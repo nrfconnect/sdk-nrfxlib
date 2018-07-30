@@ -1,0 +1,46 @@
+#
+# Copyright (c) 2018 Nordic Semiconductor
+#
+# SPDX-License-Identifier: BSD-5-Clause-Nordic
+#
+
+# Kconfig - common module configuration options
+
+comment "Common NFC module configuration"
+
+config NFC_T2T_HAL_ENABLED
+	bool
+	prompt "Enable HAL for NFC Type 2 Tag library"
+	default n
+	help
+		Enable Hardware Abstraction Layer for NFC Type 2 Tag library.
+
+config NFC_T4T_HAL_ENABLED
+	bool
+	prompt "Enable HAL for NFC Type 4 Tag library"
+	default n
+	help
+		Enable Hardware Abstraction Layer for NFC Type 4 Tag library.
+
+config NFCT_IRQ_PRIORITY
+	int
+	prompt "Interrupt priority"
+	range 0 6
+	default 6
+	help
+		Sets NFC interrupt priority.
+		Levels are from 0 (highest priority) to 7 (lowest priority)
+
+config HAL_NFC_LOG_LEVEL
+	int
+	prompt "Log severity level for NFC HAL library"
+	range 0 4
+	default 3
+	help
+		Sets log severity level for NFC Module.
+		Levels are:
+		- 0 OFF, do not write
+		- 1 ERROR, only write SYS_LOG_ERR
+		- 2 WARNING, write SYS_LOG_WRN in addition to previous level
+		- 3 INFO, write SYS_LOG_INF in addition to previous levels
+		- 4 DEBUG, write SYS_LOG_DBG in addition to previous levels
