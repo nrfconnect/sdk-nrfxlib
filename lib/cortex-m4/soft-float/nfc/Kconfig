@@ -35,7 +35,7 @@ config HAL_NFC_LOG_LEVEL
 	int
 	prompt "Log severity level for NFC HAL library"
 	range 0 4
-	default 3
+	default 0
 	help
 		Sets log severity level for NFC Module.
 		Levels are:
