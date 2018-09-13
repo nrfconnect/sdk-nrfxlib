@@ -17,11 +17,11 @@
 #include <device.h>
 #include <irq.h>
 
+#include <logging/log.h>
+
 #define LOG_MODULE_NAME hal_nfc_t2t
 #define LOG_LEVEL CONFIG_HAL_NFC_LOG_LEVEL
-
-#include <logging/log.h>
-LOG_MODULE_REGISTER();
+LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
 /* NFC library version history:
  * first experimental version intended for nRF52 IC rev. Engineering A
