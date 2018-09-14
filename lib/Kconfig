@@ -4,8 +4,24 @@
 # SPDX-License-Identifier: BSD-5-Clause-Nordic
 #
 
-menu "libraries"
+config NRFXLIB_BLE
+	bool
+	prompt "Enable BLE"
+	default n
+	help
+	  Enable BLE functionality
 
-rsource "cortex-m4/Kconfig"
+if NRFXLIB_BLE
+rsource "ble/Kconfig"
+endif # NRFXLIB_BLE
 
-endmenu
+config NRFXLIB_NFC
+	bool
+	prompt "Enable NFC"
+	default n
+	help
+	  Enable NFC functionality
+
+if NRFXLIB_NFC
+rsource "nfc/Kconfig"
+endif # NRFXLIB_BLE
