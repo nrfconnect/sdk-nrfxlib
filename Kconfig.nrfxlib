@@ -10,5 +10,6 @@ rsource "bsdlib/Kconfig"
 rsource "nfc/Kconfig"
 rsource "ble_controller/Kconfig"
 rsource "crypto/Kconfig"
+rsource "nrf_security/Kconfig"
 
 endmenu
