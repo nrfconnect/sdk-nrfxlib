@@ -6,6 +6,6 @@
 
 menu "Nordic nrfxlib"
 
-rsource "lib/Kconfig"
+rsource "nfc/Kconfig"
 
 endmenu

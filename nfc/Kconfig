@@ -4,7 +4,14 @@
 # SPDX-License-Identifier: BSD-5-Clause-Nordic
 #
 
-# Kconfig - common module configuration options
+config NRFXLIB_NFC
+	bool
+	prompt "Enable NFC"
+	default n
+	help
+	  Enable NFC functionality
+
+if NRFXLIB_NFC
 
 comment "Common NFC module configuration"
 
@@ -44,3 +51,5 @@ config HAL_NFC_LOG_LEVEL
 		- 2 WARNING, write SYS_LOG_WRN in addition to previous level
 		- 3 INFO, write SYS_LOG_INF in addition to previous levels
 		- 4 DEBUG, write SYS_LOG_DBG in addition to previous levels
+
+endif # NRFXLIB_NFC
