@@ -5,3 +5,4 @@
 #
 
 add_subdirectory_ifdef(CONFIG_NRFXLIB_NFC nfc)
+add_subdirectory_ifdef(CONFIG_NRFXLIB_BLE_CONTROLLER ble_controller)

@@ -1,0 +1,37 @@
+#
+# Copyright (c) 2018 Nordic Semiconductor
+#
+# SPDX-License-Identifier: BSD-5-Clause-Nordic
+#
+
+config NRFXLIB_BLE_CONTROLLER
+	bool
+	prompt "Enable BLE Controller"
+
+if NRFXLIB_BLE_CONTROLLER
+
+comment "Common BLE Controller module configuration"
+
+choice 
+	prompt "BLE Controller variant"
+	default BLE_CONTROLLER_S112 if SOC_NRF52810
+	default BLE_CONTROLLER_S132 if SOC_NRF52832
+	default BLE_CONTROLLER_S140 if SOC_NRF52840
+	help
+		Select a BLE Controller variant.
+
+config BLE_CONTROLLER_S112
+	depends on (SOC_NRF52810 || SOC_NRF52832)
+	bool "s112"
+
+config BLE_CONTROLLER_S132
+	depends on (SOC_NRF52810 || SOC_NRF52832)
+	bool "s132"
+
+config BLE_CONTROLLER_S140
+	depends on SOC_NRF52840
+	bool "s140"
+
+endchoice
+
+endif # NRFXLIB_BLE_CONTROLLER
