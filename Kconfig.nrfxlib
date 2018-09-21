@@ -7,5 +7,6 @@
 menu "Nordic nrfxlib"
 
 rsource "nfc/Kconfig"
+rsource "ble_controller/Kconfig"
 
 endmenu
