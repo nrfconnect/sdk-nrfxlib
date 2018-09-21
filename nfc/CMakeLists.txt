@@ -32,5 +32,6 @@ else()
 endif()
 
 zephyr_library()
+zephyr_include_directories(include)
 zephyr_library_sources(src/hal_nfc_${tag_type}.c)
 zephyr_link_libraries(${NFC_LIB_PATH}/libnfc${tag_type}_nrf52.a)

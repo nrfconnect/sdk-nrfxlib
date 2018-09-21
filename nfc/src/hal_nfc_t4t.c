@@ -4,9 +4,9 @@
 #include <string.h>
 #include "errno.h"
 
-#include <nfc/hal_nfc_t4t.h>
-#include <nfc/nfc_t4t_lib.h>
-#include <nfc/nfc_fixes.h>
+#include <hal_nfc_t4t.h>
+#include <nfc_t4t_lib.h>
+#include <nfc_fixes.h>
 
 #include <nrf_clock.h>
 #include <clock_control.h>

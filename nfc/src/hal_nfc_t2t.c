@@ -8,9 +8,9 @@
 #include <string.h>
 #include "errno.h"
 
-#include <nfc/hal_nfc_t2t.h>
-#include <nfc/nfc_t2t_lib.h>
-#include <nfc/nfc_fixes.h>
+#include <hal_nfc_t2t.h>
+#include <nfc_t2t_lib.h>
+#include <nfc_fixes.h>
 
 #include <nrf_clock.h>
 #include <clock_control.h>
