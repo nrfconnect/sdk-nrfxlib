@@ -2,6 +2,15 @@ Changelog
 #########
 All notable changes to this project are documented in this file.
 
+ble_controller 0.1.0-2.prealpha
+*******************************
+
+No change to library files
+
+Added
+=====
++ Headers necessary to utilize the timeslot api.
+
 ble_controller 0.1.0-1.prealpha
 *******************************
 

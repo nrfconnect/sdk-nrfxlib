@@ -32,7 +32,7 @@ else()
 	message(FATAL_ERROR "No BLE Controller variant selected")
 endif()
 
-set(ver 0.1.0-1.prealpha)
+set(ver 0.1.0-2.prealpha)
 
 zephyr_include_directories(include)
 zephyr_link_libraries(${BLE_CONTROLLER_LIB_PATH}/libble_controller_${ble_controller_variant}_nrf52_${ver}.a)
