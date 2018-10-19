@@ -10,13 +10,12 @@ else()
   set(float_dir soft-float)
 endif()
 
-if (float_dir STREQUAL "soft-float")
-  assert(0 "soft-float target not supported.")
-elseif (float_dir STREQUAL "softfp-float")
+if (float_dir STREQUAL "softfp-float")
   assert(0 "softfp-float target not supported.")
 endif()
 
 set(BSD_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GCC_M_CPU}/${float_dir})
 
-zephyr_link_libraries(${BSD_LIB_PATH}/libbsd_nrf9120_xxaa.a)
+zephyr_link_libraries(${BSD_LIB_PATH}/libbsd_nrf9160_xxaa.a)
+zephyr_link_libraries(${BSD_LIB_PATH}/liboberon_2.0.5.a)
 zephyr_include_directories(include)
