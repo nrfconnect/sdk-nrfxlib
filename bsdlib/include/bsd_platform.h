@@ -44,18 +44,9 @@ extern "C" {
  * @brief  Memory reserved by the BSD library for communication with the application and the
  *         network layer.
  */
-#if defined(__CORTEX_M) && (__CORTEX_M == 33U)
 
 /**@brief Memory start address reserved by the BSD library. */
 #define BSD_RESERVED_MEMORY_ADDRESS            0x20010000
-
-#else //(__CORTEX_M) && (__CORTEX_M == 33U)
-
-// TODO: Depricate.
-/**@brief Memory start address reserved by the BSD library. */
-#define BSD_RESERVED_MEMORY_ADDRESS            0x21000000
-
-#endif // (__CORTEX_M) && (__CORTEX_M == 33U)
 
 /**
  * @brief Memory size reserved by the BSD library.
@@ -77,8 +68,6 @@ extern "C" {
 /**@brief Interrupt priority used on interrupt for communication with the network layer. */
 #define BSD_NETWORK_IRQ_PRIORITY               0
 
-#if defined(NRF9160_XXAA)
-
 /**@brief Interrupt used for communication with the application layer. */
 #define BSD_APPLICATION_IRQ                    EGU1_IRQn
 
@@ -87,19 +76,6 @@ extern "C" {
 
 /**@brief Interrupt priority used on interrupt for communication with the application layer. */
 #define BSD_APPLICATION_IRQ_PRIORITY           6
-
-#else // defined(NRF9120_XXAA)
-
-/**@brief Interrupt used for communication with the application layer. */
-#define BSD_APPLICATION_IRQ                    NFCT_IRQn
-
-/** Interrupt handler used for communication with the application layer. */
-#define BSD_APPLICATION_IRQ_HANDLER            NFCT_IRQHandler
-
-/**@brief Interrupt priority used on interrupt for communication with the application layer. */
-#define BSD_APPLICATION_IRQ_PRIORITY           6
-
-#endif // defined(NRF9120_XXAA)
 
 /**@brief Maximum number of client that can be registered with RPC. */
 #define RPC_MAX_CLIENTS                        10
