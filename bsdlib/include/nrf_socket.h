@@ -362,8 +362,7 @@ typedef struct
  * @details API to create a socket that can be used for network communication independently
  *          of lower protocol layers.
  *
- * @param[in] family    The protocol family of the network protocol to use. Currently, only
- *                      AF_INET6 is supported.
+ * @param[in] family    The protocol family of the network protocol to use.
  * @param[in] type      The protocol type to use for this socket.
  * @param[in] protocol  The transport protocol to use for this socket.
  *
@@ -405,8 +404,7 @@ int nrf_fcntl(int fd, int cmd, int flags);
  *          connect on a connected handle will return an error.
  *
  * @param[in] sock          The socket to use for connection.
- * @param[in] p_servaddr    The address of the server to connect to. Currently, nrf_sockaddr_in6 is
- *                          the only supported type.
+ * @param[in] p_servaddr    The address of the server to connect to.
  * @param[in] addrlen       The size of the p_servaddr argument.
  *
  * @return 0 on success, or -1 on error.
@@ -442,8 +440,7 @@ ssize_t nrf_send(int sock, const void * p_buff, size_t nbytes, int flags);
  * @param[in] p_buff        Buffer containing the data to send.
  * @param[in] nbytes        Size of data contained in p_buff.
  * @param[in] flags         Flags to control send behavior.
- * @param[in] p_servaddr    The address of the server to send to. Currently, nrf_sockaddr_in6 is
- *                          the only supported type.
+ * @param[in] p_servaddr    The address of the server to send to.
  * @param[in] addrlen       The size of the p_servaddr argument.
  *
  * @return The number of bytes that were sent on success, or -1 on error.
