@@ -23,7 +23,7 @@ if BT_LL_NRFXLIB
 
 comment "Common BLE Controller module configuration"
 
-choice 
+choice BLE_CONTROLLER_VARIANT
 	prompt "BLE Controller variant"
 	default BLE_CONTROLLER_S112 if SOC_NRF52810
 	default BLE_CONTROLLER_S132 if SOC_NRF52832
