@@ -14,6 +14,8 @@
 #ifndef BSD_H__
 #define BSD_H__
 
+#include <stdint.h>
+
 #include "bsd_limits.h"
 
 #ifdef __cplusplus
