@@ -52,7 +52,7 @@ extern "C" {
  * @brief Memory size reserved by the BSD library.
  * This value has to match with the application RAM start address defined in the linker script.
  */
-#define BSD_RESERVED_MEMORY_SIZE               0x8000
+#define BSD_RESERVED_MEMORY_SIZE               0xc020
 
 /**@} */
 
