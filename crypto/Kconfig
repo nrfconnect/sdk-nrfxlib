@@ -1,0 +1,25 @@
+menu "Crypto libraries for nRF5x SOCs."
+
+config NRFXLIB_CRYPTO
+	bool
+
+config NRF_OBERON
+	bool "nrf_oberon SW crypto library for nRF5x."
+	select NRFXLIB_CRYPTO
+	help
+	  To use, link with nrfxlib_crypto in CMake.
+
+config NRF_CC310_BL
+	bool "nrf_cc310_bl HW crypto library for nRF52840."
+	select NRFXLIB_CRYPTO
+	select FLOAT # The cc310_bl lib uses floating point registers.
+	help
+	  To use, link with nrfxlib_crypto in CMake.
+
+if NRF_CC310_BL
+config NRF_CC310_BL_INTERRUPTS
+	bool #"Whether the nrf_cc310 library should use interrupts"
+	default n # Only the no-interrupts version currently works with Zephyr.
+endif
+
+endmenu
