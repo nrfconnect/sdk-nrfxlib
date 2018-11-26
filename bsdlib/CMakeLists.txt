@@ -17,7 +17,7 @@ endif()
 # command line.
 zephyr_link_libraries(
   ${BSD_LIB_PATH}/libbsd_nrf9160_xxaa.a
-  ${BSD_LIB_PATH}/liboberon_2.0.5.a
+  nrfxlib_crypto
   c
   )
 
