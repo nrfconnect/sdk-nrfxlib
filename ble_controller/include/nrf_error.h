@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 
+
 /** @defgroup NRF_ERRORS_BASE Error Codes Base number definitions
  * @{ */
 #define NRF_ERROR_BASE_NUM      (0x0)       ///< Global error base
@@ -19,6 +20,9 @@ extern "C" {
 #define NRF_ERROR_SOC_BASE_NUM  (0x2000)    ///< SoC error base
 #define NRF_ERROR_STK_BASE_NUM  (0x3000)    ///< STK error base
 /** @} */
+
+/** @defgroup NRF_ERRORS
+ * @{ */
 
 #define NRF_SUCCESS                           (NRF_ERROR_BASE_NUM + 0)  ///< Successful command
 #define NRF_ERROR_SVC_HANDLER_MISSING         (NRF_ERROR_BASE_NUM + 1)  ///< SVC handler is missing

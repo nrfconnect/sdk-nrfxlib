@@ -10,6 +10,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+/** @defgroup blectlr_hci
+ * @{
+ **/
 
 /** @brief The size of a command packet header. */
 #define HCI_CMD_HEADER_SIZE   (3)
@@ -83,6 +86,5 @@ bool hci_event_packet_get(hci_element_t * buffer);
 #endif // BLECTLR_HCI_H__
 
 /**
-  @}
   @}
 */

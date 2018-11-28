@@ -282,5 +282,3 @@ uint32_t sd_radio_request(nrf_radio_request_t const * p_request);
 }
 #endif
 #endif // NRF_SOC_H__
-
-/**@} */
