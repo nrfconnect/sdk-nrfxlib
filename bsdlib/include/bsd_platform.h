@@ -15,9 +15,9 @@
  * -# A common entry point for platform specific system initializations.
  * -# Initialization of modules, in right order and with platform specific tuning.
  * -# Any system level configurations. These configurations include:
- *         -1. Interrupts and their priorities.
- *         -2. Any reserved memory.
- *         -3. Any other reserved resources in the system for the purpose.
+ *         1. Interrupts and their priorities.
+ *         2. Any reserved memory.
+ *         3. Any other reserved resources in the system for the purpose.
  */
 #ifndef BSD_PLATFORM_H__
 #define BSD_PLATFORM_H__

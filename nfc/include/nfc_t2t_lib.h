@@ -9,12 +9,6 @@
 
 /** @file
  *
- * @addtogroup nfc_api
- *
- * @defgroup nfc_t2t NFC Type 2 Tag
- * @ingroup nfc_api
- * @brief Implementation of NFC Type 2 Tag.
- *
  * @defgroup nfc_t2t_lib NFC tag 2 type emulation library
  * @{
  * @ingroup nfc_t2t

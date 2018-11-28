@@ -10,6 +10,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+/** @defgroup blectlr_util
+ * @{
+ **/
+
 void blectlr_set_default_evt_length(void);
 
 void cal_init(void);
@@ -22,5 +26,7 @@ void ll_util_block_encrypt(const uint8_t key[16],
                            const uint8_t plaintext[16],
                            bool is_result_le,
                            uint8_t ciphertext[16]);
+
+/** @} **/
 
 #endif

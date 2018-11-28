@@ -9,6 +9,11 @@
 
 #include <stdint.h>
 
+/** @defgroup blectlr
+ * @{
+ **/
+
+
 /** @brief Host signal handler function pointer type. */
 typedef void (*host_signal_t)(void);
 
@@ -83,5 +88,7 @@ void C_RNG_Handler(void);
  *             The interrupt priority level should be lower than priority 0.
  */
 void C_POWER_CLOCK_Handler(void);
+
+/** @} **/
 
 #endif
