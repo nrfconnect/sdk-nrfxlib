@@ -1,20 +1,15 @@
-if(CONFIG_FLOAT)
-  if(CONFIG_FP_HARDABI)
-    set(float_dir hard-float)
-  elseif(CONFIG_FP_SOFTABI)
-    set(float_dir softfp-float)
-  else()
-    assert(0 "Unreachable code")
-  endif()
-else()
-  set(float_dir soft-float)
-endif()
+#
+# Copyright (c) 2018 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
 
-if (float_dir STREQUAL "softfp-float")
-  assert(0 "softfp-float target not supported.")
-endif()
+set(BSD_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
 
-set(BSD_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GCC_M_CPU}/${float_dir})
+if(NOT EXISTS ${BSD_LIB_PATH})
+  message(WARNING "This combination of SoC and floating point ABI is not supported by the bsd lib."
+                  "(${BSD_LIB_PATH} doesn't exist.)")
+endif()
 
 # Link in the bsd library, the oberon library, and lib C. Lib C and
 # lib oberon are linked in because they are used by the bsd library
