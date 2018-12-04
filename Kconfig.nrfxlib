@@ -6,6 +6,7 @@
 
 menu "Nordic nrfxlib"
 
+rsource "bsdlib/Kconfig"
 rsource "nfc/Kconfig"
 rsource "ble_controller/Kconfig"
 
