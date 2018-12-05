@@ -32,7 +32,7 @@
  * @param[in]  buffer_len     Length of the buffer holding the credential data.
  *
  * @retval 0            If create operation was successful.
- * @retval NRF_EIO      If operation was not succesful due to internal error or unintialized
+ * @retval NRF_EIO      If operation was not successful due to internal error or uninitialized
  *                      module.
  * @retval NRF_ENOBUFS  If the operation could not be performed because it could not allocate
  *                      enough intermediate buffers to perform the operation.
@@ -52,14 +52,14 @@ int nrf_inbuilt_key_write(nrf_sec_tag_t            sec_tag,
  *
  * This function will read the credential from persistent memory referenced by a sec_tag.
  *
- * @param[in]     sec_tag     Application defined tag for this credential to read.
- * @param[in]     cred_type   Type of credential being read.
- * @param[in]     p_buffer    Output buffer containing where to write the read credential data.
- * @param[inout]  buffer_len  Length of the output buffer as input, and length used as output
- *                            parameter.
+ * @param[in]     sec_tag       Application defined tag for this credential to read.
+ * @param[in]     cred_type     Type of credential being read.
+ * @param[in]     p_buffer      Output buffer containing where to write the read credential data.
+ * @param[inout]  p_buffer_len  Length of the output buffer as input, and length used as output
+ *                              parameter.
  *
  * @retval 0            If read operation was successful.
- * @retval NRF_EIO      If operation was not succesful due to internal error or unintialized
+ * @retval NRF_EIO      If operation was not successful due to internal error or uninitialized
  *                      module.
  * @retval NRF_ENOBUFS  If the operation could not be performed because it could not allocate
  *                      enough intermediate buffers to perform the operation.
@@ -128,7 +128,7 @@ int nrf_inbuilt_key_permission_set(nrf_sec_tag_t            sec_tag,
  *                              of the credential. Only valid if operation was successful.
  * @param[out]    p_perm_flags  Value by reference output parameter telling the permission
  *                              flags of the credential. Only valid if operation was successful
- *                              and p_exists is true. Not yet implemented/supported.
+ *                              and @param p_exists is true. Not yet implemented/supported.
  *
  * @retval 0            If delete operation was successful.
  * @retval NRF_EIO      If operation was not successful due to internal errors or uninitialized

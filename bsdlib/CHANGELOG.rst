@@ -5,6 +5,16 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.2.1
+************
+
+Updated library with bugfixes:
+
+* Updated ``nrf_inbuilt_key.h`` with smaller documentation fixes.
+* Bugfix in the ``nrf_inbuilt_key`` API to allow PSK and Identity to be provisioned successfully.
+* Bugfix in the ``nrf_inbuilt_key`` API to allow security tags in the range of 65535 to 2147483647 to be deleted, read, and listed.
+* Bugfix in proprietary trace log.
+
 bsdlib 0.2.0
 ************
 
