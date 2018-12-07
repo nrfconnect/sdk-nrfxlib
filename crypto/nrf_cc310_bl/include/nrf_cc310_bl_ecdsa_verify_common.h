@@ -37,7 +37,7 @@
 /**@file
  *
  * @defgroup nrf_cc310_bl_ecdsa_verify_common nrf_cc310_bl ECDSA verify common declarations
- * @ingroup nrf_cc310_bl
+ * @addtogroup nrf_cc310_bl
  * @brief Common declarations for nrf_cc310_bl ECDSA verify APIs.
  * @{
  */

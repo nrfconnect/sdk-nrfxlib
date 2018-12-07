@@ -8,6 +8,8 @@
  * RSA is a number theoretic public-key encryption and signature algorithm.
  *
  * These functions suport the setup of 1024 and 4069 RSA secret and public keys.
+ * @addtogroup nrf_oberon
+ * @{
  */
 
 #ifndef OCC_RSA_KEY_H
@@ -199,4 +201,5 @@ int occ_rsa2048_init_crt_key (occ_rsa2048_crt_key *k,
 						      const uint8_t *qinv, int qilen);
 /**@}*/
 
+/** @} */
 #endif

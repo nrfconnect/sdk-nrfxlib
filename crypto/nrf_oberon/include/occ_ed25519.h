@@ -12,6 +12,8 @@
  * attack resistance comparable to quality 128-bit symmetric ciphers.
  * 
  * @see [Ed25519: high-speed high-security signatures](https://ed25519.cr.yp.to)
+ * @addtogroup nrf_oberon
+ * @{
  */
 
 #ifndef OCC_ED25519_H
@@ -93,4 +95,5 @@ int occ_ed25519_verify(const uint8_t sig[occ_ed25519_BYTES],
                        const uint8_t *m, size_t m_len,
                        const uint8_t pk[occ_ed25519_PUBLIC_KEY_BYTES]);
 
+/** @} */
 #endif

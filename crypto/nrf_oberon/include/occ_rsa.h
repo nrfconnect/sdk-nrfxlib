@@ -9,6 +9,8 @@
  *
  * These functions support RSA encrytion and signatures with 1024 and 2048 bit
  * modulo and PKCS1 V1.5 padding.
+ * @addtogroup nrf_oberon
+ * @{
  */
 
 #ifndef OCC_RSA_H
@@ -245,4 +247,5 @@ int occ_rsa2048_pkcs1_v15_sha256_verify(const uint8_t s[256], const uint8_t *m, 
 /**@}*/
 
 
+/** @} */
 #endif

@@ -37,7 +37,7 @@
 /**@file
  *
  * @defgroup nrf_cc310_bl_ecdsa_verify_secp256r1 nrf_cc310_bl ECDSA verify secp256r1 types
- * @ingroup nrf_cc310_bl
+ * @addtogroup nrf_cc310_bl
  * @brief  Type definitions and APIs for nrf_cc310_bl ECDSA verify using curve secp256r1.
  * @{
  */

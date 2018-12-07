@@ -10,6 +10,8 @@
  *
  * @see [RFC 7748 - Elliptic Curves for Security](https://tools.ietf.org/html/rfc7748)
  * @see [Curve25519: high-speed elliptic-curve cryptography](http://cr.yp.to/ecdh.html)
+ * @addtogroup nrf_oberon
+ * @{
  */
 
 #ifndef OCC_CURVE25519_H
@@ -69,4 +71,5 @@ void occ_curve25519_scalarmult(uint8_t r[occ_curve25519_BYTES],
                                const uint8_t n[occ_curve25519_SCALAR_BYTES],
                                const uint8_t p[occ_curve25519_BYTES]);
 
+/** @} */
 #endif

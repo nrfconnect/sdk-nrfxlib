@@ -13,6 +13,8 @@
  * The ChaCha20 stream cipher is combined with the Poly1305 authenticator.
  *
  * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc7539)
+ * @addtogroup nrf_oberon
+ * @{
  */
 
 #ifndef OCC_CHACHA20_POLY1305_H
@@ -175,4 +177,5 @@ int occ_chacha20_poly1305_decrypt_aad(const uint8_t tag[occ_chacha20_poly1305_TA
                                       const uint8_t k[occ_chacha20_poly1305_KEY_BYTES]);
 /**@}*/
 
+/** @} */
 #endif

@@ -17,6 +17,8 @@
  *
  * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc7539)
  * @see [The ChaCha family of stream ciphers](http://cr.yp.to/chacha.html)
+ * @addtogroup nrf_oberon
+ * @{
  */
 
 #ifndef OCC_CHACHA20_H
@@ -98,4 +100,5 @@ void occ_chacha20_stream_xor(uint8_t *c,
                              const uint8_t k[occ_chacha20_KEY_BYTES],
                              uint32_t count);
 
+/** @} */
 #endif

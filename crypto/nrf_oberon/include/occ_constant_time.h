@@ -6,6 +6,8 @@
 
 /**@file
  * Collection of timing-invariant implementations of basic functions.
+ * @addtogroup nrf_oberon
+ * @{
  */
 
 #ifndef OCC_CONSTANT_TIME_H
@@ -43,4 +45,5 @@ int occ_constant_time_equal(const void *x, const void *y, size_t length);
  */
 int occ_constant_time_is_zero(const void *x, size_t length);
 
+/** @} */
 #endif

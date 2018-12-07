@@ -37,7 +37,7 @@
 /**@file
  *
  * @defgroup nrf_cc310_bl_hash_sha256 nrf_cc310_bl Hash SHA-256 API
- * @ingroup nrf_cc310_bl
+ * @addtogroup nrf_cc310_bl
  * @brief Type definitions and public APIs for nrf_cc310_bl HASH using SHA-256.
  * @{
  */

@@ -11,6 +11,8 @@
  * A fixed-sized message digest is computed from variable length input data.
  * The function is practically impossible to revert, and small changes in the
  * input message lead to major changes in the message digest.
+ * @addtogroup nrf_oberon
+ * @{
  */
 
 #ifndef OCC_SHA256_H
@@ -104,4 +106,5 @@ void occ_sha256_final(uint8_t r[occ_sha256_BYTES], occ_sha256_ctx *ctx);
 void occ_sha256(uint8_t r[occ_sha256_BYTES],
                 const uint8_t *in, size_t in_len);
 
+/** @} */
 #endif

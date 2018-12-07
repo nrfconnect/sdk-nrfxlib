@@ -37,7 +37,7 @@
 /**@file
  *
  * @defgroup nrf_cc310_bl_hash_common nrf_crypto_bl Hash common declarations
- * @ingroup nrf_cc310_bl
+ * @addtogroup nrf_cc310_bl
  * @brief Shared declarations used by nrf_cc310_bl for hash APIs.
  * @{
  */

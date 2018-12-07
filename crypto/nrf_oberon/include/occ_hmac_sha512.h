@@ -11,6 +11,8 @@
  * message.
  *
  * @see [RFC 2104 - HMAC: Keyed-Hashing for Message Authentication](http://tools.ietf.org/html/rfc2104)
+ * @addtogroup nrf_oberon
+ * @{
  */
  
 #ifndef OCC_HMAC_SHA512_H
@@ -121,4 +123,5 @@ void occ_hmac_sha512(uint8_t r[occ_hmac_sha512_BYTES],
                      const uint8_t* key, size_t key_len,
                      const uint8_t* in, size_t in_len);
 
+/** @} */
 #endif

@@ -5,6 +5,8 @@
  */
 
 /**@file
+ * @addtogroup nrf_oberon
+ * @{
  * SRP is an augmented password-authenticated key agreement protocol,
  * specifically designed to work around existing patents. SRP allows the use of
  * user names and passwords over unencrypted channels and supplies a shared
@@ -265,4 +267,5 @@ void occ_srp_proof_m2(uint8_t m2[occ_srp_PROOF_BYTES],
                       const uint8_t k[occ_srp_SESSION_KEY_BYTES]);
 /**@}*/
 
+/** @} */
 #endif

@@ -13,6 +13,8 @@
  *
  * SHA-1 is no longer considered secure against well-funded opponents;
  * replacement by SHA-2 or SHA-3 is recommended.
+ * @addtogroup nrf_oberon
+ * @{
  */
 
 #ifndef OCC_SHA1_H
@@ -43,4 +45,5 @@
 void occ_sha1(uint8_t r[occ_sha1_BYTES],
               const uint8_t *in, size_t in_len);
 
+/** @} */
 #endif

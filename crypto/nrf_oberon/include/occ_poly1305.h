@@ -16,6 +16,8 @@
  *
  * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc7539)
  * @see [Poly1305-AES: a state-of-the-art message-authentication code](http://cr.yp.to/mac.html)
+ * @addtogroup nrf_oberon
+ * @{
  */
 
 #ifndef OCC_POLY1305_H
@@ -128,4 +130,5 @@ void occ_poly1305(uint8_t r[occ_poly1305_BYTES],
                   const uint8_t *in, size_t in_len,
                   const uint8_t k[occ_poly1305_KEY_BYTES]);
 
+/** @} */
 #endif

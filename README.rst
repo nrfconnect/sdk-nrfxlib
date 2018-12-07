@@ -24,4 +24,5 @@ product development.
 
    ble_controller/README
    bsdlib/README
+   crypto/README
    nfc/README
