@@ -5,7 +5,7 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-NFC [Unreleased]
+NFC 0.2.0
 ****************
 
 The NFC libraries now use the NFCT driver instead of the NFC HAL modules. The
