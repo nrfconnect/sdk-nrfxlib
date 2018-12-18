@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 
-set(NFC_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/${GCC_M_CPU}/${float_dir})
+set(NFC_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
 
 if(NOT EXISTS ${NFC_LIB_PATH})
   message(WARNING "This combination of SoC and floating point ABI is not supported by the nfc lib."
