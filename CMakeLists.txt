@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 
-if (${CONFIG_FLOAT})
+if(CONFIG_FLOAT)
   if(CONFIG_FP_HARDABI)
     set(float_dir hard-float)
   elseif(CONFIG_FP_SOFTABI)
@@ -12,11 +12,12 @@ if (${CONFIG_FLOAT})
   else()
     assert(0 "Unreachable code")
   endif()
-else ()
+else()
   set(float_dir soft-float)
 endif()
 
 assert(GCC_M_CPU "GCC_M_CPU must be set to find correct lib.")
+
 set(lib_path lib/${GCC_M_CPU}/${float_dir})
 
 add_subdirectory_ifdef(CONFIG_NRFXLIB_NFC    nfc)
