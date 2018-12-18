@@ -4,6 +4,10 @@
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 
+include(${NRFXLIB_DIR}/common.cmake)
+
+nrfxlib_calculate_lib_path(lib_path)
+
 zephyr_interface_library_named(nrfxlib_crypto)
 
 if (CONFIG_NRF_OBERON)
