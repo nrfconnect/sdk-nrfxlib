@@ -44,6 +44,7 @@ extern "C" {
 #define NRF_ENOBUFS         105
 
 #define NRF_EHOSTDOWN       112 //< Host is down.
+#define NRF_EALREADY        114 //< Operation already in progress.
 #define NRF_EINPROGRESS     115 //< Operation in progress.
 #define NRF_ECANCELED       125 //< Operation canceled.
 
