@@ -1,8 +1,9 @@
-.. nfc_api:
+.. _nfc_api:
 
 API documentation
 #################
 
+.. _nfc_api_type2:
 
 NFC tag 2 type emulation library
 ********************************
@@ -11,6 +12,7 @@ NFC tag 2 type emulation library
    :project: nrfxlib
    :members:
 
+.. _nfc_api_type4:
 
 NFC tag 4 type emulation library
 ********************************
