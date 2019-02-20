@@ -586,7 +586,7 @@ int nrf_select(int                        nfds,
 #define NRF_POLLIN       0x0001    /**< Event for data receive. Can be requested and returned. */
 #define NRF_POLLOUT      0x0002    /**< Event for data send. Can be requested and returned. */
 #define NRF_POLLERR      0x0004    /**< Event for error on the polled socket. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
-#define NRF_POLLINVAL    0x0008    /**< Event to indicate the polled socket is not open. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
+#define NRF_POLLNVAL     0x0008    /**< Event to indicate the polled socket is not open. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
 /**@} */
 
 
