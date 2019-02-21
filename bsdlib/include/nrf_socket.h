@@ -119,7 +119,9 @@ typedef int32_t ssize_t;
  * @ingroup nrf_socket
  * @{
  */
+#define NRF_SO_ERROR                    4
 #define NRF_SO_RCVTIMEO                 20
+#define NRF_SO_BINDTODEVICE             25
 /**@} */
 
 /**@defgroup nrf_socket_options_levels Values for Socket option levels
