@@ -14,6 +14,9 @@ choice BT_LL_CHOICE
 config BT_LL_NRFXLIB
 	bool "Nordic proprietary BLE Link Layer"
 	select ZERO_LATENCY_IRQS
+	# This controller only supports nRF52, it does not support 51 or
+	# 91 (91 doesn't even have the physical HW needed for BLE).
+	depends on SOC_SERIES_NRF52X
 	help
 	  Use Nordic BLE Link Layer implementation.
 
