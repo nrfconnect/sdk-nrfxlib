@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
-
-#include <nrfx_clock.h>
+#include <clock_control.h>
+#include <device.h>
 #include <nrfx_nfct.h>
 #include <nrfx_timer.h>
 
@@ -14,11 +14,17 @@
 #define LOG_LEVEL CONFIG_NFC_PLATFORM_LOG_LEVEL
 LOG_MODULE_REGISTER(LOG_MODULE_NAME);
 
+struct device *clock;
+
 nrfx_err_t nfc_platform_setup(void)
 {
-	nrfx_clock_init(NULL);
-	nrfx_clock_enable();
-	nrfx_clock_hfclk_start();
+	int err;
+
+	clock = device_get_binding(DT_NORDIC_NRF_CLOCK_0_LABEL "_16M");
+	__ASSERT_NO_MSG(clock);
+
+	err = clock_control_on(clock, (void *)1);
+	__ASSERT_NO_MSG(!err);
 
 	IRQ_DIRECT_CONNECT(NFCT_IRQn, CONFIG_NFCT_IRQ_PRIORITY,
 			   nrfx_nfct_irq_handler, 0);
