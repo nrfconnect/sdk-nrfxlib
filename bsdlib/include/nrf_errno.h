@@ -10,9 +10,6 @@
  * @file nrf_errno.h
  * @brief Defines integer values for errno.
  *        Used by system calls to indicates the latest error.
- *
- * @defgroup nrf_errno
- * @{
  */
 #ifdef __cplusplus
 extern "C" {
@@ -44,6 +41,7 @@ extern "C" {
 #define NRF_ENOBUFS         105
 
 #define NRF_EHOSTDOWN       112 //< Host is down.
+#define NRF_EALREADY        114 //< Operation already in progress.
 #define NRF_EINPROGRESS     115 //< Operation in progress.
 #define NRF_ECANCELED       125 //< Operation canceled.
 
@@ -55,7 +53,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-/** @} **/
 
 #endif // NRF_ERRNO_H__

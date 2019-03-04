@@ -46,6 +46,16 @@ extern "C" {
 /**@brief Maximum AT Command Size in bytes. */
 #define BSD_AT_MAX_CMD_SIZE                    4096
 
+/**
+ * @brief Maximum number of PDN connections that can be created.
+ *
+ * Maximum number of concurrent PDN connections that can be created and managed on the system.
+ * This number include any default PDNs.
+ *
+ */
+#define BSD_MAX_PDN_COUNT                      10
+
+
 #ifdef __cplusplus
 }
 #endif

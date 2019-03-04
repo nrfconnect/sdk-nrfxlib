@@ -65,6 +65,7 @@ typedef int32_t ssize_t;
  * @ingroup nrf_socket
  * @{
  */
+#define NRF_AF_LOCAL            1   /**< Family to identify protocols/operations local to Nordic device. */
 #define NRF_AF_INET             2   /**< IPv4 socket family. */
 #define NRF_AF_INET6            10  /**< IPv6 socket family. */
 #define NRF_AF_LTE              102 /**< Nordic proprietary LTE socket family. */
@@ -76,6 +77,13 @@ typedef int32_t ssize_t;
  */
 #define NRF_SOCK_STREAM         1   /**< TCP socket type. */
 #define NRF_SOCK_DGRAM          2   /**< UDP socket type. */
+/**@} */
+
+/**@defgroup nrf_socket_mgmt_types Nordic specific extensions of nrf_socket_type_t
+ * @ingroup nrf_socket
+ * @{
+ */
+#define NRF_SOCK_MGMT           512 /**< Management socket. Used for system or link management. */
 /**@} */
 
 /**@defgroup nrf_socket_protocols Values for nrf_socket_protocol_t
@@ -100,6 +108,9 @@ typedef int32_t ssize_t;
  * @{
  */
 #define NRF_PROTO_AT           513  /**< Identifies socket protocol to be AT commands. */
+#define NRF_PROTO_PDN          514  /**< Identifies socket protocol for PDN management. */
+#define NRF_PROTO_DFU          515  /**< Identifies socket protocol to be DFU. */
+
 /**@} */
 
 /**@defgroup nrf_socket_options_secure_sockets Values for Secure Socket options
@@ -113,6 +124,27 @@ typedef int32_t ssize_t;
 #define NRF_SO_HOSTNAME                 5    /**< Identifies the option used to get and/or set the host name of the peer used for peer verification. Host name is provided a null terminated string. */
 #define NRF_SO_CIPHERSUITE_LIST         6    /**< Identifies the option used to get and/or set the TLS cipher suite on the socket. See @ref nrf_sec_cipher_t for details. */
 #define NRF_SO_CIPHER_IN_USE            7    /**< Identifies the option used to get the TLS cipher selected for the session on the socket. See @ref nrf_sec_cipher_t for details. */
+/**@} */
+
+/**@defgroup nrf_socket_options_pdn_sockets Values for PDN Socket options
+ * @ingroup nrf_socket
+ * @{
+ */
+#define NRF_SO_PDN_AF                   1    /**< Identifies the option used to get/set supported address families on the PDN. @ref nrf_pdn_af_list_t for details. */
+#define NRF_SO_PDN_CLASS                2    /**< Identifies the option used to get/set the APN class for the PDN. @ref nrf_pdn_class_t for details. */
+/**@} */
+
+/**@defgroup nrf_socket_options_dfu_sockets Values for DFU Socket options
+ * @ingroup nrf_socket
+ * @{
+ */
+#define NRF_SO_DFU_FW_VERSION           1    /**< Identifies the option used to get firmware version. @ref nrf_dfu_fw_version_t for details. */
+#define NRF_SO_DFU_RESOURCE             2    /**< Identifies the option used to get resources available for DFU. @ref nrf_dfu_fw_resource_t for details. */
+#define NRF_SO_DFU_TIMEO                3    /**< Identifies the option used to get and/or set the timeout to send a DFU fragment. @ref nrf_dfu_timeout_t for details. */
+#define NRF_SO_DFU_APPLY                4    /**< Identifies the option to set(execute) firmware upgrade. This option has no parameters. */
+#define NRF_SO_DFU_REVERT               5    /**< Identifies the option to set(execute) revert the upgraded firmware to the old one. This option has no parameters. */
+#define NRF_SO_DFU_BACKUP_DELETE        6    /**< Identifies the option to set(execute) delete any backup firmware. This option has no parameters. */
+#define NRF_SO_DFU_OFFSET               7    /**< Identifies the option to get and/or set offset of the downloaded firmware. */
 /**@} */
 
 /**@defgroup nrf_socket_options_sockets Values for Socket options
@@ -130,6 +162,8 @@ typedef int32_t ssize_t;
  */
 #define NRF_SOL_SOCKET                  1
 #define NRF_SOL_SECURE                  282
+#define NRF_SOL_PDN                     514
+#define NRF_SOL_DFU                     515
 /**@} */
 
 /**@defgroup nrf_socket_send_recv_flags Socket send/recv flags
@@ -264,8 +298,8 @@ typedef struct nrf_in6_addr     nrf_in6_addr;
 typedef struct nrf_in6_addr     nrf_in6_addr_t;
 typedef struct nrf_sockaddr_in  nrf_sockaddr_in_t;
 
-/**@defgroup iot_socket_dns BSD Socket Address Functions (DNS)
- * @ingroup iot_sdk_socket
+/**@defgroup nrf_socket_dns BSD Socket Address Functions (DNS)
+ * @ingroup nrf_socket
  * @{
  */
 /**@brief Address information. */
@@ -282,8 +316,8 @@ struct nrf_addrinfo
 };
 /**@} */
 
-/**@defgroup iot_socketopt_tls TLS socket option
- * @ingroup iot_sdk_socket
+/**@defgroup nrf_socketopt_tls TLS socket option
+ * @ingroup nrf_socket
  * @brief Data types defined to set and get socket options on a TLS socket.
  * @{
  */
@@ -354,9 +388,56 @@ typedef struct
     nrf_sec_tag_t           *p_sec_tag_list;         /**< Indicates the list of security tags to be used for the session. See @nrf_sec_tag_t for details. */
 } nrf_sec_config_t;
 
+#define NRF_IFNAMSIZ 64
+
+/**@brief Data type for network interface. */
+struct nrf_ifreq
+{
+   char ifr_name[NRF_IFNAMSIZ]; /* Interface name */
+};
 /**@} */
 
+/**@defgroup nrf_socketopt_pdn PDN socket option
+ * @ingroup nrf_socket
+ * @brief Data types defined to set and get socket options on a PDN socket.
+ * @{
+ */
+/**@brief Defines the format of the address family(ies) for the PDN.
+ * @note the size of the list is provided in the optlen field.
+ */
+typedef nrf_sa_family_t * nrf_pdn_af_list_t;
 
+/**@brief Defines the format for Address family for the PDN. */
+typedef uint32_t nrf_pdn_class_t;
+/**@} */
+
+/**@defgroup nrf_socketopt_dfu DFU socket option
+ * @ingroup nrf_socket
+ * @brief Data types defined to set and get socket options on a DFU socket.
+ * @{
+ */
+/**@brief Defines the format of resources available for firmware upgrade.
+ */
+
+/**@brief Defines the firmware revision.
+ *
+ * @details The firmware revision is as defined by the RFC 4122.
+ */
+typedef uint8_t nrf_dfu_fw_version_t[36];
+
+/**@brief Defines the format of resources available for firmware upgrade. */
+typedef struct
+{
+    uint32_t flash_size;                             /**< Available flash size in bytes. */
+} nrf_dfu_fw_resource_t;
+
+/**@brief Defines the format to get/set timeout for DFU operations. */
+typedef uint32_t nrf_dfu_timeout_t;
+
+/**@brief Defines the format to get/set offset for firmware download. */
+typedef uint32_t nrf_dfu_fw_offset_t;
+
+/**@} */
 
 /**
  * @brief Function for creating a socket.
