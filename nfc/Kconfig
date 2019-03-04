@@ -8,7 +8,6 @@ config NRFXLIB_NFC
 	bool
 	prompt "Enable NFC"
 	select NRFX_NFCT
-	select NRFX_CLOCK
 	help
 	  Enable NFC functionality
 
