@@ -10,6 +10,8 @@
  * @file nrf_errno.h
  * @brief Defines integer values for errno.
  *        Used by system calls to indicates the latest error.
+ *
+ * @defgroup nrf_errno
  */
 #ifdef __cplusplus
 extern "C" {
