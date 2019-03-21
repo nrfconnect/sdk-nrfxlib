@@ -5,6 +5,15 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.2.2
+************
+
+Updated library with API for setting APN name when doing getaddrinfo request.
+
+* Providing API through nrf_getaddrinfo, ai_next to set a second hint that defines the APN name to use for getaddrinfo query.
+  The hint must be using NRF_AF_LTE, NRF_SOCK_MGMT, and NRF_PROTO_PDN as family, type, and protocol.
+  The APN is set through the ai_canonname field.
+
 bsdlib 0.2.1
 ************
 
