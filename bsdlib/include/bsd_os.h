@@ -22,9 +22,28 @@ extern "C" {
 
 /* TODO: add documentation in this file */
 
+/**@defgroup bsd_os_timeout Special time-out values, used, for example, with bsd_os_timedwait.
+ * @{
+ */
+#define BSD_OS_NO_WAIT  0 /**< Zero time-out. */
+#define BSD_OS_FOREVER -1 /**< Infinite time-out. */
+/**@} */
+
 void bsd_os_init(void);
 
-int32_t bsd_os_timedwait(uint32_t context, uint32_t timeout);
+/* @brief Put a thread to a sleep for a specific time or until an event occurs.
+ *
+ * @param[in]      context   A unique identifier assigned by the library to identify the context.
+ * @param[in, out] p_timeout A pointer to the time-out value, in milliseconds. -1 for infinite
+ *                           time-out. Contains the time-out value as input, remainig time to sleep
+ *                           as output.
+ *
+ * @retval 0             If the procedure succeeded - it was interrupted by the RPC.
+ * @retval NRF_ETIMEDOUT If a time-out condition occured.
+ * @retval Other         Some other, OS specific error took place. The error code shall
+ *                       belong to the nrf_errno error space.
+ */
+int32_t bsd_os_timedwait(uint32_t context, int32_t * p_timeout);
 
 void bsd_os_errno_set(int errno_val);
 

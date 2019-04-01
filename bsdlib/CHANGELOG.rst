@@ -5,6 +5,19 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.2.3
+************
+
+Updated library with various changes:
+
+* Updated library to use nrf_oberon v3.0.0.
+* Updated the library to be deployed without inbuilt libc or libgcc symbols
+  (-nostdlib -nodefaultlibs -nostartfiles -lnosys).
+* Fixed issues with some unresolved symbols internal to the library.
+* Updated API towards bsd_os_timedwait function.
+  The time-out parameter is now an in and out parameter.
+  The bsd_os implementation is now expected to set the remaining time left of the time-out value in return.
+
 bsdlib 0.2.2
 ************
 
