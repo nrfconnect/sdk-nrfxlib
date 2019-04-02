@@ -5,6 +5,15 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.2.3
+************
+
+Compatibility warning:
+* Updated API towards bsd_os_timedwait function. The timeout parameter is now a
+in and out parameter. The bsd_os implementation is now expected to set the
+remaining time left of the timeout value in return.
+
+
 bsdlib 0.2.2
 ************
 
