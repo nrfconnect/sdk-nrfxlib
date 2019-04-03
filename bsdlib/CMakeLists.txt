@@ -21,7 +21,7 @@ endif()
 # command line.
 zephyr_link_libraries(
   ${BSD_LIB_PATH}/libbsd_nrf9160_xxaa.a
-  nrfxlib_crypto
+  ${IMAGE}nrfxlib_crypto
   c
   )
 
