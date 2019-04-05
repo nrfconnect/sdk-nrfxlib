@@ -40,8 +40,11 @@ endif()
 
 if (CONFIG_CC310_BACKEND)
   set(NRF_CC310_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_cc310_mbedcrypto)
-  set(NRF_CC310_LIB)
-    "${NRF_CC310_BASE}/${lib_path}/${CC310_FLAVOR}/libnrf_cc310_mbedcrypto.a"
+  if (NOT CONFIG_CC310_INTERRUPTS_BACKEND)
+    set(CC310_FLAVOR no-interrupts)
+  endif()
+  set(NRF_CC310_LIB
+    ${NRF_CC310_BASE}/${lib_path}/${CC310_FLAVOR}/libnrf_cc310_mbedcrypto.a
   )
   if(NOT EXISTS ${NRF_CC310_LIB})
     message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_cc310_mbedcryto lib."
@@ -54,8 +57,9 @@ if (CONFIG_CC310_BACKEND)
   target_include_directories(mbedcrypto_cc310 INTERFACE 
                              "${NRF_CC310_BASE}/include/mbedtls")
   target_link_libraries(mbedcrypto_cc310 INTERFACE mbedcrypto_vanilla)
-endif()
-
-if (NOT CONFIG_NRF_OBERON AND NOT CONFIG_NRF_CC310_BL)
-  assert( "NRFXLIB_CRYPTO enabled, but neither nrf_cc310_bl nor nrf_oberon are enabled.")
+  if (NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
+    # Only CC310 backend is selected for mbedtls API.
+    # Thus export the alt headers through Zephyr interface library.
+    zephyr_include_directories(${NRF_CC310_BASE}/include/mbedtls)
+  endif()
 endif()
