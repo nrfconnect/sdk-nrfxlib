@@ -28,6 +28,7 @@ Each library is distributed in soft-float, softfp-float, and hard-float builds.
   * The libraries are for evaluation purposes only.
   * The libraries are not fully functional.
   * The libraries are not built for performance.
+  * Some toolchains cause a segmentation fault when linking the libraries.
 
 
 .. toctree::
