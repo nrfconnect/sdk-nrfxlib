@@ -5,10 +5,22 @@
  */
 
 /**@file
- * AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128 bit block of data into an encrypted block of same size.
+ * @defgroup nrf_oberon_aes AES - Advanced Encryption Standard APIs
+ * @ingroup nrf_oberon
+ * @{
+ * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
+ * AES transfers a 128-bit block of data into an encrypted block of the same size.
+ * @}
  *
- * AES-CTR (AES counter mode) is an AES mode which effectively turn the block cipher into a stream
+ * @defgroup nrf_oberon_aes_ctr AES-CTR - AES Counter Mode
+ * @ingroup nrf_oberon_aes
+ * @{
+ * @brief Type definitions and APIs for AES-CTR (AES Counter mode).
+ *
+ * AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
+ * AES transfers a 128-bit block of data into an encrypted block of the same size.
+ *
+ * AES-CTR (AES counter mode) is an AES mode which effectively turns the block cipher into a stream
  * cipher. The AES block encryption is used on a value which is incremented for each new block.
  * The resulting cypher stream is then xor combined with the plaintext to get the ciphertext.
  * In contrast to AES itself, encryption and decryption operations are identical for AES-CTR.
@@ -30,8 +42,8 @@ typedef struct {
     uint32_t xkey[60];
     uint8_t  counter[16];
     uint8_t  cypher[16];
-    uint8_t  size;  // key size {16, 24, 32}
-    uint32_t valid; // valid bytes in cypher
+    uint8_t  size;  // Key size (16, 24, or 32 bytes).
+    uint32_t valid; // Valid bytes in cypher.
 } ocrypto_aes_ctr_ctx;
 /**@endcond */
 
@@ -49,7 +61,7 @@ typedef struct {
  *
  * @param[out] ctx   Context.
  * @param      key   AES key.
- * @param      size  Key size (16, 24, or 32).
+ * @param      size  Key size (16, 24, or 32 bytes).
  * @param      iv    Initial vector.
  */
 void ocrypto_aes_ctr_init(ocrypto_aes_ctr_ctx *ctx, const uint8_t *key, size_t size, const uint8_t iv[16]);
@@ -97,3 +109,6 @@ void ocrypto_aes_ctr_decrypt(ocrypto_aes_ctr_ctx *ctx, uint8_t* pt, const uint8_
 #endif
 
 #endif
+
+/** @} */
+

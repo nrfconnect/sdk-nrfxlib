@@ -4,6 +4,13 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
+/**@file
+ * @defgroup nrf_oberon_srpt SRPT - Secure Real-Time Transport Protocol APIs
+ * @ingroup nrf_oberon
+ * @{
+ * @brief Type declarations and APIs for SRTP - Secure Real-time Transport Protocol.
+ */
+
 #ifndef OCRYPTO_SRTP_H
 #define OCRYPTO_SRTP_H
 
@@ -17,59 +24,59 @@ extern "C" {
 #include "ocrypto_aes_key.h"
 
 /**
- * SRTP Authentication Key Size
+ * SRTP Authentication Key Size.
  */
 #define ocrypto_srtp_AuthKeySize  (20)
 
 /**
- * SRTP Salt Size
+ * SRTP Salt Size.
  */
 #define ocrypto_srtp_SaltSize     (14)
 
 /**
- * SRTP Maximum Key Size
+ * SRTP Maximum Key Size.
  */
 #define ocrypto_srtp_MaxKeySize   (ocrypto_aes256_KEY_BYTES)
 
 /**
- * SRTP Context
+ * SRTP Context.
  */
 typedef struct {
     /**
-     * Key size [bytes]
+     * Key size [bytes].
      */
     uint32_t keySize;
 
     /**
-     * Tag size [bytes]
+     * Tag size [bytes].
      */
     uint32_t tagSize;
 
     /**
-     * Session encryption key (max 256 bit)
+     * Session encryption key (max 256 bits).
      */
     uint8_t encrKey[ocrypto_srtp_MaxKeySize];
 
     /**
      * Session authentication key
-     * 160 bit
+     * 160 bits.
      */
     uint8_t authKey[ocrypto_srtp_AuthKeySize];
 
     /**
      * Session salt
-     * 112 bit
+     * 112 bits.
      */
     uint8_t saltKey[ocrypto_srtp_SaltSize];
 } ocrypto_srtp_context;
 
 /**
- * Setup SRTP contexts.
+ * Set up SRTP contexts.
  *
- * @param[out] srtpContext          SRTP context to be setup.
- * @param[out] srtcpContext         SRTCP context to be setup.
+ * @param[out] srtpContext          SRTP context to be set up.
+ * @param[out] srtcpContext         SRTCP context to be set up.
  * @param      key                  Master key.
- * @param      keySize              Size of the master key (16, 24, or 32 byte)
+ * @param      keySize              Size of the master key (16, 24, or 32 bytes)
  * @param      salt                 Master salt.
  * @param      tagSize              Size of the authentication tag.
  * @param      ssrc                 Synchronization source.
@@ -145,7 +152,8 @@ void ocrypto_srtp_authenticate(
  * @param      numBytes             Number of bytes in buffer.
  * @param      index                Index.
  *
- * @return                          1 if the tag is valid, 0 otherwise.
+ * @retval 1 If the tag is valid.
+ * @retval 0 Otherwise. 
  */
 int ocrypto_srtp_verifyAuthentication(
     ocrypto_srtp_context *context,
@@ -159,3 +167,5 @@ int ocrypto_srtp_verifyAuthentication(
 #endif
 
 #endif
+
+/** @} */
