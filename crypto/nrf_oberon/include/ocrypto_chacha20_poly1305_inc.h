@@ -4,12 +4,16 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
-/*!
- * @brief ChaCha20-Poly1305 is an authenticated encryption algorithm with
- *        optional additional authenticated data developed by Daniel J.
- *        Bernstein.
- */
 /**@file
+ * @defgroup nrf_oberon_chacha_poly_inc ChaCha20-Poly1305 incremental APIs
+ * @ingroup nrf_oberon_chacha_poly
+ * @{
+ * @brief Type declaration and APIs for authenticated encryption and additional data using
+ *        the ChaCha20-Poly1305 algorithm in incremental steps.
+ *
+ * ChaCha20-Poly1305 is an authenticated encryption algorithm with optional
+ * additional authenticated data developed by Daniel J.Bernstein.
+ *
  * The ChaCha20 stream cipher is combined with the Poly1305 authenticator.
  *
  * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc7539)
@@ -44,12 +48,13 @@ typedef struct {
 
 
 /**@name Incremental ChaCha20-Poly1305 generator.
- * 
+ *
  * This group of functions can be used to incrementally encode and decode using the ChaCha20-Poly1305 stream cypher.
  *
  * Use pattern:
  *
  * Encoding:
+ * @code
  *   ocrypto_chacha20_poly1305_init(ctx, nonce, nonce_len, key);
  *   ocrypto_chacha20_poly1305_update_aad(ctx, aad, aad_len, nonce, nonce_len, key);
  *   ...
@@ -58,8 +63,9 @@ typedef struct {
  *   ...
  *   ocrypto_chacha20_poly1305_update_enc(ctx, ct, pt, pt_len, nonce, nonce_len, key);
  *   ocrypto_chacha20_poly1305_final_enc(ctx, tag);
- *
+ * @endcode
  * Decoding:
+ * @code
  *   ocrypto_chacha20_poly1305_init(ctx, nonce, nonce_len, key);
  *   ocrypto_chacha20_poly1305_update_aad(ctx, aad, aad_len, nonce, nonce_len, key);
  *   ...
@@ -68,6 +74,7 @@ typedef struct {
  *   ...
  *   ocrypto_chacha20_poly1305_update_dec(ctx, pt, ct, ct_len, nonce, nonce_len, key);
  *   res = ocrypto_chacha20_poly1305_final_dec(ctx, tag);
+ * @endcode
  */
 /**@{*/
 
@@ -106,7 +113,7 @@ void ocrypto_chacha20_poly1305_init(
 void ocrypto_chacha20_poly1305_update_aad(
     ocrypto_chacha20_poly1305_ctx *ctx,
     const uint8_t *a, size_t a_len);
-    
+
 /**
  * SHA-ChaCha20-Poly1305 incremental encoder input.
  *
@@ -136,7 +143,7 @@ void ocrypto_chacha20_poly1305_update_enc(
     const uint8_t *m, size_t m_len,
     const uint8_t *n, size_t n_len,
     const uint8_t k[ocrypto_chacha20_poly1305_KEY_BYTES]);
-    
+
 /**
  * SHA-ChaCha20-Poly1305 incremental decoder input.
  *
@@ -166,7 +173,7 @@ void ocrypto_chacha20_poly1305_update_dec(
     const uint8_t *c, size_t c_len,
     const uint8_t *n, size_t n_len,
     const uint8_t k[ocrypto_chacha20_poly1305_KEY_BYTES]);
-    
+
 /**
  * SHA-ChaCha20-Poly1305 final encoder step.
  *
@@ -178,7 +185,7 @@ void ocrypto_chacha20_poly1305_update_dec(
 void ocrypto_chacha20_poly1305_final_enc(
     ocrypto_chacha20_poly1305_ctx *ctx,
     uint8_t tag[ocrypto_chacha20_poly1305_TAG_BYTES]);
-    
+
 /**
  * SHA-ChaCha20-Poly1305 final decoder step.
  *
@@ -187,8 +194,8 @@ void ocrypto_chacha20_poly1305_final_enc(
  * @param      ctx   Generator state.
  * @param      tag   Received authentication tag.
  *
- * @returns 0  If @p tag is valid.
- * @returns -1 Otherwise.
+ * @retval 0  If @p tag is valid.
+ * @retval -1 Otherwise.
  */
 int ocrypto_chacha20_poly1305_final_dec(
     ocrypto_chacha20_poly1305_ctx *ctx,
@@ -200,3 +207,5 @@ int ocrypto_chacha20_poly1305_final_dec(
 #endif
 
 #endif
+
+/** @} */

@@ -1,4 +1,8 @@
-
+/*
+ * Copyright (c) 2019 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+ */
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -127,7 +131,7 @@ int mbedtls_rsa_export(const mbedtls_rsa_context *ctx, mbedtls_mpi *N, mbedtls_m
 
     RSA_CONTEXT_UNPACK_NOT_NULL(ctx, funcs, backend_context);
 
-    return funcs->export(backend_context, N, P, Q, D, E);
+    return funcs->export_fn(backend_context, N, P, Q, D, E);
 }
 
 int mbedtls_rsa_export_raw(const mbedtls_rsa_context *ctx, unsigned char *N, size_t N_len, unsigned char *P, size_t P_len, unsigned char *Q, size_t Q_len, unsigned char *D, size_t D_len, unsigned char *E, size_t E_len)

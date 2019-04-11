@@ -5,12 +5,17 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_aes_gcm AES GCM - AES Galois/Counter Mode APIs
+ * @ingroup nrf_oberon_aes
+ * @{
+ * @brief Type definitions and APIs for AES-GCM (AES Galois/Counter Mode).
+ * 
  * AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128 bit block of data into an encrypted block of same size.
+ * AES transfers a 128-bit block of data into an encrypted block of the same size.
  *
- * AES-GCM (AES Galois/Counter Mode) is an AES mode which effectively turn the block cipher into
+ * AES-GCM (AES Galois/Counter Mode) is an AES mode which effectively turns the block cipher into
  * a stream cipher. The AES block cipher primitive is used in CTR mode for encryption and decryption.
- * In addition a 128 bit Galois Field multiplication is used for authentication.
+ * In addition, 128-bit Galois Field multiplication is used for authentication.
  */
 
 #ifndef OCRYPTO_AES_GCM_H
@@ -32,7 +37,7 @@ extern "C" {
  * @param      pt     Plaintext.
  * @param      pt_len Plaintext length.
  * @param      key    AES key.
- * @param      size   Key size (16, 24, or 32).
+ * @param      size   Key size (16, 24, or 32 bytes).
  * @param      iv     Initial vector.
  * @param      aa     Additional authentication data.
  * @param      aa_len Additional authentication data length.
@@ -51,15 +56,15 @@ void ocrypto_aes_gcm_encrypt (
  * @param      ct     Cyphertext.
  * @param      ct_len Cyphertext length.
  * @param      key    AES key.
- * @param      size   Key size (16, 24, or 32).
+ * @param      size   Key size (16, 24, or 32 bytes).
  * @param      iv     Initial vector.
  * @param      aa     Additional authentication data.
  * @param      aa_len Additional authentication data length.
  *
  * @remark @p ct and @p pt can point to the same address.
  *
- * @returns 0  If @p tag is valid.
- * @returns -1 Otherwise.
+ * @retval 0  If @p tag is valid.
+ * @retval -1 Otherwise.
  */
 int ocrypto_aes_gcm_decrypt (
     uint8_t* pt, const uint8_t tag[16], const uint8_t* ct, size_t ct_len,
@@ -71,3 +76,5 @@ int ocrypto_aes_gcm_decrypt (
 #endif
 
 #endif
+
+/** @} */

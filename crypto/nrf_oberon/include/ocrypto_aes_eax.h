@@ -5,10 +5,15 @@
  */
 
 /**@file
- * AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128 bit block of data into an encrypted block of same size.
+ * @defgroup nrf_oberon_aes_eax AES EAX APIs
+ * @ingroup nrf_oberon_aes
+ * @{
+ * @brief Type definitions and APIS for AES EAX (Encrypt-then-authenticate-then-translate)
  *
- * AES-EAX (encrypt-then-authenticate-then-translate) is an AES mode which effectively turn the
+ * AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
+ * AES transfers a 128-bit block of data into an encrypted block of the same size.
+ *
+ * AES-EAX (encrypt-then-authenticate-then-translate) is an AES mode which effectively turns the
  * block cipher into a stream cipher. The AES block cipher primitive is used in CTR mode for
  * encryption and as OMAC for authentication over each block.
  */
@@ -32,7 +37,7 @@ extern "C" {
  * @param      pt     Plaintext.
  * @param      pt_len Plaintext length.
  * @param      key    AES key.
- * @param      size   Key size (16, 24, or 32).
+ * @param      size   Key size (16, 24, or 32 bytes).
  * @param      iv     Initial vector.
  * @param      iv_len Initial vector length.
  * @param      aa     Additional authentication data.
@@ -52,7 +57,7 @@ void ocrypto_aes_eax_encrypt (
  * @param      ct     Cyphertext.
  * @param      ct_len Cyphertext length.
  * @param      key    AES key.
- * @param      size   Key size (16, 24, or 32).
+ * @param      size   Key size (16, 24, or 32 bytes).
  * @param      iv     Initial vector.
  * @param      iv_len Initial vector length.
  * @param      aa     Additional authentication data.
@@ -60,8 +65,8 @@ void ocrypto_aes_eax_encrypt (
  *
  * @remark @p ct and @p pt can point to the same address.
  *
- * @returns 0  If @p tag is valid.
- * @returns -1 Otherwise.
+ * @retval 0  If @p tag is valid.
+ * @retval -1 Otherwise.
  */
 int ocrypto_aes_eax_decrypt (
     uint8_t* pt, const uint8_t tag[16], const uint8_t* ct, size_t ct_len, const uint8_t *key, size_t size,
@@ -73,3 +78,4 @@ int ocrypto_aes_eax_decrypt (
 #endif
 
 #endif
+/** @} */

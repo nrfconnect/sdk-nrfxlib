@@ -40,11 +40,12 @@ endif()
 
 if (CONFIG_CC310_BACKEND)
   set(NRF_CC310_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_cc310_mbedcrypto)
+  set(NRF_CC310_VER 0.7.0)
   if (NOT CONFIG_CC310_INTERRUPTS_BACKEND)
     set(CC310_FLAVOR no-interrupts)
   endif()
   set(NRF_CC310_LIB
-    ${NRF_CC310_BASE}/${lib_path}/${CC310_FLAVOR}/libnrf_cc310_mbedcrypto.a
+    ${NRF_CC310_BASE}/${lib_path}/${CC310_FLAVOR}/libnrf_cc310_mbedcrypto_${NRF_CC310_VER}.a
   )
   if(NOT EXISTS ${NRF_CC310_LIB})
     message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_cc310_mbedcryto lib."

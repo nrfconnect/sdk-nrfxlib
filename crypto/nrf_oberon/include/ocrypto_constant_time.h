@@ -5,6 +5,17 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon Oberon cryptographic library
+ * @{
+ * @brief Highly optimized cryptographic algorithm implementation for Cortex-M0, Cortex-M4,
+ * and Cortex-M33. Created by Oberon, under distribution license with Nordic Semiconductor ASA.
+ * @}
+ *
+ * @defgroup nrf_oberon_constant_time Constant time APIs
+ * @ingroup nrf_oberon
+ * @{
+ * @brief Timing-invariant functions to use with cryptography.
+ *
  * Collection of timing-invariant implementations of basic functions.
  */
 
@@ -21,29 +32,23 @@ extern "C" {
 /**
  * Variable length comparison.
  *
- * **Example**
- * @include ocrypto_constant_time_equal.c
- *
  * @param x      Memory region to compare with @p y.
  * @param y      Memory region to compare with @p x.
  * @param length Number of bytes to compare, @p length > 0.
  *
- * @returns 1 If @p x and @p y point to equal memory regions.
- * @returns 0 Otherwise.
+ * @retval 1 If @p x and @p y point to equal memory regions.
+ * @retval 0 Otherwise.
  */
 int ocrypto_constant_time_equal(const void *x, const void *y, size_t length);
 
 /**
  * Variable length compare to zero.
  *
- * **Example**
- * @include ocrypto_constant_time_is_zero.c
- *
  * @param x      Pointer to memory region that will be compared.
  * @param length Number of bytes to compare, @p length > 0.
  *
- * @returns 1 If @p x is equal to a zero memory region.
- * @returns 0 Otherwise.
+ * @retval 1 If @p x is equal to a zero memory region.
+ * @retval 0 Otherwise.
  */
 int ocrypto_constant_time_is_zero(const void *x, size_t length);
 
@@ -59,7 +64,7 @@ void ocrypto_constant_time_copy(void *x, const void *y, size_t length);
 /**
  * Variable length fill with zero.
  *
- * @param x      Pointer to memory region that will filled with zero.
+ * @param x      Pointer to memory region to be filled with zero.
  * @param length Number of bytes to fill, @p length > 0.
  */
 void ocrypto_constant_time_fill_zero(void *x, size_t length);
@@ -69,3 +74,5 @@ void ocrypto_constant_time_fill_zero(void *x, size_t length);
 #endif
 
 #endif
+
+/** @} */

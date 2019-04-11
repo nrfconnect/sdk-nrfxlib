@@ -5,6 +5,11 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_hkdf_512 HKDF APIs using SHA-512
+ * @ingroup nrf_oberon_hkdf
+ * @{
+ * @brief Type declaration and APIs for the HKDF-SHA512 algorithm.
+ * 
  * HKDF-SHA512 is a key derivation function based on HMAC-SHA512.
  *
  * @see [RFC 5869 - HMAC-based Extract-and-Expand Key Derivation Function (HKDF)](http://tools.ietf.org/html/rfc5869)
@@ -39,9 +44,6 @@ extern "C" {
  * @p key, a salt @p salt and additional information @p info. The new key is put
  * into @p r.
  *
- * **Example**
- * @include ocrypto_hkdf_sha512.c
- *
  * @param[out] r        Output key.
  * @param      r_len    Length of @p r, 0 < @p r_len <= @c ocrypto_hkdf_sha512_LENGTH_MAX.
  * @param      key      Input key.
@@ -62,3 +64,5 @@ void ocrypto_hkdf_sha512(
 #endif
 
 #endif
+
+/** @} */

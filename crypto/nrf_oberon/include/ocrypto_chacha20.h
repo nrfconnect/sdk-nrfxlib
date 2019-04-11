@@ -4,12 +4,17 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
-/*!
- * @brief ChaCha20 is a stream cipher developed by Daniel J. Bernstein based on the 20-round cipher Salsa20/20.
- */
 /**@file
+ * @defgroup nrf_oberon_chacha ChaCha20 APIs
+ * @ingroup nrf_oberon_chacha_poly
+ * @{
+ * @brief Type declaration and APIs for the Chacha20 stream cipher algorithm.
+ *
+ * ChaCha20 is a stream cipher developed by Daniel J. Bernstein based on the 20-round cipher 
+ * Salsa20/20.
+ *
  * A 256-bit key is expanded into 2^64 randomly accessible streams, each
- * containing 2^64 randomly accessible 64-byte (512 bits) blocks.
+ * containing 2^64 randomly accessible 64-byte (512-bit) blocks.
  *
  * The changes from Salsa20/20 to ChaCha20 are designed to improve diffusion per
  * round, conjecturally increasing resistance to cryptanalysis, while
@@ -44,13 +49,10 @@ extern "C" {
 /**
  * ChaCha20 cipher stream generator.
  * 
- * The encryption key @p k, the nonce @p n and the initial block counter
+ * The encryption key @p k, the nonce @p n, and the initial block counter
  * @p count are used to generate a pseudo random cipher stream.
  *
  * Possible applications include key generation and random number generation.
- *
- * **Example**
- * @include ocrypto_chacha20_stream.c
  * 
  * @param[out] c     Generated cipher stream.
  * @param      c_len Length of @p c.
@@ -75,14 +77,11 @@ void ocrypto_chacha20_stream(
  * ChaCha20 cipher stream encoder.
  *
  * The message @p m is encrypted by applying the XOR operation with a pseudo
- * random cipher stream derived from the encryption key @p k, the nonce @p n and
+ * random cipher stream derived from the encryption key @p k, the nonce @p n, and
  * the initial block counter @p count.
  *
  * Calling the function a second time with the generated ciphertext as input
  * message @p m decrypts it back to the original message.
- *
- * **Example**
- * @include ocrypto_chacha20_stream_xor.c
  *
  * @param[out] c     Generated ciphertext. Same length as input message.
  * @param      m     Input message.
@@ -109,3 +108,5 @@ void ocrypto_chacha20_stream_xor(
 #endif
 
 #endif
+
+/** @} */

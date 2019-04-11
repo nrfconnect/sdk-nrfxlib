@@ -5,6 +5,11 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_hmac_512 HMAC APIs using SHA-512
+ * @ingroup nrf_oberon_hmac
+ * @{
+ * @brief Type declarations and APIs for the HMAC-SHA512 algorithm.
+ *
  * HMAC-SHA512 is an algorithm for message authentication using the
  * cryptographic hash function SHA512 and a reusable secret key. Users in
  * possession of the key can verify the integrity and authenticity of the
@@ -12,7 +17,7 @@
  *
  * @see [RFC 2104 - HMAC: Keyed-Hashing for Message Authentication](http://tools.ietf.org/html/rfc2104)
  */
- 
+
 #ifndef OCRYPTO_HMAC_SHA512_H
 #define OCRYPTO_HMAC_SHA512_H
 
@@ -46,7 +51,7 @@ typedef struct
 
 
 /**@name Incremental HMAC-SHA512 generator.
- * 
+ *
  * This group of functions can be used to incrementally compute HMAC-SHA512
  * for a given message.
  */
@@ -112,9 +117,6 @@ void ocrypto_hmac_sha512_final(ocrypto_hmac_sha512_ctx * ctx,
  * needs to recompute the HMAC authenticator and can then compare it with the
  * received authenticator.
  *
- * **Example**
- * @include ocrypto_hmac_sha512.c
- *
  * @param[out] r       HMAC output.
  * @param      key     HMAC key.
  * @param      key_len Length of @p key. 0 <= @p key_len <= @c ocrypto_hmac_sha512_KEY_BYTES_MAX.
@@ -131,3 +133,5 @@ void ocrypto_hmac_sha512(
 #endif
 
 #endif
+
+/** @} */

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+ */
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -26,7 +31,7 @@ const mbedtls_rsa_funcs mbedtls_rsa_cc310_backend_funcs = {
     .import = mbedtls_rsa_import,
     .import_raw = mbedtls_rsa_import_raw,
     .complete = mbedtls_rsa_complete,
-    .export = mbedtls_rsa_export,
+    .export_fn = mbedtls_rsa_export,
     .export_raw = mbedtls_rsa_export_raw,
     .export_crt = mbedtls_rsa_export_crt,
     .set_padding = mbedtls_rsa_set_padding,

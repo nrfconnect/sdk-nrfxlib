@@ -5,6 +5,11 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_ed25519 Ed25519 APIs
+ * @ingroup nrf_oberon
+ * @{
+ * @brief Type declarations and APIs for the Ed25519 algorithm.
+ *
  * Ed25519 is a specific implementation of EdDSA, a digital signature scheme.
  * EdDSA is based on Twisted Edwards curves and is designed to be faster than
  * existing digital signature schemes without sacrificing security. It was
@@ -40,11 +45,8 @@
 /**
  * Ed25519 signature key pair generation.
  *
- * Given a secret key `sk`, the corresponding public key is computed and put
- * into `pk`. The key pair can then be used to sign and verify message signatures.
- *
- * **Example**
- * @include ocrypto_ed25519_public_key.c
+ * Given a secret key @p sk, the corresponding public key is computed and put
+ * into @p pk. The key pair can then be used to sign and verify message signatures.
  *
  * @param[out] pk Generated public key.
  * @param      sk Secret key. Must be pre-filled with random data.
@@ -57,9 +59,6 @@ void ocrypto_ed25519_public_key(uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES],
  *
  * The message @p m is signed using the secret key @p sk and the corresponding
  * public key @p pk. The signature is put into @p sig.
- *
- * **Example**
- * @include ocrypto_ed25519_sign.c
  *
  * @param[out] sig   Generated signature.
  * @param      m     Input message.
@@ -78,19 +77,18 @@ void ocrypto_ed25519_sign(uint8_t sig[ocrypto_ed25519_BYTES],
  * The signature @p sig of the input message @p m is verified using the signer's
  * public key @p pk.
  *
- * **Example**
- * @include ocrypto_ed25519_verify.c
- *
  * @param sig   Input signature.
  * @param m     Input message.
  * @param m_len Length of @p m.
  * @param pk    Signer's public key.
  *
- * @returns 0 If signature OK.
- * @returns -1 Otherwise.
+ * @retval 0  If signature is OK.
+ * @retval -1 Otherwise.
  */
 int ocrypto_ed25519_verify(const uint8_t sig[ocrypto_ed25519_BYTES],
                            const uint8_t *m, size_t m_len,
                            const uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES]);
 
 #endif
+
+/** @} */

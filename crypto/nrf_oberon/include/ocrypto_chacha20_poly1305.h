@@ -4,12 +4,23 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
-/*!
- * @brief ChaCha20-Poly1305 is an authenticated encryption algorithm with
- *        optional additional authenticated data developed by Daniel J.
- *        Bernstein.
- */
 /**@file
+ * @defgroup nrf_oberon_chacha_poly ChaCha20-Poly1305
+ * @ingroup nrf_oberon
+ * @{
+ * @brief ChaCha20-Poly1305 is an authenticated encryption algorithm with optional
+ *        additional authenticated data developed by Daniel J.Bernstein.
+ * @}
+ *
+ * @defgroup nrf_oberon_chacha_poly_apis ChaCha20-Poly1305 APIs
+ * @ingroup nrf_oberon_chacha_poly
+ * @{
+ * @brief Type declaration and APIs for authenticated encryption and additional data using
+ *        the ChaCha20-Poly1305 algorithm.
+ *
+ * ChaCha20-Poly1305 is an authenticated encryption algorithm with optional
+ * additional authenticated data developed by Daniel J.Bernstein.
+ *
  * The ChaCha20 stream cipher is combined with the Poly1305 authenticator.
  *
  * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc7539)
@@ -53,9 +64,7 @@ extern "C" {
  * Additionally, the ciphertext @p c is authenticated with a tag that is
  * generated with Poly1305 using a unique subkey derived from @p k and @p n, and
  * then put into @p tag.
- *
- * **Example**
- * @include ocrypto_chacha20_poly1305_encrypt.c
+
  *
  * @param[out] tag   Generated authentication tag.
  * @param[out] c     Generated ciphertext. Same length as input message.
@@ -84,12 +93,9 @@ void ocrypto_chacha20_poly1305_encrypt(
  * encryption key @p k and the nonce @p n. The resulting ciphertext has the same
  * length @p m_len as the input message @p m and is put into @p c.
  *
- * Additionally, the ciphertext @p c as well as the additional authenticated
- * data @p a is authenticated with a tag that is generated with Poly1305 using a
+ * Additionally, the ciphertext @p c, as well as the additional authenticated
+ * data @p a, is authenticated with a tag that is generated with Poly1305 using a
  * unique subkey derived from @p k and @p n, and then put into @p tag.
- *
- * **Example**
- * @include ocrypto_chacha20_poly1305_encrypt_aad.c
  *
  * @param[out] tag   Generated authentication tag.
  * @param[out] c     Generated ciphertext. Same length as input message.
@@ -125,9 +131,6 @@ void ocrypto_chacha20_poly1305_encrypt_aad(
  * into @p m. The decrypted message @p m has the same length @p c_len as the
  * original ciphertext.
  *
- * **Example**
- * @include ocrypto_chacha20_poly1305_decrypt.c
- *
  * @param      tag   Received authentication tag.
  * @param[out] m     Decoded message. Same length as received ciphertext.
  * @param      c     Received ciphertext.
@@ -136,8 +139,8 @@ void ocrypto_chacha20_poly1305_encrypt_aad(
  * @param      n_len Length of @p n. 0 <= @p n_len <= @c ocrypto_chacha20_poly1305_NONCE_BYTES_MAX.
  * @param      k     Encryption key.
  *
- * @returns 0  If @p tag is valid.
- * @returns -1 Otherwise.
+ * @retval 0  If @p tag is valid.
+ * @retval -1 Otherwise.
  *
  * @remark @p m and @p c can point to the same address.
  */
@@ -156,9 +159,6 @@ int ocrypto_chacha20_poly1305_decrypt(
  * @p n, the ciphertext is decrypted and put into @p m. The decrypted message
  * @p m has the same length @p c_len as the original ciphertext.
  *
- * **Example**
- * @include ocrypto_chacha20_poly1305_decrypt_aad.c
- *
  * @param      tag   Received authentication tag.
  * @param[out] m     Decoded message. Same length as received ciphertext.
  * @param      c     Received ciphertext.
@@ -169,8 +169,8 @@ int ocrypto_chacha20_poly1305_decrypt(
  * @param      n_len Length of @p n. 0 <= @p n_len <= @c ocrypto_chacha20_poly1305_NONCE_BYTES_MAX.
  * @param      k     Encryption key.
  *
- * @returns 0  If @p tag is valid.
- * @returns -1 Otherwise.
+ * @retval 0  If @p tag is valid.
+ * @retval -1 Otherwise.
  *
  * @remark @p m and @p c can point to the same address.
  */
@@ -188,3 +188,5 @@ int ocrypto_chacha20_poly1305_decrypt_aad(
 #endif
 
 #endif
+
+/** @} */

@@ -5,6 +5,11 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_srp SRP - Secure Remote Password APIs
+ * @ingroup nrf_oberon
+ * @{
+ * @brief Type declarations and APIs for the SRP key agreement protocol.
+ *
  * SRP is an augmented password-authenticated key agreement protocol,
  * specifically designed to work around existing patents. SRP allows the use of
  * user names and passwords over unencrypted channels and supplies a shared
@@ -99,14 +104,11 @@ extern "C" {
 #define ocrypto_srp_PROOF_BYTES (64)
 
 
-/**@name SRP-6 Password verifier generation.
+/**@name SRP-6 Password verifier generation
  *
  * A password verifier is generated from a user name and a password. The
  * password @p pass may be discarded, as only the verifier is used during later
  * computations.
- *
- * **Example**
- * @include ocrypto_srp_verifier.c
  */
 /**@{*/
 /**
@@ -115,7 +117,7 @@ extern "C" {
  * The verifier is generated for a given user name @p user, a password @p pass
  * and salt @p salt.
  *
- * @param[out] v        Generated password verifier, must be 32 bit aligned.
+ * @param[out] v        Generated password verifier, must be 32-bit aligned.
  * @param      salt     Salt.
  * @param      user     User name.
  * @param      user_len Length of @p user.
@@ -129,13 +131,10 @@ void ocrypto_srp_verifier(
     const uint8_t *pass, size_t pass_len);
 /**@}*/
 
-/**@name SRP-6 Public key generation.
+/**@name SRP-6 Public key generation
  *
  * An ephemeral keypair can be generated based on the password verifier to be
  * used when opening a new session.
- *
- * **Example**
- * @include ocrypto_srp_public_key.c
  */
 /**@{*/
 /**
@@ -144,7 +143,7 @@ void ocrypto_srp_verifier(
  * The public key for a given private key @p priv_b is generated using the
  * password verifier @p v and put into @p pub_b.
  *
- * @param[out] pub_b  Generated public key, must be 32 bit aligned.
+ * @param[out] pub_b  Generated public key, must be 32-bit aligned.
  * @param      priv_b Private key.
  * @param      v      Password verifier.
  */
@@ -154,14 +153,11 @@ void ocrypto_srp_public_key(
     const uint8_t v[ocrypto_srp_VERIFIER_BYTES]);
 /**@}*/
 
-/**@name SRP-6 Session key generation.
+/**@name SRP-6 Session key generation
  * 
  * A premaster secret can be derived from both the client's and server's public
  * keys, the server's private key and the password verifier. A shared session
  * key can be generated from this premaster secret.
- *
- * **Example**
- * @include ocrypto_srp_session_key.c
  */
 /**@{*/
 /**
@@ -189,14 +185,14 @@ void ocrypto_srp_scrambling_parameter(
  * @p pub_a is valid, the premaster secret is then put into @p s. The premaster
  * secret can be used to generate encryption keys.
  *
- * @param[out] s      Generated premaster secret, must be 32 bit aligned.
+ * @param[out] s      Generated premaster secret, must be 32-bit aligned.
  * @param      pub_a  Client public key.
  * @param      priv_b Server private key.
  * @param      u      Scrambling parameter; generated with @c srp_scrambling_parameter.
  * @param      v      Password verifier.
  *
- * @returns 0 If @p pub_a is a legal public key.
- * @returns 1 Otherwise.
+ * @retval 0 If @p pub_a is a legal public key.
+ * @retval 1 Otherwise.
  */
 int ocrypto_srp_premaster_secret(
     uint8_t s[ocrypto_srp_PREMASTER_SECRET_BYTES],
@@ -219,14 +215,11 @@ void ocrypto_srp_session_key(
     const uint8_t s[ocrypto_srp_PREMASTER_SECRET_BYTES]);
 /**@}*/
 
-/**@name SRP-6 Proof exchange.
+/**@name SRP-6 Proof exchange
  * 
  * Proofs are exchanged from client to server and vice versa to ensure that both
  * parties computed the same shared session key. The proofs only match if the
  * correct password is used by the client.
- *
- * **Example**
- * @include ocrypto_srp_proof.c
  */
 /**@{*/
 /**
@@ -265,7 +258,7 @@ void ocrypto_srp_proof_m1(
  *
  * @param[out] m2    Generated proof.
  * @param      pub_a Client public key.
- * @param      m1    First proof; generated with @c srp_proof_m1.
+ * @param      m1    First proof. Generated with @c srp_proof_m1.
  * @param      k     Session key.
  */
 void ocrypto_srp_proof_m2(
@@ -280,3 +273,5 @@ void ocrypto_srp_proof_m2(
 #endif
 
 #endif
+
+/** @} */
