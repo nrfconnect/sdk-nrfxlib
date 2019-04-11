@@ -1,3 +1,8 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
 if(CONFIG_GLUE_MBEDTLS_AES_C)
   zephyr_library_named(mbedcrypto_glue)
   zephyr_library_sources(

@@ -5,7 +5,15 @@
  */
 
 /**@file
- * RSA is a number theoretic public-key encryption and signature algorithm.
+ * @defgroup nrf_oberon_rsa RSA - Rivest-Shamir-Adleman algorithm
+ * @ingroup nrf_oberon
+ * @{
+ * @brief RSA is a number theoretic public-key encryption and signature algorithm.
+ * @}
+ * @defgroup nrf_oberon_rsa_api RSA APIs.
+ * @ingroup nrf_oberon_rsa
+ * @{
+ * @brief APIs to for RSA encryption/decryption and sign/verify using PKCS1 v1.5, OEAP and PSS
  *
  * These functions support RSA encryption and signatures with 1024 and 2048 bit
  * modulo and PKCS1 V1.5 padding.
@@ -597,3 +605,5 @@ int ocrypto_rsa2048_pss_sha256_verify(
 #endif
 
 #endif
+
+/** @} */

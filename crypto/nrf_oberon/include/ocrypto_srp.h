@@ -5,6 +5,11 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_srp SRP - Secure Remote Password APIs.
+ * @ingroup nrf_oberon
+ * @{
+ * @brief Type declarations and APIs for the SRP key agreement protocol
+ *
  * SRP is an augmented password-authenticated key agreement protocol,
  * specifically designed to work around existing patents. SRP allows the use of
  * user names and passwords over unencrypted channels and supplies a shared
@@ -104,9 +109,6 @@ extern "C" {
  * A password verifier is generated from a user name and a password. The
  * password @p pass may be discarded, as only the verifier is used during later
  * computations.
- *
- * **Example**
- * @include ocrypto_srp_verifier.c
  */
 /**@{*/
 /**
@@ -133,9 +135,6 @@ void ocrypto_srp_verifier(
  *
  * An ephemeral keypair can be generated based on the password verifier to be
  * used when opening a new session.
- *
- * **Example**
- * @include ocrypto_srp_public_key.c
  */
 /**@{*/
 /**
@@ -159,9 +158,6 @@ void ocrypto_srp_public_key(
  * A premaster secret can be derived from both the client's and server's public
  * keys, the server's private key and the password verifier. A shared session
  * key can be generated from this premaster secret.
- *
- * **Example**
- * @include ocrypto_srp_session_key.c
  */
 /**@{*/
 /**
@@ -224,9 +220,6 @@ void ocrypto_srp_session_key(
  * Proofs are exchanged from client to server and vice versa to ensure that both
  * parties computed the same shared session key. The proofs only match if the
  * correct password is used by the client.
- *
- * **Example**
- * @include ocrypto_srp_proof.c
  */
 /**@{*/
 /**
@@ -280,3 +273,5 @@ void ocrypto_srp_proof_m2(
 #endif
 
 #endif
+
+/** @} */

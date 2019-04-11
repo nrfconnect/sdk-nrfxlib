@@ -5,6 +5,17 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon Oberon cryptographic library
+ * @{
+ * @brief Highly optimized cryptographic algorithms implementation for Cortex-M0, Cortex-M4 
+ * and Cortex-M33. Created by Oberon, under distribution license with Nordic Semiconductor ASA.
+ * @}
+ *
+ * @defgroup nrf_oberon_constant_time Constant time APIs
+ * @ingroup nrf_oberon
+ * @{
+ * @brief Timing-invariant functions to use with cryptography.
+ *
  * Collection of timing-invariant implementations of basic functions.
  */
 
@@ -21,9 +32,6 @@ extern "C" {
 /**
  * Variable length comparison.
  *
- * **Example**
- * @include ocrypto_constant_time_equal.c
- *
  * @param x      Memory region to compare with @p y.
  * @param y      Memory region to compare with @p x.
  * @param length Number of bytes to compare, @p length > 0.
@@ -35,9 +43,6 @@ int ocrypto_constant_time_equal(const void *x, const void *y, size_t length);
 
 /**
  * Variable length compare to zero.
- *
- * **Example**
- * @include ocrypto_constant_time_is_zero.c
  *
  * @param x      Pointer to memory region that will be compared.
  * @param length Number of bytes to compare, @p length > 0.
@@ -69,3 +74,5 @@ void ocrypto_constant_time_fill_zero(void *x, size_t length);
 #endif
 
 #endif
+
+/** @} */

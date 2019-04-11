@@ -1,3 +1,8 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
 FUNCTION(PREPEND var prefix)
   SET(listVar "")
   FOREACH(f ${ARGN})
@@ -23,7 +28,7 @@ PREPEND(src_crypto ${ARM_MBEDTLS_ROOT}/library/
     chacha20.c
     chachapoly.c
     cipher.c
-    cipher_wrap.c
+    # cipher_wrap.c - replaced in nrf_mbedtls
     cmac.c
     ctr_drbg.c
     des.c
@@ -49,7 +54,7 @@ PREPEND(src_crypto ${ARM_MBEDTLS_ROOT}/library/
     nist_kw.c
     oid.c
     padlock.c
-    pem.c
+    # pem.c - replaced in nrf_mbedtls
     pk.c
     pk_wrap.c
     pkcs12.c

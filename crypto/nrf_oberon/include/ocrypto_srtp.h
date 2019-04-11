@@ -4,6 +4,13 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
+/**@file
+ * @defgroup nrf_oberon_srpt SRPT - Secure Real-Time Transport Protocol APIs.
+ * @ingroup nrf_oberon
+ * @{
+ * @brief Type declarations and APIs for SRTP - Secure Real-time Transport Protocol
+ */
+
 #ifndef OCRYPTO_SRTP_H
 #define OCRYPTO_SRTP_H
 
@@ -159,3 +166,5 @@ int ocrypto_srtp_verifyAuthentication(
 #endif
 
 #endif
+
+/** @} */

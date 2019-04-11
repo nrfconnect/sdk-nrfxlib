@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2019 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+ */
+
+/**@file
+ * @addtogroup mbedcrypto_glue_cmac
+ * @{
+ */
 #ifndef MBEDTLS_CMAC_ALT_H
 #define MBEDTLS_CMAC_ALT_H
 
@@ -11,18 +21,22 @@
 
 #include <stdint.h>
 
-/**
- * \brief The CMAC context-type definition.
+/** @brief  Typedef of mbedcrypto CMAC glue context.
+ *
+ * @note All CMAC structure allocation/deallocation is handled by specific backend, so
+ * there is no need to put any content here.
  */
 typedef struct mbedtls_cmac_context_t
 {
-    /* All CMAC structure allocation/deallocation is handled by specific backend, so
-    there is no need to put here any content */
-    uint32_t dummy;
+    uint32_t dummy;                     //!< Dummy value
 } mbedtls_cmac_context_t;
 
+/** @brief Function to free a cmac context after use
+ */
 void mbedtls_cipher_cmac_free(mbedtls_cipher_context_t *ctx);
 
 #endif /* MBEDTLS_CMAC_ALT */
 
 #endif /* MBEDTLS_CMAC_ALT_H */
+
+/** @} */

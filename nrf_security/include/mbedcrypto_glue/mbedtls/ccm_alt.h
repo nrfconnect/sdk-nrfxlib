@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2019 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+ */
+
+/**@file
+ * @addtogroup mbedcrypto_glue_aes_ccm
+ * @{
+ */
 #ifndef MBEDTLS_CCM_ALT_H
 #define MBEDTLS_CCM_ALT_H
 
@@ -7,9 +17,14 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#include "mbedtls/cipher.h"
-
+/**
+ * @brief Context size of AES CCM in words in the mbed_cc310_mbedcrypto library.
+ */
 #define MBEDTLS_CC3XX_CCM_CONTEXT_WORDS     (24)
+
+/**
+ * @brief Context size of AES CCM in words in vanilla mbed TLS.
+ */
 #define MBEDTLS_DEFAULT_CCM_CONTEXT_WORDS   ((sizeof(mbedtls_cipher_context_t) + 3) / 4)
 
 #if defined(MBEDTLS_CCM_ALT)
@@ -17,25 +32,27 @@
 #include <stdint.h>
 
 /**
- * \brief The CCM context-type definition.
+ * @brief Typedef of mbedcrypto AES CCM glue context
  */
 typedef struct mbedtls_ccm_context
 {
 #if defined(CONFIG_GLUE_MBEDTLS_CCM_C)
-    void* handle;
+    void* handle;                                                       //!< Pointer to the function table in an initialized glue context.
 #endif
     union
     {
 #if defined(CONFIG_CC310_MBEDTLS_CCM_C)
-        uint32_t buffer_cc3xx[MBEDTLS_CC3XX_CCM_CONTEXT_WORDS];
-#endif
+        uint32_t buffer_cc3xx[MBEDTLS_CC3XX_CCM_CONTEXT_WORDS];         //!< Array the size of an AES CCM context in the nrf_cc310_mbedcrypto library.
+#endif /* CONFIG_CC310_MBEDTLS_CCM_C */
 #if defined(CONFIG_VANILLA_MBEDTLS_CCM_C)
-        uint32_t buffer_default[MBEDTLS_DEFAULT_CCM_CONTEXT_WORDS];
-#endif
-        uint32_t dummy;
-    } buffer;
+        uint32_t buffer_default[MBEDTLS_DEFAULT_CCM_CONTEXT_WORDS];     //!< Array the size of an AES context in vanilla mbed TLS.
+#endif /* CONFIG_VANILLA_MBEDTLS_CCM_C */
+        uint32_t dummy;                                                 //!< Dummy value in case no backend is enabled.
+    } buffer;                                                           //!< Union with size of the largest enabled backend context.
 } mbedtls_ccm_context;
 
 #endif /* MBEDTLS_CCM_ALT */
 
 #endif /* MBEDTLS_CCM_ALT_H */
+
+/** @} */

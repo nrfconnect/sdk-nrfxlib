@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+ */
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -8,7 +13,6 @@
 
 #include "mbedtls/aes.h"
 #include "backend_aes.h"
-
 
 static int mbedtls_aes_check(unsigned int keybits, int mode, int xts)
 {

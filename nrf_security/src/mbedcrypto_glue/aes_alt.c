@@ -1,4 +1,15 @@
+/*
+ * Copyright (c) 2019 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+ */
 
+/**@file
+ * @defgroup mbedcrypto_glue_sha1_alt mbedcrypto SHA-1 glue
+ * @ingroup mbedcrypto_glue
+ * @{
+ * @brief Type declarations for the mbedcrypto SHA-1 glue layer.
+ */
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else

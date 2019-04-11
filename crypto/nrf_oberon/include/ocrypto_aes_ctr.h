@@ -5,6 +5,18 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_aes AES - Advanced Encryption Standard APIs
+ * @ingroup nrf_oberon
+ * @{
+ * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
+ * AES transfers a 128 bit block of data into an encrypted block of same size.
+ * @}
+ *
+ * @defgroup nrf_oberon_aes_ctr AES-CTR - AES Counter Mode
+ * @ingroup nrf_oberon_aes
+ * @{
+ * @brief Type definitions and APIs for AES-CTR (AES Counter mode)
+ *
  * AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
  * AES transfers a 128 bit block of data into an encrypted block of same size.
  *
@@ -97,3 +109,6 @@ void ocrypto_aes_ctr_decrypt(ocrypto_aes_ctr_ctx *ctx, uint8_t* pt, const uint8_
 #endif
 
 #endif
+
+/** @} */
+

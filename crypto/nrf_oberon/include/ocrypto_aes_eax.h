@@ -5,6 +5,11 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_aes_eax AES EAX APIs
+ * @ingroup nrf_oberon_aes
+ * @{
+ * @brief Type definitions and APIS for AES EAX (Encrypt-then-authenticate-then-translate)
+ *
  * AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
  * AES transfers a 128 bit block of data into an encrypted block of same size.
  *
@@ -73,3 +78,4 @@ int ocrypto_aes_eax_decrypt (
 #endif
 
 #endif
+/** @} */

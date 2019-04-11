@@ -5,6 +5,12 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_curve25519 ECC Curve25519 low-level APIs.
+ * @ingroup nrf_oberon
+ * @{
+ * @brief Type declarations and APIs for low-level elliptic curve point operations
+ * based on Curve25519.
+ *
  * Curve25519 is an elliptic curve offering 128 bits of security. It is designed
  * for use in the elliptic curve Diffie-Hellman (ECDH) key agreement scheme.
  *
@@ -41,9 +47,6 @@ extern "C" {
  *
  * The inverse of this function is difficult to compute.
  *
- * **Example**
- * @include ocrypto_curve25519_scalarmult_base.c
- *
  * @param[out] r Resulting curve point.
  * @param[in]  n Scalar factor.
  *
@@ -61,9 +64,6 @@ void ocrypto_curve25519_scalarmult_base(
  * generated when the other party combines its private key with the local public
  * key.
  *
- * **Example**
- * @include ocrypto_curve25519_scalarmult.c
- *
  * @param[out] r Resulting curve point.
  * @param[in]  n Scalar factor.
  * @param[in]  p Point factor.
@@ -80,3 +80,5 @@ void ocrypto_curve25519_scalarmult(
 #endif
 
 #endif
+
+/** @} */

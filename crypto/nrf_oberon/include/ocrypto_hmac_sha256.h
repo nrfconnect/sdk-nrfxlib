@@ -5,6 +5,16 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_hmac HMAC - Hash-based Aessage Authentication Code
+ * @ingroup nrf_oberon
+ * @{
+ * @brief HMAC is a hash-based Message Authentication Code utilizing a secure hash function.
+ * @}
+ * @defgroup nrf_oberon_hmac_256 HMAC APIs using SHA-256.
+ * @ingroup nrf_oberon_hmac
+ * @{
+ * @brief Type declarations and APIs for the HMAC-SHA256 algorithm.
+ * 
  * HMAC-SHA256 is an algorithm for message authentication using the
  * cryptographic hash function SHA256 and a reusable secret key. Users in
  * possession of the key can verify the integrity and authenticity of the
@@ -112,9 +122,6 @@ void ocrypto_hmac_sha256_final(ocrypto_hmac_sha256_ctx * ctx,
  * needs to recompute the HMAC authenticator and can then compare it with the
  * received authenticator.
  *
- * **Example**
- * @include ocrypto_hmac_sha256.c
- *
  * @param[out] r       HMAC output.
  * @param      key     HMAC key.
  * @param      key_len Length of @p key. 0 <= @p key_len <= @c ocrypto_hmac_sha256_KEY_BYTES_MAX.
@@ -131,3 +138,6 @@ void ocrypto_hmac_sha256(
 #endif
 
 #endif
+
+
+/** @} */

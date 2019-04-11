@@ -1,5 +1,10 @@
 
 
+/*
+ * Copyright (c) 2019 Nordic Semiconductor ASA
+ *
+ * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+ */
 #include "entropy_poll.h"
 #include "entropy_alt.h"
 

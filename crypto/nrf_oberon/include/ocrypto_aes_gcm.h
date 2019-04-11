@@ -5,6 +5,11 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_aes_gcm AES GCM - AES Galois/Counter Mode APIs
+ * @ingroup nrf_oberon_aes
+ * @{
+ * @brief Type definitions and APIs for AES-GCM (AES Galois/Counter Mode).
+ * 
  * AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
  * AES transfers a 128 bit block of data into an encrypted block of same size.
  *
@@ -71,3 +76,5 @@ int ocrypto_aes_gcm_decrypt (
 #endif
 
 #endif
+
+/** @} */

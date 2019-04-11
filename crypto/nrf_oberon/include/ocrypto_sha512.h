@@ -5,6 +5,11 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_sha_512 SHA-512 APIs.
+ * @ingroup nrf_oberon
+ * @{
+ * @brief Type declarations and APIs for the SHA-512 algorithm
+ * 
  * SHA-512 is part of the SHA-2 family that is a set of cryptographic hash
  * functions designed by the NSA. It is the successor of the SHA-1 algorithm.
  *
@@ -43,9 +48,6 @@ typedef struct {
  * 
  * This group of functions can be used to incrementally compute the SHA-512
  * hash for a given message.
- *
- * **Example**
- * @include ocrypto_sha512_incremental.c
  */
 /**@{*/
 /**
@@ -102,9 +104,6 @@ void ocrypto_sha512_final(
  *
  * The SHA-512 hash of a given input message @p in is computed and put into @p r.
  *
- * **Example**
- * @include ocrypto_sha512.c
- *
  * @param[out] r      Generated hash.
  * @param      in     Input data.
  * @param      in_len Length of @p in.
@@ -118,3 +117,5 @@ void ocrypto_sha512(
 #endif
 
 #endif
+
+/** @} */

@@ -5,6 +5,11 @@
  */
 
 /**@file
+ * @defgroup nrf_oberon_sha_256 SHA-256 APIs.
+ * @ingroup nrf_oberon
+ * @{
+ * @brief Type declarations and APIs for the SHA-256 algorithm
+ * 
  * SHA-256 is part of the SHA-2 family that is a set of cryptographic hash
  * functions designed by the NSA. It is the successor of the SHA-1 algorithm.
  *
@@ -43,9 +48,6 @@ typedef struct {
  * 
  * This group of functions can be used to incrementally compute the SHA-256
  * hash for a given message.
- *
- * **Example**
- * @include ocrypto_sha256_incremental.c
  */
 /**@{*/
 /**
@@ -102,9 +104,6 @@ void ocrypto_sha256_final(
  *
  * The SHA-256 hash of a given input message @p in is computed and put into @p r.
  *
- * **Example**
- * @include ocrypto_sha256.c
- *
  * @param[out] r      Generated hash.
  * @param      in     Input data.
  * @param      in_len Length of @p in.
@@ -118,3 +117,5 @@ void ocrypto_sha256(
 #endif
 
 #endif
+
+/** @} */

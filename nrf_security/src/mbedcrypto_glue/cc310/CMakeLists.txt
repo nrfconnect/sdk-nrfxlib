@@ -1,3 +1,8 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
 if(CONFIG_CC310_BACKEND)
   set(cc310_backend_glue_src
       ${CMAKE_CURRENT_LIST_DIR}/aes_cc310.c

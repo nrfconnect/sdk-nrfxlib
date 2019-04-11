@@ -1,4 +1,8 @@
-
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
 set(NRF_MBEDTLS_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
 if(NOT CONFIG_CUSTOM_MBEDTLS_CFG)
