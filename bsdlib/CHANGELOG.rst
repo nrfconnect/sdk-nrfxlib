@@ -9,6 +9,7 @@ bsdlib 0.2.4
 ************
 
 Updated library with bug fixes:
+
 * Fix issue of reporting NRF_POLLIN on a socket handle using nrf_poll, even if no new data has arrived.
 * Fix issue of sockets not blocking on recv/recvfrom when no data is available.
 
