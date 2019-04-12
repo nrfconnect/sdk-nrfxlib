@@ -5,6 +5,20 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+NFC 0.3.0
+****************
+
+Fixed minor bugs in the NFC libraries.
+
+Modified
+========
+
+* Modified the NFC platform module (``nfc_platform_zephyr.c``) to use
+  the Zephyr Clock Controller driver.
+* Fixed the behavior of the Type 2 Tag library (``libnfct2t_nrf52.a``) when
+  receiving an unsupported WRITE command.
+
+
 NFC 0.2.0
 ****************
 
