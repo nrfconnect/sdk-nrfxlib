@@ -25,7 +25,7 @@ else()
 	message(WARNING "No BLE Controller variant selected")
 endif()
 
-set(ver 0.2.0-1.prealpha)
+set(ver 0.1.0-2.prealpha)
 
 set(BLE_CONTROLLER_LIB ${BLE_CONTROLLER_LIB_PATH}/libble_controller_${ble_controller_variant}_nrf52_${ver}.a)
 
