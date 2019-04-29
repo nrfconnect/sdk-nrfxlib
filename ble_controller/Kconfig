@@ -8,7 +8,8 @@
 # now with additional properties. Note that the dependencies of the
 # original config must be duplicated to not affect it's visibility.
 choice BT_LL_CHOICE
-	prompt "Bluetooth Link Layer Selection"
+	   bool
+	   depends on (BT_CTLR && BT_HCI && BT)
 
 config BT_LL_NRFXLIB
 	bool "Nordic proprietary BLE Link Layer"
