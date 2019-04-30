@@ -7,9 +7,11 @@
 # BT_LL_CHOICE is declared in Zephyr and also here for a second time,
 # now with additional properties. Note that the dependencies of the
 # original config must be duplicated to not affect it's visibility.
+
+if BT && BT_HCI && BT_CTLR
+
 choice BT_LL_CHOICE
-	   bool
-	   depends on (BT_CTLR && BT_HCI && BT)
+	prompt "Bluetooth Link Layer Selection"
 
 config BT_LL_NRFXLIB
 	bool "Nordic proprietary BLE Link Layer"
@@ -49,3 +51,4 @@ config BLE_CONTROLLER_S140
 endchoice
 
 endif # BT_LL_NRFXLIB
+endif # BT && BT_HCI && BT_CTLR
