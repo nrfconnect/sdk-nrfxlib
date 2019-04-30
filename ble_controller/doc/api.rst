@@ -3,11 +3,10 @@
 API documentation
 #################
 
-
 BLE Controller
 **************
 
-.. doxygengroup:: blectlr
+.. doxygengroup:: ble_controller
    :project: nrfxlib
    :members:
 
@@ -15,40 +14,22 @@ BLE Controller
 BLE Controller HCI
 ******************
 
-.. doxygengroup:: blectlr_hci
+.. doxygengroup:: ble_controller_hci
    :project: nrfxlib
    :members:
 
 
-BLE Controller utilities
+BLE Controller SoC
 ************************
 
-.. doxygengroup:: blectlr_util
-   :project: nrfxlib
-   :members:
-
-nRF Errors
-**********
-
-.. doxygengroup:: NRF_ERRORS_BASE
+.. doxygengroup:: ble_controller_soc
    :project: nrfxlib
    :members:
 
 
-.. doxygengroup:: NRF_ERRORS
+Timeslot
+********
+
+.. doxygengroup:: ble_controller_timeslot
    :project: nrfxlib
    :members:
-
-nRF SoC
-*******
-
-.. doxygengroup:: NRF_SOC_DEFINES
-   :project: nrfxlib
-   :members:
-
-.. doxygengroup:: NRF_SOC_ENUMS
-   :project: nrfxlib
-   :members:
-
-.. doxygengroup:: NRF_SOC_STRUCTURES
-   :project: nrfxlib
