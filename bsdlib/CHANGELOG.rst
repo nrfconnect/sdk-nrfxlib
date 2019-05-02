@@ -5,6 +5,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.3.0
+************
+
+Updated library with experimental GNSS support.
+
 bsdlib 0.2.4
 ************
 

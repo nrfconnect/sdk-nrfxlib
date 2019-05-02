@@ -110,6 +110,7 @@ typedef int32_t ssize_t;
 #define NRF_PROTO_AT           513  /**< Identifies socket protocol to be AT commands. */
 #define NRF_PROTO_PDN          514  /**< Identifies socket protocol for PDN management. */
 #define NRF_PROTO_DFU          515  /**< Identifies socket protocol to be DFU. */
+#define NRF_PROTO_GNSS         516  /**< Identifies socket protocol to be GNSS. */
 
 /**@} */
 
@@ -147,6 +148,47 @@ typedef int32_t ssize_t;
 #define NRF_SO_DFU_OFFSET               7    /**< Identifies the option to get and/or set offset of the downloaded firmware. */
 /**@} */
 
+/**@defgroup nrf_socket_options_gnss_sockets Values for GNSS Socket options
+ * @ingroup nrf_socket
+ * @{
+ */
+#define NRF_SO_GNSS_FIX_INTERVAL        1    /**< Identifies the option used to set the GNSS fix interval. */
+#define NRF_SO_GNSS_FIX_RETRY           2    /**< Identifies the option used to set the GNSS fix retry interval. */
+#define NRF_SO_GNSS_SYSTEM              3    /**< Identifies the option used to set and/or get the GNSS system used. See @ref nrf_gnss_system_t for details. */
+#define NRF_SO_GNSS_NMEA_MASK           4    /**< Identifies the option used to select the data format of the received data. */
+#define NRF_SO_GNSS_ELEVATION_MASK      5    /**< Indicates at which elevation the GPS should stop tracking a satellite. */
+#define NRF_SO_GNSS_USE_CASE            6    /**< Indicates the targeted start performance: 0 = single cold start performance targeted, 1 = multiple hot start performance targeted. */
+#define NRF_SO_GNSS_START               7    /**< Identifies the option to start the GPS (with no payload). */
+#define NRF_SO_GNSS_STOP                8    /**< Identifies the option to stop the GPS (with no payload). */
+/**@} */
+
+/**@defgroup nrf_gnss_pvt_flags Set of GNSS flags (as bitmask) indicating additional information about the fix
+ * @ingroup nrf_socket
+ * @{
+ */
+#define NRF_GNSS_PVT_FLAG_FIX_VALID_BIT      1 /**< Identifies if we have a valid fix. */
+#define NRF_GNSS_PVT_FLAG_LEAP_SECOND_VALID  2 /**< Identifies the validity of leap second. */
+/**@} */
+
+/**@defgroup nrf_gnss_sv_glags Set of GNSS satellite flags (as bitmask) indicating additional information about satellites being tracked
+ * @ingroup nrf_socket
+ * @{
+ */
+#define NRF_GNSS_SV_FLAG_USED_IN_FIX  2 /**< Indicate that the satellite is used in the position calculation. */
+#define NRF_GNSS_SV_FLAG_UNHEALTHY    4 /**< Indicate that the satellite is unhealthy. */
+/**@} */
+
+/**@defgroup nrf_nmea_str_mask Set of values (as bitmask) to enable NMEA output strings
+ * @ingroup nrf_socket
+ * @{
+ */
+#define NRF_CONFIG_NMEA_GGA_MASK     1  /**< Enables Global Positioning System Fix Data. */
+#define NRF_CONFIG_NMEA_GLL_MASK     2  /**< Enables Geographic Position Latitude/Longitude and time. */
+#define NRF_CONFIG_NMEA_GSA_MASK     4  /**< Enables DOP and active satellites. */
+#define NRF_CONFIG_NMEA_GSV_MASK     8  /**< Enables Satellites in view. */
+#define NRF_CONFIG_NMEA_RMC_MASK     16 /**< Enables Recommended minimum specific GPS/Transit data. */
+/** @} */
+
 /**@defgroup nrf_socket_options_sockets Values for Socket options
  * @ingroup nrf_socket
  * @{
@@ -164,6 +206,7 @@ typedef int32_t ssize_t;
 #define NRF_SOL_SECURE                  282
 #define NRF_SOL_PDN                     514
 #define NRF_SOL_DFU                     515
+#define NRF_SOL_GNSS                    516
 /**@} */
 
 /**@defgroup nrf_socket_send_recv_flags Socket send/recv flags
@@ -438,6 +481,116 @@ typedef uint32_t nrf_dfu_timeout_t;
 typedef uint32_t nrf_dfu_fw_offset_t;
 
 /**@} */
+
+/**@defgroup nrf_socket_gnss_data_frame GNSS data frames
+ * @ingroup  nrf_socket
+ * @brief    GNSS Data frame formats.
+ * @{
+ */
+typedef struct
+{
+    uint16_t year;    /**< 4-digit representation (Gregorian calendar). */
+    uint8_t  month;   /**< 1...12 */
+    uint8_t  day;     /**< 1...31 */
+    uint8_t  hour;    /**< 0...23 */
+    uint8_t  minute;  /**< 0...59 */
+    uint8_t  seconds; /**< 0...59 */
+    uint8_t  ms;      /**< 0...999 */
+} nrf_gnss_datetime_t;
+
+#define NRF_GNSS_MAX_SATELLITES 12
+
+typedef struct
+{
+    uint16_t sv;        /**< SV number 1...32 for GPS. */
+    uint16_t cn0;       /**< 0.1 dB/Hz. */
+    int16_t  elevation; /**< SV elevation angle in degrees. */
+    int16_t  azimuth;   /**< SV azimuth angle in degrees. */
+    uint8_t  flags;     /**< Bit mask of measurement and position computation flags. */
+    uint8_t  signal;    /**< Signal type. 0: invalid, 1: GPS L1C/A, other values are reserved for other GNSSes or signals. */
+} nrf_gnss_sv_t;
+
+typedef struct
+{
+    double              latitude; /**< Latitude in degrees. */
+    double              longitude;/**< Longitude in degrees. */
+    float               altitude; /**< Altitude above WGS-84 ellipsoid in meters. */
+    float               accuracy; /**< Accuracy (2D 1-sigma) in meters. */
+    float               speed;    /**< Horizontal speed in meters. */
+    float               heading;  /**< Heading of user movement in degrees. */
+    nrf_gnss_datetime_t datetime;
+    float               pdop;     /**< Position dilution of precision. */
+    float               hdop;     /**< Horizontal dilution of precision. */
+    float               vdop;     /**< Vertical dilution of precision. */
+    float               tdop;     /**< Time dilution of precision. */
+    uint8_t             flags;    /**< Bit 0 (LSB): fix validity. Bit 1: Leap second validity. Bit 2: If set, the GNSS operation is blocked, for example, by LTE. */
+    nrf_gnss_sv_t       sv[NRF_GNSS_MAX_SATELLITES]; /**< Describes up to 12 of the space vehicles used for the measurement. */
+} nrf_gnss_pvt_data_frame_t;
+
+#define NRF_GNSS_NMEA_MAX_LEN     83
+
+typedef char nrf_gnss_nmea_data_frame_t[NRF_GNSS_NMEA_MAX_LEN];
+
+#define NRF_GNSS_PVT_DATA_ID  1
+#define NRF_GNSS_NMEA_DATA_ID 2
+
+typedef struct
+{
+    uint8_t data_id;
+    union
+    {
+        nrf_gnss_pvt_data_frame_t  pvt;
+        nrf_gnss_nmea_data_frame_t nmea;
+    };
+} nrf_gnss_data_frame_t;
+
+/** @} */
+
+/**@defgroup nrf_socketopt_gnss GNSS socket option
+ * @ingroup nrf_socket
+ * @brief Data types defined to set and get socket options on GNSS sockets.
+ * @{
+ */
+
+/**@brief Defines the interval between each fix in seconds.
+ * @details The default interval is 1 second. 0 denotes a single fix.
+ */
+typedef uint16_t nrf_gnss_fix_interval_t;
+
+
+/**@brief Defines how long (in seconds) the receiver should try to get a fix.
+ * @details The default retry wait time is 60 seconds before it gives up.
+            0 denotes an infinite limit.
+ */
+typedef uint16_t nrf_gnss_fix_retry_t;
+
+/**@brief Defines which GNSS system to use.
+ * @details 0 denotes GPS. Currently, only GPS is supported and any other value
+ *          returns an error.
+ */
+typedef uint8_t  nrf_gnss_system_t;
+
+/**@brief Defines which GNSS output format to use.
+ * @details 0 denotes RAW GPS data defined in nrf_gnss_raw_data_frame_t.
+ *          1 denotes NPEA formated data frames. Any other value returns
+ *          an error.
+ */
+typedef uint8_t  nrf_gnss_data_format_t;
+
+/**@brief Defines at which elevation the GPS should track a satellite.
+ * @details This option is used to make the GPS stop tracking GPSes on a
+ *          certain elevation, because the information sent from the GPS gets more
+ *          inaccurate as it gets closer to the horizon. Acceptable values
+ *          are between 0 and 30 degrees.
+ */
+typedef uint8_t  nrf_gnss_elevation_mask_t;
+
+/**@brief Defines if NMEA frames should be added.
+ */
+typedef uint16_t nrf_gnss_nmea_mask_t;
+
+/** @} */
+
 
 /**
  * @brief Function for creating a socket.
