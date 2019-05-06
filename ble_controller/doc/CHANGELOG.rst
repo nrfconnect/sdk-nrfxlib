@@ -5,6 +5,12 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+ble_controller 0.2.0-4.prealpha
+*******************************
+* Added workaround to block host from sending HCI commands when shared command
+  is in progress.
+
+
 ble_controller 0.2.0-3.prealpha
 *******************************
 
