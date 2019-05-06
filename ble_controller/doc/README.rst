@@ -1,5 +1,5 @@
 nRF BLE Controller
-==============
+==================
 
 | The nRF BLE Controller is an RTOS-agnostic library built for the Nordic
   Semiconductor nRF52 Series that supports Bluetooth 5.
@@ -65,7 +65,8 @@ the following:
    The application should not add additional processing in the
    corresponding interrupt handlers,
    otherwise the behavior is undefined.
--  Calling a signal handler when the low priority task processing interrupt occurs.
+-  Calling the :cpp:func:`ble_controller_low_prio_tasks_process()` when the low
+   priority tasks processing interrupt occurs.
 -  Ensuring thread safe operation. This is achieved by either:
 
    -  Call all APIs from the same execution priority.
@@ -96,7 +97,7 @@ In addition to these peripherals, the nRF BLE Controller library requires one
 interrupt for low priority task processing. This interrupt is provided by the
 application in :cpp:func:`ble_controller_init()`.
 
-The APIs provided in :file:`ble_controller_soc.h` and :file:`timeslot.h` gives the
+The APIs provided in :file:`ble_controller_soc.h` and :file:`timeslot.h` give the
 application limited access to these peripherals.
 
 Architecture diagrams
