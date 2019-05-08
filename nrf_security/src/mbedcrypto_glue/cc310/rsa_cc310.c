@@ -25,7 +25,7 @@ static int mbedtls_rsa_check(int padding, int hash_id, unsigned int nbits)
 }
 
 const mbedtls_rsa_funcs mbedtls_rsa_cc310_backend_funcs = {
-    .backend_context_size = (4 * MBEDTLS_CC310_RSA_CONTEXT_WORDS),
+    .backend_context_size = (4 * CC310_MBEDTLS_RSA_CONTEXT_WORDS),
     .check = mbedtls_rsa_check,
     .init = mbedtls_rsa_init,
     .import = mbedtls_rsa_import,

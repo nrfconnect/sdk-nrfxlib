@@ -20,9 +20,9 @@ static int mbedtls_aes_check(unsigned int keybits, int mode, int xts)
 }
 
 const mbedtls_aes_funcs mbedtls_aes_cc310_backend_funcs = {
-    .backend_context_size = (4 * MBEDTLS_CC310_AES_CONTEXT_WORDS),
+    .backend_context_size = (4 * CC310_MBEDTLS_AES_CONTEXT_WORDS),
 #if defined(CONFIG_CC310_MBEDTLS_CIPHER_MODE_XTS) && defined(CONFIG_GLUE_MBEDTLS_CIPHER_MODE_XTS)
-    .backend_xts_context_size = (4 * MBEDTLS_CC310_AES_XTS_CONTEXT_WORDS),
+    .backend_xts_context_size = (4 * CC310_MBEDTLS_AES_XTS_CONTEXT_WORDS),
 #endif /* MBEDTLS_CIPHER_MODE_XTS */
     .check = mbedtls_aes_check,
     .init = mbedtls_aes_init,

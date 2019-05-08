@@ -42,6 +42,7 @@ function(library_redefine_symbols backend template)
   keep_config_test_glue("MBEDTLS_ECDH_C"          ${BACKEND_NAME})
   keep_config_test_glue("MBEDTLS_ECDSA_C"         ${BACKEND_NAME})
   keep_config_test_glue("MBEDTLS_GCM_C"           ${BACKEND_NAME})
+  keep_config_test("MBEDTLS_PLATFORM"             ${BACKEND_NAME})
   
   string(TOLOWER "${backend}" MBEDTLS_BACKEND_PREFIX)
   configure_file(${template}

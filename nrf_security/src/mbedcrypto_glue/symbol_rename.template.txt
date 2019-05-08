@@ -106,25 +106,4 @@ ${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_init ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_init
 ${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_setkey ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_setkey
 ${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_starts ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_starts
 ${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_update ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_update
-## cipher.o is available in all backends and no _ALT to ensure only single
-## backend has the symbols. Thus rename, to ensure uniqueness
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_list ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_list
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_info_from_type ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_info_from_type
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_info_from_string ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_info_from_string
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_info_from_values ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_info_from_values
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_init ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_init
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_free ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_free
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_setup ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_setup
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_set_padding_mode ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_set_padding_mode
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_setkey ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_setkey
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_set_iv ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_set_iv
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_reset ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_reset
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_update_ad ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_update_ad
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_update ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_update
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_finish ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_finish
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_write_tag ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_write_tag
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_check_tag ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_check_tag
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_crypt ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_crypt
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_auth_encrypt ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_auth_encrypt
-${KEEP_MBEDTLS_CIPHER}mbedtls_cipher_auth_decrypt ${MBEDTLS_BACKEND_PREFIX}_mbedtls_cipher_auth_decrypt
-mbedtls_platform_zeroize ${MBEDTLS_BACKEND_PREFIX}_mbedtls_platform_zeroize
+${KEEP_MBEDTLS_PLATFORM}mbedtls_platform_zeroize ${MBEDTLS_BACKEND_PREFIX}_mbedtls_platform_zeroize
