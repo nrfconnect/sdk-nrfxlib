@@ -11,15 +11,15 @@
 
 #if defined(CONFIG_VANILLA_MBEDTLS_AES_C) && defined(CONFIG_GLUE_MBEDTLS_AES_C)
 
-#include <assert.h>
+#include <toolchain.h>
 
 #include "mbedtls/aes.h"
 #include "mbedtls/aes_alt.h"
 #include "backend_aes.h"
 
-static_assert(MBEDTLS_DEFAULT_AES_CONTEXT_WORDS == (sizeof(mbedtls_aes_context) - 4) / 4, "Invalid MBEDTLS_DEFAULT_AES_CONTEXT_WORDS value");
+BUILD_ASSERT_MSG(VANILLA_MBEDTLS_AES_CONTEXT_WORDS == (sizeof(mbedtls_aes_context) - 4) / 4, "Invalid VANILLA_MBEDTLS_AES_CONTEXT_WORDS value");
 #if defined(CONFIG_GLUE_MBEDTLS_CIPHER_MODE_XTS) && defined(CONFIG_VANILLA_MBEDTLS_CIPHER_MODE_XTS)
-static_assert(MBEDTLS_DEFAULT_AES_XTS_CONTEXT_WORDS == (sizeof(mbedtls_aes_xts_context) - 4) / 4, "Invalid MBEDTLS_DEFAULT_AES_XTS_CONTEXT_WORDS value");
+BUILD_ASSERT_MSG(VANILLA_MBEDTLS_AES_XTS_CONTEXT_WORDS == (sizeof(mbedtls_aes_xts_context) - 4) / 4, "Invalid VANILLA_MBEDTLS_AES_XTS_CONTEXT_WORDS value");
 #endif /* MBEDTLS_CIPHER_MODE_XTS */
 
 
@@ -28,10 +28,10 @@ static int mbedtls_aes_check(unsigned int keybits, int mode, int xts)
     return 1;
 }
 
-const mbedtls_aes_funcs mbedtls_aes_default_backend_funcs = {
-    .backend_context_size = (4 * MBEDTLS_DEFAULT_AES_CONTEXT_WORDS),
+const mbedtls_aes_funcs mbedtls_aes_vanilla_mbedtls_backend_funcs = {
+    .backend_context_size = (4 * VANILLA_MBEDTLS_AES_CONTEXT_WORDS),
 #if defined(CONFIG_GLUE_MBEDTLS_CIPHER_MODE_XTS) && defined(CONFIG_VANILLA_MBEDTLS_CIPHER_MODE_XTS)
-    .backend_xts_context_size = (4 * MBEDTLS_DEFAULT_AES_XTS_CONTEXT_WORDS),
+    .backend_xts_context_size = (4 * VANILLA_MBEDTLS_AES_XTS_CONTEXT_WORDS),
 #endif /* MBEDTLS_CIPHER_MODE_XTS */
     .check = mbedtls_aes_check,
     .init = mbedtls_aes_init,

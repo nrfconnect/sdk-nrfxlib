@@ -17,7 +17,7 @@ static int mbedtls_ecdh_check(mbedtls_ecp_group *grp, int function)
     return 1;
 }
 
-const mbedtls_ecdh_funcs mbedtls_ecdh_default_backend_funcs = {
+const mbedtls_ecdh_funcs mbedtls_ecdh_vanilla_mbedtls_backend_funcs = {
     .check = mbedtls_ecdh_check,
     .gen_public = mbedtls_ecdh_gen_public,
     .compute_shared = mbedtls_ecdh_compute_shared,

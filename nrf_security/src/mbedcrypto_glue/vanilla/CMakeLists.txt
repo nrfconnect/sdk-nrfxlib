@@ -3,7 +3,8 @@
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 if (CONFIG_MBEDTLS_VANILLA_BACKEND)
-  set(vanilla_backend_glue_src
+  zephyr_library_named(mbedcrypto_glue_vanilla)
+  zephyr_library_sources(
       ${CMAKE_CURRENT_LIST_DIR}/aes_vanilla.c
       ${CMAKE_CURRENT_LIST_DIR}/ccm_vanilla.c
       ${CMAKE_CURRENT_LIST_DIR}/cmac_vanilla.c
@@ -13,14 +14,10 @@ if (CONFIG_MBEDTLS_VANILLA_BACKEND)
       ${CMAKE_CURRENT_LIST_DIR}/rsa_vanilla.c
   )
   
-  set_source_files_properties(${vanilla_backend_glue_src}
-                              PROPERTIES COMPILE_DEFINITIONS MBEDTLS_BACKEND_PREFIX=vanilla)
+  zephyr_library_compile_definitions(MBEDTLS_BACKEND_PREFIX=vanilla)
 
-  add_library(mbedcrypto_glue_vanilla STATIC ${vanilla_backend_glue_src})
-  target_include_directories(mbedcrypto_glue_vanilla PRIVATE
-                             $<TARGET_PROPERTY:mbedcrypto_glue,INCLUDE_DIRECTORIES>)
-  target_compile_definitions(mbedcrypto_glue_vanilla PRIVATE
-                             $<TARGET_PROPERTY:mbedcrypto_glue,COMPILE_DEFINITIONS>)
+  zephyr_library_include_directories($<TARGET_PROPERTY:mbedcrypto_glue,INCLUDE_DIRECTORIES>)
+  zephyr_library_compile_definitions($<TARGET_PROPERTY:mbedcrypto_glue,COMPILE_DEFINITIONS>)
   add_custom_command(
     TARGET mbedcrypto_glue_vanilla
     POST_BUILD
@@ -29,5 +26,4 @@ if (CONFIG_MBEDTLS_VANILLA_BACKEND)
             ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_vanilla.txt
             $<TARGET_FILE:mbedcrypto_glue_vanilla>
   )
-  target_link_libraries(mbedcrypto_glue PRIVATE mbedcrypto_glue_vanilla)
 endif()

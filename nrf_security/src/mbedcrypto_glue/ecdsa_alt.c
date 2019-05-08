@@ -24,7 +24,7 @@
 extern mbedtls_ecdsa_funcs mbedtls_ecdsa_cc310_backend_funcs;
 #endif
 #if defined(CONFIG_VANILLA_MBEDTLS_ECDSA_C)
-extern mbedtls_ecdsa_funcs mbedtls_ecdsa_default_backend_funcs;
+extern mbedtls_ecdsa_funcs mbedtls_ecdsa_vanilla_mbedtls_backend_funcs;
 #endif
 
 
@@ -33,7 +33,7 @@ static mbedtls_ecdsa_funcs* ecdsa_backends[] = {
     &mbedtls_ecdsa_cc310_backend_funcs,
 #endif
 #if defined(CONFIG_VANILLA_MBEDTLS_ECDSA_C)
-    &mbedtls_ecdsa_default_backend_funcs,
+    &mbedtls_ecdsa_vanilla_mbedtls_backend_funcs,
 #endif
 };
 

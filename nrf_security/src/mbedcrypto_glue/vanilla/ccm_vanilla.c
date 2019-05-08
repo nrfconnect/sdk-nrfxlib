@@ -11,14 +11,14 @@
 
 #if defined(CONFIG_VANILLA_MBEDTLS_CCM_C) && defined(CONFIG_GLUE_MBEDTLS_CCM_C)
 
-#include <assert.h>
+#include <toolchain.h>
 
 #include "mbedtls/ccm.h"
 #include "mbedtls/ccm_alt.h"
 #include "backend_ccm.h"
 
 
-static_assert(MBEDTLS_DEFAULT_CCM_CONTEXT_WORDS == (sizeof(mbedtls_ccm_context) - 4 + 3) / 4, "Invalid MBEDTLS_DEFAULT_CCM_CONTEXT_WORDS value");
+BUILD_ASSERT_MSG(VANILLA_MBEDTLS_CCM_CONTEXT_WORDS == (sizeof(mbedtls_ccm_context) - 4 + 3) / 4, "Invalid VANILLA_MBEDTLS_CCM_CONTEXT_WORDS value");
 
 
 static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits)
@@ -26,8 +26,8 @@ static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits)
     return 1;
 }
 
-const mbedtls_ccm_funcs mbedtls_ccm_default_backend_funcs = {
-    .backend_context_size = (4 * MBEDTLS_DEFAULT_CCM_CONTEXT_WORDS),
+const mbedtls_ccm_funcs mbedtls_ccm_vanilla_mbedtls_backend_funcs = {
+    .backend_context_size = (4 * VANILLA_MBEDTLS_CCM_CONTEXT_WORDS),
     .check = mbedtls_ccm_check,
     .init = mbedtls_ccm_init,
     .setkey = mbedtls_ccm_setkey,

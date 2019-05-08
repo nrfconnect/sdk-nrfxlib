@@ -43,6 +43,10 @@ else()
   add_library(mbedcrypto_glue INTERFACE)
 endif()
 
+# Platform implementation cannot be chosen Kconfig.
+# To ensure platform symbols are not renamed cc310 implementation is used.
+set(CONFIG_CC310_MBEDTLS_PLATFORM True)
+
 library_redefine_symbols("cc310" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
 library_redefine_symbols("vanilla" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
 

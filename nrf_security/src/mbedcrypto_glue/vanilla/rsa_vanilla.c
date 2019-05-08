@@ -6,13 +6,13 @@
 
 #if defined(MBEDTLS_BACKEND_RSA_DEFAULT) && defined(MBEDTLS_BACKEND_RSA_GLUE)
 
-#include <assert.h>
+#include <toolchain.h>
 
 #include "mbedtls/rsa.h"
 #include "backend_rsa.h"
 
 
-static_assert(MBEDTLS_DEFAULT_RSA_CONTEXT_WORDS  == (sizeof(mbedtls_rsa_context) + 3) / 4, "Invalid MBEDTLS_DEFAULT_RSA_CONTEXT_WORDS value");
+BUILD_ASSERT_MSG(VANILLA_MBEDTLS_RSA_CONTEXT_WORDS  == (sizeof(mbedtls_rsa_context) + 3) / 4, "Invalid VANILLA_MBEDTLS_RSA_CONTEXT_WORDS value");
 
 
 static int mbedtls_rsa_check(int padding, int hash_id, unsigned int nbits)
@@ -20,8 +20,8 @@ static int mbedtls_rsa_check(int padding, int hash_id, unsigned int nbits)
     return 1;
 }
 
-const mbedtls_rsa_funcs mbedtls_rsa_default_backend_funcs = {
-    .backend_context_size = (4 * MBEDTLS_DEFAULT_RSA_CONTEXT_WORDS),
+const mbedtls_rsa_funcs mbedtls_rsa_vanilla_mbedtls_backend_funcs = {
+    .backend_context_size = (4 * VANILLA_MBEDTLS_RSA_CONTEXT_WORDS),
     .check = mbedtls_rsa_check,
     .init = mbedtls_rsa_init,
     .import = mbedtls_rsa_import,

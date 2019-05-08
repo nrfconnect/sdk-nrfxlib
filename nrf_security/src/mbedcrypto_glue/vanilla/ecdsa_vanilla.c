@@ -17,7 +17,7 @@ static int mbedtls_ecdsa_check(mbedtls_ecp_group *grp, mbedtls_ecp_group_id gid,
     return 1;
 }
 
-const mbedtls_ecdsa_funcs mbedtls_ecdsa_default_backend_funcs = {
+const mbedtls_ecdsa_funcs mbedtls_ecdsa_vanilla_mbedtls_backend_funcs = {
     .check = mbedtls_ecdsa_check,
     .sign = mbedtls_ecdsa_sign,
     .verify = mbedtls_ecdsa_verify,

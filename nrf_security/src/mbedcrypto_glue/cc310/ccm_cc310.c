@@ -21,7 +21,7 @@ static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits)
 }
 
 const mbedtls_ccm_funcs mbedtls_ccm_cc310_backend_funcs = {
-    .backend_context_size = (4 * MBEDTLS_CC310_CCM_CONTEXT_WORDS),
+    .backend_context_size = (4 * CC310_MBEDTLS_CCM_CONTEXT_WORDS),
     .check = mbedtls_ccm_check,
     .init = mbedtls_ccm_init,
     .setkey = mbedtls_ccm_setkey,
