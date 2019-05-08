@@ -152,6 +152,7 @@ zephyr_library_sources(${src_tls} ${src_tls_replacement} ${MBEDTLS_CONFIGURATION
 zephyr_library_include_directories(${common_includes})
 zephyr_library_compile_definitions(-DMBEDTLS_CONFIG_FILE=${MBEDTLS_CONFIGURATION})
 zephyr_library_link_libraries(zephyr_interface)
+target_link_libraries(mbedtls_vanilla INTERFACE mbedx509_vanilla)
 if(TARGET mbedcrypto_cc310)
   zephyr_library_include_directories(
     $<TARGET_PROPERTY:mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
