@@ -5,14 +5,13 @@
 #
 set(NRF_MBEDTLS_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
-if(NOT CONFIG_CUSTOM_MBEDTLS_CFG)
+if(CONFIG_GENERATE_MBEDTLS_CFG_FILE)
   include(${CMAKE_CURRENT_LIST_DIR}/cmake/kconfig_mbedtls_configure.cmake)
-else()
-  set(MBEDTLS_CONFIGURATION "<${CONFIG_CUSTOM_MBEDTLS_CFG_FILE}>")
 endif()
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/symbol_rename.cmake)
 
-zephyr_compile_definitions(-DMBEDTLS_CONFIG_FILE=${MBEDTLS_CONFIGURATION})
+zephyr_compile_definitions(-DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}")
+zephyr_include_directories(${CMAKE_CURRENT_BINARY_DIR}/include/)
 
 if(ARM_MBEDTLS_PATH)
   set(NRF_MBEDTLS_ROOT ${ARM_MBEDTLS_PATH})

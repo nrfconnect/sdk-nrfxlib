@@ -66,6 +66,12 @@ if (NOT CONFIG_NEWLIB_LIBC)
   set(MBEDTLS_PLATFORM_SNPRINTF_ALT TRUE)
 endif ()
 
+if (CONFIG_MBED_TLS_LIBRARY)
+  set(MBEDTLS_SSL_PROTO_DTLS TRUE)
+  set(MBEDTLS_SSL_DTLS_HELLO_VERIFY TRUE)
+  set(MBEDTLS_SSL_COOKIE_C TRUE)
+endif ()
+
 kconfig_mbedtls_config("MBEDTLS_AES_C")
 kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CBC")
 kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CFB")
@@ -112,5 +118,5 @@ mbedtls_config_define_depends("MBEDTLS_KEY_EXCHANGE_DHE_RSA_ENABLED"
 )
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/../configs/nrf-config.h.template
-               ${CMAKE_CURRENT_BINARY_DIR}/include/nrf-config.h)
-set(MBEDTLS_CONFIGURATION \"${CMAKE_CURRENT_BINARY_DIR}/include/nrf-config.h\")
+               ${CMAKE_CURRENT_BINARY_DIR}/include/${CONFIG_MBEDTLS_CFG_FILE})
+#set(MBEDTLS_CONFIGURATION \"${CMAKE_CURRENT_BINARY_DIR}/include/nrf-config.h\")

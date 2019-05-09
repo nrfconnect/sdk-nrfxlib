@@ -38,10 +38,10 @@ To enable the module, set the :option:`CONFIG_NORDIC_SECURITY_BACKEND` Kconfig v
 Setting this variable allows for additional Kconfig variables, depending to the number of features requested.
 These configurations are then used to generate an mbed TLS configuration file used during compilation.
 
-It is possible to provide your own custom mbed TLS configuration file by setting the :option:`CONFIG_CUSTOM_MBEDTLS_CFG_FILE` Kconfig variable.
+It is possible to provide your own custom mbed TLS configuration file by deselecting the :option:`CONFIG_GENERATE_MBEDTLS_CFG_FILE` Kconfig variable.
 
 .. note::
-   Setting the :option:`CONFIG_CUSTOM_MBEDTLS_CFG_FILE` Kconfig variable
+   Deselecting the :option:`CONFIG_GENERATE_MBEDTLS_CFG_FILE` Kconfig variable
    is not recommended.
 
 
