@@ -139,35 +139,28 @@ if(TARGET ${IMAGE}mbedcrypto_cc310)
   target_link_libraries(${IMAGE}mbedcrypto_vanilla PRIVATE ${IMAGE}mbedcrypto_cc310)
 endif()
 
-# The mbedx509 library is currently provided for evaluation only, and when used
-# it should be linked directly with the app using CMake.
-# Therefore zephyr_library is not used.
-add_library(${IMAGE}mbedx509_vanilla STATIC "")
-set(ZEPHYR_CURRENT_LIBRARY ${IMAGE}mbedx509_vanilla)
-zephyr_library_sources(${src_x509})
-zephyr_library_include_directories(${common_includes})
-zephyr_library_compile_definitions(-DMBEDTLS_CONFIG_FILE=${MBEDTLS_CONFIGURATION})
-zephyr_library_link_libraries(${IMAGE}zephyr_interface)
-if(TARGET ${IMAGE}mbedcrypto_cc310)
-  zephyr_library_include_directories(
-    $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
-  )
 endif()
 
-# The mbedtls library is currently provided for evaluation only, and when used
-# it should be linked directly with the app using CMake.
-# Therefore zephyr_library is not used.
-add_library(${IMAGE}mbedtls_vanilla STATIC "")
-set(ZEPHYR_CURRENT_LIBRARY ${IMAGE}mbedtls_vanilla)
-zephyr_library_sources(${src_tls} ${src_tls_replacement} ${MBEDTLS_CONFIGURATION_FILE})
-zephyr_library_include_directories(${common_includes})
-zephyr_library_compile_definitions(-DMBEDTLS_CONFIG_FILE=${MBEDTLS_CONFIGURATION})
-zephyr_library_link_libraries(${IMAGE}zephyr_interface)
-target_link_libraries(${IMAGE}mbedtls_vanilla INTERFACE ${IMAGE}mbedx509_vanilla)
-if(TARGET ${IMAGE}mbedcrypto_cc310)
-  zephyr_library_include_directories(
-    $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
-  )
+if (CONFIG_MBED_X509_LIBRARY)
+  zephyr_library_named(mbedx509_vanilla)
+  zephyr_library_sources(${src_x509})
+  zephyr_library_include_directories(${common_includes})
+  if(TARGET ${IMAGE}mbedcrypto_cc310)
+    zephyr_library_include_directories(
+      $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
+    )
+  endif()
+endif()
+
+if (CONFIG_MBED_TLS_LIBRARY)
+  zephyr_library_named(mbedtls_vanilla)
+  zephyr_library_sources(${src_tls} ${src_tls_replacement})
+  zephyr_library_include_directories(${common_includes})
+  if(TARGET ${IMAGE}mbedcrypto_cc310)
+    zephyr_library_include_directories(
+      $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
+    )
+  endif()
 endif()
 
 if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)

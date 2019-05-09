@@ -227,7 +227,7 @@
 #cmakedefine MBEDTLS_PLATFORM_PRINTF_ALT
 #cmakedefine MBEDTLS_PLATFORM_SNPRINTF_ALT
 //#define MBEDTLS_PLATFORM_NV_SEED_ALT
-#cmakedefine MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT - depends on backend configuration
+#cmakedefine MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT
 
 /**
  * \def MBEDTLS_DEPRECATED_WARNING
@@ -1397,7 +1397,7 @@
  *
  * Comment this macro to disable support for DTLS
  */
-//#define MBEDTLS_SSL_PROTO_DTLS
+#cmakedefine MBEDTLS_SSL_PROTO_DTLS
 
 /**
  * \def MBEDTLS_SSL_ALPN
@@ -1439,7 +1439,7 @@
  *
  * Comment this to disable support for HelloVerifyRequest.
  */
-//#define MBEDTLS_SSL_DTLS_HELLO_VERIFY
+#cmakedefine MBEDTLS_SSL_DTLS_HELLO_VERIFY
 
 /**
  * \def MBEDTLS_SSL_DTLS_CLIENT_PORT_REUSE
@@ -2668,7 +2668,7 @@
  * Module:  library/ssl_cookie.c
  * Caller:
  */
-//#define MBEDTLS_SSL_COOKIE_C
+#cmakedefine MBEDTLS_SSL_COOKIE_C
 
 /**
  * \def MBEDTLS_SSL_TICKET_C
@@ -2938,7 +2938,6 @@
 
 /* Memory buffer allocator options */
 //#define MBEDTLS_MEMORY_ALIGN_MULTIPLE      4 /**< Align on multiples of this value */
-
 /* Platform options */
 //#define MBEDTLS_PLATFORM_STD_MEM_HDR   <stdlib.h> /**< Header to include if MBEDTLS_PLATFORM_NO_STD_FUNCTIONS is defined. Don't define if no header is needed. */
 //#define MBEDTLS_PLATFORM_STD_CALLOC        calloc /**< Default allocator to use, can be undefined */

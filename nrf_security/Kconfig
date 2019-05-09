@@ -13,6 +13,38 @@ config NORDIC_SECURITY_BACKEND
 
 if NORDIC_SECURITY_BACKEND
 
+comment "mbed TLS Configuration File"
+
+config MBEDTLS_CFG_FILE
+	string "mbed TLS configuration file"
+	default "nrf-config.h"
+
+config GENERATE_MBEDTLS_CFG_FILE
+	bool
+	prompt "Generate mbed TLS config file"
+        default y
+	help
+	  nRF Connect SDK Security will generate a mbed TLS configuration file
+          based on the selection of configuration options in Kconfig.
+	  However, if the generated configuration file needs custom 
+	  adjustments, this setting can be used to disable generating the
+          mbed TLS configuration file. Only disable this setting if you know
+          what you are doing.
+
+config MBED_X509_LIBRARY
+        bool
+	prompt "Create mbed x509 library"
+	help
+	  Create the mbed x509 library for handling of certificates.
+
+config MBED_TLS_LIBRARY
+        bool
+	prompt "Create mbed TLS library"
+        select MBED_X509_LIBRARY
+	help
+	  Create the mbed SSL/TLS library in addition to the mbed crypto
+          library.
+
 comment "Backend Selection"
 
 config CC310_BACKEND
@@ -61,26 +93,6 @@ config MBEDTLS_CIPHER_AES_256_CTR_C
 
 config MBEDTLS_CIPHER_AES_256_CCM_C
 	bool
-
-menuconfig CUSTOM_MBEDTLS_CFG
-	bool
-	prompt "Use user provided mbed TLS <config.h>"
-	depends on MBEDTLS_VANILLA_BACKEND
-
-if CUSTOM_MBEDTLS_CFG
-
-config CUSTOM_MBEDTLS_CFG_FILE
-	string "Custom mbed TLS configuration file"
-	default "custom-mbedtls-config.h"
-	help
-	  Use a custom mbed TLS configuration file. nRF Connect SDK Security
-	  will generate a mbed TLS configuration file based on the
-	  selection of configuration options in Kconfig.
-	  However, if the generated configuration file needs additional
-	  adjustments, this setting can be used to provide a custom mbed TLS
-	  configuration file instead.
-
-endif # CUSTOM_MBEDTLS_CFG
 
 comment "Configuration section"
 
