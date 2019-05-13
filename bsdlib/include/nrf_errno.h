@@ -26,6 +26,7 @@ extern "C" {
 #define NRF_EFAULT          14
 #define NRF_EINVAL          22
 #define NRF_EMFILE          24
+#define NRF_ENOSPC          28
 #define NRF_EAGAIN          35
 #define NRF_EPROTOTYPE      41
 #define NRF_ENOPROTOOPT     42

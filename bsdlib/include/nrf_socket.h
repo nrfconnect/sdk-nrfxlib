@@ -61,6 +61,12 @@ typedef int32_t ssize_t;
 
 #define nrf_ntohl(x) NRF_NTOHL(x)   /**< Convert byte order from network to host (long). */
 
+/**@brief Maximum length of IPv4 in string form, including null-termination character. */
+#define NRF_INET_ADDRSTRLEN     16
+
+/**@brief Maximum length of IPv6 in string form, including null-termination character. */
+#define NRF_INET6_ADDRSTRLEN    46
+
 /**@defgroup nrf_socket_families Values for nrf_socket_family_t
  * @ingroup nrf_socket
  * @{
@@ -122,7 +128,7 @@ typedef int32_t ssize_t;
 #define NRF_SO_SEC_TAG_LIST             2    /**< Identifies the option used to get and/or set the security tags to be used on the TLS socket. @ref nrf_sec_tag_t for details. */
 #define NRF_SO_SEC_SESSION_CACHE        3    /**< Identifies the option used to get and/or set the choice of session caching used on the TLS socket. @ref nrf_sec_session_cache_t for details. */
 #define NRF_SO_SEC_PEER_VERIFY          4    /**< Identifies the option used to get and/or set the choice of peer verification on the TLS socket. @ref nrf_sec_peer_verify_t for details. */
-#define NRF_SO_HOSTNAME                 5    /**< Identifies the option used to get and/or set the host name of the peer used for peer verification. Host name is provided a null terminated string. */
+#define NRF_SO_HOSTNAME                 5    /**< Identifies the option used to get and/or set the host name of the peer used for peer verification. Host name is provided a null-terminated string. */
 #define NRF_SO_CIPHERSUITE_LIST         6    /**< Identifies the option used to get and/or set the TLS cipher suite on the socket. See @ref nrf_sec_cipher_t for details. */
 #define NRF_SO_CIPHER_IN_USE            7    /**< Identifies the option used to get the TLS cipher selected for the session on the socket. See @ref nrf_sec_cipher_t for details. */
 /**@} */
@@ -132,7 +138,6 @@ typedef int32_t ssize_t;
  * @{
  */
 #define NRF_SO_PDN_AF                   1    /**< Identifies the option used to get/set supported address families on the PDN. @ref nrf_pdn_af_list_t for details. */
-#define NRF_SO_PDN_CLASS                2    /**< Identifies the option used to get/set the APN class for the PDN. @ref nrf_pdn_class_t for details. */
 /**@} */
 
 /**@defgroup nrf_socket_options_dfu_sockets Values for DFU Socket options
@@ -170,12 +175,12 @@ typedef int32_t ssize_t;
 #define NRF_GNSS_PVT_FLAG_LEAP_SECOND_VALID  2 /**< Identifies the validity of leap second. */
 /**@} */
 
-/**@defgroup nrf_gnss_sv_glags Set of GNSS satellite flags (as bitmask) indicating additional information about satellites being tracked
+/**@defgroup nrf_gnss_sv_flags Set of GNSS satellite flags (as bitmask) indicating additional information about satellites being tracked
  * @ingroup nrf_socket
  * @{
  */
 #define NRF_GNSS_SV_FLAG_USED_IN_FIX  2 /**< Indicate that the satellite is used in the position calculation. */
-#define NRF_GNSS_SV_FLAG_UNHEALTHY    4 /**< Indicate that the satellite is unhealthy. */
+#define NRF_GNSS_SV_FLAG_UNHEALTHY    8 /**< Indicate that the satellite is unhealthy. */
 /**@} */
 
 /**@defgroup nrf_nmea_str_mask Set of values (as bitmask) to enable NMEA output strings
@@ -822,7 +827,8 @@ int nrf_select(int                        nfds,
 #define NRF_POLLIN       0x0001    /**< Event for data receive. Can be requested and returned. */
 #define NRF_POLLOUT      0x0002    /**< Event for data send. Can be requested and returned. */
 #define NRF_POLLERR      0x0004    /**< Event for error on the polled socket. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
-#define NRF_POLLNVAL     0x0008    /**< Event to indicate the polled socket is not open. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
+#define NRF_POLLHUP      0x0008    /**< Event to indicate that the polled socket has been closed by the peer. Ignored in requested events. Subsequent calls to read the socket will be possible until all outstanding data has been read, and return zero-length packets (EOF). */
+#define NRF_POLLNVAL     0x000C    /**< Event to indicate the polled socket is not open. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
 /**@} */
 
 
@@ -936,17 +942,40 @@ int nrf_accept(int sock, void * p_cliaddr, nrf_socklen_t * p_addrlen);
 /**
  * @brief Function for converting a human-readable IP address to a form usable by the socket API.
  *
- * @details This function will convert a string form of addresses and encode it into a byte array.
+ * @details This function will convert a string form of addresses and encode it into a byte
+ *          array in network byte order.
  *
- * @param[in]  family  Address family. Only NRF_AF_INET supported.
+ * @note    Currently not supporting mixed IPv4 and IPv6 format strings.
+ *
+ * @param[in]  family  Address family. NRF_AF_INET or NRF_AF_INET6.
  * @param[in]  p_src   Null-terminated string containing the address to convert.
- * @param[out] p_dst   Pointer to a struct in6_addr where the address will be stored.
+ * @param[out] p_dst   Pointer to a struct nrf_in_addr or nrf_in6_addr where the address will
+ *                     be stored.
  *
- * @return 1 on success, 0 if p_src does not contain a valid address, -1 if family is not a valid address
- *         family.
+ * @return 1 on success, 0 if p_src does not contain a valid address,
+ *                       -1 and errno set in case of error.
  */
 int nrf_inet_pton(int family, const char * p_src, void * p_dst);
 
+/**
+ * @brief Function for converting an IP address to a human-readable string form.
+ *
+ * @details This function will decode the IP bytes from network byte order and convert
+ *          it to a string form of the address.
+ *
+ * @note    Currently not supporting mixed IPv4 and IPv6 format strings.
+ *
+ * @param[in]  family  Address family. NRF_AF_INET or NRF_AF_INET6.
+ * @param[in]  p_src   Pointer to a struct nrf_in_addr or nrf_in6_addr containing the address to convert.
+ * @param[out] p_dst   Pointer to a buffer where the string representation of the address will be stored.
+ * @param[in]  size    Size of the provided buffer in p_dst.
+ *
+ * @return Pointer to p_dst on success, NULL and errno set in case of error.
+ */
+const char * nrf_inet_ntop(int             family,
+                           const void    * p_src,
+                           char          * p_dst,
+                           nrf_socklen_t   size);
 
 /**@brief Function to resolve the host name into IPv4 and/or IPv6 addresses.
  *
