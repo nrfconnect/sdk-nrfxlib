@@ -5,6 +5,22 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.3.1
+************
+
+Updated library with various changes:
+
+* Corrected GNSS API to not fault if not read fast enough.
+* Improved length reporting on GNSS NMEA strings to report length until zero-termination.
+* Improved closing of GNSS socket. If closed, it will now also stop the GNSS from running.
+* Corrected bitmask value of NRF_GNSS_SV_FLAG_UNHEALTHY.
+* Added side API for APN Class management.
+* Removed NRF_SO_PDN_CLASS from nrf_socket.h as it is replaced by side API for APN class management.
+* Improved nrf_poll() error return on non-timeout errors to be NRF_EAGAIN, to align with standard return codes from poll().
+* Added implementation of inet_pton() and inet_ntop().
+* Added empty packet to indicate EOF when TCP peer has closed the connection.
+* Added NRF_POLLHUP to poll() bitmask to indicate sockets that peer has closed the connection (EOF).
+
 bsdlib 0.3.0
 ************
 
