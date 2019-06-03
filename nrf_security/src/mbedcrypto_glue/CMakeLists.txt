@@ -40,7 +40,7 @@ if(CONFIG_GLUE_MBEDTLS_AES_C)
   include(${CMAKE_CURRENT_LIST_DIR}/cc310/CMakeLists.txt)
   include(${CMAKE_CURRENT_LIST_DIR}/vanilla/CMakeLists.txt)
 else()
-  add_library(mbedcrypto_glue INTERFACE)
+  add_library(${IMAGE}mbedcrypto_glue INTERFACE)
 endif()
 
 # Platform implementation cannot be chosen Kconfig.
