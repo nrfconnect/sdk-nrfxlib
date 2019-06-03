@@ -48,27 +48,27 @@ function(library_redefine_symbols backend template)
   configure_file(${template}
                  symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt)
   
-  set(BACKEND_RENAMED_LIBARY libmbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend.a)
+  set(BACKEND_RENAMED_LIBARY lib${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend.a)
   add_custom_command(
     OUTPUT ${BACKEND_RENAMED_LIBARY}
     COMMAND ${CMAKE_OBJCOPY} 
             --redefine-syms
             ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt
-            $<TARGET_FILE:mbedcrypto_${MBEDTLS_BACKEND_PREFIX}>
+            $<TARGET_FILE:${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}>
             ${BACKEND_RENAMED_LIBARY}
-    DEPENDS mbedcrypto_${MBEDTLS_BACKEND_PREFIX}
+    DEPENDS ${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}
             ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt
   )
-  add_custom_target(${MBEDTLS_BACKEND_PREFIX}_backend_target
+  add_custom_target(${IMAGE}${MBEDTLS_BACKEND_PREFIX}_backend_target
                     DEPENDS ${BACKEND_RENAMED_LIBARY}
   )
-  add_library(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend STATIC IMPORTED GLOBAL)
-  add_dependencies(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend
-                   ${MBEDTLS_BACKEND_PREFIX}_backend_target)
-  set_target_properties(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend
+  add_library(${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend STATIC IMPORTED GLOBAL)
+  add_dependencies(${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend
+                   ${IMAGE}${MBEDTLS_BACKEND_PREFIX}_backend_target)
+  set_target_properties(${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend
                         PROPERTIES IMPORTED_LOCATION
                         "${CMAKE_CURRENT_BINARY_DIR}/${BACKEND_RENAMED_LIBARY}")
 
-  zephyr_append_cmake_library(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend)
+  zephyr_append_cmake_library(${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend)
 endfunction()
 

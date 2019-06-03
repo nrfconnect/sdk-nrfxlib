@@ -51,13 +51,13 @@ if (CONFIG_CC310_BACKEND)
     message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_cc310_mbedcryto lib."
                     "(${NRF_CC310_LIB} doesn't exist.)")
   endif()
-  add_library(mbedcrypto_cc310 STATIC IMPORTED GLOBAL)
-  set_target_properties(mbedcrypto_cc310 PROPERTIES IMPORTED_LOCATION
+  add_library(${IMAGE}mbedcrypto_cc310 STATIC IMPORTED GLOBAL)
+  set_target_properties(${IMAGE}mbedcrypto_cc310 PROPERTIES IMPORTED_LOCATION
                         "${NRF_CC310_LIB}"
   )
-  target_include_directories(mbedcrypto_cc310 INTERFACE 
+  target_include_directories(${IMAGE}mbedcrypto_cc310 INTERFACE
                              "${NRF_CC310_BASE}/include/mbedtls")
-  target_link_libraries(mbedcrypto_cc310 INTERFACE mbedcrypto_vanilla)
+  target_link_libraries(${IMAGE}mbedcrypto_cc310 INTERFACE ${IMAGE}mbedcrypto_vanilla)
   if (NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
     # Only CC310 backend is selected for mbedtls API.
     # Thus export the alt headers through Zephyr interface library.

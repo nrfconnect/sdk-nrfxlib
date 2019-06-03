@@ -121,44 +121,56 @@ PREPEND(src_tls_replacement ${NRF_MBEDTLS_ROOT}/src/mbedtls/replacements/
 zephyr_include_directories(${ARM_MBEDTLS_ROOT}/include)
 zephyr_include_directories(${ARM_MBEDTLS_ROOT}/include/mbedtls)
 
-add_library(mbedcrypto_vanilla STATIC "")
-set(ZEPHYR_CURRENT_LIBRARY mbedcrypto_vanilla)
+# When using multiple backends this library should not be linked directly as
+# there might be name collisions with other libs, e.g. mbedcrypto_cc310
+# When multiple backends are enabled, unique symbols are guaranteed through
+# symbol renaming and glue layer.
+# Therefore add_library is used instead of zephyr_library
+add_library(${IMAGE}mbedcrypto_vanilla STATIC "")
+set(ZEPHYR_CURRENT_LIBRARY ${IMAGE}mbedcrypto_vanilla)
 zephyr_library_sources(${src_crypto} ${src_crypto_replacement})
 zephyr_library_include_directories(${common_includes})
-zephyr_library_link_libraries(zephyr_interface)
+zephyr_library_link_libraries(${IMAGE}zephyr_interface)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_ECB_C MBEDTLS_CIPHER_AES_256_ECB_C)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CBC_C MBEDTLS_CIPHER_AES_256_CBC_C)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CTR_C MBEDTLS_CIPHER_AES_256_CTR_C)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CCM_C MBEDTLS_CIPHER_AES_256_CCM_C)
-if(TARGET mbedcrypto_cc310)
-  target_link_libraries(mbedcrypto_vanilla PRIVATE mbedcrypto_cc310)
+if(TARGET ${IMAGE}mbedcrypto_cc310)
+  target_link_libraries(${IMAGE}mbedcrypto_vanilla PRIVATE ${IMAGE}mbedcrypto_cc310)
 endif()
 
-add_library(mbedx509_vanilla STATIC "")
-set(ZEPHYR_CURRENT_LIBRARY mbedx509_vanilla)
+# The mbedx509 library is currently provided for evaluation only, and when used
+# it should be linked directly with the app using CMake.
+# Therefore zephyr_library is not used.
+add_library(${IMAGE}mbedx509_vanilla STATIC "")
+set(ZEPHYR_CURRENT_LIBRARY ${IMAGE}mbedx509_vanilla)
 zephyr_library_sources(${src_x509})
 zephyr_library_include_directories(${common_includes})
 zephyr_library_compile_definitions(-DMBEDTLS_CONFIG_FILE=${MBEDTLS_CONFIGURATION})
-zephyr_library_link_libraries(zephyr_interface)
-if(TARGET mbedcrypto_cc310)
+zephyr_library_link_libraries(${IMAGE}zephyr_interface)
+if(TARGET ${IMAGE}mbedcrypto_cc310)
   zephyr_library_include_directories(
-    $<TARGET_PROPERTY:mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
+    $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
   )
 endif()
 
-add_library(mbedtls_vanilla STATIC "")
-set(ZEPHYR_CURRENT_LIBRARY mbedtls_vanilla)
+# The mbedtls library is currently provided for evaluation only, and when used
+# it should be linked directly with the app using CMake.
+# Therefore zephyr_library is not used.
+add_library(${IMAGE}mbedtls_vanilla STATIC "")
+set(ZEPHYR_CURRENT_LIBRARY ${IMAGE}mbedtls_vanilla)
 zephyr_library_sources(${src_tls} ${src_tls_replacement} ${MBEDTLS_CONFIGURATION_FILE})
 zephyr_library_include_directories(${common_includes})
 zephyr_library_compile_definitions(-DMBEDTLS_CONFIG_FILE=${MBEDTLS_CONFIGURATION})
-zephyr_library_link_libraries(zephyr_interface)
-target_link_libraries(mbedtls_vanilla INTERFACE mbedx509_vanilla)
-if(TARGET mbedcrypto_cc310)
+zephyr_library_link_libraries(${IMAGE}zephyr_interface)
+target_link_libraries(${IMAGE}mbedtls_vanilla INTERFACE ${IMAGE}mbedx509_vanilla)
+if(TARGET ${IMAGE}mbedcrypto_cc310)
   zephyr_library_include_directories(
-    $<TARGET_PROPERTY:mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
+    $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
   )
 endif()
 
 if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
-  zephyr_append_cmake_library(mbedcrypto_vanilla)
+  # Only vanilla backend is chosen, thus append it to zephyr libraries.
+  zephyr_append_cmake_library(${IMAGE}mbedcrypto_vanilla)
 endif()

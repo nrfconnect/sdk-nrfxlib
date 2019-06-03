@@ -16,14 +16,14 @@ if (CONFIG_MBEDTLS_VANILLA_BACKEND)
   
   zephyr_library_compile_definitions(MBEDTLS_BACKEND_PREFIX=vanilla)
 
-  zephyr_library_include_directories($<TARGET_PROPERTY:mbedcrypto_glue,INCLUDE_DIRECTORIES>)
-  zephyr_library_compile_definitions($<TARGET_PROPERTY:mbedcrypto_glue,COMPILE_DEFINITIONS>)
+  zephyr_library_include_directories($<TARGET_PROPERTY:${IMAGE}mbedcrypto_glue,INCLUDE_DIRECTORIES>)
+  zephyr_library_compile_definitions($<TARGET_PROPERTY:${IMAGE}mbedcrypto_glue,COMPILE_DEFINITIONS>)
   add_custom_command(
-    TARGET mbedcrypto_glue_vanilla
+    TARGET ${IMAGE}mbedcrypto_glue_vanilla
     POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} 
             --redefine-syms
             ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_vanilla.txt
-            $<TARGET_FILE:mbedcrypto_glue_vanilla>
+            $<TARGET_FILE:${IMAGE}mbedcrypto_glue_vanilla>
   )
 endif()
