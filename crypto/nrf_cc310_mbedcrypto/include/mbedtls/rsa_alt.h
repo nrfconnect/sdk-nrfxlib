@@ -95,6 +95,7 @@ typedef struct
     mbedtls_mpi NP;                     /*!< Barrett mod N tag NP for N-modulus */
     mbedtls_mpi BQP;                    /*!< Barrett mod Q tag QP for Q-factor  */
     mbedtls_mpi BPP;                    /*!< Barrett mod P tag PP for P-factor  */
+
 }
 mbedtls_rsa_context;
 

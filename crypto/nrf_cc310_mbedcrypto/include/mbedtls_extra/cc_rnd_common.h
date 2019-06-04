@@ -169,17 +169,11 @@ typedef int (*CCRndGenerateVectWorkFunc_t)(        \
     and a function pointer for the RND-generation function. */
 typedef  struct
 {
-
-        uint32_t rndStateAllocated;
-
-
        void *   rndState; /*!< A pointer to the internal state of the RND.
                                \note This pointer should be allocated in a physical and
                                contiguous memory, accessible to the CryptoCell DMA.
                                This pointer should be allocated and assigned before calling CC_LibInit().
                                */
-
-        uint32_t entropyCtxAllocated;
 
         void *   entropyCtx; /*!< A pointer to the entropy context.
                                \note This pointer should be allocated and assigned before
