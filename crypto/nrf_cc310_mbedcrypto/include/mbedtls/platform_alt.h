@@ -44,35 +44,25 @@
 
 #if defined(MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT)
 
-#define MBEDTLS_RND_CONTEXT_INTERNAL_SIZE       (5)
 #define MBEDTLS_RND_WORKBUFFER_INTERNAL_SIZE    (1528)
 
 // These error codes are subject to change
-#define MBEDTLS_ERR_PLATFORM_PARAM_NULL	        -0x7001
-#define MBEDTLS_ERR_PLATFORM_INTERNAL	        -0x7002
-#define MBEDTLS_ERR_PLATFORM_RNG_INIT_FAILED	-0x7003
-#define MBEDTLS_ERR_PLATFORM_VERSION_FAILED	-0x7004
-#define MBEDTLS_ERR_PLATFORM_PARAM_WRITE_FAILED	-0x7005
+#define MBEDTLS_ERR_PLATFORM_PARAM_NULL         -0x7001
+#define MBEDTLS_ERR_PLATFORM_INTERNAL           -0x7002
+#define MBEDTLS_ERR_PLATFORM_RNG_INIT_FAILED    -0x7003
+#define MBEDTLS_ERR_PLATFORM_VERSION_FAILED     -0x7004
+#define MBEDTLS_ERR_PLATFORM_PARAM_WRITE_FAILED -0x7005
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * \brief          Internal RNG context structure
- */
-typedef struct mbedtls_rng_context_internal
-{
-        uint32_t buff[MBEDTLS_RND_CONTEXT_INTERNAL_SIZE];
-
-} mbedtls_rng_context_internal;
-
-/**
  * \brief          Internal RNG work buffer structure
  */
 typedef struct mbedtls_rng_workbuf_internal {
-        /*! Internal buffer */
-        uint32_t buff[MBEDTLS_RND_WORKBUFFER_INTERNAL_SIZE];
+    /*! Internal buffer */
+    uint32_t buff[MBEDTLS_RND_WORKBUFFER_INTERNAL_SIZE];
 } mbedtls_rng_workbuf_internal;
 
 
@@ -87,10 +77,19 @@ typedef struct mbedtls_rng_workbuf_internal {
  *
  */
 typedef struct {
-    mbedtls_rng_context_internal    rnd_context;
-    mbedtls_rng_workbuf_internal  * p_rnd_workbuf;
+    mbedtls_rng_workbuf_internal * p_rnd_workbuf;
 }
 mbedtls_platform_context;
+
+
+/** @brief Function to initialize platform without rng support
+ *
+ * Call this function instead of mbedtls_platform_setup if RNG is required
+ * to conserve code size.
+ *
+ * @warning Only deterministic cryptographic is supported
+ */
+int mbedtls_platform_setup_no_rng(void);
 
 
 #ifdef __cplusplus
