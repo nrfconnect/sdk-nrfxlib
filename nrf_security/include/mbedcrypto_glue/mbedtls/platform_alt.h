@@ -1,15 +1,42 @@
-/*
- * Copyright (c) 2019 Nordic Semiconductor ASA
- *
- * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
- */
-
+/**************************************************************************************
+* Copyright (c) 2016-2018, ARM Limited or its affiliates. All rights reserved         *
+*                                                                                     *
+* This file and the related binary are licensed under the following license:          *
+*                                                                                     *
+* ARM Object Code and Header Files License, v1.0 Redistribution.                      *
+*                                                                                     *
+* Redistribution and use of object code, header files, and documentation, without     *
+* modification, are permitted provided that the following conditions are met:         *
+*                                                                                     *
+* 1) Redistributions must reproduce the above copyright notice and the                *
+*    following disclaimer in the documentation and/or other materials                 *
+*    provided with the distribution.                                                  *
+*                                                                                     *
+* 2) Unless to the extent explicitly permitted by law, no reverse                     *
+*    engineering, decompilation, or disassembly of is permitted.                      *
+*                                                                                     *
+* 3) Redistribution and use is permitted solely for the purpose of                    *
+*    developing or executing applications that are targeted for use                   *
+*    on an ARM-based product.                                                         *
+*                                                                                     *
+* DISCLAIMER. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND                  *
+* CONTRIBUTORS "AS IS." ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT             *
+* NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, NON-INFRINGEMENT,        *
+* AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE          *
+* COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,   *
+* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED            *
+* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR              *
+* PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF              *
+* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING                *
+* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS                  *
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                        *
+**************************************************************************************/
 /**@file
  * @defgroup mbedcrypto_glue mbed TLS glue layer
  * @{
  * @brief The mbedcrypto glue is a crypto toolbox glue layer coupling
- *        software and hardware-accelerated cryptography. The glue layer is implemented 
- *        using the mbed TLS ALT layer (also known as mbed TLS backend) and 
+ *        software and hardware-accelerated cryptography. The glue layer is implemented
+ *        using the mbed TLS ALT layer (also known as mbed TLS backend) and
  *        is usable through regluar mbed TLS front ends.
  *
  * @note    If the functionality does not benefit from hardware-accelerated implementation
@@ -20,34 +47,73 @@
  * @{
  * @brief This is a glue layer for mbedcrypto platform abstraction.
  */
-#ifndef PLATFORM_ALT_H
-#define PLATFORM_ALT_H
 
+#ifndef MBEDTLS_PLATFORM_ALT_H
+#define MBEDTLS_PLATFORM_ALT_H
+
+#include <stddef.h>
 #include <stdint.h>
 
-#if !defined(MBEDTLS_CONFIG_FILE)
-#include "config.h"
-#else
+#if defined(MBEDTLS_CONFIG_FILE)
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#define CC310_MBEDTLS_PLATFORM_CONTEXT_WORDS    (6)//!<  Context size of of type used to initialize mbed TLS in words in the mbed_cc310_mbedcrypto library.
+#if defined(MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT)
 
-/**@brief mbedcrypto platform glue context.
- *
- * @details This context is used when initializing/deinitializing mbed TLS using
- *          @c mbedtls_platform_setup and @c mbedtls_platform_teardown, which is
- *          required when using hardware-accelerated cryptograpy.
+#define MBEDTLS_RND_WORKBUFFER_INTERNAL_SIZE    (1528)
+
+// These error codes are subject to change
+#define MBEDTLS_ERR_PLATFORM_PARAM_NULL         -0x7001
+#define MBEDTLS_ERR_PLATFORM_INTERNAL           -0x7002
+#define MBEDTLS_ERR_PLATFORM_RNG_INIT_FAILED    -0x7003
+#define MBEDTLS_ERR_PLATFORM_VERSION_FAILED     -0x7004
+#define MBEDTLS_ERR_PLATFORM_PARAM_WRITE_FAILED -0x7005
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * \brief          Internal RNG work buffer structure
  */
-typedef struct
-{
-#if defined(CONFIG_CC310_BACKEND)
-    uint32_t cc310[CC310_MBEDTLS_PLATFORM_CONTEXT_WORDS];  //!< Array the size of mbed TLS init context in the nrf_cc310_mbedcrypto library.
-#else /* MBEDTLS_CC3XX_BACKEND */
-    uint32_t dummy;                                        //!< Dummy value in case no backend is enabled.
-#endif
-} mbedtls_platform_context;
+typedef struct mbedtls_rng_workbuf_internal {
+    /*! Internal buffer */
+    uint32_t buff[MBEDTLS_RND_WORKBUFFER_INTERNAL_SIZE];
+} mbedtls_rng_workbuf_internal;
 
+
+/**
+ * \brief   The platform context structure.
+ *
+ * \note    This structure may be used to assist platform-specific
+ *          setup or teardown operations.
+ *
+ * \note    If p_rnd_workbuff is set to NULL, the required memory will
+ *          be temporarily allocated.
+ *
+ */
+typedef struct {
+    mbedtls_rng_workbuf_internal * p_rnd_workbuf;
+}
+mbedtls_platform_context;
+
+
+/** @brief Function to initialize platform without rng support
+ *
+ * Call this function instead of mbedtls_platform_setup if RNG is required
+ * to conserve code size.
+ *
+ * @warning Only deterministic cryptographic is supported
+ */
+int mbedtls_platform_setup_no_rng(void);
+
+
+#ifdef __cplusplus
+}
 #endif
+
+#endif  /* MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT */
+
+#endif  /* MBEDTLS_PLATFORM_ALT_H */
 
 /** @} */

@@ -3,7 +3,7 @@
 #
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
-if(CONFIG_GLUE_MBEDTLS_AES_C)
+if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
   zephyr_include_directories(
       ${NRF_MBEDTLS_ROOT}/include/mbedcrypto_glue/mbedtls
   )
@@ -40,7 +40,12 @@ if(CONFIG_GLUE_MBEDTLS_AES_C)
   include(${CMAKE_CURRENT_LIST_DIR}/cc310/CMakeLists.txt)
   include(${CMAKE_CURRENT_LIST_DIR}/vanilla/CMakeLists.txt)
 else()
+  # Multiple backends was enabled, but glue layer is not needed.
+  # Hence only ensure alt headers are available (namely platform_alt.h)
   add_library(${IMAGE}mbedcrypto_glue INTERFACE)
+  zephyr_include_directories(
+      ${NRF_MBEDTLS_ROOT}/include/mbedcrypto_glue/mbedtls
+  )
 endif()
 
 # Platform implementation cannot be chosen Kconfig.
