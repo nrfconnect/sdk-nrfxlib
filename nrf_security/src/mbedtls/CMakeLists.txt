@@ -162,6 +162,10 @@ if (CONFIG_MBED_TLS_LIBRARY)
   zephyr_library_named(mbedtls_vanilla)
   zephyr_library_sources(${src_tls} ${src_tls_replacement})
   zephyr_library_include_directories(${common_includes})
+  zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_ECB_C MBEDTLS_CIPHER_AES_256_ECB_C)
+  zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CBC_C MBEDTLS_CIPHER_AES_256_CBC_C)
+  zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CTR_C MBEDTLS_CIPHER_AES_256_CTR_C)
+  zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CCM_C MBEDTLS_CIPHER_AES_256_CCM_C)
   if(TARGET ${IMAGE}mbedcrypto_cc310)
     zephyr_library_include_directories(
       $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
