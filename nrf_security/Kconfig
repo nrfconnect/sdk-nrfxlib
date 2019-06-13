@@ -200,25 +200,37 @@ config VANILLA_MBEDTLS_CIPHER_MODE_CTR
 endmenu
 
 config MBEDTLS_CIPHER_MODE_CFB
+	bool
+
+config VANILLA_MBEDTLS_CIPHER_MODE_CFB
 	bool "AES-CFB - AES Cipher Feedback mode"
 	default y
 	depends on VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C)
+	select MBEDTLS_CIPHER_MODE_CFB
 	help
 	  Enable the AES Cipher Feedback mode (CFB) mode,
 	  MBEDTLS_CIPHER_MODE_CFB setting in mbed TLS config file.
 
 config MBEDTLS_CIPHER_MODE_OFB
+	bool
+
+config VANILLA_MBEDTLS_CIPHER_MODE_OFB
 	bool "AES-OFB - AES Output Feedback mode"
 	default y
 	depends on VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C)
+	select MBEDTLS_CIPHER_MODE_OFB
 	help
 	  Enable the AES Output Feedback mode (OFB) mode,
 	  MBEDTLS_CIPHER_MODE_OFB setting in mbed TLS config file.
 
 config MBEDTLS_CIPHER_MODE_XTS
+	bool
+
+config VANILLA_MBEDTLS_CIPHER_MODE_XTS
 	bool "AES-XTS - AES Xor-encrypt-xor with ciphertext stealing mode"
 	default y
 	depends on VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C)
+	select MBEDTLS_CIPHER_MODE_XTS
 	help
 	  Enable the AES Xor-encrypt-xor with ciphertext stealing mode (XTS) mode,
 	  MBEDTLS_CIPHER_MODE_XTS setting in mbed TLS config file.
@@ -301,9 +313,13 @@ endmenu
 
 config MBEDTLS_GCM_C
 	bool
+
+config VANILLA_MBEDTLS_GCM_C
+	bool
 	prompt "AES-GCM - AES Galois/Counter Mode support"
 	default y
 	depends on VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C)
+	select MBEDTLS_GCM_C
 	help
 	  Enable the GCM module.
 	  MBEDTLS_GCM_C setting in mbed TLS config file.
