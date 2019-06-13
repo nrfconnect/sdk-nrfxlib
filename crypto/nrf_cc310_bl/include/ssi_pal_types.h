@@ -36,7 +36,7 @@
 /*!
 @file
 @brief This file contains the platform dependent definitions and types.
-@defgroup ssi_pal_types CryptoCell PAL platform dependant types
+@defgroup ssi_pal_types CryptoCell PAL platform dependent types
 @{
 @ingroup ssi_pal
 */

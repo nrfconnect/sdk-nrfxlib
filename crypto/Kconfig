@@ -22,6 +22,12 @@ config NRF_CC310_BL
 	help
 	  To use, link with nrfxlib_crypto in CMake.
 
+config NRF_CC310_PLATFORM
+	bool "nrf_cc310_platform HW crypto library for nRF devices with CryptoCell CC310."
+	select NRFXLIB_CRYPTO
+	help
+		To use, link with nrfxlib_crypto in CMake.
+
 if NRF_CC310_BL
 config NRF_CC310_BL_INTERRUPTS
 	bool #"Whether the nrf_cc310 library should use interrupts"

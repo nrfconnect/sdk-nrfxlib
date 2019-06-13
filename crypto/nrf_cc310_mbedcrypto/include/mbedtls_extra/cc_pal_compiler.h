@@ -1,49 +1,21 @@
-/**************************************************************************************
-* Copyright (c) 2016-2018, Arm Limited (or its affiliates). All rights reserved       *
-*                                                                                     *
-* This file and the related binary are licensed under the following license:          *
-*                                                                                     *
-* ARM Object Code and Header Files License, v1.0 Redistribution.                      *
-*                                                                                     *
-* Redistribution and use of object code, header files, and documentation, without     *
-* modification, are permitted provided that the following conditions are met:         *
-*                                                                                     *
-* 1) Redistributions must reproduce the above copyright notice and the                *
-*    following disclaimer in the documentation and/or other materials                 *
-*    provided with the distribution.                                                  *
-*                                                                                     *
-* 2) Unless to the extent explicitly permitted by law, no reverse                     *
-*    engineering, decompilation, or disassembly of is permitted.                      *
-*                                                                                     *
-* 3) Redistribution and use is permitted solely for the purpose of                    *
-*    developing or executing applications that are targeted for use                   *
-*    on an ARM-based product.                                                         *
-*                                                                                     *
-* DISCLAIMER. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND                  *
-* CONTRIBUTORS "AS IS." ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT             *
-* NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, NON-INFRINGEMENT,        *
-* AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE          *
-* COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,   *
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED            *
-* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR              *
-* PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF              *
-* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING                *
-* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS                  *
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                        *
-**************************************************************************************/
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ */
+
+/*!
+ @addtogroup cc_pal_compiler
+ @{
+ */
 
 /*!
  @file
- @brief This file contains CryptoCell PAL platform-dependent compiler-related definitions.
+ @brief This file contains CryptoCell PAL platform-dependent compiler-related
+ definitions.
  */
 
-/*!
- @defgroup cc_pal_compiler CryptoCell PAL platform-dependent compiler-specific definitions
- @brief Contains CryptoCell PAL platform-dependent compiler-related definitions. See cc_pal_compiler.h.
- @{
- @ingroup cc_pal
- @}
- */
+
 #ifndef __CC_PAL_COMPILER_H__
 #define __CC_PAL_COMPILER_H__
 
@@ -54,10 +26,11 @@
 /*! Associate a symbol with a link section. */
 #define CC_PAL_COMPILER_SECTION(sectionName)  __attribute__((section(sectionName)))
 
-/*! Mark symbol as used, that is, prevent the garbage collector from dropping it. */
+/*! Mark symbol as used, that is, prevent the garbage collector from
+dropping it. */
 #define CC_PAL_COMPILER_KEEP_SYMBOL __attribute__((used))
 
-/*! Make a given data item aligned (alignment in Bytes). */
+/*! Align a given data item in bytes. */
 #define CC_PAL_COMPILER_ALIGN(alignement)  __attribute__((aligned(alignement)))
 
 /*! Mark a function that never returns. */
@@ -88,10 +61,11 @@
 /*! Associate a symbol with a link section. */
 #define CC_PAL_COMPILER_SECTION(sectionName)  __attribute__((section(sectionName)))
 
-/*! Mark a symbol as used, i.e., prevent garbage collector from dropping it. */
+/*! Mark a symbol as used, that is, prevent garbage collector from
+dropping it. */
 #define CC_PAL_COMPILER_KEEP_SYMBOL __attribute__((used))
 
-/*! Make a given data item aligned (alignment in Bytes). */
+/*! Align a given data item in bytes. */
 #define CC_PAL_COMPILER_ALIGN(alignement)  __attribute__((aligned(alignement)))
 
 /*! Mark a function that never returns. */
@@ -110,7 +84,9 @@
 
 /*! Definition of assertion. */
 #define CC_ASSERT_CONCAT_(a, b) a##b
+/*! Definition of assertion. */
 #define CC_ASSERT_CONCAT(a, b) CC_ASSERT_CONCAT_(a, b)
+/*! Definition of assertion. */
 #define CC_PAL_COMPILER_ASSERT(cond, message) \
     enum { CC_ASSERT_CONCAT(assert_line_, __LINE__) = 1/(!!(cond)) }
 
@@ -121,10 +97,11 @@
 /*! Associate a symbol with a link section. */
 #define CC_PAL_COMPILER_SECTION(sectionName)  __attribute__((section(sectionName)))
 
-/*! Mark a symbol as used, that is, prevent garbage collector from dropping it. */
+/*! Mark a symbol as used, that is, prevent garbage collector from
+dropping it. */
 #define CC_PAL_COMPILER_KEEP_SYMBOL __attribute__((used))
 
-/*! Make a given data item aligned (alignment in Bytes). */
+/*! Align a given data item in bytes. */
 #define CC_PAL_COMPILER_ALIGN(alignement)  __attribute__((aligned(alignement)))
 
 /*! Mark a function that never returns. */
@@ -143,7 +120,9 @@
 
 /*! Definition of assertion. */
 #define CC_ASSERT_CONCAT_(a, b) a##b
+/*! Definition of assertion. */
 #define CC_ASSERT_CONCAT(a, b) CC_ASSERT_CONCAT_(a, b)
+/*! Definition of assertion. */
 #define CC_PAL_COMPILER_ASSERT(cond, message) \
     enum { CC_ASSERT_CONCAT(assert_line_, __LINE__) = 1/(!!(cond)) }
 
@@ -155,10 +134,11 @@
 /*! Associate a symbol with a link section. */
 #define CC_PAL_COMPILER_SECTION(sectionName)  __attribute__((section(sectionName)))
 
-/*! Mark symbol as used, that is, prevent garbage collector from dropping it. */
+/*! Mark a symbol as used, that is, prevent garbage collector from
+dropping it. */
 #define CC_PAL_COMPILER_KEEP_SYMBOL __attribute__((used))
 
-/*! Make a given data item aligned (alignment in Bytes). */
+/*! Align a given data item in bytes. */
 #define CC_PAL_COMPILER_ALIGN(alignement)  __attribute__((aligned(alignement)))
 
 /*! Mark a function that never returns. */
@@ -177,7 +157,9 @@
 
 /*! Definition of assertion. */
 #define CC_ASSERT_CONCAT_(a, b) a##b
+/*! Definition of assertion. */
 #define CC_ASSERT_CONCAT(a, b) CC_ASSERT_CONCAT_(a, b)
+/*! Definition of assertion. */
 #define CC_PAL_COMPILER_ASSERT(cond, message) \
     enum { CC_ASSERT_CONCAT(assert_line_, __LINE__) = 1/(!!(cond)) }
 
@@ -185,5 +167,8 @@
 #error Unsupported compiler.
 #endif
 
+/*!
+ @}
+ */
 
 #endif /*__CC_PAL_COMPILER_H__*/

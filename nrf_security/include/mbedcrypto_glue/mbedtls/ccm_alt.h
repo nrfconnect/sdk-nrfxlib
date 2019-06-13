@@ -22,7 +22,7 @@
 /**
  * @brief Context size of AES CCM in words in the mbed_cc310_mbedcrypto library.
  */
-#define CC310_MBEDTLS_CCM_CONTEXT_WORDS     (24)
+#define CC310_MBEDTLS_CCM_CONTEXT_WORDS     (96)
 #define VANILLA_MBEDTLS_CCM_CONTEXT_WORDS   ((sizeof(mbedtls_cipher_context_t) + 3) / 4)
 
 /**
