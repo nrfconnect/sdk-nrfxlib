@@ -3,15 +3,30 @@
 #
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
-FUNCTION(PREPEND var prefix)
-  SET(listVar "")
-  FOREACH(f ${ARGN})
-    LIST(APPEND listVar "${prefix}${f}")
-  ENDFOREACH(f)
-  SET(${var} "${listVar}" PARENT_SCOPE)
-ENDFUNCTION(PREPEND)
 
-# ----------  Original (unmodified) mbedTLS sources -------------
+#
+# Internal function to append all unnamed parameters with 'prefix'
+# and add it to the list 'var'
+#
+function(append_with_prefix var prefix)
+  set(listVar ${${var}})
+  foreach(f ${ARGN})
+    kconfig_mbedtls_debug("Adding: ${f} to ${var}")
+    list(APPEND listVar "${prefix}${f}")
+  endforeach(f)
+  set(${var} ${listVar} PARENT_SCOPE)
+endfunction(append_with_prefix)
+
+#
+# Internal macro to append all unnamed parameters with 'prefix' if condition
+# is met
+#
+macro(append_with_prefix_ifdef var cond prefix)
+  if (cond)
+    append_with_prefix(prefix ${ARGN})
+  endif()
+endmacro()
+
 
 PREPEND(src_crypto ${ARM_MBEDTLS_ROOT}/library/
     aes.c
