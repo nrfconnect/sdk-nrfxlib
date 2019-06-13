@@ -1,51 +1,18 @@
-/**************************************************************************************
-* Copyright (c) 2016-2018, Arm Limited (or its affiliates). All rights reserved       *
-*                                                                                     *
-* This file and the related binary are licensed under the following license:          *
-*                                                                                     *
-* ARM Object Code and Header Files License, v1.0 Redistribution.                      *
-*                                                                                     *
-* Redistribution and use of object code, header files, and documentation, without     *
-* modification, are permitted provided that the following conditions are met:         *
-*                                                                                     *
-* 1) Redistributions must reproduce the above copyright notice and the                *
-*    following disclaimer in the documentation and/or other materials                 *
-*    provided with the distribution.                                                  *
-*                                                                                     *
-* 2) Unless to the extent explicitly permitted by law, no reverse                     *
-*    engineering, decompilation, or disassembly of is permitted.                      *
-*                                                                                     *
-* 3) Redistribution and use is permitted solely for the purpose of                    *
-*    developing or executing applications that are targeted for use                   *
-*    on an ARM-based product.                                                         *
-*                                                                                     *
-* DISCLAIMER. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND                  *
-* CONTRIBUTORS "AS IS." ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT             *
-* NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, NON-INFRINGEMENT,        *
-* AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE          *
-* COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,   *
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED            *
-* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR              *
-* PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF              *
-* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING                *
-* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS                  *
-* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                        *
-**************************************************************************************/
-
-/*!
- @file
- @brief This file contains all the type definitions that are used for the CryptoCell ECPKI APIs.
+/*
+ * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
  */
 
 /*!
- @defgroup cc_ecpki_types CryptoCell ECPKI type definitions
- @brief Contains CryptoCell ECPKI API type definitions.
-
- See cc_ecpki_types.h.
-
+ @addtogroup cc_ecpki_types
  @{
- @ingroup cc_ecpki
- @}
+ */
+
+/*!
+ @file
+ @brief This file contains all the type definitions that are used for the
+ CryptoCell ECPKI APIs.
  */
 
 #ifndef _CC_ECPKI_TYPES_H
@@ -78,25 +45,32 @@ extern "C"
 /*------------------------------------------------------------------*/
 /*! @brief EC domain idetifiers.
 
-   For more information, see <em>Standards for Efficient Cryptography Group (SECG):
-   SEC2 Recommended Elliptic Curve Domain Parameters, Version 1.0</em>.
+   For more information, see <em>Standards for Efficient Cryptography Group
+   (SECG): SEC2 Recommended Elliptic Curve Domain Parameters, Version 1.0</em>.
 */
 typedef enum
 {
     /* For prime field */
-    CC_ECPKI_DomainID_secp192k1,   /*!< EC secp192k1. */
-    CC_ECPKI_DomainID_secp192r1,   /*!< EC secp192r1. */
-    CC_ECPKI_DomainID_secp224k1,   /*!< EC secp224k1. */
-    CC_ECPKI_DomainID_secp224r1,   /*!< EC secp224r1. */
-    CC_ECPKI_DomainID_secp256k1,   /*!< EC secp256k1. */
-    CC_ECPKI_DomainID_secp256r1,   /*!< EC secp256r1. */
-    CC_ECPKI_DomainID_secp384r1,   /*!< EC secp384r1. */
-    CC_ECPKI_DomainID_secp521r1,   /*!< EC secp521r1. */
-
-    CC_ECPKI_DomainID_Builded,     /*!< User given, not identified. */
-    CC_ECPKI_DomainID_OffMode,     /*!< Reserved.*/
-
-    CC_ECPKI_DomainIDLast      = 0x7FFFFFFF, /*!< Reserved.*/
+    /*! EC secp192k1. */
+    CC_ECPKI_DomainID_secp192k1,
+    /*! EC secp192r1. */
+    CC_ECPKI_DomainID_secp192r1,
+    /*! EC secp224k1. */
+    CC_ECPKI_DomainID_secp224k1,
+    /*! EC secp224r1. */
+    CC_ECPKI_DomainID_secp224r1,
+    /*! EC secp256k1. */
+    CC_ECPKI_DomainID_secp256k1,
+    /*! EC secp256r1. */
+    CC_ECPKI_DomainID_secp256r1,
+    /*! EC secp384r1. */
+    CC_ECPKI_DomainID_secp384r1,
+    /*! EC secp521r1. */
+    CC_ECPKI_DomainID_secp521r1,
+    /*! Reserved.*/
+    CC_ECPKI_DomainID_OffMode,
+    /*! Reserved.*/
+    CC_ECPKI_DomainIDLast      = 0x7FFFFFFF,
 
 }CCEcpkiDomainID_t;
 
@@ -110,21 +84,30 @@ typedef enum
  */
 typedef enum
 {
-    CC_ECPKI_HASH_SHA1_mode    = 0,     /*!< The message data will be hashed with SHA-1. */
-    CC_ECPKI_HASH_SHA224_mode  = 1,     /*!< The message data will be hashed with SHA-224. */
-    CC_ECPKI_HASH_SHA256_mode  = 2,     /*!< The message data will be hashed with SHA-256. */
-    CC_ECPKI_HASH_SHA384_mode  = 3,     /*!< The message data will be hashed with SHA-384. */
-    CC_ECPKI_HASH_SHA512_mode  = 4,     /*!< The message data will be hashed with SHA-512. */
-
-    CC_ECPKI_AFTER_HASH_SHA1_mode    = 5,   /*!< The message data is a digest of SHA-1 and will not be hashed. */
-    CC_ECPKI_AFTER_HASH_SHA224_mode  = 6,   /*!< The message data is a digest of SHA-224 and will not be hashed. */
-    CC_ECPKI_AFTER_HASH_SHA256_mode  = 7,   /*!< The message data is a digest of SHA-256 and will not be hashed. */
-    CC_ECPKI_AFTER_HASH_SHA384_mode  = 8,   /*!< The message data is a digest of SHA-384 and will not be hashed. */
-    CC_ECPKI_AFTER_HASH_SHA512_mode  = 9,   /*!< The message data is a digest of SHA-512 and will not be hashed. */
-
-
-    CC_ECPKI_HASH_NumOfModes,   /*!< The maximal number of hash modes. */
-    CC_ECPKI_HASH_OpModeLast        = 0x7FFFFFFF, /*!< Reserved. */
+    /*! The message data will be hashed with SHA-1. */
+    CC_ECPKI_HASH_SHA1_mode    = 0,
+    /*! The message data will be hashed with SHA-224. */
+    CC_ECPKI_HASH_SHA224_mode  = 1,
+    /*! The message data will be hashed with SHA-256. */
+    CC_ECPKI_HASH_SHA256_mode  = 2,
+    /*! The message data will be hashed with SHA-384. */
+    CC_ECPKI_HASH_SHA384_mode  = 3,
+    /*! The message data will be hashed with SHA-512. */
+    CC_ECPKI_HASH_SHA512_mode  = 4,
+    /*! The message data is a digest of SHA-1 and will not be hashed. */
+    CC_ECPKI_AFTER_HASH_SHA1_mode    = 5,
+    /*! The message data is a digest of SHA-224 and will not be hashed. */
+    CC_ECPKI_AFTER_HASH_SHA224_mode  = 6,
+    /*! The message data is a digest of SHA-256 and will not be hashed. */
+    CC_ECPKI_AFTER_HASH_SHA256_mode  = 7,
+    /*! The message data is a digest of SHA-384 and will not be hashed. */
+    CC_ECPKI_AFTER_HASH_SHA384_mode  = 8,
+    /*! The message data is a digest of SHA-512 and will not be hashed. */
+    CC_ECPKI_AFTER_HASH_SHA512_mode  = 9,
+    /*! The maximal number of hash modes. */
+    CC_ECPKI_HASH_NumOfModes,
+    /*! Reserved. */
+    CC_ECPKI_HASH_OpModeLast        = 0x7FFFFFFF,
 
 }CCEcpkiHashOpMode_t;
 
@@ -134,66 +117,90 @@ typedef enum
 */
 typedef enum
 {
-    CC_EC_PointCompressed     = 2,  /*!< A compressed point. */
-    CC_EC_PointUncompressed   = 4,  /*!< An uncompressed point. */
-    CC_EC_PointContWrong      = 5,  /*!< An incorrect point-control value. */
-    CC_EC_PointHybrid         = 6,  /*!< A hybrid point. */
-
-    CC_EC_PointCompresOffMode = 8,  /*!< Reserved. */
-
-    CC_ECPKI_PointCompressionLast= 0x7FFFFFFF,  /*!< Reserved. */
-
+    /*! A compressed point. */
+    CC_EC_PointCompressed     = 2,
+    /*! An uncompressed point. */
+    CC_EC_PointUncompressed   = 4,
+    /*! An incorrect point-control value. */
+    CC_EC_PointContWrong      = 5,
+    /*! A hybrid point. */
+    CC_EC_PointHybrid         = 6,
+    /*! Reserved. */
+    CC_EC_PointCompresOffMode = 8,
+    /*! Reserved. */
+    CC_ECPKI_PointCompressionLast= 0x7FFFFFFF,
 }CCEcpkiPointCompression_t;
 
 /*----------------------------------------------------*/
 /*! EC key checks. */
 typedef enum {
-    CheckPointersAndSizesOnly = 0,   /*!< Check only preliminary input parameters. */
-    ECpublKeyPartlyCheck      = 1,   /*!< Check preliminary input parameters and verify that the EC public-key point is on the curve. */
-    ECpublKeyFullCheck        = 2,   /*!< Check preliminary input parameters, verify that the EC public-key point is on the curve,
-                                          and verify that \c EC_GeneratorOrder*PubKey = 0 */
-
-    PublKeyChecingOffMode,          /*! Reserved. */
-    EC_PublKeyCheckModeLast  = 0x7FFFFFFF,  /*! Reserved. */
+    /*! Check only preliminary input parameters. */
+    CheckPointersAndSizesOnly = 0,
+    /*! Check preliminary input parameters and verify that the EC public-key
+    point is on the curve. */
+    ECpublKeyPartlyCheck      = 1,
+    /*! Check preliminary input parameters, verify that the EC public-key
+    point is on the curve, and verify that \c EC_GeneratorOrder*PubKey = 0 */
+    ECpublKeyFullCheck        = 2,
+    /*! Reserved. */
+    PublKeyChecingOffMode,
+    /*! Reserved. */
+    EC_PublKeyCheckModeLast  = 0x7FFFFFFF,
 }ECPublKeyCheckMode_t;
 
 /*----------------------------------------------------*/
 /*! SW SCA protection type. */
 typedef enum {
-    SCAP_Inactive,  /*! SCA protection inactive.*/
-    SCAP_Active,    /*! SCA protection active.*/
-    SCAP_OFF_MODE,  /*! Reserved. */
-    SCAP_LAST = 0x7FFFFFFF  /*! Reserved. */
+    /*! SCA protection inactive. */
+    SCAP_Inactive,
+    /*! SCA protection active. */
+    SCAP_Active,
+    /*! Reserved. */
+    SCAP_OFF_MODE,
+    /*! Reserved. */
+    SCAP_LAST = 0x7FFFFFFF
 }CCEcpkiScaProtection_t;
-
 
 /**************************************************************************************
  *               EC Domain structure definition
  ***************************************************************************************/
 
 /*!
- @brief The structure containing the EC domain parameters in little-endian form.
+ @brief The structure containing the EC domain parameters in little-endian
+ form.
 
  EC equation: \c Y^2 = \c X^3 + \c A*X + \c B over prime field \p GFp.
  */
 typedef  struct {
-
-    uint32_t    ecP [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS] /*!< EC modulus: P. */;
-    uint32_t    ecA [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS] /*!< EC equation parameter A. */;
-    uint32_t    ecB [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS] /*!< EC equation parameter B. */;
-    uint32_t    ecR [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS + 1] /*!< Order of generator. */;
-    uint32_t    ecGx [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS] /*!< EC cofactor EC_Cofactor_K.
-        The coordinates of the EC base point generator in projective form. */;
-    uint32_t    ecGy [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS] /*!< EC cofactor EC_Cofactor_K.
-        The coordinates of the EC base point generator in projective form. */;
-    uint32_t    ecH /*!< EC cofactor EC_Cofactor_K.
-        The coordinates of the EC base point generator in projective form. */;
-    uint32_t      llfBuff[CC_PKA_DOMAIN_LLF_BUFF_SIZE_IN_WORDS] /*!< Specific fields that are used by the low-level functions.*/;
-    uint32_t    modSizeInBits /*!< The size of fields in bits. */;
-    uint32_t    ordSizeInBits /*!< The size of the order in bits. */;
-    uint32_t    barrTagSizeInWords /*!< The size of each inserted Barret tag in words. 0 if not inserted.*/;
-    CCEcpkiDomainID_t   DomainID /*!< The EC Domain identifier.*/;
-    int8_t name[20] /*!< Internal buffer. */;
+    /*! EC modulus: P. */
+    uint32_t    ecP [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS];
+    /*! EC equation parameter A. */
+    uint32_t    ecA [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS];
+    /*! EC equation parameter B. */
+    uint32_t    ecB [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS];
+    /*! Order of generator. */
+    uint32_t    ecR [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS + 1];
+    /*! EC cofactor EC_Cofactor_K. The coordinates of the EC base point
+    generator in projective form. */
+    uint32_t    ecGx [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS];
+    /*! EC cofactor EC_Cofactor_K. The coordinates of the EC base point
+    generator in projective form. */
+    uint32_t    ecGy [CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS];
+    /*! EC cofactor EC_Cofactor_K. The coordinates of the EC base point
+    generator in projective form. */
+    uint32_t    ecH;
+    /*! Specific fields that are used by the low-level functions.*/
+    uint32_t      llfBuff[CC_PKA_DOMAIN_LLF_BUFF_SIZE_IN_WORDS];
+    /*! The size of fields in bits. */
+    uint32_t    modSizeInBits;
+    /*! The size of the order in bits. */
+    uint32_t    ordSizeInBits;
+    /*! The size of each inserted Barret tag in words. Zero if not inserted.*/
+    uint32_t    barrTagSizeInWords;
+    /*! The EC Domain identifier. */
+    CCEcpkiDomainID_t   DomainID;
+    /*! Internal buffer. */
+    int8_t name[20];
 }CCEcpkiDomain_t;
 
 
@@ -206,8 +213,10 @@ typedef  struct {
    and little endian form. */
 typedef  struct
 {
-    uint32_t x[CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS] /*!< The X coordinate of the point. */;
-    uint32_t y[CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS] /*!< The Y coordinate of the point. */;
+    /*! The X coordinate of the point. */
+    uint32_t x[CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS];
+    /*! The Y coordinate of the point. */
+    uint32_t y[CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS];
 
 }CCEcpkiPointAffine_t;
 
@@ -223,10 +232,14 @@ typedef  struct
 /*! The structure containing the public key in affine coordinates.*/
 typedef  struct
 {
-    uint32_t x[CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS] /*!< The X coordinate of the public key.*/;
-    uint32_t y[CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS] /*!< The Y coordinate of the public key.*/;
-    CCEcpkiDomain_t  domain /*!< The EC Domain.*/;
-    uint32_t pointType /*!< The point type.*/;
+    /*! The X coordinate of the public key.*/
+    uint32_t x[CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS];
+    /*! The Y coordinate of the public key.*/
+    uint32_t y[CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS];
+    /*! The EC Domain.*/
+    CCEcpkiDomain_t  domain;
+    /*! The point type.*/
+    uint32_t pointType;
 } CCEcpkiPublKey_t;
 
 
@@ -238,9 +251,10 @@ for example, CC_EcdsaVerify().
 */
 typedef struct   CCEcpkiUserPublKey_t
 {
-    uint32_t    valid_tag /*!< The validation tag.*/;
-    uint32_t    PublKeyDbBuff[(sizeof(CCEcpkiPublKey_t)+3)/4] /*!< The data of the public key. */;
-
+    /*! The validation tag. */
+    uint32_t    valid_tag;
+    /*! The data of the public key. */
+    uint32_t    PublKeyDbBuff[(sizeof(CCEcpkiPublKey_t)+3)/4];
 } CCEcpkiUserPublKey_t;
 
 
@@ -251,10 +265,12 @@ typedef struct   CCEcpkiUserPublKey_t
 /*! The structure containing the data of the private key. */
 typedef  struct
 {
-    uint32_t  PrivKey[CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS + 1] /*!< The data of the private key. */;
-    CCEcpkiDomain_t  domain /*!< The EC domain. */;
-    CCEcpkiScaProtection_t  scaProtection /*!< The SCA protection mode. */;
-
+    /*! The data of the private key. */
+    uint32_t  PrivKey[CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS + 1];
+    /*! The EC domain. */
+    CCEcpkiDomain_t  domain;
+    /*! The SCA protection mode. */
+    CCEcpkiScaProtection_t  scaProtection;
 }CCEcpkiPrivKey_t;
 
 
@@ -266,21 +282,24 @@ typedef  struct
  */
 typedef struct   CCEcpkiUserPrivKey_t
 {
-
-    uint32_t    valid_tag /*!< The validation tag. */;
-    uint32_t    PrivKeyDbBuff[(sizeof(CCEcpkiPrivKey_t)+3)/4] /*!< The data of the private key. */;
+    /*! The validation tag. */
+    uint32_t    valid_tag;
+    /*! The data of the private key. */
+    uint32_t    PrivKeyDbBuff[(sizeof(CCEcpkiPrivKey_t)+3)/4];
 }  CCEcpkiUserPrivKey_t;
 
 /*! The type of the ECDH temporary data. */
 typedef struct CCEcdhTempData_t
 {
-    uint32_t ccEcdhIntBuff[CC_PKA_ECDH_BUFF_MAX_LENGTH_IN_WORDS] /*!< Temporary buffers. */;
+    /*! Temporary buffers. */
+    uint32_t ccEcdhIntBuff[CC_PKA_ECDH_BUFF_MAX_LENGTH_IN_WORDS];
 }CCEcdhTempData_t;
 
 /*! EC build temporary data. */
 typedef struct CCEcpkiBuildTempData_t
 {
-    uint32_t  ccBuildTmpIntBuff[CC_PKA_ECPKI_BUILD_TMP_BUFF_MAX_LENGTH_IN_WORDS] /*!< Temporary buffers. */;
+    /*! Temporary buffers. */
+    uint32_t  ccBuildTmpIntBuff[CC_PKA_ECPKI_BUILD_TMP_BUFF_MAX_LENGTH_IN_WORDS];
 }CCEcpkiBuildTempData_t;
 
 
@@ -298,17 +317,24 @@ typedef uint32_t CCEcdsaSignIntBuff_t[CC_PKA_ECDSA_SIGN_BUFF_MAX_LENGTH_IN_WORDS
 /*! The context definition for the signing operation. */
 typedef  struct
 {
-    CCEcpkiUserPrivKey_t     ECDSA_SignerPrivKey /*!< The data of the private key. */;
+    /*! The data of the private key. */
+    CCEcpkiUserPrivKey_t     ECDSA_SignerPrivKey;
 
 #ifdef USE_MBEDTLS_CRYPTOCELL
-    mbedtls_md_context_t     hash_ctx /*!< The hash context. */;
+    /*! The hash context. */
+    mbedtls_md_context_t     hash_ctx;
 #else
-    CCHashUserContext_t      hashUserCtxBuff /*!< The hash context. */;
+    /*! The hash context. */
+    CCHashUserContext_t      hashUserCtxBuff;
 #endif
-    CCHashResultBuf_t        hashResult /*!< The hash result buffer. */;
-    uint32_t                 hashResultSizeWords /*!< The size of the hash result in words. */;
-    CCEcpkiHashOpMode_t  hashMode /*!< The hash mode. */;
-    CCEcdsaSignIntBuff_t     ecdsaSignIntBuff /*!< Internal buffer. */;
+    /*! The hash result buffer. */
+    CCHashResultBuf_t        hashResult;
+    /*! The size of the hash result in words. */
+    uint32_t                 hashResultSizeWords;
+    /*! The hash mode. */
+    CCEcpkiHashOpMode_t  hashMode;
+    /*! Internal buffer. */
+    CCEcdsaSignIntBuff_t     ecdsaSignIntBuff;
 }EcdsaSignContext_t;
 
 
@@ -324,8 +350,10 @@ typedef  struct
  */
 typedef struct  CCEcdsaSignUserContext_t
 {
-    uint32_t  context_buff [(sizeof(EcdsaSignContext_t)+3)/4] /*!< The data of the signing process. */;
-    uint32_t  valid_tag /*!< The validation tag. */;
+    /*! The data of the signing process. */
+    uint32_t  context_buff [(sizeof(EcdsaSignContext_t)+3)/4];
+    /*! The validation tag. */
+    uint32_t  valid_tag;
 } CCEcdsaSignUserContext_t;
 
 
@@ -341,18 +369,24 @@ typedef uint32_t CCEcdsaVerifyIntBuff_t[CC_PKA_ECDSA_VERIFY_BUFF_MAX_LENGTH_IN_W
 /*! The context definition for verification operation. */
 typedef  struct
 {
-    CCEcpkiUserPublKey_t        ECDSA_SignerPublKey /*!< The data of the public key. */;
-
+    /*! The data of the public key. */
+    CCEcpkiUserPublKey_t        ECDSA_SignerPublKey;
 
 #ifdef USE_MBEDTLS_CRYPTOCELL
-    mbedtls_md_context_t        hash_ctx /*!< The hash context. */;
+    /*! The hash context. */
+    mbedtls_md_context_t        hash_ctx;
 #else
-    CCHashUserContext_t         hashUserCtxBuff /*!< The hash context. */;
+    /*! The hash context. */
+    CCHashUserContext_t         hashUserCtxBuff;
 #endif
-    CCHashResultBuf_t           hashResult /*!< The hash result. */;
-    uint32_t                    hashResultSizeWords /*!< The size of the hash result in words. */;
-    CCEcpkiHashOpMode_t         hashMode /*!< The hash mode. */;
-    CCEcdsaVerifyIntBuff_t      ccEcdsaVerIntBuff /*!< Internal buffer. */;
+    /*! The hash result. */
+    CCHashResultBuf_t           hashResult;
+    /*! The size of the hash result in words. */
+    uint32_t                    hashResultSizeWords;
+    /*! The hash mode. */
+    CCEcpkiHashOpMode_t         hashMode;
+    /*! Internal buffer. */
+    CCEcdsaVerifyIntBuff_t      ccEcdsaVerIntBuff;
 }EcdsaVerifyContext_t;
 
 
@@ -381,21 +415,26 @@ typedef struct  CCEcdsaVerifyUserContext_t
 /*! The temporary data type of the ECPKI KG. */
 typedef struct CCEcpkiKgTempData_t
 {
-    uint32_t ccKGIntBuff[CC_PKA_KG_BUFF_MAX_LENGTH_IN_WORDS] /*!< Internal buffer. */;
+    /*! Internal buffer. */
+    uint32_t ccKGIntBuff[CC_PKA_KG_BUFF_MAX_LENGTH_IN_WORDS];
 }CCEcpkiKgTempData_t;
 
 /*! The temporary data definition of the ECIES. */
 typedef struct CCEciesTempData_t {
-    CCEcpkiUserPrivKey_t   PrivKey /*!< The data of the private key. */;
-    CCEcpkiUserPublKey_t   PublKey /*!< The data of the public key. */;
-    CCEcpkiUserPublKey_t   ConvPublKey /*!< The public-key data used by convertion from Mbed TLS to CryptoCell. */;
-    uint32_t  zz[3*CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS + 1] /*!< Internal buffer. */;
+    /*! The data of the private key. */
+    CCEcpkiUserPrivKey_t   PrivKey;
+    /*! The data of the public key. */
+    CCEcpkiUserPublKey_t   PublKey;
+    /*! The public-key data used by conversion from Mbed TLS to CryptoCell. */
+    CCEcpkiUserPublKey_t   ConvPublKey;
+    /*! Internal buffer. */
+    uint32_t  zz[3*CC_ECPKI_MODUL_MAX_LENGTH_IN_WORDS + 1];
+    /*! Internal buffers. */
     union {
         CCEcpkiBuildTempData_t buildTempbuff;
         CCEcpkiKgTempData_t    KgTempBuff;
         CCEcdhTempData_t       DhTempBuff;
-    } tmp /*!< Internal buffers. */;
-
+    } tmp;
 }CCEciesTempData_t;
 
 
@@ -409,23 +448,26 @@ typedef struct CCEciesTempData_t {
 /*! ECPKI data structures for FIPS certification. */
 typedef struct CCEcpkiKgFipsContext_t
 {
+    /*! Signing and verification data. */
     union {
         CCEcdsaSignUserContext_t    signCtx;
         CCEcdsaVerifyUserContext_t  verifyCtx;
-    }operationCtx /*!< Signing and verification data. */;
-
-    uint32_t    signBuff[2*CC_ECPKI_ORDER_MAX_LENGTH_IN_WORDS] /*!< Internal buffer. */;
+    }operationCtx;
+    /*! Internal buffer. */
+    uint32_t    signBuff[2*CC_ECPKI_ORDER_MAX_LENGTH_IN_WORDS] ;
 }CCEcpkiKgFipsContext_t;
 
 /*! ECDSA KAT data structures for FIPS certification.
     The ECDSA KAT tests are defined for domain 256r1.     */
 typedef struct CCEcdsaFipsKatContext_t{
+    /*! The key data. */
     union {
+        /*! The private key data. */
         struct {
             CCEcpkiUserPrivKey_t    PrivKey;
             CCEcdsaSignUserContext_t    signCtx;
-        }userSignData /*!< The data of the private key. */;
-        /*! The data of the public key. */
+        }userSignData;
+        /*! The public key data. */
         struct {
             CCEcpkiUserPublKey_t    PublKey;
             union {
@@ -433,26 +475,32 @@ typedef struct CCEcdsaFipsKatContext_t{
                 CCEcpkiBuildTempData_t  tempData;
             }buildOrVerify;
         }userVerifyData;
-    }keyContextData /*!< The data of the key. */;
+    }keyContextData;
     /*! Internal buffer. */
     uint8_t         signBuff[2*CC_ECPKI_FIPS_ORDER_LENGTH];
 }CCEcdsaFipsKatContext_t;
 
 /*! ECDH KAT data structures for FIPS certification. */
 typedef struct CCEcdhFipsKatContext_t{
-    CCEcpkiUserPublKey_t  pubKey /*!< The data of the public key. */;
-    CCEcpkiUserPrivKey_t  privKey /*!< The data of the private key. */;
+    /*! The public key data. */
+    CCEcpkiUserPublKey_t  pubKey;
+    /*! The private key data. */
+    CCEcpkiUserPrivKey_t  privKey;
+    /*! Internal buffers. */
     union {
         CCEcpkiBuildTempData_t  ecpkiTempData;
         CCEcdhTempData_t      ecdhTempBuff;
-    }tmpData /*!< Internal buffers. */;
-
-    uint8_t           secretBuff[CC_ECPKI_FIPS_ORDER_LENGTH] /*!< The buffer for the secret key. */;
+    }tmpData;
+    /*! The buffer for the secret key. */
+    uint8_t secretBuff[CC_ECPKI_FIPS_ORDER_LENGTH];
 }CCEcdhFipsKatContext_t;
 
 #ifdef __cplusplus
 }
 #endif
 
+/*!
+ @}
+ */
 #endif
 

@@ -12,6 +12,5 @@ hardware accelerated cryptography.
    :maxdepth: 2
    :caption: Contents:
 
-   CHANGELOG
    doc/nrf_security
    doc/api
