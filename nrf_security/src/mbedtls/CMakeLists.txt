@@ -1,6 +1,4 @@
 #
-# Copyright (c) 2019 Nordic Semiconductor
-#
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 FUNCTION(PREPEND var prefix)
@@ -30,7 +28,7 @@ PREPEND(src_crypto ${ARM_MBEDTLS_ROOT}/library/
     cipher.c
     # cipher_wrap.c - replaced in nrf_mbedtls
     cmac.c
-    # ctr_drbg.c # Placed in dedicated mbeddrbg lib for correct symbol resolving during linking
+    # ctr_drbg.c # Placed in dedicated mbedwrap lib for correct symbol resolving during linking
     des.c
     dhm.c
     ecdh.c
@@ -49,14 +47,14 @@ PREPEND(src_crypto ${ARM_MBEDTLS_ROOT}/library/
     md2.c
     md4.c
     md5.c
-    md_wrap.c
+    # md_wrap.c # Placed in dedicated mbedwrap lib for correct symbol resolving during linking
     memory_buffer_alloc.c
     nist_kw.c
     oid.c
     padlock.c
     # pem.c - replaced in nrf_mbedtls
     pk.c
-    pk_wrap.c
+    # pk_wrap.c # Placed in dedicated mbedwrap lib for correct symbol resolving during linking
     pkcs12.c
     pkcs5.c
     pkparse.c
@@ -104,7 +102,7 @@ PREPEND(src_tls ${ARM_MBEDTLS_ROOT}/library/
 # ----------  Replacement sources - modified mbedTLS sources  -------------
 
 PREPEND(src_crypto_replacement ${NRF_MBEDTLS_ROOT}/src/mbedtls/replacements/
-    cipher_wrap.c
+    # cipher_wrap.c # Placed in dedicated mbedwrap lib for correct symbol resolving during linking
     pem.c
 )
 
@@ -133,11 +131,21 @@ if(TARGET ${IMAGE}mbedcrypto_cc310)
   target_link_libraries(${IMAGE}mbedcrypto_vanilla PRIVATE ${IMAGE}mbedcrypto_cc310)
 endif()
 
-# mbeddrbg library.
-# In order to ensure correct linking to glue functions from ctr_drbg this file
-# must be placed in independent library.
-zephyr_library_named(mbeddrbg)
+# mbedwrap library.
+# In order to ensure correct linking to glue functions from the following files
+# those must be placed in independent library to ensure they will always link
+# to the correct renamed symbols or glue layer.
+# In no symbols has been renamed they will link to correct implementation in
+# selected backend library.
+zephyr_library_named(mbedwrap)
 zephyr_library_sources(${ARM_MBEDTLS_ROOT}/library/ctr_drbg.c)
+zephyr_library_sources(${ARM_MBEDTLS_ROOT}/library/pk_wrap.c)
+zephyr_library_sources(${ARM_MBEDTLS_ROOT}/library/md_wrap.c)
+zephyr_library_sources(${NRF_MBEDTLS_ROOT}/src/mbedtls/replacements/cipher_wrap.c)
+zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_ECB_C MBEDTLS_CIPHER_AES_256_ECB_C)
+zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CBC_C MBEDTLS_CIPHER_AES_256_CBC_C)
+zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CTR_C MBEDTLS_CIPHER_AES_256_CTR_C)
+zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CCM_C MBEDTLS_CIPHER_AES_256_CCM_C)
 if(CONFIG_GLUE_MBEDTLS_AES_C)
 zephyr_library_compile_definitions(-DMBEDTLS_AES_ALT)
 endif()
@@ -145,6 +153,11 @@ if(CONFIG_SOC_NRF52840 OR CONFIG_SOC_NRF9160)
   zephyr_library_sources(${NRF_MBEDTLS_ROOT}/src/backend/cc310/replacements/entropy.c)
 else()
   zephyr_library_sources(${NRF_MBEDTLS_ROOT}/src/backend/nrf5x/replacements/entropy_nrf5x.c)
+endif()
+if(TARGET ${IMAGE}mbedcrypto_cc310)
+  zephyr_library_include_directories(
+    $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
+  )
 endif()
 
 if (CONFIG_MBED_X509_LIBRARY)
