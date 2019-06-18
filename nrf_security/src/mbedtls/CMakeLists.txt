@@ -127,8 +127,18 @@ zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_ECB_C MBE
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CBC_C MBEDTLS_CIPHER_AES_256_CBC_C)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CTR_C MBEDTLS_CIPHER_AES_256_CTR_C)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CCM_C MBEDTLS_CIPHER_AES_256_CCM_C)
-if(TARGET ${IMAGE}mbedcrypto_cc310)
-  target_link_libraries(${IMAGE}mbedcrypto_vanilla PRIVATE ${IMAGE}mbedcrypto_cc310)
+if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
+  zephyr_library_compile_options(
+      -UMBEDTLS_AES_ALT
+      -UMBEDTLS_CCM_ALT
+      -UMBEDTLS_CMAC_ALT
+      -UMBEDTLS_DHM_ALT
+      -UMBEDTLS_ECDH_GEN_PUBLIC_ALT
+      -UMBEDTLS_ECDH_COMPUTE_SHARED_ALT
+      -UMBEDTLS_ECDSA_VERIFY_ALT
+      -UMBEDTLS_ECDSA_SIGN_ALT
+      -UMBEDTLS_ECDSA_GENKEY_ALT
+  )
 endif()
 
 # mbedwrap library.
@@ -146,29 +156,16 @@ zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_ECB_C MBE
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CBC_C MBEDTLS_CIPHER_AES_256_CBC_C)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CTR_C MBEDTLS_CIPHER_AES_256_CTR_C)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CCM_C MBEDTLS_CIPHER_AES_256_CCM_C)
-if(CONFIG_GLUE_MBEDTLS_AES_C)
-zephyr_library_compile_definitions(-DMBEDTLS_AES_ALT)
-endif()
 if(CONFIG_SOC_NRF52840 OR CONFIG_SOC_NRF9160)
   zephyr_library_sources(${NRF_MBEDTLS_ROOT}/src/backend/cc310/replacements/entropy.c)
 else()
   zephyr_library_sources(${NRF_MBEDTLS_ROOT}/src/backend/nrf5x/replacements/entropy_nrf5x.c)
-endif()
-if(TARGET ${IMAGE}mbedcrypto_cc310)
-  zephyr_library_include_directories(
-    $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
-  )
 endif()
 
 if (CONFIG_MBED_X509_LIBRARY)
   zephyr_library_named(mbedx509_vanilla)
   zephyr_library_sources(${src_x509})
   zephyr_library_include_directories(${common_includes})
-  if(TARGET ${IMAGE}mbedcrypto_cc310)
-    zephyr_library_include_directories(
-      $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
-    )
-  endif()
 endif()
 
 if (CONFIG_MBED_TLS_LIBRARY)
@@ -179,14 +176,13 @@ if (CONFIG_MBED_TLS_LIBRARY)
   zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CBC_C MBEDTLS_CIPHER_AES_256_CBC_C)
   zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CTR_C MBEDTLS_CIPHER_AES_256_CTR_C)
   zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CCM_C MBEDTLS_CIPHER_AES_256_CCM_C)
-  if(TARGET ${IMAGE}mbedcrypto_cc310)
-    zephyr_library_include_directories(
-      $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
-    )
-  endif()
 endif()
 
 if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
-  # Only vanilla backend is chosen, thus append it to zephyr libraries.
+  # Only single backend is chosen, thus append it to zephyr libraries as
+  # no renaming should be carried out.
   zephyr_append_cmake_library(${IMAGE}mbedcrypto_vanilla)
+  if(TARGET ${IMAGE}mbedcrypto_cc310)
+    target_link_libraries(${IMAGE}mbedcrypto_vanilla PRIVATE ${IMAGE}mbedcrypto_cc310)
+  endif()
 endif()

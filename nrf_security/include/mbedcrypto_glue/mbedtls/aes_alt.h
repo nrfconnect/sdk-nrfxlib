@@ -30,7 +30,6 @@
  */
 typedef struct mbedtls_aes_context
 {
-    void* handle;   //!< Pointer to the function table in an initialized glue context.
     union
     {
 #if defined(CONFIG_CC310_MBEDTLS_AES_C)
@@ -41,6 +40,7 @@ typedef struct mbedtls_aes_context
 #endif /* CONFIG_VANILLA_MBEDTLS_AES_C */
         uint32_t dummy;                                                        //!< Dummy value in case no backend is enabled.
     } buffer;                                                                  //!< Union with size of the largest enabled backend context.
+    void* handle;   //!< Pointer to the function table in an initialized glue context.
 } mbedtls_aes_context;
 
 

@@ -39,7 +39,6 @@
 typedef struct mbedtls_ccm_context
 {
 #if defined(CONFIG_GLUE_MBEDTLS_CCM_C)
-    void* handle;                                                             //!< Pointer to the function table in an initialized glue context.
 #endif
     union _buffer
     {
@@ -52,6 +51,7 @@ typedef struct mbedtls_ccm_context
 #endif /* CONFIG_VANILLA_MBEDTLS_CCM_C */
         uint32_t dummy;                                                       //!< Dummy value in case no backend is enabled.
     } buffer;                                                                 //!< Union with size of the largest enabled backend context.
+    void* handle;                                                             //!< Pointer to the function table in an initialized glue context.
 } mbedtls_ccm_context;
 
 #endif /* MBEDTLS_CCM_ALT */

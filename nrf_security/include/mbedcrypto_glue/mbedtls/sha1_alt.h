@@ -32,77 +32,39 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                        *
 **************************************************************************************/
 
-#ifndef MBEDTLS_RSA_ALT_H
-#define MBEDTLS_RSA_ALT_H
+#ifndef MBEDTLS_SHA1_ALT_H
+#define MBEDTLS_SHA1_ALT_H
 
-#if defined(MBEDTLS_CONFIG_FILE)
+#include <stddef.h>
+#include <stdint.h>
+
+#if defined (MBEDTLS_CONFIG_FILE)
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined (MBEDTLS_RSA_ALT)
+#if defined (MBEDTLS_SHA1_ALT)
 
-#include "bignum.h"
+#define MBEDTLS_ERR_SHA1_HW_ACCEL_FAILED                -0x0035  /**< SHA-1 hardware accelerator failed */
 
-#if defined(MBEDTLS_THREADING_C)
-#include "threading.h"
-#endif
+/*! The Size of the hash context for SHA1.*/
+#define MBEDTLS_SHA1_CONTEXT_SIZE_IN_WORDS              (60)
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * \brief   The RSA context structure.
- *
- * \note    Direct manipulation of the members of this structure
- *          is deprecated. All manipulation should instead be done through
- *          the public interface functions.
+ * \brief          SHA-1 context structure
  */
-typedef struct
-{
-    int ver;                    /*!<  always 0          */
-    size_t len;                 /*!<  size(N) in chars  */
-
-    mbedtls_mpi N;                      /*!<  public modulus    */
-    mbedtls_mpi E;                      /*!<  public exponent   */
-
-    mbedtls_mpi D;                      /*!<  private exponent  */
-    mbedtls_mpi P;                      /*!<  1st prime factor  */
-    mbedtls_mpi Q;                      /*!<  2nd prime factor  */
-
-    mbedtls_mpi DP;                     /*!<  D % (P - 1)       */
-    mbedtls_mpi DQ;                     /*!<  D % (Q - 1)       */
-    mbedtls_mpi QP;                     /*!<  1 / (Q % P)       */
-
-    mbedtls_mpi RN;                     /*!<  cached R^2 mod N  */
-
-    mbedtls_mpi RP;                     /*!<  cached R^2 mod P  */
-    mbedtls_mpi RQ;                     /*!<  cached R^2 mod Q  */
-
-    mbedtls_mpi Vi;                     /*!<  cached blinding value     */
-    mbedtls_mpi Vf;                     /*!<  cached un-blinding value  */
-
-    int padding;                /*!<  MBEDTLS_RSA_PKCS_V15 for 1.5 padding and
-                                      MBEDTLS_RSA_PKCS_v21 for OAEP/PSS         */
-    int hash_id;                /*!<  Hash identifier of mbedtls_md_type_t as
-                                      specified in the mbedtls_md.h header file
-                                      for the EME-OAEP and EMSA-PSS
-                                      encoding                          */
-#if defined(MBEDTLS_THREADING_C)
-    mbedtls_threading_mutex_t mutex;    /*!<  Thread-safety mutex       */
-#endif
-
-    mbedtls_mpi NP;                     /*!< Barrett mod N tag NP for N-modulus */
-    mbedtls_mpi BQP;                    /*!< Barrett mod Q tag QP for Q-factor  */
-    mbedtls_mpi BPP;                    /*!< Barrett mod P tag PP for P-factor  */
-
-}
-mbedtls_rsa_context;
+typedef struct mbedtls_sha1_context {
+        /*! Internal buffer */
+        uint32_t buff[MBEDTLS_SHA1_CONTEXT_SIZE_IN_WORDS]; // defined in cc_hash_defs_proj.h
+} mbedtls_sha1_context;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /*  MBEDTLS_RSA_ALT  */
+#endif /*  MBEDTLS_SHA1_ALT  */
 
-#endif /*  MBEDTLS_RSA_ALT_H  */
+#endif /* MBEDTLS_SHA1_ALT_H */

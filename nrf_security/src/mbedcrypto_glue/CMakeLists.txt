@@ -19,11 +19,11 @@ if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
       rsa_alt.c
   )
 
-  zephyr_library_include_directories(
+  zephyr_include_directories(
       ${NRF_MBEDTLS_ROOT}/include/mbedcrypto_glue
   )
 
-  zephyr_library_compile_definitions(
+  zephyr_compile_definitions(
       -DMBEDTLS_AES_ALT
       -DMBEDTLS_CCM_ALT
       -DMBEDTLS_CMAC_ALT
@@ -33,8 +33,6 @@ if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
       -DMBEDTLS_ECDSA_VERIFY_ALT
       -DMBEDTLS_ECDSA_SIGN_ALT
       -DMBEDTLS_ECDSA_GENKEY_ALT
-      -DMBEDTLS_GCM_ALT
-      -DMBEDTLS_RSA_ALT
   )
 
   include(${CMAKE_CURRENT_LIST_DIR}/cc310/CMakeLists.txt)
