@@ -145,12 +145,13 @@ typedef int32_t ssize_t;
  * @{
  */
 #define NRF_SO_DFU_FW_VERSION           1    /**< Identifies the option used to get firmware version. @ref nrf_dfu_fw_version_t for details. */
-#define NRF_SO_DFU_RESOURCE             2    /**< Identifies the option used to get resources available for DFU. @ref nrf_dfu_fw_resource_t for details. */
-#define NRF_SO_DFU_TIMEO                3    /**< Identifies the option used to get and/or set the timeout to send a DFU fragment. @ref nrf_dfu_timeout_t for details. */
+#define NRF_SO_DFU_RESOURCES            2    /**< Identifies the option used to get resources available for DFU. @ref nrf_dfu_resources_t for details. */
+#define NRF_SO_DFU_TIMEO                3    /**< Identifies the option used to get and/or set the timeout to send a DFU fragment. Not implemented. */
 #define NRF_SO_DFU_APPLY                4    /**< Identifies the option to set(execute) firmware upgrade. This option has no parameters. */
 #define NRF_SO_DFU_REVERT               5    /**< Identifies the option to set(execute) revert the upgraded firmware to the old one. This option has no parameters. */
 #define NRF_SO_DFU_BACKUP_DELETE        6    /**< Identifies the option to set(execute) delete any backup firmware. This option has no parameters. */
 #define NRF_SO_DFU_OFFSET               7    /**< Identifies the option to get and/or set offset of the downloaded firmware. */
+#define NRF_SO_DFU_ERROR                20   /**< Fetch latest DFU error. */
 /**@} */
 
 /**@defgroup nrf_socket_options_gnss_sockets Values for GNSS Socket options
@@ -467,23 +468,45 @@ typedef uint32_t nrf_pdn_class_t;
 /**@brief Defines the format of resources available for firmware upgrade.
  */
 
-/**@brief Defines the firmware revision.
+/**@brief Defines the firmware version.
  *
- * @details The firmware revision is as defined by the RFC 4122.
+ * @details The firmware version is as defined by the RFC 4122.
  */
 typedef uint8_t nrf_dfu_fw_version_t[36];
 
-/**@brief Defines the format of resources available for firmware upgrade. */
-typedef struct
-{
-    uint32_t flash_size;                             /**< Available flash size in bytes. */
-} nrf_dfu_fw_resource_t;
-
-/**@brief Defines the format to get/set timeout for DFU operations. */
-typedef uint32_t nrf_dfu_timeout_t;
+/**@brief Defines the format for resources available for firmware upgrade,
+ * i.e. available flash size in bytes.
+ */
+typedef  uint32_t nrf_dfu_resources_t;
 
 /**@brief Defines the format to get/set offset for firmware download. */
 typedef uint32_t nrf_dfu_fw_offset_t;
+
+/**@brief DFU socket errors. */
+#define DFU_NO_ERROR                      0
+#define DFU_RECEIVER_OUT_OF_MEMORY       -1
+#define DFU_RECEIVER_BLOCK_TOO_LARGE     -2
+#define DFU_INVALID_HEADER_DATA          -3
+#define DFU_ERROR_INTERNAL_00            -4
+#define DFU_INVALID_DATA                 -5
+#define DFU_ERROR_INTERNAL_01            -6
+#define DFU_ERROR_INTERNAL_02            -7
+#define DFU_ERROR_INTERNAL_03            -8
+#define DFU_INVALID_UUID                 -9
+#define DFU_INVALID_ADDRESS              -10
+#define DFU_AREA_NOT_BLANK               -11
+#define DFU_WRITE_ERROR                  -12
+#define DFU_ERASE_ERROR                  -13
+#define DFU_INVALID_FILE_OFFSET          -14
+#define DFU_PROGRESS_LOG_INVALID         -15
+#define DFU_INVALID_RESUME_ATTEMPT       -16
+#define DFU_ERASE_PENDING                -17
+#define DFU_OPERATION_NOT_ALLOWED        -18
+#define DFU_INCOMPLETE_DATA              -19
+#define DFU_INTERRUPTED_WRITE            -20
+
+/**@brief DFU socket error. */
+typedef int nrf_dfu_err_t;
 
 /**@} */
 
@@ -500,7 +523,7 @@ typedef struct
     uint8_t  hour;    /**< 0...23 */
     uint8_t  minute;  /**< 0...59 */
     uint8_t  seconds; /**< 0...59 */
-    uint8_t  ms;      /**< 0...999 */
+    uint16_t ms;      /**< 0...999 */
 } nrf_gnss_datetime_t;
 
 #define NRF_GNSS_MAX_SATELLITES 12
@@ -508,11 +531,11 @@ typedef struct
 typedef struct
 {
     uint16_t sv;        /**< SV number 1...32 for GPS. */
+    uint8_t  signal;    /**< Signal type. 0: invalid, 1: GPS L1C/A, other values are reserved for other GNSSes or signals. */
     uint16_t cn0;       /**< 0.1 dB/Hz. */
     int16_t  elevation; /**< SV elevation angle in degrees. */
     int16_t  azimuth;   /**< SV azimuth angle in degrees. */
     uint8_t  flags;     /**< Bit mask of measurement and position computation flags. */
-    uint8_t  signal;    /**< Signal type. 0: invalid, 1: GPS L1C/A, other values are reserved for other GNSSes or signals. */
 } nrf_gnss_sv_t;
 
 typedef struct
@@ -828,7 +851,7 @@ int nrf_select(int                        nfds,
 #define NRF_POLLOUT      0x0002    /**< Event for data send. Can be requested and returned. */
 #define NRF_POLLERR      0x0004    /**< Event for error on the polled socket. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
 #define NRF_POLLHUP      0x0008    /**< Event to indicate that the polled socket has been closed by the peer. Ignored in requested events. Subsequent calls to read the socket will be possible until all outstanding data has been read, and return zero-length packets (EOF). */
-#define NRF_POLLNVAL     0x000C    /**< Event to indicate the polled socket is not open. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
+#define NRF_POLLNVAL     0x0010    /**< Event to indicate the polled socket is not open. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
 /**@} */
 
 
