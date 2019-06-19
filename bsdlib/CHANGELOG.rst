@@ -5,6 +5,21 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.3.2
+************
+
+Updated library with various changes:
+
+* Changed socket option ``NRF_SO_RCVTIMEO`` to use nrf_timeval struct instead of uint32_t.
+* Improved the PDN socket close (``NRF_PROTO_PDN``) function.
+* Added new errno values ``NRF_ENOEXEC``, ``NRF_ENOSPC``, and ``NRF_ENETRESET``.
+* Added a return value on :cpp:func:`bsd_init()` to indicate MODEM_DFU result codes or initialization result.
+* Corrected GNSS struct :c:type:`nrf_gnss_datetime_t` to use correct size on the ms member.
+* Updated modem DFU interface.
+* Improved error reporting on network or connection loss.
+* Corrected the value of ``NRF_POLLNVAL``.
+* Improved TCP peer stream closed notification and empty packet indication.
+
 bsdlib 0.3.1
 ************
 
