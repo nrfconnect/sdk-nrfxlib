@@ -22,6 +22,30 @@
 extern "C" {
 #endif
 
+
+/** Modem firmware update successful.
+  * The modem will run the updated firmware on reboot.
+  */
+#define MODEM_DFU_RESULT_OK 0x5500001u
+/** Modem firmware update failed.
+  * The modem encoutered a fatal internal error during firmware update.
+  */
+#define MODEM_DFU_RESULT_INTERNAL_ERROR 0x4400001u
+/** Modem firmware update failed.
+  * The modem encoutered a fatal hardware error during firmware update.
+  */
+#define MODEM_DFU_RESULT_HARDWARE_ERROR 0x4400002u
+/** Modem firmware update failed, due to an authentication error.
+  * The modem will automatically run the previous (non-updated)
+  * firmware on reboot.
+  */
+#define MODEM_DFU_RESULT_AUTH_ERROR 0x4400003u
+/** Modem firmware update failed, due to UUID mismatch.
+  * The modem will automatically run the previous (non-updated)
+  * firmware on reboot.
+  */
+#define MODEM_DFU_RESULT_UUID_ERROR 0x4400004u
+
 /**
  * @brief Method to initialize BSD library.
  *
@@ -35,9 +59,9 @@ extern "C" {
  *          the system. The application shall not use any of the resources identified in
  *          bsd_platform.h.
  *
- * @note This API is designed to provide flexibility of being called from startup scripts.
+ * @return Zero on success or an error code otherwise.
  */
-void bsd_init(void);
+int bsd_init(void);
 
 
 /**
