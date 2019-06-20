@@ -40,7 +40,7 @@ endif()
 
 if (CONFIG_CC310_BACKEND)
   set(NRF_CC310_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_cc310_mbedcrypto)
-  set(NRF_CC310_VER 0.8.0)
+  set(NRF_CC310_VER 0.8.1)
   if (NOT CONFIG_CC310_INTERRUPTS_BACKEND)
     set(CC310_FLAVOR no-interrupts)
   endif()
