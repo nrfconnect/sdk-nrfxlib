@@ -186,3 +186,8 @@ if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
     target_link_libraries(${IMAGE}mbedcrypto_vanilla PRIVATE ${IMAGE}mbedcrypto_cc310)
   endif()
 endif()
+
+if(CONFIG_MBEDTLS_LIBRARY)
+  zephyr_library_sources(${ZEPHYR_BASE}/ext/lib/crypto/mbedtls/zephyr_init.c)
+  zephyr_library_link_libraries(${IMAGE}mbedTLS)
+endif()
