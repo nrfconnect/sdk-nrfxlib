@@ -20,7 +20,7 @@ nrfx_err_t nfc_platform_setup(void)
 {
 	int err;
 
-	clock = device_get_binding(DT_NORDIC_NRF_CLOCK_0_LABEL "_16M");
+	clock = device_get_binding(DT_INST_0_NORDIC_NRF_CLOCK_LABEL "_16M");
 	__ASSERT_NO_MSG(clock);
 
 	err = clock_control_on(clock, (void *)1);
