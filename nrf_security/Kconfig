@@ -122,27 +122,6 @@ config MBEDTLS_AES_C
 	  cipher modes to be available.
 	  MBEDTLS_AES_C setting in mbed TLS config file.
 
-
-config MBEDTLS_CIPHER_MODE_CBC
-	bool "AES-CBC - AES Cipher Block Chaining mode"
-	depends on MBEDTLS_AES_C
-	default y
-	select MBEDTLS_CIPHER_AES_256_CBC_C if MBEDTLS_VANILLA_BACKEND
-	help
-	  Enable the AES Cipher Block Chaining (CBC) mode,
-	  MBEDTLS_CIPHER_MODE_CBC setting in mbed TLS config file.
-
-
-
-config MBEDTLS_CIPHER_MODE_CTR
-	bool "AES-CTR - AES Counter Block Cipher mode"
-	depends on MBEDTLS_AES_C
-	default y
-	select MBEDTLS_CIPHER_AES_256_CTR_C if MBEDTLS_VANILLA_BACKEND
-	help
-	  Enable the AES Counter Block Cipher mode (CTR) mode,
-	  MBEDTLS_CIPHER_MODE_CTR setting in mbed TLS config file.
-
 endif # !NRF_CRYPTO_BACKEND_COMBINATION_0
 
 menu "AES block cipher common, including ECB - Electronic Code Book mode"
@@ -164,40 +143,49 @@ config VANILLA_MBEDTLS_AES_C
 	select MBEDTLS_CIPHER_AES_256_ECB_C
 endmenu
 
-menu "AES-CBC - AES Cipher Block Chaining mode"
-	depends on VANILLA_MBEDTLS_AES_C || CC310_MBEDTLS_AES_C
- 
 config GLUE_MBEDTLS_CIPHER_MODE_CBC
 	bool
 
 config CC310_MBEDTLS_CIPHER_MODE_CBC
-	bool "cc310 (AES-128)" if CC310_MBEDTLS_AES_C
-	default y
+	bool
 
 config VANILLA_MBEDTLS_CIPHER_MODE_CBC
-	bool "mbed TLS (AES-128, AES-192, AES-256)"
-	depends on VANILLA_MBEDTLS_AES_C
-	select GLUE_MBEDTLS_CIPHER_MODE_CBC if CC310_MBEDTLS_CIPHER_MODE_CBC
-	select MBEDTLS_CIPHER_AES_256_CBC_C
-endmenu
+	bool
 
-menu "AES-CTR - AES Counter Block Cipher mode"
-	depends on VANILLA_MBEDTLS_AES_C || CC310_MBEDTLS_AES_C
+config MBEDTLS_CIPHER_MODE_CBC
+	bool "AES-CBC - AES Cipher Block Chaining mode"
+	depends on MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C || CC310_MBEDTLS_AES_C
+	default y
+	select MBEDTLS_CIPHER_AES_256_CBC_C if MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select MBEDTLS_CIPHER_AES_256_CBC_C if GLUE_MBEDTLS_AES_C
+	select GLUE_MBEDTLS_CIPHER_MODE_CBC if GLUE_MBEDTLS_AES_C
+	select CC310_MBEDTLS_CIPHER_MODE_CBC if GLUE_MBEDTLS_AES_C
+	select VANILLA_MBEDTLS_CIPHER_MODE_CBC if GLUE_MBEDTLS_AES_C
+	help
+	  Enable the AES Cipher Block Chaining (CBC) mode,
+	  MBEDTLS_CIPHER_MODE_CBC setting in mbed TLS config file.
 
 config GLUE_MBEDTLS_CIPHER_MODE_CTR
 	bool
 
 config CC310_MBEDTLS_CIPHER_MODE_CTR
-	bool "cc310 (AES-128)"
-	depends on CC310_MBEDTLS_AES_C
-	default y
+	bool
 
 config VANILLA_MBEDTLS_CIPHER_MODE_CTR
-	bool "mbed TLS (AES-128, AES-192, AES-256)"
-	depends on VANILLA_MBEDTLS_AES_C
-	select GLUE_MBEDTLS_CIPHER_MODE_CTR if CC310_MBEDTLS_CIPHER_MODE_CTR
-	select MBEDTLS_CIPHER_AES_256_CTR_C
-endmenu
+	bool
+
+config MBEDTLS_CIPHER_MODE_CTR
+	bool "AES-CTR - AES Counter Block Cipher mode"
+	depends on MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C || CC310_MBEDTLS_AES_C
+	default y
+	select MBEDTLS_CIPHER_AES_256_CTR_C if MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select MBEDTLS_CIPHER_AES_256_CTR_C if GLUE_MBEDTLS_AES_C
+	select GLUE_MBEDTLS_CIPHER_MODE_CTR if GLUE_MBEDTLS_AES_C
+	select CC310_MBEDTLS_CIPHER_MODE_CTR if GLUE_MBEDTLS_AES_C
+	select VANILLA_MBEDTLS_CIPHER_MODE_CTR if GLUE_MBEDTLS_AES_C
+	help
+	  Enable the AES Counter Block Cipher mode (CTR) mode,
+	  MBEDTLS_CIPHER_MODE_CTR setting in mbed TLS config file.
 
 config MBEDTLS_CIPHER_MODE_CFB
 	bool
