@@ -5,6 +5,13 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.3.3
+************
+
+Updated library with various changes:
+
+* Bugfix internal to the library solving issue with unresponsive sockets.
+
 bsdlib 0.3.2
 ************
 
