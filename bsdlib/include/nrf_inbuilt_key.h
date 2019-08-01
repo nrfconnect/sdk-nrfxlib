@@ -118,26 +118,23 @@ int nrf_inbuilt_key_permission_set(nrf_sec_tag_t            sec_tag,
                                    uint8_t                  perm_flags);
 
 
-/**@brief Check if credential exists in persistent storage.
+/**@brief Check if a credential exists in the persistent storage.
  *
- * This function do a check whether the credential exists in the persistent storage.
+ * @param[in]   sec_tag         The tag to search for.
+ * @param[in]   cred_type       Type of credential being searched.
+ * @param[out]  p_exists        Whether the credential exists.
+ *                              Only valid if the operation is successful.
+ * @param[out]  p_perm_flags    The permission flags of the credential.
+ *                              Only valid if the operation is successful
+ *                              and @param p_exists is true.
+ *                              Not yet implemented.
  *
- * @param[in]     sec_tag       Application defined tag for search for.
- * @param[in]     cred_type     Type of credential being searched read.
- * @param[out]    p_exists      Value by reference output parameter telling the existence
- *                              of the credential. Only valid if operation was successful.
- * @param[out]    p_perm_flags  Value by reference output parameter telling the permission
- *                              flags of the credential. Only valid if operation was successful
- *                              and @param p_exists is true. Not yet implemented/supported.
- *
- * @retval 0            If delete operation was successful.
- * @retval NRF_EIO      If operation was not successful due to internal errors or uninitialized
- *                      module.
- * @retval NRF_ENOBUFS  If the operation could not be performed because it could not allocate
- *                      enough intermediate buffers to perform the operation.
- * @retval NRF_ENOENT   If there was no credential associated with the sec_tag and cred_type.
- * @retval NRF_EPERM    If the application did not have permission to do the operation.
- * @retval NRF_EACCES   If the operation could not be performed while modem is in active state.
+ * @retval 0            If the operation was successful.
+ * @retval NRF_EIO      An internal error occurred or
+ *                      the library is not initialized.
+ * @retval NRF_ENOBUFS  Insufficient memory.
+ * @retval NRF_EPERM    Insufficient permissions.
+ * @retval NRF_EACCES   The modem is in the connected state.
  */
 int nrf_inbuilt_key_exists(nrf_sec_tag_t            sec_tag,
                            nrf_key_mgnt_cred_type_t cred_type,

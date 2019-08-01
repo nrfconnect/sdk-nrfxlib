@@ -5,6 +5,15 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.3.4
+************
+
+Updated library with various changes:
+
+* Improved error handling when running out of memory.
+* Modified :cpp:func:`nrf_inbuilt_key_exists()` so that it does not return an error if a key does not exist. `p_exists` will be updated correctly in this case.
+* Fixed a memory leak in :cpp:func:`nrf_inbuilt_key_exists()` on error.
+
 bsdlib 0.3.3
 ************
 
