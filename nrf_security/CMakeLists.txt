@@ -16,10 +16,11 @@ zephyr_include_directories(${CMAKE_CURRENT_BINARY_DIR}/include/)
 if(ARM_MBEDTLS_PATH)
   set(NRF_MBEDTLS_ROOT ${ARM_MBEDTLS_PATH})
 elseif(WEST)
-  ## Use `west list` to find mbedtls.
+  ## Use `west list` to find the mbedtls tree we use (this is not the
+  ## mbedtls tree distributed as a zephyr module).
   execute_process(
     COMMAND
-    ${WEST} list mbedtls --format={posixpath}
+    ${WEST} list mbedtls-nrf --format={posixpath}
     OUTPUT_VARIABLE
     west_project_output
     RESULT_VARIABLE
