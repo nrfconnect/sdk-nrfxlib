@@ -5,6 +5,16 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+
+bsdlib 0.4.0
+************
+
+* Added AGPS support to GNSS socket driver.
+* Added support for GNSS power save modes.
+* Added support for deleting stored GPS data.
+* Changed NRF_CONFIG_NMEA* define names to NRF_GNSS_NMEA* for alignment.
+
+
 bsdlib 0.3.4
 ************
 

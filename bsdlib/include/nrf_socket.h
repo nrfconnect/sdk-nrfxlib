@@ -166,6 +166,7 @@ typedef int32_t ssize_t;
 #define NRF_SO_GNSS_USE_CASE            6    /**< Indicates the targeted start performance: 0 = single cold start performance targeted, 1 = multiple hot start performance targeted. */
 #define NRF_SO_GNSS_START               7    /**< Identifies the option to start the GPS (with no payload). */
 #define NRF_SO_GNSS_STOP                8    /**< Identifies the option to stop the GPS (with no payload). */
+#define NRF_SO_GNSS_POWER_SAVE_MODE     9    /**< Identifies the option to set power save mode. */
 /**@} */
 
 /**@defgroup nrf_gnss_pvt_flags Set of GNSS flags (as bitmask) indicating additional information about the fix
@@ -184,15 +185,36 @@ typedef int32_t ssize_t;
 #define NRF_GNSS_SV_FLAG_UNHEALTHY    8 /**< Indicate that the satellite is unhealthy. */
 /**@} */
 
+/**@defgroup nrf_gnss_agps_data_type Flags indicating which AGPS assistance data set is written to the GPS module
+ * @ingroup nrf_socket
+ * @{
+ */
+#define NRF_GNSS_AGPS_UTC_PARAMETERS                   1 /**< GPS UTC assistance AGPS parameters. */
+#define NRF_GNSS_AGPS_EPHEMERIDES                      2 /**< GPS ephemeris assistance AGPS parameters. */
+#define NRF_GNSS_AGPS_ALMANAC                          3 /**< GPS almanac assistance AGPS parameters. */
+#define NRF_GNSS_AGPS_KLOBUCHAR_IONOSPHERIC_CORRECTION 4 /**< GPS ionospheric assistance AGPS parameters, Klobuchar model. */
+#define NRF_GNSS_AGPS_NEQUICK_IONOSPHERIC_CORRECTION   5 /**< GPS ionospheric assistance AGPS parameters, NeQuick model. */
+#define NRF_GNSS_AGPS_GPS_SYSTEM_CLOCK_AND_TOWS        6 /**< GPS system time and SV TOW assistance AGPS parameter. */
+/** @} */
+
 /**@defgroup nrf_nmea_str_mask Set of values (as bitmask) to enable NMEA output strings
  * @ingroup nrf_socket
  * @{
  */
-#define NRF_CONFIG_NMEA_GGA_MASK     1  /**< Enables Global Positioning System Fix Data. */
-#define NRF_CONFIG_NMEA_GLL_MASK     2  /**< Enables Geographic Position Latitude/Longitude and time. */
-#define NRF_CONFIG_NMEA_GSA_MASK     4  /**< Enables DOP and active satellites. */
-#define NRF_CONFIG_NMEA_GSV_MASK     8  /**< Enables Satellites in view. */
-#define NRF_CONFIG_NMEA_RMC_MASK     16 /**< Enables Recommended minimum specific GPS/Transit data. */
+#define NRF_GNSS_NMEA_GGA_MASK     1  /**< Enables Global Positioning System Fix Data. */
+#define NRF_GNSS_NMEA_GLL_MASK     2  /**< Enables Geographic Position Latitude/Longitude and time. */
+#define NRF_GNSS_NMEA_GSA_MASK     4  /**< Enables DOP and active satellites. */
+#define NRF_GNSS_NMEA_GSV_MASK     8  /**< Enables Satellites in view. */
+#define NRF_GNSS_NMEA_RMC_MASK     16 /**< Enables Recommended minimum specific GPS/Transit data. */
+/** @} */
+
+/**@defgroup nrf_gnss_psm_modes Values indicating the power saving mode used in the GNSS module
+ * @ingroup nrf_socket
+ * @{
+ */
+#define NRF_GNSS_PSM_DISABLED                 0 /** No power save mode is enabled. */
+#define NRF_GNSS_PSM_DUTY_CYCLING_PERFORMANCE 1 /** Enables duty-cycling performance policy power save mode. */
+#define NRF_GNSS_PSM_DUTY_CYCLING_POWER       2 /** Enables duty-cycling power policy power save mode. */
 /** @} */
 
 /**@defgroup nrf_socket_options_sockets Values for Socket options
@@ -574,6 +596,126 @@ typedef struct
 
 /** @} */
 
+/**@} */
+
+/**@defgroup nrf_socket_gnss_data_agps AGPS data types
+ * @ingroup  nrf_socket
+ * @brief    AGPS Data types.
+ * @{
+ */
+
+/**@brief Type used to select which AGPS data is written to the GPS module.
+ * @details Goes into the @c p_servaddr parameter in the @c nrf_sendto function prototype. Possible values:
+ *          - @c NRF_GNSS_AGPS_UTC_PARAMETERS
+ *          - @c NRF_GNSS_AGPS_EPHEMERIDE
+ *          - @c NRF_GNSS_AGPS_ALMANAC
+ *          - @c NRF_GNSS_AGPS_KLOBUCHAR_IONOSPHERIC_CORRECTION
+ *          - @c NRF_GNSS_AGPS_NEQUICK_IONOSPHERIC_CORRECTION
+ *          - @c NRF_GNSS_AGPS_GPS_SYSTEM_CLOCK_AND_TOWS
+ */
+typedef uint16_t nrf_gnss_agps_data_type_t;
+
+typedef struct
+{
+    int32_t a1;         /**< First order term of polynomial (sec/sec). Scale factor 2^-50. Range -8388608...8388607 (25 bits). */
+    int32_t a0;         /**< Constant term of polynomial (sec). Scale factor 2^-30. */
+    uint8_t tot;        /**< UTC reference GPS time-of-week (sec). Scale factor 2^12. Range 0..147. */
+    uint8_t wn_t;       /**< UTC reference GPS week number modulo 256. */
+    int8_t  delta_tls;  /**< Current or past leap second count (sec). */
+    uint8_t wn_lsf;     /**< Leap second reference GPS week number modulo 256. */
+    int8_t  dn;         /**< Leap second reference GPS day-of-week (day). Range 0...6. */
+    int8_t  delta_tlsf; /**< Current or future leap second count (sec) (total size of the type-specific assistance data). */
+} nrf_gnss_agps_data_utc_t;
+
+typedef struct
+{
+    uint8_t  sv_id;     /**< Satellite ID (dimensionless). Range 1...32. */
+    uint8_t  health;    /**< Satellite health (dimensionless). */
+    uint16_t iodc;      /**< Issue of data, clock parameters (dimensionless). Range 0...2047 (11 bits). */
+    uint16_t toc;       /**< Clock parameters reference GPS time-of-week (sec). Scale factor 2^4. Range 0...37799. */
+    int8_t   af2;       /**< Clock drift rate (sec/sec2). Scale factor 2^-55. */
+    int16_t  af1;       /**< Clock drift (sec/sec). Scale factor 2^-43. */
+    int32_t  af0;       /**< Clock bias (sec). Scale factor 2^-31. Range -2097152...2097151 (22 bit) */
+    int8_t   tgd;       /**< Group delay (sec). Scale factor 2^-31. */
+    uint8_t  ura;       /**< URA index (dimensionless). Range 0...15. */
+    uint8_t  fit_int;   /**< Curve fit interval indication. Range 0...1. */
+    uint16_t toe;       /**< Ephemeris parameters reference GPS time-of-week (sec). Scale factor 2^4. Range 0...37799. */
+    int32_t  w;         /**< Argument of perigee (semi-circle). Scale factor 2^-31. */
+    int16_t  delta_n;   /**< Mean motion difference (semi-circle/sec). Scale factor 2^-43. */
+    int32_t  m0;        /**< Mean anomaly at reference time (semi-circle). Scale factor 2^-31. */
+    int32_t  omega_dot; /**< Rate of right ascension (semi-circle/sec). Scale factor 2^-43. Range -8388608...8388607 (24 bits). */
+    uint32_t e;         /**< Eccentricity (dimensionless). Scale factor 2^-33. */
+    int16_t  idot;      /**< Rate of inclination angle (semi-circle/sec). Scale factor 2-43. Range -8192...8191 (14 bits). */
+    uint32_t sqrt_a;    /**< Square root of semi-major axis (m). Scale factor 2^-19. */
+    int32_t  i0;        /**< Inclination angle at reference time (semi-circle). Scale factor 2^-31. */
+    int32_t  omega0;    /**< Longitude of ascending node at weekly epoch (semi-circle). Scale factor 2^-31. */
+    int16_t  crs;       /**< Orbit radius, sine harmonic amplitude (m). Scale factor 2^-5. */
+    int16_t  cis;       /**< Inclination angle, sine harmonic amplitude (rad). Scale factor 2^-29. */
+    int16_t  cus;       /**< Argument of latitude, sine harmonic amplitude (rad). Scale factor 2^-29. */
+    int16_t  crc;       /**< Orbit radius, cosine harmonic amplitude (m). Scale factor 2^-5. */
+    int16_t  cic;       /**< Inclination angle, cosine harmonic amplitude (rad). Scale factor 2^-29. */
+    int16_t  cuc;       /**< Argument of latitude, cosine harmonic amplitude (rad). Scale factor 2^-29. */
+} nrf_gnss_agps_data_ephemeris_t;
+
+typedef struct
+{
+    uint8_t  sv_id;     /**< Satellite ID (dimensionless). Range 1...32. */
+    uint8_t  wn;        /**< Almanac reference GPS week number modulo 256. */
+    uint8_t  toa;       /**< Almanac reference GPS time-of-week (sec). Scale factor 2^12. Range 0...147. */
+    uint8_t  ioda;      /**< Issue of data, almanac (dimensionless). Range 0...3  (2 bits). */
+    uint16_t e;         /**< Eccentricity (dimensionless). Scale factor 2^-21. */
+    int16_t  delta_i;   /**< Correction to inclination (semi-circle). Scale factor 2^-19. */
+    int16_t  omega_dot; /**< Rate of right ascension (semi-circle/sec). Scale factor 2^-38. */
+    uint8_t  sv_health; /**< Satellite health (dimensionless) */
+    uint32_t sqrt_a;    /**< Square root of semi-major axis (m^(1/2)). Scale factor 2^-11. Range 0...16777215 (24 bit). */
+    int32_t  omega0;    /**< Longitude of ascending node at weekly epoch (semi-circle). Scale factor 2^-23. Range -8388608...8388607  (24 bits). */
+    int32_t  w;         /**< Argument of perigee (semi-circle). Scale factor 2^-23. */
+    int32_t  m0;        /**< Mean anomaly at reference time (semi-circle). Scale factor 2^-23. Range -8388608...8388608 (24 bits). */
+    int16_t  af0;       /**< Clock bias (sec). Scale factor 2^-20. Range -1024...1023 (11 bits). */
+    int16_t  af1;       /**< Clock drift (sec/sec). Scale factor 2^-38. Range -1024...1023  (11 bits). */
+} nrf_gnss_agps_data_almanac_t;
+
+typedef struct
+{
+    int8_t alpha0; /**< Constant term (sec). Scale factor 2^-30. */
+    int8_t alpha1; /**< First-order coefficient (sec/semi-circle). Scale factor 2^-27. */
+    int8_t alpha2; /**< Second-order coefficient (sec/semi-circle^2). Scale factor 2^-24. */
+    int8_t alpha3; /**< Third-order coefficient (sec/semi-circle^3). Scale factor 2^-24. */
+    int8_t beta0;  /**< Constant term (sec). Scale factor 2^11. */
+    int8_t beta1;  /**< First-order coefficient (sec/semi-circle). Scale factor 2^14. */
+    int8_t beta2;  /**< Second-order coefficient (sec/semi-circle^2). Scale factor 2^16. */
+    int8_t beta3;  /**< Third-order coefficient (sec/semi-circle^3). Scale factor 2^16. */
+} nrf_gnss_agps_data_klobuchar_t;
+
+typedef struct
+{
+    int16_t ai0;         /**< Effective ionisation level 1st order parameter (SFU). Scale factor 2^-2. Range 0...2047  (11 bits). */
+    int16_t ai1;         /**< Effective ionisation level 2nd order parameter (SFU/deg). Scale factor 2^-8. Range -1024...1023 (11 bits). */
+    int16_t ai2;         /**< Effective ionisation level 3rd order parameter (SFU/deg^2). Scale factor 2^-15. Range -8192...8191  (14 bits). */
+    uint8_t storm_cond;  /**< Storm condition bit mask indicating the ionospheric storm condition for different regions. */
+    uint8_t storm_valid; /**< Storm validity bit mask indicating for which regions the ionospheric storm condition bit is valid. */
+} nrf_gnss_agps_data_nequick_t;
+
+typedef struct
+{
+    uint16_t tlm;   /**< First two bits (MSB) represent the reserved bit and integrity status flag in the telemetry message (TLM) word.
+                         The following 14 bits represent the TLM being broadcast by the satellite. */
+    uint8_t  flags; /**< Bit 0 (LSB): anti-spoof flag. Bit 1: alert flag. */
+} nrf_gnss_agps_data_tow_element_t;
+
+#define NRF_GNSS_AGPS_MAX_SV_TOW 32
+
+typedef struct
+{
+    uint16_t date_day;     /**< Day number since Jan 6th, 1980 00:00:00 UTC (USNO) */
+    uint32_t time_full_s;  /**< Full seconds part of time-of-day (s). Range 0...86399. */
+    uint16_t time_frac_ms; /**< Fraction of a second part of time-of-day (ms). Range 0...999. */
+    uint32_t sv_mask;      /**< Bit mask indicating the satellite PRNs for which the satellite-specific TOW assistance data is valid. */
+    nrf_gnss_agps_data_tow_element_t sv_tow[NRF_GNSS_AGPS_MAX_SV_TOW]; /**< TOW assistance data for PRN n */
+} nrf_gnss_agps_data_system_time_and_sv_tow_t;
+
+/** @} */
+
 /**@defgroup nrf_socketopt_gnss GNSS socket option
  * @ingroup nrf_socket
  * @brief Data types defined to set and get socket options on GNSS sockets.
@@ -617,6 +759,26 @@ typedef uint8_t  nrf_gnss_elevation_mask_t;
  */
 typedef uint16_t nrf_gnss_nmea_mask_t;
 
+/**@brief Defines which power mode policy to use for the GNSS module.
+ * @details
+ *          - @c NRF_GNSS_PSM_DISABLED for no power mode policy.
+ *          - @c NRF_GNSS_PSM_DUTY_CYCLING_PERFORMANCE for low power mode with better performance.
+ *          - @c NRF_GNSS_PSM_DUTY_CYCLING_POWER for low power mode with lower power consumption.
+ */
+typedef uint8_t nrf_gnss_power_save_mode_t;
+
+/**@brief Defines a mask of non-volatile data types to delete.
+ * @details
+ *          - Bit 0 denotes ephemerides data.
+ *          - Bit 1 denotes almanac data (excluding leap second and ionospheric correction parameters).
+ *          - Bit 2 denotes ionospheric correction parameters data.
+ *          - Bit 3 denotes last good fix (the last position) data.
+ *          - Bit 4 denotes GPS time-of-week (TOW) data.
+ *          - Bit 5 denotes GPS week number data.
+ *          - Bit 6 denotes leap second (UTC parameters) data.
+ *          - Bit 7 denotes local clock (TCXO) frequency offset data.
+ */
+typedef uint32_t nrf_gnss_delete_mask_t;
 /** @} */
 
 
