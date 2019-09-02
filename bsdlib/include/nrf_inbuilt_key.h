@@ -24,6 +24,9 @@
  * The credential can later be referenced for use or managed by nrf_inbuilt_key module
  * by using the application defined sec_tag.
  *
+ * @note Run this function only when LTE link is inactive. If used during active
+ *       link, NRF_EACCES will be returned and the key material will not be written.
+ *
  * @param[in]  sec_tag        Application defined tag for this credential to be referred
  *                            to in setting up a BSD Secure Socket or to manage the credential
  *                            using nrf_key_mgmt module to read/delete/search the key.
@@ -65,7 +68,6 @@ int nrf_inbuilt_key_write(nrf_sec_tag_t            sec_tag,
  *                      enough intermediate buffers to perform the operation.
  * @retval NRF_ENOENT   If there was no credential associated with the sec_tag and cred_type.
  * @retval NRF_EPERM    If the application did not have permission to do the operation.
- * @retval NRF_EACCES   If the operation could not be performed while modem is in active state.
  * @retval NRF_EINVAL   If provided buffer is to small for result data. If failing with this error,
  *                      the size needed is provided as output parameter by reference in the output
  *                      p_buffer_len output parameter.
@@ -79,6 +81,9 @@ int nrf_inbuilt_key_read(nrf_sec_tag_t            sec_tag,
 /**@brief Delete a credential from persistent storage.
  *
  * This function deletes a stored credential from the persistent storage.
+ *
+ * @note Run this function only when LTE link is inactive. If used during active
+ *       link, NRF_EACCES will be returned and the key material will not be written.
  *
  * @param[in]     sec_tag     Application defined tag to delete.
  * @param[in]     cred_type   Type of credential being deleted.
@@ -111,14 +116,13 @@ int nrf_inbuilt_key_delete(nrf_sec_tag_t sec_tag, nrf_key_mgnt_cred_type_t cred_
  *                      enough intermediate buffers to perform the operation.
  * @retval NRF_ENOENT   If there was no credential associated with the sec_tag and cred_type.
  * @retval NRF_EPERM    If the application did not have permission to do the operation.
- * @retval NRF_EACCES   If the operation could not be performed while modem is in active state.
  */
 int nrf_inbuilt_key_permission_set(nrf_sec_tag_t            sec_tag,
                                    nrf_key_mgnt_cred_type_t cred_type,
                                    uint8_t                  perm_flags);
 
 
-/**@brief Check if a credential exists in the persistent storage.
+/**@brief Check if a credential exists in persistent storage.
  *
  * @param[in]   sec_tag         The tag to search for.
  * @param[in]   cred_type       Type of credential being searched.
@@ -134,7 +138,6 @@ int nrf_inbuilt_key_permission_set(nrf_sec_tag_t            sec_tag,
  *                      the library is not initialized.
  * @retval NRF_ENOBUFS  Insufficient memory.
  * @retval NRF_EPERM    Insufficient permissions.
- * @retval NRF_EACCES   The modem is in the connected state.
  */
 int nrf_inbuilt_key_exists(nrf_sec_tag_t            sec_tag,
                            nrf_key_mgnt_cred_type_t cred_type,
