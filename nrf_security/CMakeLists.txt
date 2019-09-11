@@ -5,16 +5,21 @@
 #
 set(NRF_MBEDTLS_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
-if(CONFIG_GENERATE_MBEDTLS_CFG_FILE)
+set(NRF_CC310_MBEDCRYPTO_INCLUDE_PATH "${CMAKE_CURRENT_LIST_DIR}/../crypto/nrf_cc310_mbedcrypto/include/mbedtls")
+
+if(CONFIG_GENERATE_MBEDTLS_CFG_FILE OR CONFIG_GENERATE_THREAD_MBEDTLS_CFG_FILE)
   include(${CMAKE_CURRENT_LIST_DIR}/cmake/kconfig_mbedtls_configure.cmake)
 endif()
+
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/symbol_rename.cmake)
 
-zephyr_compile_definitions(-DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}")
+set(common_includes "${CMAKE_CURRENT_LIST_DIR}/include/mbedcrypto")
+
 zephyr_include_directories(${CMAKE_CURRENT_BINARY_DIR}/include/)
+zephyr_include_directories(${CMAKE_CURRENT_LIST_DIR}/include/mbedcrypto)
 
 if(ARM_MBEDTLS_PATH)
-  set(NRF_MBEDTLS_ROOT ${ARM_MBEDTLS_PATH})
+  set(ARM_MBEDTLS_ROOT ${ARM_MBEDTLS_PATH})
 elseif(WEST)
   ## Use `west list` to find the mbedtls tree we use (this is not the
   ## mbedtls tree distributed as a zephyr module).

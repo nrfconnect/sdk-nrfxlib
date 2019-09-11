@@ -129,64 +129,57 @@ PREPEND(src_tls_replacement ${NRF_MBEDTLS_ROOT}/src/mbedtls/replacements/
 
 zephyr_include_directories(${ARM_MBEDTLS_ROOT}/include)
 zephyr_include_directories(${ARM_MBEDTLS_ROOT}/include/mbedtls)
+zephyr_include_directories(${common_includes})
 
-# When using multiple backends this library should not be linked directly as
-# there might be name collisions with other libs, e.g. mbedcrypto_cc310
-# When multiple backends are enabled, unique symbols are guaranteed through
-# symbol renaming and glue layer.
-# Therefore add_library is used instead of zephyr_library
-add_library(${IMAGE}mbedcrypto_vanilla STATIC "")
-set(ZEPHYR_CURRENT_LIBRARY ${IMAGE}mbedcrypto_vanilla)
+#
+# Library containing code not in Glue or backend
+#
+zephyr_library_named(${IMAGE}mbedtls_base_vanilla)
 zephyr_library_sources(${src_crypto} ${src_crypto_replacement})
 zephyr_library_include_directories(${common_includes})
-zephyr_library_link_libraries(${IMAGE}zephyr_interface)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_ECB_C MBEDTLS_CIPHER_AES_256_ECB_C)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CBC_C MBEDTLS_CIPHER_AES_256_CBC_C)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CTR_C MBEDTLS_CIPHER_AES_256_CTR_C)
 zephyr_library_compile_definitions_ifdef(CONFIG_MBEDTLS_CIPHER_AES_256_CCM_C MBEDTLS_CIPHER_AES_256_CCM_C)
-if(TARGET ${IMAGE}mbedcrypto_cc310)
-  target_link_libraries(${IMAGE}mbedcrypto_vanilla PRIVATE ${IMAGE}mbedcrypto_cc310)
-endif()
-
-# mbeddrbg library.
-# In order to ensure correct linking to glue functions from ctr_drbg this file
-# must be placed in independent library.
-zephyr_library_named(mbeddrbg)
-zephyr_library_sources(${ARM_MBEDTLS_ROOT}/library/ctr_drbg.c)
-if(CONFIG_GLUE_MBEDTLS_AES_C)
-zephyr_library_compile_definitions(-DMBEDTLS_AES_ALT)
-endif()
+zephyr_library_include_directories(${generated_includes})
+zephyr_library_compile_definitions(-DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}")
+zephyr_library_sources(${ZEPHYR_BASE}/../modules/crypto/mbedtls/zephyr_init.c)
 if(CONFIG_SOC_NRF52840 OR CONFIG_SOC_NRF9160)
   zephyr_library_sources(${NRF_MBEDTLS_ROOT}/src/backend/cc310/replacements/entropy.c)
 else()
-  zephyr_library_sources(${NRF_MBEDTLS_ROOT}/src/backend/nrf5x/replacements/entropy_nrf5x.c)
+  zephyr_library_sources(${NRF_MBEDTLS_ROOT}/src/backend/nrf5x/entropy_nrf5x.c)
 endif()
 
+#
+# Library for x.509
+#
 if (CONFIG_MBED_X509_LIBRARY)
-  zephyr_library_named(mbedx509_vanilla)
+  zephyr_library_named(mbedtls_x509_vanilla)
+  zephyr_library_include_directories(${generated_includes})
+  zephyr_library_compile_definitions(-DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}")
   zephyr_library_sources(${src_x509})
   zephyr_library_include_directories(${common_includes})
-  if(TARGET ${IMAGE}mbedcrypto_cc310)
-    zephyr_library_include_directories(
-      $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
-    )
-  endif()
 endif()
 
+#
+# Library for TLS support
+#
 if (CONFIG_MBED_TLS_LIBRARY)
-  zephyr_library_named(mbedtls_vanilla)
+  zephyr_library_named(mbedtls_tls_vanilla)
   zephyr_library_sources(${src_tls} ${src_tls_replacement})
   zephyr_library_include_directories(${common_includes})
-  if(TARGET ${IMAGE}mbedcrypto_cc310)
-    zephyr_library_include_directories(
-      $<TARGET_PROPERTY:${IMAGE}mbedcrypto_cc310,INTERFACE_INCLUDE_DIRECTORIES>
-    )
-  endif()
+  zephyr_library_include_directories(${generated_includes})
+  zephyr_library_compile_definitions(-DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}")
 endif()
 
 if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
-  # Only vanilla backend is chosen, thus append it to zephyr libraries.
-  zephyr_append_cmake_library(${IMAGE}mbedcrypto_vanilla)
+  #
+  # Only single backend is chosen, thus append it to zephyr libraries as
+  # no renaming should be carried out.
+  #
+  if(TARGET ${IMAGE}mbedcrypto_cc310)
+    target_link_libraries(${IMAGE}mbedtls_base_vanilla PRIVATE ${IMAGE}mbedcrypto_cc310)
+  endif()
 endif()
 
 #

@@ -23,6 +23,10 @@ if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
       ${NRF_MBEDTLS_ROOT}/include/mbedcrypto_glue
   )
 
+  #
+  # Add mbed TLS config file shared by all glue libraries
+  #
+  zephyr_library_compile_definitions(-DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}")
   zephyr_library_compile_definitions(
       -DMBEDTLS_AES_ALT
       -DMBEDTLS_CCM_ALT
@@ -54,4 +58,3 @@ set(CONFIG_CC310_MBEDTLS_PLATFORM True)
 
 library_redefine_symbols("cc310" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
 library_redefine_symbols("vanilla" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
-

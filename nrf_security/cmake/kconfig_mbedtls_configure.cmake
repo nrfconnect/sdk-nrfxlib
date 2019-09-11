@@ -106,6 +106,12 @@ macro(configure_file_ifdef mbedtls_config)
     configure_file(${ARGV1} ${ARGV2} ${ARGV3})
   endif()
 endmacro()
+
+#
+# Remove previously generated files from include folder
+#
+file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/include/)
+
 # If vanilla is not enabled, then select ALT impl to ensure rest of dependent
 # functionality is still compiled.
 if (NOT CONFIG_MBEDTLS_VANILLA_BACKEND)

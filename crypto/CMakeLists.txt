@@ -85,11 +85,13 @@ if (CONFIG_CC310_BACKEND)
   set_target_properties(${IMAGE}mbedcrypto_cc310 PROPERTIES IMPORTED_LOCATION
                         "${NRF_CC310_LIB}")
   target_include_directories(${IMAGE}mbedcrypto_cc310 INTERFACE
+                             "${NRF_CC310_BASE}/include"
                              "${NRF_CC310_BASE}/include/mbedtls")
-  target_link_libraries(${IMAGE}mbedcrypto_cc310 INTERFACE ${IMAGE}platform_cc310 ${IMAGE}mbedcrypto_vanilla)
+  target_link_libraries(${IMAGE}mbedcrypto_cc310 INTERFACE ${IMAGE}platform_cc310)
   if (NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
     # Only CC310 backend is selected for mbedtls API.
     # Thus export the alt headers through Zephyr interface library.
-    zephyr_include_directories(${NRF_CC310_BASE}/include/mbedtls)
+    zephyr_include_directories(${NRF_CC310_BASE}/include/mbedtls
+                               ${NRF_CC310_BASE}/include)
   endif()
 endif()
