@@ -14,11 +14,11 @@
 #include <toolchain.h>
 
 #include "mbedtls/ccm.h"
-#include "mbedtls/ccm_alt.h"
+#include "mbedtls/cipher.h"
 #include "backend_ccm.h"
 
 
-BUILD_ASSERT_MSG(VANILLA_MBEDTLS_CCM_CONTEXT_WORDS == (sizeof(mbedtls_ccm_context) - 4 + 3) / 4, "Invalid VANILLA_MBEDTLS_CCM_CONTEXT_WORDS value");
+BUILD_ASSERT_MSG(VANILLA_MBEDTLS_CCM_CONTEXT_WORDS == (sizeof(mbedtls_cipher_context_t) + 3) / 4, "Invalid VANILLA_MBEDTLS_CCM_CONTEXT_WORDS value");
 
 
 static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits)

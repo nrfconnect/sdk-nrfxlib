@@ -20,9 +20,9 @@
 macro(keep_config_test_glue mbedtls_config backend_name)
   if(NOT CONFIG_GLUE_${mbedtls_config} AND ${backend_name}_${mbedtls_config})
     set(KEEP_${mbedtls_config} "#")
-    kconfig_mbedtls_debug("${backend_name}: Not renamed ${mbedtls_config}")
+    nrf_security_debug("${backend_name}: Not renamed ${mbedtls_config}")
   else()
-    kconfig_mbedtls_debug("${backend_name}: Renaming ${mbedtls_config}")
+    nrf_security_debug("${backend_name}: Renaming ${mbedtls_config}")
   endif()
 endmacro()
 
@@ -34,10 +34,10 @@ macro(keep_config_test_glue_depends mbedtls_config mbedtls_config_inner backend_
   if((NOT CONFIG_GLUE_${mbedtls_config}) AND
       ${backend_name}_${mbedtls_config} AND
       CONFIG_${mbedtls_config_inner})
-    kconfig_mbedtls_debug("${backend_name}: Has ${backend_name}_${mbedtls_config}: Not renamed ${mbedtls_config_inner}")
+    nrf_security_debug("${backend_name}: Has ${backend_name}_${mbedtls_config}: Not renamed ${mbedtls_config_inner}")
     set(KEEP_${mbedtls_config_inner} "#")
   else()
-    kconfig_mbedtls_debug("${backend_name}: Renaming ${mbedtls_config_inner}")
+    nrf_security_debug("${backend_name}: Renaming ${mbedtls_config_inner}")
   endif()
 endmacro()
 
@@ -47,7 +47,7 @@ endmacro()
 #
 macro(remove_objects mbedtls_config backend_name object_list object_name)
   if (NOT ${backend_name}_${mbedtls_config})
-    kconfig_mbedtls_debug("${backend_name}: Removing object ${object_name}")
+    nrf_security_debug("${backend_name}: Removing object ${object_name}")
     set(${object_list} ${${object_list}} ${object_name})
   endif()
 endmacro()
@@ -114,7 +114,7 @@ function(symbol_rename_func backend rename_template is_stripped)
 
   if (remove_line)
     set(remove_object_command ${CMAKE_AR} d ${BACKEND_RENAMED_LIBRARY} ${remove_line})
-    kconfig_mbedtls_debug("Objects stripped from ${BACKEND_RENAMED_LIBRARY}: ${remove_line}")
+    nrf_security_debug("Objects stripped from ${BACKEND_RENAMED_LIBRARY}: ${remove_line}")
   endif()
 
   add_custom_command(
