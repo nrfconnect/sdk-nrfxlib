@@ -14,7 +14,7 @@
 #include <toolchain.h>
 
 #include "mbedtls/aes.h"
-#include "mbedtls/aes_alt.h"
+#include "aes_alt.h"
 #include "backend_aes.h"
 
 BUILD_ASSERT_MSG(VANILLA_MBEDTLS_AES_CONTEXT_WORDS == (sizeof(mbedtls_aes_context) - 4) / 4, "Invalid VANILLA_MBEDTLS_AES_CONTEXT_WORDS value");
