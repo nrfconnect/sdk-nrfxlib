@@ -126,7 +126,14 @@ static int mbedtls_aes_setkey( mbedtls_aes_context *ctx, const unsigned char *ke
 
     if (funcs == new_funcs)
     {
-        return funcs->setkey_enc(backend_context, key, keybits);
+        if (mode == MBEDTLS_AES_ENCRYPT)
+        {
+            return funcs->setkey_enc(backend_context, key, keybits);
+        }
+        else
+        {
+            return funcs->setkey_dec(backend_context, key, keybits);
+        }
     }
 
     if (funcs != NULL)
@@ -183,7 +190,14 @@ static int mbedtls_aes_xts_setkey_internal(mbedtls_aes_xts_context *ctx, const u
 
     if (funcs == new_funcs)
     {
-        return funcs->xts_setkey_enc(backend_context, key, keybits);
+        if (mode == MBEDTLS_AES_ENCRYPT)
+        {
+            return funcs->xts_setkey_enc(backend_context, key, keybits);
+        }
+        else
+        {
+            return funcs->xts_setkey_dec(backend_context, key, keybits);
+        }
     }
 
     if (funcs != NULL)

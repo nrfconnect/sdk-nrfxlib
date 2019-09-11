@@ -3,58 +3,69 @@
 #
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
+
 if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
-  zephyr_include_directories(
-      ${NRF_MBEDTLS_ROOT}/include/mbedcrypto_glue/mbedtls
-  )
 
+  nrf_security_debug("######### Creating mbedcrypto glue library #########")
+  #
+  # Create a library with common compilation options and include folders
+  #
+  zephyr_interface_library_named(mbedtls_common_glue)
+  target_include_directories(${IMAGE}mbedtls_common_glue INTERFACE "${NRF_SECURITY_ROOT}/include/mbedcrypto_glue")
+  target_link_libraries(${IMAGE}mbedtls_common_glue INTERFACE ${IMAGE}mbedtls_common)
+
+
+  if(CONFIG_GLUE_MBEDTLS_AES_C)
+    nrf_security_debug("Adding to glue: AES")
+  endif()
+
+  if(CONFIG_GLUE_MBEDTLS_CCM_C)
+    nrf_security_debug("Adding to glue: CCM")
+  endif()
+
+  if(CONFIG_GLUE_MBEDTLS_DHM_C)
+    nrf_security_debug("Adding to glue: DHM")
+  endif()
+
+  #
+  # Create the glue wrapper library
+  #
   zephyr_library_named(mbedcrypto_glue)
-  zephyr_library_sources(
-      aes_alt.c
-      ccm_alt.c
-      dhm_alt.c
-      ecdh_alt.c
-      ecdsa_alt.c
-      platform_alt.c
-      rsa_alt.c
-  )
-
-  zephyr_library_include_directories(
-      ${NRF_MBEDTLS_ROOT}/include/mbedcrypto_glue
-  )
 
   #
-  # Add mbed TLS config file shared by all glue libraries
+  # Add glued files if enabled
   #
-  zephyr_library_compile_definitions(-DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}")
-  zephyr_library_compile_definitions(
-      -DMBEDTLS_AES_ALT
-      -DMBEDTLS_CCM_ALT
-      -DMBEDTLS_CMAC_ALT
-      -DMBEDTLS_DHM_ALT
-      -DMBEDTLS_ECDH_GEN_PUBLIC_ALT
-      -DMBEDTLS_ECDH_COMPUTE_SHARED_ALT
-      -DMBEDTLS_ECDSA_VERIFY_ALT
-      -DMBEDTLS_ECDSA_SIGN_ALT
-      -DMBEDTLS_ECDSA_GENKEY_ALT
-      -DMBEDTLS_GCM_ALT
-      -DMBEDTLS_RSA_ALT
-  )
+  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_AES_C    aes_alt.c)
+  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_CCM_C    ccm_alt.c)
+  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_DHM_C    dhm_alt.c)
 
-  include(${CMAKE_CURRENT_LIST_DIR}/cc310/CMakeLists.txt)
-  include(${CMAKE_CURRENT_LIST_DIR}/vanilla/CMakeLists.txt)
-else()
-  # Multiple backends was enabled, but glue layer is not needed.
-  # Hence only ensure alt headers are available (namely platform_alt.h)
-  add_library(${IMAGE}mbedcrypto_glue INTERFACE)
-  zephyr_include_directories(
-      ${NRF_MBEDTLS_ROOT}/include/mbedcrypto_glue/mbedtls
-  )
+  zephyr_library_link_libraries(${IMAGE}mbedtls_common_glue)
+  nrf_security_debug_list_target_files(${IMAGE}mbedcrypto_glue)
+
+  #
+  # Create glue libraries for backends (if enabled)
+  #
+  if (CONFIG_CC310_BACKEND)
+    include(${CMAKE_CURRENT_LIST_DIR}/cc310/CMakeLists.txt)
+  endif()
+
+  if (CONFIG_MBEDTLS_VANILLA_BACKEND)
+    include(${CMAKE_CURRENT_LIST_DIR}/vanilla/CMakeLists.txt)
+  endif()
+
+endif() # CONFIG_NRF_CRYPTO_GLUE_LIBRARY
+
+#
+# CC310: Rename glued symbols to prevent collision
+# CC310: Remove obj files not in use in backend (param: TRUE)
+#
+if (CONFIG_CC310_BACKEND)
+  symbol_rename_func("cc310" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt TRUE)
 endif()
 
-# Platform implementation cannot be chosen Kconfig.
-# To ensure platform symbols are not renamed cc310 implementation is used.
-set(CONFIG_CC310_MBEDTLS_PLATFORM True)
-
-library_redefine_symbols("cc310" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
-library_redefine_symbols("vanilla" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
+#
+# Vanilla: Rename glued symbols to prevent collision
+#
+if (CONFIG_MBEDTLS_VANILLA_BACKEND AND CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
+  symbol_rename_func("vanilla" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt FALSE)
+endif()

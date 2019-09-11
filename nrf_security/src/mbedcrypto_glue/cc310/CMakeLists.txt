@@ -3,27 +3,53 @@
 #
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
-if(CONFIG_CC310_BACKEND)
-  zephyr_library_named(mbedcrypto_glue_cc310)
-  zephyr_library_sources(
-      ${CMAKE_CURRENT_LIST_DIR}/aes_cc310.c
-      ${CMAKE_CURRENT_LIST_DIR}/ccm_cc310.c
-      ${CMAKE_CURRENT_LIST_DIR}/cmac_cc310.c
-      ${CMAKE_CURRENT_LIST_DIR}/dhm_cc310.c
-      ${CMAKE_CURRENT_LIST_DIR}/ecdh_cc310.c
-      ${CMAKE_CURRENT_LIST_DIR}/ecdsa_cc310.c
-      ${CMAKE_CURRENT_LIST_DIR}/rsa_cc310.c
-  )
-  zephyr_library_compile_definitions(MBEDTLS_BACKEND_PREFIX=cc310)
+nrf_security_debug("######### Creating cc310 glue library #########")
 
-  zephyr_library_include_directories($<TARGET_PROPERTY:${IMAGE}mbedcrypto_glue,INCLUDE_DIRECTORIES>)
-  zephyr_library_compile_definitions($<TARGET_PROPERTY:${IMAGE}mbedcrypto_glue,COMPILE_DEFINITIONS>)
-  add_custom_command(
-    TARGET ${IMAGE}mbedcrypto_glue_cc310
-    POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} 
-            --redefine-syms
-            ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_cc310.txt
-            $<TARGET_FILE:${IMAGE}mbedcrypto_glue_cc310>
-  )
+if (CONFIG_GLUE_MBEDTLS_AES_C AND CC310_MBEDTLS_AES_C)
+  set(GLUE_CC310_MBEDTLS_AES_C TRUE)
+  nrf_security_debug("cc310 backend glue: AES")
 endif()
+
+if (CONFIG_GLUE_MBEDTLS_CCM_C AND CC310_MBEDTLS_CCM_C)
+  set(GLUE_CC310_MBEDTLS_CCM_C TRUE)
+  nrf_security_debug("cc310 backend glue: CCM")
+endif()
+
+if (CONFIG_GLUE_MBEDTLS_DHM_C AND CC310_MBEDTLS_DHM_C)
+  set(GLUE_CC310_MBEDTLS_DHM_C TRUE)
+  nrf_security_debug("cc310 backend glue: DHM")
+endif()
+
+
+zephyr_library_named(mbedcrypto_glue_cc310)
+
+#
+# Adding cc310 backend glue files
+#
+zephyr_library_sources_ifdef(GLUE_CC310_MBEDTLS_AES_C
+  ${CMAKE_CURRENT_LIST_DIR}/aes_cc310.c
+)
+zephyr_library_sources_ifdef(GLUE_CC310_MBEDTLS_CCM_C
+  ${CMAKE_CURRENT_LIST_DIR}/ccm_cc310.c
+)
+zephyr_library_sources_ifdef(GLUE_CC310_MBEDTLS_DHM_C
+  ${CMAKE_CURRENT_LIST_DIR}/dhm_cc310.c
+)
+
+zephyr_library_sources(${ZEPHYR_BASE}/misc/empty_file.c)
+
+zephyr_library_compile_definitions(MBEDTLS_BACKEND_PREFIX=cc310)
+zephyr_library_link_libraries(${IMAGE}mbedtls_common_glue)
+nrf_security_debug_list_target_files(${IMAGE}mbedcrypto_glue_cc310)
+#
+# Rename the external symbols as referenced through the glue files
+# The APIs will match cc310_mbedtls_<xxxx> after this.
+#
+add_custom_command(
+  TARGET ${IMAGE}mbedcrypto_glue_cc310
+  POST_BUILD
+  COMMAND ${CMAKE_OBJCOPY}
+          --redefine-syms
+          ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_cc310.txt
+          $<TARGET_FILE:${IMAGE}mbedcrypto_glue_cc310>
+)

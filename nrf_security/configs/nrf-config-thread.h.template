@@ -1168,7 +1168,7 @@
  *
  * Uncomment to enable the smaller implementation of SHA256.
  */
-//#define MBEDTLS_SHA256_SMALLER
+#define MBEDTLS_SHA256_SMALLER
 
 /**
  * \def MBEDTLS_SSL_ALL_ALERT_MESSAGES
@@ -2231,21 +2231,6 @@
 //#define MBEDTLS_HAVEGE_C
 
 /**
- * \def MBEDTLS_HKDF_C
- *
- * Enable the HKDF algorithm (RFC 5869).
- *
- * Module:  library/hkdf.c
- * Caller:
- *
- * Requires: MBEDTLS_MD_C
- *
- * This module adds support for the Hashed Message Authentication Code
- * (HMAC)-based key derivation function (HKDF).
- */
-#define MBEDTLS_HKDF_C
-
-/**
  * \def MBEDTLS_HMAC_DRBG_C
  *
  * Enable the HMAC_DRBG random generator.
@@ -2911,8 +2896,8 @@
  */
 
 /* MPI / BIGNUM options */
-//#define MBEDTLS_MPI_WINDOW_SIZE            6 /**< Maximum windows size used. */
-//#define MBEDTLS_MPI_MAX_SIZE            1024 /**< Maximum number of bytes for usable MPIs. */
+#define MBEDTLS_MPI_WINDOW_SIZE              1 /**< Maximum windows size used. */
+#define MBEDTLS_MPI_MAX_SIZE                32 /**< Maximum number of bytes for usable MPIs. */
 
 /* CTR_DRBG options */
 //#define MBEDTLS_CTR_DRBG_ENTROPY_LEN               48 /**< Amount of entropy used per seed by default (48 with SHA-512, 32 with SHA-256) */
@@ -2932,9 +2917,9 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 //#define MBEDTLS_HMAC_DRBG_MAX_SEED_INPUT      384 /**< Maximum size of (re)seed buffer */
 
 /* ECP options */
-//#define MBEDTLS_ECP_MAX_BITS             521 /**< Maximum bit size of groups */
-//#define MBEDTLS_ECP_WINDOW_SIZE            6 /**< Maximum window size used */
-//#define MBEDTLS_ECP_FIXED_POINT_OPTIM      1 /**< Enable fixed-point speed-up */
+#define MBEDTLS_ECP_MAX_BITS               256 /**< Maximum bit size of groups */
+#define MBEDTLS_ECP_WINDOW_SIZE              2 /**< Maximum window size used */
+#define MBEDTLS_ECP_FIXED_POINT_OPTIM        1 /**< Enable fixed-point speed-up */
 
 /* Entropy options */
 //#define MBEDTLS_ENTROPY_MAX_SOURCES                20 /**< Maximum number of sources supported */
@@ -2989,7 +2974,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  * will override this length by setting maximum incoming and/or outgoing
  * fragment length, respectively.
  */
-//#define MBEDTLS_SSL_MAX_CONTENT_LEN             16384
+#define MBEDTLS_SSL_MAX_CONTENT_LEN             900
 
 /** \def MBEDTLS_SSL_IN_CONTENT_LEN
  *
@@ -3056,7 +3041,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  *
  * The value below is only an example, not the default.
  */
-//#define MBEDTLS_SSL_CIPHERSUITES MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+#define MBEDTLS_SSL_CIPHERSUITES MBEDTLS_TLS_ECJPAKE_WITH_AES_128_CCM_8
 
 /* X509 options */
 //#define MBEDTLS_X509_MAX_INTERMEDIATE_CA   8   /**< Maximum number of intermediate CAs in a verification chain. */
@@ -3154,7 +3139,6 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 #include MBEDTLS_USER_CONFIG_FILE
 #endif
 
-
 /*
  * Nordic added. 256 bit defines for vanilla mbed TLS
  */
@@ -3164,7 +3148,6 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 #cmakedefine MBEDTLS_CIPHER_AES_256_CCM_C
 #cmakedefine MBEDTLS_CIPHER_AES_256_CFB_C
 #cmakedefine MBEDTLS_CIPHER_AES_256_OFB_C
-
 
 /*
  * Nordic added. Defines for features not supported in HW
@@ -3178,8 +3161,6 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 #if defined(MBEDTLS_ECP_ALT) && !defined(MBEDTLS_ECP_RESTARTABLE)
 typedef void mbedtls_ecp_restart_ctx;
 #endif
-
-
 
 #include "mbedtls/check_config.h"
 
