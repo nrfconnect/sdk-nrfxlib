@@ -496,6 +496,12 @@ config MBEDTLS_SHA512_C
 
 endif # HASH_FUNCTIONS_CONFIGURATION
 
+config APP_LINK_WITH_MBEDCRYPTO_INCLUDES
+	bool
+	default y
+	help
+	  Add mbedcrypto header files to the 'app' include path.
+
 endif # NORDIC_SECURITY_BACKEND
 
 endmenu
