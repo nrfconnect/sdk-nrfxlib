@@ -188,3 +188,14 @@ if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
   # Only vanilla backend is chosen, thus append it to zephyr libraries.
   zephyr_append_cmake_library(${IMAGE}mbedcrypto_vanilla)
 endif()
+
+#
+# Give the main application access to the generated includes
+# NOTE: This library corresponds to APP_LINK_WITH_MBEDCRYPTO_INCLUDES in Kconfig
+#
+zephyr_interface_library_named(mbedcrypto_includes)
+target_compile_definitions(app PRIVATE -DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}")
+target_include_directories(${IMAGE}mbedcrypto_includes INTERFACE
+  ${common_includes}
+  ${generated_includes}
+)
