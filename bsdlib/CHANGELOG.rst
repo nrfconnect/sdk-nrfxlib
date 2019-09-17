@@ -5,6 +5,23 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.4.1
+************
+
+Updated the library with the following changes:
+
+* Added socket option ``NRF_SO_PDN_CONTEXT_ID`` for PDN protocol sockets to retrieve the Context ID of the created PDN.
+* Added socket option ``NRF_SO_PDN_STATE`` for PDN protocol socket to check the active state of the PDN.
+* Fixed a TCP stream empty packet indication when a blocking receive got the peer closed notification while waiting for data to arrive.
+* Fixed an issue where IP sockets did not propagate a fine-grained error reason, and all disconnect events resulted in ``NRF_ENOTCONN``.
+  Now the error reasons could be one of the following: ``NRF_ENOTCONN``, ``NRF_ECONNRESET``, ``NRF_ENETDOWN``, ``NRF_ENETUNREACH``.
+* Fixed an issue with a blocking :cpp:func:`send()` operation on IP sockets that was not really blocking but returning immediately in case of insufficient memory to perform the operation.
+  The new behavior is that blocking sockets will block until the message is sent.
+  Also, because of internal limitations, a non-blocking socket might block for a short while until shortage of memory has been detected internally, and then return with errno set to ``NRF_EAGAIN``.
+* Corrected errno that is set by :cpp:func:`send()` from ``NRF_ENOMEM`` to ``NRF_EMSGSIZE`` in case of attempts on sending larger messages than supported by the library.
+* Added a define ``BSD_IP_MAX_MESSAGE_SIZE`` in :file:`bsd_limits.h` to hint what size is used to report ``NRF_EMSGSIZE`` in the updated :cpp:func:`send()` function.
+* Fixed an issue with :cpp:func:`nrf_inbuilt_key_read()` not respecting the ``p_buffer_len`` input parameter, making it possible for the library to write out-of-bounds on the buffer provided.
+
 
 bsdlib 0.4.0
 ************

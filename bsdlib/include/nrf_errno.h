@@ -29,6 +29,7 @@ extern "C" {
 #define NRF_EMFILE          24  //< Too many open files
 #define NRF_ENOSPC          28  //< No space left on device
 #define NRF_EAGAIN          35  //< Resource temporarily unavailable
+#define NRF_EMSGSIZE        40  //< Message too long
 #define NRF_EPROTOTYPE      41  //< Protocol wrong type for socket
 #define NRF_ENOPROTOOPT     42  //< Protocol not available
 #define NRF_EPROTONOSUPPORT 43  //< Protocol not supported
