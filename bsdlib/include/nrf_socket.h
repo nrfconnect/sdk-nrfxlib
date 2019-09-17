@@ -138,6 +138,8 @@ typedef int32_t ssize_t;
  * @{
  */
 #define NRF_SO_PDN_AF                   1    /**< Identifies the option used to get/set supported address families on the PDN. @ref nrf_pdn_af_list_t for details. */
+#define NRF_SO_PDN_CONTEXT_ID           2    /**< Identifies the option used to get the context id on the PDN. @ref nrf_pdn_context_id_t for details. */
+#define NRF_SO_PDN_STATE                3    /**< Identifies the option used to get the PDN state. */
 /**@} */
 
 /**@defgroup nrf_socket_options_dfu_sockets Values for DFU Socket options
@@ -480,6 +482,14 @@ typedef nrf_sa_family_t * nrf_pdn_af_list_t;
 
 /**@brief Defines the format for Address family for the PDN. */
 typedef uint32_t nrf_pdn_class_t;
+
+/**@brief Defines the format for Context ID for the PDN. */
+typedef uint8_t nrf_pdn_context_id_t;
+
+/**@brief Defines the format for the PDN state:
+ *        1 means active, 0 otherwise.
+ */
+typedef uint8_t nrf_pdn_state_t;
 /**@} */
 
 /**@defgroup nrf_socketopt_dfu DFU socket option

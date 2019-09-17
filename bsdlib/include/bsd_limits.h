@@ -46,6 +46,9 @@ extern "C" {
 /**@brief Maximum AT Command Size in bytes. */
 #define BSD_AT_MAX_CMD_SIZE                    4096
 
+/**@brief Maximum IP message size in bytes. */
+#define BSD_IP_MAX_MESSAGE_SIZE                4096
+
 /**
  * @brief Maximum number of PDN connections that can be created.
  *
