@@ -46,11 +46,11 @@ if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
   # Create glue libraries for backends (if enabled)
   #
   if (CONFIG_CC310_BACKEND)
-    include(${CMAKE_CURRENT_LIST_DIR}/cc310/CMakeLists.txt)
+    include(${CMAKE_CURRENT_LIST_DIR}/cc310/cc310_glue.cmake)
   endif()
 
   if (CONFIG_MBEDTLS_VANILLA_BACKEND)
-    include(${CMAKE_CURRENT_LIST_DIR}/vanilla/CMakeLists.txt)
+    include(${CMAKE_CURRENT_LIST_DIR}/vanilla/vanilla_glue.cmake)
   endif()
 
 endif() # CONFIG_NRF_CRYPTO_GLUE_LIBRARY
