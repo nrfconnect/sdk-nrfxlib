@@ -98,9 +98,7 @@ int nfc_t2t_setup(nfc_t2t_callback_t callback, void *context);
 
 /**@brief Function for setting an NFC parameter.
  *
- * @note Not implemented. For future use.
- *
- * This function allows to set any parameter defined as available by HAL_NFC.
+ * This function allows to set an NFC configuration parameter.
  *
  * @param id ID of the parameter to set.
  * @param data Pointer to a buffer containing the data to set.
@@ -113,8 +111,6 @@ int nfc_t2t_parameter_set(enum nfc_t2t_param_id  id,
 			  size_t data_length);
 
 /**@brief Function for querying an NFC parameter value.
- *
- * @note Not implemented. For future use.
  *
  * The queried value will be placed into the passed data buffer. If the buffer
  * is too small, max_data_length will contain the required buffer size. If the
