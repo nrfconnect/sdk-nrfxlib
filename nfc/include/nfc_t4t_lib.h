@@ -250,7 +250,7 @@ int nfc_t4t_response_pdu_send(const u8_t *pdu, size_t pdu_length);
 
 /** @brief Set an NFC parameter.
  *
- * Allows to set any parameter defined as available by HAL_NFC.
+ * Allows to set an NFC configuration parameter.
  *
  * @param id ID of the parameter to set.
  * @param data Pointer to a buffer containing the data to set.
