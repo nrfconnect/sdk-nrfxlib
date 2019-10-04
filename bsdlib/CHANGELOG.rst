@@ -5,6 +5,18 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.4.3
+************
+
+Updated the library with the following changes:
+
+* Added support for signaling if a peer sends larger TLS fragments than receive buffers can handle.
+  If this scenario is triggered, ``NRF_ENOBUFS`` is reported in :cpp:func:`recv()`.
+  The link is also disconnected on TLS level by issuing an ``Encryption Alert``, and TCP is reset from the device side.
+  Subsequent calls to :cpp:func:`send()` or :cpp:func:`recv()` report ``NRF_ENOTCONN``.
+  The feature will be supported in an upcoming modem firmware version.
+* Resolved an issue where sending large TLS messages very close to each other in time would result in a blocking :cpp:func:`send()` that did not return.
+
 bsdlib 0.4.2
 ************
 
