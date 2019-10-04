@@ -194,8 +194,7 @@ To enable the cryptographic algorithm, one of the backend defines must be enable
 
 AES configuration
 ------------------
-AES core support is dependent on setting the :option:`CONFIG_AES_CONFIGURATION` Kconfig variable.
-Subsequent configurations must be made depending if a single or multiple backends are used.
+AES configurations must be made depending if a single or multiple backends are used.
 Enabling AES core support enables AES ECB cipher mode and allows for the following ciphers to be configured: CTR, OFB, CFB, CBC, XTS, CMAC, CCM, CCM*, and GCM.
 
 Single backend
@@ -220,7 +219,6 @@ AES core support can be configured by setting setting Kconfig variables accordin
 AES cipher configuration
 ------------------------
 AES cipher mode configuration is dependent on AES core support according to `AES configuration`_.
-AES cipher mode support is dependent on setting the :option:`CONFIG_AES_CONFIGURATION` Kconfig variable.
 Configure the AES cipher mode support according to single or multiple enabled backends.
 
 Single backend
@@ -281,7 +279,6 @@ AES cipher mode support can be configured according to the following table:
 AEAD configurations
 -------------------
 Authenticated Encryption with Associated Data (AEAD) can be enabled according to the cipher in question.
-To enable AEAD support, set the :option:`CONFIG_AEAD_CONFIGURATION` Kconfig variable.
 Configure the AEAD cipher mode support according to single or multiple enabled backends.
 
 Single backend

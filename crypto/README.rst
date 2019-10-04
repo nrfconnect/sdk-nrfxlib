@@ -7,6 +7,7 @@ Crypto Libraries
    :maxdepth: 2
    :caption: Contents:
 
+   nrf_cc310_platform/CHANGELOG.rst
    nrf_cc310_bl/CHANGELOG
    nrf_cc310_mbedcrypto/CHANGELOG
    nrf_oberon/CHANGELOG
