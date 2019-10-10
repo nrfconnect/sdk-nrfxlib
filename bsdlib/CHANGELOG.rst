@@ -5,6 +5,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.4.2
+************
+
+* Reduced ROM footprint.
+* Miscellaneous improvements to PDN sockets.
+* Fixed an issue when linking with mbedTLS.
+
+
 bsdlib 0.4.1
 ************
 
