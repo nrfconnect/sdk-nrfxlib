@@ -29,39 +29,112 @@ extern "C" {
 #include "nrf_errno.h"
 
 
-/**< @brief Default resource configuration tag. */
+/** @brief Default resource configuration tag. */
 #define BLE_CONTROLLER_DEFAULT_RESOURCE_CFG_TAG  0
 
-/**< @brief Default maximum number of concurrent slave links. */
+/** @brief Default maximum number of concurrent slave links. */
 #define BLE_CONTROLLER_DEFAULT_SLAVE_COUNT   1
 
-/**< @brief Default maximum number of concurrent master links. */
+/** @brief Default maximum number of concurrent master links. */
 #define BLE_CONTROLLER_DEFAULT_MASTER_COUNT  1
 
-/**< @brief Default maximum LL TX packet size. */
+/** @brief Default maximum Link Layer TX packet size. */
 #define BLE_CONTROLLER_DEFAULT_TX_PACKET_SIZE 27
 
-/**< @brief Default maximum LL RX packet size. */
+/** @brief Default maximum Link Layer RX packet size. */
 #define BLE_CONTROLLER_DEFAULT_RX_PACKET_SIZE 27
 
-/**< @brief Default maximum LL TX packet count per connection. */
+/** @brief Default maximum Link Layer TX packet count per connection.
+ *
+ * With the default count, the application is able to refill the buffers during a connection event.
+ */
 #define BLE_CONTROLLER_DEFAULT_TX_PACKET_COUNT 3
 
-/**< @brief Default maximum LL RX packet count per connection. */
+/** @brief Default maximum Link Layer RX packet count per connection.
+ *
+ * With the default count, the application is able to empty the buffers during a connection event.
+ */
 #define BLE_CONTROLLER_DEFAULT_RX_PACKET_COUNT 3
 
-/**< @brief Default connection event length */
+/** @brief Default connection event length. */
 #define BLE_CONTROLLER_DEFAULT_EVENT_LENGTH_US 7500UL
 
-/**< @brief Recommended RC clock calibration timer interval. */
+/** @brief Recommended RC clock calibration timer interval. */
 #define BLE_CONTROLLER_RECOMMENDED_RC_CTIV        16
 
-/**< @brief Recommended RC clock calibration timer interval for temperature changes. */
+/** @brief Recommended RC clock calibration timer interval for temperature changes. */
 #define BLE_CONTROLLER_RECOMMENDED_RC_TEMP_CTIV   2
 
-/**< @brief Size of build revision array in bytes. */
+/** @brief Size of build revision array in bytes. */
 #define BLE_CONTROLLER_BUILD_REVISION_SIZE 20
 
+/**
+ * @defgroup ble_controller_mem_defines Memory requirement defines
+ *
+ * The BLE Controller memory requirement defines may be used to determine the dynamic memory usage
+ * at compile time. The defines specify an upper limit, therefore the actual memory required
+ * may be less.
+ *
+ * @note The values of the memory requirement defines may change between minor releases.
+ * @{
+ */
+
+/** @brief Maximum number of bytes required per master link for the default buffer configuration. */
+#define BLE_CONTROLLER_MEM_DEFAULT_MASTER_LINK_SIZE 1064
+
+/** @brief Maximum number of bytes required per slave link for the default buffer configuration. */
+#define BLE_CONTROLLER_MEM_DEFAULT_SLAVE_LINK_SIZE 1624
+
+/** @brief Memory overhead per LL packet buffer. */
+#define BLE_CONTROLLER_MEM_BUFFER_OVERHEAD_SIZE 10
+
+/** @brief Maximum additional number of bytes required per link.
+ *
+ * This macro will return the additional memory required per link
+ * if non-default buffer sizes are used.
+ *
+ * @param[in] tx_size Link Layer TX packet size.
+ * @param[in] rx_size Link Layer RX packet size.
+ * @param[in] tx_count Link Layer TX packet count.
+ * @param[in] rx_count Link Layer RX packet count.
+ */
+#define BLE_CONTROLLER_MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
+    ((tx_count) * (tx_size - BLE_CONTROLLER_DEFAULT_TX_PACKET_SIZE) + \
+     (rx_count) * (rx_size - BLE_CONTROLLER_DEFAULT_RX_PACKET_SIZE) + \
+     (tx_count - BLE_CONTROLLER_DEFAULT_TX_PACKET_COUNT) * \
+        (BLE_CONTROLLER_MEM_BUFFER_OVERHEAD_SIZE + BLE_CONTROLLER_DEFAULT_TX_PACKET_SIZE) + \
+     (rx_count - BLE_CONTROLLER_DEFAULT_RX_PACKET_COUNT) * \
+        (BLE_CONTROLLER_MEM_BUFFER_OVERHEAD_SIZE + BLE_CONTROLLER_DEFAULT_RX_PACKET_SIZE))
+
+/** @brief Maximum memory required per master link.
+ *
+ * @param[in] tx_size Link Layer TX packet size.
+ * @param[in] rx_size Link Layer RX packet size.
+ * @param[in] tx_count Link Layer TX packet count.
+ * @param[in] rx_count Link Layer RX packet count.
+ */
+#define BLE_CONTROLLER_MEM_PER_MASTER_LINK(tx_size, rx_size, tx_count, rx_count) \
+    (BLE_CONTROLLER_MEM_DEFAULT_MASTER_LINK_SIZE + \
+     BLE_CONTROLLER_MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
+
+/** @brief Maximum memory required per slave link.
+ *
+ * @param[in] tx_size Link Layer TX packet size.
+ * @param[in] rx_size Link Layer RX packet size.
+ * @param[in] tx_count Link Layer TX packet count.
+ * @param[in] rx_count Link Layer RX packet count.
+ */
+#define BLE_CONTROLLER_MEM_PER_SLAVE_LINK(tx_size, rx_size, tx_count, rx_count) \
+    (BLE_CONTROLLER_MEM_DEFAULT_SLAVE_LINK_SIZE + \
+     BLE_CONTROLLER_MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
+
+/** Maximum shared memory required for master links. */
+#define BLE_CONTROLLER_MEM_MASTER_LINKS_SHARED 40
+
+/** Maximum shared memory required for slave links. */
+#define BLE_CONTROLLER_MEM_SLAVE_LINKS_SHARED  40
+
+/** @} end of ble_controller_mem_defines */
 
 /** @brief    Function prototype for the fault handler.
  *
@@ -107,7 +180,7 @@ enum NRF_LF_CLOCK_SRC
 };
 
 
-/**@brief Type representing LFCLK oscillator source. */
+/** @brief Type representing LFCLK oscillator source. */
 typedef struct
 {
     uint8_t lf_clk_source; /**< LF oscillator clock source, see @ref NRF_LF_CLOCK_SRC. */
@@ -139,7 +212,7 @@ typedef struct
                                       If the temperature changes more that 0.5 every 4 seconds, the
                                       clock will be calibrated every 4 seconds. See the
                                       Product Specification for more information. */
-    uint8_t accuracy;    /**< External clock accuracy used in the LL to compute timing windows,
+    uint8_t accuracy;    /**< External clock accuracy used in the Link Layer to compute timing windows,
                               see @ref NRF_LF_CLOCK_SRC. */
 } nrf_lf_clock_cfg_t;
 

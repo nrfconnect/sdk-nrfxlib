@@ -32,32 +32,32 @@ extern "C" {
 #include "nrf_errno.h"
 
 
-/**@brief  The shortest allowed timeslot event in microseconds. */
+/** @brief  The shortest allowed timeslot event in microseconds. */
 #define TIMESLOT_LENGTH_MIN_US                    (100UL)
 
-/**@brief  The longest allowed timeslot event in microseconds. */
+/** @brief  The longest allowed timeslot event in microseconds. */
 #define TIMESLOT_LENGTH_MAX_US                    (100000UL)
 
-/**@brief  The longest timeslot distance in microseconds allowed for the distance parameter
+/** @brief  The longest timeslot distance in microseconds allowed for the distance parameter
            see @ref timeslot_request_normal_t. */
 #define TIMESLOT_DISTANCE_MAX_US                  (128000000UL - 1UL)
 
-/**@brief  The longest timeout in microseconds allowed when requesting the earliest possible timeslot. */
+/** @brief  The longest timeout in microseconds allowed when requesting the earliest possible timeslot. */
 #define TIMESLOT_EARLIEST_TIMEOUT_MAX_US          (128000000UL - 1UL)
 
-/**@brief  The maximum jitter in @ref TIMESLOT_SIGNAL_START relative to the requested start time. */
+/** @brief  The maximum jitter in @ref TIMESLOT_SIGNAL_START relative to the requested start time. */
 #define TIMESLOT_START_JITTER_US                  (2UL)
 
-/**@brief The minimum allowed timeslot extension time. */
+/** @brief The minimum allowed timeslot extension time. */
 #define TIMESLOT_EXTENSION_TIME_MIN_US            (200UL)
 
-/**@brief The maximum processing time to handle a timeslot extension. */
+/** @brief The maximum processing time to handle a timeslot extension. */
 #define TIMESLOT_EXTENSION_PROCESSING_TIME_MAX_US (17UL)
 
-/**@brief The latest time before the end of a timeslot when timeslot can be extended. */
+/** @brief The latest time before the end of a timeslot when timeslot can be extended. */
 #define TIMESLOT_EXTENSION_MARGIN_MIN_US          (79UL)
 
-/**@brief The timeslot signal types. */
+/** @brief The timeslot signal types. */
 enum TIMESLOT_SIGNAL
 {
     TIMESLOT_SIGNAL_START            = 0, /**< This signal indicates the start of the timeslot.
@@ -94,7 +94,7 @@ enum TIMESLOT_SIGNAL
 };
 
 
-/**@brief The actions requested by the signal callback.
+/** @brief The actions requested by the signal callback.
  *
  *  This code gives instructions about what action to take when the signal callback has
  *  returned.
@@ -120,7 +120,7 @@ enum TIMESLOT_SIGNAL_ACTION
 };
 
 
-/**@brief Timeslot high frequency clock source configuration. */
+/** @brief Timeslot high frequency clock source configuration. */
 enum TIMESLOT_HFCLK_CFG
 {
     TIMESLOT_HFCLK_CFG_XTAL_GUARANTEED = 0, /**< The high frequency clock source is the external crystal
@@ -142,14 +142,14 @@ enum TIMESLOT_HFCLK_CFG
 };
 
 
-/**@brief Timeslot event priorities. */
+/** @brief Timeslot event priorities. */
 enum TIMESLOT_PRIORITY
 {
     TIMESLOT_PRIORITY_HIGH   = 0,           /**< High priority. */
     TIMESLOT_PRIORITY_NORMAL = 1,           /**< Low priority. */
 };
 
-/**@brief Timeslot request type. */
+/** @brief Timeslot request type. */
 enum TIMESLOT_REQUEST_TYPE
 {
     TIMESLOT_REQ_TYPE_EARLIEST    = 0,      /**< Request timeslot as early as possible.
@@ -161,7 +161,7 @@ enum TIMESLOT_REQUEST_TYPE
 };
 
 
-/**@brief Parameters for a request for a timeslot as early as possible. */
+/** @brief Parameters for a request for a timeslot as early as possible. */
 typedef struct
 {
     uint8_t       hfclk;        /**< High frequency clock source, see @ref TIMESLOT_HFCLK_CFG. */
@@ -174,7 +174,7 @@ typedef struct
 } timeslot_request_earliest_t;
 
 
-/**@brief Parameters for a normal timeslot request. */
+/** @brief Parameters for a normal timeslot request. */
 typedef struct
 {
     uint8_t       hfclk;        /**< High frequency clock source, see @ref TIMESLOT_HFCLK_CFG. */
@@ -186,7 +186,7 @@ typedef struct
 } timeslot_request_normal_t;
 
 
-/**@brief Timeslot request parameters. */
+/** @brief Timeslot request parameters. */
 typedef struct
 {
     uint8_t                       request_type;  /**< Type of request, see @ref TIMESLOT_REQUEST_TYPE. */
@@ -199,7 +199,7 @@ typedef struct
 } timeslot_request_t;
 
 
-/**@brief Return parameters of the timeslot signal callback. */
+/** @brief Return parameters of the timeslot signal callback. */
 typedef struct
 {
     uint8_t         callback_action;      /**< The action requested by the application when
@@ -223,7 +223,7 @@ typedef struct
 } timeslot_signal_return_param_t;
 
 
-/**@brief The timeslot signal callback type.
+/** @brief The timeslot signal callback type.
  *
  * @note In case of invalid return parameters, the timeslot will automatically end
  *       immediately after returning from the signal callback and the
@@ -238,7 +238,7 @@ typedef struct
 typedef timeslot_signal_return_param_t * (*timeslot_callback_t) (uint32_t signal);
 
 
-/**@brief Opens a session for timeslot requests.
+/** @brief Opens a session for timeslot requests.
  *
  * @note Only one session can be open at a time.
  * @note timeslot_signal_callback(@ref TIMESLOT_SIGNAL_START) will be called when the timeslot
@@ -257,7 +257,7 @@ typedef timeslot_signal_return_param_t * (*timeslot_callback_t) (uint32_t signal
 int32_t timeslot_session_open(timeslot_callback_t timeslot_signal_callback);
 
 
-/**@brief Closes a session for timeslot requests.
+/** @brief Closes a session for timeslot requests.
  *
  * @note Any current timeslot will be finished before the session is closed.
  * @note If a timeslot is scheduled when the session is closed, it will be canceled.
@@ -268,7 +268,7 @@ int32_t timeslot_session_open(timeslot_callback_t timeslot_signal_callback);
 int32_t timeslot_session_close(void);
 
 
-/**@brief Requests a timeslot.
+/** @brief Requests a timeslot.
  *
  * @note The first request in a session must always be of type @ref TIMESLOT_REQ_TYPE_EARLIEST.
 

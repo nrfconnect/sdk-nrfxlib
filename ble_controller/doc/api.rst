@@ -10,6 +10,13 @@ BLE Controller
    :project: nrfxlib
    :members:
 
+Memory requirement defines
+==========================
+
+.. doxygengroup:: ble_controller_mem_defines
+   :project: nrfxlib
+   :members:
+
 
 BLE Controller HCI
 ******************
@@ -18,6 +25,41 @@ BLE Controller HCI
    :project: nrfxlib
    :members:
 
+
+BLE Controller HCI VS
+*********************
+
+.. doxygengroup:: ble_controller_hci_vs
+   :project: nrfxlib
+   :members:
+
+HCI VS Types
+============
+
+.. doxygengroup:: HCI_VS_TYPES
+   :project: nrfxlib
+   :members:
+
+HCI VS Events
+=============
+
+.. doxygengroup:: HCI_VS_EVENTS
+   :project: nrfxlib
+   :members:
+
+HCI VS Commands
+===============
+
+.. doxygengroup:: HCI_VS_COMMANDS
+   :project: nrfxlib
+   :members:
+
+HCI VS API
+==========
+
+.. doxygengroup:: HCI_VS_API
+   :project: nrfxlib
+   :members:
 
 BLE Controller SoC
 ************************
