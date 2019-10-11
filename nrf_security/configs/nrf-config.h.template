@@ -1168,7 +1168,7 @@
  *
  * Uncomment to enable the smaller implementation of SHA256.
  */
-//#define MBEDTLS_SHA256_SMALLER
+#cmakedefine MBEDTLS_SHA256_SMALLER
 
 /**
  * \def MBEDTLS_SSL_ALL_ALERT_MESSAGES
@@ -2911,8 +2911,8 @@
  */
 
 /* MPI / BIGNUM options */
-//#define MBEDTLS_MPI_WINDOW_SIZE            6 /**< Maximum windows size used. */
-//#define MBEDTLS_MPI_MAX_SIZE            1024 /**< Maximum number of bytes for usable MPIs. */
+#cmakedefine MBEDTLS_MPI_WINDOW_SIZE         @MBEDTLS_MPI_WINDOW_SIZE@ /**< Maximum windows size used. */
+#cmakedefine MBEDTLS_MPI_MAX_SIZE            @MBEDTLS_MPI_MAX_SIZE@ /**< Maximum number of bytes for usable MPIs. */
 
 /* CTR_DRBG options */
 //#define MBEDTLS_CTR_DRBG_ENTROPY_LEN               48 /**< Amount of entropy used per seed by default (48 with SHA-512, 32 with SHA-256) */
@@ -2932,9 +2932,9 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 //#define MBEDTLS_HMAC_DRBG_MAX_SEED_INPUT      384 /**< Maximum size of (re)seed buffer */
 
 /* ECP options */
-//#define MBEDTLS_ECP_MAX_BITS             521 /**< Maximum bit size of groups */
-//#define MBEDTLS_ECP_WINDOW_SIZE            6 /**< Maximum window size used */
-//#define MBEDTLS_ECP_FIXED_POINT_OPTIM      1 /**< Enable fixed-point speed-up */
+#cmakedefine MBEDTLS_ECP_MAX_BITS          @MBEDTLS_ECP_MAX_BITS@ /**< Maximum bit size of groups */
+#cmakedefine MBEDTLS_ECP_WINDOW_SIZE       @MBEDTLS_ECP_WINDOW_SIZE@ /**< Maximum window size used */
+#cmakedefine MBEDTLS_ECP_FIXED_POINT_OPTIM @MBEDTLS_ECP_FIXED_POINT_OPTIM@ /**< Enable fixed-point speed-up */
 
 /* Entropy options */
 //#define MBEDTLS_ENTROPY_MAX_SOURCES                20 /**< Maximum number of sources supported */
@@ -2989,7 +2989,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  * will override this length by setting maximum incoming and/or outgoing
  * fragment length, respectively.
  */
-//#define MBEDTLS_SSL_MAX_CONTENT_LEN             16384
+#cmakedefine MBEDTLS_SSL_MAX_CONTENT_LEN @MBEDTLS_SSL_MAX_CONTENT_LEN@
 
 /** \def MBEDTLS_SSL_IN_CONTENT_LEN
  *
@@ -3056,7 +3056,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  *
  * The value below is only an example, not the default.
  */
-//#define MBEDTLS_SSL_CIPHERSUITES MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,MBEDTLS_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+#cmakedefine MBEDTLS_SSL_CIPHERSUITES @MBEDTLS_SSL_CIPHERSUITES@
 
 /* X509 options */
 //#define MBEDTLS_X509_MAX_INTERMEDIATE_CA   8   /**< Maximum number of intermediate CAs in a verification chain. */
