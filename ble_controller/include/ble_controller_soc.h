@@ -32,7 +32,7 @@ extern "C" {
 #include "nrf_errno.h"
 
 
-/**@brief Flash command status. */
+/** @brief Flash command status. */
 enum BLE_CONTROLLER_FLASH_CMD_STATUS
 {
     BLE_CONTROLLER_FLASH_CMD_STATUS_SUCCESS = 0,
@@ -40,7 +40,7 @@ enum BLE_CONTROLLER_FLASH_CMD_STATUS
 };
 
 
-/**@brief Flash command callback.
+/** @brief Flash command callback.
  *
  * The flash command callback will be called when a flash operation is completed.
  * It will be executed in the same execution priority as @ref ble_controller_low_prio_tasks_process.
@@ -50,7 +50,7 @@ enum BLE_CONTROLLER_FLASH_CMD_STATUS
 typedef void (*ble_controller_flash_callback_t)(uint32_t status);
 
 
-/**@brief High frequency clock callback.
+/** @brief High frequency clock callback.
  *
  * This callback will be called when a the high frequency clock is started.
  * It will be executed in the same execution priority as @ref ble_controller_low_prio_tasks_process.
@@ -58,7 +58,7 @@ typedef void (*ble_controller_flash_callback_t)(uint32_t status);
 typedef void (*ble_controller_hf_clock_callback_t)(void);
 
 
-/**@brief Write data to flash
+/** @brief Write data to flash.
  *
  * This asynchronous API will ensure that the flash operation will not interfere with radio activity.
  * The completion will be communicated to the application through the provided callback function.
@@ -87,7 +87,7 @@ int32_t ble_controller_flash_write(uint32_t addr,
                                    ble_controller_flash_callback_t on_complete);
 
 
-/**@brief Erase a flash page
+/** @brief Erase a flash page.
  *
  * This asynchronous API will ensure that the flash operation will not interfere with radio activity.
  * The completion will be communicated to the application through the provided callback function.
@@ -106,7 +106,7 @@ int32_t ble_controller_flash_write(uint32_t addr,
 int32_t ble_controller_flash_page_erase(uint32_t addr, ble_controller_flash_callback_t on_complete);
 
 
-/**@brief Get random bytes from the random pool.
+/** @brief Get random bytes from the random pool.
  *
  * The BLE Controller will use NRF_RNG to obtain the numbers.
  * The function can be called from ISR context.
@@ -122,7 +122,7 @@ int32_t ble_controller_flash_page_erase(uint32_t addr, ble_controller_flash_call
 uint32_t ble_controller_rand_vector_get(uint8_t * p_dst, uint16_t length);
 
 
-/**@brief Get random bytes from the random pool synchronously
+/** @brief Get random bytes from the random pool synchronously
  *
  * The BLE Controller will use NRF_RNG to obtain the numbers.
  * The function can be called from ISR context.
@@ -138,7 +138,7 @@ uint32_t ble_controller_rand_vector_get(uint8_t * p_dst, uint16_t length);
 void ble_controller_rand_vector_get_blocking(uint8_t * p_dst, uint16_t length);
 
 
-/**@brief Encrypts a block according to the specified parameters.
+/** @brief Encrypt a block according to the specified parameters.
  *
  * The BLE Controller will use NRF_ECB encrypt the block. The encryption type is 128-bit AES.
  *
@@ -158,7 +158,7 @@ int32_t ble_controller_ecb_block_encrypt(const uint8_t key[16],
                                          uint8_t ciphertext[16]);
 
 
-/**@brief Request the high frequency crystal oscillator.
+/** @brief Request the high frequency crystal oscillator.
  *
  * This API will start the high frequency crystal oscillator if it is not already running.
  * The high frequency clock will be kept running until @ref ble_controller_hf_clock_release is called.
@@ -172,7 +172,7 @@ int32_t ble_controller_ecb_block_encrypt(const uint8_t key[16],
 int32_t ble_controller_hf_clock_request(ble_controller_hf_clock_callback_t on_started);
 
 
-/**@brief Releases the high frequency crystal oscillator.
+/** @brief Release the high frequency crystal oscillator.
  *
  * This API will stop the high frequency crystal oscillator. The BLE Controller may continue to
  * use the high frequency clock for BLE activity. However, the BLE Controller will automatically
@@ -183,7 +183,7 @@ int32_t ble_controller_hf_clock_request(ble_controller_hf_clock_callback_t on_st
 int32_t ble_controller_hf_clock_release(void);
 
 
-/**@brief Checks if the high frequency crystal oscillator is running.
+/** @brief Checks if the high frequency crystal oscillator is running.
  *
  * @param[out] p_is_running Set to true if the high frequency crystal oscillator is running.
  *
@@ -192,7 +192,7 @@ int32_t ble_controller_hf_clock_release(void);
 int32_t ble_controller_hf_clock_is_running(bool * p_is_running);
 
 
-/**@brief Get the temperature measured on the chip
+/** @brief Get the temperature measured on the chip.
  *
  * This function will block until the temperature measurement is done.
  *
