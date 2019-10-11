@@ -38,6 +38,18 @@ endmacro()
 
 #
 # Internal macro which will enable the define in mbed TLS config file based on
+# the corresponding Kconfig setting.
+# The macro will use the value provided as second argument in the config header.
+#
+macro(kconfig_mbedtls_config_val base val)
+  if (CONFIG_${base})
+    nrf_security_debug("Setting ${base} to ${val}")
+    set(${base} ${val})
+  endif()
+endmacro()
+
+#
+# Internal macro which will enable the define in mbed TLS config file based on
 # the correspong Kconfig setting (for _ALT flags)
 # Any additional arguments given are dependencies to to first argument, such
 # that those arguments will be set to TRUE if first argument is TRUE.
@@ -140,6 +152,18 @@ kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_CBC_C")
 kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_CTR_C")
 kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_CCM_C")
 kconfig_mbedtls_config("MBEDTLS_AES_256_CMAC_C")
+
+#
+# Advanced configuration setting for mbed TLS
+#
+kconfig_mbedtls_config_val("MBEDTLS_MPI_WINDOW_SIZE"       "${CONFIG_MBEDTLS_MPI_WINDOW_SIZE}")
+kconfig_mbedtls_config_val("MBEDTLS_MPI_MAX_SIZE"          "${CONFIG_MBEDTLS_MPI_MAX_SIZE}")
+kconfig_mbedtls_config_val("MBEDTLS_ECP_MAX_BITS"          "${CONFIG_MBEDTLS_ECP_MAX_BITS}")
+kconfig_mbedtls_config_val("MBEDTLS_ECP_WINDOW_SIZE"       "${CONFIG_MBEDTLS_ECP_WINDOW_SIZE}")
+kconfig_mbedtls_config_val("MBEDTLS_ECP_FIXED_POINT_OPTIM" "1")
+kconfig_mbedtls_config_val("MBEDTLS_SSL_MAX_CONTENT_LEN"   "${CONFIG_MBEDTLS_SSL_MAX_CONTENT_LEN}")
+kconfig_mbedtls_config_val("MBEDTLS_SSL_CIPHERSUITES"      "${CONFIG_MBEDTLS_SSL_CIPHERSUITES}")
+kconfig_mbedtls_config("MBEDTLS_SHA256_SMALLER")
 
 #
 # CC310 flags for threading and platform zeroize
@@ -442,10 +466,5 @@ zephyr_include_directories(${generated_includes})
 #
 if (CONFIG_GENERATE_MBEDTLS_CFG_FILE)
 configure_file(${CMAKE_CURRENT_LIST_DIR}/../configs/nrf-config.h.template
-               ${config_include}/${CONFIG_MBEDTLS_CFG_FILE})
-endif()
-
-if (CONFIG_GENERATE_THREAD_MBEDTLS_CFG_FILE)
-configure_file(${CMAKE_CURRENT_LIST_DIR}/../configs/nrf-config-thread.h.template
                ${config_include}/${CONFIG_MBEDTLS_CFG_FILE})
 endif()

@@ -32,18 +32,6 @@ config GENERATE_MBEDTLS_CFG_FILE
 	  mbed TLS configuration file. Only disable this setting if you know
 	  what you are doing.
 
-config GENERATE_THREAD_MBEDTLS_CFG_FILE
-	bool
-	prompt "Generate mbed TLS config file for Thread"
-	depends on !GENERATE_MBEDTLS_CFG_FILE
-	help
-	  nRF Connect SDK Security will generate a mbed TLS configuration file
-	  based on the selection of configuration options in Kconfig.
-	  However, if the generated configuration file needs custom
-	  adjustments, this setting can be used to disable generating the
-	  mbed TLS configuration file. Only disable this setting if you know
-	  what you are doing.
-
 
 config MBEDTLS_X509_LIBRARY
 	bool
@@ -805,6 +793,102 @@ config APP_LINK_WITH_MBEDTLS_INCLUDES
 	default y
 	help
 	  Add mbedcrypto header files to the 'app' include path.
+
+if MBEDTLS_VANILLA_BACKEND
+
+comment "Advanced configuration section"
+
+menuconfig NRF_SECURITY_ADVANCED
+	bool
+	prompt "Advanced mbed TLS Configuration Settings"
+	depends on MBEDTLS_VANILLA_BACKEND
+	help
+	  This setting will enable the advanced configuration menu.
+	  The advanced configuration allows for further fine tuning of the mbed TLS configuration
+	  by adjusting , as example: SSL maximum content sizes, disabling of specific cipher suites,
+	  ECP bit sizes, Bignum options.
+
+if NRF_SECURITY_ADVANCED
+
+comment "Advanced mbed TLS settings"
+
+config MBEDTLS_MPI_WINDOW_SIZE
+	int "MPI - Multiple Precision Integers window size"
+	range 1 6
+	default 6
+	help
+	  Window size used for Multiple Precision Integers (MPI) / Bignum calculation.
+	  Note that reducing this value might have an impact on the performance.
+	  MBEDTLS_MPI_WINDOW_SIZE setting in mbed TLS config file.
+
+config MBEDTLS_MPI_MAX_SIZE
+	int "MPI - Multiple Precision Integers maximum size"
+	range 0 1024
+	default 1024
+	help
+	  Maximum number of bytes for usable Multiple Precision Integers (MPI) / Bignum.
+	  This will reduce the size of MPIs that can be used for calculation.
+	  Only reduce this value if it is ensured that the system won't need larger numbers.
+	  MBEDTLS_MPI_MAX_SIZE setting in mbed TLS config file.
+
+config MBEDTLS_ECP_MAX_BITS
+	int "ECP - Max bit size of Elliptic Curves"
+	range 0 521
+	default 521
+	help
+	  This setting controls the largest elliptic curve supported in the library.
+	  If only smaller curves are used, then this value can be reduced in order to save memory.
+	  MBEDTLS_ECP_MAX_BITS setting in mbed TLS config file.
+
+config MBEDTLS_ECP_WINDOW_SIZE
+	int "ECP - Elliptic Curve multiplication window size"
+	range 2 6
+	default 6
+	help
+	  Window sized used for elliptic curve multiplication. This value can be reduce down to 2.
+	  Reducing the value will impact the performance of the system.
+	  MBEDTLS_ECP_WINDOW_SIZE setting in mbed TLS config file.
+
+config MBEDTLS_ECP_FIXED_POINT_OPTIM
+	bool "ECP - Elliptic Curve fixed point optimization"
+	default y
+	help
+	  This setting control ECP fixed point optimizations.
+	  If disabled, the system will use less memory, but it will also reduce the performance of
+	  the system.
+	  MBEDTLS_ECP_FIXED_POINT_OPTIM setting in mbed TLS config file.
+
+config MBEDTLS_SHA256_SMALLER
+	bool "Use SHA256 small footprint implementation"
+	depends on MBEDTLS_SHA256_C && NRF_SECURITY_ADVANCED
+	help
+	  Use a SHA-256 implementation with smaller footprint.
+	  Note, that this implementation will also have a lower performance.
+	  On a Cortex-M4 the size of mbedtls_sha256_process() will be reduced from ~2KB to ~0.5KB,
+	  however it will also perform around 30% slower.
+	  MBEDTLS_SHA256_SMALLER setting in mbed TLS config file.
+
+config MBEDTLS_SSL_MAX_CONTENT_LEN
+	int "SSL - Maximum buffer size"
+	range 0 16384
+	default 16384
+	help
+	  Maximum buffer size for incoming and outgoing mbed TLS I/O buffers.
+	  MBEDTLS_SSL_MAX_CONTENT_LEN setting in mbed TLS config file.
+
+config MBEDTLS_SSL_CIPHERSUITES
+	string "SSL - Cipher suites tuning"
+	help
+	  List of cipher suites to support in SSL/TLS.
+	  The cipher suites are given as a comma separated string, and in order of preference.
+	  This list can only be used for restricting cipher suites available in the system.
+	  Warning: This field has offers no validation checks.
+	  MBEDTLS_SSL_CIPHERSUITES setting in mbed TLS config file.
+
+
+endif # NRF_SECURITY_ADVANCED
+
+endif # MBEDTLS_VANILLA_BACKEND
 
 endif # NORDIC_SECURITY_BACKEND
 
