@@ -13,6 +13,16 @@ nRF CC310 bootloader crypto library
    :members:
 
 
+.. _crypto_api_nrf_cc310_platform:
+
+nRF CC310 platform library
+**************************
+
+.. doxygengroup:: nrf_cc310_platform
+   :project: nrfxlib
+   :members:
+
+
 .. _crypto_api_nrf_oberon:
    
 nrf_oberon crypto library

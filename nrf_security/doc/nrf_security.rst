@@ -43,6 +43,7 @@ It is possible to provide your own custom mbed TLS configuration file by deselec
 .. note::
    Deselecting the :option:`CONFIG_GENERATE_MBEDTLS_CFG_FILE` Kconfig variable
    is not recommended.
+   But if doing so, please read `User provided mbed TLS config header`_.
 
 
 Enabling backends
@@ -56,6 +57,7 @@ Note that configuration options added after enabling one or more backends will c
 Some configuration options allow for adding support from multiple backends by utilizing the mbed TLS glue layer, while other provide a selection between the enabled backends (as radio buttons).
 
 The nrf_security module supports two backends:
+
 * Arm CryptoCell CC310 (in nRF52840 and nRF9160)
 * Standard mbed TLS
 
@@ -194,7 +196,8 @@ To enable the cryptographic algorithm, one of the backend defines must be enable
 
 AES configuration
 ------------------
-AES configurations must be made depending if a single or multiple backends are used.
+
+AES core configuration can be enabled by setting the :option:`CONFIG_MBEDTLS_AES_C` Kconfig variable.
 Enabling AES core support enables AES ECB cipher mode and allows for the following ciphers to be configured: CTR, OFB, CFB, CBC, XTS, CMAC, CCM, CCM*, and GCM.
 
 Single backend
@@ -238,11 +241,11 @@ AES cipher mode support can be configured according to the following table:
 +--------------+----------------+---------------------------------------------+
 | XTS          | Standard only  | :option:`CONFIG_MBEDTLS_CIPHER_MODE_XTS`    |
 +--------------+----------------+---------------------------------------------+
-|CMAC          |                | :option:`CONFIG_MBEDTLS_CMAC_C`             |
+| CMAC          |                | :option:`CONFIG_MBEDTLS_CMAC_C`            |
 +--------------+----------------+---------------------------------------------+
 
 .. note::
-   Currently, AES cipher modes OFB, CFB, and XTS are only supported by standard mbed TLS.
+   Currently, AES cipher mode XTS is only supported by standard mbed TLS.
 
 .. note::
    The CC310 backend is limited to key sizes of 128 bits.
@@ -262,9 +265,9 @@ AES cipher mode support can be configured according to the following table:
 |              |                |                                                           |
 |              |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_CIPHER_MODE_CBC`|
 +--------------+----------------+-----------------------------------------------------------+
-| CFB          | Standard only  | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CFB`                  |
+| CFB          | Glue           | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CFB`                  |
 +--------------+----------------+-----------------------------------------------------------+
-| OFB          | Standard only  | :option:`CONFIG_MBEDTLS_CIPHER_MODE_OFB`                  |
+| OFB          | Glue           | :option:`CONFIG_MBEDTLS_CIPHER_MODE_OFB`                  |
 +--------------+----------------+-----------------------------------------------------------+
 | XTS          | Standard only  | :option:`CONFIG_MBEDTLS_CIPHER_MODE_XTS`                  |
 +--------------+----------------+-----------------------------------------------------------+
@@ -276,6 +279,9 @@ AES cipher mode support can be configured according to the following table:
 .. note::
    The CC310 backend is limited to key sizes of 128 bits.
 
+.. note::
+   XTS will not be available if multiple backends are enabled for AES.
+
 AEAD configurations
 -------------------
 Authenticated Encryption with Associated Data (AEAD) can be enabled according to the cipher in question.
@@ -286,15 +292,19 @@ Single backend
 
 AEAD cipher mode support can be configured according to the following table:
 
-+--------------+----------------+---------------------------------------+
-| AEAD cipher  | Note           | Configurations                        |
-+==============+================+=======================================+
-| AES CCM/CCM* |                | :option:`CONFIG_MBEDTLS_CCM_C`        |
-+--------------+----------------+---------------------------------------+
-| AES GCM      | Standard only  | :option:`CONFIG_MBEDTLS_GCM_C`        |
-+--------------+----------------+---------------------------------------+
-| ChaCha-Poly  | Standard only  | :option:`CONFIG_MBEDTLS_CHACHA20_C`   |
-+--------------+----------------+---------------------------------------+
++--------------+------------------------------------+---------------------------------------+
+| AEAD cipher  | Note                               | Configurations                        |
++==============+====================================+=======================================+
+| AES CCM/CCM* |                                    | :option:`CONFIG_MBEDTLS_CCM_C`        |
++--------------+------------------------------------+---------------------------------------+
+| AES GCM      | Standard only                      | :option:`CONFIG_MBEDTLS_GCM_C`        |
++--------------+------------------------------------+---------------------------------------+
+| ChaCha20     |                                    | :option:`CONFIG_MBEDTLS_CHACHA20_C`   |
++--------------+------------------------------------+---------------------------------------+
+| Poly1305     |                                    | :option:`CONFIG_MBEDTLS_POLY1305_C`   |
++--------------+------------------------------------+---------------------------------------+
+| ChaCha-Poly  | Requires `Poly1305` and `ChaCha20` | :option:`CONFIG_MBEDTLS_CHACHAPOLY_C` |
++--------------+------------------------------------+---------------------------------------+
 
 .. note::
    AEAD AES cipher modes are dependent on enabling AES core support according to `AES configuration`_.
@@ -307,17 +317,29 @@ Multiple backends
 
 AEAD cipher mode support can be configured according to the following table:
 
-+--------------+----------------+-------------------------------------------------------+
-| AEAD cipher  | Support        | Configurations                                        |
-+==============+================+=======================================================+
-| AES CCM      | Glue           | CC310: :option:`CONFIG_CC310_MBEDTLS_CCM_C`           |
-|              |                |                                                       |
-| AES CCM*     |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_CCM_C`      |
-+--------------+----------------+-------------------------------------------------------+
-| AES GCM      | Standard only  | :option:`CONFIG_MBEDTLS_GCM_C`                        |
-+--------------+----------------+-------------------------------------------------------+
-| ChaCha-Poly  | Standard only  | :option:`CONFIG_MBEDTLS_CHACHA20_C`                   |
-+--------------+----------------+-------------------------------------------------------+
++--------------+----------------+---------------------------------------------------------+
+| AEAD cipher  | Support        | Configurations                                          |
++==============+================+=========================================================+
+| AES CCM      | Glue           | CC310: :option:`CONFIG_CC310_MBEDTLS_CCM_C`             |
+|              |                |                                                         |
+| AES CCM*     |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_CCM_C`        |
++--------------+----------------+---------------------------------------------------------+
+| AES GCM      | Standard only  | :option:`CONFIG_MBEDTLS_GCM_C`                          |
++--------------+----------------+---------------------------------------------------------+
+| ChaCha-Poly  | Standard only  | :option:`CONFIG_MBEDTLS_CHACHA20_C`                     |
++--------------+----------------+---------------------------------------------------------+
+| ChaCha20     | Choice         | CC310: :option:`CONFIG_CC310_MBEDTLS_CHACHA20_C` or     |
+|              |                |                                                         |
+|              |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_CHACHA20_C`   |
++--------------+----------------+---------------------------------------------------------+
+| Poly1305     | Choice         | CC310: :option:`CONFIG_CC310_MBEDTLS_POLY1305_C`        |
+|              |                |                                                         |
+|              |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_POLY1305_C`   |
++--------------+----------------+---------------------------------------------------------+
+| ChaCha-Poly  | Choice         | CC310: :option:`CONFIG_VANILLA_MBEDTLS_CHACHAPOLY_C`    |
+|              |                |                                                         |
+|              |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_CHACHAPOLY_C` |
++--------------+----------------+---------------------------------------------------------+
 
 .. note::
    AEAD AES cipher modes are dependent on AES core support according to `AES configuration`_.
@@ -360,9 +382,42 @@ DHM support can be configured according to the following table:
 .. note::
    The CC310 backend is limited to key size of <= 2048 bits.
 
+
+ECC configurations
+------------------
+Elliptic Curve Cryptography (ECC) configuration provides support for Elliptic
+Curve over GF(p) library from CC310 / mbed TLS standard libray.
+ECC can be enabled by setting the :option:`CONFIG_MBEDTLS_ECP_C` Kconfig variable.
+Enabling :option:`CONFIG_MBEDTLS_ECP_C` will activate configuration options
+that are depending upon ECC, such as ECDH, ECDSA, ECJPAKE, and selection of
+ECC Curves to support in the system.
+If multiple backends are available, it is possible to select which backend to
+use for :option:`CONFIG_MBEDTLS_ECP_C`.
+
+Single backend
+~~~~~~~~~~~~~~
+Elliptic Curve over GF(p) provides core support for Elliptic Curve Cryptography
+and can be configured by setting the :option:`CONFIG_MBEDTLS_AES_C` Kconfig
+variable.
+
+Multiple backends
+~~~~~~~~~~~~~~~~~
+When multiple backends are available, then it can be configured which backend to
+use for Elliptic Curve over GF(p) according to the following table.
+
++--------------+----------------+-------------------------------------------------+
+| Module       | Support        | Configurations                                  |
++==============+================+=================================================+
+| ECP          | Choice         | CC310: :option:`CONFIG_CC310_MBEDTLS_ECP_C`     |
+|              |                |                                                 |
+|              |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_ECP_C`|
++--------------+----------------+-------------------------------------------------+
+
+
 ECDH configurations
 -------------------
 Elliptic Curve Diffie-Hellman (ECDH) support can be configured by setting Kconfig variables according to single or multiple enabled backends.
+ECDH support depends upon `ECC Configurations`_ being enabled.
 
 Single backend
 ~~~~~~~~~~~~~~
@@ -385,7 +440,7 @@ ECDH support can be configured by setting Kconfig according to the following tab
 +--------------+----------------+-------------------------------------------------------+
 | Module       | Support        | Configurations                                        |
 +==============+================+=======================================================+
-| ECDH         | Glue           | CC310: :option:`CONFIG_CC310_MBEDTLS_ECDH_C`          |
+| ECDH         | Choice         | CC310: :option:`CONFIG_CC310_MBEDTLS_ECDH_C`          |
 |              |                |                                                       |
 |              |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_ECDH_C`     |
 +--------------+----------------+-------------------------------------------------------+
@@ -399,6 +454,7 @@ ECDSA configurations
 --------------------
 
 The Elliptic Curve Digital Signature Algorithm (ECDSA) support can be configured by setting Kconfig variables according to single or multiple enabled backends.
+ECDSA support depends upon `ECC Configurations`_ being enabled.
 
 Single backend
 ~~~~~~~~~~~~~~
@@ -421,7 +477,7 @@ ECDSA support can be configured by setting Kconfig variables according to the fo
 +--------------+----------------+-------------------------------------------------------+
 | Module       | Support        | Configurations                                        |
 +==============+================+=======================================================+
-| ECDSA        | Glue           | CC310: :option:`CONFIG_CC310_MBEDTLS_ECDSA_C`         |
+| ECDSA        | Choice         | CC310: :option:`CONFIG_CC310_MBEDTLS_ECDSA_C`         |
 |              |                |                                                       |
 |              |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_ECDSA_C`    |
 +--------------+----------------+-------------------------------------------------------+
@@ -429,6 +485,85 @@ ECDSA support can be configured by setting Kconfig variables according to the fo
 .. note::
    The :ref:`nrf_cc310_mbedcrypto_readme` does not integrate on ECP layer.
    Only the top-level APIs for ECDSA are replaced.
+
+
+ECJPAKE configurations
+----------------------
+
+The Elliptic Curve, Password Authenticated Key Exchange by Juggling (ECJPAKE)
+support can be configured by setting Kconfig variables according to single or
+multiple enabled backends.
+ECJPAKE support depends upon `ECC Configurations`_ being enabled.
+
+Single backend
+~~~~~~~~~~~~~~
+ECJPAKE support can be configured by setting the :option:`CONFIG_MBEDTLS_ECJPAKE_C` Kconfig variable.
+
++--------------+----------------+---------------------------------------+
+| Module       | Note           | Configurations                        |
++==============+================+=======================================+
+| ECJPAKE      |                | :option:`CONFIG_MBEDTLS_ECJPAKE_C`    |
++--------------+----------------+---------------------------------------+
+
+Multiple backends
+~~~~~~~~~~~~~~~~~
+If multiple backends are available and ECJPAKE support is enabled, then the
+following table shows the backend selection priority.
+
++--------------+----------------+-------------------------------------------------------+
+| Module       | Priority       | Configurations                                        |
++==============+================+=======================================================+
+| ECJPAKE      | 1st            | CC310: :option:`CONFIG_CC310_MBEDTLS_ECJPAKE_C`       |
+|              |                |                                                       |
+|              | 2nd            | Standard                                              |
++--------------+----------------+-------------------------------------------------------+
+
+.. note::
+   In order to ensure correct behavior of ECJPAKE it is not possible for the
+   user to select a prefered backend version for ECJPAKE.
+
+
+ECC curves configurations
+-------------------------
+It is possible to configure the curves that should be supported in the system
+depending on the backend selected.
+
+The following table shows the curves that can be configured.
+
++----------------------------+----------------+------------------------------------------------------+
+| Curve                      | Note           | Configurations                                       |
++============================+================+======================================================+
+| NIST secp192r1             |                | :option:`CONFIG_MBEDTLS_ECP_DP_SECP192R1_ENABLED`    |
++----------------------------+----------------+------------------------------------------------------+
+| NIST secp224r1             |                | :option:`CONFIG_MBEDTLS_ECP_DP_SECP224R1_ENABLED`    |
++----------------------------+----------------+------------------------------------------------------+
+| NIST secp256r1             |                | :option:`CONFIG_MBEDTLS_ECP_DP_SECP256R1_ENABLED`    |
++----------------------------+----------------+------------------------------------------------------+
+| NIST secp384r1             |                | :option:`CONFIG_MBEDTLS_ECP_DP_SECP384R1_ENABLED`    |
++----------------------------+----------------+------------------------------------------------------+
+| NIST secp521r1             |                | :option:`CONFIG_MBEDTLS_ECP_DP_SECP521R1_ENABLED`    |
++----------------------------+----------------+------------------------------------------------------+
+| Koblitz secp192k1          |                | :option:`CONFIG_MBEDTLS_ECP_DP_SECP192K1_ENABLED`    |
++----------------------------+----------------+------------------------------------------------------+
+| Koblitz secp224k1          |                | :option:`CONFIG_MBEDTLS_ECP_DP_SECP224K1_ENABLED`    |
++----------------------------+----------------+------------------------------------------------------+
+| Koblitz secp256k1          |                | :option:`CONFIG_MBEDTLS_ECP_DP_SECP256K1_ENABLED`    |
++----------------------------+----------------+------------------------------------------------------+
+| Brainpool bp256r1          | Standard Only  | :option:`CONFIG_MBEDTLS_ECP_DP_BP256R1_ENABLED`      |
++----------------------------+----------------+------------------------------------------------------+
+| Brainpool bp384r1          | Standard Only  | :option:`CONFIG_MBEDTLS_ECP_DP_BP384R1_ENABLED`      |
++----------------------------+----------------+------------------------------------------------------+
+| Brainpool bp512r1          | Standard Only  | :option:`CONFIG_MBEDTLS_ECP_DP_BP512R1_ENABLED`      |
++----------------------------+----------------+------------------------------------------------------+
+| Curve25519 / Edwards25519  |                | :option:`CONFIG_MBEDTLS_ECP_DP_CURVE25519_ENABLED`   |
++----------------------------+----------------+------------------------------------------------------+
+| Curve448 / Edwards448      | Standard Only  | :option:`CONFIG_MBEDTLS_ECP_DP_CURVE448_ENABLED`     |
++----------------------------+----------------+------------------------------------------------------+
+
+.. note::
+   For the curves available in `Standard Only` mbed TLS to ba available then all
+   enabled ECC based features must use mbed TLS as backend. That is: ECDH, ECDSA, ECJPAKE.
+
 
 
 RSA configurations
@@ -512,6 +647,66 @@ Platform specific configurations
 The Kconfig integration of nrf_security module coupled with CMake sets some default configurations to ensure the backend works as expected.
 This includes integration with entropy data sampled from the Arm CC310 hardware, as well as a way to abstract the memory management in an RTOS context.
 See the :ref:`nrf_cc310_mbedcrypto_readme` documentation for details.
+
+
+Advanced configuration section
+------------------------------
+
+The Advanced Configuration section i Kconfig can be used to fine tune the build
+of the standard mbed TLS library.
+
+This provides the possibility of reducing the footprint and memory usage of the
+nRF Security module.
+
+Before adjusting the default settings, please refer to https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint.
+
+.. note::
+   The settings available in `Advanced configuration section`_ are not validated.
+   Thus special care must be taken when adjusting those settings.
+
+
+Multiple Precision Integers (MPI) / Bignum calculation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The :option:`CONFIG_MBEDTLS_MPI_WINDOW_SIZE` Kconfig variable controls the window size
+used in mbed TLS.
+Reducing this value to reduce memory usage. Note that reducing this this value
+might have an impact on the performance.
+
+The :option:`CONFIG_MBEDTLS_MPI_MAX_SIZE` Kconfig variable controls the maximum size of
+MPIs that can be used for calculation.
+Only reduce this value if it is ensured that the system won't need larger numbers.
+
+
+User provided mbed TLS config header
+------------------------------------
+
+The :ref:`nrf_security_readme` provides a Kconfig interface to control
+compilation and linking of mbed TLS and the :ref:`nrf_cc310_mbedcrypto_readme`
+library.
+
+The Kconfig interface and build system ensures that the configuration of
+:ref:`nrf_security_readme` is valid and working, and ensures that depencies
+between different cryptographic APIs are met.
+
+It is therefore highly recommended to let the build system generate the mbed TLS
+configuration header.
+
+However, for special use-case that can not be achieved using the Kconfig
+configuration tool, it is possible to provide a custom mbed TLS configuration
+header. When doing so, care must be taken to ensure a working system.
+
+It it therefore advised to use Kconfig and the build system to create a mbed TLS
+configuration header as a starting point, and then tweak this file to include
+settings not available i Kconfig.
+
+.. note::
+   When providing a custom mbed TLS configuration header, it is important that
+   the following criterea is still met:
+
+   * Entropy length of 144, i.e. ``#define MBEDTLS_ENTROPY_MAX_GATHER 144``
+   * Force SHA256
+
 
 API documentation
 =================

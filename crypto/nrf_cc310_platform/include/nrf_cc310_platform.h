@@ -4,6 +4,14 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 /**@file
+ * @defgroup nrf_cc310_platform nRF CC310 Platform library
+ * @{
+ * @brief nrf_cc310_platform library containing CC310
+ * hardware initialization and entropy gathering APIs. The library also contains
+ * APIs and companion source-files to setus RTOS dependent mutex and abort
+ * functionality for the nrf_cc310_mbedcrypto library in Zephyr RTOS and FreeRTOS.
+ * @}
+ *
  * @defgroup nrf_cc310_platform_init nrf_cc310_platform initialization APIs
  * @ingroup nrf_cc310_platform
  * @{
