@@ -5,6 +5,12 @@
  */
 
 /**@file
+ * @defgroup mbedcrypto_glue nrf_security mbedcrypto glue library
+ * @{
+ * @brief nrf_security mbedcrypto glue library containing glue functionality for
+ *        mbedcrypto APIs when using multiple backends.
+ * @}
+ *
  * @defgroup mbedcrypto_glue_aes mbedcrypto AES glue
  * @ingroup mbedcrypto_glue
  * @{
