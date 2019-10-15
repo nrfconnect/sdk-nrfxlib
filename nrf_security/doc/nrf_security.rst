@@ -46,11 +46,11 @@ It is possible to provide your own custom mbed TLS configuration file by deselec
    But if doing so, please read `User provided mbed TLS config header`_.
 
 
-Enabling backends
-=================
+nrf_security backends
+=====================
 
 The nrf_security module supports multiple enabled backends at the same time.
-This is done to extend the feature set of hardware accelerated cryptography in case it is limited.
+This mechanism is intended to extend the available feature set of hardware accelerated cryptography.
 Enabling one or more backends adds more configuration options grouped into classes of cryptographic algorithms.
 
 Note that configuration options added after enabling one or more backends will change based on the number of enabled backends.
@@ -61,12 +61,34 @@ The nrf_security module supports two backends:
 * Arm CryptoCell CC310 (in nRF52840 and nRF9160)
 * Standard mbed TLS
 
+
+Arm CryptoCell CC310 backend
+----------------------------
+
+The Arm CryptoCell CC310 backend is a library which provides hardware accelerated cryptography using the CC310 hardware.
+
+The Arm CryptoCell CC310 backend is only available on the following devices:
+
+* nRF52840
+* nRF9160
+
+
 Enabling the Arm CryptoCell CC310 backend
 -----------------------------------------
 
 To enable the Arm CryptoCell CC310 backend, set the :option:`CONFIG_CC310_BACKEND` Kconfig variable to true.
 
 .. note:: This backend is only available in nRF52840 and nRF9160.
+
+
+Standard mbed TLS backend
+-------------------------
+
+The standard `mbed TLS backend <https://tls.mbed.org/>`_ is a software-only library provided by Arm.
+
+The standard mbed TLS backend can be used on nRF devices that do not feature the CC310 hardware.
+Alternatively, it can be used on CC310 enabled devices to add support for features not available in the `Arm CryptoCell CC310 backend`_, for example AES-256 or ECC Brainpool curves.
+
 
 Enabling the standard mbed TLS backend
 --------------------------------------
@@ -77,24 +99,10 @@ To enable the standard mbed TLS backend, set the :option:`CONFIG_MBEDTLS_VANILLA
 Using the nrf_cc310_mbedcrypto as backend
 -----------------------------------------
 
-To use the :ref:`nrf_cc310_mbedcrypto_readme` as a backend, it must be initialized using the standard mbed TLS APIs for platform abstraction:
+To use the :ref:`nrf_cc310_mbedcrypto_readme` as a backend, the CC310 hardware must first be initialized.
 
-.. code-block:: c
-    :caption: Initializing the nrf_cc310_mbedcrypto backend
-	
-    static mbedtls_platform_context platform_context = {0};
-    int ret;
-    ret = mbedtls_platform_set_calloc_free(alloc_fn, free_fn);
-    if (ret != 0) {
-            /* Failed to set the alternative calloc/free */
-            return ret;
-    }
-    
-    ret = mbedtls_platform_setup(&platform_context);
-    if (ret != 0) {
-            /* Failed to initialize nrf_cc310_mbedcrypto platform */
-            return ret,
-    }
+The CC310 is initialized in :ref:`nrf:lib_hw_cc310` and is controlled with the :option:`nrf:CONFIG_HW_CC310` Kconfig variable.
+This variable default value is `y` when the CC310 is available.
 
 
 mbed TLS glue layer
@@ -241,7 +249,7 @@ AES cipher mode support can be configured according to the following table:
 +--------------+----------------+---------------------------------------------+
 | XTS          | Standard only  | :option:`CONFIG_MBEDTLS_CIPHER_MODE_XTS`    |
 +--------------+----------------+---------------------------------------------+
-| CMAC          |                | :option:`CONFIG_MBEDTLS_CMAC_C`            |
+| CMAC         |                | :option:`CONFIG_MBEDTLS_CMAC_C`             |
 +--------------+----------------+---------------------------------------------+
 
 .. note::
@@ -652,57 +660,126 @@ See the :ref:`nrf_cc310_mbedcrypto_readme` documentation for details.
 Advanced configuration section
 ------------------------------
 
-The Advanced Configuration section i Kconfig can be used to fine tune the build
-of the standard mbed TLS library.
+The advanced configuration section in Kconfig can be used to fine-tune the build of the `standard mbed TLS backend`_ library.
+For example, the options available in the advanced configuration section can help to reduce the memory usage and flash footprint of the library.
 
-This provides the possibility of reducing the footprint and memory usage of the
-nRF Security module.
+Actual size reductions depend on the option being adjusted.
+They also depend on whether `standard mbed TLS backend`_ is the only backend enabled, or whether the `mbed TLS glue layer`_ is used as well.
 
-Before adjusting the default settings, please refer to https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint.
+Before modifying the default settings, see `this article <https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint>`_.
 
 .. note::
-   The settings available in `Advanced configuration section`_ are not validated.
-   Thus special care must be taken when adjusting those settings.
+   The settings available in the advanced configuration section are not validated.
+   Adjust these settings with caution.
 
 
 Multiple Precision Integers (MPI) / Bignum calculation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The :option:`CONFIG_MBEDTLS_MPI_WINDOW_SIZE` Kconfig variable controls the window size
-used in mbed TLS.
-Reducing this value to reduce memory usage. Note that reducing this this value
-might have an impact on the performance.
+The :option:`CONFIG_MBEDTLS_MPI_WINDOW_SIZE` Kconfig variable controls the window size used in mbed TLS for MPI calculations.
+Reduce this value to reduce memory usage. Note that reducing this this value may have an impact on the performance.
 
-The :option:`CONFIG_MBEDTLS_MPI_MAX_SIZE` Kconfig variable controls the maximum size of
-MPIs that can be used for calculation.
-Only reduce this value if it is ensured that the system won't need larger numbers.
+The :option:`CONFIG_MBEDTLS_MPI_MAX_SIZE` Kconfig variable controls the maximum size of MPIs that can be used for calculation.
+Reduce this value only if you are sure that the system will not need larger sizes.
 
 
-User provided mbed TLS config header
-------------------------------------
++------------------------------------------------+---------+-------+------+
+| Option                                         | Default | Min   | Max  |
++================================================+=========+=======+======+
+| :option:`CONFIG_MBEDTLS_MPI_WINDOW_SIZE`       | 6       | 1     | 6    |
++------------------------------------------------+---------+-------+------+
+| :option:`CONFIG_MBEDTLS_MPI_MAX_SIZE`          | 1024    | 0     | 1024 |
++------------------------------------------------+---------+-------+------+
 
-The :ref:`nrf_security_readme` provides a Kconfig interface to control
-compilation and linking of mbed TLS and the :ref:`nrf_cc310_mbedcrypto_readme`
-library.
 
-The Kconfig interface and build system ensures that the configuration of
-:ref:`nrf_security_readme` is valid and working, and ensures that depencies
-between different cryptographic APIs are met.
+Elliptic Curves
+~~~~~~~~~~~~~~~
 
-It is therefore highly recommended to let the build system generate the mbed TLS
-configuration header.
+The :option:`CONFIG_MBEDTLS_ECP_MAX_BITS` Kconfig variable controls the largest elliptic curve supported in the library.
 
-However, for special use-case that can not be achieved using the Kconfig
-configuration tool, it is possible to provide a custom mbed TLS configuration
-header. When doing so, care must be taken to ensure a working system.
+If the curves that are used are smaller than 521 bits, then this option can be reduced in order to save memory.
+See `ECC curves configurations`_ for information on how to select the curves to use.
+For example, if `NIST secp384r1` is the only curve enabled, then :option:`CONFIG_MBEDTLS_ECP_MAX_BITS` can be reduced to 384 bits.
 
-It it therefore advised to use Kconfig and the build system to create a mbed TLS
-configuration header as a starting point, and then tweak this file to include
-settings not available i Kconfig.
+The :option:`CONFIG_MBEDTLS_ECP_WINDOW_SIZE` Kconfig variable controls the window size used for elliptic curve multiplication.
+This value can be reduced down to 2 to reduce memory usage.
+Keep in mind that reducing the value impacts the performance of the system.
+
+The :option:`CONFIG_MBEDTLS_ECP_FIXED_POINT_OPTIM` Kconfig variable controls ECP fixed point optimizations.
+If disabled, the system uses less memory, but performance of the system is reduced.
+
+
++------------------------------------------------+---------+-------+-----+
+| Option                                         | Default | Min   | Max |
++================================================+=========+=======+=====+
+| :option:`CONFIG_MBEDTLS_ECP_MAX_BITS`          | 521     | 0     | 521 |
++------------------------------------------------+---------+-------+-----+
+| :option:`CONFIG_MBEDTLS_ECP_WINDOW_SIZE`       | 6       | 2     | 6   |
++------------------------------------------------+---------+-------+-----+
+| :option:`CONFIG_MBEDTLS_ECP_FIXED_POINT_OPTIM` | `y`     | `n`   | `y` |
++------------------------------------------------+---------+-------+-----+
+
+
+SHA-256
+~~~~~~~
+
+The :option:`CONFIG_MBEDTLS_SHA256_SMALLER` Kconfig variable can be used to select a SHA-256 implementation with smaller footprint.
+Such configuration reduces SHA-256 calculation performance.
+
+For example, on a Cortex-M4, the size of :cpp:func:`mbedtls_sha256_process()` is reduced from ~2 KB to ~0.5 KB, however it also performs around 30% slower.
+
++------------------------------------------------+---------+-------+-----+
+| Option                                         | Default | Min   | Max |
++================================================+=========+=======+=====+
+| :option:`CONFIG_MBEDTLS_SHA256_SMALLER`        | `n`     | `n`   | `y` |
++------------------------------------------------+---------+-------+-----+
+
+
+SSL Configurations
+~~~~~~~~~~~~~~~~~~
+
+The :option:`CONFIG_MBEDTLS_SSL_MAX_CONTENT_LEN` Kconfig variable can be used to specify the maximum size for incoming and outgoing mbed TLS I/O buffers.
+The default value is 16384 as specified in RFC5246, however if both sides are under your control, this value can safely be reduced under the following conditions:
+
+* Both sides support the max_fragment_length SSL extension, RFC8449.
+  The max_fragment_length allows for buffer reduction to less than 1 KB.
+* Knowledge of the maximum size that will ever be sent in a single SSL/TLS frame.
+
+If one of those conditions is met, the buffer size can safely be reduced to a more appropriate value for memory constrained devices.
+
+The :option:`CONFIG_MBEDTLS_SSL_CIPHERSUITES` Kconfig variable is a custom list of cipher suites to support in SSL/TLS.
+The cipher suites are provided as a comma-separated string, in order of preference.
+This list can only be used for restricting cipher suites available in the system.
+
+
++------------------------------------------------+---------+-----------+-------+-------+
+| Option                                         | Type    | Default   | Min   | Max   |
++================================================+=========+===========+=======+=======+
+| :option:`CONFIG_MBEDTLS_SSL_MAX_CONTENT_LEN`   | Integer | 16384     | 0     | 16384 |
++------------------------------------------------+---------+-----------+-------+-------+
+| :option:`CONFIG_MBEDTLS_SSL_CIPHERSUITES`      | String  | `<empty>` |       |       |
++------------------------------------------------+---------+-----------+-------+-------+
 
 .. note::
-   When providing a custom mbed TLS configuration header, it is important that
-   the following criterea is still met:
+   The string in :option:`CONFIG_MBEDTLS_SSL_CIPHERSUITES` should not be quoted.
+
+
+User-provided mbed TLS config header
+------------------------------------
+
+The :ref:`nrf_security_readme` provides a Kconfig interface to control compilation and linking of mbed TLS and the :ref:`nrf_cc310_mbedcrypto_readme` library.
+
+The Kconfig interface and build system ensures that the configuration of :ref:`nrf_security_readme` is valid and working, and ensures that dependencies between different cryptographic APIs are met.
+
+It is therefore highly recommended to let the build system generate the mbed TLS configuration header.
+
+However, for special use cases that cannot be achieved using the Kconfig configuration tool, it is possible to provide a custom mbed TLS configuration header.
+When doing so, make sure that the system is working.
+
+It is therefore advised to use Kconfig and the build system to create an mbed TLS configuration header as a starting point, and then tweak this file to include settings that are not available in Kconfig.
+
+.. note::
+   When providing a custom mbed TLS configuration header, it is important that the following criteria are still met:
 
    * Entropy length of 144, i.e. ``#define MBEDTLS_ENTROPY_MAX_GATHER 144``
    * Force SHA256

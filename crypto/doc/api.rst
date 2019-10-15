@@ -22,6 +22,41 @@ nRF CC310 platform library
    :project: nrfxlib
    :members:
 
+CC310 Platform - Defines
+========================
+
+.. doxygengroup:: nrf_cc310_platform_defines
+   :project: nrfxlib
+   :members:
+
+CC310 Platform - Initialization APIs
+====================================
+
+.. doxygengroup:: nrf_cc310_platform_init
+   :project: nrfxlib
+   :members:
+
+CC310 Platform - Entropy APIs
+=============================
+
+.. doxygengroup:: nrf_cc310_platform_entropy
+   :project: nrfxlib
+   :members:
+
+CC310 Platform - Mutex APIs
+===========================
+
+.. doxygengroup:: nrf_cc310_platform_mutex
+   :project: nrfxlib
+   :members:
+
+CC310 Platform - Abort APIs
+===========================
+
+.. doxygengroup:: nrf_cc310_platform_abort
+   :project: nrfxlib
+   :members:
+
 
 .. _crypto_api_nrf_oberon:
    
