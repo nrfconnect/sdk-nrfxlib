@@ -860,7 +860,7 @@ config MBEDTLS_ECP_FIXED_POINT_OPTIM
 
 config MBEDTLS_SHA256_SMALLER
 	bool "Use SHA256 small footprint implementation"
-	depends on MBEDTLS_SHA256_C && NRF_SECURITY_ADVANCED
+	depends on NRF_SECURITY_ADVANCED && (VANILLA_MBEDTLS_SHA256_C || (MBEDTLS_SHA256_C && !NRF_CRYPTO_BACKEND_COMBINATION_0))
 	help
 	  Use a SHA-256 implementation with smaller footprint.
 	  Note, that this implementation will also have a lower performance.
@@ -872,12 +872,14 @@ config MBEDTLS_SSL_MAX_CONTENT_LEN
 	int "SSL - Maximum buffer size"
 	range 0 16384
 	default 16384
+	depends on MBEDTLS_TLS_LIBRARY
 	help
 	  Maximum buffer size for incoming and outgoing mbed TLS I/O buffers.
 	  MBEDTLS_SSL_MAX_CONTENT_LEN setting in mbed TLS config file.
 
 config MBEDTLS_SSL_CIPHERSUITES
 	string "SSL - Cipher suites tuning"
+	depends on MBEDTLS_TLS_LIBRARY
 	help
 	  List of cipher suites to support in SSL/TLS.
 	  The cipher suites are given as a comma separated string, and in order of preference.
