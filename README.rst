@@ -19,6 +19,7 @@ Semiconductor. Refer to their respective documentation for more information.
    ble_controller/README
    bsdlib/README
    crypto/README
+   mpsl/README
    nrf_security/README
    nfc/README
    kconfig/index
