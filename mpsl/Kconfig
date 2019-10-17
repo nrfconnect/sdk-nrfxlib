@@ -1,0 +1,13 @@
+#
+# Copyright (c) 2019 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
+
+config MPSL
+	bool "Nordic Multi Protocol Service Layer (MPSL)"
+	# MPSL only supports nRF52, it does not support 51 or 91.
+	depends on SOC_SERIES_NRF52X
+	help
+	  Use Nordic Multi Protocol Service Layer (MPSL) implementation,
+	  providing services for single and multi-protocol implementations.
