@@ -30,14 +30,14 @@ comment "Common BLE Controller module configuration"
 
 choice BLE_CONTROLLER_VARIANT
 	prompt "BLE Controller variant"
-	default BLE_CONTROLLER_S112 if SOC_NRF52810
+	default BLE_CONTROLLER_S112 if (SOC_NRF52810 || SOC_NRF52811)
 	default BLE_CONTROLLER_S132 if SOC_NRF52832
 	default BLE_CONTROLLER_S140 if SOC_NRF52840
 	help
 		Select a BLE Controller variant.
 
 config BLE_CONTROLLER_S112
-	depends on (SOC_NRF52810 || SOC_NRF52832)
+	depends on (SOC_NRF52810 || SOC_NRF52811 || SOC_NRF52832)
 	bool "s112"
 
 config BLE_CONTROLLER_S132
@@ -45,7 +45,7 @@ config BLE_CONTROLLER_S132
 	bool "s132"
 
 config BLE_CONTROLLER_S140
-	depends on SOC_NRF52840
+	depends on (SOC_NRF52811 || SOC_NRF52840)
 	bool "s140"
 
 endchoice
