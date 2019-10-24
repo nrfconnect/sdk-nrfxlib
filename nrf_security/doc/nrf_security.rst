@@ -43,7 +43,7 @@ It is possible to provide your own custom mbed TLS configuration file by deselec
 .. note::
    Deselecting the :option:`CONFIG_GENERATE_MBEDTLS_CFG_FILE` Kconfig variable
    is not recommended.
-   But if doing so, please read `User provided mbed TLS config header`_.
+   But if doing so, please read `user-provided mbed TLS config header`_.
 
 
 nrf_security backends
@@ -101,7 +101,7 @@ Using the nrf_cc310_mbedcrypto as backend
 
 To use the :ref:`nrf_cc310_mbedcrypto_readme` as a backend, the CC310 hardware must first be initialized.
 
-The CC310 is initialized in :ref:`nrf:lib_hw_cc310` and is controlled with the :option:`nrf:CONFIG_HW_CC310` Kconfig variable.
+The CC310 is initialized in :file:`<NCS>/nrf/drivers/hw_cc310/hw_cc310.c` and is controlled with the `CONFIG_HW_CC310` Kconfig variable.
 This variable default value is `y` when the CC310 is available.
 
 
