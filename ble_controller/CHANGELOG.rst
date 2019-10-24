@@ -5,6 +5,19 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+ble_controller 0.3.0-3.prealpha
+*******************************
+
+Added
+=======
+* Added support for nRF52833.
+
+Bugfixes
+========
+
+* Fixed an issue where ``hci_data_get()`` could return "No data available" when there was data available.
+  This issue would only occur when connected to multiple devices at the same time.
+
 ble_controller 0.3.0-2.prealpha
 *******************************
 
