@@ -15,7 +15,7 @@ Added
 Bugfixes
 ========
 
-* Fixed an issue where ``hci_data_get()`` could return "No data available" when there was data available.
+* Fixed an issue where :cpp:func:`hci_data_get()` could return "No data available" when there was data available.
   This issue would only occur when connected to multiple devices at the same time.
 
 ble_controller 0.3.0-2.prealpha
@@ -33,7 +33,7 @@ Added
 =====
 
 * Increased the number of supported SoC and library combinations.
-* Added API for estimating the dynamic memory usage returned by ``ble_controller_cfg_set()``.
+* Added API for estimating the dynamic memory usage returned by :cpp:func:`ble_controller_cfg_set()`.
 * Added a new header :file:`ble_controller_hci_vs.h` that exposes definitions of
   Vendor Specific HCI commands and events.
 * Added support for connection intervals less than the standard minimum of 7.5 ms.
@@ -100,10 +100,10 @@ Added
 =====
 
 * Added API for fetching build revision information
-* Added ``ble_controller_rand_vector_get_blocking()``
+* Added :cpp:func:`ble_controller_rand_vector_get_blocking()`
   as a blocking call to get a vector of random bytes.
-* Added API to get BLE controller build revision: ``ble_controller_build_revision_get()``
-* Added separate ``ble_controller_init()`` API.
+* Added API to get BLE controller build revision: :cpp:func:`ble_controller_build_revision_get()`
+* Added separate :cpp:func:`ble_controller_init()` API.
 
 Bugfixes
 ========
@@ -112,10 +112,10 @@ Bugfixes
 
 Changes
 =======
-* Moved ``fault_handler`` and ``p_clk_cfg`` from ``ble_controller_enable()`` to
-  ``ble_controller_init()``.
-* Changed ``ble_controller_process_SWI5_IRQ()`` to be IRQ independent. The
-  generic ``ble_controller_low_prio_tasks_process()`` is used instead and SWI5
+* Moved ``fault_handler`` and ``p_clk_cfg`` from :cpp:func:`ble_controller_enable()` to
+  :cpp:func:`ble_controller_init()`.
+* Changed :cpp:func:`ble_controller_process_SWI5_IRQ()` to be IRQ independent. The
+  generic :cpp:func:`ble_controller_low_prio_tasks_process()` is used instead and SWI5
   is no longer reserved.
 * Aligned naming for ble_controller configuration names.
 * Made minor changes to existing API.
