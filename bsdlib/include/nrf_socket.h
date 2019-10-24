@@ -73,6 +73,7 @@ typedef int32_t ssize_t;
  */
 #define NRF_AF_LOCAL            1   /**< Family to identify protocols/operations local to Nordic device. */
 #define NRF_AF_INET             2   /**< IPv4 socket family. */
+#define NRF_AF_PACKET           5   /**< Raw packet family. */
 #define NRF_AF_INET6            10  /**< IPv6 socket family. */
 #define NRF_AF_LTE              102 /**< Nordic proprietary LTE socket family. */
 /**@} */
@@ -83,6 +84,7 @@ typedef int32_t ssize_t;
  */
 #define NRF_SOCK_STREAM         1   /**< TCP socket type. */
 #define NRF_SOCK_DGRAM          2   /**< UDP socket type. */
+#define NRF_SOCK_RAW            3   /**< RAW socket type. */
 /**@} */
 
 /**@defgroup nrf_socket_mgmt_types Nordic specific extensions of nrf_socket_type_t
@@ -197,6 +199,8 @@ typedef int32_t ssize_t;
 #define NRF_GNSS_AGPS_KLOBUCHAR_IONOSPHERIC_CORRECTION 4 /**< GPS ionospheric assistance AGPS parameters, Klobuchar model. */
 #define NRF_GNSS_AGPS_NEQUICK_IONOSPHERIC_CORRECTION   5 /**< GPS ionospheric assistance AGPS parameters, NeQuick model. */
 #define NRF_GNSS_AGPS_GPS_SYSTEM_CLOCK_AND_TOWS        6 /**< GPS system time and SV TOW assistance AGPS parameter. */
+#define NRF_GNSS_AGPS_LOCATION                         7 /**< GPS location assistance AGPS parameters */
+#define NRF_GNSS_AGPS_INTEGRITY                        8 /**< GPS integrity assistance AGPS parameters */
 /** @} */
 
 /**@defgroup nrf_nmea_str_mask Set of values (as bitmask) to enable NMEA output strings
@@ -591,8 +595,16 @@ typedef struct
 
 typedef char nrf_gnss_nmea_data_frame_t[NRF_GNSS_NMEA_MAX_LEN];
 
+typedef struct
+{
+    uint32_t sv_mask_ephe;
+    uint32_t sv_mask_alm;
+    uint32_t data_flags;
+} nrf_gnss_agps_data_frame_t;
+
 #define NRF_GNSS_PVT_DATA_ID  1
 #define NRF_GNSS_NMEA_DATA_ID 2
+#define NRF_GNSS_AGPS_DATA_ID 3
 
 typedef struct
 {
@@ -601,6 +613,7 @@ typedef struct
     {
         nrf_gnss_pvt_data_frame_t  pvt;
         nrf_gnss_nmea_data_frame_t nmea;
+        nrf_gnss_agps_data_frame_t agps;
     };
 } nrf_gnss_data_frame_t;
 
@@ -622,6 +635,8 @@ typedef struct
  *          - @c NRF_GNSS_AGPS_KLOBUCHAR_IONOSPHERIC_CORRECTION
  *          - @c NRF_GNSS_AGPS_NEQUICK_IONOSPHERIC_CORRECTION
  *          - @c NRF_GNSS_AGPS_GPS_SYSTEM_CLOCK_AND_TOWS
+ *          - @c NRF_GNSS_AGPS_LOCATION
+ *          - @c NRF_GNSS_AGPS_INTEGRITY
  */
 typedef uint16_t nrf_gnss_agps_data_type_t;
 
@@ -723,6 +738,59 @@ typedef struct
     uint32_t sv_mask;      /**< Bit mask indicating the satellite PRNs for which the satellite-specific TOW assistance data is valid. */
     nrf_gnss_agps_data_tow_element_t sv_tow[NRF_GNSS_AGPS_MAX_SV_TOW]; /**< TOW assistance data for PRN n */
 } nrf_gnss_agps_data_system_time_and_sv_tow_t;
+
+typedef struct
+{
+    int32_t latitude;          /**< Geodetic latitude in WGS-84. Range -8388607...8388607.
+                                *   The relation between the coded number N and the latitude
+                                *   range X (in degrees) is as follows: N <= (2^24/360) * X < N + 1.
+                                *   For N = 2^23 - 1, the range is extended to include N+1.
+                                *   Range of X (in degrees) -90...90.
+                                */
+
+    int32_t longitude;         /**< Geodetic longitude in WGS-84. Range -8388607..8388607.
+                                *   The relation between the coded number N and the longitude range
+                                *   X (in degrees) is as follows: N <= (2^24/360) * X < N + 1.
+                                *   Range of X (in degrees) -180...180.
+                                */
+
+    int16_t altitude;          /**< Altitude. Above (positive value) or below (negative value) WGS-84
+                                *   ellipsoid surface. Range -32767...32767.
+                                *   The relation between the coded number N and the altitude range a
+                                *   (in meters) is as follows: N <= a < N + 1.
+                                *   For N = 2^15 - 1 the range is extended to include all greater values of a.
+                                */
+
+    uint8_t unc_semimajor;     /**< Uncertainty, semi-major. Range 0...127. The uncertainty (in meters) is
+                                *   mapped from the coded number K with following formula: r = C * (K - 1),
+                                *   where C = 10 and x = 0,1. Range of r (in kilometers) 0...1800.
+                                */
+
+    uint8_t unc_semiminor;     /**< Uncertainty, semi-minor. Range 0...127. The uncertainty (in meters) is
+                                *   mapped from the coded number K with following formula: r = C * (K - 1),
+                                *   where C = 10 and x = 0,1. Range of r (in kilometers) 0...1800)
+                                */
+
+    uint8_t orientation_major; /**< Orientation angle between the major axis and north. Range in degrees 0...179. */
+
+    uint8_t unc_altitude;      /**< Uncertainty, altitude. Range 0...127. The uncertainty in altitude h (in meters)
+                                *   is mapped from the coded number K with following formula: h = C * (K - 1).
+                                *   where C = 45 and x = 0,025. Range of h (in meters) 0...990,5.
+                                */
+
+    uint8_t confidence;        /**< The confidence level (expressed as a percentage) with which
+                                *   the position of a target entity is included within the uncertainty ellipsoid.
+                                *   Range 0...128. '0' indicates 'no information'. Values 101..128  should be treated as '0'.
+                                */
+} nrf_gnss_agps_data_location_t;
+
+
+typedef struct
+{
+    uint32_t integrity_mask; /**< Bit mask indicating the unhealthy GPS satellite PRNs. When a mask bit is set,
+                              *   the corresponding GPS satellite PRN is unhealthy.
+                              */
+} nrf_gnss_agps_data_integrity_t;
 
 /** @} */
 

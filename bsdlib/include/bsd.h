@@ -9,19 +9,24 @@
  * @defgroup bsd BSD Library Management
  * @ingroup bsd_library
  * @{
- * @brief Application Interface offered for management of BSD Library.
+ * @brief Application interface offered for management of BSD Library.
  */
 #ifndef BSD_H__
 #define BSD_H__
 
 #include <stdint.h>
 
-#include "bsd_limits.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/**
+ * @defgroup bsd_modem_dfu
+ *           @c bsd_init() return values when executing Modem firmware updates.
+ *
+ * @ingroup bsd_library
+ * @{
+ */
 
 /** Modem firmware update successful.
   * The modem will run the updated firmware on reboot.
@@ -46,57 +51,44 @@ extern "C" {
   */
 #define MODEM_DFU_RESULT_UUID_ERROR 0x4400004u
 
+/**@} */
+
 /**
- * @brief Method to initialize BSD library.
+ * @brief Initialize the library.
  *
- * @details This method shall be called before using any of the other methods of the application.
- *          In case the initialization fails, the call results in a hard fault.
+ * Once initialized, the library uses the resources defined in bsd_platform.h.
  *
- *          This method shall be called once. Calling this method again with a shutdown results
- *          in undefined behavior.
- *
- *          Initializing the library results in reserving resources defined in bsd_platform.h on
- *          the system. The application shall not use any of the resources identified in
- *          bsd_platform.h.
- *
- * @return Zero on success or an error code otherwise.
+ * @retval Zero on success.
+ * @retval A positive value from @ref bsd_modem_dfu when executing
+ *         Modem firmware updates.
+ * @retval -1 on error.
  */
 int bsd_init(void);
 
 
 /**
- * @brief Method to gracefully shutdown the BSD library.
+ * @brief Shutdown the library.
  *
- * @details This method used to shutdown the library. Resources reserved by the system may be reused
- *          once the library is gracefully shutdown.
+ * Resources reserved by the library in bsd_platform.h are freed when
+ * the library is shutdown.
+ *
+ * @retval Zero on success.
+ * @retval -1 on error.
  */
-void bsd_shutdown(void);
+int bsd_shutdown(void);
 
 
 /**
- * @brief Handler for recoverable BSD library errors.
+ * @brief Handler for BSD library errors.
  *
- * @note  It can be overwritten by the application.
- *        The default will hard fault.
- *
- * @param[in] error Indicates the error that occurred.
+ * @param[in] error The error reason.
  */
 extern void bsd_recoverable_error_handler(uint32_t error);
-
-
-/**
- * @brief Handler for irrecoverable BSD library errors.
- *
- * @note  It can be overwritten by the application.
- *        The default will hard fault.
- *
- * @param[in] error Indicates the error that occurred.
- */
-extern void bsd_irrecoverable_error_handler(uint32_t error);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif // BSD_H__
+
 /**@} */

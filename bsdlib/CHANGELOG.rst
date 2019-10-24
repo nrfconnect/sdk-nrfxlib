@@ -5,6 +5,19 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.5.0
+************
+
+* :cpp:func:`bsd_irrecoverable_handler()` has been removed.
+  The application no longer needs to implement it to receive errors during initialization, which are instead reported via :cpp:func:`bsd_init()`.
+* :cpp:func:`bsd_shutdown()` now returns an integer.
+* Added RAW socket support.
+* Added missing AGPS data models.
+* Added APGS notification support.
+* Fixed an issue where AGPS data could not be written when the GPS socket was in stopped state.
+* Fixed a memory leak in GPS socket.
+
+
 bsdlib 0.4.3
 ************
 
