@@ -27,10 +27,11 @@ config NFCT_IRQ_PRIORITY
 	int
 	prompt "Interrupt priority"
 	range 0 6
+	default 5 if ZERO_LATENCY_IRQS
 	default 6
 	help
 		Sets NFC interrupt priority.
-		Levels are from 0 (highest priority) to 7 (lowest priority)
+		Levels are from 0 (highest priority) to 6 (lowest priority)
 
 choice
 	prompt "NFC platform logging level"
