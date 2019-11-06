@@ -47,6 +47,30 @@ config MBEDTLS_TLS_LIBRARY
 	  Create the mbed SSL/TLS library in addition to the mbed crypto
 	  library.
 
+menu "mbed TLS memory configuration"
+
+config MBEDTLS_ENABLE_HEAP
+	bool "Enable global heap for mbed TLS"
+	help
+	  This option enables the mbedtls to use the heap. This setting must
+	  be global so that various applications and libraries in Zephyr do not
+	  try to do this themselves as there can be only one heap defined
+	  in mbedtls. If this is enabled, then the Zephyr will, during the device
+	  startup, initialize the heap automatically.
+
+config MBEDTLS_HEAP_SIZE
+	int "Heap size for mbed TLS"
+	default 512
+	depends on MBEDTLS_ENABLE_HEAP
+	help
+	  The mbedtls routines will use this heap if enabled.
+	  For streaming communication with arbitrary (HTTPS) servers on the
+	  Internet, 32KB + overheads (up to another 20KB) may be needed.
+	  Ensure to adjust the heap size according to the need of the
+	  application.
+
+endmenu
+
 comment "Backend Selection"
 
 config CC310_BACKEND
