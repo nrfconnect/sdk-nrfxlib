@@ -8,8 +8,12 @@
 #include <entropy.h>
 #include <mbedtls/entropy.h>
 
-static_assert(defined(CONFIG_ENTROPY_GENERATOR), "CONFIG_ENTROPY_GENERATOR is not enabled.");
-static_assert(defined(CONFIG_ENTROPY_HAS_DRIVER), "CONFIG_ENTROPY_HAS_DRIVER is not set.");
+#if !defined(CONFIG_ENTROPY_GENERATOR)
+#error "CONFIG_ENTROPY_GENERATOR is not enabled."
+#endif
+#if !defined(CONFIG_ENTROPY_HAS_DRIVER)
+#error "CONFIG_ENTROPY_HAS_DRIVER is not set."
+#endif
 
 int mbedtls_hardware_poll(void *data,
                           unsigned char *output,
