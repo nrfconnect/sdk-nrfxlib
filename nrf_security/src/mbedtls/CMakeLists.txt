@@ -181,7 +181,8 @@ zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_POLY1305_C
 zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_CHACHAPOLY_C
   ${ARM_MBEDTLS_PATH}/library/chachapoly.c
 )
-zephyr_library_sources(${ZEPHYR_BASE}/../modules/crypto/mbedtls/zephyr_init.c)
+zephyr_library_sources_ifdef(CONFIG_MBEDTLS_ENABLE_HEAP ${NRF_SECURITY_ROOT}/src/mbedtls/mbedtls_heap.c)
+zephyr_library_app_memory(k_mbedtls_partition)
 
 if(CONFIG_SOC_NRF52840 OR CONFIG_SOC_NRF9160)
   zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/cc310/replacements/entropy.c)
@@ -199,6 +200,7 @@ if (CONFIG_MBEDTLS_X509_LIBRARY)
   zephyr_library_sources(${src_x509})
   zephyr_library_link_libraries(${IMAGE}mbedtls_common)
   nrf_security_debug_list_target_files(${IMAGE}mbedtls_x509_vanilla)
+  zephyr_library_app_memory(k_mbedtls_partition)
 endif()
 
 #
@@ -209,6 +211,7 @@ if (CONFIG_MBEDTLS_TLS_LIBRARY)
   zephyr_library_sources(${src_tls} ${src_tls_replacement})
   zephyr_library_link_libraries(${IMAGE}mbedtls_common)
   nrf_security_debug_list_target_files(${IMAGE}mbedtls_tls_vanilla)
+  zephyr_library_app_memory(k_mbedtls_partition)
 endif()
 
 if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
