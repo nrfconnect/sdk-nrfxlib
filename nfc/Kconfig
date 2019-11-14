@@ -26,6 +26,7 @@ config NFC_T4T_LIB_ENABLED
 config NFCT_IRQ_PRIORITY
 	int
 	prompt "Interrupt priority"
+	range 0 5 if ZERO_LATENCY_IRQS
 	range 0 6
 	default 5 if ZERO_LATENCY_IRQS
 	default 6
