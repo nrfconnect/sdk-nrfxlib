@@ -189,8 +189,8 @@ if(CONFIG_SOC_NRF52840 OR CONFIG_SOC_NRF9160)
 else()
   zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/nrf5x/entropy_nrf5x.c)
 endif()
-zephyr_library_link_libraries(${IMAGE}mbedtls_common)
-nrf_security_debug_list_target_files(${IMAGE}mbedtls_base_vanilla)
+zephyr_library_link_libraries(mbedtls_common)
+nrf_security_debug_list_target_files(mbedtls_base_vanilla)
 
 #
 # Library for x.509
@@ -198,8 +198,8 @@ nrf_security_debug_list_target_files(${IMAGE}mbedtls_base_vanilla)
 if (CONFIG_MBEDTLS_X509_LIBRARY)
   zephyr_library_named(mbedtls_x509_vanilla)
   zephyr_library_sources(${src_x509})
-  zephyr_library_link_libraries(${IMAGE}mbedtls_common)
-  nrf_security_debug_list_target_files(${IMAGE}mbedtls_x509_vanilla)
+  zephyr_library_link_libraries(mbedtls_common)
+  nrf_security_debug_list_target_files(mbedtls_x509_vanilla)
   zephyr_library_app_memory(k_mbedtls_partition)
 endif()
 
@@ -209,8 +209,8 @@ endif()
 if (CONFIG_MBEDTLS_TLS_LIBRARY)
   zephyr_library_named(mbedtls_tls_vanilla)
   zephyr_library_sources(${src_tls} ${src_tls_replacement})
-  zephyr_library_link_libraries(${IMAGE}mbedtls_common)
-  nrf_security_debug_list_target_files(${IMAGE}mbedtls_tls_vanilla)
+  zephyr_library_link_libraries(mbedtls_common)
+  nrf_security_debug_list_target_files(mbedtls_tls_vanilla)
   zephyr_library_app_memory(k_mbedtls_partition)
 endif()
 
@@ -219,21 +219,21 @@ if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
   # Only single backend is chosen, thus append it to zephyr libraries as
   # no renaming should be carried out.
   #
-  if(TARGET ${IMAGE}mbedcrypto_cc310)
-    target_link_libraries(${IMAGE}mbedtls_base_vanilla PRIVATE ${IMAGE}mbedcrypto_cc310)
+  if(TARGET mbedcrypto_cc310)
+    target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_cc310)
   endif()
-  if(TARGET ${IMAGE}platform_cc310)
-    target_link_libraries(${IMAGE}mbedtls_base_vanilla PRIVATE ${IMAGE}platform_cc310)
+  if(TARGET platform_cc310)
+    target_link_libraries(mbedtls_base_vanilla PRIVATE platform_cc310)
   endif()
 endif()
 
 
 #
-# Generate a dummy library called ${IMAGE}mbedtls_external to be able to use
+# Generate a dummy library called mbedtls_external to be able to use
 # CONFIG_MBEDTLS and CONFIG_MBEDTLS_LIBRARY in zephyr sockets
 #
-add_library(${IMAGE}mbedtls_external)
-target_sources(${IMAGE}mbedtls_external PRIVATE ${ZEPHYR_BASE}/misc/empty_file.c)
+add_library(mbedtls_external)
+target_sources(mbedtls_external PRIVATE ${ZEPHYR_BASE}/misc/empty_file.c)
 
 #
 # Give the main application access to the generated includes and mbed TLS config
@@ -242,9 +242,9 @@ target_sources(${IMAGE}mbedtls_external PRIVATE ${ZEPHYR_BASE}/misc/empty_file.c
 #       which is always set to "true".
 #
 zephyr_interface_library_named(mbedtls_includes)
-target_link_libraries(${IMAGE}mbedtls_includes INTERFACE ${IMAGE}mbedtls_common)
+target_link_libraries(mbedtls_includes INTERFACE mbedtls_common)
 
 #
 # Give zephyr libraries access to includes and mbed TLS config
 #
-zephyr_link_libraries(${IMAGE}mbedtls_common)
+zephyr_link_libraries(mbedtls_common)

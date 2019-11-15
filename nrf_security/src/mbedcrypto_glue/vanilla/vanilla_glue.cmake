@@ -27,43 +27,43 @@ nrf_security_debug("######### Creating vanilla noglue library #########")
 # This must use be compiled with its own config-file (nrf-config-noglue.h)
 # This library must not be linked with directly
 #
-add_library(${IMAGE}mbedcrypto_vanilla)
+add_library(mbedcrypto_vanilla)
 
 #
 # Adding all standard compile/linker options (e.g. float ABI)
 #
-target_compile_options(${IMAGE}mbedcrypto_vanilla PRIVATE ${TOOLCHAIN_C_FLAGS})
-target_ld_options(${IMAGE}mbedcrypto_vanilla PRIVATE ${TOOLCHAIN_LD_FLAGS})
+target_compile_options(mbedcrypto_vanilla PRIVATE ${TOOLCHAIN_C_FLAGS})
+target_ld_options(mbedcrypto_vanilla PRIVATE ${TOOLCHAIN_LD_FLAGS})
 
 #
 # Adding original mbed TLS files
 #
 target_sources_ifdef(GLUE_VANILLA_MBEDTLS_AES_C
-  ${IMAGE}mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/aes.c
+  mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/aes.c
 )
 target_sources_ifdef(GLUE_VANILLA_MBEDTLS_CCM_C
-  ${IMAGE}mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/ccm.c
+  mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/ccm.c
 )
 
 target_sources_ifdef(GLUE_VANILLA_MBEDTLS_DHM_C
-${IMAGE}mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/dhm.c
+mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/dhm.c
 )
 
-target_sources(${IMAGE}mbedcrypto_vanilla PRIVATE
+target_sources(mbedcrypto_vanilla PRIVATE
   ${ZEPHYR_BASE}/misc/empty_file.c
 )
 
-target_include_directories(${IMAGE}mbedcrypto_vanilla PRIVATE
+target_include_directories(mbedcrypto_vanilla PRIVATE
   ${common_includes}
   ${config_include}
 )
 
-target_compile_definitions(${IMAGE}mbedcrypto_vanilla PRIVATE
+target_compile_definitions(mbedcrypto_vanilla PRIVATE
   -DMBEDTLS_BACKEND_PREFIX=vanilla
   -DMBEDTLS_CONFIG_FILE="nrf-config-noglue.h"
 )
 
-nrf_security_debug_list_target_files(${IMAGE}mbedcrypto_vanilla)
+nrf_security_debug_list_target_files(mbedcrypto_vanilla)
 
 nrf_security_debug("######### Creating vanilla glue library #########")
 
@@ -89,21 +89,21 @@ zephyr_library_sources_ifdef(GLUE_VANILLA_MBEDTLS_DHM_C
 
 zephyr_library_sources(${ZEPHYR_BASE}/misc/empty_file.c)
 zephyr_library_compile_definitions(MBEDTLS_BACKEND_PREFIX=vanilla)
-zephyr_library_link_libraries(${IMAGE}mbedtls_common_glue)
-zephyr_library_link_libraries(${IMAGE}mbedcrypto_vanilla)
-nrf_security_debug_list_target_files(${IMAGE}mbedcrypto_glue_vanilla)
+zephyr_library_link_libraries(mbedtls_common_glue)
+zephyr_library_link_libraries(mbedcrypto_vanilla)
+nrf_security_debug_list_target_files(mbedcrypto_glue_vanilla)
 
 #
 # Rename vanilla symbols in for glue and vanilla library
 #
 foreach(mbedcrypto_target mbedcrypto_glue_vanilla mbedcrypto_vanilla)
   add_custom_command(
-    TARGET ${IMAGE}${mbedcrypto_target}
+    TARGET ${mbedcrypto_target}
     POST_BUILD
     COMMAND ${CMAKE_OBJCOPY}
             --redefine-syms
             ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_vanilla.txt
-            $<TARGET_FILE:${IMAGE}${mbedcrypto_target}>
+            $<TARGET_FILE:${mbedcrypto_target}>
   )
 endforeach()
 

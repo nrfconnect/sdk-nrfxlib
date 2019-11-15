@@ -19,10 +19,10 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/symbol_rename.cmake)
 # directories
 #
 zephyr_interface_library_named(mbedtls_common)
-target_compile_definitions(${IMAGE}mbedtls_common INTERFACE
+target_compile_definitions(mbedtls_common INTERFACE
   -DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}"
 )
-target_include_directories(${IMAGE}mbedtls_common INTERFACE
+target_include_directories(mbedtls_common INTERFACE
   ${generated_includes}
 )
 
