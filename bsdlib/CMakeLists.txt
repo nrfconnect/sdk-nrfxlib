@@ -19,8 +19,8 @@ endif()
 # lib oberon are linked in because they are used by the bsd library
 # and must therefore be placed after the bsd library on the linker's
 # command line.
-set(                    BSDLIB_TARGET             ${IMAGE}bsd_nrf9160_xxaa)
+set(                    BSDLIB_TARGET             bsd_nrf9160_xxaa)
 zephyr_library_import(${BSDLIB_TARGET} ${BSD_LIB_PATH}/libbsd_nrf9160_xxaa.a)
-target_link_libraries(${BSDLIB_TARGET} INTERFACE ${IMAGE}nrfxlib_crypto -lc)
+target_link_libraries(${BSDLIB_TARGET} INTERFACE nrfxlib_crypto -lc)
 
 zephyr_include_directories(include)

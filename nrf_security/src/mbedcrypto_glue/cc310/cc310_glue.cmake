@@ -39,17 +39,17 @@ zephyr_library_sources_ifdef(GLUE_CC310_MBEDTLS_DHM_C
 zephyr_library_sources(${ZEPHYR_BASE}/misc/empty_file.c)
 
 zephyr_library_compile_definitions(MBEDTLS_BACKEND_PREFIX=cc310)
-zephyr_library_link_libraries(${IMAGE}mbedtls_common_glue)
-nrf_security_debug_list_target_files(${IMAGE}mbedcrypto_glue_cc310)
+zephyr_library_link_libraries(mbedtls_common_glue)
+nrf_security_debug_list_target_files(mbedcrypto_glue_cc310)
 #
 # Rename the external symbols as referenced through the glue files
 # The APIs will match cc310_mbedtls_<xxxx> after this.
 #
 add_custom_command(
-  TARGET ${IMAGE}mbedcrypto_glue_cc310
+  TARGET mbedcrypto_glue_cc310
   POST_BUILD
   COMMAND ${CMAKE_OBJCOPY}
           --redefine-syms
           ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_cc310.txt
-          $<TARGET_FILE:${IMAGE}mbedcrypto_glue_cc310>
+          $<TARGET_FILE:mbedcrypto_glue_cc310>
 )

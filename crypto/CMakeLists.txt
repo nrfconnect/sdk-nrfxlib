@@ -18,8 +18,8 @@ if (CONFIG_NRF_OBERON)
     message(WARNING "This combination of SoC and floating point ABI is not supported by the nrf_oberon lib."
                     "(${OBERON_LIB} doesn't exist.)")
   endif()
-  target_include_directories(${IMAGE}nrfxlib_crypto INTERFACE ${OBERON_BASE}/include)
-  target_link_libraries(${IMAGE}nrfxlib_crypto INTERFACE ${OBERON_LIB})
+  target_include_directories(nrfxlib_crypto INTERFACE ${OBERON_BASE}/include)
+  target_link_libraries(nrfxlib_crypto INTERFACE ${OBERON_LIB})
 endif()
 
 if (CONFIG_NRF_CC310_BL)
@@ -34,8 +34,8 @@ if (CONFIG_NRF_CC310_BL)
     message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_cc310_bl lib."
                     "(${CC310_BL_LIB} doesn't exist.)")
   endif()
-  target_include_directories(${IMAGE}nrfxlib_crypto INTERFACE ${CC310_BL_BASE}/include)
-  target_link_libraries(${IMAGE}nrfxlib_crypto INTERFACE ${CC310_BL_LIB})
+  target_include_directories(nrfxlib_crypto INTERFACE ${CC310_BL_BASE}/include)
+  target_link_libraries(nrfxlib_crypto INTERFACE ${CC310_BL_LIB})
 endif()
 
 if (CONFIG_NRF_CC310_PLATFORM)
@@ -55,12 +55,12 @@ if (CONFIG_NRF_CC310_PLATFORM)
   #
   # Uses a normal add_library to avoid --whole-archive
   #
-  add_library(${IMAGE}platform_cc310 STATIC IMPORTED GLOBAL)
-  set_target_properties(${IMAGE}platform_cc310 PROPERTIES IMPORTED_LOCATION
+  add_library(platform_cc310 STATIC IMPORTED GLOBAL)
+  set_target_properties(platform_cc310 PROPERTIES IMPORTED_LOCATION
       "${NRF_CC310_PLATFORM_LIB}")
-  target_include_directories(${IMAGE}platform_cc310 INTERFACE
+  target_include_directories(platform_cc310 INTERFACE
       "${NRF_CC310_PLATFORM_BASE}/include")
-  zephyr_link_libraries(${IMAGE}platform_cc310)
+  zephyr_link_libraries(platform_cc310)
   #
   # Add companion sources to directly to zephyr
   #
@@ -81,13 +81,13 @@ if (CONFIG_CC310_BACKEND)
     message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_cc310_mbedcryto lib."
                     "(${NRF_CC310_LIB} doesn't exist.)")
   endif()
-  add_library(${IMAGE}mbedcrypto_cc310 STATIC IMPORTED GLOBAL)
-  set_target_properties(${IMAGE}mbedcrypto_cc310 PROPERTIES IMPORTED_LOCATION
+  add_library(mbedcrypto_cc310 STATIC IMPORTED GLOBAL)
+  set_target_properties(mbedcrypto_cc310 PROPERTIES IMPORTED_LOCATION
                         "${NRF_CC310_LIB}")
-  target_include_directories(${IMAGE}mbedcrypto_cc310 INTERFACE
+  target_include_directories(mbedcrypto_cc310 INTERFACE
                              "${NRF_CC310_BASE}/include"
                              "${NRF_CC310_BASE}/include/mbedtls")
-  target_link_libraries(${IMAGE}mbedcrypto_cc310 INTERFACE ${IMAGE}platform_cc310)
+  target_link_libraries(mbedcrypto_cc310 INTERFACE platform_cc310)
   if (NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
     # Only CC310 backend is selected for mbedtls API.
     # Thus export the alt headers through Zephyr interface library.

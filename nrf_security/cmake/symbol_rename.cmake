@@ -110,7 +110,7 @@ function(symbol_rename_func backend rename_template is_stripped)
 
   set(redefine_line "--redefine-syms;${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt")
 
-  set(BACKEND_RENAMED_LIBRARY lib${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend.a)
+  set(BACKEND_RENAMED_LIBRARY libmbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend.a)
 
   if (remove_line)
     set(remove_object_command ${CMAKE_AR} d ${BACKEND_RENAMED_LIBRARY} ${remove_line})
@@ -120,21 +120,21 @@ function(symbol_rename_func backend rename_template is_stripped)
   add_custom_command(
     OUTPUT  ${BACKEND_RENAMED_LIBRARY}
     COMMAND ${CMAKE_OBJCOPY} ${redefine_line}
-            $<TARGET_FILE:${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}>
+            $<TARGET_FILE:mbedcrypto_${MBEDTLS_BACKEND_PREFIX}>
             ${BACKEND_RENAMED_LIBRARY}
     COMMAND ${remove_object_command}
-    DEPENDS ${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}
+    DEPENDS mbedcrypto_${MBEDTLS_BACKEND_PREFIX}
             ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt
   )
-  add_custom_target(${IMAGE}${MBEDTLS_BACKEND_PREFIX}_backend_target
+  add_custom_target(${MBEDTLS_BACKEND_PREFIX}_backend_target
                     DEPENDS ${BACKEND_RENAMED_LIBRARY}
   )
-  add_library(${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend STATIC IMPORTED GLOBAL)
-  add_dependencies(${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend
-                   ${IMAGE}${MBEDTLS_BACKEND_PREFIX}_backend_target)
-  set_target_properties(${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend
+  add_library(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend STATIC IMPORTED GLOBAL)
+  add_dependencies(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend
+                   ${MBEDTLS_BACKEND_PREFIX}_backend_target)
+  set_target_properties(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend
                         PROPERTIES IMPORTED_LOCATION
                         "${CMAKE_CURRENT_BINARY_DIR}/${BACKEND_RENAMED_LIBRARY}")
 
-  zephyr_append_cmake_library(${IMAGE}mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend)
+  zephyr_append_cmake_library(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend)
 endfunction()

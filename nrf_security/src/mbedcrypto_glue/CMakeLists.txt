@@ -11,8 +11,8 @@ if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
   # Create a library with common compilation options and include folders
   #
   zephyr_interface_library_named(mbedtls_common_glue)
-  target_include_directories(${IMAGE}mbedtls_common_glue INTERFACE "${NRF_SECURITY_ROOT}/include/mbedcrypto_glue")
-  target_link_libraries(${IMAGE}mbedtls_common_glue INTERFACE ${IMAGE}mbedtls_common)
+  target_include_directories(mbedtls_common_glue INTERFACE "${NRF_SECURITY_ROOT}/include/mbedcrypto_glue")
+  target_link_libraries(mbedtls_common_glue INTERFACE mbedtls_common)
 
 
   if(CONFIG_GLUE_MBEDTLS_AES_C)
@@ -39,8 +39,8 @@ if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
   zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_CCM_C    ccm_alt.c)
   zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_DHM_C    dhm_alt.c)
 
-  zephyr_library_link_libraries(${IMAGE}mbedtls_common_glue)
-  nrf_security_debug_list_target_files(${IMAGE}mbedcrypto_glue)
+  zephyr_library_link_libraries(mbedtls_common_glue)
+  nrf_security_debug_list_target_files(mbedcrypto_glue)
 
   #
   # Create glue libraries for backends (if enabled)
