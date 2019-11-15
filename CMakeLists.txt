@@ -5,7 +5,11 @@
 #
 
 set(NRFXLIB_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE PATH "NRFXLIB root directory")
-add_subdirectory_ifdef(CONFIG_NRFXLIB_NFC             nfc)
+if (CONFIG_NFC_T2T_NRFXLIB OR
+    CONFIG_NFC_T4T_NRFXLIB)
+	add_subdirectory(nfc)
+endif()
+
 add_subdirectory_ifdef(CONFIG_BT_LL_NRFXLIB           ble_controller)
 add_subdirectory_ifdef(CONFIG_MPSL                    mpsl)
 add_subdirectory_ifdef(CONFIG_BSD_LIBRARY             bsdlib)
