@@ -25,9 +25,7 @@ else()
 	message(WARNING "No BLE Controller variant selected")
 endif()
 
-set(ver 0.3.0-3.prealpha)
-
-set(BLE_CONTROLLER_LIB ${BLE_CONTROLLER_LIB_PATH}/libble_controller_${ble_controller_variant}_nrf52_${ver}.a)
+set(BLE_CONTROLLER_LIB ${BLE_CONTROLLER_LIB_PATH}/libble_controller_${ble_controller_variant}.a)
 
 zephyr_include_directories(include)
 zephyr_link_libraries(${BLE_CONTROLLER_LIB})
