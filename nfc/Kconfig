@@ -4,58 +4,8 @@
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 
-config NRFXLIB_NFC
-	bool
-	prompt "Enable NFC"
-	select NRFX_NFCT
-	help
-	  Enable NFC functionality
+config NFC_T2T_NRFXLIB
+	bool "Enable NFC Type 2 Tag library"
 
-if NRFXLIB_NFC
-
-comment "Common NFC module configuration"
-
-config NFC_T2T_LIB_ENABLED
-	bool
-	prompt "Enable NFC Type 2 Tag library"
-
-config NFC_T4T_LIB_ENABLED
-	bool
-	prompt "Enable NFC Type 4 Tag library"
-
-config NFCT_IRQ_PRIORITY
-	int
-	prompt "Interrupt priority"
-	range 0 6
-	default 5 if ZERO_LATENCY_IRQS
-	default 6
-	help
-		Sets NFC interrupt priority.
-		Levels are from 0 (highest priority) to 6 (lowest priority)
-
-choice
-	prompt "NFC platform logging level"
-	default NFC_PLATFORM_LOG_LEVEL_INF
-
-config NFC_PLATFORM_LOG_LEVEL_OFF
-	bool "Off"
-config NFC_PLATFORM_LOG_LEVEL_ERR
-	bool "Error"
-config NFC_PLATFORM_LOG_LEVEL_WRN
-	bool "Warning"
-config NFC_PLATFORM_LOG_LEVEL_INF
-	bool "Info"
-config NFC_PLATFORM_LOG_LEVEL_DBG
-	bool "Debug"
-
-endchoice
-
-config NFC_PLATFORM_LOG_LEVEL
-	int
-	default 0 if NFC_PLATFORM_LOG_LEVEL_OFF
-	default 1 if NFC_PLATFORM_LOG_LEVEL_ERR
-	default 2 if NFC_PLATFORM_LOG_LEVEL_WRN
-	default 3 if NFC_PLATFORM_LOG_LEVEL_INF
-	default 4 if NFC_PLATFORM_LOG_LEVEL_DBG
-
-endif # NRFXLIB_NFC
+config NFC_T4T_NRFXLIB
+	bool "Enable NFC Type 4 Tag library"
