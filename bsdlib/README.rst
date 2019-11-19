@@ -103,22 +103,13 @@ Therefore, operating on them using ``poll`` is not possible yet.
 PDN sockets only support ``open``, ``close``, ``setsockopt``, and ``getsockopt`` to configure a PDN with an APN name.
 Therefore, there is no data communication on the socket, and it is not pollable.
 
-Limitations on the cryptographic sockets:
+Modem firmware limitations
+==========================
 
-* 1 TLS socket
-* 2 DTLS sockets
-* TCP max packet size of 4096
-* TLS internal buffer size of 2.5 KB
-* Only one DTLS/TLS handshake can be done at the time.
-  No parallel handshake is possible.
+For detailed description of limitations related to the modem firmware used, refer to the changelog of that specific version.
+The changelog is distributed as part of the `downloadable zip file`_.
 
-Modem limitations on the built-in key storage:
-
-* Max number of assets is 16 (slots).
-* 1 PSK takes 1 slot.
-* 1 identity takes 1 slot.
-* 1 certificate might span over multiple slots depending on the size.
-  Testing is needed to verify that the certificate of choice is correctly stored in the modem and can be used by referencing the security tag.
+.. _downloadable zip file: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#98C9E2578566420786ABD40B695FDB9B
 
 Additional documentation
 ************************
