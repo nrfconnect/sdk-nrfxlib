@@ -838,6 +838,27 @@ if NRF_SECURITY_ADVANCED
 
 comment "Advanced mbed TLS settings"
 
+config MBEDTLS_AES_ROM_TABLES
+	bool "Use AES ROM tables"
+	depends on VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C)
+	help
+	  AES lookup tables will be placed in ROM instead of RAM
+	  Placing the AES lookup tables in ROM will perform slower but will reduce RAM usage.
+	  Using precompiled ROM tables reduces RAM size by ~8kB with an additional
+	  cost of ~8kB of ROM size.
+	  If MBEDTLS_AES_FEWER_TABLES is used the RAM reduction is ~2kB with an
+	  additional cost of ~2kB of ROM size.
+	  MBEDTLS_AES_ROM_TABLES setting in mbed TLS config file.
+
+config MBEDTLS_AES_FEWER_TABLES
+	bool "Use fewer AES tables"
+	depends on VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C)
+	help
+	  Enabling this configuration omits 75% of the AES tables in ROM or RAM.
+	  There is a tradeoff between lookup size and doing more arithmetic
+	  operations on the fly, which impacts the performance of the AES operations.
+	  MBEDTLS_AES_FEWER_TABLES setting in mbed TLS config file.
+
 config MBEDTLS_MPI_WINDOW_SIZE
 	int "MPI - Multiple Precision Integers window size"
 	range 1 6
