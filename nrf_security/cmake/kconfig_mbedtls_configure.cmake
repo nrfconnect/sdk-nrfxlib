@@ -110,7 +110,9 @@ kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_OFB")
 kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_XTS")
 kconfig_mbedtls_config("MBEDTLS_CMAC_C")
 kconfig_mbedtls_config("MBEDTLS_CCM_C")
+kconfig_mbedtls_config("MBEDTLS_CTR_DRBG_C")
 kconfig_mbedtls_config("MBEDTLS_DHM_C")
+kconfig_mbedtls_config("MBEDTLS_HMAC_DRBG_C")
 kconfig_mbedtls_config("MBEDTLS_SHA1_C")
 kconfig_mbedtls_config("MBEDTLS_SHA256_C")
 kconfig_mbedtls_config("MBEDTLS_SHA512_C")
@@ -334,6 +336,11 @@ mbedtls_config_define_depends("MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED"
   "MBEDTLS_ECJPAKE_C"
   "MBEDTLS_TLS_LIBRARY"
   "MBEDTLS_X509_LIBRARY"
+)
+
+mbedtls_config_define_depends("MBEDTLS_ECDSA_DETERMINISTIC"
+  "MBEDTLS_ECDSA_C"
+  "MBEDTLS_HMAC_DRBG_C"
 )
 
 set(generated_include_path
