@@ -101,6 +101,8 @@ file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/include/)
 # Enabling core functionality
 #
 kconfig_mbedtls_config("MBEDTLS_AES_C")
+kconfig_mbedtls_config("MBEDTLS_AES_ROM_TABLES")
+kconfig_mbedtls_config("MBEDTLS_AES_FEWER_TABLES")
 kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CBC")
 kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CFB")
 kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CTR")
