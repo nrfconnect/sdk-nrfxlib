@@ -5,6 +5,15 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Bugfixes
+========
+
+* Fixed an issue where an assert could occur when receiving a packet
+  with a CRC error after performing a data length procedure on Coded PHY.
+* Fixed an issue where assert occured when setting secondary PHY to 0
+  when using HCI LE Set Extended Advertising Parameters when the advertising type
+  was set to legacy advertising.
+
 ble_controller 0.3.0-3.prealpha
 *******************************
 
