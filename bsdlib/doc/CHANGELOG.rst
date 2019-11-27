@@ -5,6 +5,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.5.1
+************
+
+* Fixed internal memory issue in GNSS which lead to crash when running for hours.
+
 bsdlib 0.5.0
 ************
 
