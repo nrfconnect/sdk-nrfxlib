@@ -29,6 +29,10 @@ nrf_security_debug("######### Creating vanilla noglue library #########")
 #
 add_library(${IMAGE}mbedcrypto_vanilla)
 
+if (CONFIG_SHORT_WCHAR_T)
+  target_compile_options(${IMAGE}mbedcrypto_vanilla PRIVATE -fshort-wchar)
+endif()
+
 #
 # Adding all standard compile/linker options (e.g. float ABI)
 #
@@ -71,6 +75,8 @@ nrf_security_debug("######### Creating vanilla glue library #########")
 # Create the vanilla glue library
 #
 zephyr_library_named(mbedcrypto_glue_vanilla)
+
+zephyr_library_compile_options_ifdef(CONFIG_SHORT_WCHAR_T -fshort-wchar)
 
 #
 # Adding vanilla backend glue files

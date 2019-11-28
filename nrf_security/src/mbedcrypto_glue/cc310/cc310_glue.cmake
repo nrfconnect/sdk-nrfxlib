@@ -23,6 +23,8 @@ endif()
 
 zephyr_library_named(mbedcrypto_glue_cc310)
 
+zephyr_library_compile_options_ifdef(CONFIG_SHORT_WCHAR_T -fshort-wchar)
+
 #
 # Adding cc310 backend glue files
 #

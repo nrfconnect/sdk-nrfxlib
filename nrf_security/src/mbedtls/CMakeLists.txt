@@ -130,6 +130,7 @@ zephyr_include_directories(${common_includes})
 # Library containing code not in Glue or backend
 #
 zephyr_library_named(mbedtls_base_vanilla)
+zephyr_library_compile_options_ifdef(CONFIG_SHORT_WCHAR_T -fshort-wchar)
 zephyr_library_sources(${src_crypto} ${src_crypto_replacement})
 
 #
@@ -197,6 +198,7 @@ nrf_security_debug_list_target_files(${IMAGE}mbedtls_base_vanilla)
 #
 if (CONFIG_MBEDTLS_X509_LIBRARY)
   zephyr_library_named(mbedtls_x509_vanilla)
+  zephyr_library_compile_options_ifdef(CONFIG_SHORT_WCHAR_T -fshort-wchar)
   zephyr_library_sources(${src_x509})
   zephyr_library_link_libraries(${IMAGE}mbedtls_common)
   nrf_security_debug_list_target_files(${IMAGE}mbedtls_x509_vanilla)
@@ -208,6 +210,7 @@ endif()
 #
 if (CONFIG_MBEDTLS_TLS_LIBRARY)
   zephyr_library_named(mbedtls_tls_vanilla)
+  zephyr_library_compile_options_ifdef(CONFIG_SHORT_WCHAR_T -fshort-wchar)
   zephyr_library_sources(${src_tls} ${src_tls_replacement})
   zephyr_library_link_libraries(${IMAGE}mbedtls_common)
   nrf_security_debug_list_target_files(${IMAGE}mbedtls_tls_vanilla)
@@ -233,6 +236,9 @@ endif()
 # CONFIG_MBEDTLS and CONFIG_MBEDTLS_LIBRARY in zephyr sockets
 #
 add_library(${IMAGE}mbedtls_external)
+if (CONFIG_SHORT_WCHAR_T)
+  target_compile_options(${IMAGE}mbedtls_external PRIVATE -fshort-wchar)
+endif()
 target_sources(${IMAGE}mbedtls_external PRIVATE ${ZEPHYR_BASE}/misc/empty_file.c)
 
 #
@@ -242,6 +248,7 @@ target_sources(${IMAGE}mbedtls_external PRIVATE ${ZEPHYR_BASE}/misc/empty_file.c
 #       which is always set to "true".
 #
 zephyr_interface_library_named(mbedtls_includes)
+zephyr_library_compile_options_ifdef(CONFIG_SHORT_WCHAR_T -fshort-wchar)
 target_link_libraries(${IMAGE}mbedtls_includes INTERFACE ${IMAGE}mbedtls_common)
 
 #

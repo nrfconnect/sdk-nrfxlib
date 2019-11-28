@@ -32,6 +32,8 @@ if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
   #
   zephyr_library_named(mbedcrypto_glue)
 
+  zephyr_library_compile_options_ifdef(CONFIG_SHORT_WCHAR_T -fshort-wchar)
+
   #
   # Add glued files if enabled
   #
