@@ -95,6 +95,7 @@ enum nfc_t4t_event {
 	 * data_length information might not be consistent (e.g. in case of only
 	 * a single byte write to the length).
 	 *
+	 * @param data Pointer to current data of NDEF message
 	 * @param data_length Current value of NDEF content length information
 	 * i.e. 'NLEN' field.
 	 */
@@ -197,7 +198,10 @@ int nfc_t4t_setup(nfc_t4t_callback_t callback, void *context);
  *
  * The buffer needs to be kept accessible for the lifetime of the emulation.
  * If an external Reader-Writer changes the NDEF content it is signaled through
- * the app-callback.
+ * the app-callback. Buffer can be changed during the lifetime of the emulation,
+ * when NDEF READ or UPDATE procedure is pending, and it will be changed after
+ * this procedure is finished. To perform this procedure safely use
+ * critical sections or disable the interrupts.
  *
  * @param emulation_buffer Buffer pointer
  * @param buffer_length Length of buffer (maximum writable NDEF size)
@@ -205,7 +209,8 @@ int nfc_t4t_setup(nfc_t4t_callback_t callback, void *context);
  * @retval 0 Success.
  * @retval -EINVAL Invalid argument (e.g. wrong data length).
  * @retval -EINVAL Invalid argument (e.g. NULL pointer).
- * @retval -ENOTSUP If emulation is in running state.
+ * @retval -ENOTSUP If the new buffer has a different length than the first one.
+ * @retval -EFAULT If the provided buffer is the currently used buffer.
  */
 int nfc_t4t_ndef_rwpayload_set(u8_t *emulation_buffer,
 			       size_t buffer_length);
