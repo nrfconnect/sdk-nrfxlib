@@ -4,7 +4,7 @@ nRF BLE Controller
 ==================
 
 | The nRF BLE Controller is an RTOS-agnostic library built for the Nordic
-  Semiconductor nRF52 Series that supports Bluetooth 5.
+  Semiconductor nRF52 and nRF53 Series that supports Bluetooth 5.
 | In addition to providing a BLE HCI interface, it also provides:
 
 -  Multiprotocol support through APIs for requesting RADIO timeslots,
@@ -33,6 +33,9 @@ SoC support:
 +------------+--------+--------+--------+
 | nRF52840   |        |        | X      |
 +------------+--------+--------+--------+
+| nRF5340    |        |        | X      |
++------------+--------+--------+--------+
+
 
 Feature support:
 
