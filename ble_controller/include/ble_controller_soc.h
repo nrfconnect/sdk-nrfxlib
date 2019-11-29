@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2018- 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -43,19 +43,11 @@ enum BLE_CONTROLLER_FLASH_CMD_STATUS
 /** @brief Flash command callback.
  *
  * The flash command callback will be called when a flash operation is completed.
- * It will be executed in the same execution priority as @ref ble_controller_low_prio_tasks_process.
+ * It will be executed in the same execution priority as mpsl_low_priority_process.
  *
  * @param[in] status The status of the flash operation. @sa BLE_CONTROLLER_FLASH_CMD_STATUS.
  */
 typedef void (*ble_controller_flash_callback_t)(uint32_t status);
-
-
-/** @brief High frequency clock callback.
- *
- * This callback will be called when a the high frequency clock is started.
- * It will be executed in the same execution priority as @ref ble_controller_low_prio_tasks_process.
- */
-typedef void (*ble_controller_hf_clock_callback_t)(void);
 
 
 /** @brief Write data to flash.
@@ -72,7 +64,7 @@ typedef void (*ble_controller_hf_clock_callback_t)(void);
  *                         flash page. See the device's Product Specification for details.
  * @param[in]  on_complete Callback to be called when flash is written.
  *                         The callback will be executed in the context as
- *                         @ref ble_controller_low_prio_tasks_process.
+ *                         mpsl_low_priority_process.
  *
  * @retval 0                   Success
  * @retval - ::NRF_EINVAL      Either:
@@ -97,7 +89,7 @@ int32_t ble_controller_flash_write(uint32_t addr,
  *                         the page containing this address will be erased.
  * @param[in]  on_complete Function to be called when page is erased.
  *                         The callback will be executed in the context as
- *                         @ref ble_controller_low_prio_tasks_process.
+ *                         mpsl_low_priority_process.
  *
  * @retval 0                   Success
  * @retval - ::NRF_EINVAL      Tried to erase a non existing flash page.
@@ -157,48 +149,6 @@ int32_t ble_controller_ecb_block_encrypt(const uint8_t key[16],
                                          const uint8_t cleartext[16],
                                          uint8_t ciphertext[16]);
 
-
-/** @brief Request the high frequency crystal oscillator.
- *
- * This API will start the high frequency crystal oscillator if it is not already running.
- * The high frequency clock will be kept running until @ref ble_controller_hf_clock_release is called.
- *
- * @param[in] on_started Function to be called when the high frequency clock is started.
- *                       The callback will be executed in the context as
- *                       @ref ble_controller_low_prio_tasks_process.
- *
- * @retval 0 Success
- */
-int32_t ble_controller_hf_clock_request(ble_controller_hf_clock_callback_t on_started);
-
-
-/** @brief Release the high frequency crystal oscillator.
- *
- * This API will stop the high frequency crystal oscillator. The BLE Controller may continue to
- * use the high frequency clock for BLE activity. However, the BLE Controller will automatically
- * turn it off when it is no longer needed.
- *
- * @retval 0 Success
- */
-int32_t ble_controller_hf_clock_release(void);
-
-
-/** @brief Checks if the high frequency crystal oscillator is running.
- *
- * @param[out] p_is_running Set to true if the high frequency crystal oscillator is running.
- *
- * @retval 0 Success
- */
-int32_t ble_controller_hf_clock_is_running(bool * p_is_running);
-
-
-/** @brief Get the temperature measured on the chip.
- *
- * This function will block until the temperature measurement is done.
- *
- * @retval Result of temperature measurement. Die temperature in 0.25 degrees Celsius.
- */
-int32_t ble_controller_temp_get(void);
 
 
 #ifdef __cplusplus

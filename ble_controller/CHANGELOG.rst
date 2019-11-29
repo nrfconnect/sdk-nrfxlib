@@ -8,12 +8,11 @@ All notable changes to this project are documented in this file.
 Added
 =====
 
-* Added :cpp:func:`ble_controller_support_dle()` which makes LE Data Length Extension support configurable.
-* Added preliminary support for the S140 variant with the nRF5340 SoC.
-  The BLE controller for nRF5340 supports the same feature set as its nRF52 Series counterpart.
-  The following library has been added:
+* Added preliminary support for the S140 variant with the nRF5340 SoC. The BLE
+  controller for nRF5340 support the same feature set as its nRF52-series
+  counterpart. The following library has been added:
 
-  * :file:`ble_controller/lib/cortex-m33+nodsp/soft-float/libble_controller_s140.a`
+  * ``ble_controller/lib/cortex-m33+nodsp/soft-float/libble_controller_s140.a``
 
 Changes
 =======
@@ -23,14 +22,11 @@ Changes
 Bugfixes
 ========
 
-* Fixed an issue on nRF53 where the radio stayed in the TX state longer than expected.
-  This issue occured when sending a packet on either LE 1M or LE 2M PHY after receiving or transmitting a packet on
-  LE Coded PHY.
-  If this occured while performing a Link Layer Control Procedure, the controller could end up retransmitting
-  an ACKed packet, resulting in a disconnect.
-* Fixed an issue where an assert could occur when receiving a packet with a CRC error after performing a data length procedure on Coded PHY.
-* Fixed an issue where an assert occurred when setting a secondary PHY to 0 when using HCI LE Set Extended Advertising Parameters.
-  This issue occurred when the advertising type was set to legacy advertising.
+* Fixed an issue where an assert could occur when receiving a packet
+  with a CRC error after performing a data length procedure on Coded PHY.
+* Fixed an issue where assert occurred when setting secondary PHY to 0
+  when using HCI LE Set Extended Advertising Parameters when the advertising type
+  was set to legacy advertising.
 
 ble_controller 0.3.0-3.prealpha
 *******************************
