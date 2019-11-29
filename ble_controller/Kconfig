@@ -8,7 +8,14 @@
 # now with additional properties. Note that the dependencies of the
 # original config must be duplicated to not affect it's visibility.
 
-if BT && BT_HCI && BT_CTLR
+if BT && BT_HCI
+
+config BT_LL_NRFXLIB_VS_INCLUDE
+	bool "Include nRF BLE Controller vendor specific HCI interface"
+	help
+	  Include nRF BLE Controller vendor specific HCI interface.
+
+if BT_CTLR
 
 choice BT_LL_CHOICE
 	prompt "Bluetooth Link Layer Selection"
@@ -23,13 +30,14 @@ config BT_LL_NRFXLIB
 	select BT_CTLR_EXT_SCAN_FP_SUPPORT
 	select BT_CTLR_PHY_UPDATE_SUPPORT
 	select BT_CTLR_CHAN_SEL_2_SUPPORT
-	# This controller only supports nRF52, it does not support 51 or
+	# This controller only supports nRF52 and nRF53, it does not support 51 or
 	# 91 (91 doesn't even have the physical HW needed for BLE).
-	depends on SOC_SERIES_NRF52X
+	depends on (SOC_SERIES_NRF52X || SOC_SERIES_NRF53X)
 	help
 	  Use Nordic BLE Link Layer implementation.
 
 endchoice
+
 
 if BT_LL_NRFXLIB
 
@@ -54,7 +62,7 @@ config BLE_CONTROLLER_S132
 	select BT_CTLR_ADV_EXT_SUPPORT
 
 config BLE_CONTROLLER_S140
-	depends on (SOC_NRF52811 || SOC_NRF52840)
+	depends on (SOC_NRF52811 || SOC_NRF52840 || SOC_SERIES_NRF53X)
 	select BT_CTLR_DATA_LEN_UPDATE_SUPPORT
 	select BT_CTLR_ADV_EXT_SUPPORT
 	bool "s140"
@@ -62,4 +70,5 @@ config BLE_CONTROLLER_S140
 endchoice
 
 endif # BT_LL_NRFXLIB
-endif # BT && BT_HCI && BT_CTLR
+endif # BT_CTLR
+endif # BT && BT_HCI
