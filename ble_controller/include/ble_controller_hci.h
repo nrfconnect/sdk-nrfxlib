@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2018 - 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -16,7 +16,7 @@
  * The HCI packet format is described in the Bluetooth Core Specification,
  * i.e. in Core v5. Vol 2, Part E.
  * All APIs in this header file are expected to be called from the
- * same execution priority as @ref ble_controller_low_prio_tasks_process.
+ * same execution priority as mpsl_low_priority_process.
  * Not doing so will lead to undefined behavior.
  * @{
  */
