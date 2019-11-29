@@ -9,7 +9,7 @@ Added
 =====
 
 * Added :cpp:func:`ble_controller_support_dle()` which makes LE Data Length Extension support configurable.
-* Added preliminary support for the S140 variant with the nRF5340 SoC.
+* Added preliminary support for the S140 variant with the nRF5340 device.
   The BLE controller for nRF5340 supports the same feature set as its nRF52 Series counterpart.
   The following library has been added:
 
@@ -18,11 +18,31 @@ Added
 Changes
 =======
 
+* :cpp:func:`mpsl_init()` is no longer called by :cpp:func:`ble_controller_init()`.
+  Application is therefore responsible for calling :cpp:func:`mpsl_init()`, and it must be done before :cpp:func:`ble_controller_init()` is called.
+* Clock configuration parameters are now contained in :c:type:`mpsl_clock_lfclk_cfg_t` instead of :c:type:`nrf_lf_clock_cfg_t`, and must be provided to :cpp:func:`mpsl_init()` instead of :cpp:func:`ble_controller_init()`.
+* Clock accuracy must now be specified in parts per million (ppm) instead of the previous enum value.
+* The IRQ line to pend for low priority signal processing must be provided to :cpp:func:`mpsl_init()` instead of :cpp:func:`ble_controller_init()`.
+* The application must call :cpp:func:`mpsl_low_priority_process()` instead of :cpp:func:`ble_controller_low_prio_tasks_process()` to process low priority signals.
+* :cpp:func:`mpsl_uninit()` is no longer called by :cpp:func:`ble_controller_disable()`.
+  Application must therefore call :cpp:func:`mpsl_uninit()` after :cpp:func:`ble_controller_disable()` to uninitialize MPSL.
+* Interrupt handler APIs for the following peripherals are moved to MPSL: RADIO, RTC0, TIMER0, and POWER_CLOCK.
+* High frequency clock API (``ble_controller_hf_clock_...``) is removed.
+  Use corresponding API in MPSL instead.
+* Temperature API (:cpp:func:`ble_controller_temp_get()`) is removed.
+  Use corresponding API in MPSL instead.
+* Timeslot API is removed.
+  Use corresponding API in MPSL instead.
 * Version numbers have been removed from the libraries.
 
 Bugfixes
 ========
 
+* Fixed an issue on nRF53 where the T_IFS in certain conditions was off by 5 us.
+* Fixed an issue where a control packet could be sent twice even after the packet was ACKed.
+  This would only occur if the radio was forced off due to an unforeseen condition.
+* Fixed an issue in HCI LE Set Extended Scan Enable where ``UNSUPPORTED_FEATURE`` was returned when duplicate filtering was enabled.
+* Fixed an issue in HCI LE Set Advertising Parameters where ``UNSUPPORTED_FEATURE`` was returned when ``secondary_max_skip`` was set to a non-zero value.
 * Fixed an issue on nRF53 where the radio stayed in the TX state longer than expected.
   This issue occured when sending a packet on either LE 1M or LE 2M PHY after receiving or transmitting a packet on
   LE Coded PHY.

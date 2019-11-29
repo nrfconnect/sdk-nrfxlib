@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2018 - 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -58,12 +58,6 @@ extern "C" {
 
 /** @brief Default connection event length. */
 #define BLE_CONTROLLER_DEFAULT_EVENT_LENGTH_US 7500UL
-
-/** @brief Recommended RC clock calibration timer interval. */
-#define BLE_CONTROLLER_RECOMMENDED_RC_CTIV        16
-
-/** @brief Recommended RC clock calibration timer interval for temperature changes. */
-#define BLE_CONTROLLER_RECOMMENDED_RC_TEMP_CTIV   2
 
 /** @brief Size of build revision array in bytes. */
 #define BLE_CONTROLLER_BUILD_REVISION_SIZE 20
@@ -153,70 +147,6 @@ typedef void (*ble_controller_fault_handler_t)(const char * file, const uint32_t
 typedef void (*ble_controller_callback_t)(void);
 
 
-/** @brief Low frequency clock accuracy. */
-enum NRF_LF_CLOCK_ACCURACY
-{
-    NRF_LF_CLOCK_ACCURACY_250_PPM = 0,
-    NRF_LF_CLOCK_ACCURACY_500_PPM = 1,
-    NRF_LF_CLOCK_ACCURACY_150_PPM = 2,
-    NRF_LF_CLOCK_ACCURACY_100_PPM = 3,
-    NRF_LF_CLOCK_ACCURACY_75_PPM  = 4,
-    NRF_LF_CLOCK_ACCURACY_50_PPM  = 5,
-    NRF_LF_CLOCK_ACCURACY_30_PPM  = 6,
-    NRF_LF_CLOCK_ACCURACY_20_PPM  = 7,
-    NRF_LF_CLOCK_ACCURACY_10_PPM  = 8,
-    NRF_LF_CLOCK_ACCURACY_5_PPM   = 9,
-    NRF_LF_CLOCK_ACCURACY_2_PPM   = 10,
-    NRF_LF_CLOCK_ACCURACY_1_PPM   = 11,
-};
-
-
-/** @brief Low frequency clock source. */
-enum NRF_LF_CLOCK_SRC
-{
-    NRF_LF_CLOCK_SRC_RC      = 0,    /**< LFCLK RC oscillator. */
-    NRF_LF_CLOCK_SRC_XTAL    = 1,    /**< LFCLK crystal oscillator. */
-    NRF_LF_CLOCK_SRC_SYNTH   = 2,    /**< LFCLK Synthesized from HFCLK. */
-};
-
-
-/** @brief Type representing LFCLK oscillator source. */
-typedef struct
-{
-    uint8_t lf_clk_source; /**< LF oscillator clock source, see @ref NRF_LF_CLOCK_SRC. */
-    uint8_t rc_ctiv;       /**< Only for ::NRF_LF_CLOCK_SRC_RC.
-                                Calibration timer interval in 1/4 second units.
-                                @note To avoid excessive clock drift, 0.5 degrees Celsius is the
-                                      maximum temperature change allowed in one calibration timer
-                                      interval. The interval should be selected to ensure this.
-                                @note Must be 0 if source is not ::NRF_LF_CLOCK_SRC_RC. */
-    uint8_t rc_temp_ctiv;  /**< Only for ::NRF_LF_CLOCK_SRC_RC:
-                                How often (in number of calibration intervals) the RC oscillator
-                                will be calibrated.
-                                  0: Always calibrate even if the temperature hasn't changed.
-                                  1: Only calibrate if the temperature has changed.
-                                  2-33: Check the temperature and only calibrate if it has changed,
-                                        however calibration will take place every rc_temp_ctiv
-                                        intervals in any case.
-
-                                @note Must be 0 if source is not ::NRF_LF_CLOCK_SRC_RC.
-
-                                @note The application must ensure calibration at least once every
-                                      8 seconds to ensure +/-500 ppm clock stability.
-                                      The recommended configuration for ::NRF_LF_CLOCK_SRC_RC
-                                      is given by @ref BLE_CONTROLLER_RECOMMENDED_RC_CTIV
-                                      and @ref BLE_CONTROLLER_RECOMMENDED_RC_TEMP_CTIV.
-                                      This sets the calibration interval to 4 seconds and guarantees
-                                      clock calibration every second calibration interval. That is,
-                                      the clock will be calibrated every 8 seconds.
-                                      If the temperature changes more that 0.5 every 4 seconds, the
-                                      clock will be calibrated every 4 seconds. See the
-                                      Product Specification for more information. */
-    uint8_t accuracy;    /**< External clock accuracy used in the Link Layer to compute timing windows,
-                              see @ref NRF_LF_CLOCK_SRC. */
-} nrf_lf_clock_cfg_t;
-
-
 enum BLE_CONTROLLER_CFG_TYPE
 {
     BLE_CONTROLLER_CFG_TYPE_NONE         = 0,  /**< No configuration update. */
@@ -270,26 +200,18 @@ typedef union
 
 /** @brief     Initialize the BLE Controller
  *
- * After this function is called, the application may use SoC and timeslot APIs.
+ * After this function is called, the application may use SoC APIs.
  *
  * @param[in]  fault_handler           The fault handler will be executed when there is an internal
  *                                     error in the BLE Controller.
- * @param[in]  p_clk_cfg               Clock configuration. If NULL is provided, the default clock
- *                                     configuration will be used. That is @ref NRF_LF_CLOCK_SRC_RC,
- *                                     @ref NRF_LF_CLOCK_ACCURACY_250_PPM,
- *                                     @ref BLE_CONTROLLER_RECOMMENDED_RC_CTIV,
- *                                     and @ref BLE_CONTROLLER_RECOMMENDED_RC_TEMP_CTIV.
- * @param[in] low_prio_tasks_irq       The BLE controller library will pend this IRQ when there
- *                                     are low priority tasks to be processed. The application
- *                                     shall call @ref ble_controller_low_prio_tasks_process
- *                                     after this IRQ has occurred.
  *
  * @retval 0              Success
  * @retval - ::NRF_EINVAL Invalid argument provided
+ * @retval - ::NRF_EPERM  Unable to initialize because
+ *                         - MPSL is not initialized
+ *                         - MPSL needs to be configured with a LFCLK accuracy of 500 ppm or better.
  */
-int32_t ble_controller_init(ble_controller_fault_handler_t fault_handler,
-                            nrf_lf_clock_cfg_t * p_clk_cfg,
-                            IRQn_Type low_prio_tasks_irq);
+int32_t ble_controller_init(ble_controller_fault_handler_t fault_handler);
 
 
 /** @brief Change or add a BLE Controller configuration
@@ -322,7 +244,7 @@ int32_t ble_controller_cfg_set(uint8_t config_tag,
  *
  * @param[in]  callback       The callback will be executed when HCI data or and HCI event is available.
  *                            The callback will be executed in the same context as
- *                            @ref ble_controller_low_prio_tasks_process.
+ *                            mpsl_low_priority_process.
  *                            @sa hci_evt_get and @ref hci_data_get.
  * @param[in]  p_mem          Provide memory for the current resource configuration.
  *                            If custom resource configurations are used, use the value returned
@@ -358,41 +280,6 @@ int32_t ble_controller_disable(void);
 int32_t ble_controller_build_revision_get(uint8_t * p_build_revision);
 
 
-/** @brief Instruct the BLE controller to process low priority tasks
- *
- * This function should be called after the controller has indicated that it has low priority tasks
- * to be processed. See @ref ble_controller_init.
- *
- * @note This function is expected to be called from the same execution priority as the HCI APIs.
- *       Not doing so will lead to undefined behavior.
- */
-void ble_controller_low_prio_tasks_process(void);
-
-
-/** @brief BLE Controller RADIO interrupt handler
- *
- * @note   This function should be called when a radio interrupt occurs.
- *         The interrupt priority level should be set to 0.
- */
-void ble_controller_RADIO_IRQHandler(void);
-
-
-/** @brief BLE Controller RTC0 interrupt handler
- *
- * @note   This function should be called when a RTC0 interrupt occurs.
- *         The interrupt priority level should be set to 0.
- */
-void ble_controller_RTC0_IRQHandler(void);
-
-
-/** @brief BLE Controller TIMER0 interrupt handler.
- *
- * @note   This function should be called when a TIMER0 interrupt occurs.
- *         The interrupt priority level should be set to 0.
- */
-void ble_controller_TIMER0_IRQHandler(void);
-
-
 /** @brief BLE Controller RNG interrupt handler
  *
  * @note   This function should be called when a RNG interrupt occurs.
@@ -400,15 +287,6 @@ void ble_controller_TIMER0_IRQHandler(void);
  *         a higher numerical priority value.
  */
 void ble_controller_RNG_IRQHandler(void);
-
-
-/** @brief BLE Controller POWER_CLOCK interrupt handler
- *
- * @note   This function should be called when a POWER_CLOCK interrupt occurs.
- *         The interrupt priority level should be lower than priority level 0, that is,
- *         a higher numerical priority value.
- */
-void ble_controller_POWER_CLOCK_IRQHandler(void);
 
 /** @brief Support Data Length Extensions
  * 
