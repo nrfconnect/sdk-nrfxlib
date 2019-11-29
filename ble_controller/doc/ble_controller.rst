@@ -3,8 +3,9 @@
 Integration with applications
 =============================
 
-The nRF BLE Controller is an RTOS-agnostic library built for the 
-Nordic Semiconductor nRF52 Series that supports Bluetooth 5.
+The nRF BLE Controller is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series that supports Bluetooth 5.
+
+For the nRF53 Series, the requirements described in this document are only relevant for applications running alongside the nRF BLE Controller on the network processor.
 
 Applications utilizing the nRF BLE Controller library are responsible for
 the following:
@@ -40,7 +41,8 @@ directly:
 -  ECB
 -  AAR
 -  NVMC
--  PPI channels 17 - 31
+-  PPI channels 17 - 31, for the nRF52 Series
+-  DPPI channels 0 - 13, for the nRF53 Series
 
 In addition to these peripherals, the nRF BLE Controller library requires one
 interrupt for low priority task processing.
