@@ -12,7 +12,7 @@ zephyr_interface_library_named(nrfxlib_crypto)
 
 if (CONFIG_NRF_OBERON)
   set(OBERON_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_oberon)
-  set(OBERON_VER 3.0.2)
+  set(OBERON_VER 3.0.3)
   set(OBERON_LIB ${OBERON_BASE}/${lib_path}/liboberon_${OBERON_VER}.a)
   if(NOT EXISTS ${OBERON_LIB})
     message(WARNING "This combination of SoC and floating point ABI is not supported by the nrf_oberon lib."
