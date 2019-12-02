@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2018 - 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -41,24 +41,22 @@ extern "C" {
  */
 typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t line);
 
-/** @brief      MPSL initialization
- *
- * @note       This function can be called by multiple protocols
- *             The input parameters should be the same as the first call.
+/** @brief     MPSL initialization
  *
  * @param[in]  p_clock_config    Clock configuration.
                                  If NULL the LF clock will be configured as an RC source with rc_ctiv =
-                                 @ref MPSL_RECOMMENDED_RC_CTIV and .rc_temp_ctiv =
-                                 @ref MPSL_RECOMMENDED_RC_TEMP_CTIV.
+                                 @ref MPSL_RECOMMENDED_RC_CTIV, .rc_temp_ctiv =
+                                 @ref MPSL_RECOMMENDED_RC_TEMP_CTIV, and .accuracy_ppm = @ref MPSL_DEFAULT_CLOCK_ACCURACY_PPM.
  * @param[in]  low_prio_irq      IRQ to pend when low priority processing should be executed. The application
  *                               shall call @ref mpsl_low_priority_process after this IRQ has occurred.
  * @param[in]  p_assert_handler  Pointer to MPSL assert handler.
  *
  *
  * @retval  0               MPSL is successfully initialized.
- * @retval  - ::NRF_EPERM   MPSL is already initialized with different parameters.
+ * @retval  - ::NRF_EPERM   MPSL is already initialized.
+ * @retval  - ::NRF_EINVAL  Invalid parameters supplied.
  */
-int32_t mpsl_init(mpsl_clock_lf_cfg_t const * p_clock_config, IRQn_Type low_prio_irq, mpsl_assert_handler_t p_assert_handler);
+int32_t mpsl_init(mpsl_clock_lfclk_cfg_t const * p_clock_config, IRQn_Type low_prio_irq, mpsl_assert_handler_t p_assert_handler);
 
 /** @brief      Uninitialize MPSL. Stops clocks and scheduler. This will release all peripherals and
  *             reduce power usage.
