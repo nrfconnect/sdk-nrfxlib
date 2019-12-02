@@ -20,5 +20,5 @@ if(CONFIG_TEMP_NRF5 AND CONFIG_MPSL)
 endif()
 
 zephyr_include_directories(include)
-zephyr_link_libraries(${MPSL_LIB_PATH}/libmpsl_nrf52.a)
+zephyr_link_libraries(${MPSL_LIB_PATH}/libmpsl.a)
 
