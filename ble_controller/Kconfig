@@ -37,8 +37,8 @@ config BT_LL_NRFXLIB
 	select BT_CTLR_EXT_SCAN_FP_SUPPORT
 	select BT_CTLR_PHY_UPDATE_SUPPORT
 	select BT_CTLR_CHAN_SEL_2_SUPPORT
-	# This controller only supports nRF52 and nRF53, it does not support 51 or
-	# 91 (91 doesn't even have the physical HW needed for BLE).
+	# This controller only supports nRF52 and nRF53, it does not support nRF51
+	# or nRF91 (nRF91 doesn't even have the physical HW needed for BLE).
 	depends on (SOC_SERIES_NRF52X || SOC_SERIES_NRF53X)
 	help
 	  Use Nordic BLE Link Layer implementation.
