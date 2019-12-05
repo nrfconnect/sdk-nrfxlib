@@ -1,12 +1,13 @@
 .. _bsdlib_ug_porting:
 
-User Guide: Porting the BSD library to your OS
-##############################################
+Porting the BSD library to your OS
+##################################
 
 The :ref:`bsdlib` from Nordic Semiconductor is an OS-agnostic C library.
-OS-specific parts are moved out and in order to use it with your OS or scheduler, you must first port it by creating a custom :file:`bsd_os.c` file which serves as an OS abstraction layer.
-The library exposes a :file:`bsd_os.h` header file which defines the functions that must be implemented in :file:`bsd_os.c`.
-The header file also exposes what functions are provided by the library that the OS integration module must interface.
+OS-specific parts are moved out of the library.
+To use the library with your OS or scheduler, you must first port it by creating a custom :file:`bsd_os.c` file, which serves as an OS abstraction layer.
+The library exposes a :file:`bsd_os.h` header file that defines the functions that must be implemented in :file:`bsd_os.c`.
+The header file also exposes what functions are provided by the library that the OS integration module must interface with.
 
 The following diagram presents the BSD OS abstraction layer.
 Arrows indicate that the elements can communicate with each other directly.
@@ -28,9 +29,9 @@ This function is called by the BSD library when the application has issued ``bsd
 It is responsible for preparing IRQ for low priority BSD scheduling and trace scheduling.
 
 .. note::
-   When working with an application based on Zephyr, set the IRQ’s to a low priority (6 or 7) and enable them before exiting the function.
+   When working with an application based on Zephyr, set the IRQs to a low priority (6 or 7) and enable them before exiting the function.
 
-The function must also initialize timers and threads, which is required in case of a context that needs a timeout.
+The function must also initialize timers and threads (if there is a context that needs a time-out).
 If Nordic Proprietary trace is enabled, the medium for where to forward the trace must also be configured in this function.
 
 *Required actions*:
@@ -164,7 +165,7 @@ Message sequence diagrams
 The following message sequence diagrams show the interactions between the application, BSD library, and the OS.
 
 1. Sequence of the initialization of the BSD library.
-   Configuration of the high and low priority IRQs.
+   Configuration of the high and low priority IRQs:
 
 .. figure:: images/msc_init.png
    :alt: Initialization (main thread)
@@ -172,7 +173,7 @@ The following message sequence diagrams show the interactions between the applic
    Initialization (main thread)
 
 
-2. Handling an event sent from the BSD library to a lower priority to be able to receive new events.
+2. Handling an event sent from the BSD library to a lower priority to be able to receive new events:
 
 .. figure:: images/msc_event.png
    :alt: Event handling, lowering priority
@@ -188,7 +189,7 @@ The following message sequence diagrams show the interactions between the applic
    Trace handling, lowering priority
 
 
-4. Handling a timeout or sleep:
+4. Handling a time-out or sleep:
 
 .. figure:: images/msc_timers.png
    :alt: Timers
@@ -282,12 +283,3 @@ You can use it as a template and customize it for your OS or scheduler.
        // Traces can be dropped if not needed.
        return 0;
    }
-
-
-
-
-
-
-
-
-
