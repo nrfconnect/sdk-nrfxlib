@@ -15,10 +15,17 @@ config BT_LL_NRFXLIB_VS_INCLUDE
 	help
 	  Include nRF BLE Controller vendor specific HCI interface.
 
+config BT_LL_NRFXLIB_DEFAULT
+	bool "Select BT_LL_NRFXLIB as default BT_LL_CHOICE"
+	help
+	  Helper variable used to change the default link layer if
+	  BT_CTLR is supported for the platform.
+
 if BT_CTLR
 
 choice BT_LL_CHOICE
 	prompt "Bluetooth Link Layer Selection"
+	default BT_LL_NRFXLIB if BT_LL_NRFXLIB_DEFAULT
 
 config BT_LL_NRFXLIB
 	bool "Nordic proprietary BLE Link Layer"
