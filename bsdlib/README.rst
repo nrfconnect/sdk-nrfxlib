@@ -3,7 +3,7 @@
 BSD library
 ###########
 
-The BSD library is Nordic Semiconductor's implementation of the BSD Socket API, which is a set of standard function calls that can be used in an application.
+The Berkeley Software Distribution (BSD) library is Nordic Semiconductor's implementation of the BSD `Socket API <https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html>`_ , which is a set of standard function calls that can be used in an application.
 This library aims to be compatible with the BSD socket standard to simplify writing and porting of existing applications.
 
 The library has the following set of sockets:
@@ -13,111 +13,28 @@ The library has the following set of sockets:
 * 1 modem DFU socket
 * 10 PDN sockets
 
-Overview
-********
+The BSD library is the primary interface for operating the nRF9160 modem and to establish LTE-M, NB-IoT, and GNSS connections.
+The library abstracts away the details on memory management and synchronization, allowing you to focus on writing the application using standardized API calls.
 
 .. figure:: doc/images/bsd_lib_overview.svg
    :alt: BSD library overview diagram
 
    BSD library overview diagram
 
-The BSD library is the primary interface to operate the nRF9160 modem in order to establish LTE-M, NBIOT, and GNSS connections.
-The library abstracts away the details on memory management and synchronization allowing you to focus on writing the application using standardized API calls.
+To get started with socket programming, you should check out some introductions and tutorials, such as `Beej's Guide to Network Programming <https://beej.us/guide/bgnet/>`_.
 
-The current implementation of the BSD library supports the following features and protocols:
-
-* TCP (client/server)
-* UDP
-* RAW sockets
-* DTLS 1.2 client
-* TLS 1.2 client
-* AT commands
-* GNSS
-* AGPS
-* PDN management
-* Modem DFU
-
-.. note::
-   The DNS address management protocol is not yet implemented.
-
-The library implements the following standard BSD functions:
-
-* socket
-* close
-* bind
-* listen
-* accept
-* connect
-* recvfrom
-* recv
-* read
-* sendto
-* send
-* write
-* getsockopt
-* setsockopt
-* fcntl
-* poll
-* inet_pton
-* inet_ntop
-* getaddrinfo
-* freeaddrinfo
-
-.. note::
-   Each socket supports a subset of these functions.
-
-
-Library internals
-*****************
-
-The purpose of the BSD library is to communicate with the nRF9160 modem firmware.
-This is done by sending events and getting responses over the Inter Processor Communication (IPC) peripheral.
-To facilitate data transfer between the application and the modem, payload data is set in the shared RAM.
-
-The modem contains a full IP and DTLS/TLS stack as well as GNSS.
-The library internally communicates over a Remote Procedure Call (RPC) protocol using the IPC and the shared RAM to utilize the modules inside the modem.
-You can dispatch data to and from the different modules in the modem firmware by providing the right combinations of address families, types, and protocols to the BSD library.
-
-The BSD library aims to provide a standard programming interface on top of all of these modules so that the application developer does not have to manage all intricate details of the low-level parameters passed back and forth between the application and the modem.
-
-The figure below shows a simplified BSD library architecture.
-
-.. figure:: doc/images/bsd_lib_architecture.svg
-   :alt: BSD library architecture diagram
-
-   BSD library architecture diagram
-
-Porting flexibility
-*******************
-
-The BSD library has been designed in such way that you can port it to any OS.
-Therefore, procedures that would normally require some kind of OS interaction, like going into sleep and IRQ reprioritization, have been moved out of the library to an open :file:`c` file in which OS-specific integration  can be implemented.
+The BSD library has been designed in such way that you can port it to any RTOS.
+Therefore, procedures that would normally require some kind of OS interaction, like going into sleep mode and IRQ reprioritization, have been moved out of the library to a :file:`.c` file in which OS-specific integration can be implemented.
 For more information, see :ref:`bsdlib_ug_porting`.
-
-Limitations
-***********
-
-GNSS, AGPS, and Modem DFU are currently not part of the generic sockets.
-Therefore, operating on them using ``poll`` is not possible yet.
-
-PDN sockets only support ``open``, ``close``, ``setsockopt``, and ``getsockopt`` to configure a PDN with an APN name.
-Therefore, there is no data communication on the socket, and it is not pollable.
-
-Modem firmware limitations
-==========================
-
-For detailed description of limitations related to the modem firmware used, refer to the changelog of that specific version.
-The changelog is distributed as part of the `downloadable zip file`_.
-
-.. _downloadable zip file: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#98C9E2578566420786ABD40B695FDB9B
-
-Additional documentation
-************************
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   doc/supported_features
+   doc/limitations
+   doc/architecture
+   doc/security_tags
    doc/extensions
    doc/ug_bsdlib_porting_os
    doc/CHANGELOG

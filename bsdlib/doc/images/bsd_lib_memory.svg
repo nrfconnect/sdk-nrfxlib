@@ -41,7 +41,7 @@
 				<title>text6680</title>
 				<desc>0x0000 FFFF</desc>
 				<rect x="0" y="444.245" width="57.2706" height="10.8" class="st1"/>
-				<text x="-0" y="452.64" class="st2">0x0000 FFFF</text>			</g>
+				<text x="-0" y="452.64" class="st2">0x2000 FFFF</text>			</g>
 			<g id="shape11-11" transform="translate(175.17,-1.3074E-12)">
 				<title>text6684</title>
 				<desc>0x2000 0000</desc>
