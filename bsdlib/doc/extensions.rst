@@ -18,3 +18,4 @@ Extensions are available for:
    :maxdepth: 2
 
    pdn_extension
+   at_commands
