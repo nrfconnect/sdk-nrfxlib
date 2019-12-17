@@ -3,12 +3,6 @@ menu "Crypto libraries for nRF5x SOCs."
 config NRFXLIB_CRYPTO
 	bool
 
-config SHORT_WCHAR_T
-	bool "Compile with short wchar_t size (2 bytes)"
-	help
-		This compiles zephyr and libraries with -fshort-wchar
-		Don't set this define if libgcc is in use
-
 config NRF_OBERON
 	bool "nrf_oberon SW crypto library for nRF5x."
 	select NRFXLIB_CRYPTO
