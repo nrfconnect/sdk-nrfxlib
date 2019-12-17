@@ -118,6 +118,7 @@ Additional documentation
    :maxdepth: 2
    :caption: Contents:
 
+   doc/extensions
    doc/ug_bsdlib_porting_os
    doc/CHANGELOG
    doc/api
