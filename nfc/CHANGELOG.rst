@@ -5,6 +5,20 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+NFC 0.4.0
+****************
+
+Added Type 2 Tag and Type 4 Tag NFC libraries for the nRF5340 device.
+Both libraries are compiled for the Cortex-M33 CPU in hard and soft float variants.
+
+Added
+=====
+
+* Added the NFC T2T library for the nRF5340 device: ``libnfct2t_nrf53.a``.
+* Added the NFC T4T library for the nRF5340 device: ``libnfct4t_nrf53.a``.
+* Added a feature to the NFC T4T library that allows the user to change the NDEF
+  buffer when the NFC stack is already initialized and running.
+
 NFC 0.3.0
 ****************
 
