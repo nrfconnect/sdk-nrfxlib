@@ -38,20 +38,6 @@ BSD Platform
    :project: nrfxlib
    :members:
 
-nRF91 Inbuilt Key Management
-****************************
-
-.. doxygengroup:: nrf_inbuilt_key
-   :project: nrfxlib
-   :members:
-
-nRF91 Key Management
-********************
-
-.. doxygengroup:: nrf_key_mgmt
-   :project: nrfxlib
-   :members:
-
 nRF BSD Socket interface
 ************************
 
