@@ -5,6 +5,16 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.6.0
+************
+
+* Removed the ``nrf_inbuilt_key`` API.
+  From now on, the application is responsible for provisioning keys using the AT command **%CMNG**.
+* Removed the ``nrf_apn_class`` API.
+  From now on, the application is responsible for handling the Access Point Name (APN) class.
+* Removed the crypto dependency towards ``nrf_oberon`` from the library.
+  The library does not need any special cryptography functions anymore, because the application is now responsible for signing AT commands.
+
 bsdlib 0.5.1
 ************
 

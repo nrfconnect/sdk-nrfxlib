@@ -11,16 +11,14 @@ nrfxlib_calculate_lib_path(lib_path)
 set(BSD_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
 
 if(NOT EXISTS ${BSD_LIB_PATH})
-  message(WARNING "This combination of SoC and floating point ABI is not supported by the bsd lib."
+  message(WARNING "This combination of SoC and floating point ABI is not supported by bsdlib."
                   "(${BSD_LIB_PATH} doesn't exist.)")
 endif()
 
-# Link in the bsd library, the oberon library, and lib C. Lib C and
-# lib oberon are linked in because they are used by the bsd library
-# and must therefore be placed after the bsd library on the linker's
-# command line.
-set(                    BSDLIB_TARGET             bsd_nrf9160_xxaa)
+# Link in bsdlib and libc.
+# libc is linked in because it is used by bsdlib
+# and must therefore be placed after bsdlib on the linker's command line.
+set(BSDLIB_TARGET bsd_nrf9160_xxaa)
 zephyr_library_import(${BSDLIB_TARGET} ${BSD_LIB_PATH}/libbsd_nrf9160_xxaa.a)
-target_link_libraries(${BSDLIB_TARGET} INTERFACE nrfxlib_crypto -lc)
 
 zephyr_include_directories(include)
