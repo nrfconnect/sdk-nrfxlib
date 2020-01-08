@@ -5,13 +5,25 @@ Library internals
 
 Before using the Multi-Protocol Service Layer (MPSL) library, make sure you are familiar with its design.
 
+Peripherals
+===========
+The following peripherals are owned by MPSL and must not be accessed directly by the application:
+
+ * RTC0
+ * TIMER0
+ * RADIO
+ * CLOCK
+ * TEMP
+
+Limited access to these peripherals is provided through the MPSL Timeslot module and through other MPSL APIs.
+
 Thread and Interrupt Safety
 ***************************
 The MPSL library is not reentrant, so for thread-safe operation, some considerations must be made.
 
 Interrupt configuration
 =======================
-MPSL enables interrupts for RTC0, TIMER0, and low_prio_irq.
+MPSL enables interrupts for RTC0, TIMER0, POWER_CLOCK and low_prio_irq.
 All other interrupts must be enabled and configured by the application.
 If the Timeslot API is used for RADIO access, the application is responsible for enabling and disabling the interrupt for RADIO.
 
@@ -21,14 +33,14 @@ The following interrupts do not have real time requirements:
 
  * POWER_CLOCK interrupt
 
-   The interrupt must be enabled for clock calibration to work, and it is up to the application to forward any clock related events to :cpp:func:`MPSL_IRQ_CLOCK_Handler` in lower priority.
+   It is up to the application to forward any clock related events to :cpp:func:`MPSL_IRQ_CLOCK_Handler` in lower priority.
    Irrelevant events are ignored, so the application is free to forward all events for the POWER_CLOCK interrupt.
 
 
  * ``low_prio_irq`` interrupt
 
    Low priority work is signaled by MPSL by pending the IRQ specified in the ``low_prio_irq`` argument to :cpp:func:`mpsl_init`.
-   When this interrupt is triggered, :cpp:func:`mpsl_low_priority_process` should be called within reasonable time.
+   When this interrupt is triggered, :cpp:func:`mpsl_low_priority_process` should be called as soon as possible, at least within a couple of ms.
    This issues timeslot signals like blocked or canceled, among other things.
    The application should configure this interrupt priority lower than c:macro:MPSL_HIGH_IRQ_PRIORITY level (that is, a higher numerical value).
    The interrupt is enabled with :cpp:func:`mpsl_init` and disabled with :cpp:func:`mpsl_uninit` by MPSL.
