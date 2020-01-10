@@ -845,25 +845,6 @@ config MBEDTLS_MPI_WINDOW_SIZE
 	  Note that reducing this value might have an impact on the performance.
 	  MBEDTLS_MPI_WINDOW_SIZE setting in mbed TLS config file.
 
-config MBEDTLS_MPI_MAX_SIZE
-	int "MPI - Multiple Precision Integers maximum size"
-	range 0 1024
-	default 1024
-	help
-	  Maximum number of bytes for usable Multiple Precision Integers (MPI) / Bignum.
-	  This will reduce the size of MPIs that can be used for calculation.
-	  Only reduce this value if it is ensured that the system won't need larger numbers.
-	  MBEDTLS_MPI_MAX_SIZE setting in mbed TLS config file.
-
-config MBEDTLS_ECP_MAX_BITS
-	int "ECP - Max bit size of Elliptic Curves"
-	range 0 521
-	default 521
-	help
-	  This setting controls the largest elliptic curve supported in the library.
-	  If only smaller curves are used, then this value can be reduced in order to save memory.
-	  MBEDTLS_ECP_MAX_BITS setting in mbed TLS config file.
-
 config MBEDTLS_ECP_WINDOW_SIZE
 	int "ECP - Elliptic Curve multiplication window size"
 	range 2 6
@@ -913,6 +894,36 @@ config MBEDTLS_SSL_CIPHERSUITES
 
 
 endif # NRF_SECURITY_ADVANCED
+
+config MBEDTLS_MPI_MAX_SIZE
+	int
+	default 1024 if MBEDTLS_RSA_C || MBEDTLS_DHM_C || CC310_MBEDTLS_DHM_C || VANILLA_MBEDTLS_DHM_C
+	default 66 if MBEDTLS_ECP_DP_SECP521R1_ENABLED
+	default 64 if MBEDTLS_ECP_DP_BP512R1_ENABLED
+	default 56 if MBEDTLS_ECP_DP_CURVE448_ENABLED
+	default 48 if MBEDTLS_ECP_DP_SECP384R1_ENABLED || MBEDTLS_ECP_DP_BP384R1_ENABLED
+	default 32 if MBEDTLS_ECP_DP_SECP256R1_ENABLED || MBEDTLS_ECP_DP_SECP256K1_ENABLED || MBEDTLS_ECP_DP_BP256R1_ENABLED || MBEDTLS_ECP_DP_CURVE25519_ENABLED
+	default 28 if MBEDTLS_ECP_DP_SECP224R1_ENABLED || MBEDTLS_ECP_DP_SECP224K1_ENABLED
+	default 24 if MBEDTLS_ECP_DP_SECP192R1_ENABLED || MBEDTLS_ECP_DP_SECP192K1_ENABLED
+	default 1024
+	help
+	  Maximum number of bytes for usable Multiple Precision Integers (MPI) / Bignum.
+	  This will reduce the size of MPIs that can be used for calculation.
+	  MBEDTLS_MPI_MAX_SIZE setting in mbed TLS config file.
+
+config MBEDTLS_ECP_MAX_BITS
+	int
+	default 521 if MBEDTLS_ECP_DP_SECP521R1_ENABLED
+	default 512 if MBEDTLS_ECP_DP_BP512R1_ENABLED
+	default 448 if MBEDTLS_ECP_DP_CURVE448_ENABLED
+	default 384 if MBEDTLS_ECP_DP_SECP384R1_ENABLED || MBEDTLS_ECP_DP_BP384R1_ENABLED
+	default 256 if MBEDTLS_ECP_DP_SECP256R1_ENABLED || MBEDTLS_ECP_DP_SECP256K1_ENABLED || MBEDTLS_ECP_DP_BP256R1_ENABLED || MBEDTLS_ECP_DP_CURVE25519_ENABLED
+	default 224 if MBEDTLS_ECP_DP_SECP224R1_ENABLED || MBEDTLS_ECP_DP_SECP224K1_ENABLED
+	default 192 if MBEDTLS_ECP_DP_SECP192R1_ENABLED || MBEDTLS_ECP_DP_SECP192K1_ENABLED
+	default 521
+	help
+	  This setting controls the largest elliptic curve supported in the library.
+	  MBEDTLS_ECP_MAX_BITS setting in mbed TLS config file.
 
 endif # MBEDTLS_VANILLA_BACKEND
 
