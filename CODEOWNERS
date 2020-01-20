@@ -6,7 +6,7 @@
 # Root folder
 /CODEOWNERS                               @carlescufi
 /LICENSE                                  @carlescufi
-/Jenkinsfile                              @carlescufi
+/Jenkinsfile                              @thst-nordic
 /README.rst                               @ru-fu @carlescufi
 
 # All cmake related files
@@ -19,6 +19,7 @@ Kconfig*                                  @SebastianBoe
 *.rst                                     @b-gent
 
 # All subfolders
+/.github/                                 @thst-nordic
 /ble_controller/                          @joerchan @rugeGerritsen
 /bsdlib/                                  @rlubos @lemrey @evenl
 /crypto/                                  @frkv @tejlmand
