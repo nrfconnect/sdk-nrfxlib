@@ -1,37 +1,46 @@
+//
+// Copyright (c) 2020 Nordic Semiconductor ASA. All Rights Reserved.
+//
+// The information contained herein is confidential property of Nordic Semiconductor ASA.
+// The use, copying, transfer or disclosure of such information is prohibited except by
+// express written agreement with Nordic Semiconductor ASA.
+//
 
 @Library("CI_LIB") _
 
-def AGENT_LABELS = lib_Main.getAgentLabels(JOB_NAME)
-def IMAGE_TAG    = lib_Main.getDockerImage(JOB_NAME)
-def TIMEOUT      = lib_Main.getTimeout(JOB_NAME)
-def INPUT_STATE  = lib_Main.getInputState(JOB_NAME)
-def CI_STATE = new HashMap()
+HashMap CI_STATE = lib_State.getConfig(JOB_NAME)
 
-pipeline {
+properties([
+  pipelineTriggers([
+    parameterizedCron( [
+        ((JOB_NAME =~ /latest\/night\/.*\/master/).find() ? CI_STATE.CFG.CRON.NIGHTLY : ''),
+        ((JOB_NAME =~ /latest\/week\/.*\/master/).find() ? CI_STATE.CFG.CRON.WEEKLY : '')
+    ].join('    \n') )
+  ]),
+  ( JOB_NAME.contains('sub/') ? disableResume() :  disableConcurrentBuilds() )
+])
 
+pipeline
+{
   parameters {
-       booleanParam(name: 'RUN_DOWNSTREAM', description: 'if false skip downstream jobs', defaultValue: true)
-       booleanParam(name: 'RUN_TESTS', description: 'if false skip testing', defaultValue: true)
-       booleanParam(name: 'RUN_BUILD', description: 'if false skip building', defaultValue: true)
-       string(name: 'jsonstr_CI_STATE', description: 'Default State if no upstream job',
-              defaultValue: INPUT_STATE)
+    booleanParam(name: 'RUN_TESTS', description: 'if false skip testing', defaultValue: true)
+    booleanParam(name: 'RUN_BUILD', description: 'if false skip building', defaultValue: true)
+    booleanParam(name: 'RUN_DOWNSTREAM', description: 'if false skip downstream jobs', defaultValue: true)
+    string(      name: 'jsonstr_CI_STATE', description: 'Default State if no upstream job', defaultValue: CI_STATE.CFG.INPUT_STATE_STR )
+    choice(      name: 'CRON', description: 'Cron Test Phase', choices: CI_STATE.CFG.CRON_CHOICES)
   }
 
   agent {
     docker {
-      image IMAGE_TAG
-      label AGENT_LABELS
-      args '-e PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/workdir/.local/bin'
+      image CI_STATE.CFG.IMAGE_TAG
+      label CI_STATE.CFG.AGENT_LABELS
     }
   }
 
   options {
     checkoutToSubdirectory('nrfxlib')
-    timeout(time: TIMEOUT.time, unit: TIMEOUT.unit)
-  }
-
-  triggers {
-    cron(env.BRANCH_NAME == 'master' ? '0 */4 * * 1-7' : '') // Only master will be build periodically
+    parallelsAlwaysFailFast()
+    timeout(time: CI_STATE.CFG.TIMEOUT.time, unit: CI_STATE.CFG.TIMEOUT.unit)
   }
 
   environment {
@@ -47,38 +56,33 @@ pipeline {
 
       // ENVs for building (triggered by sanitycheck)
       ZEPHYR_TOOLCHAIN_VARIANT = 'gnuarmemb'
-      GNUARMEMB_TOOLCHAIN_PATH = '/workdir/gcc-arm-none-eabi-7-2018-q2-update'
   }
 
   stages {
-    stage('Load') { steps { script { CI_STATE = lib_Stage.load('NRFXLIB') }}}
-    stage('Checkout') {
-      steps { script {
-        lib_Main.cloneCItools(JOB_NAME)
-        dir('nrfxlib') {
-          CI_STATE.NRFXLIB.REPORT_SHA = lib_Main.checkoutRepo(CI_STATE.NRFXLIB.GIT_URL, "NRFXLIB", CI_STATE.NRFXLIB, false)
-          lib_West.AddManifestUpdate("NRFXLIB", 'nrfxlib', CI_STATE.NRFXLIB.GIT_URL, CI_STATE.NRFXLIB.GIT_REF, CI_STATE)
-        }
-      }}
-    }
-    stage('Get manifest && Apply Parent Manifest Updates') {
-      when { expression { CI_STATE.NRFXLIB.RUN_TESTS || CI_STATE.NRFXLIB.RUN_BUILD } }
+    stage('Load')     { steps { script { CI_STATE = lib_State.load('NRFXLIB', CI_STATE) }}}
+    stage('Checkout') { steps { script {
+        CI_STATE.SELF.REPORT_SHA = lib_Main.checkoutRepo(CI_STATE.SELF.GIT_URL, "nrfxlib", CI_STATE.SELF, false)
+        lib_West.AddManifestUpdate("NRFXLIB", 'nrfxlib', CI_STATE.SELF.GIT_URL, CI_STATE.SELF.GIT_REF, CI_STATE)
+    } } }
+    stage('West Update') {
+      when { expression { CI_STATE.SELF.RUN_TESTS || CI_STATE.SELF.RUN_BUILD } }
       steps { script {
         lib_Status.set('PENDING', 'NRFXLIB', CI_STATE)
-        // lib_West.InitUpdate('nrfxlib')
+        lib_Main.checkoutRepo(CI_STATE.NRF.GIT_URL, "nrf", CI_STATE.NRF, true)
+        lib_West.InitUpdate('nrf', 'ci-tools')
         lib_West.ApplyManifestUpdates(CI_STATE)
       }}
     }
     stage('Run compliance check') {
-      when { expression { CI_STATE.NRFXLIB.RUN_TESTS } }
+      when { expression { CI_STATE.SELF.RUN_TESTS } }
       steps {
         dir('nrfxlib') {
           script {
             // If we're a pull request, compare the target branch against the current HEAD (the PR), and also report issues to the PR
-            def BUILD_TYPE = lib_Main.getBuildType(CI_STATE.NRFXLIB)
+            def BUILD_TYPE = lib_Main.getBuildType(CI_STATE.SELF)
             if (BUILD_TYPE == "PR") {
-              COMMIT_RANGE = "$CI_STATE.NRFXLIB.MERGE_BASE..$CI_STATE.NRFXLIB.REPORT_SHA"
-              COMPLIANCE_ARGS = "$COMPLIANCE_ARGS -p $CHANGE_ID -S $CI_STATE.NRFXLIB.REPORT_SHA -g"
+              COMMIT_RANGE = "$CI_STATE.SELF.MERGE_BASE..$CI_STATE.SELF.REPORT_SHA"
+              COMPLIANCE_ARGS = "$COMPLIANCE_ARGS -p $CHANGE_ID -S $CI_STATE.SELF.REPORT_SHA -g"
               println "Building a PR [$CHANGE_ID]: $COMMIT_RANGE"
             }
             else if (BUILD_TYPE == "TAG") {
@@ -96,7 +100,7 @@ pipeline {
 
             // Run the compliance check
             try {
-              sh "../ci-tools/scripts/check_compliance.py $COMPLIANCE_ARGS --commits $COMMIT_RANGE"
+              sh "../tools/ci-tools/scripts/check_compliance.py $COMPLIANCE_ARGS --commits $COMMIT_RANGE"
             }
             finally {
               junit 'compliance.xml'
@@ -107,33 +111,21 @@ pipeline {
       }
     }
     stage('Build samples') {
-      when { expression { CI_STATE.NRFXLIB.RUN_BUILD } }
+      when { expression { CI_STATE.SELF.RUN_BUILD } }
       steps {
           echo "No Samples to build yet."
       }
     }
-    stage('Trigger testing build') {
-      when { expression { CI_STATE.NRFXLIB.RUN_DOWNSTREAM } }
-      steps {
-        script {
-          CI_STATE.NRFXLIB.WAITING = true
-          def DOWNSTREAM_JOBS = lib_Main.getDownStreamJobs(JOB_NAME)
-          def jobs = [:]
-          DOWNSTREAM_JOBS.each {
-            jobs["${it}"] = {
-              build job: "${it}", propagate: true, wait: true, parameters: [
-                        string(name: 'jsonstr_CI_STATE', value: lib_Util.HashMap2Str(CI_STATE))]
-            }
-          }
-          parallel jobs
-        }
-      }
+    stage('Trigger Downstream Jobs') {
+      when { expression { CI_STATE.SELF.RUN_DOWNSTREAM } }
+      steps { script { lib_Stage.runDownstream(JOB_NAME, CI_STATE) } }
     }
   }
   post {
     // This is the order that the methods are run. {always->success/abort/failure/unstable->cleanup}
     always {
       echo "always"
+      script { if ( !CI_STATE.SELF.RUN_BUILD || !CI_STATE.SELF.RUN_TESTS ) { currentBuild.result = "UNSTABLE"}}
     }
     success {
       echo "success"
