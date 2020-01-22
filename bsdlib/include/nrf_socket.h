@@ -1248,9 +1248,12 @@ const char * nrf_inet_ntop(int             family,
  *
  * @param[in]  p_node     Host name to resolve.
  * @param[in]  p_service  Service to resolve.
- * @param[in]  p_hints    Any hints to be used for the resolution.
+ * @param[in]  p_hints    Any hints to be used for the resolution,
+ *                        for example, whether the address is IPv4 or IPv6.
  * @param[out] pp_res     Pointer to the linked list of resolved addresses if the procedure
  *                        was successful.
+ *                        Note that because of limitations in the modem,
+ *                        only one address is returned.
  *
  * @return 0 if the procedure succeeds, else, an errno indicating the reason for failure.
  */
