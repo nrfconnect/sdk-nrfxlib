@@ -73,7 +73,7 @@ endmenu
 
 comment "Backend Selection"
 
-config CC310_BACKEND
+menuconfig CC310_BACKEND
 	bool "Use cc310 backend"
 	default y
 	# On the nRF9160, cc310 shall be accessible when:
@@ -86,10 +86,12 @@ config CC310_BACKEND
 	help
 	  Enable cc310 backend
 
-config CC310_INTERRUPTS_BACKEND
-	bool #"Use nrf_cc310_mbedtls interrupt based version"
-	depends on CC310_BACKEND
-	default n # Only the no-interrupts version currently works with Zephyr.
+if CC310_BACKEND
+
+config HW_CC310_INTERRUPT
+	bool "Use interrupt version of nrf cc310 platform and crypto libraries"
+
+endif
 
 config MBEDTLS_VANILLA_BACKEND
 	bool "Use mbed TLS backend"
