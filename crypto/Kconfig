@@ -13,6 +13,7 @@ config NRF_CC310_BL
 	bool "nrf_cc310_bl HW crypto library for nRF devices with CryptoCell CC310."
 	select NRFXLIB_CRYPTO
 	select FLOAT # The cc310_bl lib uses floating point registers.
+	depends on !NORDIC_SECURITY_BACKEND
 	help
 	  To use, link with nrfxlib_crypto in CMake.
 
@@ -31,7 +32,7 @@ menuconfig NRF_CC310_PLATFORM
 if NRF_CC310_PLATFORM
 
 config HW_CC310_INTERRUPT
-	bool "Use interrupt version of nrf cc310 platform library" if !CC310_BACKEND
+	bool "Use interrupt version of nrf cc310 platform library" if !(CC310_BACKEND || NRF_CC310_BL)
 
 endif
 
