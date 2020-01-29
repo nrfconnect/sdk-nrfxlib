@@ -414,7 +414,7 @@ config VANILLA_MBEDTLS_GCM_C
 	bool
 	prompt "AES-GCM - AES Galois/Counter Mode support"
 	default y
-	depends on VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C)
+	depends on VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C && !NRF_CRYPTO_BACKEND_COMBINATION_0)
 	select MBEDTLS_GCM_C
 	help
 	  Enable the GCM module.
