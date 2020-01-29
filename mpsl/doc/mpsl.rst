@@ -1,4 +1,4 @@
-.. _external_mpsl:
+.. _mpsl_lib:
 
 Library internals
 #################

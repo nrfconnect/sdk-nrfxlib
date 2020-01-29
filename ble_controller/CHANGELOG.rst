@@ -38,6 +38,9 @@ Changes
 Bugfixes
 ========
 
+* Fixed an issue on nRF53 that could cause poor performance when performing active scanning.
+* Fixed an issue on nRF53 where an assert could occur when receiving extended advertising packets.
+* Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out.
 * Fixed an issue on nRF53 where the T_IFS in certain conditions was off by 5 us.
 * Fixed an issue where a control packet could be sent twice even after the packet was ACKed.
   This would only occur if the radio was forced off due to an unforeseen condition.

@@ -18,4 +18,4 @@ The library is available as soft-float, softfp-float, and hard-float builds.
    :caption: Contents:
 
    CHANGELOG
-   doc/public_mpsl
+   doc/mpsl
