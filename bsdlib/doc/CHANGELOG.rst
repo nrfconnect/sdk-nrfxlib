@@ -5,6 +5,16 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.6.1
+************
+
+* Implemented TLS host name verification.
+* Implemented TLS session caching, enabled by default.
+* Added the :cpp:func:`nrf_setdnsaddr()` function to set the secondary DNS address.
+* Removed unused ``BSD_MAX_IP_SOCKET_COUNT`` and ``BSD_MAX_AT_SOCKET_COUNT`` macros.
+* Fixed a bug that prevented the application from detecting AGPS notifications.
+* Fixed a bug where the application could not allocate the 8th socket.
+
 bsdlib 0.6.0
 ************
 
