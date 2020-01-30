@@ -26,21 +26,7 @@
 extern "C" {
 #endif
 
-/**@brief Maximum number of sockets of IP sockets. */
-#define BSD_MAX_IP_SOCKET_COUNT                8
-
-/**@brief Maximum AT sockets. */
-#define BSD_MAX_AT_SOCKET_COUNT                8
-
-/**
- * @brief Maximum number of sockets available in the system.
- *
- * Maximum number of sockets that can be opened using the BSD library.
- * The socket may be of any type. IPv4, IPV6, AT etc. This upper bound applies
- * irrespective of which type of socket was in use.
- *
- * In short, this value is, MAX(BSD_MAX_IP_SOCKET_COUNT, BSD_MAX_AT_SOCKET_COUNT).
- */
+/**@brief Maximum number of total AT or IP sockets available. */
 #define BSD_MAX_SOCKET_COUNT                   8
 
 /**@brief Maximum AT Command Size in bytes. */

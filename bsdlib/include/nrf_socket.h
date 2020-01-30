@@ -177,8 +177,11 @@ typedef int32_t ssize_t;
  * @ingroup nrf_socket
  * @{
  */
-#define NRF_GNSS_PVT_FLAG_FIX_VALID_BIT      1 /**< Identifies if we have a valid fix. */
-#define NRF_GNSS_PVT_FLAG_LEAP_SECOND_VALID  2 /**< Identifies the validity of leap second. */
+#define NRF_GNSS_PVT_FLAG_FIX_VALID_BIT          0x01 /**< Identifies if we have a valid fix. */
+#define NRF_GNSS_PVT_FLAG_LEAP_SECOND_VALID      0x02 /**< Identifies the validity of leap second. */
+#define NRF_GNSS_PVT_FLAG_SLEEP_BETWEEN_PVT      0x04 /**< Identifies that at least one sleep period since last PVT notification */
+#define NRF_GNSS_PVT_FLAG_DEADLINE_MISSED        0x08 /**< Identifies that notification deadline missed */
+#define NRF_GNSS_PVT_FLAG_NOT_ENOUGH_WINDOW_TIME 0x10 /**< Identifies that operation blocked by insufficient time windows */
 /**@} */
 
 /**@defgroup nrf_gnss_sv_flags Set of GNSS satellite flags (as bitmask) indicating additional information about satellites being tracked
@@ -1248,12 +1251,9 @@ const char * nrf_inet_ntop(int             family,
  *
  * @param[in]  p_node     Host name to resolve.
  * @param[in]  p_service  Service to resolve.
- * @param[in]  p_hints    Any hints to be used for the resolution,
- *                        for example, whether the address is IPv4 or IPv6.
+ * @param[in]  p_hints    Any hints to be used for the resolution.
  * @param[out] pp_res     Pointer to the linked list of resolved addresses if the procedure
  *                        was successful.
- *                        Note that because of limitations in the modem,
- *                        only one address is returned.
  *
  * @return 0 if the procedure succeeds, else, an errno indicating the reason for failure.
  */
@@ -1271,6 +1271,22 @@ int nrf_getaddrinfo(const char                *  p_node,
  * @param[in] p_res  Pointer to the memory to be freed.
  */
 void nrf_freeaddrinfo(struct nrf_addrinfo * p_res);
+
+/**
+ * @brief Set a secondary DNS address.
+ *
+ * The secondary DNS address is used automatically in case the primary DNS
+ * address is unreachable, or if no DNS address is provided by the operator.
+ * The secondary DNS address does not override the primary DNS address.
+ *
+ * @param[in] family	Address family.
+ * @param[in] in_addr	An IPv4 or IPv6 address encoded in a @ref nrf_in_addr
+ * 			or @ref nrf_in6_addr structure, respectively.
+ * 			Pass @c NULL to unset the secondary DNS address.
+ *
+ * @return int	Zero on success, or an  error from @file nrf_errno.h otherwise.
+ */
+int nrf_setdnsaddr(int family, const void *in_addr);
 
 #ifdef __cplusplus
 }
