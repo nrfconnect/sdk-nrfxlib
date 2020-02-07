@@ -21,7 +21,7 @@ The following figure shows how security tags are provisioned using AT commands:
 
 As you see, each set of credentials is identified by a security tag (``sec_tag``), which is referenced when a DTLS/TLS socket is created.
 
-The security tag must be attached to a socket using the ``nrf_setsockopt`` function before connecting (through TCP) or transferring data (through UDP).
+The security tag must be attached to a socket using the :cpp:func:`nrf_setsockopt` function before connecting (through TCP) or transferring data (through UDP).
 The following code snippet shows how to set up strict peer verification for a socket and configure the socket to use the security tag ``sec_tag``:
 
 .. code-block:: c
