@@ -10,14 +10,6 @@
  * @ingroup bsd_library
  * @{
  * @brief Upper and lower bound limits of BSD library.
- *
- * @details This module provides:
- * -# A common entry point for limits specific system initializations.
- * -# Limits specific parameters:
- *         -# Maximum number of concurrent sockets in the system.
- *         -# Maximum number of concurrent secure sockets in the system.
- *         -# Maximum number AT sockets and subscriptions for AT events in the system.
- *         -# ..
  */
 #ifndef BSD_LIMITS_H__
 #define BSD_LIMITS_H__
@@ -26,7 +18,7 @@
 extern "C" {
 #endif
 
-/**@brief Maximum number of total AT or IP sockets available. */
+/**@brief Maximum number of concurrent AT and IP sockets available at the same time. */
 #define BSD_MAX_SOCKET_COUNT                   8
 
 /**@brief Maximum AT Command Size in bytes. */
@@ -37,10 +29,6 @@ extern "C" {
 
 /**
  * @brief Maximum number of PDN connections that can be created.
- *
- * Maximum number of concurrent PDN connections that can be created and managed on the system.
- * This number include any default PDNs.
- *
  */
 #define BSD_MAX_PDN_COUNT                      10
 

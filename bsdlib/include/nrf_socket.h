@@ -6,14 +6,6 @@
 
 /**@file nrf_socket.h
  *
- * @defgroup nrf_socket nRF BSD Socket interface
- * @ingroup nrf_sdk_socket
- * @{
- * @brief Nordic socket interface.
- *
- * @details This module provides the socket interface for writing nRF applications. The API is
- *          designed to be compatible with the POSIX/BSD socket interface for the purpose of
- *          making porting easy.
  */
 #ifndef NRF_SOCKET_H__
 #define NRF_SOCKET_H__
@@ -34,6 +26,10 @@ typedef int32_t ssize_t;
 typedef int32_t ssize_t;
 #endif
 #endif
+
+/**@addtogroup nrf_socket_api_utils
+ *@{
+ */
 
 /**@brief Host to network byte-orders on half word. */
 //lint -emacro((572),HTONS) // Suppress warning 572 "Excessive shift value"
@@ -67,8 +63,14 @@ typedef int32_t ssize_t;
 /**@brief Maximum length of IPv6 in string form, including null-termination character. */
 #define NRF_INET6_ADDRSTRLEN    46
 
-/**@defgroup nrf_socket_families Values for nrf_socket_family_t
- * @ingroup nrf_socket
+/**@}*/
+
+/**@defgroup nrf_socket_api_enumerators Socket enumerators.
+ * @brief Enumerated values that is used as input arguments to multiple socket functions.
+ * @{
+ */
+
+/**@defgroup nrf_socket_families Socket family.
  * @{
  */
 #define NRF_AF_LOCAL            1   /**< Family to identify protocols/operations local to Nordic device. */
@@ -78,88 +80,193 @@ typedef int32_t ssize_t;
 #define NRF_AF_LTE              102 /**< Nordic proprietary LTE socket family. */
 /**@} */
 
-/**@defgroup nrf_socket_types Values for nrf_socket_type_t
- * @ingroup nrf_socket
+/**@defgroup nrf_socket_types Socket type.
  * @{
  */
 #define NRF_SOCK_STREAM         1   /**< TCP socket type. */
 #define NRF_SOCK_DGRAM          2   /**< UDP socket type. */
 #define NRF_SOCK_RAW            3   /**< RAW socket type. */
+
+#define NRF_SOCK_MGMT           512 /**< Nordic specific management socket. Used for system or link management. */
 /**@} */
 
-/**@defgroup nrf_socket_mgmt_types Nordic specific extensions of nrf_socket_type_t
- * @ingroup nrf_socket
+/**@defgroup nrf_socket_protocols Socket protocols.
  * @{
  */
-#define NRF_SOCK_MGMT           512 /**< Management socket. Used for system or link management. */
+
+#define NRF_IPPROTO_TCP         1   /**< TCP protocol. */
+#define NRF_IPPROTO_UDP         2   /**< UDP protocol. */
+
+#define NRF_SPROTO_TLS1v2      260  /**< TLS1v2 protocol. */
+#define NRF_SPROTO_TLS1v3      261  /**< TLS1v3 protocol. */
+#define NRF_SPROTO_DTLS1v2     270  /**< DTLS1v2 protocol. */
+
+#define NRF_PROTO_AT           513  /**< AT command protocol. */
+#define NRF_PROTO_PDN          514  /**< PDN management protocol. */
+#define NRF_PROTO_DFU          515  /**< DFU protocol. */
+#define NRF_PROTO_GNSS         516  /**< GNSS protocol. */
 /**@} */
 
-/**@defgroup nrf_socket_protocols Values for nrf_socket_protocol_t
- * @ingroup nrf_socket
+/**
+ * @defgroup nrf_fd_set_api Descriptor sets API
+ * @brief Types and macros used to manipulate the input data argument to the nrf_select() function.
+ * @details File descriptor sets are used as input to the nrf_select() function for doing I/O
+ *          multiplexing. The maximum number of descriptors contained in a set is defined by
+ *          NRF_FD_SETSIZE.
+ *
  * @{
  */
-#define NRF_IPPROTO_TCP         1   /**< Use TCP as transport protocol. */
-#define NRF_IPPROTO_UDP         2   /**< Use UDP as transport protocol. */
+typedef uint32_t nrf_fd_set;
+#define NRF_FD_ZERO(set)            (*(set) = 0)                   /**< Clear the entire set. */
+#define NRF_FD_SET(fd, set)         (*(set) |= (1u << (fd)))       /**< Set a bit in the set. */
+#define NRF_FD_CLR(fd, set)         (*(set) &= ~(1u << (fd)))      /**< Clear a bit in the set. */
+#define NRF_FD_ISSET(fd, set)       (*(set) & (1u << (fd)))        /**< Check if a bit in the set is set. */
+#define NRF_FD_SETSIZE              sizeof(nrf_fd_set)             /**< The max size of a set. */
+
 /**@} */
 
-/**@defgroup nrf_socket_secure_protocols Values for Security Protocols
- * @ingroup nrf_socket_protocols
+/**@defgroup nrf_socket_tls TLS socket
+ * @brief TLS socket API
  * @{
  */
-#define NRF_SPROTO_TLS1v2      260  /**< Use TLS1v2 as secure transport. */
-#define NRF_SPROTO_TLS1v3      261  /**< Use TLS1v3 as secure transport. */
-#define NRF_SPROTO_DTLS1v2     270  /**< Use DTLS1v2 as as secure transport. */
+
+/**@brief
+ * Socket option to set role for the connection.
+ * Accepts a @ref nrf_sec_role_t with values:
+ *  - 0 - Client role.
+ *  - 1 - Server role.
+ */
+#define NRF_SO_SEC_ROLE 1
+
+/**@brief
+ * Socket option to select the security tags to be used.
+ * @sa nrf_sec_tag_t.
+ */
+#define NRF_SO_SEC_TAG_LIST 2
+
+/**@brief
+ * Socket option to control TLS session caching.
+ * Accepts a @ref nrf_sec_session_cache_t with values:
+ *  - 0 - Disabled.
+ *  - 1 - Enabled.
+ * @sa nrf_sec_session_cache_t.
+ */
+#define NRF_SO_SEC_SESSION_CACHE 3
+
+/**@brief
+ * Socket option to set peer verification level.
+ * This option accepts a @ref nrf_sec_peer_verify_t with values:
+ *  - 0 - None
+ *  - 1 - Optional
+ *  - 2 - Required
+ * @sa nrf_sec_peer_verify_t.
+ */
+#define NRF_SO_SEC_PEER_VERIFY 4
+
+/**@brief
+ * Socket option to set the hostname used for peer verification.
+ * This option accepts a string containing the hostname, and its length.
+ * The length may be set to zero to disable hostname verification.
+ */
+#define NRF_SO_HOSTNAME 5
+
+/**@brief
+ * Socket option to select which ciphersuites to use.
+ * @sa nrf_sec_cipher_t.
+ */
+#define NRF_SO_CIPHERSUITE_LIST 6
+
+/**@brief
+ * Socket option to retrieve the ciphersuites used during the handshake.
+ * @sa nrf_sec_cipher_t.
+ */
+#define NRF_SO_CIPHER_IN_USE 7
 /**@} */
 
-/**@defgroup nrf_socket_proprietary_protocols Values for Nordic Proprietary Protocols
- * @ingroup nrf_socket_protocols
+/**@defgroup nrf_socket_pdn PDN socket
+ * @brief PDN socket API
+ *  @{
+ */
+/**@brief
+ * Socket option control the supported address families on the PDN.
+ * @sa nrf_pdn_af_list_t.
+ */
+#define NRF_SO_PDN_AF                   1
+/**@brief
+ * Socket option to retrieve the context ID on the PDN.
+ * @sa nrf_pdn_context_id_t.
+ */
+#define NRF_SO_PDN_CONTEXT_ID           2
+/**@brief
+ * Socket option to retrieve the PDN state, read-only.
+ * @sa nrf_pdn_state_t.
+ */
+#define NRF_SO_PDN_STATE                3
+/**@} */
+
+/**@defgroup nrf_socket_dfu DFU socket
+ * @brief DFU socket API
  * @{
  */
-#define NRF_PROTO_AT           513  /**< Identifies socket protocol to be AT commands. */
-#define NRF_PROTO_PDN          514  /**< Identifies socket protocol for PDN management. */
-#define NRF_PROTO_DFU          515  /**< Identifies socket protocol to be DFU. */
-#define NRF_PROTO_GNSS         516  /**< Identifies socket protocol to be GNSS. */
-
-/**@} */
-
-/**@defgroup nrf_socket_options_secure_sockets Values for Secure Socket options
- * @ingroup nrf_socket
- * @{
+/**@brief
+ * Socket option to read the modem firmware version (UUID).
+ * @sa nrf_dfu_fw_version_t.
  */
-#define NRF_SO_SEC_ROLE                 1    /**< Identifies the option used to get and/or set the TLS role on the socket. @ref nrf_sec_role_t for details. */
-#define NRF_SO_SEC_TAG_LIST             2    /**< Identifies the option used to get and/or set the security tags to be used on the TLS socket. @ref nrf_sec_tag_t for details. */
-#define NRF_SO_SEC_SESSION_CACHE        3    /**< Identifies the option used to get and/or set the choice of session caching used on the TLS socket. @ref nrf_sec_session_cache_t for details. */
-#define NRF_SO_SEC_PEER_VERIFY          4    /**< Identifies the option used to get and/or set the choice of peer verification on the TLS socket. @ref nrf_sec_peer_verify_t for details. */
-#define NRF_SO_HOSTNAME                 5    /**< Identifies the option used to get and/or set the host name of the peer used for peer verification. Host name is provided a null-terminated string. */
-#define NRF_SO_CIPHERSUITE_LIST         6    /**< Identifies the option used to get and/or set the TLS cipher suite on the socket. See @ref nrf_sec_cipher_t for details. */
-#define NRF_SO_CIPHER_IN_USE            7    /**< Identifies the option used to get the TLS cipher selected for the session on the socket. See @ref nrf_sec_cipher_t for details. */
-/**@} */
+#define NRF_SO_DFU_FW_VERSION 1
 
-/**@defgroup nrf_socket_options_pdn_sockets Values for PDN Socket options
- * @ingroup nrf_socket
- * @{
+/**@brief
+ * Socket option to retrieve the size of the largest firmware image
+ * that can be transferred to the modem for firmware updates.
+ * @sa nrf_dfu_resources_t.
  */
-#define NRF_SO_PDN_AF                   1    /**< Identifies the option used to get/set supported address families on the PDN. @ref nrf_pdn_af_list_t for details. */
-#define NRF_SO_PDN_CONTEXT_ID           2    /**< Identifies the option used to get the context id on the PDN. @ref nrf_pdn_context_id_t for details. */
-#define NRF_SO_PDN_STATE                3    /**< Identifies the option used to get the PDN state. */
-/**@} */
+#define NRF_SO_DFU_RESOURCES 2
 
-/**@defgroup nrf_socket_options_dfu_sockets Values for DFU Socket options
- * @ingroup nrf_socket
- * @{
+/**@brief
+ * Socket option to control the timeout to send a firmware fragment.
+ * @note Not implemented.
  */
-#define NRF_SO_DFU_FW_VERSION           1    /**< Identifies the option used to get firmware version. @ref nrf_dfu_fw_version_t for details. */
-#define NRF_SO_DFU_RESOURCES            2    /**< Identifies the option used to get resources available for DFU. @ref nrf_dfu_resources_t for details. */
-#define NRF_SO_DFU_TIMEO                3    /**< Identifies the option used to get and/or set the timeout to send a DFU fragment. Not implemented. */
-#define NRF_SO_DFU_APPLY                4    /**< Identifies the option to set(execute) firmware upgrade. This option has no parameters. */
-#define NRF_SO_DFU_REVERT               5    /**< Identifies the option to set(execute) revert the upgraded firmware to the old one. This option has no parameters. */
-#define NRF_SO_DFU_BACKUP_DELETE        6    /**< Identifies the option to set(execute) delete any backup firmware. This option has no parameters. */
-#define NRF_SO_DFU_OFFSET               7    /**< Identifies the option to get and/or set offset of the downloaded firmware. */
-#define NRF_SO_DFU_ERROR                20   /**< Fetch latest DFU error. */
+#define NRF_SO_DFU_TIMEO 3
+
+/**@brief
+ * Socket option to schedule a modem firmware update at next boot.
+ * The result of the update is returned by @ref bsd_init, at next boot.
+ * The modem needs to be reset once more to run the updated firmware.
+ */
+#define NRF_SO_DFU_APPLY 4
+
+/**@brief
+ * Socket option to schedule a rollback of a firmware update at next boot.
+ */
+#define NRF_SO_DFU_REVERT 5
+
+/**@brief
+ * Socket option to delete a modem firmware image from the modem's scratch area.
+ * This option removes the possibility to rollback to a previous version,
+ * and is necessary to receive new firmware images.
+ */
+#define NRF_SO_DFU_BACKUP_DELETE 6
+
+/**@brief
+ * Socket option read and write the offset of the downloaded firmware image
+ * in the modem's scratch area. This option is used to determine whether
+ * a firmware image exists in the modem's scratch area and its size.
+ * A value of 2.5 megabytes (2621440 bytes) is returned if the scratch area
+ * is dirty, and needs erasing (via @ref NRF_SO_DFU_BACKUP_DELETE).
+ * If non-zero and different from 2.5 megabytes, the value indicates the size
+ * of the firmware image received so far.
+ */
+#define NRF_SO_DFU_OFFSET 7
+
+/**@brief
+ * Socket option to retrieve the latest DFU error, see @ref nrf_dfu_errors.
+ * Read-only.
+ */
+#define NRF_SO_DFU_ERROR 20
 /**@} */
 
-/**@defgroup nrf_socket_options_gnss_sockets Values for GNSS Socket options
- * @ingroup nrf_socket
+/**
+ * @defgroup nrf_socket_gnss_options GNSS socket options
+ * @brief Sockets options to configure behaviour of the socket.
  * @{
  */
 #define NRF_SO_GNSS_FIX_INTERVAL        1    /**< Identifies the option used to set the GNSS fix interval. */
@@ -171,29 +278,50 @@ typedef int32_t ssize_t;
 #define NRF_SO_GNSS_START               7    /**< Identifies the option to start the GPS (with no payload). */
 #define NRF_SO_GNSS_STOP                8    /**< Identifies the option to stop the GPS (with no payload). */
 #define NRF_SO_GNSS_POWER_SAVE_MODE     9    /**< Identifies the option to set power save mode. */
-/**@} */
+/** @} */
 
-/**@defgroup nrf_gnss_pvt_flags Set of GNSS flags (as bitmask) indicating additional information about the fix
- * @ingroup nrf_socket
+/**@defgroup nrf_socket_gnss_nmea_str_mask NMEA enable output strings bitmask values
+ * @brief Use these bitmask values to enable different type of NMEA output strings, the values can be OR'ed together to enable multiple string types
+ *        at the same time. Writing 0 to the bit position will disable the corresponding NMEA string type.
  * @{
  */
-#define NRF_GNSS_PVT_FLAG_FIX_VALID_BIT          0x01 /**< Identifies if we have a valid fix. */
+#define NRF_GNSS_NMEA_GGA_MASK     1  /**< Enables Global Positioning System Fix Data. */
+#define NRF_GNSS_NMEA_GLL_MASK     2  /**< Enables Geographic Position Latitude/Longitude and time. */
+#define NRF_GNSS_NMEA_GSA_MASK     4  /**< Enables DOP and active satellites. */
+#define NRF_GNSS_NMEA_GSV_MASK     8  /**< Enables Satellites in view. */
+#define NRF_GNSS_NMEA_RMC_MASK     16 /**< Enables Recommended minimum specific GPS/Transit data. */
+/** @} */
+
+/**@defgroup nrf_socket_gnss_psm_modes Power save mode enumerator
+ * @brief Use these values to select which power save mode the GNSS module should use.
+ * @{
+ */
+#define NRF_GNSS_PSM_DISABLED                 0 /** No power save mode is enabled. */
+#define NRF_GNSS_PSM_DUTY_CYCLING_PERFORMANCE 1 /** Enables duty-cycling performance policy power save mode. */
+#define NRF_GNSS_PSM_DUTY_CYCLING_POWER       2 /** Enables duty-cycling power policy power save mode. */
+/** @} */
+
+/**@defgroup nrf_socket_gnss_pvt_flags Bitmask values for flags in the PVT notification.
+ * @brief These bitmask values can be used to read the different bits in the flags element in the pvt struct.
+ * @{
+ */
+#define NRF_GNSS_PVT_FLAG_FIX_VALID_BIT          0x01 /**< Identifies a valid fix is acquired */
 #define NRF_GNSS_PVT_FLAG_LEAP_SECOND_VALID      0x02 /**< Identifies the validity of leap second. */
 #define NRF_GNSS_PVT_FLAG_SLEEP_BETWEEN_PVT      0x04 /**< Identifies that at least one sleep period since last PVT notification */
 #define NRF_GNSS_PVT_FLAG_DEADLINE_MISSED        0x08 /**< Identifies that notification deadline missed */
 #define NRF_GNSS_PVT_FLAG_NOT_ENOUGH_WINDOW_TIME 0x10 /**< Identifies that operation blocked by insufficient time windows */
 /**@} */
 
-/**@defgroup nrf_gnss_sv_flags Set of GNSS satellite flags (as bitmask) indicating additional information about satellites being tracked
- * @ingroup nrf_socket
+/**@defgroup nrf_socket_gnss_sv_flags Bitmask values for reading out satellite flags information.
+ * @brief These bitmask values can be used to read the different bits in the flags element for each satellite.
  * @{
  */
 #define NRF_GNSS_SV_FLAG_USED_IN_FIX  2 /**< Indicate that the satellite is used in the position calculation. */
 #define NRF_GNSS_SV_FLAG_UNHEALTHY    8 /**< Indicate that the satellite is unhealthy. */
 /**@} */
 
-/**@defgroup nrf_gnss_agps_data_type Flags indicating which AGPS assistance data set is written to the GPS module
- * @ingroup nrf_socket
+/**@defgroup nrf_socket_gnss_data_agps AGPS data enumerator.
+ * @brief Use these values in the address field when using sendto to write AGPS models to the GNSS module.
  * @{
  */
 #define NRF_GNSS_AGPS_UTC_PARAMETERS                   1 /**< GPS UTC assistance AGPS parameters. */
@@ -206,27 +334,8 @@ typedef int32_t ssize_t;
 #define NRF_GNSS_AGPS_INTEGRITY                        8 /**< GPS integrity assistance AGPS parameters */
 /** @} */
 
-/**@defgroup nrf_nmea_str_mask Set of values (as bitmask) to enable NMEA output strings
- * @ingroup nrf_socket
- * @{
- */
-#define NRF_GNSS_NMEA_GGA_MASK     1  /**< Enables Global Positioning System Fix Data. */
-#define NRF_GNSS_NMEA_GLL_MASK     2  /**< Enables Geographic Position Latitude/Longitude and time. */
-#define NRF_GNSS_NMEA_GSA_MASK     4  /**< Enables DOP and active satellites. */
-#define NRF_GNSS_NMEA_GSV_MASK     8  /**< Enables Satellites in view. */
-#define NRF_GNSS_NMEA_RMC_MASK     16 /**< Enables Recommended minimum specific GPS/Transit data. */
-/** @} */
-
-/**@defgroup nrf_gnss_psm_modes Values indicating the power saving mode used in the GNSS module
- * @ingroup nrf_socket
- * @{
- */
-#define NRF_GNSS_PSM_DISABLED                 0 /** No power save mode is enabled. */
-#define NRF_GNSS_PSM_DUTY_CYCLING_PERFORMANCE 1 /** Enables duty-cycling performance policy power save mode. */
-#define NRF_GNSS_PSM_DUTY_CYCLING_POWER       2 /** Enables duty-cycling power policy power save mode. */
-/** @} */
-
-/**@defgroup nrf_socket_options_sockets Values for Socket options
+/**@defgroup nrf_socket_options_sockets Generic socket options
+ * @brief Socket options used with both AT and IP sockets
  * @ingroup nrf_socket
  * @{
  */
@@ -235,8 +344,8 @@ typedef int32_t ssize_t;
 #define NRF_SO_BINDTODEVICE             25
 /**@} */
 
-/**@defgroup nrf_socket_options_levels Values for Socket option levels
- * @ingroup nrf_socket
+/**@defgroup nrf_socket_options_levels Socket option levels enumerator
+ * @ingroup nrf_socket_api_enumerators
  * @{
  */
 #define NRF_SOL_SOCKET                  1
@@ -246,8 +355,8 @@ typedef int32_t ssize_t;
 #define NRF_SOL_GNSS                    516
 /**@} */
 
-/**@defgroup nrf_socket_send_recv_flags Socket send/recv flags
- * @ingroup nrf_socket
+/**@defgroup nrf_socket_send_recv_flags Socket send/recv flags.
+ *@ingroup nrf_socket_api_enumerators
  * @{
  */
 #define NRF_MSG_DONTROUTE       0x01    /**< Send only to hosts on directly connected networks. */
@@ -257,25 +366,16 @@ typedef int32_t ssize_t;
 #define NRF_MSG_WAITALL         0x10    /**< Request a blocking operation until the request is satisfied. */
 /**@} */
 
-/**@defgroup nrf_fcnt_commands fcntl commands
+/**@defgroup nrf_fcnt_commands Descriptor manipulate API
+ * @brief API used to manipulate the behaviour of AT and IP sockets using nrf_fcntl().
  * @ingroup nrf_socket
  * @{
  */
 #define NRF_F_SETFL             1       /**< Set flag. */
 #define NRF_F_GETFL             2       /**< Get flag. */
-/**@} */
 
-/**@defgroup nrf_fcnt_flags fcntl flags
- * @ingroup nrf_socket
- * @{
- */
 #define NRF_O_NONBLOCK          0x01    /**< Use non-blocking I/O. */
 /**@} */
-
-/**
- * @brief Socket module size type.
- */
-typedef uint32_t nrf_socklen_t;
 
 /**
  * @brief Socket port type.
@@ -298,18 +398,6 @@ struct nrf_timeval
  */
 typedef int nrf_socket_family_t;
 typedef nrf_socket_family_t nrf_sa_family_t;
-
-/**
- * @brief Generic socket address.
- *
- * @details Only provided for API compatibility.
- */
-struct nrf_sockaddr
-{
-    uint8_t         sa_len;
-    int             sa_family;
-    char            sa_data[];
-};
 
 /**
  * @brief IPv6 address.
@@ -378,10 +466,27 @@ typedef struct nrf_in6_addr     nrf_in6_addr;
 typedef struct nrf_in6_addr     nrf_in6_addr_t;
 typedef struct nrf_sockaddr_in  nrf_sockaddr_in_t;
 
-/**@defgroup nrf_socket_dns BSD Socket Address Functions (DNS)
- * @ingroup nrf_socket
+/**@addtogroup nrf_socket_api_utils
  * @{
  */
+
+/**
+ * @brief Socket module size type.
+ */
+typedef uint32_t nrf_socklen_t;
+
+/**
+ * @brief Generic socket address.
+ *
+ * @details Only provided for API compatibility.
+ */
+typedef struct nrf_sockaddr
+{
+    uint8_t         sa_len;     /**< Socket address length */
+    int             sa_family;  /**< Socket address family */
+    char            sa_data[];  /**< Socket address */
+} nrf_sockaddr;
+
 /**@brief Address information. */
 struct nrf_addrinfo
 {
@@ -394,64 +499,52 @@ struct nrf_addrinfo
     char                 *ai_canonname;       /**< Canonical name of service location. */
     struct nrf_addrinfo  *ai_next;            /**< Pointer to next in list. */
 };
+
 /**@} */
 
-/**@defgroup nrf_socketopt_tls TLS socket option
- * @ingroup nrf_socket
- * @brief Data types defined to set and get socket options on a TLS socket.
+/**@addtogroup nrf_socket_tls
  * @{
  */
 
-/**@brief Defines TLS role on the socket.
- *
- * @details Valid values for the role include:
- * 0 and 1.
- * 0 implies a TLS client role.
- * 1 implies a TLS server role.
- *
- * @note The default role is the TLS client role.
+/**@brief
+ * TLS role for the connection.
+ *  - 0 - TLS client role.
+ *  - 1 - TLS server role.
  */
 typedef uint32_t nrf_sec_role_t;
 
-/**@brief Defines the security tag to be used on the TLS socket.
+/**@brief
+ * Security tags used on the TLS socket.
  *
- * @details More than one security tags may be used on a socket.
- *          If more than one tag is used on the socket,
- *          set the array of security tags.
- *          A maximum of 8 tags can be set per socket.
+ * More than one security tags may be used on a socket.
+ * If more than one tag is used on the socket, pass an array of security tags.
+ *
+ * A maximum of 8 tags can be set per socket.
  */
 typedef uint32_t nrf_sec_tag_t;
 
-/**@brief Defines session cache option on the TLS socket.
+/**@brief
+ * Session cache configuration for the TLS connection.
+ *  - 0 - Disabled.
+ *  - 1 - Enabled.
  *
- * @details Valid values used to set the choice of session cache include:
- * 0 and 1.
- * 0 implies session cache is enabled.
- * 1 implies session cache is disabled.
- *
- * @note By default, the session cache is disabled.
- * @note Session cache, even if enabled may not be used if the peer does not support it.
+ * By default, the session cache is enabled.
+ * @note Session cache, may not be used if the peer does not support it.
  */
 typedef uint8_t nrf_sec_session_cache_t;
 
-/**@brief Defines peer verification options on the TLS socket.
+/**@brief
+ * Peer verification level for the TLS connection.
+ *  - 0 - None.
+ *  - 1 - Optional.
+ *  - 2 - Required.
  *
- * @details Valid values for the peer verification option include:
- * 0, 1 and 2.
- * 0 implies no peer verification.
- * 1 implies peer verification is optional.
- * 2 implies peer verification is strict (mandatory).
- *
- * @note By default, peer verification is set to strict.
+ * By default, peer verification is optional.
  */
 typedef uint32_t nrf_sec_peer_verify_t;
 
-/**@brief Defines the cipher suite.
- *
- * @details IANA defined values must be used to identify the cipher.
- *          See https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-4 for the list.
- *
- * @note Implementation support only a limited subset of the values.
+/**@brief
+ * A IANA cipher suite identifier.
  */
 typedef uint32_t nrf_sec_cipher_t;
 
@@ -477,51 +570,56 @@ struct nrf_ifreq
 };
 /**@} */
 
-/**@defgroup nrf_socketopt_pdn PDN socket option
- * @ingroup nrf_socket
+/**@addtogroup nrf_socket_pdn PDN socket option types
  * @brief Data types defined to set and get socket options on a PDN socket.
  * @{
  */
-/**@brief Defines the format of the address family(ies) for the PDN.
- * @note the size of the list is provided in the optlen field.
+/**@brief
+ * List of address family(ies) for the PDN.
  */
 typedef nrf_sa_family_t * nrf_pdn_af_list_t;
 
-/**@brief Defines the format for Address family for the PDN. */
-typedef uint32_t nrf_pdn_class_t;
-
-/**@brief Defines the format for Context ID for the PDN. */
+/**@brief
+ * Context ID for the PDN.
+ */
 typedef uint8_t nrf_pdn_context_id_t;
 
-/**@brief Defines the format for the PDN state:
- *        1 means active, 0 otherwise.
+/**@brief
+ * PDN state.
+ *   1 - PDN is active.
+ *   0 - PDN is inactive.
  */
 typedef uint8_t nrf_pdn_state_t;
 /**@} */
 
-/**@defgroup nrf_socketopt_dfu DFU socket option
- * @ingroup nrf_socket
- * @brief Data types defined to set and get socket options on a DFU socket.
+/**@addtogroup nrf_socket_dfu
  * @{
  */
-/**@brief Defines the format of resources available for firmware upgrade.
- */
 
-/**@brief Defines the firmware version.
- *
- * @details The firmware version is as defined by the RFC 4122.
+/**@brief
+ * Universally unique identifier of the modem firmware version.
+ * The UUID format is defined by RFC 4122.
  */
 typedef uint8_t nrf_dfu_fw_version_t[36];
 
-/**@brief Defines the format for resources available for firmware upgrade,
- * i.e. available flash size in bytes.
+/**@brief
+ * Maximum size for a firmware image, in bytes.
  */
-typedef  uint32_t nrf_dfu_resources_t;
+typedef uint32_t nrf_dfu_resources_t;
 
-/**@brief Defines the format to get/set offset for firmware download. */
+/**@brief
+ * Size of the firmware image stored in flash, in bytes.
+ */
 typedef uint32_t nrf_dfu_fw_offset_t;
 
-/**@brief DFU socket errors. */
+/**@defgroup nrf_dfu_errors DFU errors
+ * @brief    DFU socket errors.
+ * @{
+ */
+
+/**@brief DFU socket error. */
+typedef int32_t nrf_dfu_err_t;
+
 #define DFU_NO_ERROR                      0
 #define DFU_RECEIVER_OUT_OF_MEMORY       -1
 #define DFU_RECEIVER_BLOCK_TOO_LARGE     -2
@@ -544,16 +642,18 @@ typedef uint32_t nrf_dfu_fw_offset_t;
 #define DFU_INCOMPLETE_DATA              -19
 #define DFU_INTERRUPTED_WRITE            -20
 
-/**@brief DFU socket error. */
-typedef int nrf_dfu_err_t;
+/** @} */
+/** @} */
 
-/**@} */
 
 /**@defgroup nrf_socket_gnss_data_frame GNSS data frames
- * @ingroup  nrf_socket
- * @brief    GNSS Data frame formats.
+ * @brief    GNSS Data frame formats. All data frames will be wrapped with the nrf_gnss_data_frame_t which will identify the frame type in the
+ *           data_id struct element.
  * @{
  */
+
+#define NRF_GNSS_MAX_SATELLITES 12
+
 typedef struct
 {
     uint16_t year;    /**< 4-digit representation (Gregorian calendar). */
@@ -564,8 +664,6 @@ typedef struct
     uint8_t  seconds; /**< 0...59 */
     uint16_t ms;      /**< 0...999 */
 } nrf_gnss_datetime_t;
-
-#define NRF_GNSS_MAX_SATELLITES 12
 
 typedef struct
 {
@@ -596,36 +694,47 @@ typedef struct
 
 #define NRF_GNSS_NMEA_MAX_LEN     83
 
+/**@brief Single null-terminated NMEA sentence
+ */
 typedef char nrf_gnss_nmea_data_frame_t[NRF_GNSS_NMEA_MAX_LEN];
 
+#define NRF_GNSS_AGPS_GPS_UTC_REQUEST             0
+#define NRF_GNSS_AGPS_KLOBUCHAR_REQUEST           1
+#define NRF_GNSS_AGPS_NEQUICK_REQUEST             2
+#define NRF_GNSS_AGPS_SYS_TIME_AND_SV_TOW_REQUEST 3
+#define NRF_GNSS_AGPS_POSITION_REQUEST            4
+#define NRF_GNSS_AGPS_INTEGRITY_REQUEST           5
+
+/**@brief AGPS notification data frame used by the GPS module to let the application know it needs new APGS data.
+ */
 typedef struct
 {
-    uint32_t sv_mask_ephe;
-    uint32_t sv_mask_alm;
-    uint32_t data_flags;
+    uint32_t sv_mask_ephe; /**< Bit mask indicating the satellite PRNs for which the assistance GPS ephemeris data is needed. */
+    uint32_t sv_mask_alm;  /**< Bit mask indicating the satellite PRNs for which the assistance GPS almanac data is needed. */
+    uint32_t data_flags;   /**< Indicating other AGPS data models is needed by the GNSS module */
 } nrf_gnss_agps_data_frame_t;
 
 #define NRF_GNSS_PVT_DATA_ID  1
 #define NRF_GNSS_NMEA_DATA_ID 2
 #define NRF_GNSS_AGPS_DATA_ID 3
 
+/**@brief Wrapper struct that used for all data frames read from the GNSS module
+ */
 typedef struct
 {
     uint8_t data_id;
     union
     {
-        nrf_gnss_pvt_data_frame_t  pvt;
-        nrf_gnss_nmea_data_frame_t nmea;
-        nrf_gnss_agps_data_frame_t agps;
+        nrf_gnss_pvt_data_frame_t  pvt;  /**< PVT (Position, Velocity, and Time) data notification frame */
+        nrf_gnss_nmea_data_frame_t nmea; /**< NMEA data notification frame */
+        nrf_gnss_agps_data_frame_t agps; /**< AGPS data request notification */
     };
 } nrf_gnss_data_frame_t;
 
 /** @} */
 
-/**@} */
-
 /**@defgroup nrf_socket_gnss_data_agps AGPS data types
- * @ingroup  nrf_socket
+ * @ingroup  nrf_socket_gnss_agps
  * @brief    AGPS Data types.
  * @{
  */
@@ -797,8 +906,7 @@ typedef struct
 
 /** @} */
 
-/**@defgroup nrf_socketopt_gnss GNSS socket option
- * @ingroup nrf_socket
+/**@defgroup nrf_socketopt_gnss_types GNSS socket option types
  * @brief Data types defined to set and get socket options on GNSS sockets.
  * @{
  */
@@ -862,6 +970,10 @@ typedef uint8_t nrf_gnss_power_save_mode_t;
 typedef uint32_t nrf_gnss_delete_mask_t;
 /** @} */
 
+
+/**@defgroup nrf_socket_api nRF BSD Socket interface
+ * @{
+ */
 
 /**
  * @brief Function for creating a socket.
@@ -1022,26 +1134,6 @@ ssize_t nrf_recvfrom(int             sock,
  */
 ssize_t nrf_read(int sock, void * p_buff, size_t nbytes);
 
-
-/**
- * @defgroup nrf_fd_set_api API for file descriptor set
- * @ingroup nrf_socket
- * @details File descriptor sets are used as input to the nrf_select() function for doing I/O
- *          multiplexing. The maximum number of descriptors contained in a set is defined by
- *          NRF_FD_SETSIZE.
- *
- * @{
- */
-typedef uint32_t nrf_fd_set;
-#define NRF_FD_ZERO(set)            (*(set) = 0)                   /**< Clear the entire set. */
-#define NRF_FD_SET(fd, set)         (*(set) |= (1u << (fd)))       /**< Set a bit in the set. */
-#define NRF_FD_CLR(fd, set)         (*(set) &= ~(1u << (fd)))      /**< Clear a bit in the set. */
-#define NRF_FD_ISSET(fd, set)       (*(set) & (1u << (fd)))        /**< Check if a bit in the set is set. */
-#define NRF_FD_SETSIZE              sizeof(nrf_fd_set)             /**< The max size of a set. */
-
-/**@} */
-
-
 /**
  * @brief Function for waiting for read, write, or exception events on a socket.
  *
@@ -1068,28 +1160,28 @@ int nrf_select(int                        nfds,
                nrf_fd_set               * p_exceptset,
                const struct nrf_timeval * p_timeout);
 
+/** @} */
 
 /**
- * @defgroup nrf_poll_api Interface for polling for socket events.
- * @ingroup nrf_socket
- * @details Necessary data types, methods and defines to poll for
- *          events on one or more sockets.
+ * @defgroup nrf_socket_api_poll Socket polling API
+ * @brief Data types and defines for use with nrf_poll().
+ * @details Necessary data types and defines to poll for
+ *          events on one or more sockets using nrf_poll().
  *
  * @{
  */
- struct nrf_pollfd
- {
-    int   handle;        /* Socket handle */
-    short requested;     /* Requested events, shall be a mask of events defined in @ref nrf_poll_events. */
-    short returned;      /* Returned events, is a mask of events defines in  @nrf_poll_events. */
-};
 
 /**
- * @defgroup nrf_poll_events Events defined to poll sockets.
- * @ingroup nrf_poll_api
- * Set of events defined as bit mask to poll on sockets.
- * More than one event can be polled on a socket at any given time.
+ *  @details This structure is used to describe which events to poll for a given socket. Which is then given as argument
+ *           to nrf_poll().
  */
+ struct nrf_pollfd
+ {
+    int   handle;        /**< Socket handle */
+    short requested;     /**< Requested events, is a mask of events */
+    short returned;      /**< Returned events, is a mask of events */
+};
+
 #define NRF_POLLIN       0x0001    /**< Event for data receive. Can be requested and returned. */
 #define NRF_POLLOUT      0x0002    /**< Event for data send. Can be requested and returned. */
 #define NRF_POLLERR      0x0004    /**< Event for error on the polled socket. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
@@ -1097,6 +1189,10 @@ int nrf_select(int                        nfds,
 #define NRF_POLLNVAL     0x0010    /**< Event to indicate the polled socket is not open. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
 /**@} */
 
+
+/**@addtogroup nrf_socket_api
+ * @{
+ */
 
 /**
  * @brief Method to poll for events on one or more sockets.
@@ -1113,11 +1209,8 @@ int nrf_select(int                        nfds,
  * @retval A positive number less than or equal to nfds indicating sockets on which events occurred.
  *         0 indicates the timed out occurred and no file descriptors were ready.
  *         -1 on error, and errno indicates the reason for failure.
- * @{
  */
 int nrf_poll(struct nrf_pollfd * p_fds, uint32_t nfds, int timeout);
-/**@} */
-
 
 /**
  * @brief Function for setting socket options for a given socket.
@@ -1204,6 +1297,17 @@ int nrf_listen(int sock, int backlog);
  */
 int nrf_accept(int sock, void * p_cliaddr, nrf_socklen_t * p_addrlen);
 
+/**@} */
+
+/**@} */
+
+/**@defgroup nrf_socket_api_utils Socket utility functions
+ * @brief Address resolution utility functions.
+ * @details Utility functions and macros for resolving host name and converting address information between
+ *          human readable and a format the BSDLib stack expect.
+ * @ingroup nrf_socket
+ * @{
+ */
 
 /**
  * @brief Function for converting a human-readable IP address to a form usable by the socket API.
@@ -1265,8 +1369,8 @@ int nrf_getaddrinfo(const char                *  p_node,
 
 /**@brief Function for freeing the memory allocated for the result of @ref nrf_getaddrinfo.
  *
- * When the linked list of resolved addresses created by @ref getaddrinfo
- * is no longer needed, call this function to free the allocated memory.
+ * @details When the linked list of resolved addresses created by @ref getaddrinfo
+ *          is no longer needed, call this function to free the allocated memory.
  *
  * @param[in] p_res  Pointer to the memory to be freed.
  */
@@ -1275,18 +1379,20 @@ void nrf_freeaddrinfo(struct nrf_addrinfo * p_res);
 /**
  * @brief Set a secondary DNS address.
  *
- * The secondary DNS address is used automatically in case the primary DNS
- * address is unreachable, or if no DNS address is provided by the operator.
- * The secondary DNS address does not override the primary DNS address.
+ * @details The secondary DNS address is used automatically in case the primary DNS
+ *          address is unreachable, or if no DNS address is provided by the operator.
+ *          The secondary DNS address does not override the primary DNS address.
  *
- * @param[in] family	Address family.
- * @param[in] in_addr	An IPv4 or IPv6 address encoded in a @ref nrf_in_addr
- * 			or @ref nrf_in6_addr structure, respectively.
- * 			Pass @c NULL to unset the secondary DNS address.
+ * @param[in] family    Address family.
+ * @param[in] in_addr   An IPv4 or IPv6 address encoded in a @ref nrf_in_addr
+ *                      or @ref nrf_in6_addr structure, respectively.
+ *                      Pass @c NULL to unset the secondary DNS address.
  *
- * @return int	Zero on success, or an  error from @file nrf_errno.h otherwise.
+ * @return int Zero on success, or an  error from @file nrf_errno.h otherwise.
  */
 int nrf_setdnsaddr(int family, const void *in_addr);
+
+/** @} */
 
 #ifdef __cplusplus
 }
