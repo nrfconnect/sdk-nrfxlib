@@ -243,9 +243,9 @@ AES cipher mode support can be configured according to the following table:
 +--------------+----------------+---------------------------------------------+
 | CBC          |                | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CBC`    |
 +--------------+----------------+---------------------------------------------+
-| CFB          | Standard only  | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CFB`    |
+| CFB          |                | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CFB`    |
 +--------------+----------------+---------------------------------------------+
-| OFB          | Standard only  | :option:`CONFIG_MBEDTLS_CIPHER_MODE_OFB`    |
+| OFB          |                | :option:`CONFIG_MBEDTLS_CIPHER_MODE_OFB`    |
 +--------------+----------------+---------------------------------------------+
 | XTS          | Standard only  | :option:`CONFIG_MBEDTLS_CIPHER_MODE_XTS`    |
 +--------------+----------------+---------------------------------------------+
@@ -265,13 +265,9 @@ AES cipher mode support can be configured according to the following table:
 +--------------+----------------+-----------------------------------------------------------+
 | Cipher mode  | Support        | Configurations                                            |
 +==============+================+===========================================================+
-| CTR          | Glue           | CC310: :option:`CONFIG_CC310_MBEDTLS_CIPHER_MODE_CTR`     |
-|              |                |                                                           |
-|              |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_CIPHER_MODE_CTR`|
+| CTR          | Glue           | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CTR`                  |
 +--------------+----------------+-----------------------------------------------------------+
-| CBC          | Glue           | CC310: :option:`CONFIG_CC310_MBEDTLS_CIPHER_MODE_CBC`     |
-|              |                |                                                           |
-|              |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_CIPHER_MODE_CBC`|
+| CBC          | Glue           | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CBC`                  |
 +--------------+----------------+-----------------------------------------------------------+
 | CFB          | Glue           | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CFB`                  |
 +--------------+----------------+-----------------------------------------------------------+
@@ -333,8 +329,6 @@ AEAD cipher mode support can be configured according to the following table:
 | AES CCM*     |                | Standard: :option:`CONFIG_VANILLA_MBEDTLS_CCM_C`        |
 +--------------+----------------+---------------------------------------------------------+
 | AES GCM      | Standard only  | :option:`CONFIG_MBEDTLS_GCM_C`                          |
-+--------------+----------------+---------------------------------------------------------+
-| ChaCha-Poly  | Standard only  | :option:`CONFIG_MBEDTLS_CHACHA20_C`                     |
 +--------------+----------------+---------------------------------------------------------+
 | ChaCha20     | Choice         | CC310: :option:`CONFIG_CC310_MBEDTLS_CHACHA20_C` or     |
 |              |                |                                                         |
@@ -405,7 +399,7 @@ use for :option:`CONFIG_MBEDTLS_ECP_C`.
 Single backend
 ~~~~~~~~~~~~~~
 Elliptic Curve over GF(p) provides core support for Elliptic Curve Cryptography
-and can be configured by setting the :option:`CONFIG_MBEDTLS_AES_C` Kconfig
+and can be configured by setting the :option:`CONFIG_MBEDTLS_ECP_C` Kconfig
 variable.
 
 Multiple backends
