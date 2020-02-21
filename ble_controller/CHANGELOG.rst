@@ -15,6 +15,10 @@ Added
 
   * :file:`ble_controller/lib/cortex-m33+nodsp/soft-float/libble_controller_s140.a`
 
+* Added LE Set Advertising Set Random Address command.
+* Added LE Remove Advertising Set command.
+* Added LE Clear Advertising Sets command.
+
 Changes
 =======
 
@@ -34,6 +38,7 @@ Changes
 * Timeslot API is removed.
   Use corresponding API in MPSL instead.
 * Version numbers have been removed from the libraries.
+* The VersNr field in the LL_VERSION_IND packet now contains the value 0x0B to indicate Bluetooth Core Specification v5.2 compliance.
 
 Bugfixes
 ========

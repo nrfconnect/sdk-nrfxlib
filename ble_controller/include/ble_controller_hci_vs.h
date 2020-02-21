@@ -212,4 +212,3 @@ uint8_t hci_vs_cmd_qos_conn_event_report_enable(const hci_vs_cmd_qos_conn_event_
 #endif
 
 #endif /* BLE_CONTROLLER_HCI_VS_H__ */
-

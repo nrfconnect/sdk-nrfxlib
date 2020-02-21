@@ -17,6 +17,10 @@ Added
 
   * :file:`soft-float/libmpsl.a`
 
+* Added API for fetching build revision information
+* Added an API to set a TX Power envelope.
+  Protocols using MPSL will limit their TX power to a value equal to, or lower than provided.
+
 Changes
 =======
 
@@ -28,6 +32,11 @@ Changes
   * Clock accuracy must be specified in parts per million (ppm).
 
 * Renamed MPSL clock API for high and low frequency clock.
+
+Bugfixes
+========
+
+* Fixed an issue on nRF53, where an assert could occur when using a timeslot
 
 MPSL 0.5.0-1.prealpha
 *********************
