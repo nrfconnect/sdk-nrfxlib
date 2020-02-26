@@ -11,14 +11,14 @@ Master branch
 Added
 =====
 
-* Added API for fetching build revision information
-* Added an API to set a TX Power envelope.
-  Protocols using MPSL will limit their TX power to a value equal to, or lower than provided.
+* Added API for fetching build revision information.
+* Added API to set a TX Power envelope.
+  Protocols using MPSL will limit their TX power to a value equal to, or lower than, the provided value.
 
 Bugfixes
 ========
 
-* Fixed an issue on nRF53, where an assert could occur when using a timeslot.
+* Fixed an issue on nRF53 where an assert could occur when using a timeslot.
 
 nRF Connect SDK v1.2.0
 **********************

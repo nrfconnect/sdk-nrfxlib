@@ -3,33 +3,29 @@
 Integration with applications
 =============================
 
-The nRF BLE Controller is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series that supports Bluetooth 5.
+The nRF Bluetooth LE Controller is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series that supports Bluetooth 5.
 
-For the nRF53 Series, the requirements described in this document are only relevant for applications running alongside the nRF BLE Controller on the network processor.
+For the nRF53 Series, the requirements described in this document are only relevant for applications running alongside the nRF Bluetooth LE Controller on the network processor.
 
-Applications utilizing the nRF BLE Controller library are responsible for
-the following:
+Applications utilizing the nRF Bluetooth LE Controller library are responsible for the following:
 
--  Forwarding RNG interrupts to the nRF BLE Controller library.
-   The application should not add additional processing in the
-   corresponding interrupt handler.
+-  Forwarding RNG interrupts to the nRF Bluetooth LE Controller library.
+   The application should not add additional processing in the corresponding interrupt handler.
    Otherwise, the behavior is undefined.
--  The BLE Controller relies on functionality provided by the Nordic :ref:`mpsl` (Multiprotocol Service Layer),
-   which has its own set of requirements that the application must follow.
--  Ensuring thread-safe operation. This can be achieved by either:
+-  The nRF Bluetooth LE Controller relies on the functionality provided by the Nordic :ref:`mpsl` (Multiprotocol Service Layer), which has its own set of requirements that the application must follow.
+-  Ensuring thread-safe operation.
+   This can be achieved by either:
 
-   -  Calling all BLE Controller and MPSL APIs from the same execution priority,
-   -  ensuring that no API call is interrupted by other API calls, for example
-      by using critical sections.
+   -  Calling all nRF Bluetooth LE Controller and MPSL APIs from the same execution priority,
+   -  ensuring that no API call is interrupted by other API calls, for example by using critical sections.
 
 -  Configuring the number of available links:
 
    -  Link configuration must be done before enabling the controller.
-   -  The application is required to provide a memory buffer the size of
-      which is dependent on the link configuration.
+   -  The application is required to provide a memory buffer the size of which is dependent on the link configuration.
 
 
-The following peripherals are owned by the nRF BLE Controller and must not be accessed directly by the application:
+The following peripherals are owned by the nRF Bluetooth LE Controller and must not be accessed directly by the application:
 
 -  RNG
 -  ECB
@@ -38,17 +34,15 @@ The following peripherals are owned by the nRF BLE Controller and must not be ac
 -  PPI channels 17 - 31, for the nRF52 Series
 -  DPPI channels 0 - 13, for the nRF53 Series
 
-The APIs provided in :file:`ble_controller_soc.h` and in MPSL give the
-application limited access to some of these peripherals.
+The APIs provided in :file:`ble_controller_soc.h` and in MPSL provide the application limited access to some of these peripherals.
 
 Architecture diagrams
 ---------------------
 
-The image below shows how the nRF BLE Controller and MPSL integrates in an
-RTOS-free environment.
+The image below shows how the nRF Bluetooth LE Controller and MPSL integrates in an RTOS-free environment.
 
 .. figure:: pic/Architecture_Without_RTOS.svg
 
-The image below shows how the nRF BLE Controller and MPSL integrates with an RTOS.
+The image below shows how the nRF Bluetooth LE Controller and MPSL integrates with an RTOS.
 
 .. figure:: pic/Architecture_With_RTOS.svg
