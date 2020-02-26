@@ -5,6 +5,34 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Master branch
+*************
+
+Added
+=====
+
+* Added LE Set Advertising Set Random Address command.
+* Added LE Remove Advertising Set command.
+* Added LE Clear Advertising Sets command.
+* Added support for the Vendor specific HCI command: Zephyr Read Version Information
+* Added support for the Vendor specific HCI command: Zephyr Read Supported Commands
+* Added support for the Vendor specific HCI command: Zephyr Write Tx Power Level (per Role/Connection)
+
+Changes
+=======
+
+* The VersNr field in the LL_VERSION_IND packet now contains the value 0x0B to indicate Bluetooth Core Specification v5.2 compliance.
+* The previously implemented Vendor Specific HCI command opcodes are now offset with 0x100.
+* The previously implemented Vendor Specific HCI event codes are now offset with 0x80.
+* When in slave latency, the controller now picks up data from the host for transmission earlier than it used to.
+* In the LE Extended Advertising Report, the Direct Address Type values 0x02, 0x03, and 0xFE will only be used 
+  when the Scanning Filter Policy is equal to 0x02 or 0x03 and TargetA is a resolvable private address.
+  If the address is resolved, then the Direct Address Type will contain the same value as the Own Address Type parameter
+  of the command LE Set Extended Scan Parameters. This is as per the Bluetooth Core Specification v 5.2.
+
+nRF Connect SDK v1.2.0
+**********************
+
 Added
 =====
 
@@ -38,15 +66,11 @@ Changes
 Bugfixes
 ========
 
-* Fixed an issue on nRF53 that could cause poor performance when performing active scanning.
-* Fixed an issue on nRF53 where an assert could occur when receiving extended advertising packets.
 * Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out.
-* Fixed an issue on nRF53 where the T_IFS in certain conditions was off by 5 us.
 * Fixed an issue where a control packet could be sent twice even after the packet was ACKed.
   This would only occur if the radio was forced off due to an unforeseen condition.
 * Fixed an issue in HCI LE Set Extended Scan Enable where ``UNSUPPORTED_FEATURE`` was returned when duplicate filtering was enabled.
 * Fixed an issue in HCI LE Set Advertising Parameters where ``UNSUPPORTED_FEATURE`` was returned when ``secondary_max_skip`` was set to a non-zero value.
-* Fixed an issue on nRF53 where the radio stayed in the TX state longer than expected.
   This issue occured when sending a packet on either LE 1M or LE 2M PHY after receiving or transmitting a packet on
   LE Coded PHY.
   If this occured while performing a Link Layer Control Procedure, the controller could end up retransmitting
@@ -59,7 +83,7 @@ ble_controller 0.3.0-3.prealpha
 *******************************
 
 Added
-=======
+=====
 * Added support for nRF52833.
 
 Bugfixes

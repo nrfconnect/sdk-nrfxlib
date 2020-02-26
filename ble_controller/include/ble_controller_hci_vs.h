@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -33,25 +33,81 @@ extern "C" {
  * @{
  */
 
+/** @brief TX power handle type. */
+enum HCI_VS_TX_POWER_HANDLE_TYPE
+{
+    /** @brief Handle of type Advertiser. */
+    HCI_VS_TX_POWER_HANDLE_TYPE_ADV = 0x00,
+    /** @brief Handle of type Scanner or Initiator. */
+    HCI_VS_TX_POWER_HANDLE_TYPE_SCAN_INIT = 0x01,
+    /** @brief Handle of type Connection. */
+    HCI_VS_TX_POWER_HANDLE_TYPE_CONN = 0x02,
+};
+
 /** @brief HCI OpCode Field values. */
 enum HCI_VS_OPCODE
 {
+    /** @brief See @ref hci_vs_cmd_zephyr_read_version_info(). */
+    HCI_VS_OPCODE_CMD_ZEPHYR_READ_VERSION_INFO = 0xfc01,
+    /** @brief See @ref hci_vs_cmd_zephyr_read_supported_commands(). */
+    HCI_VS_OPCODE_CMD_ZEPHYR_READ_SUPPORTED_COMMANDS = 0xfc02,
+    /** @brief See @ref hci_vs_cmd_vs_zephyr_write_tx_power(). */
+    HCI_VS_OPCODE_CMD_VS_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
     /** @brief See @ref hci_vs_cmd_llpm_mode_set(). */
-    HCI_VS_OPCODE_CMD_LLPM_MODE_SET = 0xfc01,
+    HCI_VS_OPCODE_CMD_LLPM_MODE_SET = 0xfd01,
     /** @brief See @ref hci_vs_cmd_conn_update(). */
-    HCI_VS_OPCODE_CMD_CONN_UPDATE = 0xfc02,
+    HCI_VS_OPCODE_CMD_CONN_UPDATE = 0xfd02,
     /** @brief See @ref hci_vs_cmd_conn_event_extend(). */
-    HCI_VS_OPCODE_CMD_CONN_EVENT_EXTEND = 0xfc03,
+    HCI_VS_OPCODE_CMD_CONN_EVENT_EXTEND = 0xfd03,
     /** @brief See @ref hci_vs_cmd_qos_conn_event_report_enable(). */
-    HCI_VS_OPCODE_CMD_QOS_CONN_EVENT_REPORT_ENABLE = 0xfc04,
+    HCI_VS_OPCODE_CMD_QOS_CONN_EVENT_REPORT_ENABLE = 0xfd04,
 };
 
 /** @brief Subevent Code values. */
 enum HCI_VS_SUBEVENT_CODE
 {
     /** @brief See @ref hci_vs_evt_qos_conn_event_report_t. */
-    HCI_VS_SUBEVENT_CODE_QOS_CONN_EVENT_REPORT = 0x01,
+    HCI_VS_SUBEVENT_CODE_QOS_CONN_EVENT_REPORT = 0x80,
 };
+
+/** @brief Zephyr supported commands.
+ *
+ * If the field is set to 1, it indicates that the underlying command and
+ * feature is supported by the controller.
+ */
+typedef __PACKED_STRUCT
+{
+    /** @brief Read Version Information. */
+    uint8_t read_version_info : 1;
+    /** @brief Read Supported Commands. */
+    uint8_t read_supported_commands : 1;
+    /** @brief Read Supported Features. */
+    uint8_t read_supported_features : 1;
+    /** @brief Set Event Mask. */
+    uint8_t set_event_mask : 1;
+    /** @brief Reset. */
+    uint8_t reset : 1;
+    /** @brief Write BD_ADDR. */
+    uint8_t write_bd_addr : 1;
+    /** @brief Set Trace Enable. */
+    uint8_t set_trace_enable : 1;
+    /** @brief Read Build Information. */
+    uint8_t read_build_info : 1;
+    /** @brief Read Static Addresses. */
+    uint8_t read_static_addresses : 1;
+    /** @brief Read Key Hierarchy Roots. */
+    uint8_t read_key_hierarchy_roots : 1;
+    /** @brief Read Chip Temperature. */
+    uint8_t read_chip_temperature : 1;
+    /** @brief Read Host Stack Commands. */
+    uint8_t read_host_stack_commands : 1;
+    /** @brief Set Scan Request Reports. */
+    uint8_t set_scan_request_reports : 1;
+    /** @brief Write Tx Power Level (per Role/Connection). */
+    uint8_t write_tx_power_level : 1;
+    /** @brief Read Tx Power Level (per Role/Connection). */
+    uint8_t read_tx_power_level : 1;
+} hci_vs_zephyr_supported_commands_t;
 
 /** @} end of HCI_VS_TYPES */
 
@@ -86,6 +142,61 @@ typedef __PACKED_STRUCT
  * @defgroup HCI_VS_COMMANDS Commands
  * @{
  */
+
+/** @brief Zephyr Read Version Information return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Assigned hardware manufacturer. Always 0x0002 indicating Nordic Semiconductor. */
+    uint16_t hw_platform;
+    /** @brief Assigned platform specific value. Set to 0x2 for nRF52, 0x3 for nRF53. */
+    uint16_t hw_variant;
+    /** @brief Firmware Variant. 0 indicates a standard Bluetooth controller. */
+    uint8_t fw_variant;
+    /** @brief Firmware Version. */
+    uint8_t fw_version;
+    /** @brief Firmware Revision. */
+    uint16_t fw_revision;
+    /** @brief Firware build revision. */
+    uint32_t fw_build;
+} hci_vs_cmd_zephyr_read_version_info_return_t;
+
+/** @brief Zephyr Read Supported Commands return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Bit mask for each vendor command. If a bit is 1, the Controller supports the
+     *         corresponding command  and the features required for the command, unsupported or
+     *         undefined commands shall be set to 0.
+     */
+    __PACKED_UNION
+    {
+        hci_vs_zephyr_supported_commands_t params;
+        uint8_t raw[64];
+    } supported_commands;
+} hci_vs_cmd_zephyr_read_supported_commands_return_t;
+
+/** @brief Zephyr Write Tx Power Level (per Role/Connection) command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Handle type. See @ref HCI_VS_TX_POWER_HANDLE_TYPE. */
+    uint8_t handle_type;
+    /** @brief Handle of the selected handle_type that identifies the instance to set the power of.
+     *         In case of Extended Advertising, the handle specifies the advertising set. In case of
+     *         a connection, it specifies a Connection Handle. Otherwise this parameter is ignored.
+     */
+    uint16_t handle;
+    /** @brief The desired Tx_Power_Level in dBm in signed 1 octet integer format.  If set to 127,
+     *         this indicates that the controller shall revert to using its  default setting for Tx
+     *         power. If the selected power level is not supported, an error is returned.
+     */
+    int8_t tx_power_level;
+} hci_vs_cmd_vs_zephyr_write_tx_power_t;
+
+/** @brief Zephyr Write Tx Power Level (per Role/Connection) return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief The selected Tx Power in dBm. */
+    int8_t selected_tx_power;
+} hci_vs_cmd_vs_zephyr_write_tx_power_return_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef __PACKED_STRUCT
@@ -130,6 +241,83 @@ typedef __PACKED_STRUCT
  * @defgroup HCI_VS_API API
  * @{
  */
+
+/** @brief Zephyr Read Version Information.
+ *
+ * Reads the values for the vendor version information for the local Controller.
+ *
+ * The Hardware_Platform information defines the hardware manufacturer
+ * information. The Hardware_Variant is manufacturer specific and defines the
+ * hardware platform from that manufacturer.
+ *
+ * The Firmware_Variant defines the type of firmware. It is possible to provide
+ * HCI firmware with limited functionality for example for bootloader operation.
+ * The Firmware_Version and Firmware_Revision define version information of the
+ * Firmware_Variant that is currently active. The Firmware_Build defines an
+ * additional counter for incremental builds.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t hci_vs_cmd_zephyr_read_version_info(hci_vs_cmd_zephyr_read_version_info_return_t * p_return);
+
+/** @brief Zephyr Read Supported Commands.
+ *
+ * This command reads the list of vendor commands supported for the local Controller.
+ *
+ * This command shall return the Supported_Commands configuration parameter. It is
+ * implied that if a command is listed as supported, the feature underlying that
+ * command is also supported.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t hci_vs_cmd_zephyr_read_supported_commands(hci_vs_cmd_zephyr_read_supported_commands_return_t * p_return);
+
+/** @brief Zephyr Write Tx Power Level (per Role/Connection).
+ *
+ * This command dynamically modifies BLE Tx power level given a handle and a
+ * handle type (advertiser, scanner, connection).
+ *
+ * The Tx power of the BLE radio interface is modified for any low-level link by
+ * the controller with a high degree of flexibility. The BLE link whose power is
+ * set is identified based on a handle type (advertiser, scanner, connection) and
+ * handle pair.
+ *
+ * The role/state defining input parameter is the Handle_Type, whereas its
+ * corresponding handle is provided by the Handle input parameter. Note that
+ * for Advertisements, the Handle input parameter is ignored in the case that
+ * Advertising Extensions are not configured, whereas Advertising Sets are to be
+ * identified by their corresponding Handle in case Advertising Extensions are
+ * enabled.
+ *
+ * The desired transmitter power level for the selected link instance is inputted
+ * as Tx_Power_Level. The power setup and control can be performed dynamically
+ * without the need of restarting the advertiser and scanner role/states. In case
+ * of connections, the Tx power changes take effect only if the connections are
+ * in a connected state.
+ *
+ * The inputs Handle_Type and Handle are passed through as outputs to aid the
+ * asynchronous service of the command as well. In addition, the command returns
+ * also with the Selected_Tx_Power by the controller which addresses and corrects
+ * the possible mismatches between the desired Tx_Power_Level and the achievable
+ * Tx powers given each individual controller capabilities.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t hci_vs_cmd_vs_zephyr_write_tx_power(const hci_vs_cmd_vs_zephyr_write_tx_power_t * p_params,
+                                            hci_vs_cmd_vs_zephyr_write_tx_power_return_t * p_return);
 
 /** @brief Set Low Latency Packet Mode.
  *
@@ -212,4 +400,3 @@ uint8_t hci_vs_cmd_qos_conn_event_report_enable(const hci_vs_cmd_qos_conn_event_
 #endif
 
 #endif /* BLE_CONTROLLER_HCI_VS_H__ */
-
