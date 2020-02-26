@@ -5,8 +5,23 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-MPSL 0.5.0-2.prealpha
-*********************
+Master branch
+*************
+
+Added
+=====
+
+* Added API for fetching build revision information
+* Added an API to set a TX Power envelope.
+  Protocols using MPSL will limit their TX power to a value equal to, or lower than provided.
+
+Bugfixes
+========
+
+* Fixed an issue on nRF53, where an assert could occur when using a timeslot.
+
+nRF Connect SDK v1.2.0
+**********************
 
 Added
 =====
@@ -21,12 +36,11 @@ Changes
 =======
 
 * Removed ``_nrf52`` from the MPSL library file names.
+* Version numbers have been removed from the libraries.
 * It is no longer allowed to call :cpp:func:`mpsl_init()` if MPSL is already initialized.
 * Clock configuration parameters for any stack that uses MPSL must be provided in :c:type:`mpsl_clock_lfclk_cfg_t` to :cpp:func:`mpsl_init()`.
   This now also involves clock accuracy.
-
-  * Clock accuracy must be specified in parts per million (ppm).
-
+* Clock accuracy must be specified in parts per million (ppm).
 * Renamed MPSL clock API for high and low frequency clock.
 
 MPSL 0.5.0-1.prealpha
