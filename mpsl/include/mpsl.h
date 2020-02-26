@@ -32,6 +32,9 @@ extern "C" {
  *  timeslot by the owner of the timeslot */
 #define MPSL_HIGH_IRQ_PRIORITY 0
 
+/** @brief Size of build revision array in bytes. */
+#define MPSL_BUILD_REVISION_SIZE 20
+
 /** @brief    Function prototype for the assert handler.
  *
  * @note      If an internal assert occurs this function is called. It is supposed to log the assert and stop execution.
@@ -70,6 +73,18 @@ void mpsl_uninit(void);
 /** @brief      Returns true if MPSL is already initialized, false otherwise.
  */
 bool mpsl_is_initialized(void);
+
+/** @brief Obtain build revision
+ *
+ * The application must provide a buffer that is at least @ref MPSL_BUILD_REVISION_SIZE
+ * bytes long. MPSL will copy the build revision to the provided buffer.
+ *
+ *  @param[in,out] p_build_revision  Build revision.
+ *
+ * @retval 0              Success
+ * @retval - ::NRF_EINVAL Invalid argument provided
+ */
+int32_t mpsl_build_revision_get(uint8_t * p_build_revision);
 
 /** @brief      RADIO interrupt handler
  *
