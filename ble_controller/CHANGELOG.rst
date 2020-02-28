@@ -16,6 +16,7 @@ Added
 * Added LE Clear Advertising Sets command.
 * Added support for the Vendor specific HCI command: Zephyr Read Version Information.
 * Added support for the Vendor specific HCI command: Zephyr Read Supported Commands.
+* Added support for the Vendor specific HCI command: Zephyr Read Static Addresses.
 * Added support for the Vendor specific HCI command: Zephyr Write TX Power Level (per Role/Connection).
 
 Changes
