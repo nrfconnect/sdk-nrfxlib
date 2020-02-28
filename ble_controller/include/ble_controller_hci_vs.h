@@ -51,8 +51,10 @@ enum HCI_VS_OPCODE
     HCI_VS_OPCODE_CMD_ZEPHYR_READ_VERSION_INFO = 0xfc01,
     /** @brief See @ref hci_vs_cmd_zephyr_read_supported_commands(). */
     HCI_VS_OPCODE_CMD_ZEPHYR_READ_SUPPORTED_COMMANDS = 0xfc02,
-    /** @brief See @ref hci_vs_cmd_vs_zephyr_write_tx_power(). */
-    HCI_VS_OPCODE_CMD_VS_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
+    /** @brief See @ref hci_vs_cmd_zephyr_read_static_addresses(). */
+    HCI_VS_OPCODE_CMD_ZEPHYR_READ_STATIC_ADDRESSES = 0xfc09,
+    /** @brief See @ref hci_vs_cmd_zephyr_write_tx_power(). */
+    HCI_VS_OPCODE_CMD_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
     /** @brief See @ref hci_vs_cmd_llpm_mode_set(). */
     HCI_VS_OPCODE_CMD_LLPM_MODE_SET = 0xfd01,
     /** @brief See @ref hci_vs_cmd_conn_update(). */
@@ -108,6 +110,17 @@ typedef __PACKED_STRUCT
     /** @brief Read Tx Power Level (per Role/Connection). */
     uint8_t read_tx_power_level : 1;
 } hci_vs_zephyr_supported_commands_t;
+
+/** @brief Zephyr Static Adress type. */
+typedef __PACKED_STRUCT
+{
+    /** @brief Static device address. */
+    uint8_t address[6];
+    /** @brief Identity root key (IR) for static device address. All zero parameter value indicates
+     *         missing identity root key.
+     */
+    uint8_t identity_root[16];
+} hci_vs_zephyr_static_address_t;
 
 /** @} end of HCI_VS_TYPES */
 
@@ -174,6 +187,15 @@ typedef __PACKED_STRUCT
     } supported_commands;
 } hci_vs_cmd_zephyr_read_supported_commands_return_t;
 
+/** @brief Zephyr Read Static Addresses return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Number of static device addresses. */
+    uint8_t num_addresses;
+    /** @brief Zephyr Static Addresses. The number of addresses is specified in num_addresses. */
+    hci_vs_zephyr_static_address_t addresses[];
+} hci_vs_cmd_zephyr_read_static_addresses_return_t;
+
 /** @brief Zephyr Write Tx Power Level (per Role/Connection) command parameter(s). */
 typedef __PACKED_STRUCT
 {
@@ -184,19 +206,19 @@ typedef __PACKED_STRUCT
      *         a connection, it specifies a Connection Handle. Otherwise this parameter is ignored.
      */
     uint16_t handle;
-    /** @brief The desired Tx_Power_Level in dBm in signed 1 octet integer format.  If set to 127,
+    /** @brief The desired Tx_Power_Level in dBm in signed 1 octet integer format. If set to 127,
      *         this indicates that the controller shall revert to using its  default setting for Tx
      *         power. If the selected power level is not supported, an error is returned.
      */
     int8_t tx_power_level;
-} hci_vs_cmd_vs_zephyr_write_tx_power_t;
+} hci_vs_cmd_zephyr_write_tx_power_t;
 
 /** @brief Zephyr Write Tx Power Level (per Role/Connection) return parameter(s). */
 typedef __PACKED_STRUCT
 {
     /** @brief The selected Tx Power in dBm. */
     int8_t selected_tx_power;
-} hci_vs_cmd_vs_zephyr_write_tx_power_return_t;
+} hci_vs_cmd_zephyr_write_tx_power_return_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef __PACKED_STRUCT
@@ -280,6 +302,36 @@ uint8_t hci_vs_cmd_zephyr_read_version_info(hci_vs_cmd_zephyr_read_version_info_
  */
 uint8_t hci_vs_cmd_zephyr_read_supported_commands(hci_vs_cmd_zephyr_read_supported_commands_return_t * p_return);
 
+/** @brief Zephyr Read Static Addresses.
+ *
+ * This commands reads the controller specific static addresses.
+ *
+ * This command shall return the static addresses programmed by the vendor at
+ * manufacturing time.
+ *
+ * Each returned static address shall confirm to the Static Device Address
+ * definition. The two most significant bits of the address shall be equal to 1.
+ * At least one bit of the random part of the address shall be 0. At least one bit
+ * of the random part of the address shall be 1.
+ *
+ * The Identity_Root parameter may be all zeros to indicate no identity root key
+ * being available for a given static address. The identity root key returned from
+ * Read_Key_Hierarchy_Roots command shall not be returned from this command.
+ *
+ * Note: If no public address is provided and a static address is available, then
+ * it is recommended to return an identity root key (if available) from this
+ * command. In case a public address is provided, then it is recommended to use
+ * the Read_Key_Hierarchy_Roots command to return the identity root key (if only
+ * one is available).
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t hci_vs_cmd_zephyr_read_static_addresses(hci_vs_cmd_zephyr_read_static_addresses_return_t * p_return);
+
 /** @brief Zephyr Write Tx Power Level (per Role/Connection).
  *
  * This command dynamically modifies BLE Tx power level given a handle and a
@@ -316,8 +368,8 @@ uint8_t hci_vs_cmd_zephyr_read_supported_commands(hci_vs_cmd_zephyr_read_support
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t hci_vs_cmd_vs_zephyr_write_tx_power(const hci_vs_cmd_vs_zephyr_write_tx_power_t * p_params,
-                                            hci_vs_cmd_vs_zephyr_write_tx_power_return_t * p_return);
+uint8_t hci_vs_cmd_zephyr_write_tx_power(const hci_vs_cmd_zephyr_write_tx_power_t * p_params,
+                                         hci_vs_cmd_zephyr_write_tx_power_return_t * p_return);
 
 /** @brief Set Low Latency Packet Mode.
  *
