@@ -14,6 +14,7 @@ Added
 * Added API for fetching build revision information.
 * Added API to set a TX Power envelope.
   Protocols using MPSL will limit their TX power to a value equal to, or lower than, the provided value.
+* Added support for using a low-swing and full-swing LF clock.
 
 Bugfixes
 ========

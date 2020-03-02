@@ -20,14 +20,22 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include "nrf.h"
 #include "nrf_errno.h"
 
 /** @brief Low frequency clock source. */
 enum MPSL_CLOCK_LF_SRC
 {
-    MPSL_CLOCK_LF_SRC_RC    = 0, /**< LFCLK RC oscillator. */
-    MPSL_CLOCK_LF_SRC_XTAL  = 1, /**< LFCLK crystal oscillator. */
-    MPSL_CLOCK_LF_SRC_SYNTH = 2, /**< LFCLK Synthesized from HFCLK. */
+    MPSL_CLOCK_LF_SRC_RC             = 0, /**< LFCLK RC oscillator. */
+    MPSL_CLOCK_LF_SRC_XTAL           = 1, /**< LFCLK crystal oscillator. */
+    MPSL_CLOCK_LF_SRC_SYNTH          = 2, /**< LFCLK Synthesized from HFCLK. */
+#if defined(NRF52_SERIES)
+    MPSL_CLOCK_LF_SRC_EXT_LOW_SWING  = 3, /**< Apply external low swing signal to XL1, ground XL2.
+                                               This option is not available on nRF53. */
+    MPSL_CLOCK_LF_SRC_EXT_FULL_SWING = 4, /**< Apply external full swing signal to XL1,
+                                               leave XL2 grounded or unconnected.
+                                               This option is not available on nRF53.*/
+#endif
 };
 
 /** @brief Recommended RC clock calibration timer interval. */
