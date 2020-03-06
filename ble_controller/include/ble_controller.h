@@ -289,12 +289,12 @@ int32_t ble_controller_build_revision_get(uint8_t * p_build_revision);
 void ble_controller_RNG_IRQHandler(void);
 
 /** @brief Support Data Length Extensions
- * 
+ *
  * After this API is called, the controller will support data length extension. That is:
- *  - All DLE HCI APIs are supported. 
+ *  - All DLE HCI APIs are supported.
  *  - The controller replies with LL_LENGTH_RSP when a LL_LENGTH_REQ is received.
- *  - DLE is marked supported in the LL Feature Exchange procedure. 
- *   
+ *  - DLE is marked supported in the LL Feature Exchange procedure.
+ *
  * @retval 0                            Success
  * @retval - ::NRF_EPERM                This API must be called before @ref ble_controller_enable().
  * @retval - ::NRF_EOPNOTSUPP           Data Length Extension is not supported.
