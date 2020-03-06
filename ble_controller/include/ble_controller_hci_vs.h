@@ -216,6 +216,10 @@ typedef __PACKED_STRUCT
 /** @brief Zephyr Write Tx Power Level (per Role/Connection) return parameter(s). */
 typedef __PACKED_STRUCT
 {
+    /** @brief Handle type. See @ref HCI_VS_TX_POWER_HANDLE_TYPE. */
+    uint8_t handle_type;
+    /** @brief See @ref hci_vs_cmd_zephyr_write_tx_power_t. */
+    uint16_t handle;
     /** @brief The selected Tx Power in dBm. */
     int8_t selected_tx_power;
 } hci_vs_cmd_zephyr_write_tx_power_return_t;
