@@ -12,5 +12,6 @@ rsource "ble_controller/Kconfig"
 rsource "mpsl/Kconfig"
 rsource "crypto/Kconfig"
 rsource "nrf_security/Kconfig"
+rsource "serialization/Kconfig"
 
 endmenu

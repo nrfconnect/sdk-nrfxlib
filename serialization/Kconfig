@@ -1,0 +1,23 @@
+#
+# Copyright (c) 2020 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
+
+menuconfig RP_SERIALIZATION
+	bool "Serialization library"
+	help
+	  Enable serialization library, with a chosen transport layer
+
+if RP_SERIALIZATION
+
+choice
+	prompt "Serialization transport layer"
+	default RPMSG_TRANSPORT
+
+config RPMSG_TRANSPORT
+	bool "Serialization RPMsg transport"
+
+endchoice
+
+endif # RP_SERIALIZATION
