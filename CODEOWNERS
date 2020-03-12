@@ -27,3 +27,4 @@ Kconfig*                                  @SebastianBoe
 /nfc/                                     @anangl @grochu
 /nrf_security/                            @frkv @tejlmand
 /zephyr/                                  @carlescufi
+/serialization/                           @KAGA164
