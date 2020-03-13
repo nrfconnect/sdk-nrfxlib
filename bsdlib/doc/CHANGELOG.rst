@@ -5,6 +5,18 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.6.2
+************
+
+* TLS session cache is again disabled by default due to missing support in modem firmware versions older than 1.1.1 included
+* :cpp:func:`sendto()` will now set errno to ``NRF_EISCONN`` instead ``NRF_EINVAL`` when passing an address if the socket type is ``NRF_SOCK_STREAM``
+* calling :cpp:func:`connect()` on a already connected socket will now properly return ``NRF_EISCONN`` instead of ``NRF_EBADF``
+* sockets with family ``NRF_AF_LTE`` must now be created with type ``NRF_SOCK_DGRAM``
+* setting a timeout :cpp:func:`recv()` larger than the maximum supported value will now properly return ``NRF_EDOM`` instead ``NRF_EINVAL``
+* fixed an overflow in timeout computation
+* operations on sockets that don't match the socket family will now return ``NRF_EAFNOSUPPORT`` instead of ``NRF_EINVAL``
+* creating a socket when no sockets are available will now return ``NRF_ENOBUFS`` instead of ``NRF_ENOMEM``
+
 bsdlib 0.6.1
 ************
 
