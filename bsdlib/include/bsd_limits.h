@@ -18,7 +18,7 @@
 extern "C" {
 #endif
 
-/**@brief Maximum number of concurrent AT and IP sockets available at the same time. */
+/**@brief Maximum number of AT and IP sockets available at the same time. */
 #define BSD_MAX_SOCKET_COUNT                   8
 
 /**@brief Maximum AT Command Size in bytes. */
