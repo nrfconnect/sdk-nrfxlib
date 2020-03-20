@@ -19,3 +19,4 @@ The library is available as soft-float, softfp-float, and hard-float builds.
 
    CHANGELOG
    doc/mpsl
+   doc/api

@@ -5,11 +5,17 @@
  */
 
 /**
- * @defgroup mpsl_radio_notification_api MPSL Library Radio Notification API
+ * @file mpsl_radio_notification.h
+ *
+ * @defgroup mpsl_radio_notification MPSL Radio notification interface
+ * @ingroup  mpsl
+ *
+ * The MPSL radio interface provides APIs for configuring radio notifications.
+ * When radio notifications are enabled, the application is notified when an
+ * MPSL timeslot starts or ends. By using radio notifications, the application is
+ * informed when a protocol uses the radio.
+ *
  * @{
- *
- * @brief APIs for the MPSL Radio Notification module.
- *
  */
 
 #ifndef MPSL_RADIO_NOTIFICATION_H__

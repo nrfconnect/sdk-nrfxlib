@@ -5,22 +5,16 @@
  */
 
 /**
- @addtogroup mpsl_timeslot
- @{
- @defgroup mpsl_timeslot_api MPSL library timeslot interface
- @{
-
-*/
-
-/**
  * @file mpsl_timeslot.h
  *
- * @brief MPSL Timeslot Interface
+ * @defgroup mpsl_timeslot MPSL timeslot interface
+ * @ingroup  mpsl
  *
  * The Timeslot interface allows the application to run another radio protocol concurrently with
  * BLE activity. When a timeslot is granted, the application has exclusive access
  * to the normally blocked RADIO, TIMER0, CCM, and AAR peripherals.
  * The application can use the peripherals freely for the duration of the timeslot.
+ * @{
  */
 
 #ifndef MPSL_TIMESLOT_H__
@@ -53,10 +47,10 @@ extern "C" {
 #define MPSL_TIMESLOT_EXTENSION_TIME_MIN_US            (200UL)
 
 /** @brief The maximum processing time to handle a timeslot extension. */
-#define MPSL_TIMESLOT_EXTENSION_PROCESSING_TIME_MAX_US (20UL)
+#define MPSL_TIMESLOT_EXTENSION_PROCESSING_TIME_MAX_US (25UL)
 
 /** @brief The latest time before the end of a timeslot when timeslot can be extended. */
-#define MPSL_TIMESLOT_EXTENSION_MARGIN_MIN_US          (82UL)
+#define MPSL_TIMESLOT_EXTENSION_MARGIN_MIN_US          (87UL)
 
 /** @brief The timeslot signal types. */
 enum MPSL_TIMESLOT_SIGNAL
@@ -194,7 +188,7 @@ typedef struct
         mpsl_timeslot_request_earliest_t earliest;      /**< Parameters for requesting a timeslot as
                                                         early as possible. */
         mpsl_timeslot_request_normal_t   normal;        /**< Parameters for requesting a normal timeslot. */
-    } params;
+    } params; /**< Union containing parameters for the request specified. */
 } mpsl_timeslot_request_t;
 
 /** @brief Return parameters of the timeslot signal callback. */
@@ -291,7 +285,4 @@ int32_t mpsl_timeslot_request(mpsl_timeslot_request_t const * p_request);
 
 #endif /* MPSL_TIMESLOT_H__ */
 
-/**
-  @}
-  @}
- */
+/**@} */

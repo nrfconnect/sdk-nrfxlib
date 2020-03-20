@@ -4,12 +4,17 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
- /**
-  @addtogroup mpsl_tx_power_api
-  @{
-  @defgroup mpsl_tx_power_interface MPSL TX_POWER API
-  @{
-*/
+/**
+ * @file mpsl_tx_power.h
+ *
+ * @defgroup mpsl_tx_power MPSL TX Power interface
+ * @ingroup  mpsl
+ *
+ * The MPSL TX Power interface provides APIs to set the maximum TX power per channel.
+ *
+ * @{
+ */
+
 
 #ifndef MPSL_TX_POWER_H__
 #define MPSL_TX_POWER_H__
@@ -42,12 +47,12 @@ typedef int8_t mpsl_tx_power_t;
 /** @brief Max TX power envelope. It is up to the application to allocate memory for an envelope. */
 typedef struct
 {
-    mpsl_phy_t phy; /* The PHY that this envelope applies to. */
+    mpsl_phy_t phy; /**< The PHY that this envelope applies to. */
     union
     {
         mpsl_tx_power_t tx_power_ble[MPSL_TOTAL_NUM_OF_BLE_CHANNELS];
         mpsl_tx_power_t tx_power_802154[MPSL_TOTAL_NUM_OF_802154_CHANNELS];
-    } envelope; /** Array of maximum TX power value per channel. From 11 to 26 for 802.15.4 protocol. From 0 to 40 for BLE protocol. */
+    } envelope; /**< Array of maximum TX power value per channel. From 11 to 26 for 802.15.4 protocol. From 0 to 40 for BLE protocol. */
 } mpsl_tx_power_envelope_t;
 
 /** @brief Sets maximum TX power envelope. If the PHY already has an envelope configured, it will be over-written.
@@ -71,7 +76,4 @@ int32_t mpsl_tx_power_channel_map_set(const mpsl_tx_power_envelope_t *const p_en
 
 #endif// MPSL_TX_POWER_H__
 
-/**
-  @}
-  @}
- */
+/**@} */
