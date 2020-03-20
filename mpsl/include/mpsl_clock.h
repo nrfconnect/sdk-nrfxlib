@@ -5,11 +5,13 @@
  */
 
 /**
- * @defgroup mpsl_clock_api MPSL Library Clock API
+ * @file mpsl_clock.h
+ *
+ * @defgroup mpsl_clock MPSL Clock interface
+ * @ingroup  mpsl
+ *
+ * The MPSL clock interface provides APIs for controlling the clocks.
  * @{
- *
- * @brief APIs for the MPSL Clock module.
- *
  */
 
 #ifndef MPSL_CLOCK_H__

@@ -4,13 +4,14 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
- /**
-  @addtogroup mpsl
-  @{
-  @defgroup mpsl_lib_interface MPSL library general interface
-  @{
-
-*/
+/**
+ * @file mpsl.h
+ *
+ * @defgroup mpsl Multiprotocol Service Layer interface
+ *
+ * The main APIs needed to configure, enable, and use the MPSL.
+ * @{
+ */
 
 #ifndef MPSL_H__
 #define MPSL_H__
@@ -130,7 +131,4 @@ void mpsl_low_priority_process(void);
 
 #endif // MPSL_H__
 
-/**
-  @}
-  @}
- */
+/**@} */
