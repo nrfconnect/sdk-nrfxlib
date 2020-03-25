@@ -10,10 +10,10 @@
 /README.rst                               @ru-fu @carlescufi
 
 # All cmake related files
-/CMakeLists.txt                           @SebastianBoe
+/CMakeLists.txt                           @tejlmand
 
 # All Kconfig related files
-Kconfig*                                  @SebastianBoe
+Kconfig*                                  @tejlmand
 
 # All documentation related files
 *.rst                                     @b-gent
