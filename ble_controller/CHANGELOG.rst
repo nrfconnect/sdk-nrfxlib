@@ -29,6 +29,7 @@ Changes
 * In the LE Extended Advertising Report, the Direct Address Type values 0x02, 0x03, and 0xFE will only be used when the Scanning Filter Policy is equal to 0x02 or 0x03 and TargetA is a resolvable private address.
   If the address is resolved, then the Direct Address Type will contain the same value as the Own Address Type parameter of the command LE Set Extended Scan Parameters.
   This follows the Bluetooth Core Specification v5.2.
+* On nRF53, the fix for Errata 16 is now applied.
 
 nRF Connect SDK v1.2.0
 **********************
