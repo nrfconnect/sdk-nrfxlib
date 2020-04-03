@@ -15,6 +15,12 @@ Added
 * Added API to set a TX Power envelope.
   Protocols using MPSL will limit their TX power to a value equal to, or lower than, the provided value.
 * Added support for using a low-swing and full-swing LF clock.
+* The support for integrating an 802.15.4 driver is now improved.
+
+Changes
+=======
+* Removed ``MPSL_RADIO_NOTIFICATION_DISTANCE_425US`` and replaced it by ``MPSL_RADIO_NOTIFICATION_DISTANCE_420US``.
+* On nRF53, the fix for Errata 16 is now applied. 
 
 Bugfixes
 ========

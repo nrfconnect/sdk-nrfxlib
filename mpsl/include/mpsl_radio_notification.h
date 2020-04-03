@@ -38,7 +38,7 @@ enum MPSL_RADIO_NOTIFICATION_DISTANCES
 {
   MPSL_RADIO_NOTIFICATION_DISTANCE_NONE = 0, /**< The event does not have a notification. */
   MPSL_RADIO_NOTIFICATION_DISTANCE_200US,    /**< The distance from the active notification to start of radio activity. */
-  MPSL_RADIO_NOTIFICATION_DISTANCE_425US,    /**< The distance from the active notification to start of radio activity. */
+  MPSL_RADIO_NOTIFICATION_DISTANCE_420US,    /**< The distance from the active notification to start of radio activity. */
   MPSL_RADIO_NOTIFICATION_DISTANCE_800US,    /**< The distance from the active notification to start of radio activity. */
   MPSL_RADIO_NOTIFICATION_DISTANCE_1740US,   /**< The distance from the active notification to start of radio activity. */
   MPSL_RADIO_NOTIFICATION_DISTANCE_2680US,   /**< The distance from the active notification to start of radio activity. */
