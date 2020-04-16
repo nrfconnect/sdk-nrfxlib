@@ -19,3 +19,4 @@ Extensions are available for:
 
    pdn_extension
    at_commands
+   gnss_extension

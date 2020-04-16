@@ -14,7 +14,11 @@
 
 .. _`article on reducing mbed TLS memory and storage footprint`: https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint
 
+.. _`Global navigation satellite system (GNSS)`: https://en.wikipedia.org/wiki/Satellite_navigation
 
+.. _`NMEA`: https://www.gpsinformation.org/dale/nmea.htm
+
+.. _`A-GPS`: https://en.wikipedia.org/wiki/Assisted_GPS
 
 .. ### Links to nrf (not a good way to link)
 

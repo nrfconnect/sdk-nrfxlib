@@ -114,6 +114,8 @@ GNSS socket data frames
    :project: nrfxlib
    :members:
 
+.. _gnss_socket_agps_df:
+
 GNSS socket AGPS data frames
 ============================
 
