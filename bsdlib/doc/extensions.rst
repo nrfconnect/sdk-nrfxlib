@@ -3,7 +3,7 @@
 BSD socket extensions
 #####################
 
-In addition to the `standard socket API <https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html>`_, the BSD library supports several extensions.
+In addition to the standard `Socket API`_, the BSD library supports several extensions.
 
 Extensions are available for:
 

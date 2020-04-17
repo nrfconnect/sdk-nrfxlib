@@ -10,7 +10,7 @@ You can then write AT command strings to that socket using :cpp:func:`nrf_send` 
 The responses are available when you read from the socket using :cpp:func:`nrf_read` and :cpp:func:`nrf_recv`.
 Received AT messages are not truncated; to read the full response, provide a sufficiently large buffer or fetch the full response in several read operations.
 
-See the `AT Commands Reference Guide <https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/intro.html>`_ for detailed information on the available AT commands.
+See the `AT Commands Reference Guide`_ for detailed information on the available AT commands.
 
 The following BSD socket functions are available for the :c:type:`NRF_PROTO_AT` protocol family:
 

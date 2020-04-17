@@ -3,8 +3,8 @@
 API documentation
 #################
 
-BLE Controller
-**************
+Bluetooth LE Controller
+***********************
 
 .. doxygengroup:: ble_controller
    :project: nrfxlib
@@ -18,16 +18,16 @@ Memory requirement defines
    :members:
 
 
-BLE Controller HCI
-******************
+Bluetooth LE Controller HCI
+***************************
 
 .. doxygengroup:: ble_controller_hci
    :project: nrfxlib
    :members:
 
 
-BLE Controller HCI VS
-*********************
+Bluetooth LE Controller HCI VS
+******************************
 
 .. doxygengroup:: ble_controller_hci_vs
    :project: nrfxlib
@@ -61,8 +61,8 @@ HCI VS API
    :project: nrfxlib
    :members:
 
-BLE Controller SoC
-************************
+Bluetooth LE Controller SoC
+***************************
 
 .. doxygengroup:: ble_controller_soc
    :project: nrfxlib
