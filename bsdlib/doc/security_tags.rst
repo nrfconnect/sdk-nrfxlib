@@ -7,10 +7,10 @@ The modem on an nRF9160 device is equipped with a full IPv4/IPv6 stack with DTLS
 To use the cryptographic functions in the modem, the application must provision the security credentials to the modem.
 
 To be able to provision credentials, the modem must be in offline mode.
-The credentials are provisioned through AT commands (see `Credential storage management %CMNG <https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/mob_termination_ctrl_status/cmng.html>`_).
-If you are using the nRF Connect SDK to build your application, you can use the `Modem key management <../../../nrf/include/modem_key_mgmt.html>`_ library to manage credentials.
-If you prefer a graphical tool, use `LTE Link Monitor <https://infocenter.nordicsemi.com/topic/ug_link_monitor/UG/link_monitor/lm_certificate_manager.html>`_ instead.
-To manage credentials with LTE Link Monitor, your device must be running an nRF Connect SDK application.
+The credentials are provisioned through AT commands (see `Credential storage management %CMNG`_).
+If you are using the |NCS| to build your application, you can use the `Modem key management`_ library to manage credentials.
+If you prefer a graphical tool, use `LTE Link Monitor`_ instead.
+To manage credentials with LTE Link Monitor, your device must be running an |NCS| application.
 
 The following figure shows how security tags are provisioned using AT commands:
 

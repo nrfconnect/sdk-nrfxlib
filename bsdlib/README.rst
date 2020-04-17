@@ -3,7 +3,7 @@
 BSD library
 ###########
 
-The Berkeley Software Distribution (BSD) library is Nordic Semiconductor's implementation of the BSD `Socket API <https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html>`_ , which is a set of standard function calls that can be used in an application.
+The Berkeley Software Distribution (BSD) library is Nordic Semiconductor's implementation of the BSD `Socket API`_, which is a set of standard function calls that can be used in an application.
 This library aims to be compatible with the BSD socket standard to simplify writing and porting of existing applications.
 
 The library has the following set of sockets:
@@ -21,7 +21,7 @@ The library abstracts away the details on memory management and synchronization,
 
    BSD library overview diagram
 
-To get started with socket programming, you should check out some introductions and tutorials, such as `Beej's Guide to Network Programming <https://beej.us/guide/bgnet/>`_.
+To get started with socket programming, you should check out some introductions and tutorials, such as `Beej's Guide to Network Programming`_.
 
 The BSD library has been designed in such way that you can port it to any RTOS.
 Therefore, procedures that would normally require some kind of OS interaction, like going into sleep mode and IRQ reprioritization, have been moved out of the library to a :file:`.c` file in which OS-specific integration can be implemented.

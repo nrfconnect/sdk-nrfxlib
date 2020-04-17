@@ -84,7 +84,7 @@ To enable the Arm CryptoCell CC310 backend, set the :option:`CONFIG_CC310_BACKEN
 Standard mbed TLS backend
 -------------------------
 
-The standard `mbed TLS backend <https://tls.mbed.org/>`_ is a software-only library provided by Arm.
+The standard `mbed TLS backend`_ is a software-only library provided by Arm.
 
 The standard mbed TLS backend can be used on nRF devices that do not feature the CC310 hardware.
 Alternatively, it can be used on CC310 enabled devices to add support for features not available in the `Arm CryptoCell CC310 backend`_, for example AES-256 or ECC Brainpool curves.
@@ -113,7 +113,7 @@ In this case, the mbed TLS glue layer enables a dynamic check to verify whether 
 If it is not supported, the glue layer calls into the software implementation as a fallback.
 
 The mbed TLS glue layer is written by Nordic Semiconductor ASA and is a part of the nrf_security module.
-The mbed TLS glue layer is dependent on Kconfig variables in the nRF Connect SDK build system.
+The mbed TLS glue layer is dependent on Kconfig variables in the |NCS| build system.
 
 mbed TLS glue layer - support and priority
 ------------------------------------------
@@ -124,7 +124,7 @@ This function is called from the API which provides configuration changes that d
 
 .. code-block:: c
     :caption: Example: CC310 backend AES CCM support and priority check
-	
+
     static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits) {
             return (keybits == 128) ? 2 : 0;
     }
@@ -163,7 +163,7 @@ The backend implementation is reached using a table of function pointers corresp
 
 .. code-block:: c
     :caption: Example: CC310 backend ECDH function table
-	
+
     const mbedtls_ecdh_funcs mbedtls_ecdh_cc310_backend_funcs = {
             .check = mbedtls_ecdh_check,
             .gen_public = mbedtls_ecdh_gen_public,
@@ -660,7 +660,7 @@ For example, the options available in the advanced configuration section can hel
 Actual size reductions depend on the option being adjusted.
 They also depend on whether `standard mbed TLS backend`_ is the only backend enabled, or whether the `mbed TLS glue layer`_ is used as well.
 
-Before modifying the default settings, see `this article <https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint>`_.
+Before modifying the default settings, see this `article on reducing mbed TLS memory and storage footprint`_.
 
 .. note::
    The settings available in the advanced configuration section are not validated.

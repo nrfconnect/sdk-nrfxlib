@@ -1,17 +1,17 @@
 .. _ble_controller:
 
 nRF Bluetooth LE Controller
-===========================
+###########################
 
-| The nRF Bluetooth LE Controller is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series that supports Bluetooth 5.
-| In addition to providing a BLE HCI interface, it also provides:
+The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series that supports Bluetooth 5.
+In addition to providing a Bluetooth HCI interface, it also provides:
 
--  Multiprotocol support through APIs for requesting RADIO timeslots,
--  APIs for accessing flash memory concurrently with radio activity,
--  APIs for controlling the high frequency clock.
+* Multiprotocol support through APIs for requesting RADIO timeslots
+* APIs for accessing flash memory concurrently with radio activity
+* APIs for controlling the high frequency clock
 
-| The nRF Bluetooth LE Controller is distributed in different variants containing different features.
-| All variants are available as soft-float, softfp-float, and hard-float builds.
+The |controller| is distributed in different variants containing different features.
+All variants are available as soft-float, softfp-float, and hard-float builds.
 
 SoC support:
 
@@ -67,9 +67,9 @@ Proprietary feature support:
 +--------------------------+--------+--------+--------+
 
 .. important::
-   -  The libraries are for evaluation purposes only.
-   -  The libraries are not fully functional and not yet fully tested.
-   -  The libraries are not optimized for performance.
+   * The libraries are for evaluation purposes only.
+   * The libraries are not fully functional and not yet fully tested.
+   * The libraries are not optimized for performance.
 
 
 .. toctree::
