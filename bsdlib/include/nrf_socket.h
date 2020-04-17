@@ -275,9 +275,11 @@ typedef uint32_t nrf_fd_set;
 #define NRF_SO_GNSS_NMEA_MASK           4    /**< Identifies the option used to select the data format of the received data. */
 #define NRF_SO_GNSS_ELEVATION_MASK      5    /**< Indicates at which elevation the GPS should stop tracking a satellite. */
 #define NRF_SO_GNSS_USE_CASE            6    /**< Indicates the targeted start performance: 0 = single cold start performance targeted, 1 = multiple hot start performance targeted. */
-#define NRF_SO_GNSS_START               7    /**< Identifies the option to start the GPS (with no payload). */
-#define NRF_SO_GNSS_STOP                8    /**< Identifies the option to stop the GPS (with no payload). */
+#define NRF_SO_GNSS_START               7    /**< Identifies the option to start the GPS. @ref nrf_gnss_delete_mask_t given as payload. */
+#define NRF_SO_GNSS_STOP                8    /**< Identifies the option to stop the GPS. @ref nrf_gnss_delete_mask_t given as payload. */
 #define NRF_SO_GNSS_POWER_SAVE_MODE     9    /**< Identifies the option to set power save mode. */
+#define NRF_SO_GNSS_ENABLE_PRIORITY     10   /**< Identifies the option to enable priority time window (with no payload). */
+#define NRF_SO_GNSS_DISABLE_PRIORITY    11   /**< Identifies the option to disable priority time window (with no payload). */
 /** @} */
 
 /**@defgroup nrf_socket_gnss_nmea_str_mask NMEA enable output strings bitmask values
@@ -341,6 +343,7 @@ typedef uint32_t nrf_fd_set;
  */
 #define NRF_SO_ERROR                    4
 #define NRF_SO_RCVTIMEO                 20
+#define NRF_SO_SNDTIMEO                 21
 #define NRF_SO_BINDTODEVICE             25
 /**@} */
 
@@ -364,6 +367,7 @@ typedef uint32_t nrf_fd_set;
 #define NRF_MSG_OOB             0x04    /**< Sends out-of-band data on sockets that support this. */
 #define NRF_MSG_PEEK            0x08    /**< Return data from the beginning of receive queue without removing data from the queue. */
 #define NRF_MSG_WAITALL         0x10    /**< Request a blocking operation until the request is satisfied. */
+#define NRF_MSG_TRUNC           0x20    /**< Control the data truncation. */
 /**@} */
 
 /**@defgroup nrf_fcnt_commands Descriptor manipulate API
@@ -760,7 +764,7 @@ typedef struct
     uint8_t wn_t;       /**< UTC reference GPS week number modulo 256. */
     int8_t  delta_tls;  /**< Current or past leap second count (sec). */
     uint8_t wn_lsf;     /**< Leap second reference GPS week number modulo 256. */
-    int8_t  dn;         /**< Leap second reference GPS day-of-week (day). Range 0...6. */
+    int8_t  dn;         /**< Leap second reference GPS day-of-week (day). Range 1...7. */
     int8_t  delta_tlsf; /**< Current or future leap second count (sec) (total size of the type-specific assistance data). */
 } nrf_gnss_agps_data_utc_t;
 
@@ -855,7 +859,7 @@ typedef struct
 {
     int32_t latitude;          /**< Geodetic latitude in WGS-84. Range -8388607...8388607.
                                 *   The relation between the coded number N and the latitude
-                                *   range X (in degrees) is as follows: N <= (2^24/360) * X < N + 1.
+                                *   range X (in degrees) is as follows: N <= (2^23/90) * X < N + 1.
                                 *   For N = 2^23 - 1, the range is extended to include N+1.
                                 *   Range of X (in degrees) -90...90.
                                 */
@@ -874,19 +878,19 @@ typedef struct
                                 */
 
     uint8_t unc_semimajor;     /**< Uncertainty, semi-major. Range 0...127. The uncertainty (in meters) is
-                                *   mapped from the coded number K with following formula: r = C * (K - 1),
+                                *   mapped from the coded number K with following formula: r = C * ((1 + x)^K - 1),
                                 *   where C = 10 and x = 0,1. Range of r (in kilometers) 0...1800.
                                 */
 
     uint8_t unc_semiminor;     /**< Uncertainty, semi-minor. Range 0...127. The uncertainty (in meters) is
-                                *   mapped from the coded number K with following formula: r = C * (K - 1),
+                                *   mapped from the coded number K with following formula: r = C * ((1 + x)^K - 1),
                                 *   where C = 10 and x = 0,1. Range of r (in kilometers) 0...1800)
                                 */
 
     uint8_t orientation_major; /**< Orientation angle between the major axis and north. Range in degrees 0...179. */
 
     uint8_t unc_altitude;      /**< Uncertainty, altitude. Range 0...127. The uncertainty in altitude h (in meters)
-                                *   is mapped from the coded number K with following formula: h = C * (K - 1).
+                                *   is mapped from the coded number K with following formula: h = C * ((1 + x)^K - 1).
                                 *   where C = 45 and x = 0,025. Range of h (in meters) 0...990,5.
                                 */
 
@@ -929,13 +933,6 @@ typedef uint16_t nrf_gnss_fix_retry_t;
  */
 typedef uint8_t  nrf_gnss_system_t;
 
-/**@brief Defines which GNSS output format to use.
- * @details 0 denotes RAW GPS data defined in nrf_gnss_raw_data_frame_t.
- *          1 denotes NPEA formated data frames. Any other value returns
- *          an error.
- */
-typedef uint8_t  nrf_gnss_data_format_t;
-
 /**@brief Defines at which elevation the GPS should track a satellite.
  * @details This option is used to make the GPS stop tracking GPSes on a
  *          certain elevation, because the information sent from the GPS gets more
@@ -943,6 +940,12 @@ typedef uint8_t  nrf_gnss_data_format_t;
  *          are between 0 and 30 degrees.
  */
 typedef uint8_t  nrf_gnss_elevation_mask_t;
+
+/**@brief Defines the targeted start performance.
+ * @details 0 denotes single cold start performance.
+ *          1 denotes multiple hot start performance.
+ */
+typedef uint8_t nrf_gnss_use_case_t;
 
 /**@brief Defines if NMEA frames should be added.
  */

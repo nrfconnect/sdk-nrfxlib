@@ -5,6 +5,23 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.7.0
+************
+
+* Major rewrite of the lower transport layer to fix an issue where packages were lost in a high bandwidth application.
+* Added support for GPS priority setting to give the GPS module priority over LTE to generate a fix.
+* Added parameter checking and only return -1 on error for the PDN set socket option function.
+* Added support for send timeout on TCP, UDP (including secure sockets), and AT sockets.
+* Added support for MSG_TRUNC on AT, GNSS, TCP, and UDP sockets.
+* Allocating more sockets than available will now return ENOBUFS instead of ENOMEM.
+* Delete mask can now be applied in stopped mode, without the need to transition to started mode first.
+* ``ai_canonname`` in the ``addrinfo`` structure is now properly allocated and null-terminated.
+* Fixed a bug where :cpp:func:`bsdlib_shutdown()` did not work correctly.
+* PDN is now disconnected properly if :cpp:func:`nrf_connect()` fails.
+* Fixed a bug in the GPS socket driver where it would try to free the same memory twice.
+* Fixed a bug where TCP/IP session would hang when the transfer is completed.
+* Fixed various GNSS documentation issues.
+
 bsdlib 0.6.2
 ************
 

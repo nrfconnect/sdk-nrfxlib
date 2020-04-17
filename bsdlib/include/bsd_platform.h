@@ -71,8 +71,8 @@ extern "C" {
 /**@brief Maximum number of client that can be registered with RPC. */
 #define RPC_MAX_CLIENTS                        10
 
-/**@brief Maximum transport instances supported for RPC. */
-#define RPC_MAX_TRANSPORT_INSTANCES            1
+/**@brief Enable IPC based transport */
+#define RPC_TRANSPORT_IPC
 
 /**@} */
 
