@@ -1,0 +1,21 @@
+.. _`Socket API`: https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
+
+.. _`Beej's Guide to Network Programming`: https://beej.us/guide/bgnet/
+
+.. _`AT Commands Reference Guide`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/intro.html
+
+.. _`Credential storage management %CMNG`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/mob_termination_ctrl_status/cmng.html
+
+.. _`LTE Link Monitor`: https://infocenter.nordicsemi.com/topic/ug_link_monitor/UG/link_monitor/lm_certificate_manager.html
+
+.. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#98C9E2578566420786ABD40B695FDB9B
+
+.. _`mbed TLS backend`: https://tls.mbed.org/
+
+.. _`article on reducing mbed TLS memory and storage footprint`: https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint
+
+
+
+.. ### Links to nrf (not a good way to link)
+
+.. _`Modem key management`: ../../../nrf/include/modem/modem_key_mgmt.html
