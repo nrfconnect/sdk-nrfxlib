@@ -17,6 +17,7 @@ Kconfig*                                  @tejlmand
 
 # All documentation related files
 *.rst                                     @b-gent
+doc/*                                     @b-gent
 
 # All subfolders
 /.github/                                 @thst-nordic
