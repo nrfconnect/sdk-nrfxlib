@@ -8,7 +8,7 @@
 #define NRF_ERRNO_H__
 
 /**
- * @file nrf_errno.h
+ * @file
  * @defgroup nrf_errno Integer values for errno
  * @ingroup ble_controller
  *
