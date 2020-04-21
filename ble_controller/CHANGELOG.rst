@@ -25,6 +25,7 @@ Changes
 * The VersNr field in the LL_VERSION_IND packet now contains the value 0x0B to indicate Bluetooth Core Specification v5.2 compliance.
 * The previously implemented Vendor Specific HCI command opcodes are now offset with 0x100.
 * The previously implemented Vendor Specific HCI event codes are now offset with 0x80.
+* When the controller receives an unknown command, it will raise "Command Status event" instead of "Command Complete event".
 * When in slave latency, the controller now picks up data from the host for transmission earlier than it used to.
 * In the LE Extended Advertising Report, the Direct Address Type values 0x02, 0x03, and 0xFE will only be used when the Scanning Filter Policy is equal to 0x02 or 0x03 and TargetA is a resolvable private address.
   If the address is resolved, then the Direct Address Type will contain the same value as the Own Address Type parameter of the command LE Set Extended Scan Parameters.

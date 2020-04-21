@@ -74,7 +74,7 @@ extern "C" {
  */
 
 /** @brief Maximum number of bytes required per master link for the default buffer configuration. */
-#define BLE_CONTROLLER_MEM_DEFAULT_MASTER_LINK_SIZE 1064
+#define BLE_CONTROLLER_MEM_DEFAULT_MASTER_LINK_SIZE 1068
 
 /** @brief Maximum number of bytes required per slave link for the default buffer configuration. */
 #define BLE_CONTROLLER_MEM_DEFAULT_SLAVE_LINK_SIZE 1624
