@@ -21,6 +21,7 @@ Changes
 =======
 * Removed ``MPSL_RADIO_NOTIFICATION_DISTANCE_425US`` and replaced it by ``MPSL_RADIO_NOTIFICATION_DISTANCE_420US``.
 * On nRF53, the fix for Errata 16 is now applied. 
+* The scheduling overhead of a timeslot event is reduced. 
 
 Bugfixes
 ========
