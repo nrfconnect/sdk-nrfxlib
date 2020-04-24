@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 Nordic Semiconductor
+# Copyright (c) 2019 - 2020 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
@@ -15,3 +15,4 @@ add_subdirectory_ifdef(CONFIG_MPSL                    mpsl)
 add_subdirectory_ifdef(CONFIG_BSD_LIBRARY             bsdlib)
 add_subdirectory_ifdef(CONFIG_NRFXLIB_CRYPTO          crypto)
 add_subdirectory_ifdef(CONFIG_NORDIC_SECURITY_BACKEND nrf_security)
+add_subdirectory_ifdef(CONFIG_ZIGBEE                  zboss)
