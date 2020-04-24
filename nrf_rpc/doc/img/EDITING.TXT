@@ -1,0 +1,8 @@
+
+How to edit the images
+======================
+
+The SVG images contained in this directory were created by the diagrams.net.
+Use it to maintain editability of the images.
+
+Go to https://www.diagrams.net/ to download the application or edit on-line.

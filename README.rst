@@ -24,3 +24,4 @@ Semiconductor. Refer to their respective documentation for more information.
    openthread/README
    softdevice_controller/README
    zboss/README
+   nrf_rpc/README

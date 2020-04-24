@@ -33,3 +33,9 @@
 .. _`NMEA`: https://www.gpsinformation.org/dale/nmea.htm
 
 .. _`A-GPS`: https://en.wikipedia.org/wiki/Assisted_GPS
+
+.. _`TinyCBOR`: https://github.com/zephyrproject-rtos/tinycbor
+
+.. _`OpenAMP`: https://github.com/OpenAMP/open-amp/
+
+.. _`Zephyr`: https://www.zephyrproject.org
