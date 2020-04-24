@@ -12,6 +12,7 @@ rsource "mpsl/Kconfig"
 rsource "crypto/Kconfig"
 rsource "nrf_security/Kconfig"
 rsource "softdevice_controller/Kconfig"
+rsource "nrf_rpc/Kconfig"
 rsource "zboss/Kconfig"
 rsource "openthread/Kconfig"
 

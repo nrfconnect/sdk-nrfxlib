@@ -30,3 +30,4 @@ doc/*                                     @b-gent
 /openthread/                              @MarekPorwisz @lmaciejonczyk
 /zboss/                                   @tomchy
 /zephyr/                                  @carlescufi
+/nrf_rpc/                                 @doki-nordic @KAGA164

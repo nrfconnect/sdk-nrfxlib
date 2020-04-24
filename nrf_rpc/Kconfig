@@ -1,0 +1,66 @@
+#
+# Copyright (c) 2020 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
+
+menuconfig NRF_RPC
+	bool "nRF RPC (Remote Procedure Call) library"
+	help
+	  Enable nRF RPC (Remote Procedure Call) library
+
+if NRF_RPC
+
+config NRF_RPC_CBOR
+	bool "Add TinyCBOR layer"
+	default y
+	help
+	  Adds API that helps use of TinyCBOR library for data serialization.
+
+choice
+	prompt "nRF RPC transport layer"
+	default NRF_RPC_TR_RPMSG
+
+config NRF_RPC_TR_RPMSG
+	bool "nRF RPC over RPMsg"
+	help
+	  If enabled selects RPMsg as a transport layer for nRF PRC.
+
+config NRF_RPC_TR_CUSTOM
+	bool "User provided transport layer"
+	help
+	  If enabled selects custom transport layer. User can provide own
+	  implementation of nRF PRC transport layer. In this case
+	  NRF_RPC_TR_CUSTOM_INCLUDE must be provided.
+
+endchoice
+
+config NRF_RPC_TR_CUSTOM_INCLUDE
+	string "User provided include file for transport layer"
+	depends on NRF_RPC_TR_CUSTOM
+	help
+	  If NRF_RPC_TR_CUSTOM is enabled this option specifies the include
+	  file that contains custom transport layer API. Provided API must
+	  be compatible with the template header file "rp_trans_tmpl.h".
+
+config NRF_RPC_CMD_CTX_POOL_SIZE
+	int "Number of available context structures for commands"
+	default 8
+	range 2 32
+	help
+	  nRF RPC need to store some data to handle commands. Pool of contexts
+	  is created to avoid dynamic memory allocation. Setting this value too
+	  low will cause unnecessary waits for available context. Minimum value
+	  that is ensured to work without waiting is the sum of the number of
+	  threads in both local and remote pool.
+
+config NRF_RPC_THREAD_POOL_SIZE
+	int "Number of threads in local thread pool"
+	default 3
+	range 1 32
+	help
+	  Thread pool is used to execute commands and events that arrived from
+	  the remote side. If there is no available threads then remote side
+	  will wait.
+
+endif # NRF_RPC
