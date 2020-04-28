@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -29,13 +29,12 @@
 #ifndef OCRYPTO_CHACHA20_POLY1305_H
 #define OCRYPTO_CHACHA20_POLY1305_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Length of the encryption key.
@@ -64,7 +63,6 @@ extern "C" {
  * Additionally, the ciphertext @p c is authenticated with a tag that is
  * generated with Poly1305 using a unique subkey derived from @p k and @p n, and
  * then put into @p tag.
-
  *
  * @param[out] tag   Generated authentication tag.
  * @param[out] c     Generated ciphertext. Same length as input message.
@@ -187,6 +185,6 @@ int ocrypto_chacha20_poly1305_decrypt_aad(
 }
 #endif
 
-#endif
+#endif /* #ifndef OCRYPTO_CHACHA20_POLY1305_H */
 
 /** @} */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -9,7 +9,7 @@
  * @ingroup nrf_oberon_hkdf
  * @{
  * @brief Type declaration and APIs for the HKDF-SHA512 algorithm.
- * 
+ *
  * HKDF-SHA512 is a key derivation function based on HMAC-SHA512.
  *
  * @see [RFC 5869 - HMAC-based Extract-and-Expand Key Derivation Function (HKDF)](http://tools.ietf.org/html/rfc5869)
@@ -18,13 +18,12 @@
 #ifndef OCRYPTO_HKDF_SHA512_H
 #define OCRYPTO_HKDF_SHA512_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Maximum length of a derived key.
@@ -63,6 +62,6 @@ void ocrypto_hkdf_sha512(
 }
 #endif
 
-#endif
+#endif /* #ifndef OCRYPTO_HKDF_SHA512_H */
 
 /** @} */

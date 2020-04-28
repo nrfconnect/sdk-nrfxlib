@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -21,13 +21,12 @@
 #ifndef OCRYPTO_SHA1_H
 #define OCRYPTO_SHA1_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Length of SHA-1 hash.
@@ -100,13 +99,11 @@ void ocrypto_sha1_final(
     uint8_t r[ocrypto_sha1_BYTES]);
 /**@}*/
 
+
 /**
  * SHA-1 hash.
  *
  * The SHA-1 hash of a given input message @p in is computed and put into @p r.
- *
- * **Example**
- * @include ocrypto_sha1.c
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.
@@ -120,6 +117,6 @@ void ocrypto_sha1(
 }
 #endif
 
-#endif
+#endif /* #ifndef OCRYPTO_SHA1_H */
 
 /** @} */

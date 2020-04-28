@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -9,21 +9,21 @@
  * @ingroup nrf_oberon_rsa
  * @{
  * @brief Type declarations for RSA APIs.
- * 
+ *
  * RSA is a number theoretic public-key encryption and signature algorithm.
  *
- * These functions support the setup of 1024 and 4069 RSA secret and public keys.
+ * These functions support the setup of 1024 and 2048 RSA secret and public keys.
  */
 
 #ifndef OCRYPTO_RSA_KEY_H
 #define OCRYPTO_RSA_KEY_H
 
+#include <stddef.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
-
 
 /**
  * The Public RSA Exponent.
@@ -39,34 +39,34 @@ extern "C" {
 /**
  * 1024-bit RSA public key.
  */
-/**@cond */
 typedef struct {
+    /**@cond */
     uint32_t n[32];
     // e = 65537
+    /**@endcond */
 } ocrypto_rsa1024_pub_key;
-/**@endcond */
 
 /**
  * 1024 bit RSA secret key.
  */
-/**@cond */
 typedef struct {
+    /**@cond */
     uint32_t n[32];
     uint32_t d[32];  // x^(e*d) mod n == x
+    /**@endcond */
 } ocrypto_rsa1024_key;
-/**@endcond */
 
 /**
  * 1024-bit RSA secret key with CRT coefficients.
  */
-/**@cond */
 typedef struct {
+    /**@cond */
     uint32_t n[32];
     uint32_t p[16], q[16];   // primes, p*q = n
     uint32_t dp[16], dq[16]; // d mod (p-1), d mod (q-1)
     uint32_t qinv[16];       // 1/q mod p
+    /**@endcond */
 } ocrypto_rsa1024_crt_key;
-/**@endcond */
 /**@}*/
 
 
@@ -78,34 +78,35 @@ typedef struct {
 /**
  * 2048-bit RSA public key.
  */
-/**@cond */
 typedef struct {
+    /**@cond */
     uint32_t n[64];
     // e = 65537
+    /**@endcond */
 } ocrypto_rsa2048_pub_key;
-/**@endcond */
 
 /**
  * 2048-bit RSA secret key.
  */
-/**@cond */
 typedef struct {
+    /**@cond */
     uint32_t n[64];
     uint32_t d[64];  // x^(e*d) mod n == x
+    /**@endcond */
 } ocrypto_rsa2048_key;
-/**@endcond */
 
 /**
  * 2048-bit RSA secret key with CRT coefficients.
  */
-/**@cond */
 typedef struct {
+    /**@cond */
     uint32_t n[64];
     uint32_t p[32], q[32];   // primes, p*q = n
     uint32_t dp[32], dq[32]; // d mod (p-1), d mod (q-1)
     uint32_t qinv[32];       // 1/q mod p
+    /**@endcond */
 } ocrypto_rsa2048_crt_key;
-/**@endcond */
+/**@}*/
 
 /**@name 1024-bit RSA key setup
  *
@@ -119,7 +120,7 @@ typedef struct {
  * @param      n       The RSA modulus. Must be exactly 1024 bits.
  * @param      nlen    Length of @p n.
  *
- * @retval -1 If the input length is not correct.
+ * @retval -1 If the input length is invalid.
  * @retval 0  Otherwise.
  *
  * @remark The public exponent is fixed at 65537.
@@ -137,7 +138,7 @@ int ocrypto_rsa1024_init_pub_key(
  * @param      d       The secret exponent. Must be <= 1024 bits.
  * @param      dlen    Length of @p d.
  *
- * @retval -1 If the input length is not correct.
+ * @retval -1 If the input length is invalid.
  * @retval 0  Otherwise.
  */
 int ocrypto_rsa1024_init_key(
@@ -160,7 +161,7 @@ int ocrypto_rsa1024_init_key(
  * @param      qinv       The CRT coefficient. qinv = 1/q mod p.
  * @param      qilen      Length of @p qinv.
  *
- * @retval -1 If the input length is not correct.
+ * @retval -1 If the input length is invalid.
  * @retval 0  Otherwise.
  */
 int ocrypto_rsa1024_init_crt_key(
@@ -184,7 +185,7 @@ int ocrypto_rsa1024_init_crt_key(
  * @param      n       The RSA modulus. Must be exactly 2048 bits.
  * @param      nlen    Length of @p n.
  *
- * @retval -1 If the input length is not correct
+ * @retval -1 If the input length is invalid.
  * @retval 0  Otherwise.
  *
  * @remark The public exponent is fixed at 65537.
@@ -202,7 +203,7 @@ int ocrypto_rsa2048_init_pub_key(
  * @param      d       The secret exponent. Must be <= 2048 bits.
  * @param      dlen    Length of @p d.
  *
- * @retval -1 If the input length is not correct.
+ * @retval -1 If the input length is invalid.
  * @retval 0  Otherwise.
  */
 int ocrypto_rsa2048_init_key(ocrypto_rsa2048_key *k,
@@ -224,7 +225,7 @@ int ocrypto_rsa2048_init_key(ocrypto_rsa2048_key *k,
  * @param      qinv       The CRT coefficient. qinv = 1/q mod p.
  * @param      qilen      Length of @p qinv.
  *
- * @retval -1 If the input length is not correct.
+ * @retval -1 If the input length is invalid.
  * @retval 0  Otherwise.
  */
 int ocrypto_rsa2048_init_crt_key(
@@ -240,6 +241,6 @@ int ocrypto_rsa2048_init_crt_key(
 }
 #endif
 
-#endif
+#endif /* #ifndef OCRYPTO_RSA_KEY_H */
 
 /** @} */
