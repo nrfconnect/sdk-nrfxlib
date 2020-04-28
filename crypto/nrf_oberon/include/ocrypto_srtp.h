@@ -71,10 +71,10 @@ typedef struct {
 } ocrypto_srtp_context;
 
 /**
- * Set up SRTP contexts.
+ * Setup SRTP contexts.
  *
- * @param[out] srtpContext          SRTP context to be set up.
- * @param[out] srtcpContext         SRTCP context to be set up.
+ * @param[out] srtpContext          SRTP context to be setup.
+ * @param[out] srtcpContext         SRTCP context to be setup.
  * @param      key                  Master key.
  * @param      keySize              Size of the master key (16, 24, or 32 bytes)
  * @param      salt                 Master salt.
@@ -93,7 +93,7 @@ void ocrypto_srtp_setupContext(
 /**
  * Encrypt SRTP packet.
  *
- * The final packet consists of @p numHeaderBytes encrytped in place, followed
+ * The final packet consists of @p numHeaderBytes encrypted in place, followed
  * by @p numDataBytes copied from @p dataBytes during encryption.
  *
  * @param         srtpContext          SRTP context.
@@ -153,10 +153,10 @@ void ocrypto_srtp_authenticate(
  * @param      index                Index.
  *
  * @retval 1 If the tag is valid.
- * @retval 0 Otherwise. 
+ * @retval 0 Otherwise.
  */
 int ocrypto_srtp_verifyAuthentication(
-    ocrypto_srtp_context *context,
+    const ocrypto_srtp_context *context,
     const uint8_t *tag,
     const uint8_t *bytes,
     size_t numBytes,

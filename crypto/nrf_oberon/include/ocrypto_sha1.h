@@ -46,7 +46,7 @@ typedef struct {
 
 
 /**@name Incremental SHA-1 generator.
- *
+ * 
  * This group of functions can be used to incrementally compute the SHA-1
  * hash for a given message.
  */
@@ -100,13 +100,11 @@ void ocrypto_sha1_final(
     uint8_t r[ocrypto_sha1_BYTES]);
 /**@}*/
 
+
 /**
  * SHA-1 hash.
  *
  * The SHA-1 hash of a given input message @p in is computed and put into @p r.
- *
- * **Example**
- * @include ocrypto_sha1.c
  *
  * @param[out] r      Generated hash.
  * @param      in     Input data.

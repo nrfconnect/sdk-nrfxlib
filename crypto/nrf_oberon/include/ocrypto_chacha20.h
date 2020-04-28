@@ -10,7 +10,7 @@
  * @{
  * @brief Type declaration and APIs for the Chacha20 stream cipher algorithm.
  *
- * ChaCha20 is a stream cipher developed by Daniel J. Bernstein based on the 20-round cipher 
+ * ChaCha20 is a stream cipher developed by Daniel J. Bernstein based on the 20-round cipher
  * Salsa20/20.
  *
  * A 256-bit key is expanded into 2^64 randomly accessible streams, each

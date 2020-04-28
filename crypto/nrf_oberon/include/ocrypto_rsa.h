@@ -31,9 +31,8 @@ extern "C" {
 
 #include "ocrypto_rsa_key.h"
 
-
 /**@name 1024-bit RSA Functions.
- * 
+ *
  * This group of functions is used for 1024-bit RSA.
  */
 /**@{*/
@@ -226,14 +225,14 @@ int ocrypto_rsa1024_pkcs1_v15_sha256_crt_sign(
 /**
  * 1024-bit RSA PKCS1 V1.5 SHA-256 signature verify.
  *
- * The signature @p s is verified for a correct signature of message @p m.
+ * The signature @p s is verified for a valid signature of message @p m.
  *
  * @param s      The 128-byte signature.
  * @param m      The signed message.
  * @param mlen   Length of @p m.
  * @param pk     A valid 1024-bit RSA public key.
  *
- * @retval 0  If the signature is successfully verified.
+ * @retval 0  If the signature is valid.
  * @retval -1 If verification failed.
  *
  * @remark The key @p pk should be initialized with @c ocrypto_rsa1024_init_pub_key.
@@ -294,7 +293,7 @@ int ocrypto_rsa1024_pss_sha256_crt_sign(
 /**
  * 1024-bit RSA PSS SHA-256 signature verify.
  *
- * The signature @p s is verified for a correct signature of message @p m.
+ * The signature @p s is verified for a valid signature of message @p m.
  *
  * @param s      The 128-byte signature.
  * @param m      The signed message.
@@ -302,7 +301,7 @@ int ocrypto_rsa1024_pss_sha256_crt_sign(
  * @param slen   The length of the salt.
  * @param pk     A valid 1024-bit RSA public key.
  *
- * @retval 0   If the signature is successfully verified.
+ * @retval 0   If the signature is valid.
  * @retval -1  If verification failed.
  * @retval -2  If the salt is too long.
  *
@@ -317,7 +316,7 @@ int ocrypto_rsa1024_pss_sha256_verify(
 
 
 /**@name 2048-bit RSA Functions.
- * 
+ *
  * This group of functions is used for 2048-bit RSA.
  */
 /**@{*/
@@ -517,7 +516,7 @@ int ocrypto_rsa2048_pkcs1_v15_sha256_crt_sign(
  * @param mlen   Length of @p m.
  * @param pk     A valid 2048-bit RSA public key.
  *
- * @retval 0  If the signature is successfully verified.
+ * @retval 0  If the signature is valid.
  * @retval -1 If verification failed.
  *
  * @remark The key @p pk should be initialized with @c ocrypto_rsa2048_init_pub_key.
@@ -578,7 +577,7 @@ int ocrypto_rsa2048_pss_sha256_crt_sign(
 /**
  * 2048-bit RSA PSS SHA-256 signature verify.
  *
- * The signature @p s is verified for a correct signature of message @p m.
+ * The signature @p s is verified for a valid signature of message @p m.
  *
  * @param s      The 256-byte signature.
  * @param m      The signed message.
@@ -586,7 +585,7 @@ int ocrypto_rsa2048_pss_sha256_crt_sign(
  * @param slen   The length of the salt.
  * @param pk     A valid 2048-bit RSA public key.
  *
- * @retval 0   If the signature is successfully verified.
+ * @retval 0   If the signature is valid.
  * @retval -1  If verification failed.
  * @retval -2  If the salt is too long.
  *

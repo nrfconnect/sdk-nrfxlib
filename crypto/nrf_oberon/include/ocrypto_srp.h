@@ -191,7 +191,7 @@ void ocrypto_srp_scrambling_parameter(
  * @param      u      Scrambling parameter; generated with @c srp_scrambling_parameter.
  * @param      v      Password verifier.
  *
- * @retval 0 If @p pub_a is a legal public key.
+ * @retval 0 If @p pub_a is a valid public key.
  * @retval 1 Otherwise.
  */
 int ocrypto_srp_premaster_secret(

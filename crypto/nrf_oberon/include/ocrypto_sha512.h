@@ -9,7 +9,7 @@
  * @ingroup nrf_oberon
  * @{
  * @brief Type declarations and APIs for the SHA-512 algorithm.
- * 
+ *
  * SHA-512 is part of the SHA-2 family that is a set of cryptographic hash
  * functions designed by the NSA. It is the successor of the SHA-1 algorithm.
  *

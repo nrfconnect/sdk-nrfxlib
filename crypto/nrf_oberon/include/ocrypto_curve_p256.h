@@ -35,7 +35,7 @@ typedef struct {
  * @param[out]      r       Point with r.x loaded, r.y kept.
  * @param           p       x as as array of bytes.
  *
- * @retval 0  If @p r is a legal curve point.
+ * @retval 0  If @p r is a valid curve point.
  * @retval -1 Otherwise.
  */
 int ocrypto_curve_p256_from32bytes(ocrypto_cp_p256 *r, const uint8_t p[32]);
@@ -46,7 +46,7 @@ int ocrypto_curve_p256_from32bytes(ocrypto_cp_p256 *r, const uint8_t p[32]);
  * @param[out]      r       Loaded point.
  * @param           p       Point as array of bytes.
  *
- * @retval 0  If @p r is a legal curve point.
+ * @retval 0  If @p r is a valid curve point.
  * @retval -1 Otherwise.
  */
 int ocrypto_curve_p256_from64bytes(ocrypto_cp_p256 *r, const uint8_t p[64]);
