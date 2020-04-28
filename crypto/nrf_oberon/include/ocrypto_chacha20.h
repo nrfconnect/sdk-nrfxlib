@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -10,7 +10,7 @@
  * @{
  * @brief Type declaration and APIs for the Chacha20 stream cipher algorithm.
  *
- * ChaCha20 is a stream cipher developed by Daniel J. Bernstein based on the 20-round cipher 
+ * ChaCha20 is a stream cipher developed by Daniel J. Bernstein based on the 20-round cipher
  * Salsa20/20.
  *
  * A 256-bit key is expanded into 2^64 randomly accessible streams, each
@@ -27,13 +27,12 @@
 #ifndef OCRYPTO_CHACHA20_H
 #define OCRYPTO_CHACHA20_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Length of the encryption key.
@@ -48,12 +47,12 @@ extern "C" {
 
 /**
  * ChaCha20 cipher stream generator.
- * 
+ *
  * The encryption key @p k, the nonce @p n, and the initial block counter
  * @p count are used to generate a pseudo random cipher stream.
  *
  * Possible applications include key generation and random number generation.
- * 
+ *
  * @param[out] c     Generated cipher stream.
  * @param      c_len Length of @p c.
  * @param      n     Nonce.
@@ -90,7 +89,7 @@ void ocrypto_chacha20_stream(
  * @param      n_len Nonce length. 0 <= @p n_len <= @c ocrypto_chacha20_NONCE_BYTES_MAX.
  * @param      k     Encryption key.
  * @param      count Initial block counter.
- * 
+ *
  * @remark @p c and @p m can point to the same address.
  *
  * @remark When reusing an encryption key @p k for a different message @p m, a
@@ -107,6 +106,6 @@ void ocrypto_chacha20_stream_xor(
 }
 #endif
 
-#endif
+#endif /* #ifndef OCRYPTO_CHACHA20_H */
 
 /** @} */

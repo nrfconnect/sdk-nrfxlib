@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -21,24 +21,36 @@ extern "C" {
 #include <stdint.h>
 
 
-/** ECDH P-256 public key r = n * p.
+/**
+ * ECDH P-256 public key generation `r = n * p`.
  *
- * @param[out]  r   Resulting public key.
- * @param       s   Secret key.
+ * Given a secret key @p s the corresponding public key is computed and put
+ * into @p r.
  *
- * @remark @p r may be the same as @p s.
- * @retval 0 If @p s is a legal secret key.
+ * @param[out] r Generated public key.
+ * @param      s Secret key. Must be pre-filled with random data.
+ *
+ * @retval 0  If @p s is a valid secret key.
+ * @retval -1 Otherwise.
+ *
+ * @remark @p r may be same as @p s.
  */
 int ocrypto_ecdh_p256_public_key(uint8_t r[64], const uint8_t s[32]);
 
-/** ECDH P-256 common secret.
+/**
+ * ECDH P-256 common secret.
  *
- * @param[out]   r  Resulting common secret.
- * @param        s  Secret key.
- * @param        p  Public key.
+ * The common secret is computed from both the client's public key @p p
+ * and the server's secret key @p s and put into @p r.
  *
- * @remark @p r may be the same as @p s or @p p.
- * @retval 0 If @p s is a legal secret key and @p p is a legal public key.
+ * @param[out] r Generated common secret.
+ * @param      s Server private key.
+ * @param      p Client public key.
+ *
+ * @retval 0  If @p s is a valid secret key and @p p is a valid public key.
+ * @retval -1 Otherwise.
+ *
+ * @remark @p r may be same as @p s or @p p.
  */
 int ocrypto_ecdh_p256_common_secret(uint8_t r[32], const uint8_t s[32], const uint8_t p[64]);
 

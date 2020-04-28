@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -9,7 +9,7 @@
  * @ingroup nrf_oberon
  * @{
  * @brief Type declarations and APIs for the SHA-256 algorithm.
- * 
+ *
  * SHA-256 is part of the SHA-2 family that is a set of cryptographic hash
  * functions designed by the NSA. It is the successor of the SHA-1 algorithm.
  *
@@ -21,18 +21,17 @@
 #ifndef OCRYPTO_SHA256_H
 #define OCRYPTO_SHA256_H
 
+#include <stddef.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stddef.h>
-#include <stdint.h>
 
 /**
  * Length of SHA-256 hash.
  */
 #define ocrypto_sha256_BYTES (32)
-
 
 /**@cond */
 typedef struct {
@@ -45,7 +44,7 @@ typedef struct {
 
 
 /**@name Incremental SHA-256 generator
- * 
+ *
  * This group of functions can be used to incrementally compute the SHA-256
  * hash for a given message.
  */
@@ -116,6 +115,6 @@ void ocrypto_sha256(
 }
 #endif
 
-#endif
+#endif /* #ifndef OCRYPTO_SHA256_H */
 
 /** @} */

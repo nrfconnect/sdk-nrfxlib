@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -14,7 +14,7 @@
  * @ingroup nrf_oberon_hmac
  * @{
  * @brief Type declarations and APIs for the HMAC-SHA256 algorithm.
- * 
+ *
  * HMAC-SHA256 is an algorithm for message authentication using the
  * cryptographic hash function SHA256 and a reusable secret key. Users in
  * possession of the key can verify the integrity and authenticity of the
@@ -26,14 +26,13 @@
 #ifndef OCRYPTO_HMAC_SHA256_H
 #define OCRYPTO_HMAC_SHA256_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stddef.h>
 #include <stdint.h>
 #include "include/ocrypto_sha256.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Maximum key length.
@@ -44,7 +43,6 @@ extern "C" {
  * Length of the authenticator.
  */
 #define ocrypto_hmac_sha256_BYTES (32)
-
 
 /**@cond */
 typedef struct
@@ -137,7 +135,6 @@ void ocrypto_hmac_sha256(
 }
 #endif
 
-#endif
-
+#endif /* #ifndef OCRYPTO_HMAC_SHA256_H */
 
 /** @} */

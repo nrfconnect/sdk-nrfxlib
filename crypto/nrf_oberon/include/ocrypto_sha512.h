@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -9,7 +9,7 @@
  * @ingroup nrf_oberon
  * @{
  * @brief Type declarations and APIs for the SHA-512 algorithm.
- * 
+ *
  * SHA-512 is part of the SHA-2 family that is a set of cryptographic hash
  * functions designed by the NSA. It is the successor of the SHA-1 algorithm.
  *
@@ -21,12 +21,12 @@
 #ifndef OCRYPTO_SHA512_H
 #define OCRYPTO_SHA512_H
 
+#include <stddef.h>
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stddef.h>
-#include <stdint.h>
 
 /**
  * Length of SHA-512 hash.
@@ -45,7 +45,7 @@ typedef struct {
 
 
 /**@name Incremental SHA-512 generator
- * 
+ *
  * This group of functions can be used to incrementally compute the SHA-512
  * hash for a given message.
  */
@@ -116,6 +116,6 @@ void ocrypto_sha512(
 }
 #endif
 
-#endif
+#endif /* #ifndef OCRYPTO_SHA512_H */
 
 /** @} */

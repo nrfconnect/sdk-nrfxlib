@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Nordic Semiconductor ASA
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
@@ -25,12 +25,13 @@
 #ifndef OCRYPTO_POLY1305_H
 #define OCRYPTO_POLY1305_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <stddef.h>
 #include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * Key length.
@@ -54,7 +55,6 @@ typedef struct {
  *
  * This group of functions can be used to incrementally compute the Poly1305
  * authenticator for a given message and key.
- *
  */
 /**@{*/
 /**
@@ -123,9 +123,6 @@ void ocrypto_poly1305_final(
  * The Poly1305 authentication of a given input message @p in is computed and
  * put into @p r.
  *
- * **Example**
- * @include ocrypto_poly1305.c
- *
  * @param[out] r      Generated authentication tag.
  * @param      in     Input data.
  * @param      in_len Length of @p in.
@@ -140,6 +137,6 @@ void ocrypto_poly1305(
 }
 #endif
 
-#endif
+#endif /* #ifndef OCRYPTO_POLY1305_H */
 
 /**@}*/
