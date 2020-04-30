@@ -11,6 +11,7 @@ Master branch
 Added
 =====
 
+* Added LE Read Supported States command.
 * Added LE Set Advertising Set Random Address command.
 * Added LE Remove Advertising Set command.
 * Added LE Clear Advertising Sets command.
