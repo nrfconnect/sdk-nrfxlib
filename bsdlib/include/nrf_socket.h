@@ -269,8 +269,35 @@ typedef uint32_t nrf_fd_set;
  * @brief Sockets options to configure behaviour of the socket.
  * @{
  */
-#define NRF_SO_GNSS_FIX_INTERVAL        1    /**< Identifies the option used to set the GNSS fix interval. */
-#define NRF_SO_GNSS_FIX_RETRY           2    /**< Identifies the option used to set the GNSS fix retry interval. */
+
+/**
+ * @brief
+ * Identifies the option used to set the GNSS fix interval in seconds.
+ *
+ * @details
+ * Single-fix navigation mode is engaged by setting the fix interval to 0.
+ *
+ * Continuous navigation mode is engaged by setting fix interval to 1.
+ *
+ * Periodic navigation mode is engaged by setting the fix interval to value
+ * other than zero or one.
+ */
+#define NRF_SO_GNSS_FIX_INTERVAL        1
+
+/**
+ * @brief
+ * Identifies the option used to set the GNSS fix retry interval in seconds.
+ *
+ * @details
+ * Fix retry parameter controls the maximum time the GNSS receiver is allowed
+ * to run while trying to produce a valid PVT estimate. If the fix retry time
+ * is non-zero, the GNSS receiver is turned off after the fix retry time is up
+ * regardless of whether a valid PVT estimate was produced or not. If fix retry
+ * parameter is set to zero, the GNSS receiver is allowed to run indefinitely
+ * until a valid PVT estimate is produced.
+ */
+#define NRF_SO_GNSS_FIX_RETRY           2
+
 #define NRF_SO_GNSS_SYSTEM              3    /**< Identifies the option used to set and/or get the GNSS system used. See @ref nrf_gnss_system_t for details. */
 #define NRF_SO_GNSS_NMEA_MASK           4    /**< Identifies the option used to select the data format of the received data. */
 #define NRF_SO_GNSS_ELEVATION_MASK      5    /**< Indicates at which elevation the GPS should stop tracking a satellite. */
@@ -280,6 +307,7 @@ typedef uint32_t nrf_fd_set;
 #define NRF_SO_GNSS_POWER_SAVE_MODE     9    /**< Identifies the option to set power save mode. */
 #define NRF_SO_GNSS_ENABLE_PRIORITY     10   /**< Identifies the option to enable priority time window (with no payload). */
 #define NRF_SO_GNSS_DISABLE_PRIORITY    11   /**< Identifies the option to disable priority time window (with no payload). */
+
 /** @} */
 
 /**@defgroup nrf_socket_gnss_nmea_str_mask NMEA enable output strings bitmask values
@@ -295,7 +323,10 @@ typedef uint32_t nrf_fd_set;
 /** @} */
 
 /**@defgroup nrf_socket_gnss_psm_modes Power save mode enumerator
- * @brief Use these values to select which power save mode the GNSS module should use.
+ *
+ * @brief
+ * Use these values to select which power save mode the GNSS module should use.
+ *
  * @{
  */
 #define NRF_GNSS_PSM_DISABLED                 0 /** No power save mode is enabled. */
@@ -305,10 +336,24 @@ typedef uint32_t nrf_fd_set;
 
 /**@defgroup nrf_socket_gnss_pvt_flags Bitmask values for flags in the PVT notification.
  * @brief These bitmask values can be used to read the different bits in the flags element in the pvt struct.
+ *
  * @{
  */
 #define NRF_GNSS_PVT_FLAG_FIX_VALID_BIT          0x01 /**< Identifies a valid fix is acquired */
-#define NRF_GNSS_PVT_FLAG_LEAP_SECOND_VALID      0x02 /**< Identifies the validity of leap second. */
+
+/**
+ * @brief
+ * Identifies the validity of leap second.
+ *
+ * @details
+ * The bit 1 in the notification flags tells if receiver has decoded leap second
+ * from the navigation message. The leap second is needed for determining
+ * GPS-UTC time offset (in seconds). If it is not decoded (bit is zero), the
+ * value of 18 seconds is used. This is the effective value since January 1st
+ * 2017.
+ */
+#define NRF_GNSS_PVT_FLAG_LEAP_SECOND_VALID      0x02
+
 #define NRF_GNSS_PVT_FLAG_SLEEP_BETWEEN_PVT      0x04 /**< Identifies that at least one sleep period since last PVT notification */
 #define NRF_GNSS_PVT_FLAG_DEADLINE_MISSED        0x08 /**< Identifies that notification deadline missed */
 #define NRF_GNSS_PVT_FLAG_NOT_ENOUGH_WINDOW_TIME 0x10 /**< Identifies that operation blocked by insufficient time windows */
@@ -916,7 +961,8 @@ typedef struct
  */
 
 /**@brief Defines the interval between each fix in seconds.
- * @details The default interval is 1 second. 0 denotes a single fix.
+ * @defails Allowed values are 0, 1, 10..1800, value 0 denotes single fix.
+ *          Default interval is 1 second (continous mode), 0 denotes a single fix.
  */
 typedef uint16_t nrf_gnss_fix_interval_t;
 
@@ -956,6 +1002,23 @@ typedef uint16_t nrf_gnss_nmea_mask_t;
  *          - @c NRF_GNSS_PSM_DISABLED for no power mode policy.
  *          - @c NRF_GNSS_PSM_DUTY_CYCLING_PERFORMANCE for low power mode with better performance.
  *          - @c NRF_GNSS_PSM_DUTY_CYCLING_POWER for low power mode with lower power consumption.
+ *
+ * The available power modes determine whether duty-cycled tracking is allowed, and,
+ * if allowed what is the target performance.
+ *
+ * Performance duty-cycled power mode:
+ * Duty-cycled tracking is engaged and run when conditions allow it without
+ * significant performance degradation.
+ *
+ * Power duty-cycled power mode::
+ * Duty-cycled tracking is engaged and run whenever it is possible with acceptable
+ * performance degradation.
+ *
+ * The GNSS receiver keeps producing PVT estimates at the configured rate
+ * regardless of whether it is tracking continuously or in duty cycles. However,
+ * a failure to produce a valid PVT estimate during duty-cycled tracking may
+ * cause the GNSS receiver to resume continuous tracking.
+ *
  */
 typedef uint8_t nrf_gnss_power_save_mode_t;
 

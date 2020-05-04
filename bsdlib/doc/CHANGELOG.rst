@@ -5,6 +5,13 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.7.1
+************
+
+* Updated GNSS documentation.
+* Changing socket mode from non-blocking to blocking when there is a pending connection will now give an error.
+* Fixed an issue where FOTA would hang after reboot.
+
 bsdlib 0.7.0
 ************
 
