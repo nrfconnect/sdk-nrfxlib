@@ -25,7 +25,7 @@ pipeline
   parameters {
     booleanParam(name: 'RUN_TESTS', description: 'if false skip testing', defaultValue: true)
     booleanParam(name: 'RUN_BUILD', description: 'if false skip building', defaultValue: true)
-    booleanParam(name: 'RUN_DOWNSTREAM', description: 'if false skip downstream jobs', defaultValue: true)
+    booleanParam(name: 'RUN_DOWNSTREAM', description: 'if false skip downstream jobs', defaultValue: false)
     string(      name: 'jsonstr_CI_STATE', description: 'Default State if no upstream job', defaultValue: CI_STATE.CFG.INPUT_STATE_STR )
     choice(      name: 'CRON', description: 'Cron Test Phase', choices: CI_STATE.CFG.CRON_CHOICES)
   }
