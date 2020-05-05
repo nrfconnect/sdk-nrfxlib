@@ -5,6 +5,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.7.2
+************
+
+* Added support in bsd_init() to disable fidoless traces and define the memory location and amount reserved for bsdlib. 
+
 bsdlib 0.7.1
 ************
 
