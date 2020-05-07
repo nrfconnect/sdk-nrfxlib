@@ -5,6 +5,13 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.6.1.1
+**************
+
+* Bugfix release
+* Fixes double free issue in GNSS socket driver that can make modem crash.
+* Revert enabling TLS session caching by default because it can make modem crash.
+
 bsdlib 0.6.1
 ************
 
