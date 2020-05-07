@@ -22,8 +22,12 @@ extern "C" {
 
 /* TODO: add documentation in this file */
 
+/**@defgroup bsd_os_timeout Special time-out values, used, for example, with bsd_os_timedwait.
+ * @{
+ */
 #define BSD_OS_NO_WAIT  0 /**< Zero time-out. */
 #define BSD_OS_FOREVER -1 /**< Infinite time-out. */
+/**@} */
 
 void bsd_os_init(void);
 
