@@ -17,9 +17,9 @@
 #include "aes_alt.h"
 #include "backend_aes.h"
 
-BUILD_ASSERT_MSG(VANILLA_MBEDTLS_AES_CONTEXT_WORDS == (sizeof(mbedtls_aes_context) - 4) / 4, "Invalid VANILLA_MBEDTLS_AES_CONTEXT_WORDS value");
+BUILD_ASSERT(VANILLA_MBEDTLS_AES_CONTEXT_WORDS == (sizeof(mbedtls_aes_context) - 4) / 4, "Invalid VANILLA_MBEDTLS_AES_CONTEXT_WORDS value");
 #if defined(CONFIG_GLUE_MBEDTLS_CIPHER_MODE_XTS) && defined(CONFIG_VANILLA_MBEDTLS_CIPHER_MODE_XTS)
-BUILD_ASSERT_MSG(VANILLA_MBEDTLS_AES_XTS_CONTEXT_WORDS == (sizeof(mbedtls_aes_xts_context) - 4) / 4, "Invalid VANILLA_MBEDTLS_AES_XTS_CONTEXT_WORDS value");
+BUILD_ASSERT(VANILLA_MBEDTLS_AES_XTS_CONTEXT_WORDS == (sizeof(mbedtls_aes_xts_context) - 4) / 4, "Invalid VANILLA_MBEDTLS_AES_XTS_CONTEXT_WORDS value");
 #endif /* MBEDTLS_CIPHER_MODE_XTS */
 
 
@@ -67,4 +67,3 @@ const mbedtls_aes_funcs mbedtls_aes_vanilla_mbedtls_backend_funcs = {
 };
 
 #endif /* defined(CONFIG_VANILLA_MBEDTLS_AES_C) && defined(CONFIG_GLUE_MBEDTLS_AES_C) */
-

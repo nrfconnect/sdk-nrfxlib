@@ -12,7 +12,7 @@
 #include "backend_rsa.h"
 
 
-BUILD_ASSERT_MSG(VANILLA_MBEDTLS_RSA_CONTEXT_WORDS  == (sizeof(mbedtls_rsa_context) + 3) / 4, "Invalid VANILLA_MBEDTLS_RSA_CONTEXT_WORDS value");
+BUILD_ASSERT(VANILLA_MBEDTLS_RSA_CONTEXT_WORDS  == (sizeof(mbedtls_rsa_context) + 3) / 4, "Invalid VANILLA_MBEDTLS_RSA_CONTEXT_WORDS value");
 
 
 static int mbedtls_rsa_check(int padding, int hash_id, unsigned int nbits)
@@ -74,4 +74,3 @@ const mbedtls_rsa_funcs mbedtls_rsa_vanilla_mbedtls_backend_funcs = {
 };
 
 #endif
-

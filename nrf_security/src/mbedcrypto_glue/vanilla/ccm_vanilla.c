@@ -18,7 +18,7 @@
 #include "backend_ccm.h"
 
 
-BUILD_ASSERT_MSG(VANILLA_MBEDTLS_CCM_CONTEXT_WORDS == (sizeof(mbedtls_cipher_context_t) + 3) / 4, "Invalid VANILLA_MBEDTLS_CCM_CONTEXT_WORDS value");
+BUILD_ASSERT(VANILLA_MBEDTLS_CCM_CONTEXT_WORDS == (sizeof(mbedtls_cipher_context_t) + 3) / 4, "Invalid VANILLA_MBEDTLS_CCM_CONTEXT_WORDS value");
 
 
 static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits)
@@ -39,4 +39,3 @@ const mbedtls_ccm_funcs mbedtls_ccm_vanilla_mbedtls_backend_funcs = {
 };
 
 #endif
-
