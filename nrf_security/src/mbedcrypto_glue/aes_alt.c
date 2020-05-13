@@ -39,6 +39,9 @@
 #if defined(CONFIG_CC310_MBEDTLS_AES_C)
 extern mbedtls_aes_funcs mbedtls_aes_cc310_backend_funcs;
 #endif
+#if defined(CONFIG_OBERON_MBEDTLS_AES_C)
+extern mbedtls_aes_funcs mbedtls_aes_oberon_backend_funcs;
+#endif
 #if defined(CONFIG_VANILLA_MBEDTLS_AES_C)
 extern mbedtls_aes_funcs mbedtls_aes_vanilla_mbedtls_backend_funcs;
 #endif
@@ -47,6 +50,9 @@ extern mbedtls_aes_funcs mbedtls_aes_vanilla_mbedtls_backend_funcs;
 static mbedtls_aes_funcs* aes_backends[] = {
 #if defined(CONFIG_CC310_MBEDTLS_AES_C)
     &mbedtls_aes_cc310_backend_funcs,
+#endif
+#if defined(CONFIG_OBERON_MBEDTLS_AES_C)
+    &mbedtls_aes_oberon_backend_funcs,
 #endif
 #if defined(CONFIG_VANILLA_MBEDTLS_AES_C)
     &mbedtls_aes_vanilla_mbedtls_backend_funcs,

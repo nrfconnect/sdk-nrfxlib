@@ -22,6 +22,9 @@
 #if defined(CONFIG_CC310_MBEDTLS_ECDH_C)
 extern mbedtls_ecdh_funcs mbedtls_ecdh_cc310_backend_funcs;
 #endif
+#if defined(CONFIG_OBERON_MBEDTLS_ECDH_C)
+extern mbedtls_ecdh_funcs mbedtls_ecdh_oberon_mbedtls_backend_funcs;
+#endif
 #if defined(CONFIG_VANILLA_MBEDTLS_ECDH_C)
 extern mbedtls_ecdh_funcs mbedtls_ecdh_vanilla_mbedtls_backend_funcs;
 #endif
@@ -30,6 +33,9 @@ extern mbedtls_ecdh_funcs mbedtls_ecdh_vanilla_mbedtls_backend_funcs;
 static mbedtls_ecdh_funcs* ecdh_backends[] = {
 #if defined(CONFIG_CC310_MBEDTLS_ECDH_C)
     &mbedtls_ecdh_cc310_backend_funcs,
+#endif
+#if defined(CONFIG_OBERON_MBEDTLS_ECDH_C)
+    &mbedtls_ecdh_oberon_mbedtls_backend_funcs,
 #endif
 #if defined(CONFIG_VANILLA_MBEDTLS_ECDH_C)
     &mbedtls_ecdh_vanilla_mbedtls_backend_funcs,
