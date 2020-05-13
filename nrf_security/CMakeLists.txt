@@ -13,6 +13,8 @@ if(CONFIG_GENERATE_MBEDTLS_CFG_FILE)
 endif()
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/symbol_rename.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/symbol_strip.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/combine_archives.cmake)
 
 #
 # Create an interface library with all shared compile definition and include
