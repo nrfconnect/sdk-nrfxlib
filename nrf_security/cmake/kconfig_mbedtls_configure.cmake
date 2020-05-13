@@ -109,18 +109,9 @@ file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/include/)
 # Enabling core functionality
 #
 kconfig_mbedtls_config("MBEDTLS_AES_C")
-kconfig_mbedtls_config("MBEDTLS_AES_ROM_TABLES")
-kconfig_mbedtls_config("MBEDTLS_AES_FEWER_TABLES")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CBC")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CFB")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CTR")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_OFB")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_XTS")
 kconfig_mbedtls_config("MBEDTLS_CMAC_C")
 kconfig_mbedtls_config("MBEDTLS_CCM_C")
-kconfig_mbedtls_config("MBEDTLS_CTR_DRBG_C")
 kconfig_mbedtls_config("MBEDTLS_DHM_C")
-kconfig_mbedtls_config("MBEDTLS_HMAC_DRBG_C")
 kconfig_mbedtls_config("MBEDTLS_SHA1_C")
 kconfig_mbedtls_config("MBEDTLS_SHA256_C")
 kconfig_mbedtls_config("MBEDTLS_SHA512_C")
@@ -130,44 +121,58 @@ kconfig_mbedtls_config("MBEDTLS_ECDSA_C")
 kconfig_mbedtls_config("MBEDTLS_ECJPAKE_C")
 kconfig_mbedtls_config("MBEDTLS_GCM_C")
 kconfig_mbedtls_config("MBEDTLS_RSA_C")
-kconfig_mbedtls_config("MBEDTLS_PKCS1_V15")
-kconfig_mbedtls_config("MBEDTLS_PKCS1_V21")
-kconfig_mbedtls_config("MBEDTLS_MD_C")
 kconfig_mbedtls_config("MBEDTLS_CHACHA20_C")
 kconfig_mbedtls_config("MBEDTLS_POLY1305_C")
 kconfig_mbedtls_config("MBEDTLS_CHACHAPOLY_C")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP192R1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP224R1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP256R1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP384R1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP521R1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP192K1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP224K1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP256K1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_BP256R1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_BP384R1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_BP512R1_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_CURVE25519_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_ECP_DP_CURVE448_ENABLED")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_PADDING_PKCS7")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_PADDING_ONE_AND_ZEROS")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_PADDING_ZEROS_AND_LEN")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_PADDING_ZEROS")
 
+#
+# Setting mbedtls defines for features not glued
+#
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_MODE_CBC")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_MODE_CFB")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_MODE_CTR")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_MODE_OFB")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_MODE_XTS")
+kconfig_mbedtls_config_direct("MBEDTLS_CTR_DRBG_C")
+kconfig_mbedtls_config_direct("MBEDTLS_HMAC_DRBG_C")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP192R1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP224R1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP256R1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP384R1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP521R1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP192K1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP224K1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP256K1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_BP256R1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_BP384R1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_BP512R1_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_CURVE25519_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_CURVE448_ENABLED")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_PADDING_PKCS7")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_PADDING_ONE_AND_ZEROS")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_PADDING_ZEROS_AND_LEN")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_PADDING_ZEROS")
+kconfig_mbedtls_config_direct("MBEDTLS_MD_C")
+kconfig_mbedtls_config_direct("MBEDTLS_PKCS1_V15")
+kconfig_mbedtls_config_direct("MBEDTLS_PKCS1_V21")
 
 #
 # Nordic added defines for features not supported in HW
 # and might not be available (due to configuration)
 #
-kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_ECB_C")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_CBC_C")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_CTR_C")
-kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_CCM_C")
-kconfig_mbedtls_config("MBEDTLS_AES_256_CMAC_C")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_ECB_C")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_CBC_C")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_CTR_C")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_CCM_C")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_OFB_C")
+kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_CFB_C")
+kconfig_mbedtls_config_direct("MBEDTLS_AES_256_CMAC_C")
 
 #
 # Advanced configuration setting for mbed TLS
 #
+kconfig_mbedtls_config_direct("MBEDTLS_AES_ROM_TABLES")
+kconfig_mbedtls_config_direct("MBEDTLS_AES_FEWER_TABLES")
 kconfig_mbedtls_config_val("MBEDTLS_MPI_WINDOW_SIZE"       "${CONFIG_MBEDTLS_MPI_WINDOW_SIZE}")
 kconfig_mbedtls_config_val("MBEDTLS_MPI_MAX_SIZE"          "${CONFIG_MBEDTLS_MPI_MAX_SIZE}")
 kconfig_mbedtls_config_val("MBEDTLS_ECP_MAX_BITS"          "${CONFIG_MBEDTLS_ECP_MAX_BITS}")
@@ -175,7 +180,7 @@ kconfig_mbedtls_config_val("MBEDTLS_ECP_WINDOW_SIZE"       "${CONFIG_MBEDTLS_ECP
 kconfig_mbedtls_config_val("MBEDTLS_ECP_FIXED_POINT_OPTIM" "1")
 kconfig_mbedtls_config_val("MBEDTLS_SSL_MAX_CONTENT_LEN"   "${CONFIG_MBEDTLS_SSL_MAX_CONTENT_LEN}")
 kconfig_mbedtls_config_val("MBEDTLS_SSL_CIPHERSUITES"      "${CONFIG_MBEDTLS_SSL_CIPHERSUITES}")
-kconfig_mbedtls_config("MBEDTLS_SHA256_SMALLER")
+kconfig_mbedtls_config_direct("MBEDTLS_SHA256_SMALLER")
 
 #
 # CC310 flags for threading and platform zeroize
@@ -213,45 +218,81 @@ configure_file(${CMAKE_CURRENT_LIST_DIR}/../configs/nrf-config.h.template
                ${CMAKE_CURRENT_BINARY_DIR}/include/nrf-config-noglue.h)
 
 #
-# Enabling ALT functionality
-# This includes GLUE, CC310 or other ALT backends
+# Generate glue header file for nrf_oberon (with oberon specific alt flags
+# temporary set)
 #
-kconfig_mbedtls_config_alt("MBEDTLS_AES")
-kconfig_mbedtls_config_alt("MBEDTLS_CCM")
-kconfig_mbedtls_config_alt("MBEDTLS_CHACHA20")
-kconfig_mbedtls_config_alt("MBEDTLS_CHACHAPOLY")
-kconfig_mbedtls_config_alt("MBEDTLS_CMAC")
-kconfig_mbedtls_config_alt("MBEDTLS_DHM")
-kconfig_mbedtls_config_alt("MBEDTLS_ECDH")
-kconfig_mbedtls_config_alt("MBEDTLS_ECDSA")
-kconfig_mbedtls_config_alt("MBEDTLS_ECP")
-kconfig_mbedtls_config_alt("MBEDTLS_POLY1305")
-kconfig_mbedtls_config_alt("MBEDTLS_RSA")
-kconfig_mbedtls_config_alt("MBEDTLS_SHA1")
-kconfig_mbedtls_config_alt("MBEDTLS_SHA256")
+if (CONFIG_OBERON_BACKEND)
+  # Temporary set the AES setkey and encrypt/decrypt
+  set(MBEDTLS_AES_SETKEY_ENC_ALT TRUE)
+  set(MBEDTLS_AES_SETKEY_DEC_ALT TRUE)
+  set(MBEDTLS_AES_ENCRYPT_ALT TRUE)
+  set(MBEDTLS_AES_DECRYPT_ALT TRUE)
+  set(MBEDTLS_ECDH_GEN_PUBLIC_ALT TRUE)
+  set(MBEDTLS_ECDH_COMPUTE_SHARED_ALT TRUE)
+  set(MBEDTLS_ECDSA_GENKEY_ALT TRUE)
+  set(MBEDTLS_ECDSA_SIGN_ALT TRUE)
+  set(MBEDTLS_ECDSA_VERIFY_ALT TRUE)
+  set(MBEDTLS_ECJPAKE_ALT TRUE)
+  set(MBEDTLS_SHA1_ALT TRUE)
+  set(MBEDTLS_SHA256_ALT TRUE)
+
+  configure_file(${CMAKE_CURRENT_LIST_DIR}/../configs/nrf-config.h.template
+                 ${CMAKE_CURRENT_BINARY_DIR}/include/nrf-config-noglue-oberon.h)
+
+  # Reset the defines again
+  set(MBEDTLS_AES_SETKEY_ENC_ALT FALSE)
+  set(MBEDTLS_AES_SETKEY_DEC_ALT FALSE)
+  set(MBEDTLS_AES_ENCRYPT_ALT FALSE)
+  set(MBEDTLS_AES_DECRYPT_ALT FALSE)
+  set(MBEDTLS_ECDH_GEN_PUBLIC_ALT FALSE)
+  set(MBEDTLS_ECDH_COMPUTE_SHARED_ALT FALSE)
+  set(MBEDTLS_ECDSA_GENKEY_ALT FALSE)
+  set(MBEDTLS_ECDSA_SIGN_ALT FALSE)
+  set(MBEDTLS_ECDSA_VERIFY_ALT FALSE)
+  set(MBEDTLS_ECJPAKE_ALT FALSE)
+  set(MBEDTLS_SHA1_ALT FALSE)
+  set(MBEDTLS_SHA256_ALT FALSE)
+endif()
+
+#
+# Alt flags set by no-prompt kconfig variables
+# This must be done after any noglue header files are generated
+#
+kconfig_mbedtls_config_direct("MBEDTLS_AES_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_CCM_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_CMAC_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_DHM_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_ECP_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_ECDH_GEN_PUBLIC_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_ECDH_COMPUTE_SHARED_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_ECDSA_GENKEY_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_ECDSA_SIGN_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_ECDSA_VERIFY_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_ECJPAKE_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_SHA1_ALT")
+kconfig_mbedtls_config_direct("MBEDTLS_SHA256_ALT")
 
 #
 # Defines currently not grouped
 #
-kconfig_mbedtls_config("MBEDTLS_PKCS1_V21")
-kconfig_mbedtls_config("MBEDTLS_PKCS1_V15")
-kconfig_mbedtls_config("MBEDTLS_PK_C")
-kconfig_mbedtls_config("MBEDTLS_PK_PARSE_C")
-kconfig_mbedtls_config("MBEDTLS_PK_WRITE_C")
-kconfig_mbedtls_config("MBEDTLS_X509_USE_C")
-kconfig_mbedtls_config("MBEDTLS_X509_CRT_PARSE_C")
-
+kconfig_mbedtls_config_direct("MBEDTLS_PKCS1_V21")
+kconfig_mbedtls_config_direct("MBEDTLS_PKCS1_V15")
+kconfig_mbedtls_config_direct("MBEDTLS_PK_C")
+kconfig_mbedtls_config_direct("MBEDTLS_PK_PARSE_C")
+kconfig_mbedtls_config_direct("MBEDTLS_PK_WRITE_C")
+kconfig_mbedtls_config_direct("MBEDTLS_X509_USE_C")
+kconfig_mbedtls_config_direct("MBEDTLS_X509_CRT_PARSE_C")
 
 if (CONFIG_CC310_BACKEND)
   set(MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT TRUE)
 endif()
 
-if (CC310_MBEDTLS_ECDH_C)
+if (CC310_MBEDTLS_ECDH_C OR OBERON_MBEDTLS_ECDH_C)
   set(MBEDTLS_ECDH_GEN_PUBLIC_ALT TRUE)
   set(MBEDTLS_ECDH_COMPUTE_SHARED_ALT TRUE)
 endif()
 
-if (CC310_MBEDTLS_ECDSA_C)
+if (CC310_MBEDTLS_ECDSA_C OR OBERON_MBEDTLS_ECDSA_C)
   set(MBEDTLS_ECDSA_VERIFY_ALT TRUE)
   set(MBEDTLS_ECDSA_SIGN_ALT TRUE)
   set(MBEDTLS_ECDSA_GENKEY_ALT TRUE)
@@ -359,56 +400,56 @@ set(generated_include_path
 # Copy the correct alt include files to use for libraries
 # from CC310 folder if in use
 #
-configure_file_ifdef(CC310_MBEDTLS_AES_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_AES_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/aes_alt.h
   ${generated_include_path}/aes_alt.h
   COPYONLY)
 
-configure_file_ifdef(CC310_MBEDTLS_CCM_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_CCM_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/ccm_alt.h
   ${generated_include_path}/ccm_alt.h COPYONLY)
 
-configure_file_ifdef(CC310_MBEDTLS_CMAC_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_CMAC_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/cmac_alt.h
   ${generated_include_path}/cmac_alt.h
   COPYONLY)
 
-configure_file_ifdef(CC310_MBEDTLS_DHM_C
+configure_file_ifdef(CONFIG_CONFIG_CC310_MBEDTLS_DHM_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/dhm_alt.h
   ${generated_include_path}/dhm_alt.h
   COPYONLY)
 
-configure_file_ifdef(CC310_MBEDTLS_RSA_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_RSA_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/rsa_alt.h
   ${generated_include_path}/rsa_alt.h
   COPYONLY)
 
-configure_file_ifdef(CC310_MBEDTLS_SHA1_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_SHA1_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/sha1_alt.h
   ${generated_include_path}/sha1_alt.h
   COPYONLY)
 
-configure_file_ifdef(CC310_MBEDTLS_SHA256_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_SHA256_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/sha256_alt.h
   ${generated_include_path}/sha256_alt.h
   COPYONLY)
 
-configure_file_ifdef(CC310_MBEDTLS_ECP_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_ECP_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/ecp_alt.h
   ${generated_include_path}/ecp_alt.h
   COPYONLY)
 
-configure_file_ifdef(CC310_MBEDTLS_CHACHA20_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_CHACHA20_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/chacha20_alt.h
   ${generated_include_path}/chacha20_alt.h
   COPYONLY)
 
-configure_file_ifdef(CC310_MBEDTLS_POLY1305_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_POLY1305_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/poly1305_alt.h
   ${generated_include_path}/poly1305_alt.h
   COPYONLY)
 
-configure_file_ifdef(CC310_MBEDTLS_CHACHAPOLY_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_CHACHAPOLY_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/chachapoly_alt.h
   ${generated_include_path}/chachapoly_alt.h
   COPYONLY)
@@ -426,6 +467,25 @@ configure_file_ifdef(CONFIG_CC310_BACKEND
 )
 
 #
+# Copy the correct alt include files to use for libraries
+# from nrf_oberon folder if in use
+#
+configure_file_ifdef(CONFIG_OBERON_MBEDTLS_SHA1_C
+  ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/sha1_alt.h
+  ${generated_include_path}/sha1_alt.h
+  COPYONLY)
+
+configure_file_ifdef(CONFIG_OBERON_MBEDTLS_SHA256_C
+  ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/sha256_alt.h
+  ${generated_include_path}/sha256_alt.h
+  COPYONLY)
+
+configure_file_ifdef(CONFIG_OBERON_MBEDTLS_ECJPAKE_C
+  ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/ecjpake_alt.h
+  ${generated_include_path}/ecjpake_alt.h
+  COPYONLY)
+
+#
 # Copy the correct glue include files to use for libraries
 # (potentially overwriting other copied backend files)
 #
@@ -437,6 +497,7 @@ configure_file_ifdef(CONFIG_GLUE_MBEDTLS_AES_C
   ${generated_include_path}/aes_alt.h
   COPYONLY
 )
+
 configure_file_ifdef(CONFIG_GLUE_MBEDTLS_CCM_C
   ${mbedcrypto_glue_include_path}/ccm_alt.h
   ${generated_include_path}/ccm_alt.h
