@@ -17,7 +17,7 @@
 
 static int mbedtls_cipher_cmac_check(const mbedtls_cipher_info_t *cipher_info , const unsigned char *key, size_t keybits)
 {
-    return (keybits == 128) ? 2 : 0;
+    return (keybits == 128) ? 3 : 0;
 }
 
 const mbedtls_cmac_funcs mbedtls_cmac_cc310_backend_funcs = {

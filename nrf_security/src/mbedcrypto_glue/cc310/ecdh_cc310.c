@@ -28,7 +28,7 @@ static int mbedtls_ecdh_check(mbedtls_ecp_group *grp, int function)
         case MBEDTLS_ECP_DP_SECP192K1:
         case MBEDTLS_ECP_DP_SECP224K1:
         case MBEDTLS_ECP_DP_SECP256K1:
-            return 2;
+            return 3;
         case MBEDTLS_ECP_DP_BP256R1:
         case MBEDTLS_ECP_DP_BP384R1:
         case MBEDTLS_ECP_DP_BP512R1:

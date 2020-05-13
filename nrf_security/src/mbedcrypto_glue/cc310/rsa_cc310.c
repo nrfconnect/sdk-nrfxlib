@@ -19,7 +19,7 @@ static int mbedtls_rsa_check(int padding, int hash_id, unsigned int nbits)
 {
     if (nbits <= 2048)
     {
-        return 2;
+        return 3;
     }
     return 0;
 }
