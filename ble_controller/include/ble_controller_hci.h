@@ -71,7 +71,7 @@ extern "C" {
  *                      OpCode, as specified by the Bluetooth Core Specification.
  *
  * @retval 0              Success
- * @retval - ::NRF_EINVAL Invalid input
+ * @retval -NRF_EINVAL    Invalid input
  */
 int32_t hci_cmd_put(uint8_t const * p_cmd_in);
 
@@ -82,7 +82,7 @@ int32_t hci_cmd_put(uint8_t const * p_cmd_in);
  *                       Handle, as specified by the Bluetooth Core Specification.
  *
  * @retval 0              Success
- * @retval - ::NRF_EINVAL Invalid input
+ * @retval -NRF_EINVAL    Invalid input
  */
 int32_t hci_data_put(uint8_t const * p_data_in);
 
@@ -99,8 +99,8 @@ int32_t hci_data_put(uint8_t const * p_data_in);
  *                          as specified by the Bluetooth Core Specification.
  *
  * @retval 0              Success
- * @retval - ::NRF_EAGAIN No event available
- * @retval - ::NRF_EINVAL Invalid input
+ * @retval -NRF_EAGAIN  No event available
+ * @retval -NRF_EINVAL  Invalid input
  */
 int32_t hci_evt_get(uint8_t * p_evt_out);
 
@@ -117,8 +117,8 @@ int32_t hci_evt_get(uint8_t * p_evt_out);
  *                           as specified by the Bluetooth Core Specification.
  *
  * @retval 0              Success
- * @retval - ::NRF_EAGAIN No data available
- * @retval - ::NRF_EINVAL Invalid input
+ * @retval -NRF_EAGAIN    No data available
+ * @retval -NRF_EINVAL    Invalid input
  */
 int32_t hci_data_get(uint8_t * p_data_out);
 

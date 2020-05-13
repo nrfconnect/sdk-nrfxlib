@@ -67,11 +67,11 @@ typedef void (*ble_controller_flash_callback_t)(uint32_t status);
  *                         mpsl_low_priority_process.
  *
  * @retval 0                   Success
- * @retval - ::NRF_EINVAL      Either:
+ * @retval -NRF_EINVAL         Either:
  *                                - Tried to write to a non existing flash address
  *                                - addr or p_src was not word aligned
  *                                - Size was 0, or higher than the maximum allowed size
- * @retval - ::NRF_EINPROGRESS Previous flash operation is not yet completed
+ * @retval -NRF_EINPROGRESS    Previous flash operation is not yet completed
  */
 int32_t ble_controller_flash_write(uint32_t addr,
                                    const void * p_src,
@@ -92,8 +92,8 @@ int32_t ble_controller_flash_write(uint32_t addr,
  *                         mpsl_low_priority_process.
  *
  * @retval 0                   Success
- * @retval - ::NRF_EINVAL      Tried to erase a non existing flash page.
- * @retval - ::NRF_EINPROGRESS Previous flash operation is not yet completed
+ * @retval -NRF_EINVAL         Tried to erase a non existing flash page.
+ * @retval -NRF_EINPROGRESS    Previous flash operation is not yet completed
  */
 int32_t ble_controller_flash_page_erase(uint32_t addr, ble_controller_flash_callback_t on_complete);
 
