@@ -242,7 +242,7 @@ typedef mpsl_timeslot_signal_return_param_t * (*mpsl_timeslot_callback_t) (uint3
  * @param[in] mpsl_timeslot_signal_callback The signal callback.
  *
  * @retval 0              Success
- * @retval  -::NRF_EAGAIN Session already open
+ * @retval  -NRF_EAGAIN   Session already open
  */
 int32_t mpsl_timeslot_session_open(mpsl_timeslot_callback_t mpsl_timeslot_signal_callback);
 
@@ -252,7 +252,7 @@ int32_t mpsl_timeslot_session_open(mpsl_timeslot_callback_t mpsl_timeslot_signal
  * @note If a timeslot is scheduled when the session is closed, it will be canceled.
  *
  * @retval 0              Success
- * @retval  -::NRF_EAGAIN Session already closed
+ * @retval  -NRF_EAGAIN   Session already closed
  */
 int32_t mpsl_timeslot_session_close(void);
 
@@ -273,8 +273,8 @@ int32_t mpsl_timeslot_session_close(void);
  * @param[in] p_request Pointer to the request parameters.
  *
  * @retval 0              Success
- * @retval  -::NRF_EINVAL The parameters of p_request are not valid
- * @retval  -::NRF_EAGAIN Either
+ * @retval  -NRF_EINVAL   The parameters of p_request are not valid
+ * @retval  -NRF_EAGAIN   Either
  *                        - The session is not open.
  *                        - The session is not IDLE. */
 int32_t mpsl_timeslot_request(mpsl_timeslot_request_t const * p_request);
