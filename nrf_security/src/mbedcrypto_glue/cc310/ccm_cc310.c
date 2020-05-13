@@ -17,7 +17,7 @@
 
 static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits)
 {
-    return (keybits == 128) ? 2 : 0;
+    return (keybits == 128) ? 3 : 0;
 }
 
 const mbedtls_ccm_funcs mbedtls_ccm_cc310_backend_funcs = {

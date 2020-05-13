@@ -19,7 +19,7 @@ static int mbedtls_dhm_check(unsigned int pbits)
 {
     if (pbits <= 2048)
     {
-        return 2;
+        return 3;
     }
     return 0;
 }

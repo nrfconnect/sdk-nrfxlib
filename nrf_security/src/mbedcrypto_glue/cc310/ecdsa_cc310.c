@@ -32,7 +32,7 @@ static int mbedtls_ecdsa_check(mbedtls_ecp_group *grp, mbedtls_ecp_group_id gid,
         case MBEDTLS_ECP_DP_SECP192K1:
         case MBEDTLS_ECP_DP_SECP224K1:
         case MBEDTLS_ECP_DP_SECP256K1:
-            return 1;
+            return 3;
         case MBEDTLS_ECP_DP_BP256R1:
         case MBEDTLS_ECP_DP_BP384R1:
         case MBEDTLS_ECP_DP_BP512R1:

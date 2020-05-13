@@ -16,7 +16,7 @@
 
 static int mbedtls_aes_check(unsigned int keybits, int mode, int xts)
 {
-    return (keybits == 128 && xts == 0) ? 2 : 0;
+    return (keybits == 128 && xts == 0) ? 3 : 0;
 }
 
 const mbedtls_aes_funcs mbedtls_aes_cc310_backend_funcs = {
