@@ -21,14 +21,19 @@
 #if defined(CONFIG_CC310_MBEDTLS_CMAC_C)
 extern mbedtls_cmac_funcs mbedtls_cmac_cc310_backend_funcs;
 #endif
+#if defined(CONFIG_OBERON_MBEDTLS_CMAC_C)
+extern mbedtls_cmac_funcs mbedtls_cmac_oberon_backend_funcs;
+#endif
 #if defined(CONFIG_VANILLA_MBEDTLS_CMAC_C)
 extern mbedtls_cmac_funcs mbedtls_cmac_vanilla_mbedtls_backend_funcs;
 #endif
 
-
 static mbedtls_cmac_funcs* cmac_backends[] = {
 #if defined(CONFIG_CC310_MBEDTLS_CMAC_C)
     &mbedtls_cmac_cc310_backend_funcs,
+#endif
+#if defined(CONFIG_OBERON_MBEDTLS_CMAC_C)
+    &mbedtls_cmac_oberon_backend_funcs,
 #endif
 #if defined(CONFIG_VANILLA_MBEDTLS_CMAC_C)
     &mbedtls_cmac_vanilla_mbedtls_backend_funcs,

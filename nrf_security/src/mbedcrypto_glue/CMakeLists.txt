@@ -59,6 +59,11 @@ if(CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
     include(${CMAKE_CURRENT_LIST_DIR}/cc310/cc310_glue.cmake)
   endif()
 
+  if (CONFIG_OBERON_BACKEND)
+    nrf_security_debug("Adding oberon_glue.cmake")
+    include(${CMAKE_CURRENT_LIST_DIR}/oberon/oberon_glue.cmake)
+  endif()
+
   if (CONFIG_MBEDTLS_VANILLA_BACKEND)
     nrf_security_debug("Adding vanilla_glue.cmake")
     include(${CMAKE_CURRENT_LIST_DIR}/vanilla/vanilla_glue.cmake)
@@ -102,11 +107,16 @@ endif() # CONFIG_NRF_CRYPTO_GLUE_LIBRARY
 
 #
 # CC310: Rename glued symbols to prevent collision
-# CC310: Remove obj files not in use in backend (param: TRUE)
 #
 if (CONFIG_CC310_BACKEND)
   symbol_rename_func("cc310" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
 endif()
+
+#
+# nrf_oberon: Rename glued symbols to prevent collisions
+#
+if (CONFIG_OBERON_BACKEND AND CONFIG_NRF_CRYPTO_GLUE_LIBRARY)
+  symbol_rename_func("oberon" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
 endif()
 
 #

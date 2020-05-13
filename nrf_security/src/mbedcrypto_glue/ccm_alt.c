@@ -35,6 +35,9 @@
 #if defined(CONFIG_CC310_MBEDTLS_CCM_C)
 extern mbedtls_ccm_funcs mbedtls_ccm_cc310_backend_funcs;
 #endif
+#if defined(CONFIG_OBERON_MBEDTLS_CCM_C)
+extern mbedtls_ccm_funcs mbedtls_ccm_oberon_backend_funcs;
+#endif
 #if defined(CONFIG_VANILLA_MBEDTLS_CCM_C)
 extern mbedtls_ccm_funcs mbedtls_ccm_vanilla_mbedtls_backend_funcs;
 #endif
@@ -43,6 +46,9 @@ extern mbedtls_ccm_funcs mbedtls_ccm_vanilla_mbedtls_backend_funcs;
 static mbedtls_ccm_funcs* ccm_backends[] = {
 #if defined(CONFIG_CC310_MBEDTLS_CCM_C)
     &mbedtls_ccm_cc310_backend_funcs,
+#endif
+#if defined(CONFIG_OBERON_MBEDTLS_CCM_C)
+    &mbedtls_ccm_oberon_backend_funcs,
 #endif
 #if defined(CONFIG_VANILLA_MBEDTLS_CCM_C)
     &mbedtls_ccm_vanilla_mbedtls_backend_funcs,
@@ -105,7 +111,7 @@ int mbedtls_ccm_setkey(mbedtls_ccm_context *ctx, mbedtls_cipher_id_t cipher, con
     }
 
     funcs->init(backend_context);
-    
+
     return funcs->setkey(backend_context, cipher, key, keybits);
 }
 
