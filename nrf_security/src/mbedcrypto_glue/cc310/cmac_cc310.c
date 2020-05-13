@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CC310_MBEDTLS_CMAC_C) && defined(GLUE_MBEDTLS_CMAC_C)
+#if defined(CONFIG_CC310_GLUE_MBEDTLS_CMAC_C)
 
 #include "mbedtls/cmac.h"
 #include "backend_cmac.h"

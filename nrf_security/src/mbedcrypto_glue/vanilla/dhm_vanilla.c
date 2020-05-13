@@ -4,7 +4,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_VANILLA_MBEDTLS_DHM_C) && defined(CONFIG_GLUE_MBEDTLS_DHM_C)
+#if defined(CONFIG_VANILLA_GLUE_MBEDTLS_DHM_C)
 
 #include <assert.h>
 

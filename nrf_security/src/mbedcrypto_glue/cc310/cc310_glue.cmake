@@ -5,42 +5,22 @@
 #
 nrf_security_debug("######### Creating cc310 glue library #########")
 
-if (CONFIG_GLUE_MBEDTLS_AES_C AND CONFIG_CC310_MBEDTLS_AES_C)
-  set(GLUE_CC310_MBEDTLS_AES_C TRUE)
-  nrf_security_debug("cc310 backend glue: AES")
-endif()
-
-if (CONFIG_GLUE_MBEDTLS_CCM_C AND CONFIG_CC310_MBEDTLS_CCM_C)
-  set(GLUE_CC310_MBEDTLS_CCM_C TRUE)
-  nrf_security_debug("cc310 backend glue: CCM")
-endif()
-
-#if (CONFIG_GLUE_MBEDTLS_CMAC_C AND CONFIG_CC310_MBEDTLS_CMAC_C)
-#  set(GLUE_CC310_MBEDTLS_CMAC_C TRUE)
-#  nrf_security_debug("cc310 backend glue: CMAC")
-#endif()
-
-if (CONFIG_GLUE_MBEDTLS_DHM_C AND CONFIG_CC310_MBEDTLS_DHM_C)
-  set(GLUE_CC310_MBEDTLS_DHM_C TRUE)
-  nrf_security_debug("cc310 backend glue: DHM")
-endif()
-
-
 zephyr_library_named(mbedcrypto_glue_cc310)
 
 #
 # Adding cc310 backend glue files
 #
-zephyr_library_sources_ifdef(CONFIG_CC310_MBEDTLS_CCM_C
+zephyr_library_sources_ifdef(CONFIG_CC310_GLUE_MBEDTLS_AES_C
   ${CMAKE_CURRENT_LIST_DIR}/aes_cc310.c
 )
-zephyr_library_sources_ifdef(CONFIG_CC310_MBEDTLS_CCM_C
+zephyr_library_sources_ifdef(CONFIG_CC310_GLUE_MBEDTLS_CCM_C
   ${CMAKE_CURRENT_LIST_DIR}/ccm_cc310.c
 )
 #zephyr_library_sources_ifdef(CONFIG_CC310_MBEDTLS_CCM_C
 #  ${CMAKE_CURRENT_LIST_DIR}/ccm_cc310.c
 #)
 zephyr_library_sources_ifdef(CONFIG_CC310_MBEDTLS_CCM_C
+zephyr_library_sources_ifdef(CONFIG_CC310_GLUE_MBEDTLS_DHM_C
   ${CMAKE_CURRENT_LIST_DIR}/dhm_cc310.c
 )
 

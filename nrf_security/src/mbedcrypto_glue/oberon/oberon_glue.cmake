@@ -3,25 +3,6 @@
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 
-#
-# Mark features needed for glue
-#
-if (CONFIG_GLUE_MBEDTLS_AES_C AND CONFIG_OBERON_MBEDTLS_AES_C)
-  set(GLUE_OBERON_MBEDTLS_AES_C TRUE)
-  nrf_security_debug("Oberon backend glue: AES")
-else()
-  nrf_security_debug("Not glued: Oberon backend AES")
-endif()
-
-if (CONFIG_GLUE_MBEDTLS_CCM_C AND CONFIG_OBERON_MBEDTLS_CCM_C)
-  set(GLUE_OBERON_MBEDTLS_CCM_C TRUE)
-  nrf_security_debug("Oberon backend glue: CCM")
-endif()
-
-#if (CONFIG_GLUE_MBEDTLS_CMAC_C AND CONFIG_OBERON_MBEDTLS_CMAC_C)
-#  set(GLUE_OBERON_MBEDTLS_CMAC_C TRUE)
-#  nrf_security_debug("Oberon backend glue: CMAC")
-#endif()
 
 nrf_security_debug("######### Creating oberon glue library #########")
 
@@ -33,11 +14,11 @@ zephyr_library_named(mbedcrypto_glue_oberon)
 #
 # Adding Oberon backend glue files
 #
-zephyr_library_sources_ifdef(GLUE_OBERON_MBEDTLS_AES_C
+zephyr_library_sources_ifdef(CONFIG_OBERON_GLUE_MBEDTLS_AES_C
   ${CMAKE_CURRENT_LIST_DIR}/aes_oberon.c
 )
 
-zephyr_library_sources_ifdef(GLUE_OBERON_MBEDTLS_CCM_C
+zephyr_library_sources_ifdef(CONFIG_OBERON_GLUE_MBEDTLS_CCM_C
   ${CMAKE_CURRENT_LIST_DIR}/ccm_oberon.c
 )
 

@@ -10,7 +10,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_CC310_MBEDTLS_CCM_C) && defined(CONFIG_GLUE_MBEDTLS_CCM_C)
+#if defined(CONFIG_CC310_GLUE_MBEDTLS_CCM_C)
 
 #include "mbedtls/ccm.h"
 #include "backend_ccm.h"
