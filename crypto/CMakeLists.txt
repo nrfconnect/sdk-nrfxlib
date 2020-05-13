@@ -14,12 +14,52 @@ if (CONFIG_NRF_OBERON)
   set(OBERON_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_oberon)
   set(OBERON_VER 3.0.5)
   set(OBERON_LIB ${OBERON_BASE}/${lib_path}/liboberon_${OBERON_VER}.a)
+  set(OBERON_MBEDTLS_LIB ${OBERON_BASE}/${lib_path}/liboberon_mbedtls_${OBERON_VER}.a)
   if(NOT EXISTS ${OBERON_LIB})
     message(WARNING "This combination of SoC and floating point ABI is not supported by the nrf_oberon lib."
                     "(${OBERON_LIB} doesn't exist.)")
   endif()
-  target_include_directories(nrfxlib_crypto INTERFACE ${OBERON_BASE}/include)
-  target_link_libraries(nrfxlib_crypto INTERFACE ${OBERON_LIB})
+
+  if (NOT CONFIG_OBERON_BACKEND)
+    target_include_directories(nrfxlib_crypto INTERFACE ${OBERON_BASE}/include)
+    target_link_libraries(nrfxlib_crypto INTERFACE ${OBERON_LIB})
+  else()
+    if(NOT EXISTS ${OBERON_MBEDTLS_LIB})
+      message(WARNING "This combination of SoC and floating point ABI is not supported by the nrf_oberon_mbedtls lib."
+                      "(${OBERON_MBEDTLS_LIB} doesn't exist.)")
+    endif()
+
+    #
+    # Add mbedcrypto_oberon_imported that points to the actual library
+    # This library will be stripped for unneeded symbols and combined into
+    # library target mbedcrypto_oberon
+    #
+    add_library(mbedcrypto_oberon_imported STATIC IMPORTED GLOBAL)
+    set_target_properties(
+      mbedcrypto_oberon_imported PROPERTIES
+        IMPORTED_LOCATION "${OBERON_LIB}"
+        BASE_INCLUDE_PATH "${OBERON_BASE}/include"
+    )
+    target_include_directories(mbedcrypto_oberon_imported INTERFACE
+                              "${OBERON_BASE}/include")
+
+
+    #
+    # Add mbedcrypto_oberon_mbedtls_imported that points to the actual library
+    # This library will be stripped for unneeded symbols and combined into
+    # library target mbedcrypto_oberon
+    #
+    add_library(mbedcrypto_oberon_mbedtls_imported STATIC IMPORTED GLOBAL)
+    set_target_properties(
+      mbedcrypto_oberon_mbedtls_imported PROPERTIES
+        IMPORTED_LOCATION "${OBERON_MBEDTLS_LIB}"
+        BASE_INCLUDE_PATH "${OBERON_BASE}/include/mbedtls"
+    )
+    target_include_directories(mbedcrypto_oberon_mbedtls_imported INTERFACE
+                              "${OBERON_BASE}/include"
+                              "${OBERON_BASE}/include/mbedtls")
+    target_link_libraries(mbedcrypto_oberon_mbedtls_imported INTERFACE mbedcrypto_oberon_imported)
+  endif()
 endif()
 
 if (CONFIG_NRF_CC310_BL)
@@ -56,8 +96,10 @@ if (CONFIG_NRF_CC310_PLATFORM)
   # Uses a normal add_library to avoid --whole-archive
   #
   add_library(platform_cc310 STATIC IMPORTED GLOBAL)
-  set_target_properties(platform_cc310 PROPERTIES IMPORTED_LOCATION
-      "${NRF_CC310_PLATFORM_LIB}")
+  set_target_properties(platform_cc310 PROPERTIES
+    IMPORTED_LOCATION "${NRF_CC310_PLATFORM_LIB}"
+    BASE_INCLUDE_PATH "${NRF_CC310_PLATFORM_BASE}/include"
+  )
   target_include_directories(platform_cc310 INTERFACE
       "${NRF_CC310_PLATFORM_BASE}/include")
   zephyr_link_libraries(platform_cc310)
@@ -81,13 +123,21 @@ if (CONFIG_CC310_BACKEND)
     message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_cc310_mbedcryto lib."
                     "(${NRF_CC310_LIB} doesn't exist.)")
   endif()
-  add_library(mbedcrypto_cc310 STATIC IMPORTED GLOBAL)
-  set_target_properties(mbedcrypto_cc310 PROPERTIES IMPORTED_LOCATION
-                        "${NRF_CC310_LIB}")
-  target_include_directories(mbedcrypto_cc310 INTERFACE
+
+  #
+  # Add mbedcrypto_cc310_imported that points links to the actual library
+  # This library will be stripped for unneeded symbols and combined into
+  # library target mbedcrypto_cc310
+  #
+  add_library(mbedcrypto_cc310_imported STATIC IMPORTED GLOBAL)
+  set_target_properties(mbedcrypto_cc310_imported PROPERTIES
+    IMPORTED_LOCATION "${NRF_CC310_LIB}"
+    BASE_INCLUDE_PATH "${NRF_CC310_BASE}/include/mbedtls"
+  )
+  target_include_directories(mbedcrypto_cc310_imported INTERFACE
                              "${NRF_CC310_BASE}/include"
                              "${NRF_CC310_BASE}/include/mbedtls")
-  target_link_libraries(mbedcrypto_cc310 INTERFACE platform_cc310)
+  target_link_libraries(mbedcrypto_cc310_imported INTERFACE platform_cc310)
   if (NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
     # Only CC310 backend is selected for mbedtls API.
     # Thus export the alt headers through Zephyr interface library.
