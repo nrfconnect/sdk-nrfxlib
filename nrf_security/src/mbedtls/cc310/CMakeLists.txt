@@ -74,7 +74,7 @@ configure_file_ifdef(CONFIG_CC310_MBEDTLS_CMAC_C
   ${generated_include_path}/cmac_alt.h
   COPYONLY)
 
-configure_file_ifdef(CONFIG_CONFIG_CC310_MBEDTLS_DHM_C
+configure_file_ifdef(CONFIG_CC310_MBEDTLS_DHM_C
   ${NRF_CC310_MBEDCRYPTO_INCLUDE_PATH}/dhm_alt.h
   ${generated_include_path}/dhm_alt.h
   COPYONLY)

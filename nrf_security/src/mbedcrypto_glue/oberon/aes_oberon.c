@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_OBERON_MBEDTLS_AES_C) && defined(CONFIG_GLUE_MBEDTLS_AES_C)
+#if defined(CONFIG_OBERON_GLUE_MBEDTLS_AES_C)
 
 #include "mbedtls/aes.h"
 #include "backend_aes.h"
