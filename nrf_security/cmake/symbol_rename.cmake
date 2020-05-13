@@ -18,7 +18,7 @@
 # in case a configuration is enabled in the backend, but not glued
 #
 macro(keep_config_test_glue mbedtls_config backend_name)
-  if(NOT CONFIG_GLUE_${mbedtls_config} AND ${backend_name}_${mbedtls_config})
+  if(NOT CONFIG_GLUE_${mbedtls_config} AND CONFIG_${backend_name}_${mbedtls_config})
     set(KEEP_${mbedtls_config} "#")
     nrf_security_debug("${backend_name}: Not renamed ${mbedtls_config}")
   else()
@@ -32,7 +32,7 @@ endmacro()
 #
 macro(keep_config_test_glue_depends mbedtls_config mbedtls_config_inner backend_name)
   if((NOT CONFIG_GLUE_${mbedtls_config}) AND
-      ${backend_name}_${mbedtls_config} AND
+      CONFIG_${backend_name}_${mbedtls_config} AND
       CONFIG_${mbedtls_config_inner})
     nrf_security_debug("${backend_name}: Has ${backend_name}_${mbedtls_config}: Not renamed ${mbedtls_config_inner}")
     set(KEEP_${mbedtls_config_inner} "#")
@@ -42,32 +42,24 @@ macro(keep_config_test_glue_depends mbedtls_config mbedtls_config_inner backend_
 endmacro()
 
 #
-# This macro will create a string to remove objects
-# if the given configuration is not enabled in the backend
+# This function will create a symbol renaming script for any library
+# named mbedcrypto_<backend> corresponding to the parameter "backend"
 #
-macro(remove_objects mbedtls_config backend_name object_list object_name)
-  if (NOT ${backend_name}_${mbedtls_config})
-    nrf_security_debug("${backend_name}: Removing object ${object_name}")
-    set(${object_list} ${${object_list}} ${object_name})
-  endif()
-endmacro()
-
-function(symbol_rename_func backend rename_template is_stripped)
+function(symbol_rename_func backend rename_template)
+  nrf_security_debug("========== Running symbol_rename_func for ${backend} ==========")
   string(TOUPPER "${backend}" BACKEND_NAME)
   #
   # Functionality that can be glued
   #
   keep_config_test_glue("MBEDTLS_AES_C"           ${BACKEND_NAME})
   keep_config_test_glue("MBEDTLS_CCM_C"           ${BACKEND_NAME})
-  keep_config_test_glue("MBEDTLS_DHM_C"           ${BACKEND_NAME})
-
   keep_config_test_glue("MBEDTLS_CMAC_C"          ${BACKEND_NAME})
+  keep_config_test_glue("MBEDTLS_DHM_C"           ${BACKEND_NAME})
   keep_config_test_glue("MBEDTLS_ECDH_C"          ${BACKEND_NAME})
   keep_config_test_glue("MBEDTLS_ECDSA_C"         ${BACKEND_NAME})
   keep_config_test_glue("MBEDTLS_RSA_C"           ${BACKEND_NAME})
   keep_config_test_glue("MBEDTLS_DHM_C"           ${BACKEND_NAME})
   keep_config_test_glue("MBEDTLS_GCM_C"           ${BACKEND_NAME})
-
 
   #
   # Functionality that can be glued (dependent configuration)
@@ -78,63 +70,31 @@ function(symbol_rename_func backend rename_template is_stripped)
   keep_config_test_glue_depends("MBEDTLS_AES_C" "MBEDTLS_CIPHER_MODE_OFB" ${BACKEND_NAME})
   keep_config_test_glue_depends("MBEDTLS_AES_C" "MBEDTLS_CIPHER_MODE_CTR" ${BACKEND_NAME})
 
-
-  #
-  # Files that are either in one of the backends
-  # These will be removed with a call to "ar"
-  #
-  if (${is_stripped})
-    remove_objects("MBEDTLS_CMAC_C"       ${BACKEND_NAME} remove_line "cmac_alt.c.obj")
-    remove_objects("MBEDTLS_ECP_C"        ${BACKEND_NAME} remove_line "ecp.c.obj")
-    remove_objects("MBEDTLS_ECP_C"        ${BACKEND_NAME} remove_line "ecp_common.c.obj")
-    remove_objects("MBEDTLS_ECP_C"        ${BACKEND_NAME} remove_line "ecp_curves.c.obj")
-    remove_objects("MBEDTLS_ECP_C"        ${BACKEND_NAME} remove_line "ecp_alt_cc310.c.obj")
-    remove_objects("MBEDTLS_ECP_C"        ${BACKEND_NAME} remove_line "ecp_curved_alt.c.obj")
-    remove_objects("MBEDTLS_ECJPAKE_C"    ${BACKEND_NAME} remove_line "ecjpake.c.obj")
-    remove_objects("MBEDTLS_CHACHA20_C"   ${BACKEND_NAME} remove_line "chacha20.c.obj")
-    remove_objects("MBEDTLS_CHACHA20_C"   ${BACKEND_NAME} remove_line "chacha20_alt.c.obj")
-    remove_objects("MBEDTLS_CHACHAPOLY_C" ${BACKEND_NAME} remove_line "chachapoly.c.obj")
-    remove_objects("MBEDTLS_CHACHAPOLY_C" ${BACKEND_NAME} remove_line "chachapoly_alt.c.obj")
-    remove_objects("MBEDTLS_POLY1305_C"   ${BACKEND_NAME} remove_line "poly1305_alt.c.obj")
-    remove_objects("MBEDTLS_POLY1305_C"   ${BACKEND_NAME} remove_line "poly1305.c.obj")
-    remove_objects("MBEDTLS_POLY1305_C"   ${BACKEND_NAME} remove_line "poly.c.obj")
-    remove_objects("MBEDTLS_SHA1_C"       ${BACKEND_NAME} remove_line "sha1.c.obj")
-    remove_objects("MBEDTLS_SHA1_C"       ${BACKEND_NAME} remove_line "sha1_alt.c.obj")
-    remove_objects("MBEDTLS_SHA256_C"     ${BACKEND_NAME} remove_line "sha256.c.obj")
-    remove_objects("MBEDTLS_SHA256_C"     ${BACKEND_NAME} remove_line "sha256_alt.c.obj")
-  endif()
-
   string(TOLOWER "${backend}" MBEDTLS_BACKEND_PREFIX)
   configure_file(${rename_template}
                  symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt)
 
   set(redefine_line "--redefine-syms;${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt")
 
-  set(BACKEND_RENAMED_LIBRARY libmbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend.a)
-
-  if (remove_line)
-    set(remove_object_command ${CMAKE_AR} d ${BACKEND_RENAMED_LIBRARY} ${remove_line})
-    nrf_security_debug("Objects stripped from ${BACKEND_RENAMED_LIBRARY}: ${remove_line}")
-  endif()
+  set(BACKEND_RENAMED_LIBRARY libmbedcrypto_${MBEDTLS_BACKEND_PREFIX}_renamed.a)
 
   add_custom_command(
     OUTPUT  ${BACKEND_RENAMED_LIBRARY}
     COMMAND ${CMAKE_OBJCOPY} ${redefine_line}
             $<TARGET_FILE:mbedcrypto_${MBEDTLS_BACKEND_PREFIX}>
             ${BACKEND_RENAMED_LIBRARY}
-    COMMAND ${remove_object_command}
     DEPENDS mbedcrypto_${MBEDTLS_BACKEND_PREFIX}
             ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt
   )
-  add_custom_target(${MBEDTLS_BACKEND_PREFIX}_backend_target
+  add_custom_target(${MBEDTLS_BACKEND_PREFIX}_renamed_target
                     DEPENDS ${BACKEND_RENAMED_LIBRARY}
   )
-  add_library(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend STATIC IMPORTED GLOBAL)
-  add_dependencies(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend
-                   ${MBEDTLS_BACKEND_PREFIX}_backend_target)
-  set_target_properties(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend
+  add_library(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_renamed STATIC IMPORTED GLOBAL)
+  add_dependencies(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_renamed
+                   ${MBEDTLS_BACKEND_PREFIX}_renamed_target)
+  set_target_properties(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_renamed
                         PROPERTIES IMPORTED_LOCATION
                         "${CMAKE_CURRENT_BINARY_DIR}/${BACKEND_RENAMED_LIBRARY}")
 
-  zephyr_append_cmake_library(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_backend)
+  zephyr_append_cmake_library(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_renamed)
 endfunction()

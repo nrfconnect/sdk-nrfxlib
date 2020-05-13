@@ -7,32 +7,57 @@
 # on the Kconfig settings.
 # When all values has been processed, the mbedtls config file will be generated.
 
-
 #
 # Internal macro which will enable the define in mbed TLS config file based on
-# the correspong Kconfig setting.
-# It will additionally set VANILLA_ONLY_MBEDTLS_XXXX in case no other
-# backends is enabling the same feature
+# the corresponding Kconfig setting.
 #
-macro(kconfig_mbedtls_config base)
+# This version is used for configurations that does not consider gluing or
+# single-backend resolving
+#
+macro(kconfig_mbedtls_config_direct base)
   if (CONFIG_${base} OR
       CONFIG_CC310_${base} OR
-      CONFIG_VANILLA_${base})
+      CONFIG_VANILLA_${base} OR
+      CONFIG_OBERON_${base})
     nrf_security_debug("Setting ${base} to TRUE")
     set(${base} TRUE)
   endif()
-  if ((CONFIG_${base} AND NOT CONFIG_CC310_BACKEND) OR
-      (CONFIG_VANILLA_${base} AND NOT CONFIG_CC310_${base}))
-    nrf_security_debug("Setting VANILLA_ONLY_${base} to TRUE")
-    set(VANILLA_ONLY_${base} TRUE)
+endmacro()
+
+#
+# Internal macro which will enable the define in mbed TLS config file based on
+# the corresponding Kconfig setting.
+#
+# This version must be used for configurations considering gluing or
+# single-backend resolving
+#
+macro(kconfig_mbedtls_config base)
+  if(CONFIG_CC310_${base})
+    nrf_security_debug("CONFIG_CC310_${base} is TRUE (Kconfig)")
   endif()
-  if (CONFIG_${base} AND NOT CONFIG_MBEDTLS_VANILLA_BACKEND)
-    nrf_security_debug("Setting CC310_${base} to TRUE")
-    set(CC310_${base} TRUE)
+  if(CONFIG_OBERON_${base})
+    nrf_security_debug("CONFIG_OBERON_${base} is TRUE (Kconfig)")
   endif()
-  if (CONFIG_CC310_${base})
-    nrf_security_debug("Setting CC310_${base} to TRUE")
-    set(CC310_${base} TRUE)
+  if(CONFIG_VANILLA_${base})
+    nrf_security_debug("CONFIG_VANILLA_${base} is TRUE (Kconfig)")
+  endif()
+
+  kconfig_mbedtls_config_direct(${base})
+
+  # Set any single-backend enabled configs
+  if (NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
+    if(CONFIG_CC310_BACKEND)
+      set (CONFIG_CC310_${base} true)
+      nrf_security_debug("Setting CONFIG_CC310_${base} to TRUE (single backend)")
+    endif()
+    if(CONFIG_OBERON_BACKEND)
+      set (CONFIG_OBERON_${base} true)
+      nrf_security_debug("Setting CONFIG_OBERON_${base} to TRUE (single backend)")
+    endif()
+    if(CONFIG_MBEDTLS_VANILLA_BACKEND)
+      set (CONFIG_VANILLA_${base} true)
+      nrf_security_debug("Setting CONFIG_VANILLA_${base} to TRUE (single backend)")
+    endif()
   endif()
 endmacro()
 
@@ -49,24 +74,6 @@ macro(kconfig_mbedtls_config_val base val)
 endmacro()
 
 #
-# Internal macro which will enable the define in mbed TLS config file based on
-# the correspong Kconfig setting (for _ALT flags)
-# Any additional arguments given are dependencies to to first argument, such
-# that those arguments will be set to TRUE if first argument is TRUE.
-#
-macro(kconfig_mbedtls_config_alt base)
-  # Note that we don't add CONFIG_ to ${base}_C as it is not used in mbed TLS
-  # config file
-  if ((${base}_C AND (CONFIG_CC310_BACKEND AND
-      NOT CONFIG_MBEDTLS_VANILLA_BACKEND)) OR
-      CONFIG_CC310_${base}_C OR
-      CONFIG_GLUE_${base}_C)
-    nrf_security_debug("ALT Setting ${base}_ALT to TRUE")
-    set(${base}_ALT TRUE)
-  endif()
-endmacro()
-
-#
 # Internal macro which will enable the define dependencies in mbed TLS config
 # file if the any backend has enabled the setting in Kconfig specified by first
 # argument.
@@ -75,8 +82,9 @@ macro(mbedtls_config_define_depends mbedtls_config)
   set(${mbedtls_config} TRUE)
   foreach(arg ${ARGN})
     if (NOT (CONFIG_${arg} OR
-            CONFIG_CC310_${arg} OR
-            CONFIG_VANILLA_${arg}))
+             CONFIG_CC310_${arg} OR
+             CONFIG_OBERON_${arg} OR
+             CONFIG_VANILLA_${arg}))
       unset(${mbedtls_config})
       break()
     endif()
