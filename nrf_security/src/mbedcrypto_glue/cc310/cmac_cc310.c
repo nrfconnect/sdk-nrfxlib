@@ -12,12 +12,23 @@
 #if defined(CONFIG_CC310_GLUE_MBEDTLS_CMAC_C)
 
 #include "mbedtls/cmac.h"
+#include "mbedtls/platform.h"
+#include "mbedtls/platform_util.h"
 #include "backend_cmac.h"
-
 
 static int mbedtls_cipher_cmac_check(const mbedtls_cipher_info_t *cipher_info , const unsigned char *key, size_t keybits)
 {
     return (keybits == 128) ? 3 : 0;
+}
+
+void mbedtls_cipher_cmac_free(mbedtls_cipher_context_t *ctx)
+{
+    if( ctx->cmac_ctx )
+    {
+       mbedtls_platform_zeroize( ctx->cmac_ctx,
+                                 sizeof( mbedtls_cmac_context_t ) );
+       mbedtls_free( ctx->cmac_ctx );
+    }
 }
 
 const mbedtls_cmac_funcs mbedtls_cmac_cc310_backend_funcs = {

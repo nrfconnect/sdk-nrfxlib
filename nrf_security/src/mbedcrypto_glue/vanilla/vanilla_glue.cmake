@@ -19,9 +19,9 @@ zephyr_library_sources_ifdef(CONFIG_VANILLA_GLUE_MBEDTLS_AES_C
 zephyr_library_sources_ifdef(CONFIG_VANILLA_GLUE_MBEDTLS_CCM_C
   ${CMAKE_CURRENT_LIST_DIR}/ccm_vanilla.c
 )
-#zephyr_library_sources_ifdef(CONFIG_VANILLA_GLUE_MBEDTLS_CMAC_C
-#  ${CMAKE_CURRENT_LIST_DIR}/cmac_vanilla.c
-#)
+zephyr_library_sources_ifdef(CONFIG_VANILLA_GLUE_MBEDTLS_CMAC_C
+  ${CMAKE_CURRENT_LIST_DIR}/cmac_vanilla.c
+)
 zephyr_library_sources_ifdef(CONFIG_VANILLA_GLUE_MBEDTLS_DHM_C
   ${CMAKE_CURRENT_LIST_DIR}/dhm_vanilla.c
 )

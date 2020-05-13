@@ -24,7 +24,7 @@ static int mbedtls_cipher_cmac_check(const mbedtls_cipher_info_t *cipher_info , 
     return 1;
 }
 
-static void mbedtls_cipher_cmac_free(mbedtls_cipher_context_t *ctx)
+void mbedtls_cipher_cmac_free(mbedtls_cipher_context_t *ctx)
 {
     if( ctx->cmac_ctx )
     {
