@@ -66,7 +66,7 @@ typedef struct
  *                       maximum power possible.
  *
  * @retval  0              TX power channel successfully set.
- * @retval  - ::NRF_EINVAL Invalid parameter provided.
+ * @retval  -NRF_EINVAL   Invalid parameter provided.
  */
 int32_t mpsl_tx_power_channel_map_set(const mpsl_tx_power_envelope_t *const p_envelope);
 

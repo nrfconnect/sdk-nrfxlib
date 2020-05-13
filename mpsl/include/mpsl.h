@@ -57,8 +57,8 @@ typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t li
  *
  *
  * @retval  0               MPSL is successfully initialized.
- * @retval  - ::NRF_EPERM   MPSL is already initialized.
- * @retval  - ::NRF_EINVAL  Invalid parameters supplied.
+ * @retval  -NRF_EPERM      MPSL is already initialized.
+ * @retval  -NRF_EINVAL     Invalid parameters supplied.
  */
 int32_t mpsl_init(mpsl_clock_lfclk_cfg_t const * p_clock_config, IRQn_Type low_prio_irq, mpsl_assert_handler_t p_assert_handler);
 
@@ -83,7 +83,7 @@ bool mpsl_is_initialized(void);
  *  @param[in,out] p_build_revision  Build revision.
  *
  * @retval 0              Success
- * @retval - ::NRF_EINVAL Invalid argument provided
+ * @retval -NRF_EINVAL    Invalid argument provided
  */
 int32_t mpsl_build_revision_get(uint8_t * p_build_revision);
 
