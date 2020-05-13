@@ -24,7 +24,7 @@ static int mbedtls_cipher_cmac_check(const mbedtls_cipher_info_t *cipher_info , 
     return 2;
 }
 
-static void mbedtls_cipher_cmac_free(mbedtls_cipher_context_t *ctx)
+void mbedtls_cipher_cmac_free(mbedtls_cipher_context_t *ctx)
 {
     if( ctx->cmac_ctx )
     {
@@ -34,7 +34,7 @@ static void mbedtls_cipher_cmac_free(mbedtls_cipher_context_t *ctx)
     }
 }
 
-const mbedtls_cmac_funcs mbedtls_cmac_vanilla_mbedtls_backend_funcs = {
+const mbedtls_cmac_funcs mbedtls_cmac_oberon_backend_funcs = {
     .check = mbedtls_cipher_cmac_check,
     .starts = mbedtls_cipher_cmac_starts,
     .update = mbedtls_cipher_cmac_update,

@@ -61,6 +61,7 @@ static const mbedtls_cmac_funcs* find_backend(const mbedtls_cipher_info_t *ciphe
 int mbedtls_cipher_cmac_starts(mbedtls_cipher_context_t *ctx , const unsigned char *key, size_t keybits)
 {
     const mbedtls_cmac_funcs* funcs;
+    mbedtls_cmac_context_t* cmac_ctx = (mbedtls_cmac_context_t*)ctx->cipher_ctx;
 
     funcs = find_backend(ctx->cipher_info, key, keybits);
 
@@ -68,14 +69,16 @@ int mbedtls_cipher_cmac_starts(mbedtls_cipher_context_t *ctx , const unsigned ch
     {
         return MBEDTLS_ERR_CIPHER_FEATURE_UNAVAILABLE;
     }
-    ctx->cmac_funcs = funcs;
 
-    return funcs->starts(ctx, key, keybits);
+    cmac_ctx->handle = (mbedtls_cmac_funcs*)funcs;
+
+    return funcs->starts(ctx, key, keybits);;
 }
 
 int mbedtls_cipher_cmac_update(mbedtls_cipher_context_t *ctx , const unsigned char *input, size_t ilen)
 {
-    const mbedtls_cmac_funcs* funcs = (const mbedtls_cmac_funcs*)ctx->cmac_funcs;
+    mbedtls_cmac_context_t* cmac_ctx = (mbedtls_cmac_context_t*)ctx->cipher_ctx;
+    const mbedtls_cmac_funcs* funcs = (const mbedtls_cmac_funcs*)cmac_ctx->handle;
 
     if (funcs == NULL)
     {
@@ -87,7 +90,8 @@ int mbedtls_cipher_cmac_update(mbedtls_cipher_context_t *ctx , const unsigned ch
 
 int mbedtls_cipher_cmac_finish(mbedtls_cipher_context_t *ctx , unsigned char *output)
 {
-    const mbedtls_cmac_funcs* funcs = (const mbedtls_cmac_funcs*)ctx->cmac_funcs;
+    mbedtls_cmac_context_t* cmac_ctx = (mbedtls_cmac_context_t*)ctx->cipher_ctx;
+    const mbedtls_cmac_funcs* funcs = (const mbedtls_cmac_funcs*)cmac_ctx->handle;
 
     if (funcs == NULL)
     {
@@ -99,7 +103,8 @@ int mbedtls_cipher_cmac_finish(mbedtls_cipher_context_t *ctx , unsigned char *ou
 
 int mbedtls_cipher_cmac_reset(mbedtls_cipher_context_t *ctx)
 {
-    const mbedtls_cmac_funcs* funcs = (const mbedtls_cmac_funcs*)ctx->cmac_funcs;
+    mbedtls_cmac_context_t* cmac_ctx = (mbedtls_cmac_context_t*)ctx->cipher_ctx;
+    const mbedtls_cmac_funcs* funcs = (const mbedtls_cmac_funcs*)cmac_ctx->handle;
 
     if (funcs == NULL)
     {
@@ -111,7 +116,8 @@ int mbedtls_cipher_cmac_reset(mbedtls_cipher_context_t *ctx)
 
 void mbedtls_cipher_cmac_free(mbedtls_cipher_context_t *ctx)
 {
-    const mbedtls_cmac_funcs* funcs = (const mbedtls_cmac_funcs*)ctx->cmac_funcs;
+    mbedtls_cmac_context_t* cmac_ctx = (mbedtls_cmac_context_t*)ctx->cipher_ctx;
+    const mbedtls_cmac_funcs* funcs = (const mbedtls_cmac_funcs*)cmac_ctx->handle;
 
     if (funcs != NULL)
     {
