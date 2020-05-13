@@ -74,10 +74,10 @@ extern "C" {
  */
 
 /** @brief Maximum number of bytes required per master link for the default buffer configuration. */
-#define BLE_CONTROLLER_MEM_DEFAULT_MASTER_LINK_SIZE 1068
+#define BLE_CONTROLLER_MEM_DEFAULT_MASTER_LINK_SIZE 788
 
 /** @brief Maximum number of bytes required per slave link for the default buffer configuration. */
-#define BLE_CONTROLLER_MEM_DEFAULT_SLAVE_LINK_SIZE 1624
+#define BLE_CONTROLLER_MEM_DEFAULT_SLAVE_LINK_SIZE 940
 
 /** @brief Memory overhead per LL packet buffer. */
 #define BLE_CONTROLLER_MEM_BUFFER_OVERHEAD_SIZE 10
@@ -123,10 +123,10 @@ extern "C" {
      BLE_CONTROLLER_MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
 
 /** Maximum shared memory required for master links. */
-#define BLE_CONTROLLER_MEM_MASTER_LINKS_SHARED 40
+#define BLE_CONTROLLER_MEM_MASTER_LINKS_SHARED 24
 
 /** Maximum shared memory required for slave links. */
-#define BLE_CONTROLLER_MEM_SLAVE_LINKS_SHARED  40
+#define BLE_CONTROLLER_MEM_SLAVE_LINKS_SHARED  24
 
 /** @} end of ble_controller_mem_defines */
 
@@ -206,8 +206,8 @@ typedef union
  *                                     error in the BLE Controller.
  *
  * @retval 0              Success
- * @retval - ::NRF_EINVAL Invalid argument provided
- * @retval - ::NRF_EPERM  Unable to initialize because
+ * @retval -NRF_EINVAL    Invalid argument provided
+ * @retval -NRF_EPERM     Unable to initialize because
  *                         - MPSL is not initialized
  *                         - MPSL needs to be configured with a LFCLK accuracy of 500 ppm or better.
  */
@@ -230,8 +230,8 @@ int32_t ble_controller_init(ble_controller_fault_handler_t fault_handler);
  * @param[in]  p_resource_cfg   Configuration to be changed.
  *
  * @returns Required memory size for the current configuration in bytes.
- * @retval - ::NRF_EOPNOTSUPP  Unsupported configuration
- * @retval - ::NRF_EINVAL      Invalid argument provided
+ * @retval -NRF_EOPNOTSUPP    Unsupported configuration
+ * @retval -NRF_EINVAL        Invalid argument provided
  */
 int32_t ble_controller_cfg_set(uint8_t config_tag,
                                uint8_t config_type,
@@ -251,7 +251,7 @@ int32_t ble_controller_cfg_set(uint8_t config_tag,
  *                            from @ref ble_controller_cfg_set.
  *
  * @retval 0              Success
- * @retval - ::NRF_EINVAL Invalid argument provided
+ * @retval -NRF_EINVAL    Invalid argument provided
  */
 int32_t ble_controller_enable(ble_controller_callback_t callback,
                               uint8_t * p_mem);
@@ -275,7 +275,7 @@ int32_t ble_controller_disable(void);
  *  @param[in,out] p_build_revision  Build revision.
  *
  * @retval 0              Success
- * @retval - ::NRF_EINVAL Invalid argument provided
+ * @retval -NRF_EINVAL    Invalid argument provided
  */
 int32_t ble_controller_build_revision_get(uint8_t * p_build_revision);
 
@@ -296,8 +296,8 @@ void ble_controller_RNG_IRQHandler(void);
  *  - DLE is marked supported in the LL Feature Exchange procedure.
  *
  * @retval 0                            Success
- * @retval - ::NRF_EPERM                This API must be called before @ref ble_controller_enable().
- * @retval - ::NRF_EOPNOTSUPP           Data Length Extension is not supported.
+ * @retval -NRF_EPERM                   This API must be called before @ref ble_controller_enable().
+ * @retval -NRF_EOPNOTSUPP              Data Length Extension is not supported.
  */
 int32_t ble_controller_support_dle(void);
 
