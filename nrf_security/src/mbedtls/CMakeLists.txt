@@ -68,7 +68,6 @@ append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library/
     platform.c
     platform_util.c
     ripemd160.c
-    sha512.c
     timing.c
     version.c
     version_features.c
@@ -161,6 +160,12 @@ if (CONFIG_MBEDTLS_TLS_LIBRARY)
   nrf_security_debug_list_target_files(mbedtls_tls_vanilla)
   zephyr_library_app_memory(k_mbedtls_partition)
 endif()
+
+#
+# Create mbedcrypto_shared (noglue) library
+#
+add_subdirectory(shared)
+zephyr_library_link_libraries(mbedcrypto_shared)
 
 #
 # Create mbedcrypto_cc310 (noglue) library
