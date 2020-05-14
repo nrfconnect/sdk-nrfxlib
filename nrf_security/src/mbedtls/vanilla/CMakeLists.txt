@@ -57,21 +57,6 @@ target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_SHA1_C
 target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_SHA256_C
   mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/sha256.c
 )
-target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_CHACHA20_C
-  mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/chacha20.c
-)
-target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_POLY1305_C
-  mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/poly1305.c
-)
-target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_CHACHAPOLY_C
-  mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/chachapoly.c
-)
-target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_RSA_C
-  mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/rsa_internal.c
-)
-target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_RSA_C
-  mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/rsa.c
-)
 
 target_include_directories(mbedcrypto_vanilla PRIVATE
   ${common_includes}
