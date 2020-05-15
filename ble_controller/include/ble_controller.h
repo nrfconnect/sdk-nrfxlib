@@ -301,6 +301,31 @@ void ble_controller_RNG_IRQHandler(void);
  */
 int32_t ble_controller_support_dle(void);
 
+/** @brief Support LE 2M PHY
+ *
+ * After this API is called, the controller will support LE 2M PHY. That is:
+ *  - All HCI APIs for obtaining or changing PHYs are supported.
+ *  - The controller can use 2M PHY in both the connected and non-connected state.
+ *  - LE 2M PHY is marked supported in the LL Feature Exchange procedure.
+ *
+ * @retval 0                            Success
+ * @retval -NRF_EPERM                   This API must be called before @ref ble_controller_enable().
+ */
+int32_t ble_controller_support_le_2m_phy(void);
+
+/** @brief Support LE Coded PHY
+ *
+ * After this API is called, the controller will support LE Coded PHY. That is:
+ *  - All HCI APIs for obtaining or changing PHYs are supported.
+ *  - The controller can use LE Coded PHY in both the connected and non-connected state.
+ *  - LE Coded PHY is marked supported in the LL Feature Exchange procedure.
+ *
+ * @retval 0                            Success
+ * @retval -NRF_EPERM                   This API must be called before @ref ble_controller_enable().
+ * @retval -NRF_EOPNOTSUPP              LE Coded PHY is not supported.
+ */
+int32_t ble_controller_support_le_coded_phy(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -67,9 +67,11 @@ Proprietary feature support:
 +--------------------------+--------+--------+--------+
 
 .. important::
-   * The libraries are for evaluation purposes only.
-   * The libraries are not fully functional and not yet fully tested.
-   * The libraries are not optimized for performance.
+   For nRF5340, the libraries are:
+
+   -  For evaluation purposes only.
+   -  Not fully functional and not properly tested.
+   -  Not optimized for performance.
 
 
 .. toctree::
