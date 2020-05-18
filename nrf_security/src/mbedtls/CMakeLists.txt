@@ -25,7 +25,6 @@ macro(append_with_prefix_ifdef var cond prefix)
   endif()
 endmacro()
 
-
 nrf_security_debug("Creating list of files for base mbed TLS lib")
 
 #
@@ -45,8 +44,6 @@ append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library/
     cipher_wrap.c
     ctr_drbg.c
     des.c
-    dhm.c
-    ecjpake.c
     entropy_poll.c
     error.c
     gcm.c
@@ -71,7 +68,6 @@ append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library/
     platform.c
     platform_util.c
     ripemd160.c
-    rsa_internal.c
     sha512.c
     timing.c
     version.c
@@ -82,7 +78,7 @@ append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library/
 nrf_security_debug("Creating list of files for x509 lib")
 #
 # x509 files
-#r
+#
 append_with_prefix(src_x509 ${ARM_MBEDTLS_PATH}/library/
     certs.c
     pkcs11.c
@@ -132,57 +128,9 @@ zephyr_include_directories(${common_includes})
 zephyr_library_named(mbedtls_base_vanilla)
 zephyr_library_sources(${src_crypto} ${src_crypto_replacement})
 
-#
-# Add files if not glued (i.e. when vanilla only is selected)
-#
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_AES_C
-  ${ARM_MBEDTLS_PATH}/library/aes.c
+zephyr_library_sources_ifdef(CONFIG_MBEDTLS_ENABLE_HEAP
+  ${NRF_SECURITY_ROOT}/src/mbedtls/mbedtls_heap.c
 )
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_CCM_C
-  ${ARM_MBEDTLS_PATH}/library/ccm.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_CMAC_C
-  ${ARM_MBEDTLS_PATH}/library/cmac.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_RSA_C
-  ${ARM_MBEDTLS_PATH}/library/rsa.c
-)
-
-#
-# Files that are either in vanilla or backend
-#
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_ECP_C
-  ${ARM_MBEDTLS_PATH}/library/ecp.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_ECP_C
-  ${ARM_MBEDTLS_PATH}/library/ecp_curves.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_ECDH_C
-  ${ARM_MBEDTLS_PATH}/library/ecdh.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_ECDSA_C
-  ${ARM_MBEDTLS_PATH}/library/ecdsa.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_ECJPAKE_C
-  ${ARM_MBEDTLS_PATH}/library/ecjpake.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_SHA256_C
-  ${ARM_MBEDTLS_PATH}/library/sha256.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_SHA1_C
-  ${ARM_MBEDTLS_PATH}/library/sha1.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_CHACHA20_C
-  ${ARM_MBEDTLS_PATH}/library/chacha20.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_POLY1305_C
-  ${ARM_MBEDTLS_PATH}/library/poly1305.c
-)
-zephyr_library_sources_ifdef(VANILLA_ONLY_MBEDTLS_CHACHAPOLY_C
-  ${ARM_MBEDTLS_PATH}/library/chachapoly.c
-)
-zephyr_library_sources_ifdef(CONFIG_MBEDTLS_ENABLE_HEAP ${NRF_SECURITY_ROOT}/src/mbedtls/mbedtls_heap.c)
-zephyr_library_app_memory(k_mbedtls_partition)
 
 if(CONFIG_SOC_NRF52840 OR CONFIG_SOC_NRF9160)
   zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/cc310/replacements/entropy.c)
@@ -198,7 +146,7 @@ nrf_security_debug_list_target_files(mbedtls_base_vanilla)
 if (CONFIG_MBEDTLS_X509_LIBRARY)
   zephyr_library_named(mbedtls_x509_vanilla)
   zephyr_library_sources(${src_x509})
-  zephyr_library_link_libraries(mbedtls_common)
+  zephyr_library_link_libraries(mbedcrypto_common)
   nrf_security_debug_list_target_files(mbedtls_x509_vanilla)
   zephyr_library_app_memory(k_mbedtls_partition)
 endif()
@@ -209,10 +157,35 @@ endif()
 if (CONFIG_MBEDTLS_TLS_LIBRARY)
   zephyr_library_named(mbedtls_tls_vanilla)
   zephyr_library_sources(${src_tls} ${src_tls_replacement})
-  zephyr_library_link_libraries(mbedtls_common)
+  zephyr_library_link_libraries(mbedcrypto_common)
   nrf_security_debug_list_target_files(mbedtls_tls_vanilla)
   zephyr_library_app_memory(k_mbedtls_partition)
 endif()
+
+#
+# Create mbedcrypto_cc310 (noglue) library
+#
+if (CONFIG_CC310_BACKEND)
+  nrf_security_debug("-------- Adding src/mbedtls/cc310")
+  add_subdirectory(cc310)
+endif()
+
+#
+# Create mbedcrypto_oberon (noglue) library
+#
+if (CONFIG_OBERON_BACKEND)
+  nrf_security_debug("-------- Adding src/mbedtls/oberon")
+  add_subdirectory(oberon)
+endif()
+
+#
+# Create mbedcrypto_vanilla (noglue) library
+#
+if (CONFIG_MBEDTLS_VANILLA_BACKEND)
+  nrf_security_debug("-------- Adding src/mbedtls/vanilla")
+  add_subdirectory(vanilla)
+endif()
+
 
 if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
   #
@@ -220,13 +193,22 @@ if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
   # no renaming should be carried out.
   #
   if(TARGET mbedcrypto_cc310)
+    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_cc310 (single backend)")
     target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_cc310)
   endif()
   if(TARGET platform_cc310)
+    nrf_security_debug("Linking mbedtls_base_vanilla with platform_cc310 (single backend)")
     target_link_libraries(mbedtls_base_vanilla PRIVATE platform_cc310)
   endif()
+  if(TARGET mbedcrypto_oberon)
+    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_oberon (single backend)")
+    target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_oberon)
+  endif()
+  if(TARGET mbedcrypto_vanilla)
+    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_oberon (single backend)")
+    target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_vanilla)
+  endif()
 endif()
-
 
 #
 # Generate a dummy library called mbedtls_external to be able to use

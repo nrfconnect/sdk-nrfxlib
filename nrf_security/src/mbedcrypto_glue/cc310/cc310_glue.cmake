@@ -5,17 +5,22 @@
 #
 nrf_security_debug("######### Creating cc310 glue library #########")
 
-if (CONFIG_GLUE_MBEDTLS_AES_C AND CC310_MBEDTLS_AES_C)
+if (CONFIG_GLUE_MBEDTLS_AES_C AND CONFIG_CC310_MBEDTLS_AES_C)
   set(GLUE_CC310_MBEDTLS_AES_C TRUE)
   nrf_security_debug("cc310 backend glue: AES")
 endif()
 
-if (CONFIG_GLUE_MBEDTLS_CCM_C AND CC310_MBEDTLS_CCM_C)
+if (CONFIG_GLUE_MBEDTLS_CCM_C AND CONFIG_CC310_MBEDTLS_CCM_C)
   set(GLUE_CC310_MBEDTLS_CCM_C TRUE)
   nrf_security_debug("cc310 backend glue: CCM")
 endif()
 
-if (CONFIG_GLUE_MBEDTLS_DHM_C AND CC310_MBEDTLS_DHM_C)
+#if (CONFIG_GLUE_MBEDTLS_CMAC_C AND CONFIG_CC310_MBEDTLS_CMAC_C)
+#  set(GLUE_CC310_MBEDTLS_CMAC_C TRUE)
+#  nrf_security_debug("cc310 backend glue: CMAC")
+#endif()
+
+if (CONFIG_GLUE_MBEDTLS_DHM_C AND CONFIG_CC310_MBEDTLS_DHM_C)
   set(GLUE_CC310_MBEDTLS_DHM_C TRUE)
   nrf_security_debug("cc310 backend glue: DHM")
 endif()
@@ -26,13 +31,16 @@ zephyr_library_named(mbedcrypto_glue_cc310)
 #
 # Adding cc310 backend glue files
 #
-zephyr_library_sources_ifdef(GLUE_CC310_MBEDTLS_AES_C
+zephyr_library_sources_ifdef(CONFIG_CC310_MBEDTLS_CCM_C
   ${CMAKE_CURRENT_LIST_DIR}/aes_cc310.c
 )
-zephyr_library_sources_ifdef(GLUE_CC310_MBEDTLS_CCM_C
+zephyr_library_sources_ifdef(CONFIG_CC310_MBEDTLS_CCM_C
   ${CMAKE_CURRENT_LIST_DIR}/ccm_cc310.c
 )
-zephyr_library_sources_ifdef(GLUE_CC310_MBEDTLS_DHM_C
+#zephyr_library_sources_ifdef(CONFIG_CC310_MBEDTLS_CCM_C
+#  ${CMAKE_CURRENT_LIST_DIR}/ccm_cc310.c
+#)
+zephyr_library_sources_ifdef(CONFIG_CC310_MBEDTLS_CCM_C
   ${CMAKE_CURRENT_LIST_DIR}/dhm_cc310.c
 )
 
@@ -41,6 +49,9 @@ zephyr_library_sources(${ZEPHYR_BASE}/misc/empty_file.c)
 zephyr_library_compile_definitions(MBEDTLS_BACKEND_PREFIX=cc310)
 zephyr_library_link_libraries(mbedtls_common_glue)
 nrf_security_debug_list_target_files(mbedcrypto_glue_cc310)
+
+add_dependencies(mbedcrypto_glue_cc310 mbedcrypto_cc310_renamed)
+
 #
 # Rename the external symbols as referenced through the glue files
 # The APIs will match cc310_mbedtls_<xxxx> after this.
@@ -52,4 +63,5 @@ add_custom_command(
           --redefine-syms
           ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_cc310.txt
           $<TARGET_FILE:mbedcrypto_glue_cc310>
+  DEPENDS mbedcrypto_cc310_renamed
 )

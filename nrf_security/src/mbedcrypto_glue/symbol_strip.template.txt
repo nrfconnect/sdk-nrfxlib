@@ -63,7 +63,7 @@ ${KEEP_MBEDTLS_ECJPAKE_C}mbedtls_ecjpake_write_round_two
 #
 ${KEEP_MBEDTLS_PLATFORM}mbedtls_platform_zeroize
 #
-# SHA1 
+# SHA1
 #
 ${KEEP_MBEDTLS_SHA1_C}mbedtls_sha1
 ${KEEP_MBEDTLS_SHA1_C}mbedtls_internal_sha1_process
