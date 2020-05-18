@@ -28,7 +28,7 @@
  */
 typedef struct mbedtls_cmac_context_t
 {
-    uint32_t dummy;                     //!< Dummy value.
+    void* handle;                       //!< Pointer to the function table in an initialized glue context.
 } mbedtls_cmac_context_t;
 
 /** @brief Free a CMAC context after use.

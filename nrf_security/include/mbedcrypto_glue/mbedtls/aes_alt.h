@@ -17,7 +17,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#define CC310_MBEDTLS_AES_CONTEXT_WORDS         (24)    //!< AES context size in words in nrf_cc310_mbedcrypto library.
+#define CC310_MBEDTLS_AES_CONTEXT_WORDS         (24)    //!< AES context size in words in the nrf_cc310_mbedcrypto library.
 #define VANILLA_MBEDTLS_AES_CONTEXT_WORDS       (70)    //!< AES context size in words in standard mbed TLS.
 #define VANILLA_MBEDTLS_AES_XTS_CONTEXT_WORDS   (140)   //!< AES XTS context size in words in standard mbed TLS.
 
