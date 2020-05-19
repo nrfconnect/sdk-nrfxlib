@@ -11,6 +11,8 @@ Master branch
 Added
 =====
 
+* Added Set Event Mask command.
+* Added Set Event Mask Page 2 command.
 * Added :cpp:func:`ble_controller_support_le_2m_phy()` which makes LE 2M PHY support configurable.
 * Added :cpp:func:`ble_controller_support_le_coded_phy()` which makes LE Coded PHY support configurable.
 * Added LE Read Supported States command.
