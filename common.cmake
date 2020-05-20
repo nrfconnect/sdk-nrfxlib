@@ -29,7 +29,7 @@ function(nrfxlib_calculate_lib_path lib_path)
   endif()
 
   # Set floating ABI
-  if(CONFIG_FLOAT)
+  if(CONFIG_FPU)
     if(CONFIG_FP_HARDABI)
         set(float_dir hard-float)
     elseif(CONFIG_FP_SOFTABI)
