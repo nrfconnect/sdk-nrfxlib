@@ -1,20 +1,32 @@
 .. _nfc:
 
-Near-Field Communication (NFC)
+Near Field Communication (NFC)
 ##############################
 
-The following NFC libraries are RTOS-agnostic NFC libraries built for
-Nordic Semiconductor nRF52 Series SoCs.
+Near Field Communication (NFC) is a technology for wireless transfer of small amounts of data between two devices.
+The provided NFC libraries are RTOS-agnostic and built for Nordic Semiconductor nRF52 and nRF53 Series SoCs.
+
+See the `Working with NFC`_ user guide for information about how to use the libraries in the |NCS|.
 
 The following libraries are available:
 
-libnfct2t_nrf52
-  * Intended for nRF52832 and nRF52840.
-  * Supports NFC-A Type 2 Tag in read-only mode.
+Type 2 Tag
+  Supports NFC-A Type 2 Tag in read-only mode.
+  See :ref:`type_2_tag` for more information.
 
-libnfct4t_nrf52
-  * Intended for nRF52832 and nRF52840.
-  * Supports NFC-A Type 4 Tag.
+  The following variants are available:
+
+  * libnfct2t_nrf52 (for nRF52832, nRF52833, and nRF52840)
+  * libnfct2t_nrf53 (for nRF5340)
+
+Type 4 Tag
+  Supports NFC-A Type 4 Tag.
+  See :ref:`type_4_tag` for more information.
+
+  The following variants are available:
+
+  * libnfct4t_nrf52 (for nRF52832, nRF52833, and nRF52840)
+  * libnfct4t_nrf53 (for nRF5340)
 
 Each library is distributed in both soft-float and hard-float builds.
 
@@ -26,6 +38,7 @@ Each library is distributed in both soft-float and hard-float builds.
    :maxdepth: 2
    :caption: Contents:
 
-   doc/integration_notes
    CHANGELOG
-   doc/api
+   doc/integration_notes
+   doc/type_2_tag
+   doc/type_4_tag
