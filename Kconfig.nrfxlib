@@ -13,5 +13,6 @@ rsource "mpsl/Kconfig"
 rsource "crypto/Kconfig"
 rsource "nrf_security/Kconfig"
 rsource "zboss/Kconfig"
+rsource "nrf_802154_sl/Kconfig"
 
 endmenu

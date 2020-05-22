@@ -26,6 +26,7 @@ doc/*                                     @b-gent
 /crypto/                                  @frkv @tejlmand
 /mpsl/                                    @joerchan @rugeGerritsen
 /nfc/                                     @anangl @grochu
+/nrf_802154_sl/                           @hubertmis
 /nrf_security/                            @frkv @tejlmand
 /zboss/                                   @tomchy
 /zephyr/                                  @carlescufi

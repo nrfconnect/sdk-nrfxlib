@@ -1,0 +1,26 @@
+#
+# Copyright (c) 2020 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
+
+if NRF_802154_RADIO_DRIVER
+
+choice NRF_802154_SL_CHOICE
+	prompt "nRF 802.15.4 Service Layer selection"
+	default NRF_802154_SL
+	help
+		Select implementation of nRF 802.15.4 Service Layer.
+
+config NRF_802154_SL
+	bool "Nordic proprietary nRF 802.15.4 Service Layer."
+	select MPSL
+	select ZERO_LATENCY_IRQS
+	select DYNAMIC_INTERRUPTS
+	help
+		Use of Nordic Semiconductor proprietary implementation of nRF 802.15.4 Service Layer.
+		This implementation enables advanced features of nRF 802.15.4 Radio Driver.
+
+endchoice # NRF_802154_SL_CHOICE
+
+endif # NRF_802154_RADIO_DRIVER

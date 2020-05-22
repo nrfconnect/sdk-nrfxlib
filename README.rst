@@ -20,5 +20,6 @@ Semiconductor. Refer to their respective documentation for more information.
    bsdlib/README
    crypto/README
    mpsl/README
+   nrf_802154_sl/README
    nrf_security/README
    nfc/README
