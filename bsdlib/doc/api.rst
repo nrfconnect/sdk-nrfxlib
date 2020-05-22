@@ -11,6 +11,12 @@ BSD Library Management
    :project: nrfxlib
    :members:
 
+bsd_init() return values for modem firmware updates
+===================================================
+
+.. doxygengroup:: bsd_modem_dfu
+   :project: nrfxlib
+   :members:
 
 Limits of the BSD library
 *************************
