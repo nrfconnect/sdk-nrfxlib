@@ -357,6 +357,7 @@ zb_nwk_pib_cache_t *zb_nwk_get_pib_cache(void);
   */
 #define ZB_PIB_CACHE() zb_nwk_get_pib_cache()
 
+#ifndef NCP_MODE_HOST
 /** Cached value of device network address */
 #define ZB_PIBCACHE_NETWORK_ADDRESS()  ZB_PIB_CACHE()->mac_short_address
 /** Cached value of device Pan ID */
@@ -372,6 +373,24 @@ zb_nwk_pib_cache_t *zb_nwk_get_pib_cache(void);
 /** Cached value of CurrentPage attribute */
 #define ZB_PIBCACHE_CURRENT_PAGE()  ZB_PIB_CACHE()->phy_current_page
 
+#else /* NCP_MODE_HOST */
+
+/** Cached value of device network address */
+#define ZB_PIBCACHE_NETWORK_ADDRESS()  zb_get_short_address()
+/** Cached value of device Pan ID */
+#define ZB_PIBCACHE_PAN_ID()           ZB_PIB_CACHE()->mac_pan_id
+/** Cached value of device extended address */
+#define ZB_PIBCACHE_EXTENDED_ADDRESS() ZB_PIB_CACHE()->mac_extended_address
+/** Cached value of RxOnWhenIdle attribute */
+#define ZB_PIBCACHE_RX_ON_WHEN_IDLE()  zb_get_rx_on_when_idle()
+/** Cached value of AssociationPermit attribute */
+#define ZB_PIBCACHE_ASSOCIATION_PERMIT() ZB_PIB_CACHE()->mac_association_permit
+/** Cached value of CurrentChannel attribute */
+#define ZB_PIBCACHE_CURRENT_CHANNEL()  ZB_PIB_CACHE()->phy_current_channel
+/** Cached value of CurrentPage attribute */
+#define ZB_PIBCACHE_CURRENT_PAGE()  ZB_PIB_CACHE()->phy_current_page
+
+#endif /* !NCP_MODE_HOST */
 
 /**
    Arguments of the NLME-PERMIT_JOINING.request routine.

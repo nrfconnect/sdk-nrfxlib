@@ -202,6 +202,7 @@ typedef enum zb_aps_aib_attr_id_e
  */
 typedef ZB_PACKED_PRE struct zb_aps_hdr_s
 {
+  /* TODO: rearrange fields to make that structure packet and exclude "packed" attribute. Don't forget to update NCP side. */
   zb_uint8_t  fc;              /*!< Frame control. */
   zb_uint16_t src_addr;        /*!< Source address of packet originator. */
   zb_uint16_t dst_addr;        /*!< The destination address of the packet. */
