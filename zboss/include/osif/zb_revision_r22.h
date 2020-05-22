@@ -6,5 +6,5 @@
  * This file implements mappings of Kconfig options enabling and configuring ZBOSS features.
  */
 
-/* ZBOSS platform for NCS build number. */
+/* Revision number of ZBOSS platform for NCS. */
 #define ZBOSS_SDK_REVISION 1

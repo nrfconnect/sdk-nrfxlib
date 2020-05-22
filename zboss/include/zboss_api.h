@@ -501,7 +501,7 @@ void zboss_start_continue(void);
 zb_ret_t zboss_start_in_sniffer_mode(void);
 
 /**
-   Start sniffing 
+   Start sniffing
 
    ZBOSS must be started in the sniffer mode.
 
@@ -595,6 +595,10 @@ void zb_set_node_descriptor_manufacturer_code(zb_uint16_t manuf_code);
    @param addr - pointer to memory where result will be stored
  */
 void zb_get_long_address(zb_ieee_addr_t addr);
+
+/** Get current short address of the device
+ */
+zb_uint16_t zb_get_short_address(void);
 
 /*! @} */ /* zb_general_get */
 
@@ -1077,7 +1081,7 @@ zb_ret_t zb_production_config_check(zb_production_config_hdr_t *prod_cfg_hdr);
   @param threshold_ms - sleep threshold in milliseconds
              If threshold is 0, means zero threshold, application will be notified each time when stack is ready to sleep
              (no immediate callbacks in queue).
-  @return RET_OK if new threshold is valid and applied 
+  @return RET_OK if new threshold is valid and applied
   @return RET_ERROR if user wants to set threshold greater that @ref ZB_MAXIMUM_SLEEP_THRESHOLD_MS or lesser than ZB_SCHED_SLEEP_THRESHOLD_MS.
 */
 zb_ret_t zb_sleep_set_threshold(zb_uint32_t threshold_ms);

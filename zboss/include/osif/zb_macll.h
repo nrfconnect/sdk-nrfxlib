@@ -28,6 +28,9 @@
 
 /** Status code indicating that the received Data frame
  *  was not acknowledged with a pending bit set (indirect poll).
+ *
+ * That status should not be set directly by the transceiver implementation,
+ * but the zb_macll_set_received_data_status(..) API should be used.
  */
 #define ZB_MACLL_NO_DATA 0xeb
 
@@ -91,6 +94,6 @@ int8_t zb_macll_metadata_get_power(zb_bufid_t bufid);
 void zb_macll_metadata_set_power(zb_bufid_t bufid, int8_t power);
 uint8_t zb_macll_metadata_get_lqi(zb_bufid_t bufid);
 void zb_macll_metadata_set_lqi(zb_bufid_t bufid, uint8_t lqi);
-
+void zb_macll_set_received_data_status(zb_bufid_t bufid, zb_bool_t pending_bit);
 
 #endif /* ZB_MACLL_H__ */
