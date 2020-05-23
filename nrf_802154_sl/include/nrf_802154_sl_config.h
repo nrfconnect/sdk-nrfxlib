@@ -55,7 +55,7 @@
  *
  */
 #ifndef NRF_802154_SL_RTC_IRQ_PRIORITY
-#define NRF_802154_SL_RTC_IRQ_PRIORITY 6
+#define NRF_802154_SL_RTC_IRQ_PRIORITY 5
 #endif
 
 /**
