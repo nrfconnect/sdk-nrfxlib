@@ -5,6 +5,12 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.7.3
+************
+
+* Aligned the naming of ``nrf_pollfd`` structure elements with ``pollfd``.
+* Fixed IP socket state after :cpp:func:`accept()` call.
+
 bsdlib 0.7.2
 ************
 

@@ -280,7 +280,7 @@ typedef uint32_t nrf_fd_set;
  * Continuous navigation mode is engaged by setting fix interval to 1.
  *
  * Periodic navigation mode is engaged by setting the fix interval to value
- * other than zero or one.
+ * 10...1800. The unit is seconds.
  */
 #define NRF_SO_GNSS_FIX_INTERVAL        1
 
@@ -1243,9 +1243,9 @@ int nrf_select(int                        nfds,
  */
  struct nrf_pollfd
  {
-    int   handle;        /**< Socket handle */
-    short requested;     /**< Requested events, is a mask of events */
-    short returned;      /**< Returned events, is a mask of events */
+    int   fd;         /**< Socket handle. */
+    short events;     /**< Requested events, is a mask of events. */
+    short revents;    /**< Returned events, is a mask of events. */
 };
 
 #define NRF_POLLIN       0x0001    /**< Event for data receive. Can be requested and returned. */
@@ -1263,16 +1263,16 @@ int nrf_select(int                        nfds,
 /**
  * @brief Method to poll for events on one or more sockets.
  *
- * @param[inout] An array of sockets, and respective for each socket that the caller polls for.
- *               The occurred events per socket is returned in the requested field of @ref struct nrf_pollfd structure.
- *               Shall not be NULL.
- * @param[in]    Positive number of sockets being polled for events.
- *               Shall not be more than @ref BSD_MAX_SOCKET_COUNT.
+ * @param[in,out] p_fds    An array of sockets, and respective for each socket that the caller polls for.
+ *                         The occurred events per socket is returned in the revents field of @ref struct nrf_pollfd structure.
+ *                         Shall not be NULL.
+ * @param[in]     nfds     Positive number of sockets being polled for events.
+ *                         Shall not be more than @ref BSD_MAX_SOCKET_COUNT.
  *
- * @param[in]    Timeout in milliseconds.
- *               The methods waits for this time period for the events to occur on the sockets.
+ * @param[in]     timeout  Timeout in milliseconds.
+ *                         The methods waits for this time period for the events to occur on the sockets.
  *
- * @retval A positive number less than or equal to nfds indicating sockets on which events occurred.
+ * @return A positive number less than or equal to nfds indicating sockets on which events occurred.
  *         0 indicates the timed out occurred and no file descriptors were ready.
  *         -1 on error, and errno indicates the reason for failure.
  */
@@ -1309,7 +1309,7 @@ int nrf_setsockopt(int             sock,
  * @param[in]       level     The level or group to which the option belongs.
  * @param[in]       optname   The name of the socket option.
  * @param[out]      p_optval  Pointer to the storage for the option value.
- * @param[inout]    p_optlen  The size of p_optval. Can be modified to the actual size of p_optval.
+ * @param[in,out]   p_optlen  The size of p_optval. Can be modified to the actual size of p_optval.
  *
  * @return 0 on success, or -1 on error.
  */

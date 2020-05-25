@@ -54,13 +54,10 @@ extern "C" {
 
 /**@} */
 
-/**@brief Structure for BSD library initialization parameters.
- *
- * See @ref bsd_reserved_memory for defaults.
- */
+/**@brief Structure for bsd library initialization parameters. */
 typedef struct
 {
-    bool       trace_on;           /**< Indicates the fidoless traces are in use. */
+    bool       trace_on;           /**< Indicates the traces are in use. */
     uint32_t   bsd_memory_address; /**< Defines the bsd library memory address. */
     uint32_t   bsd_memory_size;    /**< Defines the bsd library memory size. */
 } bsd_init_params_t;
@@ -80,6 +77,7 @@ typedef struct
  * @retval -1 on error.
  */
 int bsd_init(const bsd_init_params_t * p_init_params);
+
 
 /**
  * @brief Shutdown the library.
