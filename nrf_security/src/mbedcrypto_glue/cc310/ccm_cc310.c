@@ -33,4 +33,3 @@ const mbedtls_ccm_funcs mbedtls_ccm_cc310_backend_funcs = {
 };
 
 #endif
-

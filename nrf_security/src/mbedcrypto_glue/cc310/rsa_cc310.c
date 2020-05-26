@@ -77,6 +77,4 @@ const mbedtls_rsa_funcs mbedtls_rsa_cc310_backend_funcs = {
     .free = mbedtls_rsa_free,
 };
 
-
 #endif
-

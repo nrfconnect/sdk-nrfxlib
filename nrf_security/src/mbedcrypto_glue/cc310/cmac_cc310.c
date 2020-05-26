@@ -45,4 +45,3 @@ const mbedtls_cmac_funcs mbedtls_cmac_cc310_backend_funcs = {
 };
 
 #endif
-

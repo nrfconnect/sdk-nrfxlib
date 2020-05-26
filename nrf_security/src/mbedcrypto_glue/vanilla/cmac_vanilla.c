@@ -48,4 +48,3 @@ const mbedtls_cmac_funcs mbedtls_cmac_vanilla_mbedtls_backend_funcs = {
 };
 
 #endif
-

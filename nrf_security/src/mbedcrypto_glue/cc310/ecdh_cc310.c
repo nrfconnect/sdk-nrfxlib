@@ -45,4 +45,3 @@ const mbedtls_ecdh_funcs mbedtls_ecdh_cc310_backend_funcs = {
 };
 
 #endif
-

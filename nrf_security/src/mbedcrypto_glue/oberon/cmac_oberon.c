@@ -48,4 +48,3 @@ const mbedtls_cmac_funcs mbedtls_cmac_oberon_backend_funcs = {
 };
 
 #endif
-
