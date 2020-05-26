@@ -36,4 +36,3 @@ const mbedtls_dhm_funcs mbedtls_dhm_vanilla_mbedtls_backend_funcs = {
 };
 
 #endif
-

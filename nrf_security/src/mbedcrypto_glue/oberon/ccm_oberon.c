@@ -39,4 +39,3 @@ const mbedtls_ccm_funcs mbedtls_ccm_oberon_backend_funcs = {
 };
 
 #endif
-

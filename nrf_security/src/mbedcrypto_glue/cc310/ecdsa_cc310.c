@@ -50,4 +50,3 @@ const mbedtls_ecdsa_funcs mbedtls_ecdsa_cc310_backend_funcs = {
 };
 
 #endif
-

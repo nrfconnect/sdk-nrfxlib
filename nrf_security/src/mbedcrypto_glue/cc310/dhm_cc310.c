@@ -43,4 +43,3 @@ const mbedtls_dhm_funcs mbedtls_dhm_cc310_backend_funcs = {
 };
 
 #endif
-
