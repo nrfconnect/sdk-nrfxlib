@@ -30,12 +30,14 @@ The library does not require any initialization before the APIs can be used, alt
 
 mbed TLS integration
 ====================
-The nrf_oberon library v3.0.5 and later contains a companion library that provides mbed TLS integration for select features. This must be used with :ref:`nrf_security_readme`
+Starting from version 3.0.5, the nrf_oberon library contains a companion library that provides mbed TLS integration for select features.
+This must be used with the :ref:`nrf_security_readme`.
 
 
 Supported features
 ------------------
-The supported features for the nrf_oberon mbed TLS companion library are:
+The supported features for the mbed TLS companion library are:
+
 * AES (all ciphers, all key sizes)
 * AES CCM
 * CMAC
@@ -46,7 +48,6 @@ The supported features for the nrf_oberon mbed TLS companion library are:
 * SHA-256
 
 
-nrf_oberon crypto library
-=========================
+nrf_oberon crypto library API
+=============================
 :ref:`crypto_api_nrf_oberon`
-
