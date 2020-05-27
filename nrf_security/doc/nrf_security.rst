@@ -4,7 +4,7 @@ Nordic security module
 ######################
 
 The nrf_security module provides an integration between mbed TLS and software libraries that provide hardware-accelerated cryptographic functionality on selected Nordic Semiconductor SoCs.
-This module includes an mbed TLS glue layer to enable both hardware-accelerated and standard mbed TLS software implementation at the same time.
+This module includes an mbed TLS glue layer to enable both hardware-accelerated and software-based mbed TLS implementation at the same time.
 
 .. note::
    The nrf_security module interfaces with the :ref:`nrf_cc310_mbedcrypto_readme`.
@@ -53,10 +53,14 @@ The nrf_security module supports multiple enabled backends at the same time.
 This mechanism is intended to extend the available feature set of hardware accelerated cryptography.
 Enabling one or more backends adds more configuration options grouped into classes of cryptographic algorithms.
 
-Note that configuration options added after enabling one or more backends will change based on the number of enabled backends.
+Note that some cryptographic features are provided as an option regardless of the backend enabled.
+In such cases, the feature is compiled using standard mbed TLS.
+An example of this is SHA-512, which is only accessible using standard mbed TLS code.
+
+The configuration options added after enabling one or more backends will change based on the number of enabled backends.
 Some configuration options allow for adding support from multiple backends by utilizing the mbed TLS glue layer, while other provide a selection between the enabled backends (as radio buttons).
 
-The nrf_security module supports two backends:
+The nrf_security module supports the following backends:
 
 * Arm CryptoCell CC310 (in nRF52840 and nRF9160)
 * nrf_oberon binary library
@@ -75,7 +79,7 @@ The Arm CryptoCell CC310 backend is only available on the following devices:
 
 
 Enabling the Arm CryptoCell CC310 backend
------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To enable the Arm CryptoCell CC310 backend, set the :option:`CONFIG_CC310_BACKEND` Kconfig variable to true.
 
@@ -85,13 +89,13 @@ To enable the Arm CryptoCell CC310 backend, set the :option:`CONFIG_CC310_BACKEN
 nrf_oberon backend
 ------------------
 
-The :ref:`nrf_oberon_readme` library is a binarly library that provides select cryptographic algorithms optimized for use in nRF SOC's.
+The :ref:`nrf_oberon_readme` library is a binary library that provides select cryptographic algorithms optimized for use in nRF devices.
 This provides faster execution than standard mbed TLS implementations.
 
-The nrf_oberon backend provides support for AES ciphers, SHA-1 and SHA-256, ECC (ECDH, ECDSA, and ECJPAKE) using secp256r1.
+The nrf_oberon backend provides support for AES ciphers, SHA-1, SHA-256, and ECC (ECDH, ECDSA, and ECJPAKE) using secp256r1.
 
 Enabling the nrf_oberon backend
--------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To use the :ref:`nrf_oberon_readme` as a backend, set the :option:`CONFIG_OBERON_BACKEND` Kconfig variable to true.
 
@@ -106,7 +110,7 @@ Alternatively, it can be used on CC310 enabled devices to add support for featur
 
 
 Enabling the standard mbed TLS backend
---------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To enable the standard mbed TLS backend, set the :option:`CONFIG_MBEDTLS_VANILLA_BACKEND` Kconfig variable to true.
 
@@ -144,7 +148,7 @@ This function is called from the API which provides configuration changes that d
             return (keybits == 128) ? 2 : 0;
     }
 
-In this example, the AES CCM support in the backend will report priority level 2 if the key size is 128, or 0 if the key size is different.
+In this example, the AES CCM support in the backend will report priority level 3 if the key size is 128, or 0 if the key size is different.
 The CC310 backend does not support a larger key size.
 If it is larger, the standard mbed TLS will be used (if the backend is enabled).
 
@@ -210,7 +214,7 @@ Standard only
 ~~~~~~~~~~~~~
 The configuration options will list `Standard only` for the cryptographic algorithms that are not currently available in hardware.
 In this case, the only option to support the feature is through standard mbed TLS software implementations or through nrf_oberon.
-nrf_oberon support (if present) is shown in the next column in the table or in notes.
+If nrf_oberon support is present, it is shown in the next column in the table or in the notes.
 
 Choice
 ~~~~~~
@@ -242,10 +246,9 @@ AES core support can be configured by setting setting Kconfig variables accordin
 +--------------+----------------+----------------------------------------------------+
 
 .. note::
-   Enabling only the CC310 backend is limited to 128 bit keys. To add support for larger key sizes as well, enable standard support.
+   * Enabling only the CC310 backend is limited to 128 bit keys. To add support for larger key sizes as well, enable standard support.
+   * Enabling the nrf_oberon backend replaces select internal APIs for block encrypt/decrypt and set key for encrypt/decrypt.
 
-.. note::
-   Enabling the nrf_oberon backend replaces select internal APIs for block encrypt/decrypt and set key for encrypt/decrypt.
 
 AES cipher configuration
 ------------------------
@@ -273,10 +276,9 @@ AES cipher mode support can be configured according to the following table:
 +--------------+----------------+---------------------------------------------+
 
 .. note::
-   Currently, AES cipher mode XTS is only supported by standard mbed TLS.
+   * Currently, AES cipher mode XTS is not supported by the CC310 backend.
+   * The CC310 backend is limited to key sizes of 128 bits.
 
-.. note::
-   The CC310 backend is limited to key sizes of 128 bits.
 
 Multiple backends
 ~~~~~~~~~~~~~~~~~
@@ -301,10 +303,9 @@ AES cipher mode support can be configured according to the following table:
 +--------------+----------------+-----------------------------------------------------------+
 
 .. note::
-   The CC310 backend is limited to key sizes of 128 bits.
+   * The CC310 backend is limited to key sizes of 128 bits.
+   * XTS will not be available if multiple backends are enabled for AES.
 
-.. note::
-   XTS will not be available if multiple backends are enabled for AES.
 
 AEAD configurations
 -------------------
@@ -331,13 +332,10 @@ AEAD cipher mode support can be configured according to the following table:
 +--------------+------------------------------------+---------------------------------------+
 
 .. note::
-   AES GCM is supported by the nrf_oberon backend
+   * AES GCM is supported by the nrf_oberon backend.
+   * AEAD AES cipher modes are dependent on enabling AES core support according to `AES configuration`_.
+   * The CC310 backend is limited to key sizes of 128 bits.
 
-.. note::
-   AEAD AES cipher modes are dependent on enabling AES core support according to `AES configuration`_.
-
-.. note::
-   The CC310 backend is limited to key sizes of 128 bits.
 
 Multiple backends
 ~~~~~~~~~~~~~~~~~
@@ -369,10 +367,8 @@ AEAD cipher mode support can be configured according to the following table:
 +--------------+----------------+---------------------------------------------------------+
 
 .. note::
-   AEAD AES cipher modes are dependent on AES core support according to `AES configuration`_.
-
-.. note::
-   The CC310 backend is limited to key sizes of 128 bits.
+   * AEAD AES cipher modes are dependent on AES core support according to `AES configuration`_.
+   * The CC310 backend is limited to key sizes of 128 bits.
 
 
 DHM configurations
@@ -412,28 +408,21 @@ DHM support can be configured according to the following table:
 
 ECC configurations
 ------------------
-Elliptic Curve Cryptography (ECC) configuration provides support for Elliptic
-Curve over GF(p) library from CC310, nrf_oberon, or  mbed TLS standard libray.
+Elliptic Curve Cryptography (ECC) configuration provides support for Elliptic Curve over GF(p) library from CC310, nrf_oberon, or  mbed TLS standard library.
 ECC can be enabled by setting the :option:`CONFIG_MBEDTLS_ECP_C` Kconfig variable.
-Enabling :option:`CONFIG_MBEDTLS_ECP_C` will activate configuration options
-that are depending upon ECC, such as ECDH, ECDSA, ECJPAKE, and selection of
-ECC Curves to support in the system.
-If multiple backends are available, it is possible to select which backend to
-use for :option:`CONFIG_MBEDTLS_ECP_C`. This backend will be used to provide
-support for ECDH, ECDSA and/or ECJPAKE (if enabled).
+Enabling :option:`CONFIG_MBEDTLS_ECP_C` will activate configuration options that depend upon ECC, such as ECDH, ECDSA, ECJPAKE, and a selection of ECC curves to support in the system.
+If multiple backends are available, you can select which backend to use for :option:`CONFIG_MBEDTLS_ECP_C`.
+This backend will be used to provide support for ECDH, ECDSA, and/or ECJPAKE (if enabled).
 
 Single backend
 ~~~~~~~~~~~~~~
-Elliptic Curve over GF(p) provides core support for Elliptic Curve Cryptography
-and can be configured by setting the :option:`CONFIG_MBEDTLS_ECP_C` Kconfig
-variable.
+Elliptic Curve over GF(p) provides core support for Elliptic Curve Cryptography and can be configured by setting the :option:`CONFIG_MBEDTLS_ECP_C` Kconfig variable.
 
 Multiple backends
 ~~~~~~~~~~~~~~~~~
-When multiple backends are available, then it can be configured which backend to
-use for Elliptic Curve over GF(p) according to the following table.
+When multiple backends are available, you can configure which backend to use for Elliptic Curve over GF(p) according to the following table.
 
-+--------------+----------------+------------------------------------------------ -+
++--------------+----------------+--------------------------------------------------+
 | Module       | Support        | Configurations                                   |
 +==============+================+==================================================+
 | ECP          | Choice         | CC310: :option:`CONFIG_CC310_MBEDTLS_ECP_C`      |
@@ -462,11 +451,10 @@ ECDH support can be configured by setting the :option:`CONFIG_MBEDTLS_ECDH_C` Kc
 +--------------+----------------+-----------------------------------+
 
 .. note::
-   The :ref:`nrf_cc310_mbedcrypto_readme` does not integrate on ECP layer.
-   Only the top-level APIs for ECDH are replaced.
+   * The :ref:`nrf_cc310_mbedcrypto_readme` does not integrate on ECP layer.
+     Only the top-level APIs for ECDH are replaced.
+   * The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
 
-.. note::
-   The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
 
 ECDSA configurations
 --------------------
@@ -485,11 +473,10 @@ ECDSA support can be configured by setting Kconfig variables according to the fo
 +--------------+----------------+---------------------------------------+
 
 .. note::
-   The :ref:`nrf_cc310_mbedcrypto_readme` does not integrate on ECP layer.
-   Only the top-level APIs for ECDSA are replaced.
+   * The :ref:`nrf_cc310_mbedcrypto_readme` does not integrate on ECP layer.
+     Only the top-level APIs for ECDSA are replaced.
+   * The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
 
-.. note::
-   The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
 
 ECJPAKE configurations
 ----------------------
@@ -549,12 +536,10 @@ The following table shows the curves that can be configured.
 +----------------------------+----------------+------------------------------------------------------+
 
 .. note::
-   For the curves available in `Standard Only` mbed TLS to ba available then all
-   enabled ECC based features must use mbed TLS as backend. That is: ECDH, ECDSA, ECJPAKE.
+   * For the curves available in `Standard Only` mbed TLS to ba available then all enabled ECC based features must use mbed TLS as backend. That is: ECDH, ECDSA, ECJPAKE.
+   * The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
+     Choosing the nrf_oberon backend does not allow enabling the rest of the ECC curve types.
 
-.. note::
-   The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1. Choosing the nrf_oberon backend
-   does not allow enabling the rest of the ECC curve types.
 
 
 RSA configurations
@@ -663,9 +648,10 @@ Before modifying the default settings, see this `article on reducing mbed TLS me
 AES tables in ROM
 ~~~~~~~~~~~~~~~~~
 
-The :option:`CONFIG_MBEDTLS_AES_ROM_TABLES` Kconfig variable controls if the AES lookup tables will be placed in ROM
-instead of RAM. This decreases the RAM usage of ~8KB with an additional cost of ~8KB. Executing in ROM will be slower.
-If the configuration :option:`CONFIG_MbEDTLS_FEWER_TABLES` is set, then the size moved from RAM to ROM is ~2KB.
+You can set the :option:`CONFIG_MBEDTLS_AES_ROM_TABLES` Kconfig variable to place the AES lookup tables in ROM instead of RAM.
+This decreases the RAM usage by about 8 KB with an additional cost of about 8 KB of ROM.
+Note that executing operations in ROM is slower.
+If the configuration :option:`CONFIG_MBEDTLS_FEWER_TABLES` is set, then the size moved from RAM to ROM is about 2 KB.
 
 +------------------------------------------------+---------+-------+-----+
 | Option                                         | Default | Min   | Max |
@@ -678,8 +664,8 @@ Fewer AES tables
 ~~~~~~~~~~~~~~~~
 
 The :option:`CONFIG_MBEDTLS_AES_FEWER_TABLES` Kconfig variable controls the size of the AES lookup tables in use.
-Enabling this will omit ~75% of the AES tables in RAM or ROM. Enabling this will lead to AES needing to do more
-arithmetic, which imacts the overall performance.
+Enabling this omits about 75% of the AES tables in RAM or ROM.
+If the option is enabled, AES must perform more calculations, which impacts the overall performance.
 
 +------------------------------------------------+---------+-------+-----+
 | Option                                         | Default | Min   | Max |
