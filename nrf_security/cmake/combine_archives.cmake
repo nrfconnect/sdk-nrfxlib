@@ -14,28 +14,22 @@
 function(combine_archives output_archive input_archives)
   nrf_security_debug("Combining libraries to: ${output_archive}")
   set(mri_file ${CMAKE_CURRENT_BINARY_DIR}/${output_archive}.mri)
-  set(mri_file_in ${CMAKE_CURRENT_BINARY_DIR}/${output_archive}.mri.in)
-  nrf_security_debug("mri_file_in: ${mri_file_in}")
   nrf_security_debug("mri_file: ${mri_file}")
-  set(FULL_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/lib${output_archive}.a)
-  file(WRITE ${mri_file_in} "create ${FULL_OUTPUT_PATH}\n")
+ 
   foreach(in_archive ${input_archives})
-    file(APPEND ${mri_file_in} "addlib $<TARGET_FILE:${in_archive}>\n")
+    list(APPEND input_archives_path "$<TARGET_FILE:${in_archive}>")
     nrf_security_debug("Adding ${in_archive} to ${output_archive}")
   endforeach()
-  file(APPEND ${mri_file_in} "save\n")
-  file(APPEND ${mri_file_in} "end\n")
 
   add_library(${output_archive} STATIC ${ZEPHYR_BASE}/misc/empty_file.c)
   add_dependencies(${output_archive} ${input_archives})
 
-  file(GENERATE
-    OUTPUT ${mri_file}
-    INPUT ${mri_file_in})
-
-  add_custom_command(
-    TARGET ${output_archive}
-    POST_BUILD
-    COMMAND ${CMAKE_AR} -M < ${mri_file}
+  add_custom_command(TARGET ${output_archive}
+                     POST_BUILD
+                     COMMAND ${CMAKE_COMMAND}
+		             -DCMAKE_AR=${CMAKE_AR}
+			     -DARCHIVE_OUT=${CMAKE_CURRENT_BINARY_DIR}/lib${output_archive}.a
+			     -DARCHIVES_IN="${input_archives_path}"
+			     -P ${ZEPHYR_NRFXLIB_MODULE_DIR}/nrf_security/cmake/combine_archives_script.cmake
   )
 endfunction(combine_archives)
