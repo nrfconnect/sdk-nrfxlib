@@ -667,6 +667,34 @@ Before modifying the default settings, see this `article on reducing mbed TLS me
    Adjust these settings with caution.
 
 
+AES tables in ROM
+~~~~~~~~~~~~~~~~~
+
+The :option:`CONFIG_MBEDTLS_AES_ROM_TABLES` Kconfig variable controls if the AES lookup tables will be placed in ROM
+instead of RAM. This decreases the RAM usage of ~8KB with an additional cost of ~8KB. Executing in ROM will be slower.
+If the configuration :option:`CONFIG_MbEDTLS_FEWER_TABLES` is set, then the size moved from RAM to ROM is ~2KB.
+
++------------------------------------------------+---------+-------+-----+
+| Option                                         | Default | Min   | Max |
++================================================+=========+=======+=====+
+| :option:`CONFIG_MBEDTLS_AES_ROM_TABLES`        | `n`     | `n`   | `y` |
++------------------------------------------------+---------+-------+-----+
+
+
+Fewer AES tables
+~~~~~~~~~~~~~~~~
+
+The :option:`CONFIG_MBEDTLS_AES_FEWER_TABLES` Kconfig variable controls the size of the AES lookup tables in use.
+Enabling this will omit ~75% of the AES tables in RAM or ROM. Enabling this will lead to AES needing to do more
+arithmetic, which imacts the overall performance.
+
++------------------------------------------------+---------+-------+-----+
+| Option                                         | Default | Min   | Max |
++================================================+=========+=======+=====+
+| :option:`CONFIG_MBEDTLS_AES_FEWER_TABLES`      | `n`     | `n`   | `y` |
++------------------------------------------------+---------+-------+-----+
+
+
 Multiple Precision Integers (MPI) / Bignum calculation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
