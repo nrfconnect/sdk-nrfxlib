@@ -34,6 +34,7 @@ function(symbol_strip_func backend)
   nrf_security_debug("========== Running symbol_strip_function for ${backend} ==========")
   string(TOUPPER "${backend}" BACKEND_NAME_UPPER)
 
+  remove_objects("${BACKEND_NAME_UPPER}_ENABLED"   ${BACKEND_NAME_UPPER} remove_line "empty_file.c.obj")
   remove_objects("MBEDTLS_AES_C"        ${BACKEND_NAME_UPPER} remove_line "aes.c.obj")
   remove_objects("MBEDTLS_AES_C"        ${BACKEND_NAME_UPPER} remove_line "aes_alt.c.obj")
   remove_objects("MBEDTLS_CCM_C"        ${BACKEND_NAME_UPPER} remove_line "ccm.c.obj")
