@@ -11,6 +11,8 @@ Master branch
 Added
 =====
 
+* Added Read Authenticated Payload Timeout command.
+* Added Write Authenticated Payload Timeout command.
 * Added Set Event Mask command.
 * Added Set Event Mask Page 2 command.
 * Added :cpp:func:`ble_controller_support_le_2m_phy()` which makes LE 2M PHY support configurable.
