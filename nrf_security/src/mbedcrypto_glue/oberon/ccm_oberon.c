@@ -18,7 +18,7 @@
 #include "backend_ccm.h"
 
 
-BUILD_ASSERT_MSG(OBERON_MBEDTLS_CCM_CONTEXT_WORDS == (sizeof(mbedtls_cipher_context_t) + 3) / 4, "Invalid OBERON_MBEDTLS_CCM_CONTEXT_WORDS value");
+BUILD_ASSERT(OBERON_MBEDTLS_CCM_CONTEXT_WORDS == (sizeof(mbedtls_cipher_context_t) + 3) / 4, "Invalid OBERON_MBEDTLS_CCM_CONTEXT_WORDS value");
 
 
 static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits)
