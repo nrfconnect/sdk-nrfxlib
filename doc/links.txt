@@ -22,6 +22,8 @@
 
 .. _`A-GPS`: https://en.wikipedia.org/wiki/Assisted_GPS
 
+.. _`ZBOSS API documentation`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss_api_doc/index.html
+
 .. ### Links to nrf (not a good way to link)
 
 .. _`Modem key management`: ../../../nrf/include/modem/modem_key_mgmt.html
