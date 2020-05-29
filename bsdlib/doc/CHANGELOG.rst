@@ -5,6 +5,12 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.6.1.2
+**************
+
+* Bugfix release.
+* Fixed an issue with accept() where it did not accept a second connection.
+
 bsdlib 0.6.1.1
 **************
 
