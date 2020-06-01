@@ -5,6 +5,15 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Master branch
+*************
+
+Added
+=====
+
+* Added support for non-secure firmware image to the NFC T2T and NFC T4T libraries.
+  A non-secure image can only be run on nRF devices that support Trusted Execution (e.g. nRF5340).
+
 NFC 0.4.0
 ****************
 
