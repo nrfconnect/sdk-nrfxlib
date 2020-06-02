@@ -1,12 +1,13 @@
 .. _mpsl_lib:
 
-Library internals
+Integration notes
 #################
 
-Before using the Multi-Protocol Service Layer (MPSL) library, make sure you are familiar with its design.
+This page describes how to integrate the Multiprotocol Service Layer (MPSL) into an application.
+The descriptions are valid for both RTOS and RTOS-free environments.
 
-Peripherals
-***********
+For the nRF53 Series, the requirements described are only relevant for applications running alongside the MPSL on the network processor.
+
 The following peripherals are owned by MPSL and must not be accessed directly by the application:
 
  * RTC0
@@ -14,6 +15,8 @@ The following peripherals are owned by MPSL and must not be accessed directly by
  * RADIO
  * CLOCK
  * TEMP
+ * PPI channel 19, 30, 31, for the nRF52 Series
+ * DPPI channels 0 - 2, for the nRF53 Series
 
 Limited access to these peripherals is provided through the MPSL Timeslot module and through other MPSL APIs.
 
@@ -23,7 +26,7 @@ The MPSL library is not reentrant, so for thread-safe operation, some considerat
 
 Interrupt configuration
 =======================
-MPSL enables interrupts for RTC0, TIMER0, POWER_CLOCK, and low_prio_irq.
+MPSL enables interrupts for RTC0, TIMER0, POWER_CLOCK, and ``low_prio_irq``.
 All other interrupts must be enabled and configured by the application.
 If the Timeslot API is used for RADIO access, the application is responsible for enabling and disabling the interrupt for RADIO.
 
@@ -74,3 +77,20 @@ Do not call them while, for example, a protocol timeslot is in progress.
 This must be enforced by application and protocol stacks. 
 
 MPSL should be initialized before any protocol stack is enabled, and uninitialized after all protocol stacks have been disabled.
+
+Architecture diagrams
+---------------------
+
+The following image shows how the MPSL integrates in an RTOS-free environment.
+
+.. figure:: pic/Architecture_Without_RTOS.svg
+   :alt: MPSL integration in an RTOS-free environment
+
+   MPSL integration in an RTOS-free environment
+
+The following image shows how the the MPSL integrates with an RTOS.
+
+.. figure:: pic/Architecture_With_RTOS.svg
+   :alt: MPSL integration with an RTOS
+
+   MPSL integration with an RTOS
