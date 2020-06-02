@@ -15,6 +15,7 @@
  * All APIs in this header file are expected to be called from the
  * same execution priority as mpsl_low_priority_process.
  * Not doing so will lead to undefined behavior.
+ *
  * @{
  */
 
@@ -29,22 +30,11 @@ extern "C" {
 #include <cmsis_compiler.h>
 
 /**
- * @defgroup HCI_VS_TYPES Types
+ * @defgroup HCI_TYPES Types
  * @{
  */
 
-/** @brief TX power handle type. */
-enum HCI_VS_TX_POWER_HANDLE_TYPE
-{
-    /** @brief Handle of type Advertiser. */
-    HCI_VS_TX_POWER_HANDLE_TYPE_ADV = 0x00,
-    /** @brief Handle of type Scanner or Initiator. */
-    HCI_VS_TX_POWER_HANDLE_TYPE_SCAN_INIT = 0x01,
-    /** @brief Handle of type Connection. */
-    HCI_VS_TX_POWER_HANDLE_TYPE_CONN = 0x02,
-};
-
-/** @brief HCI OpCode Field values. */
+/** @brief HCI VS OpCode Field values. */
 enum HCI_VS_OPCODE
 {
     /** @brief See @ref hci_vs_cmd_zephyr_read_version_info(). */
@@ -65,12 +55,34 @@ enum HCI_VS_OPCODE
     HCI_VS_OPCODE_CMD_QOS_CONN_EVENT_REPORT_ENABLE = 0xfd04,
 };
 
-/** @brief Subevent Code values. */
-enum HCI_VS_SUBEVENT_CODE
+/** @brief VS subevent Code values. */
+enum HCI_VS_SUBEVENT
 {
-    /** @brief See @ref hci_vs_evt_qos_conn_event_report_t. */
-    HCI_VS_SUBEVENT_CODE_QOS_CONN_EVENT_REPORT = 0x80,
+    /** @brief See @ref hci_vs_subevent_qos_conn_event_report_t. */
+    HCI_VS_SUBEVENT_QOS_CONN_EVENT_REPORT = 0x80,
 };
+
+/** @brief TX power handle type. */
+enum HCI_VS_TX_POWER_HANDLE_TYPE
+{
+    /** @brief Handle of type Advertiser. */
+    HCI_VS_TX_POWER_HANDLE_TYPE_ADV = 0x00,
+    /** @brief Handle of type Scanner or Initiator. */
+    HCI_VS_TX_POWER_HANDLE_TYPE_SCAN_INIT = 0x01,
+    /** @brief Handle of type Connection. */
+    HCI_VS_TX_POWER_HANDLE_TYPE_CONN = 0x02,
+};
+
+/** @brief Zephyr Static Adress type. */
+typedef __PACKED_STRUCT
+{
+    /** @brief Static device address. */
+    uint8_t address[6];
+    /** @brief Identity root key (IR) for static device address. All zero parameter value indicates
+     *         missing identity root key.
+     */
+    uint8_t identity_root[16];
+} hci_vs_zephyr_static_address_t;
 
 /** @brief Zephyr supported commands.
  *
@@ -111,21 +123,10 @@ typedef __PACKED_STRUCT
     uint8_t read_tx_power_level : 1;
 } hci_vs_zephyr_supported_commands_t;
 
-/** @brief Zephyr Static Adress type. */
-typedef __PACKED_STRUCT
-{
-    /** @brief Static device address. */
-    uint8_t address[6];
-    /** @brief Identity root key (IR) for static device address. All zero parameter value indicates
-     *         missing identity root key.
-     */
-    uint8_t identity_root[16];
-} hci_vs_zephyr_static_address_t;
-
-/** @} end of HCI_VS_TYPES */
+/** @} end of HCI_TYPES */
 
 /**
- * @defgroup HCI_VS_EVENTS Events
+ * @defgroup HCI_EVENTS Events
  * @{
  */
 
@@ -147,12 +148,12 @@ typedef __PACKED_STRUCT
     uint8_t crc_error_count;
     /** @brief Indicates that the connection event was closed because a packet was not received. */
     uint8_t rx_timeout;
-} hci_vs_evt_qos_conn_event_report_t;
+} hci_vs_subevent_qos_conn_event_report_t;
 
-/** @} end of HCI_VS_EVENTS */
+/** @} end of HCI_EVENTS */
 
 /**
- * @defgroup HCI_VS_COMMANDS Commands
+ * @defgroup HCI_COMMAND_PARAMETERS Parameters
  * @{
  */
 
@@ -174,17 +175,14 @@ typedef __PACKED_STRUCT
 } hci_vs_cmd_zephyr_read_version_info_return_t;
 
 /** @brief Zephyr Read Supported Commands return parameter(s). */
-typedef __PACKED_STRUCT
+typedef __PACKED_UNION
 {
     /** @brief Bit mask for each vendor command. If a bit is 1, the Controller supports the
-     *         corresponding command  and the features required for the command, unsupported or
+     *         corresponding command and the features required for the command, unsupported or
      *         undefined commands shall be set to 0.
      */
-    __PACKED_UNION
-    {
-        hci_vs_zephyr_supported_commands_t params;
-        uint8_t raw[64];
-    } supported_commands;
+    hci_vs_zephyr_supported_commands_t params;
+    uint8_t raw[64];
 } hci_vs_cmd_zephyr_read_supported_commands_return_t;
 
 /** @brief Zephyr Read Static Addresses return parameter(s). */
@@ -207,7 +205,7 @@ typedef __PACKED_STRUCT
      */
     uint16_t handle;
     /** @brief The desired Tx_Power_Level in dBm in signed 1 octet integer format. If set to 127,
-     *         this indicates that the controller shall revert to using its  default setting for Tx
+     *         this indicates that the controller shall revert to using its default setting for Tx
      *         power. If the selected power level is not supported, an error is returned.
      */
     int8_t tx_power_level;
@@ -261,13 +259,12 @@ typedef __PACKED_STRUCT
     uint8_t enable;
 } hci_vs_cmd_qos_conn_event_report_enable_t;
 
-/** @} end of HCI_VS_COMMANDS */
+/** @} end of HCI_COMMAND_PARAMETERS */
 
 /**
  * @defgroup HCI_VS_API API
  * @{
  */
-
 /** @brief Zephyr Read Version Information.
  *
  * Reads the values for the vendor version information for the local Controller.
@@ -379,7 +376,7 @@ uint8_t hci_vs_cmd_zephyr_write_tx_power(const hci_vs_cmd_zephyr_write_tx_power_
  *
  * This command enables or disables Low Latency Packet Mode support.
  * When Low Latency Packet Mode is enabled, it is possible to switch to connection intervals in the
- * range 1-7 ms. Switch to short connection intervals by calling @ref hci_vs_cmd_conn_update().
+ * range 1-7 ms. Switch to short connection intervals by calling hci_vs_cmd_conn_update().
  *
  * After HCI Reset, this feature is disabled.
  *
@@ -433,8 +430,8 @@ uint8_t hci_vs_cmd_conn_event_extend(const hci_vs_cmd_conn_event_extend_t * p_pa
  *
  * This vendor specific command is used to enable or disable generation of QoS Connection event
  * reports.
- * See @ref hci_vs_evt_qos_conn_event_report_t. When enabled, one report will be generated every
- * connection event.
+ * See @ref hci_vs_subevent_qos_conn_event_report_t. When enabled, one report will be generated
+ * every connection event.
  *
  * @note If the application does not pull a report in time, it will be overwritten.
  *
@@ -448,8 +445,7 @@ uint8_t hci_vs_cmd_qos_conn_event_report_enable(const hci_vs_cmd_qos_conn_event_
 
 /** @} end of HCI_VS_API */
 
-
-/** @} end of ble_controller_hci_vs */
+/** @} */
 
 #ifdef __cplusplus
 }

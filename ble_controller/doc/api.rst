@@ -33,24 +33,24 @@ Bluetooth LE Controller HCI VS
    :project: nrfxlib
    :members:
 
-HCI VS Types
+HCI Types
 ============
 
-.. doxygengroup:: HCI_VS_TYPES
+.. doxygengroup:: HCI_TYPES
    :project: nrfxlib
    :members:
 
-HCI VS Events
+HCI Events
 =============
 
-.. doxygengroup:: HCI_VS_EVENTS
+.. doxygengroup:: HCI_EVENTS
    :project: nrfxlib
    :members:
 
-HCI VS Commands
+HCI Commands
 ===============
 
-.. doxygengroup:: HCI_VS_COMMANDS
+.. doxygengroup:: HCI_COMMAND_PARAMETERS
    :project: nrfxlib
    :members:
 

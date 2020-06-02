@@ -11,6 +11,8 @@ Master branch
 Added
 =====
 
+* Added Read Authenticated Payload Timeout command.
+* Added Write Authenticated Payload Timeout command.
 * Added Set Event Mask command.
 * Added Set Event Mask Page 2 command.
 * Added :cpp:func:`ble_controller_support_le_2m_phy()` which makes LE 2M PHY support configurable.
@@ -27,6 +29,10 @@ Added
 Changes
 =======
 
+* ``HCI_VS_SUBEVENT_CODE_QOS_CONN_EVENT_REPORT`` was renamed to ``HCI_VS_SUBEVENT_QOS_CONN_EVENT_REPORT``.
+* ``hci_vs_evt_qos_conn_event_report_t`` was renamed to ``hci_vs_subevent_qos_conn_event_report_t``.
+* ``hci_vs_cmd_zephyr_read_supported_commands_return_t`` was converted from a struct to a union.
+  The content remains the same.
 * The VersNr field in the LL_VERSION_IND packet now contains the value 0x0B to indicate Bluetooth Core Specification v5.2 compliance.
 * The previously implemented Vendor Specific HCI command opcodes are now offset with 0x100.
 * The previously implemented Vendor Specific HCI event codes are now offset with 0x80.
