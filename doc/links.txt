@@ -1,6 +1,6 @@
-.. _`Socket API`: https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
+.. _`nrfx`: https://github.com/NordicSemiconductor/nrfx/
 
-.. _`Beej's Guide to Network Programming`: https://beej.us/guide/bgnet/
+.. ### Links to Infocenter
 
 .. _`AT Commands Reference Guide`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/intro.html
 
@@ -8,21 +8,11 @@
 
 .. _`LTE Link Monitor`: https://infocenter.nordicsemi.com/topic/ug_link_monitor/UG/link_monitor/lm_certificate_manager.html
 
+.. _`nRF IEEE 802.15.4 radio driver documentation`: https://infocenter.nordicsemi.com/topic/15.4_radio_driver_v2.0.0-1.prealpha/index.html
+
+.. ### Links to Nordic pages
+
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#98C9E2578566420786ABD40B695FDB9B
-
-.. _`mbed TLS backend`: https://tls.mbed.org/
-
-.. _`article on reducing mbed TLS memory and storage footprint`: https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint
-
-.. _`nrfx`: https://github.com/NordicSemiconductor/nrfx/
-
-.. _`Global navigation satellite system (GNSS)`: https://en.wikipedia.org/wiki/Satellite_navigation
-
-.. _`NMEA`: https://www.gpsinformation.org/dale/nmea.htm
-
-.. _`A-GPS`: https://en.wikipedia.org/wiki/Assisted_GPS
-
-.. _`ZBOSS API documentation`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss_api_doc/index.html
 
 .. ### Links to nrf (not a good way to link)
 
@@ -31,3 +21,19 @@
 .. _`NFC Data Exchange Format (NDEF)`: ../../../nrf/ug_nfc.html#nfc-data-exchange-format-ndef
 
 .. _`Working with NFC`: ../../nrf/ug_nfc.html
+
+.. ### Other links
+
+.. _`Socket API`: https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
+
+.. _`ZBOSS API documentation`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss_api_doc/index.html
+
+.. _`mbed TLS backend`: https://tls.mbed.org/
+
+.. _`article on reducing mbed TLS memory and storage footprint`: https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint
+
+.. _`Global navigation satellite system (GNSS)`: https://en.wikipedia.org/wiki/Satellite_navigation
+
+.. _`NMEA`: https://www.gpsinformation.org/dale/nmea.htm
+
+.. _`A-GPS`: https://en.wikipedia.org/wiki/Assisted_GPS
