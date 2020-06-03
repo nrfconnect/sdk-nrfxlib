@@ -7,7 +7,7 @@
 #ifndef NRF_ERRNO_H__
 #define NRF_ERRNO_H__
 /**
- * @file nrf_errno.h
+ * @file bsdlib/include/nrf_errno.h
  * @brief Defines integer values for errno.
  *        Used by system calls to indicates the latest error.
  *

@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
-/**@file ipc/bsd_platform.h
- *
+/**
+ * @file bsd_platform.h
  * @defgroup bsd_platform_ipc BSD Platform
  * @ingroup bsd_platform
  * @{
