@@ -143,7 +143,7 @@ void nrf_cc310_platform_set_mutexes(
  * and platform mutexes.
  *
  * @note This function must be called once before calling
- * @ref nrf_cc310_platform_init or @ref nrf_cc310_platform_init_no_rng.
+ * nrf_cc310_platform_init() or nrf_cc310_platform_init_no_rng().
  *
  * @note This function is not expected to be thread-safe.
  */
@@ -154,3 +154,5 @@ void nrf_cc310_platform_mutex_init(void);
 #endif
 
 #endif /* NRF_CC310_PLATFORM_MUTEX_H__ */
+
+/** @} */

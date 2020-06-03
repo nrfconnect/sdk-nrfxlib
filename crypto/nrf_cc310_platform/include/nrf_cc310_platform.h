@@ -70,7 +70,6 @@ bool nrf_cc310_platform_is_initialized(void);
  */
 bool nrf_cc310_platform_rng_is_initialized(void);
 
-
 /** @brief ISR Function for processing of CC310 Interrupts.
  *         This CC310 interrupt service routine function should be called for
  *         interrupt processing.
@@ -84,3 +83,5 @@ void CRYPTOCELL_IRQHandler(void);
 #endif
 
 #endif /* NRF_CC310_PLATFORM_H__ */
+
+/** @} */

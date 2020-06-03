@@ -82,6 +82,8 @@ CRYSError_t nrf_cc310_bl_hash_sha256_init(
  *
  * @param[in,out]   p_hash_context  Structure holding context information
  *                                  for the SHA-256 operation.
+ * @param[in]       p_src           Input data to be added to the digest.
+ * @param[in]       len             Amount of data passed in p_src.
  *
  * @retval CRYS_OK If call was successful.
  * @retval CRYS_HASH_INVALID_USER_CONTEXT_POINTER_ERROR    p_hash_context was NULL.
@@ -96,11 +98,11 @@ CRYSError_t nrf_cc310_bl_hash_sha256_update(
 
 /** @brief Function for finalizing the hash calculation.
  *
- *  @note Memory pointed to in hash digest must be allocated prior to this call.
+ * @note Memory pointed to in hash digest must be allocated prior to this call.
  *
  * @param[in,out]   p_hash_context  Structure holding context information for
  *                                  the SHA-256 operation.
- * @param[in,out]   p_hash_digest   Pointer to the structure holding SHA-256
+ * @param[in,out]   p_digest        Pointer to the structure holding SHA-256
  *                                  hash digest. Data pointed to must be 32 bytes long.
  *
  * @retval  CRYS_HASH_INVALID_USER_CONTEXT_POINTER_ERROR    p_hash_context was NULL.
