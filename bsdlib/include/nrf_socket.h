@@ -601,13 +601,13 @@ typedef uint32_t nrf_sec_cipher_t;
 /**@brief Data type to combine all security configuration parameters. */
 typedef struct
 {
-    nrf_sec_role_t          role;                    /**< Local role to be played. See @nrf_sec_role_t for details. */
-    nrf_sec_peer_verify_t   peer_verify;             /**< Indicates the preference for peer verification. See @nrf_sec_peer_verify_t for details. */
-    nrf_sec_session_cache_t session_cache;           /**< Indicates the preference for session caching. See @nrf_sec_session_cache_t for details. */
+    nrf_sec_role_t          role;                    /**< Local role to be played. See nrf_sec_role_t for details. */
+    nrf_sec_peer_verify_t   peer_verify;             /**< Indicates the preference for peer verification. See nrf_sec_peer_verify_t for details. */
+    nrf_sec_session_cache_t session_cache;           /**< Indicates the preference for session caching. See nrf_sec_session_cache_t for details. */
     uint32_t                cipher_count;            /**< Indicates the number of entries in the cipher list. */
-    nrf_sec_cipher_t        *p_cipher_list;          /**< Indicates the list of ciphers to be used for the session. See @nrf_sec_cipher_t for details. */
+    nrf_sec_cipher_t        *p_cipher_list;          /**< Indicates the list of ciphers to be used for the session. See nrf_sec_cipher_t for details. */
     uint32_t                 sec_tag_count;          /**< Indicates the number of entries in the sec tag list. */
-    nrf_sec_tag_t           *p_sec_tag_list;         /**< Indicates the list of security tags to be used for the session. See @nrf_sec_tag_t for details. */
+    nrf_sec_tag_t           *p_sec_tag_list;         /**< Indicates the list of security tags to be used for the session. See nrf_sec_tag_t for details. */
 } nrf_sec_config_t;
 
 #define NRF_IFNAMSIZ 64
