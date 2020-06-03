@@ -607,7 +607,7 @@ SHA support can be configured by setting Kconfig according to the following tabl
 +==============+===================+=====================================================+
 | SHA-1        | Choice            | CC310: :option:`CONFIG_CC310_MBEDTLS_SHA1_C` or     |
 |              |                   |                                                     |
-|              |                   | nrf_oberon: :option:`CONFIG_OBERON_MBEDTLS_SHA_1_C` |
+|              |                   | nrf_oberon: :option:`CONFIG_OBERON_MBEDTLS_SHA1_C`  |
 |              |                   |                                                     |
 |              |                   | Standard: :option:`CONFIG_VANILLA_MBEDTLS_SHA1_C`   |
 +--------------+-------------------+-----------------------------------------------------+
@@ -651,7 +651,7 @@ AES tables in ROM
 You can set the :option:`CONFIG_MBEDTLS_AES_ROM_TABLES` Kconfig variable to place the AES lookup tables in ROM instead of RAM.
 This decreases the RAM usage by about 8 KB with an additional cost of about 8 KB of ROM.
 Note that executing operations in ROM is slower.
-If the configuration :option:`CONFIG_MBEDTLS_FEWER_TABLES` is set, then the size moved from RAM to ROM is about 2 KB.
+If the configuration :option:`CONFIG_MBEDTLS_AES_FEWER_TABLES` is set, then the size moved from RAM to ROM is about 2 KB.
 
 +------------------------------------------------+---------+-------+-----+
 | Option                                         | Default | Min   | Max |
