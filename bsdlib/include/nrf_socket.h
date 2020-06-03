@@ -961,7 +961,7 @@ typedef struct
  */
 
 /**@brief Defines the interval between each fix in seconds.
- * @defails Allowed values are 0, 1, 10..1800, value 0 denotes single fix.
+ * @details Allowed values are 0, 1, 10..1800, value 0 denotes single fix.
  *          Default interval is 1 second (continous mode), 0 denotes a single fix.
  */
 typedef uint16_t nrf_gnss_fix_interval_t;
