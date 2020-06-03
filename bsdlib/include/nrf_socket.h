@@ -1454,7 +1454,8 @@ void nrf_freeaddrinfo(struct nrf_addrinfo * p_res);
  *                      or @ref nrf_in6_addr structure, respectively.
  *                      Pass @c NULL to unset the secondary DNS address.
  *
- * @return int Zero on success, or an  error from @file nrf_errno.h otherwise.
+ * @return int Zero on success, or an  error from @file bsdlib/include/nrf_errno.h
+ *             otherwise.
  */
 int nrf_setdnsaddr(int family, const void *in_addr);
 
