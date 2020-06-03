@@ -1,9 +1,9 @@
 .. _nrf_802154_sl:
 
-NRF_802154_SL
-=============
+nRF 802.15.4 Service Layer
+##########################
 
-nRF 802.15.4 Service Layer (SL) is a library enabling advanced features of nRF 802.15.4 Radio Driver such as:
+The nRF 802.15.4 Service Layer (SL) library enables the following advanced features of the nRF IEEE 802.15.4 radio driver:
 
 * Multiprotocol support
 * Front-End module support
@@ -13,9 +13,28 @@ nRF 802.15.4 Service Layer (SL) is a library enabling advanced features of nRF 8
 * CSMA/CA support
 * Timestamping
 
-The library is available for nRF52840, nRF52833, nRF52820, nRF52811 SOCs.
-Library is available in soft-float build. For SOCs equipped with floating point unit
-also softfp-float and hard-float build versions are available.
+For more information about the radio driver features, see the `nRF IEEE 802.15.4 radio driver documentation`_.
+
+Supported devices
+*****************
+
+The library is available for the following devices:
+
+* nRF52840
+* nRF52833
+* nRF52820
+* nRF52811
+
+Build versions
+**************
+
+The library is available in the following build versions:
+
+* soft-float build (default)
+* For devices equipped with the floating point unit:
+
+  * softfp-float
+  * hard-float
 
 .. toctree::
    :maxdepth: 2
