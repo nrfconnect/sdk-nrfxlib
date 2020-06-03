@@ -22,7 +22,7 @@ extern "C" {
 #endif
 
 /**
- * @defgroup bsd_modem_dfu
+ * @defgroup bsd_modem_dfu BSD Modem DFU
  *           @c bsd_init() return values when executing Modem firmware updates.
  *
  * @ingroup bsd_library

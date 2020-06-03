@@ -8,7 +8,7 @@
  * @file bsd_os.h
  * @brief OS specific definitions.
  *
- * @defgroup bsd_os
+ * @defgroup bsd_os BSD OS Library
  * @{
  */
 #ifndef BSD_OS_H__

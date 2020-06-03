@@ -132,7 +132,7 @@ typedef uint32_t nrf_fd_set;
 
 /**@brief
  * Socket option to set role for the connection.
- * Accepts a @ref nrf_sec_role_t with values:
+ * Accepts an nrf_sec_role_t with values:
  *  - 0 - Client role.
  *  - 1 - Server role.
  */
@@ -146,7 +146,7 @@ typedef uint32_t nrf_fd_set;
 
 /**@brief
  * Socket option to control TLS session caching.
- * Accepts a @ref nrf_sec_session_cache_t with values:
+ * Accepts an nrf_sec_session_cache_t with values:
  *  - 0 - Disabled.
  *  - 1 - Enabled.
  * @sa nrf_sec_session_cache_t.
@@ -155,7 +155,7 @@ typedef uint32_t nrf_fd_set;
 
 /**@brief
  * Socket option to set peer verification level.
- * This option accepts a @ref nrf_sec_peer_verify_t with values:
+ * This option accepts an nrf_sec_peer_verify_t with values:
  *  - 0 - None
  *  - 1 - Optional
  *  - 2 - Required
@@ -229,7 +229,7 @@ typedef uint32_t nrf_fd_set;
 
 /**@brief
  * Socket option to schedule a modem firmware update at next boot.
- * The result of the update is returned by @ref bsd_init, at next boot.
+ * The result of the update is returned by bsd_init, at next boot.
  * The modem needs to be reset once more to run the updated firmware.
  */
 #define NRF_SO_DFU_APPLY 4
@@ -251,7 +251,7 @@ typedef uint32_t nrf_fd_set;
  * in the modem's scratch area. This option is used to determine whether
  * a firmware image exists in the modem's scratch area and its size.
  * A value of 2.5 megabytes (2621440 bytes) is returned if the scratch area
- * is dirty, and needs erasing (via @ref NRF_SO_DFU_BACKUP_DELETE).
+ * is dirty, and needs erasing (via NRF_SO_DFU_BACKUP_DELETE).
  * If non-zero and different from 2.5 megabytes, the value indicates the size
  * of the firmware image received so far.
  */
@@ -298,12 +298,12 @@ typedef uint32_t nrf_fd_set;
  */
 #define NRF_SO_GNSS_FIX_RETRY           2
 
-#define NRF_SO_GNSS_SYSTEM              3    /**< Identifies the option used to set and/or get the GNSS system used. See @ref nrf_gnss_system_t for details. */
+#define NRF_SO_GNSS_SYSTEM              3    /**< Identifies the option used to set and/or get the GNSS system used. See nrf_gnss_system_t for details. */
 #define NRF_SO_GNSS_NMEA_MASK           4    /**< Identifies the option used to select the data format of the received data. */
 #define NRF_SO_GNSS_ELEVATION_MASK      5    /**< Indicates at which elevation the GPS should stop tracking a satellite. */
 #define NRF_SO_GNSS_USE_CASE            6    /**< Indicates the targeted start performance: 0 = single cold start performance targeted, 1 = multiple hot start performance targeted. */
-#define NRF_SO_GNSS_START               7    /**< Identifies the option to start the GPS. @ref nrf_gnss_delete_mask_t given as payload. */
-#define NRF_SO_GNSS_STOP                8    /**< Identifies the option to stop the GPS. @ref nrf_gnss_delete_mask_t given as payload. */
+#define NRF_SO_GNSS_START               7    /**< Identifies the option to start the GPS. nrf_gnss_delete_mask_t given as payload. */
+#define NRF_SO_GNSS_STOP                8    /**< Identifies the option to stop the GPS. nrf_gnss_delete_mask_t given as payload. */
 #define NRF_SO_GNSS_POWER_SAVE_MODE     9    /**< Identifies the option to set power save mode. */
 #define NRF_SO_GNSS_ENABLE_PRIORITY     10   /**< Identifies the option to enable priority time window (with no payload). */
 #define NRF_SO_GNSS_DISABLE_PRIORITY    11   /**< Identifies the option to disable priority time window (with no payload). */
@@ -367,7 +367,7 @@ typedef uint32_t nrf_fd_set;
 #define NRF_GNSS_SV_FLAG_UNHEALTHY    8 /**< Indicate that the satellite is unhealthy. */
 /**@} */
 
-/**@defgroup nrf_socket_gnss_data_agps AGPS data enumerator.
+/**@addtogroup nrf_socket_gnss_data_agps
  * @brief Use these values in the address field when using sendto to write AGPS models to the GNSS module.
  * @{
  */
@@ -443,7 +443,7 @@ struct nrf_timeval
 /**
  * @brief Socket families.
  *
- * @details For a list of valid values, refer to @ref nrf_socket_families.
+ * @details For a list of valid values, refer to nrf_socket_families.
  */
 typedef int nrf_socket_family_t;
 typedef nrf_socket_family_t nrf_sa_family_t;
@@ -619,7 +619,7 @@ struct nrf_ifreq
 };
 /**@} */
 
-/**@addtogroup nrf_socket_pdn PDN socket option types
+/**@addtogroup nrf_socket_pdn
  * @brief Data types defined to set and get socket options on a PDN socket.
  * @{
  */
@@ -1073,7 +1073,7 @@ int nrf_close(int sock);
  *
  * @details Set or get file descriptor options or flags. For a list of supported commands, refer
  *          to @ref nrf_fcnt_commands.
- *          For a list of supported flags, refer to @ref nrf_fcnt_flags.
+ *          For a list of supported flags, refer to nrf_fcnt_flags.
  *
  * @param[in] fd    The descriptor to set options on.
  * @param[in] cmd   The command class for options.
@@ -1264,10 +1264,10 @@ int nrf_select(int                        nfds,
  * @brief Method to poll for events on one or more sockets.
  *
  * @param[in,out] p_fds    An array of sockets, and respective for each socket that the caller polls for.
- *                         The occurred events per socket is returned in the revents field of @ref struct nrf_pollfd structure.
+ *                         The occurred events per socket is returned in the revents field of nrf_pollfd structure.
  *                         Shall not be NULL.
  * @param[in]     nfds     Positive number of sockets being polled for events.
- *                         Shall not be more than @ref BSD_MAX_SOCKET_COUNT.
+ *                         Shall not be more than BSD_MAX_SOCKET_COUNT.
  *
  * @param[in]     timeout  Timeout in milliseconds.
  *                         The methods waits for this time period for the events to occur on the sockets.
@@ -1416,8 +1416,8 @@ const char * nrf_inet_ntop(int             family,
 /**@brief Function to resolve the host name into IPv4 and/or IPv6 addresses.
  *
  * @note The memory pointed to by @p pp_res must be freed using
- *       @ref nrf_freeaddrinfo when the address is no longer needed
- *       or before calling @ref nrf_getaddrinfo again.
+ *       nrf_freeaddrinfo when the address is no longer needed
+ *       or before calling nrf_getaddrinfo again.
  *
  * @param[in]  p_node     Host name to resolve.
  * @param[in]  p_service  Service to resolve.
@@ -1433,9 +1433,9 @@ int nrf_getaddrinfo(const char                *  p_node,
                     struct nrf_addrinfo       ** pp_res);
 
 
-/**@brief Function for freeing the memory allocated for the result of @ref nrf_getaddrinfo.
+/**@brief Function for freeing the memory allocated for the result of nrf_getaddrinfo.
  *
- * @details When the linked list of resolved addresses created by @ref getaddrinfo
+ * @details When the linked list of resolved addresses created by nrf_getaddrinfo
  *          is no longer needed, call this function to free the allocated memory.
  *
  * @param[in] p_res  Pointer to the memory to be freed.
@@ -1450,8 +1450,8 @@ void nrf_freeaddrinfo(struct nrf_addrinfo * p_res);
  *          The secondary DNS address does not override the primary DNS address.
  *
  * @param[in] family    Address family.
- * @param[in] in_addr   An IPv4 or IPv6 address encoded in a @ref nrf_in_addr
- *                      or @ref nrf_in6_addr structure, respectively.
+ * @param[in] in_addr   An IPv4 or IPv6 address encoded in a nrf_in_addr or
+ *                      nrf_in6_addr structure, respectively.
  *                      Pass @c NULL to unset the secondary DNS address.
  *
  * @return int Zero on success, or an  error from @file bsdlib/include/nrf_errno.h
