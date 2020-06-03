@@ -42,8 +42,7 @@
  *
  * @note If you are using nRF52832 chip (in IC rev. Engineering B or
  * Engineering C) or if You are using nRF52840 chip (in IC rev. Engineering A,
- * B or C) library will use TIMER 4 to apply workarounds for the anomalies
- * listed in @ref nfc_fixes.h
+ * B or C) library will use TIMER 4 to apply workarounds for the anomalies.
  */
 
 #include <zephyr/types.h>

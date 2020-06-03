@@ -203,7 +203,6 @@ int nfc_t2t_payload_raw_set(const u8_t *payload,
  *
  * @note When modifying the internal bytes, remember that they must be
  *	 consistent with the NFC hardware register settings
- *	 (see @ref nfc_t2t_format_internal).
  *
  * @param data Pointer to the memory area containing the data.
  * @param data_length Size of the data in bytes.
