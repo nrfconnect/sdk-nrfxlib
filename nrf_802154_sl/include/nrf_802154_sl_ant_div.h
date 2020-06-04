@@ -345,4 +345,37 @@ void nrf_802154_sl_ant_div_rx_frame_received_notify(void);
  */
 void nrf_802154_sl_ant_div_rx_preamble_timeout_notify(void);
 
+/**
+ * @brief Notification to be called when energy detection procedure is requested.
+ * 
+ * This notification will update the antenna and inform the caller for how long the energy 
+ * detection operation should be scheduled. This notification should also be called 
+ * after @ref nrf_802154_sl_ant_div_energy_detection_finished_notify requests repeating 
+ * the energy detection procedure. In that case, p_ed_time value must be set to 0 
+ * when passed to the function.
+ * 
+ * @param[inout] p_ed_time Time of the energy detection procedure requested. Value will be updated with time for
+ *                         energy detection procedure on the current antenna.
+ */
+void nrf_802154_sl_ant_div_energy_detection_requested_notify(uint32_t * p_ed_time);
+
+/**
+ * @brief Notification to be called when energy detection procedure is finished.
+ * This notification checks whether the procedure should be repeated on the second antenna.
+ *
+ * @retval true  Energy detection should be repeated, antenna diversity module will switch the antenna when it is started.
+ * @retval false Energy detection is finished, the result can be reported as normally. 
+ */
+bool nrf_802154_sl_ant_div_energy_detection_finished_notify(void);
+
+/**
+ * @brief Notification to be called when energy detection procedure is aborted.
+ */
+void nrf_802154_sl_ant_div_energy_detection_aborted_notify(void);
+
+/**
+ * @brief Notification to be called when txack operation is requested.
+ */
+void nrf_802154_sl_ant_div_txack_notify(void);
+
 #endif // NRF_802154_SL_ANT_DIV_H
