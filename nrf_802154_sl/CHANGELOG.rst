@@ -5,6 +5,13 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF 802.15.4 SL 0.1.2
+*********************
+
+Licenses of all public header files aligned to the correct version.
+No changes to the binary files.
+
+
 nRF 802.15.4 SL 0.1.1
 *********************
 
