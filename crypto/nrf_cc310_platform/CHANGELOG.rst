@@ -19,7 +19,7 @@ Added
 
 Added new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
 
-..note:
+.. note::
 
    short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
 
@@ -71,7 +71,7 @@ New version of nrf_cc310_platform library containing Arm CC310 hardware initiali
 
 Added to match with the nrf_cc310_mbedcrypto v0.9.1 library.
 
-..note:
+.. note::
 
     The library version must match with nrf_cc310_mbedcrypto if this is also
     used
@@ -81,7 +81,7 @@ Added
 
 Added new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
 
-..note:
+.. note::
 
    short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
 
@@ -133,7 +133,7 @@ Initial, experimental release of nrf_cc310_platform library containing Arm CC310
 
 The library also contains APIs and companion source-files to setup RTOS dependent mutex and abort functionality for the nrf_cc310_mbedcrypto library in Zephyr RTOS and FreeRTOS.
 
-..note:
+.. note::
 
     The library version must match with nrf_cc310_mbedcrypto if this is also
     used
@@ -143,7 +143,7 @@ Added
 
 Added new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
 
-..note:
+.. note::
 
    short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
 
@@ -186,4 +186,3 @@ Added new build of nrf_cc310_platform library for nRF9160 and nRF52 architecture
 
     * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.0.a``
     * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.0.a``
-
