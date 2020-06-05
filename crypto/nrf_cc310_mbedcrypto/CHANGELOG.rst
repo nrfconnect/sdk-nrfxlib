@@ -19,7 +19,7 @@ Added
 
 Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
 
-..note:
+.. note::
 
    short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
 
@@ -76,7 +76,7 @@ Added
 
 Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
 
-..note:
+.. note::
 
    short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
 
@@ -133,7 +133,7 @@ Added
 
 Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
 
-..note:
+.. note::
 
    short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
 
@@ -183,7 +183,7 @@ nrf_cc310_mbedcrypto - 0.8.1
 
 New experimental version of nrf_cc310_mbedcrypto with general bugfixes.
 
-..note::
+.. note::
   This version should be used for nRF9160 devices. Use of earlier versions may lead to
   undefined behavior on some nRF9160 devices.
 
@@ -192,7 +192,7 @@ Added
 
 Added new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
 
-..note:
+.. note::
 
    short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
 
@@ -251,7 +251,7 @@ Added
 
 Added new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
 
-..note:
+.. note::
 
    short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
 
@@ -349,4 +349,3 @@ Added the following nrf_cc310_mbedcrypto libraries for nRF9160 and nRF52 archite
 
     * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.7.0.a``
     * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.7.0.a``
-
