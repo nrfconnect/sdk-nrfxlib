@@ -69,7 +69,7 @@ target_include_directories(mbedcrypto_vanilla PRIVATE
 if(TARGET platform_cc310)
   target_include_directories(mbedcrypto_vanilla PRIVATE
     ${mbedcrypto_glue_include_path}/threading
-    ${NRF_CC310_PLATFORM_BASE}/include
+    $<TARGET_PROPERTY:platform_cc310,BASE_INCLUDE_PATH>
   )
 endif()
 

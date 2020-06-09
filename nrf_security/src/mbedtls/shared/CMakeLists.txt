@@ -6,8 +6,6 @@
 # The purpose of this file is to provice a set of debug commands to nrf security
 # module.
 
-get_target_property(NRF_PLATFORM_CC310_INCLUDE_PATH platform_cc310 BASE_INCLUDE_PATH)
-
 nrf_security_debug("######### Creating shared noglue library #########")
 
 #
@@ -57,14 +55,13 @@ target_sources_ifdef(CONFIG_MBEDTLS_SHA512_C
   mbedcrypto_shared PRIVATE ${ARM_MBEDTLS_PATH}/library/sha512.c
 )
 
-
 #
 # Add specific includes for threading and platform_cc310
 #
 if(TARGET platform_cc310)
   target_include_directories(mbedcrypto_shared PRIVATE
     ${mbedcrypto_glue_include_path}/threading
-    ${NRF_PLATFORM_CC310_INCLUDE_PATH}
+    $<TARGET_PROPERTY:platform_cc310,BASE_INCLUDE_PATH>
   )
 endif()
 
