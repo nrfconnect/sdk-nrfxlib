@@ -5,7 +5,8 @@
  */
 #include <assert.h>
 #include <zephyr.h>
-#include <entropy.h>
+#include <device.h>
+#include <drivers/entropy.h>
 #include <mbedtls/entropy.h>
 
 static_assert(defined(CONFIG_ENTROPY_GENERATOR), "CONFIG_ENTROPY_GENERATOR is not enabled.");
@@ -42,7 +43,8 @@ int mbedtls_hardware_poll(void *data,
         return -1;
     }
 
-    dev = device_get_binding(CONFIG_ENTROPY_NAME);
+    dev = device_get_binding(DT_CHOSEN_ZEPHYR_ENTROPY_LABEL);
+
     if (!dev)
     {
         return MBEDTLS_ERR_ENTROPY_NO_SOURCES_DEFINED;
