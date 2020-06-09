@@ -6,7 +6,6 @@
 
 get_target_property(NRF_OBERON_MBEDTLS_INCLUDE_PATH mbedcrypto_oberon_mbedtls_imported BASE_INCLUDE_PATH)
 get_target_property(NRF_OBERON_INCLUDE_PATH mbedcrypto_oberon_imported BASE_INCLUDE_PATH)
-get_target_property(NRF_PLATFORM_CC310_INCLUDE_PATH platform_cc310 BASE_INCLUDE_PATH)
 
 nrf_security_debug("######### Creating nrf_oberon noglue library #########")
 
@@ -93,7 +92,7 @@ target_include_directories(mbedcrypto_oberon_noglue PRIVATE
 if(TARGET platform_cc310)
   target_include_directories(mbedcrypto_oberon_noglue PRIVATE
     ${mbedcrypto_glue_include_path}/threading
-    ${NRF_PLATFORM_CC310_INCLUDE_PATH}
+    $<TARGET_PROPERTY:platform_cc310,BASE_INCLUDE_PATH>
   )
 endif()
 
