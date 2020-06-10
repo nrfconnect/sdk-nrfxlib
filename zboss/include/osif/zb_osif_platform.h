@@ -73,6 +73,30 @@ zb_bool_t zb_osif_timer_is_on(void);
 void zb_osif_enable_all_inter(void);
 void zb_osif_disable_all_inter(void);
 
+#define ZB_SCHEDULE_APP_CALLBACK(func, param) \
+	zigbee_schedule_callback(func, param)
+
+#define ZB_SCHEDULE_APP_CALLBACK2(func, param, user_param) \
+	zigbee_schedule_callback2(func, param, user_param)
+
+#define ZB_SCHEDULE_APP_ALARM(func, param, timeout_bi) \
+	zigbee_schedule_alarm(func, param, timeout_bi)
+
+#define ZB_SCHEDULE_APP_ALARM_CANCEL(func, param) \
+	zigbee_schedule_alarm_cancel(func, param)
+
+#define zb_buf_get_out_delayed(func) \
+	zigbee_get_out_buf_delayed(func)
+
+#define zb_buf_get_in_delayed(func) \
+	zigbee_get_in_buf_delayed(func)
+
+#define zb_buf_get_out_delayed_ext(func, param, max_size) \
+	zigbee_get_out_buf_delayed_ext(func, param, max_size)
+
+#define zb_buf_get_in_delayed_ext(func, param, max_size) \
+	zigbee_get_in_buf_delayed_ext(func, param, max_size)
+
 #ifdef ZB_STACK_REGRESSION_TESTING_API
 
 #define ZB_ENABLE_ALL_INTER()                          \

@@ -308,7 +308,9 @@ zb_ret_t zb_schedule_app_callback(zb_callback_t func, zb_uint8_t param,
 
    See sched sample
  */
+#ifndef ZB_SCHEDULE_APP_CALLBACK
 #define ZB_SCHEDULE_APP_CALLBACK(func, param) zb_schedule_app_callback(func, param, ZB_FALSE, 0, ZB_FALSE)
+#endif /* ZB_SCHEDULE_APP_CALLBACK */
 
 /**
    Schedule two-param callback execution.
@@ -323,7 +325,9 @@ zb_ret_t zb_schedule_app_callback(zb_callback_t func, zb_uint8_t param,
    @return RET_OK or RET_OVERFLOW.
    See sched sample
  */
+#ifndef ZB_SCHEDULE_APP_CALLBACK2
 #define ZB_SCHEDULE_APP_CALLBACK2(func, param, user_param) zb_schedule_app_callback((zb_callback_t)(func),  param, ZB_TRUE, user_param, ZB_FALSE)
+#endif /* ZB_SCHEDULE_APP_CALLBACK2 */
 
 /** @cond internals_doc */
 zb_ret_t zb_schedule_app_alarm(zb_callback_t func, zb_uint8_t param, zb_time_t run_after);
@@ -344,7 +348,9 @@ zb_ret_t zb_schedule_app_alarm(zb_callback_t func, zb_uint8_t param, zb_time_t r
 
    See any sample
  */
+#ifndef ZB_SCHEDULE_APP_ALARM
 #define ZB_SCHEDULE_APP_ALARM(func, param, timeout_bi) zb_schedule_app_alarm(func, param, timeout_bi)
+#endif /* ZB_SCHEDULE_APP_ALARM */
 
 /**
    Special parameter for zb_schedule_alarm_cancel(): cancel alarm once without
@@ -388,7 +394,9 @@ zb_ret_t zb_schedule_alarm_cancel(zb_callback_t func, zb_uint8_t param, zb_uint8
 
    See reporting_srv sample
  */
+#ifndef ZB_SCHEDULE_APP_ALARM_CANCEL
 #define ZB_SCHEDULE_APP_ALARM_CANCEL(func, param) zb_schedule_alarm_cancel((func), (param), NULL)
+#endif /* ZB_SCHEDULE_APP_ALARM_CANCEL */
 
 /**
    Cancel scheduled alarm and get buffer.

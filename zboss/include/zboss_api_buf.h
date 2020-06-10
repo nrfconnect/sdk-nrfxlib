@@ -276,7 +276,9 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
  * @param callback - callback to call.
  * @return RET_OK or error code.
  */
+#ifndef zb_buf_get_out_delayed
 #define zb_buf_get_out_delayed(callback) zb_buf_get_out_delayed_func(TRACE_CALL (callback))
+#endif /* zb_buf_get_out_delayed */
 
 /**
  * @brief Allocate IN buffer, call a callback when the buffer is available.
@@ -288,7 +290,9 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
  * @param callback - callback to call.
  * @return RET_OK or error code.
  */
+#ifndef zb_buf_get_in_delayed
 #define zb_buf_get_in_delayed(callback) zb_buf_get_in_delayed_func(TRACE_CALL (callback))
+#endif /* zb_buf_get_in_delayed */
 
 /**
  * @brief Allocate OUT buffer, call a callback when the buffer is available.
@@ -303,7 +307,9 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
    a fraction of buffer or long buffers. Special value 0 means "single default buffer".
  * @return RET_OK or error code.
  */
+#ifndef zb_buf_get_out_delayed_ext
 #define zb_buf_get_out_delayed_ext(callback,arg,max_size) zb_buf_get_out_delayed_ext_func(TRACE_CALL (callback),(arg),(max_size))
+#endif /* zb_buf_get_out_delayed_ext */
 
 /**
  * @brief Allocate IN buffer, call a callback when the buffer is available.
@@ -318,8 +324,9 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
  * a fraction of buffer or long buffers. Special value 0 means "single default buffer".
  * @return RET_OK or error code.
  */
+#ifndef zb_buf_get_in_delayed_ext
 #define zb_buf_get_in_delayed_ext(callback,arg,max_size) zb_buf_get_in_delayed_ext_func(TRACE_CALL (callback),(arg),(max_size))
-
+#endif /* zb_buf_get_in_delayed_ext */
 
 /**
  * @brief Free packet buffer and put it into freelist.
