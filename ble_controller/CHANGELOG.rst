@@ -5,8 +5,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-Master branch
-*************
+nRF Connect SDK v1.3.0
+**********************
 
 Added
 =====
