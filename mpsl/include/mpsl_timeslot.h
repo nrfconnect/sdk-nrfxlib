@@ -52,6 +52,12 @@ extern "C" {
 /** @brief The latest time before the end of a timeslot when timeslot can be extended. */
 #define MPSL_TIMESLOT_EXTENSION_MARGIN_MIN_US          (87UL)
 
+/** @brief Size of a single timeslot context. */
+#define MPSL_TIMESLOT_CONTEXT_SIZE                     (36)
+
+/** @brief Maximum number of timeslot sessions. */
+#define MPSL_TIMESLOT_CONTEXT_COUNT_MAX                (8)
+
 /** @brief The timeslot signal types. */
 enum MPSL_TIMESLOT_SIGNAL
 {
@@ -214,6 +220,7 @@ typedef struct
     } params;                                /**< Parameter union. */
 } mpsl_timeslot_signal_return_param_t;
 
+
 /** @brief The timeslot signal callback type.
  *
  * @note In case of invalid return parameters, the timeslot will automatically end
@@ -222,11 +229,30 @@ typedef struct
  * @note The returned struct pointer must remain valid after the signal callback
  *       function returns. For instance, this means that it must not point to a stack variable.
  *
- * @param[in] signal Type of signal, see @ref MPSL_TIMESLOT_SIGNAL.
+ * @param[in] session_id Session id as returned by @ref mpsl_timeslot_session_open.
+ * @param[in] signal     Type of signal, see @ref MPSL_TIMESLOT_SIGNAL.
  *
  * @return Pointer to structure containing action requested by the application.
  */
-typedef mpsl_timeslot_signal_return_param_t * (*mpsl_timeslot_callback_t) (uint32_t signal);
+typedef mpsl_timeslot_signal_return_param_t * (*mpsl_timeslot_callback_t) (uint8_t session_id, uint32_t signal);
+
+/** @brief Set or update the MPSL timeslot configuration.
+ *
+ * @note Resource configuration can only be performed when all timeslots are closed.
+ *
+ * void*   p_mem;        Pointer to a memory location for timeslot sessions.
+ *                       The size of the memory block needs to be at least n_sessions * MPSL_TIMESLOT_CONTEXT_SIZE bytes.
+ *                       The memory needs to reside in RAM.
+ *                       The pointer needs to be aligned to a 4-byte boundary.
+ * uint8_t n_sessions    Number of timeslot sessions.
+ *                       Maximum number of supported timeslot sessions is @ref MPSL_TIMESLOT_CONTEXT_COUNT_MAX.
+ *
+ * @returns 0            The configuration was applied successfully.
+ * @retval  -NRF_EPERM   Timeslots need to be configured when no timeslots are open.
+ * @retval  -NRF_EINVAL  Invalid argument provided.
+ * @retval  -NRF_EFAULT  The memory is not aligned to a 4-byte boundary.
+ */
+int32_t mpsl_timeslot_session_count_set(void* p_mem, uint8_t n_sessions);
 
 /** @brief Opens a session for timeslot requests.
  *
@@ -241,8 +267,8 @@ typedef mpsl_timeslot_signal_return_param_t * (*mpsl_timeslot_callback_t) (uint3
  *
  * @param[in] mpsl_timeslot_signal_callback The signal callback.
  *
- * @retval 0              Success
- * @retval  -NRF_EAGAIN   Session already open
+ * @retval >= 0           Request was successful and this is the session id of the timeslot.
+ * @retval  -NRF_ENOMEM   All sessions are already open.
  */
 int32_t mpsl_timeslot_session_open(mpsl_timeslot_callback_t mpsl_timeslot_signal_callback);
 
@@ -251,10 +277,12 @@ int32_t mpsl_timeslot_session_open(mpsl_timeslot_callback_t mpsl_timeslot_signal
  * @note Any current timeslot will be finished before the session is closed.
  * @note If a timeslot is scheduled when the session is closed, it will be canceled.
  *
+ * @param[in] session_id The session identifier as returned by @ref mpsl_timeslot_session_open.
+ *
  * @retval 0              Success
  * @retval  -NRF_EAGAIN   Session already closed
  */
-int32_t mpsl_timeslot_session_close(void);
+int32_t mpsl_timeslot_session_close(uint8_t session_id);
 
 /** @brief Requests a timeslot.
  *
@@ -270,14 +298,15 @@ int32_t mpsl_timeslot_session_close(void);
  * @note No stack will neither access the RADIO peripheral nor the TIMER0 peripheral
  *       during the timeslot.
  *
- * @param[in] p_request Pointer to the request parameters.
+ * @param[in] session_id  The session identifier as returned by @ref mpsl_timeslot_session_open.
+ * @param[in] p_request   Pointer to the request parameters.
  *
  * @retval 0              Success
  * @retval  -NRF_EINVAL   The parameters of p_request are not valid
- * @retval  -NRF_EAGAIN   Either
- *                        - The session is not open.
- *                        - The session is not IDLE. */
-int32_t mpsl_timeslot_request(mpsl_timeslot_request_t const * p_request);
+ * @retval  -NRF_ENOENT   The session is not open.
+ * @retval  -NRF_EAGAIN   The session is not IDLE.
+ */
+int32_t mpsl_timeslot_request(uint8_t session_id, mpsl_timeslot_request_t const * p_request);
 
 #ifdef __cplusplus
 }
