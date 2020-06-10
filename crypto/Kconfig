@@ -23,16 +23,16 @@ if NRF_CC310_BL
 	default n # Only the no-interrupts version currently verified to work with Zephyr.
 endif
 
-menuconfig NRF_CC310_PLATFORM
-	bool "nrf_cc310_platform HW crypto library for nRF devices with CryptoCell CC310."
+menuconfig NRF_CC3XX_PLATFORM
+	bool "nrf_cc3xx_platform HW crypto library for nRF devices with CryptoCell CC3xx."
 	select NRFXLIB_CRYPTO
 	help
 		To use, link with nrfxlib_crypto in CMake.
 
-if NRF_CC310_PLATFORM
+if NRF_CC3XX_PLATFORM
 
-config HW_CC310_INTERRUPT
-	bool "Use interrupt version of nrf cc310 platform library" if !(CC310_BACKEND || NRF_CC310_BL)
+config HW_CC3XX_INTERRUPT
+	bool "Use interrupt version of nrf cc3xx platform library" if !(CC3XX_BACKEND || NRF_CC310_BL)
 
 endif
 

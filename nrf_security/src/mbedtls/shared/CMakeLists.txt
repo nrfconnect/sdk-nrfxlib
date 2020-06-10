@@ -65,16 +65,13 @@ if (CONFIG_MBEDTLS_DHM_C AND CONFIG_OBERON_BACKEND)
     ${ARM_MBEDTLS_PATH}/library/dhm.c
   )
 
-endif()
-
-
 #
-# Add specific includes for threading and platform_cc310
+# Add specific includes for threading and platform_cc3xx
 #
-if(TARGET platform_cc310)
+if(TARGET platform_cc3xx)
   target_include_directories(mbedcrypto_shared PRIVATE
     ${mbedcrypto_glue_include_path}/threading
-    $<TARGET_PROPERTY:platform_cc310,BASE_INCLUDE_PATH>
+    $<TARGET_PROPERTY:platform_cc3xx,BASE_INCLUDE_PATH>
   )
 endif()
 
