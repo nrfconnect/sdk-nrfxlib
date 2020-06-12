@@ -5,6 +5,23 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Master branch
+*************
+
+Changes
+=======
+* Change the timeslot implementation to support up to 8 concurrent sessions.
+  As part of this change, it is now necessary to supply a timeslot context configuration
+  using :cpp:func:`mpsl_timeslot_session_count_set`. All APIs timeslot APIs now take
+  a session_id as input. The session id is retrieved from :cpp:func:`mpsl_timeslot_session_open()`.
+
+Bugfixes
+========
+
+* Fixed an issue where the high frequency clock and TIMER0 was not turned off during idle periods shorter than 9 ms.
+  This increased the average power consumption.
+  Such a case could occur when running a Bluetooth LE connection with a connection interval of 7.5 ms. 
+
 nRF Connect SDK v1.3.0
 **********************
 
