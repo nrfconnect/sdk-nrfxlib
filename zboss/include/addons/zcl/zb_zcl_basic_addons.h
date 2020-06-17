@@ -19,11 +19,11 @@ typedef struct
     zb_uint8_t app_version;
     zb_uint8_t stack_version;
     zb_uint8_t hw_version;
-    zb_char_t  mf_name[32];
-    zb_char_t  model_id[32];
-    zb_char_t  date_code[16];
+    zb_char_t  mf_name[33];
+    zb_char_t  model_id[33];
+    zb_char_t  date_code[17];
     zb_uint8_t power_source;
-    zb_char_t  location_id[15];
+    zb_char_t  location_id[17];
     zb_uint8_t ph_env;
     zb_char_t  sw_ver[17];
 } zb_zcl_basic_attrs_ext_t;
