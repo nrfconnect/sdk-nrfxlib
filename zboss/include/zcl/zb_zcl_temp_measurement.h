@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Temperature Measurement cluster defintions
+/* PURPOSE: Temperature Measurement cluster definitions
 */
 
 #if ! defined ZB_ZCL_TEMP_MEASUREMENT_H

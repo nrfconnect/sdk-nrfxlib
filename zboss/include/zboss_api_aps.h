@@ -210,7 +210,7 @@ typedef ZB_PACKED_PRE struct zb_aps_hdr_s
   zb_uint8_t  dst_endpoint;    /*!< The destination endpoint of the packet receiver. */
   zb_uint8_t  src_endpoint;    /*!< The source endpoint from which that packet was send. */
   zb_uint16_t clusterid;       /*!< The identifier of the cluster on the source device. */
-  zb_uint16_t profileid;        /*!< Profile Id */
+  zb_uint16_t profileid;        /*!< Profile ID */
   zb_uint8_t  aps_counter;      /*!< APS Counter for check APS dup command. */
   zb_uint16_t mac_src_addr;     /*!< Source address of device that transmit that packet. */
   zb_uint16_t mac_dst_addr;     /*!< Next hop address used for frame transmission. */
@@ -225,7 +225,7 @@ typedef ZB_PACKED_PRE struct zb_aps_hdr_s
                                    *      @ref zb_secur_key_attributes_e
                                    *   @endif
                                    */
-  zb_bitfield_t aps_key_from_tc:1; /* Denotes that packet received from TC and propertly
+  zb_bitfield_t aps_key_from_tc:1; /* Denotes that packet received from TC and properly
                                     * encrypted with TCLK by any appropriate method:
                                     * 1) BDB Request key (with Key Type: TCLK) ->
                                     *    Transport Key -> Verify Key
@@ -377,7 +377,7 @@ void zb_apsme_bind_request(zb_uint8_t param);
 void zb_apsme_unbind_request(zb_uint8_t param);
 
 /** @brief Perform unbind all entries. This custom function and it is not described
- * in Zigbee specificatoin.
+ * in Zigbee specification.
  * @param param - not used.
  */
 void zb_apsme_unbind_all(zb_uint8_t param);
@@ -464,7 +464,7 @@ typedef void (*zb_aps_user_payload_callback_t)(zb_uint8_t param);
  */
 typedef enum zb_aps_user_payload_cb_status_e
 {
-  /*! APS user payload transmition is successful*/
+  /*! APS user payload transmission is successful*/
   ZB_APS_USER_PAYLOAD_CB_STATUS_SUCCESS    = (zb_uint8_t)0x00,
   /* Failed to transmit APS user payload - No confirmation from MAC*/
   ZB_APS_USER_PAYLOAD_CB_STATUS_NO_MAC_ACK = (zb_uint8_t)0xe9,
@@ -534,3 +534,4 @@ void zb_aps_set_user_data_tx_cb(zb_aps_user_payload_callback_t cb);
 #endif /* #ifdef ZB_APS_USER_PAYLOAD */
 
 #endif /* #ifndef ZB_ZBOSS_API_APS_H */
+ 

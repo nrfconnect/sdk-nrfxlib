@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: EN50523 Appliance events and alerts cluster defintions
+/* PURPOSE: EN50523 Appliance events and alerts cluster definitions
 */
 
 #if ! defined ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_H
@@ -180,14 +180,14 @@ enum zb_zcl_en50523_appl_ev_and_alerts_alert_presence_e
 /*! @brief Alert structure */
 typedef ZB_PACKED_PRE struct zb_zcl_en50523_appl_ev_and_alerts_alert_struct_s
 {
-  /** Alert field - Alert ID, Category, Presense recovery, Manufacturer specific bits */
+  /** Alert field - Alert ID, Category, Presence recovery, Manufacturer specific bits */
   zb_uint8_t alert[3];
 } ZB_PACKED_STRUCT zb_zcl_en50523_appl_ev_and_alerts_alert_struct_t;
 
-/*! @brief Structure representsation of Get Alerts Response command */
+/*! @brief Structure representation of Get Alerts Response command */
 typedef ZB_PACKED_PRE struct zb_zcl_en50523_appl_ev_and_alerts_get_alerts_resp_s
 {
-  /** Alerts count fiels - Number of Alerts, Type of alert */
+  /** Alerts count fields - Number of Alerts, Type of alert */
   zb_uint8_t alerts_count;
   /** Alert structure fields, see zb_zcl_en50523_appl_ev_and_alerts_alert_struct_t */
   zb_zcl_en50523_appl_ev_and_alerts_alert_struct_t alert_struct[ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_MAX_ALERTS_NUM];
@@ -269,10 +269,10 @@ typedef ZB_PACKED_PRE struct zb_zcl_en50523_appl_ev_and_alerts_get_alerts_resp_s
 
 /******************************* Alerts Notification Command ******************************/
 
-/*! @brief Structure representsation of Alerts Notification command */
+/*! @brief Structure representation of Alerts Notification command */
 typedef ZB_PACKED_PRE struct zb_zcl_en50523_appl_ev_and_alerts_alerts_notif_s
 {
-  /** Alerts count fiels - Number of Alerts, Type of alert */
+  /** Alerts count fields - Number of Alerts, Type of alert */
   zb_uint8_t alerts_count;
   /** Alert structure fields, see zb_zcl_en50523_appl_ev_and_alerts_alert_struct_t */
   zb_zcl_en50523_appl_ev_and_alerts_alert_struct_t alert_struct[ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_MAX_ALERTS_NUM];
@@ -360,7 +360,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_en50523_appl_ev_and_alerts_alerts_notif_s
 
 /******************************* Event Notification Command ******************************/
 
-/*! @brief Event Identificatoin */
+/*! @brief Event Identification */
 enum zb_zcl_en50523_appl_ev_and_alerts_event_identification_e
 {
   ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_EVENT_ID_END_OF_CYCLE    = 0x01,
@@ -370,7 +370,7 @@ enum zb_zcl_en50523_appl_ev_and_alerts_event_identification_e
   ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_EVENT_ID_WRONG_DATA      = 0xf7,
 };
 
-/*! @brief Structure representsation of Event Notification command
+/*! @brief Structure representation of Event Notification command
   @param event_header - Event header field
   @param event_identification - Event Identification field, see zb_zcl_en50523_appl_ev_and_alerts_event_identification_e
 */

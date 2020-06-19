@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*  PURPOSE: Common constants and definitions, mainly related to ZigBee protocol.
+/*  PURPOSE: Common constants and definitions, mainly related to Zigbee protocol.
 */
 #ifndef ZB_CONFIG_COMMON_H
 #define ZB_CONFIG_COMMON_H 1
@@ -55,9 +55,9 @@ Do not put there ifdefs depending on defines made in the middle of zb_config.h!
    TODO: Fix it. there should probably be another way to build without security
 */
 /** @endcond *//* internals_doc */
-/****************************Sequrity options**************************/
+/****************************Security options**************************/
 
-/****************************Sequtity keys***************************/
+/****************************Security keys***************************/
 
 /* Always security on (both NWK and APS). Remove all special security configs */
 
@@ -75,7 +75,7 @@ shall have a value of 5A 69 67 42 65 65 41 6C 6C 69 61 6E 63 65 30 39
 
 /**
  In ZLL specification this is ZLL Certification pre-installed link key - see
- 8.7.2 Transfer ring the network key dur ing classical Zigbee commissioning.
+ 8.7.2 Transfer ring the network key during classical Zigbee commissioning.
 
 
  The distributed security global link key is used to join a distributed security
@@ -120,7 +120,7 @@ key. They use same algorithm.
 #define ZB_STANDARD_SECURITY
 
 /**
- SECUR: If defined, generate random keys at Trust Center at start of pre-configured jey is not set.
+ SECUR: If defined, generate random keys at Trust Center at start of pre-configured key is not set.
 */
 #define ZB_TC_GENERATES_KEYS
 
@@ -200,7 +200,7 @@ key. They use same algorithm.
 */
 /*! Dup check timeout */
 #define ZB_APS_DUP_INITIAL_CLOCK 21
-/*! Sets APS dup chekcks time out. By default it is 21 sec. This
+/*! Sets APS dup checks time out. By default it is 21 sec. This
 *  interval guaranties total APS retransmission interval (1 original + 2 retransmits).
 */
 #define ZB_APS_DUP_CHECK_TIMEOUT ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000)
@@ -230,7 +230,7 @@ key. They use same algorithm.
  APS: max number of packets waiting for APS ACK
 
  Derive it from the pool size. Keep some free buffers in the pool, remember some
- buffers are reserved at start (I see 4 out buffers resetved).
+ buffers are reserved at start (I see 4 out buffers reserved).
 */
 #ifndef ZB_CONFIGURABLE_MEM
 /**
@@ -374,8 +374,8 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
  * APS header (total: 8 bytes)
  * - FCF: 1 byte
  * - Destination endpoint: 1 byte
- * - Cluster id: 2 bytes
- * - Profile id: 2 bytes
+ * - Cluster ID: 2 bytes
+ * - Profile ID: 2 bytes
  * - Source endpoint: 1 byte
  * - Counter: 1 byte
  *
@@ -442,12 +442,12 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
  * security mode etc).
  * Anyway, there are not too many cases where we use ZB_APS_HEADER_MAX_LEN or
  * ZB_APS_PAYLOAD_MAX_LEN.
- * EE: Can't we assert in zb_zdo_nwk_upd_notify()? You can define 2 constamts: fragmented and not.
+ * EE: Can't we assert in zb_zdo_nwk_upd_notify()? You can define 2 constants: fragmented and not.
  */
 
 /*  2 stands for  fc + aps counter( Packet either has dest and src endpoints (1+1 byte) if not group
 * addressing or Group address elsewhere - so 2 anyway)
-* + 2(cluster id, profile id)*
+* + 2(cluster ID, profile ID)*
 * + 4(fragmentation and Extended header are NOT included
 *     TODO: handle fragmentation and Extended header.*)
 * + 1(Security control field)
@@ -519,7 +519,7 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
 #define ZB_NWK_TREE_ROUTING_DEPTH    5
 
 /**
- Define maimum network depth in stochastic addressing mode (NLF90)
+ Define maximum network depth in stochastic addressing mode (NLF90)
 */
 #define ZB_NWK_STOCH_DEPTH    15
 
@@ -730,7 +730,7 @@ nwkMaxBroadcastRetries
 /**@cond internals_doc */
 /* Old feature from pre-3.0 (HA) era */
 /* If there was an error in NWK security processing of incoming packet from parent,
- * then device tries to rejoin. This define disables this behaviour */
+ * then device tries to rejoin. This define disables this behavior */
 
 /* By default device is rejoined if network key switch failed */
 /*  #define ZB_DISABLE_REJOIN_AFTER_KEY_SWITCH_FAIL */
@@ -747,7 +747,7 @@ nwkMaxBroadcastRetries
 #define  ZB_REJOIN_IGNORES_FLAGS
 
 /*!
-Workaroud for secure rejoin
+Workaround for secure rejoin
 */
 #define xZB_NO_KEY_AFTER_REJOIN
 
@@ -794,13 +794,13 @@ Workaroud for secure rejoin
 /*!
  * Special value of the ScanDuration for Mgmt_NWK_Update_req for channel change.
  *
- * See Zigpee Specification revision 22 Table 2.88, field ScanDuration.
+ * See Zigbee Specification revision 22 Table 2.88, field ScanDuration.
  */
 #define ZB_ZDO_NEW_ACTIVE_CHANNEL 0xFE
 /*!
  * Special value of the ScanDuration for Mgmt_NWK_Update_req for channel mask change.
  *
- * See Zigpee Specification revision 22 Table 2.88, field ScanDuration.
+ * See Zigbee Specification revision 22 Table 2.88, field ScanDuration.
 */
 #define ZB_ZDO_NEW_CHANNEL_MASK   0xFF
 
@@ -895,15 +895,15 @@ Workaroud for secure rejoin
 /*! Checking channel timeout*/
 #define ZB_ZDO_CHECK_CHANNEL_TIMEOUT (24 * 60 * 60 * ZB_TIME_ONE_SECOND)
 /** @endcond *//* internals_doc */
-/* Berore r22 this value could be only 1, because scan attempts routine work
+/* Before r22 this value could be only 1, because scan attempts routine work
  * wrong. Rewritten/fixed in r22.  */
 /*!
 *  Integer value representing the number of scan attempts to make before the NWK layer decides
-*  which ZigBee coordinator or router to associate with.
+*  which Zigbee coordinator or router to associate with.
 *
 *  See Zigbee Specification revision 22 section 2.5.51 Configuration Attribute Definitions
 *
-*  Table 2-154 of Zigbee Specification reviaion 22 : Config_NWK_Scan_Attempts default value is 5.
+*  Table 2-154 of Zigbee Specification revision 22 : Config_NWK_Scan_Attempts default value is 5.
 */
 #define ZB_ZDO_NWK_SCAN_ATTEMPTS 5
 /** @cond internals_doc */
@@ -1040,7 +1040,7 @@ The SFD is a field indicating the end of the SHR and the start of the packet dat
 
 6.3.2 SFD field
  */
-/*! Start of length delimiter field lenght */
+/*! Start of length delimiter field length */
 #define ZB_MAC_SFD_LEN 1
 
 
@@ -1061,14 +1061,14 @@ See IEEE Standard for Low-Rate Wireless Networks, section 5.7.3 Frame structure.
 
 
  /* See D.10.1.1 PPDU Format for European Sub-GHz FSK */
- /*! MAC SUB GHZ peamble length */
-#define ZB_MAC_SUBG_PEAMBLE_LEN 8
+ /*! MAC SUB GHZ preamble length */
+#define ZB_MAC_SUBG_PREAMBLE_LEN 8
 /*! MAC SUB GHZ start of frame delimiter length*/
 #define ZB_MAC_SUBG_SFD_LEN     2
 /*! MAC SUB GHZ PHY header length */
 #define ZB_MAC_SUBG_PHR_LEN     2
 /*! MAC SUB GHZ PHY protocol data unit frame header length */
-#define ZB_MAC_SUBG_FRAME_PPDU_HDR_LEN (ZB_MAC_SUBG_PEAMBLE_LEN + ZB_MAC_SUBG_SFD_LEN + ZB_MAC_SUBG_PHR_LEN)
+#define ZB_MAC_SUBG_FRAME_PPDU_HDR_LEN (ZB_MAC_SUBG_PREAMBLE_LEN + ZB_MAC_SUBG_SFD_LEN + ZB_MAC_SUBG_PHR_LEN)
 /*! MAC SUB GHZ PHY protocol data unit frame footer length */
 #define ZB_MAC_SUBG_FRAME_PPDU_FOOTER_LEN 2
 /*! MAC SUB GHZ symbol duration in microseconds */
@@ -1155,7 +1155,7 @@ request command frame.
 /*! Make all MAC PIB attributes configurable */
 #define ZB_CONFIGURABLE_MAC_PIB
 
-/* Zigbee IEEE 802.15.4 Test Spec (ZibBee Doc. 14-0332-01), TP/154/MAC/DATA-04 test:
+/* Zigbee IEEE 802.15.4 Test Spec (Zigbee Doc. 14-0332-01), TP/154/MAC/DATA-04 test:
    macMaxFrameTotalWaitTime for 2.4 GHz 802.15.4-2003 Zigbee/PRO/RF4CE device is
    1220 symbols (or 20 msec) - minimal WaitTime to pass the test.
 
@@ -1433,15 +1433,22 @@ request command frame.
 #define ZB_MAC_DUTY_CYCLE_RAMP_DOWN_SYMBOLS   0
 #endif  /* ZB_MAC_DUTY_CYCLE_RAMP_DOWN_SYMBOLS */
 
+
+
+#ifndef ZB_USE_DUTY_CYCLE_PERCENT_ENABLE
+
 /*! MAC duty cycle of limited threshold length */
 #define ZB_MAC_DUTY_CYCLE_LIMITED_THRESHOLD_SYMBOLS  5400000
 /*! MAC duty cycle of critical threshold length */
 #define ZB_MAC_DUTY_CYCLE_CRITICAL_THRESHOLD_SYMBOLS 7500000
 
+/*! MAC duty cycle of limited threshold length */
 /*! Length of regulated MAC duty cycle pages 29 and 29 */
 #define ZB_MAC_DUTY_CYCLE_REGULATED_SYMBOLS_PAGES_28_29 10000000
 /*! Length of regulated MAC duty cycle pages 30 and 31 */
 #define ZB_MAC_DUTY_CYCLE_REGULATED_SYMBOLS_PAGES_30_31  9000000
+
+#endif /* ZB_USE_DUTY_CYCLE_PERCENT_ENABLE */
 
 /* aDUTYCYCLEBuckets */
 /*! Number of buckets used for duty cycle monitoring */
@@ -1466,17 +1473,17 @@ request command frame.
 *
 *   See reference document 05-3474-22 section D.9.2.4.2. Zigbee Specification R22
  */
-#define ZB_MAC_POWER_CONTOL_OPT_SIGNAL_LEVEL (ZB_EU_FSK_REFERENCE_SENSITIVITY + 20)
+#define ZB_MAC_POWER_CONTROL_OPT_SIGNAL_LEVEL (ZB_EU_FSK_REFERENCE_SENSITIVITY + 20)
 
 
 #ifndef ZB_MAC_DEFAULT_TX_POWER_SUB_GHZ
-/*! Default MAC transmition power for SUB GHZ */
+/*! Default MAC transmission power for SUB GHZ */
 #define ZB_MAC_DEFAULT_TX_POWER_SUB_GHZ +14
 #endif
 /** @endcond */ /* DOXYGEN_MULTIMAC_SECTION */
 /** @cond internals_doc */
 #ifndef ZB_MAC_DEFAULT_TX_POWER_24_GHZ
-/*! Default MAC transmition power for 2.4 GHZ */
+/*! Default MAC transmission power for 2.4 GHZ */
 #define ZB_MAC_DEFAULT_TX_POWER_24_GHZ  +20
 #endif
 /*! MAC diagnostic filter size */
@@ -1507,7 +1514,7 @@ request command frame.
 #define ZB_DEFAULT_BDB_TRUST_CENTER_NODE_JOIN_TIMEOUT ZB_MILLISECONDS_TO_BEACON_INTERVAL(0xf * 1000)
 /*! Timeout in seconds for the Trust Center to exchange link keys with the newly joined node */
 #define ZB_BDBC_TCLINK_KEY_EXCHANGE_TIMEOUT ZB_MILLISECONDS_TO_BEACON_INTERVAL(5000)
-/*! Minimum commisioning period */
+/*! Minimum commissioning period */
 #define ZB_BDBC_MIN_COMMISSIONING_TIME_S 180
 /*! Number of Trust Center link attempts to exchange link keys with the newly joined node. */
 #define ZB_DEFAULT_BDB_TCLINK_KEY_EXCHANGE_ATTEMPTS_MAX 3
@@ -1573,9 +1580,9 @@ request command frame.
 */
 #define ZB_ZGP_TIMEOUT_BEFORE_FORCE_CANCEL (3 * ZB_TIME_ONE_SECOND)
 
-/*! Unspecified Zigbee Green Power device manufacturer Id */
+/*! Unspecified Zigbee Green Power device manufacturer ID */
 #define ZB_ZGPD_MANUF_ID_UNSPEC     0xFFFF
-/*! Default Zigbee Green Power device manufacturer Id */
+/*! Default Zigbee Green Power device manufacturer ID */
 #define ZB_ZGPD_DEF_MANUFACTURER_ID 0x10d0
 /*! Maximum number of lightweight unicast address per Green Power device. */
 #define ZB_ZGP_MAX_LW_UNICAST_ADDR_PER_GPD 2
@@ -1626,3 +1633,4 @@ request command frame.
 
 
 #endif /* ZB_CONFIG_COMMON_H */
+ 

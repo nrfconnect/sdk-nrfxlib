@@ -59,7 +59,7 @@
 typedef ZB_PACKED_PRE struct zb_ieee_addr_compressed_s
 {
   zb_uint8_t dev_manufacturer; /*!< Index from dev manufacturer array */
-  zb_uint8_t device_id[5]; /*!< Device id */
+  zb_uint8_t device_id[5]; /*!< Device ID */
 }
 ZB_PACKED_STRUCT
 zb_ieee_addr_compressed_t;
@@ -102,31 +102,31 @@ typedef ZB_PACKED_PRE struct zb_address_map_s
   zb_bitfield_t              clock:1;    /*!< clock value for the clock usage algorithm  */
   zb_bitfield_t              redirect_type:2; /*!< redirect type @ref zb_addr_redirect_type_e */
   zb_bitfield_t              lock_cnt:7; /*!< lock counter. not locked if 0  */
-  zb_bitfield_t              pending_for_delete:1;    /*!< record is pending for deletetion  */
+  zb_bitfield_t              pending_for_delete:1;    /*!< record is pending for deletion  */
 } ZB_PACKED_STRUCT zb_address_map_t;
 
 
 /**
-   \par work with compresed addresses
+   \par work with compressed addresses
  */
 
 /*
   * AS: Fixed wrong division 64-bit extended address into
   * manufacturer specific and device unique parts.
 */
-#define ZB_ADDRESS_DECOMPRESS(address, copressed_address)               \
+#define ZB_ADDRESS_DECOMPRESS(address, compressed_address)               \
 do                                                                      \
 {                                                                       \
-  if (ZB_ADDRESS_COMPRESED_IS_UNKNOWN(copressed_address))               \
+  if (ZB_ADDRESS_COMPRESSED_IS_UNKNOWN(compressed_address))               \
   {                                                                     \
     ZB_64BIT_ADDR_UNKNOWN(address);                                     \
   }                                                                     \
   else                                                                  \
   {                                                                     \
     ZB_MEMCPY(&((address)[5]),                                          \
-              &(ZG->addr.dev_manufacturer[(copressed_address).dev_manufacturer].device_manufacturer[0]), \
+              &(ZG->addr.dev_manufacturer[(compressed_address).dev_manufacturer].device_manufacturer[0]), \
               (sizeof((address)[0]) * 3));                              \
-    ZB_MEMCPY(&((address)[0]), &((copressed_address).device_id[0]), (sizeof((address)[0]) * 5)); \
+    ZB_MEMCPY(&((address)[0]), &((compressed_address).device_id[0]), (sizeof((address)[0]) * 5)); \
                                                                         \
   }                                                                     \
 }                                                                       \
@@ -152,10 +152,10 @@ zb_bool_t zb_address_compressed_cmp(zb_ieee_addr_compressed_t *one, zb_ieee_addr
      This placement changes pointer type making it unusable
      Is this cast needed here?
   */
-#define ZB_ADDRESS_COMPRESED_IS_ZERO(dest)      \
+#define ZB_ADDRESS_COMPRESSED_IS_ZERO(dest)      \
   (!ZB_MEMCMP(&(dest).dev_manufacturer, (void const *)g_zero_addr, sizeof(zb_ieee_addr_compressed_t)))
 
-#define ZB_ADDRESS_COMPRESED_IS_UNKNOWN(dest)      \
+#define ZB_ADDRESS_COMPRESSED_IS_UNKNOWN(dest)      \
   (!ZB_MEMCMP(&(dest).dev_manufacturer, (void const *)g_unknown_ieee_addr, sizeof(zb_ieee_addr_compressed_t)))
 
 #define ZB_ADDRESS_COMPRESS_UNKNOWN(dest)     \
@@ -225,7 +225,7 @@ void zb_address_get_pan_id(zb_address_pan_id_ref_t pan_id_ref, zb_ext_pan_id_t p
 
    @return nothing
 
-   See zdo_startup_copmlete_int code
+   See zdo_startup_complete_int code
  */
 void zb_address_clear_pan_id_table(zb_ext_pan_id_t pan_id);
 
@@ -234,7 +234,7 @@ void zb_address_clear_pan_id_table(zb_ext_pan_id_t pan_id);
 
    @return nothing
 
-   See zdo_startup_copmlete_int code
+   See zdo_startup_complete_int code
  */
 void zb_address_reset_pan_id_table(void);
 
@@ -285,9 +285,9 @@ void zb_address_get_short_pan_id(zb_address_pan_id_ref_t pan_id_ref, zb_uint16_t
    Compare Pan ID in the source form with Pan ID reference.
 
    @param pan_id_ref - Pan ID ref
-   @param pan_id     - PAn ID (64-bit)
+   @param pan_id     - Pan ID (64-bit)
 
-   @return ZB_TRUE if addresses are equal, ZB_FALSE otherwhise
+   @return ZB_TRUE if addresses are equal, ZB_FALSE otherwise
 
    @b Example
 @code
@@ -306,8 +306,8 @@ zb_bool_t zb_address_cmp_pan_id_by_ref(zb_address_pan_id_ref_t pan_id_ref, zb_ex
 
 /**
    Update long/short address pair. Create the pair if not exist. Optionally, lock.
-   Reaction on device annonce etc. Long and short addresses are present. Must
-   syncronize the address translation table with this inforormation.
+   Reaction on device announce etc. Long and short addresses are present. Must
+   synchronize the address translation table with this information.
 
    @note Never call zb_address_update() with empty (zero) ieee_address or empty
    (-1) short_address.
@@ -405,7 +405,7 @@ void zb_address_ieee_by_ref(zb_ieee_addr_t ieee_address, zb_address_ieee_ref_t r
 void zb_address_short_by_ref(zb_uint16_t *short_address_p, zb_address_ieee_ref_t ref);
 
 /**
-   Get address ref by long address, optionaly create if not exist, optionally lock.
+   Get address ref by long address, optionally create if not exist, optionally lock.
    Update address alive time if not locked.
    @param ieee - IEEE device address
    @param create - if TRUE, create address entry if it does not exist
@@ -440,7 +440,7 @@ zb_ret_t zb_address_by_ieee(zb_ieee_addr_t ieee, zb_bool_t create, zb_bool_t loc
 
    @param ieee_address - long address
 
-   @return short address if ok, -1 otherwhise.
+   @return short address if ok, -1 otherwise.
 
    @par Example
    @snippet thermostat/thermostat_zc/thermostat_zc.c default_short_addr
@@ -594,7 +594,7 @@ void zb_ieee_addr_compress(zb_ieee_addr_t address, zb_ieee_addr_compressed_t *co
     zb_ieee_addr_t long_address;
     if (ZG->nwk.neighbor.ext_neighbor[i].short_addr != (zb_uint16_t)~0)
     {
-      if (!ZB_ADDRESS_COMPRESED_IS_UNKNOWN(ZG->nwk.neighbor.ext_neighbor[i].long_addr))
+      if (!ZB_ADDRESS_COMPRESSED_IS_UNKNOWN(ZG->nwk.neighbor.ext_neighbor[i].long_addr))
       {
         zb_ieee_addr_decompress(long_address, &ZG->nwk.neighbor.ext_neighbor[i].long_addr);
         zb_address_update(long_address, ZG->nwk.neighbor.ext_neighbor[i].short_addr, ZB_FALSE, &addr_ref);

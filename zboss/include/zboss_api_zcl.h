@@ -107,7 +107,17 @@
 #include "zcl/zb_zcl_drlc.h"
 #include "zcl/zb_zcl_metering.h"
 #include "zcl/zb_zcl_messaging.h"
+#if defined ZB_ZCL_SUPPORT_CLUSTER_DAILY_SCHEDULE
+#include "zcl/zb_zcl_daily_schedule.h"
+#endif
 #include "zcl/zb_zcl_tunneling.h"
+
+#if defined ZB_ZCL_SUPPORT_CLUSTER_PREPAYMENT
+#include "zcl/zb_zcl_prepayment.h"
+#endif
+#ifdef ZB_ZCL_SUPPORT_CLUSTER_CALENDAR
+#include "zcl/zb_zcl_calendar.h"
+#endif
 
 
 
@@ -303,7 +313,7 @@ typedef enum zb_zcl_device_callback_id_e
   ZB_ZCL_SHADE_GET_VALUE_CB_ID,
   /** Inform user about call identify effect command @see ZLL spec 6.3.1.2.1 */
   ZB_ZCL_IDENTIFY_EFFECT_CB_ID,
-  /** Inform user about ZCL Level Contol cluster attributes value modification */
+  /** Inform user about ZCL Level Control cluster attributes value modification */
   ZB_ZCL_LEVEL_CONTROL_SET_VALUE_CB_ID,
   /** Inform user about enroll result command @see ZCL spec 8.2.2.3.1 */
   ZB_ZCL_IAS_ZONE_ENROLL_RESPONSE_VALUE_CB_ID,
@@ -796,7 +806,7 @@ typedef enum zb_zcl_device_callback_id_e
    * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
    */
   ZB_ZCL_TUNNELING_REQUEST_TUNNEL_RESPONSE_CB_ID,
-  /** @b Server. Infrom user about received TransferData request
+  /** @b Server. Inform user about received TransferData request
    *
    * User's application callback is initialized by RET_OK status of device
    * callback parameters.
@@ -808,7 +818,7 @@ typedef enum zb_zcl_device_callback_id_e
    *                     Send @ref ZB_ZCL_TUNNELING_SRV_CMD_TRANSFER_DATA_ERROR "TransferDataError" command
    */
   ZB_ZCL_TUNNELING_TRANSFER_DATA_CLI_CB_ID,
-  /** @b Client. Infrom user about received TransferData request
+  /** @b Client. Inform user about received TransferData request
    *
    * User's application callback is initialized by RET_OK status of device
    * callback parameters.
@@ -820,7 +830,7 @@ typedef enum zb_zcl_device_callback_id_e
    *                     Send @ref ZB_ZCL_TUNNELING_SRV_CMD_TRANSFER_DATA_ERROR "TransferDataError" command
    */
   ZB_ZCL_TUNNELING_TRANSFER_DATA_SRV_CB_ID,
-  /** @b Server. Infrom user about received TransferDataError request
+  /** @b Server. Inform user about received TransferDataError request
    *
    * User's application callback is initialized by RET_OK status of device
    * callback parameters.
@@ -831,7 +841,7 @@ typedef enum zb_zcl_device_callback_id_e
    * @return RET_ERROR - command is handled with errors.
    */
   ZB_ZCL_TUNNELING_TRANSFER_DATA_ERROR_CLI_CB_ID,
-  /** @b Client. Infrom user about received TransferDataError request
+  /** @b Client. Inform user about received TransferDataError request
    *
    * User's application callback is initialized by RET_OK status of device
    * callback parameters.
@@ -1206,7 +1216,7 @@ typedef enum zb_zcl_device_callback_id_e
    *
    */
   ZB_ZCL_DOOR_LOCK_UNLOCK_DOOR_RESP_CB_ID,
-  /** @b Server. Inform user about Alarams Reset Alarm command.
+  /** @b Server. Inform user about Alarms Reset Alarm command.
    *
    * User's application callback is initialized by RET_OK status of device
    * callback parameters.
@@ -1218,7 +1228,7 @@ typedef enum zb_zcl_device_callback_id_e
    *
    */
   ZB_ZCL_ALARMS_RESET_ALARM_CB_ID,
-  /** @b Server. Inform user about Alarams Reset All Alarms command.
+  /** @b Server. Inform user about Alarms Reset All Alarms command.
    *
    * User's application callback is initialized by RET_OK status of device
    * callback parameters.
@@ -1273,7 +1283,7 @@ typedef enum zb_zcl_device_callback_id_e
    */
   ZB_ZCL_CONTROL4_NETWORK_ZAP_INFO_CB_ID,
   /** @b Server. Inform user about receiving "Debug Report Query" command.
-   * If debug report exists, application must return pointer to tjis report   
+   * If debug report exists, application must return pointer to this report   
    * User's application callback is initialized by RET_NOT_FOUND status of device
    * callback parameter.
    *
@@ -1524,10 +1534,10 @@ enum zb_bdb_error_codes_e
 /** @brief BDB commissioning mode mask bits */
 typedef enum zb_bdb_commissioning_mode_mask_e
 {
-  /** @cond internals_doc 
-   * Used internally */
+  /** @cond internals_doc */
+  /** Used internally */
   ZB_BDB_INITIALIZATION = 0,
-  /** @endcond*/ /** internals_doc */
+  /** @endcond */ /* internals_doc */
   /** @cond touchlink */
   /** Touchlink: 0 = Do not attempt Touchlink commissioning;
                   1 = Attempt Touchlink commissioning
@@ -1575,7 +1585,7 @@ typedef enum zb_bdb_commissioning_mode_mask_e
    @param mode_mask - commissioning modes, see @ref zb_bdb_commissioning_mode_mask_e
    
    @return ZB_TRUE - in case the device starts successfully
-   @return ZB_FALSE - ZB_FALSE -- in case an error occured (for example: the device has already been running)
+   @return ZB_FALSE - ZB_FALSE -- in case an error occurred (for example: the device has already been running)
 
    @b Example:
    @code
@@ -1591,7 +1601,7 @@ typedef enum zb_bdb_commissioning_mode_mask_e
          break;
 
        case ZB_BDB_SIGNAL_STEERING:
-         TRACE_MSG(TRACE_APP1, "Successfull steering", (FMT__0));
+         TRACE_MSG(TRACE_APP1, "Successful steering", (FMT__0));
          break;
      }
    @endcode
@@ -1658,7 +1668,7 @@ typedef enum zb_bdb_comm_binding_cb_state_e
  *  @param status - status of the binding (ask user, success or fail) @see zb_bdb_comm_binding_cb_state_t
  *  @param addr - extended address of a device to bind
  *  @param ep - endpoint of a device to bind
- *  @param cluster - cluster id to bind
+ *  @param cluster - cluster ID to bind
  *  @return bool - agree or disagree
  *
  * @b Example:
@@ -1771,12 +1781,9 @@ void zb_set_bdb_commissioning_mode(zb_uint8_t commissioning_mode);
  */
 typedef enum zb_bdb_comm_state_e
 {
-  ZB_BDB_COMM_IDLE                  = 0,        /*!< EZ-Mode isn't invoked */
-  ZB_BDB_COMM_FACTORY_RESET         = 1,        /*!< EZ-Mode factory reset in progress */
-  ZB_BDB_COMM_NWK_STEERING          = 2,        /*!< EZ-Mode network steering in progress (scanning or forming network) */
-  ZB_BDB_COMM_NWK_STEERING_JOINED   = 3,        /*!<  EZ-Mode network steering in progress (scanning or forming network finished) */
-  ZB_BDB_COMM_FINDING_AND_BINDING   = 4,        /*!< EZ-Mode finding and binding in progress (on initiator) */
-  ZB_BDB_COMM_FINDING_AND_BINDING_TARGET   = 5, /*!< EZ-Mode finding and binding in progress (on target) */
+  ZB_BDB_COMM_IDLE                       = 0,   /*!< EZ-Mode isn't invoked */
+  ZB_BDB_COMM_FINDING_AND_BINDING        = 4,   /*!< EZ-Mode finding and binding in progress (on initiator) */
+  ZB_BDB_COMM_FINDING_AND_BINDING_TARGET = 5,   /*!< EZ-Mode finding and binding in progress (on target) */
 }
   zb_bdb_comm_state_t;
 
@@ -1906,7 +1913,7 @@ typedef ZB_PACKED_PRE struct zb_bdb_comm_ctx_s
   zb_uint8_t ep_cnt;
 
   /** Signals that at least one endpoint was bound during finding and binding;
-    * it is used to invoke user callback if no endpoint was binded
+    * it is used to invoke user callback if no endpoint was bound
     */
   zb_bool_t was_bound;
 #endif
@@ -1919,7 +1926,7 @@ typedef ZB_PACKED_PRE struct zb_bdb_comm_ctx_s
   bdb_commissioning_signal_t signal;
   bdb_commissioning_rejoin_ctx_t rejoin;
 
-  /* Moved here froim BDB_CTX */
+  /* Moved here from BDB_CTX */
 #define FIRST_GENERAL_BDB_FIELD bdb_commissioning_group_id
   /* BDB attributes */
   zb_uint16_t bdb_commissioning_group_id; /*!< specifies the identifier of the group on which the initiator applies finding & binding.  */
@@ -1958,10 +1965,8 @@ Finding & binding: 0 = Do not attempt finding & binding 1 = Attempt finding & bi
   zb_uint8_t    bdb_application_signal;  /* Application signal code to be passed into
                                           * zb_zdo_startup_complete */
 #ifdef ZB_BDB_TOUCHLINK
-/** @cond touchlink */
   zb_uint8_t    tl_first_channel_rpt;
   zb_uint8_t    tl_channel_i;
-/** @endcond */ /* touchlink */
 #endif  /* ZB_BDB_TOUCHLINK */
   zb_bitfield_t bdb_force_router_rejoin:1;      /* Force rejoin for the router */
   zb_bitfield_t nfn:1;                     /*!< if 1, device is not factory new and bdb init checks
@@ -1972,7 +1977,7 @@ Finding & binding: 0 = Do not attempt finding & binding 1 = Attempt finding & bi
 
 /** @} */
 
-#endif /*#ifdef ZB_BDB_MODE*/
+#endif /* ZB_BDB_MODE*/
 
 
 /** \addtogroup ZB_ZCL_INITIALIZATION

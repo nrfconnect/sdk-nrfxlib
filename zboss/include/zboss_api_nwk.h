@@ -132,7 +132,7 @@ typedef ZB_PACKED_PRE struct zb_nlme_status_indication_s
 {
   zb_uint8_t status; /**< Error code associated with the failure */
   zb_uint16_t network_addr;  /**< Network device address associated with the status information */
-  zb_uint8_t unknown_command_id; /**< Unknown command id
+  zb_uint8_t unknown_command_id; /**< Unknown command ID
                                     (required for ZB_NWK_COMMAND_STATUS_UNKNOWN_COMMAND) */
 } ZB_PACKED_STRUCT
 zb_nlme_status_indication_t;
@@ -314,7 +314,7 @@ zb_nlme_status_indication_t;
 /**
   Data structure used to cache frequently used PIB attributes.
 
-  Useful whe using alien MAC layer without direct access to PIB: blockable "get"
+  Useful when using alien MAC layer without direct access to PIB: blockable "get"
   interface to PIB is too complex and slow.
  */
 typedef struct zb_nwk_pib_cache_s
@@ -377,18 +377,8 @@ zb_nwk_pib_cache_t *zb_nwk_get_pib_cache(void);
 
 /** Cached value of device network address */
 #define ZB_PIBCACHE_NETWORK_ADDRESS()  zb_get_short_address()
-/** Cached value of device Pan ID */
-#define ZB_PIBCACHE_PAN_ID()           ZB_PIB_CACHE()->mac_pan_id
-/** Cached value of device extended address */
-#define ZB_PIBCACHE_EXTENDED_ADDRESS() ZB_PIB_CACHE()->mac_extended_address
 /** Cached value of RxOnWhenIdle attribute */
 #define ZB_PIBCACHE_RX_ON_WHEN_IDLE()  zb_get_rx_on_when_idle()
-/** Cached value of AssociationPermit attribute */
-#define ZB_PIBCACHE_ASSOCIATION_PERMIT() ZB_PIB_CACHE()->mac_association_permit
-/** Cached value of CurrentChannel attribute */
-#define ZB_PIBCACHE_CURRENT_CHANNEL()  ZB_PIB_CACHE()->phy_current_channel
-/** Cached value of CurrentPage attribute */
-#define ZB_PIBCACHE_CURRENT_PAGE()  ZB_PIB_CACHE()->phy_current_page
 
 #endif /* !NCP_MODE_HOST */
 
@@ -430,8 +420,8 @@ typedef ZB_PACKED_PRE struct zb_pan_id_conflict_info_s
 {
   zb_uint16_t panid_count;      /* <! Count of neighboring PAN IDs. */
   zb_uint16_t panids[ZB_PAN_ID_CONFLICT_INFO_MAX_PANIDS_COUNT];
-                                /* <! Array of such PAN IDs. 
-                                 *  Only values at indices 0..(panid_count - 1) will be taken 
+                                /* <! Array of such PAN IDs.
+                                 *  Only values at indices 0..(panid_count - 1) will be taken
                                  *  into consideration. */
 } ZB_PACKED_STRUCT zb_pan_id_conflict_info_t;
 
@@ -470,8 +460,8 @@ void zb_start_pan_id_conflict_resolution(zb_uint8_t param);
 
 /**
    This function must be used for enabling/disabling automatic PAN ID conflict resolution
-   If the automatic resolution is disabled, ZBOSS will issue a ZB_NWK_SIGNAL_PANID_CONFLICT_DETECTED 
-   signal each time it receives Network Report about PAN ID conflict or (in case the device is 
+   If the automatic resolution is disabled, ZBOSS will issue a ZB_NWK_SIGNAL_PANID_CONFLICT_DETECTED
+   signal each time it receives Network Report about PAN ID conflict or (in case the device is
    the network manager) each time it detects such conflicts.
 
    By default the automatic PAN ID conflict resolution is disabled.

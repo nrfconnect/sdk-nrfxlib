@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Power Configuration cluster defintions
+/* PURPOSE: Power Configuration cluster definitions
 */
 
 #if ! defined ZB_ZCL_POWER_CONFIG_H

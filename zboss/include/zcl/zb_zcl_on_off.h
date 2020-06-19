@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: On/Off cluster defintions
+/* PURPOSE: On/Off cluster definitions
 */
 
 #if ! defined ZB_ZCL_ON_OFF_H
@@ -318,7 +318,7 @@ enum zb_zcl_on_off_effect_variant_dying_e
 * @see ZCL spec 3.8.2.3.6.1 */
 #define ZB_ZCL_ON_OFF_ACCEPT_ONLY_WHEN_ON   1
 
-/*! @brief Structured representsation of Off with effect command payload */
+/*! @brief Structured representation of Off with effect command payload */
 typedef ZB_PACKED_PRE struct zb_zcl_on_off_off_with_effect_req_s
 {
   /** Effect identify */
@@ -327,7 +327,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_on_off_off_with_effect_req_s
   zb_uint8_t effect_variant;
 } ZB_PACKED_STRUCT zb_zcl_on_off_off_with_effect_req_t;
 
-/*! @brief Structured representsation of On with timed off command payload */
+/*! @brief Structured representation of On with timed off command payload */
 typedef ZB_PACKED_PRE struct zb_zcl_on_off_on_with_timed_off_req_s
 {
   /** On/off control */

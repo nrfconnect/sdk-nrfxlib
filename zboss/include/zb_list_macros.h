@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Very simple lists operations (macroses).
+/* PURPOSE: Very simple lists operations (macros).
 */
 #ifndef LIST_H
 #define LIST_H 1
@@ -106,7 +106,7 @@
 
 
 /**
- * List control fields declaratuion. To be put into the structure
+ * List control fields declaration. To be put into the structure
  * definition.
  *
  * _prev field has special meaning for the list head: this is pointer
@@ -220,7 +220,7 @@
 
 
 /*
- * Insert after existend entry
+ * Insert after existed entry
  */
 #define ZB_LIST_INSERT_AFTER(list, name, ent, new_ent) do \
 {                                                         \

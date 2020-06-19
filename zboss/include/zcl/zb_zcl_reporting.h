@@ -130,8 +130,8 @@ typedef struct zb_zcl_reporting_info_s
 
   struct
   {
-    zb_uint16_t short_addr; /*!< Destinition short address */
-    zb_uint8_t  endpoint;   /*!< Destinition endpoint */
+    zb_uint16_t short_addr; /*!< Destination short address */
+    zb_uint8_t  endpoint;   /*!< Destination endpoint */
     zb_uint16_t profile_id; /*!< Profile id */
   }
   dst;
@@ -158,8 +158,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_reporting_info_nvram_s
    * the most cases... */
   zb_uint32_t delta; /*!< Reportable change */
 
-  zb_uint16_t short_addr_dest; /*!< Destinition short address */
-  zb_uint8_t  endpoint_dest;   /*!< Destinition endpoint */
+  zb_uint16_t short_addr_dest; /*!< Destination short address */
+  zb_uint8_t  endpoint_dest;   /*!< Destination endpoint */
   zb_uint16_t profile_id_dest; /*!< Profile id */
   zb_uint8_t align[3];
 } ZB_PACKED_STRUCT zb_zcl_reporting_info_nvram_t;
@@ -296,7 +296,7 @@ zb_ret_t zb_zcl_start_attr_reporting(zb_uint8_t ep, zb_uint16_t cluster_id, zb_u
 */
 zb_ret_t zb_zcl_stop_attr_reporting(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id);
 
-/** @brief Check if an atrtibute is configured for reporting or not
+/** @brief Check if an attribute is configured for reporting or not
     @param ep - endpoint number
     @param cluster_id - cluster ID
     @param cluster_role - cluster role

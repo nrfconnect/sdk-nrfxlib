@@ -155,19 +155,13 @@ void zb_osif_serial_transport_init();
 void zb_osif_serial_transport_put_bytes(zb_uint8_t *buf, zb_short_t len);
 #endif
 
+/** @cond DOXYGEN_UART_SECTION */
 /*! \addtogroup uart */
 /*! @{ */
 
 #if defined ZB_HAVE_SERIAL || defined DOXYGEN
 
 /* Serial interface (trace, traffic dump, serial transport) */
-
-/**
-   Type of callback called by serial interface when it receives a single byte.
-
-   @param byte - received byte
- */
-typedef void (*zb_osif_uart_byte_received_cb_t)(zb_uint8_t byte);
 
 /**
    Initialize UART low level.
@@ -183,7 +177,7 @@ void zb_osif_serial_init(void);
 
    @param hnd user's rx callback
  */
-void zb_osif_set_uart_byte_received_cb(zb_osif_uart_byte_received_cb_t hnd);
+void zb_osif_set_uart_byte_received_cb(zb_callback_t hnd);
 
 /** @cond internals_doc */
 
@@ -303,7 +297,12 @@ void zb_osif_serial_set_cb_send_data(serial_send_data_cb_t cb);
 void zb_osif_serial_put_bytes(zb_uint8_t *buf, zb_short_t len);
 #endif
 
+#ifdef ZB_TRACE_OVER_JTAG
+void zb_osif_jtag_put_bytes(zb_uint8_t *buf, zb_short_t len);
+#endif
+
 /*! @} */
+/** @endcond */ /* DOXYGEN_UART_SECTION */
 
 
 

@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Metering cluster defintions
+/* PURPOSE: Metering cluster definitions
 */
 
 #if ! defined ZB_ZCL_METERING_H
@@ -204,7 +204,9 @@ enum zb_zcl_metering_attr_e
                                                                          *   energy generated is being accumulated against. @see SE 1.4 spec, table D.101. */
   ZB_ZCL_ATTR_METERING_LAST_BLOCK_SWITCH_TIME_ID,                       /**< @e LastBlockSwitchTime attribute allows other devices to determine the time at which
                                                                          *   a meter switches from one block to another. */
-  /* 0x0023 to 0x00FF reserved */
+  ZB_ZCL_ATTR_METERING_NUMBER_OF_TIERS_IN_USE,                          /**< @e NumberofTiersInUse */
+
+  /* 0x0024 to 0x00FF reserved */
 
 
   /* TOU Information Attribute Set, table D.14 */
@@ -1129,7 +1131,7 @@ enum zb_zcl_metering_generic_alarm_group_e
   ZB_ZCL_METERING_ALARM_CHECK_METER                = 0x00, /**< Check meter */
   ZB_ZCL_METERING_ALARM_LOW_BATTERY                = 0x01, /**< Low battery */
   ZB_ZCL_METERING_ALARM_TAMPER_DETECT              = 0x02, /**< Tamper detect */
-  ZB_ZCL_METERING_ALARM_ELECTRICITY_POWER_FAILURE  = 0x03, /**< Electricity: Power Failur */
+  ZB_ZCL_METERING_ALARM_ELECTRICITY_POWER_FAILURE  = 0x03, /**< Electricity: Power Failure */
   ZB_ZCL_METERING_ALARM_WATER_PIPE_EMPTY           = 0x03, /**< Water: Pipe Empty */
   ZB_ZCL_METERING_ALARM_HEAT_TEMPERATURE_SENSOR    = 0x03, /**< Heat: Temperature Sensor */
   ZB_ZCL_METERING_ALARM_COOLING_TEMPERATURE_SENSOR = 0x03, /**< Cooling Temperature Sensor */
@@ -2275,66 +2277,66 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
 /** Macro for call @ref zb_zcl_metering_send_cmd_get_snapshot function
  */
 #define ZB_ZCL_METERING_SEND_CMD_GET_SNAPSHOT(_param, _dst_addr, _addr_mode,  \
-                                              _dst_ep, _src_ep, _payload)     \
+                                              _dst_ep, _src_ep, _payload, cb) \
   zb_zcl_metering_send_cmd_get_snapshot(_param, _dst_addr, _addr_mode,        \
-                                        _dst_ep, _src_ep, _payload, NULL)
+                                        _dst_ep, _src_ep, _payload, cb)
 
 
 /** Macro for call @ref zb_zcl_metering_send_cmd_get_sampled_data function
  */
 #define ZB_ZCL_METERING_SEND_CMD_GET_SAMPLED_DATA(_param, _dst_addr, _addr_mode,  \
-                                                  _dst_ep, _src_ep, _payload)     \
+                                                  _dst_ep, _src_ep, _payload, cb) \
   zb_zcl_metering_send_cmd_get_sampled_data(_param, _dst_addr, _addr_mode,        \
-                                            _dst_ep, _src_ep, _payload, NULL)
+                                            _dst_ep, _src_ep, _payload, cb)
 
 
 
 /** Macro for call @ref zb_zcl_metering_send_cmd_request_fast_poll_mode function
  */
 #define ZB_ZCL_METERING_SEND_CMD_REQUEST_FAST_POLL_MODE(_param, _dst_addr, _addr_mode,  \
-                                                        _dst_ep, _src_ep, _payload)     \
+                                                        _dst_ep, _src_ep, _payload, cb) \
   zb_zcl_metering_send_cmd_request_fast_poll_mode(_param, _dst_addr, _addr_mode,        \
-                                                  _dst_ep, _src_ep, _payload, NULL)
+                                                  _dst_ep, _src_ep, _payload, cb)
 
 
 /** Macro for call @ref zb_zcl_metering_send_cmd_get_profile function
  */
 #define ZB_ZCL_METERING_SEND_CMD_GET_PROFILE(_param, _dst_addr, _addr_mode,  \
-                                             _dst_ep, _src_ep, _payload)     \
+                                             _dst_ep, _src_ep, _payload, cb) \
   zb_zcl_metering_send_cmd_get_profile(_param, _dst_addr, _addr_mode,        \
-                                       _dst_ep, _src_ep, _payload, NULL)
+                                       _dst_ep, _src_ep, _payload, cb)
 
 
 /** Macro for call @ref zb_zcl_metering_send_cmd_publish_snapshot function
  */
 #define ZB_ZCL_METERING_SEND_CMD_PUBLISH_SNAPSHOT(_param, _dst_addr, _addr_mode,  \
-                                                  _dst_ep, _src_ep, _payload)     \
+                                                  _dst_ep, _src_ep, _payload, cb) \
   zb_zcl_metering_send_cmd_publish_snapshot(_param, _dst_addr, _addr_mode,        \
-                                            _dst_ep, _src_ep, _payload, NULL)
+                                            _dst_ep, _src_ep, _payload, cb)
 
 
 /** Macro for call @ref zb_zcl_metering_send_cmd_request_fast_poll_mode_response function
  */
 #define ZB_ZCL_METERING_SEND_CMD_REQUEST_FAST_POLL_MODE_RESPONSE(_param, _dst_addr, _addr_mode,  \
-                                                                 _dst_ep, _src_ep, _payload)     \
+                                                                 _dst_ep, _src_ep, _payload, cb) \
   zb_zcl_metering_send_cmd_request_fast_poll_mode_response(_param, _dst_addr, _addr_mode,        \
-                                                           _dst_ep, _src_ep, _payload, NULL)
+                                                           _dst_ep, _src_ep, _payload, cb)
 
 
 /** Macro for call @ref zb_zcl_metering_send_cmd_get_profile_response function
  */
 #define ZB_ZCL_METERING_SEND_CMD_GET_PROFILE_RESPONSE(_param, _dst_addr, _addr_mode, _dst_ep,  \
-                                                      _src_ep, _payload, _pl_size)        \
+                                                      _src_ep, _payload, _pl_size, cb)         \
   zb_zcl_metering_send_cmd_get_profile_response(_param, _dst_addr, _addr_mode, _dst_ep,        \
-                                                _src_ep, _payload, _pl_size, NULL)
+                                                _src_ep, _payload, _pl_size, cb)
 
 
 /** Macro for call @ref zb_zcl_metering_send_cmd_get_sampled_data_response function
  */
 #define ZB_ZCL_METERING_SEND_CMD_GET_SAMPLED_DATA_RESPONSE(_param, _dst_addr, _addr_mode, _dst_ep, \
-                                                           _src_ep, _payload, _pl_size)       \
+                                                           _src_ep, _payload, _pl_size, cb)        \
   zb_zcl_metering_send_cmd_get_sampled_data_response(_param, _dst_addr, _addr_mode, _dst_ep,       \
-                                                     _src_ep, _payload, _pl_size, NULL)
+                                                     _src_ep, _payload, _pl_size, cb)
 
 
 /** @} */ /* ZB_ZCL_METERING_CMDS */

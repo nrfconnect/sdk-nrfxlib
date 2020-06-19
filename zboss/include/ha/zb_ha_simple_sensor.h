@@ -168,7 +168,7 @@
     }                                                                                         \
   }
 
-/** @endcond internals_doc */
+/** @endcond */ /* internals_doc */
 
 /** @brief Declare endpoint for Simple Sensor device
     @param ep_name - endpoint variable name

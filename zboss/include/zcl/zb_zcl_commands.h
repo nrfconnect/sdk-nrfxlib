@@ -102,8 +102,8 @@ typedef enum zb_zcl_cmd_e
   ZB_ZCL_CMD_DISCOVER_COMMANDS_GENERATED_RES = 0x14, /*!< Discover Commands Generated response command */
   
   /* Discover attr ext is HA1.2 specific, but as soon as this command
-   * handling is done together with ZCL Dosciver attr cmd, declare it
-   * unconditianaly */
+   * handling is done together with ZCL Discover attr cmd, declare it
+   * unconditionally */
   ZB_ZCL_CMD_DISCOVER_ATTR_EXT               = 0x15, /*!< Discover attributes extended command */
   ZB_ZCL_CMD_DISCOVER_ATTR_EXT_RES           = 0x16  /*!< Discover attributes extended response command */
 } zb_zcl_cmd_t;
@@ -282,7 +282,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *    @par Example
  *    Command can be sent like in the following snippet:
  *    @snippet custom_cluster/custom_cluster_zr/custom_cluster_zr.c ZCL_SEND_DEFAULT_RESP
- *    Incoming default response can be barsed as following:
+ *    Incoming default response can be parsed as following:
  *    @code
  *      zb_zcl_default_resp_payload_t* payload = ZB_ZCL_READ_DEFAULT_RESP(zcl_cmd_buf);
  *    @endcode
@@ -305,7 +305,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *  @param prof_id - profile identifier
  *  @param cluster_id - cluster identifier
  *  @param seq_num - sequence number
- *  @param cmd - dentifier of the command the response is dedicated to
+ *  @param cmd - identifier of the command the response is dedicated to
  *  @param status_code - status field for received command
  *  @param direction - direction of the command (see @ref zb_zcl_frame_direction_t)
  */
@@ -337,7 +337,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *  @param prof_id - profile identifier
  *  @param cluster_id - cluster identifier
  *  @param seq_num - sequence number
- *  @param cmd - dentifier of the command the response is dedicated to
+ *  @param cmd - identifier of the command the response is dedicated to
  *  @param status_code - status field for received command
  *  @param callback - callback to be executed when command is acknowledged or expired (of type @ref zb_callback_t)
  */
@@ -379,7 +379,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *  @param prof_id - profile identifier
  *  @param cluster_id - cluster identifier
  *  @param seq_num - sequence number
- *  @param cmd - dentifier of the command the response is dedicated to
+ *  @param cmd - identifier of the command the response is dedicated to
  *  @param status_code - status field for received command
  *  @param manuf_code - manufacturer code
  *  @param direction - direction of the command (see @ref zb_zcl_frame_direction_t)
@@ -403,7 +403,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *
  * Default response is sent if:
  * - particular response is not sent yet
- * - original command is NOT broadcat
+ * - original command is NOT broadcast
  * - disable_default_response is set to FALSE or command status is not Success
  * - command itself is NOT default response
  *
@@ -425,7 +425,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
 /**
    @brief API call that is used to check if it is needed to send
    Default response for the command
-   @param _cmd_info - variable of zb_zcl_parsed_hdr_t type, containg
+   @param _cmd_info - variable of zb_zcl_parsed_hdr_t type, containing
    received command header data
    @param _status - status of the handled command
  */
@@ -440,15 +440,15 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  * @brief General API for sending Default response command
  * 
  * @param _buffer - zb_bufid_t buffer
- * @param _dst_addr - 16-bit destinition address
- * @param _dst_addr_mode - destinition adress mode. Possible values
+ * @param _dst_addr - 16-bit destination address
+ * @param _dst_addr_mode - destination address mode. Possible values
  * ZB_APS_ADDR_MODE_DST_ADDR_ENDP_NOT_PRESENT, ZB_APS_ADDR_MODE_16_GROUP_ENDP_NOT_PRESENT,
  * ZB_APS_ADDR_MODE_16_ENDP_PRESENT
- * @param _dst_ep - destinition Endpoint number
+ * @param _dst_ep - destination Endpoint number
  * @param _src_ep - source Endpoint number
  * @param _prof_id - profile ID
  * @param _cluster_id - cluster ID
- * @param _seq_num - transaction sequense number
+ * @param _seq_num - transaction sequence number
  * @param _cmd - command ID
  * @param _status_code - command status (enum zb_zcl_status_e)
  * @param _direction - direction of command (see @ref zb_zcl_frame_direction_t)
@@ -489,7 +489,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *  @param prof_id - profile identifier
  *  @param cluster_id - cluster identifier
  *  @param seq_num - sequence number
- *  @param cmd - dentifier of the command the response is dedicated to
+ *  @param cmd - identifier of the command the response is dedicated to
  *  @param status_code - status field for received command
  */
 #define ZB_ZCL_SEND_DEFAULT_RESP(                                                            \
@@ -514,7 +514,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *  @param prof_id - profile identifier
  *  @param cluster_id - cluster identifier
  *  @param seq_num - sequence number
- *  @param cmd - dentifier of the command the response is dedicated to
+ *  @param cmd - identifier of the command the response is dedicated to
  *  @param status_code - status field for received command
  *  @param manuf_code - manufacturer code
  *  @param direction - direction of command (see @ref zb_zcl_frame_direction_t)
@@ -559,7 +559,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_default_resp_payload_s
  *    @code
  *    ZB_ZCL_GENERAL_INIT_READ_ATTR_REQ(zcl_cmd_buf, cmd_ptr, ZB_ZCL_ENABLE_DEFAULT_RESPONSE);
  *    ZB_ZCL_GENERAL_ADD_ID_READ_ATTR_REQ(cmd_ptr, ZB_ZCL_ATTR_BINARY_INPUT_PRESENT_VALUE_ID);
- *    ZB_ZCL_GENRAL_SEND_READ_ATTR_REQ(zcl_cmd_buf, cmd_ptr, DUT_ADDR, DUT_ADDR_MODE, DUT_ENDPOINT,
+ *    ZB_ZCL_GENERAL_SEND_READ_ATTR_REQ(zcl_cmd_buf, cmd_ptr, DUT_ADDR, DUT_ADDR_MODE, DUT_ENDPOINT,
  *                                     TH_ENDPOINT, ZB_AF_HA_PROFILE_ID,
  *                                     ZB_ZCL_CLUSTER_ID_BINARY_INPUT, NULL);
  *    @endcode
@@ -613,7 +613,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
    @param read_attr_resp - out pointer to zb_zcl_read_attr_res_t, containing Read attribute status
    record
    @note data_buf buffer should contain Read attribute response payload, without ZCL header.  Each
-   parsed Read attribute status record is exctracted from initial data_buf buffer
+   parsed Read attribute status record is extracted from initial data_buf buffer
  */
 #define ZB_ZCL_GENERAL_GET_NEXT_READ_ATTR_RES(data_buf, read_attr_resp)                        \
 {                                                                                              \
@@ -722,7 +722,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
    @param _read_attr_req - out pointer to zb_zcl_read_attr_req_t, containing Read attribute record
    out value direct into data_buf. Do not change data_buf before finish work with read_attr_req
    @note data_buf buffer should contain Read attribute request payload, without ZCL header.  Each
-   parsed Read attribute record is exctracted from initial data_buf buffer
+   parsed Read attribute record is extracted from initial data_buf buffer
 
  */
 #define ZB_ZCL_GENERAL_GET_READ_ATTR_REQ(_data_buf, _read_attr_req)                     \
@@ -895,7 +895,7 @@ zb_zcl_write_attr_req_t;
 /** @brief Parses Write attribute request and returns next Write attribute record or NULL if there
   * is no more data.
 
-   If request contains invlid data, NULL is returned.
+   If request contains invalid data, NULL is returned.
    @param data_ptr - pointer to the data of a zb_bufid_t buffer containing write attribute request data
    @param data_len - variable containing length of a zb_bufid_t buffer
    @param write_attr_req - out pointer to zb_zcl_write_attr_req_t, containing Write attribute record
@@ -951,11 +951,11 @@ zb_zcl_write_attr_res_t;
 /** @brief Parses Write attribute response and returns next Write attribute status or NULL if there
     is no more data.
 
-   If response contains invlid data, NULL is returned.
+   If response contains invalid data, NULL is returned.
    @param data_buf - ID zb_bufid_t of a buffer containing write attribute response data
    @param write_attr_res - out pointer to zb_zcl_write_attr_res_t, containing Write attribute status
    @note data_buf buffer should contain Write attribute response payload, without ZCL header.  Each
-   parsed Write attribute response is exctracted from intial data_buf buffer
+   parsed Write attribute response is extracted from initial data_buf buffer
  */
 #define ZB_ZCL_GET_NEXT_WRITE_ATTR_RES(data_buf, write_attr_res)           \
 {                                                                          \
@@ -1081,7 +1081,7 @@ zb_zcl_write_attr_res_t;
 
 
 /** @brief Send "write attributes" request.
- * depricate */
+ * deprecate */
 #define ZB_ZCL_GENERAL_SEND_WRITE_ATTRS_REQ(                                             \
     buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id)                            \
   ZB_ZCL_SEND_GENERAL_COMMAND_REQ_SHORT(                                                 \
@@ -1272,7 +1272,7 @@ typedef enum zb_zcl_disc_complete_e
    @param disc_attr_info - out pointer to zb_zcl_disc_attr_info_t, containing Discover attribute status
    record
    @note data_buf buffer should contain Discover attribute response payload, without ZCL header.  Each
-   parsed Discover attribute status record is exctracted from intial data_buf buffer
+   parsed Discover attribute status record is extracted from initial data_buf buffer
  */
 #define ZB_ZCL_GENERAL_GET_NEXT_DISC_ATTR_RES(data_buf, disc_attr_info)                 \
 {                                                                                       \
@@ -1397,7 +1397,7 @@ typedef enum zb_zcl_disc_complete_e
   */
 
     /** u.clnt: as usual, cluster with client role sends this request
-    to a server to configure reporting: how attribute should be reprted by a server */
+    to a server to configure reporting: how attribute should be reported by a server */
 typedef ZB_PACKED_PRE struct zb_zcl_configure_reporting_req_clnt_s
     {
       zb_uint8_t attr_type;     /*!< Attribute data type */
@@ -1433,7 +1433,7 @@ zb_zcl_configure_reporting_req_u_t;
   * Attribute reporting configuration record
   */
 /* WARNING: Do not put directly packed_struct declaration inside another packet_struct - some
- * compilators does not handle it correctly! */
+ * compilers does not handle it correctly! */
 typedef ZB_PACKED_PRE struct zb_zcl_configure_reporting_req_s
 {
   zb_uint8_t direction;  /*!< Direction */
@@ -1452,7 +1452,7 @@ zb_zcl_configure_reporting_direction_value_t;
 /** @cond internals_doc */
 
 /* client configuration size is larger then srv version, can take
- * sizeof(struct); reduce by sizeof(zb_uint8_t) because delta maybe ommited */
+ * sizeof(struct); reduce by sizeof(zb_uint8_t) because delta maybe omitted */
 #define ZB_ZCL_CONFIGURE_REPORTING_FOR_SEND_SIZE                    \
     (sizeof(zb_zcl_configure_reporting_req_t) - sizeof(zb_uint8_t))
 
@@ -1464,12 +1464,12 @@ zb_zcl_configure_reporting_direction_value_t;
 /** @brief Parses Configure reporting command request and returns next Attribute reporting
     configuration record or NULL if there is no more data.
 
-   If request contains invlid data, NULL is returned.
+   If request contains invalid data, NULL is returned.
    @param data_buf -  ID zb_bufid_t of a buffer containing Parses Configure reporting command data
    @param config_rep_req - out pointer to zb_zcl_configure_reporting_req_t, containing Attribute
    reporting configuration record
    @note data_buf buffer should contain Configure reporting command payload, without ZCL header.
-   Each parsed Attribute reporting configuration record is exctracted from intial data_buf buffer
+   Each parsed Attribute reporting configuration record is extracted from initial data_buf buffer
  */
 #define ZB_ZCL_GENERAL_GET_NEXT_CONFIGURE_REPORTING_REQ(data_buf, config_rep_req)                  \
 {                                                                                                  \
@@ -1534,12 +1534,12 @@ zb_zcl_configure_reporting_res_t;
 /** @brief Parses Configure reporting response and returns next
     configure attribute status record or NULL if there is no more data.
 
-    If response contains invlid data, NULL is returned.
+    If response contains invalid data, NULL is returned.
     @param data_buf -  ID zb_bufid_t of a buffer containing Configure reporting response data
     @param config_rep_res - out pointer to zb_zcl_configure_reporting_res_t, containing Configure
     attribute status record
     @note data_buf buffer should contain Configure reporting response payload, without ZCL header.
-    Each parsed Configure attribute status record is exctracted from intial data_buf buffer
+    Each parsed Configure attribute status record is extracted from initial data_buf buffer
  */
 #define ZB_ZCL_GENERAL_GET_NEXT_CONFIGURE_REPORTING_RES(data_buf, config_rep_res)   \
 {                                                                                   \
@@ -1698,11 +1698,11 @@ zb_zcl_report_attr_req_t;
 /** @brief Parses Report attribute command and returns next Attribute
     report or NULL if there is no more data.
 
-    If command contains invlid data, NULL is returned.
+    If command contains invalid data, NULL is returned.
     @param data_buf -  ID zb_bufid_t of a buffer containing Report attribute command data
     @param rep_attr_req - out pointer to zb_zcl_report_attr_req_t, containing Attribute report
     @note data_buf buffer should contain Report attribute command payload, without ZCL header.
-    Each parsed Attribute report attribute is exctracted from intial data_buf buffer
+    Each parsed Attribute report attribute is extracted from initial data_buf buffer
  */
 #define ZB_ZCL_GENERAL_GET_NEXT_REPORT_ATTR_REQ(data_buf, rep_attr_req)                     \
 {                                                                                           \
@@ -1745,14 +1745,14 @@ zb_zcl_report_attr_req_t;
  *    @details
  *    Most of actions related to the read attribute reporting configuration are implemented in ZCL
  *    internals.
- *    Read reportung configuration command is described in ZCL spec, subclause 2.4.9.
+ *    Read reporting configuration command is described in ZCL spec, subclause 2.4.9.
  */
 
 
 
 /**Format of the Attribute Status Record Field
  *Figure 2.20 in ZCL spec.
- *NOTE: it can be variouse number of attribute status record fields in Read
+ *NOTE: it can be various number of attribute status record fields in Read
  *reporting configuration request
  */
 typedef ZB_PACKED_PRE struct zb_zcl_read_reporting_cfg_req_s
@@ -1777,12 +1777,12 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_reporting_cfg_req_s
   * next Read reporting configuration attribute record or NULL if there
   * is no more data.
 
-   If request contains invlid data, NULL is returned.
+   If request contains invalid data, NULL is returned.
    @param data_buf -  ID zb_bufid_t of a buffer containing read reporting configuration request data
    @param rep_cfg_req - out pointer to @ref zb_zcl_read_attr_req_t, containing read reporting configuration request
    @param rslt - returns TRUE if record exist and FALSE if not
    @note data_buf buffer should contain read reporting configuration request payload, without ZCL header.  Each
-   parsed read reporting configuration request is exctracted from intial data_buf buffer
+   parsed read reporting configuration request is extracted from initial data_buf buffer
  */
 #define ZB_ZCL_GENERAL_GET_NEXT_READ_REP_CFG_REQ(data_buf, rep_cfg_req, rslt)              \
   {                                                                                        \
@@ -1806,8 +1806,8 @@ zb_zcl_read_reporting_cfg_req_t *cfg_req;                                       
 
 /**Format of the Attribute Reporting Configuration Record Field
  *Figure 2.22 in ZCL spec.
- *NOTE: it can be variouse number of attribute recording configuration
- *record fields in Read reporting configuration responce
+ *NOTE: it can be various number of attribute recording configuration
+ *record fields in Read reporting configuration response
  */
 typedef ZB_PACKED_PRE struct zb_zcl_read_reporting_cfg_rsp_s
 {
@@ -1959,12 +1959,12 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_reporting_cfg_rsp_s
 /** @brief Parses Read reporting configuration response and returns next
     read reporting configuration record or NULL if there is no more data.
 
-    If response contains invlid data, NULL is returned.
+    If response contains invalid data, NULL is returned.
     @param data_buf -  ID zb_bufid_t of a buffer containing Configure reporting response data
     @param read_rep_conf_res - out pointer to zb_zcl_read_reporting_cfg_rsp_t, containing
     read reporting configuration  record
     @note data_buf buffer should contain Read reporting configuration, without ZCL header.
-    Each parsed Read reporting configuration record is exctracted from intial data_buf buffer
+    Each parsed Read reporting configuration record is extracted from initial data_buf buffer
  */
 #define ZB_ZCL_GENERAL_GET_READ_REPORTING_CONFIGURATION_RES(data_buf, read_rep_conf_res)   \
 {                                                                                          \
@@ -2028,8 +2028,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_reporting_cfg_rsp_s
 #endif
 
 
-/******************** HA extentions: discovery commands ***************************/
-/********************* HA extention: discovery commands *****************************/
+/******************** HA extensions: discovery commands ***************************/
+/********************* HA extension: discovery commands *****************************/
 
 #if defined ZB_ENABLE_HA || defined DOXYGEN
 
@@ -2267,7 +2267,7 @@ zb_zcl_disc_cmd_resp_t;
 
 #endif /* defined ZB_ENABLE_HA || defined DOXYGEN */
 
-/***** HA extention: discovery attribute extended ************************/
+/***** HA extension: discovery attribute extended ************************/
 
 /*! @brief ZCL Discover Attribute Extended Command frame
     @see HA1.2 spec, zb_zcl_disc_attr_ext 12.1.5 Discover Attributes Extended Command

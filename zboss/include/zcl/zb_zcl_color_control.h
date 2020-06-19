@@ -1122,7 +1122,7 @@ enum zb_zcl_color_control_step_mode_e
 
 /* command request structure */
 
-/*! @brief Structured representsation of Level Control command payload (optional part)
+/*! @brief Structured representation of Level Control command payload (optional part)
     @see ZCL spec, subclause 3.10.2.3.1.1*/
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_req_options_s
 {
@@ -1172,7 +1172,7 @@ enum zb_zcl_color_control_move_to_hue_direction_e
   ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE_DOWN     = 0x03
 };
 
-/*! @brief Structure representsation of Move To Hue command payload
+/*! @brief Structure representation of Move To Hue command payload
     @see ZCL spec, subclause 5.2.2.3.2 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_hue_req_s
 {
@@ -1243,7 +1243,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_hue_req_s
 }
 /******************************* MOVE_HUE ******************************/
 
-/*! @brief Structure representsation of Move Hue command payload
+/*! @brief Structure representation of Move Hue command payload
     @see ZCL spec, subclause 5.2.2.3.3 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_hue_req_s
 {
@@ -1310,7 +1310,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_hue_req_s
 
 /******************************* STEP_HUE ******************************/
 
-/*! @brief Structure representsation of Step Hue command payload
+/*! @brief Structure representation of Step Hue command payload
     @see ZCL spec, subclause 5.2.2.3.4 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_hue_req_s
 {
@@ -1361,28 +1361,28 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_hue_req_s
   * @param status - variable to put parse status to (see @ref zb_zcl_parse_status_t).
   */
 #define ZB_ZCL_COLOR_CONTROL_GET_STEP_HUE_REQ(buffer, step_hue_req, status)            \
-{                                                                                   \
+{                                                                                      \
   zb_zcl_color_control_step_hue_req_t *step_hue_req_ptr;                               \
   (step_hue_req_ptr) = zb_buf_len(buffer) >=                                           \
     ZB_ZCL_COLOR_CONTROL_STEP_HUE_REQ_PAYLOAD_LEN ?                                    \
-    (zb_zcl_color_control_step_hue_req_t*)zb_buf_begin(buffer) : NULL;                  \
+    (zb_zcl_color_control_step_hue_req_t*)zb_buf_begin(buffer) : NULL;                 \
   if (step_hue_req_ptr)                                                                \
-  {                                                                                 \
+  {                                                                                    \
     step_hue_req.step_mode = step_hue_req_ptr->step_mode;                              \
     step_hue_req.step_size = step_hue_req_ptr->step_size;                              \
-    ZB_HTOLE16(&(step_hue_req).transition_time, &(step_hue_req_ptr->transition_time)); \
+    step_hue_req.transition_time = step_hue_req_ptr->transition_time;                  \
     (void)zb_buf_cut_left(buffer, ZB_ZCL_COLOR_CONTROL_STEP_HUE_REQ_PAYLOAD_LEN);      \
     status = ZB_ZCL_PARSE_STATUS_SUCCESS;                                              \
-  }                                                                                 \
-  else                                                                              \
-  {                                                                                 \
+  }                                                                                    \
+  else                                                                                 \
+  {                                                                                    \
     status = ZB_ZCL_PARSE_STATUS_FAILURE;                                              \
-  }                                                                                 \
+  }                                                                                    \
 }
 
 /******************************* Move to Saturation ******************************/
 
-/*! @brief Structure representsation of Move To Saturation command payload
+/*! @brief Structure representation of Move To Saturation command payload
     @see ZCL spec, subclause 5.2.2.3.5 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_saturation_req_s
 {
@@ -1448,7 +1448,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_saturation_req_s
 }
 /******************************* Move Saturation ******************************/
 
-/*! @brief Structure representsation of Move Saturation command payload
+/*! @brief Structure representation of Move Saturation command payload
     @see ZCL spec, subclause 5.2.2.3.6 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_saturation_req_s
 {
@@ -1515,7 +1515,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_saturation_req_s
 
 /******************************* STEP_SATURATION ******************************/
 
-/*! @brief Structure representsation of Step Saturation command payload
+/*! @brief Structure representation of Step Saturation command payload
     @see ZCL spec, subclause 5.2.2.3.7 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_saturation_req_s
 {
@@ -1587,7 +1587,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_saturation_req_s
 
 /******************************* Move to Hue and Saturation ******************************/
 
-/*! @brief Structure representsation of Move To Hue and Saturation command payload
+/*! @brief Structure representation of Move To Hue and Saturation command payload
     @see ZCL spec, subclause 5.2.2.3.8 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_hue_saturation_req_s
 {
@@ -1659,7 +1659,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_hue_saturation_req_s
 
 /******************************* Move to Color ******************************/
 
-/*! @brief Structure representsation of Move To Color command payload
+/*! @brief Structure representation of Move To Color command payload
     @see ZCL spec, subclause 5.2.2.3.9 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_color_req_s
 {
@@ -1732,7 +1732,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_color_req_s
 
 /******************************* Move Color ******************************/
 
-/*! @brief Structure representsation of Move Color command payload
+/*! @brief Structure representation of Move Color command payload
     @see ZCL spec, subclause 5.2.2.3.10 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_req_s
 {
@@ -1799,7 +1799,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_req_s
 
 /******************************* Step Color ******************************/
 
-/*! @brief Structure representsation of Step Color command payload
+/*! @brief Structure representation of Step Color command payload
     @see ZCL spec, subclause 5.2.2.3.11 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_req_s
 {
@@ -1870,7 +1870,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_req_s
 
 /******************************* Move to Color Temperature ******************************/
 
-/*! @brief Structure representsation of Move To Color Temperature command payload
+/*! @brief Structure representation of Move To Color Temperature command payload
     @see ZCL spec, subclause 5.2.2.3.12 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_color_temperature_req_s
 {
@@ -1938,7 +1938,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_color_temperature_req_
 
 /******************************* ENHANCED_MOVE_TO_HUE ******************************/
 
-/*! @brief Structure representsation of Enhanced Move To Hue command payload
+/*! @brief Structure representation of Enhanced Move To Hue command payload
     @see ZCL spec, subclause 5.2.2.3.14 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_to_hue_req_s
 {
@@ -2010,7 +2010,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_to_hue_req_s
 
 /******************************* ENHANCED_MOVE_HUE ******************************/
 
-/*! @brief Structure representsation of Enhanced Move Hue command payload
+/*! @brief Structure representation of Enhanced Move Hue command payload
     @see ZCL spec, subclause 5.2.2.3.15 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_hue_req_s
 {
@@ -2077,7 +2077,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_hue_req_s
 
 /******************************* ENHANCED_STEP_HUE ******************************/
 
-/*! @brief Structure representsation of Enhanced Step Hue command payload
+/*! @brief Structure representation of Enhanced Step Hue command payload
     @see ZCL spec, subclause 5.2.2.3.16 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_step_hue_req_s
 {
@@ -2149,7 +2149,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_step_hue_req_s
 
 /******************************* Enhanced Move to Hue and Saturation ******************************/
 
-/*! @brief Structure representsation of Move To Hue and Saturation command payload
+/*! @brief Structure representation of Move To Hue and Saturation command payload
     @see ZCL spec, subclause 5.2.2.3.17 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_to_hue_saturation_req_s
 {
@@ -2221,7 +2221,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_to_hue_saturatio
 
 /******************************* Color Loop Set ******************************/
 
-/*! @brief Structure representsation of Color Loop Set command payload
+/*! @brief Structure representation of Color Loop Set command payload
     @see ZCL spec, subclause 5.2.2.3.18 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_color_loop_set_req_s
 {
@@ -2382,7 +2382,7 @@ typedef struct zb_zcl_color_control_color_loop_set_s
 
 /******************************* Move color temperature command ******************************/
 
-/*! @brief Structure representsation of Move color temperature command payload
+/*! @brief Structure representation of Move color temperature command payload
     @see ZCL spec, subclause 5.2.2.3.20 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_temp_req_s
 {
@@ -2459,7 +2459,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_temp_req_s
 
 /******************************* Step color temperature command ******************************/
 
-/*! @brief Structure representsation of Step color temperature command command payload
+/*! @brief Structure representation of Step color temperature command command payload
     @see ZCL spec, subclause 5.2.2.3.21 */
 typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_temp_req_s
 {
@@ -2585,7 +2585,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_temp_req_s
     ZB_MILLISECONDS_TO_BEACON_INTERVAL(ZB_ZCL_COLOR_CONTROL_TIMER_INTERVAL)
 
 /**
- * @brief Struct for process one interation of move command for one attribute
+ * @brief Struct for process one iteration of move command for one attribute
  */
 typedef struct zb_zcl_color_control_loop_element_s
 {
@@ -2595,7 +2595,7 @@ typedef struct zb_zcl_color_control_loop_element_s
   zb_uint16_t attr_id;      /** Attribute ID */
   zb_int16_t value;         /** delta value */
   zb_bool_t is_continue;   /** If ZB_TRUE attribute when is already limit value, command
-                                continious from another limit. If ZB_FALSE attribute when
+                                contentious from another limit. If ZB_FALSE attribute when
                                 is already limit value, command stop */
   zb_uint16_t limit;        /** limit of attribute value */
 

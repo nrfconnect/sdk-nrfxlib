@@ -58,13 +58,13 @@ constants etc.
 #include "zb_config_common.h"
 
 /*
- * ZC/ZR - GPPB role library     (default) (implementation of Basic Proxy is mandatory for ZigBee 3.0 ZR)
+ * ZC/ZR - GPPB role library     (default) (implementation of Basic Proxy is mandatory for Zigbee 3.0 ZR)
  * ZC/ZR - GPCB role library               (Options file shall use ZB_ENABLE_ZGP_COMBO define)
  * ZC/ZR - GP Commissioning Tool           (Options file shall use ZGP_COMMISSIONING_TOOL define)
  * ZED   - Target role library   (default) (Options file shall use ZB_ENABLE_ZGP_TARGET define)
  * ZED   - Target+ role library            (Options file shall use ZB_ENABLE_ZGP_TARGET_PLUS define)
  *
- * To enable advanced features (not covered by the curent version of GP specification) please
+ * To enable advanced features (not covered by the current version of GP specification) please
  * define ZB_ENABLE_ZGP_ADVANCED, so in this case the GPPB/GPCB/GPCT basic libs will be re-compiled
  * to GPP/GPC/GPCT advanced libs
  *
@@ -123,7 +123,7 @@ constants etc.
 #define ZB_ENABLE_ZGP_TX_QUEUE
 #endif
 
-/** Maximum payload lenght in translation table entry */
+/** Maximum payload length in translation table entry */
 #ifndef ZB_ZGP_TRANSL_CMD_PLD_MAX_SIZE
 #define ZB_ZGP_TRANSL_CMD_PLD_MAX_SIZE  3
 #endif
@@ -154,7 +154,7 @@ constants etc.
 /* Obsolete define to support old sink table migration
  * Looks like for correct migration needs to upgrade old system to zgp_dataset_info_ver_6_0_s using
  * the same ZB_ZGP_SINK_TBL_SIZE number */
-/* Anyway we don't need do migration for translaion table so let's keep this define as is. */
+/* Anyway we don't need do migration for translation table so let's keep this define as is. */
 #define ZB_ZGP_TRANSL_TBL_SIZE 4*ZB_ZGP_SINK_TBL_SIZE
 
 /* 5.1.2.3.2 test specification - The default value for DUT-GPP being a Basic Combo pr a Basic Proxy
@@ -219,11 +219,11 @@ constants etc.
 #define ZB_SUB_GHZ_LBT
 #define ZB_FILTER_OUT_CLUSTERS
 #define ZB_MAC_POWER_CONTROL
+#define ZB_ZCL_SUPPORT_CLUSTER_SUBGHZ
 #endif
 
-
 /**
-   # of frames in GPFS (repeated frames with same mac seq #)
+   Number of frames in GPFS (repeated frames with same mac seq number)
 
    For debug purposes set it to 1
 */
@@ -241,7 +241,7 @@ constants etc.
 #else
 #define ZB_ZGP_TX_PACKET_INFO_COUNT ZB_ZGP_TX_QUEUE_SIZE
 #endif  /* ZB_ZGP_IMMED_TX */
-/** Maximum payload lenght in outgoing ZGP frames */
+/** Maximum payload length in outgoing ZGP frames */
 #ifndef ZB_ZGP_TX_CMD_PLD_MAX_SIZE
 #define ZB_ZGP_TX_CMD_PLD_MAX_SIZE  64 /* Maximum payload size of APP_0000 packet */
 #endif
@@ -272,22 +272,22 @@ constants etc.
 #endif
 
 /**
-   Size of table used for long addresses compression: 3 bytes of manufacturer id.
+   Size of table used for long addresses compression: 3 bytes of manufacturer ID.
 
    ZBOSS implements long address compression: 3 bytes of manufacturer
-   id are stored in the separate table; reference to manufacturer
+   ID are stored in the separate table; reference to manufacturer
    entry is stored in the long address giving 2 bytes economy.
 
-   That is an absolute limit of # of manufactorers known to the device.
+   That is an absolute limit of numbers of manufacturers known to the device.
 
    @note All that machinery will not work if instead of legal
-   maufacturer ids (or illegal, but fixed ids) use random values.
+   manufacturer IDs (or illegal, but fixed IDs) use random values.
  */
-#ifndef ZB_DEV_MANUFACTORER_TABLE_SIZE
-#define ZB_DEV_MANUFACTORER_TABLE_SIZE 32
+#ifndef ZB_DEV_MANUFACTURER_TABLE_SIZE
+#define ZB_DEV_MANUFACTURER_TABLE_SIZE 32
 #endif
 
-/* There were configuration options for different platfoirms.
+/* There were configuration options for different platforms.
    Since in ZOI we are separating stack and platform making not all platforms visible,
    include here current platform-specific stuff.
 
@@ -324,7 +324,7 @@ Ideally should rework the whole zb_config.h to suit better for that new concept.
 
 
 
-/* MAC transport in Linux, line nsng, uart/macsplit etc */
+/* MAC transport in Linux, line NSNG, uart/macsplit etc */
 
 /***********************************************************************/
 /****************************General stack options**********************/
@@ -335,11 +335,11 @@ Ideally should rework the whole zb_config.h to suit better for that new concept.
 /*! \addtogroup ZB_CONFIG */
 /*! @{ */
 
-/** Network Selection Stack Profile Id*/
+/** Network Selection Stack Profile ID*/
 #define STACK_NETWORK_SELECT  0x00
-/** 2007 Stack Profile Id*/
+/** 2007 Stack Profile ID */
 #define STACK_2007            0x01
-/** Pro Stack Profile Id */
+/** Pro Stack Profile ID */
 #define STACK_PRO             0x02
 
 /**
@@ -367,7 +367,7 @@ Ideally should rework the whole zb_config.h to suit better for that new concept.
 #ifndef NVRAM_NOT_AVAILABLE
 #define ZB_USE_NVRAM
 #endif
-
+/*! @} */ /* ZB_CONFIG */
 
 /**
    Use 32-bit timer
@@ -413,12 +413,12 @@ Ideally should rework the whole zb_config.h to suit better for that new concept.
 */
 #define ZB_NWK_STOCHASTIC_ADDRESS_ASSIGN
 
-/*! Source routing path lenght, also called nwkMaxSourceRoute */
+/*! Source routing path length, also called nwkMaxSourceRoute */
 #define ZB_NWK_MAX_PATH_LENGTH  5
 /*! Source route table capacity */
 /* 10/21/2019 EE CR:MINOR Isn't it too many? Can we handle situation when source route table is not big enough? */
 #define ZB_NWK_MAX_SRC_ROUTES   ZB_NEIGHBOR_TABLE_SIZE
-/* 10/21/2019 EE CR:MINOR Better indicate in const name that this is time in secunds by adding _S suffix */
+/* 10/21/2019 EE CR:MINOR Better indicate in const name that this is time in seconds by adding _S suffix */
 /*! Expiration time of the source route table (300 sec) */
 #define ZB_NWK_SRC_ROUTE_TABLE_EXPIRY 60
 
@@ -437,8 +437,8 @@ ZED rx-on-when-idle can be configurable at runtime or at compile time.
 
 To better divide ZC an ZR define functionality groups:
 
-- routing & parent srv (zc & zr) - ZB_ROUTER_ROLE (name is not perfect, but keep it to minimizze code change)
-- centralized TC - ZB_COORDINATOR_ROLE  (name is not perfect, but keep it to minimizze code change)
+- routing & parent srv (zc & zr) - ZB_ROUTER_ROLE (name is not perfect, but keep it to minimize code change)
+- centralized TC - ZB_COORDINATOR_ROLE  (name is not perfect, but keep it to minimize code change)
 - joiner client functionality (zr & zed) - ZB_JOIN_CLIENT
 - formation functionality - ZB_FORMATION == ZB_COORDINATOR_ROLE || ZB_ROUTER_ROLE && ZB_DISTRIBUTED_SECURITY_ON. Also in request key etc
 - distributed-only ZR build (do not link router's update device etc) - ZB_DISTRIBUTED_ONLY
@@ -463,12 +463,12 @@ ZB_ED_FUNC is polling and ED aging.
 
 ZB_ROUTER_ROLE, ZB_COORDINATOR_ROLE, ZB_ED_ROLE defines exists for the very beginning. Let's keep it in the code where it is appropriate.
 
-In general, define ZB_COORDINATOR_ROLE to compile ZC-only build, ZB_ROUTER_ROLE to compile ZR+ZED build, ZB_ED_ROLE to compile ZED-onlyt build.
+In general, define ZB_COORDINATOR_ROLE to compile ZC-only build, ZB_ROUTER_ROLE to compile ZR+ZED build, ZB_ED_ROLE to compile ZED-only build.
  */
 
 #if !defined ZB_ED_ROLE && !defined ZB_ZGPD_ROLE && !defined ZB_COORDINATOR_ROLE && !defined ZB_ROUTER_ROLE
 /**
-   If no any role defined, let it be max possible roles set: ZC + ZR switcheable to ZED at runtime
+   If no any role defined, let it be max possible roles set: ZC + ZR switchable to ZED at runtime
 */
 #define ZB_COORDINATOR_ROLE
 #define ZB_ROUTER_ROLE
@@ -494,7 +494,7 @@ In general, define ZB_COORDINATOR_ROLE to compile ZC-only build, ZB_ROUTER_ROLE 
 #if defined ZB_ROUTER_ROLE && !defined ZB_COORDINATOR_ONLY && !defined ZB_ROUTER_NO_ED
 
 /* By default ZR can be switched to ZED at runtime. */
-/*! ZB enddevice functionality */
+/*! ZB end device functionality */
 #define ZB_ED_FUNC
 #endif
 
@@ -525,7 +525,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
 #endif
 
 #ifdef ZB_ED_ROLE
-/* ED funtionality is implemented by ZED-only build or ZR switcheable to ZED */
+/* ED functionality is implemented by ZED-only build or ZR switchable to ZED */
 #define ZB_ED_FUNC
 #endif
 /** @addtogroup ZB_CONFIG */
@@ -614,7 +614,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
 /** @{ */
 #ifndef ZB_MAX_EP_NUMBER
 /* max supported EP number, increase if needed */
-/** Maximum number of supported enpoints per device */
+/** Maximum number of supported endpoints per device */
 #define ZB_MAX_EP_NUMBER 5
 #endif
 /* APS binding */
@@ -732,7 +732,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
  APS: Get APS ACK wait time for the device depending on its receiver on when idle
 */
 /* WARNING: Generally, it is not according to spec. There are some nwk and APS routines that should
- * correllate to this interval, for these we will use ZB_N_APS_ACK_WAIT_DURATION_FROM_SLEEPY. */
+ * correlate to this interval, for these we will use ZB_N_APS_ACK_WAIT_DURATION_FROM_SLEEPY. */
 #ifndef ZB_ED_RX_OFF_WHEN_IDLE
 #define ZB_N_APS_ACK_WAIT_DURATION(_rx_on_when_idle)  \
   ((_rx_on_when_idle) ?                                                 \
@@ -774,7 +774,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
 */
 #define ZB_PANID_TABLE_SIZE 16
 #endif
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 /**
    If defined, add jitter to broadcast transmits etc.
 
@@ -782,7 +782,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
    next generated address by setting random generator start.
 */
 #define ZB_NWK_USE_SEND_JITTER
-/**@endcond*//*internals_doc*/
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 /* Some defaults for ZDO startup */
 
 #ifndef ZB_TRACE_LEVEL
@@ -821,7 +821,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
 #else
 #define ZB_ZDO_PENDING_LEAVE_SIZE 2
 #endif /*ZB_MEMORY_COMPACT*/
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #ifndef ZB_COORDINATOR_ONLY
 /* Enables PAN blacklisting. Note: it was under ifdef
  * ZB_COORDINATOR_ROLE. But ZBOSS usually built with ZR & ZC, so
@@ -844,7 +844,8 @@ ZB_ED_RX_OFF_WHEN_IDLE
 #else
 #define ZB_NWK_ROUTING_TABLE_SIZE 5
 #endif
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+
 /** @cond DOXYGEN_MULTIMAC_SECTION */
 #ifndef ZB_NWK_MAC_IFACE_TBL_SIZE
 /* For now we use only 1 MAC interface (maybe, working in 2.4 os sub-gig) */
@@ -854,15 +855,18 @@ ZB_ED_RX_OFF_WHEN_IDLE
 #define ZB_NWK_MAC_IFACE_TBL_SIZE 1
 #endif  /* ZB_NWK_MAC_IFACE_TBL_SIZE */
 /** @endcond */ /* DOXYGEN_MULTIMAC_SECTION */
+
 /**
    Size of channel list structure
 */
 #define ZB_CHANNEL_PAGES_NUM 1
+
 /** @cond DOXYGEN_SE_SECTION */
 /** Maximum channel pages number according to the Zigbee revision 22 specification */
 #define ZB_CHANNEL_PAGES_MAX_NUM 5
 /** @endcond */
-/*! @cond internals_doc */
+
+/*! @cond DOXYGEN_INTERNAL_DOC */
 /**
 The minimum value of the
 backoff exponent (BE) in the
@@ -882,7 +886,8 @@ explanation of the backoff
 exponent.
  */
 #define ZB_MAC_MAX_BE 5
-/*! @endcond */ /*internals_doc*/
+/*! @endcond */ /* DOXYGEN_INTERNAL_DOC */
+
 #ifdef ZB_MAC_POLL_INDICATION_CALLS_REDUCED
 #ifndef ZB_MAC_POLL_INDICATION_CALL_MAX_TIMEOUT
 /**
@@ -891,23 +896,26 @@ exponent.
 #define ZB_MAC_POLL_INDICATION_CALL_MAX_TIMEOUT 3600
 #endif
 #endif /* ZB_MAC_POLL_INDICATION_CALLS_REDUCED */
-/** @cond internals_doc */
+
+/** @cond DOXYGEN_INTERNAL_DOC */
 #ifndef ZB_NWK_NEIGHBOUR_PATH_COST_RSSI_BASED
 /**
-    Neighbour path cost calculation method.
-    By default, calculate neighbour path cost from LQI value as described in ZB
-    spec(section 3.6.3.1). But for sime special cases (e.g. LCGW) we need to calculate path cost
+    Neighbor path cost calculation method.
+    By default, calculate neighbor path cost from LQI value as described in ZB
+    spec(section 3.6.3.1). But for some special cases (e.g. LCGW) we need to calculate path cost
     from RSSI value.
  */
 #define ZB_NWK_NEIGHBOUR_PATH_COST_LQI_BASED
 #endif /* ZB_NWK_NEIGHBOUR_PATH_COST_RSSI_BASED */
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+
 /***********************************************************************/
 /***************************ZBOSS FEATURES SECTION**********************/
 /***********************************************************************/
 
 /***************************STACK FEATURES**********************/
-/** @cond internals_doc *//* Current stack profile */
+
+/** @cond DOXYGEN_INTERNAL_DOC *//* Current stack profile */
 #define ZB_STACK_PROFILE        STACK_PRO
 
 /**
@@ -918,7 +926,7 @@ exponent.
 #else
 #define ZB_PROTOCOL_VERSION 0x01
 #endif
-/** @endcond */ /* internals_doc ZB_STACK_PROFILE */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC ZB_STACK_PROFILE */
 
 
 #ifndef ZB_BUF_Q_SIZE
@@ -941,7 +949,7 @@ exponent.
 /**
    Buffer tail portion alignment - 4.
 
-   Note: not sizeof(zb_size_t) because at 64-bit buld it is 8 which we don't want.
+   Note: not sizeof(zb_size_t) because at 64-bit build it is 8 which we don't want.
  */
 #define ZB_BUF_ALLOC_ALIGN 4
 
@@ -963,7 +971,8 @@ exponent.
 #define ZB_IOBUF_POOL_SIZE 26
 #endif
 #endif
-/** @cond internals_doc */
+
+/** @cond DOXYGEN_INTERNAL_DOC */
 /*
   If enabled, real int24 and uint48 types will work. Else, int24 and uint48 is mapped to
   int32 and uint32.
@@ -971,39 +980,39 @@ exponent.
 */
 /** Enable support for int24 and uint48 data types */
 #define ZB_UINT24_48_SUPPORT
-/** @endcond */ /* internals_doc */
-/** Should expire in this number of attemptes if failure*/
-#define ZB_NWK_ROUTING_FAILURE_ATTEMTS_NUM 1
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+
+/** Should expire in this number of attempts if failure*/
+#define ZB_NWK_ROUTING_FAILURE_ATTEMPTS_NUM 1
 
 /** Calculate routing expiry step interval based on timer initiation value and number of attempts*/
-#define ZB_NWK_ROUTING_FAILURE_EXPIRY_STEP (ZB_NWK_ROUTING_TABLE_EXPIRY / ZB_NWK_ROUTING_FAILURE_ATTEMTS_NUM)
+#define ZB_NWK_ROUTING_FAILURE_EXPIRY_STEP (ZB_NWK_ROUTING_TABLE_EXPIRY / ZB_NWK_ROUTING_FAILURE_ATTEMPTS_NUM)
 
 /**
-   Number of times device failes to send packet to the parent before rejoin
+   Number of times device fails to send packet to the parent before rejoin
 */
 #define ZB_ZDO_PARENT_LINK_FAILURE_CNT 12
-/** @cond internals_doc */
+
+/** @cond DOXYGEN_INTERNAL_DOC */
 //#define ZB_ZDO_CHECK_FAILS_NWK_UPDATE_NOTIFY_LIMIT 4
 #define ZB_ZDO_CHECK_FAILS_CLEAR_TIMEOUT (30 * ZB_TIME_ONE_SECOND)
-/** @endcond */ /* internals_doc */
 
-/** @cond internals_doc */
 #define ZB_PREDEFINED_ROUTER_ADDR 0x3344
 #define ZB_PREDEFINED_ED_ADDR     0x3344
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #ifdef ZB_LIMIT_VISIBILITY
 /**
    Maximum number of addresses in the visibility limit arrays
 */
-#define ZB_N_VIZIBLE_ADDRESSES 6
+#define ZB_N_VISIBLE_ADDRESSES 6
 #endif
 
 #if defined ZB_LITTLE_ENDIAN && defined ZB_BIG_ENDIAN
 #error  Enable only 1 profile support: ZB_LITTLE_ENDIAN or ZB_BIG_ENDIAN
 #endif /* defined ZB_LITTLE_ENDIAN && defined ZB_BIG_ENDIAN */
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 /* DA: network status with OUT_OF_MEMORY custom value */
 #if !defined ZB_CHECK_OOM_STATUS && !defined xZB_CHECK_OOM_STATUS && !defined ZB_MACSPLIT_DEVICE && !defined ZB_LITE_NO_OOM_DETECTION
 /** Enable check whether the ZBOSS stack is out of memory */
@@ -1019,7 +1028,8 @@ exponent.
 #define ZB_SEND_OOM_DELAY (5 * ZB_TIME_ONE_SECOND)
 #endif /* ZB_SEND_OOM_STATUS */
 #endif /* ZB_CHECK_OOM_STATUS */
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+
 /** @cond DOXYGEN_JOINING_LIST_SECTION */
 #define ZB_JOINING_LIST_Q_SIZE 5
 #define ZB_JOINING_LIST_RESP_ITEMS_LIMIT 9
@@ -1027,12 +1037,14 @@ exponent.
 /* default value for mibIeeeExpiryInterval, in minutes */
 #define ZB_JOINING_LIST_DEFAULT_EXPIRY_INTERVAL 5
 /** @endcond */ /* DOXYGEN_JOINING_LIST_SECTION */
+
 /***************************HA and ZLL FEATURES**********************/
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #if defined ZB_ENABLE_HA || defined ZB_ENABLE_ZLL
 #define ZB_ENABLE_ZCL
 #endif /* defined ZB_ENABLE_HA || ZB_ENABLE_ZLL */
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+
 /* Enable only 1 profile support: ZLL or HA */
 /** @cond DOXYGEN_ZLL_SECTION */
 #if defined ZB_ENABLE_ZLL || defined DOXYGEN
@@ -1060,10 +1072,10 @@ exponent.
 #endif /*ZB_SERIAL_FOR_TRACE || defined ZB_TRACE_OVER_JTAG || defined ZB_NET_TRACE*/
 #endif /*ZB_PLATFORM_LINUX*/
 
-
+/** @cond DOXYGEN_INTERNAL_DOC */
 #ifdef ZB_PLATFORM_LINUX
 
-/* nsng run in the single thread */
+/* NSNG run in the single thread */
 #define ZB_THREADS
 #ifndef ZB_INIT_HAS_ARGS
 #define ZB_INIT_HAS_ARGS
@@ -1088,7 +1100,6 @@ exponent.
 /* #  define ZB_TRAFFIC_DUMP_ON */
 #endif
 
-/** @cond internals_doc */
 #ifndef ZB_MEMTRACE_BUF_SIZE
 #define ZB_MEMTRACE_BUF_SIZE 4080
 #endif
@@ -1110,18 +1121,18 @@ exponent.
 /**
    Name for trace off switch file
 
-   If file of this name exists in the current directory, swicth off both trace
+   If file of this name exists in the current directory, switch off both trace
    and traffic dump.
 */
 #define ZB_TRACE_SWITCH_OFF_FILE_NAME "trace_off"
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /************************Hardware watchdog******************/
 
 
 #ifndef ZB_WATCHDOG_SCHED_QUANT
 /**
- *Check watchdods once per 20 sec.
+ *Check watchdogs once per 20 sec.
  *The hardware watchdog timer is set to 30 seconds,
  *it should be initiated even if there is no job for it
 */
@@ -1129,7 +1140,7 @@ exponent.
 #endif
 
 
-
+/** @cond DOXYGEN_INTERNAL_DOC */
 /* membuffers debug: */
 /* extra buffers trace and debug */
 /* WARNING: Disabled by default. It costs too many ROM size! */
@@ -1145,7 +1156,7 @@ exponent.
 #define ZB_DEBUG_BUFFERS_EXT_USAGES_COUNT 1
 #endif
 #endif /*ZB_DEBUG_BUFFERS*/
-
+/** @cond */ /* DOXYGEN_INTERNAL_DOC */
 
 /************************Special modes for testing*******************/
 
@@ -1162,7 +1173,7 @@ exponent.
 
 
 /* Testing mode for some pro certification tests */
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 
 #define ZB_PRO_TESTING_MODE
 #ifdef ZB_PRO_TESTING_MODE
@@ -1191,7 +1202,7 @@ exponent.
 
 #endif /* ZB_PRO_TESTING_MODE */
 
-/** @endcond */ /* internals_doc */
+
 //* Definitions for 802.15.4 certification hacks */
 
 //#define MAC_CERT_TEST_HACKS
@@ -1206,7 +1217,16 @@ exponent.
 //#define TP_PRO_BV_38
 
 
+/* Put radio into RX mode before transmitting. */
+#ifndef ZB_TRANSCEIVER_ON_BEFORE_TX
+#define ZB_TRANSCEIVER_ON_BEFORE_TX  1
+#endif /* ZB_TRANSCEIVER_ON_BEFORE_TX */
 
+/* Put radio into RX mode before starting Energy Detection. */
+#ifndef ZB_TRANSCEIVER_ON_BEFORE_ED
+#define ZB_TRANSCEIVER_ON_BEFORE_ED  1
+#endif /* ZB_TRANSCEIVER_ON_BEFORE_ED */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /* Certification defines */
 
@@ -1235,12 +1255,12 @@ exponent.
    Default value for mac frame version subfield
 */
 #define MAC_FRAME_VERSION MAC_FRAME_IEEE_802_15_4_2003
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 /**
    Block sleepy end devices (devices with rx-on-when-idle == false) from receiving broadcasts (drop it at MAC level)
 */
 #define ZB_BLOCK_BROADCASTS_SLEEPY_ED
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 /* MAC */
 /* TODO: add MAC properties here */
 /** @cond DOXYGEN_JOINING_LIST_SECTION */
@@ -1362,7 +1382,7 @@ exponent.
 
 #ifndef ZB_NO_NWK_MULTICAST
 /**
-   Disable NWK multicast. Use APS grops and NWK broadcast instead.
+   Disable NWK multicast. Use APS groups and NWK broadcast instead.
  */
 #define ZB_NO_NWK_MULTICAST
 #endif
@@ -1394,7 +1414,7 @@ exponent.
 #ifndef ZB_LITE_NO_JOIN_ZR_AS_ZED
 /**
    Do not attempt to join ZR as ZED if join as ZR failed.
-   Do not join as ZED if joinint net is prior PRO.
+   Do not join as ZED if joining net is prior PRO.
  */
 #define ZB_LITE_NO_JOIN_ZR_AS_ZED
 #endif
@@ -1448,8 +1468,8 @@ exponent.
 
 #ifndef ZB_LITE_NO_GLOBAL_VS_UNIQUE_KEYS
 /**
-   Treate all APS keys as Unique.
-(Unique vs Global is brain-damaging flag to define encryption/non wncryption at
+   Treat all APS keys as Unique.
+(Unique vs Global is brain-damaging flag to define encryption/non encryption at
 APS of some APS commands, like Update Device. It introduced in r20 probably for
 compatibility with some mammoth shit */
 //#define ZB_LITE_NO_GLOBAL_VS_UNIQUE_KEYS
@@ -1465,7 +1485,7 @@ compatibility with some mammoth shit */
 
 #ifndef ZB_LITE_NO_ZDO_SYSTEM_SERVER_DISCOVERY
 /**
-   Exclude ZDO Syetrm Server Discovery
+   Exclude ZDO System Server Discovery
  */
 #define ZB_LITE_NO_ZDO_SYSTEM_SERVER_DISCOVERY
 #endif
@@ -1507,7 +1527,7 @@ compatibility with some mammoth shit */
 
 #ifndef ZB_LITE_NO_INDIRECT_MGMT_LEAVE
 /**
-   Disable mgmt leave with requires sendint leave to third device.
+   Disable mgmt leave with requires sending leave to third device.
  */
 #define ZB_LITE_NO_INDIRECT_MGMT_LEAVE
 /* Need to store only one entry - about leave myself */
@@ -1553,7 +1573,7 @@ compatibility with some mammoth shit */
 
 #ifndef ZB_LITE_DONT_STORE_RSSI
 /**
-   Do not store rssi in the neigbor
+   Do not store rssi in the neighbor
  */
 //#define ZB_LITE_DONT_STORE_RSSI
 //#define ZB_LITE_DONT_STORE_RSSI
@@ -1585,7 +1605,7 @@ compatibility with some mammoth shit */
 #ifndef ZB_NO_NWK_MULTICAST
 /**
    Disable NWK multicast. Deprecated in R21.
-   Use APS grops and NWK broadcast instead.
+   Use APS groups and NWK broadcast instead.
  */
 #define ZB_NO_NWK_MULTICAST
 #endif
@@ -1638,6 +1658,19 @@ compatibility with some mammoth shit */
 #undef ZB_NWK_MAX_SRC_ROUTES
 #endif
 
+#else
+/**
+   The purpose of the define. Ret code handling implementation on the application side
+   (via ZB_SCHEDULE_USER_APP_ALARM and ZB_SCHEDULE_USER_APP_CALLBACK) implies that we have some part
+   of the callback and alarm queues which can not be used from the user app and always should be reserved
+   for stack schedule purposes. So, let's define this part as 10 (for both immediate callbacks and alarms)
+   for all configurations.
+ */
+
+#define ZB_SCHEDULER_Q_SIZE_PROTECTED_STACK_POOL 10
+#if (ZB_SCHEDULER_Q_SIZE - ZB_SCHEDULER_Q_SIZE_PROTECTED_STACK_POOL) < 6
+#error The size of application scheduler queue is very small! Please, change ZB_SCHEDULER_Q_SIZE_PROTECTED_STACK_POOL, ZB_SCHEDULER_Q_SIZE to set it at least 6
+#endif
 #endif  /* ZB_CONFIGURABLE_MEMORY */
 
 /* pending bit source matching intended for ZB_ROUTER_ROLE only */
@@ -1698,3 +1731,4 @@ typedef enum zb_production_config_version_e
 #endif
 
 #endif /* ZB_CONFIG_H */
+ 

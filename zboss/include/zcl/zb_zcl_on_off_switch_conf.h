@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: On/Off switch configuration definitoins
+/* PURPOSE: On/Off switch configuration definitions
 */
 
 #if ! defined ZB_ZCL_ON_OFF_SWITCH_CONF_H
@@ -163,7 +163,7 @@ enum zb_zcl_on_off_switch_configuration_switch_actions_e
 /*! @}
  *  @endcond */ /* internals_doc */
 
-/** @brief Declare attribute list for ON/OFF Swith configuration cluster
+/** @brief Declare attribute list for ON/OFF Switch configuration cluster
     @param attr_list - attribute list name
     @param switch_type - pointer to variable to store switch type attribute value
     @param switch_actions - pointer to variable to store switch action attribute value

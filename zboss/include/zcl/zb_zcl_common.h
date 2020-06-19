@@ -49,7 +49,7 @@
 /** @cond DOXYGEN_ZCL_SECTION */
 
 #ifdef DEBUG
-/* If defined, samples included to zcl source files will be comiled - need for development only */
+/* If defined, samples included to zcl source files will be compiled - need for development only */
 #define ZB_COMPILE_ZCL_SAMPLE
 #endif
 
@@ -63,7 +63,7 @@
  *  @{
  *    @details
  *    The section contains enumerations defining cluster identifiers and inter-device operation
- *    statuses, and a callback type usesd to notify application on attribute value change (see @ref
+ *    statuses, and a callback type used to notify application on attribute value change (see @ref
  *    write_attr_cmd "Write attributes" command description).
  */
 
@@ -78,7 +78,7 @@
 /*
   Let's count:
 - max PHY payload - 127 bytes
-- MAC hdr (w/o Pan ID complession, short src/dest) - (FC 2, Seq 1, Pan ID 2, DST addr 2, SRC addr
+- MAC hdr (w/o Pan ID completion, short src/dest) - (FC 2, Seq 1, Pan ID 2, DST addr 2, SRC addr
 2, FCS 2) = 11b MAC
 - NWK HDR 8 + 8*2 (addresses). Note: not use source routing, else have more fields.
 - NWK security 18b
@@ -90,7 +90,7 @@ So, rest is 127-45 = 82b
 /* #define ZB_ZCL_MAX_PAYLOAD_SIZE 55 */
 /*! Maximal payload size */
 #define ZB_ZCL_HI_MAX_PAYLOAD_SIZE 66
-/*! Maximal payload size without long adress sending */
+/*! Maximal payload size without long address sending */
 #define ZB_ZCL_HI_WO_IEEE_MAX_PAYLOAD_SIZE 82
 
 struct zb_zcl_attr_s; /* Forward declaration */
@@ -293,6 +293,7 @@ typedef enum zb_zcl_cluster_id_e
   ZB_ZCL_CLUSTER_ID_EVENTS = 0x0709,                 /**< Events cluster identifier. */
   ZB_ZCL_CLUSTER_ID_MDU_PAIRING = 0x070A,            /**< MDU Pairing cluster identifier. */
   ZB_ZCL_CLUSTER_ID_SUB_GHZ = 0x070B,                /**< Sub-GHz cluster identifier. */
+  ZB_ZCL_CLUSTER_ID_DAILY_SCHEDULE = 0x070D,         /**< Daily Schedule cluster identifier. */
   ZB_ZCL_CLUSTER_ID_KEY_ESTABLISHMENT = 0x0800,      /**< Key Establishment cluster identifier. */
 
 
@@ -389,7 +390,7 @@ typedef enum zb_zcl_status_e
   ZB_ZCL_STATUS_LIMIT_REACHED            = 0xc4, /*!< Cluster is not found on the target endpoint */
 } zb_zcl_status_t;
 
-/** @brief ZCL global attibute: cluster version returned by default.
+/** @brief ZCL global attribute: cluster version returned by default.
     Used if the GLOBAL_CLUSTER_REVISION attribute is undefined for the cluster/role.
 */
 #define ZB_ZCL_GLOBAL_CLUSTER_VERSION_DEFAULT 1
@@ -486,7 +487,7 @@ static ZB_INLINE zb_uint16_t zb_zcl_string_append_data(zb_uint8_t *zcl_str,
   return newlen;
 }
 
-/** Add signle byte to ZCL Octet String. */
+/** Add single byte to ZCL Octet String. */
 static ZB_INLINE zb_uint16_t zb_zcl_string_append_byte(zb_uint8_t *zcl_str,
                                                     zb_uint8_t zcl_str_max_size,
                                                     zb_uint8_t value)
@@ -565,7 +566,7 @@ typedef enum zb_zcl_attr_type_e
   ZB_ZCL_ATTR_TYPE_SINGLE         = 0x39, /*!< 4 byte floating point */
   ZB_ZCL_ATTR_TYPE_DOUBLE         = 0x3a, /*!< 8 byte floating point */
   ZB_ZCL_ATTR_TYPE_OCTET_STRING   = 0x41, /*!< Octet string data type, */
-  ZB_ZCL_ATTR_TYPE_CHAR_STRING    = 0x42, /*!< Charactery string (array) data type */
+  ZB_ZCL_ATTR_TYPE_CHAR_STRING    = 0x42, /*!< Character string (array) data type */
   ZB_ZCL_ATTR_TYPE_LONG_OCTET_STRING = 0x43, /*!< Long octet string */
   ZB_ZCL_ATTR_TYPE_LONG_CHAR_STRING  = 0x44, /*!< Long character string */
   ZB_ZCL_ATTR_TYPE_ARRAY          = 0x48, /*!< Array data type 2 + sum of content len */
@@ -599,7 +600,7 @@ typedef enum zb_zcl_attr_access_e
   ZB_ZCL_ATTR_ACCESS_SCENE        = 0x10, /*!< Attribute is accessed through scene */
   /* Use free bit in access attribute field to save RAM */
   ZB_ZCL_ATTR_MANUF_SPEC          = 0x20, /*!< Attribute is manufacturer specific */
-  ZB_ZCL_ATTR_ACCESS_INTERNAL       = 0x40,  /*!< ZBOSS Internal accsess only Attribute */
+  ZB_ZCL_ATTR_ACCESS_INTERNAL       = 0x40,  /*!< ZBOSS Internal access only Attribute */
 } zb_zcl_attr_access_t;
 
 #define ZB_ZCL_ATTR_SET_WITH_ATTR_ID(_set, _id) ((_set << 8) | (_id & 0xFF))
@@ -621,7 +622,7 @@ typedef enum zb_zcl_attr_access_e
 
 /** @endcond */ /* internals_doc */
 
-/*! @brief ZCL attribute definiton structure */
+/*! @brief ZCL attribute definition structure */
 typedef ZB_PACKED_PRE  struct zb_zcl_attr_s
 {
   zb_uint16_t id;     /*!< Attribute id */
@@ -658,10 +659,10 @@ enum zb_zcl_attr_global_e
 #define ZB_ZCL_SET_ATTR_DESC(attr_id, data_ptr) ZB_SET_ATTR_DESCR_WITH_##attr_id(data_ptr),
 
 
-/*! @internal @brief Set manufacturer specififc attribute description.
+/*! @internal @brief Set manufacturer specific attribute description.
     @param attr_id - attribute identifier (defined individually for any particular cluster).
     @param attr_type - attribute data type @see zb_zcl_attr_type_e
-    @param attr_access - attribute access bitbask @see zb_zcl_attr_access_e
+    @param attr_access - attribute access bitmask @see zb_zcl_attr_access_e
     @param data_ptr - pointer to attribute's value storage.
 
     Creates attribute description value (@ref zb_zcl_attr_s) initialized with provided pointer to
@@ -774,7 +775,7 @@ enum zb_zcl_attr_global_e
 
 /**
  *  @brief Set attribute 8-bit value without any check. Use this macro
- *  on your own risk, if and only if you are absolutely shure that no check for Access
+ *  on your own risk, if and only if you are absolutely sure that no check for Access
  *  rights, Reporting and attribute type is needed.
  *  @param attr_desc - pointer to an attribute description structure @ref zb_zcl_attr_s.
  *  @param value - 8-bit value to be set.
@@ -785,7 +786,7 @@ enum zb_zcl_attr_global_e
 
 /**
  *  @brief Set attribute 16-bit value without any check. Use this macro
- *  on your own risk, if and only if you are absolutely shure that no check for Access
+ *  on your own risk, if and only if you are absolutely sure that no check for Access
  *  rights, Reporting and attribute type is needed.
  *  @param attr_desc - pointer to an attribute description structure @ref zb_zcl_attr_s.
  *  @param value - 16-bit value to be set.
@@ -796,7 +797,7 @@ enum zb_zcl_attr_global_e
 
 /**
  *  @brief Set attribute 32-bit value without any check. Use this macro
- *  on your own risk, if and only if you are absolutely shure that no check for Access
+ *  on your own risk, if and only if you are absolutely sure that no check for Access
  *  rights, Reporting and attribute type is needed.
  *  @param attr_desc - pointer to an attribute description structure @ref zb_zcl_attr_s.
  *  @param value - 32-bit value to be set.
@@ -893,7 +894,7 @@ typedef enum zb_zcl_disable_default_response_e
 {
   /** @brief Enable default response */
   ZB_ZCL_ENABLE_DEFAULT_RESPONSE    = 0x00,
-  /** @brief Disble default response */
+  /** @brief Disable default response */
   ZB_ZCL_DISABLE_DEFAULT_RESPONSE    = 0x01,
 } zb_zcl_disable_default_response_t;
 
@@ -1032,7 +1033,7 @@ typedef struct zb_zcl_attr_addr_info_s
 zb_zcl_attr_addr_info_t;
 
 
-/** @brief Extract common addresing data from parsed ZCL structure.
+/** @brief Extract common addressing data from parsed ZCL structure.
   * @param header - pointer to the parsed ZCL header structure (see @ref zb_zcl_parsed_hdr_s).
   */
 #define ZB_ZCL_PARSED_HDR_SHORT_DATA(header) ((header)->addr_data.common_data)
@@ -1244,7 +1245,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 
 /** @cond internals_doc */
 
-/*! @internal @brief Caclulate ZCL frame header size */
+/*! @internal @brief Calculate ZCL frame header size */
 #define ZB_ZCL_FRAME_HDR_GET_SIZE(p) ( ZB_ZCL_GET_MANUF_SPECIFIC(p) ?    \
                                        2*sizeof(zb_uint8_t)+sizeof(zb_uint16_t) : \
                                        2*sizeof(zb_uint8_t) )
@@ -1468,7 +1469,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 #define ZB_ZCL_PACKET_PUT_DATA64(ptr, val) (ZB_HTOLE64(ptr, val), (ptr) += 8)
 
 /** @brief Get 8-bit value from packet.
-  * @param dst_ptr - pointer to the memory to store value (pinter value preserved).
+  * @param dst_ptr - pointer to the memory to store value (pointer value preserved).
   * @param src_ptr - pointer to the memory to get value from (will be incremented).
   */
 #define ZB_ZCL_PACKET_GET_DATA8(dst_ptr, src_ptr) \
@@ -1490,7 +1491,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 #define ZB_ZCL_PACKET_PUT_DATA_N(ptr, val, n) (ZB_MEMCPY(ptr, val, n), (ptr) += (n))
 
 /** @brief Get 16-bit value from packet.
-  * @param dst_ptr - pointer to the memory to store value (pinter value preserved).
+  * @param dst_ptr - pointer to the memory to store value (pointer value preserved).
   * @param src_ptr - pointer to the memory to get value from (will be incremented by value size).
   */
 #define ZB_ZCL_PACKET_GET_DATA16(dst_ptr, src_ptr) \
@@ -1500,7 +1501,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 }
 
 /** @brief Get 24-bit value from packet.
-  * @param dst_ptr - pointer to the memory to store value (pinter value preserved).
+  * @param dst_ptr - pointer to the memory to store value (pointer value preserved).
   * @param src_ptr - pointer to the memory to get value from (will be incremented by value size).
   */
 #define ZB_ZCL_PACKET_GET_DATA24(dst_ptr, src_ptr) \
@@ -1511,7 +1512,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 
 
 /** @brief Get 48-bit value from packet.
-  * @param dst_ptr - pointer to the memory to store value (pinter value preserved).
+  * @param dst_ptr - pointer to the memory to store value (pointer value preserved).
   * @param src_ptr - pointer to the memory to get value from (will be incremented by value size).
   */
 #define ZB_ZCL_PACKET_GET_DATA48(dst_ptr, src_ptr) \
@@ -1522,7 +1523,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 
 
 /** @brief Get 32-bit value from packet.
-  * @param dst_ptr - pointer to the memory to store value (pinter value preserved).
+  * @param dst_ptr - pointer to the memory to store value (pointer value preserved).
   * @param src_ptr - pointer to the memory to get value from (will be incremented by value size).
   */
 #define ZB_ZCL_PACKET_GET_DATA32(dst_ptr, src_ptr) \
@@ -1532,7 +1533,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 }
 
 /** @brief Get 64-bit value from packet.
-  * @param dst_ptr - pointer to the memory to store value (pinter value preserved).
+  * @param dst_ptr - pointer to the memory to store value (pointer value preserved).
   * @param src_ptr - pointer to the memory to get value from (will be incremented by value size).
   */
 #define ZB_ZCL_PACKET_GET_DATA64(dst_ptr, src_ptr) \
@@ -1542,7 +1543,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 }
 
 /** @brief Get IEEE address from packet.
-  * @param dst_ptr - pointer to the memory to store value (pinter value preserved).
+  * @param dst_ptr - pointer to the memory to store value (pointer value preserved).
   * @param src_ptr - pointer to the memory to get value from (will be incremented by value size).
   */
 #define ZB_ZCL_PACKET_GET_DATA_IEEE(dst_ptr, src_ptr) \
@@ -1553,7 +1554,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 
 /** @brief Put IEEE address into packet.
   * @param dst_ptr - pointer to the memory to store value (will be incremented by value size).
-  * @param src_ptr - pointer to the memory to get value from (pinter value preserved).
+  * @param src_ptr - pointer to the memory to get value from (pointer value preserved).
   */
 #define ZB_ZCL_PACKET_PUT_DATA_IEEE(dst_ptr, src_ptr) \
 {                                                     \
@@ -1580,7 +1581,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
  * this macro sets data to NULL.
  *
  * @param _zcl_str - Destination buffer.
- * @param data - Pointer to incomming data.
+ * @param data - Pointer to incoming data.
  * @param _zcl_str_max_size - Size of destination buffer.
  */
 #define ZB_ZCL_PACKET_GET_STRING(_zcl_str, data, _zcl_str_max_size)         \
@@ -1616,7 +1617,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
  * this macro sets data to NULL.
  *
  * @param _zcl_str - Destination buffer.
- * @param data - Pointer to incomming data.
+ * @param data - Pointer to incoming data.
  * @param _zcl_str_max_size - Size of destination buffer.
  */
 #define ZB_ZCL_PACKET_GET_STRING(_zcl_str, data, _zcl_str_max_size)         \
@@ -1641,7 +1642,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 
 /** @brief Get N-byte value from packet.
   * @param dst_ptr - pointer to the memory to store value (will be incremented by value size).
-  * @param src_ptr - pointer to the memory to get value from (pinter value preserved).
+  * @param src_ptr - pointer to the memory to get value from (pointer value preserved).
   * @param n - data length.
   */
 #define ZB_ZCL_PACKET_GET_DATA_N(dst_ptr, src_ptr, n) \
@@ -1896,7 +1897,7 @@ zb_uint8_t zb_zcl_get_analog_attribute_size(zb_uint8_t attr_type);
  * @brief Check whether type of ZCL attrbiute is analog
  * @param attr_type - attribute type in question (see @ref zb_zcl_attr_type_t)
  *
- * @return ZB_TRUE if type is analog, ZB_FALSE otherwith
+ * @return ZB_TRUE if type is analog, ZB_FALSE otherwise
  */
 zb_bool_t zb_zcl_is_analog_data_type(zb_uint8_t attr_type);
 
@@ -1942,7 +1943,7 @@ zb_uint8_t get_endpoint_by_cluster(zb_uint16_t cluster_id, zb_uint16_t cluster_r
  * @brief Find if device has cluster with given ID
  *
  * @param cluster_id - cluster ID (see @ref zb_zcl_cluster_id_e)
- * @return ZB_TRUE if cluser found
+ * @return ZB_TRUE if cluster found
  */
 zb_bool_t is_cluster_present(zb_uint16_t cluster_id);
 
@@ -2036,8 +2037,8 @@ zb_uint8_t zb_zcl_check_accept_command(zb_uint8_t param);
 
 /** @brief Common continue command
 
-    Usualy use after invoke User App. If invoke User App finished with error (status!=RET_OK),
-    send error responce, else if not disabled default response send it or free buffer
+    Usually use after invoke User App. If invoke User App finished with error (status!=RET_OK),
+    send error response, else if not disabled default response send it or free buffer
 
     @param buffer - buffer for send response
     @param pcmd_info - pointer of cmd_info (see @ref zb_zcl_parsed_hdr_s)
@@ -2064,7 +2065,7 @@ typedef struct zb_zcl_set_attr_value_param_s
    * "ZB_BUF_GET_PARAM(buffer, zb_zcl_device_callback_param_t)".
    * Current size = maximum of fixed size of any attribute.
    * If will need to translate attribute with variable size then need
-   * set value as size and pointer of attribule.
+   * set value as size and pointer of attribute.
    * */
   union
   {
@@ -2085,7 +2086,7 @@ typedef struct zb_zcl_set_attr_value_param_s
 
 /** @cond internals_doc */
 /** @internal @brief Inform User Application about change attribute
- *  @param buffer - buffer for transmite data
+ *  @param buffer - buffer for transmit data
  *  @param clusterId - cluster ID
  *  @param attrDesc - attribute description
  *  @param p_value - pointer of new value attribute
@@ -2140,7 +2141,7 @@ typedef struct zb_zcl_set_attr_value_param_s
 }
 
 /** @internal @brief Inform User Application about change attribute
- *  @param buffer - buffer for transmite data
+ *  @param buffer - buffer for transmit data
  *  @param clusterId - cluster ID
  *  @param attrDesc - attribute description
  *  @param p_value - pointer of new value attribute
@@ -2201,6 +2202,8 @@ void zb_zcl_schedule_status_abort(zb_bufid_t  buffer, zb_addr_u *addr,
                                   zb_uint8_t ep, zb_callback_t cb);
 
 zb_uint8_t zb_zcl_handle_specific_commands(zb_uint8_t param);
+zb_bool_t cluster_needs_aps_encryption(zb_uint8_t endpoint_id, zb_uint16_t cluster_id);
+
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 #endif /* ! defined ZB_ZCL_COMMON_H */

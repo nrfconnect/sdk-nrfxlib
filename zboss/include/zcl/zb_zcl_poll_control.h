@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Poll Control cluster defintions
+/* PURPOSE: Poll Control cluster definitions
 */
 
 #if ! defined ZB_ZCL_POLL_CONTROL_H
@@ -261,7 +261,7 @@ enum zb_zcl_poll_control_attr_e
 }
 
 
-/*! @brief Structure representsation of Client Status attributes */
+/*! @brief Structure representation of Client Status attributes */
 typedef ZB_PACKED_PRE struct zb_zcl_poll_control_client_status_s
 {
   /** Client is In Poll Mode */
@@ -278,9 +278,9 @@ typedef ZB_PACKED_PRE struct zb_zcl_poll_control_client_status_s
 /* Currently not only address info is stored - also status information */
 typedef struct zb_zcl_poll_control_srv_cfg_data_s
 {
-  /** Short address of the Poll cotrol client */
+  /** Short address of the Poll control client */
   zb_uint16_t poll_addr;
-  /** Endpoint number of the Poll cotrol client */
+  /** Endpoint number of the Poll control client */
   zb_uint8_t poll_ep;
   /** Flag to check if check-in command is being sent currently */
   zb_bitfield_t sending_cmd:4;
@@ -380,7 +380,7 @@ enum zb_zcl_poll_control_resp_cmd_e
 
 /*! @brief Send Check-in command, see HA spec 9.5.4.4
     @param _buffer - to put packet to
-    @param _dst_addr - destinition address
+    @param _dst_addr - destination address
     @param _dst_addr_mode - addressing mode
     @param _dst_ep - destination endpoint
     @param _local_ep - source endpoint
@@ -439,7 +439,7 @@ zb_zcl_poll_control_check_in_cli_param_t;
 
 /******************************* Check-in response ******************************/
 
-/*! @brief Structure representsation of Check-in response command payload */
+/*! @brief Structure representation of Check-in response command payload */
 typedef ZB_PACKED_PRE struct zb_zcl_poll_control_check_in_res_s
 {
   /** Start Fast Polling */
@@ -526,7 +526,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_poll_control_check_in_res_s
 
 /******************************* Set Long Poll Interval ******************************/
 
-/*! @brief Structure representsation of Set Long Poll Interval command payload */
+/*! @brief Structure representation of Set Long Poll Interval command payload */
 typedef ZB_PACKED_PRE struct zb_zcl_poll_control_set_long_poll_interval_req_s
 {
   /** New Long Poll Interval */
@@ -583,7 +583,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_poll_control_set_long_poll_interval_req_s
 
 /******************************* Set Short Poll Interval ******************************/
 
-/*! @brief Structure representsation of Set Short Poll Interval command payload */
+/*! @brief Structure representation of Set Short Poll Interval command payload */
 typedef ZB_PACKED_PRE struct zb_zcl_poll_control_set_short_poll_interval_req_s
 {
   /** New Short Poll Interval */

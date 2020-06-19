@@ -55,7 +55,7 @@
 
 #define ZB_32BIT_WORD
 
-/* Really need xdata declaration here, not in osif: don't want to include osig.h here */
+/* Really need xdata declaration here, not in osif: don't want to include osif.h here */
 #ifdef ZB_IAR
 #define ZB_XDATA
 #define ZB_CODE
@@ -472,7 +472,7 @@ extern ZB_CODE ZB_CONST zb_64bit_addr_t g_unknown_ieee_addr;
  */
 typedef zb_64bit_addr_t zb_ieee_addr_t;
 /*
-  Long (64-bit) Extented Pan id
+  Long (64-bit) Extended Pan ID
  */
 typedef zb_64bit_addr_t zb_ext_pan_id_t;
 
@@ -659,11 +659,11 @@ void zb_htole32(zb_uint8_t ZB_XDATA *ptr, zb_uint8_t ZB_XDATA *val);
 }
 
 /**
-   Put next 2-bute value into buffer, move pointer
+   Put next 2-bite value into buffer, move pointer
 
    To be used for headers compose.
 
-   @param dst - (in/out) address os the buffer pointer
+   @param dst - (in/out) address of the buffer pointer
           As a side effect it will be incremented by 2.
    @param val - value
  */
@@ -846,7 +846,7 @@ void* zb_put_next_2_htole32(zb_uint8_t *dst, zb_uint32_t val1, zb_uint32_t val2)
  *    @brief Long (64-bit) device address.
  *
  *    @typedef zb_ext_pan_id_t
- *    @brief Long (64-bit) extended Pan Id.
+ *    @brief Long (64-bit) extended Pan ID.
  *
  *    @union zb_addr_u
  *    @brief Union to address either long or short address.

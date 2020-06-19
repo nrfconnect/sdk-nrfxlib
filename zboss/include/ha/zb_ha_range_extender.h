@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Range extender defice definition
+/* PURPOSE: Range extender device definition
 */
 
 #ifndef ZB_HA_RANGE_EXTENDER_H
@@ -53,7 +53,7 @@
  *  @ingroup ZB_HA_DEVICES
     @{
     @details
-    Range Entender device has 2 clusters (see spec 7.4.8): \n
+    Range Extender device has 2 clusters (see spec 7.4.8): \n
         - @ref ZB_ZCL_IDENTIFY \n
         - @ref ZB_ZCL_BASIC
 
@@ -148,7 +148,7 @@ zb_zcl_cluster_desc_t cluster_list_name[] =               \
     }                                                                                          \
   }
 
-/** @endcond internals_doc */
+/** @endcond */ /* internals_doc */
 
 /** @brief Declare endpoint for Range extender device
     @param ep_name - endpoint variable name

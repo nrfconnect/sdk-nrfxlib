@@ -156,15 +156,17 @@ extern zb_uint_t g_trace_inside_intr;
 #define TRACE_SUBSYSTEM_TRANSPORT TRACE_SUBSYSTEM_LWIP
 #define TRACE_SUBSYSTEM_UART TRACE_SUBSYSTEM_LWIP
 
-#define TRACE_SUBSYSTEM_SPECIAL1 TRACE_SUBSYSTEM_ALIEN
-#define TRACE_SUBSYSTEM_MACLL   TRACE_SUBSYSTEM_ALIEN
+#define TRACE_SUBSYSTEM_SPECIAL1 TRACE_SUBSYSTEM_SSL
+#define TRACE_SUBSYSTEM_MACLL   TRACE_SUBSYSTEM_SSL
 
 #define TRACE_SUBSYSTEM_BATTERY TRACE_SUBSYSTEM_SSL
 #define TRACE_SUBSYSTEM_MAC_API TRACE_SUBSYSTEM_SSL
 /** @endcond */ /* internals_doc */
 /* to be continued... */
 
+/** @cond DSR_TRACE */
 /** @} */ /* TRACE_SUBSYSTEMS */
+/** @endcond */ /* DSR_TRACE */
 /** @} */ /* ZB_TRACE */
 
 /** @cond DSR_TRACE */
@@ -202,7 +204,7 @@ zb_uint32_t zb_trace_get_counter(void);
 
 #ifdef DOXYGEN
 /**
-   Trace file id used by win_com_dump to identify source file.
+   Trace file ID used by win_com_dump to identify source file.
 
    Must be first define in the .c file, just before first include directive.
   @par Example
@@ -250,12 +252,14 @@ void zb_file_trace_commit(void);
  @param name - trace file name component
 */
 #define TRACE_INIT(name)   zb_trace_init_file(name)
+/** @endcond */
 
 /**
  Deinitialize trace subsystem
 */
 #define TRACE_DEINIT zb_trace_deinit_file
 
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define _T0(...) __VA_ARGS__
 
 #if defined ZB_BINARY_TRACE && !defined ZB_TRACE_TO_SYSLOG
@@ -284,8 +288,7 @@ void zb_trace_msg_file(
 
 #define _T1(s, l, fmts, args) if ((zb_int_t)ZB_TRACE_LEVEL>=(zb_int_t)l && ((s) & ZB_TRACE_MASK)) zb_trace_msg_file(s, l, fmts, _T0 args)
 #endif
-
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /**
  *  @brief Put trace output.
@@ -302,8 +305,8 @@ void zb_trace_msg_file(
     _T1(lm, fmts, args); \
   } while (0)
 
+/** @cond DOXYGEN_INTERNAL_DOC */
 #elif (defined ZB_TRACE_TO_PORT || defined ZB_TRACE_OVER_SIF)
-
 /*
   8051 trace does not use format string in the code to save code space.
 
@@ -396,8 +399,9 @@ void zb_trace_msg_port(
 #define TRACE_ENABLED(m) 0
 
 #endif  /* trace on/off */
+/** @endcond */
 
-
+/** @cond DSR_TRACE */
 /**
  *  @addtogroup TRACE_DATA_FORMAT_ADDITIONAL Trace data format for keys
  *  @{
@@ -440,6 +444,7 @@ void zb_trace_msg_port(
 #define TRACE_FORMAT_64 "%A"
 #define TRACE_FORMAT_128 "%A:%A"
 
+/** @endcond */ /* DSR_TRACE */
 /** @cond internals_doc */
 typedef struct zb_addr64_struct_s
 {
@@ -456,10 +461,11 @@ typedef struct zb_byte128_struct_s
 /* Pass 16-bytes key as structure by value */
 #define TRACE_ARG_128(a) *((zb_byte128_struct_t *)a)
 /** @endcond */ /* internals_doc */
+/** @cond DSR_TRACE */
 
 #endif  /* ti file / !to file */
 /** @} */ /* TRACE_DATA_FORMAT_ADDITIONAL */
-
+/** @endcond */ /* DSR_TRACE */
 
 
 /** @cond DSR_TRACE */

@@ -204,7 +204,7 @@
 
 /** @brief Declare Mains Power Outlet device context.
     @param device_ctx - device context variable name.
-    @param ep_name - andloint variable name.
+    @param ep_name - endpoint variable name.
   */
 #define ZB_HA_DECLARE_MAINS_POWER_OUTLET_CTX(device_ctx, ep_name)                                            \
   ZBOSS_DECLARE_DEVICE_CTX_1_EP(device_ctx, ep_name)

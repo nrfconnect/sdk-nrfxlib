@@ -203,7 +203,7 @@
         ZB_HA_IAS_ANCILLARY_CONTROL_EQUIPMENT_REPORT_ATTR_COUNT, reporting_info## device_ctx_name, 0, NULL)
 
 /**
-   @brief Declare application's device context for Ansillary Control Equipment
+   @brief Declare application's device context for Ancillary Control Equipment
    @param device_ctx - device context variable
    @param ep_name - endpoint variable name
 */

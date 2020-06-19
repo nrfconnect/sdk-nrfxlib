@@ -111,7 +111,7 @@ typedef struct zb_zcl_cvc_variables_s
 {
 /** @brief Input variables */
   zb_zcl_cvc_input_variables_t input_var;
-/** @brief Time to next sheduled operation (delta time) */
+/** @brief Time to next scheduled operation (delta time) */
   zb_uint16_t delta_time;
 /** @brief Delta value for one step */
   zb_int16_t delta_value16;
@@ -123,7 +123,7 @@ typedef struct zb_zcl_cvc_variables_s
   zb_uint16_t extra_inc_time_step;
 /** @brief End time of transition */
   zb_time_t end_time;
-/** @brief Availible time error */
+/** @brief Available time error */
   zb_uint16_t time_err;
 } zb_zcl_cvc_variables_t;
 
