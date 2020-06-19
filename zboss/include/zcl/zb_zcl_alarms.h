@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Alarms cluster defintions
+/* PURPOSE: Alarms cluster definitions
 */
 
 #if ! defined ZB_ZCL_ALARMS_H
@@ -86,7 +86,7 @@ enum zb_zcl_alarms_cmd_e
   ZB_ZCL_CMD_ALARMS_RESET_ALARM_LOG_ID     = 0x03  /**< "Reset alarm log" command. */
 };
 
-/*! @brief Structured representsation of Reset alarm command payload */
+/*! @brief Structured representation of Reset alarm command payload */
 typedef ZB_PACKED_PRE struct zb_zcl_alarms_reset_alarm_req_s
 {
   /** Alarm Code field */
@@ -125,7 +125,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_alarms_reset_alarm_req_s
 }
 
 /** @brief Parses Reset alarm command and fills in data request
-    structure. If request contains invlid data, status will set to ZB_FALSE.
+    structure. If request contains invalid data, status will set to ZB_FALSE.
     @param data_buf - pointer to zb_buf_t buffer containing command request data
     @param reset_alarm_req - variable to save command request
     @param status - variable to put parse status to (see @ref zb_zcl_parse_status_t).
@@ -237,7 +237,7 @@ enum zb_zcl_alarms_cmd_resp_e
 /*! @}
  *  @endcond */ /* internals_doc */
 
-/*! @brief Structured representsation of Alarm command payload */
+/*! @brief Structured representation of Alarm command payload */
 typedef zb_zcl_alarms_reset_alarm_req_t zb_zcl_alarms_alarm_res_t;
 
 typedef ZB_PACKED_PRE struct zb_zcl_alarm_get_alarm_hdr_res_s
@@ -310,7 +310,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_alarm_get_alarm_res_s
 
 
 /** @brief Parses Get alarm response command and returns response data
-    structure or status = ZB_FALSE if request contains invlid data.
+    structure or status = ZB_FALSE if request contains invalid data.
     @param data_buf - pointer to zb_buf_t buffer containing command response data
     @param get_alarm_res - command response record
     @param status - variable to put parse status to (see @ref zb_zcl_parse_status_t)

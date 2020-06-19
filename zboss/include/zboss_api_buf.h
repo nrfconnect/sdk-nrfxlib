@@ -71,7 +71,7 @@ typedef ZB_PACKED_PRE struct zb_buf_hdr_s
   zb_bitfield_t encrypt_type:3; /*!< payload must be encrypted before send, if
                                  * !0. \see zb_secur_buf_encr_type_e.
                                  */
-  zb_bitfield_t use_same_key:1;    /*!< if 1, use same nwk key# packet was
+  zb_bitfield_t use_same_key:1;    /*!< if 1, use same nwk key packet was
                                     * encrypted by */
   zb_bitfield_t zdo_cmd_no_resp:1; /*!< if 1, this is ZDO command with no
                                     * response - call callback at confirm  */
@@ -240,7 +240,7 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
    @param max_size required maximum buffer payload size (in bytes). It can be bigger or smaller than
    the default buffer size. Depending on the specific value, the buffer pool may decide to use
    a fraction of buffer or long buffers. Special value 0 means "single default buffer".
-   @return buffer id or ZB_BUF_INVALID if no buffers available
+   @return buffer ID or ZB_BUF_INVALID if no buffers available
  */
 #define zb_buf_get(is_in,max_size) zb_buf_get_func(TRACE_CALL (is_in), (max_size))
 
@@ -276,7 +276,9 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
  * @param callback - callback to call.
  * @return RET_OK or error code.
  */
+#ifndef zb_buf_get_out_delayed
 #define zb_buf_get_out_delayed(callback) zb_buf_get_out_delayed_func(TRACE_CALL (callback))
+#endif /* zb_buf_get_out_delayed */
 
 /**
  * @brief Allocate IN buffer, call a callback when the buffer is available.
@@ -288,7 +290,9 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
  * @param callback - callback to call.
  * @return RET_OK or error code.
  */
+#ifndef zb_buf_get_in_delayed
 #define zb_buf_get_in_delayed(callback) zb_buf_get_in_delayed_func(TRACE_CALL (callback))
+#endif /* zb_buf_get_in_delayed */
 
 /**
  * @brief Allocate OUT buffer, call a callback when the buffer is available.
@@ -303,7 +307,9 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
    a fraction of buffer or long buffers. Special value 0 means "single default buffer".
  * @return RET_OK or error code.
  */
+#ifndef zb_buf_get_out_delayed_ext
 #define zb_buf_get_out_delayed_ext(callback,arg,max_size) zb_buf_get_out_delayed_ext_func(TRACE_CALL (callback),(arg),(max_size))
+#endif /* zb_buf_get_out_delayed_ext */
 
 /**
  * @brief Allocate IN buffer, call a callback when the buffer is available.
@@ -318,11 +324,12 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
  * a fraction of buffer or long buffers. Special value 0 means "single default buffer".
  * @return RET_OK or error code.
  */
+#ifndef zb_buf_get_in_delayed_ext
 #define zb_buf_get_in_delayed_ext(callback,arg,max_size) zb_buf_get_in_delayed_ext_func(TRACE_CALL (callback),(arg),(max_size))
-
+#endif /* zb_buf_get_in_delayed_ext */
 
 /**
- * @brief Free packet buffer and put it into freelist.
+ * @brief Free packet buffer and put it into free list.
  *
  * Can be called from the main loop.
  *
@@ -362,7 +369,7 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
 
 
 /**
-  Return buffer id
+  Return buffer ID
 
   @param ptr - pointer to the first byte of the buffer memory
 
@@ -561,7 +568,7 @@ zb_uint_t zb_buf_flags_get_func(TRACE_PROTO zb_bufid_t buf);
 
 
 /**
-   Clear buffer's flags related ro encryption
+   Clear buffer's flags related to encryption
 
    That function calls zb_buf_flags_clr(buf, ZB_BUF_SECUR_ALL_ENCR)
    @param buf - buffer ID

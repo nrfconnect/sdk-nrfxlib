@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Groups cluster defintions
+/* PURPOSE: Groups cluster definitions
 */
 
 #ifndef ZB_ZCL_GROUPS_H
@@ -193,7 +193,7 @@ zb_zcl_groups_add_group_req_t;
 /** @endcond */ /* internals_doc */
 
 /** @brief Parses Add group command and fills in data request
-    structure. If request contains invlid data, ZB_ZCL_NULL_ID is stored as group_id.
+    structure. If request contains invalid data, ZB_ZCL_NULL_ID is stored as group_id.
     @param data_buf - pointer to zb_buf_t buffer containing command request data
     @param add_group_req - variable to save command request
     @note data_buf buffer should contain command request payload without ZCL header.
@@ -232,7 +232,7 @@ zb_zcl_groups_add_group_res_t;
 /** @endcond */ /* internals_doc */
 
 /** @brief Parses Add group response command and returns response data
-    structure or NULL if request contains invlid data.
+    structure or NULL if request contains invalid data.
     @param data_buf - pointer to zb_buf_t buffer containing command response data
     @param add_group_res - out pointer to zb_zcl_groups_add_group_res_t, containing command
     response record
@@ -283,8 +283,8 @@ zb_zcl_groups_add_group_res_t;
 /** @defgroup ZB_ZCL_GROUPS_VIEW_GROUP View group command definitions
  *  @{
  *    @details
- *    View Group command and response have simpe payload. View group command is being processed,
- *    and View Group responce command originates from ZCL internals.
+ *    View Group command and response have simple payload. View group command is being processed,
+ *    and View Group response command originates from ZCL internals.
  *
  *    @par Examples
  *    View Group request command can be formed as:
@@ -312,7 +312,7 @@ zb_zcl_groups_view_group_req_t;
 /** @endcond */ /* internals_doc */
 
 /** @brief Parses View group command and fills in data request
-    structure. If request contains invlid data, ZB_ZCL_NULL_ID is stored as group_id.
+    structure. If request contains invalid data, ZB_ZCL_NULL_ID is stored as group_id.
     @param data_buf - pointer to zb_buf_t buffer containing command request data
     @param view_group_req - variable to save command request
     @note data_buf buffer should contain command request payload without ZCL header.
@@ -351,7 +351,7 @@ zb_zcl_groups_view_group_res_t;
 /** @endcond */ /* internals_doc */
 
 /** @brief Parses View group response command and returns response data
-    structure or NULL if request contains invlid data.
+    structure or NULL if request contains invalid data.
     @param data_buf - pointer to zb_buf_t buffer containing command response data
     @param view_group_res - out pointer to zb_zcl_groups_add_group_res_t, containing command
     response record
@@ -429,7 +429,7 @@ zb_zcl_groups_get_group_membership_req_t;
 /** @endcond */ /* internals_doc */
 
 /** @brief Parses Get Group Membership command and returns pointer to data request
-    structure. If request contains invlid data, NULL is returned
+    structure. If request contains invalid data, NULL is returned
     @param data_buf - pointer to zb_buf_t buffer containing command request data
     @param group_member_req - pointer to command request
     @note data_buf buffer should contain command request payload without ZCL header.
@@ -477,7 +477,7 @@ zb_zcl_groups_get_group_membership_res_t;
 /** @endcond */ /* internals_doc */
 
 /** @brief Parses Get Group Membership command response and returns pointer to data response
-    structure. If response contains invlid data, NULL is returned.
+    structure. If response contains invalid data, NULL is returned.
     @param data_buf - pointer to zb_buf_t buffer containing command response data
     @param group_member_res - pointer to command response
     @note data_buf buffer should contain command response payload without ZCL header.
@@ -586,7 +586,7 @@ zb_zcl_groups_remove_group_req_t;
 /** @endcond */ /* internals_doc */
 
 /** @brief Parses Remove group command and fills in data request
-    structure. If request contains invlid data, ZB_ZCL_NULL_ID is stored as group_id.
+    structure. If request contains invalid data, ZB_ZCL_NULL_ID is stored as group_id.
     @param data_buf - pointer to zb_buf_t buffer containing command request data
     @param rem_group_req - variable to save command request
     @note data_buf buffer should contain command request payload without ZCL header.
@@ -624,7 +624,7 @@ zb_zcl_groups_remove_group_res_t;
 /** @endcond */ /* internals_doc */
 
 /** @brief Parses Remove group response command and returns response data
-    structure or NULL if request contains invlid data.
+    structure or NULL if request contains invalid data.
     @param data_buf - pointer to zb_buf_t buffer containing command response data
     @param rem_group_res - out pointer to zb_zcl_groups_remove_group_res_t, containing command
     response record

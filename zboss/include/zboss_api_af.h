@@ -145,7 +145,7 @@ zb_current_power_mode_t;
  */
 typedef enum zb_power_src_e
 {
-  ZB_POWER_SRC_CONSTATNT = 1,                 /*!< Constant (mains) power */
+  ZB_POWER_SRC_CONSTANT = 1,                 /*!< Constant (mains) power */
   ZB_POWER_SRC_RECHARGEABLE_BATTERY = 1 << 1, /*!< Rechargeable battery */
   ZB_POWER_SRC_DISPOSABLE_BATTERY = 1 << 2    /*!< Disposable battery */
 }
@@ -254,7 +254,7 @@ void zb_set_simple_descriptor(zb_af_simple_desc_1_1_t *simple_desc,
   Set input cluster item
   @param simple_desc - pointer to simple descriptor
   @param cluster_number - cluster item number
-  @param cluster_id - cluster id
+  @param cluster_id - cluster ID
 
   @par Example
   @snippet doxygen_snippets.dox zb_set_simple_descriptor_certification_TP_ZDO_BV-09_tp_zdo_bv_09_zc_c
@@ -267,7 +267,7 @@ void zb_set_input_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t cl
 /*! @brief Set output cluster item
     @param simple_desc - pointer to simple descriptor
     @param cluster_number - cluster item number
-    @param cluster_id - cluster id
+    @param cluster_id - cluster ID
 
   @par Example
   @snippet doxygen_snippets.dox zb_set_simple_descriptor_certification_TP_ZDO_BV-09_tp_zdo_bv_09_zc_c
@@ -302,7 +302,7 @@ void zb_set_default_ed_descriptor_values(void);
 /*! Profile identifiers */
 enum zb_af_profile_id_e
 {
-  /** ZDO profile id */
+  /** ZDO profile ID */
   ZB_AF_ZDO_PROFILE_ID  = 0x0000,
   /** Legacy profile */
   ZB_AF_LEGACY_PROFILE1_ID  = 0x0101,
@@ -310,7 +310,7 @@ enum zb_af_profile_id_e
   ZB_AF_LEGACY_PROFILE2_ID  = 0x0102,
   /** Legacy profile */
   ZB_AF_LEGACY_PROFILE3_ID  = 0x0103,
-  /** HA profile id */
+  /** HA profile ID*/
   ZB_AF_HA_PROFILE_ID  = 0x0104,
   /** Legacy profile */
   ZB_AF_LEGACY_PROFILE4_ID  = 0x0105,
@@ -320,13 +320,13 @@ enum zb_af_profile_id_e
   ZB_AF_LEGACY_PROFILE6_ID  = 0x0107,
   /** Legacy profile */
   ZB_AF_LEGACY_PROFILE7_ID  = 0x0108,
-  /** SE profile id */
+  /** SE profile ID */
   ZB_AF_SE_PROFILE_ID  = 0x0109,
   /** ZLL profile identifier. */
   ZB_AF_ZLL_PROFILE_ID      = 0xc05e,
   /** Wildcard profile identifier. */
   ZB_AF_WILDCARD_PROFILE_ID = 0xffff,
-/** GreenPower profile id */
+  /** GreenPower profile ID */
   ZB_AF_GP_PROFILE_ID = 0xA1E0,
 #ifdef ZB_CONTROL4_NETWORK_SUPPORT
   /** Control4 profile identifier. */
@@ -337,9 +337,9 @@ enum zb_af_profile_id_e
 
 /** @cond internals_doc */
 #if !(defined ZB_ZCL_DISABLE_REPORTING) || defined(DOXYGEN)
-struct zb_zcl_reporting_info_s; /* Forward declration */
+struct zb_zcl_reporting_info_s; /* Forward declaration */
 #endif
-struct zb_zcl_cluster_desc_s;   /* Forward declration */
+struct zb_zcl_cluster_desc_s;   /* Forward declaration */
 /** @endcond */ /* internals_doc */
 
 /**
@@ -373,7 +373,7 @@ typedef ZB_PACKED_PRE struct zb_af_endpoint_desc_s
       event with a non-zero argument
   */
   zb_callback_t identify_handler;
-  zb_uint8_t reseved_size; /*!< Unused parameter (reserved for future use) */
+  zb_uint8_t reserved_size; /*!< Unused parameter (reserved for future use) */
   zb_voidp_t reserved_ptr; /*!< Unused parameter (reserved for future use) */
   zb_uint8_t cluster_count;       /*!< Number of supported clusters */
   struct zb_zcl_cluster_desc_s *cluster_desc_list;  /*!< Supported clusters list */
@@ -443,8 +443,8 @@ zb_af_device_ctx_t;
   @brief Initialize endpoint descriptor
 
    @param ep_name - endpoint name
-  @param ep_id - endpoint id
-  @param profile_id - id of profile deployed on this endpoint
+  @param ep_id - endpoint ID
+  @param profile_id - ID of profile deployed on this endpoint
    @param reserved_length - unused parameter
    @param reserved_ptr - unused parameter
   @param cluster_number - number of clusters deployed on endpoint

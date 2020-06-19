@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Window Covering cluster defintions
+/* PURPOSE: Window Covering cluster definitions
 */
 
 #ifndef ZB_ZCL_WINDOW_COVERING_H
@@ -496,14 +496,14 @@ enum zb_zcl_window_covering_cmd_e
 
 /** Mandatory commands defines */
 
-/** @brief Structured representsation of GO_TO_LIFT_VALUE command payload */
+/** @brief Structured representation of GO_TO_LIFT_VALUE command payload */
 typedef ZB_PACKED_PRE struct zb_zcl_go_to_lift_value_req_s
 {
   /** Lift Value */
   zb_uint16_t      lift_value;
 } ZB_PACKED_STRUCT zb_zcl_go_to_lift_value_req_t;
 
-/** @brief Structured representsation of GO_TO_LIFT_PERCENTAGE command payload
+/** @brief Structured representation of GO_TO_LIFT_PERCENTAGE command payload
     @see ZCL spec, subclause 9.4.2.2.5.2.1*/
 typedef ZB_PACKED_PRE struct zb_zcl_go_to_lift_percentage_req_s
 {
@@ -511,14 +511,14 @@ typedef ZB_PACKED_PRE struct zb_zcl_go_to_lift_percentage_req_s
   zb_uint8_t       percentage_lift_value;
 } ZB_PACKED_STRUCT zb_zcl_go_to_lift_percentage_req_t;
 
-/** @brief Structured representsation of GO_TO_TILT_VALUE command payload */
+/** @brief Structured representation of GO_TO_TILT_VALUE command payload */
 typedef ZB_PACKED_PRE struct zb_zcl_go_to_tilt_value_req_s
 {
   /** Tilt Value */
   zb_uint16_t      tilt_value;
 } ZB_PACKED_STRUCT zb_zcl_go_to_tilt_value_req_t;
 
-/** @brief Structured representsation of GO_TO_TILT_PERCENTAGE command payload
+/** @brief Structured representation of GO_TO_TILT_PERCENTAGE command payload
     @see ZCL spec, subclause 9.4.2.2.5.5.1*/
 typedef ZB_PACKED_PRE struct zb_zcl_go_to_tilt_percentage_req_s
 {

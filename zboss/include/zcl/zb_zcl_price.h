@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Price cluster defintions
+/* PURPOSE: Price cluster definitions
 */
 
 #ifndef ZB_ZCL_PRICE_H
@@ -90,7 +90,7 @@ enum zb_zcl_price_srv_attr_set_e
 
   /* reserved 0x09 - 0x7F */
 
-  ZB_ZCL_PRICE_SET_RECEIVED_TIER_LABEL                 = 0x80,   /**< Provides a method for utilities to assing a label to Received Price Tiers. */
+  ZB_ZCL_PRICE_SET_RECEIVED_TIER_LABEL                 = 0x80,   /**< Provides a method for utilities to assign a label to Received Price Tiers. */
   ZB_ZCL_PRICE_SET_RECEIVED_BLOCK_THRESHOLD            = 0x81,   /**< Provides remote access to the Price server ReceivedBlockThresholds. */
   ZB_ZCL_PRICE_SET_RECEIVED_BLOCK_PERIOD               = 0x82,   /**< Provides remote access to the Price server Received Block Threshold period. */
 
@@ -3054,7 +3054,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_price_publish_price_payload_s
   - (ZB_ZCL_STRING_CONST_SIZE((pl)->rate_label) - ZB_ZCL_GET_STRING_LENGTH((pl)->rate_label)))
 
 /** @def ZB_ZCL_PRICE_DEFAULT_PRICE_CONTROL_VALUE
- *  @brief Controls PriceAck policy for outcoming PublishPrice packets.
+ *  @brief Controls PriceAck policy for outgoing PublishPrice packets.
  *  SE devices can enable this field (refer @ref zb_zcl_price_publish_price_payload_t::price_control)
  *  if they want to receive @ref ZB_ZCL_PRICE_CLI_CMD_PRICE_ACK "PriceAcknowledgement" command as
  *  response to @ref ZB_ZCL_PRICE_SRV_CMD_PUBLISH_PRICE "PublishPrice" command, but this behavior

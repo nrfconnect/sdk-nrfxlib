@@ -64,7 +64,7 @@
  *     and rejoins. Only a device factory reset can reset this cluster and put it back to default
  *     settings.
  *
- *     For more information see Zigbee WWAH Cluster definiton (dnocument number in Zigbee Alliance
+ *     For more information see Zigbee WWAH Cluster definition (document number in Zigbee Alliance
  *     17-01067-022).
  *
  */
@@ -1983,7 +1983,7 @@ enum zb_zcl_wwah_enrollment_mode_e
     buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_WWAH, cb);    \
 }
 
-/*! @brief Send Enable TC Security On Ntwk Key Rotation command
+/*! @brief Send Enable TC Security On NWK Key Rotation command
     @param buffer - to put packet to
     @param addr - address to send packet to
     @param dst_addr_mode - addressing mode
@@ -2345,7 +2345,7 @@ enum zb_zcl_wwah_enrollment_mode_e
     @param ep - sending endpoint
     @param prfl_id - profile identifier
     @param cb - callback for getting command send status
-    @param node_power_desc - Node Power Decriptor value */
+    @param node_power_desc - Node Power Descriptor value */
 #define ZB_ZCL_WWAH_SEND_POWER_DESCRIPTOR_CHANGE(                                     \
   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, cb, node_power_desc)              \
 {                                                                                     \
@@ -2595,10 +2595,10 @@ typedef ZB_PACKED_PRE struct zb_zcl_wwah_context_s
 
 #define ZB_ZCL_WWAH_REJOIN_SLEEPY_ED_TIMEOUT (ZB_TIME_ONE_SECOND * 60 * 15)
 #define ZB_ZCL_WWAH_REJOIN_NON_SLEEPY_ED_ROUTER_TIMEOUT (ZB_TIME_ONE_SECOND * 60 * 60 * 24)
-/* For dubug purpose: #define ZB_ZCL_WWAH_REJOIN_NON_SLEEPY_ED_ROUTER_TIMEOUT (ZB_TIME_ONE_SECOND * 60)*/
+/* For debug purpose: #define ZB_ZCL_WWAH_REJOIN_NON_SLEEPY_ED_ROUTER_TIMEOUT (ZB_TIME_ONE_SECOND * 60)*/
 
 #define ZB_ZCL_WWAH_BAD_PARENT_RECOVERY_TIMEOUT (ZB_TIME_ONE_SECOND * 60 * 60 * 24)
-/* For dubug purpose: #define ZB_ZCL_WWAH_BAD_PARENT_RECOVERY_TIMEOUT (ZB_TIME_ONE_SECOND * 30)*/
+/* For debug purpose: #define ZB_ZCL_WWAH_BAD_PARENT_RECOVERY_TIMEOUT (ZB_TIME_ONE_SECOND * 30)*/
 #define ZB_ZCL_WWAH_BAD_PARENT_RECOVERY_POLL_CONTROL_CHECK_IN_FAILED_CNT 3
 /* FIXME: Is it defined somewhere in WWAH spec? */
 #define ZB_ZCL_WWAH_BAD_PARENT_RECOVERY_RSSI_IS_GOOD(rssi) (rssi >= -100)

@@ -83,7 +83,7 @@
 
 */
 
-#define ZB_HA_DEVICE_VER_SHADE_CONTROLLER 0  /*!< Shade controller device version */
+#define ZB_HA_DEVICE_VER_SHADE 0  /*!< Shade controller device version */
 
 /*! @cond internals_doc */
 #define ZB_HA_SHADE_CONTROLLER_IN_CLUSTER_NUM 2 /*!< Shade controller IN (server) clusters number */

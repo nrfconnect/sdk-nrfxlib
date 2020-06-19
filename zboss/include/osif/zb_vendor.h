@@ -20,6 +20,22 @@
 
 #include "zb_config_platform.h"
 
+#ifdef CONFIG_ZB_NCP_DEBUG
+#define ZBNCP_DEBUG
+#define ZBNCP_USE_ZBOSS_TRACE
+#endif
+
+#ifdef CONFIG_ZB_NCP_TRANSPORT_TYPE_SERIAL
+#define ZB_NCP_TRANSPORT_TYPE_SERIAL
+#endif
+
+#ifdef CONFIG_ZB_NCP_TRANSPORT_TYPE_SPI
+#define ZB_NCP_TRANSPORT_TYPE_SPI
+#endif
+
+#ifdef CONFIG_ZB_NCP_TRANSPORT_TYPE_NSNG
+#define ZB_NCP_TRANSPORT_TYPE_NSNG
+#endif
 
 #ifdef CONFIG_ZB_TRACE_LOG_LEVEL
 #define ZB_TRACE_LEVEL CONFIG_ZB_TRACE_LOG_LEVEL
@@ -247,5 +263,11 @@
 #ifndef ZB_USE_SLEEP
 #define ZB_USE_SLEEP
 #endif
+
+/* Enter TX mode directly from radio sleep sate. */
+#define ZB_TRANSCEIVER_ON_BEFORE_TX  0
+
+/* Start Energy Detection from radio sleep state. */
+#define ZB_TRANSCEIVER_ON_BEFORE_ED  0
 
 #endif /* ZB_VENDOR_H__ */

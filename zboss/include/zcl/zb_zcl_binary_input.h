@@ -124,7 +124,7 @@ enum zb_zcl_binary_input_status_flag_value_e
   ZB_ZCL_BINARY_INPUT_STATUS_FLAG_NORMAL    = 0x00,       /**< Normal (default) state. */
   ZB_ZCL_BINARY_INPUT_STATUS_FLAG_IN_ALARM  = 0x01,       /**< In alarm bit. */
   ZB_ZCL_BINARY_INPUT_STATUS_FLAG_FAULT     = 0x02,       /**< Fault bit. */
-  ZB_ZCL_BINARY_INPUT_STATUS_FLAG_OVERRIDEN = 0x04,       /**< Overriden bit. */
+  ZB_ZCL_BINARY_INPUT_STATUS_FLAG_OVERRIDEN = 0x04,       /**< Overridden bit. */
   ZB_ZCL_BINARY_INPUT_STATUS_FLAG_OUT_OF_SERVICE = 0x08,  /**< Out of service bit. */
 };
 
@@ -222,7 +222,7 @@ enum zb_zcl_binary_input_status_flag_value_e
   }                                                                                         \
 }
 
-/** @brief Set overriden operating mode
+/** @brief Set overridden operating mode
    @param ep - endpoint number
 */
 #define ZB_ZCL_BINARY_INPUT_SET_OVERRIDEN_MODE(ep)                                     \

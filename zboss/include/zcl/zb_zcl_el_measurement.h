@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Electrical Measurement cluster defintions
+/* PURPOSE: Electrical Measurement cluster definitions
 */
 
 #if ! defined ZB_ZCL_ELECTRICAL_MEASUREMENT_H
@@ -764,7 +764,7 @@ enum zb_zcl_electrical_measurement_measurement_type_e
 /*! @brief Electrical Measurement cluster server command identifiers
     @see ZCL spec, subclause 4.9.2.3.1
 */
-enum zb_zcl_on_off_srv_cmd_e
+enum zb_zcl_electrical_measurement_srv_cmd_e
 {
   /** This command is generated when the Client command GetProfileInfo is received. */
   ZB_ZCL_CMD_ELECTRICAL_MEASUREMENT_GET_PROFILE_INFO_RESPONSE_COMMAND        = 0x00,
@@ -775,7 +775,7 @@ enum zb_zcl_on_off_srv_cmd_e
 /*! @brief Electrical Measurement cluster client command identifiers
     @see ZCL spec, subclause 4.9.2.4.1
 */
-enum zb_zcl_on_off_cli_cmd_e
+enum zb_zcl_electrical_measurement_cli_cmd_e
 {
   /** Get Profile Info Command */
   ZB_ZCL_CMD_ELECTRICAL_MEASUREMENT_GET_PROFILE_INFO_COMMAND                 = 0x00,
@@ -875,6 +875,51 @@ enum zb_zcl_on_off_cli_cmd_e
 */
 #define ZB_ZCL_ELECTRICAL_MEASUREMENT_REPORT_ATTR_COUNT 2
 
+#define ZB_ZCL_ELECTRICAL_MEASUREMENT_SEND_GET_PROFILE_INFO_RESP(                                 \
+  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb,                                 \
+  profile_count, profile_interval_period, max_number_of_intervals,                                \
+  list_of_attributes, list_of_attributes_size)                                                    \
+{                                                                                                 \
+  zb_uint8_t ind;                                                                                 \
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET(buffer);                                                  \
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RES_FRAME_CONTROL(ptr);                                       \
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER(ptr, ZB_ZCL_GET_SEQ_NUM(),                                      \
+    ZB_ZCL_CMD_ELECTRICAL_MEASUREMENT_GET_PROFILE_INFO_RESPONSE_COMMAND);                         \
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (profile_count));                                                  \
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (profile_interval_period));                                        \
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (max_number_of_intervals));                                        \
+  for (ind=0; ind < list_of_attributes_size; ind++)                                               \
+  {                                                                                               \
+    ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (list_of_attributes[ind]));                                 \
+  }                                                                                               \
+  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                             \
+  ZB_ZCL_SEND_COMMAND_SHORT(buffer, addr, dst_addr_mode, dst_ep, ep,                              \
+    prfl_id, ZB_ZCL_CLUSTER_ID_ELECTRICAL_MEASUREMENT, cb);                                       \
+}
+
+#define ZB_ZCL_ELECTRICAL_MEASUREMENT_SEND_GET_MEASUREMENT_PROFILE_INFO_RESP(                     \
+  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb,                                 \
+  start_time, status, profile_interval_period, number_of_intervals_delivered, attr_id,            \
+  list_of_intervals)                                                                              \
+{                                                                                                 \
+  zb_uint8_t ind;                                                                                 \
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET(buffer)                                                   \
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RES_FRAME_CONTROL(ptr, def_resp)                              \
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER(ptr, ZB_ZCL_GET_SEQ_NUM(),                                      \
+    ZB_ZCL_CMD_ELECTRICAL_MEASUREMENT_GET_MEASUREMENT_PROFILE_RESPONSE_COMMAND);                  \
+  ZB_ZCL_PACKET_PUT_DATA32_VAL(ptr, (start_time));                                                \
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (status));                                                         \
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (profile_interval_period));                                        \
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (number_of_intervals_delivered));                                  \
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (attr_id));                                                   \
+  for (ind=0; ind < number_of_intervals_delivered; ind++)                                         \
+  {                                                                                               \
+                                                                                                  \
+  }                                                                                               \
+  ZB_ZCL_FINISH_PACKET(buffer, ptr)                                                               \
+  ZB_ZCL_SEND_COMMAND_SHORT(buffer, addr, dst_addr_mode, dst_ep, ep,                              \
+    prfl_id, ZB_ZCL_CLUSTER_ID_ELECTRICAL_MEASUREMENT, cb);                                       \
+}
 /*! @}
     @endcond */ /* Electrical Measurement cluster internals */
 

@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Thermostat cluster defintions
+/* PURPOSE: Thermostat cluster definitions
 */
 
 #if ! defined ZB_ZCL_THERMOSTAT_H
@@ -59,7 +59,7 @@
 /* <31.07.13>  Tokarev CR function prototype moved from C file into header for public access */
 /**
  * Thermostat initialization function
- * initialize setpoint mode, shedule table
+ * initialize setpoint mode, schedule table
  */
 void zb_zcl_thermostat_init(void);
 /* <31.07.13>  Tokarev CR function prototype moved from C file into header for public access */
@@ -1212,7 +1212,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_thermostat_get_weekly_schedule_resp_s
 
 /** @brief Parses Get Weekly Schedule response header
 
-   If request contains invlid data, status is ZB_FALSE.
+   If request contains invalid data, status is ZB_FALSE.
    @param data_buf - pointer to zb_buf_t buffer containing write attribute request data
    @param resp - record of type @ref zb_zcl_thermostat_get_weekly_schedule_resp_t
    @param status - result of parsing

@@ -171,7 +171,7 @@ enum zb_ha_standard_devs_e
 
 #define ZB_HA_DEFINE_DEVICE_TEST_DEVICE
 
-/************** Custome Devices ******************/
+/************** Custom Devices ******************/
 /* Define device support for custom security sensor */
 #define ZB_HA_DEFINE_DEVICE_CUSTOM_SECURITY_SENSOR
 /* this device definition - for coordinator (CIE) role, need for test
@@ -470,7 +470,7 @@ enum zb_ha_standard_devs_e
 /* #define ZB_HA_SUPPORT_EZ_MODE                         1 */
 #endif /* ZB_HA_DEFINE_DEVICE_GATEWAY */
 
-/* Custome device should not be declared as a part of HA, keep it
+/* Custom device should not be declared as a part of HA, keep it
  * here foe simplicity */
 #ifdef ZB_PROFILE_DEFINE_DEVICE_CUSTOM_TUNNEL
 #define ZB_ZCL_SUPPORT_CLUSTER_BASIC                1

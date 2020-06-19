@@ -185,7 +185,7 @@
 
 /** @endcond */
 
-/** @brief Declare endpointy for Door Lock device
+/** @brief Declare endpoint for Door Lock device
     @param ep_name - endpoint variable name
     @param ep_id - endpoint ID
     @param cluster_list - endpoint cluster list

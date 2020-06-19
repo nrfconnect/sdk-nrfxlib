@@ -59,7 +59,7 @@
 /**
    Parameters for storing data in a pending queue
 
-   Moved there from MAC to be able to implement MAC indirect quete size configuration.
+   Moved there from MAC to be able to implement MAC indirect quote size configuration.
 */
 typedef struct zb_mac_pending_data_s
 {
@@ -103,7 +103,7 @@ typedef ZB_PACKED_PRE struct zb_delayed_buf_q_ent_s
   zb_callback_t func_ptr;        /*!< function to call  */
   zb_uint16_t   user_param;      /*!< user parameter */
   zb_bitfield_t buf_cnt:7;       /*!< number of buffers to allocate */
-  zb_bitfield_t is_2param:1;     /*!< whether this is a 2param calback */
+  zb_bitfield_t is_2param:1;     /*!< whether this is a 2param callback */
 }
 ZB_PACKED_STRUCT
 zb_delayed_buf_q_ent_t;
@@ -371,12 +371,11 @@ typedef ZB_PACKED_PRE struct zb_neighbor_tbl_ent_s /* not need to pack it at IAR
       /* 10 */
       zb_uint8_t                channel_page; /*!< The current channel page occupied by the network.  */
       /* 11 */
-      zb_bitfield_t             logical_channel:5; /*!< The current logical channel
+      zb_bitfield_t             logical_channel:6; /*!< The current logical channel
                                                      occupied by the network.  */
 
       zb_bitfield_t             stack_profile:2; /*!< A ZBOSS profile identifier.   */
 
-      zb_bitfield_t             reserved:1;
 #ifdef ZB_PARENT_CLASSIFICATION
       /* 12 */
       zb_uint8_t                classification_mask;

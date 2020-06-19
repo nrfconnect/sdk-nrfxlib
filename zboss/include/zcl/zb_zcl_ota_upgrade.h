@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: OTA Upgrade cluster defintions
+/* PURPOSE: OTA Upgrade cluster definitions
 */
 
 #if ! defined ZB_ZCL_OTA_UPGRADE_H
@@ -66,7 +66,7 @@
     @{
 */
 
-/*! @brief Structure representsation of OTA File Header,
+/*! @brief Structure representation of OTA File Header,
  * see OTA spec 6.3.2 */
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_file_header_s
 {
@@ -157,7 +157,7 @@ enum zb_zcl_ota_upgrade_file_header_image_type_e
 /** @brief OTA Upgrade File Version, Stack build, see spec 6.3.2.7 */
 #define ZB_ZCL_OTA_UPGRADE_FILE_GET_STACK_BUILD(ver)  ((ver) & 0xff)
 
-/** @brief OTA Upgrade File Version, make file verston, see spec 6.3.2.7 */
+/** @brief OTA Upgrade File Version, make file version, see spec 6.3.2.7 */
 #define ZB_ZCL_OTA_UPGRADE_FILE_MAKE_VERSION(app_rel, app_build, stack_rel, stack_build)  \
   ((app_rel) << 24 | (app_build) << 16 | (stack_rel) << 8 | (stack_build))
 
@@ -168,9 +168,9 @@ enum zb_zcl_ota_upgrade_file_header_image_type_e
    may upgrade/downgrade any f/w (except re-installation), so this comparing is simply:
      ver1 != ver2
    Only one possible limitation now is NVRAM, but if dataset ids are not overlapped, it is also ok.
-   Any additional comparsion logic may be implemented on the application level.
+   Any additional comparison logic may be implemented on the application level.
  */
-/** @brief Compare 2 OTA versions and deside if it is needed to do upgrade */
+/** @brief Compare 2 OTA versions and decide if it is needed to do upgrade */
 #define ZB_ZCL_OTA_UPGRADE_VERSION_CMP(ver1, ver2)  \
     ( (ver1) != (ver2) )
 
@@ -220,12 +220,12 @@ enum zb_zcl_ota_upgrade_file_header_security_version_e
 /*! @}
 */
 
-/*! @name OTA File Sub-elementformat
+/*! @name OTA File Sub-element format
     Structures for representation OTA File Sub-element
     @{
 */
 
-/*! @brief Structure representsation of OTA File Sub-element,
+/*! @brief Structure representation of OTA File Sub-element,
  * see OTA spec 6.3.3 */
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_sub_element_s
 {
@@ -253,7 +253,7 @@ enum zb_zcl_ota_upgrade_sub_element_tags_e
   ZB_ZCL_OTA_UPGRADE_FILE_TAG_MANUF_MAX       = 0xffff,
 };
 
-/*! @brief Structure representsation of OTA ECDSA Signature,
+/*! @brief Structure representation of OTA ECDSA Signature,
  * see OTA spec 6.3.5 */
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_ecdsa_s
 {
@@ -271,7 +271,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_ecdsa_s
 #define ZB_ZCL_OTA_UPGRADE_ECDSA_LENGTH   0x00000032
 
 
-/*! @brief Structure representsation of OTA ECDSA Signature,
+/*! @brief Structure representation of OTA ECDSA Signature,
  * see OTA spec 6.3.6 */
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_ecdsa_signing_s
 {
@@ -288,7 +288,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_ecdsa_signing_s
 #define ZB_ZCL_OTA_UPGRADE_ECDSA_SIGNING_LENGTH   0x00000030
 
 
-/*! @brief Structure representsation of OTA ECDSA Certificate,
+/*! @brief Structure representation of OTA ECDSA Certificate,
  * see OTA spec 6.3.7 */
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_ecdsa_certificate_s
 {
@@ -336,7 +336,7 @@ typedef zb_ret_t (*zb_zcl_ota_upgrade_next_data_ind_t)(zb_uint8_t index,
  * For client initiate search Upgrade server */
 zb_void_t zb_zcl_ota_upgrade_init_server(zb_uint8_t endpoint, zb_zcl_ota_upgrade_next_data_ind_t next_data_ind_cb);
 
-/*! @brief Structure representsation of Data for insert OTA file to upgrade mechanism */
+/*! @brief Structure representation of Data for insert OTA file to upgrade mechanism */
 typedef struct zb_zcl_ota_upgrade_server_insert_file_s
 {
   zb_uint8_t endpoint;    /**< Endpoint */
@@ -368,7 +368,7 @@ zb_ret_t zb_zcl_ota_upgrade_insert_file(zb_uint8_t param);
   (ret_code) = zb_zcl_ota_upgrade_insert_file(buf);                     \
 }
 
-/*! @brief Structure representsation of Data for insert OTA file to upgrade mechanism */
+/*! @brief Structure representation of Data for insert OTA file to upgrade mechanism */
 typedef struct zb_zcl_ota_upgrade_server_remove_file_s
 {
   zb_uint8_t endpoint;    /**< Endpoint */
@@ -393,7 +393,7 @@ zb_ret_t zb_zcl_ota_upgrade_remove_file(zb_uint8_t param);
   (ret_code) = zb_zcl_ota_upgrade_remove_file(buf);                 \
 }
 
-/*! @brief Structure representsation of OTA file on server side */
+/*! @brief Structure representation of OTA file on server side */
 typedef struct zb_zcl_ota_upgrade_data_s
 {
   zb_zcl_ota_upgrade_file_header_t *file_header;
@@ -401,7 +401,7 @@ typedef struct zb_zcl_ota_upgrade_data_s
 
 } zb_zcl_ota_upgrade_data_t;
 
-/*! @brief Structure representsation of server side variables */
+/*! @brief Structure representation of server side variables */
 typedef struct zb_zcl_ota_upgrade_server_variable_s
 {
   zb_uint8_t *query_jitter;      /**< QueryJitter */
@@ -500,7 +500,7 @@ zb_void_t zb_zcl_ota_upgrade_stop_client(void);
  */
 zb_void_t zb_zcl_ota_upgrade_resume_client(zb_uint8_t param, zb_uint8_t upgrade_status);
 
-/*! @brief Set Freqency request server about new upgrade file (minutes)
+/*! @brief Set Frequency request server about new upgrade file (minutes)
  * @param endpoint - endpoint of the OTA cluster
  * @param interval - new interval value (in minutes)
  */
@@ -510,11 +510,11 @@ zb_void_t zb_zcl_ota_upgrade_set_query_interval(zb_uint8_t endpoint, zb_uint16_t
  *
  * @param endpoint - endpoint
  *
- *@note After colling this command OTA file may be removed from memory
+ *@note After calling this command OTA file may be removed from memory
 */
 zb_void_t zb_zcl_ota_upgrade_file_upgraded(zb_uint8_t endpoint);
 
-/*! @brief Structure representsation of client side variables */
+/*! @brief Structure representation of client side variables */
 typedef struct zb_zcl_ota_upgrade_client_variable_s
 {
   // custom data
@@ -616,7 +616,7 @@ enum zb_zcl_ota_upgrade_image_status_e
   ZB_ZCL_OTA_UPGRADE_IMAGE_STATUS_WAIT_FOR_MORE     = 0x05,
 };
 
-/*! @brief Default Freqency request server about new upgrade file (minutes) */
+/*! @brief Default Frequency request server about new upgrade file (minutes) */
 #define ZB_ZCL_OTA_UPGRADE_QUERY_TIMER_COUNT_DEF          (24*60)
 
 /*! @brief Timer interval for Query timer  */
@@ -882,7 +882,7 @@ enum zb_zcl_ota_upgrade_resp_cmd_e
 
 /************************* Query Next Image Request **************************/
 
-/*! @brief Structure representsation of Query Next Image Request command payload
+/*! @brief Structure representation of Query Next Image Request command payload
   @see OTA spec, OTA Upgrade Cluster 6.10.4.1
 */typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_query_next_image_s
 {
@@ -981,7 +981,7 @@ enum zb_zcl_ota_upgrade_query_next_image_fc_e
 
 /************************* Image Block Request **************************/
 
-/*! @brief Structure representsation of Image Block Request command payload
+/*! @brief Structure representation of Image Block Request command payload
   @see OTA spec, OTA Upgrade Cluster 6.10.6.1
 */
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_image_block_s
@@ -1096,7 +1096,7 @@ enum zb_zcl_ota_upgrade_image_block_fc_e
 
 /************************* Image Page Request **************************/
 
-/*! @brief Structure representsation of Image Page Request command payload
+/*! @brief Structure representation of Image Page Request command payload
   @see OTA spec, OTA Upgrade Cluster 6.10.7.1
 */
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_image_page_s
@@ -1203,7 +1203,7 @@ enum zb_zcl_ota_upgrade_image_page_fc_e
 
 /************************* Upgrade End Request **************************/
 
-/*! @brief Structure representsation of Upgrade End Request command payload
+/*! @brief Structure representation of Upgrade End Request command payload
   @see OTA spec, OTA Upgrade Cluster 6.10.9.1
 */typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_upgrade_end_s
 {
@@ -1276,7 +1276,7 @@ enum zb_zcl_ota_upgrade_image_page_fc_e
 
 /************************* Query Specific File Request **************************/
 
-/*! @brief Structure representsation of Query Specific File Request command payload
+/*! @brief Structure representation of Query Specific File Request command payload
   @see OTA spec, OTA Upgrade Cluster 6.10.11.1
 */typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_query_specific_file_s
 {
@@ -1349,7 +1349,7 @@ enum zb_zcl_ota_upgrade_image_page_fc_e
 
 /******************************* Image Notify ******************************/
 
-/*! @brief Structure representsation of Image Notify response command payload
+/*! @brief Structure representation of Image Notify response command payload
     @see OTA spec, OTA Upgrade Cluster 6.10.3.1
 */
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_image_notify_s
@@ -1448,7 +1448,7 @@ enum zb_zcl_ota_upgrade_image_notify_payload_type_e
 
 /******************************* Query Next Image Response  ******************************/
 
-/*! @brief Structure representsation of Query Next Image Response command payload
+/*! @brief Structure representation of Query Next Image Response command payload
   @see OTA spec, OTA Upgrade Cluster 6.10.5.1
 */typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_query_next_image_res_s
 {
@@ -1529,7 +1529,7 @@ enum zb_zcl_ota_upgrade_image_notify_payload_type_e
 
 /******************************* Image Block Response ******************************/
 
-/*! @brief Structure representsation of Image Block Response command payload
+/*! @brief Structure representation of Image Block Response command payload
   @see OTA spec, OTA Upgrade Cluster 6.10.8.1
 */
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_image_block_res_s
@@ -1707,7 +1707,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_image_block_res_s
 
 /******************************* Upgrade End Response ******************************/
 
-/*! @brief Structure representsation of Upgrade End  Response command payload
+/*! @brief Structure representation of Upgrade End  Response command payload
   @see OTA spec, OTA Upgrade Cluster 6.10.10.1
 */
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_upgrade_end_res_s
@@ -1780,7 +1780,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_upgrade_end_res_s
 
 /******************************* Query Specific File Response ******************************/
 
-/*! @brief Structure representsation of Query Specific File  Response command payload
+/*! @brief Structure representation of Query Specific File  Response command payload
   @see OTA spec, OTA Upgrade Cluster 6.10.12.1
 */typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_query_specific_file_res_s
 {

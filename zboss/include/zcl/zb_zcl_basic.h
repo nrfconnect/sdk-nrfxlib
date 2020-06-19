@@ -165,7 +165,7 @@ enum zb_zcl_basic_alarm_mask_e
 */
 typedef struct zb_zcl_basic_disable_local_conf_s
 {
-  /*! Reset to factry defaults disabled */
+  /*! Reset to factory defaults disabled */
   zb_bitfield_t reset_disabled  : 1;
   /*! Device configuration enabled */
   zb_bitfield_t config_enabled  : 1;
@@ -340,7 +340,7 @@ typedef struct zb_zcl_basic_disable_local_conf_s
 }
 
 #if defined ZB_ZCL_SUPPORT_CLUSTER_SCENES
-/*! Scenes fieldset length for Basic cluster */
+/*! Scenes field set length for Basic cluster */
 #define ZB_ZCL_CLUSTER_ID_BASIC_SCENE_FIELD_SETS_LENGTH 0
 #endif /* defined ZB_ZCL_SUPPORT_CLUSTER_SCENES */
 

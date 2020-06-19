@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*  PURPOSE: The biggest pissible configuration: ZC, big net, high load, high complexity
+/*  PURPOSE: The biggest possible configuration: ZC, big net, high load, high complexity
 */
 #ifndef ZB_MEM_CONFIG_MAXIMUM_H
 #define ZB_MEM_CONFIG_MAXIMUM_H 1

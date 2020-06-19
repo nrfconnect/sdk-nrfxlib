@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Demand Response and Load Control cluster defintions
+/* PURPOSE: Demand Response and Load Control cluster definitions
 */
 
 #ifndef ZB_ZCL_DRLC_H_
@@ -68,7 +68,7 @@
 typedef enum zb_zcl_drlc_cli_attr_e
 {
   ZB_ZCL_ATTR_DRLC_UTILITY_ENROLLMENT_GROUP        = 0x0000,   /**< UtilityEnrollmentGroup attribute.
-                                                               * Provides for utilites to assing devices to groups.
+                                                               * Provides for utilities to assign devices to groups.
                                                                */
 
   ZB_ZCL_ATTR_DRLC_START_RANDOMIZATION_MINUTES     = 0x0001,   /**< StartRandomizationMinutes attribute.
@@ -89,7 +89,7 @@ typedef enum zb_zcl_drlc_cli_attr_e
 
 
 /** Criticality Level value applied by the device.
- * @see SE spe, Table D-3
+ * @see SE spec, Table D-3
  */
 typedef enum zb_zcl_drlc_criticality_levels_e
 {
