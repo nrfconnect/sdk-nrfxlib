@@ -9,7 +9,7 @@
 
 /**
  * @file
- * @defgroup nrf_errno_ble Integer values for errno
+ * @defgroup nrf_errno Integer values for errno
  * @ingroup ble_controller
  *
  * Used by system calls to indicates the latest error.
@@ -57,6 +57,6 @@ extern "C" {
 }
 #endif
 
-/** @} end of nrf_errno_ble */
+/** @} end of nrf_errno */
 
 #endif // NRF_ERRNO_H__
