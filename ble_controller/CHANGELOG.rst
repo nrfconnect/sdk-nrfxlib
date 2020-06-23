@@ -5,6 +5,22 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Master branch
+*************
+
+Added
+=====
+
+* Added support for setting the event length of a connection. See :cpp:func:`hci_vs_cmd_event_length_set()`.
+* Added Set Controller to Host Flow Control command.
+* Added Host Buffer Size command.
+* Added Host Number of Complete Packets command.
+
+Changes
+=======
+
+* When LLPM mode is enabled, the connection event length is now no longer implicitly set to 1 ms.
+
 nRF Connect SDK v1.3.0
 **********************
 
