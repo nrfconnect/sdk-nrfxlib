@@ -119,10 +119,10 @@ uint32_t ble_controller_rand_vector_get(uint8_t * p_dst, uint16_t length);
  * The BLE Controller will use NRF_RNG to obtain the numbers.
  * The function can be called from ISR context.
  *
- * @note  This function works like @ref ble_controller_rand_vector_get, except that
- *        instead of failing in the event of not enough numbers being available, it
- *        will block until it has filled the specified length with random number
- *        bytes. The time until completion will vary.
+ * @note This function works like @ref ble_controller_rand_vector_get(), except
+ *       that instead of failing in the event of not enough numbers being
+ *       available, it will block until it has filled the specified length with
+ *       random number bytes. The time until completion will vary.
  *
  * @param[out]  p_dst   Pointer to a buffer in RAM for storing the bytes.
  * @param[in]   length  Number of random bytes to retrieve.

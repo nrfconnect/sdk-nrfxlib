@@ -53,6 +53,8 @@ enum HCI_VS_OPCODE
     HCI_VS_OPCODE_CMD_CONN_EVENT_EXTEND = 0xfd03,
     /** @brief See @ref hci_vs_cmd_qos_conn_event_report_enable(). */
     HCI_VS_OPCODE_CMD_QOS_CONN_EVENT_REPORT_ENABLE = 0xfd04,
+    /** @brief See @ref hci_vs_cmd_event_length_set(). */
+    HCI_VS_OPCODE_CMD_EVENT_LENGTH_SET = 0xfd05,
 };
 
 /** @brief VS subevent Code values. */
@@ -259,6 +261,13 @@ typedef __PACKED_STRUCT
     uint8_t enable;
 } hci_vs_cmd_qos_conn_event_report_enable_t;
 
+/** @brief Set event length for connections command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Allocated event length in microseconds. */
+    uint32_t event_length_us;
+} hci_vs_cmd_event_length_set_t;
+
 /** @} end of HCI_COMMAND_PARAMETERS */
 
 /**
@@ -376,7 +385,7 @@ uint8_t hci_vs_cmd_zephyr_write_tx_power(const hci_vs_cmd_zephyr_write_tx_power_
  *
  * This command enables or disables Low Latency Packet Mode support.
  * When Low Latency Packet Mode is enabled, it is possible to switch to connection intervals in the
- * range 1-7 ms. Switch to short connection intervals by calling hci_vs_cmd_conn_update().
+ * range 1-7 ms. Switch to short connection intervals by calling @ref hci_vs_cmd_conn_update().
  *
  * After HCI Reset, this feature is disabled.
  *
@@ -407,7 +416,7 @@ uint8_t hci_vs_cmd_conn_update(const hci_vs_cmd_conn_update_t * p_params);
 /** @brief Enable or Disable Extended Connection Events.
  *
  * When Extended Connection Events are disabled, the maximum connection event length is set by @ref
- * ble_controller_cfg_event_length_t::event_length_us.
+ * hci_vs_cmd_event_length_set().
  * When Extended Connection Events are enabled, the controller will extend the connection event as
  * much as possible, if:
  * - Either of the peers has more data to send.
@@ -442,6 +451,27 @@ uint8_t hci_vs_cmd_conn_event_extend(const hci_vs_cmd_conn_event_extend_t * p_pa
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t hci_vs_cmd_qos_conn_event_report_enable(const hci_vs_cmd_qos_conn_event_report_enable_t * p_params);
+
+/** @brief Set event length for connections.
+ *
+ * That is, if this API must be called before starting a connectable advertiser or connecting to an
+ * advertiser.
+ * The event length will not be changed for existing connections.
+ *
+ * The BLE controller will ensure that the anchor points of master link connections are spaced
+ * event_length_us apart.
+ *
+ * The default event length is BLE_CONTROLLER_DEFAULT_EVENT_LENGTH_US.
+ *
+ * See also @ref hci_vs_cmd_conn_event_extend().
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t hci_vs_cmd_event_length_set(const hci_vs_cmd_event_length_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 

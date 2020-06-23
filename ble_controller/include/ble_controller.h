@@ -130,20 +130,22 @@ extern "C" {
 
 /** @} end of ble_controller_mem_defines */
 
-/** @brief    Function prototype for the fault handler.
+/** @brief Function prototype for the fault handler.
  *
- * @note      The BLE Controller will disable all interrupts prior to calling the fault handler.
- *            The BLE Controller will reset the chip if the application returns from this function.
+ * @note The BLE Controller will disable all interrupts prior to calling the
+ *       fault handler. The BLE Controller will reset the chip if the
+ *       application returns from this function.
  *
- * @param[in] file   The filename where the assertion occurred.
- * @param[in] line   The line number where the assertion occurred.
+ * @param[in] file  The filename where the assertion occurred.
+ * @param[in] line  The line number where the assertion occurred.
  */
 typedef void (*ble_controller_fault_handler_t)(const char * file, const uint32_t line);
 
 
 /** @brief Function prototype for the BLE Controller callback.
  *
- *  @sa @ref ble_controller_enable */
+ *  @sa @ref ble_controller_enable().
+ */
 typedef void (*ble_controller_callback_t)(void);
 
 
@@ -198,32 +200,36 @@ typedef union
 } ble_controller_cfg_t;
 
 
-/** @brief     Initialize the BLE Controller
+/** @brief Initialize the BLE Controller
  *
  * After this function is called, the application may use SoC APIs.
  *
- * @param[in]  fault_handler           The fault handler will be executed when there is an internal
- *                                     error in the BLE Controller.
+ * @param[in]  fault_handler  The fault handler will be executed when there is an
+ *                            internal error in the BLE Controller.
  *
- * @retval 0              Success
- * @retval -NRF_EINVAL    Invalid argument provided
- * @retval -NRF_EPERM     Unable to initialize because
- *                         - MPSL is not initialized
- *                         - MPSL needs to be configured with a LFCLK accuracy of 500 ppm or better.
+ * @retval 0            Success
+ * @retval -NRF_EINVAL  Invalid argument provided
+ * @retval -NRF_EPERM   Unable to initialize because
+ *                        - MPSL is not initialized
+ *                        - MPSL needs to be configured with a LFCLK accuracy
+ *                          of 500 ppm or better.
  */
 int32_t ble_controller_init(ble_controller_fault_handler_t fault_handler);
 
 
 /** @brief Change or add a BLE Controller configuration
  *
- * To change the default configuration, update @ref BLE_CONTROLLER_DEFAULT_RESOURCE_CFG_TAG.
- * To create or update a new configuration, provide another resource_cfg_tag.
+ * To change the default configuration, update @ref
+ * BLE_CONTROLLER_DEFAULT_RESOURCE_CFG_TAG. To create or update a new
+ * configuration, provide another resource_cfg_tag.
  *
- * @note The application can set config_type to @ref BLE_CONTROLLER_CFG_TYPE_NONE to obtain
- *       the required memory size for the current configuration in bytes.
+ * @note The application can set config_type to @ref
+ *       BLE_CONTROLLER_CFG_TYPE_NONE to obtain the required memory size for the
+ *       current configuration in bytes.
  *
- * @note Resource configuration can only be performed prior to calling @ref ble_controller_enable.
- *       However, the current configuration may be changed after enabling the BLE Controller.
+ * @note Resource configuration can only be performed prior to calling @ref
+ *       ble_controller_enable(). However, the current configuration may be
+ *       changed after enabling the BLE Controller.
  *
  * @param[in]  config_tag       Configuration tag.
  * @param[in]  config_type      Configuration type. @sa BLE_CONTROLLER_CFG_TYPE.
@@ -238,20 +244,20 @@ int32_t ble_controller_cfg_set(uint8_t config_tag,
                                ble_controller_cfg_t const * p_resource_cfg);
 
 
-/** @brief     Enable the BLE Controller
+/** @brief Enable the BLE Controller
  *
  * After this function is called, the application may utilize HCI APIs.
  *
- * @param[in]  callback       The callback will be executed when HCI data or and HCI event is available.
- *                            The callback will be executed in the same context as
- *                            mpsl_low_priority_process.
- *                            @sa hci_evt_get and @ref hci_data_get.
- * @param[in]  p_mem          Provide memory for the current resource configuration.
- *                            If custom resource configurations are used, use the value returned
- *                            from @ref ble_controller_cfg_set.
+ * @param[in] callback  The callback will be executed when HCI data or and HCI
+ *                      event is available. The callback will be executed in
+ *                      the same context as mpsl_low_priority_process.
+ *                      @sa @ref hci_evt_get() and @ref hci_data_get().
+ * @param[in]  p_mem    Provide memory for the current resource configuration. If
+ *                      custom resource configurations are used, use the value
+ *                      returned from @ref ble_controller_cfg_set().
  *
- * @retval 0              Success
- * @retval -NRF_EINVAL    Invalid argument provided
+ * @retval 0            Success
+ * @retval -NRF_EINVAL  Invalid argument provided
  */
 int32_t ble_controller_enable(ble_controller_callback_t callback,
                               uint8_t * p_mem);
@@ -259,8 +265,8 @@ int32_t ble_controller_enable(ble_controller_callback_t callback,
 
 /** @brief Disable the BLE Controller
  *
- * This call is synchronous. After the BLE Controller is disabled, BLE functionality is no
- * longer available.
+ * This call is synchronous. After the BLE Controller is disabled, BLE
+ * functionality is no longer available.
  *
  * @retval 0 Success
  */
@@ -274,30 +280,31 @@ int32_t ble_controller_disable(void);
  *
  *  @param[in,out] p_build_revision  Build revision.
  *
- * @retval 0              Success
- * @retval -NRF_EINVAL    Invalid argument provided
+ * @retval 0            Success
+ * @retval -NRF_EINVAL  Invalid argument provided
  */
 int32_t ble_controller_build_revision_get(uint8_t * p_build_revision);
 
 
 /** @brief BLE Controller RNG interrupt handler
  *
- * @note   This function should be called when a RNG interrupt occurs.
- *         The interrupt priority level should be lower than priority level 0, that is,
- *         a higher numerical priority value.
+ * @note This function should be called when a RNG interrupt occurs. The
+ *       interrupt priority level should be lower than priority level 0, that
+ *       is, a higher numerical priority value.
  */
 void ble_controller_RNG_IRQHandler(void);
 
 /** @brief Support Data Length Extensions
  *
- * After this API is called, the controller will support data length extension. That is:
- *  - All DLE HCI APIs are supported.
- *  - The controller replies with LL_LENGTH_RSP when a LL_LENGTH_REQ is received.
- *  - DLE is marked supported in the LL Feature Exchange procedure.
+ * After this API is called, the controller will support data length extension.
+ * That is:
+ *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
+ *  - when a LL_LENGTH_REQ is received. DLE is marked supported in the LL
+ *  - Feature Exchange procedure.
  *
- * @retval 0                            Success
- * @retval -NRF_EPERM                   This API must be called before @ref ble_controller_enable().
- * @retval -NRF_EOPNOTSUPP              Data Length Extension is not supported.
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref ble_controller_enable().
+ * @retval -NRF_EOPNOTSUPP  Data Length Extension is not supported.
  */
 int32_t ble_controller_support_dle(void);
 
@@ -308,8 +315,8 @@ int32_t ble_controller_support_dle(void);
  *  - The controller can use 2M PHY in both the connected and non-connected state.
  *  - LE 2M PHY is marked supported in the LL Feature Exchange procedure.
  *
- * @retval 0                            Success
- * @retval -NRF_EPERM                   This API must be called before @ref ble_controller_enable().
+ * @retval 0           Success
+ * @retval -NRF_EPERM  This API must be called before @ref ble_controller_enable().
  */
 int32_t ble_controller_support_le_2m_phy(void);
 
@@ -320,9 +327,9 @@ int32_t ble_controller_support_le_2m_phy(void);
  *  - The controller can use LE Coded PHY in both the connected and non-connected state.
  *  - LE Coded PHY is marked supported in the LL Feature Exchange procedure.
  *
- * @retval 0                            Success
- * @retval -NRF_EPERM                   This API must be called before @ref ble_controller_enable().
- * @retval -NRF_EOPNOTSUPP              LE Coded PHY is not supported.
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref ble_controller_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Coded PHY is not supported.
  */
 int32_t ble_controller_support_le_coded_phy(void);
 
