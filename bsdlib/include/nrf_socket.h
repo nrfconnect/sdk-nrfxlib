@@ -390,6 +390,10 @@ typedef uint32_t nrf_fd_set;
 #define NRF_SO_RCVTIMEO                 20
 #define NRF_SO_SNDTIMEO                 21
 #define NRF_SO_BINDTODEVICE             25
+#define NRF_SO_SILENCE_ALL              30
+#define NRF_SO_SILENCE_IP_ECHO_REPLY    31
+#define NRF_SO_SILENCE_IPV6_ECHO_REPLY  32
+#define NRF_SO_REUSEADDR                40
 /**@} */
 
 /**@defgroup nrf_socket_options_levels Socket option levels enumerator

@@ -5,6 +5,13 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.7.4
+************
+
+* New socket options added:
+  ``SILENCE_ALL``, ``SILENCE_IP_ECHO_REPLY``, ``SILENCE_IPV6_ECHO_REPLY`` and ``REUSEADDR``
+* Fix to fidoless trace disable
+
 bsdlib 0.7.3
 ************
 
@@ -14,7 +21,7 @@ bsdlib 0.7.3
 bsdlib 0.7.2
 ************
 
-* Added support in bsd_init() to disable fidoless traces and define the memory location and amount reserved for bsdlib. 
+* Added support in bsd_init() to disable fidoless traces and define the memory location and amount reserved for bsdlib.
 
 bsdlib 0.7.1
 ************
