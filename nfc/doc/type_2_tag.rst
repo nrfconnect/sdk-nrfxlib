@@ -348,7 +348,7 @@ To program a tag, complete the following steps:
       }
 
 #. Configure the data for the tag.
-   You can provide the data as NDEF message (recommended, see `NFC Data Exchange Format (NDEF)`_) or as a raw TLV structure (advanced usage, see Type 2 Tag :ref:`t2t_memory_layout`).
+   You can provide the data as NDEF message (recommended, see :ref:`nrf:ug_nfc_ndef`) or as a raw TLV structure (advanced usage, see Type 2 Tag :ref:`t2t_memory_layout`).
 
    * Set an NDEF message:
 

@@ -54,7 +54,7 @@ It consists of following fields:
    * - NDEF Message
      - NLEN bytes
      - NDEF message.
-       See `NFC Data Exchange Format (NDEF)`_.
+       See :ref:`nrf:ug_nfc_ndef`.
 
 As you see, the NDEF file adds one additional field in comparison to the raw NDEF message.
 It is called NLEN and is required for an NDEF file.
