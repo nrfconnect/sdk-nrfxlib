@@ -14,14 +14,6 @@
 
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#98C9E2578566420786ABD40B695FDB9B
 
-.. ### Links to nrf (not a good way to link)
-
-.. _`Modem key management`: ../../../nrf/include/modem/modem_key_mgmt.html
-
-.. _`NFC Data Exchange Format (NDEF)`: ../../../nrf/ug_nfc.html#nfc-data-exchange-format-ndef
-
-.. _`Working with NFC`: ../../nrf/ug_nfc.html
-
 .. ### Other links
 
 .. _`Beej's Guide to Network Programming`: https://beej.us/guide/bgnet/

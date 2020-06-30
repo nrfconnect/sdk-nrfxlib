@@ -8,7 +8,7 @@ To use the cryptographic functions in the modem, the application must provision 
 
 To be able to provision credentials, the modem must be in offline mode.
 The credentials are provisioned through AT commands (see `Credential storage management %CMNG`_).
-If you are using the |NCS| to build your application, you can use the `Modem key management`_ library to manage credentials.
+If you are using the |NCS| to build your application, you can use the :ref:`nrf:modem_key_mgmt` library to manage credentials.
 If you prefer a graphical tool, use `LTE Link Monitor`_ instead.
 To manage credentials with LTE Link Monitor, your device must be running an |NCS| application.
 
