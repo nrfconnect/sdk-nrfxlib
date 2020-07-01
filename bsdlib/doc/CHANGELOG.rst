@@ -5,6 +5,19 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.7.5
+************
+
+* Updated `bsd_shutdown()` to perform a proper shutdown of the modem and the library.
+* Updated `bsd_init()` to properly support multiple initializations of the modem and the library.
+
+bsdlib 0.7.4
+************
+
+* New socket options added:
+    ``SILENCE_ALL``, ``SILENCE_IP_ECHO_REPLY``, ``SILENCE_IPV6_ECHO_REPLY`` and ``REUSEADDR``
+* Fix to fidoless trace disable
+
 bsdlib 0.7.3
 ************
 
