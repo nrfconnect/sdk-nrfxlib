@@ -27,5 +27,6 @@ doc/*                                     @b-gent
 /mpsl/                                    @joerchan @rugeGerritsen
 /nfc/                                     @anangl @grochu
 /nrf_security/                            @frkv @tejlmand
+/openthread/                              @MarekPorwisz @lmaciejonczyk
 /zboss/                                   @tomchy
 /zephyr/                                  @carlescufi

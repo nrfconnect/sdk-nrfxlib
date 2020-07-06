@@ -1,0 +1,27 @@
+#
+# Copyright (c) 2020 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
+
+# OPENTHREAD_IMPLEMENTATION is declared in Zephyr and also here for a second time,
+# now with additional properties. Note that the dependencies of the
+# original config must be duplicated to not affect it's visibility.
+
+if NET_L2_OPENTHREAD
+
+choice OPENTHREAD_IMPLEMENTATION
+	prompt "OpenThread Selection"
+	default OPENTHREAD_SOURCES
+	help
+	  Select OpenThread to use for build. Custom OpenThread implementations
+	  can be added to the application Kconfig.
+
+config OPENTHREAD_LIBRARY_1_1
+	bool "OpenThread 1.1 from library"
+	help
+	  Uses prebuilt library of openthread instead of building from sources.
+
+endchoice
+
+endif

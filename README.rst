@@ -22,4 +22,5 @@ Semiconductor. Refer to their respective documentation for more information.
    mpsl/README
    nrf_security/README
    nfc/README
+   openthread/README
    zboss/README
