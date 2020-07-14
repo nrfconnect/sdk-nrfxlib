@@ -455,8 +455,8 @@ uint8_t hci_vs_cmd_qos_conn_event_report_enable(const hci_vs_cmd_qos_conn_event_
 /** @brief Set event length for connections.
  *
  * Set the event length for new connections. This API must be called before starting a connectable
- * advertiser or starting an initiator for the event length to applied to the connection once established.
- * The event length will not be changed for existing connections.
+ * advertiser or starting an initiator for the event length to applied to the connection once
+ * established.
  *
  * The BLE controller will ensure that the anchor points of master link connections are spaced
  * event_length_us apart.
