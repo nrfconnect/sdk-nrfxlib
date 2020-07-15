@@ -78,7 +78,7 @@ enum nfc_t2t_param_id {
  */
 typedef void (*nfc_t2t_callback_t)(void *context,
 				   enum nfc_t2t_event event,
-				   const u8_t *data,
+				   const uint8_t *data,
 				   size_t data_length);
 
 /**@brief Function for registering the application callback for event
@@ -157,7 +157,7 @@ int nfc_t2t_parameter_get(enum nfc_t2t_param_id id,
  *
  * @retval Zero on success or (negative) error code otherwise.
  */
-int nfc_t2t_payload_set(const u8_t *payload, size_t payload_length);
+int nfc_t2t_payload_set(const uint8_t *payload, size_t payload_length);
 
 /** @brief Function for registering the raw payload to send on reception of a
  *  READ request.
@@ -188,7 +188,7 @@ int nfc_t2t_payload_set(const u8_t *payload, size_t payload_length);
  * @retval 0 If the operation was successful. If one of the arguments was
  * invalid, an error code is returned.
  */
-int nfc_t2t_payload_raw_set(const u8_t *payload,
+int nfc_t2t_payload_raw_set(const uint8_t *payload,
 			    size_t payload_length);
 
 /** @brief Function for registering the sequence of internal bytes.
@@ -210,7 +210,7 @@ int nfc_t2t_payload_raw_set(const u8_t *payload,
  * @retval 0 If the operation was successful. If the data was not NULL and the
  * data length was not 10, an error code is returned.
  */
-int nfc_t2t_internal_set(const u8_t *data, size_t data_length);
+int nfc_t2t_internal_set(const uint8_t *data, size_t data_length);
 
 /** @brief Function for activating the NFC frontend.
  *
