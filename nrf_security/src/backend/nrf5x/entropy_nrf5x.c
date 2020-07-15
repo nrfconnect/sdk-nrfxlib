@@ -15,7 +15,7 @@ int mbedtls_hardware_poll(void *data,
                           size_t *olen )
 {
     struct device *dev;
-    u8_t buffer[MBEDTLS_ENTROPY_MAX_GATHER] = { 0 };
+    uint8_t buffer[MBEDTLS_ENTROPY_MAX_GATHER] = { 0 };
     int ret;
     
     (void)data;

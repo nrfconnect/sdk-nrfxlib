@@ -163,9 +163,9 @@ enum nfc_t4t_param_id {
  */
 typedef void (*nfc_t4t_callback_t)(void *context,
 				   enum nfc_t4t_event event,
-				   const u8_t *data,
+				   const uint8_t *data,
 				   size_t data_length,
-				   u32_t flags);
+				   uint32_t flags);
 
 /** @brief Register the application callback for event signaling.
  *
@@ -211,7 +211,7 @@ int nfc_t4t_setup(nfc_t4t_callback_t callback, void *context);
  * @retval -ENOTSUP If the new buffer has a different length than the first one.
  * @retval -EFAULT If the provided buffer is the currently used buffer.
  */
-int nfc_t4t_ndef_rwpayload_set(u8_t *emulation_buffer,
+int nfc_t4t_ndef_rwpayload_set(uint8_t *emulation_buffer,
 			       size_t buffer_length);
 
 /** @brief Set emulationBuffer and Content for a NDEF Tag emulation that is
@@ -229,7 +229,7 @@ int nfc_t4t_ndef_rwpayload_set(u8_t *emulation_buffer,
  * @retval -EINVAL Invalid argument (e.g. NULL pointer).
  * @retval -ENOTSUP Emulation is in running stated.
  */
-int nfc_t4t_ndef_staticpayload_set(const u8_t *emulation_buffer,
+int nfc_t4t_ndef_staticpayload_set(const uint8_t *emulation_buffer,
 				   size_t buffer_length);
 
 /** @brief Send a raw response PDU after getting a Request PDU callback.
@@ -250,7 +250,7 @@ int nfc_t4t_ndef_staticpayload_set(const u8_t *emulation_buffer,
  * @retval -EINVAL Invalid argument (e.g. NULL pointer).
  * @retval -ENOTSUP Emulation is in running state.
  */
-int nfc_t4t_response_pdu_send(const u8_t *pdu, size_t pdu_length);
+int nfc_t4t_response_pdu_send(const uint8_t *pdu, size_t pdu_length);
 
 /** @brief Set an NFC parameter.
  *

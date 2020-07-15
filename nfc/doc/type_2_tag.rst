@@ -334,9 +334,9 @@ To program a tag, complete the following steps:
       /* Callback for NFC events */
       static void nfc_callback(void * context,
                                enum nfc_t4t_event event,
-                               const u8_t * data,
+                               const uint8_t * data,
                                size_t data_length,
-                               u32_t flags)
+                               uint32_t flags)
       {
       ...
       }
@@ -354,8 +354,8 @@ To program a tag, complete the following steps:
 
      .. code-block:: c
 
-        u8_t ndef_msg_buf[] = ...; // Buffer with the user NDEF message
-        u32_t len           = sizeof(ndef_msg_buf);
+        uint8_t ndef_msg_buf[] = ...; // Buffer with the user NDEF message
+        uint32_t len           = sizeof(ndef_msg_buf);
         /* Set created message as the NFC payload. */
         err = nfc_t2t_payload_set(ndef_msg_buf, len);
         if (err) {
@@ -368,8 +368,8 @@ To program a tag, complete the following steps:
 
      .. code-block:: c
 
-        u8_t tlv_buf[] = ...; // Buffer with the user TLV structure
-        u32_t len           = sizeof(tlv_buf);
+        uint8_t tlv_buf[] = ...; // Buffer with the user TLV structure
+        uint32_t len           = sizeof(tlv_buf);
         /* Set created TLV structure as the NFC payload. */
         err = nfc_t2t_payload_raw_set(tlv_buf, len);
         if (err) {
