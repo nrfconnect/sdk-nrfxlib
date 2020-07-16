@@ -5,6 +5,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.7.6
+************
+
+* Added bsdlib support for ``TLS_CIPHERSUITE_LIST``.
+  :cpp:func:`getsockopt()` lists the supported cipher suites and :cpp:func:`setsockopt()`
+  selects a supported cipher suite.
+* Support for sending packets sized more than 2048 bytes in TLS socket.
+
 bsdlib 0.7.5
 ************
 
@@ -27,7 +35,7 @@ bsdlib 0.7.3
 bsdlib 0.7.2
 ************
 
-* Added support in bsd_init() to disable fidoless traces and define the memory location and amount reserved for bsdlib. 
+* Added support in bsd_init() to disable fidoless traces and define the memory location and amount reserved for bsdlib.
 
 bsdlib 0.7.1
 ************
