@@ -176,6 +176,14 @@ void zb_osif_button_cb(zb_uint8_t arg);
 int zb_osif_button_state(zb_uint8_t arg);
 /** @endcond */
 
+/* Button indexes utilized by applications
+ * note: more can be used/defined depending on target HW
+ */
+#define ZB_BOARD_BUTTON_0 0
+#define ZB_BOARD_BUTTON_1 1
+#define ZB_BOARD_BUTTON_2 2
+#define ZB_BOARD_BUTTON_3 3
+
 /**
  * Number of handler that can be associated with a button.
  * 
@@ -189,6 +197,15 @@ int zb_osif_button_state(zb_uint8_t arg);
  * Number of button utilized by application
  */
 #define ZB_N_BUTTONS 1
+
+#endif
+
+#ifndef ZB_N_LEDS
+
+/**
+ * Number of leds utilized by application
+ */
+#define ZB_N_LEDS 1
 
 #endif
 

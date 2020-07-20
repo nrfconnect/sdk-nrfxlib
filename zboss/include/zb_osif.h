@@ -776,4 +776,54 @@ void zb_osif_busy_loop_delay(zb_uint32_t count);
  */
 zb_uint16_t zb_osif_get_timer_reminder(void);
 
+/* Init leds and buttons
+ *
+ */
+void zb_osif_led_button_init(void);
+
+/* Set a LED on
+ * It must be initialized first.
+ *
+ * @param led_no - id of the LED in board (check platform specific headers to identify LED)
+ */
+void zb_osif_led_on(zb_uint8_t led_no);
+
+/* Set a LED off
+ * It must be initialized first.
+ *
+ * @param led_no - id of the LED in board (check platform specific headers to identify LED)
+ */
+void zb_osif_led_off(zb_uint8_t led_no);
+
+/* Get the current button tate
+ * It must be initialized first.
+ *
+ * @param arg - id of the LED in board (check platform specific headers to identify LED)
+ *
+ * @return ZB_FALSE is button is pressed, ZB_TRUE if button is not being pressed
+ */
+int zb_osif_button_state(zb_uint8_t arg);
+
+
+/* Configure one LED to be dimmable
+ *
+ * @param led_no - Led id to be dimmable
+ */
+zb_bool_t zb_osif_led_level_init(zb_uint8_t led_no);
+
+/* Set level of a dimmable LED (only one led is supported)
+ *  It must be initialized first with zb_osif_led_level_init(zb_uint8_t led_no)
+ *
+ * @param level - brightness level to set from (0 to 255) to the dimmable led
+ */
+void zb_osif_led_on_set_level(zb_uint8_t level);
+
+void zb_osif_button_cb(zb_uint8_t arg);
+
+/* Inform osif layer that button callback is being set
+ * @return ZB_TRUE if leds and buttons have been initiated
+ *  with zb_osif_led_button_init()
+ */
+zb_bool_t zb_setup_buttons_cb(zb_callback_t cb);
+
 #endif /* ZB_OSIF_H */
