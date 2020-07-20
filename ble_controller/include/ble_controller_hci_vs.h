@@ -41,6 +41,8 @@ enum HCI_VS_OPCODE
     HCI_VS_OPCODE_CMD_ZEPHYR_READ_VERSION_INFO = 0xfc01,
     /** @brief See @ref hci_vs_cmd_zephyr_read_supported_commands(). */
     HCI_VS_OPCODE_CMD_ZEPHYR_READ_SUPPORTED_COMMANDS = 0xfc02,
+    /** @brief See @ref hci_vs_cmd_zephyr_write_bd_addr(). */
+    HCI_VS_OPCODE_CMD_ZEPHYR_WRITE_BD_ADDR = 0xfc06,
     /** @brief See @ref hci_vs_cmd_zephyr_read_static_addresses(). */
     HCI_VS_OPCODE_CMD_ZEPHYR_READ_STATIC_ADDRESSES = 0xfc09,
     /** @brief See @ref hci_vs_cmd_zephyr_write_tx_power(). */
@@ -187,6 +189,13 @@ typedef __PACKED_UNION
     uint8_t raw[64];
 } hci_vs_cmd_zephyr_read_supported_commands_return_t;
 
+/** @brief Zephyr Write BD ADDR command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief BD_ADDR of the Device. */
+    uint8_t bd_addr[6];
+} hci_vs_cmd_zephyr_write_bd_addr_t;
+
 /** @brief Zephyr Read Static Addresses return parameter(s). */
 typedef __PACKED_STRUCT
 {
@@ -311,6 +320,23 @@ uint8_t hci_vs_cmd_zephyr_read_version_info(hci_vs_cmd_zephyr_read_version_info_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t hci_vs_cmd_zephyr_read_supported_commands(hci_vs_cmd_zephyr_read_supported_commands_return_t * p_return);
+
+/** @brief Zephyr Write BD ADDR.
+ *
+ * This command writes the BD_ADDR (Bluetooth public device address) value
+ * to the volatile memory. It is kept over Reset and can be read out by
+ * Read_BD_ADDR command.
+ *
+ * When the Write_BD_ADDR command has completed, a Command Complete event shall
+ * be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t hci_vs_cmd_zephyr_write_bd_addr(const hci_vs_cmd_zephyr_write_bd_addr_t * p_params);
 
 /** @brief Zephyr Read Static Addresses.
  *

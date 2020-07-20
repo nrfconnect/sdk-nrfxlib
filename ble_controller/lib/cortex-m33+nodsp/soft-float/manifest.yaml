@@ -1,5 +1,5 @@
 description: nRF Bluetooth LE Controller
-git_revision: 8989f712310277aba87340a5ea2f99803ed16627
-ll_subversion_number: '0x20BE'
+git_revision: 53e3d77d5a79335d3bd247661186b68c31f02d3a
+ll_subversion_number: '0x20C4'
 ll_version_number: '0x0B'
-timestamp: '2020-07-14T07:27:28Z'
+timestamp: '2020-07-20T10:54:03Z'

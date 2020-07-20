@@ -18,6 +18,7 @@ Added
 * Added Set Controller to Host Flow Control command.
 * Added Host Buffer Size command.
 * Added Host Number of Complete Packets command.
+* Added support for the Vendor specific HCI command: Zephyr Write BD Addr.
 
 Changes
 =======
