@@ -116,7 +116,7 @@ typedef struct zgp_attr_record_options_s
   zb_bitfield_t reserved:2;
 }zgp_attr_record_options_t;
 
-#define ZB_APP_DESCR_ATTR_VAL_SIZE 4
+#define ZB_APP_DESCR_ATTR_VAL_SIZE 8
 typedef struct zgp_attr_record_s
 {
   zb_uint16_t id;
@@ -147,13 +147,13 @@ typedef struct zgp_data_point_desc_options_s
   zb_bitfield_t reserved:3;
 }zgp_data_point_desc_options_t;
 
-#define ZB_APP_DESCR_ATTR_DATA_SIZE 27
+#define ZB_APP_DESCR_ATTR_REC_SIZE 4
 typedef struct zgp_data_point_desc_s
 {
   zgp_data_point_desc_options_t options;
   zb_uint16_t cluster_id;
   zb_uint16_t manuf_id;
-  zb_uint8_t attr_records_data[ZB_APP_DESCR_ATTR_DATA_SIZE]; /* contains array of not parsed zgp_attr_record_t */
+  zgp_attr_record_t attr_records_data[ZB_APP_DESCR_ATTR_REC_SIZE]; /* contains array of not parsed zgp_attr_record_t */
 }zgp_data_point_desc_t;
 
 typedef struct zgp_report_desc_options_s

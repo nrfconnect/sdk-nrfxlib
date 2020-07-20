@@ -11,14 +11,14 @@
  * Please use release scripts to update it's contents.
  *
  * Repositories:
- * platform_ncs       f34e5e56501f67081750c84ae24a1c4d5fcdc4ce https://bitbucket-zoi.dsr-corporation.com/scm/ZOI/platform_ncs.git
- * zboss-stack-src    948b69325bb58715ecab792f33ef6e415e7652e3 https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_stable
+ * platform_ncs       3788e55e2177da47e6403098eea45786a4b853ed https://bitbucket-zoi.dsr-corporation.com/scm/ZOI/platform_ncs.git
+ * zboss-stack-src    f64123b00bcd9ed2041f3ec2b1d3bee3ba27b118 https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_stable
  * zboss-stack-doc    e8c9e54b2e34842d9091c9c48032b60bb00915a2 https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_doc
- * nrf                b050d06b4c69e538a98a3c6ba675456218c26cca https://github.com/nrfconnect/sdk-nrf
- * zephyr             7bd90a18c319548415ede8f7a2edc752661aecdb https://github.com/nrfconnect/sdk-zephyr
- * mcuboot            e81a207f8b94b15c09a63e9e5ebf074d44315cb4 https://github.com/nrfconnect/sdk-mcuboot
+ * nrf                f346be692cfeb13e440cd5cdf248cd91e9dcb898 https://github.com/nrfconnect/sdk-nrf
+ * zephyr             a6a1fb4642fa9ba5e5dcb5174e127a36a47d9ff6 https://github.com/nrfconnect/sdk-zephyr
+ * mcuboot            dc9464d003cb8fc6cc11aaf713f700928c9fc398 https://github.com/nrfconnect/sdk-mcuboot
  * mcumgr             5885efb7cabf7b566577b73129c9d277d7d8848d https://github.com/nrfconnect/sdk-mcumgr
- * nrfxlib            c552a8488f9266039e5d8e453c9478000abd5dcf https://github.com/nrfconnect/sdk-nrfxlib
+ * nrfxlib            8954ae46b2fc89a8bbd57de88c4dc48dcdb14a7f https://github.com/nrfconnect/sdk-nrfxlib
  * cmock              c243b9a7a7b3c471023193992b46cf1bd1910450 https://github.com/ThrowTheSwitch/cmock
  * unity              031f3bbe45f8adf504ca3d13e6f093869920b091 https://github.com/ThrowTheSwitch/unity
  * mbedtls-nrf        2a1d9332d55d1270084232e42df08fdb08129f1b https://github.com/ARMmbed/mbedtls
@@ -47,16 +47,16 @@
 
 
 /** ZBOSS build number */
-#define ZBOSS_BUILD_NR 4
+#define ZBOSS_BUILD_NR 5
 
 /** ZBOSS build tag */
-#define ZBOSS_BUILD_TAG "build-4"
+#define ZBOSS_BUILD_TAG "build-5"
 
 /** ZBOSS build date (UTC) */
-#define ZBOSS_BUILD_DATE 20200625
+#define ZBOSS_BUILD_DATE 20200720
 
 /** ZBOSS build time (UTC) */
-#define ZBOSS_BUILD_TIME 090721
+#define ZBOSS_BUILD_TIME 132410
 
 
 #endif /* ZBOSS_BUILD_INFO_H__ */
