@@ -60,6 +60,7 @@ config MBEDTLS_ENABLE_HEAP
 
 config MBEDTLS_HEAP_SIZE
 	int "Heap size for mbed TLS"
+	default 15360 if OPENTHREAD_NRF_SECURITY
 	default 512
 	depends on MBEDTLS_ENABLE_HEAP
 	help
@@ -750,7 +751,7 @@ choice
 	prompt "Backend selection"
 	depends on MBEDTLS_ECP_C && NRF_CRYPTO_BACKEND_COMBINATION_0
 	default CHOICE_CC310_MBEDTLS_ECP_C if CC310_BACKEND
-	default CHOICE_OBERON_MBEDTLS_ECP_C if !CC310_BACKEND
+	default CHOICE_OBERON_MBEDTLS_ECP_C if  OBERON_BACKEND && !CC310_BACKEND
 
 config CHOICE_CC310_MBEDTLS_ECP_C
 	bool "cc310" if CC310_BACKEND
@@ -1197,6 +1198,7 @@ config MBEDTLS_SHA256_SMALLER
 config MBEDTLS_SSL_MAX_CONTENT_LEN
 	int "SSL - Maximum buffer size"
 	range 0 16384
+	default 900 if OPENTHREAD_NRF_SECURITY
 	default 16384
 	depends on MBEDTLS_TLS_LIBRARY
 	help
