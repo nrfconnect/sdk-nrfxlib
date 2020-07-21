@@ -108,6 +108,7 @@ if (CONFIG_NRF_CC310_PLATFORM)
   #
   zephyr_sources(${NRF_CC310_PLATFORM_BASE}/src/nrf_cc310_platform_abort_zephyr.c)
   zephyr_sources(${NRF_CC310_PLATFORM_BASE}/src/nrf_cc310_platform_mutex_zephyr.c)
+  zephyr_include_directories(${NRF_CC310_PLATFORM_BASE}/include)
 endif()
 
 if (CONFIG_CC310_BACKEND)
