@@ -5,6 +5,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.7.7
+************
+
+* Fixed a bug in bsd_init() (introduced in the version 0.7.5) that caused the library to be in an inconsistent state when updating the modem firmware.
+
 bsdlib 0.7.6
 ************
 
