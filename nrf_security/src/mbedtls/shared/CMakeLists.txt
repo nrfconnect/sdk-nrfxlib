@@ -9,22 +9,6 @@
 nrf_security_debug("######### Creating shared noglue library #########")
 
 #
-# Add vanilla as define if non-cc310 feature is enabled (e.g. single backend)
-#
-if (CONFIG_MBEDTLS_CHACHA20_C AND NOT CONFIG_CC310_MBEDTLS_CHACHA20_C)
-    set(CONFIG_VANILLA_MBEDTLS_CHACHA20_C TRUE)
-endif()
-if (CONFIG_MBEDTLS_POLY1305_C AND NOT CONFIG_CC310_MBEDTLS_POLY1305_C)
-    set(CONFIG_VANILLA_MBEDTLS_POLY1305_C TRUE)
-endif()
-if (CONFIG_MBEDTLS_CHACHAPOLY_C AND NOT CONFIG_CC310_MBEDTLS_CHACHAPOLY_C)
-    set(CONFIG_VANILLA_MBEDTLS_CHACHAPOLY_C TRUE)
-endif()
-if (CONFIG_MBEDTLS_RSA_C AND NOT CONFIG_CC310_MBEDTLS_RSA_C)
-    set(CONFIG_VANILLA_MBEDTLS_RSA_C TRUE)
-endif()
-
-#
 # mbedcrypto_shared is a library containing features that are all
 # provided by vanilla backend, but is expressively enabled to allow
 # single backend being enabled in the system and still have full access to
@@ -36,21 +20,40 @@ add_library(mbedcrypto_shared STATIC
   ${ZEPHYR_BASE}/misc/empty_file.c
 )
 
-target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_CHACHA20_C
-  mbedcrypto_shared PRIVATE ${ARM_MBEDTLS_PATH}/library/chacha20.c
-)
-target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_POLY1305_C
-  mbedcrypto_shared PRIVATE ${ARM_MBEDTLS_PATH}/library/poly1305.c
-)
-target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_CHACHAPOLY_C
-  mbedcrypto_shared PRIVATE ${ARM_MBEDTLS_PATH}/library/chachapoly.c
-)
-target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_RSA_C
-  mbedcrypto_shared PRIVATE ${ARM_MBEDTLS_PATH}/library/rsa.c
-)
-target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_RSA_C
-  mbedcrypto_shared PRIVATE ${ARM_MBEDTLS_PATH}/library/rsa_internal.c
-)
+if (CONFIG_VANILLA_MBEDTLS_CHACHA20_C OR
+  (CONFIG_MBEDTLS_CHACHA20_C AND NOT CONFIG_CC310_MBEDTLS_CHACHA20_C))
+
+  target_sources(mbedcrypto_shared PRIVATE
+    ${ARM_MBEDTLS_PATH}/library/chacha20.c
+  )
+endif()
+
+if (CONFIG_VANILLA_MBEDTLS_POLY1305_C OR
+  (CONFIG_MBEDTLS_POLY1305_C AND NOT CONFIG_CC310_MBEDTLS_POLY1305_C))
+
+  target_sources(mbedcrypto_shared PRIVATE
+    ${ARM_MBEDTLS_PATH}/library/poly1305.c
+  )
+endif()
+
+if (CONFIG_VANILLA_MBEDTLS_CHACHAPOLY_C OR
+  (CONFIG_MBEDTLS_CHACHAPOLY_C AND NOT CONFIG_CC310_MBEDTLS_CHACHAPOLY_C))
+
+  target_sources(mbedcrypto_shared PRIVATE
+    ${ARM_MBEDTLS_PATH}/library/chachapoly.c
+  )
+endif()
+
+if (CONFIG_VANILLA_MBEDTLS_RSA_C OR
+   (CONFIG_MBEDTLS_RSA_C AND NOT CONFIG_CC310_MBEDTLS_RSA_C))
+
+  target_sources(mbedcrypto_shared PRIVATE
+    ${ARM_MBEDTLS_PATH}/library/rsa.c
+    ${ARM_MBEDTLS_PATH}/library/rsa_internal.c
+  )
+
+endif()
+
 target_sources_ifdef(CONFIG_MBEDTLS_SHA512_C
   mbedcrypto_shared PRIVATE ${ARM_MBEDTLS_PATH}/library/sha512.c
 )
