@@ -45,7 +45,7 @@ macro(kconfig_mbedtls_config base)
   kconfig_mbedtls_config_direct(${base})
 
   # Set any single-backend enabled configs
-  if (NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
+  if (NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0 AND CONFIG_${base})
     if(CONFIG_CC310_BACKEND)
       set (CONFIG_CC310_${base} true)
       nrf_security_debug("Setting CONFIG_CC310_${base} to TRUE (single backend)")
