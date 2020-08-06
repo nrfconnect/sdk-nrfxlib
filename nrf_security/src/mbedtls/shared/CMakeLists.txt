@@ -58,6 +58,16 @@ target_sources_ifdef(CONFIG_MBEDTLS_SHA512_C
   mbedcrypto_shared PRIVATE ${ARM_MBEDTLS_PATH}/library/sha512.c
 )
 
+# Special case: Oberon only backend and enabled DHM
+if (CONFIG_MBEDTLS_DHM_C AND CONFIG_OBERON_BACKEND)
+
+  target_sources(mbedcrypto_shared PRIVATE
+    ${ARM_MBEDTLS_PATH}/library/dhm.c
+  )
+
+endif()
+
+
 #
 # Add specific includes for threading and platform_cc310
 #

@@ -673,7 +673,7 @@ config MBEDTLS_DHM_C
 	prompt "DHM   - Diffie-Hellman-Merkel"
 	default y
 	depends on !NRF_CRYPTO_BACKEND_COMBINATION_0
-	depends on CC310_BACKEND || MBEDTLS_VANILLA_BACKEND
+	depends on CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
 	select MBEDTLS_DHM_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
 	help
 	  Enable the DHM module.
