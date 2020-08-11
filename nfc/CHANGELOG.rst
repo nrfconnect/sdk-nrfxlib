@@ -13,6 +13,8 @@ Added
 
 * Added support for non-secure firmware image to the NFC T2T and NFC T4T libraries.
   A non-secure image can only be run on nRF devices that support Trusted Execution (e.g. nRF5340).
+* Added Frame Waiting Time (FWT) management logic to the NFC T4T library.
+  FWT is changed now according to the ISO-DEP timing requirements (e.g. WTX frame).
 
 NFC 0.4.0
 ****************
