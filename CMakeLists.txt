@@ -10,10 +10,10 @@ if (CONFIG_NFC_T2T_NRFXLIB OR
 	add_subdirectory(nfc)
 endif()
 
-add_subdirectory_ifdef(CONFIG_BT                      ble_controller)
 add_subdirectory_ifdef(CONFIG_MPSL                    mpsl)
 add_subdirectory_ifdef(CONFIG_BSD_LIBRARY             bsdlib)
 add_subdirectory_ifdef(CONFIG_NRFXLIB_CRYPTO          crypto)
 add_subdirectory_ifdef(CONFIG_NORDIC_SECURITY_BACKEND nrf_security)
+add_subdirectory_ifdef(CONFIG_BT                      softdevice_controller)
 add_subdirectory_ifdef(CONFIG_NET_L2_OPENTHREAD       openthread)
 add_subdirectory_ifdef(CONFIG_ZIGBEE                  zboss)
