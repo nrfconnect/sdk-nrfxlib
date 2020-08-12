@@ -21,7 +21,7 @@ doc/*                                     @b-gent
 
 # All subfolders
 /.github/                                 @thst-nordic
-/ble_controller/                          @joerchan @rugeGerritsen
+/softdevice_controller/                   @joerchan @rugeGerritsen
 /bsdlib/                                  @rlubos @lemrey @evenl
 /crypto/                                  @frkv @tejlmand
 /mpsl/                                    @joerchan @rugeGerritsen

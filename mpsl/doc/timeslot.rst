@@ -93,12 +93,12 @@ Performance considerations
 **************************
 The Timeslot API shares core peripherals with the MPSL, and application-requested timeslots are scheduled along with other MPSL activities.
 Therefore, the use of the timeslot feature might influence the performance of other users of MPSL.
-Configurations of other MPSL users, like the :ref:`ble_controller`, should be considered when using the timeslot feature.
+Configurations of other MPSL users, like the :ref:`softdevice_controller`, should be considered when using the timeslot feature.
 
 All timeslot requests should use the lowest priority to minimize disturbances to other activities.
 The high priority should only be used when required, such as for running a radio protocol with certain timing requirements that are not met by using normal priority.
 By using the highest priority available to the Timeslot API, other non-critical radio protocol traffic might be affected.
-Other users of MPSL, like the Bluetooth LE Controller might have access to higher priority levels than the application.
+Other users of MPSL, like the |controller| might have access to higher priority levels than the application.
 These levels will be used for important radio activity, for instance when the device is about to lose a connection.
 
 Timeslots should be kept as short as possible in order to minimize the impact on the overall performance of the device.
@@ -225,4 +225,3 @@ An application can use timeslot extension to create long continuous timeslots th
    :alt: Extended timeslot example
 
    Extended timeslot example
-
