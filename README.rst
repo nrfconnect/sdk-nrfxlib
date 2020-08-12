@@ -16,11 +16,11 @@ Semiconductor. Refer to their respective documentation for more information.
    :maxdepth: 2
    :caption: Libraries:
 
-   ble_controller/README
    bsdlib/README
    crypto/README
    mpsl/README
    nrf_security/README
    nfc/README
    openthread/README
+   softdevice_controller/README
    zboss/README
