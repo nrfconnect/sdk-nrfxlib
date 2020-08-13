@@ -433,7 +433,7 @@
 			<title
    id="title5301">Sheet.9</title>
 			<desc
-   id="desc5303">BLE Host</desc>
+   id="desc5303">Bluetooth Host</desc>
 			<path
    d="M 0,542.47 V 599.1 H 126.69 V 542.47 Z"
    class="st1"
@@ -441,12 +441,12 @@
    inkscape:connector-curvature="0"
    style="fill:#4472c4;stroke:none;stroke-width:0.79307026;stroke-linecap:round;stroke-linejoin:round" />
 			<text
-   x="35.364315"
+   x="25.364315"
    y="605.67969"
    class="st3"
    id="text5307"
    style="font-size:12.65404224px;font-family:Calibri;fill:#ffffff;stroke-width:1.05742705"
-   transform="scale(1.054493,0.94832307)">BLE Host</text>
+   transform="scale(1.054493,0.94832307)">Bluetooth Host</text>
 		</g>
 		
 		
@@ -511,7 +511,7 @@
 			<title
    id="title5353">Sheet.38</title>
 			<desc
-   id="desc5355">BLE adaption layer</desc>
+   id="desc5355">Bluetooth adaption layer</desc>
 			<path
    d="M 0,485.72 V 599.1 H 126.69 V 485.72 Z"
    class="st1"
@@ -519,12 +519,12 @@
    inkscape:connector-curvature="0"
    style="fill:#4472c4;stroke:none;stroke-width:0.78595918;stroke-linecap:round;stroke-linejoin:round" />
 			<text
-   x="24.666628"
+   x="13.666628"
    y="562.98059"
    class="st8"
    id="text5361"
    style="font-size:12.53843594px;font-family:Calibri;fill:#feffff;stroke-width:1.04794562"
-   transform="scale(1.0448592,0.95706673)">BLE adaption<tspan
+   transform="scale(1.0448592,0.95706673)">Bluetooth adaption<tspan
    x="45.333942"
    dy="15.046124"
    class="st5"
@@ -960,9 +960,9 @@
      transform="scale(1.2681554,0.78854687)"><tspan
        sodipodi:role="line"
        id="tspan6388"
-       x="146.31406"
+       x="160.31406"
        y="565.65247"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.20886707px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:url(#linearGradient9401);fill-opacity:1;stroke-width:1.0260061">BLE Link Layer</tspan></text>
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.20886707px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:url(#linearGradient9401);fill-opacity:1;stroke-width:1.0260061">Link Layer</tspan></text>
 <g
      id="shape10-38-9-8"
      transform="matrix(0.7281249,0,0,1.6439445,318.83119,-215.21539)"

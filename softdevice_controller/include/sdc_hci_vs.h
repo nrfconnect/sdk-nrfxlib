@@ -371,11 +371,11 @@ uint8_t sdc_hci_vs_cmd_zephyr_read_static_addresses(sdc_hci_vs_cmd_zephyr_read_s
 
 /** @brief Zephyr Write Tx Power Level (per Role/Connection).
  *
- * This command dynamically modifies BLE Tx power level given a handle and a
+ * This command dynamically modifies Bluetooth LE Tx power level given a handle and a
  * handle type (advertiser, scanner, connection).
  *
- * The Tx power of the BLE radio interface is modified for any low-level link by
- * the controller with a high degree of flexibility. The BLE link whose power is
+ * The Tx power of the Bluetooth LE radio interface is modified for any low-level link by
+ * the controller with a high degree of flexibility. The Bluetooth LE link whose power is
  * set is identified based on a handle type (advertiser, scanner, connection) and
  * handle pair.
  *
