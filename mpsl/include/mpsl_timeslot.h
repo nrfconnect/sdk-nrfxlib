@@ -11,7 +11,7 @@
  * @ingroup  mpsl
  *
  * The Timeslot interface allows the application to run another radio protocol concurrently with
- * BLE activity. When a timeslot is granted, the application has exclusive access
+ * Bluetooth LE activity. When a timeslot is granted, the application has exclusive access
  * to the normally blocked RADIO, TIMER0, CCM, and AAR peripherals.
  * The application can use the peripherals freely for the duration of the timeslot.
  * @{

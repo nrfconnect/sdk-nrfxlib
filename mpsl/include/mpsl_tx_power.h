@@ -26,7 +26,7 @@ extern "C" {
 #include <stdint.h>
 #include "nrf_errno.h"
 
-/** @brief The number of channels for BLE protocol. */
+/** @brief The number of channels for Bluetooth LE protocol. */
 #define MPSL_TOTAL_NUM_OF_BLE_CHANNELS    40
 /** @brief The number of channels for 802.15.4 protocol. */
 #define MPSL_TOTAL_NUM_OF_802154_CHANNELS 16
@@ -52,7 +52,7 @@ typedef struct
     {
         mpsl_tx_power_t tx_power_ble[MPSL_TOTAL_NUM_OF_BLE_CHANNELS];
         mpsl_tx_power_t tx_power_802154[MPSL_TOTAL_NUM_OF_802154_CHANNELS];
-    } envelope; /**< Array of maximum TX power value per channel. From 11 to 26 for 802.15.4 protocol. From 0 to 40 for BLE protocol. */
+    } envelope; /**< Array of maximum TX power value per channel. From 11 to 26 for 802.15.4 protocol. From 0 to 40 for Bluetooth LE protocol. */
 } mpsl_tx_power_envelope_t;
 
 /** @brief Sets maximum TX power envelope. If the PHY already has an envelope configured, it will be over-written.
