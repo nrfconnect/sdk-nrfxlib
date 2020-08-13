@@ -50,7 +50,7 @@ Known issues and limitations
 * The maximum connection interval that can be active when switching to a connection interval of 1 ms is 10 ms. An application that needs to use a higher interval than 10 ms needs to perform two connection updates to use 1 ms connection interval: A first update to 10 ms connection interval, and a second update to 1 ms connection interval (DRGN-11297).
 * If the scanner is configured with a scan window larger than 16 seconds, the scanner will truncate the scan window to 16 seconds (DRGN-10305).
 * Applications must not modify the SEVONPEND flag in the SCR register when running in priority levels higher than 6 (priority level numerical values lower than 6) as this can lead to undefined behavior (DRGN-8569).
-* Synthesized low frequency clock source is not tested or intended for use with the BLE stack.
+* Synthesized low frequency clock source is not tested or intended for use with the Bluetooth LE stack.
 * If an extended advertiser is configured with limited duration, it will time out after the first primary channel packet in the last advertising event (DRGN-10367).
 
 nRF Connect SDK v1.3.0
@@ -172,14 +172,14 @@ Added
 * Added a new header :file:`ble_controller_hci_vs.h` that exposes definitions of
   Vendor Specific HCI commands and events.
 * Added support for connection intervals less than the standard minimum of 7.5 ms.
-  Note that this a proprietary feature that is not BLE compliant.
+  Note that this a proprietary feature that is not Bluetooth compliant.
   This proprietary feature is named 'Low Latency Packet Mode (LLPM)'.
 * Added support for enabling or disabling connection event length extension.
   When disabled, the maximum connection event length is set by ``ble_controller_cfg_event_length_t::event_length_us``.
   When enabled, the maximum connection event length is determined by the connection interval.
 * Added support for generating QoS Connection event reports.
   When enabled, one report is generated with every connection event.
-  The report contains information that can be used to change the BLE channel map.
+  The report contains information that can be used to change the Bluetooth LE channel map.
 
 Bugfixes
 ========

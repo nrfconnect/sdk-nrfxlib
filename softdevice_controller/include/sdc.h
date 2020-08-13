@@ -265,7 +265,7 @@ int32_t sdc_enable(sdc_callback_t callback,
 
 /** @brief Disable the SoftDevice Controller
  *
- * This call is synchronous. After the SoftDevice Controller is disabled, BLE
+ * This call is synchronous. After the SoftDevice Controller is disabled, Bluetooth LE
  * functionality is no longer available.
  *
  * @retval 0 Success

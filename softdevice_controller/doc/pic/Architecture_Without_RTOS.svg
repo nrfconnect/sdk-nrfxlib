@@ -359,7 +359,7 @@
 			<title
    id="title4909">Sheet.12</title>
 			<desc
-   id="desc4911">BLE Host</desc>
+   id="desc4911">Bluetooth Host</desc>
 			<path
    d="M 58.82,429.31 H 0 v 13.11 h 58.82 v -13.11"
    class="st2"
@@ -367,11 +367,11 @@
    inkscape:connector-curvature="0"
    style="stroke:none;stroke-width:0.75;stroke-linecap:round;stroke-linejoin:round" />
 			<text
-   x="3.8900001"
+   x="-12.8900001"
    y="440.17001"
    class="st8"
    id="text4915"
-   style="font-size:14.35560036px;font-family:Calibri;fill:#ffffff">BLE Host</text>
+   style="font-size:14.35560036px;font-family:Calibri;fill:#ffffff">Bluetooth Host</text>
 		</g>
 		<g
    id="shape45-44"
@@ -605,9 +605,9 @@
    id="text6390"><tspan
      sodipodi:role="line"
      id="tspan6388"
-     x="385.30511"
+     x="398.30511"
      y="213.9882"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.99999142px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:url(#linearGradient8915);fill-opacity:1;stroke-width:0.74999952">BLE Link Layer</tspan></text>
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.99999142px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:url(#linearGradient8915);fill-opacity:1;stroke-width:0.74999952">Link Layer</tspan></text>
 <g
    id="shape45-44-7"
    transform="matrix(0.90137766,0,0,1,128.01213,-276.08515)"><title
