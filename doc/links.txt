@@ -10,6 +10,8 @@
 
 .. _`nRF IEEE 802.15.4 radio driver documentation`: https://infocenter.nordicsemi.com/topic/15.4_radio_driver_v2.0.0-1.prealpha/index.html
 
+.. _`Infocenter`: https://infocenter.nordicsemi.com/index.jsp
+
 .. ### Links to Nordic pages
 
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#98C9E2578566420786ABD40B695FDB9B
