@@ -230,6 +230,7 @@ kconfig_mbedtls_config("MBEDTLS_ECDSA_VERIFY_ALT")
 kconfig_mbedtls_config("MBEDTLS_ECJPAKE_ALT")
 kconfig_mbedtls_config("MBEDTLS_SHA1_ALT")
 kconfig_mbedtls_config("MBEDTLS_SHA256_ALT")
+kconfig_mbedtls_config("MBEDTLS_RSA_ALT")
 
 #
 # Defines currently not grouped

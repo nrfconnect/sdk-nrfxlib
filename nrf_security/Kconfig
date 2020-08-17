@@ -1186,7 +1186,6 @@ config VANILLA_MBEDTLS_RSA_C
 if NRF_SECURITY_MULTI_BACKEND
 
 comment "RSA Backend Selection"
-	depends on NRF_SECURITY_MULTI_BACKEND
 
 choice
 	bool
