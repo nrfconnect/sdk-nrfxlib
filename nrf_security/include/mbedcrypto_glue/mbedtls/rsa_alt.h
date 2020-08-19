@@ -17,7 +17,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#define CC310_MBEDTLS_RSA_CONTEXT_WORDS       (52)    //!< Context size in words in nrf_cc310_mbedcrypto library in words.
+#define CC3XX_MBEDTLS_RSA_CONTEXT_WORDS       (52)    //!< Context size in words in nrf_cc3xx_mbedcrypto library in words.
 #define VANILLA_MBEDTLS_RSA_CONTEXT_WORDS     (43)    //!< Context size in words in standard mbed TLS in words.
 
 #if defined(MBEDTLS_RSA_ALT)
@@ -35,9 +35,9 @@ typedef struct mbedtls_rsa_context
 #endif /* CONFIG_GLUE_MBEDTLS_RSA_C */
     union _buffer
     {
-#if defined(CONFIG_CC310_MBEDTLS_RSA_C)
-        uint32_t buffer_cc310[CC310_MBEDTLS_RSA_CONTEXT_WORDS];               //!< Array the size of an RSA context in the nrf_cc310_mbedcrypto library.
-#endif /* CONFIG_CC310_MBEDTLS_RSA_C */
+#if defined(CONFIG_CC3XX_MBEDTLS_RSA_C)
+        uint32_t buffer_cc3xx[CC3XX_MBEDTLS_RSA_CONTEXT_WORDS];               //!< Array the size of an RSA context in the nrf_cc3xx_mbedcrypto library.
+#endif /* CONFIG_CC3XX_MBEDTLS_RSA_C */
 #if defined(CONFIG_VANILLA_MBEDTLS_RSA_C)
         uint32_t buffer_vanilla_mbedtls[VANILLA_MBEDTLS_RSA_CONTEXT_WORDS];   //!< Array the size of an RSA context in standard mbed TLS.
 #endif /* CONFIG_VANILLA_MBEDTLS_RSA_C */

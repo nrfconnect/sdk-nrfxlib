@@ -10,16 +10,16 @@
 
 #if defined(MBEDTLS_BACKEND_ENTROPY_GLUE)
 
-#if defined(MBEDTLS_BACKEND_ENTROPY_CC310)
-extern entropy_backend mbedtls_entropy_backend_cc310;
+#if defined(MBEDTLS_BACKEND_ENTROPY_CC3XX)
+extern entropy_backend mbedtls_entropy_backend_cc3xx;
 #endif
 #if defined(MBEDTLS_BACKEND_ENTROPY_NRF)
 extern entropy_backend mbedtls_entropy_backend_nrf;
 #endif
 
 static entropy_backend* entropy_backends[] = {
-#if defined(MBEDTLS_BACKEND_ENTROPY_CC310)
-    &mbedtls_entropy_backend_cc310,
+#if defined(MBEDTLS_BACKEND_ENTROPY_CC3XX)
+    &mbedtls_entropy_backend_cc3xx,
 #endif
 #if defined(MBEDTLS_BACKEND_ENTROPY_NRF)
     &mbedtls_entropy_backend_nrf,

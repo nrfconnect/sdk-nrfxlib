@@ -54,7 +54,7 @@ if(CONFIG_NRF_SECURITY_GLUE_LIBRARY)
   #
   # Create glue libraries for backends (if enabled)
   #
-  if (CONFIG_CC310_BACKEND)
+  if (CONFIG_CC3XX_BACKEND)
     nrf_security_debug("Adding cc310_glue.cmake")
     include(${CMAKE_CURRENT_LIST_DIR}/cc310/cc310_glue.cmake)
   endif()
@@ -108,8 +108,8 @@ endif(CONFIG_NRF_SECURITY_GLUE_LIBRARY)
 #
 # CC310: Rename glued symbols to prevent collision
 #
-if (CONFIG_CC310_BACKEND)
-  symbol_rename_func("cc310" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
+if (CONFIG_CC3XX_BACKEND)
+  symbol_rename_func("cc3xx" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
 endif()
 
 #

@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_CC310_MBEDTLS_ECDSA_C) && defined(CONFIG_GLUE_MBEDTLS_ECDSA_C)
+#if defined(CONFIG_CC3XX_MBEDTLS_ECDSA_C) && defined(CONFIG_GLUE_MBEDTLS_ECDSA_C)
 
 #include "mbedtls/ecdsa.h"
 #include "backend_ecdsa.h"

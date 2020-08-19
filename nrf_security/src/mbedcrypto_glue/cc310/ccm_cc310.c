@@ -10,7 +10,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_GLUE_CC310_MBEDTLS_CCM_C)
+#if defined(CONFIG_GLUE_CC3XX_MBEDTLS_CCM_C)
 
 #include "mbedtls/ccm.h"
 #include "backend_ccm.h"
@@ -20,8 +20,8 @@ static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits)
     return (keybits == 128) ? 3 : 0;
 }
 
-const mbedtls_ccm_funcs mbedtls_ccm_cc310_backend_funcs = {
-    .backend_context_size = (4 * CC310_MBEDTLS_CCM_CONTEXT_WORDS),
+const mbedtls_ccm_funcs mbedtls_ccm_cc3xx_backend_funcs = {
+    .backend_context_size = (4 * CC3XX_MBEDTLS_CCM_CONTEXT_WORDS),
     .check = mbedtls_ccm_check,
     .init = mbedtls_ccm_init,
     .setkey = mbedtls_ccm_setkey,

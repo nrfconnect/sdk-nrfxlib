@@ -40,8 +40,8 @@
 #define DHM_CONTEXT_FREE(ctx) do { ctx->handle = NULL; } while (0)
 
 
-#if defined(CONFIG_CC310_MBEDTLS_DHM_C)
-extern mbedtls_dhm_funcs mbedtls_dhm_cc310_backend_funcs;
+#if defined(CONFIG_CC3XX_MBEDTLS_DHM_C)
+extern mbedtls_dhm_funcs mbedtls_dhm_cc3xx_backend_funcs;
 #endif
 #if defined(CONFIG_VANILLA_MBEDTLS_DHM_C)
 extern mbedtls_dhm_funcs mbedtls_dhm_vanilla_mbedtls_backend_funcs;
@@ -49,8 +49,8 @@ extern mbedtls_dhm_funcs mbedtls_dhm_vanilla_mbedtls_backend_funcs;
 
 
 static mbedtls_dhm_funcs* dhm_backends[] = {
-#if defined(CONFIG_CC310_MBEDTLS_DHM_C)
-    &mbedtls_dhm_cc310_backend_funcs,
+#if defined(CONFIG_CC3XX_MBEDTLS_DHM_C)
+    &mbedtls_dhm_cc3xx_backend_funcs,
 #endif
 #if defined(CONFIG_VANILLA_MBEDTLS_DHM_C)
     &mbedtls_dhm_vanilla_mbedtls_backend_funcs,

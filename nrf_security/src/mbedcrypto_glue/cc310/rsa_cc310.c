@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_CC310_MBEDTLS_RSA_C) && defined(CONFIG_GLUE_MBEDTLS_RSA_C)
+#if defined(CONFIG_CC3XX_MBEDTLS_RSA_C) && defined(CONFIG_GLUE_MBEDTLS_RSA_C)
 
 #include "mbedtls/rsa.h"
 #include "backend_rsa.h"
@@ -24,8 +24,8 @@ static int mbedtls_rsa_check(int padding, int hash_id, unsigned int nbits)
     return 0;
 }
 
-const mbedtls_rsa_funcs mbedtls_rsa_cc310_backend_funcs = {
-    .backend_context_size = (4 * CC310_MBEDTLS_RSA_CONTEXT_WORDS),
+const mbedtls_rsa_funcs mbedtls_rsa_cc3xx_backend_funcs = {
+    .backend_context_size = (4 * CC3XX_MBEDTLS_RSA_CONTEXT_WORDS),
     .check = mbedtls_rsa_check,
     .init = mbedtls_rsa_init,
     .import = mbedtls_rsa_import,

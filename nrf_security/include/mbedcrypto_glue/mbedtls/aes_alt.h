@@ -17,7 +17,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#define CC310_MBEDTLS_AES_CONTEXT_WORDS         (24)    //!< AES context size in words in the nrf_cc310_mbedcrypto library.
+#define CC3XX_MBEDTLS_AES_CONTEXT_WORDS         (29)    //!< AES context size in words in the nrf_cc3xx_mbedcrypto library.
 #define OBERON_MBEDTLS_AES_CONTEXT_WORDS        (70)    //!< AES context size in words in the nrf_oberon mbed TLS.
 #define VANILLA_MBEDTLS_AES_CONTEXT_WORDS       (70)    //!< AES context size in words in standard mbed TLS.
 #define OBERON_MBEDTLS_AES_XTS_CONTEXT_WORDS    (140)   //!< AES XTS context size in words in the nrf_oberon library.
@@ -34,9 +34,9 @@ typedef struct mbedtls_aes_context
 {
     union
     {
-#if defined(CONFIG_CC310_MBEDTLS_AES_C)
-        uint32_t buffer_cc310[CC310_MBEDTLS_AES_CONTEXT_WORDS];                //!< Array the size of an AES context in the nrf_cc310_mbedcrypto library.
-#endif /* CONFIG_CC310_MBEDTLS_AES_C */
+#if defined(CONFIG_CC3XX_MBEDTLS_AES_C)
+        uint32_t buffer_cc3xx[CC3XX_MBEDTLS_AES_CONTEXT_WORDS];                //!< Array the size of an AES context in the nrf_cc3xx_mbedcrypto library.
+#endif /* CONFIG_CC3XX_MBEDTLS_AES_C */
 #if defined(CONFIG_OBERON_MBEDTLS_AES_C)
         uint32_t buffer_oberon_mbedtls[OBERON_MBEDTLS_AES_CONTEXT_WORDS];     //!< Array the size of an AES context in the nrf_oberon library.
 #endif /* CONFIG_OBERON_MBEDTLS_AES_C */

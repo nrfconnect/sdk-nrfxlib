@@ -142,11 +142,11 @@ kconfig_mbedtls_config_val("MBEDTLS_SSL_CIPHERSUITES"      "${CONFIG_MBEDTLS_SSL
 kconfig_mbedtls_config("MBEDTLS_SHA256_SMALLER")
 
 #
-# CC310 flags for threading and platform zeroize
+# CC3XX flags for threading and platform zeroize
 # Note: These must be set in noglue an and regular configuration for correct
 # context sizes
 #
-if (CONFIG_CC310_BACKEND)
+if (CONFIG_CC3XX_BACKEND)
   set(MBEDTLS_PLATFORM_ZEROIZE_ALT TRUE)
   set(MBEDTLS_THREADING_C TRUE)
   set(MBEDTLS_THREADING_ALT TRUE)
@@ -221,6 +221,7 @@ kconfig_mbedtls_config("MBEDTLS_AES_ALT")
 kconfig_mbedtls_config("MBEDTLS_CCM_ALT")
 kconfig_mbedtls_config("MBEDTLS_CMAC_ALT")
 kconfig_mbedtls_config("MBEDTLS_DHM_ALT")
+kconfig_mbedtls_config("MBEDTLS_GCM_ALT")
 kconfig_mbedtls_config("MBEDTLS_ECP_ALT")
 kconfig_mbedtls_config("MBEDTLS_ECDH_GEN_PUBLIC_ALT")
 kconfig_mbedtls_config("MBEDTLS_ECDH_COMPUTE_SHARED_ALT")
@@ -243,16 +244,16 @@ kconfig_mbedtls_config("MBEDTLS_PK_WRITE_C")
 kconfig_mbedtls_config("MBEDTLS_X509_USE_C")
 kconfig_mbedtls_config("MBEDTLS_X509_CRT_PARSE_C")
 
-if (CONFIG_CC310_BACKEND)
+if (CONFIG_CC3XX_BACKEND)
   set(MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT TRUE)
 endif()
 
-if (CC310_MBEDTLS_ECDH_C OR OBERON_MBEDTLS_ECDH_C)
+if (CC3XX_MBEDTLS_ECDH_C OR OBERON_MBEDTLS_ECDH_C)
   set(MBEDTLS_ECDH_GEN_PUBLIC_ALT TRUE)
   set(MBEDTLS_ECDH_COMPUTE_SHARED_ALT TRUE)
 endif()
 
-if (CC310_MBEDTLS_ECDSA_C OR OBERON_MBEDTLS_ECDSA_C)
+if (CC3XX_MBEDTLS_ECDSA_C OR OBERON_MBEDTLS_ECDSA_C)
   set(MBEDTLS_ECDSA_VERIFY_ALT TRUE)
   set(MBEDTLS_ECDSA_SIGN_ALT TRUE)
   set(MBEDTLS_ECDSA_GENKEY_ALT TRUE)

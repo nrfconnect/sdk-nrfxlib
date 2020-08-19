@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_GLUE_CC310_MBEDTLS_DHM_C)
+#if defined(CONFIG_GLUE_CC3XX_MBEDTLS_DHM_C)
 
 #include "mbedtls/dhm.h"
 #include "backend_dhm.h"
@@ -24,7 +24,7 @@ static int mbedtls_dhm_check(unsigned int pbits)
     return 0;
 }
 
-const mbedtls_dhm_funcs mbedtls_dhm_cc310_backend_funcs = {
+const mbedtls_dhm_funcs mbedtls_dhm_cc3xx_backend_funcs = {
     .check = mbedtls_dhm_check,
     .init = mbedtls_dhm_init,
     .read_params = mbedtls_dhm_read_params,
