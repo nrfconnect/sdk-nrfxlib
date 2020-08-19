@@ -31,8 +31,8 @@
 #define RSA_CONTEXT_FREE(ctx) do { ctx->handle = NULL; } while (0)
 
 
-#if defined(CONFIG_CC310_MBEDTLS_RSA_C)
-extern mbedtls_rsa_funcs mbedtls_rsa_cc310_backend_funcs;
+#if defined(CONFIG_CC3XX_MBEDTLS_RSA_C)
+extern mbedtls_rsa_funcs mbedtls_rsa_cc3xx_backend_funcs;
 #endif
 #if defined(CONFIG_VANILLA_MBEDTLS_RSA_C)
 extern mbedtls_rsa_funcs mbedtls_rsa_vanilla_mbedtls_backend_funcs;
@@ -40,8 +40,8 @@ extern mbedtls_rsa_funcs mbedtls_rsa_vanilla_mbedtls_backend_funcs;
 
 
 static mbedtls_rsa_funcs* rsa_backends[] = {
-#if defined(CONFIG_CC310_MBEDTLS_RSA_C)
-    &mbedtls_rsa_cc310_backend_funcs,
+#if defined(CONFIG_CC3XX_MBEDTLS_RSA_C)
+    &mbedtls_rsa_cc3xx_backend_funcs,
 #endif
 #if defined(CONFIG_VANILLA_MBEDTLS_RSA_C)
     &mbedtls_rsa_vanilla_mbedtls_backend_funcs,

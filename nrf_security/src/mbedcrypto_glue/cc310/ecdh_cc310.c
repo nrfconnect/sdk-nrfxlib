@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_CC310_MBEDTLS_ECDH_C) && defined(CONFIG_GLUE_MBEDTLS_ECDH_C)
+#if defined(CONFIG_CC3XX_MBEDTLS_ECDH_C) && defined(CONFIG_GLUE_MBEDTLS_ECDH_C)
 
 #include "mbedtls/ecdh.h"
 #include "backend_ecdh.h"
@@ -38,7 +38,7 @@ static int mbedtls_ecdh_check(mbedtls_ecp_group *grp, int function)
     }
 }
 
-const mbedtls_ecdh_funcs mbedtls_ecdh_cc310_backend_funcs = {
+const mbedtls_ecdh_funcs mbedtls_ecdh_cc3xx_backend_funcs = {
     .check = mbedtls_ecdh_check,
     .gen_public = mbedtls_ecdh_gen_public,
     .compute_shared = mbedtls_ecdh_compute_shared,

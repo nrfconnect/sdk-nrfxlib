@@ -36,8 +36,8 @@
 #define AES_XTS_CONTEXT_FREE(ctx) do { ctx->handle = NULL; } while (0)
 
 
-#if defined(CONFIG_CC310_MBEDTLS_AES_C)
-extern mbedtls_aes_funcs mbedtls_aes_cc310_backend_funcs;
+#if defined(CONFIG_CC3XX_MBEDTLS_AES_C)
+extern mbedtls_aes_funcs mbedtls_aes_cc3xx_backend_funcs;
 #endif
 #if defined(CONFIG_OBERON_MBEDTLS_AES_C)
 extern mbedtls_aes_funcs mbedtls_aes_oberon_backend_funcs;
@@ -48,8 +48,8 @@ extern mbedtls_aes_funcs mbedtls_aes_vanilla_mbedtls_backend_funcs;
 
 
 static mbedtls_aes_funcs* aes_backends[] = {
-#if defined(CONFIG_CC310_MBEDTLS_AES_C)
-    &mbedtls_aes_cc310_backend_funcs,
+#if defined(CONFIG_CC3XX_MBEDTLS_AES_C)
+    &mbedtls_aes_cc3xx_backend_funcs,
 #endif
 #if defined(CONFIG_OBERON_MBEDTLS_AES_C)
     &mbedtls_aes_oberon_backend_funcs,

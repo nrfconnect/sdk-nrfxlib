@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_CC310_MBEDTLS_ECDSA_C) && defined(CONFIG_GLUE_MBEDTLS_ECDSA_C)
+#if defined(CONFIG_CC3XX_MBEDTLS_ECDSA_C) && defined(CONFIG_GLUE_MBEDTLS_ECDSA_C)
 
 #include "mbedtls/ecdsa.h"
 #include "backend_ecdsa.h"
@@ -42,7 +42,7 @@ static int mbedtls_ecdsa_check(mbedtls_ecp_group *grp, mbedtls_ecp_group_id gid,
     }
 }
 
-const mbedtls_ecdsa_funcs mbedtls_ecdsa_cc310_backend_funcs = {
+const mbedtls_ecdsa_funcs mbedtls_ecdsa_cc3xx_backend_funcs = {
     .check = mbedtls_ecdsa_check,
     .sign = mbedtls_ecdsa_sign,
     .verify = mbedtls_ecdsa_verify,

@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_GLUE_CC310_MBEDTLS_CMAC_C)
+#if defined(CONFIG_GLUE_CC3XX_MBEDTLS_CMAC_C)
 
 #include "mbedtls/cmac.h"
 #include "mbedtls/platform.h"
@@ -31,7 +31,7 @@ void mbedtls_cipher_cmac_free(mbedtls_cipher_context_t *ctx)
     }
 }
 
-const mbedtls_cmac_funcs mbedtls_cmac_cc310_backend_funcs = {
+const mbedtls_cmac_funcs mbedtls_cmac_cc3xx_backend_funcs = {
     .check = mbedtls_cipher_cmac_check,
     .starts = mbedtls_cipher_cmac_starts,
     .update = mbedtls_cipher_cmac_update,

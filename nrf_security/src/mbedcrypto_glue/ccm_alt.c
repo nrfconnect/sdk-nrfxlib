@@ -32,8 +32,8 @@
     } while (0)
 
 
-#if defined(CONFIG_CC310_MBEDTLS_CCM_C)
-extern mbedtls_ccm_funcs mbedtls_ccm_cc310_backend_funcs;
+#if defined(CONFIG_CC3XX_MBEDTLS_CCM_C)
+extern mbedtls_ccm_funcs mbedtls_ccm_cc3xx_backend_funcs;
 #endif
 #if defined(CONFIG_OBERON_MBEDTLS_CCM_C)
 extern mbedtls_ccm_funcs mbedtls_ccm_oberon_backend_funcs;
@@ -44,8 +44,8 @@ extern mbedtls_ccm_funcs mbedtls_ccm_vanilla_mbedtls_backend_funcs;
 
 
 static mbedtls_ccm_funcs* ccm_backends[] = {
-#if defined(CONFIG_CC310_MBEDTLS_CCM_C)
-    &mbedtls_ccm_cc310_backend_funcs,
+#if defined(CONFIG_CC3XX_MBEDTLS_CCM_C)
+    &mbedtls_ccm_cc3xx_backend_funcs,
 #endif
 #if defined(CONFIG_OBERON_MBEDTLS_CCM_C)
     &mbedtls_ccm_oberon_backend_funcs,

@@ -44,6 +44,7 @@ append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library/
     cipher_wrap.c
     ctr_drbg.c
     des.c
+    entropy.c
     entropy_poll.c
     error.c
     gcm.c
@@ -54,7 +55,6 @@ append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library/
     md2.c
     md4.c
     md5.c
-    memory_buffer_alloc.c
     nist_kw.c
     oid.c
     padlock.c
@@ -112,6 +112,7 @@ nrf_security_debug("Adding replacement files (modified mbed TLS)")
 append_with_prefix(src_crypto_replacement
   ${NRF_SECURITY_ROOT}/src/mbedtls/replacements/
   pem.c
+  memory_buffer_alloc.c
 )
 
 append_with_prefix(src_tls_replacement
@@ -131,11 +132,9 @@ zephyr_library_sources_ifdef(CONFIG_MBEDTLS_ENABLE_HEAP
   ${NRF_SECURITY_ROOT}/src/mbedtls/mbedtls_heap.c
 )
 
-if (CONFIG_ENTROPY_CC310)
-  zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/cc310/replacements/entropy.c)
+if (CONFIG_ENTROPY_CC3XX)
 elseif(CONFIG_ENTROPY_NRF5_RNG OR CONFIG_ENTROPY_NRF_LL_SOFTDEVICE)
   zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/nrf5x/entropy_nrf5x.c)
-  zephyr_library_sources(${ARM_MBEDTLS_PATH}/library/entropy.c)
 endif()
 
 zephyr_library_link_libraries(mbedtls_common)
@@ -170,9 +169,9 @@ add_subdirectory(shared)
 zephyr_library_link_libraries(mbedcrypto_shared)
 
 #
-# Create mbedcrypto_cc310 (noglue) library
+# Create mbedcrypto_cc3xx (noglue) library
 #
-if (CONFIG_CC310_BACKEND)
+if (CONFIG_CC3XX_BACKEND)
   nrf_security_debug("-------- Adding src/mbedtls/cc310")
   add_subdirectory(cc310)
 endif()
@@ -198,13 +197,13 @@ if(NOT CONFIG_NRF_SECURITY_GLUE_LIBRARY)
   # Only single backend is chosen, thus append it to zephyr libraries as
   # no renaming should be carried out.
   #
-  if(TARGET mbedcrypto_cc310)
-    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_cc310 (no glue)")
-    target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_cc310)
+  if(TARGET mbedcrypto_cc3xx)
+    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_cc3xx (no glue)")
+    target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_cc3xx)
   endif()
-  if(TARGET platform_cc310)
-    nrf_security_debug("Linking mbedtls_base_vanilla with platform_cc310 (no glue)")
-    target_link_libraries(mbedtls_base_vanilla PRIVATE platform_cc310)
+  if(TARGET platform_cc3xx)
+    nrf_security_debug("Linking mbedtls_base_vanilla with platform_cc3xx (no glue)")
+    target_link_libraries(mbedtls_base_vanilla PRIVATE platform_cc3xx)
   endif()
   if(TARGET mbedcrypto_oberon)
     nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_oberon (no glue)")

@@ -20,9 +20,9 @@
 #include "mbedtls/cipher.h"
 
 /**
- * @brief Context size of AES CCM in words in the mbed_cc310_mbedcrypto library.
+ * @brief Context size of AES CCM in words in the mbed_cc3xx_mbedcrypto library.
  */
-#define CC310_MBEDTLS_CCM_CONTEXT_WORDS     (96)
+#define CC3XX_MBEDTLS_CCM_CONTEXT_WORDS     (29)
 #define OBERON_MBEDTLS_CCM_CONTEXT_WORDS    ((sizeof(mbedtls_cipher_context_t) + 3) / 4)
 #define VANILLA_MBEDTLS_CCM_CONTEXT_WORDS   ((sizeof(mbedtls_cipher_context_t) + 3) / 4)
 
@@ -43,10 +43,10 @@ typedef struct mbedtls_ccm_context
 #endif
     union _buffer
     {
-#if defined(CONFIG_CC310_MBEDTLS_CCM_C)
-        uint32_t buffer_cc310[CC310_MBEDTLS_CCM_CONTEXT_WORDS];               //!< Array the size of an AES CCM context in the nrf_cc310_mbedcrypto library.
+#if defined(CONFIG_CC3XX_MBEDTLS_CCM_C)
+        uint32_t buffer_cc3xx[CC3XX_MBEDTLS_CCM_CONTEXT_WORDS];               //!< Array the size of an AES CCM context in the nrf_cc3xx_mbedcrypto library.
 
-#endif /* CONFIG_CC310_MBEDTLS_CCM_C */
+#endif /* CONFIG_CC3XX_MBEDTLS_CCM_C */
 #if defined(CONFIG_OBERON_MBEDTLS_CCM_C)
         uint32_t buffer_oberon_mbedtls[OBERON_MBEDTLS_CCM_CONTEXT_WORDS];   //!< Array the size of an AES CCM context in the nrf_oberon library.
 #endif /* CONFIG_OBERON_MBEDTLS_CCM_C */

@@ -19,8 +19,8 @@
 #include "backend_ecdsa.h"
 
 
-#if defined(CONFIG_CC310_MBEDTLS_ECDSA_C)
-extern mbedtls_ecdsa_funcs mbedtls_ecdsa_cc310_backend_funcs;
+#if defined(CONFIG_CC3XX_MBEDTLS_ECDSA_C)
+extern mbedtls_ecdsa_funcs mbedtls_ecdsa_cc3xx_backend_funcs;
 #endif
 #if defined(CONFIG_OBERON_MBEDTLS_ECDSA_C)
 extern mbedtls_ecdsa_funcs mbedtls_ecdsa_oberon_mbedtls_backend_funcs;
@@ -31,8 +31,8 @@ extern mbedtls_ecdsa_funcs mbedtls_ecdsa_vanilla_mbedtls_backend_funcs;
 
 
 static mbedtls_ecdsa_funcs* ecdsa_backends[] = {
-#if defined(CONFIG_CC310_MBEDTLS_ECDSA_C)
-    &mbedtls_ecdsa_cc310_backend_funcs,
+#if defined(CONFIG_CC3XX_MBEDTLS_ECDSA_C)
+    &mbedtls_ecdsa_cc3XX_backend_funcs,
 #endif
 #if defined(CONFIG_OBERON_MBEDTLS_ECDSA_C)
     &mbedtls_ecdsa_oberon_mbedtls_backend_funcs,

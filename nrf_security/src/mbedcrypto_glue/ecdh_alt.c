@@ -19,8 +19,8 @@
 #include "backend_ecdh.h"
 
 
-#if defined(CONFIG_CC310_MBEDTLS_ECDH_C)
-extern mbedtls_ecdh_funcs mbedtls_ecdh_cc310_backend_funcs;
+#if defined(CONFIG_CC3XX_MBEDTLS_ECDH_C)
+extern mbedtls_ecdh_funcs mbedtls_ecdh_cc3xx_backend_funcs;
 #endif
 #if defined(CONFIG_OBERON_MBEDTLS_ECDH_C)
 extern mbedtls_ecdh_funcs mbedtls_ecdh_oberon_mbedtls_backend_funcs;
@@ -31,8 +31,8 @@ extern mbedtls_ecdh_funcs mbedtls_ecdh_vanilla_mbedtls_backend_funcs;
 
 
 static mbedtls_ecdh_funcs* ecdh_backends[] = {
-#if defined(CONFIG_CC310_MBEDTLS_ECDH_C)
-    &mbedtls_ecdh_cc310_backend_funcs,
+#if defined(CONFIG_CC3XX_MBEDTLS_ECDH_C)
+    &mbedtls_ecdh_cc3xx_backend_funcs,
 #endif
 #if defined(CONFIG_OBERON_MBEDTLS_ECDH_C)
     &mbedtls_ecdh_oberon_mbedtls_backend_funcs,
