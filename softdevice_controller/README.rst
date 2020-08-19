@@ -11,30 +11,36 @@ In addition to providing a Bluetooth HCI interface, it also provides:
 * APIs for controlling the high frequency clock
 
 The |controller| is distributed in different variants containing different features.
-All variants are available as soft-float, softfp-float, and hard-float builds.
+Variants for the Arm Cortex-M4 processor are available as soft-float, softfp-float, and hard-float.
+Variants for the Arm Cortex-M33 processor are available as soft-float only.
 
 SoC support:
 
 +------------+--------+--------+--------+
 |            | S112   | S132   | S140   |
 +============+========+========+========+
-| nRF52805   | X      |        |        |
+| nRF52805   | Rev 1  |        |        |
 +------------+--------+--------+--------+
-| nRF52810   | X      | X      |        |
+| nRF52810   | Rev 1  |        |        |
 +------------+--------+--------+--------+
-| nRF52811   | X      |        | X      |
+| nRF52811   | Rev 1  |        | Rev 1  |
 +------------+--------+--------+--------+
-| nRF52832   | X      | X      |        |
+| nRF52820   | Eng B  |        | Eng B  |
 +------------+--------+--------+--------+
-| nRF52833   |        |        | X      |
+| nRF52832   | Rev 2  | Rev 2  |        |
 +------------+--------+--------+--------+
-| nRF52840   |        |        | X      |
+| nRF52833   |        |        | Eng A  |
 +------------+--------+--------+--------+
-| nRF5340    |        |        | X      |
+| nRF52840   |        |        | Rev 2  |
++------------+--------+--------+--------+
+| nRF5340    |        |        | Eng A  |
 +------------+--------+--------+--------+
 
+For more information about SoC revisions, see the SoC revision and variants information in the 
+compatibility matrix for each SoC. You can find the compatibility matrices in the `Infocenter`_.
 
-Feature support:
+
+Bluetooth LE feature support:
 
 +--------------------------+--------+--------+--------+
 |                          | S112   | S132   | S140   |
