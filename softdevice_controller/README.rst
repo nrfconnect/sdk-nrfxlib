@@ -36,8 +36,8 @@ SoC support:
 | nRF5340    |        |        | Eng A  |
 +------------+--------+--------+--------+
 
-For more information about SoC revisions, see the SoC revision and variants information in the 
-compatibility matrix for each SoC. You can find the compatibility matrices in the `Infocenter`_.
+For more information about SoC revisions, see the SoC revision and variants information in the compatibility matrix for each SoC.
+You can find the compatibility matrices in the `Infocenter`_.
 
 
 Bluetooth LE feature support:
