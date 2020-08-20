@@ -25,9 +25,8 @@ Bugfixes
 Known Issues and limitations
 ============================
 * Synthesized low frequency clock source is not tested or intended for use with MPSL.
-* The Radio Notification feature has a power performance penalty proportional to the notification
-  distance. This means an additional average current consumption of about 600 µA for the duration
-  of the notification distance (DRGN-14153).
+* The Radio Notification feature has a power performance penalty proportional to the notification distance.
+  This means an additional average current consumption of about 600 µA for the duration of the notification distance (DRGN-14153).
 
 nRF Connect SDK v1.3.0
 **********************
