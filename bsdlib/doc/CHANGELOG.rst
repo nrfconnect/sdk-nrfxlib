@@ -5,6 +5,13 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.7.8
+************
+
+* Fixed the issue where the modem communication would not work after a shutdown-init sequence.
+* Added TLS server support
+
+
 bsdlib 0.7.7
 ************
 
