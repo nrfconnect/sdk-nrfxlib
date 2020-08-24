@@ -10,7 +10,7 @@ Master branch
 
 Changes
 =======
-* Change the timeslot implementation to support up to 8 concurrent sessions.
+* Change the timeslot implementation to support up to 8 concurrent sessions (DRGN-13952).
   As part of this change, it is now necessary to supply a timeslot context configuration
   using :cpp:func:`mpsl_timeslot_session_count_set`. All APIs timeslot APIs now take
   a session_id as input. The session id is retrieved from :cpp:func:`mpsl_timeslot_session_open()`.
@@ -18,13 +18,13 @@ Changes
 Bugfixes
 ========
 
-* Fixed an issue where the high frequency clock and TIMER0 was not turned off during idle periods shorter than 9 ms.
+* Fixed an issue where the high frequency clock and TIMER0 was not turned off during idle periods shorter than 9 ms (DRGN-14152).
   This increased the average power consumption.
-  Such a case could occur when running a Bluetooth LE connection with a connection interval of 7.5 ms. 
+  Such a case could occur when running a Bluetooth LE connection with a connection interval of 7.5 ms.
 
 Known Issues and limitations
 ============================
-* Synthesized low frequency clock source is not tested or intended for use with MPSL.
+* Synthesized low frequency clock source is not tested or intended for use with MPSL (DRGN-6362).
 * The Radio Notification feature has a power performance penalty proportional to the notification distance.
   This means an additional average current consumption of about 600 µA for the duration of the notification distance (DRGN-14153).
 
