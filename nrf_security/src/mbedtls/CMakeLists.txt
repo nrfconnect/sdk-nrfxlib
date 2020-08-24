@@ -193,26 +193,25 @@ if (CONFIG_MBEDTLS_VANILLA_BACKEND)
   add_subdirectory(vanilla)
 endif()
 
-
-if(NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
+if(NOT CONFIG_NRF_SECURITY_GLUE_LIBRARY)
   #
   # Only single backend is chosen, thus append it to zephyr libraries as
   # no renaming should be carried out.
   #
   if(TARGET mbedcrypto_cc310)
-    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_cc310 (single backend)")
+    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_cc310 (no glue)")
     target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_cc310)
   endif()
   if(TARGET platform_cc310)
-    nrf_security_debug("Linking mbedtls_base_vanilla with platform_cc310 (single backend)")
+    nrf_security_debug("Linking mbedtls_base_vanilla with platform_cc310 (no glue)")
     target_link_libraries(mbedtls_base_vanilla PRIVATE platform_cc310)
   endif()
   if(TARGET mbedcrypto_oberon)
-    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_oberon (single backend)")
+    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_oberon (no glue)")
     target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_oberon)
   endif()
   if(TARGET mbedcrypto_vanilla)
-    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_oberon (single backend)")
+    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_vanilla (no glue)")
     target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_vanilla)
   endif()
 endif()

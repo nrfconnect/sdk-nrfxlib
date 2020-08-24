@@ -11,60 +11,22 @@
 # Internal macro which will enable the define in mbed TLS config file based on
 # the corresponding Kconfig setting.
 #
-# This version is used for configurations that does not consider gluing or
-# single-backend resolving
+# This macro strips away CONFIG_ to make a define usable in mbed TLS config file
 #
-macro(kconfig_mbedtls_config_direct base)
-  if (CONFIG_${base} OR
-      CONFIG_CC310_${base} OR
-      CONFIG_VANILLA_${base} OR
-      CONFIG_OBERON_${base})
+macro(kconfig_mbedtls_config base)
+  if (CONFIG_${base})
     nrf_security_debug("Setting ${base} to TRUE")
     set(${base} TRUE)
   endif()
 endmacro()
 
-#
-# Internal macro which will enable the define in mbed TLS config file based on
-# the corresponding Kconfig setting.
-#
-# This version must be used for configurations considering gluing or
-# single-backend resolving
-#
-macro(kconfig_mbedtls_config base)
-  if(CONFIG_CC310_${base})
-    nrf_security_debug("CONFIG_CC310_${base} is TRUE (Kconfig)")
-  endif()
-  if(CONFIG_OBERON_${base})
-    nrf_security_debug("CONFIG_OBERON_${base} is TRUE (Kconfig)")
-  endif()
-  if(CONFIG_VANILLA_${base})
-    nrf_security_debug("CONFIG_VANILLA_${base} is TRUE (Kconfig)")
-  endif()
-
-  kconfig_mbedtls_config_direct(${base})
-
-  # Set any single-backend enabled configs
-  if (NOT CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0 AND CONFIG_${base})
-    if(CONFIG_CC310_BACKEND)
-      set (CONFIG_CC310_${base} true)
-      nrf_security_debug("Setting CONFIG_CC310_${base} to TRUE (single backend)")
-    endif()
-    if(CONFIG_OBERON_BACKEND)
-      set (CONFIG_OBERON_${base} true)
-      nrf_security_debug("Setting CONFIG_OBERON_${base} to TRUE (single backend)")
-    endif()
-    if(CONFIG_MBEDTLS_VANILLA_BACKEND)
-      set (CONFIG_VANILLA_${base} true)
-      nrf_security_debug("Setting CONFIG_VANILLA_${base} to TRUE (single backend)")
-    endif()
-  endif()
-endmacro()
 
 #
 # Internal macro which will enable the define in mbed TLS config file based on
 # the corresponding Kconfig setting.
-# The macro will use the value provided as second argument in the config header.
+#
+# This macro strips away CONFIG_ to make a define usable in mbed TLS config file
+# This macro will use the value provided as second argument in the config header.
 #
 macro(kconfig_mbedtls_config_val base val)
   if (CONFIG_${base})
@@ -81,10 +43,7 @@ endmacro()
 macro(mbedtls_config_define_depends mbedtls_config)
   set(${mbedtls_config} TRUE)
   foreach(arg ${ARGN})
-    if (NOT (CONFIG_${arg} OR
-             CONFIG_CC310_${arg} OR
-             CONFIG_OBERON_${arg} OR
-             CONFIG_VANILLA_${arg}))
+    if (NOT CONFIG_${arg})
       unset(${mbedtls_config})
       break()
     endif()
@@ -128,51 +87,51 @@ kconfig_mbedtls_config("MBEDTLS_CHACHAPOLY_C")
 #
 # Setting mbedtls defines for features not glued
 #
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_MODE_CBC")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_MODE_CFB")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_MODE_CTR")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_MODE_OFB")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_MODE_XTS")
-kconfig_mbedtls_config_direct("MBEDTLS_CTR_DRBG_C")
-kconfig_mbedtls_config_direct("MBEDTLS_HMAC_DRBG_C")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP192R1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP224R1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP256R1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP384R1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP521R1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP192K1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP224K1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_SECP256K1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_BP256R1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_BP384R1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_BP512R1_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_CURVE25519_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_DP_CURVE448_ENABLED")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_PADDING_PKCS7")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_PADDING_ONE_AND_ZEROS")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_PADDING_ZEROS_AND_LEN")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_PADDING_ZEROS")
-kconfig_mbedtls_config_direct("MBEDTLS_MD_C")
-kconfig_mbedtls_config_direct("MBEDTLS_PKCS1_V15")
-kconfig_mbedtls_config_direct("MBEDTLS_PKCS1_V21")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CBC")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CFB")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_CTR")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_OFB")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_MODE_XTS")
+kconfig_mbedtls_config("MBEDTLS_CTR_DRBG_C")
+kconfig_mbedtls_config("MBEDTLS_HMAC_DRBG_C")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP192R1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP224R1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP256R1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP384R1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP521R1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP192K1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP224K1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_SECP256K1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_BP256R1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_BP384R1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_BP512R1_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_CURVE25519_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_ECP_DP_CURVE448_ENABLED")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_PADDING_PKCS7")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_PADDING_ONE_AND_ZEROS")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_PADDING_ZEROS_AND_LEN")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_PADDING_ZEROS")
+kconfig_mbedtls_config("MBEDTLS_MD_C")
+kconfig_mbedtls_config("MBEDTLS_PKCS1_V15")
+kconfig_mbedtls_config("MBEDTLS_PKCS1_V21")
 
 #
 # Nordic added defines for features not supported in HW
 # and might not be available (due to configuration)
 #
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_ECB_C")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_CBC_C")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_CTR_C")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_CCM_C")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_OFB_C")
-kconfig_mbedtls_config_direct("MBEDTLS_CIPHER_AES_256_CFB_C")
-kconfig_mbedtls_config_direct("MBEDTLS_AES_256_CMAC_C")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_ECB_C")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_CBC_C")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_CTR_C")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_CCM_C")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_OFB_C")
+kconfig_mbedtls_config("MBEDTLS_CIPHER_AES_256_CFB_C")
+kconfig_mbedtls_config("MBEDTLS_AES_256_CMAC_C")
 
 #
 # Advanced configuration setting for mbed TLS
 #
-kconfig_mbedtls_config_direct("MBEDTLS_AES_ROM_TABLES")
-kconfig_mbedtls_config_direct("MBEDTLS_AES_FEWER_TABLES")
+kconfig_mbedtls_config("MBEDTLS_AES_ROM_TABLES")
+kconfig_mbedtls_config("MBEDTLS_AES_FEWER_TABLES")
 kconfig_mbedtls_config_val("MBEDTLS_MPI_WINDOW_SIZE"       "${CONFIG_MBEDTLS_MPI_WINDOW_SIZE}")
 kconfig_mbedtls_config_val("MBEDTLS_MPI_MAX_SIZE"          "${CONFIG_MBEDTLS_MPI_MAX_SIZE}")
 kconfig_mbedtls_config_val("MBEDTLS_ECP_MAX_BITS"          "${CONFIG_MBEDTLS_ECP_MAX_BITS}")
@@ -180,7 +139,7 @@ kconfig_mbedtls_config_val("MBEDTLS_ECP_WINDOW_SIZE"       "${CONFIG_MBEDTLS_ECP
 kconfig_mbedtls_config_val("MBEDTLS_ECP_FIXED_POINT_OPTIM" "1")
 kconfig_mbedtls_config_val("MBEDTLS_SSL_MAX_CONTENT_LEN"   "${CONFIG_MBEDTLS_SSL_MAX_CONTENT_LEN}")
 kconfig_mbedtls_config_val("MBEDTLS_SSL_CIPHERSUITES"      "${CONFIG_MBEDTLS_SSL_CIPHERSUITES}")
-kconfig_mbedtls_config_direct("MBEDTLS_SHA256_SMALLER")
+kconfig_mbedtls_config("MBEDTLS_SHA256_SMALLER")
 
 #
 # CC310 flags for threading and platform zeroize
@@ -258,30 +217,30 @@ endif()
 # Alt flags set by no-prompt kconfig variables
 # This must be done after any noglue header files are generated
 #
-kconfig_mbedtls_config_direct("MBEDTLS_AES_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_CCM_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_CMAC_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_DHM_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_ECP_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_ECDH_GEN_PUBLIC_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_ECDH_COMPUTE_SHARED_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_ECDSA_GENKEY_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_ECDSA_SIGN_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_ECDSA_VERIFY_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_ECJPAKE_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_SHA1_ALT")
-kconfig_mbedtls_config_direct("MBEDTLS_SHA256_ALT")
+kconfig_mbedtls_config("MBEDTLS_AES_ALT")
+kconfig_mbedtls_config("MBEDTLS_CCM_ALT")
+kconfig_mbedtls_config("MBEDTLS_CMAC_ALT")
+kconfig_mbedtls_config("MBEDTLS_DHM_ALT")
+kconfig_mbedtls_config("MBEDTLS_ECP_ALT")
+kconfig_mbedtls_config("MBEDTLS_ECDH_GEN_PUBLIC_ALT")
+kconfig_mbedtls_config("MBEDTLS_ECDH_COMPUTE_SHARED_ALT")
+kconfig_mbedtls_config("MBEDTLS_ECDSA_GENKEY_ALT")
+kconfig_mbedtls_config("MBEDTLS_ECDSA_SIGN_ALT")
+kconfig_mbedtls_config("MBEDTLS_ECDSA_VERIFY_ALT")
+kconfig_mbedtls_config("MBEDTLS_ECJPAKE_ALT")
+kconfig_mbedtls_config("MBEDTLS_SHA1_ALT")
+kconfig_mbedtls_config("MBEDTLS_SHA256_ALT")
 
 #
 # Defines currently not grouped
 #
-kconfig_mbedtls_config_direct("MBEDTLS_PKCS1_V21")
-kconfig_mbedtls_config_direct("MBEDTLS_PKCS1_V15")
-kconfig_mbedtls_config_direct("MBEDTLS_PK_C")
-kconfig_mbedtls_config_direct("MBEDTLS_PK_PARSE_C")
-kconfig_mbedtls_config_direct("MBEDTLS_PK_WRITE_C")
-kconfig_mbedtls_config_direct("MBEDTLS_X509_USE_C")
-kconfig_mbedtls_config_direct("MBEDTLS_X509_CRT_PARSE_C")
+kconfig_mbedtls_config("MBEDTLS_PKCS1_V21")
+kconfig_mbedtls_config("MBEDTLS_PKCS1_V15")
+kconfig_mbedtls_config("MBEDTLS_PK_C")
+kconfig_mbedtls_config("MBEDTLS_PK_PARSE_C")
+kconfig_mbedtls_config("MBEDTLS_PK_WRITE_C")
+kconfig_mbedtls_config("MBEDTLS_X509_USE_C")
+kconfig_mbedtls_config("MBEDTLS_X509_CRT_PARSE_C")
 
 if (CONFIG_CC310_BACKEND)
   set(MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT TRUE)

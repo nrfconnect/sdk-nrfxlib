@@ -65,7 +65,7 @@ set(common_includes
 add_subdirectory(src/mbedtls)
 nrf_security_debug("-------- Adding src/mbedtls")
 
-if (CONFIG_NRF_CRYPTO_BACKEND_COMBINATION_0)
+if (CONFIG_NRF_SECURITY_MULTI_BACKEND)
   # a. cc310 and vanilla selection of ciphers --> Renaming and glue
   # b. vanilla selection of ciphers only --> Renaming, but no glue
   add_subdirectory(src/mbedcrypto_glue)

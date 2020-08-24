@@ -32,7 +32,6 @@ config GENERATE_MBEDTLS_CFG_FILE
 	  mbed TLS configuration file. Only disable this setting if you know
 	  what you are doing.
 
-
 config MBEDTLS_X509_LIBRARY
 	bool
 	prompt "Create mbed TLS x509 library"
@@ -64,15 +63,34 @@ config MBEDTLS_HEAP_SIZE
 	default 512
 	depends on MBEDTLS_ENABLE_HEAP
 	help
-	  The mbedtls routines will use this heap if enabled.
+	  Heap size for mbed TLS in bytes.
 	  For streaming communication with arbitrary (HTTPS) servers on the
 	  Internet, 32KB + overheads (up to another 20KB) may be needed.
 	  Ensure to adjust the heap size according to the need of the
 	  application.
 
-endmenu
+endmenu # mbed TLS memory configuration
 
 comment "Backend Selection"
+
+if !NRF_SECURITY_MULTI_BACKEND
+
+config CC310_SINGLE_BACKEND
+	bool
+	depends on CC310_BACKEND
+	default y
+
+config OBERON_SINGLE_BACKEND
+	bool
+	depends on OBERON_BACKEND
+	default y
+
+config MBEDTLS_VANILLA_SINGLE_BACKEND
+	bool
+	depends on MBEDTLS_VANILLA_BACKEND
+	default y
+
+endif # !NRF_SECURITY_MULTI_BACKEND
 
 menuconfig CC310_BACKEND
 	bool "Use cc310 backend"
@@ -82,7 +100,6 @@ menuconfig CC310_BACKEND
 	#   This is tested as (SOC_NRF9160 && !SPM) because TRUSTED_EXECUTION_NONSECURE can be omitted in this case.
 	depends on SOC_NRF52840 || (SOC_NRF9160 && TRUSTED_EXECUTION_SECURE) || (SOC_NRF9160 && !SPM)
 	default y
-	select NRF_CRYPTO_BACKEND_COMBINATION_0 if MBEDTLS_VANILLA_BACKEND || OBERON_BACKEND
 	select NRF_CC310_PLATFORM
 	help
 	  Enable cc310 backend
@@ -92,73 +109,57 @@ if CC310_BACKEND
 config HW_CC310_INTERRUPT
 	bool "Use interrupt version of nrf cc310 platform and crypto libraries"
 
-endif
+endif # CC310_BACKEND
 
 config OBERON_BACKEND
 	bool "Use nrf_oberon backend"
 	default y if !(SOC_NRF52840 || (SOC_NRF9160 && TRUSTED_EXECUTION_SECURE))
-	select NRF_CRYPTO_BACKEND_COMBINATION_0 if CC310_BACKEND || MBEDTLS_VANILLA_BACKEND
 	select NRF_OBERON
 	help
-		enable nrf_oberon mbed TLS backend
+	  Enable nrf_oberon mbed TLS backend
 
 config MBEDTLS_VANILLA_BACKEND
-	bool "Use mbed TLS backend"
-	select NRF_CRYPTO_BACKEND_COMBINATION_0 if CC310_BACKEND || OBERON_BACKEND
+	bool "Use mbed TLS vanilla backend"
 	help
 	  Enable mbed TLS vanilla backend
 
-# Backend combination group 0 is used to indicate when two or more backends are
-# selected which all supports the following crypto features:
-# - AES
-# - CMAC
-# - DHM
-# - ECDH
-# - ECDSA
-# - RSA
-# - SHA
 #
-# Purpose of th backend combination is to reduce the need for testing against
-# multiple backends and make it easier to add additional backends.
+# Configuration to signal that multiple backends are enabled
 #
-config NRF_CRYPTO_BACKEND_COMBINATION_0
+config NRF_SECURITY_MULTI_BACKEND
 	bool
+	depends on NRF_SECURITY_ANY_BACKEND
+	depends on (CC310_BACKEND && (OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND) || \
+			   (OBERON_BACKEND && MBEDTLS_VANILLA_BACKEND))
+	default y
+
+#
+# Configuration to signal that any backend is enabled
+#
+config NRF_SECURITY_ANY_BACKEND
+	bool
+	depends on CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
+	default y
+
+comment "Configuration section"
+
+if NRF_SECURITY_ANY_BACKEND
 
 #
 # Configuration to indicate that a glue layer is needed
-# This is used when multiple backend are enabled that supports
+# This is used when multiple backends are enabled that support
 # a glued functionality (like AES)
 #
-config NRF_CRYPTO_GLUE_LIBRARY
+config NRF_SECURITY_GLUE_LIBRARY
 	bool
-
-#
-# List of additional symbols to indicate cipher key sizes.
-# Currently selected based backend selection.
-#
-config MBEDTLS_CIPHER_AES_256_ECB_C
-	bool
-
-config MBEDTLS_CIPHER_AES_256_CBC_C
-	bool
-
-config MBEDTLS_CIPHER_AES_256_CTR_C
-	bool
-
-config MBEDTLS_CIPHER_AES_256_CCM_C
-	bool
-
-config MBEDTLS_CIPHER_AES_256_CFB_C
-	bool
-
-config MBEDTLS_CIPHER_AES_256_OFB_C
-	bool
-
-comment "Configuration section"
+	depends on NRF_SECURITY_MULTI_BACKEND
+	depends on GLUE_MBEDTLS_AES_C || GLUE_MBEDTLS_CMAC_C || GLUE_MBEDTLS_CCM_C || GLUE_MBEDTLS_DHM_C
+	default y
 
 menuconfig NRF_SECURITY_RNG
 	bool
 	prompt "Random Number Generator support"
+	depends on ENTROPY_HAS_DRIVER
 	default y
 	select MBEDTLS_SHA256_C
 	help
@@ -182,27 +183,20 @@ config MBEDTLS_HMAC_DRBG_C
 	bool
 	prompt "PRNG using HMAC_DRBG"
 	default y
+	select MBEDTLS_SHA256_C
 	help
 	  This setting will enable HMAC_DRBG APIs in mbed TLS.
 	  Corresponds to MBEDTLS_HMAC_DRBG_C setting in mbed TLS config file.
 
-endif
-
-config MBEDTLS_AES_ALT
-	bool
-
-config OBERON_ALTERNATE_AES_KEY_ENC
-	bool
+endif # NRF_SECURITY_RNG
 
 menuconfig MBEDTLS_AES_C
 	bool
 	prompt "AES   - Advanced Encryption Standard"
-	depends on CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
 	default y
-	select MBEDTLS_CIPHER_AES_256_ECB_C if OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select MBEDTLS_CIPHER_AES_256_ECB_C if MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select MBEDTLS_AES_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select OBERON_ALTERNATE_AES_KEY_ENC if OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select CC310_MBEDTLS_AES_C if CC310_SINGLE_BACKEND
+	select OBERON_MBEDTLS_AES_C if OBERON_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_AES_C if MBEDTLS_VANILLA_SINGLE_BACKEND
 	help
 	  This setting will enable AES block cipher, including ECB - Electronic Code Book.
 	  Enabling AES will provide a sub-menu which allows for fine grained
@@ -211,24 +205,110 @@ menuconfig MBEDTLS_AES_C
 
 if MBEDTLS_AES_C
 
+#
+# List of additional symbols to indicate AES cipher key sizes.
+# Based on backend selection.
+#
+config MBEDTLS_CIPHER_AES_256_ECB_C
+	bool
+	depends on OBERON_MBEDTLS_CIPHER_MODE_ECB || VANILLA_MBEDTLS_CIPHER_MODE_ECB
+	default y
+
+config MBEDTLS_CIPHER_AES_256_CBC_C
+	bool
+	depends on OBERON_MBEDTLS_CIPHER_MODE_CBC || VANILLA_MBEDTLS_CIPHER_MODE_CBC
+	default y
+
+config MBEDTLS_CIPHER_AES_256_CTR_C
+	bool
+	depends on OBERON_MBEDTLS_CIPHER_MODE_CTR || VANILLA_MBEDTLS_CIPHER_MODE_CTR
+	default y
+
+config MBEDTLS_CIPHER_AES_256_CFB_C
+	bool
+	depends on OBERON_MBEDTLS_CIPHER_MODE_CFB || VANILLA_MBEDTLS_CIPHER_MODE_CFB
+	default y
+
+config MBEDTLS_CIPHER_AES_256_OFB_C
+	bool
+	depends on OBERON_MBEDTLS_CIPHER_MODE_OFB || VANILLA_MBEDTLS_CIPHER_MODE_OFB
+	default y
+
+config MBEDTLS_CIPHER_AES_256_CCM_C
+	bool
+	depends on OBERON_MBEDTLS_CCM_C || VANILLA_MBEDTLS_CCM_C
+	default y
+
+#
+# Internal symbols indicating aes_alt.h will be used
+#
+config MBEDTLS_AES_ALT
+	bool
+	depends on CC310_MBEDTLS_AES_C || GLUE_MBEDTLS_AES_C
+	default y
+
+config OBERON_ALTERNATE_AES_KEY_ENC
+	bool
+	depends on OBERON_MBEDTLS_AES_C
+	default y
+
+#
+# Internal symbols for AES for specific backends
+#
+config CC310_MBEDTLS_AES_C
+	bool
+
+config OBERON_MBEDTLS_AES_C
+	bool
+
+config VANILLA_MBEDTLS_AES_C
+	bool
+
+#
+# Internal symbols for AES ECB
+#
+config CC310_MBEDTLS_CIPHER_MODE_ECB
+	bool
+	depends on CC310_MBEDTLS_AES_C
+	default y
+
+config OBERON_MBEDTLS_CIPHER_MODE_ECB
+	bool
+	depends on OBERON_MBEDTLS_AES_C
+	default y
+
+config VANILLA_MBEDTLS_CIPHER_MODE_ECB
+	bool
+	depends on VANILLA_MBEDTLS_AES_C && !OBERON_MBEDTLS_CIPHER_MODE_ECB
+	default y
+
+if NRF_SECURITY_MULTI_BACKEND
+
+#
+# Internal symbols for AES gluing
+#
 config GLUE_MBEDTLS_AES_C
 	bool
-	select NRF_CRYPTO_GLUE_LIBRARY
-	select MBEDTLS_AES_ALT
+	depends on CC310_GLUE_MBEDTLS_AES_C || OBERON_GLUE_MBEDTLS_AES_C || VANILLA_GLUE_MBEDTLS_AES_C
+	default y
 
 config CC310_GLUE_MBEDTLS_AES_C
 	bool
-	select GLUE_MBEDTLS_AES_C
+	depends on CC310_MBEDTLS_AES_C
+	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
+	default y
 
 config OBERON_GLUE_MBEDTLS_AES_C
 	bool
-	select GLUE_MBEDTLS_AES_C
+	depends on OBERON_MBEDTLS_AES_C
+	depends on CC310_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
+	default y
 
 config VANILLA_GLUE_MBEDTLS_AES_C
 	bool
-	select GLUE_MBEDTLS_AES_C
-
-if NRF_CRYPTO_BACKEND_COMBINATION_0
+	depends on VANILLA_MBEDTLS_AES_C
+	depends on CC310_MBEDTLS_AES_C || OBERON_MBEDTLS_AES_C
+	default y
 
 comment "General AES Backend Selection"
 
@@ -236,53 +316,48 @@ config CC310_MBEDTLS_AES_C
 	bool "cc310 (AES-128)"
 	depends on CC310_BACKEND
 	default y
-	select CC310_GLUE_MBEDTLS_AES_C if OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
-	select MBEDTLS_AES_ALT
 
 config OBERON_MBEDTLS_AES_C
 	bool "nrf_oberon (AES-128, AES-192, AES-256)"
 	depends on OBERON_BACKEND
 	default y
-	select OBERON_GLUE_MBEDTLS_AES_C if CC310_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
-	select OBERON_ALTERNATE_AES_KEY_ENC
-	select MBEDTLS_CIPHER_AES_256_ECB_C
 
 config VANILLA_MBEDTLS_AES_C
 	bool "mbed TLS (AES-128, AES-192, AES-256)"
 	depends on MBEDTLS_VANILLA_BACKEND
-	select VANILLA_GLUE_MBEDTLS_AES_C if CC310_MBEDTLS_AES_C || OBERON_MBEDTLS_AES_C
-	select MBEDTLS_CIPHER_AES_256_ECB_C
+
+endif # NRF_SECURITY_MULTI_BACKEND (AES ECB)
 
 comment "Cipher Selection"
 
-endif # NRF_CRYPTO_BACKEND_COMBINATION_0
-
-config GLUE_MBEDTLS_CIPHER_MODE_CBC
-	bool
-
-config CC310_MBEDTLS_CIPHER_MODE_CBC
-	bool
-
-config OBERON_MBEDTLS_CIPHER_MODE_CBC
-	bool
-
-config VANILLA_MBEDTLS_CIPHER_MODE_CBC
-	bool
-
 config MBEDTLS_CIPHER_MODE_CBC
 	bool "AES-CBC - AES Cipher Block Chaining mode"
-	depends on MBEDTLS_AES_C
 	default y
-	select MBEDTLS_CIPHER_AES_256_CBC_C if OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
-	select MBEDTLS_CIPHER_AES_256_CBC_C if OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select MBEDTLS_CIPHER_AES_256_CBC_C if MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select GLUE_MBEDTLS_CIPHER_MODE_CBC if GLUE_MBEDTLS_AES_C
-	select CC310_MBEDTLS_CIPHER_MODE_CBC if CC310_MBEDTLS_AES_C || (CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select OBERON_MBEDTLS_CIPHER_MODE_CBC if OBERON_MBEDTLS_AES_C || (OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select VANILLA_MBEDTLS_CIPHER_MODE_CBC if VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
 	help
 	  Enable the AES Cipher Block Chaining (CBC) mode,
 	  MBEDTLS_CIPHER_MODE_CBC setting in mbed TLS config file.
+
+if MBEDTLS_CIPHER_MODE_CBC
+
+config GLUE_MBEDTLS_CIPHER_MODE_CBC
+	bool
+	depends on GLUE_MBEDTLS_AES_C && NRF_SECURITY_MULTI_BACKEND
+	default y
+
+config CC310_MBEDTLS_CIPHER_MODE_CBC
+	bool
+	depends on CC310_MBEDTLS_AES_C
+	default y
+
+config OBERON_MBEDTLS_CIPHER_MODE_CBC
+	bool
+	depends on OBERON_MBEDTLS_AES_C
+	default y
+
+config VANILLA_MBEDTLS_CIPHER_MODE_CBC
+	bool
+	depends on VANILLA_MBEDTLS_AES_C && !OBERON_MBEDTLS_CIPHER_MODE_CBC
+	default y
 
 menu "CBC cipher padding modes"
 	depends on MBEDTLS_CIPHER_MODE_CBC
@@ -319,224 +394,273 @@ config MBEDTLS_CIPHER_PADDING_ZEROS
 	  Enable support for zeros padding for CBC cipher functions in mbedTLS.
 	  That is, fill buffer with 00 .. 00.
 
-endmenu
+endmenu # CBC cipher padding modes
 
-config GLUE_MBEDTLS_CIPHER_MODE_CTR
-	bool
-
-config CC310_MBEDTLS_CIPHER_MODE_CTR
-	bool
-
-config OBERON_MBEDTLS_CIPHER_MODE_CTR
-	bool
-
-config VANILLA_MBEDTLS_CIPHER_MODE_CTR
-	bool
+endif # MBEDTLS_CIPHER_MODE_CBC
 
 config MBEDTLS_CIPHER_MODE_CTR
 	bool "AES-CTR - AES Counter Block Cipher mode"
-	depends on MBEDTLS_AES_C
 	default y
-	select MBEDTLS_CIPHER_AES_256_CTR_C if OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
-	select MBEDTLS_CIPHER_AES_256_CTR_C if OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select MBEDTLS_CIPHER_AES_256_CTR_C if MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select GLUE_MBEDTLS_CIPHER_MODE_CTR if GLUE_MBEDTLS_AES_C
-	select CC310_MBEDTLS_CIPHER_MODE_CTR if CC310_MBEDTLS_AES_C || (CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select OBERON_MBEDTLS_CIPHER_MODE_CTR if OBERON_MBEDTLS_AES_C || (OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select VANILLA_MBEDTLS_CIPHER_MODE_CTR if VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
 	help
 	  Enable the AES Counter Block Cipher mode (CTR) mode,
 	  MBEDTLS_CIPHER_MODE_CTR setting in mbed TLS config file.
 
-config GLUE_MBEDTLS_CIPHER_MODE_CFB
-	bool
+if MBEDTLS_CIPHER_MODE_CTR
 
-config CC310_MBEDTLS_CIPHER_MODE_CFB
+config GLUE_MBEDTLS_CIPHER_MODE_CTR
 	bool
+	depends on GLUE_MBEDTLS_AES_C && NRF_SECURITY_MULTI_BACKEND
+	default y
 
-config OBERON_MBEDTLS_CIPHER_MODE_CFB
+config CC310_MBEDTLS_CIPHER_MODE_CTR
 	bool
+	depends on CC310_MBEDTLS_AES_C
+	default y
 
-config VANILLA_MBEDTLS_CIPHER_MODE_CFB
+config OBERON_MBEDTLS_CIPHER_MODE_CTR
 	bool
+	depends on OBERON_MBEDTLS_AES_C
+	default y
 
+config VANILLA_MBEDTLS_CIPHER_MODE_CTR
+	bool
+	depends on VANILLA_MBEDTLS_AES_C && !OBERON_MBEDTLS_CIPHER_MODE_CTR
+	default y
+
+endif # MBEDTLS_CIPHER_MODE_CTR
+
+#
+# Note: AES CFB is not available in CC310_BACKEND
+#
 config MBEDTLS_CIPHER_MODE_CFB
 	bool "AES-CFB - AES Cipher Feedback mode"
-	depends on MBEDTLS_AES_C
-	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C || (!NRF_CRYPTO_BACKEND_COMBINATION_0 && (OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND))
+	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
 	default y
-	select MBEDTLS_CIPHER_AES_256_CFB_C if OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
-	select MBEDTLS_CIPHER_AES_256_CFB_C if OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select MBEDTLS_CIPHER_AES_256_CFB_C if MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select GLUE_MBEDTLS_CIPHER_MODE_CFB if GLUE_MBEDTLS_AES_C
-	select OBERON_MBEDTLS_CIPHER_MODE_CFB if OBERON_MBEDTLS_AES_C || (OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select VANILLA_MBEDTLS_CIPHER_MODE_CFB if VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
 	help
 	  Enable the AES Cipher Feedback mode (CFB) mode,
 	  MBEDTLS_CIPHER_MODE_CFB setting in mbed TLS config file.
 
+if MBEDTLS_CIPHER_MODE_CFB
 
-config GLUE_MBEDTLS_CIPHER_MODE_OFB
+config GLUE_MBEDTLS_CIPHER_MODE_CFB
 	bool
+	depends on GLUE_MBEDTLS_AES_C && NRF_SECURITY_MULTI_BACKEND
+	default y
 
-config CC310_MBEDTLS_CIPHER_MODE_OFB
+config OBERON_MBEDTLS_CIPHER_MODE_CFB
 	bool
+	depends on OBERON_MBEDTLS_AES_C
+	default y
 
-config OBERON_MBEDTLS_CIPHER_MODE_OFB
+config VANILLA_MBEDTLS_CIPHER_MODE_CFB
 	bool
+	depends on VANILLA_MBEDTLS_AES_C && !OBERON_MBEDTLS_CIPHER_MODE_CFB
+	default y
 
-config VANILLA_MBEDTLS_CIPHER_MODE_OFB
-	bool
+endif # MBEDTLS_CIPHER_MODE_CFB
 
+#
+# Note: AES OFB is not available in CC310_BACKEND
+#
 config MBEDTLS_CIPHER_MODE_OFB
 	bool "AES-OFB - AES Output Feedback mode"
-	depends on MBEDTLS_AES_C
-	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C || (!NRF_CRYPTO_BACKEND_COMBINATION_0 && (OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND))
+	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
 	default y
-	select MBEDTLS_CIPHER_AES_256_OFB_C if OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
-	select MBEDTLS_CIPHER_AES_256_CFB_C if OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select MBEDTLS_CIPHER_AES_256_OFB_C if MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select GLUE_MBEDTLS_CIPHER_MODE_OFB if GLUE_MBEDTLS_AES_C
-	select OBERON_MBEDTLS_CIPHER_MODE_CFB if OBERON_MBEDTLS_AES_C || (OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select VANILLA_MBEDTLS_CIPHER_MODE_CFB if VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
 	help
 	  Enable the AES Output Feedback mode (OFB) mode,
 	  MBEDTLS_CIPHER_MODE_OFB setting in mbed TLS config file.
 
+if MBEDTLS_CIPHER_MODE_OFB
 
-config GLUE_MBEDTLS_CIPHER_MODE_XTS
+config GLUE_MBEDTLS_CIPHER_MODE_OFB
 	bool
+	depends on GLUE_MBEDTLS_AES_C && NRF_SECURITY_MULTI_BACKEND
+	default y
 
-config OBERON_MBEDTLS_CIPHER_MODE_XTS
+config OBERON_MBEDTLS_CIPHER_MODE_OFB
 	bool
+	depends on OBERON_MBEDTLS_AES_C
+	default y
 
-config VANILLA_MBEDTLS_CIPHER_MODE_XTS
+config VANILLA_MBEDTLS_CIPHER_MODE_OFB
 	bool
+	depends on VANILLA_MBEDTLS_AES_C && !OBERON_MBEDTLS_CIPHER_MODE_OFB
+	default y
 
+endif # MBEDTLS_CIPHER_MODE_OFB
+
+#
+# Note: AES XTS is not available in CC310_BACKEND
+#
 config MBEDTLS_CIPHER_MODE_XTS
 	bool "AES-XTS - AES Xor-encrypt-xor with ciphertext stealing mode"
-	depends on MBEDTLS_AES_C
-	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C || (!NRF_CRYPTO_BACKEND_COMBINATION_0 && (OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND))
+	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
 	default y
-	select GLUE_MBEDTLS_CIPHER_MODE_XTS if GLUE_MBEDTLS_AES_C
-	select OBERON_MBEDTLS_CIPHER_MODE_XTS if OBERON_MBEDTLS_AES_C || (OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select VANILLA_MBEDTLS_CIPHER_MODE_XTS if VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
 	help
 	  Enable the AES Xor-encrypt-xor with ciphertext stealing mode (XTS) mode,
 	  MBEDTLS_CIPHER_MODE_XTS setting in mbed TLS config file.
 
+if MBEDTLS_CIPHER_MODE_XTS
+
+config GLUE_MBEDTLS_CIPHER_MODE_XTS
+	bool
+	depends on GLUE_MBEDTLS_AES_C && NRF_SECURITY_MULTI_BACKEND
+	default y
+
+config OBERON_MBEDTLS_CIPHER_MODE_XTS
+	bool
+	depends on OBERON_MBEDTLS_AES_C
+	default y
+
+config VANILLA_MBEDTLS_CIPHER_MODE_XTS
+	bool
+	depends on VANILLA_MBEDTLS_AES_C && !OBERON_MBEDTLS_CIPHER_MODE_XTS
+	default y
+
+endif # MBEDTLS_CIPHER_MODE_XTS
+
+menuconfig MBEDTLS_CMAC_C
+	bool "AES-CMAC - AES Cipher-based Message Authentication Code mode for block ciphers"
+	default y
+	select CC310_MBEDTLS_CMAC_C if CC310_SINGLE_BACKEND
+	select OBERON_MBEDTLS_CMAC_C if OBERON_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_CMAC_C if MBEDTLS_VANILLA_SINGLE_BACKEND
+
+if MBEDTLS_CMAC_C
+
 config MBEDTLS_AES_256_CMAC_C
 	bool
+	depends on OBERON_MBEDTLS_CMAC_C || VANILLA_MBEDTLS_CMAC_C
+	default y
 
 config MBEDTLS_CMAC_ALT
 	bool
-
-config MBEDTLS_CMAC_C
-	bool "AES-CMAC - AES Cipher-based Message Authentication Code mode for block ciphers"
-	depends on MBEDTLS_AES_C
-	depends on CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
-	depends on !NRF_CRYPTO_BACKEND_COMBINATION_0
+	depends on CC310_MBEDTLS_CMAC_C || GLUE_MBEDTLS_CMAC_C
 	default y
-	select MBEDTLS_AES_256_CMAC_C if OBERON_BACKEND
-	select MBEDTLS_AES_256_CMAC_C if MBEDTLS_VANILLA_BACKEND
-	select MBEDTLS_CMAC_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
 
-menu "AES-CMAC - AES Cipher-based Message Authentication Code mode for block ciphers"
-	depends on NRF_CRYPTO_BACKEND_COMBINATION_0
+config CC310_MBEDTLS_CMAC_C
+	bool
+
+config OBERON_MBEDTLS_CMAC_C
+	bool
+
+config VANILLA_MBEDTLS_CMAC_C
+	bool
+
+if NRF_SECURITY_MULTI_BACKEND
 
 config GLUE_MBEDTLS_CMAC_C
 	bool
-	select NRF_CRYPTO_GLUE_LIBRARY
-	select MBEDTLS_CMAC_ALT
+	depends on GLUE_MBEDTLS_AES_C
+	default y
 
 config CC310_GLUE_MBEDTLS_CMAC_C
 	bool
-	select GLUE_MBEDTLS_CMAC_C
+	depends on CC310_MBEDTLS_AES_C
+	depends on GLUE_MBEDTLS_AES_C
+	default y
 
 config OBERON_GLUE_MBEDTLS_CMAC_C
 	bool
-	select GLUE_MBEDTLS_CMAC_C
+	depends on OBERON_MBEDTLS_AES_C
+	depends on GLUE_MBEDTLS_AES_C
+	default y
 
 config VANILLA_GLUE_MBEDTLS_CMAC_C
 	bool
-	select GLUE_MBEDTLS_CMAC_C
+	depends on VANILLA_MBEDTLS_AES_C
+	depends on GLUE_MBEDTLS_AES_C
+	default y
 
 config CC310_MBEDTLS_CMAC_C
-	bool "CC310 (CMAC using AES-128)"
-	depends on CC310_BACKEND
+	bool "cc310 (CMAC using AES-128)"
+	depends on CC310_MBEDTLS_AES_C
 	default y
-	select CC310_GLUE_MBEDTLS_CMAC_C if OBERON_MBEDTLS_CMAC_C || VANILLA_MBEDTLS_CMAC_C
-	select MBEDTLS_AES_256_CMAC_C
-	select MBEDTLS_CMAC_ALT
 	help
 	  HW accelerated CMAC support using AES-128
 
 config OBERON_MBEDTLS_CMAC_C
 	bool "nrf_oberon (CMAC using AES-128, AES-192, AES-256)"
-	depends on OBERON_BACKEND && MBEDTLS_AES_C
-	default y if OBERON_MBEDTLS_AES_C
-	select OBERON_GLUE_MBEDTLS_CMAC_C if CC310_MBEDTLS_CMAC_C || VANILLA_MBEDTLS_CMAC_C
-	select MBEDTLS_AES_256_CMAC_C
+	depends on OBERON_MBEDTLS_AES_C
+	default y
 	help
 	  CMAC support using AES-128, AES-192, AES-256
-
 
 config VANILLA_MBEDTLS_CMAC_C
 	bool "mbed TLS (CMAC using AES-128, AES-192, AES-256)"
-	depends on MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C
-	default y if VANILLA_MBEDTLS_AES_C
-	select VANILLA_GLUE_MBEDTLS_CMAC_C if CC310_MBEDTLS_CMAC_C || OBERON_MBEDTLS_CMAC_C
-	select MBEDTLS_AES_256_CMAC_C
+	depends on VANILLA_MBEDTLS_AES_C && !OBERON_MBEDTLS_CMAC_C
+	default y
 	help
 	  CMAC support using AES-128, AES-192, AES-256
 
-endmenu # "AES-CMAC - AES Cipher-based Message Authentication Code mode for block ciphers"
+endif # NRF_SECURITY_MULTI_BACKEND (CMAC)
+
+endif # MBEDTLS_CMAC_C
 
 endif # MBEDTLS_AES_C
 
 menu "AEAD  - Authenticated Encryption with Associated Data"
-	depends on CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
 
-config MBEDTLS_CCM_ALT
-	bool
-
-config MBEDTLS_CCM_C
+menuconfig MBEDTLS_CCM_C
 	bool "AES-CCM - AES Counter with CBC-MAC mode"
-	depends on MBEDTLS_AES_C && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	depends on MBEDTLS_AES_C
 	default y
-	select MBEDTLS_CIPHER_AES_256_CCM_C if OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
-	select MBEDTLS_CCM_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select CC310_MBEDTLS_CCM_C if CC310_SINGLE_BACKEND
+	select OBERON_MBEDTLS_CCM_C if OBERON_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_CCM_C if MBEDTLS_VANILLA_SINGLE_BACKEND
 	help
 	  Enable the Counter with CBC-MAC (CCM) mode for 128-bit block cipher.
 	  This also includes CCM*
 	  MBEDTLS_CCM_C setting in mbed TLS config file.
 
-menu "AES-CCM - Counter with CBC-MAC mode"
-	depends on NRF_CRYPTO_BACKEND_COMBINATION_0
+if MBEDTLS_CCM_C
+
+config MBEDTLS_CCM_ALT
+	bool
+	depends on CC310_MBEDTLS_CCM_C || GLUE_MBEDTLS_CCM_C
+	default y
+
+config CC310_MBEDTLS_CCM_C
+	bool
+	depends on CC310_BACKEND && MBEDTLS_CCM_C
+	default y
+
+config OBERON_MBEDTLS_CCM_C
+	bool
+
+config VANILLA_MBEDTLS_CCM_C
+	bool
+
+if NRF_SECURITY_MULTI_BACKEND
 
 config GLUE_MBEDTLS_CCM_C
 	bool
-	select NRF_CRYPTO_GLUE_LIBRARY
-	select MBEDTLS_CCM_ALT
+	depends on NRF_SECURITY_MULTI_BACKEND && GLUE_MBEDTLS_AES_C
+	depends on CC310_GLUE_MBEDTLS_CCM_C || OBERON_GLUE_MBEDTLS_CCM_C || VANILLA_GLUE_MBEDTLS_CCM_C
+	default y
 
 config CC310_GLUE_MBEDTLS_CCM_C
 	bool
-	select GLUE_MBEDTLS_CCM_C
+	depends on CC310_MBEDTLS_CCM_C
+	depends on OBERON_GLUE_MBEDTLS_CCM_C || VANILLA_GLUE_MBEDTLS_CCM_C
+	default y
 
 config OBERON_GLUE_MBEDTLS_CCM_C
 	bool
-	select GLUE_MBEDTLS_CCM_C
+	depends on OBERON_MBEDTLS_CCM_C
+	depends on CC310_MBEDTLS_CCM_C || VANILLA_MBEDTLS_CCM_C
+	default y
 
 config VANILLA_GLUE_MBEDTLS_CCM_C
 	bool
-	select GLUE_MBEDTLS_CCM_C
+	depends on VANILLA_MBEDTLS_CCM_C
+	depends on CC310_MBEDTLS_CCM_C || OBERON_MBEDTLS_CCM_C
+	default y
 
 config CC310_MBEDTLS_CCM_C
 	bool "cc310 (Using AES-128)"
 	depends on CC310_MBEDTLS_AES_C
 	default y
-	select CC310_GLUE_MBEDTLS_CCM_C if OBERON_MBEDTLS_CCM_C || VANILLA_MBEDTLS_CCM_C
-	select MBEDTLS_CCM_ALT
 	help
 	  Enable the Counter with CBC-MAC (CCM) mode for 128-bit block cipher
 	  using AES-128. This also includes CCM* (star) mode
@@ -546,8 +670,6 @@ config OBERON_MBEDTLS_CCM_C
 	bool "nrf_oberon (Using AES-128, AES-192, AES-256)"
 	depends on OBERON_MBEDTLS_AES_C
 	default y
-	select OBERON_GLUE_MBEDTLS_CCM_C if CC310_MBEDTLS_CCM_C || VANILLA_MBEDTLS_CCM_C
-	select MBEDTLS_CIPHER_AES_256_CCM_C
 	help
 	  Enable the Counter with CBC-MAC (CCM) mode for 128-bit block cipher
 	  using AES-128, AES-192, AES-256. This also includes CCM* (star) mode
@@ -555,164 +677,251 @@ config OBERON_MBEDTLS_CCM_C
 
 config VANILLA_MBEDTLS_CCM_C
 	bool "mbed TLS (Using AES-128, AES-192, AES-256)"
-	depends on VANILLA_MBEDTLS_AES_C
-	select VANILLA_GLUE_MBEDTLS_CCM_C if CC310_MBEDTLS_CCM_C || OBERON_MBEDTLS_CCM_C
-	select MBEDTLS_CIPHER_AES_256_CCM_C
+	depends on VANILLA_MBEDTLS_AES_C && OBERON_MBEDTLS_CCM_C
+	default y
 	help
-	  Enable the Counter with CBC-MAC (CCM) mode for 128-bit block cipher
+	  EnableG the Counter with CBC-MAC (CCM) mode for 128-bit block cipher
 	  using AES-128, AES-192, AES-256. This also includes CCM* (star) mode
 	  MBEDTLS_CCM_C setting in mbed TLS config file.
 
-endmenu # "AES-CCM - Counter with CBC-MAC mode"
+endif # NRF_SECURITY_MULTI_BACKEND (AES CCM)
+
+endif # MBEDTLS_CCM_C
 
 config MBEDTLS_GCM_C
 	bool
 	prompt "AES-GCM - AES Galois/Counter Mode support"
 	depends on MBEDTLS_AES_C
-	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C || (!NRF_CRYPTO_BACKEND_COMBINATION_0 && (OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND))
+	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
 	default y
 	help
 	  Enable the GCM module.
 	  MBEDTLS_GCM_C setting in mbed TLS config file.
 
-config MBEDTLS_CHACHA_ALT
-	bool
-
 config MBEDTLS_CHACHA20_C
 	bool
 	prompt "CHACHA20 stream cipher support"
-	depends on (CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND)
 	default y
-	select MBEDTLS_CHACHA_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select CC310_MBEDTLS_CHACHA20_C if CC310_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_CHACHA20_C if OBERON_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_CHACHA20_C if MBEDTLS_VANILLA_SINGLE_BACKEND
 	help
 	  Enable the CHACHA20 stream cipher.
 	  MBEDTLS_CHACHA20_C setting in mbed TLS config file.
 
+if MBEDTLS_CHACHA20_C
+
+config MBEDTLS_CHACHA20_ALT
+	bool
+	depends on CHOICE_CC310_MBEDTLS_CHACHA20_C
+	default y
+
+config CC310_MBEDTLS_CHACHA20_C
+	bool
+
+config VANILLA_MBEDTLS_CHACHA20_C
+	bool
+
 choice
 	bool
 	prompt "Backend selection"
-	depends on MBEDTLS_CHACHA20_C && NRF_CRYPTO_BACKEND_COMBINATION_0
-	default CC310_MBEDTLS_CHACHA20_C
+	depends on 	NRF_SECURITY_MULTI_BACKEND
+	default CHOICE_CC310_MBEDTLS_CHACHA20_C
 
-config CC310_MBEDTLS_CHACHA20_C
-	bool "cc310" if CC310_BACKEND
-	select MBEDTLS_CHACHA_ALT
+config CHOICE_CC310_MBEDTLS_CHACHA20_C
+	bool "cc310"
+	depends on CC310_BACKEND
+	select CC310_MBEDTLS_CHACHA20_C
 	help
 	  HW accelerated chacha20 support
 
-config VANILLA_MBEDTLS_CHACHA20_C
-	bool "mbed TLS vanilla" if OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
+config CHOICE_VANILLA_MBEDTLS_CHACHA20_C
+	bool "mbed TLS vanilla"
+	depends on OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
+	select VANILLA_MBEDTLS_CHACHA20_C
 	help
 	  SW implemented chacha20 support
 
-endchoice
+endchoice # ChaCha20 backend selection
 
-config MBEDTLS_POLY1305_ALT
-	bool
+endif # MBEDTLS_CHACHA20_C
 
 config MBEDTLS_POLY1305_C
 	bool
 	prompt "POLY1305 module support"
-	depends on (CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND)
 	default y
-	select MBEDTLS_POLY1305_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select CC310_MBEDTLS_POLY1305_C if CC310_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_POLY1305_C if OBERON_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_POLY1305_C if MBEDTLS_VANILLA_SINGLE_BACKEND
 	help
 	  Enable the POLY1305 module.
 	  MBEDTLS_POLY1305_C setting in mbed TLS config file.
 
+if MBEDTLS_POLY1305_C
+
+config MBEDTLS_POLY1305_ALT
+	bool
+	depends on CC310_MBEDTLS_POLY1305_C
+	default y
+
+config CC310_MBEDTLS_POLY1305_C
+	bool
+
+config VANILLA_MBEDTLS_POLY1305_C
+	bool
+
 choice
 	bool
 	prompt "Backend selection"
-	depends on MBEDTLS_POLY1305_C && NRF_CRYPTO_BACKEND_COMBINATION_0
-	default CC310_MBEDTLS_POLY1305_C
+	depends on NRF_SECURITY_MULTI_BACKEND
+	default CHOICE_CC310_MBEDTLS_POLY1305_C
 
-config CC310_MBEDTLS_POLY1305_C
-	bool "cc310" if CC310_BACKEND
-	select MBEDTLS_POLY1305_ALT
+config CHOICE_CC310_MBEDTLS_POLY1305_C
+	bool "cc310"
+	depends on CC310_BACKEND
+	select CC310_MBEDTLS_POLY1305_C
 
-config VANILLA_MBEDTLS_POLY1305_C
-	bool "mbed TLS vanilla" if OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
+config CHOICE_VANILLA_MBEDTLS_POLY1305_C
+	bool "mbed TLS vanilla"
+	depends on OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
+	select VANILLA_MBEDTLS_POLY1305_C
 
-endchoice
+endchoice # Poly1305 backend selection
 
-config MBEDTLS_CHACHAPOLY_ALT
-	bool
+endif # MBEDTLS_POLY1305_C
 
 config MBEDTLS_CHACHAPOLY_C
 	bool
 	prompt "CHACHA-POLY module support"
-	depends on (CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND)
 	depends on (MBEDTLS_CHACHA20_C && MBEDTLS_POLY1305_C)
 	default y
-	select MBEDTLS_CHACHAPOLY_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select CC310_MBEDTLS_CHACHAPOLY_C if CC310_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_CHACHAPOLY_C if OBERON_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_CHACHAPOLY_C if MBEDTLS_VANILLA_SINGLE_BACKEND
 	help
 	  Enable the CHACHA-POLY module.
 	  MBEDTLS_CHACHAPOLY_C setting in mbed TLS config file.
 
+if MBEDTLS_CHACHAPOLY_C
+
+config MBEDTLS_CHACHAPOLY_ALT
+	bool
+	depends on CC310_MBEDTLS_CHACHAPOLY_C
+	default y
+
+config CC310_MBEDTLS_CHACHAPOLY_C
+	bool
+
+config VANILLA_MBEDTLS_CHACHAPOLY_C
+	bool
+
 choice
 	bool
 	prompt "Backend selection"
-	depends on (MBEDTLS_CHACHAPOLY_C && NRF_CRYPTO_BACKEND_COMBINATION_0)
-	default CC310_MBEDTLS_CHACHAPOLY_C
+	depends on NRF_SECURITY_MULTI_BACKEND
+	default CHOICE_CC310_MBEDTLS_CHACHAPOLY_C
 
-config CC310_MBEDTLS_CHACHAPOLY_C
-	bool "cc310" if CC310_BACKEND
-	select MBEDTLS_CHACHAPOLY_ALT
+config CHOICE_CC310_MBEDTLS_CHACHAPOLY_C
+	bool "cc310"
+	depends on CC310_BACKEND
+	select CC310_MBEDTLS_CHACHAPOLY_C
 
-config VANILLA_MBEDTLS_CHACHAPOLY_C
-	bool "mbed TLS vanilla" if OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
+config CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C
+	bool "mbed TLS vanilla"
+	depends on OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
+	select VANILLA_MBEDTLS_CHACHAPOLY_C
 
-endchoice
+endchoice # Backend selection
+
+endif # MBEDTLS_CHACHAPOLY_C
 
 endmenu # AEAD  - Authenticated Encryption with Associated Data
 
-config MBEDTLS_DHM_ALT
-	bool
-
-config MBEDTLS_DHM_C
+#
+# DHM gluing is only available for CC310_BACKEND + MBEDTLS_VANILLA_BACKEND
+# CC310 will be prioritized if CC310_BACKEND + OBERON_BACKEND is selected (not glued)
+#
+menuconfig MBEDTLS_DHM_C
 	bool
 	prompt "DHM   - Diffie-Hellman-Merkel"
 	default y
-	depends on !NRF_CRYPTO_BACKEND_COMBINATION_0
-	depends on CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
-	select MBEDTLS_DHM_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select CC310_MBEDTLS_DHM_C if CC310_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_DHM_C if OBERON_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_DHM_C if MBEDTLS_VANILLA_SINGLE_BACKEND
 	help
 	  Enable the DHM module.
 	  MBEDTLS_DHM_C setting in mbed TLS config file.
 
-menu "DHM   - Diffie-Hellman-Merkel"
-	depends on NRF_CRYPTO_BACKEND_COMBINATION_0
+if MBEDTLS_DHM_C
+
+config MBEDTLS_DHM_ALT
+	bool
+	depends on CC310_MBEDTLS_DHM_C || GLUE_MBEDTLS_DHM_C
+	default y
+
+config CC310_MBEDTLS_DHM_C
+	bool
+
+config VANILLA_MBEDTLS_DHM_C
+	bool
+
+if NRF_SECURITY_MULTI_BACKEND
 
 config GLUE_MBEDTLS_DHM_C
 	bool
-	select NRF_CRYPTO_GLUE_LIBRARY
+	depends on CC310_GLUE_MBEDTLS_DHM_C || VANILLA_GLUE_MBEDTLS_DHM_C
+	default y
 
 config CC310_GLUE_MBEDTLS_DHM_C
 	bool
-	select GLUE_MBEDTLS_DHM_C
+	depends on CC310_MBEDTLS_DHM_C && VANILLA_MBEDTLS_DHM_C
+	default y
 
 config VANILLA_GLUE_MBEDTLS_DHM_C
 	bool
-	select GLUE_MBEDTLS_DHM_C
+	depends on CC310_MBEDTLS_DHM_C && VANILLA_MBEDTLS_DHM_C
+	default y
 
 config CC310_MBEDTLS_DHM_C
-	bool "cc310" if CC310_BACKEND
+	bool "cc310"
+	depends on CC310_BACKEND
 	default y
-	select MBEDTLS_DHM_ALT
 	help
 	  Enable the DHM module from nrf cc310.
 	  MBEDTLS_DHM_C setting in mbed TLS config file.
 
 config VANILLA_MBEDTLS_DHM_C
-	bool "mbed TLS vanilla" if MBEDTLS_VANILLA_BACKEND
-	select GLUE_MBEDTLS_DHM_C if CC310_MBEDTLS_DHM_C
+	bool "mbed TLS vanilla"
+	depends on MBEDTLS_VANILLA_BACKEND
+	default y if !CC310_BACKEND
 	help
 	  Enable the DHM module from mbed TLS vanilla.
 	  MBEDTLS_DHM_C setting in mbed TLS config file.
-endmenu
+
+endif # NRF_SECURITY_MULTI_BACKEND (DHM)
+
+endif # MBEDTLS_DHM_C
+
+menuconfig MBEDTLS_ECP_C
+	bool
+	prompt "ECC - Eliptic Curve Cryptography"
+	default y
+	select CC310_MBEDTLS_ECP_C if CC310_SINGLE_BACKEND
+	select OBERON_MBEDTLS_ECP_C if OBERON_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_ECP_C if MBEDTLS_VANILLA_SINGLE_BACKEND
+	help
+	  Enable low level APIs for elliptic curves for
+	  additional functionality (besides ECDH and ECDSA)
+	  Enabling ECC will provide a sub-menu which allows for fine grained
+	  configuration of ECC based features and specific cipher support.
+	  Corresponds to MBEDTLS_ECP_C setting in mbed TLS config file.
+
+if MBEDTLS_ECP_C
 
 config MBEDTLS_ECP_ALT
 	bool
+	depends on CC310_MBEDTLS_ECP_C
+	default y
 
 config CC310_MBEDTLS_ECP_C
 	bool
@@ -723,79 +932,38 @@ config OBERON_MBEDTLS_ECP_C
 config VANILLA_MBEDTLS_ECP_C
 	bool
 
-menuconfig MBEDTLS_ECP_C
-	bool
-	prompt "ECC - Eliptic Curve Cryptography"
-	depends on (CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND)
-	default y if !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select CC310_MBEDTLS_ECP_C if (CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select MBEDTLS_ECP_ALT if (CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select MBEDTLS_ECP_ALT if (CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select OBERON_MBEDTLS_ECP_C if (OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	select VANILLA_MBEDTLS_ECP_C if (MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
-	help
-	  Enable low level APIs for elliptic curves for
-	  additional functionality (besides ECDH and ECDSA)
-	  Enabling ECC will provide a sub-menu which allows for fine grained
-	  configuration of ECC based features and specific cipher support.
-	  Corresponds to MBEDTLS_ECP_C setting in mbed TLS config file.
-
-if MBEDTLS_ECP_C
-
-if NRF_CRYPTO_BACKEND_COMBINATION_0
-
 comment "General ECC Backend Selection"
+	depends on NRF_SECURITY_MULTI_BACKEND
 
 choice
 	bool
 	prompt "Backend selection"
-	depends on MBEDTLS_ECP_C && NRF_CRYPTO_BACKEND_COMBINATION_0
+	depends on NRF_SECURITY_MULTI_BACKEND
 	default CHOICE_CC310_MBEDTLS_ECP_C if CC310_BACKEND
-	default CHOICE_OBERON_MBEDTLS_ECP_C if  OBERON_BACKEND && !CC310_BACKEND
+	default CHOICE_OBERON_MBEDTLS_ECP_C if OBERON_BACKEND && !CC310_BACKEND
 
 config CHOICE_CC310_MBEDTLS_ECP_C
-	bool "cc310" if CC310_BACKEND
+	bool "cc310"
+	depends on CC310_BACKEND
 	select CC310_MBEDTLS_ECP_C
-	select MBEDTLS_ECP_ALT
 
 config CHOICE_OBERON_MBEDTLS_ECP_C
-	bool "nrf_oberon" if OBERON_BACKEND
+	bool "nrf_oberon"
+	depends on OBERON_BACKEND
 	select OBERON_MBEDTLS_ECP_C
 
 config CHOICE_VANILLA_MBEDTLS_ECP_C
-	bool "mbed TLS vanilla" if MBEDTLS_VANILLA_BACKEND
+	bool "mbed TLS vanilla"
+	depends on MBEDTLS_VANILLA_BACKEND
 	select VANILLA_MBEDTLS_ECP_C
 
 endchoice # "Backend selection"
 
 comment "ECC Feature Selection"
 
-endif # NRF_CRYPTO_BACKEND_COMBINATION_0
-
-config MBEDTLS_ECDH_GEN_PUBLIC_ALT
-	bool
-
-config MBEDTLS_ECDH_COMPUTE_SHARED_ALT
-	bool
-
-config CC310_MBEDTLS_ECDH_C
-	bool
-	select MBEDTLS_ECDH_GEN_PUBLIC_ALT
-	select MBEDTLS_ECDH_COMPUTE_SHARED_ALT
-
-config OBERON_MBEDTLS_ECDH_C
-	bool
-	select MBEDTLS_ECDH_GEN_PUBLIC_ALT
-	select MBEDTLS_ECDH_COMPUTE_SHARED_ALT
-
-config VANILLA_MBEDTLS_ECDH_C
-	bool
-
 config MBEDTLS_ECDH_C
 	bool
 	prompt "ECDH  - Elliptic Curve Diffie-Hellman"
-	depends on CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
-	depends on MBEDTLS_ECP_C
 	select CC310_MBEDTLS_ECDH_C if CC310_MBEDTLS_ECP_C
 	select OBERON_MBEDTLS_ECDH_C if OBERON_MBEDTLS_ECP_C
 	select VANILLA_MBEDTLS_ECDH_C if VANILLA_MBEDTLS_ECP_C
@@ -804,37 +972,33 @@ config MBEDTLS_ECDH_C
 	  Enable the ECDH module.
 	  MBEDTLS_ECDH_C setting in mbed TLS config file.
 
+if MBEDTLS_ECDH_C
 
-config MBEDTLS_ECDSA_GENKEY_ALT
+config MBEDTLS_ECDH_GEN_PUBLIC_ALT
+	bool
+	depends on CC310_MBEDTLS_ECDH_C || OBERON_MBEDTLS_ECDH_C
+	default y
+
+config MBEDTLS_ECDH_COMPUTE_SHARED_ALT
+	bool
+	depends on CC310_MBEDTLS_ECDH_C || OBERON_MBEDTLS_ECDH_C
+	default y
+
+config CC310_MBEDTLS_ECDH_C
 	bool
 
-config MBEDTLS_ECDSA_SIGN_ALT
+config OBERON_MBEDTLS_ECDH_C
 	bool
 
-config MBEDTLS_ECDSA_VERIFY_ALT
+config VANILLA_MBEDTLS_ECDH_C
 	bool
 
-config CC310_MBEDTLS_ECDSA_C
-	bool
-	select MBEDTLS_ECDSA_GENKEY_ALT
-	select MBEDTLS_ECDSA_SIGN_ALT
-	select MBEDTLS_ECDSA_VERIFY_ALT
-
-config OBERON_MBEDTLS_ECDSA_C
-	bool
-	select MBEDTLS_ECDSA_GENKEY_ALT
-	select MBEDTLS_ECDSA_SIGN_ALT
-	select MBEDTLS_ECDSA_VERIFY_ALT
-
-config VANILLA_MBEDTLS_ECDSA_C
-	bool
+endif # MBEDTLS_ECDH_C
 
 config MBEDTLS_ECDSA_C
 	bool
 	prompt "ECDSA - Elliptic Curve Digital Signature Algorithm"
 	default y
-	depends on CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
-	depends on MBEDTLS_ECP_C
 	select CC310_MBEDTLS_ECDSA_C if CC310_MBEDTLS_ECP_C
 	select OBERON_MBEDTLS_ECDSA_C if OBERON_MBEDTLS_ECP_C
 	select VANILLA_MBEDTLS_ECDSA_C if VANILLA_MBEDTLS_ECP_C
@@ -842,32 +1006,61 @@ config MBEDTLS_ECDSA_C
 	  Enable the ECDSA module.
 	  MBEDTLS_ECDSA_C setting in mbed TLS config file.
 
+if MBEDTLS_ECDSA_C
+
+config MBEDTLS_ECDSA_GENKEY_ALT
+	bool
+	depends on CC310_MBEDTLS_ECDSA_C || OBERON_MBEDTLS_ECDSA_C
+	default y
+
+config MBEDTLS_ECDSA_SIGN_ALT
+	bool
+	depends on CC310_MBEDTLS_ECDSA_C || OBERON_MBEDTLS_ECDSA_C
+	default y
+
+config MBEDTLS_ECDSA_VERIFY_ALT
+	bool
+	depends on CC310_MBEDTLS_ECDSA_C || OBERON_MBEDTLS_ECDSA_C
+	default y
+
+config CC310_MBEDTLS_ECDSA_C
+	bool
+
+config OBERON_MBEDTLS_ECDSA_C
+	bool
+
+config VANILLA_MBEDTLS_ECDSA_C
+	bool
+
+endif # MBEDTLS_ECDSA_C
+
+config MBEDTLS_ECJPAKE_C
+	bool "ECJPAKE - Elliptic curve J-PAKE"
+	select CC310_MBEDTLS_ECJPAKE_C if CC310_MBEDTLS_ECP_C
+	select OBERON_MBEDTLS_ECJPAKE_C if OBERON_MBEDTLS_ECP_C
+	select VANILLA_MBEDTLS_ECJPAKE_C if VANILLA_MBEDTLS_ECP_C
+	help
+	  Enable support for ECJPAKE
+
+if MBEDTLS_ECJPAKE_C
+
 config MBEDTLS_ECJPAKE_ALT
 	bool
+	depends on OBERON_MBEDTLS_ECJPAKE_C
+	default y
 
 config CC310_MBEDTLS_ECJPAKE_C
 	bool
 
 config OBERON_MBEDTLS_ECJPAKE_C
-	select MBEDTLS_ECJPAKE_ALT
 	bool
 
 config VANILLA_MBEDTLS_ECJPAKE_C
 	bool
 
-config MBEDTLS_ECJPAKE_C
-	bool "ECJPAKE - Elliptic curve J-PAKE"
-	depends on (CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND)
-	depends on MBEDTLS_ECP_C
-	select CC310_MBEDTLS_ECJPAKE_C if CC310_MBEDTLS_ECP_C
-	select OBERON_MBEDTLS_ECJPAKE_C if OBERON_MBEDTLS_ECP_C
-	select VANILLA_MBEDTLS_ECJPAKE_C if VANILLA_MBEDTLS_ECP_C
-	default y
-	help
-	  Enable support for ECJPAKE
+endif # MBEDTLS_ECJPAKE_C
 
 menu "ECC curves"
-	depends on MBEDTLS_ECP_C
 
 config MBEDTLS_ECP_DP_SECP192R1_ENABLED
 	bool "Enable NIST curve secp192r1"
@@ -927,7 +1120,7 @@ config MBEDTLS_ECP_DP_SECP256K1_ENABLED
 config MBEDTLS_ECP_DP_BP256R1_ENABLED
 	bool "Enable Brainpool curve bp256r1"
 	depends on !OBERON_MBEDTLS_ECP_C
-	depends on (VANILLA_MBEDTLS_ECP_C && !CC310_MBEDTLS_ECDH_C && !CC310_MBEDTLS_ECDSA_C) || (MBEDTLS_ECP_C && MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
+	depends on VANILLA_MBEDTLS_ECP_C
 	default n
 	help
 	  MBEDTLS_ECP_DP_BP256R1_ENABLED setting in mbed TLS config file.
@@ -935,7 +1128,7 @@ config MBEDTLS_ECP_DP_BP256R1_ENABLED
 config MBEDTLS_ECP_DP_BP384R1_ENABLED
 	bool "Enable Brainpool curve bp384r1"
 	depends on !OBERON_MBEDTLS_ECP_C
-	depends on (VANILLA_MBEDTLS_ECP_C && !CC310_MBEDTLS_ECDH_C && !CC310_MBEDTLS_ECDSA_C) || (MBEDTLS_ECP_C && MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
+	depends on VANILLA_MBEDTLS_ECP_C
 	default n
 	help
 	  MBEDTLS_ECP_DP_BP384R1_ENABLED setting in mbed TLS config file.
@@ -943,7 +1136,7 @@ config MBEDTLS_ECP_DP_BP384R1_ENABLED
 config MBEDTLS_ECP_DP_BP512R1_ENABLED
 	bool "Enable Brainpool curve bp512r1"
 	depends on !OBERON_MBEDTLS_ECP_C
-	depends on (VANILLA_MBEDTLS_ECP_C && !CC310_MBEDTLS_ECDH_C && !CC310_MBEDTLS_ECDSA_C) || (MBEDTLS_ECP_C && MBEDTLS_VANILLA_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0)
+	depends on VANILLA_MBEDTLS_ECP_C
 	default n
 	help
 	  MBEDTLS_ECP_DP_BP512R1_ENABLED setting in mbed TLS config file.
@@ -958,7 +1151,7 @@ config MBEDTLS_ECP_DP_CURVE25519_ENABLED
 config MBEDTLS_ECP_DP_CURVE448_ENABLED
 	bool "Enable Curve448 aka Edwards448"
 	depends on !OBERON_MBEDTLS_ECP_C
-	depends on (VANILLA_MBEDTLS_ECDSA_C || VANILLA_MBEDTLS_ECP_C || VANILLA_MBEDTLS_ECDH_C	)
+	depends on VANILLA_MBEDTLS_ECP_C
 	default n
 	help
 	  MBEDTLS_ECP_DP_CURVE448_ENABLED setting in mbed TLS config file.
@@ -967,45 +1160,54 @@ endmenu # ECC curves
 
 endif # MBEDTLS_ECP_C
 
-
-config MBEDTLS_RSA_ALT
-	bool
-
 menuconfig MBEDTLS_RSA_C
 	bool
 	prompt "RSA   - Rivest–Shamir–Adleman cryptosystem"
-	depends on CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
 	default y
-	select MBEDTLS_RSA_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select CC310_MBEDTLS_RSA_C if CC310_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_RSA_C if OBERON_SINGLE_BACKEND || MBEDTLS_VANILLA_SINGLE_BACKEND
 	help
 	  Enable RSA cryptosystem support.
 	  MBEDTLS_RSA_C setting in mbed TLS config file.
 
 if MBEDTLS_RSA_C
 
-if NRF_CRYPTO_BACKEND_COMBINATION_0
+config MBEDTLS_RSA_ALT
+	bool
+	depends on CC310_MBEDTLS_RSA_C
+	default y
+
+config CC310_MBEDTLS_RSA_C
+	bool
+
+config VANILLA_MBEDTLS_RSA_C
+	bool
+
+if NRF_SECURITY_MULTI_BACKEND
 
 comment "RSA Backend Selection"
+	depends on NRF_SECURITY_MULTI_BACKEND
 
 choice
 	bool
-	prompt "Backend selection" if MBEDTLS_RSA_C
-	depends on NRF_CRYPTO_BACKEND_COMBINATION_0
-	depends on MBEDTLS_RSA_C
-	default CC310_MBEDTLS_RSA_C
+	prompt "Backend selection"
+	default CHOICE_CC310_MBEDTLS_RSA_C
 
-config CC310_MBEDTLS_RSA_C
-	bool "cc310" if CC310_BACKEND
-	select MBEDTLS_RSA_ALT
+config CHOICE_CC310_MBEDTLS_RSA_C
+	bool "cc310"
+	depends on CC310_BACKEND
+	select CC310_MBEDTLS_RSA_C
 
-config VANILLA_MBEDTLS_RSA_C
-	bool "mbed TLS vanilla" if OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
+config CHOICE_VANILLA_MBEDTLS_RSA_C
+	bool "mbed TLS vanilla"
+	depends on OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
+	select VANILLA_MBEDTLS_RSA_C
 
-endchoice
+endchoice # RSA Backend Selection
+
+endif # NRF_SECURITY_MULTI_BACKEND
 
 comment "RSA Encoding Selection"
-
-endif # NRF_CRYPTO_BACKEND_COMBINATION_0
 
 config MBEDTLS_PKCS1_V15
 	bool "PKCS1 v1.5 support"
@@ -1019,76 +1221,112 @@ config MBEDTLS_PKCS1_V21
 endif # MBEDTLS_RSA_C
 
 menu "SHA   - Secure Hash Algorithm"
-	depends on (CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND)
-
-config MBEDTLS_SHA1_ALT
-	bool
 
 config MBEDTLS_SHA1_C
 	bool
 	prompt "SHA-1 hash functionality"
-	depends on (CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND)
-	select MBEDTLS_SHA1_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select MBEDTLS_SHA1_ALT if OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select CC310_MBEDTLS_SHA1_C if CC310_SINGLE_BACKEND
+	select OBERON_MBEDTLS_SHA1_C if OBERON_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_SHA1_C if MBEDTLS_VANILLA_SINGLE_BACKEND
 	default y
 	help
 	  SHA-1 hash functionality.
 
+if MBEDTLS_SHA1_C
+
+config MBEDTLS_SHA1_ALT
+	bool
+	depends on CC310_MBEDTLS_SHA1_C || OBERON_MBEDTLS_SHA1_C
+	default y
+
+config CC310_MBEDTLS_SHA1_C
+	bool
+
+config OBERON_MBEDTLS_SHA1_C
+	bool
+
+config VANILLA_MBEDTLS_SHA1_C
+	bool
+
 choice
 	bool
 	prompt "Backend selection"
-	depends on MBEDTLS_SHA1_C && NRF_CRYPTO_BACKEND_COMBINATION_0
-	default CC310_MBEDTLS_SHA1_C
+	depends on MBEDTLS_SHA1_C && NRF_SECURITY_MULTI_BACKEND
+	default CHOICE_CC310_MBEDTLS_SHA1_C
 
-config CC310_MBEDTLS_SHA1_C
-	bool "cc310" if CC310_BACKEND
-	select MBEDTLS_SHA1_ALT
+config CHOICE_CC310_MBEDTLS_SHA1_C
+	bool "cc310"
+	depends on CC310_BACKEND
+	select CC310_MBEDTLS_SHA1_C
 
-config OBERON_MBEDTLS_SHA1_C
-	bool "nrf_oberon" if OBERON_BACKEND
-	select MBEDTLS_SHA1_ALT
+config CHOICE_OBERON_MBEDTLS_SHA1_C
+	bool "nrf_oberon"
+	depends on OBERON_BACKEND
+	select OBERON_MBEDTLS_SHA1_C
 
-config VANILLA_MBEDTLS_SHA1_C
-	bool "mbed TLS vanilla" if MBEDTLS_VANILLA_BACKEND
+config CHOICE_VANILLA_MBEDTLS_SHA1_C
+	bool "mbed TLS vanilla"
+	depends on MBEDTLS_VANILLA_BACKEND
+	select VANILLA_MBEDTLS_SHA1_C
 
 endchoice
 
-config MBEDTLS_SHA256_ALT
-	bool
+endif # MBEDTLS_SHA1_C
 
 config MBEDTLS_SHA256_C
 	bool
 	prompt "SHA-256 hash functionality"
-	depends on (CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND)
-	select MBEDTLS_SHA256_ALT if CC310_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
-	select MBEDTLS_SHA256_ALT if OBERON_BACKEND && !NRF_CRYPTO_BACKEND_COMBINATION_0
+	select CC310_MBEDTLS_SHA256_C if CC310_SINGLE_BACKEND
+	select OBERON_MBEDTLS_SHA256_C if OBERON_SINGLE_BACKEND
+	select VANILLA_MBEDTLS_SHA256_C if MBEDTLS_VANILLA_SINGLE_BACKEND
 	default y
 	help
 	  SHA-256 hash functionality.
 
+if MBEDTLS_SHA256_C
+
+config MBEDTLS_SHA256_ALT
+	bool
+	depends on CC310_MBEDTLS_SHA256_C || OBERON_MBEDTLS_SHA256_C
+	default y
+
+config CC310_MBEDTLS_SHA256_C
+	bool
+
+config OBERON_MBEDTLS_SHA256_C
+	bool
+
+config VANILLA_MBEDTLS_SHA256_C
+	bool
+
 choice
 	bool
 	prompt "Backend selection"
-	depends on MBEDTLS_SHA256_C && NRF_CRYPTO_BACKEND_COMBINATION_0
-	default CC310_MBEDTLS_SHA256_C
+	depends on NRF_SECURITY_MULTI_BACKEND
+	default CHOICE_CC310_MBEDTLS_SHA256_C
 
-config CC310_MBEDTLS_SHA256_C
-	bool "cc310" if CC310_BACKEND
-	select MBEDTLS_SHA256_ALT
+config CHOICE_CC310_MBEDTLS_SHA256_C
+	bool "cc310"
+	depends on CC310_BACKEND
+	select CC310_MBEDTLS_SHA256_C
 
-config OBERON_MBEDTLS_SHA256_C
-	bool "nrf_oberon" if OBERON_BACKEND
-	select MBEDTLS_SHA256_ALT
+config CHOICE_OBERON_MBEDTLS_SHA256_C
+	bool "nrf_oberon"
+	depends on OBERON_BACKEND
+	select OBERON_MBEDTLS_SHA256_C
 
-config VANILLA_MBEDTLS_SHA256_C
-	bool "mbed TLS vanilla" if MBEDTLS_VANILLA_BACKEND
+config CHOICE_VANILLA_MBEDTLS_SHA256_C
+	bool "mbed TLS vanilla"
+	depends on MBEDTLS_VANILLA_BACKEND
+	select VANILLA_MBEDTLS_SHA256_C
 
 endchoice
+
+endif # MBEDTLS_SHA256_C
 
 config MBEDTLS_SHA512_C
 	bool
 	prompt "SHA-512 hash functionality"
-	depends on CC310_BACKEND || OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
 	default y
 	help
 	  SW implemented SHA-512 hash support
@@ -1100,8 +1338,6 @@ config APP_LINK_WITH_MBEDTLS_INCLUDES
 	default y
 	help
 	  Add mbedcrypto header files to the 'app' include path.
-
-if MBEDTLS_VANILLA_BACKEND
 
 comment "Advanced configuration section"
 
@@ -1120,7 +1356,7 @@ comment "Advanced mbed TLS settings"
 
 config MBEDTLS_AES_ROM_TABLES
 	bool "Use AES ROM tables"
-	depends on VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C)
+	depends on VANILLA_MBEDTLS_AES_C
 	help
 	  AES lookup tables will be placed in ROM instead of RAM
 	  Placing the AES lookup tables in ROM will perform slower but will reduce RAM usage.
@@ -1132,7 +1368,7 @@ config MBEDTLS_AES_ROM_TABLES
 
 config MBEDTLS_AES_FEWER_TABLES
 	bool "Use fewer AES tables"
-	depends on VANILLA_MBEDTLS_AES_C || (MBEDTLS_VANILLA_BACKEND && MBEDTLS_AES_C)
+	depends on VANILLA_MBEDTLS_AES_C
 	help
 	  Enabling this configuration omits 75% of the AES tables in ROM or RAM.
 	  There is a tradeoff between lookup size and doing more arithmetic
@@ -1141,6 +1377,7 @@ config MBEDTLS_AES_FEWER_TABLES
 
 config MBEDTLS_MPI_WINDOW_SIZE
 	int "MPI - Multiple Precision Integers window size"
+	depends on CC310_BACKEND || VANILLA_MBEDTLS_AES_C
 	range 1 6
 	default 6
 	help
@@ -1150,6 +1387,7 @@ config MBEDTLS_MPI_WINDOW_SIZE
 
 config MBEDTLS_MPI_MAX_SIZE
 	int "MPI - Multiple Precision Integers maximum size"
+	depends on CC310_BACKEND || VANILLA_MBEDTLS_AES_C
 	range 0 1024
 	default 1024
 	help
@@ -1160,6 +1398,7 @@ config MBEDTLS_MPI_MAX_SIZE
 
 config MBEDTLS_ECP_MAX_BITS
 	int "ECP - Max bit size of Elliptic Curves"
+	depends on CC310_BACKEND || VANILLA_MBEDTLS_AES_C
 	range 0 521
 	default 521
 	help
@@ -1169,6 +1408,7 @@ config MBEDTLS_ECP_MAX_BITS
 
 config MBEDTLS_ECP_WINDOW_SIZE
 	int "ECP - Elliptic Curve multiplication window size"
+	depends on CC310_BACKEND || VANILLA_MBEDTLS_AES_C
 	range 2 6
 	default 6
 	help
@@ -1178,6 +1418,7 @@ config MBEDTLS_ECP_WINDOW_SIZE
 
 config MBEDTLS_ECP_FIXED_POINT_OPTIM
 	bool "ECP - Elliptic Curve fixed point optimization"
+	depends on CC310_BACKEND || VANILLA_MBEDTLS_AES_C
 	default y
 	help
 	  This setting control ECP fixed point optimizations.
@@ -1187,7 +1428,7 @@ config MBEDTLS_ECP_FIXED_POINT_OPTIM
 
 config MBEDTLS_SHA256_SMALLER
 	bool "Use SHA256 small footprint implementation"
-	depends on NRF_SECURITY_ADVANCED && (VANILLA_MBEDTLS_SHA256_C || (MBEDTLS_SHA256_C && !NRF_CRYPTO_BACKEND_COMBINATION_0))
+	depends on VANILLA_MBEDTLS_SHA256_C
 	help
 	  Use a SHA-256 implementation with smaller footprint.
 	  Note, that this implementation will also have a lower performance.
@@ -1215,11 +1456,10 @@ config MBEDTLS_SSL_CIPHERSUITES
 	  Warning: This field has offers no validation checks.
 	  MBEDTLS_SSL_CIPHERSUITES setting in mbed TLS config file.
 
-
 endif # NRF_SECURITY_ADVANCED
 
-endif # MBEDTLS_VANILLA_BACKEND
+endif # NRF_SECURITY_ANY_BACKEND
 
 endif # NORDIC_SECURITY_BACKEND
 
-endmenu
+endmenu # Nordic Security
