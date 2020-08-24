@@ -20,7 +20,7 @@ macro(remove_objects mbedtls_config backend_name object_list object_name)
     nrf_security_debug("${backend_name}: Removing object ${object_name}")
     set(${object_list} ${${object_list}} ${object_name})
   else ()
-    nrf_security_debug("Not removing: CONFIG_${backend_name}_${mbedtls_config} is set to TRUE")
+    nrf_security_debug("Not removing: CONFIG_${backend_name}_${mbedtls_config} is set to TRUE (${object_name})")
   endif()
 endmacro()
 
