@@ -12,37 +12,20 @@ if BT && BT_HCI
 
 config BT_LL_SOFTDEVICE_VS_INCLUDE
 	bool "Include SoftDevice Controller vendor specific HCI interface"
-	default y if BT_LL_NRFXLIB_VS_INCLUDE
 	help
 	  Include SoftDevice Controller vendor specific HCI interface.
 
 config BT_LL_SOFTDEVICE_DEFAULT
 	bool "Select BT_LL_SOFTDEVICE as default BT_LL_CHOICE"
-	default y if BT_LL_NRFXLIB_DEFAULT
 	help
 	  Helper variable used to change the default link layer if
 	  BT_CTLR is supported for the platform.
 
-config BT_LL_NRFXLIB_VS_INCLUDE
-	bool
-	help
-	  Deprecated configuration. Use BT_LL_SOFTDEVICE_VS_INCLUDE instead.
-
-config BT_LL_NRFXLIB_DEFAULT
-	bool "Select BT_LL_SOFTDEVICE as default BT_LL_CHOICE"
-	help
-	  Deprecated configuration. Use BT_LL_SOFTDEVICE_DEFAULT instead.
-
 if BT_CTLR
-
-config BT_LL_NRFXLIB
-	bool "Select BT_LL_SOFTDEVICE as default BT_LL_CHOICE"
-	help
-	  Deprecated configuration. Use BT_LL_SOFTDEVICE instead.
 
 choice BT_LL_CHOICE
 	prompt "Bluetooth Link Layer Selection"
-	default BT_LL_SOFTDEVICE if (BT_LL_SOFTDEVICE_DEFAULT || BT_LL_NRFXLIB_DEFAULT || BT_LL_NRFXLIB)
+	default BT_LL_SOFTDEVICE if BT_LL_SOFTDEVICE_DEFAULT
 
 config BT_LL_SOFTDEVICE
 	bool "SoftDevice Link Layer"
@@ -69,27 +52,11 @@ if BT_LL_SOFTDEVICE
 
 comment "Common SoftDevice Controller module configuration"
 
-
-config BLE_CONTROLLER_S112
-	bool "s112"
-	help
-	  Deprecated configuration. Use SOFTDEVICE_CONTROLLER_S112 instead.
-
-config BLE_CONTROLLER_S132
-	bool "s132"
-	help
-	  Deprecated configuration. Use SOFTDEVICE_CONTROLLER_S132 instead.
-
-config BLE_CONTROLLER_S140
-	bool "s140"
-	help
-	  Deprecated configuration. Use SOFTDEVICE_CONTROLLER_S132 instead.
-
 choice SOFTDEVICE_CONTROLLER_VARIANT
 	prompt "SoftDevice Controller variant"
-	default SOFTDEVICE_CONTROLLER_S112 if (SOC_NRF52810 || SOC_NRF52811 || SOC_NRF52820 || BLE_CONTROLLER_S112)
-	default SOFTDEVICE_CONTROLLER_S132 if (SOC_NRF52832 || BLE_CONTROLLER_S132)
-	default SOFTDEVICE_CONTROLLER_S140 if (SOC_NRF52833 || SOC_NRF52840 || BLE_CONTROLLER_S140)
+	default SOFTDEVICE_CONTROLLER_S112 if (SOC_NRF52810 || SOC_NRF52811 || SOC_NRF52820)
+	default SOFTDEVICE_CONTROLLER_S132 if SOC_NRF52832
+	default SOFTDEVICE_CONTROLLER_S140 if (SOC_NRF52833 || SOC_NRF52840)
 	help
 	  Select a BLE Controller variant.
 
