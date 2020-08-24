@@ -11,29 +11,30 @@ Master branch
 Added
 =====
 
-* Added Read Transmit Power Level command.
-* Added LE Read Transmit Power command.
-* Added LE Read Advertising Physical Channel Tx Power command.
-* Added support for setting the event length of a connection. See :cpp:func:`hci_vs_cmd_event_length_set()`.
-* Added Set Controller to Host Flow Control command.
-* Added Host Buffer Size command.
-* Added Host Number of Complete Packets command.
-* Added support for the Vendor specific HCI command: Zephyr Write BD Addr.
+* Added Read Transmit Power Level command (DRGN-12236).
+* Added LE Read Transmit Power command (DRGN-12236).
+* Added LE Read Advertising Physical Channel Tx Power command (DRGN-12238).
+* Added support for setting the event length of a connection. See :cpp:func:`hci_vs_cmd_event_length_set()` (DRGN-12696).
+* Added Set Controller to Host Flow Control command (DRGN-13331).
+* Added Host Buffer Size command (DRGN-13331).
+* Added Host Number of Complete Packets command (DRGN-13331).
+* Added support for the Vendor specific HCI command: Zephyr Write BD Addr (DRGN-14511).
+* Added LE Read PHY command (DRGN-14664).
 
 Changes
 =======
 
-* When LLPM mode is enabled, the connection event length is now no longer implicitly set to 1 ms.
-* When the connection interval is an LLPM connection interval, that is, below 7.5 ms, link layer procedures with an instant will use an instant larger than 6 connection events.
-* The nRF Bluetooth LE Controller was renamed to SoftDevice Controller.
+* When LLPM mode is enabled, the connection event length is now no longer implicitly set to 1 ms (DRGN-12696).
+* When the connection interval is an LLPM connection interval, that is, below 7.5 ms, link layer procedures with an instant will use an instant larger than 6 connection events (DRGN-14379).
+* The nRF Bluetooth LE Controller was renamed to SoftDevice Controller (DRGN-14283).
   APIs are updated accordingly:
 
   * BLE_CONTROLLER -> SDC
   * ble_controller -> sdc
   * HCI APIs are now prefixed with sdc
 
-* The name of the library file was changed to :file:`libsoftdevice_controller.a`
-* SoC APIs have been renamed:
+* The name of the library file was changed to :file:`libsoftdevice_controller.a` (DRGN-14283).
+* SoC APIs have been renamed (DRGN-14283):
 
   * ble_controller_flash_write -> sdc_soc_flash_write_async
   * ble_controller_flash_page_erase -> sdc_soc_flash_page_erase_async
@@ -45,13 +46,15 @@ Known issues and limitations
 ============================
 
 * In connections, the Link Layer payload size is limited to 27 bytes on LE Coded PHY (DRGN-8476).
-* If the application has set an all zeroes IRK for a device in the resolving list, then a resolvable address that can be resolved with the all zeroes IRK will be reported to the application as that device in the advertisement report or the connected event. (DRGN-9083).
+* If the application has set an all zeroes IRK for a device in the resolving list, then a resolvable address that can be resolved with the all zeroes IRK will be reported to the application as that device in the advertisement report or the connected event (DRGN-9083).
 * The SoftDevice Controller will generate a resolvable address for the TargetA field in directed advertisements if the target device address is in the resolving list with a non-zero IRK, even if privacy is not enabled and the local device address is set to a public address. A workaround is to remove the device address from the resolving list (DRGN-10659).
 * The maximum connection interval that can be active when switching to a connection interval of 1 ms is 10 ms. An application that needs to use a higher interval than 10 ms needs to perform two connection updates to use 1 ms connection interval: A first update to 10 ms connection interval, and a second update to 1 ms connection interval (DRGN-11297).
 * If the scanner is configured with a scan window larger than 16 seconds, the scanner will truncate the scan window to 16 seconds (DRGN-10305).
 * Applications must not modify the SEVONPEND flag in the SCR register when running in priority levels higher than 6 (priority level numerical values lower than 6) as this can lead to undefined behavior (DRGN-8569).
-* Synthesized low frequency clock source is not tested or intended for use with the Bluetooth LE stack.
+* Synthesized low frequency clock source is not tested or intended for use with the Bluetooth LE stack (DRGN-6362).
 * If an extended advertiser is configured with limited duration, it will time out after the first primary channel packet in the last advertising event (DRGN-10367).
+* The HCI Receiver and Transmitter Test commands are not available.
+  To perform a radio test, utilize the DTM application in the nRF5 SDK (DRGN-12259).
 
 nRF Connect SDK v1.3.0
 **********************
