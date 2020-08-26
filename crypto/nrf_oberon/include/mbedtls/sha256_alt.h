@@ -14,6 +14,8 @@
 #ifndef SHA256_ALT_H
 #define SHA256_ALT_H
 
+#include <stdint.h>
+
 #if defined(MBEDTLS_CONFIG_FILE)
 #include MBEDTLS_CONFIG_FILE
 #else
@@ -24,11 +26,11 @@
 extern "C" {
 #endif
 
-#define OCRYPTO_SHA256_CONTEXT_SIZE (108) //!< SHA-256 context size in bytes.
+#define OCRYPTO_SHA256_CONTEXT_SIZE_WORDS (27) //!< SHA-256 context size in words.
 
 /* @brief Oberon replacement SHA-256 context */
 typedef struct mbedtls_sha256_context {
-    unsigned char data[OCRYPTO_SHA256_CONTEXT_SIZE]; //!< Opaque SHA-256 context.
+    uint32_t data[OCRYPTO_SHA256_CONTEXT_SIZE_WORDS]; //!< Opaque SHA-256 context.
 } mbedtls_sha256_context;
 
 

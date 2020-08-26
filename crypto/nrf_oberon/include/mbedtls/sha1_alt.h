@@ -11,12 +11,11 @@
  * @brief Type declarations for an alternate implementation of SHA-1 for mbed TLS.
  */
 
+
 #ifndef SHA1_ALT_H
 #define SHA1_ALT_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <stdint.h>
 
 #if defined(MBEDTLS_CONFIG_FILE)
 #include MBEDTLS_CONFIG_FILE
@@ -24,12 +23,16 @@ extern "C" {
 #include "mbedtls/config.h"
 #endif
 
-#define OCRYPTO_SHA1_CONTEXT_SIZE (96) //!< SHA-1 context size in bytes.
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+#define OBERON_SHA1_CONTEXT_SIZE_WORDS (24) //!< SHA-1 context size in words.
+
+/* @brief Oberon replacement SHA-1 context */
 typedef struct mbedtls_sha1_context {
-    unsigned char data[OCRYPTO_SHA1_CONTEXT_SIZE]; // Opaque SHA-1 context.
+    uint32_t data[OBERON_SHA1_CONTEXT_SIZE_WORDS]; //!< Opaque SHA-1 context.
 } mbedtls_sha1_context;
-
 
 #ifdef __cplusplus
 }
