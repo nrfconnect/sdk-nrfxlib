@@ -158,7 +158,7 @@ As the return value for the last signal in the timeslot, the signal handler requ
 Eventually, the application does not require more timeslot events.
 Therefore, at the last signal in the last timeslot, the application returns END from the signal handler.
 The MPSL then sends an :cpp:enumerator:`MPSL_TIMESLOT_SIGNAL_SESSION_IDLE` signal to the application signal handler.
-The application calls :cpp:func:`mpsl_timeslot_session_close`, and the MPSL sends the :cpp:enumerator:`MPSL_TIMESLOT_SIGNAL_SESSION_CLOSED` signal. The session has now ended.
+The application calls :c:func:`mpsl_timeslot_session_close`, and the MPSL sends the :cpp:enumerator:`MPSL_TIMESLOT_SIGNAL_SESSION_CLOSED` signal. The session has now ended.
 
 .. figure:: pic/timeslot_normal.svg
    :alt: Complete timeslot session

@@ -190,7 +190,7 @@ The backend implementation is reached using a table of function pointers corresp
             .compute_shared = mbedtls_ecdh_compute_shared,
     };
 
-:cpp:func:`mbedtls_ecdh_cc310_backend_funcs` points to mbed TLS APIs in :ref:`nrf_cc310_mbedcrypto_readme` which is renamed if mbed TLS glue layer is enabled.
+:c:func:`mbedtls_ecdh_cc310_backend_funcs` points to mbed TLS APIs in :ref:`nrf_cc310_mbedcrypto_readme` which is renamed if mbed TLS glue layer is enabled.
 The function pointers `gen_public` and `compute_shared` have signatures equal to the corresponding mbed TLS APIs.
 
 
@@ -827,7 +827,7 @@ SHA-256
 The :option:`CONFIG_MBEDTLS_SHA256_SMALLER` Kconfig variable can be used to select a SHA-256 implementation with smaller footprint.
 Such configuration reduces SHA-256 calculation performance.
 
-For example, on a Cortex-M4, the size of :cpp:func:`mbedtls_sha256_process()` is reduced from ~2 KB to ~0.5 KB, however it also performs around 30% slower.
+For example, on a Cortex-M4, the size of :c:func:`mbedtls_sha256_process` is reduced from ~2 KB to ~0.5 KB, however it also performs around 30% slower.
 
 +------------------------------------------------+---------+-------+-----+
 | Option                                         | Default | Min   | Max |

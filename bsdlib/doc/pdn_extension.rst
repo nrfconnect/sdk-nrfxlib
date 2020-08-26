@@ -25,10 +25,10 @@ It then configures the CID, which creates a PDN.
 This PDN is used to handle data that is sent over the connection.
 
 The example code shows how to create a PDN socket with the protocol family :c:type:`NRF_NPROTO_PDN` and the proprietary address family :c:type:`NRF_AF_LTE`.
-When the :cpp:func:`nrf_socket` function returns, a CID has been allocated.
-Next, the :cpp:func:`nrf_connect` function is used to configure the created CID to use the application's APN.
+When the :c:func:`nrf_socket` function returns, a CID has been allocated.
+Next, the :c:func:`nrf_connect` function is used to configure the created CID to use the application's APN.
 If this operation is successful, the library attempts to activate the associated PDN handle.
-If this activation succeeds, :cpp:func:`nrf_connect` returns with success.
+If this activation succeeds, :c:func:`nrf_connect` returns with success.
 
 The file descriptor that is returned can only be used to operate on the PDN socket itself.
 For example, you can use it to set and retrieve socket options, to connect, or to close the PDN socket.
@@ -77,9 +77,9 @@ Configuring the type of transport
 
 You can configure a PDN socket to use a specific Internet family type of transport, for example, IPv4 only, IPv6 only, or dual stack.
 To do so, set the socket option :c:type:`NRF_SO_PDN_AF` to request a specific type of connection.
-You must do this after creating the socket and before activating it with :cpp:func:`nrf_connect`.
+You must do this after creating the socket and before activating it with :c:func:`nrf_connect`.
 
-To retrieve a list of what address families were activated by the network, call :cpp:func:`nrf_getsockopt` again after activation, using the same socket option.
+To retrieve a list of what address families were activated by the network, call :c:func:`nrf_getsockopt` again after activation, using the same socket option.
 
 .. admonition:: Limitation
 
@@ -101,7 +101,7 @@ In this case, sending data on any socket bound to that PDN will fail with error 
 See `Creating a PDN socket`_.
 
 .. note::
-   Setting the socket option :c:type:`NRF_SO_PDN_STATE` with :cpp:func:`nrf_setsockopt` to manually control activation/deactivation is not supported.
+   Setting the socket option :c:type:`NRF_SO_PDN_STATE` with :c:func:`nrf_setsockopt` to manually control activation/deactivation is not supported.
 
 
 Retrieving the context ID (CID)
@@ -113,7 +113,7 @@ Retrieving the context ID (CID)
    nrf_getsockopt(pdn_fd, NRF_SOL_PDN, NRF_SO_PDN_CONTEXT_ID, &cid, sizeof(nrf_pdn_context_id_t));
 
 In some use cases, it is useful to know the CID that is assigned to a PDN socket.
-To retrieve the CID, get the socket option :c:type:`NRF_SO_PDN_CONTEXT_ID` with :cpp:func:`nrf_getsockopt`.
+To retrieve the CID, get the socket option :c:type:`NRF_SO_PDN_CONTEXT_ID` with :c:func:`nrf_getsockopt`.
 
 :c:type:`NRF_SO_PDN_CONTEXT_ID` is a read-only socket option.
 The CID is an internal allocation and cannot be configured by the user.

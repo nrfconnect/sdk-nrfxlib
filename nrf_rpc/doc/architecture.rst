@@ -92,7 +92,7 @@ Two kinds of errors might occur when using this library.
     These errors cannot be directly returned to the user as a return value.
     The user is informed about such errors through a callback.
     First, if the group in which the error happened is known, then a group error callback is called.
-    Second, a global error handler (provided to the :cpp:func:`nrf_rpc_init` function) is called.
+    Second, a global error handler (provided to the :c:func:`nrf_rpc_init` function) is called.
     Malformed packets should not normally happen, because the transport layer is responsible for reliable packet transferring.
     Such errors are a serious problem from which nRF RPC will probably not recover.
 

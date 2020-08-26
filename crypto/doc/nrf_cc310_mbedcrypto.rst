@@ -130,16 +130,16 @@ The following API must be used to change the default `calloc`/`free` function:
     }
 
 .. note::
-   This API must be called prior to calling :cpp:func:`mbedtls_platform_setup`.
+   This API must be called prior to calling :c:func:`mbedtls_platform_setup`.
 
 .. note::
-   The library will default to use clib calloc/free functions if the :cpp:func:`mbedtls_platform_set_calloc_free` is not used.
+   The library will default to use clib calloc/free functions if the :c:func:`mbedtls_platform_set_calloc_free` is not used.
 
 
 Initializing the library
 ------------------------
 The library requires initialization before use.
-You can initialize it by calling the :cpp:func:`mbedtls_platform_setup`/:cpp:func:`mbedtls_platform_teardown` functions.
+You can initialize it by calling the :c:func:`mbedtls_platform_setup`/:c:func:`mbedtls_platform_teardown` functions.
 
 .. code-block:: c
     :caption: Initializing the library

@@ -109,12 +109,12 @@ If you are not interested in traces, they can be ignored and this function can b
 bsd_os_application_irq_handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This function is implemented in the BSD library and must be called upon the low priority BSD library IRQ handler, triggered by the :cpp:func:`bsd_os_application_irq_set` function.
+This function is implemented in the BSD library and must be called upon the low priority BSD library IRQ handler, triggered by the :c:func:`bsd_os_application_irq_set` function.
 
 bsd_os_trace_irq_handler
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-This function is implemented in the BSD library and must be called upon the low priority trace IRQ handler, triggered by the :cpp:func:`bsd_os_trace_irq_set` function.
+This function is implemented in the BSD library and must be called upon the low priority trace IRQ handler, triggered by the :c:func:`bsd_os_trace_irq_set` function.
 
 Other scenarios to handle in bsd_os.c
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,7 +122,7 @@ Other scenarios to handle in bsd_os.c
 #. In case the OS has its own IRQ handler scheme, not directly forwarding the IPC_IRQHandler to the BSD library, this must be routed by the OS.
    The OS must call IPC_IRQHandler() upon all IRQs with IRQ number IPC_IRQn.
 
-#. In :file:`bsd_os.c`, you can configure a desired medium for forwarding trace data upon :cpp:func:`bsd_os_trace_put` calls .
+#. In :file:`bsd_os.c`, you can configure a desired medium for forwarding trace data upon :c:func:`bsd_os_trace_put` calls .
 
 Memory
 ******
