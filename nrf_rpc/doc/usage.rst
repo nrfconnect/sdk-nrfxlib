@@ -22,18 +22,18 @@ RPC encoders encode commands and events into serialized packets.
 Creating an encoder is similar for all packet types.
 The first step is the allocation of a buffer using :c:macro:`NRF_RPC_ALLOC`.
 After that, you can encode parameters directly into the buffer or use the `TinyCBOR`_ library.
-In the last step, the packet is sent using one of the sending functions: :cpp:func:`nrf_rpc_cmd`, :cpp:func:`nrf_rpc_cbor_evt`, or similar.
+In the last step, the packet is sent using one of the sending functions: :c:func:`nrf_rpc_cmd`, :c:func:`nrf_rpc_cbor_evt`, or similar.
 
 After sending the command, a response is received, so it must be parsed.
 There are two ways to parse a response.
 
-The first way is to provide a response handler in the parameters of :cpp:func:`nrf_rpc_cmd` or :cpp:func:`nrf_rpc_cbor_cmd`.
-It is called before :cpp:func:`nrf_rpc_cmd` returns.
+The first way is to provide a response handler in the parameters of :c:func:`nrf_rpc_cmd` or :c:func:`nrf_rpc_cbor_cmd`.
+It is called before :c:func:`nrf_rpc_cmd` returns.
 It can be called from a different thread.
 
-Another way of parsing a response is to call :cpp:func:`nrf_rpc_cmd_rsp` or :cpp:func:`nrf_rpc_cbor_cmd_rsp`.
+Another way of parsing a response is to call :c:func:`nrf_rpc_cmd_rsp` or :c:func:`nrf_rpc_cbor_cmd_rsp`.
 The output of these functions contains the response.
-After parsing it, the :cpp:func:`nrf_rpc_decoding_done` or :cpp:func:`nrf_rpc_cbor_decoding_done` functions must be called to indicate that parsing is completed and the buffers holding the response can be released.
+After parsing it, the :c:func:`nrf_rpc_decoding_done` or :c:func:`nrf_rpc_cbor_decoding_done` functions must be called to indicate that parsing is completed and the buffers holding the response can be released.
 
 Events have no response, so they need no additional action after sending them.
 

@@ -26,7 +26,7 @@ Starting the GPS
 ****************
 
 After the GNSS socket is created, the GPS module must be started for the module to start generating GPS fixes.
-This is done using the :cpp:func:`nrf_setsockopt` function with the :c:type:`NRF_SOL_GNSS` socket option level and the :c:type:`NRF_SO_GNSS_START` socket option.
+This is done using the :c:func:`nrf_setsockopt` function with the :c:type:`NRF_SOL_GNSS` socket option level and the :c:type:`NRF_SO_GNSS_START` socket option.
 
 .. code-block:: c
 
@@ -38,7 +38,7 @@ This is done using the :cpp:func:`nrf_setsockopt` function with the :c:type:`NRF
 
 During a session (when the GPS is running), the socket stores the information to the non-volatile memory.
 This is done to generate a quick fix in a subsequent session and is termed as a hot or warm start (depending on the data that is used from the last session).
-Such session data can be deleted using the delete mask that is supplied to the :cpp:func:`nrf_setsockopt` function call while starting the GPS module.
+Such session data can be deleted using the delete mask that is supplied to the :c:func:`nrf_setsockopt` function call while starting the GPS module.
 A value of 0 in the delete mask is an indication to keep all the previous data.
 The bit masks for the different types of data that can be deleted is defined in the GNSS socket API documentation of :cpp:type:`nrf_gnss_delete_mask_t`.
 
@@ -60,7 +60,7 @@ Configuring the GPS
 
 There are various configuration parameters that can be sent to the GPS module.
 Configuration parameters can only be sent to the GPS module when it is in the stopped state.
-A configuration parameter is written to the GPS module through the :cpp:func:`nrf_setsockopt` function call.
+A configuration parameter is written to the GPS module through the :c:func:`nrf_setsockopt` function call.
 
 Below example code shows how to set the fix interval:
 
@@ -70,7 +70,7 @@ Below example code shows how to set the fix interval:
 
    nrf_setsockopt(gnss_fd, NRF_SOL_GNSS, NRF_SO_GNSS_FIX_INTERVAL, &fix_interval, sizeof(fix_interval));
 
-A configuration can also be read by the application by using the :cpp:func:`nrf_getsockopt` function call as shown in the following code:
+A configuration can also be read by the application by using the :c:func:`nrf_getsockopt` function call as shown in the following code:
 
 .. code-block:: c
 
@@ -217,7 +217,7 @@ Disable priority
 Reading a fix
 *************
 
-To read a data fix, the socket read function :cpp:func:`nrf_recv` is used with the GNSS socket descriptor as the function argument.
+To read a data fix, the socket read function :c:func:`nrf_recv` is used with the GNSS socket descriptor as the function argument.
 This is shown in the following code:
 
 .. code-block:: c
@@ -228,7 +228,7 @@ This is shown in the following code:
   ret = nrf_recv(gnss_fd, &gps_data, sizeof(nrf_gnss_data_frame_t), 0)
 
 As this is a datagram socket, each successful read contains a complete frame of data.
-The :cpp:func:`nrf_recv` read function can return three types of data frames.
+The :c:func:`nrf_recv` read function can return three types of data frames.
 The data type is identified by the ``data_id`` parameter in the received frame.
 The three datatypes that are currently supported are :c:type:`NRF_GNSS_PVT_DATA_ID`, :c:type:`NRF_GNSS_AGPS_DATA_ID` and :c:type:`NRF_GNSS_NMEA_DATA_ID`.
 The following code shows how the the position data is displayed based on the :c:type:`NRF_GNSS_PVT_DATA_ID` and :c:type:`NRF_GNSS_NMEA_DATA_ID` datatypes:
@@ -268,7 +268,7 @@ A-GPS data
 
 The GPS module automatically requests A-GPS data when the module determines that the existing data is outdated.
 The A-GPS data frame is described in GNSS API documentation of :cpp:type:`nrf_gnss_agps_data_frame_t`.
-This request data frame type can be read with the :cpp:func:`nrf_recv` function with the :c:type:`NRF_GNSS_AGPS_DATA_ID` id as shown in the following code:
+This request data frame type can be read with the :c:func:`nrf_recv` function with the :c:type:`NRF_GNSS_AGPS_DATA_ID` id as shown in the following code:
 
 
 .. code-block:: c
@@ -283,7 +283,7 @@ This request data frame type can be read with the :cpp:func:`nrf_recv` function 
    }
 
 
-When the A-GPS data is downloaded, it can be written to the GPS module using the :cpp:func:`nrf_sendto` function.
+When the A-GPS data is downloaded, it can be written to the GPS module using the :c:func:`nrf_sendto` function.
 The ``servaddr`` parameter is used to select the A-GPS data model to which the data should be written to.
 The available A-GPS data models are listed in the API documentation for :ref:`gnss_socket_agps_df`.
 
@@ -299,7 +299,7 @@ The following code shows how the A-GPS data is written to the GPS module.
 Closing a GNSS socket
 *********************
 
-The :cpp:func:`nrf_close` function is used to close a GNSS socket.
+The :c:func:`nrf_close` function is used to close a GNSS socket.
 This function is called with the file descriptor associated with the GNSS socket that was created.
 
 .. code-block:: c

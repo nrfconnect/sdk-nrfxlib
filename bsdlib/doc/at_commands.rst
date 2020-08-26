@@ -6,24 +6,24 @@ AT commands
 You can use the BSD socket interface to send AT commands to the LTE modem and to receive the responses.
 
 To do so, create a socket with the proprietary address family :c:type:`NRF_AF_LTE` and the protocol family :c:type:`NRF_PROTO_AT`.
-You can then write AT command strings to that socket using :cpp:func:`nrf_send` and :cpp:func:`nrf_write`, and they are sent to the modem.
-The responses are available when you read from the socket using :cpp:func:`nrf_read` and :cpp:func:`nrf_recv`.
+You can then write AT command strings to that socket using :c:func:`nrf_send` and :c:func:`nrf_write`, and they are sent to the modem.
+The responses are available when you read from the socket using :c:func:`nrf_read` and :c:func:`nrf_recv`.
 Received AT messages are not truncated; to read the full response, provide a sufficiently large buffer or fetch the full response in several read operations.
 
 See the `AT Commands Reference Guide`_ for detailed information on the available AT commands.
 
 The following BSD socket functions are available for the :c:type:`NRF_PROTO_AT` protocol family:
 
-* :cpp:func:`nrf_socket` for creating a socket
-* :cpp:func:`nrf_close` for closing a socket
-* :cpp:func:`nrf_fcntl` for managing socket options
-* :cpp:func:`nrf_read` for reading data from a socket
-* :cpp:func:`nrf_recv` for reading data from a socket and concatenating several received messages into one receive buffer
-* :cpp:func:`nrf_write` for writing data to a socket
-* :cpp:func:`nrf_send` for writing data to a socket using specific flags
+* :c:func:`nrf_socket` for creating a socket
+* :c:func:`nrf_close` for closing a socket
+* :c:func:`nrf_fcntl` for managing socket options
+* :c:func:`nrf_read` for reading data from a socket
+* :c:func:`nrf_recv` for reading data from a socket and concatenating several received messages into one receive buffer
+* :c:func:`nrf_write` for writing data to a socket
+* :c:func:`nrf_send` for writing data to a socket using specific flags
 
 By default, read and write functions are blocking.
-To make them non-blocking, use :cpp:func:`nrf_fcntl` to set the NRF_O_NONBLOCK flag, or pass NRF_MSG_DONTWAIT as flag to the function call.
+To make them non-blocking, use :c:func:`nrf_fcntl` to set the NRF_O_NONBLOCK flag, or pass NRF_MSG_DONTWAIT as flag to the function call.
 
 The following code example shows how to send an AT command and receive the response:
 

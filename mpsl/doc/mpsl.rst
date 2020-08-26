@@ -36,16 +36,16 @@ The following interrupts do not have real time requirements:
 
  * POWER_CLOCK interrupt
 
-   It is up to the application to forward any clock related events to :cpp:func:`MPSL_IRQ_CLOCK_Handler` in lower priority.
+   It is up to the application to forward any clock related events to :c:func:`MPSL_IRQ_CLOCK_Handler` in lower priority.
    Irrelevant events are ignored, so the application is free to forward all events for the POWER_CLOCK interrupt.
 
 
  * ``low_prio_irq`` interrupt
 
-   Low priority work is signaled by MPSL by pending the IRQ specified in the ``low_prio_irq`` argument to :cpp:func:`mpsl_init`.
-   When this interrupt is triggered, :cpp:func:`mpsl_low_priority_process` should be called as soon as possible, at least within a couple of ms.
+   Low priority work is signaled by MPSL by pending the IRQ specified in the ``low_prio_irq`` argument to :c:func:`mpsl_init`.
+   When this interrupt is triggered, :c:func:`mpsl_low_priority_process` should be called as soon as possible, at least within a couple of ms.
    The application should configure this interrupt priority lower than c:macro:MPSL_HIGH_IRQ_PRIORITY level (that is, a higher numerical value).
-   The interrupt is enabled with :cpp:func:`mpsl_init` and disabled with :cpp:func:`mpsl_uninit` by MPSL.
+   The interrupt is enabled with :c:func:`mpsl_init` and disabled with :c:func:`mpsl_uninit` by MPSL.
 
 
 Scheduling
@@ -67,12 +67,12 @@ Therefore, make sure that only one MPSL API function is called from the applicat
 
  * All protocol stacks using MPSL must be synchronized (i.e. not called concurrently) to avoid concurrent calls to MPSL functions.
  * Application must only call MPSL APIs from non-preemptible threads, or with interrupts disabled (e.g. during initialization).
- * The :cpp:func:`mpsl_low_priority_process` function should only be called from thread context, i.e. not directly from the software interrupt handler.
+ * The :c:func:`mpsl_low_priority_process` function should only be called from thread context, i.e. not directly from the software interrupt handler.
  * Alternatively, you can use synchronization primitives to ensure that no MPSL functions are called at the same time.
 
 Other priorities
 ----------------
-MPSL inititialization functions, like :cpp:func:`mpsl_init` and :cpp:func:`mpsl_uninit`, are not thread-safe.
+MPSL inititialization functions, like :c:func:`mpsl_init` and :c:func:`mpsl_uninit`, are not thread-safe.
 Do not call them while, for example, a protocol timeslot is in progress.
 This must be enforced by application and protocol stacks. 
 
