@@ -29,11 +29,11 @@ target_include_directories(mbedtls_common INTERFACE
 if(ARM_MBEDTLS_PATH)
   # Do nothing, just use the provided path
 elseif(WEST)
-  ## Use `west list` to find the mbedtls tree we use (this is not the
+  ## Use `west` to find the mbedtls tree we use (this is not the
   ## mbedtls tree distributed as a zephyr module).
   execute_process(
-    COMMAND
-    ${WEST} list mbedtls-nrf --format={posixpath}
+    COMMAND ${PYTHON_EXECUTABLE} -c
+    "from west.manifest import Manifest; manifest = Manifest.from_file(); print(manifest.get_projects(['mbedtls-nrf'])[0].posixpath)"
     OUTPUT_VARIABLE
     west_project_output
     RESULT_VARIABLE
