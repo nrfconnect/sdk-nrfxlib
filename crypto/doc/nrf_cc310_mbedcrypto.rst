@@ -162,7 +162,7 @@ RNG initialization memory management
 
 The nrf_cc310_mbedcrypto library allocates a work buffer during RNG initialization using calloc/free.
 The size of this work buffer is 6112 bytes.
-An alternative to allocating this on the heap is to provide a reference to a static variable inside the :cpp:type:`mbedtls_platform_context` structure type.
+An alternative to allocating this on the heap is to provide a reference to a static variable inside the :c:type:`mbedtls_platform_context` structure type.
 
 .. code-block:: c
     :caption: Preventing heap-allocation for RNG initialization
