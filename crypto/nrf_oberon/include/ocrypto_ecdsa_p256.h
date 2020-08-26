@@ -14,13 +14,12 @@
 #ifndef OCRYPTO_ECDSA_P256_H
 #define OCRYPTO_ECDSA_P256_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * ECDSA P-256 public key generation.

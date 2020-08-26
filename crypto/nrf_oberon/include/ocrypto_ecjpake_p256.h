@@ -11,17 +11,15 @@
  * @brief Type declaration and APIs for EC-JPAKE.
  *
  */
-
 #ifndef OCRYPTO_ECJPAKE_P256_H
 #define OCRYPTO_ECJPAKE_P256_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * EC-JPAKE-P256 public key and zero knowledge proof generation.

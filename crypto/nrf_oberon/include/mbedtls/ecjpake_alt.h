@@ -33,6 +33,7 @@ extern "C" {
 /* @brief Oberon replacement ECJPAKE context */
 typedef struct mbedtls_ecjpake_context {
     mbedtls_ecjpake_role role;                                  //!< Role, either client or server.
+    int point_format;                                           //!< Point format
     unsigned char secret[OBERON_ECJPAKE_P256_SECRET_KEY_SIZE];  //!< Secret.
     unsigned char s_key2[OBERON_ECJPAKE_P256_SECRET_KEY_SIZE];  //!< Secret key 2.
     unsigned char p_key1[OBERON_ECJPAKE_P256_PUBLIC_KEY_SIZE];  //!< Public key 1.
