@@ -206,12 +206,12 @@ However, a failure to produce a valid PVT estimate during duty-cycled tracking m
 
 Enable priority
    | Socket option: :c:type:`NRF_SO_GNSS_ENABLE_PRIORITY`
-   | Datatype:      NA (:c:type:`void`)
+   | Datatype:      NA (``void``)
    | Default:       NA
 
 Disable priority
    | Socket option: :c:type:`NRF_SO_GNSS_DISABLE_PRIORITY`
-   | Datatype:      NA (:c:type:`void`)
+   | Datatype:      NA (``void``)
    | Default:       NA
 
 Reading a fix
