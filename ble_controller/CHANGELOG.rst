@@ -5,6 +5,26 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF Connect SDK v1.3.1
+**********************
+
+Added
+=====
+
+* Added Read Transmit Power Level command (DRGN-12236).
+* Added LE Read Transmit Power command (DRGN-12236).
+* Added LE Read Advertising Physical Channel Tx Power command (DRGN-12238).
+* Added Set Controller to Host Flow Control command (DRGN-13331).
+* Added Host Buffer Size command (DRGN-13331).
+* Added Host Number of Complete Packets command (DRGN-13331).
+* Added LE Read PHY command (DRGN-14664).
+
+Known issues and limitations
+============================
+
+* The HCI Receiver and Transmitter Test commands are not available.
+  To perform a radio test, utilize the DTM application in the nRF5 SDK (DRGN-12259).
+
 nRF Connect SDK v1.3.0
 **********************
 
