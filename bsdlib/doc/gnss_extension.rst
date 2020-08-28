@@ -260,6 +260,8 @@ The following code shows how the the position data is displayed based on the :c:
 
 Fixes are always received in the ``pvt`` format.
 The format of this frame is defined in the GNSS API documentation of :cpp:type:`nrf_gnss_pvt_data_frame_t`.
+If NMEA strings are enabled, NMEA strings are always sent after the corresponding PVT notification.
+For example, if a PVT notification indicates a good fix, this applies to all the subsequent NMEA strings that are sent in between the current PVT notification and the next PVT notification.
 
 A-GPS data
 **********
