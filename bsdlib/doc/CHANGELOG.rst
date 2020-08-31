@@ -5,6 +5,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.7.9
+************
+
+* Fixed an issue introduced with the TLS server support that made :cpp:func:`nrf_connect` hang forever.
+
 bsdlib 0.7.8
 ************
 
