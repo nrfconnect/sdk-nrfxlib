@@ -135,6 +135,7 @@ if (CONFIG_ENTROPY_CC310)
   zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/cc310/replacements/entropy.c)
 elseif(CONFIG_ENTROPY_NRF5_RNG)
   zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/nrf5x/entropy_nrf5x.c)
+  zephyr_library_sources(${ARM_MBEDTLS_PATH}/library/entropy.c)
 endif()
 
 zephyr_library_link_libraries(mbedtls_common)
