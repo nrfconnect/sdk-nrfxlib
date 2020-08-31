@@ -1108,7 +1108,6 @@ comment "Advanced configuration section"
 menuconfig NRF_SECURITY_ADVANCED
 	bool
 	prompt "Advanced mbed TLS Configuration Settings"
-	depends on MBEDTLS_VANILLA_BACKEND
 	help
 	  This setting will enable the advanced configuration menu.
 	  The advanced configuration allows for further fine tuning of the mbed TLS configuration
