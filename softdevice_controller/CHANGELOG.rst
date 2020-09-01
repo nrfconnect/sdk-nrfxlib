@@ -42,6 +42,12 @@ Changes
   * ble_controller_rand_vector_get_blocking -> sdc_soc_rand_vector_get
   * ble_controller_ecb_block_encrypt -> sdc_soc_ecb_block_encrypt
 
+* Vendor specific HCI APIs have been renamed (DRGN-14701):
+
+  * HCI_VS_OPCODE   -> HCI_OPCODE_VS
+  * HCI_VS_SUBEVENT -> HCI_SUBEVENT_VS
+  * hci_vs_cmd      -> hci_cmd_vs
+
 Known issues and limitations
 ============================
 
