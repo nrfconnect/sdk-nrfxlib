@@ -28,6 +28,7 @@ extern "C" {
 
 #include <stdint.h>
 #include <cmsis_compiler.h>
+#include "sdc_hci_vs_deprecated.h"
 
 /**
  * @defgroup HCI_TYPES Types
@@ -35,35 +36,35 @@ extern "C" {
  */
 
 /** @brief HCI VS OpCode Field values. */
-enum sdc_hci_vs_opcode
+enum sdc_hci_opcode_vs
 {
-    /** @brief See @ref sdc_hci_vs_cmd_zephyr_read_version_info(). */
-    SDC_HCI_VS_OPCODE_CMD_ZEPHYR_READ_VERSION_INFO = 0xfc01,
-    /** @brief See @ref sdc_hci_vs_cmd_zephyr_read_supported_commands(). */
-    SDC_HCI_VS_OPCODE_CMD_ZEPHYR_READ_SUPPORTED_COMMANDS = 0xfc02,
-    /** @brief See @ref sdc_hci_vs_cmd_zephyr_write_bd_addr(). */
-    SDC_HCI_VS_OPCODE_CMD_ZEPHYR_WRITE_BD_ADDR = 0xfc06,
-    /** @brief See @ref sdc_hci_vs_cmd_zephyr_read_static_addresses(). */
-    SDC_HCI_VS_OPCODE_CMD_ZEPHYR_READ_STATIC_ADDRESSES = 0xfc09,
-    /** @brief See @ref sdc_hci_vs_cmd_zephyr_write_tx_power(). */
-    SDC_HCI_VS_OPCODE_CMD_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
-    /** @brief See @ref sdc_hci_vs_cmd_llpm_mode_set(). */
-    SDC_HCI_VS_OPCODE_CMD_LLPM_MODE_SET = 0xfd01,
-    /** @brief See @ref sdc_hci_vs_cmd_conn_update(). */
-    SDC_HCI_VS_OPCODE_CMD_CONN_UPDATE = 0xfd02,
-    /** @brief See @ref sdc_hci_vs_cmd_conn_event_extend(). */
-    SDC_HCI_VS_OPCODE_CMD_CONN_EVENT_EXTEND = 0xfd03,
-    /** @brief See @ref sdc_hci_vs_cmd_qos_conn_event_report_enable(). */
-    SDC_HCI_VS_OPCODE_CMD_QOS_CONN_EVENT_REPORT_ENABLE = 0xfd04,
-    /** @brief See @ref sdc_hci_vs_cmd_event_length_set(). */
-    SDC_HCI_VS_OPCODE_CMD_EVENT_LENGTH_SET = 0xfd05,
+    /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_version_info(). */
+    SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_VERSION_INFO = 0xfc01,
+    /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_supported_commands(). */
+    SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_SUPPORTED_COMMANDS = 0xfc02,
+    /** @brief See @ref sdc_hci_cmd_vs_zephyr_write_bd_addr(). */
+    SDC_HCI_OPCODE_CMD_VS_ZEPHYR_WRITE_BD_ADDR = 0xfc06,
+    /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_static_addresses(). */
+    SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_STATIC_ADDRESSES = 0xfc09,
+    /** @brief See @ref sdc_hci_cmd_vs_zephyr_write_tx_power(). */
+    SDC_HCI_OPCODE_CMD_VS_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
+    /** @brief See @ref sdc_hci_cmd_vs_llpm_mode_set(). */
+    SDC_HCI_OPCODE_CMD_VS_LLPM_MODE_SET = 0xfd01,
+    /** @brief See @ref sdc_hci_cmd_vs_conn_update(). */
+    SDC_HCI_OPCODE_CMD_VS_CONN_UPDATE = 0xfd02,
+    /** @brief See @ref sdc_hci_cmd_vs_conn_event_extend(). */
+    SDC_HCI_OPCODE_CMD_VS_CONN_EVENT_EXTEND = 0xfd03,
+    /** @brief See @ref sdc_hci_cmd_vs_qos_conn_event_report_enable(). */
+    SDC_HCI_OPCODE_CMD_VS_QOS_CONN_EVENT_REPORT_ENABLE = 0xfd04,
+    /** @brief See @ref sdc_hci_cmd_vs_event_length_set(). */
+    SDC_HCI_OPCODE_CMD_VS_EVENT_LENGTH_SET = 0xfd05,
 };
 
 /** @brief VS subevent Code values. */
-enum sdc_hci_vs_subevent
+enum sdc_hci_subevent_vs
 {
-    /** @brief See @ref sdc_hci_vs_subevent_qos_conn_event_report_t. */
-    SDC_HCI_VS_SUBEVENT_QOS_CONN_EVENT_REPORT = 0x80,
+    /** @brief See @ref sdc_hci_subevent_vs_qos_conn_event_report_t. */
+    SDC_HCI_SUBEVENT_VS_QOS_CONN_EVENT_REPORT = 0x80,
 };
 
 /** @brief TX power handle type. */
@@ -152,7 +153,7 @@ typedef __PACKED_STRUCT
     uint8_t crc_error_count;
     /** @brief Indicates that the connection event was closed because a packet was not received. */
     uint8_t rx_timeout;
-} sdc_hci_vs_subevent_qos_conn_event_report_t;
+} sdc_hci_subevent_vs_qos_conn_event_report_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -176,7 +177,7 @@ typedef __PACKED_STRUCT
     uint16_t fw_revision;
     /** @brief Firware build revision. */
     uint32_t fw_build;
-} sdc_hci_vs_cmd_zephyr_read_version_info_return_t;
+} sdc_hci_cmd_vs_zephyr_read_version_info_return_t;
 
 /** @brief Zephyr Read Supported Commands return parameter(s). */
 typedef __PACKED_UNION
@@ -187,14 +188,14 @@ typedef __PACKED_UNION
      */
     sdc_hci_vs_zephyr_supported_commands_t params;
     uint8_t raw[64];
-} sdc_hci_vs_cmd_zephyr_read_supported_commands_return_t;
+} sdc_hci_cmd_vs_zephyr_read_supported_commands_return_t;
 
 /** @brief Zephyr Write BD ADDR command parameter(s). */
 typedef __PACKED_STRUCT
 {
     /** @brief BD_ADDR of the Device. */
     uint8_t bd_addr[6];
-} sdc_hci_vs_cmd_zephyr_write_bd_addr_t;
+} sdc_hci_cmd_vs_zephyr_write_bd_addr_t;
 
 /** @brief Zephyr Read Static Addresses return parameter(s). */
 typedef __PACKED_STRUCT
@@ -203,7 +204,7 @@ typedef __PACKED_STRUCT
     uint8_t num_addresses;
     /** @brief Zephyr Static Addresses. The number of addresses is specified in num_addresses. */
     sdc_hci_vs_zephyr_static_address_t addresses[];
-} sdc_hci_vs_cmd_zephyr_read_static_addresses_return_t;
+} sdc_hci_cmd_vs_zephyr_read_static_addresses_return_t;
 
 /** @brief Zephyr Write Tx Power Level (per Role/Connection) command parameter(s). */
 typedef __PACKED_STRUCT
@@ -220,25 +221,25 @@ typedef __PACKED_STRUCT
      *         power. If the selected power level is not supported, an error is returned.
      */
     int8_t tx_power_level;
-} sdc_hci_vs_cmd_zephyr_write_tx_power_t;
+} sdc_hci_cmd_vs_zephyr_write_tx_power_t;
 
 /** @brief Zephyr Write Tx Power Level (per Role/Connection) return parameter(s). */
 typedef __PACKED_STRUCT
 {
     /** @brief Handle type. See @ref sdc_hci_vs_tx_power_handle_type. */
     uint8_t handle_type;
-    /** @brief See @ref sdc_hci_vs_cmd_zephyr_write_tx_power_t. */
+    /** @brief See @ref sdc_hci_cmd_vs_zephyr_write_tx_power_t. */
     uint16_t handle;
     /** @brief The selected Tx Power in dBm. */
     int8_t selected_tx_power;
-} sdc_hci_vs_cmd_zephyr_write_tx_power_return_t;
+} sdc_hci_cmd_vs_zephyr_write_tx_power_return_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef __PACKED_STRUCT
 {
     /** @brief Set to 1 to enable LLPM. */
     uint8_t enable;
-} sdc_hci_vs_cmd_llpm_mode_set_t;
+} sdc_hci_cmd_vs_llpm_mode_set_t;
 
 /** @brief Connection Update command parameter(s). */
 typedef __PACKED_STRUCT
@@ -254,28 +255,28 @@ typedef __PACKED_STRUCT
     uint16_t conn_latency;
     /** @brief Supervision timeout for the LE Link in 10 ms units. Range 100 ms to 32 ms. */
     uint16_t supervision_timeout;
-} sdc_hci_vs_cmd_conn_update_t;
+} sdc_hci_cmd_vs_conn_update_t;
 
 /** @brief Enable or Disable Extended Connection Events command parameter(s). */
 typedef __PACKED_STRUCT
 {
     /** @brief Set to 0 for disabling, 1 for enabling, all other values are RFU. */
     uint8_t enable;
-} sdc_hci_vs_cmd_conn_event_extend_t;
+} sdc_hci_cmd_vs_conn_event_extend_t;
 
 /** @brief QoS Connection Event Reports enable command parameter(s). */
 typedef __PACKED_STRUCT
 {
     /** @brief Set to 0 for disabling, 1 for enabling, all other values are RFU. */
     uint8_t enable;
-} sdc_hci_vs_cmd_qos_conn_event_report_enable_t;
+} sdc_hci_cmd_vs_qos_conn_event_report_enable_t;
 
 /** @brief Set event length for connections command parameter(s). */
 typedef __PACKED_STRUCT
 {
     /** @brief Allocated event length in microseconds. */
     uint32_t event_length_us;
-} sdc_hci_vs_cmd_event_length_set_t;
+} sdc_hci_cmd_vs_event_length_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -303,7 +304,7 @@ typedef __PACKED_STRUCT
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_vs_cmd_zephyr_read_version_info(sdc_hci_vs_cmd_zephyr_read_version_info_return_t * p_return);
+uint8_t sdc_hci_cmd_vs_zephyr_read_version_info(sdc_hci_cmd_vs_zephyr_read_version_info_return_t * p_return);
 
 /** @brief Zephyr Read Supported Commands.
  *
@@ -319,7 +320,7 @@ uint8_t sdc_hci_vs_cmd_zephyr_read_version_info(sdc_hci_vs_cmd_zephyr_read_versi
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_vs_cmd_zephyr_read_supported_commands(sdc_hci_vs_cmd_zephyr_read_supported_commands_return_t * p_return);
+uint8_t sdc_hci_cmd_vs_zephyr_read_supported_commands(sdc_hci_cmd_vs_zephyr_read_supported_commands_return_t * p_return);
 
 /** @brief Zephyr Write BD ADDR.
  *
@@ -337,7 +338,7 @@ uint8_t sdc_hci_vs_cmd_zephyr_read_supported_commands(sdc_hci_vs_cmd_zephyr_read
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_vs_cmd_zephyr_write_bd_addr(const sdc_hci_vs_cmd_zephyr_write_bd_addr_t * p_params);
+uint8_t sdc_hci_cmd_vs_zephyr_write_bd_addr(const sdc_hci_cmd_vs_zephyr_write_bd_addr_t * p_params);
 
 /** @brief Zephyr Read Static Addresses.
  *
@@ -367,7 +368,7 @@ uint8_t sdc_hci_vs_cmd_zephyr_write_bd_addr(const sdc_hci_vs_cmd_zephyr_write_bd
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_vs_cmd_zephyr_read_static_addresses(sdc_hci_vs_cmd_zephyr_read_static_addresses_return_t * p_return);
+uint8_t sdc_hci_cmd_vs_zephyr_read_static_addresses(sdc_hci_cmd_vs_zephyr_read_static_addresses_return_t * p_return);
 
 /** @brief Zephyr Write Tx Power Level (per Role/Connection).
  *
@@ -405,14 +406,14 @@ uint8_t sdc_hci_vs_cmd_zephyr_read_static_addresses(sdc_hci_vs_cmd_zephyr_read_s
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_vs_cmd_zephyr_write_tx_power(const sdc_hci_vs_cmd_zephyr_write_tx_power_t * p_params,
-                                             sdc_hci_vs_cmd_zephyr_write_tx_power_return_t * p_return);
+uint8_t sdc_hci_cmd_vs_zephyr_write_tx_power(const sdc_hci_cmd_vs_zephyr_write_tx_power_t * p_params,
+                                             sdc_hci_cmd_vs_zephyr_write_tx_power_return_t * p_return);
 
 /** @brief Set Low Latency Packet Mode.
  *
  * This command enables or disables Low Latency Packet Mode support.
  * When Low Latency Packet Mode is enabled, it is possible to switch to connection intervals in the
- * range 1-7 ms. Switch to short connection intervals by calling @ref sdc_hci_vs_cmd_conn_update().
+ * range 1-7 ms. Switch to short connection intervals by calling @ref sdc_hci_cmd_vs_conn_update().
  *
  * After HCI Reset, this feature is disabled.
  *
@@ -422,7 +423,7 @@ uint8_t sdc_hci_vs_cmd_zephyr_write_tx_power(const sdc_hci_vs_cmd_zephyr_write_t
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_vs_cmd_llpm_mode_set(const sdc_hci_vs_cmd_llpm_mode_set_t * p_params);
+uint8_t sdc_hci_cmd_vs_llpm_mode_set(const sdc_hci_cmd_vs_llpm_mode_set_t * p_params);
 
 /** @brief Connection Update.
  *
@@ -438,12 +439,12 @@ uint8_t sdc_hci_vs_cmd_llpm_mode_set(const sdc_hci_vs_cmd_llpm_mode_set_t * p_pa
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_vs_cmd_conn_update(const sdc_hci_vs_cmd_conn_update_t * p_params);
+uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params);
 
 /** @brief Enable or Disable Extended Connection Events.
  *
  * When Extended Connection Events are disabled, the maximum connection event length is set by @ref
- * sdc_hci_vs_cmd_event_length_set().
+ * sdc_hci_cmd_vs_event_length_set().
  * When Extended Connection Events are enabled, the controller will extend the connection event as
  * much as possible, if:
  * - Either of the peers has more data to send.
@@ -460,13 +461,13 @@ uint8_t sdc_hci_vs_cmd_conn_update(const sdc_hci_vs_cmd_conn_update_t * p_params
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_vs_cmd_conn_event_extend(const sdc_hci_vs_cmd_conn_event_extend_t * p_params);
+uint8_t sdc_hci_cmd_vs_conn_event_extend(const sdc_hci_cmd_vs_conn_event_extend_t * p_params);
 
 /** @brief QoS Connection Event Reports enable.
  *
  * This vendor specific command is used to enable or disable generation of QoS Connection event
  * reports.
- * See @ref sdc_hci_vs_subevent_qos_conn_event_report_t. When enabled, one report will be generated
+ * See @ref sdc_hci_subevent_vs_qos_conn_event_report_t. When enabled, one report will be generated
  * every connection event.
  *
  * @note If the application does not pull a report in time, it will be overwritten.
@@ -477,7 +478,7 @@ uint8_t sdc_hci_vs_cmd_conn_event_extend(const sdc_hci_vs_cmd_conn_event_extend_
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_vs_cmd_qos_conn_event_report_enable(const sdc_hci_vs_cmd_qos_conn_event_report_enable_t * p_params);
+uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_conn_event_report_enable_t * p_params);
 
 /** @brief Set event length for connections.
  *
@@ -490,7 +491,7 @@ uint8_t sdc_hci_vs_cmd_qos_conn_event_report_enable(const sdc_hci_vs_cmd_qos_con
  *
  * The default event length is @ref SDC_DEFAULT_EVENT_LENGTH_US.
  *
- * See also @ref sdc_hci_vs_cmd_conn_event_extend().
+ * See also @ref sdc_hci_cmd_vs_conn_event_extend().
  *
  * @param[in]  p_params Input parameters.
  *
@@ -498,7 +499,7 @@ uint8_t sdc_hci_vs_cmd_qos_conn_event_report_enable(const sdc_hci_vs_cmd_qos_con
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_vs_cmd_event_length_set(const sdc_hci_vs_cmd_event_length_set_t * p_params);
+uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 
