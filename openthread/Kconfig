@@ -4,14 +4,16 @@
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 
+if NET_L2_OPENTHREAD
+
+menu "OpenThread"
+
 # OPENTHREAD_IMPLEMENTATION is declared in Zephyr and also here for a second time,
 # now with additional properties. Note that the dependencies of the
 # original config must be duplicated to not affect it's visibility.
 
-if NET_L2_OPENTHREAD
-
 choice OPENTHREAD_IMPLEMENTATION
-	prompt "OpenThread Selection"
+	prompt "OpenThread origin selection"
 	default OPENTHREAD_SOURCES
 	help
 	  Select OpenThread to use for build. Custom OpenThread implementations
@@ -23,5 +25,83 @@ config OPENTHREAD_LIBRARY_1_1
 	  Uses prebuilt library of openthread instead of building from sources.
 
 endchoice
+
+# OpenThread configuration features sets from Nordic Semiconductor
+
+config OPENTHREAD_NORDIC_LIBRARY
+	bool
+	prompt "Nordic library feature sets"
+
+choice
+	prompt "Feature set"
+	default OPENTHREAD_NORDIC_LIBRARY_MASTER
+	depends on OPENTHREAD_NORDIC_LIBRARY
+	help
+	  Nordic Semiconductor features set selection for OpenThread stack.
+
+config OPENTHREAD_NORDIC_LIBRARY_MASTER
+	bool "Nordic OpenThread master configuration"
+	select OPENTHREAD_BORDER_AGENT
+	select OPENTHREAD_BORDER_ROUTER
+	select OPENTHREAD_CHILD_SUPERVISION
+	select OPENTHREAD_COAP
+	select OPENTHREAD_COAPS
+	select OPENTHREAD_COMMISSIONER
+	select OPENTHREAD_DIAG
+	select OPENTHREAD_DNS_CLIENT
+	select OPENTHREAD_DHCP6_SERVER
+	select OPENTHREAD_DHCP6_CLIENT
+	select OPENTHREAD_ECDSA
+	select OPENTHREAD_ENABLE_SERVICE
+	select OPENTHREAD_IP6_FRAGM
+	select OPENTHREAD_JAM_DETECTION
+	select OPENTHREAD_JOINER
+	select OPENTHREAD_MAC_FILTER
+	select OPENTHREAD_MTD_NETDIAG
+	select OPENTHREAD_RAW
+	select OPENTHREAD_SLAAC
+	select OPENTHREAD_SNTP_CLIENT
+	select OPENTHREAD_UDP_FORWARD
+	help
+	  Nordic Semiconductor complete set of OpenThread features.
+
+config OPENTHREAD_NORDIC_LIBRARY_FTD
+	bool "Nordic Optimized FTD configuration"
+	select OPENTHREAD_CHILD_SUPERVISION
+	select OPENTHREAD_COAP
+	select OPENTHREAD_COAPS
+	select OPENTHREAD_DNS_CLIENT
+	select OPENTHREAD_DHCP6_CLIENT
+	select OPENTHREAD_ECDSA
+	select OPENTHREAD_ENABLE_SERVICE
+	select OPENTHREAD_IP6_FRAGM
+	select OPENTHREAD_JAM_DETECTION
+	select OPENTHREAD_JOINER
+	select OPENTHREAD_MAC_FILTER
+	select OPENTHREAD_SLAAC
+	select OPENTHREAD_SNTP_CLIENT
+	select OPENTHREAD_UDP_FORWARD
+	help
+	  Nordic Semiconductor optimized OpenThread features for FTD.
+
+config OPENTHREAD_NORDIC_LIBRARY_MTD
+	bool "Nordic Optimized MTD configuration"
+	select OPENTHREAD_CHILD_SUPERVISION
+	select OPENTHREAD_COAP
+	select OPENTHREAD_COAPS
+	select OPENTHREAD_DNS_CLIENT
+	select OPENTHREAD_DHCP6_CLIENT
+	select OPENTHREAD_ECDSA
+	select OPENTHREAD_IP6_FRAGM
+	select OPENTHREAD_JAM_DETECTION
+	select OPENTHREAD_JOINER
+	select OPENTHREAD_MAC_FILTER
+	select OPENTHREAD_SLAAC
+	select OPENTHREAD_SNTP_CLIENT
+	help
+	  Nordic Semiconductor optimized OpenThread features for MTD.
+endchoice
+
+endmenu # "OpenThread"
 
 endif
