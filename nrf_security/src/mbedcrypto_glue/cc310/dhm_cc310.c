@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_CC310_GLUE_MBEDTLS_DHM_C)
+#if defined(CONFIG_GLUE_CC310_MBEDTLS_DHM_C)
 
 #include "mbedtls/dhm.h"
 #include "backend_dhm.h"

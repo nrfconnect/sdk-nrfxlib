@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_OBERON_GLUE_MBEDTLS_CMAC_C)
+#if defined(CONFIG_GLUE_OBERON_MBEDTLS_CMAC_C)
 
 #include <assert.h>
 
