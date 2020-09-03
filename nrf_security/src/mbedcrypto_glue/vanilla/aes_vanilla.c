@@ -9,7 +9,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(CONFIG_VANILLA_GLUE_MBEDTLS_AES_C)
+#if defined(CONFIG_GLUE_VANILLA_MBEDTLS_AES_C)
 
 #include <toolchain.h>
 
