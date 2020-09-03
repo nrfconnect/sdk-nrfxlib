@@ -1101,7 +1101,6 @@ config APP_LINK_WITH_MBEDTLS_INCLUDES
 	help
 	  Add mbedcrypto header files to the 'app' include path.
 
-if MBEDTLS_VANILLA_BACKEND
 
 comment "Advanced configuration section"
 
@@ -1141,6 +1140,7 @@ config MBEDTLS_AES_FEWER_TABLES
 
 config MBEDTLS_MPI_WINDOW_SIZE
 	int "MPI - Multiple Precision Integers window size"
+	depends on CC310_BACKEND || VANILLA_MBEDTLS_ECP_C || VANILLA_MBEDTLS_RSA_C
 	range 1 6
 	default 6
 	help
@@ -1150,6 +1150,7 @@ config MBEDTLS_MPI_WINDOW_SIZE
 
 config MBEDTLS_MPI_MAX_SIZE
 	int "MPI - Multiple Precision Integers maximum size"
+	depends on CC310_BACKEND || VANILLA_MBEDTLS_ECP_C || VANILLA_MBEDTLS_RSA_C
 	range 0 1024
 	default 1024
 	help
@@ -1160,6 +1161,7 @@ config MBEDTLS_MPI_MAX_SIZE
 
 config MBEDTLS_ECP_MAX_BITS
 	int "ECP - Max bit size of Elliptic Curves"
+	depends on CC310_BACKEND || VANILLA_MBEDTLS_ECP_C
 	range 0 521
 	default 521
 	help
@@ -1169,6 +1171,7 @@ config MBEDTLS_ECP_MAX_BITS
 
 config MBEDTLS_ECP_WINDOW_SIZE
 	int "ECP - Elliptic Curve multiplication window size"
+	depends on CC310_BACKEND || VANILLA_MBEDTLS_ECP_C
 	range 2 6
 	default 6
 	help
@@ -1178,6 +1181,7 @@ config MBEDTLS_ECP_WINDOW_SIZE
 
 config MBEDTLS_ECP_FIXED_POINT_OPTIM
 	bool "ECP - Elliptic Curve fixed point optimization"
+	depends on VANILLA_MBEDTLS_ECP_C
 	default y
 	help
 	  This setting control ECP fixed point optimizations.
@@ -1187,7 +1191,8 @@ config MBEDTLS_ECP_FIXED_POINT_OPTIM
 
 config MBEDTLS_SHA256_SMALLER
 	bool "Use SHA256 small footprint implementation"
-	depends on NRF_SECURITY_ADVANCED && (VANILLA_MBEDTLS_SHA256_C || (MBEDTLS_SHA256_C && !NRF_CRYPTO_BACKEND_COMBINATION_0))
+	depends on NRF_SECURITY_ADVANCED && (VANILLA_MBEDTLS_SHA256_C || \
+			   (MBEDTLS_SHA256_C && !NRF_CRYPTO_BACKEND_COMBINATION_0 && MBEDTLS_VANILLA_BACKEND))
 	help
 	  Use a SHA-256 implementation with smaller footprint.
 	  Note, that this implementation will also have a lower performance.
@@ -1215,10 +1220,7 @@ config MBEDTLS_SSL_CIPHERSUITES
 	  Warning: This field has offers no validation checks.
 	  MBEDTLS_SSL_CIPHERSUITES setting in mbed TLS config file.
 
-
 endif # NRF_SECURITY_ADVANCED
-
-endif # MBEDTLS_VANILLA_BACKEND
 
 endif # NORDIC_SECURITY_BACKEND
 
