@@ -689,23 +689,29 @@ config GLUE_MBEDTLS_DHM_C
 
 config CC310_GLUE_MBEDTLS_DHM_C
 	bool
+	depends on CC310_MBEDTLS_DHM_C && VANILLA_MBEDTLS_DHM_C
+	default y
 	select GLUE_MBEDTLS_DHM_C
 
 config VANILLA_GLUE_MBEDTLS_DHM_C
 	bool
+	depends on CC310_MBEDTLS_DHM_C && VANILLA_MBEDTLS_DHM_C
+	default y
 	select GLUE_MBEDTLS_DHM_C
 
 config CC310_MBEDTLS_DHM_C
-	bool "cc310" if CC310_BACKEND
-	default y
+	bool "cc310"
+	depends on CC310_BACKEND
+	default y if CC310_BACKEND
 	select MBEDTLS_DHM_ALT
 	help
 	  Enable the DHM module from nrf cc310.
 	  MBEDTLS_DHM_C setting in mbed TLS config file.
 
 config VANILLA_MBEDTLS_DHM_C
-	bool "mbed TLS vanilla" if MBEDTLS_VANILLA_BACKEND
-	select GLUE_MBEDTLS_DHM_C if CC310_MBEDTLS_DHM_C
+	bool "mbed TLS vanilla"
+	default y if !CC310_BACKEND
+	depends on MBEDTLS_VANILLA_BACKEND || OBERON_BACKEND
 	help
 	  Enable the DHM module from mbed TLS vanilla.
 	  MBEDTLS_DHM_C setting in mbed TLS config file.
