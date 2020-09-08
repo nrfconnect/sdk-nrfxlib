@@ -28,6 +28,8 @@
 
 .. _`article on reducing mbed TLS memory and storage footprint`: https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint
 
+.. _`Arm mbed TLS project`: https://github.com/ARMmbed/mbedtls
+
 .. _`Global navigation satellite system (GNSS)`: https://en.wikipedia.org/wiki/Satellite_navigation
 
 .. _`NMEA`: https://www.gpsinformation.org/dale/nmea.htm
