@@ -38,6 +38,7 @@ config BT_LL_SOFTDEVICE
 	select BT_CTLR_EXT_SCAN_FP_SUPPORT
 	select BT_CTLR_PHY_UPDATE_SUPPORT
 	select BT_CTLR_CHAN_SEL_2_SUPPORT
+	select BT_CTLR_CONN_RSSI_SUPPORT
 	select BT_HAS_HCI_VS
 	# The SoftDevice Controller only supports nRF52 and nRF53, it does not support nRF51
 	# or nRF91 (nRF91 doesn't even have the physical HW needed for BLE).
