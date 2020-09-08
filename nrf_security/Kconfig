@@ -119,9 +119,10 @@ config OBERON_BACKEND
 	  Enable nrf_oberon mbed TLS backend
 
 config MBEDTLS_VANILLA_BACKEND
-	bool "Use mbed TLS vanilla backend"
+	bool "Use Original mbed TLS backend"
 	help
-	  Enable mbed TLS vanilla backend
+	  Enable Original mbed TLS backend
+	  This backend uses unaltered source code from the Arm mbed TLS project.
 
 #
 # Configuration to signal that multiple backends are enabled
@@ -739,7 +740,7 @@ config CHOICE_CC310_MBEDTLS_CHACHA20_C
 	  HW accelerated chacha20 support
 
 config CHOICE_VANILLA_MBEDTLS_CHACHA20_C
-	bool "mbed TLS vanilla"
+	bool "Original mbed TLS"
 	depends on OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
 	select VANILLA_MBEDTLS_CHACHA20_C
 	help
@@ -785,7 +786,7 @@ config CHOICE_CC310_MBEDTLS_POLY1305_C
 	select CC310_MBEDTLS_POLY1305_C
 
 config CHOICE_VANILLA_MBEDTLS_POLY1305_C
-	bool "mbed TLS vanilla"
+	bool "Original mbed TLS"
 	depends on OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
 	select VANILLA_MBEDTLS_POLY1305_C
 
@@ -830,7 +831,7 @@ config CHOICE_CC310_MBEDTLS_CHACHAPOLY_C
 	select CC310_MBEDTLS_CHACHAPOLY_C
 
 config CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C
-	bool "mbed TLS vanilla"
+	bool "Original mbed TLS"
 	depends on OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
 	select VANILLA_MBEDTLS_CHACHAPOLY_C
 
@@ -894,7 +895,7 @@ config CC310_MBEDTLS_DHM_C
 	  MBEDTLS_DHM_C setting in mbed TLS config file.
 
 config VANILLA_MBEDTLS_DHM_C
-	bool "mbed TLS vanilla"
+	bool "Original mbed TLS"
 	depends on MBEDTLS_VANILLA_BACKEND
 	default y if !CC310_BACKEND
 	help
@@ -956,7 +957,7 @@ config CHOICE_OBERON_MBEDTLS_ECP_C
 	select OBERON_MBEDTLS_ECP_C
 
 config CHOICE_VANILLA_MBEDTLS_ECP_C
-	bool "mbed TLS vanilla"
+	bool "Original mbed TLS"
 	depends on MBEDTLS_VANILLA_BACKEND
 	select VANILLA_MBEDTLS_ECP_C
 
@@ -1201,7 +1202,7 @@ config CHOICE_CC310_MBEDTLS_RSA_C
 	select CC310_MBEDTLS_RSA_C
 
 config CHOICE_VANILLA_MBEDTLS_RSA_C
-	bool "mbed TLS vanilla"
+	bool "Original mbed TLS"
 	depends on OBERON_BACKEND || MBEDTLS_VANILLA_BACKEND
 	select VANILLA_MBEDTLS_RSA_C
 
@@ -1267,7 +1268,7 @@ config CHOICE_OBERON_MBEDTLS_SHA1_C
 	select OBERON_MBEDTLS_SHA1_C
 
 config CHOICE_VANILLA_MBEDTLS_SHA1_C
-	bool "mbed TLS vanilla"
+	bool "Original mbed TLS"
 	depends on MBEDTLS_VANILLA_BACKEND
 	select VANILLA_MBEDTLS_SHA1_C
 
@@ -1318,7 +1319,7 @@ config CHOICE_OBERON_MBEDTLS_SHA256_C
 	select OBERON_MBEDTLS_SHA256_C
 
 config CHOICE_VANILLA_MBEDTLS_SHA256_C
-	bool "mbed TLS vanilla"
+	bool "Original mbed TLS"
 	depends on MBEDTLS_VANILLA_BACKEND
 	select VANILLA_MBEDTLS_SHA256_C
 
