@@ -15,11 +15,33 @@
 
 static unsigned char mbedtls_heap[CONFIG_MBEDTLS_HEAP_SIZE];
 
+/*
+ * Initializes the heap with the compile-time configured size.
+ *
+ * Not static in order to allow extern use.
+ */
+void _heap_init(void)
+{
+	mbedtls_memory_buffer_alloc_init(mbedtls_heap, sizeof(mbedtls_heap));
+}
+
+/*
+ * Internal use. Calling this followed by _heap_init allows re-allocating the
+ * heap, which is useful when testing small devices with small heaps,
+ * where fragmentation might render the heap unusable.
+ *
+ * Not static in order to allow extern use.
+ */
+void _heap_free(void)
+{
+	mbedtls_memory_buffer_alloc_free();
+}
+
 static int mbedtls_heap_init(struct device *dev)
 {
 	ARG_UNUSED(dev);
 
-	mbedtls_memory_buffer_alloc_init(mbedtls_heap, sizeof(mbedtls_heap));
+	_heap_init();
 
 	return 0;
 }
