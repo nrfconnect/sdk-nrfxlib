@@ -42,7 +42,7 @@ The following additional Kconfig options were set for the build:
 * :option:`CONFIG_OPENTHREAD_LOG_LEVEL_CRIT` set to ``y``
 * :option:`CONFIG_OPENTHREAD_MAC_FILTER` set to ``y``
 * :option:`CONFIG_OPENTHREAD_MBEDTLS` set to ``y``
-* :option:`CONFIG_OPENTHREAD_MBEDTLS_TARGET` set to ``mbedTLS``
+* :option:`CONFIG_OPENTHREAD_MBEDTLS_LIB_NAME` set to ``mbedTLS``
 * :option:`CONFIG_OPENTHREAD_MTD_NETDIAG` set to ``y``
 * :option:`CONFIG_OPENTHREAD_NETWORK_NAME` set to ``ot_zephyr``
 * :option:`CONFIG_OPENTHREAD_NORDIC_LIBRARY` set to ``y``
