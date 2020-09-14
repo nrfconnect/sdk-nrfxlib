@@ -137,7 +137,8 @@ void nrf_rpc_os_tls_set(void *data);
  *
  * If there is no available context then this function waits for it.
  *
- * @return Context index between 0 and CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE - 1.
+ * @return Context index between 0 and
+ *         @option{CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE} - 1.
  */
 uint32_t nrf_rpc_os_ctx_pool_reserve();
 
