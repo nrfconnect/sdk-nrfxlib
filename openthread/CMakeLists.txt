@@ -6,6 +6,8 @@
 include(${NRFXLIB_DIR}/common.cmake)
 nrfxlib_calculate_lib_path(lib_path)
 
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/extensions.cmake)
+
 function(checkOpenthreadVersion)
   file(READ "${ZEPHYR_OPENTHREAD_MODULE_DIR}/../include/openthread/instance.h" INSTANCE_FILE_CONTENT)
   string(REGEX MATCH "#define[ ]*OPENTHREAD_API_VERSION[ ]*\\(([0-9]+)\\)" MACRO_DEF "${INSTANCE_FILE_CONTENT}")
@@ -20,6 +22,36 @@ function(checkOpenthreadVersion)
     message(WARNING "The Openthread source code version (${OPENTHREAD_SOURCE_API_VERSION}) is not equal to compiled Openthread library version (${OPENTHREAD_LIB_API_VERSION}).")
   endif()
 endfunction()
+
+if(CONFIG_OPENTHREAD_SOURCES)
+  message(DEBUG "Building OT from sources, config file will be generated.")
+
+  set(OPENTHREAD_CONFIG_FILE "${CMAKE_BINARY_DIR}/openthread_lib_configuration.txt")
+
+  openthread_libs_configuration_write(${OPENTHREAD_CONFIG_FILE})
+
+  nrfxlib_calculate_lib_path(lib_path)
+  set(OPENTHREAD_DST_DIR "${CMAKE_CURRENT_LIST_DIR}/${lib_path}/v${CONFIG_OPENTHREAD_THREAD_VERSION}")
+  set(OPENTHREAD_HEADERS_DIR "${ZEPHYR_OPENTHREAD_MODULE_DIR}/../include")
+
+  add_custom_target(install_openthread_libraries
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ftd> "${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-mtd> "${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-radio> "${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-cli-ftd> "${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-cli-mtd> "${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ncp-ftd> "${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ncp-mtd> "${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-rcp> "${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+      ${OPENTHREAD_HEADERS_DIR}
+      ${NRFXLIB_DIR}/openthread/include
+    COMMAND ${CMAKE_COMMAND} -E copy
+     ${OPENTHREAD_CONFIG_FILE}
+     ${NRFXLIB_DIR}/openthread/
+    )
+endif()
 
 if (CONFIG_OPENTHREAD_LIBRARY_1_1)
   set(version_dir "v1.1")
