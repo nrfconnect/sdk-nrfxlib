@@ -29,7 +29,7 @@ The Type 4 Tag library supports three different modes of emulation:
      - All APDUs are signaled through the callback.
    * - Read-only T4T NDEF tag
      - The NDEF file cannot be modified.
-       Only NFC field status and :cpp:enumerator:`NFC_T4T_EVENT_NDEF_READ <nfc_t4t_lib::NFC_T4T_EVENT_NDEF_READ>` can be signaled through the callback.
+       Only NFC field status and :c:enumerator:`NFC_T4T_EVENT_NDEF_READ` can be signaled through the callback.
    * - Read-write T4T NDEF tag
      - The NDEF file can be modified.
        The changes to the NDEF content are signaled through the callback.

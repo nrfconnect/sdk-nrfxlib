@@ -202,7 +202,7 @@ CT stands for Cascade Tag byte and equals 0x88.
 
 The UID bytes are stored in the nRF52 FICR registers.
 
-If you want to use UID bytes other than the ones from the FICR registers, use the :c:func:`nfc_t2t_parameter_set` function with the :cpp:enumerator:`NFC_T2T_PARAM_NFCID1 <nfc_t2t_lib::NFC_T2T_PARAM_NFCID1>` parameter.
+If you want to use UID bytes other than the ones from the FICR registers, use the :c:func:`nfc_t2t_parameter_set` function with the :c:enumerator:`NFC_T2T_PARAM_NFCID1` parameter.
 When choosing a custom UID, remember to follow the NFC Forum requirements.
 
 Static Lock bytes
