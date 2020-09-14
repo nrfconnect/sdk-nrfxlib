@@ -28,7 +28,6 @@ extern "C" {
 
 #include <stdint.h>
 #include <cmsis_compiler.h>
-#include "sdc_hci_vs_deprecated.h"
 
 /**
  * @defgroup HCI_TYPES Types
