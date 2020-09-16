@@ -51,7 +51,6 @@ append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library/
     hkdf.c
     hmac_drbg.c
     md.c
-    md_wrap.c
     md2.c
     md4.c
     md5.c
