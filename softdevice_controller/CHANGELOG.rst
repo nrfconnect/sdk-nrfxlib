@@ -62,7 +62,7 @@ Known issues and limitations
 * The HCI Receiver and Transmitter Test commands are not available.
   To perform a radio test, use a DTM application.
   For nRF52, use the DTM application in the nRF5 SDK.
-  For nRF53, use :ref:`nrf:_direct_test_mode` (DRGN-12259).
+  For nRF53, use :ref:`nrf:direct_test_mode` (DRGN-12259).
 
 nRF Connect SDK v1.3.0
 **********************
