@@ -37,7 +37,7 @@ void _heap_free(void)
 	mbedtls_memory_buffer_alloc_free();
 }
 
-static int mbedtls_heap_init(struct device *dev)
+static int mbedtls_heap_init(const struct device *dev)
 {
 	ARG_UNUSED(dev);
 
