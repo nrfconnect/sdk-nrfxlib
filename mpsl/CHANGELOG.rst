@@ -15,6 +15,9 @@ Changes
   using :cpp:func:`mpsl_timeslot_session_count_set`. All APIs timeslot APIs now take
   a session_id as input. The session id is retrieved from :cpp:func:`mpsl_timeslot_session_open()`.
 
+* Added API to use Front-End Modules (nRF21540 GPIO and simple GPIO) by the protocols and API to
+  configure them by the application. Only nRF52 series is supported.
+
 Bugfixes
 ========
 
@@ -43,8 +46,8 @@ Added
 Changes
 =======
 * Removed ``MPSL_RADIO_NOTIFICATION_DISTANCE_425US`` and replaced it by ``MPSL_RADIO_NOTIFICATION_DISTANCE_420US``.
-* On nRF53, the fix for Errata 16 is now applied. 
-* The scheduling overhead of a timeslot event is reduced. 
+* On nRF53, the fix for Errata 16 is now applied.
+* The scheduling overhead of a timeslot event is reduced.
 
 Bugfixes
 ========

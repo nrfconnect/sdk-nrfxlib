@@ -38,6 +38,34 @@ MPSL TX Power
    :project: nrfxlib
    :members:
 
+MPSL FEM
+********
+
+.. doxygengroup:: mpsl_fem
+   :project: nrfxlib
+   :members:
+
+MPSL FEM common configuration
+*****************************
+
+.. doxygengroup:: mpsl_fem_config_common
+   :project: nrfxlib
+   :members:
+
+MPSL FEM nRF21540 GPIO
+**********************
+
+.. doxygengroup:: mpsl_fem_nrf21540_gpio
+   :project: nrfxlib
+   :members:
+
+MPSL FEM Simple GPIO
+********************
+
+.. doxygengroup:: mpsl_fem_simple_gpio
+   :project: nrfxlib
+   :members:
+
 MPSL Temp
 *********
 

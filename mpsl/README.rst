@@ -13,6 +13,7 @@ Key features of this library include:
 * Radio notifications - a configurable interrupt before and/or after radio activity.
 * TX Power control - the MPSL TX Power interface provides APIs to set the maximum TX power per channel.
 * Clock control - APIs for configuring and controlling the low and high-frequency clock.
+* FEM - APIs for controlling external Front-End Modules (only nRF52 series is supported).
 * API for obtaining the temperature measured on the SoC.
 
 .. important::
@@ -32,4 +33,5 @@ Key features of this library include:
    doc/timeslot
    doc/radio_notification
    doc/tx_power_control
+   doc/fem
    doc/api
