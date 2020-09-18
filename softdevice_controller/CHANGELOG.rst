@@ -60,7 +60,9 @@ Known issues and limitations
 * Synthesized low frequency clock source is not tested or intended for use with the Bluetooth LE stack (DRGN-6362).
 * If an extended advertiser is configured with limited duration, it will time out after the first primary channel packet in the last advertising event (DRGN-10367).
 * The HCI Receiver and Transmitter Test commands are not available.
-  To perform a radio test, utilize the DTM application in the nRF5 SDK (DRGN-12259).
+  To perform a radio test, use a DTM application.
+  For nRF52, use the DTM application in the nRF5 SDK.
+  For nRF53, use :ref:`nrf:direct_test_mode` (DRGN-12259).
 
 nRF Connect SDK v1.3.0
 **********************
