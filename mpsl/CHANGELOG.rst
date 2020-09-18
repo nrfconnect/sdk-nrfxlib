@@ -16,7 +16,8 @@ Changes
   a session_id as input. The session id is retrieved from :cpp:func:`mpsl_timeslot_session_open()`.
 
 * Added API to use Front-End Modules (nRF21540 GPIO and simple GPIO) by the protocols and API to
-  configure them by the application. Only nRF52 series is supported.
+  configure them by the application. Only nRF52 series is supported. This API is currently implemented
+  in 802.15.4 protocol only.
 
 Bugfixes
 ========
