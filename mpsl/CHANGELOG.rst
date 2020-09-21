@@ -10,27 +10,27 @@ Master branch
 
 Changes
 =======
-* Change the timeslot implementation to support up to 8 concurrent sessions (DRGN-13952).
-  As part of this change, it is now necessary to supply a timeslot context configuration
-  using :cpp:func:`mpsl_timeslot_session_count_set`. All APIs timeslot APIs now take
-  a session_id as input. The session id is retrieved from :cpp:func:`mpsl_timeslot_session_open()`.
+* Changed the timeslot implementation to support up to 8 concurrent sessions (DRGN-13952).
+  It is now necessary to supply a timeslot context configuration using :cpp:func:`mpsl_timeslot_session_count_set`.
+  All timeslot APIs now take a ``session_id`` as input.
+  The session id is retrieved from :cpp:func:`mpsl_timeslot_session_open()`.
 
-* Added API to use Front-End Modules (nRF21540 GPIO and simple GPIO) by the protocols and API to
-  configure them by the application. Only nRF52 series is supported. This API is currently implemented
-  in 802.15.4 protocol only.
+* Added an API to use Front-End Modules, like the nRF21540 GPIO or a simple GPIO, with the protocols and an API to configure them using the application.
+  Only the nRF52 series is supported.
+  This API is currently implemented in 802.15.4 protocol only.
 
 Bugfixes
 ========
 
-* Fixed an issue where the high frequency clock and TIMER0 was not turned off during idle periods shorter than 9 ms (DRGN-14152).
+* Fixed an issue where the high frequency clock and ``TIMER0`` were not turned off during idle periods shorter than 9 ms (DRGN-14152).
   This increased the average power consumption.
-  Such a case could occur when running a Bluetooth LE connection with a connection interval of 7.5 ms.
+  Such a case could occur when running a |BLE| connection with a connection interval of 7.5 ms.
 
 Known Issues and limitations
 ============================
-* Synthesized low frequency clock source is not tested or intended for use with MPSL (DRGN-6362).
+* The synthesized low frequency clock source is neither tested nor intended for usage with MPSL (DRGN-6362).
 * The Radio Notification feature has a power performance penalty proportional to the notification distance.
-  This means an additional average current consumption of about 600 µA for the duration of the notification distance (DRGN-14153).
+  This means an additional average current consumption of about 600 µA for the duration of the radio notification (DRGN-14153).
 
 nRF Connect SDK v1.3.0
 **********************

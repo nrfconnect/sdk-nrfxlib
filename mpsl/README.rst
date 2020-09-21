@@ -7,21 +7,28 @@ The Multiprotocol Service Layer (MPSL) is a library of common services for singl
 
 The library is available as soft-float, softfp-float, and hard-float builds for the nRF52 and nRF53 series.
 
-Key features of this library include:
+This library provides the following key features:
 
-* Timeslot - allows the application to schedule its own events concurrently with other protocols.
-* Radio notifications - a configurable interrupt before and/or after radio activity.
-* TX Power control - the MPSL TX Power interface provides APIs to set the maximum TX power per channel.
-* Clock control - APIs for configuring and controlling the low and high-frequency clock.
-* FEM - APIs for controlling external Front-End Modules (only nRF52 series is supported).
-* API for obtaining the temperature measured on the SoC.
+* Timeslot.
+  It allows the application to schedule its own events concurrently with other protocols.
+* Radio notifications.
+  It provides a configurable interrupt, usable before and/or after radio activity.
+* TX Power control.
+  It provides an API for setting the maximum TX power per channel.
+* Clock control.
+  It provides an API for configuring and controlling the low and high-frequency clock.
+* FEM.
+  It provides an API for controlling external Front-End Modules.
+  It supports only the nRF52 series.
+* SoC Temperature.
+  It provides an API for obtaining the temperature measured on the SoC.
 
-.. important::
-   For nRF5340, the libraries are:
+.. note::
+   Please note the following when using the library for the nRF5340:
 
-   * For evaluation purposes only.
-   * Not fully functional and not properly tested.
-   * Not optimized for performance.
+   * The libraries are for evaluation purposes only.
+   * They are neither fully functional, nor properly tested.
+   * They are not optimized for performance.
 
 
 .. toctree::
