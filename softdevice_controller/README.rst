@@ -3,11 +3,12 @@
 SoftDevice Controller
 ###########################
 
-The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series that supports Bluetooth 5.
-In addition to providing a Bluetooth HCI interface, it also provides:
+The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series.
+It supports Bluetooth 5.
+In addition to providing a Bluetooth HCI interface, it also provides the following:
 
-* Multiprotocol support through APIs for requesting RADIO timeslots
-* APIs for accessing flash memory concurrently with radio activity
+* APIs for requesting RADIO timeslots, to provide multiprotocol support
+* APIs for accessing the flash memory concurrently with the radio activity
 * APIs for controlling the high frequency clock
 
 The |controller| is distributed in different variants containing different features.
@@ -38,7 +39,7 @@ SoC support:
 | nRF5340    |        |        | Eng A  |
 +------------+--------+--------+--------+
 
-Bluetooth LE feature support:
+|BLE| feature support:
 
 +--------------------------+--------+--------+--------+
 |                          | S112   | S132   | S140   |
@@ -70,12 +71,12 @@ Proprietary feature support:
 | QoS Conn Event Reports   | X      | X      | X      |
 +--------------------------+--------+--------+--------+
 
-.. important::
-   For nRF5340, the libraries are:
+.. note::
+   Please note the following when using the library for the nRF5340:
 
-   -  For evaluation purposes only.
-   -  Not fully functional and not properly tested.
-   -  Not optimized for performance.
+   * The libraries are for evaluation purposes only.
+   * They are neither fully functional, nor properly tested.
+   * They are not optimized for performance.
 
 
 .. toctree::
