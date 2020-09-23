@@ -217,7 +217,7 @@ typedef struct zb_zcl_shade_get_value_param_s
   ZB_ZCL_ATTR_SHADE_CONFIG_STATUS_ID,                                             \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                  \
-  (zb_voidp_t) data_ptr                                                           \
+  (void*) data_ptr                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_SHADE_CONFIG_CLOSED_LIMIT_ID(data_ptr) \
@@ -225,7 +225,7 @@ typedef struct zb_zcl_shade_get_value_param_s
   ZB_ZCL_ATTR_SHADE_CONFIG_CLOSED_LIMIT_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                  \
-  (zb_voidp_t) data_ptr                                                           \
+  (void*) data_ptr                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_SHADE_CONFIG_MODE_ID(data_ptr)         \
@@ -233,7 +233,7 @@ typedef struct zb_zcl_shade_get_value_param_s
   ZB_ZCL_ATTR_SHADE_CONFIG_MODE_ID,                                               \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                     \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                  \
-  (zb_voidp_t) data_ptr                                                           \
+  (void*) data_ptr                                                           \
 }
 
 /** Number of attributes mandatory for reporting in Shade Configuration cluster */

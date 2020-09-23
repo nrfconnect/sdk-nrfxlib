@@ -406,30 +406,6 @@ zb_ret_t zb_schedule_alarm_cancel(zb_callback_t func, zb_uint8_t param, zb_uint8
 #define ZB_SCHEDULE_APP_ALARM_CANCEL(func, param) zb_schedule_alarm_cancel((func), (param), NULL)
 #endif /* ZB_SCHEDULE_APP_ALARM_CANCEL */
 
-/**
-   Cancel scheduled alarm and get buffer.
-
-   This function cancel previously scheduled alarm and returns buffer ref associated with alarm.
-   Function is identified by the pointer.
-
-   @param func - function to cancel
-   @param param - parameter to cancel. \see ZB_ALARM_ANY_PARAM. \see ZB_ALARM_ALL_CB
-   @param p_param - [out] pointer of ref buffer from cancelled flag: free buffer if its alarm will be cancel
-   @return RET_OK or error code
-
-   @b Example:
-   @code
-   {
-     zb_uint8_t cancelled_param;
-
-     ZB_SCHEDULE_ALARM_CANCEL_AND_GET_BUF(my_func1, ZB_ALARM_ALL_CB, &cancelled_param);
-     my_func1(cancelled_param);
-   }
-   @endcode
-
-   See reporting_srv sample
- */
-#define ZB_SCHEDULE_APP_ALARM_CANCEL_AND_GET_BUF(func, param, p_param) zb_schedule_alarm_cancel((func), (param), p_param)
 
 /** @cond internals_doc */
 /**

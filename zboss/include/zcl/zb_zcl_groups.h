@@ -781,7 +781,7 @@ zb_bool_t zb_zcl_process_groups_commands_cli(zb_uint8_t param);
   ZB_ZCL_ATTR_GROUPS_NAME_SUPPORT_ID,                             \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                   \
-  (zb_voidp_t) data_ptr                                           \
+  (void*) data_ptr                                           \
 }
 
 /** @internal @brief Number of attributes mandatory for reporting in Groups cluster. */
@@ -799,8 +799,8 @@ zb_bool_t zb_zcl_process_groups_commands_cli(zb_uint8_t param);
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 
-zb_void_t zb_zcl_groups_init_server(void);
-zb_void_t zb_zcl_groups_init_client(void);
+void zb_zcl_groups_init_server(void);
+void zb_zcl_groups_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_GROUPS_SERVER_ROLE_INIT zb_zcl_groups_init_server
 #define ZB_ZCL_CLUSTER_ID_GROUPS_CLIENT_ROLE_INIT zb_zcl_groups_init_client
 

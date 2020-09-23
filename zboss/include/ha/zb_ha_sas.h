@@ -69,7 +69,7 @@ attempt
  */
 #define ZB_HA_SAS_TIME_BTWN_SCANS 1000
 
-zb_void_t zb_ha_process_sas(void);
+void zb_ha_process_sas(void);
 
 #endif /* defined ZB_ENABLE_HA_SAS */
 

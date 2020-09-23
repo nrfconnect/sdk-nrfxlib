@@ -231,7 +231,7 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_COMPANY_NAME,                                              \
   ZB_ZCL_ATTR_TYPE_CHAR_STRING,                                                               \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (zb_voidp_t) data_ptr                                                                       \
+  (void*) data_ptr                                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METER_IDENTIFICATION_METER_TYPE_ID(data_ptr)       \
@@ -239,7 +239,7 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_METER_TYPE_ID,                                             \
   ZB_ZCL_ATTR_TYPE_U16,                                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (zb_voidp_t) data_ptr                                                                       \
+  (void*) data_ptr                                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METER_IDENTIFICATION_DATA_QUALITY_ID(data_ptr)     \
@@ -247,7 +247,7 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_DATA_QUALITY_ID,                                           \
   ZB_ZCL_ATTR_TYPE_U16,                                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (zb_voidp_t) data_ptr                                                                       \
+  (void*) data_ptr                                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METER_IDENTIFICATION_POD(data_ptr)                 \
@@ -255,7 +255,7 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_POD,                                                       \
   ZB_ZCL_ATTR_TYPE_CHAR_STRING,                                                               \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (zb_voidp_t) data_ptr                                                                       \
+  (void*) data_ptr                                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METER_IDENTIFICATION_AVAILABLE_POWER(data_ptr)     \
@@ -263,7 +263,7 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_AVAILABLE_POWER,                                           \
   ZB_ZCL_ATTR_TYPE_S24,                                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (zb_voidp_t) data_ptr                                                                       \
+  (void*) data_ptr                                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METER_IDENTIFICATION_POWER_THRESHOLD(data_ptr)     \
@@ -271,7 +271,7 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_POWER_THRESHOLD,                                           \
   ZB_ZCL_ATTR_TYPE_S24,                                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (zb_voidp_t) data_ptr                                                                       \
+  (void*) data_ptr                                                                       \
 }
 
 /*! @internal Number of attributes mandatory for reporting in Meter Identification cluster */
@@ -284,8 +284,8 @@ typedef enum zb_zcl_meter_identification_data_quality_e
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 
-zb_void_t zb_zcl_meter_identification_init_server(void);
-zb_void_t zb_zcl_meter_identification_init_client(void);
+void zb_zcl_meter_identification_init_server(void);
+void zb_zcl_meter_identification_init_client(void);
 
 #define ZB_ZCL_CLUSTER_ID_METER_IDENTIFICATION_SERVER_ROLE_INIT zb_zcl_meter_identification_init_server
 #define ZB_ZCL_CLUSTER_ID_METER_IDENTIFICATION_CLIENT_ROLE_INIT zb_zcl_meter_identification_init_client

@@ -11,14 +11,14 @@
  * Please use release scripts to update it's contents.
  *
  * Repositories:
- * platform_ncs       3788e55e2177da47e6403098eea45786a4b853ed https://bitbucket-zoi.dsr-corporation.com/scm/ZOI/platform_ncs.git
- * zboss-stack-src    f64123b00bcd9ed2041f3ec2b1d3bee3ba27b118 https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_stable
- * zboss-stack-doc    e8c9e54b2e34842d9091c9c48032b60bb00915a2 https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_doc
- * nrf                f346be692cfeb13e440cd5cdf248cd91e9dcb898 https://github.com/nrfconnect/sdk-nrf
- * zephyr             a6a1fb4642fa9ba5e5dcb5174e127a36a47d9ff6 https://github.com/nrfconnect/sdk-zephyr
- * mcuboot            dc9464d003cb8fc6cc11aaf713f700928c9fc398 https://github.com/nrfconnect/sdk-mcuboot
- * mcumgr             5885efb7cabf7b566577b73129c9d277d7d8848d https://github.com/nrfconnect/sdk-mcumgr
- * nrfxlib            8954ae46b2fc89a8bbd57de88c4dc48dcdb14a7f https://github.com/nrfconnect/sdk-nrfxlib
+ * platform_ncs       21988c5e15f30eac4c6e281ed4852b87f671949d https://bitbucket-zoi.dsr-corporation.com/scm/ZOI/platform_ncs.git
+ * zboss-stack-src    ada73ece9d90e7cb467f5e47f4be048651f36031 https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_stable
+ * zboss-stack-doc    c9bac2c7a596f70f8b95c5e870b42843ec92a57b https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_doc
+ * nrf                f893d8df6e43f6025d013f0213bc7d8c610ba2a3 https://github.com/nrfconnect/sdk-nrf
+ * zephyr             7d20f2ebf25991b2897b91275939f8d16d38513a https://github.com/nrfconnect/sdk-zephyr
+ * mcuboot            50eec26a462d8cbc171dbbdca623979294a6227b https://github.com/nrfconnect/sdk-mcuboot
+ * mcumgr             cfe5eb98a9493017448846fd1a44a9340bd0a22f https://github.com/nrfconnect/sdk-mcumgr
+ * nrfxlib            7ab7c9f1e4cc2d55bb71ec9116dfcad7efb540f2 https://github.com/nrfconnect/sdk-nrfxlib
  * cmock              c243b9a7a7b3c471023193992b46cf1bd1910450 https://github.com/ThrowTheSwitch/cmock
  * unity              031f3bbe45f8adf504ca3d13e6f093869920b091 https://github.com/ThrowTheSwitch/unity
  * mbedtls-nrf        2a1d9332d55d1270084232e42df08fdb08129f1b https://github.com/ARMmbed/mbedtls
@@ -26,37 +26,34 @@
  * canopennode        5c6b0566d56264efd4bf23ed58bc7cb8b32fe063 https://github.com/zephyrproject-rtos/canopennode
  * ci-tools           da9a2df574094f52d87a03f6393928bdc7dce17c https://github.com/zephyrproject-rtos/ci-tools
  * civetweb           99129c5efc907ea613c4b73ccff07581feb58a7a https://github.com/zephyrproject-rtos/civetweb
- * fatfs              9ee6b9b9511151d0d64a74d532d39c6f2bbd4f16 https://github.com/zephyrproject-rtos/fatfs
- * hal_nordic         c84263d8ecc7767b25d9abab9502c9e748d045e9 https://github.com/zephyrproject-rtos/hal_nordic
+ * fatfs              13697783bf653dfdf17c57129ce8e181634e5970 https://github.com/zephyrproject-rtos/fatfs
+ * hal_nordic         b69c5a7c25007fbc111a0cbda6e2a6a945a6ae9a https://github.com/zephyrproject-rtos/hal_nordic
  * hal_st             5b3ec3e182d4310e8943cc34c6c70ae57d9711da https://github.com/zephyrproject-rtos/hal_st
- * libmetal           3c3c9ec83bbb99390e34f8f2ba273ec86cf2b67c https://github.com/zephyrproject-rtos/libmetal
- * lvgl               74fc2e753a997bd71cefa34dd9c56dcb954b42e2 https://github.com/zephyrproject-rtos/lvgl
- * mbedtls            821154171b246f64eaeef3ccc267f58d8274739a https://github.com/zephyrproject-rtos/mbedtls
+ * libmetal           87e9e7f2c5b4e238236fe703db61ba23e48dc2ef https://github.com/zephyrproject-rtos/libmetal
+ * lvgl               928b61c7c8ef5f770f10e6fd36d4fea0cf375b5e https://github.com/zephyrproject-rtos/lvgl
+ * mbedtls            4bf099f1254332d16dcd931ccea0a88d24a7d3c7 https://github.com/zephyrproject-rtos/mbedtls
  * net-tools          1c4fdba512b268033a4cf926bddd323866c3261a https://github.com/zephyrproject-rtos/net-tools
  * open-amp           724f7e2a4519d7e1d40ef330042682dea950c991 https://github.com/zephyrproject-rtos/open-amp
- * loramac-node       29e516ec585b1a909af2b5f1c60d83e7d4d563e3 https://github.com/zephyrproject-rtos/loramac-node
- * openthread         a83d18cf18bc8cd431ad6704ad0bf0e6d08c99d7 https://github.com/zephyrproject-rtos/openthread
+ * loramac-node       170a2579dd890f78f5056f0959cdb9c9bea259a1 https://github.com/zephyrproject-rtos/loramac-node
+ * openthread         f23165fde96ae8bd710b08c6d77879465ed92cac https://github.com/zephyrproject-rtos/openthread
  * segger             6fcf61606d6012d2c44129edc033f59331e268bc https://github.com/zephyrproject-rtos/segger
  * tinycbor           40daca97b478989884bffb5226e9ab73ca54b8c4 https://github.com/zephyrproject-rtos/tinycbor
  * tinycrypt          3e9a49d2672ec01435ffbf0d788db6d95ef28de0 https://github.com/zephyrproject-rtos/tinycrypt
- * littlefs           0aefdda69d236cb01f932117c1f32e9da09c0ec3 https://github.com/zephyrproject-rtos/littlefs
+ * littlefs           9e4498d1c73009acd84bb36036ee5e2869112a6c https://github.com/zephyrproject-rtos/littlefs
  * mipi-sys-t         957d46bc3ce0d5f628f0d525196bb4db207672ee https://github.com/zephyrproject-rtos/mipi-sys-t
- * nrf_hw_models      fec69703cb1ca06fcdab6d5fde01274f0fc5c759 https://github.com/zephyrproject-rtos/nrf_hw_models
+ * nrf_hw_models      9e594dace1af29252903938064b8ecb1b8b77678 https://github.com/zephyrproject-rtos/nrf_hw_models
  * edtt               c39888ff74acf421eeff9a7514fa9b172c3373f7 https://github.com/zephyrproject-rtos/edtt
  */
 
 
-/** ZBOSS build number */
-#define ZBOSS_BUILD_NR 5
-
 /** ZBOSS build tag */
-#define ZBOSS_BUILD_TAG "build-5"
+#define ZBOSS_BUILD_TAG "09_10_2020"
 
 /** ZBOSS build date (UTC) */
-#define ZBOSS_BUILD_DATE 20200720
+#define ZBOSS_BUILD_DATE 20200923
 
 /** ZBOSS build time (UTC) */
-#define ZBOSS_BUILD_TIME 132410
+#define ZBOSS_BUILD_TIME 175917
 
 
 #endif /* ZBOSS_BUILD_INFO_H__ */

@@ -140,6 +140,20 @@ zb_bool_t zb_osif_is_sleeping(void);
 #define ZB_HAVE_ASYNC_SERIAL
 #endif  /* CONFIG_ZB_HAVE_SERIAL */
 
+#ifdef CONFIG_ZB_USE_LEDS
+#define ZB_USE_LEDS
+#define ZB_N_LEDS 4
+#endif /* CONFIG_ZB_USE_LEDS */
+
+#ifdef CONFIG_ZB_USE_DIMMABLE_LED
+#define ZB_USE_DIMMABLE_LED
+#endif /* CONFIG_ZB_USE_DIMMABLE_LED */
+
+#ifdef CONFIG_ZB_USE_BUTTONS
+#define ZB_USE_BUTTONS
+#define ZB_N_BUTTONS 4
+#endif /* CONFIG_ZB_USE_BUTTONS */
+
 
 /** @addtogroup special_nordic_functions
  * @{

@@ -14,6 +14,21 @@
 
 
 /**
+ * SDK Type (HA, SE, etc.) - Home Automation
+ */
+#define CONFIG_ZB_SDK_TYPE_HA y
+
+/**
+ * SDK Type (HA, SE, etc.) - Smart Energy
+ */
+/* #undef CONFIG_ZB_SDK_TYPE_SE */
+
+/**
+ * ZB_SDK_TYPE
+ */
+#define CONFIG_ZB_SDK_TYPE 1
+
+/**
  * NCP trasnport type - Serial (UART)
  */
 /* #undef CONFIG_ZB_NCP_TRANSPORT_TYPE_SERIAL */
@@ -101,12 +116,27 @@
 /* #undef CONFIG_ZB_ASYNC_TRACE_CONTROL */
 
 /**
- * Enable test commands
+ * Enable UART test commands support
  *
  * Enable reception of test commands on UART interface
  * (enabled in ZBOSS test configs only)
  */
 /* #undef CONFIG_ZB_NRF_TRACE_RX_ENABLE */
+
+/**
+ * Enable LEDs abstract for ZBOSS OSIF
+ */
+/* #undef CONFIG_ZB_USE_LEDS */
+
+/**
+ * Enable dimmable LED (PWM) abstract for ZBOSS OSIF
+ */
+/* #undef CONFIG_ZB_USE_DIMMABLE_LED */
+
+/**
+ * Enable buttons abstract for ZBOSS OSIF
+ */
+/* #undef CONFIG_ZB_USE_BUTTONS */
 
 /**
  * NVRAM migration
@@ -175,6 +205,16 @@
  * PAN ID blacklist length
  */
 #define CONFIG_ZB_NWK_BLACKLIST_SIZE 16
+
+/**
+ * Enable Control4 network support
+ */
+#define CONFIG_ZB_CONTROL4_NETWORK_SUPPORT y
+
+/**
+ * Enable R22 extension for for mutitple MAC interfaces support.
+ */
+#define CONFIG_ZB_R22_MULTIMAC y
 
 /**
  * WWAH cluster
@@ -246,14 +286,42 @@
 /* #undef CONFIG_ZB_CERTIFICATION_HACKS */
 
 /**
- * Enable Zigbee profile, used by verification framework
+ * MAC filtering
+ *
+ * Enables filtering frames at MAC level, based on device's short or
+ * long address
+ */
+/* #undef CONFIG_ZB_LIMIT_VISIBILITY */
+
+/**
+ * Enable Zigbee test mode and features
+ */
+/* #undef CONFIG_ZB_TEST_MODE */
+
+/**
+ * Test mode - Enable Zigbee PRO test mode
+ */
+/* #undef CONFIG_ZB_TEST_MODE_PRO */
+
+/**
+ * Enable Zigbee test mode and features - Enable Zigbee profile, used by verification framework
  */
 /* #undef CONFIG_ZB_TEST_PROFILE */
 
 /**
- * Serial console RX timeout
+ * Test mode - Enable Zigbee MAC test mode
  */
-#define CONFIG_ZB_MULTITEST_CONSOLE_SLEEP_TIMEOUT 4000000
+/* #undef CONFIG_ZB_TEST_MODE_MAC */
+
+/**
+ * Enable Zigbee test mode and features - Enable Zigbee MAC features, used by the verification framework
+ */
+/* #undef CONFIG_ZB_MAC_TESTING_MODE */
+
+/**
+ * Enable Zigbee test mode and features - Serial console RX timeout
+ */
+/* #undef CONFIG_ZB_MULTITEST_CONSOLE_SLEEP_TIMEOUT */
 
 /**
  * Disable TRACE_FILE_ID assert
@@ -279,12 +347,29 @@
 /* #undef CONFIG_ZB_USEALIAS */
 
 /**
- * MAC filtering
- *
- * Enables filtering frames at MAC level, based on device's short or
- * long address
+ * Enable MAC duty cycle monitoring
  */
-/* #undef CONFIG_ZB_LIMIT_VISIBILITY */
+/* #undef CONFIG_ZB_MAC_DUTY_CYCLE_MONITORING */
+
+/**
+ * Enable per-device MAC TX power control
+ */
+/* #undef CONFIG_ZB_MAC_POWER_CONTROL */
+
+/**
+ * Enable internal clusters through filters
+ */
+/* #undef CONFIG_ZB_FILTER_OUT_CLUSTERS */
+
+/**
+ * Enable enhanced beacon support
+ */
+#define CONFIG_ZB_ENHANCED_BEACON_SUPPORT y
+
+/**
+ * Enable joining list support
+ */
+#define CONFIG_ZB_JOINING_LIST_SUPPORT y
 
 /**
  * PAN ID translation table size

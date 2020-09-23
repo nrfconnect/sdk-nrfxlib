@@ -315,9 +315,6 @@ typedef zb_int_t           zb_long_t;
 typedef zb_uint_t          zb_ulong_t;
 #endif
 
-typedef void *             zb_voidp_t;
-typedef void               zb_void_t;
-
 /** @brief General purpose boolean type. */
 typedef enum zb_bool_e zb_bool_t;
 
@@ -611,7 +608,7 @@ void zb_htole16(zb_uint8_t ZB_XDATA *ptr, zb_uint8_t ZB_XDATA *val);
 
 #define ZB_HTOLE16_ONPLACE(val) 		\
 {						\
-  zb_uint8_t *pval = (zb_uint8_t*)val;		\
+  zb_uint8_t *pval = (zb_uint8_t*)(&(val));     \
   zb_uint8_t a = pval[0];			\
   pval[0] = pval[1]; 				\
   pval[1] = a;  				\
@@ -824,12 +821,6 @@ void* zb_put_next_2_htole32(zb_uint8_t *dst, zb_uint32_t val1, zb_uint32_t val2)
  *
  *    @typedef zb_ulong_t
  *    @brief Unsigned long int (at least 4 bytes).
- *
- *    @typedef zb_void_t
- *    @brief Project-local void type.
- *
- *    @typedef zb_voidp_t
- *    @brief Project-local "pointer to void" type.
  *
  *    @typedef zb_bool_t
  *    @brief Boolean type can be ZB_TRUE or ZB_FALSE
@@ -1047,7 +1038,7 @@ typedef ZB_PACKED_PRE struct zb_int48_s
 
 #else /* ZB_BIG_ENDIAN */
 
-zb_void_t zb_reverse_bytes(zb_uint8_t *ptr, zb_uint8_t *val, zb_uint8_t size);
+void zb_reverse_bytes(zb_uint8_t *ptr, zb_uint8_t *val, zb_uint8_t size);
 
 #define ZB_HTOLE24(ptr, val)   zb_reverse_bytes((zb_uint8_t*)(ptr), (val), ZB_24BIT_SIZE)
 #define ZB_HTOLE48(ptr, val)   zb_reverse_bytes((zb_uint8_t*)(ptr), (val), ZB_48BIT_SIZE)

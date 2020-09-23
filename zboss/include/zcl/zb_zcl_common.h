@@ -595,7 +595,13 @@ typedef enum zb_zcl_attr_access_e
   ZB_ZCL_ATTR_ACCESS_WRITE_ONLY     = 0x02,  /*!< Attribute is read/write */
   ZB_ZCL_ATTR_ACCESS_READ_WRITE     = ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_WRITE_ONLY,  /*!< Attribute is read/write */
   ZB_ZCL_ATTR_ACCESS_REPORTING      = 0x04,  /*!< Attribute is allowed for reporting */
-  ZB_ZCL_ATTR_ACCESS_WRITE_OPTIONAL = ZB_ZCL_ATTR_ACCESS_READ_ONLY,  /*!< Attribute is read/write */
+  /** @cond internals_doc */
+  ZB_ZCL_ATTR_ACCESS_WRITE_OPTIONAL = ZB_ZCL_ATTR_ACCESS_READ_ONLY,  /*!< Attribute is read only,
+                                                                      * but may be marked as
+                                                                      * writable due to ZCL
+                                                                      * specification (using
+                                                                      * ZB_ZCL_SET_ATTR_WRITABLE) */
+  /** @endcond */ /* internals_doc */
   ZB_ZCL_ATTR_ACCESS_SINGLETON    = 0x08, /*!< Attribute is singleton */
   ZB_ZCL_ATTR_ACCESS_SCENE        = 0x10, /*!< Attribute is accessed through scene */
   /* Use free bit in access attribute field to save RAM */
@@ -628,7 +634,7 @@ typedef ZB_PACKED_PRE  struct zb_zcl_attr_s
   zb_uint16_t id;     /*!< Attribute id */
   zb_uint8_t type;    /*!< Attribute type see @ref zb_zcl_attr_type_t */
   zb_uint8_t access;  /*!< Attribute access options according to @ref zb_zcl_attr_access_t */
-  zb_voidp_t data_p;  /*!< Pointer to data */
+  void* data_p;  /*!< Pointer to data */
 } ZB_PACKED_STRUCT
 zb_zcl_attr_t;
 
@@ -673,7 +679,7 @@ enum zb_zcl_attr_global_e
     attr_id,                                                                       \
     attr_type,                                                                     \
     attr_access | ZB_ZCL_ATTR_MANUF_SPEC,                                          \
-    (zb_voidp_t) data_ptr                                                          \
+    (void*) data_ptr                                                          \
   },
 
 
@@ -685,7 +691,7 @@ enum zb_zcl_attr_global_e
     ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID,                                         \
     ZB_ZCL_ATTR_TYPE_U16,                                                           \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                   \
-    (zb_voidp_t) &(cluster_revision_##attrs_desc_name)                              \
+    (void*) &(cluster_revision_##attrs_desc_name)                              \
   },
 
 /*! @internal @brief End declaration of attributes list */
@@ -2051,7 +2057,7 @@ void zb_zcl_process_command_finish(zb_bufid_t buffer, zb_zcl_parsed_hdr_t *pcmd_
 void zb_zcl_process_command_finish_new(zb_bufid_t buffer, zb_zcl_parsed_hdr_t *pcmd_info, zb_uint8_t status);
 #define ZB_ZCL_PROCESS_COMMAND_FINISH_NEW(buffer, pcmd_info, status)        \
   zb_zcl_process_command_finish_new(buffer, pcmd_info, status)
-    
+
 /** @brief Declare for change attribute for User Application
  *
  * @note Size of values must be twice as large as maximum size of a possible attribute

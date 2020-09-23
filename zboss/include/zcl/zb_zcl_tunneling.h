@@ -102,7 +102,7 @@ enum zb_zcl_tunneling_attr_e
   ZB_ZCL_ATTR_TUNNELING_CLOSE_TUNNEL_TIMEOUT_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                                \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                        \
-  (zb_voidp_t) data_ptr                                                                \
+  (void*) data_ptr                                                                \
 }
 
 /** @endcond */ /* internals_doc */
@@ -1002,8 +1002,8 @@ extern zb_zcl_tunneling_cli_t tunneling_cli;
 
 /**************************** Tunnel internal **********************************/
 
-zb_void_t zb_zcl_tunneling_init_server(void);
-zb_void_t zb_zcl_tunneling_init_client(void);
+void zb_zcl_tunneling_init_server(void);
+void zb_zcl_tunneling_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_TUNNELING_SERVER_ROLE_INIT zb_zcl_tunneling_init_server
 #define ZB_ZCL_CLUSTER_ID_TUNNELING_CLIENT_ROLE_INIT zb_zcl_tunneling_init_client
 

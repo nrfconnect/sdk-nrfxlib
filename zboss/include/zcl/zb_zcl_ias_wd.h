@@ -93,7 +93,7 @@ enum zb_zcl_ias_wd_attr_e
   ZB_ZCL_ATTR_IAS_WD_MAX_DURATION_ID,                   \
   ZB_ZCL_ATTR_TYPE_U16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                        \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 /*! @internal Number of attributes mandatory for reporting in IAS WD cluster */

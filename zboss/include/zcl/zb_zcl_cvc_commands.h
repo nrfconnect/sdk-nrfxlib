@@ -189,7 +189,7 @@ zb_uint8_t zb_zcl_cvc_check_transition_running(
 
 
 /*! @brief Initialize alarm list (stored in device context). */
-zb_void_t zb_zcl_init_cvc_alarm_info(void);
+void zb_zcl_init_cvc_alarm_info(void);
 
 
 /*!

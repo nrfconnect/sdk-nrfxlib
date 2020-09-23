@@ -405,7 +405,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_identify_query_res_s
   ZB_ZCL_ATTR_IDENTIFY_IDENTIFY_TIME_ID,                               \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #if defined ZB_ZCL_SUPPORT_CLUSTER_SCENES

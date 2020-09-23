@@ -230,7 +230,7 @@ enum zb_zcl_custom_learn_type_e
     ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_ID,                                     \
     ZB_ZCL_ATTR_TYPE_8BITMAP,                                                       \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                    \
-    (zb_voidp_t) data_ptr                                                           \
+    (void*) data_ptr                                                           \
   }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_SENSOR_TYPE_ID(data_ptr) \
@@ -238,7 +238,7 @@ enum zb_zcl_custom_learn_type_e
     ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_SENSOR_TYPE_ID,                                     \
     ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                 \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-    (zb_voidp_t) data_ptr                                                                       \
+    (void*) data_ptr                                                                       \
   }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_SENSOR_TYPE_BITMAP_ID(data_ptr) \
@@ -246,7 +246,7 @@ enum zb_zcl_custom_learn_type_e
     ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_SENSOR_TYPE_BITMAP_ID,                                     \
     ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                          \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                      \
-    (zb_voidp_t) data_ptr                                                                              \
+    (void*) data_ptr                                                                              \
   }
 /** @internal Number of attributes mandatory for reporting on Occupancy Sensing cluster */
 #define ZB_ZCL_OCCUPANCY_SENSING_REPORT_ATTR_COUNT 1

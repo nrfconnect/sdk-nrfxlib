@@ -257,7 +257,7 @@ enum zb_zcl_binary_input_status_flag_value_e
   ZB_ZCL_ATTR_BINARY_INPUT_OUT_OF_SERVICE_ID,                       \
   ZB_ZCL_ATTR_TYPE_BOOL,                                            \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_WRITE_OPTIONAL, \
-  (zb_voidp_t) data_ptr                                             \
+  (void*) data_ptr                                             \
 }
 
 /* Optionally, access to this attribute may be changed to READ_WRITE */
@@ -266,7 +266,7 @@ enum zb_zcl_binary_input_status_flag_value_e
   ZB_ZCL_ATTR_BINARY_INPUT_PRESENT_VALUE_ID,                        \
   ZB_ZCL_ATTR_TYPE_BOOL,                                            \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_WRITE_OPTIONAL | ZB_ZCL_ATTR_ACCESS_REPORTING, \
-  (zb_voidp_t) data_ptr                                             \
+  (void*) data_ptr                                             \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_BINARY_INPUT_STATUS_FLAG_ID(data_ptr) \
@@ -274,7 +274,7 @@ enum zb_zcl_binary_input_status_flag_value_e
   ZB_ZCL_ATTR_BINARY_INPUT_STATUS_FLAG_ID,                          \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,      \
-  (zb_voidp_t) data_ptr                                             \
+  (void*) data_ptr                                             \
 }
 
 /*! Number of attributes mandatory for reporting in Binary Input cluster */
@@ -288,8 +288,8 @@ enum zb_zcl_binary_input_status_flag_value_e
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 
-zb_void_t zb_zcl_binary_input_init_server(void);
-zb_void_t zb_zcl_binary_input_init_client(void);
+void zb_zcl_binary_input_init_server(void);
+void zb_zcl_binary_input_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_BINARY_INPUT_SERVER_ROLE_INIT zb_zcl_binary_input_init_server
 #define ZB_ZCL_CLUSTER_ID_BINARY_INPUT_CLIENT_ROLE_INIT zb_zcl_binary_input_init_client
 

@@ -436,7 +436,7 @@ typedef struct zb_zcl_on_off_effect_user_app_schedule_e
   ZB_ZCL_ATTR_ON_OFF_ON_OFF_ID,                                                              \
   ZB_ZCL_ATTR_TYPE_BOOL,                                                                     \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING | ZB_ZCL_ATTR_ACCESS_SCENE,    \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ON_OFF_GLOBAL_SCENE_CONTROL(data_ptr) \
@@ -444,7 +444,7 @@ typedef struct zb_zcl_on_off_effect_user_app_schedule_e
   ZB_ZCL_ATTR_ON_OFF_GLOBAL_SCENE_CONTROL,                                       \
   ZB_ZCL_ATTR_TYPE_BOOL,                                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                  \
-  (zb_voidp_t) data_ptr                                                          \
+  (void*) data_ptr                                                          \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ON_OFF_ON_TIME(data_ptr)  \
@@ -452,7 +452,7 @@ typedef struct zb_zcl_on_off_effect_user_app_schedule_e
   ZB_ZCL_ATTR_ON_OFF_ON_TIME,                                        \
   ZB_ZCL_ATTR_TYPE_U16,                                              \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                     \
-  (zb_voidp_t) data_ptr                                              \
+  (void*) data_ptr                                              \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ON_OFF_OFF_WAIT_TIME(data_ptr)    \
@@ -460,7 +460,7 @@ typedef struct zb_zcl_on_off_effect_user_app_schedule_e
   ZB_ZCL_ATTR_ON_OFF_OFF_WAIT_TIME,                                          \
   ZB_ZCL_ATTR_TYPE_U16,                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                             \
-  (zb_voidp_t) data_ptr                                                      \
+  (void*) data_ptr                                                      \
 }
 
 /** @struct zb_zcl_on_off_attrs_s
@@ -476,7 +476,7 @@ typedef struct zb_zcl_on_off_attrs_s
   ZB_ZCL_ATTR_ON_OFF_START_UP_ON_OFF,                                        \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                             \
-  (zb_voidp_t) data_ptr                                                      \
+  (void*) data_ptr                                                      \
 }
 
 #define ZB_ZCL_DECLARE_ON_OFF_ATTR_LIST(attr_list, attrs)               \
@@ -501,8 +501,8 @@ typedef struct zb_on_off_user_app_schedule_e
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 
-zb_void_t zb_zcl_on_off_init_server(void);
-zb_void_t zb_zcl_on_off_init_client(void);
+void zb_zcl_on_off_init_server(void);
+void zb_zcl_on_off_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_ON_OFF_SERVER_ROLE_INIT zb_zcl_on_off_init_server
 #define ZB_ZCL_CLUSTER_ID_ON_OFF_CLIENT_ROLE_INIT zb_zcl_on_off_init_client
 

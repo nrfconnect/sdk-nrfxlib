@@ -37,6 +37,10 @@
 #define ZB_NCP_TRANSPORT_TYPE_NSNG
 #endif
 
+#ifdef CONFIG_ZB_SDK_TYPE
+#define ZBOSS_SDK_TYPE (CONFIG_ZB_SDK_TYPE - 1)
+#endif
+
 #ifdef CONFIG_ZB_TRACE_LOG_LEVEL
 #define ZB_TRACE_LEVEL CONFIG_ZB_TRACE_LOG_LEVEL
 #endif
@@ -88,8 +92,39 @@
 
 #endif /* CONFIG_ZB_NWK_BLACKLIST */
 
-#ifdef CONFIG_ZB_ZCL_SUPPORT_CLUSTER_WWAH
+#ifdef CONFIG_ZB_CONTROL4_NETWORK_SUPPORT
+#define ZB_CONTROL4_NETWORK_SUPPORT
+#endif
+
+#ifdef CONFIG_ZB_R22_MULTIMAC
 #define ZB_R22_MULTIMAC
+#endif
+
+#ifdef CONFIG_ZB_MAC_TESTING_MODE
+#define ZB_MAC_TESTING_MODE
+#endif
+
+#ifdef CONFIG_ZB_MAC_DUTY_CYCLE_MONITORING
+#define ZB_MAC_DUTY_CYCLE_MONITORING
+#endif
+
+#ifdef CONFIG_ZB_MAC_POWER_CONTROL
+#define ZB_MAC_POWER_CONTROL
+#endif
+
+#ifdef CONFIG_ZB_FILTER_OUT_CLUSTERS
+#define ZB_FILTER_OUT_CLUSTERS
+#endif
+
+#ifdef CONFIG_ZB_ENHANCED_BEACON_SUPPORT
+#define ZB_ENHANCED_BEACON_SUPPORT
+#endif
+
+#ifdef CONFIG_ZB_JOINING_LIST_SUPPORT
+#define ZB_JOINING_LIST_SUPPORT
+#endif
+
+#ifdef CONFIG_ZB_ZCL_SUPPORT_CLUSTER_WWAH
 #define ZB_ZCL_SUPPORT_CLUSTER_WWAH
 
 #ifdef CONFIG_ZB_ZCL_ENABLE_WWAH_CLIENT
@@ -244,6 +279,8 @@
 
 /* ZBOSS stack options non-configurable via Kconfig. */
 
+/* Remove upper layers when building MAC tests. */
+
 /* Include Zigbee BDB implementation (always defined, except macsplit). */
 #define ZB_BDB_MODE
 
@@ -264,10 +301,14 @@
 #define ZB_USE_SLEEP
 #endif
 
+
 /* Enter TX mode directly from radio sleep sate. */
 #define ZB_TRANSCEIVER_ON_BEFORE_TX  0
 
 /* Start Energy Detection from radio sleep state. */
 #define ZB_TRANSCEIVER_ON_BEFORE_ED  0
+
+/* Include all test cases in the certification firmware builds. */
+#define ZB_TEST_GROUP_ALL
 
 #endif /* ZB_VENDOR_H__ */

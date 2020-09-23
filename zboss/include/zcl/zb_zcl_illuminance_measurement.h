@@ -123,7 +123,7 @@ enum zb_zcl_illuminance_measurement_attr_e
   ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MEASURED_VALUE_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                                        \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                                 \
-  (zb_voidp_t) data_ptr                                                                        \
+  (void*) data_ptr                                                                        \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MIN_MEASURED_VALUE_ID(data_ptr) \
@@ -131,7 +131,7 @@ enum zb_zcl_illuminance_measurement_attr_e
   ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MIN_MEASURED_VALUE_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                                            \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                    \
-  (zb_voidp_t) data_ptr                                                                            \
+  (void*) data_ptr                                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MAX_MEASURED_VALUE_ID(data_ptr) \
@@ -139,7 +139,7 @@ enum zb_zcl_illuminance_measurement_attr_e
   ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MAX_MEASURED_VALUE_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                                            \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                    \
-  (zb_voidp_t) data_ptr                                                                            \
+  (void*) data_ptr                                                                            \
 }
 
 #define ZB_ZCL_ILLUMINANCE_MEASUREMENT_REPORT_ATTR_COUNT 1

@@ -192,7 +192,7 @@ enum zb_zcl_poll_control_attr_e
   ZB_ZCL_ATTR_POLL_CONTROL_CHECKIN_INTERVAL_ID,         \
   ZB_ZCL_ATTR_TYPE_U32,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                        \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_ID(data_ptr) \
@@ -200,7 +200,7 @@ enum zb_zcl_poll_control_attr_e
   ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_ID,       \
   ZB_ZCL_ATTR_TYPE_U32,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_SHORT_POLL_INTERVAL_ID(data_ptr) \
@@ -208,7 +208,7 @@ enum zb_zcl_poll_control_attr_e
   ZB_ZCL_ATTR_POLL_CONTROL_SHORT_POLL_INTERVAL_ID,      \
   ZB_ZCL_ATTR_TYPE_U16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_ID(data_ptr) \
@@ -216,7 +216,7 @@ enum zb_zcl_poll_control_attr_e
   ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_ID,        \
   ZB_ZCL_ATTR_TYPE_U16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                        \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_CHECKIN_INTERVAL_MIN_ID(data_ptr) \
@@ -224,7 +224,7 @@ enum zb_zcl_poll_control_attr_e
   ZB_ZCL_ATTR_POLL_CONTROL_CHECKIN_INTERVAL_MIN_ID,     \
   ZB_ZCL_ATTR_TYPE_U32,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                        \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_MIN_ID(data_ptr) \
@@ -232,7 +232,7 @@ enum zb_zcl_poll_control_attr_e
   ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_MIN_ID,   \
   ZB_ZCL_ATTR_TYPE_U32,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_MAX_ID(data_ptr) \
@@ -240,7 +240,7 @@ enum zb_zcl_poll_control_attr_e
   ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_MAX_ID,    \
   ZB_ZCL_ATTR_TYPE_U16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_STATUS_DATA_ID(data_ptr) \
@@ -248,7 +248,7 @@ enum zb_zcl_poll_control_attr_e
   ZB_ZCL_ATTR_POLL_CONTROL_STATUS_DATA_ID,              \
   ZB_ZCL_ATTR_TYPE_NULL,                                \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                          \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 
@@ -257,7 +257,7 @@ enum zb_zcl_poll_control_attr_e
   ZB_ZCL_ATTR_POLL_CONTROL_ADDR_DATA_ID,                \
   ZB_ZCL_ATTR_TYPE_NULL,                                \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                          \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 
