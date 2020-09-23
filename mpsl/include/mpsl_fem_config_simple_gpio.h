@@ -10,7 +10,6 @@
  * @defgroup mpsl_fem_simple_gpio MPSL Simple GPIO Front End Module Configuration
  * @ingroup  mpsl_fem
  *
- * The MPSL Simple GPIO Front End Module Configuration defines the configuration of the Simple GPIO Front End Module.
  * @{
  */
 
@@ -26,28 +25,41 @@ extern "C" {
 #endif
 
 /** @brief Configuration parameters for the Front End Module Simple GPIO variant.
- *         A Simple GPIO Front End Module may be used with all Front End Modules which use one wire for PA and one wire for LNA.
+ *
+ *  A Simple GPIO Front End Module may be used with all Front End Modules
+ *  which use one wire for a Power Amplifier (PA) and one wire for a Linear
+ *  Noise Amplifier (LNA).
  */
 typedef struct
 {
     struct
     {
-        uint32_t pa_time_gap_us;                  /**< Time between the activation of the PA pin and the start of the radio transmission. Should be no bigger than Radio Ramp-Up time. */
-        uint32_t lna_time_gap_us;                 /**< Time between the activation of the LNA pin and the start of the radio reception. Should be no bigger than Radio Ramp-Up time. */
-        int8_t   pa_gain_db;                      /**< Configurable PA gain. Ignored if the amplifier is not supporting this feature. */
-        int8_t   lna_gain_db;                     /**< Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
-    }                            fem_config;      /**< Configration structure of the Simple GPIO Front End Module. */
+        /**< Time between the activation of the PA pin and the start of the radio transmission.
+         *   Should be no bigger than Radio Ramp-Up time. */
+        uint32_t pa_time_gap_us;
+        /**< Time between the activation of the LNA pin and the start of the radio reception.
+         *   Should be no bigger than Radio Ramp-Up time. */
+        uint32_t lna_time_gap_us;
+        /**< Configurable PA gain. Ignored if the amplifier is not supporting this feature. */
+        int8_t   pa_gain_db;
+        /**< Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
+        int8_t   lna_gain_db;
+      /**< Configration structure of the Simple GPIO Front End Module. */
+    } fem_config;
 
-    mpsl_fem_gpiote_pin_config_t pa_pin_config;   /**< Power Amplifier pin configuration. */
-    mpsl_fem_gpiote_pin_config_t lna_pin_config;  /**< Low Noise Amplifier pin configuration. */
+    /**< Power Amplifier pin configuration. */
+    mpsl_fem_gpiote_pin_config_t pa_pin_config;
+    /**< Low Noise Amplifier pin configuration. */
+    mpsl_fem_gpiote_pin_config_t lna_pin_config;
 
-    uint8_t                      ppi_channels[2]; /**< Array of PPI which need to be provided to Front End Module to operate. */
+    /**< Array of PPI channels which need to be provided to Front End Module to operate. */
+    uint8_t                      ppi_channels[2];
 } mpsl_fem_simple_gpio_interface_config_t;
 
 /** @brief Configures the PA and LNA device interface.
  *
  * This function sets device interface parameters for the PA/LNA module.
- * The module can then be used to control a power amplifier or a low noise amplifier (or both) through the given interface and resources.
+ * The module can then be used to control PA or LNA (or both) through the given interface and resources.
  *
  * The function also sets the PPI and GPIOTE channels to be configured for the PA/LNA interface.
  *
@@ -60,9 +72,10 @@ typedef struct
 int32_t mpsl_fem_simple_gpio_interface_config_set(mpsl_fem_simple_gpio_interface_config_t const * const p_config);
 
 /**
- * Simple GPIO Front End Module Timings
+ * @brief Simple GPIO Front End Module Timings
  *
- * A Simple GPIO Front End Module may be used with all Front End Modules which use one wire for PA and one wire for LNA.
+ * A Simple GPIO Front End Module may be used with all Front End Modules which
+ * use one wire for PA and one wire for LNA.
  * The timing restrictions should be obtained from its corresponding datasheet.
  */
 
@@ -73,9 +86,10 @@ int32_t mpsl_fem_simple_gpio_interface_config_set(mpsl_fem_simple_gpio_interface
 #define MPSL_FEM_SIMPLE_GPIO_DEFAULT_LNA_TIME_IN_ADVANCE_US 5
 
 /**
- * Simple GPIO Front End Module Gains
+ * @brief Simple GPIO Front End Module Gains
  *
- * A Simple GPIO Front End Module may be used with all Front End Modules which use one wire for PA and one wire for LNA.
+ * A Simple GPIO Front End Module may be used with all Front End Modules which
+ * use one wire for PA and one wire for LNA.
  * The gains should be obtained from its corresponding datasheet.
  */
 
