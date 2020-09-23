@@ -374,7 +374,7 @@ typedef ZB_PACKED_PRE struct zb_af_endpoint_desc_s
   */
   zb_callback_t identify_handler;
   zb_uint8_t reserved_size; /*!< Unused parameter (reserved for future use) */
-  zb_voidp_t reserved_ptr; /*!< Unused parameter (reserved for future use) */
+  void* reserved_ptr; /*!< Unused parameter (reserved for future use) */
   zb_uint8_t cluster_count;       /*!< Number of supported clusters */
   struct zb_zcl_cluster_desc_s *cluster_desc_list;  /*!< Supported clusters list */
   zb_af_simple_desc_1_1_t *simple_desc; /*!< Simple descriptor */
@@ -477,7 +477,7 @@ zb_af_device_ctx_t;
     NULL,                                \
     NULL,                                \
     reserved_length,                     \
-    (zb_voidp_t)reserved_ptr,            \
+    (void*)reserved_ptr,            \
     cluster_number,                      \
     cluster_list,                        \
     simple_desc,                         \

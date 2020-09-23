@@ -144,7 +144,7 @@ enum zb_zcl_thermostat_ui_config_keypad_lockout_e
   ZB_ZCL_ATTR_THERMOSTAT_UI_CONFIG_TEMPERATURE_DISPLAY_MODE_ID,                                       \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                         \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                      \
-  (zb_voidp_t) data_ptr                                                                               \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_UI_CONFIG_KEYPAD_LOCKOUT_ID(data_ptr)           \
@@ -152,7 +152,7 @@ enum zb_zcl_thermostat_ui_config_keypad_lockout_e
   ZB_ZCL_ATTR_THERMOSTAT_UI_CONFIG_KEYPAD_LOCKOUT_ID,                                                 \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                         \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                      \
-  (zb_voidp_t) data_ptr                                                                               \
+  (void*) data_ptr                                                                               \
 }
 
 /*! @internal Number of attributes mandatory for reporting in Thermostat UI Configuration cluster */

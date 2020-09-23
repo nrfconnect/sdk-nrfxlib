@@ -2577,7 +2577,7 @@ void zb_zdo_rejoin_backoff_cancel(void);
 
 #ifndef ZB_LITE_NO_CONFIGURABLE_POWER_DELTA
 zb_ret_t zb_zdo_set_lpd_cmd_mode(zb_uint8_t mode);
-zb_void_t zb_zdo_set_lpd_cmd_timeout(zb_uint8_t timeout);
+void zb_zdo_set_lpd_cmd_timeout(zb_uint8_t timeout);
 #else
 #define zb_zdo_set_lpd_cmd_mode(mode)
 #define zb_zdo_set_lpd_cmd_timeout(timeout)

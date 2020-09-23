@@ -306,7 +306,7 @@ enum zb_zcl_time_time_status_e
   ZB_ZCL_ATTR_TIME_TIME_ID,                                                   \
   ZB_ZCL_ATTR_TYPE_UTC_TIME,                                                  \
     ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (zb_voidp_t) data_ptr                                                       \
+  (void*) data_ptr                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_TIME_STATUS_ID(data_ptr)      \
@@ -314,7 +314,7 @@ enum zb_zcl_time_time_status_e
   ZB_ZCL_ATTR_TIME_TIME_STATUS_ID,                                            \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                 \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (zb_voidp_t) data_ptr                                                       \
+  (void*) data_ptr                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_TIME_ZONE_ID(data_ptr)        \
@@ -322,7 +322,7 @@ enum zb_zcl_time_time_status_e
   ZB_ZCL_ATTR_TIME_TIME_ZONE_ID,                                              \
   ZB_ZCL_ATTR_TYPE_S32,                                                       \
     ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (zb_voidp_t) data_ptr                                                       \
+  (void*) data_ptr                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_DST_START_ID(data_ptr)        \
@@ -330,7 +330,7 @@ enum zb_zcl_time_time_status_e
   ZB_ZCL_ATTR_TIME_DST_START_ID,                                              \
   ZB_ZCL_ATTR_TYPE_U32,                                                       \
     ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (zb_voidp_t) data_ptr                                                       \
+  (void*) data_ptr                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_DST_END_ID(data_ptr)          \
@@ -338,7 +338,7 @@ enum zb_zcl_time_time_status_e
   ZB_ZCL_ATTR_TIME_DST_END_ID,                                                \
   ZB_ZCL_ATTR_TYPE_U32,                                                       \
     ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (zb_voidp_t) data_ptr                                                       \
+  (void*) data_ptr                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_DST_SHIFT_ID(data_ptr)        \
@@ -346,7 +346,7 @@ enum zb_zcl_time_time_status_e
   ZB_ZCL_ATTR_TIME_DST_SHIFT_ID,                                              \
   ZB_ZCL_ATTR_TYPE_S32,                                                     \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (zb_voidp_t) data_ptr                                                       \
+  (void*) data_ptr                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_STANDARD_TIME_ID(data_ptr)    \
@@ -354,7 +354,7 @@ enum zb_zcl_time_time_status_e
   ZB_ZCL_ATTR_TIME_STANDARD_TIME_ID,                                          \
   ZB_ZCL_ATTR_TYPE_U32,                                                       \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
-  (zb_voidp_t) data_ptr                                                       \
+  (void*) data_ptr                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_LOCAL_TIME_ID(data_ptr)       \
@@ -362,7 +362,7 @@ enum zb_zcl_time_time_status_e
   ZB_ZCL_ATTR_TIME_LOCAL_TIME_ID,                                             \
   ZB_ZCL_ATTR_TYPE_U32,                                                       \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
-  (zb_voidp_t) data_ptr                                                       \
+  (void*) data_ptr                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_LAST_SET_TIME_ID(data_ptr)    \
@@ -370,7 +370,7 @@ enum zb_zcl_time_time_status_e
   ZB_ZCL_ATTR_TIME_LAST_SET_TIME_ID,                                          \
   ZB_ZCL_ATTR_TYPE_UTC_TIME,                                                  \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
-  (zb_voidp_t) data_ptr                                                       \
+  (void*) data_ptr                                                       \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_VALID_UNTIL_TIME_ID(data_ptr) \
@@ -378,7 +378,7 @@ enum zb_zcl_time_time_status_e
   ZB_ZCL_ATTR_TIME_VALID_UNTIL_TIME_ID,                                       \
   ZB_ZCL_ATTR_TYPE_UTC_TIME,                                                  \
     ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (zb_voidp_t) data_ptr                                                       \
+  (void*) data_ptr                                                       \
 }
 
 /*! @internal Number of attributes mandatory for reporting in Time cluster */

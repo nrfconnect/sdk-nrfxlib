@@ -297,7 +297,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_NUMBER_OF_RESETS_ID,                  \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_PACKET_BUFFER_ALLOCATE_FAILURES_ID(data_ptr) \
@@ -305,7 +305,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_PACKET_BUFFER_ALLOCATE_FAILURES_ID,   \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_JOIN_INDICATION_ID(data_ptr) \
@@ -313,7 +313,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_JOIN_INDICATION_ID,                   \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 
@@ -322,7 +322,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_MAC_RX_BCAST_ID,                      \
   ZB_ZCL_ATTR_TYPE_U32,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_BCAST_ID(data_ptr) \
@@ -330,7 +330,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_BCAST_ID,                      \
   ZB_ZCL_ATTR_TYPE_U32,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_ID(data_ptr) \
@@ -338,7 +338,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_ID,                      \
   ZB_ZCL_ATTR_TYPE_U32,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_BCAST_ID(data_ptr) \
@@ -346,7 +346,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_BCAST_ID,                      \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_SUCCESS_ID(data_ptr) \
@@ -354,7 +354,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_SUCCESS_ID,              \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_FAIL_ID(data_ptr) \
@@ -362,7 +362,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_FAIL_ID,                 \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_AVERAGE_MAC_RETRY_PER_APS_ID(data_ptr) \
@@ -370,7 +370,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_AVERAGE_MAC_RETRY_PER_APS_ID,         \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_LAST_LQI_ID(data_ptr) \
@@ -378,7 +378,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_LAST_LQI_ID,                          \
   ZB_ZCL_ATTR_TYPE_U8,                                          \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_LAST_RSSI_ID(data_ptr) \
@@ -386,7 +386,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_ATTR_DIAGNOSTICS_LAST_RSSI_ID,                         \
   ZB_ZCL_ATTR_TYPE_S8,                                          \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 /*! @} */ /* Diagnostics cluster internals */
@@ -425,7 +425,7 @@ enum zb_zcl_diagnostics_attr_e
 /*! @brief Increment diagnostic attribute
     @param attr_id - attribute Id, see @ref zb_zcl_diagnostics_attr_e
 */
-zb_void_t zb_zcl_diagnostics_inc(zb_uint16_t attr_id, zb_uint8_t value);
+void zb_zcl_diagnostics_inc(zb_uint16_t attr_id, zb_uint8_t value);
 
 #define ZB_ZCL_DIAGNOSTICS_INC(attr_id)           zb_zcl_diagnostics_inc((attr_id), 0)
 #define ZB_ZCL_DIAGNOSTICS_SAVE(attr_id, value)   zb_zcl_diagnostics_inc((attr_id), (value))
@@ -436,8 +436,8 @@ zb_void_t zb_zcl_diagnostics_inc(zb_uint16_t attr_id, zb_uint8_t value);
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 
-zb_void_t zb_zcl_diagnostics_init_server(void);
-zb_void_t zb_zcl_diagnostics_init_client(void);
+void zb_zcl_diagnostics_init_server(void);
+void zb_zcl_diagnostics_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_DIAGNOSTICS_SERVER_ROLE_INIT zb_zcl_diagnostics_init_server
 #define ZB_ZCL_CLUSTER_ID_DIAGNOSTICS_CLIENT_ROLE_INIT zb_zcl_diagnostics_init_client
 

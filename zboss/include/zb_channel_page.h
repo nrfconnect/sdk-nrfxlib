@@ -303,6 +303,15 @@ void zb_channel_page_list_set_2_4GHz_mask(zb_channel_list_t list,
  */
 zb_uint32_t zb_channel_page_list_get_2_4GHz_mask(zb_channel_list_t list);
 
+/*
+ * @brief Gets the first filled page index of channel page list.
+ *
+ * @param list - channel page list
+ *
+ * @return Page index of the first used page or number of pages if all list is empty.
+ */
+zb_uint8_t zb_channel_page_list_get_first_filled_page(zb_channel_list_t list);
+
 /**
  * @brief Sets channels mask for specified element of the AIB channel page list.
  *
@@ -310,7 +319,7 @@ zb_uint32_t zb_channel_page_list_get_2_4GHz_mask(zb_channel_list_t list);
  * @param mask - channels mask to set
  */
 void zb_aib_channel_page_list_set_mask(zb_uint8_t  idx,
-                                            zb_uint32_t mask);
+                                       zb_uint32_t mask);
 
 /**
  * @brief Gets channels mask of specified element of the AIB channel page list.
@@ -328,7 +337,7 @@ zb_uint32_t zb_aib_channel_page_list_get_mask(zb_uint8_t idx);
  * @param page - channel page to set
  */
 void zb_aib_channel_page_list_set_page(zb_uint8_t idx,
-                                            zb_uint8_t page);
+                                       zb_uint8_t page);
 
 /**
  * @brief Gets channels page of specified element of the AIB channel page list.
@@ -354,6 +363,13 @@ void zb_aib_channel_page_list_set_2_4GHz_mask(zb_uint32_t mask);
  * @return 2.4GHz channels mask.
  */
 zb_uint32_t zb_aib_channel_page_list_get_2_4GHz_mask(void);
+
+/*
+ * @brief Gets the first filled page index of the AIB channel page list.
+ *
+ * @return Page index of the first used AIB channel page or number of pages if all list is empty.
+ */
+zb_uint8_t zb_aib_channel_page_list_get_first_filled_page(void);
 
 /**
  * @brief Gets the first channel number for specified channel page.

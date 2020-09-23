@@ -382,6 +382,12 @@ zb_nwk_pib_cache_t *zb_nwk_get_pib_cache(void);
 
 #endif /* !NCP_MODE_HOST */
 
+#ifdef ZB_ED_RX_OFF_WHEN_IDLE
+/* Make simpler checks if ZED always rx-off-when-idle */
+#undef ZB_PIBCACHE_RX_ON_WHEN_IDLE
+#define ZB_PIBCACHE_RX_ON_WHEN_IDLE() (!ZB_IS_DEVICE_ZED())
+#endif
+
 /**
    Arguments of the NLME-PERMIT_JOINING.request routine.
 */

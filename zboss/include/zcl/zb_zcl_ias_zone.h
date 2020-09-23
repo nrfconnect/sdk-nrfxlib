@@ -58,7 +58,7 @@
 /** @cond internals_doc */
 /** @brief Hook on Write attribute
  * send Zone Status Change Notification Command if change ZoneStatus attribute */
-zb_void_t zb_zcl_ias_zone_write_attr_hook(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value);
+void zb_zcl_ias_zone_write_attr_hook(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value);
 /*! @}
  *  @endcond */ /* internals_doc */
 
@@ -216,7 +216,7 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_CUSTOM_CIE_EP,                            \
   ZB_ZCL_ATTR_TYPE_U8,                                  \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CUSTOM_CIE_SHORT_ADDR(data_ptr) \
@@ -224,7 +224,7 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_CUSTOM_CIE_SHORT_ADDR,                    \
   ZB_ZCL_ATTR_TYPE_U16,                                 \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 
@@ -233,7 +233,7 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_ZONESTATE_ID,                    \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                           \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_ZONETYPE_ID(data_ptr) \
@@ -241,7 +241,7 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_ZONETYPE_ID,                     \
   ZB_ZCL_ATTR_TYPE_16BIT_ENUM,                          \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_ZONESTATUS_ID(data_ptr) \
@@ -249,7 +249,7 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_ZONESTATUS_ID,                           \
   ZB_ZCL_ATTR_TYPE_16BITMAP,                                    \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,  \
-  (zb_voidp_t) data_ptr                                         \
+  (void*) data_ptr                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID(data_ptr) \
@@ -257,7 +257,7 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID,              \
   ZB_ZCL_ATTR_TYPE_IEEE_ADDR,                           \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                        \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_ZONEID_ID(data_ptr) \
@@ -265,7 +265,7 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_ZONEID_ID,                       \
   ZB_ZCL_ATTR_TYPE_U8,                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_NUMBER_OF_ZONE_SENSITIVITY_LEVELS_SUPPORTED_ID(data_ptr) \
@@ -273,7 +273,7 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_NUMBER_OF_ZONE_SENSITIVITY_LEVELS_SUPPORTED_ID,                      \
   ZB_ZCL_ATTR_TYPE_U8,                                \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_CURRENT_ZONE_SENSITIVITY_LEVEL_ID(data_ptr) \
@@ -281,7 +281,7 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_CURRENT_ZONE_SENSITIVITY_LEVEL_ID,                      \
   ZB_ZCL_ATTR_TYPE_U8,                                \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_INT_CTX_ID(data_ptr) \
@@ -289,7 +289,7 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_INT_CTX_ID,                      \
   ZB_ZCL_ATTR_TYPE_NULL,                                \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                          \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 /*! @internal Number of attributes mandatory for reporting in IAS Zone cluster */
@@ -731,7 +731,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_ias_zone_enroll_res_s
 
 /* Set or clear Zone Status bits
  */
-zb_void_t zb_zcl_ias_zone_change_status(zb_uint8_t param);
+void zb_zcl_ias_zone_change_status(zb_uint8_t param);
 
 /** @brief Declare Set/Clear Zone Status bits
 */
@@ -862,7 +862,7 @@ typedef struct zb_zcl_ias_zone_enroll_response_user_app_schedule_e
     @param process_result_cb - notification sent callback function
     @param general_cb - general callback function
 */
-zb_void_t zb_zcl_ias_zone_register_cb(
+void zb_zcl_ias_zone_register_cb(
     zb_uint8_t endpoint,
     zb_callback_t process_result_cb,
     zb_ias_zone_app_callback_t general_cb);
@@ -878,15 +878,15 @@ zb_bool_t zb_zcl_ias_zone_check_attr_notify(
 /**
    @brief fills in notification command and sends it
 */
-zb_void_t zb_zcl_ias_zone_send_status_change_not(zb_uint8_t param);
+void zb_zcl_ias_zone_send_status_change_not(zb_uint8_t param);
 
 
 /*! @} */ /* ZCL IAS Zone cluster definitions */
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 
-zb_void_t zb_zcl_ias_zone_init_server(void);
-zb_void_t zb_zcl_ias_zone_init_client(void);
+void zb_zcl_ias_zone_init_server(void);
+void zb_zcl_ias_zone_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_IAS_ZONE_SERVER_ROLE_INIT zb_zcl_ias_zone_init_server
 #define ZB_ZCL_CLUSTER_ID_IAS_ZONE_CLIENT_ROLE_INIT zb_zcl_ias_zone_init_client
 

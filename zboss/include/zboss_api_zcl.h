@@ -156,11 +156,11 @@
  *
  */
 
-/** @brief ZCL version. 
+/** @brief ZCL version.
 *     According ZCL 7 spec:
 *     3.2.2.2.1 ZCLVersion Attribute
-*     The ZCLVersion attribute represents a published set of foundation items (in Chapter 2), 
-*     such as global commands and functional descriptions. 
+*     The ZCLVersion attribute represents a published set of foundation items (in Chapter 2),
+*     such as global commands and functional descriptions.
 *     For this version of the ZCL, this attribute SHALL be set to 0x03.
 */
 #define ZB_ZCL_VERSION       0x03
@@ -299,10 +299,12 @@ typedef enum zb_zcl_device_callback_id_e
 {
   /** Inform user about attribute value modification */
   ZB_ZCL_SET_ATTR_VALUE_CB_ID = 0,
+/** @cond DOXYGEN_INTERNAL_DOC */
   /** Inform user about received attribute report */
   ZB_ZCL_REPORT_ATTR_CB_ID,
-  /** Inform user that report was not received during  defined time interval */
+  /** Inform user that report was not received during defined time interval */
   ZB_ZCL_NO_REPORTING_CB_ID,
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
   /** Inform user about change On/Off effect @see ZLL spec 6.6.1.4.4.2 */
   ZB_ZCL_ON_OFF_WITH_EFFECT_VALUE_CB_ID,
   /** */
@@ -970,11 +972,10 @@ typedef enum zb_zcl_device_callback_id_e
    *
    */
   ZB_ZCL_METERING_GET_SAMPLED_DATA_RESPONSE_CB_ID,
+/** @cond DOXYGEN_INTERNAL_DOC */
   /** Inform user about APS fragmented data transfer completion */
   ZB_ZCL_BIG_DATA_TRANSFER_COMPLETE_CB_ID,
-  /** Inform user about Time receiving from Time server */
-  ZB_ZCL_TIME_SYNC_CB_ID,
-  ZB_ZCL_TIME_SYNC_FAILED_CB_ID,
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
   /** @b Server. Inform user about Window Covering Up/Open command.
    *
    * User's application callback is initialized by RET_OK status of device
@@ -1239,15 +1240,15 @@ typedef enum zb_zcl_device_callback_id_e
    *
    */
   ZB_ZCL_ALARMS_RESET_ALL_ALARMS_CB_ID,
-  /** @b Client. Inform user about Alarms Alarm command. 
+  /** @b Client. Inform user about Alarms Alarm command.
    * User's application callback is initialized by RET_OK status of device
    * callback parameters.
    * @param[in] param_in zb_zcl_alarms_alarm_res_t
-   * 
+   *
    * One of the following statuses must be returned:
    * @return RET_OK - successfully handled command. Response will be send if requested.
    * @return RET_ERROR - command is handled with errors
-   * 
+   *
   */
   ZB_ZCL_ALARMS_ALARM_CB_ID,
   /** @b Server. Inform user about receiving "Enable WWAH App Event Retry Algorithm" command.
@@ -1283,7 +1284,7 @@ typedef enum zb_zcl_device_callback_id_e
    */
   ZB_ZCL_CONTROL4_NETWORK_ZAP_INFO_CB_ID,
   /** @b Server. Inform user about receiving "Debug Report Query" command.
-   * If debug report exists, application must return pointer to this report   
+   * If debug report exists, application must return pointer to this report
    * User's application callback is initialized by RET_NOT_FOUND status of device
    * callback parameter.
    *
@@ -1293,7 +1294,7 @@ typedef enum zb_zcl_device_callback_id_e
    *                  For example:
    *                  zb_zcl_wwah_debug_report_t debug_report_table[10]
    *                  ZB_ZCL_DEVICE_CMD_PARAM_OUT_SET(param, &debug_report_table[4]);
-   * @return RET_ERROR, RET_NOT_FOUND - command is handled with errors. 
+   * @return RET_ERROR, RET_NOT_FOUND - command is handled with errors.
    *                  Default Response will be send.
    */
   ZB_ZCL_WWAH_DEBUG_REPORT_QUERY_CB_ID,
@@ -1366,8 +1367,9 @@ typedef struct zb_zcl_device_callback_param_s
    //
    zb_zcl_ias_zone_enroll_response_value_param_t enroll_response_value_param;
    //
-   zb_zcl_thermostat_value_param_t thermostat_value_param;
 #endif /* defined ZB_ENABLE_HA */
+    /* moved thermostat_value_param out of ZB_ENABLE_HA to be able to compile without that define */
+   zb_zcl_thermostat_value_param_t thermostat_value_param;
    //
    zb_zcl_ias_wd_squawk_value_param_t  squawk_value_param;
 #if defined ZB_ENABLE_HA
@@ -1486,6 +1488,7 @@ void zb_zcl_mark_report_not_sent(zb_zcl_reporting_info_t *rep_info);
    Use @ref ZB_AF_REGISTER_DEVICE_CTX.
  */
 void zb_zcl_register_device_ctx(zb_af_device_ctx_t *device_ctx);
+void zb_zcl_init_endpoint(zb_af_endpoint_desc_t* ep);
 zb_bool_t zb_zcl_check_cluster_list(void);
 /** @endcond */ /* internals_doc */
 /** @} */ /* ZB_ZCL_INITIALIZATION */
@@ -1560,7 +1563,7 @@ typedef enum zb_bdb_commissioning_mode_mask_e
           @ref zb_bdb_finding_binding_target or @ref zb_bdb_finding_binding_initiator.
    */
   ZB_BDB_FINDING_N_BINDING = 8,
-  
+
   /* Used internally */
   ZB_BDB_LAST_COMMISSIONING_STEP = 0x10,
   /* Used internally */
@@ -1579,11 +1582,11 @@ typedef enum zb_bdb_commissioning_mode_mask_e
 /**
    @brief Start top level commissioning procedure with specified mode mask.
    When the selected commissioning procedure finishes one of the following ZBOSS signals is generated:
-    - @ref ZB_BDB_SIGNAL_STEERING 
+    - @ref ZB_BDB_SIGNAL_STEERING
     - @ref ZB_BDB_SIGNAL_FORMATION
-    
+
    @param mode_mask - commissioning modes, see @ref zb_bdb_commissioning_mode_mask_e
-   
+
    @return ZB_TRUE - in case the device starts successfully
    @return ZB_FALSE - ZB_FALSE -- in case an error occurred (for example: the device has already been running)
 
@@ -1755,7 +1758,7 @@ void zb_bdb_set_legacy_device_support(zb_uint8_t state);
 /**
   * @brief Set commissioning mode.
   * @param  commissioning_mode - bitfield with the bdbCommissioningMode
-  * attribute. Set 1 to the corresponding bit to enable, 0 to disable. 
+  * attribute. Set 1 to the corresponding bit to enable, 0 to disable.
   * All the possible mask bits are stored in @ref zb_bdb_commissioning_mode_mask_t
  */
 void zb_set_bdb_commissioning_mode(zb_uint8_t commissioning_mode);
@@ -1797,6 +1800,9 @@ typedef ZB_PACKED_PRE struct zb_bdb_comm_respondent_info_s
 #endif
 
   zb_uint8_t eps_checked; /*!< Count of the currently checked endpoints */
+  zb_bufid_t simple_desc_resp_buf;
+  zb_bufid_t curr_bind_req_buf;
+  zb_uindex_t curr_cluster_idx;
 } ZB_PACKED_STRUCT zb_bdb_comm_respondent_info_t;
 
 typedef enum bdb_commissioning_signal_e
@@ -1969,8 +1975,6 @@ Finding & binding: 0 = Do not attempt finding & binding 1 = Attempt finding & bi
   zb_uint8_t    tl_channel_i;
 #endif  /* ZB_BDB_TOUCHLINK */
   zb_bitfield_t bdb_force_router_rejoin:1;      /* Force rejoin for the router */
-  zb_bitfield_t nfn:1;                     /*!< if 1, device is not factory new and bdb init checks
-                                            * are ok - no need to reinit commissioning */
   zb_bitfield_t host_bdb_mode:1;
   } ZB_PACKED_STRUCT zb_bdb_comm_ctx_t;
 /** @endcond */ /* internals_doc */

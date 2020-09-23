@@ -201,7 +201,7 @@ enum zb_zcl_level_control_options_e
                        (&(move_status_data_ctx## _attr_list)))                              \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
-    
+
 /*!
   @brief Declare attribute list for Level Control cluster
   @param attr_list - attribute list name
@@ -221,7 +221,7 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_LEVEL_CONTROL_MOVE_STATUS_ID,                                      \
                        (&(move_status_data_ctx## _attr_list)))                                        \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
-    
+
 /*! @} */ /* Level Control cluster attributes */
 
 /** @cond internals_doc */
@@ -236,7 +236,7 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_ATTR_LEVEL_CONTROL_CURRENT_LEVEL_ID,                                             \
   ZB_ZCL_ATTR_TYPE_U8,                                                                    \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING | ZB_ZCL_ATTR_ACCESS_SCENE, \
-  (zb_voidp_t) data_ptr                                                                   \
+  (void*) data_ptr                                                                   \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_LEVEL_CONTROL_REMAINING_TIME_ID(data_ptr)\
@@ -244,7 +244,7 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_ATTR_LEVEL_CONTROL_REMAINING_TIME_ID,                                      \
   ZB_ZCL_ATTR_TYPE_U16,                                                             \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                     \
-  (zb_voidp_t) data_ptr                                                             \
+  (void*) data_ptr                                                             \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_LEVEL_CONTROL_OPTIONS_ID(data_ptr)      \
@@ -252,7 +252,7 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_ATTR_LEVEL_CONTROL_OPTIONS_ID,                                            \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                        \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                   \
-  (zb_voidp_t) data_ptr                                                            \
+  (void*) data_ptr                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_LEVEL_CONTROL_MOVE_STATUS_ID(data_ptr) \
@@ -260,7 +260,7 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_ATTR_LEVEL_CONTROL_MOVE_STATUS_ID,                                       \
   ZB_ZCL_ATTR_TYPE_NULL,                                                          \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                                                    \
-  (zb_voidp_t) data_ptr                                                           \
+  (void*) data_ptr                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_LEVEL_CONTROL_START_UP_CURRENT_LEVEL_ID(data_ptr) \
@@ -268,7 +268,7 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_ATTR_LEVEL_CONTROL_START_UP_CURRENT_LEVEL_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U8,                                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                             \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 /** @internal Structure of addr variables for Move commands
  */

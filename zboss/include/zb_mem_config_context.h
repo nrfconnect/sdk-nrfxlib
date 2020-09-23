@@ -56,9 +56,9 @@
    recompiling ZBOSS libraries.
    If application does not configure storage parameters, default values will be used.
 
-   ZBOSS uses static memory allocation technic.
+   ZBOSS uses static memory allocation technique.
 
-   Initially (before introducing configurable memory) ZBOSS uses static arrays inside data structures and defines for arraps syzes.
+   Initially (before introducing configurable memory) ZBOSS used static arrays inside data structures and defines for array's sizes.
    Defines are fixed at ZBOSS compile time. @see zb_buf_pool_t.pool as an example.
 
    To be able to configure memory at compile time, ZBOSS changes static buffers to pointers (@see zb_buf_pool_t.pool again).
@@ -71,7 +71,7 @@
    When included form the kernel, ZB_CONFIG_DEFAULT_KERNEL_DEFINITION is defined, so all symbols are defined as weak.
    As a result, if application does not included any memory configuration includes,
    default buffers and its sizes (weak) are used.
-   If application includes one of zb_mem_config_xxx.h, it owerwrites weak symbols for buffers and its sizes.
+   If application includes one of zb_mem_config_xxx.h, it overwrites weak symbols for buffers and its sizes.
 
    Pointers assignment (like @ref zb_buf_pool_t.pool) and arrays syzes
    initialization are done at ZBOSS start time from @ref zb_init_configurable_mem().

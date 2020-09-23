@@ -38,6 +38,8 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+/* PURPOSE: Daily Schedule cluster defintions
+*/
 
 #ifndef ZB_ZCL_DAILY_SCHEDULE_H_
 #define ZB_ZCL_DAILY_SCHEDULE_H_
@@ -390,7 +392,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_daily_schedule_publish_schedule_payload_s
  * @param size - size of received data payload
  */
 #define ZB_ZCL_DAILY_SCHEDULE_PUBLISH_DAY_PROFILE_PL_SIZE_IS_VALID(size) \
-  ((size >= (sizeof(zb_zcl_daily_schedule_publish_day_profile_payload_t)-sizeof(zb_void_t *)-sizeof(zb_uint8_t)) ? ZB_TRUE : ZB_FALSE))
+  ((size >= (sizeof(zb_zcl_daily_schedule_publish_day_profile_payload_t)-sizeof(void *)-sizeof(zb_uint8_t)) ? ZB_TRUE : ZB_FALSE))
 
 
 /** Check if @ref ZB_ZCL_DAILY_SCHEDULE_SRV_CMD_CANCEL_SCHEDULE "CancelSchedule" command payload size is valid
@@ -540,7 +542,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_daily_schedule_get_day_profile_payload_s
  * @param cb - Callback which should be called when the ZCL stack receives
  * APS ack.
  */
-zb_void_t zb_zcl_daily_schedule_send_cmd_publish_schedule(zb_uint8_t param, const zb_addr_u *dst_addr,
+void zb_zcl_daily_schedule_send_cmd_publish_schedule(zb_uint8_t param, const zb_addr_u *dst_addr,
                                                enum zb_aps_addr_mode_e dst_addr_mode,
                                                zb_uint8_t dst_ep, zb_uint8_t src_ep,
                                                const zb_zcl_daily_schedule_publish_schedule_payload_t *pl,
@@ -561,7 +563,7 @@ zb_void_t zb_zcl_daily_schedule_send_cmd_publish_schedule(zb_uint8_t param, cons
  * @param cb - Callback which should be called when the ZCL stack receives
  * APS ack.
  */
-zb_void_t zb_zcl_daily_schedule_send_cmd_publish_day_profile(zb_uint8_t param,
+void zb_zcl_daily_schedule_send_cmd_publish_day_profile(zb_uint8_t param,
   const zb_addr_u *dst_addr, enum zb_aps_addr_mode_e dst_addr_mode,
   zb_uint8_t dst_ep, zb_uint8_t src_ep,
   const zb_zcl_daily_schedule_publish_day_profile_payload_t *pl,
@@ -581,7 +583,7 @@ zb_void_t zb_zcl_daily_schedule_send_cmd_publish_day_profile(zb_uint8_t param,
  * @param cb - Callback which should be called when the ZCL stack receives
  * APS ack.
  */
-zb_void_t zb_zcl_daily_schedule_send_cmd_get_schedule(zb_uint8_t param,
+void zb_zcl_daily_schedule_send_cmd_get_schedule(zb_uint8_t param,
   const zb_addr_u *dst_addr, enum zb_aps_addr_mode_e dst_addr_mode,
   zb_uint8_t dst_ep, zb_uint8_t src_ep,
   const zb_zcl_daily_schedule_get_schedule_payload_t *pl,
@@ -601,7 +603,7 @@ zb_void_t zb_zcl_daily_schedule_send_cmd_get_schedule(zb_uint8_t param,
  * @param cb - Callback which should be called when the ZCL stack receives
  * APS ack.
  */
-zb_void_t zb_zcl_daily_schedule_send_cmd_get_day_profile(zb_uint8_t param,
+void zb_zcl_daily_schedule_send_cmd_get_day_profile(zb_uint8_t param,
   const zb_addr_u *dst_addr, enum zb_aps_addr_mode_e dst_addr_mode,
   zb_uint8_t dst_ep, zb_uint8_t src_ep,
   const zb_zcl_daily_schedule_get_day_profile_payload_t *pl,
@@ -619,7 +621,7 @@ zb_void_t zb_zcl_daily_schedule_send_cmd_get_day_profile(zb_uint8_t param,
  * @param cb - Callback which should be called when the ZCL stack receives
  * APS ack.
  */
-zb_void_t zb_zcl_daily_schedule_send_cmd_get_schedule_cancellation(zb_uint8_t param,
+void zb_zcl_daily_schedule_send_cmd_get_schedule_cancellation(zb_uint8_t param,
   const zb_addr_u *dst_addr, enum zb_aps_addr_mode_e dst_addr_mode,
   zb_uint8_t dst_ep, zb_uint8_t src_ep,
   zb_callback_t cb
@@ -638,7 +640,7 @@ zb_void_t zb_zcl_daily_schedule_send_cmd_get_schedule_cancellation(zb_uint8_t pa
  * @param cb - Callback which should be called when the ZCL stack receives
  * APS ack.
  */
-zb_void_t zb_zcl_daily_schedule_send_cmd_cancel_schedule(zb_uint8_t param,
+void zb_zcl_daily_schedule_send_cmd_cancel_schedule(zb_uint8_t param,
   const zb_addr_u *dst_addr, enum zb_aps_addr_mode_e dst_addr_mode,
   zb_uint8_t dst_ep, zb_uint8_t src_ep,
   const zb_zcl_daily_schedule_cancel_schedule_payload_t *pl,
@@ -709,8 +711,8 @@ zb_void_t zb_zcl_daily_schedule_send_cmd_cancel_schedule(zb_uint8_t param,
 
 /******************************************************************************/
 
-zb_void_t zb_zcl_daily_schedule_init_server();
-zb_void_t zb_zcl_daily_schedule_init_client();
+void zb_zcl_daily_schedule_init_server();
+void zb_zcl_daily_schedule_init_client();
 #define ZB_ZCL_CLUSTER_ID_DAILY_SCHEDULE_SERVER_ROLE_INIT zb_zcl_daily_schedule_init_server
 #define ZB_ZCL_CLUSTER_ID_DAILY_SCHEDULE_CLIENT_ROLE_INIT zb_zcl_daily_schedule_init_client
 

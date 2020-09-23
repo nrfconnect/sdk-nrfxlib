@@ -74,12 +74,12 @@ enum zb_zcl_metering_cli_attr_set_e
 enum zb_zcl_metering_cli_attr_e
 {
   ZB_ZCL_ATTR_METERING_CLI_FUNCTIONAL_NOTIFICATION_FLAGS = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_CLI_NOTIFICATION_ATTRIBUTE, 0x00),
-                                                /**< @e FunctionalNotificationFlags attribute is implemented as a set of bit flags 
-                                                 * which are have a predefined action associated with a bit that is not based on a specific command, 
+                                                /**< @e FunctionalNotificationFlags attribute is implemented as a set of bit flags
+                                                 * which are have a predefined action associated with a bit that is not based on a specific command,
                                                  * but may require the Mirrored device to trigger some additional functionality within the system */
   ZB_ZCL_ATTR_METERING_CLI_NOTIFICATION_FLAGS2, /**< @e NotificationFlagsN are 32-bit bitmaps that each represent a series of flags.
                                                 * Each flag represents an outstanding command that the Mirror is holding on behalf of the BOMD.
-                                                * Each flag represents a different command. 
+                                                * Each flag represents a different command.
                                                 * The format of these attributes is dictated by the scheme that is currently in operation. */
   ZB_ZCL_ATTR_METERING_CLI_NOTIFICATION_FLAGS3, /**< @copydoc ZB_ZCL_ATTR_METERING_CLI_NOTIFICATION_FLAGS2 */
   ZB_ZCL_ATTR_METERING_CLI_NOTIFICATION_FLAGS4, /**< @copydoc ZB_ZCL_ATTR_METERING_CLI_NOTIFICATION_FLAGS2 */
@@ -635,49 +635,49 @@ enum zb_zcl_metering_attr_e
 
   /**< @e BillToDateDelivered provides a value for the costs in the current billing period.*/
   ZB_ZCL_ATTR_METERING_BILL_TO_DATE_DELIVERED = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_METER_BILLING, 0x00),
-  ZB_ZCL_ATTR_METERING_BILL_TO_DATE_TIMESTAMP_DELIVERED, /**< @e BillToDateTimeStampDelivered The UTC timestamp 
+  ZB_ZCL_ATTR_METERING_BILL_TO_DATE_TIMESTAMP_DELIVERED, /**< @e BillToDateTimeStampDelivered The UTC timestamp
                                                          * when the associated BillToDateDelivered attribute was last updated.*/
   ZB_ZCL_ATTR_METERING_PROJECTED_BILL_DELIVERED, /**< @e ProjectedBillDelivered provides a value indicating what the estimated state of the account
                                                 * will be at the end of the billing period based on past consumption.*/
-  ZB_ZCL_ATTR_METERING_PROJECTED_BILL_TIME_STAMP_DELIVERED, /**< @e ProjectedBillTimeStampDelivered 
+  ZB_ZCL_ATTR_METERING_PROJECTED_BILL_TIME_STAMP_DELIVERED, /**< @e ProjectedBillTimeStampDelivered
                                                             * The UTC timestamp when the associated ProjectedBillDelivered attribute was last updated. */
-  ZB_ZCL_ATTR_METERING_BILL_DELIVERED_TRAILING_DIGIT, /**< @e BillDeliveredTrailingDigit An 8-bit BitMap used to determine where the decimal point is located 
+  ZB_ZCL_ATTR_METERING_BILL_DELIVERED_TRAILING_DIGIT, /**< @e BillDeliveredTrailingDigit An 8-bit BitMap used to determine where the decimal point is located
                                                     * in the BillToDateDelivered and ProjectedBillDelivered attributes. */
-  ZB_ZCL_ATTR_METERING_BILL_TO_DATE_RECEIVED = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_METER_BILLING, 0x10), 
-                                                    /**< @e BillToDateReceived provides a value for the costs in the current billing period. 
+  ZB_ZCL_ATTR_METERING_BILL_TO_DATE_RECEIVED = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_METER_BILLING, 0x10),
+                                                    /**< @e BillToDateReceived provides a value for the costs in the current billing period.
                                                     * This attribute is measured in a base unit of Currency with the decimal point located
                                                     * as indicated by the BillReceivedTrailingDigit attribute */
-  ZB_ZCL_ATTR_METERING_BILL_TO_DATE_TIMESTAMP_RECEIVED, /**< @e BillToDateTimeStampReceived The UTC timestamp 
+  ZB_ZCL_ATTR_METERING_BILL_TO_DATE_TIMESTAMP_RECEIVED, /**< @e BillToDateTimeStampReceived The UTC timestamp
                                                        * when the associated BillToDateReceived attribute was last updated */
   ZB_ZCL_ATTR_METERING_PROJECTED_BILL_RECEIVED, /**< @e ProjectedBillReceived provides a value indicating what the estimated state of the account
                                               * will be at the end of the billing period based on past generation.*/
-  ZB_ZCL_ATTR_METERING_PROJECTED_BILL_TIME_STAMP_RECEIVED, /**< @e ProjectedBillTimeStampReceived 
-                                                          * The UTC timestamp when the associated ProjectedBillReceived attribute was last updated. */           
-  ZB_ZCL_ATTR_METERING_BILL_RECEIVED_TRAILING_DIGIT, /**< @e BillReceivedTrailingDigit 
-                                                    * An 8-bit BitMap used to determine where the decimal point is located 
+  ZB_ZCL_ATTR_METERING_PROJECTED_BILL_TIME_STAMP_RECEIVED, /**< @e ProjectedBillTimeStampReceived
+                                                          * The UTC timestamp when the associated ProjectedBillReceived attribute was last updated. */
+  ZB_ZCL_ATTR_METERING_BILL_RECEIVED_TRAILING_DIGIT, /**< @e BillReceivedTrailingDigit
+                                                    * An 8-bit BitMap used to determine where the decimal point is located
                                                     * in the BillToDateReceived and ProjectedBillReceived attributes.*/
 
   /* Supply Control Attribute, table D.45 */
 
-  /**< @e ProposedChangeSupplyImplementationTime indicates the time 
+  /**< @e ProposedChangeSupplyImplementationTime indicates the time
    * at which a proposed change to the supply is to be implemented.*/
   ZB_ZCL_ATTR_METERING_PROPOSED_CHANGE_SUPPLY_IMPLEMENTATION_TIME = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_SUPPLY_CONTROL, 0x00),
-  ZB_ZCL_ATTR_METERING_PROPOSED_CHANGE_SUPPLY_STATUS, /**< @e ProposedChangeSupplyStatus indicates the proposed status of the supply 
+  ZB_ZCL_ATTR_METERING_PROPOSED_CHANGE_SUPPLY_STATUS, /**< @e ProposedChangeSupplyStatus indicates the proposed status of the supply
                                                      * once the change to the supply has be been implemented.*/
-  /**< @e UncontrolledFlowThreshold indicates the threshold above which a flow meter (e.g. Gas or Water) 
+  /**< @e UncontrolledFlowThreshold indicates the threshold above which a flow meter (e.g. Gas or Water)
    * shall detect an uncontrolled flow.*/
   ZB_ZCL_ATTR_METERING_UNCONTROLLED_FLOW_THRESHOLD = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_SUPPLY_CONTROL, 0x10),
-  ZB_ZCL_ATTR_METERING_UNCONTROLLED_FLOW_THRESHOLD_UNIT_OF_MEASURE, /**< @e UncontrolledFlowThresholdUnitOfMeasure indicates the unit of measure 
+  ZB_ZCL_ATTR_METERING_UNCONTROLLED_FLOW_THRESHOLD_UNIT_OF_MEASURE, /**< @e UncontrolledFlowThresholdUnitOfMeasure indicates the unit of measure
                                                                      * used in conjunction with the Uncontrolled Flow Threshold attribute.*/
-  ZB_ZCL_ATTR_METERING_UNCONTROLLED_FLOW_MULTIPLIER, /**< @e UncontrolledFlowMultiplier indicates the multiplier, 
-                                                    * to be used in conjunction with the Uncontrolled Flow Threshold and Uncontrolled Flow Divisor attributes, 
+  ZB_ZCL_ATTR_METERING_UNCONTROLLED_FLOW_MULTIPLIER, /**< @e UncontrolledFlowMultiplier indicates the multiplier,
+                                                    * to be used in conjunction with the Uncontrolled Flow Threshold and Uncontrolled Flow Divisor attributes,
                                                     * to determine the true flow threshold value.*/
-  ZB_ZCL_ATTR_METERING_UNCONTROLLED_FLOW_DIVISOR, /**< @e UncontrolledFlowDivisor 
-                                                  * The Uncontrolled Flow Divisor attribute indicates the divisor, to be used in conjunction 
+  ZB_ZCL_ATTR_METERING_UNCONTROLLED_FLOW_DIVISOR, /**< @e UncontrolledFlowDivisor
+                                                  * The Uncontrolled Flow Divisor attribute indicates the divisor, to be used in conjunction
                                                   * with the Uncontrolled Flow Threshold and Uncontrolled Flow Multiplier attributes,
                                                   * to determine the true flow threshold value.*/
   ZB_ZCL_ATTR_METERING_FLOW_STABILISATION_PERIOD, /**< @e FlowStabilisationPeriod indicates the time given to allow the flow to stabilize.*/
-  ZB_ZCL_ATTR_METERING_FLOW_MEASUREMENT_PERIOD, /**< @e FlowMeasurementPeriodAttribute indicates the period 
+  ZB_ZCL_ATTR_METERING_FLOW_MEASUREMENT_PERIOD, /**< @e FlowMeasurementPeriodAttribute indicates the period
                                                 * over which the flow is measured and compared against the Uncontrolled Flow Threshold attribute.*/
 
   /* Alternative Historical Consumption Attribute Set, table D.46 */
@@ -687,32 +687,32 @@ enum zb_zcl_metering_attr_e
                                                               * delivered to the premises since the Historical Freeze Time (HFT). */
   ZB_ZCL_ATTR_METERING_CURRENT_DAY_ALT_CONSUMPTION_RECEIVED, /**< @e CurrentDayAlternativeConsumptionReceived represents the summed value
                                                             * received from the premises since the Historical Freeze Time (HFT).*/
-  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY_ALT_CONSUMPTION_DELIVERED, /**< @e PreviousDayAlternativeConsumptionDelivered represents the summed value 
-                                                              * delivered to the premises within the previous 24 hour period 
+  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY_ALT_CONSUMPTION_DELIVERED, /**< @e PreviousDayAlternativeConsumptionDelivered represents the summed value
+                                                              * delivered to the premises within the previous 24 hour period
                                                               * starting at the alternative Historical Freeze Time (HFT).*/
-  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY_ALT_CONSUMPTION_RECEIVED, /**< @e PreviousDayAlternativeConsumptionReceived represents the summed value 
-                                                              * received to the premises within the previous 24 hour period 
+  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY_ALT_CONSUMPTION_RECEIVED, /**< @e PreviousDayAlternativeConsumptionReceived represents the summed value
+                                                              * received to the premises within the previous 24 hour period
                                                               * starting at the alternative Historical Freeze Time (HFT).*/
   ZB_ZCL_ATTR_METERING_CURRENT_ALT_PARTIAL_PROFILE_INTERVAL_START_TIME_DELIVERED, /**< @e CurrentAlternativePartialProfileIntervalStartTimeDelivered represents the start time
                                                                                   * of the current Load Profile interval being accumulated for commodity delivered */
   ZB_ZCL_ATTR_METERING_CURRENT_ALT_PARTIAL_PROFILE_INTERVAL_START_TIME_RECEIVED, /**< @e CurrentAlternativePartialProfileIntervalStartTimeReceived represents the start time
                                                                                   * of the current Load Profile interval being accumulated for commodity received */
-  ZB_ZCL_ATTR_METERING_CURRENT_ALT_PARTIAL_PROFILE_INTERVAL_VALUE_DELIVERED, /**< @e CurrentAlternativePartialProfileIntervalValueDelivered represents the value 
+  ZB_ZCL_ATTR_METERING_CURRENT_ALT_PARTIAL_PROFILE_INTERVAL_VALUE_DELIVERED, /**< @e CurrentAlternativePartialProfileIntervalValueDelivered represents the value
 *                                                                            * of the current Load Profile interval being accumulated for commodity delivered.*/
-  ZB_ZCL_ATTR_METERING_CURRENT_ALT_PARTIAL_PROFILE_INTERVAL_VALUE_RECEIVED, /**< @e CurrentAlternativePartialProfileIntervalValueReceived represents the value 
+  ZB_ZCL_ATTR_METERING_CURRENT_ALT_PARTIAL_PROFILE_INTERVAL_VALUE_RECEIVED, /**< @e CurrentAlternativePartialProfileIntervalValueReceived represents the value
 *                                                                            * of the current Load Profile interval being accumulated for commodity received .*/
-  ZB_ZCL_ATTR_METERING_CURRENT_DAY_ALT_MAX_PRESSURE, /**< @e CurrentDayAlternativeMaxPressure is the maximum pressure 
+  ZB_ZCL_ATTR_METERING_CURRENT_DAY_ALT_MAX_PRESSURE, /**< @e CurrentDayAlternativeMaxPressure is the maximum pressure
                                                      * reported during a day from the water or gas meter. */
-  ZB_ZCL_ATTR_METERING_CURRENT_DAY_ALT_MIN_PRESSURE, /**< @e CurrentDayAlternativeMinPressure is the minimum pressure 
+  ZB_ZCL_ATTR_METERING_CURRENT_DAY_ALT_MIN_PRESSURE, /**< @e CurrentDayAlternativeMinPressure is the minimum pressure
                                                      * reported during a day from the water or gas meter. */
-  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY_ALT_MAX_PRESSURE, /**< @e PreviousDayAlternativeMaxPressure represents the maximum pressure 
+  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY_ALT_MAX_PRESSURE, /**< @e PreviousDayAlternativeMaxPressure represents the maximum pressure
                                                       * reported during previous day from the water or gas meter.*/
-  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY_ALT_MIN_PRESSURE, /**< @e PreviousDayAlternativeMinPressure  represents the minimum pressure 
+  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY_ALT_MIN_PRESSURE, /**< @e PreviousDayAlternativeMinPressure  represents the minimum pressure
                                                       * reported during previous day from the water or gas meter.*/
 
-  ZB_ZCL_ATTR_METERING_CURRENT_DAY_ALT_MAX_DEMAND, /**< @e CurrentDayAlternativeMaxDemand represents the maximum demand or rate 
+  ZB_ZCL_ATTR_METERING_CURRENT_DAY_ALT_MAX_DEMAND, /**< @e CurrentDayAlternativeMaxDemand represents the maximum demand or rate
                                                    * of delivered value of Energy, Gas, or Water being utilized at the premises.*/
-  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY_ALT_MAX_DEMAND, /**< @e PreviousDayAlternativeMaxDemand represents represents the maximum demand or rate 
+  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY_ALT_MAX_DEMAND, /**< @e PreviousDayAlternativeMaxDemand represents represents the maximum demand or rate
                                                     * of delivered value of Energy, Gas, or Water being utilized at the premises.*/
 
   ZB_ZCL_ATTR_METERING_CURRENT_MONTH_ALT_MAX_DEMAND, /**< @e CurrentMonthAlternativeMaxDemand is the maximum demand reported during a month from the meter. */
@@ -721,34 +721,34 @@ enum zb_zcl_metering_attr_e
   /**< @e PreviousDayNAlternativeConsumptionDelivered represents the summed value delivered to the premises
   * within the previous 24 hour period starting at the Historical Freeze Time (HFT).  */
   ZB_ZCL_ATTR_METERING_PREVIOUS_DAY2_ALT_CONSUMPTION_DELIVERED = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_ALTERNATIVE_HISTORICAL_CONSUMPTION, 0x20),
-  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY2_ALT_CONSUMPTION_RECEIVED, /**< @e PreviousDayNAlternativeConsumptionReceived 
+  ZB_ZCL_ATTR_METERING_PREVIOUS_DAY2_ALT_CONSUMPTION_RECEIVED, /**< @e PreviousDayNAlternativeConsumptionReceived
                                                               * represents the summed value received from the premises
                                                               * within the previous 24 hour period starting at the Historical Freeze Time (HFT).*/
 
-  /**< @e CurrentWeekAlternativeConsumptionDelivered represents the summed value 
+  /**< @e CurrentWeekAlternativeConsumptionDelivered represents the summed value
   * delivered to the premises since the Historical Freeze Time (HFT) on Monday to the last HFT read. */
   ZB_ZCL_ATTR_METERING_CURRENT_WEEK_ALT_CONSUMPTION_DELIVERED = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_ALTERNATIVE_HISTORICAL_CONSUMPTION, 0x30),
-  ZB_ZCL_ATTR_METERING_CURRENT_WEEK_ALT_CONSUMPTION_RECEIVED, /**< @e CurrentWeekAlternativeConsumptionReceived represents the summed value 
+  ZB_ZCL_ATTR_METERING_CURRENT_WEEK_ALT_CONSUMPTION_RECEIVED, /**< @e CurrentWeekAlternativeConsumptionReceived represents the summed value
                                                               * received from the premises since the Historical Freeze Time (HFT) on Monday to the last HFT read */
 
   ZB_ZCL_ATTR_METERING_PREVIOUS_WEEK_ALT_CONSUMPTION_DELIVERED, /**< @e PreviousWeekNAlternativeConsumptionDelivered represents the summed value
-                                                                * delivered to the premises within the previous week period 
+                                                                * delivered to the premises within the previous week period
                                                                 * starting at the Historical Freeze Time (HFT) on the Monday to the Sunday.  */
-  ZB_ZCL_ATTR_METERING_PREVIOUS_WEEK_ALT_CONSUMPTION_RECEIVED, /**< @e PreviousWeekNAlternativeConsumptionReceived represents the summed value 
-                                                                * received from the premises within the previous week period 
+  ZB_ZCL_ATTR_METERING_PREVIOUS_WEEK_ALT_CONSUMPTION_RECEIVED, /**< @e PreviousWeekNAlternativeConsumptionReceived represents the summed value
+                                                                * received from the premises within the previous week period
                                                                 * starting at the Historical Freeze Time (HFT) on the Monday to the Sunday*/
-  /**< @e CurrentMonthAlternativeConsumptionDelivered represents the summed value delivered to the premises 
+  /**< @e CurrentMonthAlternativeConsumptionDelivered represents the summed value delivered to the premises
   * since the Historical Freeze Time (HFT) on the 1st of the month to the last HFT read */
   ZB_ZCL_ATTR_METERING_CURRENT_MONTH_ALT_CONSUMPTION_DELIVERED = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_ALTERNATIVE_HISTORICAL_CONSUMPTION, 0x40),
-  ZB_ZCL_ATTR_METERING_CURRENT_MONTH_ALT_CONSUMPTION_RECEIVED, /**< @e CurrentMonthAlternativeConsumptionReceived represents the summed value 
-                                                                * received from the premises since the Historical Freeze Time (HFT) 
+  ZB_ZCL_ATTR_METERING_CURRENT_MONTH_ALT_CONSUMPTION_RECEIVED, /**< @e CurrentMonthAlternativeConsumptionReceived represents the summed value
+                                                                * received from the premises since the Historical Freeze Time (HFT)
                                                                 * on the 1st of the month to the last HFT read. */
 
-  ZB_ZCL_ATTR_METERING_PREVIOUS_MONTH_ALT_CONSUMPTION_DELIVERED, /**< @e PreviousMonthNAlternativeConsumptionDelivered represents the summed value 
-                                                                  * delivered to the premises within the previous Month period 
+  ZB_ZCL_ATTR_METERING_PREVIOUS_MONTH_ALT_CONSUMPTION_DELIVERED, /**< @e PreviousMonthNAlternativeConsumptionDelivered represents the summed value
+                                                                  * delivered to the premises within the previous Month period
                                                                   * starting at the Historical Freeze Time (HFT) on the 1st of the month to the last day of the month. */
-  ZB_ZCL_ATTR_METERING_PREVIOUS_MONTH_ALT_CONSUMPTION_RECEIVED, /**< @e PreviousMonthNAlternativeConsumptionReceived represents the summed value 
-                                                                * received from the premises within the previous month period 
+  ZB_ZCL_ATTR_METERING_PREVIOUS_MONTH_ALT_CONSUMPTION_RECEIVED, /**< @e PreviousMonthNAlternativeConsumptionReceived represents the summed value
+                                                                * received from the premises within the previous month period
                                                                 * starting at the Historical Freeze Time (HFT) on the 1st of the month to the last day of the month. */
 
   /* ZB_ZCL_METERING_SET_FOUR_QUADRANT_ELECTRICITY attribute set */
@@ -2135,7 +2135,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_metering_publish_snapshot_payload_s
  * @param payload - Packet payload (ref to @ref zb_zcl_metering_get_snapshot_payload_t).
  * @param cb - Callback which should be called when the ZCL stack receives APS ack.
  */
-zb_void_t zb_zcl_metering_send_cmd_get_snapshot(zb_uint8_t param, zb_addr_u *dst_addr,
+void zb_zcl_metering_send_cmd_get_snapshot(zb_uint8_t param, zb_addr_u *dst_addr,
                                                 zb_aps_addr_mode_t dst_addr_mode, zb_uint8_t dst_ep,
                                                 zb_uint8_t src_ep,
                                                 zb_zcl_metering_get_snapshot_payload_t *payload,
@@ -2153,7 +2153,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_snapshot(zb_uint8_t param, zb_addr_u *dst
  * @param payload - Packet payload (ref to @ref zb_zcl_metering_get_sampled_data_payload_t).
  * @param cb - Callback which should be called when the ZCL stack receives APS ack.
  */
-zb_void_t zb_zcl_metering_send_cmd_get_sampled_data(zb_uint8_t param, zb_addr_u *dst_addr,
+void zb_zcl_metering_send_cmd_get_sampled_data(zb_uint8_t param, zb_addr_u *dst_addr,
                                                     zb_aps_addr_mode_t dst_addr_mode, zb_uint8_t dst_ep,
                                                     zb_uint8_t src_ep,
                                                     zb_zcl_metering_get_sampled_data_payload_t *payload,
@@ -2171,7 +2171,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data(zb_uint8_t param, zb_addr_u 
  * @param payload - Packet payload (ref to @ref zb_zcl_metering_request_fast_poll_mode_payload_t).
  * @param cb - Callback which should be called when the ZCL stack receives APS ack.
  */
-zb_void_t zb_zcl_metering_send_cmd_request_fast_poll_mode(zb_uint8_t param, zb_addr_u *dst_addr,
+void zb_zcl_metering_send_cmd_request_fast_poll_mode(zb_uint8_t param, zb_addr_u *dst_addr,
                                                           zb_aps_addr_mode_t dst_addr_mode, zb_uint8_t dst_ep,
                                                           zb_uint8_t src_ep,
                                                           zb_zcl_metering_request_fast_poll_mode_payload_t *payload,
@@ -2189,7 +2189,7 @@ zb_void_t zb_zcl_metering_send_cmd_request_fast_poll_mode(zb_uint8_t param, zb_a
  * @param payload - Packet payload (ref to @ref zb_zcl_metering_get_profile_payload_t).
  * @param cb - Callback which should be called when the ZCL stack receives APS ack.
  */
-zb_void_t zb_zcl_metering_send_cmd_get_profile(zb_uint8_t param, zb_addr_u *dst_addr,
+void zb_zcl_metering_send_cmd_get_profile(zb_uint8_t param, zb_addr_u *dst_addr,
                                                zb_aps_addr_mode_t dst_addr_mode, zb_uint8_t dst_ep,
                                                zb_uint8_t src_ep, zb_zcl_metering_get_profile_payload_t *payload,
                                                zb_callback_t cb);
@@ -2206,7 +2206,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_profile(zb_uint8_t param, zb_addr_u *dst_
  * @param pl - Packet payload (ref to @ref zb_zcl_metering_publish_snapshot_payload_t).
  * @param cb - Callback which should be called when the ZCL stack receives APS ack.
  */
-zb_void_t zb_zcl_metering_send_cmd_publish_snapshot(zb_uint8_t param, const zb_addr_u *dst_addr,
+void zb_zcl_metering_send_cmd_publish_snapshot(zb_uint8_t param, const zb_addr_u *dst_addr,
                                                     enum zb_aps_addr_mode_e dst_addr_mode, zb_uint8_t dst_ep,
                                                     zb_uint8_t src_ep,
                                                     const zb_zcl_metering_publish_snapshot_payload_t *pl,
@@ -2227,7 +2227,7 @@ zb_void_t zb_zcl_metering_send_cmd_publish_snapshot(zb_uint8_t param, const zb_a
  * @param tsn - transaction sequence number of response
  * @param cb - Callback which should be called when the ZCL stack receives APS ack.
  */
-zb_void_t zb_zcl_metering_send_cmd_request_fast_poll_mode_response(zb_uint8_t param, const zb_addr_u *dst_addr,
+void zb_zcl_metering_send_cmd_request_fast_poll_mode_response(zb_uint8_t param, const zb_addr_u *dst_addr,
                                                                    enum zb_aps_addr_mode_e dst_addr_mode, zb_uint8_t dst_ep,
                                                                    zb_uint8_t src_ep,
                                                                    const zb_zcl_metering_request_fast_poll_mode_response_payload_t *pl,
@@ -2248,7 +2248,7 @@ zb_void_t zb_zcl_metering_send_cmd_request_fast_poll_mode_response(zb_uint8_t pa
  * @param tsn - transaction sequence number of response
  * @param cb - Callback which should be called when the ZCL stack receives APS ack.
  */
-zb_void_t zb_zcl_metering_send_cmd_get_profile_response(zb_uint8_t param, const zb_addr_u *dst_addr,
+void zb_zcl_metering_send_cmd_get_profile_response(zb_uint8_t param, const zb_addr_u *dst_addr,
                                                         enum zb_aps_addr_mode_e dst_addr_mode, zb_uint8_t dst_ep,
                                                         zb_uint8_t src_ep, const zb_zcl_metering_get_profile_response_payload_t *pl,
                                                         zb_uint8_t pl_size, zb_uint8_t tsn, zb_callback_t cb);
@@ -2268,7 +2268,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_profile_response(zb_uint8_t param, const 
  * @param tsn - transaction sequence number of response
  * @param cb - Callback which should be called when the ZCL stack receives APS ack.
  */
-zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const zb_addr_u *dst_addr,
+void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const zb_addr_u *dst_addr,
                                                              enum zb_aps_addr_mode_e dst_addr_mode, zb_uint8_t dst_ep,
                                                              zb_uint8_t src_ep,
                                                              const zb_zcl_metering_get_sampled_data_response_payload_t *pl,
@@ -2353,7 +2353,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
    ZB_ZCL_ATTR_METERING_CURRENT_SUMMATION_DELIVERED_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U48,                                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                               \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_STATUS_ID(data_ptr)                      \
@@ -2361,7 +2361,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
   ZB_ZCL_ATTR_METERING_STATUS_ID,                                                            \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                               \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_UNIT_OF_MEASURE_ID(data_ptr)             \
@@ -2369,7 +2369,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
   ZB_ZCL_ATTR_METERING_UNIT_OF_MEASURE_ID,                                                   \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_SUMMATION_FORMATTING_ID(data_ptr)        \
@@ -2377,7 +2377,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
   ZB_ZCL_ATTR_METERING_SUMMATION_FORMATTING_ID,                                              \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_METERING_DEVICE_TYPE_ID(data_ptr)        \
@@ -2385,7 +2385,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
   ZB_ZCL_ATTR_METERING_METERING_DEVICE_TYPE_ID,                                              \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_INSTANTANEOUS_DEMAND_ID(data_ptr)        \
@@ -2393,7 +2393,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
   ZB_ZCL_ATTR_METERING_INSTANTANEOUS_DEMAND_ID,                                              \
   ZB_ZCL_ATTR_TYPE_S24,                                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                               \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_DEMAND_FORMATTING_ID(data_ptr)           \
@@ -2401,7 +2401,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
   ZB_ZCL_ATTR_METERING_DEMAND_FORMATTING_ID,                                                 \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_HISTORICAL_CONSUMPTION_FORMATTING_ID(data_ptr)      \
@@ -2409,7 +2409,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
   ZB_ZCL_ATTR_METERING_HISTORICAL_CONSUMPTION_FORMATTING_ID,                                 \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_MULTIPLIER_ID(data_ptr)                  \
@@ -2417,7 +2417,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
   ZB_ZCL_ATTR_METERING_MULTIPLIER_ID,                                                        \
   ZB_ZCL_ATTR_TYPE_U24,                                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_DIVISOR_ID(data_ptr)                     \
@@ -2425,7 +2425,7 @@ zb_void_t zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, c
   ZB_ZCL_ATTR_METERING_DIVISOR_ID,                                                           \
   ZB_ZCL_ATTR_TYPE_U24,                                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (zb_voidp_t) data_ptr                                                                      \
+  (void*) data_ptr                                                                      \
 }
 
 
@@ -2531,8 +2531,8 @@ typedef struct zb_zcl_metering_attrs_s
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 
-zb_void_t zb_zcl_metering_init_server(void);
-zb_void_t zb_zcl_metering_init_client(void);
+void zb_zcl_metering_init_server(void);
+void zb_zcl_metering_init_client(void);
 
 
 #define ZB_ZCL_CLUSTER_ID_METERING_SERVER_ROLE_INIT zb_zcl_metering_init_server

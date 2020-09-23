@@ -213,14 +213,32 @@ constants etc.
 /* #endif */
 #endif /* ZB_ZCL_SUPPORT_CLUSTER_WWAH */
 
-#ifdef ZB_SUBGHZ_MODE
-#define ZB_R22_MULTIMAC
+/*
+ * Use vendor file to define build for the desired band:
+ *
+ * ZB_R22_MULTIMAC_MODE - 2.4GHz band and Sub-GHz band supported
+ * ZB_SUBGHZ_ONLY_MODE  - only Sub-GHz band supported
+ * Nothing of above     - only 2.4GHz band supported
+ */
+#if defined ZB_SUBGHZ_ONLY_MODE && defined ZB_R22_MULTIMAC_MODE
+#error ZB_SUBGHZ_ONLY_MODE && ZB_R22_MULTIMAC_MODE defined!
+#endif /* ZB_SUBGHZ_ONLY_MODE && ZB_R22_MULTIMAC_MODE */
+
+#if defined ZB_SUBGHZ_ONLY_MODE || defined ZB_R22_MULTIMAC_MODE
+/* Sub-GHz is used without reference to 2.4GHz band enabled */
+#define ZB_SUBGHZ_BAND_ENABLED
+
+/* Current Sub-GHz properties */
 #define ZB_MAC_DUTY_CYCLE_MONITORING
 #define ZB_SUB_GHZ_LBT
-#define ZB_FILTER_OUT_CLUSTERS
+#define ZB_ENHANCED_BEACON_SUPPORT
+#define ZB_JOINING_LIST_SUPPORT
+#define ZB_SUB_GHZ_ZB30_SUPPORT
 #define ZB_MAC_POWER_CONTROL
+#define ZB_FILTER_OUT_CLUSTERS
 #define ZB_ZCL_SUPPORT_CLUSTER_SUBGHZ
-#endif
+
+#endif /* ZB_SUBGHZ_ONLY_MODE || ZB_R22_MULTIMAC_MODE */
 
 /**
    Number of frames in GPFS (repeated frames with same mac seq number)
@@ -312,7 +330,15 @@ Ideally should rework the whole zb_config.h to suit better for that new concept.
 /* #define ZB_TRANSCEIVER_ALL_CHANNELS_MASK   (0xffff << 11) */ /* 0000.0111 1111.1111 1111.1000 0000.0000*/
 /* C51 doesn't like long shifts, it just cut last two bytes. (11-26) */
 /* TODO: Remove old subgig definitions */
+#if defined ZB_SUBGHZ_BAND_ENABLED
+#define ZB_TRANSCEIVER_ALL_CHANNELS_MASK   0x07FFF800     /* 11-26 for compatibility with 2.4Ghz*/
+#define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE28 0xE7FFFFFF
+#define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE29 0xE80001FF
+#define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE30 0xF7FFFFFF
+#define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE31 0xFFFFFFFF
+#else
 #define ZB_TRANSCEIVER_ALL_CHANNELS_MASK   0x07FFF800 /* 0000.0111 1111.1111 1111.1000 0000.0000*/
+#endif /* !ZB_SUBGHZ_BAND_ENABLED */
 
 #define MAC_DEVICE_TABLE_SIZE 4
 
@@ -401,11 +427,6 @@ Ideally should rework the whole zb_config.h to suit better for that new concept.
 #endif  /* ZB_DEFAULT_APS_CHANNEL_MASK */
 /** @} */ /* ZB_CONFIG */
 
-
-//**
-//   If defined, do not compile some features, even Mandatory, to fit into 64k ROM at 2410/64k device in Keil debug build.
-//*/
-//#define ZB_LIMITED_FEATURES
 
 /*  PRO stack specific details */
 /**
@@ -791,11 +812,23 @@ ZB_ED_RX_OFF_WHEN_IDLE
 */
 #define ZB_DEFAULT_SCAN_DURATION 3
 
+#ifdef ZB_SUBGHZ_BAND_ENABLED
+/** @cond DOXYGEN_SUBGHZ_SECTION */
+/* as defined in D.7 of Zigbee/r22 */
+#else
+#define ZB_DEFAULT_SCAN_DURATION_SUB_GHZ ZB_DEFAULT_SCAN_DURATION
+/** @endcond */ /* DOXYGEN_SUBGHZ_SECTION */
+#endif /* !ZB_SUBGHZ_BAND_ENABLED */
 
 #else  /* ZB_TRACE_LEVEL */
 
 #define ZB_DEFAULT_SCAN_DURATION 5
 
+#if defined ZB_SUBGHZ_BAND_ENABLED
+#define ZB_DEFAULT_SCAN_DURATION_SUB_GHZ 7
+#else
+#define ZB_DEFAULT_SCAN_DURATION_SUB_GHZ ZB_DEFAULT_SCAN_DURATION
+#endif /* !ZB_SUBGHZ_BAND_ENABLED */
 
 #endif /*ZB_TRACE_LEVEL*/
 
@@ -859,7 +892,11 @@ ZB_ED_RX_OFF_WHEN_IDLE
 /**
    Size of channel list structure
 */
+#if defined ZB_SUBGHZ_BAND_ENABLED
+#define ZB_CHANNEL_PAGES_NUM 5
+#else
 #define ZB_CHANNEL_PAGES_NUM 1
+#endif  /* !ZB_SUBGHZ_BAND_ENABLED */
 
 /** @cond DOXYGEN_SE_SECTION */
 /** Maximum channel pages number according to the Zigbee revision 22 specification */
@@ -875,7 +912,8 @@ CSMA-CA algorithm. See
 explanation of the backoff
 exponent.
  */
-#define ZB_MAC_MIN_BE 3
+/* As defined in D.6 Zigbee/r22 spec */
+#define ZB_MAC_MIN_BE 5
 
  /**
 The maximum value of the
@@ -885,7 +923,9 @@ CSMA-CA algorithm. See
 explanation of the backoff
 exponent.
  */
-#define ZB_MAC_MAX_BE 5
+/* As defined in D.6 Zigbee/r22 spec */
+#define ZB_MAC_MAX_BE 8
+
 /*! @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #ifdef ZB_MAC_POLL_INDICATION_CALLS_REDUCED
@@ -1030,6 +1070,7 @@ exponent.
 #endif /* ZB_CHECK_OOM_STATUS */
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
+#if defined ZB_JOINING_LIST_SUPPORT
 /** @cond DOXYGEN_JOINING_LIST_SECTION */
 #define ZB_JOINING_LIST_Q_SIZE 5
 #define ZB_JOINING_LIST_RESP_ITEMS_LIMIT 9
@@ -1037,6 +1078,7 @@ exponent.
 /* default value for mibIeeeExpiryInterval, in minutes */
 #define ZB_JOINING_LIST_DEFAULT_EXPIRY_INTERVAL 5
 /** @endcond */ /* DOXYGEN_JOINING_LIST_SECTION */
+#endif /* ZB_JOINING_LIST_SUPPORT */
 
 /***************************HA and ZLL FEATURES**********************/
 /** @cond DOXYGEN_INTERNAL_DOC */
@@ -1160,16 +1202,16 @@ exponent.
 
 /************************Special modes for testing*******************/
 
-#ifdef DEBUG
-#if !defined ZB_LIMITED_FEATURES && !defined ZB_TEST_PROFILE && !defined xZB_TEST_PROFILE
-#ifdef ZB_CERTIFICATION_HACKS
+#if defined DEBUG && defined ZB_CERTIFICATION_HACKS
+
 /**
  * This define turns on/off test profile
  */
+#if !defined ZB_TEST_PROFILE
 #define ZB_TEST_PROFILE
 #endif
-#endif /*ZB_LIMITED_FEATURES*/
-#endif /*DEBUG*/
+
+#endif /* DEBUG && ZB_CERTIFICATION_HACKS */
 
 
 /* Testing mode for some pro certification tests */
@@ -1263,11 +1305,14 @@ exponent.
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 /* MAC */
 /* TODO: add MAC properties here */
+
+#if defined ZB_JOINING_LIST_SUPPORT
 /** @cond DOXYGEN_JOINING_LIST_SECTION */
 #ifndef MAC_JOINING_LIST_SIZE_LIMIT
 #define MAC_JOINING_LIST_SIZE_LIMIT 16
 #endif
 /** @endcond */ /* DOXYGEN_JOINING_LIST_SECTION */
+#endif /* ZB_JOINING_LIST_SUPPORT */
 
 /***** GREEN POWER *****/
 

@@ -521,7 +521,7 @@ typedef struct zb_zcl_messaging_get_last_message_response_s {
  * @par Usage
  * @n Example of sending ZB_ZCL_MESSAGING_CLI_CMD_GET_LAST_MESSAGE "GetLastMessage" command
  */
-zb_void_t zb_zcl_messaging_send_get_last_msg(zb_uint8_t param,
+void zb_zcl_messaging_send_get_last_msg(zb_uint8_t param,
                                              const zb_addr_u *dst_addr,
                                              enum zb_aps_addr_mode_e dst_addr_mode,
                                              zb_uint8_t dst_ep,
@@ -543,7 +543,7 @@ zb_void_t zb_zcl_messaging_send_get_last_msg(zb_uint8_t param,
  * @par Usage
  * @n Handle @ref ZB_ZCL_MESSAGING_CLI_CMD_GET_LAST_MESSAGE "GetLastMessage" command
  */
-zb_void_t zb_zcl_messaging_send_display_msg(zb_uint8_t param,
+void zb_zcl_messaging_send_display_msg(zb_uint8_t param,
                                             const zb_addr_u *dst_addr,
                                             enum zb_aps_addr_mode_e dst_addr_mode,
                                             zb_uint8_t dst_ep,
@@ -562,7 +562,7 @@ zb_void_t zb_zcl_messaging_send_display_msg(zb_uint8_t param,
  * @param payload - Packet payload (@ref zb_zcl_messaging_message_confirm_payload_t).
  * @param cb - Callback which should be called when the ZCL stack receives APS ack.
  */
-zb_void_t zb_zcl_messaging_send_msg_confirmation(zb_uint8_t param,
+void zb_zcl_messaging_send_msg_confirmation(zb_uint8_t param,
                                             const zb_addr_u *dst_addr,
                                             enum zb_aps_addr_mode_e dst_addr_mode,
                                             zb_uint8_t dst_ep,
@@ -581,7 +581,7 @@ zb_void_t zb_zcl_messaging_send_msg_confirmation(zb_uint8_t param,
  * @param payload - Packet payload (@ref zb_zcl_messaging_cancel_message_payload_t).
  * @param cb - Callback which should be called when the ZCL stack receives APS ack.
  */
-zb_void_t zb_zcl_messaging_send_cancel_msg(zb_uint8_t param,
+void zb_zcl_messaging_send_cancel_msg(zb_uint8_t param,
                                            const zb_addr_u *dst_addr,
                                            enum zb_aps_addr_mode_e dst_addr_mode,
                                            zb_uint8_t dst_ep,
@@ -615,8 +615,8 @@ zb_void_t zb_zcl_messaging_send_cancel_msg(zb_uint8_t param,
 
 /** @cond internals_doc */
 
-zb_void_t zb_zcl_messaging_init_server(void);
-zb_void_t zb_zcl_messaging_init_client(void);
+void zb_zcl_messaging_init_server(void);
+void zb_zcl_messaging_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_MESSAGING_SERVER_ROLE_INIT zb_zcl_messaging_init_server
 #define ZB_ZCL_CLUSTER_ID_MESSAGING_CLIENT_ROLE_INIT zb_zcl_messaging_init_client
 

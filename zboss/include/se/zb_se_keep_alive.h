@@ -97,7 +97,7 @@ enum zb_zcl_keep_alive_attr_e
   ZB_ZCL_ATTR_KEEP_ALIVE_TC_KEEP_ALIVE_BASE_ID,                                         \
   ZB_ZCL_ATTR_TYPE_U8,                                                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                        \
-  (zb_voidp_t) data_ptr                                                                \
+  (void*) data_ptr                                                                \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_KEEP_ALIVE_TC_KEEP_ALIVE_JITTER_ID(data_ptr) \
@@ -105,7 +105,7 @@ enum zb_zcl_keep_alive_attr_e
   ZB_ZCL_ATTR_KEEP_ALIVE_TC_KEEP_ALIVE_JITTER_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                                \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                        \
-  (zb_voidp_t) data_ptr                                                                \
+  (void*) data_ptr                                                                \
 }
 
 /** @internal @brief Declare attribute list for Keep-Alive cluster

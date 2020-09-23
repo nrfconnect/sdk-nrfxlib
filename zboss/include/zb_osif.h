@@ -98,6 +98,10 @@ zb_osif_platform.h is different in different platforms repo.
 //#define ZB_PLATFORM_INIT()
 #endif
 
+#ifndef ZB_OSIF_IS_EXIT
+#define ZB_OSIF_IS_EXIT() 0
+#endif
+
 /* Default (C standard) definition of MAIN() if not redefined in zb_osif_platform.h */
 #ifndef MAIN
 #define MAIN() int main(int argc, char *argv[])
@@ -299,6 +303,7 @@ void zb_osif_serial_put_bytes(zb_uint8_t *buf, zb_short_t len);
 
 #ifdef ZB_TRACE_OVER_JTAG
 void zb_osif_jtag_put_bytes(zb_uint8_t *buf, zb_short_t len);
+void zb_osif_jtag_flush(void);
 #endif
 
 /*! @} */
@@ -309,12 +314,14 @@ void zb_osif_jtag_put_bytes(zb_uint8_t *buf, zb_short_t len);
 #ifdef ZB_TRACE_OVER_SIF
 void zb_osif_sif_put_bytes(zb_uint8_t *buf, zb_short_t len);
 void zb_osif_sif_init(void);
-zb_void_t zb_osif_sif_debug_trace(zb_uint8_t param);
+void zb_osif_sif_debug_trace(zb_uint8_t param);
 #endif
 
 #ifdef ZB_HAVE_FILE
 /* File  */
 zb_uint32_t zb_osif_get_file_size(zb_char_t *name);
+zb_bool_t zb_osif_check_dir_exist(const zb_char_t *name);
+int zb_osif_create_dir(const zb_char_t *name);
 zb_bool_t zb_osif_check_file_exist(const zb_char_t *name, const zb_uint8_t mode);
 void zb_osif_file_copy(const zb_char_t *name_src, const zb_char_t *name_dst);
 zb_osif_file_t *zb_osif_file_open(const zb_char_t *name, const zb_char_t *mode);
@@ -341,6 +348,7 @@ enum zb_file_path_base_type_e
   ZB_FILE_PATH_BASE_ROMFS_BINARIES,    /* ROM FS */  /* elf binaries, etc */
   ZB_FILE_PATH_BASE_MNTFS_BINARIES,    /* RW FS */   /* prod config, etc */
   ZB_FILE_PATH_BASE_MNTFS_USER_DATA,   /* RW FS */   /* nvram. etc */
+  ZB_FILE_PATH_BASE_MNTFS_TRACE_LOGS,  /* RW FS */
   ZB_FILE_PATH_BASE_RAMFS_UNIX_SOCKET, /* RAM FS */
   ZB_FILE_PATH_BASE_RAMFS_TRACE_LOGS,  /* RAM FS */
   ZB_FILE_PATH_BASE_RAMFS_TMP_DATA,    /* RAM FS */
@@ -379,6 +387,16 @@ void zb_file_path_get_with_postfix(zb_uint8_t base_type, const char *default_bas
     ZB_ASSERT(sn_ret < ZB_MAX_FILE_PATH_SIZE); \
   }
 #endif  /* ZB_FILE_PATH_MGMNT */
+
+#ifdef ZB_USE_LOGFILE_ROTATE
+zb_uint32_t zb_osif_get_max_logfile_size(void);
+zb_ret_t zb_osif_set_max_logfile_size(zb_uint32_t val);
+
+zb_uint32_t zb_osif_get_max_logfiles_count(void);
+zb_ret_t zb_osif_set_max_logfiles_count(zb_uint32_t val);
+
+zb_ret_t zb_osif_file_rotate(const zb_char_t *file_path, const zb_char_t *file_name);
+#endif /* ZB_USE_LOGFILE_ROTATE */
 #endif /* ZB_HAVE_FILE */
 
 /*! \addtogroup zb_platform */
@@ -387,8 +405,8 @@ void zb_file_path_get_with_postfix(zb_uint8_t base_type, const char *default_bas
 /**
    Platform dependent soft reset
 */
-zb_void_t zb_reset(zb_uint8_t param);
-zb_void_t zb_syslog_msg(const zb_char_t *msg);
+void zb_reset(zb_uint8_t param);
+void zb_syslog_msg(const zb_char_t *msg);
 
 /*! @} */
 
@@ -401,9 +419,6 @@ zb_void_t zb_syslog_msg(const zb_char_t *msg);
  *  @param s_direction [OUT] - stack growing direction (ZB_TRUE - UP, ZB_FALSE - DOWN).
  */
 void zb_osif_get_stack(zb_uint8_t **s_head, zb_uint32_t *s_size, zb_uint8_t *s_direction);
-
-void osif_set_reset_at_crash(void);
-void osif_handle_crash(void);
 
 #if defined ZB_USE_NVRAM || defined doxygen
 /**
@@ -658,7 +673,7 @@ zb_bool_t zb_osif_ota_verify_integrity_async(void *dev, zb_uint32_t raw_len);
  *
  * @param integrity_is_ok - is verification of OTA image recording successfull
  */
-zb_void_t zb_osif_ota_verify_integrity_done(zb_uint8_t integrity_is_ok);
+void zb_osif_ota_verify_integrity_done(zb_uint8_t integrity_is_ok);
 
 /**
  * Read OTA image data from flash.
@@ -709,7 +724,7 @@ zb_uint8_t *zb_osif_ota_srv_get_image_header(void *dev);
  * Fill stack area with a predefined pattern.
  *
  */
-zb_void_t zb_stack_profiler_pre(void);
+void zb_stack_profiler_pre(void);
 
 /**
  * @brief Get stack usage by previously called function.
@@ -723,7 +738,7 @@ zb_uint16_t zb_stack_profiler_usage(void);
 
 #ifdef ZB_USE_SLEEP
 zb_uint32_t zb_osif_sleep(zb_uint32_t sleep_tmo);
-zb_void_t zb_osif_wake_up(void);
+void zb_osif_wake_up(void);
 #endif
 
 #ifdef ZB_PRODUCTION_CONFIG

@@ -676,14 +676,14 @@ void zb_set_network_ed_role_legacy(zb_uint32_t channel_mask);
 
 /**
    Initiate device as a Zigbee 3.0 BDB coordinator with channel list.
-   Provides functionality to set mask for 2.4 GHz or Sub-GHz page.
+   Provides functionality to set mask for Sub-GHz and 2.4GHz page.
    @param channel_list - Zigbee channels list
 */
 void zb_set_network_coordinator_role_ext(zb_channel_list_t channel_list);
 
 /**
    Initiate device as a Zigbee 3.0 BDB End Device with channel list.
-   Provides functionality to set mask for 2.4 GHz or Sub-GHz page.
+   Provides functionality to set mask for Sub-GHz and 2.4GHz page.
    @param channel_list - Zigbee channels list
 */
 void zb_set_network_ed_role_ext(zb_channel_list_t channel_list);
@@ -702,6 +702,12 @@ void zb_set_network_ed_role_ext(zb_channel_list_t channel_list);
  * @return - zb_nwk_device_type_t device_role_id
  */
 zb_nwk_device_type_t zb_get_network_role(void);
+
+/**
+ * Returns the maximum number of children allowed
+ */
+zb_uint8_t zb_get_max_children(void);
+
 
 /*! @} */ /* zb_general_get */
 
@@ -1132,7 +1138,279 @@ void zb_sleep_now(void);
 /*! @endcond */ /* DOXYGEN_LL_SECTION */
 #endif /* ZB_USE_SLEEP */
 
+#if defined ZB_JOINING_LIST_SUPPORT
 
+/**
+ *  \addtogroup zdo_joining_lists
+ *  @{
+ *    @details
+ *    The API executes only one operation at a time.
+ *    It is necessary to account for that, issuing another operation
+ *    only on completion of the previous one. See examples.
+ */
+
+
+
+/** Parameters for @ref zb_ieee_joining_list_add. */
+typedef ZB_PACKED_PRE struct zb_ieee_joining_list_add_params_s
+{
+  zb_callback_t callback;   /**< Callback to be scheduled on completion of adding. */
+
+  zb_ieee_addr_t address;   /**< 64-bit address to add. */
+
+} ZB_PACKED_STRUCT zb_ieee_joining_list_add_params_t;
+
+
+/** Parameters for @ref zb_ieee_joining_list_delete. */
+typedef ZB_PACKED_PRE struct zb_ieee_joining_list_delete_params_s
+{
+  zb_callback_t callback;  /**< Callback to be scheduled on completion of deleting. */
+
+  zb_ieee_addr_t address;  /**< 64-bit address to delete. */
+
+} ZB_PACKED_STRUCT zb_ieee_joining_list_delete_params_t;
+
+
+/** See table D-4 of Zigbee r22 spec. */
+typedef enum zb_mac_joining_policy_e
+{
+  ZB_MAC_JOINING_POLICY_ALL_JOIN = 0x0,       /* Any device is allowed to join. */
+  ZB_MAC_JOINING_POLICY_IEEELIST_JOIN = 0x1, /* Only devices on the mibJoiningIeeeList are allowed to join.*/
+  ZB_MAC_JOINING_POLICY_NO_JOIN = 0x2       /* No device is allowed to join. */
+} zb_mac_joining_policy_t;
+
+
+/** Parameters for @ref zb_ieee_joining_list_clear. */
+typedef ZB_PACKED_PRE struct zb_ieee_joining_list_clear_params_s
+{
+  zb_callback_t callback;  /**< Callback to be scheduled on completion
+                              of clearing IEEE joining list. */
+
+  zb_mac_joining_policy_t new_joining_policy;   /**< Joining list policy to set on the emptied list.
+                                                   See @ref zb_mac_joining_policy_t for possible
+                                                   values.*/
+
+} ZB_PACKED_STRUCT zb_ieee_joining_list_clear_params_t;
+
+
+/** Parameters for @ref zb_ieee_joining_list_set_policy. */
+typedef ZB_PACKED_PRE struct zb_ieee_joining_list_set_policy_s
+{
+  zb_callback_t callback;  /**< Callback to be scheduled on completion
+                              of updating IEEE joining list policy. */
+
+  zb_mac_joining_policy_t new_joining_policy;   /**< Joining list policy to set on the emptied list.
+                                                   See @ref zb_mac_joining_policy_t for possible
+                                                   values.*/
+
+} ZB_PACKED_STRUCT zb_ieee_joining_list_set_policy_t;
+
+
+/** Parameters for @ref zb_ieee_joining_list_announce. */
+typedef ZB_PACKED_PRE struct zb_ieee_joining_list_announce_s
+{
+  zb_callback_t callback;   /**< Callback to be scheduled on completion
+                               of clearing IEEE joining list. */
+
+  zb_bool_t silent;         /**< If set to ZB_TRUE, no broadcast happens. */
+} ZB_PACKED_STRUCT zb_ieee_joining_list_announce_t;
+
+
+/** Parameters for @ref zb_ieee_joining_list_request. */
+typedef ZB_PACKED_PRE struct zb_ieee_joining_list_request_s
+{
+  zb_callback_t callback;   /**< Callback to be scheduled on completion of the operation. */
+} ZB_PACKED_STRUCT zb_ieee_joining_list_request_t;
+
+
+/* Result statuses of joining list management operations */
+typedef enum zb_ieee_joining_list_result_status_e
+{
+  ZB_IEEE_JOINING_LIST_RESULT_OK,                       /**< Operation completed successfully. */
+
+  ZB_IEEE_JOINING_LIST_RESULT_INTERNAL_ERROR,          /**< Operation failed due to problems
+                                                           within ZBOSS. */
+
+  ZB_IEEE_JOINING_LIST_RESULT_BAD_RESPONSE,             /**< Operation failed due to incorrect
+                                                           behavior of the opposite side. */
+
+  ZB_IEEE_JOINING_LIST_RESULT_PERMISSION_DENIED,        /**< Basic conditions for execution of
+                                                           the operation are not satisfied
+                                                           (for example, it must be used by
+                                                           routers only, etc). */
+
+  ZB_IEEE_JOINING_LIST_RESULT_RESTART_LATER,            /**< The situation forces the command to be
+                                                           restarted.*/
+
+	ZB_IEEE_JOINING_LIST_RESULT_INSUFFICIENT_SPACE        /**< The device does not have storage space
+	                                                           to support the requested operation. */
+
+} zb_ieee_joining_list_result_status_t;
+
+
+/** Structure passed as a parameter to operation completion callbacks. */
+typedef ZB_PACKED_PRE struct zb_ieee_joining_list_result_s
+{
+  zb_ieee_joining_list_result_status_t status;
+} ZB_PACKED_STRUCT zb_ieee_joining_list_result_t;
+
+/**
+ * Add an address to IEEE joining list.
+ *
+ * For coordinators only.
+ *
+ * @param param - Reference to buffer containing @ref zb_ieee_joining_list_add_params_t structure as a parameter.
+ *
+ * @b Example:
+   @code
+
+void function_add_cb(zb_uint8_t param)
+{
+  zb_ieee_joining_list_result_t *res;
+  zb_bufid_t buf = ZB_GET_BUF_FROM_REF(param);
+
+  res = ZB_BUF_GET_PARAM(buf, zb_ieee_joining_list_result_t);
+  if (res->status == ZB_IEEE_JOINING_LIST_RESULT_OK)
+  {
+    // Address has been added
+  }
+
+  zb_free_buf(buf);
+}
+
+// 00:00:00:00:00:00:0E:01
+static zb_ieee_addr_t new_addr = {0x01, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+void function_add(zb_uint8_t param)
+{
+  zb_ieee_joining_list_add_params_t *add_params;
+  zb_bufid_t buf = ZB_GET_BUF_FROM_REF(param);
+
+  add_params = ZB_BUF_GET_PARAM(buf, zb_ieee_joining_list_set_policy_t);
+  ZB_MEMCPY(add_params->address, &new_addr, sizeof(new_addr));
+  add_params->callback = &function_add_cb;
+
+  zb_ieee_joining_list_add(param);
+}
+   @endcode
+ */
+void zb_ieee_joining_list_add(zb_uint8_t param);
+
+
+/**
+ * Remove an address from IEEE joining list.
+ *
+ * For coordinators only.
+ *
+ * @param param - Reference to buffer containing @ref zb_ieee_joining_list_delete_params_t structure as a parameter.
+ */
+void zb_ieee_joining_list_delete(zb_uint8_t param);
+
+
+/**
+ * Clear IEEE joining list.
+ *
+ * For coordinators only.
+ *
+ * @param param - Reference to buffer containing @ref zb_ieee_joining_list_clear_params_t structure as a parameter.
+ *
+ * @b Example:
+   @code
+
+void function_clear_cb(zb_uint8_t param)
+{
+  zb_ieee_joining_list_result_t *res;
+  zb_bufid_t buf = ZB_GET_BUF_FROM_REF(param);
+
+  res = ZB_BUF_GET_PARAM(buf, zb_ieee_joining_list_result_t);
+  if (res->status == ZB_IEEE_JOINING_LIST_RESULT_OK)
+  {
+    // IEEE joining list is empty now
+  }
+
+  zb_free_buf(buf);
+}
+
+void function_clear(zb_uint8_t param)
+{
+  zb_ieee_joining_list_clear_params_t *clear_params;
+  zb_bufid_t buf = ZB_GET_BUF_FROM_REF(param);
+
+  clear_params = ZB_BUF_GET_PARAM(buf, zb_ieee_joining_list_clear_params_t);
+  clear_params->new_joining_policy = ZB_MAC_JOINING_POLICY_NO_JOIN;
+  clear_params->callback = &function_clear_cb;
+
+  zb_ieee_joining_list_clear(param);
+}
+   @endcode
+ */
+void zb_ieee_joining_list_clear(zb_uint8_t param);
+
+
+/**
+ * Set joining policy for IEEE joining list.
+ *
+ * For coordinators only.
+ *
+ * @param param - Reference to buffer containing @ref zb_ieee_joining_list_set_policy_t structure as a parameter.
+ *
+ * @b Example:
+   @code
+
+void function_policy_cb(zb_uint8_t param)
+{
+  zb_ieee_joining_list_result_t *res;
+  zb_bufid_t buf = ZB_GET_BUF_FROM_REF(param);
+
+  res = ZB_BUF_GET_PARAM(buf, zb_ieee_joining_list_result_t);
+  if (res->status == ZB_IEEE_JOINING_LIST_RESULT_OK)
+  {
+    // New policy has been set
+  }
+
+  zb_free_buf(buf);
+}
+
+void function_policy(zb_uint8_t param)
+{
+  zb_ieee_joining_list_set_policy_t *policy_params;
+  zb_bufid_t buf = ZB_GET_BUF_FROM_REF(param);
+
+  policy_params = ZB_BUF_GET_PARAM(buf, zb_ieee_joining_list_set_policy_t);
+  policy_params->new_joining_policy = ZB_MAC_JOINING_POLICY_NO_JOIN;
+  policy_params->callback = &function_policy_cb;
+
+  zb_ieee_joining_list_set_policy(param);
+}
+   @endcode
+ */
+void zb_ieee_joining_list_set_policy(zb_uint8_t param);
+
+
+/**
+ * Increases update_id, marks IEEE joining list as consistent and broadcasts changes.
+ *
+ * For coordinators only.
+ *
+ * @param param - Reference to buffer containing @ref zb_ieee_joining_list_announce_t structure as a parameter.
+ */
+void zb_ieee_joining_list_announce(zb_uint8_t param);
+
+
+/**
+ * Request IEEE joining list from the Trust Center.
+ *
+ * For routers only.
+ *
+ * If the Trust Center updates its list during zb_ieee_joining_list_request execution,
+ * zb_ieee_joining_list_request fails with ZB_IEEE_JOINING_LIST_RESULT_RESTART_LATER status.
+ *
+ * @param param - Reference to buffer containing @ref zb_ieee_joining_list_request_t structure as a parameter.
+ */
+void zb_ieee_joining_list_request(zb_uint8_t param);
+/*!@} */ /* zdo_joining_lists */
+
+#endif /* defined ZB_JOINING_LIST_SUPPORT */
 
 #ifdef ZB_SECURITY_INSTALLCODES
 /**

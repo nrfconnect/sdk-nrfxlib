@@ -58,7 +58,7 @@ typedef enum zb_aps_status_e
 {
   ZB_APS_STATUS_SUCCESS               = 0x00, /*!< A request has been executed
                                                 * successfully. */
-  ZB_APS_ASDU_TOO_LONG                = 0xa0, /*!< A transmit request failed since 
+  ZB_APS_ASDU_TOO_LONG                = 0xa0, /*!< A transmit request failed since
                                                the ASDU is too large and fragmentation
                                                is not supported.*/
   ZB_APS_DEFRAG_DEFERRED              = 0xa1, /* A received fragmented frame could not be
@@ -272,18 +272,20 @@ typedef struct zb_apsme_binding_req_s
                                         device that is to be bound to the destination device.*/
   zb_uint8_t      addr_mode;      /*!< The type of destination address supplied by
                                        the DstAddr parameter - see @ref zb_aps_addr_mode_e  */
-  zb_addr_u dst_addr;       /*!< The destination address for the binding entry. */
+  zb_addr_u       dst_addr;       /*!< The destination address for the binding entry. */
   zb_uint8_t      dst_endpoint;   /*!< This parameter will be present only if
                                        the DstAddrMode parameter has a value of
                                        0x03 and, if present, will be the
                                        destination endpoint for the binding entry.*/
+  zb_callback_t   confirm_cb;     /*!< The callback to be called when the operation is completed. */
 } zb_apsme_binding_req_t;
 
 /** @brief APSME-ADD-GROUP.request primitive parameters. */
 typedef struct zb_apsme_add_group_req_s
 {
-  zb_uint16_t group_address;    /*!< The 16-bit address of the group being added.  */
-  zb_uint8_t  endpoint;         /*!< The endpoint to which the given group is being added.  */
+  zb_uint16_t     group_address; /*!< The 16-bit address of the group being added.  */
+  zb_uint8_t      endpoint;      /*!< The endpoint to which the given group is being added.  */
+  zb_callback_t   confirm_cb;    /*!< The callback to be called when the operation is completed. */
 } zb_apsme_add_group_req_t;
 
 /** @brief APSME-ADD-GROUP.confirm primitive parameters. */
@@ -303,7 +305,8 @@ typedef struct zb_apsme_add_group_conf_s zb_apsme_remove_group_conf_t;
 /** @brief APSME-REMOVE-ALL-GROUPS.request primitive parameters.  */
 typedef struct zb_apsme_remove_all_groups_req_s
 {
-  zb_uint8_t  endpoint;         /*!< The endpoint to which the given group is being removed. */
+  zb_uint8_t    endpoint;      /*!< The endpoint to which the given group is being removed. */
+  zb_callback_t confirm_cb;    /*!< The callback to be called when the operation is completed. */
 } zb_apsme_remove_all_groups_req_t;
 
 /** @brief APSME-REMOVE-ALL-GROUPS.confirm primitive parameters.  */
@@ -384,9 +387,6 @@ void zb_apsme_unbind_all(zb_uint8_t param);
 
 /** @brief APSME-ADD-GROUP.request primitive.
   *
-  * @internal
-  * Use macro @ref ZDO_REGISTER_CALLBACK to register APSME-ADD-GROUP.confirm callback.
-  * @endinternal
   * @param param - index of buffer with parameter. See @ref zb_apsme_add_group_req_t.
   *
   * @par Example
@@ -534,4 +534,3 @@ void zb_aps_set_user_data_tx_cb(zb_aps_user_payload_callback_t cb);
 #endif /* #ifdef ZB_APS_USER_PAYLOAD */
 
 #endif /* #ifndef ZB_ZBOSS_API_APS_H */
- 

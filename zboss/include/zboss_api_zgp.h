@@ -100,28 +100,29 @@ typedef ZB_PACKED_PRE struct zb_zgpd_id_s
 } ZB_PACKED_STRUCT
 zb_zgpd_id_t;
 
-typedef struct zgp_attr_record_options_s
-{
-  zb_bitfield_t remaining_len:4;
-
-  /*
-  7344 The Reported sub-field is a Boolean flag which indicates if the attribute as identified by the AttributeID
-  7345 field is reported by the GPD in operation, or if it is background data required for processing of a report-
-  7346 ed attribute only conveyed once at commissioning time.
-
-  7350 If Reported = 0b1, Attribute Offset within Report field is present, otherwise it is absent
-  */
-  zb_bitfield_t reported:1;
-  zb_bitfield_t attr_val_present:1;
-  zb_bitfield_t reserved:2;
-}zgp_attr_record_options_t;
+#define ZGP_ATTR_OPT_GET_REMAINING_LEN(opt) ((opt) & 0xF)
+#define ZGP_ATTR_OPT_GET_REPORTED(opt)      (((opt) >> 4) & 0x1)
+#define ZGP_ATTR_OPT_GET_VAL_PRESENT(opt)   (((opt) >> 5) & 0x1)
 
 #define ZB_APP_DESCR_ATTR_VAL_SIZE 8
 typedef struct zgp_attr_record_s
 {
   zb_uint16_t id;
   zb_uint8_t  data_type;
-  zgp_attr_record_options_t options;
+
+  /*
+  zb_bitfield_t remaining_len:4;
+
+    7344 The Reported sub-field is a Boolean flag which indicates if the attribute as identified by the AttributeID
+    7345 field is reported by the GPD in operation, or if it is background data required for processing of a report-
+    7346 ed attribute only conveyed once at commissioning time.
+    7350 If Reported = 0b1, Attribute Offset within Report field is present, otherwise it is absent
+
+  zb_bitfield_t reported:1;
+  zb_bitfield_t attr_val_present:1;
+  zb_bitfield_t reserved:2;
+   */
+  zb_uint8_t  options;
 
   /*
   7358 The Attribute Offset within Report field, when present, carries the start position (in bytes) of the data
@@ -711,6 +712,11 @@ void zb_zgps_register_app_search_zgp_device_cb(zb_zgp_app_search_zgp_device_cb_t
 */
 #endif  /* ZB_ENABLE_ZGP_SINK */
 
+enum zb_zgpd_switch_type_e
+{
+  ZB_GPD_SWITCH_TYPE_BUTTON                        = 0b01,
+  ZB_GPD_SWITCH_TYPE_ROCKER                        = 0b10,
+};
 /********************************************************************/
 /********************* GPDF command IDs *****************************/
 /********************************************************************/
@@ -780,6 +786,9 @@ enum zb_zgpd_cmd_id_e
   ZB_GPDF_CMD_RELEASE_1_OF_1                       = 0x61,
   ZB_GPDF_CMD_PRESS_1_OF_2                         = 0x62,
   ZB_GPDF_CMD_RELEASE_1_OF_2                       = 0X63,
+
+  ZB_GPDF_CMD_8BIT_VECTOR_PRESS                    = 0X69,
+  ZB_GPDF_CMD_8BIT_VECTOR_RELEASE                  = 0X6A,
 
   ZB_GPDF_CMD_ATTR_REPORT                          = 0xA0,
   ZB_GPDF_CMD_MANUF_SPEC_ATTR_REPORT               = 0xA1,
@@ -1119,7 +1128,7 @@ typedef struct zb_gpdf_attr_report_fld_s
 {
   zb_uint16_t attr_id;   /**< Attribute ID specific to cluster */
   zb_uint8_t attr_type;  /**< Attribute type (see @ref zb_zcl_attr_type_t) */
-  zb_voidp_t data_p;     /**< Attribute data */
+  void* data_p;     /**< Attribute data */
 }
 zb_gpdf_attr_report_fld_t;
 
@@ -1512,6 +1521,13 @@ void zb_zgps_set_commissioning_exit_mode(zb_uint_t cem);
   */
 void zb_zgps_set_communication_mode(zgp_communication_mode_t mode);
 
+/* Override this function in app for handling 8-bit vector command (generic switch) */
+zb_ret_t zb_zgp_convert_8bit_vector(zb_uint8_t vector_8bit_cmd_id,      /* press or release cmd */
+                                    zb_uint8_t switch_type,             /* see zb_zgpd_switch_type_e */
+                                    zb_uint8_t num_of_contacs,
+                                    zb_uint8_t contact_status,
+                                    zb_uint8_t *zgp_cmd_out);
+
 #ifdef ZB_ENABLE_ZGP_DIRECT
 /**
    Set ZBOSS to skip all incoming GPDF.
@@ -1756,8 +1772,9 @@ typedef ZB_PACKED_PRE struct zgp_app_tbl_ent_s
 typedef struct zgp_runtime_app_tbl_ent_s
 {
   zb_uint8_t status; /* zgp_app_descr_status_t */
-  zb_uint8_t recieve_reports_num;
+  zb_uint8_t receive_reports_num;
   zb_uint8_t reply_buf;
+  zb_bool_t  need_reply;
   zgp_app_tbl_ent_t base;
 }zgp_runtime_app_tbl_ent_t;
 

@@ -112,7 +112,7 @@ enum zb_zcl_ias_ace_attr_e
   ZB_ZCL_ATTR_IAS_ACE_ZONE_TABLE_LENGTH_ID,             \
   ZB_ZCL_ATTR_TYPE_U8,                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ACE_ZONE_TABLE_ID(data_ptr) \
@@ -120,7 +120,7 @@ enum zb_zcl_ias_ace_attr_e
   ZB_ZCL_ATTR_IAS_ACE_ZONE_TABLE_ID,                    \
   ZB_ZCL_ATTR_TYPE_NULL,                                \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                          \
-  (zb_voidp_t) data_ptr                                 \
+  (void*) data_ptr                                 \
 }
 
 /*! @internal Number of attributes mandatory for reporting in IAS Ace cluster */
