@@ -3,6 +3,7 @@
 #
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
+include(common.cmake)
 
 set(NRFXLIB_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE PATH "NRFXLIB root directory")
 if (CONFIG_NFC_T2T_NRFXLIB OR

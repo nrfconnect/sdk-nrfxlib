@@ -26,26 +26,7 @@ target_include_directories(mbedtls_common INTERFACE
   ${generated_includes}
 )
 
-if(ARM_MBEDTLS_PATH)
-  # Do nothing, just use the provided path
-elseif(WEST)
-  ## Use `west` to find the mbedtls tree we use (this is not the
-  ## mbedtls tree distributed as a zephyr module).
-  execute_process(
-    COMMAND ${PYTHON_EXECUTABLE} -c
-    "from west.manifest import Manifest; manifest = Manifest.from_file(); print(manifest.get_projects(['mbedtls-nrf'])[0].posixpath)"
-    OUTPUT_VARIABLE
-    west_project_output
-    RESULT_VARIABLE
-    result
-  )
-  string(REGEX REPLACE "[\r\n]+" "" ARM_MBEDTLS_PATH "${west_project_output}")
-  if(${result})
-    message(FATAL_ERROR "Failed to find mbedtls, cannot build security libraries")
-  endif()
-else()
-  message(FATAL_ERROR "west not installed, please provide ARM_MBEDTLS_PATH to CMake to support security libraries")
-endif()
+get_mbedtls_dir(ARM_MBEDTLS_PATH)
 
 set(mbedcrypto_glue_include_path
   "${CMAKE_CURRENT_LIST_DIR}/include/mbedcrypto_glue/mbedtls"

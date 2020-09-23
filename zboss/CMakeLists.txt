@@ -4,8 +4,6 @@
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 
-include(${NRFXLIB_DIR}/common.cmake)
-
 # Define a separate interface library for Nordic's extensions to ZBOSS stack
 zephyr_interface_library_named(zboss-extensions)
 
