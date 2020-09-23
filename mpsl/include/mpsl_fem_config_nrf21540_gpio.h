@@ -10,7 +10,6 @@
  * @defgroup mpsl_fem_nrf21540_gpio MPSL nRF21540 GPIO Front End Module Configuration
  * @ingroup  mpsl_fem
  *
- * The MPSL nRF21540 GPIO Front End Module Configuration defines the configuration of the nRF21540 GPIO Front End Module.
  * @{
  */
 
@@ -25,32 +24,46 @@
 extern "C" {
 #endif
 
-/** @brief Configuration parameters for the PA/LNA interface in the nRF21540 GPIO variant
+/** @brief Configuration parameters for the Power Amplifier (PA) and Low Noise
+ *  Amplifier (LNA) interface in the nRF21540 GPIO variant.
  */
 typedef struct
 {
     struct
     {
-        uint32_t pa_time_gap_us;                  /**< Time between the activation of the PA pin and the start of the radio transmission. Should be no bigger than Radio Ramp-Up time. */
-        uint32_t lna_time_gap_us;                 /**< Time between the activation of the LNA pin and the start of the radio reception. Should be no bigger than Radio Ramp-Up time. */
-        uint32_t pdn_settle_us;                   /**< The time between activating the PDN pin and activating the PA/LNA pin. */
-        uint32_t trx_hold_us;                     /**< The time between deactivating the PA/LNA pin and deactivating the PDN pin. */
-        int8_t   pa_gain_db;                      /**< Configurable PA gain. Ignored if the amplifier is not supporting this feature. */
-        int8_t   lna_gain_db;                     /**< Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
-    }                            fem_config;      /**< Configuration structure of the nRF21540 GPIO. */
+        /**< Time between the activation of the PA pin and the start of the radio transmission.
+         *   Should be no bigger than Radio Ramp-Up time. */
+        uint32_t pa_time_gap_us;
+        /**< Time between the activation of the LNA pin and the start of the radio reception.
+         *   Should be no bigger than Radio Ramp-Up time. */
+        uint32_t lna_time_gap_us;
+        /**< The time between activating the PDN pin and activating the PA/LNA pin. */
+        uint32_t pdn_settle_us;
+        /**< The time between deactivating the PA/LNA pin and deactivating the PDN pin. */
+        uint32_t trx_hold_us;
+        /**< Configurable PA gain. Ignored if the amplifier is not supporting this feature. */
+        int8_t   pa_gain_db;
+        /**< Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
+        int8_t   lna_gain_db;
+      /**< Configuration structure of the nRF21540 GPIO Front End Module. */
+    } fem_config;
 
-    mpsl_fem_gpiote_pin_config_t pa_pin_config;   /**< Power Amplifier pin configuration. */
-    mpsl_fem_gpiote_pin_config_t lna_pin_config;  /**< Low Noise Amplifier pin configuration. */
-    mpsl_fem_gpiote_pin_config_t pdn_pin_config;  /**< Power Down pin configuration. */
+    /**< PA pin configuration. */
+    mpsl_fem_gpiote_pin_config_t pa_pin_config;
+    /**< LNA pin configuration. */
+    mpsl_fem_gpiote_pin_config_t lna_pin_config;
+    /**< PDN pin configuration. */
+    mpsl_fem_gpiote_pin_config_t pdn_pin_config;
 
-    uint8_t                      ppi_channels[3]; /**< Array of PPI which need to be provided to Front End Module to operate. */
+    /**< Array of PPI channels which need to be provided to Front End Module to operate. */
+    uint8_t                      ppi_channels[3];
 
 } mpsl_fem_nrf21540_gpio_interface_config_t;
 
 /** @brief Configures the PA and LNA device interface.
  *
  * This function sets device interface parameters for the PA/LNA module.
- * The module can then be used to control a power amplifier or a low noise amplifier (or both) through the given interface and resources.
+ * The module can then be used to control PA or LNA (or both) through the given interface and resources.
  *
  * The function also sets the PPI and GPIOTE channels to be configured for the PA/LNA interface.
  *
@@ -63,7 +76,7 @@ typedef struct
 int32_t mpsl_fem_nrf21540_gpio_interface_config_set(mpsl_fem_nrf21540_gpio_interface_config_t const * const p_config);
 
 /**
- * nRF21540 GPIO Front End Module Timings
+ * @brief nRF21540 GPIO Front End Module Timings
  */
 
 /** Time in microseconds when PA GPIO is activated before the radio is ready for transmission. */
@@ -79,9 +92,10 @@ int32_t mpsl_fem_nrf21540_gpio_interface_config_set(mpsl_fem_nrf21540_gpio_inter
 #define MPSL_FEM_NRF21540_GPIO_DEFAULT_TRX_HOLD_US            5
 
 /**
- * nRF21540 GPIO Front End Module Gains
+ * @brief nRF21540 GPIO Front End Module Gains
  *
- * The provided gains are the default gains. The actual gain may depend on the temperature and the configuration of the Front End Module.
+ * The provided gains are the default gains. The actual gain may depend on the
+ * temperature and the configuration of the Front End Module.
  * See the Objective Product Specification for more details.
  */
 
