@@ -3,66 +3,76 @@
 #
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
-include(${NRFXLIB_DIR}/common.cmake)
-nrfxlib_calculate_lib_path(lib_path)
+include(cmake/extensions.cmake)
 
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/extensions.cmake)
-
-function(checkOpenthreadVersion)
-  file(READ "${ZEPHYR_OPENTHREAD_MODULE_DIR}/../include/openthread/instance.h" INSTANCE_FILE_CONTENT)
-  string(REGEX MATCH "#define[ ]*OPENTHREAD_API_VERSION[ ]*\\(([0-9]+)\\)" MACRO_DEF "${INSTANCE_FILE_CONTENT}")
-  set(OPENTHREAD_SOURCE_API_VERSION ${CMAKE_MATCH_1})
-
-  file(READ "include/openthread/instance.h" INSTANCE_FILE_CONTENT)
-  string(REGEX MATCH "#define[ ]*OPENTHREAD_API_VERSION[ ]*\\(([0-9]+)\\)" MACRO_DEF "${INSTANCE_FILE_CONTENT}")
-  set(OPENTHREAD_LIB_API_VERSION ${CMAKE_MATCH_1})
-
-  #check if the Openthread API changed
-  if(NOT (${OPENTHREAD_SOURCE_API_VERSION} EQUAL ${OPENTHREAD_LIB_API_VERSION}))
-    message(WARNING "The Openthread source code version (${OPENTHREAD_SOURCE_API_VERSION}) is not equal to compiled Openthread library version (${OPENTHREAD_LIB_API_VERSION}).")
-  endif()
-endfunction()
+set(OPENTHREAD_LIB_MBEDTLS_CONF_FILE "nrf_security_mbedtls_configuration.txt")
 
 if(CONFIG_OPENTHREAD_SOURCES)
   message(DEBUG "Building OT from sources, config file will be generated.")
 
-  set(OPENTHREAD_CONFIG_FILE "${CMAKE_BINARY_DIR}/openthread_lib_configuration.txt")
+  set(OPENTHREAD_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/openthread_lib_configuration.txt")
 
   openthread_libs_configuration_write(${OPENTHREAD_CONFIG_FILE})
 
-  nrfxlib_calculate_lib_path(lib_path)
-  set(OPENTHREAD_DST_DIR "${CMAKE_CURRENT_LIST_DIR}/${lib_path}/v${CONFIG_OPENTHREAD_THREAD_VERSION}")
-  set(OPENTHREAD_HEADERS_DIR "${ZEPHYR_OPENTHREAD_MODULE_DIR}/../include")
+  openthread_calculate_lib_path("v${CONFIG_OPENTHREAD_THREAD_VERSION}" OPENTHREAD_DST_DIR)
 
-  add_custom_target(install_openthread_libraries
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${OPENTHREAD_DST_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ftd> "${OPENTHREAD_DST_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-mtd> "${OPENTHREAD_DST_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-radio> "${OPENTHREAD_DST_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-cli-ftd> "${OPENTHREAD_DST_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-cli-mtd> "${OPENTHREAD_DST_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ncp-ftd> "${OPENTHREAD_DST_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ncp-mtd> "${OPENTHREAD_DST_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-rcp> "${OPENTHREAD_DST_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-      ${OPENTHREAD_HEADERS_DIR}
-      ${NRFXLIB_DIR}/openthread/include
-    COMMAND ${CMAKE_COMMAND} -E copy
-     ${OPENTHREAD_CONFIG_FILE}
-     ${NRFXLIB_DIR}/openthread/
+  set(OPENTHREAD_HEADERS_DIR "${ZEPHYR_OPENTHREAD_MODULE_DIR}/include")
+  set(OPENTHREAD_HEADERS_DST_DIR "${NRFXLIB_DIR}/openthread/include")
+  set(OPENTHREAD_SYSTEM_H "${ZEPHYR_OPENTHREAD_MODULE_DIR}/examples/platforms/openthread-system.h")
+  set(NRF_SECURITY_MBEDTLS_CONFIG_FILE ${CMAKE_CURRENT_BINARY_DIR}/../nrf_security/include/${CONFIG_MBEDTLS_CFG_FILE})
+
+  if(CONFIG_OPENTHREAD_BUILD_OUTPUT_STRIPPED)
+    foreach(target openthread-ftd openthread-mtd openthread-radio openthread-cli-ftd openthread-cli-mtd openthread-ncp-ftd openthread-ncp-mtd openthread-rcp)
+      list(APPEND OPENTHREAD_STRIP_COMMAND
+           COMMAND $<TARGET_PROPERTY:bintools,strip_command>
+                   $<TARGET_PROPERTY:bintools,strip_flag>
+                   $<TARGET_PROPERTY:bintools,strip_flag_debug>
+                   $<TARGET_PROPERTY:bintools,strip_flag_infile>$<TARGET_FILE:${target}>
+                   $<TARGET_PROPERTY:bintools,strip_flag_outfile>$<TARGET_FILE:${target}>.strip
+                   $<TARGET_PROPERTY:bintools,strip_flag_final>
+      )
+    endforeach()
+    add_custom_target(openthread_stripped ALL
+                      ${OPENTHREAD_STRIP_COMMAND}
+                      COMMAND_EXPAND_LISTS
     )
+    set(OPENTHREAD_LIB_INSTALL_POSTFIX ".strip")
+  endif()
+  list(APPEND INSTALL_COMMANDS
+    COMMAND ${CMAKE_COMMAND} -E echo "Installing OpenThread libraries into: ${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${OPENTHREAD_DST_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ftd>${OPENTHREAD_LIB_INSTALL_POSTFIX}  ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-ftd>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-mtd>${OPENTHREAD_LIB_INSTALL_POSTFIX}  ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-mtd>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-radio>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-radio>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-cli-ftd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-cli-ftd>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-cli-mtd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-cli-mtd>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ncp-ftd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-ncp-ftd>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ncp-mtd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-ncp-mtd>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-rcp>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-rcp>
+  )
+
+  list(APPEND INSTALL_COMMANDS
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${OPENTHREAD_HEADERS_DIR} ${OPENTHREAD_HEADERS_DST_DIR}
+    COMMAND ${CMAKE_COMMAND} -E copy ${OPENTHREAD_SYSTEM_H} ${OPENTHREAD_HEADERS_DST_DIR}/
+    COMMAND ${CMAKE_COMMAND} -E copy ${OPENTHREAD_CONFIG_FILE} ${OPENTHREAD_DST_DIR}/
+    COMMAND ${CMAKE_COMMAND} -E copy
+      ${NRF_SECURITY_MBEDTLS_CONFIG_FILE} ${OPENTHREAD_DST_DIR}/${OPENTHREAD_LIB_MBEDTLS_CONF_FILE}
+  )
+
+  add_custom_target(install_openthread_libraries ${INSTALL_COMMANDS})
 endif()
 
 if (CONFIG_OPENTHREAD_LIBRARY_1_1)
-  set(version_dir "v1.1")
-  set(OT_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path}/${version_dir})
+  openthread_calculate_lib_path("v1.1" OT_LIB_PATH)
 
   if(NOT EXISTS ${OT_LIB_PATH})
-    message(WARNING "This platform has no libraries provided for OpenThread.
-                     Please use sources to build OpenThread.")
+    message(FATAL_ERROR
+      " This platform has no OpenThread libraries provided for the current configuration.\n"
+      " Please use sources to build OpenThread.")
   endif()
 
-  checkOpenthreadVersion()
+  check_openthread_version()
+  check_openthread_dependencies("${OT_LIB_PATH}/${OPENTHREAD_LIB_MBEDTLS_CONF_FILE}")
 
   if(CONFIG_OPENTHREAD_SHELL)
     if(CONFIG_OPENTHREAD_FTD)

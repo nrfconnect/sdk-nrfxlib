@@ -21,6 +21,7 @@ choice OPENTHREAD_IMPLEMENTATION
 
 config OPENTHREAD_LIBRARY_1_1
 	bool "OpenThread 1.1 from library"
+	select OPENTHREAD_NORDIC_LIBRARY
 	help
 	  Uses prebuilt library of openthread instead of building from sources.
 
@@ -29,13 +30,12 @@ endchoice
 # OpenThread configuration features sets from Nordic Semiconductor
 
 config OPENTHREAD_NORDIC_LIBRARY
-	bool
-	prompt "Nordic library feature sets"
+	bool "Nordic library feature sets"
+	depends on !OPENTHREAD_SOURCES
 
 choice
 	prompt "Feature set"
-	default OPENTHREAD_NORDIC_LIBRARY_MASTER
-	depends on OPENTHREAD_NORDIC_LIBRARY
+	default OPENTHREAD_USER_CUSTOM_LIBRARY
 	help
 	  Nordic Semiconductor features set selection for OpenThread stack.
 
@@ -100,7 +100,18 @@ config OPENTHREAD_NORDIC_LIBRARY_MTD
 	select OPENTHREAD_SNTP_CLIENT
 	help
 	  Nordic Semiconductor optimized OpenThread features for MTD.
+
+config OPENTHREAD_USER_CUSTOM_LIBRARY
+	bool "User custom configuration"
+	help
+	  No extra features selected.
+
 endchoice
+
+config OPENTHREAD_BUILD_OUTPUT_STRIPPED
+	bool "Strip OpenThread libraries"
+	help
+	  Build a stripped library versions of OpenThread in the build directory.
 
 endmenu # "OpenThread"
 
