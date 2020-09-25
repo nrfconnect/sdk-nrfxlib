@@ -103,6 +103,7 @@ append_with_prefix(src_tls ${ARM_MBEDTLS_PATH}/library/
     ssl_srv.c
     ssl_ticket.c
     ssl_tls.c
+    ssl_msg.c
 )
 
 # ----------  Replacement sources - modified mbedTLS sources  -------------<
