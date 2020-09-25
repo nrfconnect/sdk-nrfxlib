@@ -133,7 +133,7 @@ zephyr_library_sources_ifdef(CONFIG_MBEDTLS_ENABLE_HEAP
 
 if (CONFIG_ENTROPY_CC310)
   zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/cc310/replacements/entropy.c)
-elseif(CONFIG_ENTROPY_NRF5_RNG)
+elseif(CONFIG_ENTROPY_NRF5_RNG OR CONFIG_ENTROPY_NRF_LL_SOFTDEVICE)
   zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/nrf5x/entropy_nrf5x.c)
   zephyr_library_sources(${ARM_MBEDTLS_PATH}/library/entropy.c)
 endif()
