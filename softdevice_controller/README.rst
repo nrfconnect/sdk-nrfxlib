@@ -21,24 +21,22 @@ SoC support:
 +============+========+========+========+
 | nRF52805   | Rev 1  |        |        |
 +------------+--------+--------+--------+
-| nRF52810   | Rev 1  |        |        |
+| nRF52810   | Rev 1  | Rev 1  |        |
+|            | Rev 2  | Rev 2  |        |
 +------------+--------+--------+--------+
-| nRF52811   | Rev 1  |        | Rev 1  |
+| nRF52811   | Rev 1  | Rev 1  | Rev 1  |
 +------------+--------+--------+--------+
-| nRF52820   | Eng B  |        | Eng B  |
+| nRF52820   | Rev 2  |        | Rev 2  |
 +------------+--------+--------+--------+
 | nRF52832   | Rev 2  | Rev 2  |        |
+|            |        |        |        |
 +------------+--------+--------+--------+
-| nRF52833   |        |        | Eng A  |
+| nRF52833   |        |        | Rev 1  |
 +------------+--------+--------+--------+
 | nRF52840   |        |        | Rev 2  |
 +------------+--------+--------+--------+
 | nRF5340    |        |        | Eng A  |
 +------------+--------+--------+--------+
-
-For more information about SoC revisions, see the SoC revision and variants information in the compatibility matrix for each SoC.
-You can find the compatibility matrices in the `Infocenter`_.
-
 
 Bluetooth LE feature support:
 
