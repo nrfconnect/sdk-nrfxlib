@@ -185,7 +185,6 @@ int32_t mpsl_fem_lna_configuration_set(const mpsl_fem_event_t * const p_activate
 
 /** @brief Clears up the configuration provided by the @ref mpsl_fem_lna_configuration_set function.
  *
- *
  * @retval   0             LNA activate setup purge is successful.
  * @retval   -NRF_EPERM    LNA is currently disabled.
  */
@@ -242,11 +241,12 @@ int32_t mpsl_fem_abort_reduce(uint32_t channel_to_remove, uint32_t group);
  */
 int32_t mpsl_fem_abort_clear(void);
 
-/** @brief Cleans up the configured PA/LNA timer/radio instance and corresponding
- *  allocated hardware resources. The function resets the hardware that has been
- *  set up for the PA/LNA activation. The PA and LNA module control configuration
- *  parameters are not deleted.
- *  The function is intended to be called after the radio disable signal.
+/** @brief Cleans up the configured PA/LNA hardware resources.
+ *
+ *  The function resets the hardware that has been set up for the PA/LNA
+ *  activation. The PA and LNA module control configuration parameters
+ *  are not deleted.
+ *  The function is intended to be called after the radio DISABLED signal.
  */
 void mpsl_fem_cleanup(void);
 
@@ -260,6 +260,9 @@ void mpsl_fem_cleanup(void);
 void mpsl_fem_pa_is_configured(int8_t * const p_gain);
 
 /** @brief Prepares the Front End Module to switch to the Power Down state.
+ *
+ *  This function makes sure the Front End Module shall be switched off in the
+ *  appropriate time, using the hardware timer and its compare channel.
  *  The timer is owned by the protocol and must be started by the protocol.
  *  The timer stops after matching the provided compare channel (the call sets the short).
  *
