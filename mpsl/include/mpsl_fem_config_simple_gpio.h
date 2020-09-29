@@ -34,25 +34,25 @@ typedef struct
 {
     struct
     {
-        /**< Time between the activation of the PA pin and the start of the radio transmission.
-         *   Should be no bigger than Radio Ramp-Up time. */
+        /** Time between the activation of the PA pin and the start of the radio transmission.
+         *  Should be no bigger than Radio Ramp-Up time. */
         uint32_t pa_time_gap_us;
-        /**< Time between the activation of the LNA pin and the start of the radio reception.
-         *   Should be no bigger than Radio Ramp-Up time. */
+        /** Time between the activation of the LNA pin and the start of the radio reception.
+         *  Should be no bigger than Radio Ramp-Up time. */
         uint32_t lna_time_gap_us;
-        /**< Configurable PA gain. Ignored if the amplifier is not supporting this feature. */
+        /** Configurable PA gain. Ignored if the amplifier is not supporting this feature. */
         int8_t   pa_gain_db;
-        /**< Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
+        /** Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
         int8_t   lna_gain_db;
-      /**< Configration structure of the Simple GPIO Front End Module. */
+      /** Configration structure of the Simple GPIO Front End Module. */
     } fem_config;
 
-    /**< Power Amplifier pin configuration. */
+    /** Power Amplifier pin configuration. */
     mpsl_fem_gpiote_pin_config_t pa_pin_config;
-    /**< Low Noise Amplifier pin configuration. */
+    /** Low Noise Amplifier pin configuration. */
     mpsl_fem_gpiote_pin_config_t lna_pin_config;
 
-    /**< Array of PPI channels which need to be provided to Front End Module to operate. */
+    /** Array of PPI channels which need to be provided to Front End Module to operate. */
     uint8_t                      ppi_channels[2];
 } mpsl_fem_simple_gpio_interface_config_t;
 

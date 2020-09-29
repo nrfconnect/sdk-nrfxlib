@@ -31,31 +31,31 @@ typedef struct
 {
     struct
     {
-        /**< Time between the activation of the PA pin and the start of the radio transmission.
-         *   Should be no bigger than Radio Ramp-Up time. */
+        /** Time between the activation of the PA pin and the start of the radio transmission.
+         *  Should be no bigger than Radio Ramp-Up time. */
         uint32_t pa_time_gap_us;
-        /**< Time between the activation of the LNA pin and the start of the radio reception.
-         *   Should be no bigger than Radio Ramp-Up time. */
+        /** Time between the activation of the LNA pin and the start of the radio reception.
+         *  Should be no bigger than Radio Ramp-Up time. */
         uint32_t lna_time_gap_us;
-        /**< The time between activating the PDN pin and activating the PA/LNA pin. */
+        /** The time between activating the PDN pin and activating the PA/LNA pin. */
         uint32_t pdn_settle_us;
-        /**< The time between deactivating the PA/LNA pin and deactivating the PDN pin. */
+        /** The time between deactivating the PA/LNA pin and deactivating the PDN pin. */
         uint32_t trx_hold_us;
-        /**< Configurable PA gain. Ignored if the amplifier is not supporting this feature. */
+        /** Configurable PA gain. Ignored if the amplifier is not supporting this feature. */
         int8_t   pa_gain_db;
-        /**< Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
+        /** Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
         int8_t   lna_gain_db;
-      /**< Configuration structure of the nRF21540 GPIO Front End Module. */
+      /** Configuration structure of the nRF21540 GPIO Front End Module. */
     } fem_config;
 
-    /**< PA pin configuration. */
+    /** PA pin configuration. */
     mpsl_fem_gpiote_pin_config_t pa_pin_config;
-    /**< LNA pin configuration. */
+    /** LNA pin configuration. */
     mpsl_fem_gpiote_pin_config_t lna_pin_config;
-    /**< PDN pin configuration. */
+    /** PDN pin configuration. */
     mpsl_fem_gpiote_pin_config_t pdn_pin_config;
 
-    /**< Array of PPI channels which need to be provided to Front End Module to operate. */
+    /** Array of PPI channels which need to be provided to Front End Module to operate. */
     uint8_t                      ppi_channels[3];
 
 } mpsl_fem_nrf21540_gpio_interface_config_t;
