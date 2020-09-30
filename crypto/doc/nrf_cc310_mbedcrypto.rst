@@ -12,7 +12,7 @@ The nrf_cc310_mbedcrypto library provides low-level integration towards selected
 The APIs expressed in this library use the alternative implementation abstraction layer inside mbed TLS for selected modules.
 
 .. note::
-   It is not recommended to link to this library directly. Use the :ref:`nrf_security_readme`.
+   It is not recommended to link to this library directly. Use the :ref:`nrf_security`.
 
 
 Supported cryptographic algorithms
