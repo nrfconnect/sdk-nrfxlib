@@ -1,16 +1,25 @@
 .. _nrf_security:
 
 Nordic Security Module
-======================
+######################
 
-The nrf_security module provides additional features and
-configurations to mbed TLS.
-On nRF52840 and nRF9160 the :ref:`nrf_cc310_mbedcrypto_readme` library provides
-hardware accelerated cryptography.
+The Nordic Security Module (nrf_security) provides an integration between mbed TLS and software libraries that provide hardware-accelerated cryptographic functionality on selected Nordic Semiconductor SoCs as well as alternate software-based implementations of the mbed TLS APIs.
+This module includes an mbed TLS glue layer to enable both hardware-accelerated and software-based mbed TLS implementation at the same time.
+
+.. note::
+   The nrf_security module interfaces with the :ref:`nrf_cc310_mbedcrypto_readme`.
+   This library conforms to a specific version of mbed TLS.
+
 
 .. toctree::
    :maxdepth: 2
    :caption: Subpages:
 
-   doc/nrf_security
+   doc/prerequisites
+   doc/configuration
+   doc/backends
+   doc/glue_layer
+   doc/backend_config
+   doc/adv_backend_config
+   doc/mbed_tls_header
    doc/api
