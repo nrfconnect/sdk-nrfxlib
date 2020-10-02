@@ -15,9 +15,8 @@ int mbedtls_hardware_poll(void *data,
                           size_t *olen )
 {
     struct device *dev;
-    uint8_t buffer[MBEDTLS_ENTROPY_MAX_GATHER] = { 0 };
-    int ret;
-    
+    size_t chunk_size;
+
     (void)data;
 
     if (output == NULL)
@@ -35,11 +34,6 @@ int mbedtls_hardware_poll(void *data,
         return -1;
     }
 
-    if (len != MBEDTLS_ENTROPY_MAX_GATHER)
-    {
-        return -1;
-    }
-
     dev = device_get_binding(DT_CHOSEN_ZEPHYR_ENTROPY_LABEL);
 
     if (!dev)
@@ -47,10 +41,18 @@ int mbedtls_hardware_poll(void *data,
         return MBEDTLS_ERR_ENTROPY_NO_SOURCES_DEFINED;
     }
 
-    ret = entropy_get_entropy(dev, buffer, MBEDTLS_ENTROPY_MAX_GATHER);
-    if (ret)
+    while (len > 0)
     {
-        return MBEDTLS_ERR_ENTROPY_SOURCE_FAILED;
+        chunk_size = MIN(MBEDTLS_ENTROPY_MAX_GATHER, len);
+
+        if (entropy_get_entropy(dev, output, chunk_size) < 0)
+        {
+            return MBEDTLS_ERR_ENTROPY_SOURCE_FAILED;
+        }
+
+        *olen += chunk_size;
+        output += chunk_size;
+        len -= chunk_size;
     }
 
     return 0;
