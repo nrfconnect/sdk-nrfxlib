@@ -29,6 +29,7 @@ extern "C" {
  */
 typedef struct
 {
+    /** Configuration structure of the nRF21540 GPIO Front End Module. */
     struct
     {
         /** Time between the activation of the PA pin and the start of the radio transmission.
@@ -45,7 +46,6 @@ typedef struct
         int8_t   pa_gain_db;
         /** Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
         int8_t   lna_gain_db;
-      /** Configuration structure of the nRF21540 GPIO Front End Module. */
     } fem_config;
 
     /** PA pin configuration. */
