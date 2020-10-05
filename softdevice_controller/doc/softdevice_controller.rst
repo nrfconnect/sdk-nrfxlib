@@ -12,13 +12,12 @@ Applications utilizing the |controller| library are responsible for the followin
 * Forwarding RNG interrupts to the |controller| library.
    The application should not add additional processing in the corresponding interrupt handler.
    Otherwise, the behavior is undefined.
-* The |controller| relies on the functionality provided by the Nordic :ref:`mpsl` (Multiprotocol Service Layer), which has its own set of requirements that the application must follow.
+* The |controller| relies on the functionality provided by the Nordic :ref:`mpsl`, which has its own set of requirements that the application must follow.
 * Ensuring thread-safe operation.
    This can be achieved by either:
 
    * Calling all |controller| and MPSL APIs from the same execution priority,
    * ensuring that no API call is interrupted by other API calls, for example by using critical sections.
-
 * Configuring the number of available links:
 
    * Link configuration must be done before enabling the controller.
