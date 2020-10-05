@@ -4,12 +4,7 @@ SoftDevice Controller
 ###########################
 
 The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series.
-It supports Bluetooth 5.
-In addition to providing a Bluetooth HCI interface, it also provides the following:
-
-* APIs for requesting RADIO timeslots, to provide multiprotocol support
-* APIs for accessing the flash memory concurrently with the radio activity
-* APIs for controlling the high frequency clock
+It supports Bluetooth 5. The library utilizes services provided by the Nordic :ref:`mpsl`.
 
 The |controller| is distributed in different variants containing different features.
 Variants for the Arm Cortex-M4 processor are available as soft-float, softfp-float, and hard-float.
