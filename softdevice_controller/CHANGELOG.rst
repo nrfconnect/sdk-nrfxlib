@@ -20,10 +20,16 @@ Added
 * Added Host Number of Complete Packets command (DRGN-13331).
 * Added support for the Vendor specific HCI command: Zephyr Write BD Addr (DRGN-14511).
 * Added LE Read PHY command (DRGN-14664).
+* Added APIs for every supported HCI command (DRGN-13723).
+* Added :cpp:func:`sdc_support_adv()` which makes the advertising state configurable (DRGN-14759).
+* Added :cpp:func:`sdc_support_slave()` which makes the slave role configurable (DRGN-14759).
+* Added :cpp:func:`sdc_support_scan()` which makes the scanning state configurable (DRGN-14759).
+* Added :cpp:func:`sdc_support_master()` which makes the master role configurable (DRGN-14759).
 
 Changes
 =======
 
+* When linking the final binary, the image size is reduced. Only the requested features are included. See :cpp:func:`sdc_support_adv()` and similar APIs for more details.
 * When LLPM mode is enabled, the connection event length is now no longer implicitly set to 1 ms (DRGN-12696).
 * When the connection interval is an LLPM connection interval, that is, below 7.5 ms, link layer procedures with an instant will use an instant larger than 6 connection events (DRGN-14379).
 * The nRF Bluetooth LE Controller was renamed to SoftDevice Controller (DRGN-14283).

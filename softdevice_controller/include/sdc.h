@@ -294,6 +294,54 @@ int32_t sdc_build_revision_get(uint8_t * p_build_revision);
  */
 void sdc_RNG_IRQHandler(void);
 
+/** @brief Support Advertising State
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to the Advertising State.
+ * Only non-connectable advertising is supported. To support connectable
+ * advertising, call @ref sdc_support_slave().
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Advertising state is not supported.
+ */
+int32_t sdc_support_adv(void);
+
+/** @brief Support Slave role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to the slave role.
+ * This state requires the advertising state to be supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Slave role is not supported.
+ */
+int32_t sdc_support_slave(void);
+
+/** @brief Support Scanning state
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to the scanning state.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Scanning state is not supported.
+ */
+int32_t sdc_support_scan(void);
+
+/** @brief Support Master role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to the master role.
+ * This state requires the scanning state to be supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Master role is not supported.
+ */
+int32_t sdc_support_master(void);
+
 /** @brief Support Data Length Extensions
  *
  * After this API is called, the controller will support data length extension.
