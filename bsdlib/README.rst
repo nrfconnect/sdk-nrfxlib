@@ -29,7 +29,7 @@ For more information, see :ref:`bsdlib_ug_porting`.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Subpages:
 
    doc/supported_features
    doc/limitations

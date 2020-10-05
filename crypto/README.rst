@@ -5,7 +5,7 @@ Crypto Libraries
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Subpages:
 
    nrf_cc310_platform/CHANGELOG.rst
    nrf_cc310_bl/CHANGELOG

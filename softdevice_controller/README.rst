@@ -81,7 +81,7 @@ Proprietary feature support:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Subpages:
 
    CHANGELOG
    doc/softdevice_controller

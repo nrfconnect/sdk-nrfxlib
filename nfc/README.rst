@@ -36,7 +36,7 @@ Each library is distributed in both soft-float and hard-float builds.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Subpages:
 
    CHANGELOG
    doc/integration_notes
