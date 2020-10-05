@@ -10,7 +10,7 @@ hardware accelerated cryptography.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Subpages:
 
    doc/nrf_security
    doc/api

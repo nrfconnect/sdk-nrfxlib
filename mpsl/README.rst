@@ -33,7 +33,7 @@ This library provides the following key features:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Subpages:
 
    CHANGELOG
    doc/mpsl

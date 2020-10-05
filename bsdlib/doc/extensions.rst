@@ -16,6 +16,7 @@ Extensions are available for:
 
 .. toctree::
    :maxdepth: 2
+   :caption: Subpages:
 
    pdn_extension
    at_commands
