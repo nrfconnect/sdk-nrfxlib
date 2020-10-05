@@ -5,7 +5,7 @@
 #
 include(cmake/extensions.cmake)
 
-set(OPENTHREAD_LIB_MBEDTLS_CONF_FILE "nrf_security_mbedtls_configuration.txt")
+set(OPENTHREAD_LIB_MBEDTLS_CONF_FILE "nrf_security_mbedtls_configuration.h")
 
 if(CONFIG_OPENTHREAD_SOURCES)
   message(DEBUG "Building OT from sources, config file will be generated.")

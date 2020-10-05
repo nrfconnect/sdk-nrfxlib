@@ -183,7 +183,7 @@
  * Uncomment to prevent default assignment of standard functions in the
  * platform layer.
  */
-#cmakedefine MBEDTLS_PLATFORM_NO_STD_FUNCTIONS
+/* #undef MBEDTLS_PLATFORM_NO_STD_FUNCTIONS */
 
 /**
  * \def MBEDTLS_PLATFORM_EXIT_ALT
@@ -208,13 +208,13 @@
  * Uncomment a macro to enable alternate implementation of specific base
  * platform function
  */
-#cmakedefine MBEDTLS_PLATFORM_EXIT_ALT
+/* #undef MBEDTLS_PLATFORM_EXIT_ALT */
 //#define MBEDTLS_PLATFORM_TIME_ALT
-#cmakedefine MBEDTLS_PLATFORM_FPRINTF_ALT
-#cmakedefine MBEDTLS_PLATFORM_PRINTF_ALT
-#cmakedefine MBEDTLS_PLATFORM_SNPRINTF_ALT
+/* #undef MBEDTLS_PLATFORM_FPRINTF_ALT */
+/* #undef MBEDTLS_PLATFORM_PRINTF_ALT */
+/* #undef MBEDTLS_PLATFORM_SNPRINTF_ALT */
 //#define MBEDTLS_PLATFORM_NV_SEED_ALT
-#cmakedefine MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT
+/* #undef MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT */
 
 /**
  * \def MBEDTLS_DEPRECATED_WARNING
@@ -357,29 +357,29 @@
  *            digests and ciphers instead.
  *
  */
-#cmakedefine MBEDTLS_AES_ALT
+/* #undef MBEDTLS_AES_ALT */
 //#define MBEDTLS_ARC4_ALT
 //#define MBEDTLS_ARIA_ALT
 //#define MBEDTLS_BLOWFISH_ALT
 //#define MBEDTLS_CAMELLIA_ALT
-#cmakedefine MBEDTLS_CCM_ALT
-#cmakedefine MBEDTLS_CHACHA20_ALT
-#cmakedefine MBEDTLS_CHACHAPOLY_ALT
-#cmakedefine MBEDTLS_CMAC_ALT
+/* #undef MBEDTLS_CCM_ALT */
+/* #undef MBEDTLS_CHACHA20_ALT */
+/* #undef MBEDTLS_CHACHAPOLY_ALT */
+/* #undef MBEDTLS_CMAC_ALT */
 //#define MBEDTLS_DES_ALT
-#cmakedefine MBEDTLS_DHM_ALT
-#cmakedefine MBEDTLS_ECJPAKE_ALT
-#cmakedefine MBEDTLS_GCM_ALT
+/* #undef MBEDTLS_DHM_ALT */
+#define MBEDTLS_ECJPAKE_ALT
+/* #undef MBEDTLS_GCM_ALT */
 //#define MBEDTLS_NIST_KW_ALT
 //#define MBEDTLS_MD2_ALT
 //#define MBEDTLS_MD4_ALT
 //#define MBEDTLS_MD5_ALT
-#cmakedefine MBEDTLS_POLY1305_ALT
+/* #undef MBEDTLS_POLY1305_ALT */
 //#define MBEDTLS_RIPEMD160_ALT
-#cmakedefine MBEDTLS_ECP_ALT
-#cmakedefine MBEDTLS_RSA_ALT
-#cmakedefine MBEDTLS_SHA1_ALT
-#cmakedefine MBEDTLS_SHA256_ALT
+/* #undef MBEDTLS_ECP_ALT */
+/* #undef MBEDTLS_RSA_ALT */
+/* #undef MBEDTLS_SHA1_ALT */
+#define MBEDTLS_SHA256_ALT
 //#define MBEDTLS_SHA512_ALT
 //#define MBEDTLS_XTEA_ALT
 
@@ -449,15 +449,15 @@
 //#define MBEDTLS_DES_SETKEY_ALT
 //#define MBEDTLS_DES_CRYPT_ECB_ALT
 //#define MBEDTLS_DES3_CRYPT_ECB_ALT
-#cmakedefine MBEDTLS_AES_SETKEY_ENC_ALT
-#cmakedefine MBEDTLS_AES_SETKEY_DEC_ALT
-#cmakedefine MBEDTLS_AES_ENCRYPT_ALT
-#cmakedefine MBEDTLS_AES_DECRYPT_ALT
-#cmakedefine MBEDTLS_ECDH_GEN_PUBLIC_ALT
-#cmakedefine MBEDTLS_ECDH_COMPUTE_SHARED_ALT
-#cmakedefine MBEDTLS_ECDSA_VERIFY_ALT
-#cmakedefine MBEDTLS_ECDSA_SIGN_ALT
-#cmakedefine MBEDTLS_ECDSA_GENKEY_ALT
+/* #undef MBEDTLS_AES_SETKEY_ENC_ALT */
+/* #undef MBEDTLS_AES_SETKEY_DEC_ALT */
+/* #undef MBEDTLS_AES_ENCRYPT_ALT */
+/* #undef MBEDTLS_AES_DECRYPT_ALT */
+#define MBEDTLS_ECDH_GEN_PUBLIC_ALT
+#define MBEDTLS_ECDH_COMPUTE_SHARED_ALT
+#define MBEDTLS_ECDSA_VERIFY_ALT
+#define MBEDTLS_ECDSA_SIGN_ALT
+#define MBEDTLS_ECDSA_GENKEY_ALT
 
 /**
  * \def MBEDTLS_ECP_INTERNAL_ALT
@@ -560,7 +560,7 @@
  * This option is independent of \c MBEDTLS_AES_FEWER_TABLES.
  *
  */
-#cmakedefine MBEDTLS_AES_ROM_TABLES
+/* #undef MBEDTLS_AES_ROM_TABLES */
 
 /**
  * \def MBEDTLS_AES_FEWER_TABLES
@@ -582,7 +582,7 @@
  * This option is independent of \c MBEDTLS_AES_ROM_TABLES.
  *
  */
-#cmakedefine MBEDTLS_AES_FEWER_TABLES
+/* #undef MBEDTLS_AES_FEWER_TABLES */
 
 /**
  * \def MBEDTLS_CAMELLIA_SMALL_MEMORY
@@ -598,35 +598,35 @@
  *
  * Enable Cipher Block Chaining mode (CBC) for symmetric ciphers.
  */
-#cmakedefine MBEDTLS_CIPHER_MODE_CBC
+/* #undef MBEDTLS_CIPHER_MODE_CBC */
 
 /**
  * \def MBEDTLS_CIPHER_MODE_CFB
  *
  * Enable Cipher Feedback mode (CFB) for symmetric ciphers.
  */
-#cmakedefine MBEDTLS_CIPHER_MODE_CFB
+/* #undef MBEDTLS_CIPHER_MODE_CFB */
 
 /**
  * \def MBEDTLS_CIPHER_MODE_CTR
  *
  * Enable Counter Block Cipher mode (CTR) for symmetric ciphers.
  */
-#cmakedefine MBEDTLS_CIPHER_MODE_CTR
+/* #undef MBEDTLS_CIPHER_MODE_CTR */
 
 /**
  * \def MBEDTLS_CIPHER_MODE_OFB
  *
  * Enable Output Feedback mode (OFB) for symmetric ciphers.
  */
-#cmakedefine MBEDTLS_CIPHER_MODE_OFB
+/* #undef MBEDTLS_CIPHER_MODE_OFB */
 
 /**
  * \def MBEDTLS_CIPHER_MODE_XTS
  *
  * Enable Xor-encrypt-xor with ciphertext stealing mode (XTS) for AES.
  */
-#cmakedefine MBEDTLS_CIPHER_MODE_XTS
+/* #undef MBEDTLS_CIPHER_MODE_XTS */
 
 /**
  * \def MBEDTLS_CIPHER_NULL_CIPHER
@@ -672,10 +672,10 @@
  *
  * Enable padding modes in the cipher layer.
  */
-#cmakedefine MBEDTLS_CIPHER_PADDING_PKCS7
-#cmakedefine MBEDTLS_CIPHER_PADDING_ONE_AND_ZEROS
-#cmakedefine MBEDTLS_CIPHER_PADDING_ZEROS_AND_LEN
-#cmakedefine MBEDTLS_CIPHER_PADDING_ZEROS
+/* #undef MBEDTLS_CIPHER_PADDING_PKCS7 */
+/* #undef MBEDTLS_CIPHER_PADDING_ONE_AND_ZEROS */
+/* #undef MBEDTLS_CIPHER_PADDING_ZEROS_AND_LEN */
+/* #undef MBEDTLS_CIPHER_PADDING_ZEROS */
 
 /** \def MBEDTLS_CTR_DRBG_USE_128_BIT_KEY
  *
@@ -743,19 +743,19 @@
  *
  * Comment macros to disable the curve and functions for it
  */
-#cmakedefine MBEDTLS_ECP_DP_SECP192R1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_SECP224R1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_SECP256R1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_SECP384R1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_SECP521R1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_SECP192K1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_SECP224K1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_SECP256K1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_BP256R1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_BP384R1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_BP512R1_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_CURVE25519_ENABLED
-#cmakedefine MBEDTLS_ECP_DP_CURVE448_ENABLED
+/* #undef MBEDTLS_ECP_DP_SECP192R1_ENABLED */
+/* #undef MBEDTLS_ECP_DP_SECP224R1_ENABLED */
+#define MBEDTLS_ECP_DP_SECP256R1_ENABLED
+/* #undef MBEDTLS_ECP_DP_SECP384R1_ENABLED */
+/* #undef MBEDTLS_ECP_DP_SECP521R1_ENABLED */
+/* #undef MBEDTLS_ECP_DP_SECP192K1_ENABLED */
+/* #undef MBEDTLS_ECP_DP_SECP224K1_ENABLED */
+/* #undef MBEDTLS_ECP_DP_SECP256K1_ENABLED */
+/* #undef MBEDTLS_ECP_DP_BP256R1_ENABLED */
+/* #undef MBEDTLS_ECP_DP_BP384R1_ENABLED */
+/* #undef MBEDTLS_ECP_DP_BP512R1_ENABLED */
+/* #undef MBEDTLS_ECP_DP_CURVE25519_ENABLED */
+/* #undef MBEDTLS_ECP_DP_CURVE448_ENABLED */
 
 /**
  * \def MBEDTLS_ECP_NIST_OPTIM
@@ -855,7 +855,7 @@
  *
  * Comment this macro to disable deterministic ECDSA.
  */
-#cmakedefine MBEDTLS_ECDSA_DETERMINISTIC
+#define MBEDTLS_ECDSA_DETERMINISTIC
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_PSK_ENABLED
@@ -908,7 +908,7 @@
  *             See dhm.h for more details.
  *
  */
-#cmakedefine MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED
+/* #undef MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED */
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED
@@ -928,7 +928,7 @@
  *      MBEDTLS_TLS_ECDHE_PSK_WITH_3DES_EDE_CBC_SHA
  *      MBEDTLS_TLS_ECDHE_PSK_WITH_RC4_128_SHA
  */
-#cmakedefine MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED
+#define MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED
@@ -953,7 +953,7 @@
  *      MBEDTLS_TLS_RSA_PSK_WITH_3DES_EDE_CBC_SHA
  *      MBEDTLS_TLS_RSA_PSK_WITH_RC4_128_SHA
  */
-#cmakedefine MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED
+/* #undef MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED */
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_RSA_ENABLED
@@ -981,7 +981,7 @@
  *      MBEDTLS_TLS_RSA_WITH_RC4_128_SHA
  *      MBEDTLS_TLS_RSA_WITH_RC4_128_MD5
  */
-#cmakedefine MBEDTLS_KEY_EXCHANGE_RSA_ENABLED
+/* #undef MBEDTLS_KEY_EXCHANGE_RSA_ENABLED */
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_DHE_RSA_ENABLED
@@ -1014,7 +1014,7 @@
  *             See dhm.h for more details.
  *
  */
-#cmakedefine MBEDTLS_KEY_EXCHANGE_DHE_RSA_ENABLED
+/* #undef MBEDTLS_KEY_EXCHANGE_DHE_RSA_ENABLED */
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
@@ -1039,7 +1039,7 @@
  *      MBEDTLS_TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA
  *      MBEDTLS_TLS_ECDHE_RSA_WITH_RC4_128_SHA
  */
-#cmakedefine MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
+/* #undef MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED */
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
@@ -1063,7 +1063,7 @@
  *      MBEDTLS_TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA
  *      MBEDTLS_TLS_ECDHE_ECDSA_WITH_RC4_128_SHA
  */
-#cmakedefine MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
+#define MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED
@@ -1087,7 +1087,7 @@
  *      MBEDTLS_TLS_ECDH_ECDSA_WITH_CAMELLIA_128_GCM_SHA256
  *      MBEDTLS_TLS_ECDH_ECDSA_WITH_CAMELLIA_256_GCM_SHA384
  */
-#cmakedefine MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED
+#define MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED
@@ -1111,7 +1111,7 @@
  *      MBEDTLS_TLS_ECDH_RSA_WITH_CAMELLIA_128_GCM_SHA256
  *      MBEDTLS_TLS_ECDH_RSA_WITH_CAMELLIA_256_GCM_SHA384
  */
-#cmakedefine MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED
+#define MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED
 
 /**
  * \def MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
@@ -1130,7 +1130,7 @@
  * enabled as well):
  *      MBEDTLS_TLS_ECJPAKE_WITH_AES_128_CCM_8
  */
-#cmakedefine MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
+#define MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
 
 /**
  * \def MBEDTLS_PK_PARSE_EC_EXTENDED
@@ -1303,7 +1303,7 @@
  *
  * This enables support for PKCS#1 v1.5 operations.
  */
-#cmakedefine MBEDTLS_PKCS1_V15
+/* #undef MBEDTLS_PKCS1_V15 */
 
 /**
  * \def MBEDTLS_PKCS1_V21
@@ -1314,7 +1314,7 @@
  *
  * This enables support for RSAES-OAEP and RSASSA-PSS operations.
  */
-#cmakedefine MBEDTLS_PKCS1_V21
+/* #undef MBEDTLS_PKCS1_V21 */
 
 /**
  * \def MBEDTLS_PSA_CRYPTO_SPM
@@ -1375,7 +1375,7 @@
  *
  * Uncomment to enable the smaller implementation of SHA256.
  */
-#cmakedefine MBEDTLS_SHA256_SMALLER
+/* #undef MBEDTLS_SHA256_SMALLER */
 
 /**
  * \def MBEDTLS_SHA512_SMALLER
@@ -1678,7 +1678,7 @@
  *
  * Comment this macro to disable support for DTLS
  */
-#cmakedefine MBEDTLS_SSL_PROTO_DTLS
+#define MBEDTLS_SSL_PROTO_DTLS
 
 /**
  * \def MBEDTLS_SSL_ALPN
@@ -1702,7 +1702,7 @@
  *
  * Comment this to disable anti-replay in DTLS.
  */
-#cmakedefine MBEDTLS_SSL_DTLS_ANTI_REPLAY
+#define MBEDTLS_SSL_DTLS_ANTI_REPLAY
 
 /**
  * \def MBEDTLS_SSL_DTLS_HELLO_VERIFY
@@ -1720,7 +1720,7 @@
  *
  * Comment this to disable support for HelloVerifyRequest.
  */
-#cmakedefine MBEDTLS_SSL_DTLS_HELLO_VERIFY
+#define MBEDTLS_SSL_DTLS_HELLO_VERIFY
 
 /**
  * \def MBEDTLS_SSL_DTLS_CLIENT_PORT_REUSE
@@ -1889,7 +1889,7 @@
  *
  * Uncomment this to allow your own alternate threading implementation.
  */
-#cmakedefine MBEDTLS_THREADING_ALT
+/* #undef MBEDTLS_THREADING_ALT */
 
 /**
  * \def MBEDTLS_THREADING_PTHREAD
@@ -2140,7 +2140,7 @@
  *
  * PEM_PARSE uses AES for decrypting encrypted keys.
  */
-#cmakedefine MBEDTLS_AES_C
+#define MBEDTLS_AES_C
 
 /**
  * \def MBEDTLS_ARC4_C
@@ -2355,7 +2355,7 @@
  * This module enables the AES-CCM ciphersuites, if other requisites are
  * enabled as well.
  */
-#cmakedefine MBEDTLS_CCM_C
+#define MBEDTLS_CCM_C
 
 /**
  * \def MBEDTLS_CERTS_C
@@ -2376,7 +2376,7 @@
  *
  * Module:  library/chacha20.c
  */
-#cmakedefine MBEDTLS_CHACHA20_C
+/* #undef MBEDTLS_CHACHA20_C */
 
 /**
  * \def MBEDTLS_CHACHAPOLY_C
@@ -2387,7 +2387,7 @@
  *
  * This module requires: MBEDTLS_CHACHA20_C, MBEDTLS_POLY1305_C
  */
-#cmakedefine MBEDTLS_CHACHAPOLY_C
+/* #undef MBEDTLS_CHACHAPOLY_C */
 
 /**
  * \def MBEDTLS_CIPHER_C
@@ -2412,7 +2412,7 @@
  * Requires: MBEDTLS_AES_C or MBEDTLS_DES_C
  *
  */
-#cmakedefine MBEDTLS_CMAC_C
+#define MBEDTLS_CMAC_C
 
 /**
  * \def MBEDTLS_CTR_DRBG_C
@@ -2432,7 +2432,7 @@
  *
  * This module provides the CTR_DRBG AES random number generator.
  */
-#cmakedefine MBEDTLS_CTR_DRBG_C
+#define MBEDTLS_CTR_DRBG_C
 
 /**
  * \def MBEDTLS_DEBUG_C
@@ -2496,7 +2496,7 @@
  *             See dhm.h for more details.
  *
  */
-#cmakedefine MBEDTLS_DHM_C
+/* #undef MBEDTLS_DHM_C */
 
 /**
  * \def MBEDTLS_ECDH_C
@@ -2512,7 +2512,7 @@
  *
  * Requires: MBEDTLS_ECP_C
  */
-#cmakedefine MBEDTLS_ECDH_C
+#define MBEDTLS_ECDH_C
 
 /**
  * \def MBEDTLS_ECDSA_C
@@ -2529,7 +2529,7 @@
  *           and at least one MBEDTLS_ECP_DP_XXX_ENABLED for a
  *           short Weierstrass curve.
  */
-#cmakedefine MBEDTLS_ECDSA_C
+#define MBEDTLS_ECDSA_C
 
 /**
  * \def MBEDTLS_ECJPAKE_C
@@ -2548,7 +2548,7 @@
  *
  * Requires: MBEDTLS_ECP_C, MBEDTLS_MD_C
  */
-#cmakedefine MBEDTLS_ECJPAKE_C
+#define MBEDTLS_ECJPAKE_C
 
 /**
  * \def MBEDTLS_ECP_C
@@ -2562,7 +2562,7 @@
  *
  * Requires: MBEDTLS_BIGNUM_C and at least one MBEDTLS_ECP_DP_XXX_ENABLED
  */
-#cmakedefine MBEDTLS_ECP_C
+#define MBEDTLS_ECP_C
 
 /**
  * \def MBEDTLS_ENTROPY_C
@@ -2602,7 +2602,7 @@
  * This module enables the AES-GCM and CAMELLIA-GCM ciphersuites, if other
  * requisites are enabled as well.
  */
-#cmakedefine MBEDTLS_GCM_C
+/* #undef MBEDTLS_GCM_C */
 
 /**
  * \def MBEDTLS_HAVEGE_C
@@ -2654,7 +2654,7 @@
  *
  * Uncomment to enable the HMAC_DRBG random number geerator.
  */
-#cmakedefine MBEDTLS_HMAC_DRBG_C
+#define MBEDTLS_HMAC_DRBG_C
 
 /**
  * \def MBEDTLS_NIST_KW_C
@@ -2857,7 +2857,7 @@
  *
  * Uncomment to enable generic public key wrappers.
  */
-#cmakedefine MBEDTLS_PK_C
+#define MBEDTLS_PK_C
 
 /**
  * \def MBEDTLS_PK_PARSE_C
@@ -2872,7 +2872,7 @@
  *
  * Uncomment to enable generic public key parse functions.
  */
-#cmakedefine MBEDTLS_PK_PARSE_C
+#define MBEDTLS_PK_PARSE_C
 
 /**
  * \def MBEDTLS_PK_WRITE_C
@@ -2886,7 +2886,7 @@
  *
  * Uncomment to enable generic public key write functions.
  */
-#cmakedefine MBEDTLS_PK_WRITE_C
+/* #undef MBEDTLS_PK_WRITE_C */
 
 /**
  * \def MBEDTLS_PKCS5_C
@@ -2963,7 +2963,7 @@
  * Module:  library/poly1305.c
  * Caller:  library/chachapoly.c
  */
-#cmakedefine MBEDTLS_POLY1305_C
+/* #undef MBEDTLS_POLY1305_C */
 
 /**
  * \def MBEDTLS_PSA_CRYPTO_C
@@ -3050,7 +3050,7 @@
  *
  * Requires: MBEDTLS_BIGNUM_C, MBEDTLS_OID_C
  */
-#cmakedefine MBEDTLS_RSA_C
+/* #undef MBEDTLS_RSA_C */
 
 /**
  * \def MBEDTLS_SHA1_C
@@ -3072,7 +3072,7 @@
  *            on it, and considering stronger message digests instead.
  *
  */
-#cmakedefine MBEDTLS_SHA1_C
+/* #undef MBEDTLS_SHA1_C */
 
 /**
  * \def MBEDTLS_SHA256_C
@@ -3089,7 +3089,7 @@
  * This module adds support for SHA-224 and SHA-256.
  * This module is required for the SSL/TLS 1.2 PRF function.
  */
-#cmakedefine MBEDTLS_SHA256_C
+#define MBEDTLS_SHA256_C
 
 /**
  * \def MBEDTLS_SHA512_C
@@ -3104,7 +3104,7 @@
  *
  * This module adds support for SHA-384 and SHA-512.
  */
-#cmakedefine MBEDTLS_SHA512_C
+/* #undef MBEDTLS_SHA512_C */
 
 /**
  * \def MBEDTLS_SSL_CACHE_C
@@ -3126,7 +3126,7 @@
  * Module:  library/ssl_cookie.c
  * Caller:
  */
-#cmakedefine MBEDTLS_SSL_COOKIE_C
+#define MBEDTLS_SSL_COOKIE_C
 
 /**
  * \def MBEDTLS_SSL_TICKET_C
@@ -3204,7 +3204,7 @@
  *
  * Enable this layer to allow use of mutexes within mbed TLS
  */
-#cmakedefine MBEDTLS_THREADING_C
+/* #undef MBEDTLS_THREADING_C */
 
 /**
  * \def MBEDTLS_TIMING_C
@@ -3255,7 +3255,7 @@
  *
  * This module is required for the X.509 parsing modules.
  */
-#cmakedefine MBEDTLS_X509_USE_C
+#define MBEDTLS_X509_USE_C
 
 /**
  * \def MBEDTLS_X509_CRT_PARSE_C
@@ -3271,7 +3271,7 @@
  *
  * This module is required for X.509 certificate parsing.
  */
-#cmakedefine MBEDTLS_X509_CRT_PARSE_C
+#define MBEDTLS_X509_CRT_PARSE_C
 
 /**
  * \def MBEDTLS_X509_CRL_PARSE_C
@@ -3368,8 +3368,8 @@
  */
 
 /* MPI / BIGNUM options */
-#cmakedefine MBEDTLS_MPI_WINDOW_SIZE         @MBEDTLS_MPI_WINDOW_SIZE@ /**< Maximum windows size used. */
-#cmakedefine MBEDTLS_MPI_MAX_SIZE            @MBEDTLS_MPI_MAX_SIZE@ /**< Maximum number of bytes for usable MPIs. */
+/* #undef MBEDTLS_MPI_WINDOW_SIZE */
+/* #undef MBEDTLS_MPI_MAX_SIZE */
 
 /* CTR_DRBG options */
 //#define MBEDTLS_CTR_DRBG_ENTROPY_LEN               48 /**< Amount of entropy used per seed by default (48 with SHA-512, 32 with SHA-256) */
@@ -3389,9 +3389,9 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 //#define MBEDTLS_HMAC_DRBG_MAX_SEED_INPUT      384 /**< Maximum size of (re)seed buffer */
 
 /* ECP options */
-#cmakedefine MBEDTLS_ECP_MAX_BITS          @MBEDTLS_ECP_MAX_BITS@ /**< Maximum bit size of groups */
-#cmakedefine MBEDTLS_ECP_WINDOW_SIZE       @MBEDTLS_ECP_WINDOW_SIZE@ /**< Maximum window size used */
-#cmakedefine MBEDTLS_ECP_FIXED_POINT_OPTIM @MBEDTLS_ECP_FIXED_POINT_OPTIM@ /**< Enable fixed-point speed-up */
+/* #undef MBEDTLS_ECP_MAX_BITS */
+/* #undef MBEDTLS_ECP_WINDOW_SIZE */
+/* #undef MBEDTLS_ECP_FIXED_POINT_OPTIM */
 
 /* Entropy options */
 //#define MBEDTLS_ENTROPY_MAX_SOURCES                1 /**< Maximum number of sources supported */
@@ -3498,7 +3498,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  * Uncomment to set the maximum plaintext size of both
  * incoming and outgoing I/O buffers.
  */
-#cmakedefine MBEDTLS_SSL_MAX_CONTENT_LEN @MBEDTLS_SSL_MAX_CONTENT_LEN@
+#define MBEDTLS_SSL_MAX_CONTENT_LEN 900
 
 /** \def MBEDTLS_SSL_IN_CONTENT_LEN
  *
@@ -3629,7 +3629,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  *
  * The value below is only an example, not the default.
  */
-#cmakedefine MBEDTLS_SSL_CIPHERSUITES @MBEDTLS_SSL_CIPHERSUITES@
+/* #undef MBEDTLS_SSL_CIPHERSUITES */
 
 /* X509 options */
 //#define MBEDTLS_X509_MAX_INTERMEDIATE_CA   8   /**< Maximum number of intermediate CAs in a verification chain. */
@@ -3684,7 +3684,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  * C standards (e.g using memset_s() in C11) or calling a secure memset() from
  * their system (e.g explicit_bzero() in BSD).
  */
-#cmakedefine MBEDTLS_PLATFORM_ZEROIZE_ALT
+/* #undef MBEDTLS_PLATFORM_ZEROIZE_ALT */
 
 /**
  * Uncomment the macro to let Mbed TLS use your alternate implementation of
@@ -3729,19 +3729,19 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 /*
  * Nordic added. 256 bit defines for vanilla mbed TLS
  */
-#cmakedefine MBEDTLS_CIPHER_AES_256_ECB_C
-#cmakedefine MBEDTLS_CIPHER_AES_256_CBC_C
-#cmakedefine MBEDTLS_CIPHER_AES_256_CTR_C
-#cmakedefine MBEDTLS_CIPHER_AES_256_CCM_C
-#cmakedefine MBEDTLS_CIPHER_AES_256_CFB_C
-#cmakedefine MBEDTLS_CIPHER_AES_256_OFB_C
+#define MBEDTLS_CIPHER_AES_256_ECB_C
+/* #undef MBEDTLS_CIPHER_AES_256_CBC_C */
+/* #undef MBEDTLS_CIPHER_AES_256_CTR_C */
+#define MBEDTLS_CIPHER_AES_256_CCM_C
+/* #undef MBEDTLS_CIPHER_AES_256_CFB_C */
+/* #undef MBEDTLS_CIPHER_AES_256_OFB_C */
 
 
 /*
  * Nordic added. Defines for features not supported in HW
  * on non-glued functionality.
  */
-#cmakedefine MBEDTLS_AES_256_CMAC_C
+#define MBEDTLS_AES_256_CMAC_C
 
 /*
  * Nordic added. Ensure there is a definition of mbedtls_ecp_restart_ctx
