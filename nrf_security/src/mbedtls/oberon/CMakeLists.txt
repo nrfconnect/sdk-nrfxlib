@@ -113,7 +113,7 @@ set(oberon_libs
 
 #
 # Create the actual mbedcrypto_oberon library containing
-# all backend-specific 
+# all backend-specific
 #
 combine_archives(mbedcrypto_oberon "${oberon_libs}")
 symbol_strip_func(oberon)
@@ -134,4 +134,14 @@ configure_file_ifdef(CONFIG_OBERON_MBEDTLS_SHA256_C
 configure_file_ifdef(CONFIG_OBERON_MBEDTLS_ECJPAKE_C
   ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/ecjpake_alt.h
   ${generated_include_path}/ecjpake_alt.h
+  COPYONLY)
+
+configure_file_ifdef(CONFIG_OBERON_MBEDTLS_CHACHA20_C
+  ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/chacha20_alt.h
+  ${generated_include_path}/chacha20_alt.h
+  COPYONLY)
+
+configure_file_ifdef(CONFIG_OBERON_MBEDTLS_POLY1305_C
+  ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/poly1305_alt.h
+  ${generated_include_path}/poly1305_alt.h
   COPYONLY)
