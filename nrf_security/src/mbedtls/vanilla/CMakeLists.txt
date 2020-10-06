@@ -58,6 +58,7 @@ target_sources_ifdef(CONFIG_VANILLA_MBEDTLS_SHA256_C
   mbedcrypto_vanilla PRIVATE ${ARM_MBEDTLS_PATH}/library/sha256.c
 )
 
+
 target_include_directories(mbedcrypto_vanilla PRIVATE
   ${common_includes}
   ${config_include}
