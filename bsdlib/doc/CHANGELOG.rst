@@ -5,6 +5,18 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.8.0
+************
+
+* Fixed the issue with stalled TLS handshake.
+* Fixed the issue with TLS connection where :cpp:func:`nrf_connect` hangs.
+* Fixed the issue of :cpp:func:`nrf_sendto` timeout not working in some cases.
+* Updated the documentation to reflect that NRF_SO_CHIPER_IN_USE is not currently supported.
+* Fixed the issue of missing AT socket and POLLIN events.
+* Added support for PDN authentication parameters.
+* Added flushing of the GNSS socket queue if the stop command is issued.
+* Added support for GPS low accuracy use case.
+
 bsdlib 0.7.9
 ************
 

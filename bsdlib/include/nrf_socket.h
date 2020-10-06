@@ -63,6 +63,12 @@ typedef int32_t ssize_t;
 /**@brief Maximum length of IPv6 in string form, including null-termination character. */
 #define NRF_INET6_ADDRSTRLEN    46
 
+/**@brief Maximum length of PDN authentication username in string form, including null-termination character. */
+#define NRF_PDN_MAX_USERNAME_LEN    100
+
+/**@brief Maximum length of PDN authentication password in string form, including null-termination character. */
+#define NRF_PDN_MAX_PASSWORD_LEN    100
+
 /**@}*/
 
 /**@defgroup nrf_socket_api_enumerators Socket enumerators.
@@ -178,6 +184,7 @@ typedef uint32_t nrf_fd_set;
 
 /**@brief
  * Socket option to retrieve the ciphersuites used during the handshake.
+ * Currently unsupported.
  * @sa nrf_sec_cipher_t.
  */
 #define NRF_SO_CIPHER_IN_USE 7
@@ -202,6 +209,11 @@ typedef uint32_t nrf_fd_set;
  * @sa nrf_pdn_state_t.
  */
 #define NRF_SO_PDN_STATE                3
+/**@brief
+ * Socket option to set PDN authentication.
+ * @sa nrf_pdn_auth_t.
+ */
+#define NRF_SO_PDN_AUTH                 4
 /**@} */
 
 /**@defgroup nrf_socket_dfu DFU socket
@@ -301,7 +313,7 @@ typedef uint32_t nrf_fd_set;
 #define NRF_SO_GNSS_SYSTEM              3    /**< Identifies the option used to set and/or get the GNSS system used. See nrf_gnss_system_t for details. */
 #define NRF_SO_GNSS_NMEA_MASK           4    /**< Identifies the option used to select the data format of the received data. */
 #define NRF_SO_GNSS_ELEVATION_MASK      5    /**< Indicates at which elevation the GPS should stop tracking a satellite. */
-#define NRF_SO_GNSS_USE_CASE            6    /**< Indicates the targeted start performance: 0 = single cold start performance targeted, 1 = multiple hot start performance targeted. */
+#define NRF_SO_GNSS_USE_CASE            6    /**< Indicates the targeted start performance. */
 #define NRF_SO_GNSS_START               7    /**< Identifies the option to start the GPS. nrf_gnss_delete_mask_t given as payload. */
 #define NRF_SO_GNSS_STOP                8    /**< Identifies the option to stop the GPS. nrf_gnss_delete_mask_t given as payload. */
 #define NRF_SO_GNSS_POWER_SAVE_MODE     9    /**< Identifies the option to set power save mode. */
@@ -332,6 +344,20 @@ typedef uint32_t nrf_fd_set;
 #define NRF_GNSS_PSM_DISABLED                 0 /** No power save mode is enabled. */
 #define NRF_GNSS_PSM_DUTY_CYCLING_PERFORMANCE 1 /** Enables duty-cycling performance policy power save mode. */
 #define NRF_GNSS_PSM_DUTY_CYCLING_POWER       2 /** Enables duty-cycling power policy power save mode. */
+/** @} */
+
+/**@defgroup nrf_socket_gnss_use_case_modes Use case enumerator
+ *
+ * @brief
+ * Use these bit values to select which use case mode the GNSS module should use. A use case mode
+ * is a combination of the values of all of the bits.
+ *
+ * @{
+ */
+#define NRF_GNSS_USE_CASE_SINGLE_COLD_START  0 << 0 /** Single cold start performance bit 0 value */
+#define NRF_GNSS_USE_CASE_MULTIPLE_HOT_START 1 << 0 /** Mutiple hot start performance bit 0 value */
+#define NRF_GNSS_USE_CASE_NORMAL_ACCURACY    0 << 1 /** Normal accuracy fixes bit 1 value */
+#define NRF_GNSS_USE_CASE_LOW_ACCURACY       1 << 1 /** Low accuracy fixes allowed bit 1 value */ 
 /** @} */
 
 /**@defgroup nrf_socket_gnss_pvt_flags Bitmask values for flags in the PVT notification.
@@ -643,6 +669,26 @@ typedef uint8_t nrf_pdn_context_id_t;
  *   0 - PDN is inactive.
  */
 typedef uint8_t nrf_pdn_state_t;
+
+/**@brief
+ * PDN authentication type.
+ */
+typedef enum
+{
+    NRF_PDN_AUTH_TYPE_NONE = 0,
+    NRF_PDN_AUTH_TYPE_PAP,
+    NRF_PDN_AUTH_TYPE_CHAP
+} nrf_pdn_auth_type_t;
+
+/**@brief
+ * Structure for PDN authentication socket option.
+ */
+typedef struct
+{
+    char                   username[NRF_PDN_MAX_USERNAME_LEN];
+    char                   password[NRF_PDN_MAX_PASSWORD_LEN];
+    nrf_pdn_auth_type_t    authentication_type;
+} nrf_pdn_auth_t;
 /**@} */
 
 /**@addtogroup nrf_socket_dfu
