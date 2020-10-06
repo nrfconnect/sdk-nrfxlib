@@ -44,8 +44,9 @@ typedef enum
 /** @brief MPSL Front End Module event. */
 typedef struct
 {
-    /**< Type of event source. */
+    /** Type of event source. */
     mpsl_fem_event_type_t      type;
+    /** Implementation of the event. */
     union
     {
         struct
@@ -70,7 +71,6 @@ typedef struct
             uint32_t           register_address;
           /** Generic event, used in case of type equal to @ref mpsl_fem_event_type_t::MPSL_FEM_EVENT_TYPE_GENERIC. */
         } generic;
-      /** Implementation of the event. */
     } event;
     /** False to ignore the PPI channel below and use the one set by application. True to use the PPI channel below. */
     bool                       override_ppi;
