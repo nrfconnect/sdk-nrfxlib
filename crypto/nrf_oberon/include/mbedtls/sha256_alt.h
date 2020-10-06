@@ -31,6 +31,7 @@ extern "C" {
 /* @brief Oberon replacement SHA-256 context */
 typedef struct mbedtls_sha256_context {
     uint32_t data[OCRYPTO_SHA256_CONTEXT_SIZE_WORDS]; //!< Opaque SHA-256 context.
+    int is224;
 } mbedtls_sha256_context;
 
 

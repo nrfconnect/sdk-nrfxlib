@@ -24,9 +24,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**
  * AES-EAX encryption.
@@ -70,6 +72,7 @@ void ocrypto_aes_eax_encrypt (
 int ocrypto_aes_eax_decrypt (
     uint8_t* pt, const uint8_t tag[16], const uint8_t* ct, size_t ct_len, const uint8_t *key, size_t size,
     const uint8_t* iv, size_t iv_len, const uint8_t *aa, size_t aa_len);
+
 
 #ifdef __cplusplus
 }

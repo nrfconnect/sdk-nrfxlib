@@ -14,15 +14,18 @@
  *
  * @see [RFC 5869 - HMAC-based Extract-and-Expand Key Derivation Function (HKDF)](http://tools.ietf.org/html/rfc5869)
  */
+
 #ifndef OCRYPTO_HKDF_SHA1_H
 #define OCRYPTO_HKDF_SHA1_H
 
 #include <stddef.h>
 #include <stdint.h>
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**
  * Maximum length of a derived key.

@@ -17,7 +17,9 @@
 #ifndef OCRYPTO_AES_KEY_H
 #define OCRYPTO_AES_KEY_H
 
+#include <stddef.h>
 #include <stdint.h>
+
 
 #ifdef __cplusplus
 extern "C" {

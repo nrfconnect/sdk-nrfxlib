@@ -24,9 +24,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**
  * Length of SHA-1 hash.
