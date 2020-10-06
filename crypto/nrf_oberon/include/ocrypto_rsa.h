@@ -27,9 +27,11 @@
 
 #include "ocrypto_rsa_key.h"
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**@name 1024-bit RSA Functions.
  *

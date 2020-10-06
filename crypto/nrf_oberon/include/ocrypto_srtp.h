@@ -9,6 +9,8 @@
  * @ingroup nrf_oberon
  * @{
  * @brief Type declarations and APIs for SRTP - Secure Real-time Transport Protocol.
+ *
+ * SRTP is an extension of the RTP protocol with an enhanced security mechanism.
  */
 
 #ifndef OCRYPTO_SRTP_H
@@ -19,9 +21,11 @@
 
 #include "ocrypto_aes_key.h"
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**
  * SRTP Authentication Key Size.

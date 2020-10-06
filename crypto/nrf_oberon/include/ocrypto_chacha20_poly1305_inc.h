@@ -27,9 +27,11 @@
 #include "ocrypto_chacha20_poly1305.h"
 #include "ocrypto_poly1305.h"
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**@cond */
 typedef struct {

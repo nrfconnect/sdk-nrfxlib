@@ -25,13 +25,14 @@
 #ifndef OCRYPTO_POLY1305_H
 #define OCRYPTO_POLY1305_H
 
-
 #include <stddef.h>
 #include <stdint.h>
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**
  * Key length.
@@ -139,4 +140,4 @@ void ocrypto_poly1305(
 
 #endif /* #ifndef OCRYPTO_POLY1305_H */
 
-/**@}*/
+/** @} */

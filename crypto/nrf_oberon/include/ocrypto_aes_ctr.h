@@ -32,9 +32,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**@cond */
 typedef struct {
@@ -53,6 +55,7 @@ typedef struct {
  * AES-CTR encryption/decryption for a given message.
  */
 /**@{*/
+
 /**
  * AES-CTR initialization.
  *
@@ -101,6 +104,7 @@ void ocrypto_aes_ctr_encrypt(ocrypto_aes_ctr_ctx *ctx, uint8_t* ct, const uint8_
  */
 void ocrypto_aes_ctr_decrypt(ocrypto_aes_ctr_ctx *ctx, uint8_t* pt, const uint8_t* ct, size_t ct_len);
 /**@}*/
+
 
 #ifdef __cplusplus
 }

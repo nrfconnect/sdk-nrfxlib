@@ -65,6 +65,7 @@ int ocrypto_ecjpake_verify_key(
     const uint8_t r[32],
     const char *id, size_t id_len);
 
+
 /**
  * EC-JPAKE-P256 generator derivation.
  *

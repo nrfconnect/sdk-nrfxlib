@@ -24,14 +24,17 @@
 #include <stddef.h>
 #include <stdint.h>
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**
  * Length of SHA-256 hash.
  */
 #define ocrypto_sha256_BYTES (32)
+
 
 /**@cond */
 typedef struct {
