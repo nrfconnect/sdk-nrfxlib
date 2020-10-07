@@ -11,17 +11,19 @@
  * Please use release scripts to update it's contents.
  *
  * Repositories:
- * platform_ncs       21988c5e15f30eac4c6e281ed4852b87f671949d https://bitbucket-zoi.dsr-corporation.com/scm/ZOI/platform_ncs.git
- * zboss-stack-src    ada73ece9d90e7cb467f5e47f4be048651f36031 https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_stable
- * zboss-stack-doc    c9bac2c7a596f70f8b95c5e870b42843ec92a57b https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_doc
- * nrf                f893d8df6e43f6025d013f0213bc7d8c610ba2a3 https://github.com/nrfconnect/sdk-nrf
- * zephyr             7d20f2ebf25991b2897b91275939f8d16d38513a https://github.com/nrfconnect/sdk-zephyr
+ * platform_ncs       090fb637f0a62ccbe651d5a3307c0ea31d97dacb https://bitbucket-zoi.dsr-corporation.com/scm/ZOI/platform_ncs.git
+ * zboss-stack-src    4c971a7c222064f81641184c25a0b7d70c739802 https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_stable
+ * zboss-stack-doc    639a0cda809df2ac8289828239c267fc4d4feae4 https://bitbucket-zoi.dsr-corporation.com/scm/zoi/zboss_doc
+ * nrf                14ee6d1f52124fd1538421ef09e780af735d0234 https://github.com/nrfconnect/sdk-nrf
+ * zephyr             247f9af846a29c4ffcefccb24b2a2348a2e9257f https://github.com/nrfconnect/sdk-zephyr
  * mcuboot            50eec26a462d8cbc171dbbdca623979294a6227b https://github.com/nrfconnect/sdk-mcuboot
  * mcumgr             cfe5eb98a9493017448846fd1a44a9340bd0a22f https://github.com/nrfconnect/sdk-mcumgr
- * nrfxlib            7ab7c9f1e4cc2d55bb71ec9116dfcad7efb540f2 https://github.com/nrfconnect/sdk-nrfxlib
+ * nrfxlib            721f19da2be9e2848e507b9a12b6a504e227f2b7 https://github.com/nrfconnect/sdk-nrfxlib
  * cmock              c243b9a7a7b3c471023193992b46cf1bd1910450 https://github.com/ThrowTheSwitch/cmock
  * unity              031f3bbe45f8adf504ca3d13e6f093869920b091 https://github.com/ThrowTheSwitch/unity
  * mbedtls-nrf        2a1d9332d55d1270084232e42df08fdb08129f1b https://github.com/ARMmbed/mbedtls
+ * nanopb             df0e92f474f9cca704fe2b31483f0b4d1b1715a4 https://github.com/nanopb/nanopb
+ * Alexa-Gadgets-Embedded-Sample-Code face92d8c62184832793f518bb1f19379538c5c1 https://github.com/alexa/Alexa-Gadgets-Embedded-Sample-Code
  * cmsis              542b2296e6d515b265e25c6b7208e8fea3014f90 https://github.com/zephyrproject-rtos/cmsis
  * canopennode        5c6b0566d56264efd4bf23ed58bc7cb8b32fe063 https://github.com/zephyrproject-rtos/canopennode
  * ci-tools           da9a2df574094f52d87a03f6393928bdc7dce17c https://github.com/zephyrproject-rtos/ci-tools
@@ -47,13 +49,13 @@
 
 
 /** ZBOSS build tag */
-#define ZBOSS_BUILD_TAG "09_10_2020"
+#define ZBOSS_BUILD_TAG "10_06_2020"
 
 /** ZBOSS build date (UTC) */
-#define ZBOSS_BUILD_DATE 20200923
+#define ZBOSS_BUILD_DATE 20201007
 
 /** ZBOSS build time (UTC) */
-#define ZBOSS_BUILD_TIME 175917
+#define ZBOSS_BUILD_TIME 104209
 
 
 #endif /* ZBOSS_BUILD_INFO_H__ */

@@ -121,9 +121,9 @@ extern zb_uint_t g_trace_inside_intr;
 #define TRACE_SUBSYSTEM_SECUR     0x0080  /**< Security subsystem. */
 
 #define TRACE_SUBSYSTEM_ZCL       0x0100  /**< ZCL subsystem. */
-/** @cond DOXYGEN_ZLL_SECTION*/
-#define TRACE_SUBSYSTEM_ZLL       0x0200  /**< ZLL subsystem. */
-/** @endcond */ /* DOXYGEN_ZLL_SECTION */
+/** @cond DOXYGEN_TOUCHLINK_FEATURE */
+#define TRACE_SUBSYSTEM_ZLL       0x0200  /**< ZLL/Touchlink subsystem. */
+/** @endcond */ /* DOXYGEN_TOUCHLINK_FEATURE */
 /** @cond internals_doc */
 #define TRACE_SUBSYSTEM_JSON      TRACE_SUBSYSTEM_ZLL  /**< JSON decoding is used in app,
                                            * else free */
@@ -140,6 +140,8 @@ extern zb_uint_t g_trace_inside_intr;
 /** @cond internals_doc */
 #define TRACE_SUBSYSTEM_USB       0x8000
 /** @endcond */ /* internals_doc */
+
+#define TRACE_SUBSYSTEM_INFO      (zb_uint_t)(-1)  /**< Common subsystem */
 
 #define TRACE_SUBSYSTEM_OTA TRACE_SUBSYSTEM_ZGP /**< OTA subsystem */
 #define TRACE_SUBSYSTEM_ZSE       TRACE_SUBSYSTEM_CLOUD  /**< ZSE subsystem. Not conflicting
@@ -510,13 +512,13 @@ typedef struct zb_byte128_struct_s
  *  @{
  */
 /** @brief Error message. */
-#define TRACE_ERROR (zb_uint_t)-1, 1
+#define TRACE_ERROR TRACE_SUBSYSTEM_INFO, 0
 /** @brief Information message level 1. */
-#define TRACE_INFO1 (zb_uint_t)-1, 2
+#define TRACE_INFO1 TRACE_SUBSYSTEM_INFO, 1
 /** @brief Information message level 2. */
-#define TRACE_INFO2 (zb_uint_t)-1, 3
+#define TRACE_INFO2 TRACE_SUBSYSTEM_INFO, 2
 /** @brief Information message level 3. */
-#define TRACE_INFO3 (zb_uint_t)-1, 4
+#define TRACE_INFO3 TRACE_SUBSYSTEM_INFO, 3
 
 /** @} */ /* TRACE_GENERAL_MESSAGES */
 
@@ -582,6 +584,7 @@ typedef struct zb_byte128_struct_s
 #define FMT__A_D_D                                      TRACE_ARG_SIZE(0,2,0,0,1)
 #define FMT__A_D_D_P_H                                  TRACE_ARG_SIZE(1,2,0,1,1)
 #define FMT__A_D_H                                      TRACE_ARG_SIZE(1,1,0,0,1)
+#define FMT__A_D_H_H                                    TRACE_ARG_SIZE(2,1,0,0,1)
 #define FMT__A_D_P_H_H_H                                TRACE_ARG_SIZE(3,1,0,1,1)
 #define FMT__A_H                                        TRACE_ARG_SIZE(1,0,0,0,1)
 #define FMT__A_H_H                                      TRACE_ARG_SIZE(2,0,0,0,1)
@@ -629,6 +632,8 @@ typedef struct zb_byte128_struct_s
 #define FMT__D_D_L_P                                    TRACE_ARG_SIZE(0,2,1,1,0)
 #define FMT__D_D_P                                      TRACE_ARG_SIZE(0,2,0,1,0)
 #define FMT__D_D_P_D                                    TRACE_ARG_SIZE(0,3,0,1,0)
+#define FMT__D_P_P_D                                    TRACE_ARG_SIZE(0,2,0,2,0)
+#define FMT__D_P_P_P                                    TRACE_ARG_SIZE(0,1,0,3,0)
 #define FMT__D_D_P_D_D                                  TRACE_ARG_SIZE(0,4,0,1,0)
 #define FMT__D_D_P_D_L                                  TRACE_ARG_SIZE(0,3,1,1,0)
 #define FMT__D_D_P_H                                    TRACE_ARG_SIZE(1,2,0,1,0)

@@ -28,6 +28,7 @@ void zb_trans_buffer_free(zb_uint8_t *p_buf);
 zb_bool_t zb_trans_set_pending_bit(zb_uint8_t *addr, zb_bool_t value, zb_bool_t extended);
 void zb_trans_src_match_tbl_drop(void);
 zb_time_t osif_sub_trans_timer(zb_time_t t2, zb_time_t t1);
+zb_bool_t zb_trans_rx_pending(void);
 zb_uint8_t zb_trans_get_next_packet(zb_bufid_t buf);
 
 #endif /* ZB_TRANSCEIVER_H__ */

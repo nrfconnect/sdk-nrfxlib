@@ -2612,6 +2612,11 @@ void zb_zdo_set_tc_standard_distributed_key(zb_uint8_t *key_ptr);
 void zb_zdo_setup_network_as_distributed(void);
 
 /**
+ *  @brief Setups insecure join flag
+ */
+void zb_zdo_set_aps_unsecure_join(zb_bool_t insecure_join);
+
+/**
    Enable distributed security linkage
 
    Without that call ZR is not able to create a Distributed network.

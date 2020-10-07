@@ -792,6 +792,25 @@ void zb_set_ed_timeout(zb_uint_t to);
 */
 void zb_set_keepalive_timeout(zb_uint_t to);
 
+/**
+ *  Enumeration, which stores all values that a ZC/ZR can set as the supported keepalive method
+ */
+typedef enum nwk_keepalive_supported_method_e
+{
+  ED_KEEPALIVE_DISABLED = 0,    /*!< ZC/ZR doesn't support Keepalive feature */
+  MAC_DATA_POLL_KEEPALIVE,      /*!< ZC/ZR supports Keepalive feature by means of MAC Data Poll */
+  ED_TIMEOUT_REQUEST_KEEPALIVE, /*!< ZC/ZR supports Keepalive feature by means of ED Timeout Request */
+  BOTH_KEEPALIVE_METHODS,       /*!< ZC/ZR supports both MAC Data Poll and ED Timeout Request as Keepalive methods */
+} nwk_keepalive_supported_method_t;
+
+/**
+   Set keep alive mode.
+
+   Use it to set which method a device should use in poll context.
+   @param mode - the keepalive mode a device wants to set
+*/
+void zb_set_keepalive_mode(nwk_keepalive_supported_method_t mode);
+
 /** @} */ /* zb_general_set */
 
 

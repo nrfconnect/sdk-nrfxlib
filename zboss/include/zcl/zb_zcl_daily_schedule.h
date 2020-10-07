@@ -49,7 +49,7 @@
 #include "zboss_api_aps.h"
 #include "zb_zcl_common.h"
 
-/** @cond DOXYGEN_ZCL_SECTION */
+/** @cond (DOXYGEN_ZCL_SECTION && DOXYGEN_DAILY_SCHEDULE_CLUSTER) */
 
 /** @addtogroup ZB_ZCL_DAILY_SCHEDULE
   *  @{

@@ -327,6 +327,7 @@ void zb_osif_file_copy(const zb_char_t *name_src, const zb_char_t *name_dst);
 zb_osif_file_t *zb_osif_file_open(const zb_char_t *name, const zb_char_t *mode);
 zb_osif_file_t *zb_osif_init_trace(zb_char_t *name);
 zb_osif_file_t *zb_osif_file_stdout(void);
+zb_osif_file_t *zb_osif_file_stdin(void);
 void zb_osif_file_close(zb_osif_file_t *f);
 int zb_osif_file_remove(const zb_char_t *name);
 void zb_osif_trace_printf(zb_osif_file_t *f, zb_char_t *format, ...);
@@ -342,6 +343,9 @@ int zb_osif_file_truncate(zb_osif_file_t *f, zb_uint32_t off);
 int zb_osif_file_sync(zb_osif_file_t *f);
 void zb_osif_trace_get_time(zb_uint_t *sec, zb_uint_t *msec);
 zb_osif_file_t *zb_osif_popen(zb_char_t *arg);
+
+int zb_osif_stream_read(zb_osif_file_t *stream, zb_uint8_t *buf, zb_uint_t len);
+int zb_osif_stream_write(zb_osif_file_t *stream, zb_uint8_t *buf, zb_uint_t len);
 
 enum zb_file_path_base_type_e
 {

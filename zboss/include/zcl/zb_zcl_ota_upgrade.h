@@ -352,6 +352,8 @@ typedef struct zb_zcl_ota_upgrade_server_insert_file_s
  *
  * @param param - buffer with @ref zb_zcl_ota_upgrade_server_insert_file_s structure
  *
+ * @note Takes buffer ownership.
+ *
  * @note OTA file must be saved in memory until call zb_zcl_ota_upgrade_remove_file
 */
 zb_ret_t zb_zcl_ota_upgrade_insert_file(zb_uint8_t param);
@@ -379,6 +381,8 @@ typedef struct zb_zcl_ota_upgrade_server_remove_file_s
 /*! @brief Remove upgrade file from Server upgrade table
  *
  * @param param - buffer with @ref zb_zcl_ota_upgrade_server_remove_file_s structure
+ *
+ * @note Takes buffer ownership.
  *
  * @note After calling this command OTA file may be removed from memory
 */
@@ -2159,7 +2163,7 @@ void zb_zcl_ota_upgrade_send_query_next_image_response(zb_zcl_parsed_hdr_t *zcl_
 void zb_zcl_ota_upgrade_send_image_block_response(zb_zcl_parsed_hdr_t *zcl_header, zb_uindex_t table_idx,
                                                   zb_bool_t block_present,
                                                   zb_uint32_t offset, zb_uint8_t data_size,
-                                                  zb_uint8_t* data);
+                                                  const zb_uint8_t* data);
 
 #define ZB_ZCL_CLUSTER_ID_OTA_UPGRADE_SERVER_ROLE_INIT zb_zcl_ota_upgrade_init_srv
 #define ZB_ZCL_CLUSTER_ID_OTA_UPGRADE_CLIENT_ROLE_INIT zb_zcl_ota_upgrade_init_cli

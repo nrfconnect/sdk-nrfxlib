@@ -16,6 +16,7 @@ Added
 Changes
 =======
 
-* Updated ZBOSS stack to version ``09_10_2020``.
+* Updated ZBOSS stack to version ``10_06_2020``.
 * Unified OSIF layer for LEDs and buttons.
 * Updated the ZBOSS release naming convention for nrfxlib commit.
+* Changed MAC LL API.

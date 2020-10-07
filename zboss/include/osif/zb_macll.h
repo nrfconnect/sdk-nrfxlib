@@ -45,13 +45,13 @@ typedef struct
 
 void zb_macll_init(void);
 
-void zb_macll_set_trans_int(void);
-void zb_macll_clear_trans_int(void);
-zb_bool_t zb_macll_get_trans_int(void);
+#define zb_macll_set_trans_int()      /* Transceiver interrupt is a logical or of the TX and RX interrupt flag. */
+#define zb_macll_clear_trans_int()    /* Transceiver interrupt is a logical or of the TX and RX interrupt flag. */
+#define zb_macll_get_trans_int()      (zb_macll_get_rx_flag() || zb_macll_get_tx_flag())
 
-void zb_macll_set_rx_flag(void);
-void zb_macll_clear_rx_flag(void);
-zb_bool_t zb_macll_get_rx_flag(void);
+#define zb_macll_set_rx_flag()        /* Implemented through reading RX status via zb_trans_rx_pending(). */
+#define zb_macll_clear_rx_flag()      /* Implemented through reading RX status via zb_trans_rx_pending(). */
+#define zb_macll_get_rx_flag          zb_trans_rx_pending
 
 void zb_macll_set_tx_flag(void);
 void zb_macll_clear_tx_flag(void);

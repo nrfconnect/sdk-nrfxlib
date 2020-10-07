@@ -596,25 +596,6 @@ typedef void (ZB_CODE * zb_zgp_app_comm_ind_cb_t)(
    @{
 */
 
-#ifdef ZB_ENABLE_ZGP_MIGRATE_OLD_SINK_DATASET
-/**
- * @brief Application search ZGP manufactured specific device callback
- *
- * Callback is called when sink table entry data is restored from old NVRAM version.
- *
- * Application search ZGP manufactured specific device callback
- * should be set during ZGP initialization using
- * @ref ZB_ZGP_REGISTER_APP_SEARCH_ZGP_DEVICE_CB macro.
- *
- * @param zgpd_id         [in]  ZGPD ID
- * @param manuf_model_id  [out]  Manufacturer model ID
- * @return RET_OK on success, RET_NOT_FOUND otherwise
- */
-typedef zb_ret_t (ZB_CODE * zb_zgp_app_search_zgp_device_cb_t)(
-                  zb_zgpd_id_t *zgpd_id,
-                  zb_uint16_t  *manuf_model_id);
-#endif  /* ZB_ENABLE_ZGP_MIGRATE_OLD_SINK_DATASET */
-
 /*! @} */
 /*! @endcond */
 
@@ -690,19 +671,6 @@ void zb_zgps_register_app_cfm_cb(zb_zgp_app_cfm_cb_t cb);
   zb_zgps_register_app_cfm_cb((cb)); \
 }
 
-#ifdef ZB_ENABLE_ZGP_MIGRATE_OLD_SINK_DATASET
-/**
- * @brief Register application search ZGP manufactured specific device callback
- *
- * @param cb [in]  Application search ZGP manufactured specific device callback (@ref zb_zgp_app_search_zgp_device_cb_t)
- */
-void zb_zgps_register_app_search_zgp_device_cb(zb_zgp_app_search_zgp_device_cb_t cb);
-#define ZB_ZGP_REGISTER_APP_SEARCH_ZGP_DEVICE_CB(cb) \
-{ \
-  zb_zgps_register_app_search_zgp_device_cb((cb)); \
-}
-#endif  /* ZB_ENABLE_ZGP_MIGRATE_OLD_SINK_DATASET */
-
 /*! @} */
 /*! @endcond */
 
@@ -714,8 +682,8 @@ void zb_zgps_register_app_search_zgp_device_cb(zb_zgp_app_search_zgp_device_cb_t
 
 enum zb_zgpd_switch_type_e
 {
-  ZB_GPD_SWITCH_TYPE_BUTTON                        = 0b01,
-  ZB_GPD_SWITCH_TYPE_ROCKER                        = 0b10,
+  ZB_GPD_SWITCH_TYPE_BUTTON                        = 0x01, /* 0b01 */
+  ZB_GPD_SWITCH_TYPE_ROCKER                        = 0x02, /* 0b10 */
 };
 /********************************************************************/
 /********************* GPDF command IDs *****************************/
@@ -1538,9 +1506,10 @@ zb_ret_t zb_zgp_convert_8bit_vector(zb_uint8_t vector_8bit_cmd_id,      /* press
 
    @param skip if ZB_TRUE, skip incoming GP frames
   */
-void zb_zgp_set_skip_gpfd(zb_bool_t skip);
 
-zb_bool_t zb_zgp_get_skip_gpfd();
+void       zb_zgp_set_skip_gpdf(zb_uint8_t skip);
+zb_uint8_t zb_zgp_get_skip_gpdf(void);
+void       zb_zgp_sync_pib(zb_uint8_t param);
 
 #endif  /* ZB_ENABLE_ZGP_DIRECT */
 
