@@ -14,21 +14,6 @@
 
 
 /**
- * SDK Type (HA, SE, etc.) - Home Automation
- */
-#define CONFIG_ZB_SDK_TYPE_HA y
-
-/**
- * SDK Type (HA, SE, etc.) - Smart Energy
- */
-/* #undef CONFIG_ZB_SDK_TYPE_SE */
-
-/**
- * ZB_SDK_TYPE
- */
-#define CONFIG_ZB_SDK_TYPE 1
-
-/**
  * NCP trasnport type - Serial (UART)
  */
 /* #undef CONFIG_ZB_NCP_TRANSPORT_TYPE_SERIAL */
@@ -52,6 +37,21 @@
  * Enable ZBOSS TRACE subsystem in NCP firmware
  */
 /* #undef CONFIG_ZB_NCP_DEBUG */
+
+/**
+ * SDK Type (HA, SE, etc.) - Home Automation
+ */
+#define CONFIG_ZB_SDK_TYPE_HA y
+
+/**
+ * SDK Type (HA, SE, etc.) - Smart Energy
+ */
+/* #undef CONFIG_ZB_SDK_TYPE_SE */
+
+/**
+ * ZB_SDK_TYPE
+ */
+#define CONFIG_ZB_SDK_TYPE 1
 
 /**
  * Compiled-in trace mask of ZBOSS stack logs

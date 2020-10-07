@@ -166,33 +166,6 @@ zb_bool_t zb_osif_is_sleeping(void);
  */
 void zb_osif_get_ieee_eui64(zb_ieee_addr_t ieee_eui64);
 
-#ifdef CONFIG_RADIO_STATISTICS
-typedef struct zb_osif_radio_stats_s
-{
-  zb_uint32_t rx_successful;            /* Success: nrf_802154_received_timestamp_raw() calls count. */
-  zb_uint32_t rx_err_none;              /* Error Code: 0x00 */
-  zb_uint32_t rx_err_invalid_frame;     /* Error Code: 0x01 */
-  zb_uint32_t rx_err_invalid_fcs;       /* Error Code: 0x02 */
-  zb_uint32_t rx_err_invalid_dest_addr; /* Error Code: 0x03 */
-  zb_uint32_t rx_err_runtime;           /* Error Code: 0x04 */
-  zb_uint32_t rx_err_timeslot_ended;    /* Error Code: 0x05 */
-  zb_uint32_t rx_err_aborted;           /* Error Code: 0x06 */
-
-  zb_uint32_t tx_successful;            /* Success: nrf_802154_transmitted_raw() calls count. */
-  zb_uint32_t tx_err_none;              /* Error Code: 0x00 */
-  zb_uint32_t tx_err_busy_channel;      /* Error Code: 0x01 */
-  zb_uint32_t tx_err_invalid_ack;       /* Error Code: 0x02 */
-  zb_uint32_t tx_err_no_mem;            /* Error Code: 0x03 */
-  zb_uint32_t tx_err_timeslot_ended;    /* Error Code: 0x04 */
-  zb_uint32_t tx_err_no_ack;            /* Error Code: 0x05 */
-  zb_uint32_t tx_err_aborted;           /* Error Code: 0x06 */
-  zb_uint32_t tx_err_timeslot_denied;   /* Error Code: 0x07 */
-
-} zb_osif_radio_stats_t;
-
-zb_osif_radio_stats_t *zb_osif_get_radio_stats(void);
-#endif /* CONFIG_RADIO_STATISTICS */
-
 /**
  * @}
  */

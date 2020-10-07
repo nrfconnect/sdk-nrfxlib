@@ -91,7 +91,6 @@ constants etc.
  *   A.3.2.4 GP Combo device
  *    - ability to receive any GP frame both in direct mode and in tunneled mode
  *
- * For migration old sink dataset use ZB_ENABLE_ZGP_MIGRATE_OLD_SINK_DATASET define
  */
 
 #ifdef ZB_ZGPD_ROLE
@@ -138,10 +137,6 @@ constants etc.
 /** Max number of cluster identifiers in one
  *  functionality matching table entry */
 #define ZB_ZGP_TBL_MAX_CLUSTERS 5
-#endif
-
-#ifndef ZB_ENABLE_ZGP_SINK
-#undef ZB_ENABLE_ZGP_MIGRATE_OLD_SINK_DATASET
 #endif
 
 /** Sink table size */
@@ -813,11 +808,11 @@ ZB_ED_RX_OFF_WHEN_IDLE
 #define ZB_DEFAULT_SCAN_DURATION 3
 
 #ifdef ZB_SUBGHZ_BAND_ENABLED
-/** @cond DOXYGEN_SUBGHZ_SECTION */
+/** @cond DOXYGEN_SUBGHZ_FEATURE */
 /* as defined in D.7 of Zigbee/r22 */
+/** @endcond */ /* DOXYGEN_SUBGHZ_FEATURE */
 #else
 #define ZB_DEFAULT_SCAN_DURATION_SUB_GHZ ZB_DEFAULT_SCAN_DURATION
-/** @endcond */ /* DOXYGEN_SUBGHZ_SECTION */
 #endif /* !ZB_SUBGHZ_BAND_ENABLED */
 
 #else  /* ZB_TRACE_LEVEL */
@@ -1088,7 +1083,7 @@ exponent.
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /* Enable only 1 profile support: ZLL or HA */
-/** @cond DOXYGEN_ZLL_SECTION */
+/** @cond DOXYGEN_TOUCHLINK_FEATURE */
 #if defined ZB_ENABLE_ZLL || defined DOXYGEN
 /** @brief Controls inter-PAN exchange feature */
 #define ZB_ENABLE_INTER_PAN_EXCHANGE
@@ -1102,7 +1097,7 @@ exponent.
 #endif
 #define ZB_ZLL_PRIMARY_CHANNELS {11, 15, 20, 25}
 #endif /* defined ZB_ENABLE_ZLL || defined DOXYGEN */
-/** @endcond */ /* DOXYGEN_ZLL_SECTION */
+/** @endcond */ /* DOXYGEN_TOUCHLINK_FEATURE */
 
 /*************************Serial and UDP trace**********************/
 #ifndef ZB_PLATFORM_LINUX /* Uncomment for binary logs! */
@@ -1387,11 +1382,6 @@ exponent.
 /** Save neighbor table in the NVRAM */
 #define ZB_STORE_NEIGHBOR_TBL
 
-
-
-#ifndef ZB_LITE_NO_NVRAM_DATASET_VERSIONING
-#define ZB_NVRAM_DATASET_OWN_VERSIONING
-#endif
 
 /* Check for old GP definitions and produce a error */
 #if defined ENABLE_ZGP_TARGET_PLUS || defined ZB_ENABLE_ZGP_EP || defined ZB_DIRECT_MODE_WITH_ZGPD

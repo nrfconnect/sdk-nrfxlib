@@ -2098,35 +2098,37 @@ typedef struct zb_zcl_set_attr_value_param_s
  *  @param p_value - pointer of new value attribute
  *  @param result - [out] result user callback
 */
-#define ZB_ZCL_INVOKE_USER_APP_SET_ATTR_WITH_RESULT(                                    \
-  buffer, ep, clusterId, attrDesc, p_value, result)                \
-{                                                                                       \
+#define ZB_ZCL_INVOKE_USER_APP_SET_ATTR_WITH_RESULT(                           \
+  buffer, ep, clusterId, attrDesc, p_value, result)                            \
+{                                                                              \
   (result) = RET_OK;                                                           \
                                                                                \
-  if (ZCL_CTX().device_cb)                                                              \
-  {                                                                                     \
-    zb_zcl_device_callback_param_t *data = NULL;                               \
+  if (ZCL_CTX().device_cb)                                                     \
+  {                                                                            \
+    zb_zcl_device_callback_param_t *data =                                     \
+      ZB_BUF_GET_PARAM((buffer), zb_zcl_device_callback_param_t);              \
     zb_uint8_t size =                                                          \
       zb_zcl_get_attribute_size((attrDesc)->type, (attrDesc)->data_p);         \
                                                                                \
     switch ((zb_zcl_attr_type_t)(attrDesc)->type)                              \
     {                                                                          \
-      case ZB_ZCL_ATTR_TYPE_OCTET_STRING:                                      \
       case ZB_ZCL_ATTR_TYPE_CHAR_STRING:                                       \
+      case ZB_ZCL_ATTR_TYPE_OCTET_STRING:                                      \
+      case ZB_ZCL_ATTR_TYPE_LONG_OCTET_STRING:                                 \
+      case ZB_ZCL_ATTR_TYPE_ARRAY:                                             \
+      case ZB_ZCL_ATTR_TYPE_CUSTOM_32ARRAY:                                    \
+      case ZB_ZCL_ATTR_TYPE_128_BIT_KEY:                                       \
       {                                                                        \
-        zb_uint8_t *ptr =                                                      \
-          (zb_uint8_t*)zb_buf_get_tail(                                        \
-            (buffer), sizeof(zb_zcl_device_callback_param_t) + size);          \
+        zb_uint8_t *ptr = (zb_uint8_t*)zb_buf_initial_alloc((buffer), size);   \
+        data = ZB_BUF_GET_PARAM((buffer), zb_zcl_device_callback_param_t);     \
                                                                                \
         ZB_MEMCPY(ptr, (p_value), size);                                       \
-        data = (zb_zcl_device_callback_param_t*)(void*)(ptr + size);           \
         data->cb_param.set_attr_value_param.values.data_variable.size = size;  \
         data->cb_param.set_attr_value_param.values.data_variable.p_data = ptr; \
       }                                                                        \
       break;                                                                   \
                                                                                \
       default:                                                                 \
-        data = ZB_BUF_GET_PARAM((buffer), zb_zcl_device_callback_param_t);     \
         ZB_MEMCPY(&(data->cb_param.set_attr_value_param.values),               \
                   (p_value),                                                   \
                   size);                                                       \
@@ -2135,65 +2137,14 @@ typedef struct zb_zcl_set_attr_value_param_s
                                                                                \
     if (data)                                                                  \
     {                                                                          \
-    data->device_cb_id = ZB_ZCL_SET_ATTR_VALUE_CB_ID;                                   \
-    data->endpoint = (ep);                                              \
+      data->device_cb_id = ZB_ZCL_SET_ATTR_VALUE_CB_ID;                        \
+      data->endpoint = (ep);                                                   \
       data->attr_type = (zb_zcl_attr_access_t) (attrDesc)->type;               \
-    data->cb_param.set_attr_value_param.cluster_id = (clusterId);                       \
-    data->cb_param.set_attr_value_param.attr_id = (attrDesc)->id;                       \
-    (ZCL_CTX().device_cb)((buffer));                                   \
-    (result) = data->status;                                                            \
-  }                                                                                     \
-  }                                                                                     \
-}
-
-/** @internal @brief Inform User Application about change attribute
- *  @param buffer - buffer for transmit data
- *  @param clusterId - cluster ID
- *  @param attrDesc - attribute description
- *  @param p_value - pointer of new value attribute
-*/
-#define ZB_ZCL_INVOKE_USER_APP_SET_ATTR(                                                \
-  buffer, ep, clusterId, attrDesc, p_value)                       \
-{                                                                                       \
-  if (ZCL_CTX().device_cb)                                                              \
-  {                                                                                     \
-    zb_zcl_device_callback_param_t *data = NULL;                               \
-    zb_uint8_t size =                                                          \
-      zb_zcl_get_attribute_size((attrDesc)->type, (attrDesc)->data_p);         \
-                                                                               \
-    switch ((zb_zcl_attr_type_t)(attrDesc)->type)                              \
-    {                                                                          \
-      case ZB_ZCL_ATTR_TYPE_OCTET_STRING:                                      \
-      case ZB_ZCL_ATTR_TYPE_CHAR_STRING:                                       \
-      {                                                                        \
-        zb_uint8_t *ptr =                                                      \
-          (zb_uint8_t*)zb_buf_get_tail(                                        \
-            (buffer), sizeof(zb_zcl_device_callback_param_t) + size);          \
-                                                                               \
-        ZB_MEMCPY(ptr, (p_value), size);                                       \
-        data = (zb_zcl_device_callback_param_t*)(void*)(ptr + size);           \
-        data->cb_param.set_attr_value_param.values.data_variable.size = size;  \
-        data->cb_param.set_attr_value_param.values.data_variable.p_data = ptr; \
-      }                                                                        \
-      break;                                                                   \
-                                                                               \
-      default:                                                                 \
-        data = ZB_BUF_GET_PARAM((buffer), zb_zcl_device_callback_param_t);     \
-        ZB_MEMCPY(&(data->cb_param.set_attr_value_param.values),               \
-                  (p_value),                                                   \
-                  size);                                                       \
-      break;                                                                   \
+      data->cb_param.set_attr_value_param.cluster_id = (clusterId);            \
+      data->cb_param.set_attr_value_param.attr_id = (attrDesc)->id;            \
+      (ZCL_CTX().device_cb)((buffer));                                         \
+      (result) = data->status;                                                 \
     }                                                                          \
-                                                                               \
-    if (data)                                                                  \
-    {                                                                          \
-    data->device_cb_id = ZB_ZCL_SET_ATTR_VALUE_CB_ID;                                   \
-    data->endpoint = (ep);                                              \
-      data->attr_type = (zb_zcl_attr_access_t) (attrDesc)->type;               \
-    data->cb_param.set_attr_value_param.cluster_id = (clusterId);                       \
-    data->cb_param.set_attr_value_param.attr_id = (attrDesc)->id;                       \
-    (ZCL_CTX().device_cb)((buffer));                                   \
-  }                                                                                     \
   }                                                                            \
 }
 
