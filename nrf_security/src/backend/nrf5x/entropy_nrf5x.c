@@ -14,7 +14,7 @@ int mbedtls_hardware_poll(void *data,
                           size_t len,
                           size_t *olen )
 {
-    struct device *dev;
+    const struct device *dev;
     size_t chunk_size;
 
     (void)data;
