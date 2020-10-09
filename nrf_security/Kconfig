@@ -162,7 +162,7 @@ menuconfig NRF_SECURITY_RNG
 	bool
 	prompt "Random Number Generator support"
 	depends on ENTROPY_HAS_DRIVER
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select MBEDTLS_SHA256_C
 	help
 	  The Random Number Generator support in nRF Security provides a
@@ -195,7 +195,7 @@ endif # NRF_SECURITY_RNG
 menuconfig MBEDTLS_AES_C
 	bool
 	prompt "AES   - Advanced Encryption Standard"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select CC310_MBEDTLS_AES_C if CC310_SINGLE_BACKEND
 	select OBERON_MBEDTLS_AES_C if OBERON_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_AES_C if MBEDTLS_VANILLA_SINGLE_BACKEND
@@ -335,7 +335,7 @@ comment "Cipher Selection"
 
 config MBEDTLS_CIPHER_MODE_CBC
 	bool "AES-CBC - AES Cipher Block Chaining mode"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  Enable the AES Cipher Block Chaining (CBC) mode,
 	  MBEDTLS_CIPHER_MODE_CBC setting in mbed TLS config file.
@@ -403,7 +403,7 @@ endif # MBEDTLS_CIPHER_MODE_CBC
 
 config MBEDTLS_CIPHER_MODE_CTR
 	bool "AES-CTR - AES Counter Block Cipher mode"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  Enable the AES Counter Block Cipher mode (CTR) mode,
 	  MBEDTLS_CIPHER_MODE_CTR setting in mbed TLS config file.
@@ -438,7 +438,7 @@ endif # MBEDTLS_CIPHER_MODE_CTR
 config MBEDTLS_CIPHER_MODE_CFB
 	bool "AES-CFB - AES Cipher Feedback mode"
 	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  Enable the AES Cipher Feedback mode (CFB) mode,
 	  MBEDTLS_CIPHER_MODE_CFB setting in mbed TLS config file.
@@ -468,7 +468,7 @@ endif # MBEDTLS_CIPHER_MODE_CFB
 config MBEDTLS_CIPHER_MODE_OFB
 	bool "AES-OFB - AES Output Feedback mode"
 	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  Enable the AES Output Feedback mode (OFB) mode,
 	  MBEDTLS_CIPHER_MODE_OFB setting in mbed TLS config file.
@@ -498,7 +498,7 @@ endif # MBEDTLS_CIPHER_MODE_OFB
 config MBEDTLS_CIPHER_MODE_XTS
 	bool "AES-XTS - AES Xor-encrypt-xor with ciphertext stealing mode"
 	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  Enable the AES Xor-encrypt-xor with ciphertext stealing mode (XTS) mode,
 	  MBEDTLS_CIPHER_MODE_XTS setting in mbed TLS config file.
@@ -524,7 +524,7 @@ endif # MBEDTLS_CIPHER_MODE_XTS
 
 menuconfig MBEDTLS_CMAC_C
 	bool "AES-CMAC - AES Cipher-based Message Authentication Code mode for block ciphers"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select CC310_MBEDTLS_CMAC_C if CC310_SINGLE_BACKEND
 	select OBERON_MBEDTLS_CMAC_C if OBERON_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_CMAC_C if MBEDTLS_VANILLA_SINGLE_BACKEND
@@ -607,7 +607,7 @@ menu "AEAD  - Authenticated Encryption with Associated Data"
 menuconfig MBEDTLS_CCM_C
 	bool "AES-CCM - AES Counter with CBC-MAC mode"
 	depends on MBEDTLS_AES_C
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select CC310_MBEDTLS_CCM_C if CC310_SINGLE_BACKEND
 	select OBERON_MBEDTLS_CCM_C if OBERON_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_CCM_C if MBEDTLS_VANILLA_SINGLE_BACKEND
@@ -697,7 +697,7 @@ config MBEDTLS_GCM_C
 	prompt "AES-GCM - AES Galois/Counter Mode support"
 	depends on MBEDTLS_AES_C
 	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  Enable the GCM module.
 	  MBEDTLS_GCM_C setting in mbed TLS config file.
@@ -705,7 +705,7 @@ config MBEDTLS_GCM_C
 config MBEDTLS_CHACHA20_C
 	bool
 	prompt "CHACHA20 stream cipher support"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select CC310_MBEDTLS_CHACHA20_C if CC310_SINGLE_BACKEND
 	select OBERON_MBEDTLS_CHACHA20_C if OBERON_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_CHACHA20_C if MBEDTLS_VANILLA_SINGLE_BACKEND
@@ -763,7 +763,7 @@ endif # MBEDTLS_CHACHA20_C
 config MBEDTLS_POLY1305_C
 	bool
 	prompt "POLY1305 module support"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select CC310_MBEDTLS_POLY1305_C if CC310_SINGLE_BACKEND
 	select OBERON_MBEDTLS_POLY1305_C if OBERON_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_POLY1305_C if MBEDTLS_VANILLA_SINGLE_BACKEND
@@ -816,7 +816,7 @@ config MBEDTLS_CHACHAPOLY_C
 	bool
 	prompt "CHACHA-POLY module support"
 	depends on (MBEDTLS_CHACHA20_C && MBEDTLS_POLY1305_C)
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select CC310_MBEDTLS_CHACHAPOLY_C if CC310_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_CHACHAPOLY_C if OBERON_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_CHACHAPOLY_C if MBEDTLS_VANILLA_SINGLE_BACKEND
@@ -866,7 +866,7 @@ endmenu # AEAD  - Authenticated Encryption with Associated Data
 menuconfig MBEDTLS_DHM_C
 	bool
 	prompt "DHM   - Diffie-Hellman-Merkel"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select CC310_MBEDTLS_DHM_C if CC310_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_DHM_C if OBERON_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_DHM_C if MBEDTLS_VANILLA_SINGLE_BACKEND
@@ -927,7 +927,7 @@ endif # MBEDTLS_DHM_C
 menuconfig MBEDTLS_ECP_C
 	bool
 	prompt "ECC - Eliptic Curve Cryptography"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select CC310_MBEDTLS_ECP_C if CC310_SINGLE_BACKEND
 	select OBERON_MBEDTLS_ECP_C if OBERON_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_ECP_C if MBEDTLS_VANILLA_SINGLE_BACKEND
@@ -989,7 +989,7 @@ config MBEDTLS_ECDH_C
 	select CC310_MBEDTLS_ECDH_C if CC310_MBEDTLS_ECP_C
 	select OBERON_MBEDTLS_ECDH_C if OBERON_MBEDTLS_ECP_C
 	select VANILLA_MBEDTLS_ECDH_C if VANILLA_MBEDTLS_ECP_C
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  Enable the ECDH module.
 	  MBEDTLS_ECDH_C setting in mbed TLS config file.
@@ -1020,7 +1020,7 @@ endif # MBEDTLS_ECDH_C
 config MBEDTLS_ECDSA_C
 	bool
 	prompt "ECDSA - Elliptic Curve Digital Signature Algorithm"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select CC310_MBEDTLS_ECDSA_C if CC310_MBEDTLS_ECP_C
 	select OBERON_MBEDTLS_ECDSA_C if OBERON_MBEDTLS_ECP_C
 	select VANILLA_MBEDTLS_ECDSA_C if VANILLA_MBEDTLS_ECP_C
@@ -1099,7 +1099,7 @@ config MBEDTLS_ECP_DP_SECP224R1_ENABLED
 
 config MBEDTLS_ECP_DP_SECP256R1_ENABLED
 	bool "Enable NIST curve secp256r1"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  MBEDTLS_ECP_DP_SECP256R1_ENABLED setting in mbed TLS config file.
 
@@ -1184,7 +1184,7 @@ endif # MBEDTLS_ECP_C
 menuconfig MBEDTLS_RSA_C
 	bool
 	prompt "RSA   - Rivest–Shamir–Adleman cryptosystem"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	select CC310_MBEDTLS_RSA_C if CC310_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_RSA_C if OBERON_SINGLE_BACKEND || MBEDTLS_VANILLA_SINGLE_BACKEND
 	help
@@ -1248,7 +1248,7 @@ config MBEDTLS_SHA1_C
 	select CC310_MBEDTLS_SHA1_C if CC310_SINGLE_BACKEND
 	select OBERON_MBEDTLS_SHA1_C if OBERON_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_SHA1_C if MBEDTLS_VANILLA_SINGLE_BACKEND
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  SHA-1 hash functionality.
 
@@ -1299,7 +1299,7 @@ config MBEDTLS_SHA256_C
 	select CC310_MBEDTLS_SHA256_C if CC310_SINGLE_BACKEND
 	select OBERON_MBEDTLS_SHA256_C if OBERON_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_SHA256_C if MBEDTLS_VANILLA_SINGLE_BACKEND
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  SHA-256 hash functionality.
 
@@ -1347,7 +1347,7 @@ endif # MBEDTLS_SHA256_C
 config MBEDTLS_SHA512_C
 	bool
 	prompt "SHA-512 hash functionality"
-	default y
+	default y if !NRF_SECURITY_DEFAULT_ENABLE_NONE
 	help
 	  SW implemented SHA-512 hash support
 
@@ -1475,6 +1475,16 @@ config MBEDTLS_SSL_CIPHERSUITES
 	  This list can only be used for restricting cipher suites available in the system.
 	  Warning: This field has offers no validation checks.
 	  MBEDTLS_SSL_CIPHERSUITES setting in mbed TLS config file.
+
+config NRF_SECURITY_DEFAULT_ENABLE_NONE
+	bool
+	help
+	  Disable all nRF Security features which are enabled by default.
+	  This option allows to save memory by disabling features that are not needed.
+	  When enabled, if the project requires specific nRF Security features,
+	  these features must be selected explicitly one by one.
+	  This option is promptless and can be only set manually from within
+	  a configuration file.
 
 endif # NRF_SECURITY_ADVANCED
 
