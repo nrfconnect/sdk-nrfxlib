@@ -10,7 +10,7 @@
  * @brief The nrf_cc3xx_platform_ctr_drbg APIs provide PRNG seeded by TRNG in
  *        accordance with <em>NIST SP 800-90A: Recommendation for Random Number
  *        Generation Using Deterministic Random Bit Generators</em>
- *        The generation of TRNG/PRNG data is using Arm CryptoCell cc3xx 
+ *        The generation of TRNG/PRNG data is using Arm CryptoCell cc3xx
  *        hardware acceleration.
  *
  * The pre-built APIs are based on mbedtls_entropy and mbedtls_ctr_drbg
@@ -211,7 +211,7 @@ int nrf_cc3xx_platform_ctr_drbg_get_with_add(
  *
  * @param[in,out]   context     Pointer to structure holding the ctr_drbg context.
  * @param[in]       buffer      Pointer to buffer to hold PRNG data.
- * @param[in]       len         Length of PRNG to get.
+ * @param[in]       length      Length of PRNG to get.
  * @param[out]      olen        Length reported out.
  *
  * @return 0 on success, otherwise a non-zero failure  according to the API

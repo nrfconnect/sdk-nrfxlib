@@ -41,3 +41,5 @@ extern "C"
 #endif
 
 #endif /* NRF_CC3XX_PLATFORM_MUTEX_H__ */
+
+/** @} */

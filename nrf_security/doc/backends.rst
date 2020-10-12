@@ -16,7 +16,7 @@ Some configuration options allow for adding support from multiple backends by ut
 
 The nrf_security module supports the following backends:
 
-* Arm CryptoCell cc310 (in nRF52840 and nRF9160)
+* Arm CryptoCell cc3xx (in nRF52840, nRF9160, and nRF5340)
 * nrf_oberon binary library
 * Original mbed TLS
 
@@ -24,23 +24,24 @@ The nrf_security module supports the following backends:
    Note that whenever this documentation mentions 'original' mbed TLS, it refers to the open-source `Arm mbed TLS project`_, not the customized version available in Zephyr.
    KConfig options used to configure this backend include the term ``VANILLA``.
 
-.. _nrf_security_backends_cc310:
+.. _nrf_security_backends_cc3xx:
 
-Arm CryptoCell cc310 backend
+Arm CryptoCell cc3xx backend
 ****************************
 
-The Arm CryptoCell cc310 backend is a runtime library that provides hardware-accelerated cryptography using the Arm CryptoCell cc310 hardware.
+The Arm CryptoCell cc3xx backend is a runtime library that provides hardware-accelerated cryptography using the Arm CryptoCell cc310/cc312 hardware.
 
-The Arm CryptoCell cc310 backend is only available on the following devices:
+The Arm CryptoCell cc3xx backend is only available on the following devices:
 
 * nRF52840
 * nRF9160
+* nRF5340
 
 
-Enabling the Arm CryptoCell cc310 backend
+Enabling the Arm CryptoCell cc3xx backend
 =========================================
 
-The Arm CryptoCell cc310 backend can be enabled by setting the :option:`CONFIG_CC310_BACKEND` Kconfig variable.
+The Arm CryptoCell cc3xx backend can be enabled by setting the :option:`CONFIG_CC3XX_BACKEND` Kconfig variable.
 
 .. note:: This backend is only available in nRF52840 and nRF9160.
 
@@ -69,7 +70,7 @@ The original mbed TLS backend uses the open-source software from the `Arm mbed T
 
 The software is unaltered from the Arm mbed TLS project source distribution, meaning it is in its `vanilla` form.
 
-You can use the original mbed TLS backend to add support for features not available in the `Arm CryptoCell cc310 backend`_, for example AES-256 or ECC Brainpool curve types.
+You can use the original mbed TLS backend to add support for features not available in the `Arm CryptoCell cc3xx backend`_, for example AES-256 or ECC Brainpool curve types.
 
 Similarly, you can use the original mbed TLS backend to add support for features not available in the `nrf_oberon backend`_, for example to support more ECC curve types.
 
@@ -80,10 +81,10 @@ Enabling the original mbed TLS backend
 To enable the original mbed TLS backend, set the :option:`CONFIG_MBEDTLS_VANILLA_BACKEND` Kconfig variable to true.
 
 
-Using the nrf_cc310_mbedcrypto as backend
+Using the nrf_cc3xx_mbedcrypto as backend
 *****************************************
 
-To use the :ref:`nrf_cc310_mbedcrypto_readme` as a backend, the Arm CryptoCell cc310 hardware must be first initialized.
+To use the :ref:`nrf_cc3xx_mbedcrypto_readme` as a backend, the Arm CryptoCell cc310/cc312 hardware must be first initialized.
 
-The Arm CryptoCell cc310 hardware is initialized in :file:`<NCS>/nrf/drivers/hw_cc310/hw_cc310.c` and is controlled with the :option:`CONFIG_HW_CC310` Kconfig variable.
-The Kconfig variable has a default value of 'y' when cc310 is available in the SoC.
+The Arm CryptoCell cc3xx hardware is initialized in :file:`<NCS>/nrf/drivers/hw_cc310/hw_cc310.c` and is controlled with the :option:`CONFIG_HW_CC3XX` Kconfig variable.
+The Kconfig variable has a default value of 'y' when cc3xx is available in the SoC.

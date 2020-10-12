@@ -98,3 +98,5 @@ int nrf_cc3xx_platform_kmu_write_kdr_slot(const uint8_t key[16]);
 #endif // defined(NRF9160_XXAA)
 
 #endif /* NRF_CC3XX_PLATFORM_KMU__ */
+
+/** @} */

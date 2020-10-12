@@ -3,6 +3,13 @@
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
+/**@file
+ * @defgroup nrf_cc3xx_platform_kmu nrf_cc3xx_platform kmu APIs
+ * @ingroup nrf_cc3xx_platform
+ * @{
+ * @brief The nrf_cc3xx_platform_kmu APIs provides RTOS integration for storing
+ *        keys in KMU hardware peripherals
+ */
 #ifndef NRF_CC3XX_PLATFORM_KMU__
 #define NRF_CC3XX_PLATFORM_KMU__
 
@@ -98,3 +105,5 @@ int nrf_cc3xx_platform_kmu_write_kdr_slot(const uint8_t key[16]);
 #endif // defined(NRF9160_XXAA)
 
 #endif /* NRF_CC3XX_PLATFORM_KMU__ */
+
+/** @} */

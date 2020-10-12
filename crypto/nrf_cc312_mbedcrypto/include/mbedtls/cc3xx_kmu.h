@@ -4,7 +4,11 @@
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 /**@file
+ * @defgroup cc3xx_kmu cc3xx  APIs
+ * @ingroup nrf_cc3xx_platform
  * @{
+ * @brief The cc3xx_kmu APIs provides APIs to directly use or derive key
+ *        from KMU or KDR in ARM CryptoCell devices
  */
 #ifndef CC3XX_KMU_H__
 #define CC3XX_KMU_H__
@@ -17,9 +21,6 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-/** @subgroup Predefined keys
- * @{
- */
 #define NRF_KMU_FIRST_SLOT              (0U)    //!< First addressable key slot in KMU (reserved for Kdr)
 #define NRF_KMU_SECOND_SLOT             (1U)    //!< Second addressable key slot in KMU (reserved for Kdr)
 #define NRF_KMU_LAST_SLOT               (127U)  //!< Last addressable key slot in KMU.
@@ -32,15 +33,13 @@
 
 #define NRF_KMU_SLOT_MEXT               (4U)    //!< Key slot reserved for MEXT (Master Key Encryption Key).
 #define NRF_KMU_SLOT_MEXT_RESERVED      (5U)    //!< Key slot reserved for MEXT (CC312: Used for last 128 bits of key material).
-/** @} */
+
 
 #define MBEDTLS_SHADOW_KEY_KDF_MAX_LABEL_SIZE_IN_BYTES      (64)    //!< KDF input "label" can be 0 to 64 bytes.
 #define MBEDTLS_SHADOW_KEY_KDF_MAX_CONTEXT_SIZE_IN_BYTES    (64)    //!< KDF input "context" can be 0 to 64 bytes.
 #define MBEDTLS_SHADOW_KEY_KDF_MAX_DERIVED_SIZE_IN_BYTES    (4080)  //!< KDF max length for derived material.
 
-/** @subgroup Return codes
- * @{
- */
+
 #define MBEDTLS_ERR_SHADOW_KEY_KEY_OK               (0)     //!< The shadow key operation was succesful.
 #define MBEDTLS_ERR_SHADOW_KEY_INVALID_SLOT         (-1)    //!< The shadow key operation used an invalid slot.
 #define MBEDTLS_ERR_SHADOW_KEY_INVALID_SIZE         (-2)    //!< The shadow key was of invalid size.
@@ -49,7 +48,6 @@
 #define MBEDTLS_ERR_SHADOW_KEY_KDF_INVALID_INPUT    (-5)    //!< The KDF input is invalid
 #define MBEDTLS_ERR_SHADOW_KEY_INTERNAL_ERROR       (-6)    //!< KMU/KDF internal error.
 
-/** @} */
 
 #if defined(MBEDTLS_AES_C)
 
@@ -66,11 +64,11 @@ extern "C"
  * @note    A shadow key is not directly accessible, only reference information
  *          is stored in the context type
  *
- * @note    Replaces the API @ref mbedtls_aes_setkey_enc.
+ * @note    Replaces the API mbedtls_aes_setkey_enc.
  *
  * @note    Using this API enforces raw key usage of keys in the KMU slots.
  *          If derived key usage is intended, please use the API
- *          @ref nrf_cc3xx_platform_kmu_aes_setkey_enc_shadow_key_derived.
+ *          nrf_cc3xx_platform_kmu_aes_setkey_enc_shadow_key_derived.
  *
  * @note    KMU slots 0 and 1 is reserved for Kdr and can't be used directly.
  *
@@ -92,11 +90,11 @@ int mbedtls_aes_setkey_enc_shadow_key(
  * @note    A shadow key is not directly accessible, only reference information
  *          is stored in the context type
  *
- * @note    Replaces the API @ref mbedtls_aes_setkey_dec.
+ * @note    Replaces the API mbedtls_aes_setkey_dec.
  *
  * @note    Using this API enforces raw key usage of keys in the KMU slots.
  *          If derived key usage is intended, please use the API
- *          @ref nrf_cc3xx_platform_kmu_aes_setkey_dec_shadow_key_derived.
+ *          nrf_cc3xx_platform_kmu_aes_setkey_dec_shadow_key_derived.
  *
  * @note    KMU slots 0 and 1 is reserved for Kdr and can't be used directly.
  *
@@ -114,9 +112,9 @@ int mbedtls_aes_setkey_dec_shadow_key(
 /** @brief Function to configure AES to use a key derived from one or more
  *         slots in KMU for encryption.
  *
- * @details See @ref mbedtls_derive_kmu_key for details on the KDF function.
+ * @details See mbedtls_derive_kmu_key for details on the KDF function.
  *
- * @note    Replaces the API @ref mbedtls_aes_setkey_dec.
+ * @note    Replaces the API mbedtls_aes_setkey_dec.
  *
  * @note    The key derivation is executed before each requests to encrypt.
  *          this function only configures the context to use a derived key.
@@ -148,11 +146,11 @@ int mbedtls_aes_setkey_enc_shadow_key_derived(
 /** @brief Function to configure AES to use a key derived from one or more
  *         slots in KMU for decryption.
  *
- * @details See @ref mbedtls_derive_kmu_key for details on the KDF function.
+ * @details See mbedtls_derive_kmu_key for details on the KDF function.
  *
  * @note    A shadow key is not directly accessible, only reference information
  *          is stored in the context type
- * @note    Replaces the API @ref mbedtls_aes_setkey_enc.
+ * @note    Replaces the API mbedtls_aes_setkey_enc.
  *
  * @note    The key derivation is executed before each requests to decrypt.
  *          This function only configures the context to use a derived key.
@@ -202,11 +200,11 @@ extern "C"
  * @note    A shadow key is not directly accessible, only reference information
  *          is stored in the context type
  *
- * @note    Replaces the API @ref mbedtls_ccm_setkey.
+ * @note    Replaces the API mbedtls_ccm_setkey.
  *
  * @note    Using this API enforces raw key usage of keys in the KMU slots.
  *          If derived key usage is intended, please use the API
- *          @ref nrf_cc3xx_platform_kmu_aes_setkey_enc_shadow_key_derived.
+ *          nrf_cc3xx_platform_kmu_aes_setkey_enc_shadow_key_derived.
  *
  * @note    KMU slots 0 and 1 is reserved for Kdr and can't be used directly.
  *
@@ -227,12 +225,12 @@ int mbedtls_ccm_setkey_shadow_key(
 /** @brief Function to configure AES CCM to use a key derived from one or more
  *         slots in KMU for encryption.
  *
- * @details See @ref mbedtls_derive_kmu_key for details on the KDF function.
+ * @details See mbedtls_derive_kmu_key for details on the KDF function.
  *
  * @note    A shadow key is not directly accessible, only reference information
  *          is stored in the context type
  *
- * @note    Replaces the API @ref mbedtls_ccm_setkey.
+ * @note    Replaces the API mbedtls_ccm_setkey.
  *
  * @note    The key derivation is executed before each requests to decrypt.
  *          This function only configures the context to use a derived key.
@@ -284,11 +282,11 @@ extern "C"
  * @note    A shadow key is not directly accessible, only reference information
  *          is stored in the context type
  *
- * @note    Replaces the API @ref mbedtls_gcm_setkey.
+ * @note    Replaces the API mbedtls_gcm_setkey.
  *
  * @note    Using this API enforces raw key usage of keys in the KMU slots.
  *          If derived key usage is intended, please use the API
- *          @ref nrf_cc3xx_platform_kmu_aes_setkey_enc_shadow_key_derived.
+ *          nrf_cc3xx_platform_kmu_aes_setkey_enc_shadow_key_derived.
  *
  * @note    KMU slots 0 and 1 is reserved for Kdr and can't be used directly.
  *
@@ -309,12 +307,12 @@ int mbedtls_gcm_setkey_shadow_key(
 /** @brief Function to configure AES GCM to use a key derived from one or more
  *         slots in KMU for encryption.
  *
- * @details See @ref mbedtls_derive_kmu_key for details on the KDF function.
+ * @details See mbedtls_derive_kmu_key for details on the KDF function.
  *
  * @note    A shadow key is not directly accessible, only reference information
  *          is stored in the context type
  *
- * @note    Replaces the API @ref mbedtls_gcm_setkey.
+ * @note    Replaces the API mbedtls_gcm_setkey.
  *
  * @note    The key derivation is executed before each requests to decrypt.
  *          this function only configures the context to use a derived key.

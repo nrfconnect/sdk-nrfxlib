@@ -1,14 +1,15 @@
 .. _nrf_cc310_mbedcrypto_readme:
+.. _nrf_cc3xx_mbedcrypto_readme:
 
-nrf_cc310_mbedcrypto library
+nrf_cc3xx_mbedcrypto library
 ############################
 
-The nrf_cc310_mbedcrypto library is software library to interface with the Arm CryptoCell CC310 hardware accelerator that is available on the nRF52840 SoC and the nRF9160 SiP.
+The nrf_cc3xx_mbedcrypto library is software library to interface with the Arm CryptoCell CC310 hardware accelerator that is available on the nRF52840 SoC and the nRF9160 SiP.
 The library adds hardware support for selected cryptographic algorithms.
 
 Integration with mbed TLS
 =========================
-The nrf_cc310_mbedcrypto library provides low-level integration towards selected versions of mbed TLS deliverables.
+The nrf_cc3xx_mbedcrypto library provides low-level integration towards selected versions of mbed TLS deliverables.
 The APIs expressed in this library use the alternative implementation abstraction layer inside mbed TLS for selected modules.
 
 .. note::
@@ -18,7 +19,7 @@ The APIs expressed in this library use the alternative implementation abstractio
 Supported cryptographic algorithms
 ==================================
 
-The following tables show the supported cryptographic algorithms in the Arm CryptoCell CC310 hardware accelerator in nRF52840 and nRF9160, as well as the current state of support in the nrf_cc310_mbedcrypto library.
+The following tables show the supported cryptographic algorithms in the Arm CryptoCell CC310 hardware accelerator in nRF52840 and nRF9160, as well as the current state of support in the nrf_cc3xx_mbedcrypto library.
 
 .. note::
    If `no mbed TLS support` is listed in limitations, it indicates that the hardware supports it, but it is not exposed in an API that works with mbed TLS.
@@ -54,7 +55,7 @@ AEAD - Authenticated Encryption with Associated Data
 +-----------------------+-------------------------------+
 
 .. note::
-   APIs currently in mbedtls_extra, as well as APIs with no current HW TLS support, will be supported in upcoming releases of the nrf_cc310_mbedcrypto library.
+   APIs currently in mbedtls_extra, as well as APIs with no current HW TLS support, will be supported in upcoming releases of the nrf_cc3xx_mbedcrypto library.
 
 Diffie-Hellman-Merkel
 ---------------------
@@ -149,7 +150,7 @@ You can initialize it by calling the :c:func:`mbedtls_platform_setup`/:c:func:`m
     
     ret = mbedtls_platform_setup(&platform_context);
     if (ret != 0) {
-            /* Failed to initialize nrf_cc310_mbedcrypto platform */
+            /* Failed to initialize nrf_cc3xx_mbedcrypto platform */
             return ret,
     }
 
@@ -160,7 +161,7 @@ You can initialize it by calling the :c:func:`mbedtls_platform_setup`/:c:func:`m
 RNG initialization memory management
 ------------------------------------
 
-The nrf_cc310_mbedcrypto library allocates a work buffer during RNG initialization using calloc/free.
+The nrf_cc3xx_mbedcrypto library allocates a work buffer during RNG initialization using calloc/free.
 The size of this work buffer is 6112 bytes.
 An alternative to allocating this on the heap is to provide a reference to a static variable inside the :c:type:`mbedtls_platform_context` structure type.
 
@@ -174,12 +175,12 @@ An alternative to allocating this on the heap is to provide a reference to a sta
     
     ret = mbedtls_platform_setup(&platform_context);
     if (ret != 0) {
-            /* Failed to initialize nrf_cc310_mbedcrypto platform */
+            /* Failed to initialize nrf_cc3xx_mbedcrypto platform */
             return ret,
     }
 
 Usage restrictions
 ------------------
 
-On the nRF9160 SiP, the nrf_cc310_mbedcrypto library is restricted to only work in secure processing environment.
+On the nRF9160 SiP, the nrf_cc3xx_mbedcrypto library is restricted to only work in secure processing environment.
 The library uses mutexes to ensure single usage of hardware modules.

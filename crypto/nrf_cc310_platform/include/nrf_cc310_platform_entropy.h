@@ -21,3 +21,5 @@ extern "C"
 #endif
 
 #endif /* NRF_CC310_PLATFORM_ENTROPY_H__ */
+
+/** @} */
