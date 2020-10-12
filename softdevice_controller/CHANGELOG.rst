@@ -14,22 +14,22 @@ Added
 * Added Read Transmit Power Level command (DRGN-12236).
 * Added LE Read Transmit Power command (DRGN-12236).
 * Added LE Read Advertising Physical Channel Tx Power command (DRGN-12238).
-* Added support for setting the event length of a connection. See :c:func:`hci_vs_cmd_event_length_set` (DRGN-12696).
+* Added support for setting the event length of a connection. See :cpp:func:`hci_vs_cmd_event_length_set()` (DRGN-12696).
 * Added Set Controller to Host Flow Control command (DRGN-13331).
 * Added Host Buffer Size command (DRGN-13331).
 * Added Host Number of Complete Packets command (DRGN-13331).
 * Added support for the Vendor specific HCI command: Zephyr Write BD Addr (DRGN-14511).
 * Added LE Read PHY command (DRGN-14664).
 * Added APIs for every supported HCI command (DRGN-13723).
-* Added :c:func:`sdc_support_adv` which makes the advertising state configurable (DRGN-14759).
-* Added :c:func:`sdc_support_slave` which makes the slave role configurable (DRGN-14759).
-* Added :c:func:`sdc_support_scan` which makes the scanning state configurable (DRGN-14759).
-* Added :c:func:`sdc_support_master` which makes the master role configurable (DRGN-14759).
+* Added :cpp:func:`sdc_support_adv()` which makes the advertising state configurable (DRGN-14759).
+* Added :cpp:func:`sdc_support_slave()` which makes the slave role configurable (DRGN-14759).
+* Added :cpp:func:`sdc_support_scan()` which makes the scanning state configurable (DRGN-14759).
+* Added :cpp:func:`sdc_support_master()` which makes the master role configurable (DRGN-14759).
 
 Changes
 =======
 
-* When linking the final binary, the image size is reduced. Only the requested features are included. See :c:func:`sdc_support_adv` and similar APIs for more details.
+* When linking the final binary, the image size is reduced. Only the requested features are included. See :cpp:func:`sdc_support_adv()` and similar APIs for more details.
 * When LLPM mode is enabled, the connection event length is now no longer implicitly set to 1 ms (DRGN-12696).
 * When the connection interval is an LLPM connection interval, that is, below 7.5 ms, link layer procedures with an instant will use an instant larger than 6 connection events (DRGN-14379).
 * The nRF Bluetooth LE Controller was renamed to SoftDevice Controller (DRGN-14283).
@@ -80,8 +80,8 @@ Added
 * Added Write Authenticated Payload Timeout command.
 * Added Set Event Mask command.
 * Added Set Event Mask Page 2 command.
-* Added :c:func:`ble_controller_support_le_2m_phy` which makes LE 2M PHY support configurable.
-* Added :c:func:`ble_controller_support_le_coded_phy` which makes LE Coded PHY support configurable.
+* Added :cpp:func:`ble_controller_support_le_2m_phy()` which makes LE 2M PHY support configurable.
+* Added :cpp:func:`ble_controller_support_le_coded_phy()` which makes LE Coded PHY support configurable.
 * Added LE Read Supported States command.
 * Added LE Set Advertising Set Random Address command.
 * Added LE Remove Advertising Set command.
@@ -114,7 +114,7 @@ nRF Connect SDK v1.2.0
 Added
 =====
 
-* Added :c:func:`ble_controller_support_dle` which makes LE Data Length Extension support configurable.
+* Added :cpp:func:`ble_controller_support_dle()` which makes LE Data Length Extension support configurable.
 * Added preliminary support for the S140 variant with the nRF5340 device.
   The Bluetooth LE Controller for nRF5340 supports the same feature set as its nRF52 Series counterpart.
   The following library has been added:
@@ -124,18 +124,18 @@ Added
 Changes
 =======
 
-* :c:func:`mpsl_init` is no longer called by :c:func:`ble_controller_init`.
-  Application is therefore responsible for calling :c:func:`mpsl_init`, and it must be done before :c:func:`ble_controller_init` is called.
-* Clock configuration parameters are now contained in :c:type:`mpsl_clock_lfclk_cfg_t` instead of :c:type:`nrf_lf_clock_cfg_t`, and must be provided to :c:func:`mpsl_init` instead of :c:func:`ble_controller_init`.
+* :cpp:func:`mpsl_init()` is no longer called by :cpp:func:`ble_controller_init()`.
+  Application is therefore responsible for calling :cpp:func:`mpsl_init()`, and it must be done before :cpp:func:`ble_controller_init()` is called.
+* Clock configuration parameters are now contained in :c:type:`mpsl_clock_lfclk_cfg_t` instead of :c:type:`nrf_lf_clock_cfg_t`, and must be provided to :cpp:func:`mpsl_init()` instead of :cpp:func:`ble_controller_init()`.
 * Clock accuracy must now be specified in parts per million (ppm) instead of the previous enum value.
-* The IRQ line to pend for low priority signal processing must be provided to :c:func:`mpsl_init` instead of :c:func:`ble_controller_init`.
-* The application must call :c:func:`mpsl_low_priority_process` instead of :c:func:`ble_controller_low_prio_tasks_process` to process low priority signals.
-* :c:func:`mpsl_uninit` is no longer called by :c:func:`ble_controller_disable`.
-  Application must therefore call :c:func:`mpsl_uninit` after :c:func:`ble_controller_disable` to uninitialize MPSL.
+* The IRQ line to pend for low priority signal processing must be provided to :cpp:func:`mpsl_init()` instead of :cpp:func:`ble_controller_init()`.
+* The application must call :cpp:func:`mpsl_low_priority_process()` instead of :cpp:func:`ble_controller_low_prio_tasks_process()` to process low priority signals.
+* :cpp:func:`mpsl_uninit()` is no longer called by :cpp:func:`ble_controller_disable()`.
+  Application must therefore call :cpp:func:`mpsl_uninit()` after :cpp:func:`ble_controller_disable()` to uninitialize MPSL.
 * Interrupt handler APIs for the following peripherals are moved to MPSL: RADIO, RTC0, TIMER0, and POWER_CLOCK.
 * High frequency clock API (``ble_controller_hf_clock_...``) is removed.
   Use corresponding API in MPSL instead.
-* Temperature API (:c:func:`ble_controller_temp_get`) is removed.
+* Temperature API (:cpp:func:`ble_controller_temp_get()`) is removed.
   Use corresponding API in MPSL instead.
 * Timeslot API is removed.
   Use corresponding API in MPSL instead.
@@ -167,7 +167,7 @@ Added
 Bugfixes
 ========
 
-* Fixed an issue where :c:func:`hci_data_get` could return "No data available" when there was data available.
+* Fixed an issue where :cpp:func:`hci_data_get()` could return "No data available" when there was data available.
   This issue would only occur when connected to multiple devices at the same time.
 
 nRF Bluetooth LE Controller 0.3.0-2.prealpha
@@ -185,7 +185,7 @@ Added
 =====
 
 * Increased the number of supported SoC and library combinations.
-* Added API for estimating the dynamic memory usage returned by :c:func:`ble_controller_cfg_set`.
+* Added API for estimating the dynamic memory usage returned by :cpp:func:`ble_controller_cfg_set()`.
 * Added a new header :file:`ble_controller_hci_vs.h` that exposes definitions of
   Vendor Specific HCI commands and events.
 * Added support for connection intervals less than the standard minimum of 7.5 ms.
@@ -247,9 +247,9 @@ Added
 =====
 
 * Added API for fetching build revision information.
-* Added :c:func:`ble_controller_rand_vector_get_blocking` as a blocking call to get a vector of random bytes.
-* Added API to get Bluetooth LE Controller build revision: :c:func:`ble_controller_build_revision_get`.
-* Added separate :c:func:`ble_controller_init` API.
+* Added :cpp:func:`ble_controller_rand_vector_get_blocking()` as a blocking call to get a vector of random bytes.
+* Added API to get Bluetooth LE Controller build revision: :cpp:func:`ble_controller_build_revision_get()`.
+* Added separate :cpp:func:`ble_controller_init()` API.
 
 Bugfixes
 ========
@@ -258,9 +258,9 @@ Bugfixes
 
 Changes
 =======
-* Moved ``fault_handler`` and ``p_clk_cfg`` from :c:func:`ble_controller_enable` to :c:func:`ble_controller_init`.
-* Changed :c:func:`ble_controller_process_SWI5_IRQ` to be IRQ independent.
-  The generic :c:func:`ble_controller_low_prio_tasks_process` is used instead and SWI5 is no longer reserved.
+* Moved ``fault_handler`` and ``p_clk_cfg`` from :cpp:func:`ble_controller_enable()` to :cpp:func:`ble_controller_init()`.
+* Changed :cpp:func:`ble_controller_process_SWI5_IRQ()` to be IRQ independent.
+  The generic :cpp:func:`ble_controller_low_prio_tasks_process()` is used instead and SWI5 is no longer reserved.
 * Aligned naming for Bluetooth LE Controller configuration names.
 * Made minor changes to existing API.
 * Improved API documentation.
