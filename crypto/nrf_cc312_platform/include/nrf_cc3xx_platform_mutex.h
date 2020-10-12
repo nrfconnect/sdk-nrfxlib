@@ -154,3 +154,5 @@ void nrf_cc3xx_platform_mutex_init(void);
 #endif
 
 #endif /* NRF_CC3XX_PLATFORM_MUTEX_H__ */
+
+/** @} */

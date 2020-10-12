@@ -13,47 +13,61 @@ nRF CC310 bootloader crypto library
    :members:
 
 
-.. _crypto_api_nrf_cc310_platform:
+.. _crypto_api_nrf_cc3xx_platform:
 
-nRF CC310 platform library
+nRF CC3XX platform library
 **************************
 
-.. doxygengroup:: nrf_cc310_platform
+.. doxygengroup:: nrf_cc3xx_platform
    :project: nrfxlib
    :members:
 
-CC310 Platform - Defines
+CC3XX Platform - Defines
 ========================
 
-.. doxygengroup:: nrf_cc310_platform_defines
+.. doxygengroup:: nrf_cc3xx_platform_defines
    :project: nrfxlib
    :members:
 
-CC310 Platform - Initialization APIs
+CC3XX Platform - Initialization APIs
 ====================================
 
-.. doxygengroup:: nrf_cc310_platform_init
+.. doxygengroup:: nrf_cc3xx_platform_init
    :project: nrfxlib
    :members:
 
-CC310 Platform - Entropy APIs
+CC3XX Platform - Entropy APIs
 =============================
 
-.. doxygengroup:: nrf_cc310_platform_entropy
+.. doxygengroup:: nrf_cc3xx_platform_entropy
    :project: nrfxlib
    :members:
 
-CC310 Platform - Mutex APIs
+CC3XX Platform - Mutex APIs
 ===========================
 
-.. doxygengroup:: nrf_cc310_platform_mutex
+.. doxygengroup:: nrf_cc3xx_platform_mutex
    :project: nrfxlib
    :members:
 
-CC310 Platform - Abort APIs
+CC3XX Platform - Abort APIs
 ===========================
 
-.. doxygengroup:: nrf_cc310_platform_abort
+.. doxygengroup:: nrf_cc3xx_platform_abort
+   :project: nrfxlib
+   :members:
+
+CC3XX Platform - KMU APIs
+=========================
+
+.. doxygengroup:: nrf_cc3xx_platform_kmu
+   :project: nrfxlib
+   :members:
+
+CC3XX Platform - CTR_DRBG APIs
+==============================
+
+.. doxygengroup:: nrf_cc3xx_platform_ctr_drbg
    :project: nrfxlib
    :members:
 
@@ -94,7 +108,7 @@ AES GCM - AES Galois/Counter Mode APIs
 .. doxygengroup:: nrf_oberon_aes_gcm
    :project: nrfxlib
    :members:
-   
+
 AES key sizes
 -------------
 
@@ -108,14 +122,14 @@ ChaCha20-Poly1305
 .. doxygengroup:: nrf_oberon_chacha_poly
    :project: nrfxlib
    :members:
-   
+
 ChaCha20-Poly1305 APIs
 ----------------------
 
 .. doxygengroup:: nrf_oberon_chacha_poly_apis
    :project: nrfxlib
    :members:
-   
+
 ChaCha20 APIs
 -------------
 
@@ -129,21 +143,21 @@ ChaCha20-Poly1305 incremental APIs
 .. doxygengroup:: nrf_oberon_chacha_poly_inc
    :project: nrfxlib
    :members:
-   
+
 Constant time APIs
 ==================
 
 .. doxygengroup:: nrf_oberon_constant_time
    :project: nrfxlib
    :members:
-   
+
 ECC secp256r1 low-level APIs
 ============================
 
 .. doxygengroup:: nrf_oberon_p256
    :project: nrfxlib
    :members:
-   
+
 ECC Curve25519 low-level APIs
 =============================
 
@@ -157,14 +171,14 @@ ECDH APIs
 .. doxygengroup:: nrf_oberon_ecdh
    :project: nrfxlib
    :members:
-   
+
 ECDSA APIs
 ==========
 
 .. doxygengroup:: nrf_oberon_ecdsa
    :project: nrfxlib
    :members:
-   
+
 Ed25519 APIs
 =============
 
@@ -185,77 +199,77 @@ HKDF APIs using SHA-256
 .. doxygengroup:: nrf_oberon_hkdf_256
    :project: nrfxlib
    :members:
-   
+
 HKDF APIs using SHA-512
 -----------------------
 
 .. doxygengroup:: nrf_oberon_hkdf_512
    :project: nrfxlib
    :members:
-   
+
 HMAC - Hash-based Aessage Authentication Code
 =============================================
 
 .. doxygengroup:: nrf_oberon_hmac
    :project: nrfxlib
    :members:
-   
+
 HMAC APIs using SHA-256
 -----------------------
 
 .. doxygengroup:: nrf_oberon_hmac_256
    :project: nrfxlib
    :members:
-   
+
 HMAC APIs using SHA-512
 -----------------------
 
 .. doxygengroup:: nrf_oberon_hmac_512
    :project: nrfxlib
    :members:
-   
+
 RSA - Rivest-Shamir-Adleman algorithm
 =====================================
 
 .. doxygengroup:: nrf_oberon_rsa
    :project: nrfxlib
    :members:   
-   
+
 RSA APIs
 --------
 
 .. doxygengroup:: nrf_oberon_rsa_api
    :project: nrfxlib
    :members:   
-   
+
 RSA key APIs
 ------------
 
 .. doxygengroup:: nrf_oberon_rsa_key
    :project: nrfxlib
    :members:   
-   
+
 SHA-256 APIs
 ============
 
 .. doxygengroup:: nrf_oberon_sha_256
    :project: nrfxlib
    :members:
-   
+
 SHA-512 APIs
 ============
 
 .. doxygengroup:: nrf_oberon_sha_512
    :project: nrfxlib
    :members:
-   
+
 SRP - Secure Remote Password APIs
 =================================
 
 .. doxygengroup:: nrf_oberon_srp
    :project: nrfxlib
    :members:
-   
+
 SRPT - Secure Real-Time Transport Protocol APIs
 ===============================================
 

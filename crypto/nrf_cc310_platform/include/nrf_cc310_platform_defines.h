@@ -32,3 +32,5 @@ extern "C"
 #endif
 
 #endif /* NRF_CC310_PLATFORM_DEFINES_H__ */
+
+/** @} */

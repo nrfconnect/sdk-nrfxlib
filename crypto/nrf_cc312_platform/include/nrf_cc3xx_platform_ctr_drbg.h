@@ -211,7 +211,7 @@ int nrf_cc3xx_platform_ctr_drbg_get_with_add(
  *
  * @param[in,out]   context     Pointer to structure holding the ctr_drbg context.
  * @param[in]       buffer      Pointer to buffer to hold PRNG data.
- * @param[in]       len         Length of PRNG to get.
+ * @param[in]       length      Length of PRNG to get.
  * @param[out]      olen        Length reported out.
  *
  * @return 0 on success, otherwise a non-zero failure  according to the API

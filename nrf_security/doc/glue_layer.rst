@@ -19,14 +19,14 @@ The check is performed using a `check function`.
 This function is called from the API which provides configuration changes that determine the selection between the enabled backends.
 
 .. code-block:: c
-    :caption: Example: cc310 backend AES CCM support and priority check
+    :caption: Example: cc3xx backend AES CCM support and priority check
 
     static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits) {
             return (keybits == 128) ? 3 : 0;
     }
 
 In this example, the AES CCM support in the backend will report priority level 3 if the key size is 128, or 0 if the key size is different.
-The :ref:`nrf_security_backends_cc310` does not support a larger key size.
+The :ref:`nrf_security_backends_cc3xx` does not support a larger key size.
 If the key size is larger than 128 bits, then another enabled backend is used.
 
 .. note::
@@ -34,7 +34,7 @@ If the key size is larger than 128 bits, then another enabled backend is used.
    An example of a location that determines backend selection is an API to set an encryption key, in which case the key size may change, demanding a new selection of available and prioritized backends.
 
 .. note::
-   Hardware-accelerated cryptography through the :ref:`nrf_security_backends_cc310` is prioritized if it is supported.
+   Hardware-accelerated cryptography through the :ref:`nrf_security_backends_cc3xx` is prioritized if it is supported.
 
 
 Enabling the mbed TLS glue layer
@@ -53,15 +53,15 @@ The mbed TLS glue layer relies on symbol renaming of known APIs in mbed TLS to p
 The backend implementation is reached using a table of function pointers corresponding to the renamed symbols.
 
 .. code-block:: c
-    :caption: Example: cc310 backend ECDH function table
+    :caption: Example: cc3xx backend ECDH function table
 
-    const mbedtls_ecdh_funcs mbedtls_ecdh_cc310_backend_funcs = {
+    const mbedtls_ecdh_funcs mbedtls_ecdh_cc3xx_backend_funcs = {
             .check = mbedtls_ecdh_check,
             .gen_public = mbedtls_ecdh_gen_public,
             .compute_shared = mbedtls_ecdh_compute_shared,
     };
 
-:cpp:func:`mbedtls_ecdh_cc310_backend_funcs` points to mbed TLS APIs in :ref:`nrf_cc310_mbedcrypto_readme` which is renamed if mbed TLS glue layer is enabled.
+:cpp:func:`mbedtls_ecdh_cc3xx_backend_funcs` points to mbed TLS APIs in :ref:`nrf_cc3xx_mbedcrypto_readme` which is renamed if mbed TLS glue layer is enabled.
 The function pointers `gen_public` and `compute_shared` have signatures equal to the corresponding mbed TLS APIs.
 
 

@@ -84,3 +84,5 @@ void CRYPTOCELL_IRQHandler(void);
 #endif
 
 #endif /* NRF_CC3XX_PLATFORM_H__ */
+
+/** @} */

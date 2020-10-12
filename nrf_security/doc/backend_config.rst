@@ -47,7 +47,7 @@ AES core support can be enabled by setting the :option:`CONFIG_MBEDTLS_AES_C` Kc
 +--------------+-----------------------------------+
 
 .. note::
-   * The :ref:`nrf_security_backends_cc310` is limited to key sizes of 128 bits.
+   * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
 
 Multiple backends
 =================
@@ -57,7 +57,7 @@ AES core support can be enabled by setting setting the :option:`CONFIG_MBEDTLS_A
 +--------------+----------------+------------------------------------------------------------+
 | Cipher mode  | Support        | Configurations                                             |
 +==============+================+============================================================+
-| ECB          | Glue           | cc310: :option:`CONFIG_CC310_MBEDTLS_AES_C`                |
+| ECB          | Glue           | cc3xx: :option:`CONFIG_CC3XX_MBEDTLS_AES_C`                |
 |              |                |                                                            |
 |              |                | nrf_oberon: :option:`CONFIG_OBERON_MBEDTLS_AES_C`          |
 |              |                |                                                            |
@@ -65,7 +65,7 @@ AES core support can be enabled by setting setting the :option:`CONFIG_MBEDTLS_A
 +--------------+----------------+------------------------------------------------------------+
 
 .. note::
-   * The :ref:`nrf_security_backends_cc310` is limited to key sizes of 128 bits.
+   * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
    * Enabling the :ref:`nrf_security_backends_oberon` replaces select internal APIs for AES block encrypt/decrypt and set key operations for encrypt/decrypt.
    * If both nrf_oberon backend and :ref:`nrf_security_backends_orig_mbedtls` are enabled, the implementation from
      nrf_oberon backend will provide support for AES ECB.
@@ -98,8 +98,8 @@ AES cipher modes can be enabled by setting one or more of the following Kconfig 
 
 .. note::
    * AES cipher modes are dependent on enabling AES core support according to `AES configuration`_.
-   * The :ref:`nrf_security_backends_cc310` is limited to key sizes of 128 bits.
-   * Currently, AES cipher modes CFB, OFB, and XTS are not supported by the Arm CryptoCell cc310 backend.
+   * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
+   * Currently, AES cipher modes CFB, OFB, and XTS are not supported by the Arm CryptoCell cc3xx backend.
    * XTS will not be available if multiple backends are enabled for AES.
    * If both :ref:`nrf_security_backends_oberon` and :ref:`nrf_security_backends_orig_mbedtls` is enabled, the implementation from
      nrf_oberon backend will provide support for AES cipher modes.
@@ -129,7 +129,7 @@ CMAC can be enabled by setting the :option:`CONFIG_MBEDTLS_CMAC_C` Kconfig varia
 +--------------+-----------------------------+-----------------------------------------------------------------+
 | Algorithm    | Support                     | Configurations                                                  |
 +==============+=============================+=================================================================+
-| CMAC         | Glue                        | cc310: :option:`CONFIG_CC310_MBEDTLS_CMAC_C`                    |
+| CMAC         | Glue                        | cc3xx: :option:`CONFIG_CC3XX_MBEDTLS_CMAC_C`                    |
 |              |                             |                                                                 |
 |              |                             | nrf_oberon: :option:`CONFIG_OBERON_MBEDTLS_CMAC_C`              |
 |              |                             |                                                                 |
@@ -137,7 +137,7 @@ CMAC can be enabled by setting the :option:`CONFIG_MBEDTLS_CMAC_C` Kconfig varia
 +--------------+-----------------------------+-----------------------------------------------------------------+
 
 .. note::
-   * The :ref:`nrf_security_backends_cc310` is limited to key sizes of 128 bits.
+   * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
    * If both :ref:`nrf_security_backends_oberon` and :ref:`nrf_security_backends_orig_mbedtls` is enabled, the implementation from
      nrf_oberon backend will provide support for CMAC.
 
@@ -157,8 +157,9 @@ AEAD cipher mode support can be enabled by setting one or more of the following 
 +==============+=========================================+=========================================+
 | AES CCM/CCM* | :option:`CONFIG_MBEDTLS_CCM_C`          |                                         |
 +--------------+-----------------------------------------+-----------------------------------------+
-| AES GCM      | :option:`CONFIG_MBEDTLS_GCM_C`          | Original mbed TLS or nrf_oberon only    |
-+--------------++----------------------------------------+-----------------------------------------+
+| AES GCM      | :option:`CONFIG_MBEDTLS_GCM_C`          | Original mbed TLS, or nrf_oberon,       |
+|              |                                         | or cc312                                |
++--------------+-----------------------------------------+-----------------------------------------+
 | ChaCha20     | :option:`CONFIG_MBEDTLS_CHACHA20_C`     |                                         |
 +--------------+-----------------------------------------+-----------------------------------------+
 | Poly1305     | :option:`CONFIG_MBEDTLS_POLY1305_C`     |                                         |
@@ -168,8 +169,8 @@ AEAD cipher mode support can be enabled by setting one or more of the following 
 
 .. note::
    * AEAD AES cipher modes are dependent on enabling AES core support according to `AES configuration`_.
-   * The :ref:`nrf_security_backends_cc310` is limited to key sizes of 128 bits.
-   * The ChaCha-Poly implemented by the Arm CryptoCell cc310 backend does not support incremental operations.
+   * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
+   * The ChaCha-Poly implemented by the Arm CryptoCell cc3xx backend does not support incremental operations.
 
 
 Multiple backends
@@ -185,7 +186,7 @@ AES CCM/CCM* can be enabled by setting the :option:`CONFIG_MBEDTLS_CCM_C` Kconfi
 +--------------+-----------------+-----------------------------------------------------------------+
 | AEAD cipher  | Support         | Configurations                                                  |
 +==============+=================+=================================================================+
-| AES CCM/CCM* | Glue            | cc310: :option:`CONFIG_CC310_MBEDTLS_CCM_C`                     |
+| AES CCM/CCM* | Glue            | cc3xx: :option:`CONFIG_CC3XX_MBEDTLS_CCM_C`                     |
 |              |                 |                                                                 |
 |              |                 | nrf_oberon: :option:`CONFIG_OBERON_MBEDTLS_CCM_C`               |
 |              |                 |                                                                 |
@@ -194,7 +195,7 @@ AES CCM/CCM* can be enabled by setting the :option:`CONFIG_MBEDTLS_CCM_C` Kconfi
 
 .. note::
    * AEAD AES cipher modes are dependent on AES core support according to `AES configuration`_.
-   * The :ref:`nrf_security_backends_cc310` is limited to key sizes of 128 bits.
+   * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
    * If both :ref:`nrf_security_backends_oberon` and :ref:`nrf_security_backends_orig_mbedtls` is enabled, the nrf_oberon backend will
      provide support for AES CCM/CCM*.
 
@@ -210,7 +211,7 @@ AES GCM can be enabled by setting the :option:`CONFIG_MBEDTLS_GCM_C` Kconfig var
 +--------------+-----------------------------------+--------------------------------------+
 
 .. note::
-   * AES GCM is not supported in Arm CryptoCell cc310 hardware.
+   * AES GCM is not supported in Arm CryptoCell cc3xx hardware.
 
 ChaCha20
 --------
@@ -220,14 +221,14 @@ ChaCha20 support can be enabled by setting the :option:`CONFIG_MBEDTLS_CHACHA20_
 +--------------+-----------------+--------------------------------------------------------------------------+
 | AEAD cipher  | Support         | Configurations                                                           |
 +==============+=================+==========================================================================+
-| ChaCha20     | Choice          | cc310: :option:`CONFIG_CHOICE_CC310_MBEDTLS_CHACHA20_C`                  |
+| ChaCha20     | Choice          | cc3xx: :option:`CONFIG_CHOICE_CC3XX_MBEDTLS_CHACHA20_C`                  |
 |              |                 |                                                                          |
 |              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHA20_C`    |
 +--------------+-----------------+--------------------------------------------------------------------------+
 
 .. note::
    * For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
-   * The ChaCha-Poly implemented by the :ref:`nrf_security_backends_cc310` does not support incremental operations.
+   * The ChaCha-Poly implemented by the :ref:`nrf_security_backends_cc3xx` does not support incremental operations.
 
 Poly1305
 --------
@@ -237,14 +238,14 @@ Poly1305 can be enabled by setting the :option:`CONFIG_MBEDTLS_POLY1305_C` Kconf
 +--------------+-----------------+-----------------------------------------------------------------------+
 | AEAD cipher  | Support         | Configurations                                                        |
 +==============+=================+=======================================================================+
-| Poly1305     | Choice          | cc310: :option:`CONFIG_CHOICE_CC310_MBEDTLS_POLY1305_C`               |
+| Poly1305     | Choice          | cc3xx: :option:`CONFIG_CHOICE_CC3XX_MBEDTLS_POLY1305_C`               |
 |              |                 |                                                                       |
 |              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_POLY1305_C` |
 +--------------+-----------------+-----------------------------------------------------------------------+
 
 .. note::
    * For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
-   * The ChaCha-Poly implemented by the :ref:`nrf_security_backends_cc310` does not support incremental operations.
+   * The ChaCha-Poly implemented by the :ref:`nrf_security_backends_cc3xx` does not support incremental operations.
 
 
 ChaCha-Poly
@@ -255,7 +256,7 @@ ChaCha-Poly can be enabled by setting the :option:`CONFIG_MBEDTLS_CHACHAPOLY_C` 
 +--------------+-----------------+--------------------------------------------------------------------------+
 | AEAD cipher  | Support         | Configurations                                                           |
 +==============+=================+==========================================================================+
-| ChaCha-Poly  | Choice          | cc310: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C`              |
+| ChaCha-Poly  | Choice          | cc3xx: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C`              |
 |              |                 |                                                                          |
 |              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C`  |
 +--------------+-----------------+--------------------------------------------------------------------------+
@@ -263,7 +264,7 @@ ChaCha-Poly can be enabled by setting the :option:`CONFIG_MBEDTLS_CHACHAPOLY_C` 
 .. note::
    * ChaCha-Poly support requires enabling both `ChaCha20`_ and `Poly1305`_.
    * For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
-   * The ChaCha-Poly implementation in :ref:`nrf_security_backends_cc310` does not support incremental operations.
+   * The ChaCha-Poly implementation in :ref:`nrf_security_backends_cc3xx` does not support incremental operations.
 
 DHM configurations
 ******************
@@ -282,7 +283,7 @@ DHM can be enabled by setting the :option:`CONFIG_MBEDTLS_DHM_C` Kconfig variabl
 +--------------+--------------------------------------+
 
 .. note::
-   :ref:`nrf_security_backends_cc310`  is limited to key size of <= 2048 bits.
+   :ref:`nrf_security_backends_cc3xx`  is limited to key size of <= 2048 bits.
 
 Multiple backends
 =================
@@ -292,13 +293,13 @@ DHM can be enabled by setting the :option:`CONFIG_MBEDTLS_DHM_C` Kconfig variabl
 +--------------+--------------+--------------------------------------------------------------+
 | Algorithm    | Support      | Configurations                                               |
 +==============+==============+==============================================================+
-| DHM          | Glue         | cc310: :option:`CONFIG_CC310_MBEDTLS_DHM_C`                  |
+| DHM          | Glue         | cc3xx: :option:`CONFIG_CC3XX_MBEDTLS_DHM_C`                  |
 |              |              |                                                              |
 |              |              | Original mbed TLS: :option:`CONFIG_VANILLA_MBEDTLS_DHM_C`    |
 +--------------+--------------+--------------------------------------------------------------+
 
 .. note::
-   * :ref:`nrf_security_backends_cc310`  is limited to key size of <= 2048 bits.
+   * :ref:`nrf_security_backends_cc3xx`  is limited to key size of <= 2048 bits.
 
 
 ECC configurations
@@ -323,7 +324,7 @@ ECC core support can be enabled by setting the :option:`CONFIG_MBEDTLS_ECP_C` Kc
 +--------------+--------------+--------------------------------------------------------------------+
 | Algorithm    | Support      | Configurations                                                     |
 +==============+==============+====================================================================+
-| ECP          | Choice       | cc310: :option:`CONFIG_CHOICE_CC310_MBEDTLS_ECP_C`                 |
+| ECP          | Choice       | cc3xx: :option:`CONFIG_CHOICE_CC3XX_MBEDTLS_ECP_C`                 |
 |              |              |                                                                    |
 |              |              | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_ECP_C`           |
 |              |              |                                                                    |
@@ -348,7 +349,7 @@ Elliptic Curve Diffie-Hellman (ECDH) support can be enabled by setting the :opti
 
 .. note::
    * ECDH support depends upon `ECC Configurations`_ being enabled.
-   * The :ref:`nrf_cc310_mbedcrypto_readme` does not integrate on ECP layer.
+   * The :ref:`nrf_cc3xx_mbedcrypto_readme` does not integrate on ECP layer.
      Only the top-level APIs for ECDH are replaced.
    * The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
 
@@ -366,7 +367,7 @@ Elliptic Curve Digital Signature Algorithm (ECDSA) support can be enabled be con
 
 .. note::
    * ECDSA support depends upon `ECC Configurations`_ being enabled.
-   * The :ref:`nrf_cc310_mbedcrypto_readme` does not integrate on ECP layer.
+   * The :ref:`nrf_cc3xx_mbedcrypto_readme` does not integrate on ECP layer.
      Only the top-level APIs for ECDSA are replaced.
    * The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
 
@@ -448,7 +449,7 @@ RSA support can be enabled by setting the :option:`CONFIG_MBEDTLS_RSA_C` Kconfig
 +--------------+---------------------------------------+
 
 .. note::
-   :ref:`nrf_security_backends_cc310`  is limited to key sizes of <= 2048 bits.
+   :ref:`nrf_security_backends_cc3xx`  is limited to key sizes of <= 2048 bits.
 
 Multiple backends
 =================
@@ -458,14 +459,14 @@ RSA support can be enabled by setting the :option:`CONFIG_MBEDTLS_RSA_C` Kconfig
 +--------------+-----------------+--------------------------------------------------------------------+
 | Algorithm    | Support         | Configurations                                                     |
 +==============+=================+====================================================================+
-| RSA          | Choice          | cc310: :option:`CONFIG_CHOICE_CC310_MBEDTLS_RSA_C`                 |
+| RSA          | Choice          | cc3xx: :option:`CONFIG_CHOICE_CC3XX_MBEDTLS_RSA_C`                 |
 |              |                 |                                                                    |
 |              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_RSA_C`   |
 +--------------+-----------------+--------------------------------------------------------------------+
 
 .. note::
    * For configurations providing :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
-   * :ref:`nrf_security_backends_cc310`  is limited to key sizes of <= 2048 bits.
+   * :ref:`nrf_security_backends_cc3xx`  is limited to key sizes of <= 2048 bits.
 
 Secure Hash configurations
 **************************
@@ -500,7 +501,7 @@ SHA-1 support can be enabled by setting the :option:`CONFIG_MBEDTLS_SHA1_C` Kcon
 +--------------+-----------------+--------------------------------------------------------------------+
 | Algorithm    | Support         | Backend selection                                                  |
 +==============+=================+====================================================================+
-| SHA-1        | Choice          | cc310: :option:`CONFIG_CHOICE_CC310_MBEDTLS_SHA1_C`                |
+| SHA-1        | Choice          | cc3xx: :option:`CONFIG_CHOICE_CC3XX_MBEDTLS_SHA1_C`                |
 |              |                 |                                                                    |
 |              |                 | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_SHA1_C`          |
 |              |                 |                                                                    |
@@ -518,7 +519,7 @@ SHA-256 support can be enabled by setting the :option:`CONFIG_MBEDTLS_SHA256_C` 
 +--------------+-----------------+-----------------------------------------------------------------------+
 | Algorithm    | Support         | Backend selection                                                     |
 +==============+=================+=======================================================================+
-| SHA-256      | Choice          | cc310: :option:`CONFIG_CHOICE_CC310_MBEDTLS_SHA256_C`                 |
+| SHA-256      | Choice          | cc3xx: :option:`CONFIG_CHOICE_CC3XX_MBEDTLS_SHA256_C`                 |
 |              |                 |                                                                       |
 |              |                 | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_SHA256_C`           |
 |              |                 |                                                                       |
@@ -548,5 +549,5 @@ Backend platform-specific configurations
 
 The Kconfig integration of nrf_security module coupled with CMake sets some default configurations to ensure that the backend works as expected.
 
-This includes integration with entropy data sampled from the Arm CryptoCell cc310 hardware, as well as a way to abstract the memory management in an RTOS context.
-See the :ref:`nrf_cc310_mbedcrypto_readme` documentation for details.
+This includes integration with entropy data sampled from the Arm CryptoCell cc3xx hardware, as well as a way to abstract the memory management in an RTOS context.
+See the :ref:`nrf_cc3xx_mbedcrypto_readme` documentation for details.
