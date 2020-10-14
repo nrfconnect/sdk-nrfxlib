@@ -22,7 +22,9 @@ if(CONFIG_OPENTHREAD_SOURCES)
   set(NRF_SECURITY_MBEDTLS_CONFIG_FILE ${CMAKE_CURRENT_BINARY_DIR}/../nrf_security/include/${CONFIG_MBEDTLS_CFG_FILE})
 
   if(CONFIG_OPENTHREAD_BUILD_OUTPUT_STRIPPED)
-    foreach(target openthread-ftd openthread-mtd openthread-radio openthread-cli-ftd openthread-cli-mtd openthread-ncp-ftd openthread-ncp-mtd openthread-rcp)
+    foreach(target openthread-ftd openthread-mtd openthread-radio openthread-cli-ftd openthread-cli-mtd openthread-ncp-ftd openthread-ncp-mtd 
+      openthread-spinel-ncp openthread-hdlc openthread-rcp)
+
       list(APPEND OPENTHREAD_STRIP_COMMAND
            COMMAND $<TARGET_PROPERTY:bintools,strip_command>
                    $<TARGET_PROPERTY:bintools,strip_flag>
@@ -48,6 +50,8 @@ if(CONFIG_OPENTHREAD_SOURCES)
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-cli-mtd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-cli-mtd>
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ncp-ftd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-ncp-ftd>
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ncp-mtd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-ncp-mtd>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-spinel-ncp>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-spinel-ncp>
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-hdlc>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-hdlc>
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-rcp>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-rcp>
   )
 
@@ -89,6 +93,14 @@ if (CONFIG_OPENTHREAD_LIBRARY_1_1)
   endif()
 
   if(CONFIG_OPENTHREAD_NCP)
+    zephyr_library_import(
+      libopenthread-spinel-ncp
+      ${OT_LIB_PATH}/libopenthread-spinel-ncp.a
+    )
+    zephyr_library_import(
+      openthread-hdlc
+      ${OT_LIB_PATH}/libopenthread-hdlc.a
+    )
     if(CONFIG_OPENTHREAD_FTD)
       zephyr_library_import(
         openthread-ncp-ftd
