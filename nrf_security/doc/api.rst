@@ -35,16 +35,6 @@ mbedcrypto AES CCM glue
    :members:
 
 
-.. _nrf_security_api_mbedcrypto_glue_cmac:
-
-mbedcrypto CMAC glue
-====================
-
-.. doxygengroup:: mbedcrypto_glue_cmac
-   :project: nrfxlib
-   :members:
-
-
 .. _nrf_security_api_mbedcrypto_glue_dhm:
 
 mbedcrypto DHM glue

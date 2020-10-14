@@ -126,20 +126,19 @@ Multiple backends
 
 CMAC can be enabled by setting the :option:`CONFIG_MBEDTLS_CMAC_C` Kconfig variable, and one or more of the following Kconfig variables:
 
-+--------------+-----------------------------+-----------------------------------------------------------------+
-| Algorithm    | Support                     | Configurations                                                  |
-+==============+=============================+=================================================================+
-| CMAC         | Glue                        | cc3xx: :option:`CONFIG_CC3XX_MBEDTLS_CMAC_C`                    |
-|              |                             |                                                                 |
-|              |                             | nrf_oberon: :option:`CONFIG_OBERON_MBEDTLS_CMAC_C`              |
-|              |                             |                                                                 |
-|              |                             | Original mbed TLS: :option:`CONFIG_VANILLA_MBEDTLS_CMAC_C`      |
-+--------------+-----------------------------+-----------------------------------------------------------------+
++--------------+-----------------------------+--------------------------------------------------------------------+
+| Algorithm    | Support                     | Configurations                                                     |
++==============+=============================+====================================================================+
+| CMAC         | Choice                      | cc3xx: :option:`CONFIG_CHOICE_CC3XX_MBEDTLS_CMAC_C`                |
+|              |                             |                                                                    |
+|              |                             | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_CMAC_C`          |
+|              |                             |                                                                    |
+|              |                             | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CMAC_C`  |
++--------------+-----------------------------+--------------------------------------------------------------------+
 
 .. note::
+   * For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
    * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
-   * If both :ref:`nrf_security_backends_oberon` and :ref:`nrf_security_backends_orig_mbedtls` is enabled, the implementation from
-     nrf_oberon backend will provide support for CMAC.
 
 AEAD configurations
 *******************

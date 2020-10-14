@@ -25,10 +25,6 @@ if(CONFIG_NRF_SECURITY_GLUE_LIBRARY)
     nrf_security_debug("Adding to glue: CCM")
   endif()
 
-  if(CONFIG_GLUE_MBEDTLS_CMAC_C)
-    nrf_security_debug("Adding to glue: CMAC")
-  endif()
-
   if(CONFIG_GLUE_MBEDTLS_DHM_C)
     nrf_security_debug("Adding to glue: DHM")
   endif()
