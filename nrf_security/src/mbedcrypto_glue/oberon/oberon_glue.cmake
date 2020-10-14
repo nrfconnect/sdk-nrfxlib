@@ -21,10 +21,6 @@ zephyr_library_sources_ifdef(CONFIG_GLUE_OBERON_MBEDTLS_CCM_C
   ${CMAKE_CURRENT_LIST_DIR}/ccm_oberon.c
 )
 
-zephyr_library_sources_ifdef(CONFIG_GLUE_OBERON_MBEDTLS_CMAC_C
-  ${CMAKE_CURRENT_LIST_DIR}/cmac_oberon.c
-)
-
 zephyr_library_sources(${ZEPHYR_BASE}/misc/empty_file.c)
 zephyr_library_compile_definitions(MBEDTLS_BACKEND_PREFIX=oberon)
 zephyr_library_link_libraries(mbedtls_common_glue)
