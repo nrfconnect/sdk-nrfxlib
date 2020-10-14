@@ -43,7 +43,7 @@ config BT_LL_SOFTDEVICE
 	select BT_HAS_HCI_VS
 	# The SoftDevice Controller only supports nRF52 and nRF53, it does not support nRF51
 	# or nRF91 (nRF91 doesn't even have the physical HW needed for BLE).
-	depends on (SOC_SERIES_NRF52X || SOC_SERIES_NRF53X)
+	depends on (SOC_SERIES_NRF52X || SOC_NRF5340_CPUNET)
 	help
 	  Use SoftDevice Link Layer implementation.
 
@@ -73,7 +73,7 @@ config SOFTDEVICE_CONTROLLER_S132
 	select BT_CTLR_ADV_EXT_SUPPORT
 
 config SOFTDEVICE_CONTROLLER_S140
-	depends on (SOC_NRF52811 || SOC_NRF52820 || SOC_NRF52840 || SOC_NRF52833 || SOC_SERIES_NRF53X)
+	depends on (SOC_NRF52811 || SOC_NRF52820 || SOC_NRF52840 || SOC_NRF52833 || SOC_NRF5340_CPUNET)
 	select BT_CTLR_DATA_LEN_UPDATE_SUPPORT
 	select BT_CTLR_ADV_EXT_SUPPORT
 	select BT_CTLR_PHY_CODED_SUPPORT
