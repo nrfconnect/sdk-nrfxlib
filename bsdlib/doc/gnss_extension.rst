@@ -3,6 +3,10 @@
 GNSS socket
 ###########
 
+.. contents::
+   :local:
+   :depth: 2
+
 `Global navigation satellite system (GNSS)`_ socket is one of the socket types supported by the BSD library.
 This socket type is used to configure and fetch GPS position fix data from the GPS module, and to write `A-GPS`_ data to the GPS module.
 

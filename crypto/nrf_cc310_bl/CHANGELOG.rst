@@ -3,6 +3,10 @@
 Changelog - nRF cc310 bl
 ########################
 
+.. contents::
+   :local:
+   :depth: 2
+
 All notable changes to this project are documented in this file.
 
 nrf_cc310_bl - 0.9.12

@@ -3,6 +3,10 @@
 Changelog - nRF Oberon
 ######################
 
+.. contents::
+   :local:
+   :depth: 2
+
 All notable changes to this project are documented in this file.
 
 nrf_oberon - 3.0.7

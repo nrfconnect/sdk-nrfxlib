@@ -3,6 +3,10 @@
 PDN management
 ##############
 
+.. contents::
+   :local:
+   :depth: 2
+
 The BSD library supports configuring up to 10 packet data network (PDN) sockets.
 PDN sockets are an extension to the standard socket API.
 They allow for configuring PDN connections as identified by the user's Access Point Name (APN).

@@ -3,6 +3,10 @@
 Type 2 Tag
 ##########
 
+.. contents::
+   :local:
+   :depth: 2
+
 The Type 2 Tag implementation is based on the NFC Forum document *Type 2 Tag Technical Specification Version 1.0*.
 
 A Type 2 Tag can be read and re-written, and the memory of the tag can be write protected.

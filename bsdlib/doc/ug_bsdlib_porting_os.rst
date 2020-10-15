@@ -3,6 +3,10 @@
 Porting the BSD library to your OS
 ##################################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The :ref:`bsdlib` from Nordic Semiconductor is an OS-agnostic C library.
 OS-specific parts are moved out of the library.
 To use the library with your OS or scheduler, you must first port it by creating a custom :file:`bsd_os.c` file, which serves as an OS abstraction layer.

@@ -3,6 +3,10 @@
 API documentation
 #################
 
+.. contents::
+   :local:
+   :depth: 2
+
 .. _nrf_rpc_core_api_documentation:
 
 Core API documentation

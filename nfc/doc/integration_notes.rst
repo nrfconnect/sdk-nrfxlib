@@ -3,6 +3,10 @@
 Integration notes
 #################
 
+.. contents::
+   :local:
+   :depth: 2
+
 When integrating the NFC libraries in your application, there are a few things to be aware of.
 See the following notes:
 

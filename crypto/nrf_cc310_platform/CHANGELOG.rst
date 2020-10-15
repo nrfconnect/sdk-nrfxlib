@@ -3,6 +3,10 @@
 Changelog - nrf_cc3xx_platform
 ##############################
 
+.. contents::
+   :local:
+   :depth: 2
+
 All notable changes to this project are documented in this file.
 
 nrf_cc3xx_platform - 0.9.3

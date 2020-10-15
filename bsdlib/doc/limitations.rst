@@ -3,6 +3,10 @@
 Limitations
 ###########
 
+.. contents::
+   :local:
+   :depth: 2
+
 GNSS, AGPS, and modem DFU are not part of the generic sockets.
 Therefore, operating on them using ``poll`` is not possible.
 

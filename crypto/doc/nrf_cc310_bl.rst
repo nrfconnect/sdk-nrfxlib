@@ -3,6 +3,10 @@
 nrf_cc310_bl crypto library
 ###########################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The nrf_cc310_bl library is a software library to interface with Arm CryptoCell CC310 hardware accelerator that is available on the  nRF52840 SoC and the nRF9160 SiP.
 The library adds hardware support for cryptographic algorithms to be used in a bootloader-specific use cases.
 

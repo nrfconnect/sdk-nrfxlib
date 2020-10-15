@@ -3,6 +3,10 @@
 API documentation
 #################
 
+.. contents::
+   :local:
+   :depth: 2
+
 API reference for the mbed TLS glue layer.
 
 .. _nrf_security_api_mbedcrypto_glue:

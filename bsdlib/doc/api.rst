@@ -3,6 +3,9 @@
 API documentation
 #################
 
+.. contents::
+   :local:
+   :depth: 2
 
 BSD Library Management
 **********************

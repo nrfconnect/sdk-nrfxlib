@@ -3,6 +3,10 @@
 Integration with applications
 #############################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series that supports Bluetooth 5.
 
 For the nRF53 Series, the requirements described in this document are only relevant for applications running alongside the |controller| on the network processor.
