@@ -5,6 +5,12 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+bsdlib 0.8.1
+************
+
+* Fixed compability issue with SES.
+* Fixed an issue with a strcmp in the PDN socket that might compare to long strings in some cases.
+
 bsdlib 0.8.0
 ************
 
