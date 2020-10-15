@@ -3,6 +3,10 @@
 API documentation
 #################
 
+.. contents::
+   :local:
+   :depth: 2
+
 .. _crypto_api_nrf_cc310_bl:
 
 nRF CC310 bootloader crypto library

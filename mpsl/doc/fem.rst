@@ -3,6 +3,10 @@
 Front-End Module feature
 ########################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The Front-End Module feature allows the application to interface with several types of Front-End Modules (FEMs).
 This allows an increase of the transmitted power through a Power Amplifier (PA) or an increase of the sensitivity through a Low-Noise Amplifier (LNA).
 Any increase in power and sensitivity results in an increased communication range.

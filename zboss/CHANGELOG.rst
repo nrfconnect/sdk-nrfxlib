@@ -3,6 +3,10 @@
 Changelog
 #########
 
+.. contents::
+   :local:
+   :depth: 2
+
 All notable changes to this project are documented in this file.
 
 nRF Connect SDK v1.4.0

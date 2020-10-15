@@ -3,6 +3,10 @@
 Type 4 Tag
 ##########
 
+.. contents::
+   :local:
+   :depth: 2
+
 The Type 4 Tag implementation is based on the NFC Forum document *Type 4 Tag Technical Specification Version 1.0 2017-08-28 [T4T]*.
 
 A Type 4 Tag must contain at least the NDEF tag application.

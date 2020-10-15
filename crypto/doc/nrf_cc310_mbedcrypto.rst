@@ -4,6 +4,10 @@
 nrf_cc3xx_mbedcrypto library
 ############################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The nrf_cc3xx_mbedcrypto library is software library to interface with the Arm CryptoCell CC310 hardware accelerator that is available on the nRF52840 SoC and the nRF9160 SiP.
 The library adds hardware support for selected cryptographic algorithms.
 

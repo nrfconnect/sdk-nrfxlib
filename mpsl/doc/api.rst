@@ -3,6 +3,10 @@
 API documentation
 #################
 
+.. contents::
+   :local:
+   :depth: 2
+
 Multiprotocol Service Layer interface
 *************************************
 

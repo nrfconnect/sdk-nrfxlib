@@ -3,6 +3,10 @@
 Backend configurations
 ######################
 
+.. contents::
+   :local:
+   :depth: 2
+
 This section covers the configurations available when one or more nrf_security backends are enabled.
 This includes linking directly to the backend library or utilizing the mbed TLS glue layer.
 

@@ -3,6 +3,10 @@
 Integration notes
 #################
 
+.. contents::
+   :local:
+   :depth: 2
+
 This page describes how to integrate the Multiprotocol Service Layer (MPSL) into an application.
 The descriptions are valid for both RTOS and RTOS-free environments.
 

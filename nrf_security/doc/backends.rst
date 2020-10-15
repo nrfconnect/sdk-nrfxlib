@@ -3,6 +3,10 @@
 nrf_security backends
 #####################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The nrf_security module supports multiple enabled backends at the same time.
 This mechanism is intended to extend the available feature set of hardware-accelerated cryptography or to provide alternative implementations of the mbed TLS APIs.
 Enabling one or more backends adds more configuration options grouped into classes of cryptographic algorithms.

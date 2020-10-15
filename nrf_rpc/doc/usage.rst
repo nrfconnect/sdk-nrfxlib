@@ -3,6 +3,10 @@
 Implementing remote procedure calls
 ###################################
 
+.. contents::
+   :local:
+   :depth: 2
+
 A specific API can be used remotely if RPC encoders and RPC decoders are provided for it.
 On one side, there are encoders that encode parameters and send commands or events.
 On the other side, there are decoders that decode and execute a specific procedure.

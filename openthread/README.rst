@@ -3,6 +3,10 @@
 OpenThread pre-built libraries
 ##############################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The |NCS| allows for using certified OpenThread libraries for Nordic devices.
 This simplifies the OpenThread certification process of the final product.
 

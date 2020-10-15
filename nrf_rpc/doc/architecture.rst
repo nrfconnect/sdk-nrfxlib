@@ -3,6 +3,10 @@
 Architecture
 ############
 
+.. contents::
+   :local:
+   :depth: 2
+
 The following picture gives an overview of the nRF RPC architecture:
 
 .. figure:: img/layers.svg

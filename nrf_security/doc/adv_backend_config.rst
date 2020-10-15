@@ -3,6 +3,10 @@
 Advanced backend configuration
 ##############################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The advanced configuration section in Kconfig can be used to fine-tune the build of specific backends.
 For example, the options available in the advanced configuration section can help to reduce the memory usage and/or flash footprint of the :ref:`nrf_security_backends_orig_mbedtls`.
 

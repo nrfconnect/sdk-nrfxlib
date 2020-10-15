@@ -3,6 +3,10 @@
 mbed TLS glue layer
 ###################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The mbed TLS glue layer allows for using both the hardware-accelerated and software implementation of cryptography at the same time.
 A typical use case is if the cryptographic algorithm is limited in hardware support (for example, the AES key size or supported ciphers).
 In this case, the mbed TLS glue layer enables a dynamic check to verify whether the cryptographic algorithm is supported in hardware.

@@ -3,6 +3,10 @@
 Timeslot
 ########
 
+.. contents::
+   :local:
+   :depth: 2
+
 The Timeslot interface allows developers to implement their own 2.4 GHz proprietary protocol that can be run concurrently with other protocols using the MPSL.
 The Timeslot feature gives the application access to the radio and other restricted peripherals during defined time intervals, denoted as timeslots.
 It can also be used to suppress radio activity and to reserve guaranteed time for application activities with hard timing requirements.
