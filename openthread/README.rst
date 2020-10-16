@@ -183,3 +183,11 @@ For a more concise list of features enabled for each feature set, see :ref:`nrf:
      - ``y``
      - ``y``
      - ``n``
+   * - :option:`CONFIG_OPENTHREAD_MAX_CHILDREN`
+     - ``32``
+     - ``32``
+     - ``32``
+   * - :option:`CONFIG_OPENTHREAD_MAX_IP_ADDR_PER_CHILD`
+     - ``6``
+     - ``6``
+     - ``6``
