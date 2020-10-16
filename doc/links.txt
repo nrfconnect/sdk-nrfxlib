@@ -22,7 +22,7 @@
 
 .. _`Socket API`: https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
 
-.. _`ZBOSS API documentation`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss_api_doc/index.html
+.. _`ZBOSS API documentation`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss/index.html
 
 .. _`mbed TLS backend`: https://tls.mbed.org/
 
