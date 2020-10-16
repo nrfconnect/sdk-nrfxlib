@@ -54,6 +54,11 @@ Changes
   * HCI_VS_SUBEVENT -> HCI_SUBEVENT_VS
   * hci_vs_cmd      -> hci_cmd_vs
 
+Bugfixes
+========
+
+* Fixed an issue in master role which could cause disconnects if there were scheduling conflicts while doing a control procedures with an instant (DRGN-11222).
+
 Known issues and limitations
 ============================
 
