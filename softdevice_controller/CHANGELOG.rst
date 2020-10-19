@@ -66,18 +66,7 @@ Bugfixes
 Known issues and limitations
 ============================
 
-* In connections, the Link Layer payload size is limited to 27 bytes on LE Coded PHY (DRGN-8476).
-* If the application has set an all zeroes IRK for a device in the resolving list, then a resolvable address that can be resolved with the all zeroes IRK will be reported to the application as that device in the advertisement report or the connected event (DRGN-9083).
-* The SoftDevice Controller will generate a resolvable address for the TargetA field in directed advertisements if the target device address is in the resolving list with a non-zero IRK, even if privacy is not enabled and the local device address is set to a public address. A workaround is to remove the device address from the resolving list (DRGN-10659).
-* The maximum connection interval that can be active when switching to a connection interval of 1 ms is 10 ms. An application that needs to use a higher interval than 10 ms needs to perform two connection updates to use 1 ms connection interval: A first update to 10 ms connection interval, and a second update to 1 ms connection interval (DRGN-11297).
-* If the scanner is configured with a scan window larger than 16 seconds, the scanner will truncate the scan window to 16 seconds (DRGN-10305).
-* Applications must not modify the SEVONPEND flag in the SCR register when running in priority levels higher than 6 (priority level numerical values lower than 6) as this can lead to undefined behavior (DRGN-8569).
-* Synthesized low frequency clock source is not tested or intended for use with the Bluetooth LE stack (DRGN-6362).
-* If an extended advertiser is configured with limited duration, it will time out after the first primary channel packet in the last advertising event (DRGN-10367).
-* The HCI Receiver and Transmitter Test commands are not available.
-  To perform a radio test, use a DTM application.
-  For nRF52, use the DTM application in the nRF5 SDK.
-  For nRF53, use :ref:`nrf:direct_test_mode` (DRGN-12259).
+See the :ref:`nrf:known_issues` page in |NCS| for the list of known issues and limitations for this release.
 
 nRF Connect SDK v1.3.0
 **********************
