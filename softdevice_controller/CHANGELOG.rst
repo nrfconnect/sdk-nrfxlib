@@ -3,10 +3,6 @@
 Changelog
 #########
 
-.. contents::
-   :local:
-   :depth: 2
-
 All notable changes to this project are documented in this file.
 
 Master branch
@@ -57,6 +53,11 @@ Changes
   * HCI_VS_OPCODE   -> HCI_OPCODE_VS
   * HCI_VS_SUBEVENT -> HCI_SUBEVENT_VS
   * hci_vs_cmd      -> hci_cmd_vs
+
+Bugfixes
+========
+
+* Fixed an issue in master role which could cause disconnects if there were scheduling conflicts while doing a control procedures with an instant (DRGN-11222).
 
 Known issues and limitations
 ============================
