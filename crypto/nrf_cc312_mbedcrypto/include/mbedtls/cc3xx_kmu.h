@@ -102,6 +102,7 @@ int mbedtls_aes_setkey_enc_shadow_key(
  * @param   slot_id     Identifier of the key slot (2 - 127).
  * @param   keybits     Key size in bits.
  *
+ * @returns 0 on success, otherwise a negative number.
  */
 int mbedtls_aes_setkey_dec_shadow_key(
     mbedtls_aes_context * const ctx,
@@ -392,6 +393,8 @@ extern "C"
  * @param   context_size    Context info size to use for KDF.
  * @param   output          Output buffer.
  * @param   output_size     Size of output buffer in bytes.
+ *
+ * @returns 0 on success, otherwise a negative number.
  */
 int mbedtls_shadow_key_derive(uint32_t slot_id,
                              unsigned int keybits,
