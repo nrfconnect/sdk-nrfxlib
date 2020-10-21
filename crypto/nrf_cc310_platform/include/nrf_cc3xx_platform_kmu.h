@@ -102,7 +102,47 @@ int nrf_cc3xx_platform_kmu_write_key_slot(
  */
 int nrf_cc3xx_platform_kmu_write_kdr_slot(const uint8_t key[16]);
 
+
+/** @brief Push the 128 bit AES key in KMU slot 0 (reserved for KDR) into
+ *         CryptoCell KDR registers and set LCS state to secure
+ *
+ *  @note This function must be run once on every boot to load the KDR key
+ *        and to set the LCS state to secure.
+ *
+ * @note The KDR key will be stored in the Always on Domain (AO) untill the next
+ *       reset. It is not possible to set the KDR value once the LCS state is
+ *       set to secure.
+ *
+ * @return NRF_CC3XX_PLATFORM_SUCCESS on success, otherwise a negative value.
+ */
+int nrf_cc3xx_platform_kmu_push_kdr_slot_and_lock(void);
+
 #endif // defined(NRF9160_XXAA)
+
+
+#if defined(NRF52840_XXAA)
+
+/** @brief Load a unique 128 bit root key into CryptoCell KDR registers and set
+ *         CryptoCell LCS state to secure
+ *
+ * @note This function must be run once on every boot do load an AES key into
+ *       KDR. It is recommended that this is done in an immutable bootloader
+ *       stage and the page holding the key is ACL read+write protected after
+ *       it has been loaded into KDR with this API.
+ *
+ * @note The KDR key should be a randomly generated unique key.
+ *
+ * @note The KDR key will be stored in the Always on Domain (AO) until the next
+ *       reset. It is not possible to set the KDR value once the LCS state is
+ *       set to secure.
+ *
+ * @param[in]   key     Array with the AES 128 bit key.
+ *
+ * @return NRF_CC3XX_PLATFORM_SUCCESS on success, otherwise a negative value.
+ */
+int nrf_cc3xx_platform_kdr_load_key(uint8_t key[16]);
+
+#endif // defined(NRF52840_XXAA)
 
 #endif /* NRF_CC3XX_PLATFORM_KMU__ */
 
