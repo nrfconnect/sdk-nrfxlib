@@ -24,3 +24,4 @@ Changes
 * Unified OSIF layer for LEDs and buttons.
 * Updated the ZBOSS release naming convention for nrfxlib commit.
 * Changed MAC LL API.
+* ZBOSS IO buffer size reconfigured to allow for sending 802.15.4 MAC frame with maximum payload.

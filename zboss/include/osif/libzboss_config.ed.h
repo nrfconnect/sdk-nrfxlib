@@ -61,12 +61,17 @@
  *
  * Available modules are:
  *
+ * - 0x8000 SPI platform implementation
  * - 0x4000 Zigbee Green Power
+ * - 0x2000 Custom components
+ * - 0x1000 UART and NCP transport
  * - 0x0800 Application
+ * - 0x0400 MAC Lower Layer
  * - 0x0200 Zigbee Light Link
  * - 0x0100 Zigbee Cluster Library
  * - 0x0080 Security
  * - 0x0040 Zigbee Device Object
+ * - 0x0020 Zigbee Smart Energy
  * - 0x0010 Application Support layer
  * - 0x0008 Network layer
  * - 0x0004 MAC layer

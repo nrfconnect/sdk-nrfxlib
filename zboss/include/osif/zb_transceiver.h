@@ -30,5 +30,8 @@ void zb_trans_src_match_tbl_drop(void);
 zb_time_t osif_sub_trans_timer(zb_time_t t2, zb_time_t t1);
 zb_bool_t zb_trans_rx_pending(void);
 zb_uint8_t zb_trans_get_next_packet(zb_bufid_t buf);
+zb_ret_t zb_trans_cca(void);
+zb_ret_t zb_trans_continuous_carrier(void);
+void zb_trans_set_crcpoly(zb_uint32_t iv, zb_uint32_t polynomial);
 
 #endif /* ZB_TRANSCEIVER_H__ */
