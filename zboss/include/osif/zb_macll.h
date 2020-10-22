@@ -96,4 +96,6 @@ uint8_t zb_macll_metadata_get_lqi(zb_bufid_t bufid);
 void zb_macll_metadata_set_lqi(zb_bufid_t bufid, uint8_t lqi);
 void zb_macll_set_received_data_status(zb_bufid_t bufid, zb_bool_t pending_bit);
 
+zb_ret_t zb_macll_tx_carrier(zb_uint8_t channel, zb_time_t timeout_bi);
+
 #endif /* ZB_MACLL_H__ */

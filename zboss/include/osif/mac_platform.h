@@ -207,8 +207,8 @@ zb_transceiver_ctx_t;
 
 
 /*PHY tests specific API. Implement for PHY tests only.*/
-#define ZB_TRANSCEIVER_PERFORM_CCA()                     (0) /*Perform single CCA attempt. Used in TP_154_PHY24_RECEIVER_07 test*/
-#define ZB_TRANS_TX_CARRIER_DATA(channel, timeout_bi)    (0) /*Start continuous transmission. Used in TP_154_PHY24_TRANSMIT_02 test.*/
+#define ZB_TRANSCEIVER_PERFORM_CCA()                     zb_macll_cca()
+#define ZB_TRANS_TX_CARRIER_DATA(channel, timeout_bi)    zb_macll_tx_carrier(channel, timeout_bi)
 
 #define ZB_TRANSCEIVER_SET_TX_POWER(new_power)           zb_macll_set_tx_power(new_power)
 #define ZB_TRANSCEIVER_GET_TX_POWER(power)               zb_macll_get_tx_power(power)

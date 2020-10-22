@@ -7,4 +7,4 @@
  */
 
 /* Revision number of ZBOSS platform for NCS. */
-#define ZBOSS_SDK_REVISION 4
+#define ZBOSS_SDK_REVISION 5

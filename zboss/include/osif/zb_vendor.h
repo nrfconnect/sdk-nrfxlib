@@ -284,6 +284,11 @@
 /* Include Zigbee BDB implementation (always defined, except macsplit). */
 #define ZB_BDB_MODE
 
+#if defined NCP_MODE && !defined NCP_MODE_HOST
+/* Enable NCP SoC -specific BDB signal generation and handler. */
+#define ZB_NCP_SOC_BDB
+#endif /* NCP_MODE && !NCP_MODE_HOST */
+
 /* Include Zigbee HA clusters implementation (always defined, except macsplit). */
 #define ZB_ENABLE_HA
 
@@ -310,5 +315,12 @@
 
 /* Include all test cases in the certification firmware builds. */
 #define ZB_TEST_GROUP_ALL
+
+/* Set the ZBOSS buffer size according to the set of enabled MAC features. */
+#ifdef ZB_MAC_SECURITY
+#define ZB_IO_BUF_SIZE 164
+#else /* ZB_MAC_SECURITY */
+#define ZB_IO_BUF_SIZE 152
+#endif /* ZB_MAC_SECURITY */
 
 #endif /* ZB_VENDOR_H__ */
