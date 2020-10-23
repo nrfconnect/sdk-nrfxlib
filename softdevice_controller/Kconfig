@@ -50,6 +50,7 @@ config BT_LL_SOFTDEVICE
 	select BT_CTLR_PHY_2M_SUPPORT if HAS_HW_NRF_RADIO_BLE_2M
 	select BT_CTLR_PHY_CODED_SUPPORT if HAS_HW_NRF_RADIO_BLE_CODED
 	select BT_HAS_HCI_VS
+	select BT_CTLR_ECDH_SUPPORT
 	# The SoftDevice Controller only supports nRF52 and nRF53, it does not support nRF51
 	# or nRF91 (nRF91 doesn't even have the physical HW needed for BLE).
 	depends on (SOC_SERIES_NRF52X || SOC_NRF5340_CPUNET)
@@ -99,6 +100,20 @@ config SOFTDEVICE_CONTROLLER_MULTIROLE
 
 endchoice
 
+if BT_CTLR_ECDH
+choice BT_CTLR_ECDH_LIB
+	prompt "SoftDevice ECDH library"
+
+config BT_CTLR_ECDH_LIB_OBERON
+	select NRF_OBERON
+	bool "Oberon ECDH library"
+
+config BT_CTLR_ECDH_LIB_TINYCRYPT
+	select NRF_OBERON
+	bool "TinyCrypt ECDB library"
+
+endchoice
+endif # BT_CTLR_ECDH
 
 endif # BT_LL_SOFTDEVICE
 endif # BT_CTLR
