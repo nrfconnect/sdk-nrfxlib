@@ -24,7 +24,7 @@ doc/*                                     @b-gent
 /softdevice_controller/                   @joerchan @rugeGerritsen
 /bsdlib/                                  @rlubos @lemrey @evenl
 /crypto/                                  @frkv @tejlmand
-/mpsl/                                    @joerchan @rugeGerritsen
+/mpsl/                                    @joerchan @hurricaneFromMoscow
 /nfc/                                     @anangl @grochu
 /nrf_security/                            @frkv @tejlmand
 /openthread/                              @MarekPorwisz @lmaciejonczyk
