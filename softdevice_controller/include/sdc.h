@@ -311,7 +311,6 @@ int32_t sdc_support_adv(void);
  *
  * After this API is called, the controller will support the HCI commands
  * and events related to the slave role.
- * This state requires the advertising state to be supported.
  *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
@@ -330,11 +329,23 @@ int32_t sdc_support_slave(void);
  */
 int32_t sdc_support_scan(void);
 
+/** @brief Support scanning for extended advertising PDUs
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related extended scanning.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Extended scanning state is not supported.
+ */
+int32_t sdc_support_ext_scan(void);
+
 /** @brief Support Master role
  *
  * After this API is called, the controller will support the HCI commands
  * and events related to the master role.
- * This state requires the scanning state to be supported.
+ * If connection establishment on secondary advertising channels is required, the application
+ * must also call @ref sdc_support_ext_scan().
  *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().

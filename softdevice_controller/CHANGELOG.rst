@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Master branch
+*************
+
+Added
+=====
+
+* Added :c:func:`sdc_support_ext_scan` which makes support for extended scanning configurable (DRGN-14902).
+
 nRF Connect SDK v1.4.0
 **********************
 
