@@ -116,6 +116,13 @@ Power save mode enumerator
    :project: nrfxlib
    :members:
 
+Use case enumerator
+===================
+
+.. doxygengroup:: nrf_socket_gnss_use_case_modes
+   :project: nrfxlib
+   :members:
+
 GNSS socket data frames
 =======================
 
