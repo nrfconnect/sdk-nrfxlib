@@ -54,8 +54,8 @@ set(cc3xx_libs
   mbedcrypto_cc3xx_noglue
 )
 
-symbol_strip_func(cc3xx strip_command)
-combine_archives(mbedcrypto_cc3xx "${cc3xx_libs}" "${strip_command}")
+nrf_security_symbol_strip(cc3xx strip_command)
+nrf_security_combine_archives(cc3xx "${cc3xx_libs}" "${strip_command}")
 
 #
 # Copy alternate files to generated folder (if enabled in backend)

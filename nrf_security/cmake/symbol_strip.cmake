@@ -30,7 +30,7 @@ endmacro()
 # If is_stripped is "TRUE" this function will strip symbols from any library
 # named mbedcrypto_<backend> corresponding to the parameter "backend"
 #
-function(symbol_strip_func backend strip_command)
+function(nrf_security_symbol_strip backend strip_command)
   nrf_security_debug("========== Running symbol_strip_function for ${backend} ==========")
   string(TOUPPER "${backend}" BACKEND_NAME_UPPER)
 

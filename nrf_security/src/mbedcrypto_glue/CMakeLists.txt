@@ -105,19 +105,19 @@ endif(CONFIG_NRF_SECURITY_GLUE_LIBRARY)
 # CC310: Rename glued symbols to prevent collision
 #
 if (CONFIG_CC3XX_BACKEND)
-  symbol_rename_func("cc3xx" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
+  nrf_security_symbol_rename("cc3xx" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
 endif()
 
 #
 # nrf_oberon: Rename glued symbols to prevent collisions
 #
 if (CONFIG_OBERON_BACKEND AND CONFIG_NRF_SECURITY_GLUE_LIBRARY)
-  symbol_rename_func("oberon" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
+  nrf_security_symbol_rename("oberon" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
 endif()
 
 #
 # Vanilla: Rename glued symbols to prevent collision
 #
 if (CONFIG_MBEDTLS_VANILLA_BACKEND AND CONFIG_NRF_SECURITY_GLUE_LIBRARY)
-  symbol_rename_func("vanilla" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
+  nrf_security_symbol_rename("vanilla" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
 endif()
