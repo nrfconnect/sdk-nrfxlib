@@ -45,8 +45,8 @@ endmacro()
 # This function will create a symbol renaming script for any library
 # named mbedcrypto_<backend> corresponding to the parameter "backend"
 #
-function(symbol_rename_func backend rename_template)
-  nrf_security_debug("========== Running symbol_rename_func for ${backend} ==========")
+function(nrf_security_symbol_rename backend rename_template)
+  nrf_security_debug("========== Running nrf_security_symbol_rename for ${backend} ==========")
   string(TOUPPER "${backend}" BACKEND_NAME)
   #
   # Functionality that can be glued
