@@ -115,8 +115,8 @@ set(oberon_libs
 # Create the actual mbedcrypto_oberon library containing
 # all backend-specific
 #
-combine_archives(mbedcrypto_oberon "${oberon_libs}")
-symbol_strip_func(oberon)
+symbol_strip_func(oberon strip_command)
+combine_archives(mbedcrypto_oberon "${oberon_libs}" "${strip_command}")
 
 #
 # Copy the replacement _alt.h files by from nrf_oberon by enabled feature

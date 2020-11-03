@@ -78,10 +78,13 @@ function(symbol_rename_func backend rename_template)
 
   set(BACKEND_RENAMED_LIBRARY libmbedcrypto_${MBEDTLS_BACKEND_PREFIX}_renamed.a)
 
+  get_target_property(LIB_TYPE mbedcrypto_${MBEDTLS_BACKEND_PREFIX} TYPE)
+
   add_custom_command(
     OUTPUT  ${BACKEND_RENAMED_LIBRARY}
     COMMAND ${CMAKE_OBJCOPY} ${redefine_line}
-            $<TARGET_FILE:mbedcrypto_${MBEDTLS_BACKEND_PREFIX}>
+            $<$<STREQUAL:INTERFACE_LIBRARY,${LIB_TYPE}>:$<TARGET_PROPERTY:mbedcrypto_${MBEDTLS_BACKEND_PREFIX},INTERFACE_LINK_LIBRARIES>>
+            $<$<NOT:$<STREQUAL:INTERFACE_LIBRARY,${LIB_TYPE}>>:$<TARGET_FILE:mbedcrypto_${MBEDTLS_BACKEND_PREFIX}>>
             ${BACKEND_RENAMED_LIBRARY}
     DEPENDS mbedcrypto_${MBEDTLS_BACKEND_PREFIX}
             ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt
@@ -94,7 +97,7 @@ function(symbol_rename_func backend rename_template)
                    ${MBEDTLS_BACKEND_PREFIX}_renamed_target)
   set_target_properties(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_renamed
                         PROPERTIES IMPORTED_LOCATION
-                        "${CMAKE_CURRENT_BINARY_DIR}/${BACKEND_RENAMED_LIBRARY}")
+                        ${CMAKE_CURRENT_BINARY_DIR}/${BACKEND_RENAMED_LIBRARY})
 
   zephyr_append_cmake_library(mbedcrypto_${MBEDTLS_BACKEND_PREFIX}_renamed)
 endfunction()
