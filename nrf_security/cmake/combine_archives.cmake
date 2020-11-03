@@ -23,14 +23,22 @@ function(combine_archives output_archive input_archives)
     math(EXPR COUNT "${COUNT} + 1" OUTPUT_FORMAT DECIMAL)
   endforeach()
 
-  add_library(${output_archive} STATIC ${ZEPHYR_BASE}/misc/empty_file.c)
-  add_dependencies(${output_archive} ${input_archives})
-  add_custom_command(TARGET ${output_archive}
-                     POST_BUILD
+  # This interface library allows other targets to link to the custom generated library.
+  # Together with the custom ${output_archive}_target this ensures that dependencies
+  # are setup so that linking with ${output_archive} will drive the dependencies.
+  add_library(${output_archive} INTERFACE)
+  target_link_libraries(${output_archive} INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/lib${output_archive}.a)
+  add_dependencies(${output_archive} ${output_archive}_target)
+
+  add_custom_target(${output_archive}_target DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/lib${output_archive}.a)
+
+  add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lib${output_archive}.a
                      COMMAND ${CMAKE_COMMAND}
                              -DCMAKE_AR=${CMAKE_AR}
                              -DARCHIVE_OUT=${CMAKE_CURRENT_BINARY_DIR}/lib${output_archive}.a
                              ${archives_in}
                              -P ${ZEPHYR_NRFXLIB_MODULE_DIR}/nrf_security/cmake/combine_archives_script.cmake
+                     ${strip_command}
+                     DEPENDS ${in_archive}
   )
 endfunction(combine_archives)

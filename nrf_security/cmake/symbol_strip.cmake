@@ -30,11 +30,10 @@ endmacro()
 # If is_stripped is "TRUE" this function will strip symbols from any library
 # named mbedcrypto_<backend> corresponding to the parameter "backend"
 #
-function(symbol_strip_func backend)
+function(symbol_strip_func backend strip_command)
   nrf_security_debug("========== Running symbol_strip_function for ${backend} ==========")
   string(TOUPPER "${backend}" BACKEND_NAME_UPPER)
 
-  remove_objects("${BACKEND_NAME_UPPER}_ENABLED"   ${BACKEND_NAME_UPPER} remove_line "empty_file.c.obj")
   remove_objects("MBEDTLS_AES_C"        ${BACKEND_NAME_UPPER} remove_line "aes.c.obj")
   remove_objects("MBEDTLS_AES_C"        ${BACKEND_NAME_UPPER} remove_line "aes_alt.c.obj")
   remove_objects("MBEDTLS_CCM_C"        ${BACKEND_NAME_UPPER} remove_line "ccm.c.obj")
@@ -68,15 +67,9 @@ function(symbol_strip_func backend)
   set(BACKEND_LIBRARY libmbedcrypto_${backend}.a)
 
   if (remove_line)
-    set(remove_object_command ${CMAKE_AR} d ${BACKEND_LIBRARY} ${remove_line})
+    set(${strip_command} COMMAND ${CMAKE_AR} d ${BACKEND_LIBRARY} ${remove_line} PARENT_SCOPE)
     nrf_security_debug("Objects stripped from mbedcrypto_${backend}: ${remove_line}")
   else()
     nrf_security_debug("No remove_line from mbedcrypto_${backend}")
   endif()
-
-  add_custom_command(
-    TARGET mbedcrypto_${backend}
-    POST_BUILD
-    COMMAND ${remove_object_command}
-  )
 endfunction()
