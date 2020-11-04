@@ -9,8 +9,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-nRF Connect SDK v1.4.0
-**********************
+Master branch
+*************
 
 Changes
 =======
@@ -31,8 +31,10 @@ Bugfixes
 
 Known Issues and limitations
 ============================
-
-See the :ref:`nrf:known_issues` page in |NCS| for the list of known issues and limitations for this release.
+* The synthesized low frequency clock source is neither tested nor intended for usage with MPSL (DRGN-6362).
+* The Radio Notification feature has a power performance penalty proportional to the notification distance.
+  This means an additional average current consumption of about 600 µA for the duration of the radio notification (DRGN-14153).
+* Front-End Modules API is currently implemented in 802.15.4 protocol only.
 
 nRF Connect SDK v1.3.0
 **********************
