@@ -1524,6 +1524,9 @@ config MBEDTLS_SSL_CIPHERSUITES
 	  Warning: This field has offers no validation checks.
 	  MBEDTLS_SSL_CIPHERSUITES setting in mbed TLS config file.
 
+
+rsource "sst_settings/Kconfig"
+
 endif # NRF_SECURITY_ADVANCED
 
 endif # NRF_SECURITY_ANY_BACKEND

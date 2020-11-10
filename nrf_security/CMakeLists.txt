@@ -51,3 +51,5 @@ if (CONFIG_NRF_SECURITY_MULTI_BACKEND)
   # b. vanilla selection of ciphers only --> Renaming, but no glue
   add_subdirectory(src/mbedcrypto_glue)
 endif()
+
+add_subdirectory_ifdef(CONFIG_SST_SETTINGS sst_settings)

@@ -1,0 +1,17 @@
+#
+# Copyright (c) 2020 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
+config SST_SETTINGS
+	bool "Settings module for Secure Storage"
+	help
+	  Enable to get access for flashin operation based on Settings subsys.
+
+if SST_SETTINGS
+
+module = SST_SETTINGS
+module-str = Secure Storage Settings
+source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"
+
+endif
