@@ -307,10 +307,28 @@ void sdc_RNG_IRQHandler(void);
  */
 int32_t sdc_support_adv(void);
 
+/** @brief Support extended advertising
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to both legacy and extended advertising.
+ *
+ * To reduce the size of the final linked image, the application should
+ * call either @ref sdc_support_adv() or @ref sdc_support_ext_adv().
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Extended advertising state is not supported.
+ */
+int32_t sdc_support_ext_adv(void);
+
 /** @brief Support Slave role
  *
  * After this API is called, the controller will support the HCI commands
  * and events related to the slave role.
+ *
+ * The application shall call either @ref sdc_support_adv() or
+ * @ref sdc_support_ext_adv() to be able to support connection
+ * establishment.
  *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
@@ -332,7 +350,10 @@ int32_t sdc_support_scan(void);
 /** @brief Support scanning for extended advertising PDUs
  *
  * After this API is called, the controller will support the HCI commands
- * and events related extended scanning.
+ * and events related to both legacy and extended scanning.
+ *
+ * To reduce the size of the final linked image, the application should
+ * call either @ref sdc_support_scan() or @ref sdc_support_ext_scan().
  *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
@@ -344,8 +365,10 @@ int32_t sdc_support_ext_scan(void);
  *
  * After this API is called, the controller will support the HCI commands
  * and events related to the master role.
- * If connection establishment on secondary advertising channels is required, the application
- * must also call @ref sdc_support_ext_scan().
+ *
+ * The application shall call either @ref sdc_support_scan() or
+ * @ref sdc_support_ext_scan() to be able to support connection
+ * establishment.
  *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().

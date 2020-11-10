@@ -16,6 +16,12 @@ Added
 =====
 
 * Added :c:func:`sdc_support_ext_scan` which makes support for extended scanning configurable (DRGN-14902).
+* Added :c:func:`sdc_support_ext_adv` which makes support for extended advertising configurable (DRGN-14914).
+
+Bugfixes
+========
+
+* Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out (DRGN-13029).
 
 nRF Connect SDK v1.4.0
 **********************
