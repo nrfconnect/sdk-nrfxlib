@@ -22,6 +22,7 @@ Bugfixes
 ========
 
 * Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out (DRGN-13029).
+* Fixed an issue where a directed advertiser used a resolvable address as the TargetA when the local device address was set to public or random device address (DRGN-13921).
 
 nRF Connect SDK v1.4.0
 **********************
