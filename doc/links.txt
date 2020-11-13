@@ -42,3 +42,5 @@
 .. _`OpenAMP`: https://github.com/OpenAMP/open-amp/
 
 .. _`Zephyr`: https://www.zephyrproject.org
+
+.. _`NMEA report sample`: http://aprs.gids.nl/nmea/#gsa
