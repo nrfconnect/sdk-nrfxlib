@@ -3,10 +3,6 @@
 GNSS socket
 ###########
 
-.. contents::
-   :local:
-   :depth: 2
-
 `Global navigation satellite system (GNSS)`_ socket is one of the socket types supported by the BSD library.
 This socket type is used to configure and fetch GPS position fix data from the GPS module, and to write `A-GPS`_ data to the GPS module.
 
@@ -30,7 +26,7 @@ Starting the GPS
 ****************
 
 After the GNSS socket is created, the GPS module must be started for the module to start generating GPS fixes.
-This is done using the :c:func:`nrf_setsockopt` function with the :c:type:`NRF_SOL_GNSS` socket option level and the :c:type:`NRF_SO_GNSS_START` socket option.
+This is done using the :c:func:`nrf_setsockopt` function with the ``NRF_SOL_GNSS`` socket option level and the :c:type:`NRF_SO_GNSS_START` socket option.
 
 .. code-block:: c
 
@@ -43,7 +39,7 @@ This is done using the :c:func:`nrf_setsockopt` function with the :c:type:`NRF_S
 During a session (when the GPS is running), the socket stores the information to the non-volatile memory.
 This is done to generate a quick fix in a subsequent session and is termed as a hot or warm start (depending on the data that is used from the last session).
 Such session data can be deleted using the delete mask that is supplied to the :c:func:`nrf_setsockopt` function call while starting the GPS module.
-A value of 0 in the delete mask is an indication to keep all the previous data.
+A value of zero in the delete mask is an indication to keep all the previous data.
 The bit masks for the different types of data that can be deleted is defined in the GNSS socket API documentation of :c:type:`nrf_gnss_delete_mask_t`.
 
 Stopping the GPS
@@ -86,7 +82,11 @@ A configuration can also be read by the application by using the :c:func:`nrf_ge
 Configuration parameters
 ========================
 
+The various configuration parameters that can be used with the GNSS socket are described below.
+
 Fix interval
+------------
+
    | Socket option:  :c:type:`NRF_SO_GNSS_FIX_INTERVAL`
    | Datatype:       :c:type:`nrf_gnss_fix_interval_t`
    | Default:        1
@@ -96,21 +96,22 @@ The fix interval parameter controls the time between GNSS receiver-starts.
 It also controls the stopping of the GNSS receiver after a valid PVT
 estimate.
 The fix interval parameter determines the mode of navigation.
-There are three different navigation modes available: single-fix,
-continuous, and periodic.
+There are three different navigation modes available: single-fix, continuous, and periodic.
 
-Single-fix navigation mode is engaged by setting the fix interval to 0.
+Single-fix navigation mode is engaged by setting the fix interval to zero.
 In this mode, once a valid PVT estimate is produced, the GNSS receiver is turned off indefinitely.
 It does not resume navigation without explicit actions by the application processor.
 To do another single-fix, the application processor must first stop the GNSS module and then start the GNSS module again.
 
-Continuous navigation mode is engaged by setting the fix interval to 1.
+Continuous navigation mode is engaged by setting the fix interval to one.
 In this mode, the GNSS receiver continues to produce fixes at 1 Hz rate without any time limit.
 
-Periodic navigation mode is engaged by setting the fix interval to a value other than 0 or 1.
+Periodic navigation mode is engaged by setting the fix interval to a value other than zero or one.
 In this mode the GNSS receiver is turned off after each valid PVT estimate, and turned back on periodically after each fix interval has passed.
 
 Fix retry
+---------
+
    | Socket option:  :c:type:`NRF_SO_GNSS_FIX_RETRY`
    | Datatype:       :c:type:`nrf_gnss_fix_retry_t`
    | Default:        60
@@ -118,9 +119,11 @@ Fix retry
 
 The fix retry parameter controls the maximum time the GNSS receiver can run while trying to produce a valid PVT estimate.
 If the fix retry time is non-zero, the GNSS receiver is turned off after the fix retry time is up regardless of whether a valid PVT estimate was produced or not.
-If the fix retry parameter is set to 0, the GNSS receiver can run indefinitely until a valid PVT estimate is produced.
+If the fix retry parameter is set to zero, the GNSS receiver can run indefinitely until a valid PVT estimate is produced.
 
 NMEA mask
+---------
+
    | Socket option: :c:type:`NRF_SO_GNSS_NMEA_MASK`
    | Datatype:      :c:type:`nrf_gnss_nmea_mask_t`
    | Default:       0x0000
@@ -136,6 +139,8 @@ This mask is used to enable different `NMEA`_ string types.
 Multiple NMEA string types can be enabled at the same time.
 
 Elevation mask
+--------------
+
    | Socket option:  :c:type:`NRF_SO_GNSS_ELEVATION_MASK`
    | Datatype:       :c:type:`nrf_gnss_elevation_mask_t`
    | Default         5
@@ -145,15 +150,62 @@ The elevation mask parameter controls the elevation threshold angle (in degrees)
 Satellites with elevation angle less than the threshold are automatically excluded from the PVT estimation.
 
 Use case
+--------
+
    | Socket option:  :c:type:`NRF_SO_GNSS_USE_CASE`
    | Datatype:       :c:type:`uint8_t`
-   | Default         1
-   | Allowed values: 0, 1
+   | Default:        :c:type:`NRF_GNSS_USE_CASE_MULTIPLE_HOT_START` | :c:type:`NRF_GNSS_USE_CASE_NORMAL_ACCURACY`
+   | Allowed values:
 
-The use case parameter determines the target performance.
-A value of 0 indicates single cold start and one indicates multiple hot starts.
+   | :c:type:`NRF_GNSS_USE_CASE_SINGLE_COLD_START`
+   | :c:type:`NRF_GNSS_USE_CASE_MULTIPLE_HOT_START`
+   | :c:type:`NRF_GNSS_USE_CASE_NORMAL_ACCURACY`
+   | :c:type:`NRF_GNSS_USE_CASE_LOW_ACCURACY`
+
+This bitmask is used to specify the combination of the target GNSS performance (single cold or multiple hot start) and the accuracy (normal or low).
+
+Low accuracy mode
++++++++++++++++++
+
+If you enable the low accuracy mode, the GNSS receiver demonstrates a looser acceptance criterion for a fix.
+The error in position calculation, when compared to the actual position, can be larger than the error in normal accuracy mode.
+In addition, in the low accuracy mode, the GNSS receiver might use only three satellites to determine a fix.
+In normal accuracy mode, four or more satellites are used.
+
+For a possible position fix using three satellites, one of the following criteria must be satisfied initially and when the criterion is met, it will be valid for a time duration of 24 hours:
+
+* At least a single fix must have taken place using five or more satellites. If you initiate the GPS to start in low accuracy mode, the GNSS engine will not be able to utilize the fix using three satellites before the aforementioned condition has taken place. In the subsequent time window following the fix using five satellites, any fix that uses five or more satellites results in the resetting of the time window and extension of the 24-hour time window.
+
+* The altitude (in meters), altitude uncertainty (0 percent), and confidence (100 percent) must be given as input to the GNSS engine using the :c:type:`nrf_gnss_agps_data_location_t` A-GPS data location struct as shown in the code below. To be able to remain in low accuracy mode, this step must be repeated at least once for every 24-hour duration, results in resetting the timer and extension of the 24-hour time window.
+
+
+.. important::
+   The altitude must be accurate to a value within ±10 meters of the actual altitude of the device. An erroneous altitude will result in a severe error in the position fix calculation using three satellites.
+
+.. code-block:: c
+
+   nrf_gnss_agps_data_location_t location;
+
+   location.latitude          = 0;        /* Unknown, set to 0 */
+   location.longitude         = 0;        /* Unknown, set to 0 */
+   location.altitude          = altitude; /* Actual altitude of the device in meters */
+   location.unc_semimajor     = 127;      /* Set to 127 when location is unknown */
+   location.unc_semiminor     = 127;      /* Set to 127 when location is unknown */
+   location.orientation_major = 0;        /* Unknown, set to 0 */
+   location.unc_altitude      = 0;        /* Set to 0 */
+   location.confidence        = 100;      /* Set to 100 */
+
+If the actual altitude of the device changes with respect to the altitude stored in the GNSS engine (for example, when the device moves around), the accuracy of the position fix using three satellites will be degraded.
+
+The low accuracy mode is different from the 2D fix that is documented in the NMEA reports.
+All fixes, including the low accuracy fixes, will be reported as 3D fixes.
+See the `NMEA report sample`_ and number of IDs of SVs used in the position fix to get information of the number of satellites are used for the position fix.
+
+
 
 Start GPS module
+----------------
+
    | Socket option: :c:type:`NRF_SO_GNSS_START`
    | Datatype:      :c:type:`nrf_gnss_delete_mask_t`
    | Default:       NA
@@ -162,14 +214,18 @@ This parameter makes the GPS module start generating fixes.
 The delete mask is used to delete the data that the GPS module has stored for any previous session.
 
 Stop GPS module
+---------------
+
    | Socket option: :c:type:`NRF_SO_GNSS_STOP`
    | Datatype:      :c:type:`nrf_gnss_delete_mask_t`
-   | Default        NA
+   | Default:       NA
 
 This parameter makes the GPS module stop generating fixes.
 The delete mask is used to delete data that the GPS module has stored from any previous session.
 
 Power save modes
+----------------
+
    | Socket option: :c:type:`NRF_SO_GNSS_POWER_SAVE_MODE`
    | Datatype:      :c:type:`nrf_gnss_power_save_mode_t`
    | Default:       :c:type:`NRF_GNSS_PSM_DISABLED`
@@ -191,7 +247,7 @@ This type of tracking reduces the power consumption at the expense of performanc
 A duty cycle denotes the fraction of one cycle in which the GNSS receiver is tracking.
 In duty-cycled tracking the tracking period is fixed to 100 ms, and the sleeping period is fixed to 400 ms.
 Consequently, the total time needed to complete an on-and-off cycle is 500 ms.
-These values give 20% duty cycle.
+These values give 20 percent duty cycle.
 Since the GPS data bit length is 20 ms, and the smallest meaningful data primitive is 30-bit word (i.e. 600 ms), it is impossible to decode any data during duty-cycled tracking.
 This has significant impact on the performance.
 It means that any new GNSS signal cannot be utilized before any of the following conditions occur:
@@ -209,13 +265,17 @@ The GNSS receiver continues to produce PVT estimates at the configured rate rega
 However, a failure to produce a valid PVT estimate during duty-cycled tracking may cause the GNSS receiver to resume continuous tracking.
 
 Enable priority
+---------------
+
    | Socket option: :c:type:`NRF_SO_GNSS_ENABLE_PRIORITY`
-   | Datatype:      NA (``void``)
+   | Datatype:      NA
    | Default:       NA
 
 Disable priority
+----------------
+
    | Socket option: :c:type:`NRF_SO_GNSS_DISABLE_PRIORITY`
-   | Datatype:      NA (``void``)
+   | Datatype:      NA
    | Default:       NA
 
 Reading a fix
@@ -235,7 +295,7 @@ As this is a datagram socket, each successful read contains a complete frame of 
 The :c:func:`nrf_recv` read function can return three types of data frames.
 The data type is identified by the ``data_id`` parameter in the received frame.
 The three datatypes that are currently supported are :c:type:`NRF_GNSS_PVT_DATA_ID`, :c:type:`NRF_GNSS_AGPS_DATA_ID` and :c:type:`NRF_GNSS_NMEA_DATA_ID`.
-The following code shows how the the position data is displayed based on the :c:type:`NRF_GNSS_PVT_DATA_ID` and :c:type:`NRF_GNSS_NMEA_DATA_ID` datatypes:
+The following code shows how the position data is displayed based on the :c:type:`NRF_GNSS_PVT_DATA_ID` and :c:type:`NRF_GNSS_NMEA_DATA_ID` datatypes:
 
 .. code-block:: c
 
@@ -264,8 +324,6 @@ The following code shows how the the position data is displayed based on the :c:
 
 Fixes are always received in the ``pvt`` format.
 The format of this frame is defined in the GNSS API documentation of :c:type:`nrf_gnss_pvt_data_frame_t`.
-If NMEA strings are enabled, NMEA strings are always sent after the corresponding PVT notification.
-For example, if a PVT notification indicates a good fix, this applies to all the subsequent NMEA strings that are sent in between the current PVT notification and the next PVT notification.
 
 A-GPS data
 **********
