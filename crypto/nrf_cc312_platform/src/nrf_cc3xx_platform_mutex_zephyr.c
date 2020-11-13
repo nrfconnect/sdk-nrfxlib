@@ -20,6 +20,8 @@
  */
 extern nrf_cc3xx_platform_abort_apis_t platform_abort_apis;
 
+#if CONFIG_CC3XX_MUTEX_LOCK
+
 /** @brief Definition of mutex for symmetric cryptography
  */
 K_MUTEX_DEFINE(sym_mutex_int);
@@ -28,10 +30,6 @@ K_MUTEX_DEFINE(sym_mutex_int);
  */
 K_MUTEX_DEFINE(asym_mutex_int);
 
-/** @brief Definition of mutex for random number generation
-*/
-K_MUTEX_DEFINE(rng_mutex_int);
-
 /** @brief Definition of mutex for power mode changes
 */
 K_MUTEX_DEFINE(power_mutex_int);
@@ -39,6 +37,32 @@ K_MUTEX_DEFINE(power_mutex_int);
 /** @brief Definition of mutex for heap allocations
  */
 K_MUTEX_DEFINE(heap_mutex_int);
+
+#elif CONFIG_CC3XX_ATOMIC_LOCK
+
+/** @brief Definition of mutex for symmetric cryptography
+ */
+atomic_t sym_mutex_int;
+
+/** @brief Definition of mutex for asymmetric cryptography
+ */
+atomic_t asym_mutex_int;
+
+/** @brief Definition of mutex for power mode changes
+*/
+atomic_t power_mutex_int;
+
+/** @brief Definition of mutex for heap allocations
+ */
+atomic_t heap_mutex_int;
+
+#else
+#error "Improper configuration of the lock variant!"
+#endif
+
+/** @brief Definition of mutex for random number generation
+*/
+K_MUTEX_DEFINE(rng_mutex_int);
 
 /** @brief Arbritary number of mutexes the system suppors
  */
@@ -56,43 +80,42 @@ char __aligned(4) mutex_slab_buffer[NUM_MUTEXES * sizeof(struct k_mutex)];
  * with NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID set to indicate that
  * allocation is unneccesary
 */
-static nrf_cc3xx_platform_mutex_t sym_mutex =
-{
+static nrf_cc3xx_platform_mutex_t sym_mutex = {
     .mutex = &sym_mutex_int,
-    .flags = NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
+    .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
+                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
+                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
 };
-
 
 /**@brief Definition of RTOS-independent asymmetric cryptography mutex
  * with NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID set to indicate that
  * allocation is unneccesary
 */
-static nrf_cc3xx_platform_mutex_t asym_mutex =
-{
+static nrf_cc3xx_platform_mutex_t asym_mutex = {
     .mutex = &asym_mutex_int,
-    .flags = NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
+    .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
+                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
+                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
 };
-
 
 /**@brief Definition of RTOS-independent random number generation mutex
  * with NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID set to indicate that
  * allocation is unneccesary
 */
-static nrf_cc3xx_platform_mutex_t rng_mutex =
-{
-    .mutex = &rng_mutex_int,
-    .flags = NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
+static nrf_cc3xx_platform_mutex_t rng_mutex = {
+	.mutex = &rng_mutex_int,
+	.flags = NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
 };
-
 
 /**@brief Definition of RTOS-independent power management mutex
  * with NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID set to indicate that
  * allocation is unneccesary
 */
-static nrf_cc3xx_platform_mutex_t power_mutex =
-{
+static nrf_cc3xx_platform_mutex_t power_mutex = {
     .mutex = &power_mutex_int,
-    .flags = NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
+    .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
+                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
+                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
 };
 
 /** @brief Definition of RTOS-independent heap allocation mutex
@@ -102,12 +125,12 @@ static nrf_cc3xx_platform_mutex_t power_mutex =
  * @note This symbol can't be static as it is referenced in the replacement
  *       file mbemory_buffer_alloc.c inside the heap structure.
  */
-nrf_cc3xx_platform_mutex_t heap_mutex =
-{
+nrf_cc3xx_platform_mutex_t heap_mutex = {
     .mutex = &heap_mutex_int,
-    .flags = NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
+    .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
+                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
+                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
 };
-
 
 /**@brief static function to initialize a mutex
  */
@@ -119,6 +142,10 @@ static void mutex_init_platform(nrf_cc3xx_platform_mutex_t *mutex) {
     if (mutex == NULL) {
         platform_abort_apis.abort_fn(
             "mutex_init called with NULL parameter");
+    }
+    /* Atomic mutex has been initialized statically */
+    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC) {
+        return;
     }
 
     /* Allocate if this has not been initialized statically */
@@ -158,6 +185,12 @@ static void mutex_free_platform(nrf_cc3xx_platform_mutex_t *mutex) {
             "mutex_init called with NULL parameter");
     }
 
+    /* Check if we are freeing a mutex that is atomic */
+    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC) {
+        /*Nothing to free*/
+        return;
+    }
+
     /* Check if we are freeing a mutex that isn't initialized */
     if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID) {
         /*Nothing to free*/
@@ -189,22 +222,26 @@ static int32_t mutex_lock_platform(nrf_cc3xx_platform_mutex_t *mutex) {
         return NRF_CC3XX_PLATFORM_ERROR_PARAM_NULL;
     }
 
-    /* Ensure that the mutex has been initialized */
-    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID) {
-        return NRF_CC3XX_PLATFORM_ERROR_MUTEX_NOT_INITIALIZED;
-    }
+    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC) {
+        return atomic_cas((atomic_t *)mutex->mutex, 0, 1) ?
+                       NRF_CC3XX_PLATFORM_SUCCESS :
+                       NRF_CC3XX_PLATFORM_ERROR_MUTEX_FAILED;
+    } else {
+        /* Ensure that the mutex has been initialized */
+        if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID) {
+            return NRF_CC3XX_PLATFORM_ERROR_MUTEX_NOT_INITIALIZED;
+        }
 
-    p_mutex = (struct k_mutex *)mutex->mutex;
+        p_mutex = (struct k_mutex *)mutex->mutex;
 
-    ret = k_mutex_lock(p_mutex, K_FOREVER);
-    if (ret == 0) {
-        return NRF_CC3XX_PLATFORM_SUCCESS;
-    }
-    else {
-        return NRF_CC3XX_PLATFORM_ERROR_MUTEX_FAILED;
+        ret = k_mutex_lock(p_mutex, K_FOREVER);
+        if (ret == 0) {
+            return NRF_CC3XX_PLATFORM_SUCCESS;
+        } else {
+            return NRF_CC3XX_PLATFORM_ERROR_MUTEX_FAILED;
+        }
     }
 }
-
 
 /** @brief Static function to unlock a mutex
  */
@@ -216,17 +253,22 @@ static int32_t mutex_unlock_platform(nrf_cc3xx_platform_mutex_t *mutex) {
         return NRF_CC3XX_PLATFORM_ERROR_PARAM_NULL;
     }
 
-    /* Ensure that the mutex has been initialized */
-    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID) {
-        return NRF_CC3XX_PLATFORM_ERROR_MUTEX_NOT_INITIALIZED;
+    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC) {
+        return atomic_cas((atomic_t *)mutex->mutex, 1, 0) ?
+                       NRF_CC3XX_PLATFORM_SUCCESS :
+                       NRF_CC3XX_PLATFORM_ERROR_MUTEX_FAILED;
+    } else {
+        /* Ensure that the mutex has been initialized */
+        if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID) {
+            return NRF_CC3XX_PLATFORM_ERROR_MUTEX_NOT_INITIALIZED;
+        }
+
+        p_mutex = (struct k_mutex *)mutex->mutex;
+
+        k_mutex_unlock(p_mutex);
+        return NRF_CC3XX_PLATFORM_SUCCESS;
     }
-
-    p_mutex = (struct k_mutex *)mutex->mutex;
-
-    k_mutex_unlock(p_mutex);
-    return NRF_CC3XX_PLATFORM_SUCCESS;
 }
-
 
 /**@brief Constant definition of mutex APIs to set in nrf_cc3xx_platform
  */
@@ -241,13 +283,12 @@ static const nrf_cc3xx_platform_mutex_apis_t mutex_apis =
 
 /** @brief Constant definition of mutexes to set in nrf_cc3xx_platform
  */
-static const nrf_cc3xx_platform_mutexes_t mutexes =
-{
-    .sym_mutex = &sym_mutex,
-    .asym_mutex = &asym_mutex,
-    .rng_mutex = &rng_mutex,
-    .reserved  = NULL,
-    .power_mutex = &power_mutex,
+static const nrf_cc3xx_platform_mutexes_t mutexes = {
+            .sym_mutex = &sym_mutex,
+            .asym_mutex = &asym_mutex,
+            .rng_mutex = &rng_mutex,
+            .reserved = NULL,
+            .power_mutex = &power_mutex,
 };
 
 /** @brief Function to initialize the nrf_cc3xx_platform mutex APIs
@@ -255,9 +296,9 @@ static const nrf_cc3xx_platform_mutexes_t mutexes =
 void nrf_cc3xx_platform_mutex_init(void)
 {
     k_mem_slab_init(&mutex_slab,
-            mutex_slab_buffer,
-            sizeof(struct k_mutex),
-            NUM_MUTEXES);
+                mutex_slab_buffer,
+                sizeof(struct k_mutex),
+                NUM_MUTEXES);
 
     nrf_cc3xx_platform_set_mutexes(&mutex_apis, &mutexes);
 }

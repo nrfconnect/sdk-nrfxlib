@@ -34,6 +34,31 @@ if NRF_CC3XX_PLATFORM
 config HW_CC3XX_INTERRUPT
 	bool "Use interrupt version of nrf cc3xx platform library" if !(CC3XX_BACKEND || NRF_CC310_BL)
 
+choice CC3XX_LOCK_VARIANT
+	prompt "CC3XX lock variant"
+	default CC3XX_MUTEX_LOCK
+
+config CC3XX_MUTEX_LOCK
+	bool "Use mutex variables for mutually exclusive access to CC3XX resources"
+	help
+	  Enables exclusive access to the ARM CryptoCell hardware using an RTOS
+	  mutex that has priority inheritance. The mutex lock is safe across threads
+	  and/or interrupts with different priority. Using an RTOS mutex comes
+	  at a cost of lower performance.
+
+config CC3XX_ATOMIC_LOCK
+	bool "Use atomic variables for mutually exclusive access to CC3XX resources"
+	help
+	  Using atomic operations is the fastest way to ensure mutually exclusive
+	  access to the ARM CryptoCell hardware.
+	  Warning: If this configuration is set, every execution requiring use of
+	  the ARM CryptoCell hardware must happen in the same priority. Calling into
+	  mbed TLS APIs from a higher priority while an ongoing operation will lead
+	  to undefined behavior. It is highy recommended to to do all cryptographic
+	  operations in one single thread if this configuration is set.
+
+endchoice
+
 endif
 
 endmenu
