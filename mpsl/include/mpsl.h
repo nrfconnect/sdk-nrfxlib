@@ -87,6 +87,18 @@ bool mpsl_is_initialized(void);
  */
 int32_t mpsl_build_revision_get(uint8_t * p_build_revision);
 
+/** @brief Support MPSL scheduler.
+ *
+ * After this API is called, the MPSL will support the scheduler functionality.
+ * This functionality is needed when using:
+ *  - Timeslot
+ *  - Radio notifications
+ *
+ * @retval  0               Success
+ * @retval  -NRF_EPERM      This API must be called before @ref mpsl_init.
+ */
+int32_t mpsl_support_scheduler(void);
+
 /** @brief      RADIO interrupt handler
  *
  * @note       This handler should be placed in the interrupt vector table.

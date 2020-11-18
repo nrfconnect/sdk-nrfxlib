@@ -9,6 +9,18 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Master branch
+*************
+
+Added
+=====
+* Added :c:func:`mpsl_support_scheduler` which enables support for scheduler (KRKNWK-7977)
+
+Changes
+=======
+* Changed :c:func:`mpsl_init` implementation to not initialize a scheduler by default. (KRKNWK-7977)
+  It is now necessary to call :c:func:`mpsl_support_scheduler` function which enables support for scheduler before :c:func:`mpsl_init` to use Timeslot and Radio notifications features.
+
 nRF Connect SDK v1.4.0
 **********************
 
