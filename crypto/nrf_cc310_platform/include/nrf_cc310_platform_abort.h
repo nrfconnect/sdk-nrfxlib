@@ -18,6 +18,4 @@
 
 #define nrf_cc310_platform_abort_init nrf_cc3xx_platform_abort_init
 
-#endif /* NRF_CC310_PLATFORM_DEFINES_H__ */
-
-/** @} */
+#endif /* NRF_CC310_PLATFORM_ABORT_H__ */

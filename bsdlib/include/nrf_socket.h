@@ -1516,5 +1516,3 @@ int nrf_setdnsaddr(int family, const void *in_addr);
 #endif
 
 #endif // NRF_SOCKET_H__
-
-/**@} */
