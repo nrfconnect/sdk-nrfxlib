@@ -31,6 +31,7 @@ choice BT_LL_CHOICE
 config BT_LL_SOFTDEVICE
 	bool "SoftDevice Link Layer"
 	select MPSL
+	select MPSL_SCHEDULER
 	select ZERO_LATENCY_IRQS
 	select BT_CTLR_LE_ENC_SUPPORT
 	select BT_CTLR_EXT_REJ_IND_SUPPORT
