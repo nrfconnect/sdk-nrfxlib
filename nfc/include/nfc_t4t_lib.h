@@ -206,8 +206,7 @@ int nfc_t4t_setup(nfc_t4t_callback_t callback, void *context);
  * @param buffer_length Length of buffer (maximum writable NDEF size)
  *
  * @retval 0 Success.
- * @retval -EINVAL Invalid argument (e.g. wrong data length).
- * @retval -EINVAL Invalid argument (e.g. NULL pointer).
+ * @retval -EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
  * @retval -ENOTSUP If the new buffer has a different length than the first one.
  * @retval -EFAULT If the provided buffer is the currently used buffer.
  */
@@ -225,8 +224,7 @@ int nfc_t4t_ndef_rwpayload_set(uint8_t *emulation_buffer,
  * @param buffer_length Length of contained NDEF payload message
  *
  * @retval 0 Success.
- * @retval -EINVAL Invalid argument (e.g. wrong data length).
- * @retval -EINVAL Invalid argument (e.g. NULL pointer).
+ * @retval -EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
  * @retval -ENOTSUP Emulation is in running stated.
  */
 int nfc_t4t_ndef_staticpayload_set(const uint8_t *emulation_buffer,
@@ -246,8 +244,7 @@ int nfc_t4t_ndef_staticpayload_set(const uint8_t *emulation_buffer,
  * @param pdu_length Length of PDU.
  *
  * @retval 0 Success.
- * @retval -EINVAL Invalid argument (e.g. wrong data length).
- * @retval -EINVAL Invalid argument (e.g. NULL pointer).
+ * @retval -EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
  * @retval -ENOTSUP Emulation is in running state.
  */
 int nfc_t4t_response_pdu_send(const uint8_t *pdu, size_t pdu_length);
@@ -261,8 +258,7 @@ int nfc_t4t_response_pdu_send(const uint8_t *pdu, size_t pdu_length);
  * @param data_length Size of the buffer containing the data to set.
  *
  * @retval 0 Success.
- * @retval -EINVAL Invalid argument (e.g. wrong data length).
- * @retval -EINVAL Invalid argument (e.g. NULL pointer).
+ * @retval -EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
  */
 int nfc_t4t_parameter_set(enum nfc_t4t_param_id id,
 			  void *data,
@@ -281,8 +277,7 @@ int nfc_t4t_parameter_set(enum nfc_t4t_param_id id,
  * data.
  *
  * @retval 0 Success.
- * @retval -EINVAL Invalid argument (e.g. wrong data length).
- * @retval -EINVAL Invalid argument (e.g. NULL pointer).
+ * @retval -EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
  */
 int nfc_t4t_parameter_get(enum nfc_t4t_param_id id,
 			  void *data,
