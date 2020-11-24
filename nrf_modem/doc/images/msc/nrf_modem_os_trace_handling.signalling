@@ -1,0 +1,29 @@
+title: Trace handling, Lowering priority;
+msc=round_green;
+hscale=3;
+
+app,nrf_modem,nrf_modem_os.c;
+
+...;
+->nrf_modem: IPC_IRQHandler (Priority 0);
+note: Trace events;
+nrf_modem->nrf_modem_os.c: nrf_modem_os_trace_irq_set();
+nrf_modem_os.c->nrf_modem_os.c: NVIC_SetPendingIRQ(EGU2);
+nrf_modem<-nrf_modem_os.c;
+---: Waiting for EGU2 to hit ...;
+nrf_modem_os.c<-: EGU2_IRQHandler (Priority 6);
+nrf_modem<-nrf_modem_os.c: nrf_modem_os_trace_irq_handler();
+activate nrf_modem;
+nrf_modem->nrf_modem_os.c: nrf_modem_os_trace_irq_clear();
+activate nrf_modem_os.c;
+nrf_modem_os.c->nrf_modem_os.c: NVIC_ClearPendingIRQ(EGU2);
+nrf_modem<<nrf_modem_os.c;
+deactivate nrf_modem_os.c;
+nrf_modem->nrf_modem_os.c: nrf_modem_os_trace_put(buffer);
+activate nrf_modem_os.c;
+nrf_modem_os.c--nrf_modem_os.c: Store the buffer to\ndesired medium (UART, SDcard etc.);
+nrf_modem<<nrf_modem_os.c;
+deactivate nrf_modem_os.c;
+nrf_modem>>nrf_modem_os.c;
+deactivate nrf_modem;
+...;

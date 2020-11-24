@@ -6,7 +6,7 @@
 
 menu "Nordic nrfxlib"
 
-rsource "bsdlib/Kconfig"
+rsource "nrf_modem/Kconfig"
 rsource "nfc/Kconfig"
 rsource "mpsl/Kconfig"
 rsource "crypto/Kconfig"

@@ -20,8 +20,6 @@
 
 .. _`Beej's Guide to Network Programming`: https://beej.us/guide/bgnet/
 
-.. _`Socket API`: https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html
-
 .. _`ZBOSS API documentation`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss/index.html
 .. _`ZBOSS stack release notes`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss/index.html
 

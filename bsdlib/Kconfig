@@ -1,8 +1,0 @@
-
-config BSD_LIB
-	bool
-	default y
-	depends on BSD_LIBRARY
-	select NRF_OBERON
-	help
-	  Redefinition of BSD_LIBRARY inside nrfxlib.
