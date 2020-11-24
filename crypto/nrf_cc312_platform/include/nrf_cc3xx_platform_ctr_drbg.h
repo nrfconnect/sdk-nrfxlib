@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
@@ -10,7 +10,7 @@
  * @brief The nrf_cc3xx_platform_ctr_drbg APIs provide PRNG seeded by TRNG in
  *        accordance with <em>NIST SP 800-90A: Recommendation for Random Number
  *        Generation Using Deterministic Random Bit Generators</em>
- *        The generation of TRNG/PRNG data is using Arm CryptoCell cc3xx 
+ *        The generation of TRNG/PRNG data is using Arm CryptoCell cc3xx
  *        hardware acceleration.
  *
  * The pre-built APIs are based on mbedtls_entropy and mbedtls_ctr_drbg

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
@@ -145,5 +145,4 @@ int nrf_cc3xx_platform_kdr_load_key(uint8_t key[16]);
 #endif // defined(NRF52840_XXAA)
 
 #endif /* NRF_CC3XX_PLATFORM_KMU__ */
-
 /** @} */

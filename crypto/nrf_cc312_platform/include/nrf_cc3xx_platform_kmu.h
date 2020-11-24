@@ -1,7 +1,14 @@
-/**
+/*
  * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+ */
+/**@file
+ * @defgroup nrf_cc3xx_platform_kmu nrf_cc3xx_platform kmu APIs
+ * @ingroup nrf_cc3xx_platform
+ * @{
+ * @brief The nrf_cc3xx_platform_kmu APIs provides RTOS integration for storing
+ *        keys in KMU hardware peripherals
  */
 #ifndef NRF_CC3XX_PLATFORM_KMU__
 #define NRF_CC3XX_PLATFORM_KMU__
@@ -138,5 +145,4 @@ int nrf_cc3xx_platform_kdr_load_key(uint8_t key[16]);
 #endif // defined(NRF52840_XXAA)
 
 #endif /* NRF_CC3XX_PLATFORM_KMU__ */
-
 /** @} */

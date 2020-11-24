@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2020 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
@@ -34,9 +34,11 @@
 #define NRF_KMU_SLOT_MEXT               (4U)    //!< Key slot reserved for MEXT (Master Key Encryption Key).
 #define NRF_KMU_SLOT_MEXT_RESERVED      (5U)    //!< Key slot reserved for MEXT (CC312: Used for last 128 bits of key material).
 
+
 #define MBEDTLS_SHADOW_KEY_KDF_MAX_LABEL_SIZE_IN_BYTES      (64)    //!< KDF input "label" can be 0 to 64 bytes.
 #define MBEDTLS_SHADOW_KEY_KDF_MAX_CONTEXT_SIZE_IN_BYTES    (64)    //!< KDF input "context" can be 0 to 64 bytes.
 #define MBEDTLS_SHADOW_KEY_KDF_MAX_DERIVED_SIZE_IN_BYTES    (4080)  //!< KDF max length for derived material.
+
 
 #define MBEDTLS_ERR_SHADOW_KEY_KEY_OK               (0)     //!< The shadow key operation was succesful.
 #define MBEDTLS_ERR_SHADOW_KEY_INVALID_SLOT         (-1)    //!< The shadow key operation used an invalid slot.
@@ -45,6 +47,7 @@
 #define MBEDTLS_ERR_SHADOW_KEY_KDF_INVALID_CONTEXT  (-4)    //!< The KDF input context is invalid
 #define MBEDTLS_ERR_SHADOW_KEY_KDF_INVALID_INPUT    (-5)    //!< The KDF input is invalid
 #define MBEDTLS_ERR_SHADOW_KEY_INTERNAL_ERROR       (-6)    //!< KMU/KDF internal error.
+
 
 #if defined(MBEDTLS_AES_C)
 
