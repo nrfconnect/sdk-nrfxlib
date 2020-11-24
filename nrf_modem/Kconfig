@@ -1,0 +1,13 @@
+config NRF_MODEM
+	bool
+	imply FPU
+	imply FPU_SHARING
+
+choice NRF_MODEM_BUILD_STRATEGY
+	depends on NRF_MODEM
+	prompt "Modem library build strategy"
+
+config NRF_MODEM_LINK_WITH_BINARY
+	bool "Link binary"
+
+endchoice

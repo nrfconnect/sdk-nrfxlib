@@ -24,7 +24,7 @@ doc/*                                     @b-gent
 # All subfolders
 /.github/                                 @thst-nordic
 /softdevice_controller/                   @joerchan @rugeGerritsen
-/bsdlib/                                  @rlubos @lemrey @evenl
+/nrf_modem/                               @rlubos @lemrey @evenl
 /crypto/                                  @frkv @tejlmand
 /mpsl/                                    @joerchan @hurricaneFromMoscow
 /nfc/                                     @anangl @grochu

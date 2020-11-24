@@ -1,0 +1,30 @@
+title: Initialization (main thread);
+msc=round_green;
+hscale=3;
+
+app,nrf_modem,nrf_modem_os.c;
+
+...;
+app->nrf_modem: nrf_modem_init();
+nrf_modem--nrf_modem: Set up subsystems;
+nrf_modem--nrf_modem: Configure IPC_IRQ priority 0;
+nrf_modem->nrf_modem_os.c: nrf_modem_os_init();
+box nrf_modem_os.c--nrf_modem_os.c: Configure low priority schedulilng\nIRQ and Trace IRQ
+  [color=lgray]
+{
+    ...;
+    nrf_modem_os.c..nrf_modem_os.c: Configure NRF_MODEM_APPLICATION_IRQ;
+    nrf_modem_os.c->nrf_modem_os.c: NVIC_SetPriority(EGU1, 6);
+    nrf_modem_os.c->nrf_modem_os.c: NVIC_ClearPendingIRQ(EGU1);
+    nrf_modem_os.c->nrf_modem_os.c: NVIC_EnableIRQ(EGU1);
+    nrf_modem_os.c..nrf_modem_os.c: Configure NRF_MODEM_TRACE_IRQ;
+    nrf_modem_os.c->nrf_modem_os.c: NVIC_SetPriority(EGU2, 6);
+    nrf_modem_os.c->nrf_modem_os.c: NVIC_ClearPendingIRQ(EGU2);
+    nrf_modem_os.c->nrf_modem_os.c: NVIC_EnableIRQ(EGU2);
+};
+note: Sample shows EGU1\nand EGU2 to be used;
+box nrf_modem_os.c--nrf_modem_os.c: Configure timers/threads;
+box nrf_modem_os.c..nrf_modem_os.c: Optional: Configure Trace medium;
+nrf_modem<<nrf_modem_os.c;
+app<<nrf_modem;
+...;
