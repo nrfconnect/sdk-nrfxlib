@@ -1,10 +1,10 @@
-/**
+/*
  * Copyright (c) 2019 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 /**@file
- * @defgroup nrf_cc3xx_platform nrf_cc3xx_platform  APIs
+ * @defgroup nrf_cc3xx_platform nrf_cc3xx_platform APIs
  * @{
  * @brief nrf_cc3xx_platform library containing cc3xx
  * hardware initialization and entropy gathering APIs. The library also contains
@@ -84,5 +84,4 @@ void CRYPTOCELL_IRQHandler(void);
 #endif
 
 #endif /* NRF_CC3XX_PLATFORM_H__ */
-
 /** @} */

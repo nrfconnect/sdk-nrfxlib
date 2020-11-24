@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
@@ -154,5 +154,4 @@ void nrf_cc3xx_platform_mutex_init(void);
 #endif
 
 #endif /* NRF_CC3XX_PLATFORM_MUTEX_H__ */
-
 /** @} */

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2019 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
@@ -84,5 +84,4 @@ void CRYPTOCELL_IRQHandler(void);
 #endif
 
 #endif /* NRF_CC3XX_PLATFORM_H__ */
-
 /** @} */
