@@ -64,7 +64,7 @@
 typedef struct zb_mac_pending_data_s
 {
   zb_addr_u dst_addr;         /**< Destination address */
-  zb_uint8_t      dst_addr_mode;    /**< Destination address mode @ref zb_addr_mode_t */
+  zb_uint8_t      dst_addr_mode;    /**< Destination address mode @ref address_modes */
   zb_uint8_t      pending_param;                 /**< Pointer to pending data */
 }
 zb_mac_pending_data_t;
@@ -159,7 +159,7 @@ typedef ZB_PACKED_PRE struct zb_aps_device_key_pair_array_s
 typedef ZB_PACKED_PRE struct zb_nwk_routing_s /* do not pack for IAR */
 {
   zb_bitfield_t used:1; /*!< 1 if entry is used, 0 - otherwise */
-  zb_bitfield_t status:2; /*!< The status of the route, @see zb_nwk_route_state_t */
+  zb_bitfield_t status:2; /*!< The status of the route, see @ref nwk_route_state */
 #ifndef ZB_LITE_NO_SOURCE_ROUTING
   zb_bitfield_t no_route_cache:1;        /*!< Dest does not store source routes. */
   zb_bitfield_t many_to_one:1;           /*!< Dest is the concentrator and many-to-one
@@ -256,12 +256,20 @@ typedef ZB_PACKED_PRE struct zb_aps_bind_dst_table_s
 #ifndef ZB_CONFIGURABLE_MEM
   zb_uint8_t            trans_index[ZB_SINGLE_TRANS_INDEX_SIZE];
 #endif /* defined ZB_CONFIGURABLE_MEM */
+
+#ifdef SNCP_MODE
+  zb_uint8_t            dst_addr_mode;   /*!< destination address mode flag, 0
+                                          * - group address, otherwise long
+                                          * address plus dest endpoint */
+  zb_uint8_t            src_table_index; /*!< index from zb_asp_src_table_t */
+#else
   zb_uint8_t            align;
 
   zb_bitfield_t         dst_addr_mode:3;   /*!< destination address mode flag, 0
                                             * - group address, otherwise long
                                             * address plus dest endpoint */
   zb_bitfield_t         src_table_index:5; /*!< index from zb_asp_src_table_t */
+#endif
 } ZB_PACKED_STRUCT zb_aps_bind_dst_table_t;
 
 /**
@@ -310,7 +318,7 @@ typedef ZB_PACKED_PRE struct zb_neighbor_tbl_ent_s /* not need to pack it at IAR
                                               0x05=unauthenticated child
                                               This field shall be present in every
                                               neighbor table entry.
-                                              \see zb_nwk_relationship_e
+                                              see @ref nwk_relationship
                                             */
 
   zb_bitfield_t             need_rejoin:1; 	/*!< Need send rejoin response without receive request */
@@ -451,5 +459,7 @@ enum zb_mac_tx_status_e
   ZB_TRANS_TX_LBT_TO,
   ZB_TRANS_NO_ACK
 };
+
+zb_uint32_t zb_get_channel_mask(void);
 
 #endif /* ZB_ZBOSS_API_INTERNAL_H */

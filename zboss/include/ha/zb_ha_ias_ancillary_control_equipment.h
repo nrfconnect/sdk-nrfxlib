@@ -41,8 +41,8 @@
 /* PURPOSE: IAS Ancillary Control Equipment device definition
 */
 
-#if ! defined ZB_HA_IAS_ANCILLARY_H
-#define ZB_HA_IAS_ANCILLARY_H
+#ifndef ZB_HA_IAS_ANCILLARY_H
+#define ZB_HA_IAS_ANCILLARY_H 1
 
 #if defined ZB_HA_DEFINE_DEVICE_IAS_ANCILLARY_CONTROL_EQUIPMENT || defined DOXYGEN
 
@@ -218,4 +218,4 @@
 
 #endif /* defined ZB_HA_DEFINE_DEVICE_IAS_ANCILLARY_CONTROL_EQUIPMENT || defined DOXYGEN */
 
-#endif /* ! defined ZB_HA_IAS_ANCILLARY_H */
+#endif /* ZB_HA_IAS_ANCILLARY_H */

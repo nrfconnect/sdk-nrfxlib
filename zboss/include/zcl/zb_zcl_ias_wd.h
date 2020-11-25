@@ -41,8 +41,8 @@
 /* PURPOSE: IAS WD cluster defintions
 */
 
-#if ! defined ZB_ZCL_IAS_WD_H
-#define ZB_ZCL_IAS_WD_H
+#ifndef ZB_ZCL_IAS_WD_H
+#define ZB_ZCL_IAS_WD_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -467,4 +467,4 @@ void zb_zcl_ias_wd_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_IAS_WD_SERVER_ROLE_INIT zb_zcl_ias_wd_init_server
 #define ZB_ZCL_CLUSTER_ID_IAS_WD_CLIENT_ROLE_INIT zb_zcl_ias_wd_init_client
 
-#endif /* ! defined ZB_ZCL_IAS_WD_H */
+#endif /* ZB_ZCL_IAS_WD_H */

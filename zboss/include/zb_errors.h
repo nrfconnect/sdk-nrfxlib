@@ -42,13 +42,13 @@
 */
 
 #ifndef ZB_ERRORS_H
-#define ZB_ERRORS_H
+#define ZB_ERRORS_H 1
 
 /**
  * @addtogroup base_types
  * @{
  */
-/** @brief Return type for ZB functions returning execution status. @see enum zb_ret_e. */
+/** @brief Return type for ZB functions returning execution status. @see ::RET_OK. */
 typedef zb_int_t zb_ret_t;
 /** @} */
 
@@ -58,7 +58,7 @@ typedef zb_int_t zb_ret_t;
 
 #define ERROR_CATEGORY_INTERVAL 256
 
-enum zb_error_category_e
+enum
 {
   ERROR_CATEGORY_GENERIC,
   ERROR_CATEGORY_SYSTEM,
@@ -90,7 +90,7 @@ enum zb_error_category_e
  *
  *  Error can be "generic" or some additional error code.
  */
-enum zb_ret_e
+enum
 {
   /* Most common return types: ok, generic error, BLOCKED, thread exit indication. */
   RET_OK              = 0,

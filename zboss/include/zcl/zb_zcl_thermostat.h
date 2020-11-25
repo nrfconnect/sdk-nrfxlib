@@ -41,8 +41,8 @@
 /* PURPOSE: Thermostat cluster definitions
 */
 
-#if ! defined ZB_ZCL_THERMOSTAT_H
-#define ZB_ZCL_THERMOSTAT_H
+#ifndef ZB_ZCL_THERMOSTAT_H
+#define ZB_ZCL_THERMOSTAT_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -889,7 +889,7 @@ enum zb_zcl_thermostat_setpoint_raise_lower_mode_e
   zb_zcl_thermostat_setpoint_raise_lower_req_t *req_ptr =                               \
      zb_buf_len(data_buf) >= ZB_ZCL_THERMOSTAT_SETPOINT_RAISE_LOWER_REQ_PAYLOAD_LEN ?   \
          (zb_zcl_thermostat_setpoint_raise_lower_req_t*)zb_buf_begin(data_buf) : NULL;  \
-  if (req_ptr)                                                                          \
+  if (req_ptr != NULL)                                                                  \
   {                                                                                     \
     ZB_MEMCPY(&(req), req_ptr, sizeof(zb_zcl_thermostat_setpoint_raise_lower_req_t));   \
     status = ZB_ZCL_PARSE_STATUS_SUCCESS;                                               \
@@ -1462,4 +1462,4 @@ void zb_zcl_thermostat_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_THERMOSTAT_SERVER_ROLE_INIT zb_zcl_thermostat_init_server
 #define ZB_ZCL_CLUSTER_ID_THERMOSTAT_CLIENT_ROLE_INIT zb_zcl_thermostat_init_client
 
-#endif /* ! defined ZB_ZCL_THERMOSTAT_H */
+#endif /* ZB_ZCL_THERMOSTAT_H */

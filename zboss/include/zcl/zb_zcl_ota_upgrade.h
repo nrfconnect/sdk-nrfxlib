@@ -41,8 +41,8 @@
 /* PURPOSE: OTA Upgrade cluster definitions
 */
 
-#if ! defined ZB_ZCL_OTA_UPGRADE_H
-#define ZB_ZCL_OTA_UPGRADE_H
+#ifndef ZB_ZCL_OTA_UPGRADE_H
+#define ZB_ZCL_OTA_UPGRADE_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -2168,4 +2168,4 @@ void zb_zcl_ota_upgrade_send_image_block_response(zb_zcl_parsed_hdr_t *zcl_heade
 #define ZB_ZCL_CLUSTER_ID_OTA_UPGRADE_SERVER_ROLE_INIT zb_zcl_ota_upgrade_init_srv
 #define ZB_ZCL_CLUSTER_ID_OTA_UPGRADE_CLIENT_ROLE_INIT zb_zcl_ota_upgrade_init_cli
 
-#endif /* ! defined ZB_ZCL_OTA_UPGRADE_H */
+#endif /* ZB_ZCL_OTA_UPGRADE_H */

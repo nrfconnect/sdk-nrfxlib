@@ -337,6 +337,8 @@ void zb_osif_trace_unlock(void);
 zb_osif_file_t *zb_osif_init_dump(zb_char_t *name);
 int zb_osif_file_read(zb_osif_file_t *f, zb_uint8_t *buf, zb_uint_t len);
 int zb_osif_file_write(zb_osif_file_t *f, zb_uint8_t *buf, zb_uint_t len);
+int zb_osif_file_is_eof(zb_osif_file_t *f);
+int zb_osif_file_is_err(zb_osif_file_t *f);
 int zb_osif_file_flush(zb_osif_file_t *f);
 int zb_osif_file_seek(zb_osif_file_t *f, zb_uint32_t off, zb_uint8_t mode);
 int zb_osif_file_truncate(zb_osif_file_t *f, zb_uint32_t off);

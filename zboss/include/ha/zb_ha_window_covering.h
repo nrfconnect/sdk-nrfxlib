@@ -41,8 +41,8 @@
 /* PURPOSE: Window Covering device definition
 */
 
-#if ! defined ZB_HA_WINDOW_COVERING_H
-#define ZB_HA_WINDOW_COVERING_H
+#ifndef ZB_HA_WINDOW_COVERING_H
+#define ZB_HA_WINDOW_COVERING_H 1
 
 #if defined ZB_HA_DEFINE_DEVICE_WINDOW_COVERING || defined DOXYGEN
 
@@ -216,4 +216,4 @@
 
 #endif /* ZB_HA_DEFINE_DEVICE_WINDOW_COVERING */
 
-#endif /* ! defined ZB_HA_WINDOW_COVERING_H */
+#endif /* ZB_HA_WINDOW_COVERING_H */

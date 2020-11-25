@@ -41,8 +41,8 @@
 /* PURPOSE: Meter Identification cluster defintions
 */
 
-#if ! defined ZB_ZCL_METER_IDENTIFICATION_H
-#define ZB_ZCL_METER_IDENTIFICATION_H
+#ifndef ZB_ZCL_METER_IDENTIFICATION_H
+#define ZB_ZCL_METER_IDENTIFICATION_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -290,4 +290,4 @@ void zb_zcl_meter_identification_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_METER_IDENTIFICATION_SERVER_ROLE_INIT zb_zcl_meter_identification_init_server
 #define ZB_ZCL_CLUSTER_ID_METER_IDENTIFICATION_CLIENT_ROLE_INIT zb_zcl_meter_identification_init_client
 
-#endif /* ! defined ZB_ZCL_METER_IDENTIFICATION_H */
+#endif /* ZB_ZCL_METER_IDENTIFICATION_H */

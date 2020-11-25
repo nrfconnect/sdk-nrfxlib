@@ -30,7 +30,6 @@
  * and the actual TX time is not known at this level due to delays of MAC layer or transceiver.
  */
 #define ZB_GPD_TX_OFFSET_US                              (ZB_MILLISECONDS_TO_USEC(ZB_GPD_RX_OFFSET_MS))
-//#define MAC_AUTO_DELAY_IN_MAC_GP_SEND
 #define MAC_AUTO_GPDF_RETX
 
 #define MAC_TIMER_QUANT_US                               4

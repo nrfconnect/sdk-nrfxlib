@@ -41,8 +41,8 @@
 /* PURPOSE: Level control cluster definitions
 */
 
-#if !defined ZB_ZCL_LEVEL_CONTROL_H
-#define ZB_ZCL_LEVEL_CONTROL_H
+#ifndef ZB_ZCL_LEVEL_CONTROL_H
+#define ZB_ZCL_LEVEL_CONTROL_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -390,7 +390,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_req_options_s
   (req_options_ptr) = zb_buf_len(data_buf) >=                           \
     ZB_ZCL_LEVEL_CONTROL_REQ_OPTIONS_PAYLOAD_LEN ?                      \
     (zb_zcl_level_control_req_options_t*)zb_buf_begin(data_buf) : NULL; \
-  if (req_options_ptr)                                                  \
+  if (req_options_ptr != NULL)                                                  \
   {                                                                     \
     req_options.options_mask = req_options_ptr->options_mask;           \
     req_options.options_override = req_options_ptr->options_override;   \
@@ -438,7 +438,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_move_to_level_req_s
   (move_to_level_req_ptr) = zb_buf_len(data_buf) >=                                              \
     ZB_ZCL_LEVEL_CONTROL_MOVE_TO_LEVEL_REQ_PAYLOAD_LEN ?                                         \
     (zb_zcl_level_control_move_to_level_req_t*)zb_buf_begin(data_buf) : NULL;                    \
-  if (move_to_level_req_ptr)                                                                     \
+  if (move_to_level_req_ptr != NULL)                                                             \
   {                                                                                              \
     ZB_HTOLE16(&(move_to_level_req).transition_time, &(move_to_level_req_ptr->transition_time)); \
     move_to_level_req.level = move_to_level_req_ptr->level;                                      \
@@ -577,7 +577,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_move_req_s
   zb_zcl_level_control_move_req_t *move_req_ptr;                                       \
   (move_req_ptr) = zb_buf_len(data_buf) >= ZB_ZCL_LEVEL_CONTROL_MOVE_REQ_PAYLOAD_LEN ? \
     (zb_zcl_level_control_move_req_t*)zb_buf_begin(data_buf) : NULL;                   \
-  if (move_req_ptr)                                                                    \
+  if (move_req_ptr != NULL)                                                            \
   {                                                                                    \
     ZB_MEMCPY(&(move_req), move_req_ptr, sizeof(zb_zcl_level_control_move_req_t));     \
     (void)zb_buf_cut_left(data_buf, sizeof(zb_zcl_level_control_move_req_t));          \
@@ -734,7 +734,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_step_req_s
   zb_zcl_level_control_step_req_t *step_req_ptr;                                       \
   (step_req_ptr) = zb_buf_len(data_buf) >= ZB_ZCL_LEVEL_CONTROL_STEP_REQ_PAYLOAD_LEN ? \
     (zb_zcl_level_control_step_req_t*)zb_buf_begin(data_buf) : NULL;                   \
-  if (step_req_ptr)                                                                    \
+  if (step_req_ptr != NULL)                                                            \
   {                                                                                    \
     step_req.step_mode = step_req_ptr->step_mode;                                      \
     step_req.step_size = step_req_ptr->step_size;                                      \

@@ -41,8 +41,8 @@
 /* PURPOSE: HA Thermostat device definition
 */
 
-#if ! defined ZB_HA_THERMOSTAT_H
-#define ZB_HA_THERMOSTAT_H
+#ifndef ZB_HA_THERMOSTAT_H
+#define ZB_HA_THERMOSTAT_H 1
 
 #if defined ZB_HA_DEFINE_DEVICE_THERMOSTAT || defined DOXYGEN
 
@@ -272,4 +272,4 @@
 
 #endif /* ZB_HA_DEFINE_DEVICE_THERMOSTAT */
 
-#endif /* ! defined ZB_HA_THERMOSTAT_H */
+#endif /* ZB_HA_THERMOSTAT_H */

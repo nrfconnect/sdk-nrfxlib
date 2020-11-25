@@ -41,8 +41,8 @@
 /* PURPOSE: Window Covering device definition
 */
 
-#if ! defined ZB_HA_CUSTOM_ATTR_H
-#define ZB_HA_CUSTOM_ATTR_H
+#ifndef ZB_HA_CUSTOM_ATTR_H
+#define ZB_HA_CUSTOM_ATTR_H 1
 
 /******************* Specific definitions for window covering device **************************/
 
@@ -187,4 +187,4 @@
 
 #endif /* ZB_HA_DEFINE_DEVICE_CUSTOM_ATTR */
 
-#endif /* ! defined ZB_HA_CUSTOM_ATTR_H */
+#endif /* ZB_HA_CUSTOM_ATTR_H */

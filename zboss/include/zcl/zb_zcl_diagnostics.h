@@ -41,8 +41,8 @@
 /* PURPOSE: Diagnostics cluster definitions
 */
 
-#if ! defined ZB_ZCL_DIAGNOSTICS_H
-#define ZB_ZCL_DIAGNOSTICS_H
+#ifndef ZB_ZCL_DIAGNOSTICS_H
+#define ZB_ZCL_DIAGNOSTICS_H 1
 
 #if defined(ZB_ZCL_SUPPORT_CLUSTER_DIAGNOSTICS) || defined(DOXYGEN)
 
@@ -451,4 +451,4 @@ void zb_zcl_diagnostics_init_client(void);
 
 #endif /* defined(ZB_ZCL_SUPPORT_CLUSTER_DIAGNOSTICS) */
 
-#endif /* ! defined ZB_ZCL_DIAGNOSTICS_H */
+#endif /* ZB_ZCL_DIAGNOSTICS_H */

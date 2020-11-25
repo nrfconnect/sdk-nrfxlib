@@ -41,7 +41,7 @@
 /* PURPOSE: HA configuration
 */
 
-//#ifndef ZB_HA_CONFIG_H
+#ifndef ZB_HA_CONFIG_H
 #define ZB_HA_CONFIG_H 1
 
 #include "zb_vendor.h"
@@ -68,4 +68,4 @@
 
 #endif /* ZB_ENABLE_HA */
 
-//#endif /* ZB_HA_CONFIG_H */
+#endif /* ZB_HA_CONFIG_H */

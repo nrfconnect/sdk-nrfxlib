@@ -280,6 +280,29 @@ typedef struct zb_apsme_binding_req_s
   zb_callback_t   confirm_cb;     /*!< The callback to be called when the operation is completed. */
 } zb_apsme_binding_req_t;
 
+
+
+/**
+  * This data structure passed to @ref zb_aps_check_binding().
+  */
+typedef struct zb_aps_check_binding_req_s
+{
+  zb_uint8_t src_endpoint; /* a source endpoint, if ZB_ZCL_BROADCAST_ENDPOINT - any endpoint */
+  zb_uint16_t cluster_id; /* a source cluster ID */
+  zb_callback_t response_cb;
+} zb_aps_check_binding_req_t;
+
+
+/**
+  * This data structure passed to callback passed to @ref zb_aps_check_binding().
+  */
+typedef struct zb_aps_check_binding_resp_s
+{
+  zb_uint8_t src_endpoint; /* a source endpoint from the corresponding request */
+  zb_uint16_t cluster_id; /* a source cluster ID from the corresponding request */
+  zb_bool_t exists; /* whether the binding with specified parameters exists */
+} zb_aps_check_binding_resp_t;
+
 /** @brief APSME-ADD-GROUP.request primitive parameters. */
 typedef struct zb_apsme_add_group_req_s
 {
@@ -384,6 +407,11 @@ void zb_apsme_unbind_request(zb_uint8_t param);
  * @param param - not used.
  */
 void zb_apsme_unbind_all(zb_uint8_t param);
+
+/**
+ * Checks if the binding with specified parameters exists
+ */
+void zb_aps_check_binding_request(zb_bufid_t param);
 
 /** @brief APSME-ADD-GROUP.request primitive.
   *

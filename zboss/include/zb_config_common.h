@@ -318,12 +318,12 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
  */
 /**@cond internals_doc*/
 /*! Maximum broadcast APS payload size */
-#define ZB_APS_MAX_BROADCAST_PAYLOAD_SIZE 74
+#define ZB_APS_MAX_BROADCAST_PAYLOAD_SIZE 74U
 /**
    Maximum broadcast APS payload size supposing NWK encryption only, no long
    address in NWK header. That means definitely the largest possible size.
  */
-#define ZB_APS_MAX_MAX_BROADCAST_PAYLOAD_SIZE (74 + 8)
+#define ZB_APS_MAX_MAX_BROADCAST_PAYLOAD_SIZE (74U + 8U)
 
 /**
    MAC hdr:
@@ -347,7 +347,7 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
 /**
    Maximal frame size
  */
-#define MAX_PHY_FRM_SIZE              127
+#define MAX_PHY_FRM_SIZE              127U
 
 /* ZB packet length must not exceed 127 bytes
  *
@@ -939,11 +939,11 @@ Frequency band (MHz)                  MR-FSK symbol duration used for MAC
 */
 
 #if   defined(ZB_SUB_GHZ_EU1) || defined(ZB_SUB_GHZ_EU2) || defined(ZB_SUB_GHZ_EU3)
-#define ZB_SYMBOL_DURATION_USEC   20
+#define ZB_SYMBOL_DURATION_USEC   20U
 #elif defined(ZB_SUB_GHZ_US)
-#define ZB_SYMBOL_DURATION_USEC   20
+#define ZB_SYMBOL_DURATION_USEC   20U
 #elif defined ZB_SUB_GHZ_JP
-#define ZB_SYMBOL_DURATION_USEC   20
+#define ZB_SYMBOL_DURATION_USEC   20U
 #elif defined ZB_SUB_GHZ_CN
 #else
 
@@ -953,15 +953,15 @@ Frequency band (MHz)                  MR-FSK symbol duration used for MAC
  * The 2450 MHz PHY symbol rate shall be 62.
  * 5 ksymbol/s 40 ppm.
  */
-#define ZB_SYMBOL_DURATION_USEC   16      /* 1 symbol = 16e-6 sec (mac spec 6.5.3.2 Symbol rate) */
+#define ZB_SYMBOL_DURATION_USEC   16U      /* 1 symbol = 16e-6 sec (mac spec 6.5.3.2 Symbol rate) */
 #endif
 
 /*!
  * @brief Symbol duration for O-QPSK (2.4 GHz)
  * @see 12.3 section of 802.15.4-2015
  */
-#define ZB_O_QPSK_2_4_GHZ_SYMBOL_DURATION_USEC 16
-#define ZB_O_QPSK_2_4_GHZ_PHY_SYMBOLS_PER_OCTET 2
+#define ZB_O_QPSK_2_4_GHZ_SYMBOL_DURATION_USEC 16U
+#define ZB_O_QPSK_2_4_GHZ_PHY_SYMBOLS_PER_OCTET 2U
 
 #define ZB_2_4_GHZ_OCTET_DURATION_USEC (ZB_O_QPSK_2_4_GHZ_SYMBOL_DURATION_USEC * ZB_O_QPSK_2_4_GHZ_PHY_SYMBOLS_PER_OCTET)
 
@@ -969,16 +969,16 @@ Frequency band (MHz)                  MR-FSK symbol duration used for MAC
  * @brief Symbol duration for European FSK Sub-GHz
  * @see D.11.2 MAC Support for Listen Before Talk (LBT)
  */
-#define ZB_EU_FSK_SYMBOL_DURATION_USEC 10
+#define ZB_EU_FSK_SYMBOL_DURATION_USEC 10U
 
-#define ZB_EU_FSK_PHY_SYMBOLS_PER_OCTET 8
+#define ZB_EU_FSK_PHY_SYMBOLS_PER_OCTET 8U
 
 /*!
  * @brief Synchronization header for European FSK Sub-GHz
  * @see D.10.1.1.1 SHR for European Sub-GHz FSK
  * synchronization header: 8 bytes preamble + 2 bytes SFD
  */
-#define ZB_MAC_EU_FSK_SHR_LEN_BYTES   10
+#define ZB_MAC_EU_FSK_SHR_LEN_BYTES   10U
 #define ZB_MAC_EU_FSK_SHR_LEN_SYMBOLS \
   (ZB_MAC_EU_FSK_SHR_LEN_BYTES * ZB_EU_FSK_PHY_SYMBOLS_PER_OCTET)
 
@@ -987,7 +987,7 @@ Frequency band (MHz)                  MR-FSK symbol duration used for MAC
  * @see D.10.1.1.2 PHR for European Sub-GHz FSK
  * PHY header: 2 bytes
  */
-#define ZB_MAC_EU_FSK_PHR_LEN_BYTES 2
+#define ZB_MAC_EU_FSK_PHR_LEN_BYTES 2U
 #define ZB_MAC_EU_FSK_PHR_LEN_SYMBOLS \
   (ZB_MAC_EU_FSK_PHR_LEN_BYTES * ZB_EU_FSK_PHY_SYMBOLS_PER_OCTET)
 
@@ -999,7 +999,7 @@ Frequency band (MHz)                  MR-FSK symbol duration used for MAC
    aBaseSlotDuration = 60
    aNumSuperframeSlots = 16
 */
-#define ZB_ABASE_SUPERFRAME_DURATION 960
+#define ZB_ABASE_SUPERFRAME_DURATION 960U
 
 
 /*!
@@ -1173,7 +1173,7 @@ request command frame.
 *
 *  @note Make sure the time value is not too big.
 */
-#define ZB_MAX_FRAME_TOTAL_WAIT_TIME_2_4_GHZ (ZB_MILLISECONDS_TO_BEACON_INTERVAL(40) + 1)
+#define ZB_MAX_FRAME_TOTAL_WAIT_TIME_2_4_GHZ (ZB_MILLISECONDS_TO_BEACON_INTERVAL(40) + 1U)
 /*!
 *  Maximum time to wait for indirect data for SUB GHZ.
 *
@@ -1181,7 +1181,7 @@ request command frame.
 *
 *  @note Make sure the time value is not too big.
 */
-#define ZB_MAX_FRAME_TOTAL_WAIT_TIME_SUB_GHZ (ZB_MILLISECONDS_TO_BEACON_INTERVAL(48) + 1)
+#define ZB_MAX_FRAME_TOTAL_WAIT_TIME_SUB_GHZ (ZB_MILLISECONDS_TO_BEACON_INTERVAL(48) + 1U)
 
 
 /*!
@@ -1213,9 +1213,9 @@ request command frame.
 /*! MAC beacon request timeout length (high bound of the random value) */
 #ifndef ZB_MAC_HANDLE_BEACON_REQ_HI_TMO
 /*! Default MAC beacon request timeout length */
-#define ZB_MAC_HANDLE_BEACON_REQ_HI_TMO_DEFAULT 8
+#define ZB_MAC_HANDLE_BEACON_REQ_HI_TMO_DEFAULT 8U
 /*! Extended MAC beacon request timeout length */
-#define ZB_MAC_HANDLE_BEACON_REQ_HI_TMO_EXTENDED 20
+#define ZB_MAC_HANDLE_BEACON_REQ_HI_TMO_EXTENDED 20U
 
 #ifdef ZB_CERTIFICATION_HACKS
 /* Choose exact value depending on cert hack flags */

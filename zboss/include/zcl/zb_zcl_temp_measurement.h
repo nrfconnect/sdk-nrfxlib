@@ -41,8 +41,8 @@
 /* PURPOSE: Temperature Measurement cluster definitions
 */
 
-#if ! defined ZB_ZCL_TEMP_MEASUREMENT_H
-#define ZB_ZCL_TEMP_MEASUREMENT_H
+#ifndef ZB_ZCL_TEMP_MEASUREMENT_H
+#define ZB_ZCL_TEMP_MEASUREMENT_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -203,4 +203,4 @@ void zb_zcl_temp_measurement_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT_CLIENT_ROLE_INIT zb_zcl_temp_measurement_init_client
 
 
-#endif /* ! defined ZB_ZCL_TEMP_MEASUREMENT_H */
+#endif /* ZB_ZCL_TEMP_MEASUREMENT_H */

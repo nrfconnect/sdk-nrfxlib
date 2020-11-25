@@ -76,7 +76,7 @@ typedef struct type_name_prefix ## _s                                 \
 /**
  * Initialize ring buffer internals
  */
-#define ZB_RING_BUFFER_INIT(rb) ( (rb)->read_i = (rb)->write_i = (rb)->written = 0)
+#define ZB_RING_BUFFER_INIT(rb) ( (rb)->read_i = (rb)->write_i = (rb)->written = 0U)
 
 /**
  * Return ring buffer capacity
@@ -97,7 +97,7 @@ typedef struct type_name_prefix ## _s                                 \
  *
  * @param rb - ring buffer pointer.
  */
-#define ZB_RING_BUFFER_IS_EMPTY(rb) ((rb)->written == 0)
+#define ZB_RING_BUFFER_IS_EMPTY(rb) ((rb)->written == 0U)
 
 
 /**
@@ -172,6 +172,18 @@ typedef struct type_name_prefix ## _s                                 \
 )
 
 /**
+   Return amount of data which can be put into ring buffer tail starting from write_i using external rb capacity
+
+   @param rb - ring buffer pointer
+   @param size - requested data size
+ */
+#define ZB_RING_BUFFER_LINEAR_PORTION_BY_CAP(rb, size, rb_cap) \
+(                                                              \
+  (rb_cap) - (rb)->write_i < (size) ?                          \
+  (rb_cap) - (rb)->write_i : (size)                            \
+  )
+
+/**
  * Get the size of available for writing continuous portion in ring buffer.
  *
  * That portion is from write_i index to the end of the buffer or
@@ -191,14 +203,33 @@ typedef struct type_name_prefix ## _s                                 \
    @param rb - ring buffer pointer
    @param data - data ptr
    @param size - requested data size
-   @param written - (out) amount of data put
+   @param entries_written - (out) amount of data put
  */
-#define ZB_RING_BUFFER_BATCH_PUT(rb, data, size, written)          \
-{                                                                  \
-  (written) = ZB_RING_BUFFER_LINEAR_PORTION((rb), (size));         \
-  ZB_MEMCPY((rb)->ring_buf + (rb)->write_i, (data), (written));    \
-  (rb)->written += (written);                                      \
-  (rb)->write_i = ((rb)->write_i + (written) % ZB_RING_BUFFER_CAPACITY(rb)); \
+#define ZB_RING_BUFFER_BATCH_PUT(rb, data, size, entries_written)                    \
+{                                                                                    \
+  (entries_written) = ZB_RING_BUFFER_LINEAR_PORTION((rb), (size));                   \
+  ZB_MEMCPY((rb)->ring_buf + (rb)->write_i, (data), (entries_written));              \
+  (rb)->written += (entries_written);                                                \
+  (rb)->write_i = ((rb)->write_i + (entries_written) % ZB_RING_BUFFER_CAPACITY(rb)); \
+}
+
+/**
+   Batch put data into ringbuffer using external rb capacity
+
+   To be used to copy from external buffer to ring buffer
+
+   @param rb - ring buffer pointer
+   @param data - data ptr
+   @param size - requested data size
+   @param entries_written - (out) amount of data put
+   @param rb_cap - cap of the ring buffer
+ */
+#define ZB_RING_BUFFER_BATCH_PUT_BY_CAP(rb, data, size, entries_written, rb_cap)    \
+{                                                                                   \
+  (entries_written) = ZB_RING_BUFFER_LINEAR_PORTION_BY_CAP((rb), (size), (rb_cap)); \
+  ZB_MEMCPY((rb)->ring_buf + (rb)->write_i, (data), (entries_written));             \
+  (rb)->written += (entries_written);                                               \
+  (rb)->write_i = (((rb)->write_i + (entries_written)) % (rb_cap));                 \
 }
 
 
@@ -310,7 +341,7 @@ typedef struct type_name_prefix ## _s                                 \
 #define ZB_RING_BUFFER_FLUSH_GET(rb)                                    \
 (                                                                       \
   (rb)->written--,                                                      \
-  ((rb)->read_i = ((rb)->read_i + 1) % ZB_RING_BUFFER_CAPACITY(rb))     \
+  ((rb)->read_i = ((rb)->read_i + 1U) % ZB_RING_BUFFER_CAPACITY(rb))     \
   )
 
 

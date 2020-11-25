@@ -216,4 +216,4 @@
 
 #endif /* ZB_HA_DEFINE_DEVICE_SHADE_CONTROLLER */
 
-#endif /* ! defined ZB_HA_SHADE_CONTROLLER_H */
+#endif /* ZB_HA_SHADE_CONTROLLER_H */

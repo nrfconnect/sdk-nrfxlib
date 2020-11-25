@@ -40,8 +40,8 @@
  */
 /* PURPOSE: Zigbee cluster library commands common for all clusters
 */
-#if ! defined ZB_ZCL_COMMANDS_H
-#define ZB_ZCL_COMMANDS_H
+#ifndef ZB_ZCL_COMMANDS_H
+#define ZB_ZCL_COMMANDS_H 1
 
 #include "zcl/zb_zcl_common.h"
 
@@ -621,7 +621,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
   (read_attr_resp) = zb_buf_len(data_buf) >= ZB_ZCL_READ_ATTR_RESP_SIZE ?                      \
     (zb_zcl_read_attr_res_t*)zb_buf_begin(data_buf) : NULL;                                    \
                                                                                                \
-  if (read_attr_resp)                                                                          \
+  if (read_attr_resp != NULL)                                                                  \
   {                                                                                            \
     resp_size = ZB_ZCL_READ_ATTR_RESP_SIZE;                                                    \
     ZB_ZCL_HTOLE16_INPLACE(&(read_attr_resp)->attr_id);                                        \
@@ -907,7 +907,7 @@ zb_zcl_write_attr_req_t;
   (write_attr_req) = (data_len) >= ZB_ZCL_WRITE_ATTR_REQ_SIZE ?                              \
     (zb_zcl_write_attr_req_t*)(data_ptr) : NULL;                                             \
                                                                                              \
-  if (write_attr_req)                                                                        \
+  if (write_attr_req != NULL)                                                                \
   {                                                                                          \
     /* substruct sizeof(zb_uint8_t) because its size */                                      \
     /* is already included into ZB_ZCL_WRITE_ATTR_REQ_SIZE */                                \
@@ -2404,4 +2404,4 @@ void zb_zcl_send_report_attr_command(struct zb_zcl_reporting_info_s *rep_info, z
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 
-#endif /* ! defined ZB_ZCL_COMMANDS_H */
+#endif /* ZB_ZCL_COMMANDS_H */

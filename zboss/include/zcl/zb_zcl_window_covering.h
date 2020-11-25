@@ -42,7 +42,7 @@
 */
 
 #ifndef ZB_ZCL_WINDOW_COVERING_H
-#define ZB_ZCL_WINDOW_COVERING_H
+#define ZB_ZCL_WINDOW_COVERING_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -631,7 +631,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_go_to_tilt_percentage_req_s
   (lift_percentage_req_ptr) = zb_buf_len(data_buf) ==                   \
     sizeof(zb_zcl_go_to_lift_percentage_req_t) ?                        \
     (zb_zcl_go_to_lift_percentage_req_t*)zb_buf_begin(data_buf) : NULL; \
-  if (lift_percentage_req_ptr)                                          \
+  if (lift_percentage_req_ptr != NULL)                                  \
   {                                                                     \
     (lift_percentage_req)->percentage_lift_value =                      \
       lift_percentage_req_ptr->percentage_lift_value;                   \
@@ -682,7 +682,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_go_to_tilt_percentage_req_s
   (tilt_percentage_req_ptr) = zb_buf_len(data_buf) ==                   \
     sizeof(zb_zcl_go_to_tilt_percentage_req_t) ?                        \
     (zb_zcl_go_to_tilt_percentage_req_t*)zb_buf_begin(data_buf) : NULL; \
-  if (tilt_percentage_req_ptr)                                          \
+  if (tilt_percentage_req_ptr != NULL)                                  \
   {                                                                     \
     (tilt_percentage_req)->percentage_tilt_value =                      \
       tilt_percentage_req_ptr->percentage_tilt_value;                   \

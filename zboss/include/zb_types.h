@@ -53,6 +53,24 @@
  * @{
  */
 
+/*
+ * C standard being used during compilation.
+ * The preferred standard is C99 and it should be used whenever possible.
+ * However, C90 compatibility should be maintained. Macroses ZB_STDC_* can be
+ * used for conditional compilation based on C standard. Note: __STDC__ and
+ * __STDC_VERSION__ are expected to be supported by all compilers in use.
+ */
+#if defined __STDC__
+#if defined __STDC_VERSION__  && (__STDC_VERSION__ >= 199901L)
+#define ZB_STDC_99
+#else
+#define ZB_STDC_90
+#endif /* __STDC_VERSION__  && (__STDC_VERSION__ >= 199901L) */
+#else
+#warning __STDC__ is not defined, assume C90 standard
+#define ZB_STDC_90
+#endif /* __STDC__ */
+
 #define ZB_32BIT_WORD
 
 /* Really need xdata declaration here, not in osif: don't want to include osif.h here */
@@ -109,11 +127,23 @@ enum zb_param_e
 };
 
 /** @brief General purpose boolean type. */
-enum zb_bool_e
+#ifdef ZB_STDC_90
+/* MISRA-2012 allows to use enum type to define boolean values in C90. */
+typedef enum
 {
   ZB_FALSE = 0, /**< False value literal. */
   ZB_TRUE = 1   /**<  True value literal. */
-};
+} zb_bool_t;
+#else
+/* Use C99 bool type. Assume stdbool.h standard header is available.
+ * It is compatible with MISRA-2012 in contrast to enum usage for boolean in C99.
+ */
+#include <stdbool.h>
+
+typedef bool zb_bool_t;
+#define ZB_FALSE false
+#define ZB_TRUE true
+#endif /* ZB_STDC_90 */
 
 #if defined WIN32 && !defined ZB_WINDOWS
 #define ZB_WINDOWS
@@ -315,9 +345,6 @@ typedef zb_int_t           zb_long_t;
 typedef zb_uint_t          zb_ulong_t;
 #endif
 
-/** @brief General purpose boolean type. */
-typedef enum zb_bool_e zb_bool_t;
-
 #define ZB_INT8_MIN       (-127 - 1)
 #define ZB_INT8_MAX       127
 #define ZB_UINT8_MIN      0
@@ -462,7 +489,7 @@ extern ZB_CODE ZB_CONST zb_64bit_addr_t g_unknown_ieee_addr;
 /*
    Return 1 if long addresses are equal
  */
-#define ZB_64BIT_ADDR_CMP(one, two) ((zb_bool_t)!ZB_MEMCMP((one), (two), 8))
+#define ZB_64BIT_ADDR_CMP(one, two) (ZB_MEMCMP((one), (two), 8) == 0)
 
 /*
   Long (64-bit) device address
@@ -1494,4 +1521,4 @@ typedef zb_uint32_t           zb_uint24_t;
 
 /** @} */
 
-#endif /* ! defined ZB_TYPES_H */
+#endif /* ZB_TYPES_H */

@@ -42,7 +42,7 @@
 */
 
 #ifndef ZB_ZCL_SHADE_CONFIG_H
-#define ZB_ZCL_SHADE_CONFIG_H
+#define ZB_ZCL_SHADE_CONFIG_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"

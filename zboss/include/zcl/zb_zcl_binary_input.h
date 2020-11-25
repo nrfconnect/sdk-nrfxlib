@@ -41,8 +41,8 @@
 /* PURPOSE: Binary Input cluster
 */
 
-#if !defined ZB_ZCL_BINARY_INPUT_H
-#define ZB_ZCL_BINARY_INPUT_H
+#ifndef ZB_ZCL_BINARY_INPUT_H
+#define ZB_ZCL_BINARY_INPUT_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"

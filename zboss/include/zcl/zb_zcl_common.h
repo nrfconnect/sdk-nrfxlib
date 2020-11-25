@@ -41,8 +41,8 @@
 /* PURPOSE: Zigbee cluster library types and macros common for all clusters
 */
 
-#if ! defined ZB_ZCL_COMMON_H
-#define ZB_ZCL_COMMON_H
+#ifndef ZB_ZCL_COMMON_H
+#define ZB_ZCL_COMMON_H 1
 
 #include <zboss_api_core.h> /* int types, zb_bufid_t */
 
@@ -492,7 +492,7 @@ static ZB_INLINE zb_uint16_t zb_zcl_string_append_byte(zb_uint8_t *zcl_str,
                                                     zb_uint8_t zcl_str_max_size,
                                                     zb_uint8_t value)
 {
-  zb_uint16_t newlen = ZB_ZCL_GET_STRING_LENGTH(zcl_str) + 1;
+  zb_uint16_t newlen = ZB_ZCL_GET_STRING_LENGTH(zcl_str) + 1U;
 
   if (newlen < (zb_uint16_t) zcl_str_max_size)
   {
@@ -1241,7 +1241,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 /*! @brief Construct ZCL header, Manufacturer specific value is conditionally supported */
 #define ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT(_data_ptr, _tsn, _is_manuf_spec, _manuf_specific, _cmd_id) \
   {                                                                     \
-    if (_is_manuf_spec)                                                 \
+    if (_is_manuf_spec != 0)                                            \
     {                                                                   \
       ZB_ZCL_PACKET_PUT_DATA16_VAL((_data_ptr), (_manuf_specific));     \
     }                                                                   \
@@ -2103,7 +2103,7 @@ typedef struct zb_zcl_set_attr_value_param_s
 {                                                                              \
   (result) = RET_OK;                                                           \
                                                                                \
-  if (ZCL_CTX().device_cb)                                                     \
+  if (ZCL_CTX().device_cb != NULL)                                             \
   {                                                                            \
     zb_zcl_device_callback_param_t *data =                                     \
       ZB_BUF_GET_PARAM((buffer), zb_zcl_device_callback_param_t);              \
@@ -2135,7 +2135,7 @@ typedef struct zb_zcl_set_attr_value_param_s
       break;                                                                   \
     }                                                                          \
                                                                                \
-    if (data)                                                                  \
+    if (data != NULL)                                                          \
     {                                                                          \
       data->device_cb_id = ZB_ZCL_SET_ATTR_VALUE_CB_ID;                        \
       data->endpoint = (ep);                                                   \
@@ -2163,4 +2163,4 @@ zb_bool_t cluster_needs_aps_encryption(zb_uint8_t endpoint_id, zb_uint16_t clust
 
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
-#endif /* ! defined ZB_ZCL_COMMON_H */
+#endif /* ZB_ZCL_COMMON_H */

@@ -41,8 +41,8 @@
 /* PURPOSE: IAS Zone cluster defintions
 */
 
-#if ! defined ZB_ZCL_IAS_ZONE_H
-#define ZB_ZCL_IAS_ZONE_H
+#ifndef ZB_ZCL_IAS_ZONE_H
+#define ZB_ZCL_IAS_ZONE_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -893,4 +893,4 @@ void zb_zcl_ias_zone_init_client(void);
 zb_bool_t zb_zcl_process_ias_zone_specific_commands(zb_uint8_t param);
 zb_bool_t zb_zcl_ias_zone_check_bind_unbind_request(zb_apsme_binding_req_t *aps_bind_req);
 
-#endif /* ! defined ZB_ZCL_IAS_ZONE_H */
+#endif /* ZB_ZCL_IAS_ZONE_H */

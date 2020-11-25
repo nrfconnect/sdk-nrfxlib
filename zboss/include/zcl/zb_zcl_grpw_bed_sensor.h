@@ -41,8 +41,8 @@
 /* PURPOSE: Bed Sensor for GreenPower cluster
 */
 
-#if !defined ZB_ZCL_GRPW_BED_SENSOR_H
-#define ZB_ZCL_GRPW_BED_SENSOR_H
+#ifndef ZB_ZCL_GRPW_BED_SENSOR_H
+#define ZB_ZCL_GRPW_BED_SENSOR_H 1
 
 #define ZB_ZCL_CLUSTER_ID_GRPW_BED_SENSOR  0xfd00
 

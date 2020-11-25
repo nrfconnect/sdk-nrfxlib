@@ -41,8 +41,8 @@
 /* PURPOSE: Alarms cluster definitions
 */
 
-#if ! defined ZB_ZCL_ALARMS_H
-#define ZB_ZCL_ALARMS_H
+#ifndef ZB_ZCL_ALARMS_H
+#define ZB_ZCL_ALARMS_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -137,7 +137,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_alarms_reset_alarm_req_s
   (reset_alarm_req_ptr) = zb_buf_len(data_buf) >=                                  \
     ZB_ZCL_ALARMS_RESET_ALARM_REQ_PAYLOAD_LEN ?                                    \
     (zb_zcl_alarms_reset_alarm_req_t*)zb_buf_begin(data_buf) : NULL;               \
-  if (reset_alarm_req_ptr)                                                         \
+  if (reset_alarm_req_ptr != NULL)                                                 \
   {                                                                                \
     reset_alarm_req.alarm_code = reset_alarm_req_ptr->alarm_code;                  \
     ZB_HTOLE16(&(reset_alarm_req).cluster_id, &(reset_alarm_req_ptr->cluster_id)); \
@@ -358,4 +358,4 @@ void zb_zcl_alarms_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_ALARMS_SERVER_ROLE_INIT zb_zcl_alarms_init_server
 #define ZB_ZCL_CLUSTER_ID_ALARMS_CLIENT_ROLE_INIT zb_zcl_alarms_init_client
 
-#endif /* ! defined ZB_ZCL_ALARMS_H */
+#endif /* ZB_ZCL_ALARMS_H */

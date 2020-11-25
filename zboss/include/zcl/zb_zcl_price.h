@@ -42,7 +42,7 @@
 */
 
 #ifndef ZB_ZCL_PRICE_H
-#define ZB_ZCL_PRICE_H
+#define ZB_ZCL_PRICE_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -4454,4 +4454,4 @@ void zb_zcl_price_init_client(void);
 /** @} */ /* Price cluster */
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 
-#endif /* ! defined ZB_ZCL_PRICE_H */
+#endif /* ZB_ZCL_PRICE_H */

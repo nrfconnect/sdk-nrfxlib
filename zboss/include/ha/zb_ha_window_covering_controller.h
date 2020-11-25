@@ -41,8 +41,8 @@
 /* PURPOSE: Window Covering Controller device definition
 */
 
-#if ! defined ZB_HA_WINDOW_COVERING_CONTROLLER_H
-#define ZB_HA_WINDOW_COVERING_CONTROLLER_H
+#ifndef ZB_HA_WINDOW_COVERING_CONTROLLER_H
+#define ZB_HA_WINDOW_COVERING_CONTROLLER_H 1
 
 #if defined ZB_HA_DEFINE_DEVICE_WINDOW_COVERING_CONTROLLER || defined DOXYGEN
 
@@ -207,4 +207,4 @@ zb_zcl_cluster_desc_t cluster_list_name[] =                             \
 
 #endif /* ZB_HA_DEFINE_DEVICE_WINDOW_COVERING_CONTROLLER */
 
-#endif /* ! defined ZB_HA_WINDOW_COVERING_CONTROLLER_H */
+#endif /* ZB_HA_WINDOW_COVERING_CONTROLLER_H */

@@ -41,8 +41,8 @@
 /* PURPOSE: Occupancy Sensing definitoins
 */
 
-#if ! defined ZB_ZCL_OCCUPANCY_SENSING_H
-#define ZB_ZCL_OCCUPANCY_SENSING_H
+#ifndef ZB_ZCL_OCCUPANCY_SENSING_H
+#define ZB_ZCL_OCCUPANCY_SENSING_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -276,4 +276,4 @@ enum zb_zcl_custom_learn_type_e
 #define ZB_ZCL_CLUSTER_ID_OCCUPANCY_SENSING_SERVER_ROLE_INIT (zb_zcl_cluster_init_t)NULL
 #define ZB_ZCL_CLUSTER_ID_OCCUPANCY_SENSING_CLIENT_ROLE_INIT (zb_zcl_cluster_init_t)NULL
 
-#endif /* ! defined ZB_ZCL_OCCUPANCY_SENSING_H */
+#endif /* ZB_ZCL_OCCUPANCY_SENSING_H */

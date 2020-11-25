@@ -41,8 +41,8 @@
 /* PURPOSE: Electrical Measurement cluster definitions
 */
 
-#if ! defined ZB_ZCL_ELECTRICAL_MEASUREMENT_H
-#define ZB_ZCL_ELECTRICAL_MEASUREMENT_H
+#ifndef ZB_ZCL_ELECTRICAL_MEASUREMENT_H
+#define ZB_ZCL_ELECTRICAL_MEASUREMENT_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -933,4 +933,4 @@ void zb_zcl_el_measurement_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_ELECTRICAL_MEASUREMENT_SERVER_ROLE_INIT zb_zcl_el_measurement_init_server
 #define ZB_ZCL_CLUSTER_ID_ELECTRICAL_MEASUREMENT_CLIENT_ROLE_INIT zb_zcl_el_measurement_init_client
 
-#endif /* ! defined ZB_ZCL_ELECTRICAL_MEASUREMENT_H */
+#endif /* ZB_ZCL_ELECTRICAL_MEASUREMENT_H */
