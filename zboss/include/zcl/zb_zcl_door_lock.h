@@ -42,7 +42,7 @@
 */
 
 #ifndef ZB_ZCL_DOOR_LOCK_H
-#define ZB_ZCL_DOOR_LOCK_H
+#define ZB_ZCL_DOOR_LOCK_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"

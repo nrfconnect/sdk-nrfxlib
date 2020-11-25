@@ -41,8 +41,8 @@
 /* PURPOSE: HA Smart Plug device definition
 */
 
-#if ! defined ZB_HA_SMART_PLUG_H
-#define ZB_HA_SMART_PLUG_H
+#ifndef ZB_HA_SMART_PLUG_H
+#define ZB_HA_SMART_PLUG_H 1
 
 #if defined ZB_HA_DEFINE_DEVICE_SMART_PLUG || defined DOXYGEN
 
@@ -206,4 +206,4 @@
 
 #endif /* ZB_HA_DEFINE_DEVICE_SMART_PLUG */
 
-#endif /* ! defined ZB_HA_SMART_PLUG_H */
+#endif /* ZB_HA_SMART_PLUG_H */

@@ -41,8 +41,8 @@
 /* PURPOSE: HA Dimmable Light device definition
 */
 
-#if ! defined ZB_HA_DIMMABLE_LIGHT_H
-#define ZB_HA_DIMMABLE_LIGHT_H
+#ifndef ZB_HA_DIMMABLE_LIGHT_H
+#define ZB_HA_DIMMABLE_LIGHT_H 1
 
 #if defined ZB_HA_DEFINE_DEVICE_DIMMABLE_LIGHT || defined DOXYGEN
 
@@ -217,4 +217,4 @@
 
 #endif /* ZB_HA_DEFINE_DEVICE_DIMMABLE_LIGHT */
 
-#endif /* ! defined ZB_HA_DIMMABLE_LIGHT_H */
+#endif /* ZB_HA_DIMMABLE_LIGHT_H */

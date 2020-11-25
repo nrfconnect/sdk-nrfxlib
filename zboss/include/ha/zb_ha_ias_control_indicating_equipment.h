@@ -41,8 +41,8 @@
 /* PURPOSE: IAS Control and Indicating Equipment device definition
 */
 
-#if ! defined ZB_HA_IAS_CONTR_INDICATION_H
-#define ZB_HA_IAS_CONTR_INDICATION_H
+#ifndef ZB_HA_IAS_CONTR_INDICATION_H
+#define ZB_HA_IAS_CONTR_INDICATION_H 1
 
 #if defined ZB_HA_DEFINE_DEVICE_IAS_CONTROL_INDICATING_EQUIPMENT || defined DOXYGEN
 
@@ -222,4 +222,4 @@
 
 #endif /* defined ZB_HA_DEFINE_DEVICE_IAS_CONTROL_INDICATING_EQUIPMENT || defined DOXYGEN */
 
-#endif /* ! defined ZB_HA_IAS_CONTR_INDICATION_H */
+#endif /* ZB_HA_IAS_CONTR_INDICATION_H */

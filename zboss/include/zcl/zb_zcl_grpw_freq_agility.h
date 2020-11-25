@@ -41,8 +41,8 @@
 /* PURPOSE: Frequency agility for GreenPower cluster
 */
 
-#if !defined ZB_ZCL_GRPW_FREQ_AGILITY_H
-#define ZB_ZCL_GRPW_FREQ_AGILITY_H
+#ifndef ZB_ZCL_GRPW_FREQ_AGILITY_H
+#define ZB_ZCL_GRPW_FREQ_AGILITY_H 1
 
 #define ZB_ZCL_CLUSTER_ID_GRPW_FREQ_AGILITY  0xFCFA
 

@@ -411,9 +411,7 @@ zb_ret_t zb_set_tx_power(zb_uint8_t tx_power);
 
 
    @b Example:
-@code
-  zb_set_rx_on_when_idle(ZB_FALSE); // switch device to rx off
-@endcode
+@snippet doxygen_snippets.dox zboss_api_h_1
 */
 void zb_set_rx_on_when_idle(zb_bool_t rx_on);
 
@@ -513,10 +511,12 @@ zb_ret_t zboss_start_in_sniffer_mode(void);
 
    ZBOSS must be started in the sniffer mode.
 
-   @param channel - channel to work on
+   @param channel_cmd - channel and page index to work on. page index is encoded in two
+   most significant bits (see zb_channel_page_num_e) and channel is encoded in 5 least 
+   significant bits.
    @param data_ind_cb - callback to be called to pass data to the sniffer application
  */
-void zboss_sniffer_start(zb_uint8_t channel, zb_callback_t data_ind_cb);
+void zboss_sniffer_start(zb_uint8_t channel_cmd, zb_callback_t data_ind_cb);
 
 /**
    Stop sniffing or do nothing if not sniffing now.
@@ -872,6 +872,7 @@ typedef enum zb_nvram_dataset_types_e
    */
   ZB_NVRAM_APP_DATA3             = 27, /**< Application-specific data #3 */
   ZB_NVRAM_APP_DATA4             = 28, /**< Application-specific data #4 */
+  ZB_NVRAM_KE_WHITELIST          = 29,
   ZB_NVRAM_DATASET_NUMBER,             /**< Count of Dataset */
   ZB_NVRAM_DATA_SET_TYPE_PAGE_HDR = 0x1e /**< Special internal dataset type  */
 } zb_nvram_dataset_types_t;

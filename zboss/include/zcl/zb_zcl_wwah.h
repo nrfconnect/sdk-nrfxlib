@@ -41,8 +41,8 @@
 /* PURPOSE: WWAH cluster definitions
 */
 
-#if ! defined ZB_ZCL_WWAH_H
-#define ZB_ZCL_WWAH_H
+#ifndef ZB_ZCL_WWAH_H
+#define ZB_ZCL_WWAH_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -2618,4 +2618,4 @@ zb_ret_t zb_zcl_wwah_update_time(zb_uint8_t param);
 #define ZB_ZCL_CLUSTER_ID_WWAH_SERVER_ROLE_INIT zb_zcl_wwah_init_server
 #define ZB_ZCL_CLUSTER_ID_WWAH_CLIENT_ROLE_INIT zb_zcl_wwah_init_client
 
-#endif /* ! defined ZB_ZCL_WWAH_H */
+#endif /* ZB_ZCL_WWAH_H */

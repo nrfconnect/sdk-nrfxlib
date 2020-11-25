@@ -434,7 +434,7 @@ void zb_trace_msg_port(
 #define TRACE_INIT(name)
 #define TRACE_DEINIT(c)
 
-#define TRACE_ENABLED(m) 0
+#define TRACE_ENABLED(m) ZB_FALSE
 
 #endif  /* trace on/off */
 /** @endcond */
@@ -593,6 +593,10 @@ typedef struct zb_byte128_struct_s
 #define FMT__A_P                                        TRACE_ARG_SIZE(0,0,0,1,1)
 #define FMT__AA                                         TRACE_ARG_SIZE(0,0,0,0,2)
 #define FMT__C                                          TRACE_ARG_SIZE(1,0,0,0,0)
+#define FMT__C_C                                        TRACE_ARG_SIZE(2,0,0,0,0)
+#define FMT__C_C_C                                      TRACE_ARG_SIZE(3,0,0,0,0)
+#define FMT__C_C_C_C                                    TRACE_ARG_SIZE(4,0,0,0,0)
+#define FMT__C_C_C_C_C                                  TRACE_ARG_SIZE(5,0,0,0,0)
 #define FMT__C_C_H_H                                    TRACE_ARG_SIZE(4,0,0,0,0)
 #define FMT__C_H                                        TRACE_ARG_SIZE(2,0,0,0,0)
 #define FMT__D                                          TRACE_ARG_SIZE(0,1,0,0,0)
@@ -797,6 +801,7 @@ typedef struct zb_byte128_struct_s
 #define FMT__L_H_H_H                                    TRACE_ARG_SIZE(3,0,1,0,0)
 #define FMT__L_L                                        TRACE_ARG_SIZE(0,0,2,0,0)
 #define FMT__L_L_L                                      TRACE_ARG_SIZE(0,0,3,0,0)
+#define FMT__L_L_L_H                                    TRACE_ARG_SIZE(1,0,3,0,0)
 #define FMT__L_L_A_A                                    TRACE_ARG_SIZE(0,0,2,0,2)
 #define FMT__L_D_A                                      TRACE_ARG_SIZE(0,1,1,0,1)
 #define FMT__L_D_A_A                                    TRACE_ARG_SIZE(0,1,1,0,2)
@@ -804,8 +809,10 @@ typedef struct zb_byte128_struct_s
 #define FMT__L_L_D_D                                    TRACE_ARG_SIZE(0,2,2,0,0)
 #define FMT__L_L_H_L_H_H_H_H_H_H_H_H_H_H_H_H            TRACE_ARG_SIZE(13,0,3,0,0)
 #define FMT__L_L_L_D                                    TRACE_ARG_SIZE(0,1,3,0,0)
+#define FMT__L_L_L_D_L_D                                TRACE_ARG_SIZE(0,2,4,0,0)
 #define FMT__L_L_L_L                                    TRACE_ARG_SIZE(0,0,4,0,0)
 #define FMT__L_L_L_L_L                                  TRACE_ARG_SIZE(0,0,5,0,0)
+#define FMT__L_L_L_L_L_L                                TRACE_ARG_SIZE(0,0,6,0,0)
 #define FMT__L_L_L_L_L_L_L                              TRACE_ARG_SIZE(0,0,7,0,0)
 #define FMT__L_P                                        TRACE_ARG_SIZE(0,0,1,1,0)
 #define FMT__L_P_L                                      TRACE_ARG_SIZE(0,0,2,1,0)

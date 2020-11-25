@@ -41,8 +41,8 @@
 /* PURPOSE: Metering cluster definitions
 */
 
-#if ! defined ZB_ZCL_METERING_H
-#define ZB_ZCL_METERING_H
+#ifndef ZB_ZCL_METERING_H
+#define ZB_ZCL_METERING_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -2538,4 +2538,4 @@ void zb_zcl_metering_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_METERING_SERVER_ROLE_INIT zb_zcl_metering_init_server
 #define ZB_ZCL_CLUSTER_ID_METERING_CLIENT_ROLE_INIT zb_zcl_metering_init_client
 
-#endif /* ! defined ZB_ZCL_METERING_H */
+#endif /* ZB_ZCL_METERING_H */

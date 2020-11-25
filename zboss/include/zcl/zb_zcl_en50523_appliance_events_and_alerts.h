@@ -41,8 +41,8 @@
 /* PURPOSE: EN50523 Appliance events and alerts cluster definitions
 */
 
-#if ! defined ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_H
-#define ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_H
+#ifndef ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_H
+#define ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_H 1
 
 /** @cond DOXYGEN_ZCL_SECTION */
 

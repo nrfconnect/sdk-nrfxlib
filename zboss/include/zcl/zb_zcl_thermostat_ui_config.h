@@ -41,8 +41,8 @@
 /* PURPOSE: Thermostat UI Configuration cluster defintions
 */
 
-#if ! defined ZB_ZCL_THERMOSTAT_UI_CONFIG_H
-#define ZB_ZCL_THERMOSTAT_UI_CONFIG_H
+#ifndef ZB_ZCL_THERMOSTAT_UI_CONFIG_H
+#define ZB_ZCL_THERMOSTAT_UI_CONFIG_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -170,4 +170,4 @@ void zb_zcl_thermostat_ui_config_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_THERMOSTAT_UI_CONFIG_SERVER_ROLE_INIT zb_zcl_thermostat_ui_config_init_server
 #define ZB_ZCL_CLUSTER_ID_THERMOSTAT_UI_CONFIG_CLIENT_ROLE_INIT zb_zcl_thermostat_ui_config_init_client
 
-#endif /* ! defined ZB_ZCL_THERMOSTAT_UI_CONFIG_H */
+#endif /* ZB_ZCL_THERMOSTAT_UI_CONFIG_H */

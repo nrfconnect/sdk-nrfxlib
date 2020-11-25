@@ -430,13 +430,13 @@ Ideally should rework the whole zb_config.h to suit better for that new concept.
 #define ZB_NWK_STOCHASTIC_ADDRESS_ASSIGN
 
 /*! Source routing path length, also called nwkMaxSourceRoute */
-#define ZB_NWK_MAX_PATH_LENGTH  5
+#define ZB_NWK_MAX_PATH_LENGTH  5U
 /*! Source route table capacity */
 /* 10/21/2019 EE CR:MINOR Isn't it too many? Can we handle situation when source route table is not big enough? */
 #define ZB_NWK_MAX_SRC_ROUTES   ZB_NEIGHBOR_TABLE_SIZE
 /* 10/21/2019 EE CR:MINOR Better indicate in const name that this is time in seconds by adding _S suffix */
 /*! Expiration time of the source route table (300 sec) */
-#define ZB_NWK_SRC_ROUTE_TABLE_EXPIRY 60
+#define ZB_NWK_SRC_ROUTE_TABLE_EXPIRY 60U
 
 
 
@@ -514,14 +514,9 @@ In general, define ZB_COORDINATOR_ROLE to compile ZC-only build, ZB_ROUTER_ROLE 
 #define ZB_ED_FUNC
 #endif
 
-#ifdef ZB_ROUTER_NO_ED
-#define ZB_LITE_NO_JOIN_ZR_AS_ZED
-#endif
-
 /*
-Related defined
+Related defines
 ZB_LITE_ROUTER_ONLY_ROLE
-ZB_LITE_NO_JOIN_ZR_AS_ZED
 ZB_ED_RX_OFF_WHEN_IDLE
  */
 
@@ -749,7 +744,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
 */
 /* WARNING: Generally, it is not according to spec. There are some nwk and APS routines that should
  * correlate to this interval, for these we will use ZB_N_APS_ACK_WAIT_DURATION_FROM_SLEEPY. */
-#ifndef ZB_ED_RX_OFF_WHEN_IDLE
+#if !(defined ZB_ED_RX_OFF_WHEN_IDLE && defined ZB_ED_ROLE)
 #define ZB_N_APS_ACK_WAIT_DURATION(_rx_on_when_idle)  \
   ((_rx_on_when_idle) ?                                                 \
    ZB_N_APS_ACK_WAIT_DURATION_FROM_NON_SLEEPY : ZB_N_APS_ACK_WAIT_DURATION_FROM_SLEEPY)
@@ -957,9 +952,9 @@ exponent.
    Protocol version selection: see table 1.1(pro-specification)
 */
 #if ZB_STACK_PROFILE == STACK_PRO || ZB_STACK_PROFILE == STACK_2007
-#define ZB_PROTOCOL_VERSION 0x02
+#define ZB_PROTOCOL_VERSION 0x02U
 #else
-#define ZB_PROTOCOL_VERSION 0x01
+#define ZB_PROTOCOL_VERSION 0x01U
 #endif
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC ZB_STACK_PROFILE */
 
@@ -1390,12 +1385,6 @@ exponent.
 
 /* ZBOSS Lite defines */
 
-/** Do not allow ZR to join as ZED by default. */
-#define ZB_LITE_NO_JOIN_ZR_AS_ZED
-
-/* Since R21 NWK multicast should be turned off by default */
-#define ZB_LITE_NO_NWK_MULTICAST
-
 /*
   If defined maximum possible features cut
  */
@@ -1444,14 +1433,6 @@ exponent.
    See 3.6.3.1 Routing Cost
  */
 ///not sure this is good idea #define ZB_LITE_NO_LINK_COST
-#endif
-
-#ifndef ZB_LITE_NO_JOIN_ZR_AS_ZED
-/**
-   Do not attempt to join ZR as ZED if join as ZR failed.
-   Do not join as ZED if joining net is prior PRO.
- */
-#define ZB_LITE_NO_JOIN_ZR_AS_ZED
 #endif
 
 #ifndef ZB_LITE_NO_ORPHAN_SCAN
@@ -1763,6 +1744,11 @@ typedef enum zb_production_config_version_e
 
 #if defined USE_ZB_WATCHDOG || defined ZB_MACSPLIT_DEVICE
 #define ZB_NEVER_STOP_TIMER
+#endif
+
+#if defined DEBUG_EXPOSE_KEYS && !defined DEBUG
+#warning undefining DEBUG_EXPOSE_KEYS for release build
+#undef DEBUG_EXPOSE_KEYS
 #endif
 
 #endif /* ZB_CONFIG_H */

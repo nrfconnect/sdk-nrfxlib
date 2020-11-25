@@ -867,6 +867,315 @@ typedef enum zb_zcl_device_callback_id_e
    * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
    */
   ZB_ZCL_TUNNELING_CLOSE_TUNNEL_CB_ID,
+
+#if defined ZB_ENABLE_SE || defined ZB_ZCL_SUPPORT_CLUSTER_CALENDAR
+  /** @b Server. Inform user about GetProfile request.
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_metering_get_profile_payload_t
+   * @param[out] param_out @ref zb_zcl_metering_get_profile_response_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   *                  Send @ref ZB_ZCL_METERING_SRV_CMD_GET_PROFILE_RESPONSE "GetProfileResponse" command.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   *
+   */
+  /** @b Server. Ask user about payload for PublishCalendar request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_get_calendar_payload_t
+   * @param[out] param_out @ref zb_zcl_calendar_publish_calendar_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   *                  Send @ref ZB_ZCL_CALENDAR_SRV_CMD_PUBLISH_CALENDAR "PublishCalendar" command.
+   * @return RET_NOT_FOUND - no calendar is found. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_GET_CALENDAR_CB_ID,
+  /** @b Server. Ask user about payload for PublishDayProfiles request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_get_day_profiles_payload_t
+   * @param[out] param_out @ref zb_zcl_calendar_publish_day_profile_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   *                  Send @ref ZB_ZCL_CALENDAR_SRV_CMD_PUBLISH_DAY_PROFILE "PublishDayProfiles" command.
+   * @return RET_NOT_FOUND - no calendar is found. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_GET_DAY_PROFILES_CB_ID,
+  /** @b Server. Ask user about payload for PublishWeekProfiles request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_get_week_profiles_payload_t
+   * @param[out] param_out @ref zb_zcl_calendar_publish_week_profile_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   *                  Send @ref ZB_ZCL_CALENDAR_SRV_CMD_PUBLISH_WEEK_PROFILE "PublishWeekProfiles" command.
+   * @return RET_NOT_FOUND - no calendar is found. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_GET_WEEK_PROFILES_CB_ID,
+  /** @b Server. Ask user about payload for PublishSeasons request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_get_seasons_payload_t
+   * @param[out] param_out @ref zb_zcl_calendar_publish_seasons_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   *                  Send @ref ZB_ZCL_CALENDAR_SRV_CMD_PUBLISH_SEASONS "PublishSeasons" command.
+   * @return RET_NOT_FOUND - no calendar is found. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_GET_SEASONS_CB_ID,
+  /** @b Server. Ask user about payload for PublishSpecialDays request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_get_special_days_payload_t
+   * @param[out] param_out @ref zb_zcl_calendar_publish_special_days_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   *                  Send @ref ZB_ZCL_CALENDAR_SRV_CMD_PUBLISH_SPECIAL_DAYS "PublishSpecialDays" command.
+   * @return RET_NOT_FOUND - no calendar is found. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_GET_SPECIAL_DAYS_CB_ID,
+  /** @b Server. Ask user about payload for CancelCalendar request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[out] param_out @ref zb_zcl_calendar_cancel_calendar_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   *                  Send @ref ZB_ZCL_CALENDAR_SRV_CMD_CANCEL_CALENDAR "CancelCalendar" command.
+   * @return RET_NOT_FOUND - no calendar is found. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_GET_CALENDAR_CANCELLATION_CB_ID,
+  /** @b Client. Inform user about PublishCalendar request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_publish_calendar_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command. Default Response will be send if requested.
+   * @return RET_NOT_FOUND - IssuerCalendarID doesn't match with one of the stored
+   *                         calendar instances. Default Response will be send if requested.
+   * @return RET_NO_MEMORY - not able to store new calendar instance. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_PUBLISH_CALENDAR_CB_ID,
+  /** @b Client. Calendar Inform user about PublishDayProfile request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_publish_day_profile_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command. Default Response will be send if requested.
+   * @return RET_NOT_FOUND - IssuerCalendarID doesn't match with one of the stored
+   *                         calendar instances. Default Response will be send if requested.
+   * @return RET_NO_MEMORY - not able to store new calendar instance. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_PUBLISH_DAY_PROFILE_CB_ID,
+  /** @b Client. Calendar Inform user about PublishWeekProfile request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_publish_week_profile_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command. Default Response will be send if requested.
+   * @return RET_NOT_FOUND - IssuerCalendarID doesn't match with one of the stored
+   *                         calendar instances. Default Response will be send if requested.
+   * @return RET_NO_MEMORY - not able to store new calendar instance. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_PUBLISH_WEEK_PROFILE_CB_ID,
+  /** @b Client. Calendar Inform user about PublishSeasons request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_publish_seasons_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command. Default Response will be send if requested.
+   * @return RET_NOT_FOUND - IssuerCalendarID doesn't match with one of the stored
+   *                         calendar instances. Default Response will be send if requested.
+   * @return RET_NO_MEMORY - not able to store new calendar instance. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_PUBLISH_SEASONS_CB_ID,
+  /** @b Client. Calendar Inform user about PublishSpecialDays request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_publish_special_days_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command. Default Response will be send if requested.
+   * @return RET_NOT_FOUND - IssuerCalendarID doesn't match with one of the stored
+   *                         calendar instances. Default Response will be send if requested.
+   * @return RET_NO_MEMORY - not able to store new calendar instance. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_PUBLISH_SPECIAL_DAYS_CB_ID,
+  /** @b Client. Calendar Inform user about CancelCalendar request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_calendar_cancel_calendar_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command. Default Response will be send if requested.
+   * @return RET_NOT_FOUND - IssuerCalendarID doesn't match with one of the stored
+   *                         calendar instances. Default Response will be send if requested.
+   * @return RET_NO_MEMORY - not able to store new calendar instance. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_CALENDAR_CANCEL_CALENDAR_CB_ID,
+#endif /* ZB_ENABLE_SE || ZB_ZCL_SUPPORT_CLUSTER_CALENDAR */
+
+#if defined ZB_ENABLE_SE || defined ZB_ZCL_SUPPORT_CLUSTER_DAILY_SCHEDULE
+  /** @b Server. Inform user about GetScheduleCancellation request.
+   *
+   * @param[out] param_out @ref zb_zcl_daily_schedule_cancel_schedule_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - command is handled successfully. Send @ref
+   * ZB_ZCL_DAILY_SCHEDULE_SRV_CMD_CANCEL_SCHEDULE "CancelSchedule" command.
+   * @return RET_ERROR - command is handled with errors.
+   *
+   */
+  ZB_ZCL_DAILY_SCHEDULE_GET_SCHEDULE_CANCELLATION_CB_ID,
+  /** @b Server. Inform user about GetDayProfile request.
+   *
+   * @param[in] param_in @ref zb_zcl_daily_schedule_get_day_profile_payload_t
+   * @param[out] param_out @ref zb_zcl_daily_schedule_publish_day_profile_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - command is handled successfully. Send @ref
+   * ZB_ZCL_DAILY_SCHEDULE_SRV_CMD_PUBLISH_DAY_PROFILE "PublishDayProfile" command.
+   * Application may put one or several day schedule entries.
+   * @return RET_ERROR - command is handled with errors.
+   *
+   */
+  ZB_ZCL_DAILY_SCHEDULE_GET_DAY_PROFILE_CB_ID,
+  /** @b Server. Inform user about GetSchedule request.
+   *
+   * @param[in] param_in @ref zb_zcl_daily_schedule_get_schedule_payload_t
+   * @param[out] param_out @ref zb_zcl_daily_schedule_publish_schedule_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - command is handled successfully. Send @ref
+   * ZB_ZCL_DAILY_SCHEDULE_SRV_CMD_PUBLISH_SCHEDULE "PublishSchedule" command.
+   * @return RET_ERROR - command is handled with errors.
+   *
+   */
+  ZB_ZCL_DAILY_SCHEDULE_GET_SCHEDULE_CB_ID,
+  /** @b Client. Inform user about PublishSchedule cmd.
+   *
+   * @param[in] param_in @ref zb_zcl_daily_schedule_publish_schedule_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - command is handled successfully.
+   * @return RET_ERROR - command is handled with errors.
+   *
+   */
+  ZB_ZCL_DAILY_SCHEDULE_PUBLISH_SCHEDULE_CB_ID,
+  /** @b Client. Inform user about PublishDayProfile cmd.
+   *
+   * @param[in] param_in @ref zb_zcl_daily_schedule_publish_schedule_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - command is handled successfully.
+   * @return RET_ERROR - command is handled with errors.
+   *
+   */
+  ZB_ZCL_DAILY_SCHEDULE_PUBLISH_DAY_PROFILE_CB_ID,
+  /** @b Client. Inform user about CancelSchedule cmd.
+   *
+   * @param[in] param_in @ref zb_zcl_daily_schedule_cancel_schedule_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - command is handled successfully.
+   * @return RET_ERROR - command is handled with errors.
+   *
+   */
+  ZB_ZCL_DAILY_SCHEDULE_CANCEL_SCHEDULE_CB_ID,
+#endif /* ZB_ENABLE_SE || ZB_ZCL_SUPPORT_CLUSTER_DAILY_SCHEDULE */
+
+#if defined ZB_ENABLE_SE || defined ZB_ZCL_SUPPORT_CLUSTER_ENERGY_MANAGEMENT
+  /** @b Client. Inform user about ReportEventStatus request
+   *
+   * User's application callback is initialized by RET_OK status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_energy_management_report_event_status_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   * @return RET_ERROR - command is handled with errors.
+   */
+  ZB_ZCL_ENERGY_MANAGEMENT_REPORT_EVENT_STATUS_CB_ID,
+  /** @b Server. Inform user about ManageEvent request
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   *
+   * @param[in] param_in @ref zb_zcl_energy_management_manage_event_payload_t
+   * @param[out] param_out @ref zb_zcl_energy_management_report_event_status_payload_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   *                  Send @ref ZB_ZCL_ENERGY_MANAGEMENT_SRV_CMD_REPORT_EVENT_STATUS "ReportEventStatusCommandPayload" command.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_ENERGY_MANAGEMENT_MANAGE_EVENT_CB_ID,
+#endif /* ZB_ENABLE_SE || ZB_ZCL_SUPPORT_CLUSTER_ENERGY_MANAGEMENT */
+
+#if defined ZB_ENABLE_SE || defined ZB_ZCL_SUPPORT_CLUSTER_MDU_PAIRING
+  /** @b Server. Inform user about MDU Paring Request. You may provide MDU list as reply
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   *
+   * @param[in] param_in @ref zb_zcl_mdu_pairing_request_t
+   * @param[out] param_out @ref zb_zcl_mdu_pairing_response_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   *                  Send @ref ZB_ZCL_MDU_PAIRING_SRV_CMD_PAIRING_RESPONSE "MDUPairingResponse" command
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   */
+  ZB_ZCL_MDU_PAIRING_REQUEST_CB_ID,
+  /** @b Client. Inform user about MDU Pairing Response. List of MDU Paired devices passed
+   *
+   * User's application callback is initialized by RET_OK status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_mdu_pairing_response_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command.
+   * @return RET_ERROR - command is handled with errors.
+   */
+  ZB_ZCL_MDU_PAIRING_RESPONSE_CB_ID,
+#endif /* ZB_ENABLE_SE || ZB_ZCL_SUPPORT_CLUSTER_MDU_PAIRING */
+
   /** @b Server. Inform user about GetProfile request.
    *
    * User's application callback is initialized by RET_ERROR status of device
@@ -2110,7 +2419,7 @@ void zb_zcl_send_cmd(
 void zb_zcl_send_cmd_tsn(
   zb_uint8_t param,
   const zb_addr_u *dst_addr,
-  enum zb_aps_addr_mode_e dst_addr_mode,
+  zb_aps_addr_mode_t dst_addr_mode,
   zb_uint8_t dst_ep,
   zb_zcl_frame_direction_t direction,
   zb_uint8_t src_ep,

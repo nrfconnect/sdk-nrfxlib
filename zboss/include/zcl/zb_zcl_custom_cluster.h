@@ -41,8 +41,8 @@
 /* PURPOSE: Time cluster definitions
 */
 
-#if ! defined ZB_ZCL_CUSTOM_ATTR_H
-#define ZB_ZCL_CUSTOM_ATTR_H
+#ifndef ZB_ZCL_CUSTOM_ATTR_H
+#define ZB_ZCL_CUSTOM_ATTR_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -495,4 +495,4 @@ void zb_zcl_custom_attr_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_CUSTOM_SERVER_ROLE_INIT zb_zcl_custom_attr_init_server
 #define ZB_ZCL_CLUSTER_ID_CUSTOM_CLIENT_ROLE_INIT zb_zcl_custom_attr_init_client
 
-#endif /* ! defined ZB_ZCL_CUSTOM_ATTR_H */
+#endif /* ZB_ZCL_CUSTOM_ATTR_H */

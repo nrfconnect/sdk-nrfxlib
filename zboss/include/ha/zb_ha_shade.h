@@ -41,7 +41,7 @@
 /* PURPOSE: Shade device definition
 */
 
-#if ! defined ZB_HA_SHADE_H
+#ifndef ZB_HA_SHADE_H
 #define ZB_HA_SHADE_H 1
 
 #if defined ZB_HA_DEFINE_DEVICE_SHADE || defined DOXYGEN
@@ -251,4 +251,4 @@
 
 #endif /* ZB_HA_DEFINE_DEVICE_SHADE */
 
-#endif /* ! defined ZB_HA_SHADE_H */
+#endif /* ZB_HA_SHADE_H */

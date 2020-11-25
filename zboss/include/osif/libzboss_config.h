@@ -111,7 +111,7 @@
 /* #undef CONFIG_ZB_LOG_LEVEL_DBG */
 
 /**
- * ZB_TRACE_LOG_LEVEL
+ * Off - ZB_TRACE_LOG_LEVEL
  */
 #define CONFIG_ZB_TRACE_LOG_LEVEL 2
 
@@ -336,12 +336,12 @@
 #define CONFIG_ZB_DONT_NEED_TRACE_FILE_ID y
 
 /**
- * Enable busy loop in GP implementation
+ * Use delayed TX feature of the radio driver instead of entering busy loop in GP implementation
  *
  * While communicating with Green Power device, ZBOSS will wait before issuing
- * mcps-data.req in a busy loop instead of using MAC features
+ * mcps-data.req using MAC features instead of waiting in a busy loop
  */
-/* #undef CONFIG_ZB_MAC_AUTO_DELAY_IN_MAC_GP_SEND */
+#define CONFIG_ZB_MAC_AUTO_DELAY_IN_MAC_GP_SEND y
 
 /**
  * NWK requests with aliases

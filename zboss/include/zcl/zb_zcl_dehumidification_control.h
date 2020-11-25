@@ -41,8 +41,8 @@
 /* PURPOSE: Dehumidification Control cluster definitions
 */
 
-#if ! defined ZB_ZCL_DEHUMIDIFICATION_CONTROL_H
-#define ZB_ZCL_DEHUMIDIFICATION_CONTROL_H
+#ifndef ZB_ZCL_DEHUMIDIFICATION_CONTROL_H
+#define ZB_ZCL_DEHUMIDIFICATION_CONTROL_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -202,4 +202,4 @@ void zb_zcl_dehumidification_control_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_DEHUMID_CONTROL_SERVER_ROLE_INIT zb_zcl_dehumidification_control_init_server
 #define ZB_ZCL_CLUSTER_ID_DEHUMID_CONTROL_CLIENT_ROLE_INIT zb_zcl_dehumidification_control_init_client
 
-#endif /* ! defined ZB_ZCL_DEHUMID_CONTROL_H */
+#endif /* ZB_ZCL_DEHUMID_CONTROL_H */

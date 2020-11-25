@@ -41,8 +41,8 @@
 /* PURPOSE: Poll Control cluster definitions
 */
 
-#if ! defined ZB_ZCL_CONTROL4_NETWORKING_H
-#define ZB_ZCL_CONTROL4_NETWORKING_H
+#ifndef ZB_ZCL_CONTROL4_NETWORKING_H
+#define ZB_ZCL_CONTROL4_NETWORKING_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -478,4 +478,4 @@ void zb_zcl_control4_networking_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_CONTROL4_NETWORKING_SERVER_ROLE_INIT zb_zcl_control4_networking_init_server
 #define ZB_ZCL_CLUSTER_ID_CONTROL4_NETWORKING_CLIENT_ROLE_INIT zb_zcl_control4_networking_init_client
 
-#endif /* #if ! defined ZB_ZCL_CONTROL4_NETWORKING_H */
+#endif /* ZB_ZCL_CONTROL4_NETWORKING_H */

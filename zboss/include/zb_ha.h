@@ -42,7 +42,7 @@
 */
 
 #ifndef ZB_HA_H
-#define ZB_HA_H
+#define ZB_HA_H 1
 
 #include "ha/zb_ha_config.h"
 #include "ha/zb_ha_sas.h"

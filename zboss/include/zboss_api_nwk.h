@@ -49,17 +49,20 @@
 /** @addtogroup nwk_common_constants NWK common constants
  * @{
  */
-/** @brief Network broadcast addresses types. */
-typedef enum zb_nwk_broadcast_address_e
-{
-  ZB_NWK_BROADCAST_ALL_DEVICES        = 0xFFFF, /**< All devices in PAN */
-  ZB_NWK_BROADCAST_RX_ON_WHEN_IDLE    = 0xFFFD, /**< macRxOnWhenIdle = TRUE */
-  ZB_NWK_BROADCAST_ROUTER_COORDINATOR = 0xFFFC, /**< All routers and coordinator */
-  ZB_NWK_BROADCAST_LOW_POWER_ROUTER   = 0xFFFB, /**< Low power routers only */
 
-  ZB_NWK_BROADCAST_RESERVED           = 0xFFF8 /**< Reserved value */
-}
-zb_nwk_broadcast_address_t;
+/**
+ * @name Network broadcast addresses types
+ * @anchor nwk_broadcast_addresses
+*/
+/** @{ */
+#define ZB_NWK_BROADCAST_ALL_DEVICES        0xFFFFu /**< All devices in PAN */
+#define ZB_NWK_BROADCAST_RX_ON_WHEN_IDLE    0xFFFDu /**< macRxOnWhenIdle = TRUE */
+#define ZB_NWK_BROADCAST_ROUTER_COORDINATOR 0xFFFCu /**< All routers and coordinator */
+#define ZB_NWK_BROADCAST_LOW_POWER_ROUTER   0xFFFBu /**< Low power routers only */
+
+#define ZB_NWK_BROADCAST_RESERVED           0xFFF8u /**< Reserved value */
+/** @} */ /* nwk_broadcast_addresses */
+
 /** @} */ /* nwk_common_constants */
 
 /** @addtogroup nwk_management_service NWK management service

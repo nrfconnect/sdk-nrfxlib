@@ -41,8 +41,8 @@
 /* PURPOSE: Color control cluster definitions
 */
 
-#if !defined ZB_ZCL_COLOR_CONTROL_H
-#define ZB_ZCL_COLOR_CONTROL_H
+#ifndef ZB_ZCL_COLOR_CONTROL_H
+#define ZB_ZCL_COLOR_CONTROL_H 1
 
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
@@ -1143,7 +1143,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_req_options_s
   (req_options_ptr) = zb_buf_len(data_buf) >=                               \
     ZB_ZCL_COLOR_CONTROL_REQ_OPTIONS_PAYLOAD_LEN ?                          \
     (zb_zcl_color_control_req_options_t*)zb_buf_begin(data_buf) : NULL;     \
-  if (req_options_ptr)                                                      \
+  if (req_options_ptr != NULL)                                              \
   {                                                                         \
     req_options.options_mask = req_options_ptr->options_mask;               \
     req_options.options_override = req_options_ptr->options_override;       \
@@ -1228,7 +1228,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_hue_req_s
   (move_to_hue_req_ptr) = zb_buf_len(buffer) >=                                              \
     ZB_ZCL_COLOR_CONTROL_MOVE_TO_HUE_REQ_PAYLOAD_LEN ?                                       \
     (zb_zcl_color_control_move_to_hue_req_t*)zb_buf_begin(buffer) : NULL;                    \
-  if (move_to_hue_req_ptr)                                                                   \
+  if (move_to_hue_req_ptr != NULL)                                                           \
   {                                                                                 \
     move_to_hue_req.hue = move_to_hue_req_ptr->hue;                                          \
     move_to_hue_req.direction = move_to_hue_req_ptr->direction;                              \
@@ -1295,8 +1295,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_hue_req_s
   (move_hue_req_ptr) = zb_buf_len(buffer) >=                                 \
     ZB_ZCL_COLOR_CONTROL_MOVE_HUE_REQ_PAYLOAD_LEN ?                          \
     (zb_zcl_color_control_move_hue_req_t*)zb_buf_begin(buffer) : NULL;       \
-  if (move_hue_req_ptr)                                                      \
-  {                                                                                 \
+  if (move_hue_req_ptr != NULL)                                              \
+  {                                                                          \
     move_hue_req.move_mode = move_hue_req_ptr->move_mode;                    \
     move_hue_req.rate = move_hue_req_ptr->rate;                              \
     (void)zb_buf_cut_left(buffer, ZB_ZCL_COLOR_CONTROL_MOVE_HUE_REQ_PAYLOAD_LEN);   \
@@ -1366,7 +1366,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_hue_req_s
   (step_hue_req_ptr) = zb_buf_len(buffer) >=                                           \
     ZB_ZCL_COLOR_CONTROL_STEP_HUE_REQ_PAYLOAD_LEN ?                                    \
     (zb_zcl_color_control_step_hue_req_t*)zb_buf_begin(buffer) : NULL;                 \
-  if (step_hue_req_ptr)                                                                \
+  if (step_hue_req_ptr != NULL)                                                        \
   {                                                                                    \
     step_hue_req.step_mode = step_hue_req_ptr->step_mode;                              \
     step_hue_req.step_size = step_hue_req_ptr->step_size;                              \
@@ -1434,7 +1434,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_saturation_req_s
   (move_to_saturation_req_ptr) = zb_buf_len(buffer) >=                                                     \
     ZB_ZCL_COLOR_CONTROL_MOVE_TO_SATURATION_REQ_PAYLOAD_LEN ?                                              \
     (zb_zcl_color_control_move_to_saturation_req_t*)zb_buf_begin(buffer) : NULL;                           \
-  if (move_to_saturation_req_ptr)                                                                          \
+  if (move_to_saturation_req_ptr != NULL)                                            \
   {                                                                                  \
     move_to_saturation_req.saturation = move_to_saturation_req_ptr->saturation;                            \
     ZB_HTOLE16(&(move_to_saturation_req).transition_time, &(move_to_saturation_req_ptr->transition_time)); \
@@ -1500,7 +1500,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_saturation_req_s
   (move_saturation_req_ptr) = zb_buf_len(buffer) >=                                       \
     ZB_ZCL_COLOR_CONTROL_MOVE_SATURATION_REQ_PAYLOAD_LEN ?                                \
     (zb_zcl_color_control_move_saturation_req_t*)zb_buf_begin(buffer) : NULL;             \
-  if (move_saturation_req_ptr)                                                            \
+  if (move_saturation_req_ptr != NULL)                                                    \
   {                                                                                 \
     move_saturation_req.move_mode = move_saturation_req_ptr->move_mode;                   \
     move_saturation_req.rate = move_saturation_req_ptr->rate;                             \
@@ -1571,7 +1571,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_saturation_req_s
   (step_saturation_req_ptr) = zb_buf_len(buffer) >=                                       \
     ZB_ZCL_COLOR_CONTROL_STEP_SATURATION_REQ_PAYLOAD_LEN ?                                \
     (zb_zcl_color_control_step_saturation_req_t*)zb_buf_begin(buffer) : NULL;             \
-  if (step_saturation_req_ptr)                                                            \
+  if (step_saturation_req_ptr != NULL)                                                    \
   {                                                                                     \
     step_saturation_req.step_mode = step_saturation_req_ptr->step_mode;                   \
     step_saturation_req.step_size = step_saturation_req_ptr->step_size;                   \
@@ -1643,7 +1643,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_hue_saturation_req_s
   (move_to_hue_saturation_req_ptr) = zb_buf_len(buffer) >=                                                         \
     ZB_ZCL_COLOR_CONTROL_MOVE_TO_HUE_SATURATION_REQ_PAYLOAD_LEN ?                                                  \
     (zb_zcl_color_control_move_to_hue_saturation_req_t*)zb_buf_begin(buffer) : NULL;                               \
-  if (move_to_hue_saturation_req_ptr)                                                                              \
+  if (move_to_hue_saturation_req_ptr != NULL)                                           \
   {                                                                                     \
     move_to_hue_saturation_req.hue = move_to_hue_saturation_req_ptr->hue;                                          \
     move_to_hue_saturation_req.saturation = move_to_hue_saturation_req_ptr->saturation;                            \
@@ -1716,8 +1716,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_color_req_s
   (move_to_color_req_ptr) = zb_buf_len(buffer) >=                                                    \
     ZB_ZCL_COLOR_CONTROL_MOVE_TO_COLOR_REQ_PAYLOAD_LEN ?                                             \
     (zb_zcl_color_control_move_to_color_req_t*)zb_buf_begin(buffer) : NULL;                          \
-  if (move_to_color_req_ptr)                                                                         \
-  {                                                                                     \
+  if (move_to_color_req_ptr != NULL)                                                                 \
+  {                                                                                                  \
     ZB_HTOLE16(&(move_to_color_req).color_x, &(move_to_color_req_ptr->color_x));                     \
     ZB_HTOLE16(&(move_to_color_req).color_y, &(move_to_color_req_ptr->color_y));                     \
     ZB_HTOLE16(&(move_to_color_req).transition_time, &(move_to_color_req_ptr->transition_time));     \
@@ -1784,8 +1784,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_req_s
   (move_color_req_ptr) = zb_buf_len(buffer) >=                                                       \
     ZB_ZCL_COLOR_CONTROL_MOVE_COLOR_REQ_PAYLOAD_LEN ?                                                \
     (zb_zcl_color_control_move_color_req_t*)zb_buf_begin(buffer) : NULL;                             \
-  if (move_color_req_ptr)                                                                            \
-  {                                                                             \
+  if (move_color_req_ptr != NULL)                                                                    \
+  {                                                                                                  \
     ZB_HTOLE16(&(move_color_req).rate_x, &(move_color_req_ptr->rate_x));                             \
     ZB_HTOLE16(&(move_color_req).rate_y, &(move_color_req_ptr->rate_y));                             \
     (void)zb_buf_cut_left(buffer, ZB_ZCL_COLOR_CONTROL_MOVE_COLOR_REQ_PAYLOAD_LEN);                  \
@@ -1854,8 +1854,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_req_s
   (step_color_req_ptr) = zb_buf_len(buffer) >=                                                       \
     ZB_ZCL_COLOR_CONTROL_STEP_COLOR_REQ_PAYLOAD_LEN ?                                                \
     (zb_zcl_color_control_step_color_req_t*)zb_buf_begin(buffer) : NULL;                             \
-  if (step_color_req_ptr)                                                                            \
-  {                                                                             \
+  if (step_color_req_ptr != NULL)                                                                    \
+  {                                                                                                  \
     ZB_HTOLE16(&(step_color_req).step_x, &(step_color_req_ptr->step_x));                             \
     ZB_HTOLE16(&(step_color_req).step_y, &(step_color_req_ptr->step_y));                             \
     ZB_HTOLE16(&(step_color_req).transition_time, &(step_color_req_ptr->transition_time));           \
@@ -1923,7 +1923,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_color_temperature_req_
   (move_to_color_temp_req_ptr) = zb_buf_len(buffer) >=                                                                \
     ZB_ZCL_COLOR_CONTROL_MOVE_TO_COLOR_TEMP_REQ_PAYLOAD_LEN ?                                                         \
     (zb_zcl_color_control_move_to_color_temperature_req_t*)zb_buf_begin(buffer) : NULL;                               \
-  if (move_to_color_temp_req_ptr)                                                                                     \
+  if (move_to_color_temp_req_ptr != NULL)                                                                             \
   {                                                                                                                   \
     ZB_HTOLE16(&(move_to_color_temperature_req).color_temperature, &(move_to_color_temp_req_ptr->color_temperature)); \
     ZB_HTOLE16(&(move_to_color_temperature_req).transition_time, &(move_to_color_temp_req_ptr->transition_time));     \
@@ -1994,7 +1994,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_to_hue_req_s
   (enhanced_move_to_hue_req_ptr) = zb_buf_len(buffer) >=                                                       \
     ZB_ZCL_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE_REQ_PAYLOAD_LEN ?                                                \
     (zb_zcl_color_control_enhanced_move_to_hue_req_t*)zb_buf_begin(buffer) : NULL;                             \
-  if (enhanced_move_to_hue_req_ptr)                                                                            \
+  if (enhanced_move_to_hue_req_ptr != NULL)                                                                    \
   {                                                                                     \
     ZB_HTOLE16(&(enhanced_move_to_hue_req).enhanced_hue, &(enhanced_move_to_hue_req_ptr->enhanced_hue));       \
     enhanced_move_to_hue_req.direction = enhanced_move_to_hue_req_ptr->direction;                              \
@@ -2062,7 +2062,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_hue_req_s
   (enhanced_move_hue_req_ptr) = zb_buf_len(buffer) >=                                            \
     ZB_ZCL_COLOR_CONTROL_ENHANCED_MOVE_HUE_REQ_PAYLOAD_LEN ?                                     \
     (zb_zcl_color_control_enhanced_move_hue_req_t*)zb_buf_begin(buffer) : NULL;                  \
-  if (enhanced_move_hue_req_ptr)                                                                 \
+  if (enhanced_move_hue_req_ptr != NULL)                                                         \
   {                                                                                 \
     enhanced_move_hue_req.move_mode = enhanced_move_hue_req_ptr->move_mode;                      \
     ZB_HTOLE16(&(enhanced_move_hue_req).rate, &(enhanced_move_hue_req_ptr->rate));               \
@@ -2133,7 +2133,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_step_hue_req_s
   (enhanced_step_hue_req_ptr) = zb_buf_len(buffer) >=                                                    \
     ZB_ZCL_COLOR_CONTROL_ENHANCED_STEP_HUE_REQ_PAYLOAD_LEN ?                                             \
     (zb_zcl_color_control_enhanced_step_hue_req_t*)zb_buf_begin(buffer) : NULL;                          \
-  if (enhanced_step_hue_req_ptr)                                                                         \
+  if (enhanced_step_hue_req_ptr != NULL)                                                                 \
   {                                                                                 \
     enhanced_step_hue_req.step_mode = enhanced_step_hue_req_ptr->step_mode;                              \
     ZB_HTOLE16(&(enhanced_step_hue_req).step_size, &(enhanced_step_hue_req_ptr->step_size));             \
@@ -2205,7 +2205,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_to_hue_saturatio
   (enhanced_move_to_hue_saturation_req_ptr) = zb_buf_len(buffer) >=                                                                  \
     ZB_ZCL_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE_SATURATION_REQ_PAYLOAD_LEN ?                                                           \
     (zb_zcl_color_control_enhanced_move_to_hue_saturation_req_t*)zb_buf_begin(buffer) : NULL;                                        \
-  if (enhanced_move_to_hue_saturation_req_ptr)                                                                                       \
+  if (enhanced_move_to_hue_saturation_req_ptr != NULL)                                                                               \
   {                                                                                                 \
     ZB_HTOLE16(&(enhanced_move_to_hue_saturation_req).enhanced_hue, &(enhanced_move_to_hue_saturation_req_ptr->enhanced_hue));       \
     enhanced_move_to_hue_saturation_req.saturation = enhanced_move_to_hue_saturation_req_ptr->saturation;                            \
@@ -2341,8 +2341,8 @@ typedef struct zb_zcl_color_control_color_loop_set_s
   (color_loop_set_req_ptr) = zb_buf_len(buffer) >=                                       \
     ZB_ZCL_COLOR_CONTROL_COLOR_LOOR_SET_REQ_PAYLOAD_LEN ?                                \
     (zb_zcl_color_control_color_loop_set_req_t*)zb_buf_begin(buffer) : NULL;             \
-  if (color_loop_set_req_ptr)                                                            \
-  {                                                                                     \
+  if (color_loop_set_req_ptr != NULL)                                                    \
+  {                                                                                      \
     color_loop_set_req.update_flags = color_loop_set_req_ptr->update_flags;              \
     color_loop_set_req.action = color_loop_set_req_ptr->action;                          \
     color_loop_set_req.direction = color_loop_set_req_ptr->direction;                    \
@@ -2442,7 +2442,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_temp_req_s
   (move_color_temp_req_ptr) = zb_buf_len(buffer) >=                                                \
     ZB_ZCL_COLOR_CONTROL_MOVE_COLOR_TEMP_REQ_PAYLOAD_LEN ?                                         \
     (zb_zcl_color_control_move_color_temp_req_t*)zb_buf_begin(buffer) : NULL;                      \
-  if (move_color_temp_req_ptr)                                                                     \
+  if (move_color_temp_req_ptr != NULL)                                                             \
   {                                                                                 \
     move_color_temp_req.move_mode = move_color_temp_req_ptr->move_mode;                            \
     ZB_HTOLE16(&(move_color_temp_req).rate, &(move_color_temp_req_ptr->rate));                     \
@@ -2523,7 +2523,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_temp_req_s
   (move_color_temp_req_ptr) = zb_buf_len(buffer) >=                                                \
     ZB_ZCL_COLOR_CONTROL_MOVE_COLOR_TEMP_REQ_PAYLOAD_LEN ?                                         \
     (zb_zcl_color_control_move_color_temp_req_t*)zb_buf_begin(buffer) : NULL;                      \
-  if (move_color_temp_req_ptr)                                                                     \
+  if (move_color_temp_req_ptr != NULL)                                                             \
   {                                                                                 \
     move_color_temp_req.move_mode = move_color_temp_req_ptr->move_mode;                            \
     ZB_HTOLE16(&(move_color_temp_req).rate, &(move_color_temp_req_ptr->rate));                     \
@@ -2551,7 +2551,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_temp_req_s
   (step_color_temp_req_ptr) = zb_buf_len(buffer) >=                                                  \
     ZB_ZCL_COLOR_CONTROL_STEP_COLOR_TEMP_REQ_PAYLOAD_LEN ?                                           \
     (zb_zcl_color_control_step_color_temp_req_t*)zb_buf_begin(buffer) : NULL;                        \
-  if (step_color_temp_req_ptr)                                                                       \
+  if (step_color_temp_req_ptr != NULL)                                                               \
   {                                                                                                  \
     step_color_temp_req.step_mode = step_color_temp_req_ptr->step_mode;                              \
     ZB_HTOLE16(&(step_color_temp_req).step_size, &(step_color_temp_req_ptr->step_size));             \

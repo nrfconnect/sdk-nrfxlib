@@ -41,8 +41,8 @@
 /* PURPOSE: IAS Warning Device
 */
 
-#if ! defined ZB_HA_IAS_WARNING_H
-#define ZB_HA_IAS_WARNING_H
+#ifndef ZB_HA_IAS_WARNING_H
+#define ZB_HA_IAS_WARNING_H 1
 
 #if defined ZB_HA_DEFINE_DEVICE_IAS_WARNING_DEVICE || defined DOXYGEN
 
@@ -227,4 +227,4 @@
 
 #endif /* defined ZB_HA_DEFINE_DEVICE_IAS_WARNING_DEVICE || defined DOXYGEN */
 
-#endif /* ! defined ZB_HA_IAS_WARNING_H */
+#endif /* ZB_HA_IAS_WARNING_H */

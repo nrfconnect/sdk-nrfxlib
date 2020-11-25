@@ -123,7 +123,7 @@ typedef void (ZB_CODE * zb_callback_t)(zb_uint8_t param);
 /**
  * A half of defined maximum timer value.
  */
-#define ZB_HALF_MAX_TIME_VAL (ZB_MAX_TIME_VAL / 2)
+#define ZB_HALF_MAX_TIME_VAL (ZB_MAX_TIME_VAL / 2U)
 
 /** @cond internals_doc */
 /**
@@ -186,20 +186,20 @@ zb_time_t zb_timer_get(void);
 /**
  One second timeout
 */
-#define ZB_TIME_ONE_SECOND ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000)
+#define ZB_TIME_ONE_SECOND ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000U)
 
 
 #ifdef ZB_TIMER_32
 /**
   Convert time from milliseconds to beacon intervals (32-bit platforms).
 */
-#define ZB_MILLISECONDS_TO_BEACON_INTERVAL(ms) (((zb_time_t)(ms) * 1000) / ZB_BEACON_INTERVAL_USEC)
+#define ZB_MILLISECONDS_TO_BEACON_INTERVAL(ms) (((zb_time_t)(ms) * 1000U) / ZB_BEACON_INTERVAL_USEC)
 #else
 /**
   Convert time from milliseconds to beacon intervals
   Try to not cause overflow in 16-bit arithmetic (with some precision lost...)
 */
-#define ZB_MILLISECONDS_TO_BEACON_INTERVAL(ms) (((10l * (zb_time_t)(ms) + 0) / (ZB_BEACON_INTERVAL_USEC / 100)))
+#define ZB_MILLISECONDS_TO_BEACON_INTERVAL(ms) (((10UL * (zb_time_t)(ms) + 0U) / (ZB_BEACON_INTERVAL_USEC / 100U)))
 #endif
 
 /**
@@ -239,6 +239,11 @@ zb_time_t zb_timer_get(void);
 #define ZB_TIME_QUARTERECONDS(n)  (ZB_TIME_BEACON_INTERVAL_TO_MSEC((n)) / 250)
 
 /**
+ Convert from msec to quarterseconds
+*/
+#define ZB_MSEC_TO_QUARTERECONDS(n)  ((n) / 250)
+
+/**
  Convert from quarterseconds to msec
 */
 #define ZB_QUARTERECONDS_TO_MSEC(n)  250*(n)
@@ -266,7 +271,7 @@ zb_time_t zb_timer_get(void);
 
 /*! \addtogroup sched */
 /*! @{ */
-                                                        
+
 
 typedef zb_ret_t (ZB_CODE * zb_ret_callback_t)(zb_uint8_t param);
 

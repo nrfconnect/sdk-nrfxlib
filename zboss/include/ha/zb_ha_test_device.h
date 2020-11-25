@@ -41,8 +41,8 @@
 /* PURPOSE: HA test device definition
 */
 
-#if ! defined ZB_TEST_DEVICE_H
-#define ZB_TEST_DEVICE_H
+#ifndef ZB_TEST_DEVICE_H
+#define ZB_TEST_DEVICE_H 1
 
 #if defined ZB_HA_DEFINE_DEVICE_TEST_DEVICE || defined DOXYGEN
 
@@ -179,4 +179,4 @@
 
 /** @endcond */ /* DOXYGEN_HA_SECTION */
 
-#endif /* ! defined ZB_TEST_DEVICE_H */
+#endif /* ZB_TEST_DEVICE_H */

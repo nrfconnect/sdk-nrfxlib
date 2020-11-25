@@ -40,8 +40,8 @@
  */
 /* PURPOSE: HA startup attribute sets definitions
 */
-#if ! defined ZB_HA_SAS_H
-#define ZB_HA_SAS_H
+#ifndef ZB_HA_SAS_H
+#define ZB_HA_SAS_H 1
 
 #include "zb_ha_config.h"
 
@@ -73,4 +73,4 @@ void zb_ha_process_sas(void);
 
 #endif /* defined ZB_ENABLE_HA_SAS */
 
-#endif /* ! defined ZB_HA_SAS_H */
+#endif /* ZB_HA_SAS_H */

@@ -888,50 +888,7 @@ zb_zdo_nwk_addr_resp_ext2_t;
                   performed now (nor enough memory, resources, etc.)
 
 @b Example:
-@code
-{
-  zb_bufid_t buf = param;
-  zb_uint8_t tsn;
-  zb_zdo_nwk_addr_req_param_t *req_param = ZB_BUF_GET_PARAM(buf, zb_zdo_nwk_addr_req_param_t);
-
-  req_param->dst_addr = 0;
-  zb_address_ieee_by_ref(req_param->ieee_addr, short_addr);
-  req_param->request_type = ZB_ZDO_SINGLE_DEVICE_RESP;
-  req_param->start_index = 0;
-  tsn = zb_zdo_nwk_addr_req(param, zb_get_peer_short_addr_cb);
-
-  if (tsn == ZB_ZDO_INVALID_TSN)
-  {
-    TRACE_MSG(TRACE_ZDO2, "request failed", (FMT__0));
-  }
-}
-
-void zb_get_peer_short_addr_cb(zb_uint8_t param)
-{
-  zb_bufid_t buf = param;
-  zb_zdo_nwk_addr_resp_head_t *resp;
-  zb_ieee_addr_t ieee_addr;
-  zb_uint16_t nwk_addr;
-  zb_address_ieee_ref_t addr_ref;
-
-  TRACE_MSG(TRACE_ZDO2, "zb_get_peer_short_addr_cb param %hd", (FMT__H, param));
-
-  resp = (zb_zdo_nwk_addr_resp_head_t*)zb_buf_begin(buf);
-  TRACE_MSG(TRACE_ZDO2, "resp status %hd, nwk addr %d", (FMT__H_D, resp->status, resp->nwk_addr));
-  ZB_DUMP_IEEE_ADDR(resp->ieee_addr);
-
-  // additionally check tsn if needed
-  //if (resp->tsn == my_saved_tsn)
-
-  if (resp->status == ZB_ZDP_STATUS_SUCCESS)
-  {
-    ZB_LETOH64(ieee_addr, resp->ieee_addr);
-    ZB_LETOH16(&nwk_addr, &resp->nwk_addr);
-    zb_address_update(ieee_addr, nwk_addr, ZB_TRUE, &addr_ref);
-  }
-  zb_buf_free(buf);
-}
-@endcode
+@snippet doxygen_snippets.dox zboss_api_zdo_h_1
 
 See tp_zdo_bv-31 sample
 */
@@ -1773,48 +1730,7 @@ zb_zdo_neighbor_table_record_t;
    @ref zb_zdo_mgmt_lqi_resp_s, \ref zb_zdo_neighbor_table_record_s
 
    @b Example:
-@code
-{
-  zb_uint8_t tsn;
-  zb_zdo_mgmt_lqi_param_t *req_param;
-
-  req_param = ZB_BUF_GET_PARAM(buf, zb_zdo_mgmt_lqi_param_t);
-  req_param->start_index = 0;
-  req_param->dst_addr = 0; //coord short addr
-
-  tsn = zb_zdo_mgmt_lqi_req(ZB_REF_FROM_BUF(buf), get_lqi_cb);
-}
-
-
-void get_lqi_cb(zb_uint8_t param)
-{
-  zb_bufid_t buf = param;
-  zb_uint8_t *zdp_cmd = zb_buf_begin(buf);
-  zb_zdo_mgmt_lqi_resp_t *resp = (zb_zdo_mgmt_lqi_resp_t*)(zdp_cmd);
-  zb_zdo_neighbor_table_record_t *record = (zb_zdo_neighbor_table_record_t*)(resp + 1);
-  zb_uint_t i;
-
-  TRACE_MSG(TRACE_APS1, "get_lqi_cb status %hd, neighbor_table_entries %hd, start_index %hd, neighbor_table_list_count %d",
-            (FMT__H_H_H_H, resp->status, resp->neighbor_table_entries, resp->start_index, resp->neighbor_table_list_count));
-
-  for (i = 0; i < resp->neighbor_table_list_count; i++)
-  {
-    TRACE_MSG(TRACE_APS1, "#%hd: long addr " TRACE_FORMAT_64 " pan id " TRACE_FORMAT_64,
-              (FMT__H_A_A, i, TRACE_ARG_64(record->ext_addr), TRACE_ARG_64(record->ext_pan_id)));
-
-    TRACE_MSG(TRACE_APS1,
-      "#%hd: network_addr %d, dev_type %hd, rx_on_wen_idle %hd, relationship %hd, permit_join %hd, depth %hd, lqi %hd",
-      (FMT_H_D_H_H_H_H_H_H, i, record->network_addr,
-       ZB_ZDO_RECORD_GET_DEVICE_TYPE(record->type_flags),
-       ZB_ZDO_RECORD_GET_RX_ON_WHEN_IDLE(record->type_flags),
-       ZB_ZDO_RECORD_GET_RELATIONSHIP(record->type_flags),
-       record->permit_join, record->depth, record->lqi));
-
-    record++;
-  }
-}
-
-@endcode
+@snippet doxygen_snippets.dox zboss_api_zdo_h_2
 
 See zdpo_lqi sample
 */
@@ -2016,42 +1932,7 @@ zb_zdo_bind_resp_t;
    @return 0xFF if operation cannot be performed now (nor enough memory, resources, etc.)
 
    @b Example:
-@code
-{
-  zb_apsme_binding_req_t *req;
-
-  req = ZB_BUF_GET_PARAM(buf, zb_apsme_binding_req_t);
-  ZB_MEMCPY(&req->src_addr, &g_ieee_addr, sizeof(zb_ieee_addr_t));
-  req->src_endpoint = i;
-  req->clusterid = 1;
-  req->addr_mode = ZB_APS_ADDR_MODE_64_ENDP_PRESENT;
-  ZB_MEMCPY(&req->dst_addr.addr_long, &g_ieee_addr_d, sizeof(zb_ieee_addr_t));
-  req->dst_endpoint = 240;
-
-  zb_zdo_bind_req(ZB_REF_FROM_BUF(buf), zb_bind_callback);
-  ret = buf->u.hdr.status;
-  if (ret == RET_TABLE_FULL)
-  {
-    TRACE_MSG(TRACE_ERROR, "TABLE FULL %d", (FMT__D, ret));
-  }
-}
-
-void zb_bind_callback(zb_uint8_t param)
-{
-  zb_ret_t ret = RET_OK;
-  zb_bufid_t buf = param;
-  zb_uint8_t *aps_body = NULL;
-
-  aps_body = zb_buf_begin(buf);
-  ZB_MEMCPY(&ret, aps_body, sizeof(ret));
-
-  TRACE_MSG(TRACE_INFO1, "zb_bind_callback %hd", (FMT__H, ret));
-  if (ret == RET_OK)
-  {
-    // bind ok
-  }
-}
-@endcode
+@snippet doxygen_snippets.dox zboss_api_zdo_h_3
 
 See tp_zdo_bv-12 sample
  */
@@ -2108,15 +1989,6 @@ void unbind_device1_cb(zb_uint8_t param)
  */
 zb_uint8_t zb_zdo_unbind_req(zb_uint8_t param, zb_callback_t cb);
 
-/**
- * @brief Checks existence of  bind table entries with selected endpoint and cluster ID.
- *
- * @param src_end - source endpoint
- * @param cluster_id - source cluster ID
- *
- * @return ZB_TRUE if binding is found on given endpoint, ZB_FALSE otherwise
- */
-zb_bool_t zb_zdo_find_bind_src(zb_uint8_t src_end, zb_uint16_t cluster_id);
 
 /** @} */
 
@@ -2477,6 +2349,15 @@ typedef ZB_PACKED_PRE struct zb_nlme_leave_indication_s
 } ZB_PACKED_STRUCT
 zb_nlme_leave_indication_t;
 
+/**
+   Arguments of asynchronous Get Long Poll Interval response.
+*/
+typedef ZB_PACKED_PRE struct zb_zdo_pim_get_long_poll_interval_resp_s
+{
+  zb_time_t interval; /**< long poll interval */
+} ZB_PACKED_STRUCT
+zb_zdo_pim_get_long_poll_interval_resp_t;
+
 /*! @} */
 
 #ifndef ZB_COORDINATOR_ONLY
@@ -2527,9 +2408,12 @@ void zb_zdo_pim_set_long_poll_interval(zb_time_t ms);
 
 /**
  * @brief Get the Long Poll Interval.
+ *
+ * @param param buffer that will be used to store response parameters.
+ *
  * @return Long Poll interval in milliseconds.
 */
-zb_time_t zb_zdo_pim_get_long_poll_interval_ms(void);
+void zb_zdo_pim_get_long_poll_interval_req(zb_uint8_t param, zb_callback_t cb);
 
 #else
 #define zb_zdo_pim_turbo_poll_continuous_leave(param)
@@ -2537,7 +2421,7 @@ zb_time_t zb_zdo_pim_get_long_poll_interval_ms(void);
 #define zb_zdo_pim_start_turbo_poll_continuous(turbo_poll_timeout_ms)
 #define zb_zdo_pim_start_turbo_poll_packets(n_packets)
 #define zb_zdo_pim_set_long_poll_interval(ms)
-#define zb_zdo_pim_get_long_poll_interval_ms() 0
+#define zb_zdo_pim_get_long_poll_interval_req(param, cb)
 #endif
 
 /** @} */
