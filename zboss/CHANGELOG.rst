@@ -15,7 +15,7 @@ Master branch
 Changes
 =======
 
-* Updated ZBOSS stack to version ``3.3.0.6+11_03_2020`` that includes the Cortex-M33 CPU libraries.
+* Updated ZBOSS stack to version ``3.3.0.6+11_30_2020`` that includes the Cortex-M33 CPU libraries.
   For detailed release notes for this stack version, see `ZBOSS stack release notes`_ for the Master branch.
 
 nRF Connect SDK v1.4.0
@@ -41,4 +41,3 @@ Limitations
 This sections lists limitations that apply to all versions of nRF Connect SDK.
 
 * On average, ZBOSS alarms last longer by 6.4 percent than Zephyr alarms.
-

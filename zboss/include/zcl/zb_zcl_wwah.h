@@ -2506,12 +2506,12 @@ enum zb_zcl_wwah_enrollment_mode_e
     buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_WWAH, NULL);  \
 }
 zb_bool_t zb_is_wwah_server(void);
+void wwah_post_commissioning_actions(void);
 zb_bool_t zb_zcl_wwah_check_new_channel(zb_uint32_t new_channel_mask);
 zb_bool_t zb_zcl_wwah_check_new_panid(zb_uint16_t new_panid);
 zb_uint8_t zb_zcl_wwah_mac_poll_cca_retry_count(void);
 zb_time_t zb_zcl_wwah_mac_poll_failure_wait_time(void);
 zb_bool_t zb_zcl_wwah_check_if_forced_to_use_tc(zb_uint16_t cluster_id);
-zb_bool_t zb_zcl_wwah_check_nwk_key_commands_broadcast_allowed(void);
 zb_bool_t zb_zcl_wwah_check_zdo_command(zb_apsde_data_indication_t *di);
 zb_bool_t zb_zcl_wwah_check_if_aps_ack_needed(zb_uint16_t cluster_id);
 zb_bool_t zb_zcl_wwah_check_if_aps_link_key_authorization_needed(zb_uint16_t cluster_id);
@@ -2570,18 +2570,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_wwah_context_s
   zb_uint8_t use_trust_center_for_cluster_table_cnt;
   /* This is a list of clusters that should be forced to use the Trust Center. */
   zb_uint16_t use_trust_center_for_cluster_table[ZB_ZCL_WWAH_USE_TRUST_CENTER_FOR_CLUSTER_TABLE_SIZE];
-  /* ======= Survey Beacon related context ======= */
-  /**
-   *  @brief Reference to a buffer with Survey Beacons Response command
-   *
-   *  Also it's used as status flag: ref == 0 when Survey Beacons procedure
-   *  is not started.
-   */
-  zb_uint8_t survey_beacons_resp_ref;
 
-  /* FIXME: Remove? We use ZB_NIB().nwk_hub_connectivity and
-   * ZB_NIB().ZB_NIB().nwk_hub_connectivity instead. */
-  zb_zcl_wwah_classification_mask_t classification_mask;
+  /* ======= Survey Beacon related context ======= */
+  zb_uint8_t survey_beacons_seq_number;
+  zb_uint8_t survey_beacons_in_progress;
+
   zb_zcl_wwah_periodic_checkins_data_t periodic_checkins;
 
   zb_zcl_wwah_enable_wwah_rejoin_algorithm_t rejoin_alg;

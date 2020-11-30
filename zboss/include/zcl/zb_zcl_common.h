@@ -438,7 +438,7 @@ typedef void (*zb_zcl_modify_attr_value_cb_t)(
 /** @brief Get ZCL string length */
 #define ZB_ZCL_GET_STRING_LENGTH(str) ((str)[0])
 
-#define ZB_ZCL_SET_STRING_LENGTH(str, _newlen) (((str))[0] = _newlen)
+#define ZB_ZCL_SET_STRING_LENGTH(str, _newlen) (((str))[0] = (_newlen))
 
 /** @brief Returns size of a string constant */
 #define ZB_ZCL_STRING_CONST_SIZE(str) (zb_uint8_t)(sizeof(str) - 1)
@@ -1241,7 +1241,7 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 /*! @brief Construct ZCL header, Manufacturer specific value is conditionally supported */
 #define ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT(_data_ptr, _tsn, _is_manuf_spec, _manuf_specific, _cmd_id) \
   {                                                                     \
-    if (_is_manuf_spec != 0)                                            \
+    if ((_is_manuf_spec) != 0)                                          \
     {                                                                   \
       ZB_ZCL_PACKET_PUT_DATA16_VAL((_data_ptr), (_manuf_specific));     \
     }                                                                   \

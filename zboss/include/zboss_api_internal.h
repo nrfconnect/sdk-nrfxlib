@@ -90,23 +90,49 @@ typedef ZB_PACKED_PRE struct zb_aps_retrans_ent_s
 
 typedef ZB_PACKED_PRE struct zb_cb_q_ent_s
 {
-  zb_callback_t func_ptr;        /*!< function to call  */
+  union {
+    zb_callback_t func_ptr;
+    zb_callback2_t func2_ptr;
+  } u;                           /*!< function to call  */
   zb_uint16_t user_param;        /*!< user parameter */
   zb_uint8_t param;              /*!< parameter to pass to 'func'  */
 }
 ZB_PACKED_STRUCT
 zb_cb_q_ent_t;
 
+/**
+   Returns 'zb_cb_q_ent_t' members 'func_ptr' or 'func2_ptr' depending on whether the callback
+   takes one or two parameters.
+
+   @param ent - variable of type 'zb_cb_q_ent_t'
+   @param is2param - boolean value, ZB_TRUE if the callback takes two parameters, ZB_FALSE otherwise
+
+   @return 'func_ptr' or 'func2_ptr'
+ */
+#define ZB_CB_QENT_FPTR(ent, is2param) ((!(is2param)) ? (void*)((ent)->u.func_ptr) : (void*)((ent)->u.func2_ptr))
 
 typedef ZB_PACKED_PRE struct zb_delayed_buf_q_ent_s
 {
-  zb_callback_t func_ptr;        /*!< function to call  */
+  union {
+    zb_callback_t func_ptr;
+    zb_callback2_t func2_ptr;
+  } u;                           /*!< function to call  */
   zb_uint16_t   user_param;      /*!< user parameter */
   zb_bitfield_t buf_cnt:7;       /*!< number of buffers to allocate */
   zb_bitfield_t is_2param:1;     /*!< whether this is a 2param callback */
 }
 ZB_PACKED_STRUCT
 zb_delayed_buf_q_ent_t;
+
+/**
+   Returns 'zb_delayed_buf_q_ent_t' members 'func_ptr' or 'func2_ptr' depending on whether the callback
+   takes one or two parameters.
+
+   @param ent - variable of type 'zb_delayed_buf_q_ent_t'
+
+   @return 'func_ptr' or 'func2_ptr'
+ */
+#define ZB_DELAYED_BUF_QENT_FPTR(ent) (((ent)->is_2param == 0U) ? (void*)((ent)->u.func_ptr) : (void*)((ent)->u.func2_ptr))
 
 /**
    Delayed (scheduled to run after timeout) callbacks queue entry.
@@ -257,19 +283,10 @@ typedef ZB_PACKED_PRE struct zb_aps_bind_dst_table_s
   zb_uint8_t            trans_index[ZB_SINGLE_TRANS_INDEX_SIZE];
 #endif /* defined ZB_CONFIGURABLE_MEM */
 
-#ifdef SNCP_MODE
   zb_uint8_t            dst_addr_mode;   /*!< destination address mode flag, 0
                                           * - group address, otherwise long
                                           * address plus dest endpoint */
   zb_uint8_t            src_table_index; /*!< index from zb_asp_src_table_t */
-#else
-  zb_uint8_t            align;
-
-  zb_bitfield_t         dst_addr_mode:3;   /*!< destination address mode flag, 0
-                                            * - group address, otherwise long
-                                            * address plus dest endpoint */
-  zb_bitfield_t         src_table_index:5; /*!< index from zb_asp_src_table_t */
-#endif
 } ZB_PACKED_STRUCT zb_aps_bind_dst_table_t;
 
 /**
@@ -384,10 +401,8 @@ typedef ZB_PACKED_PRE struct zb_neighbor_tbl_ent_s /* not need to pack it at IAR
 
       zb_bitfield_t             stack_profile:2; /*!< A ZBOSS profile identifier.   */
 
-#ifdef ZB_PARENT_CLASSIFICATION
       /* 12 */
       zb_uint8_t                classification_mask;
-#endif
       /* 13 */
     } ZB_PACKED_STRUCT ext;
     ZB_PACKED_PRE struct zb_base_neighbor_s

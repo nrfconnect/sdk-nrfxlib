@@ -1416,10 +1416,6 @@ typedef ZB_PACKED_PRE struct zb_zdo_mgmt_nwk_update_req_s
   zb_zdo_mgmt_nwk_update_req_hdr_t hdr; /*!< Request header */
   zb_uint8_t scan_count;       /*!< This field represents the number
                                 * of energy scans to be conducted and reported */
-  zb_uint8_t update_id;     /*!< This value is set by the Network
-                               * Channel Manager prior to sending
-                               * the message. This field shall only
-                               * be present of the ScanDuration is 0xfe or 0xff */
   zb_uint16_t manager_addr; /*!< This field shall be present only
                                * if the ScanDuration is set to 0xff,
                                * and, where present, indicates the
@@ -1441,10 +1437,6 @@ typedef struct zb_zdo_mgmt_nwk_enhanced_update_req_param_s
                                    * each channel. */
   zb_uint8_t scan_count;          /*!< This field represents the number
                                    * of energy scans to be conducted and reported */
-  zb_uint8_t update_id;           /*!< This value is set by the Network
-                                   * Channel Manager prior to sending
-                                   * the message. This field shall only
-                                   * be present of the ScanDuration is 0xfe or 0xff */
   zb_uint16_t manager_addr;       /*!< This field shall be present only
                                    * if the ScanDuration is set to 0xff,
                                    * and, where present, indicates the
@@ -1515,7 +1507,6 @@ typedef zb_zdo_mgmt_nwk_update_notify_param_t zb_zdo_mgmt_nwk_enhanced_update_no
   req->hdr.scan_channels = ZB_MAC_ALL_CHANNELS_MASK;
   req->hdr.scan_duration = TEST_SCAN_DURATION;
   req->scan_count = TEST_SCAN_COUNT;
-  req->update_id = ZB_NIB_UPDATE_ID();
 
   req->dst_addr = 0;
 
@@ -1651,7 +1642,7 @@ zb_zdo_mgmt_lqi_resp_t;
 
    @ref zb_zdo_neighbor_table_record_s
   */
-#define ZB_ZDO_RECORD_SET_DEVICE_TYPE(var, type) ( var &= ~3, var |= type )
+#define ZB_ZDO_RECORD_SET_DEVICE_TYPE(var, type) ( ( var ) &= ~3, ( var ) |= ( type ) )
 /**
    Get device type of neighbor table record.
 
@@ -1671,7 +1662,7 @@ zb_zdo_mgmt_lqi_resp_t;
 
    @ref zb_zdo_neighbor_table_record_s
   */
-#define ZB_ZDO_RECORD_SET_RX_ON_WHEN_IDLE(var, type) ( var &= ~0xC, var |= (type << 2) )
+#define ZB_ZDO_RECORD_SET_RX_ON_WHEN_IDLE(var, type) ( ( var ) &= ~0xC, ( var ) |= (( type ) << 2) )
 /**
    Get RxOnWhenIdle of neighbor table record.
 
@@ -1691,7 +1682,7 @@ zb_zdo_mgmt_lqi_resp_t;
 
    @ref zb_zdo_neighbor_table_record_s
   */
-#define ZB_ZDO_RECORD_SET_RELATIONSHIP(var, type) ( var &= ~0x70, var |= (type << 4) )
+#define ZB_ZDO_RECORD_SET_RELATIONSHIP(var, type) ( ( var ) &= ~0x70, ( var ) |= (( type ) << 4) )
 /**
    Get relationship of neighbor table record.
 
@@ -2049,8 +2040,8 @@ zb_zdo_mgmt_leave_res_t;
 
    @param param - index of buffer with Lqi request parameters. @ref zb_zdo_mgmt_leave_param_s
    @param cb    - user's function to call when got response from the remote.
-   @return        - transaction sequence number of request or 0xFF if operation not be
-                  performed right now (in case if not exist free slot for registering callback)
+   @return      - transaction sequence number of request or 0xFF if operation can't be
+                  performed right now (if there is no free slot for registering the callback)
 
    @b Example:
 @code
@@ -2275,7 +2266,6 @@ typedef ZB_PACKED_PRE struct zb_zdo_mgmt_nwk_ieee_joining_list_rsp_s
 }
 ZB_PACKED_STRUCT
 zb_zdo_mgmt_nwk_ieee_joining_list_rsp_t;
-//!!
 
 
 /** @brief ZDO interface for ADD-GROUP.request.

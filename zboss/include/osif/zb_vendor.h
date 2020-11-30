@@ -287,6 +287,8 @@
 #if defined NCP_MODE && !defined NCP_MODE_HOST
 /* Enable NCP SoC -specific BDB signal generation and handler. */
 #define ZB_NCP_SOC_BDB
+/* Include additional API, that allows to write any dataset structure into the ZBOSS NVRAM. */
+#define ZB_NVRAM_ENABLE_DIRECT_API
 #endif /* NCP_MODE && !NCP_MODE_HOST */
 
 /* Include Zigbee HA clusters implementation (always defined, except macsplit). */
@@ -322,5 +324,8 @@
 #else /* ZB_MAC_SECURITY */
 #define ZB_IO_BUF_SIZE 152
 #endif /* ZB_MAC_SECURITY */
+
+/* ZBOSS stack version, represented as an unit32 number. */
+#define ZB_STACK_VERSION ((ZBOSS_MAJOR << 24) | (ZBOSS_MINOR << 16) | (ZBOSS_SDK_TYPE << 8) | (ZBOSS_SDK_REVISION))
 
 #endif /* ZB_VENDOR_H__ */

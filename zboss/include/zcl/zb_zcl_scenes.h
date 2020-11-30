@@ -105,6 +105,8 @@ enum zb_zcl_scene_attr_e
 /** @brief Mask to extract Name support bit */
 #define ZB_ZCL_SCENES_NAME_SUPPORT_BIT_MASK 0x80
 
+/*! Minimal permissible value for Current group attribute */
+#define ZB_ZCL_ATTR_SCENES_CURRENT_GROUP_MIN_VALUE 0x0001
 /*! Maximal permissible value for Current group attribute */
 #define ZB_ZCL_ATTR_SCENES_CURRENT_GROUP_MAX_VALUE 0xfff7
 /*! Maximal number of scene table records */
@@ -133,8 +135,6 @@ enum zb_zcl_scene_attr_e
 */
 #define ZB_ZCL_SCENES_NAME_SUPPORT_DEFAULT_VALUE 0
 
-#if defined ZB_ENABLE_ZLL || defined DOXYGEN
-
 /** @brief Global Scene - group identifier
     see ZLL spec 6.5.1.3.1*/
 #define ZB_ZCL_SCENE_GLOBAL_SCENE_GROUP_ID 0x00
@@ -142,8 +142,6 @@ enum zb_zcl_scene_attr_e
 /** @brief Global Scene - scene identifier
     see ZLL spec 6.5.1.3.1*/
 #define ZB_ZCL_SCENE_GLOBAL_SCENE_ID 0x00
-
-#endif /*defined ZB_ENABLE_ZLL || defined DOXYGEN*/
 
 
 /*! @brief Fixed-size part of the Scene table */

@@ -85,8 +85,8 @@ typedef zb_channel_page_t zb_channel_list_t[ZB_CHANNEL_PAGES_NUM];
 #define ZB_PAGE31_SUB_GHZ_CHANNEL_FROM  0
 #define ZB_PAGE31_SUB_GHZ_CHANNEL_TO    26
 
-#define ZB_CHANNEL_PAGE_TO_IDX(channel_page) ((channel_page > 0) ? (channel_page - 27) : 0)
-#define ZB_CHANNEL_PAGE_FROM_IDX(channel_page_idx) ((channel_page_idx > 0) ? (channel_page_idx + 27) : 0)
+#define ZB_CHANNEL_PAGE_TO_IDX(channel_page) (((channel_page) > 0) ? ((channel_page) - 27) : 0)
+#define ZB_CHANNEL_PAGE_FROM_IDX(channel_page_idx) (((channel_page_idx) > 0) ? ((channel_page_idx) + 27) : 0)
 
 #ifdef ZB_PAGES_REMAP_TO_2_4GHZ
 /**
@@ -191,7 +191,7 @@ zb_uint8_t zb_pages_remap_logical_channel(zb_uint8_t channel_page,
 #define ZB_LOGICAL_PAGE_SUB_GHZ_PAGE_MASK ZB_CHANNEL_PAGE28_SUB_GHZ
 
 #define ZB_LOGICAL_PAGE_IS_SUB_GHZ_EU_FSK(logical_page) \
-  ((logical_page) & ZB_LOGICAL_PAGE_SUB_GHZ_PAGE_MASK)
+  (((logical_page) & ZB_LOGICAL_PAGE_SUB_GHZ_PAGE_MASK) != 0U)
 
 #define ZB_LOGICAL_PAGE_IS_2_4GHZ(logical_page) \
   ((logical_page) == ZB_CHANNEL_PAGE0_2_4_GHZ)

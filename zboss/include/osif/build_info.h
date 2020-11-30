@@ -11,14 +11,14 @@
  * Please use release scripts to update it's contents.
  *
  * Repositories:
- * platform_ncs       d2bd50d088929d8202639487e75691b9dc065690 https://bitbucket.dsr-corporation.com/scm/ZOI/platform_ncs.git
- * zboss-stack-src    37737d2f5e070636979b429a5c17e9bcd9f07207 https://bitbucket.dsr-corporation.com/scm/zoi/zboss_stable
- * zboss-stack-doc    9b11f784bb4437c793812319c4ba05e5c698fc90 https://bitbucket.dsr-corporation.com/scm/zoi/zboss_doc
- * nrf                de3b8ae6ecb452c51b6b90bd2e8dfba72e2fb002 https://github.com/nrfconnect/sdk-nrf
- * zephyr             ab7c0341c18b79dde96d2e74c329a4f0ed1eb082 https://github.com/wbober/sdk-zephyr
- * mcuboot            818b68fd4bd4b69f54a2723072606ae25077d130 https://github.com/nrfconnect/sdk-mcuboot
- * mcumgr             f28a637db12c4b12fb2b18bddc6b2a0deaa95251 https://github.com/nrfconnect/sdk-mcumgr
- * nrfxlib            87fc2af8b2ca365642fc0bb12c1c6f9cd7410162 https://github.com/nrfconnect/sdk-nrfxlib
+ * platform_ncs       19161e7de2990be42a8fda6f609ca817b9793c5a https://bitbucket.dsr-corporation.com/scm/ZOI/platform_ncs.git
+ * zboss-stack-src    9c6be5410891e732150fea1e14a678b26568eee2 https://bitbucket.dsr-corporation.com/scm/zoi/zboss_stable
+ * zboss-stack-doc    787a18fa7069dfb796fc250f3f6c9a4b2c57eaff https://bitbucket.dsr-corporation.com/scm/zoi/zboss_doc
+ * nrf                a495afc650a39d30aa2830cc73ae3b18b8254caa https://github.com/nrfconnect/sdk-nrf
+ * zephyr             444e432dbc26eae47de5772b0e77d66ab513a725 https://github.com/wbober/sdk-zephyr
+ * mcuboot            853e11283805ec66f157bc27a5286edb36046725 https://github.com/nrfconnect/sdk-mcuboot
+ * mcumgr             c811bcbd446c4589496fc96237c0a286ea2e7f10 https://github.com/nrfconnect/sdk-mcumgr
+ * nrfxlib            d2e0a44f593cb807d3aa9cc8dd142878bc43e22f https://github.com/nrfconnect/sdk-nrfxlib
  * cmock              c243b9a7a7b3c471023193992b46cf1bd1910450 https://github.com/ThrowTheSwitch/cmock
  * unity              031f3bbe45f8adf504ca3d13e6f093869920b091 https://github.com/ThrowTheSwitch/unity
  * mbedtls-nrf        3ede1737dc471199bf8d5d3824ee2545c11a497e https://github.com/ARMmbed/mbedtls
@@ -50,13 +50,13 @@
 
 
 /** ZBOSS build tag */
-#define ZBOSS_BUILD_TAG "11_03_2020"
+#define ZBOSS_BUILD_TAG "11_30_2020"
 
 /** ZBOSS build date (UTC) */
-#define ZBOSS_BUILD_DATE 20201126
+#define ZBOSS_BUILD_DATE 20201130
 
 /** ZBOSS build time (UTC) */
-#define ZBOSS_BUILD_TIME 114625
+#define ZBOSS_BUILD_TIME 115850
 
 
 #endif /* ZBOSS_BUILD_INFO_H__ */

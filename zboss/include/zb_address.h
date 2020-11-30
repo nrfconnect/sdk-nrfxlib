@@ -93,7 +93,6 @@ typedef ZB_PACKED_PRE struct zb_address_map_s
   zb_uint16_t                addr; /*!< 16-bit device address */
   zb_address_ieee_ref_t      redirect_ref; /*!< Reference to redirected or regular record */
 
-#ifdef SNCP_MODE
   zb_bitfield_t              lock_cnt:8; /*!< lock counter. not locked if 0  */
   zb_bitfield_t              used:1; /*!< if 0, this entry is free (never used)  */
   zb_bitfield_t              has_address_conflict:1; /*!< Set to 1 if device discovers address conflict
@@ -105,18 +104,6 @@ typedef ZB_PACKED_PRE struct zb_address_map_s
   zb_bitfield_t              redirect_type:2; /*!< redirect type @ref zb_addr_redirect_type_e */
   zb_bitfield_t              pending_for_delete:1;    /*!< record is pending for deletion  */
 
-#else
-  zb_bitfield_t              used:1; /*!< if 0, this entry is free (never used)  */
-  zb_bitfield_t              has_address_conflict:1; /*!< Set to 1 if device discovers address conflict
-                                                      *   Cleared when conflict is resolved:
-                                                      *   - Device that discovers conflict sending  Network Status
-                                                      *   - or another Network Status with identical payload was received  */
-  zb_bitfield_t              padding:3; /*!< Explicit padding bits  */
-  zb_bitfield_t              clock:1;    /*!< clock value for the clock usage algorithm  */
-  zb_bitfield_t              redirect_type:2; /*!< redirect type @ref zb_addr_redirect_type_e */
-  zb_bitfield_t              lock_cnt:7; /*!< lock counter. not locked if 0  */
-  zb_bitfield_t              pending_for_delete:1;    /*!< record is pending for deletion  */
-#endif
 } ZB_PACKED_STRUCT zb_address_map_t;
 
 

@@ -251,7 +251,7 @@ zb_time_t zb_timer_get(void);
 /**
  Convert from quarterseconds to beacon
 */
-#define ZB_QUARTERECONDS_TO_BEACON_INTERVAL(qsec) ZB_MILLISECONDS_TO_BEACON_INTERVAL(250*qsec)
+#define ZB_QUARTERECONDS_TO_BEACON_INTERVAL(qsec) ZB_MILLISECONDS_TO_BEACON_INTERVAL(250 * (qsec))
 
 /**
  * Convert from seconds to milliseconds
@@ -298,16 +298,12 @@ typedef void (ZB_CODE * zb_callback2_t)(zb_uint8_t param, zb_uint16_t cb_param);
 
     @param func - function to execute
     @param param - callback parameter - usually, but not always ref to packet buffer
-    @param use_2_param - ZB_TRUE whether additional parameter should be used
-    @param user_param - additional parameter which will be used if use_2_param is ZB_TRUE
-    @param is_prior - ZB_TRUE is callback is high priority
 
     @return RET_OK or error code.
 
     See sched sample
 */
-zb_ret_t zb_schedule_app_callback(zb_callback_t func, zb_uint8_t param,
-                                  zb_bool_t use_2_param, zb_uint16_t user_param, zb_bool_t is_prior);
+zb_ret_t zb_schedule_app_callback(zb_callback_t func, zb_uint8_t param);
 /** @endcond */ /* internals_doc */
 /**
    Schedule single-param callback execution.
@@ -322,9 +318,23 @@ zb_ret_t zb_schedule_app_callback(zb_callback_t func, zb_uint8_t param,
    See sched sample
  */
 #ifndef ZB_SCHEDULE_APP_CALLBACK
-#define ZB_SCHEDULE_APP_CALLBACK(func, param) zb_schedule_app_callback(func, param, ZB_FALSE, 0, ZB_FALSE)
+#define ZB_SCHEDULE_APP_CALLBACK(func, param) zb_schedule_app_callback(func, param)
 #endif /* ZB_SCHEDULE_APP_CALLBACK */
 
+/** @cond internals_doc */
+/** Schedule two-param callback execution.
+    (use ZB_SCHEDULE_APP_CALLBACK2() macro instead of this function).
+
+    Schedule execution of function `func' in the main scheduler loop.
+
+    @param func - function to execute
+    @param param - callback parameter - usually, but not always ref to packet buffer
+    @param user_param - zb_uint16_t user parameter - usually, but not always short address
+
+    @return RET_OK or error code.
+*/
+zb_ret_t zb_schedule_app_callback2(zb_callback2_t func, zb_uint8_t param, zb_uint16_t user_param);
+/** @endcond */ /* internals_doc */
 /**
    Schedule two-param callback execution.
    Schedule execution of function `func' in the main scheduler loop.
@@ -332,14 +342,13 @@ zb_ret_t zb_schedule_app_callback(zb_callback_t func, zb_uint8_t param,
    @param func - function to execute
    @param param - zb_uint8_t callback parameter - usually, but not always ref to
    packet buffer
-   @param user_param - zb_uint16_t user parameter - usually, but not
-   always short address
+   @param user_param - zb_uint16_t user parameter - usually, but not always short address
 
    @return RET_OK or RET_OVERFLOW.
    See sched sample
  */
 #ifndef ZB_SCHEDULE_APP_CALLBACK2
-#define ZB_SCHEDULE_APP_CALLBACK2(func, param, user_param) zb_schedule_app_callback((zb_callback_t)(func),  param, ZB_TRUE, user_param, ZB_FALSE)
+#define ZB_SCHEDULE_APP_CALLBACK2(func, param, user_param) zb_schedule_app_callback2(func, param, user_param)
 #endif /* ZB_SCHEDULE_APP_CALLBACK2 */
 
 /** @cond internals_doc */
@@ -457,6 +466,17 @@ zb_uint16_t zb_random(void);
    Generate random value between 0 to max_value (16 bit)
  */
 #define ZB_RANDOM_VALUE(max_value) (((zb_uint16_t)(max_value)) ? (zb_random() / (ZB_RAND_MAX / (zb_uint16_t)(max_value))) : 0)
+
+/**
+ * Analogue of bzero() for volatile data.
+ *
+ * A custom version should be implemented because there is no standard library function for that
+ * purpose. Also, this function is not platform-dependent in contrast to ZB_BZERO() macro and
+ * therefore can't be overriden by specific ZBOSS platform.
+ *
+ * The function sets individually every byte of provided memory region to zero.
+ */
+void zb_bzero_volatile(volatile void *s, zb_uint_t size);
 
 /*! @} */
 

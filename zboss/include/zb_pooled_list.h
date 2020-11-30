@@ -85,8 +85,8 @@ instead of pointer.
 #define ZB_POOLED_LIST16_IS_EMPTY( list ) ( ( list ) == ZP_NULL16 )
 #define ZB_POOLED_LIST16_IS_NOT_EMPTY( list ) ( ( list ) != ZP_NULL16 )
 
-#define ZB_POOLED_LIST8_NEXT( base, index, link_field ) ( (  ZP_NULL8 == index ) ? ZP_NULL8 :  base[ index ].link_field##_next)
-#define ZB_POOLED_LIST8_PREV( base, index, link_field ) ( (  ZP_NULL8 == index ) ? ZP_NULL8 :  base[ index ].link_field##_prev)
+#define ZB_POOLED_LIST8_NEXT( base, index, link_field ) ( (  ZP_NULL8 == ( index ) ) ? ZP_NULL8 :  ( base )[ ( index ) ].link_field##_next)
+#define ZB_POOLED_LIST8_PREV( base, index, link_field ) ( (  ZP_NULL8 == ( index ) ) ? ZP_NULL8 :  ( base )[ ( index ) ].link_field##_prev)
 
 #define ZB_POOLED_LIST8_GET_HEAD( base, list, link_field ) ( list )
 #define ZB_POOLED_LIST8_GET_TAIL( base, list, link_field ) ( ( ZP_NULL8 != list ) ? base[ list ].link_field##_prev : ZP_NULL8 )
@@ -106,13 +106,13 @@ instead of pointer.
   removed_elem_index = list;                                            \
   if( ( list ) != ZP_NULL8 )                                            \
   {                                                                     \
-    if( base[ list ].link_field##_next != ZP_NULL8 )                    \
+    if( ( base )[ list ].link_field##_next != ZP_NULL8 )                \
     {                                                                   \
-      base[ base[ list ].link_field##_next ].link_field##_prev =        \
-         base[ list ].link_field##_prev;                                \
+      ( base )[ ( base )[ list ].link_field##_next ].link_field##_prev = \
+         ( base )[ list ].link_field##_prev;                            \
     }                                                                   \
-    base[ list ].link_field##_prev = ZP_NULL8;                          \
-   ( list ) = base[ list ].link_field##_next ;                          \
+    ( base )[ list ].link_field##_prev = ZP_NULL8;                      \
+    ( list )  = ( base )[ list ].link_field##_next ;                    \
   }                                                                     \
 } while (0)                                                             \
 
@@ -124,15 +124,15 @@ instead of pointer.
 #define ZB_POOLED_LIST8_INSERT_HEAD( base, list, link_field, elem_index ) do \
 {                                                                       \
   ZB_ASSERT( ( elem_index ) != ZP_NULL8 );                              \
-  base[ elem_index ].link_field##_next = ( list );                      \
+  ( base )[ elem_index ].link_field##_next = ( list );                  \
   if( ( list ) != ZP_NULL8 )                                            \
  {                                                                      \
-   base[ elem_index ].link_field##_prev = base[ list ].link_field##_prev; \
-   base[ list ].link_field##_prev = elem_index ;                        \
+   ( base )[ ( elem_index ) ].link_field##_prev = ( base )[ list ].link_field##_prev; \
+   ( base )[ ( list ) ].link_field##_prev = ( elem_index ) ;            \
  }                                                                      \
  else                                                                   \
  {                                                                      \
-   base[ elem_index ].link_field##_prev = elem_index;                   \
+   ( base )[ elem_index ].link_field##_prev = ( elem_index );           \
  }                                                                      \
  ( list ) = ( elem_index );                                             \
 } while( 0 )
@@ -145,16 +145,16 @@ instead of pointer.
 #define ZB_POOLED_LIST8_INSERT_TAIL( base, list, link_field, elem_index ) do \
 {                                                                       \
   ZB_ASSERT( ( elem_index ) != ZP_NULL8 );                              \
-  base[ elem_index ].link_field##_next = ZP_NULL8;                      \
+  ( base )[ ( elem_index ) ].link_field##_next = ZP_NULL8;              \
   if( ( list ) != ZP_NULL8 )                                            \
   {                                                                     \
-    base[ elem_index ].link_field##_prev = base[ list ].link_field##_prev; \
-    base[ base[ list ].link_field##_prev ].link_field##_next = elem_index; \
-    base[ list ].link_field##_prev = elem_index;                        \
+    ( base )[ ( elem_index ) ].link_field##_prev = ( base )[ ( list ) ].link_field##_prev; \
+    ( base )[ ( base )[ ( list ) ].link_field##_prev ].link_field##_next = elem_index; \
+    ( base )[ ( list ) ].link_field##_prev = ( elem_index );            \
   }                                                                     \
   else                                                                  \
   {                                                                     \
-    base[ elem_index ].link_field##_prev = elem_index;                  \
+    ( base )[ ( elem_index ) ].link_field##_prev = ( elem_index );      \
     ( list ) = ( elem_index );                                          \
   }                                                                     \
 } while (0)
@@ -166,19 +166,19 @@ instead of pointer.
 
 #define ZB_POOLED_LIST8_INSERT_AFTER( base, list, link_field, elem_index, new_elem_index ) do \
 {                                                                       \
-  ZB_ASSERT( new_elem_index != ZP_NULL8 );                              \
-  if( elem_index != ZP_NULL8  )                                         \
+  ZB_ASSERT( ( new_elem_index ) != ZP_NULL8 );                          \
+  if( ( elem_index ) != ZP_NULL8  )                                         \
   {                                                                     \
-    if( elem_index == ZB_POOLED_LIST8_GET_TAIL( base, list, link_field ) ) \
+    if( ( ( elem_index ) ) == ZB_POOLED_LIST8_GET_TAIL( ( base ), ( list ), link_field ) ) \
     {                                                                   \
-      ZB_POOLED_LIST8_INSERT_TAIL( base, list, link_field, new_elem_index ); \
+      ZB_POOLED_LIST8_INSERT_TAIL( ( base ), ( list ), link_field, new_elem_index ); \
     }                                                                   \
     else                                                                \
     {                                                                   \
-      base[ new_elem_index ].link_field##_next = base[ elem_index ].link_field##_next ; \
-      base[ new_elem_index ].link_field##_prev = elem_index;            \
-      base[ base[ elem_index ].link_field##_next ].link_field##_prev = new_elem_index; \
-      base[ elem_index ].link_field##_next = ( new_elem_index );        \
+      ( base )[ new_elem_index ].link_field##_next = ( base )[ ( elem_index ) ].link_field##_next ; \
+      ( base )[ new_elem_index ].link_field##_prev = ( elem_index );    \
+      ( base )[ ( base )[ ( elem_index ) ].link_field##_next ].link_field##_prev = ( new_elem_index ); \
+      ( base )[ ( elem_index ) ].link_field##_next = ( new_elem_index ); \
     }                                                                   \
   }                                                                     \
 } while(0)
@@ -252,26 +252,26 @@ instead of pointer.
 #define ZB_POOLED_LIST8_REMOVE( base, list, link_field, elem_index )    \
 do                                                                      \
 {                                                                       \
-  ZB_ASSERT( elem_index != ZP_NULL8 );                                  \
-  if( base[ elem_index ].link_field##_prev != ZP_NULL8 )                \
+  ZB_ASSERT( ( elem_index ) != ZP_NULL8 );                              \
+  if( base[ ( elem_index ) ].link_field##_prev != ZP_NULL8 )            \
   {                                                                     \
-    if( base[ elem_index ].link_field##_next != ZP_NULL8 )    /* this is not a tail */ \
+    if( ( base )[ ( elem_index ) ].link_field##_next != ZP_NULL8 )    /* this is not a tail */ \
     {                                                                   \
-      base[ base[ elem_index ].link_field##_next ].link_field##_prev = base[ elem_index ].link_field##_prev; \
+      ( base )[ ( base )[ ( elem_index ) ].link_field##_next ].link_field##_prev = ( base )[ ( elem_index ) ].link_field##_prev; \
     }                                                                   \
     else                          /* this is a tail */                  \
     {                                                                   \
-      base[ list ].link_field##_prev = base[ elem_index ].link_field##_prev; \
+      ( base )[ ( list ) ].link_field##_prev = ( base )[ ( elem_index ) ].link_field##_prev; \
     }                                                                   \
     if( ( elem_index ) == ( list ) )          /* this is a head */      \
     {                                                                   \
-      ( list ) = base[ elem_index ].link_field##_next;                  \
+      ( list ) = ( base )[ ( elem_index ) ].link_field##_next;          \
     }                                                                   \
     else                          /* this is not a head */              \
     {                                                                   \
-      base[ base[ elem_index ].link_field##_prev ].link_field##_next = base[ elem_index ].link_field##_next; \
+      ( base )[ ( base )[ ( elem_index ) ].link_field##_prev ].link_field##_next = ( base )[ ( elem_index ) ].link_field##_next; \
     }                                                                   \
-    base[ elem_index ].link_field##_prev = ZP_NULL8;                    \
+    ( base )[ ( elem_index ) ].link_field##_prev = ZP_NULL8;            \
   }                                                                     \
 }                                                                       \
 while( 0 )                                                              \

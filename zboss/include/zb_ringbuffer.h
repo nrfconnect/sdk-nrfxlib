@@ -355,7 +355,7 @@ typedef struct type_name_prefix ## _s                                 \
  */
 #define ZB_RING_BUFFER_GET_BATCH(rb, size)                              \
   (                                                                     \
-    size = ((rb)->written <= (ZB_RING_BUFFER_CAPACITY(rb) - (rb)->read_i) \
+    (size) = ((rb)->written <= (ZB_RING_BUFFER_CAPACITY(rb) - (rb)->read_i) \
             ?                                                           \
             (rb)->written                                               \
             :                                                           \
@@ -376,8 +376,8 @@ typedef struct type_name_prefix ## _s                                 \
  */
 #define ZB_RING_BUFFER_FLUSH_GET_BATCH(rb, size)                        \
 (                                                                       \
-  (rb)->written -= size,                                                      \
-  ((rb)->read_i = ((rb)->read_i + size) % ZB_RING_BUFFER_CAPACITY(rb))     \
+  (rb)->written -= (size),                                              \
+  ((rb)->read_i = ((rb)->read_i + (size)) % ZB_RING_BUFFER_CAPACITY((rb))) \
   )
 
 /**
@@ -456,7 +456,7 @@ ZB_RING_BUFFER_DECLARE(zb_byte_array, zb_uint8_t, 1);
 #define ZB_BYTE_ARRAY_FLUSH_GET(rb, cap)      \
 (                                            \
   (rb)->written--,                           \
-  ((rb)->read_i = ((rb)->read_i + 1) % cap)  \
+  ((rb)->read_i = ((rb)->read_i + 1) % (cap)) \
   )
 
 /* 10/04/17 CR Ustimenko start */
@@ -477,7 +477,7 @@ ZB_RING_BUFFER_DECLARE(zb_byte_array, zb_uint8_t, 1);
             :                                                           \
             (cap - (rb)->read_i)),                 \
     (rb)->ring_buf + (rb)->read_i                                       \
-  )  
+  )
 
 /**
  * Move ring buffer read pointer for more than 1 element
