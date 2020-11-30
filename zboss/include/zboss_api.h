@@ -512,7 +512,7 @@ zb_ret_t zboss_start_in_sniffer_mode(void);
    ZBOSS must be started in the sniffer mode.
 
    @param channel_cmd - channel and page index to work on. page index is encoded in two
-   most significant bits (see zb_channel_page_num_e) and channel is encoded in 5 least 
+   most significant bits (see @ref channel_pages_numbers) and channel is encoded in 5 least
    significant bits.
    @param data_ind_cb - callback to be called to pass data to the sniffer application
  */
@@ -718,16 +718,25 @@ zb_uint8_t zb_get_max_children(void);
 void zb_se_set_bdb_mode_enabled(zb_uint8_t enabled);
 
 /**
-   Enum for channel pages' numbers
-  */
-enum zb_channel_page_num_e
-{
-  ZB_CHANNEL_PAGE0_2_4_GHZ  =  0,
-  ZB_CHANNEL_PAGE28_SUB_GHZ = 28,
-  ZB_CHANNEL_PAGE29_SUB_GHZ = 29,
-  ZB_CHANNEL_PAGE30_SUB_GHZ = 30,
-  ZB_CHANNEL_PAGE31_SUB_GHZ = 31,
-};
+ *  @name Channel pages' numbers
+ *  @anchor channel_pages_numbers
+ */
+/** @{ */
+#define ZB_CHANNEL_PAGE0_2_4_GHZ   0U
+#define ZB_CHANNEL_PAGE28_SUB_GHZ  28U
+#define ZB_CHANNEL_PAGE29_SUB_GHZ  29U
+#define ZB_CHANNEL_PAGE30_SUB_GHZ  30U
+#define ZB_CHANNEL_PAGE31_SUB_GHZ  31U
+/** @} */
+
+/**
+ * @brief Type for channel pages' numbers
+ *
+ * @deprecated holds one of @ref channel_pages_numbers. Kept only for backward compatibility as
+ * @ref channel_pages_numbers were declared previously as enum. Can be removed in future releases.
+ */
+typedef zb_uint8_t zb_channel_page_num_e;
+
 
 /**
    Initialize a channel list
@@ -739,7 +748,7 @@ void zb_channel_list_init(zb_channel_list_t channel_list);
 /**
    Add channel mask for a specified channel page in a channel list
    @param channel_list - pointer to a channel list
-   @param page_num - channel page number - @ref zb_channel_page_num_e
+   @param page_num - channel page number - @ref channel_pages_numbers
    @param channel_mask - Zigbee channel mask
 
    @return RET_OK if ok, else error code
@@ -877,6 +886,7 @@ typedef enum zb_nvram_dataset_types_e
   ZB_NVRAM_DATA_SET_TYPE_PAGE_HDR = 0x1e /**< Special internal dataset type  */
 } zb_nvram_dataset_types_t;
 
+#define ZB_NVRAM_APP_DATASET_NUMBER 4
 
 /**
  * Declares application callback used for reading application datasets from NVRAM.
@@ -1016,6 +1026,31 @@ void zb_nvram_transaction_start(void);
    A transaction must started by calling zb_nvram_transaction_start().
  */
 void zb_nvram_transaction_commit(void);
+
+/**
+ * Reads a portion of some dataset.
+ *
+ * @param page - an NVRAM page to read from
+ * @param pos - a position on the NVRAM page
+ * @param buf - a buffer where read data will be saved
+ * @param len - a data length to read
+ *
+ * @ret status of operation
+ */
+zb_ret_t zb_nvram_read_data(zb_uint8_t page, zb_uint32_t pos, zb_uint8_t *buf, zb_uint16_t len);
+
+
+/**
+ * Writes a portion of some dataset.
+ *
+ * @param page - an NVRAM page to write
+ * @param pos - a position on the NVRAM page
+ * @param buf - a buffer with data to be written
+ * @param len - a buffer size
+ *
+ * @ret status of operation
+ */
+zb_ret_t zb_nvram_write_data(zb_uint8_t page, zb_uint32_t pos, zb_uint8_t *buf, zb_uint16_t len);
 
 /** @} */ /* zboss_nvram */
 /*! @endcond */ /* DOXYGEN_LL_SECTION */

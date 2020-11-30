@@ -231,11 +231,11 @@ typedef ZB_PACKED_PRE struct zb_aps_hdr_s
                                     *    Transport Key -> Verify Key
                                     * 2) BDB+SE Mixed CBKE
                                     * 3) SE CBKE */
-  zb_bitfield_t reserved:4;
+  zb_bitfield_t extended_fc:2;
+  zb_bitfield_t reserved:2;
 
   #define FIRST_INTERNAL_APSIND_FIELD tsn
   zb_uint8_t tsn;               /*!< Transaction sequence number for ZDO/ZCL command. */
-  zb_uint8_t extended_fc;       /*!< Extended frame control. */
   zb_uint8_t block_num;         /*!< Fragmentation: block number. */
   zb_uint8_t block_ack;         /*!< Fragmentation: block ack. */
 } ZB_PACKED_STRUCT zb_aps_hdr_t;
@@ -247,6 +247,7 @@ typedef ZB_PACKED_PRE struct zb_aps_hdr_s
     Also used as a parameter in different APS calls.
  */
 typedef zb_aps_hdr_t zb_apsde_data_indication_t;
+ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_apsde_data_indication_t);
 
 /** @} */ /* APS data service */
 /** @} */

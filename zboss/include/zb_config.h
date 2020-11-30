@@ -385,7 +385,7 @@ Ideally should rework the whole zb_config.h to suit better for that new concept.
  */
 //#define NVRAM_NOT_AVAILABLE
 
-#ifndef NVRAM_NOT_AVAILABLE
+#if !defined NVRAM_NOT_AVAILABLE && !defined ZB_USE_NVRAM
 #define ZB_USE_NVRAM
 #endif
 /*! @} */ /* ZB_CONFIG */
@@ -488,6 +488,10 @@ In general, define ZB_COORDINATOR_ROLE to compile ZC-only build, ZB_ROUTER_ROLE 
 */
 #define ZB_COORDINATOR_ROLE
 #define ZB_ROUTER_ROLE
+/**
+ * If ZB_ROUTER_NO_ED defined, ZR library has no ZED functionality.
+ * ZR can't switch to ZED mode from application or implicitly join as ZED.
+ */
 #ifndef ZB_ROUTER_NO_ED
 /*! Define Zigbee end device functionality */
 #define ZB_ED_FUNC
@@ -549,13 +553,13 @@ ZB_ED_RX_OFF_WHEN_IDLE
 #ifndef ZB_NEIGHBOR_TABLE_SIZE
 
 #if defined ZB_COORDINATOR_ROLE
-#define ZB_NEIGHBOR_TABLE_SIZE 32
+#define ZB_NEIGHBOR_TABLE_SIZE 32U
 
 #elif defined ZB_ROUTER_ROLE
-#define ZB_NEIGHBOR_TABLE_SIZE 32
+#define ZB_NEIGHBOR_TABLE_SIZE 32U
 
 #elif defined ZB_ED_ROLE
-#define ZB_NEIGHBOR_TABLE_SIZE 32
+#define ZB_NEIGHBOR_TABLE_SIZE 32U
 
 #elif defined ZB_ZGPD_ROLE
 /* zcl_common.zgpd.o won't be built without any ZB_NEIGHBOR_TABLE_SIZE definition. */
@@ -566,6 +570,10 @@ ZB_ED_RX_OFF_WHEN_IDLE
 #endif  /* roles */
 
 #endif /* ZB_NEIGHBOR_TABLE_SIZE */
+
+#if ZB_NEIGHBOR_TABLE_SIZE > 255
+#error ZB_NEIGHBOR_TABLE_SIZE should be less than 255 (fit into 1 byte)
+#endif
 
 /**
  *  Scheduler callbacks queue size. Usually not need to change it.
@@ -1699,11 +1707,6 @@ compatibility with some mammoth shit */
 #endif
 #endif
 
-#ifndef ZB_NO_SYSTEST_SUPPORT
-/* That is legacy for some tests. Not used any more */
-#define ZB_NO_SYSTEST_SUPPORT
-#endif
-
 #ifdef ZB_COORDINATOR_ONLY
 /* ZLL/Touchlink can be only ZR and ZED */
 #ifdef ZB_BDB_TOUCHLINK
@@ -1752,4 +1755,3 @@ typedef enum zb_production_config_version_e
 #endif
 
 #endif /* ZB_CONFIG_H */
- 

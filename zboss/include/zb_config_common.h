@@ -1173,7 +1173,7 @@ request command frame.
 *
 *  @note Make sure the time value is not too big.
 */
-#define ZB_MAX_FRAME_TOTAL_WAIT_TIME_2_4_GHZ (ZB_MILLISECONDS_TO_BEACON_INTERVAL(40) + 1U)
+#define ZB_MAX_FRAME_TOTAL_WAIT_TIME_2_4_GHZ (ZB_MILLISECONDS_TO_BEACON_INTERVAL(40U) + 1U)
 /*!
 *  Maximum time to wait for indirect data for SUB GHZ.
 *
@@ -1181,7 +1181,7 @@ request command frame.
 *
 *  @note Make sure the time value is not too big.
 */
-#define ZB_MAX_FRAME_TOTAL_WAIT_TIME_SUB_GHZ (ZB_MILLISECONDS_TO_BEACON_INTERVAL(48) + 1U)
+#define ZB_MAX_FRAME_TOTAL_WAIT_TIME_SUB_GHZ (ZB_MILLISECONDS_TO_BEACON_INTERVAL(48U) + 1U)
 
 
 /*!
@@ -1232,9 +1232,9 @@ request command frame.
 /*! MAC beacon request timeout length (low bound of the random value) */
 #ifndef ZB_MAC_HANDLE_BEACON_REQ_LOW_TMO
 /*! Default MAC beacon request timeout length */
-#define ZB_MAC_HANDLE_BEACON_REQ_LOW_TMO_DEFAULT 1
+#define ZB_MAC_HANDLE_BEACON_REQ_LOW_TMO_DEFAULT 1U
 /*! Extended MAC beacon request timeout length */
-#define ZB_MAC_HANDLE_BEACON_REQ_LOW_TMO_EXTENDED 12
+#define ZB_MAC_HANDLE_BEACON_REQ_LOW_TMO_EXTENDED 12U
 
 #ifdef ZB_STACK_REGRESSION_TESTING_API
 /** Choose exact value depending on regression tests flags */
@@ -1600,7 +1600,9 @@ request command frame.
 /* ****************** Smart Energy parameters ******************* */
 /* 5.3.8 APS Fragmentation Parameters
    For  the Smart Energy Profile the default value shall be set to 128 bytes. */
-#define ZB_ASDU_MAX_FRAG_LEN (ZB_IO_BUF_SIZE - sizeof(zb_apsde_data_indication_t) - ZB_APS_HEADER_MAX_LEN - 3)
+#define ZB_APS_MSG_MAX_SIZE 1536
+#define ZB_ASDU_MAX_LEN_MULTIPLIER ((ZB_APS_MSG_MAX_SIZE + sizeof(zb_apsde_data_indication_t) +  ZB_APS_HEADER_MAX_LEN + 3)/ZB_IO_BUF_SIZE + 1)
+#define ZB_ASDU_MAX_FRAG_LEN (ZB_ASDU_MAX_LEN_MULTIPLIER*ZB_IO_BUF_SIZE - sizeof(zb_apsde_data_indication_t) - ZB_APS_HEADER_MAX_LEN - 3)
 #define ZB_APS_MAX_WINDOW_SIZE 1
 #define ZB_APS_INTERFRAME_DELAY 50 /* milliseconds */
 

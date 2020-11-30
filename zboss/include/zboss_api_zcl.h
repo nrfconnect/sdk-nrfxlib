@@ -2381,6 +2381,11 @@ typedef struct zb_zcl_globals_s
 #endif /* ZB_CONTROL4_NETWORK_SUPPORT */
   zb_uint8_t zcl_handlers_cnt;
   zb_discover_cmd_list_t *zb_zcl_cluster_cmd_list;
+#if (defined ZB_ZCL_SUPPORT_CLUSTER_WWAH && (defined ZB_ZCL_ENABLE_WWAH_SERVER || defined ZB_ZCL_ENABLE_WWAH_CLIENT))
+  /* TODO: Split (client/server) ! */
+  zb_zcl_wwah_context_t wwah_ctx;
+#endif
+
 } zb_zcl_globals_t;
 
 /**

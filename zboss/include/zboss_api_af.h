@@ -185,11 +185,11 @@ typedef ZB_PACKED_PRE struct zb_af_node_power_desc_s
 
 
 /** @cond internals_doc */
-#define __CAT__(a, b, c, d, e) a##b##c##d##e
+#define CAT5(a, b, c, d, e) a##b##c##d##e
 /** @endcond */ /*internals_doc */
 
 /** Generate simple descriptor type name */
-#define ZB_AF_SIMPLE_DESC_TYPE(in_num, out_num)  __CAT__(zb_af_simple_desc_,in_num,_,out_num,_t)
+#define ZB_AF_SIMPLE_DESC_TYPE(in_num, out_num)  CAT5(zb_af_simple_desc_,in_num,_,out_num,_t)
 
 /**
    Declares Simple descriptor type
@@ -214,7 +214,7 @@ typedef ZB_PACKED_PRE struct zb_af_node_power_desc_s
     zb_uint8_t    app_input_cluster_count;  /* Application input cluster count */         \
     zb_uint8_t    app_output_cluster_count; /* Application output cluster count */        \
     /* Application input and output cluster list */                                       \
-    zb_uint16_t   app_cluster_list[in_clusters_count + out_clusters_count];               \
+    zb_uint16_t   app_cluster_list[(in_clusters_count) + (out_clusters_count)];               \
   } ZB_PACKED_STRUCT                                                                      \
   zb_af_simple_desc_ ## in_clusters_count ## _ ## out_clusters_count ## _t
 

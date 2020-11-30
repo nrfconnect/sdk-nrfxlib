@@ -65,7 +65,7 @@ void zb_abort(char *caller_file, int caller_line);
    @param file_name - source file name
    @param line_number - line in the source
 */
-void zb_assert(zb_char_t *file_name, zb_int_t line_number);
+void zb_assert(const zb_char_t *file_name, zb_int_t line_number);
 /** @endcond */
 /**
    Check for expression in runtime and call zb_assert() if it is false.
@@ -94,7 +94,7 @@ void zb_assert(zb_uint16_t file_id, zb_int_t line_number);
 
    @param expr expression to check
 */
-#define ZB_ASSERT(expr) {if(!(expr)) zb_assert(ZB_TRACE_FILE_ID, __LINE__);}
+#define ZB_ASSERT(expr) {if(!(expr)) { zb_assert(ZB_TRACE_FILE_ID, __LINE__);} }
 /** @cond internals_doc */
 #define ZB_INLINE_ASSERT_SIMPLE(expr)  ((expr) ? 1 : (zb_assert(ZB_TRACE_FILE_ID, __LINE__), 1))
 /** @endcond */

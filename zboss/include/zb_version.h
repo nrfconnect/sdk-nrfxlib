@@ -41,8 +41,8 @@
 /* PURPOSE: ZBOSS version declare
 */
 
-#ifndef _ZB_VERSION_H_
-#define _ZB_VERSION_H_ 1
+#ifndef ZB_VERSION_H
+#define ZB_VERSION_H 1
 
 #include "zb_revision_r22.h"
 
@@ -59,4 +59,4 @@
 /* 2 - MM_SE enabled */
 #define ZBOSS_MINOR 3
 
-#endif
+#endif /* ZB_VERSION_H */

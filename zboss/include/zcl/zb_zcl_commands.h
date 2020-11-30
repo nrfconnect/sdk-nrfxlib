@@ -773,7 +773,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
 */
 #define ZB_ZCL_GENERAL_ADD_READ_ATTR_RESP(_buf, _cmd_ptr, _attr_desc)                           \
 {                                                                                               \
-  zb_uint8_t bytes_avail = ZB_ZCL_GET_BYTES_AVAILABLE((_buf), (_cmd_ptr));                      \
+  zb_uint16_t bytes_avail = ZB_ZCL_GET_BYTES_AVAILABLE((_buf), (_cmd_ptr));                     \
   zb_uint8_t attr_size = zb_zcl_get_attribute_size((_attr_desc)->type, (_attr_desc)->data_p);   \
   if (bytes_avail >= (sizeof(zb_zcl_read_attr_res_t) - sizeof(zb_uint8_t) + attr_size))         \
   {                                                                                             \
@@ -796,7 +796,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
 */
 #define ZB_ZCL_GENERAL_ADD_NO_SUPPORT_READ_ATTR_RESP(_buf, _cmd_ptr, _attr_id)          \
 {                                                                                       \
-  zb_uint8_t bytes_avail = ZB_ZCL_GET_BYTES_AVAILABLE((_buf), (_cmd_ptr));              \
+  zb_uint16_t bytes_avail = ZB_ZCL_GET_BYTES_AVAILABLE((_buf), (_cmd_ptr));             \
   if (bytes_avail >= (sizeof(zb_uint16_t) + sizeof(zb_uint8_t)))                        \
   {                                                                                     \
     ZB_ZCL_PACKET_PUT_DATA16_VAL((_cmd_ptr), (_attr_id));                               \
@@ -1133,7 +1133,7 @@ zb_zcl_write_attr_res_t;
 */
 #define ZB_ZCL_GENERAL_ADD_STATUS_WRITE_ATTR_RESP(_buf, _cmd_ptr, _attr_id, _status)    \
 {                                                                                       \
-  zb_uint8_t bytes_avail = ZB_ZCL_GET_BYTES_AVAILABLE((_buf), (_cmd_ptr));              \
+  zb_uint16_t bytes_avail = ZB_ZCL_GET_BYTES_AVAILABLE((_buf), (_cmd_ptr));             \
   if (bytes_avail >= sizeof(zb_zcl_write_attr_res_t))                                   \
   {                                                                                     \
     ZB_ZCL_PACKET_PUT_DATA8((_cmd_ptr), (_status));                                     \

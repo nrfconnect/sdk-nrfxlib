@@ -173,12 +173,10 @@ enum zb_zcl_on_off_cmd_e
 
 #define ZB_ZCL_CLUSTER_ID_ON_OFF_CLIENT_ROLE_RECEIVED_CMD_LIST ZB_ZCL_CLUSTER_ID_ON_OFF_SERVER_ROLE_GENERATED_CMD_LIST
 
-#define ZB_ZCL_CLUSTER_ID_ON_OFF_CLIENT_ROLE_GENERATED_CMD_LIST     \
-                                      ZB_ZCL_CMD_ON_OFF_OFF_ID,     \
-                                      ZB_ZCL_CMD_ON_OFF_ON_ID,      \
-                                      ZB_ZCL_CMD_ON_OFF_TOGGLE_ID
-
-#define ZB_ZCL_CLUSTER_ID_ON_OFF_TL_CLIENT_ROLE_GENERATED_CMD_LIST                      \
+#define ZB_ZCL_CLUSTER_ID_ON_OFF_CLIENT_ROLE_GENERATED_CMD_LIST                         \
+                                      ZB_ZCL_CMD_ON_OFF_OFF_ID,                         \
+                                      ZB_ZCL_CMD_ON_OFF_ON_ID,                          \
+                                      ZB_ZCL_CMD_ON_OFF_TOGGLE_ID,                      \
                                       ZB_ZCL_CMD_ON_OFF_OFF_WITH_EFFECT_ID,             \
                                       ZB_ZCL_CMD_ON_OFF_ON_WITH_RECALL_GLOBAL_SCENE_ID, \
                                       ZB_ZCL_CMD_ON_OFF_ON_WITH_TIMED_OFF_ID
