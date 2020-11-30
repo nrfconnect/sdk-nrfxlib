@@ -3,11 +3,18 @@
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
+
 /**@file
- * @defgroup cc3xx_kmu cc3xx  APIs
- * @ingroup nrf_cc3xx_platform
+ * @defgroup nrf_cc3xx_mbedcrypto nrf_cc3xx_mbedcrypto APIs
  * @{
- * @brief The cc3xx_kmu APIs provides APIs to directly use or derive key
+ * @brief nrf_cc3xx_mbedcrypto  nrf_cc3xx_mbedcrypto library containing cc3xx
+ * APIs for the KMU or KDR peripherarls. Further documentation can be found on : https://tls.mbed.org
+ * @}
+ *
+ * @defgroup nrf_cc3xx_mbedcrypto_kmu nrf_cc3xx_mbedcrypto KMU APIs
+ * @ingroup nrf_cc3xx_mbedcrypto
+ * @{
+ * @brief The nrf_cc3xx_mbedcrypto_kmu APIs provides APIs to directly use or derive key
  *        from KMU or KDR in ARM CryptoCell devices
  */
 #ifndef CC3XX_KMU_H__

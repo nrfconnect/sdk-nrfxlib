@@ -76,6 +76,23 @@ CC3XX Platform - CTR_DRBG APIs
    :members:
 
 
+.. _crypto_api_nrf_cc3xx_mbedcrypto:
+
+nRF CC3XX mbedcrypto library
+****************************
+
+.. doxygengroup:: nrf_cc3xx_mbedcrypto
+   :project: nrfxlib
+   :members:
+
+KMU/KDR APIs
+========================
+
+.. doxygengroup:: nrf_cc3xx_mbedcrypto_kmu
+   :project: nrfxlib
+   :members:
+
+
 .. _crypto_api_nrf_oberon:
    
 nrf_oberon crypto library
