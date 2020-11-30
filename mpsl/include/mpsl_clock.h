@@ -22,6 +22,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "nrf.h"
 #include "nrf_errno.h"
 
@@ -49,38 +50,44 @@ enum MPSL_CLOCK_LF_SRC
 /** @brief Default LF clock accuracy in parts per million (ppm). */
 #define MPSL_DEFAULT_CLOCK_ACCURACY_PPM  250
 
+/** @brief MPSL waits for low frequency clock to start by default. */
+#define MPSL_NO_WAIT_FOR_LF_CLOCK false
+
 /** @brief Type representing LFCLK oscillator source. */
 typedef struct
 {
-    uint8_t source;         /**< LF oscillator clock source, see @ref MPSL_CLOCK_LF_SRC. */
-    uint8_t rc_ctiv;        /**< Only for ::MPSL_CLOCK_LF_SRC_RC.
-                                 Calibration timer interval in 1/4 second units.
-                                 @note To avoid excessive clock drift, 0.5 degrees Celsius is the
-                                       maximum temperature change allowed in one calibration timer
-                                       interval. The interval should be selected to ensure this.
-                                 @note Must be 0 if source is not ::MPSL_CLOCK_LF_SRC_RC. */
-    uint8_t rc_temp_ctiv;   /**< Only for ::MPSL_CLOCK_LF_SRC_RC: How often (in number of calibration
-                                 intervals) the RC oscillator shall be calibrated if the temperature
-                                 hasn't changed.
-                                      0: Always calibrate even if the temperature hasn't changed.
-                                      2-33: Check the temperature and only calibrate if it has changed,
-                                            however calibration will take place every rc_temp_ctiv
-                                            intervals in any case.
+  uint8_t source;         /**< LF oscillator clock source, see @ref MPSL_CLOCK_LF_SRC. */
+  uint8_t rc_ctiv;        /**< Only for ::MPSL_CLOCK_LF_SRC_RC.
+                               Calibration timer interval in 1/4 second units.
+                               @note To avoid excessive clock drift, 0.5 degrees Celsius is the
+                                     maximum temperature change allowed in one calibration timer
+                                     interval. The interval should be selected to ensure this.
+                               @note Must be 0 if source is not ::MPSL_CLOCK_LF_SRC_RC. */
+  uint8_t rc_temp_ctiv;   /**< Only for ::MPSL_CLOCK_LF_SRC_RC: How often (in number of calibration
+                               intervals) the RC oscillator shall be calibrated if the temperature
+                               hasn't changed.
+                                    0: Always calibrate even if the temperature hasn't changed.
+                                    2-33: Check the temperature and only calibrate if it has changed,
+                                          however calibration will take place every rc_temp_ctiv
+                                          intervals in any case.
 
-                                 @note Must be 0 if source is not ::MPSL_CLOCK_LF_SRC_RC.
+                               @note Must be 0 if source is not ::MPSL_CLOCK_LF_SRC_RC.
 
-                                 @note The application must ensure calibration at least once every
-                                       8 seconds to ensure +/-500 ppm clock stability.
-                                       The recommended configuration for ::MPSL_CLOCK_LF_SRC_RC
-                                       is given by @ref MPSL_RECOMMENDED_RC_CTIV
-                                       and @ref MPSL_RECOMMENDED_RC_TEMP_CTIV.
-                                       This sets the calibration interval to 4 seconds and guarantees
-                                       clock calibration every second calibration interval. That is,
-                                       the clock will be calibrated every 8 seconds.
-                                       If the temperature changes more that 0.5 every 4 seconds, the
-                                       clock will be calibrated every 4 seconds. See the
-                                       Product Specification for more information. */
-    uint16_t accuracy_ppm;  /**< Accuracy of the low frequency clock in parts per million (ppm). Default value is @ref MPSL_DEFAULT_CLOCK_ACCURACY_PPM.*/
+                               @note The application must ensure calibration at least once every
+                                     8 seconds to ensure +/-500 ppm clock stability.
+                                     The recommended configuration for ::MPSL_CLOCK_LF_SRC_RC
+                                     is given by @ref MPSL_RECOMMENDED_RC_CTIV
+                                     and @ref MPSL_RECOMMENDED_RC_TEMP_CTIV.
+                                     This sets the calibration interval to 4 seconds and guarantees
+                                     clock calibration every second calibration interval. That is,
+                                     the clock will be calibrated every 8 seconds.
+                                     If the temperature changes more that 0.5 every 4 seconds, the
+                                     clock will be calibrated every 4 seconds. See the
+                                     Product Specification for more information. */
+  uint16_t accuracy_ppm;  /**< Accuracy of the low frequency clock in parts per million (ppm). Default value is @ref MPSL_DEFAULT_CLOCK_ACCURACY_PPM.*/
+  bool no_wait_lfclk;     /**< Determines whether MPSL waits for the low frequency clock to start during initialization or not.
+                               If it is set to true, MPSL will wait for the low frequency clock later,
+                               before the low frequency clock is used for the first time. */
 } mpsl_clock_lfclk_cfg_t;
 
 /** @brief High frequency clock callback.
