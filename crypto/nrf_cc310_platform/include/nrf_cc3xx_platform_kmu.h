@@ -64,9 +64,9 @@
  *
  * @note nRF5340: Keys of 128 bits can use @ref NRF_CC3XX_PLATFORM_KMU_AES_ADDR,
  *       Keys larger than 128 bits must be split up to use two KMU slots.
- *       Use @ref NRF_CC3XX_PLATFORM_KMU_AES_ADDR_1 for the first 128 bits of
+ *       Use NRF_CC3XX_PLATFORM_KMU_AES_ADDR_1 for the first 128 bits of
  *       the key.
- *       Use @ref NRF_CC3XX_PLATFORM_KMU_AES_ADDR_2 for the subsequent bits of
+ *       Use NRF_CC3XX_PLATFORM_KMU_AES_ADDR_2 for the subsequent bits of
  *       the key.
  *
  * @param[in]   slot_id     KMU slot ID for the new key (2 - 127).

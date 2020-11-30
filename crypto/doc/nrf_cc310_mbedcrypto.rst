@@ -188,3 +188,8 @@ Usage restrictions
 
 On the nRF9160 SiP, the nrf_cc3xx_mbedcrypto library is restricted to only work in secure processing environment.
 The library uses mutexes to ensure single usage of hardware modules.
+
+API documentation
+=================
+
+:ref:`crypto_api_nrf_cc3xx_mbedcrypto`
