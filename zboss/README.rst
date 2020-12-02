@@ -9,7 +9,7 @@ For detailed documentation of the ZBOSS API and instructions on how to use it, s
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Subpages:
 
    CHANGELOG
    doc/zboss_configuration
