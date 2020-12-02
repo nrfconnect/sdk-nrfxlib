@@ -3,13 +3,17 @@
 GNSS socket
 ###########
 
+.. contents::
+   :local:
+   :depth: 2
+
 `Global navigation satellite system (GNSS)`_ socket is one of the socket types supported by the BSD library.
 This socket type is used to configure and fetch GPS position fix data from the GPS module, and to write `A-GPS`_ data to the GPS module.
 
 Creating a GNSS socket
 **********************
 
-The following code shows how to create a GNSS socket with the :c:type:`NRF_PROTO_GNSS` protocol family and the 
+The following code shows how to create a GNSS socket with the :c:type:`NRF_PROTO_GNSS` protocol family and the
 :c:type:`NRF_AF_LOCAL` proprietary address family.
 
 .. code-block:: c
@@ -45,7 +49,7 @@ The bit masks for the different types of data that can be deleted is defined in 
 Stopping the GPS
 ****************
 
-The GPS module can be stopped through the GNSS socket by using the :c:type:`NRF_SO_GNSS_STOP` socket option. 
+The GPS module can be stopped through the GNSS socket by using the :c:type:`NRF_SO_GNSS_STOP` socket option.
 A delete mask must also be supplied when stopping the GPS module as shown in the following code:
 
 .. code-block:: c
