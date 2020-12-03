@@ -8,6 +8,7 @@
 /LICENSE                                  @carlescufi
 /Jenkinsfile                              @thst-nordic
 /README.rst                               @ru-fu @carlescufi
+/.checkpatch.conf                         @carlescufi
 
 # All cmake related files
 /CMakeLists.txt                           @tejlmand
