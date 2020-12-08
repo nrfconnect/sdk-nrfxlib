@@ -176,34 +176,47 @@ The error in position calculation, when compared to the actual position, can be 
 In addition, in the low accuracy mode, the GNSS receiver might use only three satellites to determine a fix.
 In normal accuracy mode, four or more satellites are used.
 
-For a possible position fix using three satellites, one of the following criteria must be satisfied initially and when the criterion is met, it will be valid for a time duration of 24 hours:
+For a possible position fix utilizing only three satellites, the GNSS engine must have a reference altitude that has been updated in the last 24 hours.
+The reference altitude is obtained from one of the following sources:
 
-* At least a single fix must have taken place using five or more satellites. If you initiate the GPS to start in low accuracy mode, the GNSS engine will not be able to utilize the fix using three satellites before the aforementioned condition has taken place. In the subsequent time window following the fix using five satellites, any fix that uses five or more satellites results in the resetting of the time window and extension of the 24-hour time window.
+* A GNSS fix using five or more satellites (In the subsequent time window following the fix using five satellites, any fix that uses five or more satellites results in the resetting of the time window and extension of the 24-hour time window.)
+* An A-GPS assistance message - The assistance data is given as input to the GNSS engine using the :c:type:`nrf_gnss_agps_data_location_t` A-GPS data location struct, as shown in the code below:
 
-* The altitude (in meters), altitude uncertainty (0 percent), and confidence (100 percent) must be given as input to the GNSS engine using the :c:type:`nrf_gnss_agps_data_location_t` A-GPS data location struct as shown in the code below. To be able to remain in low accuracy mode, this step must be repeated at least once for every 24-hour duration, results in resetting the timer and extension of the 24-hour time window.
+  .. code-block:: c
+
+     nrf_gnss_agps_data_location_t location;
+
+     location.latitude          = latitude; /* Best estimate within maximum limit of 1800 km  */
+     location.longitude         = longitude;/* Best estimate within maximum limit of 1800 km */
+     location.altitude          = altitude; /* Actual altitude of the device in meters */
+     location.unc_semimajor     = 127;      /* Can be set to 127 or less if actual uncertainty is known */
+     location.unc_semiminor     = 127;      /* Can be set to 127 or less if actual uncertainty is known  */
+     location.orientation_major = 0;        /* Can be set to 0 if unc_semimajor and unc_semiminor are identical values */
+     location.unc_altitude      = 0;        /* Actual altitude, value needs to be less than 48 in order to be taken into use */
+     location.confidence        = 100;      /* Set to 100 for maximum confidence */
+
+ The struct contains the latitude, longitude (Geodetic latitude/longitude, WGS-84 format) and altitude (in meters) parameters.
+ The uncertainties for the coordinates (unc_semimajor and unc_semiminor) and for the altitude (unc_altitude) are given as an index from ``0`` to ``127``.
+ The altitude uncertainty must be less than 100 meters (index less than ``48``) for it to be valid as a reference altitude.
+ The accuracy of the latitude and longitude are less important, but it must be within 1800 kilometers of the actual location.
+
+If both verified GNSS fix (five or more satellites used in earlier fix) and A-GPS assistance data are available, then the altitude from the verified GNSS fix is used.
+
+Thus, if GNSS has started in low accuracy mode, the GNSS engine will not be able to produce fixes using three satellites until it has a reference altitude from one of the above-mentioned sources.
+Furthermore, to continue having possible three satellite fixes, the reference altitude must be updated at least once in every 24 hours.
+
+.. note::
+   Starting or stopping the navigation with bit ``3`` (``delete the last valid fix``) in the delete mask clears the reference altitude value.
 
 
 .. important::
    The altitude must be accurate to a value within ±10 meters of the actual altitude of the device. An erroneous altitude will result in a severe error in the position fix calculation using three satellites.
 
-.. code-block:: c
-
-   nrf_gnss_agps_data_location_t location;
-
-   location.latitude          = 0;        /* Unknown, set to 0 */
-   location.longitude         = 0;        /* Unknown, set to 0 */
-   location.altitude          = altitude; /* Actual altitude of the device in meters */
-   location.unc_semimajor     = 127;      /* Set to 127 when location is unknown */
-   location.unc_semiminor     = 127;      /* Set to 127 when location is unknown */
-   location.orientation_major = 0;        /* Unknown, set to 0 */
-   location.unc_altitude      = 0;        /* Set to 0 */
-   location.confidence        = 100;      /* Set to 100 */
-
 If the actual altitude of the device changes with respect to the altitude stored in the GNSS engine (for example, when the device moves around), the accuracy of the position fix using three satellites will be degraded.
 
 The low accuracy mode is different from the 2D fix that is documented in the NMEA reports.
 All fixes, including the low accuracy fixes, will be reported as 3D fixes.
-See the `NMEA report sample`_ and number of IDs of SVs used in the position fix to get information of the number of satellites are used for the position fix.
+See the `NMEA report sample`_ and number of IDs of SVs used in the position fix to get information of the number of satellites that are used for the position fix.
 
 
 

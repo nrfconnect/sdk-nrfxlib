@@ -33,7 +33,7 @@
 
 .. _`Global navigation satellite system (GNSS)`: https://en.wikipedia.org/wiki/Satellite_navigation
 
-.. _`NMEA`: https://www.gpsinformation.org/dale/nmea.htm
+.. _`NMEA`: https://www.gpsworld.com/what-exactly-is-gps-nmea-data/
 
 .. _`A-GPS`: https://en.wikipedia.org/wiki/Assisted_GPS
 
