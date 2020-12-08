@@ -51,6 +51,7 @@ config GENERATE_MBEDTLS_CFG_FILE
 config MBEDTLS_X509_LIBRARY
 	bool
 	prompt "Create mbed TLS x509 library"
+	select MBEDTLS_PK_C
 	help
 	  Create the mbed x509 library for handling of certificates.
 
@@ -1554,6 +1555,18 @@ config MBEDTLS_SSL_CIPHERSUITES
 	  This list can only be used for restricting cipher suites available in the system.
 	  Warning: This field has offers no validation checks.
 	  MBEDTLS_SSL_CIPHERSUITES setting in mbed TLS config file.
+
+config MBEDTLS_PK_C
+	bool "PK - Enable the generic public (asymetric) key layer"
+	depends on MBEDTLS_TLS_LIBRARY
+	help
+	  Enable generic public key wrappers.
+
+config MBEDTLS_PK_WRITE_C
+	bool "Enable the generic public (asymetric) key writer"
+	depends on MBEDTLS_PK_C
+	help
+	  Enable generic public key write functions.
 
 endif # NRF_SECURITY_ADVANCED
 
