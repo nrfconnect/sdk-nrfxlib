@@ -130,3 +130,9 @@ configure_file_ifdef(CONFIG_CC3XX_BACKEND
   ${generated_include_path}/threading_alt.h
   COPYONLY
 )
+
+configure_file_ifdef(CONFIG_CC3XX_BACKEND
+  ${NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH}/cc3xx_kmu.h
+  ${generated_include_path}/mbedtls/cc3xx_kmu.h
+  COPYONLY
+)
