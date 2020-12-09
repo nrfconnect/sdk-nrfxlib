@@ -368,12 +368,11 @@
 //#define MBEDTLS_MD5_ALT
 #define MBEDTLS_POLY1305_ALT
 //#define MBEDTLS_RIPEMD160_ALT
-//#define MBEDTLS_XTEA_ALT
+#define MBEDTLS_RSA_ALT
 #define MBEDTLS_SHA1_ALT
 #define MBEDTLS_SHA256_ALT
 //#define MBEDTLS_SHA512_ALT
-#define MBEDTLS_RSA_ALT
-
+//#define MBEDTLS_XTEA_ALT
 
 /*
  * When replacing the elliptic curve module, pleace consider, that it is
