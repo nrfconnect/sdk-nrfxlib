@@ -9,6 +9,21 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Master branch
+*************
+
+Added
+=====
+* Added a new signal to MPSL timeslot ``MPSL_TIMESLOT_SIGNAL_OVERSTAYED``.
+  This signal is given to the application when a timeslot session is closed too late (DRGN-14677).
+* Added clock configuration option to not wait for low frequency clock to start (DRGN-14204).
+  See ``mpsl_clock_lfclk_cfg_t::skip_wait_lfclk_started``.
+
+Bugfixes
+========
+
+* Fixed an issue where the low frequency clock was configured incorrectly when low frequency source was either low or full swing signal (DRGN-15064).
+
 nRF Connect SDK v1.4.0
 **********************
 

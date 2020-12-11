@@ -64,38 +64,41 @@ typedef uint8_t mpsl_timeslot_session_id_t;
 /** @brief The timeslot signal types. */
 enum MPSL_TIMESLOT_SIGNAL
 {
-    MPSL_TIMESLOT_SIGNAL_START            = 0, /**< This signal indicates the start of the timeslot.
-                                               The signal will be executed in the same context as
-                                               @ref MPSL_IRQ_TIMER0_Handler. */
-    MPSL_TIMESLOT_SIGNAL_TIMER0           = 1, /**< This signal indicates the TIMER0 interrupt.
-                                               The signal will be executed in the same context as
-                                               @ref MPSL_IRQ_TIMER0_Handler. */
-    MPSL_TIMESLOT_SIGNAL_RADIO            = 2, /**< This signal indicates the RADIO interrupt.
-                                               The signal will be executed in the same context as
-                                               @ref MPSL_IRQ_RADIO_Handler. */
-    MPSL_TIMESLOT_SIGNAL_EXTEND_FAILED    = 3, /**< This signal indicates extend action failed.
-                                               The signal will be executed in the same context as
-                                               the previous signal. */
-    MPSL_TIMESLOT_SIGNAL_EXTEND_SUCCEEDED = 4, /**< This signal indicates extend action succeeded.
-                                               The signal will be executed in the same context as
-                                               the previous signal. */
+    MPSL_TIMESLOT_SIGNAL_START            = 0,  /**< This signal indicates the start of the timeslot.
+                                                The signal will be executed in the same context as
+                                                @ref MPSL_IRQ_TIMER0_Handler. */
+    MPSL_TIMESLOT_SIGNAL_TIMER0           = 1,  /**< This signal indicates the TIMER0 interrupt.
+                                                The signal will be executed in the same context as
+                                                @ref MPSL_IRQ_TIMER0_Handler. */
+    MPSL_TIMESLOT_SIGNAL_RADIO            = 2,  /**< This signal indicates the RADIO interrupt.
+                                                The signal will be executed in the same context as
+                                                @ref MPSL_IRQ_RADIO_Handler. */
+    MPSL_TIMESLOT_SIGNAL_EXTEND_FAILED    = 3,  /**< This signal indicates extend action failed.
+                                                The signal will be executed in the same context as
+                                                the previous signal. */
+    MPSL_TIMESLOT_SIGNAL_EXTEND_SUCCEEDED = 4,  /**< This signal indicates extend action succeeded.
+                                                The signal will be executed in the same context as
+                                                the previous signal. */
 
-    MPSL_TIMESLOT_SIGNAL_BLOCKED          = 5, /**< The previous request was blocked. The signal will
-                                               be executed in the same context as
-                                               @ref mpsl_low_priority_process. */
-    MPSL_TIMESLOT_SIGNAL_CANCELLED        = 6, /**< The previous request was cancelled. The signal will
-                                               be executed in the same context as
-                                               @ref mpsl_low_priority_process.  */
-    MPSL_TIMESLOT_SIGNAL_SESSION_IDLE     = 7, /**< The timeslot session has no more pending requests.
-                                               The signal will be executed in the same context as
-                                               @ref mpsl_low_priority_process. */
-    MPSL_TIMESLOT_SIGNAL_INVALID_RETURN   = 8, /**< The previous timeslot callback return value was invalid.
-                                               The signal will be executed in the same context as
-                                               the previous signal which had an invalid return value.
-                                               The application should avoid to continuously provide
-                                               invalid return values. Doing so, will lead to an
-                                               infinite loop. */
-    MPSL_TIMESLOT_SIGNAL_SESSION_CLOSED   = 9  /**< The session has been closed. */
+    MPSL_TIMESLOT_SIGNAL_BLOCKED          = 5,  /**< The previous request was blocked. The signal will
+                                                be executed in the same context as
+                                                @ref mpsl_low_priority_process. */
+    MPSL_TIMESLOT_SIGNAL_CANCELLED        = 6,  /**< The previous request was cancelled. The signal will
+                                                be executed in the same context as
+                                                @ref mpsl_low_priority_process.  */
+    MPSL_TIMESLOT_SIGNAL_SESSION_IDLE     = 7,  /**< The timeslot session has no more pending requests.
+                                                The signal will be executed in the same context as
+                                                @ref mpsl_low_priority_process. */
+    MPSL_TIMESLOT_SIGNAL_INVALID_RETURN   = 8,  /**< The previous timeslot callback return value was invalid.
+                                                The signal will be executed in the same context as
+                                                the previous signal which had an invalid return value.
+                                                The application should avoid to continuously provide
+                                                invalid return values. Doing so, will lead to an
+                                                infinite loop. */
+    MPSL_TIMESLOT_SIGNAL_SESSION_CLOSED   = 9,  /**< The session has been closed. */
+    MPSL_TIMESLOT_SIGNAL_OVERSTAYED       = 10, /**< The timeslot event was closed too late.
+                                                An assert will be triggered after the processing
+                                                of this signal completes. */
 };
 
 /** @brief The actions requested by the signal callback.
@@ -268,6 +271,9 @@ int32_t mpsl_timeslot_session_count_set(void* p_mem, uint8_t n_sessions);
  *       the TIMER0 interrupt occurs.
  * @note mpsl_timeslot_signal_callback(@ref MPSL_TIMESLOT_SIGNAL_RADIO) is called whenever the RADIO
  *       interrupt occurs.
+ * @note If the low frequency clock is not running when this function is called,
+ *       the function will wait until the low frequency clock has started.
+ *       See @ref mpsl_clock_lfclk_cfg_t::skip_wait_lfclk_started.
  *
  * @param[in]  mpsl_timeslot_signal_callback The signal callback.
  * @param[out] p_session_id                  Pointer to the id of the session that was opened.
