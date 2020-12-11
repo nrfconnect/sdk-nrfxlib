@@ -268,6 +268,9 @@ int32_t mpsl_timeslot_session_count_set(void* p_mem, uint8_t n_sessions);
  *       the TIMER0 interrupt occurs.
  * @note mpsl_timeslot_signal_callback(@ref MPSL_TIMESLOT_SIGNAL_RADIO) is called whenever the RADIO
  *       interrupt occurs.
+ * @note If the low frequency clock is not running when this function is called,
+ *       the function will wait until the low frequency clock has started.
+ *       See @ref mpsl_clock_lfclk_cfg_t::skip_wait_lfclk_started.
  *
  * @param[in]  mpsl_timeslot_signal_callback The signal callback.
  * @param[out] p_session_id                  Pointer to the id of the session that was opened.
