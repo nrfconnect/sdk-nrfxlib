@@ -9,6 +9,21 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF Connect SDK v1.4.1
+**********************
+
+Added
+=====
+
+* Added a new clock configuration option :c:member:`skip_wait_lfclk_started` in :c:struct:`mpsl_clock_lfclk_cfg_t`,
+  which does not wait for the start of Low Frequency Clock. (DRGN-14204)
+
+Bugfixes
+========
+
+* Fixed an issue where Low Frequency Clock was configured incorrectly
+  when the source configuration signal was set to either External Full swing or External Low swing. (DRGN-15064)
+
 nRF Connect SDK v1.4.0
 **********************
 
