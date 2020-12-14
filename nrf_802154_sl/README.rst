@@ -11,8 +11,6 @@ Currently, the library implements the following features:
   It allows the concurrency of Bluetooth LE and 802.15.4 operations.
 * CSMA/CA support.
   It provides a built-in CSMA/CA mechanism, optimized for performance.
-* Front-end Module (FEM) support.
-  It provides an API for controlling external signal amplifiers.
 * Delayed transmission and reception.
   It allows the scheduling of transmissions and receptions, to execute them at a predefined moment.
 * Timestamping.
@@ -43,6 +41,6 @@ To use the library:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Subpages:
+   :caption: Contents:
 
    CHANGELOG
