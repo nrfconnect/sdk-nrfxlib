@@ -13,9 +13,5 @@ if(NOT EXISTS ${MPSL_LIB_PATH})
                   "(${MPSL_LIB_PATH} doesn't exist.)")
 endif()
 
-if(CONFIG_TEMP_NRF5 AND CONFIG_MPSL)
-  message(WARNING "CONFIG_TEMP_NRF5 and CONFIG_MPSL have both been enabled, but are not designed to co-exist.")
-endif()
-
 zephyr_include_directories(include)
 zephyr_link_libraries(${MPSL_LIB_PATH}/libmpsl.a)
