@@ -9,6 +9,18 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF 802.15.4 Service Layer 0.3.0
+********************************
+
+* PA/LNA implementation has been moved to MPSL.
+  Obsolete implementation and API have been removed.
+
+Removed
+=======
+
+* Removed PA/LNA implementation and API.
+  Built from commit *e268db75108016ee02965556aa52cf8437f5e071*.
+
 nRF 802.15.4 Service Layer 0.2.0
 ********************************
 

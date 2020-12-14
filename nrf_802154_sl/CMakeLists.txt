@@ -17,6 +17,4 @@ endif()
 
 zephyr_include_directories(include)
 
-zephyr_include_directories(include/fem)
-
 zephyr_link_libraries(${NRF_802154_SL_LIB_PATH}/libnrf_802154_sl.a)
