@@ -1669,8 +1669,6 @@ void nrf_freeaddrinfo(struct nrf_addrinfo *p_res);
  */
 int nrf_setdnsaddr(int family, const void *in_addr);
 
-/** @} */
-
 #ifdef __cplusplus
 }
 #endif
