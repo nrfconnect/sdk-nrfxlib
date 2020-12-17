@@ -35,10 +35,6 @@ Resources for the Modem library
    :project: nrfxlib
    :members:
 
-.. doxygengroup:: nrf_modem_reserved_memory
-   :project: nrfxlib
-   :members:
-
 .. doxygengroup:: nrf_modem_reserved_interrupts
    :project: nrfxlib
    :members:
