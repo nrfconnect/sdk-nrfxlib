@@ -11,7 +11,7 @@ The :ref:`nrf_modem` from Nordic Semiconductor is an OS-agnostic C library.
 OS-specific parts are moved out of the library.
 To use the library with your OS or scheduler, you must first port it by creating a custom :file:`nrf_modem_os.c` file, which serves as an OS abstraction layer.
 The library exposes a :file:`nrf_modem_os.h` header file that defines the functions that must be implemented in :file:`nrf_modem_os.c`.
-The header file also exposes what functions are provided by the library that the OS integration module must interface with.
+The header file also exposes the functions provided by the library that the OS integration module must interface with.
 
 The following diagram presents the Modem library OS abstraction layer.
 Arrows indicate that the elements can communicate with each other directly.
@@ -24,10 +24,10 @@ Arrows indicate that the elements can communicate with each other directly.
 Creating the OS abstraction layer
 *********************************
 
-To create an OS abstraction layer for the Modem library, you must implement a number of functions in the :file:`nrf_modem_os.c` file.
+To create an OS abstraction layer for the Modem library, you must implement the functions in the :file:`nrf_modem_os.h` file.
 
 nrf_modem_os_init
-~~~~~~~~~~~~~~~~~
+=================
 
 This function is called by the Modem library when the application has issued :c:func:`nrf_modem_init`.
 It is responsible for preparing IRQ for low priority Modem library scheduling and trace scheduling.
@@ -35,21 +35,23 @@ It is responsible for preparing IRQ for low priority Modem library scheduling an
 .. note::
    When working with an application based on Zephyr, set the IRQs to a low priority (6 or 7) and enable them before exiting the function.
 
-The function must also initialize timers and threads (if there is a context that needs a time-out).
-If Nordic Proprietary trace is enabled, the medium for where to forward the trace must also be configured in this function.
+The function must also initialize the timers and threads (if there is a context that needs a time-out).
+If Nordic Proprietary trace is enabled, the library generates trace data and forwards it to a medium that can be initialized or configured by using the :c:func:`nrf_modem_os_init` function.
+The forwarded trace data is handled in the :c:func:`nrf_modem_os_trace_put` function.
+See :ref:`trace_output_function` for more information.
 
 *Required actions*:
 
 * Initialize timers/threads.
-* Configure low priority libdemom scheduling IRQ (SoftIRQ).
+* Configure low priority Modem library scheduling IRQ (SoftIRQ).
 * Configure low priority trace scheduling IRQ (SoftIRQ).
 * Configure medium for trace (UART/SPI etc.).
 
 nrf_modem_os_timedwait
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 This function is called by the Modem library when a timed context or sleep is required.
-A blind return value of 0 will make all Modem library operations always blocking.
+A blind return value of 0 will make all the Modem library operations always blocking.
 
 *Required actions* to make the operations non-blocking:
 
@@ -57,18 +59,40 @@ A blind return value of 0 will make all Modem library operations always blocking
 * Report back the remaining time of the timer if the specific timer is interrupted.
 * If timed out, report NRF_ETIMEDOUT.
 
-nrf_modem_os_errno_set
-~~~~~~~~~~~~~~~~~~~~~~
+nrf_modem_os_alloc
+==================
 
-This function translates errno’s from the Modem library to the OS-defined ones.
+This function is called by the library to allocate memory dynamically, and it is like a *malloc* call.
+There are no specific requirements related to the location where this memory must be allocated in RAM.
+
+nrf_modem_os_free
+=================
+
+This function must free the memory allocated by :c:func:`nrf_modem_os_alloc`.
+
+nrf_modem_os_shm_tx_alloc
+=========================
+
+This function is called by the library to dynamically allocate the memory that must be *shared with the modem core*.
+This function allocates memory on the TX memory region that is passed to the :c:func:`nrf_modem_init` function during the initialization.
+
+nrf_modem_os_shm_tx_free
+========================
+
+This function releases the memory allocated by :c:func:`nrf_modem_os_shm_tx_alloc`.
+
+nrf_modem_os_errno_set
+======================
+
+This function translates errnos from the Modem library to the OS-defined ones.
 
 *Required action*:
 
 * Implement a translation for each errno set by the Modem library.
-  If it overlaps with your OS errno, translation is not needed.
+  If it overlaps with your OS errno, the translation is not needed.
 
 nrf_modem_os_application_irq_clear
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================
 
 This function is called by the Modem library when the library wants to clear IRQ on the low priority Modem library scheduling IRQ.
 
@@ -77,7 +101,7 @@ This function is called by the Modem library when the library wants to clear IRQ
 * Clear the low priority Modem library scheduling IRQ using OS primitives or NVIC functions.
 
 nrf_modem_os_application_irq_set
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+================================
 
 This function is called by the Modem library when the library wants to set a pending IRQ on the low priority Modem library scheduling IRQ.
 
@@ -86,7 +110,7 @@ This function is called by the Modem library when the library wants to set a pen
 * Set a pending IRQ on the low priority Modem library scheduling IRQ using OS primitives or NVIC functions.
 
 nrf_modem_os_trace_irq_clear
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+============================
 
 This function is called by the Modem library when the library wants to clear IRQ on the low priority trace scheduling IRQ.
 
@@ -95,7 +119,7 @@ This function is called by the Modem library when the library wants to clear IRQ
 * Clear the low priority trace scheduling IRQ using OS primitives or NVIC functions.
 
 nrf_modem_os_trace_irq_set
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+==========================
 
 This function is called by the Modem library when the library wants to set a pending IRQ on the low priority trace scheduling IRQ.
 
@@ -103,45 +127,41 @@ This function is called by the Modem library when the library wants to set a pen
 
 * Set a pending IRQ on the low priority trace scheduling IRQ using OS primitives or NVIC functions.
 
+.. _trace_output_function:
+
 nrf_modem_os_trace_put
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 This function puts the trace string to the desired medium, typically UART.
-However, the medium used to forward and store the traces is up to the implementation and must be initialized correctly before used.
-If you are not interested in traces, they can be ignored and this function can be empty and simply return.
+However, the medium used to forward and store the traces is up to the implementation and must be initialized correctly before using.
+If you are not interested in traces, they can be ignored, and this function can be empty and simply return.
 
 nrf_modem_os_application_irq_handler
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+====================================
 
 This function is implemented in the Modem library and must be called upon the low priority Modem library IRQ handler, triggered by the :c:func:`nrf_modem_os_application_irq_set` function.
 
 nrf_modem_os_trace_irq_handler
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==============================
 
 This function is implemented in the Modem library and must be called upon the low priority trace IRQ handler, triggered by the :c:func:`nrf_modem_os_trace_irq_set` function.
 
 Other scenarios to handle in nrf_modem_os.c
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===========================================
 
-#. In case the OS has its own IRQ handler scheme, not directly forwarding the IPC_IRQHandler to the Modem library, this must be routed by the OS.
+#. In case the OS has its own IRQ handler scheme, which is not directly forwarding the IPC_IRQHandler to the Modem library, this must be routed by the OS.
    The OS must call IPC_IRQHandler() upon all IRQs with IRQ number IPC_IRQn.
 
-#. In :file:`nrf_modem_os.c`, you can configure a desired medium for forwarding trace data upon :c:func:`nrf_modem_os_trace_put` calls .
+#. In :file:`nrf_modem_os.c`, you can configure a desired medium for forwarding the trace data upon :c:func:`nrf_modem_os_trace_put` calls.
 
 Memory
 ******
 
-The Modem library must have a region of absolute positioned RAM.
-The region must be configured as non-secure RAM by the secure application.
-The starting address of this region must be 0x20010000, and the size of the block is 0xC020 bytes.
+The Modem library needs a region of RAM within the first lower 128KB to share with the modem.
+To be accessible by both the modem and the application, this region of RAM must be configured as non-secure by the secure application.
 
-The secure domain memory is divided into segments of 8 KB RAM blocks.
-Because the size of the Modem library block is 0xC020 bytes, it is not aligned to full 8 KB blocks.
-It occupies six blocks and a small part of a seventh block.
+The following RAM overview diagram shows the placement of Modem library in the sequential RAM, and it also indicates the configurable memory position values.
 
-The leftover memory in that seventh block (8160 bytes, starting at address 0x2001 c020) is configured as non-secure, but it can be used by the application.
-
-The following RAM overview diagram shows where in the sequential RAM the Modem library must be positioned, and also indicates the important memory position values. The dotted lines represent 8 KB memory blocks. Note that the Modem library occupies more than six full blocks.
 
 .. figure:: images/nrf_modem_memory.svg
    :alt: Modem library memory overview
@@ -177,7 +197,7 @@ The following message sequence diagrams show the interactions between the applic
    Initialization (main thread)
 
 
-2. Handling an event sent from the Modem library to a lower priority to be able to receive new events:
+#. Handling an event sent from the Modem library to a lower priority to be able to receive new events:
 
 .. figure:: images/msc_event.svg
    :alt: Event handling, lowering priority
@@ -185,7 +205,7 @@ The following message sequence diagrams show the interactions between the applic
    Event handling, lowering priority
 
 
-3. Handling traces:
+#. Handling traces:
 
 .. figure:: images/msc_trace.svg
    :alt: Trace handling, lowering priority
@@ -193,7 +213,7 @@ The following message sequence diagrams show the interactions between the applic
    Trace handling, lowering priority
 
 
-4. Handling a time-out or sleep:
+#. Handling a time-out or sleep:
 
 .. figure:: images/msc_timers.svg
    :alt: Timers

@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 
-if(CONFIG_NRF_MODEM_LINK_WITH_BINARY)
+if(CONFIG_NRF_MODEM_LINK_BINARY)
 
   nrfxlib_calculate_lib_path(lib_path)
 

@@ -36,5 +36,6 @@ For more information, see :ref:`nrf_modem_ug_porting`.
    doc/tls_dtls_configuration
    doc/extensions
    doc/ug_nrf_modem_porting_os
+   doc/full-dfu
    doc/CHANGELOG
    doc/api
