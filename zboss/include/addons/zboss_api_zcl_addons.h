@@ -18,5 +18,8 @@
 #include "zcl/zb_zcl_scenes_addons.h"
 #include "zcl/zb_zcl_on_off_addons.h"
 #include "zcl/zb_zcl_temp_measurement_addons.h"
+#include "zcl/zb_zcl_thermostat_addons.h"
+#include "zcl/zb_zcl_thermostat_ui_addons.h"
+#include "zcl/zb_zcl_fan_addons.h"
 
 #endif /* ZBOSS_API_ZCL_ADDONS_H__ */
