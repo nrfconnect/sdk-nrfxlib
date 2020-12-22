@@ -54,13 +54,44 @@ config MBEDTLS_X509_LIBRARY
 	help
 	  Create the mbed x509 library for handling of certificates.
 
-config MBEDTLS_TLS_LIBRARY
+menuconfig MBEDTLS_TLS_LIBRARY
 	bool
 	prompt "Create mbed TLS transport layer security library"
 	select MBEDTLS_X509_LIBRARY
 	help
 	  Create the mbed SSL/TLS library in addition to the mbed crypto
 	  library.
+
+config MBEDTLS_SSL_TLS_C
+	bool
+	depends on MBEDTLS_TLS_LIBRARY
+	default y
+	help
+	  Corresponds to MBEDTLS_SSL_TLS_C in mbed TLS config file
+
+config MBEDTLS_SSL_PROTO_TLS1_2
+	bool
+	depends on MBEDTLS_TLS_LIBRARY
+	default y
+	help
+	  Enable the TLS 1.2 protocol
+	  Corresponds to MBEDTLS_SSL_PROTO_TLS1_2 in mbed TLS config file
+
+config MBEDTLS_SSL_CLI_C
+	bool "Enable the SSL/TLS client code"
+	depends on MBEDTLS_TLS_LIBRARY
+	default y
+	help
+	  This setting enables SSL/TLS client functionality.
+	  Corresponds to MBEDTLS_SSL_CLI_C in mbed TLS config file
+
+config MBEDTLS_SSL_SRV_C
+	bool "Enable the SSL/TLS server code"
+	depends on MBEDTLS_TLS_LIBRARY
+	default y
+	help
+	  This setting enables SSL/TLS server functionality.
+	  Corresponds to MBEDTLS_SSL_SRV_C in mbed TLS config file.
 
 menu "mbed TLS memory configuration"
 
