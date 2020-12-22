@@ -140,6 +140,10 @@ kconfig_mbedtls_config_val("MBEDTLS_ECP_FIXED_POINT_OPTIM" "1")
 kconfig_mbedtls_config_val("MBEDTLS_SSL_MAX_CONTENT_LEN"   "${CONFIG_MBEDTLS_SSL_MAX_CONTENT_LEN}")
 kconfig_mbedtls_config_val("MBEDTLS_SSL_CIPHERSUITES"      "${CONFIG_MBEDTLS_SSL_CIPHERSUITES}")
 kconfig_mbedtls_config("MBEDTLS_SHA256_SMALLER")
+kconfig_mbedtls_config("MBEDTLS_SSL_PROTO_TLS1_2")
+kconfig_mbedtls_config("MBEDTLS_SSL_TLS_C")
+kconfig_mbedtls_config("MBEDTLS_SSL_SRV_C")
+kconfig_mbedtls_config("MBEDTLS_SSL_CLI_C")
 
 #
 # CC3XX flags for threading and platform zeroize
@@ -271,6 +275,11 @@ if (CONFIG_MBEDTLS_X509_LIBRARY)
   set(MBEDTLS_ASN1_PARSE_C TRUE)
   set(MBEDTLS_PK_PARSE_C TRUE)
   set(MBEDTLS_X509_CRT_PARSE_C TRUE)
+endif()
+
+if (MBEDTLS_SSL_PROTO_TLS1_2)
+  set(MBEDTLS_SSL_ENCRYPT_THEN_MAC TRUE)
+  set(MBEDTLS_SSL_EXTENDED_MASTER_SECRET TRUE)
 endif()
 
 #
