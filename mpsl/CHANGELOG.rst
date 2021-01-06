@@ -21,12 +21,15 @@ Added
 * Added a new clock configuration option :c:member:`skip_wait_lfclk_started` in :c:struct:`mpsl_clock_lfclk_cfg_t`,
   which does not wait for the start of Low Frequency Clock. (DRGN-14204)
 
+* Added macro MPSL_RESERVED_PPI_CHANNELS for a bit mask of (D)PPI channels
+  reserved by MPSL (DRGN-13356).
 
 Bugfixes
 ========
 
 * Fixed an issue where Low Frequency Clock was configured incorrectly
   when the source configuration signal was set to either External Full swing or External Low swing. (DRGN-15064)
+
 
 nRF Connect SDK v1.4.0
 **********************
