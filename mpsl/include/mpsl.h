@@ -36,6 +36,15 @@ extern "C" {
 /** @brief Size of build revision array in bytes. */
 #define MPSL_BUILD_REVISION_SIZE 20
 
+/** @brief Bitmask of (D)PPI channels reserved for MPSL. */
+#if defined(NRF52_SERIES)
+#define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
+#elif defined(NRF53_SERIES)
+#define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
+#else
+#error Unknown NRF series.
+#endif
+
 /** @brief    Function prototype for the assert handler.
  *
  * @note      If an internal assert occurs this function is called. It is supposed to log the assert and stop execution.
