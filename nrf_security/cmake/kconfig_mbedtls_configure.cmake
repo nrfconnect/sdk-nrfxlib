@@ -283,6 +283,12 @@ if (MBEDTLS_SSL_PROTO_TLS1_2)
 endif()
 
 #
+# Ciphers and configurations disabled due to not being recommended
+# Please see nrf-config.h.template or mbed TLS documentation for details
+#
+set(MBEDTLS_ARC4_C False)
+
+#
 # Compare the following with check-config.h in mbed TLS
 #
 mbedtls_config_define_depends("MBEDTLS_SSL_DTLS_ANTI_REPLAY"
