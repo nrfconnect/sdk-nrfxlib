@@ -16,6 +16,8 @@
 
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#98C9E2578566420786ABD40B695FDB9B
 
+.. _`nRF9160 modem TLS cipher suites`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#infotabs
+
 .. ### Other links
 
 .. _`Beej's Guide to Network Programming`: https://beej.us/guide/bgnet/
@@ -42,3 +44,5 @@
 .. _`Zephyr`: https://www.zephyrproject.org
 
 .. _`NMEA report sample`: http://aprs.gids.nl/nmea/#gsa
+
+.. _`IANA`: https://en.wikipedia.org/wiki/Internet_Assigned_Numbers_Authority

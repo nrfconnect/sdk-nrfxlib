@@ -1,11 +1,16 @@
+.. _tls_dtls_configuration:
+
+TLS/DTLS configuration
+######################
+
+The modem on an nRF9160 device is equipped with a full IPv4/IPv6 stack with TLS/DTLS support.
+
 .. _security_tags:
 
 Security tags
-#############
+*************
 
-The modem on an nRF9160 device is equipped with a full IPv4/IPv6 stack with DTLS/TLS support.
 To use the cryptographic functions in the modem, the application must provision the security credentials to the modem.
-
 To be able to provision credentials, the modem must be in offline mode.
 The credentials are provisioned through AT commands (see `Credential storage management %CMNG`_).
 If you are using the |NCS| to build your application, you can use the :ref:`nrf:modem_key_mgmt` library to manage credentials.
@@ -65,3 +70,25 @@ In this case, either security tag 4 or security tag 5 can be used for operations
    :alt: Using multiple security tags
 
    Using multiple security tags
+
+Supported cipher suites
+***********************
+
+See the `nRF9160 modem TLS cipher suites`_ summary page for a full list of TLS/DTLS cipher suites supported by the modem.
+
+Each cipher suite is recognized by an official identification number, which is registered at `IANA`_.
+You can narrow down the set of cipher suites that is used for a specific TLS/DTLS connection with :c:func:`nrf_setsockopt`.
+For example, see the following code:
+
+.. code-block:: c
+
+   /* TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA */
+   nrf_sec_cipher_t cipher_list[] = { 0xC014 };
+
+   err = nrf_setsockopt(fd, NRF_SOL_TLS, NRF_SO_CIPHERSUITE_LIST, cipher_list, sizeof(cipher_list));
+   if (err) {
+      /* Failed to set up cipher suite list. */
+      return -1;
+   }
+
+Note that as in the case of other TLS/DTLS socket options, you must do this configuration before connecting to the server.
