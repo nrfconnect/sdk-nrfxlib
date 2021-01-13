@@ -19,6 +19,8 @@ function(openthread_calculate_lib_path ot_version lib_path)
 
   if(CONFIG_CC310_BACKEND)
     set(nrf_security_backend "cc310")
+  elseif(CONFIG_CC312_BACKEND)
+    set(nrf_security_backend "cc312")
   elseif(CONFIG_OBERON_BACKEND)
     set(nrf_security_backend "oberon")
   endif()
