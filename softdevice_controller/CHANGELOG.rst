@@ -17,12 +17,28 @@ Added
 
 * Added :c:func:`sdc_support_ext_scan` which makes support for extended scanning configurable (DRGN-14902).
 * Added :c:func:`sdc_support_ext_adv` which makes support for extended advertising configurable (DRGN-14914).
+* Added support for the vendor specific HCI command: Zephyr Read Chip Temperature (DRGN-13769).
+
+Changes
+=======
+
+* Renamed and reconfigured the libraries (DRGN-15118).
+  Refer to the README for their corresponding supported feature sets.
+  The new names are now:
+
+    * ``libsoftdevice_controller_periph.a``
+    * ``libsoftdevice_controller_central.a``
+    * ``libsoftdevice_controller_multirole.a``
+
+* All libraries are now compatible with all platforms within a given family (DRGN-15118).
 
 Bugfixes
 ========
 
 * Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out (DRGN-13029).
 * Fixed an issue where a directed advertiser used a resolvable address as the TargetA when the local device address was set to public or random device address (DRGN-13921).
+* Fixed an issue where "HCI LE Set Extended Advertising Parameters" should have returned "Packet Too Long (0x45)" when the advertising set was already configured with data which was longer than it could fit within the advertising interval.
+  Previously, the advertising data was cleared every time the advertising set was configured (DRGN-14008).
 
 nRF Connect SDK v1.4.0
 **********************

@@ -45,6 +45,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_WRITE_BD_ADDR = 0xfc06,
     /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_static_addresses(). */
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_STATIC_ADDRESSES = 0xfc09,
+    /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_chip_temp(). */
+    SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_CHIP_TEMP = 0xfc0b,
     /** @brief See @ref sdc_hci_cmd_vs_zephyr_write_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
     /** @brief See @ref sdc_hci_cmd_vs_llpm_mode_set(). */
@@ -204,6 +206,13 @@ typedef __PACKED_STRUCT
     /** @brief Zephyr Static Addresses. The number of addresses is specified in num_addresses. */
     sdc_hci_vs_zephyr_static_address_t addresses[];
 } sdc_hci_cmd_vs_zephyr_read_static_addresses_return_t;
+
+/** @brief Zephyr Read Chip Temperature return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief The measured temperature in degrees Celsius. */
+    int8_t temp;
+} sdc_hci_cmd_vs_zephyr_read_chip_temp_return_t;
 
 /** @brief Zephyr Write Tx Power Level (per Role/Connection) command parameter(s). */
 typedef __PACKED_STRUCT
@@ -368,6 +377,18 @@ uint8_t sdc_hci_cmd_vs_zephyr_write_bd_addr(const sdc_hci_cmd_vs_zephyr_write_bd
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_zephyr_read_static_addresses(sdc_hci_cmd_vs_zephyr_read_static_addresses_return_t * p_return);
+
+/** @brief Zephyr Read Chip Temperature.
+ *
+ * This commands reads the controller chip temperature.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_zephyr_read_chip_temp(sdc_hci_cmd_vs_zephyr_read_chip_temp_return_t * p_return);
 
 /** @brief Zephyr Write Tx Power Level (per Role/Connection).
  *
