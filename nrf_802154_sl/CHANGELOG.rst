@@ -9,6 +9,17 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF 802.15.4 Service Layer 0.4.0
+********************************
+
+* Added multiprotocol support for the nRF53 family.
+
+Added
+=====
+
+* Added multiprotocol support for nRF53 family.
+  Built from commit *5d2497b78683687bdd57fcd6854b1bc3c26871be*.
+
 nRF 802.15.4 Service Layer 0.3.0
 ********************************
 

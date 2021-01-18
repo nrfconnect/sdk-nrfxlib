@@ -3,7 +3,7 @@
 nRF 802.15.4 Service Layer
 ==========================
 
-The nRF 802.15.4 Service Layer (SL) is a library that allows you to enable advanced features of the nRF 802.15.4 Radio Driver.
+The nRF 802.15.4 Service Layer (SL) is a library that enables advanced features of the nRF 802.15.4 Radio Driver.
 
 Currently, the library implements the following features:
 
@@ -30,17 +30,19 @@ The library is available as binaries for the following SoCs:
 * nRF52820
 * nRF52811
 
-For the SOCs equipped with a floating-point unit (nRF52840 and nRF52833), the library is available in the soft-float, softfp-float, and hard-float build versions.
+For the SOCs equipped with a floating-point unit (nRF52840 and nRF52833), the service layer is available in the soft-float, softfp-float, and hard-float build versions.
 For the other SOCs, it is available only in the soft-float build version.
 
-To use the library:
+When you use the |NCS|, the nRF 802.15.4 Radio Driver takes advantage of the service layer automatically.
+No additional user action is needed.
+
+When you use the nRF 802.15.4 Radio Driver in your project outside of the |NCS|, to let the radio driver take advantage of the features enabled by the service layer, you must do the following:
 
 * Add the header files to the include directories of the project
 * Add the binaries to the linking stage of the build.
-  In the |NCS|, this is done through Kconfig.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Subpages:
 
    CHANGELOG
