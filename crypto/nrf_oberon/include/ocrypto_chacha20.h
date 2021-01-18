@@ -20,8 +20,8 @@
  * round, conjecturally increasing resistance to cryptanalysis, while
  * preserving - and often improving - time per round.
  *
- * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc7539)
- * @see [The ChaCha family of stream ciphers](http://cr.yp.to/chacha.html)
+ * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](https://tools.ietf.org/html/rfc7539)
+ * @see [The ChaCha family of stream ciphers](https://cr.yp.to/chacha.html)
  */
 
 #ifndef OCRYPTO_CHACHA20_H

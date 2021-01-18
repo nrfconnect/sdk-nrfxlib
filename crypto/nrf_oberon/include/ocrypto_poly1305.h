@@ -18,8 +18,8 @@
  * Since a key can only be used to authenticate a single message, a new key
  * needs to be derived for each message.
  *
- * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc7539)
- * @see [Poly1305-AES: a state-of-the-art message-authentication code](http://cr.yp.to/mac.html)
+ * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](https://tools.ietf.org/html/rfc7539)
+ * @see [Poly1305-AES: a state-of-the-art message-authentication code](https://cr.yp.to/mac.html)
  */
 
 #ifndef OCRYPTO_POLY1305_H

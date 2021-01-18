@@ -1547,7 +1547,7 @@ uint8_t sdc_hci_cmd_le_read_remote_features(const sdc_hci_cmd_le_read_remote_fea
  * The HCI_LE_Encrypt command is used to request the Controller to encrypt the
  * Plaintext_Data in the command using the Key given in the command and
  * returns the Encrypted_Data to the Host. The AES-128 bit block cypher is
- * defined in NIST Publication FIPS-197 (http://csrc.nist.gov/publications/fips/
+ * defined in NIST Publication FIPS-197 (https://csrc.nist.gov/publications/fips/
  * fips197/fips-197.pdf).
  *
  * Event(s) generated (unless masked away):

@@ -18,7 +18,7 @@
  *
  * HKDF-SHA256 is a key derivation function based on HMAC-SHA256.
  *
- * @see [RFC 5869 - HMAC-based Extract-and-Expand Key Derivation Function (HKDF)](http://tools.ietf.org/html/rfc5869)
+ * @see [RFC 5869 - HMAC-based Extract-and-Expand Key Derivation Function (HKDF)](https://tools.ietf.org/html/rfc5869)
  */
 
 #ifndef OCRYPTO_HKDF_SHA256_H

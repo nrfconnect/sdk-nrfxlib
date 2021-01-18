@@ -15,7 +15,7 @@
  * possession of the key can verify the integrity and authenticity of the
  * message.
  *
- * @see [RFC 2104 - HMAC: Keyed-Hashing for Message Authentication](http://tools.ietf.org/html/rfc2104)
+ * @see [RFC 2104 - HMAC: Keyed-Hashing for Message Authentication](https://tools.ietf.org/html/rfc2104)
  */
 
 #ifndef OCRYPTO_HMAC_SHA1_H
