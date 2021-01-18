@@ -14,7 +14,7 @@
 
 .. ### Links to Nordic pages
 
-.. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#98C9E2578566420786ABD40B695FDB9B
+.. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#0B34B59935AF4AFCB7AB93E9646C1F53
 
 .. _`nRF9160 modem TLS cipher suites`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#infotabs
 
@@ -22,7 +22,7 @@
 
 .. _`Beej's Guide to Network Programming`: https://beej.us/guide/bgnet/
 
-.. _`ZBOSS API documentation`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss/index.html
+.. _`ZBOSS API documentation`:
 .. _`ZBOSS stack release notes`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss/index.html
 
 .. _`mbed TLS backend`: https://tls.mbed.org/

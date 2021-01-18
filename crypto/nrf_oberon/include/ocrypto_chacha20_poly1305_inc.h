@@ -16,7 +16,7 @@
  *
  * The ChaCha20 stream cipher is combined with the Poly1305 authenticator.
  *
- * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](http://tools.ietf.org/html/rfc7539)
+ * @see [RFC 7539 - ChaCha20 and Poly1305 for IETF Protocols](https://tools.ietf.org/html/rfc7539)
  */
 
 #ifndef OCRYPTO_CHACHA20_POLY1305_INC_H
