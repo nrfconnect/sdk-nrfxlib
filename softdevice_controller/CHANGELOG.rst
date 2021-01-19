@@ -19,11 +19,40 @@ Added
 * Added :c:func:`sdc_support_ext_adv` which makes support for extended advertising configurable (DRGN-14914).
 * Added support for the vendor specific HCI command: Zephyr Read Chip Temperature (DRGN-13769).
 
+Changes
+=======
+
+* Renamed and reconfigured the libraries (DRGN-15118).
+  Refer to the README for their corresponding supported feature sets.
+  The new names are now:
+
+    * ``libsoftdevice_controller_peripheral.a``
+    * ``libsoftdevice_controller_central.a``
+    * ``libsoftdevice_controller_multirole.a``
+
+* All libraries are now compatible with all platforms within a given family (DRGN-15118).
+
 Bugfixes
 ========
 
 * Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out (DRGN-13029).
 * Fixed an issue where a directed advertiser used a resolvable address as the TargetA when the local device address was set to public or random device address (DRGN-13921).
+* Fixed an issue where "HCI LE Set Extended Advertising Parameters" should have returned "Packet Too Long (0x45)" when the advertising set was already configured with data which was longer than it could fit within the advertising interval.
+  Previously, the advertising data was cleared every time the advertising set was configured (DRGN-14008).
+* Fixed an issue where the link would disconnect with reason "LMP Response Timeout (0x22)".
+  This would occur if "HCI LE Long Term Key Request event" was disabled and the slave received an encryption request (DRGN-15226).
+
+Known issues and limitations
+============================
+
+* The RSSI value reported by the Softdevice Controller is the raw value from the radio peripheral.
+  Some SoCs require compensation of the RSSI value based on the chip temperature.
+  See the Errata document for the respective SoC for detailed information.
+
+  For the nRF53 Series, you can retrieve the chip temperature by reading the value of the temperature peripheral on the network core.
+  To do this with the SoftDevice Controller, use the Zephyr HCI VS Read Chip Temperature command (``BT_HCI_OP_VS_READ_CHIP_TEMP``).
+  For the nRF52 Series, you can use the Zephyr sensor API instead of the HCI command to retrieve the chip temperature.
+  You can then use the retrieved temperature value to compensate the raw RSSI value, following the workaround in the Errata document.
 
 nRF Connect SDK v1.4.0
 **********************
