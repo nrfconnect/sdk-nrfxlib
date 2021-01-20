@@ -7,57 +7,86 @@ jobs:
     runs-on: ubuntu-latest
     name: Run compliance checks on patch series (PR)
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
-        with:
-          path: ncs/nrfxlib
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
+    - name: Checkout the code
+      uses: actions/checkout@v2
+      with:
+        path: ncs/nrfxlib
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 0
 
-      - name: cache-pip
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-doc-pip
+    - name: cache-pip
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-doc-pip
 
-      - name: Run Compliance Tests
-        env:
-          BASE_REF: ${{ github.base_ref }}
-        working-directory: ncs
-        run: |
-          pip3 install -U pip
-          pip3 install -U setuptools
-          export PATH="$HOME/.local/bin:$PATH"
-          pip3 install -U west
-          west init -m https://github.com/nrfconnect/sdk-nrf
-          west update zephyr
-          export ZEPHYR_BASE=$(pwd)/zephyr
-          pip3 install -U gitlint
-          pip3 install -r zephyr/scripts/requirements-compliance.txt
-          cd nrfxlib
-          $ZEPHYR_BASE/scripts/ci/check_compliance.py -m Codeowners -m Devicetree -m Gitlint -m Identity -m Nits -m pylint -m checkpatch -m Kconfig -c origin/${BASE_REF}.. || true
+    - name: Install python dependencies
+      run: |
+        pip3 install -U pip
+        pip3 install  -U setuptools
+        export PATH="$HOME/.local/bin:$PATH"
+        pip3 install  -U wheel
+        pip3 install  -U python-magic junitparser==1.6.3 gitlint pylint pykwalify
+        pip3 install --user -U west
+        pip3 show -f west
 
-      - name: Upload Results
-        uses: actions/upload-artifact@master
-        continue-on-error: True
-        with:
-          name: compliance.xml
-          path: ncs/nrfxlib/compliance.xml
+    - name: West init and update
+      working-directory: ncs
+      env:
+        PR_REF: ${{ github.event.pull_request.head.sha }}
+      run: |
+        export PATH="$HOME/.local/bin:$PATH"
+        export PATH="$HOME/bin:$PATH"
+        west init -m https://github.com/nrfconnect/sdk-nrf
+        west update
+        west zephyr-export
+        # west update will override the ref, so check it out again
+        git -C nrfxlib checkout ${PR_REF}
 
-      - name: Check Warnings
-        run: |
-          for file in Codeowners.txt Devicetree.txt Gitlint.txt Identity.txt Nits.txt pylint.txt checkpatch.txt Kconfig.txt; do
-            path="ncs/nrfxlib/${file}"
-            if [[ -s $path ]]; then
-              errors=$(cat $path)
-              errors="${errors//'%'/'%25'}"
-              errors="${errors//$'\n'/'%0A'}"
-              errors="${errors//$'\r'/'%0D'}"
-              echo "::error file=${file}::$errors"
-              exit=1
-            fi
-          done
+    - name: Run Compliance Tests
+      continue-on-error: true
+      env:
+        BASE_REF: ${{ github.base_ref }}
+      working-directory: ncs/nrfxlib
+      run: |
+        export PATH="$HOME/.local/bin:$PATH"
+        export PATH="$HOME/bin:$PATH"
+        export ZEPHYR_BASE="$(dirname "$(pwd)")/zephyr"
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
+        git remote -v
+        git branch
+        git rebase origin/${BASE_REF}
+        # debug
+        ls -la
+        git log --pretty=oneline | head -n 10
+        $ZEPHYR_BASE/scripts/ci/check_compliance.py -m Codeowners -m Devicetree -m Gitlint -m Identity -m Nits -m pylint -m checkpatch -m Kconfig -c origin/${BASE_REF}..
 
-          if [[ $exit == 1 ]]; then
-            exit 1
+    - name: Upload Results
+      uses: actions/upload-artifact@master
+      continue-on-error: True
+      with:
+        name: compliance.xml
+        path: ncs/nrfxlib/compliance.xml
+
+    - name: Check Warnings
+      working-directory: ncs/nrfxlib
+      run: |
+        if [[ ! -s "compliance.xml" ]]; then
+          exit 1;
+        fi
+
+        for file in Codeowners.txt Devicetree.txt Gitlint.txt Identity.txt Nits.txt pylint.txt checkpatch.txt Kconfig.txt; do
+          if [[ -s $file ]]; then
+            errors=$(cat $path)
+            errors="${errors//'%'/'%25'}"
+            errors="${errors//$'\n'/'%0A'}"
+            errors="${errors//$'\r'/'%0D'}"
+            echo "::error file=${file}::$errors"
+            exit=1
           fi
+        done
+
+        if [[ $exit == 1 ]]; then
+          exit 1
+        fi
