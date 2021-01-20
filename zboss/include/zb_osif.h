@@ -414,18 +414,21 @@ zb_ret_t zb_osif_file_rotate(const zb_char_t *file_path, const zb_char_t *file_n
 void zb_reset(zb_uint8_t param);
 void zb_syslog_msg(const zb_char_t *msg);
 
-/* Possible reset sources */
-
-typedef enum zb_reset_source_e
-{
-  ZB_RESET_SRC_POWER_ON,
-  ZB_RESET_SRC_SW_RESET,
-  ZB_RESET_SRC_RESET_PIN,
-  ZB_RESET_SRC_BROWN_OUT,
-  ZB_RESET_SRC_CLOCK_LOSS,
-  ZB_RESET_SRC_OTHER,
-
-} zb_reset_source_t;
+/**
+ * @name Possible reset sources
+ * @anchor reset_source
+ * 
+ * Note: These values were members of `enum zb_reset_source_e` type but were
+ * converted to a set of macros due to MISRA violations.
+ */
+/** @{ */
+#define ZB_RESET_SRC_POWER_ON   0U
+#define ZB_RESET_SRC_SW_RESET   1U
+#define ZB_RESET_SRC_RESET_PIN  2U
+#define ZB_RESET_SRC_BROWN_OUT  3U
+#define ZB_RESET_SRC_CLOCK_LOSS 4U
+#define ZB_RESET_SRC_OTHER      5U
+/** @} */
 
 /**
  * @brief Get the reason that triggered the last reset
