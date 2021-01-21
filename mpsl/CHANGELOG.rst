@@ -30,6 +30,8 @@ Bugfixes
 * Fixed an issue where Low Frequency Clock was configured incorrectly
   when the source configuration signal was set to either External Full swing or External Low swing. (DRGN-15064)
 
+* Fixed an issue where MPSL waited for Low Frequency Clock to start even though it was configured not wait for it. (DRGN-15176)
+
 
 nRF Connect SDK v1.4.0
 **********************

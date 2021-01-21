@@ -103,6 +103,11 @@ typedef struct
    *  If it is set to true, MPSL will wait for the low frequency clock later,
    *  before the low frequency clock is used for the first time.
    *  Default value is @ref MPSL_DEFAULT_SKIP_WAIT_LFCLK_STARTED.
+   *
+   * @note If this option is set to true and the application starts Low Frequency clock,
+   *       the application shall either stop Low Frequency clock
+   *       or not clear the event signaling that Low Frequency clock has started
+   *       before MPSL initialization.
    */
   bool skip_wait_lfclk_started;
 } mpsl_clock_lfclk_cfg_t;

@@ -37,7 +37,7 @@ In both implementations, two timings can be configured:
 For the nRF21540, two additional timings can also be configured:
 
 * ``TRX hold time``, the time interval for which the FEM is kept powered up after the PDN deactivation event occurs.
-* ``PDN settle time``, the time interval reserved for the FEM ramp-up, before the PA or LNA activation.
+* ``PDN settle time``, the time interval reserved for the FEM settle, before the PA or LNA activation.
 
 General usage
 *************
@@ -62,12 +62,12 @@ To prepare a timer event, it is required that the application provides the follo
 * The Start time, at which the Front End Module can start preparing the PA or LNA.
 * The End time, at which the Front End Module must be ready for the RF procedure.
 
-Then, the module can configure the timer to activate or deactivate the FEM accordingly, taking also into account the FEM ramp-up time.
+Then, the module can configure the timer to activate or deactivate the FEM accordingly, taking also into account the FEM settle time.
 
 See below for an example of activating the LNA for Rx operation, using the following parameters:
 
 * RX ramp-up time - 40 us
-* LNA ramp-up time - 13 us
+* LNA settle time - 13 us
 * LNA deactivation event - ``rx_end``
 * LNA activation timer - ``TIMER0``
 
@@ -77,7 +77,7 @@ See below for the steps needed to properly configure LNA in this example:
 
 1 The application configures the LNA to be activated by the timer event, with the start time set to 0 us and the end time set to 40 us.
 # The application provides the ``rx_end`` event as the LNA deactivation event.
-# The FEM module reads the scheduled time and sets the ``TIMER0`` compare channel to 27 us, as a result of the RX ramp-up time (40 us) minus the LNA ramp-up time (13 us).
+# The FEM module reads the scheduled time and sets the ``TIMER0`` compare channel to 27 us, as a result of the RX ramp-up time (40 us) minus the LNA settle time (13 us).
 # The application starts the RX operation.
 # The application starts ``TIMER0``.
 
@@ -105,9 +105,9 @@ The FEM is powered back up automatically before PA or LNA are activated.
 See below for an example of controlling LNA and PDN during Rx operation, using the following parameters:
 
 * RX ramp-up time - 40 us
-* LNA ramp-up time - 13 us
+* LNA settle time - 11 us
 * PDN settle time - 18 us
-* TRX hold time - 5 us
+* TRX hold time - 3 us
 * LNA deactivation event - ``rx_end``
 * PDN deactivation event - ``rx_end``
 * PDN activation timer - ``TIMER0``
