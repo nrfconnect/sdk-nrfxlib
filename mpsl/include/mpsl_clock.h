@@ -103,6 +103,12 @@ typedef struct
    *  If it is set to true, MPSL will wait for the low frequency clock later,
    *  before the low frequency clock is used for the first time.
    *  Default value is @ref MPSL_DEFAULT_SKIP_WAIT_LFCLK_STARTED.
+   *
+   * @note If this option is set to true and the application writes to
+   *       NRF_CLOCK->TASKS_LFCLKSTART before mpsl_init() is called,
+   *       the application shall either:
+   *       - Write to NRF_CLOCK->TASKS_LFCLKSTOP.
+   *       - Keep NRF_CLOCK->EVENTS_LFCLKSTARTED untouched.
    */
   bool skip_wait_lfclk_started;
 } mpsl_clock_lfclk_cfg_t;
