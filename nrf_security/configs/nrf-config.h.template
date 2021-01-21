@@ -3721,6 +3721,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  * Allow user to override any previous default.
  *
  */
+#cmakedefine MBEDTLS_USER_CONFIG_FILE	"@MBEDTLS_USER_CONFIG_FILE@"
 #if defined(MBEDTLS_USER_CONFIG_FILE)
 #include MBEDTLS_USER_CONFIG_FILE
 #endif

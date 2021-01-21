@@ -65,6 +65,10 @@ endmacro()
 #
 file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/include/)
 
+# User config file
+#
+kconfig_mbedtls_config_val("MBEDTLS_USER_CONFIG_FILE"	"${CONFIG_MBEDTLS_USER_CONFIG_FILE}")
+
 # Enabling core functionality
 #
 kconfig_mbedtls_config("MBEDTLS_AES_C")
