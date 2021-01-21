@@ -25,7 +25,7 @@ function(nrf_security_combine_archives backend input_archives)
   # Together with the custom mbedcrypto_${backend}_target this ensures that dependencies
   # are setup so that linking with mbedcrypto_${backend} will drive the dependencies.
   add_library(mbedcrypto_${backend} INTERFACE)
-  target_link_libraries(mbedcrypto_${backend} INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/libmbedcrypto_${backend}.a)
+  target_link_libraries(mbedcrypto_${backend} INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/libmbedcrypto_${backend}.a -lc)
   add_dependencies(mbedcrypto_${backend} mbedcrypto_${backend}_target)
 
   add_custom_target(mbedcrypto_${backend}_target DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/libmbedcrypto_${backend}.a)
