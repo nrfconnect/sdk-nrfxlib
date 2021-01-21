@@ -60,7 +60,7 @@ jobs:
         # debug
         ls -la
         git log --pretty=oneline | head -n 10
-        $ZEPHYR_BASE/scripts/ci/check_compliance.py -m Codeowners -m Devicetree -m Gitlint -m Identity -m Nits -m pylint -m checkpatch -m Kconfig -c origin/${BASE_REF}..
+        $ZEPHYR_BASE/scripts/ci/check_compliance.py -m Codeowners -m Devicetree -m Gitlint -m Identity -m Nits -m pylint -m Kconfig -c origin/${BASE_REF}..
 
     - name: Upload Results
       uses: actions/upload-artifact@master
@@ -76,7 +76,7 @@ jobs:
           exit 1;
         fi
 
-        for file in Codeowners.txt Devicetree.txt Gitlint.txt Identity.txt Nits.txt pylint.txt checkpatch.txt Kconfig.txt; do
+        for file in Codeowners.txt Devicetree.txt Gitlint.txt Identity.txt Nits.txt pylint.txt Kconfig.txt; do
           if [[ -s $file ]]; then
             errors=$(cat $path)
             errors="${errors//'%'/'%25'}"
