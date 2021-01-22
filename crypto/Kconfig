@@ -51,6 +51,21 @@ config CC3XX_ATOMIC_LOCK
 	help
 	  Using atomic operations is the fastest way to ensure mutually exclusive
 	  access to the ARM CryptoCell hardware.
+
+	  Warning: If this configuration is set, every execution requiring use of
+	  the ARM CryptoCell hardware must happen in the same priority. Calling into
+	  mbed TLS APIs from a higher priority while an ongoing operation will lead
+	  to undefined behavior. It is highy recommended to to do all cryptographic
+	  operations in one single thread if this configuration is set.
+
+config CC3XX_HW_MUTEX_LOCK
+	bool "Use hardware mutex for mutually exclusive access to CC3XX resources"
+	depends on SOC_NRF5340_CPUAPP
+	help
+	  A mutual exclusive peripheral is the fastest way to ensure mutually
+	  exclusive access to the ARM CryptoCell hardware on platform which support
+	  it. The MUTEX peripheral is nRF53 platform specific solution.
+
 	  Warning: If this configuration is set, every execution requiring use of
 	  the ARM CryptoCell hardware must happen in the same priority. Calling into
 	  mbed TLS APIs from a higher priority while an ongoing operation will lead
