@@ -10,6 +10,10 @@
 #include <zephyr.h>
 #include <kernel.h>
 
+#if defined(NRF5340_XXAA_APPLICATION)
+#include <hal/nrf_mutex.h>
+#endif /* defined(NRF5340_XXAA_APPLICATION) */
+
 #include "nrf_cc3xx_platform_defines.h"
 #include "nrf_cc3xx_platform_mutex.h"
 #include "nrf_cc3xx_platform_abort.h"
@@ -42,19 +46,44 @@ K_MUTEX_DEFINE(heap_mutex_int);
 
 /** @brief Definition of mutex for symmetric cryptography
  */
-atomic_t sym_mutex_int;
+static atomic_t sym_mutex_int;
 
 /** @brief Definition of mutex for asymmetric cryptography
  */
-atomic_t asym_mutex_int;
+static atomic_t asym_mutex_int;
 
 /** @brief Definition of mutex for power mode changes
 */
-atomic_t power_mutex_int;
+static atomic_t power_mutex_int;
 
 /** @brief Definition of mutex for heap allocations
  */
-atomic_t heap_mutex_int;
+static atomic_t heap_mutex_int;
+
+#elif defined(NRF5340_XXAA_APPLICATION) && NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX
+
+typedef enum {
+    HW_MUTEX_SYM_CRYPTO = 15,
+    HW_MUTEX_ASYM_CRYPTO = 14,
+    HW_MUTEX_POWER_MODE = 13,
+    HW_MUTEX_HEAP_ALLOC = 12,
+} hw_mutex_t;
+
+/** @brief Definition of mutex for symmetric cryptography
+ */
+static hw_mutex_t sym_mutex_int = HW_MUTEX_SYM_CRYPTO;
+
+/** @brief Definition of mutex for asymmetric cryptography
+ */
+static hw_mutex_t asym_mutex_int = HW_MUTEX_ASYM_CRYPTO;
+
+/** @brief Definition of mutex for power mode changes
+*/
+static hw_mutex_t power_mutex_int = HW_MUTEX_POWER_MODE;
+
+/** @brief Definition of mutex for heap allocations
+ */
+static hw_mutex_t heap_mutex_int = HW_MUTEX_HEAP_ALLOC;
 
 #else
 #error "Improper configuration of the lock variant!"
@@ -83,8 +112,10 @@ char __aligned(4) mutex_slab_buffer[NUM_MUTEXES * sizeof(struct k_mutex)];
 static nrf_cc3xx_platform_mutex_t sym_mutex = {
     .mutex = &sym_mutex_int,
     .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
-                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
-                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
+                NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
+                IS_ENABLED(CONFIG_CC3XX_HW_MUTEX_LOCK) ?
+                    NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX :
+                    NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
 };
 
 /**@brief Definition of RTOS-independent asymmetric cryptography mutex
@@ -94,8 +125,10 @@ static nrf_cc3xx_platform_mutex_t sym_mutex = {
 static nrf_cc3xx_platform_mutex_t asym_mutex = {
     .mutex = &asym_mutex_int,
     .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
-                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
-                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
+                NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
+                IS_ENABLED(CONFIG_CC3XX_HW_MUTEX_LOCK) ?
+                    NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX :
+                    NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
 };
 
 /**@brief Definition of RTOS-independent random number generation mutex
@@ -114,8 +147,10 @@ static nrf_cc3xx_platform_mutex_t rng_mutex = {
 static nrf_cc3xx_platform_mutex_t power_mutex = {
     .mutex = &power_mutex_int,
     .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
-                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
-                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
+                NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
+                IS_ENABLED(CONFIG_CC3XX_HW_MUTEX_LOCK) ?
+                    NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX :
+                    NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
 };
 
 /** @brief Definition of RTOS-independent heap allocation mutex
@@ -128,8 +163,10 @@ static nrf_cc3xx_platform_mutex_t power_mutex = {
 nrf_cc3xx_platform_mutex_t heap_mutex = {
     .mutex = &heap_mutex_int,
     .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
-                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
-                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
+                NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
+                IS_ENABLED(CONFIG_CC3XX_HW_MUTEX_LOCK) ?
+                    NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX :
+                    NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
 };
 
 /**@brief static function to initialize a mutex
@@ -144,7 +181,8 @@ static void mutex_init_platform(nrf_cc3xx_platform_mutex_t *mutex) {
             "mutex_init called with NULL parameter");
     }
     /* Atomic mutex has been initialized statically */
-    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC) {
+    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC ||
+        mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX) {
         return;
     }
 
@@ -186,7 +224,8 @@ static void mutex_free_platform(nrf_cc3xx_platform_mutex_t *mutex) {
     }
 
     /* Check if we are freeing a mutex that is atomic */
-    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC) {
+    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC ||
+        mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX) {
         /*Nothing to free*/
         return;
     }
@@ -222,11 +261,22 @@ static int32_t mutex_lock_platform(nrf_cc3xx_platform_mutex_t *mutex) {
         return NRF_CC3XX_PLATFORM_ERROR_PARAM_NULL;
     }
 
-    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC) {
+    switch (mutex->flags) {
+    case NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC:
         return atomic_cas((atomic_t *)mutex->mutex, 0, 1) ?
                        NRF_CC3XX_PLATFORM_SUCCESS :
                        NRF_CC3XX_PLATFORM_ERROR_MUTEX_FAILED;
-    } else {
+
+#if defined(NRF5340_XXAA_APPLICATION)
+
+    case NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX:
+        return nrf_mutex_lock(NRF_MUTEX, *((uint8_t *)mutex->mutex)) ?
+                       NRF_CC3XX_PLATFORM_SUCCESS :
+                       NRF_CC3XX_PLATFORM_ERROR_MUTEX_FAILED;
+
+#endif /* defined(NRF5340_XXAA_APPLICATION) */
+
+    default:
         /* Ensure that the mutex has been initialized */
         if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID) {
             return NRF_CC3XX_PLATFORM_ERROR_MUTEX_NOT_INITIALIZED;
@@ -253,11 +303,23 @@ static int32_t mutex_unlock_platform(nrf_cc3xx_platform_mutex_t *mutex) {
         return NRF_CC3XX_PLATFORM_ERROR_PARAM_NULL;
     }
 
-    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC) {
+    switch (mutex->flags)
+    {
+    case NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC:
         return atomic_cas((atomic_t *)mutex->mutex, 1, 0) ?
                        NRF_CC3XX_PLATFORM_SUCCESS :
                        NRF_CC3XX_PLATFORM_ERROR_MUTEX_FAILED;
-    } else {
+
+
+#if defined(NRF5340_XXAA_APPLICATION)
+
+    case NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX:
+        nrf_mutex_unlock(NRF_MUTEX, *((uint8_t *)mutex->mutex));
+        return NRF_CC3XX_PLATFORM_SUCCESS;
+
+#endif /* defined(NRF5340_XXAA_APPLICATION) */
+
+    default:
         /* Ensure that the mutex has been initialized */
         if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID) {
             return NRF_CC3XX_PLATFORM_ERROR_MUTEX_NOT_INITIALIZED;
