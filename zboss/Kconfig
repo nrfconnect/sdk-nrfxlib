@@ -1,10 +1,40 @@
 #
-# Copyright (c) 2020 Nordic Semiconductor
+# Copyright (c) 2021 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
 
-config APP_LINK_WITH_ZBOSS
-	bool
+menu "ZBOSS library configuration"
+
+# Select between the production and development version of libraries
+choice ZIGBEE_LIBRARY_TYPE
+	bool "ZBOSS library version"
+	default ZIGBEE_LIBRARY_PRODUCTION
+
+config ZIGBEE_LIBRARY_PRODUCTION
+	bool "Use production libraries"
 	help
-	  Link application with ZBOSS library
+	  If selected, the application will be linked with the latest, stable
+	  version of ZBOSS libraries.
+	  Please check NCS documentation in order to get the certification status
+	  of those libraries.
+
+config ZIGBEE_LIBRARY_DEVELOPMENT
+	bool "Use development libraries [EXPERIMENTAL]"
+	help
+	  If selected, the application will be linked with newest version of
+	  ZBOSS libraries.
+	  Those libraries are not officially certified, but may be used for
+	  an early development of applications, that require experimental features.
+
+endchoice # ZIGBEE_LIBRARY_TYPE
+
+if ZIGBEE_LIBRARY_PRODUCTION
+rsource "production/Kconfig"
+endif # ZIGBEE_LIBRARY_PRODUCTION
+
+if ZIGBEE_LIBRARY_DEVELOPMENT
+rsource "development/Kconfig"
+endif # ZIGBEE_LIBRARY_DEVELOPMENT
+
+endmenu

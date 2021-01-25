@@ -1,0 +1,49 @@
+#
+# Copyright (c) 2021 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+#
+
+# Add a menu option to switch between platform designs.
+choice
+	prompt "Zigbee platform design"
+	depends on ZIGBEE_LIBRARY_DEVELOPMENT
+	default ZIGBEE_LIBRARY_SOC
+
+config ZIGBEE_LIBRARY_SOC
+	bool "System-on-Chip"
+	help
+	  The Zigbee stack, as well as the application is implemented on the SoC
+
+config ZIGBEE_LIBRARY_NCP_DEV
+	bool "Network co-processor (connectivity device) [EXPERIMENTAL]"
+	help
+	  The Zigbee stack is implemented on the connectivity SoC,
+	  but the application is implemented on the host MCU
+
+endchoice
+
+# Add a menu option to switch between subsets of Zigbee Green Power features.
+choice
+	prompt "Zigbee Green Power feature set configuration"
+	depends on ZIGBEE_LIBRARY_DEVELOPMENT
+	default ZIGBEE_GP_PB
+
+config ZIGBEE_GP_NONE
+	bool "Disable Zigbee Green Power functionality"
+	help
+	  This option is valid only when building ZBOSS without application layer
+
+config ZIGBEE_GP_PB
+	bool "Enable Zigbee Green Power Proxy Basic functionality"
+
+config ZIGBEE_GP_CB
+	bool "Enable Zigbee Green Power Combo Basic functionality [EXPERIMENTAL]"
+	depends on !ZIGBEE_ROLE_END_DEVICE
+
+endchoice
+
+config APP_LINK_WITH_ZBOSS
+	bool
+	help
+	  Link application with ZBOSS library

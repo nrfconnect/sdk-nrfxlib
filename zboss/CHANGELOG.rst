@@ -12,6 +12,12 @@ All notable changes to this project in |NCS| are documented in this file.
 Master branch
 *************
 
+Added
+=====
+
+* Additional ZBOSS stack library version based on the ZBOSS build v3.4.0.800.
+  This library version is dedicated for :ref:`NCP development <nrf:ug_zigbee_platform_design_ncp_details>`.
+
 Changes
 =======
 
