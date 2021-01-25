@@ -19,7 +19,7 @@ if(CONFIG_BT_LL_SOFTDEVICE)
       "(${SOFTDEVICE_CONTROLLER_LIB_PATH} doesn't exist.)")
   endif()
 
-  if(CONFIG_SOFTDEVICE_CONTROLLER_PERIPH)
+  if(CONFIG_SOFTDEVICE_CONTROLLER_PERIPHERAL)
     set(softdevice_controller_variant peripheral)
   elseif(CONFIG_SOFTDEVICE_CONTROLLER_CENTRAL)
     set(softdevice_controller_variant central)
