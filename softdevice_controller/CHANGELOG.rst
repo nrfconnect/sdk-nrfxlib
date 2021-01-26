@@ -18,6 +18,7 @@ Added
 * Added :c:func:`sdc_support_ext_scan` which makes support for extended scanning configurable (DRGN-14902).
 * Added :c:func:`sdc_support_ext_adv` which makes support for extended advertising configurable (DRGN-14914).
 * Added support for the vendor specific HCI command: Zephyr Read Chip Temperature (DRGN-13769).
+* Added support for the vendor specific HCI command: Zephyr Read Tx Power (DRGN-15250).
 
 Changes
 =======
