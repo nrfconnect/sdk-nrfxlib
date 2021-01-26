@@ -1568,6 +1568,90 @@ config MBEDTLS_PK_WRITE_C
 	help
 	  Enable generic public key write functions.
 
+config MBEDTLS_SSL_RENEGOTIATION
+	bool "SSL - Renegotiation"
+	depends on MBEDTLS_TLS_LIBRARY
+	help
+	  Enable support for TLS renegotiation.
+
+config MBEDTLS_SSL_ALPN
+	bool "SSL - RFC 7301 ALP Negotiation"
+	depends on MBEDTLS_TLS_LIBRARY
+	help
+	  Enable support for RFC 7301 Application Layer Protocol Negotiation.
+
+config MBEDTLS_SSL_DTLS_CLIENT_PORT_REUSE
+	bool "SSL - DTLS client port reuse"
+	depends on MBEDTLS_TLS_LIBRARY
+	help
+	  Enable server-side support for clients that reconnect from the same port.
+
+config MBEDTLS_SSL_DTLS_BADMAC_LIMIT
+	bool "SSL - DTLS bad MAC limit"
+	depends on MBEDTLS_TLS_LIBRARY
+	help
+	  Enable support for a limit of records with bad MAC.
+
+config MBEDTLS_SSL_SESSION_TICKETS
+	bool "SSL - RFC 5077 session tickets support"
+	depends on MBEDTLS_TLS_LIBRARY
+	help
+	  Enable support for RFC 5077 session tickets in SSL.
+
+config MBEDTLS_SSL_SERVER_NAME_INDICATION
+	bool "SSL - RFC 6066 SNI"
+	depends on MBEDTLS_TLS_LIBRARY
+	help
+	  Enable support for RFC 6066 server name indication (SNI) in SSL.
+
+config MBEDTLS_SSL_CACHE_C
+	bool "SSL - cache"
+	depends on MBEDTLS_TLS_LIBRARY
+	help
+	  Enable simple SSL cache implementation.
+
+config MBEDTLS_SSL_TICKET_C
+	bool "SSL - tickets"
+	depends on MBEDTLS_TLS_LIBRARY
+	help
+	  Enable an implementation of TLS server-side callbacks for session tickets.
+
+config MBEDTLS_X509_CHECK_KEY_USAGE
+	bool "X.509 - check key usage"
+	depends on MBEDTLS_X509_LIBRARY
+	help
+	  Enable verification of the keyUsage extension (CA and leaf certificates).
+
+config MBEDTLS_X509_CHECK_EXTENDED_KEY_USAGE
+	bool "X.509 - check extended key usage"
+	depends on MBEDTLS_X509_LIBRARY
+	help
+	  Enable verification of the extendedKeyUsage extension (leaf certificates).
+
+config MBEDTLS_X509_CRL_PARSE_C
+	bool "X.509 - CRL parsing"
+	depends on MBEDTLS_X509_LIBRARY
+	help
+	  Enable X.509 CRL parsing.
+
+config MBEDTLS_X509_CSR_PARSE_C
+	bool "X.509 - CSR parsing"
+	depends on MBEDTLS_X509_LIBRARY
+	help
+	  Enable X.509 Certificate Signing Requests (CSR) parsing.
+
+config MBEDTLS_X509_CREATE_C
+	bool "X.509 - creating certificates core"
+	depends on MBEDTLS_X509_LIBRARY
+	help
+	  Enable X.509 core for creating certificates.
+
+config MBEDTLS_X509_CSR_WRITE_C
+	bool "X.509 - CSR writing"
+	depends on MBEDTLS_X509_LIBRARY
+	help
+	  Enable creating X.509 Certificate Signing Requests (CSR).
+
 endif # NRF_SECURITY_ADVANCED
 
 endif # NRF_SECURITY_ANY_BACKEND
