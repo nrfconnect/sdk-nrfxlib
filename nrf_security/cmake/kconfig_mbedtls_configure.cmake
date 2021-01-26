@@ -293,6 +293,24 @@ endif()
 set(MBEDTLS_ARC4_C False)
 
 #
+# Defines currently not grouped
+#
+kconfig_mbedtls_config("MBEDTLS_SSL_RENEGOTIATION")
+kconfig_mbedtls_config("MBEDTLS_SSL_ALPN")
+kconfig_mbedtls_config("MBEDTLS_SSL_DTLS_CLIENT_PORT_REUSE")
+kconfig_mbedtls_config("MBEDTLS_SSL_DTLS_BADMAC_LIMIT")
+kconfig_mbedtls_config("MBEDTLS_SSL_SESSION_TICKETS")
+kconfig_mbedtls_config("MBEDTLS_SSL_SERVER_NAME_INDICATION")
+kconfig_mbedtls_config("MBEDTLS_SSL_CACHE_C")
+kconfig_mbedtls_config("MBEDTLS_SSL_TICKET_C")
+kconfig_mbedtls_config("MBEDTLS_X509_CHECK_KEY_USAGE")
+kconfig_mbedtls_config("MBEDTLS_X509_CHECK_EXTENDED_KEY_USAGE")
+kconfig_mbedtls_config("MBEDTLS_X509_CRL_PARSE_C")
+kconfig_mbedtls_config("MBEDTLS_X509_CSR_PARSE_C")
+kconfig_mbedtls_config("MBEDTLS_X509_CREATE_C")
+kconfig_mbedtls_config("MBEDTLS_X509_CSR_WRITE_C")
+
+#
 # Compare the following with check-config.h in mbed TLS
 #
 mbedtls_config_define_depends("MBEDTLS_SSL_DTLS_ANTI_REPLAY"
