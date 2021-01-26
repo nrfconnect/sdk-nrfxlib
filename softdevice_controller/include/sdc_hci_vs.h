@@ -49,6 +49,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_CHIP_TEMP = 0xfc0b,
     /** @brief See @ref sdc_hci_cmd_vs_zephyr_write_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
+    /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_tx_power(). */
+    SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_TX_POWER = 0xfc0f,
     /** @brief See @ref sdc_hci_cmd_vs_llpm_mode_set(). */
     SDC_HCI_OPCODE_CMD_VS_LLPM_MODE_SET = 0xfd01,
     /** @brief See @ref sdc_hci_cmd_vs_conn_update(). */
@@ -242,6 +244,29 @@ typedef __PACKED_STRUCT
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_write_tx_power_return_t;
 
+/** @brief Zephyr Read Tx Power Level (per Role/Connection) Command command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Handle type. See @ref sdc_hci_vs_tx_power_handle_type. */
+    uint8_t handle_type;
+    /** @brief Handle of the selected handle_type that identifies the instance to set the power of.
+     *         In case of Extended Advertising, the handle specifies the advertising set. In case of
+     *         a connection, it specifies a Connection Handle. Otherwise this parameter is ignored.
+     */
+    uint16_t handle;
+} sdc_hci_cmd_vs_zephyr_read_tx_power_t;
+
+/** @brief Zephyr Read Tx Power Level (per Role/Connection) Command return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Handle type. See @ref sdc_hci_vs_tx_power_handle_type. */
+    uint8_t handle_type;
+    /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_tx_power_t. */
+    uint16_t handle;
+    /** @brief The selected Tx Power in dBm. */
+    int8_t selected_tx_power;
+} sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
+
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef __PACKED_STRUCT
 {
@@ -428,6 +453,26 @@ uint8_t sdc_hci_cmd_vs_zephyr_read_chip_temp(sdc_hci_cmd_vs_zephyr_read_chip_tem
  */
 uint8_t sdc_hci_cmd_vs_zephyr_write_tx_power(const sdc_hci_cmd_vs_zephyr_write_tx_power_t * p_params,
                                              sdc_hci_cmd_vs_zephyr_write_tx_power_return_t * p_return);
+
+/** @brief Zephyr Read Tx Power Level (per Role/Connection) Command.
+ *
+ * This command reads the BLE Tx power level.
+ *
+ * In contrast to the standardized HCI command, i.e. Read_Transmit_Power_Level,
+ * which returns the transmitted power level only for a specified connection handle,
+ * this command operates for both connected and unconnected states.
+ * It gets the BLE Tx power level for any given handle type (advertiser, scanner, connection) and
+ * handle.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_zephyr_read_tx_power(const sdc_hci_cmd_vs_zephyr_read_tx_power_t * p_params,
+                                            sdc_hci_cmd_vs_zephyr_read_tx_power_return_t * p_return);
 
 /** @brief Set Low Latency Packet Mode.
  *
