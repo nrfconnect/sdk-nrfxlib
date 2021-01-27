@@ -26,7 +26,7 @@ target_include_directories(mbedtls_common INTERFACE
   ${generated_includes}
 )
 
-get_mbedtls_dir(ARM_MBEDTLS_PATH)
+get_mbedtls_dir(${ARM_MBEDTLS_PATH})
 
 set(mbedcrypto_glue_include_path
   "${CMAKE_CURRENT_LIST_DIR}/include/mbedcrypto_glue/mbedtls"
