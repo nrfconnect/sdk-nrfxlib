@@ -23,7 +23,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include "include/ocrypto_sha512.h"
+#include "ocrypto_sha512.h"
 
 #ifdef __cplusplus
 extern "C" {
