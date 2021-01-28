@@ -1,47 +1,33 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2021 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
 /**@file
- * @defgroup nrf_oberon_p256 ECC secp256r1 low-level APIs
+ * @defgroup nrf_oberon_p224 ECC secp224r1 low-level APIs
  * @ingroup nrf_oberon
  * @{
  * @brief Type declarations and APIs for low-level elliptic curve point operations
- * based on the NIST secp256r1 curve.
+ * based on the NIST secp224r1 curve.
  */
 
-#ifndef OCRYPTO_CURVE_P256_H
-#define OCRYPTO_CURVE_P256_H
+#ifndef OCRYPTO_CURVE_P224_H
+#define OCRYPTO_CURVE_P224_H
 
-#include "ocrypto_sc_p256.h"
+#include "ocrypto_sc_p224.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+
+// (x,y) only Jacobian coordinates
 /**@cond */
-
-// (x,y) only jacobian coordinates
 typedef struct {
-    ocrypto_mod_p256 x;
-    ocrypto_mod_p256 y;
-} ocrypto_cp_p256;
-
-// P-256 invert context
-typedef struct {
-    ocrypto_mod_p256 x, x3, xn, t;
-    int step;
-} ocrypto_p256_invert_context;
-
-
-typedef struct {
-    ocrypto_cp_p256 p, q0, q1;
-    uint32_t e[8]; // bits 0-255 of extended scalar, bit 256 = ~bit 255
-    ocrypto_p256_invert_context inv;
-    int ret, prev, dec, step;
-} ocrypto_p256_mult_context;
+    ocrypto_mod_p224 x;
+    ocrypto_mod_p224 y;
+} ocrypto_cp_p224;
 /**@endcond */
 
 
@@ -53,8 +39,7 @@ typedef struct {
  * @retval 0  If @p r is a valid curve point.
  * @retval -1 Otherwise.
  */
-int ocrypto_curve_p256_from32bytes(ocrypto_cp_p256 *r, const uint8_t p[32]);
-
+int ocrypto_curve_p224_from28bytes(ocrypto_cp_p224 *r, const uint8_t p[28]);
 
 /** Load point from bytes.
  *
@@ -64,23 +49,23 @@ int ocrypto_curve_p256_from32bytes(ocrypto_cp_p256 *r, const uint8_t p[32]);
  * @retval 0  If @p r is a valid curve point.
  * @retval -1 Otherwise.
  */
-int ocrypto_curve_p256_from64bytes(ocrypto_cp_p256 *r, const uint8_t p[64]);
+int ocrypto_curve_p224_from56bytes(ocrypto_cp_p224 *r, const uint8_t p[56]);
 
 /** Store p.x to bytes.
  *
  * @param[out]           r       x stored as array.
  * @param                p       Point with x to be stored.
  */
-void ocrypto_curve_p256_to32bytes(uint8_t r[32], ocrypto_cp_p256 *p);
+void ocrypto_curve_p224_to28bytes(uint8_t r[28], ocrypto_cp_p224 *p);
 
 /** Store p.x to bytes.
  *
  * @param[out]           r       Point stored as array.
  * @param                p       Point to be stored.
  */
-void ocrypto_curve_p256_to64bytes(uint8_t r[64], ocrypto_cp_p256 *p);
+void ocrypto_curve_p224_to56bytes(uint8_t r[56], ocrypto_cp_p224 *p);
 
-/** P256 scalar multiplication.
+/** P224 scalar multiplication.
  *
  * r = p * s
  * r = [0,0] if p = [0,0] or s mod q = 0
@@ -93,9 +78,9 @@ void ocrypto_curve_p256_to64bytes(uint8_t r[64], ocrypto_cp_p256 *p);
  * @retval 0  If 0 < s < q.
  * @retval 1  If s > q.
  */
-int ocrypto_curve_p256_scalarmult(ocrypto_cp_p256 *r, const ocrypto_cp_p256 *p, const ocrypto_sc_p256 *s);
+int ocrypto_curve_p224_scalarmult(ocrypto_cp_p224 *r, const ocrypto_cp_p224 *p, const ocrypto_sc_p224 *s);
 
-/** P256 scalar base multiplication.
+/** P224 scalar base multiplication.
  *
  * r = basePoint * s
  * r = [0,0] if s mod q = 0
@@ -107,12 +92,29 @@ int ocrypto_curve_p256_scalarmult(ocrypto_cp_p256 *r, const ocrypto_cp_p256 *p, 
  * @retval 0  If 0 < s < q.
  * @retval 1  If s > q.
  */
-int ocrypto_curve_p256_scalarmult_base(ocrypto_cp_p256 *r, const ocrypto_sc_p256 *s);
+int ocrypto_curve_p224_scalarmult_base(ocrypto_cp_p224 *r, const ocrypto_sc_p224 *s);
+
+/** P224 add and double
+ *
+ * r = p + q
+ * p == [0,0] -> r = q
+ * q == [0,0] -> r = p
+ * p == -q    -> r = [0,0]
+ *
+ * @param[out]  r       Resulting point
+ * @param       p       Input point.
+ * @param       q       input point.
+ *
+ * @retval -1 if r = [0,0].
+ * @retval 0 if successful.
+ */
+int ocrypto_curve_p224_add(ocrypto_cp_p224 *r, const ocrypto_cp_p224 *p, const ocrypto_cp_p224 *q);
+
 
 #ifdef __cplusplus
 }
-#endif
+#endif /* #ifndef OCRYPTO_CURVE_P224_H */
 
-#endif /* #ifndef OCRYPTO_CURVE_P256_H */
+#endif
 
 /** @} */

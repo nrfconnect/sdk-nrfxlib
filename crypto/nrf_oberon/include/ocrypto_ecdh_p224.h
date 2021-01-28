@@ -5,8 +5,8 @@
  */
 
 /**@file
- * @defgroup ocrypto_ecdh_p224 ECDH P224 APIs
- * @ingroup ocrypto_ecdh
+ * @defgroup nrf_oberon_ecdh_p224 ECDH P224 APIs
+ * @ingroup nrf_oberon
  * @{
  * @brief Type declarations and APIs for low-level elliptic curve point operations
  *        to do Elliptic Curve Diffie-Hellman based on the NIST secp224r1 curve.

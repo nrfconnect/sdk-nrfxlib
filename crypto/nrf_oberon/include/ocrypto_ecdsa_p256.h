@@ -5,7 +5,7 @@
  */
 
 /**@file
- * @defgroup nrf_oberon_ecdsa ECDSA APIs
+ * @defgroup nrf_oberon_ecdsa_p256 ECDSA APIs
  * @ingroup nrf_oberon
  * @{
  * @brief Type declarations and APIs to do Elliptic Curve Digital Signature Algorith using the

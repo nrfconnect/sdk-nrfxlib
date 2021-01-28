@@ -172,14 +172,23 @@ ECC Curve25519 low-level APIs
 ECDH APIs
 =========
 
-.. doxygengroup:: nrf_oberon_ecdh
+.. doxygengroup:: nrf_oberon_ecdh_p256
    :project: nrfxlib
    :members:
+
+.. doxygengroup:: nrf_oberon_ecdh_p224
+   :project: nrfxlib
+   :members:
+
 
 ECDSA APIs
 ==========
 
-.. doxygengroup:: nrf_oberon_ecdsa
+.. doxygengroup:: nrf_oberon_ecdsa_p256
+   :project: nrfxlib
+   :members:
+
+.. doxygengroup:: nrf_oberon_ecdsa_p224
    :project: nrfxlib
    :members:
 

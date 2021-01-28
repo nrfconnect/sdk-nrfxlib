@@ -9,6 +9,74 @@ Changelog - nRF Oberon
 
 All notable changes to this project are documented in this file.
 
+nrf_oberon - 3.0.8
+
+Added
+=====
+
+* Added APIs for doing ECDH calculation using secp256r1 in incremental steps.
+* Added ``ocrypto_`` APIs for SHA-224 and SHA-384.
+* Added ``ocrypto_`` APIs for pbkdf2 for SHA-1 and SHA-256.
+
+Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
+
+.. note::
+   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+
+* nrf_oberon, nRF9160 and nRF53 application core variants
+
+  * ``cortex-m33/hard-float/liboberon_3.0.8.a``
+  * ``cortex-m33/soft-float/liboberon_3.0.8.a``
+
+  * short-wchar
+
+    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.8.a``
+    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.8.a``
+
+  * Keil
+
+    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.8.lib``
+    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.8.lib``
+
+* nrf_oberon, nrf53 network core variants
+
+  * ``cortex-m33+nodsp/soft-float/liboberon_3.0.8.a``
+
+  * short-wchar
+
+    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.8.a``
+
+  * Keil
+
+    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.8.lib``
+
+* nrf_oberon, nRF52 variants
+
+  * ``cortex-m4/hard-float/liboberon_3.0.8.a``
+  * ``cortex-m4/soft-float/liboberon_3.0.8.a``
+
+  * short-wchar
+
+    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.8.a``
+    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.8.a``
+
+  * Keil
+
+    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.8.lib``
+    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.8.lib``
+
+* nrf_oberon, nRF51 variants
+
+  * ``cortex-m0/soft-float/liboberon_3.0.8.a``
+
+  * short-wchar
+
+    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.8.a``
+
+  * Keil
+
+    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.8.lib``
+
 nrf_oberon - 3.0.7
 
 Added
@@ -31,12 +99,10 @@ Added library-internal symbols for mbed TLS alternate APIs
 
 Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
 
-nrf_oberon - 3.0.7
-
 .. note::
    short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
 
-* nrf_oberon, nRF9160 and nRF53 app core variants
+* nrf_oberon, nRF9160 and nRF53 application core variants
 
   * ``cortex-m33/hard-float/liboberon_3.0.7.a``
   * ``cortex-m33/soft-float/liboberon_3.0.7.a``
@@ -118,7 +184,7 @@ Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51
 .. note::
    short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
 
-* nrf_oberon, nRF9160 and nRF53 app core variants
+* nrf_oberon, nRF9160 and nRF53 application core variants
 
   * ``cortex-m33/hard-float/liboberon_3.0.5.a``
   * ``cortex-m33/soft-float/liboberon_3.0.5.a``

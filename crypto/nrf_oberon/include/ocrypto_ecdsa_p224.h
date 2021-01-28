@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2021 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
  */
 
 /**@file
- * @defgroup ocrypto_ecdsa_p224 ECDSA secp224r1 low-level APIs
- * @ingroup ocrypto_ecdsa
+ * @defgroup nrf_oberon_ecdsa_p224 ECDSA secp224r1 low-level APIs
+ * @ingroup nrf_oberon
  * @{
  * @brief Type declarations and APIs to do Elliptic Curve Digital Signature Algorith using the
  *        NIST secp224r1 curve.

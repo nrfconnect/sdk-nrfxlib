@@ -28,7 +28,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include "include/ocrypto_sha256.h"
+#include "ocrypto_sha256.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -131,6 +131,23 @@ void ocrypto_hmac_sha256(
     uint8_t r[ocrypto_hmac_sha256_BYTES],
     const uint8_t* key, size_t key_len,
     const uint8_t* in, size_t in_len);
+
+/**
+ * HMAC-SHA256 algorithm with AAD.
+ *
+ * @param[out] r       HMAC output.
+ * @param      key     HMAC key.
+ * @param      key_len Length of @p key. 0 <= @p key_len <= @c ocrypto_hmac_sha256_KEY_BYTES_MAX.
+ * @param      in      Input data.
+ * @param      in_len  Length of @p in.
+ * @param      aad     Additional authentication data. May be NULL.
+ * @param      aad_len Length of @p aad.
+ */
+void ocrypto_hmac_sha256_aad(
+    uint8_t r[ocrypto_hmac_sha256_BYTES],
+    const uint8_t* key, size_t key_len,
+    const uint8_t* in, size_t in_len,
+    const uint8_t* aad, size_t aad_len);
 
 #ifdef __cplusplus
 }
