@@ -9,10 +9,12 @@ Changelog - nrf_cc3xx_mbedcrypto
 
 All notable changes to this project are documented in this file.
 
-nrf_cc3xx_mbedcrypto - 0.9.6
+nrf_cc3xx_mbedcrypto - 0.9.7
 ****************************
-
-New version of the runtime library fixing a regression in derived keys for ECB, CCM, and GCM.
+New version of the runtime library with bugfixes:
+* Fixed issues where mbedtls_rsa_complete was not able to deduce missing parameters.
+* Fixed an issue with calculating the correct salt length for certain combinations of RSA key and digest sizes.
+* Adding missing function mbedtls_ecp_write_key.
 
 Library built against mbed TLS version 2.24.0.
 
@@ -21,7 +23,87 @@ This version is dependent on the nrf_cc310_platform or nrf_cc312_platform librar
 Added
 =====
 
-Added new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+
+.. note::
+
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+
+* nrf_cc312_mbedcrypto, nRF5340 variants
+
+  * ``cortex-m33/hard-float/libnrf_cc312_mbedcrypto_0.9.7.a``
+  * ``cortex-m33/soft-float/libnrf_cc312_mbedcrypto_0.9.7.a``
+
+  * No interrupts
+
+    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_mbedcrypto_0.9.7.a``
+    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_mbedcrypto_0.9.7.a``
+
+  * short-wchar
+
+    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_mbedcrypto_0.9.7.a``
+    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_mbedcrypto_0.9.7.a``
+
+  * short-wchar, no interrupts
+
+    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_mbedcrypto_0.9.7.a``
+    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_mbedcrypto_0.9.7.a``
+
+
+* nrf_cc310_mbedcrypto, nRF9160 variants
+
+  * ``cortex-m33/hard-float/libnrf_cc312_mbedcrypto_0.9.7.a``
+  * ``cortex-m33/soft-float/libnrf_cc310_mbedcrypto_0.9.7.a``
+
+  * No interrupts
+
+    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_mbedcrypto_0.9.7.a``
+    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_mbedcrypto_0.9.7.a``
+
+  * short-wchar
+
+    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.7.a``
+    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.7.a``
+
+  * short-wchar, no interrupts
+
+    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.7.a``
+    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.7.a``
+
+
+* nrf_cc310_mbedcrypto, nRF52840 variants
+
+  * ``cortex-m4/soft-float/libnrf_cc310_mbedcrypto_0.9.7.a``
+  * ``cortex-m4/hard-float/libnrf_cc310_mbedcrypto_0.9.7.a``
+
+  * No interrupts
+
+    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_mbedcrypto_0.9.7.a``
+    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_mbedcrypto_0.9.7.a``
+
+  * short-wchar
+
+    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.7.a``
+    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.7.a``
+
+  * short-wchar, no interrupts
+
+    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.7.a``
+    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.7.a``
+
+
+nrf_cc3xx_mbedcrypto - 0.9.6
+****************************
+
+New version of the runtime library fixing a regression in derived keys for ECB, CCM, and GCM
+Library built against mbed TLS version 2.24.0.
+
+This version is dependent on the nrf_cc310_platform or nrf_cc312_platform library for low-level initialization of the system and proper RTOS integration.
+
+Added
+=====
+
+Added a new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -100,7 +182,7 @@ This version is dependent on the nrf_cc310_platform or nrf_cc312_platform librar
 Added
 =====
 
-Added new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added anew build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -181,7 +263,7 @@ This version is dependent on the nrf_cc310_platform or nrf_cc312_platform librar
 Added
 =====
 
-Added new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -274,7 +356,7 @@ This version is dependent on the nrf_cc310_platform or nrf_cc312_platform librar
 Added
 =====
 
-Added new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -295,7 +377,7 @@ Added new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF
     * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_mbedcrypto_0.9.3.a``
     * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_mbedcrypto_0.9.3.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_mbedcrypto_0.9.3.a``
     * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_mbedcrypto_0.9.3.a``
@@ -316,7 +398,7 @@ Added new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF
     * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.3.a``
     * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.3.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.3.a``
     * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.3.a``
@@ -337,7 +419,7 @@ Added new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF
     * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.3.a``
     * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.3.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.3.a``
     * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.3.a``
@@ -350,16 +432,16 @@ New experimental version of nrf_cc310_mbedcrypto with fixes for power management
 
 This version also adds experimental support for interrupts in selected versions of the library  (the libraries that do not support interrupts can be found in the ``no-interrupts`` folders).
 
-This version is dependent on nrf_cc310_platform library for low-level initialization of the system and proper RTOS integration.
+This version is dependent on the nrf_cc310_platform library for low-level initialization of the system and proper RTOS integration.
 
 Added
 =====
 
-Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
+Added a new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
 
-.. note:
+.. note::
 
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
 * nrf_cc310_mbedcrypto, nRF9160 variants
 
@@ -376,7 +458,7 @@ Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectu
     * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.2.a``
     * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.2.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.2.a``
     * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.2.a``
@@ -396,7 +478,7 @@ Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectu
     * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.2.a``
     * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.2.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.2.a``
     * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.2.a``
@@ -407,16 +489,16 @@ nrf_cc310_mbedcrypto - 0.9.1
 
 New experimental version of nrf_cc310_mbedcrypto with general bugfixes.
 
-This version is dependent on nrf_cc310_platform library for low-level initialization of the system and proper RTOS integration.
+This version is dependent on the nrf_cc310_platform library for low-level initialization of the system and proper RTOS integration.
 
 Added
 =====
 
-Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
+Added a new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
 
-.. note:
+.. note::
 
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
 * nrf_cc310_mbedcrypto, nRF9160 variants
 
@@ -433,7 +515,7 @@ Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectu
     * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.1.a``
     * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.1.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.1.a``
     * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.1.a``
@@ -453,7 +535,7 @@ Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectu
     * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.1.a``
     * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.1.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.1.a``
     * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.1.a``
@@ -469,11 +551,11 @@ This version is dependent on the newly added nrf_cc310_platform library for low-
 Added
 =====
 
-Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
+Added a new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
 
-.. note:
+.. note::
 
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
 * nrf_cc310_mbedcrypto, nRF9160 variants
 
@@ -490,7 +572,7 @@ Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectu
     * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.0.a``
     * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.0.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.0.a``
     * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.0.a``
@@ -510,7 +592,7 @@ Added new build of nRF_cc310_mbedcrypto library for nRF9160 and nRF52 architectu
     * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.0.a``
     * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.0.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.0.a``
     * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.0.a``
@@ -528,11 +610,11 @@ New experimental version of nrf_cc310_mbedcrypto with general bugfixes.
 Added
 =====
 
-Added new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
+Added a new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
 
-.. note:
+.. note::
 
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
 * nrf_cc310_mbedcrypto, nRF9160 variants
 
@@ -549,7 +631,7 @@ Added new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectu
     * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.8.1.a``
     * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.8.1.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.8.1.a``
     * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.8.1.a``
@@ -569,7 +651,7 @@ Added new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectu
     * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.8.1.a``
     * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.8.1.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.8.1.a``
     * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.8.1.a``
@@ -587,11 +669,11 @@ New experimental version of nrf_cc310_mbedcrypto with changes to platform initia
 Added
 =====
 
-Added new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
+Added a new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectures.
 
-.. note:
+.. note::
 
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
 * nrf_cc310_mbedcrypto, nRF9160 variants
 
@@ -608,7 +690,7 @@ Added new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectu
     * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.8.0.a``
     * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.8.0.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.8.0.a``
     * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.8.0.a``
@@ -628,7 +710,7 @@ Added new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architectu
     * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.8.0.a``
     * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.8.0.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.8.0.a``
     * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.8.0.a``
@@ -645,7 +727,7 @@ Added
 Added the following nrf_cc310_mbedcrypto libraries for nRF9160 and nRF52 architectures.
 
 .. note::
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
 
 * nrf_cc310_mbedcrypto, nRF9160 variants
@@ -663,7 +745,7 @@ Added the following nrf_cc310_mbedcrypto libraries for nRF9160 and nRF52 archite
     * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.7.0.a``
     * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.7.0.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.7.0.a``
     * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.7.0.a``
@@ -683,7 +765,7 @@ Added the following nrf_cc310_mbedcrypto libraries for nRF9160 and nRF52 archite
     * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.7.0.a``
     * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.7.0.a``
 
-  * short-wchar, No interrupts
+  * short-wchar, no interrupts
 
     * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.7.0.a``
     * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.7.0.a``

@@ -238,7 +238,7 @@ static void mutex_free_platform(nrf_cc3xx_platform_mutex_t *mutex) {
 
     /* Check if the mutex was allocated or being statically defined */
     if ((mutex->flags & NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ALLOCATED) != 0) {
-        k_mem_slab_free(&mutex_slab, mutex->mutex);
+        k_mem_slab_free(&mutex_slab, &mutex->mutex);
         mutex->mutex = NULL;
     }
     else {
