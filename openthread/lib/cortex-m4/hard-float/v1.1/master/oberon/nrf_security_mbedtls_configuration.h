@@ -1561,7 +1561,7 @@
  *          configuration of this extension).
  *
  */
-//#define MBEDTLS_SSL_RENEGOTIATION
+/* #undef MBEDTLS_SSL_RENEGOTIATION */
 
 /**
  * \def MBEDTLS_SSL_SRV_SUPPORT_SSLV2_CLIENT_HELLO
@@ -1687,7 +1687,7 @@
  *
  * Comment this macro to disable support for ALPN.
  */
-//#define MBEDTLS_SSL_ALPN
+/* #undef MBEDTLS_SSL_ALPN */
 
 /**
  * \def MBEDTLS_SSL_DTLS_ANTI_REPLAY
@@ -1736,7 +1736,7 @@
  *
  * Comment this to disable support for clients reusing the source port.
  */
-//#define MBEDTLS_SSL_DTLS_CLIENT_PORT_REUSE
+/* #undef MBEDTLS_SSL_DTLS_CLIENT_PORT_REUSE */
 
 /**
  * \def MBEDTLS_SSL_DTLS_BADMAC_LIMIT
@@ -1747,7 +1747,7 @@
  *
  * Requires: MBEDTLS_SSL_PROTO_DTLS
  */
-//#define MBEDTLS_SSL_DTLS_BADMAC_LIMIT
+/* #undef MBEDTLS_SSL_DTLS_BADMAC_LIMIT */
 
 /**
  * \def MBEDTLS_SSL_SESSION_TICKETS
@@ -1761,7 +1761,7 @@
  *
  * Comment this macro to disable support for SSL session tickets
  */
-//#define MBEDTLS_SSL_SESSION_TICKETS
+/* #undef MBEDTLS_SSL_SESSION_TICKETS */
 
 /**
  * \def MBEDTLS_SSL_EXPORT_KEYS
@@ -1782,7 +1782,7 @@
  *
  * Comment this macro to disable support for server name indication in SSL
  */
-//#define MBEDTLS_SSL_SERVER_NAME_INDICATION
+/* #undef MBEDTLS_SSL_SERVER_NAME_INDICATION */
 
 /**
  * \def MBEDTLS_SSL_TRUNCATED_HMAC
@@ -1995,7 +1995,7 @@
  *
  * Comment to skip keyUsage checking for both CA and leaf certificates.
  */
-//#define MBEDTLS_X509_CHECK_KEY_USAGE
+/* #undef MBEDTLS_X509_CHECK_KEY_USAGE */
 
 /**
  * \def MBEDTLS_X509_CHECK_EXTENDED_KEY_USAGE
@@ -2008,7 +2008,7 @@
  *
  * Comment to skip extendedKeyUsage checking for certificates.
  */
-//#define MBEDTLS_X509_CHECK_EXTENDED_KEY_USAGE
+/* #undef MBEDTLS_X509_CHECK_EXTENDED_KEY_USAGE */
 
 /**
  * \def MBEDTLS_X509_RSASSA_PSS_SUPPORT
@@ -2886,7 +2886,7 @@
  *
  * Uncomment to enable generic public key write functions.
  */
-/* #undef MBEDTLS_PK_WRITE_C */
+#define MBEDTLS_PK_WRITE_C
 
 /**
  * \def MBEDTLS_PKCS5_C
@@ -3116,7 +3116,7 @@
  *
  * Requires: MBEDTLS_SSL_CACHE_C
  */
-//#define MBEDTLS_SSL_CACHE_C
+/* #undef MBEDTLS_SSL_CACHE_C */
 
 /**
  * \def MBEDTLS_SSL_COOKIE_C
@@ -3138,7 +3138,7 @@
  *
  * Requires: MBEDTLS_CIPHER_C
  */
-//#define MBEDTLS_SSL_TICKET_C
+/* #undef MBEDTLS_SSL_TICKET_C */
 
 /**
  * \def MBEDTLS_SSL_CLI_C
@@ -3285,7 +3285,7 @@
  *
  * This module is required for X.509 CRL parsing.
  */
-//#define MBEDTLS_X509_CRL_PARSE_C
+/* #undef MBEDTLS_X509_CRL_PARSE_C */
 
 /**
  * \def MBEDTLS_X509_CSR_PARSE_C
@@ -3299,7 +3299,7 @@
  *
  * This module is used for reading X.509 certificate request.
  */
-//#define MBEDTLS_X509_CSR_PARSE_C
+/* #undef MBEDTLS_X509_CSR_PARSE_C */
 
 /**
  * \def MBEDTLS_X509_CREATE_C
@@ -3312,7 +3312,7 @@
  *
  * This module is the basis for creating X.509 certificates and CSRs.
  */
-//#define MBEDTLS_X509_CREATE_C
+/* #undef MBEDTLS_X509_CREATE_C */
 
 /**
  * \def MBEDTLS_X509_CRT_WRITE_C
@@ -3338,7 +3338,7 @@
  *
  * This module is required for X.509 certificate request writing.
  */
-//#define MBEDTLS_X509_CSR_WRITE_C
+/* #undef MBEDTLS_X509_CSR_WRITE_C */
 
 /**
  * \def MBEDTLS_XTEA_C
@@ -3721,6 +3721,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  * Allow user to override any previous default.
  *
  */
+/* #undef MBEDTLS_USER_CONFIG_FILE */
 #if defined(MBEDTLS_USER_CONFIG_FILE)
 #include MBEDTLS_USER_CONFIG_FILE
 #endif
