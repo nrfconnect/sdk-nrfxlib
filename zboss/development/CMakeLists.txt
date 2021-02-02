@@ -4,30 +4,30 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-# Define a separate interface library for Nordic's extensions to ZBOSS stack
-zephyr_interface_library_named(zboss-extensions)
+# Define an interface library for Nordic's ZBOSS stack.
+# This library contains official ZBOSS headers, platform-specific configuration,
+# Nordic's extensions of ZBOSS API.
+zephyr_interface_library_named(zboss)
 
 # Common includes, not related to ZBOSS source code.
-target_include_directories(zboss-extensions INTERFACE
+target_include_directories(zboss INTERFACE
   src/zb_error
   include/addons
 )
 
 # Suppress bitfield compatibility warning.
 # This has to be included in all files, that uses ZBOSS headers.
-# Those options will be inherited by the ZBOSS target as well as everything
-# that links to it.
-target_compile_options(zboss-extensions INTERFACE
+# Those options will be inherited by everything that links to the ZBOSS target.
+target_compile_options(zboss INTERFACE
   -Wno-packed-bitfield-compat
 )
 
 # Add compile-time definition, indicating which ZBOSS library will be linked
 # This definition adjusts ZBOSS headers, by making non-applicable API for
 # a given Zigbee role invisible.
-# Those options will be inherited by the ZBOSS target as well as everything
-# that links to it.
+# Those options will be inherited by everything that links to the ZBOSS target.
 if (CONFIG_ZIGBEE_ROLE_END_DEVICE)
-  target_compile_definitions(zboss-extensions INTERFACE
+  target_compile_definitions(zboss INTERFACE
     ZB_ED_ROLE
   )
 endif()
@@ -42,8 +42,7 @@ zephyr_library()
 # Add source files
 zephyr_library_sources(src/zb_error/zb_error_to_string.c)
 
-# Link with ZBOSS extensions interface library, which is linked to the main
-# ZBOSS interface library.
+# Link with ZBOSS interface library.
 zephyr_library_link_libraries(zboss)
 
 # Precompiled libraries -only part.
@@ -61,13 +60,6 @@ if ((NOT DEFINED CONFIG_ZBOSS_SOURCES_AVAILABLE) OR
     message(WARNING "This combination of SoC and floating point ABI is not supported by the ZBOSS lib."
                     "(${ZBOSS_LIB_PATH} doesn't exist.)")
   endif()
-
-  # Define an interface library for Nordic's ZBOSS stack.
-  # This library contains official ZBOSS headers, platform-specific configuration
-  # and links to Nordic's extensions of ZBOSS API.
-  # This target definition is defined in both - nrfxlib and ZBOSS platform for
-  # NCS due to the lack of control on the order of Zephyr module inclusion.
-  zephyr_interface_library_named(zboss)
 
   # Extend ZBOSS interface libraries by headers placed in nrfxlib.
   target_include_directories(zboss INTERFACE
@@ -108,8 +100,4 @@ if ((NOT DEFINED CONFIG_ZBOSS_SOURCES_AVAILABLE) OR
   else()
     message(FATAL_ERROR "Unsupported Zigbee platform design")
   endif()
-
-  # Link with Nordic's ZBOSS extensions as well as common compile time options
-  # and definitions.
-  target_link_libraries(zboss INTERFACE zboss-extensions)
 endif()
