@@ -6,10 +6,13 @@
 
 menu "ZBOSS library configuration"
 
+config ZBOSS_SOURCES_AVAILABLE
+	bool
+
 # Select between the production and development version of libraries
 choice ZIGBEE_LIBRARY_TYPE
 	bool "ZBOSS library version"
-	default ZIGBEE_LIBRARY_PRODUCTION
+	default ZIGBEE_LIBRARY_PRODUCTION if !ZBOSS_SOURCES_AVAILABLE
 
 config ZIGBEE_LIBRARY_PRODUCTION
 	bool "Use production libraries"
