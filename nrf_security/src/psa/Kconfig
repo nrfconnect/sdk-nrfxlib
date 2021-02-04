@@ -1,0 +1,49 @@
+#
+# Copyright (c) 2021 Nordic Semiconductor ASA
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menuconfig PSA_NATIVE_ITS
+	bool "PSA native Internal Trusted Storage"
+	depends on CC310_BACKEND
+
+if PSA_NATIVE_ITS
+
+choice
+	prompt "Backend selection for PSA native ITS"
+	help
+	  Select backend for PSA native Internal Trusted Storage
+
+config CHOICE_BACKEND_ZEPHYR_SETTINGS
+	bool "Zephyr Settings"
+	select PSA_EITS_BACKEND_ZEPHYR
+
+endchoice
+
+menuconfig PSA_EITS_BACKEND_ZEPHYR
+	bool "Native ITS backend based on Zephyr Settings subsystem"
+	select FLASH
+	select FLASH_MAP
+	select FLASH_PAGE_LAYOUT
+	select MPU_ALLOW_FLASH_WRITE
+	select NVS
+	select SETTINGS
+	depends on CHOICE_BACKEND_ZEPHYR_SETTINGS
+	help
+	  Enable to get access for flashing operation based on Zephyr Settings
+	  subsystem.
+
+if PSA_EITS_BACKEND_ZEPHYR
+
+config PSA_EITS_READ_BUFF_SIZE
+	int "The size of the buffer used when reading with an offset"
+	default 2048
+
+module = PSA_EITS_BACKEND_ZEPHYR
+module-str = PSA EITS Zephyr backend
+source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"
+
+endif # PSA_EITS_BACKEND_ZEPHYR
+
+endif # PSA_NATIVE_ITS

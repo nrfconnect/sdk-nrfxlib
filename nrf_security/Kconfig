@@ -1655,6 +1655,9 @@ config MBEDTLS_X509_CSR_WRITE_C
 
 endif # NRF_SECURITY_ADVANCED
 
+comment "PSA Native ITS"
+rsource "src/psa/Kconfig"
+
 endif # NRF_SECURITY_ANY_BACKEND
 
 endif # NORDIC_SECURITY_BACKEND
