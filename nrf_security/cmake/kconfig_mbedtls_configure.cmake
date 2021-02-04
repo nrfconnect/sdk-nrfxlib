@@ -61,6 +61,11 @@ macro(configure_file_ifdef mbedtls_config)
 endmacro()
 
 #
+# Include PSA configuration
+#
+include(${CMAKE_CURRENT_LIST_DIR}/kconfig_psa_configure.cmake)
+
+#
 # Remove previously generated files from include folder
 #
 file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/include/)
