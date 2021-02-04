@@ -9,18 +9,18 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-Master branch
-*************
+nRF Connect SDK v1.5.0
+**********************
 
 Added
 =====
 
 * Added a new signal to the MPSL timeslot: ``MPSL_TIMESLOT_SIGNAL_OVERSTAYED``.
   This signal is given to the application when a timeslot session is closed too late. (DRGN-14677)
-
+  
 * Added a new clock configuration option :c:member:`skip_wait_lfclk_started` in :c:struct:`mpsl_clock_lfclk_cfg_t`,
   which does not wait for the start of Low Frequency Clock. (DRGN-14204)
-
+  
 * Added macro MPSL_RESERVED_PPI_CHANNELS for a bit mask of (D)PPI channels
   reserved by MPSL (DRGN-13356).
 
@@ -32,12 +32,12 @@ Bugfixes
 
 * Fixed an issue where MPSL waited for Low Frequency Clock to start even though it was configured not wait for it. (DRGN-15176)
 
-
 nRF Connect SDK v1.4.0
 **********************
 
 Changes
 =======
+
 * Changed the timeslot implementation to support up to 8 concurrent sessions (DRGN-13952).
   It is now necessary to supply a timeslot context configuration using :c:func:`mpsl_timeslot_session_count_set`.
   All timeslot APIs now take a ``session_id`` as input.
@@ -72,6 +72,7 @@ Added
 
 Changes
 =======
+
 * Removed ``MPSL_RADIO_NOTIFICATION_DISTANCE_425US`` and replaced it by ``MPSL_RADIO_NOTIFICATION_DISTANCE_420US``.
 * On nRF53, the fix for Errata 16 is now applied.
 * The scheduling overhead of a timeslot event is reduced.
@@ -91,7 +92,7 @@ Added
   The feature set is the same as in the MPSL library for nRF52.
   The following library has been added:
 
-  * :file:`soft-float/libmpsl.a`
+:file:`soft-float/libmpsl.a`
 
 Changes
 =======
@@ -106,6 +107,7 @@ Changes
 
 MPSL 0.5.0-1.prealpha
 *********************
+
 Initial release.
 
 Added

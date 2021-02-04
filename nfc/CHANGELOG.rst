@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF Connect SDK v1.5.0
+**********************
+
+No changes in this release.
+
 nRF Connect SDK v1.4.0
 **********************
 
@@ -21,7 +26,7 @@ Added
   FWT is changed now according to the ISO-DEP timing requirements (e.g. WTX frame).
 
 NFC 0.4.0
-****************
+*********
 
 Added Type 2 Tag and Type 4 Tag NFC libraries for the nRF5340 device.
 Both libraries are compiled for the Cortex-M33 CPU in hard and soft float variants.
@@ -35,7 +40,7 @@ Added
   buffer when the NFC stack is already initialized and running.
 
 NFC 0.3.0
-****************
+*********
 
 Fixed minor bugs in the NFC libraries.
 
@@ -49,7 +54,7 @@ Modified
 
 
 NFC 0.2.0
-****************
+*********
 
 The NFC libraries now use the NFCT driver instead of the NFC HAL modules. The
 NFCT driver is a part of nrfx repository.

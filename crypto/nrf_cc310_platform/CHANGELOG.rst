@@ -13,6 +13,7 @@ nrf_cc3xx_platform - 0.9.7
 **************************
 
 New version of the library with a bugfix:
+
 * Fixed an issue with mutex slab allocation in Zephyr RTOS platform file.
 
 Library built against mbed TLS version 2.24.0.
