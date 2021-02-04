@@ -11,10 +11,12 @@ All notable changes to this project are documented in this file.
 
 nrf_cc3xx_mbedcrypto - 0.9.7
 ****************************
+
 New version of the runtime library with bugfixes:
-* Fixed issues where mbedtls_rsa_complete was not able to deduce missing parameters.
+
+* Fixed issues where `mbedtls_rsa_complete` was not able to deduce missing parameters.
 * Fixed an issue with calculating the correct salt length for certain combinations of RSA key and digest sizes.
-* Adding missing function mbedtls_ecp_write_key.
+* Adding missing function `mbedtls_ecp_write_key`.
 
 Library built against mbed TLS version 2.24.0.
 
