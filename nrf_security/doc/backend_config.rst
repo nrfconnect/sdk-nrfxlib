@@ -1,7 +1,7 @@
 .. _nrf_security_backend_config:
 
-Backend configurations
-######################
+Backend configurations and supported features
+#############################################
 
 .. contents::
    :local:
@@ -51,7 +51,7 @@ AES core support can be enabled by setting the :option:`CONFIG_MBEDTLS_AES_C` Kc
 +--------------+-----------------------------------+
 
 .. note::
-   * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
+   The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
 
 Multiple backends
 =================
@@ -69,11 +69,30 @@ AES core support can be enabled by setting setting the :option:`CONFIG_MBEDTLS_A
 +--------------+----------------+------------------------------------------------------------+
 
 .. note::
-   * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
    * Enabling the :ref:`nrf_security_backends_oberon` replaces select internal APIs for AES block encrypt/decrypt and set key operations for encrypt/decrypt.
    * If both nrf_oberon backend and :ref:`nrf_security_backends_orig_mbedtls` are enabled, the implementation from
      nrf_oberon backend will provide support for AES ECB.
 
+Feature support
+===============
+
++-------------+-------------------+-------------+
+| Cipher mode | Backend           | Key size    |
++=============+===================+=============+
+| ECB         | cc3xx             | 128-bit key |
+|             +-------------------+-------------+
+|             | nrf_oberon        | 128-bit key |
+|             |                   +-------------+
+|             |                   | 192-bit key |
+|             |                   +-------------+
+|             |                   | 256-bit key |
+|             +-------------------+-------------+
+|             | Original mbed TLS | 128-bit key |
+|             |                   +-------------+
+|             |                   | 192-bit key |
+|             |                   +-------------+
+|             |                   | 256-bit key |
++-------------+-------------------+-------------+
 
 AES cipher configuration
 ************************
@@ -102,11 +121,86 @@ AES cipher modes can be enabled by setting one or more of the following Kconfig 
 
 .. note::
    * AES cipher modes are dependent on enabling AES core support according to `AES configuration`_.
-   * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
-   * Currently, AES cipher modes CFB, OFB, and XTS are not supported by the Arm CryptoCell cc3xx backend.
    * XTS will not be available if multiple backends are enabled for AES.
    * If both :ref:`nrf_security_backends_oberon` and :ref:`nrf_security_backends_orig_mbedtls` is enabled, the implementation from
      nrf_oberon backend will provide support for AES cipher modes.
+
+Feature support
+===============
+
++-------------+-------------------+-------------+-----------------------+
+| Cipher mode | Backend           | Key size    | Note                  |
++=============+===================+=============+=======================+
+| CTR         | cc3xx             | 128-bit key |                       |
+|             +-------------------+-------------+-----------------------+
+|             | nrf_oberon        | 128-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 192-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 256-bit key |                       |
+|             +-------------------+-------------+-----------------------+
+|             | Original mbed TLS | 128-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 192-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 256-bit key |                       |
++-------------+-------------------+-------------+-----------------------+
+| CBC         | cc3xx             | 128-bit key |                       |
+|             +-------------------+-------------+-----------------------+
+|             | nrf_oberon        | 128-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 192-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 256-bit key |                       |
+|             +-------------------+-------------+-----------------------+
+|             | Original mbed TLS | 128-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 192-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 256-bit key |                       |
++-------------+-------------------+-------------+-----------------------+
+| CFB         | cc3xx             | N/A         | Backend not supported |
+|             +-------------------+-------------+-----------------------+
+|             | nrf_oberon        | 128-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 192-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 256-bit key |                       |
+|             +-------------------+-------------+-----------------------+
+|             | Original mbed TLS | 128-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 192-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 256-bit key |                       |
++-------------+-------------------+-------------+-----------------------+
+| OFB         | cc3xx             | N/A         | Backend not supported |
+|             +-------------------+-------------+-----------------------+
+|             | nrf_oberon        | 128-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 192-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 256-bit key |                       |
+|             +-------------------+-------------+-----------------------+
+|             | Original mbed TLS | 128-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 192-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 256-bit key |                       |
++-------------+-------------------+-------------+-----------------------+
+| XTS         | cc3xx             | N/A         | Backend not supported |
+|             +-------------------+-------------+-----------------------+
+|             | nrf_oberon        | 128-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 192-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 256-bit key |                       |
+|             +-------------------+-------------+-----------------------+
+|             | Original mbed TLS | 128-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 192-bit key |                       |
+|             |                   +-------------+-----------------------+
+|             |                   | 256-bit key |                       |
++-------------+-------------------+-------------+-----------------------+
 
 
 CMAC configuration
@@ -143,6 +237,28 @@ CMAC can be enabled by setting the :option:`CONFIG_MBEDTLS_CMAC_C` Kconfig varia
 .. note::
    * For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
    * The :ref:`nrf_security_backends_cc3xx` is limited to key sizes of 128 bits on devices with Arm CryptoCell cc310.
+
+Feature support
+===============
+
++-----------+-------------------+-------------+
+| Algorithm | Backend           | Key size    |
++===========+===================+=============+
+| CMAC      | cc3xx             | 128-bit key |
+|           +-------------------+-------------+
+|           | nrf_oberon        | 128-bit key |
+|           |                   +-------------+
+|           |                   | 192-bit key |
+|           |                   +-------------+
+|           |                   | 256-bit key |
+|           +-------------------+-------------+
+|           | Original mbed TLS | 128-bit key |
+|           |                   +-------------+
+|           |                   | 192-bit key |
+|           |                   +-------------+
+|           |                   | 256-bit key |
++-----------+-------------------+-------------+
+
 
 AEAD configurations
 *******************
@@ -226,6 +342,8 @@ ChaCha20 support can be enabled by setting the :option:`CONFIG_MBEDTLS_CHACHA20_
 +==============+=================+==========================================================================+
 | ChaCha20     | Choice          | cc3xx: :option:`CONFIG_CHOICE_CC3XX_MBEDTLS_CHACHA20_C`                  |
 |              |                 |                                                                          |
+|              |                 | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_CHACHA20_C`            |
+|              |                 |                                                                          |
 |              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHA20_C`    |
 +--------------+-----------------+--------------------------------------------------------------------------+
 
@@ -242,6 +360,8 @@ Poly1305 can be enabled by setting the :option:`CONFIG_MBEDTLS_POLY1305_C` Kconf
 | AEAD cipher  | Support         | Configurations                                                        |
 +==============+=================+=======================================================================+
 | Poly1305     | Choice          | cc3xx: :option:`CONFIG_CHOICE_CC3XX_MBEDTLS_POLY1305_C`               |
+|              |                 |                                                                       |
+|              |                 | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_POLY1305_C`         |
 |              |                 |                                                                       |
 |              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_POLY1305_C` |
 +--------------+-----------------+-----------------------------------------------------------------------+
@@ -261,18 +381,73 @@ ChaCha-Poly can be enabled by setting the :option:`CONFIG_MBEDTLS_CHACHAPOLY_C` 
 +==============+=================+==========================================================================+
 | ChaCha-Poly  | Choice          | cc3xx: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C`              |
 |              |                 |                                                                          |
-|              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C`  |
+|              |                 | nrf_oberon: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C`         |
+|              |                 |                                                                          |
+|              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C`  |	
 +--------------+-----------------+--------------------------------------------------------------------------+
 
 .. note::
    * ChaCha-Poly support requires enabling both `ChaCha20`_ and `Poly1305`_.
    * For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
-   * The ChaCha-Poly implementation in :ref:`nrf_security_backends_cc3xx` does not support incremental operations.
+
+Feature support
+===============
+
++--------------+-------------------+-------------+----------------------------------------------------------------------+
+| AEAD cipher  | Backend           | Key size    | Note                                                                 |
++==============+===================+=============+======================================================================+
+| AES CCM/CCM* | cc3xx             | 128-bit key |                                                                      |
+|              +-------------------+-------------+----------------------------------------------------------------------+
+|              | nrf_oberon        | 128-bit key |                                                                      |
+|              |                   +-------------+----------------------------------------------------------------------+
+|              |                   | 192-bit key |                                                                      |
+|              |                   +-------------+----------------------------------------------------------------------+
+|              |                   | 256-bit key |                                                                      |
+|              +-------------------+-------------+----------------------------------------------------------------------+
+|              | Original mbed TLS | 128-bit key |                                                                      |
+|              |                   +-------------+----------------------------------------------------------------------+
+|              |                   | 192-bit key |                                                                      |
+|              |                   +-------------+----------------------------------------------------------------------+
+|              |                   | 256-bit key |                                                                      |
++--------------+-------------------+-------------+----------------------------------------------------------------------+
+| AES GCM      | cc312             | 128-bit key | cc310 not supported                                                  |
+|              +-------------------+-------------+----------------------------------------------------------------------+
+|              | nrf_oberon        | 128-bit key |                                                                      |
+|              |                   +-------------+----------------------------------------------------------------------+
+|              |                   | 192-bit key |                                                                      |
+|              |                   +-------------+----------------------------------------------------------------------+
+|              |                   | 256-bit key |                                                                      |
+|              +-------------------+-------------+----------------------------------------------------------------------+
+|              | Original mbed TLS | 128-bit key |                                                                      |
+|              |                   +-------------+----------------------------------------------------------------------+
+|              |                   | 192-bit key |                                                                      |
+|              |                   +-------------+----------------------------------------------------------------------+
+|              |                   | 256-bit key |                                                                      |
++--------------+-------------------+-------------+----------------------------------------------------------------------+
+| ChaCha20     | cc3xx             | 256-bit key |                                                                      |
+|              +-------------------+-------------+----------------------------------------------------------------------+
+|              | nrf_oberon        | 256-bit key |                                                                      |
+|              +-------------------+-------------+----------------------------------------------------------------------+
+|              | Original mbed TLS | 256-bit key |                                                                      |
++--------------+-------------------+-------------+----------------------------------------------------------------------+
+| Poly1305     | cc3xx             | 256-bit key |                                                                      |
+|              +-------------------+-------------+----------------------------------------------------------------------+
+|              | nrf_oberon        | 256-bit key |                                                                      |
+|              +-------------------+-------------+----------------------------------------------------------------------+
+|              | Original mbed TLS | 256-bit key |                                                                      |
++--------------+-------------------+-------------+----------------------------------------------------------------------+
+| ChaCha-Poly  | cc3xx             | 256-bit key | The ChaCha-Poly implementation in :ref:`nrf_security_backends_cc3xx` |
+|              |                   |             | does not support incremental operations.                             |
+|              +-------------------+-------------+----------------------------------------------------------------------+
+|              | nrf_oberon        | 256-bit key |                                                                      |
+|              +-------------------+-------------+----------------------------------------------------------------------+
+|              | Original mbed TLS | 256-bit key |                                                                      |
++--------------+-------------------+-------------+----------------------------------------------------------------------+
 
 DHM configurations
 ******************
 
-Diffie-Hellman-Merkel (DHM) support can be enabled by setting Kconfig variables according to single or multiple enabled backends.
+Diffie-Hellman-Merkle (DHM) support can be enabled by setting Kconfig variables according to single or multiple enabled backends.
 
 Single backend
 ==============
@@ -285,8 +460,6 @@ DHM can be enabled by setting the :option:`CONFIG_MBEDTLS_DHM_C` Kconfig variabl
 | DHM          | :option:`CONFIG_MBEDTLS_DHM_C`       |
 +--------------+--------------------------------------+
 
-.. note::
-   :ref:`nrf_security_backends_cc3xx`  is limited to key size of <= 2048 bits.
 
 Multiple backends
 =================
@@ -301,9 +474,18 @@ DHM can be enabled by setting the :option:`CONFIG_MBEDTLS_DHM_C` Kconfig variabl
 |              |              | Original mbed TLS: :option:`CONFIG_VANILLA_MBEDTLS_DHM_C`    |
 +--------------+--------------+--------------------------------------------------------------+
 
-.. note::
-   * :ref:`nrf_security_backends_cc3xx`  is limited to key size of <= 2048 bits.
+Feature support
+===============
 
++-----------+-------------------+----------------------+-----------------------+
+| Algorithm | Backend           | Key size             | Note                  |
++===========+===================+======================+=======================+
+| DHM       | cc3xx             | Limited to 2048 bits |                       |
+|           +-------------------+----------------------+-----------------------+
+|           | nrf_oberon        | N/A                  | Backend not supported |
+|           +-------------------+----------------------+-----------------------+
+|           | Original mbed TLS | No limitation        |                       |
++-----------+-------------------+----------------------+-----------------------+
 
 ECC configurations
 ******************
@@ -336,8 +518,63 @@ ECC core support can be enabled by setting the :option:`CONFIG_MBEDTLS_ECP_C` Kc
 
 .. note::
    * For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
-   * The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
 
+Feature support
+===============
+
++-----------+-------------------+-------------+------------+
+| Algorithm | Backend           | Curve group | Curve type |
++===========+===================+=============+============+
+| ECP       | cc3xx             | NIST        | secp192r1  |
+|           |                   |             +------------+
+|           |                   |             | secp224r1  |
+|           |                   |             +------------+
+|           |                   |             | secp256r1  |
+|           |                   |             +------------+
+|           |                   |             | secp384r1  |
+|           |                   |             +------------+
+|           |                   |             | secp521r1  |
+|           |                   +-------------+------------+
+|           |                   | Koblitz     | secp192k1  |
+|           |                   |             +------------+
+|           |                   |             | secp224k1  |
+|           |                   |             +------------+
+|           |                   |             | secp256k1  |
+|           |                   +-------------+------------+
+|           |                   | Curve25519  | Curve25519 |
+|           +-------------------+-------------+------------+
+|           | nrf_oberon        | NIST        | secp256r1  |
+|           |                   |             +------------+
+|           |                   |             | secp224r1  |
+|           |                   +-------------+------------+
+|           |                   | Curve25519  | Curve25519 |
+|           |                   |             +------------+
+|           |                   |             | Ed25519    |
+|           +-------------------+-------------+------------+
+|           | Original mbed TLS | NIST        | secp192r1  |
+|           |                   |             +------------+
+|           |                   |             | secp224r1  |
+|           |                   |             +------------+
+|           |                   |             | secp256r1  |
+|           |                   |             +------------+
+|           |                   |             | secp384r1  |
+|           |                   |             +------------+
+|           |                   |             | secp521r1  |
+|           |                   +-------------+------------+
+|           |                   | Koblitz     | secp192k1  |
+|           |                   |             +------------+
+|           |                   |             | secp224k1  |
+|           |                   |             +------------+
+|           |                   |             | secp256k1  |
+|           |                   +-------------+------------+
+|           |                   | Brainpool   | bp256r1    |
+|           |                   |             +------------+
+|           |                   |             | bp384r1    |
+|           |                   |             +------------+
+|           |                   |             | bp512r1    |
+|           |                   +-------------+------------+
+|           |                   | Curve25519  | Curve25519 |
++-----------+-------------------+-------------+------------+
 
 ECDH configurations
 *******************
@@ -354,8 +591,61 @@ Elliptic Curve Diffie-Hellman (ECDH) support can be enabled by setting the :opti
    * ECDH support depends upon `ECC Configurations`_ being enabled.
    * The :ref:`nrf_cc3xx_mbedcrypto_readme` does not integrate on ECP layer.
      Only the top-level APIs for ECDH are replaced.
-   * The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
 
+Feature support
+===============
+
++-----------+-------------------+-------------+------------+
+| Algorithm | Backend           | Curve group | Curve type |
++===========+===================+=============+============+
+| ECDH      | cc3xx             | NIST        | secp192r1  |
+|           |                   |             +------------+
+|           |                   |             | secp224r1  |
+|           |                   |             +------------+
+|           |                   |             | secp256r1  |
+|           |                   |             +------------+
+|           |                   |             | secp384r1  |
+|           |                   |             +------------+
+|           |                   |             | secp521r1  |
+|           |                   +-------------+------------+
+|           |                   | Koblitz     | secp192k1  |
+|           |                   |             +------------+
+|           |                   |             | secp224k1  |
+|           |                   |             +------------+
+|           |                   |             | secp256k1  |
+|           |                   +-------------+------------+
+|           |                   | Curve25519  | Curve25519 |
+|           +-------------------+-------------+------------+
+|           | nrf_oberon        | NIST        | secp256r1  |
+|           |                   |             +------------+
+|           |                   |             | secp224r1  |
+|           |                   +-------------+------------+
+|           |                   | Curve25519  | Curve25519 |
+|           +-------------------+-------------+------------+
+|           | Original mbed TLS | NIST        | secp192r1  |
+|           |                   |             +------------+
+|           |                   |             | secp224r1  |
+|           |                   |             +------------+
+|           |                   |             | secp256r1  |
+|           |                   |             +------------+
+|           |                   |             | secp384r1  |
+|           |                   |             +------------+
+|           |                   |             | secp521r1  |
+|           |                   +-------------+------------+
+|           |                   |  Koblitz    | secp192k1  |
+|           |                   |             +------------+
+|           |                   |             | secp224k1  |
+|           |                   |             +------------+
+|           |                   |             | secp256k1  |
+|           |                   +-------------+------------+
+|           |                   | Brainpool   | bp256r1    |
+|           |                   |             +------------+
+|           |                   |             | bp384r1    |
+|           |                   |             +------------+
+|           |                   |             | bp512r1    |
+|           |                   +-------------+------------+
+|           |                   | Curve25519  | Curve25519 |
++-----------+-------------------+-------------+------------+
 
 ECDSA configurations
 ********************
@@ -372,8 +662,61 @@ Elliptic Curve Digital Signature Algorithm (ECDSA) support can be enabled be con
    * ECDSA support depends upon `ECC Configurations`_ being enabled.
    * The :ref:`nrf_cc3xx_mbedcrypto_readme` does not integrate on ECP layer.
      Only the top-level APIs for ECDSA are replaced.
-   * The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
 
+Feature support
+===============
+
++-----------+-------------------+-------------+------------+
+| Algorithm | Backend           | Curve group | Curve type |
++===========+===================+=============+============+
+| ECDSA     | cc3xx             | NIST        | secp192r1  |
+|           |                   |             +------------+
+|           |                   |             | secp224r1  |
+|           |                   |             +------------+
+|           |                   |             | secp256r1  |
+|           |                   |             +------------+
+|           |                   |             | secp384r1  |
+|           |                   |             +------------+
+|           |                   |             | secp521r1  |
+|           |                   +-------------+------------+
+|           |                   | Koblitz     | secp192k1  |
+|           |                   |             +------------+
+|           |                   |             | secp224k1  |
+|           |                   |             +------------+
+|           |                   |             | secp256k1  |
+|           |                   +-------------+------------+
+|           |                   | Curve25519  | Curve25519 |
+|           +-------------------+-------------+------------+
+|           | nrf_oberon        | NIST        | secp256r1  |
+|           |                   |             +------------+
+|           |                   |             | secp224r1  |
+|           |                   +-------------+------------+
+|           |                   | Curve25519  | Curve25519 |
+|           +-------------------+-------------+------------+
+|           | Original mbed TLS | NIST        | secp192r1  |
+|           |                   |             +------------+
+|           |                   |             | secp224r1  |
+|           |                   |             +------------+
+|           |                   |             | secp256r1  |
+|           |                   |             +------------+
+|           |                   |             | secp384r1  |
+|           |                   |             +------------+
+|           |                   |             | secp521r1  |
+|           |                   +-------------+------------+
+|           |                   |  Koblitz    | secp192k1  |
+|           |                   |             +------------+
+|           |                   |             | secp224k1  |
+|           |                   |             +------------+
+|           |                   |             | secp256k1  |
+|           |                   +-------------+------------+
+|           |                   | Brainpool   | bp256r1    |
+|           |                   |             +------------+
+|           |                   |             | bp384r1    |
+|           |                   |             +------------+
+|           |                   |             | bp512r1    |
+|           |                   +-------------+------------+
+|           |                   | Curve25519  | Curve25519 |
++-----------+-------------------+-------------+------------+
 
 ECJPAKE configurations
 **********************
@@ -387,8 +730,22 @@ Elliptic Curve, Password Authenticated Key Exchange by Juggling (ECJPAKE) suppor
 +--------------+---------------------------------------+
 
 .. note::
-   * ECJPAKE support depends upon `ECC Configurations`_ being enabled.
-   * The :ref:`nrf_oberon_readme` only supports ECC curve secp256r1.
+   ECJPAKE support depends upon `ECC Configurations`_ being enabled.
+
+Feature support
+===============
+
++-----------+-------------------+-------------+------------+
+| Algorithm | Backend           | Curve group | Curve type |
++===========+===================+=============+============+
+| ECJPAKE   | cc3xx             | NIST        | secp256r1  |
+|           +-------------------+-------------+------------+
+|           | nrf_oberon        | NIST        | secp256r1  |
+|           +-------------------+-------------+------------+
+|           | Original mbed TLS | NIST        | secp256r1  |
++-----------+-------------------+-------------+------------+
+
+
 
 .. _nrf_security_backend_config_ecc_curves:
 
@@ -468,8 +825,20 @@ RSA support can be enabled by setting the :option:`CONFIG_MBEDTLS_RSA_C` Kconfig
 +--------------+-----------------+--------------------------------------------------------------------+
 
 .. note::
-   * For configurations providing :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
-   * :ref:`nrf_security_backends_cc3xx`  is limited to key sizes of <= 2048 bits.
+   For configurations providing :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
+
+Feature support
+===============
+
++-----------+-------------------+----------------------+-----------------------+
+| Algorithm | Backend           | Key size             | Note                  |
++===========+===================+======================+=======================+
+| RSA       | cc3xx             | Limited to 2048 bits |                       |
+|           +-------------------+----------------------+-----------------------+
+|           | nrf_oberon        | N/A                  | Backend not supported |
+|           +-------------------+----------------------+-----------------------+
+|           | Original mbed TLS | No limitation        |                       |
++-----------+-------------------+----------------------+-----------------------+
 
 Secure Hash configurations
 **************************
@@ -512,7 +881,7 @@ SHA-1 support can be enabled by setting the :option:`CONFIG_MBEDTLS_SHA1_C` Kcon
 +--------------+-----------------+--------------------------------------------------------------------+
 
 .. note::
-   * For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
+   For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
 
 SHA-256
 -------
@@ -530,8 +899,7 @@ SHA-256 support can be enabled by setting the :option:`CONFIG_MBEDTLS_SHA256_C` 
 +--------------+-----------------+-----------------------------------------------------------------------+
 
 .. note::
-   * For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
-   * The nrf_oberon backend does not support SHA-224.
+   For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
 
 SHA-512
 -------
@@ -545,7 +913,44 @@ SHA-256 support can be configured by setting the :option:`CONFIG_MBEDTLS_SHA512_
 +--------------+-----------------+-----------------------------------------------------------------+
 
 .. note::
-   * For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
+   For features provided with :ref:`Choice<nrf_security_backend_config_multiple>` support, the enabled backend that is first in order is selected by default.
+
+Feature support
+===============
+
++-----------+--------------------+----------------------------------------+
+| Algorithm | Supported backends | Note                                   |
++===========+====================+========================================+
+| SHA-1     | cc3xx              |                                        |
+|           +--------------------+----------------------------------------+
+|           | nrf_oberon         |                                        |
+|           +--------------------+----------------------------------------+
+|           | Original mbed TLS  |                                        |
++-----------+--------------------+----------------------------------------+
+| SHA-224   | cc3xx              | SHA-224 is enabled by enabling SHA-256 |
+|           +--------------------+                                        |
+|           | nrf_oberon         |                                        |
+|           +--------------------+                                        |
+|           | Original mbed TLS  |                                        |
++-----------+--------------------+----------------------------------------+
+| SHA-256   | cc3xx              |                                        |
+|           +--------------------+                                        |
+|           | nrf_oberon         |                                        |
+|           +--------------------+                                        |
+|           | Original mbed TLS  |                                        |
++-----------+--------------------+----------------------------------------+
+| SHA-384   | cc3xx              | SHA-384 is enabled by enabling SHA-512 |
+|           +--------------------+                                        |
+|           | nrf_oberon         |                                        |
+|           +--------------------+                                        |
+|           | Original mbed TLS  |                                        |
++-----------+--------------------+----------------------------------------+
+| SHA-512   | cc3xx              |                                        |
+|           +--------------------+                                        |
+|           | nrf_oberon         |                                        |
+|           +--------------------+                                        |
+|           | Original mbed TLS  |                                        |
++-----------+--------------------+----------------------------------------+
 
 Backend platform-specific configurations
 ****************************************
