@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 Nordic Semiconductor
+# Copyright (c) 2019-2021 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
 #
@@ -16,36 +16,10 @@ if(CONFIG_NRF_SECURITY_GLUE_LIBRARY)
   )
   target_link_libraries(mbedtls_common_glue INTERFACE mbedtls_common)
 
-
-  if(CONFIG_GLUE_MBEDTLS_AES_C)
-    nrf_security_debug("Adding to glue: AES")
-  endif()
-
-  if(CONFIG_GLUE_MBEDTLS_CCM_C)
-    nrf_security_debug("Adding to glue: CCM")
-  endif()
-
-  if(CONFIG_GLUE_MBEDTLS_DHM_C)
-    nrf_security_debug("Adding to glue: DHM")
-  endif()
-
   #
   # Create the glue wrapper library
   #
-  zephyr_library_named(mbedcrypto_glue)
-  zephyr_library_sources(${ZEPHYR_BASE}/misc/empty_file.c)
-
-  #
-  # Add glued files if enabled
-  #
-  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_AES_C    aes_alt.c)
-  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_CCM_C    ccm_alt.c)
-  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_CMAC_C   cmac_alt.c)
-  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_DHM_C    dhm_alt.c)
-
-  zephyr_library_link_libraries(mbedtls_common_glue)
-  nrf_security_debug_list_target_files(mbedcrypto_glue)
-
+  nrf_security_glue_library(ALT FILES aes_alt.c ccm_alt.c cmac_alt.c dhm_alt.c)
 
   #
   # Create glue libraries for backends (if enabled)

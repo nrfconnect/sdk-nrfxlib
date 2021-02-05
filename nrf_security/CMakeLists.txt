@@ -13,6 +13,7 @@ endif()
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/symbol_rename.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/symbol_strip.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/combine_archives.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/nrf_glue_library.cmake)
 
 #
 # Create an interface library with all shared compile definition and include
