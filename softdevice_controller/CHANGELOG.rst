@@ -42,6 +42,8 @@ Bugfixes
   Previously, the advertising data was cleared every time the advertising set was configured (DRGN-14008).
 * Fixed an issue where the link would disconnect with reason "LMP Response Timeout (0x22)".
   This would occur if "HCI LE Long Term Key Request event" was disabled and the slave received an encryption request (DRGN-15226).
+* Fixed an issue where the LL control procedures LE start encryption and LE connection parameter update could not be initiated at the same time (DRGN-11963).
+* Fixed an issue where the generation of QoS Connection event was not disabled after an HCI reset (DRGN-15291).
 
 Known issues and limitations
 ============================
