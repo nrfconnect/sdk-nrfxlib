@@ -9,6 +9,17 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF 802.15.4 Service Layer 0.5.0
+********************************
+
+* Added possibility to check 802.15.4 capabilities.
+
+Added
+=====
+
+* Added possibility to check 802.15.4 capabilities.
+  Built from commit *2966ae8b4b3fcf2b64d8b987703cbf4ecc0dd60b*.
+
 nRF 802.15.4 Service Layer 0.4.0
 ********************************
 
