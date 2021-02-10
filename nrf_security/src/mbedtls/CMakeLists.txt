@@ -132,9 +132,10 @@ zephyr_library_sources_ifdef(CONFIG_MBEDTLS_ENABLE_HEAP
   ${NRF_SECURITY_ROOT}/src/mbedtls/mbedtls_heap.c
 )
 
-if (CONFIG_ENTROPY_CC3XX)
-elseif(CONFIG_ENTROPY_NRF5_RNG OR CONFIG_ENTROPY_NRF_LL_SOFTDEVICE)
-  zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/nrf5x/entropy_nrf5x.c)
+if ((CONFIG_ENTROPY_CC3XX AND CONFIG_TRUSTED_EXECUTION_NONSECURE) OR
+    CONFIG_ENTROPY_NRF5_RNG OR
+    CONFIG_ENTROPY_NRF_LL_SOFTDEVICE)
+  zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/entropy/entropy_poll.c)
 endif()
 
 zephyr_library_link_libraries(mbedtls_common)
