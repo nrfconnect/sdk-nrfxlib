@@ -3,11 +3,12 @@
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
-#include <assert.h>
+
 #include <zephyr.h>
 #include <device.h>
 #include <drivers/entropy.h>
 #include <mbedtls/entropy.h>
+#include <mbedtls/entropy_poll.h>
 
 int mbedtls_hardware_poll(void *data,
                           unsigned char *output,
