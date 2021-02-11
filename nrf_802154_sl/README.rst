@@ -3,7 +3,14 @@
 nRF 802.15.4 Service Layer
 ==========================
 
-The nRF 802.15.4 Service Layer (SL) is a library that enables advanced features of the nRF 802.15.4 Radio Driver.
+.. contents::
+   :local:
+   :depth: 2
+
+The nRF 802.15.4 Service Layer (SL) is a library that enables various advanced features of the nRF 802.15.4 Radio Driver.
+
+Overview
+********
 
 Currently, the library implements the following features:
 
@@ -16,22 +23,35 @@ Currently, the library implements the following features:
 * Timestamping.
   It provides precise frame timestamps.
 
-The library also defines APIs for features that are not yet supported:
+It also provides an API to retrieve the capabilities of the binary in run-time.
+
+Moreover, the library also defines APIs for features that are not yet supported, as the following:
 
 * WiFi coexistence support.
   It provides an API for facilitating the integration with an external PTA.
 * Antenna diversity support.
   It provides an API for runtime antenna selection.
 
-The library is available as binaries for the following SoCs:
+Requirements
+************
 
-* nRF52840
-* nRF52833
-* nRF52820
+The service layer is available as a binary for the following SoCs/SiPs:
+
 * nRF52811
+* nRF52820
+* nRF52833
+* nRF52840
+* nRF5340 Network Core
+
+.. note::
+
+   Currently, only multiprotocol support and CSMA/CA support are available for the nRF5340 Network Core.
 
 For the SOCs equipped with a floating-point unit (nRF52840 and nRF52833), the service layer is available in the soft-float, softfp-float, and hard-float build versions.
-For the other SOCs, it is available only in the soft-float build version.
+For the other SOCs/SiPs, it is available only in the soft-float build version.
+
+Usage
+*****
 
 When you use the |NCS|, the nRF 802.15.4 Radio Driver takes advantage of the service layer automatically.
 No additional user action is needed.

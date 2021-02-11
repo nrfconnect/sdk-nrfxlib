@@ -12,12 +12,12 @@ All notable changes to this project are documented in this file.
 nRF 802.15.4 Service Layer 0.5.0
 ********************************
 
-* Added possibility to check 802.15.4 capabilities.
+* Added the possibility to check the 802.15.4 capabilities.
 
 Added
 =====
 
-* Added possibility to check 802.15.4 capabilities.
+* Added the possibility to check the 802.15.4 capabilities.
   Built from commit *2966ae8b4b3fcf2b64d8b987703cbf4ecc0dd60b*.
 
 nRF 802.15.4 Service Layer 0.4.0
@@ -28,7 +28,7 @@ nRF 802.15.4 Service Layer 0.4.0
 Added
 =====
 
-* Added multiprotocol support for nRF53 family.
+* Added multiprotocol support for the nRF53 family.
   Built from commit *5d2497b78683687bdd57fcd6854b1bc3c26871be*.
 
 nRF 802.15.4 Service Layer 0.3.0
