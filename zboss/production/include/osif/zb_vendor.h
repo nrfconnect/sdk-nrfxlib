@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 Nordic Semiconductor
  *
- * SPDX-License-Identifier: LicenseRef-BSD-5-Clause-Nordic
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  *
  * This file implements mappings of Kconfig options enabling and configuring ZBOSS features.
  */
