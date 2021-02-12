@@ -1652,6 +1652,12 @@ config MBEDTLS_X509_CSR_WRITE_C
 	help
 	  Enable creating X.509 Certificate Signing Requests (CSR).
 
+config MBEDTLS_ENTROPY_MAX_SOURCES
+	int "Maximum number of entropy sources"
+	default 1
+	help
+	  Maximum number of entropy sources supported.
+
 endif # NRF_SECURITY_ADVANCED
 
 endif # NRF_SECURITY_ANY_BACKEND
