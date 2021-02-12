@@ -309,6 +309,11 @@ kconfig_mbedtls_config("MBEDTLS_X509_CRL_PARSE_C")
 kconfig_mbedtls_config("MBEDTLS_X509_CSR_PARSE_C")
 kconfig_mbedtls_config("MBEDTLS_X509_CREATE_C")
 kconfig_mbedtls_config("MBEDTLS_X509_CSR_WRITE_C")
+kconfig_mbedtls_config_val("MBEDTLS_ENTROPY_MAX_SOURCES"          "${CONFIG_MBEDTLS_ENTROPY_MAX_SOURCES}")
+
+if (CONFIG_TRUSTED_EXECUTION_SECURE AND CONFIG_MBEDTLS_ENTROPY_MAX_SOURCES GREATER_EQUAL 1)
+  message(FATAL_ERROR "When building trusted firmware CryptoCell must be the only entropy source (CONFIG_MBEDTLS_ENTROPY_MAX_SOURCES set to 1)")
+endif()
 
 #
 # Compare the following with check-config.h in mbed TLS
