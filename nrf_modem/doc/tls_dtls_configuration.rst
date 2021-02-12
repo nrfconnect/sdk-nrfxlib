@@ -3,6 +3,10 @@
 TLS/DTLS configuration
 ######################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The modem on an nRF9160 device is equipped with a full IPv4/IPv6 stack with TLS/DTLS support.
 
 .. _security_tags:

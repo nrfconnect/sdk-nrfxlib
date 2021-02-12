@@ -3,6 +3,10 @@
 Library architecture
 ####################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The Modem library is the application interface to the nRF9160 modem firmware, which contains a full IP and DTLS/TLS stack as well as GNSS.
 It provides the standard Socket APIs, to facilitate application development and additional APIs to manage the modem and perform full-modem firmware updates.
 

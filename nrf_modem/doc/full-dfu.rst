@@ -3,6 +3,10 @@
 Full-modem firmware update
 ##########################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The modem library supports the full update of the modem firmware when the library is initialized in full DFU mode via the :file:`nrf_modem_full_dfu.h` interface.
 Full-modem firmware update is the only operation that can be performed in full DFU mode.
 The sockets are not available to the application.
