@@ -152,12 +152,12 @@ if CC3XX_BACKEND
 
 config CC310_BACKEND
 	bool
-	depends on CRYPTOCELL_CC310_USABLE
+	depends on CC3XX_BACKEND && CRYPTOCELL_CC310_USABLE
 	default y
 
 config CC312_BACKEND
 	bool
-	depends on CRYPTOCELL_CC312_USABLE
+	depends on CC3XX_BACKEND && CRYPTOCELL_CC312_USABLE
 	default y
 
 
