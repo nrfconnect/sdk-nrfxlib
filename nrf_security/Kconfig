@@ -145,7 +145,6 @@ menuconfig CC3XX_BACKEND
 	depends on CRYPTOCELL_USABLE
 	default y
 	select NRF_CC3XX_PLATFORM
-	select NRF_CC3XX_MBEDCRYPTO
 	help
 	  Enable cc3xx backend
 

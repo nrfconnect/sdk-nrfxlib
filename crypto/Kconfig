@@ -23,21 +23,12 @@ if NRF_CC310_BL
 	default n # Only the no-interrupts version currently verified to work with Zephyr.
 endif
 
-config NRF_CC3XX_MBEDCRYPTO
-	bool
-	depends on HW_CC3XX
-	help
-	  Use nrf_cc3xx_mbedcrypto library. This is automatically ensured
-	  when using nrf security with the cc3xx backend.
-	  Only select this setting without nrf security for special use
-	  cases, such as csrng support without nrf security.
-
 menuconfig NRF_CC3XX_PLATFORM
 	bool "nrf_cc3xx_platform HW crypto library for nRF devices with CryptoCell CC3xx."
 	select NRFXLIB_CRYPTO
 	depends on HW_CC3XX
 	help
-	  To use, link with nrfxlib_crypto in CMake.
+		To use, link with nrfxlib_crypto in CMake.
 
 if NRF_CC3XX_PLATFORM
 
