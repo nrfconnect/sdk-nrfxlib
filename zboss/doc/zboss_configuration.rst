@@ -3,6 +3,10 @@
 ZBOSS library configuration
 ###########################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The ZBOSS stack is distributed as a set of precompiled linkable libraries.
 These libraries are available in the following versions:
 
