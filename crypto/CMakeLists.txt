@@ -113,7 +113,7 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   zephyr_sources(${NRF_CC3XX_PLATFORM_BASE}/src/nrf_cc3xx_platform_mutex_zephyr.c)
 endif()
 
-if (CONFIG_NRF_CC3XX_MBEDCRYPTO)
+if (CONFIG_CC3XX_BACKEND)
   if(CONFIG_SOC_NRF5340_CPUAPP)
     set (CC3XX_ARCH cc312)
   else()
@@ -146,16 +146,10 @@ if (CONFIG_NRF_CC3XX_MBEDCRYPTO)
                              "${NRF_CC3XX_BASE}/include"
                              "${NRF_CC3XX_BASE}/include/mbedtls")
   target_link_libraries(mbedcrypto_cc3xx_imported INTERFACE platform_cc3xx)
-
-  if (NOT CONFIG_NORDIC_SECURITY_BACKEND)
-    target_link_libraries(platform_cc3xx INTERFACE mbedcrypto_cc3xx_imported)
-  endif()
-
   if (NOT CONFIG_NRF_SECURITY_MULTI_BACKEND)
     # Only CC3XX backend is selected for mbedtls API.
     # Thus export the alt headers through Zephyr interface library.
     zephyr_include_directories(${NRF_CC3XX_BASE}/include/mbedtls
                                ${NRF_CC3XX_BASE}/include)
   endif()
-
 endif()
