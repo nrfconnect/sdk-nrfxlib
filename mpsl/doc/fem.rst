@@ -1,13 +1,13 @@
 .. _mpsl_fem:
 
-Front-End Module feature
+Front-end module feature
 ########################
 
 .. contents::
    :local:
    :depth: 2
 
-The Front-End Module feature allows the application to interface with several types of Front-End Modules (FEMs).
+The front-end module feature allows the application to interface with several types of front-end modules (FEMs).
 This allows an increase of the transmitted power through a Power Amplifier (PA) or an increase of the sensitivity through a Low-Noise Amplifier (LNA).
 Any increase in power and sensitivity results in an increased communication range.
 The exact PA and LNA gains are dependent on the specific FEM used.
@@ -20,7 +20,7 @@ Two FEM implementations are provided:
 * *nRF21540 GPIO*.
   It is compatible with the nRF21540 FEM and it implements a 3-pin interface.
 * *Simple GPIO*.
-  It is a simplified version, made to be compatible with other Front-End Modules.
+  It is a simplified version, made to be compatible with other front-end modules.
   It implements a 2-pin interface.
 
 Both implementations use PA and LNA pins for controlling the FEM.
@@ -58,9 +58,9 @@ To prepare a generic event, it is required that the application provides the eve
 To prepare a timer event, it is required that the application provides the following:
 
 * The instance of the timer, which the protocol has to start by itself.
-* The *Compare Channels* mask, which tells the Front End Module which Compare Channels of the provided Timer are free to use.
-* The Start time, at which the Front End Module can start preparing the PA or LNA.
-* The End time, at which the Front End Module must be ready for the RF procedure.
+* The *Compare Channels* mask, which tells the front-end module which Compare Channels of the provided Timer are free to use.
+* The Start time, at which the front-end module can start preparing the PA or LNA.
+* The End time, at which the front-end module must be ready for the RF procedure.
 
 Then, the module can configure the timer to activate or deactivate the FEM accordingly, taking also into account the FEM settle time.
 

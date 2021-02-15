@@ -26,7 +26,7 @@ The nrf_security module supports the following backends:
 
 .. note::
    Note that whenever this documentation mentions 'original' mbed TLS, it refers to the open-source `Arm mbed TLS project`_, not the customized version available in Zephyr.
-   KConfig options used to configure this backend include the term ``VANILLA``.
+   Kconfig options used to configure this backend include the term ``VANILLA``.
 
 .. _nrf_security_backends_cc3xx:
 

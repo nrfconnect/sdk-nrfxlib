@@ -19,8 +19,8 @@ A group is created with the :c:macro:`NRF_RPC_GROUP_DEFINE` macro.
 Grouping allows you to logically divide the remote API, but also increases performance of nRF RPC.
 
 
-RPC Encoders
-============
+RPC encoders
+************
 
 RPC encoders encode commands and events into serialized packets.
 Creating an encoder is similar for all packet types.
@@ -111,8 +111,8 @@ The following code shows how this function might look.
 	}
 
 
-RPC Decoders
-============
+RPC decoders
+************
 
 RPC decoders are registered with macros :c:macro:`NRF_RPC_CMD_DECODER`, :c:macro:`NRF_RPC_CBOR_EVT_DECODER`, or similar, depending on what kind of decoder it is.
 Decoders are called automatically when a command or event with a matching ID is received.
