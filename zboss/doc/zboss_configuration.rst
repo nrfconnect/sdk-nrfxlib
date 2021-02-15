@@ -22,7 +22,8 @@ ZBOSS production libraries
 
 |list_outro|
 
-The ZBOSS production library version is enabled by default with the :option:`CONFIG_ZIGBEE_LIBRARY_PRODUCTION` KConfig option.
+The ZBOSS production library version is enabled by default with the :option:`CONFIG_ZIGBEE_LIBRARY_PRODUCTION` Kconfig option.
+The production libraries support only the nRF52840 and nRF52833.
 
 ZBOSS development libraries
 ***************************
@@ -35,7 +36,7 @@ The ZBOSS libraries in the development state include all the production code, bu
 
 |list_outro|
 
-You can select the ZBOSS development library version with the :option:`CONFIG_ZIGBEE_LIBRARY_DEVELOPMENT` KConfig option.
+You can select the ZBOSS development library version with the :option:`CONFIG_ZIGBEE_LIBRARY_DEVELOPMENT` Kconfig option.
 You can enable additional features in the development version of ZBOSS libraries using the following Kconfig options:
 
 * :option:`CONFIG_ZIGBEE_LIBRARY_NCP_DEV` - With this option enabled, the application may link NCP commands implementation.
@@ -44,6 +45,36 @@ You can enable additional features in the development version of ZBOSS libraries
   This option is added only for evaluation purposes and does not have a dedicated sample.
 
 Both of these features are experimental.
+
+ZBOSS library variants
+**********************
+
+The following table describes the available Zigbee libraries and supported configurations.
+
+.. list-table::
+   :header-rows: 1
+
+   * - Library
+     - nRF5340 single SoC
+     - nRF5340 NCP
+     - nRF52833 single SoC
+     - nRF52833 NCP
+     - nRF52840 single SoC
+     - nRF52840 NCP
+   * - Production
+     -
+     -
+     - x
+     -
+     - x
+     -
+   * - Development
+     - x
+     - x
+     - x
+     - x
+     - x
+     - x
 
 ZBOSS library certification
 ***************************

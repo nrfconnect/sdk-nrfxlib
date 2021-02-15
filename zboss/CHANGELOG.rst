@@ -9,20 +9,21 @@ Changelog
 
 All notable changes to this project in |NCS| are documented in this file.
 
-Master branch
-*************
+nRF Connect SDK v1.5.0
+**********************
 
 Added
 =====
 
-* Additional ZBOSS stack library version based on the ZBOSS build v3.4.0.800.
+* Development ZBOSS stack library version based on the ZBOSS build v3.5.0.0.
   This library version is dedicated for :ref:`NCP development <nrf:ug_zigbee_platform_design_ncp_details>`.
+* Development libraries for the Cortex-M33 CPU.
 
 Changes
 =======
 
-* Updated ZBOSS stack to version ``3.3.0.6+11_30_2020`` that includes the Cortex-M33 CPU libraries.
-  For detailed release notes for this stack version, see `ZBOSS stack release notes`_ for the Master branch.
+* Updated the production ZBOSS stack to version ``3.3.0.6+11_30_2020``.
+  For detailed release notes for this stack version, see `ZBOSS stack release notes`_ for the |NCS| v1.5.0.
 
 nRF Connect SDK v1.4.0
 **********************
@@ -44,6 +45,7 @@ Changes
 
 Limitations
 ***********
+
 This sections lists limitations that apply to all versions of nRF Connect SDK.
 
 * On average, ZBOSS alarms last longer by 6.4 percent than Zephyr alarms.
