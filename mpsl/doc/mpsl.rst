@@ -24,7 +24,7 @@ The following peripherals are owned by MPSL and must not be accessed directly by
 
 Limited access to these peripherals is provided through the MPSL Timeslot module and through other MPSL APIs.
 
-Thread and Interrupt Safety
+Thread and interrupt safety
 ***************************
 The MPSL library is not reentrant, so for thread-safe operation, some considerations must be made.
 
@@ -78,7 +78,7 @@ Other priorities
 ----------------
 MPSL inititialization functions, like :c:func:`mpsl_init` and :c:func:`mpsl_uninit`, are not thread-safe.
 Do not call them while, for example, a protocol timeslot is in progress.
-This must be enforced by application and protocol stacks. 
+This must be enforced by application and protocol stacks.
 
 MPSL should be initialized before any protocol stack is enabled, and uninitialized after all protocol stacks have been disabled.
 
