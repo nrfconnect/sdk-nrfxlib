@@ -391,7 +391,7 @@ zb_bool_t zb_is_transport_key_aps_encryption_enabled(void);
 
 /*! @} */ /* se_secur */
 /*! @endcond */ /* DOXYGEN_SECUR_SECTION */
-/*! @endcond */ /* DOXYGEN_ERL_SECTION */
+/*! @endcond */ /* (!DOXYGEN_ERL_SECTION) */
 
 /*! @cond DOXYGEN_GENERAL_SECTION */
 /*! @addtogroup zboss_general_api */

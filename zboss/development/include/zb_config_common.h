@@ -138,7 +138,7 @@ key. They use same algorithm.
 /**
  SECUR: CCM key CRC size
 */
-#define ZB_CCM_KEY_CRC_SIZE 2
+#define ZB_CCM_KEY_CRC_SIZE 2U
 
 /* NLS5 - All devices shall maintain at least 2 NWK keys with the frame
    counters consistent with the security mode of the network (Standard or High).*/

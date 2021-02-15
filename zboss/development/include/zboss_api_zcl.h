@@ -2503,7 +2503,7 @@ void zb_zcl_send_cmd(
   zb_zcl_put_payload_cb_t put_payload,
   zb_zcl_cluster_id_t cluster_id,
   zb_zcl_disable_default_response_t def_resp,
-  zb_uint16_t cmd_id,
+  zb_uint8_t cmd_id,
   zb_callback_t cb
 );
 
@@ -2519,7 +2519,7 @@ void zb_zcl_send_cmd_tsn(
   zb_zcl_put_payload_cb_t put_payload,
   zb_zcl_cluster_id_t cluster_id,
   zb_zcl_disable_default_response_t def_resp,
-  zb_uint16_t cmd_id,
+  zb_uint8_t cmd_id,
   zb_uint8_t tsn,
   zb_callback_t cb
 );

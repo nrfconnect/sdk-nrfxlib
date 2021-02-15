@@ -124,6 +124,8 @@ typedef zb_int8_t zb_aps_status_t;
 #define ZB_APS_ADDR_MODE_16_GROUP_ENDP_NOT_PRESENT  0x01U /*!< 16-bit group address for DstAddress; DstEndpoint not present */
 #define ZB_APS_ADDR_MODE_16_ENDP_PRESENT            0x02U /*!< 16-bit address for DstAddress and DstEndpoint present */
 #define ZB_APS_ADDR_MODE_64_ENDP_PRESENT            0x03U /*!< 64-bit extended address for DstAddress and DstEndpoint present  */
+#define ZB_APS_ADDR_MODE_BIND_TBL_ID                0x04U /*!< "destination endpoint" is interpreted as an index in the binding table,
+                                                              all other destination address information is ignored */
 /** @} */
 
 /**
@@ -291,6 +293,13 @@ typedef struct zb_apsme_binding_req_s
                                        the DstAddrMode parameter has a value of
                                        0x03 and, if present, will be the
                                        destination endpoint for the binding entry.*/
+#ifdef SNCP_MODE
+  zb_uint8_t       remote_bind;   /*!< Indication if the bind req is local or remote */
+  zb_uint8_t       id;             /*!< unique identifier of the entry for NCP, updated only in
+                                    zb_apsme_bind_request and zb_apsme_unbind_request and used to
+                                    notify NCP */
+  /* confirm_cb is not sent in payload by NCP, keep it in the end of this structure */
+#endif
   zb_callback_t   confirm_cb;     /*!< The callback to be called when the operation is completed. */
 } zb_apsme_binding_req_t;
 
@@ -391,7 +400,6 @@ typedef ZB_PACKED_PRE struct zb_apsme_set_confirm_s
 } ZB_PACKED_STRUCT zb_apsme_set_confirm_t;
 
 /** @endcond */
-
 /** @brief APSME-BIND.request primitive.
   * @param param - index of buffer containing request data (see @ref
   * zb_apsme_binding_req_t).
@@ -508,8 +516,6 @@ typedef enum zb_aps_user_payload_cb_status_e
 {
   /*! APS user payload transmission is successful*/
   ZB_APS_USER_PAYLOAD_CB_STATUS_SUCCESS    = (zb_uint8_t)0x00,
-  /* Failed to transmit APS user payload - No confirmation from MAC*/
-  ZB_APS_USER_PAYLOAD_CB_STATUS_NO_MAC_ACK = (zb_uint8_t)0xe9,
   /* Failed to transmit APS user payload - No confirmation from APS*/
   ZB_APS_USER_PAYLOAD_CB_STATUS_NO_APS_ACK = (zb_uint8_t)0xbe
 } zb_aps_user_payload_cb_status_t;

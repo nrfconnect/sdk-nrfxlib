@@ -123,26 +123,26 @@ typedef zb_uint8_t zb_nwk_leave_type_t;
  * @anchor nwk_command_status
  */
 /** @{ */
-#define ZB_NWK_COMMAND_STATUS_NO_ROUTE_AVAILABLE          0x00U /**< No route available */
-#define ZB_NWK_COMMAND_STATUS_TREE_LINK_FAILURE           0x01U /**< Tree link failure */
-#define ZB_NWK_COMMAND_STATUS_NONE_TREE_LINK_FAILURE      0x02U /**< None-tree link failure */
-#define ZB_NWK_COMMAND_STATUS_LOW_BATTERY_LEVEL           0x03U /**< Low battery level */
-#define ZB_NWK_COMMAND_STATUS_NO_ROUTING_CAPACITY         0x04U /**< No routing capacity */
-#define ZB_NWK_COMMAND_STATUS_NO_INDIRECT_CAPACITY        0x05U /**< No indirect capacity */
-#define ZB_NWK_COMMAND_STATUS_INDIRECT_TRANSACTION_EXPIRY 0x06U /**< Indirect transaction expiry */
-#define ZB_NWK_COMMAND_STATUS_TARGET_DEVICE_UNAVAILABLE   0x07U /**< Target device unavailable */
-#define ZB_NWK_COMMAND_STATUS_TARGET_ADDRESS_UNALLOCATED  0x08U /**< Target address unallocated */
-#define ZB_NWK_COMMAND_STATUS_PARENT_LINK_FAILURE         0x09U /**< Parent link failure */
-#define ZB_NWK_COMMAND_STATUS_VALIDATE_ROUTE              0x0aU /**< Validate route */
-#define ZB_NWK_COMMAND_STATUS_SOURCE_ROUTE_FAILURE        0x0bU /**< Source route failure */
-#define ZB_NWK_COMMAND_STATUS_MANY_TO_ONE_ROUTE_FAILURE   0x0cU /**< Many-to-one route failure */
-#define ZB_NWK_COMMAND_STATUS_ADDRESS_CONFLICT            0x0dU /**< Address conflict */
-#define ZB_NWK_COMMAND_STATUS_VERIFY_ADDRESS              0x0eU /**< Verify address */
-#define ZB_NWK_COMMAND_STATUS_PAN_IDENTIFIER_UPDATE       0x0fU /**< Pan ID update */
-#define ZB_NWK_COMMAND_STATUS_NETWORK_ADDRESS_UPDATE      0x10U /**< Network address update */
-#define ZB_NWK_COMMAND_STATUS_BAD_FRAME_COUNTER           0x11U /**< Bad frame counter  */
-#define ZB_NWK_COMMAND_STATUS_BAD_KEY_SEQUENCE_NUMBER     0x12U /**< Bad key sequence number */
-#define ZB_NWK_COMMAND_STATUS_UNKNOWN_COMMAND             0x13U /**< Command received is not known */
+#define ZB_NWK_COMMAND_STATUS_NO_ROUTE_AVAILABLE          0x00 /**< No route available */
+#define ZB_NWK_COMMAND_STATUS_TREE_LINK_FAILURE           0x01 /**< Tree link failure */
+#define ZB_NWK_COMMAND_STATUS_NONE_TREE_LINK_FAILURE      0x02 /**< None-tree link failure */
+#define ZB_NWK_COMMAND_STATUS_LOW_BATTERY_LEVEL           0x03 /**< Low battery level */
+#define ZB_NWK_COMMAND_STATUS_NO_ROUTING_CAPACITY         0x04 /**< No routing capacity */
+#define ZB_NWK_COMMAND_STATUS_NO_INDIRECT_CAPACITY        0x05 /**< No indirect capacity */
+#define ZB_NWK_COMMAND_STATUS_INDIRECT_TRANSACTION_EXPIRY 0x06 /**< Indirect transaction expiry */
+#define ZB_NWK_COMMAND_STATUS_TARGET_DEVICE_UNAVAILABLE   0x07 /**< Target device unavailable */
+#define ZB_NWK_COMMAND_STATUS_TARGET_ADDRESS_UNALLOCATED  0x08 /**< Target address unallocated */
+#define ZB_NWK_COMMAND_STATUS_PARENT_LINK_FAILURE         0x09 /**< Parent link failure */
+#define ZB_NWK_COMMAND_STATUS_VALIDATE_ROUTE              0x0a /**< Validate route */
+#define ZB_NWK_COMMAND_STATUS_SOURCE_ROUTE_FAILURE        0x0b /**< Source route failure */
+#define ZB_NWK_COMMAND_STATUS_MANY_TO_ONE_ROUTE_FAILURE   0x0c /**< Many-to-one route failure */
+#define ZB_NWK_COMMAND_STATUS_ADDRESS_CONFLICT            0x0d /**< Address conflict */
+#define ZB_NWK_COMMAND_STATUS_VERIFY_ADDRESS              0x0e /**< Verify address */
+#define ZB_NWK_COMMAND_STATUS_PAN_IDENTIFIER_UPDATE       0x0f /**< Pan ID update */
+#define ZB_NWK_COMMAND_STATUS_NETWORK_ADDRESS_UPDATE      0x10 /**< Network address update */
+#define ZB_NWK_COMMAND_STATUS_BAD_FRAME_COUNTER           0x11 /**< Bad frame counter  */
+#define ZB_NWK_COMMAND_STATUS_BAD_KEY_SEQUENCE_NUMBER     0x12 /**< Bad key sequence number */
+#define ZB_NWK_COMMAND_STATUS_UNKNOWN_COMMAND             0x13 /**< Command received is not known */
 /** @} */
 
 /**
@@ -151,7 +151,7 @@ typedef zb_uint8_t zb_nwk_leave_type_t;
  * Holds one of @ref nwk_command_status. Kept for backward compatibility as
  * @ref nwk_command_status were declared previously as enum.
  */
-typedef zb_uint8_t zb_nwk_command_status_t;
+typedef zb_ret_t zb_nwk_command_status_t;
 
 /** @endcond */ /* internals_doc */
 /** @} */ /* nwk_common_constants */
@@ -178,7 +178,7 @@ zb_nlme_status_indication_t;
 /**
    RSSI undefined value
  */
-#define ZB_MAC_RSSI_UNDEFINED 0x7fU
+#define ZB_MAC_RSSI_UNDEFINED (0x7F)
 
 
 /**

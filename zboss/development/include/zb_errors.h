@@ -49,7 +49,7 @@
  * @{
  */
 /** @brief Return type for ZB functions returning execution status. @see ::RET_OK. */
-typedef zb_int_t zb_ret_t;
+typedef zb_int32_t zb_ret_t;
 /** @} */
 
 /*! @cond internals_doc */
@@ -58,13 +58,16 @@ typedef zb_int_t zb_ret_t;
 
 #define ERROR_CATEGORY_INTERVAL 256
 
-#define   ERROR_CATEGORY_GENERIC 0
-#define   ERROR_CATEGORY_SYSTEM  1
-#define   ERROR_CATEGORY_MAC     2
-#define   ERROR_CATEGORY_NWK     3
-#define   ERROR_CATEGORY_APS     4
-#define   ERROR_CATEGORY_ZDO     5
-#define   ERROR_CATEGORY_CBKE    6
+#define   ERROR_CATEGORY_GENERIC  0
+#define   ERROR_CATEGORY_SYSTEM   1
+#define   ERROR_CATEGORY_MAC      2
+#define   ERROR_CATEGORY_NWK      3
+#define   ERROR_CATEGORY_APS      4
+#define   ERROR_CATEGORY_ZDO      5
+#define   ERROR_CATEGORY_CBKE     6
+#define   ERROR_CATEGORY_WATCHDOG 7
+#define   ERROR_CATEGORY_SERIAL   8
+#define   ERROR_CATEGORY_NVRAM    9
 
 /* Let's always return 0 for RET_OK - in any category. */
 #define ERROR_CODE(category, code) ((zb_ret_t)((code) != 0 ? -(((category) * ERROR_CATEGORY_INTERVAL) + (code)) : 0))

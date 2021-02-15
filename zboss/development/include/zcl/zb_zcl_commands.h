@@ -124,7 +124,7 @@ void dump_zcl_header(zb_zcl_parsed_hdr_t *header);
 typedef zb_uint8_t zb_zcl_cmd_t;
 
 /** @brief ZCL broadcast endpoint */
-#define ZB_ZCL_BROADCAST_ENDPOINT   0xFF
+#define ZB_ZCL_BROADCAST_ENDPOINT   0xFFU
 
 /** @brief Minimum time delay between responses to ZCL command sent to broadcast endpoint */
 #define ZB_ZCL_BROADCAST_ENDPOINT_CMD_RESP_JITTER (ZB_MILLISECONDS_TO_BEACON_INTERVAL(500))
@@ -324,19 +324,20 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *  @param status_code - status field for received command
  *  @param direction - direction of the command (see @ref zcl_frame_direction)
  */
-#define ZB_ZCL_SEND_DEFAULT_RESP_DIRECTION(buffer,                        \
-    addr, addr_mode, dst_ep, ep, prof_id, cluster_id, seq_num, cmd, status_code, direction) \
-{                                                                         \
-  zb_uint8_t * ptr = NULL;                                                \
-  ptr = ZB_ZCL_START_PACKET(buffer);                                      \
-  ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL_A(ptr,              \
-          (direction), ZB_ZCL_NOT_MANUFACTURER_SPECIFIC);                 \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER(ptr, seq_num, ZB_ZCL_CMD_DEFAULT_RESP); \
-  *(ptr++) = cmd;                                                         \
-  *(ptr++) = status_code;                                                 \
-  ZB_ZCL_FINISH_PACKET(buffer, ptr)                                      \
-  ZB_ZCL_SEND_COMMAND_SHORT(buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id, NULL); \
-}
+#define ZB_ZCL_SEND_DEFAULT_RESP_DIRECTION(buffer, addr, addr_mode, dst_ep, ep, prof_id,           \
+                                           cluster_id, seq_num, cmd, status_code, direction)       \
+  {                                                                                                \
+    zb_uint8_t *ptr;                                                                               \
+    ptr = ZB_ZCL_START_PACKET(buffer);                                                             \
+    ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL_A(                                         \
+        ptr, (direction), ZB_U2B(ZB_ZCL_NOT_MANUFACTURER_SPECIFIC));                               \
+    ZB_ZCL_CONSTRUCT_COMMAND_HEADER(ptr, (seq_num), ZB_ZCL_CMD_DEFAULT_RESP);                      \
+    *(ptr++) = (cmd);                                                                              \
+    *(ptr++) = (status_code);                                                                      \
+    ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                            \
+    ZB_ZCL_SEND_COMMAND_SHORT((buffer), (addr), (addr_mode), (dst_ep), (ep), (prof_id),            \
+                              (cluster_id), NULL);                                                 \
+  }
 
 /**
  *  @brief Send default response command and execute callback when it is acknowledged or expired
@@ -356,29 +357,33 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *  @param status_code - status field for received command
  *  @param callback - callback to be executed when command is acknowledged or expired (of type @ref zb_callback_t)
  */
-#define ZB_ZCL_SEND_DEFAULT_RESP_WITH_CB(buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id, seq_num, cmd, status_code, callback) \
-{                                                                         \
-  zb_uint8_t * ptr = NULL;                                                \
-  ptr = ZB_ZCL_START_PACKET(buffer);                                      \
-  ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL(ptr);               \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER(ptr, seq_num, ZB_ZCL_CMD_DEFAULT_RESP); \
-  *(ptr++) = cmd;                                                         \
-  *(ptr++) = status_code;                                                 \
-  ZB_ZCL_FINISH_PACKET(buffer, ptr)                                      \
-  ZB_ZCL_SEND_COMMAND_SHORT(buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id, (callback)); \
-}
+#define ZB_ZCL_SEND_DEFAULT_RESP_WITH_CB(buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id, \
+                                         seq_num, cmd, status_code, callback)                      \
+  {                                                                                                \
+    zb_uint8_t *ptr;                                                                               \
+    ptr = ZB_ZCL_START_PACKET(buffer);                                                             \
+    ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL(ptr);                                      \
+    ZB_ZCL_CONSTRUCT_COMMAND_HEADER(ptr, (seq_num), ZB_ZCL_CMD_DEFAULT_RESP);                      \
+    *(ptr++) = (cmd);                                                                              \
+    *(ptr++) = (status_code);                                                                      \
+    ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                            \
+    ZB_ZCL_SEND_COMMAND_SHORT((buffer), (addr), (addr_mode), (dst_ep), (ep), (prof_id),            \
+                              (cluster_id), (callback));                                           \
+  }
 
-#define ZB_ZCL_SEND_DEFAULT_RESP_WITH_CB_NEW(buffer, addr, addr_mode, dst_ep, ep, \
-  prof_id, cluster_id, seq_num, cmd, status_code, callback, aps_secured)          \
-{                                                                                 \
-  zb_uint8_t * ptr = NULL;                                                        \
-  ptr = ZB_ZCL_START_PACKET(buffer);                                              \
-  ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL(ptr);                       \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER(ptr, seq_num, ZB_ZCL_CMD_DEFAULT_RESP);         \
-  *(ptr++) = cmd;                                                                 \
-  *(ptr++) = status_code;                                                         \
-  ZB_ZCL_FINISH_N_SEND_PACKET_NEW(buffer, ptr, addr, addr_mode, dst_ep, ep, prof_id, cluster_id, (callback), aps_secured, ZB_FALSE, 0); \
-}
+#define ZB_ZCL_SEND_DEFAULT_RESP_WITH_CB_NEW(buffer, addr, addr_mode, dst_ep, ep, prof_id,         \
+                                             cluster_id, seq_num, cmd, status_code, callback,      \
+                                             aps_secured)                                          \
+  {                                                                                                \
+    zb_uint8_t *ptr;                                                                               \
+    ptr = ZB_ZCL_START_PACKET(buffer);                                                             \
+    ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL(ptr);                                      \
+    ZB_ZCL_CONSTRUCT_COMMAND_HEADER(ptr, (seq_num), ZB_ZCL_CMD_DEFAULT_RESP);                      \
+    *(ptr++) = (cmd);                                                                              \
+    *(ptr++) = (status_code);                                                                      \
+    ZB_ZCL_FINISH_N_SEND_PACKET_NEW((buffer), ptr, (addr), (addr_mode), (dst_ep), (ep), (prof_id), \
+                                    (cluster_id), (callback), (aps_secured), ZB_FALSE, 0);         \
+  }
 
 /**
  *  @brief Send default response command and execute callback when it's acknowledged or expired
@@ -474,24 +479,22 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  * @param _callback - pointer to the callback function that will be
  * called when the command is sent
  */
-#define ZB_ZCL_SEND_DEFAULT_RESP_EXT(                                   \
-  _buffer, _dst_addr, _dst_addr_mode, _dst_ep, _src_ep,                 \
-  _prof_id, _cluster_id, _seq_num, _cmd, _status_code,                  \
-  _direction, _is_manuf_specific, _manuf_code, _callback)               \
-{                                                                       \
-  zb_uint8_t * _ptr = NULL;                                             \
-  _ptr = ZB_ZCL_START_PACKET(_buffer);                                  \
-  ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL_A(_ptr,           \
-      (_direction),                                                     \
-      ((_is_manuf_specific)!=ZB_FALSE ?                                 \
-          ZB_ZCL_MANUFACTURER_SPECIFIC : ZB_ZCL_NOT_MANUFACTURER_SPECIFIC));    \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT(_ptr, _seq_num,                   \
-      _is_manuf_specific, _manuf_code, ZB_ZCL_CMD_DEFAULT_RESP);        \
-  *(_ptr++) = (_cmd);                                                   \
-  *(_ptr++) = (_status_code);                                           \
-  ZB_ZCL_FINISH_PACKET(_buffer, _ptr)                                  \
-  ZB_ZCL_SEND_COMMAND_SHORT(_buffer, _dst_addr, _dst_addr_mode, _dst_ep, _src_ep, _prof_id, _cluster_id, _callback); \
-}
+#define ZB_ZCL_SEND_DEFAULT_RESP_EXT(_buffer, _dst_addr, _dst_addr_mode, _dst_ep, _src_ep,         \
+                                     _prof_id, _cluster_id, _seq_num, _cmd, _status_code,          \
+                                     _direction, _is_manuf_specific, _manuf_code, _callback)       \
+  {                                                                                                \
+    zb_uint8_t *_ptr;                                                                              \
+    _ptr = ZB_ZCL_START_PACKET(_buffer);                                                           \
+    ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL_A(_ptr, (_direction),                      \
+                                                          (_is_manuf_specific));                   \
+    ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT(_ptr, (_seq_num), (_is_manuf_specific), (_manuf_code),     \
+                                        ZB_ZCL_CMD_DEFAULT_RESP);                                  \
+    *(_ptr++) = (_cmd);                                                                            \
+    *(_ptr++) = (_status_code);                                                                    \
+    ZB_ZCL_FINISH_PACKET((_buffer), _ptr)                                                          \
+    ZB_ZCL_SEND_COMMAND_SHORT((_buffer), (_dst_addr), (_dst_addr_mode), (_dst_ep), (_src_ep),      \
+                              (_prof_id), (_cluster_id), (_callback));                             \
+  }
 
 
 /** @brief Send default response command.
@@ -507,15 +510,15 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *  @param cmd - identifier of the command the response is dedicated to
  *  @param status_code - status field for received command
  */
-#define ZB_ZCL_SEND_DEFAULT_RESP(                                                            \
-    buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id, seq_num, cmd, status_code)     \
-  ZB_ZCL_SEND_DEFAULT_RESP_WITH_CB(buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id, \
-      seq_num, cmd, status_code, NULL)
+#define ZB_ZCL_SEND_DEFAULT_RESP(buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id,         \
+                                 seq_num, cmd, status_code)                                        \
+  ZB_ZCL_SEND_DEFAULT_RESP_WITH_CB(buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id,       \
+                                   seq_num, cmd, status_code, NULL)
 
-#define ZB_ZCL_SEND_DEFAULT_RESP_NEW(                                                                 \
-    buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id, seq_num, cmd, status_code, aps_secured) \
-  ZB_ZCL_SEND_DEFAULT_RESP_WITH_CB_NEW(buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id,      \
-      seq_num, cmd, status_code, NULL, aps_secured)
+#define ZB_ZCL_SEND_DEFAULT_RESP_NEW(buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id,     \
+                                     seq_num, cmd, status_code, aps_secured)                       \
+  ZB_ZCL_SEND_DEFAULT_RESP_WITH_CB_NEW(buffer, addr, addr_mode, dst_ep, ep, prof_id, cluster_id,   \
+                                       seq_num, cmd, status_code, NULL, aps_secured)
 
 /**
  *  @brief Send default response command.
@@ -916,35 +919,39 @@ zb_zcl_write_attr_req_t;
    @param write_attr_req - out pointer to zb_zcl_write_attr_req_t, containing Write attribute record
    @note buffer data by data_ptr should contain Write attribute request payload, without ZCL header.
  */
-#define ZB_ZCL_GENERAL_GET_NEXT_WRITE_ATTR_REQ(data_ptr, data_len, write_attr_req)           \
-{                                                                                            \
-  zb_uint8_t req_size = 0xff;                                                                \
-  (write_attr_req) = (data_len) >= ZB_ZCL_WRITE_ATTR_REQ_SIZE ?                              \
-    (zb_zcl_write_attr_req_t*)(void *)(data_ptr) : NULL;                                     \
-                                                                                             \
-  if (write_attr_req != NULL)                                                                \
-  {                                                                                          \
-    /* substruct sizeof(zb_uint8_t) because its size */                                      \
-    /* is already included into ZB_ZCL_WRITE_ATTR_REQ_SIZE */                                \
-    req_size = ZB_ZCL_WRITE_ATTR_REQ_SIZE - sizeof(zb_uint8_t) +                             \
-      zb_zcl_get_attribute_size((write_attr_req)->attr_type, (write_attr_req)->attr_value);  \
-    if (req_size <= (data_len))                                                              \
-    {                                                                                        \
-      ZB_ZCL_HTOLE16_INPLACE(&(write_attr_req)->attr_id);                                    \
-      ZB_ZCL_FIX_ENDIAN((write_attr_req)->attr_value, (write_attr_req)->attr_type);          \
-    }                                                                                        \
-  }                                                                                          \
-                                                                                             \
-  if (req_size <= (data_len))                                                                \
-  {                                                                                          \
-    (data_ptr) = (data_ptr) + req_size;                                                      \
-    (data_len) = (data_len) - req_size;                                                      \
-  }                                                                                          \
-  else                                                                                       \
-  {                                                                                          \
-    (write_attr_req) = NULL;                                                                 \
-  }                                                                                          \
-}
+#define ZB_ZCL_GENERAL_GET_NEXT_WRITE_ATTR_REQ(data_ptr, data_len, write_attr_req)                 \
+  {                                                                                                \
+    zb_uint8_t req_size = 0xFFU;                                                                   \
+    (write_attr_req) = (data_len) >= ZB_ZCL_WRITE_ATTR_REQ_SIZE                                    \
+                           ? (zb_zcl_write_attr_req_t *)(void *)(data_ptr)                         \
+                           : NULL;                                                                 \
+                                                                                                   \
+    if ((write_attr_req) != NULL)                                                                  \
+    {                                                                                              \
+      /* substruct sizeof(zb_uint8_t) because its size */                                          \
+      /* is already included into ZB_ZCL_WRITE_ATTR_REQ_SIZE */                                    \
+      ZB_ASSERT_COMPILE_TIME(ZB_ZCL_WRITE_ATTR_REQ_SIZE <= 0xFFU);                                 \
+      req_size = (zb_uint8_t)ZB_ZCL_WRITE_ATTR_REQ_SIZE - (zb_uint8_t)sizeof(zb_uint8_t)           \
+                 + zb_zcl_get_attribute_size((write_attr_req)->attr_type,                          \
+                                             (write_attr_req)->attr_value);                        \
+                                                                                                   \
+      if (req_size <= (data_len))                                                                  \
+      {                                                                                            \
+        ZB_ZCL_HTOLE16_INPLACE(&(write_attr_req)->attr_id);                                        \
+        ZB_ZCL_FIX_ENDIAN((write_attr_req)->attr_value, (write_attr_req)->attr_type);              \
+      }                                                                                            \
+    }                                                                                              \
+                                                                                                   \
+    if (req_size <= (data_len))                                                                    \
+    {                                                                                              \
+      (data_ptr) = (data_ptr) + req_size;                                                          \
+      (data_len) = (data_len)-req_size;                                                            \
+    }                                                                                              \
+    else                                                                                           \
+    {                                                                                              \
+      (write_attr_req) = NULL;                                                                     \
+    }                                                                                              \
+  }
 
 /*! @brief ZCL Write Attribute Command frame
     @see ZCL spec, 2.4.3 Write Attributes Command
@@ -2403,7 +2410,7 @@ zb_zcl_disc_attr_ext_res_t;
 
   /*! Convert internal attribute access bitmask into ZCL/HA1.2 bitmask
  *  value (actually, support 0 and 1 bits) */
-#define ZB_ZCL_CONVERT_ATTR_ACCESS_BITMASK(_access) ((_access) && 0x3)
+#define ZB_ZCL_CONVERT_ATTR_ACCESS_BITMASK(_access) ((_access) & 0x3U)
 
 /******************** Command handlers ***************************/
 
@@ -2422,7 +2429,7 @@ void zb_zcl_send_report_attr_command(struct zb_zcl_reporting_info_s *rep_info, z
 
 #endif
 
-zb_uint8_t zb_zcl_handle_general_commands(zb_uint8_t param);
+zb_bool_t zb_zcl_handle_general_commands(zb_uint8_t param);
 
 /** @endcond */ /* internals_doc */
 

@@ -82,16 +82,17 @@ enum zb_zcl_diagnostics_attr_e
 {
   /** @brief number_of_resets, Zigbee Diagnostic Cluster spec 1.2.2.1.1 */
   ZB_ZCL_ATTR_DIAGNOSTICS_NUMBER_OF_RESETS_ID                = 0x0000,
-  /** This attribute keeps track of the number of writes to persistent memory. */
+  /** This attribute keeps track of the number of writes to persistent memory.
+   *  HA spec 9.2.2.2.1.2 */
   ZB_ZCL_ATTR_DIAGNOSTICS_PERSISTENT_MEMORY_WRITES_ID        = 0x0001,
-  /** @brief MacRxBcast, HA spec 9.3.2.2.2 */
+  /** @brief MacRxBcast, HA spec 9.2.2.2.2.1 */
   ZB_ZCL_ATTR_DIAGNOSTICS_MAC_RX_BCAST_ID                    = 0x0100,
-  /** @brief MacTxBcast, HA spec 9.3.2.2.2 */
+  /** @brief MacTxBcast, HA spec 9.2.2.2.2.2 */
   ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_BCAST_ID                    = 0x0101,
   /** MacRxUcast Attribute A counter that is incremented each time the MAC
    *  layer receives a unicast. */
   ZB_ZCL_ATTR_DIAGNOSTICS_MAC_RX_UCAST_ID                    = 0x0102,
-  /** @brief MacTxUcast, HA spec 9.3.2.2.2 */
+  /** @brief MacTxUcast, HA spec 9.2.2.2.2.4 */
   ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_ID                    = 0x0103,
   /** MacTxUcastRetry Attribute A counter that is incremented each time
    *  the MAC layer retries a unicast. */
@@ -102,17 +103,17 @@ enum zb_zcl_diagnostics_attr_e
   /** APSRxBcast Attribute A counter that is incremented each time
    *  the APS layer receives a broadcast. */
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_RX_BCAST_ID                    = 0x0106,
-  /** @brief aps_tx_bcast, HA spec 9.3.2.2.2 */
+  /** @brief aps_tx_bcast, HA spec 9.3.2.2.2 (??) */
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_BCAST_ID                    = 0x0107,
   /** APSRxUcast Attribute A counter that is incremented each time
    *  the APS layer receives a unicast. */
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_RX_UCAST_ID                    = 0x0108,
-  /** @brief aps_tx_ucast_success, HA spec 9.3.2.2.2 */
+  /** @brief aps_tx_ucast_success, HA spec 9.3.2.2.2 (??) */
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_SUCCESS_ID            = 0x0109,
   /** APSTxUcastRetry Attribute A counter that is incremented each time
    *  the APS layer retries the sending of a unicast. */
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_RETRY_ID              = 0x010A,
-  /** @brief aps_tx_ucast_fail, HA spec 9.3.2.2.2 */
+  /** @brief aps_tx_ucast_fail, HA spec 9.3.2.2.2 (??) */
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_FAIL_ID               = 0x010b,
   /** RouteDiscInitiated Attribute A counter that is incremented each time
    *  a route request is initiated . */
@@ -149,27 +150,49 @@ enum zb_zcl_diagnostics_attr_e
   /** A counter that is incremented each time an APS encrypted message was received
    *  but dropped because decryption failed. */
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_DECRYPT_FAILURES_ID            = 0x0116,
-  /** @brief average_mac_retry_per_aps_message_sent, HA spec 9.3.2.2.2.27 */
+  /** A counter that is incremented each time the stack failed to allocate a packet
+   *  buffers. This doesn't necessarily mean that the packet buffer count was 0 at
+   *  the time, but that the number requested was greater than the number free. */
   ZB_ZCL_ATTR_DIAGNOSTICS_PACKET_BUFFER_ALLOCATE_FAILURES_ID = 0x0117,
   /** A counter that is incremented each time a unicast packet is relayed. */
   ZB_ZCL_ATTR_DIAGNOSTICS_RELAYED_UCAST_ID                   = 0x0118,
+  /** A counter that is incremented each time a packet is dropped because the PHY to
+   *  MAC queue was exhausted */
   ZB_ZCL_ATTR_DIAGNOSTICS_PHYTOMACQUEUELIMITREACHED_ID       = 0x0119,
   /** A counter that is incremented each time a packet was dropped due to a packet
    *  validation error. This could be due to length or other formatting problems
    *  in the packet. */
   ZB_ZCL_ATTR_DIAGNOSTICS_PACKET_VALIDATEDROPCOUNT_ID        = 0x011A,
-  /** @brief PacketBufferAllocateFeatures, Zigbee Diagnostic Cluster spec 1.2.2.2.24 */
+  /** A counter that is equal to the average number of MAC retries needed to send
+   *  an APS message, HA spec 9.2.2.2.2.27 */
   ZB_ZCL_ATTR_DIAGNOSTICS_AVERAGE_MAC_RETRY_PER_APS_ID       = 0x011b,
-  /** @brief LastMessageLQI, HA spec 9.3.2.2.2. */
+  /** This is the Link Quality Indicator for the last message received. There is no
+   *  current agreed upon standard for calculating the LQI. For some implementations
+   *  LQI is related directly to RSSI for others it is a function of the number of
+   *  errors received over a fixed number of bytes in a given message. The one thing
+   *  that has been agreed is that the Link Quality Indicator is a value between 0
+   *  and 255 where 0 indicates the worst possible link and 255 indicates the best
+   *  possible link. Note that for a device reading the Last Message LQI the returned
+   *  value SHALL be the LQI for the read attribute message used to read the attribute
+   *  itself. */
   ZB_ZCL_ATTR_DIAGNOSTICS_LAST_LQI_ID                        = 0x011c,
-  /** @brief LastMessageRSSI, HA spec 9.3.2.2.2. */
+  /** This is the receive signal strength indication for the last message received.
+   *  As with Last Message LQI, a device reading the Last Message RSSI, the returned
+   *  value SHALL be the RSSI of the read attribute message used to read the attribute
+   *  itself. */
   ZB_ZCL_ATTR_DIAGNOSTICS_LAST_RSSI_ID                       = 0x011d,
   /*! @brief A counter that is incremented on the NWK layer
    *         each time tries number of a packet resending are gone.
    *
-   * @note It's a non-stanrad counter that depends on ZB_ENABLE_NWK_RETRANSMIT and
+   * @note It's a non-standard counter that depends on ZB_ENABLE_NWK_RETRANSMIT and
    *       will be zero always when the macro isn't set. */
-  ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_NWK_RETRY_OVERFLOW_ID  = 0xff00
+  ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_NWK_RETRY_OVERFLOW_ID  = 0xff00,
+  /** A non-standard counter that is incremented each time an the PHY layer was unable
+   *  to transmit due to a failed CCA */
+  ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_PHY_CCA_FAILURES_ID    = 0xff01,
+  /** A non-standard counter of the number of times the NWK broadcast was dropped
+   *  because the broadcast table was full. */
+  ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_BCAST_TABLE_FULL_ID    = 0xff02
 };
 
 /** @brief Default value for number_of_resets attribute */
@@ -268,6 +291,12 @@ enum zb_zcl_diagnostics_attr_e
 /** @brief Default value for LastRSSI attribute */
 #define ZB_ZCL_DIAGNOSTICS_LAST_RSSI_DEFAULT_VALUE ((zb_int8_t)0)
 
+#define ZB_ZCL_DIAGNOSTICS_CUSTOM_ATTR_NWK_RETRY_OVERFLOW_DEFAULT_VALUE ((zb_uint16_t)0)
+
+#define ZB_ZCL_DIAGNOSTICS_CUSTOM_ATTR_PHY_CCA_FAILURES_DEFAULT_VALUE ((zb_uint16_t)0)
+
+#define ZB_ZCL_DIAGNOSTICS_CUSTOM_ATTR_BCAST_TABLE_FULL_DEFAULT_VALUE ((zb_uint16_t)0)
+
 /** @cond internals_doc */
 /*! @internal @name Diagnostics cluster internals
     Internal structures for attribute representation in cluster definitions.
@@ -363,6 +392,14 @@ enum zb_zcl_diagnostics_attr_e
   (void*) data_ptr                                              \
 }
 
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_RETRY_ID(data_ptr) \
+{                                                               \
+  ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_RETRY_ID,                \
+  ZB_ZCL_ATTR_TYPE_U16,                                         \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
+  (void*) data_ptr                                              \
+}
+
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_FAIL_ID(data_ptr) \
 {                                                               \
   ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_FAIL_ID,                 \
@@ -395,6 +432,14 @@ enum zb_zcl_diagnostics_attr_e
   (void*) data_ptr                                              \
 }
 
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_CHILD_MOVED_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_CHILD_MOVED_ID,                             \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_NWKFC_FAILURE_ID(data_ptr) \
 {                                                                     \
   ZB_ZCL_ATTR_DIAGNOSTICS_NWKFC_FAILURE_ID,                           \
@@ -411,9 +456,89 @@ enum zb_zcl_diagnostics_attr_e
   (void*) data_ptr                                                    \
 }
 
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_APS_UNAUTHORIZED_KEY_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_APS_UNAUTHORIZED_KEY_ID,                    \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_NWK_DECRYPT_FAILURES_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_NWK_DECRYPT_FAILURES_ID,                    \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_APS_DECRYPT_FAILURES_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_APS_DECRYPT_FAILURES_ID,                    \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_PHYTOMACQUEUELIMITREACHED_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_PHYTOMACQUEUELIMITREACHED_ID,               \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_PACKET_VALIDATEDROPCOUNT_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_PACKET_VALIDATEDROPCOUNT_ID,                \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_ADDED_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_ADDED_ID,                          \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_REMOVED_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_REMOVED_ID,                        \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_STALE_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_STALE_ID,                          \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_NWK_RETRY_OVERFLOW_ID(data_ptr) \
 {                                                                     \
   ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_NWK_RETRY_OVERFLOW_ID,          \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_PHY_CCA_FAILURES_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_PHY_CCA_FAILURES_ID,            \
+  ZB_ZCL_ATTR_TYPE_U16,                                               \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
+  (void*) data_ptr                                                    \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_BCAST_TABLE_FULL_ID(data_ptr) \
+{                                                                     \
+  ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_BCAST_TABLE_FULL_ID,            \
   ZB_ZCL_ATTR_TYPE_U16,                                               \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
   (void*) data_ptr                                                    \
@@ -432,16 +557,28 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_FAIL_ID,               &diagnostics_ctx_zcl.mac_data.mac_tx_ucast_failures_zcl) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_LAST_LQI_ID,                        &diagnostics_ctx_zcl.mac_data.last_msg_lqi) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_LAST_RSSI_ID,                       &diagnostics_ctx_zcl.mac_data.last_msg_rssi) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_PHYTOMACQUEUELIMITREACHED_ID,       &diagnostics_ctx_zcl.mac_data.phy_to_mac_que_lim_reached) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_PACKET_VALIDATEDROPCOUNT_ID,        &diagnostics_ctx_zcl.mac_data.mac_validate_drop_cnt) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_PHY_CCA_FAILURES_ID,    &diagnostics_ctx_zcl.mac_data.phy_cca_fail_count) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_NUMBER_OF_RESETS_ID,                &diagnostics_ctx_zcl.zdo_data.number_of_resets) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_BCAST_ID,                    &diagnostics_ctx_zcl.zdo_data.aps_tx_bcast) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_SUCCESS_ID,            &diagnostics_ctx_zcl.zdo_data.aps_tx_ucast_success) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_RETRY_ID,              &diagnostics_ctx_zcl.zdo_data.aps_tx_ucast_retry) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_FAIL_ID,               &diagnostics_ctx_zcl.zdo_data.aps_tx_ucast_fail) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_ADDED_ID,                  &diagnostics_ctx_zcl.zdo_data.nwk_neighbor_added) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_REMOVED_ID,                &diagnostics_ctx_zcl.zdo_data.nwk_neighbor_removed) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_STALE_ID,                  &diagnostics_ctx_zcl.zdo_data.nwk_neighbor_stale) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_JOIN_INDICATION_ID,                 &diagnostics_ctx_zcl.zdo_data.join_indication) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_AVERAGE_MAC_RETRY_PER_APS_ID,       &diagnostics_ctx_zcl.zdo_data.average_mac_retry_per_aps_message_sent) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_PACKET_BUFFER_ALLOCATE_FAILURES_ID, &diagnostics_ctx_zcl.zdo_data.packet_buffer_allocate_failures) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_CHILD_MOVED_ID,                     &diagnostics_ctx_zcl.zdo_data.childs_removed) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_NWKFC_FAILURE_ID,                   &diagnostics_ctx_zcl.zdo_data.nwk_fc_failure) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_APSFC_FAILURE_ID,                   &diagnostics_ctx_zcl.zdo_data.aps_fc_failure) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_APS_UNAUTHORIZED_KEY_ID,            &diagnostics_ctx_zcl.zdo_data.aps_unauthorized_key) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_NWK_DECRYPT_FAILURES_ID,            &diagnostics_ctx_zcl.zdo_data.nwk_decrypt_failure) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_APS_DECRYPT_FAILURES_ID,            &diagnostics_ctx_zcl.zdo_data.aps_decrypt_failure) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_NWK_RETRY_OVERFLOW_ID,  &diagnostics_ctx_zcl.zdo_data.nwk_retry_overflow) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_BCAST_TABLE_FULL_ID,    &diagnostics_ctx_zcl.zdo_data.nwk_bcast_table_full) \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
 /*! @} */ /* Diagnostics cluster internals */

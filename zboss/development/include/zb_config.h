@@ -222,7 +222,7 @@ constants etc.
 
 #ifdef ZB_SE_KE_WHITELIST
 #ifndef ZB_SE_KE_WHITELIST_MAX_SIZE
-#define ZB_SE_KE_WHITELIST_MAX_SIZE 32
+#define ZB_SE_KE_WHITELIST_MAX_SIZE 32U
 #endif
 #endif
 
@@ -1021,7 +1021,7 @@ exponent.
 
    Note: not sizeof(zb_size_t) because at 64-bit build it is 8 which we don't want.
  */
-#define ZB_BUF_ALLOC_ALIGN 4U
+#define ZB_BUF_ALLOC_ALIGN (4U)
 
 
 /**
@@ -1238,7 +1238,7 @@ exponent.
 #define ZB_DEBUG_BUFFERS_EXT_USAGES_COUNT 1U
 #endif
 #endif /*ZB_DEBUG_BUFFERS*/
-/** @cond */ /* DOXYGEN_INTERNAL_DOC */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /************************Special modes for testing*******************/
 
@@ -1499,11 +1499,13 @@ exponent.
 #define ZB_LITE_NO_STORE_APS_COUNTERS
 #endif
 
+#ifndef SNCP_MODE
 /**
    Do not check for APS security counters inconsistence at unsecure
  */
 #ifndef ZB_NO_CHECK_INCOMING_SECURE_APS_FRAME_COUNTERS
 #define ZB_NO_CHECK_INCOMING_SECURE_APS_FRAME_COUNTERS
+#endif
 #endif
 
 #ifdef ZB_DISTRIBUTED_SECURITY_ON
@@ -1767,7 +1769,7 @@ compatibility with some mammoth shit */
 /*! \addtogroup ZB_CONFIG */
 /*! @{ */
 /** Maximum buffer index. Buffer indexing starts from one. */
-#define ZB_N_BUF_IDS (ZB_IOBUF_POOL_SIZE + 1)
+#define ZB_N_BUF_IDS (ZB_IOBUF_POOL_SIZE + 1U)
 
 #ifdef ZB_PRODUCTION_CONFIG
 #define ZB_PRODUCTION_CONFIG_MAX_SIZE 128
@@ -1795,6 +1797,14 @@ compatibility with some mammoth shit */
 #if defined DEBUG_EXPOSE_KEYS && !defined DEBUG
 #warning undefining DEBUG_EXPOSE_KEYS for release build
 #undef DEBUG_EXPOSE_KEYS
+#endif
+
+#ifndef ZB_USE_ERROR_INDICATION
+#define ZB_USE_ERROR_INDICATION
+#endif /* !ZB_USE_ERROR_INDICATION */
+
+#ifdef NCP_MODE_HOST
+#define HAVE_TOP_LEVEL_ERROR_HANDLER
 #endif
 
 #endif /* ZB_CONFIG_H */

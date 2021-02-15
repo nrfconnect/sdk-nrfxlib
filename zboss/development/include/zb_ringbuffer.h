@@ -141,7 +141,7 @@ typedef struct type_name_prefix ## _s                                 \
 #define ZB_RING_BUFFER_FLUSH_PUT(rb)                                    \
 (                                                                       \
   (rb)->written++,                                                      \
-  (rb)->write_i = ((rb)->write_i + 1) % ZB_RING_BUFFER_CAPACITY(rb)     \
+  (rb)->write_i = ((rb)->write_i + 1U) % ZB_RING_BUFFER_CAPACITY(rb)     \
   )
 
 #define ZB_RING_BUFFER_FLUSH_PUT_HEAD(rb)           \

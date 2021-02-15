@@ -246,7 +246,7 @@ zb_time_t zb_timer_get(void);
 /**
  Convert from quarterseconds to msec
 */
-#define ZB_QUARTERECONDS_TO_MSEC(n)  250U*(n)
+#define ZB_QUARTERECONDS_TO_MSEC(n)  250UL*(n)
 
 /**
  Convert from quarterseconds to beacon
@@ -527,7 +527,7 @@ void zb_memcpy8(zb_uint8_t *ptr, zb_uint8_t *src);
 
 #define ZB_SET_BIT_IN_BIT_VECTOR(vector, nbit) ( (vector)[ (nbit) / 8U ] |= ( 1U << ( (nbit) % 8U )) )
 #define ZB_CLR_BIT_IN_BIT_VECTOR(vector, nbit) ( (vector)[ (nbit) / 8U ] &= ~( 1U << ( (nbit) % 8U )) )
-#define ZB_CHECK_BIT_IN_BIT_VECTOR(vector, nbit) ( (vector)[ (nbit) / 8U ] & ( 1U << ( (nbit) % 8U )) )
+#define ZB_CHECK_BIT_IN_BIT_VECTOR(vector, nbit) (ZB_U2B( (vector)[ (nbit) / 8U ] & ( 1U << ( (nbit) % 8U )) ))
 #define ZB_SIZE_OF_BIT_VECTOR(bit_count) (bit_count / 8U + !!(bit_count % 8U != 0U))
 
 /**

@@ -287,6 +287,12 @@ typedef ZB_PACKED_PRE struct zb_aps_bind_dst_table_s
                                           * - group address, otherwise long
                                           * address plus dest endpoint */
   zb_uint8_t            src_table_index; /*!< index from zb_asp_src_table_t */
+#ifdef SNCP_MODE
+  zb_uint8_t            id;              /* original index position when inserted, to identify
+                                          *  entry even if moved with the array (on removal of
+                                          *  other elements) */
+  zb_uint8_t            align;
+#endif
 } ZB_PACKED_STRUCT zb_aps_bind_dst_table_t;
 
 /**
@@ -511,10 +517,31 @@ typedef ZB_PACKED_PRE struct zb_mac_diagnostic_info_s
   zb_uint16_t mac_tx_ucast_retries; /* Total number of Mac Retries regardles of
                                      * whether the transaction resulted in
                                      * success or failure. */
+
+  zb_uint16_t phy_to_mac_que_lim_reached;  /* A counter that is incremented each time when MAC RX queue if full. */
+
+  zb_uint16_t mac_validate_drop_cnt; /* How many times the packet was dropped at the packet
+                                      * validation stage for length or bad formatting. */
+
+  zb_uint16_t phy_cca_fail_count;   /* Number of the PHY layer was unable
+                                     * to transmit due to a failed CCA */
+
   zb_uint8_t period_of_time;    /* Time period over which MACTx results are measured */
   zb_uint8_t last_msg_lqi;      /* LQI value of the last received packet */
   zb_int8_t last_msg_rssi;      /* RSSI value of the last received packet */
-} ZB_PACKED_STRUCT zb_mac_diagnostic_info_t;
+} ZB_PACKED_STRUCT
+zb_mac_diagnostic_info_t;
+
+/* MAC diagnostics info extended struct */
+typedef ZB_PACKED_PRE struct zb_mac_diagnostic_ex_info_s
+{
+  zb_mac_diagnostic_info_t mac_diag_info;
+  /* Internal variables/counters that should be transferred
+   * from MAC to ZDO and should not go to the NHLE */
+  zb_uint32_t mac_tx_for_aps_messages; /* Internal counter used to calculate 
+                                          average_mac_retry_per_aps_message_sent in ZDO */
+} ZB_PACKED_STRUCT
+zb_mac_diagnostic_ex_info_t;
 
 /*! @brief Structure saved diagnostic counters except MAC
  * See the ZCL Diagnostics Cluster -> ZCLr7 spec, chapter 3.15 */
@@ -532,21 +559,33 @@ typedef ZB_PACKED_PRE struct zdo_diagnostics_info_s
    *         the APS layer successfully transmits a unicast. */
   zb_uint16_t aps_tx_ucast_success;
 
+  /*! @brief A counter that is incremented each time the
+   *  APS layer retries the sending of a unicast. */
+  zb_uint16_t aps_tx_ucast_retry;
+
   /*! @brief A counter that is incremented each time
    *         the APS layer fails to send a unicast. */
   zb_uint16_t aps_tx_ucast_fail;
 
   /*! @brief A counter that is incremented each time
+   *  an entry is added to the neighbor table. */
+  zb_uint16_t nwk_neighbor_added;
+
+  /*! @brief A counter that is incremented each time
+   *  an entry is removed from the neighbor table. */
+  zb_uint16_t nwk_neighbor_removed;
+
+  /*! @brief A counter that is incremented each time a neighbor table entry
+   *  becomes stale because the neighbor has not been heard from. */
+  zb_uint16_t nwk_neighbor_stale;
+
+  /*! @brief A counter that is incremented each time
    *         a node joins or rejoins the network via this node. */
   zb_uint16_t join_indication;
 
-  /*! @brief A counter that is equal to the average number
-   *         of MAC retries needed to send an APS message. */
-  zb_uint16_t average_mac_retry_per_aps_message_sent;
-
-  /*! @brief A counter that is incremented each time
-   *         the stack failed to allocate a packet buffers. */
-  zb_uint16_t packet_buffer_allocate_failures;
+  /*! @brief A counter that is incremented each time an entry
+   *  is removed from the child table. */
+  zb_uint16_t childs_removed;
 
   /*! @brief A counter that is incremented each time a message is
    *         dropped at the network layer because the APS frame counter
@@ -558,12 +597,41 @@ typedef ZB_PACKED_PRE struct zdo_diagnostics_info_s
    *         not higher than the last message seen from that source. */
   zb_uint16_t aps_fc_failure;
 
+  /*! @brief A counter that is incremented each time a message is dropped
+   *  at the APS layer because it had APS encryption but the key associated
+   *  with the sender has not been authenticated, and thus the key is not
+   *  authorized for use in APS data messages. */
+  zb_uint16_t aps_unauthorized_key;
+
+  /*! @brief A counter that is incremented each time a NWK encrypted message
+   *         was received but dropped because decryption failed. */
+  zb_uint16_t nwk_decrypt_failure;
+
+  /*! @brief A counter that is incremented each time an APS encrypted message was
+   *  received but dropped because decryption failed. */
+  zb_uint16_t aps_decrypt_failure;
+
+  /*! @brief A counter that is incremented each time
+   *         the stack failed to allocate a packet buffers. */
+  zb_uint16_t packet_buffer_allocate_failures;
+
+  /*! @brief A counter that is equal to the average number
+   *         of MAC retries needed to send an APS message. */
+  zb_uint16_t average_mac_retry_per_aps_message_sent;
+
   /*! @brief A counter that is incremented on the NWK layer
    *         each time tries number of a packet resending are gone.
    *
    * @note It's a non-stanrad counter that depends on ZB_ENABLE_NWK_RETRANSMIT and
    *       will be zero always when the macro isn't set. */
   zb_uint16_t nwk_retry_overflow;
+
+  /** A non-standard counter of the number of times the NWK broadcast was
+   *  dropped because the broadcast table was full.
+   *  01/15/2021 In ZBOSS fired if any of the broadcast_transaction or
+   *  broadcast_retransmition tables are full */
+  zb_uint16_t nwk_bcast_table_full;
+
 } ZB_PACKED_STRUCT zdo_diagnostics_info_t;
 
 #if defined NCP_MODE && !defined NCP_MODE_HOST

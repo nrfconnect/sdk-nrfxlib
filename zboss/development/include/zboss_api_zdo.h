@@ -57,55 +57,55 @@
  */
 /** @{ */
 /** The requested operation or transmission was completed successfully. */
-#define ZB_ZDP_STATUS_SUCCESS 0x00u
+#define ZB_ZDP_STATUS_SUCCESS 0x00
 
 /*!< The supplied request type was invalid. */
-#define ZB_ZDP_STATUS_INV_REQUESTTYPE 0x80u
+#define ZB_ZDP_STATUS_INV_REQUESTTYPE 0x80
 
 /*!< The requested device did not exist on a device following a child descriptor request to a
  * parent.*/
 #define ZB_ZDP_STATUS_DEVICE_NOT_FOUND 0x81
 
 /*!< The supplied endpoint was equal to 0x00 or between 0xf1 and 0xff. */
-#define ZB_ZDP_STATUS_INVALID_EP 0x82u
+#define ZB_ZDP_STATUS_INVALID_EP 0x82
 
 /*!< The requested endpoint is not described by simple descriptor. */
-#define ZB_ZDP_STATUS_NOT_ACTIVE 0x83u
+#define ZB_ZDP_STATUS_NOT_ACTIVE 0x83
 
 /*!< The requested optional feature is not supported on the target device. */
-#define ZB_ZDP_STATUS_NOT_SUPPORTED 0x84u
+#define ZB_ZDP_STATUS_NOT_SUPPORTED 0x84
 
 /*!< A timeout has occurred with the requested operation. */
-#define ZB_ZDP_STATUS_TIMEOUT 0x85u
+#define ZB_ZDP_STATUS_TIMEOUT 0x85
 
 /*!< The end device bind request was unsuccessful due to a failure to match any suitable clusters.*/
-#define ZB_ZDP_STATUS_NO_MATCH 0x86u
+#define ZB_ZDP_STATUS_NO_MATCH 0x86
 
 /*!< The unbind request was unsuccessful due to the coordinator or source device not having an
  * entry in its binding table to unbind.*/
-#define ZB_ZDP_STATUS_NO_ENTRY 0x88u
+#define ZB_ZDP_STATUS_NO_ENTRY 0x88
 
 /*!< A child descriptor was not available following a discovery request to a parent. */
-#define ZB_ZDP_STATUS_NO_DESCRIPTOR 0x89u
+#define ZB_ZDP_STATUS_NO_DESCRIPTOR 0x89
 
 /*!< The device does not have storage space to support the requested operation. */
-#define ZB_ZDP_STATUS_INSUFFICIENT_SPACE 0x8au
+#define ZB_ZDP_STATUS_INSUFFICIENT_SPACE 0x8a
 
 /*!< The device is not in the proper state to support the requested operation. */
-#define ZB_ZDP_STATUS_NOT_PERMITTED 0x8bu
+#define ZB_ZDP_STATUS_NOT_PERMITTED 0x8b
 
 /*!< The device does not have table space to support the operation. */
-#define ZB_ZDP_STATUS_TABLE_FULL 0x8cu
+#define ZB_ZDP_STATUS_TABLE_FULL 0x8c
 
 /*!< The permissions configuration table on the target indicates that the request is not authorized
  * from this device.*/
-#define ZB_ZDP_STATUS_NOT_AUTHORIZED 0x8du
+#define ZB_ZDP_STATUS_NOT_AUTHORIZED 0x8d
 
 /*!< The index in the received command is out of bounds. */
-#define ZB_ZDP_STATUS_INVALID_INDEX 0x8fu
+#define ZB_ZDP_STATUS_INVALID_INDEX 0x8f
 
 /**< Custom internal statuses. */
-#define ZB_ZDP_STATUS_TIMEOUT_BY_STACK 0xffu
+#define ZB_ZDP_STATUS_TIMEOUT_BY_STACK 0xff
 /** @} */
 
 /**
@@ -114,7 +114,7 @@
  * Holds one of @ref zdp_status. Kept for backward compatibility as
  * @ref zdp_status were declared previously as enum.
  */
-typedef zb_uint8_t zb_zdp_status_t;
+typedef zb_ret_t zb_zdp_status_t;
 
 /**
  * @name Signals passed to zboss_signal_handler()

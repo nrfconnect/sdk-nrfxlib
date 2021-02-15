@@ -126,8 +126,8 @@ do                                                                      \
   {                                                                     \
     ZB_MEMCPY(&((address)[5]),                                          \
               &(ZG->addr.dev_manufacturer[(compressed_address).dev_manufacturer].device_manufacturer[0]), \
-              (sizeof((address)[0]) * 3));                              \
-    ZB_MEMCPY(&((address)[0]), &((compressed_address).device_id[0]), (sizeof((address)[0]) * 5)); \
+              (sizeof((address)[0]) * 3U));                              \
+    ZB_MEMCPY(&((address)[0]), &((compressed_address).device_id[0]), (sizeof((address)[0]) * 5U)); \
                                                                         \
   }                                                                     \
 }                                                                       \
@@ -154,10 +154,10 @@ zb_bool_t zb_address_compressed_cmp(zb_ieee_addr_compressed_t *one, zb_ieee_addr
      Is this cast needed here?
   */
 #define ZB_ADDRESS_COMPRESSED_IS_ZERO(dest)      \
-  (!ZB_MEMCMP(&(dest).dev_manufacturer, (void const *)g_zero_addr, sizeof(zb_ieee_addr_compressed_t)))
+  (ZB_MEMCMP(&(dest).dev_manufacturer, (void const *)g_zero_addr, sizeof(zb_ieee_addr_compressed_t)) == 0)
 
 #define ZB_ADDRESS_COMPRESSED_IS_UNKNOWN(dest)      \
-  (!ZB_MEMCMP(&(dest).dev_manufacturer, (void const *)g_unknown_ieee_addr, sizeof(zb_ieee_addr_compressed_t)))
+  (ZB_MEMCMP(&(dest).dev_manufacturer, (void const *)g_unknown_ieee_addr, sizeof(zb_ieee_addr_compressed_t)) == 0)
 
 #define ZB_ADDRESS_COMPRESS_UNKNOWN(dest)     \
   (ZB_MEMCPY(&(dest).dev_manufacturer, (void const *)g_unknown_ieee_addr, sizeof(zb_ieee_addr_compressed_t)))

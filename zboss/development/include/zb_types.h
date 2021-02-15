@@ -622,11 +622,11 @@ zb_addr_u;
 #endif  /* need_align */
 
 
-#define ZB_HTOLE16_ONPLACE(v)
+#define ZB_HTOLE16_ONPLACE(v) ZVUNUSED(v)
 
-#define ZB_HTOLE32_ONPLACE(v)
+#define ZB_HTOLE32_ONPLACE(v) ZVUNUSED(v)
 
-#define ZB_HTOLE64_ONPLACE(v)
+#define ZB_HTOLE64_ONPLACE(v) ZVUNUSED(v)
 
 #define ZB_HTOBE16(ptr, val)                            \
   (((zb_uint8_t *)(ptr))[0] = ((zb_uint8_t *)(val))[1], \
