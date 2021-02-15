@@ -13,6 +13,7 @@ choice ZIGBEE_LIBRARY_TYPE
 
 config ZIGBEE_LIBRARY_PRODUCTION
 	bool "Use production libraries"
+	depends on (SOC_NRF52840 || SOC_NRF52833)
 	help
 	  If selected, the application will be linked with the latest, stable
 	  version of ZBOSS libraries.
