@@ -3,16 +3,7 @@
 nRF 802.15.4 Service Layer
 ==========================
 
-.. contents::
-   :local:
-   :depth: 2
-
-The nRF 802.15.4 Service Layer (SL) is a library that enables various advanced features of the nRF 802.15.4 Radio Driver.
-
-Overview
-********
-
-Currently, the library implements the following features:
+The nRF 802.15.4 Service Layer (SL) is a library that implements the following features of the nRF 802.15.4 Radio Driver:
 
 * Multiprotocol support.
   It allows the concurrency of Bluetooth LE and 802.15.4 operations.
@@ -23,17 +14,12 @@ Currently, the library implements the following features:
 * Timestamping.
   It provides precise frame timestamps.
 
-It also provides an API to retrieve the capabilities of the binary in run-time.
-
-Moreover, the library also defines APIs for features that are not yet supported, as the following:
+It also provides an API to retrieve the capabilities of the binary in run-time and defines APIs for features that are not yet supported, as the following:
 
 * WiFi coexistence support.
   It provides an API for facilitating the integration with an external PTA.
 * Antenna diversity support.
   It provides an API for runtime antenna selection.
-
-Requirements
-************
 
 The service layer is available as a binary for the following SoCs/SiPs:
 
@@ -50,16 +36,13 @@ The service layer is available as a binary for the following SoCs/SiPs:
 For the SOCs equipped with a floating-point unit (nRF52840 and nRF52833), the service layer is available in the soft-float, softfp-float, and hard-float build versions.
 For the other SOCs/SiPs, it is available only in the soft-float build version.
 
-Usage
-*****
-
-When you use the |NCS|, the nRF 802.15.4 Radio Driver takes advantage of the service layer automatically.
+When using the |NCS|, the nRF 802.15.4 Radio Driver takes advantage of the service layer automatically.
 No additional user action is needed.
-
-When you use the nRF 802.15.4 Radio Driver in your project outside of the |NCS|, to let the radio driver take advantage of the features enabled by the service layer, you must do the following:
+Instead, when using the nRF 802.15.4 Radio Driver in your project outside of the |NCS|, you must do the following to let the radio driver take advantage of the features enabled by the service layer:
 
 * Add the header files to the include directories of the project
 * Add the binaries to the linking stage of the build.
+
 
 .. toctree::
    :maxdepth: 2
