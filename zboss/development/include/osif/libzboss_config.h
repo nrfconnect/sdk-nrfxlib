@@ -191,7 +191,7 @@
  *
  * Include API to send raw APS frames
  */
-#define CONFIG_ZB_APS_USER_PAYLOAD y
+/* #undef CONFIG_ZB_APS_USER_PAYLOAD */
 
 /**
  * NWK security API
@@ -443,7 +443,7 @@
  *
  * Maximum number of supported endpoints per device
  */
-#define CONFIG_ZB_MAX_EP_NUMBER 6
+#define CONFIG_ZB_MAX_EP_NUMBER 8
 
 /**
  * Number of supported APS groups

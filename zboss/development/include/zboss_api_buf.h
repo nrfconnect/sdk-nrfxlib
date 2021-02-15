@@ -50,14 +50,14 @@
   Moved here buffer structure to implement configurable mem without enabling legacy buffers
  */
 
-#define ZB_RESERVED_BUF_TO_ALIGN_HDR_SIZE    3u
+#define ZB_RESERVED_BUF_TO_ALIGN_HDR_SIZE    1u
 
 /**
    Packet buffer header.
  */
 typedef ZB_PACKED_PRE struct zb_buf_hdr_s
 {
-/* 07/12/2019 EE CR:MAJOR really can pack that 3 fields into 4 bytes. Into 3 bytes if cut bits from handle (can be done later) */
+  zb_ret_t status;            /*!< some status to be passed with packet  */
   zb_uint16_t len;              /*!< current layer buffer length  */
   zb_uint16_t data_offset;      /*!< data offset in buffer buf*/
   zb_uint8_t  multiplicity;     /*!< if greater that 1, then the following (multiplicity - 1) buffers
@@ -75,13 +75,13 @@ typedef ZB_PACKED_PRE struct zb_buf_hdr_s
                                     * encrypted by */
   zb_bitfield_t zdo_cmd_no_resp:1; /*!< if 1, this is ZDO command with no
                                     * response - call callback at confirm  */
-  zb_bitfield_t is_rx_buf:1;    /*!< if 1, this is buffer with received packet and
-                                 * nwk_mac_addrs_t is at buffer tail */
-  zb_bitfield_t has_aps_payload:1;   /*!< if 1, than packet comes from APS */
-  zb_int16_t status;            /*!< some status to be passed with packet  */
-  zb_uint8_t reserved_to_align[ZB_RESERVED_BUF_TO_ALIGN_HDR_SIZE]; /*!< this field serves to keep
-                                                         following buf[ZB_IO_BUF_SIZE]
-                                                         aligned to a word*/
+  zb_bitfield_t is_rx_buf:1;        /*!< if 1, this is buffer with received packet and
+                                     * nwk_mac_addrs_t is at buffer tail */
+  zb_bitfield_t has_aps_payload:1;  /*!< if 1, than packet comes from APS, the flag is needed
+                                     * to increase APS packets counter in diagnostic data on packet sending
+                                     */
+  zb_bitfield_t has_aps_user_payload:1;   /*!< if 1, than packet comes with APS user's payload */
+  zb_uint8_t reserved:7;
 } ZB_PACKED_STRUCT zb_buf_hdr_t;
 
 /* if there is a platform with failed assertion, ZB_RESERVED_BUF_TO_ALIGN_HDR_SIZE
@@ -188,8 +188,8 @@ typedef zb_uint8_t zb_buffer_types_t;
  */
 typedef zb_uint8_t zb_bufid_t;
 
-#define ZB_BUF_INVALID 0
-#define ZB_UNDEFINED_BUFFER 0
+#define ZB_BUF_INVALID 0U
+#define ZB_UNDEFINED_BUFFER 0U
 
 #ifdef ZB_DEBUG_BUFFERS
 #define TRACE_PROTO_VOID zb_uint16_t from_file, zb_uint16_t from_line
@@ -554,7 +554,8 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
 #define ZB_BUF_SECUR_ALL_ENCR   (ZB_BUF_SECUR_NWK_ENCR | ZB_BUF_SECUR_APS_ENCR | ZB_BUF_SECUR_MAC_ENCR)
 #define ZB_BUF_USE_SAME_KEY     (1U << 4)
 #define ZB_BUF_ZDO_CMD_NO_RESP  (1U << 5)
-#define ZB_BUF_HAS_APS_PAYLOAD  (1U << 6)
+#define ZB_BUF_HAS_APS_PAYLOAD  (1U << 6) /*!< Flag to indicate whether the buffer contains any APS payload */
+#define ZB_BUF_HAS_APS_USER_PAYLOAD  (1U << 7) /*!< Flag to indicate whether the buffer contains APS user payload */
 /** @} */
 
 /**
@@ -632,8 +633,8 @@ zb_bool_t zb_buf_memory_close_to_low(void);
 zb_bool_t zb_buf_memory_low(void);
 
 /** @cond internals_doc */
-zb_int16_t zb_buf_get_status_func(TRACE_PROTO zb_bufid_t buf);
-void zb_buf_set_status_func(TRACE_PROTO zb_bufid_t buf, zb_int16_t status);
+zb_ret_t zb_buf_get_status_func(TRACE_PROTO zb_bufid_t buf);
+void zb_buf_set_status_func(TRACE_PROTO zb_bufid_t buf, zb_ret_t status);
 zb_uint8_t zb_buf_get_handle_func(TRACE_PROTO zb_bufid_t buf);
 void zb_buf_set_handle_func(TRACE_PROTO zb_bufid_t buf, zb_uint8_t handle);
 /** @endcond */
@@ -689,6 +690,19 @@ void zb_buf_set_mac_rx_need(zb_bool_t needs);
 zb_bool_t zb_buf_get_mac_rx_need(void);
 
 zb_bool_t zb_buf_have_rx_bufs(void);
+
+#define ZB_BUF_COPY_FLAG_APS_PAYLOAD(dst, src)                          \
+  do {                                                                  \
+    if ((zb_buf_flags_get((src)) & ZB_BUF_HAS_APS_PAYLOAD) != 0)        \
+    {                                                                   \
+      zb_buf_flags_or((dst), ZB_BUF_HAS_APS_PAYLOAD);                   \
+                                                                        \
+      if ((zb_buf_flags_get((src)) & ZB_BUF_HAS_APS_USER_PAYLOAD) != 0) \
+      {                                                                 \
+        zb_buf_flags_or((dst), ZB_BUF_HAS_APS_USER_PAYLOAD);            \
+      }                                                                 \
+    }                                                                   \
+  } while(0)
 
 /*! @} */
 

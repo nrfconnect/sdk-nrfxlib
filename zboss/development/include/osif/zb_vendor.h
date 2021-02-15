@@ -303,6 +303,11 @@
 /* Enable ZGP profile  (always defined, except macsplit). */
 #define ZB_ENABLE_ZGP
 
+/* Enable Green Power Combo implementation. */
+#if defined(CONFIG_ZIGBEE_GP_CB) && !defined(ZB_ENABLE_ZGP_COMBO)
+#define ZB_ENABLE_ZGP_COMBO
+#endif
+
 /* Enable sleepy behaviour on all devices. The sleep signal will allow other, lower-priority task to take over. */
 #ifndef ZB_USE_SLEEP
 #define ZB_USE_SLEEP

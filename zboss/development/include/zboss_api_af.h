@@ -385,7 +385,7 @@ zb_af_endpoint_desc_t* zb_af_get_endpoint_desc(zb_uint8_t ep_id);
  *  @param _ep - identifier of the endpoint under consideration.
  *  @returns ZB_TRUE if endpoint is registered, ZB_FALSE otherwise.
  */
-#define ZB_AF_IS_EP_REGISTERED( _ep ) (zb_af_get_endpoint_desc( _ep ) != NULL)?(ZB_TRUE):(ZB_FALSE)
+#define ZB_AF_IS_EP_REGISTERED( _ep ) ((zb_af_get_endpoint_desc( _ep ) != NULL)?(ZB_TRUE):(ZB_FALSE))
 /** @} */ /* af_management_service */
 /** @cond internals_doc */
 

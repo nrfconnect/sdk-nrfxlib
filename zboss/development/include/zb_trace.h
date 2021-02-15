@@ -629,6 +629,7 @@ typedef struct zb_byte128_struct_s
 #define FMT__D_D_D_D_H                                  TRACE_ARG_SIZE(1,4,0,0,0)
 #define FMT__D_D_D_H                                    TRACE_ARG_SIZE(1,3,0,0,0)
 #define FMT__D_D_D_H_H                                  TRACE_ARG_SIZE(2,3,0,0,0)
+#define FMT__D_D_D_L                                    TRACE_ARG_SIZE(0,3,1,0,0)
 #define FMT__D_D_D_L_L                                  TRACE_ARG_SIZE(0,3,2,0,0)
 #define FMT__D_D_D_P                                    TRACE_ARG_SIZE(0,3,0,1,0)
 #define FMT__D_D_H                                      TRACE_ARG_SIZE(1,2,0,0,0)
@@ -939,7 +940,6 @@ typedef struct zb_byte128_struct_s
 #define FMT__H_H_L_L                                    TRACE_ARG_SIZE(2,0,2,0,0)
 #define FMT__D_D_H_H_D_H_D_D_D_D                        TRACE_ARG_SIZE(3,7,0,0,0)
 #define FMT__D_A_D_A                                    TRACE_ARG_SIZE(0,2,0,0,2)
-#define FMT__D_D_A                                      TRACE_ARG_SIZE(0,2,0,0,1)
 #define FMT__H_H_H_L_H_H_H                              TRACE_ARG_SIZE(6,0,1,0,0)
 #define FMT__H_D_D_D_D_D                                TRACE_ARG_SIZE(1,5,0,0,0)
 #define FMT__P_P_D_D_L                                  TRACE_ARG_SIZE(0,2,1,2,0)
@@ -1168,7 +1168,7 @@ static ZB_INLINE zb_uint8_t zb_get_traf_dump_state(void)
 #else
 #define ZB_SET_TRAF_DUMP_OFF()
 #define ZB_SET_TRAF_DUMP_ON()
-#define ZB_GET_TRAF_DUMP_STATE()  0
+#define ZB_GET_TRAF_DUMP_STATE()  0U
 #endif
 /** @} */ /* DUMP_ON_OFF */
 

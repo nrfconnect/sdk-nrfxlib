@@ -89,9 +89,9 @@ So, rest is 127-45 = 82b
  */
 /* #define ZB_ZCL_MAX_PAYLOAD_SIZE 55 */
 /*! Maximal payload size */
-#define ZB_ZCL_HI_MAX_PAYLOAD_SIZE 66
+#define ZB_ZCL_HI_MAX_PAYLOAD_SIZE 66U
 /*! Maximal payload size without long address sending */
-#define ZB_ZCL_HI_WO_IEEE_MAX_PAYLOAD_SIZE 82
+#define ZB_ZCL_HI_WO_IEEE_MAX_PAYLOAD_SIZE 82U
 
 struct zb_zcl_attr_s; /* Forward declaration */
 
@@ -507,12 +507,13 @@ static ZB_INLINE zb_uint16_t zb_zcl_string_append_byte(zb_uint8_t *zcl_str,
                                                     zb_uint8_t zcl_str_max_size,
                                                     zb_uint8_t value)
 {
-  zb_uint16_t newlen = ZB_ZCL_GET_STRING_LENGTH(zcl_str) + 1U;
+  zb_uint16_t newlen = (zb_uint16_t)ZB_ZCL_GET_STRING_LENGTH(zcl_str) + 1U;
 
   if (newlen < (zb_uint16_t) zcl_str_max_size)
   {
     *ZB_ZCL_GET_STRING_END(zcl_str) = value;
-    ZB_ZCL_SET_STRING_LENGTH(zcl_str, newlen);
+    ZB_ASSERT(newlen <= 0xFFU);
+    ZB_ZCL_SET_STRING_LENGTH(zcl_str, (zb_uint8_t)newlen);
   }
   else
   {
@@ -688,8 +689,6 @@ zb_zcl_attr_t;
  */
 #define ZB_ZCL_CLUSTER_REVISION_DEFAULT 1
 
-#define ZB_ZCL_ATTR_SET_WITH_ATTR_ID(_set, _id) ((_set << 8) | (_id & 0xFF))
-
 /** @cond internals_doc */
 
 /*! @internal @brief Set attribute description.
@@ -779,32 +778,21 @@ zb_zcl_attr_t;
     - set bit 14 for manufacturer specific attributes
 */
 /*! @internal @brief Mark attribute Id as custom/manufacture specific attribute */
-#define ZB_ZCL_ATTR_INTERNAL_ID(_attr_id) ((_attr_id) | (1 << 15))
+#define ZB_ZCL_ATTR_INTERNAL_ID(_attr_id) ((_attr_id) | (1U << 15))
 
 /*! @internal @brief Check if attribute Id is custom/manufacture specific */
-#define ZB_ZCL_ATTR_CHECK_INTERNAL_ID(_attr_id) ((_attr_id) & (1 << 15))
+#define ZB_ZCL_ATTR_CHECK_INTERNAL_ID(_attr_id) ((_attr_id) & (1U << 15))
 
 
 /*! @internal @brief Mark attribute Id as custom/manufacture specific attribute */
-#define ZB_ZCL_ATTR_CUSTOM_ID(_attr_id) ((_attr_id) | (1 << 14))
+#define ZB_ZCL_ATTR_CUSTOM_ID(_attr_id) ((_attr_id) | (1U << 14))
 
 /*! @internal @brief Check if attribute Id is custom/manufacture specific */
-#define ZB_ZCL_ATTR_CHECK_CUSTOM_ID(_attr_id) ((_attr_id) & (1 << 14))
+#define ZB_ZCL_ATTR_CHECK_CUSTOM_ID(_attr_id) ((_attr_id) & (1U << 14))
 
 
 /*! @internal @brief Start number for custom attributes */
 #define ZB_ZCL_ATTR_CUSTOM_START_NUMBER    0xfff0
-
-
-/*! @internal @brief Check if attribute Id is custom/manufacture specific */
-#define ZB_ZCL_ATTR_CHECK_INTERNAL_ID(_attr_id) ((_attr_id) & (1 << 15))
-
-
-/*! @internal @brief Mark attribute Id as custom/manufacture specific attribute */
-#define ZB_ZCL_ATTR_CUSTOM_ID(_attr_id) ((_attr_id) | (1 << 14))
-
-/*! @internal @brief Check if attribute Id is custom/manufacture specific */
-#define ZB_ZCL_ATTR_CHECK_CUSTOM_ID(_attr_id) ((_attr_id) & (1 << 14))
 
 /*! @internal @brief Check boolean type attribute value */
 #define ZB_ZCL_CHECK_BOOL_VALUE(x) ((x) == ZB_FALSE || (x) == ZB_TRUE)
@@ -901,13 +889,13 @@ zb_zcl_attr_t;
 
 /*! @brief ZCL header size */
 #define ZB_ZCL_GET_HEADER_SIZE(frm_ctl)    \
-  (   (ZB_ZCL_GET_MANUF_SPECIFIC(frm_ctl)) \
+  (   (ZB_ZCL_IS_MANUF_SPECIFIC(frm_ctl)) \
    ? sizeof(zb_zcl_frame_hdr_full_t)       \
    : sizeof(zb_zcl_frame_hdr_short_t))
 
 /** @internal @brief Cuts ZCL header form a buffer. */
 #define ZB_ZCL_CUT_HEADER(buf)                                                   \
-  zb_buf_cut_left(buf, ZB_ZCL_GET_HEADER_SIZE(*(zb_uint8_t*)zb_buf_begin(buf)))
+  (void)zb_buf_cut_left(buf, ZB_ZCL_GET_HEADER_SIZE(*(zb_uint8_t*)zb_buf_begin(buf)))
 
 /** @endcond */ /* internals_doc */
 
@@ -1093,9 +1081,9 @@ typedef ZB_PACKED_PRE  struct zb_zcl_parsed_hdr_s
   zb_uint8_t  cmd_id;                   /**< Command identifier. */
   zb_uint8_t  cmd_direction;            /**< Command direction identifier. */
   zb_uint8_t  seq_number;               /**< ZCL transaction sequence number. */
-  zb_uint8_t  is_common_command;        /**< "Common command" flag. */
-  zb_uint8_t  disable_default_response; /**< "Disable default response" flag. */
-  zb_uint8_t  is_manuf_specific;        /**< "Has manufacturer-specific data" flag. */
+  zb_bool_t   is_common_command;        /**< "Common command" flag. */
+  zb_bool_t   disable_default_response; /**< "Disable default response" flag. */
+  zb_bool_t   is_manuf_specific;        /**< "Has manufacturer-specific data" flag. */
   zb_uint16_t manuf_specific;           /**< Manufacturer-specific data. */
 } ZB_PACKED_STRUCT
 zb_zcl_parsed_hdr_t;
@@ -1133,6 +1121,8 @@ zb_zcl_attr_addr_info_t;
  */
 #define ZB_ZCL_GET_MANUF_SPECIFIC(v) (((v) >> 2U) & 0x1U)
 
+#define ZB_ZCL_IS_MANUF_SPECIFIC(v) (ZB_ZCL_GET_MANUF_SPECIFIC(v) != 0U)
+
 /**
  *  @brief Get ZCL frame direction @ref zcl_frame_direction.
  *  @hideinitializer
@@ -1155,19 +1145,19 @@ zb_zcl_attr_addr_info_t;
  * @brief  Set ZCL frame manufacturer specific @ref zcl_manufacturer_specific.
  * @hideinitializer
  */
-#define ZB_ZCL_SET_MANUF_SPECIFIC(v, val) ((v) |= (val << 2))
+#define ZB_ZCL_SET_MANUF_SPECIFIC(v, val) ((v) |= ((val) << 2))
 
 /**
  *  @brief Set ZCL frame direction @ref zcl_frame_direction.
  *  @hideinitializer
  */
-#define ZB_ZCL_SET_DIRECTION(v, val)      ((v) |= (val << 3))
+#define ZB_ZCL_SET_DIRECTION(v, val)      ((v) |= ((val) << 3))
 
 /**
  *  @brief Set ZCL disable default response field @ref zcl_disable_default_response.
  *  @hideinitializer
  */
-#define ZB_ZCL_SET_DISABLE_DEFAULT_RESPONSE(v, val) ((v) |= (val << 4))
+#define ZB_ZCL_SET_DISABLE_DEFAULT_RESPONSE(v, val) ((v) |= ((val) << 4))
 
 /**
   * @brief Construct ZCL command header in the buffer
@@ -1246,51 +1236,57 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
     def_resp),                                                                 \
    buf_ptr++)
 
-#define ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL_A(buf_ptr,  \
-                  direction, is_manufacturer_specific, def_resp)        \
-  (ZB_ZCL_CONSTRUCT_SET_FRAME_CONTROL(*buf_ptr,                         \
-    ZB_ZCL_FRAME_TYPE_CLUSTER_SPECIFIC,                                 \
-    (is_manufacturer_specific),                                         \
-    (direction),                                                        \
-    (def_resp)),                                                        \
-   buf_ptr++)
+#define ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL_A(buf_ptr, direction,                  \
+                                                              is_manufacturer_specific, def_resp)  \
+  (ZB_ZCL_CONSTRUCT_SET_FRAME_CONTROL(*(buf_ptr),                                                  \
+                                      ZB_ZCL_FRAME_TYPE_CLUSTER_SPECIFIC,                          \
+                                      ((is_manufacturer_specific) ? ZB_ZCL_MANUFACTURER_SPECIFIC   \
+                                                            : ZB_ZCL_NOT_MANUFACTURER_SPECIFIC),   \
+                                      (direction),                                                 \
+                                      (def_resp)),                                                 \
+   (buf_ptr)++)
 
-#define ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL_A(buf_ptr,  \
-                direction, is_manufacturer_specific)                    \
-  (ZB_ZCL_CONSTRUCT_SET_FRAME_CONTROL(*buf_ptr,                             \
-    ZB_ZCL_FRAME_TYPE_COMMON,                                           \
-    (is_manufacturer_specific),                                         \
-    (direction),                                                        \
-    ZB_ZCL_DISABLE_DEFAULT_RESPONSE),                                   \
-     buf_ptr++)
+#define ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL_A(buf_ptr, direction,                  \
+                                                              is_manufacturer_specific)            \
+  (ZB_ZCL_CONSTRUCT_SET_FRAME_CONTROL(*(buf_ptr),                                                  \
+                                      ZB_ZCL_FRAME_TYPE_COMMON,                                    \
+                                      ((is_manufacturer_specific)                                  \
+                                           ? ZB_ZCL_MANUFACTURER_SPECIFIC                          \
+                                           : ZB_ZCL_NOT_MANUFACTURER_SPECIFIC),                    \
+                                      (direction),                                                 \
+                                      ZB_ZCL_DISABLE_DEFAULT_RESPONSE),                            \
+   (buf_ptr)++)
 
-#define ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RESP_FRAME_CONTROL_A(buf_ptr, \
-                direction, is_manufacturer_specific)                    \
-  (ZB_ZCL_CONSTRUCT_SET_FRAME_CONTROL(*buf_ptr,                             \
-    ZB_ZCL_FRAME_TYPE_CLUSTER_SPECIFIC,                                 \
-    (is_manufacturer_specific),                                         \
-    (direction),                                                        \
-    ZB_ZCL_DISABLE_DEFAULT_RESPONSE),                                   \
-     buf_ptr++)
+#define ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RESP_FRAME_CONTROL_A(buf_ptr, direction,                 \
+                                                               is_manufacturer_specific)           \
+  (ZB_ZCL_CONSTRUCT_SET_FRAME_CONTROL(*(buf_ptr),                                                  \
+                                      ZB_ZCL_FRAME_TYPE_CLUSTER_SPECIFIC,                          \
+                                      ((is_manufacturer_specific)                                  \
+                                           ? ZB_ZCL_MANUFACTURER_SPECIFIC                          \
+                                           : ZB_ZCL_NOT_MANUFACTURER_SPECIFIC),                    \
+                                      (direction),                                                 \
+                                      ZB_ZCL_DISABLE_DEFAULT_RESPONSE),                            \
+   (buf_ptr)++)
+
 /*! @internal Construct ZCL header frame control valueZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL for General command response */
-#define ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL(buf_ptr) \
-  (ZB_ZCL_CONSTRUCT_SET_FRAME_CONTROL(*buf_ptr,                          \
-    ZB_ZCL_FRAME_TYPE_COMMON,                                        \
-    ZB_ZCL_NOT_MANUFACTURER_SPECIFIC,                                \
-    ZB_ZCL_FRAME_DIRECTION_TO_CLI,                                   \
-    ZB_ZCL_DISABLE_DEFAULT_RESPONSE),                                \
-     buf_ptr++)
+#define ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL(buf_ptr)                               \
+  (ZB_ZCL_CONSTRUCT_SET_FRAME_CONTROL(*(buf_ptr), ZB_ZCL_FRAME_TYPE_COMMON,                        \
+                                      ZB_ZCL_NOT_MANUFACTURER_SPECIFIC,                            \
+                                      ZB_ZCL_FRAME_DIRECTION_TO_CLI,                               \
+                                      ZB_ZCL_DISABLE_DEFAULT_RESPONSE),                            \
+   (buf_ptr)++)
 
 
 /*! @internal Construct ZCL header frame control value for General
  *  command response, specifying extra parameters */
-#define ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL_EXT(_buf_ptr, _is_manuf_specific, _direction) \
-  (ZB_ZCL_CONSTRUCT_SET_FRAME_CONTROL(                                   \
-    *(_buf_ptr),                                                     \
-    ZB_ZCL_FRAME_TYPE_COMMON,                                        \
-    (_is_manuf_specific),                                            \
-    (_direction),                                                    \
-    ZB_ZCL_DISABLE_DEFAULT_RESPONSE),                                \
+#define ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_RESP_FRAME_CONTROL_EXT(_buf_ptr, _is_manuf_specific,      \
+                                                                _direction)                        \
+  (ZB_ZCL_CONSTRUCT_SET_FRAME_CONTROL(*(_buf_ptr),                                                 \
+                                      ZB_ZCL_FRAME_TYPE_COMMON,                                    \
+                                      ((_is_manuf_specific) ? ZB_ZCL_MANUFACTURER_SPECIFIC         \
+                                                            : ZB_ZCL_NOT_MANUFACTURER_SPECIFIC),   \
+                                      (_direction),                                                \
+                                      ZB_ZCL_DISABLE_DEFAULT_RESPONSE),                            \
    (_buf_ptr)++)
 
 /** @endcond */ /* internals_doc */
@@ -1312,13 +1308,13 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
  *  @note To add Manufacturer specific field, use ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT(), macro.
  *  @hideinitializer
  */
-#define ZB_ZCL_CONSTRUCT_COMMAND_HEADER(data_ptr, tsn, cmd_id)                        \
-  (ZB_ZCL_PACKET_PUT_DATA8(data_ptr, tsn), ZB_ZCL_PACKET_PUT_DATA8(data_ptr, cmd_id))
+#define ZB_ZCL_CONSTRUCT_COMMAND_HEADER(data_ptr, tsn, cmd_id)                                     \
+  (ZB_ZCL_PACKET_PUT_DATA8((data_ptr), (tsn)), ZB_ZCL_PACKET_PUT_DATA8((data_ptr), (cmd_id)))
 
 /*! @brief Construct ZCL header, Manufacturer specific value is conditionally supported */
 #define ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT(_data_ptr, _tsn, _is_manuf_spec, _manuf_specific, _cmd_id) \
   {                                                                     \
-    if ((_is_manuf_spec) != 0)                                          \
+    if ((_is_manuf_spec))                                               \
     {                                                                   \
       ZB_ZCL_PACKET_PUT_DATA16_VAL((_data_ptr), (_manuf_specific));     \
     }                                                                   \
@@ -1561,10 +1557,6 @@ do                                         \
   *(dst_ptr) = *((src_ptr)++);                    \
 }
 
-#define ZB_ZCL_PACKET_PUT_2DATA16_VAL(ptr, val1, val2) (ptr) = zb_put_next_2_htole16((ptr),(val1),(val2))
-
-#define ZB_ZCL_PACKET_PUT_2DATA32_VAL(ptr, val1, val2) (ptr) = zb_put_next_2_htole32((ptr),(val1),(val2))
-
 /**
  *  @brief Put N byte data to packet.
  *  @param ptr - pointer to the place to put value to.
@@ -1572,7 +1564,8 @@ do                                         \
  *  @param n - number of bytes to be copied.
  *  @hideinitializer
  */
-#define ZB_ZCL_PACKET_PUT_DATA_N(ptr, val, n) (ZB_MEMCPY(ptr, val, n), (ptr) += (n))
+#define ZB_ZCL_PACKET_PUT_DATA_N(ptr, val, n) \
+    (ZB_MEMCPY(ptr, val, n), (ptr) += (n))
 
 /** @brief Get 16-bit value from packet.
   * @param dst_ptr - pointer to the memory to store value (pointer value preserved).
@@ -1646,48 +1639,6 @@ do                                         \
   (dst_ptr) += sizeof(zb_ieee_addr_t);                \
 }
 
-/*!
-  Put N byte data to packet
-*/
-#define ZB_ZCL_PACKET_PUT_DATA_N(ptr, val, n)     \
-  (ZB_MEMCPY(ptr, val, n), (ptr) += (n))
-
-/** Put ZCL Octet String to packet */
-#define ZB_ZCL_PACKET_PUT_STRING(_ptr, _val)                          \
-{                                                                     \
- ZB_ZCL_PACKET_PUT_DATA8 (_ptr, ZB_ZCL_GET_STRING_LENGTH(_val));      \
- ZB_ZCL_PACKET_PUT_DATA_N(_ptr, ZB_ZCL_GET_STRING_BEGIN(_val),        \
-                          ZB_ZCL_GET_STRING_LENGTH(_val));            \
-}
-
-/** Get ZCL String from packet.
- * @note If string is invalid (cannot be stored in buffer)
- * this macro sets data to NULL.
- *
- * @param _zcl_str - Destination buffer.
- * @param data - Pointer to incoming data.
- * @param _zcl_str_max_size - Size of destination buffer.
- */
-#define ZB_ZCL_PACKET_GET_STRING(_zcl_str, data, _zcl_str_max_size)         \
-{                                                                           \
-  ZB_ZCL_PACKET_GET_DATA8(&_zcl_str[0], data);                              \
-  if (_zcl_str_max_size > ZB_ZCL_GET_STRING_LENGTH(_zcl_str))               \
-  {                                                                         \
-    ZB_ZCL_PACKET_GET_DATA_N(ZB_ZCL_GET_STRING_BEGIN(_zcl_str),             \
-                             data,                                          \
-                             ZB_ZCL_GET_STRING_LENGTH(_zcl_str));           \
-  }                                                                         \
-  else                                                                      \
-  {                                                                         \
-    data = NULL;                                                            \
-  }                                                                         \
-}
-
-/** Get ZCL String from packet and put it into array with fixed size. */
-#define ZB_ZCL_PACKET_GET_STATIC_STRING(_zcl_str, data) \
-  ZB_ZCL_PACKET_GET_STRING(_zcl_str, data, sizeof(_zcl_str))
-
-
 /** Put ZCL Octet String to packet */
 #define ZB_ZCL_PACKET_PUT_STRING(_ptr, _val)                          \
 {                                                                     \
@@ -1748,13 +1699,13 @@ do                                         \
     @param cb command send status callback
  */
 zb_ret_t zb_zcl_finish_and_send_packet(zb_bufid_t buffer, zb_uint8_t *ptr,
-                                   zb_addr_u *dst_addr, zb_uint8_t dst_addr_mode,
+                                   const zb_addr_u *dst_addr, zb_uint8_t dst_addr_mode,
                                    zb_uint8_t dst_ep, zb_uint8_t ep,
                                    zb_uint16_t prof_id, zb_uint16_t cluster_id,
                                    zb_callback_t cb);
 
 zb_ret_t zb_zcl_finish_and_send_packet_new(zb_bufid_t buffer, zb_uint8_t *ptr,
-                                   zb_addr_u *dst_addr, zb_uint8_t dst_addr_mode,
+                                   const zb_addr_u *dst_addr, zb_uint8_t dst_addr_mode,
                                    zb_uint8_t dst_ep, zb_uint8_t ep,
                                    zb_uint16_t prof_id, zb_uint16_t cluster_id,
                                    zb_callback_t cb, zb_bool_t aps_secured,
@@ -1774,13 +1725,13 @@ zb_ret_t zb_zcl_finish_and_send_packet_new(zb_bufid_t buffer, zb_uint8_t *ptr,
 /* Glue ZB_ZCL_FINISH_PACKET and ZB_ZCL_SEND_COMMAND_SHORT into one call */
 #define ZB_ZCL_FINISH_PACKET(zbbuf, ptr) (void) zb_zcl_finish_and_send_packet((zbbuf), (ptr),
 
-#define ZB_ZCL_SEND_COMMAND_SHORT(                                      \
-  buffer, addr, dst_addr_mode, dst_ep, ep, prof_id, cluster_id, cb)     \
-  (zb_addr_u *)(void *)(&(addr)), dst_addr_mode, dst_ep, ep, prof_id, cluster_id, cb)
+#define ZB_ZCL_SEND_COMMAND_SHORT(buffer, addr, dst_addr_mode, dst_ep, ep, prof_id, cluster_id,    \
+                                  cb)                                                              \
+  (const zb_addr_u *)(const void *)(&(addr)), (dst_addr_mode), (dst_ep), (ep), (prof_id), (cluster_id), (cb))
 
 
 #define ZB_ZCL_FINISH_N_SEND_PACKET(zbbuf, ptr, addr, dst_addr_mode, dst_ep, ep, prof_id, cluster_id, cb)                          \
-  (void) zb_zcl_finish_and_send_packet((zbbuf), (ptr),(zb_addr_u *)(void *)(&(addr)), dst_addr_mode, dst_ep, ep, prof_id, cluster_id, cb)
+  (void) zb_zcl_finish_and_send_packet((zbbuf), (ptr),(const zb_addr_u *)(const void *)(&(addr)), dst_addr_mode, dst_ep, ep, prof_id, cluster_id, cb)
 
 #define ZB_ZCL_FINISH_N_SEND_PACKET_NEW(zbbuf, ptr, addr, dst_addr_mode, dst_ep, ep, prof_id, cluster_id, cb, aps_secured, disable_aps_ack, delay)                         \
   (void) zb_zcl_finish_and_send_packet_new((zbbuf), (ptr),(zb_addr_u *)(void *)(&(addr)), dst_addr_mode, dst_ep, ep, prof_id, cluster_id, cb, aps_secured, disable_aps_ack, delay)
@@ -1831,17 +1782,17 @@ zb_uint48_t zb_zcl_attr_get48(zb_uint8_t *value);
 #define ZB_ZCL_ARRAY_SET_SIZE(ar, val) ZB_HTOLE16_VAL(ar, val)
 
 /** @internal @brief Calculates 32-byte array size (add 2 bytes for full length). */
-#define ZB_BYTE_32ARRAY_GET_SIZE(ar, val) { ZB_ZCL_ARRAY_GET_SIZE(ar, val); *(zb_uint16_t*)(ar) *= 4; }
-#define ZB_BYTE_32ARRAY_SET_SIZE(ar, val) { ZB_ZCL_ARRAY_SET_SIZE(ar, val); *(zb_uint16_t*)(ar) /= 4; }
+#define ZB_BYTE_32ARRAY_GET_SIZE(ar, val) { ZB_ZCL_ARRAY_GET_SIZE(ar, val); *(zb_uint16_t*)(ar) *= 4U; }
+#define ZB_BYTE_32ARRAY_SET_SIZE(ar, val) { ZB_ZCL_ARRAY_SET_SIZE(ar, val); *(zb_uint16_t*)(ar) /= 4U; }
 
 #define ZB_ZCL_NULL_EP_ID (zb_uint8_t)(-1)
 #define ZB_ZCL_NULL_ID (zb_uint16_t)(-1)
 #define ZB_ZCL_NULL_STRING (zb_uint8_t)(0)
 
 /** @internal @brief Maximum size of Character String (with Length octet) */
-#define ZB_ZCL_MAX_STRING_SIZE 0xFF
-#define ZB_ZCL_INVALID_STRING_VALUE 0xFF
-#define ZB_ZCL_INVALID_ARRAY_VALUE 0xFFFF
+#define ZB_ZCL_MAX_STRING_SIZE 0xFFU
+#define ZB_ZCL_INVALID_STRING_VALUE 0xFFU
+#define ZB_ZCL_INVALID_ARRAY_VALUE 0xFFFFU
 
 /** @endcond */
 
@@ -1897,7 +1848,7 @@ zcl_cb_hash_ent_t;
 /** Command send status structure */
 typedef struct zb_zcl_command_send_status_s
 {
-  zb_ret_t status;            /*!< command send status */
+  zb_ret_t    status;         /*!< command send status */
   zb_uint8_t  dst_endpoint;   /*!< Destination endpoint */
   zb_zcl_addr_t dst_addr;     /*!< Destination address */
   zb_uint8_t  src_endpoint;   /*!< Source endpoint */
@@ -2012,7 +1963,7 @@ zb_uint8_t zb_zcl_get_next_target_endpoint(
  * @param cluster_role - role (see @ref zcl_cluster_role)
  * @return cluster descriptor or NULL if not present
  */
-zb_zcl_cluster_desc_t* get_cluster_desc(zb_af_endpoint_desc_t* ep_desc, zb_uint16_t cluster_id, zb_uint8_t cluster_role);
+zb_zcl_cluster_desc_t* get_cluster_desc(const zb_af_endpoint_desc_t* ep_desc, zb_uint16_t cluster_id, zb_uint8_t cluster_role);
 
 /**
  * @brief Find endpoint which has cluster with given ID
@@ -2021,7 +1972,7 @@ zb_zcl_cluster_desc_t* get_cluster_desc(zb_af_endpoint_desc_t* ep_desc, zb_uint1
  * @param cluster_role - role (see @ref zcl_cluster_role)
  * @return endpoint number or 0 if not found
  */
-zb_uint8_t get_endpoint_by_cluster(zb_uint16_t cluster_id, zb_uint16_t cluster_role);
+zb_uint8_t get_endpoint_by_cluster(zb_uint16_t cluster_id, zb_uint8_t cluster_role);
 
 /**
  * @brief Find if device has cluster with given ID
@@ -2236,7 +2187,7 @@ void zb_zcl_schedule_status_abort(zb_bufid_t  buffer, zb_addr_u *addr,
                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
                                   zb_uint8_t ep, zb_callback_t cb);
 
-zb_uint8_t zb_zcl_handle_specific_commands(zb_uint8_t param);
+zb_bool_t zb_zcl_handle_specific_commands(zb_uint8_t param);
 zb_bool_t cluster_needs_aps_encryption(zb_uint8_t endpoint_id, zb_uint16_t cluster_id);
 
 

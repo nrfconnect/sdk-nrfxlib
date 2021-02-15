@@ -51,7 +51,7 @@
 /**
  ZCL: transactions table size
 */
-#define ZCL_TRAN_TABLE_SIZE 16
+#define ZCL_TRAN_TABLE_SIZE 16U
 
 /* DA: range check error */
 /* #define ZB_DISABLE_TEMP_MEASUREMENT_TOLERANCE_ID */
