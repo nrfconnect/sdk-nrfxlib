@@ -69,7 +69,7 @@ See `Creating a PDN socket`_.
 
 .. note::
    If the PDN that the socket is being bound to has been deactivated by the network, setting the NRF_SO_BINDTODEVICE option returns an error stating that the APN parameter is not valid.
-   To fix this error, you must create another PDN socket that is associated with the APN, and bind the data socket to it.
+   To fix this error, you must re-create the PDN socket that is associated with the APN, and bind the data socket to it.
 
 Configuring the type of transport
 *********************************
@@ -148,7 +148,7 @@ The example code shows how to specify an APN to use for a DNS query.
 In this example, the DNS hints are extended with an extra linked-list hint that specifies the APN to use for the query.
 
 Like for data sockets, the APN name must be set up and activated before the DNS query.
-Otherwise, the query will fail.
+Otherwise, the query will fall back on the default PDN (if it exists).
 
 Waiting for an IPv6 connection
 ******************************
@@ -157,21 +157,44 @@ Waiting for an IPv6 connection
 
    at_fd = nrf_socket(NRF_AF_LTE, 0, NRF_NPROTO_AT);
    nrf_send(at_fd, "AT+CGEREP=1", strlen("AT+CGEREP=1"));
-   # -> AT reponse "OK"
+   nrf_recv(at_fd, buf, sizeof(buf), 0);
+
+   if (strcmp("OK", buf) == 0) {
+        /* If the command did not return OK, we failed to subscribe to the
+         * packet domain notifications.
+         */
+        nrf_close(at_fd);
+        return -1;
+   }
 
    # Set up PDN socket using the APN (PDN initialize and connect)
 
    nrf_getsockopt(pdn_fd, NRF_SOL_PDN, NRF_SO_PDN_CONTEXT_ID, &context_id, sizeof(uint8_t));
-   while not (context_id in ":CGEV IPV6 <cid>");
+
+   char pdn_notification[20];
+   snprintf(pdn_notification, 20, "+CGEV IPV6 %d", context_id);
+
+   int max_bytes;
+   do {
+        int recv_data = nrf_recv(at_fd, buf, sizeof(buf), 0);
+        if(recv_data < 0) {
+                /* nrf_recv failed for reason, this should be handled */
+                return -1;
+        }
+        max_bytes = MIN(recv_data, sizeof(pdn_notification));
+   } while(strncmp(buf, max_bytes, pdn_notification) != 0)
+
    nrf_close(at_fd);
 
-When requesting an IPv6 connection (which requires PDN type IPV6 or IPV4V6), the IPv6 address might not be correct even if the request is successful.
+When requesting an IPv6 connection (which requires PDN type IPV6 or IPV4V6), the IPv6 address might not be global even if the request is successful.
 The reason for this is that many networks use SLAAC, where the prefix of the IPv6 address is set after the PDN connection is created.
-Therefore, you might need to wait with using an IPv6 socket until the prefix is properly set.
-If the address cannot be obtained, a ``+CGEV: IPV6 FAIL <cid>`` error is returned.
+Therefore, you might need to wait before using an IPv6 socket until the prefix is properly set.
+If the address can be obtained, the AT socket sends a ``+CGEV: IPV6 <cid>`` notification.
+Otherwise, it sends a ``+CGEV: IPV6 FAIL <cid>`` notification.
 
 The example code shows how to set up an AT socket that logs "CGEV" entries.
 It signals when IPv6 is available for use by an IPv6 socket, either while connecting to a PDN or afterwards.
 
-Note that the example code does not cover the default PDN (CID 0), because this PDN is always available.
-However, the algorithm for checking that IPv6 is available on the default PDN is the same as if it was manually set up with an APN.
+.. note::
+   This example code does not cover the default PDN (CID 0), because this PDN is usually available in most networks.
+   However, the algorithm for checking that IPv6 is available on the default PDN is the same as if it was manually set up with an APN.
