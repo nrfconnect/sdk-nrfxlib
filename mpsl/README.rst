@@ -35,10 +35,10 @@ This library provides the following key features:
    :maxdepth: 2
    :caption: Subpages:
 
-   CHANGELOG
    doc/mpsl
    doc/timeslot
    doc/radio_notification
    doc/tx_power_control
    doc/fem
+   CHANGELOG
    doc/api
