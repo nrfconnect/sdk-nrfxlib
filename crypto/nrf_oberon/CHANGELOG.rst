@@ -10,6 +10,9 @@ Changelog - nRF Oberon
 All notable changes to this project are documented in this file.
 
 nrf_oberon - 3.0.8
+******************
+
+New version of the nrf_oberon library with the following changes.
 
 Added
 =====
@@ -21,7 +24,7 @@ Added
 Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
 
 .. note::
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
@@ -78,6 +81,9 @@ Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51
     * ``cortex-m0/soft-float/short-wchar/oberon_3.0.8.lib``
 
 nrf_oberon - 3.0.7
+******************
+
+New version of the nrf_oberon library with the following changes.
 
 Added
 =====
@@ -100,7 +106,7 @@ Added library-internal symbols for mbed TLS alternate APIs
 Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
 
 .. note::
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
@@ -155,6 +161,9 @@ Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51
   * Keil
 
     * ``cortex-m0/soft-float/short-wchar/oberon_3.0.7.lib``
+
+nrf_oberon - 3.0.5
+******************
 
 Added
 =====
@@ -243,6 +252,7 @@ Removed
 
 
 nrf_oberon - 3.0.3
+******************
 
 Added
 =====
@@ -305,6 +315,7 @@ Removed
 
 
 nrf_oberon - 3.0.2
+******************
 
 Added
 =====
@@ -367,6 +378,7 @@ Removed
 
 
 nrf_oberon - 3.0.0
+******************
 
 Added
 =====
