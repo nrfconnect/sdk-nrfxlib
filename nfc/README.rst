@@ -38,7 +38,7 @@ Each library is distributed in both soft-float and hard-float builds.
    :maxdepth: 2
    :caption: Subpages:
 
-   CHANGELOG
    doc/integration_notes
    doc/type_2_tag
    doc/type_4_tag
+   CHANGELOG

@@ -27,5 +27,5 @@ For detailed documentation of the ZBOSS API for these versions and instructions 
    :maxdepth: 1
    :caption: Subpages:
 
-   CHANGELOG
    doc/zboss_configuration
+   CHANGELOG

@@ -55,6 +55,6 @@ Proprietary feature support:
    :maxdepth: 2
    :caption: Subpages:
 
-   CHANGELOG
    doc/softdevice_controller
+   CHANGELOG
    doc/api
