@@ -548,8 +548,6 @@ Feature support
 |           |                   |             | secp224r1  |
 |           |                   +-------------+------------+
 |           |                   | Curve25519  | Curve25519 |
-|           |                   |             +------------+
-|           |                   |             | Ed25519    |
 |           +-------------------+-------------+------------+
 |           | Original mbed TLS | NIST        | secp192r1  |
 |           |                   |             +------------+
@@ -782,9 +780,9 @@ The following table shows the curves that can be enabled.
 +-----------------------------+-----------------------------------------------------+--------------------------+
 | Brainpool bp512r1           | :option:`CONFIG_MBEDTLS_ECP_DP_BP512R1_ENABLED`     | Original mbed TLS only   |
 +-----------------------------+-----------------------------------------------------+--------------------------+
-| Curve25519 / Edwards25519   | :option:`CONFIG_MBEDTLS_ECP_DP_CURVE25519_ENABLED`  |                          |
+| Curve25519                  | :option:`CONFIG_MBEDTLS_ECP_DP_CURVE25519_ENABLED`  |                          |
 +-----------------------------+-----------------------------------------------------+--------------------------+
-| Curve448 / Edwards448       | :option:`CONFIG_MBEDTLS_ECP_DP_CURVE448_ENABLED`    | Original mbed TLS only   |
+| Curve448                    | :option:`CONFIG_MBEDTLS_ECP_DP_CURVE448_ENABLED`    | Original mbed TLS only   |
 +-----------------------------+-----------------------------------------------------+--------------------------+
 
 .. note::

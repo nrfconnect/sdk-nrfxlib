@@ -1243,14 +1243,14 @@ config MBEDTLS_ECP_DP_BP512R1_ENABLED
 	  MBEDTLS_ECP_DP_BP512R1_ENABLED setting in mbed TLS config file.
 
 config MBEDTLS_ECP_DP_CURVE25519_ENABLED
-	bool "Enable Curve25519 aka Edwards25519"
+	bool "Enable Curve25519"
 	depends on !OBERON_MBEDTLS_ECP_C
 	default n
 	help
 	  MBEDTLS_ECP_DP_CURVE25519_ENABLED setting in mbed TLS config file.
 
 config MBEDTLS_ECP_DP_CURVE448_ENABLED
-	bool "Enable Curve448 aka Edwards448"
+	bool "Enable Curve448"
 	depends on !OBERON_MBEDTLS_ECP_C
 	depends on VANILLA_MBEDTLS_ECP_C
 	default n
