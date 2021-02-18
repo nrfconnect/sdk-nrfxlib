@@ -9,6 +9,12 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.0.1
+***************
+
+* Reverted the :c:func:`nrf_getaddrinfo` function behavior to be the same as in v0.8.99, since the LwM2M carrier library is not compatible with the newly introduced POSIX errors codes yet.
+* Removed the :file:`nrf_gai_error.h` header.
+
 nrf_modem 1.0.0
 ***************
 
