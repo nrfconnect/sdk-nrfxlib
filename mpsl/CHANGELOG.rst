@@ -17,10 +17,10 @@ Added
 
 * Added a new signal to the MPSL timeslot: ``MPSL_TIMESLOT_SIGNAL_OVERSTAYED``.
   This signal is given to the application when a timeslot session is closed too late. (DRGN-14677)
-  
+
 * Added a new clock configuration option :c:member:`skip_wait_lfclk_started` in :c:struct:`mpsl_clock_lfclk_cfg_t`,
   which does not wait for the start of Low Frequency Clock. (DRGN-14204)
-  
+
 * Added macro MPSL_RESERVED_PPI_CHANNELS for a bit mask of (D)PPI channels
   reserved by MPSL (DRGN-13356).
 
