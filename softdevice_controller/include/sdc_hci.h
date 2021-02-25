@@ -16,7 +16,7 @@
  * The HCI packet format is described in the Bluetooth Core Specification,
  * i.e. in Core v5. Vol 2, Part E.
  * All APIs in this header file are expected to be called from the
- * same execution priority as mpsl_low_priority_process.
+ * same execution priority as @ref mpsl_low_priority_process.
  * Not doing so will lead to undefined behavior.
  * @{
  */
