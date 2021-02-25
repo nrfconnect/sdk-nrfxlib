@@ -74,13 +74,13 @@ extern "C" {
  */
 
 /** @brief Maximum number of bytes required per master link for the default buffer configuration. */
-#define SDC_MEM_DEFAULT_MASTER_LINK_SIZE 878
+#define SDC_MEM_DEFAULT_MASTER_LINK_SIZE 872
 
 /** @brief Maximum number of bytes required per slave link for the default buffer configuration. */
-#define SDC_MEM_DEFAULT_SLAVE_LINK_SIZE 940
+#define SDC_MEM_DEFAULT_SLAVE_LINK_SIZE 936
 
 /** @brief Memory overhead per LL packet buffer. */
-#define SDC_MEM_BUFFER_OVERHEAD_SIZE 10
+#define SDC_MEM_BUFFER_OVERHEAD_SIZE 9
 
 /** @brief Maximum additional number of bytes required per link.
  *
@@ -250,7 +250,7 @@ int32_t sdc_cfg_set(uint8_t config_tag,
  *
  * @param[in] callback  The callback will be executed when HCI data or and HCI
  *                      event is available. The callback will be executed in
- *                      the same context as mpsl_low_priority_process.
+ *                      the same context as @ref mpsl_low_priority_process.
  *                      @sa @ref sdc_hci_evt_get() and @ref sdc_hci_data_get().
  * @param[in]  p_mem    Provide memory for the current resource configuration. If
  *                      custom resource configurations are used, use the value
