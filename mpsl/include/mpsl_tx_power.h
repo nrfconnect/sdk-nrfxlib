@@ -38,7 +38,7 @@ typedef enum
     MPSL_PHY_BLE_2M,
     MPSL_PHY_BLE_LR125Kbit,
     MPSL_PHY_BLE_LR500Kbit,
-    MPSL_PHY_Ieee802154_250Kbit
+    MPSL_PHY_Ieee802154_250Kbit,
 } mpsl_phy_t;
 
 /** TX power, dBm. */
@@ -50,14 +50,19 @@ typedef struct
     mpsl_phy_t phy; /**< The PHY that this envelope applies to. */
     union
     {
+        /** Tx power per channel when @ref mpsl_tx_power_envelope_t::phy is a Bluetooth LE PHY. */
         mpsl_tx_power_t tx_power_ble[MPSL_TOTAL_NUM_OF_BLE_CHANNELS];
+
+        /** Tx power per channel when @ref mpsl_tx_power_envelope_t::phy is a 802.15.4 PHY. */
         mpsl_tx_power_t tx_power_802154[MPSL_TOTAL_NUM_OF_802154_CHANNELS];
-    } envelope; /**< Array of maximum TX power value per channel. From 11 to 26 for 802.15.4 protocol. From 0 to 40 for Bluetooth LE protocol. */
+    } envelope; /**< Array of maximum TX power value per channel. From 11 to 26 for 802.15.4 protocol.
+                     From 0 to 40 for Bluetooth LE protocol. */
 } mpsl_tx_power_envelope_t;
 
 /** @brief Sets maximum TX power envelope. If the PHY already has an envelope configured, it will be over-written.
  *
- * @note Calling this function while an envelope is being used to limit current TX Power may lead to undefined behavior.
+ * @note Calling this function while an envelope is being used to limit current TX Power
+ *       may lead to undefined behavior.
  *
  * @note The memory for the provided envelope is not copied and must be valid until it is replaced
  *       with another envelope for the same PHY.

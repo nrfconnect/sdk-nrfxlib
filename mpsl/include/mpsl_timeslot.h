@@ -247,11 +247,12 @@ typedef mpsl_timeslot_signal_return_param_t * (*mpsl_timeslot_callback_t) (mpsl_
  *
  * @note Resource configuration can only be performed when all timeslots are closed.
  *
- * void*   p_mem;        Pointer to a memory location for timeslot sessions.
- *                       The size of the memory block needs to be at least n_sessions * MPSL_TIMESLOT_CONTEXT_SIZE bytes.
+ * @param[in] p_mem      Pointer to a memory location for timeslot sessions.
+ *                       The size of the memory block needs to be at least
+ *                       n_sessions * @ref MPSL_TIMESLOT_CONTEXT_SIZE bytes.
  *                       The memory needs to reside in RAM.
  *                       The pointer needs to be aligned to a 4-byte boundary.
- * uint8_t n_sessions    Number of timeslot sessions.
+ * @param[in] n_sessions Number of timeslot sessions.
  *                       Maximum number of supported timeslot sessions is @ref MPSL_TIMESLOT_CONTEXT_COUNT_MAX.
  *
  * @retval  0            The configuration was applied successfully.
