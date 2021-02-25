@@ -81,6 +81,8 @@ int32_t mpsl_init(mpsl_clock_lfclk_cfg_t const * p_clock_config, IRQn_Type low_p
 void mpsl_uninit(void);
 
 /** @brief      Returns true if MPSL is already initialized, false otherwise.
+ *
+ *  @returns    True if initialized, false if not.
  */
 bool mpsl_is_initialized(void);
 
