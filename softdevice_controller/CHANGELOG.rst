@@ -9,6 +9,19 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Master branch
+*************
+
+Added
+=====
+
+* Added radio front-end module (FEM) support, based on the :ref:`mpsl_fem` (DRGN-11059).
+
+Bug fixes
+=========
+
+* Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not applied on the secondary advertising channels (DRGN-13594).
+
 nRF Connect SDK v1.5.0
 **********************
 
@@ -54,7 +67,7 @@ See the Errata document for the respective SoC for detailed information.
 
 For the nRF53 Series, you can retrieve the chip temperature by reading the value of the temperature peripheral on the network core.
 To do this with the SoftDevice Controller, use the Zephyr HCI VS Read Chip Temperature command (``BT_HCI_OP_VS_READ_CHIP_TEMP``).
-  
+
 For the nRF52 Series, you can use the Zephyr sensor API instead of the HCI command to retrieve the chip temperature.
 
 You can then use the retrieved temperature value to compensate the raw RSSI value, following the workaround in the Errata document.

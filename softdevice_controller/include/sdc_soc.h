@@ -43,7 +43,7 @@ enum sdc_soc_flash_cmd_status
 /** @brief Flash command callback.
  *
  * The flash command callback will be called when a flash operation is completed.
- * It will be executed in the same execution priority as mpsl_low_priority_process.
+ * It will be executed in the same execution priority as @ref mpsl_low_priority_process.
  *
  * @param[in] status The status of the flash operation. @sa SDC_SOC_FLASH_CMD_STATUS.
  */
@@ -64,7 +64,7 @@ typedef void (*sdc_soc_flash_callback_t)(uint32_t status);
  *                         flash page. See the device's Product Specification for details.
  * @param[in]  on_complete Callback to be called when flash is written.
  *                         The callback will be executed in the context as
- *                         mpsl_low_priority_process.
+ *                         @ref mpsl_low_priority_process.
  *
  * @retval 0                   Success
  * @retval -NRF_EINVAL         Either:
@@ -89,7 +89,7 @@ int32_t sdc_soc_flash_write_async(uint32_t addr,
  *                         the page containing this address will be erased.
  * @param[in]  on_complete Function to be called when page is erased.
  *                         The callback will be executed in the context as
- *                         mpsl_low_priority_process.
+ *                         @ref mpsl_low_priority_process.
  *
  * @retval 0                   Success
  * @retval -NRF_EINVAL         Tried to erase a non existing flash page.
