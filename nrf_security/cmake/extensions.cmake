@@ -5,6 +5,62 @@
 #
 
 #
+# Add common configurations/options from the zephyr interface libraries
+#
+# This includes
+# Compile options
+# Standard includes
+# C flags/Linker flags
+#
+macro(nrf_security_add_zephyr_options lib_name)
+  # Add compile options and includes from zephyr
+  target_compile_options(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_COMPILE_OPTIONS>)
+  target_include_directories(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_INCLUDE_DIRECTORIES>)
+  target_include_directories(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_SYSTEM_INCLUDE_DIRECTORIES>)
+
+  # Unsure if these are needed any more
+  target_compile_options(${lib_name} PRIVATE ${TOOLCHAIN_C_FLAGS})
+  target_ld_options(${lib_name} PRIVATE ${TOOLCHAIN_LD_FLAGS})
+endmacro()
+
+#
+# Macro to strip away function names into specific algoritm root
+#
+# Examples:
+#   ecp => ECP
+#   ecp_curves => ECP
+#   ecp_<backend><_xxxx> => ECP
+#   ecp_alt<_xxxx> => ECP
+#   ecp_common => ECP
+#   ecp_xxxx.c.obj => ECP
+#
+# backend - Input backend name (in case this is part of the file name)
+# alg_root - Input (potentially a file nameFile name that will be stripped to alg-root and capitalized
+macro(nrf_security_filename_to_alg_root backend file_name alg_root)
+  nrf_security_debug("nrf_security_filename_to_alg_root: Input: ${file_name}")
+
+  # Strip file extension
+  string(REGEX REPLACE "\\..*$" "" ${alg_root} "${file_name}")
+
+  # Strip _<backend>
+  string(REGEX REPLACE "_${backend}" "" ${alg_root} "${${alg_root}}")
+
+  # Strip _alt
+  string(REGEX REPLACE "_alt" "" ${alg_root} "${${alg_root}}")
+
+  # Strip _common
+  string(REGEX REPLACE "_common" "" ${alg_root} "${${alg_root}}")
+
+  # Strip _curves
+  string(REGEX REPLACE "_curves" "" ${alg_root} "${${alg_root}}")
+
+  # Convert to a capitalized version
+  string(TOUPPER "${${alg_root}}" ${alg_root})
+
+  nrf_security_debug("nrf_security_filename_to_alg_root: Output: ${${alg_root}}")
+endmacro()
+
+#
 # Function to create libraries for nrf_security
 #
 # One value arguments:
