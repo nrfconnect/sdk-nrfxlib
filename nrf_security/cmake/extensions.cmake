@@ -103,3 +103,87 @@ function(nrf_security_library)
     target_link_libraries(${lib_name} PRIVATE ${LIBRARY_LINK_LIBRARIES})
   endif()
 endfunction()
+
+#
+# Function to add a glue library for nrf_security
+# Options:
+#   ALT: This indicates the glue frontend library.
+# One value arguments:
+#   BACKEND: The backend to which this glue library relates, cc3xx, Oberon,
+#            Vanilla.
+#
+# Multi value arguments:
+#   FILES: List of sources to add
+#   INCLUDES: List of include directories
+#   LINK_LIBRARIES: List of libraries to link to
+#
+function(nrf_security_library_glue)
+  set(options ALT)
+  set(one_arg BACKEND)
+  set(multi_args FILES INCLUDES LINK_LIBRARIES)
+  cmake_parse_arguments(GLUE_LIB "${options}" "${one_arg}" "${multi_args}" ${ARGN})
+  set(sources "")
+
+  if(GLUE_LIB_ALT)
+    set(lib_name mbedcrypto_glue)
+    set(backend_name dummy)
+  else()
+    set(lib_name mbedcrypto_glue_${GLUE_LIB_BACKEND})
+    set(backend_name ${GLUE_LIB_BACKEND})
+    string(TOUPPER ${GLUE_LIB_BACKEND} BACKEND_UPPER)
+  endif()
+
+  # Add the sources
+  foreach(file ${GLUE_LIB_FILES})
+    get_filename_component(file_name ${file} NAME_WE)
+
+    string(REPLACE "cc310" "cc3xx" file_name ${file_name})
+
+    # Get the algorithm root to use for matching configuration
+    nrf_security_filename_to_alg_root(${backend_name}
+      ${file_name}
+      ALG_ROOT
+    )
+
+    if(DEFINED GLUE_LIB_BACKEND)
+      if(CONFIG_GLUE_${BACKEND_UPPER}_MBEDTLS_${ALG_ROOT}_C)
+        nrf_security_debug("Adding to ${backend_name}_glue: ${file}")
+        list(APPEND sources ${file})
+      endif()
+    endif()
+
+    # Add the glue frontend files
+    if(DEFINED GLUE_LIB_ALT)
+      if(CONFIG_GLUE_MBEDTLS_${ALG_ROOT}_C)
+        nrf_security_debug("Adding to glue: ${file}")
+        list(APPEND sources ${file})
+      endif()
+    endif()
+  endforeach()
+
+  if(sources STREQUAL "")
+    return()
+  endif()
+
+  add_library(${lib_name} OBJECT ${sources})
+  target_compile_definitions(${lib_name} PRIVATE MBEDTLS_BACKEND_PREFIX=${GLUE_LIB_BACKEND})
+  # Add options from Zephyr build
+  nrf_security_add_zephyr_options(${lib_name})
+
+  if(GLUE_LIB_INCLUDES)
+    target_include_directories(${lib_name} PRIVATE ${GLUE_LIB_INCLUDES})
+  endif()
+
+  if(GLUE_LIB_BACKEND)
+    set_property(TARGET ${lib_name} PROPERTY BACKEND_NAME ${GLUE_LIB_BACKEND})
+  endif()
+
+  # Add any dependencies
+  if(DEFINED GLUE_LIB_LINK_LIBRARIES)
+    nrf_security_debug("Adding glue lib dependencies: ${GLUE_LIB_LINK_LIBRARIES}")
+    target_link_libraries(${lib_name} PRIVATE ${GLUE_LIB_LINK_LIBRARIES})
+  endif()
+
+  # Listing files
+  nrf_security_debug_list_target_files(${lib_name})
+endfunction()
