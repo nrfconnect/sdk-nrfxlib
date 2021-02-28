@@ -282,3 +282,150 @@ function(nrf_security_library_shared)
 
   nrf_security_debug_list_target_files(${LIB_NAME})
 endfunction()
+
+#
+# Function to extract any imported libraries defined at the given locations.
+#
+# Each imported library will be extracted and renamed according to the algorithm
+# defined by the `nrf_security_symbol_rename` function.
+#
+# The `nrf_security_symbol_strip` will determine any object to be dropped before
+# appending to the target provided as argument.
+#
+# Arguments:
+# TARGET:      Name of target where extracted object should be appended
+# DIRECTORIES: List of CMake directories to search recursively for imported
+#              targets
+#
+function(nrf_security_target_embed_libraries)
+  cmake_parse_arguments(SEC_LIBS "" "TARGET" "DIRECTORIES" ${ARGN})
+  foreach(dir ${SEC_LIBS_DIRECTORIES})
+    zephyr_get_targets(${CMAKE_CURRENT_SOURCE_DIR}/${dir}
+                       INTERFACE_LIBRARY interface_libraries
+    )
+  endforeach()
+
+  foreach(target ${interface_libraries})
+    get_property(libraries TARGET ${target} PROPERTY INTERFACE_LINK_LIBRARIES)
+
+    foreach(library ${libraries})
+      get_property(target_type TARGET ${library} PROPERTY TYPE)
+
+      if(${target_type} STREQUAL STATIC_LIBRARY)
+        get_property(imported_location
+	             TARGET ${library}
+		     PROPERTY IMPORTED_LOCATION
+        )
+        if(DEFINED imported_location)
+          list(APPEND imported_libraries ${library})
+        endif()
+      endif()
+    endforeach()
+  endforeach()
+
+  foreach(target ${imported_libraries})
+    # add the library dep-list
+    list(APPEND dep_list ${target})
+
+    # if backend name is not set, there is no need to strip/rename
+    get_property(backend_name TARGET ${target} PROPERTY BACKEND_NAME)
+
+    if (CONFIG_NRF_SECURITY_MULTI_BACKEND AND DEFINED backend_name)
+      # Rename functions in object files
+      nrf_security_symbol_rename(${backend_name} ${target}
+           ${NRF_SECURITY_ROOT}/src/mbedcrypto_glue/symbol_rename.template.txt
+	   rename_target
+      )
+      set(imported_library_location ${rename_target})
+    else()
+      get_property(imported_library_location TARGET ${target} PROPERTY IMPORTED_LOCATION)
+    endif()
+
+    execute_process(
+      COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}
+    )
+
+    set(strip_list)
+    nrf_security_symbol_strip(${backend_name} strip_list)
+
+    if(DEFINED strip_list)
+      set(strip_command COMMAND ${CMAKE_COMMAND} -E remove ${strip_list})
+    endif()
+
+    add_custom_target(${target}_extract
+      COMMAND ${CMAKE_AR} x ${imported_library_location}
+      ${strip_command}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}
+      DEPENDS ${imported_library_location}
+      COMMAND_EXPAND_LISTS
+    )
+
+    list(APPEND dep_list ${target}_extract)
+    list(APPEND archive ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name})
+  endforeach()
+
+  if(DEFINED dep_list )
+    add_dependencies(${SEC_LIBS_TARGET} ${dep_list})
+  endif()
+
+  list(REMOVE_DUPLICATES archive)
+  foreach(arc ${archive})
+    add_custom_command(TARGET ${SEC_LIBS_TARGET}
+      POST_BUILD
+      COMMAND ${CMAKE_AR} q $<TARGET_FILE:${SEC_LIBS_TARGET}> ${arc}/*
+    )
+  endforeach()
+endfunction()
+
+#
+# Function to include objects from any CMake object libraries defined at the
+# given locations.
+#
+# Each object library will be renamed according to the algorithm defined by the
+# `nrf_security_symbol_rename` function.
+#
+# Arguments:
+# TARGET:      Name of target where extracted object should be appended
+# DIRECTORIES: List of CMake directories to search recursively for CMake Object
+#              libraries
+#
+function(nrf_security_target_embed_objects)
+  cmake_parse_arguments(SEC_LIBS "" "TARGET" "DIRECTORIES" ${ARGN})
+  # Each interface lib may contain imported libs to re-archive.
+  set(object_libraries)
+
+  foreach(dir ${SEC_LIBS_DIRECTORIES})
+    zephyr_get_targets(${CMAKE_CURRENT_SOURCE_DIR}/${dir} OBJECT_LIBRARY object_libraries)
+  endforeach()
+
+  foreach(target ${object_libraries})
+    # add the library dep-list
+    list(APPEND dep_list ${target})
+
+    # if backend name is not set, there is no need to strip/rename
+    get_property(backend_name TARGET ${target} PROPERTY BACKEND_NAME)
+
+    # Get a copy of the objects in the target
+    set(target_objs $<TARGET_OBJECTS:${target}>)
+
+    if (CONFIG_NRF_SECURITY_MULTI_BACKEND AND DEFINED backend_name)
+      # Rename functions in object files
+      nrf_security_symbol_rename(${backend_name} ${target}
+           ${NRF_SECURITY_ROOT}/src/mbedcrypto_glue/symbol_rename.template.txt
+	   rename_target
+      )
+
+      list(APPEND dep_list ${rename_target})
+    endif()
+
+    # Copy the list back (now stripped and/or renamed)
+    list(APPEND obj_list ${target_objs})
+  endforeach()
+
+  if(DEFINED dep_list)
+    add_dependencies(${SEC_LIBS_TARGET} ${dep_list})
+  endif()
+
+  # Append to the static library.
+  target_sources(${SEC_LIBS_TARGET} PRIVATE ${obj_list})
+endfunction()
