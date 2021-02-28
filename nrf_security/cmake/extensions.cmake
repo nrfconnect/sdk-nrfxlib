@@ -187,3 +187,98 @@ function(nrf_security_library_glue)
   # Listing files
   nrf_security_debug_list_target_files(${lib_name})
 endfunction()
+
+#
+# Function to add a shared object library for nrf_security
+#
+# One value arguments:
+#   NAME: Name of library to create
+#
+# Multi value arguments:
+#   FILES: List of sources to add
+#   INCLUDE: List of backends for which the list of files should be included
+#   EXCLUDE: List of backends for which the list of files should be excluded
+#
+function(nrf_security_library_shared)
+  cmake_parse_arguments(LIB "" "NAME" "" ${ARGN})
+  set(sources "")
+  set(ARGN_LOCAL ${ARGN})
+
+  set(index 0)
+  set(prev_index 0)
+  set(length -1)
+  foreach(arg ${ARGN_LOCAL})
+    if(${arg} STREQUAL FILES)
+      list(APPEND FILES_START_INDICES ${index})
+      if(prev_index)
+        math(EXPR  length "${index} - ${prev_index}")
+        set(FILES_INDEX_${prev_index}_LENGTH ${length})
+      endif()
+      set(prev_index ${index})
+    endif()
+    math(EXPR  index "${index} + 1")
+  endforeach()
+  set(FILES_INDEX_${prev_index}_LENGTH -1)
+
+  foreach(index ${FILES_START_INDICES})
+    list(SUBLIST ARGN_LOCAL ${index} ${FILES_INDEX_${index}_LENGTH} SUB_LIST)
+
+    # Create sublist and parse sub-args.
+    cmake_parse_arguments(SOURCE_LIST "" "" "FILES;INCLUDE;EXCLUDE" ${SUB_LIST})
+
+    list(GET SOURCE_LIST_FILES 0 file)
+    get_filename_component(file_name ${file} NAME_WE)
+    string(TOUPPER ${file_name} SETTING_UPPER)
+
+    if(CONFIG_MBEDTLS_${SETTING_UPPER}_C)
+      set(use_file True)
+      foreach(backend ${SOURCE_LIST_INCLUDE})
+        if(CONFIG_${backend}_MBEDTLS_${SETTING_UPPER}_C)
+          # include file
+          set(use_file True)
+        endif()
+      endforeach()
+
+      foreach(backend ${SOURCE_LIST_EXCLUDE})
+        if(CONFIG_${backend}_MBEDTLS_${SETTING_UPPER}_C)
+          # exclude file
+          set(use_file False)
+        endif()
+      endforeach()
+
+      if(${use_file})
+        nrf_security_debug("Adding to shared: ${SETTING_UPPER}")
+        list(APPEND sources ${SOURCE_LIST_FILES})
+      endif()
+    endif()
+  endforeach()
+
+  # If there are no sources, then there is no reason to continue as no
+  # target will be created
+  if(sources STREQUAL "")
+    return()
+  endif()
+
+  add_library(${LIB_NAME} OBJECT ${sources})
+
+  # Add options from Zephyr build
+  nrf_security_add_zephyr_options(${LIB_NAME})
+
+  target_compile_options(${LIB_NAME} PRIVATE ${TOOLCHAIN_C_FLAGS})
+  target_ld_options(${LIB_NAME} PRIVATE ${TOOLCHAIN_LD_FLAGS})
+
+  target_include_directories(${LIB_NAME} PRIVATE
+      ${common_includes}
+      ${config_include}
+      $<$<TARGET_EXISTS:platform_cc3xx>:${mbedcrypto_glue_include_path}/threading>
+      $<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>
+  )
+
+  # Use configurations for vanilla as shared will always need configurations
+  # that aren't enabling any alternate implemenatations.
+  target_compile_definitions(${LIB_NAME} PRIVATE
+    -DMBEDTLS_CONFIG_FILE="nrf-config-noglue.h"
+  )
+
+  nrf_security_debug_list_target_files(${LIB_NAME})
+endfunction()
