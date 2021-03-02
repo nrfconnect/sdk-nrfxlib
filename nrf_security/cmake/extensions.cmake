@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 Nordic Semiconductor
+# Copyright (c) 2020-2021 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
@@ -59,6 +59,148 @@ macro(nrf_security_filename_to_alg_root backend file_name alg_root)
 
   nrf_security_debug("nrf_security_filename_to_alg_root: Output: ${${alg_root}}")
 endmacro()
+
+#
+# This function will create a list of files that should be dropped from the
+# library named mbedcrypto_<backend> corresponding to the parameter "backend"
+#
+function(nrf_security_symbol_strip backend out_file_list)
+  nrf_security_debug("========== Running symbol_strip_function for ${backend} ==========")
+  string(TOUPPER "${backend}" BACKEND_NAME_UPPER)
+
+  set(file_list
+      "aes.c.obj"        "aes_alt.c.obj"
+      "ccm.c.obj"        "ccm_alt.c.obj"
+      "cmac.c.obj"       "cmac_alt.c.obj"
+      "ecp.c.obj"        "ecp_alt_cc310.c.obj" "ecp_alt_cc3xx.c.obj"
+      "ecp_curves.c.obj" "ecp_curves_alt.c.obj"
+      "ecp_common.c.obj"
+      "ecdh.c.obj"       "ecdh_alt.c.obj"
+      "ecdsa.c.obj"      "ecdsa_alt.c.obj"
+      "ecjpake.c.obj"    "ecjpake_alt.c.obj"
+      "chacha20.c.obj"   "chacha20_alt.c.obj"
+      "chachapoly.c.obj" "chachapoly_alt.c.obj"
+      "poly1305.c.obj"   "poly1305_alt.c.obj"
+      "rsa.c.obj"        "rsa_alt.c.obj"
+      "sha1.c.obj"       "sha1_alt.c.obj"
+      "sha256.c.obj"     "sha256_alt.c.obj"
+  )
+
+  foreach(file ${file_list})
+    nrf_security_filename_to_alg_root(${backend} ${file} alg)
+    if (NOT CONFIG_${BACKEND_NAME_UPPER}_MBEDTLS_${alg}_C)
+      nrf_security_debug("${backend}: Removing object ${file}")
+      list(APPEND ${out_file_list} ${file})
+    else ()
+      nrf_security_debug("Not removing: CONFIG_${BACKEND_NAME_UPPER}_MBEDTLS_${alg}_C is set to TRUE (${file})")
+    endif()
+  endforeach()
+
+  # Special handling of files that cannot be which cannot be
+  # converted into a Kconfig setting.
+  set(indices 1)
+  set(file_1   "poly.c.obj")
+  set(symbol_1 MBEDTLS_POLY1305_C)
+
+  foreach(index ${indices})
+    if (NOT CONFIG_${BACKEND_NAME_UPPER}_${symbol_${index}})
+      nrf_security_debug("${backend}: Removing object ${file}")
+      list(APPEND ${out_file_list} ${file_${index}})
+    else ()
+      nrf_security_debug("Not removing: CONFIG_${BACKEND_NAME_UPPER}_${symbol_${index}} is set to TRUE (${file})")
+    endif()
+  endforeach()
+
+  set(${out_file_list} ${${out_file_list}} PARENT_SCOPE)
+endfunction()
+
+#
+# This macro comments out the instruction to rename a symbol
+# in case a configuration is enabled in the backend, but not glued
+# Note: Internal use for `nrf_security_symbol_rename` only
+#
+macro(keep_config_test_glue mbedtls_config backend_name)
+  if(NOT CONFIG_GLUE_${mbedtls_config} AND CONFIG_${backend_name}_${mbedtls_config})
+    set(KEEP_${mbedtls_config} "#")
+    nrf_security_debug("${backend_name}: Not renamed ${mbedtls_config}")
+  else()
+    nrf_security_debug("${backend_name}: Renaming ${mbedtls_config}")
+  endif()
+endmacro()
+
+#
+# This macro comments out the instruction to rename a symbol if two dependent
+# configurations are enabled, but the feature (as a whole) is not glued
+# Note: Internal use for `nrf_security_symbol_rename` only
+#
+macro(keep_config_test_glue_depends mbedtls_config mbedtls_config_inner backend_name)
+  if((NOT CONFIG_GLUE_${mbedtls_config}) AND
+      CONFIG_${backend_name}_${mbedtls_config} AND
+      CONFIG_${mbedtls_config_inner})
+    nrf_security_debug("${backend_name}: Has ${backend_name}_${mbedtls_config}: Not renamed ${mbedtls_config_inner}")
+    set(KEEP_${mbedtls_config_inner} "#")
+  else()
+    nrf_security_debug("${backend_name}: Renaming ${mbedtls_config_inner}")
+  endif()
+endmacro()
+
+#
+# This function will create a symbol renaming script for any library
+# named mbedcrypto_<backend> corresponding to the parameter "backend"
+#
+function(nrf_security_symbol_rename backend target rename_template out_target)
+  nrf_security_debug("========== Running nrf_security_symbol_rename for ${backend} ==========")
+  string(TOUPPER "${backend}" BACKEND_NAME)
+  #
+  # Functionality that can be glued
+  #
+  keep_config_test_glue("MBEDTLS_AES_C"           ${BACKEND_NAME})
+  keep_config_test_glue("MBEDTLS_CCM_C"           ${BACKEND_NAME})
+  keep_config_test_glue("MBEDTLS_CMAC_C"          ${BACKEND_NAME})
+  keep_config_test_glue("MBEDTLS_DHM_C"           ${BACKEND_NAME})
+
+  #
+  # Functionality that can be glued (dependent configuration)
+  #
+  keep_config_test_glue_depends("MBEDTLS_AES_C" "MBEDTLS_CIPHER_MODE_XTS" ${BACKEND_NAME})
+  keep_config_test_glue_depends("MBEDTLS_AES_C" "MBEDTLS_CIPHER_MODE_CBC" ${BACKEND_NAME})
+  keep_config_test_glue_depends("MBEDTLS_AES_C" "MBEDTLS_CIPHER_MODE_CFB" ${BACKEND_NAME})
+  keep_config_test_glue_depends("MBEDTLS_AES_C" "MBEDTLS_CIPHER_MODE_OFB" ${BACKEND_NAME})
+  keep_config_test_glue_depends("MBEDTLS_AES_C" "MBEDTLS_CIPHER_MODE_CTR" ${BACKEND_NAME})
+
+  string(TOLOWER "${backend}" MBEDTLS_BACKEND_PREFIX)
+  configure_file(${rename_template}
+                 symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt)
+
+  get_property(target_type TARGET ${target} PROPERTY TYPE)
+  if(${target_type} STREQUAL OBJECT_LIBRARY)
+    add_custom_target(${target}_renaming
+                      COMMAND ${CMAKE_COMMAND}
+                              -DCMAKE_OBJCOPY=${CMAKE_OBJCOPY}
+                              -DOBJECTS="$<TARGET_OBJECTS:${target}>"
+                              -DRENAME="${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt"
+                              -P ${NRF_SECURITY_ROOT}/cmake/symbol_rename_script.cmake
+                      DEPENDS ${target}
+    )
+    set(${out_target} ${target}_renaming PARENT_SCOPE)
+  else()
+    get_property(imported_location TARGET ${target} PROPERTY IMPORTED_LOCATION)
+    get_filename_component(libraryname ${imported_location} NAME)
+
+    set(renamed_location ${CMAKE_CURRENT_BINARY_DIR}/rename/${backend}/${libraryname})
+
+    add_custom_command(OUTPUT ${renamed_location}
+      COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/rename/${backend}
+      COMMAND ${CMAKE_OBJCOPY}
+              --redefine-syms ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt
+              ${imported_location}
+              ${renamed_location}
+      DEPENDS ${imported_location}
+    )
+
+    set(${out_target} ${renamed_location} PARENT_SCOPE)
+  endif()
+endfunction()
 
 #
 # Function to create libraries for nrf_security
@@ -144,7 +286,7 @@ function(nrf_security_library)
       ${common_includes}
       ${config_include}
       $<$<TARGET_EXISTS:platform_cc3xx>:${mbedcrypto_glue_include_path}/threading>
-      $<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>
+      $<$<TARGET_EXISTS:platform_cc3xx>:$<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>>
   )
 
   # Add defines (if set)
@@ -327,7 +469,7 @@ function(nrf_security_library_shared)
       ${common_includes}
       ${config_include}
       $<$<TARGET_EXISTS:platform_cc3xx>:${mbedcrypto_glue_include_path}/threading>
-      $<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>
+      $<$<TARGET_EXISTS:platform_cc3xx>:$<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>>
   )
 
   # Use configurations for vanilla as shared will always need configurations

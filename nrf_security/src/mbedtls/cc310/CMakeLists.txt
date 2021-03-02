@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-get_target_property(NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH mbedcrypto_cc3xx_imported BASE_INCLUDE_PATH)
+get_target_property(NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH mbedcrypto_cc3xx_imported INTERFACE_INCLUDE_DIRECTORIES)
 
 #
 # Creating a "noglue" version of the mbedcrypto CC310 libray.
@@ -16,46 +16,31 @@ get_target_property(NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH mbedcrypto_cc3xx_imported 
 # the noglue library is amended with missing symbols
 #
 # The noglue library will not be linked with directly. It is to be combined with
-# the cc3xx binary library to create mbedcrypto_cc3xx (naming neccesary for
-# renaming in glue )
+# the cc3xx binary library to create mbedcrypto_cc3xx
 #
-add_library(mbedcrypto_cc3xx_noglue STATIC
-  ${ZEPHYR_BASE}/misc/empty_file.c
-)
-
-target_sources_ifdef(CONFIG_CC3XX_MBEDTLS_ECJPAKE_C
-  mbedcrypto_cc3xx_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/ecjpake.c
-)
-
-target_include_directories(mbedcrypto_cc3xx_noglue PRIVATE
-  ${NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH}
-  ${common_includes}
-  ${config_include}
-)
-
-if(TARGET platform_cc3xx)
-  target_include_directories(mbedcrypto_cc3xx_noglue PRIVATE
+nrf_security_library(NOGLUE cc3xx
+  FILES
+    ${ARM_MBEDTLS_PATH}/library/ecjpake.c
+  INCLUDES
+    ${NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH}
+    ${common_includes}
+    ${config_include}
     ${mbedcrypto_glue_include_path}/threading
-    ${NRF_PLATFORM_CC3XX_INCLUDE_PATH}
-  )
-endif()
-
-target_compile_options(mbedcrypto_cc3xx_noglue PRIVATE ${TOOLCHAIN_C_FLAGS})
-target_ld_options(mbedcrypto_cc3xx_noglue PRIVATE ${TOOLCHAIN_LD_FLAGS})
-
-target_compile_definitions(mbedcrypto_cc3xx_noglue PRIVATE
+    $<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>
+  DEFINES
   -DMBEDTLS_CONFIG_FILE="nrf-config.h"
+  LINK_LIBRARIES
+    platform_cc3xx
 )
 
-nrf_security_debug_list_target_files(mbedcrypto_cc3xx_noglue)
 
-set(cc3xx_libs
-  mbedcrypto_cc3xx_imported
-  mbedcrypto_cc3xx_noglue
+#
+# Create the mbedcrypto library for cc3xx backend
+#
+add_library(mbedcrypto_cc3xx INTERFACE)
+target_link_libraries(mbedcrypto_cc3xx INTERFACE
+                      mbedcrypto_cc3xx_imported
 )
-
-nrf_security_symbol_strip(cc3xx strip_command)
-nrf_security_combine_archives(cc3xx "${cc3xx_libs}" "${strip_command}")
 
 #
 # Copy alternate files to generated folder (if enabled in backend)

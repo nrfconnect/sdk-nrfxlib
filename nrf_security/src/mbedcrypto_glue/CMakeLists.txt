@@ -1,69 +1,59 @@
 #
-# Copyright (c) 2019 Nordic Semiconductor
+# Copyright (c) 2021 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-if(CONFIG_NRF_SECURITY_GLUE_LIBRARY)
+nrf_security_debug("######### Creating mbedcrypto glue library #########")
 
-  nrf_security_debug("######### Creating mbedcrypto glue library #########")
-  #
-  # Create a library with common compilation options and include folders
-  #
-  zephyr_interface_library_named(mbedtls_common_glue)
-  target_include_directories(mbedtls_common_glue INTERFACE
-    "${NRF_SECURITY_ROOT}/include/mbedcrypto_glue"
-  )
-  target_link_libraries(mbedtls_common_glue INTERFACE mbedtls_common)
+#
+# Create a library with common include folders (used by this and backend libs)
+#
+add_library(mbedcrypto_common_glue INTERFACE)
 
+target_include_directories(mbedcrypto_common_glue INTERFACE
+  ${NRF_SECURITY_ROOT}/include/mbedcrypto_glue
+)
 
-  if(CONFIG_GLUE_MBEDTLS_AES_C)
-    nrf_security_debug("Adding to glue: AES")
-  endif()
+target_compile_definitions(mbedcrypto_common_glue INTERFACE
+  -DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}"
+)
 
-  if(CONFIG_GLUE_MBEDTLS_CCM_C)
-    nrf_security_debug("Adding to glue: CCM")
-  endif()
+target_link_libraries(mbedcrypto_common_glue INTERFACE mbedtls_common)
 
-  if(CONFIG_GLUE_MBEDTLS_DHM_C)
-    nrf_security_debug("Adding to glue: DHM")
-  endif()
+#
+# Create glue libraries for backends (if enabled)
+#
+if (CONFIG_CC3XX_BACKEND)
+  nrf_security_debug("Adding cc310_glue.cmake")
+  include(${CMAKE_CURRENT_LIST_DIR}/cc310/cc310_glue.cmake)
+endif()
 
-  #
-  # Create the glue wrapper library
-  #
-  zephyr_library_named(mbedcrypto_glue)
-  zephyr_library_sources(${ZEPHYR_BASE}/misc/empty_file.c)
+if (CONFIG_OBERON_BACKEND)
+  nrf_security_debug("Adding oberon_glue.cmake")
+  include(${CMAKE_CURRENT_LIST_DIR}/oberon/oberon_glue.cmake)
+endif()
 
-  #
-  # Add glued files if enabled
-  #
-  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_AES_C    aes_alt.c)
-  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_CCM_C    ccm_alt.c)
-  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_CMAC_C   cmac_alt.c)
-  zephyr_library_sources_ifdef(CONFIG_GLUE_MBEDTLS_DHM_C    dhm_alt.c)
+if (CONFIG_MBEDTLS_VANILLA_BACKEND)
+  nrf_security_debug("Adding vanilla_glue.cmake")
+  include(${CMAKE_CURRENT_LIST_DIR}/vanilla/vanilla_glue.cmake)
+endif()
 
-  zephyr_library_link_libraries(mbedtls_common_glue)
-  nrf_security_debug_list_target_files(mbedcrypto_glue)
-
-
-  #
-  # Create glue libraries for backends (if enabled)
-  #
-  if (CONFIG_CC3XX_BACKEND)
-    nrf_security_debug("Adding cc310_glue.cmake")
-    include(${CMAKE_CURRENT_LIST_DIR}/cc310/cc310_glue.cmake)
-  endif()
-
-  if (CONFIG_OBERON_BACKEND)
-    nrf_security_debug("Adding oberon_glue.cmake")
-    include(${CMAKE_CURRENT_LIST_DIR}/oberon/oberon_glue.cmake)
-  endif()
-
-  if (CONFIG_MBEDTLS_VANILLA_BACKEND)
-    nrf_security_debug("Adding vanilla_glue.cmake")
-    include(${CMAKE_CURRENT_LIST_DIR}/vanilla/vanilla_glue.cmake)
-  endif()
+#
+# Create the glue library
+#
+nrf_security_library_glue(ALT
+  FILES
+    ${CMAKE_CURRENT_LIST_DIR}/aes_alt.c
+    ${CMAKE_CURRENT_LIST_DIR}/ccm_alt.c
+    ${CMAKE_CURRENT_LIST_DIR}/cmac_alt.c
+    ${CMAKE_CURRENT_LIST_DIR}/dhm_alt.c
+  LINK_LIBRARIES
+    mbedcrypto_common_glue
+    $<TARGET_NAME_IF_EXISTS:mbedcrypto_glue_cc3xx>
+    $<TARGET_NAME_IF_EXISTS:mbedcrypto_glue_oberon>
+    $<TARGET_NAME_IF_EXISTS:mbedcrypto_glue_vanilla>
+)
 
 #
 # Copy the correct glue include files to use for libraries
@@ -98,26 +88,3 @@ configure_file_ifdef(CONFIG_GLUE_MBEDTLS_RSA_C
   ${generated_include_path}/rsa_alt.h
   COPYONLY
 )
-
-endif(CONFIG_NRF_SECURITY_GLUE_LIBRARY)
-
-#
-# CC310: Rename glued symbols to prevent collision
-#
-if (CONFIG_CC3XX_BACKEND)
-  nrf_security_symbol_rename("cc3xx" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
-endif()
-
-#
-# nrf_oberon: Rename glued symbols to prevent collisions
-#
-if (CONFIG_OBERON_BACKEND AND CONFIG_NRF_SECURITY_GLUE_LIBRARY)
-  nrf_security_symbol_rename("oberon" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
-endif()
-
-#
-# Vanilla: Rename glued symbols to prevent collision
-#
-if (CONFIG_MBEDTLS_VANILLA_BACKEND AND CONFIG_NRF_SECURITY_GLUE_LIBRARY)
-  nrf_security_symbol_rename("vanilla" ${CMAKE_CURRENT_LIST_DIR}/symbol_rename.template.txt)
-endif()
