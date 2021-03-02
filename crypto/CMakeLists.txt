@@ -36,11 +36,10 @@ if (CONFIG_NRF_OBERON)
     set_target_properties(
       mbedcrypto_oberon_imported PROPERTIES
         IMPORTED_LOCATION "${OBERON_LIB}"
-        BASE_INCLUDE_PATH "${OBERON_BASE}/include"
+        BACKEND_NAME "oberon"
     )
     target_include_directories(mbedcrypto_oberon_imported INTERFACE
                               "${OBERON_BASE}/include")
-
 
     #
     # Add mbedcrypto_oberon_mbedtls_imported that points to the actual library
@@ -51,11 +50,10 @@ if (CONFIG_NRF_OBERON)
     set_target_properties(
       mbedcrypto_oberon_mbedtls_imported PROPERTIES
         IMPORTED_LOCATION "${OBERON_MBEDTLS_LIB}"
-        BASE_INCLUDE_PATH "${OBERON_BASE}/include/mbedtls"
+        BACKEND_NAME "oberon"
     )
     target_include_directories(mbedcrypto_oberon_mbedtls_imported INTERFACE
-                              "${OBERON_BASE}/include"
-                              "${OBERON_BASE}/include/mbedtls")
+                               "${OBERON_BASE}/include/mbedtls")
     target_link_libraries(mbedcrypto_oberon_mbedtls_imported INTERFACE mbedcrypto_oberon_imported)
   endif()
 endif()
@@ -101,7 +99,6 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   add_library(platform_cc3xx STATIC IMPORTED GLOBAL)
   set_target_properties(platform_cc3xx PROPERTIES
     IMPORTED_LOCATION "${NRF_CC3XX_PLATFORM_LIB}"
-    BASE_INCLUDE_PATH "${NRF_CC3XX_PLATFORM_BASE}/include"
   )
   target_include_directories(platform_cc3xx INTERFACE
       "${NRF_CC3XX_PLATFORM_BASE}/include")
@@ -144,10 +141,9 @@ if (CONFIG_CC3XX_BACKEND)
   add_library(mbedcrypto_cc3xx_imported STATIC IMPORTED GLOBAL)
   set_target_properties(mbedcrypto_cc3xx_imported PROPERTIES
     IMPORTED_LOCATION "${NRF_CC3XX_LIB}"
-    BASE_INCLUDE_PATH "${NRF_CC3XX_BASE}/include/mbedtls"
+    BACKEND_NAME "cc3xx"
   )
   target_include_directories(mbedcrypto_cc3xx_imported INTERFACE
-                             "${NRF_CC3XX_BASE}/include"
                              "${NRF_CC3XX_BASE}/include/mbedtls")
   target_link_libraries(mbedcrypto_cc3xx_imported INTERFACE platform_cc3xx)
   if (NOT CONFIG_NRF_SECURITY_MULTI_BACKEND)

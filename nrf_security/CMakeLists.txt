@@ -1,33 +1,31 @@
 #
-# Copyright (c) 2019 Nordic Semiconductor
+# Copyright (c) 2019-2021 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 set(NRF_SECURITY_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/nrf_security_debug.cmake)
+
+# If nrf_security generates config file, include cmake script that
+# adds configurations according to Kconfig and converts them from
+# CONFIG_MBEDTLS_XXXX to MBEDTLS_XXXX.
 if(CONFIG_GENERATE_MBEDTLS_CFG_FILE)
   include(${CMAKE_CURRENT_LIST_DIR}/cmake/kconfig_mbedtls_configure.cmake)
 endif()
 
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/symbol_rename.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/symbol_strip.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/combine_archives.cmake)
+# Add nrf_security extension functions.
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/extensions.cmake)
 
 #
-# Create an interface library with all shared compile definition and include
-# directories
+# Populate ARM_MBEDTLS_PATH
 #
-zephyr_interface_library_named(mbedtls_common)
-target_compile_definitions(mbedtls_common INTERFACE
-  -DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}"
-)
-target_include_directories(mbedtls_common INTERFACE
-  ${generated_includes}
-)
-
 get_mbedtls_dir(ARM_MBEDTLS_PATH)
 
+
+#
+# Add include folder for glued libraries
+#
 set(mbedcrypto_glue_include_path
   "${CMAKE_CURRENT_LIST_DIR}/include/mbedcrypto_glue/mbedtls"
 )
@@ -43,21 +41,19 @@ set(common_includes
 )
 
 #
-#  Add mbed TLS sources
+# Create an interface library with all shared compile definition and include
+# directories
 #
-add_subdirectory(src/mbedtls)
-nrf_security_debug("-------- Adding src/mbedtls")
+add_library(mbedtls_common INTERFACE)
+target_include_directories(mbedtls_common INTERFACE
+  ${generated_includes}
+  ${common_includes}
+)
+target_compile_definitions(mbedtls_common INTERFACE
+  -DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}"
+)
 
-if (CONFIG_NRF_SECURITY_MULTI_BACKEND)
-  # a. cc310 and vanilla selection of ciphers --> Renaming and glue
-  # b. vanilla selection of ciphers only --> Renaming, but no glue
-  add_subdirectory(src/mbedcrypto_glue)
-endif()
-
 #
-#  Add PSA apis sources
+#  Add nrf_security source folder
 #
-if (CONFIG_MBEDTLS_PSA_CRYPTO_C)
-  add_subdirectory(src/psa)
-  nrf_security_debug("-------- Adding src/psa")
-endif()
+add_subdirectory(src)

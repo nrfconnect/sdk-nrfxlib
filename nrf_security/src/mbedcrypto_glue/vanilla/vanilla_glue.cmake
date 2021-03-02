@@ -6,37 +6,14 @@
 nrf_security_debug("######### Creating vanilla glue library #########")
 
 #
-# Create the vanilla glue library
+# Create mbedcrypto_glue_vanilla
 #
-zephyr_library_named(mbedcrypto_glue_vanilla)
-
-#
-# Adding vanilla backend glue files
-#
-zephyr_library_sources_ifdef(CONFIG_GLUE_VANILLA_MBEDTLS_AES_C
-  ${CMAKE_CURRENT_LIST_DIR}/aes_vanilla.c
-)
-zephyr_library_sources_ifdef(CONFIG_GLUE_VANILLA_MBEDTLS_CCM_C
-  ${CMAKE_CURRENT_LIST_DIR}/ccm_vanilla.c
-)
-zephyr_library_sources_ifdef(CONFIG_GLUE_VANILLA_MBEDTLS_DHM_C
-  ${CMAKE_CURRENT_LIST_DIR}/dhm_vanilla.c
-)
-
-zephyr_library_sources(${ZEPHYR_BASE}/misc/empty_file.c)
-zephyr_library_compile_definitions(MBEDTLS_BACKEND_PREFIX=vanilla)
-zephyr_library_link_libraries(mbedtls_common_glue)
-
-add_dependencies(mbedcrypto_glue_vanilla mbedcrypto_vanilla_renamed)
-
-nrf_security_debug_list_target_files(mbedcrypto_glue_vanilla)
-
-add_custom_command(
-  TARGET mbedcrypto_glue_vanilla
-  POST_BUILD
-  COMMAND ${CMAKE_OBJCOPY}
-          --redefine-syms
-          ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_vanilla.txt
-          $<TARGET_FILE:mbedcrypto_glue_vanilla>
-  DEPENDS mbedcrypto_vanilla_renamed
+nrf_security_library_glue(BACKEND vanilla
+  FILES
+    ${CMAKE_CURRENT_LIST_DIR}/aes_vanilla.c
+    ${CMAKE_CURRENT_LIST_DIR}/ccm_vanilla.c
+    ${CMAKE_CURRENT_LIST_DIR}/dhm_vanilla.c
+  LINK_LIBRARIES
+    mbedcrypto_common_glue
+    mbedcrypto_vanilla
 )
