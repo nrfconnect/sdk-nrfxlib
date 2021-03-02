@@ -58,6 +58,7 @@ config GENERATE_MBEDTLS_CFG_FILE
 config MBEDTLS_X509_LIBRARY
 	bool
 	prompt "Create mbed TLS x509 library"
+	select NRF_SECURITY_ADVANCED
 	select MBEDTLS_PK_C
 	help
 	  Create the mbed x509 library for handling of certificates.
