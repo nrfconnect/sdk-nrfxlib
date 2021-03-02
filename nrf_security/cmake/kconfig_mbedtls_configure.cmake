@@ -53,10 +53,12 @@ endmacro()
 #
 # Internal macro to configure file if mbed TLS config is set
 #
-macro(configure_file_ifdef mbedtls_config)
+macro(nrf_security_configure_file mbedtls_config file)
   if (${mbedtls_config})
-    nrf_security_debug("Configure file: ${ARGV1}")
-    configure_file(${ARGV1} ${ARGV2} ${ARGV3})
+
+    nrf_security_debug("Configure file: ${file}")
+    get_filename_component(file_name ${file} NAME)
+    configure_file(${file} ${generated_include_path}/mbedtls/${file_name} COPYONLY)
   endif()
 endmacro()
 

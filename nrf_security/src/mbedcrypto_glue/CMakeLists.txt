@@ -59,32 +59,22 @@ nrf_security_library_glue(ALT
 # Copy the correct glue include files to use for libraries
 # (potentially overwriting other copied backend files)
 #
-configure_file_ifdef(CONFIG_GLUE_MBEDTLS_AES_C
+nrf_security_configure_file(CONFIG_GLUE_MBEDTLS_AES_C
   ${mbedcrypto_glue_include_path}/aes_alt.h
-  ${generated_include_path}/aes_alt.h
-  COPYONLY
 )
 
-configure_file_ifdef(CONFIG_GLUE_MBEDTLS_CCM_C
+nrf_security_configure_file(CONFIG_GLUE_MBEDTLS_CCM_C
   ${mbedcrypto_glue_include_path}/ccm_alt.h
-  ${generated_include_path}/ccm_alt.h
-  COPYONLY
 )
 
-configure_file_ifdef(CONFIG_GLUE_MBEDTLS_CMAC_C
+nrf_security_configure_file(CONFIG_GLUE_MBEDTLS_CMAC_C
   ${mbedcrypto_glue_include_path}/cmac_alt.h
-  ${generated_include_path}/cmac_alt.h
-  COPYONLY
 )
 
-configure_file_ifdef(CONFIG_GLUE_MBEDTLS_DHM_C
+nrf_security_configure_file(CONFIG_GLUE_MBEDTLS_DHM_C
   ${mbedcrypto_glue_include_path}/dhm_alt.h
-  ${generated_include_path}/dhm_alt.h
-  COPYONLY
 )
 
-configure_file_ifdef(CONFIG_GLUE_MBEDTLS_RSA_C
+nrf_security_configure_file(CONFIG_GLUE_MBEDTLS_RSA_C
   ${mbedcrypto_glue_include_path}/rsa_alt.h
-  ${generated_include_path}/rsa_alt.h
-  COPYONLY
 )

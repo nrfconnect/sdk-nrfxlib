@@ -51,27 +51,22 @@ target_link_libraries(mbedcrypto_oberon INTERFACE
 #
 # Copy the replacement _alt.h files by from nrf_oberon by enabled feature
 #
-configure_file_ifdef(CONFIG_OBERON_MBEDTLS_SHA1_C
+nrf_security_configure_file(CONFIG_OBERON_MBEDTLS_SHA1_C
   ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/sha1_alt.h
-  ${generated_include_path}/sha1_alt.h
-  COPYONLY)
+)
 
-configure_file_ifdef(CONFIG_OBERON_MBEDTLS_SHA256_C
+nrf_security_configure_file(CONFIG_OBERON_MBEDTLS_SHA256_C
   ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/sha256_alt.h
-  ${generated_include_path}/sha256_alt.h
-  COPYONLY)
+)
 
-configure_file_ifdef(CONFIG_OBERON_MBEDTLS_ECJPAKE_C
+nrf_security_configure_file(CONFIG_OBERON_MBEDTLS_ECJPAKE_C
   ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/ecjpake_alt.h
-  ${generated_include_path}/ecjpake_alt.h
-  COPYONLY)
+)
 
-configure_file_ifdef(CONFIG_OBERON_MBEDTLS_CHACHA20_C
+nrf_security_configure_file(CONFIG_OBERON_MBEDTLS_CHACHA20_C
   ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/chacha20_alt.h
-  ${generated_include_path}/chacha20_alt.h
-  COPYONLY)
+)
 
-configure_file_ifdef(CONFIG_OBERON_MBEDTLS_POLY1305_C
+nrf_security_configure_file(CONFIG_OBERON_MBEDTLS_POLY1305_C
   ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}/poly1305_alt.h
-  ${generated_include_path}/poly1305_alt.h
-  COPYONLY)
+)
