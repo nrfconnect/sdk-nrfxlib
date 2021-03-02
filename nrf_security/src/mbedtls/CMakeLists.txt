@@ -1,4 +1,6 @@
 #
+# Copyright (c) 2021 Nordic Semiconductor
+#
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
@@ -123,53 +125,18 @@ append_with_prefix(src_tls_replacement
 zephyr_include_directories(${common_includes})
 
 #
-# Library containing code not in Glue or backend
+# Creating prerequisites for mbedcrypto
 #
-zephyr_library_named(mbedtls_base_vanilla)
-zephyr_library_sources(${src_crypto} ${src_crypto_replacement})
-
-zephyr_library_sources_ifdef(CONFIG_MBEDTLS_ENABLE_HEAP
-  ${NRF_SECURITY_ROOT}/src/mbedtls/mbedtls_heap.c
-)
-
+# This configures:
+# - mbedcrypto_xxxx backends (is enabled)
+# - mbedcrypto_base_vanilla - All files not in any backend
 #
-# When the CC3XX platform is not enabled, implement the entropy poll
-# using the chosen entropy driver.
-#
-if (NOT CONFIG_NRF_CC3XX_PLATFORM)
-  zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/entropy/entropy_poll.c)
-endif()
-
-zephyr_library_link_libraries(mbedtls_common)
-nrf_security_debug_list_target_files(mbedtls_base_vanilla)
-
-#
-# Library for x.509
-#
-if (CONFIG_MBEDTLS_X509_LIBRARY)
-  zephyr_library_named(mbedtls_x509_vanilla)
-  zephyr_library_sources(${src_x509})
-  zephyr_library_link_libraries(mbedtls_common)
-  nrf_security_debug_list_target_files(mbedtls_x509_vanilla)
-  zephyr_library_app_memory(k_mbedtls_partition)
-endif()
-
-#
-# Library for TLS support
-#
-if (CONFIG_MBEDTLS_TLS_LIBRARY)
-  zephyr_library_named(mbedtls_tls_vanilla)
-  zephyr_library_sources(${src_tls} ${src_tls_replacement})
-  zephyr_library_link_libraries(mbedtls_common)
-  nrf_security_debug_list_target_files(mbedtls_tls_vanilla)
-  zephyr_library_app_memory(k_mbedtls_partition)
-endif()
 
 #
 # Create mbedcrypto_shared (noglue) library
 #
+nrf_security_debug("-------- Adding src/mbedtls/shared")
 add_subdirectory(shared)
-zephyr_library_link_libraries(mbedcrypto_shared)
 
 #
 # Create mbedcrypto_cc3xx (noglue) library
@@ -177,6 +144,7 @@ zephyr_library_link_libraries(mbedcrypto_shared)
 if (CONFIG_CC3XX_BACKEND)
   nrf_security_debug("-------- Adding src/mbedtls/cc310")
   add_subdirectory(cc310)
+  list(APPEND cmake_directories cc310)
 endif()
 
 #
@@ -185,6 +153,7 @@ endif()
 if (CONFIG_OBERON_BACKEND)
   nrf_security_debug("-------- Adding src/mbedtls/oberon")
   add_subdirectory(oberon)
+  list(APPEND cmake_directories oberon)
 endif()
 
 #
@@ -193,48 +162,59 @@ endif()
 if (CONFIG_MBEDTLS_VANILLA_BACKEND)
   nrf_security_debug("-------- Adding src/mbedtls/vanilla")
   add_subdirectory(vanilla)
-endif()
-
-if(NOT CONFIG_NRF_SECURITY_GLUE_LIBRARY)
-  #
-  # Only single backend is chosen, thus append it to zephyr libraries as
-  # no renaming should be carried out.
-  #
-  if(TARGET mbedcrypto_cc3xx)
-    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_cc3xx (no glue)")
-    target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_cc3xx)
-  endif()
-  if(TARGET platform_cc3xx)
-    nrf_security_debug("Linking mbedtls_base_vanilla with platform_cc3xx (no glue)")
-    target_link_libraries(mbedtls_base_vanilla PRIVATE platform_cc3xx)
-  endif()
-  if(TARGET mbedcrypto_oberon)
-    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_oberon (no glue)")
-    target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_oberon)
-  endif()
-  if(TARGET mbedcrypto_vanilla)
-    nrf_security_debug("Linking mbedtls_base_vanilla with mbedcrypto_vanilla (no glue)")
-    target_link_libraries(mbedtls_base_vanilla PRIVATE mbedcrypto_vanilla)
-  endif()
+  list(APPEND cmake_directories vanilla)
 endif()
 
 #
-# Generate a dummy library called mbedtls_external to be able to use
-# CONFIG_MBEDTLS and CONFIG_MBEDTLS_LIBRARY in zephyr sockets
+# Add mbedcrypto_base_vanilla for everything that is not in a backend
 #
-add_library(mbedtls_external)
-target_sources(mbedtls_external PRIVATE ${ZEPHYR_BASE}/misc/empty_file.c)
+nrf_security_library(BASE mbedcrypto_base_vanilla
+  FILES
+    ${src_crypto}
+    ${src_crypto_replacement}
+  LINK_LIBRARIES
+    mbedtls_common
+    $<TARGET_NAME_IF_EXISTS:mbedcrypto_shared>
+)
+
+# Consider: Move this knowledge out of here.
+if (CONFIG_NRF_SECURITY_MULTI_BACKEND)
+  list(APPEND cmake_directories ../mbedcrypto_glue)
+endif()
 
 #
-# Give the main application access to the generated includes and mbed TLS config
+# Library for x.509
 #
-# NOTE: This library corresponds to APP_LINK_WITH_MBEDTLS_INCLUDES in Kconfig
-#       which is always set to "true".
-#
-zephyr_interface_library_named(mbedtls_includes)
-target_link_libraries(mbedtls_includes INTERFACE mbedtls_common)
+if (CONFIG_MBEDTLS_X509_LIBRARY)
+  add_library(mbedx509 STATIC
+    ${src_x509}
+  )
+
+  # Add options from Zephyr build
+  nrf_security_add_zephyr_options(mbedx509)
+
+  target_link_libraries(mbedx509 PRIVATE
+    mbedtls_common
+    mbedcrypto_static_alias
+  )
+
+endif()
 
 #
-# Give zephyr libraries access to includes and mbed TLS config
+# Library for TLS support
 #
-zephyr_link_libraries(mbedtls_common)
+if (CONFIG_MBEDTLS_TLS_LIBRARY)
+  add_library(mbedtls STATIC
+    ${src_tls}
+    ${src_tls_replacement}
+  )
+
+  # Add options from Zephyr build
+  nrf_security_add_zephyr_options(mbedtls)
+
+  target_link_libraries(mbedtls PRIVATE
+    mbedtls_common
+    mbedcrypto_static_alias
+  )
+
+endif()

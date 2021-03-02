@@ -4,8 +4,8 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-get_target_property(NRF_OBERON_MBEDTLS_INCLUDE_PATH mbedcrypto_oberon_mbedtls_imported BASE_INCLUDE_PATH)
-get_target_property(NRF_OBERON_INCLUDE_PATH mbedcrypto_oberon_imported BASE_INCLUDE_PATH)
+get_target_property(NRF_OBERON_MBEDTLS_INCLUDE_PATH mbedcrypto_oberon_mbedtls_imported INTERFACE_INCLUDE_DIRECTORIES)
+get_target_property(NRF_OBERON_INCLUDE_PATH mbedcrypto_oberon_imported INTERFACE_INCLUDE_DIRECTORIES)
 
 nrf_security_debug("######### Creating nrf_oberon noglue library #########")
 
@@ -19,104 +19,34 @@ nrf_security_debug("######### Creating nrf_oberon noglue library #########")
 # the noglue library is amended with missing symbols
 #
 # The noglue library will not be linked with directly. It is to be combined with
-# the nrf_oberon binary library to create mbedcrypto_oberon (naming neccesary for
-# renaming in glue )
+# the nrf_oberon binary library to create mbedcrypto_oberon
 #
-add_library(mbedcrypto_oberon_noglue STATIC
-  ${ZEPHYR_BASE}/misc/empty_file.c
+nrf_security_library(NOGLUE oberon
+  FILES
+    ${ARM_MBEDTLS_PATH}/library/aes.c
+    ${ARM_MBEDTLS_PATH}/library/ccm.c
+    ${ARM_MBEDTLS_PATH}/library/cmac.c
+    ${ARM_MBEDTLS_PATH}/library/ecp.c
+    ${ARM_MBEDTLS_PATH}/library/ecp_curves.c
+    ${CMAKE_CURRENT_LIST_DIR}/ecp_oberon.c
+    ${ARM_MBEDTLS_PATH}/library/ecdsa.c
+    ${ARM_MBEDTLS_PATH}/library/ecdh.c
+    ${ARM_MBEDTLS_PATH}/library/ecjpake.c
+    ${ARM_MBEDTLS_PATH}/library/sha1.c
+    ${ARM_MBEDTLS_PATH}/library/sha256.c
+    ${CMAKE_CURRENT_LIST_DIR}/xts_oberon.c
+  INCLUDES
+    ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}
+    ${NRF_OBERON_INCLUDE_PATH}
+  DEFINES
+    -DMBEDTLS_CONFIG_FILE="nrf-config-noglue-oberon.h"
 )
 
-#
-# mbed TLS files not present in nrf_oberon_mbedtls
-# Added if oberon enables the specific functionality
-#
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_AES_C
-  mbedcrypto_oberon_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/aes.c
+add_library(mbedcrypto_oberon INTERFACE)
+target_link_libraries(mbedcrypto_oberon INTERFACE
+                      mbedcrypto_oberon_mbedtls_imported
+                      mbedcrypto_oberon_imported
 )
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_CCM_C
-  mbedcrypto_oberon_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/ccm.c
-)
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_CMAC_C
-  mbedcrypto_oberon_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/cmac.c
-)
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_ECP_C
-  mbedcrypto_oberon_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/ecp.c
-)
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_ECP_C
-  mbedcrypto_oberon_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/ecp_curves.c
-)
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_ECP_C
-  mbedcrypto_oberon_noglue PRIVATE ${CMAKE_CURRENT_LIST_DIR}/ecp_oberon.c
-)
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_ECDSA_C
-  mbedcrypto_oberon_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/ecdsa.c
-)
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_ECDH_C
-  mbedcrypto_oberon_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/ecdh.c
-)
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_ECJPAKE_C
-  mbedcrypto_oberon_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/ecjpake.c
-)
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_SHA1_C
-  mbedcrypto_oberon_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/sha1.c
-)
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_SHA256_C
-  mbedcrypto_oberon_noglue PRIVATE ${ARM_MBEDTLS_PATH}/library/sha256.c
-)
-
-#
-# Add file required to to make nrf_oberon_mbedtls work with mbed TLS v2.16.x
-#
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_ECP_C
-  mbedcrypto_oberon_noglue PRIVATE ${CMAKE_CURRENT_LIST_DIR}/ecp_oberon.c
-)
-
-#
-# Add file required to make xts work with alternate aes enc/dec setkey
-#
-target_sources_ifdef(CONFIG_OBERON_MBEDTLS_AES_C
-  mbedcrypto_oberon_noglue PRIVATE ${CMAKE_CURRENT_LIST_DIR}/xts_oberon.c
-)
-
-target_include_directories(mbedcrypto_oberon_noglue PRIVATE
-  ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}
-  ${NRF_OBERON_MBEDTLS_INCLUDE}
-  ${common_includes}
-  ${config_include}
-)
-
-
-#
-# Add specific includes for threading and platform_cc3xx
-#
-if(TARGET platform_cc3xx)
-  target_include_directories(mbedcrypto_oberon_noglue PRIVATE
-    ${mbedcrypto_glue_include_path}/threading
-    $<TARGET_PROPERTY:platform_cc3xx,BASE_INCLUDE_PATH>
-  )
-endif()
-
-target_compile_options(mbedcrypto_oberon_noglue PRIVATE ${TOOLCHAIN_C_FLAGS})
-target_ld_options(mbedcrypto_oberon_noglue PRIVATE ${TOOLCHAIN_LD_FLAGS})
-
-target_compile_definitions(mbedcrypto_oberon_noglue PRIVATE
-  -DMBEDTLS_CONFIG_FILE="nrf-config-noglue-oberon.h"
-)
-
-nrf_security_debug_list_target_files(mbedcrypto_oberon_noglue)
-
-set(oberon_libs
-  mbedcrypto_oberon_mbedtls_imported
-  mbedcrypto_oberon_imported
-  mbedcrypto_oberon_noglue
-)
-
-#
-# Create the actual mbedcrypto_oberon library containing
-# all backend-specific
-#
-nrf_security_symbol_strip(oberon strip_command)
-nrf_security_combine_archives(oberon "${oberon_libs}" "${strip_command}")
 
 #
 # Copy the replacement _alt.h files by from nrf_oberon by enabled feature
