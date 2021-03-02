@@ -23,7 +23,7 @@ nrf_security_debug("######### Creating nrf_oberon noglue library #########")
 #
 nrf_security_library(NOGLUE oberon
   FILES
-    ${ARM_MBEDTLS_PATH}/library/aes.c
+    ${NRF_SECURITY_ROOT}/src/mbedtls/replacements/aes.c
     ${ARM_MBEDTLS_PATH}/library/ccm.c
     ${ARM_MBEDTLS_PATH}/library/cmac.c
     ${ARM_MBEDTLS_PATH}/library/ecp.c
