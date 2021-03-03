@@ -36,6 +36,15 @@ Added
 Changes
 =======
 
+* Decoupled the controller from the random number generator (DRGN-12507).
+  This functionality must now be provided by the user.
+  The user must provide ``rand_prio_low_get()``, ``rand_prio_high_get()`` and ``rand_poll()`` through the newly introduced :c:func:`sdc_rand_source_register()`.
+  These function can be mapped to the Zephyr Entropy API:
+
+    * ``rand_prio_low_get()`` <-> ``entropy_get_entropy_isr()`` (``*_isr()`` for nonblocking behavior)
+    * ``rand_prio_high_get()`` <-> ``entropy_get_entropy_isr()``
+    * ``rand_poll()`` <-> ``entropy_get_entropy()``
+
 * Renamed and reconfigured the libraries (DRGN-15118).
   Refer to the README for their corresponding supported feature sets.
   The new names are now:

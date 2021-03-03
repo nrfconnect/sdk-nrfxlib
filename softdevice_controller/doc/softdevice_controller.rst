@@ -13,9 +13,7 @@ For the nRF53 Series, the requirements described in this document are only relev
 
 Applications utilizing the |controller| library are responsible for the following:
 
-* Forwarding RNG interrupts to the |controller| library.
-  The application should not add additional processing in the corresponding interrupt handler.
-  Otherwise, the behavior is undefined.
+* Ensuring a source of random numbers is available to the |controller| (see the message sequence charts below).
 * The |controller| relies on the functionality provided by Nordic Semiconductor's :ref:`mpsl`, which has its own set of requirements that the application must follow.
 * Ensuring thread-safe operation.
   This can be achieved by either:
@@ -30,7 +28,6 @@ Applications utilizing the |controller| library are responsible for the followin
 
 The following peripherals are owned by the |controller| and must not be accessed directly by the application:
 
-* RNG
 * ECB
 * AAR
 * NVMC
@@ -53,6 +50,7 @@ The application can choose the features that are enabled and the number of links
     Host rbox Controller [label = "Library initialization"];
     Host->Controller      [label="sdc_init()"];
     Host rbox Controller [label = "Library configuration"];
+    Host->Controller      [label="sdc_rand_source_register(...)"];
     Host->Controller      [label="sdc_cfg_set(SDC_CFG_TYPE_MASTER_COUNT)"];
     Host->Controller      [label="sdc_cfg_set(SDC_CFG_TYPE_SLAVE_COUNT)"];
     Host rbox Controller[label = "Feature inclusion"];
