@@ -10,9 +10,9 @@
  * @defgroup sdc_soc SoftDevice Controller SoC Interface
  * @ingroup sdc
  *
- * The SoftDevice Controller SoC interface provides APIs for flash access, random number generation,
- * and block encryption. While the SoftDevice Controller is enabled, the application should only use
- * the provided APIs to access NRF_NVMC, NRF_RNG, or NRF_ECB.
+ * The SoftDevice Controller SoC interface provides APIs for flash access and block encryption
+ * While the SoftDevice Controller is enabled, the application should only use
+ * the provided APIs to access NRF_NVMC or NRF_ECB.
  * Not doing so will lead to undefined behavior.
  * @{
  */
@@ -97,39 +97,6 @@ int32_t sdc_soc_flash_write_async(uint32_t addr,
  */
 int32_t sdc_soc_flash_page_erase_async(uint32_t addr, sdc_soc_flash_callback_t on_complete);
 
-
-/** @brief Poll for random bytes from the random pool.
- *
- * The SoftDevice Controller will use NRF_RNG to obtain the numbers.
- * The function can be called from ISR context.
- *
- * @note If the function is repeatedly called from an execution priority higher
- * than the RNG IRQ priority, no new bytes will be returned.
- *
- * @param[out]  p_dst   Pointer to a buffer in RAM for storing the bytes.
- * @param[in]   length  Number of random bytes to retrieve.
- *
- * @retval Number of bytes obtained
- */
-uint32_t sdc_soc_rand_vector_poll(uint8_t * p_dst, uint16_t length);
-
-
-/** @brief Get random bytes from the random pool synchronously
- *
- * The SoftDevice Controller will use NRF_RNG to obtain the numbers.
- * The function can be called from ISR context.
- *
- * @note This function works like @ref sdc_soc_rand_vector_poll(), except
- *       that instead of failing in the event of not enough numbers being
- *       available, it will block until it has filled the specified length with
- *       random number bytes. The time until completion will vary.
- *
- * @param[out]  p_dst   Pointer to a buffer in RAM for storing the bytes.
- * @param[in]   length  Number of random bytes to retrieve.
- */
-void sdc_soc_rand_vector_get(uint8_t * p_dst, uint16_t length);
-
-
 /** @brief Encrypt a block according to the specified parameters.
  *
  * The SoftDevice Controller will use NRF_ECB encrypt the block. The encryption type is 128-bit AES.
@@ -149,6 +116,52 @@ int32_t sdc_soc_ecb_block_encrypt(const uint8_t key[16],
                                   const uint8_t cleartext[16],
                                   uint8_t ciphertext[16]);
 
+/**
+ * @brief Functions used by the SoftDevice Controller to obtain random numbers.
+ *
+ * These functions are used for several different purposes,
+ * including private address generation so they are expected to conform to:
+ * BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 2, Part H, Section 2.
+ */
+typedef struct
+{
+    /** @brief Function used by the controller to obtain random numbers in a low priority context.
+     *  The function will be executed in the same context as mpsl_low_priority_process and should not block.
+     *
+     *  @param[out]  p_buff  The destination buffer for the random numbers
+     *  @param[in]   length  The requested number of random bytes and the maximum length of the destination buffer
+     *  @retval              The number of bytes written to p_buff
+     */
+    uint8_t (*rand_prio_low_get)(uint8_t *p_buff, uint8_t length);
+
+    /** @brief Function used by the controller to obtain random numbers in a high priority context.
+     *  This function will be called in an ISR context and should not block.
+     *
+     *  @param[out]  p_buff  The destination buffer for the random numbers
+     *  @param[in]   length  The requested number of random bytes and the maximum length of the destination buffer
+     *  @retval              The number of bytes written to p_buff
+     */
+    uint8_t (*rand_prio_high_get)(uint8_t *p_buff, uint8_t length);
+
+    /** @brief Function used by the controller to obtain random numbers.
+     *  This function must block until length bytes of random numbers were written to p_buff.
+     *  The function will be executed in the same context as mpsl_low_priority_process.
+     *
+     *  @param[out]  p_buff  The destination buffer for the random numbers
+     *  @param[in]   length  The requested number of random bytes and the maximum length of the destination buffer
+     */
+    void (*rand_poll)(uint8_t *p_buff, uint8_t length);
+} sdc_rand_source_t;
+
+/** @brief Pass a source of randomness to the SoftDevice Controller
+ *
+ * The SoftDevice Controller will use the function pointers provided in this function call to get random numbers.
+ *
+ * @param[in] rand_source  A table of function pointers to obtain random numbers
+ *
+ * @retval 0 Success
+ */
+int32_t sdc_rand_source_register(const sdc_rand_source_t *rand_source);
 
 
 #ifdef __cplusplus
