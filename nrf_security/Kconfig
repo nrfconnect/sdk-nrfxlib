@@ -12,7 +12,7 @@ config NORDIC_SECURITY_BACKEND
 	prompt "Use Nordic provided security backend" if !NORDIC_SECURITY_PROMPTLESS
 	depends on SOC_FAMILY_NRF
 	select NRFXLIB_CRYPTO
-	select ENTROPY_GENERATOR if (SOC_NRF52810 || SOC_NRF52832)
+	select ENTROPY_GENERATOR
 	help
 	  nRF Connect SDK Security provides crypto functionality through
 	  different backends.
@@ -20,22 +20,6 @@ config NORDIC_SECURITY_BACKEND
 	  features.
 
 if NORDIC_SECURITY_BACKEND
-
-config CRYPTOCELL_USABLE
-	bool
-	depends on SOC_NRF52840 || (SOC_NRF9160 && !TRUSTED_EXECUTION_NONSECURE) || \
-			   (SOC_NRF5340_CPUAPP && !TRUSTED_EXECUTION_NONSECURE)
-	default y
-
-config CRYPTOCELL_CC310_USABLE
-	bool
-	depends on SOC_NRF52840 || (SOC_NRF9160 && !TRUSTED_EXECUTION_NONSECURE)
-	default y
-
-config CRYPTOCELL_CC312_USABLE
-	bool
-	depends on (SOC_NRF5340_CPUAPP && !TRUSTED_EXECUTION_NONSECURE)
-	default y
 
 comment "mbed TLS Configuration File"
 
