@@ -132,9 +132,11 @@ zephyr_library_sources_ifdef(CONFIG_MBEDTLS_ENABLE_HEAP
   ${NRF_SECURITY_ROOT}/src/mbedtls/mbedtls_heap.c
 )
 
-if ((CONFIG_ENTROPY_CC3XX AND CONFIG_TRUSTED_EXECUTION_NONSECURE) OR
-    CONFIG_ENTROPY_NRF5_RNG OR
-    CONFIG_ENTROPY_NRF_LL_SOFTDEVICE)
+#
+# When the CC3XX platform is not enabled, implement the entropy poll
+# using the chosen entropy driver.
+#
+if (NOT CONFIG_NRF_CC3XX_PLATFORM)
   zephyr_library_sources(${NRF_SECURITY_ROOT}/src/backend/entropy/entropy_poll.c)
 endif()
 
