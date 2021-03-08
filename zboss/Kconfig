@@ -4,6 +4,8 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
+if ZIGBEE
+
 menu "ZBOSS library configuration"
 
 config ZBOSS_SOURCES_AVAILABLE
@@ -42,3 +44,5 @@ rsource "development/Kconfig"
 endif # ZIGBEE_LIBRARY_DEVELOPMENT
 
 endmenu
+
+endif #ZIGBEE
