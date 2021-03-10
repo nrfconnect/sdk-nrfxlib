@@ -57,4 +57,5 @@ Proprietary feature support:
 
    doc/softdevice_controller
    CHANGELOG
+   limitations
    doc/api
