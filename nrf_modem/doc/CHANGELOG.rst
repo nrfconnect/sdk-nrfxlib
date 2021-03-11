@@ -236,7 +236,7 @@ bsdlib 0.3.3
 
 Updated library with various changes:
 
-* Bugfix internal to the library solving issue with unresponsive sockets.
+* Bug fix internal to the library solving issue with unresponsive sockets.
 
 bsdlib 0.3.2
 ************
@@ -292,7 +292,7 @@ Updated library with various changes:
   (-nostdlib -nodefaultlibs -nostartfiles -lnosys).
 * Fixed issues with some unresolved symbols internal to the library.
 * Updated API towards bsd_os_timedwait function.
-  The time-out parameter is now an in and out parameter.
+  The timeout parameter is now an in and out parameter.
   The bsd_os implementation is now expected to set the remaining time left of the time-out value in return.
 
 bsdlib 0.2.2
@@ -307,12 +307,12 @@ Updated library with API for setting APN name when doing getaddrinfo request.
 bsdlib 0.2.1
 ************
 
-Updated library with bugfixes:
+Updated library with bug fixes:
 
 * Updated ``nrf_inbuilt_key.h`` with smaller documentation fixes.
-* Bugfix in the ``nrf_inbuilt_key`` API to allow PSK and Identity to be provisioned successfully.
-* Bugfix in the ``nrf_inbuilt_key`` API to allow security tags in the range of 65535 to 2147483647 to be deleted, read, and listed.
-* Bugfix in proprietary trace log.
+* Bug fix in the ``nrf_inbuilt_key`` API to allow PSK and Identity to be provisioned successfully.
+* Bug fix in the ``nrf_inbuilt_key`` API to allow security tags in the range of 65535 to 2147483647 to be deleted, read, and listed.
+* Bug fix in proprietary trace log.
 
 bsdlib 0.2.0
 ************

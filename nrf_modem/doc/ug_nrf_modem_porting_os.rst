@@ -35,7 +35,7 @@ It is responsible for preparing IRQ for low priority Modem library scheduling an
 .. note::
    When working with an application based on Zephyr, set the IRQs to a low priority (6 or 7) and enable them before exiting the function.
 
-The function must also initialize the timers and threads (if there is a context that needs a time-out).
+The function must also initialize the timers and threads (if there is a context that needs a timeout).
 If Nordic Proprietary trace is enabled, the library generates trace data and forwards it to a medium that can be initialized or configured by using the :c:func:`nrf_modem_os_init` function.
 The forwarded trace data is handled in the :c:func:`nrf_modem_os_trace_put` function.
 See :ref:`trace_output_function` for more information.
@@ -213,7 +213,7 @@ The following message sequence diagrams show the interactions between the applic
    Trace handling, lowering priority
 
 
-#. Handling a time-out or sleep:
+#. Handling a timeout or sleep:
 
 .. figure:: images/msc_timers.svg
    :alt: Timers

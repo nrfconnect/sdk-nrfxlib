@@ -24,8 +24,8 @@ Added
 * Added macro MPSL_RESERVED_PPI_CHANNELS for a bit mask of (D)PPI channels
   reserved by MPSL (DRGN-13356).
 
-Bugfixes
-========
+Bug fixes
+=========
 
 * Fixed an issue where Low Frequency Clock was configured incorrectly
   when the source configuration signal was set to either External Full swing or External Low swing. (DRGN-15064)
@@ -46,8 +46,8 @@ Changes
 * Added an API to use Front-End Modules, like the nRF21540 GPIO or a simple GPIO, with the protocols and an API to configure them using the application.
   Only the nRF52 series is supported.
 
-Bugfixes
-========
+Bug fixes
+=========
 
 * Fixed an issue where the high frequency clock and ``TIMER0`` were not turned off during idle periods shorter than 9 ms (DRGN-14152).
   This increased the average power consumption.
@@ -77,8 +77,8 @@ Changes
 * On nRF53, the fix for Errata 16 is now applied.
 * The scheduling overhead of a timeslot event is reduced.
 
-Bugfixes
-========
+Bug fixes
+=========
 
 * Fixed an issue on nRF53 where an assert could occur when using a timeslot.
 
