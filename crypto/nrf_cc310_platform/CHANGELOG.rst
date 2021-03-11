@@ -12,7 +12,7 @@ All notable changes to this project are documented in this file.
 nrf_cc3xx_platform - 0.9.7
 **************************
 
-New version of the library with a bugfix:
+New version of the library with a bug fix:
 
 * Fixed an issue with mutex slab allocation in Zephyr RTOS platform file.
 

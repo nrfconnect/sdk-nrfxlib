@@ -489,7 +489,7 @@ Added a new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architec
 nrf_cc310_mbedcrypto - 0.9.1
 ****************************
 
-New experimental version of nrf_cc310_mbedcrypto with general bugfixes.
+New experimental version of nrf_cc310_mbedcrypto with general bug fixes.
 
 This version is dependent on the nrf_cc310_platform library for low-level initialization of the system and proper RTOS integration.
 
@@ -546,7 +546,7 @@ Added a new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architec
 nrf_cc310_mbedcrypto - 0.9.0
 ****************************
 
-New experimental version of nrf_cc310_mbedcrypto with general bugfixes.
+New experimental version of nrf_cc310_mbedcrypto with general bug fixes.
 
 This version is dependent on the newly added nrf_cc310_platform library for low-level  initialization of the system and proper RTOS integration.
 
@@ -603,7 +603,7 @@ Added a new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architec
 nrf_cc310_mbedcrypto - 0.8.1
 ****************************
 
-New experimental version of nrf_cc310_mbedcrypto with general bugfixes.
+New experimental version of nrf_cc310_mbedcrypto with general bug fixes.
 
 .. note::
   This version should be used for nRF9160 devices. Use of earlier versions may lead to
@@ -662,7 +662,7 @@ Added a new build of nrf_cc310_mbedcrypto library for nRF9160 and nRF52 architec
 nrf_cc310_mbedcrypto - 0.8.0
 ****************************
 
-New experimental version of nrf_cc310_mbedcrypto with changes to platform initialization and general bugfixes.
+New experimental version of nrf_cc310_mbedcrypto with changes to platform initialization and general bug fixes.
 
 ..warning::
    This version may lead to undefined behavior on some nRF9160 devices.
