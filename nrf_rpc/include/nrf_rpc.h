@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include <nrf_errno.h>
+#include <nrf_rpc_errno.h>
 #include <nrf_rpc_common.h>
 #include <nrf_rpc_tr.h>
 
