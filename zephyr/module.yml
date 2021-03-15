@@ -1,3 +1,5 @@
 build:
-  cmake: .
+  cmake-ext: True
   kconfig: Kconfig.nrfxlib
+  depends:
+  - hal_nordic
