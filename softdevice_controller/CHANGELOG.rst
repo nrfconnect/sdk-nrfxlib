@@ -67,19 +67,8 @@ Bugfixes
 * Fixed an issue where the LL control procedures LE start encryption and LE connection parameter update could not be initiated at the same time (DRGN-11963).
 * Fixed an issue where the generation of QoS Connection event was not disabled after an HCI reset (DRGN-15291).
 
-Limitations
-===========
-
-The RSSI value reported by the Softdevice Controller is the raw value from the radio peripheral.
-Some SoCs require compensation of the RSSI value based on the chip temperature.
-See the Errata document for the respective SoC for detailed information.
-
-For the nRF53 Series, you can retrieve the chip temperature by reading the value of the temperature peripheral on the network core.
-To do this with the SoftDevice Controller, use the Zephyr HCI VS Read Chip Temperature command (``BT_HCI_OP_VS_READ_CHIP_TEMP``).
-
-For the nRF52 Series, you can use the Zephyr sensor API instead of the HCI command to retrieve the chip temperature.
-
-You can then use the retrieved temperature value to compensate the raw RSSI value, following the workaround in the Errata document.
+Known issues
+============
 
 See the :ref:`nrf:known_issues` page in |NCS| for the list of known issues and limitations for this release.
 
