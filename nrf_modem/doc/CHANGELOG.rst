@@ -9,6 +9,18 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.0.2
+***************
+
+* Implemented RAI (Release Assistance Indication) support in Modem library.
+* Fixed an issue that leads to the reporting of both ``NRF_POLLIN`` and ``NRF_POLLHUP`` by :c:function:`nrf_poll` when a connection is closed by the peer.
+* Fixed an issue where a :c:function:`nrf_recv` call on a non-blocking socket would not always behave correctly when the ``NRF_MSG_WAITALL`` flag or the ``NRF_MSG_DONTWAIT`` flag was used.
+* Fixed an issue where a blocking :c:function:`nrf_send` could return before sending all the data in some cases.
+* Reduced the Heap memory usage in :c:function:`nrf_recv` by 20 percent when using IPv4.
+* :c:function:`nrf_listen` on a connected socket will now correctly set errno to ``NRF_EINVAL``, instead of ``NRF_EBADF``.
+* :c:function:`nrf_accept` on a non-listening socket will now correctly set errno to ``NRF_EINVAL``, instead of ``NRF_EBADF``.
+* Added support for binding RAW sockets to PDNs.
+
 nrf_modem 1.0.1
 ***************
 
