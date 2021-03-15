@@ -471,6 +471,30 @@ typedef uint32_t nrf_fd_set;
 #define NRF_SO_SILENCE_IP_ECHO_REPLY   31
 #define NRF_SO_SILENCE_IPV6_ECHO_REPLY 32
 #define NRF_SO_REUSEADDR	       40
+/** Release Assistance Indication feature: This will indicate that the next call to send/sendto will
+ * be the last one for some time, which means that the modem can get out of connected mode quicker
+ * when this data is sent.
+ */
+#define NRF_SO_RAI_LAST                    50
+/** Release Assistance Indication feature: This will indicate that the application will not send any
+ * more data. This socket option will apply immediately, and does not require a call to send
+ * afterwards.
+ */
+#define NRF_SO_RAI_NO_DATA                 51
+/** Release Assistance Indication feature: This will indicate that after the next call to
+ * send/sendto, the application is expecting to receive one more data packet before this socket
+ * will not be used again for some time.
+ */
+#define NRF_SO_RAI_ONE_RESP                52
+/** Release Assistance Indication feature: If a client application expects to use the socket more
+ * it can indicate that by setting this socket option before the next send call which will keep
+ * the modem in connected mode longer.
+ */
+#define NRF_SO_RAI_ONGOING                 53
+/** Release Assistance Indication feature: If a server application expects to use the socket more
+ * it can indicate that by setting this socket option before the next send call.
+ */
+#define NRF_SO_RAI_WAIT_MORE               54
 /**@} */
 
 /**@defgroup nrf_socket_options_levels Socket option levels enumerator
