@@ -28,7 +28,7 @@ doc/*                                     @b-gent
 /crypto/                                  @frkv @tejlmand
 /mpsl/                                    @joerchan @hurricaneFromMoscow
 /nfc/                                     @anangl @grochu
-/nrf_802154_sl/                           @hubertmis
+/nrf_802154/                              @czeslawmakarski
 /nrf_security/                            @frkv @tejlmand
 /openthread/                              @MarekPorwisz @lmaciejonczyk
 /zboss/                                   @tomchy

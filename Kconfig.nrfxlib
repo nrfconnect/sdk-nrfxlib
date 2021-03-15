@@ -15,6 +15,6 @@ rsource "softdevice_controller/Kconfig"
 rsource "nrf_rpc/Kconfig"
 rsource "zboss/Kconfig"
 rsource "openthread/Kconfig"
-rsource "nrf_802154_sl/Kconfig"
+rsource "nrf_802154/zephyr/Kconfig.nrfxlib"
 
 endmenu
