@@ -51,6 +51,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
     /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_TX_POWER = 0xfc0f,
+    /** @brief See @ref sdc_hci_cmd_vs_read_supported_vs_commands(). */
+    SDC_HCI_OPCODE_CMD_VS_READ_SUPPORTED_VS_COMMANDS = 0xfd00,
     /** @brief See @ref sdc_hci_cmd_vs_llpm_mode_set(). */
     SDC_HCI_OPCODE_CMD_VS_LLPM_MODE_SET = 0xfd01,
     /** @brief See @ref sdc_hci_cmd_vs_conn_update(). */
@@ -80,6 +82,17 @@ enum sdc_hci_vs_tx_power_handle_type
     /** @brief Handle of type Connection. */
     SDC_HCI_VS_TX_POWER_HANDLE_TYPE_CONN = 0x02,
 };
+
+/** @brief Supported Vendor Specific HCI Commands. */
+typedef __PACKED_STRUCT
+{
+    uint8_t read_supported_vs_commands : 1;
+    uint8_t llpm_mode_set : 1;
+    uint8_t conn_update : 1;
+    uint8_t conn_event_extend : 1;
+    uint8_t qos_conn_event_report_enable : 1;
+    uint8_t event_length_set : 1;
+} sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Adress type. */
 typedef __PACKED_STRUCT
@@ -266,6 +279,13 @@ typedef __PACKED_STRUCT
     /** @brief The selected Tx Power in dBm. */
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
+
+/** @brief Read Supported Vendor Specific Commands return parameter(s). */
+typedef __PACKED_UNION
+{
+    sdc_hci_vs_supported_vs_commands_t params;
+    uint8_t raw[64];
+} sdc_hci_cmd_vs_read_supported_vs_commands_return_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef __PACKED_STRUCT
@@ -473,6 +493,26 @@ uint8_t sdc_hci_cmd_vs_zephyr_write_tx_power(const sdc_hci_cmd_vs_zephyr_write_t
  */
 uint8_t sdc_hci_cmd_vs_zephyr_read_tx_power(const sdc_hci_cmd_vs_zephyr_read_tx_power_t * p_params,
                                             sdc_hci_cmd_vs_zephyr_read_tx_power_return_t * p_return);
+
+/** @brief Read Supported Vendor Specific Commands.
+ *
+ * This command reads the list of vendor specific HCI commands supported
+ * for the local Controller.
+ *
+ * This command shall return a bitmap of the supported vendor specific
+ * commands.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_Read_Supported_Vs_Commands command has completed,
+ * an HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_read_supported_vs_commands(sdc_hci_cmd_vs_read_supported_vs_commands_return_t * p_return);
 
 /** @brief Set Low Latency Packet Mode.
  *

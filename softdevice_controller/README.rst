@@ -56,5 +56,6 @@ Proprietary feature support:
    :caption: Subpages:
 
    doc/softdevice_controller
+   limitations
    CHANGELOG
    doc/api
