@@ -16,11 +16,13 @@ Added
 =====
 
 * Added radio front-end module (FEM) support, based on the :ref:`mpsl_fem` (DRGN-11059).
+* Added supported for the vendor specific HCI command: Read Supported Vendor Specific Commands (DRGN-13763).
 
 Bug fixes
 =========
 
 * Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not applied on the secondary advertising channels (DRGN-13594).
+* The SoftDevice Controller can now be qualified on nRF52832 (DRGN-15382).
 
 nRF Connect SDK v1.5.0
 **********************
@@ -55,8 +57,8 @@ Changes
 
 * All libraries are now compatible with all platforms within a given family (DRGN-15118).
 
-Bug fixes
-=========
+Bugfixes
+========
 
 * Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out (DRGN-13029).
 * Fixed an issue where a directed advertiser used a resolvable address as the TargetA when the local device address was set to public or random device address (DRGN-13921).
@@ -67,19 +69,8 @@ Bug fixes
 * Fixed an issue where the LL control procedures LE start encryption and LE connection parameter update could not be initiated at the same time (DRGN-11963).
 * Fixed an issue where the generation of QoS Connection event was not disabled after an HCI reset (DRGN-15291).
 
-Limitations
-===========
-
-The RSSI value reported by the Softdevice Controller is the raw value from the radio peripheral.
-Some SoCs require compensation of the RSSI value based on the chip temperature.
-See the Errata document for the respective SoC for detailed information.
-
-For the nRF53 Series, you can retrieve the chip temperature by reading the value of the temperature peripheral on the network core.
-To do this with the SoftDevice Controller, use the Zephyr HCI VS Read Chip Temperature command (``BT_HCI_OP_VS_READ_CHIP_TEMP``).
-
-For the nRF52 Series, you can use the Zephyr sensor API instead of the HCI command to retrieve the chip temperature.
-
-You can then use the retrieved temperature value to compensate the raw RSSI value, following the workaround in the Errata document.
+Known issues
+============
 
 See the :ref:`nrf:known_issues` page in |NCS| for the list of known issues and limitations for this release.
 
@@ -132,8 +123,8 @@ Changes
   * HCI_VS_SUBEVENT -> HCI_SUBEVENT_VS
   * hci_vs_cmd      -> hci_cmd_vs
 
-Bug fixes
-=========
+Bugfixes
+========
 
 * Fixed an issue in master role which could cause disconnects if there were scheduling conflicts while doing a control procedures with an instant (DRGN-11222).
 
@@ -213,8 +204,8 @@ Changes
   Use corresponding API in MPSL instead.
 * Version numbers have been removed from the libraries.
 
-Bug fixes
-=========
+Bugfixes
+========
 
 * Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out.
 * Fixed an issue where a control packet could be sent twice even after the packet was ACKed.
@@ -237,8 +228,8 @@ Added
 
 * Added support for nRF52833.
 
-Bug fixes
-=========
+Bugfixes
+========
 
 * Fixed an issue where :c:func:`hci_data_get` could return "No data available" when there was data available.
   This issue would only occur when connected to multiple devices at the same time.
@@ -246,8 +237,8 @@ Bug fixes
 nRF Bluetooth LE Controller 0.3.0-2.prealpha
 ********************************************
 
-Bug fixes
-=========
+Bugfixes
+========
 
 * Fixed an issue where an assert occured when the host issued LE Write Suggested Default Data Length.
 
@@ -271,8 +262,8 @@ Added
   When enabled, one report is generated with every connection event.
   The report contains information that can be used to change the Bluetooth LE channel map.
 
-Bug fixes
-=========
+Bugfixes
+========
 
 * Fixed an issue where HCI Read Local Supported Commands command did not indicate support for HCI LE Set Privacy Mode command.
 * Fixed an issue where an ASSERT occured when setting advertising data after HCI Reset without setting advertising parameters.
@@ -314,7 +305,7 @@ Changes
 nRF Bluetooth LE Controller 0.2.0-1.prealpha
 ********************************************
 
-Updated Bluetooth LE Controller with bug fixes and updated APIs.
+Updated Bluetooth LE Controller with bugfixes and updated APIs.
 
 Added
 =====
@@ -324,8 +315,8 @@ Added
 * Added API to get Bluetooth LE Controller build revision: :c:func:`ble_controller_build_revision_get`.
 * Added separate :c:func:`ble_controller_init` API.
 
-Bug fixes
-=========
+Bugfixes
+========
 
 Fixed an issue in HCI control flow that severely limited Bluetooth LE throughput.
 
