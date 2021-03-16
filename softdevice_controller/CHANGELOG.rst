@@ -16,11 +16,13 @@ Added
 =====
 
 * Added radio front-end module (FEM) support, based on the :ref:`mpsl_fem` (DRGN-11059).
+* Added supported for the vendor specific HCI command: Read Supported Vendor Specific Commands (DRGN-13763).
 
 Bug fixes
 =========
 
 * Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not applied on the secondary advertising channels (DRGN-13594).
+* The SoftDevice Controller can now be qualified on nRF52832 (DRGN-15382).
 
 nRF Connect SDK v1.5.0
 **********************
@@ -55,8 +57,8 @@ Changes
 
 * All libraries are now compatible with all platforms within a given family (DRGN-15118).
 
-Bug fixes
-=========
+Bugfixes
+========
 
 * Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out (DRGN-13029).
 * Fixed an issue where a directed advertiser used a resolvable address as the TargetA when the local device address was set to public or random device address (DRGN-13921).
@@ -67,19 +69,8 @@ Bug fixes
 * Fixed an issue where the LL control procedures LE start encryption and LE connection parameter update could not be initiated at the same time (DRGN-11963).
 * Fixed an issue where the generation of QoS Connection event was not disabled after an HCI reset (DRGN-15291).
 
-Limitations
-===========
-
-The RSSI value reported by the Softdevice Controller is the raw value from the radio peripheral.
-Some SoCs require compensation of the RSSI value based on the chip temperature.
-See the Errata document for the respective SoC for detailed information.
-
-For the nRF53 Series, you can retrieve the chip temperature by reading the value of the temperature peripheral on the network core.
-To do this with the SoftDevice Controller, use the Zephyr HCI VS Read Chip Temperature command (``BT_HCI_OP_VS_READ_CHIP_TEMP``).
-
-For the nRF52 Series, you can use the Zephyr sensor API instead of the HCI command to retrieve the chip temperature.
-
-You can then use the retrieved temperature value to compensate the raw RSSI value, following the workaround in the Errata document.
+Known issues
+============
 
 See the :ref:`nrf:known_issues` page in |NCS| for the list of known issues and limitations for this release.
 
