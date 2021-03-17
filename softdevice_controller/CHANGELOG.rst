@@ -9,8 +9,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-Master branch
-*************
+nRF Connect SDK v1.5.1
+**********************
 
 Added
 =====
@@ -21,6 +21,7 @@ Bug fixes
 =========
 
 * Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not applied on the secondary advertising channels (DRGN-13594).
+* The SoftDevice Controller can now be qualified on nRF52832 (DRGN-15382).
 
 nRF Connect SDK v1.5.0
 **********************
