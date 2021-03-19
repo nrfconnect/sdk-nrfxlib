@@ -14,6 +14,7 @@
 #define NRF_CC3XX_PLATFORM_KMU__
 
 #include <stdint.h>
+#include <stddef.h>
 #include "nrf.h"
 
 #if defined(NRF9160_XXAA) || defined(NRF5340_XXAA_APPLICATION)
@@ -64,9 +65,9 @@
  *
  * @note nRF5340: Keys of 128 bits can use @ref NRF_CC3XX_PLATFORM_KMU_AES_ADDR,
  *       Keys larger than 128 bits must be split up to use two KMU slots.
- *       Use @ref NRF_CC3XX_PLATFORM_KMU_AES_ADDR_1 for the first 128 bits of
+ *       Use NRF_CC3XX_PLATFORM_KMU_AES_ADDR_1 for the first 128 bits of
  *       the key.
- *       Use @ref NRF_CC3XX_PLATFORM_KMU_AES_ADDR_2 for the subsequent bits of
+ *       Use NRF_CC3XX_PLATFORM_KMU_AES_ADDR_2 for the subsequent bits of
  *       the key.
  *
  * @param[in]   slot_id     KMU slot ID for the new key (2 - 127).
@@ -143,6 +144,54 @@ int nrf_cc3xx_platform_kmu_push_kdr_slot_and_lock(void);
 int nrf_cc3xx_platform_kdr_load_key(uint8_t key[16]);
 
 #endif // defined(NRF52840_XXAA)
+
+/** @brief Function to use CMAC to derive a key stored in KMU/KDR
+ *
+ * @details The KDF is using a PRF function described in the Special publication
+ *          800-108: Recommendation for Key Derivation Using Pseudorandom Functions
+ *          https://csrc.nist.gov/publications/detail/sp/800-108/final.
+ *
+ *          This algorithm is described in chapter 5.1 - KDF in Counter Mode
+ *
+ *          The format of the PRF (the input) is as follows:
+ *          PRF (KI, i || Label || 0x00 || Context || L)
+ *
+ *          KI: The Key derivation key
+ *          i : The counter value for each iteration of the PRF represented
+ *              as one byte.
+ *          label: A string identifying the purpose of the derived key
+ *                 that is up to 64 bytes long.
+ *          0x00: a single byte delimiter.
+ *          Context: Fixed information about the derived keying material
+ *                   that is up to 64 bytes long.
+ *          L : The length of derived key material in bits represented as two
+ *              bytes.
+ *
+ * @note On nRF52840 only slot_id == 0 is valid, pointing to the
+ *       Kdr key (also known as a HUK key) loaded into the CryptoCell.
+ *
+ * @param   slot_id         Identifier of the key slot.
+ * @param   keybits         Key size in bits.
+ * @param   label           Label to use for KDF.
+ * @param   label_size      Size of the label to use for KDF.
+ * @param   context         Context info to use for KDF.
+ * @param   context_size    Context info size to use for KDF.
+ * @param   output          Output buffer.
+ * @param   output_size     Size of output buffer in bytes.
+ *
+ * @returns 0 on success, otherwise a negative number.
+ */
+int nrf_cc3xx_platform_kmu_shadow_key_derive(
+    uint32_t slot_id,
+    unsigned int keybits,
+    uint8_t const * label,
+    size_t label_size,
+    uint8_t const * context,
+    size_t context_size,
+    uint8_t * output,
+    size_t output_size);
+
+
 
 #endif /* NRF_CC3XX_PLATFORM_KMU__ */
 /** @} */

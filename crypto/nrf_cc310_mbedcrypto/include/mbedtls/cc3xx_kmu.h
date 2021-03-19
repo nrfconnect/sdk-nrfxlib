@@ -7,8 +7,8 @@
 /**@file
  * @defgroup nrf_cc3xx_mbedcrypto nrf_cc3xx_mbedcrypto APIs
  * @{
- * @brief nrf_cc3xx_mbedcrypto  nrf_cc3xx_mbedcrypto library containing cc3xx
- * APIs for the KMU or KDR peripherarls. Further documentation can be found on : https://tls.mbed.org
+ * @brief nrf_cc3xx_mbedcrypto  nrf_cc3xx_mbedcrypto library containing
+ * APIs for the KMU or KDR peripherals. Further documentation can be found on : https://tls.mbed.org
  * @}
  *
  * @defgroup nrf_cc3xx_mbedcrypto_kmu nrf_cc3xx_mbedcrypto KMU APIs
@@ -367,7 +367,7 @@ extern "C"
 #endif
 
 
-/** @brief Function to use CMAC to derive a key stored in KMU key
+/** @brief Function to use CMAC to derive a key stored in KMU/KDR
  *
  * @details The KDF is using a PRF function described in the Special publication
  *          800-108: Recommendation for Key Derivation Using Pseudorandom Functions

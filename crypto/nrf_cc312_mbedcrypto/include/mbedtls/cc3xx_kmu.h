@@ -3,11 +3,18 @@
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
+
 /**@file
- * @defgroup cc3xx_kmu cc3xx  APIs
- * @ingroup nrf_cc3xx_platform
+ * @defgroup nrf_cc3xx_mbedcrypto nrf_cc3xx_mbedcrypto APIs
  * @{
- * @brief The cc3xx_kmu APIs provides APIs to directly use or derive key
+ * @brief nrf_cc3xx_mbedcrypto  nrf_cc3xx_mbedcrypto library containing
+ * APIs for the KMU or KDR peripherals. Further documentation can be found on : https://tls.mbed.org
+ * @}
+ *
+ * @defgroup nrf_cc3xx_mbedcrypto_kmu nrf_cc3xx_mbedcrypto KMU APIs
+ * @ingroup nrf_cc3xx_mbedcrypto
+ * @{
+ * @brief The nrf_cc3xx_mbedcrypto_kmu APIs provides APIs to directly use or derive key
  *        from KMU or KDR in ARM CryptoCell devices
  */
 #ifndef CC3XX_KMU_H__
@@ -360,7 +367,7 @@ extern "C"
 #endif
 
 
-/** @brief Function to use CMAC to derive a key stored in KMU key
+/** @brief Function to use CMAC to derive a key stored in KMU/Kdr
  *
  * @details The KDF is using a PRF function described in the Special publication
  *          800-108: Recommendation for Key Derivation Using Pseudorandom Functions
