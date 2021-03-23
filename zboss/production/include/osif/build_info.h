@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -11,52 +11,54 @@
  * Please use release scripts to update it's contents.
  *
  * Repositories:
- * platform_ncs       19161e7de2990be42a8fda6f609ca817b9793c5a https://bitbucket.dsr-corporation.com/scm/ZOI/platform_ncs.git
- * zboss-stack-src    9c6be5410891e732150fea1e14a678b26568eee2 https://bitbucket.dsr-corporation.com/scm/zoi/zboss_stable
- * zboss-stack-doc    787a18fa7069dfb796fc250f3f6c9a4b2c57eaff https://bitbucket.dsr-corporation.com/scm/zoi/zboss_doc
- * nrf                a495afc650a39d30aa2830cc73ae3b18b8254caa https://github.com/nrfconnect/sdk-nrf
- * zephyr             444e432dbc26eae47de5772b0e77d66ab513a725 https://github.com/wbober/sdk-zephyr
- * mcuboot            853e11283805ec66f157bc27a5286edb36046725 https://github.com/nrfconnect/sdk-mcuboot
- * mcumgr             c811bcbd446c4589496fc96237c0a286ea2e7f10 https://github.com/nrfconnect/sdk-mcumgr
- * nrfxlib            d2e0a44f593cb807d3aa9cc8dd142878bc43e22f https://github.com/nrfconnect/sdk-nrfxlib
- * cmock              c243b9a7a7b3c471023193992b46cf1bd1910450 https://github.com/ThrowTheSwitch/cmock
- * unity              031f3bbe45f8adf504ca3d13e6f093869920b091 https://github.com/ThrowTheSwitch/unity
- * mbedtls-nrf        3ede1737dc471199bf8d5d3824ee2545c11a497e https://github.com/ARMmbed/mbedtls
+ * platform_ncs       0d6ead1b2c07e25e8f0b2bd0ef313e62e5cae1bd https://bitbucket.dsr-corporation.com/scm/ZOI/platform_ncs.git
+ * zboss-stack-src    f63ee60b071d7d83a9663d0e64af2726f23bb4d8 https://bitbucket.dsr-corporation.com/scm/zoi/zboss_stable
+ * zboss-stack-doc    ef9a1665e4a92f0231b74601cedd3292ea23285c https://bitbucket.dsr-corporation.com/scm/zoi/zboss_doc
+ * nrf                65c784a907b8d494e163259f20d2fff1d5529275 https://github.com/nrfconnect/sdk-nrf
+ * zephyr             4ce908a2342494c19df09f347ce79ab81b415185 https://github.com/nrfconnect/sdk-zephyr
+ * mcuboot            858dd034f6565bcab5ed780e48aa713994ca1b7d https://github.com/nrfconnect/sdk-mcuboot
+ * nrfxlib            bedc08376043de27a59c7ea0af51c9cc177b0f18 https://github.com/nrfconnect/sdk-nrfxlib
+ * trusted-firmware-m 3bc9506f48adbb0450fd6862e7fc34cd40f31763 https://github.com/nrfconnect/sdk-trusted-firmware-m
+ * tfm-mcuboot        81d19f017f18f1bc6bea906d96fd45fba3672064 https://github.com/nrfconnect/sdk-mcuboot
+ * connectedhomeip    c73b8e0ada5b38b0b9fdb73b582b09b62f242b60 https://github.com/nrfconnect/sdk-connectedhomeip
+ * cmock              9d092898ef26ece140d9225e037274b64d4f851e https://github.com/ThrowTheSwitch/cmock
+ * unity              74cde089e65c3435ce9aa87d5c69f4f16b7f6ade https://github.com/ThrowTheSwitch/unity
+ * mbedtls-nrf        523f0554b6cdc7ace5d360885c3f5bbcc73ec0e8 https://github.com/ARMmbed/mbedtls
  * nanopb             df0e92f474f9cca704fe2b31483f0b4d1b1715a4 https://github.com/nanopb/nanopb
  * Alexa-Gadgets-Embedded-Sample-Code face92d8c62184832793f518bb1f19379538c5c1 https://github.com/alexa/Alexa-Gadgets-Embedded-Sample-Code
- * cmsis              542b2296e6d515b265e25c6b7208e8fea3014f90 https://github.com/zephyrproject-rtos/cmsis
+ * cddl-gen           24f1b2b0c64c694b7f9ac1b7eab60b39236ca0bf https://github.com/NordicSemiconductor/cddl-gen
+ * cmsis              421dcf358fa420e9721a8452c647f0d42af8d68c https://github.com/zephyrproject-rtos/cmsis
  * canopennode        468d350028a975b96563e58344de48281a0ab371 https://github.com/zephyrproject-rtos/canopennode
- * ci-tools           da9a2df574094f52d87a03f6393928bdc7dce17c https://github.com/zephyrproject-rtos/ci-tools
  * civetweb           e6903b80c09d17cd1a8bb32e40080005558aad29 https://github.com/zephyrproject-rtos/civetweb
  * fatfs              1d1fcc725aa1cb3c32f366e0c53d7490d0fe1109 https://github.com/zephyrproject-rtos/fatfs
- * hal_nordic         d7b3b6e3cea622ecc93fcacd3f2cfddf83746aff https://github.com/zephyrproject-rtos/hal_nordic
+ * hal_nordic         c8f03de5639cb611e449232788249f599bf2beaa https://github.com/zephyrproject-rtos/hal_nordic
  * hal_st             b52fdbf4b62439be9fab9bb4bae9690a42d2fb14 https://github.com/zephyrproject-rtos/hal_st
  * libmetal           9d4ee2c3cfd5f49861939447990f3b7d7bf9bf94 https://github.com/zephyrproject-rtos/libmetal
  * lvgl               31acbaa36e9e74ab88ac81e3d21e7f1d00a71136 https://github.com/zephyrproject-rtos/lvgl
  * mbedtls            13cf2e52024a144ecee9f37680681760a85febab https://github.com/zephyrproject-rtos/mbedtls
- * net-tools          c72fbf3300264a8a4bb48be314ca93765c863a19 https://github.com/zephyrproject-rtos/net-tools
+ * mcumgr             43845e883ff3a6cdaae22e23f3e60b5fcf78c6ba https://github.com/zephyrproject-rtos/mcumgr
+ * net-tools          41132e9220f8bc1223084975350c5e5f3b492afe https://github.com/zephyrproject-rtos/net-tools
  * open-amp           de1b85a13032a2de1d8b6695ae5f800b613e739d https://github.com/zephyrproject-rtos/open-amp
  * loramac-node       3f545d76a2e6d1db83a470ccdb5bebd1f484e137 https://github.com/zephyrproject-rtos/loramac-node
- * openthread         07f430dac6c400abdd358ba1173c0f94b94a5a80 https://github.com/zephyrproject-rtos/openthread
- * segger             874d9e9696b00c09f9eeefe839028dc25fe44983 https://github.com/zephyrproject-rtos/segger
+ * openthread         aad6518ee30d3840411b21437d396f0405e947c3 https://github.com/zephyrproject-rtos/openthread
+ * segger             38c79a447e4a47d413b4e8d34448316a5cece77c https://github.com/zephyrproject-rtos/segger
  * tinycbor           40daca97b478989884bffb5226e9ab73ca54b8c4 https://github.com/zephyrproject-rtos/tinycbor
  * tinycrypt          3e9a49d2672ec01435ffbf0d788db6d95ef28de0 https://github.com/zephyrproject-rtos/tinycrypt
  * littlefs           9e4498d1c73009acd84bb36036ee5e2869112a6c https://github.com/zephyrproject-rtos/littlefs
  * mipi-sys-t         75e671550ac1acb502f315fe4952514dc73f7bfb https://github.com/zephyrproject-rtos/mipi-sys-t
- * nrf_hw_models      71a8a9ef086d57ff5f3974138b0951f24c2017ad https://github.com/zephyrproject-rtos/nrf_hw_models
- * edtt               c39888ff74acf421eeff9a7514fa9b172c3373f7 https://github.com/zephyrproject-rtos/edtt
- * trusted-firmware-m 6edaaaaaa1a227cb1ccc9ef698a9d2e258a9bbd5 https://github.com/zephyrproject-rtos/trusted-firmware-m
+ * nrf_hw_models      a47e326ca772ddd14cc3b9d4ca30a9ab44ecca16 https://github.com/zephyrproject-rtos/nrf_hw_models
+ * edtt               b209a60ba3ad8887a7f35f67c0372c84a28b9b9b https://github.com/zephyrproject-rtos/edtt
  */
 
 
 /** ZBOSS build tag */
-#define ZBOSS_BUILD_TAG "11_30_2020"
+#define ZBOSS_BUILD_TAG "f63ee60b0"
 
 /** ZBOSS build date (UTC) */
-#define ZBOSS_BUILD_DATE 20201130
+#define ZBOSS_BUILD_DATE 20210323
 
 /** ZBOSS build time (UTC) */
-#define ZBOSS_BUILD_TIME 115850
+#define ZBOSS_BUILD_TIME 105148
 
 
 #endif /* ZBOSS_BUILD_INFO_H__ */
