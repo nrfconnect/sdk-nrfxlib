@@ -12,7 +12,6 @@ The nrfxlib repository contains the following versions of the ZBOSS libraries:
   This version is enabled by default.
 
   The production libraries fully conform to the certification, but they are not necessarily certified.
-  See the compatibility matrices in the `Infocenter`_ for the certification status of the production library that is present in a given |NCS| release.
 
 * *Development* version that contains the latest version of ZBOSS libraries, with experimental features included.
   This version is enabled with the :option:`CONFIG_ZIGBEE_LIBRARY_DEVELOPMENT` Kconfig option and its files are located in the :file:`zboss/development/` directory.
