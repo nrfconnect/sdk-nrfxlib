@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * http://www.dsr-zboss.com
  * http://www.dsr-corporation.com
  * All rights reserved.
@@ -413,29 +413,6 @@ zb_ret_t zb_osif_file_rotate(const zb_char_t *file_path, const zb_char_t *file_n
 */
 void zb_reset(zb_uint8_t param);
 void zb_syslog_msg(const zb_char_t *msg);
-
-/**
- * @name Possible reset sources
- * @anchor reset_source
- *
- * Note: These values were members of `enum zb_reset_source_e` type but were
- * converted to a set of macros due to MISRA violations.
- */
-/** @{ */
-#define ZB_RESET_SRC_POWER_ON   0U
-#define ZB_RESET_SRC_SW_RESET   1U
-#define ZB_RESET_SRC_RESET_PIN  2U
-#define ZB_RESET_SRC_BROWN_OUT  3U
-#define ZB_RESET_SRC_CLOCK_LOSS 4U
-#define ZB_RESET_SRC_OTHER      5U
-/** @} */
-
-/**
- * @brief Get the reason that triggered the last reset
- *
- * @return @ref reset_source
- * */
-zb_uint8_t zb_get_reset_source(void);
 
 /*! @} */
 
