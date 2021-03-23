@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2021 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -62,5 +62,5 @@
 
 
 /** @} */
-                           
+
 #endif /* ZBOSS_API_AF_ADDONS_H__ */

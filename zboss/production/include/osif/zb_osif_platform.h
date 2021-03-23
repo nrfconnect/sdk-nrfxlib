@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2021 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -169,5 +169,39 @@ void zb_osif_get_ieee_eui64(zb_ieee_addr_t ieee_eui64);
 /**
  * @}
  */
+
+/*! \addtogroup zb_platform */
+/*! @{ */
+
+/**
+   Platform dependent soft reset
+*/
+void zb_reset(zb_uint8_t param);
+void zb_syslog_msg(const zb_char_t *msg);
+
+/**
+ * @name Possible reset sources
+ * @anchor reset_source
+ *
+ * Note: These values were members of `enum zb_reset_source_e` type but were
+ * converted to a set of macros due to MISRA violations.
+ */
+/** @{ */
+#define ZB_RESET_SRC_POWER_ON   0U
+#define ZB_RESET_SRC_SW_RESET   1U
+#define ZB_RESET_SRC_RESET_PIN  2U
+#define ZB_RESET_SRC_BROWN_OUT  3U
+#define ZB_RESET_SRC_CLOCK_LOSS 4U
+#define ZB_RESET_SRC_OTHER      5U
+/** @} */
+
+/**
+ * @brief Get the reason that triggered the last reset
+ *
+ * @return @ref reset_source
+ * */
+zb_uint8_t zb_get_reset_source(void);
+
+/*! @} */
 
 #endif /* ZB_OSIF_PLATFORM_H__ */
