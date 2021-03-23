@@ -16,6 +16,33 @@ These libraries are available in the following versions:
 Each version contains variants of the libraries that support different Zigbee device roles, each variant having its own configuration.
 This allows you to scale the application and select the most suitable set of features.
 
+The following table describes the available Zigbee libraries and supported configurations.
+
+.. list-table::
+   :header-rows: 1
+
+   * - Library
+     - nRF5340 single SoC
+     - nRF5340 NCP
+     - nRF52833 single SoC
+     - nRF52833 NCP
+     - nRF52840 single SoC
+     - nRF52840 NCP
+   * - Production
+     -
+     -
+     - x
+     -
+     - x
+     -
+   * - Development
+     - x
+     - x
+     - x
+     - x
+     - x
+     - x
+
 ZBOSS production libraries
 **************************
 
@@ -49,36 +76,6 @@ You can enable additional features in the development version of ZBOSS libraries
   This option is added only for evaluation purposes and does not have a dedicated sample.
 
 Both of these features are experimental.
-
-ZBOSS library variants
-**********************
-
-The following table describes the available Zigbee libraries and supported configurations.
-
-.. list-table::
-   :header-rows: 1
-
-   * - Library
-     - nRF5340 single SoC
-     - nRF5340 NCP
-     - nRF52833 single SoC
-     - nRF52833 NCP
-     - nRF52840 single SoC
-     - nRF52840 NCP
-   * - Production
-     -
-     -
-     - x
-     -
-     - x
-     -
-   * - Development
-     - x
-     - x
-     - x
-     - x
-     - x
-     - x
 
 ZBOSS library certification
 ***************************
