@@ -9,6 +9,16 @@ Changelog
 
 All notable changes to this project in |NCS| are documented in this file.
 
+nRF Connect SDK v1.5.1
+**********************
+
+Changes
+=======
+
+* Updated the production ZBOSS stack to version ``3.3.0.7+03_22_2021``.
+  This certification-ready version includes several bugfixes.
+  For detailed information, see `ZBOSS stack release notes`_ for the |NCS|'s Master branch.
+
 nRF Connect SDK v1.5.0
 **********************
 
