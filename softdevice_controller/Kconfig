@@ -65,26 +65,26 @@ comment "Common SoftDevice Controller module configuration"
 
 choice SOFTDEVICE_CONTROLLER_VARIANT
 	prompt "SoftDevice Controller variant"
-	default SOFTDEVICE_CONTROLLER_MULTIROLE if ((BT_CENTRAL && BT_PERIPHERAL) || \
+	default SOFTDEVICE_CONTROLLER_MULTIROLE if ((BT_OBSERVER && BT_BROADCASTER) || \
 						     BT_CTLR_LLPM || \
 						     BT_CTLR_ADV_EXT || \
 						     BT_CTLR_PHY_CODED || \
 						     SOC_NRF5340_CPUNET)
-	default SOFTDEVICE_CONTROLLER_CENTRAL if BT_CENTRAL
-	default SOFTDEVICE_CONTROLLER_PERIPHERAL if BT_PERIPHERAL
+	default SOFTDEVICE_CONTROLLER_CENTRAL if BT_OBSERVER
+	default SOFTDEVICE_CONTROLLER_PERIPHERAL if BT_BROADCASTER
 	help
 	  Select a SoftDevice Controller variant.
 
 config SOFTDEVICE_CONTROLLER_PERIPHERAL
 	bool "SoftDevice Controller peripheral library optimized for peripheral role applications"
-	depends on !BT_CENTRAL && !BT_CTLR_LLPM && !BT_CTLR_ADV_EXT && !BT_CTLR_PHY_CODED
+	depends on !BT_OBSERVER && !BT_CTLR_LLPM && !BT_CTLR_ADV_EXT && !BT_CTLR_PHY_CODED
 	help
 	  The peripheral library variant is optimized for simpler applications only
 	  requiring the peripheral role.
 
 config SOFTDEVICE_CONTROLLER_CENTRAL
 	bool "SoftDevice Controller optimized for central role applications"
-	depends on !BT_PERIPHERAL && !BT_CTLR_LLPM && !BT_CTLR_ADV_EXT && !BT_CTLR_PHY_CODED
+	depends on !BT_BROADCASTER && !BT_CTLR_LLPM && !BT_CTLR_ADV_EXT && !BT_CTLR_PHY_CODED
 	help
 	  The central library variant is optimized for simpler applications only
 	  requiring the central role.
