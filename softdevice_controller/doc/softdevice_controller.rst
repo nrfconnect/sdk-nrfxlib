@@ -51,6 +51,7 @@ The application can choose the features that are enabled and the number of links
     Host->Controller      [label="sdc_init()"];
     Host rbox Controller [label = "Library configuration"];
     Host->Controller      [label="sdc_rand_source_register(...)"];
+    Host->Controller      [label="sdc_cfg_set(SDC_CFG_TYPE_ADV_COUNT)"];
     Host->Controller      [label="sdc_cfg_set(SDC_CFG_TYPE_MASTER_COUNT)"];
     Host->Controller      [label="sdc_cfg_set(SDC_CFG_TYPE_SLAVE_COUNT)"];
     Host rbox Controller[label = "Feature inclusion"];

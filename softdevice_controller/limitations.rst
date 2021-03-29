@@ -1,4 +1,4 @@
-.. softdevice_controller_limitations:
+.. _softdevice_controller_limitations:
 
 Limitations
 ###########
@@ -24,3 +24,34 @@ DRGN-8628: Setting Filter_Duplicates in LE Set Scan Enable and LE Set Extended S
   Filter_Duplicates cannot guarantee that all duplicate advertising reports are filtered out, because the controller has a limited "cache" of known advertising reports.
 
   **Workaround:** Filter out the duplicate advertising reports in the application.
+
+DRGN-8476: Long packets not supported in connections on Coded PHY
+  In connections, the Link Layer payload size is limited to 27 bytes on LE Coded PHY.
+
+DRGN-9083: AAR populated with zero IRK
+  If the application has set an all zeroes IRK for a device in the resolving list, then a resolvable address that can be resolved with the all zeroes IRK will be reported to the application as that device in the advertisement report or the connected event.
+
+DRGN-11297: Maximum connection interval of 10 ms before entering LLPM-mode
+  The maximum connection interval that can be active when switching to a connection interval of 1 ms is 10 ms.
+
+  **Workaround:** An application that needs to use a higher interval than 10 ms must perform two connection updates to use 1 ms connection interval:
+
+  * A first update to 10 ms connection interval.
+  * A second update to 1 ms connection interval.
+
+DRGN-10305: Scan window is limited to 16 seconds
+  If the scanner is configured with a scan window larger than 16 seconds, the scanner will truncate the scan window to 16 seconds.
+
+DRGN-8569: SEVONPEND flag must not be modified
+  Applications must not modify the SEVONPEND flag in the SCR register when running in priority levels higher than 6 (priority level numerical values lower than 6), as this can lead to undefined behavior.
+
+DRGN-6362: Synthesized low frequency clock source not tested
+  Synthesized low frequency clock source is not tested or intended for use with the SoftDevice Controller.
+
+DRGN-12259: HCI Receiver and Transmitter Test commands not available
+  The HCI Receiver and Transmitter Test commands are not available.
+
+  **Workaround:** To perform a radio test, use a DTM application:
+
+  * For nRF52, use the DTM application in the nRF5 SDK.
+  * For nRF53, use :ref:`direct_test_mode`.
