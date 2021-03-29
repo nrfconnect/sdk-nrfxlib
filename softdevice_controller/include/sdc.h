@@ -32,6 +32,9 @@ extern "C" {
 /** @brief Default resource configuration tag. */
 #define SDC_DEFAULT_RESOURCE_CFG_TAG  0
 
+/** @brief Default maximum number of concurrent advertisers. */
+#define SDC_DEFAULT_ADV_COUNT     1
+
 /** @brief Default maximum number of concurrent slave links. */
 #define SDC_DEFAULT_SLAVE_COUNT   1
 
@@ -73,14 +76,17 @@ extern "C" {
  * @{
  */
 
+/** @brief Maximum number of bytes required per advertiser. */
+#define SDC_MEM_DEFAULT_ADV_SIZE 0
+
 /** @brief Maximum number of bytes required per master link for the default buffer configuration. */
-#define SDC_MEM_DEFAULT_MASTER_LINK_SIZE 872
+#define SDC_MEM_DEFAULT_MASTER_LINK_SIZE 864
 
 /** @brief Maximum number of bytes required per slave link for the default buffer configuration. */
-#define SDC_MEM_DEFAULT_SLAVE_LINK_SIZE 936
+#define SDC_MEM_DEFAULT_SLAVE_LINK_SIZE 928
 
 /** @brief Memory overhead per LL packet buffer. */
-#define SDC_MEM_BUFFER_OVERHEAD_SIZE 9
+#define SDC_MEM_BUFFER_OVERHEAD_SIZE 7
 
 /** @brief Maximum additional number of bytes required per link.
  *
@@ -160,6 +166,10 @@ enum sdc_cfg_type
                                          @sa sdc_cfg_t::buffer_cfg. */
     SDC_CFG_TYPE_EVENT_LENGTH = 4,  /**< Maximum event length.
                                          @sa sdc_cfg_t::event_length. */
+    SDC_CFG_TYPE_ADV_COUNT    = 5,  /**< Number of concurrent advertisers.
+                                         @sa sdc_cfg_t::adv_count.
+                                         The maximum number of supported
+                                         advertisers is 1. */
 };
 
 /** @brief Role count. */
@@ -197,6 +207,8 @@ typedef union
                                                Default: @ref SDC_DEFAULT_SLAVE_COUNT. */
     sdc_cfg_event_length_t event_length;  /**< Max connection event length.
                                                Default: @ref SDC_DEFAULT_EVENT_LENGTH_US. */
+    sdc_cfg_role_count_t   adv_count;     /**< Max number of concurrent advertisers.
+                                               Default: @ref SDC_DEFAULT_ADV_COUNT. */
 } sdc_cfg_t;
 
 

@@ -19,11 +19,18 @@ Added
 * Added supported for the vendor specific HCI command: Read Supported Vendor Specific Commands (DRGN-13763).
 * Added support for the vendor specific HCI command: Zephyr Read Key Hierarchy Roots (DRGN-13237).
 
+Changes
+=======
+
+* Moved permanent limitations from the :ref:`nrf:known_issues` page to :ref:`softdevice_controller_limitations`.
+
 Bug fixes
 =========
 
 * Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not applied on the secondary advertising channels (DRGN-13594).
 * The SoftDevice Controller can now be qualified on nRF52832 (DRGN-15382).
+* Fixed an issue where in rare cases an assert could occur when receiving a packet as a slave with a CRC error after performing a data length procedure on Coded PHY (DRGN-15251).
+* Fixed an issue where "HCI Read RSSI" would always returns Command Disallowed (0x0C) error code (DRGN-15310).
 
 nRF Connect SDK v1.5.0
 **********************
