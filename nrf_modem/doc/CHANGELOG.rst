@@ -9,6 +9,13 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.0.3
+***************
+
+* Fixed an issue (introduced in version 1.0.2) where :c:func:`nrf_recv` did not return as soon as the data became available on the socket.
+* Fixed an issue (introduced in version 1.0.2) where :c:func:`nrf_send` did not correctly report the amount of data sent for TLS and DTLS sockets.
+
+
 nrf_modem 1.0.2
 ***************
 
