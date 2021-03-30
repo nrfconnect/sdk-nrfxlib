@@ -15,8 +15,7 @@ Master branch
 Bug fixes
 =========
 
-* Fixed an issue where clock configuration option :c:member:`skip_wait_lfclk_started` in :c:struct:`mpsl_clock_lfclk_cfg_t`
-  might have not worked as expected with nRF5340 devices (DRGN-15223).
+* Fixed an issue where the clock configuration option :c:member:`mpsl_clock_lfclk_cfg_t.skip_wait_lfclk_started` did not work as expected with nRF5340 devices (DRGN-15223).
 
 nRF Connect SDK v1.5.0
 **********************
