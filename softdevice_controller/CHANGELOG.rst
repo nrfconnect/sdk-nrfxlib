@@ -16,7 +16,7 @@ Added
 =====
 
 * Added radio front-end module (FEM) support, based on the :ref:`mpsl_fem` (DRGN-11059).
-* Added supported for the vendor specific HCI command: Read Supported Vendor Specific Commands (DRGN-13763).
+* Added support for the vendor specific HCI command: Read Supported Vendor Specific Commands (DRGN-13763).
 * Added support for the vendor specific HCI command: Zephyr Read Key Hierarchy Roots (DRGN-13237).
 
 Changes
@@ -29,6 +29,7 @@ Bug fixes
 
 * Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not applied on the secondary advertising channels (DRGN-13594).
 * The SoftDevice Controller can now be qualified on nRF52832 (DRGN-15382).
+* Fixed an issue where setting a legacy advertiser's scan response data using extended advertising HCI commands corrupted the advertising data (DRGN-15465).
 * Fixed an issue where, in rare cases, an assert could occur when receiving a packet as a slave.
   This could only occur after performing a data length procedure on Coded PHY (DRGN-15251).
 * Fixed an issue where "HCI Read RSSI" would always return a Command Disallowed (0x0C) error code (DRGN-15310).
