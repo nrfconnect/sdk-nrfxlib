@@ -258,7 +258,6 @@ int32_t sdc_cfg_set(uint8_t config_tag,
  *
  * @retval 0            Success
  * @retval -NRF_EINVAL  Invalid argument provided
- * @retval -NRF_EPERM   The entropy source is not configured. Call @ref sdc_rand_source_register() first.
  */
 int32_t sdc_enable(sdc_callback_t callback,
                    uint8_t * p_mem);
@@ -285,6 +284,15 @@ int32_t sdc_disable(void);
  * @retval -NRF_EINVAL  Invalid argument provided
  */
 int32_t sdc_build_revision_get(uint8_t * p_build_revision);
+
+
+/** @brief SoftDevice Controller RNG interrupt handler
+ *
+ * @note This function should be called when a RNG interrupt occurs. The
+ *       interrupt priority level should be lower than priority level 0, that
+ *       is, a higher numerical priority value.
+ */
+void sdc_RNG_IRQHandler(void);
 
 /** @brief Support Advertising State
  *
