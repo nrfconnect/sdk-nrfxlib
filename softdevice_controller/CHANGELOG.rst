@@ -22,6 +22,7 @@ Bug fixes
 
 * Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not applied on the secondary advertising channels (DRGN-13594).
 * The SoftDevice Controller can now be qualified on nRF52832 (DRGN-15382).
+* Fixed an issue where setting a legacy advertiser's scan response data using extended advertising HCI commands corrupted the advertising data (DRGN-15465).
 
 nRF Connect SDK v1.5.0
 **********************
@@ -47,8 +48,8 @@ Changes
 
 * All libraries are now compatible with all platforms within a given family (DRGN-15118).
 
-Bugfixes
-========
+Bug fixes
+=========
 
 * Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out (DRGN-13029).
 * Fixed an issue where a directed advertiser used a resolvable address as the TargetA when the local device address was set to public or random device address (DRGN-13921).
@@ -124,8 +125,8 @@ Changes
   * HCI_VS_SUBEVENT -> HCI_SUBEVENT_VS
   * hci_vs_cmd      -> hci_cmd_vs
 
-Bugfixes
-========
+Bug fixes
+=========
 
 * Fixed an issue in master role which could cause disconnects if there were scheduling conflicts while doing a control procedures with an instant (DRGN-11222).
 
@@ -205,8 +206,8 @@ Changes
   Use corresponding API in MPSL instead.
 * Version numbers have been removed from the libraries.
 
-Bugfixes
-========
+Bug fixes
+=========
 
 * Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out.
 * Fixed an issue where a control packet could be sent twice even after the packet was ACKed.
@@ -229,8 +230,8 @@ Added
 
 * Added support for nRF52833.
 
-Bugfixes
-========
+Bug fixes
+=========
 
 * Fixed an issue where :c:func:`hci_data_get` could return "No data available" when there was data available.
   This issue would only occur when connected to multiple devices at the same time.
@@ -238,8 +239,8 @@ Bugfixes
 nRF Bluetooth LE Controller 0.3.0-2.prealpha
 ********************************************
 
-Bugfixes
-========
+Bug fixes
+=========
 
 * Fixed an issue where an assert occured when the host issued LE Write Suggested Default Data Length.
 
@@ -263,8 +264,8 @@ Added
   When enabled, one report is generated with every connection event.
   The report contains information that can be used to change the Bluetooth LE channel map.
 
-Bugfixes
-========
+Bug fixes
+=========
 
 * Fixed an issue where HCI Read Local Supported Commands command did not indicate support for HCI LE Set Privacy Mode command.
 * Fixed an issue where an ASSERT occured when setting advertising data after HCI Reset without setting advertising parameters.
@@ -316,8 +317,8 @@ Added
 * Added API to get Bluetooth LE Controller build revision: :c:func:`ble_controller_build_revision_get`.
 * Added separate :c:func:`ble_controller_init` API.
 
-Bugfixes
-========
+Bug fixes
+=========
 
 Fixed an issue in HCI control flow that severely limited Bluetooth LE throughput.
 
