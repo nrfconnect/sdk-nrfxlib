@@ -76,7 +76,9 @@
 
     @par
 
-   See Temperature Sensor device sample in application/HA_samples/temperature_sensor
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
+    See Temperature Sensor device sample in application/HA_samples/temperature_sensor
+    @endcond
 
 */
 

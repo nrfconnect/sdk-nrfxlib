@@ -82,7 +82,9 @@
 
     @par
 
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
     See application/HA_samples/ias_warning_device sample
+    @endcond
 */
 
 #define ZB_HA_IAS_WARNING_VER 0      /**< Device version */

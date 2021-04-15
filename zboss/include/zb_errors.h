@@ -68,9 +68,10 @@ typedef zb_int32_t zb_ret_t;
 #define   ERROR_CATEGORY_WATCHDOG 7
 #define   ERROR_CATEGORY_SERIAL   8
 #define   ERROR_CATEGORY_NVRAM    9
+#define   ERROR_CATEGORY_MACSPLIT 10
 
 /* Let's always return 0 for RET_OK - in any category. */
-#define ERROR_CODE(category, code) ((zb_ret_t)((code) != 0 ? -(((category) * ERROR_CATEGORY_INTERVAL) + (code)) : 0))
+#define ERROR_CODE(category, code) ((zb_ret_t)(((zb_ret_t)code) != 0 ? -(((category) * ERROR_CATEGORY_INTERVAL) + ((zb_ret_t)code)) : 0))
 #define GENERIC_ERROR_CODE(code)   ERROR_CODE(ERROR_CATEGORY_GENERIC, code)
 #define SYSTEM_ERROR_CODE(code)    ERROR_CODE(ERROR_CATEGORY_SYSTEM, code)
 

@@ -463,7 +463,7 @@ zb_uint16_t zb_address_short_by_ieee(zb_ieee_addr_t ieee_address);
    @return RET_OK or RET_NOT_FOUND
 
    @b Example
-   @snippet light_sample/light_coordinator/light_zc.c address_ieee_by_short
+   @snippet light_sample_HA_1_2_bulb/light_coordinator_HA_1_2_bulb/light_zc_HA_1_2_bulb.c address_ieee_by_short
 
    See light_sample
  */
@@ -553,14 +553,6 @@ zb_ret_t zb_address_delete(zb_address_ieee_ref_t ref);
 
 
 /*! @cond internals_doc */
-
-/**
-   Deinitialize Zigbee address management
-
-   Function doesn't return values
- */
-void zb_address_deinit(void);
-
 
 /**
    Compress long address: store manufacturer address part elsewhere

@@ -60,51 +60,51 @@
 /** @{ */
 
 /** A request has been executed successfully. */
-#define ZB_APS_STATUS_SUCCESS               0x00
+#define ZB_APS_STATUS_SUCCESS               0x00U
 /** A transmit request failed since the ASDU is too large and fragmentation is not supported.*/
-#define ZB_APS_ASDU_TOO_LONG                0xa0
+#define ZB_APS_ASDU_TOO_LONG                0xa0U
 /** A received fragmented frame could not be defragmented at the current time. */
-#define ZB_APS_DEFRAG_DEFERRED              0xa1
+#define ZB_APS_DEFRAG_DEFERRED              0xa1U
 /** A received fragmented frame could not be defragmented since the device does not support
  * fragmentation. */
-#define ZB_APS_DEFRAG_UNSUPPORTED           0xa2
+#define ZB_APS_DEFRAG_UNSUPPORTED           0xa2U
 /** A parameter value was out of range. */
-#define ZB_APS_STATUS_ILLEGAL_REQUEST       0xa3
+#define ZB_APS_STATUS_ILLEGAL_REQUEST       0xa3U
 /** An APSME-UNBIND.request failed due to the requested binding link not existing in the  binding
  * table. */
-#define ZB_APS_STATUS_INVALID_BINDING       0xa4
+#define ZB_APS_STATUS_INVALID_BINDING       0xa4U
 /** An APSME-REMOVE-GROUP.request has been issued with a group identifier that does not appear in
  * the group table. */
-#define ZB_APS_STATUS_INVALID_GROUP         0xa5
+#define ZB_APS_STATUS_INVALID_GROUP         0xa5U
 /** A parameter value was invalid or out of range. */
-#define ZB_APS_STATUS_INVALID_PARAMETER     0xa6
+#define ZB_APS_STATUS_INVALID_PARAMETER     0xa6U
 /** An APSDE-DATA.request requesting acknowledged transmission failed due to no acknowledgement
  * being received. */
-#define ZB_APS_STATUS_NO_ACK                0xa7
+#define ZB_APS_STATUS_NO_ACK                0xa7U
 /** An APSDE-DATA.request with a destination addressing mode set to 0x00 failed due to  there being
  * no devices bound to this device. */
-#define ZB_APS_STATUS_NO_BOUND_DEVICE       0xa8
+#define ZB_APS_STATUS_NO_BOUND_DEVICE       0xa8U
 /** An APSDE-DATA.request with a destination addressing mode set to 0x03 failed due to no
  * corresponding short address found in the address map table. */
-#define ZB_APS_STATUS_NO_SHORT_ADDRESS      0xa9
+#define ZB_APS_STATUS_NO_SHORT_ADDRESS      0xa9U
 /** An APSDE-DATA.request with a destination addressing mode set to 0x00 failed due to a binding
  * table not being supported on the device. */
-#define ZB_APS_STATUS_NOT_SUPPORTED         0xaa
+#define ZB_APS_STATUS_NOT_SUPPORTED         0xaaU
 /** An ASDU was received that was secured using a link key. */
-#define ZB_APS_STATUS_SECURED_LINK_KEY      0xab
+#define ZB_APS_STATUS_SECURED_LINK_KEY      0xabU
 /** An ASDU was received that was secured using a network key. */
-#define ZB_APS_STATUS_SECURED_NWK_KEY       0xac
+#define ZB_APS_STATUS_SECURED_NWK_KEY       0xacU
 /** An APSDE-DATA.request requesting security has resulted in an error during the corresponding
  * security processing. */
-#define ZB_APS_STATUS_SECURITY_FAIL         0xad
+#define ZB_APS_STATUS_SECURITY_FAIL         0xadU
 /** An APSME-BIND.request or APSME.ADD-GROUP.request issued when the binding or group tables,
  * respectively, were full. */
-#define ZB_APS_STATUS_TABLE_FULL            0xae
+#define ZB_APS_STATUS_TABLE_FULL            0xaeU
 /** An ASDU was received without any security. */
-#define ZB_APS_STATUS_UNSECURED             0xaf
+#define ZB_APS_STATUS_UNSECURED             0xafU
 /** An APSME-GET.request or APSME-SET.request has been issued with an unknown attribute identifier.
  */
-#define ZB_APS_STATUS_UNSUPPORTED_ATTRIBUTE 0xb0
+#define ZB_APS_STATUS_UNSUPPORTED_ATTRIBUTE 0xb0U
 /** @} */
 
 /**
@@ -113,7 +113,7 @@
  * @deprecated holds one of @ref aps_status. Kept only for backward compatibility as
  * @ref aps_status were declared previously as enum. Can be removed in future releases.
  */
-typedef zb_int8_t zb_aps_status_t;
+typedef zb_uint8_t zb_aps_status_t;
 
 /**
  * @name APS addressing mode constants
@@ -230,7 +230,7 @@ typedef ZB_PACKED_PRE struct zb_aps_hdr_s
   zb_uint16_t mac_src_addr;     /*!< Source address of device that transmit that packet. */
   zb_uint16_t mac_dst_addr;     /*!< Next hop address used for frame transmission. */
   zb_uint8_t lqi;
-  zb_uint8_t rssi;
+  zb_int8_t rssi;
   /* attributes of the key used to unsecure this frame */
   zb_bitfield_t aps_key_source:1;    /*!< @if ZB_SECUR
                                    *     @ref secur_key_sources
@@ -306,7 +306,7 @@ typedef struct zb_apsme_binding_req_s
 
 
 /**
-  * This data structure passed to @ref zb_aps_check_binding().
+  * This data structure passed to @ref zb_aps_check_binding_request().
   */
 typedef struct zb_aps_check_binding_req_s
 {
@@ -317,7 +317,7 @@ typedef struct zb_aps_check_binding_req_s
 
 
 /**
-  * This data structure passed to callback passed to @ref zb_aps_check_binding().
+  * This data structure passed to callback passed to @ref zb_aps_check_binding_request().
   */
 typedef struct zb_aps_check_binding_resp_s
 {

@@ -123,26 +123,26 @@ typedef zb_uint8_t zb_nwk_leave_type_t;
  * @anchor nwk_command_status
  */
 /** @{ */
-#define ZB_NWK_COMMAND_STATUS_NO_ROUTE_AVAILABLE          0x00 /**< No route available */
-#define ZB_NWK_COMMAND_STATUS_TREE_LINK_FAILURE           0x01 /**< Tree link failure */
-#define ZB_NWK_COMMAND_STATUS_NONE_TREE_LINK_FAILURE      0x02 /**< None-tree link failure */
-#define ZB_NWK_COMMAND_STATUS_LOW_BATTERY_LEVEL           0x03 /**< Low battery level */
-#define ZB_NWK_COMMAND_STATUS_NO_ROUTING_CAPACITY         0x04 /**< No routing capacity */
-#define ZB_NWK_COMMAND_STATUS_NO_INDIRECT_CAPACITY        0x05 /**< No indirect capacity */
-#define ZB_NWK_COMMAND_STATUS_INDIRECT_TRANSACTION_EXPIRY 0x06 /**< Indirect transaction expiry */
-#define ZB_NWK_COMMAND_STATUS_TARGET_DEVICE_UNAVAILABLE   0x07 /**< Target device unavailable */
-#define ZB_NWK_COMMAND_STATUS_TARGET_ADDRESS_UNALLOCATED  0x08 /**< Target address unallocated */
-#define ZB_NWK_COMMAND_STATUS_PARENT_LINK_FAILURE         0x09 /**< Parent link failure */
-#define ZB_NWK_COMMAND_STATUS_VALIDATE_ROUTE              0x0a /**< Validate route */
-#define ZB_NWK_COMMAND_STATUS_SOURCE_ROUTE_FAILURE        0x0b /**< Source route failure */
-#define ZB_NWK_COMMAND_STATUS_MANY_TO_ONE_ROUTE_FAILURE   0x0c /**< Many-to-one route failure */
-#define ZB_NWK_COMMAND_STATUS_ADDRESS_CONFLICT            0x0d /**< Address conflict */
-#define ZB_NWK_COMMAND_STATUS_VERIFY_ADDRESS              0x0e /**< Verify address */
-#define ZB_NWK_COMMAND_STATUS_PAN_IDENTIFIER_UPDATE       0x0f /**< Pan ID update */
-#define ZB_NWK_COMMAND_STATUS_NETWORK_ADDRESS_UPDATE      0x10 /**< Network address update */
-#define ZB_NWK_COMMAND_STATUS_BAD_FRAME_COUNTER           0x11 /**< Bad frame counter  */
-#define ZB_NWK_COMMAND_STATUS_BAD_KEY_SEQUENCE_NUMBER     0x12 /**< Bad key sequence number */
-#define ZB_NWK_COMMAND_STATUS_UNKNOWN_COMMAND             0x13 /**< Command received is not known */
+#define ZB_NWK_COMMAND_STATUS_NO_ROUTE_AVAILABLE          0x00u /**< No route available */
+#define ZB_NWK_COMMAND_STATUS_TREE_LINK_FAILURE           0x01u /**< Tree link failure */
+#define ZB_NWK_COMMAND_STATUS_NONE_TREE_LINK_FAILURE      0x02u /**< None-tree link failure */
+#define ZB_NWK_COMMAND_STATUS_LOW_BATTERY_LEVEL           0x03u /**< Low battery level */
+#define ZB_NWK_COMMAND_STATUS_NO_ROUTING_CAPACITY         0x04u /**< No routing capacity */
+#define ZB_NWK_COMMAND_STATUS_NO_INDIRECT_CAPACITY        0x05u /**< No indirect capacity */
+#define ZB_NWK_COMMAND_STATUS_INDIRECT_TRANSACTION_EXPIRY 0x06u /**< Indirect transaction expiry */
+#define ZB_NWK_COMMAND_STATUS_TARGET_DEVICE_UNAVAILABLE   0x07u /**< Target device unavailable */
+#define ZB_NWK_COMMAND_STATUS_TARGET_ADDRESS_UNALLOCATED  0x08u /**< Target address unallocated */
+#define ZB_NWK_COMMAND_STATUS_PARENT_LINK_FAILURE         0x09u /**< Parent link failure */
+#define ZB_NWK_COMMAND_STATUS_VALIDATE_ROUTE              0x0au /**< Validate route */
+#define ZB_NWK_COMMAND_STATUS_SOURCE_ROUTE_FAILURE        0x0bu /**< Source route failure */
+#define ZB_NWK_COMMAND_STATUS_MANY_TO_ONE_ROUTE_FAILURE   0x0cu /**< Many-to-one route failure */
+#define ZB_NWK_COMMAND_STATUS_ADDRESS_CONFLICT            0x0du /**< Address conflict */
+#define ZB_NWK_COMMAND_STATUS_VERIFY_ADDRESS              0x0eu /**< Verify address */
+#define ZB_NWK_COMMAND_STATUS_PAN_IDENTIFIER_UPDATE       0x0fu /**< Pan ID update */
+#define ZB_NWK_COMMAND_STATUS_NETWORK_ADDRESS_UPDATE      0x10u /**< Network address update */
+#define ZB_NWK_COMMAND_STATUS_BAD_FRAME_COUNTER           0x11u /**< Bad frame counter  */
+#define ZB_NWK_COMMAND_STATUS_BAD_KEY_SEQUENCE_NUMBER     0x12u /**< Bad key sequence number */
+#define ZB_NWK_COMMAND_STATUS_UNKNOWN_COMMAND             0x13u /**< Command received is not known */
 /** @} */
 
 /**
@@ -151,21 +151,20 @@ typedef zb_uint8_t zb_nwk_leave_type_t;
  * Holds one of @ref nwk_command_status. Kept for backward compatibility as
  * @ref nwk_command_status were declared previously as enum.
  */
-typedef zb_ret_t zb_nwk_command_status_t;
+typedef zb_uint8_t zb_nwk_command_status_t;
 
 /** @endcond */ /* internals_doc */
 /** @} */ /* nwk_common_constants */
 
 /** @cond internals_doc */
-/** @brief Arguments of the NLME-STATUS.indication routine. */
+/** @brief 3.4.3 Network Status Command: Arguments of the NLME-STATUS.indication routine. */
 typedef ZB_PACKED_PRE struct zb_nlme_status_indication_s
 {
   zb_uint8_t status; /**< Error code associated with the failure */
-  zb_uint16_t network_addr;  /**< Network device address associated with the status information */
+  zb_uint16_t network_addr; /**< Network device address associated with the status information */
   zb_uint8_t unknown_command_id; /**< Unknown command ID
                                     (required for ZB_NWK_COMMAND_STATUS_UNKNOWN_COMMAND) */
-} ZB_PACKED_STRUCT
-zb_nlme_status_indication_t;
+} ZB_PACKED_STRUCT zb_nlme_status_indication_t;
 /** @endcond */ /* internals_doc */
 
 /** @addtogroup nwk_common_constants NWK common constants
@@ -179,7 +178,6 @@ zb_nlme_status_indication_t;
    RSSI undefined value
  */
 #define ZB_MAC_RSSI_UNDEFINED (0x7F)
-
 
 /**
    Number of the first channel
@@ -395,7 +393,11 @@ zb_nwk_pib_cache_t *zb_nwk_get_pib_cache(void);
 /** Cached value of device extended address */
 #define ZB_PIBCACHE_EXTENDED_ADDRESS() ZB_PIB_CACHE()->mac_extended_address
 /** Cached value of RxOnWhenIdle attribute */
+#ifdef ZB_ED_RX_OFF_WHEN_IDLE
+#define ZB_PIBCACHE_RX_ON_WHEN_IDLE() (!ZB_IS_DEVICE_ZED())
+#else
 #define ZB_PIBCACHE_RX_ON_WHEN_IDLE()  ZB_PIB_CACHE()->mac_rx_on_when_idle
+#endif
 /** Cached value of AssociationPermit attribute */
 #define ZB_PIBCACHE_ASSOCIATION_PERMIT() ZB_PIB_CACHE()->mac_association_permit
 /** Cached value of CurrentChannel attribute */
@@ -408,15 +410,12 @@ zb_nwk_pib_cache_t *zb_nwk_get_pib_cache(void);
 /** Cached value of device network address */
 #define ZB_PIBCACHE_NETWORK_ADDRESS()  zb_get_short_address()
 /** Cached value of RxOnWhenIdle attribute */
-#define ZB_PIBCACHE_RX_ON_WHEN_IDLE()  zb_get_rx_on_when_idle()
-
-#endif /* !NCP_MODE_HOST */
-
 #ifdef ZB_ED_RX_OFF_WHEN_IDLE
-/* Make simpler checks if ZED always rx-off-when-idle */
-#undef ZB_PIBCACHE_RX_ON_WHEN_IDLE
 #define ZB_PIBCACHE_RX_ON_WHEN_IDLE() (!ZB_IS_DEVICE_ZED())
+#else
+#define ZB_PIBCACHE_RX_ON_WHEN_IDLE()  zb_get_rx_on_when_idle()
 #endif
+#endif /* !NCP_MODE_HOST */
 
 /**
    Arguments of the NLME-PERMIT_JOINING.request routine.
@@ -508,6 +507,7 @@ void zb_start_pan_id_conflict_resolution(zb_uint8_t param);
  */
 void zb_enable_auto_pan_id_conflict_resolution(zb_bool_t status);
 
+
 /** @cond internals_doc */
 /**
    Toogles panid conflict resolution.
@@ -548,6 +548,8 @@ void zb_nwk_set_ieee_policy(zb_bool_t put_always);
 /** @addtogroup nwk_mtorr NWK MTORR functionality
  * @{
  */
+
+#ifdef ZB_COORDINATOR_ROLE
 /**
    Enable Concentrator mode for the device (disabled by default).
    It's possible to call this function to send MTORR immediately, e.g. after a new device joined the network.
@@ -565,6 +567,7 @@ void zb_start_concentrator_mode(zb_uint8_t radius, zb_uint32_t disc_time);
    It does affect only for Coordinator role.
 */
 void zb_stop_concentrator_mode(void);
+#endif /* ZB_COORDINATOR_ROLE */
 /** @} */ /* nwk_mtorr */
 
 /** @cond internals_doc */

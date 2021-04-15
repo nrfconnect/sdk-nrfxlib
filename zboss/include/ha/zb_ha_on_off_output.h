@@ -82,7 +82,9 @@
     @par
 
 
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
     The complete set of On/Off Output device samples can be found in /application/HA_samples/on_off_output
+    @endcond
 */
 
 #define ZB_HA_DEVICE_VER_ON_OFF_OUTPUT 0 /*!< On/Off Output device version */

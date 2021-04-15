@@ -44,6 +44,8 @@
 #ifndef ZCL_CVC_COMMANDS_H
 #define ZCL_CVC_COMMANDS_H 1
 
+#if defined ZB_CVC_FEATURE_SUPPORT
+
 /** @cond DOXYGEN_ZCL_SECTION */
 
 /* Documentation - doc/HA/continuous_value_change-detailed_design.doc */
@@ -144,7 +146,6 @@ typedef struct zb_zcl_cvc_alarm_variables_s
 } ZB_PACKED_STRUCT
 zb_zcl_cvc_alarm_variables_t;
 
-
 /*!
   @brief Calculate transition values and put it into buffer.
   @param input_var - pointer to zb_zcl_cvc_input_variables_s containing input data
@@ -200,5 +201,7 @@ void zb_zcl_init_cvc_alarm_info(void);
 zb_uint16_t zb_zcl_cvc_get_remaining_time(zb_uint8_t alarm_id);
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
+
+#endif /* ZB_CVC_FEATURE_SUPPORT */
 
 #endif /* ZCL_LEVEL_CVC_COMMANDS_H */

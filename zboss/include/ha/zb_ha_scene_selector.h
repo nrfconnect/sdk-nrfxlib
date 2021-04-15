@@ -79,7 +79,9 @@
 
     @par
 
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
     The complete set of Scene Selector device samples can be found in /application/HA_samples/scene_selector
+    @endcond
 */
 
 #define ZB_HA_DEVICE_VER_SCENE_SELECTOR 0  /*!< Scene selector device version */

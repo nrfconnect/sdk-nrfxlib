@@ -921,7 +921,7 @@ zb_zcl_write_attr_req_t;
  */
 #define ZB_ZCL_GENERAL_GET_NEXT_WRITE_ATTR_REQ(data_ptr, data_len, write_attr_req)                 \
   {                                                                                                \
-    zb_uint8_t req_size = 0xFFU;                                                                   \
+    zb_uint8_t req_size = ZB_UINT8_MAX;                                                                   \
     (write_attr_req) = (data_len) >= ZB_ZCL_WRITE_ATTR_REQ_SIZE                                    \
                            ? (zb_zcl_write_attr_req_t *)(void *)(data_ptr)                         \
                            : NULL;                                                                 \
@@ -930,7 +930,7 @@ zb_zcl_write_attr_req_t;
     {                                                                                              \
       /* substruct sizeof(zb_uint8_t) because its size */                                          \
       /* is already included into ZB_ZCL_WRITE_ATTR_REQ_SIZE */                                    \
-      ZB_ASSERT_COMPILE_TIME(ZB_ZCL_WRITE_ATTR_REQ_SIZE <= 0xFFU);                                 \
+      ZB_ASSERT_COMPILE_TIME(ZB_ZCL_WRITE_ATTR_REQ_SIZE <= ZB_UINT8_MAX);                                 \
       req_size = (zb_uint8_t)ZB_ZCL_WRITE_ATTR_REQ_SIZE - (zb_uint8_t)sizeof(zb_uint8_t)           \
                  + zb_zcl_get_attribute_size((write_attr_req)->attr_type,                          \
                                              (write_attr_req)->attr_value);                        \
@@ -2417,8 +2417,9 @@ zb_zcl_disc_attr_ext_res_t;
 /* ZCL handlers */
 void zb_zcl_read_attr_handler(zb_uint8_t param);
 void zb_zcl_write_attr_handler(zb_uint8_t param);
+#if defined ZB_ENABLE_HA
 void zb_zcl_discover_commands_res(zb_uint8_t param, zb_bool_t recv_cmd_type);
-void zb_zcl_disc_attr_handler_ext(zb_uint8_t param);
+#endif /* ZB_ENABLE_HA */
 
 #if !(defined ZB_ZCL_DISABLE_REPORTING) || defined(DOXYGEN)
 

@@ -55,10 +55,15 @@
  *  @{
  */
 
+#ifdef ZB_DEPRECATED_API
+/* This function is not used anywhere and seems its objective is not different from
+ * 'zb_osif_led_button_init()' which is currently used. It will be removed in a future
+ * release. */
 /**
  * Prepare LEDs for usage
  */
-void zb_led_init(void);
+void zb_led_init(void) ZB_DEPRECATED;
+#endif /* ZB_DEPRECATED_API */
 
 /**
  * Stop blinking on given LED
@@ -155,7 +160,6 @@ void zb_button_off_cb(zb_uint8_t butt_no);
  */
 void zb_button_register_handler(zb_uint8_t butt_no, zb_uint8_t pressed_sec_pow2, zb_callback_t cb);
 
-
 /** @cond internals_doc */
 void zb_osif_led_button_init(void);
 /** @endcond */
@@ -173,7 +177,7 @@ void zb_osif_led_off(zb_uint8_t led_no);
 /** @cond internals_doc */
 zb_bool_t zb_setup_buttons_cb(zb_callback_t cb);
 void zb_osif_button_cb(zb_uint8_t arg);
-int zb_osif_button_state(zb_uint8_t arg);
+zb_bool_t zb_osif_button_state(zb_uint8_t arg);
 /** @endcond */
 
 /* Button indexes utilized by applications
@@ -186,7 +190,7 @@ int zb_osif_button_state(zb_uint8_t arg);
 
 /**
  * Number of handler that can be associated with a button.
- * 
+ *
  * Each of those handlers corresponds to its own press duration
  */
 #define ZB_BUTT_N_CBS 5U

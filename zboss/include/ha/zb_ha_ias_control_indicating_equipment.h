@@ -84,7 +84,9 @@
 
     @par
 
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
     The complete set of IAS Control and Indicating Equipment samples can be found in /application/HA_samples/ias_control_indicating_equipment
+    @endcond
 */
 
 #define ZB_HA_IAS_CONTROL_INDICATING_EQUIPMENT_VER 0   /*!< IAS ACE device version */

@@ -208,8 +208,10 @@ enum zb_ha_standard_devs_e
 #define ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL           1
 
 /* Define clusters which are not used by any device but expected to be
- * supported in ZBOSS stack when ZB_ALL_DEVICE_SUPPORT is defined. For example,
- * some samples from application/HA_samples may use them.
+ * supported in ZBOSS stack when ZB_ALL_DEVICE_SUPPORT is defined.
+ * @cond ZBOSS_SAMPLES_API_DOC_LINE
+ * For example, some samples from application/HA_samples may use them.
+ * @endcond
  *
  * The main intention of ZB_ALL_DEVICE_SUPPORT define is to compile in ZBOSS
  * stack as much HA-related functionality as possible so declaring support for

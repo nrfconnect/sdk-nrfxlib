@@ -57,7 +57,7 @@ void zb_macll_set_tx_flag(void);
 void zb_macll_clear_tx_flag(void);
 zb_bool_t zb_macll_get_tx_flag(void);
 
-zb_ret_t zb_macll_src_match_set_pending_bit(zb_uint8_t *addr, zb_bool_t value, zb_bool_t extended);
+zb_uint8_t zb_macll_src_match_set_pending_bit(zb_uint8_t *addr, zb_bool_t value, zb_bool_t extended);
 #define zb_macll_src_match_tbl_drop   zb_trans_src_match_tbl_drop
 
 #define zb_macll_set_short_addr       zb_trans_set_short_addr

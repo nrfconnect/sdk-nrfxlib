@@ -44,6 +44,7 @@
 #define ZBOSS_API_H 1
 
 #include "zb_version.h"
+#include "zb_channel_page.h"
 #include "zboss_api_core.h"
 #include "zboss_api_buf.h"
 #include "zboss_api_internal.h"
@@ -58,7 +59,9 @@
 #ifdef ZB_ENABLE_SE_MIN_CONFIG
 #include "zboss_api_se.h"
 #endif
+#ifdef ZB_ENABLE_ZCL
 #include "zboss_api_zcl.h"
+#endif /* ZB_ENABLE_ZCL */
 #ifdef ZB_ENABLE_ZGP
 #include "zboss_api_zgp.h"
 #endif
@@ -83,6 +86,7 @@
  */
 void zb_secur_setup_nwk_key(zb_uint8_t *key, zb_uint8_t i);
 
+#ifdef ZB_COORDINATOR_ROLE
 /**
  *  Initiate procedure of NWK key switching.
  *
@@ -92,6 +96,7 @@ void zb_secur_setup_nwk_key(zb_uint8_t *key, zb_uint8_t i);
  *  @param param - work buffer ID or 0 (is zero, function allocates buffer itself)
  */
 void zb_secur_nwk_key_switch_procedure(zb_uint8_t param);
+#endif /* ZB_COORDINATOR_ROLE */
 /** @} */ /* secur_nwk_key */
 
 /** @addtogroup secur_tc_rejoin TC rejoin settings
@@ -115,7 +120,9 @@ void zb_secur_set_tc_rejoin_enabled(zb_bool_t enable);
 void zb_secur_set_ignore_tc_rejoin(zb_bool_t enable);
 /** @} */ /* secur_tc_rejoin */
 
-/** @cond ZBOSS_INTERNAL */
+/** @cond DOXYGEN_INTERNAL_DOC */
+#ifdef ZB_COORDINATOR_ROLE
+#ifndef ZB_LITE_NO_TRUST_CENTER_REQUIRE_KEY_EXCHANGE
 /**
  *  Initiate procedure of NWK key switching.
  *
@@ -124,12 +131,10 @@ void zb_secur_set_ignore_tc_rejoin(zb_bool_t enable);
  *
  *  @param addr_of_interest - network address of ZC to ask ZC for KEC.
  */
-#ifdef ZB_COORDINATOR_ROLE
-#ifndef ZB_LITE_NO_TRUST_CENTER_REQUIRE_KEY_EXCHANGE
 void se_tc_update_link_key(zb_uint16_t addr_of_interest);
 #endif
 #endif
-/** @endcond */ /* ZBOSS_INTERNAL */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /** @addtogroup secur_ic_usage Install code usage
  * @{
@@ -162,6 +167,7 @@ typedef zb_uint8_t zb_ic_types_t;
  */
 typedef void (*zb_secur_ic_add_cb_t)(zb_ret_t status);
 
+#if defined ZB_COORDINATOR_ROLE && defined ZB_SECURITY_INSTALLCODES
 /** @fn void zb_secur_ic_add(zb_ieee_addr_t address, zb_uint8_t ic_type, zb_uint8_t *ic, zb_secur_ic_add_cb_t cb)
  *  @brief Add install code for the device with specified long address
  *  @param[in]  address - long address of the device to add the install code
@@ -181,8 +187,8 @@ typedef void (*zb_secur_ic_add_cb_t)(zb_ret_t status);
  *  @snippet doxygen_snippets.dox wrong_ic_snippet_cs_ick_tc_02_dut_using_ic_c
  */
 void zb_secur_ic_add(zb_ieee_addr_t address, zb_uint8_t ic_type, zb_uint8_t *ic, zb_secur_ic_add_cb_t cb);
+#endif /* ZB_COORDINATOR_ROLE && ZB_SECURITY_INSTALLCODES */
 
-#ifndef ZB_USE_INTERNAL_HEADERS
 
 /** @fn zb_ret_t zb_secur_ic_set(zb_uint8_t ic_type, zb_uint8_t *ic)
  *  @brief Set install code for the device
@@ -199,20 +205,6 @@ void zb_secur_ic_add(zb_ieee_addr_t address, zb_uint8_t ic_type, zb_uint8_t *ic,
  *  @return RET_OK on success or RET_CONVERSION_ERROR on error in install code
  */
 zb_ret_t zb_secur_ic_set(zb_uint8_t ic_type, zb_uint8_t *ic);
-
-#endif /* ZB_USE_INTERNAL_HEADERS */
-
-/** @cond ZBOSS_INTERNAL */
-/**
-   Get list of the install codes.
-
-   It is valid only for the TC (ZC).
-
-   @param table - pointer to the allocated space for the entries.
-   @param cnt - pointer to the counter that indicates count of the output items in the table.
-
-   @return RET_OK on success or RET_ERROR in case of fail
-*/
 
 /** @brief Request for zb_secur_ic_get_list_req.
 */
@@ -297,6 +289,7 @@ typedef ZB_PACKED_PRE struct zb_secur_ic_remove_all_resp_s
 ZB_PACKED_STRUCT
 zb_secur_ic_remove_all_resp_t;
 
+#if defined ZB_COORDINATOR_ROLE && defined ZB_SECURITY_INSTALLCODES
 /**
  * @brief Get list of the install codes.
  * It is valid only for the TC (ZC).
@@ -329,8 +322,7 @@ void zb_secur_ic_remove_req(zb_uint8_t param);
  * @param param buffer with request parameters, will be also used to store response.
 */
 void zb_secur_ic_remove_all_req(zb_uint8_t param);
-
-#ifndef ZB_USE_INTERNAL_HEADERS
+#endif /* ZB_COORDINATOR_ROLE && ZB_SECURITY_INSTALLCODES */
 
 /** @fn zb_ret_t zb_secur_ic_str_set(char *ic_str)
  *  @brief Set install code for the device from character string
@@ -341,6 +333,8 @@ void zb_secur_ic_remove_all_req(zb_uint8_t param);
  *  @returns RET_OK on success.
  */
 zb_ret_t zb_secur_ic_str_set(char *ic_str);
+
+#ifndef ZB_USE_INTERNAL_HEADERS
 
 /** @fn void zb_secur_ic_str_add(zb_ieee_addr_t address, char *ic_str, zb_secur_ic_add_cb_t cb)
  *  @brief Add install code for the device from character string
@@ -365,7 +359,7 @@ void zb_set_installcode_policy(zb_bool_t allow_ic_only);
 /** @} */ /* secur_ic_usage */
 
 #ifdef ZB_ROUTER_ROLE
-/** @cond ZBOSS_INTERNAL */
+/** @cond DOXYGEN_INTERNAL_DOC */
 /**
    Disable APS-encryption of Transport Key from the ZC.
 
@@ -386,7 +380,7 @@ void zb_enable_transport_key_aps_encryption(void);
    @return ZB_TRUE when APS-encryption of Transport Key is enabled, ZB_FALSE otherwise
 */
 zb_bool_t zb_is_transport_key_aps_encryption_enabled(void);
-/** @endcond */ /* ZBOSS_INTERNAL */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 #endif /* ZB_ROUTER_ROLE */
 
 /*! @} */ /* se_secur */
@@ -416,7 +410,7 @@ zb_bool_t zb_is_transport_key_aps_encryption_enabled(void);
 
 #endif  /* DOXYGEN */
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 /**
    Check whether the right library is selected at application compilation time
 
@@ -433,7 +427,7 @@ void since_you_got_that_symbol_unresolved_you_probably_forget_use_ZB_ED_ROLE_pre
 /* minor internal hack for CI system */
 #define ZB_SET_NS_UART_CB_STUB()
 
-/** @endcond*/ /*internals_doc*/
+/** @endcond*/ /* DOXYGEN_INTERNAL_DOC */
 
 /*! @addtogroup zb_general_start */
 /*! @{ */
@@ -460,13 +454,13 @@ void since_you_got_that_symbol_unresolved_you_probably_forget_use_ZB_ED_ROLE_pre
   zb_init((zb_char_t *)trace_comment);       \
   ZB_SET_NS_UART_CB_STUB();                  \
 }
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 /** @brief Global stack initialization.
 
     Don't call directly, use ZB_INIT() instead
 */
 void zb_init(zb_char_t *trace_comment);
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 #else
 /**
    Global stack initialization.
@@ -650,9 +644,9 @@ void zboss_sniffer_stop(void);
 /*! @addtogroup zb_general_get */
 /*! @{ */
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 zb_bool_t zb_zdo_joined(void);
-/** @endcond */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /**
    Checks that device is joined to the network.
@@ -660,7 +654,7 @@ zb_bool_t zb_zdo_joined(void);
 */
 #define ZB_JOINED()  zb_zdo_joined()
 
-/*! @} */ /*zb_general_get */
+/*! @} */ /* zb_general_get */
 
 /*! @addtogroup zb_general_main_loop */
 /*! @{ */
@@ -769,11 +763,13 @@ zb_uint8_t zb_get_current_channel(void);
 /*! @addtogroup zb_general_set */
 /*! @{ */
 
+#ifdef ZB_COORDINATOR_ROLE
 /**
    Initiate device as a Zigbee 3.0 (not SE!) coordinator
    @param channel_mask - Zigbee channel mask
 */
 void zb_set_network_coordinator_role(zb_uint32_t channel_mask);
+#endif /* ZB_COORDINATOR_ROLE */
 
 /**
    Initiate device as a Zigbee Zigbee 3.0 (not SE!) router
@@ -805,6 +801,7 @@ void zb_set_network_router_role_legacy(zb_uint32_t channel_mask);
 void zb_set_network_ed_role_legacy(zb_uint32_t channel_mask);
 #endif /* ZB_USE_INTERNAL_HEADERS */
 
+/** @cond DOXYGEN_SUBGHZ_FEATURE */
 /**
    Initiate device as a Zigbee 3.0 BDB coordinator with channel list.
    Provides functionality to set mask for Sub-GHz and 2.4GHz page.
@@ -818,11 +815,9 @@ void zb_set_network_coordinator_role_ext(zb_channel_list_t channel_list);
    @param channel_list - Zigbee channels list
 */
 void zb_set_network_ed_role_ext(zb_channel_list_t channel_list);
+/** @endcond */ /* DOXYGEN_SUBGHZ_FEATURE */
 
 /** @} */
-/** @addtogroup zb_general_get
-@{
-*/
 
 /*! @addtogroup zb_general_get */
 /*! @{ */
@@ -839,14 +834,17 @@ zb_nwk_device_type_t zb_get_network_role(void);
  */
 zb_uint8_t zb_get_max_children(void);
 
-
 /*! @} */ /* zb_general_get */
 
 /** @addtogroup zb_general_set
 @{
 */
 
+/** @cond DOXYGEN_SE_SECTION */
+#ifdef ZB_SE_COMMISSIONING
 void zb_se_set_bdb_mode_enabled(zb_uint8_t enabled);
+#endif /* ZB_SE_COMMISSIONING */
+/** @endcond */ /* DOXYGEN_SE_SECTION */
 
 /**
  * @name Channel pages' numbers
@@ -1028,8 +1026,9 @@ typedef enum zb_nvram_dataset_types_e
   ZB_NVRAM_APP_DATA3             = 27, /**< Application-specific data #3 */
   ZB_NVRAM_APP_DATA4             = 28, /**< Application-specific data #4 */
   ZB_NVRAM_KE_WHITELIST          = 29,
-  ZB_NVRAM_DATASET_NUMBER,             /**< Count of Dataset */
-  ZB_NVRAM_DATA_SET_TYPE_PAGE_HDR = 0x1e /**< Special internal dataset type  */
+  ZB_NVRAM_ZDO_DIAGNOSTICS_DATA  = 31, /**< Dataset of the Diagnostics cluster */
+  ZB_NVRAM_DATASET_NUMBER        = 32, /**< Count of Dataset */
+  ZB_NVRAM_DATA_SET_TYPE_PAGE_HDR = 30, /**< Special internal dataset type  */
 } zb_nvram_dataset_types_t;
 
 #define ZB_NVRAM_APP_DATASET_NUMBER 4U
@@ -1132,20 +1131,21 @@ void zb_nvram_register_app4_write_cb(
  * Write specified dataset into NVRAM
  *
  * @param t - dataset index, see @ref zb_nvram_dataset_types_e
- * @ret status of operation
+ * @return Status of operation
  *
- * @b Example @b:
+ * @b Example @b
  * @snippet light_sample/dimmable_light/bulb.c nvram_usage_example
  *
  * See light_sample
  */
 zb_ret_t zb_nvram_write_dataset(zb_nvram_dataset_types_t t);
-/** @cond internals_doc */
+
+/** @cond DOXYGEN_INTERNAL_DOC */
 /**
  * Clears all datasets except @ref ZB_IB_COUNTERS and application datasets.
  */
 void zb_nvram_clear(void);
-/** @endcond */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #ifndef ZB_USE_INTERNAL_HEADERS
 /**
@@ -1185,7 +1185,7 @@ void zb_nvram_transaction_commit(void);
  * @param buf - a buffer where read data will be saved
  * @param len - a data length to read
  *
- * @ret status of operation
+ * @return Status of operation
  */
 zb_ret_t zb_nvram_read_data(zb_uint8_t page, zb_uint32_t pos, zb_uint8_t *buf, zb_uint16_t len);
 
@@ -1198,20 +1198,20 @@ zb_ret_t zb_nvram_read_data(zb_uint8_t page, zb_uint32_t pos, zb_uint8_t *buf, z
  * @param buf - a buffer with data to be written
  * @param len - a buffer size
  *
- * @ret status of operation
+ * @return Status of operation
  */
 zb_ret_t zb_nvram_write_data(zb_uint8_t page, zb_uint32_t pos, zb_uint8_t *buf, zb_uint16_t len);
 
 /** @} */ /* zboss_nvram */
 /*! @endcond */ /* DOXYGEN_LL_SECTION */
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define ZB_INVALID_TX_POWER_VALUE     0x7F
-/** @endcond */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #ifdef ZB_PRODUCTION_CONFIG
-/** @cond internals_doc */
 
+/** @cond DOXYGEN_INTERNAL_DOC */
 /** Maximum size of production configuration */
 #define ZB_PRODUCTION_CONFIG_APP_MAX_SIZE 128U
 
@@ -1280,7 +1280,7 @@ typedef ZB_PACKED_PRE struct zb_cs_key_material_header_s
 } ZB_PACKED_STRUCT zb_cs_key_material_header_t;
 
 #define ZB_PROD_CFG_IS_PRESENT_CERT_ANY(v) ((v->options) & 0x80U)
-/** @endcond */ /*internals_doc*/
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /**
  * Disable usage of production configuration at runtime.

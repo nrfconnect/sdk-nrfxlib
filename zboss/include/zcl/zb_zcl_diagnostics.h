@@ -408,6 +408,14 @@ enum zb_zcl_diagnostics_attr_e
   (void*) data_ptr                                              \
 }
 
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_ROUTE_DISC_INITIATED_ID(data_ptr) \
+{                                                               \
+  ZB_ZCL_ATTR_DIAGNOSTICS_ROUTE_DISC_INITIATED_ID,              \
+  ZB_ZCL_ATTR_TYPE_U16,                                         \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
+  (void*) data_ptr                                              \
+}
+
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_AVERAGE_MAC_RETRY_PER_APS_ID(data_ptr) \
 {                                                               \
   ZB_ZCL_ATTR_DIAGNOSTICS_AVERAGE_MAC_RETRY_PER_APS_ID,         \
@@ -565,6 +573,7 @@ enum zb_zcl_diagnostics_attr_e
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_SUCCESS_ID,            &diagnostics_ctx_zcl.zdo_data.aps_tx_ucast_success) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_RETRY_ID,              &diagnostics_ctx_zcl.zdo_data.aps_tx_ucast_retry) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_APS_TX_UCAST_FAIL_ID,               &diagnostics_ctx_zcl.zdo_data.aps_tx_ucast_fail) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_ROUTE_DISC_INITIATED_ID,            &diagnostics_ctx_zcl.zdo_data.route_disc_initiated) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_ADDED_ID,                  &diagnostics_ctx_zcl.zdo_data.nwk_neighbor_added) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_REMOVED_ID,                &diagnostics_ctx_zcl.zdo_data.nwk_neighbor_removed) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_NEIGHBOR_STALE_ID,                  &diagnostics_ctx_zcl.zdo_data.nwk_neighbor_stale) \

@@ -80,7 +80,9 @@
 
     @par
 
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
     The complete set of Window Covering Controller device samples can be found in /application/HA_samples/window_covering_controller
+    @endcond
 */
 
 /*!< window covering controller device version */

@@ -43,6 +43,7 @@
 #ifndef ZB_CHANNEL_PAGE_H
 #define ZB_CHANNEL_PAGE_H 1
 
+#include "zb_config.h"
 #include "zb_types.h"
 #include "zb_errors.h"
 

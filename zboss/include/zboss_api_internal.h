@@ -52,6 +52,9 @@
 #include "zb_debug.h"
 #include "zb_trace.h"
 #include "zb_pooled_list.h"
+
+#ifndef ZB_MINIMAL_CONTEXT
+
 #include "zb_address.h"
 
 /* Data structures moved from subsystem internal headers for configurable memory implementation. */
@@ -87,6 +90,7 @@ typedef ZB_PACKED_PRE struct zb_aps_retrans_ent_s
   zb_bitfield_t state:3;        /*!< @see @ref aps_retrans_ent_state */
 } ZB_PACKED_STRUCT zb_aps_retrans_ent_t;
 
+#endif /* !ZB_MINIMAL_CONTEXT */
 
 typedef ZB_PACKED_PRE struct zb_cb_q_ent_s
 {
@@ -147,6 +151,7 @@ typedef ZB_PACKED_PRE struct zb_tm_q_ent_s
 ZB_PACKED_STRUCT
 zb_tm_q_ent_t;
 
+#ifndef ZB_MINIMAL_CONTEXT
 /**
    Installcode hash for TC
 
@@ -567,6 +572,10 @@ typedef ZB_PACKED_PRE struct zdo_diagnostics_info_s
    *         the APS layer fails to send a unicast. */
   zb_uint16_t aps_tx_ucast_fail;
 
+  /*! @brief A counter that is incremented each time the network
+   *  layer submits a route discovery message to the MAC. */
+  zb_uint16_t route_disc_initiated;
+
   /*! @brief A counter that is incremented each time
    *  an entry is added to the neighbor table. */
   zb_uint16_t nwk_neighbor_added;
@@ -643,5 +652,7 @@ typedef ZB_PACKED_PRE struct zb_ncp_pending_calls_s
 zb_ncp_pending_calls_t;
 
 #endif /* NCP_MODE && !NCP_MODE_HOST */
+
+#endif /* !ZB_MINIMAL_CONTEXT */
 
 #endif /* ZB_ZBOSS_API_INTERNAL_H */

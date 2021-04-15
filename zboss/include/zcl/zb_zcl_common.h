@@ -512,7 +512,7 @@ static ZB_INLINE zb_uint16_t zb_zcl_string_append_byte(zb_uint8_t *zcl_str,
   if (newlen < (zb_uint16_t) zcl_str_max_size)
   {
     *ZB_ZCL_GET_STRING_END(zcl_str) = value;
-    ZB_ASSERT(newlen <= 0xFFU);
+    ZB_ASSERT(newlen <= ZB_UINT8_MAX);
     ZB_ZCL_SET_STRING_LENGTH(zcl_str, (zb_uint8_t)newlen);
   }
   else

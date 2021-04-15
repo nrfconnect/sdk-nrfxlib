@@ -331,9 +331,9 @@
 #endif /* ZB_MAC_SECURITY */
 
 /* ZBOSS stack version, represented as an unit32 number. */
-#define ZB_STACK_VERSION ((ZBOSS_MAJOR << 24) | (ZBOSS_MINOR << 16) | (ZBOSS_SDK_TYPE << 8) | (ZBOSS_SDK_REVISION))
+#define ZB_STACK_VERSION ((ZBOSS_MAJOR << 24) | (ZBOSS_MINOR << 16) | (ZBOSS_PATCH << 8) | (ZBOSS_SDK_REVISION))
 
 /* ZBOSS NCP protocol version. */
-#define ZB_NCP_PROTOCOL_VERSION 0x010E
+#define ZB_NCP_PROTOCOL_VERSION 0x0111
 
 #endif /* ZB_VENDOR_H__ */
