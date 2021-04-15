@@ -11,37 +11,47 @@ menu "ZBOSS library configuration"
 config ZBOSS_SOURCES_AVAILABLE
 	bool
 
-# Select between the production and development version of libraries
-choice ZIGBEE_LIBRARY_TYPE
-	bool "ZBOSS library version"
-	default ZIGBEE_LIBRARY_PRODUCTION if !ZBOSS_SOURCES_AVAILABLE
+# Add a menu option to switch between platform designs.
+choice
+	prompt "Zigbee platform design"
+	default ZIGBEE_LIBRARY_SOC
 
-config ZIGBEE_LIBRARY_PRODUCTION
-	bool "Use production libraries"
-	depends on (SOC_NRF52840 || SOC_NRF52833)
+config ZIGBEE_LIBRARY_SOC
+	bool "System-on-Chip"
 	help
-	  If selected, the application will be linked with the latest, stable
-	  version of ZBOSS libraries.
-	  Please check NCS documentation in order to get the certification status
-	  of those libraries.
+	  The Zigbee stack, as well as the application is implemented on the SoC
 
-config ZIGBEE_LIBRARY_DEVELOPMENT
-	bool "Use development libraries [EXPERIMENTAL]"
+config ZIGBEE_LIBRARY_NCP_DEV
+	bool "Network co-processor (connectivity device) [EXPERIMENTAL]"
 	help
-	  If selected, the application will be linked with newest version of
-	  ZBOSS libraries.
-	  Those libraries are not officially certified, but may be used for
-	  an early development of applications, that require experimental features.
+	  The Zigbee stack is implemented on the connectivity SoC,
+	  but the application is implemented on the host MCU
 
-endchoice # ZIGBEE_LIBRARY_TYPE
+endchoice
 
-if ZIGBEE_LIBRARY_PRODUCTION
-rsource "production/Kconfig"
-endif # ZIGBEE_LIBRARY_PRODUCTION
+# Add a menu option to switch between subsets of Zigbee Green Power features.
+choice
+	prompt "Zigbee Green Power feature set configuration"
+	default ZIGBEE_GP_PB
 
-if ZIGBEE_LIBRARY_DEVELOPMENT
-rsource "development/Kconfig"
-endif # ZIGBEE_LIBRARY_DEVELOPMENT
+config ZIGBEE_GP_NONE
+	bool "Disable Zigbee Green Power functionality"
+	help
+	  This option is valid only when building ZBOSS without application layer
+
+config ZIGBEE_GP_PB
+	bool "Enable Zigbee Green Power Proxy Basic functionality"
+
+config ZIGBEE_GP_CB
+	bool "Enable Zigbee Green Power Combo Basic functionality [EXPERIMENTAL]"
+	depends on !ZIGBEE_ROLE_END_DEVICE
+
+endchoice
+
+config APP_LINK_WITH_ZBOSS
+	bool
+	help
+	  Link application with ZBOSS library
 
 endmenu
 
