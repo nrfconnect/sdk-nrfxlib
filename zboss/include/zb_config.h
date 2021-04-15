@@ -1049,7 +1049,9 @@ exponent.
   See include/zb_uint48.h.
 */
 /** Enable support for int24 and uint48 data types */
+#ifndef ZB_NO_UINT24_48_SUPPORT
 #define ZB_UINT24_48_SUPPORT
+#endif /* !ZB_NO_UINT24_48_SUPPORT */
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /** Should expire in this number of attempts if failure*/
@@ -1180,6 +1182,9 @@ exponent.
 /* #  define ZB_BINARY_TRACE */
 /* #  define ZB_NET_TRACE */
 /* #  define ZB_TRAFFIC_DUMP_ON */
+#if (ZB_STACK_SPEC_VERSION < 23U)
+#define ZB_TRAFFIC_DUMP_V3
+#endif
 #endif
 
 #ifndef ZB_MEMTRACE_BUF_SIZE
@@ -1794,10 +1799,29 @@ compatibility with some mammoth shit */
 #define ZB_NEVER_STOP_TIMER
 #endif
 
-#if defined DEBUG_EXPOSE_KEYS && !defined DEBUG
+#ifndef DEBUG
+#ifdef DEBUG_EXPOSE_KEYS
 #warning undefining DEBUG_EXPOSE_KEYS for release build
 #undef DEBUG_EXPOSE_KEYS
 #endif
+
+#ifdef DEBUG_EXPOSE_ALL_KEYS
+#warning undefining DEBUG_EXPOSE_ALL_KEYS for release build
+#undef DEBUG_EXPOSE_ALL_KEYS
+#endif
+
+#ifdef ZB_BINARY_TRACE
+#warning undefining ZB_BINARY_TRACE for release build
+#undef ZB_BINARY_TRACE
+#endif
+
+#ifdef ZB_TRAFFIC_DUMP_ON
+#warning undefining ZB_TRAFFIC_DUMP_ON for release build
+#undef ZB_TRAFFIC_DUMP_ON
+#define ZB_TRAFFIC_DUMP_OFF
+#endif
+
+#endif /* DEBUG */
 
 #ifndef ZB_USE_ERROR_INDICATION
 #define ZB_USE_ERROR_INDICATION
@@ -1805,6 +1829,14 @@ compatibility with some mammoth shit */
 
 #ifdef NCP_MODE_HOST
 #define HAVE_TOP_LEVEL_ERROR_HANDLER
+#endif
+
+#ifndef ZB_APS_USER_PAYLOAD
+#define ZB_APS_USER_PAYLOAD
+#endif
+
+#ifndef ZB_DEPRECATED_API
+#define ZB_DEPRECATED_API
 #endif
 
 #endif /* ZB_CONFIG_H */

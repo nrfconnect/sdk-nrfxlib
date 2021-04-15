@@ -57,21 +57,12 @@
  *    For more information see 5.51.2_poll_control_commands sample
  */
 
-/**
- * @brief Hook on Write attribute
- *
- * send Check-in if change Check-in interval & Check-in remain time > new check-in interval
- *
- * @param endpoint - endpoint number
- * @param attr_id - ID of attribute being written
- * @param new_value - pointer to new value of attribute
- */
-void zb_zcl_poll_control_write_attr_hook(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value);
-
 #if defined ZB_HA_ENABLE_POLL_CONTROL_SERVER || defined DOXYGEN
 
 /*! @brief Schedule poll control process on given endpoint
  * First check-in will occur after one check-in interval
+ * Poll Controll process also starts automatically during ZCL periodic activities
+ * initialization if Poll Control server cluster is declared
  * @param param - buffer for check-in command
  * @param endpoint - endpoint to start poll control process on */
 void zb_zcl_poll_control_start(zb_uint8_t param, zb_uint8_t endpoint);
@@ -128,11 +119,11 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
 /** Fast Poll Timeout attribute, HA spec 9.5.4.1. */
 #define ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_ID      0x0003U
 /** Check-in Interval Min attribute, HA spec 9.5.4.1.4 */
-#define ZB_ZCL_ATTR_POLL_CONTROL_CHECKIN_INTERVAL_MIN_ID   0x0004U
+#define ZB_ZCL_ATTR_POLL_CONTROL_MIN_CHECKIN_INTERVAL_ID   0x0004U
 /** Long Poll Interval Min attribute, HA spec 9.5.4.1.5 */
-#define ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_MIN_ID 0x0005U
+#define ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_MIN_INTERVAL_ID 0x0005U
 /** Fast Poll Timeout Max attribute, HA spec 9.5.4.1.6 */
-#define ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_MAX_ID  0x0006U
+#define ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_MAX_TIMEOUT_ID  0x0006U
 
 /** Status Data - custom non-spec parameters  */
 #define ZB_ZCL_ATTR_POLL_CONTROL_STATUS_DATA_ID 0xefffU
@@ -223,25 +214,25 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
   (void*) data_ptr                                 \
 }
 
-#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_CHECKIN_INTERVAL_MIN_ID(data_ptr) \
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_MIN_CHECKIN_INTERVAL_ID(data_ptr) \
 {                                                       \
-  ZB_ZCL_ATTR_POLL_CONTROL_CHECKIN_INTERVAL_MIN_ID,     \
+  ZB_ZCL_ATTR_POLL_CONTROL_MIN_CHECKIN_INTERVAL_ID,     \
   ZB_ZCL_ATTR_TYPE_U32,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                        \
   (void*) data_ptr                                 \
 }
 
-#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_MIN_ID(data_ptr) \
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_MIN_INTERVAL_ID(data_ptr) \
 {                                                       \
-  ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_MIN_ID,   \
+  ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_MIN_INTERVAL_ID,   \
   ZB_ZCL_ATTR_TYPE_U32,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
   (void*) data_ptr                                 \
 }
 
-#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_MAX_ID(data_ptr) \
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_MAX_TIMEOUT_ID(data_ptr) \
 {                                                       \
-  ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_MAX_ID,    \
+  ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_MAX_TIMEOUT_ID,    \
   ZB_ZCL_ATTR_TYPE_U16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
   (void*) data_ptr                                 \
@@ -322,9 +313,9 @@ zb_zcl_poll_control_srv_cfg_data_t;
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_ID, (long_poll_interval))          \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_POLL_CONTROL_SHORT_POLL_INTERVAL_ID, (short_poll_interval))        \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_ID, (fast_poll_timeout))            \
-  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_POLL_CONTROL_CHECKIN_INTERVAL_MIN_ID, (checkin_interval_min))      \
-  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_MIN_ID, (long_poll_interval_min))  \
-  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_MAX_ID, (fast_poll_timeout_max))    \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_POLL_CONTROL_MIN_CHECKIN_INTERVAL_ID, (checkin_interval_min))      \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_MIN_INTERVAL_ID, (long_poll_interval_min))  \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_MAX_TIMEOUT_ID, (fast_poll_timeout_max))    \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_POLL_CONTROL_ADDR_DATA_ID, &(srv_cfg_data_ctx_##attr_list))        \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
@@ -658,12 +649,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_poll_control_set_short_poll_interval_req_s
 zb_ret_t zb_zcl_poll_control_set_client_addr(zb_uint8_t local_ep, zb_uint16_t addr, zb_uint8_t ep);
 #endif
 
-/**
-   @brief Force to go long polling
-   @param endpoint - Endpoint, implementing Poll control cluster
-*/
-void zb_zcl_poll_control_stop_fast_poll(zb_uint8_t endpoint);
-
+#if defined ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL
 /**
   @brief Function is used by Poll control client to set Fast poll
   timeout value. This value is included into Check-in response
@@ -673,7 +659,6 @@ void zb_zcl_poll_control_stop_fast_poll(zb_uint8_t endpoint);
 */
 void zb_zcl_set_fast_poll_timeout(zb_uint8_t ep, zb_uint16_t fast_poll_timeout);
 
-
 #ifdef ZB_USE_NVRAM
 /**
    @brief Save to NVRAM Poll Control dataset
@@ -681,7 +666,8 @@ void zb_zcl_set_fast_poll_timeout(zb_uint8_t ep, zb_uint16_t fast_poll_timeout);
    @note ignore param, set it to 0
 */
 void zb_zcl_poll_control_save_nvram(zb_uint8_t param);
-#endif
+#endif /* ZB_USE_NVRAM */
+#endif /* ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL */
 
 /*! @} */ /* Poll Control cluster commands */
 
@@ -695,9 +681,11 @@ zb_uint8_t zb_zcl_get_cmd_list_poll_control(zb_bool_t is_client_generated, zb_ui
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 
+#if defined ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL
 void zb_zcl_poll_control_init_server(void);
 void zb_zcl_poll_control_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_POLL_CONTROL_SERVER_ROLE_INIT zb_zcl_poll_control_init_server
 #define ZB_ZCL_CLUSTER_ID_POLL_CONTROL_CLIENT_ROLE_INIT zb_zcl_poll_control_init_client
+#endif /* ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL */
 
 #endif /* ZB_ZCL_POLL_CONTROL_H */

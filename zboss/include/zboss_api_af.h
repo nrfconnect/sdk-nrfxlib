@@ -630,8 +630,10 @@ zb_af_device_ctx_t;
 
 
 /** @cond internals_doc */
+#if defined ZB_ENABLE_ZCL && !defined ZB_ZCL_DISABLE_REPORTING
 void zb_zcl_init_reporting_ctx(void);
 void zb_zcl_reset_reporting_ctx(void);
+#endif /* ZB_ENABLE_ZCL && !ZB_ZCL_DISABLE_REPORTING */
 
 /* TODO: extend this ifdef*/
 #if defined ZB_ENABLE_ZCL

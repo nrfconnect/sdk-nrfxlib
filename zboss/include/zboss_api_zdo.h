@@ -57,55 +57,55 @@
  */
 /** @{ */
 /** The requested operation or transmission was completed successfully. */
-#define ZB_ZDP_STATUS_SUCCESS 0x00
+#define ZB_ZDP_STATUS_SUCCESS 0x00U
 
 /*!< The supplied request type was invalid. */
-#define ZB_ZDP_STATUS_INV_REQUESTTYPE 0x80
+#define ZB_ZDP_STATUS_INV_REQUESTTYPE 0x80U
 
 /*!< The requested device did not exist on a device following a child descriptor request to a
  * parent.*/
-#define ZB_ZDP_STATUS_DEVICE_NOT_FOUND 0x81
+#define ZB_ZDP_STATUS_DEVICE_NOT_FOUND 0x81U
 
 /*!< The supplied endpoint was equal to 0x00 or between 0xf1 and 0xff. */
-#define ZB_ZDP_STATUS_INVALID_EP 0x82
+#define ZB_ZDP_STATUS_INVALID_EP 0x82U
 
 /*!< The requested endpoint is not described by simple descriptor. */
-#define ZB_ZDP_STATUS_NOT_ACTIVE 0x83
+#define ZB_ZDP_STATUS_NOT_ACTIVE 0x83U
 
 /*!< The requested optional feature is not supported on the target device. */
-#define ZB_ZDP_STATUS_NOT_SUPPORTED 0x84
+#define ZB_ZDP_STATUS_NOT_SUPPORTED 0x84U
 
 /*!< A timeout has occurred with the requested operation. */
-#define ZB_ZDP_STATUS_TIMEOUT 0x85
+#define ZB_ZDP_STATUS_TIMEOUT 0x85U
 
 /*!< The end device bind request was unsuccessful due to a failure to match any suitable clusters.*/
-#define ZB_ZDP_STATUS_NO_MATCH 0x86
+#define ZB_ZDP_STATUS_NO_MATCH 0x86U
 
 /*!< The unbind request was unsuccessful due to the coordinator or source device not having an
  * entry in its binding table to unbind.*/
-#define ZB_ZDP_STATUS_NO_ENTRY 0x88
+#define ZB_ZDP_STATUS_NO_ENTRY 0x88U
 
 /*!< A child descriptor was not available following a discovery request to a parent. */
-#define ZB_ZDP_STATUS_NO_DESCRIPTOR 0x89
+#define ZB_ZDP_STATUS_NO_DESCRIPTOR 0x89U
 
 /*!< The device does not have storage space to support the requested operation. */
-#define ZB_ZDP_STATUS_INSUFFICIENT_SPACE 0x8a
+#define ZB_ZDP_STATUS_INSUFFICIENT_SPACE 0x8aU
 
 /*!< The device is not in the proper state to support the requested operation. */
-#define ZB_ZDP_STATUS_NOT_PERMITTED 0x8b
+#define ZB_ZDP_STATUS_NOT_PERMITTED 0x8bU
 
 /*!< The device does not have table space to support the operation. */
-#define ZB_ZDP_STATUS_TABLE_FULL 0x8c
+#define ZB_ZDP_STATUS_TABLE_FULL 0x8cU
 
 /*!< The permissions configuration table on the target indicates that the request is not authorized
  * from this device.*/
-#define ZB_ZDP_STATUS_NOT_AUTHORIZED 0x8d
+#define ZB_ZDP_STATUS_NOT_AUTHORIZED 0x8dU
 
 /*!< The index in the received command is out of bounds. */
-#define ZB_ZDP_STATUS_INVALID_INDEX 0x8f
+#define ZB_ZDP_STATUS_INVALID_INDEX 0x8fU
 
 /**< Custom internal statuses. */
-#define ZB_ZDP_STATUS_TIMEOUT_BY_STACK 0xff
+#define ZB_ZDP_STATUS_TIMEOUT_BY_STACK 0xffU
 /** @} */
 
 /**
@@ -114,7 +114,7 @@
  * Holds one of @ref zdp_status. Kept for backward compatibility as
  * @ref zdp_status were declared previously as enum.
  */
-typedef zb_ret_t zb_zdp_status_t;
+typedef zb_uint8_t zb_zdp_status_t;
 
 /**
  * @name Signals passed to zboss_signal_handler()
@@ -1134,8 +1134,8 @@ zb_uint8_t zb_zdo_nwk_addr_req(zb_uint8_t param, zb_callback_t cb);
 zb_uint8_t zb_zdo_initiate_nwk_addr_req(zb_uint8_t param, zb_ieee_addr_t ieee_addr);
 /* Used internally in stack. */
 void zb_zdo_initiate_nwk_addr_req_2param(zb_uint8_t param, zb_uint16_t user_param);
-void zb_zdo_initiate_node_desc_req_2param(zb_uint8_t param, zb_uint16_t user_param);
-void zb_zdo_initiate_node_desc_req_direct(zb_uint16_t addr, zb_callback_t user_cb);
+void zb_zdo_init_node_desc_req_2param(zb_uint8_t param, zb_uint16_t user_param);
+zb_ret_t zb_zdo_init_node_desc_req_direct(zb_uint16_t addr, zb_callback_t user_cb);
 /** @endcond */ /* internals_doc */
 
 /** @brief Parameters of IEEE_addr_req primitive.
@@ -1378,7 +1378,9 @@ zb_zdo_power_desc_resp_t;
   * @snippet onoff_server/on_off_switch_zed.c send_node_desc_req
   * @snippet onoff_server/on_off_switch_zed.c node_req_cb
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See application/onoff_server sample
+  * @endcond
   */
 zb_uint8_t zb_zdo_node_desc_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1405,7 +1407,9 @@ typedef ZB_PACKED_PRE struct zb_zdo_power_desc_req_s
   * @snippet onoff_server/on_off_switch_zed.c send_power_desc_req
   * @snippet onoff_server/on_off_switch_zed.c power_desc_cb
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See application/onoff_server sample
+  * @endcond
   */
 zb_uint8_t zb_zdo_power_desc_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1433,7 +1437,9 @@ typedef ZB_PACKED_PRE struct zb_zdo_simple_desc_req_s
   * @snippet onoff_server/on_off_switch_zed.c send_simple_desc_req
   * @snippet onoff_server/on_off_switch_zed.c simple_desc_cb
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See application/onoff_server sample
+  * @endcond
   */
 zb_uint8_t zb_zdo_simple_desc_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1473,7 +1479,9 @@ zb_zdo_ep_resp_t;
  * @snippet onoff_server/on_off_switch_zed.c send_active_ep_req
  * @snippet onoff_server/on_off_switch_zed.c active_ep_cb
  *
+ * @cond ZBOSS_SAMPLES_API_DOC_LINE
  * See application/onoff_server sample
+ * @endcond
  */
 zb_uint8_t zb_zdo_active_ep_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1617,7 +1625,9 @@ zb_zdo_system_server_discovery_resp_t;
  *  @snippet onoff_server/on_off_switch_zed.c system_server_discovery_req
  *  @snippet onoff_server/on_off_switch_zed.c system_server_discovery_cb
  *
- *  See application/onoff_server sample
+ * @cond ZBOSS_SAMPLES_API_DOC_LINE
+ * See application/onoff_server sample
+ * @endcond
  */
 zb_uint8_t zb_zdo_system_server_discovery_req(zb_uint8_t param, zb_callback_t cb);
 #endif  /*ZB_LITE_NO_ZDO_SYSTEM_SERVER_DISCOVERY */
@@ -1786,7 +1796,19 @@ zb_uint8_t zb_zdo_mgmt_nwk_update_req(zb_uint8_t param, zb_callback_t cb);
                   performed now (nor enough memory, resources, etc.)
 
 */
-zb_uint8_t zb_zdo_mgmt_nwk_enhanced_update_req(zb_uint8_t param, zb_callback_t cb);
+zb_uint8_t zb_zdo_mgmt_nwk_enh_update_req(zb_uint8_t param, zb_callback_t cb);
+
+#ifdef ZB_DEPRECATED_API
+
+/** @brief Performs Mgmt_NWK_Update_req request
+
+    @deprecated This function is deprecated and will be removed in a future release.
+                Use zb_zdo_mgmt_nwk_enh_update_req() instead.
+*/
+zb_uint8_t zb_zdo_mgmt_nwk_enhanced_update_req(zb_uint8_t param, zb_callback_t cb) ZB_DEPRECATED;
+
+#endif /* ZB_DEPRECATED_API */
+
 
 /** @brief Notification for Mgmt_NWK_Unsolicited_Enhanced_Update_Notify
   * @see ZB spec, subclause 2.4.4.4.12
@@ -1977,7 +1999,7 @@ zb_zdo_routing_table_record_t;
  * @name Bind destination address mode
  * @brief The addressing mode for the destination address used in @ref
  * zb_zdo_binding_table_record_s, @ref zb_zdo_bind_req_param_s, @ref zb_zdo_bind_req_head_s command.
- * This field can take one of the non-reserved values from the list @ref zb_bind_dst_addr_mode_e.
+ * This field can take one of the non-reserved values from the list of defines below (@ref bind_dst_addr_mode).
  * Values 0x00, 0x02, 0x04-0xff are reserved.
  * @anchor bind_dst_addr_mode
  * @see ZB Spec, subclause 2.4.3.2.2.
@@ -2642,6 +2664,7 @@ void zb_zdo_pim_turbo_poll_continuous_leave(zb_uint8_t param);
  * @brief Get the Long Poll Interval.
  *
  * @param param buffer that will be used to store response parameters.
+ * @param cb
  *
  * @return Long Poll interval in milliseconds.
 */

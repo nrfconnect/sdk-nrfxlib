@@ -46,6 +46,8 @@
 /*! \addtogroup buf */
 /*! @{ */
 
+#include "zboss_api_core.h"
+
 /*
   Moved here buffer structure to implement configurable mem without enabling legacy buffers
  */
@@ -223,9 +225,6 @@ zb_ret_t zb_buf_get_in_delayed_ext_func(TRACE_PROTO zb_callback2_t callback, zb_
 void zb_buf_free_func(TRACE_PROTO zb_bufid_t buf);
 void* zb_buf_begin_func(TRACE_PROTO zb_bufid_t buf);
 void* zb_buf_end_func(TRACE_PROTO zb_bufid_t buf);
-void* zb_buf_ptr_func(TRACE_PROTO zb_bufid_t buf);
-zb_bufid_t zb_buf_from_ptr_func(TRACE_PROTO void *ptr);
-void zb_buf_set_data_offset_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t off);
 zb_uint_t zb_buf_len_func(TRACE_PROTO zb_bufid_t buf);
 void zb_buf_copy_func(TRACE_PROTO zb_bufid_t dst_buf, zb_bufid_t src_buf);
 void *zb_buf_initial_alloc_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
@@ -371,35 +370,6 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
   @return pointer to the first byte after data in the buffer
 */
 #define zb_buf_end(buf) zb_buf_end_func(TRACE_CALL (buf))
-
-/**
-  Return pointer to the memory of the buffer
-
-  @param buf - buffer ID
-
-  @return pointer to the first byte of the buffer memory
-*/
-#define zb_buf_ptr(buf) zb_buf_ptr_func(TRACE_CALL (buf))
-
-
-/**
-  Return buffer ID
-
-  @param ptr - pointer to the first byte of the buffer memory
-
-  @return buffer ID
-*/
-#define zb_buf_from_ptr(ptr) zb_buf_from_ptr_func(TRACE_CALL (ptr))
-
-
-/**
- * Set buffer data offset
- *
- * @param buf - buffer ID
- * @param off - data offset
- */
-#define zb_buf_set_data_offset(buf, off) zb_buf_set_data_offset_func(TRACE_CALL (buf), (off))
-
 
 /**
  * Return current buffer length
@@ -613,17 +583,21 @@ zb_uint_t zb_buf_flags_get_func(TRACE_PROTO zb_bufid_t buf);
  */
 zb_bool_t zb_buf_is_oom_state(void);
 
+#ifdef ZB_TRACE_LEVEL
 /**
    Trace buffer statistics into ZBOSS trace
  */
 void zb_buf_oom_trace(void);
+#endif /* ZB_TRACE_LEVEL */
 
+#ifdef ZB_REDUCE_NWK_LOAD_ON_LOW_MEMORY
 /**
    Check if buffer pool is close to Out Of Memory (OOM) state
 
    @return ZB_TRUE if ZBOSS is nearly in OOM state
  */
 zb_bool_t zb_buf_memory_close_to_low(void);
+#endif /* ZB_REDUCE_NWK_LOAD_ON_LOW_MEMORY */
 
 /**
    Check if buffer pool is close to Out Of Memory (OOM) state
@@ -653,7 +627,7 @@ void zb_buf_set_handle_func(TRACE_PROTO zb_bufid_t buf, zb_uint8_t handle);
    @param buf - buffer ID
    @param status - new status field value
  */
-#define zb_buf_set_status(buf,status) zb_buf_set_status_func(TRACE_CALL (buf), (status))
+#define zb_buf_set_status(buf,status) zb_buf_set_status_func(TRACE_CALL (buf), (zb_ret_t)(status))
 
 /**
    Get 'handle' field of the buffer's header
@@ -693,11 +667,11 @@ zb_bool_t zb_buf_have_rx_bufs(void);
 
 #define ZB_BUF_COPY_FLAG_APS_PAYLOAD(dst, src)                          \
   do {                                                                  \
-    if ((zb_buf_flags_get((src)) & ZB_BUF_HAS_APS_PAYLOAD) != 0)        \
+    if ((zb_buf_flags_get((src)) & ZB_BUF_HAS_APS_PAYLOAD) != 0U)       \
     {                                                                   \
       zb_buf_flags_or((dst), ZB_BUF_HAS_APS_PAYLOAD);                   \
                                                                         \
-      if ((zb_buf_flags_get((src)) & ZB_BUF_HAS_APS_USER_PAYLOAD) != 0) \
+      if ((zb_buf_flags_get((src)) & ZB_BUF_HAS_APS_USER_PAYLOAD) != 0U)\
       {                                                                 \
         zb_buf_flags_or((dst), ZB_BUF_HAS_APS_USER_PAYLOAD);            \
       }                                                                 \

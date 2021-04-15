@@ -47,7 +47,6 @@
 #include "zb_vendor.h"
 #include "zb_config.h"
 #include "zb_types.h"
-#include "zb_channel_page.h"
 #include "zb_errors.h"
 
 /* zb_callback_t is used in osif if we have serial API */
@@ -71,6 +70,8 @@ typedef void (ZB_CODE * zb_callback_t)(zb_uint8_t param);
 #include "zb_osif.h"
 #include "zb_debug.h"
 #include "zb_trace.h"
+
+#include "zb_pooled_list.h"
 
 /*! \addtogroup time */
 /*! @{ */
@@ -193,13 +194,13 @@ zb_time_t zb_timer_get(void);
 /**
   Convert time from milliseconds to beacon intervals (32-bit platforms).
 */
-#define ZB_MILLISECONDS_TO_BEACON_INTERVAL(ms) (((zb_time_t)(ms) * 1000U) / ZB_BEACON_INTERVAL_USEC)
+#define ZB_MILLISECONDS_TO_BEACON_INTERVAL(ms) (((zb_time_t)(ms) * 1000U + (ZB_BEACON_INTERVAL_USEC - 1U)) / ZB_BEACON_INTERVAL_USEC)
 #else
 /**
   Convert time from milliseconds to beacon intervals
   Try to not cause overflow in 16-bit arithmetic (with some precision lost...)
 */
-#define ZB_MILLISECONDS_TO_BEACON_INTERVAL(ms) (((10UL * (zb_time_t)(ms) + 0U) / (ZB_BEACON_INTERVAL_USEC / 100U)))
+#define ZB_MILLISECONDS_TO_BEACON_INTERVAL(ms) (((10UL * (zb_time_t)(ms) + (ZB_BEACON_INTERVAL_USEC / 100U - 1U)) / (ZB_BEACON_INTERVAL_USEC / 100U)))
 #endif
 
 /**
@@ -518,12 +519,12 @@ void zb_memcpy8(zb_uint8_t *ptr, zb_uint8_t *src);
  * ZB_BITS2(2,3)   = 12
  * ZB_BITS3(0,1,2) = 7
  */
-#define ZB_BITS1(_b) (1ul << (_b))
-#define ZB_BITS2(_b1, _b2) ((1ul << (_b1)) | (1ul << (_b2)))
-#define ZB_BITS3(_b1, _b2, _b3) ((1ul << (_b1)) | (1ul << (_b2)) | (1ul << (_b3)))
-#define ZB_BITS4(_b1, _b2, _b3, _b4) ((1ul << (_b1)) | (1ul << (_b2)) | (1ul << (_b3)) | (1ul << (_b4)))
-#define ZB_BITS5(_b1, _b2, _b3, _b4, _b5) ((1ul << (_b1)) | (1ul << (_b2)) | (1ul << (_b3)) | \
-                                           (1ul << (_b4)) | (1ul << (_b5)))
+#define ZB_BITS1(_b) (1UL << (_b))
+#define ZB_BITS2(_b1, _b2) ((1UL << (_b1)) | (1UL << (_b2)))
+#define ZB_BITS3(_b1, _b2, _b3) ((1UL << (_b1)) | (1UL << (_b2)) | (1UL << (_b3)))
+#define ZB_BITS4(_b1, _b2, _b3, _b4) ((1UL << (_b1)) | (1UL << (_b2)) | (1UL << (_b3)) | (1UL << (_b4)))
+#define ZB_BITS5(_b1, _b2, _b3, _b4, _b5) ((1UL << (_b1)) | (1UL << (_b2)) | (1UL << (_b3)) | \
+                                           (1UL << (_b4)) | (1UL << (_b5)))
 
 #define ZB_SET_BIT_IN_BIT_VECTOR(vector, nbit) ( (vector)[ (nbit) / 8U ] |= ( 1U << ( (nbit) % 8U )) )
 #define ZB_CLR_BIT_IN_BIT_VECTOR(vector, nbit) ( (vector)[ (nbit) / 8U ] &= ~( 1U << ( (nbit) % 8U )) )

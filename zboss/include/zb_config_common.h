@@ -140,11 +140,12 @@ key. They use same algorithm.
 */
 #define ZB_CCM_KEY_CRC_SIZE 2U
 
+#ifndef ZB_SECUR_N_SECUR_MATERIAL
 /* NLS5 - All devices shall maintain at least 2 NWK keys with the frame
    counters consistent with the security mode of the network (Standard or High).*/
 /*! Define number of network keys with the frame counter */
 #define ZB_SECUR_N_SECUR_MATERIAL 3U
-
+#endif
 
 /* parameters for security level 5 - the only security level supported */
 /**
@@ -704,11 +705,14 @@ nwkMaxBroadcastRetries
 /*! Number of poll attempts during rejoin */
 #define ZB_NWK_REJOIN_POLL_ATTEMPTS 3U
 //#define ZB_NWK_REJOIN_POLL_ATTEMPTS 6 //TEST
+
 /** @cond internals_doc */
+#ifndef ZB_NWK_CHANNEL_ACCEPT_LEVEL
 /*!
  * Acceptable energy level on channel
  */
 #define ZB_NWK_CHANNEL_ACCEPT_LEVEL 0x60U
+#endif
 
 /**
    Devices which sends broadcast packets with rssi lower than this value will not be added

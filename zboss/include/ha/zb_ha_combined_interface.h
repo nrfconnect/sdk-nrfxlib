@@ -78,7 +78,9 @@
 
     @par
 
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
     The Combined Interface device sample can be found in /application/HA_samples/combined_interface
+    @endcond
 */
 
 #define ZB_HA_DEVICE_VER_COMBINED_INTERFACE 0  /*!< Combined interface device version */

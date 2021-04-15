@@ -144,18 +144,19 @@ typedef struct type_name_prefix ## _s                                 \
   (rb)->write_i = ((rb)->write_i + 1U) % ZB_RING_BUFFER_CAPACITY(rb)     \
   )
 
-#define ZB_RING_BUFFER_FLUSH_PUT_HEAD(rb)           \
-{                                                   \
-  (rb)->written++;                                  \
-  if ((rb)->read_i > 0)                             \
-  {                                                 \
-    --((rb)->read_i);                               \
-  }                                                 \
-  else                                              \
-  {                                                 \
-    (rb)->read_i = ZB_RING_BUFFER_CAPACITY(rb) - 1; \
-  }                                                 \
-}
+#define ZB_RING_BUFFER_FLUSH_PUT_HEAD(rb)            \
+do                                                   \
+{                                                    \
+  (rb)->written++;                                   \
+  if ((rb)->read_i > 0U)                             \
+  {                                                  \
+    --((rb)->read_i);                                \
+  }                                                  \
+  else                                               \
+  {                                                  \
+    (rb)->read_i = ZB_RING_BUFFER_CAPACITY(rb) - 1U; \
+  }                                                  \
+} while(ZB_FALSE)
 
 
 
@@ -206,12 +207,13 @@ typedef struct type_name_prefix ## _s                                 \
    @param entries_written - (out) amount of data put
  */
 #define ZB_RING_BUFFER_BATCH_PUT(rb, data, size, entries_written)                    \
+do                                                                                   \
 {                                                                                    \
   (entries_written) = ZB_RING_BUFFER_LINEAR_PORTION((rb), (size));                   \
   ZB_MEMCPY((rb)->ring_buf + (rb)->write_i, (data), (entries_written));              \
   (rb)->written += (entries_written);                                                \
   (rb)->write_i = ((rb)->write_i + (entries_written) % ZB_RING_BUFFER_CAPACITY(rb)); \
-}
+} while(ZB_FALSE)
 
 /**
    Batch put data into ringbuffer using external rb capacity
@@ -225,12 +227,13 @@ typedef struct type_name_prefix ## _s                                 \
    @param rb_cap - cap of the ring buffer
  */
 #define ZB_RING_BUFFER_BATCH_PUT_BY_CAP(rb, data, size, entries_written, rb_cap)    \
+do                                                                                  \
 {                                                                                   \
   (entries_written) = ZB_RING_BUFFER_LINEAR_PORTION_BY_CAP((rb), (size), (rb_cap)); \
   ZB_MEMCPY((rb)->ring_buf + (rb)->write_i, (data), (entries_written));             \
   (rb)->written += (entries_written);                                               \
   (rb)->write_i = (((rb)->write_i + (entries_written)) % (rb_cap));                 \
-}
+} while(ZB_FALSE)
 
 
 /**
@@ -260,7 +263,7 @@ typedef struct type_name_prefix ## _s                                 \
 (                                                                       \
   (rb)->ring_buf[(rb)->write_i] = (value),                              \
   (rb)->written++,                                                      \
-  (rb)->write_i = ((rb)->write_i + 1) % ZB_RING_BUFFER_CAPACITY(rb)     \
+  (rb)->write_i = ((rb)->write_i + 1U) % ZB_RING_BUFFER_CAPACITY(rb)     \
   )
 
 
@@ -275,7 +278,7 @@ typedef struct type_name_prefix ## _s                                 \
 (                                                                       \
   memcpy(&((rb)->ring_buf[(rb)->write_i]), (value_ptr), sizeof((rb)->ring_buf[0])), \
   (rb)->written++,                                                      \
-  (rb)->write_i = ((rb)->write_i + 1) % ZB_RING_BUFFER_CAPACITY(rb)     \
+  (rb)->write_i = ((rb)->write_i + 1U) % ZB_RING_BUFFER_CAPACITY(rb)     \
   )
 
 
@@ -290,7 +293,7 @@ typedef struct type_name_prefix ## _s                                 \
 (                                                                       \
   memcpy(&((rb)->ring_buf[((rb)->write_i ? (rb)->write_i - 1U : (rb)->write_i + ZB_RING_BUFFER_CAPACITY(rb) - 1U)]), \
            (value_ptr),                                                 \
-           sizeof((rb)->ring_buf[0]))																		\
+           sizeof((rb)->ring_buf[0]))                                   \
     )
 
 
@@ -522,7 +525,8 @@ ZB_RING_BUFFER_DECLARE(zb_byte_array, zb_uint8_t, 1);
   ((rb)->ring_buf + ZB_BYTE_ARRAY_PUT_HEAD_RESERVE_IDX(rb, (cap)))      \
   )
 
-#define ZB_BYTE_ARRAY_FLUSH_PUT_HEAD(rb, cap)           \
+#define ZB_BYTE_ARRAY_FLUSH_PUT_HEAD(rb, cap)       \
+do                                                  \
 {                                                   \
   (rb)->written++;                                  \
   if ((rb)->read_i > 0U)                            \
@@ -533,7 +537,7 @@ ZB_RING_BUFFER_DECLARE(zb_byte_array, zb_uint8_t, 1);
   {                                                 \
     (rb)->read_i = (cap) - 1U;                      \
   }                                                 \
-}
+} while(ZB_FALSE)
 
 #define ZB_BYTE_ARRAY_FLUSH_PUT(rb, cap)                                    \
 (                                                                       \

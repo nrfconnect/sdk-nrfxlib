@@ -80,7 +80,9 @@
 
     @par
 
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
     The complete set of Door Lock Controller device samples can be found in /application/HA_samples/door_lock_controller
+    @endcond
 */
 
 #define ZB_HA_DEVICE_VER_DOOR_LOCK_CONTROLLER      0   /*!< Door Lock Controller device version */

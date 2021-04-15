@@ -82,7 +82,9 @@
 
     @par
 
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
     The complete set of Window Covering device samples can be found in /application/HA_samples/window_covering
+    @endcond
 */
 #define ZB_HA_DEVICE_VER_WINDOW_COVERING 0  /*!< Window covering device version */
 

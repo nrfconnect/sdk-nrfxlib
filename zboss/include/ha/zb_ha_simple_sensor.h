@@ -78,7 +78,9 @@
 
     @par
 
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
     The complete set of Simple Sensor device samples can be found in /application/HA_samples/simple_sensor
+    @endcond
 */
 
 

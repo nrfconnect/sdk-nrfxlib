@@ -46,6 +46,7 @@
 /*! \addtogroup ZB_ASSERT_DYNAMIC */
 /*! @{ */
 
+#if defined DEBUG || defined USE_ASSERT
 /**
    Trace current location, abort current program execution, with core dump if possible.
 
@@ -53,9 +54,6 @@
    @param caller_line - line in the source
  */
 void zb_abort(char *caller_file, int caller_line);
-
-#if defined DEBUG || defined USE_ASSERT
-
 
 #ifndef ZB_BINARY_TRACE
 /** @cond internals_doc */
@@ -232,6 +230,7 @@ while (0)
 #define ZB_P4_ON() 
 #define ZB_P4_OFF()
 
+#if defined DEBUG
 /**
    Dump array of byte
 
@@ -239,6 +238,7 @@ while (0)
    @param len - size of array
  */
 void dump_traf(zb_uint8_t *buf, zb_ushort_t len);
+#endif /* DEBUG */
 
 #ifdef DEBUG
 void dump_usb_traf(zb_uint8_t *buf, zb_ushort_t len);

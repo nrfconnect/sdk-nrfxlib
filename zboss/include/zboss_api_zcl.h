@@ -2524,14 +2524,11 @@ void zb_zcl_send_cmd_tsn(
   zb_callback_t cb
 );
 
-#ifndef ZB_USE_INTERNAL_HEADERS
 zb_bool_t zb_zcl_send_default_handler(zb_uint8_t param,
   const zb_zcl_parsed_hdr_t *cmd_info, zb_zcl_status_t status);
-#endif /* ZB_USE_INTERNAL_HEADERS */
 
 void zb_zcl_send_default_resp_ext(zb_uint8_t param,
   const zb_zcl_parsed_hdr_t *cmd_info, zb_zcl_status_t status);
 
-void zb_zcl_set_cluster_encryption(zb_uint8_t endpoint_id, zb_uint16_t cluster_id, zb_uint8_t encrypt);
 
 #endif /* ZBOSS_API_ZCL_H */

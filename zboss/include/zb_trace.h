@@ -55,12 +55,12 @@
  */
 /** @endcond */ /* DSR_TARCE */
 
+#if defined(ZB_TRACE_LEVEL)
 /** @cond internals_doc */
 extern zb_uint8_t g_trace_level, g_o_trace_level;
-extern zb_uint16_t g_trace_mask;
+extern zb_uint32_t g_trace_mask;
 extern zb_uint_t g_trace_inside_intr;
 /** @endcond */ /* internals_doc */
-
 /**
    Set trace level at runtime
 
@@ -73,7 +73,21 @@ extern zb_uint_t g_trace_inside_intr;
    @snippet thermostat/thermostat_zr/thermostat_zr.c set_trace
    @par
  */
-#define ZB_SET_TRACE_LEVEL(l) g_trace_level = (l);
+#define ZB_SET_TRACE_LEVEL(l) g_trace_level = (l)
+
+/**
+   Switch off all trace at runtime
+ */
+#define ZB_SET_TRACE_OFF() g_o_trace_level = g_trace_level, g_trace_level = 0U
+
+/**
+   Switch on trace at runtime
+
+   That macro enables trace which was active before call to ZB_SET_TRACE_OFF().
+
+   @snippet light_sample/dimmable_light/bulb.c switch_trace_on
+ */
+#define ZB_SET_TRACE_ON() g_trace_level = g_o_trace_level
 
 /**
    Set trace mask at runtime
@@ -87,20 +101,16 @@ extern zb_uint_t g_trace_inside_intr;
    @snippet thermostat/thermostat_zr/thermostat_zr.c set_trace
    @par
  */
-#define ZB_SET_TRACE_MASK(m) g_trace_mask = (m);
+#define ZB_SET_TRACE_MASK(m) g_trace_mask = (m)
 
-/**
-   Switch off all trace at runtime
- */
-#define ZB_SET_TRACE_OFF() g_o_trace_level = g_trace_level, g_trace_level = 0U
-/**
-   Switch on trace at runtime
+#else
 
-   That macro enables trace which was active before call to ZB_SET_TRACE_OFF().
+#define ZB_SET_TRACE_OFF()
+#define ZB_SET_TRACE_LEVEL(l)
+#define ZB_SET_TRACE_ON()
+#define ZB_SET_TRACE_MASK(m)
 
-   @snippet light_sample/dimmable_light/bulb.c switch_trace_on
- */
-#define ZB_SET_TRACE_ON() g_trace_level = g_o_trace_level
+#endif /* defined(ZB_TRACE_LEVEL) */
 /** @cond DSR_TRACE */
 /** @} */ /* ZB_TRACE_CONFIG */
 /** @endcond */ /* DSR_TRACE */
@@ -116,7 +126,7 @@ extern zb_uint_t g_trace_inside_intr;
 #define TRACE_SUBSYSTEM_NWK       0x0008U  /**< NWK subsystem. */
 
 #define TRACE_SUBSYSTEM_APS       0x0010U  /**< APS subsystem. */
-#define TRACE_SUBSYSTEM_CLOUD     0x0020U  /**< Interface to the Cloud if used, else free */
+#define TRACE_SUBSYSTEM_ZSE       0x0020U  /**< ZSE subsystem. */
 #define TRACE_SUBSYSTEM_ZDO       0x0040U  /**< ZDO subsystem. */
 #define TRACE_SUBSYSTEM_SECUR     0x0080U  /**< Security subsystem. */
 
@@ -125,8 +135,6 @@ extern zb_uint_t g_trace_inside_intr;
 #define TRACE_SUBSYSTEM_ZLL       0x0200U  /**< ZLL/Touchlink subsystem. */
 /** @endcond */ /* DOXYGEN_TOUCHLINK_FEATURE */
 /** @cond internals_doc */
-#define TRACE_SUBSYSTEM_JSON      TRACE_SUBSYSTEM_ZLL  /**< JSON decoding is used in app,
-                                           * else free */
 #define TRACE_SUBSYSTEM_SSL       0x0400U  /**< SSL subsystem */
 /** @endcond */ /* internals_doc */
 /** @endcond */ /* DSR_TRACE */
@@ -138,32 +146,22 @@ extern zb_uint_t g_trace_inside_intr;
 /** @endcond */ /* internals_doc */
 #define TRACE_SUBSYSTEM_ZGP       0x4000U  /**< ZGP subsystem */
 /** @cond internals_doc */
-#define TRACE_SUBSYSTEM_USB       0x8000U
+#define TRACE_SUBSYSTEM_MAC_API   0x8000U    /**< MAC API subsystem */
+#define TRACE_SUBSYSTEM_MACLL     0x10000U   /**< MAC LL subsystem */
+#define TRACE_SUBSYSTEM_SPECIAL1  0x20000U   /**< Special subsystem */
+#define TRACE_SUBSYSTEM_BATTERY   0x40000U   /**< Battery subsystem */
+#define TRACE_SUBSYSTEM_OTA       0x80000U   /**< OTA subsystem */
+#define TRACE_SUBSYSTEM_TRANSPORT 0x100000U  /**< Transport subsystem */
+#define TRACE_SUBSYSTEM_USB       0x200000U  /**< USB subsystem */
+#define TRACE_SUBSYSTEM_SPI       0x400000U  /**< SPI subsystem */
+#define TRACE_SUBSYSTEM_UART      0x800000U  /**< UART subsystem */
+#define TRACE_SUBSYSTEM_JSON      0x1000000U /**< JSON subsystem */
+#define TRACE_SUBSYSTEM_HTTP      0x2000000U /**< HTTP subsystem */
+#define TRACE_SUBSYSTEM_CLOUD     0x4000000U /**< Interface to the Cloud */
 /** @endcond */ /* internals_doc */
 
 #define TRACE_SUBSYSTEM_INFO      ((zb_uint_t)-1)  /**< Common subsystem */
 
-#define TRACE_SUBSYSTEM_OTA TRACE_SUBSYSTEM_ZGP /**< OTA subsystem */
-#define TRACE_SUBSYSTEM_ZSE       TRACE_SUBSYSTEM_CLOUD  /**< ZSE subsystem. Not conflicting
-                                                          * with cloud, let's use it */
-
-/** @cond internals_doc */
-/* SPI trace usage is limited (now only in
- * application\comcast\spi\css_sensor_spi.c). Not conflict with USB, so let's
- * use it. */
-#define TRACE_SUBSYSTEM_SPI TRACE_SUBSYSTEM_USB
-#define TRACE_SUBSYSTEM_HTTP TRACE_SUBSYSTEM_USB /* HTTP == LWIP usage (tcp),
-                                                  * but not SSL */
-
-#define TRACE_SUBSYSTEM_TRANSPORT TRACE_SUBSYSTEM_LWIP
-#define TRACE_SUBSYSTEM_UART TRACE_SUBSYSTEM_LWIP
-
-#define TRACE_SUBSYSTEM_SPECIAL1 TRACE_SUBSYSTEM_SSL
-#define TRACE_SUBSYSTEM_MACLL   TRACE_SUBSYSTEM_SSL
-
-#define TRACE_SUBSYSTEM_BATTERY TRACE_SUBSYSTEM_SSL
-#define TRACE_SUBSYSTEM_MAC_API TRACE_SUBSYSTEM_SSL
-/** @endcond */ /* internals_doc */
 /* to be continued... */
 
 /** @cond DSR_TRACE */
@@ -738,6 +736,7 @@ typedef struct zb_byte128_struct_s
 #define FMT__H_H_H_D                                    TRACE_ARG_SIZE(3,1,0,0,0)
 #define FMT__H_H_H_D_D                                  TRACE_ARG_SIZE(3,2,0,0,0)
 #define FMT__H_H_H_D_D_H_A_H_A                          TRACE_ARG_SIZE(5,2,0,0,2)
+#define FMT__H_D_H_H_H_D_D_H_A_H_A                      TRACE_ARG_SIZE(6,3,0,0,2)
 #define FMT__D_H_H_H_D_D_H_A_H_A                        TRACE_ARG_SIZE(5,3,0,0,2)
 #define FMT__H_H_H_D_D_D                                TRACE_ARG_SIZE(3,3,0,0,0)
 #define FMT__H_H_H_D_H                                  TRACE_ARG_SIZE(4,1,0,0,0)
@@ -768,6 +767,7 @@ typedef struct zb_byte128_struct_s
 #define FMT__H_L_L                                      TRACE_ARG_SIZE(1,0,2,0,0)
 #define FMT__H_L_H                                      TRACE_ARG_SIZE(2,0,1,0,0)
 #define FMT__H_L_D_D                                    TRACE_ARG_SIZE(1,2,1,0,0)
+#define FMT__H_L_D_D_D                                  TRACE_ARG_SIZE(1,3,1,0,0)
 #define FMT__H_L_D_P                                    TRACE_ARG_SIZE(1,1,1,1,0)
 #define FMT__H_L_H_D                                    TRACE_ARG_SIZE(2,1,1,0,0)
 #define FMT__H_L_H_D_D                                  TRACE_ARG_SIZE(2,2,1,0,0)

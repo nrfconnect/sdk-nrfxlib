@@ -79,11 +79,8 @@ Following things are platform-dependent:
 
 
 
-#ifdef __IAR_SYSTEMS_ICC__
-#ifndef ZB_IAR
-#define ZB_IAR
-#endif
-#endif
+#include "zb_config.h"
+
  /**
 OSIF platform selection. One of pre-defined platform should be selected in
 zb_config.h configurations.
@@ -162,6 +159,14 @@ void zb_osif_serial_transport_put_bytes(zb_uint8_t *buf, zb_short_t len);
 /** @cond DOXYGEN_UART_SECTION */
 /*! \addtogroup uart */
 /*! @{ */
+
+#ifndef ZB_SERIAL_INT_DISABLE
+#define ZB_SERIAL_INT_DISABLE()  ZB_OSIF_GLOBAL_LOCK()
+#endif /* ZB_SERIAL_INT_DISABLE */
+
+#ifndef ZB_SERIAL_INT_ENABLE
+#define ZB_SERIAL_INT_ENABLE()   ZB_OSIF_GLOBAL_UNLOCK()
+#endif /* ZB_SERIAL_INT_ENABLE */
 
 #if defined ZB_HAVE_SERIAL || defined DOXYGEN
 
@@ -304,11 +309,15 @@ void zb_osif_serial_set_cb_send_data(serial_send_data_cb_t cb);
    @param buf data buffer
    @param len data length.
  */
-void zb_osif_serial_put_bytes(zb_uint8_t *buf, zb_short_t len);
+void zb_osif_serial_put_bytes(const zb_uint8_t *buf, zb_short_t len);
 #endif
 
+#if defined ZB_SERIAL_FOR_TRACE && !defined ZB_OSIF_SERIAL_FLUSH
+#define ZB_OSIF_SERIAL_FLUSH()
+#endif /* ZB_SERIAL_FOR_TRACE && !ZB_OSIF_SERIAL_FLUSH */
+
 #ifdef ZB_TRACE_OVER_JTAG
-void zb_osif_jtag_put_bytes(zb_uint8_t *buf, zb_short_t len);
+void zb_osif_jtag_put_bytes(const zb_uint8_t *buf, zb_short_t len);
 void zb_osif_jtag_flush(void);
 #endif
 
@@ -318,7 +327,7 @@ void zb_osif_jtag_flush(void);
 
 
 #ifdef ZB_TRACE_OVER_SIF
-void zb_osif_sif_put_bytes(zb_uint8_t *buf, zb_short_t len);
+void zb_osif_sif_put_bytes(const zb_uint8_t *buf, zb_short_t len);
 void zb_osif_sif_init(void);
 void zb_osif_sif_debug_trace(zb_uint8_t param);
 #endif
@@ -342,7 +351,7 @@ void zb_osif_trace_lock(void);
 void zb_osif_trace_unlock(void);
 zb_osif_file_t *zb_osif_init_dump(zb_char_t *name);
 int zb_osif_file_read(zb_osif_file_t *f, zb_uint8_t *buf, zb_uint_t len);
-int zb_osif_file_write(zb_osif_file_t *f, zb_uint8_t *buf, zb_uint_t len);
+int zb_osif_file_write(zb_osif_file_t *f, const zb_uint8_t *buf, zb_uint_t len);
 int zb_osif_file_is_eof(zb_osif_file_t *f);
 int zb_osif_file_is_err(zb_osif_file_t *f);
 int zb_osif_file_flush(zb_osif_file_t *f);
@@ -418,7 +427,6 @@ zb_ret_t zb_osif_file_rotate(const zb_char_t *file_path, const zb_char_t *file_n
    Platform dependent soft reset
 */
 void zb_reset(zb_uint8_t param);
-void zb_syslog_msg(const zb_char_t *msg);
 
 /**
  * @name Possible reset sources
@@ -444,16 +452,6 @@ void zb_syslog_msg(const zb_char_t *msg);
 zb_uint8_t zb_get_reset_source(void);
 
 /*! @} */
-
-/**
- *
- *  @brief Get stack current parameters.
- *
- *  @param s_head      [OUT] - pointer to stack head.
- *  @param s_size      [OUT] - current size of stack.
- *  @param s_direction [OUT] - stack growing direction (ZB_TRUE - UP, ZB_FALSE - DOWN).
- */
-void zb_osif_get_stack(zb_uint8_t **s_head, zb_uint32_t *s_size, zb_uint8_t *s_direction);
 
 #if defined ZB_USE_NVRAM || defined doxygen
 /**
@@ -485,7 +483,7 @@ zb_uint8_t zb_get_nvram_page_count(void);
  *
  * @return RET_OK if success or code error
  */
-zb_ret_t zb_osif_nvram_read_memory(zb_uint32_t address, zb_uint16_t len, zb_uint8_t *buf);
+zb_ret_t zb_osif_nvram_read_memory(zb_uint32_t address, zb_uint32_t len, zb_uint8_t *buf);
 
 /**
  * @brief Read from NVRAM page
@@ -538,7 +536,7 @@ zb_ret_t zb_osif_nvram_write(zb_uint8_t page, zb_uint32_t pos, void *buf, zb_uin
  *
  * @return RET_OK if success or code error
  */
-zb_ret_t zb_osif_nvram_write_memory(zb_uint32_t address, zb_uint16_t len, zb_uint8_t *buf);
+zb_ret_t zb_osif_nvram_write_memory(zb_uint32_t address, zb_uint32_t len, zb_uint8_t *buf);
 
 /**
  * @brief Erase NVRAM directly, by address
@@ -779,9 +777,7 @@ void zb_osif_wake_up(void);
 #ifdef ZB_PRODUCTION_CONFIG
 
 /* Check whether production configuration block is present in memory */
-zb_bool_t zb_osif_production_configuration_check_presence(void);
-
-zb_bool_t zb_osif_production_configuration_check_header(void);
+zb_bool_t zb_osif_prod_cfg_check_presence(void);
 
 /* Read data from production configuration header
  *
@@ -790,7 +786,7 @@ zb_bool_t zb_osif_production_configuration_check_header(void);
  *
  * @return RET_OK is success, RET_ERROR otherwise
  */
-zb_ret_t zb_osif_production_configuration_read_header(zb_uint8_t *prod_cfg_hdr, zb_uint16_t hdr_len);
+zb_ret_t zb_osif_prod_cfg_read_header(zb_uint8_t *prod_cfg_hdr, zb_uint16_t hdr_len);
 
 /* Read data from production configuration block
  *
@@ -800,8 +796,9 @@ zb_ret_t zb_osif_production_configuration_read_header(zb_uint8_t *prod_cfg_hdr, 
  *
  * @return
  */
-zb_ret_t zb_osif_production_configuration_read(zb_uint8_t *buffer, zb_uint16_t len, zb_uint16_t offset);
+zb_ret_t zb_osif_prod_cfg_read(zb_uint8_t *buffer, zb_uint16_t len, zb_uint16_t offset);
 
+#ifdef ZB_OSIF_CONFIGURABLE_TX_POWER
 /* Set transmit power of radio on selected channel
  *
  * @param channel - channle on which radio applies new transmit power
@@ -810,6 +807,7 @@ zb_ret_t zb_osif_production_configuration_read(zb_uint8_t *buffer, zb_uint16_t l
  * return RET_OK if power was set successfully, RET_ERROR otherwise
  */
 zb_ret_t zb_osif_set_transmit_power(zb_uint8_t channel, zb_int8_t power);
+#endif /* ZB_OSIF_CONFIGURABLE_TX_POWER */
 
 #endif
 
@@ -824,7 +822,7 @@ void zb_osif_busy_loop_delay(zb_uint32_t count);
  *
  * @return Timer counter value in microseconds
  */
-zb_uint16_t zb_osif_get_timer_reminder(void);
+zb_uint32_t zb_osif_get_timer_reminder(void);
 
 #ifndef ZB_USE_INTERNAL_HEADERS
 /* Init leds and buttons
@@ -853,7 +851,7 @@ void zb_osif_led_off(zb_uint8_t led_no);
  *
  * @return ZB_FALSE is button is pressed, ZB_TRUE if button is not being pressed
  */
-int zb_osif_button_state(zb_uint8_t arg);
+zb_bool_t zb_osif_button_state(zb_uint8_t arg);
 
 /* Inform osif layer that button callback is being set
  * @return ZB_TRUE if leds and buttons have been initiated

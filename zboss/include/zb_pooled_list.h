@@ -149,7 +149,7 @@ instead of pointer.
   if( ( list ) != ZP_NULL8 )                                            \
   {                                                                     \
     ( base )[ ( elem_index ) ].link_field##_prev = ( base )[ ( list ) ].link_field##_prev; \
-    ( base )[ ( base )[ ( list ) ].link_field##_prev ].link_field##_next = elem_index; \
+    ( base )[ ( base )[ ( list ) ].link_field##_prev ].link_field##_next = ( elem_index ); \
     ( base )[ ( list ) ].link_field##_prev = ( elem_index );            \
   }                                                                     \
   else                                                                  \
@@ -171,7 +171,7 @@ instead of pointer.
   {                                                                     \
     if( ( ( elem_index ) ) == ZB_POOLED_LIST8_GET_TAIL( ( base ), ( list ), link_field ) ) \
     {                                                                   \
-      ZB_POOLED_LIST8_INSERT_TAIL( ( base ), ( list ), link_field, new_elem_index ); \
+      ZB_POOLED_LIST8_INSERT_TAIL( ( base ), ( list ), link_field, ( new_elem_index ) ); \
     }                                                                   \
     else                                                                \
     {                                                                   \

@@ -71,6 +71,12 @@
 #define ZB_STDC_90
 #endif /* __STDC__ */
 
+#ifdef __IAR_SYSTEMS_ICC__
+#ifndef ZB_IAR
+#define ZB_IAR
+#endif
+#endif
+
 #define ZB_32BIT_WORD
 
 /* Really need xdata declaration here, not in osif: don't want to include osif.h here */
@@ -342,6 +348,9 @@ typedef zb_bitfield_t zb_bitbool_t;
 #define ZB_FALSE 0U /**< False value literal. */
 #define ZB_TRUE  1U /**< True value literal. */
 
+#define ZB_FALSE_U ZB_FALSE
+#define ZB_TRUE_U ZB_TRUE
+
 #define ZB_B2U(b) (((b) != ZB_FALSE) ? (1U) : (0U))
 #define ZB_U2B(u) (((u) != 0U) ? (ZB_TRUE) : (ZB_FALSE))
 
@@ -353,6 +362,9 @@ typedef bool zb_bitbool_t;
 
 #define ZB_FALSE false /**< False value literal. */
 #define ZB_TRUE  true  /**< True value literal. */
+
+#define ZB_FALSE_U 0U
+#define ZB_TRUE_U 1U
 
 #define ZB_B2U(b) ((b) ? (1U) : (0U))
 #define ZB_U2B(u) ((u) != 0U)
@@ -457,6 +469,11 @@ typedef bool zb_bitbool_t;
 #define ZB_ALIGNED_PRE
 #endif
 
+#if defined __GNUC__
+  #define ZB_DEPRECATED __attribute__((deprecated))
+#else
+  #define ZB_DEPRECATED
+#endif /* __GNUC__ */
 
 /*
    8-bytes address (xpanid or long device address) base type
@@ -709,17 +726,17 @@ void zb_htole32(zb_uint8_t ZB_XDATA *ptr, zb_uint8_t ZB_XDATA *val);
 void* zb_put_next_htole16(zb_uint8_t *dst, zb_uint16_t val);
 
 #ifdef ZB_LITTLE_ENDIAN
-#define ZB_PUT_NEXT_HTOLE16(ptr, val)  \
-{                                                \
-*((ptr)++) = (val) & 0xffU;                      \
-*((ptr)++) = ((val) >> 8U) & 0xffU;              \
+#define ZB_PUT_NEXT_HTOLE16(ptr, val)                \
+{                                                    \
+  *((ptr)++) = (zb_uint8_t)((val) & 0xffU);          \
+  *((ptr)++) = (zb_uint8_t)(((val) >> 8U) & 0xffU);  \
 }
 
 #else
 #define ZB_PUT_NEXT_HTOLE16(ptr, val)  \
-{                                               \
-  *((ptr)++) = ((val) >> 8U) & 0xffU;           \
-  *((ptr)++) = (val) & 0xffU;                   \
+{                                                   \
+  *((ptr)++) = (zb_uint8_t)(((val) >> 8U) & 0xffU); \
+  *((ptr)++) = (zb_uint8_t)((val) & 0xffU);         \
 }
 #endif                          /* ZB_LITTLE_ENDIAN */
 
@@ -760,11 +777,11 @@ void* zb_put_next_2_htole32(zb_uint8_t *dst, zb_uint32_t val1, zb_uint32_t val2)
 
 /** @} */ /* Endian change API. */
 
-#define ZB_GET_LOW_BYTE(val) ((val) & 0xFFU)
-#define ZB_GET_HI_BYTE(val)  (((val) >> 8U) & 0xFFU)
+#define ZB_GET_LOW_BYTE(val) (zb_uint8_t)((val) & 0xFFU)
+#define ZB_GET_HI_BYTE(val)  (zb_uint8_t)(((val) >> 8U) & 0xFFU)
 
-#define ZB_SET_LOW_BYTE(res, val) (res) = (((res) & 0xFF00U) | ((val) & 0xFFU))
-#define ZB_SET_HI_BYTE(res, val) (res) = ((((val) << 8U) & 0xFF00U) | ((res) & 0xFFU))
+#define ZB_SET_LOW_BYTE(res, val) (res) = ((((zb_uint16_t)res) & 0xFF00U) | (((zb_uint16_t)val) & 0xFFU))
+#define ZB_SET_HI_BYTE(res, val) (res) = (((((zb_uint16_t)val) << 8U) & 0xFF00U) | (((zb_uint16_t)res) & 0xFFU))
 
 #define ZB_PKT_16B_ZERO_BYTE 0U
 #define ZB_PKT_16B_FIRST_BYTE 1U
@@ -910,12 +927,14 @@ void* zb_put_next_2_htole32(zb_uint8_t *dst, zb_uint32_t val1, zb_uint32_t val2)
 
 /* FIXME: which value to prefer? Because 0x800000 is reserved in ZCL */
 /* IAR C-STAT generates falsepositive for hexadecimal value */
-#define MIN_SIGNED_24BIT_VAL (-8388607LL) /* (0xFF800001LL) */
-#define MAX_SIGNED_24BIT_VAL (0x7FFFFF)
+#define MIN_SIGNED_24BIT_VAL    (-8388607LL) /* (0xFF800001LL) */
+#define MAX_SIGNED_24BIT_VAL    (0x7FFFFF)
+#define MAX_UNSIGNED_24BIT_VAL  (0xFFFFFFU)
 
 /* IAR C-STAT generates falsepositive for hexadecimal value */
-#define MIN_SIGNED_48BIT_VAL (-140737488355327LL) /* (0xFFFF800000000001LL) */
-#define MAX_SIGNED_48BIT_VAL (0x7FFFFFFFFFFF)
+#define MIN_SIGNED_48BIT_VAL   (-140737488355327LL) /* (0xFFFF800000000001LL) */
+#define MAX_SIGNED_48BIT_VAL   (0x7FFFFFFFFFFF)
+#define MAX_UNSIGNED_48BIT_VAL (0xFFFFFFFFFFFFU)
 
 #define ZB_S64_FROM_S48(x) ((x & 0xFFFFFFFFFFFF) | ((x & 0x800000000000) ? 0xFFFF000000000000 : 0x0))
 
@@ -1091,6 +1110,7 @@ void zb_reverse_bytes(zb_uint8_t *ptr, zb_uint8_t *val, zb_uint8_t size);
 
 #endif /* ZB_BIG_ENDIAN */
 
+#ifdef ZB_UINT24_48_SUPPORT
 /**
  * @name 24-bit and 48-bit arithmetic API
  * @{
@@ -1129,7 +1149,7 @@ zb_int32_t zb_int24_to_int32(const zb_int24_t *var);
 /**
  * Convert signed 32-bit value to signed 24-bit value
  * @param[in]  var - signed 32-bit value
- * @param[out]  res - pointer to signed 24-bit value
+ * @param[out]  res - pointer to signed 24-bit value (Returns #MAX_SIGNED_24BIT_VAL or #MIN_SIGNED_24BIT_VAL when out of bounds)
  */
 void zb_int32_to_int24(zb_int32_t var, zb_int24_t *res);
 
@@ -1137,7 +1157,7 @@ void zb_int32_to_int24(zb_int32_t var, zb_int24_t *res);
 /**
  * Convert signed 32-bit value to unsigned 24-bit value
  * @param[in]  var - signed 32-bit value
- * @param[out]  res - pointer to unsigned 24-bit value
+ * @param[out]  res - pointer to unsigned 24-bit value (Returns #MAX_UNSIGNED_24BIT_VAL or 0U when out of bounds)
  */
 void zb_int32_to_uint24(zb_int32_t var, zb_uint24_t *res);
 
@@ -1288,7 +1308,7 @@ zb_int64_t zb_int48_to_int64(const zb_int48_t *var);
 /**
  * Convert signed 64-bit value to signed 48-bit value
  * @param[in]  var - signed 64-bit value
- * @param[out] res - pointer to signed 48-bit value
+ * @param[out] res - pointer to signed 48-bit value (Returns #MAX_SIGNED_48BIT_VAL or #MIN_SIGNED_48BIT_VAL when out of the bounds)
  */
 void zb_int64_to_int48(zb_int64_t var, zb_int48_t *res);
 
@@ -1296,8 +1316,7 @@ void zb_int64_to_int48(zb_int64_t var, zb_int48_t *res);
 /**
  * Convert signed 64-bit value to unsigned 48-bit value
  * @param[in]  var - signed 64-bit value
- * @param[out]  res - unsigned 48-bit value
- * @return     [description]
+ * @param[out]  res - unsigned 48-bit value (Returns #MAX_UNSIGNED_48BIT_VAL or 0U when out of the bounds)
  */
 void zb_int64_to_uint48(zb_int64_t var, zb_uint48_t *res);
 
@@ -1544,5 +1563,6 @@ typedef zb_uint32_t           zb_uint24_t;
 
 
 /** @} */
+#endif /* ZB_UINT24_48_SUPPORT */
 
 #endif /* ZB_TYPES_H */

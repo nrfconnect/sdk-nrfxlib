@@ -78,7 +78,9 @@
 
     @par
 
+    @cond ZBOSS_SAMPLES_API_DOC_LINE
     See application/HA_samples/level_control_switch sample
+    @endcond
  */
 
 #define ZB_HA_DEVICE_VER_LEVEL_CONTROL_SWITCH 0  /*!< Level Control Switch device version */
