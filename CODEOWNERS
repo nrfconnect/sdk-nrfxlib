@@ -26,7 +26,7 @@ doc/*                                     @b-gent
 /softdevice_controller/                   @joerchan @rugeGerritsen
 /nrf_modem/                               @rlubos @lemrey @evenl
 /crypto/                                  @frkv @tejlmand
-/mpsl/                                    @joerchan @hurricaneFromMoscow
+/mpsl/                                    @joerchan @carlopaparo
 /nfc/                                     @anangl @grochu
 /nrf_802154/                              @czeslawmakarski
 /nrf_security/                            @frkv @tejlmand
