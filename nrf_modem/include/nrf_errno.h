@@ -46,6 +46,7 @@ extern "C" {
 #define NRF_EISCONN	    56 /**< Transport endpoint is already connected */
 #define NRF_ENOTCONN	    57 /**< Transport endpoint is not connected */
 #define NRF_ETIMEDOUT	    60 /**< Connection timed out */
+#define NRF_ECONNREFUSED    61 /**< Connection refused */
 #define NRF_ENOBUFS	    105 /**< No buffer space available */
 #define NRF_EHOSTDOWN	    112 /**< Host is down */
 #define NRF_EALREADY	    114 /**< Operation already in progress */

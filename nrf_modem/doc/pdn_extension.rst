@@ -55,6 +55,10 @@ Otherwise, it will not have any transport and will start reporting errors.
 Binding a data socket to an APN
 *******************************
 
+The following code shows how to create an IPv4 TCP stream socket and bind it to an APN using the NRF_SO_BINDTODEVICE socket option.
+The APN name must be set up and activated prior to binding it.
+See `Creating a PDN socket`_.
+
 .. code-block:: c
 
    tcp_fd = nrf_socket(NRF_AF_INET, NRF_SOCK_STREAM, NRF_IPPROTO_TCP);
@@ -63,13 +67,26 @@ Binding a data socket to an APN
    nrf_connect(...);
    nrf_send(tcp_fd, "data", 4, 0);
 
-The example code shows how to create an IPv4 TCP stream socket and bind it to an APN using the NRF_SO_BINDTODEVICE socket option.
-The APN name must be set up and activated prior to binding it.
-See `Creating a PDN socket`_.
 
 .. note::
    If the PDN that the socket is being bound to has been deactivated by the network, setting the NRF_SO_BINDTODEVICE option returns an error stating that the APN parameter is not valid.
    To fix this error, you must create another PDN socket that is associated with the APN, and bind the data socket to it.
+
+.. note::
+
+   From Modem library v1.1.0, binding a socket to a PDN ID is introduced and binding a socket to an APN is deprecated.
+   It is recommended that the application bind a socket to a PDN ID.
+
+
+Binding a data socket to a PDN ID
+*********************************
+
+The following code shows how to create an IPv4 TCP stream socket and bind it to a PDN ID:
+
+.. code-block:: c
+
+   fd = nrf_socket(NRF_AF_INET, NRF_SOCK_STREAM, NRF_IPPROTO_TCP);
+   nrf_setsockopt(fd, NRF_SOL_SOCKET, NRF_SO_BINDTODEVICE, "pdn1", strlen("pdn1"));
 
 Configuring the type of transport
 *********************************
@@ -123,8 +140,8 @@ To retrieve the CID, get the socket option :c:type:`NRF_SO_PDN_CONTEXT_ID` with 
 The CID is an internal allocation and cannot be configured by the user.
 
 
-Sending a DNS query
-*******************
+Sending a DNS query using APN
+*****************************
 
 .. code-block:: c
 
@@ -149,6 +166,27 @@ In this example, the DNS hints are extended with an extra linked-list hint that 
 
 Like for data sockets, the APN name must be set up and activated before the DNS query.
 Otherwise, the query will fail.
+
+.. note::
+
+   From Modem library v1.1.0, routing a DNS query by specifying the PDN ID is introduced and the use of an APN for DNS query is deprecated.
+   It is recommended that the application specify the PDN ID for a DNS query.
+
+
+Sending a DNS query using PDN ID
+********************************
+
+The following code shows how to specify a PDN ID to route a DNS query:
+
+.. code-block:: c
+
+   struct nrf_addrinfo hints = {
+     .ai_flags = NRF_AI_PDNSERV, /* flag to specify PDN ID */
+     .ai_family = NRF_AF_INET,
+     .ai_socktype = NRF_SOCK_STREAM
+   }
+
+   nrf_getaddrinfo("example.com", "pdn1", &hints, &result);
 
 Waiting for an IPv6 connection
 ******************************

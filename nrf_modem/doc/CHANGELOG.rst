@@ -9,12 +9,25 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.1.0
+***************
+
+* The PDN socket has been deprecated.
+* Added the possibility to specify the PDN ID to bind a socket by using the ``NRF_SO_BINDTODEVICE`` socket option.
+* Added the ``NRF_AI_PDNSERV`` flag for :c:func:`nrf_getaddrinfo` to specify the PDN ID to route a DNS query.
+* Added the ``NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO`` socket option to set the DTLS handshake timeout.
+* Added the ``NRF_SO_SEC_SESSION_CACHE_PURGE`` socket option to purge TLS/DTLS session cache.
+* Updated :c:func:`nrf_connect` to set ``errno`` to ``NRF_ECONNREFUSED`` when failing due to a missing certificate, wrong certificate, or a wrong private key.
+* Updated :c:func:`nrf_getaddrinfo` to return POSIX-compatible error codes from :file:`nrf_gai_error.h`.
+* Fixed a potential concurrency issue in :c:func:`nrf_getaddrinfo`.
+* Fixed the :c:func:`nrf_poll` behavior when ``fd`` is less than zero.
+* Fixed the :c:func:`nrf_poll` behavior when ``nfds`` is zero.
+
 nrf_modem 1.0.3
 ***************
 
 * Fixed an issue (introduced in version 1.0.2) where :c:func:`nrf_recv` did not return as soon as the data became available on the socket.
 * Fixed an issue (introduced in version 1.0.2) where :c:func:`nrf_send` did not correctly report the amount of data sent for TLS and DTLS sockets.
-
 
 nrf_modem 1.0.2
 ***************
