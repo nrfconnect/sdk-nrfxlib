@@ -63,10 +63,20 @@ typedef int32_t ssize_t;
 /**@brief Maximum length of IPv6 in string form, including null-termination character. */
 #define NRF_INET6_ADDRSTRLEN 46
 
-/**@brief Maximum length of PDN authentication username in string form, including null-termination character. */
+/**
+ * @brief Maximum length of PDN authentication username in string form,
+ * including null-termination character.
+ *
+ * @deprecated since v1.1.0.
+ */
 #define NRF_PDN_MAX_USERNAME_LEN 100
 
-/**@brief Maximum length of PDN authentication password in string form, including null-termination character. */
+/**
+ * @brief Maximum length of PDN authentication password in string form,
+ * including null-termination character.
+ *
+ * @deprecated since v1.1.0.
+ */
 #define NRF_PDN_MAX_PASSWORD_LEN 100
 
 /**@}*/
@@ -101,7 +111,9 @@ typedef int32_t ssize_t;
 /** RAW socket type. */
 #define NRF_SOCK_RAW 3
 
-/** Nordic specific management socket. Used for system or link management. */
+/** Nordic specific management socket. Used for system or link management.
+ *  @deprecated since v1.1.0.
+ */
 #define NRF_SOCK_MGMT 512
 /**@} */
 
@@ -123,7 +135,9 @@ typedef int32_t ssize_t;
 
 /** AT command protocol. */
 #define NRF_PROTO_AT 513
-/** PDN management protocol. */
+/** PDN management protocol.
+ *  @deprecated since v1.1.0.
+ */
 #define NRF_PROTO_PDN 514
 /** DFU protocol. */
 #define NRF_PROTO_DFU 515
@@ -211,30 +225,48 @@ typedef uint32_t nrf_fd_set;
  * @sa nrf_sec_cipher_t.
  */
 #define NRF_SO_CIPHER_IN_USE 7
+
+/**@brief
+ * Socket option to set DTLS handshake timeout value.
+ * Please see @ref nrf_socket_tls_dtls_handshake_timeouts for allowed values.
+ */
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO 8
+
+/**@brief
+ * Socket option to purge session cache immediately.
+ * This option accepts any value.
+ */
+#define NRF_SO_SEC_SESSION_CACHE_PURGE 9
 /**@} */
 
 /**@defgroup nrf_socket_pdn PDN socket
  * @brief PDN socket API
+ * @deprecated since v1.1.0.
+ * Use the nRF91 Packet Domain AT commands instead.
  *  @{
  */
 /**@brief
  * Socket option control the supported address families on the PDN.
  * @sa nrf_pdn_af_list_t.
+ * @deprecated since v1.1.0.
  */
 #define NRF_SO_PDN_AF 1
 /**@brief
  * Socket option to retrieve the context ID on the PDN.
  * @sa nrf_pdn_context_id_t.
+ * @deprecated since v1.1.0.
  */
 #define NRF_SO_PDN_CONTEXT_ID 2
 /**@brief
  * Socket option to retrieve the PDN state, read-only.
  * @sa nrf_pdn_state_t.
+ * @deprecated since v1.1.0.
  */
 #define NRF_SO_PDN_STATE 3
 /**@brief
  * Socket option to set PDN authentication.
  * @sa nrf_pdn_auth_t.
+ * @deprecated since v1.1.0.
  */
 #define NRF_SO_PDN_AUTH 4
 /**@} */
@@ -503,6 +535,7 @@ typedef uint32_t nrf_fd_set;
  */
 #define NRF_SOL_SOCKET 1
 #define NRF_SOL_SECURE 282
+/** @deprecated since v1.1.0. */
 #define NRF_SOL_PDN    514
 #define NRF_SOL_DFU    515
 #define NRF_SOL_GNSS   516
@@ -538,6 +571,29 @@ typedef uint32_t nrf_fd_set;
 
 /** Use non-blocking I/O. */
 #define NRF_O_NONBLOCK 0x01
+/**@} */
+
+/**@defgroup nrf_socket_tls_dtls_handshake_timeouts DTLS handshake timeout values
+ * @brief Allowed timeout values for DTLS handshake timeout socket option according
+ *        to RFC6347 section 4.2.4.1. Default is 123 seconds.
+ *        (https://tools.ietf.org/html/rfc6347#section-4.2.4.1)
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+/** 1 second */
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_1S	1
+/** 1s + 2s */
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_3S	3
+/** 1s + 2s + 4s */
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_7S	7
+/** 1s + 2s + 4s + 8s */
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_15S	15
+/** 1s + 2s + 4s + 8s + 16s */
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_31S	31
+/** 1s + 2s + 4s + 8s + 16s + 32s */
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_63S	63
+/** 1s + 2s + 4s + 8s + 16s + 32s + 60s */
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_123S	123
 /**@} */
 
 /**
@@ -659,6 +715,25 @@ typedef struct nrf_sockaddr {
 	char sa_data[];
 } nrf_sockaddr;
 
+/* Flags for getaddrinfo() hints. */
+
+/** Assume `service` (port) is numeric.
+ *  When specified together with the NRF_AI_PDNSERV flag,
+ *  `service` shall be formatted as follows: "port:pdn_id"
+ *  where "port" is the port number and "pdn_id" is the PDN ID.
+ *  Example: "8080:1", port 8080 PDN ID 1.
+ *  Example: "42:0", port 42 PDN ID 0.
+ */
+#define NRF_AI_NUMERICSERV 0x400
+/** Assume `service` contains a Packet Data Network (PDN) ID.
+ *  When specified together with the NRF_AI_NUMERICSERV flag,
+ *  `service` shall be formatted as follows: "port:pdn_id"
+ *  where "port" is the port number and "pdn_id" is the PDN ID.
+ *  Example: "8080:1", port 8080 PDN ID 1.
+ *  Example: "42:0", port 42 PDN ID 0.
+ */
+#define NRF_AI_PDNSERV 0x1000
+
 /**@brief Address information. */
 struct nrf_addrinfo {
 	/** Input flags. */
@@ -745,9 +820,15 @@ typedef struct {
 	nrf_sec_tag_t *p_sec_tag_list;
 } nrf_sec_config_t;
 
+/**
+ * @brief Maximum network interface name size.
+ * @deprecated since v1.1.0.
+ */
 #define NRF_IFNAMSIZ 64
 
-/**@brief Data type for network interface. */
+/**@brief Data type for network interface.
+ * @deprecated since v1.1.0.
+ */
 struct nrf_ifreq {
 	char ifr_name[NRF_IFNAMSIZ]; /* Interface name */
 };
@@ -755,15 +836,18 @@ struct nrf_ifreq {
 
 /**@addtogroup nrf_socket_pdn
  * @brief Data types defined to set and get socket options on a PDN socket.
+ * @deprecated since v1.1.0.
  * @{
  */
 /**@brief
+ * @deprecated since v1.1.0.
  * List of address family(ies) for the PDN.
  */
 typedef nrf_sa_family_t *nrf_pdn_af_list_t;
 
 /**@brief
  * Context ID for the PDN.
+ * @deprecated since v1.1.0.
  */
 typedef uint8_t nrf_pdn_context_id_t;
 
@@ -771,11 +855,13 @@ typedef uint8_t nrf_pdn_context_id_t;
  * PDN state.
  *   1 - PDN is active.
  *   0 - PDN is inactive.
+ * @deprecated since v1.1.0.
  */
 typedef uint8_t nrf_pdn_state_t;
 
 /**@brief
  * PDN authentication type.
+ * @deprecated since v1.1.0.
  */
 typedef enum {
 	NRF_PDN_AUTH_TYPE_NONE = 0,
@@ -785,6 +871,7 @@ typedef enum {
 
 /**@brief
  * Structure for PDN authentication socket option.
+ * @deprecated since v1.1.0.
  */
 typedef struct {
 	char username[NRF_PDN_MAX_USERNAME_LEN];
