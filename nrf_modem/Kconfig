@@ -1,6 +1,5 @@
 config NRF_MODEM
 	bool
-	imply FPU
 	imply FPU_SHARING
 
 choice NRF_MODEM_BUILD_STRATEGY
