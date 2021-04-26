@@ -45,7 +45,7 @@
  * B or C) library will use TIMER 4 to apply workarounds for the anomalies.
  */
 
-#include <zephyr/types.h>
+#include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 
