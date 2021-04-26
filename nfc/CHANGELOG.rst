@@ -9,6 +9,17 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+master
+******
+
+Modified
+========
+
+* Debug info is removed from the NFC T2T and T4T libraries.
+* Fixed duplicated initial Frame Waiting Time (FWT) value setting.
+* Modified the :c:func:`nfc_t2t_done()` and the :c:func:`nfc_t4t_done()` functions to uninitialize the NFCT driver to achieve symmetry in the library behaviour since the :c:func:`nfc_txt_setup()` function initializes the NFCT driver.
+* Fixed FSDI value setting for RFU value cases.
+
 nRF Connect SDK v1.6.0
 **********************
 
