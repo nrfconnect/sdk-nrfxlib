@@ -1,8 +1,15 @@
 menu "Nordic Security"
 
+config NORDIC_SECURITY_PROMPTLESS
+	bool
+	help
+	  Internal setting to disable the Nordic security backend
+	  This setting is Kconfig internal that must be used by subsystems that
+	  provides nRF Security selection groups.
+
 config NORDIC_SECURITY_BACKEND
 	bool
-	prompt "Use Nordic provided security backend"
+	prompt "Use Nordic provided security backend" if !NORDIC_SECURITY_PROMPTLESS
 	depends on SOC_FAMILY_NRF
 	select NRFXLIB_CRYPTO
 	select ENTROPY_GENERATOR if (SOC_NRF52810 || SOC_NRF52832)
