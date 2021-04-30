@@ -7,45 +7,25 @@ OpenThread pre-built libraries
    :local:
    :depth: 2
 
-The |NCS| allows for using certified OpenThread libraries for Nordic devices.
+The |NCS| provides pre-built OpenThread libraries.
+Some of these are certified by the Thread Group for use with Nordic Semiconductor devices.
 This simplifies the OpenThread certification process of the final product.
+See :ref:`ug_thread_cert` for more information.
 
-The libraries vary depending on stack configuration and hardware cryptography capabilities.
-You can choose the stack configuration from one of the predefined set of values, also called feature sets.
-For more information about OpenThread feature sets and how to select them in |NCS|, see :ref:`nrf:thread_ug_feature_sets`.
+The pre-built libraries vary depending on stack configuration and hardware cryptography capabilities:
 
-The cryptography variant is selected automatically based on the microcontroller capabilities.
+* The stack configuration depends on the feature set that you use.
+  A feature set is a predefined set of configuration options.
+  For more information about selecting a feature set and customizing the configuration of the pre-built libraries, see :ref:`nrf:thread_ug_prebuilt`.
+* The cryptography variant is selected automatically based on the microcontroller capabilities.
 
-Thread certified library variants
-*********************************
+For the full list of configuration options that were used during compilation of the libraries, including the default values, see the :file:`openthread_lib_configuration.txt` file within each library folder.
 
-The following table describes the available Thread certified libraries for all |NCS| releases.
+Certified libraries
+*******************
 
-.. list-table::
-   :header-rows: 1
+Check the compatibility matrices in the `Infocenter`_ for information about which library variants and versions are certified for a specific device:
 
-   * - SoC
-     - |NCS| tag
-     - Thread version
-     - Crypto backend
-     - OpenThread commit
-     - GNU Arm Embedded Toolchain
-     - Feature set
-   * - nRF52840
-     - v1.4.0
-     - :option:`CONFIG_OPENTHREAD_THREAD_VERSION_1_1`
-     - CC310
-     - ``07f430dac6c400abdd358ba1173c0f94b94a5a80``
-     - ``9-2019-q4-major``
-     - :option:`CONFIG_OPENTHREAD_NORDIC_LIBRARY_MASTER`
-   * - nRF52833
-     - v1.4.0
-     - :option:`CONFIG_OPENTHREAD_THREAD_VERSION_1_1`
-     - nrf_oberon
-     - ``07f430dac6c400abdd358ba1173c0f94b94a5a80``
-     - ``9-2019-q4-major``
-     - :option:`CONFIG_OPENTHREAD_NORDIC_LIBRARY_MASTER`
-
-For a comprehensive list of the used Kconfig options, check the :file:`openthread_lib_configuration.txt` file within each library folder.
-
-.. note:: Only library variants shown in the table have been certified.
+* `Thread CIDs for nRF5340`_
+* `Thread CIDs for nRF52840`_
+* `Thread CIDs for nRF52833`_
