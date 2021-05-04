@@ -44,13 +44,14 @@
 /**
  * @brief Examines the frame before transmission and checks if it needs to be delayed.
  *
- * @param[in]  p_frame  Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
- * @param[in]  cca      Whether to trigger CCA before transmitting the frame.
+ * @param[in]  p_frame   Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
+ * @param[in]  cca       Whether to trigger CCA before transmitting the frame.
+ * @param[in]  immediate Whether to skip IFS check and send immediately or not.
  *
- * @retval     true     Frame will be transmitted right away.
- * @retval     false    Frame is delayed and will be transmistted after a needed IFS.
+ * @retval     true      Frame will be transmitted right away.
+ * @retval     false     Frame is delayed and will be transmistted after a needed IFS.
  */
-bool nrf_802154_ifs_pretransmission(const uint8_t * p_frame, bool cca);
+bool nrf_802154_ifs_pretransmission(const uint8_t * p_frame, bool cca, bool immediate);
 
 /**
  * @brief Captures the timestamp, length and destination address of the transmitted

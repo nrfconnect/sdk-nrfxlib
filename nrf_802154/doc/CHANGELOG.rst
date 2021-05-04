@@ -9,17 +9,19 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-nRF 802.15.4 Radio Driver and nRF 802.15.4 Service Layer
-********************************************************
+Master branch - nRF 802.15.4 Radio Driver
+*****************************************
 
 Initial common release.
 
 Added
 =====
 
-* Added source code of the 802.15.4 Radio Driver.
+* Added the source code of the 802.15.4 Radio Driver.
 * Added the 802.15.4 Service Layer library.
-* Added source code of the 802.15.4 Radio Driver API serialization library.
+* Added the source code of the 802.15.4 Radio Driver API serialization library.
+* Added the possibility to schedule two delayed reception windows.
+* Added CSL phase injection.
 
 Notable Changes
 ===============
@@ -28,6 +30,8 @@ Notable Changes
 * The changelog of the previous versions of the 802.15.4 SL library is now located at the bottom of this page.
 * The Radio Driver documentation will now also include the Service Layer documentation.
 * Future versions of the Radio Driver and the Service Layer will follow NCS version tags.
+* The 802.15.4 Radio Driver API has been modified to support more than a single delayed reception window simultaneously.
+  The `nrf_802154_receive_at`_, `nrf_802154_receive_at_cancel`_, and `nrf_802154_receive_failed`_ functions take an additional parameter that identifies a given reception window unambiguously.
 
 .. _Radio Driver section: https://infocenter.nordicsemi.com/topic/15.4_radio_driver_v1.10.0/rd_release_notes.html
 

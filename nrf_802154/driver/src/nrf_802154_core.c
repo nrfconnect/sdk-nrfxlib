@@ -147,6 +147,9 @@ static nrf_802154_timer_t m_rx_prestarted_timer;
 /** @brief Value of Coex TX Request mode */
 static nrf_802154_coex_tx_request_mode_t m_coex_tx_request_mode;
 
+/** @brief Identifier of currently active reception window. */
+static uint32_t m_rx_window_id;
+
 #if NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
 #if !NRF_802154_FRAME_TIMESTAMP_ENABLED
 #error NRF_802154_FRAME_TIMESTAMP_ENABLED == 0 when NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED != 0
@@ -181,7 +184,8 @@ static void state_set(radio_state_t state)
     m_state = state;
 
     nrf_802154_log_local_event(NRF_802154_LOG_VERBOSITY_LOW,
-                               NRF_802154_LOG_LOCAL_EVENT_ID_CORE__SET_STATE, (uint32_t)state);
+                               NRF_802154_LOG_LOCAL_EVENT_ID_CORE__SET_STATE,
+                               (uint32_t)state);
 
     request_preconditions_for_state(state);
 }
@@ -292,7 +296,7 @@ static void receive_failed_notify(nrf_802154_rx_error_t error)
 {
     nrf_802154_critical_section_nesting_allow();
 
-    nrf_802154_notify_receive_failed(error);
+    nrf_802154_notify_receive_failed(error, m_rx_window_id);
 
     nrf_802154_critical_section_nesting_deny();
 }
@@ -307,6 +311,13 @@ static void transmit_started_notify(void)
         nrf_802154_tx_started(p_frame);
     }
 
+}
+
+/** Notify MAC layer that transmission of ACK frame has started. */
+static void transmit_ack_started_notify()
+{
+    nrf_802154_core_hooks_tx_ack_started(mp_ack);
+    nrf_802154_tx_ack_started(mp_ack);
 }
 
 #if !NRF_802154_DISABLE_BCC_MATCHING
@@ -671,7 +682,7 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
         case RADIO_STATE_RX:
             if (receiving_psdu_now)
             {
-                nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_ABORTED);
+                nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_ABORTED, m_rx_window_id);
             }
 
             break;
@@ -1621,7 +1632,7 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
             // which could result in spurious RF emission.
             rx_init();
 
-            nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_TIMESLOT_ENDED);
+            nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_TIMESLOT_ENDED, m_rx_window_id);
         }
     }
 
@@ -1741,7 +1752,8 @@ void nrf_802154_trx_receive_frame_crcerror(void)
 #endif
 
 #if NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
-    update_total_times_on_receive_end(listening_start_hp_timestamp, receive_end_hp_timestamp,
+    update_total_times_on_receive_end(listening_start_hp_timestamp,
+                                      receive_end_hp_timestamp,
                                       mp_current_rx_buffer->data[PHR_OFFSET]);
 #endif
 
@@ -1762,7 +1774,8 @@ void nrf_802154_trx_receive_ack_crcerror(void)
     uint32_t receive_end_hp_timestamp     = nrf_802154_hp_timer_timestamp_get();
     uint32_t listening_start_hp_timestamp = m_listening_start_hp_timestamp;
 
-    update_total_times_on_receive_end(listening_start_hp_timestamp, receive_end_hp_timestamp,
+    update_total_times_on_receive_end(listening_start_hp_timestamp,
+                                      receive_end_hp_timestamp,
                                       mp_current_rx_buffer->data[PHR_OFFSET]);
 #endif
 
@@ -1781,7 +1794,8 @@ void nrf_802154_trx_receive_frame_received(void)
     uint32_t receive_end_hp_timestamp     = nrf_802154_hp_timer_timestamp_get();
     uint32_t listening_start_hp_timestamp = m_listening_start_hp_timestamp;
 
-    update_total_times_on_receive_end(listening_start_hp_timestamp, receive_end_hp_timestamp,
+    update_total_times_on_receive_end(listening_start_hp_timestamp,
+                                      receive_end_hp_timestamp,
                                       mp_current_rx_buffer->data[PHR_OFFSET]);
 #endif
 
@@ -1956,7 +1970,7 @@ void nrf_802154_trx_transmit_ack_started(void)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     assert(m_state == RADIO_STATE_TX_ACK);
-    nrf_802154_tx_ack_started(mp_ack);
+    transmit_ack_started_notify();
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -2192,7 +2206,8 @@ void nrf_802154_trx_receive_ack_received(void)
     uint32_t receive_end_hp_timestamp     = nrf_802154_hp_timer_timestamp_get();
     uint32_t listening_start_hp_timestamp = m_listening_start_hp_timestamp;
 
-    update_total_times_on_receive_end(listening_start_hp_timestamp, receive_end_hp_timestamp,
+    update_total_times_on_receive_end(listening_start_hp_timestamp,
+                                      receive_end_hp_timestamp,
                                       mp_current_rx_buffer->data[PHR_OFFSET]);
 #endif
 
@@ -2405,7 +2420,8 @@ bool nrf_802154_core_sleep(nrf_802154_term_t term_lvl)
 bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
                              req_originator_t               req_orig,
                              nrf_802154_notification_func_t notify_function,
-                             bool                           notify_abort)
+                             bool                           notify_abort,
+                             uint32_t                       id)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -2423,6 +2439,7 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
                 {
                     m_trx_receive_frame_notifications_mask =
                         make_trx_frame_receive_notification_mask();
+                    m_rx_window_id = id;
                     state_set(RADIO_STATE_RX);
                     rx_init();
                 }
@@ -2467,7 +2484,7 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
     if (result)
     {
         // Short-circuit evaluation in place.
-        if ((immediate) || (nrf_802154_core_hooks_pre_transmission(p_data, cca)))
+        if (nrf_802154_core_hooks_pre_transmission(p_data, cca, immediate))
         {
             result = current_operation_terminate(term_lvl, req_orig, true);
 
@@ -2653,7 +2670,7 @@ bool nrf_802154_core_notify_buffer_free(uint8_t * p_data)
     return true;
 }
 
-bool nrf_802154_core_channel_update(void)
+bool nrf_802154_core_channel_update(req_originator_t req_orig)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -2669,7 +2686,7 @@ bool nrf_802154_core_channel_update(void)
         switch (m_state)
         {
             case RADIO_STATE_RX:
-                if (current_operation_terminate(NRF_802154_TERM_NONE, REQ_ORIG_CORE, true))
+                if (current_operation_terminate(NRF_802154_TERM_802154, req_orig, true))
                 {
                     rx_init();
                 }

@@ -75,6 +75,7 @@ bool nrf_802154_request_sleep(nrf_802154_term_t term_lvl);
  * @param[in]  req_orig         Module that originates this request.
  * @param[in]  notify_function  Function called to notify the status of this procedure. May be NULL.
  * @param[in]  notify_abort     If the abort notification is to be triggered automatically.
+ * @param[in]  id               Identifier of a reception window.
  *
  * @retval  true   The driver will enter the receive state.
  * @retval  false  The driver cannot enter the receive state due to ongoing operation.
@@ -82,7 +83,8 @@ bool nrf_802154_request_sleep(nrf_802154_term_t term_lvl);
 bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
                                 req_originator_t               req_orig,
                                 nrf_802154_notification_func_t notify_function,
-                                bool                           notify_abort);
+                                bool                           notify_abort,
+                                uint32_t                       id);
 
 /**
  * @brief Request entering the @ref RADIO_STATE_TX state for the driver.
@@ -162,8 +164,10 @@ bool nrf_802154_request_antenna_update(void);
 
 /**
  * @brief Requests the driver to update the channel number used by the RADIO peripheral.
+ *
+ * @param[in]  req_orig   Module that originates this request.
  */
-bool nrf_802154_request_channel_update(void);
+bool nrf_802154_request_channel_update(req_originator_t req_orig);
 
 /**
  * @brief Requests the driver to update the CCA configuration used by the RADIO peripheral.

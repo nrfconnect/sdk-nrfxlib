@@ -399,11 +399,11 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_pending_bit_for_addr_s
         return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
     }
 
-    if (addr_len == 8)
+    if (addr_len == EXTENDED_ADDRESS_SIZE)
     {
         extended = true;
     }
-    else if (addr_len == 2)
+    else if (addr_len == SHORT_ADDRESS_SIZE)
     {
         extended = false;
     }
@@ -448,11 +448,11 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_pending_bit_for_addr_c
         return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
     }
 
-    if (addr_len == 8)
+    if (addr_len == EXTENDED_ADDRESS_SIZE)
     {
         extended = true;
     }
-    else if (addr_len == 2)
+    else if (addr_len == SHORT_ADDRESS_SIZE)
     {
         extended = false;
     }
@@ -537,6 +537,115 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_src_addr_matching_meth
     nrf_802154_src_addr_matching_method_set(match_method);
 
     return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
+}
+
+/**
+ * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_SET.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
+ * @param[in]  property_data_len  Size of the @ref p_data buffer.
+ *
+ */
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_ack_data_set(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    void                * p_addr;
+    size_t                addr_len;
+    void                * p_data;
+    size_t                length;
+    nrf_802154_ack_data_t data_type;
+    spinel_ssize_t        siz;
+    bool                  extended;
+
+    siz = spinel_datatype_unpack(p_property_data,
+                                 property_data_len,
+                                 SPINEL_DATATYPE_NRF_802154_ACK_DATA_SET,
+                                 &p_addr,
+                                 &addr_len,
+                                 &p_data,
+                                 &length,
+                                 &data_type);
+
+    if (siz < 0)
+    {
+        return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
+    }
+
+    if (addr_len == EXTENDED_ADDRESS_SIZE)
+    {
+        extended = true;
+    }
+    else if (addr_len == SHORT_ADDRESS_SIZE)
+    {
+        extended = false;
+    }
+    else
+    {
+        return NRF_802154_SERIALIZATION_ERROR_REQUEST_INVALID;
+    }
+
+    bool ack_data_set_res = nrf_802154_ack_data_set(
+        (const uint8_t *)p_addr,
+        extended,
+        (const void *)p_data,
+        (uint16_t)length,
+        data_type);
+
+    return nrf_802154_spinel_send_cmd_prop_value_is(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_SET,
+        SPINEL_DATATYPE_NRF_802154_ACK_DATA_SET_RET,
+        ack_data_set_res);
+}
+
+/**
+ * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_CLEAR.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
+ * @param[in]  property_data_len  Size of the @ref p_data buffer.
+ *
+ */
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_ack_data_clear(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    const uint8_t       * p_addr;
+    size_t                addr_len;
+    bool                  extended;
+    nrf_802154_ack_data_t data_type;
+    spinel_ssize_t        siz;
+
+    siz = spinel_datatype_unpack(p_property_data,
+                                 property_data_len,
+                                 SPINEL_DATATYPE_NRF_802154_ACK_DATA_CLEAR,
+                                 &p_addr,
+                                 &addr_len,
+                                 &data_type);
+
+    if (siz < 0)
+    {
+        return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
+    }
+
+    if (addr_len == EXTENDED_ADDRESS_SIZE)
+    {
+        extended = true;
+    }
+    else if (addr_len == SHORT_ADDRESS_SIZE)
+    {
+        extended = false;
+    }
+    else
+    {
+        return NRF_802154_SERIALIZATION_ERROR_REQUEST_INVALID;
+    }
+
+    bool ack_data_clear_res = nrf_802154_ack_data_clear(p_addr, extended, data_type);
+
+    return nrf_802154_spinel_send_cmd_prop_value_is(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_CLEAR,
+        SPINEL_DATATYPE_NRF_802154_ACK_DATA_CLEAR_RET,
+        ack_data_clear_res);
 }
 
 /**
@@ -863,6 +972,14 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CAPABILITIES_GET:
             return spinel_decode_prop_nrf_802154_capabilities_get(p_property_data,
                                                                   property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_SET:
+            return spinel_decode_prop_nrf_802154_ack_data_set(p_property_data,
+                                                              property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_CLEAR:
+            return spinel_decode_prop_nrf_802154_ack_data_clear(p_property_data,
+                                                                property_data_len);
 
         default:
             NRF_802154_SPINEL_LOG_RAW("Unsupported property: %s(%u)\n",

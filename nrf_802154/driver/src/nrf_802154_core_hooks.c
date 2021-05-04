@@ -48,17 +48,19 @@
 #include "mac_features/nrf_802154_ack_timeout.h"
 #include "mac_features/nrf_802154_csma_ca.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
+#include "mac_features/nrf_802154_ie_writer.h"
 #include "mac_features/nrf_802154_ifs.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_types.h"
 
 typedef bool (* abort_hook)(nrf_802154_term_t term_lvl, req_originator_t req_orig);
-typedef bool (* pre_transmission_hook)(const uint8_t * p_frame, bool cca);
+typedef bool (* pre_transmission_hook)(const uint8_t * p_frame, bool cca, bool immediate);
 typedef void (* transmitted_hook)(const uint8_t * p_frame);
 typedef bool (* tx_failed_hook)(const uint8_t * p_frame, nrf_802154_tx_error_t error);
 typedef bool (* tx_started_hook)(const uint8_t * p_frame);
 typedef void (* rx_started_hook)(const uint8_t * p_frame);
 typedef void (* rx_ack_started_hook)(void);
+typedef void (* tx_ack_started_hook)(const uint8_t * p_ack);
 
 /* Since some compilers do not allow empty initializers for arrays with unspecified bounds,
  * NULL pointer is appended to below arrays if the compiler used is not GCC. It is intentionally
@@ -90,6 +92,9 @@ static const pre_transmission_hook m_pre_transmission_hooks[] =
 {
 #if NRF_802154_IFS_ENABLED
     nrf_802154_ifs_pretransmission,
+#endif
+#if NRF_802154_IE_WRITER_ENABLED
+    nrf_802154_ie_writer_pretransmission,
 #endif
     NULL,
 };
@@ -128,6 +133,10 @@ static const tx_started_hook m_tx_started_hooks[] =
     nrf_802154_ack_timeout_tx_started_hook,
 #endif
 
+#if NRF_802154_IE_WRITER_ENABLED
+    nrf_802154_ie_writer_tx_started_hook,
+#endif
+
     NULL,
 };
 
@@ -144,6 +153,15 @@ static const rx_ack_started_hook m_rx_ack_started_hooks[] =
 {
 #if NRF_802154_ACK_TIMEOUT_ENABLED
     nrf_802154_ack_timeout_rx_ack_started_hook,
+#endif
+
+    NULL,
+};
+
+static const tx_ack_started_hook m_tx_ack_started_hooks[] =
+{
+#if NRF_802154_IE_WRITER_ENABLED
+    nrf_802154_ie_writer_tx_ack_started_hook,
 #endif
 
     NULL,
@@ -171,7 +189,7 @@ bool nrf_802154_core_hooks_terminate(nrf_802154_term_t term_lvl, req_originator_
     return result;
 }
 
-bool nrf_802154_core_hooks_pre_transmission(const uint8_t * p_frame, bool cca)
+bool nrf_802154_core_hooks_pre_transmission(const uint8_t * p_frame, bool cca, bool immediate)
 {
     bool result = true;
 
@@ -183,7 +201,7 @@ bool nrf_802154_core_hooks_pre_transmission(const uint8_t * p_frame, bool cca)
             break;
         }
 
-        result = m_pre_transmission_hooks[i](p_frame, cca);
+        result = m_pre_transmission_hooks[i](p_frame, cca, immediate);
 
         if (!result)
         {
@@ -275,5 +293,19 @@ void nrf_802154_core_hooks_rx_ack_started(void)
         }
 
         m_rx_ack_started_hooks[i]();
+    }
+}
+
+void nrf_802154_core_hooks_tx_ack_started(const uint8_t * p_ack)
+{
+    for (uint32_t i = 0; i < sizeof(m_tx_ack_started_hooks) / sizeof(m_tx_ack_started_hooks[0]);
+         i++)
+    {
+        if (m_tx_ack_started_hooks[i] == NULL)
+        {
+            break;
+        }
+
+        m_tx_ack_started_hooks[i](p_ack);
     }
 }

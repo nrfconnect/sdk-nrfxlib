@@ -221,19 +221,21 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_receive_failed(
     const void * p_property_data,
     size_t       property_data_len)
 {
-    uint8_t error;
+    uint8_t  error;
+    uint32_t id;
 
     spinel_ssize_t siz = spinel_datatype_unpack(p_property_data,
                                                 property_data_len,
                                                 SPINEL_DATATYPE_NRF_802154_RECEIVE_FAILED,
-                                                &error);
+                                                &error,
+                                                &id);
 
     if (siz < 0)
     {
         return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
     }
 
-    nrf_802154_receive_failed(error);
+    nrf_802154_receive_failed(error, id);
 
     return NRF_802154_SERIALIZATION_ERROR_OK;
 }
@@ -514,6 +516,10 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_is(
         // fall through
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PENDING_BIT_FOR_ADDR_CLEAR:
         // fall through
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_SET:
+        // fall through
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_CLEAR:
+        // fall through
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW:
             nrf_802154_spinel_response_notifier_property_notify(property,
                                                                 p_property_data,
@@ -594,9 +600,10 @@ __WEAK void nrf_802154_received_timestamp_raw(uint8_t * p_data,
     // Intentionally empty
 }
 
-__WEAK void nrf_802154_receive_failed(nrf_802154_rx_error_t error)
+__WEAK void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
 {
     (void)error;
+    (void)id;
     // Intentionally empty
 }
 

@@ -482,6 +482,39 @@ extern "C" {
 #define NRF_802154_STATS_COUNT_RECEIVED_PREAMBLES 1
 #endif
 
+/**
+ * @}
+ * @defgroup nrf_802154_security Security configuration
+ * @{
+ */
+
+/**
+ * @def NRF_802154_SECURITY_KEY_STORAGE_SIZE
+ *
+ * Configures the number of keys which are available in the Key Storage.
+ * This configuration is implementation-independent.
+ */
+#ifndef NRF_802154_SECURITY_KEY_STORAGE_SIZE
+#define NRF_802154_SECURITY_KEY_STORAGE_SIZE 3
+#endif
+
+/**
+ * @}
+ * @defgroup nrf_802154_ie Information Elements configuration
+ * @{
+ */
+
+/**
+ * @def NRF_802154_IE_WRITER_ENABLED
+ *
+ * Enables the Information Element writer module. The module parses frames being transmitted
+ * for known Information Element IDs. If such elements are found, the writer module shall
+ * fill the elements with appropriate data.
+ */
+#ifndef NRF_802154_IE_WRITER_ENABLED
+#define NRF_802154_IE_WRITER_ENABLED 1
+#endif
+
 #ifdef __cplusplus
 }
 #endif

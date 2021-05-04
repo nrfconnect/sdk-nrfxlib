@@ -122,6 +122,19 @@ typedef uint8_t nrf_802154_sleep_error_t;
 #define NRF_802154_SLEEP_ERROR_BUSY 0x01 // !< The driver cannot enter the sleep state due to the ongoing operation.
 
 /**
+ * @brief Possible errors during key handling.
+ */
+typedef uint8_t nrf_802154_security_error_t;
+
+#define NRF_802154_SECURITY_ERROR_NONE                   0x00 // !< There is no error.
+#define NRF_802154_SECURITY_ERROR_STORAGE_FULL           0x01 // !< The key storage is full - removal of stored keys is needed.
+#define NRF_802154_SECURITY_ERROR_KEY_NOT_FOUND          0x02 // !< The provided key was not found inside the storage.
+#define NRF_802154_SECURITY_ERROR_ALREADY_PRESENT        0x03 // !< The storage already has the key of the same ID.
+#define NRF_802154_SECURITY_ERROR_TYPE_NOT_SUPPORTED     0x04 // !< The provided key type is not supported.
+#define NRF_802154_SECURITY_ERROR_MODE_NOT_SUPPORTED     0x05 // !< The provided key id mode is not supported.
+#define NRF_802154_SECURITY_ERROR_FRAME_COUNTER_OVERFLOW 0x06 // !< The associated frame counter overflowed.
+
+/**
  * @brief Termination level selected for a particular request.
  *
  * Each request can terminate an ongoing operation. This type selects which operation should be
@@ -171,8 +184,7 @@ typedef uint8_t nrf_802154_src_addr_match_t;
 /**
  * @brief RSSI measurement results.
  */
-
-#define NRF_802154_RSSI_INVALID INT8_MAX
+#define NRF_802154_RSSI_INVALID            INT8_MAX
 
 /**
  * @brief Mode of triggering receive request to Coex arbiter.
@@ -238,6 +250,17 @@ typedef uint32_t nrf_802154_capabilities_t;
 #define NRF_802154_CAPABILITY_ANT_DIVERSITY (1UL << 4UL) // !< Antenna diversity supported
 #define NRF_802154_CAPABILITY_IFS           (1UL << 5UL) // !< Inter-frame spacing supported
 #define NRF_802154_CAPABILITY_TIMESTAMP     (1UL << 6UL) // !< Frame timestamping supported
+
+/**
+ * @brief Types of keys which can be used with the nRF 802.15.4 Radio Driver.
+ *
+ * Possible values:
+ * - @ref NRF_802154_KEY_CLEARTEXT,
+ *
+ */
+typedef uint32_t nrf_802154_key_type_t;
+
+#define NRF_802154_KEY_CLEARTEXT 0x00 // !< Key stored in clear text.
 
 /**
  * @brief Type of structure holding statistic counters.
@@ -309,6 +332,35 @@ typedef struct
     /**@brief Time stamps of events */
     nrf_802154_stat_timestamps_t timestamps;
 } nrf_802154_stats_t;
+
+/**
+ * @brief Type holding the value of Key Id Mode of the key stored in nRF 802.15.4 Radio Driver.
+ */
+typedef uint8_t nrf_802154_key_id_mode_t;
+
+/**
+ * @brief Type holding the value of Key Id for the keys stored in nRF 802.15.4 Radio Driver.
+ */
+typedef struct
+{
+    nrf_802154_key_id_mode_t mode;     // !< Key Id Mode (0..3)
+    uint8_t                * p_key_id; // !< Pointer to the Key Id field
+} nrf_802154_key_id_t;
+
+/**
+ * @brief Type of structure holding a 802.15.4 MAC Security Key.
+ */
+typedef struct
+{
+    union
+    {
+        uint8_t * p_cleartext_key;                  // !< Pointer to the cleartext representation of the key.
+    }                     value;                    // !< Union holding different representations of the key.
+    nrf_802154_key_id_t   id;                       // !< Key Id of the key.
+    nrf_802154_key_type_t type;                     // !< @ref nrf_802154_key_type_t type of the key used.
+    uint32_t              frame_counter;            // !< Frame counter to use in case @ref use_global_frame_counter is set to false.
+    bool                  use_global_frame_counter; // !< Whether to use the global frame counter instead of the one defined in this structure.
+} nrf_802154_key_t;
 
 /**
  *@}

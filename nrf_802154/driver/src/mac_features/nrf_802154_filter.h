@@ -78,4 +78,8 @@
  */
 nrf_802154_rx_error_t nrf_802154_filter_frame_part(const uint8_t * p_data, uint8_t * p_num_bytes);
 
+/**
+ *@}
+ **/
+
 #endif /* NRF_802154_FILTER_H_ */

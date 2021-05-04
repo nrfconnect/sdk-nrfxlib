@@ -106,6 +106,7 @@ typedef struct
             nrf_802154_term_t              term_lvl;    ///< Request priority.
             req_originator_t               req_orig;    ///< Request originator.
             bool                           notif_abort; ///< If function termination should be notified.
+            uint32_t                       id;          ///< Identifier of a reception window.
             bool                         * p_result;    ///< Receive request result.
         } receive;                                      ///< Receive request details.
 
@@ -154,8 +155,9 @@ typedef struct
 
         struct
         {
-            bool * p_result; ///< Channel update request result.
-        } channel_update;    ///< Channel update request details.
+            req_originator_t req_orig; ///< Request originator.
+            bool           * p_result; ///< Channel update request result.
+        } channel_update;              ///< Channel update request details.
 
         struct
         {
@@ -293,12 +295,14 @@ static void swi_sleep(nrf_802154_term_t term_lvl, bool * p_result)
  * @param[in]   req_orig         Module that originates this request.
  * @param[in]   notify_function  Function called to notify the status of the procedure. May be NULL.
  * @param[in]   notify_abort     If abort notification should be triggered automatically.
+ * @param[in]   id               Identifier of the reception window.
  * @param[out]  p_result         Result of entering the receive state.
  */
 static void swi_receive(nrf_802154_term_t              term_lvl,
                         req_originator_t               req_orig,
                         nrf_802154_notification_func_t notify_function,
                         bool                           notify_abort,
+                        uint32_t                       id,
                         bool                         * p_result)
 {
     nrf_802154_req_data_t * p_slot = req_enter();
@@ -308,6 +312,7 @@ static void swi_receive(nrf_802154_term_t              term_lvl,
     p_slot->data.receive.req_orig    = req_orig;
     p_slot->data.receive.notif_func  = notify_function;
     p_slot->data.receive.notif_abort = notify_abort;
+    p_slot->data.receive.id          = id;
     p_slot->data.receive.p_result    = p_result;
 
     req_exit();
@@ -467,12 +472,13 @@ static void swi_antenna_update(bool * p_result)
  * @param[out] p_result Pointer where the result to be returned by
  *                      nrf_802154_request_channel_update should be written by the swi handler.
  */
-static void swi_channel_update(bool * p_result)
+static void swi_channel_update(req_originator_t req_orig, bool * p_result)
 {
     nrf_802154_req_data_t * p_slot = req_enter();
 
     p_slot->type                         = REQ_TYPE_CHANNEL_UPDATE;
     p_slot->data.channel_update.p_result = p_result;
+    p_slot->data.channel_update.req_orig = req_orig;
 
     req_exit();
 }
@@ -529,8 +535,10 @@ static void swi_rssi_measurement_get(int8_t * p_rssi, bool * p_result)
 
 void nrf_802154_request_init(void)
 {
-    nrf_802154_queue_init(&m_requests_queue, m_requests_queue_memory,
-                          sizeof(m_requests_queue_memory), sizeof(m_requests_queue_memory[0]));
+    nrf_802154_queue_init(&m_requests_queue,
+                          m_requests_queue_memory,
+                          sizeof(m_requests_queue_memory),
+                          sizeof(m_requests_queue_memory[0]));
 
     nrf_egu_int_enable(NRF_802154_EGU_INSTANCE, REQ_INT);
 
@@ -545,14 +553,16 @@ bool nrf_802154_request_sleep(nrf_802154_term_t term_lvl)
 bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
                                 req_originator_t               req_orig,
                                 nrf_802154_notification_func_t notify_function,
-                                bool                           notify_abort)
+                                bool                           notify_abort,
+                                uint32_t                       id)
 {
     REQUEST_FUNCTION(nrf_802154_core_receive,
                      swi_receive,
                      term_lvl,
                      req_orig,
                      notify_function,
-                     notify_abort)
+                     notify_abort,
+                     id)
 }
 
 bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
@@ -588,7 +598,8 @@ bool nrf_802154_request_cca(nrf_802154_term_t term_lvl)
 
 bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl)
 {
-    REQUEST_FUNCTION(nrf_802154_core_continuous_carrier, swi_continuous_carrier,
+    REQUEST_FUNCTION(nrf_802154_core_continuous_carrier,
+                     swi_continuous_carrier,
                      term_lvl)
 }
 
@@ -611,9 +622,9 @@ bool nrf_802154_request_antenna_update(void)
     REQUEST_FUNCTION_NO_ARGS(nrf_802154_core_antenna_update, swi_antenna_update)
 }
 
-bool nrf_802154_request_channel_update(void)
+bool nrf_802154_request_channel_update(req_originator_t req_orig)
 {
-    REQUEST_FUNCTION_NO_ARGS(nrf_802154_core_channel_update, swi_channel_update)
+    REQUEST_FUNCTION(nrf_802154_core_channel_update, swi_channel_update, req_orig)
 }
 
 bool nrf_802154_request_cca_cfg_update(void)
@@ -653,7 +664,8 @@ static void irq_handler_req_event(void)
                     nrf_802154_core_receive(p_slot->data.receive.term_lvl,
                                             p_slot->data.receive.req_orig,
                                             p_slot->data.receive.notif_func,
-                                            p_slot->data.receive.notif_abort);
+                                            p_slot->data.receive.notif_abort,
+                                            p_slot->data.receive.id);
                 break;
 
             case REQ_TYPE_TRANSMIT:
@@ -695,7 +707,8 @@ static void irq_handler_req_event(void)
                 break;
 
             case REQ_TYPE_CHANNEL_UPDATE:
-                *(p_slot->data.channel_update.p_result) = nrf_802154_core_channel_update();
+                *(p_slot->data.channel_update.p_result) =
+                    nrf_802154_core_channel_update(p_slot->data.channel_update.req_orig);
                 break;
 
             case REQ_TYPE_CCA_CFG_UPDATE:

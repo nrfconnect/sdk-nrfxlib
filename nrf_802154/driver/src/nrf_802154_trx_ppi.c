@@ -69,7 +69,8 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool star
     // Clr event EGU (needed for nrf_802154_trx_ppi_for_ramp_up_was_triggered)
     nrf_egu_event_clear(NRF_802154_EGU_INSTANCE, EGU_EVENT);
 
-    nrf_ppi_channel_and_fork_endpoint_setup(NRF_PPI, PPI_EGU_RAMP_UP,
+    nrf_ppi_channel_and_fork_endpoint_setup(NRF_PPI,
+                                            PPI_EGU_RAMP_UP,
                                             nrf_egu_event_address_get(
                                                 NRF_802154_EGU_INSTANCE,
                                                 EGU_EVENT),
@@ -79,7 +80,8 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool star
 
     if (start_timer)
     {
-        nrf_ppi_channel_endpoint_setup(NRF_PPI, PPI_EGU_TIMER_START,
+        nrf_ppi_channel_endpoint_setup(NRF_PPI,
+                                       PPI_EGU_TIMER_START,
                                        nrf_egu_event_address_get(NRF_802154_EGU_INSTANCE,
                                                                  EGU_EVENT),
                                        nrf_timer_task_address_get(NRF_802154_TIMER_INSTANCE,

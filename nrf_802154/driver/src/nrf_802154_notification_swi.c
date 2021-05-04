@@ -95,6 +95,7 @@ typedef struct
         struct
         {
             nrf_802154_rx_error_t error; ///< An error code that indicates reason of the failure.
+            uint32_t              id;    ///< Identifier of reception window the error occured in.
         } receive_failed;
 
         struct
@@ -196,12 +197,13 @@ void swi_notify_received(uint8_t * p_data, int8_t power, uint8_t lqi)
  *
  * @param[in]  error  Error code that indicates reason of the failure.
  */
-void swi_notify_receive_failed(nrf_802154_rx_error_t error)
+void swi_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
 {
     nrf_802154_ntf_data_t * p_slot = ntf_enter();
 
     p_slot->type                      = NTF_TYPE_RECEIVE_FAILED;
     p_slot->data.receive_failed.error = error;
+    p_slot->data.receive_failed.id    = id;
 
     ntf_exit();
 }
@@ -320,7 +322,8 @@ void swi_notify_cca_failed(nrf_802154_cca_error_t error)
 
 void nrf_802154_notification_init(void)
 {
-    nrf_802154_queue_init(&m_notifications_queue, m_notifications_queue_memory,
+    nrf_802154_queue_init(&m_notifications_queue,
+                          m_notifications_queue_memory,
                           sizeof(m_notifications_queue_memory),
                           sizeof(m_notifications_queue_memory[0]));
 
@@ -334,9 +337,9 @@ void nrf_802154_notify_received(uint8_t * p_data, int8_t power, uint8_t lqi)
     swi_notify_received(p_data, power, lqi);
 }
 
-void nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error)
+void nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
 {
-    swi_notify_receive_failed(error);
+    swi_notify_receive_failed(error, id);
 }
 
 void nrf_802154_notify_transmitted(const uint8_t * p_frame,
@@ -396,7 +399,8 @@ static void irq_handler_ntf_event(void)
                 break;
 
             case NTF_TYPE_RECEIVE_FAILED:
-                nrf_802154_receive_failed(p_slot->data.receive_failed.error);
+                nrf_802154_receive_failed(p_slot->data.receive_failed.error,
+                                          p_slot->data.receive_failed.id);
                 break;
 
             case NTF_TYPE_TRANSMITTED:

@@ -62,6 +62,35 @@ extern "C" {
  */
 
 /**
+ * @brief Maximum number of DTX delayed timeslots that can be scheduled simultaneously.
+ */
+#ifndef NRF_802154_RSCH_DLY_TS_OP_DTX_SLOTS
+#define NRF_802154_RSCH_DLY_TS_OP_DTX_SLOTS 1
+#endif
+
+/**
+ * @brief Maximum number of DRX delayed timeslots that can be scheduled simultaneously.
+ */
+#ifndef NRF_802154_RSCH_DLY_TS_OP_DRX_SLOTS
+#define NRF_802154_RSCH_DLY_TS_OP_DRX_SLOTS 2
+#endif
+
+/**
+ * @brief Maximum number of CSMA/CA delayed timeslots that can be scheduled simultaneously.
+ */
+#ifndef NRF_802154_RSCH_DLY_TS_OP_CSMACA_SLOTS
+#define NRF_802154_RSCH_DLY_TS_OP_CSMACA_SLOTS 1
+#endif
+
+/**
+ * @brief Number of available slots for all delayed timeslots.
+ */
+#define NRF_802154_RSCH_DLY_TS_SLOTS      \
+    NRF_802154_RSCH_DLY_TS_OP_DTX_SLOTS + \
+    NRF_802154_RSCH_DLY_TS_OP_DRX_SLOTS + \
+    NRF_802154_RSCH_DLY_TS_OP_CSMACA_SLOTS
+
+/**
  * @brief List of the preconditions that have to be met before any radio activity.
  */
 typedef enum
@@ -88,16 +117,19 @@ typedef enum
 } rsch_prio_t;
 
 /**
- * @brief Enumeration of the delayed timeslot IDs.
+ * @brief Enumeration of the delayed timeslot operation types.
  */
 typedef enum
 {
-    RSCH_DLY_TX,     ///< Timeslot for delayed TX operation.
-    RSCH_DLY_RX,     ///< Timeslot for delayed RX operation.
-    RSCH_DLY_CSMACA, ///< Timeslot for CSMA/CA operation.
+    RSCH_DLY_TS_OP_DTX,    ///< Timeslot for delayed TX operation.
+    RSCH_DLY_TS_OP_DRX,    ///< Timeslot for delayed RX operation.
+    RSCH_DLY_TS_OP_CSMACA, ///< Timeslot for CSMA/CA operation.
+} rsch_dly_ts_op_t;
 
-    RSCH_DLY_TS_NUM, ///< Number of delayed timeslots.
-} rsch_dly_ts_id_t;
+/**
+ * @brief Identifier of a delayed timeslot.
+ */
+typedef uint32_t rsch_dly_ts_id_t;
 
 /**
  * @brief Enumeration of the precondition requesting strategies.
@@ -121,6 +153,8 @@ typedef enum
 
 /**
  * @brief Function pointer used for notifying about delayed timeslot start.
+ *
+ * @param[in]  dly_ts_id  Identifier of the started delayed timeslot.
  */
 typedef void (* rsch_dly_ts_started_callback_t)(rsch_dly_ts_id_t dly_ts_id);
 
@@ -132,9 +166,10 @@ typedef struct
     uint32_t                       t0;               ///< Base time of the timestamp of the timeslot start, in microseconds.
     uint32_t                       dt;               ///< Time delta between @p t0 and the timestamp of the timeslot start, in microseconds.
     rsch_prio_t                    prio;             ///< Priority level required for the delayed timeslot.
-    rsch_dly_ts_id_t               id;               ///< ID of the requested timeslot.
+    rsch_dly_ts_op_t               op;               ///< Operation to be performed in the requested timeslot.
     rsch_dly_ts_type_t             type;             ///< Type of the requested timeslot.
     rsch_dly_ts_started_callback_t started_callback; ///< Callback called when delayed timeslot starts.
+    rsch_dly_ts_id_t               id;               ///< Identifier of the timeslot provided by its owner. Its value must be unique, to unambigously map to an active slot.
 } rsch_dly_ts_param_t;
 
 /**
@@ -200,12 +235,26 @@ bool nrf_802154_rsch_timeslot_request(uint32_t length_us);
  * the timeslot is supposed to start and how long it is to last. When the requested timeslot starts,
  * @p p_dly_ts_param->started_callback is called.
  *
+ * For a given type of operation to be performed in the delayed timeslot, @p p_dly_ts_param->op,
+ * there's a limited number of delayed timeslots that can be scheduled at the same time:
+ *   - for delayed transmissions it's @ref NRF_802154_RSCH_DLY_TS_OP_DTX_SLOTS;
+ *   - for delayed receptions it's @ref NRF_802154_RSCH_DLY_TS_OP_DRX_SLOTS;
+ *   - for CSMA/CA it's @ref NRF_802154_RSCH_DLY_TS_OP_CSMACA_SLOTS.
+ *
+ * If the API user requests more delayed timeslots with given @p p_dly_ts_param->op than specified
+ * by these constants, the request will fail unconditionally. It also implies that there can only
+ * be as many delayed timeslots scheduled simultaneously in total as the sum of these constants.
+ *
+ * @note Every call to this function must be paired with a call to
+ *       @ref nrf_802154_rsch_delayed_timeslot_cancel so that the assigned slot becomes
+ *       available for future requests.
+ *
  * @note @p p_dly_ts_param->started_callback can be delayed and it is up to
  *       the called module to check the delay and decide if it causes any issues.
  *
  * @note The time parameters use the same units that are used in the Timer Scheduler module.
  *
- * @param[in]  p_dly_ts_param  Parameters of the requested delayed timeslot.
+ * @param[in]   p_dly_ts_param  Parameters of the requested delayed timeslot.
  *
  * @retval true   Requested timeslot has been scheduled.
  * @retval false  Requested timeslot cannot be scheduled and will not be granted.
@@ -215,7 +264,8 @@ bool nrf_802154_rsch_delayed_timeslot_request(const rsch_dly_ts_param_t * p_dly_
 /**
  * @brief Cancels a requested future timeslot.
  *
- * @param[in] dly_ts_id  ID of the requested timeslot.
+ * @param[in] dly_ts_id  Identifier of the requested timeslot. If the provided value does not refer
+ *                       to any scheduled delayed timeslot, the function returns false.
  *
  * @retval true     Scheduled timeslot has been cancelled.
  * @retval false    No scheduled timeslot has been requested (nothing to cancel).
@@ -225,7 +275,9 @@ bool nrf_802154_rsch_delayed_timeslot_cancel(rsch_dly_ts_id_t dly_ts_id);
 /**
  * @brief Updates priority of a requested delayed timeslot.
  *
- * @param[in] dly_ts_id    ID of the requested timeslot.
+ * @param[in] dly_ts_id    Identifier of the requested timeslot. If the provided value does not
+ *                         refer to any scheduled or active delayed timeslot, the function
+ *                         returns false.
  * @param[in] dly_ts_prio  Priority to be assigned to the requested timeslot.
  *
  * @retval true     Scheduled timeslot's priority has been updated.
@@ -234,6 +286,17 @@ bool nrf_802154_rsch_delayed_timeslot_cancel(rsch_dly_ts_id_t dly_ts_id);
 bool nrf_802154_rsch_delayed_timeslot_priority_update(rsch_dly_ts_id_t dly_ts_id,
                                                       rsch_prio_t      dly_ts_prio);
 
+/**
+ * @brief Retrieves the remaining time until a requested timeslot begins.
+ *
+ * @param[in]  dly_ts_id        ID of the requested timeslot.
+ * @param[out] p_time_to_start  Pointer to a 32-bit variable where time to start will be stored.
+ *
+ * @retval true     The given timeslot was scheduled and p_time_to_start contains a valid value.
+ * @retval false    The given timeslot was not scheduled and p_time_to_start was not modified.
+ */
+bool nrf_802154_rsch_delayed_timeslot_time_to_start_get(rsch_dly_ts_id_t dly_ts_id,
+                                                        uint32_t       * p_time_to_start);
 /**
  * @brief Checks if there is a pending timeslot request.
  *

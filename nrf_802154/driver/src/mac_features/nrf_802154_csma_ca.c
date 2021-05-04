@@ -96,12 +96,15 @@ static bool procedure_is_running(void)
  */
 static void procedure_stop(void)
 {
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+    if (procedure_is_running())
+    {
+        nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
-    nrf_802154_rsch_delayed_timeslot_cancel(RSCH_DLY_CSMACA);
-    m_is_running = false;
+        nrf_802154_rsch_delayed_timeslot_cancel(NRF_802154_RESERVED_CSMACA_ID);
+        m_is_running = false;
 
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+    }
 }
 
 static void priority_leverage(void)
@@ -116,7 +119,8 @@ static void priority_leverage(void)
     if (first_transmit_attempt && coex_requires_boosted_prio)
     {
         // It should always be possible to update this timeslot's priority here
-        if (!nrf_802154_rsch_delayed_timeslot_priority_update(RSCH_DLY_CSMACA, RSCH_PRIO_TX))
+        if (!nrf_802154_rsch_delayed_timeslot_priority_update(NRF_802154_RESERVED_CSMACA_ID,
+                                                              RSCH_PRIO_TX))
         {
             assert(false);
         }
@@ -157,6 +161,7 @@ static void notify_busy_channel(bool result)
  */
 static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
 {
+    assert(dly_ts_id == NRF_802154_RESERVED_CSMACA_ID);
     (void)dly_ts_id;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -192,9 +197,10 @@ static void random_backoff_start(void)
     {
         .t0               = nrf_802154_timer_sched_time_get(),
         .dt               = backoff_periods * UNIT_BACKOFF_PERIOD,
-        .id               = RSCH_DLY_CSMACA,
+        .op               = RSCH_DLY_TS_OP_CSMACA,
         .type             = RSCH_DLY_TS_TYPE_RELAXED,
         .started_callback = frame_transmit,
+        .id               = NRF_802154_RESERVED_CSMACA_ID,
     };
 
     switch (nrf_802154_pib_coex_tx_request_mode_get())
@@ -217,6 +223,14 @@ static void random_backoff_start(void)
         default:
             assert(false);
             break;
+    }
+
+    if (m_nb != 0)
+    {
+        // Since CSMA/CA always requests delayed timeslot of type RSCH_DLY_TS_TYPE_RELAXED,
+        // it must be cancelled explicitly, so that the slot is released and available
+        // for the upcoming request.
+        nrf_802154_rsch_delayed_timeslot_cancel(NRF_802154_RESERVED_CSMACA_ID);
     }
 
     // Delayed timeslot with these parameters should always be scheduled

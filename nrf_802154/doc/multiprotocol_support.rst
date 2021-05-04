@@ -67,7 +67,7 @@ The MPSL includes a Radio Event Manager (REM) that manages radio arbitration and
 Switching between Bluetooth Low Energy and protocols based on IEEE 802.15.4 is done automatically in the background of the currently running application and therefore is transparent for the user.
 The user can write the Bluetooth part of a multiprotocol application as if it was a Bluetooth-only application, and the IEEE 802.15.4 part of the multiprotocol application as if it was an IEEE 802.15.4 based-only application.
 
-In this solution, Bluetooth Low Energy always has priority over Thread.
+In this solution, Bluetooth Low Energy has always priority over 802.15.4 protocols.
 Because of the nature of the Bluetooth Low Energy protocol (TDMA), the Bluetooth packet error rate should be 0% in absence of any external interference.
 
 .. note::

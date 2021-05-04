@@ -49,6 +49,11 @@
 #include "nrf_802154_types.h"
 
 /**
+ * @brief Reception window identifier reserved for immediate reception.
+ */
+#define NRF_802154_RESERVED_IMM_RX_WINDOW_ID (UINT32_MAX - 1)
+
+/**
  * @brief Select the source matching algorithm.
  *
  * @note This method should be called after driver initialization, but before transceiver is enabled.
@@ -60,6 +65,59 @@
  * @param[in]  match_method Source address matching method to be used.
  */
 void nrf_802154_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_method);
+
+/**
+ * @brief Adds the address of a peer node for which the provided ACK data
+ * is to be added to the pending bit list.
+ *
+ * The pending bit list works differently, depending on the upper layer for which the source
+ * address matching method is selected:
+ *   - For Thread, @ref NRF_802154_SRC_ADDR_MATCH_THREAD
+ *   - For Zigbee, @ref NRF_802154_SRC_ADDR_MATCH_ZIGBEE
+ *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
+ * For more information, see @ref nrf_802154_src_addr_match_t.
+ *
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ *
+ * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
+ * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
+ * @param[in]  p_data    Pointer to the buffer containing data to be set.
+ * @param[in]  length    Length of @p p_data.
+ * @param[in]  data_type Type of data to be set. Refer to the @ref nrf_802154_ack_data_t type.
+ *
+ * @retval True   Address successfully added to the list.
+ * @retval False  Not enough memory to store this address in the list.
+ */
+bool nrf_802154_ack_data_set(const uint8_t       * p_addr,
+                             bool                  extended,
+                             const void          * p_data,
+                             uint16_t              length,
+                             nrf_802154_ack_data_t data_type);
+
+/**
+ * @brief Removes the address of a peer node for which the ACK data is set from the pending bit list.
+ *
+ * The ACK data that was previously set for the given address is automatically removed.
+ *
+ * The pending bit list works differently, depending on the upper layer for which the source
+ * address matching method is selected:
+ *   - For Thread, @ref NRF_802154_SRC_ADDR_MATCH_THREAD
+ *   - For Zigbee, @ref NRF_802154_SRC_ADDR_MATCH_ZIGBEE
+ *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
+ * For more information, see @ref nrf_802154_src_addr_match_t.
+ *
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ *
+ * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
+ * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
+ * @param[in]  data_type Type of data to be removed. Refer to the @ref nrf_802154_ack_data_t type.
+ *
+ * @retval True   Address removed from the list.
+ * @retval False  Address not found in the list.
+ */
+bool nrf_802154_ack_data_clear(const uint8_t       * p_addr,
+                               bool                  extended,
+                               nrf_802154_ack_data_t data_type);
 
 /**
  * @brief Enables or disables setting a pending bit in automatically transmitted ACK frames.
@@ -371,7 +429,7 @@ int8_t nrf_802154_tx_power_get(void);
 int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level);
 
 /**
- * @brief Gets nRF 802.15.4 Radio Diver Capabilities.
+ * @brief Gets nRF 802.15.4 Radio Driver Capabilities.
  *
  * @return Capabilities of the radio driver.
  */

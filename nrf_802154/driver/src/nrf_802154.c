@@ -74,6 +74,7 @@
 #include "mac_features/nrf_802154_ack_timeout.h"
 #include "mac_features/nrf_802154_csma_ca.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
+#include "mac_features/nrf_802154_security_pib.h"
 #include "mac_features/ack_generator/nrf_802154_ack_data.h"
 
 #include "nrf_802154_sl_ant_div.h"
@@ -116,7 +117,7 @@ void nrf_802154_channel_set(uint8_t channel)
 
     if (changed)
     {
-        (void)nrf_802154_request_channel_update();
+        (void)nrf_802154_request_channel_update(REQ_ORIG_HIGHER_LAYER);
     }
 }
 
@@ -219,6 +220,9 @@ void nrf_802154_init(void)
     nrf_802154_temperature_init();
     nrf_802154_timer_coord_init();
     nrf_802154_timer_sched_init();
+#if NRF_802154_DELAYED_TRX_ENABLED
+    nrf_802154_delayed_trx_init();
+#endif
 }
 
 void nrf_802154_deinit(void)
@@ -411,7 +415,11 @@ bool nrf_802154_receive(void)
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    result = nrf_802154_request_receive(NRF_802154_TERM_802154, REQ_ORIG_HIGHER_LAYER, NULL, true);
+    result = nrf_802154_request_receive(NRF_802154_TERM_802154,
+                                        REQ_ORIG_HIGHER_LAYER,
+                                        NULL,
+                                        true,
+                                        NRF_802154_RESERVED_IMM_RX_WINDOW_ID);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;
@@ -489,25 +497,26 @@ bool nrf_802154_transmit_at_cancel(void)
 bool nrf_802154_receive_at(uint32_t t0,
                            uint32_t dt,
                            uint32_t timeout,
-                           uint8_t  channel)
+                           uint8_t  channel,
+                           uint32_t id)
 {
     bool result;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    result = nrf_802154_delayed_trx_receive(t0, dt, timeout, channel);
+    result = nrf_802154_delayed_trx_receive(t0, dt, timeout, channel, id);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;
 }
 
-bool nrf_802154_receive_at_cancel(void)
+bool nrf_802154_receive_at_cancel(uint32_t id)
 {
     bool result;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    result = nrf_802154_delayed_trx_receive_cancel();
+    result = nrf_802154_delayed_trx_receive_cancel(id);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;
@@ -886,6 +895,21 @@ uint32_t nrf_802154_time_get(void)
     return nrf_802154_timer_sched_time_get();
 }
 
+void nrf_802154_security_global_frame_counter_set(uint32_t frame_counter)
+{
+    nrf_802154_security_pib_global_frame_counter_set(frame_counter);
+}
+
+nrf_802154_security_error_t nrf_802154_security_key_store(nrf_802154_key_t * p_key)
+{
+    return nrf_802154_security_pib_key_store(p_key);
+}
+
+nrf_802154_security_error_t nrf_802154_security_key_remove(nrf_802154_key_id_t * p_id)
+{
+    return nrf_802154_security_pib_key_remove(p_id);
+}
+
 __WEAK void nrf_802154_custom_part_of_radio_init(void)
 {
     // Intentionally empty
@@ -899,7 +923,9 @@ __WEAK void nrf_802154_tx_ack_started(const uint8_t * p_data)
 #if NRF_802154_USE_RAW_API
 __WEAK void nrf_802154_received_raw(uint8_t * p_data, int8_t power, uint8_t lqi)
 {
-    nrf_802154_received_timestamp_raw(p_data, power, lqi,
+    nrf_802154_received_timestamp_raw(p_data,
+                                      power,
+                                      lqi,
                                       nrf_802154_stat_timestamp_read(last_rx_end_timestamp));
 }
 
@@ -938,9 +964,10 @@ __WEAK void nrf_802154_received_timestamp(uint8_t * p_data,
 
 #endif // !NRF_802154_USE_RAW_API
 
-__WEAK void nrf_802154_receive_failed(nrf_802154_rx_error_t error)
+__WEAK void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
 {
     (void)error;
+    (void)id;
 }
 
 __WEAK void nrf_802154_tx_started(const uint8_t * p_frame)

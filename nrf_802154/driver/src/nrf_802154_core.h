@@ -121,6 +121,7 @@ bool nrf_802154_core_sleep(nrf_802154_term_t term_lvl);
  * @param[in]  req_orig         Module that originates this request.
  * @param[in]  notify_function  Function called to notify the status of this procedure. May be NULL.
  * @param[in]  notify_abort     If abort notification is to be triggered.
+ * @param[in]  id               Identifier of reception window.
  *
  * @retval  true   Entering the receive state succeeded.
  * @retval  false  Entering the receive state failed (the driver is performing other procedure).
@@ -128,7 +129,8 @@ bool nrf_802154_core_sleep(nrf_802154_term_t term_lvl);
 bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
                              req_originator_t               req_orig,
                              nrf_802154_notification_func_t notify_function,
-                             bool                           notify_abort);
+                             bool                           notify_abort,
+                             uint32_t                       id);
 
 /**
  * @brief Requests the transition to the @ref RADIO_STATE_TX state.
@@ -225,8 +227,10 @@ bool nrf_802154_core_notify_buffer_free(uint8_t * p_data);
  * in the @ref RADIO_STATE_RX, in the @ref RADIO_STATE_CONTINUOUS_CARRIER
  * or in the @ref RADIO_STATE_MODULATED_CARRIER state, the transceiver is disabled
  * and enabled again to use the new channel.
+ *
+ * @param[in]  req_orig   Module that originates this request.
  */
-bool nrf_802154_core_channel_update(void);
+bool nrf_802154_core_channel_update(req_originator_t req_orig);
 
 /**
  * @brief Notifies the core module that the next higher layer requested the change

@@ -147,9 +147,16 @@ static uint16_t ifs_needed_by_time(uint32_t current_timestamp)
     return ifs_period;
 }
 
-bool nrf_802154_ifs_pretransmission(const uint8_t * p_frame, bool cca)
+bool nrf_802154_ifs_pretransmission(const uint8_t * p_frame, bool cca, bool immediate)
 {
-    nrf_802154_ifs_mode_t mode = nrf_802154_pib_ifs_mode_get();
+    nrf_802154_ifs_mode_t mode;
+
+    if (immediate)
+    {
+        return true;
+    }
+
+    mode = nrf_802154_pib_ifs_mode_get();
 
     if (mode == NRF_802154_IFS_MODE_DISABLED)
     {

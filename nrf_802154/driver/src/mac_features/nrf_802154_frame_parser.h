@@ -318,4 +318,89 @@ const uint8_t * nrf_802154_frame_parser_ie_header_get(const uint8_t * p_frame);
  */
 uint8_t nrf_802154_frame_parser_ie_header_offset_get(const uint8_t * p_frame);
 
+/**
+ * @brief Initializes the IE iterator with given IE header address.
+ *
+ * @param[in]   p_ie_header  Pointer to an IE header.
+ *
+ * @returns  Information element iterator.
+ *
+ */
+const uint8_t * nrf_802154_frame_parser_header_ie_iterator_begin(const uint8_t * p_ie_header);
+
+/**
+ * @brief Gets next information element iterator.
+ *
+ * @param[in]   p_ie_iterator  Current information element iterator.
+ *
+ * @returns  Next information element iterator.
+ *
+ */
+const uint8_t * nrf_802154_frame_parser_ie_iterator_next(const uint8_t * p_ie_iterator);
+
+/**
+ * @brief Checks if the current IE is a terminator.
+ *
+ * @param[in]   p_ie_iterator  Information element iterator.
+ * @param[in]   p_end_addr     Address past which the iteration shall stop.
+ *
+ * @retval  true   The IE is a terminator or iteration has passed the end address.
+ * @retval  false  The IE is not a terminator and iteration has not passed the end address.
+ *
+ */
+bool nrf_802154_frame_parser_ie_iterator_end(const uint8_t * p_ie_iterator,
+                                             const uint8_t * p_end_addr);
+
+/**
+ * @brief Gets length of currently iterated IE.
+ *
+ * @param[in]   p_ie_iterator  Information element iterator.
+ *
+ * @returns  Length of currently iterated information element.
+ *
+ */
+uint8_t nrf_802154_frame_parser_ie_length_get(const uint8_t * p_ie_iterator);
+
+/**
+ * @brief Gets identifier of currently iterated IE.
+ *
+ * @param[in]   p_ie_iterator  Information element iterator.
+ *
+ * @returns  Identifier of currently iterated information element.
+ *
+ */
+uint8_t nrf_802154_frame_parser_ie_id_get(const uint8_t * p_ie_iterator);
+
+/**
+ * @brief Gets payload address of currently iterated IE.
+ *
+ * @param[in]   p_ie_iterator  Information element iterator.
+ *
+ * @returns  Current IE payload address.
+ *
+ * @note  The user must ensure that the payload is properly bounded.
+ *
+ */
+const uint8_t * nrf_802154_frame_parser_ie_content_address_get(const uint8_t * p_ie_iterator);
+
+/**
+ * @brief Gets the length of the PHY payload from the PHR.
+ *
+ * @param[in]   p_frame  Pointer to a frame.
+ *
+ * @returns  Total length of the PHY payload.
+ *
+ */
+uint8_t nrf_802154_frame_parser_frame_length_get(const uint8_t * p_frame);
+
+/**
+ * @brief Gets the address of the first MFR byte.
+ *
+ * @param[in]   p_frame  Pointer to a frame.
+ *
+ * @returns  Address of the first byte of MAC footer.
+ *
+ */
+const uint8_t * nrf_802154_frame_parser_mfr_address_get(const uint8_t * p_frame);
+
 #endif // NRF_802154_FRAME_PARSER_H
