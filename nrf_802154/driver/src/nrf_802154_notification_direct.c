@@ -63,9 +63,9 @@ void nrf_802154_notify_received(uint8_t * p_data, int8_t power, uint8_t lqi)
 #endif  // NRF_802154_USE_RAW_API
 }
 
-void nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error)
+void nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
 {
-    nrf_802154_receive_failed(error);
+    nrf_802154_receive_failed(error, id);
 }
 
 void nrf_802154_notify_transmitted(const uint8_t * p_frame,

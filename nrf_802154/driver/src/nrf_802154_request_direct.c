@@ -73,13 +73,15 @@ bool nrf_802154_request_sleep(nrf_802154_term_t term_lvl)
 bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
                                 req_originator_t               req_orig,
                                 nrf_802154_notification_func_t notify_function,
-                                bool                           notify_abort)
+                                bool                           notify_abort,
+                                uint32_t                       id)
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_receive,
                            term_lvl,
                            req_orig,
                            notify_function,
-                           notify_abort)
+                           notify_abort,
+                           id)
 }
 
 bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
@@ -129,9 +131,9 @@ bool nrf_802154_request_antenna_update(void)
     REQUEST_FUNCTION(nrf_802154_core_antenna_update)
 }
 
-bool nrf_802154_request_channel_update(void)
+bool nrf_802154_request_channel_update(req_originator_t req_orig)
 {
-    REQUEST_FUNCTION(nrf_802154_core_channel_update)
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_channel_update, req_orig)
 }
 
 bool nrf_802154_request_cca_cfg_update(void)

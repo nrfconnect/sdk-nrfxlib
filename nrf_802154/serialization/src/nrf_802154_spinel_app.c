@@ -502,6 +502,82 @@ bail:
     SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
 }
 
+bool nrf_802154_ack_data_set(const uint8_t       * p_addr,
+                             bool                  extended,
+                             const void          * p_data,
+                             uint16_t              length,
+                             nrf_802154_ack_data_t data_type)
+{
+    nrf_802154_ser_err_t res;
+    bool                 ack_data_set_res = false;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+    NRF_802154_SPINEL_LOG_BUFF(p_addr, extended ? EXTENDED_ADDRESS_SIZE : SHORT_ADDRESS_SIZE);
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%s", (extended ? "true" : "false"), "extended");
+
+    nrf_802154_spinel_response_notifier_lock_before_request(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_SET);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_SET,
+        SPINEL_DATATYPE_NRF_802154_ACK_DATA_SET,
+        p_addr,
+        extended ? EXTENDED_ADDRESS_SIZE : SHORT_ADDRESS_SIZE,
+        p_data,
+        length,
+        data_type);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = net_generic_bool_response_await(&ack_data_set_res,
+                                          CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return ack_data_set_res;
+}
+
+bool nrf_802154_ack_data_clear(const uint8_t       * p_addr,
+                               bool                  extended,
+                               nrf_802154_ack_data_t data_type)
+{
+    nrf_802154_ser_err_t res;
+    bool                 ack_data_clear_res = false;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+    NRF_802154_SPINEL_LOG_BUFF(p_addr, extended ? EXTENDED_ADDRESS_SIZE : SHORT_ADDRESS_SIZE);
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%s", (extended ? "true" : "false"), "extended");
+
+    nrf_802154_spinel_response_notifier_lock_before_request(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_CLEAR);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_CLEAR,
+        SPINEL_DATATYPE_NRF_802154_ACK_DATA_CLEAR,
+        p_addr,
+        extended ? EXTENDED_ADDRESS_SIZE : SHORT_ADDRESS_SIZE,
+        data_type);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = net_generic_bool_response_await(&ack_data_clear_res,
+                                          CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return ack_data_clear_res;
+}
+
 void nrf_802154_auto_pending_bit_set(bool enabled)
 {
     nrf_802154_ser_err_t res;
@@ -535,7 +611,7 @@ bool nrf_802154_pending_bit_for_addr_set(const uint8_t * p_addr, bool extended)
     SERIALIZATION_ERROR_INIT(error);
 
     NRF_802154_SPINEL_LOG_BANNER_CALLING();
-    NRF_802154_SPINEL_LOG_BUFF(p_addr, extended ? 8 : 2);
+    NRF_802154_SPINEL_LOG_BUFF(p_addr, extended ? EXTENDED_ADDRESS_SIZE : SHORT_ADDRESS_SIZE);
     NRF_802154_SPINEL_LOG_VAR_NAMED("%s", (extended ? "true" : "false"), "extended");
 
     nrf_802154_spinel_response_notifier_lock_before_request(
@@ -545,7 +621,7 @@ bool nrf_802154_pending_bit_for_addr_set(const uint8_t * p_addr, bool extended)
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PENDING_BIT_FOR_ADDR_SET,
         SPINEL_DATATYPE_NRF_802154_PENDING_BIT_FOR_ADDR_SET,
         p_addr,
-        extended ? 8 : 2);
+        extended ? EXTENDED_ADDRESS_SIZE : SHORT_ADDRESS_SIZE);
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 
@@ -568,7 +644,7 @@ bool nrf_802154_pending_bit_for_addr_clear(const uint8_t * p_addr, bool extended
     SERIALIZATION_ERROR_INIT(error);
 
     NRF_802154_SPINEL_LOG_BANNER_CALLING();
-    NRF_802154_SPINEL_LOG_BUFF(p_addr, extended ? 8 : 2);
+    NRF_802154_SPINEL_LOG_BUFF(p_addr, extended ? EXTENDED_ADDRESS_SIZE : SHORT_ADDRESS_SIZE);
     NRF_802154_SPINEL_LOG_VAR_NAMED("%s", (extended ? "true" : "false"), "extended");
 
     nrf_802154_spinel_response_notifier_lock_before_request(
@@ -578,7 +654,7 @@ bool nrf_802154_pending_bit_for_addr_clear(const uint8_t * p_addr, bool extended
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PENDING_BIT_FOR_ADDR_CLEAR,
         SPINEL_DATATYPE_NRF_802154_PENDING_BIT_FOR_ADDR_CLEAR,
         p_addr,
-        extended ? 8 : 2);
+        extended ? EXTENDED_ADDRESS_SIZE : SHORT_ADDRESS_SIZE);
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 

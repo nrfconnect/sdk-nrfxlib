@@ -90,6 +90,14 @@ typedef uint8_t nrf_802154_cca_error_t;
 #define NRF_802154_CCA_ERROR_ABORTED 0x01 // !< Procedure was aborted by another operation.
 
 /**
+ * @brief Types of data that can be set in an ACK message.
+ */
+typedef uint8_t nrf_802154_ack_data_t;
+
+#define NRF_802154_ACK_DATA_PENDING_BIT 0x00
+#define NRF_802154_ACK_DATA_IE          0x01
+
+/**
  * @brief Methods of source address matching.
  *
  * You can use one of the following methods that can be set during the initialization phase

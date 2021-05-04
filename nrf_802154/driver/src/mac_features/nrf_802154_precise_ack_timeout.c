@@ -83,7 +83,8 @@ static void timeout_timer_fired(void * p_context)
         if (nrf_802154_request_receive(NRF_802154_TERM_802154,
                                        REQ_ORIG_ACK_TIMEOUT,
                                        notify_tx_error,
-                                       false))
+                                       false,
+                                       NRF_802154_RESERVED_IMM_RX_WINDOW_ID))
         {
             m_procedure_is_active = false;
         }

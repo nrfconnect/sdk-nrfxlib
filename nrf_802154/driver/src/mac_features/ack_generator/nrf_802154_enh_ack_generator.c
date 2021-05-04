@@ -44,6 +44,7 @@
 #include <string.h>
 
 #include "mac_features/nrf_802154_frame_parser.h"
+#include "mac_features/nrf_802154_ie_writer.h"
 #include "nrf_802154_ack_data.h"
 #include "nrf_802154_const.h"
 #include "nrf_802154_pib.h"
@@ -327,6 +328,10 @@ static void ie_header_set(const uint8_t * p_ie_data, uint8_t ie_data_len, const 
 
     memcpy(p_ack_ie, p_ie_data, ie_data_len);
     m_ack_data[PHR_OFFSET] += ie_data_len;
+
+#if NRF_802154_IE_WRITER_ENABLED
+    nrf_802154_ie_writer_prepare(p_ack_ie, p_ack_ie + ie_data_len);
+#endif
 }
 
 /***************************************************************************************************

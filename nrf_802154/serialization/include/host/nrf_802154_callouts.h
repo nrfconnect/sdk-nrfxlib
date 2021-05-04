@@ -33,7 +33,7 @@
  */
 
 /**@file nrf_802154_callouts.h
- * @brief Provides function prototypes required by nRF 802.15.4 Radio Diver
+ * @brief Provides function prototypes required by nRF 802.15.4 Radio Driver
  *
  * Functions whose prototypes are defined in this file are to be implemented
  * by an application using the nRF 802.15.4 Radio Driver.
@@ -131,8 +131,13 @@ extern void nrf_802154_received_timestamp_raw(uint8_t * p_data,
  * @brief Notifies that the reception of a frame failed.
  *
  * @param[in]  error  Error code that indicates the reason of the failure.
+ * @param[in]  id     Identifier of reception window the error occurred in.
+ *                    If the error is related to a delayed reception window requested through
+ *                    @ref nrf_802154_receive_at, the value of @p id equals the identifier
+ *                    of the scheduled reception window. Otherwise, the value of @p id equals
+ *                    @ref NRF_802154_RESERVED_IMM_RX_WINDOW_ID.
  */
-extern void nrf_802154_receive_failed(nrf_802154_rx_error_t error);
+extern void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id);
 
 /**
  * @brief Notifies that a frame was transmitted.

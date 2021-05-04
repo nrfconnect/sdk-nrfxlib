@@ -254,6 +254,18 @@ typedef enum
      */
     SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CAPABILITIES_GET =
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 31,
+
+    /**
+     * Vendor property for nrf_802154_ack_data_set serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_SET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 32,
+
+    /**
+     * Vendor property for nrf_802154_ack_data_clear serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_CLEAR =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 33,
 } spinel_prop_vendor_key_t;
 
 /**
@@ -424,7 +436,8 @@ typedef enum
  * @brief Spinel data type description for nrf_802154_receive_failed
  */
 #define SPINEL_DATATYPE_NRF_802154_RECEIVE_FAILED \
-    SPINEL_DATATYPE_UINT8_S /* error */           \
+    SPINEL_DATATYPE_UINT8_S  /* error */          \
+    SPINEL_DATATYPE_UINT32_S /* id */
 
 /**
  * @brief Spinel data type description for nrf_802154_tx_ack_started
@@ -488,6 +501,35 @@ typedef enum
  * @brief Spinel data type desription for nrf_802154_src_addr_matching_method_set.
  */
 #define SPINEL_DATATYPE_NRF_802154_SRC_ADDR_MATCHING_METHOD_SET   SPINEL_DATATYPE_UINT8_S
+
+/**
+ * @brief Spinel data type desription for nrf_802154_ack_data_set.
+ *
+ * SPINEL_DATATYPE_ARRAY_S encoding is not implemented, SPINEL_DATATYPE_DATA_S has to be used instead.
+ */
+#define SPINEL_DATATYPE_NRF_802154_ACK_DATA_SET        \
+    SPINEL_DATATYPE_DATA_WLEN_S /* Address */          \
+    SPINEL_DATATYPE_DATA_WLEN_S /* Data to be set */   \
+    SPINEL_DATATYPE_UINT8_S     /* Type of the data */ \
+
+/**
+ * @brief Spinel data type desription for nrf_802154_ack_data_set return value.
+ */
+#define SPINEL_DATATYPE_NRF_802154_ACK_DATA_SET_RET SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type desription for nrf_802154_ack_data_clear.
+ *
+ * SPINEL_DATATYPE_ARRAY_S encoding is not implemented, SPINEL_DATATYPE_DATA_S has to be used instead.
+ */
+#define SPINEL_DATATYPE_NRF_802154_ACK_DATA_CLEAR \
+    SPINEL_DATATYPE_DATA_WLEN_S /* Address */     \
+    SPINEL_DATATYPE_UINT8_S     /* Type of the data */
+
+/**
+ * @brief Spinel data type desription for nrf_802154_ack_data_clear return value.
+ */
+#define SPINEL_DATATYPE_NRF_802154_ACK_DATA_CLEAR_RET SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_transmit_csma_ca_raw.

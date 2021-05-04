@@ -79,8 +79,13 @@ void nrf_802154_notify_received(uint8_t * p_data, int8_t power, uint8_t lqi);
  * @brief Notifies the next higher layer that the reception of a frame failed.
  *
  * @param[in]  error  Error code that indicates the reason of the failure.
+ * @param[in]  id     Identifier of reception window the error occurred in.
+ *                    If the error is related to a delayed reception window requested through
+ *                    @ref nrf_802154_receive_at, the value of @p id equals the identifier
+ *                    of the scheduled reception window. Otherwise, the value of @p id equals
+ *                    @ref NRF_802154_RESERVED_IMM_RX_WINDOW_ID.
  */
-void nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error);
+void nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id);
 
 /**
  * @brief Notifies the next higher layer that a frame was transmitted.

@@ -244,7 +244,8 @@ static void nrf_radio_reset(void)
     nrf_radio_power_set(NRF_RADIO, true);
 
     nrf_802154_log_global_event(NRF_802154_LOG_VERBOSITY_LOW,
-                                NRF_802154_LOG_GLOBAL_EVENT_ID_RADIO_RESET, 0U);
+                                NRF_802154_LOG_GLOBAL_EVENT_ID_RADIO_RESET,
+                                0U);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -605,7 +606,8 @@ void nrf_802154_trx_disable(void)
         m_trx_state = TRX_STATE_DISABLED;
 
         nrf_802154_log_global_event(NRF_802154_LOG_VERBOSITY_LOW,
-                                    NRF_802154_LOG_GLOBAL_EVENT_ID_RADIO_RESET, 0U);
+                                    NRF_802154_LOG_GLOBAL_EVENT_ID_RADIO_RESET,
+                                    0U);
     }
     else
     {
@@ -2040,7 +2042,8 @@ static void txframe_finish_disable_ints(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
-    nrf_radio_int_disable(NRF_RADIO, NRF_RADIO_INT_PHYEND_MASK |
+    nrf_radio_int_disable(NRF_RADIO,
+                          NRF_RADIO_INT_PHYEND_MASK |
                           NRF_RADIO_INT_CCAIDLE_MASK |
                           NRF_RADIO_INT_CCABUSY_MASK |
                           NRF_RADIO_INT_ADDRESS_MASK |

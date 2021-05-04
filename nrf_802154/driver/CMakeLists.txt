@@ -33,7 +33,9 @@ target_sources(nrf-802154-driver
     src/mac_features/nrf_802154_delayed_trx.c
     src/mac_features/nrf_802154_filter.c
     src/mac_features/nrf_802154_frame_parser.c
+    src/mac_features/nrf_802154_ie_writer.c
     src/mac_features/nrf_802154_ifs.c
+    src/mac_features/nrf_802154_security_pib_ram.c
     src/mac_features/nrf_802154_precise_ack_timeout.c
     src/mac_features/ack_generator/nrf_802154_ack_data.c
     src/mac_features/ack_generator/nrf_802154_ack_generator.c
@@ -64,18 +66,20 @@ else ()
 endif ()
 
 if (SL_OPENSOURCE OR NRF53_SERIES)
-  target_compile_definitions(nrf-802154-driver
-    PUBLIC
+  target_compile_definitions(nrf-802154-driver-interface
+    INTERFACE
       # Disable Frame Timestamps
       NRF_802154_FRAME_TIMESTAMP_ENABLED=0
       # Disable DTRX
       NRF_802154_DELAYED_TRX_ENABLED=0
       # Disable IFS
       NRF_802154_IFS_ENABLED=0
+      # Disable IE writer
+      NRF_802154_IE_WRITER_ENABLED=0
   )
 else()
-  target_compile_definitions(nrf-802154-driver
-    PUBLIC
+  target_compile_definitions(nrf-802154-driver-interface
+    INTERFACE
       # Enable Frame Timestamps
       NRF_802154_FRAME_TIMESTAMP_ENABLED=1
       # Enable DTRX

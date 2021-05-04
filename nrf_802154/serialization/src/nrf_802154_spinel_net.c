@@ -253,7 +253,7 @@ bail:
     return;
 }
 
-void nrf_802154_receive_failed(nrf_802154_rx_error_t error)
+void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
 {
     nrf_802154_ser_err_t res;
 
@@ -269,7 +269,8 @@ void nrf_802154_receive_failed(nrf_802154_rx_error_t error)
     res = nrf_802154_spinel_send_cmd_prop_value_is(
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_FAILED,
         SPINEL_DATATYPE_NRF_802154_RECEIVE_FAILED,
-        error);
+        error,
+        id);
 
     SERIALIZATION_ERROR_CHECK(res, ser_error, bail);
 

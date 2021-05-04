@@ -65,15 +65,16 @@ bool nrf_802154_core_hooks_terminate(nrf_802154_term_t term_lvl, req_originator_
 /**
  * @brief Processes hooks which are to fire before the transmission request.
  *
- * @param[in] p_frame Pointer to a buffer that contains PHR and PSDU of the frame
- *                    that is to be transmitted.
+ * @param[in] p_frame   Pointer to a buffer that contains PHR and PSDU of the frame
+ *                      that is to be transmitted.
  *
- * @param[in] cca     Whether to start with cca or not.
+ * @param[in] cca       Whether to start with cca or not.
+ * @param[in] immediate Whether to start sending immediately or not.
  *
- * @retval true       Frame can be sent immediately.
- * @retval false      Hooks have handled the frame - upper layer should not worry about it anymore.
+ * @retval true         Frame can be sent immediately.
+ * @retval false        Hooks have handled the frame - upper layer should not worry about it anymore.
  */
-bool nrf_802154_core_hooks_pre_transmission(const uint8_t * p_frame, bool cca);
+bool nrf_802154_core_hooks_pre_transmission(const uint8_t * p_frame, bool cca, bool immediate);
 
 /**
  * @brief Processes hooks for the transmitted event.
@@ -120,6 +121,14 @@ void nrf_802154_core_hooks_rx_started(const uint8_t * p_frame);
  * @brief Processes hooks for the RX ACK started event.
  */
 void nrf_802154_core_hooks_rx_ack_started(void);
+
+/**
+ * @brief Processes hooks for the TX ACK started event.
+ *
+ * @param[in]  p_ack  Pointer to a buffer that contains PHR and PSDU of the ACK frame
+ *                    that is being transmitted.
+ */
+void nrf_802154_core_hooks_tx_ack_started(const uint8_t * p_ack);
 
 /**
  *@}

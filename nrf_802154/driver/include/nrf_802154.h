@@ -56,7 +56,25 @@ extern "C" {
 /**
  * @brief Timestamp value indicating that the timestamp is inaccurate.
  */
-#define NRF_802154_NO_TIMESTAMP 0
+#define NRF_802154_NO_TIMESTAMP                0
+
+/**
+ * @brief Invalid delayed timeslot identifier.
+ */
+#define NRF_802154_RESERVED_INVALID_ID         UINT32_MAX
+
+/**
+ * @brief Reception window identifier reserved for immediate reception.
+ */
+#define NRF_802154_RESERVED_IMM_RX_WINDOW_ID   (UINT32_MAX - 1)
+
+/**
+ * @brief Upper bound for delayed reception window identifiers used by the application.
+ *
+ * All integers ranging from 0 to @ref NRF_802154_RESERVED_DRX_ID_UPPER_BOUND (inclusive)
+ * can be used by the application as identifiers of delayed reception windows.
+ */
+#define NRF_802154_RESERVED_DRX_ID_UPPER_BOUND (UINT32_MAX - 4)
 
 /**
  * @brief Initializes the 802.15.4 driver.
@@ -452,11 +470,19 @@ bool nrf_802154_receive(void);
  *
  * A scheduled reception can be cancelled by a call to @ref nrf_802154_receive_at_cancel.
  *
- * @param[in]  t0       Base of delay time - absolute time used by the Timer Scheduler,
- *                      in microseconds (us).
- * @param[in]  dt       Delta of delay time from @p t0, in microseconds (us).
- * @param[in]  timeout  Reception timeout (counted from @p t0 + @p dt), in microseconds (us).
- * @param[in]  channel  Radio channel on which the frame is to be received.
+ * @note The identifier @p id must be unique. It must not have the same value as identifiers
+ * of other delayed timeslots active at the moment, so that it can be mapped unambiguously
+ * to an active delayed operation if the request is successful. In particular, none of the reserved
+ * identifiers can be used.
+ *
+ * @param[in]   t0       Base of delay time - absolute time used by the Timer Scheduler,
+ *                       in microseconds (us).
+ * @param[in]   dt       Delta of delay time from @p t0, in microseconds (us).
+ * @param[in]   timeout  Reception timeout (counted from @p t0 + @p dt), in microseconds (us).
+ * @param[in]   channel  Radio channel on which the frame is to be received.
+ * @param[in]   id       Identifier of the scheduled reception window. If the reception has been
+ *                       scheduled successfully, the value of this parameter can be used in
+ *                       @ref nrf_802154_receive_at_cancel to cancel it.
  *
  * @retval  true   The reception procedure was scheduled.
  * @retval  false  The driver could not schedule the reception procedure.
@@ -464,7 +490,8 @@ bool nrf_802154_receive(void);
 bool nrf_802154_receive_at(uint32_t t0,
                            uint32_t dt,
                            uint32_t timeout,
-                           uint8_t  channel);
+                           uint8_t  channel,
+                           uint32_t id);
 
 /**
  * @brief Cancels a delayed reception scheduled by a call to @ref nrf_802154_receive_at.
@@ -473,10 +500,14 @@ bool nrf_802154_receive_at(uint32_t t0,
  * entering the receive window. If the receive window has been scheduled and has already started,
  * the radio remains in the receive state, but a window timeout will not be reported.
  *
+ * @param[in]  id  Identifier of the delayed reception window to be cancelled. If the provided
+ *                 value does not refer to any scheduled or active receive window, the function
+ *                 returns false.
+ *
  * @retval  true    The delayed reception was scheduled and successfully cancelled.
  * @retval  false   No delayed reception was scheduled.
  */
-bool nrf_802154_receive_at_cancel(void);
+bool nrf_802154_receive_at_cancel(uint32_t id);
 
 #if NRF_802154_USE_RAW_API
 /**
@@ -806,8 +837,13 @@ extern void nrf_802154_received_timestamp(uint8_t * p_data,
  * @brief Notifies that the reception of a frame failed.
  *
  * @param[in]  error  Error code that indicates the reason of the failure.
+ * @param[in]  id     Identifier of reception window the error occurred in.
+ *                    If the error is related to a delayed reception window requested through
+ *                    @ref nrf_802154_receive_at, the value of @p id equals the identifier
+ *                    of the scheduled reception window. Otherwise, the value of @p id equals
+ *                    @ref NRF_802154_RESERVED_IMM_RX_WINDOW_ID.
  */
-extern void nrf_802154_receive_failed(nrf_802154_rx_error_t error);
+extern void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id);
 
 /**
  * @brief Notifies that transmitting a frame has started.
@@ -1638,11 +1674,60 @@ void nrf_802154_ifs_min_lifs_period_set(uint16_t period);
  */
 
 /**
- * @brief Gets nRF 802.15.4 Radio Diver Capabilities.
+ * @brief Gets nRF 802.15.4 Radio Driver Capabilities.
  *
  * @return Capabilities of the radio driver.
  */
 nrf_802154_capabilities_t nrf_802154_capabilities_get(void);
+
+/** @} */
+
+/**
+ * @}
+ * @defgroup nrf_802154_security Radio driver MAC security feature.
+ * @{
+ */
+
+/**
+ * @brief Sets nRF 802.15.4 Radio Driver Global MAC Frame Counter.
+ *
+ * The driver automatically increments the counter in every outgoing frame
+ * which uses the Global MAC Frame Counter.
+ * This call is meant to set the initial value of the frame counter.
+ *
+ * @param[in] frame_counter Global MAC Frame Counter to set.
+ */
+void nrf_802154_security_global_frame_counter_set(uint32_t frame_counter);
+
+/**
+ * @brief Store the 802.15.4 MAC Security Key inside the nRF 802.15.4 Radio Driver.
+ *
+ * @param[in] p_key Pointer to the key to store. Refer to @ref nrf_802154_key_t for details.
+ *                  Storing the key copies the content of the key and key ID into the Radio Driver.
+ *                  This input parameter can be destroyed after the call.
+ *
+ * @note This function is not reentrant and must be called from thread context only.
+ *
+ * @retval NRF_802154_SECURITY_ERROR_NONE               Storing of key is successful.
+ * @retval NRF_802154_SECURITY_ERROR_TYPE_NOT_SUPPORTED Type of the key is not supported.
+ * @retval NRF_802154_SECURITY_ERROR_MODE_NOT_SUPPORTED ID mode of the key is not supported.
+ * @retval NRF_802154_SECURITY_ERROR_ALREADY_PRESENT    Failed to store the key - key of such id is already
+ *                                                      present. Remove the key first to overwrite.
+ * @retval NRF_802154_SECURITY_ERROR_STORAGE_FULL       Failed to store the key - storage full.
+ */
+nrf_802154_security_error_t nrf_802154_security_key_store(nrf_802154_key_t * p_key);
+
+/**
+ * @brief Remove the 802.15.4 MAC Security Key from the nRF 802.15.4 Radio Driver.
+ *
+ * @param[in] p_id Pointer to the ID of the key to remove.
+ *
+ * @note This function is not reentrant and must be called from thread context only.
+ *
+ * @retval NRF_802154_SECURITY_ERROR_NONE          Removal of key is successful.
+ * @retval NRF_802154_SECURITY_ERROR_KEY_NOT_FOUND Failed to remove the key - no such key found.
+ */
+nrf_802154_security_error_t nrf_802154_security_key_remove(nrf_802154_key_id_t * p_id);
 
 /** @} */
 

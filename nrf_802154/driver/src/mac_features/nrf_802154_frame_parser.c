@@ -691,3 +691,49 @@ const uint8_t * nrf_802154_frame_parser_ie_header_get(const uint8_t * p_frame)
 
     return &p_frame[ie_header_offset];
 }
+
+const uint8_t * nrf_802154_frame_parser_header_ie_iterator_begin(const uint8_t * p_ie_header)
+{
+    return p_ie_header;
+}
+
+const uint8_t * nrf_802154_frame_parser_ie_iterator_next(const uint8_t * p_ie_iterator)
+{
+    return nrf_802154_frame_parser_ie_content_address_get(p_ie_iterator)
+           + nrf_802154_frame_parser_ie_length_get(p_ie_iterator);
+}
+
+bool nrf_802154_frame_parser_ie_iterator_end(const uint8_t * p_ie_iterator,
+                                             const uint8_t * p_end_addr)
+{
+    uint8_t ie_id = nrf_802154_frame_parser_ie_id_get(p_ie_iterator);
+
+    return ((nrf_802154_frame_parser_ie_length_get(p_ie_iterator) == 0) &&
+            ((ie_id == IE_HT1) || (ie_id == IE_HT2)))
+           || (p_ie_iterator >= p_end_addr);
+}
+
+uint8_t nrf_802154_frame_parser_ie_length_get(const uint8_t * p_ie_iterator)
+{
+    return p_ie_iterator[IE_LENGTH_OFFSET] & IE_LENGTH_MASK;
+}
+
+uint8_t nrf_802154_frame_parser_ie_id_get(const uint8_t * p_ie_iterator)
+{
+    return (p_ie_iterator[IE_ID_OFFSET_0] >> 7) | (p_ie_iterator[IE_ID_OFFSET_1] << 1);
+}
+
+const uint8_t * nrf_802154_frame_parser_ie_content_address_get(const uint8_t * p_ie_iterator)
+{
+    return p_ie_iterator + IE_DATA_OFFSET;
+}
+
+uint8_t nrf_802154_frame_parser_frame_length_get(const uint8_t * p_frame)
+{
+    return p_frame[PHR_OFFSET] & PHR_LENGTH_MASK;
+}
+
+const uint8_t * nrf_802154_frame_parser_mfr_address_get(const uint8_t * p_frame)
+{
+    return p_frame + PHR_SIZE + nrf_802154_frame_parser_frame_length_get(p_frame) - FCS_SIZE;
+}
