@@ -31,7 +31,7 @@ Notable Changes
 * The Radio Driver documentation will now also include the Service Layer documentation.
 * Future versions of the Radio Driver and the Service Layer will follow NCS version tags.
 * The 802.15.4 Radio Driver API has been modified to support more than a single delayed reception window simultaneously.
-  The `nrf_802154_receive_at`_, `nrf_802154_receive_at_cancel`_, and `nrf_802154_receive_failed`_ functions take an additional parameter that identifies a given reception window unambiguously.
+  The :c:func:`nrf_802154_receive_at`, :c:func:`nrf_802154_receive_at_cancel`, and :c:func:`nrf_802154_receive_failed` functions take an additional parameter that identifies a given reception window unambiguously.
 
 .. _Radio Driver section: https://infocenter.nordicsemi.com/topic/15.4_radio_driver_v1.10.0/rd_release_notes.html
 
