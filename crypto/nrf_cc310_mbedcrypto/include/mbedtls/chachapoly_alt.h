@@ -11,6 +11,8 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
+#include "chacha20_alt.h"
+
 
 #ifdef __cplusplus
 extern "C"
@@ -18,18 +20,14 @@ extern "C"
 #endif
 
 /************************ Defines ******************************/
+#define CHACHAPOLY_TAG_SIZE_BYTES       16
 
 #if defined(MBEDTLS_CHACHAPOLY_ALT)
 
-
-#define MBEDTLS_CHACHAPOLY_KEY_SIZE_BYTES 32
-
-
-typedef struct mbedtls_chachapoly_context
+typedef struct
 {
-    unsigned char key[MBEDTLS_CHACHAPOLY_KEY_SIZE_BYTES];
-}
-mbedtls_chachapoly_context;
+    mbedtls_chacha20_context chacha20_ctx;  /**< The ChaCha20 context. */
+}mbedtls_chachapoly_context;
 
 #endif
 

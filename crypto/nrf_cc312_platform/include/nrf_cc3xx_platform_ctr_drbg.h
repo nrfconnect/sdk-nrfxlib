@@ -52,6 +52,8 @@ typedef struct nrf_cc3xx_platform_ctr_drbg_context_t
 
 /**@brief Function that initializes an ctr_drbg context
  *
+ * @note  If the context is NULL the function uses an internal context.
+ *
  * @param[in,out]	context             Pointer to structure holding the ctr_drbg
  *                                      context which must be used for subsequent
  *                                      calls to generate random data.
@@ -60,7 +62,6 @@ typedef struct nrf_cc3xx_platform_ctr_drbg_context_t
  * @param[in]       pers_string_len     Length of the personalization string,
  *                                      which may be zero.
  *
- * @retval NRF_CC3XX_PLATFORM_ERROR_PARAM_NULL Context was NULL.
  * @return 0 on success, otherwise a non-zero failure from mbedtls_ctrl_drbg_seed.
  */
 int nrf_cc3xx_platform_ctr_drbg_init(
@@ -80,6 +81,8 @@ int nrf_cc3xx_platform_ctr_drbg_free(
 
 /**@brief Function to enable prediction resistance
  *
+ * @note  If the context is NULL the function uses an internal context.
+ *
  * If prediction resistance is enabled, TRNG is gathered at the beginning of
  * every call to @ref nrf_cc3xx_platform_ctr_drbg_get and
  * @ref nrf_cc3xx_platform_ctr_drbg_get_with_add. This leads to a higher power
@@ -95,7 +98,6 @@ int nrf_cc3xx_platform_ctr_drbg_free(
  * @param[in]       pr_enabled  Enables prediction resistance if true, otherwise
  *                              false (default).
  *
- * @retval NRF_CC3XX_PLATFORM_ERROR_PARAM_NULL Context was NULL.
  * @return 0 on success, otherwise a non-zero failure.
  */
 int nrf_cc3xx_platform_ctr_drbg_set_pr(
@@ -104,6 +106,8 @@ int nrf_cc3xx_platform_ctr_drbg_set_pr(
 
 
 /**@brief Function to change the reseed interval
+ *
+ * @note  If the context is NULL the function uses an internal context.
  *
  * This API controls when the ctr_drbg is automatically reseeded
  *
@@ -116,7 +120,6 @@ int nrf_cc3xx_platform_ctr_drbg_set_pr(
  *                              context.
  * @param[in]       interval    New reeseed interval value.
  *
- * @retval NRF_CC3XX_PLATFORM_ERROR_PARAM_NULL Context was NULL.
  * @return 0 on success, otherwise a non-zero failure according to the API
  *         mbedtls_ctrl_drbg_reseed.
  */
@@ -125,6 +128,8 @@ int nrf_cc3xx_platform_ctr_drbg_set_reseed_interval(
 
 
 /**@brief Function to do a manual reseed of ctr_drbg (using TRNG)
+ *
+ * @note  If the context is NULL the function uses an internal context.
  *
  * @note Calling this API is optional as the APIs
  *       @ref nrf_cc3xx_platform_ctr_drbg_get and
@@ -147,7 +152,6 @@ int nrf_cc3xx_platform_ctr_drbg_set_reseed_interval(
  *                             CTR_DRBG_Reseed_function.
  * @param[in]      add_len     Length of the additional input, may be zero.
  *
- * @retval NRF_CC3XX_PLATFORM_ERROR_PARAM_NULL  Context was NULL.
  * @return 0 on success, otherwise a non-zero failure according to the API
  *         mbedtls_ctrl_drbg_seed.
  */
@@ -158,6 +162,8 @@ int nrf_cc3xx_platform_ctr_drbg_reseed(
 
 
 /** @brief Function to get PRNG using ctr_drbg and an additional string of data
+ *
+ * @note  If the context is NULL the function uses an internal context.
  *
  * This function will calculate PRNG using HW accelarated AES CTR_DRBG with a
  * 16-byte key and reseed with TRNG using ARM CryptoCEll cc3xx HW according
@@ -182,7 +188,6 @@ int nrf_cc3xx_platform_ctr_drbg_reseed(
  * @param[in]       additional  Additional input to use with CTR_DRBG_Generate_algorithm.
  * @param[in]       add_len     Length of CTR_DRBG additional input.
  *
- * @retval NRF_CC3XX_PLATFORM_ERROR_PARAM_NULL  Context was NULL.
  * @return 0 on success, otherwise a non-zero failure according to the API
  *         mbedtls_ctrl_drbg_get_with_add.
  */
@@ -196,6 +201,8 @@ int nrf_cc3xx_platform_ctr_drbg_get_with_add(
 
 
 /** @brief Function to get PRNG data using ctr_drbg
+ *
+ * @note  If the context is NULL the function uses an internal context.
  *
  * @details This function calculates random numbers using PRNG seeded by TRNG as
  *          defined in <em>NIST SP 800-90A: Recommendation for Random Number
