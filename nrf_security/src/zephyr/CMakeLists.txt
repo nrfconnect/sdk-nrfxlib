@@ -29,6 +29,7 @@ endif()
 
 if(CONFIG_BUILD_WITH_TFM)
   list(APPEND src_zephyr
+    ${NRF_SECURITY_ROOT}/src/mbedtls/exit.c
     ${ARM_MBEDTLS_PATH}/library/platform.c
   )
 endif()
