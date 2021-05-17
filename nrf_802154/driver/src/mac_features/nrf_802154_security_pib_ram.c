@@ -99,12 +99,19 @@ static bool key_matches(table_entry_t * p_key, nrf_802154_key_id_t * p_id)
         return false;
     }
 
-    if (memcmp(p_id->p_key_id, p_key->id, id_length_get(p_id->mode)) != 0)
+    if (p_id->mode == KEY_ID_MODE_0)
+    {
+        return true;
+    }
+    else if ((p_id->p_key_id == NULL) ||
+             (memcmp(p_id->p_key_id, p_key->id, id_length_get(p_id->mode)) != 0))
     {
         return false;
     }
-
-    return true;
+    else
+    {
+        return true;
+    }
 }
 
 static bool key_is_present(nrf_802154_key_id_t * p_id)
@@ -222,7 +229,7 @@ nrf_802154_security_error_t nrf_802154_security_pib_frame_counter_get_next(
     assert(p_frame_counter != NULL);
     assert(p_id != NULL);
 
-    uint32_t * p_frame_counter_to_use;
+    uint32_t * p_frame_counter_to_use = NULL;
     uint32_t   fc;
 
     for (uint32_t i = 0; i < NRF_802154_SECURITY_KEY_STORAGE_SIZE; i++)
@@ -239,7 +246,10 @@ nrf_802154_security_error_t nrf_802154_security_pib_frame_counter_get_next(
             }
             break;
         }
+    }
 
+    if (p_frame_counter_to_use == NULL)
+    {
         /* No proper key found. */
         return NRF_802154_SECURITY_ERROR_KEY_NOT_FOUND;
     }

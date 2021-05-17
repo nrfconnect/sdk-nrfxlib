@@ -34,6 +34,10 @@
 
 #define NRF_802154_MODULE_ID NRF_802154_DRV_MODULE_ID_TRX_PPI
 
+#include "nrf.h"
+
+#ifdef NRF52_SERIES
+
 #include "nrf_802154_trx_ppi_api.h"
 
 #include <stdbool.h>
@@ -280,3 +284,5 @@ void nrf_802154_trx_ppi_for_radio_sync_clear(nrf_egu_task_t task)
 }
 
 #endif
+
+#endif // NRF52_SERIES

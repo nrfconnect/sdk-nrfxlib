@@ -42,43 +42,17 @@
 
 #define _POSIX_C_SOURCE 1 // Enable access to POSIX functions (rand_r is not from the std library)
 
-#include "nrf_802154_random.h"
+#include "platform/nrf_802154_random.h"
 
 #include <stdlib.h>
 #include <stdint.h>
 
 #include "nrf.h"
 
-#if RAAL_SOFTDEVICE
-
-#if defined (__GNUC__)
-_Pragma("GCC diagnostic push")
-_Pragma("GCC diagnostic ignored \"-Wreturn-type\"")
-_Pragma("GCC diagnostic ignored \"-Wunused-parameter\"")
-_Pragma("GCC diagnostic ignored \"-Wpedantic\"")
-#endif
-
-#include <nrf_soc.h>
-
-#if defined (__GNUC__)
-_Pragma("GCC diagnostic pop")
-#endif
-
-#endif // RAAL_SOFTDEVICE
-
 unsigned int m_seed;
 
 void nrf_802154_random_init(void)
 {
-#if RAAL_SOFTDEVICE
-    uint32_t result;
-
-    do
-    {
-        result = sd_rand_application_vector_get((uint8_t *)&m_seed, sizeof(m_seed));
-    }
-    while (result != NRF_SUCCESS);
-#else // RAAL_SOFTDEVICE
     NRF_RNG->TASKS_START = 1;
 
     while (!NRF_RNG->EVENTS_VALRDY);
@@ -86,7 +60,6 @@ void nrf_802154_random_init(void)
     NRF_RNG->TASKS_STOP    = 1;
 
     m_seed = NRF_RNG->VALUE;
-#endif // RAAL_SOFTDEVICE
 }
 
 void nrf_802154_random_deinit(void)

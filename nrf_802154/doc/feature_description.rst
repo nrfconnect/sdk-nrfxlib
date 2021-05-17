@@ -253,11 +253,85 @@ The driver can update the Coordinated Sampled Listening (CSL) phase in a transmi
 
 The driver calculates the injected CSL phase value from the moment it ended the transmission of the last SHR symbol to the middle of the first pending delayed-reception window.
 If there are no pending delayed-reception windows or the frame does not contain a CSL Information Element (IE), the driver does not perform any action and it does not modify the frame.
+The higher layer must call :c:func:`nrf_802154_csl_writer_period_set` once it knows the period to be used, to let the driver set correctly the ``CSL Period`` field.
+The driver stores the provided value and uses it to fill the ``Period`` field in the transmissions that follow.
 
-As such, the higher layer must prepare a properly formatted frame, containing the following:
+As such, the higher layer must prepare a properly formatted frame and the enhanced ACK data, containing the placeholder values for the following fields in the CSL Information Element:
 
-* The CSL Information Element with the ``Period`` field set correctly.
-* The ``CSL Phase`` field containing a placeholder value.
+* The ``Period`` field
+* The ``CSL Phase`` field
+
+To set the enhanced ACK data containing the CSL Information Element, the higher layer must call the :c:func:`nrf_802154_ack_data_set` function.
 
 .. note::
    This feature requires the support for scheduling radio operations in the 802.15.4 Service Layer, which is currently not supported by nRF53 chips.
+
+.. _features_description_frame_security:
+
+Supporting IEEE 802.15.4 frame security
+***************************************
+
+The driver can perform various security-related transformations on the outgoing frames and Enh-Acks, like the following:
+
+* Frame counter injection
+* Payload encryption and authentication
+
+You can secure outgoing frames using the following API calls:
+
+* :c:func:`security_global_frame_counter_set`
+* :c:func:`security_key_store`
+* :c:func:`security_key_remove`
+
+To use them, you must enable the following driver config options:
+
+* :c:macro:`NRF_802154_SECURITY_WRITER_ENABLED`
+* :c:macro:`NRF_802154_ENCRYPTION_ENABLED`
+
+When you enable the security support, the driver parses each of the outgoing frames to check for the presence of the auxiliary security header.
+If the driver finds the header, it encrypts and authenticates the frame using the key specified by the key identifier field.
+The upper layer must fill all the necessary auxiliary security header fields, except the frame counter one.
+The driver populates the frame counter field before the frame is transmitted.
+
+If the frame security level requires a Message Integrity Code, the upper layer must leave a placeholder between the payload and the MAC footer to let the driver write the Message Integrity Code.
+The placeholder for the Message Integrity Code can be 4, 8, or 16 bytes long, depending on the security level.
+The driver does not interpret the placeholder and will overwrite it after it calculates the Message Integrity Code.
+If the upper layer fails to leave a placeholder with the correct length, the resulting frame will have a corrupted encrypted payload.
+
+If the key identifier and key mode do not match any key entry added by :c:func:`security_key_store` or the frame counter overflows, the frame transmission will not occur and the driver will notify about the transmission failure using the :c:func:`transmit_failed` function.
+
+.. _features_description_thread_link_metrics:
+
+Injecting Thread Link Metrics IEs
+*********************************
+
+The driver can inject Thread Link Metrics Information Elements into Enh-Acks.
+
+The driver supports the following metrics:
+
+* The LQI of the last received frame
+* The RSSI of the last received frame
+* The link margin, or the RSSI above the sensitivity threshold, of the last received frame
+
+To enable the automatic injection of link metrics, the upper layer must prepare properly formatted Thread Link Metrics Information Elements with the appropriate tokens in place of the RSSI, LQI, and/or link margin, and set them using :c:func:`ack_data_for_addr_set`.
+The injector module recognizes the following tokens, defined in :file:`nrf_802154_const.h`, and replaces them with the proper values when the Enh-Ack is generated:
+
+* :c:macro:`IE_VENDOR_THREAD_RSSI_TOKEN`
+* :c:macro:`IE_VENDOR_THREAD_MARGIN_TOKEN`
+* :c:macro:`IE_VENDOR_THREAD_LQI_TOKEN`
+
+Performing retransmissions
+**************************
+
+The driver can modify the content of a frame that has to be transmitted to support features related to the IEEE 802.15.4 security and information elements.
+However, to let the higher layer correctly handle retransmissions, the driver must not modify in any way the content of frames that have to be retransmitted.
+To achieve that, the driver exposes an API for performing retransmissions:
+
+* :c:func:`nrf_802154_retransmit_csma_ca`
+* :c:func:`nrf_802154_retransmit_csma_ca_raw`
+* :c:func:`nrf_802154_retransmit_raw_at`
+
+These functions guarantee that the driver will retransmit the frame passed as a parameter without any modifications.
+Other than that, these functions work exactly like their counterparts used for first transmission attempts.
+
+.. caution::
+   Never use these functions to perform the first transmission attempt as that may result in transmitting malformed or incorrect frames and creating security breaches.

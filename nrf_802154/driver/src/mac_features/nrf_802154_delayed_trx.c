@@ -104,9 +104,9 @@ typedef struct
  */
 typedef struct
 {
-    const uint8_t * p_data;  ///< Pointer to a buffer containing PHR and PSDU of the frame requested to be transmitted.
-    bool            cca;     ///< If CCA should be performed prior to transmission.
-    uint8_t         channel; ///< Channel number on which transmission should be performed.
+    const uint8_t              * p_data;  ///< Pointer to a buffer containing PHR and PSDU of the frame requested to be transmitted.
+    nrf_802154_transmit_params_t params;  ///< Transmission parameters.
+    uint8_t                      channel; ///< Channel number on which transmission should be performed.
 } dly_tx_data_t;
 
 /**
@@ -193,28 +193,6 @@ static dly_op_data_t * dly_tx_data_by_id_search(rsch_dly_ts_id_t id)
     assert(id == m_dly_tx_data[0].id);
 
     return &m_dly_tx_data[0];
-}
-
-/**
- * @brief Check if there are any slots available.
- *
- * @param[in]  p_dly_op_data_pool  Pool of slots to check.
- * @param[in]  pool_len            Total number of elements in the pool.
- *
- * @retval  true   The pool contains free slots.
- * @retval  false  There are no available slots in the pool.
- */
-static bool is_dly_ts_slot_available(const dly_op_data_t * p_dly_op_data_pool, uint32_t pool_len)
-{
-    for (uint32_t i = 0; i < pool_len; i++)
-    {
-        if (p_dly_op_data_pool[i].id == NRF_802154_RESERVED_INVALID_ID)
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 /**
@@ -584,8 +562,7 @@ static void transmit_attempt(dly_op_data_t * p_dly_op_data)
         (void)nrf_802154_request_transmit(NRF_802154_TERM_802154,
                                           REQ_ORIG_DELAYED_TRX,
                                           p_dly_op_data->tx.p_data,
-                                          p_dly_op_data->tx.cca,
-                                          true,
+                                          &p_dly_op_data->tx.params,
                                           dly_tx_result_notify);
     }
     else
@@ -725,33 +702,33 @@ void nrf_802154_delayed_trx_init(void)
     }
 }
 
-bool nrf_802154_delayed_trx_transmit(const uint8_t * p_data,
-                                     bool            cca,
-                                     uint32_t        t0,
-                                     uint32_t        dt,
-                                     uint8_t         channel)
+bool nrf_802154_delayed_trx_transmit(const uint8_t                * p_data,
+                                     nrf_802154_transmit_params_t * p_params,
+                                     uint32_t                       t0,
+                                     uint32_t                       dt,
+                                     uint8_t                        channel)
 {
-    bool result = is_dly_ts_slot_available(m_dly_tx_data,
-                                           sizeof(m_dly_tx_data) / sizeof(m_dly_tx_data[0]));
+    dly_op_data_t * p_dly_tx_data = available_dly_tx_slot_get();
+    bool            result        = false;
 
-    if (result)
+    if (p_dly_tx_data != NULL)
     {
         dt -= TX_SETUP_TIME;
         dt -= TX_RAMP_UP_TIME;
 
-        if (cca)
+        if (p_params->cca)
         {
             dt -= nrf_802154_cca_before_tx_duration_get();
         }
 
-        dly_op_data_t * p_dly_tx_data = available_dly_tx_slot_get();
-
         p_dly_tx_data->op = RSCH_DLY_TS_OP_DTX;
 
-        p_dly_tx_data->tx.p_data  = p_data;
-        p_dly_tx_data->tx.cca     = cca;
-        p_dly_tx_data->tx.channel = channel;
-        p_dly_tx_data->id         = NRF_802154_RESERVED_DTX_ID;
+        p_dly_tx_data->tx.p_data                   = p_data;
+        p_dly_tx_data->tx.params.cca               = p_params->cca;
+        p_dly_tx_data->tx.params.immediate         = p_params->immediate;
+        p_dly_tx_data->tx.params.is_retransmission = p_params->is_retransmission;
+        p_dly_tx_data->tx.channel                  = channel;
+        p_dly_tx_data->id                          = NRF_802154_RESERVED_DTX_ID;
 
         rsch_dly_ts_param_t dly_ts_param =
         {
@@ -776,15 +753,13 @@ bool nrf_802154_delayed_trx_receive(uint32_t t0,
                                     uint8_t  channel,
                                     uint32_t id)
 {
-    bool result = is_dly_ts_slot_available(m_dly_rx_data,
-                                           sizeof(m_dly_rx_data) / sizeof(m_dly_rx_data[0]));
+    dly_op_data_t * p_dly_rx_data = available_dly_rx_slot_get();
+    bool            result        = false;
 
-    if (result)
+    if (p_dly_rx_data != NULL)
     {
         dt -= RX_SETUP_TIME;
         dt -= RX_RAMP_UP_TIME;
-
-        dly_op_data_t * p_dly_rx_data = available_dly_rx_slot_get();
 
         p_dly_rx_data->op = RSCH_DLY_TS_OP_DRX;
 

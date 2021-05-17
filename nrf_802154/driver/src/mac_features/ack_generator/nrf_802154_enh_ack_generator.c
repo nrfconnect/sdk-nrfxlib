@@ -45,9 +45,12 @@
 
 #include "mac_features/nrf_802154_frame_parser.h"
 #include "mac_features/nrf_802154_ie_writer.h"
+#include "mac_features/nrf_802154_security_pib.h"
 #include "nrf_802154_ack_data.h"
+#include "nrf_802154_encrypt.h"
 #include "nrf_802154_const.h"
 #include "nrf_802154_pib.h"
+#include "nrf_802154_utils_byteorder.h"
 
 #define ENH_ACK_MAX_SIZE MAX_PACKET_SIZE
 
@@ -209,6 +212,36 @@ static void source_set(void)
  * @section Auxiliary security header functions
  **************************************************************************************************/
 
+static uint8_t security_header_size(const nrf_802154_frame_parser_mhr_data_t * p_frame)
+{
+    uint8_t sec_hdr_size = SECURITY_CONTROL_SIZE;
+
+    if (((*p_frame->p_sec_ctrl) & FRAME_COUNTER_SUPPRESS_BIT) == 0)
+    {
+        sec_hdr_size += FRAME_COUNTER_SIZE;
+    }
+
+    switch ((*p_frame->p_sec_ctrl) & KEY_ID_MODE_MASK)
+    {
+        case KEY_ID_MODE_1_MASK:
+            sec_hdr_size += KEY_ID_MODE_1_SIZE;
+            break;
+
+        case KEY_ID_MODE_2_MASK:
+            sec_hdr_size += KEY_ID_MODE_2_SIZE;
+            break;
+
+        case KEY_ID_MODE_3_MASK:
+            sec_hdr_size += KEY_ID_MODE_3_SIZE;
+            break;
+
+        default:
+            break;
+    }
+
+    return sec_hdr_size;
+}
+
 static void security_control_set(const nrf_802154_frame_parser_mhr_data_t * p_frame,
                                  const nrf_802154_frame_parser_mhr_data_t * p_ack)
 {
@@ -220,19 +253,19 @@ static void security_control_set(const nrf_802154_frame_parser_mhr_data_t * p_fr
     m_ack_data[PHR_OFFSET] += SECURITY_CONTROL_SIZE;
 }
 
-static void security_key_id_set(const nrf_802154_frame_parser_mhr_data_t * p_frame,
-                                const nrf_802154_frame_parser_mhr_data_t * p_ack,
-                                bool                                       fc_suppresed,
-                                const uint8_t                           ** p_sec_end)
+static const uint8_t * security_key_id_set(const nrf_802154_frame_parser_mhr_data_t * p_frame,
+                                           const nrf_802154_frame_parser_mhr_data_t * p_ack,
+                                           bool                                       fc_suppressed,
+                                           const uint8_t                           ** p_sec_end)
 {
     const uint8_t * p_frame_key_id;
     const uint8_t * p_ack_key_id;
-    uint8_t         key_id_mode_size = 0;
+    uint8_t         key_id_size = 0;
 
     p_frame_key_id = p_frame->p_sec_ctrl + SECURITY_CONTROL_SIZE;
     p_ack_key_id   = p_ack->p_sec_ctrl + SECURITY_CONTROL_SIZE;
 
-    if (!fc_suppresed)
+    if (!fc_suppressed)
     {
         p_frame_key_id += FRAME_COUNTER_SIZE;
         p_ack_key_id   += FRAME_COUNTER_SIZE;
@@ -240,26 +273,26 @@ static void security_key_id_set(const nrf_802154_frame_parser_mhr_data_t * p_fra
 
     switch ((*p_ack->p_sec_ctrl) & KEY_ID_MODE_MASK)
     {
-        case KEY_ID_MODE_1:
-            key_id_mode_size = KEY_ID_MODE_1_SIZE;
+        case KEY_ID_MODE_1_MASK:
+            key_id_size = KEY_ID_MODE_1_SIZE;
             break;
 
-        case KEY_ID_MODE_2:
-            key_id_mode_size = KEY_ID_MODE_2_SIZE;
+        case KEY_ID_MODE_2_MASK:
+            key_id_size = KEY_ID_MODE_2_SIZE;
             break;
 
-        case KEY_ID_MODE_3:
-            key_id_mode_size = KEY_ID_MODE_3_SIZE;
+        case KEY_ID_MODE_3_MASK:
+            key_id_size = KEY_ID_MODE_3_SIZE;
             break;
 
         default:
             break;
     }
 
-    if (0 != key_id_mode_size)
+    if (0 != key_id_size)
     {
-        memcpy((uint8_t *)p_ack_key_id, p_frame_key_id, key_id_mode_size);
-        m_ack_data[PHR_OFFSET] += key_id_mode_size;
+        memcpy((uint8_t *)p_ack_key_id, p_frame_key_id, key_id_size);
+        m_ack_data[PHR_OFFSET] += key_id_size;
     }
 
     switch (*(p_ack->p_sec_ctrl) & SECURITY_LEVEL_MASK)
@@ -283,32 +316,77 @@ static void security_key_id_set(const nrf_802154_frame_parser_mhr_data_t * p_fra
             break;
     }
 
-    *p_sec_end = p_ack_key_id + key_id_mode_size;
+    *p_sec_end = p_ack_key_id + key_id_size;
+
+    return (0 == key_id_size) ? NULL : p_ack_key_id;
 }
 
-static void security_header_set(const nrf_802154_frame_parser_mhr_data_t * p_frame,
+static bool frame_counter_set(const nrf_802154_frame_parser_mhr_data_t * p_ack_pdata,
+                              const uint8_t                            * p_ack_key_id)
+{
+    nrf_802154_key_id_t ack_key_id;
+    uint32_t            new_fc_value;
+
+    ack_key_id.mode     = ((*p_ack_pdata->p_sec_ctrl) & KEY_ID_MODE_MASK) >> KEY_ID_MODE_BIT_OFFSET;
+    ack_key_id.p_key_id = (uint8_t *)p_ack_key_id;
+
+    if (NRF_802154_SECURITY_ERROR_NONE !=
+        nrf_802154_security_pib_frame_counter_get_next(&new_fc_value, &ack_key_id))
+    {
+        return false;
+    }
+
+    // Set the frame counter value in security header of the ACK frame
+    host_32_to_little(new_fc_value,
+                      (uint8_t *)(p_ack_pdata->p_sec_ctrl + SECURITY_CONTROL_SIZE));
+
+    m_ack_data[PHR_OFFSET] += FRAME_COUNTER_SIZE;
+
+    return true;
+}
+
+static bool security_header_set(const nrf_802154_frame_parser_mhr_data_t * p_frame,
                                 const nrf_802154_frame_parser_mhr_data_t * p_ack,
                                 const uint8_t                           ** p_sec_end)
 {
-    bool fc_suppressed;
+    bool security_header_prepared;
 
-    if (p_ack->p_sec_ctrl == NULL)
+    if (((*p_frame->p_sec_ctrl) & SECURITY_LEVEL_MASK) == 0)
     {
-        *p_sec_end = &m_ack_data[p_ack->addressing_end_offset];
-        return;
+        // The security level value is zero, therefore no auxiliary security header processing
+        // is performed according to 802.15.4 specification. This also applies to the frame counter,
+        // the value of which is left as it is in the message to which the ACK responds.
+        // The entire auxiliary security header content is simply copied to ACK.
+        uint8_t sec_hdr_size = security_header_size(p_frame);
+
+        memcpy((uint8_t *)p_ack->p_sec_ctrl, p_frame->p_sec_ctrl, sec_hdr_size);
+        m_ack_data[PHR_OFFSET]  += sec_hdr_size;
+        security_header_prepared = true;
+    }
+    else
+    {
+        bool            fc_suppressed;
+        const uint8_t * p_ack_key_id;
+
+        security_control_set(p_frame, p_ack);
+
+        // Frame counter is set by MAC layer when the frame is encrypted.
+        fc_suppressed = ((*p_ack->p_sec_ctrl) & FRAME_COUNTER_SUPPRESS_BIT);
+
+        p_ack_key_id = security_key_id_set(p_frame, p_ack, fc_suppressed, p_sec_end);
+
+        if (fc_suppressed)
+        {
+            // There is no frame counter filed, so all done here.
+            security_header_prepared = true;
+        }
+        else
+        {
+            security_header_prepared = frame_counter_set(p_ack, p_ack_key_id);
+        }
     }
 
-    security_control_set(p_frame, p_ack);
-
-    // Frame counter is set by MAC layer when the frame is encrypted.
-    fc_suppressed = ((*p_ack->p_sec_ctrl) & FRAME_COUNTER_SUPPRESS_BIT);
-
-    if (!fc_suppressed)
-    {
-        m_ack_data[PHR_OFFSET] += FRAME_COUNTER_SIZE;
-    }
-
-    security_key_id_set(p_frame, p_ack, fc_suppressed, p_sec_end);
+    return security_header_prepared;
 }
 
 /***************************************************************************************************
@@ -334,6 +412,58 @@ static void ie_header_set(const uint8_t * p_ie_data, uint8_t ie_data_len, const 
 #endif
 }
 
+static void ie_header_terminate(const nrf_802154_frame_parser_mhr_data_t * p_ack,
+                                const uint8_t                            * p_sec_end,
+                                const uint8_t                            * p_ie_data,
+                                uint8_t                                    ie_data_len)
+{
+    if (p_ie_data == NULL)
+    {
+        // No IEs to terminate.
+        return;
+    }
+
+    if ((p_ack->p_sec_ctrl == NULL) || ((*p_ack->p_sec_ctrl & SECURITY_LEVEL_MASK) == 0))
+    {
+        // This code assumes that neither regular frame payload nor Payload IEs can be set by the
+        // driver. Therefore without security, the Ack has no payload, so termination is not necessary.
+        return;
+    }
+
+    uint8_t * p_ack_ie = (uint8_t *)p_sec_end;
+    uint8_t   ie_hdr_term[IE_HEADER_SIZE];
+
+    assert(p_ack_ie != NULL);
+
+    host_16_to_little((IE_HT2) << IE_HEADER_ELEMENT_ID_OFFSET, ie_hdr_term);
+
+    memcpy(p_ack_ie + ie_data_len, ie_hdr_term, sizeof(ie_hdr_term));
+    m_ack_data[PHR_OFFSET] += sizeof(ie_hdr_term);
+}
+
+/***************************************************************************************************
+ * @section Authentication and encryption transformation
+ **************************************************************************************************/
+
+static bool encryption_prepare(const nrf_802154_frame_parser_mhr_data_t * p_ack)
+{
+#if NRF_802154_ENCRYPTION_ENABLED
+    if (p_ack->p_sec_ctrl == NULL)
+    {
+        return true;
+    }
+
+    if ((*(p_ack->p_sec_ctrl) & SECURITY_LEVEL_MASK) == 0)
+    {
+        return true;
+    }
+
+    return nrf_802154_encrypt_ack_prepare(m_ack_data);
+#else // NRF_802154_ENCRYPTION_ENABLED
+    return true;
+#endif  // NRF_802154_ENCRYPTION_ENABLED
+}
+
 /***************************************************************************************************
  * @section Public API implementation
  **************************************************************************************************/
@@ -345,7 +475,6 @@ void nrf_802154_enh_ack_generator_init(void)
 
 const uint8_t * nrf_802154_enh_ack_generator_create(const uint8_t * p_frame)
 {
-
     nrf_802154_frame_parser_mhr_data_t frame_offsets;
     nrf_802154_frame_parser_mhr_data_t ack_offsets;
     const uint8_t                    * p_sec_end    = NULL;
@@ -378,11 +507,44 @@ const uint8_t * nrf_802154_enh_ack_generator_create(const uint8_t * p_frame)
     // Set source address and PAN ID.
     source_set();
 
-    // Set auxiliary security header.
-    security_header_set(&frame_offsets, &ack_offsets, &p_sec_end);
+    // Attempt to set auxiliary security header.
+    if (ack_offsets.p_sec_ctrl == NULL)
+    {
+        // There is no auxiliary security header.
+        p_sec_end = &m_ack_data[ack_offsets.addressing_end_offset];
+    }
+    else if (security_header_set(&frame_offsets, &ack_offsets, &p_sec_end))
+    {
+        // Security header has been set successfully: intentionally empty.
+    }
+    else
+    {
+        // Failure to set auxiliary security header: The ACK cannot be created.
+        ack_buffer_clear();
+        return NULL;
+    }
 
     // Set IE header.
     ie_header_set(p_ie_data, ie_data_len, p_sec_end);
 
+    // Terminate the IE header if needed.
+    ie_header_terminate(&ack_offsets, p_sec_end, p_ie_data, ie_data_len);
+
+    // Prepare encryption.
+    if (!encryption_prepare(&ack_offsets))
+    {
+        // Failure to prepare encryption even though it's required. The ACK cannot be created.
+        ack_buffer_clear();
+        return NULL;
+    }
+
     return m_ack_data;
 }
+
+#ifdef TEST
+void nrf_802154_enh_ack_generator_module_reset(void)
+{
+    memset(m_ack_data, 0, sizeof(m_ack_data));
+}
+
+#endif // TEST

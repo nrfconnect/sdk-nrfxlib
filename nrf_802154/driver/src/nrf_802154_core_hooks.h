@@ -65,16 +65,18 @@ bool nrf_802154_core_hooks_terminate(nrf_802154_term_t term_lvl, req_originator_
 /**
  * @brief Processes hooks which are to fire before the transmission request.
  *
- * @param[in] p_frame   Pointer to a buffer that contains PHR and PSDU of the frame
- *                      that is to be transmitted.
- *
- * @param[in] cca       Whether to start with cca or not.
- * @param[in] immediate Whether to start sending immediately or not.
+ * @param[in] p_frame          Pointer to a buffer that contains PHR and PSDU of the frame
+ *                             that is to be transmitted.
+ * @param[in] p_params         Pointer to the transmission parameters.
+ * @param[in] notify_function  Function to be called to notify transmission failure.
  *
  * @retval true         Frame can be sent immediately.
  * @retval false        Hooks have handled the frame - upper layer should not worry about it anymore.
  */
-bool nrf_802154_core_hooks_pre_transmission(const uint8_t * p_frame, bool cca, bool immediate);
+bool nrf_802154_core_hooks_pre_transmission(
+    const uint8_t                           * p_frame,
+    nrf_802154_transmit_params_t            * p_params,
+    nrf_802154_transmit_failed_notification_t notify_function);
 
 /**
  * @brief Processes hooks for the transmitted event.

@@ -74,6 +74,7 @@
 #include "mac_features/nrf_802154_ack_timeout.h"
 #include "mac_features/nrf_802154_csma_ca.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
+#include "mac_features/nrf_802154_ie_writer.h"
 #include "mac_features/nrf_802154_security_pib.h"
 #include "mac_features/ack_generator/nrf_802154_ack_data.h"
 
@@ -211,6 +212,7 @@ void nrf_802154_init(void)
     nrf_802154_notification_init();
     nrf_802154_lp_timer_init();
     nrf_802154_pib_init();
+    nrf_802154_security_pib_init();
     nrf_802154_rsch_prio_drop_init();
     nrf_802154_random_init();
     nrf_802154_request_init();
@@ -232,6 +234,7 @@ void nrf_802154_deinit(void)
     nrf_802154_temperature_deinit();
     nrf_802154_rsch_uninit();
     nrf_802154_random_deinit();
+    nrf_802154_security_pib_deinit();
     nrf_802154_lp_timer_deinit();
     nrf_802154_clock_deinit();
     nrf_802154_core_deinit();
@@ -428,15 +431,20 @@ bool nrf_802154_receive(void)
 #if NRF_802154_USE_RAW_API
 bool nrf_802154_transmit_raw(const uint8_t * p_data, bool cca)
 {
-    bool result;
+    bool                         result;
+    nrf_802154_transmit_params_t params =
+    {
+        .cca               = cca,
+        .immediate         = false,
+        .is_retransmission = false,
+    };
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     result = nrf_802154_request_transmit(NRF_802154_TERM_NONE,
                                          REQ_ORIG_HIGHER_LAYER,
                                          p_data,
-                                         cca,
-                                         false,
+                                         &params,
                                          NULL);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -447,7 +455,13 @@ bool nrf_802154_transmit_raw(const uint8_t * p_data, bool cca)
 
 bool nrf_802154_transmit(const uint8_t * p_data, uint8_t length, bool cca)
 {
-    bool result;
+    bool                         result;
+    nrf_802154_transmit_params_t params =
+    {
+        .cca               = cca,
+        .immediate         = false,
+        .is_retransmission = false,
+    };
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -455,8 +469,7 @@ bool nrf_802154_transmit(const uint8_t * p_data, uint8_t length, bool cca)
     result = nrf_802154_request_transmit(NRF_802154_TERM_NONE,
                                          REQ_ORIG_HIGHER_LAYER,
                                          m_tx_buffer,
-                                         cca,
-                                         false,
+                                         &params,
                                          NULL);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -472,11 +485,39 @@ bool nrf_802154_transmit_raw_at(const uint8_t * p_data,
                                 uint32_t        dt,
                                 uint8_t         channel)
 {
-    bool result;
+    bool                         result;
+    nrf_802154_transmit_params_t params =
+    {
+        .cca               = cca,
+        .immediate         = true,
+        .is_retransmission = false,
+    };
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    result = nrf_802154_delayed_trx_transmit(p_data, cca, t0, dt, channel);
+    result = nrf_802154_delayed_trx_transmit(p_data, &params, t0, dt, channel);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+    return result;
+}
+
+bool nrf_802154_retransmit_raw_at(const uint8_t * p_data,
+                                  bool            cca,
+                                  uint32_t        t0,
+                                  uint32_t        dt,
+                                  uint8_t         channel)
+{
+    bool                         result;
+    nrf_802154_transmit_params_t params =
+    {
+        .cca               = cca,
+        .immediate         = true,
+        .is_retransmission = true,
+    };
+
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    result = nrf_802154_delayed_trx_transmit(p_data, &params, t0, dt, channel);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;
@@ -755,7 +796,16 @@ void nrf_802154_transmit_csma_ca_raw(const uint8_t * p_data)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    nrf_802154_csma_ca_start(p_data);
+    nrf_802154_csma_ca_start(p_data, false);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+void nrf_802154_retransmit_csma_ca_raw(const uint8_t * p_data)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    nrf_802154_csma_ca_start(p_data, true);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -768,7 +818,18 @@ void nrf_802154_transmit_csma_ca(const uint8_t * p_data, uint8_t length)
 
     tx_buffer_fill(p_data, length);
 
-    nrf_802154_csma_ca_start(m_tx_buffer);
+    nrf_802154_csma_ca_start(m_tx_buffer, false);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+}
+
+void nrf_802154_retransmit_csma_ca(const uint8_t * p_data, uint8_t length)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    tx_buffer_fill(p_data, length);
+
+    nrf_802154_csma_ca_start(m_tx_buffer, true);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -872,6 +933,9 @@ nrf_802154_capabilities_t nrf_802154_capabilities_get(void)
     caps_drv |= (NRF_802154_ACK_TIMEOUT_ENABLED ?
                  NRF_802154_CAPABILITY_ACK_TIMEOUT : 0UL);
 
+    caps_drv |= ((NRF_802154_SECURITY_WRITER_ENABLED && NRF_802154_ENCRYPTION_ENABLED) ?
+                 NRF_802154_CAPABILITY_SECURITY : 0UL);
+
     /* Both IFS and ACK Timeout features require timer scheduler, however
      * using them both at the same time requires that SL is able to schedule
      * several timers simultaneously.
@@ -909,6 +973,15 @@ nrf_802154_security_error_t nrf_802154_security_key_remove(nrf_802154_key_id_t *
 {
     return nrf_802154_security_pib_key_remove(p_id);
 }
+
+#if NRF_802154_DELAYED_TRX_ENABLED && NRF_802154_IE_WRITER_ENABLED
+
+void nrf_802154_csl_writer_period_set(uint16_t period)
+{
+    nrf_802154_ie_writer_csl_period_set(period);
+}
+
+#endif
 
 __WEAK void nrf_802154_custom_part_of_radio_init(void)
 {

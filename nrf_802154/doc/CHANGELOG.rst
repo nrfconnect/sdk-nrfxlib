@@ -22,6 +22,8 @@ Added
 * Added the source code of the 802.15.4 Radio Driver API serialization library.
 * Added the possibility to schedule two delayed reception windows.
 * Added CSL phase injection.
+* Added outgoing frame encryption and frame counter injection.
+* Added Thread Link Metrics IEs injection.
 
 Notable Changes
 ===============

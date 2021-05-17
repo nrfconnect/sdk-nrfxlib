@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2020 - 2021 Nordic Semiconductor
+# Copyright (c) 2020 - 2021 Nordic Semiconductor ASA
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
@@ -14,6 +14,10 @@ config NRF_802154_SOURCE_NRFXLIB
 endchoice # NRF_802154_SOURCE
 
 if NRF_802154_RADIO_DRIVER
+
+config NRF_802154_ENCRYPTION
+	bool "nRF 802.15.4 AES-CCM* authentication & encryption"
+	depends on !CRYPTO_NRF_ECB
 
 choice NRF_802154_SL_TYPE
 	prompt "nRF 802.15.4 Service Layer selection"

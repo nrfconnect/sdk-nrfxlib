@@ -49,10 +49,10 @@
 
 static uint8_t * buffer_alloc(nrf_802154_buffer_t * p_buffer_pool, size_t buffer_pool_len)
 {
-    nrf_802154_buffer_t * p_buffer = NULL;
-    bool                  success  = false;
-    bool                  retry    = false;
-    uint32_t              crit_sect;
+    nrf_802154_buffer_t * p_buffer  = NULL;
+    bool                  success   = false;
+    bool                  retry     = false;
+    uint32_t              crit_sect = 0UL;
 
     do
     {
@@ -96,8 +96,8 @@ static void buffer_free(nrf_802154_buffer_t * p_buffer_to_free,
                         nrf_802154_buffer_t * p_buffer_pool,
                         size_t                buffer_pool_len)
 {
-    uint32_t crit_sect;
-    size_t   idx =
+    uint32_t crit_sect = 0UL;
+    size_t   idx       =
         ((uintptr_t)p_buffer_to_free - (uintptr_t)p_buffer_pool) / sizeof(nrf_802154_buffer_t);
 
     assert(idx < buffer_pool_len);

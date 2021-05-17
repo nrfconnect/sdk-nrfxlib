@@ -42,7 +42,10 @@
 
 #include "mac_features/nrf_802154_frame_parser.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
+#include "nrf_802154_core.h"
+#include "nrf_802154_nrfx_addons.h"
 #include "nrf_802154_utils.h"
+#include "nrf_802154_utils_byteorder.h"
 
 #include <assert.h>
 
@@ -59,7 +62,9 @@ static writer_state_t m_writer_state = IE_WRITER_RESET; ///< IE writer state
 
 #if NRF_802154_DELAYED_TRX_ENABLED
 
-static uint8_t * mp_csl_phase_addr; ///< Cached CSL information element phase field address
+static uint8_t * mp_csl_phase_addr;  ///< Cached CSL information element phase field address
+static uint8_t * mp_csl_period_addr; ///< Cached CSL information element period field address
+static uint16_t  m_csl_period;       ///< CSL period value that will be injected to CSL information element
 
 /**
  * @brief Writes CSL phase to previously set memory address.
@@ -70,7 +75,7 @@ static void csl_ie_write_commit(void)
     uint32_t symbols;
     uint32_t csl_phase;
 
-    if (mp_csl_phase_addr == NULL)
+    if ((mp_csl_phase_addr == NULL) || (mp_csl_period_addr == NULL))
     {
         // CSL writer not armed. Nothing to be done.
         return;
@@ -98,8 +103,8 @@ static void csl_ie_write_commit(void)
         return;
     }
 
-    mp_csl_phase_addr[0] = (uint8_t)(csl_phase & 0xffU);
-    mp_csl_phase_addr[1] = (uint8_t)((csl_phase >> 8) & 0xffU);;
+    host_16_to_little(csl_phase, mp_csl_phase_addr);
+    host_16_to_little(m_csl_period, mp_csl_period_addr);
 }
 
 /**
@@ -120,7 +125,8 @@ static bool csl_ie_write_prepare(const uint8_t * p_iterator)
         return false;
     }
 
-    mp_csl_phase_addr = (uint8_t *)nrf_802154_frame_parser_ie_content_address_get(p_iterator);
+    mp_csl_phase_addr  = (uint8_t *)nrf_802154_frame_parser_ie_content_address_get(p_iterator);
+    mp_csl_period_addr = mp_csl_phase_addr + sizeof(uint16_t);
 
     return true;
 }
@@ -130,7 +136,8 @@ static bool csl_ie_write_prepare(const uint8_t * p_iterator)
  */
 static void csl_ie_write_reset(void)
 {
-    mp_csl_phase_addr = NULL;
+    mp_csl_phase_addr  = NULL;
+    mp_csl_period_addr = NULL;
 }
 
 #else
@@ -167,6 +174,147 @@ static void csl_ie_write_reset(void)
 
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
+static uint8_t * mp_lm_rssi_addr;   ///< Cached Link Metrics information element RSSI field address
+static uint8_t * mp_lm_margin_addr;  ///< Cached Link Metrics information element link margin field address
+static uint8_t * mp_lm_lqi_addr; ///< Cached Link Metrics information element LQI field address
+
+static uint8_t rssi_scale(int8_t rssi)
+{
+    int16_t rssi_lim;     ///< RSSI value after applying limits
+    int16_t intermediate; ///< RSSI value after casting to a wider type
+    uint8_t scaled;       ///< RSSI value after scaling
+
+    // Apply lower limit
+    rssi_lim =
+        ((int16_t)rssi < IE_VENDOR_THREAD_RSSI_FLOOR) ? IE_VENDOR_THREAD_RSSI_FLOOR : (int16_t)rssi;
+    // Apply upper limit
+    rssi_lim = (rssi_lim > IE_VENDOR_THREAD_RSSI_CEIL) ? IE_VENDOR_THREAD_RSSI_CEIL : rssi_lim;
+
+    // Cast to a wider type to avoid premature overflow
+    intermediate = (int16_t)rssi_lim - IE_VENDOR_THREAD_RSSI_FLOOR;
+    // Scale linearly to range 0 - UINT8_MAX
+    scaled = (uint8_t)((intermediate * (UINT8_MAX - 0)) /
+                       (IE_VENDOR_THREAD_RSSI_CEIL - IE_VENDOR_THREAD_RSSI_FLOOR));
+
+    return scaled;
+}
+
+static uint8_t margin_scale(int16_t margin)
+{
+    int16_t margin_lim; ///< Margin value after applying limits
+    uint8_t scaled;     ///< Margin value after scaling
+
+    // Apply lower limit
+    margin_lim = (margin < IE_VENDOR_THREAD_MARGIN_FLOOR) ? IE_VENDOR_THREAD_MARGIN_FLOOR : margin;
+    // Apply upper limit
+    margin_lim =
+        (margin_lim > IE_VENDOR_THREAD_MARGIN_CEIL) ? IE_VENDOR_THREAD_MARGIN_CEIL : margin_lim;
+
+    // Scale linearly to range 0 - UINT8_MAX
+    scaled = (uint8_t)(((margin_lim - IE_VENDOR_THREAD_MARGIN_FLOOR) * (UINT8_MAX - 0)) /
+                       (IE_VENDOR_THREAD_MARGIN_CEIL - IE_VENDOR_THREAD_MARGIN_FLOOR));
+
+    return scaled;
+}
+
+/**
+ * @brief Writes link metrics to previously prepared addresses in a frame.
+ */
+static void link_metrics_ie_write_commit(void)
+{
+    if ((mp_lm_rssi_addr != NULL) || (mp_lm_margin_addr != NULL))
+    {
+        int8_t rssi = (uint8_t)nrf_802154_core_last_frame_rssi_get();
+
+        if (mp_lm_rssi_addr != NULL)
+        {
+            *mp_lm_rssi_addr = rssi_scale(rssi);
+        }
+
+        if (mp_lm_margin_addr != NULL)
+        {
+            *mp_lm_margin_addr = margin_scale((int16_t)rssi - ED_MIN_DBM);
+        }
+    }
+
+    if (mp_lm_lqi_addr != NULL)
+    {
+        *mp_lm_lqi_addr = (uint8_t)nrf_802154_core_last_frame_lqi_get();
+    }
+
+}
+
+/**
+ * @brief Finds and prepare memory addresses where link metrics will be written.
+ *
+ * @param[in]  p_iterator  Information Element parser iterator.
+ *
+ * @retval  true  The write prepare operation for link metrics was successful.
+ * @retval  false An improperly formatted link metrics IE was detected.
+ */
+static bool link_metrics_ie_write_prepare(const uint8_t * p_iterator)
+{
+    assert(p_iterator != NULL);
+
+    // Initialize the iterator at the start of IE content
+    uint8_t * p_content_iterator =
+        (uint8_t *)nrf_802154_frame_parser_ie_vendor_thread_data_addr_get(p_iterator);
+    uint8_t * ie_end = (uint8_t *)nrf_802154_frame_parser_ie_iterator_next(p_iterator);
+
+    if (nrf_802154_frame_parser_ie_length_get(p_iterator) < IE_VENDOR_THREAD_ACK_SIZE_MIN ||
+        nrf_802154_frame_parser_ie_length_get(p_iterator) > IE_VENDOR_THREAD_ACK_SIZE_MAX)
+    {
+        return false;
+    }
+
+    while (p_content_iterator != ie_end)
+    {
+        switch (*p_content_iterator)
+        {
+            case IE_VENDOR_THREAD_RSSI_TOKEN:
+                if (mp_lm_rssi_addr != NULL)
+                {
+                    return false;
+                }
+                mp_lm_rssi_addr = p_content_iterator;
+                break;
+
+            case IE_VENDOR_THREAD_MARGIN_TOKEN:
+                if (mp_lm_margin_addr != NULL)
+                {
+                    return false;
+                }
+                mp_lm_margin_addr = p_content_iterator;
+                break;
+
+            case IE_VENDOR_THREAD_LQI_TOKEN:
+                if (mp_lm_lqi_addr != NULL)
+                {
+                    return false;
+                }
+                mp_lm_lqi_addr = p_content_iterator;
+                break;
+
+            default:
+                return false;
+        }
+
+        p_content_iterator++;
+    }
+
+    return true;
+}
+
+/**
+ * @brief Resets the prepared addresses for injecting link metrics into a frame.
+ */
+static void link_metrics_ie_write_reset(void)
+{
+    mp_lm_rssi_addr   = NULL;
+    mp_lm_margin_addr = NULL;
+    mp_lm_lqi_addr    = NULL;
+}
+
 /**
  * @brief Resets IE writer to pristine state.
  */
@@ -175,6 +323,7 @@ static void ie_writer_reset(void)
     m_writer_state = IE_WRITER_RESET;
 
     csl_ie_write_reset();
+    link_metrics_ie_write_reset();
 }
 
 /**
@@ -212,6 +361,20 @@ static void ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
 
         switch (nrf_802154_frame_parser_ie_id_get(p_iterator))
         {
+            case IE_VENDOR_ID:
+                if (nrf_802154_frame_parser_ie_length_get(p_iterator) >= IE_VENDOR_SIZE_MIN &&
+                    nrf_802154_frame_parser_ie_vendor_oui_get(p_iterator) == IE_VENDOR_THREAD_OUI)
+                {
+                    if (nrf_802154_frame_parser_ie_length_get(p_iterator) >=
+                        IE_VENDOR_THREAD_SIZE_MIN &&
+                        nrf_802154_frame_parser_ie_vendor_thread_subtype_get(p_iterator) ==
+                        IE_VENDOR_THREAD_ACK_PROBING_ID)
+                    {
+                        result = link_metrics_ie_write_prepare(p_iterator);
+                    }
+                }
+                break;
+
             case IE_CSL_ID:
                 result = csl_ie_write_prepare(p_iterator);
                 break;
@@ -239,6 +402,7 @@ static void ie_writer_commit(void)
     m_writer_state = IE_WRITER_COMMIT;
 
     csl_ie_write_commit();
+    link_metrics_ie_write_commit();
 }
 
 void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
@@ -250,13 +414,21 @@ void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_a
     ie_writer_prepare(p_ie_header, p_end_addr);
 }
 
-bool nrf_802154_ie_writer_pretransmission(const uint8_t * p_frame, bool cca, bool immediate)
+bool nrf_802154_ie_writer_pretransmission(
+    const uint8_t                           * p_frame,
+    nrf_802154_transmit_params_t            * p_params,
+    nrf_802154_transmit_failed_notification_t notify_function)
 {
+    (void)notify_function;
+
+    if (p_params->is_retransmission)
+    {
+        // Pass.
+        return true;
+    }
+
     const uint8_t * p_mfr_addr;
     uint8_t       * p_ie_header;
-
-    (void)cca;
-    (void)immediate;
 
     p_ie_header = (uint8_t *)nrf_802154_frame_parser_ie_header_get(p_frame);
     p_mfr_addr  = nrf_802154_frame_parser_mfr_address_get(p_frame);
@@ -299,13 +471,13 @@ void nrf_802154_ie_writer_tx_ack_started_hook(const uint8_t * p_ack)
     ie_writer_reset();
 }
 
-#ifdef TEST
-/**@brief Unit test facility */
-void nrf_802154_ie_writer_module_reset(void)
+#if NRF_802154_DELAYED_TRX_ENABLED
+
+void nrf_802154_ie_writer_csl_period_set(uint16_t period)
 {
-    ie_writer_reset();
+    m_csl_period = period;
 }
 
-#endif
+#endif // NRF_802154_DELAYED_TRX_ENABLED
 
 #endif // NRF_802154_IE_WRITER_ENABLED

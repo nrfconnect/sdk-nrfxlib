@@ -108,14 +108,8 @@ extern "C" {
  */
 
 #ifndef NRF_802154_INTERNAL_RADIO_IRQ_HANDLING
-
-#if RAAL_SOFTDEVICE || RAAL_REM
 #define NRF_802154_INTERNAL_RADIO_IRQ_HANDLING 0
-#else // RAAL_SOFTDEVICE || RAAL_REM
-#define NRF_802154_INTERNAL_RADIO_IRQ_HANDLING 1
-#endif  // RAAL_SOFTDEVICE || RAAL_REM
-
-#endif // NRF_802154_INTERNAL_RADIO_IRQ_HANDLING
+#endif
 
 /**
  * @def NRF_802154_INTERNAL_SWI_IRQ_HANDLING
@@ -128,14 +122,8 @@ extern "C" {
  */
 
 #ifndef NRF_802154_INTERNAL_SWI_IRQ_HANDLING
-
-#if RAAL_SOFTDEVICE || RAAL_REM
-#define NRF_802154_INTERNAL_SWI_IRQ_HANDLING 0
-#else // RAAL_SOFTDEVICE || RAAL_REM
 #define NRF_802154_INTERNAL_SWI_IRQ_HANDLING 1
-#endif  // RAAL_SOFTDEVICE || RAAL_REM
-
-#endif // NRF_802154_INTERNAL_SWI_IRQ_HANDLING
+#endif
 
 /**
  * @def NRF_802154_IRQ_PRIORITY
@@ -156,6 +144,16 @@ extern "C" {
  */
 #ifndef NRF_802154_SWI_PRIORITY
 #define NRF_802154_SWI_PRIORITY 4
+#endif
+
+/**
+ * @def NRF_802154_ECB_PRIORITY
+ *
+ * Interrupt priority for ECB peripheral used for frame encryption.
+ *
+ */
+#ifndef NRF_802154_ECB_PRIORITY
+#define NRF_802154_ECB_PRIORITY 3
 #endif
 
 /**
@@ -496,6 +494,26 @@ extern "C" {
  */
 #ifndef NRF_802154_SECURITY_KEY_STORAGE_SIZE
 #define NRF_802154_SECURITY_KEY_STORAGE_SIZE 3
+#endif
+
+/**
+ * @def NRF_802154_SECURITY_WRITER_ENABLED
+ *
+ * Enables the Security Writer module. The module parses the frame being transmitted, validates
+ * frame's security header and injects frame counter associated with the used key.
+ */
+#ifndef NRF_802154_SECURITY_WRITER_ENABLED
+#define NRF_802154_SECURITY_WRITER_ENABLED 1
+#endif
+
+/**
+ * @def NRF_802154_ENCRYPTION_ENABLED
+ *
+ * Enables the frame encryption module. The module uses AES-CCM* algorithm to secure frames
+ * transmitted by the driver.
+ */
+#ifndef NRF_802154_ENCRYPTION_ENABLED
+#define NRF_802154_ENCRYPTION_ENABLED 1
 #endif
 
 /**

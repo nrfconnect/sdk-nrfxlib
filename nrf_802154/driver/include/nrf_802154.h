@@ -636,6 +636,57 @@ bool nrf_802154_transmit_raw_at(const uint8_t * p_data,
                                 uint8_t         channel);
 
 /**
+ * @brief Requests retransmission at the specified time.
+ *
+ * @note This function is implemented in a zero-copy fashion. It passes the given buffer pointer to
+ *       the RADIO peripheral.
+ *
+ * @note This function is meant specifically to be used for transmitting frames for which
+ *       @ref nrf_802154_transmit_failed was reported in the original transmission attempt. This
+ *       function does not perform any modifications to the provided frame's content. In particular,
+ *       it performs neither authentication nor confidentiality transform of the frame's content.
+ *       Therefore it must not be called to execute the first transmission attempt of a given frame.
+ *       Doing so might lead to a number of issues such as security breaches and transmissions of
+ *       malformed or incorrect frames.
+ *
+ * @note Only a single transmission or only a single retransmission can be scheduled at a time.
+ *
+ * This function is asynchronous. It queues the delayed transmission using the Radio Scheduler
+ * module and performs it at the specified time.
+ *
+ * If the delayed retransmission is successfully performed, @ref nrf_802154_transmitted is called.
+ * If the delayed retransmission cannot be performed or the requested transmission timeslot is
+ * denied, @ref nrf_802154_transmit_failed with the @ref NRF_802154_TX_ERROR_TIMESLOT_DENIED
+ * argument is called.
+ *
+ * This function is designed to transmit the first symbol of SHR at the given time.
+ *
+ * If the requested retransmission time is in the past, the function returns false and does not
+ * schedule retransmission.
+ *
+ * A successfully scheduled retransmission can be cancelled by a call
+ * to @ref nrf_802154_transmit_at_cancel, similarly to a successfully scheduled transmission.
+ *
+ * @param[in]  p_data   Pointer to the array with data to transmit. The first byte must contain
+ *                      the frame length (including PHR and FCS). The following bytes contain data.
+ *                      The CRC is computed automatically by the radio hardware. Therefore, the FCS
+ *                      field can contain any bytes.
+ * @param[in]  cca      If the driver is to perform a CCA procedure before transmission.
+ * @param[in]  t0       Base of delay time - absolute time used by the Timer Scheduler,
+ *                      in microseconds (us).
+ * @param[in]  dt       Delta of delay time from @p t0, in microseconds (us).
+ * @param[in]  channel  Radio channel on which the frame is to be transmitted.
+ *
+ * @retval  true   The retransmission procedure was scheduled.
+ * @retval  false  The driver could not schedule the retransmission procedure.
+ */
+bool nrf_802154_retransmit_raw_at(const uint8_t * p_data,
+                                  bool            cca,
+                                  uint32_t        t0,
+                                  uint32_t        dt,
+                                  uint8_t         channel);
+
+/**
  * @brief Cancels a delayed transmission scheduled by a call to @ref nrf_802154_transmit_raw_at.
  *
  * If a delayed transmission has been scheduled but the transmission has not been started yet,
@@ -1207,7 +1258,9 @@ void nrf_802154_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_m
 
 /**
  * @brief Adds the address of a peer node for which the provided ACK data
- * is to be added to the pending bit list.
+ * is to be injected into generated ACKs.
+ *
+ * Data passed to this function can be either pending bit data or Header IE data.
  *
  * The pending bit list works differently, depending on the upper layer for which the source
  * address matching method is selected:
@@ -1215,6 +1268,36 @@ void nrf_802154_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_m
  *   - For Zigbee, @ref NRF_802154_SRC_ADDR_MATCH_ZIGBEE
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
+ *
+ * For IE data, specific cases are supported, where additional data will be injected into the IE on pre-transmission:
+ *   - CSL IE - CSL phase will be injected if IE ID is set to @ref IE_CSL_ID
+ *   - Thread link metrics - Link metrics will be injected if
+ *      - IE ID is set to IE_VENDOR_ID
+ *      - OUI is set to IE_VENDOR_THREAD_OUI
+ *      - Thread IE subtype is set to IE_VENDOR_THREAD_ACK_PROBING_ID
+ *
+ * For Link metrics to be injected, additional preparation is required. Each byte of injected link metrics needs to be filled
+ * with a token, indicating what type of data is to be injected pre-transmission. Supported tokens are:
+ *   - @ref IE_VENDOR_THREAD_RSSI_TOKEN - RSSI of the last received frame will be injected,
+ *   - @ref IE_VENDOR_THREAD_MARGIN_TOKEN - RSSI above sensitivity margin of the last received frame will be injected,
+ *   - @ref IE_VENDOR_THREAD_LQI_TOKEN - LQI of the last received frame will be injected.
+ * Additionally, tokens must be unique in given IE, all bytes prepared for link metrics must be filled with tokens and no more
+ * than two bytes must be prepared for link metrics.
+ * If any of those conditions is not met, no data will be injected into the ACK pre-transmission.
+ *
+ * To better illustrate, if RSSI is to be inserted into ACKs for specific address,
+ * following ie data needs to be prepared:
+ *
+ * +------------+----------------------+---------------------------------+-----------------------------+
+ * | Bytes: 0-1 |          2-4         |                5                |              6              |
+ * +------------+----------------------+---------------------------------+-----------------------------+
+ * | IE header  | IE_VENDOR_THREAD_OUI | IE_VENDOR_THREAD_ACK_PROBING_ID | IE_VENDOR_THREAD_RSSI_TOKEN |
+ * +------------+----------------------+---------------------------------+-----------------------------+
+ *                                     |                                                               |
+ *                                     | <------------------IE Vendor-specific data------------------> |
+ *
+ * When sending ACK with this data, before transmission, RSSI of the last received frame
+ * will be written into byte 6.
  *
  * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
  *
@@ -1385,6 +1468,32 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg);
  */
 void nrf_802154_transmit_csma_ca_raw(const uint8_t * p_data);
 
+/**
+ * @brief Performs the CSMA-CA procedure and retransmits a frame in case of success.
+ *
+ * The end of the CSMA-CA procedure is notified by @ref nrf_802154_transmitted_raw or
+ * @ref nrf_802154_transmit_failed.
+ *
+ * @note This function is meant specifically to be used for transmitting frames for which
+ *       @ref nrf_802154_transmit_failed was reported in the original transmission attempt. This
+ *       function does not perform any modifications to the provided frame's content. In particular,
+ *       it performs neither authentication nor confidentiality transform of the frame's content.
+ *       Therefore it must not be called to execute the first transmission attempt of a given frame.
+ *       Doing so might lead to a number of issues such as security breaches and transmissions of
+ *       malformed or incorrect frames.
+ *
+ * @note The driver may be configured to automatically time out waiting for an ACK frame depending
+ *       on @ref NRF_802154_ACK_TIMEOUT_ENABLED. If the automatic ACK timeout is disabled,
+ *       the CSMA-CA procedure does not time out waiting for an ACK frame if a frame
+ *       with the ACK request bit set was transmitted. The MAC layer is expected to manage the timer
+ *       to time out waiting for the ACK frame. This timer can be started
+ *       by @ref nrf_802154_tx_started. When the timer expires, the MAC layer is expected
+ *       to call @ref nrf_802154_receive or @ref nrf_802154_sleep to stop waiting for the ACK frame.
+ *
+ * @param[in]  p_data  Pointer to the frame to transmit. See also @ref nrf_802154_transmit_raw.
+ */
+void nrf_802154_retransmit_csma_ca_raw(const uint8_t * p_data);
+
 #else // NRF_802154_USE_RAW_API
 
 /**
@@ -1405,6 +1514,33 @@ void nrf_802154_transmit_csma_ca_raw(const uint8_t * p_data);
  * @param[in]  length    Length of the given frame. See also @ref nrf_802154_transmit.
  */
 void nrf_802154_transmit_csma_ca(const uint8_t * p_data, uint8_t length);
+
+/**
+ * @brief Performs the CSMA-CA procedure and retransmits a frame in case of success.
+ *
+ * The end of the CSMA-CA procedure is notified by @ref nrf_802154_transmitted_raw or
+ * @ref nrf_802154_transmit_failed.
+ *
+ * @note This function is meant specifically to be used for transmitting frames for which
+ *       @ref nrf_802154_transmit_failed was reported in the original transmission attempt. This
+ *       function does not perform any modifications to the provided frame's content. In particular,
+ *       it performs neither authentication nor confidentiality transform of the frame's content.
+ *       Therefore it must not be called to execute the first transmission attempt of a given frame.
+ *       Doing so might lead to a number of issues such as security breaches and transmissions of
+ *       malformed or incorrect frames.
+ *
+ * @note The driver may be configured to automatically time out waiting for an ACK frame depending
+ *       on @ref NRF_802154_ACK_TIMEOUT_ENABLED. If the automatic ACK timeout is disabled,
+ *       the CSMA-CA procedure does not time out waiting for an ACK frame if a frame
+ *       with the ACK request bit set was transmitted. The MAC layer is expected to manage the timer
+ *       to time out waiting for the ACK frame. This timer can be started
+ *       by @ref nrf_802154_tx_started. When the timer expires, the MAC layer is expected
+ *       to call @ref nrf_802154_receive or @ref nrf_802154_sleep to stop waiting for the ACK frame.
+ *
+ * @param[in]  p_data    Pointer to the frame to transmit. See also @ref nrf_802154_transmit.
+ * @param[in]  length    Length of the given frame. See also @ref nrf_802154_transmit.
+ */
+void nrf_802154_retransmit_csma_ca(const uint8_t * p_data, uint8_t length);
 
 #endif // NRF_802154_USE_RAW_API
 
@@ -1728,6 +1864,19 @@ nrf_802154_security_error_t nrf_802154_security_key_store(nrf_802154_key_t * p_k
  * @retval NRF_802154_SECURITY_ERROR_KEY_NOT_FOUND Failed to remove the key - no such key found.
  */
 nrf_802154_security_error_t nrf_802154_security_key_remove(nrf_802154_key_id_t * p_id);
+
+/**
+ * @}
+ * @defgroup nrf_802154_ie_writer Radio driver Information Element data injection feature.
+ * @{
+ */
+
+/**
+ * @brief Sets the value of CSL period to inject into the CSL information element.
+ *
+ * @param[in]  period  CSL period value.
+ */
+void nrf_802154_csl_writer_period_set(uint16_t period);
 
 /** @} */
 

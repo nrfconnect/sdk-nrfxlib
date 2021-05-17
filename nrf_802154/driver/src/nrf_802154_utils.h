@@ -37,6 +37,7 @@
 
 #include <assert.h>
 #include <stdint.h>
+#include <string.h>
 #include "nrf.h"
 #include <nrfx.h>
 #include <soc/nrfx_coredep.h>

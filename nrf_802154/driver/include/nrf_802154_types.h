@@ -73,14 +73,16 @@ typedef uint8_t nrf_802154_state_t;
  */
 typedef uint8_t nrf_802154_tx_error_t;
 
-#define NRF_802154_TX_ERROR_NONE            0x00 // !< There is no transmit error.
-#define NRF_802154_TX_ERROR_BUSY_CHANNEL    0x01 // !< CCA reported busy channel before the transmission.
-#define NRF_802154_TX_ERROR_INVALID_ACK     0x02 // !< Received ACK frame is other than expected.
-#define NRF_802154_TX_ERROR_NO_MEM          0x03 // !< No receive buffer is available to receive an ACK.
-#define NRF_802154_TX_ERROR_TIMESLOT_ENDED  0x04 // !< Radio timeslot ended during the transmission procedure.
-#define NRF_802154_TX_ERROR_NO_ACK          0x05 // !< ACK frame was not received during the timeout period.
-#define NRF_802154_TX_ERROR_ABORTED         0x06 // !< Procedure was aborted by another operation.
-#define NRF_802154_TX_ERROR_TIMESLOT_DENIED 0x07 // !< Transmission did not start due to a denied timeslot request.
+#define NRF_802154_TX_ERROR_NONE                0x00 // !< There is no transmit error.
+#define NRF_802154_TX_ERROR_BUSY_CHANNEL        0x01 // !< CCA reported busy channel before the transmission.
+#define NRF_802154_TX_ERROR_INVALID_ACK         0x02 // !< Received ACK frame is other than expected.
+#define NRF_802154_TX_ERROR_NO_MEM              0x03 // !< No receive buffer is available to receive an ACK.
+#define NRF_802154_TX_ERROR_TIMESLOT_ENDED      0x04 // !< Radio timeslot ended during the transmission procedure.
+#define NRF_802154_TX_ERROR_NO_ACK              0x05 // !< ACK frame was not received during the timeout period.
+#define NRF_802154_TX_ERROR_ABORTED             0x06 // !< Procedure was aborted by another operation.
+#define NRF_802154_TX_ERROR_TIMESLOT_DENIED     0x07 // !< Transmission did not start due to a denied timeslot request.
+#define NRF_802154_TX_ERROR_KEY_ID_INVALID      0x08 // !< Transmission did not start due to invalid key ID in frame's security header.
+#define NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR 0x09 // !< Transmission did not start due a frame counter error.
 
 /**
  * @brief Possible errors during the frame reception.
@@ -161,8 +163,8 @@ typedef struct
  */
 typedef uint8_t nrf_802154_ack_data_t;
 
-#define NRF_802154_ACK_DATA_PENDING_BIT 0x00
-#define NRF_802154_ACK_DATA_IE          0x01
+#define NRF_802154_ACK_DATA_PENDING_BIT 0x00 // !< Frame Pending bit should be set in the Ack.
+#define NRF_802154_ACK_DATA_IE          0x01 // !< Header Information Element should be set in the Ack.
 
 /**
  * @brief Methods of source address matching.
@@ -239,6 +241,7 @@ typedef uint8_t nrf_802154_ifs_mode_t;
  * - @ref NRF_802154_CAPABILITY_ANT_DIVERSITY,
  * - @ref NRF_802154_CAPABILITY_IFS,
  * - @ref NRF_802154_CAPABILITY_TIMESTAMP
+ * - @ref NRF_802154_CAPABILITY_SECURITY
  *
  */
 typedef uint32_t nrf_802154_capabilities_t;
@@ -250,6 +253,7 @@ typedef uint32_t nrf_802154_capabilities_t;
 #define NRF_802154_CAPABILITY_ANT_DIVERSITY (1UL << 4UL) // !< Antenna diversity supported
 #define NRF_802154_CAPABILITY_IFS           (1UL << 5UL) // !< Inter-frame spacing supported
 #define NRF_802154_CAPABILITY_TIMESTAMP     (1UL << 6UL) // !< Frame timestamping supported
+#define NRF_802154_CAPABILITY_SECURITY      (1UL << 7UL) // !< Frame security supported
 
 /**
  * @brief Types of keys which can be used with the nRF 802.15.4 Radio Driver.
@@ -361,6 +365,22 @@ typedef struct
     uint32_t              frame_counter;            // !< Frame counter to use in case @ref use_global_frame_counter is set to false.
     bool                  use_global_frame_counter; // !< Whether to use the global frame counter instead of the one defined in this structure.
 } nrf_802154_key_t;
+
+/**
+ * @brief Function pointer used for notifying about transmission failure.
+ */
+typedef void (* nrf_802154_transmit_failed_notification_t)(const uint8_t       * p_frame,
+                                                           nrf_802154_tx_error_t error);
+
+/**
+ * @brief Structure that holds transmission parameters.
+ */
+typedef struct
+{
+    bool cca;               // !< If the driver is to perform CCA procedure before transmission.
+    bool immediate;         // !< If true, the driver schedules transmission immediately or never. If false, the transmission may be postponed until its preconditions are met.
+    bool is_retransmission; // !< Indicates if a given transmission attempt is a retransmission.
+} nrf_802154_transmit_params_t;
 
 /**
  *@}

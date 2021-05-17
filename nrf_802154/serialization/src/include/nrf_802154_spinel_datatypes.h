@@ -273,6 +273,12 @@ typedef enum
     SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TIME_GET =
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 34,
 
+    /**
+     * Vendor property for nrf_802154_retransmit_csma_ca_raw serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RETRANSMIT_CSMA_CA_RAW =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 35,
+
 } spinel_prop_vendor_key_t;
 
 /**
@@ -542,6 +548,12 @@ typedef enum
  * @brief Spinel data type description for nrf_802154_transmit_csma_ca_raw.
  */
 #define SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW \
+    SPINEL_DATATYPE_NRF_802154_HDATA_S /* Frame to transmit with its handle */
+
+/**
+ * @brief Spinel data type description for nrf_802154_retransmit_csma_ca_raw.
+ */
+#define SPINEL_DATATYPE_NRF_802154_RETRANSMIT_CSMA_CA_RAW \
     SPINEL_DATATYPE_NRF_802154_HDATA_S /* Frame to transmit with its handle */
 
 /**

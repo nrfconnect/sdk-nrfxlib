@@ -38,6 +38,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "nrf_802154_types.h"
+
 /**
  * @defgroup nrf_802154_ie_writer 802.15.4 driver Information Element writer
  * @{
@@ -78,13 +80,17 @@ void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_a
  * If this function detects a malformed frame, the module state shall be reset to the
  * unarmed state. There is no guarantee that all malformed frames will be detected.
  *
- * @param[in]  p_frame   Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
- * @param[in]  cca       Whether to trigger CCA before transmitting the frame.
- * @param[in]  immediate Whether to start sending the frame immediately or not.
+ * @param[in]  p_frame          Pointer to the buffer that contains the PHR and PSDU
+ *                              of the transmitted frame.
+ * @param[in]  p_params         Pointer to the transmission parameters.
+ * @param[in]  notify_function  Function to be called to notify transmission failure.
  *
  * @retval  true         Always succeeds.
  */
-bool nrf_802154_ie_writer_pretransmission(const uint8_t * p_frame, bool cca, bool immediate);
+bool nrf_802154_ie_writer_pretransmission(
+    const uint8_t                           * p_frame,
+    nrf_802154_transmit_params_t            * p_params,
+    nrf_802154_transmit_failed_notification_t notify_function);
 
 /**
  * @brief ACK TX started hook for the IE writer module.
@@ -120,6 +126,13 @@ void nrf_802154_ie_writer_tx_ack_started_hook(const uint8_t * p_ack);
  * @retval  true  Always succeeds.
  */
 bool nrf_802154_ie_writer_tx_started_hook(const uint8_t * p_frame);
+
+/**
+ * @brief Sets the value of CSL period to inject into the CSL information element.
+ *
+ * @param[in]  period  CSL period value.
+ */
+void nrf_802154_ie_writer_csl_period_set(uint16_t period);
 
 /**
  *@}
