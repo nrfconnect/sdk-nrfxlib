@@ -116,8 +116,7 @@ typedef struct
             nrf_802154_term_t              term_lvl;   ///< Request priority.
             req_originator_t               req_orig;   ///< Request originator.
             const uint8_t                * p_data;     ///< Pointer to a buffer containing PHR and PSDU of the frame to transmit.
-            bool                           cca;        ///< If CCA was requested prior to transmission.
-            bool                           immediate;  ///< If TX procedure must be performed immediately.
+            nrf_802154_transmit_params_t * p_params;   ///< Pointer to transmission parameters.
             bool                         * p_result;   ///< Transmit request result.
         } transmit;                                    ///< Transmit request details.
 
@@ -325,10 +324,7 @@ static void swi_receive(nrf_802154_term_t              term_lvl,
  * @param[in]   req_orig         Module that originates this request.
  * @param[in]   p_data           Pointer to a buffer that contains PHR and PSDU of the frame to be
  *                               transmitted.
- * @param[in]   cca              If the driver should perform the CCA procedure before transmission.
- * @param[in]   immediate        If true, the driver schedules transmission immediately or never;
- *                               if false, the transmission may be postponed until TX preconditions
- *                               are met.
+ * @param[in]   p_params         Pointer to transmission parameters.
  * @param[in]   notify_function  Function called to notify the status of this procedure instead of
  *                               the default notification. If NULL, the default notification
  *                               is used.
@@ -337,8 +333,7 @@ static void swi_receive(nrf_802154_term_t              term_lvl,
 static void swi_transmit(nrf_802154_term_t              term_lvl,
                          req_originator_t               req_orig,
                          const uint8_t                * p_data,
-                         bool                           cca,
-                         bool                           immediate,
+                         nrf_802154_transmit_params_t * p_params,
                          nrf_802154_notification_func_t notify_function,
                          bool                         * p_result)
 {
@@ -348,8 +343,7 @@ static void swi_transmit(nrf_802154_term_t              term_lvl,
     p_slot->data.transmit.term_lvl   = term_lvl;
     p_slot->data.transmit.req_orig   = req_orig;
     p_slot->data.transmit.p_data     = p_data;
-    p_slot->data.transmit.cca        = cca;
-    p_slot->data.transmit.immediate  = immediate;
+    p_slot->data.transmit.p_params   = p_params;
     p_slot->data.transmit.notif_func = notify_function;
     p_slot->data.transmit.p_result   = p_result;
 
@@ -568,8 +562,7 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
 bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                                  req_originator_t               req_orig,
                                  const uint8_t                * p_data,
-                                 bool                           cca,
-                                 bool                           immediate,
+                                 nrf_802154_transmit_params_t * p_params,
                                  nrf_802154_notification_func_t notify_function)
 {
     REQUEST_FUNCTION(nrf_802154_core_transmit,
@@ -577,8 +570,7 @@ bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                      term_lvl,
                      req_orig,
                      p_data,
-                     cca,
-                     immediate,
+                     p_params,
                      notify_function)
 }
 
@@ -673,8 +665,7 @@ static void irq_handler_req_event(void)
                     nrf_802154_core_transmit(p_slot->data.transmit.term_lvl,
                                              p_slot->data.transmit.req_orig,
                                              p_slot->data.transmit.p_data,
-                                             p_slot->data.transmit.cca,
-                                             p_slot->data.transmit.immediate,
+                                             p_slot->data.transmit.p_params,
                                              p_slot->data.transmit.notif_func);
                 break;
 

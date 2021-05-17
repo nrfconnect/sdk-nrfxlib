@@ -138,10 +138,7 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
  * @param[in]  term_lvl         Termination level of this request. Selects procedures to abort.
  * @param[in]  req_orig         Module that originates this request.
  * @param[in]  p_data           Pointer to a frame to transmit.
- * @param[in]  cca              If the driver is to perform CCA procedure before transmission.
- * @param[in]  immediate        If true, the driver schedules transmission immediately or never.
- *                              If false, the transmission may be postponed until
- *                              the TX preconditions are met.
+ * @param[in]  p_params         Pointer to transmission parameters.
  * @param[in]  notify_function  Function called to notify the status of this procedure. May be NULL.
  *
  * @retval  true   Entering the transmit state succeeded.
@@ -150,8 +147,7 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
 bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
                               req_originator_t               req_orig,
                               const uint8_t                * p_data,
-                              bool                           cca,
-                              bool                           immediate,
+                              nrf_802154_transmit_params_t * p_params,
                               nrf_802154_notification_func_t notify_function);
 
 /**
@@ -249,6 +245,24 @@ bool nrf_802154_core_rssi_measure(void);
  * @param[out]  p_rssi  RSSI measurement value in dBm.
  */
 bool nrf_802154_core_last_rssi_measurement_get(int8_t * p_rssi);
+
+/**
+ * Get RSSI of the last received non-ACK frame.
+ *
+ * Returns 0 if no frame was received yet.
+ *
+ * @returns Temperature-corrected RSSI of the last received frame
+ */
+int8_t nrf_802154_core_last_frame_rssi_get(void);
+
+/**
+ * Get LQI of the last received non-ACK frame.
+ *
+ * Returns 0 if no frame was received yet.
+ *
+ * @returns Temperature-corrected LQI of the last received frame
+ */
+uint8_t nrf_802154_core_last_frame_lqi_get(void);
 
 /**
  * @brief Notifies the core module that the next higher layer requested the change of the antenna.

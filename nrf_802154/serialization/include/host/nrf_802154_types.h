@@ -125,6 +125,7 @@ typedef uint8_t nrf_802154_src_addr_match_t;
  * - @ref NRF_802154_CAPABILITY_ANT_DIVERSITY,
  * - @ref NRF_802154_CAPABILITY_IFS,
  * - @ref NRF_802154_CAPABILITY_TIMESTAMP
+ * - @ref NRF_802154_CAPABILITY_SECURITY
  *
  */
 typedef uint32_t nrf_802154_capabilities_t;
@@ -136,6 +137,7 @@ typedef uint32_t nrf_802154_capabilities_t;
 #define NRF_802154_CAPABILITY_ANT_DIVERSITY (1UL << 4UL) // !< Antenna diversity supported
 #define NRF_802154_CAPABILITY_IFS           (1UL << 5UL) // !< Inter-frame spacing supported
 #define NRF_802154_CAPABILITY_TIMESTAMP     (1UL << 6UL) // !< Frame timestamping supported
+#define NRF_802154_CAPABILITY_SECURITY      (1UL << 7UL) // !< Frame security supported
 
 /**
  *@}

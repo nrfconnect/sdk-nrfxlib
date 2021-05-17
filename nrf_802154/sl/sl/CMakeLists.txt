@@ -8,11 +8,6 @@ add_library(nrf-802154-sl INTERFACE)
 
 nrfxlib_calculate_lib_path(lib_path SOC_MODE)
 
-target_include_directories(nrf-802154-sl
-  INTERFACE
-    ../include
-)
-
 set(NRF_802154_SL_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
 
 if(NOT EXISTS ${NRF_802154_SL_LIB_PATH})

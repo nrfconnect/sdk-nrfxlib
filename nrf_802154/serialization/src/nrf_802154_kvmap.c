@@ -95,7 +95,7 @@ void nrf_802154_kvmap_init(nrf_802154_kvmap_t * p_kvmap,
 
 bool nrf_802154_kvmap_add(nrf_802154_kvmap_t * p_kvmap, const void * p_key, const void * p_value)
 {
-    uint32_t crit_sect;
+    uint32_t crit_sect = 0UL;
     size_t   idx;
     bool     success = true;
 
@@ -132,7 +132,7 @@ bool nrf_802154_kvmap_add(nrf_802154_kvmap_t * p_kvmap, const void * p_key, cons
 
 bool nrf_802154_kvmap_remove(nrf_802154_kvmap_t * p_kvmap, const void * p_key)
 {
-    uint32_t crit_sect;
+    uint32_t crit_sect = 0UL;
     size_t   idx;
     bool     success = true;
 
@@ -171,7 +171,7 @@ bool nrf_802154_kvmap_search(const nrf_802154_kvmap_t * p_kvmap,
                              const void               * p_key,
                              void                     * p_value)
 {
-    uint32_t crit_sect;
+    uint32_t crit_sect = 0UL;
     size_t   idx;
     bool     success = true;
 

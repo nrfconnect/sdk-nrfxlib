@@ -87,16 +87,14 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
 bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                                  req_originator_t               req_orig,
                                  const uint8_t                * p_data,
-                                 bool                           cca,
-                                 bool                           immediate,
+                                 nrf_802154_transmit_params_t * p_params,
                                  nrf_802154_notification_func_t notify_function)
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_transmit,
                            term_lvl,
                            req_orig,
                            p_data,
-                           cca,
-                           immediate,
+                           p_params,
                            notify_function)
 }
 

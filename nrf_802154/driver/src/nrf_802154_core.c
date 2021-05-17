@@ -121,6 +121,8 @@ static const uint8_t * mp_ack;         ///< Pointer to Ack frame buffer.
 static const uint8_t * mp_tx_data;     ///< Pointer to the data to transmit.
 static uint32_t        m_ed_time_left; ///< Remaining time of the current energy detection procedure [us].
 static uint8_t         m_ed_result;    ///< Result of the current energy detection procedure.
+static uint8_t         m_last_lqi;     ///< LQI of the last received non-ACK frame, corrected for the temperature.
+static int8_t          m_last_rssi;    ///< RSSI of the last received non-ACK frame, corrected for the temperature.
 
 static volatile radio_state_t m_state; ///< State of the radio driver.
 
@@ -276,9 +278,9 @@ static uint32_t timer_coord_timestamp_get(void)
 
 static void received_frame_notify(uint8_t * p_data)
 {
-    nrf_802154_notify_received(p_data,                      // data
-                               rssi_last_measurement_get(), // rssi
-                               lqi_get(p_data));            // lqi
+    nrf_802154_notify_received(p_data,      // data
+                               m_last_rssi, // rssi
+                               m_last_lqi); // lqi
 }
 
 /** Allow nesting critical sections and notify MAC layer that a frame was received. */
@@ -345,10 +347,8 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
 }
 
 /** Notify MAC layer that transmission procedure failed. */
-static void transmit_failed_notify(nrf_802154_tx_error_t error)
+static void transmit_failed_notify(const uint8_t * p_frame, nrf_802154_tx_error_t error)
 {
-    const uint8_t * p_frame = mp_tx_data;
-
     if (nrf_802154_core_hooks_tx_failed(p_frame, error))
     {
         nrf_802154_notify_transmit_failed(p_frame, error);
@@ -360,7 +360,7 @@ static void transmit_failed_notify_and_nesting_allow(nrf_802154_tx_error_t error
 {
     nrf_802154_critical_section_nesting_allow();
 
-    transmit_failed_notify(error);
+    transmit_failed_notify(mp_tx_data, error);
 
     nrf_802154_critical_section_nesting_deny();
 }
@@ -694,11 +694,11 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
 
         case RADIO_STATE_CCA_TX:
         case RADIO_STATE_TX:
-            transmit_failed_notify(NRF_802154_TX_ERROR_ABORTED);
+            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_ABORTED);
             break;
 
         case RADIO_STATE_RX_ACK:
-            transmit_failed_notify(NRF_802154_TX_ERROR_ABORTED);
+            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_ABORTED);
             break;
 
         case RADIO_STATE_ED:
@@ -1790,6 +1790,10 @@ void nrf_802154_trx_receive_frame_received(void)
 
     uint8_t * p_received_data = mp_current_rx_buffer->data;
 
+    // Latch RSSI and LQI values before sending ACK
+    m_last_rssi = rssi_last_measurement_get();
+    m_last_lqi  = lqi_get(p_received_data);
+
 #if NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
     uint32_t receive_end_hp_timestamp     = nrf_802154_hp_timer_timestamp_get();
     uint32_t listening_start_hp_timestamp = m_listening_start_hp_timestamp;
@@ -2473,8 +2477,7 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
 bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
                               req_originator_t               req_orig,
                               const uint8_t                * p_data,
-                              bool                           cca,
-                              bool                           immediate,
+                              nrf_802154_transmit_params_t * p_params,
                               nrf_802154_notification_func_t notify_function)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2484,7 +2487,7 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
     if (result)
     {
         // Short-circuit evaluation in place.
-        if (nrf_802154_core_hooks_pre_transmission(p_data, cca, immediate))
+        if (nrf_802154_core_hooks_pre_transmission(p_data, p_params, &transmit_failed_notify))
         {
             result = current_operation_terminate(term_lvl, req_orig, true);
 
@@ -2492,16 +2495,16 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
             {
                 m_coex_tx_request_mode                  = nrf_802154_pib_coex_tx_request_mode_get();
                 m_trx_transmit_frame_notifications_mask =
-                    make_trx_frame_transmit_notification_mask(cca);
+                    make_trx_frame_transmit_notification_mask(p_params->cca);
                 m_flags.tx_diminished_prio =
                     m_coex_tx_request_mode == NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE;
 
-                state_set(cca ? RADIO_STATE_CCA_TX : RADIO_STATE_TX);
+                state_set(p_params->cca ? RADIO_STATE_CCA_TX : RADIO_STATE_TX);
                 mp_tx_data = p_data;
 
                 // coverity[check_return]
-                result = tx_init(p_data, cca);
-                if (immediate)
+                result = tx_init(p_data, p_params->cca);
+                if (p_params->immediate)
                 {
                     if (!result)
                     {
@@ -2801,6 +2804,16 @@ bool nrf_802154_core_last_rssi_measurement_get(int8_t * p_rssi)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 
     return result;
+}
+
+int8_t  nrf_802154_core_last_frame_rssi_get(void)
+{
+    return m_last_rssi;
+}
+
+uint8_t nrf_802154_core_last_frame_lqi_get(void)
+{
+    return m_last_lqi;
 }
 
 bool nrf_802154_core_antenna_update(void)

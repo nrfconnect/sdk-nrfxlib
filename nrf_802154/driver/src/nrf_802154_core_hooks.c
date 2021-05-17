@@ -49,12 +49,16 @@
 #include "mac_features/nrf_802154_csma_ca.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "mac_features/nrf_802154_ie_writer.h"
+#include "mac_features/nrf_802154_security_writer.h"
 #include "mac_features/nrf_802154_ifs.h"
+#include "nrf_802154_encrypt.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_types.h"
 
 typedef bool (* abort_hook)(nrf_802154_term_t term_lvl, req_originator_t req_orig);
-typedef bool (* pre_transmission_hook)(const uint8_t * p_frame, bool cca, bool immediate);
+typedef bool (* pre_transmission_hook)(const uint8_t                           * p_frame,
+                                       nrf_802154_transmit_params_t            * p_params,
+                                       nrf_802154_transmit_failed_notification_t notify_function);
 typedef void (* transmitted_hook)(const uint8_t * p_frame);
 typedef bool (* tx_failed_hook)(const uint8_t * p_frame, nrf_802154_tx_error_t error);
 typedef bool (* tx_started_hook)(const uint8_t * p_frame);
@@ -95,6 +99,12 @@ static const pre_transmission_hook m_pre_transmission_hooks[] =
 #endif
 #if NRF_802154_IE_WRITER_ENABLED
     nrf_802154_ie_writer_pretransmission,
+#endif
+#if NRF_802154_SECURITY_WRITER_ENABLED
+    nrf_802154_security_writer_pretransmission,
+#endif
+#if NRF_802154_ENCRYPTION_ENABLED
+    nrf_802154_encrypt_pretransmission,
 #endif
     NULL,
 };
@@ -137,6 +147,10 @@ static const tx_started_hook m_tx_started_hooks[] =
     nrf_802154_ie_writer_tx_started_hook,
 #endif
 
+#if NRF_802154_ENCRYPTION_ENABLED
+    nrf_802154_encrypt_tx_started_hook,
+#endif
+
     NULL,
 };
 
@@ -164,6 +178,10 @@ static const tx_ack_started_hook m_tx_ack_started_hooks[] =
     nrf_802154_ie_writer_tx_ack_started_hook,
 #endif
 
+#if NRF_802154_ENCRYPTION_ENABLED
+    nrf_802154_encrypt_tx_ack_started_hook,
+#endif
+
     NULL,
 };
 
@@ -189,7 +207,10 @@ bool nrf_802154_core_hooks_terminate(nrf_802154_term_t term_lvl, req_originator_
     return result;
 }
 
-bool nrf_802154_core_hooks_pre_transmission(const uint8_t * p_frame, bool cca, bool immediate)
+bool nrf_802154_core_hooks_pre_transmission(
+    const uint8_t                           * p_frame,
+    nrf_802154_transmit_params_t            * p_params,
+    nrf_802154_transmit_failed_notification_t notify_function)
 {
     bool result = true;
 
@@ -201,7 +222,7 @@ bool nrf_802154_core_hooks_pre_transmission(const uint8_t * p_frame, bool cca, b
             break;
         }
 
-        result = m_pre_transmission_hooks[i](p_frame, cca, immediate);
+        result = m_pre_transmission_hooks[i](p_frame, p_params, notify_function);
 
         if (!result)
         {

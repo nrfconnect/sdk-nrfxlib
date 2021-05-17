@@ -92,10 +92,7 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
  * @param[in]  term_lvl         Termination level of this request. Selects procedures to abort.
  * @param[in]  req_orig         Module that originates this request.
  * @param[in]  p_data           Pointer to the frame to transmit.
- * @param[in]  cca              If the driver is to perform the CCA procedure before transmission.
- * @param[in]  immediate        If true, the driver schedules transmission immediately or never.
- *                              If false, the transmission can be postponed until the TX
- *                              preconditions are met.
+ * @param[in]  p_params         Pointer to transmission parameters.
  * @param[in]  notify_function  Function called to notify the status of this procedure. May be NULL.
  *
  * @retval  true   The driver will enter the transmit state.
@@ -104,8 +101,7 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
 bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                                  req_originator_t               req_orig,
                                  const uint8_t                * p_data,
-                                 bool                           cca,
-                                 bool                           immediate,
+                                 nrf_802154_transmit_params_t * p_params,
                                  nrf_802154_notification_func_t notify_function);
 
 /**

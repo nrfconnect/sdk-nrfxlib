@@ -391,6 +391,32 @@ bool nrf_802154_transmit_raw(const uint8_t * p_data, bool cca);
 void nrf_802154_transmit_csma_ca_raw(const uint8_t * p_data);
 
 /**
+ * @brief Performs the CSMA-CA procedure and retransmits a frame in case of success.
+ *
+ * The end of the CSMA-CA procedure is notified by @ref nrf_802154_transmitted_raw or
+ * @ref nrf_802154_transmit_failed.
+ *
+ * @note This function is meant specifically to be used for transmitting frames for which
+ *       @ref nrf_802154_transmit_failed was reported in the original transmission attempt. This
+ *       function does not perform any modifications to the provided frame's content. In particular,
+ *       it performs neither authentication nor confidentiality transform of the frame's content.
+ *       Therefore it must not be called to execute the first transmission attempt of a given frame.
+ *       Doing so might lead to a number of issues such as security breaches and transmissions of
+ *       malformed or incorrect frames.
+ *
+ * @note The driver may be configured to automatically time out waiting for an ACK frame depending
+ *       on @ref NRF_802154_ACK_TIMEOUT_ENABLED. If the automatic ACK timeout is disabled,
+ *       the CSMA-CA procedure does not time out waiting for an ACK frame if a frame
+ *       with the ACK request bit set was transmitted. The MAC layer is expected to manage the timer
+ *       to time out waiting for the ACK frame. This timer can be started
+ *       by @ref nrf_802154_tx_started. When the timer expires, the MAC layer is expected
+ *       to call @ref nrf_802154_receive or @ref nrf_802154_sleep to stop waiting for the ACK frame.
+ *
+ * @param[in]  p_data  Pointer to the frame to transmit. See also @ref nrf_802154_transmit_raw.
+ */
+void nrf_802154_retransmit_csma_ca_raw(const uint8_t * p_data);
+
+/**
  * @brief Notifies the driver that the buffer containing the received frame is not used anymore.
  *
  * @note The buffer pointed to by @p p_data may be modified by this function.

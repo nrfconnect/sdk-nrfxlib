@@ -62,11 +62,12 @@
 
 #if NRF_802154_CSMA_CA_ENABLED
 
-static uint8_t m_nb;                 ///< The number of times the CSMA-CA algorithm was required to back off while attempting the current transmission.
-static uint8_t m_be;                 ///< Backoff exponent, which is related to how many backoff periods a device shall wait before attempting to assess a channel.
+static uint8_t m_nb;                        ///< The number of times the CSMA-CA algorithm was required to back off while attempting the current transmission.
+static uint8_t m_be;                        ///< Backoff exponent, which is related to how many backoff periods a device shall wait before attempting to assess a channel.
 
-static const uint8_t * mp_data;      ///< Pointer to a buffer containing PHR and PSDU of the frame being transmitted.
-static bool            m_is_running; ///< Indicates if CSMA-CA procedure is running.
+static const uint8_t * mp_data;             ///< Pointer to a buffer containing PHR and PSDU of the frame being transmitted.
+static bool            m_is_retransmission; ///< Flag that indicates if the current CSMA-CA procedure is a retransmission.
+static bool            m_is_running;        ///< Indicates if CSMA-CA procedure is running.
 
 /**
  * @brief Perform appropriate actions for busy channel conditions.
@@ -170,11 +171,17 @@ static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
     {
         priority_leverage();
 
+        nrf_802154_transmit_params_t params =
+        {
+            .cca               = true,
+            .immediate         = NRF_802154_CSMA_CA_WAIT_FOR_TIMESLOT ? false : true,
+            .is_retransmission = m_is_retransmission,
+        };
+
         if (!nrf_802154_request_transmit(NRF_802154_TERM_NONE,
                                          REQ_ORIG_CSMA_CA,
                                          mp_data,
-                                         true,
-                                         NRF_802154_CSMA_CA_WAIT_FOR_TIMESLOT ? false : true,
+                                         &params,
                                          notify_busy_channel))
         {
             (void)channel_busy();
@@ -273,7 +280,7 @@ static bool channel_busy(void)
     return result;
 }
 
-void nrf_802154_csma_ca_start(const uint8_t * p_data)
+void nrf_802154_csma_ca_start(const uint8_t * p_data, bool is_retransmission)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -285,10 +292,11 @@ void nrf_802154_csma_ca_start(const uint8_t * p_data)
 
     assert(!procedure_is_running());
 
-    mp_data      = p_data;
-    m_nb         = 0;
-    m_be         = nrf_802154_pib_csmaca_min_be_get();
-    m_is_running = true;
+    mp_data             = p_data;
+    m_is_retransmission = is_retransmission;
+    m_nb                = 0;
+    m_be                = nrf_802154_pib_csmaca_min_be_get();
+    m_is_running        = true;
 
     random_backoff_start();
 
@@ -325,18 +333,31 @@ bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_o
 
 bool nrf_802154_csma_ca_tx_failed_hook(const uint8_t * p_frame, nrf_802154_tx_error_t error)
 {
-    (void)error;
-
     bool result = true;
 
-    if (p_frame == mp_data)
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    switch (error)
     {
-        nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+        /* Below errors mean a failure occurred during the frame processing and the frame cannot be
+         * transmitted unless a higher layer takes appropriate actions, hence the CSMA-CA procedure
+         * shall be stopped.
+         */
+        case NRF_802154_TX_ERROR_KEY_ID_INVALID:
+        /* Fallthrough. */
+        case NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR:
+            procedure_stop();
+            result = true;
+            break;
 
-        result = channel_busy();
-
-        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+        default:
+            if (p_frame == mp_data)
+            {
+                result = channel_busy();
+            }
     }
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 
     return result;
 }
