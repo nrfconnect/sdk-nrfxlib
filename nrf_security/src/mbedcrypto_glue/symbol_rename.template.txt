@@ -103,14 +103,3 @@ ${KEEP_MBEDTLS_DHM_C}mbedtls_dhm_set_group ${MBEDTLS_BACKEND_PREFIX}_mbedtls_dhm
 #
 #${KEEP_MBEDTLS_ECDH_C}mbedtls_ecdh_compute_shared ${MBEDTLS_BACKEND_PREFIX}_mbedtls_ecdh_compute_shared
 #${KEEP_MBEDTLS_ECDH_C}mbedtls_ecdh_gen_public ${MBEDTLS_BACKEND_PREFIX}_mbedtls_ecdh_gen_public
-#
-# GCM (Vanilla only)
-#
-${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_auth_decrypt ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_auth_decrypt
-${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_crypt_and_tag ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_crypt_and_tag
-${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_finish ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_finish
-${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_free ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_free
-${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_init ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_init
-${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_setkey ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_setkey
-${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_starts ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_starts
-${KEEP_MBEDTLS_GCM_C}mbedtls_gcm_update ${MBEDTLS_BACKEND_PREFIX}_mbedtls_gcm_update
