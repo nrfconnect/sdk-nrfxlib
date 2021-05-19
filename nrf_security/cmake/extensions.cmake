@@ -87,6 +87,7 @@ function(nrf_security_symbol_strip backend out_file_list)
       "ecjpake.c.obj"    "ecjpake_alt.c.obj"
       "chacha20.c.obj"   "chacha20_alt.c.obj"
       "chachapoly.c.obj" "chachapoly_alt.c.obj"
+      "gcm.c.obj"        "gcm_alt.c.obj"
       "poly1305.c.obj"   "poly1305_alt.c.obj"
       "rsa.c.obj"        "rsa_alt.c.obj"
       "sha1.c.obj"       "sha1_alt.c.obj"
