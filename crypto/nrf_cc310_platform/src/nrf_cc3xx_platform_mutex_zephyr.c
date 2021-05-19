@@ -10,6 +10,10 @@
 #include <zephyr.h>
 #include <kernel.h>
 
+BUILD_ASSERT(IS_ENABLED(CONFIG_MULTITHREADING),
+	"This file is intended for multi-threading, but single-threading is enabled. "
+	"Please check your config build configuration!");
+
 #if defined(NRF5340_XXAA_APPLICATION)
 #include <hal/nrf_mutex.h>
 #endif /* defined(NRF5340_XXAA_APPLICATION) */
