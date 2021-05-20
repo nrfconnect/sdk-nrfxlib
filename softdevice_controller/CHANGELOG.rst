@@ -18,6 +18,8 @@ Added
 * Added radio front-end module (FEM) support, based on the :ref:`mpsl_fem` (DRGN-11059).
 * Added support for the vendor specific HCI command: Read Supported Vendor Specific Commands (DRGN-13763).
 * Added support for the vendor specific HCI command: Zephyr Read Key Hierarchy Roots (DRGN-13237).
+* On nRF53 Series devices, the maximum supported radio output power is increased from 0 dBm to 3 dBm.
+  In this case, NRF_VREQCTRL->VREGRADIO.VREQH will be set (DRGN-15476).
 
 Changes
 =======
@@ -33,6 +35,8 @@ Bug fixes
 * Fixed an issue where, in rare cases, an assert could occur when receiving a packet as a slave.
   This could only occur after performing a data length procedure on Coded PHY (DRGN-15251).
 * Fixed an issue where "HCI Read RSSI" would always return a Command Disallowed (0x0C) error code (DRGN-15310).
+* Fixed an issue where setting radio output power using the Vendor specific HCI command: Zephyr Write TX Power Level returned "Unsupported Feature or Parameter value (0x11).
+  Now the controller will select an output power level that is lower or equal to the one requested. It will return success and the selected power level (DRGN-15369).
 
 nRF Connect SDK v1.5.0
 **********************
