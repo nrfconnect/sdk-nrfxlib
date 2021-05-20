@@ -473,6 +473,20 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_prop_nrf_802154_capabilities_get_r
             NRF_802154_SERIALIZATION_ERROR_OK);
 }
 
+nrf_802154_ser_err_t nrf_802154_spinel_decode_prop_nrf_802154_time_get_ret(
+    const void * p_property_data,
+    size_t       property_data_len,
+    uint32_t   * p_time)
+{
+    spinel_ssize_t siz = spinel_datatype_unpack(p_property_data,
+                                                property_data_len,
+                                                SPINEL_DATATYPE_NRF_802154_TIME_GET_RET,
+                                                p_time);
+
+    return ((siz) < 0 ? NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE :
+            NRF_802154_SERIALIZATION_ERROR_OK);
+}
+
 nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_is(
     const void * p_cmd_data,
     size_t       cmd_data_len)
@@ -511,6 +525,8 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_is(
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CHANNEL_GET:
         // fall through
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CAPABILITIES_GET:
+        // fall through
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TIME_GET:
         // fall through
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PENDING_BIT_FOR_ADDR_SET:
         // fall through

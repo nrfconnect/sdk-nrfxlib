@@ -435,4 +435,14 @@ int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level);
  */
 nrf_802154_capabilities_t nrf_802154_capabilities_get(void);
 
+/**
+ * @brief Gets the current time.
+ *
+ * The time returned by this function is to be used to calculate timing parameters for
+ * @ref nrf_802154_transmit_at and @ref nrf_802154_receive_at functions.
+ *
+ * @returns Current time in microseconds.
+ */
+uint32_t nrf_802154_time_get(void);
+
 #endif
