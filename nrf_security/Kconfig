@@ -557,7 +557,7 @@ endif # MBEDTLS_CIPHER_MODE_OFB
 #
 config MBEDTLS_CIPHER_MODE_XTS
 	bool "AES-XTS - AES Xor-encrypt-xor with ciphertext stealing mode"
-	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C
+	depends on VANILLA_MBEDTLS_AES_C
 	default y
 	help
 	  Enable the AES Xor-encrypt-xor with ciphertext stealing mode (XTS) mode,
