@@ -28,6 +28,8 @@
 
 .. _`ZBOSS API documentation`:
 .. _`ZBOSS stack release notes`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss/index.html
+.. _`certification policy`: https://zigbeealliance.org/wp-content/uploads/2021/04/07-4842-13-Zigbee-certification-policy.pdf
+.. _`Zigbee Compliant Platforms page`: https://zigbeealliance.org/classic-platform-search/#zcp/?view_197_search=nRF%20Connect%20SDK
 
 .. _`mbed TLS backend`: https://tls.mbed.org/
 
