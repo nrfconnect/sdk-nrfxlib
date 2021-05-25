@@ -9,6 +9,15 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.2.0
+***************
+
+* Added the new GNSS API.
+* The GNSS socket has been deprecated.
+* Added the ``NRF_SO_TCP_SRV_SESSTIMEO`` socket option to control TCP server timeout.
+* Added the ``NRF_AF_UNSPEC`` address family for :c:func:`nrf_getaddrinfo`.
+* The ``NRF_POLLIN`` flag is now set with ``NRF_POLLHUP`` for stream sockets.
+
 nrf_modem 1.1.0
 ***************
 

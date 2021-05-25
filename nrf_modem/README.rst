@@ -37,5 +37,6 @@ For more information, see :ref:`nrf_modem_ug_porting`.
    doc/extensions
    doc/ug_nrf_modem_porting_os
    doc/full-dfu
+   doc/gnss_interface
    doc/CHANGELOG
    doc/api
