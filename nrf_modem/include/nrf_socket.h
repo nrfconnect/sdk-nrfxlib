@@ -26,7 +26,7 @@ typedef int32_t ssize_t;
 #endif
 #endif
 
-/**@addtogroup nrf_socket_api_utils
+/**@addtogroup nrf_socket_address_resolution
  *@{
  */
 
@@ -89,6 +89,8 @@ typedef int32_t ssize_t;
 /**@defgroup nrf_socket_families Socket family.
  * @{
  */
+/** Unspecified address family */
+#define NRF_AF_UNSPEC 0
 /** Family to identify protocols/operations local to Nordic device. */
 #define NRF_AF_LOCAL 1
 /** IPv4 socket family. */
@@ -141,7 +143,9 @@ typedef int32_t ssize_t;
 #define NRF_PROTO_PDN 514
 /** DFU protocol. */
 #define NRF_PROTO_DFU 515
-/** GNSS protocol. */
+/** GNSS protocol.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_PROTO_GNSS 516
 /**@} */
 
@@ -334,6 +338,7 @@ typedef uint32_t nrf_fd_set;
 /**
  * @defgroup nrf_socket_gnss_options GNSS socket options
  * @brief Sockets options to configure behaviour of the socket.
+ * @deprecated since v1.2.0.
  * @{
  */
 
@@ -348,6 +353,8 @@ typedef uint32_t nrf_fd_set;
  *
  * Periodic navigation mode is engaged by setting the fix interval to value
  * 10...1800. The unit is seconds.
+ *
+ * @deprecated since v1.2.0.
  */
 #define NRF_SO_GNSS_FIX_INTERVAL 1
 
@@ -362,26 +369,47 @@ typedef uint32_t nrf_fd_set;
  * regardless of whether a valid PVT estimate was produced or not. If fix retry
  * parameter is set to zero, the GNSS receiver is allowed to run indefinitely
  * until a valid PVT estimate is produced.
+ *
+ * @deprecated since v1.2.0.
  */
 #define NRF_SO_GNSS_FIX_RETRY 2
 
-/** Identifies the option used to set and/or get the GNSS system used. See nrf_gnss_system_t for details. */
+/** Identifies the option used to set and/or get the GNSS system used. See nrf_gnss_system_t for
+ *  details.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_SO_GNSS_SYSTEM 3
-/** Identifies the option used to select the data format of the received data. */
+/** Identifies the option used to select the data format of the received data.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_SO_GNSS_NMEA_MASK 4
-/** Indicates at which elevation the GPS should stop tracking a satellite. */
+/** Indicates at which elevation the GPS should stop tracking a satellite.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_SO_GNSS_ELEVATION_MASK 5
-/** Indicates the targeted start performance. */
+/** Indicates the targeted start performance.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_SO_GNSS_USE_CASE 6
-/** Identifies the option to start the GPS. nrf_gnss_delete_mask_t given as payload. */
+/** Identifies the option to start the GPS. nrf_gnss_delete_mask_t given as payload.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_SO_GNSS_START 7
-/** Identifies the option to stop the GPS. nrf_gnss_delete_mask_t given as payload. */
+/** Identifies the option to stop the GPS. nrf_gnss_delete_mask_t given as payload.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_SO_GNSS_STOP 8
-/** Identifies the option to set power save mode. */
+/** Identifies the option to set power save mode.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_SO_GNSS_POWER_SAVE_MODE 9
-/** Identifies the option to enable priority time window (with no payload). */
+/** Identifies the option to enable priority time window (with no payload).
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_SO_GNSS_ENABLE_PRIORITY 10
-/** Identifies the option to disable priority time window (with no payload). */
+/** Identifies the option to disable priority time window (with no payload).
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_SO_GNSS_DISABLE_PRIORITY 11
 
 /** @} */
@@ -389,17 +417,29 @@ typedef uint32_t nrf_fd_set;
 /**@defgroup nrf_socket_gnss_nmea_str_mask NMEA enable output strings bitmask values
  * @brief Use these bitmask values to enable different type of NMEA output strings, the values can be OR'ed together to enable multiple string types
  *        at the same time. Writing 0 to the bit position will disable the corresponding NMEA string type.
+ *
+ * @deprecated since v1.2.0.
  * @{
  */
-/** Enables Global Positioning System Fix Data. */
+/** Enables Global Positioning System Fix Data.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_NMEA_GGA_MASK 1
-/** Enables Geographic Position Latitude/Longitude and time. */
+/** Enables Geographic Position Latitude/Longitude and time.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_NMEA_GLL_MASK 2
-/** Enables DOP and active satellites. */
+/** Enables DOP and active satellites.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_NMEA_GSA_MASK 4
-/** Enables Satellites in view. */
+/** Enables Satellites in view.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_NMEA_GSV_MASK 8
-/** Enables Recommended minimum specific GPS/Transit data. */
+/** Enables Recommended minimum specific GPS/Transit data.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_NMEA_RMC_MASK 16
 /** @} */
 
@@ -408,11 +448,22 @@ typedef uint32_t nrf_fd_set;
  * @brief
  * Use these values to select which power save mode the GNSS module should use.
  *
+ * @deprecated since v1.2.0.
+ *
  * @{
  */
-#define NRF_GNSS_PSM_DISABLED		      0 /** No power save mode is enabled. */
-#define NRF_GNSS_PSM_DUTY_CYCLING_PERFORMANCE 1 /** Enables duty-cycling performance policy power save mode. */
-#define NRF_GNSS_PSM_DUTY_CYCLING_POWER	      2 /** Enables duty-cycling power policy power save mode. */
+/** No power save mode is enabled.
+ *  @deprecated since v1.2.0.
+ */
+#define NRF_GNSS_PSM_DISABLED		      0
+/** Enables duty-cycling performance policy power save mode.
+ *  @deprecated since v1.2.0.
+ */
+#define NRF_GNSS_PSM_DUTY_CYCLING_PERFORMANCE 1
+/** Enables duty-cycling power policy power save mode.
+ *  @deprecated since v1.2.0.
+ */
+#define NRF_GNSS_PSM_DUTY_CYCLING_POWER	      2
 /** @} */
 
 /**@defgroup nrf_socket_gnss_use_case_modes Use case enumerator
@@ -421,20 +472,35 @@ typedef uint32_t nrf_fd_set;
  * Use these bit values to select which use case mode the GNSS module should use. A use case mode
  * is a combination of the values of all of the bits.
  *
+ * @deprecated since v1.2.0.
  * @{
  */
-#define NRF_GNSS_USE_CASE_SINGLE_COLD_START  0 << 0 /** Single cold start performance bit 0 value */
-#define NRF_GNSS_USE_CASE_MULTIPLE_HOT_START 1 << 0 /** Mutiple hot start performance bit 0 value */
-#define NRF_GNSS_USE_CASE_NORMAL_ACCURACY    0 << 1 /** Normal accuracy fixes bit 1 value */
-#define NRF_GNSS_USE_CASE_LOW_ACCURACY	     1 << 1 /** Low accuracy fixes allowed bit 1 value */
+/** Single cold start performance bit 0 value
+ *  @deprecated since v1.2.0.
+ */
+#define NRF_GNSS_USE_CASE_SINGLE_COLD_START  (0 << 0)
+/** Multiple hot start performance bit 0 value
+ *  @deprecated since v1.2.0.
+ */
+#define NRF_GNSS_USE_CASE_MULTIPLE_HOT_START (1 << 0)
+/** Normal accuracy fixes bit 1 value
+ *  @deprecated since v1.2.0.
+ */
+#define NRF_GNSS_USE_CASE_NORMAL_ACCURACY    (0 << 1)
+/** Low accuracy fixes allowed bit 1 value
+ *  @deprecated since v1.2.0.
+ */
+#define NRF_GNSS_USE_CASE_LOW_ACCURACY	     (1 << 1)
 /** @} */
 
 /**@defgroup nrf_socket_gnss_pvt_flags Bitmask values for flags in the PVT notification.
  * @brief These bitmask values can be used to read the different bits in the flags element in the pvt struct.
- *
+ * @deprecated since v1.2.0.
  * @{
  */
-/** Identifies a valid fix is acquired */
+/** Identifies a valid fix is acquired
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_PVT_FLAG_FIX_VALID_BIT 0x01
 
 /**
@@ -447,46 +513,76 @@ typedef uint32_t nrf_fd_set;
  * GPS-UTC time offset (in seconds). If it is not decoded (bit is zero), the
  * value of 18 seconds is used. This is the effective value since January 1st
  * 2017.
+ *
+ *  @deprecated since v1.2.0.
  */
 #define NRF_GNSS_PVT_FLAG_LEAP_SECOND_VALID 0x02
 
-/** Identifies that at least one sleep period since last PVT notification */
+/** Identifies that at least one sleep period since last PVT notification
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_PVT_FLAG_SLEEP_BETWEEN_PVT 0x04
-/** Identifies that notification deadline missed */
+/** Identifies that notification deadline missed
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_PVT_FLAG_DEADLINE_MISSED 0x08
-/** Identifies that operation blocked by insufficient time windows */
+/** Identifies that operation blocked by insufficient time windows
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_PVT_FLAG_NOT_ENOUGH_WINDOW_TIME 0x10
 /**@} */
 
 /**@defgroup nrf_socket_gnss_sv_flags Bitmask values for reading out satellite flags information.
  * @brief These bitmask values can be used to read the different bits in the flags element for each satellite.
+ * @deprecated since v1.2.0.
  * @{
  */
-/** Indicate that the satellite is used in the position calculation. */
+/** Indicate that the satellite is used in the position calculation.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_SV_FLAG_USED_IN_FIX 2
-/** Indicate that the satellite is unhealthy. */
+/** Indicate that the satellite is unhealthy.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_SV_FLAG_UNHEALTHY 8
 /**@} */
 
 /**@addtogroup nrf_socket_gnss_data_agps
  * @brief Use these values in the address field when using sendto to write AGPS models to the GNSS module.
+ * @deprecated since v1.2.0.
  * @{
  */
-/** GPS UTC assistance AGPS parameters. */
+/** GPS UTC assistance AGPS parameters.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_AGPS_UTC_PARAMETERS 1
-/** GPS ephemeris assistance AGPS parameters. */
+/** GPS ephemeris assistance AGPS parameters.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_AGPS_EPHEMERIDES 2
-/** GPS almanac assistance AGPS parameters. */
+/** GPS almanac assistance AGPS parameters.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_AGPS_ALMANAC 3
-/** GPS ionospheric assistance AGPS parameters, Klobuchar model. */
+/** GPS ionospheric assistance AGPS parameters, Klobuchar model.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_AGPS_KLOBUCHAR_IONOSPHERIC_CORRECTION 4
-/** GPS ionospheric assistance AGPS parameters, NeQuick model. */
+/** GPS ionospheric assistance AGPS parameters, NeQuick model.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_AGPS_NEQUICK_IONOSPHERIC_CORRECTION 5
-/** GPS system time and SV TOW assistance AGPS parameter. */
+/** GPS system time and SV TOW assistance AGPS parameter.
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_AGPS_GPS_SYSTEM_CLOCK_AND_TOWS 6
-/** GPS location assistance AGPS parameters */
+/** GPS location assistance AGPS parameters
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_AGPS_LOCATION 7
-/** GPS integrity assistance AGPS parameters */
+/** GPS integrity assistance AGPS parameters
+ *  @deprecated since v1.2.0.
+ */
 #define NRF_GNSS_AGPS_INTEGRITY 8
 /** @} */
 
@@ -527,6 +623,10 @@ typedef uint32_t nrf_fd_set;
  * it can indicate that by setting this socket option before the next send call.
  */
 #define NRF_SO_RAI_WAIT_MORE               54
+/** Configurable TCP server session timeout in minutes.
+ * Range is 0 to 135. 0 is no timeout and 135 is 2 h 15 min. Default is 0 (no timeout).
+ */
+#define NRF_SO_TCP_SRV_SESSTIMEO           55
 /**@} */
 
 /**@defgroup nrf_socket_options_levels Socket option levels enumerator
@@ -538,6 +638,7 @@ typedef uint32_t nrf_fd_set;
 /** @deprecated since v1.1.0. */
 #define NRF_SOL_PDN    514
 #define NRF_SOL_DFU    515
+/** @deprecated since v1.2.0. */
 #define NRF_SOL_GNSS   516
 /**@} */
 
@@ -596,10 +697,9 @@ typedef uint32_t nrf_fd_set;
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_123S	123
 /**@} */
 
-/**
- * @brief Socket port type.
+/**@addtogroup nrf_socket_api
+ * @{
  */
-typedef uint16_t nrf_in_port_t;
 
 /**
  * @brief Structure specifying time interval.
@@ -610,6 +710,16 @@ struct nrf_timeval {
 	/** Time interval microseconds. */
 	uint32_t tv_usec;
 };
+/**@} */
+
+/**@addtogroup nrf_socket_address_resolution
+ * @{
+ */
+
+/**
+ * @brief Socket port type.
+ */
+typedef uint16_t nrf_in_port_t;
 
 /**
  * @brief Socket families.
@@ -691,10 +801,6 @@ typedef struct nrf_sockaddr_in6 nrf_sockaddr_in6_t;
 typedef struct nrf_in6_addr nrf_in6_addr;
 typedef struct nrf_in6_addr nrf_in6_addr_t;
 typedef struct nrf_sockaddr_in nrf_sockaddr_in_t;
-
-/**@addtogroup nrf_socket_api_utils
- * @{
- */
 
 /**
  * @brief Socket module size type.
@@ -936,11 +1042,14 @@ typedef int32_t nrf_dfu_err_t;
 /**@defgroup nrf_socket_gnss_data_frame GNSS data frames
  * @brief    GNSS Data frame formats. All data frames will be wrapped with the nrf_gnss_data_frame_t which will identify the frame type in the
  *           data_id struct element.
+ * @deprecated since v1.2.0.
  * @{
  */
 
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_MAX_SATELLITES 12
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** 4-digit representation (Gregorian calendar). */
 	uint16_t year;
@@ -958,6 +1067,7 @@ typedef struct {
 	uint16_t ms;
 } nrf_gnss_datetime_t;
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** SV number 1...32 for GPS. */
 	uint16_t sv;
@@ -973,6 +1083,7 @@ typedef struct {
 	uint8_t flags;
 } nrf_gnss_sv_t;
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** Latitude in degrees. */
 	double latitude;
@@ -1001,20 +1112,29 @@ typedef struct {
 	nrf_gnss_sv_t sv[NRF_GNSS_MAX_SATELLITES];
 } nrf_gnss_pvt_data_frame_t;
 
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_NMEA_MAX_LEN 83
 
 /**@brief Single null-terminated NMEA sentence
+ * @deprecated since v1.2.0.
  */
 typedef char nrf_gnss_nmea_data_frame_t[NRF_GNSS_NMEA_MAX_LEN];
 
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_AGPS_GPS_UTC_REQUEST		  0
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_AGPS_KLOBUCHAR_REQUEST		  1
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_AGPS_NEQUICK_REQUEST		  2
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_AGPS_SYS_TIME_AND_SV_TOW_REQUEST 3
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_AGPS_POSITION_REQUEST		  4
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_AGPS_INTEGRITY_REQUEST		  5
 
 /**@brief AGPS notification data frame used by the GPS module to let the application know it needs new APGS data.
+ * @deprecated since v1.2.0.
  */
 typedef struct {
 	/** Bit mask indicating the satellite PRNs for which the assistance GPS ephemeris data is needed. */
@@ -1025,11 +1145,15 @@ typedef struct {
 	uint32_t data_flags;
 } nrf_gnss_agps_data_frame_t;
 
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_PVT_DATA_ID  1
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_NMEA_DATA_ID 2
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_AGPS_DATA_ID 3
 
 /**@brief Wrapper struct that used for all data frames read from the GNSS module
+ * @deprecated since v1.2.0.
  */
 typedef struct {
 	uint8_t data_id;
@@ -1048,6 +1172,7 @@ typedef struct {
 /**@defgroup nrf_socket_gnss_data_agps AGPS data types
  * @ingroup  nrf_socket_gnss_agps
  * @brief    AGPS Data types.
+ * @deprecated since v1.2.0.
  * @{
  */
 
@@ -1061,9 +1186,11 @@ typedef struct {
  *          - @c NRF_GNSS_AGPS_GPS_SYSTEM_CLOCK_AND_TOWS
  *          - @c NRF_GNSS_AGPS_LOCATION
  *          - @c NRF_GNSS_AGPS_INTEGRITY
+ * @deprecated since v1.2.0.
  */
 typedef uint16_t nrf_gnss_agps_data_type_t;
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** First order term of polynomial (sec/sec). Scale factor 2^-50. Range -8388608...8388607 (25 bits). */
 	int32_t a1;
@@ -1083,6 +1210,7 @@ typedef struct {
 	int8_t delta_tlsf;
 } nrf_gnss_agps_data_utc_t;
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** Satellite ID (dimensionless). Range 1...32. */
 	uint8_t sv_id;
@@ -1138,6 +1266,7 @@ typedef struct {
 	int16_t cuc;
 } nrf_gnss_agps_data_ephemeris_t;
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** Satellite ID (dimensionless). Range 1...32. */
 	uint8_t sv_id;
@@ -1169,6 +1298,7 @@ typedef struct {
 	int16_t af1;
 } nrf_gnss_agps_data_almanac_t;
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** Constant term (sec). Scale factor 2^-30. */
 	int8_t alpha0;
@@ -1188,6 +1318,7 @@ typedef struct {
 	int8_t beta3;
 } nrf_gnss_agps_data_klobuchar_t;
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** Effective ionisation level 1st order parameter (SFU). Scale factor 2^-2. Range 0...2047  (11 bits). */
 	int16_t ai0;
@@ -1201,6 +1332,7 @@ typedef struct {
 	uint8_t storm_valid;
 } nrf_gnss_agps_data_nequick_t;
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** First two bits (MSB) represent the reserved bit and integrity status flag in the telemetry message (TLM) word.
 	 *  The following 14 bits represent the TLM being broadcast by the satellite.
@@ -1210,8 +1342,10 @@ typedef struct {
 	uint8_t flags;
 } nrf_gnss_agps_data_tow_element_t;
 
+/** @deprecated since v1.2.0. */
 #define NRF_GNSS_AGPS_MAX_SV_TOW 32
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** Day number since Jan 6th, 1980 00:00:00 UTC (USNO) */
 	uint16_t date_day;
@@ -1225,6 +1359,7 @@ typedef struct {
 	nrf_gnss_agps_data_tow_element_t sv_tow[NRF_GNSS_AGPS_MAX_SV_TOW];
 } nrf_gnss_agps_data_system_time_and_sv_tow_t;
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** Geodetic latitude in WGS-84. Range -8388607...8388607.
 	 *  The relation between the coded number N and the latitude
@@ -1277,6 +1412,7 @@ typedef struct {
 	uint8_t confidence;
 } nrf_gnss_agps_data_location_t;
 
+/** @deprecated since v1.2.0. */
 typedef struct {
 	/** Bit mask indicating the unhealthy GPS satellite PRNs. When a mask bit is set,
 	 *  the corresponding GPS satellite PRN is unhealthy.
@@ -1288,24 +1424,28 @@ typedef struct {
 
 /**@defgroup nrf_socketopt_gnss_types GNSS socket option types
  * @brief Data types defined to set and get socket options on GNSS sockets.
+ * @deprecated since v1.2.0.
  * @{
  */
 
 /**@brief Defines the interval between each fix in seconds.
  * @details Allowed values are 0, 1, 10..1800, value 0 denotes single fix.
  *          Default interval is 1 second (continous mode), 0 denotes a single fix.
+ * @deprecated since v1.2.0.
  */
 typedef uint16_t nrf_gnss_fix_interval_t;
 
 /**@brief Defines how long (in seconds) the receiver should try to get a fix.
  * @details The default retry wait time is 60 seconds before it gives up.
  *          0 denotes an infinite limit.
+ * @deprecated since v1.2.0.
  */
 typedef uint16_t nrf_gnss_fix_retry_t;
 
 /**@brief Defines which GNSS system to use.
  * @details 0 denotes GPS. Currently, only GPS is supported and any other value
  *          returns an error.
+ * @deprecated since v1.2.0.
  */
 typedef uint8_t nrf_gnss_system_t;
 
@@ -1314,16 +1454,19 @@ typedef uint8_t nrf_gnss_system_t;
  *          certain elevation, because the information sent from the GPS gets more
  *          inaccurate as it gets closer to the horizon. Acceptable values
  *          are between 0 and 30 degrees.
+ * @deprecated since v1.2.0.
  */
 typedef uint8_t nrf_gnss_elevation_mask_t;
 
 /**@brief Defines the targeted start performance.
  * @details 0 denotes single cold start performance.
  *          1 denotes multiple hot start performance.
+ * @deprecated since v1.2.0.
  */
 typedef uint8_t nrf_gnss_use_case_t;
 
 /**@brief Defines if NMEA frames should be added.
+ * @deprecated since v1.2.0.
  */
 typedef uint16_t nrf_gnss_nmea_mask_t;
 
@@ -1349,6 +1492,7 @@ typedef uint16_t nrf_gnss_nmea_mask_t;
  * a failure to produce a valid PVT estimate during duty-cycled tracking may
  * cause the GNSS receiver to resume continuous tracking.
  *
+ * @deprecated since v1.2.0.
  */
 typedef uint8_t nrf_gnss_power_save_mode_t;
 
@@ -1362,6 +1506,7 @@ typedef uint8_t nrf_gnss_power_save_mode_t;
  *          - Bit 5 denotes GPS week number data.
  *          - Bit 6 denotes leap second (UTC parameters) data.
  *          - Bit 7 denotes local clock (TCXO) frequency offset data.
+ * @deprecated since v1.2.0.
  */
 typedef uint32_t nrf_gnss_delete_mask_t;
 /** @} */
@@ -1689,7 +1834,7 @@ int nrf_accept(int sock, void *p_cliaddr, nrf_socklen_t *p_addrlen);
 
 /**@} */
 
-/**@defgroup nrf_socket_api_utils Socket utility functions
+/**@defgroup nrf_socket_address_resolution Socket address resolution API
  * @brief Address resolution utility functions.
  * @details Utility functions and macros for resolving host name and converting address information between
  *          human readable and a format the library expect.
@@ -1775,7 +1920,7 @@ void nrf_freeaddrinfo(struct nrf_addrinfo *p_res);
  *                      nrf_in6_addr structure, respectively.
  *                      Pass @c NULL to unset the secondary DNS address.
  *
- * @return int Zero on success, or an  error from @c nrf_modem/include/nrf_errno.h
+ * @return int Zero on success, or an  error from @file nrf_modem/include/nrf_errno.h
  *             otherwise.
  */
 int nrf_setdnsaddr(int family, const void *in_addr);

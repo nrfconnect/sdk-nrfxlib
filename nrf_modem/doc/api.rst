@@ -7,6 +7,10 @@ API documentation
    :local:
    :depth: 2
 
+.. note::
+
+   Starting from Modem library v1.2.0, the GNSS socket is deprecated and replaced with the `GNSS API <https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrfxlib/nrf_modem/doc/api.html#gnss-api>`_.
+
 Library Management
 ******************
 
@@ -63,6 +67,34 @@ Socket protocols
    :project: nrfxlib
    :members:
 
+Socket option levels
+====================
+
+.. doxygengroup:: nrf_socket_options_levels
+   :project: nrfxlib
+   :members:
+
+Generic socket options
+======================
+
+.. doxygengroup:: nrf_socket_options_sockets
+   :project: nrfxlib
+   :members:
+
+Socket send and recv flags
+==========================
+
+.. doxygengroup:: nrf_socket_send_recv_flags
+   :project: nrfxlib
+   :members:
+
+fcntl parameters
+================
+
+.. doxygengroup:: nrf_fcnt_commands
+   :project: nrfxlib
+   :members:
+
 Socket API
 **********
 
@@ -74,6 +106,13 @@ TLS socket
 **********
 
 .. doxygengroup:: nrf_socket_tls
+   :project: nrfxlib
+   :members:
+
+DTLS handshake timeout values
+=============================
+
+.. doxygengroup:: nrf_socket_tls_dtls_handshake_timeouts
    :project: nrfxlib
    :members:
 
@@ -138,6 +177,13 @@ DFU socket
    :project: nrfxlib
    :members:
 
+DFU errors
+==========
+
+.. doxygengroup:: nrf_dfu_errors
+   :project: nrfxlib
+   :members:
+
 PDN socket
 **********
 
@@ -148,7 +194,7 @@ PDN socket
 Socket address resolution API
 *****************************
 
-.. doxygengroup:: nrf_socket_api_utils
+.. doxygengroup:: nrf_socket_address_resolution
    :project: nrfxlib
    :members:
 
@@ -170,6 +216,111 @@ Necessary data types and defines to poll for
 events on one or more sockets using nrf_poll().
 
 .. doxygengroup:: nrf_socket_api_poll
+   :project: nrfxlib
+   :members:
+
+GNSS API
+********
+
+.. doxygengroup:: nrf_modem_gnss
+   :project: nrfxlib
+   :members:
+
+Event types
+===========
+
+.. doxygengroup:: nrf_modem_gnss_event_type
+   :project: nrfxlib
+   :members:
+
+Data types
+==========
+
+.. doxygengroup:: nrf_modem_gnss_data_type
+   :project: nrfxlib
+   :members:
+
+PVT notification flags bitmask values
+=====================================
+
+.. doxygengroup:: nrf_modem_gnss_pvt_flag_bitmask
+   :project: nrfxlib
+   :members:
+
+Satellite flags bitmask values
+==============================
+
+.. doxygengroup:: nrf_modem_gnss_sv_flag_bitmask
+   :project: nrfxlib
+   :members:
+
+A-GPS data request bitmask values
+=================================
+
+.. doxygengroup:: nrf_modem_gnss_agps_data_bitmask
+   :project: nrfxlib
+   :members:
+
+A-GPS data types
+================
+
+.. doxygengroup:: nrf_modem_gnss_agps_data_type
+   :project: nrfxlib
+   :members:
+
+Delete bitmask values
+=====================
+
+.. doxygengroup:: nrf_modem_gnss_delete_bitmask
+   :project: nrfxlib
+   :members:
+
+GNSS system bitmask values
+==========================
+
+.. doxygengroup:: nrf_modem_gnss_system_bitmask
+   :project: nrfxlib
+   :members:
+
+NMEA string bitmask values
+==========================
+
+.. doxygengroup:: nrf_modem_gnss_nmea_string_bitmask
+   :project: nrfxlib
+   :members:
+
+Power save modes
+================
+
+.. doxygengroup:: nrf_modem_gnss_power_save_modes
+   :project: nrfxlib
+   :members:
+
+Use case bitmask values
+=======================
+
+.. doxygengroup:: nrf_modem_gnss_use_case_bitmask
+   :project: nrfxlib
+   :members:
+
+Sleep timing sources
+====================
+
+.. doxygengroup:: nrf_modem_gnss_timing_source
+   :project: nrfxlib
+   :members:
+
+QZSS NMEA modes
+===============
+
+.. doxygengroup:: nrf_modem_gnss_qzss_nmea_mode
+   :project: nrfxlib
+   :members:
+
+Dynamics modes
+==============
+
+.. doxygengroup:: nrf_modem_gnss_dynamics_mode
    :project: nrfxlib
    :members:
 
