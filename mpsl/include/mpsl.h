@@ -64,6 +64,11 @@ typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t li
  *                               shall call @ref mpsl_low_priority_process after this IRQ has occurred.
  * @param[in]  p_assert_handler  Pointer to MPSL assert handler.
  *
+ * @note If `CONFIG_SYSTEM_CLOCK_NO_WAIT` is set to 0,
+ *       never modify the SEVONPEND flag in the SCR register,
+ *       while this function is executing.
+ *       Doing so might lead to a deadlock.
+ *
  *
  * @retval  0               MPSL is successfully initialized.
  * @retval  -NRF_EPERM      MPSL is already initialized.
