@@ -1690,6 +1690,8 @@ endif # NRF_SECURITY_ADVANCED
 
 config MBEDTLS_PSA_CRYPTO_C
 	bool "Enable PSA API support"
+	depends on (SOC_NRF52840 || SOC_NRF9160 || SOC_NRF5340_CPUAPP) && \
+				(!BUILD_WITH_TFM && !SPM)
 	help
 	  Enables the usage of the PSA APIs in mbed TLS.
 	  Corresponds to MBEDTLS_PSA_CRYPTO_C setting in mbed TLS config file.
