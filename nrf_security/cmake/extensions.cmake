@@ -13,14 +13,21 @@
 # C flags/Linker flags
 #
 macro(nrf_security_add_zephyr_options lib_name)
-  # Add compile options and includes from zephyr
-  target_compile_options(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_COMPILE_OPTIONS>)
-  target_include_directories(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_INCLUDE_DIRECTORIES>)
-  target_include_directories(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_SYSTEM_INCLUDE_DIRECTORIES>)
+  if(TARGET zephyr_interface)
+    # Add compile options and includes from zephyr
+    target_compile_options(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_COMPILE_OPTIONS>)
+    target_include_directories(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_INCLUDE_DIRECTORIES>)
+    target_include_directories(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_SYSTEM_INCLUDE_DIRECTORIES>)
 
-  # Unsure if these are needed any more
-  target_compile_options(${lib_name} PRIVATE ${TOOLCHAIN_C_FLAGS})
-  target_ld_options(${lib_name} PRIVATE ${TOOLCHAIN_LD_FLAGS})
+    # Unsure if these are needed any more
+    target_compile_options(${lib_name} PRIVATE ${TOOLCHAIN_C_FLAGS})
+    target_ld_options(${lib_name} PRIVATE ${TOOLCHAIN_LD_FLAGS})
+  else()
+    target_compile_options(${lib_name} PRIVATE "SHELL: -imacros ${ZEPHYR_AUTOCONF}")
+    target_include_directories(${lib_name} PRIVATE
+      $<$<TARGET_EXISTS:platform_cc3xx>:$<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>>
+    )
+  endif()
 endmacro()
 
 #
@@ -96,8 +103,7 @@ function(nrf_security_symbol_strip backend out_file_list)
     endif()
   endforeach()
 
-  # Special handling of files that cannot be which cannot be
-  # converted into a Kconfig setting.
+  # Special handling of files which cannot be converted into a Kconfig setting.
   set(indices 1)
   set(file_1   "poly.c.obj")
   set(symbol_1 MBEDTLS_POLY1305_C)
@@ -148,7 +154,7 @@ endmacro()
 # This function will create a symbol renaming script for any library
 # named mbedcrypto_<backend> corresponding to the parameter "backend"
 #
-function(nrf_security_symbol_rename backend target rename_template out_target)
+function(nrf_security_configure_rename_file backend input output)
   nrf_security_debug("========== Running nrf_security_symbol_rename for ${backend} ==========")
   string(TOUPPER "${backend}" BACKEND_NAME)
   #
@@ -168,38 +174,14 @@ function(nrf_security_symbol_rename backend target rename_template out_target)
   keep_config_test_glue_depends("MBEDTLS_AES_C" "MBEDTLS_CIPHER_MODE_OFB" ${BACKEND_NAME})
   keep_config_test_glue_depends("MBEDTLS_AES_C" "MBEDTLS_CIPHER_MODE_CTR" ${BACKEND_NAME})
 
-  string(TOLOWER "${backend}" MBEDTLS_BACKEND_PREFIX)
-  configure_file(${rename_template}
-                 symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt)
+  #
+  # Set variable for the backend in rename
+  #
+  set(MBEDTLS_BACKEND_PREFIX ${backend})
 
-  get_property(target_type TARGET ${target} PROPERTY TYPE)
-  if(${target_type} STREQUAL OBJECT_LIBRARY)
-    add_custom_target(${target}_renaming
-                      COMMAND ${CMAKE_COMMAND}
-                              -DCMAKE_OBJCOPY=${CMAKE_OBJCOPY}
-                              -DOBJECTS="$<TARGET_OBJECTS:${target}>"
-                              -DRENAME="${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt"
-                              -P ${NRF_SECURITY_ROOT}/cmake/symbol_rename_script.cmake
-                      DEPENDS ${target}
-    )
-    set(${out_target} ${target}_renaming PARENT_SCOPE)
-  else()
-    get_property(imported_location TARGET ${target} PROPERTY IMPORTED_LOCATION)
-    get_filename_component(libraryname ${imported_location} NAME)
-
-    set(renamed_location ${CMAKE_CURRENT_BINARY_DIR}/rename/${backend}/${libraryname})
-
-    add_custom_command(OUTPUT ${renamed_location}
-      COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/rename/${backend}
-      COMMAND ${CMAKE_OBJCOPY}
-              --redefine-syms ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${MBEDTLS_BACKEND_PREFIX}.txt
-              ${imported_location}
-              ${renamed_location}
-      DEPENDS ${imported_location}
-    )
-
-    set(${out_target} ${renamed_location} PARENT_SCOPE)
-  endif()
+  configure_file(${input}
+                 ${output}
+  )
 endfunction()
 
 #
@@ -219,13 +201,13 @@ endfunction()
 function(nrf_security_library)
   set(options NOT_USED)
   set(one_value_args NOGLUE BASE)
-  set(multi_value_args FILES LINK_LIBRARIES INCLUDES DEFINES)
+  set(multi_value_args FILES LINK_LIBRARIES INCLUDES DEFINES OPTIONS)
   cmake_parse_arguments(LIBRARY "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
   set(sources "")
 
   # Resolve library name, backend name, and set library type.
   if(DEFINED LIBRARY_NOGLUE)
-    set(lib_name mbedcrypto_${LIBRARY_NOGLUE}_noglue)
+    set(lib_name ${mbedcrypto_target}_${LIBRARY_NOGLUE}_noglue)
     set(backend_name ${LIBRARY_NOGLUE})
   elseif(DEFINED LIBRARY_BASE)
     set(lib_name ${LIBRARY_BASE})
@@ -281,19 +263,21 @@ function(nrf_security_library)
     target_include_directories(${lib_name} PRIVATE ${LIBRARY_INCLUDES})
   endif()
 
-  # Add the standard includes for this library
-  target_include_directories(${lib_name} PRIVATE
-      ${common_includes}
-      ${config_include}
-      $<$<TARGET_EXISTS:platform_cc3xx>:${mbedcrypto_glue_include_path}/threading>
-      $<$<TARGET_EXISTS:platform_cc3xx>:$<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>>
-  )
+  # Add includes for mbed TLS
+  target_link_libraries(${lib_name} PRIVATE mbedcrypto_includes)
 
   # Add defines (if set)
   if(DEFINED LIBRARY_DEFINES)
     nrf_security_debug("Add compile definitions for ${lib_name}: ${LIBRARY_DEFINES}")
     target_compile_definitions(${lib_name} PRIVATE ${LIBRARY_DEFINES})
   endif()
+
+  # Add options (if set)
+  if(DEFINED LIBRARY_OPTIONS)
+    nrf_security_debug("Add compile definitions for ${lib_name}: ${LIBRARY_OPTIONS}")
+    target_compile_options(${lib_name} PRIVATE ${LIBRARY_OPTIONS})
+  endif()
+
 
   # Add dependencies (if set)
   if(DEFINED LIBRARY_LINK_LIBRARIES)
@@ -323,10 +307,10 @@ function(nrf_security_library_glue)
   set(sources "")
 
   if(GLUE_LIB_ALT)
-    set(lib_name mbedcrypto_glue)
+    set(lib_name ${mbedcrypto_target}_glue)
     set(backend_name dummy)
   else()
-    set(lib_name mbedcrypto_glue_${GLUE_LIB_BACKEND})
+    set(lib_name ${mbedcrypto_target}_glue_${GLUE_LIB_BACKEND})
     set(backend_name ${GLUE_LIB_BACKEND})
     string(TOUPPER ${GLUE_LIB_BACKEND} BACKEND_UPPER)
   endif()
@@ -465,12 +449,8 @@ function(nrf_security_library_shared)
   target_compile_options(${LIB_NAME} PRIVATE ${TOOLCHAIN_C_FLAGS})
   target_ld_options(${LIB_NAME} PRIVATE ${TOOLCHAIN_LD_FLAGS})
 
-  target_include_directories(${LIB_NAME} PRIVATE
-      ${common_includes}
-      ${config_include}
-      $<$<TARGET_EXISTS:platform_cc3xx>:${mbedcrypto_glue_include_path}/threading>
-      $<$<TARGET_EXISTS:platform_cc3xx>:$<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>>
-  )
+  # All regular includes, no generated includes (no xxxx-alt.h is added)
+  target_link_libraries(${LIB_NAME} PRIVATE mbedcrypto_includes)
 
   # Use configurations for vanilla as shared will always need configurations
   # that aren't enabling any alternate implemenatations.
@@ -511,8 +491,8 @@ function(nrf_security_target_embed_libraries)
 
       if(${target_type} STREQUAL STATIC_LIBRARY)
         get_property(imported_location
-	             TARGET ${library}
-		     PROPERTY IMPORTED_LOCATION
+                     TARGET ${library}
+                     PROPERTY IMPORTED_LOCATION
         )
         if(DEFINED imported_location)
           list(APPEND imported_libraries ${library})
@@ -530,17 +510,39 @@ function(nrf_security_target_embed_libraries)
 
     if (CONFIG_NRF_SECURITY_MULTI_BACKEND AND DEFINED backend_name)
       # Rename functions in object files
-      nrf_security_symbol_rename(${backend_name} ${target}
-           ${NRF_SECURITY_ROOT}/src/mbedcrypto_glue/symbol_rename.template.txt
-	   rename_target
+      # Rename functions in object files
+      nrf_security_configure_rename_file(${backend_name}
+        ${NRF_SECURITY_ROOT}/src/mbedcrypto_glue/symbol_rename.template.txt
+        ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${backend_name}.txt
       )
-      set(imported_library_location ${rename_target})
+      get_property(imported_location TARGET ${target} PROPERTY IMPORTED_LOCATION)
+      get_filename_component(libraryname ${imported_location} NAME)
+
+      set(renamed_location ${CMAKE_CURRENT_BINARY_DIR}/rename/${backend_name}/${libraryname})
+
+      add_custom_command(OUTPUT ${renamed_location}
+        COMMAND
+          ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/rename/${backend}
+        COMMAND
+          ${CMAKE_OBJCOPY}
+            --redefine-syms ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${backend_name}.txt
+            ${imported_location}
+            ${renamed_location}
+        DEPENDS
+          ${imported_location}
+      )
+      add_custom_target(${target}_rename DEPENDS ${renamed_location})
+
+      set(imported_library_location ${renamed_location})
+      list(APPEND dep_list ${target}_rename)
     else()
       get_property(imported_library_location TARGET ${target} PROPERTY IMPORTED_LOCATION)
     endif()
 
     execute_process(
-      COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}
+      COMMAND
+        ${CMAKE_COMMAND}
+          -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}
     )
 
     set(strip_list)
@@ -550,19 +552,17 @@ function(nrf_security_target_embed_libraries)
       set(strip_command COMMAND ${CMAKE_COMMAND} -E remove ${strip_list})
     endif()
 
-    add_custom_target(${target}_extract
+    add_custom_command(TARGET ${SEC_LIBS_TARGET}
+      POST_BUILD
       COMMAND ${CMAKE_AR} x ${imported_library_location}
       ${strip_command}
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}
-      DEPENDS ${imported_library_location}
-      COMMAND_EXPAND_LISTS
     )
 
-    list(APPEND dep_list ${target}_extract)
     list(APPEND archive ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name})
   endforeach()
 
-  if(DEFINED dep_list )
+  if(DEFINED dep_list)
     add_dependencies(${SEC_LIBS_TARGET} ${dep_list})
   endif()
 
@@ -608,16 +608,27 @@ function(nrf_security_target_embed_objects)
 
     if (CONFIG_NRF_SECURITY_MULTI_BACKEND AND DEFINED backend_name)
       # Rename functions in object files
-      nrf_security_symbol_rename(${backend_name} ${target}
-           ${NRF_SECURITY_ROOT}/src/mbedcrypto_glue/symbol_rename.template.txt
-	   rename_target
+      nrf_security_configure_rename_file(${backend_name}
+        ${NRF_SECURITY_ROOT}/src/mbedcrypto_glue/symbol_rename.template.txt
+        ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${backend_name}.txt
       )
 
-      list(APPEND dep_list ${rename_target})
+      add_custom_command(TARGET ${SEC_LIBS_TARGET}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND}
+          -DCMAKE_OBJCOPY=${CMAKE_OBJCOPY}
+          -DCMAKE_AR=${CMAKE_AR}
+          -DOBJECTS="$<TARGET_OBJECTS:${target}>"
+          -DARCHIVE=$<TARGET_FILE:${SEC_LIBS_TARGET}>
+          -DRENAME="${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${backend_name}.txt"
+          -DOUT_FOLDER=${CMAKE_CURRENT_BINARY_DIR}/${backend_name}
+          -P ${NRF_SECURITY_ROOT}/cmake/symbol_rename_archive_script.cmake
+      )
+    else()
+      # Copy the list back (now stripped and/or renamed)
+      list(APPEND obj_list ${target_objs})
     endif()
-
-    # Copy the list back (now stripped and/or renamed)
-    list(APPEND obj_list ${target_objs})
+    list(APPEND dep_list ${target})
   endforeach()
 
   if(DEFINED dep_list)

@@ -11,4 +11,5 @@
 # Enabling core functionality
 #
 kconfig_mbedtls_config("MBEDTLS_PSA_CRYPTO_C")
+kconfig_mbedtls_config("MBEDTLS_PSA_CRYPTO_SPM")
 kconfig_mbedtls_config("MBEDTLS_PSA_CRYPTO_STORAGE_C")

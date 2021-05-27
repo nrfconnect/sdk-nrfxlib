@@ -46,7 +46,7 @@ endif
 menuconfig NRF_CC3XX_PLATFORM
 	bool "nrf_cc3xx_platform HW crypto library for nRF devices with CryptoCell CC3xx."
 	select NRFXLIB_CRYPTO
-	depends on CRYPTOCELL_USABLE
+	depends on CRYPTOCELL_USABLE && !BUILD_WITH_TFM
 	help
 		To use, link with nrfxlib_crypto in CMake.
 

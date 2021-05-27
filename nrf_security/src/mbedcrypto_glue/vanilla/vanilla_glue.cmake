@@ -14,6 +14,6 @@ nrf_security_library_glue(BACKEND vanilla
     ${CMAKE_CURRENT_LIST_DIR}/ccm_vanilla.c
     ${CMAKE_CURRENT_LIST_DIR}/dhm_vanilla.c
   LINK_LIBRARIES
-    mbedcrypto_common_glue
-    mbedcrypto_vanilla
+    ${mbedcrypto_target}_common_glue
+    ${mbedcrypto_target}_vanilla
 )

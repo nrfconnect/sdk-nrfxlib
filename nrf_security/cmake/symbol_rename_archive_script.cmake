@@ -15,10 +15,22 @@
 # Note: The OUTPUT is the same as input in the current version of the script.
 #       This will change in an upcoming refactoring
 #
+execute_process(
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${OUT_FOLDER}
+)
+
 foreach(obj ${OBJECTS})
+  get_filename_component(obj_filename ${obj} NAME)
   execute_process(COMMAND ${CMAKE_OBJCOPY}
                           --redefine-syms ${RENAME}
                           ${obj}
-                          ${OUTPUT}
+                          ${OUT_FOLDER}/${obj_filename}
   )
+  list(APPEND renamed_objects ${OUT_FOLDER}/${obj_filename})
 endforeach()
+
+execute_process(COMMAND ${CMAKE_AR}
+                        q
+                        ${ARCHIVE}
+                        ${renamed_objects}
+)

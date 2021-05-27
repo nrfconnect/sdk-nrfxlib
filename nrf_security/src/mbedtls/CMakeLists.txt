@@ -46,6 +46,7 @@ append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library/
     cipher_wrap.c
     ctr_drbg.c
     des.c
+    debug.c
     entropy.c
     entropy_poll.c
     error.c
@@ -84,11 +85,10 @@ append_with_prefix(src_x509 ${ARM_MBEDTLS_PATH}/library/
     pkcs11.c
     x509.c
     x509_create.c
+    x509write_csr.c
     x509_crl.c
     x509_crt.c
     x509_csr.c
-    x509write_crt.c
-    x509write_csr.c
 )
 
 nrf_security_debug("Creating list of files for TLS lib")
@@ -96,8 +96,8 @@ nrf_security_debug("Creating list of files for TLS lib")
 # TLS files
 #
 append_with_prefix(src_tls ${ARM_MBEDTLS_PATH}/library/
-    debug.c
     net_sockets.c
+    platform.c
     ssl_cache.c
     ssl_cli.c
     ssl_cookie.c
@@ -114,7 +114,6 @@ nrf_security_debug("Adding replacement files (modified mbed TLS)")
 append_with_prefix(src_crypto_replacement
   ${NRF_SECURITY_ROOT}/src/mbedtls/replacements/
   pem.c
-  memory_buffer_alloc.c
 )
 
 append_with_prefix(src_tls_replacement
@@ -122,7 +121,20 @@ append_with_prefix(src_tls_replacement
   ssl_ciphersuites.c
 )
 
-zephyr_include_directories(${common_includes})
+# Add files that are going into the TF-M build and PSA without TF-M
+# But not in NS build (which only should have mbed TLS)
+if(COMPILE_PSA_APIS)
+  append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library/
+    psa_crypto.c
+    psa_crypto_client.c
+    psa_crypto_driver_wrappers.c
+    psa_crypto_slot_management.c
+    psa_crypto_storage.c
+    psa_crypto_ecp.c
+    psa_crypto_rsa.c
+  )
+
+endif()
 
 #
 # Creating prerequisites for mbedcrypto
@@ -144,7 +156,6 @@ add_subdirectory(shared)
 if (CONFIG_CC3XX_BACKEND)
   nrf_security_debug("-------- Adding src/mbedtls/cc310")
   add_subdirectory(cc310)
-  list(APPEND cmake_directories cc310)
 endif()
 
 #
@@ -153,7 +164,6 @@ endif()
 if (CONFIG_OBERON_BACKEND)
   nrf_security_debug("-------- Adding src/mbedtls/oberon")
   add_subdirectory(oberon)
-  list(APPEND cmake_directories oberon)
 endif()
 
 #
@@ -162,40 +172,39 @@ endif()
 if (CONFIG_MBEDTLS_VANILLA_BACKEND)
   nrf_security_debug("-------- Adding src/mbedtls/vanilla")
   add_subdirectory(vanilla)
-  list(APPEND cmake_directories vanilla)
 endif()
 
 #
 # Add mbedcrypto_base_vanilla for everything that is not in a backend
 #
-nrf_security_library(BASE mbedcrypto_base_vanilla
+nrf_security_library(BASE ${mbedcrypto_target}_base_vanilla
   FILES
     ${src_crypto}
     ${src_crypto_replacement}
+  DEFINES
+    $<TARGET_PROPERTY:${mbedcrypto_target},INTERFACE_COMPILE_DEFINITIONS>
+  OPTIONS
+    $<TARGET_PROPERTY:${mbedcrypto_target},INTERFACE_COMPILE_OPTIONS>
   LINK_LIBRARIES
-    mbedtls_common
-    $<TARGET_NAME_IF_EXISTS:mbedcrypto_shared>
+    $<TARGET_NAME_IF_EXISTS:${mbedcrypto_target}_shared>
+    $<GENEX_EVAL:$<TARGET_PROPERTY:${mbedcrypto_target},PRIVATE_LINK_LIBRARIES>>
+    mbedcrypto_generated_includes
 )
-
-# Consider: Move this knowledge out of here.
-if (CONFIG_NRF_SECURITY_MULTI_BACKEND)
-  list(APPEND cmake_directories ../mbedcrypto_glue)
-endif()
 
 #
 # Library for x.509
 #
-if (CONFIG_MBEDTLS_X509_LIBRARY)
-  add_library(mbedx509 STATIC
+if (CONFIG_MBEDTLS_X509_LIBRARY AND NOT CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
+  add_library(${MBEDTLS_TARGET_PREFIX}mbedx509 STATIC
     ${src_x509}
   )
 
   # Add options from Zephyr build
-  nrf_security_add_zephyr_options(mbedx509)
+  nrf_security_add_zephyr_options(${MBEDTLS_TARGET_PREFIX}mbedx509)
 
-  target_link_libraries(mbedx509 PRIVATE
-    mbedtls_common
-    mbedcrypto_static_alias
+  target_link_libraries(${MBEDTLS_TARGET_PREFIX}mbedx509
+    PRIVATE
+      ${mbedcrypto_target}
   )
 
 endif()
@@ -203,18 +212,19 @@ endif()
 #
 # Library for TLS support
 #
-if (CONFIG_MBEDTLS_TLS_LIBRARY)
-  add_library(mbedtls STATIC
+if (CONFIG_MBEDTLS_TLS_LIBRARY AND NOT CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
+  add_library(${MBEDTLS_TARGET_PREFIX}mbedtls STATIC
     ${src_tls}
     ${src_tls_replacement}
   )
 
   # Add options from Zephyr build
-  nrf_security_add_zephyr_options(mbedtls)
+  nrf_security_add_zephyr_options(${MBEDTLS_TARGET_PREFIX}mbedtls)
 
-  target_link_libraries(mbedtls PRIVATE
-    mbedtls_common
-    mbedcrypto_static_alias
+  target_link_libraries(${MBEDTLS_TARGET_PREFIX}mbedtls
+    PRIVATE
+      ${MBEDTLS_TARGET_PREFIX}mbedx509
+      ${mbedcrypto_target}
   )
 
 endif()
