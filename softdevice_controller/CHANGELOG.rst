@@ -15,24 +15,35 @@ Master branch
 Added
 =====
 
+* Added support for multiple advertising sets (DRGN-15426).
 * Added radio front-end module (FEM) support, based on the :ref:`mpsl_fem` (DRGN-11059).
-* Added support for the vendor specific HCI command: Read Supported Vendor Specific Commands (DRGN-13763).
-* Added support for the vendor specific HCI command: Zephyr Read Key Hierarchy Roots (DRGN-13237).
+* Added support for the vendor-specific HCI command: Read Supported Vendor Specific Commands (DRGN-13763).
+* Added support for the vendor-specific HCI command: Zephyr Read Key Hierarchy Roots (DRGN-13237).
 
 Changes
 =======
 
 * Moved permanent limitations from the :ref:`nrf:known_issues` page to :ref:`softdevice_controller_limitations`.
+* Increased the maximum supported radio output power on nRF53 Series devices from 0 dBm to 3 dBm.
+  If the output power is above 0 dBm, NRF_VREQCTRL->VREGRADIO.VREQH is set (DRGN-15476).
 
 Bug fixes
 =========
 
+* Fixed an issue where a slave connection could disconnect prematurely if there were scheduling conflicts with other roles (DRGN-15469).
 * Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not applied on the secondary advertising channels (DRGN-13594).
 * The SoftDevice Controller can now be qualified on nRF52832 (DRGN-15382).
 * Fixed an issue where setting a legacy advertiser's scan response data using extended advertising HCI commands corrupted the advertising data (DRGN-15465).
 * Fixed an issue where, in rare cases, an assert could occur when receiving a packet as a slave.
   This could only occur after performing a data length procedure on Coded PHY (DRGN-15251).
 * Fixed an issue where "HCI Read RSSI" would always return a Command Disallowed (0x0C) error code (DRGN-15310).
+* Fixed an issue where setting radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned "Unsupported Feature or Parameter value (0x11)".
+  Now the controller will select an output power level that is lower or equal to the one requested.
+  The command returns success and the selected power level (DRGN-15369).
+* Fixed an issue where an assert could occur when running an extended advertiser with maximum data length and minimum interval on Coded PHY.
+  The assert would only occur if there were scheduling conflicts (DRGN-15694).
+* Fixed an issue where a connectable or scannable advertiser ends with sending a packet without listening for the CONNECT_IND, AUX_CONNECT_REQ, and SCAN_REQ (DRGN-15484).
+* Fixed an issue where an extended advertiser with limited duration may time out after the first primary channel packet in the last advertising event (DRGN-10367).
 
 nRF Connect SDK v1.5.0
 **********************
@@ -42,8 +53,8 @@ Added
 
 * Added :c:func:`sdc_support_ext_scan` which makes support for extended scanning configurable (DRGN-14902).
 * Added :c:func:`sdc_support_ext_adv` which makes support for extended advertising configurable (DRGN-14914).
-* Added support for the vendor specific HCI command: Zephyr Read Chip Temperature (DRGN-13769).
-* Added support for the vendor specific HCI command: Zephyr Read Tx Power (DRGN-15250).
+* Added support for the vendor-specific HCI command: Zephyr Read Chip Temperature (DRGN-13769).
+* Added support for the vendor-specific HCI command: Zephyr Read Tx Power (DRGN-15250).
 
 Changes
 =======
@@ -97,7 +108,7 @@ Added
 * Added Set Controller to Host Flow Control command (DRGN-13331).
 * Added Host Buffer Size command (DRGN-13331).
 * Added Host Number of Complete Packets command (DRGN-13331).
-* Added support for the Vendor specific HCI command: Zephyr Write BD Addr (DRGN-14511).
+* Added support for the vendor-specific HCI command: Zephyr Write BD Addr (DRGN-14511).
 * Added LE Read PHY command (DRGN-14664).
 * Added APIs for every supported HCI command (DRGN-13723).
 * Added :c:func:`sdc_support_adv` which makes the advertising state configurable (DRGN-14759).
@@ -127,7 +138,7 @@ Changes
   * ble_controller_rand_vector_get_blocking -> sdc_soc_rand_vector_get
   * ble_controller_ecb_block_encrypt -> sdc_soc_ecb_block_encrypt
 
-* Vendor specific HCI APIs have been renamed (DRGN-14701):
+* Vendor-specific HCI APIs have been renamed (DRGN-14701):
 
   * HCI_VS_OPCODE   -> HCI_OPCODE_VS
   * HCI_VS_SUBEVENT -> HCI_SUBEVENT_VS
@@ -159,10 +170,10 @@ Added
 * Added LE Set Advertising Set Random Address command.
 * Added LE Remove Advertising Set command.
 * Added LE Clear Advertising Sets command.
-* Added support for the Vendor specific HCI command: Zephyr Read Version Information.
-* Added support for the Vendor specific HCI command: Zephyr Read Supported Commands.
-* Added support for the Vendor specific HCI command: Zephyr Read Static Addresses.
-* Added support for the Vendor specific HCI command: Zephyr Write TX Power Level (per Role/Connection).
+* Added support for the vendor-specific HCI command: Zephyr Read Version Information.
+* Added support for the vendor-specific HCI command: Zephyr Read Supported Commands.
+* Added support for the vendor-specific HCI command: Zephyr Read Static Addresses.
+* Added support for the vendor-specific HCI command: Zephyr Write TX Power Level (per Role/Connection).
 
 Changes
 =======

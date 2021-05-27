@@ -77,7 +77,7 @@ extern "C" {
  */
 
 /** @brief Maximum number of bytes required per advertiser. */
-#define SDC_MEM_DEFAULT_ADV_SIZE 0
+#define SDC_MEM_DEFAULT_ADV_SIZE 840
 
 /** @brief Maximum number of bytes required per master link for the default buffer configuration. */
 #define SDC_MEM_DEFAULT_MASTER_LINK_SIZE 864
@@ -167,9 +167,7 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_EVENT_LENGTH = 4,  /**< Maximum event length.
                                          @sa sdc_cfg_t::event_length. */
     SDC_CFG_TYPE_ADV_COUNT    = 5,  /**< Number of concurrent advertisers.
-                                         @sa sdc_cfg_t::adv_count.
-                                         The maximum number of supported
-                                         advertisers is 1. */
+                                         @sa sdc_cfg_t::adv_count. */
 };
 
 /** @brief Role count. */
@@ -250,6 +248,7 @@ int32_t sdc_init(sdc_fault_handler_t fault_handler);
  * @returns Required memory size for the current configuration in bytes.
  * @retval -NRF_EOPNOTSUPP    Unsupported configuration
  * @retval -NRF_EINVAL        Invalid argument provided
+ * @retval -NRF_EPERM         This API was called after @ref sdc_enable().
  */
 int32_t sdc_cfg_set(uint8_t config_tag,
                     uint8_t config_type,
