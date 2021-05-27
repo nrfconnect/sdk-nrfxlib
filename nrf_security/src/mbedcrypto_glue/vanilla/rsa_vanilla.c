@@ -6,13 +6,13 @@
 
 #if defined(MBEDTLS_BACKEND_RSA_DEFAULT) && defined(MBEDTLS_BACKEND_RSA_GLUE)
 
-#include <toolchain.h>
+#include <assert.h>
 
 #include "mbedtls/rsa.h"
 #include "backend_rsa.h"
 
 
-BUILD_ASSERT(VANILLA_MBEDTLS_RSA_CONTEXT_WORDS  == (sizeof(mbedtls_rsa_context) + 3) / 4, "Invalid VANILLA_MBEDTLS_RSA_CONTEXT_WORDS value");
+_Static_assert(VANILLA_MBEDTLS_RSA_CONTEXT_WORDS  == (sizeof(mbedtls_rsa_context) + 3) / 4, "Invalid VANILLA_MBEDTLS_RSA_CONTEXT_WORDS value");
 
 
 static int mbedtls_rsa_check(int padding, int hash_id, unsigned int nbits)

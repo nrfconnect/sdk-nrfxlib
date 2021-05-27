@@ -14,6 +14,6 @@ nrf_security_library_glue(BACKEND cc3xx
     ${CMAKE_CURRENT_LIST_DIR}/ccm_cc310.c
     ${CMAKE_CURRENT_LIST_DIR}/dhm_cc310.c
   LINK_LIBRARIES
-    mbedcrypto_common_glue
-    mbedcrypto_cc3xx
+    ${mbedcrypto_target}_common_glue
+    ${mbedcrypto_target}_cc3xx
 )

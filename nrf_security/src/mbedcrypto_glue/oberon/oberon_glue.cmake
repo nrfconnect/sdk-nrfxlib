@@ -13,6 +13,6 @@ nrf_security_library_glue(BACKEND oberon
     ${CMAKE_CURRENT_LIST_DIR}/aes_oberon.c
     ${CMAKE_CURRENT_LIST_DIR}/ccm_oberon.c
   LINK_LIBRARIES
-    mbedcrypto_common_glue
-    mbedcrypto_oberon
+    ${mbedcrypto_target}_common_glue
+    ${mbedcrypto_target}_oberon
 )

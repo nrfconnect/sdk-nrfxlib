@@ -4,11 +4,13 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
+include_guard(GLOBAL)
+
 nrfxlib_calculate_lib_path(lib_path)
 
-zephyr_interface_library_named(nrfxlib_crypto)
+add_library(nrfxlib_crypto INTERFACE)
 
-if (CONFIG_NRF_OBERON)
+if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM)
   set(OBERON_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_oberon)
   set(OBERON_VER 3.0.8)
   set(OBERON_LIB ${OBERON_BASE}/${lib_path}/liboberon_${OBERON_VER}.a)
@@ -18,7 +20,7 @@ if (CONFIG_NRF_OBERON)
                     "(${OBERON_LIB} doesn't exist.)")
   endif()
 
-  if (NOT CONFIG_OBERON_BACKEND)
+  if (NOT CONFIG_BUILD_WITH_TFM AND NOT CONFIG_OBERON_BACKEND)
     target_include_directories(nrfxlib_crypto INTERFACE ${OBERON_BASE}/include)
     target_link_libraries(nrfxlib_crypto INTERFACE ${OBERON_LIB})
   else()
@@ -102,15 +104,17 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   )
   target_include_directories(platform_cc3xx INTERFACE
       "${NRF_CC3XX_PLATFORM_BASE}/include")
-  zephyr_link_libraries(platform_cc3xx)
-  #
-  # Add companion sources to directly to zephyr
-  #
-  zephyr_sources(${NRF_CC3XX_PLATFORM_BASE}/src/nrf_cc3xx_platform_abort_zephyr.c)
-  if (CONFIG_MULTITHREADING)
-    zephyr_sources(${NRF_CC3XX_PLATFORM_BASE}/src/nrf_cc3xx_platform_mutex_zephyr.c)
-  else()
-    zephyr_sources(${NRF_CC3XX_PLATFORM_BASE}/src/nrf_cc3xx_platform_no_mutex_zephyr.c)
+  if (TARGET zephyr_interface)
+    zephyr_link_libraries(platform_cc3xx)
+    #
+    # Add companion sources to directly to zephyr
+    #
+    zephyr_sources(${NRF_CC3XX_PLATFORM_BASE}/src/nrf_cc3xx_platform_abort_zephyr.c)
+    if (CONFIG_MULTITHREADING)
+      zephyr_sources(${NRF_CC3XX_PLATFORM_BASE}/src/nrf_cc3xx_platform_mutex_zephyr.c)
+    else()
+      zephyr_sources(${NRF_CC3XX_PLATFORM_BASE}/src/nrf_cc3xx_platform_no_mutex_zephyr.c)
+    endif()
   endif()
 endif()
 
@@ -146,10 +150,4 @@ if (CONFIG_CC3XX_BACKEND)
   target_include_directories(mbedcrypto_cc3xx_imported INTERFACE
                              "${NRF_CC3XX_BASE}/include/mbedtls")
   target_link_libraries(mbedcrypto_cc3xx_imported INTERFACE platform_cc3xx)
-  if (NOT CONFIG_NRF_SECURITY_MULTI_BACKEND)
-    # Only CC3XX backend is selected for mbedtls API.
-    # Thus export the alt headers through Zephyr interface library.
-    zephyr_include_directories(${NRF_CC3XX_BASE}/include/mbedtls
-                               ${NRF_CC3XX_BASE}/include)
-  endif()
 endif()

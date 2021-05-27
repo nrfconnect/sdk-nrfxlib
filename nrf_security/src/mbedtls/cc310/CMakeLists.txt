@@ -23,12 +23,10 @@ nrf_security_library(NOGLUE cc3xx
     ${ARM_MBEDTLS_PATH}/library/ecjpake.c
   INCLUDES
     ${NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH}
-    ${common_includes}
-    ${config_include}
-    ${mbedcrypto_glue_include_path}/threading
-    $<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>
   DEFINES
-  -DMBEDTLS_CONFIG_FILE="nrf-config.h"
+    -DMBEDTLS_CONFIG_FILE="nrf-config.h"
+  OPTIONS
+    $<TARGET_PROPERTY:${mbedcrypto_target},INTERFACE_COMPILE_OPTIONS>
   LINK_LIBRARIES
     platform_cc3xx
 )
@@ -37,8 +35,8 @@ nrf_security_library(NOGLUE cc3xx
 #
 # Create the mbedcrypto library for cc3xx backend
 #
-add_library(mbedcrypto_cc3xx INTERFACE)
-target_link_libraries(mbedcrypto_cc3xx INTERFACE
+add_library(${mbedcrypto_target}_cc3xx INTERFACE)
+target_link_libraries(${mbedcrypto_target}_cc3xx INTERFACE
                       mbedcrypto_cc3xx_imported
 )
 
