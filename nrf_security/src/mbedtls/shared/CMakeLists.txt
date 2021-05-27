@@ -17,11 +17,11 @@ nrf_security_debug("######### Creating shared library #########")
 # All features added here can't be glued
 #
 nrf_security_library_shared(
-  NAME mbedcrypto_shared
+  NAME ${mbedcrypto_target}_shared
   FILES ${ARM_MBEDTLS_PATH}/library/chacha20.c INCLUDE VANILLA OBERON EXCLUDE CC3XX
   FILES ${ARM_MBEDTLS_PATH}/library/poly1305.c INCLUDE VANILLA OBERON EXCLUDE CC3XX
   FILES ${ARM_MBEDTLS_PATH}/library/chachapoly.c INCLUDE VANILLA EXCLUDE CC3XX
   FILES ${ARM_MBEDTLS_PATH}/library/rsa.c ${ARM_MBEDTLS_PATH}/library/rsa_internal.c INCLUDE VANILLA EXCLUDE CC3XX
   FILES ${ARM_MBEDTLS_PATH}/library/sha512.c
-#  FILES dhm.c BACKEND OBERON
+  FILES ${ARM_MBEDTLS_PATH}/library/dhm.c INCLUDE VANILLA OBERON EXCLUDE CC3XX
 )

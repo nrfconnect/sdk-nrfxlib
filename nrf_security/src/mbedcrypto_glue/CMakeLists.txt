@@ -9,17 +9,22 @@ nrf_security_debug("######### Creating mbedcrypto glue library #########")
 #
 # Create a library with common include folders (used by this and backend libs)
 #
-add_library(mbedcrypto_common_glue INTERFACE)
+add_library(${mbedcrypto_target}_common_glue INTERFACE)
 
-target_include_directories(mbedcrypto_common_glue INTERFACE
-  ${NRF_SECURITY_ROOT}/include/mbedcrypto_glue
+target_include_directories(${mbedcrypto_target}_common_glue
+  INTERFACE
+    ${NRF_SECURITY_ROOT}/include/mbedcrypto_glue
+    ${NRF_SECURITY_ROOT}/include/mbedcrypto_glue/mbedtls
 )
 
-target_compile_definitions(mbedcrypto_common_glue INTERFACE
+target_link_libraries(${mbedcrypto_target}_common_glue
+  INTERFACE
+    mbedcrypto_includes
+)
+
+target_compile_definitions(${mbedcrypto_target}_common_glue INTERFACE
   -DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}"
 )
-
-target_link_libraries(mbedcrypto_common_glue INTERFACE mbedtls_common)
 
 #
 # Create glue libraries for backends (if enabled)
@@ -48,11 +53,15 @@ nrf_security_library_glue(ALT
     ${CMAKE_CURRENT_LIST_DIR}/ccm_alt.c
     ${CMAKE_CURRENT_LIST_DIR}/cmac_alt.c
     ${CMAKE_CURRENT_LIST_DIR}/dhm_alt.c
+  INCLUDES
+    ${mbedcrypto_glue_include_path}/mbedtls
+    ${mbedcrypto_glue_include_path}
+    ${MBEDTLS_INCLUDE_FILES}
   LINK_LIBRARIES
-    mbedcrypto_common_glue
-    $<TARGET_NAME_IF_EXISTS:mbedcrypto_glue_cc3xx>
-    $<TARGET_NAME_IF_EXISTS:mbedcrypto_glue_oberon>
-    $<TARGET_NAME_IF_EXISTS:mbedcrypto_glue_vanilla>
+    ${mbedcrypto_target}_common_glue
+    $<TARGET_NAME_IF_EXISTS:${mbedcrypto_target}_glue_cc3xx>
+    $<TARGET_NAME_IF_EXISTS:${mbedcrypto_target}_glue_oberon>
+    $<TARGET_NAME_IF_EXISTS:${mbedcrypto_target}_glue_vanilla>
 )
 
 #

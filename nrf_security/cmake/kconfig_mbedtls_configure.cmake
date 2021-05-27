@@ -164,8 +164,13 @@ kconfig_mbedtls_config("MBEDTLS_SSL_CLI_C")
 #
 if (CONFIG_CC3XX_BACKEND)
   set(MBEDTLS_PLATFORM_ZEROIZE_ALT TRUE)
-  set(MBEDTLS_THREADING_C TRUE)
-  set(MBEDTLS_THREADING_ALT TRUE)
+  if(NOT DEFINED MBEDTLS_THREADING_C)
+    set(MBEDTLS_THREADING_C TRUE)
+  endif()
+
+  if(NOT DEFINED MBEDTLS_THREADING_ALT)
+    set(MBEDTLS_THREADING_ALT TRUE)
+  endif()
 endif()
 
 #
@@ -180,11 +185,11 @@ set(MBEDTLS_CIPHER_C TRUE)
 #
 if (NOT CONFIG_NEWLIB_LIBC)
   set(MBEDTLS_PLATFORM_NO_STD_FUNCTIONS TRUE)
-  set(MBEDTLS_PLATFORM_EXIT_ALT TRUE)
   set(MBEDTLS_PLATFORM_FPRINTF_ALT TRUE)
   set(MBEDTLS_PLATFORM_PRINTF_ALT TRUE)
   set(MBEDTLS_PLATFORM_SNPRINTF_ALT TRUE)
 endif ()
+
 
 #
 # Generating glue header file (without alt flags set)
@@ -406,12 +411,24 @@ mbedtls_config_define_depends("MBEDTLS_ECDSA_DETERMINISTIC"
   "MBEDTLS_HMAC_DRBG_C"
 )
 
+#
+# Folder path for files to be copied (regular mbed TLS files)
+#
+set(copied_include_path
+  "${CMAKE_CURRENT_BINARY_DIR}/include/mbedtls_copied"
+)
+
+#
+# Folder path for files to be generated (alt-files and config)
+#
 set(generated_include_path
-  "${CMAKE_CURRENT_BINARY_DIR}/include/mbedtls_generated/"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/mbedtls_generated"
 )
 
 #
 # Include for generated mbed TLS config file(s)
+#
+# Note: This is required for all types of build (regular/glued)
 #
 set(config_include
   ${CMAKE_CURRENT_BINARY_DIR}/include
@@ -420,12 +437,88 @@ set(config_include
 #
 # Includes for all generated header files
 #
+# Note: This can't be used for glued builds
+#
 set(generated_includes
   ${config_include}
   ${generated_include_path}
 )
 
-zephyr_include_directories(${generated_includes})
+#
+# Add a target with interface includes for mbed TLS
+#
+# Note: This library does not include generated header files
+#       Only copied generic files from mbed TLS
+#
+add_library(mbedcrypto_includes INTERFACE)
+
+#
+# Includes for all generic builds
+#
+target_include_directories(mbedcrypto_includes
+  INTERFACE
+    ${config_include}
+    ${NRF_SECURITY_ROOT}/include
+    ${ARM_MBEDTLS_PATH}/library
+)
+
+set(mbedtls_include_dir ${ARM_MBEDTLS_PATH}/include/mbedtls)
+file(GLOB MBEDTLS_INCLUDE_FILES
+  RELATIVE ${mbedtls_include_dir}
+  "${mbedtls_include_dir}/*.h"
+)
+
+if (COMPILE_PSA_APIS)
+  list(TRANSFORM MBEDTLS_INCLUDE_FILES PREPEND "${copied_include_path}/mbedtls/")
+  file(REMOVE ${MBEDTLS_INCLUDE_FILES})
+
+  # Provide the PSA includes directly to the build
+  # Either for TF-M build or when TrustZone isn't used.
+  target_include_directories(mbedcrypto_includes
+    INTERFACE
+      ${ARM_MBEDTLS_PATH}/include
+      ${ARM_MBEDTLS_PATH}/include/mbedtls
+      ${ARM_MBEDTLS_PATH}/include/psa
+  )
+else()
+  # PSA APIs aren't compiled. This means that the mbed TLS includes list
+  # need to be provided in a "clean root" to ensure there is no
+  # folder collision with the TF-M NS interface provided PSA headers
+  #
+  # Do note that this is only done because mbed TLS shares the same root
+  # for files included with #include <mbedtls/xxxx.h> and
+  # #include <psa/xxxx.h>. This is not possible when TF-M is enabled as it
+  # provides its own version of PSA headers
+  set(tfm_mbedtls_include_files ${MBEDTLS_INCLUDE_FILES})
+  list(TRANSFORM tfm_mbedtls_include_files PREPEND "${copied_include_path}/mbedtls/")
+  list(TRANSFORM MBEDTLS_INCLUDE_FILES PREPEND "${mbedtls_include_dir}/")
+
+  add_custom_command(OUTPUT ${tfm_mbedtls_include_files}
+    COMMAND ${CMAKE_COMMAND} -E copy ${MBEDTLS_INCLUDE_FILES} ${copied_include_path}/mbedtls
+    DEPENDS ${MBEDTLS_INCLUDE_FILES}
+    COMMAND_EXPAND_LISTS
+  )
+  add_custom_target(tfm_mbedtls_headers_copy
+    DEPENDS ${tfm_mbedtls_include_files}
+  )
+
+  target_include_directories(mbedcrypto_includes INTERFACE
+    ${copied_include_path}
+  )
+
+  add_dependencies(tfm_cmake tfm_mbedtls_headers_copy)
+endif()
+
+#
+# Add library for generated includes
+#
+add_library(mbedcrypto_generated_includes INTERFACE)
+
+target_include_directories(mbedcrypto_generated_includes
+  INTERFACE
+    ${generated_include_path}/mbedtls
+    ${generated_include_path}
+)
 
 #
 # Generate the mbed TLS config files

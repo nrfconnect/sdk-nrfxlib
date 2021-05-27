@@ -11,14 +11,14 @@
 
 #if defined(CONFIG_GLUE_VANILLA_MBEDTLS_CCM_C)
 
-#include <toolchain.h>
+#include <assert.h>
 
 #include "mbedtls/ccm.h"
 #include "mbedtls/cipher.h"
 #include "backend_ccm.h"
 
 
-BUILD_ASSERT(VANILLA_MBEDTLS_CCM_CONTEXT_WORDS == (sizeof(mbedtls_cipher_context_t) + 3) / 4, "Invalid VANILLA_MBEDTLS_CCM_CONTEXT_WORDS value");
+_Static_assert(VANILLA_MBEDTLS_CCM_CONTEXT_WORDS == (sizeof(mbedtls_cipher_context_t) + 3) / 4, "Invalid VANILLA_MBEDTLS_CCM_CONTEXT_WORDS value");
 
 
 static int mbedtls_ccm_check(mbedtls_cipher_id_t cipher, unsigned int keybits)

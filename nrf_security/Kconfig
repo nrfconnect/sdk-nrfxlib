@@ -13,6 +13,8 @@ config NORDIC_SECURITY_BACKEND
 	depends on SOC_FAMILY_NRF
 	select NRFXLIB_CRYPTO
 	select ENTROPY_GENERATOR
+	select MBEDTLS_PROMPTLESS
+	select MBEDTLS
 	help
 	  nRF Connect SDK Security provides crypto functionality through
 	  different backends.
@@ -137,7 +139,7 @@ menuconfig CC3XX_BACKEND
 	bool "Use cc3xx backend"
 	depends on CRYPTOCELL_USABLE
 	default y
-	select NRF_CC3XX_PLATFORM
+	select NRF_CC3XX_PLATFORM if !BUILD_WITH_TFM
 	help
 	  Enable cc3xx backend
 
@@ -1676,8 +1678,6 @@ endif # NRF_SECURITY_ADVANCED
 
 config MBEDTLS_PSA_CRYPTO_C
 	bool "Enable PSA API support"
-	depends on (SOC_NRF52840 || SOC_NRF9160 || SOC_NRF5340_CPUAPP) && \
-				(!BUILD_WITH_TFM && !SPM)
 	help
 	  Enables the usage of the PSA APIs in mbed TLS.
 	  Corresponds to MBEDTLS_PSA_CRYPTO_C setting in mbed TLS config file.
