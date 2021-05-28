@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -672,7 +672,7 @@ void zb_htole16(zb_uint8_t ZB_XDATA *ptr, zb_uint8_t ZB_XDATA *val);
   pval[1] = a;  				\
 }
 
-#define ZB_HTOLE32_ONPLACE(val) { zb_uint32_t _v = *(val); ZB_HTOLE32((val), &_v); }
+#define ZB_HTOLE32_ONPLACE(val) { zb_uint32_t _v = (val); ZB_HTOLE32(&(val), &_v); }
 
 void zb_htole32(zb_uint8_t ZB_XDATA *ptr, zb_uint8_t ZB_XDATA *val);
 #define ZB_HTOLE32(ptr, val) zb_htole32((zb_uint8_t*)(ptr), (zb_uint8_t*)(val))

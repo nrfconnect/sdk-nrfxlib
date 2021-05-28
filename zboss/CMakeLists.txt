@@ -39,7 +39,10 @@ endif()
 # It will be pulled if the module links to the ZBOSS interface library.
 zephyr_library()
 
-# Add source files
+# Add source files for the Nordic's extensions to ZBOSS stack.
+# Due to the fact that extensions are linked for all variants of ZBOSS builds
+# (libraries, closed source), they are separate from the CMakelists.txt file
+# found under the src directory.
 zephyr_library_sources(src/zb_error/zb_error_to_string.c)
 
 # Link with ZBOSS interface library.
@@ -69,6 +72,9 @@ if ((NOT DEFINED CONFIG_ZBOSS_SOURCES_AVAILABLE) OR
     include/se
     include/osif
   )
+
+  # Add the part of ZBOSS that is distributed in the source code.
+  add_subdirectory(src)
 
   # Resolve Zigbee role to library variant
   if (CONFIG_ZIGBEE_ROLE_COORDINATOR OR CONFIG_ZIGBEE_ROLE_ROUTER)

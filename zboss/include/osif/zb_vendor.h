@@ -200,6 +200,10 @@
 #define ZB_BDB_TOUCHLINK
 #endif
 
+#ifdef CONFIG_ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL
+#define ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL
+#endif
+
 #ifdef CONFIG_ZB_CONFIGURABLE_MEM
 #define ZB_CONFIGURABLE_MEM
 #endif
@@ -289,6 +293,8 @@
 #define ZB_NCP_SOC_BDB
 /* Include additional API, that allows to write any dataset structure into the ZBOSS NVRAM. */
 #define ZB_NVRAM_ENABLE_DIRECT_API
+/* Include NCP commands for entering bootloader. */
+#define ZB_NCP_ENABLE_OTA_CMD
 #endif /* NCP_MODE && !NCP_MODE_HOST */
 
 /* Include Zigbee HA clusters implementation (always defined, except macsplit). */

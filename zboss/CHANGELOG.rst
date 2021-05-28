@@ -17,7 +17,12 @@ Changes
 =======
 
 * Reduced the number of ZBOSS libraries to a single set.
-* Updated the ZBOSS stack to version ``3.5.2.0+2.0.0``.
+* Added sources of the BDB and ZCL layers and removed them from the main ZBOSS library.
+* Moved scheduler API prototypes to :file:`zb_osif.h`.
+* Added API for sending and receiving inter-PAN frames.
+* Extended NCP protocol with inter-PAN commands.
+* Added bootloader commands in the NCP protocol.
+* Updated the ZBOSS stack to version ``3.6.0.0+3.0.0``.
   For detailed information, see `ZBOSS stack release notes`_ for the |NCS|'s Master branch.
 
 nRF Connect SDK v1.5.1

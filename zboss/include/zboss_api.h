@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -624,12 +624,9 @@ zb_ret_t zboss_start_in_sniffer_mode(void);
 
    ZBOSS must be started in the sniffer mode.
 
-   @param channel_cmd - channel and page index to work on. page index is encoded in two
-   most significant bits (see @ref channel_pages_numbers) and channel is encoded in 5 least
-   significant bits.
    @param data_ind_cb - callback to be called to pass data to the sniffer application
  */
-void zboss_sniffer_start(zb_uint8_t channel_cmd, zb_callback_t data_ind_cb);
+void zboss_sniffer_start(zb_callback_t data_ind_cb);
 
 /**
    Stop sniffing or do nothing if not sniffing now.
@@ -810,6 +807,13 @@ void zb_set_network_ed_role_legacy(zb_uint32_t channel_mask);
 void zb_set_network_coordinator_role_ext(zb_channel_list_t channel_list);
 
 /**
+   Initiate device as a Zigbee 3.0 BDB router with channel list.
+   Provides functionality to set mask for Sub-GHz and 2.4GHz page.
+   @param channel_list - Zigbee channels list
+*/
+void zb_set_network_router_role_ext(zb_channel_list_t channel_list);
+
+/**
    Initiate device as a Zigbee 3.0 BDB End Device with channel list.
    Provides functionality to set mask for Sub-GHz and 2.4GHz page.
    @param channel_list - Zigbee channels list
@@ -841,9 +845,9 @@ zb_uint8_t zb_get_max_children(void);
 */
 
 /** @cond DOXYGEN_SE_SECTION */
-#ifdef ZB_SE_COMMISSIONING
-void zb_se_set_bdb_mode_enabled(zb_uint8_t enabled);
-#endif /* ZB_SE_COMMISSIONING */
+#if defined ZB_SE_COMMISSIONING && defined ZB_SE_BDB_MIXED
+void zb_se_set_bdb_mode_enabled(zb_bool_t enabled);
+#endif /* ZB_SE_COMMISSIONING && ZB_SE_BDB_MIXED */
 /** @endcond */ /* DOXYGEN_SE_SECTION */
 
 /**
@@ -855,6 +859,11 @@ void zb_se_set_bdb_mode_enabled(zb_uint8_t enabled);
  */
 /** @{ */
 #define ZB_CHANNEL_PAGE0_2_4_GHZ   0U
+#define ZB_CHANNEL_PAGE23_SUB_GHZ  23U
+#define ZB_CHANNEL_PAGE24_SUB_GHZ  24U
+#define ZB_CHANNEL_PAGE25_SUB_GHZ  25U
+#define ZB_CHANNEL_PAGE26_SUB_GHZ  26U
+#define ZB_CHANNEL_PAGE27_SUB_GHZ  27U
 #define ZB_CHANNEL_PAGE28_SUB_GHZ  28U
 #define ZB_CHANNEL_PAGE29_SUB_GHZ  29U
 #define ZB_CHANNEL_PAGE30_SUB_GHZ  30U
@@ -1233,7 +1242,8 @@ typedef ZB_PACKED_PRE struct zb_production_config_ver_1_s
 }
 ZB_PACKED_STRUCT zb_production_config_ver_1_t;
 
-#define ZB_PROD_CFG_APS_CHANNEL_LIST_SIZE 5U
+/* NOTE: ZB_PROD_CFG_APS_CHANNEL_LIST_SIZE must be used with prod. config v2 only! */
+#define ZB_PROD_CFG_APS_CHANNEL_LIST_SIZE   5U
 #define ZB_PROD_CFG_MAC_TX_POWER_CHANNEL_N 27U
 
 #define ZB_PROD_CFG_OPTIONS_IC_TYPE_MASK      0x03U
@@ -1493,13 +1503,13 @@ void function_add_cb(zb_uint8_t param)
   res = ZB_BUF_GET_PARAM(buf, zb_ieee_joining_list_result_t);
   if (res->status == ZB_IEEE_JOINING_LIST_RESULT_OK)
   {
-    // Address has been added
+    TRACE_MSG(TRACE_APP1, "Address has been added", (FMT__0));
   }
 
   zb_free_buf(buf);
 }
 
-// 00:00:00:00:00:00:0E:01
+/&lowast; 00:00:00:00:00:00:0E:01 &lowast;/
 static zb_ieee_addr_t new_addr = {0x01, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 void function_add(zb_uint8_t param)
@@ -1546,7 +1556,7 @@ void function_clear_cb(zb_uint8_t param)
   res = ZB_BUF_GET_PARAM(buf, zb_ieee_joining_list_result_t);
   if (res->status == ZB_IEEE_JOINING_LIST_RESULT_OK)
   {
-    // IEEE joining list is empty now
+    TRACE_MSG(TRACE_APP1, "IEEE joining list is empty now", (FMT__0));
   }
 
   zb_free_buf(buf);
@@ -1586,7 +1596,7 @@ void function_policy_cb(zb_uint8_t param)
   res = ZB_BUF_GET_PARAM(buf, zb_ieee_joining_list_result_t);
   if (res->status == ZB_IEEE_JOINING_LIST_RESULT_OK)
   {
-    // New policy has been set
+    TRACE_MSG(TRACE_APP1, "New policy has been set", (FMT__0));
   }
 
   zb_free_buf(buf);

@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -123,26 +123,26 @@ typedef zb_uint8_t zb_nwk_leave_type_t;
  * @anchor nwk_command_status
  */
 /** @{ */
-#define ZB_NWK_COMMAND_STATUS_NO_ROUTE_AVAILABLE          0x00u /**< No route available */
-#define ZB_NWK_COMMAND_STATUS_TREE_LINK_FAILURE           0x01u /**< Tree link failure */
-#define ZB_NWK_COMMAND_STATUS_NONE_TREE_LINK_FAILURE      0x02u /**< None-tree link failure */
-#define ZB_NWK_COMMAND_STATUS_LOW_BATTERY_LEVEL           0x03u /**< Low battery level */
-#define ZB_NWK_COMMAND_STATUS_NO_ROUTING_CAPACITY         0x04u /**< No routing capacity */
-#define ZB_NWK_COMMAND_STATUS_NO_INDIRECT_CAPACITY        0x05u /**< No indirect capacity */
-#define ZB_NWK_COMMAND_STATUS_INDIRECT_TRANSACTION_EXPIRY 0x06u /**< Indirect transaction expiry */
-#define ZB_NWK_COMMAND_STATUS_TARGET_DEVICE_UNAVAILABLE   0x07u /**< Target device unavailable */
-#define ZB_NWK_COMMAND_STATUS_TARGET_ADDRESS_UNALLOCATED  0x08u /**< Target address unallocated */
-#define ZB_NWK_COMMAND_STATUS_PARENT_LINK_FAILURE         0x09u /**< Parent link failure */
-#define ZB_NWK_COMMAND_STATUS_VALIDATE_ROUTE              0x0au /**< Validate route */
-#define ZB_NWK_COMMAND_STATUS_SOURCE_ROUTE_FAILURE        0x0bu /**< Source route failure */
-#define ZB_NWK_COMMAND_STATUS_MANY_TO_ONE_ROUTE_FAILURE   0x0cu /**< Many-to-one route failure */
-#define ZB_NWK_COMMAND_STATUS_ADDRESS_CONFLICT            0x0du /**< Address conflict */
-#define ZB_NWK_COMMAND_STATUS_VERIFY_ADDRESS              0x0eu /**< Verify address */
-#define ZB_NWK_COMMAND_STATUS_PAN_IDENTIFIER_UPDATE       0x0fu /**< Pan ID update */
-#define ZB_NWK_COMMAND_STATUS_NETWORK_ADDRESS_UPDATE      0x10u /**< Network address update */
-#define ZB_NWK_COMMAND_STATUS_BAD_FRAME_COUNTER           0x11u /**< Bad frame counter  */
-#define ZB_NWK_COMMAND_STATUS_BAD_KEY_SEQUENCE_NUMBER     0x12u /**< Bad key sequence number */
-#define ZB_NWK_COMMAND_STATUS_UNKNOWN_COMMAND             0x13u /**< Command received is not known */
+#define ZB_NWK_COMMAND_STATUS_NO_ROUTE_AVAILABLE          0x00U /**< No route available */
+#define ZB_NWK_COMMAND_STATUS_TREE_LINK_FAILURE           0x01U /**< Tree link failure */
+#define ZB_NWK_COMMAND_STATUS_NONE_TREE_LINK_FAILURE      0x02U /**< None-tree link failure */
+#define ZB_NWK_COMMAND_STATUS_LOW_BATTERY_LEVEL           0x03U /**< Low battery level */
+#define ZB_NWK_COMMAND_STATUS_NO_ROUTING_CAPACITY         0x04U /**< No routing capacity */
+#define ZB_NWK_COMMAND_STATUS_NO_INDIRECT_CAPACITY        0x05U /**< No indirect capacity */
+#define ZB_NWK_COMMAND_STATUS_INDIRECT_TRANSACTION_EXPIRY 0x06U /**< Indirect transaction expiry */
+#define ZB_NWK_COMMAND_STATUS_TARGET_DEVICE_UNAVAILABLE   0x07U /**< Target device unavailable */
+#define ZB_NWK_COMMAND_STATUS_TARGET_ADDRESS_UNALLOCATED  0x08U /**< Target address unallocated */
+#define ZB_NWK_COMMAND_STATUS_PARENT_LINK_FAILURE         0x09U /**< Parent link failure */
+#define ZB_NWK_COMMAND_STATUS_VALIDATE_ROUTE              0x0aU /**< Validate route */
+#define ZB_NWK_COMMAND_STATUS_SOURCE_ROUTE_FAILURE        0x0bU /**< Source route failure */
+#define ZB_NWK_COMMAND_STATUS_MANY_TO_ONE_ROUTE_FAILURE   0x0cU /**< Many-to-one route failure */
+#define ZB_NWK_COMMAND_STATUS_ADDRESS_CONFLICT            0x0dU /**< Address conflict */
+#define ZB_NWK_COMMAND_STATUS_VERIFY_ADDRESS              0x0eU /**< Verify address */
+#define ZB_NWK_COMMAND_STATUS_PAN_IDENTIFIER_UPDATE       0x0fU /**< Pan ID update */
+#define ZB_NWK_COMMAND_STATUS_NETWORK_ADDRESS_UPDATE      0x10U /**< Network address update */
+#define ZB_NWK_COMMAND_STATUS_BAD_FRAME_COUNTER           0x11U /**< Bad frame counter  */
+#define ZB_NWK_COMMAND_STATUS_BAD_KEY_SEQUENCE_NUMBER     0x12U /**< Bad key sequence number */
+#define ZB_NWK_COMMAND_STATUS_UNKNOWN_COMMAND             0x13U /**< Command received is not known *//** @} */
 /** @} */
 
 /**
@@ -161,10 +161,11 @@ typedef zb_uint8_t zb_nwk_command_status_t;
 typedef ZB_PACKED_PRE struct zb_nlme_status_indication_s
 {
   zb_uint8_t status; /**< Error code associated with the failure */
-  zb_uint16_t network_addr; /**< Network device address associated with the status information */
+  zb_uint16_t network_addr;  /**< Network device address associated with the status information */
   zb_uint8_t unknown_command_id; /**< Unknown command ID
                                     (required for ZB_NWK_COMMAND_STATUS_UNKNOWN_COMMAND) */
-} ZB_PACKED_STRUCT zb_nlme_status_indication_t;
+} ZB_PACKED_STRUCT
+zb_nlme_status_indication_t;
 /** @endcond */ /* internals_doc */
 
 /** @addtogroup nwk_common_constants NWK common constants
@@ -177,7 +178,7 @@ typedef ZB_PACKED_PRE struct zb_nlme_status_indication_s
 /**
    RSSI undefined value
  */
-#define ZB_MAC_RSSI_UNDEFINED (0x7F)
+#define ZB_MAC_RSSI_UNDEFINED 0x7fU
 
 /**
    Number of the first channel
@@ -194,6 +195,107 @@ typedef ZB_PACKED_PRE struct zb_nlme_status_indication_s
 
 /** @cond DOXYGEN_SE_SECTION */
 /* See D.10.2.1.3.2 Channel Pages */
+
+/* North America and Mexico region Page 23 */
+
+/**
+   The first logical channel for Page 23 Sub GHz
+*/
+#define ZB_PAGE23_SUB_GHZ_START_LOGICAL_CHANNEL 0U
+
+/**
+   Number of the first channel in channel mask for Page 23 Sub GHz
+*/
+#define ZB_PAGE23_SUB_GHZ_START_CHANNEL_NUMBER 0U
+/**
+   The last logical channel for Page 23 Sub GHz
+*/
+#define ZB_PAGE23_SUB_GHZ_MAX_LOGICAL_CHANNEL 24U
+/**
+   Number of the last channel in channel mask for Page 23 Sub GHz
+*/
+#define ZB_PAGE23_SUB_GHZ_MAX_CHANNEL_NUMBER (ZB_PAGE23_SUB_GHZ_MAX_LOGICAL_CHANNEL - \
+                                              ZB_PAGE23_SUB_GHZ_START_LOGICAL_CHANNEL)
+
+/* Europe region Pages 24 - 27 */
+
+/**
+   The first logical channel for Page 24 Sub GHz
+*/
+#define ZB_PAGE24_SUB_GHZ_START_LOGICAL_CHANNEL 56U
+
+/**
+   Number of the first channel in channel mask for Page 24 Sub GHz
+*/
+#define ZB_PAGE24_SUB_GHZ_START_CHANNEL_NUMBER 0U
+/**
+   The last logical channel for Page 24 Sub GHz
+*/
+#define ZB_PAGE24_SUB_GHZ_MAX_LOGICAL_CHANNEL 76U
+/**
+   Number of the last channel in channel mask for Page 24 Sub GHz
+*/
+#define ZB_PAGE24_SUB_GHZ_MAX_CHANNEL_NUMBER (ZB_PAGE24_SUB_GHZ_MAX_LOGICAL_CHANNEL - \
+                                              ZB_PAGE24_SUB_GHZ_START_LOGICAL_CHANNEL)
+
+/**
+   The first logical channel for Page 25 Sub GHz
+*/
+#define ZB_PAGE25_SUB_GHZ_START_LOGICAL_CHANNEL 0U
+
+/**
+   Number of the first channel in channel mask for Page 25 Sub GHz
+*/
+#define ZB_PAGE25_SUB_GHZ_START_CHANNEL_NUMBER 0U
+/**
+   The last logical channel for Page 25 Sub GHz
+*/
+#define ZB_PAGE25_SUB_GHZ_MAX_LOGICAL_CHANNEL 26U
+/**
+   Number of the last channel in channel mask for Page 25 Sub GHz
+*/
+#define ZB_PAGE25_SUB_GHZ_MAX_CHANNEL_NUMBER (ZB_PAGE25_SUB_GHZ_MAX_LOGICAL_CHANNEL - \
+                                              ZB_PAGE25_SUB_GHZ_START_LOGICAL_CHANNEL)
+
+/**
+   The first logical channel for Page 26 Sub GHz
+*/
+#define ZB_PAGE26_SUB_GHZ_START_LOGICAL_CHANNEL 27U
+
+/**
+   Number of the first channel in channel mask for Page 26 Sub GHz
+*/
+#define ZB_PAGE26_SUB_GHZ_START_CHANNEL_NUMBER 0U
+/**
+   The last logical channel for Page 26 Sub GHz
+*/
+#define ZB_PAGE26_SUB_GHZ_MAX_LOGICAL_CHANNEL 34U
+/**
+   Number of the last channel in channel mask for Page 26 Sub GHz
+*/
+#define ZB_PAGE26_SUB_GHZ_MAX_CHANNEL_NUMBER (ZB_PAGE26_SUB_GHZ_MAX_LOGICAL_CHANNEL - \
+                                              ZB_PAGE26_SUB_GHZ_START_LOGICAL_CHANNEL)
+
+/**
+   The first logical channel for Page 27 Sub GHz
+*/
+#define ZB_PAGE27_SUB_GHZ_START_LOGICAL_CHANNEL 35U
+
+/**
+   Number of the first channel in channel mask for Page 27 Sub GHz
+*/
+#define ZB_PAGE27_SUB_GHZ_START_CHANNEL_NUMBER 0U
+/**
+   The last logical channel for Page 27 Sub GHz
+*/
+#define ZB_PAGE27_SUB_GHZ_MAX_LOGICAL_CHANNEL 55U
+/**
+   Number of the last channel in channel mask for Page 27 Sub GHz
+*/
+#define ZB_PAGE27_SUB_GHZ_MAX_CHANNEL_NUMBER (ZB_PAGE27_SUB_GHZ_MAX_LOGICAL_CHANNEL - \
+                                              ZB_PAGE27_SUB_GHZ_START_LOGICAL_CHANNEL)
+
+/* Great Britain region Pages 28 - 31 */
 
 /**
    The first logical channel for Page 28 Sub GHz
@@ -298,31 +400,57 @@ typedef ZB_PACKED_PRE struct zb_nlme_status_indication_s
 
 /** @cond DOXYGEN_SE_SECTION */
 /**
+   Maximal number of channels for Page 23 Sub GHz
+*/
+#define ZB_PAGE23_SUB_GHZ_MAX_CHANNELS_COUNT (ZB_PAGE23_SUB_GHZ_MAX_CHANNEL_NUMBER - \
+                                              ZB_PAGE23_SUB_GHZ_START_CHANNEL_NUMBER + 1U)
+/**
+   Maximal number of channels for Page 24 Sub GHz
+*/
+#define ZB_PAGE24_SUB_GHZ_MAX_CHANNELS_COUNT (ZB_PAGE24_SUB_GHZ_MAX_CHANNEL_NUMBER - \
+                                              ZB_PAGE24_SUB_GHZ_START_CHANNEL_NUMBER + 1U)
+/**
+   Maximal number of channels for Page 25 Sub GHz
+*/
+#define ZB_PAGE25_SUB_GHZ_MAX_CHANNELS_COUNT (ZB_PAGE25_SUB_GHZ_MAX_CHANNEL_NUMBER - \
+                                              ZB_PAGE25_SUB_GHZ_START_CHANNEL_NUMBER + 1U)
+/**
+   Maximal number of channels for Page 26 Sub GHz
+*/
+#define ZB_PAGE26_SUB_GHZ_MAX_CHANNELS_COUNT (ZB_PAGE26_SUB_GHZ_MAX_CHANNEL_NUMBER - \
+                                              ZB_PAGE26_SUB_GHZ_START_CHANNEL_NUMBER + 1U)
+/**
+   Maximal number of channels for Page 27 Sub GHz
+*/
+#define ZB_PAGE27_SUB_GHZ_MAX_CHANNELS_COUNT (ZB_PAGE27_SUB_GHZ_MAX_CHANNEL_NUMBER - \
+                                              ZB_PAGE27_SUB_GHZ_START_CHANNEL_NUMBER + 1U)
+
+/**
    Maximal number of channels for Page 28 Sub GHz
 */
 #define ZB_PAGE28_SUB_GHZ_MAX_CHANNELS_COUNT (ZB_PAGE28_SUB_GHZ_MAX_CHANNEL_NUMBER - \
-                                              ZB_PAGE28_SUB_GHZ_START_CHANNEL_NUMBER + 1)
+                                              ZB_PAGE28_SUB_GHZ_START_CHANNEL_NUMBER + 1U)
 /**
    Maximal number of channels for Page 29 Sub GHz
 */
 #define ZB_PAGE29_SUB_GHZ_MAX_CHANNELS_COUNT (ZB_PAGE29_SUB_GHZ_MAX_CHANNEL_NUMBER - \
-                                              ZB_PAGE29_SUB_GHZ_START_CHANNEL_NUMBER + 1)
+                                              ZB_PAGE29_SUB_GHZ_START_CHANNEL_NUMBER + 1U)
 /**
    Maximal number of channels for Page 30 Sub GHz
 */
 #define ZB_PAGE30_SUB_GHZ_MAX_CHANNELS_COUNT (ZB_PAGE30_SUB_GHZ_MAX_CHANNEL_NUMBER - \
-                                              ZB_PAGE30_SUB_GHZ_START_CHANNEL_NUMBER + 1)
+                                              ZB_PAGE30_SUB_GHZ_START_CHANNEL_NUMBER + 1U)
 /**
    Maximal number of channels for Page 31 Sub GHz
 */
 #define ZB_PAGE31_SUB_GHZ_MAX_CHANNELS_COUNT (ZB_PAGE31_SUB_GHZ_MAX_CHANNEL_NUMBER - \
-                                              ZB_PAGE31_SUB_GHZ_START_CHANNEL_NUMBER + 1)
+                                              ZB_PAGE31_SUB_GHZ_START_CHANNEL_NUMBER + 1U)
 /** @endcond */ /* DOXYGEN_SE_SECTION */
 /**
    Maximal number of channels for Page 0 2.4GHz
 */
 #define ZB_PAGE0_2_4_GHZ_MAX_CHANNELS_COUNT  (ZB_PAGE0_2_4_GHZ_MAX_CHANNEL_NUMBER - \
-                                              ZB_PAGE0_2_4_GHZ_START_CHANNEL_NUMBER  + 1)
+                                              ZB_PAGE0_2_4_GHZ_START_CHANNEL_NUMBER  + 1U)
 /** @cond DOXYGEN_SE_SECTION */
 /**
    Maximal number of channels for all pages
@@ -383,7 +511,22 @@ zb_nwk_pib_cache_t *zb_nwk_get_pib_cache(void);
   Macro used to access PIB cache.
   @return pointer to PIB cache.
   */
+
+
+/* We get false-positive violations of MISRA rules 5.2 and 5.4 here
+ * because an internal header redefine ZB_PIB_CACHE macro for
+ * optimization purposes, and C-STAT can not properly handle
+ * #undef usage. Only one macro definition is valid at a time,
+ * but MISRA rules 5.2 and 5.4 prohibit two definitions of a
+ * symbol simultaneously.
+ * We ensure that only one instance of the macro is effectively
+ * defined here. */
+#ifdef ZB_PIB_CACHE
+#error Please ensure that you are not including any internal headers which redefine ZB_PIB_CACHE macro before incuding this file
+#else /* ZB_PIB_CACHE */
+/*cstat !MISRAC2012-Rule-5.2_c99 !MISRAC2012-Rule-5.4_c99 */
 #define ZB_PIB_CACHE() zb_nwk_get_pib_cache()
+#endif /* ZB_PIB_CACHE */
 
 #ifndef NCP_MODE_HOST
 /** Cached value of device network address */
@@ -394,7 +537,7 @@ zb_nwk_pib_cache_t *zb_nwk_get_pib_cache(void);
 #define ZB_PIBCACHE_EXTENDED_ADDRESS() ZB_PIB_CACHE()->mac_extended_address
 /** Cached value of RxOnWhenIdle attribute */
 #ifdef ZB_ED_RX_OFF_WHEN_IDLE
-#define ZB_PIBCACHE_RX_ON_WHEN_IDLE() (!ZB_IS_DEVICE_ZED())
+#define ZB_PIBCACHE_RX_ON_WHEN_IDLE() ZB_B2U(!ZB_IS_DEVICE_ZED())
 #else
 #define ZB_PIBCACHE_RX_ON_WHEN_IDLE()  ZB_PIB_CACHE()->mac_rx_on_when_idle
 #endif
@@ -411,9 +554,11 @@ zb_nwk_pib_cache_t *zb_nwk_get_pib_cache(void);
 #define ZB_PIBCACHE_NETWORK_ADDRESS()  zb_get_short_address()
 /** Cached value of RxOnWhenIdle attribute */
 #ifdef ZB_ED_RX_OFF_WHEN_IDLE
-#define ZB_PIBCACHE_RX_ON_WHEN_IDLE() (!ZB_IS_DEVICE_ZED())
+/* Make simpler checks if ZED always rx-off-when-idle */
+#undef ZB_PIBCACHE_RX_ON_WHEN_IDLE
+#define ZB_PIBCACHE_RX_ON_WHEN_IDLE() ZB_B2U(!ZB_IS_DEVICE_ZED())
 #else
-#define ZB_PIBCACHE_RX_ON_WHEN_IDLE()  zb_get_rx_on_when_idle()
+#define ZB_PIBCACHE_RX_ON_WHEN_IDLE()  ZB_B2U(zb_get_rx_on_when_idle())
 #endif
 #endif /* !NCP_MODE_HOST */
 

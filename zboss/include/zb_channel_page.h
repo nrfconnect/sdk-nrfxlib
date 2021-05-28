@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -66,13 +66,33 @@ typedef zb_channel_page_t zb_channel_list_t[ZB_CHANNEL_PAGES_NUM];
 
 /* Private API */
 #define ZB_CHANNEL_LIST_PAGE0_IDX  0U
-#define ZB_CHANNEL_LIST_PAGE28_IDX 1U
-#define ZB_CHANNEL_LIST_PAGE29_IDX 2U
-#define ZB_CHANNEL_LIST_PAGE30_IDX 3U
-#define ZB_CHANNEL_LIST_PAGE31_IDX 4U
+#define ZB_CHANNEL_LIST_PAGE23_IDX 1U
+#define ZB_CHANNEL_LIST_PAGE24_IDX 2U
+#define ZB_CHANNEL_LIST_PAGE25_IDX 3U
+#define ZB_CHANNEL_LIST_PAGE26_IDX 4U
+#define ZB_CHANNEL_LIST_PAGE27_IDX 5U
+#define ZB_CHANNEL_LIST_PAGE28_IDX 6U
+#define ZB_CHANNEL_LIST_PAGE29_IDX 7U
+#define ZB_CHANNEL_LIST_PAGE30_IDX 8U
+#define ZB_CHANNEL_LIST_PAGE31_IDX 9U
 
 #define ZB_PAGE0_2_4_GHZ_CHANNEL_FROM   11U
 #define ZB_PAGE0_2_4_GHZ_CHANNEL_TO     26U
+
+#define ZB_PAGE23_SUB_GHZ_CHANNEL_FROM  0U
+#define ZB_PAGE23_SUB_GHZ_CHANNEL_TO    24U
+
+#define ZB_PAGE24_SUB_GHZ_CHANNEL_FROM  56U
+#define ZB_PAGE24_SUB_GHZ_CHANNEL_TO    76U
+
+#define ZB_PAGE25_SUB_GHZ_CHANNEL_FROM  0U
+#define ZB_PAGE25_SUB_GHZ_CHANNEL_TO    26U
+
+#define ZB_PAGE26_SUB_GHZ_CHANNEL_FROM  27U
+#define ZB_PAGE26_SUB_GHZ_CHANNEL_TO    34U
+
+#define ZB_PAGE27_SUB_GHZ_CHANNEL_FROM  35U
+#define ZB_PAGE27_SUB_GHZ_CHANNEL_TO    55U
 
 #define ZB_PAGE28_SUB_GHZ_CHANNEL_FROM  0U
 #define ZB_PAGE28_SUB_GHZ_CHANNEL_TO    26U
@@ -86,8 +106,8 @@ typedef zb_channel_page_t zb_channel_list_t[ZB_CHANNEL_PAGES_NUM];
 #define ZB_PAGE31_SUB_GHZ_CHANNEL_FROM  0U
 #define ZB_PAGE31_SUB_GHZ_CHANNEL_TO    26U
 
-#define ZB_CHANNEL_PAGE_TO_IDX(channel_page) (((channel_page) > 0U) ? ((channel_page) - 27U) : 0U)
-#define ZB_CHANNEL_PAGE_FROM_IDX(channel_page_idx) (((channel_page_idx) > 0U) ? ((channel_page_idx) + 27U) : 0U)
+#define ZB_CHANNEL_PAGE_TO_IDX(channel_page) (((channel_page) > 0U) ? ((channel_page) - 22U) : 0U)
+#define ZB_CHANNEL_PAGE_FROM_IDX(channel_page_idx) (((channel_page_idx) > 0U) ? ((channel_page_idx) + 22U) : 0U)
 
 #ifdef ZB_PAGES_REMAP_TO_2_4GHZ
 /**
@@ -180,25 +200,48 @@ zb_uint8_t zb_pages_remap_logical_channel(zb_uint8_t channel_page,
  */
 #define ZB_CHANNEL_PAGE_SET_MASK(channel_page, mask) (channel_page) = ((channel_page) & ZB_CHANNEL_PAGE_PAGE_BITMASK) | ((mask) & ZB_CHANNEL_PAGE_MASK_BITMASK)
 
-/* Numbers [28, 29, 30, 31] have common first three bits
+/* Numbers [23 - 31] have common first bit
  *
+ * 23 = 0b10111
+ * 24 = 0b11000
+ * 25 = 0b11001
+ * 26 = 0b11010
+ * 27 = 0b11011
  * 28 = 0b11100
  * 29 = 0b11101
  * 30 = 0b11110
  * 31 = 0b11111
  *
- * So, can only compare with 0b11100 mask = 0x1C = 28 (dec)
+ * So, it is enough to compare it with 0b10111 mask = 0x17 = 23 (dec).
  */
-#define ZB_LOGICAL_PAGE_SUB_GHZ_PAGE_MASK ZB_CHANNEL_PAGE28_SUB_GHZ
+#define ZB_LOGICAL_PAGE_SUB_GHZ_PAGE_MASK ZB_CHANNEL_PAGE23_SUB_GHZ
+
+#define ZB_LOGICAL_PAGE_IS_SUB_GHZ(logical_page) \
+  (ZB_U2B((logical_page) & ZB_LOGICAL_PAGE_SUB_GHZ_PAGE_MASK))
+
+#define ZB_LOGICAL_PAGE_IS_SUB_GHZ_NA_FSK(logical_page) \
+  ((logical_page) == ZB_CHANNEL_PAGE23_SUB_GHZ)
 
 #define ZB_LOGICAL_PAGE_IS_SUB_GHZ_EU_FSK(logical_page) \
-  (((logical_page) & ZB_LOGICAL_PAGE_SUB_GHZ_PAGE_MASK) != 0U)
+  ((logical_page) >= ZB_CHANNEL_PAGE24_SUB_GHZ && (logical_page) <= ZB_CHANNEL_PAGE27_SUB_GHZ)
+
+#define ZB_LOGICAL_PAGE_IS_SUB_GHZ_GB_FSK(logical_page) \
+  ((logical_page) >= ZB_CHANNEL_PAGE28_SUB_GHZ && (logical_page) <= ZB_CHANNEL_PAGE31_SUB_GHZ)
 
 #define ZB_LOGICAL_PAGE_IS_2_4GHZ(logical_page) \
   ((logical_page) == ZB_CHANNEL_PAGE0_2_4_GHZ)
 
+#define ZB_CHANNEL_PAGE_IS_SUB_GHZ(channel_page) \
+  (ZB_LOGICAL_PAGE_IS_SUB_GHZ(ZB_CHANNEL_PAGE_GET_PAGE(channel_page)))
+
+#define ZB_CHANNEL_PAGE_IS_SUB_GHZ_NA_FSK(channel_page) \
+  (ZB_LOGICAL_PAGE_IS_SUB_GHZ_NA_FSK(ZB_CHANNEL_PAGE_GET_PAGE(channel_page)))
+
 #define ZB_CHANNEL_PAGE_IS_SUB_GHZ_EU_FSK(channel_page) \
   (ZB_LOGICAL_PAGE_IS_SUB_GHZ_EU_FSK(ZB_CHANNEL_PAGE_GET_PAGE(channel_page)))
+
+#define ZB_CHANNEL_PAGE_IS_SUB_GHZ_GB_FSK(channel_page) \
+  (ZB_LOGICAL_PAGE_IS_SUB_GHZ_GB_FSK(ZB_CHANNEL_PAGE_GET_PAGE(channel_page)))
 
 #define ZB_CHANNEL_PAGE_IS_2_4GHZ(channel_page) \
   (ZB_LOGICAL_PAGE_IS_2_4GHZ(ZB_CHANNEL_PAGE_GET_PAGE(channel_page)))
@@ -283,6 +326,15 @@ zb_ret_t zb_channel_page_list_get_page_idx(zb_uint8_t page, zb_uint8_t *idx);
  * @return RET_OK or RET_NOT_FOUND.
  */
 zb_ret_t zb_channel_page_get_page_by_idx(zb_uint8_t idx, zb_uint8_t *page);
+
+/**
+ * @brief Gets all channels mask by a page number
+ *
+ * @param page - channel page
+ *
+ * @return the all channels mask for a certain page
+ */
+zb_uint32_t zb_channel_page_get_all_channels_mask_by_page(zb_uint8_t page);
 
 /**
  * @brief Sets channels mask for the list element of channel page list that

@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -198,7 +198,7 @@ zb_zcl_cluster_write_attr_hook_t zb_zcl_get_control4_cluster_write_attr_hook(zb_
 /**
  * @name Cluster roles in message exchange
  * @anchor zcl_cluster_role
- * 
+ *
  * Note: These values were members of `enum zb_zcl_cluster_role_e` type but were converted to a
  * set of macros due to MISRA violations.
  */
@@ -1443,17 +1443,27 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 #define ZB_ZCL_GET_BYTES_WRITTEN(zbbuf, ptr) \
   zb_buf_get_ptr_off((zbbuf), (ptr))
 
+zb_bool_t zb_zcl_can_cluster_be_fragmented(zb_uint16_t profile_id, zb_uint16_t cluster_id);
+
+#define ZB_ZCL_GET_BYTES_AVAILABLE_WITH_FRAGMENTATION(zbbuf, ptr) \
+  (ZB_ASDU_MAX_FRAG_LEN - ZB_ZCL_GET_BYTES_WRITTEN(zbbuf, ptr))
+
+#define ZB_ZCL_GET_BYTES_AVAILABLE_WO_FRAGMENTATION(zbbuf, ptr) \
+  (ZB_ZCL_HI_WO_IEEE_MAX_PAYLOAD_SIZE - ZB_ZCL_GET_BYTES_WRITTEN(zbbuf, ptr))
+
 /**
  *  @brief Return number of bytes available in a packet.
  *  @hideinitializer
  */
 #ifdef APS_FRAGMENTATION
-#define ZB_ZCL_GET_BYTES_AVAILABLE(zbbuf, ptr)              \
-  (ZB_ASDU_MAX_FRAG_LEN - ZB_ZCL_GET_BYTES_WRITTEN(zbbuf, ptr))
+#define ZB_ZCL_GET_BYTES_AVAILABLE(zbbuf, ptr, profile_id, cluster_id)     \
+  (zb_zcl_can_cluster_be_fragmented(profile_id, cluster_id) ?              \
+   ZB_ZCL_GET_BYTES_AVAILABLE_WITH_FRAGMENTATION(zbbuf, ptr) :             \
+   ZB_ZCL_GET_BYTES_AVAILABLE_WO_FRAGMENTATION(zbbuf, ptr))
 #else
-#define ZB_ZCL_GET_BYTES_AVAILABLE(zbbuf, ptr)              \
-  (ZB_ZCL_HI_WO_IEEE_MAX_PAYLOAD_SIZE - ZB_ZCL_GET_BYTES_WRITTEN(zbbuf, ptr))
-#endif
+#define ZB_ZCL_GET_BYTES_AVAILABLE(zbbuf, ptr, profile_id, cluster_id)     \
+  ZB_ZCL_GET_BYTES_AVAILABLE_WO_FRAGMENTATION(zbbuf, ptr)
+#endif /* APS_FRAGMENTATION */
 
 /**
  *  @brief Put 8-bit value to packet.

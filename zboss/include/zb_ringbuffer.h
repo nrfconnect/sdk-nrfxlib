@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -212,7 +212,7 @@ do                                                                              
   (entries_written) = ZB_RING_BUFFER_LINEAR_PORTION((rb), (size));                   \
   ZB_MEMCPY((rb)->ring_buf + (rb)->write_i, (data), (entries_written));              \
   (rb)->written += (entries_written);                                                \
-  (rb)->write_i = ((rb)->write_i + (entries_written) % ZB_RING_BUFFER_CAPACITY(rb)); \
+  (rb)->write_i = (((rb)->write_i + (entries_written)) % ZB_RING_BUFFER_CAPACITY(rb)); \
 } while(ZB_FALSE)
 
 /**
