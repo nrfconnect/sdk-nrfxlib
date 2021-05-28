@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -52,6 +52,7 @@
 
 #include "zb_config.h"
 #include "zb_address.h"
+#include "zboss_api_aps_interpan.h"
 
 /**
  * @name APS status constants

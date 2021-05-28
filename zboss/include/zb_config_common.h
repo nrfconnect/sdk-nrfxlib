@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -876,13 +876,23 @@ Workaround for secure rejoin
 /*!
    Default turbo poll interval
  */
+#if defined ZB_SUBGHZ_ONLY_MODE || defined ZB_R22_MULTIMAC_MODE
+/* For the Sub-GHz bands the minimum and default turbo polling intervals are increased,
+   because the LBT mechanism periodically blocks the radio */
+#define ZB_PIM_DEFAULT_TURBO_POLL_INTERVAL ZB_MILLISECONDS_TO_BEACON_INTERVAL(250U)
+#else
 #define ZB_PIM_DEFAULT_TURBO_POLL_INTERVAL ZB_MILLISECONDS_TO_BEACON_INTERVAL(100U)
+#endif
 
 /*!
    Minimal possible turbo poll interval
  */
+#if defined ZB_SUBGHZ_ONLY_MODE || defined ZB_R22_MULTIMAC_MODE
+#define ZB_PIM_DEFAULT_MIN_TURBO_POLL_INTERVAL ZB_MILLISECONDS_TO_BEACON_INTERVAL(250U)
+#else
 #define ZB_PIM_DEFAULT_MIN_TURBO_POLL_INTERVAL ZB_MILLISECONDS_TO_BEACON_INTERVAL(100U)
 //#define ZB_PIM_DEFAULT_MIN_TURBO_POLL_INTERVAL ZB_MILLISECONDS_TO_BEACON_INTERVAL(60)
+#endif
 
 /*!
    Maximal possible turbo poll interval
@@ -1002,32 +1012,6 @@ Frequency band (MHz)                  MR-FSK symbol duration used for MAC
 #define ZB_O_QPSK_2_4_GHZ_PHY_SYMBOLS_PER_OCTET 2U
 
 #define ZB_2_4_GHZ_OCTET_DURATION_USEC (ZB_O_QPSK_2_4_GHZ_SYMBOL_DURATION_USEC * ZB_O_QPSK_2_4_GHZ_PHY_SYMBOLS_PER_OCTET)
-
-/*!
- * @brief Symbol duration for European FSK Sub-GHz
- * @see D.11.2 MAC Support for Listen Before Talk (LBT)
- */
-#define ZB_EU_FSK_SYMBOL_DURATION_USEC 10U
-
-#define ZB_EU_FSK_PHY_SYMBOLS_PER_OCTET 8U
-
-/*!
- * @brief Synchronization header for European FSK Sub-GHz
- * @see D.10.1.1.1 SHR for European Sub-GHz FSK
- * synchronization header: 8 bytes preamble + 2 bytes SFD
- */
-#define ZB_MAC_EU_FSK_SHR_LEN_BYTES   10U
-#define ZB_MAC_EU_FSK_SHR_LEN_SYMBOLS \
-  (ZB_MAC_EU_FSK_SHR_LEN_BYTES * ZB_EU_FSK_PHY_SYMBOLS_PER_OCTET)
-
-/*!
- * @brief PHY header for European FSK Sub-GHz
- * @see D.10.1.1.2 PHR for European Sub-GHz FSK
- * PHY header: 2 bytes
- */
-#define ZB_MAC_EU_FSK_PHR_LEN_BYTES 2U
-#define ZB_MAC_EU_FSK_PHR_LEN_SYMBOLS \
-  (ZB_MAC_EU_FSK_PHR_LEN_BYTES * ZB_EU_FSK_PHY_SYMBOLS_PER_OCTET)
 
 /*!
    \par Time measurement unit is beacon interval.
@@ -1173,7 +1157,12 @@ The CCA detection time shall be equal to 8 symbol periods.
 /*! Percentage of failures. Use it as divider to get 25 % */
 #define ZB_FAILS_PERCENTAGE   4U
 /*! MAC queue size */
+#if defined ZB_SUBGHZ_ONLY_MODE || defined ZB_R22_MULTIMAC_MODE
+/* Increased MAC queue size for Sub-GHz because the LBT mechanism periodically blocks the radio */
+#define ZB_MAC_QUEUE_SIZE 7U
+#else
 #define ZB_MAC_QUEUE_SIZE 5U
+#endif
 
 /*
 The maximum time, in
@@ -1293,6 +1282,45 @@ request command frame.
  */
 #define ZB_EU_FSK_REFERENCE_SENSITIVITY -99
 
+/*
+ * 02/01/2021: After discussions in ZigBee Sub-GHz task group, agreed that
+ * end device can close it's receiver if it hasn't received first bit of the MAC header between
+ * aLBTAckWindowStart (450us) and aLBTAckWindow (1ms).
+ *
+ * TODO: Clarify this after official specification will be available
+ */
+#define ZB_MAC_PIB_ACK_WAIT_DURATION_HW_GB_EU_FSK_SYMBOLS 100U
+#define ZB_MAC_PIB_ACK_WAIT_DURATION_HW_NA_FSK_SYMBOLS    500U
+
+/*!
+ * @brief Symbol duration for European FSK Sub-GHz
+ * @see D.11.2 MAC Support for Listen Before Talk (LBT)
+ */
+#define ZB_GB_EU_FSK_SYMBOL_DURATION_USEC 10UL
+
+/*!
+ * @brief Symbol duration for North America FSK Sub-GHz
+ */
+#define ZB_NA_FSK_SYMBOL_DURATION_USEC 2UL
+
+#define ZB_SUB_GHZ_PHY_SYMBOLS_PER_OCTET 8U
+
+/*!
+ * @brief Synchronization header for Sub-GHz PHY
+ * @see D.10.1.1.1 SHR for European Sub-GHz FSK
+ * synchronization header: 8 bytes preamble + 2 bytes SFD
+ */
+#define ZB_MAC_SUB_GHZ_SHR_LEN_BYTES   10U
+
+/*!
+ * @brief PHY header for Sub-GHz PHY
+ * @see D.10.1.1.2 PHR for European Sub-GHz FSK
+ * PHY header: 2 bytes
+ */
+#define ZB_MAC_SUB_GHZ_PHR_LEN_BYTES 2U
+
+/* @breief CCA period for Sub-GHz PHY in symbols */
+#define ZB_MAC_SUB_GHZ_CCA_PERIOD_SYMBOLS 16U
 
 /* IMPORTANT!!!
  * As mentioned in section D.11.2 MAC Support for Listen Before Talk
@@ -1306,68 +1334,50 @@ request command frame.
 /* aLBTTxMinOff */
 /* 100 ms */
 /*! The minimum permitted off time between a device's own transmissions. */
-#define ZB_MAC_LBT_TX_MIN_OFF_SYMBOLS 10000U
-/*! The minimum permitted off time between a device's own transmissions in microseconds. */
-#define ZB_MAC_LBT_TX_MIN_OFF_USEC    (ZB_MAC_LBT_TX_MIN_OFF_SYMBOLS * ZB_EU_FSK_SYMBOL_DURATION_USEC)
-/*! The minimum permitted off time between a device's own transmissions in ms.*/
-#define ZB_MAC_LBT_TX_MIN_OFF_MS      (ZB_MAC_LBT_TX_MIN_OFF_USEC / 1000U)
+#define ZB_MAC_LBT_TX_MIN_OFF_SYMBOLS 10000UL
 
 /* aLBTTxMaxPKT */
 /* 1 second */
 /*! The maximum permitted off time between a device's own transmissions. */
 #define ZB_MAC_LBT_TX_MAX_PKT_SYMBOLS 100000U
-/*! The maximum permitted off time between a device's own transmissions in microseconds. */
-#define ZB_MAC_LBT_TX_MAX_PKT_USEC    (ZB_MAC_LBT_TX_MAX_PKT_SYMBOLS * ZB_EU_FSK_SYMBOL_DURATION_USEC)
-/*! The maximum permitted off time between a device's own transmissions in ms.*/
-#define ZB_MAC_LBT_TX_MAX_PKT_MS      (ZB_MAC_LBT_TX_MAX_PKT_USEC / 1000U)
 
 /* aLBTMinFree */
-/* 5 ms */
-/*! The minimum duration a channel should be free */
-#define ZB_MAC_LBT_MIN_FREE_SYMBOLS   500U
-/*! The minimum duration a channel should be free in microseconds*/
-#define ZB_MAC_LBT_MIN_FREE_USEC      (ZB_MAC_LBT_MIN_FREE_SYMBOLS * ZB_EU_FSK_SYMBOL_DURATION_USEC)
-/*! The minimum duration a channel should be free in ms*/
-#define ZB_MAC_LBT_MIN_FREE_MS        (ZB_MAC_LBT_MIN_FREE_USEC / 1000U)
+/*! The minimum duration a channel should be free for different Sub-GHz pages */
+#define ZB_MAC_GB_EU_FSK_LBT_MIN_FREE_SYMBOLS 500U
+#define ZB_MAC_NA_FSK_LBT_MIN_FREE_SYMBOLS    32U
 
 /* aLBTMaxRandom */
-/* 5 ms */
-/*! The maximum period of the backoff */
-#define ZB_MAC_LBT_MAX_RANDOM_SYMBOLS 500U
-/*! The maximum period of the backoff in microseconds */
-#define ZB_MAC_LBT_MAX_RANDOM_USEC    (ZB_MAC_LBT_MAX_RANDOM_SYMBOLS * ZB_EU_FSK_SYMBOL_DURATION_USEC)
-/*! The maximum period of the backoff in ms */
-#define ZB_MAC_LBT_MAX_RANDOM_MS      (ZB_MAC_LBT_MAX_RANDOM_USEC / 1000U)
+/*! The maximum period of the backoff for different Sub-GHz pages */
+#define ZB_MAC_GB_EU_FSK_LBT_MAX_RANDOM_SYMBOLS 500UL
+#define ZB_MAC_NA_FSK_LBT_MAX_RANDOM_SYMBOLS    2200UL
 
 /* aLBTMinRandom */
-/* 0 ms */
-/*! The minimum period of the backoff */
-#define ZB_MAC_LBT_MIN_RANDOM_SYMBOLS 0U
-/*! The minimum period of the backoff in microseconds */
-#define ZB_MAC_LBT_MIN_RANDOM_USEC    0U
-/*! The minimum period of the backoff in ms */
-#define ZB_MAC_LBT_MIN_RANDOM_MS      0U
+/*! The minimum period of the backoff for different Sub-GHz pages */
+#define ZB_MAC_GB_EU_FSK_LBT_MIN_RANDOM_SYMBOLS 0U
+#define ZB_MAC_NA_FSK_LBT_MIN_RANDOM_SYMBOLS    500U
 
 /* aLBTGranularity */
-/* 500 us */
-/*! The granularity in the random backoff */
-#define ZB_MAC_LBT_GRANULARITY_SYMBOLS 50U
-/*! The granularity in the random backoff in microseconds */
-#define ZB_MAC_LBT_GRANULARITY_USEC    (ZB_MAC_LBT_GRANULARITY_SYMBOLS * ZB_EU_FSK_SYMBOL_DURATION_USEC)
+/*! The granularity in the random backoff for different Sub-GHz pages */
+#define ZB_MAC_GB_EU_FSK_LBT_GRANULARITY_SYMBOLS 50U
+#define ZB_MAC_NA_FSK_LBT_GRANULARITY_SYMBOLS    200U
 
 /* aLBTThresholdLevelLp */
 /*!
 *   The level (in dBm) at which the receiver determines whether there
 *   is activity in a low power channel (+14 dBm Tx).
 */
-#define ZB_MAC_LBT_THRESHOLD_LEVEL_LP  (-87)
+#define ZB_MAC_LBT_GB_THRESHOLD_LEVEL_LP  (-80)
+#define ZB_MAC_LBT_EU_THRESHOLD_LEVEL_LP  (-80)
+#define ZB_MAC_LBT_NA_THRESHOLD_LEVEL_LP  (-79) /* 08/25/2020: see TP/154/PHYRFS1/RECEIVER-07 test */
 
 /* aLBTThresholdLevelHp */
 /*!
 *   The level (in dBm) at which the receiver determines whether
 *   there is activity in a high power channel (+27 dBm Tx).
 */
-#define ZB_MAC_LBT_THRESHOLD_LEVEL_HP  (-91)
+#define ZB_MAC_LBT_GB_THRESHOLD_LEVEL_HP  (-91)
+#define ZB_MAC_LBT_EU_THRESHOLD_LEVEL_HP  (-91)
+#define ZB_MAC_LBT_NA_THRESHOLD_LEVEL_HP  ZB_MAC_LBT_NA_THRESHOLD_LEVEL_LP
 
 /* aLBTMaxTxRetries */
 /*! The maximum number of retries allowed while looking for a clear channel.
@@ -1385,14 +1395,6 @@ request command frame.
 *   may result in the transmitter missing the ACK.
 */
 #define ZB_MAC_LBT_ACK_WINDOW_START_SYMBOLS 45U
-/*!
-*   The minimum pause before acknowledging a received packet in microseconds.
-*   This is to allow a transmitting device to change from
-*   transmit to receive mode. Starting an ACK before this time
-*   may result in the transmitter missing the ACK.
-*/
-#define ZB_MAC_LBT_ACK_WINDOW_START_USEC \
-  (ZB_MAC_LBT_ACK_WINDOW_START_SYMBOLS * ZB_EU_FSK_SYMBOL_DURATION_USEC)
 
 /* aLBTAckWindow */
 /* 1ms */
@@ -1403,20 +1405,7 @@ request command frame.
 *   devices could interpret the quiet as an opportunity to transmit.
 */
 #define ZB_MAC_LBT_ACK_WINDOW_SYMBOLS 100U
-/*!
-*   The maximum wait time in microseconds before acknowledging a received
-*   packet (includes @ref ZB_MAC_LBT_ACK_WINDOW_START_SYMBOLS).
-*   This time MUST be shorter than @ref ZB_MAC_LBT_MIN_FREE_SYMBOLS otherwise other
-*   devices could interpret the quiet as an opportunity to transmit.
-*/
-#define ZB_MAC_LBT_ACK_WINDOW_USEC    (ZB_MAC_LBT_ACK_WINDOW_SYMBOLS * ZB_EU_FSK_SYMBOL_DURATION_USEC)
-/*!
-*   The maximum wait time in ms before acknowledging a received
-*   packet (includes @ref ZB_MAC_LBT_ACK_WINDOW_START_SYMBOLS).
-*   This time MUST be shorter than @ref ZB_MAC_LBT_MIN_FREE_SYMBOLS otherwise other
-*   devices could interpret the quiet as an opportunity to transmit.
-*/
-#define ZB_MAC_LBT_ACK_WINDOW_MS      (ZB_MAC_LBT_ACK_WINDOW_USEC / 1000U)
+
 /*aTxRxTurnAround */
 /*!
 *  Time for radio to switch between transmit and receive
@@ -1430,23 +1419,7 @@ request command frame.
 *   [@ref ZB_MAC_LBT_MIN_FREE_SYMBOLS  + @ref ZB_MAC_LBT_MAX_TX_RETRIES * (@ref ZB_MAC_LBT_MIN_FREE_SYMBOLS + @ref ZB_MAC_LBT_MAX_RANDOM_SYMBOLS) + @ref ZB_MAC_LBT_TX_RX_SWITCH_TIME_SYMBOLS )]
 *   to ensure that all re-tries can occur.
 */
-#define ZB_MAC_LBT_TIMEOUT_SYMBOLS 6000U
-/*!
-*   Time before aborting LBT if it cannot find a free slot in microseconds.
-*   This value should be set to at least
-*   [@ref ZB_MAC_LBT_MIN_FREE_SYMBOLS  + @ref ZB_MAC_LBT_MAX_TX_RETRIES * (@ref ZB_MAC_LBT_MIN_FREE_SYMBOLS + @ref ZB_MAC_LBT_MAX_RANDOM_SYMBOLS) + @ref ZB_MAC_LBT_TX_RX_SWITCH_TIME_SYMBOLS )]
-*   to ensure that all re-tries can occur.
-*/
-#define ZB_MAC_LBT_TIMEOUT_USEC    (ZB_MAC_LBT_TIMEOUT_SYMBOLS * ZB_EU_FSK_SYMBOL_DURATION_USEC)
-/*!
-*   Time before aborting LBT if it cannot find a free slot in ms.
-*   This value should be set to at least
-*   [@ref ZB_MAC_LBT_MIN_FREE_SYMBOLS  + @ref ZB_MAC_LBT_MAX_TX_RETRIES * (@ref ZB_MAC_LBT_MIN_FREE_SYMBOLS + @ref ZB_MAC_LBT_MAX_RANDOM_SYMBOLS) + @ref ZB_MAC_LBT_TX_RX_SWITCH_TIME_SYMBOLS )]
-*   to ensure that all re-tries can occur.
-*/
-#define ZB_MAC_LBT_TIMEOUT_MS      (ZB_MAC_LBT_TIMEOUT_USEC / 1000U)
-/*! LBT acknowledgement length for SUB GHZ */
-#define ZB_MAC_LBT_SUB_GHZ_ACK_LEN_SYMBOLS (ZB_MAC_ACK_LEN_BYTES * ZB_EU_FSK_PHY_SYMBOLS_PER_OCTET)
+#define ZB_MAC_LBT_TIMEOUT_SYMBOLS 6000UL
 
 /* Tuned to fit to 2 beacon intervals */
 /*! LBT transmition wait period in ms */
@@ -1455,9 +1428,6 @@ request command frame.
 /* aDUTYCYCLEMeasurementPeriod */
 /*! The period over which the duty cycle is calculated. */
 #define ZB_MAC_DUTY_CYCLE_MEASUREMENT_PERIOD_SYMBOLS 360000000U
-/*! The period over which the duty cycle is calculated in seconds */
-#define ZB_MAC_DUTY_CYCLE_MEASUREMENT_PERIOD_SEC \
- (ZB_MAC_DUTY_CYCLE_MEASUREMENT_PERIOD_SYMBOLS / 1000000U * ZB_EU_FSK_SYMBOL_DURATION_USEC)
 
 /* aDUTYCYCLERampUp */
 #ifndef ZB_MAC_DUTY_CYCLE_RAMP_UP_SYMBOLS
@@ -1493,12 +1463,6 @@ request command frame.
 #define ZB_MAC_DUTY_CYCLE_BUCKETS 13U
 
 /*!
-*   Duty cycle monitoring period
-  */
-#define ZB_MAC_DUTY_CYCLE_TIME_PERIOD_SEC \
-  (ZB_MAC_DUTY_CYCLE_MEASUREMENT_PERIOD_SEC / (ZB_MAC_DUTY_CYCLE_BUCKETS - 1U))
-
-/*!
 *   MAC power control information table size
 *
 *   See reference document 05-3474-22 section D.9.2 Zigbee Specification R22
@@ -1514,10 +1478,20 @@ request command frame.
 #define ZB_MAC_POWER_CONTROL_OPT_SIGNAL_LEVEL (ZB_EU_FSK_REFERENCE_SENSITIVITY + 20U)
 
 
-#ifndef ZB_MAC_DEFAULT_TX_POWER_SUB_GHZ
-/*! Default MAC transmission power for SUB GHZ */
-#define ZB_MAC_DEFAULT_TX_POWER_SUB_GHZ +14
+#ifndef ZB_MAC_DEFAULT_TX_POWER_GB_EU_SUB_GHZ
+/*! Default MAC transmission power for GB and EU Sub-GHz PHY */
+#define ZB_MAC_DEFAULT_TX_POWER_GB_EU_SUB_GHZ +14
 #endif
+
+#ifndef ZB_MAC_DEFAULT_TX_POWER_GB_EU_SUB_GHZ
+/*! Default MAC transmission power for GB and EU Sub-GHz PHY */
+#define ZB_MAC_DEFAULT_TX_POWER_GB_EU_SUB_GHZ +14
+#endif
+#ifndef ZB_MAC_DEFAULT_TX_POWER_NA_SUB_GHZ
+/*! Default MAC transmission power for NA Sub-GHz PHY */
+#define ZB_MAC_DEFAULT_TX_POWER_NA_SUB_GHZ +30
+#endif
+
 /** @endcond */ /* DOXYGEN_MULTIMAC_SECTION */
 /** @cond internals_doc */
 #ifndef ZB_MAC_DEFAULT_TX_POWER_24_GHZ

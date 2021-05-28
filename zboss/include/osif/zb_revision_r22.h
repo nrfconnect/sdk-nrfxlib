@@ -17,7 +17,7 @@
 /**
  * Major version number of the ZBOSS platform for NCS.
  */
-#define ZBOSS_PLATFORM_MAJOR 2U
+#define ZBOSS_PLATFORM_MAJOR 3U
 
 /**
  * Minor version number of the ZBOSS platform for NCS.
@@ -36,4 +36,4 @@
  *
  * Note: This value is automatically updated by the release script.
  */
-#define ZBOSS_PATCH 2U
+#define ZBOSS_PATCH 0U

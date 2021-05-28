@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -456,8 +456,8 @@ typedef ZB_PACKED_PRE struct zb_neighbor_tbl_ent_s /* not need to pack it at IAR
   } ZB_PACKED_STRUCT u;
   /* TODO: move it to base ?? */
 #if !defined ZB_ED_ROLE && defined ZB_MAC_DUTY_CYCLE_MONITORING
-  zb_lbitfield_t is_subghz:1;        /*!< if 1, this is Sub-GHz device */
-  zb_lbitfield_t suspended:1;        /*!< if 1, SuspendZCLMessages was sent to the device */
+  zb_bitbool_t   is_subghz:1;        /*!< if 1, this is Sub-GHz device */
+  zb_bitbool_t   suspended:1;        /*!< if 1, SuspendZCLMessages was sent to the device */
   zb_lbitfield_t pkt_count:22;       /*!< count of packets received from this device */
 #define MAX_NBT_PKT_COUNT ((1u<<22U)-1U)
   zb_lbitfield_t subghz_ep:8;        /*!< endpoint with Sub-GHz cluster on remote device */

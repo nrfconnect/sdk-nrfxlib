@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -208,12 +208,16 @@ constants etc.
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #if defined ZB_ENABLE_SE_MIN_CONFIG
+#ifndef ZB_SECURITY_INSTALLCODES
 #define ZB_SECURITY_INSTALLCODES
+#endif
 /* ZB_ENABLE_SE coyuld be set to enable only CBKE but not SE commissioninfg */
 #ifndef ZB_NO_SE_COMMISSIONING
 #define ZB_SE_COMMISSIONING
 #endif
+#ifndef APS_FRAGMENTATION
 #define APS_FRAGMENTATION
+#endif
 #define ZB_MGMT_NWK_ENHANCED_UPDATE_ENABLED
 
 #ifndef ZB_SE_DISABLE_TIME_SYNC
@@ -256,7 +260,6 @@ constants etc.
 #define ZB_ENHANCED_BEACON_SUPPORT
 #define ZB_JOINING_LIST_SUPPORT
 #define ZB_SUB_GHZ_ZB30_SUPPORT
-#define ZB_MAC_POWER_CONTROL
 #define ZB_FILTER_OUT_CLUSTERS
 #define ZB_ZCL_SUPPORT_CLUSTER_SUBGHZ
 
@@ -293,6 +296,14 @@ constants etc.
 #define ZB_ENABLE_ZLL
 #define ZB_ENABLE_INTER_PAN_EXCHANGE
 #endif
+
+/* Add dependency to the Inter-Pan exchange */
+#ifdef  ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL
+#ifndef ZB_ENABLE_INTER_PAN_EXCHANGE
+#define ZB_ENABLE_INTER_PAN_EXCHANGE
+#endif
+#endif
+
 
 /*
   Features to be specified in vendor config:
@@ -354,6 +365,11 @@ Ideally should rework the whole zb_config.h to suit better for that new concept.
 /* TODO: Remove old subgig definitions */
 #if defined ZB_SUBGHZ_BAND_ENABLED
 #define ZB_TRANSCEIVER_ALL_CHANNELS_MASK   0x07FFF800U     /* 11-26 for compatibility with 2.4Ghz*/
+#define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE23 0xB9FFFFFFU
+#define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE24 0xC01FFFFFU
+#define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE25 0xCFFFFFFFU
+#define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE26 0xD00000FFU
+#define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE27 0xD81FFFFFU
 #define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE28 0xE7FFFFFFU
 #define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE29 0xE80001FFU
 #define ZB_TRANSCEIVER_ALL_CHANNELS_MASK_PAGE30 0xF7FFFFFFU
@@ -542,7 +558,10 @@ In general, define ZB_COORDINATOR_ROLE to compile ZC-only build, ZB_ROUTER_ROLE 
 
 /* By default ZR can be switched to ZED at runtime. */
 /*! ZB end device functionality */
+#ifndef ZB_ED_FUNC
 #define ZB_ED_FUNC
+#endif
+
 #endif
 
 /*
@@ -840,6 +859,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
 #ifdef ZB_SUBGHZ_BAND_ENABLED
 /** @cond DOXYGEN_SUBGHZ_FEATURE */
 /* as defined in D.7 of Zigbee/r22 */
+#define ZB_DEFAULT_SCAN_DURATION_SUB_GHZ 7U
 /** @endcond */ /* DOXYGEN_SUBGHZ_FEATURE */
 #else
 #define ZB_DEFAULT_SCAN_DURATION_SUB_GHZ ZB_DEFAULT_SCAN_DURATION
@@ -847,7 +867,12 @@ ZB_ED_RX_OFF_WHEN_IDLE
 
 #else  /* ZB_TRACE_LEVEL */
 
+/* SNCP release build has enabled trace and in the same time requires to have scan duration value set to 3 */
+#ifdef SNCP_MODE
+#define ZB_DEFAULT_SCAN_DURATION 3U
+#else
 #define ZB_DEFAULT_SCAN_DURATION 5U
+#endif /* SNCP_MODE */
 
 #if defined ZB_SUBGHZ_BAND_ENABLED
 #define ZB_DEFAULT_SCAN_DURATION_SUB_GHZ 7U
@@ -918,7 +943,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
    Size of channel list structure
 */
 #if defined ZB_SUBGHZ_BAND_ENABLED
-#define ZB_CHANNEL_PAGES_NUM 5U
+#define ZB_CHANNEL_PAGES_NUM 10U
 #else
 #define ZB_CHANNEL_PAGES_NUM 1U
 #endif  /* !ZB_SUBGHZ_BAND_ENABLED */
@@ -1072,13 +1097,6 @@ exponent.
 #define ZB_PREDEFINED_ROUTER_ADDR 0x3344U
 #define ZB_PREDEFINED_ED_ADDR     0x3344U
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
-
-#ifdef ZB_LIMIT_VISIBILITY
-/**
-   Maximum number of addresses in the visibility limit arrays
-*/
-#define ZB_N_VISIBLE_ADDRESSES 6U
-#endif
 
 #if defined ZB_LITTLE_ENDIAN && defined ZB_BIG_ENDIAN
 #error  Enable only 1 profile support: ZB_LITTLE_ENDIAN or ZB_BIG_ENDIAN
@@ -1268,6 +1286,13 @@ exponent.
 #define ZB_LIMIT_VISIBILITY
 #endif /*!defined ZB_LIMIT_VISIBILITY && !defined ZB_MEMORY_COMPACT*/
 #endif /* ZB_CERTIFICATION_HACKS */
+
+#ifdef ZB_LIMIT_VISIBILITY
+/**
+   Maximum number of addresses in the visibility limit arrays
+*/
+#define ZB_N_VISIBLE_ADDRESSES 6U
+#endif
 
 #if defined ZB_ROUTER_ROLE
 /* See: certification test 13.66_Commissioning_the_short_address */
@@ -1769,6 +1794,12 @@ compatibility with some mammoth shit */
 
 #ifdef ZB_ED_ROLE
 #define ZB_USE_SLEEP
+#endif
+
+#ifdef ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL
+/* Lock queues size to temporarily store packets when inter-pan procedue is in progress */
+#define NWK_INTRP_LOCK_QUEUE_SIZE 5U
+#define APS_LOCK_QUEUE_SIZE 5U
 #endif
 
 /*! \addtogroup ZB_CONFIG */

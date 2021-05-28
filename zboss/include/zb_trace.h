@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -513,13 +513,13 @@ typedef struct zb_byte128_struct_s
  *  @{
  */
 /** @brief Error message. */
-#define TRACE_ERROR TRACE_SUBSYSTEM_INFO, 0
+#define TRACE_ERROR TRACE_SUBSYSTEM_INFO, 0U
 /** @brief Information message level 1. */
-#define TRACE_INFO1 TRACE_SUBSYSTEM_INFO, 1
+#define TRACE_INFO1 TRACE_SUBSYSTEM_INFO, 1U
 /** @brief Information message level 2. */
-#define TRACE_INFO2 TRACE_SUBSYSTEM_INFO, 2
+#define TRACE_INFO2 TRACE_SUBSYSTEM_INFO, 2U
 /** @brief Information message level 3. */
-#define TRACE_INFO3 TRACE_SUBSYSTEM_INFO, 3
+#define TRACE_INFO3 TRACE_SUBSYSTEM_INFO, 3U
 
 /** @} */ /* TRACE_GENERAL_MESSAGES */
 
@@ -902,6 +902,7 @@ typedef struct zb_byte128_struct_s
 #define FMT__P_P_P_D_P                                  TRACE_ARG_SIZE(0,1,0,4,0)
 #define FMT__P_P_P_H_H                                  TRACE_ARG_SIZE(2,0,0,3,0)
 #define FMT__P_P_P_P                                    TRACE_ARG_SIZE(0,0,0,4,0)
+#define FMT__P_P_P_P_P                                  TRACE_ARG_SIZE(0,0,0,5,0)
 #define FMT__D_D_L_D                                    TRACE_ARG_SIZE(0,3,1,0,0)
 #define FMT__D_D_L_L                                    TRACE_ARG_SIZE(0,2,2,0,0)
 #define FMT__D_D_D_D_L_L                                TRACE_ARG_SIZE(0,4,2,0,0)

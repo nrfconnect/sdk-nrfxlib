@@ -303,6 +303,11 @@
 /* #undef CONFIG_ZB_BDB_TOUCHLINK */
 
 /**
+ * Enable API for sending inter-pan packets at non default channel
+ */
+#define CONFIG_ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL y
+
+/**
  * Certification specific behavior
  *
  * Enable behaviors specific to golden devices used during certification

@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -57,21 +57,24 @@
  *   Callback function typedef.
  *   Callback is function planned to execute by another function.
  *
- *   @note Callback must be declared as reentrant for sdcc.
- *
  *   @param param - callback parameter - usually, but not always, ref to packet buf
  *
  *   See any sample
  */
 typedef void (ZB_CODE * zb_callback_t)(zb_uint8_t param);
+
+/**
+ *   Callback function with 2 parameters typedef.
+ *   Callback is function planned to execute by another function.
+ *
+ *   @param param - callback parameter - usually, but not always, ref to packet buf
+ *   @param cb_param - additional 2-byte callback parameter, user data.
+ *
+ *   See any sample
+ */
+typedef void (ZB_CODE * zb_callback2_t)(zb_uint8_t param, zb_uint16_t cb_param);
 /*! @} */
 
-
-#include "zb_osif.h"
-#include "zb_debug.h"
-#include "zb_trace.h"
-
-#include "zb_pooled_list.h"
 
 /*! \addtogroup time */
 /*! @{ */
@@ -270,27 +273,15 @@ zb_time_t zb_timer_get(void);
 
 /*! @} */
 
+#include "zb_osif.h"
+#include "zb_debug.h"
+#include "zb_trace.h"
+
+#include "zb_pooled_list.h"
+
 /*! \addtogroup sched */
 /*! @{ */
 
-
-typedef zb_ret_t (ZB_CODE * zb_ret_callback_t)(zb_uint8_t param);
-
-typedef void (*zb_callback_void_t)(void);
-
-
-/**
- *   Callback function with 2 parameters typedef.
- *   Callback is function planned to execute by another function.
- *
- *   @note Callback must be declared as reentrant for sdcc.
- *
- *   @param param - callback parameter - usually, but not always, ref to packet buf
- *   @param cb_param - additional 2-byte callback parameter, user data.
- *
- *   See any sample
- */
-typedef void (ZB_CODE * zb_callback2_t)(zb_uint8_t param, zb_uint16_t cb_param);
 /** @cond internals_doc */
 /** Schedule single-param callback execution.
     (use ZB_SCHEDULE_APP_CALLBACK() macro instead of this function).

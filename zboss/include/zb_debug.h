@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -46,7 +46,7 @@
 /*! \addtogroup ZB_ASSERT_DYNAMIC */
 /*! @{ */
 
-#if defined DEBUG || defined USE_ASSERT
+#if (defined USE_ASSERT)
 /**
    Trace current location, abort current program execution, with core dump if possible.
 

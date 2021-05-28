@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -748,6 +748,19 @@ zb_uint8_t *zb_osif_ota_srv_get_image_header(void *dev);
 /** @} */ /* ll */
 
 #endif /* ZB_USE_OSIF_OTA_ROUTINES */
+
+/**
+ * Run the bootloader after next reset
+ *
+ * @return RET_OK is success, RET_ERROR otherwise
+ */
+zb_ret_t zb_osif_bootloader_run_after_reboot(void);
+
+/**
+ * Inform that image was successfully loaded
+ */
+void zb_osif_bootloader_report_successful_loading(void);
+
 
 #if defined ZB_PROFILE_STACK_USAGE
 /* Both functions are platform-specific */

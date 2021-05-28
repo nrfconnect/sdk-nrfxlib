@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -199,10 +199,6 @@
 #endif
 
 
-
-#if defined ZB_BDB_MODE
-//#include "zb_bdb_comissioning.h"
-#endif
 
 #if defined ZB_ENABLE_ZGP_CLUSTER
 //#include "zgp/zgp_internal.h"
@@ -1772,7 +1768,9 @@ typedef struct zb_zcl_device_callback_param_s
    //
    zb_zcl_ota_upgrade_value_param_t  ota_value_param;
 #endif /*defined ZB_HA_ENABLE_OTA_UPGRADE_CLIENT || defined DOXYGEN */
+#if defined ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL
    zb_zcl_poll_control_check_in_cli_param_t checkin_cli_param;
+#endif /* defined ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL */
 #if defined ZB_HA_ENABLE_OTA_UPGRADE_SERVER
    zb_zcl_ota_upgrade_srv_query_img_param_t       ota_upgrade_srv_query_img_param;
    zb_zcl_ota_upgrade_srv_upgrade_started_param_t ota_upgrade_srv_upgrade_started_param;
@@ -2185,195 +2183,6 @@ typedef enum zb_bdb_comm_state_e
 }
   zb_bdb_comm_state_t;
 
-/** @cond internals_doc */
-typedef ZB_PACKED_PRE struct zb_bdb_comm_respondent_info_s
-{
-  zb_address_ieee_ref_t addr_ref; /*!< Address reference in Translation Table for "respondent" */
-  zb_uint8_t ep_list[ZB_BDB_COMM_ACTIVE_ENDP_LIST_LEN];  /*!< Respondent's active endpoints list */
-#if defined(ZB_BDB_ENABLE_FINDING_BINDING)
-  zb_uint8_t ep_cnt;   /*!< Count of endpoints received during finding and binding */
-#endif
-
-  zb_uint8_t eps_checked; /*!< Count of the currently checked endpoints */
-  zb_bufid_t simple_desc_resp_buf;
-  zb_bufid_t curr_bind_req_buf;
-  zb_uindex_t curr_cluster_idx;
-} ZB_PACKED_STRUCT zb_bdb_comm_respondent_info_t;
-
-typedef enum bdb_commissioning_signal_e
-{
-  BDB_COMM_SIGNAL_BAD,          /* 0 */
-
-  BDB_COMM_SIGNAL_INIT_START,   /* 1 */
-  BDB_COMM_SIGNAL_INIT_SECURE_REJOIN,
-  BDB_COMM_SIGNAL_INIT_TC_REJOIN,
-  BDB_COMM_SIGNAL_INIT_FINISH,
-
-  BDB_COMM_SIGNAL_TOUCHLINK_START, /* 5 */
-  BDB_COMM_SIGNAL_TOUCHLINK_INITIATOR_DONE,
-  BDB_COMM_SIGNAL_TOUCHLINK_INITIATOR_FAILED,
-  BDB_COMM_SIGNAL_TOUCHLINK_NOTIFY_TASK_RESULT,
-  BDB_COMM_SIGNAL_TOUCHLINK_FINISH,
-
-  BDB_COMM_SIGNAL_NETWORK_STEERING_START, /* 10 */
-  BDB_COMM_SIGNAL_NETWORK_STEERING_DISCOVERY_FAILED,
-  BDB_COMM_SIGNAL_NETWORK_STEERING_TCLK_EX_FAILURE,
-  BDB_COMM_SIGNAL_NETWORK_STEERING_TCLK_DONE,
-  /* TODO: BDB_COMM_SIGNAL_NETWORK_STEERING_LEAVE, */
-  BDB_COMM_SIGNAL_NETWORK_STEERING_FINISH,
-
-  BDB_COMM_SIGNAL_NETWORK_FORMATION_START, /* 15 */
-  BDB_COMM_SIGNAL_NETWORK_FORMATION_FINISH,
-
-  BDB_COMM_SIGNAL_FINDING_N_BINDING_START, /* 17 */
-  BDB_COMM_SIGNAL_FINDING_N_BINDING_FINISH,
-
-  BDB_COMM_SIGNAL_REJOIN_START, /* 19 */
-  BDB_COMM_SIGNAL_REJOIN_TRY_SECURE_REJOIN_ON_CURRENT_CHANNEL,
-  BDB_COMM_SIGNAL_REJOIN_TRY_TC_REJOIN_ON_CURRENT_CHANNEL,
-  BDB_COMM_SIGNAL_REJOIN_TRY_TC_REJOIN_ON_ALL_CHANNELS,
-  BDB_COMM_SIGNAL_REJOIN_TRY_SECURE_REJOIN_ON_ALL_CHANNELS,
-  BDB_COMM_SIGNAL_REJOIN_FINISH,
-
-  BDB_COMM_SIGNAL_FINISH, /* 25 */
-
-  BDB_COMM_SIGNAL_NWK_FORMATION_OK, /* 26 */
-  BDB_COMM_SIGNAL_NWK_START_ROUTER_CONF,
-  BDB_COMM_SIGNAL_LEAVE_DONE,
-  BDB_COMM_SIGNAL_NWK_JOIN_FAILED,
-  BDB_COMM_SIGNAL_NWK_JOIN_DONE,
-  BDB_COMM_SIGNAL_NWK_AUTH_FAILED,
-
-  BDB_COMM_N_SIGNALS
-} bdb_commissioning_signal_t;
-
-enum bdb_commissioning_rejoin_reason_e
-{
-  BDB_COMM_REJOIN_REASON_UNSPECIFIED = 0,
-  BDB_COMM_REJOIN_REASON_POLL_CONTROL_CHECK_IN,
-};
-/*!
-* @ brief BDB Commissioning rejoin context
-*/
-typedef ZB_PACKED_PRE struct bdb_commissioning_rejoin_ctx_t
-{
-  zb_bitfield_t rejoin_by_checkin_failure:1;
-  zb_bitfield_t rr_have_unique_tclk:1;
-  zb_bitfield_t waiting:1;
-  zb_bitfield_t reserved:5;
-
-  zb_uint8_t rr_sv_device_type; /* zb_nwk_device_type_t */
-  zb_uint16_t rr_sv_parent_short;
-  zb_ieee_addr_t rr_sv_parent_long;
-  zb_neighbor_tbl_ent_t rr_sv_parent_nent;
-  zb_uint8_t rr_sv_authenticated;
-  zb_uint8_t rr_retries;
-  zb_uint8_t rr_ignore_start_router_conf;
-  zb_uint16_t rr_global_retries;
-  zb_uint8_t rr_skip_savepoint;
-
-  bdb_commissioning_signal_t last_rejoin_signal;
-  bdb_commissioning_signal_t next_rejoin_signal;
-}
-ZB_PACKED_STRUCT bdb_commissioning_rejoin_ctx_t;
-
-/**
- * BDB commissioning context
- */
-typedef ZB_PACKED_PRE struct zb_bdb_comm_ctx_s
-{
-  /** State of commissioning */
-  zb_bdb_comm_state_t state;
-  zb_ret_t status;
-  /** Callback function invoked when factory fresh or network steering operations finish */
-  zb_callback_t user_cb;
-
-#if defined(ZB_BDB_ENABLE_FINDING_BINDING)
-  /** Callback function invoked when binding operation start */
-  zb_bdb_comm_binding_callback_t finding_binding_progress_cb;
-/* [AV] After having separated binding user callbacks from f&b complete callback
-    the last one can be stored in the user_cb field. */
-#endif
-
-  /** Duration of PermitJoining and IdentifyTime */
-  zb_uint16_t duration;
-/*Data array to store info from Identity_Query_Resp */
-  zb_bdb_comm_respondent_info_t respondent[BDB_MAX_IDENTIFY_QUERY_RESP_NUMBER];
-  zb_uint8_t respondent_number;
-
-#if defined(ZB_BDB_ENABLE_FINDING_BINDING)
-  /** Endpoint which participate in finding and binding*/
-  zb_uint8_t ep;
-#endif
-
-  /** Endpoint descriptor*/
-  zb_af_endpoint_desc_t *ep_desc;
-
-#if defined(ZB_BDB_ENABLE_FINDING_BINDING)
-  /** Count of endpoints received during finding and binding */
-  zb_uint8_t ep_cnt;
-
-  /** Signals that at least one endpoint was bound during finding and binding;
-    * it is used to invoke user callback if no endpoint was bound
-    */
-  zb_bool_t was_bound;
-#endif
-  /*EZ mode in progress flag. Sets for EZScanTimeout*/
-  zb_bool_t ez_scan_inprogress;
-  /** Reference to the buffer holding simple descriptor response */
-  zb_uint8_t simple_desc_buf_ref;
-
-  /* ------------- */
-  bdb_commissioning_signal_t signal;
-  bdb_commissioning_rejoin_ctx_t rejoin;
-
-  /* Moved here from BDB_CTX */
-#define FIRST_GENERAL_BDB_FIELD bdb_commissioning_group_id
-  /* BDB attributes */
-  zb_uint16_t bdb_commissioning_group_id; /*!< specifies the identifier of the group on which the initiator applies finding & binding.  */
-  zb_uint8_t bdb_commissioning_mode;      /*!< @see zb_bdb_commissioning_mode_mask_t See Table 4  Bits of the bdbCommissioningMode attribute:
-0
-Touchlink: 0 = Do not attempt Touchlink commissioning 1 = Attempt Touchlink commissioning
-1
-Network steering: 0 = Do not attempt network steering 1 = Attempt network steering
-2
-Network formation: 0 = Do not attempt to form a network 1 = Attempt to form a network, according to device type2
-3
-Finding & binding: 0 = Do not attempt finding & binding 1 = Attempt finding & binding
-                                           */
-  zb_uint8_t  bdb_commissioning_status; /*!< see zb_bdb_error_codes_e  */
-
-  zb_uint32_t   bdb_primary_channel_set;
-  zb_uint32_t   bdb_secondary_channel_set;
-  zb_uint32_t   v_scan_channels;
-  zb_uint32_t   bdb_commissioning_time;
-  zb_uint8_t    bdb_scan_duration;
-  zb_uint8_t    bdb_commissioning_step;
-
-  zb_bitfield_t v_do_primary_scan:3; /*!< a bit more than vDoPromaryScan in
-                                      * BDB: really scan & join machine
-                                      * state. @see enum bdb_join_machine_e */
-
-  zb_bitfield_t bdb_ext_channel_scan:1; /*!< Touchlink performs ext scan if 1 */
-  zb_bitfield_t ignore_aps_channel_mask:1; /*!< Non standard, but useful: if 1,
-                                            * use hard-coded channels set. if 0,
-                                            * mask channels sets by
-                                            * aps_channel_mask. To be used to
-                                            * debug at single channel, or 2
-                                            * channels etc */
-
-
-  zb_uint8_t    bdb_application_signal;  /* Application signal code to be passed into
-                                          * zb_zdo_startup_complete */
-#ifdef ZB_BDB_TOUCHLINK
-  zb_uint8_t    tl_first_channel_rpt;
-  zb_uint8_t    tl_channel_i;
-#endif  /* ZB_BDB_TOUCHLINK */
-  zb_bitfield_t bdb_force_router_rejoin:1;      /* Force rejoin for the router */
-  zb_bitfield_t host_bdb_mode:1;
-  } ZB_PACKED_STRUCT zb_bdb_comm_ctx_t;
-/** @endcond */ /* internals_doc */
-
 /** @} */
 
 #endif /* ZB_BDB_MODE*/
@@ -2392,7 +2201,7 @@ typedef struct zcl_cluster_handlers_s
   zb_zcl_cluster_write_attr_hook_t cluster_write_attr_hook;
 } zcl_cluster_handlers_t;
 
-#define ZB_ZCL_GENERAL_GET_CMD_LISTS_PARAM 0xff
+#define ZB_ZCL_GENERAL_GET_CMD_LISTS_PARAM 0xFFU
 
 #define ZB_ZCL_CLUSTER_HANDLERS_TABLE_SIZE 20
 
@@ -2403,6 +2212,26 @@ typedef struct zb_discover_cmd_list
   zb_uint8_t generated_cnt;
   zb_uint8_t *generated;
 } zb_discover_cmd_list_t;
+
+typedef zb_bool_t (*zb_zcl_is_high_freq_msg_func_t)(zb_bufid_t);
+typedef zb_bool_t (*zb_zcl_block_zcl_cmd_t)(zb_zcl_parsed_hdr_t*);
+typedef zb_bool_t (*zb_zcl_read_attr_resp_handler_t)(zb_bufid_t);
+
+#if defined ZB_ENABLE_SE || defined ZB_BDB_ENABLE_FINDING_BINDING || defined ZB_ZCL_SUPPORT_CLUSTER_WWAH
+typedef struct zb_zcl_func_selector_s
+{
+
+#if defined ZB_SE_COMMISSIONING || (defined ZB_ZCL_SUPPORT_CLUSTER_WWAH && defined ZB_ZCL_ENABLE_WWAH_SERVER)
+  zb_zcl_block_zcl_cmd_t block_zcl_cmd;
+  zb_zcl_read_attr_resp_handler_t read_attr_resp_handler;
+#endif /* ZB_SE_COMMISSINONING || (ZB_ZCL_SUPPORT_CLUSTER_WWAH && ZB_ZCL_ENABLE_WWAH_SERVER) */
+
+#ifdef ZB_BDB_ENABLE_FINDING_BINDING
+  zb_callback_t process_identify_query_res;
+#endif /* ZB_BDB_ENABLE_FINDING_BINDING */
+} zb_zcl_func_selector_t;
+
+#endif /* ZB_ENABLE_SE || ZB_BDB_ENABLE_FINDING_BINDING || ZB_ZCL_SUPPORT_CLUSTER_WWAH */
 
 /** @cond internals_doc */
 typedef struct zb_zcl_globals_s
@@ -2451,10 +2280,6 @@ typedef struct zb_zcl_globals_s
 #ifdef ZB_HA_ENABLE_OTA_UPGRADE_CLIENT
   zb_zcl_ota_upgrade_cli_ctx_t ota_cli;
 #endif
-#if defined ZB_BDB_MODE
-  /** @internal BDB commissioning context */
-  zb_bdb_comm_ctx_t bdb_comm_ctx;
-#endif /*ZB_BDB_MODE*/
 
 #if defined ZB_ENABLE_HA
   zb_zcl_disc_manuf_cmd_cb_t disc_manuf_cmd_cb;
@@ -2472,7 +2297,12 @@ typedef struct zb_zcl_globals_s
   zb_zcl_wwah_context_t wwah_ctx;
 #endif
 
+#if defined ZB_ENABLE_SE || defined ZB_BDB_ENABLE_FINDING_BINDING || defined ZB_ZCL_SUPPORT_CLUSTER_WWAH
+  zb_zcl_func_selector_t selector;
+#endif /* ZB_ENABLE_SE || ZB_BDB_ENABLE_FINDING_BINDING || ZB_ZCL_SUPPORT_CLUSTER_WWAH */
 } zb_zcl_globals_t;
+
+#define ZCL_SELECTOR() ZG->zcl.selector
 
 /**
    Returns ZCL context.

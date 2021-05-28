@@ -2,8 +2,8 @@
  * ZBOSS Zigbee 3.0
  *
  * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
- * http://www.dsr-zboss.com
- * http://www.dsr-corporation.com
+ * www.dsr-zboss.com
+ * www.dsr-corporation.com
  * All rights reserved.
  *
  *
@@ -458,7 +458,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
 
 /**
  * @brief General API for sending Default response command
- * 
+ *
  * @param _buffer - zb_bufid_t buffer
  * @param _dst_addr - 16-bit destination address
  * @param _dst_addr_mode - destination address mode. Possible values
@@ -522,7 +522,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
 
 /**
  *  @brief Send default response command.
- *  
+ *
  *  @param buffer - ID zb_bufid_t of a buffer with payload
  *  @param addr - short destination address
  *  @param addr_mode - address mode, only @ref ZB_APS_ADDR_MODE_16_GROUP_ENDP_NOT_PRESENT and @ref
@@ -679,7 +679,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
 
 /**
  * @brief Initialize Read Attribute Request command
- * 
+ *
  * @param buffer - buffer to store command data
  * @param cmd_ptr - pointer to a command data memory
  * @param direction - direction of command (see @ref zcl_frame_direction)
@@ -694,7 +694,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
 
 /**
  * @brief Initialize Read Attribute Request command with manufacturer code
- * 
+ *
  * @param buffer - buffer to store command data
  * @param cmd_ptr - pointer to a command data memory
  * @param direction - direction of command (see @ref zcl_frame_direction)
@@ -769,7 +769,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
 
 /**
  * @brief Initialize Read Attribute Response command
- * 
+ *
  * @param _buffer - buffer to store command data
  * @param _cmd_ptr - pointer to a command data memory
  * @param _direction - direction of command (see @ref zcl_frame_direction)
@@ -784,47 +784,6 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
   ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT((_cmd_ptr), (_seq), (_is_manuf), (_manuf_id), ZB_ZCL_CMD_READ_ATTRIB_RESP);       \
 }
 
-/** @brief Add attribute value to command payload
-   @param _buf - buffer to store command data
-   @param _cmd_ptr - pointer to a command data memory
-   @param _attr_desc - attribute descriptor
-*/
-#define ZB_ZCL_GENERAL_ADD_READ_ATTR_RESP(_buf, _cmd_ptr, _attr_desc)                           \
-{                                                                                               \
-  zb_uint16_t bytes_avail = ZB_ZCL_GET_BYTES_AVAILABLE((_buf), (_cmd_ptr));                     \
-  zb_uint8_t attr_size = zb_zcl_get_attribute_size((_attr_desc)->type, (_attr_desc)->data_p);   \
-  if (bytes_avail >= (sizeof(zb_zcl_read_attr_res_t) - sizeof(zb_uint8_t) + attr_size))         \
-  {                                                                                             \
-    ZB_ZCL_PACKET_PUT_DATA16_VAL((_cmd_ptr), (_attr_desc)->id);                                 \
-    ZB_ZCL_PACKET_PUT_DATA8((_cmd_ptr), ZB_ZCL_STATUS_SUCCESS);                                 \
-    ZB_ZCL_PACKET_PUT_DATA8((_cmd_ptr), (_attr_desc)->type);                                    \
-    (_cmd_ptr) = zb_zcl_put_value_to_packet((_cmd_ptr), (_attr_desc)->type,                     \
-            (zb_uint8_t *)(void *)(_attr_desc)->data_p);                                        \
-  }                                                                                             \
-  else                                                                                          \
-  {                                                                                             \
-    TRACE_MSG(TRACE_ZCL1, "ERROR, buffer is full", (FMT__0));                                   \
-  }                                                                                             \
-}
-
-/** @brief Add attribute value to command payload
-   @param _buf - buffer to store command data
-   @param _cmd_ptr - pointer to a command data memory
-   @param _attr_id - attribute identifier
-*/
-#define ZB_ZCL_GENERAL_ADD_NO_SUPPORT_READ_ATTR_RESP(_buf, _cmd_ptr, _attr_id)          \
-{                                                                                       \
-  zb_uint16_t bytes_avail = ZB_ZCL_GET_BYTES_AVAILABLE((_buf), (_cmd_ptr));             \
-  if (bytes_avail >= (sizeof(zb_uint16_t) + sizeof(zb_uint8_t)))                        \
-  {                                                                                     \
-    ZB_ZCL_PACKET_PUT_DATA16_VAL((_cmd_ptr), (_attr_id));                               \
-    ZB_ZCL_PACKET_PUT_DATA8((_cmd_ptr),  ZB_ZCL_STATUS_UNSUP_ATTRIB);                   \
-  }                                                                                     \
-  else                                                                                  \
-  {                                                                                     \
-    TRACE_MSG(TRACE_ZCL1, "ERROR, buffer is full", (FMT__0));                           \
-  }                                                                                     \
-}
 
 /** @brief Send Read attribute response command
     @param _buffer - buffer to store command data
@@ -1057,7 +1016,7 @@ zb_zcl_write_attr_res_t;
 
 /**
  * @brief Initialize Write attribute command
- * 
+ *
  * @param buffer - buffer to store command data
  * @param cmd_ptr - pointer to a command data memory
  * @param direction - direction of command (see @ref zcl_frame_direction)
@@ -1124,7 +1083,7 @@ zb_zcl_write_attr_res_t;
 
 /**
  * @brief Initialize Write attribute response command
- * 
+ *
  * @param _buffer - buffer to store command data
  * @param _cmd_ptr - pointer to a command data memory
  * @param _direction - direction of command (see @ref zcl_frame_direction)
@@ -1147,25 +1106,6 @@ zb_zcl_write_attr_res_t;
   ZB_ZCL_PACKET_PUT_DATA8((_cmd_ptr), ZB_ZCL_STATUS_SUCCESS);   \
 }
 
-/** @brief Add Fail status value to Write attribute response command payload
-   @param _buf - buffer to store command data
-   @param _cmd_ptr - pointer to a command data memory
-   @param _attr_id - attribute ID
-   @param _status - status
-*/
-#define ZB_ZCL_GENERAL_ADD_STATUS_WRITE_ATTR_RESP(_buf, _cmd_ptr, _attr_id, _status)    \
-{                                                                                       \
-  zb_uint16_t bytes_avail = ZB_ZCL_GET_BYTES_AVAILABLE((_buf), (_cmd_ptr));             \
-  if (bytes_avail >= sizeof(zb_zcl_write_attr_res_t))                                   \
-  {                                                                                     \
-    ZB_ZCL_PACKET_PUT_DATA8((_cmd_ptr), (_status));                                     \
-    ZB_ZCL_PACKET_PUT_DATA16_VAL((_cmd_ptr), (_attr_id));                               \
-  }                                                                                     \
-  else                                                                                  \
-  {                                                                                     \
-    TRACE_MSG(TRACE_ZCL1, "ERROR, buffer is full", (FMT__0));                           \
-  }                                                                                     \
-}
 
 /** @brief Send Write attribute response command
     @param _buffer - buffer to store command data
