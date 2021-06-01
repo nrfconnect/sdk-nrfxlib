@@ -12,6 +12,14 @@ All notable changes to this project are documented in this file.
 Master branch
 *************
 
+Added
+=====
+
+* Added an API to set and get a flag that determines whether to apply the DEVICE-CONFIG-254.
+  The API user shall set the flag to desired value with :c:func:`mpsl_fem_device_config_254_shall_apply_set`.
+  The protocol stacks' responsibility is to check the flag value using :c:func:`mpsl_fem_device_config_254_shall_apply_get`
+  and apply the configuration when the flag value is true.
+
 Bug fixes
 =========
 
