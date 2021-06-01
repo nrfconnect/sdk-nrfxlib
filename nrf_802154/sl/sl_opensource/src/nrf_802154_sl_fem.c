@@ -32,9 +32,10 @@
  *
  */
 
-#include <stdint.h>
 #include <nrf.h>
 #include "nrf_errno.h"
+#include <stdbool.h>
+#include <stdint.h>
 
 #include "mpsl_fem_protocol_api.h"
 
@@ -118,6 +119,11 @@ bool mpsl_fem_prepare_powerdown(NRF_TIMER_Type * p_instance,
     (void)compare_channel;
     (void)ppi_id;
 
+    return false;
+}
+
+bool mpsl_fem_device_config_254_apply_get(void)
+{
     return false;
 }
 

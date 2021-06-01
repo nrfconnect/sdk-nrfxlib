@@ -56,6 +56,7 @@
 
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_critical_section.h"
+#include "mpsl_fem_config_common.h"
 #include "mpsl_fem_protocol_api.h"
 #include "platform/nrf_802154_irq.h"
 
@@ -192,7 +193,7 @@ typedef struct
 
 static nrf_802154_flags_t m_flags; ///< Flags used to store the current driver state.
 
-/**@brief Value of TIMER internal counter from which the counting is resumed on RADIO.EVENTS_END event. */
+/** @brief Value of TIMER internal counter from which the counting is resumed on RADIO.EVENTS_END event. */
 static volatile uint32_t m_timer_value_on_radio_end_event;
 static volatile bool     m_transmit_with_cca;
 
@@ -394,6 +395,36 @@ static void fem_for_tx_reset(bool cca)
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
 }
 
+/** @brief Applies DEVICE-CONFIG-254.
+ *
+ * Shall be called after every RADIO peripheral reset.
+ */
+static void device_config_254_apply_tx(void)
+{
+    uint32_t ficr_reg1 = *(volatile uint32_t *)0x10000330UL;
+
+    /* Check if the device is fixed by testing FICR register value.
+     *
+     * Only one of the FICR register is tested to optimize the procedure. All the registers shall
+     * have consistent values, i.e. all registers contain reset values or all registers contain
+     * values that shall be written to to the radio registers. If it is not true, then it is
+     * a hardware bug.
+     */
+    if (ficr_reg1 != 0xffffffffUL)
+    {
+        volatile uint32_t * p_radio_reg1 = (volatile uint32_t *)0x4000174cUL;
+        volatile uint32_t * p_radio_reg2 = (volatile uint32_t *)0x40001584UL;
+        volatile uint32_t * p_radio_reg3 = (volatile uint32_t *)0x40001588UL;
+
+        uint32_t ficr_reg2 = *(volatile uint32_t *)0x10000334UL;
+        uint32_t ficr_reg3 = *(volatile uint32_t *)0x10000338UL;
+
+        *p_radio_reg1 = ficr_reg1;
+        *p_radio_reg2 = ficr_reg2;
+        *p_radio_reg3 = ficr_reg3;
+    }
+}
+
 void nrf_802154_trx_module_reset(void)
 {
     m_trx_state                      = TRX_STATE_DISABLED;
@@ -425,6 +456,12 @@ void nrf_802154_trx_enable(void)
     assert(m_trx_state == TRX_STATE_DISABLED);
 
     nrf_radio_reset();
+
+    // Apply DEVICE-CONFIG-254 if needed.
+    if (mpsl_fem_device_config_254_apply_get())
+    {
+        device_config_254_apply_tx();
+    }
 
     nrf_radio_packet_conf_t packet_conf;
 
