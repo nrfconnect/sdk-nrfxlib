@@ -34,6 +34,21 @@ typedef struct
     uint8_t gpiote_ch_id; /**< The GPIOTE channel used for toggling this pin. */
 } mpsl_fem_gpiote_pin_config_t;
 
+/** @brief Sets flag which determines whether DEVICE-CONFIG-254 shall be applied.
+ *
+ * @note This function shall be called before initialization of any protocol stack.
+ *
+ * @param[in]   apply   Whether the DEVICE-CONFIG-254 option shall be applied.
+ */
+void mpsl_fem_device_config_254_apply_set(bool apply);
+
+/** @brief Gets flag which determines whether DEVICE-CONFIG-254 shall be applied.
+ *
+ * @retval  true    DEVICE-CONFIG-254 shall be applied.
+ * @retval  false   DEVICE-CONFIG-254 shall not be applied.
+ */
+bool mpsl_fem_device_config_254_apply_get(void);
+
 #ifdef __cplusplus
 }
 #endif
