@@ -83,13 +83,6 @@
 #define BITS_TO_LIMBS(i)  ( (i) / biL + ( (i) % biL != 0 ) )
 #define CHARS_TO_LIMBS(i) ( (i) / ciL + ( (i) % ciL != 0 ) )
 
-/* Implementation that should never be optimized out by the compiler */
-static void mbedtls_mpi_zeroize( mbedtls_mpi_uint *v, size_t n )
-{
-    mbedtls_platform_zeroize( v, ciL * n );
-}
-
-
 /*
  * Import X from unsigned binary data, little endian
  */
