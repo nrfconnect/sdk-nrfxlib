@@ -100,9 +100,9 @@ typedef union {
 /** @brief Write a key into the KMU
  *
  * @details This writes a key into the KMU slot defined by slot_id. If the key is larger than
- *          128 bit it will occupy two KMU consecutive KMU slots.
+ *          128 bit it will occupy two consecutive KMU slots.
  *
- * @note    This function use the default kmu key permissions,
+ * @note    This function uses the default KMU key permissions,
  *          see @ref NRF_CC3XX_PLATFORM_KMU_DEFAULT_PERMISSIONS.
  *
  * @param[in]   slot_id     KMU slot ID for the new key (2 - 127).
@@ -235,7 +235,7 @@ int nrf_cc3xx_platform_kdr_load_key(uint8_t key[16]);
  *              as one byte.
  *          label: A string identifying the purpose of the derived key
  *                 that is up to 64 bytes long.
- *          0x00: a single byte delimiter.
+ *          0x00: A single byte delimiter.
  *          Context: Fixed information about the derived keying material
  *                   that is up to 64 bytes long.
  *          L : The length of derived key material in bits represented as two
@@ -247,11 +247,11 @@ int nrf_cc3xx_platform_kdr_load_key(uint8_t key[16]);
  * @param   slot_id         Identifier of the key slot.
  * @param   keybits         Key size in bits.
  * @param   label           Label to use for KDF.
- * @param   label_size      Size of the label to use for KDF.
+ * @param   label_size      Size of the label in bytes to use for KDF.
  * @param   context         Context info to use for KDF.
- * @param   context_size    Context info size to use for KDF.
+ * @param   context_size    Context info size in bytes to use for KDF.
  * @param   output          Output buffer.
- * @param   output_size     Size of output buffer in bytes.
+ * @param   output_size     Size of the output buffer in bytes.
  *
  * @returns 0 on success, otherwise a negative number.
  */
