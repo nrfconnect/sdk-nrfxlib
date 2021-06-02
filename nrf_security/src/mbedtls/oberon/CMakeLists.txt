@@ -34,7 +34,7 @@ nrf_security_library(NOGLUE oberon
     ${ARM_MBEDTLS_PATH}/library/ecjpake.c
     ${ARM_MBEDTLS_PATH}/library/sha1.c
     ${ARM_MBEDTLS_PATH}/library/sha256.c
-    ${CMAKE_CURRENT_LIST_DIR}/xts_oberon.c
+    ${CMAKE_CURRENT_LIST_DIR}/aes_oberon.c
   INCLUDES
     ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}
     ${NRF_OBERON_INCLUDE_PATH}
