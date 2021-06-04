@@ -267,6 +267,11 @@ function(nrf_security_library)
   # Add includes for mbed TLS
   target_link_libraries(${lib_name} PRIVATE mbedcrypto_includes)
 
+  # Add dependency for copied mbed TLS headers when building with TF-M
+  if (TARGET tfm_mbedtls_headers_copy)
+    add_dependencies(${lib_name} tfm_mbedtls_headers_copy)
+  endif()
+
   # Add defines (if set)
   if(DEFINED LIBRARY_DEFINES)
     nrf_security_debug("Add compile definitions for ${lib_name}: ${LIBRARY_DEFINES}")
@@ -452,6 +457,11 @@ function(nrf_security_library_shared)
 
   # All regular includes, no generated includes (no xxxx-alt.h is added)
   target_link_libraries(${LIB_NAME} PRIVATE mbedcrypto_includes)
+
+  # Add dependency for copied mbed TLS headers when building with TF-M
+  if (TARGET tfm_mbedtls_headers_copy)
+    add_dependencies(${LIB_NAME} tfm_mbedtls_headers_copy)
+  endif()
 
   # Use configurations for vanilla as shared will always need configurations
   # that aren't enabling any alternate implemenatations.
