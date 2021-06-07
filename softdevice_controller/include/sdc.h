@@ -57,7 +57,7 @@ extern "C" {
  *
  * With the default count, the application is able to empty the buffers during a connection event.
  */
-#define SDC_DEFAULT_RX_PACKET_COUNT 3
+#define SDC_DEFAULT_RX_PACKET_COUNT 2
 
 /** @brief Default connection event length. */
 #define SDC_DEFAULT_EVENT_LENGTH_US 7500UL
@@ -80,10 +80,10 @@ extern "C" {
 #define SDC_MEM_DEFAULT_ADV_SIZE 840
 
 /** @brief Maximum number of bytes required per master link for the default buffer configuration. */
-#define SDC_MEM_DEFAULT_MASTER_LINK_SIZE 864
+#define SDC_MEM_DEFAULT_MASTER_LINK_SIZE 830
 
 /** @brief Maximum number of bytes required per slave link for the default buffer configuration. */
-#define SDC_MEM_DEFAULT_SLAVE_LINK_SIZE 928
+#define SDC_MEM_DEFAULT_SLAVE_LINK_SIZE 894
 
 /** @brief Memory overhead per LL packet buffer. */
 #define SDC_MEM_BUFFER_OVERHEAD_SIZE 7
