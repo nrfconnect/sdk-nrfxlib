@@ -22,7 +22,6 @@ config MBEDTLS_USE_PSA_CRYPTO
 	bool "PSA APIs for X.509 and TLS library"
 	default y if BUILD_WITH_TFM
 	select NRF_SECURITY_ADVANCED
-	imply MBEDTLS_PK_WRITE_C
 	help
 	  Corresponds to MBEDTLS_USE_PSA_CRYPTO setting in mbed TLS config file.
 
