@@ -46,10 +46,7 @@ Proprietary feature support:
 .. note::
    Please note the following when using the library for the nRF5340:
 
-   * The libraries are for evaluation purposes only.
-   * They are neither fully functional, nor properly tested.
-   * They are not optimized for performance.
-
+   * Low Latency Packet mode is not supported on the nRF53 Series.
 
 .. toctree::
    :maxdepth: 2

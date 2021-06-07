@@ -16,9 +16,10 @@ Added
 =====
 
 * Added support for multiple advertising sets (DRGN-15426).
-* Added radio front-end module (FEM) support, based on the :ref:`mpsl_fem` (DRGN-11059).
+* Added radio front-end module (FEM) support, based on the :ref:`mpsl_fem` (nRF52 Series only) (DRGN-11059).
 * Added support for the vendor-specific HCI command: Read Supported Vendor Specific Commands (DRGN-13763).
 * Added support for the vendor-specific HCI command: Zephyr Read Key Hierarchy Roots (DRGN-13237).
+* Added support for nRF5340, which was previously only supported for evaluation purposes (DRGN-8639).
 
 Changes
 =======
@@ -26,6 +27,7 @@ Changes
 * Moved permanent limitations from the :ref:`nrf:known_issues` page to :ref:`softdevice_controller_limitations`.
 * Increased the maximum supported radio output power on nRF53 Series devices from 0 dBm to 3 dBm.
   If the output power is above 0 dBm, NRF_VREQCTRL->VREGRADIO.VREQH is set (DRGN-15476).
+* Reduced ``SDC_DEFAULT_RX_PACKET_COUNT`` from 3 to 2. Now the controller can achieve full throughput with only two RX buffers (DRGN-7696).
 
 Bug fixes
 =========
@@ -44,6 +46,9 @@ Bug fixes
   The assert would only occur if there were scheduling conflicts (DRGN-15694).
 * Fixed an issue where a connectable or scannable advertiser ends with sending a packet without listening for the CONNECT_IND, AUX_CONNECT_REQ, and SCAN_REQ (DRGN-15484).
 * Fixed an issue where an extended advertiser with limited duration may time out after the first primary channel packet in the last advertising event (DRGN-10367).
+* Fixed an issue where the coding scheme provided by the LE Set PHY HCI Command was ignored after a remote initiated PHY procedure (DRGN-15531).
+* Fixed an issue where the controller may still have pending events after :c:func:`sdc_hci_evt_get()` returns false.
+  This would only occur if the host has masked out events (DRGN-15758).
 
 nRF Connect SDK v1.5.0
 **********************
