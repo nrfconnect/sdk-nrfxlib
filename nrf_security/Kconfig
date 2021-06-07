@@ -2,6 +2,7 @@ menu "Nordic Security"
 
 config NORDIC_SECURITY_PROMPTLESS
 	bool
+	default y if BUILD_WITH_TFM
 	help
 	  Internal setting to disable the Nordic security backend
 	  This setting is Kconfig internal that must be used by subsystems that
@@ -15,11 +16,11 @@ config NORDIC_SECURITY_BACKEND
 	select ENTROPY_GENERATOR
 	select MBEDTLS_PROMPTLESS
 	select MBEDTLS
+	default y if BUILD_WITH_TFM
 	help
-	  nRF Connect SDK Security provides crypto functionality through
-	  different backends.
-	  Some HW platforms supports the used of HW accelerated crypto
-	  features.
+	  nRF Connect SDK Security provides crypto functionality through different backends.
+	  Some HW platforms support the use of HW accelerated crypto features.
+	  Enabled by default in TF-M builds on nRF Devices.
 
 if NORDIC_SECURITY_BACKEND
 
@@ -94,6 +95,7 @@ menu "mbed TLS memory configuration"
 
 config MBEDTLS_ENABLE_HEAP
 	bool "Enable global heap for mbed TLS"
+	default y if BUILD_WITH_TFM
 	help
 	  This option enables the mbedtls to use the heap. This setting must
 	  be global so that various applications and libraries in Zephyr do not
@@ -211,7 +213,7 @@ config NRF_SECURITY_GLUE_LIBRARY
 
 menuconfig NRF_SECURITY_RNG
 	bool
-	prompt "Random Number Generator support"
+	prompt "Random Number Generator support" if !BUILD_WITH_TFM
 	depends on ENTROPY_HAS_DRIVER
 	default y
 	select MBEDTLS_SHA256_C
@@ -1321,6 +1323,7 @@ menu "SHA   - Secure Hash Algorithm"
 
 config MBEDTLS_MD5_C
 	bool
+	default y
 	help
 	  MD5 hash functionality.
 	  MD5 is not recommended for general use as a secure hash algorithm.
@@ -1680,6 +1683,7 @@ endif # NRF_SECURITY_ADVANCED
 
 config MBEDTLS_PSA_CRYPTO_C
 	bool "Enable PSA API support"
+	default y if BUILD_WITH_TFM
 	help
 	  Enables the usage of the PSA APIs in mbed TLS.
 	  Corresponds to MBEDTLS_PSA_CRYPTO_C setting in mbed TLS config file.
