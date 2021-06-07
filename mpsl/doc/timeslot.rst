@@ -16,6 +16,7 @@ MPSL exposes APIs to open a Timeslot session and request timeslots.
 When a Timeslot request is granted, the application has exclusive and real-time access to the following peripherals:
 
  * TIMER0
+ * TIMER1 for the nRF53 Series
  * RADIO
  * TEMP
  * PPI channel 19 for the nRF52 Series

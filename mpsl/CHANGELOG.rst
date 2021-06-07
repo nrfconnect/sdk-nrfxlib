@@ -60,7 +60,7 @@ Changes
   The session id is retrieved from :c:func:`mpsl_timeslot_session_open`.
 
 * Added an API to use Front-End Modules, like the nRF21540 GPIO or a simple GPIO, with the protocols and an API to configure them using the application.
-  Only the nRF52 series is supported.
+  Only the nRF52 Series is supported.
 
 Bug fixes
 =========
