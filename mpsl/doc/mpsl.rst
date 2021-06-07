@@ -16,6 +16,7 @@ The following peripherals are owned by MPSL and must not be accessed directly by
 
  * RTC0
  * TIMER0
+ * TIMER1, for the nRF53 Series
  * RADIO
  * CLOCK
  * TEMP
@@ -30,11 +31,12 @@ The MPSL library is not reentrant, so for thread-safe operation, some considerat
 
 Interrupt configuration
 =======================
-MPSL enables interrupts for RTC0, TIMER0, POWER_CLOCK, and ``low_prio_irq``.
+MPSL enables interrupts for RTC0, TIMER0, TIMER1 (only on nRF53 Series), POWER_CLOCK, and ``low_prio_irq``.
 All other interrupts must be enabled and configured by the application.
 If the Timeslot API is used for RADIO access, the application is responsible for enabling and disabling the interrupt for RADIO.
 
 Interrupts for RTC0, TIMER0, and RADIO must be configured for priority level 0 (:c:macro:`MPSL_HIGH_IRQ_PRIORITY`) by the application.
+On the nRF53 Series, the application must additionally configure TIMER1 for priority level 0 (:c:macro:`MPSL_HIGH_IRQ_PRIORITY`).
 
 The following interrupts do not have real time requirements:
 
