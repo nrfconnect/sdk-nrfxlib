@@ -12,6 +12,9 @@ This allows an increase of the transmitted power through a Power Amplifier (PA) 
 Any increase in power and sensitivity results in an increased communication range.
 The exact PA and LNA gains are dependent on the specific FEM used.
 
+.. note::
+   The front-end module feature is not supported on the nRF53 Series.
+
 Implementation
 **************
 
