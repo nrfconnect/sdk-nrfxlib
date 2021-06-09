@@ -195,14 +195,14 @@ nrf_security_library(BASE ${mbedcrypto_target}_base_vanilla
 # Library for x.509
 #
 if (CONFIG_MBEDTLS_X509_LIBRARY AND NOT CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
-  add_library(${MBEDTLS_TARGET_PREFIX}mbedx509 STATIC
+  add_library(${MBEDTLS_TARGET_PREFIX}${mbedx509_target} STATIC
     ${src_x509}
   )
 
   # Add options from Zephyr build
-  nrf_security_add_zephyr_options(${MBEDTLS_TARGET_PREFIX}mbedx509)
+  nrf_security_add_zephyr_options(${MBEDTLS_TARGET_PREFIX}${mbedx509_target})
 
-  target_link_libraries(${MBEDTLS_TARGET_PREFIX}mbedx509
+  target_link_libraries(${MBEDTLS_TARGET_PREFIX}${mbedx509_target}
     PRIVATE
       ${mbedcrypto_target}
   )
@@ -223,7 +223,7 @@ if (CONFIG_MBEDTLS_TLS_LIBRARY AND NOT CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
 
   target_link_libraries(${MBEDTLS_TARGET_PREFIX}mbedtls
     PRIVATE
-      ${MBEDTLS_TARGET_PREFIX}mbedx509
+      ${MBEDTLS_TARGET_PREFIX}${mbedx509_target}
       ${mbedcrypto_target}
   )
 

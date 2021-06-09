@@ -4,7 +4,17 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 set(NRF_SECURITY_ROOT ${CMAKE_CURRENT_LIST_DIR})
-set(mbedcrypto_target mbedcrypto)
+
+if(TARGET mbedcrypto)
+  # pelion-dm creates mbedcrypto and mbedx509 as INTERFACE libraries
+  # This results in library name collision, so therefore we are redifining for
+  # Nordic security backend.
+  set(mbedcrypto_target real_mbedcrypto)
+  set(mbedx509_target   real_mbedx509)
+else()
+  set(mbedcrypto_target mbedcrypto)
+  set(mbedx509_target mbedx509)
+endif()
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/nrf_security_debug.cmake)
 
