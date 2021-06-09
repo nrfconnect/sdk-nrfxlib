@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.2.1
+***************
+
+* Fixed an issue where :c:func:`nrf_getaddrinfo()` would set a wrong errno when returning ``NRF_EAI_SYSTEM``.
+* Fixed an issue where the ``NRF_SO_TCP_SRV_SESSTIMEO``, ``NRF_SO_SILENCE_IP_ECHO_REPLY`` and ``NRF_SO_SILENCE_IPV6_ECHO_REPLY`` socket options returned an error when set via :c:func:`nrf_setsockopt`.
+* Renamed the socket option ``NRF_SO_SILENCE_IP_ECHO_REPLY`` to ``NRF_SO_IP_ECHO_REPLY``.
+* Renamed the socket option ``NRF_SO_SILENCE_IPV6_ECHO_REPLY`` to ``NRF_SO_IPV6_ECHO_REPLY``.
+
 nrf_modem 1.2.0
 ***************
 
