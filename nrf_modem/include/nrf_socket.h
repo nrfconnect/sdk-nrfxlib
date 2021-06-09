@@ -596,8 +596,10 @@ typedef uint32_t nrf_fd_set;
 #define NRF_SO_SNDTIMEO		       21
 #define NRF_SO_BINDTODEVICE	       25
 #define NRF_SO_SILENCE_ALL	       30
-#define NRF_SO_SILENCE_IP_ECHO_REPLY   31
-#define NRF_SO_SILENCE_IPV6_ECHO_REPLY 32
+/** Boolean control for ICMP echo reply disable/enable (0/1). Default is 1 (enabled). */
+#define NRF_SO_IP_ECHO_REPLY	       31
+/** Boolean control for ICMPv6 echo reply disable/enable (0/1). Default is 1 (enabled). */
+#define NRF_SO_IPV6_ECHO_REPLY	       32
 #define NRF_SO_REUSEADDR	       40
 /** Release Assistance Indication feature: This will indicate that the next call to send/sendto will
  * be the last one for some time, which means that the modem can get out of connected mode quicker

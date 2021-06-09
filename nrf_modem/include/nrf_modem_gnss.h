@@ -14,6 +14,7 @@
 #define NRF_MODEM_GNSS_H__
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
