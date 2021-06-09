@@ -1263,7 +1263,7 @@ endif # MBEDTLS_ECP_C
 menuconfig MBEDTLS_RSA_C
 	bool
 	prompt "RSA   - Rivest–Shamir–Adleman cryptosystem"
-	default n
+	default y if !BUILD_WITH_TFM
 	select CC3XX_MBEDTLS_RSA_C if CC3XX_SINGLE_BACKEND
 	select VANILLA_MBEDTLS_RSA_C if OBERON_SINGLE_BACKEND || MBEDTLS_VANILLA_SINGLE_BACKEND
 	help
