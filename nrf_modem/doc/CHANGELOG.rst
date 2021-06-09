@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.2.1
+***************
+
+* Fixed an issue where :c:func:`nrf_getaddrinfo()` would set a wrong errno when returning ``NRF_EAI_SYSTEM``.
+
 nrf_modem 1.2.0
 ***************
 
