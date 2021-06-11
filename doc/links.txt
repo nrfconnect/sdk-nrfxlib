@@ -1,6 +1,19 @@
+.. ### This page lists links used in the nrfxlib docs.
+       Links are grouped by source URL if three or more have the same source URL.
+       Otherwise, they are placed in "Source: other".
+       Links not separated by blank line are related to one another.
+
+.. ### Source: github.com
+
 .. _`nrfx`: https://github.com/NordicSemiconductor/nrfx/
 
-.. ### Links to Infocenter
+.. _`Arm mbed TLS project`: https://github.com/ARMmbed/mbedtls
+
+.. _`TinyCBOR`: https://github.com/zephyrproject-rtos/tinycbor
+
+.. _`OpenAMP`: https://github.com/OpenAMP/open-amp/
+
+.. ### Source: infocenter.nordicsemi.com
 
 .. _`AT Commands Reference Guide`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/intro.html
 
@@ -16,39 +29,35 @@
 .. _`Thread CIDs for nRF52840`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52840/COMP/nrf52840/nrf52840_thread_cids.html
 .. _`Thread CIDs for nRF52833`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52833/COMP/nrf52833/nrf52833_thread_cids.html
 
-.. ### Links to Nordic pages
+.. ### Source: www.nordicsemi.com
 
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#0B34B59935AF4AFCB7AB93E9646C1F53
 
 .. _`nRF9160 modem TLS cipher suites`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#infotabs
 
-.. ### Other links
+.. ### Source: wikipedia
 
-.. _`Beej's Guide to Network Programming`: https://beej.us/guide/bgnet/
+.. _`Global navigation satellite system (GNSS)`: https://en.wikipedia.org/wiki/Satellite_navigation
+
+.. _`A-GPS`: https://en.wikipedia.org/wiki/Assisted_GPS
+
+.. _`IANA`: https://en.wikipedia.org/wiki/Internet_Assigned_Numbers_Authority
+
+.. ### Source: other
+
+.. _`Zephyr`: https://www.zephyrproject.org
 
 .. _`ZBOSS API documentation`:
 .. _`ZBOSS stack release notes`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss/index.html
+
 .. _`certification policy`: https://zigbeealliance.org/wp-content/uploads/2021/04/07-4842-13-Zigbee-certification-policy.pdf
 .. _`Zigbee Compliant Platforms page`: https://zigbeealliance.org/classic-platform-search/#zcp/?view_197_search=nRF%20Connect%20SDK
 
 .. _`mbed TLS backend`: https://tls.mbed.org/
-
 .. _`article on reducing mbed TLS memory and storage footprint`: https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint
 
-.. _`Arm mbed TLS project`: https://github.com/ARMmbed/mbedtls
-
-.. _`Global navigation satellite system (GNSS)`: https://en.wikipedia.org/wiki/Satellite_navigation
+.. _`Beej's Guide to Network Programming`: https://beej.us/guide/bgnet/
 
 .. _`NMEA`: https://www.gpsworld.com/what-exactly-is-gps-nmea-data/
 
-.. _`A-GPS`: https://en.wikipedia.org/wiki/Assisted_GPS
-
-.. _`TinyCBOR`: https://github.com/zephyrproject-rtos/tinycbor
-
-.. _`OpenAMP`: https://github.com/OpenAMP/open-amp/
-
-.. _`Zephyr`: https://www.zephyrproject.org
-
 .. _`NMEA report sample`: http://aprs.gids.nl/nmea/#gsa
-
-.. _`IANA`: https://en.wikipedia.org/wiki/Internet_Assigned_Numbers_Authority
