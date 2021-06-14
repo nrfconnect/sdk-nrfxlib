@@ -22,22 +22,22 @@ typedef enum {
     ALG_CHACHAPOLY_256_BIT    = 3
 } nrf_cc3xx_platform_cipher_info_t;
 
-/** @brief Key derivation info, the algorithm for the derivation is always AES CMAC */
+/** @brief Structure containing information for doing the key derivation using AES CMAC */
 typedef struct{
-    uint32_t        slot_id;    /**<  The slot id containing the AES key used in the derivation process. */
-    size_t          key_size;   /**<  The size of the AES key in bits. */
-    const uint8_t   *label;     /**<  Buffer containing the label used in the derivation process. */
-    size_t          label_size; /**<  The size of the label in bytes. */
+    uint32_t            slot_id;    /**<  The slot id containing the AES key used in the derivation process. */
+    size_t              key_size;   /**<  The size of the AES key in bits. */
+    const uint8_t     * label;      /**<  Buffer containing the label used in the derivation process. */
+    size_t              label_size; /**<  The size of the label in bytes. */
 } nrf_cc3xx_platform_derivation_info_t;
 
 /** @brief Authenticated encryption/decryption info */
 typedef struct{
-    const uint8_t     *nonce;         /**<  Buffer containing the nonce used in the authenticated encryption/decryption. */
-    size_t            nonce_size;     /**<  The nonce size in bytes. */
-    const uint8_t     *aad;           /**<  Buffer containing the additional data used in the authenticated encryption/decryption. */
-    size_t            aad_size;       /**<  The additional data size in bytes. */
-    uint8_t           *tag;           /**<  Buffer containing the authentication tag. */
-    size_t            tag_size;       /**<  The tag size in bytes. */
+    const uint8_t     * nonce;      /**<  Buffer containing the nonce used in the authenticated encryption/decryption. */
+    size_t              nonce_size; /**<  The nonce size in bytes. */
+    const uint8_t     * aad;        /**<  Buffer containing the additional data used in the authenticated encryption/decryption. */
+    size_t              aad_size;   /**<  The additional data size in bytes. */
+    uint8_t           * tag;        /**<  Buffer containing the authentication tag. */
+    size_t              tag_size;   /**<  The tag size in bytes. */
 
 } nrf_cc3xx_platform_auth_info_t;
 
@@ -107,6 +107,7 @@ int nrf_cc3xx_platform_derived_key_set_auth_info(nrf_cc3xx_platform_derived_key_
 
 
 /**@brief Function to encrypt data using a derived key
+ *
  * @note The input and the output buffers should have the same size.
  *
  * @param[in,out]   ctx             Pointer to the derived key context.
@@ -118,11 +119,12 @@ int nrf_cc3xx_platform_derived_key_set_auth_info(nrf_cc3xx_platform_derived_key_
  */
 int nrf_cc3xx_platform_derived_key_encrypt(nrf_cc3xx_platform_derived_key_ctx_t * ctx,
                                            uint8_t * output,
-                                           size_t output_size,
+                                           size_t input_size,
                                            uint8_t const * input);
 
 
 /**@brief Function to decrypt data using a derived key
+ *
  * @note The input and the output buffers should have the same size.
  *
  * @param[in,out]   ctx             Pointer to the derived key context.
@@ -134,7 +136,7 @@ int nrf_cc3xx_platform_derived_key_encrypt(nrf_cc3xx_platform_derived_key_ctx_t 
  */
 int nrf_cc3xx_platform_derived_key_decrypt(nrf_cc3xx_platform_derived_key_ctx_t * ctx,
                                            uint8_t * output,
-                                           size_t output_size,
+                                           size_t input_size,
                                            uint8_t const * input);
 
 #endif /* NRF_CC3XX_PLATFORM_DERIVED_KEY__ */
