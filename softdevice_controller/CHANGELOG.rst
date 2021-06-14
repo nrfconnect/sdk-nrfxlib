@@ -28,6 +28,14 @@ Changes
 * Increased the maximum supported radio output power on nRF53 Series devices from 0 dBm to 3 dBm.
   If the output power is above 0 dBm, NRF_VREQCTRL->VREGRADIO.VREQH is set (DRGN-15476).
 * Reduced ``SDC_DEFAULT_RX_PACKET_COUNT`` from 3 to 2. Now the controller can achieve full throughput with only two RX buffers (DRGN-7696).
+* Decoupled the controller from the random number generator (DRGN-12507).
+  This functionality must now be provided by the user.
+  The user must provide ``rand_prio_low_get()``, ``rand_prio_high_get()`` and ``rand_poll()`` through the newly introduced :c:func:`sdc_rand_source_register()`.
+  These functions can be mapped to the Zephyr Entropy APIs:
+
+    * ``rand_prio_low_get()`` <-> ``entropy_get_entropy_isr()`` (``*_isr()`` for nonblocking behavior)
+    * ``rand_prio_high_get()`` <-> ``entropy_get_entropy_isr()``
+    * ``rand_poll()`` <-> ``entropy_get_entropy()``
 
 Bug fixes
 =========
@@ -63,15 +71,6 @@ Added
 
 Changes
 =======
-
-* Decoupled the controller from the random number generator (DRGN-12507).
-  This functionality must now be provided by the user.
-  The user must provide ``rand_prio_low_get()``, ``rand_prio_high_get()`` and ``rand_poll()`` through the newly introduced :c:func:`sdc_rand_source_register()`.
-  These function can be mapped to the Zephyr Entropy API:
-
-    * ``rand_prio_low_get()`` <-> ``entropy_get_entropy_isr()`` (``*_isr()`` for nonblocking behavior)
-    * ``rand_prio_high_get()`` <-> ``entropy_get_entropy_isr()``
-    * ``rand_poll()`` <-> ``entropy_get_entropy()``
 
 * Renamed and reconfigured the libraries (DRGN-15118).
   Refer to the README for their corresponding supported feature sets.
