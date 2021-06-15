@@ -25,6 +25,7 @@ if BT_CTLR
 
 config BT_CTLR_LLPM
 	bool "Enable Low Latency Packet Mode support"
+	depends on SOC_SERIES_NRF52X
 	help
 	  Low Latency Packet Mode (LLPM) is a Nordic proprietary addition
 	  which lets the application use connection intervals down to 1 ms.
