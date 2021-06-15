@@ -10,6 +10,7 @@
 /README.rst                               @ru-fu @carlescufi
 /.checkpatch.conf                         @carlescufi
 /.gitattributes                           @thst-nordic
+/.gitlint                                 @thst-nordic
 
 # All cmake related files
 /CMakeLists.txt                           @tejlmand
