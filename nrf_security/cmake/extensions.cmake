@@ -602,7 +602,11 @@ function(nrf_security_target_embed_libraries)
   foreach(arc ${archive})
     add_custom_command(TARGET ${SEC_LIBS_TARGET}
       POST_BUILD
-      COMMAND ${CMAKE_AR} q $<TARGET_FILE:${SEC_LIBS_TARGET}> ${arc}/*
+      COMMAND ${CMAKE_COMMAND}
+          -DCMAKE_AR=${CMAKE_AR}
+          -DLIBRARY=$<TARGET_FILE:${SEC_LIBS_TARGET}>
+          -DFOLDER=${arc}
+          -P ${NRF_SECURITY_ROOT}/cmake/archive_folder.cmake
     )
   endforeach()
 endfunction()
