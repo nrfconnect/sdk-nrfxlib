@@ -769,7 +769,7 @@ config MBEDTLS_GCM_C
 	prompt "AES-GCM - AES Galois/Counter Mode support"
 	depends on MBEDTLS_AES_C
 	depends on OBERON_MBEDTLS_AES_C || VANILLA_MBEDTLS_AES_C || \
-			   (CC312_BACKEND && CC3XX_MBEDTLS_AES_C)
+			   (CC312_BACKEND && CC3XX_MBEDTLS_AES_C) || BUILD_WITH_TFM
 	default y
 	select CC3XX_MBEDTLS_GCM_C if CC312_BACKEND
 	help
