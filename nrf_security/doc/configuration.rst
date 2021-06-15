@@ -14,3 +14,9 @@ It is possible to provide your own custom mbed TLS configuration file by deselec
 .. note::
    Deselecting the :option:`CONFIG_GENERATE_MBEDTLS_CFG_FILE` Kconfig variable is not recommended.
    If you decide to do so, see :ref:`nrf_security_tls_header`.
+
+Building with TF-M
+******************
+
+If :option:`CONFIG_BUILD_WITH_TFM` is enabled together with :option:`CONFIG_NORDIC_SECURITY_BACKEND`, the TF-M secure image will enable the use of the hardware acceleration of Arm CryptoCell.
+In such case, the Kconfig configurations in the Nordic Security Backend control the features enabled through TF-M.
