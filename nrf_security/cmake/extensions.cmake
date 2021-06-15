@@ -550,25 +550,46 @@ function(nrf_security_target_embed_libraries)
       get_property(imported_library_location TARGET ${target} PROPERTY IMPORTED_LOCATION)
     endif()
 
+    get_filename_component(library_file ${imported_library_location} NAME_WE)
+
     execute_process(
       COMMAND
         ${CMAKE_COMMAND}
           -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}
+    )
+    execute_process(
+      COMMAND
+        ${CMAKE_COMMAND}
+          -E remove -f ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}.mon
+    )
+
+    if(NOT TARGET ${backend_name}_extract)
+      add_custom_target(${backend_name}_extract
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}.mon
+      )
+    endif()
+
+    add_custom_command(
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}.mon
+      COMMAND ${CMAKE_COMMAND}
+          -DCMAKE_AR=${CMAKE_AR}
+          -DSTRIP="$<TARGET_PROPERTY:${backend_name}_extract,STRIP_LIST>"
+          -DLIBRARIES="$<TARGET_PROPERTY:${backend_name}_extract,LIBRARIES>"
+          -DMONITOR_FILE=${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}.mon
+          -P ${NRF_SECURITY_ROOT}/cmake/libraries_extract.cmake
+      DEPENDS $<TARGET_PROPERTY:${backend_name}_extract,LIBRARIES>
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}
     )
 
     set(strip_list)
     nrf_security_symbol_strip(${backend_name} strip_list)
 
     if(DEFINED strip_list)
-      set(strip_command COMMAND ${CMAKE_COMMAND} -E remove ${strip_list})
+      set_property(TARGET ${backend_name}_extract APPEND PROPERTY STRIP_LIST ${strip_list})
     endif()
+    set_property(TARGET ${backend_name}_extract APPEND PROPERTY LIBRARIES ${imported_library_location})
 
-    add_custom_command(TARGET ${SEC_LIBS_TARGET}
-      POST_BUILD
-      COMMAND ${CMAKE_AR} x ${imported_library_location}
-      ${strip_command}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name}
-    )
+    add_dependencies(${SEC_LIBS_TARGET} ${backend_name}_extract)
 
     list(APPEND archive ${CMAKE_CURRENT_BINARY_DIR}/objects/${backend_name})
   endforeach()
