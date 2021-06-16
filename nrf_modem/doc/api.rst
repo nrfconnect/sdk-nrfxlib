@@ -205,6 +205,9 @@ File descriptor sets are used as input to the nrf_select() function for doing I/
 multiplexing. The maximum number of descriptors contained in a set is defined by
 NRF_FD_SETSIZE.
 
+.. note::
+   :c:func:`nrf_select` is currently not supported.
+
 .. doxygengroup:: nrf_fd_set_api
    :project: nrfxlib
    :members:
