@@ -395,6 +395,10 @@ static void fem_for_tx_reset(bool cca)
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
 }
 
+#if defined(NRF52840_XXAA) || \
+    defined(NRF52833_XXAA) || \
+    defined(NRF52820_XXAA) || \
+    defined(NRF52811_XXAA)
 /** @brief Applies DEVICE-CONFIG-254.
  *
  * Shall be called after every RADIO peripheral reset.
@@ -424,6 +428,8 @@ static void device_config_254_apply_tx(void)
         *p_radio_reg3 = ficr_reg3;
     }
 }
+
+#endif
 
 void nrf_802154_trx_module_reset(void)
 {
@@ -457,11 +463,16 @@ void nrf_802154_trx_enable(void)
 
     nrf_radio_reset();
 
+#if defined(NRF52840_XXAA) || \
+    defined(NRF52833_XXAA) || \
+    defined(NRF52820_XXAA) || \
+    defined(NRF52811_XXAA)
     // Apply DEVICE-CONFIG-254 if needed.
     if (mpsl_fem_device_config_254_apply_get())
     {
         device_config_254_apply_tx();
     }
+#endif
 
     nrf_radio_packet_conf_t packet_conf;
 
