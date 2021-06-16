@@ -193,7 +193,7 @@
 
 #define IE_VENDOR_THREAD_SUBTYPE_OFFSET 3                                            ///< Thread Vendor-specific IE subtype offset
 #define IE_VENDOR_THREAD_DATA_OFFSET    4                                            ///< Thread Vendor-specific IE DATA offset
-#define IE_VENDOR_THREAD_OUI            0xf4ce36                                     ///< Thread Vendor-specific IE OUI
+#define IE_VENDOR_THREAD_OUI            0xeab89b                                     ///< Thread Vendor-specific IE OUI
 #define IE_VENDOR_THREAD_SIZE_MIN       4                                            ///< Thread Vendor-specific IE minimum length
 
 #define IE_VENDOR_THREAD_ACK_PROBING_ID 0x00                                         ///< Thread Vendor-specific ACK Probing IE subtype ID
