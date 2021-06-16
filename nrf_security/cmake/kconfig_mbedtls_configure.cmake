@@ -493,8 +493,22 @@ else()
   list(TRANSFORM tfm_mbedtls_include_files PREPEND "${copied_include_path}/mbedtls/")
   list(TRANSFORM MBEDTLS_INCLUDE_FILES PREPEND "${mbedtls_include_dir}/")
 
+  if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
+    # CMake / Ninja generator will create a bat file for command invocation when
+    # the command line execution exceeds a certain length. Unfortunately SES-NE
+    # invokes said bat file wrongly, so instead we create a CMake script to be
+    # invoked in windows for the header copy operation.
+    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/header_copy.cmake
+         "execute_process(COMMAND ${CMAKE_COMMAND} "
+         "-E copy ${MBEDTLS_INCLUDE_FILES} ${copied_include_path}/mbedtls)"
+    )
+    set(header_copy_cmd -P ${CMAKE_CURRENT_BINARY_DIR}/header_copy.cmake)
+  else()
+    set(header_copy_cmd -E copy ${MBEDTLS_INCLUDE_FILES} ${copied_include_path}/mbedtls)
+  endif()
+
   add_custom_command(OUTPUT ${tfm_mbedtls_include_files}
-    COMMAND ${CMAKE_COMMAND} -E copy ${MBEDTLS_INCLUDE_FILES} ${copied_include_path}/mbedtls
+    COMMAND ${CMAKE_COMMAND} ${header_copy_cmd}
     DEPENDS ${MBEDTLS_INCLUDE_FILES}
     COMMAND_EXPAND_LISTS
   )
