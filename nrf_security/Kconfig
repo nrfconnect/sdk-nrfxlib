@@ -1109,6 +1109,10 @@ config MBEDTLS_ECDSA_C
 
 if MBEDTLS_ECDSA_C
 
+config MBEDTLS_ECDSA_DETERMINISTIC
+	bool "Enable deterministic ECDSA (RFC 6979)"
+	default y
+
 config MBEDTLS_ECDSA_GENKEY_ALT
 	bool
 	depends on CC3XX_MBEDTLS_ECDSA_C || OBERON_MBEDTLS_ECDSA_C
