@@ -61,6 +61,22 @@ static inline void memcpy_rev(void * p_dst, const void * p_src, size_t n)
     }
 }
 
+static bool frame_version_is_2015_or_above(const uint8_t * p_frame)
+{
+    switch (p_frame[FRAME_VERSION_OFFSET] & FRAME_VERSION_MASK)
+    {
+        case FRAME_VERSION_0:
+        case FRAME_VERSION_1:
+            return false;
+
+        case FRAME_VERSION_2:
+            return true;
+
+        default:
+            return true;
+    }
+}
+
 static uint8_t mic_length_from_security_level_get(uint8_t security_level)
 {
     switch (security_level)
@@ -161,6 +177,9 @@ static bool command_frame_a_data_and_m_data_prepare(
     uint8_t         mic_length    = mic_length_from_security_level_get(p_aux_sec_hdr->security_lvl);
     const uint8_t * p_mac_payload = nrf_802154_frame_parser_mac_payload_get(p_frame);
 
+    uint8_t open_payload_size =
+        frame_version_is_2015_or_above(p_frame) ? 0 : MAC_CMD_COMMAND_ID_SIZE;
+
     switch (p_aux_sec_hdr->security_lvl)
     {
         case 0:
@@ -191,16 +210,17 @@ static bool command_frame_a_data_and_m_data_prepare(
             // Data authenticity and data confidentiality
             p_aes_ccm_data->auth_data =
                 (uint8_t *)&p_frame[PSDU_OFFSET];
+
             p_aes_ccm_data->auth_data_len =
                 nrf_802154_frame_parser_mac_header_length_get(p_frame, p_mac_payload) +
-                MAC_CMD_COMMAND_ID_SIZE;
+                open_payload_size;
             p_aes_ccm_data->plain_text_data =
                 (uint8_t *)(nrf_802154_frame_parser_mac_command_id_get(p_frame, p_mac_payload) +
-                            MAC_CMD_COMMAND_ID_SIZE);
+                            open_payload_size);
             p_aes_ccm_data->plain_text_data_len =
                 nrf_802154_frame_parser_mac_payload_length_get(p_frame, p_mac_payload) -
                 mic_length -
-                MAC_CMD_COMMAND_ID_SIZE;
+                open_payload_size;
             break;
 
         default:
