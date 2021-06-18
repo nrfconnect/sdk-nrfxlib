@@ -9,8 +9,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-Master branch - nRF 802.15.4 Radio Driver
-*****************************************
+nRF Connect SDK 1.6.0 - nRF 802.15.4 Radio Driver
+*************************************************
 
 Initial common release.
 
