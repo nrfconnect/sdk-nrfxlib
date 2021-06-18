@@ -47,14 +47,15 @@ extern "C" {
 #endif
 
 /**
- * This method returns the IPv6 link-local address of given infrastructure interface.
+ * This method tells whether an infra interface has the given IPv6 address assigned.
  *
- * @param[in]   aInfraIfIndex  The index of the infrastructure interface.
+ * @param[in]  aInfraIfIndex  The index of the infra interface.
+ * @param[in]  aAddress       The IPv6 address.
  *
- * @returns  A pointer to the IPv6 link-local address. NULL if no valid IPv6 link-local address found.
+ * @returns  TRUE if the infra interface has given IPv6 address assigned, FALSE otherwise.
  *
  */
-const otIp6Address *otPlatInfraIfGetLinkLocalAddress(uint32_t aInfraIfIndex);
+bool otPlatInfraIfHasAddress(uint32_t aInfraIfIndex, const otIp6Address *aAddress);
 
 /**
  * This method sends an ICMPv6 Neighbor Discovery message on given infrastructure interface.
@@ -63,7 +64,8 @@ const otIp6Address *otPlatInfraIfGetLinkLocalAddress(uint32_t aInfraIfIndex);
  *
  * @param[in]  aInfraIfIndex  The index of the infrastructure interface this message is sent to.
  * @param[in]  aDestAddress   The destination address this message is sent to.
- * @param[in]  aBuffer        The ICMPv6 message buffer.
+ * @param[in]  aBuffer        The ICMPv6 message buffer. The ICMPv6 checksum is left zero and the
+ *                            platform should do the checksum calculate.
  * @param[in]  aBufferLength  The length of the message buffer.
  *
  * @note  Per RFC 4861, the implementation should send the message with IPv6 link-local source address
@@ -99,6 +101,27 @@ extern void otPlatInfraIfRecvIcmp6Nd(otInstance *        aInstance,
                                      const otIp6Address *aSrcAddress,
                                      const uint8_t *     aBuffer,
                                      uint16_t            aBufferLength);
+
+/**
+ * The infra interface driver calls this method to notify OpenThread
+ * of the interface state changes.
+ *
+ * It is fine for the platform to call to method even when the running state
+ * of the interface hasn't changed. In this case, the Routing Manager state is
+ * not affected.
+ *
+ * @param[in]  aInstance          The OpenThread instance structure.
+ * @param[in]  aInfraIfIndex      The index of the infrastructure interface.
+ * @param[in]  aIsRunning         A boolean that indicates whether the infrastructure
+ *                                interface is running.
+ *
+ * @retval  OT_ERROR_NONE           Successfully updated the infra interface status.
+ * @retval  OT_ERROR_INVALID_STATE  The Routing Manager is not initialized.
+ * @retval  OT_ERROR_INVALID_ARGS   The @p aInfraIfIndex doesn't match the infra interface the
+ *                                  Routing Manager are initialized with.
+ *
+ */
+extern otError otPlatInfraIfStateChanged(otInstance *aInstance, uint32_t aInfraIfIndex, bool aIsRunning);
 
 #ifdef __cplusplus
 } // extern "C"
