@@ -211,7 +211,7 @@ The end of the procedure is notified by either the :c:func:`tx_started` or the :
 The driver :ref:`receives ACK frames <features_description_receiving_ack>` like after any other transmission procedure.
 
 .. note::
-   This feature requires the usage of the proprietary 802.15.4 Service Layer, which is currently not supported by nRF53 chips.
+   This feature requires the usage of the proprietary 802.15.4 Service Layer.
 
 .. _features_description_delayed_ops:
 
