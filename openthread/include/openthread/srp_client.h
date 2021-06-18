@@ -35,6 +35,7 @@
 #ifndef OPENTHREAD_SRP_CLIENT_H_
 #define OPENTHREAD_SRP_CLIENT_H_
 
+#include <openthread/dns.h>
 #include <openthread/ip6.h>
 
 #ifdef __cplusplus
@@ -50,37 +51,6 @@ extern "C" {
  * @{
  *
  */
-
-/**
- * This structure represents a TXT record entry representing a key/value pair (RFC 6763 - section 6.3).
- *
- * The strings buffers pointed to by `mKey` and `mValue` MUST persist and remain unchanged after an instance of such a
- * structure is passed to OpenThread (as part of `otSrpClientService` instance).
- *
- * An array of `otSrpTxtEntry` entries is used in `otSrpClientService` to specify the full TXT record (a list of
- * entries).
- *
- */
-typedef struct otSrpTxtEntry
-{
-    /**
-     * The TXT record key string.
-     *
-     * If `mKey` is not NULL, then the entry is treated as key/value pair with `mValue` buffer providing the value.
-     *   - The entry is encoded as follows:
-     *        - A single string length byte followed by "key=value" format (without the quotation marks).
-              - In this case, the overall encoded length must be 255 bytes or less.
-     *   - If `mValue` is NULL, then key is treated as a boolean attribute and encoded as "key" (with no `=`).
-     *   - If `mValue` is not NULL but `mValueLength` is zero, then it is treated as empty value and encoded as "key=".
-     *
-     * If `mKey` is NULL, then `mValue` buffer is treated as an already encoded TXT-DATA and is appended as is in the
-     * DNS message.
-     *
-     */
-    const char *   mKey;
-    const uint8_t *mValue;       ///< The TXT record value or already encoded TXT-DATA (depending on `mKey`).
-    uint16_t       mValueLength; ///< Number of bytes in `mValue` buffer.
-} otSrpTxtEntry;
 
 /**
  * This enumeration specifies an SRP client item (service or host info) state.
@@ -122,7 +92,7 @@ typedef struct otSrpClientService
 {
     const char *         mName;          ///< The service name labels (e.g., "_chip._udp", not the full domain name).
     const char *         mInstanceName;  ///< The service instance name label (not the full name).
-    const otSrpTxtEntry *mTxtEntries;    ///< Array of TXT entries (number of entries is given by `mNumTxtEntries`).
+    const otDnsTxtEntry *mTxtEntries;    ///< Array of TXT entries (number of entries is given by `mNumTxtEntries`).
     uint16_t             mPort;          ///< The service port number.
     uint16_t             mPriority;      ///< The service priority.
     uint16_t             mWeight;        ///< The service weight.
@@ -160,27 +130,27 @@ typedef struct otSrpClientService
  *
  * If the server rejects an SRP update request, the DNS response code (RFC 2136) is mapped to the following errors:
  *
- *    (0)  NOERROR   Success (no error condition)                    -> OT_ERROR_NONE
- *    (1)  FORMERR   Server unable to interpret due to format error  -> OT_ERROR_PARSE
- *    (2)  SERVFAIL  Server encountered an internal failure          -> OT_ERROR_FAILED
- *    (3)  NXDOMAIN  Name that ought to exist, does not exist        -> OT_ERROR_NOT_FOUND
- *    (4)  NOTIMP    Server does not support the query type (OpCode) -> OT_ERROR_NOT_IMPLEMENTED
- *    (5)  REFUSED   Server refused for policy/security reasons      -> OT_ERROR_SECURITY
- *    (6)  YXDOMAIN  Some name that ought not to exist, does exist   -> OT_ERROR_DUPLICATED
- *    (7)  YXRRSET   Some RRset that ought not to exist, does exist  -> OT_ERROR_DUPLICATED
- *    (8)  NXRRSET   Some RRset that ought to exist, does not exist  -> OT_ERROR_NOT_FOUND
- *    (9)  NOTAUTH   Service is not authoritative for zone           -> OT_ERROR_SECURITY
- *    (10) NOTZONE   A name is not in the zone                       -> OT_ERROR_PARSE
- *    (20) BADNAME   Bad name                                        -> OT_ERROR_PARSE
- *    (21) BADALG    Bad algorithm                                   -> OT_ERROR_SECURITY
- *    (22) BADTRUN   Bad truncation                                  -> OT_ERROR_PARSE
- *    Other response codes                                           -> OT_ERROR_FAILED
+ *  - (0)  NOERROR   Success (no error condition)                    -> OT_ERROR_NONE
+ *  - (1)  FORMERR   Server unable to interpret due to format error  -> OT_ERROR_PARSE
+ *  - (2)  SERVFAIL  Server encountered an internal failure          -> OT_ERROR_FAILED
+ *  - (3)  NXDOMAIN  Name that ought to exist, does not exist        -> OT_ERROR_NOT_FOUND
+ *  - (4)  NOTIMP    Server does not support the query type (OpCode) -> OT_ERROR_NOT_IMPLEMENTED
+ *  - (5)  REFUSED   Server refused for policy/security reasons      -> OT_ERROR_SECURITY
+ *  - (6)  YXDOMAIN  Some name that ought not to exist, does exist   -> OT_ERROR_DUPLICATED
+ *  - (7)  YXRRSET   Some RRset that ought not to exist, does exist  -> OT_ERROR_DUPLICATED
+ *  - (8)  NXRRSET   Some RRset that ought to exist, does not exist  -> OT_ERROR_NOT_FOUND
+ *  - (9)  NOTAUTH   Service is not authoritative for zone           -> OT_ERROR_SECURITY
+ *  - (10) NOTZONE   A name is not in the zone                       -> OT_ERROR_PARSE
+ *  - (20) BADNAME   Bad name                                        -> OT_ERROR_PARSE
+ *  - (21) BADALG    Bad algorithm                                   -> OT_ERROR_SECURITY
+ *  - (22) BADTRUN   Bad truncation                                  -> OT_ERROR_PARSE
+ *  - Other response codes                                           -> OT_ERROR_FAILED
  *
  * The following errors are also possible:
  *
- *    OT_ERROR_RESPONSE_TIMEOUT : Timed out waiting for response from server (client would continue to retry).
- *    OT_ERROR_INVALID_ARGS     : The provided service structure is invalid (e.g., bad service name or `otSrpTxtEntry`).
- *    OT_ERROR_NO_BUFS          : Insufficient buffer to prepare or send the update message.
+ *  - OT_ERROR_RESPONSE_TIMEOUT : Timed out waiting for response from server (client would continue to retry).
+ *  - OT_ERROR_INVALID_ARGS     : The provided service structure is invalid (e.g., bad service name or `otDnsTxtEntry`).
+ *  - OT_ERROR_NO_BUFS          : Insufficient buffer to prepare or send the update message.
  *
  * Note that in case of any failure, the client continues the operation, i.e. it prepares and (re)transmits the SRP
  * update message to the server, after some wait interval. The retry wait interval starts from the minimum value and
@@ -202,6 +172,21 @@ typedef void (*otSrpClientCallback)(otError                    aError,
                                     void *                     aContext);
 
 /**
+ * This function pointer type defines the callback used by SRP client to notify user when it is auto-started or stopped.
+ *
+ * This is only used when auto-start feature `OPENTHREAD_CONFIG_SRP_CLIENT_AUTO_START_API_ENABLE` is enabled.
+ *
+ * This callback is invoked when auto-start mode is enabled and the SRP client is either automatically started or
+ * stopped.
+ *
+ * @param[in] aSeverSockAddress    A non-NULL pointer indicates SRP sever was started and pointer will give the
+ *                                 selected server socket address. A NULL pointer indicates SRP sever was stopped.
+ * @param[in] aContext             A pointer to an arbitrary context (provided when callback was registered).
+ *
+ */
+typedef void (*otSrpClientAutoStartCallback)(const otSockAddr *aServerSockAddr, void *aContext);
+
+/**
  * This function starts the SRP client operation.
  *
  * SRP client will prepare and send "SRP Update" message to the SRP server once all the following conditions are met:
@@ -219,19 +204,14 @@ typedef void (*otSrpClientCallback)(otError                    aError,
  *
  * @param[in] aInstance        A pointer to the OpenThread instance.
  * @param[in] aServerSockAddr  The socket address (IPv6 address and port number) of the SRP server.
- * @param[in] aCallback        The callback which is used to notify events and changes. Can be NULL if not needed.
- * @param[in] aContext         An arbitrary context used with @p aCallback.
  *
  * @retval OT_ERROR_NONE       SRP client operation started successfully or it is already running with same server
  *                             socket address and callback.
- * @retval OT_ERROR_BUSY       SRP client is busy running with a different socket address and/or callback.
+ * @retval OT_ERROR_BUSY       SRP client is busy running with a different socket address.
  * @retval OT_ERROR_FAILED     Failed to open/connect the client's UDP socket.
  *
  */
-otError otSrpClientStart(otInstance *        aInstance,
-                         const otSockAddr *  aServerSockAddr,
-                         otSrpClientCallback aCallback,
-                         void *              aContext);
+otError otSrpClientStart(otInstance *aInstance, const otSockAddr *aServerSockAddr);
 
 /**
  * This function stops the SRP client operation.
@@ -243,6 +223,96 @@ otError otSrpClientStart(otInstance *        aInstance,
  *
  */
 void otSrpClientStop(otInstance *aInstance);
+
+/**
+ * This function indicates whether the SRP client is running or not.
+ *
+ * @param[in] aInstance       A pointer to the OpenThread instance.
+ *
+ * @returns TRUE if the SRP client is running, FALSE otherwise.
+ *
+ */
+bool otSrpClientIsRunning(otInstance *aInstance);
+
+/**
+ * This function gets the socket address (IPv6 address and port number) of the SRP server which is being used by SRP
+ * client.
+ *
+ * If the client is not running, the address is unspecified (all zero) with zero port number.
+ *
+ * @param[in] aInstance       A pointer to the OpenThread instance.
+ *
+ * @returns A pointer to the SRP server's socket address (is always non-NULL).
+ *
+ */
+const otSockAddr *otSrpClientGetServerAddress(otInstance *aInstance);
+
+/**
+ * This function sets the callback to notify caller of events/changes from SRP client.
+ *
+ * The SRP client allows a single callback to be registered. So consecutive calls to this function will overwrite any
+ * previously set callback functions.
+ *
+ * @param[in] aInstance   A pointer to the OpenThread instance.
+ * @param[in] aCallback   The callback to notify of events and changes. Can be NULL if not needed.
+ * @param[in] aContext    An arbitrary context used with @p aCallback.
+ *
+ */
+void otSrpClientSetCallback(otInstance *aInstance, otSrpClientCallback aCallback, void *aContext);
+
+/**
+ * This function enables the auto-start mode.
+ *
+ * This is only available when auto-start feature `OPENTHREAD_CONFIG_SRP_CLIENT_AUTO_START_API_ENABLE` is enabled.
+ *
+ * Config option `OPENTHREAD_CONFIG_SRP_CLIENT_AUTO_START_DEFAULT_MODE` specifies the default auto-start mode (whether
+ * it is enabled or disabled at the start of OT stack).
+ *
+ * When auto-start is enabled, the SRP client will monitor the Thread Network Data for SRP Server Service entries
+ * and automatically start and stop the client when an SRP server is detected.
+ *
+ * If multiple SRP servers are found, a random one will be selected. If the selected SRP server is no longer
+ * detected (not longer present in the Thread Network Data), the SRP client will be stopped and then it may switch
+ * to another SRP server (if available).
+ *
+ * When the SRP client is explicitly started through a successful call to `otSrpClientStart()`, the given SRP server
+ * address in `otSrpClientStart()` will continue to be used regardless of the state of auto-start mode and whether the
+ * same SRP server address is discovered or not in the Thread Network Data. In this case, only an explicit
+ * `otSrpClientStop()` call will stop the client.
+ *
+ * @param[in] aInstance   A pointer to the OpenThread instance.
+ * @param[in] aCallback   A callback to notify when client is auto-started/stopped. Can be NULL if not needed.
+ * @param[in] aContext    A context to be passed when invoking @p aCallback.
+ *
+ */
+void otSrpClientEnableAutoStartMode(otInstance *aInstance, otSrpClientAutoStartCallback aCallback, void *aContext);
+
+/**
+ * This function disables the auto-start mode.
+ *
+ * This is only available when auto-start feature `OPENTHREAD_CONFIG_SRP_CLIENT_AUTO_START_API_ENABLE` is enabled.
+ *
+ * Disabling the auto-start mode will not stop the client if it is already running but the client stops monitoring
+ * the Thread Network Data to verify that the selected SRP server is still present in it.
+ *
+ * Note that a call to `otSrpClientStop()` will also disable the auto-start mode.
+ *
+ * @param[in] aInstance   A pointer to the OpenThread instance.
+ *
+ */
+void otSrpClientDisableAutoStartMode(otInstance *aInstance);
+
+/**
+ * This function indicates the current state of auto-start mode (enabled or disabled).
+ *
+ * This is only available when auto-start feature `OPENTHREAD_CONFIG_SRP_CLIENT_AUTO_START_API_ENABLE` is enabled.
+ *
+ * @param[in] aInstance   A pointer to the OpenThread instance.
+ *
+ * @returns TRUE if the auto-start mode is enabled, FALSE otherwise.
+ *
+ */
+bool otSrpClientIsAutoStartModeEnabled(otInstance *aInstance);
 
 /**
  * This function gets the lease interval used in SRP update requests.
@@ -376,8 +446,8 @@ otError otSrpClientSetHostAddresses(otInstance *aInstance, const otIp6Address *a
 
  * @retval OT_ERROR_NONE          The addition of service started successfully. The `otSrpClientCallback` will be
  *                                called to report the status.
- * @retval OT_ERROR_ALREADY       The same service is already in the list.
- * @retval OT_ERROR_INVALID_ARGS  The service structure is invalid (e.g., bad service name or `otSrpTxtEntry`).
+ * @retval OT_ERROR_ALREADY       A service with the same service and instance names is already in the list.
+ * @retval OT_ERROR_INVALID_ARGS  The service structure is invalid (e.g., bad service name or `otDnsTxtEntry`).
  *
  */
 otError otSrpClientAddService(otInstance *aInstance, otSrpClientService *aService);
@@ -402,6 +472,26 @@ otError otSrpClientAddService(otInstance *aInstance, otSrpClientService *aServic
  *
  */
 otError otSrpClientRemoveService(otInstance *aInstance, otSrpClientService *aService);
+
+/**
+ * This function clears a service, immediately removing it from the client service list.
+ *
+ * Unlike `otSrpClientRemoveService()` which sends an update message to the server to remove the service, this function
+ * clears the service from the client's service list without any interaction with the server. On a successful call to
+ * this function, the `otSrpClientCallback` will NOT be called and the @p aService entry can be reclaimed and re-used
+ * by the caller immediately.
+ *
+ * This function can be used along with a subsequent call to `otSrpClientAddService()` (potentially reusing the same @p
+ * aService entry with the same service and instance names) to update some of the parameters in an existing service.
+ *
+ * @param[in] aInstance        A pointer to the OpenThread instance.
+ * @param[in] aService         A pointer to a `otSrpClientService` instance to delete.
+ *
+ * @retval OT_ERROR_NONE       The @p aService is deleted successfully. It can be reclaimed and re-used immediately.
+ * @retval OT_ERROR_NOT_FOUND  The service could not be found in the list.
+ *
+ */
+otError otSrpClientClearService(otInstance *aInstance, otSrpClientService *aService);
 
 /**
  * This function gets the list of services being managed by client.
@@ -437,8 +527,8 @@ otError otSrpClientRemoveHostAndServices(otInstance *aInstance, bool aRemoveKeyL
 /**
  * This function clears all host info and all the services.
  *
- * Unlike `otSrpClientRemoveHostAndServices()` which sends an update message to server to remove/unregister all the
- * info, this function clears all the info immediately without any interaction with server.
+ * Unlike `otSrpClientRemoveHostAndServices()` which sends an update message to the server to remove all the info, this
+ * function clears all the info immediately without any interaction with the server.
  *
  * @param[in] aInstance        A pointer to the OpenThread instance.
  *
@@ -490,6 +580,36 @@ otError otSrpClientSetDomainName(otInstance *aInstance, const char *aName);
  *
  */
 const char *otSrpClientItemStateToString(otSrpClientItemState aItemState);
+
+/**
+ * This function enables/disables "service key record inclusion" mode.
+ *
+ * When enabled, SRP client will include KEY record in Service Description Instructions in the SRP update messages
+ * that it sends.
+ *
+ * This function is available when `OPENTHREAD_CONFIG_REFERENCE_DEVICE_ENABLE` configuration is enabled.
+ *
+ * @note KEY record is optional in Service Description Instruction (it is required and always included in the Host
+ * Description Instruction). The default behavior of SRP client is to not include it. This function is intended to
+ * override the default behavior for testing only.
+ *
+ * @param[in] aInstance  A pointer to the OpenThread instance.
+ * @param[in] aEnabled   TRUE to enable, FALSE to disable the "service key record inclusion" mode.
+ *
+ */
+void otSrpClientSetServiceKeyRecordEnabled(otInstance *aInstance, bool aEnabled);
+
+/**
+ * This method indicates whether the "service key record inclusion" mode is enabled or disabled.
+ *
+ * This function is available when `OPENTHREAD_CONFIG_REFERENCE_DEVICE_ENABLE` configuration is enabled.
+ *
+ * @param[in] aInstance     A pointer to the OpenThread instance.
+ *
+ * @returns TRUE if "service key record inclusion" mode is enabled, FALSE otherwise.
+ *
+ */
+bool otSrpClientIsServiceKeyRecordEnabled(otInstance *aInstance);
 
 /**
  * @}
