@@ -57,6 +57,7 @@ Bug fixes
 * Fixed an issue where the coding scheme provided by the LE Set PHY HCI Command was ignored after a remote initiated PHY procedure (DRGN-15531).
 * Fixed an issue where the controller may still have pending events after :c:func:`sdc_hci_evt_get()` returns false.
   This would only occur if the host has masked out events (DRGN-15758).
+* Fixed an issue where the extended scanner generated reports containing truncated data from a chained advertising PDU (DRGN-13338).
 
 nRF Connect SDK v1.5.0
 **********************
