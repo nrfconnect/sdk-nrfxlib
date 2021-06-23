@@ -8,7 +8,7 @@ Backend configurations and supported features
    :depth: 2
 
 This section covers the configurations available when one or more nrf_security backends are enabled.
-This includes linking directly to the backend library or utilizing the mbed TLS glue layer.
+This includes linking directly to the backend library or utilizing the Mbed TLS glue layer.
 
 .. _nrf_security_backend_config_multiple:
 
@@ -22,7 +22,7 @@ Glue
    The configuration options will list `Glue` for the cryptographic algorithms that can be enabled in multiple backends at the same time.
 Shared
    For some cryptographic features, the implementation is only available in the :ref:`nrf_security_backends_orig_mbedtls`.
-   For convenience, this is made available in any backend, although the implementation will always use open-source code from the Arm mbed TLS project.
+   For convenience, this is made available in any backend, although the implementation will always use open-source code from the Arm Mbed TLS project.
 Choice
    The configuration options will list `Choice` for the cryptographic algorithms that are supported by multiple backends, but only one of them can be enabled at the same time.
    To enable the cryptographic algorithm, a `base` configuration must be enabled, and then the backend can be selected using a setting prefixed with ``CONFIG_CHOICE_``.
@@ -65,7 +65,7 @@ AES core support can be enabled by setting setting the :option:`CONFIG_MBEDTLS_A
 |              |                |                                                            |
 |              |                | nrf_oberon: :option:`CONFIG_OBERON_MBEDTLS_AES_C`          |
 |              |                |                                                            |
-|              |                | Original mbed TLS: :option:`CONFIG_VANILLA_MBEDTLS_AES_C`  |
+|              |                | Original Mbed TLS: :option:`CONFIG_VANILLA_MBEDTLS_AES_C`  |
 +--------------+----------------+------------------------------------------------------------+
 
 .. note::
@@ -87,7 +87,7 @@ Feature support
 |             |                   +-------------+
 |             |                   | 256-bit key |
 |             +-------------------+-------------+
-|             | Original mbed TLS | 128-bit key |
+|             | Original Mbed TLS | 128-bit key |
 |             |                   +-------------+
 |             |                   | 192-bit key |
 |             |                   +-------------+
@@ -112,11 +112,11 @@ AES cipher modes can be enabled by setting one or more of the following Kconfig 
 +--------------+-----------------+---------------------------------------------+----------------------------------------+
 | CBC          | Glue            | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CBC`    |                                        |
 +--------------+-----------------+---------------------------------------------+----------------------------------------+
-| CFB          |                 | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CFB`    | Original mbed TLS and nrf_oberon only  |
+| CFB          |                 | :option:`CONFIG_MBEDTLS_CIPHER_MODE_CFB`    | Original Mbed TLS and nrf_oberon only  |
 +--------------+-----------------+---------------------------------------------+----------------------------------------+
-| OFB          |                 | :option:`CONFIG_MBEDTLS_CIPHER_MODE_OFB`    | Original mbed TLS and nrf_oberon only  |
+| OFB          |                 | :option:`CONFIG_MBEDTLS_CIPHER_MODE_OFB`    | Original Mbed TLS and nrf_oberon only  |
 +--------------+-----------------+---------------------------------------------+----------------------------------------+
-| XTS          |                 | :option:`CONFIG_MBEDTLS_CIPHER_MODE_XTS`    | Original mbed TLS and nrf_oberon only  |
+| XTS          |                 | :option:`CONFIG_MBEDTLS_CIPHER_MODE_XTS`    | Original Mbed TLS and nrf_oberon only  |
 +--------------+-----------------+---------------------------------------------+----------------------------------------+
 
 .. note::
@@ -139,7 +139,7 @@ Feature support
 |             |                   +-------------+-----------------------+
 |             |                   | 256-bit key |                       |
 |             +-------------------+-------------+-----------------------+
-|             | Original mbed TLS | 128-bit key |                       |
+|             | Original Mbed TLS | 128-bit key |                       |
 |             |                   +-------------+-----------------------+
 |             |                   | 192-bit key |                       |
 |             |                   +-------------+-----------------------+
@@ -153,7 +153,7 @@ Feature support
 |             |                   +-------------+-----------------------+
 |             |                   | 256-bit key |                       |
 |             +-------------------+-------------+-----------------------+
-|             | Original mbed TLS | 128-bit key |                       |
+|             | Original Mbed TLS | 128-bit key |                       |
 |             |                   +-------------+-----------------------+
 |             |                   | 192-bit key |                       |
 |             |                   +-------------+-----------------------+
@@ -167,7 +167,7 @@ Feature support
 |             |                   +-------------+-----------------------+
 |             |                   | 256-bit key |                       |
 |             +-------------------+-------------+-----------------------+
-|             | Original mbed TLS | 128-bit key |                       |
+|             | Original Mbed TLS | 128-bit key |                       |
 |             |                   +-------------+-----------------------+
 |             |                   | 192-bit key |                       |
 |             |                   +-------------+-----------------------+
@@ -181,7 +181,7 @@ Feature support
 |             |                   +-------------+-----------------------+
 |             |                   | 256-bit key |                       |
 |             +-------------------+-------------+-----------------------+
-|             | Original mbed TLS | 128-bit key |                       |
+|             | Original Mbed TLS | 128-bit key |                       |
 |             |                   +-------------+-----------------------+
 |             |                   | 192-bit key |                       |
 |             |                   +-------------+-----------------------+
@@ -195,7 +195,7 @@ Feature support
 |             |                   +-------------+-----------------------+
 |             |                   | 256-bit key |                       |
 |             +-------------------+-------------+-----------------------+
-|             | Original mbed TLS | 128-bit key |                       |
+|             | Original Mbed TLS | 128-bit key |                       |
 |             |                   +-------------+-----------------------+
 |             |                   | 192-bit key |                       |
 |             |                   +-------------+-----------------------+
@@ -231,7 +231,7 @@ CMAC can be enabled by setting the :option:`CONFIG_MBEDTLS_CMAC_C` Kconfig varia
 |              |                             |                                                                    |
 |              |                             | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_CMAC_C`          |
 |              |                             |                                                                    |
-|              |                             | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CMAC_C`  |
+|              |                             | Original Mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CMAC_C`  |
 +--------------+-----------------------------+--------------------------------------------------------------------+
 
 .. note::
@@ -252,7 +252,7 @@ Feature support
 |           |                   +-------------+
 |           |                   | 256-bit key |
 |           +-------------------+-------------+
-|           | Original mbed TLS | 128-bit key |
+|           | Original Mbed TLS | 128-bit key |
 |           |                   +-------------+
 |           |                   | 192-bit key |
 |           |                   +-------------+
@@ -276,7 +276,7 @@ AEAD cipher mode support can be enabled by setting one or more of the following 
 +==============+=========================================+=========================================+
 | AES CCM/CCM* | :option:`CONFIG_MBEDTLS_CCM_C`          |                                         |
 +--------------+-----------------------------------------+-----------------------------------------+
-| AES GCM      | :option:`CONFIG_MBEDTLS_GCM_C`          | Original mbed TLS, or nrf_oberon,       |
+| AES GCM      | :option:`CONFIG_MBEDTLS_GCM_C`          | Original Mbed TLS, or nrf_oberon,       |
 |              |                                         | or cc312                                |
 +--------------+-----------------------------------------+-----------------------------------------+
 | ChaCha20     | :option:`CONFIG_MBEDTLS_CHACHA20_C`     |                                         |
@@ -309,7 +309,7 @@ AES CCM/CCM* can be enabled by setting the :option:`CONFIG_MBEDTLS_CCM_C` Kconfi
 |              |                 |                                                                 |
 |              |                 | nrf_oberon: :option:`CONFIG_OBERON_MBEDTLS_CCM_C`               |
 |              |                 |                                                                 |
-|              |                 | Original mbed TLS: :option:`CONFIG_VANILLA_MBEDTLS_CCM_C`       |
+|              |                 | Original Mbed TLS: :option:`CONFIG_VANILLA_MBEDTLS_CCM_C`       |
 +--------------+-----------------+-----------------------------------------------------------------+
 
 .. note::
@@ -326,7 +326,7 @@ AES GCM can be enabled by setting the :option:`CONFIG_MBEDTLS_GCM_C` Kconfig var
 +--------------+-----------------------------------+--------------------------------------+
 | AEAD cipher  | Configurations                    | Note                                 |
 +==============+===================================+======================================+
-| AES GCM      | :option:`CONFIG_MBEDTLS_GCM_C`    | Original mbed TLS or nrf_oberon only |
+| AES GCM      | :option:`CONFIG_MBEDTLS_GCM_C`    | Original Mbed TLS or nrf_oberon only |
 +--------------+-----------------------------------+--------------------------------------+
 
 .. note::
@@ -344,7 +344,7 @@ ChaCha20 support can be enabled by setting the :option:`CONFIG_MBEDTLS_CHACHA20_
 |              |                 |                                                                          |
 |              |                 | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_CHACHA20_C`            |
 |              |                 |                                                                          |
-|              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHA20_C`    |
+|              |                 | Original Mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHA20_C`    |
 +--------------+-----------------+--------------------------------------------------------------------------+
 
 .. note::
@@ -363,7 +363,7 @@ Poly1305 can be enabled by setting the :option:`CONFIG_MBEDTLS_POLY1305_C` Kconf
 |              |                 |                                                                       |
 |              |                 | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_POLY1305_C`         |
 |              |                 |                                                                       |
-|              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_POLY1305_C` |
+|              |                 | Original Mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_POLY1305_C` |
 +--------------+-----------------+-----------------------------------------------------------------------+
 
 .. note::
@@ -383,7 +383,7 @@ ChaCha-Poly can be enabled by setting the :option:`CONFIG_MBEDTLS_CHACHAPOLY_C` 
 |              |                 |                                                                          |
 |              |                 | nrf_oberon: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C`         |
 |              |                 |                                                                          |
-|              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C`  |	
+|              |                 | Original Mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_CHACHAPOLY_C`  |	
 +--------------+-----------------+--------------------------------------------------------------------------+
 
 .. note::
@@ -404,7 +404,7 @@ Feature support
 |              |                   +-------------+----------------------------------------------------------------------+
 |              |                   | 256-bit key |                                                                      |
 |              +-------------------+-------------+----------------------------------------------------------------------+
-|              | Original mbed TLS | 128-bit key |                                                                      |
+|              | Original Mbed TLS | 128-bit key |                                                                      |
 |              |                   +-------------+----------------------------------------------------------------------+
 |              |                   | 192-bit key |                                                                      |
 |              |                   +-------------+----------------------------------------------------------------------+
@@ -418,7 +418,7 @@ Feature support
 |              |                   +-------------+----------------------------------------------------------------------+
 |              |                   | 256-bit key |                                                                      |
 |              +-------------------+-------------+----------------------------------------------------------------------+
-|              | Original mbed TLS | 128-bit key |                                                                      |
+|              | Original Mbed TLS | 128-bit key |                                                                      |
 |              |                   +-------------+----------------------------------------------------------------------+
 |              |                   | 192-bit key |                                                                      |
 |              |                   +-------------+----------------------------------------------------------------------+
@@ -428,20 +428,20 @@ Feature support
 |              +-------------------+-------------+----------------------------------------------------------------------+
 |              | nrf_oberon        | 256-bit key |                                                                      |
 |              +-------------------+-------------+----------------------------------------------------------------------+
-|              | Original mbed TLS | 256-bit key |                                                                      |
+|              | Original Mbed TLS | 256-bit key |                                                                      |
 +--------------+-------------------+-------------+----------------------------------------------------------------------+
 | Poly1305     | cc3xx             | 256-bit key |                                                                      |
 |              +-------------------+-------------+----------------------------------------------------------------------+
 |              | nrf_oberon        | 256-bit key |                                                                      |
 |              +-------------------+-------------+----------------------------------------------------------------------+
-|              | Original mbed TLS | 256-bit key |                                                                      |
+|              | Original Mbed TLS | 256-bit key |                                                                      |
 +--------------+-------------------+-------------+----------------------------------------------------------------------+
 | ChaCha-Poly  | cc3xx             | 256-bit key | The ChaCha-Poly implementation in :ref:`nrf_security_backends_cc3xx` |
 |              |                   |             | does not support incremental operations.                             |
 |              +-------------------+-------------+----------------------------------------------------------------------+
 |              | nrf_oberon        | 256-bit key |                                                                      |
 |              +-------------------+-------------+----------------------------------------------------------------------+
-|              | Original mbed TLS | 256-bit key |                                                                      |
+|              | Original Mbed TLS | 256-bit key |                                                                      |
 +--------------+-------------------+-------------+----------------------------------------------------------------------+
 
 DHM configurations
@@ -471,7 +471,7 @@ DHM can be enabled by setting the :option:`CONFIG_MBEDTLS_DHM_C` Kconfig variabl
 +==============+==============+==============================================================+
 | DHM          | Glue         | cc3xx: :option:`CONFIG_CC3XX_MBEDTLS_DHM_C`                  |
 |              |              |                                                              |
-|              |              | Original mbed TLS: :option:`CONFIG_VANILLA_MBEDTLS_DHM_C`    |
+|              |              | Original Mbed TLS: :option:`CONFIG_VANILLA_MBEDTLS_DHM_C`    |
 +--------------+--------------+--------------------------------------------------------------+
 
 Feature support
@@ -484,7 +484,7 @@ Feature support
 |           +-------------------+----------------------+-----------------------+
 |           | nrf_oberon        | N/A                  | Backend not supported |
 |           +-------------------+----------------------+-----------------------+
-|           | Original mbed TLS | No limitation        |                       |
+|           | Original Mbed TLS | No limitation        |                       |
 +-----------+-------------------+----------------------+-----------------------+
 
 ECC configurations
@@ -513,7 +513,7 @@ ECC core support can be enabled by setting the :option:`CONFIG_MBEDTLS_ECP_C` Kc
 |              |              |                                                                    |
 |              |              | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_ECP_C`           |
 |              |              |                                                                    |
-|              |              | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_ECP_C`   |
+|              |              | Original Mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_ECP_C`   |
 +--------------+--------------+--------------------------------------------------------------------+
 
 .. note::
@@ -549,7 +549,7 @@ Feature support
 |           |                   +-------------+------------+
 |           |                   | Curve25519  | Curve25519 |
 |           +-------------------+-------------+------------+
-|           | Original mbed TLS | NIST        | secp192r1  |
+|           | Original Mbed TLS | NIST        | secp192r1  |
 |           |                   |             +------------+
 |           |                   |             | secp224r1  |
 |           |                   |             +------------+
@@ -620,7 +620,7 @@ Feature support
 |           |                   +-------------+------------+
 |           |                   | Curve25519  | Curve25519 |
 |           +-------------------+-------------+------------+
-|           | Original mbed TLS | NIST        | secp192r1  |
+|           | Original Mbed TLS | NIST        | secp192r1  |
 |           |                   |             +------------+
 |           |                   |             | secp224r1  |
 |           |                   |             +------------+
@@ -691,7 +691,7 @@ Feature support
 |           |                   +-------------+------------+
 |           |                   | Curve25519  | Curve25519 |
 |           +-------------------+-------------+------------+
-|           | Original mbed TLS | NIST        | secp192r1  |
+|           | Original Mbed TLS | NIST        | secp192r1  |
 |           |                   |             +------------+
 |           |                   |             | secp224r1  |
 |           |                   |             +------------+
@@ -740,7 +740,7 @@ Feature support
 |           +-------------------+-------------+------------+
 |           | nrf_oberon        | NIST        | secp256r1  |
 |           +-------------------+-------------+------------+
-|           | Original mbed TLS | NIST        | secp256r1  |
+|           | Original Mbed TLS | NIST        | secp256r1  |
 +-----------+-------------------+-------------+------------+
 
 
@@ -774,15 +774,15 @@ The following table shows the curves that can be enabled.
 +-----------------------------+-----------------------------------------------------+--------------------------+
 | Koblitz secp256k1           | :option:`CONFIG_MBEDTLS_ECP_DP_SECP256K1_ENABLED`   |                          |
 +-----------------------------+-----------------------------------------------------+--------------------------+
-| Brainpool bp256r1           | :option:`CONFIG_MBEDTLS_ECP_DP_BP256R1_ENABLED`     | Original mbed TLS only   |
+| Brainpool bp256r1           | :option:`CONFIG_MBEDTLS_ECP_DP_BP256R1_ENABLED`     | Original Mbed TLS only   |
 +-----------------------------+-----------------------------------------------------+--------------------------+
-| Brainpool bp384r1           | :option:`CONFIG_MBEDTLS_ECP_DP_BP384R1_ENABLED`     | Original mbed TLS only   |
+| Brainpool bp384r1           | :option:`CONFIG_MBEDTLS_ECP_DP_BP384R1_ENABLED`     | Original Mbed TLS only   |
 +-----------------------------+-----------------------------------------------------+--------------------------+
-| Brainpool bp512r1           | :option:`CONFIG_MBEDTLS_ECP_DP_BP512R1_ENABLED`     | Original mbed TLS only   |
+| Brainpool bp512r1           | :option:`CONFIG_MBEDTLS_ECP_DP_BP512R1_ENABLED`     | Original Mbed TLS only   |
 +-----------------------------+-----------------------------------------------------+--------------------------+
 | Curve25519                  | :option:`CONFIG_MBEDTLS_ECP_DP_CURVE25519_ENABLED`  |                          |
 +-----------------------------+-----------------------------------------------------+--------------------------+
-| Curve448                    | :option:`CONFIG_MBEDTLS_ECP_DP_CURVE448_ENABLED`    | Original mbed TLS only   |
+| Curve448                    | :option:`CONFIG_MBEDTLS_ECP_DP_CURVE448_ENABLED`    | Original Mbed TLS only   |
 +-----------------------------+-----------------------------------------------------+--------------------------+
 
 .. note::
@@ -819,7 +819,7 @@ RSA support can be enabled by setting the :option:`CONFIG_MBEDTLS_RSA_C` Kconfig
 +==============+=================+====================================================================+
 | RSA          | Choice          | cc3xx: :option:`CONFIG_CHOICE_CC3XX_MBEDTLS_RSA_C`                 |
 |              |                 |                                                                    |
-|              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_RSA_C`   |
+|              |                 | Original Mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_RSA_C`   |
 +--------------+-----------------+--------------------------------------------------------------------+
 
 .. note::
@@ -835,7 +835,7 @@ Feature support
 |           +-------------------+----------------------+-----------------------+
 |           | nrf_oberon        | N/A                  | Backend not supported |
 |           +-------------------+----------------------+-----------------------+
-|           | Original mbed TLS | No limitation        |                       |
+|           | Original Mbed TLS | No limitation        |                       |
 +-----------+-------------------+----------------------+-----------------------+
 
 Secure Hash configurations
@@ -875,7 +875,7 @@ SHA-1 support can be enabled by setting the :option:`CONFIG_MBEDTLS_SHA1_C` Kcon
 |              |                 |                                                                    |
 |              |                 | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_SHA1_C`          |
 |              |                 |                                                                    |
-|              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_SHA1_C`  |
+|              |                 | Original Mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_SHA1_C`  |
 +--------------+-----------------+--------------------------------------------------------------------+
 
 .. note::
@@ -893,7 +893,7 @@ SHA-256 support can be enabled by setting the :option:`CONFIG_MBEDTLS_SHA256_C` 
 |              |                 |                                                                       |
 |              |                 | nrf_oberon: :option:`CONFIG_CHOICE_OBERON_MBEDTLS_SHA256_C`           |
 |              |                 |                                                                       |
-|              |                 | Original mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_SHA256_C`   |
+|              |                 | Original Mbed TLS: :option:`CONFIG_CHOICE_VANILLA_MBEDTLS_SHA256_C`   |
 +--------------+-----------------+-----------------------------------------------------------------------+
 
 .. note::
@@ -923,31 +923,31 @@ Feature support
 |           +--------------------+----------------------------------------+
 |           | nrf_oberon         |                                        |
 |           +--------------------+----------------------------------------+
-|           | Original mbed TLS  |                                        |
+|           | Original Mbed TLS  |                                        |
 +-----------+--------------------+----------------------------------------+
 | SHA-224   | cc3xx              | SHA-224 is enabled by enabling SHA-256 |
 |           +--------------------+                                        |
 |           | nrf_oberon         |                                        |
 |           +--------------------+                                        |
-|           | Original mbed TLS  |                                        |
+|           | Original Mbed TLS  |                                        |
 +-----------+--------------------+----------------------------------------+
 | SHA-256   | cc3xx              |                                        |
 |           +--------------------+                                        |
 |           | nrf_oberon         |                                        |
 |           +--------------------+                                        |
-|           | Original mbed TLS  |                                        |
+|           | Original Mbed TLS  |                                        |
 +-----------+--------------------+----------------------------------------+
 | SHA-384   | cc3xx              | SHA-384 is enabled by enabling SHA-512 |
 |           +--------------------+                                        |
 |           | nrf_oberon         |                                        |
 |           +--------------------+                                        |
-|           | Original mbed TLS  |                                        |
+|           | Original Mbed TLS  |                                        |
 +-----------+--------------------+----------------------------------------+
 | SHA-512   | cc3xx              |                                        |
 |           +--------------------+                                        |
 |           | nrf_oberon         |                                        |
 |           +--------------------+                                        |
-|           | Original mbed TLS  |                                        |
+|           | Original Mbed TLS  |                                        |
 +-----------+--------------------+----------------------------------------+
 
 Backend platform-specific configurations

@@ -16,7 +16,7 @@ New version of the library with an added feature:
 
 * Added HMAC_DRBG APIs in :file:`nrf_cc3xx_platform_hmac_drbg.h`
 
-Library built against mbed TLS version 2.26.0.
+Library built against Mbed TLS version 2.26.0.
 
 Added
 =====
@@ -101,7 +101,7 @@ New version of the library with bug fixes and added features:
 * Modified CTR_DRBG APIs to use internal context when the context argument is NULL.
 * Added new API for storing keys in the KMU.
 
-Library built against mbed TLS version 2.25.0.
+Library built against Mbed TLS version 2.25.0.
 
 Added
 =====
@@ -185,7 +185,7 @@ New version of the library with improvements and bug fixes:
 * Fixed issues in the entropy module.
 * Added APIs for key derivation in nrf_cc3xx_platform_kmu.h
 
-Library built against mbed TLS version 2.24.0.
+Library built against Mbed TLS version 2.24.0.
 
 Added
 =====
@@ -266,7 +266,7 @@ New version of the library with a bug fix:
 
 * Fixed an issue with mutex slab allocation in Zephyr RTOS platform file.
 
-Library built against mbed TLS version 2.24.0.
+Library built against Mbed TLS version 2.24.0.
 
 Added
 =====
@@ -343,8 +343,8 @@ Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and n
 nrf_cc3xx_platform - 0.9.6
 **************************
 
-New version of the library with mbed TLS sources ctr_drbg.c and entropy.c built in
-Library built against mbed TLS version 2.24.0.
+New version of the library with Mbed TLS sources ctr_drbg.c and entropy.c built in
+Library built against Mbed TLS version 2.24.0.
 
 Added
 =====
@@ -582,7 +582,7 @@ Added experimental support for devices with Arm CryptoCell CC312 (nRF5340).
 
 Changed name of configurations from CC310 to CC3XX. This is reflected in the header file and APIs as well, where nrf_cc310_xxxx is renamed to nrf_cc3xx_xxxx.
 
-Added new version of libraries nrf_cc310_platform/nrf_cc312_platform built with mbed TLS version 2.23.0.
+Added new version of libraries nrf_cc310_platform/nrf_cc312_platform built with Mbed TLS version 2.23.0.
 
 Added APIs for storing keys in the the KMU peripheral (nRF9160, nRF5340).
 See :file:`include/nrf_cc3xx_platform_kmu.h`.

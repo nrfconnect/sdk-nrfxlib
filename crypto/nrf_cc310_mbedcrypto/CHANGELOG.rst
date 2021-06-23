@@ -16,7 +16,7 @@ New version of the runtime library with a bugfix:
 
 * Fixed configuration issue that only selected 128-bit keys for CTR_DRBG
 
-Library built against mbed TLS version 2.26.0.
+Library built against Mbed TLS version 2.26.0.
 
 This version is dependent on the nrf_cc310_platform or nrf_cc312_platform library for low-level initialization of the system and proper RTOS integration.
 
@@ -99,7 +99,7 @@ New version of the runtime library with new features:
 
 * Added support for verifying the RSA key length is supported on nRF52840 and nRF9160
 
-Library built against mbed TLS version 2.25.0.
+Library built against Mbed TLS version 2.25.0.
 
 This version is dependent on the nrf_cc310_platform or nrf_cc312_platform library for low-level initialization of the system and proper RTOS integration.
 
@@ -183,7 +183,7 @@ New version of the runtime library with new features:
 * Added support for verifying that the input comes from a DMA addressable address for cryptographic functionality that requires this for nRF52840 and nRF9160
   Affected algorithms: AES, ChaCha Poly and SHA.
 
-Library built against mbed TLS version 2.24.0.
+Library built against Mbed TLS version 2.24.0.
 
 This version is dependent on the nrf_cc310_platform or nrf_cc312_platform library for low-level initialization of the system and proper RTOS integration.
 
@@ -268,7 +268,7 @@ New version of the runtime library with bug fixes:
 * Fixed an issue with calculating the correct salt length for certain combinations of RSA key and digest sizes.
 * Adding missing function `mbedtls_ecp_write_key`.
 
-Library built against mbed TLS version 2.24.0.
+Library built against Mbed TLS version 2.24.0.
 
 This version is dependent on the nrf_cc310_platform or nrf_cc312_platform library for low-level initialization of the system and proper RTOS integration.
 
@@ -348,7 +348,7 @@ nrf_cc3xx_mbedcrypto - 0.9.6
 ****************************
 
 New version of the runtime library fixing a regression in derived keys for ECB, CCM, and GCM
-Library built against mbed TLS version 2.24.0.
+Library built against Mbed TLS version 2.24.0.
 
 This version is dependent on the nrf_cc310_platform or nrf_cc312_platform library for low-level initialization of the system and proper RTOS integration.
 
@@ -598,7 +598,7 @@ See :file:`include/mbedtls/cc3xx_kmu.h`.
 Added APIs for key derivation from KDR key loaded into CryptoCell on boot (nRF52840, nRF9160).
 See :file:`include/mbedtls/cc3xx_kmu.h`.
 
-Added new version of libraries nrf_cc310_mbedcrypto/nrf_cc312_mbedcrypto built with mbed TLS version 2.23.0.
+Added new version of libraries nrf_cc310_mbedcrypto/nrf_cc312_mbedcrypto built with Mbed TLS version 2.23.0.
 
 This version also adds experimental support for interrupts in selected versions of the library  (the libraries that do not support interrupts can be found in the ``no-interrupts`` folders).
 

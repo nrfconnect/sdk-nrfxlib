@@ -93,12 +93,12 @@ Added the following header files with ocrypto APIs
 * ``include/ocrypto_ecdh_p224.h``
 * ``include/ocrypto_ecdsa_p224.h``
 
-Added the following header files with mbed TLS alternate APIs
+Added the following header files with Mbed TLS alternate APIs
 
 * ``include/mbedtls/chacha20_alt.h``
 * ``include/mbedtls/poly1305_alt.h``
 
-Added library-internal symbols for mbed TLS alternate APIs
+Added library-internal symbols for Mbed TLS alternate APIs
 
 * ECDSA generate key, sign, and verify (secp224r1, secp256r1, curve25519)
 * ECDH generate key, compute shared secret (secp224r1, secp256r1, curve25519)
@@ -177,13 +177,13 @@ Added the following header files with ocrypto APIs
 * ``include/ocrypto_hkdf_sha1.h``
 * ``include/ocrypto_hmac_sha1.h``
 
-Added the following header files with mbed TLS alternate APIs
+Added the following header files with Mbed TLS alternate APIs
 
 * ``include/mbedtls/ecjpake_alt.h``
 * ``include/mbedtls/sha1_alt.h``
 * ``include/mbedtls/sha256_alt.h``
 
-Added library-internal symbols for mbed TLS alternate APIs
+Added library-internal symbols for Mbed TLS alternate APIs
 
 * ECDSA generate key, sign, and verify (secp256r1)
 * ECDH generate key, compute shared secret (secp256r1)

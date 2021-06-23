@@ -7,11 +7,11 @@ API documentation
    :local:
    :depth: 2
 
-API reference for the mbed TLS glue layer.
+API reference for the Mbed TLS glue layer.
 
 .. _nrf_security_api_mbedcrypto_glue:
 
-mbed TLS glue layer
+Mbed TLS glue layer
 *******************
 
 .. doxygengroup:: mbedcrypto_glue

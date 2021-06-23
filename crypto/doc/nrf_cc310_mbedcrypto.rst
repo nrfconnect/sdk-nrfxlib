@@ -11,10 +11,10 @@ nrf_cc3xx_mbedcrypto library
 The nrf_cc3xx_mbedcrypto library is software library to interface with the Arm CryptoCell CC310 hardware accelerator that is available on the nRF52840 SoC and the nRF9160 SiP.
 The library adds hardware support for selected cryptographic algorithms.
 
-Integration with mbed TLS
+Integration with Mbed TLS
 =========================
-The nrf_cc3xx_mbedcrypto library provides low-level integration towards selected versions of mbed TLS deliverables.
-The APIs expressed in this library use the alternative implementation abstraction layer inside mbed TLS for selected modules.
+The nrf_cc3xx_mbedcrypto library provides low-level integration towards selected versions of Mbed TLS deliverables.
+The APIs expressed in this library use the alternative implementation abstraction layer inside Mbed TLS for selected modules.
 
 .. note::
    It is not recommended to link to this library directly. Use the :ref:`nrf_security`.
@@ -26,9 +26,9 @@ Supported cryptographic algorithms
 The following tables show the supported cryptographic algorithms in the Arm CryptoCell CC310 hardware accelerator in nRF52840 and nRF9160, as well as the current state of support in the nrf_cc3xx_mbedcrypto library.
 
 .. note::
-   If `no mbed TLS support` is listed in limitations, it indicates that the hardware supports it, but it is not exposed in an API that works with mbed TLS.
+   If `no Mbed TLS support` is listed in limitations, it indicates that the hardware supports it, but it is not exposed in an API that works with Mbed TLS.
    
-   If `mbedtls_extra only` is listed in limitations, it indicates that an API similar to recent versions of mbed TLS is made available with the library.
+   If `mbedtls_extra only` is listed in limitations, it indicates that an API similar to recent versions of Mbed TLS is made available with the library.
 
 
 AES - Advanced Encryption Standard
@@ -40,9 +40,9 @@ AES - Advanced Encryption Standard
 +-----------------------+-------------------------------+
 | CBC                   | 128-bit                       |
 +-----------------------+-------------------------------+
-| OFB                   | 128-bit, no mbed TLS support  |
+| OFB                   | 128-bit, no Mbed TLS support  |
 +-----------------------+-------------------------------+
-| CFB                   | 128-bit, no mbed TLS support  |
+| CFB                   | 128-bit, no Mbed TLS support  |
 +-----------------------+-------------------------------+
 | CMAC                  | 128-bit                       |
 +-----------------------+-------------------------------+
@@ -105,7 +105,7 @@ Edwards/Montgommery:
 
 Additional items in mbedtls_extra
 ---------------------------------
-The following is a list of features available in mbedtls_extra as non-standard mbed TLS APIs:
+The following is a list of features available in mbedtls_extra as non-standard Mbed TLS APIs:
 
 * AES key wrap functions
 * ChaCha20 and Poly1305
@@ -118,7 +118,7 @@ Using the library
 
 Providing platform specific calloc/free
 ---------------------------------------
-This library facilitates the same type of memory management as regular mbed TLS deliverables.
+This library facilitates the same type of memory management as regular Mbed TLS deliverables.
 This includes using internal calls to calloc/free from the library code when memory is needed.
 
 The following API must be used to change the default `calloc`/`free` function:
