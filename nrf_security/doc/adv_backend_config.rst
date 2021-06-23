@@ -12,7 +12,7 @@ For example, the options available in the advanced configuration section can hel
 
 Actual size reductions depend on the option being adjusted.
 
-Before modifying the default settings, see this `article on reducing mbed TLS memory and storage footprint`_.
+Before modifying the default settings, see this `article on reducing Mbed TLS memory and storage footprint`_.
 
 .. note::
    The settings available in the advanced configuration section are not validated.
@@ -56,7 +56,7 @@ If the option is enabled, AES must perform more calculations, which impacts the 
 Multiple Precision Integers (MPI) / Bignum calculation
 ******************************************************
 
-The :option:`CONFIG_MBEDTLS_MPI_WINDOW_SIZE` Kconfig variable controls the window size used in mbed TLS for MPI calculations.
+The :option:`CONFIG_MBEDTLS_MPI_WINDOW_SIZE` Kconfig variable controls the window size used in Mbed TLS for MPI calculations.
 Reduce this value to reduce memory usage. Note that reducing this this value may have an impact on the performance.
 
 The :option:`CONFIG_MBEDTLS_MPI_MAX_SIZE` Kconfig variable controls the maximum size of MPIs that can be used for calculation.
@@ -126,7 +126,7 @@ For example, on a Cortex-M4, the size of :cpp:func:`mbedtls_sha256_process()` is
 SSL Configurations
 ******************
 
-The :option:`CONFIG_MBEDTLS_SSL_MAX_CONTENT_LEN` Kconfig variable can be used to specify the maximum size for incoming and outgoing mbed TLS I/O buffers.
+The :option:`CONFIG_MBEDTLS_SSL_MAX_CONTENT_LEN` Kconfig variable can be used to specify the maximum size for incoming and outgoing Mbed TLS I/O buffers.
 The default value is 16384 as specified in RFC5246, however if both sides are under your control, this value can safely be reduced under the following conditions:
 
 * Both sides support the max_fragment_length SSL extension, RFC8449.

@@ -7,7 +7,7 @@
 
 .. _`nrfx`: https://github.com/NordicSemiconductor/nrfx/
 
-.. _`Arm mbed TLS project`: https://github.com/ARMmbed/mbedtls
+.. _`Arm Mbed TLS project`: https://github.com/ARMmbed/mbedtls
 
 .. _`TinyCBOR`: https://github.com/zephyrproject-rtos/tinycbor
 
@@ -53,8 +53,8 @@
 .. _`certification policy`: https://zigbeealliance.org/wp-content/uploads/2021/04/07-4842-13-Zigbee-certification-policy.pdf
 .. _`Zigbee Compliant Platforms page`: https://zigbeealliance.org/classic-platform-search/#zcp/?view_197_search=nRF%20Connect%20SDK
 
-.. _`mbed TLS backend`: https://tls.mbed.org/
-.. _`article on reducing mbed TLS memory and storage footprint`: https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint
+.. _`Mbed TLS backend`: https://tls.mbed.org/
+.. _`article on reducing Mbed TLS memory and storage footprint`: https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint
 
 .. _`Beej's Guide to Network Programming`: https://beej.us/guide/bgnet/
 

@@ -32,15 +32,15 @@ Initializing the library
 The library does not require any initialization before the APIs can be used, although some APIs require calling specific initialization functions before use.
 
 
-mbed TLS integration
+Mbed TLS integration
 ====================
-Starting from version 3.0.5, the nrf_oberon library contains a companion library that provides mbed TLS integration for select features.
+Starting from version 3.0.5, the nrf_oberon library contains a companion library that provides Mbed TLS integration for select features.
 This must be used with the :ref:`nrf_security`.
 
 
 Supported features
 ------------------
-The supported features for the mbed TLS companion library are:
+The supported features for the Mbed TLS companion library are:
 
 * AES (all ciphers, all key sizes)
 * AES CCM
