@@ -74,8 +74,6 @@ target_sources(nrf-802154-driver
     src/mac_features/ack_generator/nrf_802154_ack_generator.c
     src/mac_features/ack_generator/nrf_802154_enh_ack_generator.c
     src/mac_features/ack_generator/nrf_802154_imm_ack_generator.c
-    src/platform/temperature/nrf_802154_temperature_none.c
-
 )
 
 if (SL_OPENSOURCE)
