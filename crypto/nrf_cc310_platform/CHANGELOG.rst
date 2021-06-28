@@ -578,17 +578,19 @@ Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and n
 nrf_cc3xx_platform - 0.9.3
 **************************
 
-Added experimental support for devices with Arm CryptoCell CC312 (nRF5340)
+Added experimental support for devices with Arm CryptoCell CC312 (nRF5340).
 
-Changed name of configurations from CC310 to CC3XX. This is reflected in the header file and APIs as well, where nrf_cc310_xxxx is renamed to nrf_cc3xx_xxxx
+Changed name of configurations from CC310 to CC3XX. This is reflected in the header file and APIs as well, where nrf_cc310_xxxx is renamed to nrf_cc3xx_xxxx.
 
-Added new version of libraries nrf_cc310_platform/nrf_cc312_platform built with mbed TLS version 2.23.0
+Added new version of libraries nrf_cc310_platform/nrf_cc312_platform built with mbed TLS version 2.23.0.
 
-Added APIs for storing keys in the the KMU peripheral (nRF9160, nRF5340). Please see include/nrf_cc3xx_platform_kmu.h
+Added APIs for storing keys in the the KMU peripheral (nRF9160, nRF5340).
+See :file:`include/nrf_cc3xx_platform_kmu.h`.
 
-Added APIs for generating CSPRNG using CTR_DRBG. Please see include/nrf_cc3xx_platform_ctr_drbg.h
+Added APIs for generating CSPRNG using CTR_DRBG.
+See :file:`include/nrf_cc3xx_platform_ctr_drbg.h`.
 
-This version also adds experimental support for interrupts in selected versions of the library  (the libraries that do not support interrupts can be found in the ``no-interrupts`` folders).
+This version also adds experimental support for interrupts in selected versions of the library (the libraries that do not support interrupts can be found in the ``no-interrupts`` folders).
 
 Added
 =====
