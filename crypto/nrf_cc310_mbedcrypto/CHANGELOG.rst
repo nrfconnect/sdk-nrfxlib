@@ -914,9 +914,9 @@ nrf_cc310_mbedcrypto - 0.8.0
 
 New experimental version of nrf_cc310_mbedcrypto with changes to platform initialization and general bug fixes.
 
-..warning::
+.. note::
    This version may lead to undefined behavior on some nRF9160 devices.
-   Please use a newer version.
+   Hence, use a newer version.
 
 Added
 =====
