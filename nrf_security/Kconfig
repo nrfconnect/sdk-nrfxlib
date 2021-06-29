@@ -91,6 +91,11 @@ config MBEDTLS_SSL_SRV_C
 	  This setting enables SSL/TLS server functionality.
 	  Corresponds to MBEDTLS_SSL_SRV_C in mbed TLS config file.
 
+config MBEDTLS_KEY_EXCHANGE_SOME_PSK_ENABLED
+	bool
+	depends on MBEDTLS_TLS_LIBRARY
+	default y
+
 menu "mbed TLS memory configuration"
 
 config MBEDTLS_ENABLE_HEAP
