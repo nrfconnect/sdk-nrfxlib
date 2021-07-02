@@ -32,7 +32,6 @@ config BT_CTLR_LLPM
 
 choice BT_LL_CHOICE
 	prompt "Bluetooth Link Layer Selection"
-	default BT_LL_SW_SPLIT if BT_MESH
 	default BT_LL_SOFTDEVICE
 
 config BT_LL_SOFTDEVICE
