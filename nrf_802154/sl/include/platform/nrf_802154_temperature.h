@@ -40,7 +40,6 @@
 #ifndef NRF_802154_TEMPERATURE_H_
 #define NRF_802154_TEMPERATURE_H_
 
-#include <stdbool.h>
 #include <stdint.h>
 
 #ifdef __cplusplus
