@@ -35,7 +35,7 @@ The following code example shows how to send an AT command and receive the respo
    int func(void)
    {
        // Create a socket for AT commands.
-       int fd = nrf_socket(NRF_AF_LTE, 0, NRF_PROTO_AT);
+       int fd = nrf_socket(NRF_AF_LTE, NRF_SOCK_DGRAM, NRF_PROTO_AT);
 
        // Write the AT command.
        nrf_write(fd, "AT+CEREG=2", 10);
