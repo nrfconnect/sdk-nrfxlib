@@ -10,6 +10,17 @@ Changelog
 All notable changes to this project in |NCS| are documented in this file.
 
 
+Master branch
+*************
+
+Changes
+=======
+
+* Fixed the assertion in GPPB table read routine.
+* Fixed deadlock in NCP fragmentation logic.
+* Updated the ZBOSS stack to version ``3.6.0.3+3.0.1``.
+  For detailed information, see `ZBOSS stack release notes`_ for the |NCS|'s Master branch.
+
 nRF Connect SDK v1.6.0
 **********************
 
