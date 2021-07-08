@@ -61,3 +61,5 @@
 .. _`NMEA`: https://www.gpsworld.com/what-exactly-is-gps-nmea-data/
 
 .. _`NMEA report sample`: http://aprs.gids.nl/nmea/#gsa
+
+.. _`Bluetooth Core Specification`: https://www.bluetooth.com/specifications/specs/core-specification/
