@@ -77,7 +77,7 @@ extern "C" {
  */
 
 /** @brief Maximum number of bytes required per advertiser. */
-#define SDC_MEM_DEFAULT_ADV_SIZE 840
+#define SDC_MEM_DEFAULT_ADV_SIZE 848
 
 /** @brief Maximum number of bytes required per master link for the default buffer configuration. */
 #define SDC_MEM_DEFAULT_MASTER_LINK_SIZE 830
@@ -180,10 +180,14 @@ typedef struct
 /** @brief Buffer configuration. */
 typedef struct
 {
-    uint8_t tx_packet_size;   /**< Link Layer TX packet size. Valid range: 27-251. */
-    uint8_t rx_packet_size;   /**< Link Layer RX packet size. Valid range: 27-251. */
-    uint8_t tx_packet_count;  /**< Link Layer TX packet count per link. */
-    uint8_t rx_packet_count;  /**< Link Layer RX packet count per link. */
+    uint8_t tx_packet_size;   /**< Link Layer TX packet size. Valid range: 27-251.
+                                   Default: @ref SDC_DEFAULT_TX_PACKET_SIZE. */
+    uint8_t rx_packet_size;   /**< Link Layer RX packet size. Valid range: 27-251.
+                                   Default: @ref SDC_DEFAULT_RX_PACKET_SIZE. */
+    uint8_t tx_packet_count;  /**< Link Layer TX packet count per link.
+                                   Default: @ref SDC_DEFAULT_TX_PACKET_COUNT. */
+    uint8_t rx_packet_count;  /**< Link Layer RX packet count per link.
+                                   Default: @ref SDC_DEFAULT_RX_PACKET_COUNT. */
 } sdc_cfg_buffer_cfg_t;
 
 
@@ -201,8 +205,9 @@ typedef union
                                                Default: @ref SDC_DEFAULT_MASTER_COUNT. */
     sdc_cfg_role_count_t   slave_count;   /**< Max number of concurrent slave connections.
                                                Default: @ref SDC_DEFAULT_SLAVE_COUNT. */
-    sdc_cfg_buffer_cfg_t   buffer_cfg;    /**< Max number of concurrent slave connections.
-                                               Default: @ref SDC_DEFAULT_SLAVE_COUNT. */
+    sdc_cfg_buffer_cfg_t   buffer_cfg;    /**< Configures the number and size of the
+                                               data buffers available per link.
+                                               Default: See @ref sdc_cfg_buffer_cfg_t. */
     sdc_cfg_event_length_t event_length;  /**< Max connection event length.
                                                Default: @ref SDC_DEFAULT_EVENT_LENGTH_US. */
     sdc_cfg_role_count_t   adv_count;     /**< Max number of concurrent advertisers.

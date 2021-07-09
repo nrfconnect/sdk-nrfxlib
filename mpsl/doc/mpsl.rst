@@ -23,6 +23,10 @@ The following peripherals are owned by MPSL and must not be accessed directly by
  * PPI channel 19, 30, 31, for the nRF52 Series
  * DPPI channels 0 - 2, for the nRF53 Series
 
+.. note:: These peripherals can be used freely when MPSL is not initialized.
+
+.. note:: Additional peripheral requirements may be set by protocol stacks in use.
+
 Limited access to these peripherals is provided through the MPSL Timeslot module and through other MPSL APIs.
 
 Thread and interrupt safety

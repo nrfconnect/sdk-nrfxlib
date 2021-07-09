@@ -102,18 +102,16 @@ nRF21540 usage
 **************
 
 In the nRF21540 implementation, the PDN pin is used to power down the FEM internal circuits.
-The FEM can be powered down on application request, configuring the activation timer event, similarly to PA and LNA pins.
+The FEM can be powered down on explicit application request.
 The FEM is powered back up automatically before PA or LNA are activated.
 
 See below for an example of controlling LNA and PDN during Rx operation, using the following parameters:
 
 * RX ramp-up time - 40 us
-* LNA settle time - 11 us
+* LNA settle time - 13 us
 * PDN settle time - 18 us
-* TRX hold time - 3 us
 * LNA deactivation event - ``rx_end``
-* PDN deactivation event - ``rx_end``
-* PDN activation timer - ``TIMER0``
+* PDN deactivation event - ``software``
 * LNA activation timer - ``TIMER1``
 
 The *RX ramp-up time* is the total time scheduled by the application.
@@ -121,10 +119,9 @@ The *RX ramp-up time* is the total time scheduled by the application.
 See below for the steps needed to properly configure LNA and PDN in this example:
 
 * The application configures the power-down by passing ``rx_end`` as the activation event.
-* The FEM module connects the activation event with the ``TIMER0`` start task through PPI and sets TRX hold time to 3 us.
 * The application configures LNA to be activated by the timer event, with the start time set to 0 us and end time set to 40 us.
 * The application provides the ``rx_end`` event as the LNA deactivation event.
-* The FEM module reads the scheduled time and sets ``TIMER1`` compare channels to 29 us (40-11) and 11 us (29-18).
+* The FEM module reads the scheduled time and sets ``TIMER1`` compare channels to 27 us (40-13) and 9 us (27-18).
 * The application starts Rx operation.
 * The application starts ``TIMER1``.
 

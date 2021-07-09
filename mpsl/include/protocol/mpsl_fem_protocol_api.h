@@ -84,6 +84,22 @@ typedef struct
     uint8_t                    ppi_ch_id;
 } mpsl_fem_event_t;
 
+/** @brief Disable Front End Module.
+ *
+ * Some Front End Module devices can be explicitly disabled after PA and LNA activities are
+ * finished to preserve power.
+ *
+ * This function is intended to disable Front End Module shortly after radio operations are
+ * finished and the protocol does not expect more radio activities in short future, or passes
+ * radio control to other protocols in the system.
+ *
+ * Front End Module disabling process is synchronous and immediate.
+ *
+ * @retval 0
+ * @retval -NRF_EPERM    FEM is configured to enable PA or LNA.
+ */
+int32_t mpsl_fem_disable(void);
+
 /** @brief Sets up PA using the provided events for the upcoming radio transmission.
  *
  * Multiple configurations can be provided by repeating calls to this function
@@ -266,6 +282,8 @@ void mpsl_fem_cleanup(void);
 void mpsl_fem_pa_is_configured(int8_t * const p_gain);
 
 /** @brief Prepares the Front End Module to switch to the Power Down state.
+ *
+ *  @deprecated This function is deprecated. Use @ref mpsl_fem_disable instead.
  *
  *  This function makes sure the Front End Module shall be switched off in the
  *  appropriate time, using the hardware timer and its compare channel.

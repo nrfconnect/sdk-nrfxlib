@@ -29,6 +29,7 @@ This library provides the following key features:
    :caption: Subpages:
 
    doc/mpsl
+   doc/clock
    doc/timeslot
    doc/radio_notification
    doc/tx_power_control
