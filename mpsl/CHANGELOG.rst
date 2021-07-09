@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Master branch
+*************
+
+Changes
+=======
+
+* The :file:`mpsl_fem_protocol_api.h` was moved from the directory :file:`include` to :file:`include/protocol` (KRKNWK-10507).
+
 nRF Connect SDK v1.6.0
 **********************
 
@@ -20,6 +28,7 @@ Added
   The protocol stacks' responsibility is to check the flag value using :c:func:`mpsl_fem_device_config_254_shall_apply_get`
   and apply the configuration when the flag value is true.
 * Added support for the nRF5340 device, which was previously only supported for evaluation purposes. (DRGN-8639)
+* Added a function to FEM protocol API to disable FEM when no radio activity is expected. This function is intended to reduce power consumption. (KRKNWK-8842)
 
 Changes
 =======
