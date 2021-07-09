@@ -101,10 +101,10 @@ int32_t sdc_soc_flash_page_erase_async(uint32_t addr, sdc_soc_flash_callback_t o
  *
  * The SoftDevice Controller will use NRF_ECB encrypt the block. The encryption type is 128-bit AES.
  *
- * @note:
- *    - The application may set the SEVONPEND bit in the SCR to 1 to make the SoftDevice Controller sleep
- *      while the ECB is running. The SEVONPEND bit should only be cleared from the current execution
- *      context or a lower priority execution context.
+ * @note The application may set the SEVONPEND bit in the SCR to 1 to make the SoftDevice Controller sleep
+ *       while the ECB is running. The SEVONPEND bit must not be cleared (set to 0) from a function
+ *       running in an interrupt priority level higher (lower numerical value) than the execution priority
+ *       level this function was called from.
  *
  * @param[in]  key        Encryption key
  * @param[in]  cleartext  Cleartext data

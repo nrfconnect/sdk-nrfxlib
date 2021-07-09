@@ -43,10 +43,10 @@ Proprietary feature support:
 | QoS Conn Event Reports   | X               | X            | X         |
 +--------------------------+-----------------+--------------+-----------+
 
-
 .. note::
+   Please note the following when using the library for the nRF5340:
 
-   Low Latency Packet mode is not supported on the nRF53 Series.
+   * Low Latency Packet mode is not supported on the nRF53 Series.
 
 .. toctree::
    :maxdepth: 2
