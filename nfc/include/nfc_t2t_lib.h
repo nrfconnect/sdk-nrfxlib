@@ -16,7 +16,7 @@
  */
 
 #include <string.h>
-#include <zephyr/types.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
