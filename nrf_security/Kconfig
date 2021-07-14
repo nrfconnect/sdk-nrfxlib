@@ -106,7 +106,6 @@ config MBEDTLS_ENABLE_HEAP
 config MBEDTLS_HEAP_SIZE
 	int "Heap size for mbed TLS"
 	default 15360 if OPENTHREAD_NRF_SECURITY
-	default 65536 if BUILD_WITH_TFM
 	default 512
 	depends on MBEDTLS_ENABLE_HEAP
 	help

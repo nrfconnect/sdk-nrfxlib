@@ -59,6 +59,20 @@ if(CONFIG_BUILD_WITH_TFM)
       -DMCUBOOT_MBEDCRYPTO_CONFIG_PATH=$<TARGET_PROPERTY:nrf_security_target,MBEDTLS_CFG_FILE>
   )
 
+  if(CONFIG_MBEDTLS_ENABLE_HEAP)
+    set_property(TARGET nrf_security_target
+      PROPERTY MBEDTLS_HEAP_SIZE
+        ${CONFIG_MBEDTLS_HEAP_SIZE}
+    )
+
+    # The ENGINE_BUF_SIZE holds the dynamic allocation buffer for TF-M, which is the equivalent
+    # of dynamic allocation in MBEDTLS
+    set_property(TARGET zephyr_property_target
+      APPEND PROPERTY TFM_CMAKE_OPTIONS
+        -DCRYPTO_ENGINE_BUF_SIZE=$<TARGET_PROPERTY:nrf_security_target,MBEDTLS_HEAP_SIZE>
+    )
+  endif()
+
   # Set the path used by TF-M to build mbedcrypto in the secure image
   # The CMakelists.txt in this folder is called when building mbed TLS
   set_property(TARGET zephyr_property_target
