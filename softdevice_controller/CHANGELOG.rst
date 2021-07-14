@@ -9,6 +9,16 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF Connect SDK v1.6.1
+**********************
+
+Bug fixes
+=========
+
+* Fixed an issue on the nRF53 Series where an assert could occur while scanning using legacy commands (DRGN-15852).
+* Fixed an issue on the nRF53 Series where the scanner could generate corrupted advertising reports (DRGN-15852).
+
+
 nRF Connect SDK v1.6.0
 **********************
 
