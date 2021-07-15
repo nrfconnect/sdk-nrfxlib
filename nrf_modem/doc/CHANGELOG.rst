@@ -9,6 +9,16 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.2.2
+***************
+
+* Fixed a memory leak in :c:func:`nrf_recv()` when reading many packets quickly.
+* Fixed a bug in :c:func:`nrf_getaddrinfo()` where the function was not returning the proper protocol suggested by the hints.
+* Fixed a bug in :c:func:`nrf_getaddrinfo()` where specifying ``NRF_AF_UNSPEC`` would incorrectly return an error.
+* Fixed a bug in :c:func:`nrf_setsockopt()` where the option ``NRF_SO_HOSTNAME`` would incorrectly return an error when the hostname was NULL and optlen was 0.
+* Fixed a bug in :c:func:`nrf_modem_gnss_init()` where calling the function would lead to field accuracy speed to always be 0 and to the new GNSS events not working.
+  This issue would occur when GNSS is not enabled in %XSYSTEMMODE and modem functional mode is not online.
+
 nrf_modem 1.2.1
 ***************
 
