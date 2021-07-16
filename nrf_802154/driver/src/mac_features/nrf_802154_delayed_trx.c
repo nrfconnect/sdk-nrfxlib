@@ -104,7 +104,7 @@ typedef struct
  */
 typedef struct
 {
-    const uint8_t              * p_data;  ///< Pointer to a buffer containing PHR and PSDU of the frame requested to be transmitted.
+    uint8_t                    * p_data;  ///< Pointer to a buffer containing PHR and PSDU of the frame requested to be transmitted.
     nrf_802154_transmit_params_t params;  ///< Transmission parameters.
     uint8_t                      channel; ///< Channel number on which transmission should be performed.
 } dly_tx_data_t;
@@ -702,11 +702,10 @@ void nrf_802154_delayed_trx_init(void)
     }
 }
 
-bool nrf_802154_delayed_trx_transmit(const uint8_t                * p_data,
-                                     nrf_802154_transmit_params_t * p_params,
-                                     uint32_t                       t0,
-                                     uint32_t                       dt,
-                                     uint8_t                        channel)
+bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p_data,
+                                     uint32_t                                  t0,
+                                     uint32_t                                  dt,
+                                     const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
     dly_op_data_t * p_dly_tx_data = available_dly_tx_slot_get();
     bool            result        = false;
@@ -716,19 +715,19 @@ bool nrf_802154_delayed_trx_transmit(const uint8_t                * p_data,
         dt -= TX_SETUP_TIME;
         dt -= TX_RAMP_UP_TIME;
 
-        if (p_params->cca)
+        if (p_metadata->cca)
         {
             dt -= nrf_802154_cca_before_tx_duration_get();
         }
 
         p_dly_tx_data->op = RSCH_DLY_TS_OP_DTX;
 
-        p_dly_tx_data->tx.p_data                   = p_data;
-        p_dly_tx_data->tx.params.cca               = p_params->cca;
-        p_dly_tx_data->tx.params.immediate         = p_params->immediate;
-        p_dly_tx_data->tx.params.is_retransmission = p_params->is_retransmission;
-        p_dly_tx_data->tx.channel                  = channel;
-        p_dly_tx_data->id                          = NRF_802154_RESERVED_DTX_ID;
+        p_dly_tx_data->tx.p_data             = p_data;
+        p_dly_tx_data->tx.params.frame_props = p_metadata->frame_props;
+        p_dly_tx_data->tx.params.cca         = p_metadata->cca;
+        p_dly_tx_data->tx.params.immediate   = true;
+        p_dly_tx_data->tx.channel            = p_metadata->channel;
+        p_dly_tx_data->id                    = NRF_802154_RESERVED_DTX_ID;
 
         rsch_dly_ts_param_t dly_ts_param =
         {
@@ -864,14 +863,20 @@ bool nrf_802154_delayed_trx_abort(nrf_802154_term_t term_lvl, req_originator_t r
 
 void nrf_802154_delayed_trx_rx_started_hook(const uint8_t * p_frame)
 {
-    dly_op_data_t * p_dly_op_data = ongoing_dly_rx_slot_get();
+    dly_op_data_t                * p_dly_op_data = ongoing_dly_rx_slot_get();
+    nrf_802154_frame_parser_data_t frame_data;
 
-    if (p_dly_op_data != NULL)
+    bool result = nrf_802154_frame_parser_data_init(p_frame,
+                                                    p_frame[PHR_OFFSET] + PHR_SIZE,
+                                                    PARSE_LEVEL_FCF_OFFSETS,
+                                                    &frame_data);
+
+    if ((result) && (p_dly_op_data != NULL))
     {
         p_dly_op_data->rx.extension_frame.sof_timestamp = nrf_802154_timer_sched_time_get();
         p_dly_op_data->rx.extension_frame.psdu_length   = p_frame[PHR_OFFSET];
         p_dly_op_data->rx.extension_frame.ack_requested = nrf_802154_frame_parser_ar_bit_is_set(
-            p_frame);
+            &frame_data);
     }
 }
 

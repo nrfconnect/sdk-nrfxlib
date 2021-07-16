@@ -659,15 +659,17 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_csma_ca_raw(
     const void * p_property_data,
     size_t       property_data_len)
 {
-    uint32_t     remote_frame_handle;
-    const void * p_frame;
-    size_t       frame_hdata_len;
-    void       * p_local_frame_ptr;
+    uint32_t                               remote_frame_handle;
+    const void                           * p_frame;
+    size_t                                 frame_hdata_len;
+    void                                 * p_local_frame_ptr;
+    nrf_802154_transmit_csma_ca_metadata_t tx_metadata;
 
     spinel_ssize_t siz = spinel_datatype_unpack(
         p_property_data,
         property_data_len,
         SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW,
+        NRF_802154_TRANSMIT_CSMA_CA_METADATA_DECODE(tx_metadata),
         NRF_802154_HDATA_DECODE(remote_frame_handle, p_frame, frame_hdata_len));
 
     if (siz < 0)
@@ -689,55 +691,18 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_csma_ca_raw(
     }
 
     // Transmit the content under the locally accessible pointer
-    nrf_802154_transmit_csma_ca_raw(p_local_frame_ptr);
+    bool result = nrf_802154_transmit_csma_ca_raw(p_local_frame_ptr, &tx_metadata);
 
-    return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
-}
-
-/**
- * @brief Decode and dispatch SPINEL_DATATYPE_NRF_802154_RETRANSMIT_CSMA_CA_RAW.
- *
- * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
- * @param[in]  property_data_len  Size of the @ref p_data buffer.
- *
- */
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_retransmit_csma_ca_raw(
-    const void * p_property_data,
-    size_t       property_data_len)
-{
-    uint32_t     remote_frame_handle;
-    const void * p_frame;
-    size_t       frame_hdata_len;
-    void       * p_local_frame_ptr;
-
-    spinel_ssize_t siz = spinel_datatype_unpack(
-        p_property_data,
-        property_data_len,
-        SPINEL_DATATYPE_NRF_802154_RETRANSMIT_CSMA_CA_RAW,
-        NRF_802154_HDATA_DECODE(remote_frame_handle, p_frame, frame_hdata_len));
-
-    if (siz < 0)
+    if (!result)
     {
-        return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
+        nrf_802154_buffer_mgr_dst_remove_by_local_pointer(nrf_802154_spinel_dst_buffer_mgr_get(),
+                                                          p_local_frame_ptr);
     }
 
-    // Map the remote handle to locally accessible pointer and copy the buffer content there
-    bool frame_added = nrf_802154_buffer_mgr_dst_add(
-        nrf_802154_spinel_dst_buffer_mgr_get(),
-        remote_frame_handle,
-        p_frame,
-        NRF_802154_DATA_LEN_FROM_HDATA_LEN(frame_hdata_len),
-        &p_local_frame_ptr);
-
-    if (!frame_added)
-    {
-        return NRF_802154_SERIALIZATION_ERROR_NO_MEMORY;
-    }
-
-    // Transmit the content under the locally accessible pointer
-    nrf_802154_retransmit_csma_ca_raw(p_local_frame_ptr);
-
-    return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
+    return nrf_802154_spinel_send_cmd_prop_value_is(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_CSMA_CA_RAW,
+        SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW_RET,
+        result);
 }
 
 /**
@@ -751,18 +716,18 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_raw(
     const void * p_property_data,
     size_t       property_data_len)
 {
-    uint32_t     remote_frame_handle;
-    const void * p_frame;
-    size_t       frame_hdata_len;
-    bool         cca;
-    void       * p_local_frame_ptr;
+    uint32_t                       remote_frame_handle;
+    const void                   * p_frame;
+    size_t                         frame_hdata_len;
+    void                         * p_local_frame_ptr;
+    nrf_802154_transmit_metadata_t tx_metadata;
 
     spinel_ssize_t siz = spinel_datatype_unpack(
         p_property_data,
         property_data_len,
         SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW,
-        NRF_802154_HDATA_DECODE(remote_frame_handle, p_frame, frame_hdata_len),
-        &cca);
+        NRF_802154_TRANSMIT_METADATA_DECODE(tx_metadata),
+        NRF_802154_HDATA_DECODE(remote_frame_handle, p_frame, frame_hdata_len));
 
     if (siz < 0)
     {
@@ -782,7 +747,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_raw(
         return NRF_802154_SERIALIZATION_ERROR_NO_MEMORY;
     }
 
-    bool result = nrf_802154_transmit_raw(p_local_frame_ptr, cca);
+    bool result = nrf_802154_transmit_raw(p_local_frame_ptr, &tx_metadata);
 
     if (!result)
     {
@@ -1031,10 +996,6 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_CSMA_CA_RAW:
             return spinel_decode_prop_nrf_802154_transmit_csma_ca_raw(p_property_data,
                                                                       property_data_len);
-
-        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RETRANSMIT_CSMA_CA_RAW:
-            return spinel_decode_prop_nrf_802154_retransmit_csma_ca_raw(p_property_data,
-                                                                        property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW:
             return spinel_decode_prop_nrf_802154_transmit_raw(p_property_data, property_data_len);

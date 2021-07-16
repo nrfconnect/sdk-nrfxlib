@@ -115,7 +115,7 @@ typedef struct
             nrf_802154_notification_func_t notif_func; ///< Error notified in case of success.
             nrf_802154_term_t              term_lvl;   ///< Request priority.
             req_originator_t               req_orig;   ///< Request originator.
-            const uint8_t                * p_data;     ///< Pointer to a buffer containing PHR and PSDU of the frame to transmit.
+            uint8_t                      * p_data;     ///< Pointer to a buffer containing PHR and PSDU of the frame to transmit.
             nrf_802154_transmit_params_t * p_params;   ///< Pointer to transmission parameters.
             bool                         * p_result;   ///< Transmit request result.
         } transmit;                                    ///< Transmit request details.
@@ -332,7 +332,7 @@ static void swi_receive(nrf_802154_term_t              term_lvl,
  */
 static void swi_transmit(nrf_802154_term_t              term_lvl,
                          req_originator_t               req_orig,
-                         const uint8_t                * p_data,
+                         uint8_t                      * p_data,
                          nrf_802154_transmit_params_t * p_params,
                          nrf_802154_notification_func_t notify_function,
                          bool                         * p_result)
@@ -561,7 +561,7 @@ bool nrf_802154_request_receive(nrf_802154_term_t              term_lvl,
 
 bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                                  req_originator_t               req_orig,
-                                 const uint8_t                * p_data,
+                                 uint8_t                      * p_data,
                                  nrf_802154_transmit_params_t * p_params,
                                  nrf_802154_notification_func_t notify_function)
 {

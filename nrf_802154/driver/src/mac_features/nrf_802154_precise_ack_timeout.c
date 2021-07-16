@@ -62,7 +62,7 @@ static void timeout_timer_retry(void);
 static uint32_t           m_timeout = NRF_802154_PRECISE_ACK_TIMEOUT_DEFAULT_TIMEOUT; ///< ACK timeout in us.
 static nrf_802154_timer_t m_timer;                                                    ///< Timer used to notify when the ACK frama is not received for too long.
 static volatile bool      m_procedure_is_active;
-static const uint8_t    * mp_frame;
+static uint8_t          * mp_frame;
 
 static void notify_tx_error(bool result)
 {
@@ -135,7 +135,7 @@ void nrf_802154_ack_timeout_time_set(uint32_t time)
     m_timeout = time;
 }
 
-bool nrf_802154_ack_timeout_tx_started_hook(const uint8_t * p_frame)
+bool nrf_802154_ack_timeout_tx_started_hook(uint8_t * p_frame)
 {
     mp_frame = p_frame;
     timeout_timer_start();
@@ -181,7 +181,7 @@ void nrf_802154_ack_timeout_rx_ack_started_hook(void)
     timeout_timer_stop();
 }
 
-bool nrf_802154_ack_timeout_tx_failed_hook(const uint8_t * p_frame, nrf_802154_tx_error_t error)
+bool nrf_802154_ack_timeout_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error)
 {
     (void)error;
     assert((p_frame == mp_frame) || (!m_procedure_is_active));

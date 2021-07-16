@@ -41,7 +41,7 @@
 #include "nrf_802154_types.h"
 
 /**
- * @brief Pretransmission hook for the security writer module.
+ * @brief Transmission setup hook for the security writer module.
  *
  * This hook parses the frame to check availability of the key identified by the frame's security
  * header and injects a frame counter associated with the key. If the frame's security level is
@@ -58,9 +58,21 @@
  * @retval  false        Frame security header was not processed successfully.
  * @retval  true         Frame security header was processed successfully.
  */
-bool nrf_802154_security_writer_pretransmission(
-    const uint8_t                           * p_frame,
+bool nrf_802154_security_writer_tx_setup(
+    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function);
+
+/**
+ * @brief TX started hook for the security writer module.
+ *
+ * Depending on whether @ref nrf_802154_security_writer_tx_setup has injected a frame counter
+ * into the transmitted frame, this hook marks the frame counter as updated.
+ *
+ * @param[in]  p_frame  Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
+ *
+ * @retval  true  Always succeeds.
+ */
+bool nrf_802154_security_writer_tx_started_hook(uint8_t * p_frame);
 
 #endif // NRF_802154_SECURITY_WRITER_H__

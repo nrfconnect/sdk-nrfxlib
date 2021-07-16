@@ -44,19 +44,34 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "mac_features/nrf_802154_frame_parser.h"
+
 /** Initializes the Immediate ACK generator module. */
 void nrf_802154_imm_ack_generator_init(void);
 
-/** Creates an Immediate ACK in response to the provided frame.
+/** @brief Resets the Immediate ACK generator module.
  *
- *  This function creates an Immediate ACK frame and inserts it into a radio buffer.
- *
- * @param [in]  p_frame  Pointer to the buffer that contains PHR and PSDU of the frame
- *                       to respond to.
- *
- * @returns  Pointer to a constant buffer that contains PHR and PSDU of the created
- *           Immediate ACK frame.
+ * @note This function should be called for every received frame to be acknowledged before
+ *       @ref nrf_802154_imm_ack_generator_create is called for that frame.
  */
-const uint8_t * nrf_802154_imm_ack_generator_create(const uint8_t * p_frame);
+void nrf_802154_imm_ack_generator_reset(void);
+
+/** @brief Creates an Immediate ACK in response to the provided frame.
+ *
+ * @note Only those contents of the frame being acknowledged marked by @p p_frame_data as valid
+ * are used for ACK generation. If any data necessary to generate an ACK is missing or marked as
+ * invalid by @p p_frame_data, this function returns NULL. Once more data becomes available and valid,
+ * this function can be called again and the generation will be continued. That allows for
+ * generating ACK iteratively as data to be acknowledged is being received.
+ *
+ * @param [in]  p_frame_data  Pointer to the parser data of the frame for which an Ack
+ *                            will be generated.
+ *
+ * @returns  Either pointer to a constant buffer that contains PHR and PSDU
+ *           of the created Immediate ACK frame, or NULL when the response cannot be
+ *           created.
+ */
+uint8_t * nrf_802154_imm_ack_generator_create(
+    const nrf_802154_frame_parser_data_t * p_frame_data);
 
 #endif // NRF_802154_IMM_ACK_GENERATOR_H

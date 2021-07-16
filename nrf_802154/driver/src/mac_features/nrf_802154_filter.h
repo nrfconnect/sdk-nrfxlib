@@ -44,6 +44,7 @@
 #include <stdint.h>
 
 #include "nrf_802154_types.h"
+#include "mac_features/nrf_802154_frame_parser.h"
 
 /**
  * @defgroup nrf_802154_filter Incoming frame filter API
@@ -65,7 +66,9 @@
  * and does not modify the @p p_num_bytes value. If the verified frame is incorrect, this function
  * returns false and the @p p_num_bytes value is undefined.
  *
- * @param[in]    p_data       Pointer to a buffer that contains PHR and PSDU of the incoming frame.
+ * @param[inout] p_frame_data Pointer to a frame parser data of the frame to be filtered.
+ *                            The frame filter may increase the frame parse level to either
+ *                            PARSE_LEVEL_FCF_OFFSETS or PARSE_LEVEL_DST_ADDRESSING_END.
  * @param[inout] p_num_bytes  Number of bytes available in @p p_data buffer. This value is either
  *                            set to the requested number of bytes for the next iteration or remains
  *                            unchanged if no more iterations are to be performed during
@@ -76,7 +79,9 @@
  * @retval NRF_802154_RX_ERROR_INVALID_DEST_ADDR  Incoming frame has destination address that
  *                                                mismatches the address of this node.
  */
-nrf_802154_rx_error_t nrf_802154_filter_frame_part(const uint8_t * p_data, uint8_t * p_num_bytes);
+nrf_802154_rx_error_t nrf_802154_filter_frame_part(
+    nrf_802154_frame_parser_data_t * p_frame_data,
+    uint8_t                        * p_num_bytes);
 
 /**
  *@}

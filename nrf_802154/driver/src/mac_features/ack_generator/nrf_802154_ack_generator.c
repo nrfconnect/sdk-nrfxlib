@@ -54,9 +54,10 @@ typedef enum
     FRAME_VERSION_INVALID
 } frame_version_t;
 
-static frame_version_t frame_version_is_2015_or_above(const uint8_t * p_frame)
+static frame_version_t frame_version_is_2015_or_above(
+    const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    switch (p_frame[FRAME_VERSION_OFFSET] & FRAME_VERSION_MASK)
+    switch (nrf_802154_frame_parser_frame_version_get(p_frame_data))
     {
         case FRAME_VERSION_0:
         case FRAME_VERSION_1:
@@ -77,18 +78,25 @@ void nrf_802154_ack_generator_init(void)
     nrf_802154_enh_ack_generator_init();
 }
 
-const uint8_t * nrf_802154_ack_generator_create(const uint8_t * p_frame)
+void nrf_802154_ack_generator_reset(void)
+{
+    // Both generators are reset to enable sending both Imm-Ack and Enh-Ack.
+    nrf_802154_imm_ack_generator_reset();
+    nrf_802154_enh_ack_generator_reset();
+}
+
+uint8_t * nrf_802154_ack_generator_create(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
     // This function should not be called if ACK is not requested.
-    assert(p_frame[ACK_REQUEST_OFFSET] & ACK_REQUEST_BIT);
+    assert(nrf_802154_frame_parser_ar_bit_is_set(p_frame_data));
 
-    switch (frame_version_is_2015_or_above(p_frame))
+    switch (frame_version_is_2015_or_above(p_frame_data))
     {
         case FRAME_VERSION_BELOW_2015:
-            return nrf_802154_imm_ack_generator_create(p_frame);
+            return nrf_802154_imm_ack_generator_create(p_frame_data);
 
         case FRAME_VERSION_2015_OR_ABOVE:
-            return nrf_802154_enh_ack_generator_create(p_frame);
+            return nrf_802154_enh_ack_generator_create(p_frame_data);
 
         default:
             return NULL;

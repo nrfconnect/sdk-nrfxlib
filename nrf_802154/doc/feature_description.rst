@@ -323,15 +323,41 @@ Performing retransmissions
 **************************
 
 The driver can modify the content of a frame that has to be transmitted to support features related to the IEEE 802.15.4 security and information elements.
-However, to let the higher layer correctly handle retransmissions, the driver must not modify in any way the content of frames that have to be retransmitted.
-To achieve that, the driver exposes an API for performing retransmissions:
 
-* :c:func:`nrf_802154_retransmit_csma_ca`
-* :c:func:`nrf_802154_retransmit_csma_ca_raw`
-* :c:func:`nrf_802154_retransmit_raw_at`
+When the driver modifies a frame, it also informs the higher layer about the modifications performed to let the higher layer correctly handle retransmissions.
 
-These functions guarantee that the driver will retransmit the frame passed as a parameter without any modifications.
-Other than that, these functions work exactly like their counterparts used for first transmission attempts.
+To do so, the following functions take an additional parameter:
+
+* :c:func:`nrf_802154_transmitted`
+* :c:func:`nrf_802154_transmitted_raw`
+* :c:func:`nrf_802154_transmit_failed`
+
+This additional parameter contains two flags:
+
+* One indicates if the driver secured the frame in question, according to its IEEE 802.15.4 Auxiliary Security Header.
+  When set, this flag indicates that the frame's MAC payload is encrypted, that the frame got authenticated with a Message Integrity Code (MIC), or both.
+* The other indicates if the fields set by the driver in runtime, namely the Frame Counter field and any Information Elements field that requires strict timing precision (like Coordinated Sample Listening IE), have been set.
+
+After receiving information about the modifications performed, the higher layer can order the driver to skip specific steps of the frame transformation, also avoiding some of the pre-transmission processing.
+
+To do so, the following functions take an additional parameter:
+
+* :c:func:`nrf_802154_transmit`
+* :c:func:`nrf_802154_transmit_raw`
+* :c:func:`nrf_802154_transmit_csma_ca`
+* :c:func:`nrf_802154_transmit_csma_ca_raw`
+* :c:func:`nrf_802154_transmit_raw_at`
+
+This additional parameter contains two flags:
+
+* One indicates if the driver should secure the frame in question, according to its IEEE 802.15.4 Auxiliary Security Header.
+  When set, the driver attempts to authenticate and encrypt the frame, as configured by the frame's MAC header.
+* The other indicates if the driver should update the Frame Counter field and any Information Elements field that requires strict timing precision (like Coordinated Sample Listening IE).
+  When set, the driver overwrites the values present in the fields of the provided frame.
+
+The higher layer can implement various retransmission schemes by combining the information provided by the driver in the callouts with the ability to control the processing performed by the driver on the frames that have to be transmitted.
 
 .. caution::
-   Never use these functions to perform the first transmission attempt as that may result in transmitting malformed or incorrect frames and creating security breaches.
+   If the higher layer marks a frame as already secured, it must not expect the driver to update the dynamic data of the frame.
+   Transmitting an encrypted frame with its header modified afterward results in a security breach.
+   An attempt to transmit a frame with such parameters will fail unconditionally.

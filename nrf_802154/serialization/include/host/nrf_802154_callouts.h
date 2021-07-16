@@ -145,36 +145,37 @@ extern void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id);
  * @note If ACK was requested for the transmitted frame, this function is called after a proper ACK
  *       is received. If ACK was not requested, this function is called just after transmission has
  *       ended.
- * @note The buffer pointed to by @p p_ack is not modified by the radio driver (and cannot be used
- *       to receive a frame) until @ref nrf_802154_buffer_free_raw is called.
- * @note The buffer pointed to by @p p_ack may be modified by the function handler (and other
- *       modules) until @ref nrf_802154_buffer_free_raw is called.
+ * @note The buffer pointed to by @ref nrf_802154_transmit_done_metadata_t.data.transmitted.p_ack
+ *       is not modified by the radio driver (and cannot be used to receive a frame) until
+ *       @ref nrf_802154_buffer_free_raw is called.
+ * @note The buffer pointed to by @ref nrf_802154_transmit_done_metadata_t.data.transmitted.p_ack
+ *       may be modified by the function handler (and other modules) until
+ *       @ref nrf_802154_buffer_free_raw is called.
+ * @note @ref nrf_802154_transmit_done_metadata_t.data.transmitted.time will have value of
+ *       @ref NRF_802154_NO_TIMESTAMP as timestamping is not supported for nRF53 family.
  *
- * @param[in]  p_frame  Pointer to a buffer that contains PHR and PSDU of the transmitted frame.
- * @param[in]  p_ack    Pointer to a buffer that contains PHR and PSDU of the received ACK.
- *                      The first byte in the buffer is the length of the frame (PHR). The following
- *                      bytes contain the ACK frame itself (PSDU). The length byte (PHR) includes
- *                      FCS. FCS is already verified by the hardware and may be modified by the
- *                      hardware. If ACK was not requested, @p p_ack is set to NULL.
- * @param[in]  power    RSSI of the received frame or 0 if ACK was not requested.
- * @param[in]  lqi      LQI of the received frame or 0 if ACK was not requested.
+ * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the transmitted frame.
+ * @param[in]  p_metadata   Pointer to a metadata structure describing frame passed in @p p_frame.
  */
-extern void nrf_802154_transmitted_raw(const uint8_t * p_frame,
-                                       uint8_t       * p_ack,
-                                       int8_t          power,
-                                       uint8_t         lqi);
+extern void nrf_802154_transmitted_raw(uint8_t                                   * p_frame,
+                                       const nrf_802154_transmit_done_metadata_t * p_metadata);
 
 /**
  * @brief Notifies that a frame was not transmitted due to a busy channel.
  *
  * This function is called if the transmission procedure fails.
  *
- * @param[in]  p_frame  Pointer to a buffer that contains PHR and PSDU of the frame that was not
- *                      transmitted.
- * @param[in]  error    Reason of the failure.
+ * @note Frame data values in @ref nrf_802154_transmit_done_metadata_t.data are invalid for
+ *       @ref nrf_802154_transmit_failed callout.
+ *
+ * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the frame that was not
+ *                          transmitted.
+ * @param[in]  error        Reason of the failure.
+ * @param[in]  p_metadata   Pointer to a metadata structure describing frame passed in @p p_frame.
  */
-extern void nrf_802154_transmit_failed(const uint8_t       * p_frame,
-                                       nrf_802154_tx_error_t error);
+extern void nrf_802154_transmit_failed(uint8_t                                   * p_frame,
+                                       nrf_802154_tx_error_t                       error,
+                                       const nrf_802154_transmit_done_metadata_t * p_metadata);
 
 #endif /* NRF_802154_CALLOUTS_H_ */
 

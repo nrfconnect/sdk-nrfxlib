@@ -58,10 +58,10 @@ static bool mode_is_valid(nrf_802154_key_id_mode_t mode)
 {
     switch (mode)
     {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
+        case KEY_ID_MODE_0:
+        case KEY_ID_MODE_1:
+        case KEY_ID_MODE_2:
+        case KEY_ID_MODE_3:
             return true;
 
         default:

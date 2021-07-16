@@ -328,16 +328,16 @@ static bool addr_index_find(const uint8_t       * p_addr,
 /**
  * @brief Thread implementation of the address matching algorithm.
  *
- * @param[in]  p_frame  Pointer to the frame for which the ACK frame is being prepared.
+ * @param[in]  p_frame_data  Pointer to the frame parser data for which the ACK frame is being prepared.
  *
  * @retval true   Pending bit is to be set.
  * @retval false  Pending bit is to be cleared.
  */
-static bool addr_match_thread(const uint8_t * p_frame)
+static bool addr_match_thread(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    bool            extended;
     uint32_t        location;
-    const uint8_t * p_src_addr = nrf_802154_frame_parser_src_addr_get(p_frame, &extended);
+    bool            extended   = nrf_802154_frame_parser_src_addr_is_extended(p_frame_data);
+    const uint8_t * p_src_addr = nrf_802154_frame_parser_src_addr_get(p_frame_data);
 
     // The pending bit is set by default.
     if (!m_pending_bit.enabled || (NULL == p_src_addr))
@@ -351,18 +351,18 @@ static bool addr_match_thread(const uint8_t * p_frame)
 /**
  * @brief Zigbee implementation of the address matching algorithm.
  *
- * @param[in]  p_frame  Pointer to the frame for which the ACK frame is being prepared.
+ * @param[in]  p_frame_data  Pointer to the frame parser data for which the ACK frame is being prepared.
  *
  * @retval true   Pending bit is to be set.
  * @retval false  Pending bit is to be cleared.
  */
-static bool addr_match_zigbee(const uint8_t * p_frame)
+static bool addr_match_zigbee(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    uint8_t                            frame_type;
-    nrf_802154_frame_parser_mhr_data_t mhr_fields;
-    uint32_t                           location;
-    const uint8_t                    * p_cmd = p_frame;
-    bool                               ret   = false;
+    uint8_t         src_addr_type;
+    uint32_t        location;
+    const uint8_t * p_cmd;
+    const uint8_t * p_src_addr;
+    bool            ret = false;
 
     // If ack data generator module is disabled do not perform check, return true by default.
     if (!m_pending_bit.enabled)
@@ -371,31 +371,19 @@ static bool addr_match_zigbee(const uint8_t * p_frame)
     }
 
     // Check the frame type.
-    frame_type = (p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK);
+    p_src_addr    = nrf_802154_frame_parser_src_addr_get(p_frame_data);
+    src_addr_type = nrf_802154_frame_parser_src_addr_type_get(p_frame_data);
 
-    // Parse the MAC header and retrieve the command type.
-    if (nrf_802154_frame_parser_mhr_parse(p_frame, &mhr_fields))
-    {
-        // Note: Security header is not included in the offset.
-        // If security is to be used at any point, additional calculation
-        // in nrf_802154_frame_parser_mhr_parse needs to be implemented.
-        p_cmd += mhr_fields.addressing_end_offset;
-    }
-    else
-    {
-        // If invalid source or destination addressing mode is detected, assume unknown device.
-        // Command type cannot be checked, as addressing_end_offset value will be invalid.
-        return true;
-    }
+    p_cmd = nrf_802154_frame_parser_mac_command_id_get(p_frame_data);
 
     // Check frame type and command type.
-    if ((frame_type == FRAME_TYPE_COMMAND) && (*p_cmd == MAC_CMD_DATA_REQ))
+    if ((p_cmd != NULL) && (*p_cmd == MAC_CMD_DATA_REQ))
     {
         // Check addressing type - in long case address, pb should always be 1.
-        if (mhr_fields.src_addr_size == SHORT_ADDRESS_SIZE)
+        if (src_addr_type == SRC_ADDR_TYPE_SHORT)
         {
             // Return true if address is not found on the m_pending_bits list.
-            ret = !addr_index_find(mhr_fields.p_src_addr,
+            ret = !addr_index_find(p_src_addr,
                                    &location,
                                    NRF_802154_ACK_DATA_PENDING_BIT,
                                    false);
@@ -415,13 +403,13 @@ static bool addr_match_zigbee(const uint8_t * p_frame)
  * Function always returns true. It is IEEE 802.15.4 compliant, as per 6.7.3.
  * Higher layer should ensure empty data frame with no AR is sent afterwards.
  *
- * @param[in]  p_frame  Pointer to the frame for which the ACK frame is being prepared.
+ * @param[in]  p_frame_data  Pointer to the frame parser data for which the ACK frame is being prepared.
  *
  * @retval true   Pending bit is to be set.
  */
-static bool addr_match_standard_compliant(const uint8_t * p_frame)
+static bool addr_match_standard_compliant(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    (void)p_frame;
+    (void)p_frame_data;
     return true;
 }
 
@@ -693,22 +681,23 @@ void nrf_802154_ack_data_src_addr_matching_method_set(nrf_802154_src_addr_match_
 
 }
 
-bool nrf_802154_ack_data_pending_bit_should_be_set(const uint8_t * p_frame)
+bool nrf_802154_ack_data_pending_bit_should_be_set(
+    const nrf_802154_frame_parser_data_t * p_frame_data)
 {
     bool ret;
 
     switch (m_src_matching_method)
     {
         case NRF_802154_SRC_ADDR_MATCH_THREAD:
-            ret = addr_match_thread(p_frame);
+            ret = addr_match_thread(p_frame_data);
             break;
 
         case NRF_802154_SRC_ADDR_MATCH_ZIGBEE:
-            ret = addr_match_zigbee(p_frame);
+            ret = addr_match_zigbee(p_frame_data);
             break;
 
         case NRF_802154_SRC_ADDR_MATCH_ALWAYS_1:
-            ret = addr_match_standard_compliant(p_frame);
+            ret = addr_match_standard_compliant(p_frame_data);
             break;
 
         default:

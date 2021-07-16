@@ -61,9 +61,9 @@ static inline void memcpy_rev(void * p_dst, const void * p_src, size_t n)
     }
 }
 
-static bool frame_version_is_2015_or_above(const uint8_t * p_frame)
+static bool frame_version_is_2015_or_above(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    switch (p_frame[FRAME_VERSION_OFFSET] & FRAME_VERSION_MASK)
+    switch (nrf_802154_frame_parser_frame_version_get(p_frame_data))
     {
         case FRAME_VERSION_0:
         case FRAME_VERSION_1:
@@ -77,27 +77,6 @@ static bool frame_version_is_2015_or_above(const uint8_t * p_frame)
     }
 }
 
-static uint8_t mic_length_from_security_level_get(uint8_t security_level)
-{
-    switch (security_level)
-    {
-        case SECURITY_LEVEL_MIC_32:
-        case SECURITY_LEVEL_ENC_MIC_32:
-            return MIC_32_SIZE;
-
-        case SECURITY_LEVEL_MIC_64:
-        case SECURITY_LEVEL_ENC_MIC_64:
-            return MIC_64_SIZE;
-
-        case SECURITY_LEVEL_MIC_128:
-        case SECURITY_LEVEL_ENC_MIC_128:
-            return MIC_128_SIZE;
-
-        default:
-            return 0;
-    }
-}
-
 static uint8_t mic_level_from_security_level_get(uint8_t security_level)
 {
     // According to the specification, two least significant bits of the security level
@@ -105,22 +84,35 @@ static uint8_t mic_level_from_security_level_get(uint8_t security_level)
     return security_level & SECURITY_LEVEL_MIC_LEVEL_MASK;
 }
 
-static bool data_frame_a_data_and_m_data_prepare(
-    const uint8_t                               * p_frame,
-    const nrf_802154_frame_parser_aux_sec_hdr_t * p_aux_sec_hdr,
-    nrf_802154_aes_ccm_data_t                   * p_aes_ccm_data)
+static bool a_data_and_m_data_prepare(
+    const nrf_802154_frame_parser_data_t * p_frame_data,
+    nrf_802154_aes_ccm_data_t            * p_aes_ccm_data)
 {
     bool result = true;
+
+    uint8_t open_payload_len = 0;
+
+    if ((nrf_802154_frame_parser_frame_type_get(p_frame_data) == FRAME_TYPE_COMMAND) &&
+        (!frame_version_is_2015_or_above(p_frame_data)))
+    {
+        open_payload_len = MAC_CMD_COMMAND_ID_SIZE;
+    }
 
     // It is assumed that the provided frame has a placeholder of appropriate length for MIC
     // at the end. The algorithm inputs should only contain MAC payload, so the MIC placeholder
     // of the below length should be removed
-    uint8_t         mic_length    = mic_length_from_security_level_get(p_aux_sec_hdr->security_lvl);
-    const uint8_t * p_mac_payload = nrf_802154_frame_parser_mac_payload_get(p_frame);
+    uint8_t   mic_len     = nrf_802154_frame_parser_mic_size_get(p_frame_data);
+    uint8_t * p_mac_hdr   = (uint8_t *)nrf_802154_frame_parser_psdu_get(p_frame_data);
+    uint8_t   mac_hdr_len =
+        nrf_802154_frame_parser_mac_header_length_get(p_frame_data) + open_payload_len;
+    uint8_t * p_mac_payload =
+        (uint8_t *)(nrf_802154_frame_parser_mac_payload_get(p_frame_data) + open_payload_len);
+    uint8_t mac_payload_len =
+        nrf_802154_frame_parser_mac_payload_length_get(p_frame_data) - mic_len - open_payload_len;
 
-    switch (p_aux_sec_hdr->security_lvl)
+    switch (nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_frame_data))
     {
-        case 0:
+        case SECURITY_LEVEL_NONE:
             // No data authenticity nor data confidentiality
             p_aes_ccm_data->auth_data           = NULL;
             p_aes_ccm_data->auth_data_len       = 0;
@@ -132,12 +124,8 @@ static bool data_frame_a_data_and_m_data_prepare(
         case SECURITY_LEVEL_MIC_64:
         case SECURITY_LEVEL_MIC_128:
             // Data authenticity without data confidentiality
-            p_aes_ccm_data->auth_data =
-                (uint8_t *)&p_frame[PSDU_OFFSET];
-            p_aes_ccm_data->auth_data_len =
-                nrf_802154_frame_parser_mac_header_length_get(p_frame, p_mac_payload) +
-                nrf_802154_frame_parser_mac_payload_length_get(p_frame, p_mac_payload) -
-                mic_length;
+            p_aes_ccm_data->auth_data           = p_mac_hdr;
+            p_aes_ccm_data->auth_data_len       = mac_hdr_len + mac_payload_len;
             p_aes_ccm_data->plain_text_data     = NULL;
             p_aes_ccm_data->plain_text_data_len = 0;
             break;
@@ -146,14 +134,10 @@ static bool data_frame_a_data_and_m_data_prepare(
         case SECURITY_LEVEL_ENC_MIC_64:
         case SECURITY_LEVEL_ENC_MIC_128:
             // Data authenticity and data confidentiality
-            p_aes_ccm_data->auth_data =
-                (uint8_t *)&p_frame[PSDU_OFFSET];
-            p_aes_ccm_data->auth_data_len =
-                nrf_802154_frame_parser_mac_header_length_get(p_frame, p_mac_payload);
-            p_aes_ccm_data->plain_text_data =
-                (uint8_t *)p_mac_payload;
-            p_aes_ccm_data->plain_text_data_len =
-                nrf_802154_frame_parser_mac_payload_length_get(p_frame, p_mac_payload) - mic_length;
+            p_aes_ccm_data->auth_data           = p_mac_hdr;
+            p_aes_ccm_data->auth_data_len       = mac_hdr_len;
+            p_aes_ccm_data->plain_text_data     = p_mac_payload;
+            p_aes_ccm_data->plain_text_data_len = mac_payload_len;
             break;
 
         default:
@@ -161,88 +145,22 @@ static bool data_frame_a_data_and_m_data_prepare(
             break;
     }
 
-    return result;
-}
-
-static bool command_frame_a_data_and_m_data_prepare(
-    const uint8_t                               * p_frame,
-    const nrf_802154_frame_parser_aux_sec_hdr_t * p_aux_sec_hdr,
-    nrf_802154_aes_ccm_data_t                   * p_aes_ccm_data)
-{
-    bool result = true;
-
-    // It is assumed that the provided frame has a placeholder of appropriate length for MIC
-    // at the end. The algorithm inputs should only contain MAC payload, so the MIC placeholder
-    // of the below length should be removed
-    uint8_t         mic_length    = mic_length_from_security_level_get(p_aux_sec_hdr->security_lvl);
-    const uint8_t * p_mac_payload = nrf_802154_frame_parser_mac_payload_get(p_frame);
-
-    uint8_t open_payload_size =
-        frame_version_is_2015_or_above(p_frame) ? 0 : MAC_CMD_COMMAND_ID_SIZE;
-
-    switch (p_aux_sec_hdr->security_lvl)
-    {
-        case 0:
-            // No data authenticity nor data confidentiality
-            p_aes_ccm_data->auth_data           = NULL;
-            p_aes_ccm_data->auth_data_len       = 0;
-            p_aes_ccm_data->plain_text_data     = NULL;
-            p_aes_ccm_data->plain_text_data_len = 0;
-            break;
-
-        case SECURITY_LEVEL_MIC_32:
-        case SECURITY_LEVEL_MIC_64:
-        case SECURITY_LEVEL_MIC_128:
-            // Data authenticity without data confidentiality
-            p_aes_ccm_data->auth_data =
-                (uint8_t *)&p_frame[PSDU_OFFSET];
-            p_aes_ccm_data->auth_data_len =
-                nrf_802154_frame_parser_mac_header_length_get(p_frame, p_mac_payload) +
-                nrf_802154_frame_parser_mac_payload_length_get(p_frame, p_mac_payload) -
-                mic_length;
-            p_aes_ccm_data->plain_text_data     = NULL;
-            p_aes_ccm_data->plain_text_data_len = 0;
-            break;
-
-        case SECURITY_LEVEL_ENC_MIC_32:
-        case SECURITY_LEVEL_ENC_MIC_64:
-        case SECURITY_LEVEL_ENC_MIC_128:
-            // Data authenticity and data confidentiality
-            p_aes_ccm_data->auth_data =
-                (uint8_t *)&p_frame[PSDU_OFFSET];
-
-            p_aes_ccm_data->auth_data_len =
-                nrf_802154_frame_parser_mac_header_length_get(p_frame, p_mac_payload) +
-                open_payload_size;
-            p_aes_ccm_data->plain_text_data =
-                (uint8_t *)(nrf_802154_frame_parser_mac_command_id_get(p_frame, p_mac_payload) +
-                            open_payload_size);
-            p_aes_ccm_data->plain_text_data_len =
-                nrf_802154_frame_parser_mac_payload_length_get(p_frame, p_mac_payload) -
-                mic_length -
-                open_payload_size;
-            break;
-
-        default:
-            result = false;
-            break;
-    }
     return result;
 }
 
 /**
  * @brief Retrieves key to be used for the AES CCM transformation.
  *
- * @param[in]   p_aux_sec_hdr     Pointer to Auxiliary Security Header data.
+ * @param[in]   p_frame_data     Pointer to the frame parser data.
  * @param[out]  p_aes_ccm_data   Pointer to AES CCM transformation data to be filled.
  */
-static bool aes_ccm_data_key_prepare(nrf_802154_frame_parser_aux_sec_hdr_t * p_aux_sec_hdr,
-                                     nrf_802154_aes_ccm_data_t             * p_aes_ccm_data)
+bool aes_ccm_data_key_prepare(const nrf_802154_frame_parser_data_t * p_frame_data,
+                              nrf_802154_aes_ccm_data_t            * p_aes_ccm_data)
 {
     nrf_802154_key_id_t key_id =
     {
-        .mode     = p_aux_sec_hdr->key_id_mode,
-        .p_key_id = (uint8_t *)p_aux_sec_hdr->p_key_id,
+        .mode     = nrf_802154_frame_parser_sec_ctrl_key_id_mode_get(p_frame_data),
+        .p_key_id = (uint8_t *)nrf_802154_frame_parser_key_id_get(p_frame_data),
     };
 
     return NRF_802154_SECURITY_ERROR_NONE ==
@@ -252,17 +170,16 @@ static bool aes_ccm_data_key_prepare(nrf_802154_frame_parser_aux_sec_hdr_t * p_a
 /**
  * @brief Generates a CCM nonce.
  *
- * @param[in]  p_frame   Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
- * @param[out] p_nonce   Pointer to the buffer to be filled with generated nonce.
+ * @param[in]  p_frame_data   Pointer to the frame parser data.
+ * @param[out] p_nonce        Pointer to the buffer to be filled with generated nonce.
  *
  * @retval  true   Nonce was generated successfully.
  * @retval  false  Nonce could not be generated.
  */
-static bool aes_ccm_nonce_generate(const uint8_t                               * p_frame,
-                                   const nrf_802154_frame_parser_aux_sec_hdr_t * p_aux_sec_hdr,
-                                   uint8_t                                     * p_nonce)
+bool aes_ccm_nonce_generate(const nrf_802154_frame_parser_data_t * p_frame_data,
+                            uint8_t                              * p_nonce)
 {
-    if ((p_frame == NULL) || (p_nonce == NULL))
+    if ((p_frame_data == NULL) || (p_nonce == NULL))
     {
         return false;
     }
@@ -275,10 +192,12 @@ static bool aes_ccm_nonce_generate(const uint8_t                               *
 
     // Byte order for Frame Counter gets reversed as defined
     // in 802.15.4-2015 Std Chapters 9.3.1 and Annex B.2
-    memcpy_rev((p_nonce + offset), p_aux_sec_hdr->p_frame_counter, FRAME_COUNTER_SIZE);
+    memcpy_rev((p_nonce + offset),
+               nrf_802154_frame_parser_frame_counter_get(p_frame_data),
+               FRAME_COUNTER_SIZE);
     offset += FRAME_COUNTER_SIZE;
 
-    p_nonce[offset] = p_aux_sec_hdr->security_lvl;
+    p_nonce[offset] = nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_frame_data);
 
     return true;
 }
@@ -286,31 +205,27 @@ static bool aes_ccm_nonce_generate(const uint8_t                               *
 /**
  * @brief Prepares _a_ data and _m_ data strings as defined in IEEE 802.15.4-2015 9.3.4.2.
  *
- * @param[in]   p_frame           Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
+ * @param[in]   p_frame_data      Pointer to the frame parser data.
  * @param[in]   p_aux_sec_hdr     Pointer to Auxiliary Security Header data.
  * @param[out]  p_aes_ccm_data    Pointer to AES CCM transformation data to be filled.
  *
  * @retval  true   Data was prepared successfully.
  * @retval  false  Data could not be prepared.
  */
-static bool aes_ccm_data_a_data_and_m_data_prepare(
-    const uint8_t                               * p_frame,
-    const nrf_802154_frame_parser_aux_sec_hdr_t * p_aux_sec_hdr,
-    nrf_802154_aes_ccm_data_t                   * p_aes_ccm_data)
+bool aes_ccm_data_a_data_and_m_data_prepare(
+    const nrf_802154_frame_parser_data_t * p_frame_data,
+    nrf_802154_aes_ccm_data_t            * p_aes_ccm_data)
 {
     bool result;
 
-    switch (p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK)
+    switch (nrf_802154_frame_parser_frame_type_get(p_frame_data))
     {
         case FRAME_TYPE_ACK:
         // Fallthrough
         case FRAME_TYPE_DATA:
-            result = data_frame_a_data_and_m_data_prepare(p_frame, p_aux_sec_hdr, p_aes_ccm_data);
-            break;
-
+        // Fallthrough
         case FRAME_TYPE_COMMAND:
-            result =
-                command_frame_a_data_and_m_data_prepare(p_frame, p_aux_sec_hdr, p_aes_ccm_data);
+            result = a_data_and_m_data_prepare(p_frame_data, p_aes_ccm_data);
             break;
 
         case FRAME_TYPE_BEACON:
@@ -337,99 +252,106 @@ static bool aes_ccm_data_a_data_and_m_data_prepare(
 /**
  * @brief Prepares data for AES CCM transformation.
  *
- * @param[in]   p_frame           Pointer to the buffer that contains the PHR and PSDU of the transmitted frame.
+ * @param[in]   p_frame_data     Pointer to the frame parser data.
  * @param[out]  p_aes_ccm_data   Pointer to AES CCM transformation data to be filled.
  *
  * @retval  true    AES CCM transformation data was prepared successfully.
  * @retval  false   AES CCM transformation could not be prepared.
  */
-static bool aes_ccm_data_content_prepare(const uint8_t             * p_frame,
-                                         nrf_802154_aes_ccm_data_t * p_aes_ccm_data)
+static bool aes_ccm_data_content_prepare(const nrf_802154_frame_parser_data_t * p_frame_data,
+                                         nrf_802154_aes_ccm_data_t            * p_aes_ccm_data)
 {
-    nrf_802154_frame_parser_aux_sec_hdr_t aux_sec_hdr;
     bool retval = false;
 
     do
     {
-        if (!nrf_802154_frame_parser_aux_sec_hdr_parse(p_frame, &aux_sec_hdr))
-        {
-            // Return immediately if Auxiliary Security Header could not be retrieved.
-            break;
-        }
-
-        if (!aes_ccm_data_key_prepare(&aux_sec_hdr, p_aes_ccm_data))
+        if (!aes_ccm_data_key_prepare(p_frame_data, p_aes_ccm_data))
         {
             // Return immediately if specified key could not be found
             break;
         }
 
-        if (!aes_ccm_nonce_generate(p_frame, &aux_sec_hdr, p_aes_ccm_data->nonce))
+        if (!aes_ccm_nonce_generate(p_frame_data, p_aes_ccm_data->nonce))
         {
             // Return immediately if nonce could not be generated
             break;
         }
 
         // Fill _a_ data (authenticity) and _m_ data (confidentiality)
-        if (!aes_ccm_data_a_data_and_m_data_prepare(p_frame, &aux_sec_hdr, p_aes_ccm_data))
+        if (!aes_ccm_data_a_data_and_m_data_prepare(p_frame_data, p_aes_ccm_data))
         {
             // Return immediately if transformation data could not be generated
             break;
         }
 
         // Fill in the remaining data
-        p_aes_ccm_data->mic_level = mic_level_from_security_level_get(aux_sec_hdr.security_lvl);
-        p_aes_ccm_data->raw_frame = (uint8_t *)p_frame;
+        p_aes_ccm_data->mic_level = mic_level_from_security_level_get(
+            nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_frame_data));
+        p_aes_ccm_data->raw_frame = (uint8_t *)p_frame_data->p_frame;
 
         retval = true;
-
     }
     while (0);
 
     return retval;
 }
 
-bool nrf_802154_encrypt_ack_prepare(const uint8_t * p_ack)
+bool nrf_802154_encrypt_ack_prepare(const nrf_802154_frame_parser_data_t * p_ack_data)
 {
     nrf_802154_aes_ccm_data_t aes_ccm_data;
-    bool                      success;
+    bool                      success = false;
 
-    if (aes_ccm_data_content_prepare(p_ack, &aes_ccm_data))
+    if (!nrf_802154_frame_parser_security_enabled_bit_is_set(p_ack_data))
+    {
+        success = true;
+    }
+    else if (aes_ccm_data_content_prepare(p_ack_data, &aes_ccm_data))
     {
         // Algorithm's inputs prepared. Schedule transformation
         success = nrf_802154_aes_ccm_transform_prepare(&aes_ccm_data);
     }
     else
     {
-        // Algorithm's inputs could not be prepared. Only allow for that if security is disabled.
-        success = !nrf_802154_frame_parser_security_enabled_bit_is_set(p_ack);
+        // Intentionally empty
     }
 
     return success;
 }
 
-bool nrf_802154_encrypt_pretransmission(
-    const uint8_t                           * p_frame,
+bool nrf_802154_encrypt_tx_setup(
+    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
-    if (p_params->is_retransmission)
+    if (p_params->frame_props.is_secured)
     {
-        // Pass.
+        // The frame is already secured. Pass.
         return true;
     }
 
-    nrf_802154_aes_ccm_data_t aes_ccm_data;
-    bool                      success;
+    nrf_802154_frame_parser_data_t frame_data;
+    nrf_802154_aes_ccm_data_t      aes_ccm_data;
+    bool                           success = false;
 
-    if (aes_ccm_data_content_prepare(p_frame, &aes_ccm_data))
+    success = nrf_802154_frame_parser_data_init(p_frame,
+                                                p_frame[PHR_OFFSET] + PHR_SIZE,
+                                                PARSE_LEVEL_FULL,
+                                                &frame_data);
+    assert(success);
+    (void)success;
+
+    if (!nrf_802154_frame_parser_security_enabled_bit_is_set(&frame_data))
+    {
+        success = true;
+    }
+    else if (aes_ccm_data_content_prepare(&frame_data, &aes_ccm_data))
     {
         // Algorithm's inputs prepared. Schedule transformation
         success = nrf_802154_aes_ccm_transform_prepare(&aes_ccm_data);
     }
     else
     {
-        // Algorithm's inputs could not be prepared. Only allow for that if security is disabled.
-        success = !nrf_802154_frame_parser_security_enabled_bit_is_set(p_frame);
+        success = false;
     }
 
     if (!success)
@@ -440,14 +362,32 @@ bool nrf_802154_encrypt_pretransmission(
     return success;
 }
 
-bool nrf_802154_encrypt_tx_started_hook(const uint8_t * p_frame)
+bool nrf_802154_encrypt_tx_started_hook(uint8_t * p_frame)
 {
+    // The provided pointer is the original buffer. It doesn't need to be changed,
+    // because the AES-CCM* module is aware of two separate buffers (original vs work buffer)
     nrf_802154_aes_ccm_transform_start(p_frame);
 
     return true;
 }
 
-void nrf_802154_encrypt_tx_ack_started_hook(const uint8_t * p_ack)
+void nrf_802154_encrypt_tx_ack_started_hook(uint8_t * p_ack)
 {
     nrf_802154_aes_ccm_transform_start(p_ack);
+}
+
+bool nrf_802154_encrypt_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error)
+{
+    (void)error;
+
+    nrf_802154_aes_ccm_transform_abort(p_frame);
+
+    return true;
+}
+
+void nrf_802154_encrypt_tx_ack_failed_hook(uint8_t * p_ack, nrf_802154_tx_error_t error)
+{
+    (void)error;
+
+    nrf_802154_aes_ccm_transform_abort(p_ack);
 }

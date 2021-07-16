@@ -53,7 +53,7 @@
  * @retval     false     Frame is delayed and will be transmistted after a needed IFS.
  */
 bool nrf_802154_ifs_pretransmission(
-    const uint8_t                           * p_frame,
+    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function);
 

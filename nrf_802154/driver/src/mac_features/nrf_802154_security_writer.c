@@ -45,6 +45,7 @@
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
 #include "nrf_802154_notification.h"
+#include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_utils_byteorder.h"
 
 #include <assert.h>
@@ -52,17 +53,18 @@
 
 #if NRF_802154_SECURITY_WRITER_ENABLED
 
+static bool m_frame_counter_injected; ///< Flag that indicates if frame counter was injected.
+
 /**
  * @brief Populates the key ID structure with key ID mode and source.
  *
- * @param[in]   p_sec_hdr   Pointer to the parsed security header from which key ID data is to
- *                          be extracted.
- * @param[out]  p_key_id    Pointer to the @ref nrf_802154_key_id_t structure to be populated.
+ * @param[in]   p_frame_data Pointer to the frame parser data.
+ * @param[out]  p_key_id     Pointer to the @ref nrf_802154_key_id_t structure to be populated.
  */
-static void key_id_prepare(nrf_802154_frame_parser_aux_sec_hdr_t * p_sec_hdr,
-                           nrf_802154_key_id_t                   * p_key_id)
+static void key_id_prepare(const nrf_802154_frame_parser_data_t * p_frame_data,
+                           nrf_802154_key_id_t                  * p_key_id)
 {
-    p_key_id->mode = p_sec_hdr->key_id_mode;
+    p_key_id->mode = nrf_802154_frame_parser_sec_ctrl_key_id_mode_get(p_frame_data);
 
     switch (p_key_id->mode)
     {
@@ -77,7 +79,7 @@ static void key_id_prepare(nrf_802154_frame_parser_aux_sec_hdr_t * p_sec_hdr,
         case KEY_ID_MODE_2:
         /* Fallthrough */
         case KEY_ID_MODE_3:
-            p_key_id->p_key_id = (uint8_t *)p_sec_hdr->p_key_id;
+            p_key_id->p_key_id = (uint8_t *)nrf_802154_frame_parser_key_id_get(p_frame_data);
             break;
 
         default:
@@ -91,9 +93,8 @@ static void key_id_prepare(nrf_802154_frame_parser_aux_sec_hdr_t * p_sec_hdr,
 /**
  * @brief Injects frame counter value into given address with security enabled.
  *
- * @param[in]   p_sec_hdr   Pointer to the parsed security header containing frame counter address
- *                          where the retrieved frame counter value is to be stored.
- * @param[in]   p_key_id    Pointer to the key identifying which counter shall be retrieved.
+ * @param[in]   p_frame_data Pointer to the frame parser data.
+ * @param[in]   p_key_id     Pointer to the key identifying which counter shall be retrieved.
  *
  * @retval      NRF_802154_SECURITY_ERROR_NONE  Frame counter was injected successfully.
  *
@@ -101,10 +102,12 @@ static void key_id_prepare(nrf_802154_frame_parser_aux_sec_hdr_t * p_sec_hdr,
  *                                              the frame counter injection.
  */
 static nrf_802154_security_error_t frame_counter_inject(
-    nrf_802154_frame_parser_aux_sec_hdr_t * p_sec_hdr,
-    nrf_802154_key_id_t                   * p_key_id)
+    nrf_802154_frame_parser_data_t * p_frame_data,
+    nrf_802154_key_id_t            * p_key_id)
 {
-    uint32_t                    frame_counter;
+    uint32_t  frame_counter;
+    uint8_t * p_frame_counter =
+        (uint8_t *)nrf_802154_frame_parser_frame_counter_get(p_frame_data);
     nrf_802154_security_error_t err;
 
     err = nrf_802154_security_pib_frame_counter_get_next(&frame_counter, p_key_id);
@@ -112,10 +115,10 @@ static nrf_802154_security_error_t frame_counter_inject(
     switch (err)
     {
         case NRF_802154_SECURITY_ERROR_NONE:
-            if (p_sec_hdr->p_frame_counter != NULL)
+            if (p_frame_counter != NULL)
             {
                 /* Frame counter suppression is off. Inject the frame counter. */
-                host_32_to_little(frame_counter, (uint8_t *)p_sec_hdr->p_frame_counter);
+                host_32_to_little(frame_counter, p_frame_counter);
             }
             break;
 
@@ -137,37 +140,44 @@ static nrf_802154_security_error_t frame_counter_inject(
 /**
  * @brief Checks if security is enabled for the given Auxiliary Security Header.
  *
- * @param[in]   p_sec_hdr   Parsed frame's Auxiliary Security Header to be checked.
+ * @param[in]   p_frame_data Pointer to the frame parser data to be checked.
  *
  * @retval      true        Security is enabled.
  * @retbal      false       Security is disabled.
  */
-static bool security_is_enabled(nrf_802154_frame_parser_aux_sec_hdr_t * p_sec_hdr)
+static bool security_is_enabled(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    return ((NULL != p_sec_hdr->p_sec_ctrl) && (0 != p_sec_hdr->security_lvl));
+    return (NULL != nrf_802154_frame_parser_sec_ctrl_get(p_frame_data)) &&
+           (SECURITY_LEVEL_NONE != nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_frame_data));
 }
 
-bool nrf_802154_security_writer_pretransmission(
-    const uint8_t                           * p_frame,
+bool nrf_802154_security_writer_tx_setup(
+    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
-    if (p_params->is_retransmission)
+    nrf_802154_frame_parser_data_t frame_data;
+    nrf_802154_key_id_t            key_id;
+    bool                           result = false;
+
+    m_frame_counter_injected = false;
+
+    if (p_params->frame_props.dynamic_data_is_set)
     {
-        // Pass.
+        // The frame has a frame counter field already set. Pass.
         return true;
     }
 
-    nrf_802154_frame_parser_aux_sec_hdr_t sec_hdr;
-    nrf_802154_key_id_t                   key_id;
-    bool result = false;
-
-    /* Prepare Auxiliary Security Header for processing. */
-    nrf_802154_frame_parser_aux_sec_hdr_parse(p_frame, &sec_hdr);
+    result = nrf_802154_frame_parser_data_init(p_frame,
+                                               p_frame[PHR_OFFSET] + PHR_SIZE,
+                                               PARSE_LEVEL_AUX_SEC_HDR_END,
+                                               &frame_data);
+    assert(result);
+    (void)result;
 
     do
     {
-        if (!security_is_enabled(&sec_hdr))
+        if (!security_is_enabled(&frame_data))
         {
             /* Security is not enabled. Pass. */
             result = true;
@@ -175,22 +185,25 @@ bool nrf_802154_security_writer_pretransmission(
         }
 
         /* Prepare key ID for key validation. */
-        key_id_prepare(&sec_hdr, &key_id);
+        key_id_prepare(&frame_data, &key_id);
 
-        nrf_802154_security_error_t err = frame_counter_inject(&sec_hdr, &key_id);
+        nrf_802154_security_error_t err = frame_counter_inject(&frame_data, &key_id);
 
         switch (err)
         {
             case NRF_802154_SECURITY_ERROR_NONE:
-                result = true;
+                result                   = true;
+                m_frame_counter_injected = true;
                 break;
 
             case NRF_802154_SECURITY_ERROR_KEY_NOT_FOUND:
                 notify_function(p_frame, NRF_802154_TX_ERROR_KEY_ID_INVALID);
+                result = false;
                 break;
 
             case NRF_802154_SECURITY_ERROR_FRAME_COUNTER_OVERFLOW:
                 notify_function(p_frame, NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR);
+                result = false;
                 break;
 
             default:
@@ -198,11 +211,23 @@ bool nrf_802154_security_writer_pretransmission(
                  * handled in the above cases. If it does then it is a bug.
                  */
                 assert(false);
+                result = false;
         }
     }
     while (0);
 
     return result;
+}
+
+bool nrf_802154_security_writer_tx_started_hook(uint8_t * p_frame)
+{
+    if (m_frame_counter_injected)
+    {
+        /* Mark dynamic data updated in the work buffer. */
+        nrf_802154_tx_work_buffer_is_dynamic_data_updated_set();
+    }
+
+    return true;
 }
 
 #endif // NRF_802154_SECURITY_WRITER_ENABLED

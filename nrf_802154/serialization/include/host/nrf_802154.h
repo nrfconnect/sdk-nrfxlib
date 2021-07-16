@@ -361,16 +361,19 @@ bool nrf_802154_energy_detection(uint32_t time_us);
  *       | <---------------------------- PHR -----------------------------------> |
  * @endverbatim
  *
- * @param[in]  p_data  Pointer to the array with data to transmit. The first byte must contain frame
- *                     length (including PHR and FCS). The following bytes contain data. The CRC is
- *                     computed automatically by the radio hardware. Therefore, the FCS field can
- *                     contain any bytes.
- * @param[in]  cca     If the driver is to perform a CCA procedure before transmission.
+ * @param[in]  p_data      Pointer to the array with data to transmit. The first byte must contain
+ *                         frame length (including FCS). The following bytes contain data.
+ *                         The CRC is computed automatically by the radio hardware. Therefore,
+ *                         the FCS field can contain any bytes.
+ * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
+ *                         to transmit and additional parameters for the procedure.
+ *                         If NULL, @ref NRF_802154_TRANSMIT_METADATA_DEFAULT_INIT is used.
  *
  * @retval  true   The transmission procedure was scheduled.
  * @retval  false  The driver could not schedule the transmission procedure.
  */
-bool nrf_802154_transmit_raw(const uint8_t * p_data, bool cca);
+bool nrf_802154_transmit_raw(uint8_t                              * p_data,
+                             const nrf_802154_transmit_metadata_t * p_metadata);
 
 /**
  * @brief Performs the CSMA-CA procedure and transmits a frame in case of success.
@@ -386,35 +389,15 @@ bool nrf_802154_transmit_raw(const uint8_t * p_data, bool cca);
  *       by @ref nrf_802154_tx_started. When the timer expires, the MAC layer is expected
  *       to call @ref nrf_802154_receive or @ref nrf_802154_sleep to stop waiting for the ACK frame.
  *
- * @param[in]  p_data  Pointer to the frame to transmit. See also @ref nrf_802154_transmit_raw.
+ * @param[in]  p_data      Pointer to the frame to transmit. See also @ref nrf_802154_transmit_raw.
+ * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
+ *                         to transmit. If NULL, @ref NRF_802154_TRANSMIT_METADATA_DEFAULT_INIT is used.
+ *
+ * @retval  true   The chain of CSMA-CA and transmission procedure was scheduled.
+ * @retval  false  The driver could not schedule the procedure chain.
  */
-void nrf_802154_transmit_csma_ca_raw(const uint8_t * p_data);
-
-/**
- * @brief Performs the CSMA-CA procedure and retransmits a frame in case of success.
- *
- * The end of the CSMA-CA procedure is notified by @ref nrf_802154_transmitted_raw or
- * @ref nrf_802154_transmit_failed.
- *
- * @note This function is meant specifically to be used for transmitting frames for which
- *       @ref nrf_802154_transmit_failed was reported in the original transmission attempt. This
- *       function does not perform any modifications to the provided frame's content. In particular,
- *       it performs neither authentication nor confidentiality transform of the frame's content.
- *       Therefore it must not be called to execute the first transmission attempt of a given frame.
- *       Doing so might lead to a number of issues such as security breaches and transmissions of
- *       malformed or incorrect frames.
- *
- * @note The driver may be configured to automatically time out waiting for an ACK frame depending
- *       on @ref NRF_802154_ACK_TIMEOUT_ENABLED. If the automatic ACK timeout is disabled,
- *       the CSMA-CA procedure does not time out waiting for an ACK frame if a frame
- *       with the ACK request bit set was transmitted. The MAC layer is expected to manage the timer
- *       to time out waiting for the ACK frame. This timer can be started
- *       by @ref nrf_802154_tx_started. When the timer expires, the MAC layer is expected
- *       to call @ref nrf_802154_receive or @ref nrf_802154_sleep to stop waiting for the ACK frame.
- *
- * @param[in]  p_data  Pointer to the frame to transmit. See also @ref nrf_802154_transmit_raw.
- */
-void nrf_802154_retransmit_csma_ca_raw(const uint8_t * p_data);
+bool nrf_802154_transmit_csma_ca_raw(uint8_t                                      * p_data,
+                                     const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
 
 /**
  * @brief Notifies the driver that the buffer containing the received frame is not used anymore.

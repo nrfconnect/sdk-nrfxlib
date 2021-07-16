@@ -35,6 +35,7 @@
 #ifndef NRF_802154_TYPES_H__
 #define NRF_802154_TYPES_H__
 
+#include <stdbool.h>
 #include <stdint.h>
 
 /**
@@ -138,6 +139,79 @@ typedef uint32_t nrf_802154_capabilities_t;
 #define NRF_802154_CAPABILITY_IFS           (1UL << 5UL) // !< Inter-frame spacing supported
 #define NRF_802154_CAPABILITY_TIMESTAMP     (1UL << 6UL) // !< Frame timestamping supported
 #define NRF_802154_CAPABILITY_SECURITY      (1UL << 7UL) // !< Frame security supported
+
+/**
+ * @brief Structure with frame properties associated with the transmission operation.
+ *
+ * @note When using to request transmission, parameters contained here influence whether or not
+ *       the security related data transformation will be performed. In particular, the driver may:
+ *        - update frame counter field if the dynamic parts of the frame are not yet updated
+ *        - secure a non-secured frame on-the-fly
+ *       If performed, the above operations are configured by the IEEE 802.15.4 Auxiliary Security
+ *       Header present in the transmitted frame.
+ *
+ * @note It is recommended to use values defined in @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
+ *       to perform the first transmission attempt. Using other values may result in transmitting
+ *       malformed or incorrect frames and creating security breaches.
+ *
+ * @note The combination with is_secured = true and dynamic_data_is_set = false is not allowed.
+ *       An attempt to transmit a frame with such parameters will fail unconditionally.
+ */
+typedef struct
+{
+    bool is_secured;          // !< If the frame to be transmitted is already secured (in the sense of IEEE 802.15.4 security operations).
+    bool dynamic_data_is_set; // !< If dynamic data of the frame frame to be transmitted is set.
+} nrf_802154_transmitted_frame_props_t;
+
+/**
+ * @brief Default initializer for nrf_802154_transmitted_frame_props_t.
+ */
+#define NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT \
+    (nrf_802154_transmitted_frame_props_t){             \
+        .is_secured          = false,                   \
+        .dynamic_data_is_set = false                    \
+    }
+
+/**
+ * @brief Structure with transmit request metadata for simple transmission request.
+ */
+typedef struct
+{
+    nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the frame to be transmitted.
+    bool                                 cca;         // !< If the driver is to perform a CCA procedure before transmission.
+} nrf_802154_transmit_metadata_t;
+
+/**
+ * @brief Structure with transmit request metadata for transmission preceded by CSMA-CA procedure.
+ */
+typedef struct
+{
+    nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the frame to be transmitted.
+} nrf_802154_transmit_csma_ca_metadata_t;
+
+/**
+ * @brief Structure that holds transmission result metadata.
+ */
+typedef struct
+{
+    nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the returned frame.
+
+    union
+    {
+        struct
+        {
+            uint8_t * p_ack; // !< If NRF_802154_USE_RAW_API is disabled, p_ack is a pointer to a buffer that contains only the received ACK payload (PSDU excluding FCS).
+                             // If NRF_802154_USE_RAW_API is enabled, p_ack is a pointer to a buffer that contains PHR and PSDU of the received ACK. The first byte
+                             // in the buffer is the length of the frame (PHR). The following bytes contain the ACK frame itself (PSDU). The length byte
+                             // (PHR) includes FCS. FCS is already verified by the hardware and may be modified by the hardware.
+                             // If ACK was not requested or requested but not received, @ref p_ack is set to NULL.
+            uint8_t  length; // !< Length of the received ACK payload or 0 if @ref p_ack is NULL.
+            int8_t   power;  // !< RSSI of the received frame or 0 if @ref p_ack is NULL.
+            uint8_t  lqi;    // !< LQI of the received frame or 0 if @ref p_ack is NULL.
+            uint32_t time;   // !< Timestamp taken when the last symbol of ACK is received. If @ref p_ack is NULL, this field is set to 0, but is considered invalid.
+        } transmitted;       // !< Result values for a successful frame transmission.
+    } data;                  // !< Result values that are valid only for successful operations.
+} nrf_802154_transmit_done_metadata_t;
 
 /**
  *@}
