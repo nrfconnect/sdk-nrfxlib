@@ -853,75 +853,8 @@ bail:
     return ed_result;
 }
 
-void nrf_802154_transmit_csma_ca_raw(const uint8_t * p_data)
-{
-    nrf_802154_ser_err_t res;
-    uint32_t             data_handle;
-
-    SERIALIZATION_ERROR_INIT(error);
-
-    NRF_802154_SPINEL_LOG_BANNER_CALLING();
-    NRF_802154_SPINEL_LOG_BUFF(p_data, p_data[0]);
-
-    bool handle_added = nrf_802154_buffer_mgr_src_add(nrf_802154_spinel_src_buffer_mgr_get(),
-                                                      p_data,
-                                                      &data_handle);
-
-    SERIALIZATION_ERROR_IF(!handle_added, NRF_802154_SERIALIZATION_ERROR_NO_MEMORY, error, bail);
-
-    nrf_802154_spinel_response_notifier_lock_before_request(SPINEL_PROP_LAST_STATUS);
-
-    res = nrf_802154_spinel_send_cmd_prop_value_set(
-        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_CSMA_CA_RAW,
-        SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW,
-        NRF_802154_HDATA_ENCODE(data_handle, p_data, p_data[0]));
-
-    SERIALIZATION_ERROR_CHECK(res, error, bail);
-
-    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
-    SERIALIZATION_ERROR_CHECK(res, error, bail);
-
-bail:
-    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
-
-    return;
-}
-
-void nrf_802154_retransmit_csma_ca_raw(const uint8_t * p_data)
-{
-    nrf_802154_ser_err_t res;
-    uint32_t             data_handle;
-
-    SERIALIZATION_ERROR_INIT(error);
-
-    NRF_802154_SPINEL_LOG_BANNER_CALLING();
-    NRF_802154_SPINEL_LOG_BUFF(p_data, p_data[0]);
-
-    bool handle_added = nrf_802154_buffer_mgr_src_add(nrf_802154_spinel_src_buffer_mgr_get(),
-                                                      p_data,
-                                                      &data_handle);
-
-    SERIALIZATION_ERROR_IF(!handle_added, NRF_802154_SERIALIZATION_ERROR_NO_MEMORY, error, bail);
-
-    nrf_802154_spinel_response_notifier_lock_before_request(SPINEL_PROP_LAST_STATUS);
-
-    res = nrf_802154_spinel_send_cmd_prop_value_set(
-        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RETRANSMIT_CSMA_CA_RAW,
-        SPINEL_DATATYPE_NRF_802154_RETRANSMIT_CSMA_CA_RAW,
-        NRF_802154_HDATA_ENCODE(data_handle, p_data, p_data[0]));
-
-    SERIALIZATION_ERROR_CHECK(res, error, bail);
-
-    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
-    SERIALIZATION_ERROR_CHECK(res, error, bail);
-
-bail:
-    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
-
-    return;
-}
-
-bool nrf_802154_transmit_raw(const uint8_t * p_data, bool cca)
+bool nrf_802154_transmit_csma_ca_raw(uint8_t                                      * p_data,
+                                     const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
     nrf_802154_ser_err_t res;
     uint32_t             data_handle;
@@ -936,6 +869,77 @@ bool nrf_802154_transmit_raw(const uint8_t * p_data, bool cca)
                                                       p_data,
                                                       &data_handle);
 
+    if (p_metadata == NULL)
+    {
+        static const nrf_802154_transmit_csma_ca_metadata_t metadata_default =
+        {
+            .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
+        };
+
+        p_metadata = &metadata_default;
+    }
+
+    SERIALIZATION_ERROR_IF(!handle_added, NRF_802154_SERIALIZATION_ERROR_NO_MEMORY, error, bail);
+
+    nrf_802154_spinel_response_notifier_lock_before_request(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_CSMA_CA_RAW);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_CSMA_CA_RAW,
+        SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW,
+        NRF_802154_TRANSMIT_CSMA_CA_METADATA_ENCODE(*p_metadata),
+        NRF_802154_HDATA_ENCODE(data_handle, p_data, p_data[0]));
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = net_generic_bool_response_await(&transmit_result,
+                                          CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    return transmit_result;
+
+bail:
+    if (handle_added)
+    {
+        /* Rollback what we did until an error to avoid memory leak. */
+        nrf_802154_buffer_mgr_src_remove_by_buffer_handle(
+            nrf_802154_spinel_src_buffer_mgr_get(),
+            data_handle);
+    }
+
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return transmit_result;
+}
+
+bool nrf_802154_transmit_raw(uint8_t                              * p_data,
+                             const nrf_802154_transmit_metadata_t * p_metadata)
+{
+    nrf_802154_ser_err_t res;
+    uint32_t             data_handle;
+    bool                 transmit_result = false;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+    NRF_802154_SPINEL_LOG_BUFF(p_data, p_data[0]);
+
+    bool handle_added = nrf_802154_buffer_mgr_src_add(nrf_802154_spinel_src_buffer_mgr_get(),
+                                                      p_data,
+                                                      &data_handle);
+
+    if (p_metadata == NULL)
+    {
+        static const nrf_802154_transmit_metadata_t metadata_default =
+        {
+            .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
+            .cca         = true
+        };
+
+        p_metadata = &metadata_default;
+    }
+
     SERIALIZATION_ERROR_IF(!handle_added, NRF_802154_SERIALIZATION_ERROR_NO_MEMORY, error, bail);
 
     nrf_802154_spinel_response_notifier_lock_before_request(
@@ -944,8 +948,8 @@ bool nrf_802154_transmit_raw(const uint8_t * p_data, bool cca)
     res = nrf_802154_spinel_send_cmd_prop_value_set(
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW,
         SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW,
-        NRF_802154_HDATA_ENCODE(data_handle, p_data, p_data[0]),
-        cca);
+        NRF_802154_TRANSMIT_METADATA_ENCODE(*p_metadata),
+        NRF_802154_HDATA_ENCODE(data_handle, p_data, p_data[0]));
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 

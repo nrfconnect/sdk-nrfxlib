@@ -105,6 +105,8 @@
 #define KEY_SRC_KEY_ID_MODE_2_SIZE      4                                            ///< Size of the Key Source field when Key Identifier Mode equals 2.
 #define KEY_SRC_KEY_ID_MODE_3_SIZE      8                                            ///< Size of the Key Source field when Key Identifier Mode equals 3.
 
+#define KEY_IDX_SIZE                    1                                            ///< Size of the Key Index field
+
 #define MAC_CMD_COMMAND_ID_SIZE         1                                            ///< Size of the MAC Command ID field.
 #define MAC_CMD_ASSOC_REQ               0x01                                         ///< Command frame identifier for MAC Association request.
 #define MAC_CMD_ASSOC_RESP              0x02                                         ///< Command frame identifier for MAC Association response.
@@ -129,6 +131,7 @@
 #define SECURITY_ENABLED_OFFSET         1                                            ///< Byte containing the Security Enabled bit.
 #define SECURITY_ENABLED_BIT            0x08                                         ///< Bits containing the Security Enabled field.
 #define SECURITY_LEVEL_MASK             0x07                                         ///< Mask of bits containing the Security level field.
+#define SECURITY_LEVEL_NONE             0x00                                         ///< Bits indicating a frame with no security attributes (0b000).
 #define SECURITY_LEVEL_MIC_32           0x01                                         ///< Bits containing the 32-bit Message Integrity Code (0b001).
 #define SECURITY_LEVEL_MIC_64           0x02                                         ///< Bits containing the 64-bit Message Integrity Code (0b010).
 #define SECURITY_LEVEL_MIC_128          0x03                                         ///< Bits containing the 128-bit Message Integrity Code (0b011).

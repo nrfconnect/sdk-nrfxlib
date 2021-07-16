@@ -341,7 +341,7 @@ void nrf_802154_sl_ant_div_rx_preamble_detected_notify(void);
 bool nrf_802154_sl_ant_div_rx_frame_started_notify(void);
 
 /**
- * @brief Notification to be called when frame is received successfuly.
+ * @brief Notification to be called when frame is received successfully.
  */
 void nrf_802154_sl_ant_div_rx_frame_received_notify(void);
 

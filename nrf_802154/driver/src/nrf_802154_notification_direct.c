@@ -41,10 +41,12 @@
 #include "nrf_802154_notification.h"
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #include "nrf_802154.h"
 #include "nrf_802154_critical_section.h"
+#include "nrf_802154_tx_work_buffer.h"
 
 #define RAW_LENGTH_OFFSET  0
 #define RAW_PAYLOAD_OFFSET 1
@@ -68,28 +70,40 @@ void nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
     nrf_802154_receive_failed(error, id);
 }
 
-void nrf_802154_notify_transmitted(const uint8_t * p_frame,
-                                   uint8_t       * p_ack,
-                                   int8_t          power,
-                                   uint8_t         lqi)
+void nrf_802154_notify_transmitted(uint8_t                             * p_frame,
+                                   nrf_802154_transmit_done_metadata_t * p_metadata)
 {
+    // Update the transmitted frame contents and update frame status flags
+    nrf_802154_tx_work_buffer_original_frame_update(p_frame,
+                                                    &p_metadata->frame_props);
+    // Notify
 #if NRF_802154_USE_RAW_API
-    nrf_802154_transmitted_raw(p_frame, p_ack, power, lqi);
+    nrf_802154_transmitted_raw(p_frame, p_metadata);
 #else // NRF_802154_USE_RAW_API
-    nrf_802154_transmitted(p_frame + RAW_PAYLOAD_OFFSET,
-                           p_ack == NULL ? NULL : p_ack + RAW_PAYLOAD_OFFSET,
-                           p_ack[RAW_LENGTH_OFFSET],
-                           power,
-                           lqi);
+    if (p_metadata->data.transmitted.p_ack != NULL)
+    {
+        p_metadata->data.transmitted.length = p_metadata->data.transmitted.p_ack[RAW_LENGTH_OFFSET];
+        p_metadata->data.transmitted.p_ack += RAW_PAYLOAD_OFFSET;
+    }
+
+    nrf_802154_transmitted(p_frame + RAW_PAYLOAD_OFFSET, p_metadata);
 #endif // NRF_802154_USE_RAW_API
 }
 
-void nrf_802154_notify_transmit_failed(const uint8_t * p_frame, nrf_802154_tx_error_t error)
+void nrf_802154_notify_transmit_failed(uint8_t             * p_frame,
+                                       nrf_802154_tx_error_t error)
 {
+    nrf_802154_transmit_done_metadata_t metadata = {0};
+
+    // Update the failed frame contents and update frame status flags
+    nrf_802154_tx_work_buffer_original_frame_update(p_frame,
+                                                    &metadata.frame_props);
+
+    // Notify
 #if NRF_802154_USE_RAW_API
-    nrf_802154_transmit_failed(p_frame, error);
+    nrf_802154_transmit_failed(p_frame, error, &metadata);
 #else // NRF_802154_USE_RAW_API
-    nrf_802154_transmit_failed(p_frame + RAW_PAYLOAD_OFFSET, error);
+    nrf_802154_transmit_failed(p_frame + RAW_PAYLOAD_OFFSET, error, &metadata);
 #endif  // NRF_802154_USE_RAW_API
 }
 

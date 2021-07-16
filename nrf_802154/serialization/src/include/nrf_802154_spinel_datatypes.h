@@ -273,12 +273,6 @@ typedef enum
     SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TIME_GET =
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 34,
 
-    /**
-     * Vendor property for nrf_802154_retransmit_csma_ca_raw serialization.
-     */
-    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RETRANSMIT_CSMA_CA_RAW =
-        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 35,
-
 } spinel_prop_vendor_key_t;
 
 /**
@@ -330,6 +324,62 @@ typedef enum
         SPINEL_DATATYPE_UINT32_S /* Data handle */  \
         SPINEL_DATATYPE_DATA_S   /* Data content */ \
                             )
+
+/**
+ * @brief Spinel data type description for nrf_802154_transmitted_frame_props_t.
+ */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S \
+    SPINEL_DATATYPE_BOOL_S /* is_secured */                  \
+    SPINEL_DATATYPE_BOOL_S /* dynamic_data_is_set */
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S data type.
+ */
+#define NRF_802154_TRANSMITTED_FRAME_PROPS_ENCODE(frame_props) \
+    ((frame_props).is_secured), ((frame_props).dynamic_data_is_set)
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S data type.
+ */
+#define NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE(frame_props) \
+    (&(frame_props).is_secured), (&(frame_props).dynamic_data_is_set)
+
+/**
+ * @brief Spinel data type description for nrf_802154_transmit_metadata_t.
+ */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_METADATA_S                     \
+    SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* frame_props */ \
+    SPINEL_DATATYPE_BOOL_S                               /* cca */
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_METADATA_S data type.
+ */
+#define NRF_802154_TRANSMIT_METADATA_ENCODE(tx_metadata)                  \
+    NRF_802154_TRANSMITTED_FRAME_PROPS_ENCODE((tx_metadata).frame_props), \
+    ((tx_metadata).cca)
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_METADATA_S data type.
+ */
+#define NRF_802154_TRANSMIT_METADATA_DECODE(tx_metadata)                  \
+    NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE((tx_metadata).frame_props), \
+    (&(tx_metadata).cca)
+
+/**
+ * @brief Spinel data type description for nrf_802154_transmit_csma_ca_metadata_t.
+ */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_METADATA_S \
+    SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* frame_props */
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_METADATA_S data type.
+ */
+#define NRF_802154_TRANSMIT_CSMA_CA_METADATA_ENCODE(tx_metadata) \
+    NRF_802154_TRANSMITTED_FRAME_PROPS_ENCODE((tx_metadata).frame_props)
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_METADATA_S data type.
+ */
+#define NRF_802154_TRANSMIT_CSMA_CA_METADATA_DECODE(tx_metadata) \
+    NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE((tx_metadata).frame_props)
 
 /**
  * @brief Spinel data type description for SPINEL_PROP_LAST_STATUS.
@@ -467,14 +517,19 @@ typedef enum
 /**
  * @brief Spinel data type description for nrf_802154_transmit_raw
  */
-#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW                                \
-    SPINEL_DATATYPE_NRF_802154_HDATA_S /* Frame to transmit with its handle */ \
-    SPINEL_DATATYPE_BOOL_S             /* CCA */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW    \
+    SPINEL_DATATYPE_NRF_802154_TRANSMIT_METADATA_S \
+    SPINEL_DATATYPE_NRF_802154_HDATA_S /* Frame to transmit with its handle */
 
 /**
  * @brief Spinel data type description for return value of nrf_802154_transmit_raw
  */
 #define SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW_RET               SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type description for return value of nrf_802154_transmit_csma_ca_raw
+ */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW_RET       SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type desription for nrf_802154_auto_pending_bit_set.
@@ -547,30 +602,67 @@ typedef enum
 /**
  * @brief Spinel data type description for nrf_802154_transmit_csma_ca_raw.
  */
-#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW \
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW    \
+    SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_METADATA_S \
     SPINEL_DATATYPE_NRF_802154_HDATA_S /* Frame to transmit with its handle */
 
 /**
- * @brief Spinel data type description for nrf_802154_retransmit_csma_ca_raw.
+ * @brief Spinel data type description for nrf_802154_transmit_done_metadata.
  */
-#define SPINEL_DATATYPE_NRF_802154_RETRANSMIT_CSMA_CA_RAW \
-    SPINEL_DATATYPE_NRF_802154_HDATA_S /* Frame to transmit with its handle */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_DONE_METADATA_S                \
+    SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* Frame props */ \
+    SPINEL_DATATYPE_UINT8_S                              /* Length */      \
+    SPINEL_DATATYPE_INT8_S                               /* Power */       \
+    SPINEL_DATATYPE_UINT8_S                              /* LQI */         \
+    SPINEL_DATATYPE_UINT32_S                             /* Timestamp */   \
+    SPINEL_DATATYPE_NRF_802154_HDATA_S                   /* Ack frame with its handle */
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_DONE_METADATA_S data type.
+ *
+ * @param[in]  metadata    Transmit done metadata structure to be decoded.
+ * @param[in]  ack_handle  Variable containing handle to
+ */
+#define NRF_802154_TRANSMIT_DONE_METADATA_ENCODE(metadata, ack_handle) \
+    NRF_802154_TRANSMITTED_FRAME_PROPS_ENCODE((metadata).frame_props), \
+    (metadata).data.transmitted.length,                                \
+    (metadata).data.transmitted.power,                                 \
+    (metadata).data.transmitted.lqi,                                   \
+    (metadata).data.transmitted.time,                                  \
+    NRF_802154_HDATA_ENCODE(ack_handle,                                \
+                            (metadata).data.transmitted.p_ack,         \
+                            ((metadata).data.transmitted.p_ack) ?      \
+                            ((metadata).data.transmitted.p_ack)[0] + 1 : 0)
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_DONE_METADATA_S data type.
+ *
+ * @param[out]  metadata    Transmit done metadata structure to which store decoded data.
+ * @param[out]  ack_handle  Pointer variable to which store handle of received ACK frame.
+ * @param[out]  ack_length  Variable to which store length of the decoded ACK with a handle.
+ */
+#define NRF_802154_TRANSMIT_DONE_METADATA_DECODE(metadata, ack_handle, ack_length) \
+    NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE((metadata).frame_props),             \
+    &(metadata).data.transmitted.length,                                           \
+    &(metadata).data.transmitted.power,                                            \
+    &(metadata).data.transmitted.lqi,                                              \
+    &(metadata).data.transmitted.time,                                             \
+    NRF_802154_HDATA_DECODE(ack_handle, (metadata).data.transmitted.p_ack, ack_length)
 
 /**
  * @brief Spinel data type description for nrf_802154_transmitted_raw.
  */
-#define SPINEL_DATATYPE_NRF_802154_TRANSMITTED_RAW                       \
-    SPINEL_DATATYPE_UINT32_S           /* Handle to transmitted frame */ \
-    SPINEL_DATATYPE_NRF_802154_HDATA_S /* Ack frame with its handle */   \
-    SPINEL_DATATYPE_INT8_S             /* Power */                       \
-    SPINEL_DATATYPE_UINT8_S            /* LQI */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMITTED_RAW                                        \
+    SPINEL_DATATYPE_UINT32_S                            /* Handle to transmitted frame */ \
+    SPINEL_DATATYPE_NRF_802154_TRANSMIT_DONE_METADATA_S /* Transmit done metadata */
 
 /**
  * @brief Spinel data type description for nrf_802154_transmit_failed.
  */
-#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED             \
-    SPINEL_DATATYPE_UINT32_S /* Handle to transmitted frame */ \
-    SPINEL_DATATYPE_UINT8_S  /* Error code */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED                                         \
+    SPINEL_DATATYPE_UINT32_S                             /* Handle to transmitted frame */ \
+    SPINEL_DATATYPE_UINT8_S                              /* Error code */                  \
+    SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* Frame props */
 
 /**
  * @brief Spinel data type description for nrf_802154_capabilities_get.

@@ -310,6 +310,9 @@ static void fem_for_lna_reset(void)
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
     nrf_timer_shorts_disable(NRF_802154_TIMER_INSTANCE, NRF_TIMER_SHORT_COMPARE0_STOP_MASK);
     nrf_802154_trx_ppi_for_fem_clear();
+    /* There is no need to explicitly deactivate LNA pin during reset as mpsl_fem_abort_set is used
+     * to provide a deactivation mechanism on DISABLED event.
+     */
 }
 
 /** Configure FEM to set PA at appropriate time.
@@ -577,24 +580,7 @@ static void ppi_all_clear(void)
 static void fem_power_down_now(void)
 {
     mpsl_fem_deactivate_now(MPSL_FEM_ALL);
-
-    if (nrf_802154_trx_ppi_for_fem_powerdown_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_CC_CHANNEL0))
-    {
-        // FEM requires timer to run to perform powering down operation
-        nrf_timer_event_clear(NRF_802154_TIMER_INSTANCE, NRF_TIMER_EVENT_COMPARE0);
-
-        nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_START);
-
-        while (!nrf_timer_event_check(NRF_802154_TIMER_INSTANCE, NRF_TIMER_EVENT_COMPARE0))
-        {
-            // Wait until the event is set.
-            // The waiting takes several microseconds
-        }
-
-        nrf_timer_shorts_disable(NRF_802154_TIMER_INSTANCE, NRF_TIMER_SHORT_COMPARE0_STOP_MASK);
-        nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
-        nrf_802154_trx_ppi_for_fem_powerdown_clear();
-    }
+    mpsl_fem_disable();
 }
 
 void nrf_802154_trx_disable(void)
@@ -626,11 +612,10 @@ void nrf_802154_trx_disable(void)
         defined(NRF52833_XXAA) || \
         defined(NRF52820_XXAA) || \
         defined(NRF52811_XXAA)
+        mpsl_fem_lna_configuration_clear();
+        mpsl_fem_pa_configuration_clear();
         mpsl_fem_abort_clear();
 #endif
-
-        // TODO: Deconfigure FAL PA and LNA here?
-        mpsl_fem_deactivate_now(MPSL_FEM_ALL);
 
         if (m_trx_state != TRX_STATE_IDLE)
         {

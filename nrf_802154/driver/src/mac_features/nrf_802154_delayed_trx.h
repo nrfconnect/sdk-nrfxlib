@@ -69,17 +69,17 @@ void nrf_802154_delayed_trx_init(void);
  *       Waiting for ACK must be timed out by the next higher layer or the ACK timeout module.
  *       The ACK timeout timer must start when the @ref nrf_802154_tx_started function is called.
  *
- * @param[in]  p_data   Pointer to a buffer containing PHR and PSDU of the frame to be transmitted.
- * @param[in]  p_params Pointer to the transmission parameters.
- * @param[in]  t0       Base of delay time in microseconds.
- * @param[in]  dt       Delta of the delay time from @p t0 in microseconds.
- * @param[in]  channel  Number of the channel on which the frame is to be transmitted.
+ * @param[in]  p_data       Pointer to a buffer containing PHR and PSDU of the frame to be
+ *                          transmitted.
+ * @param[in]  t0           Base of delay time in microseconds.
+ * @param[in]  dt           Delta of the delay time from @p t0 in microseconds.
+ * @param[in]  p_metadata   Pointer to metadata structure. Contains detailed properties of data
+ *                          to transmit and additional parameters for the procedure.
  */
-bool nrf_802154_delayed_trx_transmit(const uint8_t                * p_data,
-                                     nrf_802154_transmit_params_t * p_params,
-                                     uint32_t                       t0,
-                                     uint32_t                       dt,
-                                     uint8_t                        channel);
+bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p_data,
+                                     uint32_t                                  t0,
+                                     uint32_t                                  dt,
+                                     const nrf_802154_transmit_at_metadata_t * p_metadata);
 
 /**
  * @brief Cancels a transmission scheduled by a call to @ref nrf_802154_delayed_trx_transmit.

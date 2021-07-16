@@ -226,33 +226,6 @@ void nrf_802154_trx_ppi_for_fem_clear(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
-bool nrf_802154_trx_ppi_for_fem_powerdown_set(NRF_TIMER_Type * p_instance,
-                                              uint32_t         compare_channel)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
-
-    // PPI_EGU_TIMER_START is reused here on purpose, to save resources,
-    // as fem powerdown cannot be scheduled simultaneously with fem ramp-up.
-    bool result = mpsl_fem_prepare_powerdown(p_instance,
-                                             compare_channel,
-                                             PPI_EGU_TIMER_START,
-                                             nrf_radio_event_address_get(NRF_RADIO,
-                                                                         NRF_RADIO_EVENT_DISABLED));
-
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
-
-    return result;
-}
-
-void nrf_802154_trx_ppi_for_fem_powerdown_clear(void)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
-
-    nrf_ppi_channel_disable(NRF_PPI, PPI_EGU_TIMER_START);
-
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
-}
-
 uint32_t nrf_802154_trx_ppi_group_for_abort_get(void)
 {
     return (uint32_t)PPI_CHGRP_ABORT;

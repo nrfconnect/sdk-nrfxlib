@@ -44,6 +44,7 @@
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "nrf_802154_core.h"
 #include "nrf_802154_nrfx_addons.h"
+#include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_utils.h"
 #include "nrf_802154_utils_byteorder.h"
 
@@ -68,8 +69,11 @@ static uint16_t  m_csl_period;       ///< CSL period value that will be injected
 
 /**
  * @brief Writes CSL phase to previously set memory address.
+ *
+ * @param[inout]  p_written  Flag set to true if CSL IE was written. If CSL IE is not written, the flag
+ *                           is not modified.
  */
-static void csl_ie_write_commit(void)
+static void csl_ie_write_commit(bool * p_written)
 {
     uint32_t time_remaining;
     uint32_t symbols;
@@ -105,6 +109,8 @@ static void csl_ie_write_commit(void)
 
     host_16_to_little(csl_phase, mp_csl_phase_addr);
     host_16_to_little(m_csl_period, mp_csl_period_addr);
+
+    *p_written = true;
 }
 
 /**
@@ -145,9 +151,10 @@ static void csl_ie_write_reset(void)
 /**
  * @brief Writes CSL phase to previously set memory address.
  */
-static void csl_ie_write_commit(void)
+static void csl_ie_write_commit(bool * p_written)
 {
     // Intentionally empty
+    (void)p_written;
 }
 
 /**
@@ -219,8 +226,11 @@ static uint8_t margin_scale(int16_t margin)
 
 /**
  * @brief Writes link metrics to previously prepared addresses in a frame.
+ *
+ * @param[inout]  p_written  Flag set to true if link metrics IE was written. If link metrics IE is
+ *                           not written, the flag is not modified.
  */
-static void link_metrics_ie_write_commit(void)
+static void link_metrics_ie_write_commit(bool * p_written)
 {
     if ((mp_lm_rssi_addr != NULL) || (mp_lm_margin_addr != NULL))
     {
@@ -229,19 +239,21 @@ static void link_metrics_ie_write_commit(void)
         if (mp_lm_rssi_addr != NULL)
         {
             *mp_lm_rssi_addr = rssi_scale(rssi);
+            *p_written       = true;
         }
 
         if (mp_lm_margin_addr != NULL)
         {
             *mp_lm_margin_addr = margin_scale((int16_t)rssi - ED_MIN_DBM);
+            *p_written         = true;
         }
     }
 
     if (mp_lm_lqi_addr != NULL)
     {
         *mp_lm_lqi_addr = (uint8_t)nrf_802154_core_last_frame_lqi_get();
+        *p_written      = true;
     }
-
 }
 
 /**
@@ -348,17 +360,6 @@ static void ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
 
     while (nrf_802154_frame_parser_ie_iterator_end(p_iterator, p_end_addr) == false)
     {
-        const uint8_t * p_ie_end_addr = nrf_802154_frame_parser_ie_content_address_get(p_iterator)
-                                        + nrf_802154_frame_parser_ie_length_get(p_iterator);
-
-        // Boundary check
-        if (p_ie_end_addr > p_end_addr)
-        {
-            // Reset writer module state
-            ie_writer_reset();
-            return;
-        }
-
         switch (nrf_802154_frame_parser_ie_id_get(p_iterator))
         {
             case IE_VENDOR_ID:
@@ -395,14 +396,17 @@ static void ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
 
 /**
  * @brief Commits data to recognized information elements.
+ *
+ * @param[inout]  p_written  Flag set to true if IE was written. If IE was not written, the flag is
+ *                           not modified.
  */
-static void ie_writer_commit(void)
+static void ie_writer_commit(bool * p_written)
 {
     assert(m_writer_state == IE_WRITER_PREPARE);
     m_writer_state = IE_WRITER_COMMIT;
 
-    csl_ie_write_commit();
-    link_metrics_ie_write_commit();
+    csl_ie_write_commit(p_written);
+    link_metrics_ie_write_commit(p_written);
 }
 
 void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
@@ -414,24 +418,34 @@ void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_a
     ie_writer_prepare(p_ie_header, p_end_addr);
 }
 
-bool nrf_802154_ie_writer_pretransmission(
-    const uint8_t                           * p_frame,
+bool nrf_802154_ie_writer_tx_setup(
+    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
     (void)notify_function;
 
-    if (p_params->is_retransmission)
+    if (p_params->frame_props.dynamic_data_is_set)
     {
-        // Pass.
+        // The dynamic data in the frame is already set. Pass.
         return true;
     }
 
     const uint8_t * p_mfr_addr;
     uint8_t       * p_ie_header;
 
-    p_ie_header = (uint8_t *)nrf_802154_frame_parser_ie_header_get(p_frame);
-    p_mfr_addr  = nrf_802154_frame_parser_mfr_address_get(p_frame);
+    nrf_802154_frame_parser_data_t frame_data;
+
+    bool result = nrf_802154_frame_parser_data_init(p_frame,
+                                                    p_frame[PHR_OFFSET] + PHR_SIZE,
+                                                    PARSE_LEVEL_FULL,
+                                                    &frame_data);
+
+    assert(result);
+    (void)result;
+
+    p_ie_header = (uint8_t *)nrf_802154_frame_parser_ie_header_get(&frame_data);
+    p_mfr_addr  = nrf_802154_frame_parser_mfr_get(&frame_data);
 
     if (p_ie_header == NULL)
     {
@@ -443,7 +457,7 @@ bool nrf_802154_ie_writer_pretransmission(
     return true;
 }
 
-bool nrf_802154_ie_writer_tx_started_hook(const uint8_t * p_frame)
+bool nrf_802154_ie_writer_tx_started_hook(uint8_t * p_frame)
 {
     (void)p_frame;
 
@@ -452,13 +466,20 @@ bool nrf_802154_ie_writer_tx_started_hook(const uint8_t * p_frame)
         return true;
     }
 
-    ie_writer_commit();
+    bool written = false;
+
+    ie_writer_commit(&written);
     ie_writer_reset();
+
+    if (written)
+    {
+        nrf_802154_tx_work_buffer_is_dynamic_data_updated_set();
+    }
 
     return true;
 }
 
-void nrf_802154_ie_writer_tx_ack_started_hook(const uint8_t * p_ack)
+void nrf_802154_ie_writer_tx_ack_started_hook(uint8_t * p_ack)
 {
     (void)p_ack;
 
@@ -467,8 +488,15 @@ void nrf_802154_ie_writer_tx_ack_started_hook(const uint8_t * p_ack)
         return;
     }
 
-    ie_writer_commit();
+    bool written = false;
+
+    ie_writer_commit(&written);
     ie_writer_reset();
+
+    if (written)
+    {
+        nrf_802154_tx_work_buffer_is_dynamic_data_updated_set();
+    }
 }
 
 #if NRF_802154_DELAYED_TRX_ENABLED

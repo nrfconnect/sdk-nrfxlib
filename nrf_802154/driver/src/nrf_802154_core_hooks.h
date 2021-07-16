@@ -63,7 +63,8 @@
 bool nrf_802154_core_hooks_terminate(nrf_802154_term_t term_lvl, req_originator_t req_orig);
 
 /**
- * @brief Processes hooks which are to fire before the transmission request.
+ * @brief Processes hooks which are to fire before the transmission request and before
+ *        attempt to terminate previous operation.
  *
  * @param[in] p_frame          Pointer to a buffer that contains PHR and PSDU of the frame
  *                             that is to be transmitted.
@@ -74,7 +75,24 @@ bool nrf_802154_core_hooks_terminate(nrf_802154_term_t term_lvl, req_originator_
  * @retval false        Hooks have handled the frame - upper layer should not worry about it anymore.
  */
 bool nrf_802154_core_hooks_pre_transmission(
-    const uint8_t                           * p_frame,
+    uint8_t                                 * p_frame,
+    nrf_802154_transmit_params_t            * p_params,
+    nrf_802154_transmit_failed_notification_t notify_function);
+
+/**
+ * @brief Processes hooks which are to fire before the transmission but after previous operation
+ *        has been already terminated.
+ *
+ * @param[in] p_frame          Pointer to a buffer that contains PHR and PSDU of the frame
+ *                             that is to be transmitted.
+ * @param[in] p_params         Pointer to the transmission parameters.
+ * @param[in] notify_function  Function to be called to notify transmission failure.
+ *
+ * @retval true         Frame can be sent immediately.
+ * @retval false        Hooks have handled the frame - upper layer should not worry about it anymore.
+ */
+bool nrf_802154_core_hooks_tx_setup(
+    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function);
 
@@ -97,7 +115,16 @@ void nrf_802154_core_hooks_transmitted(const uint8_t * p_frame);
  * @retval  false  TX failed event is not to be propagated to the MAC layer. It is handled
  *                 internally.
  */
-bool nrf_802154_core_hooks_tx_failed(const uint8_t * p_frame, nrf_802154_tx_error_t error);
+bool nrf_802154_core_hooks_tx_failed(uint8_t * p_frame, nrf_802154_tx_error_t error);
+
+/**
+ * @brief Processes hooks for the ACK TX failed event.
+ *
+ * @param[in]  p_ack    Pointer to a buffer that contains PHR and PSDU of the ACK frame
+ *                      that was not transmitted.
+ * @param[in]  error    Cause of the failed transmission.
+ */
+void nrf_802154_core_hooks_tx_ack_failed(uint8_t * p_ack, nrf_802154_tx_error_t error);
 
 /**
  * @brief Processes hooks for the TX started event.
@@ -109,7 +136,7 @@ bool nrf_802154_core_hooks_tx_failed(const uint8_t * p_frame, nrf_802154_tx_erro
  * @retval  false  TX started event is not to be propagated to the MAC layer. It is handled
  *                 internally.
  */
-bool nrf_802154_core_hooks_tx_started(const uint8_t * p_frame);
+bool nrf_802154_core_hooks_tx_started(uint8_t * p_frame);
 
 /**
  * @brief Processes hooks for the RX started event.
@@ -130,7 +157,7 @@ void nrf_802154_core_hooks_rx_ack_started(void);
  * @param[in]  p_ack  Pointer to a buffer that contains PHR and PSDU of the ACK frame
  *                    that is being transmitted.
  */
-void nrf_802154_core_hooks_tx_ack_started(const uint8_t * p_ack);
+void nrf_802154_core_hooks_tx_ack_started(uint8_t * p_ack);
 
 /**
  *@}
