@@ -70,7 +70,7 @@
 void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr);
 
 /**
- * @brief Pretransmission hook for the IE writer module.
+ * @brief Transmission setup hook for the IE writer module.
  *
  * This hook parses the frame in search of header Information Elements and arms
  * the IE writer module. The IE writer module shall write data to recognized
@@ -87,8 +87,8 @@ void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_a
  *
  * @retval  true         Always succeeds.
  */
-bool nrf_802154_ie_writer_pretransmission(
-    const uint8_t                           * p_frame,
+bool nrf_802154_ie_writer_tx_setup(
+    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function);
 
@@ -107,7 +107,7 @@ bool nrf_802154_ie_writer_pretransmission(
  * @param[in]  p_ack    Pointer to the buffer that contains the PHR and PSDU of the ACK frame.
  *
  */
-void nrf_802154_ie_writer_tx_ack_started_hook(const uint8_t * p_ack);
+void nrf_802154_ie_writer_tx_ack_started_hook(uint8_t * p_ack);
 
 /**
  * @brief TX started hook for the IE writer module.
@@ -125,7 +125,7 @@ void nrf_802154_ie_writer_tx_ack_started_hook(const uint8_t * p_ack);
  *
  * @retval  true  Always succeeds.
  */
-bool nrf_802154_ie_writer_tx_started_hook(const uint8_t * p_frame);
+bool nrf_802154_ie_writer_tx_started_hook(uint8_t * p_frame);
 
 /**
  * @brief Sets the value of CSL period to inject into the CSL information element.

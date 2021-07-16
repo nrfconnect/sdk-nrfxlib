@@ -34,10 +34,12 @@
 
 #include "nrf_802154_aes_ccm.h"
 
+#include <assert.h>
 #include <string.h>
 
 #include "hal/nrf_ecb.h"
 #include "nrf_802154_const.h"
+#include "nrf_802154_tx_work_buffer.h"
 #include "platform/nrf_802154_irq.h"
 
 #ifndef MIN
@@ -84,6 +86,8 @@ static uint8_t                   m_a[NRF_802154_AES_CCM_BLOCK_SIZE];            
 static ccm_state_t               m_state;                                          ///< State of AES-CCM* transformation
 static uint8_t                   m_auth_tag[MIC_128_SIZE];                         ///< Authorization Tag
 static bool                      m_initialized;                                    ///< Flag that indicates whether the module has been initialized.
+static uint8_t                 * mp_ciphertext;                                    ///< Pointer to ciphertext destination buffer.
+static uint8_t                 * mp_work_buffer;                                   ///< Pointer to work buffer that stores the frame being transformed.
 
 static const uint8_t m_mic_size[] = { 0, MIC_32_SIZE, MIC_64_SIZE, MIC_128_SIZE }; ///< Security level - 802.15.4-2015 Standard Table 9.6
 
@@ -134,6 +138,7 @@ static void ecb_init(void)
     nrf_802154_irq_clear_pending(ECB_IRQn);
     nrf_802154_irq_enable(ECB_IRQn);
     nrf_ecb_int_enable(NRF_ECB, NRF_ECB_INT_ENDECB_MASK);
+    nrf_ecb_int_enable(NRF_ECB, NRF_ECB_INT_ERRORECB_MASK);
 }
 
 /******************************************************************************/
@@ -365,6 +370,12 @@ static void perform_plain_text_authorization(void)
     }
 }
 
+static void transformation_finished(void)
+{
+    nrf_802154_tx_work_buffer_is_secured_set();
+    m_aes_ccm_data.raw_frame = NULL;
+}
+
 /**
  * @brief Handler to ECB Interrupt Routine
  *  Performs AES-CCM* calculation in pipeline
@@ -374,7 +385,8 @@ static void ecb_irq_handler(void)
     uint8_t len = 0;
     uint8_t offset;
 
-    if (nrf_ecb_event_check(NRF_ECB, NRF_ECB_EVENT_ENDECB))
+    if (nrf_ecb_int_enable_check(NRF_ECB, NRF_ECB_INT_ENDECB_MASK) &&
+        nrf_ecb_event_check(NRF_ECB, NRF_ECB_EVENT_ENDECB))
     {
         nrf_ecb_event_clear(NRF_ECB, NRF_ECB_EVENT_ENDECB);
 
@@ -403,7 +415,7 @@ static void ecb_irq_handler(void)
                 offset = (m_state.iteration - 1) * NRF_802154_AES_CCM_BLOCK_SIZE;
                 len    = MIN(m_aes_ccm_data.plain_text_data_len - offset,
                              NRF_802154_AES_CCM_BLOCK_SIZE);
-                memcpy(m_aes_ccm_data.plain_text_data + offset, m_m, len);
+                memcpy(mp_ciphertext + offset, m_m, len);
                 if (plain_text_data_get(&m_aes_ccm_data, m_state.iteration, m_m))
                 {
                     m_state.iteration++;
@@ -419,7 +431,7 @@ static void ecb_irq_handler(void)
                     }
                     else
                     {
-                        m_aes_ccm_data.raw_frame = NULL;
+                        transformation_finished();
                     }
                 }
                 break;
@@ -428,18 +440,35 @@ static void ecb_irq_handler(void)
                 two_blocks_xor(m_auth_tag,
                                mp_ecb_ciphertext,
                                m_mic_size[m_aes_ccm_data.mic_level]);
-                memcpy(m_aes_ccm_data.raw_frame +
-                       (m_aes_ccm_data.raw_frame[PHR_OFFSET] - 2 -
+                memcpy(mp_work_buffer +
+                       (mp_work_buffer[PHR_OFFSET] - FCS_SIZE -
                         m_mic_size[m_aes_ccm_data.mic_level] +
-                        1),
+                        PHR_SIZE),
                        m_auth_tag,
                        m_mic_size[m_aes_ccm_data.mic_level]);
-                m_aes_ccm_data.raw_frame = NULL;
+                transformation_finished();
                 break;
 
             default:
                 break;
         }
+    }
+
+    if (nrf_ecb_int_enable_check(NRF_ECB, NRF_ECB_INT_ERRORECB_MASK) &&
+        nrf_ecb_event_check(NRF_ECB, NRF_ECB_EVENT_ERRORECB))
+    {
+        /*
+         * It is possible that the ERRORECB event is caused by the
+         * AAR and CCM peripherals, which share the same hardware resources.
+         * At this point it is assumed, that ECB, AAR and CCM peripherals
+         * are not used by anything, except the 802.15.4 driver and
+         * other MPSL clients and thus it is impossible that ECB was aborted
+         * for any other reason, than the TX failed event caused by a terminated
+         * 802.15.4 transmit operation or end of timeslot.
+         *
+         * Therefore no action is taken in this handler.
+         */
+        nrf_ecb_event_clear(NRF_ECB, NRF_ECB_EVENT_ERRORECB);
     }
 }
 
@@ -479,10 +508,26 @@ bool nrf_802154_aes_ccm_transform_prepare(const nrf_802154_aes_ccm_data_t * p_ae
     // Store the encryption data for future use
     memcpy(&m_aes_ccm_data, p_aes_ccm_data, sizeof(nrf_802154_aes_ccm_data_t));
 
+    ptrdiff_t offset = p_aes_ccm_data->raw_frame[PHR_OFFSET] + PHR_SIZE;
+
+    if (p_aes_ccm_data->plain_text_data)
+    {
+        offset = p_aes_ccm_data->plain_text_data - p_aes_ccm_data->raw_frame;
+    }
+
+    assert((offset >= 0) && (offset <= MAX_PACKET_SIZE + PHR_SIZE));
+
+    nrf_802154_tx_work_buffer_plain_text_offset_set(offset);
+    mp_work_buffer = nrf_802154_tx_work_buffer_enable_for(p_aes_ccm_data->raw_frame);
+    mp_ciphertext  = mp_work_buffer + offset;
+
+    memcpy(mp_work_buffer, p_aes_ccm_data->raw_frame, offset);
+    memset(mp_ciphertext, 0, p_aes_ccm_data->raw_frame[PHR_OFFSET] + PHR_SIZE - offset);
+
     return true;
 }
 
-void nrf_802154_aes_ccm_transform_start(const uint8_t * p_frame)
+void nrf_802154_aes_ccm_transform_start(uint8_t * p_frame)
 {
     // Verify that the algorithm's inputs were prepared properly
     if ((p_frame != m_aes_ccm_data.raw_frame) || (m_aes_ccm_data.raw_frame == NULL))
@@ -493,6 +538,10 @@ void nrf_802154_aes_ccm_transform_start(const uint8_t * p_frame)
     uint8_t   auth_flags = auth_flags_format(&m_aes_ccm_data);
     uint8_t * p_x        = m_x;
     uint8_t * p_b        = m_b;
+    ptrdiff_t offset     = mp_ciphertext - mp_work_buffer;
+
+    // Copy updated part of the frame
+    memcpy(mp_work_buffer, p_frame, offset);
 
     // initial settings
     memset(p_x, 0, NRF_802154_AES_CCM_BLOCK_SIZE);
@@ -503,4 +552,23 @@ void nrf_802154_aes_ccm_transform_start(const uint8_t * p_frame)
     memset(mp_ecb_key, 0, 48);
     nrf_ecb_set_key(m_aes_ccm_data.key);
     start_ecb_auth_transformation();
+}
+
+void nrf_802154_aes_ccm_transform_abort(uint8_t * p_frame)
+{
+    // Verify that the encryption of the correct frame is being aborted.
+    if (p_frame != m_aes_ccm_data.raw_frame)
+    {
+        return;
+    }
+
+    /*
+     * Temporarily disable ENDECB interrupt, trigger STOPECB task
+     * to stop encryption in case it is still running and clear
+     * the ENDECB event in case the encryption has completed.
+     */
+    nrf_ecb_int_disable(NRF_ECB, NRF_ECB_INT_ENDECB_MASK);
+    nrf_ecb_task_trigger(NRF_ECB, NRF_ECB_TASK_STOPECB);
+    nrf_ecb_event_clear(NRF_ECB, NRF_ECB_EVENT_ENDECB);
+    nrf_ecb_int_enable(NRF_ECB, NRF_ECB_INT_ENDECB_MASK);
 }

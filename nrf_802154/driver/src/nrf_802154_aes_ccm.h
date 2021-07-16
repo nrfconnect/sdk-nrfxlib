@@ -82,6 +82,13 @@ bool nrf_802154_aes_ccm_transform_prepare(const nrf_802154_aes_ccm_data_t * p_ae
  *
  * @param[in]  p_frame  Pointer to the buffer that contains a frame being transmitted.
  */
-void nrf_802154_aes_ccm_transform_start(const uint8_t * p_frame);
+void nrf_802154_aes_ccm_transform_start(uint8_t * p_frame);
+
+/**
+ * @brief Aborts AES-CCM* transformation.
+ *
+ * @param[in]  p_frame  Pointer to the buffer that contains a frame being transmitted.
+ */
+void nrf_802154_aes_ccm_transform_abort(uint8_t * p_frame);
 
 #endif // NRF_802154_AES_CCM_H_

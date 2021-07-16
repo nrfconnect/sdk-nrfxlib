@@ -189,26 +189,6 @@ void nrf_802154_trx_ppi_for_fem_clear(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
-bool nrf_802154_trx_ppi_for_fem_powerdown_set(NRF_TIMER_Type * p_instance,
-                                              uint32_t         compare_channel)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
-
-    // TODO: Implement this function when FEM API supports nRF53
-
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
-    return false;
-}
-
-void nrf_802154_trx_ppi_for_fem_powerdown_clear(void)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
-
-    // TODO: Implement this function when FEM API supports nRF53
-
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
-}
-
 uint32_t nrf_802154_trx_ppi_group_for_abort_get(void)
 {
     // TODO: Implement it when external event (like coex) can abort radio operation

@@ -57,13 +57,32 @@ void nrf_802154_imm_ack_generator_init(void)
     memcpy(m_ack_data, ack_data, sizeof(ack_data));
 }
 
-const uint8_t * nrf_802154_imm_ack_generator_create(const uint8_t * p_frame)
+void nrf_802154_imm_ack_generator_reset(void)
 {
+    // Intentionally empty
+}
+
+uint8_t * nrf_802154_imm_ack_generator_create(
+    const nrf_802154_frame_parser_data_t * p_frame_data)
+{
+    if (nrf_802154_frame_parser_parse_level_get(p_frame_data) < PARSE_LEVEL_FULL)
+    {
+        // The entire frame being acknowledged is necessary to correctly generate Ack
+        return NULL;
+    }
+
+    const uint8_t * frame_dsn = nrf_802154_frame_parser_dsn_get(p_frame_data);
+
+    if (frame_dsn == NULL)
+    {
+        return NULL;
+    }
+
     // Set valid sequence number in ACK frame.
-    m_ack_data[DSN_OFFSET] = p_frame[DSN_OFFSET];
+    m_ack_data[DSN_OFFSET] = *frame_dsn;
 
     // Set pending bit in ACK frame.
-    if (nrf_802154_ack_data_pending_bit_should_be_set(p_frame))
+    if (nrf_802154_ack_data_pending_bit_should_be_set(p_frame_data))
     {
         m_ack_data[FRAME_PENDING_OFFSET] = ACK_HEADER_WITH_PENDING;
     }

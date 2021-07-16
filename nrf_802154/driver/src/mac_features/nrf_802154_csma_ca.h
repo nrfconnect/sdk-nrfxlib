@@ -60,12 +60,13 @@
  *       timed out by the next layer. The ACK timeout timer must start when
  *       the @ref nrf_802154_tx_started() function is called.
  *
- * @param[in]  p_data             Pointer to a buffer the contains PHR and PSDU of the frame
- *                                that is to be transmitted.
- * @param[in]  is_retransmission  Flag that indicates if the CSMA-CA procedure to be started is
- *                                a retransmission.
+ * @param[in]  p_data      Pointer to a buffer the contains PHR and PSDU of the frame that is
+ *                         to be transmitted.
+ * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
+ *                         to transmit.
  */
-void nrf_802154_csma_ca_start(const uint8_t * p_data, bool is_retransmission);
+void nrf_802154_csma_ca_start(uint8_t                                      * p_data,
+                              const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
 
 /**
  * @brief Aborts the ongoing CSMA-CA procedure.
@@ -94,7 +95,7 @@ bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_o
  * @retval  false  TX failed event is not to be propagated to the MAC layer. It is handled
  *                 internally in the CSMA-CA module.
  */
-bool nrf_802154_csma_ca_tx_failed_hook(const uint8_t * p_frame, nrf_802154_tx_error_t error);
+bool nrf_802154_csma_ca_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error);
 
 /**
  * @brief Handles a TX started event.
@@ -106,7 +107,7 @@ bool nrf_802154_csma_ca_tx_failed_hook(const uint8_t * p_frame, nrf_802154_tx_er
  * @retval  false  TX started event is not to be propagated to the MAC layer. It is handled
  *                 internally in the CSMA-CA module.
  */
-bool nrf_802154_csma_ca_tx_started_hook(const uint8_t * p_frame);
+bool nrf_802154_csma_ca_tx_started_hook(uint8_t * p_frame);
 
 /**
  *@}

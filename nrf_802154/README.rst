@@ -61,3 +61,4 @@ The lists of the necessary files can be found in the following locations:
    doc/multiprotocol_support
    doc/rd_service_layer_lib
    doc/CHANGELOG
+   doc/api

@@ -54,19 +54,43 @@
 
 #define ENH_ACK_MAX_SIZE MAX_PACKET_SIZE
 
-static uint8_t m_ack_data[ENH_ACK_MAX_SIZE + PHR_SIZE];
-
-static void ack_buffer_clear(void)
+typedef enum
 {
-    memset(m_ack_data, 0, FCF_SIZE + PHR_SIZE);
+    ACK_STATE_RESET,
+    ACK_STATE_INVALID,
+    ACK_STATE_PROCESSING,
+    ACK_STATE_COMPLETE,
+} ack_state_t;
+
+static ack_state_t m_ack_state;
+
+static uint8_t                        m_ack[ENH_ACK_MAX_SIZE + PHR_SIZE];
+static nrf_802154_frame_parser_data_t m_ack_data;
+static const uint8_t                * mp_ie_data;
+static uint8_t                        m_ie_data_len;
+
+static void ack_state_set(ack_state_t state_to_set)
+{
+    m_ack_state = state_to_set;
 }
 
-static void sequence_number_set(const uint8_t * p_frame)
+static inline ack_state_t ack_state_get(void)
 {
-    if (!nrf_802154_frame_parser_dsn_suppress_bit_is_set(p_frame))
+    return m_ack_state;
+}
+
+static uint8_t sequence_number_set(const nrf_802154_frame_parser_data_t * p_frame_data)
+{
+    const uint8_t * p_frame_dsn = nrf_802154_frame_parser_dsn_get(p_frame_data);
+
+    if (p_frame_dsn != NULL)
     {
-        m_ack_data[DSN_OFFSET] = p_frame[DSN_OFFSET];
+        m_ack[DSN_OFFSET] = *p_frame_dsn;
+
+        return DSN_SIZE;
     }
+
+    return 0U;
 }
 
 /***************************************************************************************************
@@ -75,132 +99,152 @@ static void sequence_number_set(const uint8_t * p_frame)
 
 static void fcf_frame_type_set(void)
 {
-    m_ack_data[FRAME_TYPE_OFFSET] |= FRAME_TYPE_ACK;
+    m_ack[FRAME_TYPE_OFFSET] |= FRAME_TYPE_ACK;
 }
 
-static void fcf_security_enabled_set(const uint8_t * p_frame)
+static void fcf_security_enabled_set(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    m_ack_data[SECURITY_ENABLED_OFFSET] |=
-        (p_frame[SECURITY_ENABLED_OFFSET] & SECURITY_ENABLED_BIT);
-}
-
-static void fcf_frame_pending_set(const uint8_t * p_frame)
-{
-    if (nrf_802154_ack_data_pending_bit_should_be_set(p_frame))
+    if (nrf_802154_frame_parser_security_enabled_bit_is_set(p_frame_data))
     {
-        m_ack_data[FRAME_PENDING_OFFSET] |= FRAME_PENDING_BIT;
+        m_ack[SECURITY_ENABLED_OFFSET] |= SECURITY_ENABLED_BIT;
     }
 }
 
-static void fcf_panid_compression_set(const uint8_t * p_frame)
+static void fcf_frame_pending_set(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    if (p_frame[PAN_ID_COMPR_OFFSET] & PAN_ID_COMPR_MASK)
+    if (nrf_802154_ack_data_pending_bit_should_be_set(p_frame_data))
     {
-        m_ack_data[PAN_ID_COMPR_OFFSET] |= PAN_ID_COMPR_MASK;
+        m_ack[FRAME_PENDING_OFFSET] |= FRAME_PENDING_BIT;
     }
 }
 
-static void fcf_sequence_number_suppression_set(const uint8_t * p_frame)
+static void fcf_panid_compression_set(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    if (nrf_802154_frame_parser_dsn_suppress_bit_is_set(p_frame))
+    if (nrf_802154_frame_parser_panid_compression_is_set(p_frame_data))
     {
-        m_ack_data[DSN_SUPPRESS_OFFSET] |= DSN_SUPPRESS_BIT;
+        m_ack[PAN_ID_COMPR_OFFSET] |= PAN_ID_COMPR_MASK;
     }
 }
 
-static void fcf_ie_present_set(const uint8_t * p_ie_data)
+static void fcf_sequence_number_suppression_set(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    if (p_ie_data != NULL)
+    if (nrf_802154_frame_parser_dsn_suppress_bit_is_set(p_frame_data))
     {
-        m_ack_data[IE_PRESENT_OFFSET] |= IE_PRESENT_BIT;
+        m_ack[DSN_SUPPRESS_OFFSET] |= DSN_SUPPRESS_BIT;
     }
 }
 
-static void fcf_dst_addressing_mode_set(const uint8_t * p_frame)
+static void fcf_ie_present_set(bool ie_present)
 {
-    if (nrf_802154_frame_parser_src_addr_is_extended(p_frame))
+    if (ie_present)
     {
-        m_ack_data[DEST_ADDR_TYPE_OFFSET] |= DEST_ADDR_TYPE_EXTENDED;
+        m_ack[IE_PRESENT_OFFSET] |= IE_PRESENT_BIT;
     }
-    else if (nrf_802154_frame_parser_src_addr_is_short(p_frame))
+}
+
+static void fcf_dst_addressing_mode_set(const nrf_802154_frame_parser_data_t * p_frame_data)
+{
+    if (nrf_802154_frame_parser_src_addr_is_extended(p_frame_data))
     {
-        m_ack_data[DEST_ADDR_TYPE_OFFSET] |= DEST_ADDR_TYPE_SHORT;
+        m_ack[DEST_ADDR_TYPE_OFFSET] |= DEST_ADDR_TYPE_EXTENDED;
+    }
+    else if (nrf_802154_frame_parser_src_addr_is_short(p_frame_data))
+    {
+        m_ack[DEST_ADDR_TYPE_OFFSET] |= DEST_ADDR_TYPE_SHORT;
     }
     else
     {
-        m_ack_data[DEST_ADDR_TYPE_OFFSET] |= DEST_ADDR_TYPE_NONE;
+        m_ack[DEST_ADDR_TYPE_OFFSET] |= DEST_ADDR_TYPE_NONE;
     }
 }
 
 static void fcf_src_addressing_mode_set(void)
 {
-    m_ack_data[SRC_ADDR_TYPE_OFFSET] |= SRC_ADDR_TYPE_NONE;
+    m_ack[SRC_ADDR_TYPE_OFFSET] |= SRC_ADDR_TYPE_NONE;
 }
 
 static void fcf_frame_version_set(void)
 {
-    m_ack_data[FRAME_VERSION_OFFSET] |= FRAME_VERSION_2;
+    m_ack[FRAME_VERSION_OFFSET] |= FRAME_VERSION_2;
 }
 
-static void frame_control_set(const uint8_t                      * p_frame,
-                              const uint8_t                      * p_ie_data,
-                              nrf_802154_frame_parser_mhr_data_t * p_ack_offsets)
+static uint8_t frame_control_set(const nrf_802154_frame_parser_data_t * p_frame_data,
+                                 bool                                   ie_present)
 {
-    bool parse_results;
+    nrf_802154_frame_parser_level_t level = nrf_802154_frame_parser_parse_level_get(p_frame_data);
 
-    fcf_frame_type_set();
-    fcf_security_enabled_set(p_frame);
-    fcf_frame_pending_set(p_frame);
-    fcf_panid_compression_set(p_frame);
-    fcf_sequence_number_suppression_set(p_frame);
-    fcf_ie_present_set(p_ie_data);
-    fcf_dst_addressing_mode_set(p_frame);
-    fcf_frame_version_set();
-    fcf_src_addressing_mode_set();
+    if (level >= PARSE_LEVEL_FCF_OFFSETS)
+    {
+        fcf_frame_type_set();
+        fcf_security_enabled_set(p_frame_data);
+        fcf_panid_compression_set(p_frame_data);
+        fcf_sequence_number_suppression_set(p_frame_data);
+        fcf_ie_present_set(ie_present);
+        fcf_dst_addressing_mode_set(p_frame_data);
+        fcf_frame_version_set();
+        fcf_src_addressing_mode_set();
+    }
 
-    parse_results = nrf_802154_frame_parser_mhr_parse(m_ack_data, p_ack_offsets);
-    assert(parse_results);
-    (void)parse_results;
+    if (level >= PARSE_LEVEL_FULL)
+    {
+        // As some frame pending bit setting algorithms depend on MAC payload,
+        // the entire frame must be known to set this field.
+        fcf_frame_pending_set(p_frame_data);
+    }
 
-    m_ack_data[PHR_OFFSET] = p_ack_offsets->addressing_end_offset - PHR_SIZE + FCS_SIZE;
+    return FCF_SIZE;
 }
 
 /***************************************************************************************************
  * @section Addressing fields functions
  **************************************************************************************************/
 
-static void destination_set(const nrf_802154_frame_parser_mhr_data_t * p_frame,
-                            const nrf_802154_frame_parser_mhr_data_t * p_ack)
+static uint8_t destination_set(const nrf_802154_frame_parser_data_t * p_frame_data,
+                               nrf_802154_frame_parser_data_t       * p_ack_data)
 {
+    uint8_t   bytes_written   = 0U;
+    uint8_t * p_ack_dst_panid = (uint8_t *)nrf_802154_frame_parser_dst_panid_get(p_ack_data);
+    uint8_t * p_ack_dst_addr  = (uint8_t *)nrf_802154_frame_parser_dst_addr_get(p_ack_data);
+
+    const uint8_t * p_frame_src_panid = nrf_802154_frame_parser_src_panid_get(p_frame_data);
+    const uint8_t * p_frame_dst_panid = nrf_802154_frame_parser_dst_panid_get(p_frame_data);
+    const uint8_t * p_frame_src_addr  = nrf_802154_frame_parser_src_addr_get(p_frame_data);
+
+    uint8_t src_addr_size = nrf_802154_frame_parser_src_addr_size_get(p_frame_data);
+
     // Fill the Ack destination PAN ID field.
-    if (p_ack->p_dst_panid != NULL)
+    if (p_ack_dst_panid != NULL)
     {
         const uint8_t * p_dst_panid;
 
-        if (p_frame->p_src_panid != NULL)
+        if (p_frame_src_panid != NULL)
         {
-            p_dst_panid = p_frame->p_src_panid;
+            p_dst_panid = p_frame_src_panid;
         }
-        else if (p_frame->p_dst_panid != NULL)
+        else if (p_frame_dst_panid != NULL)
         {
-            p_dst_panid = p_frame->p_dst_panid;
+            p_dst_panid = p_frame_dst_panid;
         }
         else
         {
             p_dst_panid = nrf_802154_pib_pan_id_get();
         }
 
-        memcpy((uint8_t *)p_ack->p_dst_panid, p_dst_panid, PAN_ID_SIZE);
+        memcpy(p_ack_dst_panid, p_dst_panid, PAN_ID_SIZE);
+        bytes_written += PAN_ID_SIZE;
     }
 
     // Fill the Ack destination address field.
-    if (p_frame->p_src_addr != NULL)
+    if ((p_ack_dst_addr != NULL) && (p_frame_src_addr != NULL))
     {
-        assert(p_ack->p_dst_addr != NULL);
-        assert(p_ack->dst_addr_size == p_frame->src_addr_size);
+        assert(nrf_802154_frame_parser_dst_addr_is_extended(p_ack_data) ==
+               nrf_802154_frame_parser_src_addr_is_extended(p_frame_data));
 
-        memcpy((uint8_t *)p_ack->p_dst_addr, p_frame->p_src_addr, p_frame->src_addr_size);
+        memcpy(p_ack_dst_addr, p_frame_src_addr, src_addr_size);
+        bytes_written += src_addr_size;
     }
+
+    return bytes_written;
 }
 
 static void source_set(void)
@@ -212,179 +256,135 @@ static void source_set(void)
  * @section Auxiliary security header functions
  **************************************************************************************************/
 
-static uint8_t security_header_size(const nrf_802154_frame_parser_mhr_data_t * p_frame)
+static uint8_t security_header_size(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    uint8_t sec_hdr_size = SECURITY_CONTROL_SIZE;
+    uint8_t sec_ctrl_offset = nrf_802154_frame_parser_sec_ctrl_offset_get(p_frame_data);
+    uint8_t aux_sec_hdr_end = nrf_802154_frame_parser_aux_sec_hdr_end_offset_get(p_frame_data);
 
-    if (((*p_frame->p_sec_ctrl) & FRAME_COUNTER_SUPPRESS_BIT) == 0)
-    {
-        sec_hdr_size += FRAME_COUNTER_SIZE;
-    }
-
-    switch ((*p_frame->p_sec_ctrl) & KEY_ID_MODE_MASK)
-    {
-        case KEY_ID_MODE_1_MASK:
-            sec_hdr_size += KEY_ID_MODE_1_SIZE;
-            break;
-
-        case KEY_ID_MODE_2_MASK:
-            sec_hdr_size += KEY_ID_MODE_2_SIZE;
-            break;
-
-        case KEY_ID_MODE_3_MASK:
-            sec_hdr_size += KEY_ID_MODE_3_SIZE;
-            break;
-
-        default:
-            break;
-    }
-
-    return sec_hdr_size;
+    return aux_sec_hdr_end - sec_ctrl_offset;
 }
 
-static void security_control_set(const nrf_802154_frame_parser_mhr_data_t * p_frame,
-                                 const nrf_802154_frame_parser_mhr_data_t * p_ack)
+static uint8_t key_id_size_get(uint8_t key_id_mode)
 {
-    assert(p_frame->p_sec_ctrl != NULL);
-
-    // All the bits in the security control byte can be copied.
-    *(uint8_t *)p_ack->p_sec_ctrl = *p_frame->p_sec_ctrl;
-
-    m_ack_data[PHR_OFFSET] += SECURITY_CONTROL_SIZE;
-}
-
-static const uint8_t * security_key_id_set(const nrf_802154_frame_parser_mhr_data_t * p_frame,
-                                           const nrf_802154_frame_parser_mhr_data_t * p_ack,
-                                           bool                                       fc_suppressed,
-                                           const uint8_t                           ** p_sec_end)
-{
-    const uint8_t * p_frame_key_id;
-    const uint8_t * p_ack_key_id;
-    uint8_t         key_id_size = 0;
-
-    p_frame_key_id = p_frame->p_sec_ctrl + SECURITY_CONTROL_SIZE;
-    p_ack_key_id   = p_ack->p_sec_ctrl + SECURITY_CONTROL_SIZE;
-
-    if (!fc_suppressed)
+    switch (key_id_mode)
     {
-        p_frame_key_id += FRAME_COUNTER_SIZE;
-        p_ack_key_id   += FRAME_COUNTER_SIZE;
-    }
+        case KEY_ID_MODE_1:
+            return KEY_ID_MODE_1_SIZE;
 
-    switch ((*p_ack->p_sec_ctrl) & KEY_ID_MODE_MASK)
-    {
-        case KEY_ID_MODE_1_MASK:
-            key_id_size = KEY_ID_MODE_1_SIZE;
-            break;
+        case KEY_ID_MODE_2:
+            return KEY_ID_MODE_2_SIZE;
 
-        case KEY_ID_MODE_2_MASK:
-            key_id_size = KEY_ID_MODE_2_SIZE;
-            break;
-
-        case KEY_ID_MODE_3_MASK:
-            key_id_size = KEY_ID_MODE_3_SIZE;
-            break;
+        case KEY_ID_MODE_3:
+            return KEY_ID_MODE_3_SIZE;
 
         default:
-            break;
+            return 0U;
     }
-
-    if (0 != key_id_size)
-    {
-        memcpy((uint8_t *)p_ack_key_id, p_frame_key_id, key_id_size);
-        m_ack_data[PHR_OFFSET] += key_id_size;
-    }
-
-    switch (*(p_ack->p_sec_ctrl) & SECURITY_LEVEL_MASK)
-    {
-        case SECURITY_LEVEL_MIC_32:
-        case SECURITY_LEVEL_ENC_MIC_32:
-            m_ack_data[PHR_OFFSET] += MIC_32_SIZE;
-            break;
-
-        case SECURITY_LEVEL_MIC_64:
-        case SECURITY_LEVEL_ENC_MIC_64:
-            m_ack_data[PHR_OFFSET] += MIC_64_SIZE;
-            break;
-
-        case SECURITY_LEVEL_MIC_128:
-        case SECURITY_LEVEL_ENC_MIC_128:
-            m_ack_data[PHR_OFFSET] += MIC_128_SIZE;
-            break;
-
-        default:
-            break;
-    }
-
-    *p_sec_end = p_ack_key_id + key_id_size;
-
-    return (0 == key_id_size) ? NULL : p_ack_key_id;
 }
 
-static bool frame_counter_set(const nrf_802154_frame_parser_mhr_data_t * p_ack_pdata,
-                              const uint8_t                            * p_ack_key_id)
+static uint8_t security_key_id_set(const nrf_802154_frame_parser_data_t * p_frame_data,
+                                   nrf_802154_frame_parser_data_t       * p_ack_data)
+{
+    const uint8_t * p_frame_key_id = nrf_802154_frame_parser_key_id_get(p_frame_data);
+    uint8_t       * p_ack_key_id   = (uint8_t *)nrf_802154_frame_parser_key_id_get(p_ack_data);
+    uint8_t         key_id_size    = key_id_size_get(nrf_802154_frame_parser_sec_ctrl_key_id_mode_get(
+                                                         p_ack_data));
+
+    if ((p_ack_key_id != NULL) && (p_frame_key_id != NULL))
+    {
+        memcpy(p_ack_key_id, p_frame_key_id, key_id_size);
+    }
+
+    return key_id_size;
+}
+
+static bool frame_counter_set(nrf_802154_frame_parser_data_t * p_ack_data,
+                              uint8_t                        * p_bytes_written)
 {
     nrf_802154_key_id_t ack_key_id;
     uint32_t            new_fc_value;
+    uint8_t           * p_frame_counter = (uint8_t *)nrf_802154_frame_parser_frame_counter_get(
+        p_ack_data);
 
-    ack_key_id.mode     = ((*p_ack_pdata->p_sec_ctrl) & KEY_ID_MODE_MASK) >> KEY_ID_MODE_BIT_OFFSET;
-    ack_key_id.p_key_id = (uint8_t *)p_ack_key_id;
+    if (p_frame_counter == NULL)
+    {
+        // The frame counter is suppressed
+        *p_bytes_written = 0;
+        return true;
+    }
+
+    ack_key_id.mode     = nrf_802154_frame_parser_sec_ctrl_key_id_mode_get(p_ack_data);
+    ack_key_id.p_key_id = (uint8_t *)nrf_802154_frame_parser_key_id_get(p_ack_data);
 
     if (NRF_802154_SECURITY_ERROR_NONE !=
         nrf_802154_security_pib_frame_counter_get_next(&new_fc_value, &ack_key_id))
     {
+        *p_bytes_written = 0;
         return false;
     }
 
     // Set the frame counter value in security header of the ACK frame
-    host_32_to_little(new_fc_value,
-                      (uint8_t *)(p_ack_pdata->p_sec_ctrl + SECURITY_CONTROL_SIZE));
-
-    m_ack_data[PHR_OFFSET] += FRAME_COUNTER_SIZE;
+    host_32_to_little(new_fc_value, p_frame_counter);
+    *p_bytes_written = FRAME_COUNTER_SIZE;
 
     return true;
 }
 
-static bool security_header_set(const nrf_802154_frame_parser_mhr_data_t * p_frame,
-                                const nrf_802154_frame_parser_mhr_data_t * p_ack,
-                                const uint8_t                           ** p_sec_end)
+static bool security_header_set(const nrf_802154_frame_parser_data_t * p_frame_data,
+                                nrf_802154_frame_parser_data_t       * p_ack_data,
+                                uint8_t                              * p_bytes_written)
 {
     bool security_header_prepared;
+    bool result;
 
-    if (((*p_frame->p_sec_ctrl) & SECURITY_LEVEL_MASK) == 0)
+    uint8_t bytes_written       = 0U;
+    uint8_t fc_bytes_written    = 0U;
+    uint8_t ack_sec_ctrl_offset = nrf_802154_frame_parser_addressing_end_offset_get(
+        p_ack_data);
+    uint8_t * ack_sec_ctrl = (uint8_t *)nrf_802154_frame_parser_addressing_end_get(
+        p_ack_data);
+    const uint8_t * frame_sec_ctrl = nrf_802154_frame_parser_sec_ctrl_get(p_frame_data);
+
+    if ((ack_sec_ctrl == NULL) || (frame_sec_ctrl == NULL))
+    {
+        *p_bytes_written = bytes_written;
+        return true;
+    }
+
+    // All the bits in the security control byte can be copied.
+    *ack_sec_ctrl  = *frame_sec_ctrl;
+    bytes_written += SECURITY_CONTROL_SIZE;
+
+    // Security control field is now ready. The parsing of the frame can advance.
+    result = nrf_802154_frame_parser_valid_data_extend(p_ack_data,
+                                                       ack_sec_ctrl_offset + PHR_SIZE,
+                                                       PARSE_LEVEL_SEC_CTRL_OFFSETS);
+    assert(result);
+    (void)result;
+
+    if (nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_frame_data) == SECURITY_LEVEL_NONE)
     {
         // The security level value is zero, therefore no auxiliary security header processing
         // is performed according to 802.15.4 specification. This also applies to the frame counter,
         // the value of which is left as it is in the message to which the ACK responds.
         // The entire auxiliary security header content is simply copied to ACK.
-        uint8_t sec_hdr_size = security_header_size(p_frame);
+        uint8_t sec_hdr_size = security_header_size(p_frame_data) - SECURITY_CONTROL_SIZE;
 
-        memcpy((uint8_t *)p_ack->p_sec_ctrl, p_frame->p_sec_ctrl, sec_hdr_size);
-        m_ack_data[PHR_OFFSET]  += sec_hdr_size;
+        memcpy(ack_sec_ctrl + SECURITY_CONTROL_SIZE,
+               frame_sec_ctrl + SECURITY_CONTROL_SIZE,
+               sec_hdr_size);
+        bytes_written           += sec_hdr_size;
         security_header_prepared = true;
     }
     else
     {
-        bool            fc_suppressed;
-        const uint8_t * p_ack_key_id;
-
-        security_control_set(p_frame, p_ack);
-
-        // Frame counter is set by MAC layer when the frame is encrypted.
-        fc_suppressed = ((*p_ack->p_sec_ctrl) & FRAME_COUNTER_SUPPRESS_BIT);
-
-        p_ack_key_id = security_key_id_set(p_frame, p_ack, fc_suppressed, p_sec_end);
-
-        if (fc_suppressed)
-        {
-            // There is no frame counter filed, so all done here.
-            security_header_prepared = true;
-        }
-        else
-        {
-            security_header_prepared = frame_counter_set(p_ack, p_ack_key_id);
-        }
+        bytes_written           += security_key_id_set(p_frame_data, p_ack_data);
+        security_header_prepared = frame_counter_set(p_ack_data, &fc_bytes_written);
+        bytes_written           += fc_bytes_written;
     }
+
+    bytes_written   += nrf_802154_frame_parser_mic_size_get(p_ack_data);
+    *p_bytes_written = bytes_written;
 
     return security_header_prepared;
 }
@@ -393,9 +393,14 @@ static bool security_header_set(const nrf_802154_frame_parser_mhr_data_t * p_fra
  * @section Information Elements
  **************************************************************************************************/
 
-static void ie_header_set(const uint8_t * p_ie_data, uint8_t ie_data_len, const uint8_t * p_sec_end)
+static void ie_header_set(const uint8_t                  * p_ie_data,
+                          uint8_t                          ie_data_len,
+                          nrf_802154_frame_parser_data_t * p_ack_data)
 {
-    uint8_t * p_ack_ie = (uint8_t *)p_sec_end;
+    uint8_t   ie_offset = p_ack_data->helper.aux_sec_hdr_end_offset;
+    uint8_t * p_ack_ie;
+
+    p_ack_ie = (uint8_t *)p_ack_data->p_frame + ie_offset;
 
     if (p_ie_data == NULL)
     {
@@ -405,32 +410,31 @@ static void ie_header_set(const uint8_t * p_ie_data, uint8_t ie_data_len, const 
     assert(p_ack_ie != NULL);
 
     memcpy(p_ack_ie, p_ie_data, ie_data_len);
-    m_ack_data[PHR_OFFSET] += ie_data_len;
 
 #if NRF_802154_IE_WRITER_ENABLED
     nrf_802154_ie_writer_prepare(p_ack_ie, p_ack_ie + ie_data_len);
 #endif
 }
 
-static void ie_header_terminate(const nrf_802154_frame_parser_mhr_data_t * p_ack,
-                                const uint8_t                            * p_sec_end,
-                                const uint8_t                            * p_ie_data,
-                                uint8_t                                    ie_data_len)
+static uint8_t ie_header_terminate(const uint8_t                  * p_ie_data,
+                                   uint8_t                          ie_data_len,
+                                   nrf_802154_frame_parser_data_t * p_ack_data)
 {
     if (p_ie_data == NULL)
     {
         // No IEs to terminate.
-        return;
+        return 0U;
     }
 
-    if ((p_ack->p_sec_ctrl == NULL) || ((*p_ack->p_sec_ctrl & SECURITY_LEVEL_MASK) == 0))
+    if ((nrf_802154_frame_parser_security_enabled_bit_is_set(p_ack_data) == false) ||
+        (nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_ack_data) == SECURITY_LEVEL_NONE))
     {
         // This code assumes that neither regular frame payload nor Payload IEs can be set by the
         // driver. Therefore without security, the Ack has no payload, so termination is not necessary.
-        return;
+        return 0U;
     }
 
-    uint8_t * p_ack_ie = (uint8_t *)p_sec_end;
+    uint8_t * p_ack_ie = (uint8_t *)p_ack_data->p_frame + p_ack_data->helper.aux_sec_hdr_end_offset;
     uint8_t   ie_hdr_term[IE_HEADER_SIZE];
 
     assert(p_ack_ie != NULL);
@@ -438,30 +442,203 @@ static void ie_header_terminate(const nrf_802154_frame_parser_mhr_data_t * p_ack
     host_16_to_little((IE_HT2) << IE_HEADER_ELEMENT_ID_OFFSET, ie_hdr_term);
 
     memcpy(p_ack_ie + ie_data_len, ie_hdr_term, sizeof(ie_hdr_term));
-    m_ack_data[PHR_OFFSET] += sizeof(ie_hdr_term);
+    return sizeof(ie_hdr_term);
 }
 
 /***************************************************************************************************
  * @section Authentication and encryption transformation
  **************************************************************************************************/
 
-static bool encryption_prepare(const nrf_802154_frame_parser_mhr_data_t * p_ack)
+static bool encryption_prepare(const nrf_802154_frame_parser_data_t * p_ack_data)
 {
 #if NRF_802154_ENCRYPTION_ENABLED
-    if (p_ack->p_sec_ctrl == NULL)
+    if (nrf_802154_frame_parser_security_enabled_bit_is_set(p_ack_data) == false)
     {
         return true;
     }
 
-    if ((*(p_ack->p_sec_ctrl) & SECURITY_LEVEL_MASK) == 0)
+    if (nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_ack_data) == SECURITY_LEVEL_NONE)
     {
         return true;
     }
 
-    return nrf_802154_encrypt_ack_prepare(m_ack_data);
+    return nrf_802154_encrypt_ack_prepare(p_ack_data);
 #else // NRF_802154_ENCRYPTION_ENABLED
     return true;
 #endif  // NRF_802154_ENCRYPTION_ENABLED
+}
+
+/***************************************************************************************************
+ * @section Enhanced ACK generation
+ **************************************************************************************************/
+
+static void fcf_process(const nrf_802154_frame_parser_data_t * p_frame_data,
+                        uint8_t                              * p_bytes_written)
+{
+    // Set Frame Control field bits.
+    // Some of them might require correction when higher parse level is available
+    *p_bytes_written   = frame_control_set(p_frame_data, false);
+    m_ack[PHR_OFFSET] += *p_bytes_written;
+
+    bool result = nrf_802154_frame_parser_valid_data_extend(&m_ack_data,
+                                                            m_ack[PHR_OFFSET] + PHR_SIZE,
+                                                            PARSE_LEVEL_FCF_OFFSETS);
+
+    assert(result);
+    (void)result;
+}
+
+static void dst_addr_process(const nrf_802154_frame_parser_data_t * p_frame_data,
+                             uint8_t                              * p_bytes_written)
+{
+    // Set valid sequence number in ACK frame.
+    *p_bytes_written   = sequence_number_set(p_frame_data);
+    m_ack[PHR_OFFSET] += *p_bytes_written;
+
+    // Set destination address and PAN ID.
+    *p_bytes_written   = destination_set(p_frame_data, &m_ack_data);
+    m_ack[PHR_OFFSET] += *p_bytes_written;
+
+    bool result = nrf_802154_frame_parser_valid_data_extend(&m_ack_data,
+                                                            m_ack[PHR_OFFSET] + PHR_SIZE,
+                                                            PARSE_LEVEL_DST_ADDRESSING_END);
+
+    assert(result);
+    (void)result;
+}
+
+static void addr_end_process(const nrf_802154_frame_parser_data_t * p_frame_data)
+{
+    // Set source address and PAN ID.
+    source_set();
+
+    // Having the frame's source address, presence of IEs can be determined.
+    // coverity[unchecked_value]
+    mp_ie_data = nrf_802154_ack_data_ie_get(
+        nrf_802154_frame_parser_src_addr_get(p_frame_data),
+        nrf_802154_frame_parser_src_addr_is_extended(p_frame_data),
+        &m_ie_data_len);
+
+    // Update the IE present bit in Frame Control field knowing if IEs should be present.
+    fcf_ie_present_set(mp_ie_data != NULL);
+
+    bool result = nrf_802154_frame_parser_valid_data_extend(&m_ack_data,
+                                                            m_ack[PHR_OFFSET] + PHR_SIZE,
+                                                            PARSE_LEVEL_ADDRESSING_END);
+
+    assert(result);
+    (void)result;
+}
+
+static bool aux_sec_hdr_process(const nrf_802154_frame_parser_data_t * p_frame_data,
+                                uint8_t                              * p_bytes_written)
+{
+    if (security_header_set(p_frame_data, &m_ack_data, p_bytes_written) == false)
+    {
+        return false;
+    }
+
+    m_ack[PHR_OFFSET] += *p_bytes_written;
+
+    bool result = nrf_802154_frame_parser_valid_data_extend(&m_ack_data,
+                                                            m_ack[PHR_OFFSET] + PHR_SIZE,
+                                                            PARSE_LEVEL_AUX_SEC_HDR_END);
+
+    assert(result);
+    (void)result;
+
+    return true;
+}
+
+static void ie_process(const nrf_802154_frame_parser_data_t * p_frame_data,
+                       uint8_t                              * p_bytes_written)
+{
+    // Set IE header.
+    ie_header_set(mp_ie_data, m_ie_data_len, &m_ack_data);
+    m_ack[PHR_OFFSET] += m_ie_data_len;
+
+    // Terminate the IE header if needed.
+    *p_bytes_written   = ie_header_terminate(mp_ie_data, m_ie_data_len, &m_ack_data);
+    m_ack[PHR_OFFSET] += *p_bytes_written + FCS_SIZE;
+
+    bool result = nrf_802154_frame_parser_valid_data_extend(&m_ack_data,
+                                                            m_ack[PHR_OFFSET] + PHR_SIZE,
+                                                            PARSE_LEVEL_FULL);
+
+    assert(result);
+    (void)result;
+}
+
+static bool encryption_process(void)
+{
+    return encryption_prepare(&m_ack_data);
+}
+
+static uint8_t * ack_process(
+    const nrf_802154_frame_parser_data_t * p_frame_data,
+    bool                                 * p_processing_done)
+{
+    uint8_t bytes_written = 0U;
+
+    nrf_802154_frame_parser_level_t frame_parse_level = nrf_802154_frame_parser_parse_level_get(
+        p_frame_data);
+    nrf_802154_frame_parser_level_t ack_parse_level = nrf_802154_frame_parser_parse_level_get(
+        &m_ack_data);
+
+    *p_processing_done = false;
+
+    if ((frame_parse_level >= PARSE_LEVEL_FCF_OFFSETS) &&
+        (ack_parse_level < PARSE_LEVEL_FCF_OFFSETS))
+    {
+        fcf_process(p_frame_data, &bytes_written);
+    }
+
+    if ((frame_parse_level >= PARSE_LEVEL_DST_ADDRESSING_END) &&
+        (ack_parse_level < PARSE_LEVEL_DST_ADDRESSING_END))
+    {
+        dst_addr_process(p_frame_data, &bytes_written);
+    }
+
+    if ((frame_parse_level >= PARSE_LEVEL_ADDRESSING_END) &&
+        (ack_parse_level < PARSE_LEVEL_ADDRESSING_END))
+    {
+        addr_end_process(p_frame_data);
+    }
+
+    if ((frame_parse_level >= PARSE_LEVEL_AUX_SEC_HDR_END) &&
+        (ack_parse_level < PARSE_LEVEL_AUX_SEC_HDR_END))
+    {
+        if (!aux_sec_hdr_process(p_frame_data, &bytes_written))
+        {
+            // Failure to set auxiliary security header, the ACK cannot be created. Exit immediately
+            *p_processing_done = true;
+            return NULL;
+        }
+
+        ie_process(p_frame_data, &bytes_written);
+    }
+
+    if (frame_parse_level == PARSE_LEVEL_FULL)
+    {
+        // With the entire frame validated update the Frame Pending bit in Frame Control field
+        fcf_frame_pending_set(p_frame_data);
+
+        if (encryption_process())
+        {
+            // Success. Processing completed
+            *p_processing_done = true;
+            return m_ack;
+        }
+        else
+        {
+            // Failure to prepare encryption even though it's required, the ACK cannot be created.
+            // Exit immediately
+            *p_processing_done = true;
+            return NULL;
+        }
+    }
+
+    return NULL;
 }
 
 /***************************************************************************************************
@@ -473,78 +650,45 @@ void nrf_802154_enh_ack_generator_init(void)
     // Intentionally empty.
 }
 
-const uint8_t * nrf_802154_enh_ack_generator_create(const uint8_t * p_frame)
+void nrf_802154_enh_ack_generator_reset(void)
 {
-    nrf_802154_frame_parser_mhr_data_t frame_offsets;
-    nrf_802154_frame_parser_mhr_data_t ack_offsets;
-    const uint8_t                    * p_sec_end    = NULL;
-    bool                               parse_result = nrf_802154_frame_parser_mhr_parse(p_frame,
-                                                                                        &frame_offsets);
-
-    if (!parse_result)
-    {
-        return NULL;
-    }
-
-    uint8_t         ie_data_len = 0;
-    const uint8_t * p_ie_data   = nrf_802154_ack_data_ie_get(
-        frame_offsets.p_src_addr,
-        frame_offsets.src_addr_size == EXTENDED_ADDRESS_SIZE,
-        &ie_data_len);
-
-    // Clear previously created ACK.
-    ack_buffer_clear();
-
-    // Set Frame Control field bits.
-    frame_control_set(p_frame, p_ie_data, &ack_offsets);
-
-    // Set valid sequence number in ACK frame.
-    sequence_number_set(p_frame);
-
-    // Set destination address and PAN ID.
-    destination_set(&frame_offsets, &ack_offsets);
-
-    // Set source address and PAN ID.
-    source_set();
-
-    // Attempt to set auxiliary security header.
-    if (ack_offsets.p_sec_ctrl == NULL)
-    {
-        // There is no auxiliary security header.
-        p_sec_end = &m_ack_data[ack_offsets.addressing_end_offset];
-    }
-    else if (security_header_set(&frame_offsets, &ack_offsets, &p_sec_end))
-    {
-        // Security header has been set successfully: intentionally empty.
-    }
-    else
-    {
-        // Failure to set auxiliary security header: The ACK cannot be created.
-        ack_buffer_clear();
-        return NULL;
-    }
-
-    // Set IE header.
-    ie_header_set(p_ie_data, ie_data_len, p_sec_end);
-
-    // Terminate the IE header if needed.
-    ie_header_terminate(&ack_offsets, p_sec_end, p_ie_data, ie_data_len);
-
-    // Prepare encryption.
-    if (!encryption_prepare(&ack_offsets))
-    {
-        // Failure to prepare encryption even though it's required. The ACK cannot be created.
-        ack_buffer_clear();
-        return NULL;
-    }
-
-    return m_ack_data;
+    memset(m_ack, 0U, sizeof(m_ack));
+    (void)nrf_802154_frame_parser_data_init(m_ack, 0U, PARSE_LEVEL_NONE, &m_ack_data);
+    mp_ie_data    = 0U;
+    m_ie_data_len = 0U;
+    m_ack_state   = ACK_STATE_RESET;
 }
 
-#ifdef TEST
-void nrf_802154_enh_ack_generator_module_reset(void)
+uint8_t * nrf_802154_enh_ack_generator_create(
+    const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    memset(m_ack_data, 0, sizeof(m_ack_data));
-}
+    switch (ack_state_get())
+    {
+        case ACK_STATE_RESET:
+            ack_state_set(ACK_STATE_PROCESSING);
+        // Fallthrough
 
-#endif // TEST
+        case ACK_STATE_PROCESSING:
+        {
+            bool      processing_done;
+            uint8_t * p_ack = ack_process(p_frame_data, &processing_done);
+
+            if (processing_done)
+            {
+                ack_state_set(p_ack ? ACK_STATE_COMPLETE : ACK_STATE_INVALID);
+            }
+
+            return processing_done ? p_ack : NULL;
+        }
+
+        case ACK_STATE_INVALID:
+            return NULL;
+
+        case ACK_STATE_COMPLETE:
+            return m_ack;
+
+        default:
+            assert(false);
+            return NULL;
+    }
+}

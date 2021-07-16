@@ -85,7 +85,7 @@ void nrf_802154_ack_timeout_transmitted_hook(const uint8_t * p_frame);
  * @retval  false  TX failed event is not to be propagated to the MAC layer. It is handled
  *                 internally in the ACK timeout module.
  */
-bool nrf_802154_ack_timeout_tx_failed_hook(const uint8_t * p_frame, nrf_802154_tx_error_t error);
+bool nrf_802154_ack_timeout_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error);
 
 /**
  * @brief Handles a TX started event.
@@ -96,7 +96,7 @@ bool nrf_802154_ack_timeout_tx_failed_hook(const uint8_t * p_frame, nrf_802154_t
  * @retval  false  TX started event is not to be propagated to the MAC layer. It is handled
  *                 internally in the ACK timeout module.
  */
-bool nrf_802154_ack_timeout_tx_started_hook(const uint8_t * p_frame);
+bool nrf_802154_ack_timeout_tx_started_hook(uint8_t * p_frame);
 
 /**
  * @brief Handles a RX ACK started event.

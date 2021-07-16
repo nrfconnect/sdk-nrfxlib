@@ -39,6 +39,7 @@
 #include <stdint.h>
 
 #include "nrf_802154.h"
+#include "nrf_802154_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,25 +91,27 @@ void nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id);
 /**
  * @brief Notifies the next higher layer that a frame was transmitted.
  *
- * @param[in]  p_frame  Pointer to a buffer that contains PHR and PSDU of the transmitted frame.
- * @param[in]  p_ack    Pointer to a buffer that containsthat contains PHR and PSDU of ACK frame. NULL if ACK was
- *                      not requested.
- * @param[in]  power    RSSI of the received frame or 0 if ACK was not requested.
- * @param[in]  lqi      LQI of the received frame of 0 if ACK was not requested.
+ * @note This function performs an update of the original frame and modifies @p p_metadata structure
+ *       passed to the public callout.
+ *
+ * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the transmitted frame.
+ * @param[in]  p_metadata   Pointer to a metadata structure describing frame passed in @p p_frame.
  */
-void nrf_802154_notify_transmitted(const uint8_t * p_frame,
-                                   uint8_t       * p_ack,
-                                   int8_t          power,
-                                   uint8_t         lqi);
+void nrf_802154_notify_transmitted(uint8_t                             * p_frame,
+                                   nrf_802154_transmit_done_metadata_t * p_metadata);
 
 /**
  * @brief Notifies the next higher layer that a frame was not transmitted.
  *
- * @param[in]  p_frame  Pointer to a buffer that contains PHR and PSDU of the frame that failed
- *                      the transmission operation.
- * @param[in]  error    An error code indicating the reason of the failure.
+ * @note This function performs an update of the original frame and prepares
+ *       @ref nrf_802154_transmit_done_metadata_t structure passed to the public callout.
+ *
+ * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the frame that failed
+ *                          the transmission operation.
+ * @param[in]  error        An error code indicating the reason of the failure.
  */
-void nrf_802154_notify_transmit_failed(const uint8_t * p_frame, nrf_802154_tx_error_t error);
+void nrf_802154_notify_transmit_failed(uint8_t             * p_frame,
+                                       nrf_802154_tx_error_t error);
 
 /**
  * @brief Notifies the next higher layer that the energy detection procedure ended.

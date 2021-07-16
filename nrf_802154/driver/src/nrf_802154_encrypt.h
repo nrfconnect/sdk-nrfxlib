@@ -39,6 +39,7 @@
 #include <stdint.h>
 
 #include "nrf_802154_types.h"
+#include "mac_features/nrf_802154_frame_parser.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,12 +48,12 @@ extern "C" {
 /**
  * @brief Prepares encryption data for provided Ack.
  *
- * @param[in]  p_ack  Pointer to the buffer that contains the PHR and PSDU of the ACK frame.
+ * @param[in]  p_ack_data  Pointer to the ACK frame parser data.
  */
-bool nrf_802154_encrypt_ack_prepare(const uint8_t * p_ack);
+bool nrf_802154_encrypt_ack_prepare(const nrf_802154_frame_parser_data_t * p_ack_data);
 
 /**
- * @brief Pretransmission hook for the encryption module.
+ * @brief Transmission setup hook for the encryption module.
  *
  * This hook prepares encryption data for provided frame.
  *
@@ -64,8 +65,8 @@ bool nrf_802154_encrypt_ack_prepare(const uint8_t * p_ack);
  * @retval  true         Encryption was prepared successfully.
  * @retval  false        Encryption prepare failed.
  */
-bool nrf_802154_encrypt_pretransmission(
-    const uint8_t                           * p_frame,
+bool nrf_802154_encrypt_tx_setup(
+    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function);
 
@@ -78,7 +79,7 @@ bool nrf_802154_encrypt_pretransmission(
  *
  * @retval  true        Always succeeds.
  */
-bool nrf_802154_encrypt_tx_started_hook(const uint8_t * p_frame);
+bool nrf_802154_encrypt_tx_started_hook(uint8_t * p_frame);
 
 /**
  * @brief ACK TX started hook for the encryption module.
@@ -87,6 +88,28 @@ bool nrf_802154_encrypt_tx_started_hook(const uint8_t * p_frame);
  *
  * @param[in]  p_ack  Pointer to the buffer that contains the PHR and PSDU of the ACK frame.
  */
-void nrf_802154_encrypt_tx_ack_started_hook(const uint8_t * p_ack);
+void nrf_802154_encrypt_tx_ack_started_hook(uint8_t * p_ack);
+
+/**
+ * @brief TX failed hook for the encryption module.
+ *
+ * This function aborts the transformation procedure of the provided frame.
+ *
+ * @param[in]  p_frame  Pointer to the buffer that contains a frame being transmitted.
+ * @param[in]  error    Cause of the failed transmission.
+ *
+ * @retval  true        Always succeeds.
+ */
+bool nrf_802154_encrypt_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error);
+
+/**
+ * @brief ACK TX failed hook for the encryption module.
+ *
+ * This function aborts the transformation procedure of the provided ACK frame.
+ *
+ * @param[in]  p_ack  Pointer to the buffer that contains a frame being transmitted.
+ * @param[in]  error  Cause of the failed transmission.
+ */
+void nrf_802154_encrypt_tx_ack_failed_hook(uint8_t * p_ack, nrf_802154_tx_error_t error);
 
 #endif /* NRF_802154_ENCRYPT_H_ */

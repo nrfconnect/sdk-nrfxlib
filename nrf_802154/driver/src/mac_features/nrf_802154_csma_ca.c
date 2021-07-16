@@ -62,12 +62,12 @@
 
 #if NRF_802154_CSMA_CA_ENABLED
 
-static uint8_t m_nb;                        ///< The number of times the CSMA-CA algorithm was required to back off while attempting the current transmission.
-static uint8_t m_be;                        ///< Backoff exponent, which is related to how many backoff periods a device shall wait before attempting to assess a channel.
+static uint8_t m_nb;                                      ///< The number of times the CSMA-CA algorithm was required to back off while attempting the current transmission.
+static uint8_t m_be;                                      ///< Backoff exponent, which is related to how many backoff periods a device shall wait before attempting to assess a channel.
 
-static const uint8_t * mp_data;             ///< Pointer to a buffer containing PHR and PSDU of the frame being transmitted.
-static bool            m_is_retransmission; ///< Flag that indicates if the current CSMA-CA procedure is a retransmission.
-static bool            m_is_running;        ///< Indicates if CSMA-CA procedure is running.
+static uint8_t                            * mp_data;      ///< Pointer to a buffer containing PHR and PSDU of the frame being transmitted.
+static nrf_802154_transmitted_frame_props_t m_data_props; ///< Structure containing detailed properties of data in buffer.
+static bool m_is_running;                                 ///< Indicates if CSMA-CA procedure is running.
 
 /**
  * @brief Perform appropriate actions for busy channel conditions.
@@ -173,9 +173,9 @@ static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
 
         nrf_802154_transmit_params_t params =
         {
-            .cca               = true,
-            .immediate         = NRF_802154_CSMA_CA_WAIT_FOR_TIMESLOT ? false : true,
-            .is_retransmission = m_is_retransmission,
+            .frame_props = m_data_props,
+            .cca         = true,
+            .immediate   = NRF_802154_CSMA_CA_WAIT_FOR_TIMESLOT ? false : true,
         };
 
         if (!nrf_802154_request_transmit(NRF_802154_TERM_NONE,
@@ -280,7 +280,8 @@ static bool channel_busy(void)
     return result;
 }
 
-void nrf_802154_csma_ca_start(const uint8_t * p_data, bool is_retransmission)
+void nrf_802154_csma_ca_start(uint8_t                                      * p_data,
+                              const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -292,11 +293,11 @@ void nrf_802154_csma_ca_start(const uint8_t * p_data, bool is_retransmission)
 
     assert(!procedure_is_running());
 
-    mp_data             = p_data;
-    m_is_retransmission = is_retransmission;
-    m_nb                = 0;
-    m_be                = nrf_802154_pib_csmaca_min_be_get();
-    m_is_running        = true;
+    mp_data      = p_data;
+    m_data_props = p_metadata->frame_props;
+    m_nb         = 0;
+    m_be         = nrf_802154_pib_csmaca_min_be_get();
+    m_is_running = true;
 
     random_backoff_start();
 
@@ -331,7 +332,7 @@ bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_o
     return result;
 }
 
-bool nrf_802154_csma_ca_tx_failed_hook(const uint8_t * p_frame, nrf_802154_tx_error_t error)
+bool nrf_802154_csma_ca_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error)
 {
     bool result = true;
 
@@ -362,7 +363,7 @@ bool nrf_802154_csma_ca_tx_failed_hook(const uint8_t * p_frame, nrf_802154_tx_er
     return result;
 }
 
-bool nrf_802154_csma_ca_tx_started_hook(const uint8_t * p_frame)
+bool nrf_802154_csma_ca_tx_started_hook(uint8_t * p_frame)
 {
     if (p_frame == mp_data)
     {

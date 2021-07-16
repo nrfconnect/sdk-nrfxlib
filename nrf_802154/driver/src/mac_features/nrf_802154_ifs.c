@@ -90,9 +90,20 @@ static void callback_fired(void * p_context)
 /**@brief Checks if the IFS is needed by comparing the addresses of the actual and the last frames. */
 static bool is_ifs_needed_by_address(const uint8_t * p_frame)
 {
-    bool is_extended;
+    nrf_802154_frame_parser_data_t frame_data;
+    const uint8_t                * addr;
+    bool                           is_extended;
 
-    const uint8_t * addr = nrf_802154_frame_parser_dst_addr_get(p_frame, &is_extended);
+    bool result = nrf_802154_frame_parser_data_init(p_frame,
+                                                    p_frame[PHR_OFFSET] + PHR_SIZE,
+                                                    PARSE_LEVEL_ADDRESSING_END,
+                                                    &frame_data);
+
+    assert(result);
+    (void)result;
+
+    addr        = nrf_802154_frame_parser_dst_addr_get(&frame_data);
+    is_extended = nrf_802154_frame_parser_dst_addr_is_extended(&frame_data);
 
     if (!addr)
     {
@@ -147,7 +158,7 @@ static uint16_t ifs_needed_by_time(uint32_t current_timestamp)
 }
 
 bool nrf_802154_ifs_pretransmission(
-    const uint8_t                           * p_frame,
+    uint8_t                                 * p_frame,
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
@@ -187,14 +198,14 @@ bool nrf_802154_ifs_pretransmission(
         return true;
     }
 
-    m_context.p_data                   = (uint8_t *)p_frame;
-    m_context.params.cca               = p_params->cca;
-    m_context.params.immediate         = true;
-    m_context.params.is_retransmission = p_params->is_retransmission;
-    m_timer.t0                         = m_last_frame_timestamp;
-    m_timer.dt                         = dt;
-    m_timer.callback                   = callback_fired;
-    m_timer.p_context                  = &m_context;
+    m_context.p_data             = p_frame;
+    m_context.params.frame_props = p_params->frame_props;
+    m_context.params.cca         = p_params->cca;
+    m_context.params.immediate   = true;
+    m_timer.t0                   = m_last_frame_timestamp;
+    m_timer.dt                   = dt;
+    m_timer.callback             = callback_fired;
+    m_timer.p_context            = &m_context;
 
     nrf_802154_timer_sched_add(&m_timer, true);
 
@@ -207,8 +218,19 @@ void nrf_802154_ifs_transmitted_hook(const uint8_t * p_frame)
 
     m_last_frame_timestamp = nrf_802154_timer_sched_time_get();
 
-    const uint8_t * addr =
-        nrf_802154_frame_parser_dst_addr_get(p_frame, &m_is_last_address_extended);
+    nrf_802154_frame_parser_data_t frame_data;
+    const uint8_t                * addr;
+
+    bool result = nrf_802154_frame_parser_data_init(p_frame,
+                                                    p_frame[PHR_OFFSET] + PHR_SIZE,
+                                                    PARSE_LEVEL_ADDRESSING_END,
+                                                    &frame_data);
+
+    assert(result);
+    (void)result;
+
+    addr                       = nrf_802154_frame_parser_dst_addr_get(&frame_data);
+    m_is_last_address_extended = nrf_802154_frame_parser_dst_addr_is_extended(&frame_data);
 
     if (!addr)
     {

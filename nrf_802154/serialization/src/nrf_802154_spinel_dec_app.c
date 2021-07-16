@@ -279,24 +279,23 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmitted_raw(
     const void * p_property_data,
     size_t       property_data_len)
 {
-    uint32_t frame_handle;
-    uint32_t remote_ack_handle;
-    void   * p_ack;
-    size_t   ack_hdata_len;
-    int8_t   power;
-    uint8_t  lqi;
-    void   * p_frame;
-    void   * p_ack_local_ptr = NULL;
+    uint32_t                            frame_handle;
+    uint32_t                            remote_ack_handle;
+    void                              * p_ack;
+    size_t                              ack_hdata_len;
+    void                              * p_frame;
+    void                              * p_ack_local_ptr = NULL;
+    nrf_802154_transmit_done_metadata_t metadata        = {0};
 
     spinel_ssize_t siz = spinel_datatype_unpack(p_property_data,
                                                 property_data_len,
                                                 SPINEL_DATATYPE_NRF_802154_TRANSMITTED_RAW,
                                                 &frame_handle,
-                                                NRF_802154_HDATA_DECODE(remote_ack_handle,
-                                                                        p_ack,
-                                                                        ack_hdata_len),
-                                                &power,
-                                                &lqi);
+                                                NRF_802154_TRANSMIT_DONE_METADATA_DECODE(metadata,
+                                                                                         remote_ack_handle,
+                                                                                         ack_hdata_len));
+
+    p_ack = metadata.data.transmitted.p_ack;
 
     if (siz < 0)
     {
@@ -347,7 +346,9 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmitted_raw(
         return NRF_802154_SERIALIZATION_ERROR_INVALID_BUFFER;
     }
 
-    nrf_802154_transmitted_raw(p_frame, p_ack_local_ptr, power, lqi);
+    // Overwrite ACK frame pointer with a newly allocated one.
+    metadata.data.transmitted.p_ack = p_ack_local_ptr;
+    nrf_802154_transmitted_raw(p_frame, &metadata);
 
     return NRF_802154_SERIALIZATION_ERROR_OK;
 }
@@ -362,15 +363,18 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_failed(
     const void * p_property_data,
     size_t       property_data_len)
 {
-    uint32_t              frame_handle;
-    nrf_802154_tx_error_t tx_error;
-    void                * p_frame;
+    uint32_t                            frame_handle;
+    nrf_802154_tx_error_t               tx_error;
+    void                              * p_frame;
+    nrf_802154_transmit_done_metadata_t metadata = {0};
 
     spinel_ssize_t siz = spinel_datatype_unpack(p_property_data,
                                                 property_data_len,
                                                 SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED,
                                                 &frame_handle,
-                                                &tx_error);
+                                                &tx_error,
+                                                NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE(metadata.
+                                                                                          frame_props));
 
     if (siz < 0)
     {
@@ -399,7 +403,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_failed(
         return NRF_802154_SERIALIZATION_ERROR_INVALID_BUFFER;
     }
 
-    nrf_802154_transmit_failed(p_frame, tx_error);
+    nrf_802154_transmit_failed(p_frame, tx_error, &metadata);
 
     return NRF_802154_SERIALIZATION_ERROR_OK;
 }
@@ -537,6 +541,8 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_is(
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_CLEAR:
         // fall through
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW:
+        // fall through
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_CSMA_CA_RAW:
             nrf_802154_spinel_response_notifier_property_notify(property,
                                                                 p_property_data,
                                                                 property_data_len);
@@ -623,22 +629,21 @@ __WEAK void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
     // Intentionally empty
 }
 
-__WEAK void nrf_802154_transmitted_raw(const uint8_t * p_data,
-                                       uint8_t       * p_ack,
-                                       int8_t          rssi,
-                                       uint8_t         lqi)
+__WEAK void nrf_802154_transmitted_raw(uint8_t                                   * p_data,
+                                       const nrf_802154_transmit_done_metadata_t * p_metadata)
 {
     (void)p_data;
-    (void)p_ack;
-    (void)rssi;
-    (void)lqi;
+    (void)p_metadata;
     // Intentionally empty
 }
 
-__WEAK void nrf_802154_transmit_failed(const uint8_t       * p_data,
-                                       nrf_802154_tx_error_t error)
+__WEAK void nrf_802154_transmit_failed(uint8_t                                   * p_data,
+                                       nrf_802154_tx_error_t                       error,
+                                       const nrf_802154_transmit_done_metadata_t * p_metadata)
 {
+    (void)p_data;
     (void)error;
+    (void)p_metadata;
     // Intentionally empty
 }
 
