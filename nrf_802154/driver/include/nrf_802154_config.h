@@ -58,7 +58,7 @@ extern "C" {
  */
 
 /**
- * @def NRF_802154_CCA_MODE_DEFAULT
+ * @brief NRF_802154_CCA_MODE_DEFAULT
  *
  * CCA mode used by the driver.
  *
@@ -68,7 +68,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_CCA_ED_THRESHOLD_DEFAULT
+ * @brief NRF_802154_CCA_ED_THRESHOLD_DEFAULT
  *
  * Energy detection threshold used in the CCA procedure.
  *
@@ -78,7 +78,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_CCA_CORR_THRESHOLD_DEFAULT
+ * @brief NRF_802154_CCA_CORR_THRESHOLD_DEFAULT
  *
  * Correlator threshold used in the CCA procedure.
  *
@@ -88,7 +88,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_CCA_CORR_LIMIT_DEFAULT
+ * @brief NRF_802154_CCA_CORR_LIMIT_DEFAULT
  *
  * Correlator limit used in the CCA procedure.
  *
@@ -98,7 +98,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_INTERNAL_RADIO_IRQ_HANDLING
+ * @brief NRF_802154_INTERNAL_RADIO_IRQ_HANDLING
  *
  * If the driver is expected to internally handle the RADIO IRQ.
  * If the driver is used in an OS, the RADIO IRQ can be handled by the OS and passed to
@@ -112,7 +112,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_INTERNAL_SWI_IRQ_HANDLING
+ * @brief NRF_802154_INTERNAL_SWI_IRQ_HANDLING
  *
  * If the driver is expected to internally handle the SWI IRQ.
  * If the driver is used in an OS, the SWI IRQ can be handled by the OS and passed to
@@ -126,7 +126,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_IRQ_PRIORITY
+ * @brief NRF_802154_IRQ_PRIORITY
  *
  * Interrupt priority for RADIO peripheral.
  * Keep the IRQ priority high (low number) to prevent losing frames due to preemption.
@@ -137,7 +137,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_SWI_PRIORITY
+ * @brief NRF_802154_SWI_PRIORITY
  *
  * The priority of software interrupt used for requests and notifications.
  *
@@ -147,7 +147,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_ECB_PRIORITY
+ * @brief NRF_802154_ECB_PRIORITY
  *
  * Interrupt priority for ECB peripheral used for frame encryption.
  *
@@ -157,7 +157,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_USE_RAW_API
+ * @brief NRF_802154_USE_RAW_API
  *
  * When this flag is set, the RAW API is available for the MAC layer. It is recommended to use
  * the RAW API because it provides more optimized functions.
@@ -171,7 +171,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_PENDING_SHORT_ADDRESSES
+ * @brief NRF_802154_PENDING_SHORT_ADDRESSES
  *
  * The number of slots containing short addresses of nodes for which the pending data is stored.
  *
@@ -181,7 +181,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_PENDING_EXTENDED_ADDRESSES
+ * @brief NRF_802154_PENDING_EXTENDED_ADDRESSES
  *
  * The number of slots containing extended addresses of nodes for which the pending data is stored.
  *
@@ -191,7 +191,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_RX_BUFFERS
+ * @brief NRF_802154_RX_BUFFERS
  *
  * The number of buffers in the receive queue.
  *
@@ -201,7 +201,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_DISABLE_BCC_MATCHING
+ * @brief NRF_802154_DISABLE_BCC_MATCHING
  *
  * Setting this flag disables NRF_RADIO_EVENT_BCMATCH handling, and therefore the address filtering
  * during the frame reception. With this flag set to 1, the address filtering is done after
@@ -216,7 +216,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_NOTIFY_CRCERROR
+ * @brief NRF_802154_NOTIFY_CRCERROR
  *
  * With this flag set to 1, the CRC errors are notified to upper layers. This requires an interrupt
  * handler to be used.
@@ -227,7 +227,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_FRAME_TIMESTAMP_ENABLED
+ * @brief NRF_802154_FRAME_TIMESTAMP_ENABLED
  *
  * If timestamps are to be added to the frames received.
  * Enabling this feature enables the functions @ref nrf_802154_received_timestamp_raw,
@@ -241,7 +241,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
+ * @brief NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
  *
  * If measurement of total time spent in certain states is to be calculated.
  *
@@ -254,7 +254,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_DELAYED_TRX_ENABLED
+ * @brief NRF_802154_DELAYED_TRX_ENABLED
  *
  * If the delayed transmission and the receive window features are available.
  *
@@ -270,7 +270,7 @@ extern "C" {
  */
 
 /**
- * @def NRF_802154_CSMA_CA_ENABLED
+ * @brief NRF_802154_CSMA_CA_ENABLED
  *
  * If CSMA-CA is to be enabled by the driver. Disabling CSMA-CA improves
  * the driver performance.
@@ -281,7 +281,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_CSMA_CA_MIN_BE_DEFAULT
+ * @brief NRF_802154_CSMA_CA_MIN_BE_DEFAULT
  *
  * The default minimum value of the backoff exponent (BE) in the CSMA-CA algorithm
  * (see IEEE 802.15.4-2015: 6.2.5.1).
@@ -298,7 +298,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_CSMA_CA_MAX_BE_DEFAULT
+ * @brief NRF_802154_CSMA_CA_MAX_BE_DEFAULT
  *
  * The default maximum value of the backoff exponent, BE, in the CSMA-CA algorithm
  * (see IEEE 802.15.4-2015: 6.2.5.1).
@@ -315,7 +315,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_CSMA_CA_MAX_CSMA_BACKOFFS_DEFAULT
+ * @brief NRF_802154_CSMA_CA_MAX_CSMA_BACKOFFS_DEFAULT
  *
  * The default maximum number of backoffs that the CSMA-CA algorithm will attempt before declaring
  * a channel access failure.
@@ -333,7 +333,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_CSMA_CA_WAIT_FOR_TIMESLOT
+ * @brief NRF_802154_CSMA_CA_WAIT_FOR_TIMESLOT
  *
  * Indicates whether the CSMA-CA algorithm waits for an available timeslot before it performs
  * the CCA procedure.
@@ -356,7 +356,7 @@ extern "C" {
  */
 
 /**
- * @def NRF_802154_ACK_TIMEOUT_ENABLED
+ * @brief NRF_802154_ACK_TIMEOUT_ENABLED
  *
  * Indicates whether the ACK timeout feature is to be enabled in the driver.
  *
@@ -366,7 +366,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_ACK_TIMEOUT_DEFAULT_TIMEOUT
+ * @brief NRF_802154_ACK_TIMEOUT_DEFAULT_TIMEOUT
  *
  * The default timeout in microseconds (us) for the ACK timeout feature.
  *
@@ -376,7 +376,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_ACK_TIMEOUT_DEFAULT_TIMEOUT
+ * @brief NRF_802154_ACK_TIMEOUT_DEFAULT_TIMEOUT
  *
  * The default timeout in microseconds (us) for the precise ACK timeout feature.
  *
@@ -386,7 +386,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_MAX_ACK_IE_SIZE
+ * @brief NRF_802154_MAX_ACK_IE_SIZE
  *
  * The maximum supported size of the 802.15.4-2015 IE header and content fields in an Enh-Ack.
  *
@@ -402,7 +402,7 @@ extern "C" {
  */
 
 /**
- * @def NRF_802154_IFS_ENABLED
+ * @brief NRF_802154_IFS_ENABLED
  *
  * Indicates whether the Short/Long Interframe spacing feature is to be enabled in the driver.
  *
@@ -418,7 +418,7 @@ extern "C" {
  */
 
 /**
- * @def NRF_802154_TX_STARTED_NOTIFY_ENABLED
+ * @brief NRF_802154_TX_STARTED_NOTIFY_ENABLED
  *
  * Indicates whether the notifications of the started transmissions are to be enabled in the driver.
  *
@@ -426,7 +426,7 @@ extern "C" {
  *       These features depend on the notifications of the transmission start.
  */
 #ifndef NRF_802154_TX_STARTED_NOTIFY_ENABLED
-#if NRF_802154_ACK_TIMEOUT_ENABLED || NRF_802154_CSMA_CA_ENABLED
+#if defined(NRF_802154_ACK_TIMEOUT_ENABLED) || defined(NRF_802154_CSMA_CA_ENABLED)
 #define NRF_802154_TX_STARTED_NOTIFY_ENABLED 1
 #else
 #define NRF_802154_TX_STARTED_NOTIFY_ENABLED 0
@@ -435,12 +435,12 @@ extern "C" {
 
 /**
  * @}
- * @defgroup nrf_802154_coex WiFi coexistence feature configuration
+ * @defgroup nrf_802154_coex WiFi coexistence feature
  * @{
  */
 
 /**
- * @def NRF_802154_COEX_INITIALLY_ENABLED
+ * @brief NRF_802154_COEX_INITIALLY_ENABLED
  *
  * Configures if WiFi coex is initially enabled or disabled.
  */
@@ -450,12 +450,12 @@ extern "C" {
 
 /**
  * @}
- * @defgroup nrf_802154_stats Statistics configuration
+ * @defgroup nrf_802154_stats Statistics and measurements
  * @{
  */
 
 /**
- * @def NRF_802154_STATS_COUNT_ENERGY_DETECTED_EVENTS
+ * @brief NRF_802154_STATS_COUNT_ENERGY_DETECTED_EVENTS
  *
  * Configures if energy detected events will be counted in receive mode.
  * When this option is enabled additional interrupts on energy detected events will occur
@@ -468,7 +468,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_STATS_COUNT_RECEIVED_PREAMBLES
+ * @brief NRF_802154_STATS_COUNT_RECEIVED_PREAMBLES
  *
  * Configures if number of received preambles will be counted in receive mode.
  * When this option is enabled additional interrupts on preamble reveived will occur
@@ -482,12 +482,12 @@ extern "C" {
 
 /**
  * @}
- * @defgroup nrf_802154_security Security configuration
+ * @defgroup nrf_802154_security Radio driver MAC security feature.
  * @{
  */
 
 /**
- * @def NRF_802154_SECURITY_KEY_STORAGE_SIZE
+ * @brief NRF_802154_SECURITY_KEY_STORAGE_SIZE
  *
  * Configures the number of keys which are available in the Key Storage.
  * This configuration is implementation-independent.
@@ -497,7 +497,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_SECURITY_WRITER_ENABLED
+ * @brief NRF_802154_SECURITY_WRITER_ENABLED
  *
  * Enables the Security Writer module. The module parses the frame being transmitted, validates
  * frame's security header and injects frame counter associated with the used key.
@@ -507,7 +507,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_ENCRYPTION_ENABLED
+ * @brief NRF_802154_ENCRYPTION_ENABLED
  *
  * Enables the frame encryption module. The module uses AES-CCM* algorithm to secure frames
  * transmitted by the driver.
@@ -523,7 +523,7 @@ extern "C" {
  */
 
 /**
- * @def NRF_802154_IE_WRITER_ENABLED
+ * @brief NRF_802154_IE_WRITER_ENABLED
  *
  * Enables the Information Element writer module. The module parses frames being transmitted
  * for known Information Element IDs. If such elements are found, the writer module shall
@@ -532,6 +532,8 @@ extern "C" {
 #ifndef NRF_802154_IE_WRITER_ENABLED
 #define NRF_802154_IE_WRITER_ENABLED 1
 #endif
+
+/** @} */
 
 #ifdef __cplusplus
 }

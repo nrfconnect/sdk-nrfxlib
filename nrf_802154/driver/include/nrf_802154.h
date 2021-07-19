@@ -102,7 +102,7 @@ void nrf_802154_deinit(void);
  */
 extern void nrf_802154_custom_part_of_radio_init(void);
 
-#if !NRF_802154_INTERNAL_RADIO_IRQ_HANDLING
+#if !defined(NRF_802154_INTERNAL_RADIO_IRQ_HANDLING)
 /**
  * @brief Handles the interrupt request from the RADIO peripheral.
  *
@@ -255,7 +255,7 @@ nrf_802154_sl_ant_div_antenna_t nrf_802154_antenna_diversity_tx_antenna_get(void
 /**
  * @brief Gets which antenna was selected as best for the last reception.
  *
- * @note In three cases @ref NRF_802154_SL_ANT_DIV_ANTENNA_NONE may be returned:
+ * @note In three cases #NRF_802154_SL_ANT_DIV_ANTENNA_NONE may be returned:
  *  - No frame was received yet.
  *  - Last frame was received with antenna diversity auto mode disabled.
  *  - RSSI measurements didn't have enough time to finish during last frame reception
@@ -334,7 +334,6 @@ void nrf_802154_antenna_diversity_timer_irq_handler(void);
 uint32_t nrf_802154_time_get(void);
 
 /**
- * @}
  * @defgroup nrf_802154_addresses Setting addresses and PAN ID of the device
  * @{
  */
@@ -1299,7 +1298,7 @@ void nrf_802154_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_m
  * When sending ACK with this data, before transmission, RSSI of the last received frame
  * will be written into byte 6.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
@@ -1325,10 +1324,10 @@ bool nrf_802154_ack_data_set(const uint8_t       * p_addr,
  * address matching method is selected:
  *   - For Thread, @ref NRF_802154_SRC_ADDR_MATCH_THREAD
  *   - For Zigbee, @ref NRF_802154_SRC_ADDR_MATCH_ZIGBEE
- *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
+ *   - For Standard-compliant, #NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
@@ -1372,7 +1371,7 @@ void nrf_802154_auto_pending_bit_set(bool enabled);
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @note This function makes a copy of the given address.
  *
@@ -1394,7 +1393,7 @@ bool nrf_802154_pending_bit_for_addr_set(const uint8_t * p_addr, bool extended);
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
@@ -1414,7 +1413,7 @@ bool nrf_802154_pending_bit_for_addr_clear(const uint8_t * p_addr, bool extended
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  extended  If the function is to remove all extended MAC addresses or all short
  *                       addresses.
@@ -1447,7 +1446,7 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg);
  * @defgroup nrf_802154_csma CSMA-CA procedure
  * @{
  */
-#if NRF_802154_CSMA_CA_ENABLED
+#ifdef NRF_802154_CSMA_CA_ENABLED
 #if NRF_802154_USE_RAW_API
 
 /**
@@ -1601,7 +1600,7 @@ uint8_t nrf_802154_csma_ca_max_backoffs_get(void);
  * @defgroup nrf_802154_timeout ACK timeout procedure
  * @{
  */
-#if NRF_802154_ACK_TIMEOUT_ENABLED
+#ifdef NRF_802154_ACK_TIMEOUT_ENABLED
 
 /**
  * @brief Sets timeout for the ACK timeout feature.
@@ -1617,7 +1616,7 @@ void nrf_802154_ack_timeout_set(uint32_t time);
 
 /**
  * @}
- * @defgroup nrf_802154_coex Wifi Coex feature
+ * @defgroup nrf_802154_coex WiFi coexistence feature
  * @{
  */
 
@@ -1754,7 +1753,7 @@ void nrf_802154_stat_totals_get(nrf_802154_stat_totals_t * p_stat_totals);
  * @defgroup nrf_802154_ifs Inter-frame spacing feature
  * @{
  */
-#if NRF_802154_IFS_ENABLED
+#ifdef NRF_802154_IFS_ENABLED
 
 /**
  * @brief Gets IFS operation mode.
@@ -1815,8 +1814,6 @@ void nrf_802154_ifs_min_lifs_period_set(uint16_t period);
  * @return Capabilities of the radio driver.
  */
 nrf_802154_capabilities_t nrf_802154_capabilities_get(void);
-
-/** @} */
 
 /**
  * @}

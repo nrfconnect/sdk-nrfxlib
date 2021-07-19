@@ -50,7 +50,6 @@ extern "C" {
 /**
  * @defgroup nrf_802154_temperature Thermometer Abstraction Layer for the 802.15.4 driver
  * @{
- * @ingroup nrf_802154_temperature
  * @brief The Thermometer Abstraction Layer interface for the 802.15.4 driver.
  *
  * The Thermometer Abstraction Layer is an abstraction layer of the thermometer that is used

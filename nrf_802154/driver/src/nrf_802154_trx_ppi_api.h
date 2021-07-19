@@ -103,7 +103,7 @@ bool nrf_802154_trx_ppi_for_ramp_up_was_triggered(void);
 void nrf_802154_trx_ppi_for_ack_tx_set(void);
 
 /**
- * @brief Clear PPIs to connect TIMER event with radio TXEN task, needed to ramp up for ACK TX. See @ref void nrf_802154_trx_ppi_for_ack_tx_set
+ * @brief Clear PPIs to connect TIMER event with radio TXEN task, needed to ramp up for ACK TX. See @ref nrf_802154_trx_ppi_for_ack_tx_set
  */
 void nrf_802154_trx_ppi_for_ack_tx_clear(void);
 

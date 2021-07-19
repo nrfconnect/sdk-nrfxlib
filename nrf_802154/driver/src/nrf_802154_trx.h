@@ -759,8 +759,7 @@ extern void nrf_802154_trx_standalone_cca_finished(bool channel_was_idle);
  * - @ref nrf_802154_trx_go_idle,
  * - @ref nrf_802154_trx_disable.
  *
- * @param channel_was_idle  Informs implementation of the handler if channel was idle.
- *                          true means the channel was idle, false means the channel was busy.
+ * @param ed_sample Energy detection sample.
  */
 extern void nrf_802154_trx_energy_detection_finished(uint8_t ed_sample);
 
