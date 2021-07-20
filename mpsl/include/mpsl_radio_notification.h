@@ -85,9 +85,9 @@ enum MPSL_RADIO_NOTIFICATION_TYPES
  *                       setting the interrupt priority.
  *
  *
- * @retval -NRF_EINVAL    Invalid parameters supplied.
- * @retval -NRF_EAGAIN    A protocol stack or other SoftDevice is running. Stop all
- *                        running activities and retry.
+ * @retval -NRF_EINVAL       Invalid parameters supplied.
+ * @retval -NRF_EINPROGRESS  A protocol stack or other SoftDevice is running. Stop all
+ *                           running activities and retry.
  * @retval 0  Success
  */
 int32_t mpsl_radio_notification_cfg_set(uint8_t type, uint8_t distance, IRQn_Type irq);
