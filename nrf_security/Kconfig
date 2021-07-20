@@ -1336,6 +1336,11 @@ config MBEDTLS_MD5_C
 	  MD5 hash functionality.
 	  MD5 is not recommended for general use as a secure hash algorithm.
 
+config MBEDTLS_RIPEMD160_C
+	bool "RIPEMD hash functionality"
+	help
+	  Enable support for RIPEMD160.
+
 config MBEDTLS_SHA1_C
 	bool
 	prompt "SHA-1 hash functionality"
