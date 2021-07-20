@@ -34,7 +34,7 @@ The following peripherals are owned by the |controller| and must not be accessed
 * PPI channels 17 - 31, for the nRF52 Series
 * DPPI channels 0 - 13, for the nRF53 Series
 
-The APIs provided in :file:`sdc_soc.h` and in MPSL provide the application limited access to some of these peripherals.
+Some of these peripherals may be accessed by APIs provided in :file:`sdc_soc.h` and by :ref:`mpsl`. The application can access most of these directly using :ref:`mpsl_timeslot`.
 
 Message sequence charts
 ***********************
