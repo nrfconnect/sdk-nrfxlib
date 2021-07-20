@@ -14,4 +14,5 @@ if(NOT EXISTS ${MPSL_LIB_PATH})
 endif()
 
 zephyr_include_directories(include)
+zephyr_include_directories(include/protocol)
 zephyr_link_libraries(${MPSL_LIB_PATH}/libmpsl.a)
