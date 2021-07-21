@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 - 2020 Nordic Semiconductor
+# Copyright (c) 2019 - 2021 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
@@ -19,3 +19,4 @@ add_subdirectory_ifdef(CONFIG_BT                      softdevice_controller)
 add_subdirectory_ifdef(CONFIG_NET_L2_OPENTHREAD       openthread)
 add_subdirectory_ifdef(CONFIG_NRF_RPC                 nrf_rpc)
 add_subdirectory_ifdef(CONFIG_ZIGBEE                  zboss)
+add_subdirectory_ifdef(CONFIG_SM_IPT                  sm_ipt)
