@@ -1,0 +1,42 @@
+#
+# Copyright (c) 2021 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+menuconfig SM_IPT
+	bool "Shared memory Inter-Processor Transport"
+	help
+	  Enable Shared memory Inter-Processor Transport library
+
+if SM_IPT
+
+choice
+	prompt "Shared memory blocks"
+	default SM_IPT_NUM_BLOCKS_32
+
+config SM_IPT_NUM_BLOCKS_32
+	bool "32"
+	help
+	  Selects 32 shared memory blocks per single input or output channel.
+
+config SM_IPT_NUM_BLOCKS_64
+	bool "64"
+	help
+	  Selects 64 shared memory blocks per single input or output channel.
+	  This will increase allocatable memory granularity, but it will have
+	  some impact on performance and code size.
+
+endchoice
+
+config SM_IPT_PRIMARY
+	bool "Primary role"
+	help
+	  One side must have primary role (this option selected) and the other
+	  side must have secondary role. Shared memory layout depends on this configuration.
+
+module = SM_IPT
+module-str = SM IPT
+source "${ZEPHYR_BASE}/subsys/logging/Kconfig.template.log_config"
+
+endif # SM_IPT

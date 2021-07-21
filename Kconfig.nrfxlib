@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 - 2020 Nordic Semiconductor
+# Copyright (c) 2019 - 2021 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
@@ -13,6 +13,7 @@ rsource "crypto/Kconfig"
 rsource "nrf_security/Kconfig"
 rsource "softdevice_controller/Kconfig"
 rsource "nrf_rpc/Kconfig"
+rsource "sm_ipt/Kconfig"
 rsource "zboss/Kconfig"
 rsource "openthread/Kconfig"
 rsource "nrf_802154/zephyr/Kconfig.nrfxlib"
