@@ -28,19 +28,20 @@ Applications utilizing the |controller| library are responsible for the followin
 
 The following peripherals are owned by the |controller| and must not be accessed directly by the application:
 
-* ECB
-* AAR
-* NVMC
-* PPI channels 17 - 31, for the nRF52 Series
-* DPPI channels 0 - 13, for the nRF53 Series
+* ``ECB``
+* ``AAR``
+* ``NVMC``
+* PPI channels from ``17`` to ``31`` (for the nRF52 Series)
+* DPPI channels from ``0`` to ``13`` (for the nRF53 Series)
 
-Some of these peripherals may be accessed by APIs provided in :file:`sdc_soc.h` and by :ref:`mpsl`. The application can access most of these directly using :ref:`mpsl_timeslot`.
+Some of these peripherals can be accessed by APIs provided in :file:`sdc_soc.h` and by :ref:`mpsl`.
+The application can access most of these directly using :ref:`mpsl_timeslot`.
 
 Message sequence charts
 ***********************
 
-The following message sequence chart shows an example on how to initialize the library.
-Notice that the :ref:`mpsl` must be initialized before the |controller| is initialized.
+The following message sequence chart shows an example of how to initialize the library.
+The :ref:`mpsl` must be initialized before the |controller| is initialized.
 The application can choose the features that are enabled and the number of links that are supported.
 
 .. msc::
@@ -91,10 +92,10 @@ Therefore, the host should try to pull data and events until it fails.
 Architecture diagrams
 *********************
 
-The image below shows how the |controller| and MPSL integrates in an RTOS-free environment.
+The image below shows how the |controller| and MPSL integrates into an RTOS-free environment.
 
 .. figure:: pic/Architecture_Without_RTOS.svg
 
-The image below shows how the |controller| and MPSL integrates with an RTOS.
+The image below shows how the |controller| and MPSL integrates into an RTOS.
 
 .. figure:: pic/Architecture_With_RTOS.svg

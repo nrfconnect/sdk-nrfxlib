@@ -7,28 +7,31 @@ Changelog
    :local:
    :depth: 2
 
-All notable changes to this project are documented in this file.
+All the notable changes to this project are documented in this file.
 
 Master branch
 *************
 
+All the notable changes added to the master branch are documented in this section.
+
 Changes
 =========
 
-* The Direct_Address_Type and the Direct_Address in extended advertising reports are updated to reflect the latest BLE specification.
+* The ``Direct_Address_Type`` and the ``Direct_Address`` in extended advertising reports are updated to reflect the latest BLE specification.
   See Specification errata 14566 and 15752 (DRGN-15927).
 
 Bug fixes
 =========
 
 * Fixed an issue where the scanner did not check that the scan window was smaller than the scan interval (DRGN-15586).
-* Fixed an issue where the channel map provided by the LE Host Set Channel Classification HCI command was not always applied on the secondary advertising channels (DRGN-15695).
+* Fixed an issue where the channel map provided by the "LE Host Set Channel Classification" HCI command was not always applied on the secondary advertising channels (DRGN-15695).
 * Fixed an issue on the nRF53 Series where an assert could occur while scanning using legacy commands (DRGN-15852).
 * Fixed an issue on the nRF53 Series where the scanner could generate corrupted advertising reports (DRGN-15852).
 
-
 nRF Connect SDK v1.6.0
 **********************
+
+All the notable changes included in the nRF Connect SDK v1.6.0 release are documented in this section.
 
 Added
 =====
@@ -80,6 +83,8 @@ Bug fixes
 nRF Connect SDK v1.5.0
 **********************
 
+All the notable changes included in the nRF Connect SDK v1.5.0 release are documented in this section.
+
 Added
 =====
 
@@ -105,11 +110,11 @@ Bug fixes
 =========
 
 * Fixed an issue where the application could not immediately restart a connectable advertiser after a high duty cycle advertiser timed out (DRGN-13029).
-* Fixed an issue where a directed advertiser used a resolvable address as the TargetA when the local device address was set to public or random device address (DRGN-13921).
-* Fixed an issue where "HCI LE Set Extended Advertising Parameters" should have returned "Packet Too Long (0x45)" when the advertising set was already configured with data which was longer than it could fit within the advertising interval.
+* Fixed an issue where a directed advertiser used a resolvable address as the ``TargetA`` when the local device address was set to public or random device address (DRGN-13921).
+* Fixed an issue where "HCI LE Set Extended Advertising Parameters" should have returned "Packet Too Long (0x45)" when the advertising set was already configured with data that was longer than it could fit within the advertising interval.
   Previously, the advertising data was cleared every time the advertising set was configured (DRGN-14008).
 * Fixed an issue where the link would disconnect with reason "LMP Response Timeout (0x22)".
-  This would occur if "HCI LE Long Term Key Request event" was disabled and the slave received an encryption request (DRGN-15226).
+  This would occur if the "HCI LE Long Term Key Request event" was disabled and the slave received an encryption request (DRGN-15226).
 * Fixed an issue where the LL control procedures LE start encryption and LE connection parameter update could not be initiated at the same time (DRGN-11963).
 * Fixed an issue where the generation of QoS Connection event was not disabled after an HCI reset (DRGN-15291).
 
@@ -120,6 +125,8 @@ See the :ref:`nrf:known_issues` page in |NCS| for the list of known issues and l
 
 nRF Connect SDK v1.4.0
 **********************
+
+All the notable changes included in the nRF Connect SDK v1.4.0 release are documented in this section.
 
 Added
 =====
@@ -142,9 +149,10 @@ Added
 Changes
 =======
 
-* When linking the final binary, the image size is reduced. Only the requested features are included. See :c:func:`sdc_support_adv` and similar APIs for more details.
+* When linking the final binary, the image size is reduced. Only the requested features are included.
+  See :c:func:`sdc_support_adv` and similar APIs for more details.
 * When LLPM mode is enabled, the connection event length is now no longer implicitly set to 1 ms (DRGN-12696).
-* When the connection interval is an LLPM connection interval, that is, below 7.5 ms, link layer procedures with an instant will use an instant larger than 6 connection events (DRGN-14379).
+* When the connection interval is an LLPM connection interval, that is, below 7.5 ms, link-layer procedures with an instant will use an instant larger than 6 connection events (DRGN-14379).
 * The nRF Bluetooth LE Controller was renamed to SoftDevice Controller (DRGN-14283).
   APIs are updated accordingly:
 
@@ -170,7 +178,7 @@ Changes
 Bug fixes
 =========
 
-* Fixed an issue in master role which could cause disconnects if there were scheduling conflicts while doing a control procedures with an instant (DRGN-11222).
+* Fixed an issue in the master role which could cause disconnects if there were scheduling conflicts while doing control procedures with an instant (DRGN-11222).
 
 Known issues and limitations
 ============================
@@ -179,6 +187,8 @@ See the :ref:`nrf:known_issues` page in |NCS| for the list of known issues and l
 
 nRF Connect SDK v1.3.0
 **********************
+
+All the notable changes included in the nRF Connect SDK v1.3.0 release are documented in this section.
 
 Added
 =====
@@ -218,6 +228,8 @@ Changes
 nRF Connect SDK v1.2.0
 **********************
 
+All the notable changes included in the nRF Connect SDK v1.2.0 release are documented in this section.
+
 Added
 =====
 
@@ -240,12 +252,12 @@ Changes
 * :c:func:`mpsl_uninit` is no longer called by :c:func:`ble_controller_disable`.
   Application must therefore call :c:func:`mpsl_uninit` after :c:func:`ble_controller_disable` to uninitialize MPSL.
 * Interrupt handler APIs for the following peripherals are moved to MPSL: RADIO, RTC0, TIMER0, and POWER_CLOCK.
-* High frequency clock API (``ble_controller_hf_clock_...``) is removed.
-  Use corresponding API in MPSL instead.
+* High-frequency clock API (``ble_controller_hf_clock_...``) is removed.
+  Use the corresponding API in MPSL instead.
 * Temperature API (:c:func:`ble_controller_temp_get`) is removed.
-  Use corresponding API in MPSL instead.
+  Use the corresponding API in MPSL instead.
 * Timeslot API is removed.
-  Use corresponding API in MPSL instead.
+  Use the corresponding API in MPSL instead.
 * Version numbers have been removed from the libraries.
 
 Bug fixes
@@ -256,9 +268,9 @@ Bug fixes
   This would only occur if the radio was forced off due to an unforeseen condition.
 * Fixed an issue in HCI LE Set Extended Scan Enable where ``UNSUPPORTED_FEATURE`` was returned when duplicate filtering was enabled.
 * Fixed an issue in HCI LE Set Advertising Parameters where ``UNSUPPORTED_FEATURE`` was returned when ``secondary_max_skip`` was set to a non-zero value.
-  This issue occured when sending a packet on either LE 1M or LE 2M PHY after receiving or transmitting a packet on
+  This issue occurred when sending a packet on either LE 1M or LE 2M PHY after receiving or transmitting a packet on
   LE Coded PHY.
-  If this occured while performing a Link Layer Control Procedure, the controller could end up retransmitting
+  If this occurred while performing a Link Layer Control Procedure, the controller could end up retransmitting
   an ACKed packet, resulting in a disconnect.
 * Fixed an issue where an assert could occur when receiving a packet with a CRC error after performing a data length procedure on Coded PHY.
 * Fixed an issue where an assert occurred when setting a secondary PHY to 0 when using HCI LE Set Extended Advertising Parameters.
@@ -266,6 +278,8 @@ Bug fixes
 
 nRF Bluetooth LE Controller 0.3.0-3.prealpha
 ********************************************
+
+All the notable changes included in this release are documented in this section.
 
 Added
 =====
@@ -281,13 +295,17 @@ Bug fixes
 nRF Bluetooth LE Controller 0.3.0-2.prealpha
 ********************************************
 
+All the notable changes included in this release are documented in this section.
+
 Bug fixes
 =========
 
-* Fixed an issue where an assert occured when the host issued LE Write Suggested Default Data Length.
+* Fixed an issue where an assert occurred when the host issued LE Write Suggested Default Data Length.
 
 nRF Bluetooth LE Controller 0.3.0-1.prealpha
 ********************************************
+
+All the notable changes included in this release are documented in this section.
 
 Added
 =====
@@ -295,9 +313,9 @@ Added
 * Increased the number of supported SoC and library combinations.
 * Added API for estimating the dynamic memory usage returned by :c:func:`ble_controller_cfg_set`.
 * Added a new header :file:`ble_controller_hci_vs.h` that exposes definitions of
-  Vendor Specific HCI commands and events.
+  Vendor-Specific HCI commands and events.
 * Added support for connection intervals less than the standard minimum of 7.5 ms.
-  Note that this a proprietary feature that is not Bluetooth compliant.
+  Note that this is a proprietary feature that is not Bluetooth compliant.
   This proprietary feature is named 'Low Latency Packet Mode (LLPM)'.
 * Added support for enabling or disabling connection event length extension.
   When disabled, the maximum connection event length is set by ``ble_controller_cfg_event_length_t::event_length_us``.
@@ -309,19 +327,20 @@ Added
 Bug fixes
 =========
 
-* Fixed an issue where HCI Read Local Supported Commands command did not indicate support for HCI LE Set Privacy Mode command.
-* Fixed an issue where an ASSERT occured when setting advertising data after HCI Reset without setting advertising parameters.
-* Fixed an issue where an ASSERT occured when writing to flash.
+* Fixed an issue where the "HCI Read Local Supported Commands" command did not indicate support for the "HCI LE Set Privacy Mode" command.
+* Fixed an issue where an ASSERT occurred when setting advertising data after HCI Reset without setting advertising parameters.
+* Fixed an issue where an ASSERT occurred when writing to flash.
 * Fixed an issue where a directed advertiser could time out without sending a packet on air.
 
 Changes
 =======
-* The VersNr field in the LL_VERSION_IND packet now contains the value 0x0A to indicate Bluetooth Core Specification v5.1 compatibility.
+* The ``VersNr`` field in the LL_VERSION_IND packet now contains the value 0x0A to indicate Bluetooth Core Specification v5.1 compatibility.
 * Bluetooth Core Specification Erratum #10750 is incorporated.
   The LE Data Length Change event will now be raised when switching to and from Coded PHY.
   On-air behavior has not changed.
-* Bluetooth Core Specification Erratum #10818 is incorporated. The controller now allows HCI ACL data packets with 0-length payload, but does not transmit anything until receiving the next non-zero continuation fragment.
-* Cleaned up invalid doxygen comments.
+* Bluetooth Core Specification Erratum #10818 is incorporated.
+  The controller now allows HCI ACL data packets with a 0-length payload but does not transmit anything until receiving the next non-zero continuation fragment.
+* Cleaned up invalid Doxygen comments.
 
 
 nRF Bluetooth LE Controller 0.2.0-4.prealpha
@@ -381,7 +400,7 @@ No change to library files.
 Added
 =====
 
-* Headers necessary to utilize the timeslot API.
+* Added the headers necessary to utilize the timeslot API.
 
 
 nRF Bluetooth LE Controller 0.1.0-1.prealpha
