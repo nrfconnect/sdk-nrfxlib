@@ -19,5 +19,5 @@ Extensions are available for:
    :caption: Subpages:
 
    pdn_extension
-   at_commands
+   at_socket
    gnss_extension

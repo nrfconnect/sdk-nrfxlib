@@ -89,14 +89,29 @@ extern "C" {
  *       setting the use-case modes to keep the code compliant with future versions of the modem
  *       firmware.
  */
-#define NRF_MODEM_GNSS_USE_CASE_MULTIPLE_HOT_START 0x01
+#define NRF_MODEM_GNSS_USE_CASE_MULTIPLE_HOT_START     0x01
 /** @brief Low accuracy fixes allowed.
  *
  * @details The error in position calculation can be larger than in normal accuracy mode. In
  *          addition, GNSS might only use three satellites to determine a fix, while in normal
  *          accuracy mode at least four satellites are used.
  */
-#define NRF_MODEM_GNSS_USE_CASE_LOW_ACCURACY       0x02
+#define NRF_MODEM_GNSS_USE_CASE_LOW_ACCURACY	       0x02
+/** @brief Disable scheduled downloads.
+ *
+ * @details By default, in periodic navigation mode, when GNSS determines it needs to download
+ *          ephemerides or almanacs from the broadcast, the fix interval and fix retry parameters
+ *          are temporarily ignored. GNSS will perform scheduled downloads until it has downloaded
+ *          the data it needs, after which normal operation is resumed.
+ *
+ * When this bit is set, scheduled downloads are disabled. This is recommended when A-GPS is used
+ * to supply assistance data to the GNSS. It is also possible to use this option without A-GPS,
+ * but it should be noted that in that case GNSS will never get some data (for example ionospheric
+ * corrections), which may affect the accuracy.
+ *
+ * @note This is only supported by modem firmware v1.3.1 or later.
+ */
+#define NRF_MODEM_GNSS_USE_CASE_SCHED_DOWNLOAD_DISABLE 0x04
 /** @} */
 
 /** @defgroup nrf_modem_gnss_pvt_flag_bitmask Bitmask values for flags in the PVT notification

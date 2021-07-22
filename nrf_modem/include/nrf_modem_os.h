@@ -97,6 +97,46 @@ void nrf_modem_os_errno_set(int errno_val);
  */
 bool nrf_modem_os_is_in_isr(void);
 
+/*
+ * @brief Initialize a semaphore.
+ *
+ * The function shall allocate and initialize a semaphore and return its address
+ * as an output. If an address of an already allocated semaphore is provided as
+ * an input, the allocation part is skipped and the semaphore is only reinitialized.
+ *
+ * @param[inout] sem The address of the semaphore.
+ * @param initial_count Initial semaphore count.
+ * @param limit Maximum semaphore count.
+ *
+ * @return int Zero on success, or a negative value otherwise.
+ */
+int nrf_modem_os_sem_init(void **sem,
+			  unsigned int initial_count,
+			  unsigned int limit);
+
+/**
+ * @brief Give a semaphore.
+ *
+ * @param sem The semaphore.
+ *
+ * @note Can be called from an ISR.
+ */
+void nrf_modem_os_sem_give(void *sem);
+
+/**
+ * @brief Take a semaphore.
+ *
+ * @param sem The semaphore.
+ * @param timeout Timeout in milliseconds.
+ *		  @c NRF_MODEM_OS_FOREVER indicates infinite timeout.
+ *		  @c NRF_MODEM_OS_NO_WAIT indicates no timeout.
+ *
+ * @note @a timeout shall be set to NRF_MODEM_OS_NO_WAIT if called from ISR.
+ *
+ * @return int Zero on success or NRF_ETIMEDOUT if the timeout expired.
+ */
+int nrf_modem_os_sem_take(void *sem, int timeout);
+
 /**
  * @brief Set the application IRQ, @c NRF_MODEM_APPLICATION_IRQ.
  */

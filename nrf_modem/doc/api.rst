@@ -1,4 +1,4 @@
-.. nrf_modem_api:
+.. _nrf_modem_api:
 
 API documentation
 #################
@@ -219,6 +219,33 @@ Necessary data types and defines to poll for
 events on one or more sockets using nrf_poll().
 
 .. doxygengroup:: nrf_socket_api_poll
+   :project: nrfxlib
+   :members:
+
+.. _nrf_modem_at_api:
+
+AT API
+******
+
+.. doxygengroup:: nrf_modem_at
+   :project: nrfxlib
+   :members:
+
+.. _nrf_modem_full_dfu_api:
+
+Full DFU API
+************
+
+.. doxygengroup:: nrf_modem_full_dfu
+   :project: nrfxlib
+   :members:
+
+.. _nrf_modem_delta_dfu_api:
+
+Delta DFU API
+*************
+
+.. doxygengroup:: nrf_modem_delta_dfu
    :project: nrfxlib
    :members:
 

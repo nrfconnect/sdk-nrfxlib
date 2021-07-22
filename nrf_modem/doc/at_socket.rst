@@ -1,9 +1,14 @@
-.. _at_commands:
+.. _at_socket:
 
-AT commands
-###########
+AT socket
+#########
 
-You can use the socket interface to send AT commands to the LTE modem and to receive the responses.
+.. note::
+
+   The socket-based AT interface is deprecated since version v1.3.0.
+   Use the :ref:`AT interface <nrf_modem_at>` instead.
+
+You can use the AT socket to send AT commands to the LTE modem and to receive the responses.
 
 To do so, create a socket with the proprietary address family :c:type:`NRF_AF_LTE` and the protocol family :c:type:`NRF_PROTO_AT`.
 You can then write AT command strings to that socket using :c:func:`nrf_send` and :c:func:`nrf_write`, and they are sent to the modem.

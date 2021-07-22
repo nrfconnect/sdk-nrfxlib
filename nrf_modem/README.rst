@@ -31,12 +31,15 @@ For more information, see :ref:`nrf_modem_ug_porting`.
    :caption: Subpages:
 
    doc/supported_features
-   doc/limitations
    doc/architecture
+   doc/at_interface
+   doc/at_socket
+   doc/gnss_interface
+   doc/full_dfu
+   doc/delta_dfu
    doc/tls_dtls_configuration
+   doc/limitations
    doc/extensions
    doc/ug_nrf_modem_porting_os
-   doc/full-dfu
-   doc/gnss_interface
    doc/CHANGELOG
    doc/api

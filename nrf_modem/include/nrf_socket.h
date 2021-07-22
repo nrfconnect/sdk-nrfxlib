@@ -91,7 +91,9 @@ typedef int32_t ssize_t;
  */
 /** Unspecified address family */
 #define NRF_AF_UNSPEC 0
-/** Family to identify protocols/operations local to Nordic device. */
+/** Family to identify protocols/operations local to Nordic device.
+ *  @deprecated since v1.3.0.
+ */
 #define NRF_AF_LOCAL 1
 /** IPv4 socket family. */
 #define NRF_AF_INET 2
@@ -99,7 +101,9 @@ typedef int32_t ssize_t;
 #define NRF_AF_PACKET 5
 /** IPv6 socket family. */
 #define NRF_AF_INET6 10
-/** Nordic proprietary LTE socket family. */
+/** Nordic proprietary LTE socket family.
+ *  @deprecated since v1.3.0.
+ */
 #define NRF_AF_LTE 102
 /**@} */
 
@@ -135,13 +139,17 @@ typedef int32_t ssize_t;
 /** DTLS1v2 protocol. */
 #define NRF_SPROTO_DTLS1v2 270
 
-/** AT command protocol. */
+/** AT command protocol.
+ *  @deprecated since v1.3.0.
+ */
 #define NRF_PROTO_AT 513
 /** PDN management protocol.
  *  @deprecated since v1.1.0.
  */
 #define NRF_PROTO_PDN 514
-/** DFU protocol. */
+/** DFU protocol.
+ *  @deprecated since v1.3.0.
+ */
 #define NRF_PROTO_DFU 515
 /** GNSS protocol.
  *  @deprecated since v1.2.0.
@@ -277,11 +285,14 @@ typedef uint32_t nrf_fd_set;
 
 /**@defgroup nrf_socket_dfu DFU socket
  * @brief DFU socket API
+ * @deprecated since v1.3.0.
  * @{
  */
 /**@brief
  * Socket option to read the modem firmware version (UUID).
  * @sa nrf_dfu_fw_version_t.
+ *
+ * @deprecated since v1.3.0.
  */
 #define NRF_SO_DFU_FW_VERSION 1
 
@@ -289,12 +300,16 @@ typedef uint32_t nrf_fd_set;
  * Socket option to retrieve the size of the largest firmware image
  * that can be transferred to the modem for firmware updates.
  * @sa nrf_dfu_resources_t.
+ *
+ * @deprecated since v1.3.0.
  */
 #define NRF_SO_DFU_RESOURCES 2
 
 /**@brief
  * Socket option to control the timeout to send a firmware fragment.
  * @note Not implemented.
+ *
+ * @deprecated since v1.3.0.
  */
 #define NRF_SO_DFU_TIMEO 3
 
@@ -302,11 +317,15 @@ typedef uint32_t nrf_fd_set;
  * Socket option to schedule a modem firmware update at next boot.
  * The result of the update is returned by nrf_modem_init, at next boot.
  * The modem needs to be reset once more to run the updated firmware.
+ *
+ * @deprecated since v1.3.0.
  */
 #define NRF_SO_DFU_APPLY 4
 
 /**@brief
  * Socket option to schedule a rollback of a firmware update at next boot.
+ *
+ * @deprecated since v1.3.0.
  */
 #define NRF_SO_DFU_REVERT 5
 
@@ -314,6 +333,8 @@ typedef uint32_t nrf_fd_set;
  * Socket option to delete a modem firmware image from the modem's scratch area.
  * This option removes the possibility to rollback to a previous version,
  * and is necessary to receive new firmware images.
+ *
+ * @deprecated since v1.3.0.
  */
 #define NRF_SO_DFU_BACKUP_DELETE 6
 
@@ -325,12 +346,15 @@ typedef uint32_t nrf_fd_set;
  * is dirty, and needs erasing (via NRF_SO_DFU_BACKUP_DELETE).
  * If non-zero and different from 2.5 megabytes, the value indicates the size
  * of the firmware image received so far.
+ *
+ * @deprecated since v1.3.0.
  */
 #define NRF_SO_DFU_OFFSET 7
 
 /**@brief
  * Socket option to retrieve the latest DFU error, see @ref nrf_dfu_errors.
  * Read-only.
+ * @deprecated since v1.3.0.
  */
 #define NRF_SO_DFU_ERROR 20
 /**@} */
@@ -639,6 +663,7 @@ typedef uint32_t nrf_fd_set;
 #define NRF_SOL_SECURE 282
 /** @deprecated since v1.1.0. */
 #define NRF_SOL_PDN    514
+/** @deprecated since v1.3.0. */
 #define NRF_SOL_DFU    515
 /** @deprecated since v1.2.0. */
 #define NRF_SOL_GNSS   516
@@ -995,25 +1020,31 @@ typedef struct {
 /**@brief
  * Universally unique identifier of the modem firmware version.
  * The UUID format is defined by RFC 4122.
+ * @deprecated since v1.3.0.
  */
 typedef uint8_t nrf_dfu_fw_version_t[36];
 
 /**@brief
  * Maximum size for a firmware image, in bytes.
+ * @deprecated since v1.3.0.
  */
 typedef uint32_t nrf_dfu_resources_t;
 
 /**@brief
  * Size of the firmware image stored in flash, in bytes.
+ * @deprecated since v1.3.0.
  */
 typedef uint32_t nrf_dfu_fw_offset_t;
 
 /**@defgroup nrf_dfu_errors DFU errors
  * @brief    DFU socket errors.
+ * @deprecated since v1.3.0.
  * @{
  */
 
-/**@brief DFU socket error. */
+/**@brief DFU socket error.
+ * @deprecated since v1.3.0.
+ */
 typedef int32_t nrf_dfu_err_t;
 
 #define DFU_NO_ERROR		     0

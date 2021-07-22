@@ -20,6 +20,7 @@ extern "C" {
 #define NRF_EPERM	    1 /**< Operation not permitted */
 #define NRF_ENOENT	    2 /**< No such file or directory */
 #define NRF_EIO		    5 /**< Input/output error */
+#define NRF_E2BIG	    7 /**< Arg list too long */
 #define NRF_ENOEXEC	    8 /**< Exec format error */
 #define NRF_EBADF	    9 /**< Bad file descriptor */
 #define NRF_ENOMEM	    12 /**< Cannot allocate memory */
@@ -47,6 +48,7 @@ extern "C" {
 #define NRF_ENOTCONN	    57 /**< Transport endpoint is not connected */
 #define NRF_ETIMEDOUT	    60 /**< Connection timed out */
 #define NRF_ECONNREFUSED    61 /**< Connection refused */
+#define NRF_EBADMSG	    77 /**< Invalid STREAMS message */
 #define NRF_ENOBUFS	    105 /**< No buffer space available */
 #define NRF_EHOSTDOWN	    112 /**< Host is down */
 #define NRF_EALREADY	    114 /**< Operation already in progress */

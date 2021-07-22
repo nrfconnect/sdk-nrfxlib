@@ -1,17 +1,17 @@
 .. _full_dfu:
 
-Full-modem firmware update
-##########################
+Full firmware updates
+#####################
 
 .. contents::
    :local:
    :depth: 2
 
-The modem library supports the full update of the modem firmware when the library is initialized in full DFU mode via the :file:`nrf_modem_full_dfu.h` interface.
-Full-modem firmware update is the only operation that can be performed in full DFU mode.
+The modem library supports the full update of the modem firmware when the library is initialized in full DFU mode by the :file:`nrf_modem_full_dfu.h` interface.
+Full firmware update is the only operation that can be performed in full DFU mode.
 The sockets are not available to the application.
 
-It is possible to switch between the full-DFU and normal operation modes by reinitializing the library.
+It is possible to switch between the full DFU and normal operation modes by reinitializing the library.
 
 Memory requirements
 *******************
@@ -21,20 +21,20 @@ This is because programming requires 8 kB data buffer and some storage for struc
 
 .. note::
 
-   When using |NCS|, the library is initialized via the glue, which will configure the size and position of the shared memory regions in RAM.
+   When using |NCS|, the library is initialized by the glue, which will configure the size and position of the shared memory regions in RAM.
    Use the Kconfig options belonging to the glue to ensure that the total size of the shared memory region is sufficiently large.
 
 Modem library initialization
 ============================
 
-To perform a full-modem firmware update, the library must be initialized in ``FULL_DFU`` mode as shown in the following code:
+To perform a full firmware update of the modem, the library must be initialized in ``FULL_DFU`` mode as shown in the following code:
 
 .. code-block:: c
 
    /* Shutdown modem to prepare for DFU */
    nrf_modem_init(init_params, FULL_DFU_MODE);
 
-If the library has already been initialized in ``NORMAL_MODE`` mode, it must be shut down via the :c:func:`nrf_modem_shutdown` function and reinitialized as shown in the following code:
+If the library has already been initialized in ``NORMAL_MODE`` mode, it must be shut down through the :c:func:`nrf_modem_shutdown` function and reinitialized as shown in the following code:
 
 .. code-block:: c
 
@@ -74,7 +74,7 @@ You must then initialize the modem library manually by using the following code:
 Full DFU API
 ************
 
-A full-modem firmware upgrade consists of the following steps:
+A full firmware upgrade of the modem consists of the following steps:
 
 1. Initialization
 #. Programming the bootloader
@@ -87,7 +87,7 @@ If any failures happen, the sequence of steps must be restarted from the initial
 Initialization
 ==============
 
-To initialize the full modem firmware update process, call the following function:
+To initialize the full firmware update process for the modem, call the following function:
 
 .. code-block:: c
 

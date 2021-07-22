@@ -5,8 +5,11 @@
  */
 
 /**@file nrf_modem_full_dfu.h
- *
+ * @defgroup nrf_modem_full_dfu Full DFU API
+ * @{
+ * @brief API for Full DFU.
  */
+
 #ifndef NRF_FULL_DFU_H__
 #define NRF_FULL_DFU_H__
 
@@ -26,9 +29,7 @@ typedef int32_t ssize_t;
 #endif
 #endif
 
-/**@addtogroup nrf_full_dfu_api_utils
- *@{
- */
+
 
 /**@brief Digest buffer length. */
 #define NRF_MODEM_FULL_DFU_DIGEST_LEN 32
