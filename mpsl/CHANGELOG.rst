@@ -7,34 +7,38 @@ Changelog
    :local:
    :depth: 2
 
-All notable changes to this project are documented in this file.
+All the notable changes to this project are documented in this file.
 
 Master branch
 *************
 
+All the notable changes added to the master branch are documented in this section.
+
 Added
 =====
 
-* Added public interface for radio coexistence protocol API. (KRKNWK-7490)
-  This public interface can be used to replace example radio coexistence implementation with other implementation compliant with other Packet Traffic Arbitration (PTA) interface.
+* Added a public interface for the radio coexistence protocol API (KRKNWK-7490).
+  This public interface can be used to replace the example implementation of the radio coexistence with other implementations compliant with other Packet Traffic Arbitration (PTA) interfaces.
 
 Changes
 =======
 
-* The :file:`mpsl_fem_protocol_api.h` was moved from the directory :file:`include` to :file:`include/protocol` (KRKNWK-10507).
+* The :file:`mpsl_fem_protocol_api.h` was moved from the :file:`include` directory to the :file:`include/protocol` directory (KRKNWK-10507).
 
 nRF Connect SDK v1.6.0
 **********************
+
+All the notable changes included in the nRF Connect SDK v1.6.0 release are documented in this section.
 
 Added
 =====
 
 * Added an API to set and get a flag that determines whether to apply the DEVICE-CONFIG-254.
   The API user shall set the flag to desired value with :c:func:`mpsl_fem_device_config_254_shall_apply_set`.
-  The protocol stacks' responsibility is to check the flag value using :c:func:`mpsl_fem_device_config_254_shall_apply_get`
-  and apply the configuration when the flag value is true.
-* Added support for the nRF5340 device, which was previously only supported for evaluation purposes. (DRGN-8639)
-* Added a function to FEM protocol API to disable FEM when no radio activity is expected. This function is intended to reduce power consumption. (KRKNWK-8842)
+  The protocol stacks' responsibility is to check the flag value using :c:func:`mpsl_fem_device_config_254_shall_apply_get` and apply the configuration when the flag value is true.
+* Added support for the nRF5340 device, which was previously only supported for evaluation purposes (DRGN-8639).
+* Added a function to the FEM protocol API to disable FEM when no radio activity is expected.
+  This function is intended to reduce power consumption (KRKNWK-8842).
 
 Changes
 =======
@@ -49,28 +53,29 @@ Bug fixes
 nRF Connect SDK v1.5.0
 **********************
 
+All the notable changes included in the nRF Connect SDK v1.5.0 release are documented in this section.
+
 Added
 =====
 
 * Added a new signal to the MPSL timeslot: ``MPSL_TIMESLOT_SIGNAL_OVERSTAYED``.
-  This signal is given to the application when a timeslot session is closed too late. (DRGN-14677)
+  This signal is given to the application when a timeslot session is closed too late (DRGN-14677).
 
-* Added a new clock configuration option :c:member:`skip_wait_lfclk_started` in :c:struct:`mpsl_clock_lfclk_cfg_t`,
-  which does not wait for the start of Low Frequency Clock. (DRGN-14204)
+* Added a new clock configuration option :c:member:`skip_wait_lfclk_started` in :c:struct:`mpsl_clock_lfclk_cfg_t`, which does not wait for the start of the low-frequency clock (DRGN-14204).
 
-* Added macro MPSL_RESERVED_PPI_CHANNELS for a bit mask of (D)PPI channels
-  reserved by MPSL (DRGN-13356).
+* Added macro MPSL_RESERVED_PPI_CHANNELS for a bit mask of (D)PPI channels reserved by MPSL (DRGN-13356).
 
 Bug fixes
 =========
 
-* Fixed an issue where Low Frequency Clock was configured incorrectly
-  when the source configuration signal was set to either External Full swing or External Low swing. (DRGN-15064)
+* Fixed an issue where the low-frequency clock was configured incorrectly when the source configuration signal was set to either External Full swing or External Low swing (DRGN-15064).
 
-* Fixed an issue where MPSL waited for Low Frequency Clock to start even though it was configured not wait for it. (DRGN-15176)
+* Fixed an issue where MPSL waited for the low-frequency clock to start even though it was configured not to wait for it (DRGN-15176).
 
 nRF Connect SDK v1.4.0
 **********************
+
+All the notable changes included in the nRF Connect SDK v1.4.0 release are documented in this section.
 
 Changes
 =======
@@ -86,7 +91,7 @@ Changes
 Bug fixes
 =========
 
-* Fixed an issue where the high frequency clock and ``TIMER0`` were not turned off during idle periods shorter than 9 ms (DRGN-14152).
+* Fixed an issue where both the high-frequency clock and ``TIMER0`` were not turned off during idle periods shorter than 9 ms (DRGN-14152).
   This increased the average power consumption.
   Such a case could occur when running a |BLE| connection with a connection interval of 7.5 ms.
 
@@ -97,6 +102,8 @@ See the :ref:`nrf:known_issues` page in |NCS| for the list of known issues and l
 
 nRF Connect SDK v1.3.0
 **********************
+
+All the notable changes included in the nRF Connect SDK v1.3.0 release are documented in this section.
 
 Added
 =====
@@ -122,6 +129,8 @@ Bug fixes
 nRF Connect SDK v1.2.0
 **********************
 
+All the notable changes included in the nRF Connect SDK v1.2.0 release are documented in this section.
+
 Added
 =====
 
@@ -129,7 +138,7 @@ Added
   The feature set is the same as in the MPSL library for nRF52.
   The following library has been added:
 
-:file:`soft-float/libmpsl.a`
+  * :file:`soft-float/libmpsl.a`
 
 Changes
 =======
@@ -140,7 +149,7 @@ Changes
 * Clock configuration parameters for any stack that uses MPSL must be provided in :c:type:`mpsl_clock_lfclk_cfg_t` to :c:func:`mpsl_init`.
   This now also involves clock accuracy.
 * Clock accuracy must be specified in parts per million (ppm).
-* Renamed MPSL clock API for high and low frequency clock.
+* Renamed the MPSL clock API for the high-frequency and low-frequency clocks.
 
 MPSL 0.5.0-1.prealpha
 *********************

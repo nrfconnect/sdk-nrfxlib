@@ -21,7 +21,7 @@ Implementation
 Two FEM implementations are provided:
 
 * *nRF21540 GPIO*.
-  It is compatible with the nRF21540 FEM and it implements a 3-pin interface.
+  It is compatible with the nRF21540 FEM and implements a 3-pin interface.
 * *Simple GPIO*.
   It is a simplified version, made to be compatible with other front-end modules.
   It implements a 2-pin interface.
@@ -102,7 +102,7 @@ nRF21540 usage
 **************
 
 In the nRF21540 implementation, the PDN pin is used to power down the FEM internal circuits.
-The FEM can be powered down on explicit application request.
+The FEM can be powered down on an explicit application request.
 The FEM is powered back up automatically before PA or LNA are activated.
 
 See below for an example of controlling LNA and PDN during Rx operation, using the following parameters:
@@ -118,8 +118,8 @@ The *RX ramp-up time* is the total time scheduled by the application.
 
 See below for the steps needed to properly configure LNA and PDN in this example:
 
-* The application configures the power-down by passing ``rx_end`` as the activation event.
-* The application configures LNA to be activated by the timer event, with the start time set to 0 us and end time set to 40 us.
+* The application configures the power-down passing ``rx_end`` as the activation event.
+* The application configures LNA to be activated by the timer event, with the start time set to 0 us and the end time set to 40 us.
 * The application provides the ``rx_end`` event as the LNA deactivation event.
 * The FEM module reads the scheduled time and sets ``TIMER1`` compare channels to 27 us (40-13) and 9 us (27-18).
 * The application starts Rx operation.
