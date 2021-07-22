@@ -9,6 +9,15 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.3.0
+***************
+
+* Added new AT interface for AT commands.
+* Added new Delta DFU interface for modem firmware delta updates.
+* The AT socket has been deprecated.
+* The DFU socket has been deprecated.
+* Fixed a bug in :c:func:`nrf_send()` for blocking sockets where calling the function very quickly would cause the application to hang up.
+
 nrf_modem 1.2.2
 ***************
 

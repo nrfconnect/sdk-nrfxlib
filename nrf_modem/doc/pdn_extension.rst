@@ -7,6 +7,10 @@ PDN management
    :local:
    :depth: 2
 
+.. note::
+
+   The PDN socket is deprecated since v1.2.0. The functionality is now provided through AT commands.
+
 The Modem library supports configuring up to 10 packet data network (PDN) sockets.
 PDN sockets are an extension to the standard socket API.
 They allow for configuring PDN connections as identified by the user's Access Point Name (APN).
