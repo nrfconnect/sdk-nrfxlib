@@ -43,6 +43,7 @@ typedef void (*nrf_rpc_os_work_t)(const uint8_t *data, size_t len);
  *
  * @param callback Work callback that will be called when something was send
  *                 to a thread pool.
+ * @param user_data Data pointer passed to ipm device callbacks
  *
  * @return         0 on success or negative error code.
  */

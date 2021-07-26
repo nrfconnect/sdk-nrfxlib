@@ -366,7 +366,7 @@ static void receive_handler(const uint8_t *packet, size_t len)
 	}
 
 	NRF_RPC_DBG("Received %d bytes packet from %d to %d, type 0x%02X, "
-		    "cmd/evt/cnt 0x%02X, grp %d (%s)", len, hdr.src, hdr.dst,
+		    "cmd/evt/cnt 0x%02X, grp %d (%s)", (int)len, hdr.src, hdr.dst,
 		    hdr.type, hdr.id, hdr.group_id,
 		    (group != NULL) ? group->strid : "unknown");
 
@@ -801,3 +801,18 @@ void nrf_rpc_err(int code, enum nrf_rpc_err_src src,
 		global_err_handler(&report);
 	}
 }
+
+#ifndef nrf_rpc_tr_alloc_tx_buf
+
+uint8_t *_nrf_rpc_alloc(size_t len)
+{
+	uint8_t *packet;
+
+	NRF_RPC_ASSERT(len < NRF_RPC_MAX_ALLOC_SIZE);
+
+	nrf_rpc_tr_alloc_tx_buf(&packet, _NRF_RPC_HEADER_SIZE + len);
+
+	return &packet[_NRF_RPC_HEADER_SIZE];
+}
+
+#endif

@@ -227,6 +227,9 @@ void _nrf_rpc_cbor_proxy_handler(const uint8_t *packet, size_t len,
 
 void _nrf_rpc_cbor_prepare(struct nrf_rpc_cbor_ctx *ctx, size_t len)
 {
+#ifndef nrf_rpc_tr_alloc_tx_buf
+	NRF_RPC_ALLOC(ctx->out_packet, len + 1);
+#endif
 	cbor_buf_writer_init(&ctx->writer, ctx->out_packet, len);
 	cbor_encoder_init(&ctx->encoder, &ctx->writer.enc, 0);
 }

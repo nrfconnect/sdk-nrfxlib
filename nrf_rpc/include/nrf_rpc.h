@@ -28,8 +28,19 @@ extern "C" {
 /* Internal definition used in the macros. */
 #define _NRF_RPC_HEADER_SIZE 4
 
+#ifndef NRF_RPC_TR_MAX_HEADER_SIZE
+#define NRF_RPC_TR_MAX_HEADER_SIZE 0
+#endif
+
+#ifndef NRF_RPC_TR_AUTO_FREE_RX_BUF
+#define NRF_RPC_TR_AUTO_FREE_RX_BUF 0
+#endif
+
 /** @brief Special value to indicate that ID is unknown or irrelevant. */
 #define NRF_RPC_ID_UNKNOWN 0xFF
+
+/** @brief Special value to indicate that ID is unknown or irrelevant. */
+#define NRF_RPC_MAX_ALLOC_SIZE 0x70000000
 
 /* Forward declaration. */
 struct nrf_rpc_err_report;
@@ -230,9 +241,20 @@ struct nrf_rpc_err_report {
  *                     a newly allocated packet buffer.
  * @param[in]  _len    Requested length of the packet.
  */
+ /* If nrf_rpc_tr_alloc_tx_buf is a macro, put it directly,
+  * because it may allocate memory on stack.
+  */
+#ifdef nrf_rpc_tr_alloc_tx_buf
 #define NRF_RPC_ALLOC(_packet, _len)					       \
 	nrf_rpc_tr_alloc_tx_buf(&(_packet), _NRF_RPC_HEADER_SIZE + (_len));    \
 	*(uint8_t **)&(_packet) += _NRF_RPC_HEADER_SIZE
+#else
+#define NRF_RPC_ALLOC(_packet, _len)					       \
+	do {								       \
+		extern uint8_t *_nrf_rpc_alloc(size_t len);		       \
+		(_packet) = _nrf_rpc_alloc(_len);			       \
+	} while (0)
+#endif
 
 /** @brief Deallocate memory for a packet.
  *

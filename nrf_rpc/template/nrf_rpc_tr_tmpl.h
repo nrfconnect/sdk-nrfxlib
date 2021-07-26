@@ -117,4 +117,4 @@ int nrf_rpc_tr_send(uint8_t *buf, size_t len);
  * @}
  */
 
-#endif /* TRANS_RPMSG_H_ */
+#endif /* NRF_RPC_TR_TMPL_H_ */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2020-2021 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -10,6 +10,10 @@
 #if defined(CONFIG_NRF_RPC_TR_RPMSG)
 
 #include <nrf_rpc_rpmsg.h>
+
+#elif defined(CONFIG_NRF_RPC_TR_SHMEM)
+
+#include <sm_ipt_backend.h>
 
 #elif defined(CONFIG_NRF_RPC_TR_CUSTOM)
 

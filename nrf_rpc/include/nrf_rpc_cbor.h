@@ -131,9 +131,14 @@ struct nrf_rpc_cbor_rsp_ctx {
  *                   resources to encode and send a packet.
  * @param[in]  _len  Requested length of the packet.
  */
+#ifdef nrf_rpc_tr_alloc_tx_buf
 #define NRF_RPC_CBOR_ALLOC(_ctx, _len)					       \
 	NRF_RPC_ALLOC((_ctx).out_packet, (_len) + 1);			       \
 	_nrf_rpc_cbor_prepare((struct nrf_rpc_cbor_ctx *)(&(_ctx)), (_len) + 1)
+#else
+#define NRF_RPC_CBOR_ALLOC(_ctx, _len)					       \
+	_nrf_rpc_cbor_prepare((struct nrf_rpc_cbor_ctx *)(&(_ctx)), (_len) + 1)
+#endif
 
 /** @brief Deallocate memory for a packet.
  *

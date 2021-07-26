@@ -26,6 +26,13 @@ config NRF_RPC_TR_RPMSG
 	help
 	  If enabled selects RPMsg as a transport layer for nRF PRC.
 
+config NRF_RPC_TR_SHMEM
+	bool "nRF RPC over shared memory"
+	select SM_IPT
+	help
+	  If enabled selects SM_IPT as a transport layer for nRF PRC.
+	  It requires additional API implemented in nrf_rpc_os.h file.
+
 config NRF_RPC_TR_CUSTOM
 	bool "User provided transport layer"
 	help
