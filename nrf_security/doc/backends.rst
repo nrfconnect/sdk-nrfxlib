@@ -45,7 +45,7 @@ The Arm CryptoCell cc3xx backend is only available on the following devices:
 Enabling the Arm CryptoCell cc3xx backend
 =========================================
 
-The Arm CryptoCell cc3xx backend can be enabled by setting the :option:`CONFIG_CC3XX_BACKEND` Kconfig variable.
+The Arm CryptoCell cc3xx backend can be enabled by setting the :kconfig:`CONFIG_CC3XX_BACKEND` Kconfig variable.
 
 .. note:: This backend is only available in nRF52840 and nRF9160.
 
@@ -63,7 +63,7 @@ The nrf_oberon backend provides support for AES ciphers, SHA-1, SHA-256, and ECC
 Enabling the nrf_oberon backend
 ===============================
 
-To use the :ref:`nrf_oberon_readme` as a backend, set the :option:`CONFIG_OBERON_BACKEND` Kconfig variable to true.
+To use the :ref:`nrf_oberon_readme` as a backend, set the :kconfig:`CONFIG_OBERON_BACKEND` Kconfig variable to true.
 
 .. _nrf_security_backends_orig_mbedtls:
 
@@ -82,7 +82,7 @@ Similarly, you can use the original Mbed TLS backend to add support for features
 Enabling the original Mbed TLS backend
 ======================================
 
-To enable the original Mbed TLS backend, set the :option:`CONFIG_MBEDTLS_VANILLA_BACKEND` Kconfig variable to true.
+To enable the original Mbed TLS backend, set the :kconfig:`CONFIG_MBEDTLS_VANILLA_BACKEND` Kconfig variable to true.
 
 
 Using the nrf_cc3xx_mbedcrypto as backend
@@ -90,5 +90,5 @@ Using the nrf_cc3xx_mbedcrypto as backend
 
 To use the :ref:`nrf_cc3xx_mbedcrypto_readme` as a backend, the Arm CryptoCell cc310/cc312 hardware must be first initialized.
 
-The Arm CryptoCell cc3xx hardware is initialized in :file:`<NCS>/nrf/drivers/hw_cc310/hw_cc310.c` and is controlled with the :option:`CONFIG_HW_CC3XX` Kconfig variable.
+The Arm CryptoCell cc3xx hardware is initialized in :file:`<NCS>/nrf/drivers/hw_cc310/hw_cc310.c` and is controlled with the :kconfig:`CONFIG_HW_CC3XX` Kconfig variable.
 The Kconfig variable has a default value of 'y' when cc3xx is available in the SoC.
