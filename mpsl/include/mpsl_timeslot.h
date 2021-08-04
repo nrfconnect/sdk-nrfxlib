@@ -41,7 +41,7 @@ extern "C" {
 #define MPSL_TIMESLOT_EARLIEST_TIMEOUT_MAX_US          (128000000UL - 1UL)
 
 /** @brief The maximum jitter in @ref MPSL_TIMESLOT_SIGNAL_START relative to the requested start time. */
-#define MPSL_TIMESLOT_START_JITTER_US                  (3UL)
+#define MPSL_TIMESLOT_START_JITTER_US                  (1UL)
 
 /** @brief The minimum allowed timeslot extension time. */
 #define MPSL_TIMESLOT_EXTENSION_TIME_MIN_US            (200UL)
