@@ -19,6 +19,8 @@ Changes
 
 * The ``Direct_Address_Type`` and the ``Direct_Address`` in extended advertising reports are updated to reflect the latest BLE specification.
   See Specification errata 14566 and 15752 (DRGN-15927).
+* The scanner is now scheduling cooperatively when the scan window is equal to the scan interval.
+  This improves the performance in the case of Bluetooth Mesh applications (DRGN-13146).
 
 Bug fixes
 =========
