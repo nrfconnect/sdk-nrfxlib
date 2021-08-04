@@ -24,6 +24,7 @@ Changes
 =======
 
 * The :file:`mpsl_fem_protocol_api.h` was moved from the :file:`include` directory to the :file:`include/protocol` directory (KRKNWK-10507).
+* The start signal jitter for the timeslot API (``MPSL_TIMESLOT_START_JITTER_US``) has been reduced to 1us. (DRGN-15842).
 
 nRF Connect SDK v1.6.0
 **********************
