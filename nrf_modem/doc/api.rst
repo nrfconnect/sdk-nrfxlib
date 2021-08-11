@@ -9,7 +9,7 @@ API documentation
 
 .. note::
 
-   Starting from Modem library v1.2.0, the GNSS socket is deprecated and replaced with the `GNSS API <https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrfxlib/nrf_modem/doc/api.html#gnss-api>`_.
+   Starting from Modem library v1.2.0, the GNSS socket is deprecated and replaced with the :ref:`nrf_modem_gnss_api`.
 
 Library Management
 ******************
@@ -248,6 +248,8 @@ Delta DFU API
 .. doxygengroup:: nrf_modem_delta_dfu
    :project: nrfxlib
    :members:
+
+.. _nrf_modem_gnss_api:
 
 GNSS API
 ********
