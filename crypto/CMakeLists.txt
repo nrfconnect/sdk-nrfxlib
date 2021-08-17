@@ -11,6 +11,12 @@ nrfxlib_calculate_lib_path(lib_path)
 add_library(nrfxlib_crypto INTERFACE)
 
 if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM)
+
+  # The oberon library doesn't have a softfp version so we replace its path with the soft-float one
+  if (CONFIG_FP_SOFTABI)
+        string(REGEX REPLACE "softfp-float" "soft-float"  lib_path ${lib_path})
+  endif()
+
   set(OBERON_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_oberon)
   set(OBERON_VER 3.0.8)
   set(OBERON_LIB ${OBERON_BASE}/${lib_path}/liboberon_${OBERON_VER}.a)
