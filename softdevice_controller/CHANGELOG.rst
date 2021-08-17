@@ -14,6 +14,11 @@ Master branch
 
 All the notable changes added to the master branch are documented in this section.
 
+Added
+=====
+
+* Added ``SDC_CFG_TYPE_SCAN_BUFFER_CFG`` to allow the application to configure the number of scan buffers (DRGN-15899).
+
 Changes
 =========
 
@@ -21,6 +26,7 @@ Changes
   See Specification errata 14566 and 15752 (DRGN-15927).
 * The scanner is now scheduling cooperatively when the scan window is equal to the scan interval.
   This improves the performance in the case of Bluetooth Mesh applications (DRGN-13146).
+* Support for radio front-end module (FEM) in nRF53 Series, based on the :ref:`mpsl_fem` (DRGN-14908).
 
 Bug fixes
 =========
@@ -29,6 +35,11 @@ Bug fixes
 * Fixed an issue where the channel map provided by the "LE Host Set Channel Classification" HCI command was not always applied on the secondary advertising channels (DRGN-15695).
 * Fixed an issue on the nRF53 Series where an assert could occur while scanning using legacy commands (DRGN-15852).
 * Fixed an issue on the nRF53 Series where the scanner could generate corrupted advertising reports (DRGN-15852).
+
+Changes
+=======
+
+* The application must now call the APIs prefixed with ``sdc_support_` before calling :c:func:`sdc_cfg_set` (DRGN-15899).
 
 nRF Connect SDK v1.6.0
 **********************

@@ -53,6 +53,7 @@ Proprietary feature support:
    :caption: Subpages:
 
    doc/softdevice_controller
+   doc/scheduling
    limitations
    CHANGELOG
    doc/api

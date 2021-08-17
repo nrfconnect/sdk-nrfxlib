@@ -59,6 +59,13 @@ extern "C" {
  */
 #define SDC_DEFAULT_RX_PACKET_COUNT 2
 
+/** @brief Default maximum number of advertising reports available in the scanner.
+ *
+ * The default buffer configuration allows the scanner to continue scanning
+ * with a pending advertising and scan response report.
+ */
+#define SDC_DEFAULT_SCAN_BUFFER_COUNT 3
+
 /** @brief Default connection event length. */
 #define SDC_DEFAULT_EVENT_LENGTH_US 7500UL
 
@@ -134,6 +141,12 @@ extern "C" {
 /** Maximum shared memory required for slave links. */
 #define SDC_MEM_SLAVE_LINKS_SHARED  24
 
+/** Memory required for scanner buffers when only supporting legacy scanning. */
+#define SDC_MEM_SCAN_BUFFER(buffer_count) ((buffer_count) * 0)
+
+/** Memory required for scanner buffers when supporting extended scanning. */
+#define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) ((buffer_count) * 0)
+
 /** @} end of sdc_mem_defines */
 
 /** @brief Function prototype for the fault handler.
@@ -150,24 +163,39 @@ typedef void (*sdc_fault_handler_t)(const char * file, const uint32_t line);
 
 /** @brief Function prototype for the SoftDevice Controller callback.
  *
- *  @sa @ref sdc_enable().
+ *  See also @ref sdc_enable().
  */
 typedef void (*sdc_callback_t)(void);
 
 
 enum sdc_cfg_type
 {
-    SDC_CFG_TYPE_NONE         = 0,  /**< No configuration update. */
-    SDC_CFG_TYPE_MASTER_COUNT = 1,  /**< Number of concurrent master roles.
-                                         @sa sdc_cfg_t::master_count. */
-    SDC_CFG_TYPE_SLAVE_COUNT  = 2,  /**< Number of concurrent slave roles.
-                                         @sa sdc_cfg_t::slave_count. */
-    SDC_CFG_TYPE_BUFFER_CFG   = 3,  /**< Buffer configuration per connection.
-                                         @sa sdc_cfg_t::buffer_cfg. */
-    SDC_CFG_TYPE_EVENT_LENGTH = 4,  /**< Maximum event length.
-                                         @sa sdc_cfg_t::event_length. */
-    SDC_CFG_TYPE_ADV_COUNT    = 5,  /**< Number of concurrent advertisers.
-                                         @sa sdc_cfg_t::adv_count. */
+    /** No configuration update. */
+    SDC_CFG_TYPE_NONE         = 0,
+    /** Number of concurrent master roles.
+     *  See also @ref sdc_cfg_t::master_count.
+     */
+    SDC_CFG_TYPE_MASTER_COUNT = 1,
+    /** Number of concurrent slave roles.
+     *  See also @ref sdc_cfg_t::slave_count.
+     */
+    SDC_CFG_TYPE_SLAVE_COUNT  = 2,
+    /** Buffer configuration per connection.
+     *  See also @ref sdc_cfg_t::buffer_cfg.
+     */
+    SDC_CFG_TYPE_BUFFER_CFG   = 3,
+    /** Maximum event length.
+     * See also @ref sdc_cfg_t::event_length.
+     */
+    SDC_CFG_TYPE_EVENT_LENGTH = 4,
+    /** Number of concurrent advertisers.
+     *  See also @ref sdc_cfg_t::adv_count.
+     */
+    SDC_CFG_TYPE_ADV_COUNT    = 5,
+    /** Number of scan buffers.
+     *  See also @ref sdc_cfg_t::scan_buffer_cfg.
+     */
+    SDC_CFG_TYPE_SCAN_BUFFER_CFG = 6,
 };
 
 /** @brief Role count. */
@@ -198,20 +226,51 @@ typedef struct
 } sdc_cfg_event_length_t;
 
 
+typedef struct
+{
+    /** @brief Number of buffers available in the scanner.
+     *
+     * The buffers are used for processing incoming packets
+     * and storing advertising reports.
+     *
+     * The minimum allowed number of buffers is 2.
+     *
+     * It is recommended to support at least three buffers,
+     * otherwise the scan response report will likely not be generated.
+     *
+     * Default: @ref SDC_DEFAULT_SCAN_BUFFER_COUNT.
+     */
+    uint8_t count;
+} sdc_cfg_scan_buffer_cfg_t;
+
+
 /** @brief SoftDevice Controller configuration.  */
 typedef union
 {
-    sdc_cfg_role_count_t   master_count;  /**< Max number of concurrent master connections.
-                                               Default: @ref SDC_DEFAULT_MASTER_COUNT. */
-    sdc_cfg_role_count_t   slave_count;   /**< Max number of concurrent slave connections.
-                                               Default: @ref SDC_DEFAULT_SLAVE_COUNT. */
-    sdc_cfg_buffer_cfg_t   buffer_cfg;    /**< Configures the number and size of the
-                                               data buffers available per link.
-                                               Default: See @ref sdc_cfg_buffer_cfg_t. */
-    sdc_cfg_event_length_t event_length;  /**< Max connection event length.
-                                               Default: @ref SDC_DEFAULT_EVENT_LENGTH_US. */
-    sdc_cfg_role_count_t   adv_count;     /**< Max number of concurrent advertisers.
-                                               Default: @ref SDC_DEFAULT_ADV_COUNT. */
+    /** Max number of concurrent master connections.
+     *  Default: @ref SDC_DEFAULT_MASTER_COUNT.
+     */
+    sdc_cfg_role_count_t   master_count;
+    /** Max number of concurrent slave connections.
+     *  Default: @ref SDC_DEFAULT_SLAVE_COUNT.
+     */
+    sdc_cfg_role_count_t   slave_count;
+    /** Configures the number and size of the data buffers available per link.
+     *  Default: See @ref sdc_cfg_buffer_cfg_t.
+     */
+    sdc_cfg_buffer_cfg_t   buffer_cfg;
+    /** Max connection event length.
+     *   Default: @ref SDC_DEFAULT_EVENT_LENGTH_US.
+     */
+    sdc_cfg_event_length_t event_length;
+    /** Max number of concurrent advertisers.
+     *  Default: @ref SDC_DEFAULT_ADV_COUNT.
+     */
+    sdc_cfg_role_count_t   adv_count;
+    /** Configures the maximum number of advertising reports available in the scanner.
+     *  Default: See @ref sdc_cfg_scan_buffer_cfg_t.
+     */
+    sdc_cfg_scan_buffer_cfg_t scan_buffer_cfg;
 } sdc_cfg_t;
 
 
@@ -247,7 +306,7 @@ int32_t sdc_init(sdc_fault_handler_t fault_handler);
  *       changed after enabling the SoftDevice Controller.
  *
  * @param[in]  config_tag       Configuration tag.
- * @param[in]  config_type      Configuration type. @sa sdc_cfg_type.
+ * @param[in]  config_type      Configuration type. See also @ref sdc_cfg_type.
  * @param[in]  p_resource_cfg   Configuration to be changed.
  *
  * @returns Required memory size for the current configuration in bytes.
@@ -267,7 +326,7 @@ int32_t sdc_cfg_set(uint8_t config_tag,
  * @param[in] callback  The callback will be executed when HCI data or and HCI
  *                      event is available. The callback will be executed in
  *                      the same context as @ref mpsl_low_priority_process.
- *                      @sa @ref sdc_hci_evt_get() and @ref sdc_hci_data_get().
+ *                      See also @ref sdc_hci_evt_get() and @ref sdc_hci_data_get().
  * @param[in]  p_mem    Provide memory for the current resource configuration. If
  *                      custom resource configurations are used, use the value
  *                      returned from @ref sdc_cfg_set().
@@ -310,7 +369,7 @@ int32_t sdc_build_revision_get(uint8_t * p_build_revision);
  * advertising, call @ref sdc_support_slave().
  *
  * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  Advertising state is not supported.
  */
 int32_t sdc_support_adv(void);
@@ -324,7 +383,7 @@ int32_t sdc_support_adv(void);
  * call either @ref sdc_support_adv() or @ref sdc_support_ext_adv().
  *
  * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  Extended advertising state is not supported.
  */
 int32_t sdc_support_ext_adv(void);
@@ -339,7 +398,7 @@ int32_t sdc_support_ext_adv(void);
  * establishment.
  *
  * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  Slave role is not supported.
  */
 int32_t sdc_support_slave(void);
@@ -350,7 +409,7 @@ int32_t sdc_support_slave(void);
  * and events related to the scanning state.
  *
  * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  Scanning state is not supported.
  */
 int32_t sdc_support_scan(void);
@@ -364,7 +423,7 @@ int32_t sdc_support_scan(void);
  * call either @ref sdc_support_scan() or @ref sdc_support_ext_scan().
  *
  * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  Extended scanning state is not supported.
  */
 int32_t sdc_support_ext_scan(void);
@@ -379,7 +438,7 @@ int32_t sdc_support_ext_scan(void);
  * establishment.
  *
  * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  Master role is not supported.
  */
 int32_t sdc_support_master(void);
@@ -393,7 +452,7 @@ int32_t sdc_support_master(void);
  *  - Feature Exchange procedure.
  *
  * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  Data Length Extension is not supported.
  */
 int32_t sdc_support_dle(void);
@@ -406,7 +465,7 @@ int32_t sdc_support_dle(void);
  *  - LE 2M PHY is marked supported in the LL Feature Exchange procedure.
  *
  * @retval 0           Success
- * @retval -NRF_EPERM  This API must be called before @ref sdc_enable().
+ * @retval -NRF_EPERM  This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  */
 int32_t sdc_support_le_2m_phy(void);
 
@@ -418,7 +477,7 @@ int32_t sdc_support_le_2m_phy(void);
  *  - LE Coded PHY is marked supported in the LL Feature Exchange procedure.
  *
  * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_enable().
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  LE Coded PHY is not supported.
  */
 int32_t sdc_support_le_coded_phy(void);
