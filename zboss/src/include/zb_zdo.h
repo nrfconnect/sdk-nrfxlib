@@ -1452,6 +1452,10 @@ void zb_send_leave_indication_signal(zb_uint8_t param, zb_ieee_addr_t device_add
 
 void zdo_send_signal_no_args(zb_uint8_t param, zb_uint16_t signal);
 
+#if defined NCP_MODE && !defined NCP_MODE_HOST
+void zdo_send_ncp_join_signal(zb_uint8_t param);
+#endif /* defined NCP_MODE && !defined NCP_MODE_HOST */
+
 #ifdef ZB_PRODUCTION_CONFIG
 /**
  * Check whether production configuration block is present in device

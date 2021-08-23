@@ -488,7 +488,8 @@ void zb_zcl_ota_upgrade_file_upgraded(zb_uint8_t endpoint)
 static zb_ret_t image_notify_handler(zb_uint8_t param)
 {
   zb_ret_t ret = RET_OK;
-  zb_zcl_ota_upgrade_image_notify_t payload;
+  /* Compilers may complain here about maybe-uninitialized without {0} when optimization is enabled */
+  zb_zcl_ota_upgrade_image_notify_t payload = {0};
   zb_zcl_parse_status_t status;
   zb_zcl_parsed_hdr_t cmd_info;
 
@@ -876,7 +877,7 @@ static void zb_zcl_ota_upgrade_end(zb_uint8_t param,
 // try resend req
 static void resend_buffer(zb_uint8_t param)
 {
-  zb_ieee_addr_t our_long_address;
+  zb_ieee_addr_t our_long_address = {0};
   zb_bufid_t send_buf = 0;
   zb_uint32_t current_offset;
   zb_zcl_attr_t *attr_desc;

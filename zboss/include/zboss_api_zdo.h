@@ -360,11 +360,7 @@ typedef zb_uint8_t zb_zdp_status_t;
  * @endparblock */
 #define ZB_BDB_SIGNAL_WWAH_REJOIN_STARTED 20U
 
-/**
- * @cond DOXYGEN_ZGP_SECTION
- * @addtogroup zgp_sink
- * @{ */
-
+/** @cond DOXYGEN_ZGP_SECTION */
 /** ZGP commissioning complete signal.
  * @parblock
  * When generated:
@@ -380,8 +376,6 @@ typedef zb_uint8_t zb_zdp_status_t;
  * @snippet light_sample/light_coordinator_combo/light_zc.c signal_zgp_commissioning
  * @endparblock */
 #define ZB_ZGP_SIGNAL_COMMISSIONING 21U
-
-/** @} */ /* zgp_sink */
 /** @endcond */ /* DOXYGEN_ZGP_SECTION */
 
 /** Notifies the application that the MCU can sleep for the specified period of time.
@@ -434,7 +428,7 @@ typedef zb_uint8_t zb_zdp_status_t;
  *  @endparblock */
 #define ZB_NWK_SIGNAL_NO_ACTIVE_LINKS_LEFT 24U
 
-#ifdef ZB_ENABLE_SE_MIN_CONFIG
+#if defined ZB_ENABLE_SE_MIN_CONFIG || defined DOXYGEN
 /* SE signals */
 /** @cond DOXYGEN_SE_SECTION */
 
@@ -651,6 +645,22 @@ typedef zb_uint8_t zb_zdp_status_t;
 #define ZB_TC_SWAPPED_SIGNAL 52U
 /** @endcond */ /* internals_doc */
 
+/** TC rejoin is completed
+ * @parblock
+ * When generated:
+ *  - Device completes TC rejoin procedure.
+ *
+ * Status codes:
+ *  - RET_OK: TC rejoin completed successful
+ *  - RET_ERROR: An error of any type.
+ *
+ * Signal parameters:
+ *  - none
+ *
+ * @snippet onoff_server/on_off_switch_zed.c signal_bdb_tc_rejoin_done
+ * @endparblock */
+#define ZB_BDB_SIGNAL_TC_REJOIN_DONE 53U
+
 /** @} */
 
 /**
@@ -734,14 +744,8 @@ typedef struct zb_se_signal_service_discovery_bind_params_s
 } zb_se_signal_service_discovery_bind_params_t;
 /** @endcond */
 
+#if defined ZB_ENABLE_ZGP_SINK || defined DOXYGEN
 /** @cond DOXYGEN_ZGP_SECTION */
-#if defined DOXYGEN && defined ZB_DOCUMENT_ZGP
-/** @addtogroup zgp_sink
- *  @{
- */
-#endif
-
-#ifdef ZB_ENABLE_ZGP_SINK
 /**
    @brief ZGP commissioning parameters
 
@@ -753,9 +757,9 @@ typedef struct zb_zgp_signal_commissioning_params_s
   zb_zgpd_id_t zgpd_id;       /*!< Pointer to GPD ID */
   zb_zgp_comm_status_t result; /*!< commissioning result, see @ref zb_zgp_comm_status_t */
 } zb_zgp_signal_commissioning_params_t;
-#endif  /* ZB_ENABLE_ZGP_SINK */
-/** @} */
 /** @endcond */
+#endif  /* ZB_ENABLE_ZGP_SINK */
+
 /**
    @brief Association parameters
 
@@ -779,8 +783,7 @@ typedef struct zb_zdo_signal_device_annce_params_s
   zb_uint8_t       capability;
 } zb_zdo_signal_device_annce_params_t;
 
-/** @cond touchlink */
-
+/** @cond DOXYGEN_TOUCHLINK_FEATURE */
 typedef struct zb_bdb_signal_touchlink_nwk_started_params_s
 {
   zb_ieee_addr_t device_ieee_addr; /*!< address of device that started the network */
@@ -794,8 +797,7 @@ typedef struct zb_bdb_signal_touchlink_nwk_joined_router_s
   zb_uint8_t endpoint;
   zb_uint16_t profile_id;
 } zb_bdb_signal_touchlink_nwk_joined_router_t;
-
-/** @endcond */ /* touchlink */
+/** @endcond */ /* DOXYGEN_TOUCHLINK_FEATURE */
 
 /**
    @brief Sleep signal parameters.
@@ -884,6 +886,7 @@ typedef struct zb_zdo_signal_device_update_params_s
 /** @{ */
 #define ZB_ZDO_AUTHORIZATION_TYPE_LEGACY   0U /*!< Authorization type for legacy devices ( < r21) */
 #define ZB_ZDO_AUTHORIZATION_TYPE_R21_TCLK 1U /*!< Authorization type for r21 device through TCLK */
+#define ZB_ZDO_AUTHORIZATION_TYPE_SE_CBKE  2U /*!< Authorization type for SE through CBKE */
 /** @} */
 
 /**
@@ -917,12 +920,21 @@ typedef zb_uint8_t zb_zdo_legacy_device_authorization_status_t;
 /**
  * @name Authorization statuses for ZB_ZDO_AUTHORIZATION_TYPE_R21_TCLK value of @ref
  * zdo_authorization_type type
- * @anchor zdo_legacy_device_authorization_status
+ * @anchor zdo_authorization_type_r21_tclk_status
  */
 /** @{ */
 #define ZB_ZDO_TCLK_AUTHORIZATION_SUCCESS 0U /*!< Authorization success */
 #define ZB_ZDO_TCLK_AUTHORIZATION_TIMEOUT 1U /*!< Authorization timeout */
 #define ZB_ZDO_TCLK_AUTHORIZATION_FAILED  2U /*!< Authorization failed */
+/** @} */
+
+/**
+ * @name Authorization statuses for ZB_ZDO_AUTHORIZATION_TYPE_SE_CBKE value of @ref
+ *
+ * For non-success statuses @see zb_kec_term_status_t
+ */
+/** @{ */
+#define ZB_ZDO_CBKE_AUTHORIZATION_SUCCESS 0U /*!< Authorization success */
 /** @} */
 
 /**
@@ -1029,6 +1041,37 @@ zb_zdo_app_signal_type_t zb_get_app_signal(zb_uint8_t param, zb_zdo_app_signal_h
 @endcode
  */
 void zb_zdo_get_diag_data(zb_uint16_t short_address, zb_uint8_t *lqi, zb_int8_t *rssi);
+
+typedef struct zb_zdo_get_diag_data_req_params_s
+{
+  zb_uint16_t short_address;
+} zb_zdo_get_diag_data_req_params_t;
+
+typedef struct zb_zdo_get_diag_data_resp_params_s
+{
+  zb_ret_t status; /* RET_OK if lqi and rssi values are available for the requested address,
+                      RET_NOT_FOUND if no values are available for the requested address */
+  zb_uint16_t short_address;
+  zb_uint8_t lqi;
+  zb_int8_t rssi;
+} zb_zdo_get_diag_data_resp_params_t;
+
+/**
+ * @brief Obtains last known LQI and RSSI values from the device with the specified short address
+ *
+ * @param buf - a buffer with request params, see zb_zdo_get_diag_data_req_params_t
+ * @param cb - a user's function to call when the response is ready.
+ *             See zb_zdo_get_diag_data_resp_params_t for response params description.
+ *
+ * @return status, RET_OK - request successfully sent,
+ *                 RET_INVALID_PARAMETER_1 if buf is ZB_BUF_INVALID,
+ *                 RET_INVALID_PARAMETER_2 if cb is NULL,
+ *                 RET_BUSY if this request can't be served at the moment
+ *
+ * Example:
+ * @snippet onoff_server/on_off_output_zc.c zb_zdo_get_diag_data_async_example
+ */
+zb_ret_t zb_zdo_get_diag_data_async(zb_bufid_t buf, zb_callback_t cb);
 
 /*! @} */
 
@@ -1253,7 +1296,9 @@ zb_zdo_ieee_addr_resp_ext2_t;
   *
   * @endcode
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See tp_zdo_bv-31 sample
+  * @endcond
   */
 zb_uint8_t zb_zdo_ieee_addr_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -2090,7 +2135,9 @@ zb_zdo_binding_table_record_t;
   * @return 0xFF if operation cannot be
   *         performed now (nor enough memory, resources, etc.)
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See zdo_binding sample
+  * @endcond
   */
 zb_uint8_t zb_zdo_mgmt_bind_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -2548,7 +2595,9 @@ void zb_zdo_add_group_req(zb_uint8_t param);
   * @param param - (in/out) buffer with parameters
   * @snippet doxygen_snippets.dox tp_pro_bv-46_zed_certification_TP_PRO_BV-46_tp_pro_bv-46_zed_c
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See tp_pro_bv-46 sample
+  * @endcond
   */
 void zb_zdo_remove_group_req(zb_uint8_t param);
 
@@ -2557,7 +2606,9 @@ void zb_zdo_remove_group_req(zb_uint8_t param);
   *
   * @snippet doxygen_snippets.dox add_remove_all_groups_aps_group_management_aps_group_zc_c
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See aps_group_management sample
+  * @endcond
   */
 void zb_zdo_remove_all_groups_req(zb_uint8_t param);
 
@@ -2566,7 +2617,9 @@ void zb_zdo_remove_all_groups_req(zb_uint8_t param);
   *
   * @snippet doxygen_snippets.dox zb_zdo_get_group_membership_req_aps_group_membership_req_aps_group_zc_c
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See aps_group_management sample
+  * @endcond
   */
 void zb_zdo_get_group_membership_req(zb_uint8_t param);
 
@@ -2841,7 +2894,20 @@ void zb_af_set_data_indication(zb_device_handler_t cb);
  *  @param param - buffer reference (if 0, buffer will be allocated automatically)
  */
 void zb_bdb_reset_via_local_action(zb_uint8_t param);
+
+/**
+ *  @brief Starts TC rejoin procedure
+ *
+ * If device doesn't have a TCLK and UnsecureTcRejoinEnabled policy
+ * is set to ZB_FALSE (this is the default setting), TC rejoin won't
+ * be performed and ZB_BDB_SIGNAL_TC_REJOIN_DONE signal with RET_ERROR
+ * status will be raised.
+ *
+ *  @param param - buffer reference (if 0, buffer will be allocated automatically)
+ */
+void zb_bdb_initiate_tc_rejoin(zb_uint8_t param);
+
 /** @} */ /* af_management_service */
 /*! @} */
 
-#endif /*ZB_ZBOSS_API_ZDO_H*/
+#endif /* ZB_ZBOSS_API_ZDO_H */

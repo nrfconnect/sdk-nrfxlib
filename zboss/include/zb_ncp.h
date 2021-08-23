@@ -122,4 +122,13 @@ void sncp_auto_turbo_poll_aps_tx(zb_bool_t is_on);
 void sncp_auto_turbo_poll_stop(void);
 #endif
 
+/**
+ * @brief It is used to create and read a response sent by @ref zb_ncp_custom_response
+ */
+typedef ZB_PACKED_PRE struct ncp_hl_custom_resp_s
+{
+  zb_ret_t status;
+  zb_uint8_t tsn;
+} ZB_PACKED_STRUCT ncp_hl_custom_resp_t;
+
 #endif /* ZB_NCP_INTERNAL_H */

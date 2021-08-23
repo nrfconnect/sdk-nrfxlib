@@ -215,9 +215,9 @@ typedef ZB_PACKED_PRE struct zb_af_node_power_desc_s
 } ZB_PACKED_STRUCT zb_af_node_power_desc_t;
 
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define CAT5(a, b, c, d, e) a##b##c##d##e
-/** @endcond */ /*internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /** Generate simple descriptor type name */
 #define ZB_AF_SIMPLE_DESC_TYPE(in_num, out_num)  CAT5(zb_af_simple_desc_,in_num,_,out_num,_t)
@@ -308,12 +308,12 @@ ZB_DECLARE_SIMPLE_DESC(8,9);
 
 /** @} */ /* af_common_constants */
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #if !(defined ZB_ZCL_DISABLE_REPORTING) || defined(DOXYGEN)
 struct zb_zcl_reporting_info_s; /* Forward declaration */
 #endif
 struct zb_zcl_cluster_desc_s;   /* Forward declaration */
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /**
  * @addtogroup af_management_service AF management service
@@ -387,8 +387,8 @@ zb_af_endpoint_desc_t* zb_af_get_endpoint_desc(zb_uint8_t ep_id);
  */
 #define ZB_AF_IS_EP_REGISTERED( _ep ) ((zb_af_get_endpoint_desc( _ep ) != NULL)?(ZB_TRUE):(ZB_FALSE))
 /** @} */ /* af_management_service */
-/** @cond internals_doc */
 
+/** @cond DOXYGEN_INTERNAL_DOC */
 /**
   AF device context, contains a list of registered endpoints
 */
@@ -398,8 +398,7 @@ typedef ZB_PACKED_PRE struct zb_af_device_ctx_s
   zb_af_endpoint_desc_t **ep_desc_list; /*!< Endpoint list */
 }ZB_PACKED_STRUCT
 zb_af_device_ctx_t;
-
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /**
  * @addtogroup af_management_service AF management service
@@ -470,7 +469,9 @@ zb_af_device_ctx_t;
  *  @attention Endpoint should be registered. ZB_AF_SET_ENDPOINT_HANDLER() should be called after
  *  device context is registered, using call to ZB_AF_REGISTER_DEVICE_CTX()
  *
+ * @cond ZBOSS_SAMPLES_API_DOC_LINE
  *  See HA samples
+ * @endcond
  */
 #define ZB_AF_SET_ENDPOINT_HANDLER(endpoint, handler)                 \
   (zb_af_get_endpoint_desc((endpoint))->device_handler = (handler))
@@ -482,7 +483,9 @@ zb_af_device_ctx_t;
     @param handler to set
     @attention Assumes that endpoint already registered
  *
+ * @cond ZBOSS_SAMPLES_API_DOC_LINE
  *  See HA samples
+ * @endcond
 */
 #define ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(endpoint, handler)    \
   (zb_af_get_endpoint_desc((endpoint))->identify_handler = (handler))
@@ -629,20 +632,22 @@ zb_af_device_ctx_t;
                            (ZB_ZCL_ARRAY_SIZE(ep_list_##device_ctx_name, zb_af_endpoint_desc_t*)))
 
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #if defined ZB_ENABLE_ZCL && !defined ZB_ZCL_DISABLE_REPORTING
 void zb_zcl_init_reporting_ctx(void);
 void zb_zcl_reset_reporting_ctx(void);
 #endif /* ZB_ENABLE_ZCL && !ZB_ZCL_DISABLE_REPORTING */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /* TODO: extend this ifdef*/
-#if defined ZB_ENABLE_ZCL
+#if defined ZB_ENABLE_ZCL || DOXYGEN
+/** @cond DOXYGEN_INTERNAL_DOC */
 /**
   Register device context.
   @param device_ctx - pointer to device context
  */
 void zb_af_register_device_ctx(zb_af_device_ctx_t *device_ctx);
-/*! @endcond */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 /**
   Register device context.
   @param _device_ctx - Pointer to the device context

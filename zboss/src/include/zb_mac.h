@@ -1838,7 +1838,9 @@ zb_mlme_set_ieee_joining_list_req_t;
  *
  *  @snippet aib_nib_pib_test/start_ze.c zb_mlme_get_request
  *
+ * @cond ZBOSS_SAMPLES_API_DOC_LINE
  *  See aib_nib_pib_test sample
+ * @endcond
  */
 void zb_mlme_get_request(zb_uint8_t param);
 
@@ -1856,7 +1858,9 @@ void zb_mlme_get_confirm(zb_uint8_t param);
  *
  *  @snippet aib_nib_pib_test/start_ze.c zb_mlme_set_request
  *
+ * @cond ZBOSS_SAMPLES_API_DOC_LINE
  *  See aib_nib_pib_test sample
+ * @endcond
  */
 void zb_mlme_set_request(zb_uint8_t param);
 
@@ -2751,4 +2755,33 @@ zb_bool_t zb_mac_check_frame_dst_addr(const zb_mac_mhr_t *mhr);
 */
 zb_bool_t zb_mac_check_frame_pan_id(const zb_mac_mhr_t *mhr);
 
+#ifdef ZB_PHY_TESTING_MODE
+
+/**
+ * Validate received packet buffer in PHY Testing mode
+ */
+void zb_mac_phy_testing_rx_data_indication_cb(zb_uint8_t param);
+
+/**
+ * Handle PHY Testing mode request
+ */
+void zb_mac_phy_testing_mode_request(zb_bufid_t param);
+
+/**
+ * Handle PHY Testing mode statistics request
+ */
+void zb_mac_phy_testing_mode_statistics_request(zb_bufid_t param);
+
+/**
+ * Handle tx_done event in PHY Testing mode
+ */
+void zb_mac_phy_testing_tx_done(void);
+
+/*
+ * Notify upper layer that the transceiver entered the PHY testing mode
+ * or that the test has finished.
+*/
+void zb_mac_phy_testing_mode_notification(zb_bufid_t param);
+
+#endif
 #endif  /* ZB_MAC_API_INCLUDED */

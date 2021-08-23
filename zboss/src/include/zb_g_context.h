@@ -520,6 +520,11 @@ typedef struct zb_cert_hacks_s
                                                    *   Used into TP_R20_BV-01 */
   zb_bitfield_t nwk_leave_from_unknown_addr:1; /*!< Send all nwk leave_req with src ieee addr=<nwk_leave_unknown_addr>
                                                     and short=<nwk_leave_unknown_short> */
+  zb_bitfield_t low_ram_concentrator:1;       /*!< Forces coordinator to send no route cache in mtorr */
+
+  zb_bitfield_t tc_rejoin_mac_cap_wrong_dev_type:1; /* Toggle FFD bit in MAC capabilities for rejoin req */
+  zb_bitfield_t tc_rejoin_mac_cap_wrong_rx_on_when_idle:1; /* Toggle FFD bit in MAC capabilities for rejoin req */
+
   zb_ieee_addr_t nwk_leave_from_unknown_ieee_addr; /*!< IEEE source address used in nwk_leave if `nwk_leave_from_unknown_addr` is set */
   zb_uint16_t nwk_leave_from_unknown_short_addr; /*!< Short source address used in nwk_leave if `nwk_leave_from_unknown_addr` is set */
 } zb_cert_hacks_t;
@@ -701,6 +706,7 @@ struct zb_intr_globals_s
 #define ZB_IOCTX() g_izb.ioctx
 #define ZB_TIMER_CTX() g_izb.time
 #define SER_CTX() ZB_IOCTX().serial_ctx
+#define USB_CTX() ZB_IOCTX().userial_ctx
 #define SPI_CTX() ZB_IOCTX().spi_ctx
 
 

@@ -324,9 +324,6 @@ void zb_schedule_callback_from_alien(zb_callback_t func, zb_uint8_t param);
 #define ZB_SCHEDULE_TRACE_QUEUE()
 #endif
 
-zb_bool_t zb_sheduler_is_stop(void);
-#define ZB_SCHEDULER_IS_STOP() zb_sheduler_is_stop()
-
 zb_ret_t zb_schedule_callback(zb_callback_t func, zb_uint8_t param);
 
 /**

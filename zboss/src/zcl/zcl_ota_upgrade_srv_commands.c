@@ -529,7 +529,7 @@ static zb_ret_t image_block_handler(zb_uint8_t param)
           zb_uint32_t total_image_size = vars->table[i].file_header->total_image_size;
           if( payload.file_offset < total_image_size)
           {
-            zb_uint8_t *data;
+            zb_uint8_t *data = NULL;
             zb_uint8_t  data_size =
                 (payload.data_size_max <= ZB_ZCL_OTA_UPGRADE_QUERY_IMAGE_BLOCK_DATA_SIZE_MAX) ?
                 payload.data_size_max :
@@ -541,23 +541,27 @@ static zb_ret_t image_block_handler(zb_uint8_t param)
             }
 
             ret = ZCL_CTX().ota_upgrade_next_data_ind_cb(i, cmd_info_p, payload.file_offset, data_size, &data);
-            if (ret == RET_OK)
+
+            if (payload.file_offset == 0)
             {
-            if (data)
-            {
-              if (payload.file_offset == 0)
+              if (ret == RET_BLOCKED
+                  || (ret ==  RET_OK && data) )
               {
+                /* Will hope RET_BLOCKED results means data will be sent later */
                 zcl_ota_upgrade_srv_upgrade_started_invoke_user_app(
                   param, &ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).source,
                   payload.image_type, payload.file_version);
               }
+            }
 
+            if (ret == RET_OK
+                && data)
+            {
                 zb_zcl_ota_upgrade_send_image_block_response(cmd_info_p, i, ZB_TRUE, payload.file_offset,
                                                              data_size, data);
                 zb_buf_free(param);
               ret = RET_BUSY;
             }
-          }
             else if (ret == RET_BLOCKED)
             {
               TRACE_MSG(TRACE_ZCL1, "Application will call zb_zcl_ota_upgrade_send_image_block_response later",
@@ -629,6 +633,7 @@ static zb_ret_t upgrade_end_handler(zb_uint8_t param)
   zb_zcl_ota_upgrade_upgrade_end_t payload;
   zb_zcl_parse_status_t status;
   zb_zcl_parsed_hdr_t cmd_info;
+  zb_uint32_t upgrade_time = ZB_ZCL_OTA_UPGRADE_UPGRADE_TIME_DEF_VALUE;
 
   TRACE_MSG(TRACE_ZCL1, "> upgrade_end_handler %hx", (FMT__H, param));
 
@@ -643,12 +648,12 @@ static zb_ret_t upgrade_end_handler(zb_uint8_t param)
   }
   else
   {
+    zb_uint8_t endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
+    zb_zcl_ota_upgrade_server_variable_t *vars = get_upgrade_server_variables(endpoint);
+    zb_uindex_t i = vars->table_length;
+
     if(payload.status==ZB_ZCL_STATUS_SUCCESS)
     {
-      zb_uint8_t endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
-      zb_zcl_ota_upgrade_server_variable_t *vars = get_upgrade_server_variables(endpoint);
-      zb_uindex_t i;
-
       for(i=0; i<vars->table_length; i++)
       {
         if(vars->table[i].file_header)
@@ -657,25 +662,35 @@ static zb_ret_t upgrade_end_handler(zb_uint8_t param)
               payload.image_type == vars->table[i].file_header->image_type &&
               vars->table[i].file_header->file_version == payload.file_version )
           {
+            upgrade_time = vars->table[i].upgrade_time;
             break;
           }
         }
       }
+    }
 
+    /* pass the pointer to upgrade time field to give an application the means of setting upgrade time
+       FIXME: refactor this command and the whole cluster using IN/OUT params API */
+    /*ret = */
+    zcl_ota_upgrade_srv_upgrade_end_invoke_user_app(
+      param, &ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).source, payload.status,
+      payload.image_type, payload.file_version, &upgrade_time);
+
+    if(payload.status==ZB_ZCL_STATUS_SUCCESS)
+    {
       if (i < vars->table_length)
       {
-	/* pass the pointer to upgrade time field to give an application the means of setting upgrade time
-	   FIXME: refactor this command and the whole cluster using IN/OUT params API */
-        ret = zcl_ota_upgrade_srv_upgrade_end_invoke_user_app(
-                param, &ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).source, payload.status,
-                payload.image_type, payload.file_version, &vars->table[i].upgrade_time);
+	      vars->table[i].upgrade_time = upgrade_time;
       }
       else
       {
         ret = RET_ERROR;
       }
+    }
 
-      if (ret == RET_NOT_FOUND || ret == RET_OK)
+    if (ret != RET_ERROR)
+    {
+      if (payload.status==ZB_ZCL_STATUS_SUCCESS)
       {
         ZB_ZCL_OTA_UPGRADE_SEND_UPGRADE_END_RES(
           param,
@@ -704,8 +719,8 @@ static zb_ret_t upgrade_end_handler(zb_uint8_t param)
           cmd_info.cmd_id,
           ZB_ZCL_STATUS_SUCCESS,
           (ZB_ZCL_FRAME_DIRECTION_TO_CLI == cmd_info.cmd_direction ?
-           ZB_ZCL_FRAME_DIRECTION_TO_SRV :
-           ZB_ZCL_FRAME_DIRECTION_TO_CLI));
+            ZB_ZCL_FRAME_DIRECTION_TO_SRV :
+            ZB_ZCL_FRAME_DIRECTION_TO_CLI));
       }
       ret = RET_BUSY;
     }

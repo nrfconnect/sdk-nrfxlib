@@ -54,7 +54,6 @@
  *    @details
  *    All commands in the cluster have only request form, and carry no payload.
  *
- *    For more information see 5.51.2_poll_control_commands sample
  */
 
 #if defined ZB_HA_ENABLE_POLL_CONTROL_SERVER || defined DOXYGEN
@@ -97,10 +96,6 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
 
 /* Cluster ZB_ZCL_CLUSTER_ID_POLL_CONTROL */
 
-/*! @name Poll Control cluster attributes
-    @{
-*/
-
 /**
  * @name Poll Control cluster attribute identifiers
  * @anchor zcl_poll_control_attr
@@ -130,6 +125,9 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
 /** Status Data - custom non-spec parameters for server side */
 #define ZB_ZCL_ATTR_POLL_CONTROL_ADDR_DATA_ID   0xeffeU
 /** @} */
+
+/** @name Poll Control cluster attributes */
+/** @{ */
 
 /** @brief Value for stop Check-in process for Check-in Interval attribute */
 #define ZB_ZCL_POLL_CONTROL_CHECKIN_INTERVAL_NO_CHECK_IN_VALUE    0x0000
@@ -175,12 +173,12 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
 
 /** @brief Default value for FastPollTimeoutMax attribute */
 #define ZB_ZCL_POLL_CONTROL_FAST_POLL_MAX_TIMEOUT_DEFAULT_VALUE ((zb_uint16_t)0)
+/** @} */
 
-/*! @cond internals_doc
-    @internal @name Poll Control cluster internals
-    Internal structures for attribute representation in cluster definitions.
-    @{
-*/
+/** @cond DOXYGEN_INTERNAL_DOC */
+/** @name Poll Control cluster internals
+ *  Internal structures for attribute representation in cluster definitions. */
+/** @{ */
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_CHECKIN_INTERVAL_ID(data_ptr) \
 {                                                       \
@@ -290,8 +288,11 @@ zb_zcl_poll_control_srv_cfg_data_t;
 /*! @internal Number of attributes mandatory for reporting in Poll Control cluster */
 #define ZB_ZCL_POLL_CONTROL_REPORT_ATTR_COUNT 0
 
-/*! @}
-    @endcond */ /* Poll Control cluster internals */
+/** @} */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */ /* Poll Control cluster internals */
+
+/** @name Poll Control cluster attributes */
+/** @{ */
 
 /** @brief Declare attribute list for Poll Control cluster - server side
     @param attr_list - attribute list name
@@ -330,11 +331,10 @@ zb_zcl_poll_control_srv_cfg_data_t;
                          (&(client_status_data_ctx_##attr_list)))                             \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
-/*! @} */ /* Poll Control cluster attributes */
+/** @} */ /* Poll Control cluster attributes */
 
-/*! @name Poll Control cluster commands
-    @{
-*/
+/** @name Poll Control cluster commands */
+/** @{ */
 
 /*! @brief Poll Control cluster command identifiers
     @see HA spec, Poll Control Cluster, 9.5.4.3
@@ -355,7 +355,7 @@ enum zb_zcl_poll_control_resp_cmd_e
   ZB_ZCL_CMD_POLL_CONTROL_SET_SHORT_POLL_INTERVAL_ID  = 0x03, /**< "Set Short Poll Interval" command, HA spec 9.5.5.6 */
 };
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 /* Poll control cluster commands list : only for information - do not modify */
 #define ZB_ZCL_CLUSTER_ID_POLL_CONTROL_SERVER_ROLE_GENERATED_CMD_LIST ZB_ZCL_CMD_POLL_CONTROL_CHECK_IN_ID
 
@@ -368,8 +368,7 @@ enum zb_zcl_poll_control_resp_cmd_e
                                       ZB_ZCL_CMD_POLL_CONTROL_SET_SHORT_POLL_INTERVAL_ID
 
 #define ZB_ZCL_CLUSTER_ID_POLL_CONTROL_SERVER_ROLE_RECEIVED_CMD_LIST ZB_ZCL_CLUSTER_ID_POLL_CONTROL_CLIENT_ROLE_GENERATED_CMD_LIST
-/*! @}
- *  @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /******************************* Check-in ******************************/
 
@@ -404,7 +403,7 @@ typedef struct zb_zcl_poll_control_check_in_cli_param_s
 }
 zb_zcl_poll_control_check_in_cli_param_t;
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define ZB_ZCL_POLL_CONTROL_CLI_CALL_USER_APP(                              \
   _buffer, _short_addr, _ep, _fast_poll_timeout, _result)                   \
 {                                                                           \
@@ -429,8 +428,7 @@ zb_zcl_poll_control_check_in_cli_param_t;
     _result = RET_OK;                                                       \
   }                                                                         \
 }
-/*! @}
- *  @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /******************************* Check-in response ******************************/
 
@@ -649,7 +647,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_poll_control_set_short_poll_interval_req_s
 zb_ret_t zb_zcl_poll_control_set_client_addr(zb_uint8_t local_ep, zb_uint16_t addr, zb_uint8_t ep);
 #endif
 
-#if defined ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL
+#if defined ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL || defined DOXYGEN
 /**
   @brief Function is used by Poll control client to set Fast poll
   timeout value. This value is included into Check-in response
@@ -659,7 +657,7 @@ zb_ret_t zb_zcl_poll_control_set_client_addr(zb_uint8_t local_ep, zb_uint16_t ad
 */
 void zb_zcl_set_fast_poll_timeout(zb_uint8_t ep, zb_uint16_t fast_poll_timeout);
 
-#ifdef ZB_USE_NVRAM
+#if defined ZB_USE_NVRAM || defined DOXYGEN
 /**
    @brief Save to NVRAM Poll Control dataset
    @param param

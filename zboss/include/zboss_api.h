@@ -82,7 +82,9 @@
  *    to well-known key. To be used in certification tests mainly.
  *  @snippet simple_gw/simple_gw.c zb_secur_setup_preconfigured_key_value
  *  @snippet simple_gw/simple_gw.c zb_secur_setup_preconfigured_key
+ * @cond ZBOSS_SAMPLES_API_DOC_LINE
  *  @see TP_R20_BV-01 sample.
+ * @endcond
  */
 void zb_secur_setup_nwk_key(zb_uint8_t *key, zb_uint8_t i);
 
@@ -118,6 +120,17 @@ void zb_secur_set_tc_rejoin_enabled(zb_bool_t enable);
  *  @param enable - whether to enable or disable TC Rejoin ignore.
  */
 void zb_secur_set_ignore_tc_rejoin(zb_bool_t enable);
+
+/**
+ *  Specifies whether Trust Center Rejoin is allowed, when there is no unique TCLK.
+ *  On joiner device it could be used to perform TC rejoin with legacy ZC.
+ *
+ *  If set to ZB_TRUE on joiner device, it can make TC rejoin without unique TCLK.
+ *
+ *  @param enable - whether to enable or disable unsecured TC Rejoin.
+ */
+void zb_secur_set_unsecure_tc_rejoin_enabled(zb_bool_t enable);
+
 /** @} */ /* secur_tc_rejoin */
 
 /** @cond DOXYGEN_INTERNAL_DOC */
@@ -409,6 +422,8 @@ zb_bool_t zb_is_transport_key_aps_encryption_enabled(void);
 #define MAIN_RETURN(retc) return (retc)
 
 #endif  /* DOXYGEN */
+
+/*! @} */ /* zboss_general_api */
 
 /** @cond DOXYGEN_INTERNAL_DOC */
 /**
@@ -1142,10 +1157,12 @@ void zb_nvram_register_app4_write_cb(
  * @param t - dataset index, see @ref zb_nvram_dataset_types_e
  * @return Status of operation
  *
- * @b Example @b
+ * @b Example
  * @snippet light_sample/dimmable_light/bulb.c nvram_usage_example
  *
+ * @cond ZBOSS_SAMPLES_API_DOC_LINE
  * See light_sample
+ * @endcond
  */
 zb_ret_t zb_nvram_write_dataset(zb_nvram_dataset_types_t t);
 

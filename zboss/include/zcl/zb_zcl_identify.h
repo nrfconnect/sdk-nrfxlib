@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -65,7 +65,9 @@
  *    Identify Query request sending:
  *    @snippet HA_samples/on_off_switch/sample_zed.c identify_send_identify_query_req
  *
+ *    @cond ZBOSS_SAMPLES_API_DOC_LINE
  *    For more information see HA_samples/door_lock and HA_samples/on_off_switch samples
+ *    @endcond
  */
 
 /** @name Identify cluster attributes

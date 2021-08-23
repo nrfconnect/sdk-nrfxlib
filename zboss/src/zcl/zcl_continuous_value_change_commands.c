@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -135,7 +135,10 @@ static zb_uint8_t zb_zcl_cvc_calc(
   {
 
 /* 2. Set input variables. */
-    ZB_MEMCPY(&(change_variables->input_var), input_var, sizeof(zb_zcl_cvc_input_variables_t));
+    if (&(change_variables->input_var) != input_var)
+    {
+      ZB_MEMCPY(&(change_variables->input_var), input_var, sizeof(zb_zcl_cvc_input_variables_t));
+    }
 /*    change_variables->input_var.current_value16 = input_var->current_value16;
     change_variables->input_var.end_value16 = input_var->end_value16;
     change_variables->input_var.min_value16 = input_var->min_value16;
@@ -145,7 +148,7 @@ static zb_uint8_t zb_zcl_cvc_calc(
     change_variables->input_var.value_set_func = input_var->value_set_func;
     change_variables->input_var.buf_id = input_var->buf_id;
     change_variables->input_var.after_processing_cb = input_var->after_processing_cb;
-*/    
+*/
 #ifndef ZB_ZCL_ENABLE_CVC
     input_var->transition_time = ZB_ZCL_CVC_TRANSITION_TIME_AS_FAST_AS_ABLE;
     change_variables->steps_number = 1;
@@ -193,7 +196,7 @@ static zb_uint8_t zb_zcl_cvc_calc(
       else
       {
       /* 7. */
-/* 01/02/2013 
+/* 01/02/2013
   I don't understood this comparison.
   What they are compared for?
 
@@ -760,7 +763,7 @@ zb_uint8_t zb_zcl_cvc_start_alarm(zb_uint8_t endpoint_id,
 
               if (change_var->input_var.transition_time == ZB_ZCL_CVC_TRANSITION_TIME_AS_FAST_AS_ABLE)
               {
-/* 
+/*
    Why should it wait for the "minimal" interval when it's said as_fast_as_able?
 
    05/02/2013 It was our agreement that as_fast_as_able == at 1 minimal transition time unit.

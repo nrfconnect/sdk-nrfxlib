@@ -251,7 +251,7 @@ static zb_ret_t zb_bdb_find_respondent(zb_uint16_t nwk_addr, zb_uint8_t *resp_in
 {
   zb_ret_t ret = RET_NOT_FOUND;
   zb_uindex_t i;
-  zb_address_ieee_ref_t addr_ref;
+  zb_address_ieee_ref_t addr_ref = 0;
 
   TRACE_MSG(TRACE_ZCL1, "> zb_bdb_find_respondent by addr %d", (FMT__D, nwk_addr));
 
@@ -378,7 +378,7 @@ static void handle_bind_confirm(zb_uint8_t param)
   TRACE_MSG(TRACE_ZCL2, "<< handle_bind_confirm", (FMT__0));
 }
 
-static void bind_respondent_cluster(zb_bdb_comm_respondent_info_t *respondent,
+static zb_ret_t bind_respondent_cluster(zb_bdb_comm_respondent_info_t *respondent,
                                     zb_uint8_t ep,
                                     zb_uint16_t cluster,
                                     zb_bufid_t param)
@@ -449,12 +449,9 @@ static void bind_respondent_cluster(zb_bdb_comm_respondent_info_t *respondent,
     zb_apsme_bind_request(param);
   }
 
-  if (status != RET_OK)
-  {
-    process_next_binding_for_respondent(respondent, param);
-  }
+  TRACE_MSG(TRACE_ZCL2, "<< bind_respondent_cluster status %hd", (FMT__H, status));
 
-  TRACE_MSG(TRACE_ZCL2, "<< bind_respondent_cluster", (FMT__0));
+  return status;
 }
 
 static void process_binding_for_respondent(zb_bdb_comm_respondent_info_t *respondent,
@@ -473,6 +470,7 @@ static void process_binding_for_respondent(zb_bdb_comm_respondent_info_t *respon
   zb_zdo_simple_desc_resp_t *resp = NULL;
   zb_uint8_t in_cluster_cnt;
   zb_uint8_t out_cluster_cnt;
+  zb_ret_t bind_status = RET_OK;
 
   TRACE_MSG(TRACE_ZCL2, ">> process_binding_for_respondent, respondent %p, param %d",
             (FMT__P_D, respondent, param));
@@ -494,10 +492,10 @@ static void process_binding_for_respondent(zb_bdb_comm_respondent_info_t *respon
       TRACE_MSG(TRACE_ZCL2, "found cluster match clusterid %d",
                 (FMT__D, resp->simple_desc.app_cluster_list[respondent->curr_cluster_idx]));
 
-      bind_respondent_cluster(respondent,
-                              respondent->ep_list[respondent->eps_checked],
-                              resp->simple_desc.app_cluster_list[respondent->curr_cluster_idx],
-                              param);
+      bind_status = bind_respondent_cluster(respondent,
+                                            respondent->ep_list[respondent->eps_checked],
+                                            resp->simple_desc.app_cluster_list[respondent->curr_cluster_idx],
+                                            param);
       break;
     }
     else
@@ -530,6 +528,13 @@ static void process_binding_for_respondent(zb_bdb_comm_respondent_info_t *respon
     respondent->eps_checked++;
     ZB_SCHEDULE_CALLBACK(zb_bdb_active_eps_check_cb, respondent->simple_desc_resp_buf);
     respondent->simple_desc_resp_buf = 0;
+  }
+  else
+  {
+    if (bind_status != RET_OK)
+    {
+      process_next_binding_for_respondent(respondent, param);
+    }
   }
 
   TRACE_MSG(TRACE_ZCL2, "<< process_binding_for_respondent", (FMT__0));
@@ -1008,7 +1013,7 @@ void zb_bdb_fb_send_active_ep_req(zb_uint8_t param, zb_uint16_t src_addr)
   if (resp_idx != 0xff)
   {
     zb_zdo_active_ep_req_t *req;
-    zb_address_ieee_ref_t addr_ref;
+    zb_address_ieee_ref_t addr_ref = 0;
     respondent = &BDB_COMM_CTX().respondent[resp_idx];
 
     if (zb_address_by_short(src_addr, ZB_FALSE, ZB_FALSE, &addr_ref) == RET_OK)

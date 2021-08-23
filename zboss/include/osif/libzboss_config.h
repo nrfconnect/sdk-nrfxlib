@@ -303,9 +303,14 @@
 /* #undef CONFIG_ZB_BDB_TOUCHLINK */
 
 /**
- * Enable API for sending inter-pan packets at non default channel
+ * Enable Zigbee MAC features, used by the verification framework - Enable API for sending inter-pan packets at non default channel
  */
 #define CONFIG_ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL y
+
+/**
+ * Enable Zigbee test mode and features - Enable Zigbee MAC features, used by the verification framework
+ */
+/* #undef CONFIG_ZB_MAC_TESTING_MODE */
 
 /**
  * Certification specific behavior
@@ -323,14 +328,9 @@
 #define CONFIG_ZB_LIMIT_VISIBILITY y
 
 /**
- * Test mode - Enable Zigbee PRO test mode
+ * Groups of test cases to be included - Enable both TH and DUT test cases
  */
-#define CONFIG_ZB_TEST_MODE_PRO y
-
-/**
- * Enable Zigbee test mode and features - Enable Zigbee profile, used by verification framework
- */
-#define CONFIG_ZB_TEST_PROFILE y
+#define CONFIG_ZB_TEST_GROUP_ALL y
 
 /**
  * Test mode - Enable Zigbee MAC test mode
@@ -338,9 +338,24 @@
 /* #undef CONFIG_ZB_TEST_MODE_MAC */
 
 /**
- * Enable Zigbee test mode and features - Enable Zigbee MAC features, used by the verification framework
+ * Test mode - Enable Zigbee PRO test mode
  */
-/* #undef CONFIG_ZB_MAC_TESTING_MODE */
+#define CONFIG_ZB_TEST_MODE_PRO y
+
+/**
+ * Groups of test cases to be included - Enable DUT test cases
+ */
+/* #undef CONFIG_ZB_TEST_GROUP_ALL_DUT */
+
+/**
+ * Groups of test cases to be included - Enable TH test cases
+ */
+/* #undef CONFIG_ZB_TEST_GROUP_ALL_TH */
+
+/**
+ * Enable Zigbee test mode and features - Enable Zigbee profile, used by verification framework
+ */
+#define CONFIG_ZB_TEST_PROFILE y
 
 /**
  * Enable Zigbee test mode and features - Serial console RX timeout

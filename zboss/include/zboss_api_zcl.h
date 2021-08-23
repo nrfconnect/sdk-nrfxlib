@@ -108,6 +108,9 @@
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_TEMP_MEASUREMENT)
 #include "zcl/zb_zcl_temp_measurement.h"
 #endif
+#if defined (ZB_ZCL_SUPPORT_CLUSTER_PRESSURE_MEASUREMENT)
+#include "zcl/zb_zcl_pressure_measurement.h"
+#endif
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_REL_HUMIDITY_MEASUREMENT)
 #include "zcl/zb_zcl_rel_humidity_measurement.h"
 #endif
@@ -380,15 +383,13 @@ typedef enum zb_zcl_device_callback_id_e
   /** Inform user that report was not received during defined time interval */
   ZB_ZCL_NO_REPORTING_CB_ID,
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
-  /** Inform user about change On/Off effect @see ZLL spec 6.6.1.4.4.2 */
+  /** Inform user about change On/Off effect @see ZCL spec 6.6.1.4.4.2 */
   ZB_ZCL_ON_OFF_WITH_EFFECT_VALUE_CB_ID,
-  /** */
-  /* TODO: describe this callback */
+  /** Inform user about ZCL Shade cluster shade position value modification */
   ZB_ZCL_SHADE_SET_VALUE_CB_ID,
-  /** */
-  /* TODO: describe this callback */
+  /** Inform user that shade_get_value_param of ZCL Shade custer could be changed */
   ZB_ZCL_SHADE_GET_VALUE_CB_ID,
-  /** Inform user about call identify effect command @see ZLL spec 6.3.1.2.1 */
+  /** Inform user about call identify effect command @see ZCL spec 6.3.1.2.1 */
   ZB_ZCL_IDENTIFY_EFFECT_CB_ID,
   /** Inform user about ZCL Level Control cluster attributes value modification */
   ZB_ZCL_LEVEL_CONTROL_SET_VALUE_CB_ID,
@@ -943,7 +944,8 @@ typedef enum zb_zcl_device_callback_id_e
    */
   ZB_ZCL_TUNNELING_CLOSE_TUNNEL_CB_ID,
 
-#if defined ZB_ENABLE_SE || defined ZB_ZCL_SUPPORT_CLUSTER_CALENDAR
+#if defined ZB_ENABLE_SE || defined ZB_ZCL_SUPPORT_CLUSTER_CALENDAR || DOXYGEN
+  /** @cond DOXYGEN_ZCL_SECTION && DOXYGEN_SE_SECTION */
   /** @b Server. Inform user about GetProfile request.
    *
    * User's application callback is initialized by RET_ERROR status of device
@@ -1124,9 +1126,11 @@ typedef enum zb_zcl_device_callback_id_e
    * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
    */
   ZB_ZCL_CALENDAR_CANCEL_CALENDAR_CB_ID,
+  /** @endcond */ /* DOXYGEN_ZCL_SECTION && DOXYGEN_SE_SECTION */
 #endif /* ZB_ENABLE_SE || ZB_ZCL_SUPPORT_CLUSTER_CALENDAR */
 
 #if defined ZB_ENABLE_SE || defined ZB_ZCL_SUPPORT_CLUSTER_DAILY_SCHEDULE
+  /** @cond DOXYGEN_ZCL_SECTION && DOXYGEN_SE_SECTION */
   /** @b Server. Inform user about GetScheduleCancellation request.
    *
    * @param[out] param_out @ref zb_zcl_daily_schedule_cancel_schedule_payload_t
@@ -1193,9 +1197,11 @@ typedef enum zb_zcl_device_callback_id_e
    *
    */
   ZB_ZCL_DAILY_SCHEDULE_CANCEL_SCHEDULE_CB_ID,
+  /** @endcond */ /* DOXYGEN_ZCL_SECTION && DOXYGEN_SE_SECTION */
 #endif /* ZB_ENABLE_SE || ZB_ZCL_SUPPORT_CLUSTER_DAILY_SCHEDULE */
 
-#if defined ZB_ENABLE_SE || defined ZB_ZCL_SUPPORT_CLUSTER_ENERGY_MANAGEMENT
+#if defined ZB_ENABLE_SE || defined ZB_ZCL_SUPPORT_CLUSTER_ENERGY_MANAGEMENT || DOXYGEN
+  /** @cond DOXYGEN_ZCL_SECTION && DOXYGEN_SE_SECTION */
   /** @b Client. Inform user about ReportEventStatus request
    *
    * User's application callback is initialized by RET_OK status of device
@@ -1221,9 +1227,11 @@ typedef enum zb_zcl_device_callback_id_e
    * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
    */
   ZB_ZCL_ENERGY_MANAGEMENT_MANAGE_EVENT_CB_ID,
+  /** @endcond */ /* DOXYGEN_ZCL_SECTION && DOXYGEN_SE_SECTION */
 #endif /* ZB_ENABLE_SE || ZB_ZCL_SUPPORT_CLUSTER_ENERGY_MANAGEMENT */
 
 #if defined ZB_ENABLE_SE || defined ZB_ZCL_SUPPORT_CLUSTER_MDU_PAIRING
+  /** @cond DOXYGEN_ZCL_SECTION && DOXYGEN_SE_SECTION */
   /** @b Server. Inform user about MDU Paring Request. You may provide MDU list as reply
    *
    * User's application callback is initialized by RET_ERROR status of device
@@ -1249,6 +1257,7 @@ typedef enum zb_zcl_device_callback_id_e
    * @return RET_ERROR - command is handled with errors.
    */
   ZB_ZCL_MDU_PAIRING_RESPONSE_CB_ID,
+  /** @endcond */ /* DOXYGEN_ZCL_SECTION && DOXYGEN_SE_SECTION */
 #endif /* ZB_ENABLE_SE || ZB_ZCL_SUPPORT_CLUSTER_MDU_PAIRING */
 
   /** @b Server. Inform user about GetProfile request.

@@ -38,49 +38,50 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: HA global definitions
+/*  PURPOSE: NCP Dev API declarations
 */
+#ifndef NCP_DEV_API_H
+#define NCP_DEV_API_H 1
 
-#ifndef ZB_HA_H
-#define ZB_HA_H 1
+#include "zb_types.h"
+#include "zb_ncp.h"
 
-#ifdef ZB_ENABLE_HA
-#include "ha/zb_ha_config.h"
-#include "ha/zb_ha_sas.h"
+#define NCP_RET_LATER (255U)
 
-#include "ha/zb_ha_door_lock.h"
-#include "ha/zb_ha_door_lock_controller.h"
-#include "ha/zb_ha_on_off_output.h"
-#include "ha/zb_ha_on_off_switch.h"
-#include "ha/zb_ha_simple_sensor.h"
-#include "ha/zb_ha_combined_interface.h"
-#include "ha/zb_ha_scene_selector.h"
-#include "ha/zb_ha_configuration_tool.h"
-#include "ha/zb_ha_mains_power_outlet.h"
-#include "ha/zb_ha_range_extender.h"
-#include "ha/zb_ha_level_control_switch.h"
-#include "ha/zb_ha_level_controllable_output.h"
-#include "ha/zb_ha_window_covering.h"
-#include "ha/zb_ha_window_covering_controller.h"
-#include "ha/zb_ha_shade.h"
-#include "ha/zb_ha_shade_controller.h"
+/** The custom request callback.
+ *
+ * @param param - the buffer with request data from host and tsn (zb_uint8_t) as a parameter.
+ *                It's freed by the stack afterwards.
+ *
+ * @return The length of a response returned by @ref zb_ncp_custom_response if it is called within callback.
+ *         NCP_RET_LATER if zb_ncp_custom_response is called later.
+ *
+ * @note If neither length nor NCP_RET_LATER status is returned, the response is generated and sent automatically.
+ */
+typedef zb_ret_t (*zb_ncp_custom_request_cb_t)(zb_uint8_t param);
 
-#include "ha/zb_ha_temperature_sensor.h"
+/** Registers a callback, that is called once the zb_ncp_custom_request is called on the host side
+ *  and the corresponding NCP command is received.
+ *
+ * @param cb - the callback. If NULL is passed, previously registered callback (if any) will be unregistered.
+ */
+void zb_ncp_custom_register_request_cb(zb_ncp_custom_request_cb_t cb);
 
-#include "ha/zb_ha_ias_control_indicating_equipment.h"
-#include "ha/zb_ha_ias_ancillary_control_equipment.h"
-#include "ha/zb_ha_ias_zone.h"
-#include "ha/zb_ha_ias_warning_device.h"
+/** Sends the indication to the host.
+ *
+ * @param param - the zboss buffer with payload. It's freed by the stack.
+ */
+void zb_ncp_custom_indication(zb_uint8_t param);
 
-#include "ha/zb_ha_custom_attr.h"
-#include "ha/zb_ha_dimmable_light.h"
-#include "ha/zb_ha_dimmer_switch.h"
-#include "ha/zb_ha_smart_plug.h"
-#include "ha/zb_ha_thermostat.h"
+/** Sends a custom response.
+ *
+ * @param param - the zboss buffer with response payload and @ref ncp_hl_custom_resp_t as a parameter.
+ *                It's freed by the stack.
+ *
+ * @return response length
+ *
+ * @note Should be called within @ref zb_ncp_custom_request_cb_t unless NCP_RET_LATER is not returned from callback.
+ */
+zb_ret_t zb_ncp_custom_response(zb_uint8_t param);
 
-#include "ha/zb_ha_test_device.h"
-
-#include "ha/zb_ha_erl_device_interface.h"
-#include "ha/zb_ha_erl_gw_device.h"
-#endif
-#endif /* ZB_HA_H */
+#endif /* NCP_DEV_API_H */

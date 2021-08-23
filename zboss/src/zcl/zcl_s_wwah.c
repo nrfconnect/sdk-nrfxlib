@@ -156,14 +156,14 @@ void zb_zcl_wwah_init_server(void)
     ZB_ASSERT(ZB_ZCL_WWAH_APS_ACK_EXEMPT_TABLE_SIZE > 0 &&
               ZB_ZCL_WWAH_APS_ACK_EXEMPT_TABLE_SIZE <= 0xFF);
 
-    ZB_MEMSET(WWAH_CTX().aps_ack_exempt_table, ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
+    ZB_MEMSET(WWAH_CTX().aps_ack_exempt_table, (zb_uint8_t)ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
               sizeof(WWAH_CTX().aps_ack_exempt_table));
     WWAH_CTX().aps_ack_exempt_table_cnt = 0;
 
     ZB_ASSERT(ZB_ZCL_WWAH_APS_LINK_KEY_AUTHORIZATION_TABLE_SIZE > 0 &&
               ZB_ZCL_WWAH_APS_LINK_KEY_AUTHORIZATION_TABLE_SIZE <= 0xFF);
 
-    ZB_MEMSET(WWAH_CTX().aps_link_key_authorization_table, ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
+    ZB_MEMSET(WWAH_CTX().aps_link_key_authorization_table, (zb_uint8_t)ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
               sizeof(WWAH_CTX().aps_link_key_authorization_table));
     WWAH_CTX().aps_link_key_authorization_table_cnt = 0;
 
@@ -171,7 +171,7 @@ void zb_zcl_wwah_init_server(void)
 
     ZB_ASSERT(ZB_ZCL_WWAH_USE_TRUST_CENTER_FOR_CLUSTER_TABLE_SIZE == 4);
 
-    ZB_MEMSET(WWAH_CTX().use_trust_center_for_cluster_table, ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD, sizeof(WWAH_CTX().use_trust_center_for_cluster_table));
+    ZB_MEMSET(WWAH_CTX().use_trust_center_for_cluster_table, (zb_uint8_t)ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD, sizeof(WWAH_CTX().use_trust_center_for_cluster_table));
     WWAH_CTX().use_trust_center_for_cluster_table_cnt = 0;
 
     ZCL_SELECTOR().block_zcl_cmd = zb_zcl_wwah_periodic_checkin_block_zcl_cmd;
@@ -545,7 +545,7 @@ zb_ret_t zb_zcl_wwah_enable_aps_link_key_authorization_handler(zb_uint8_t param)
   else
   {
     /* This command enforces that all cluster commands for the cluster have APS level security. */
-    ZB_MEMSET(WWAH_CTX().aps_link_key_authorization_table, ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
+    ZB_MEMSET(WWAH_CTX().aps_link_key_authorization_table, (zb_uint8_t)ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
               sizeof(WWAH_CTX().aps_link_key_authorization_table));
     WWAH_CTX().aps_link_key_authorization_table_cnt = 0;
 
@@ -594,7 +594,7 @@ zb_ret_t zb_zcl_wwah_disable_aps_link_key_authorization_handler(zb_uint8_t param
   else
   {
     /* This command removes the enforcement of APS level security on cluster commands. */
-    ZB_MEMSET(WWAH_CTX().aps_link_key_authorization_table, ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
+    ZB_MEMSET(WWAH_CTX().aps_link_key_authorization_table, (zb_uint8_t)ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
               sizeof(WWAH_CTX().aps_link_key_authorization_table));
     WWAH_CTX().aps_link_key_authorization_table_cnt = 0;
     for(i = 0; i < payload.number_of_clusters; ++i)
@@ -1207,7 +1207,7 @@ zb_ret_t zb_zcl_wwah_require_aps_acks_on_unicasts_handler(zb_uint8_t param){
   else
   {
     /* This command enforces that all unicast commands have APS ACKs enabled. */
-    ZB_MEMSET(WWAH_CTX().aps_ack_exempt_table, ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
+    ZB_MEMSET(WWAH_CTX().aps_ack_exempt_table, (zb_uint8_t)ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
               sizeof(WWAH_CTX().aps_ack_exempt_table));
     WWAH_CTX().aps_ack_exempt_table_cnt = 0;
     for(i = 0; i < payload.number_of_clusters; ++i)
@@ -1229,7 +1229,7 @@ zb_ret_t zb_zcl_wwah_remove_aps_acks_on_unicasts_requirement_handler(zb_uint8_t 
 {
   ZVUNUSED(param);
   TRACE_MSG(TRACE_ZCL1, "> zb_zcl_wwah_remove_aps_acks_on_unicasts_requirement_handler %hd", (FMT__H, param));
-  ZB_MEMSET(WWAH_CTX().aps_ack_exempt_table, ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
+  ZB_MEMSET(WWAH_CTX().aps_ack_exempt_table, (zb_uint8_t)ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD,
             sizeof(WWAH_CTX().aps_ack_exempt_table));
   WWAH_CTX().aps_ack_exempt_table_cnt = 0;
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_wwah_remove_aps_acks_on_unicasts_requirement_handler", (FMT__0));
@@ -1829,7 +1829,7 @@ zb_ret_t zb_zcl_wwah_use_trust_center_for_cluster_handler(zb_uint8_t param)
   else
   {
     /* On receipt of this command, a device SHALL use the Trust Center for all clusters in the list given. */
-    ZB_MEMSET(WWAH_CTX().use_trust_center_for_cluster_table, ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD, sizeof(WWAH_CTX().use_trust_center_for_cluster_table));
+    ZB_MEMSET(WWAH_CTX().use_trust_center_for_cluster_table, (zb_uint8_t)ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD, sizeof(WWAH_CTX().use_trust_center_for_cluster_table));
     WWAH_CTX().use_trust_center_for_cluster_table_cnt = 0;
     for(i = 0; i < payload.number_of_clusters; ++i)
     {

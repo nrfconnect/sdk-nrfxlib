@@ -409,7 +409,9 @@ typedef ZB_PACKED_PRE struct zb_apsme_set_confirm_s
   * @snippet light_sample/light_control/light_control.c apsme_bind_req
   * @par
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See light_sample
+  * @endcond
   */
 void zb_apsme_bind_request(zb_uint8_t param);
 
@@ -421,7 +423,9 @@ void zb_apsme_bind_request(zb_uint8_t param);
   * @snippet doxygen_snippets.dox zb_apsme_unbind_request_tests_aps_bind_aps_binding_test_c
   * @par
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See aps_binding_test sample
+  * @endcond
   */
 void zb_apsme_unbind_request(zb_uint8_t param);
 
@@ -444,7 +448,9 @@ void zb_aps_check_binding_request(zb_bufid_t param);
   * @snippet scenes/scenes_zed.c apsme_add_group_req
   * @par
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See scenes sample
+  * @endcond
   */
 void zb_apsme_add_group_request(zb_uint8_t param);
 
@@ -459,7 +465,9 @@ void zb_apsme_add_group_request(zb_uint8_t param);
   * @snippet doxygen_snippets.dox zb_apsme_remove_group_request_certification_TP_APS_BV-17_tp_aps_bv-17_zed_c
   * @par
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See tp_aps_bv-17 sample
+  * @endcond
   */
 void zb_apsme_remove_group_request(zb_uint8_t param);
 
@@ -474,7 +482,9 @@ void zb_apsme_remove_group_request(zb_uint8_t param);
   * @snippet doxygen_snippets.dox zb_apsme_remove_all_groups_request_tests_certification_TP_APS_BV-18_tp_aps_bv-18_zed_c
   * @par
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See tp_aps_bv-18 sample
+  * @endcond
   */
 void zb_apsme_remove_all_groups_request(zb_uint8_t param);
 
@@ -496,8 +506,10 @@ zb_uint8_t zb_aps_get_max_buffer_size(zb_uint16_t short_addr);
 /** @addtogroup aps_api
  * @{
  */
-/*! @addtogroup aps_user_payload APS user payload */
-/*! @{ */
+
+/** @addtogroup aps_user_payload APS user payload
+ * @{
+ */
 
 /*!
  * @brief
@@ -576,9 +588,9 @@ zb_uint8_t *zb_aps_get_aps_payload(zb_uint8_t param, zb_uint8_t *aps_payload_siz
  */
 void zb_aps_set_user_data_tx_cb(zb_aps_user_payload_callback_t cb);
 
-/*! @} */ /* addtogroup aps_user_payload */
+/** @} */ /* aps_user_payload */
 
-/*! @} */
+/** @} */
 
 #endif /* #ifdef ZB_APS_USER_PAYLOAD */
 

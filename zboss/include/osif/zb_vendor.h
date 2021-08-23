@@ -326,8 +326,24 @@
 /* Start Energy Detection from radio sleep state. */
 #define ZB_TRANSCEIVER_ON_BEFORE_ED  0
 
-/* Include all test cases in the certification firmware builds. */
+/* Include test cases in the certification firmware builds. */
+#ifdef CONFIG_ZB_TEST_GROUP_ALL
 #define ZB_TEST_GROUP_ALL
+#endif
+
+#ifdef CONFIG_ZB_TEST_GROUP_ALL_DUT
+#ifndef ZB_ED_ROLE
+#define ZB_TEST_GROUP_ALL_DUT
+#else
+/* The zed_test_table.h doe not divide test cases into TH and DUT roles. */
+#define ZB_TEST_GROUP_ALL
+#endif /* ZB_ED_ROLE */
+#endif /* CONFIG_ZB_TEST_GROUP_ALL_DUT */
+
+#ifdef CONFIG_ZB_TEST_GROUP_ALL_TH
+#define ZB_TEST_GROUP_ALL_TH
+#endif
+
 
 /* Set the ZBOSS buffer size according to the set of enabled MAC features. */
 #ifdef ZB_MAC_SECURITY
@@ -340,6 +356,6 @@
 #define ZB_STACK_VERSION ((ZBOSS_MAJOR << 24) | (ZBOSS_MINOR << 16) | (ZBOSS_PATCH << 8) | (ZBOSS_SDK_REVISION))
 
 /* ZBOSS NCP protocol version. */
-#define ZB_NCP_PROTOCOL_VERSION 0x0111
+#define ZB_NCP_PROTOCOL_VERSION 0x0115
 
 #endif /* ZB_VENDOR_H__ */
