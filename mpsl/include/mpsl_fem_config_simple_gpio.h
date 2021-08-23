@@ -52,8 +52,19 @@ typedef struct
     /** Low Noise Amplifier pin configuration. */
     mpsl_fem_gpiote_pin_config_t lna_pin_config;
 
+#if defined(NRF52_SERIES)
     /** Array of PPI channels which need to be provided to Front End Module to operate. */
     uint8_t                      ppi_channels[2];
+#else
+    /** Array of DPPI channels which need to be provided to Front End Module to operate. */
+    uint8_t                      dppi_channels[3];
+    /** Number of EGU instance for which @c egu_channels apply. */
+    uint8_t                      egu_instance_no;
+    /** Array of EGU channels (belonging to EGU instance number @c egu_instance_no) which
+     *  need to be provided to Front End Module to operate. */
+    uint8_t                      egu_channels[3];
+#endif
+
 } mpsl_fem_simple_gpio_interface_config_t;
 
 /** @brief Configures the PA and LNA device interface.

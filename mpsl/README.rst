@@ -22,6 +22,8 @@ This library provides the following key features:
   It supports only the nRF52 Series.
 * SoC Temperature.
   It provides an API for obtaining the temperature measured on the SoC.
+* Radio coexistence.
+  It allows the application to interface with several types of packet traffic arbiters (PTAs).
 
 
 .. toctree::
@@ -34,5 +36,6 @@ This library provides the following key features:
    doc/radio_notification
    doc/tx_power_control
    doc/fem
+   doc/cx
    CHANGELOG
    doc/api

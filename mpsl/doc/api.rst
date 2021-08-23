@@ -70,6 +70,12 @@ MPSL FEM Simple GPIO
    :project: nrfxlib
    :members:
 
+MPSL Coexistence
+****************
+.. doxygengroup:: mpsl_cx
+   :project: nrfxlib
+   :members:
+
 MPSL Temp
 *********
 
