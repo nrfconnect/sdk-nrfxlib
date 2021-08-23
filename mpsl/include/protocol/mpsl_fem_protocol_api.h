@@ -41,6 +41,22 @@ typedef enum
     MPSL_FEM_EVENT_TYPE_GENERIC                /**< Generic Event type. */
 } mpsl_fem_event_type_t;
 
+/** @brief Type representing a multiple-subscribable hardware event.
+ *
+ *  For nRF52 series this is an address of an event within a peripheral. This
+ *  event can be written to @c EEP register of a PPI channel, to make the
+ *  PPI channel be driven by the event. For nRF52 series an event can be
+ *  published to multiple PPI channels by hardware design, which makes it possible
+ *  for multiple tasks to subscribe to it.
+ *
+ *  For nRF53 series this is a number of a DPPI channel which is configured
+ *  in such a way that certain event publishes to the DPPI channel and the
+ *  DPPI channel is enabled. Ensuring above is responsibility of an user
+ *  of the provided API. Multiple tasks can then subscribe to the DPPI channel
+ *  (by hardware design) thus indirectly to the event.
+ */
+typedef uint32_t mpsl_subscribable_hw_event_t;
+
 /** @brief MPSL Front End Module event. */
 typedef struct
 {
@@ -73,15 +89,18 @@ typedef struct
         /** Parameters when type is @ref MPSL_FEM_EVENT_TYPE_GENERIC. */
         struct
         {
-            /** Address of event register. */
-            uint32_t           register_address;
+            /** Event triggerring required FEM operation. */
+            mpsl_subscribable_hw_event_t event;
           /** Generic event, used in case of type equal to @ref mpsl_fem_event_type_t::MPSL_FEM_EVENT_TYPE_GENERIC. */
         } generic;
     } event;
+
+#if defined(NRF52_SERIES)
     /** False to ignore the PPI channel below and use the one set by application. True to use the PPI channel below. */
     bool                       override_ppi;
     /** PPI channel to be used for this event. */
     uint8_t                    ppi_ch_id;
+#endif
 } mpsl_fem_event_t;
 
 /** @brief Disable Front End Module.
@@ -225,18 +244,19 @@ void mpsl_fem_deactivate_now(mpsl_fem_functionality_t type);
 /** @brief Instruct Front End Module to disable PA and LNA as soon as possible
  *  using the group following the event.
  *
- * @param[in] event       Address of the event which is triggered when the abort condition occurs.
- * @param[in] group       PPI Group which shall be disabled when the abort event is triggered.
+ * @param[in] event       An event which is triggered when the abort condition occurs.
+ *                        (See doc for @ref mpsl_subscribable_hw_event_t type.)
+ * @param[in] group       (D)PPI Group which shall be disabled when the abort event is triggered.
  *
  * @retval   0            Setting of the abort sequence path is successful.
  * @retval   -NRF_EPERM   Setting of the abort sequence path could not be performed.
  */
-int32_t mpsl_fem_abort_set(uint32_t event, uint32_t group);
+int32_t mpsl_fem_abort_set(mpsl_subscribable_hw_event_t event, uint32_t group);
 
 /** @brief Adds one more PPI channel to the PPI Group prepared by the
  *  @ref mpsl_fem_abort_set function.
  *
- * @param[in] channel_to_add PPI channel to add to the PPI group.
+ * @param[in] channel_to_add (D)PPI channel to add to the (D)PPI group.
  * @param[in] group          The said PPI group.
  *
  * @retval    0              Setting of the abort sequence path is successful.
@@ -247,7 +267,7 @@ int32_t mpsl_fem_abort_extend(uint32_t channel_to_add, uint32_t group);
 /** @brief Removes one PPI channel from the PPI Group prepared by the
  *  @ref mpsl_fem_abort_set function.
  *
- * @param[in] channel_to_remove PPI channel to remove from the PPI group.
+ * @param[in] channel_to_remove (D)PPI channel to remove from the (D)PPI group.
  * @param[in] group             The said PPI group.
  *
  * @retval   0                  Setting of the abort sequence path is successful.

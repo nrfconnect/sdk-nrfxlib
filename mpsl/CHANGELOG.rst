@@ -17,6 +17,7 @@ All the notable changes added to the master branch are documented in this sectio
 Added
 =====
 
+* Added support for nRF21540 GPIO Front-End Module for nRF53 Series.
 * Added a public interface for the radio coexistence protocol API (KRKNWK-7490).
   This public interface can be used to replace the example implementation of the radio coexistence with other implementations compliant with other Packet Traffic Arbitration (PTA) interfaces.
 
