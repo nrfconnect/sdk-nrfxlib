@@ -83,13 +83,20 @@ static void bdb_rejoin_machine(zb_uint8_t param);
 
 zb_bool_t bdb_not_ever_joined()
 {
-  zb_ext_pan_id_t curr_ext_pan_id;
+  zb_ext_pan_id_t curr_ext_pan_id = {0};
   zb_get_extended_pan_id(curr_ext_pan_id);
 
   return (zb_bool_t)(ZB_EXTPANID_IS_ZERO(curr_ext_pan_id)
                      && !zb_zdo_authenticated()
                      && !zb_zdo_tclk_valid());
 }
+
+
+zb_bool_t bdb_is_in_tc_rejoin(void)
+{
+  return ZB_U2B(ZB_BDB().bdb_tc_rejoin_active);
+}
+
 
 #ifdef ZB_FORMATION
 
@@ -231,7 +238,7 @@ static void bdb_init(void)
 zb_bool_t bdb_joined(void)
 {
   zb_bool_t joined;
-  zb_ext_pan_id_t ext_pan_id;
+  zb_ext_pan_id_t ext_pan_id = {0};
 
   zb_get_extended_pan_id(ext_pan_id);
   joined = (zb_bool_t)(!ZB_EXTPANID_IS_ZERO(ext_pan_id) &&
@@ -285,7 +292,7 @@ static void bdb_init_channel_sets(void)
 void bdb_preinit(void)
 {
   zb_bool_t joined;
-  zb_ext_pan_id_t ext_pan_id;
+  zb_ext_pan_id_t ext_pan_id = {0};
 
   TRACE_MSG(TRACE_ZDO1, ">> bdb_preinit", (FMT__0));
 
@@ -342,7 +349,7 @@ void bdb_preinit(void)
  */
 void bdb_initialization_procedure(zb_uint8_t param)
 {
-  zb_ext_pan_id_t ext_pan_id;
+  zb_ext_pan_id_t ext_pan_id = {0};
   zb_get_extended_pan_id(ext_pan_id);
 
   bdb_preinit();
@@ -424,6 +431,17 @@ static void bdb_post_commissioning_actions(void)
 #endif
 }
 
+static void bdb_send_tc_rejoin_done_after_reboot(zb_uint8_t param, zb_uint16_t status)
+{
+  TRACE_MSG(TRACE_ZDO1, ">> bdb_send_tc_rejoin_done_after_reboot, param %hd, status %d",
+    (FMT__H_D, param, status));
+
+  zb_app_signal_pack(param, ZB_BDB_SIGNAL_TC_REJOIN_DONE, -status, 0);
+  ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
+
+  TRACE_MSG(TRACE_ZDO1, "<< bdb_send_tc_rejoin_done_after_reboot", (FMT__0));
+}
+
 void bdb_commissioning_machine(zb_uint8_t param)
 {
   TRACE_MSG(TRACE_ZDO1, "bdb_commissioning_machine param %hd signal %hd state %hd",
@@ -476,9 +494,17 @@ void bdb_commissioning_machine(zb_uint8_t param)
           /* Reset "force rejoin" flag */
           ZB_BDB().bdb_force_router_rejoin = ZB_FALSE;
         }
+
         TRACE_MSG(TRACE_INFO1, "COMMISSIONING_STOP: app signal %hd comm status %hd", (FMT__H_H, ZB_BDB().bdb_application_signal, ZB_BDB().bdb_commissioning_status));
         zb_app_signal_pack(param, ZB_BDB().bdb_application_signal, -ZB_BDB().bdb_commissioning_status, 0);
         ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
+
+        if (ZB_BDB().bdb_tc_rejoin_after_reboot == ZB_TRUE &&
+            ZB_BDB().bdb_application_signal == ZB_BDB_SIGNAL_DEVICE_REBOOT)
+        {
+          zb_buf_get_out_delayed_ext(bdb_send_tc_rejoin_done_after_reboot, ZB_BDB().bdb_commissioning_status, 0U);
+          ZB_BDB().bdb_tc_rejoin_after_reboot = ZB_FALSE;
+        }
 
         /* FIXME: Not sure when to start WWAH and other activities */
         if (ZB_BDB().bdb_commissioning_status == ZB_BDB_STATUS_SUCCESS &&
@@ -549,6 +575,12 @@ static void bdb_initialization_machine(zb_uint8_t param)
       break;
 
     case BDB_COMM_SIGNAL_INIT_TC_REJOIN:
+      if (ZB_BDB().bdb_application_signal == ZB_BDB_SIGNAL_DEVICE_REBOOT)
+      {
+        ZB_BDB().bdb_tc_rejoin_after_reboot = ZB_TRUE_U;
+      }
+
+      ZB_BDB().bdb_tc_rejoin_active = ZB_TRUE;
       bdb_precomm_rejoin_over_all_channels(param, 0);
       break;
 
@@ -556,10 +588,36 @@ static void bdb_initialization_machine(zb_uint8_t param)
       /* ZG->aps.authenticated = ZB_FALSE; */
       /* FALLTHROUGH */
     case BDB_COMM_SIGNAL_NWK_JOIN_FAILED:
-      TRACE_MSG(TRACE_ZDO1, "rejoin failed, finish", (FMT__0));
-      ZB_BDB().bdb_commissioning_status = ZB_BDB_STATUS_NO_NETWORK;
-      bdb_commissioning_signal(BDB_COMM_SIGNAL_INIT_FINISH, param);
-      break;
+    {
+      TRACE_MSG(TRACE_ZDO1, "Rejoin failed, secured %hd", (FMT__H, bdb_is_in_tc_rejoin()));
+
+#if 0
+      /* TC rejoin should be invoked only if we have unique TCLK or if it is directly allowed in
+       * application to perform TC rejoin with legacy ZC.
+       * To prevent infinite rejoins loop here, TC rejoin will be performed only once, but application
+       * will receive ZB_BDB_SIGNAL_TC_REJOIN_DONE to choose a next action */
+      if (!bdb_is_in_tc_rejoin() && ((zb_zdo_tclk_valid() && (zb_aib_get_coordinator_version() >= 21))
+          || zb_aib_tcpol_get_allow_unsecure_tc_rejoins())
+#ifdef ZB_REJOIN_BACKOFF
+          && !zb_zdo_rejoin_backoff_is_running()
+#endif
+          )
+      {
+        /* Perform TC rejoin */
+        TRACE_MSG(TRACE_ZDO1, "Perform TC rejoin", (FMT__0));
+        bdb_commissioning_signal(BDB_COMM_SIGNAL_INIT_TC_REJOIN, param);
+      }
+      else
+#endif
+      {
+        TRACE_MSG(TRACE_ZDO1, "Can't find network", (FMT__0));
+        ZB_BDB().bdb_commissioning_status = ZB_BDB_STATUS_NO_NETWORK;
+        ZB_BDB().bdb_tc_rejoin_active = ZB_FALSE_U;
+
+        bdb_commissioning_signal(BDB_COMM_SIGNAL_INIT_FINISH, param);
+      }
+    }
+    break;
 
     case BDB_COMM_SIGNAL_NWK_JOIN_DONE:
       TRACE_MSG(TRACE_ZDO1, "Device is joined", (FMT__0));
@@ -572,6 +630,8 @@ static void bdb_initialization_machine(zb_uint8_t param)
         zb_nwk_blacklist_reset();
 #endif
       }
+
+      ZB_BDB().bdb_tc_rejoin_active = ZB_FALSE_U;
       bdb_commissioning_signal(BDB_COMM_SIGNAL_INIT_FINISH, param);
       break;
 
@@ -1835,12 +1895,12 @@ static void bdb_handle_join_failed_signal(zb_bufid_t param)
 {
   TRACE_MSG(TRACE_ZDO1, "{re}join failed - call BDB machine", (FMT__0));
   /* Note: there was a check for BDB * NFN and call to bdb machine in that case only.
-     See originag zb_nlme_join_confirm() code.
+     See original zb_nlme_join_confirm() code.
      TODO: in BDB machine implement rejoin re-attempt vs association */
   /* NK: Looks like this is already covered in BDB machine - if device is NFN, control will be
    * passed to application (signal with status NO_NETWORK). Not sure if we need to implement
    * some additional logic in BDB machine itself - application may decide if it wants to do
-   * rejoin backoff (for example), or siletly go to sleep, or reset to factory defaults
+   * rejoin backoff (for example), or silently go to sleep, or reset to factory defaults
    * etc. */
 
   if (COMM_CTX().discovery_ctx.scanlist_ref)
@@ -2206,6 +2266,65 @@ zb_uint8_t bdb_get_scan_duration(void)
 }
 
 
+void zb_bdb_initiate_tc_rejoin(zb_uint8_t param)
+{
+  zb_ret_t ret = RET_OK;
+
+  if (param == ZB_UNDEFINED_BUFFER)
+  {
+    zb_buf_get_out_delayed(zb_bdb_initiate_tc_rejoin);
+    return;
+  }
+
+  TRACE_MSG(TRACE_ZDO1, ">> zb_bdb_initiate_tc_rejoin, param %hd", (FMT__H, param));
+
+  if ((!zb_zdo_tclk_valid() || (zb_aib_get_coordinator_version() < 21))
+        && !zb_aib_tcpol_get_allow_unsecure_tc_rejoins())
+  {
+    TRACE_MSG(TRACE_ERROR, "TC rejoin is not allowed", (FMT__0));
+    ret = RET_INVALID_STATE;
+  }
+
+  if (ret == RET_OK)
+  {
+    TRACE_MSG(TRACE_ZDO1, "Start TC rejoin", (FMT__0));
+
+    ZB_BDB().bdb_commissioning_status = ZB_BDB_STATUS_IN_PROGRESS;
+    ZB_BDB().bdb_commissioning_step = ZB_BDB_INITIALIZATION;
+    ZB_BDB().bdb_application_signal = ZB_BDB_SIGNAL_TC_REJOIN_DONE;
+
+    bdb_commissioning_signal(BDB_COMM_SIGNAL_INIT_TC_REJOIN, param);
+  }
+  else
+  {
+    (void)zb_app_signal_pack(param, ZB_BDB_SIGNAL_TC_REJOIN_DONE, ret, 0);
+    ZB_SCHEDULE_CALLBACK(zboss_signal_handler, param);
+  }
+
+  TRACE_MSG(TRACE_ZDO1, "<< zb_bdb_initiate_tc_rejoin, ret %d", (FMT__D, ret));
+}
+
+
+zb_ret_t zb_bdb_start_secured_rejoin(void)
+{
+  zb_ret_t ret;
+
+  TRACE_MSG(TRACE_ZDO1, ">> zb_bdb_start_secured_rejoin, prev_comm_signal %hd", (FMT__H, BDB_COMM_CTX().signal));
+
+  ret = BDB_COMM_CTX().signal == BDB_COMM_SIGNAL_NWK_JOIN_FAILED ? RET_OK : RET_INVALID_STATE;
+
+  if (ret == RET_OK)
+  {
+    TRACE_MSG(TRACE_ZDO2, "Start secured rejoin", (FMT__0));
+    bdb_commissioning_signal(BDB_COMM_SIGNAL_INIT_SECURE_REJOIN, ZB_BUF_INVALID);
+  }
+
+  TRACE_MSG(TRACE_ZDO1, "<< zb_bdb_start_secured_rejoin, ret %d", (FMT__D, ret));
+
+  return ret;
+}
+
+
 void bdb_force_link(void)
 {
   bdb_init();
@@ -2216,6 +2335,7 @@ void bdb_force_link(void)
 
   COMM_SELECTOR().signal = bdb_handle_comm_signal;
   COMM_SELECTOR().get_scan_duration = bdb_get_scan_duration;
+  COMM_SELECTOR().is_in_tc_rejoin = bdb_is_in_tc_rejoin;
 
 #ifdef ZB_ROUTER_ROLE
   COMM_SELECTOR().get_permit_join_duration = bdb_get_permit_join_duration;

@@ -86,6 +86,14 @@ OSIF platform selection. One of pre-defined platform should be selected in
 zb_config.h configurations.
 zb_osif_platform.h is different in different platforms repo.
 */
+/**
+ * OSIF timer expiration callback type
+ * @param user_data - any user specified data which will be sent to this callback
+ * Might be used to determine particular timer which cause callback
+ * 
+*/
+typedef void (*zb_osif_timer_exp_cb_t)(void *user_data);
+
 #include "zb_osif_platform.h"
 
 #include "zb_ringbuffer.h"
@@ -366,6 +374,7 @@ int zb_osif_stream_write(zb_osif_file_t *stream, zb_uint8_t *buf, zb_uint_t len)
 
 enum zb_file_path_base_type_e
 {
+  ZB_FILE_PATH_BASE_NOT_SPECIFIED,     /* not specified base type - allows to use default base path */
   ZB_FILE_PATH_BASE_ROMFS_BINARIES,    /* ROM FS */  /* elf binaries, etc */
   ZB_FILE_PATH_BASE_MNTFS_BINARIES,    /* RW FS */   /* prod config, etc */
   ZB_FILE_PATH_BASE_MNTFS_USER_DATA,   /* RW FS */   /* nvram. etc */
@@ -376,6 +385,10 @@ enum zb_file_path_base_type_e
 
   ZB_FILE_PATH_BASE_MAX_TYPE
 };
+
+#ifndef ZB_TRACE_LOG_FILE_EXTENSION
+#define ZB_TRACE_LOG_FILE_EXTENSION ""
+#endif /* ZB_TRACE_LOG_FILE_EXTENSION */
 
 #define ZB_MAX_FILE_PATH_SIZE 256
 
@@ -453,7 +466,7 @@ zb_uint8_t zb_get_reset_source(void);
 
 /*! @} */
 
-#if defined ZB_USE_NVRAM || defined doxygen
+#if defined ZB_USE_NVRAM || defined DOXYGEN
 /**
  * @brief osif NVRAM initializer
  */
@@ -867,8 +880,9 @@ void zb_osif_led_off(zb_uint8_t led_no);
 zb_bool_t zb_osif_button_state(zb_uint8_t arg);
 
 /* Inform osif layer that button callback is being set
- * @return ZB_TRUE if leds and buttons have been initiated
- *  with zb_osif_led_button_init()
+ * @return ZB_TRUE if leds and buttons are not initialized yet
+ *  with zb_osif_led_button_init(). In this case stack logic
+ *  should call it explicitly.
  */
 zb_bool_t zb_setup_buttons_cb(zb_callback_t cb);
 

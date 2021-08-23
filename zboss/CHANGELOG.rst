@@ -10,6 +10,17 @@ Changelog
 All notable changes to this project in |NCS| are documented in this file.
 
 
+Master branch
+*************
+
+Changes
+=======
+
+* Added API for reading active neighbor list.
+* Extended NCP protocol with vendor-specific commands set.
+* Updated the ZBOSS stack to version ``3.8.0.1+4.0.0``.
+  For detailed information, see `ZBOSS stack release notes`_ for the |NCS|'s Master branch.
+
 nRF Connect SDK v1.6.0
 **********************
 

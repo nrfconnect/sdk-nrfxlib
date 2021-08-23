@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -289,11 +289,14 @@ zb_zgpd_manuf_specific_dev_id_t;
    @}
 */
 
-#ifdef ZB_ENABLE_ZGP_SINK
 /********************************************************************/
 /*********************** Sink definitions ***************************/
 /********************************************************************/
-
+#if defined ZB_ENABLE_ZGP_SINK || defined DOXYGEN
+/**
+   @addtogroup zgp_sink
+   @{
+*/
 /**
  * @brief Mapping of ZGPD command ID to Zigbee ZCL command ID
  */
@@ -311,7 +314,11 @@ typedef struct zgps_cluster_rec_s
 /**
  * Options field of cluster table entry
  *
- * [0-1]        role mask          client/server/both
+ * [0-1]        role mask          client/server/both.
+ *                                 Note: this role specifies the original cluster role, not
+ *                                 the cluster role to which this command will be addressed.
+ *                                 E.g. for On/Off/Toggle commands it should be client role
+ *                                 (these command send from client to server).
  *
  */
   zb_uint8_t  options;
@@ -319,6 +326,7 @@ typedef struct zgps_cluster_rec_s
 }
 zgps_dev_cluster_rec_t;
 
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define GET_CLUSTER_ROLE(cluster) \
   (cluster->options & 0x03U)
 
@@ -339,6 +347,7 @@ ZB_PACKED_STRUCT zgps_dev_match_rec_t;
 
 #define IS_STANDART_ZGPS_DEVICE(dev_match_rec) \
   (dev_match_rec->manuf_id == ZB_ZGPD_MANUF_ID_UNSPEC)
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /**
  * @brief Necessary information for filling translation table for any ZGPD
@@ -357,6 +366,7 @@ typedef struct zb_zgps_match_info_s
   const ZB_CODE zgps_dev_cluster_rec_t  *clusters_tbl;
 }
 zb_zgps_match_info_t;
+/** @} */ /* zgp_sink */
 #endif  /* ZB_ENABLE_ZGP_SINK */
 
 #ifdef ZB_ENABLE_ZGP_DIRECT
@@ -483,7 +493,8 @@ typedef enum zb_zgp_comm_status_e
 }
 zb_zgp_comm_status_t;
 
-#ifdef ZB_ENABLE_ZGP_SINK
+#if defined ZB_ENABLE_ZGP_SINK || defined DOXYGEN
+/** @cond DOXYGEN_INTERNAL_DOC */
 /**
  * @brief Commissioning callback type
  *
@@ -498,6 +509,7 @@ zb_zgp_comm_status_t;
 typedef void (ZB_CODE * zb_zgp_comm_completed_cb_t)(
     zb_zgpd_id_t *zgpd_id,
     zb_zgp_comm_status_t result);
+/** @endcond */
 
 /**
  * @brief Commissioning request callback type
@@ -591,64 +603,52 @@ typedef void (ZB_CODE * zb_zgp_app_comm_ind_cb_t)(
 /*! @} */
 
 /**
-   @cond internal
-   @addtogroup zgp_internal
-   @{
-*/
-
-/*! @} */
-/*! @endcond */
-
-/**
    @addtogroup zgp_sink
    @{
 */
 
+/** @cond DOXYGEN_INTERNAL_DOC */
+void zb_zgps_set_match_info(const zb_zgps_match_info_t *info);
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 /**
  * @ingroup zgp_sink
  * @brief Set matching information that is used to fill ZGP command - ZCL
  * cluster translation table.
  * @param [in]  info  Matching information of type @ref zb_zgps_match_info_t
  */
-void zb_zgps_set_match_info(const zb_zgps_match_info_t *info);
-#define ZB_ZGP_SET_MATCH_INFO(info) \
+#define ZB_ZGP_SET_MATCH_INFO(info)             \
 { \
   zb_zgps_set_match_info((info));               \
 }
 
-/**
- * @ingroup zgp_sink
- * @brief Register commissioning callback
- *
- * @note this is legacy API. Use ZB_ZGP_SIGNAL_COMMISSIONING signal passed to
- * zboss_signal_handler instead!
- *
- * @param cb [in]  Commissioning callback (@ref zb_zgp_comm_completed_cb_t)
- * #define ZB_ZGP_REGISTER_COMM_COMPLETED_CB(cb)
- */
-
+/** @cond DOXYGEN_INTERNAL_DOC */
+void zb_zgps_register_comm_req_cb(zb_zgp_comm_req_cb_t cb);
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 /**
  * @ingroup zgp_sink
  * @brief Register commissioning request callback
  *
  * @param cb [in]  Commissioning request callback (@ref zb_zgp_comm_req_cb_t)
  *
- * @snippet doxygen_snippets.dox accept_comm
+ * @if DOXIGEN_INTERNAL_DOC
+ * @snippet tests/zgp/gppb/test_gps_decommissioning/dut_gps.c accept_comm
+ * @endif
  */
-void zb_zgps_register_comm_req_cb(zb_zgp_comm_req_cb_t cb);
-#define ZB_ZGP_REGISTER_COMM_REQ_CB(cb) \
+#define ZB_ZGP_REGISTER_COMM_REQ_CB(cb)         \
 { \
   zb_zgps_register_comm_req_cb((cb)); \
 }
 
+/** @cond DOXYGEN_INTERNAL_DOC */
+void zb_zgps_register_app_cic_cb(zb_zgp_app_comm_ind_cb_t cb);
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 /**
  * @ingroup zgp_sink
  * @brief Register application commissioning indication callback
  *
  * @param cb [in]  Application commissioning indication callback (@ref zb_zgp_app_comm_ind_cb_t)
  */
-void zb_zgps_register_app_cic_cb(zb_zgp_app_comm_ind_cb_t cb);
-#define ZB_ZGP_REGISTER_APP_CIC_CB(cb) \
+#define ZB_ZGP_REGISTER_APP_CIC_CB(cb)          \
 { \
   zb_zgps_register_app_cic_cb((cb)); \
 }
@@ -868,10 +868,14 @@ typedef struct zb_gpdf_comm_app_info_options_s
 
 typedef ZB_PACKED_PRE struct zb_gpdf_comm_switch_gen_cfg_s
 {
-  zb_bitfield_t num_of_contacs:4;
+  zb_bitfield_t num_of_contacts:4;
   zb_bitfield_t switch_type:2;
   zb_bitfield_t reserved:2;
 }ZB_PACKED_STRUCT zb_gpdf_comm_switch_gen_cfg_t;
+
+/* DEPRECATED: Typo in structure field was fixes -
+ * old name, with the typo, will be removed in the next Major release */
+#define num_of_contacs num_of_contacts
 
 typedef struct zb_gpdf_comm_switch_info_s
 {
@@ -1364,9 +1368,11 @@ void zb_zgps_start_commissioning(zb_time_t timeout);
 /**
  * @brief Switch ZGPS back to operational mode from commissioning
  *
+ * @cond DOXYGEN_INTERNAL_DOC
  * After commissioning is cancelled, user is notified with
  * @ref zb_zgp_comm_completed_cb_t with ZB_ZGP_COMMISSIONING_CANCELLED_BY_USER
  * status.
+ * @endcond
  *
  * @snippet light_sample/light_coordinator_combo/light_zc.c zgps_stop_comm
  */
@@ -1383,7 +1389,9 @@ void zb_zgps_stop_commissioning(void);
  *                     process with ZGPD \n
  *                     Otherwise ongoing commissioning process will be
  *                     terminated
+ * @if DOXIGEN_INTERNAL_DOC
  * @snippet tests/zgp/gppb/test_gps_decommissioning/dut_gps.c accept_comm
+ * @endif
  */
 void zb_zgps_accept_commissioning(zb_bool_t accept);
 
@@ -1489,10 +1497,34 @@ void zb_zgps_set_commissioning_exit_mode(zb_uint_t cem);
   */
 void zb_zgps_set_communication_mode(zgp_communication_mode_t mode);
 
-/* Override this function in app for handling 8-bit vector command (generic switch) */
+/**
+ * Application function to override translation of 8-bit vector command (generic switch)
+ *
+ * If this function is not implemented in the application, then ZBOSS
+ * performs a default translation as recommended by ZGP spec (see Green Power
+ * Basic specification v1.1.1, tables 51, 52). If there is no default
+ * translation found, then the received command is dropped.
+ *
+ * If this function is implemented by the the application, then application is
+ * fully responsible for a translation of GPD 8-bit vector commands. For any
+ * return code but RET_OK, ZBOSS will stop command processing and drop it.
+ *
+ * Note: The translation is done to GPDF command ID, not to ZCL command ID.
+ *
+ * @param[in] vector_8bit_cmd_id incoming command ID: press (0x69) or release(0x6a)
+ * @param[in] switch_type switch type of the command's originator (see ZGP spec. A.4.2.1.1.10)
+ * @param[in] num_of_contacts number of contacts command's originator provides
+ * @param[in] contact_status contacts status from the payload of the received command
+ * @param[out] zgp_cmd_out GPDF command ID to which incoming command should be translated
+ * @return RET_OK if translation is successful.
+ *
+ * See Green Power Basic specification v1.1.1, chapters A.3.6.2.2.2, A.4.2.2.1 for more information.
+ *
+ * @snippet simple_combo/zc_combo.c convert_8bit_vector
+ */
 zb_ret_t zb_zgp_convert_8bit_vector(zb_uint8_t vector_8bit_cmd_id,      /* press or release cmd */
                                     zb_uint8_t switch_type,             /* see zb_zgpd_switch_type_e */
-                                    zb_uint8_t num_of_contacs,
+                                    zb_uint8_t num_of_contacts,
                                     zb_uint8_t contact_status,
                                     zb_uint8_t *zgp_cmd_out);
 

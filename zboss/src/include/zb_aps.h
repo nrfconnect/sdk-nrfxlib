@@ -237,7 +237,9 @@ void zb_apsde_data_request(zb_uint8_t param);
   * status values returned from security suite or the MCPS-DATA.confirm primitive.
   * @li handle - The handle associated with the NSDU being confirmed.
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See nwk_addr sample
+  * @endcond
   */
 void zb_apsde_data_confirm(zb_uint8_t param);
 
@@ -251,7 +253,9 @@ void zb_apsde_data_confirm(zb_uint8_t param);
   *
   * Other fields got from MAC nsdu by macros.
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See nwk_addr sample
+  * @endcond
   */
 void zb_apsde_data_indication(zb_uint8_t param);
 
@@ -527,7 +531,9 @@ void zb_aps_hdr_parse(zb_bufid_t packet, zb_aps_hdr_t *aps_hdr, zb_bool_t cut_nw
  * @snippet tp_pro_bv-52_zr1.c tp_pro_bv-52_zr1
  * @par
  *
+ * @cond ZBOSS_SAMPLES_API_DOC_LINE
  * See tp_pro_bv-52 sample
+ * @endcond
  * */
 zb_bool_t zb_aps_is_in_group(zb_uint16_t grp_id);
 
@@ -588,7 +594,9 @@ zb_ret_t zb_apsme_remove_group_internal(zb_uint16_t group, zb_uint8_t ep);
   * @snippet start_ze.c zb_apsme_get_request
   * @par
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See aib_nib_pib_test sample
+  * @endcond
   */
 void zb_apsme_get_request(zb_uint8_t param);
 
@@ -599,7 +607,9 @@ void zb_apsme_get_request(zb_uint8_t param);
   * @snippet start_ze.c zb_apsme_set_request
   * @par
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See aib_nib_pib_test sample
+  * @endcond
   */
 void zb_apsme_set_request(zb_uint8_t param);
 

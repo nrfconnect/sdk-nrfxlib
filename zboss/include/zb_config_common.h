@@ -323,33 +323,6 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
 
  */
 /**@cond internals_doc*/
-/*! Maximum broadcast APS payload size */
-#define ZB_APS_MAX_BROADCAST_PAYLOAD_SIZE 74U
-/**
-   Maximum broadcast APS payload size supposing NWK encryption only, no long
-   address in NWK header. That means definitely the largest possible size.
- */
-#define ZB_APS_MAX_MAX_BROADCAST_PAYLOAD_SIZE (74U + 8U)
-
-/**
-   MAC hdr:
-   3 (hdr, seq num) + 2 * 3  (short dst and src; dst panid)
-   NWK hdr:
-   4 + 2*2 (dst, src short) + 8*2 (dst, src long)
-   NWK security:  18
-   APS hdr: 8 (max, without ext header and security)
-   MAC footer: 2
-
-   Total: 69 bytes
-   So we can send: 127-69 = 58 bytes
-*/
-#define ZB_APS_GUARANTEED_PAYLOAD_SIZE_WO_SECURITY 58U
-
-/**
-   Maximum number of bytes that is additionally occupied by APS security (in case of extended nonce)
-*/
-#define ZB_APS_MAX_APS_SECURITY_SIZE 17U
-
 /**
    Maximal frame size
  */
@@ -399,6 +372,16 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
  * Total length: 127-(11+16+18) = 82 bytes  */
  /* nwk hdr include source IEEE address */
 
+/**
+ * NWK base header: 8b
+ *   2b - fcf
+ *   2b - dst short addr
+ *   2b - src short addr
+ *   1b - radius
+ *   1b - seq num
+ */
+#define ZB_NWK_BASE_HDR_SIZE 8U
+
 /*! Maximum broadcast NWK header size */
 #define ZB_NWK_MAX_BROADCAST_HDR_SIZE 16U
 /*! Maximum security NWK header size */
@@ -407,13 +390,8 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
 #define ZB_NWK_MAX_BROADCAST_PAYLOAD_SIZE (MAX_PHY_FRM_SIZE - (MAX_MAC_OVERHEAD_SHORT_ADDRS + \
   ZB_NWK_MAX_BROADCAST_HDR_SIZE + ZB_NWK_MAX_SECURITY_HDR_SIZE))
 /** @endcond */ /* internals_doc */
-/*!
- * Maximum unicast APS payload size, if no APS encryption is provided
- */
-#define ZB_APS_MAX_PAYLOAD_SIZE (ZB_APS_MAX_BROADCAST_PAYLOAD_SIZE - 8U)
+
 /** @cond internals_doc */
-/*! Maximum ZDO payload size */
-#define ZB_ZDO_MAX_PAYLOAD_SIZE (ZB_APS_MAX_PAYLOAD_SIZE-1U)
 /*! The size of the MAC header used by the Zigbee NWK layer. */
 #define ZB_NWKC_MAC_FRAME_OVERHEAD 0xBU
 /*! The minimum number of octets added by the NWK layer to an NSDU. */
@@ -451,22 +429,99 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
  * EE: Can't we assert in zb_zdo_nwk_upd_notify()? You can define 2 constants: fragmented and not.
  */
 
-/*  2 stands for  fc + aps counter( Packet either has dest and src endpoints (1+1 byte) if not group
-* addressing or Group address elsewhere - so 2 anyway)
-* + 2(cluster ID, profile ID)*
-* + 4(fragmentation and Extended header are NOT included
-*     TODO: handle fragmentation and Extended header.*)
-* + 1(Security control field)
-* + 4(Frame Counter)
-* + 4(Message Integrity Code)
-* + 0
-*/
+/*! Maximum broadcast APS payload size */
+#define ZB_APS_MAX_BROADCAST_PAYLOAD_SIZE 74U
+/**
+   Maximum broadcast APS payload size supposing NWK encryption only, no long
+   address in NWK header. That means definitely the largest possible size.
+ */
+#define ZB_APS_MAX_MAX_BROADCAST_PAYLOAD_SIZE (74U + 8U)
 
+/**
+ * APS base header: 8b
+ *   1b - FCF
+ *   1b - dst ep
+ *   2b - cluster id
+ *   2b - profile id
+ *   1b - src ep
+ *   1b - counter
+ */
+#define ZB_APS_BASE_HDR_SIZE 8U
+
+/**
+   Ext frame control: 1 byte
+   Block number: 1 byte
+   ACK bitfield: 1 byte - for acks only; for data packets it doesn't matter
+ */
+#define ZB_APS_EXT_HDR_SIZE_DATA_PKT 2U
+
+#define ZB_APS_EXT_HDR_SIZE_ACK_PKT ((ZB_APS_EXT_HDR_SIZE_DATA_PKT) + 1U)
+
+/**
+   MAC hdr: 9
+   3 (hdr, seq num) + 2 * 3  (short dst and src; dst panid)
+   NWK hdr: 8
+   4 + 2*2 (dst, src short)
+   NWK security:  18
+   APS hdr: 8 (max, without ext header and security)
+   MAC footer: 2
+
+   Total: 9 + 8 + 18 + 8 + 2 = 45 bytes
+   So we can send: 127 - 45 = 82 bytes
+*/
+#define ZB_APS_GUARANTEED_PAYLOAD_SIZE_WO_SECURITY     \
+  ((MAX_PHY_FRM_SIZE)                                  \
+   - ((MAX_MAC_OVERHEAD_SHORT_ADDRS)                   \
+      + (ZB_NWK_BASE_HDR_SIZE)                         \
+      + (ZB_NWK_MAX_SECURITY_HDR_SIZE)                 \
+      + (ZB_APS_BASE_HDR_SIZE)))
+
+/**
+ * 1b - sec control field
+ * 4b - frame counter
+ * 4b - message integrity code
+ */
+#define ZB_APS_MIN_APS_SECURITY_SIZE 9U
+
+/**
+ * ext src addr when ext nonce flag is true
+ */
+#define ZB_APS_SECURITY_EXT_SRC_SIZE ((zb_uint8_t)sizeof(zb_ieee_addr_t))
+
+/**
+ * Maximum number of bytes that is additionally occupied by APS security (in case of extended nonce)
+ */
+#define ZB_APS_MAX_APS_SECURITY_SIZE ((ZB_APS_MIN_APS_SECURITY_SIZE) + (ZB_APS_SECURITY_EXT_SRC_SIZE))
+
+/* APS base header: 8b
+ *   1b - FCF
+ *   1b - dst ep
+ *   2b - cluster id
+ *   2b - profile id
+ *   1b - src ep
+ *   1b - counter
+ *
+ * ext FC: 2b
+ *   1b - fragmentation
+ *   1b - block number
+ *   1b - ACK bitfield - it doesn't matter for data packets
+ *
+ * security: 17b
+ *   1b - control field
+ *   4b - frame counter
+ *   4b - message integrity code
+ *   8b - ieee addr
+ *
+ * total: 8b + 2b + 17b = 27b
+ */
 /*! Maximum length of APS header */
-#define ZB_APS_HEADER_MAX_LEN (17U)
+#define ZB_APS_HEADER_MAX_LEN                   \
+   ((ZB_APS_BASE_HDR_SIZE)                      \
+    + (ZB_APS_EXT_HDR_SIZE_DATA_PKT)            \
+    + (ZB_APS_MAX_APS_SECURITY_SIZE))
 
 /*! Maximum length of an APS payload.*/
-#define ZB_APS_PAYLOAD_MAX_LEN (ZB_ASDU_MAX_LEN - ZB_APS_HEADER_MAX_LEN)
+#define ZB_APS_PAYLOAD_MAX_LEN ((ZB_ASDU_MAX_LEN) - (ZB_APS_HEADER_MAX_LEN))
 
 /* 01/24/2018 EE CR:MINOR Better move it out of zb_config.common.h */
 /* Value 3 in this define comes for fragmentation and ext header  */
@@ -495,9 +550,19 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
 */
 #define ZB_APS_MAX_FRAGMENT_NUM_IN_WINDOW 8U
 /** @endcond *//* internals_doc */
+
+/*!
+ * Maximum unicast APS payload size, if no APS encryption is provided
+ */
+#define ZB_APS_MAX_PAYLOAD_SIZE ZB_APS_GUARANTEED_PAYLOAD_SIZE_WO_SECURITY
+
 /** Maximum buffer size for APS fragmentation. Bigger buffer will not be created for APS fragmentation */
 #define APS_IN_FRAG_MAX_BUF_SIZE 1500U
 
+/** @cond internals_doc */
+/*! Maximum ZDO payload size */
+#define ZB_ZDO_MAX_PAYLOAD_SIZE (ZB_APS_MAX_PAYLOAD_SIZE-1U)
+/** @endcond *//* internals_doc */
 
 /****************************NWK layer options**************************/
 /** @cond internals_doc */
@@ -534,7 +599,7 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
    NWK Mesh route stuff: route discovery table size
 */
 #ifndef ZB_NWK_ROUTE_DISCOVERY_TABLE_SIZE
-#define ZB_NWK_ROUTE_DISCOVERY_TABLE_SIZE 5U
+#define ZB_NWK_ROUTE_DISCOVERY_TABLE_SIZE 6U
 #endif
 
 /* nwkcRouteDiscoveryTime == 0x2710 ms == 10 sec. Expiry function called once
@@ -1361,6 +1426,47 @@ request command frame.
 #define ZB_MAC_GB_EU_FSK_LBT_GRANULARITY_SYMBOLS 50U
 #define ZB_MAC_NA_FSK_LBT_GRANULARITY_SYMBOLS    200U
 
+/* aLBTAckWindowStart */
+/* 450 us */
+/*!
+*   The minimum pause before acknowledging a received packet.
+*   This is to allow a transmitting device to change from
+*   transmit to receive mode. Starting an ACK before this time
+*   may result in the transmitter missing the ACK.
+*/
+#define ZB_MAC_GB_EU_FSK_LBT_ACK_WINDOW_START_SYMBOLS 45U
+#define ZB_MAC_NA_FSK_LBT_ACK_WINDOW_START_SYMBOLS    225U
+
+/* aLBTAckWindow */
+/* 1ms */
+/*!
+*   The maximum wait time before acknowledging a received
+*   packet (includes @ref ZB_MAC_LBT_ACK_WINDOW_START_SYMBOLS).
+*   This time MUST be shorter than @ref ZB_MAC_LBT_MIN_FREE_SYMBOLS otherwise other
+*   devices could interpret the quiet as an opportunity to transmit.
+*/
+#define ZB_MAC_GB_EU_FSK_LBT_ACK_WINDOW_SYMBOLS 100U
+#define ZB_MAC_NA_FSK_LBT_ACK_WINDOW_SYMBOLS 500U
+
+/*aTxRxTurnAround */
+/*!
+*  Time for radio to switch between transmit and receive
+*/
+#define ZB_MAC_GB_EU_FSK_LBT_TX_RX_SWITCH_TIME_SYMBOLS 45U
+#define ZB_MAC_NA_FSK_LBT_TX_RX_SWITCH_TIME_SYMBOLS 225U
+
+/* aLBTTimeout */
+/* 6 ms */
+/*!
+*   Time before aborting LBT if it cannot find a free slot.
+*   This value should be set to at least
+*   [@ref ZB_MAC_LBT_MIN_FREE_SYMBOLS  + @ref ZB_MAC_LBT_MAX_TX_RETRIES * (@ref ZB_MAC_LBT_MIN_FREE_SYMBOLS + @ref ZB_MAC_LBT_MAX_RANDOM_SYMBOLS) + @ref ZB_MAC_LBT_TX_RX_SWITCH_TIME_SYMBOLS )]
+*   to ensure that all re-tries can occur.
+*/
+#define ZB_MAC_GB_EU_FSK_LBT_TIMEOUT_SYMBOLS 6000UL
+#define ZB_MAC_NA_FSK_LBT_TIMEOUT_SYMBOLS 30000U
+
+
 /* aLBTThresholdLevelLp */
 /*!
 *   The level (in dBm) at which the receiver determines whether there
@@ -1385,41 +1491,6 @@ request command frame.
  * See Zigbee Specification revision 22 Table D-23 LBT MAC Sublayer Constants - Implementation.
 */
 #define ZB_MAC_LBT_MAX_TX_RETRIES 3U
-
-/* aLBTAckWindowStart */
-/* 450 us */
-/*!
-*   The minimum pause before acknowledging a received packet.
-*   This is to allow a transmitting device to change from
-*   transmit to receive mode. Starting an ACK before this time
-*   may result in the transmitter missing the ACK.
-*/
-#define ZB_MAC_LBT_ACK_WINDOW_START_SYMBOLS 45U
-
-/* aLBTAckWindow */
-/* 1ms */
-/*!
-*   The maximum wait time before acknowledging a received
-*   packet (includes @ref ZB_MAC_LBT_ACK_WINDOW_START_SYMBOLS).
-*   This time MUST be shorter than @ref ZB_MAC_LBT_MIN_FREE_SYMBOLS otherwise other
-*   devices could interpret the quiet as an opportunity to transmit.
-*/
-#define ZB_MAC_LBT_ACK_WINDOW_SYMBOLS 100U
-
-/*aTxRxTurnAround */
-/*!
-*  Time for radio to switch between transmit and receive
-*/
-#define ZB_MAC_LBT_TX_RX_SWITCH_TIME_SYMBOLS 45U
-/* aLBTTimeout */
-/* 6 ms */
-/*!
-*   Time before aborting LBT if it cannot find a free slot.
-*   This value should be set to at least
-*   [@ref ZB_MAC_LBT_MIN_FREE_SYMBOLS  + @ref ZB_MAC_LBT_MAX_TX_RETRIES * (@ref ZB_MAC_LBT_MIN_FREE_SYMBOLS + @ref ZB_MAC_LBT_MAX_RANDOM_SYMBOLS) + @ref ZB_MAC_LBT_TX_RX_SWITCH_TIME_SYMBOLS )]
-*   to ensure that all re-tries can occur.
-*/
-#define ZB_MAC_LBT_TIMEOUT_SYMBOLS 6000UL
 
 /* Tuned to fit to 2 beacon intervals */
 /*! LBT transmition wait period in ms */
@@ -1475,7 +1546,7 @@ request command frame.
 *
 *   See reference document 05-3474-22 section D.9.2.4.2. Zigbee Specification R22
  */
-#define ZB_MAC_POWER_CONTROL_OPT_SIGNAL_LEVEL (ZB_EU_FSK_REFERENCE_SENSITIVITY + 20U)
+#define ZB_MAC_POWER_CONTROL_OPT_SIGNAL_LEVEL (ZB_EU_FSK_REFERENCE_SENSITIVITY + 20)
 
 
 #ifndef ZB_MAC_DEFAULT_TX_POWER_GB_EU_SUB_GHZ
@@ -1613,8 +1684,8 @@ request command frame.
 /* 5.3.8 APS Fragmentation Parameters
    For  the Smart Energy Profile the default value shall be set to 128 bytes. */
 #define ZB_APS_MSG_MAX_SIZE 1536U
-#define ZB_ASDU_MAX_LEN_MULTIPLIER ((ZB_APS_MSG_MAX_SIZE + sizeof(zb_apsde_data_indication_t) +  ZB_APS_HEADER_MAX_LEN + 3U)/ZB_IO_BUF_SIZE + 1U)
-#define ZB_ASDU_MAX_FRAG_LEN (ZB_ASDU_MAX_LEN_MULTIPLIER*ZB_IO_BUF_SIZE - sizeof(zb_apsde_data_indication_t) - ZB_APS_HEADER_MAX_LEN - 3U)
+#define ZB_ASDU_MAX_LEN_MULTIPLIER ((ZB_APS_MSG_MAX_SIZE + sizeof(zb_apsde_data_indication_t) + ZB_APS_HEADER_MAX_LEN)/ZB_IO_BUF_SIZE + 1U)
+#define ZB_ASDU_MAX_FRAG_LEN (ZB_ASDU_MAX_LEN_MULTIPLIER*ZB_IO_BUF_SIZE - sizeof(zb_apsde_data_indication_t) - ZB_APS_HEADER_MAX_LEN)
 #define ZB_APS_MAX_WINDOW_SIZE 1U
 #define ZB_APS_INTERFRAME_DELAY 50U /* milliseconds */
 

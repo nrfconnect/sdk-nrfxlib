@@ -148,8 +148,14 @@ typedef struct zb_mchan_intrp_data_confirm_s
  */
 typedef zb_uint8_t (*zb_af_inter_pan_handler_t)(zb_uint8_t param, zb_uint8_t current_page, zb_uint8_t current_channel);
 
+/** @brief Enable interpan procedure. This allows to send interpan frames at multiple channels
+  *        and register handler to receive interpan frames.
+  */
+void zboss_enable_interpan_with_chan_change(void);
+
 /** @brief Make INTRP-DATA request at multiple channels with time given as @param chan_wait_ms
-  *        to wait for response packets.
+  *        to wait for response packets. Can be used after zboss_enable_interpan_with_chan_change()
+  *        was called.
   *
   * Assumes buffer contains data in its main part, and INTRP-DATA.request parameters in buffer's
   * parameter (represented as @ref zb_intrp_data_req_s structure).
@@ -160,7 +166,7 @@ typedef zb_uint8_t (*zb_af_inter_pan_handler_t)(zb_uint8_t param, zb_uint8_t cur
   * @param cb - user callback function called after the procedure is finished.
   * @return Returns RET_OK if procedure has started successfully,
   *         RET_BUSY if procedure is on-going,
-  *         RET_ERROR if failed to start,
+  *         RET_ERROR if failed to start or procedure was not enabled,
   *         RET_INVALID_PARAMETER if one of function's arguments is invalid.
   * @note  cb buffer's parameter contains status which can be obtained using @ref zb_buf_get_status
   * function, RET_OK if packet was successfully sent at at least one channel, RET_ERROR otherwise.
@@ -170,6 +176,7 @@ typedef zb_uint8_t (*zb_af_inter_pan_handler_t)(zb_uint8_t param, zb_uint8_t cur
 zb_ret_t zb_intrp_data_request_with_chan_change(zb_bufid_t buffer, zb_channel_page_t channel_page_mask, zb_uint32_t chan_wait_ms, zb_callback_t cb);
 
 /** @brief Register inter-pan indication callback, called when inter-pan packet is received.
+  *        Can be used after zboss_enable_interpan_with_chan_change() was called.
   *
   * @param cb - callback function to be called when inter-pan packet is received.
   * @note If packet is processed in the callback function and no longer shall be processed

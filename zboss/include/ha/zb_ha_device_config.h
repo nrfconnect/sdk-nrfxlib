@@ -135,9 +135,10 @@ enum zb_ha_standard_devs_e
 };
 
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 /* Define supported devices here */
 #ifdef ZB_ALL_DEVICE_SUPPORT
+
 #define ZB_HA_DEFINE_DEVICE_ON_OFF_SWITCH
 #define ZB_HA_DEFINE_DEVICE_ON_OFF_OUTPUT
 #define ZB_HA_DEFINE_DEVICE_DOOR_LOCK
@@ -180,6 +181,9 @@ enum zb_ha_standard_devs_e
 /* Define device support for Low Cost Gateway */
 #define ZB_HA_DEFINE_DEVICE_GATEWAY
 #define ZB_HA_DEFINE_DEVICE_CUSTOM_DIMMABLE_LIGHT
+/* Linky */
+#define ZB_HA_DEFINE_DEVICE_ERL_INTERFACE_DEVICE
+#define ZB_HA_DEFINE_DEVICE_ERL_GW
 
 
 
@@ -209,9 +213,6 @@ enum zb_ha_standard_devs_e
 
 /* Define clusters which are not used by any device but expected to be
  * supported in ZBOSS stack when ZB_ALL_DEVICE_SUPPORT is defined.
- * @cond ZBOSS_SAMPLES_API_DOC_LINE
- * For example, some samples from application/HA_samples may use them.
- * @endcond
  *
  * The main intention of ZB_ALL_DEVICE_SUPPORT define is to compile in ZBOSS
  * stack as much HA-related functionality as possible so declaring support for
@@ -490,6 +491,7 @@ enum zb_ha_standard_devs_e
 #define ZB_ZCL_SUPPORT_CLUSTER_POWER_CONFIG              1
 #define ZB_ZCL_SUPPORT_CLUSTER_REL_HUMIDITY_MEASUREMENT  1
 #define ZB_ZCL_SUPPORT_CLUSTER_TEMP_MEASUREMENT          1
+#define ZB_ZCL_SUPPORT_CLUSTER_PRESSURE_MEASUREMENT      1
 #define ZB_ZCL_SUPPORT_CLUSTER_ON_OFF                    1
 #define ZB_ZCL_SUPPORT_CLUSTER_SCENES                    1
 #define ZB_ZCL_SUPPORT_CLUSTER_GROUPS                    1
@@ -532,6 +534,18 @@ enum zb_ha_standard_devs_e
 #define ZB_ZCL_SUPPORT_CLUSTER_LEVEL_CONTROL 1
 #define ZB_ZCL_SUPPORT_CLUSTER_COLOR_CONTROL 1
 #endif /* ZB_HA_DEFINE_DEVICE_CUSTOM_DIMMABLE_LIGHT */
+
+#if defined  ZB_HA_DEFINE_DEVICE_ERL_INTERFACE_DEVICE || defined ZB_HA_DEFINE_DEVICE_ERL_GW
+#define ZB_ZCL_SUPPORT_CLUSTER_BASIC                  1
+#define ZB_ZCL_SUPPORT_CLUSTER_IDENTIFY               1
+#define ZB_ZCL_SUPPORT_CLUSTER_TIME                   1
+#define ZB_ZCL_SUPPORT_CLUSTER_METER_IDENTIFICATION   1
+#define ZB_ZCL_SUPPORT_CLUSTER_ELECTRICAL_MEASUREMENT 1
+#define ZB_ZCL_SUPPORT_CLUSTER_DIAGNOSTICS            1
+#define ZB_ZCL_SUPPORT_CLUSTER_METERING               1
+#define ZB_ZCL_SUPPORT_CLUSTER_MESSAGING              1
+#define ZB_ZCL_SUPPORT_CLUSTER_DAILY_SCHEDULE         1
+#endif /* defined  ZB_HA_DEFINE_DEVICE_ERL_INTERFACE_DEVICE || defined ZB_HA_DEFINE_DEVICE_ERL_GW */
 
 /* BDB uses identify */
 #if defined ZB_BDB_MODE && !defined ZB_ZCL_SUPPORT_CLUSTER_IDENTIFY

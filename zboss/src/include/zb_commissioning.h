@@ -54,6 +54,7 @@ typedef zb_bool_t (*zb_commissioning_must_use_installcode_func_t)(zb_bool_t is_c
 typedef void (*zb_commissioning_formation_channels_mask_t)(zb_channel_list_t list);
 typedef zb_uint8_t (*zb_commissioning_get_scan_duration_func_t)(void);
 typedef void (*zb_commissioning_get_scan_channel_mask_func_t)(zb_channel_list_t channel_mask);
+typedef zb_bool_t (*zb_commissioning_is_in_tc_rejoin_func_t)(void);
 
 #define ZB_COMM_SIGNAL_START 1u
 #define ZB_COMM_SIGNAL_NWK_DISC_FAILED 2u
@@ -101,6 +102,7 @@ typedef struct zb_commissioning_func_selector_s
   zb_commissioning_get_scan_channel_mask_func_t get_scan_channel_mask;
 #endif /* ZB_JOIN_CLIENT */
 
+  zb_commissioning_is_in_tc_rejoin_func_t is_in_tc_rejoin;
 } zb_commissioning_func_selector_t;
 
 typedef struct zb_commissioning_ctx_s

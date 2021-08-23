@@ -303,7 +303,9 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *    @endcode
  *    @par
  *
+ *    @cond ZBOSS_SAMPLES_API_DOC_LINE
  *    For more information see any HA sample
+ *    @endcond
  */
 
 /**
@@ -590,7 +592,9 @@ typedef ZB_PACKED_PRE struct zb_zcl_default_resp_payload_s
  *    Read attributes request parsing and response filling and sending is implemented in ZCL
  *    library internal functions.
  *
+ *    @cond ZBOSS_SAMPLES_API_DOC_LINE
  *    For more information see any HA sample
+ *    @endcond
  */
 
 /*! @brief ZCL Read Attribute Command frame
@@ -846,7 +850,9 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
  *
  *    Response sending and parsing could be done in the same manner.
  *
+ *    @cond ZBOSS_SAMPLES_API_DOC_LINE
  *    For more information see any HA sample
+ *    @endcond
  */
 
 /*! @brief ZCL Write Attribute Command frame
@@ -1154,7 +1160,9 @@ zb_zcl_write_attr_res_t;
  *    Discover attributes request parsing and response filling and sending is implemented in ZCL
  *    library internal functions.
  *
+ *    @cond ZBOSS_SAMPLES_API_DOC_LINE
  *    For more information see any HA sample
+ *    @endcond
  */
 
 /*! @brief ZCL Discover Attribute Command frame
@@ -1364,7 +1372,9 @@ typedef zb_uint8_t zb_zcl_disc_complete_t;
  *    If there are several Configure Reporting response records, they could be processed cyclically
  *    in the same manner as Configure Reporting request ones.
  *
+ *    @cond ZBOSS_SAMPLES_API_DOC_LINE
  *    For more information see HA samples
+ *    @endcond
   */
 
     /** u.clnt: as usual, cluster with client role sends this request
@@ -1636,7 +1646,9 @@ zb_zcl_configure_reporting_res_t;
  *    ZCL spec, subclause 2.4.11. This command can be parsed by cyclical application of @ref
  *    ZB_ZCL_GENERAL_GET_NEXT_REPORT_ATTR_REQ() macro.
  *
+ *    @cond ZBOSS_SAMPLES_API_DOC_LINE
  *    For more information see any HA sample
+ *    @endcond
  */
 
 /** @cond internals_doc */
@@ -2011,7 +2023,9 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_reporting_cfg_rsp_s
  *    Discovery commands request has fixed length payload.
  *    Discovery commands response has variable-length payload.
  *
+ *    @cond ZBOSS_SAMPLES_API_DOC_LINE
  *    For more information see any HA sample
+ *    @endcond
  */
 
 /********* request commands ************/
@@ -2028,20 +2042,20 @@ typedef ZB_PACKED_PRE struct zb_zcl_disc_cmd_req_s
 zb_zcl_disc_cmd_req_t;
 
 /** @brief Discover commands Generated command
-    @param buffer to put packet to
-    @param direction - direction client-to-server or server-to-client
-    @param def_resp - enable/disable default response
-    @param addr - address to send packet to
-    @param dst_addr_mode - addressing mode
-    @param dst_ep - destination endpoint
-    @param ep - sending endpoint
-    @param profile_id - profile identifier
-    @param cluster_id - cluster identifier
-    @param cb - callback for getting command send status
+    @param _buffer to put packet to
+    @param _direction - direction client-to-server or server-to-client
+    @param _def_resp - enable/disable default response
+    @param _addr - address to send packet to
+    @param _dst_addr_mode - addressing mode
+    @param _dst_ep - destination endpoint
+    @param _ep - sending endpoint
+    @param _profile_id - profile identifier
+    @param _cluster_id - cluster identifier
+    @param _cb - callback for getting command send status
     @param _is_manuf - is discovery manufacturer attributes
     @param _manuf_id - manufacturer ID
-    @param start_attr_id - start command ID
-    @param max_len - max count
+    @param _start_cmd_id - start command ID
+    @param _max_len - max count
 */
 #define ZB_ZCL_GENERAL_DISC_COMMAND_GENERATED_REQ(_buffer, _direction, _def_resp,       \
           _addr, _dst_addr_mode, _dst_ep, _ep, _profile_id, _cluster_id, _cb,           \
@@ -2061,20 +2075,20 @@ zb_zcl_disc_cmd_req_t;
 }
 
 /** @brief Discover commands Received command
-    @param buffer to put packet to
-    @param direction - direction client-to-server or server-to-client
-    @param def_resp - enable/disable default response
-    @param addr - address to send packet to
-    @param dst_addr_mode - addressing mode
-    @param dst_ep - destination endpoint
-    @param ep - sending endpoint
-    @param profile_id - profile identifier
-    @param cluster_id - cluster identifier
-    @param cb - callback for getting command send status
+    @param _buffer to put packet to
+    @param _direction - direction client-to-server or server-to-client
+    @param _def_resp - enable/disable default response
+    @param _addr - address to send packet to
+    @param _dst_addr_mode - addressing mode
+    @param _dst_ep - destination endpoint
+    @param _ep - sending endpoint
+    @param _profile_id - profile identifier
+    @param _cluster_id - cluster identifier
+    @param _cb - callback for getting command send status
     @param _is_manuf - is discovery manufacturer attributes
     @param _manuf_id - manufacturer ID
-    @param start_attr_id - start command ID
-    @param max_len - max count
+    @param _start_cmd_id - start command ID
+    @param _max_len - max count
 */
 #define ZB_ZCL_GENERAL_DISC_COMMAND_RECEIVED_REQ(_buffer, _direction, _def_resp,        \
           _addr, _dst_addr_mode, _dst_ep, _ep, _profile_id, _cluster_id, _cb,           \
@@ -2095,9 +2109,9 @@ zb_zcl_disc_cmd_req_t;
 
 /** @brief Get parameter of Discovery command request.
 
-   @param data_buf -  ID zb_bufid_t of a buffer containing part of Discover command request data
-   @param data_ptr - out pointer to zb_zcl_disc_cmd_req_t, containing Discover command data
-   @status - result parse, see @ref zb_zcl_parse_status_t
+   @param _buffer - buffer containing part of Discover command request data
+   @param _data_ptr - out pointer to zb_zcl_disc_cmd_req_t, containing Discover command data
+   @param _status - result parse, see @ref zb_zcl_parse_status_t
  */
 #define ZB_ZCL_GENERAL_GET_DISC_COMMAND(_data_ptr, _buffer, _status) \
 {                                                               \

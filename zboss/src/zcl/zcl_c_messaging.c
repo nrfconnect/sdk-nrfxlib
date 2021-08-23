@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -156,7 +156,7 @@ static void zb_zcl_messaging_client_handle_cancel_message(zb_uint8_t param,
 }
 
 
-void zb_zcl_messaging_client_handle_display_message(zb_uint8_t param,
+static void zb_zcl_messaging_client_handle_display_message(zb_uint8_t param,
   const zb_zcl_parsed_hdr_t *cmd_info)
 {
   zb_zcl_messaging_display_message_payload_t pl = ZB_ZCL_MESSAGING_DISPLAY_MSG_PAYLOAD_INIT;

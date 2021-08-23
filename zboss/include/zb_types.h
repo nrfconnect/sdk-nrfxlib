@@ -136,7 +136,11 @@ enum zb_param_e
 #define ZB_WINDOWS
 #endif
 
-#if (! defined UNIX) || (defined ZB_WINDOWS)
+#if !defined ZB_USE_STDINT && defined UNIX && !defined ZB_WINDOWS
+#define ZB_USE_STDINT
+#endif
+
+#ifndef ZB_USE_STDINT
 
 /* base types */
 
@@ -1110,7 +1114,7 @@ void zb_reverse_bytes(zb_uint8_t *ptr, zb_uint8_t *val, zb_uint8_t size);
 
 #endif /* ZB_BIG_ENDIAN */
 
-#ifdef ZB_UINT24_48_SUPPORT
+#if defined ZB_UINT24_48_SUPPORT || defined DOXYGEN
 /**
  * @name 24-bit and 48-bit arithmetic API
  * @{
@@ -1562,7 +1566,8 @@ typedef zb_uint32_t           zb_uint24_t;
   ((MSB_N << 4) | ZB_UINT8_LSB_NIBBLE(LSB_N))
 
 
-/** @} */
 #endif /* ZB_UINT24_48_SUPPORT */
+
+/** @} */
 
 #endif /* ZB_TYPES_H */

@@ -256,6 +256,7 @@ constants etc.
 
 /* Current Sub-GHz properties */
 #define ZB_MAC_DUTY_CYCLE_MONITORING
+#define ZB_MAC_POWER_CONTROL
 #define ZB_SUB_GHZ_LBT
 #define ZB_ENHANCED_BEACON_SUPPORT
 #define ZB_JOINING_LIST_SUPPORT
@@ -997,6 +998,20 @@ exponent.
  */
 #define ZB_NWK_NEIGHBOUR_PATH_COST_LQI_BASED
 #endif /* ZB_NWK_NEIGHBOUR_PATH_COST_RSSI_BASED */
+
+/*! Reserved space for routing on a parent when a device in ZED role.
+ *
+ * ZED doesn't have information about routing, so we need to reserve
+ * some space in a packet during APSDE data request processing.
+ * In this case our parent will be able to use at least 7 hops.
+ *
+ * If destination is not ZC, it is possible that packet
+ * can be routed via ZC, and ZC will use source routing.
+ *
+ * Use that 24 bytes for either long addresses in nwk hdr with 3 hops
+ * or 11 hops of source routing.
+*/
+#define ZB_NWK_RESERVED_SPACE_FOR_PARENT_ROUTING 24U
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /***********************************************************************/
@@ -1130,6 +1145,21 @@ exponent.
 /** @endcond */ /* DOXYGEN_JOINING_LIST_SECTION */
 #endif /* ZB_JOINING_LIST_SUPPORT */
 
+/** @cond DOXYGEN_INTERNAL_DOC */
+/** The necessity of radio interrupt disabling/enabling when MAC gets RX/TX interrupt statuses is platform-dependent.
+ * This protection is not needed only if the platform guarantees that getting a 4-byte aligned variable is an atomic operation.
+ * If platform allows do it without this protection, ZB_GET_RADIO_FLAG_UNPROTECTED macro should be defined for this feature in platform.
+ * Otherwise, radio interrupts disabling/enabling for the case will be switched on.
+ */
+#ifndef ZB_GET_RADIO_FLAG_UNPROTECTED
+#define ZB_GET_RADIO_FLAG_INT_DISABLE() ZB_RADIO_INT_DISABLE()
+#define ZB_GET_RADIO_FLAG_INT_ENABLE() ZB_RADIO_INT_ENABLE()
+#else
+#define ZB_GET_RADIO_FLAG_INT_DISABLE()
+#define ZB_GET_RADIO_FLAG_INT_ENABLE()
+#endif
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+
 /***************************HA and ZLL FEATURES**********************/
 /** @cond DOXYGEN_INTERNAL_DOC */
 #if defined ZB_ENABLE_HA || defined ZB_ENABLE_ZLL
@@ -1196,6 +1226,9 @@ exponent.
 #endif
 #ifndef ZB_USERDATA_FILE_PATH_PREFIX
 #define ZB_USERDATA_FILE_PATH_PREFIX ""
+#endif
+#ifndef ZB_LOG_FILE_PATH_PREFIX
+#define ZB_LOG_FILE_PATH_PREFIX ZB_TMP_FILE_PATH_PREFIX
 #endif
 /* #  define ZB_BINARY_TRACE */
 /* #  define ZB_NET_TRACE */
@@ -1867,7 +1900,10 @@ compatibility with some mammoth shit */
 #endif
 
 #ifndef ZB_DEPRECATED_API
+/* Note: we don't use deprecated API in SNCP */
+#ifndef SNCP_MODE
 #define ZB_DEPRECATED_API
+#endif
 #endif
 
 #endif /* ZB_CONFIG_H */

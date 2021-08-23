@@ -794,7 +794,7 @@ void zb_zcl_thermostat_remove_record_by_day(zb_uint8_t day)
 
 zb_ret_t zb_zcl_thermostat_setpoint_raise_lower_handler(zb_uint8_t param)
 {
-  zb_zcl_thermostat_setpoint_raise_lower_req_t setpoint_raise_lower_req;
+  zb_zcl_thermostat_setpoint_raise_lower_req_t setpoint_raise_lower_req = {0, 0};
   zb_zcl_parse_status_t status;
   zb_ret_t ret = RET_OK;
   zb_uint8_t endpoint;

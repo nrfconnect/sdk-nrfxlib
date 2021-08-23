@@ -326,7 +326,9 @@ zb_nlme_get_request_t;
   *
   * @snippet start_ze.c zb_nlme_get_request
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See aib_nib_pib_test sample
+  * @endcond
   */
 void zb_nlme_get_request(zb_uint8_t param);
 
@@ -357,7 +359,9 @@ zb_nlme_set_request_t;
   *
   * @snippet start_ze.c zb_nlme_set_request
   *
+  * @cond ZBOSS_SAMPLES_API_DOC_LINE
   * See aib_nib_pib_test sample
+  * @endcond
   */
 void zb_nlme_set_request(zb_uint8_t param);
 
@@ -1919,6 +1923,8 @@ zb_uint8_t zb_get_nwk_header_size(const zb_nwk_hdr_t *hdr);
  */
 void zb_nwk_nib_init(zb_bool_t is_first);
 
+void zb_nwk_handle_init(void);
+
 #if defined ZB_PRO_STACK && !defined ZB_NO_NWK_MULTICAST
 zb_nwk_multicast_control_field_t *zb_get_mc_field_from_header(zb_nwk_hdr_t *hdr);
 #define GET_NWK_MCF( nwk_hdr ) (*( zb_get_mc_field_from_header(nwk_hdr)))
@@ -2154,6 +2160,9 @@ void nwk_internal_unlock_in(void);
 
 void zb_mcps_build_data_request(zb_bufid_t buf, zb_uint16_t src_addr_param, zb_uint16_t dst_addr_param, zb_uint8_t tx_options_param, zb_uint8_t msdu_hande_param);
 
+#ifdef SNCP_MODE
+zb_ret_t zb_nwk_force_route_sending(zb_bool_t enable);
+#endif
 
 void nwk_mark_nwk_encr1(zb_bufid_t buf, zb_uint16_t file_id, zb_uint16_t line);
 #define nwk_mark_nwk_encr(buf) nwk_mark_nwk_encr1((buf), ZB_TRACE_FILE_ID, __LINE__)
@@ -2200,14 +2209,5 @@ void zb_enable_control4_emulator();
 #endif /* ZB_CONTROL4_NETWORK_SUPPORT */
 
 zb_ext_neighbor_tbl_ent_t *nwk_choose_parent(zb_address_pan_id_ref_t panid_ref, zb_mac_capability_info_t capability_information);
-
-#if defined ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL
-/** @brief Function for scheduling calls to zb_nwk_forward
-  *        to send all packets that have been moved to a queue
-  *        because of ongoing INTER-PAN communication.
-  * @param param ignored
-  */
-void zb_nwk_schedule_data_requests_from_queue(zb_uint8_t param);
-#endif /* defined ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL  */
 
 #endif /* ZB_NWK_H */

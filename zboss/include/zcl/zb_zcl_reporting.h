@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -69,7 +69,9 @@
  *    @snippet light_sample/dimmable_light/bulb.c zb_zcl_set_report_attr_cb_example
  *    @par
  *
+ *    @cond ZBOSS_SAMPLES_API_DOC_LINE
  *    For more information see light_sample/dimmable_light sample
+ *    @endcond
  */
 
 /* Boundary and default values are defined by application profile */

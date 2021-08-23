@@ -250,6 +250,8 @@ Finding & binding: 0 = Do not attempt finding & binding 1 = Attempt finding & bi
   zb_uint8_t    tl_channel_i;
 #endif  /* ZB_BDB_TOUCHLINK */
   zb_bitfield_t bdb_force_router_rejoin:1;      /* Force rejoin for the router */
+  zb_bitfield_t bdb_tc_rejoin_after_reboot:1;   /* Is TC rejoin started when reboot signal is scheduled */
+  zb_bitfield_t bdb_tc_rejoin_active:1;         /* Is TC rejoin active */
   } ZB_PACKED_STRUCT zb_bdb_comm_ctx_t;
 /** @endcond */ /* internals_doc */
 

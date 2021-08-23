@@ -43,6 +43,8 @@
 #ifndef ZB_LOGGER_H
 #define ZB_LOGGER_H 1
 
+#include <stdarg.h>
+
 /** @cond DOXYGEN_DEBUG_SECTION */
 /**
  * @addtogroup ZB_TRACE Debug trace
@@ -53,14 +55,14 @@
  * @addtogroup ZB_TRACE_CONFIG Trace configuration
  * @{
  */
-/** @endcond */ /* DSR_TARCE */
+/** @endcond */ /* DSR_TRACE */
 
 #if defined(ZB_TRACE_LEVEL)
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 extern zb_uint8_t g_trace_level, g_o_trace_level;
 extern zb_uint32_t g_trace_mask;
 extern zb_uint_t g_trace_inside_intr;
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 /**
    Set trace level at runtime
 
@@ -111,6 +113,7 @@ extern zb_uint_t g_trace_inside_intr;
 #define ZB_SET_TRACE_MASK(m)
 
 #endif /* defined(ZB_TRACE_LEVEL) */
+
 /** @cond DSR_TRACE */
 /** @} */ /* ZB_TRACE_CONFIG */
 /** @endcond */ /* DSR_TRACE */
@@ -134,18 +137,18 @@ extern zb_uint_t g_trace_inside_intr;
 /** @cond DOXYGEN_TOUCHLINK_FEATURE */
 #define TRACE_SUBSYSTEM_ZLL       0x0200U  /**< ZLL/Touchlink subsystem. */
 /** @endcond */ /* DOXYGEN_TOUCHLINK_FEATURE */
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define TRACE_SUBSYSTEM_SSL       0x0400U  /**< SSL subsystem */
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 /** @endcond */ /* DSR_TRACE */
 #define TRACE_SUBSYSTEM_APP       0x0800U  /**< User Application */
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define TRACE_SUBSYSTEM_LWIP      0x1000U  /* LWIP is used, else free */
 #define TRACE_SUBSYSTEM_ALIEN     0x2000U  /* Some special debug */
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 #define TRACE_SUBSYSTEM_ZGP       0x4000U  /**< ZGP subsystem */
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define TRACE_SUBSYSTEM_MAC_API   0x8000U    /**< MAC API subsystem */
 #define TRACE_SUBSYSTEM_MACLL     0x10000U   /**< MAC LL subsystem */
 #define TRACE_SUBSYSTEM_SPECIAL1  0x20000U   /**< Special subsystem */
@@ -158,7 +161,7 @@ extern zb_uint_t g_trace_inside_intr;
 #define TRACE_SUBSYSTEM_JSON      0x1000000U /**< JSON subsystem */
 #define TRACE_SUBSYSTEM_HTTP      0x2000000U /**< HTTP subsystem */
 #define TRACE_SUBSYSTEM_CLOUD     0x4000000U /**< Interface to the Cloud */
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #define TRACE_SUBSYSTEM_INFO      ((zb_uint_t)-1)  /**< Common subsystem */
 
@@ -180,9 +183,9 @@ extern zb_uint_t g_trace_inside_intr;
  * @{
  */
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define TRACE_ENABLED_(mask,lev) ((lev) <= ZB_TRACE_LEVEL && ((mask) & ZB_TRACE_MASK))
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC*/
 
 /**
  *  @brief Check that trace is enabled for provided level.
@@ -198,9 +201,9 @@ extern zb_uint_t g_trace_inside_intr;
  */
 #define TRACE_ENABLED(m) TRACE_ENABLED_(m)
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 zb_uint32_t zb_trace_get_counter(void);
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #ifdef DOXYGEN
 /**
@@ -215,7 +218,7 @@ zb_uint32_t zb_trace_get_counter(void);
 #endif
 /** @} */ /* ZB_TRACE_CONFIG */
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 #ifdef ZB_INTERRUPT_SAFE_CALLBACKS
 /* If HW can detect that we are inside ISR, let's use it and do not trace from ISR. */
 zb_bool_t zb_osif_is_inside_isr(void);
@@ -233,10 +236,10 @@ zb_bool_t zb_osif_is_inside_isr(void);
 #else
 #define ZB_TRACE_INSIDE_INTR_BLOCK() 0
 #endif
-/** @endcond */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #if defined ZB_TRACE_TO_FILE || defined ZB_TRACE_TO_SYSLOG || defined DOXYGEN
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 /**
    \par Trace to file means trace to disk file using printf() or its analog.
    Tricks to decrease code size by excluding format strings are not used.
@@ -252,7 +255,7 @@ void zb_file_trace_commit(void);
  @param name - trace file name component
 */
 #define TRACE_INIT(name)   zb_trace_init_file(name)
-/** @endcond */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /**
  Deinitialize trace subsystem
@@ -261,6 +264,20 @@ void zb_file_trace_commit(void);
 
 /** @cond DOXYGEN_INTERNAL_DOC */
 #define _T0(...) __VA_ARGS__
+
+#if defined ZB_BINARY_AND_TEXT_TRACE_MODE || defined ZB_TRACE_TO_SYSLOG || !defined ZB_BINARY_TRACE
+/**
+ *  @brief Print trace message. Option with va_list
+ */
+void zb_trace_msg_txt_file_vl(
+    zb_uint_t mask,
+    zb_uint_t level,
+    const zb_char_t *format,
+    const zb_char_t *file_name,
+    zb_int_t line_number,
+    zb_int_t args_size,
+    va_list arglist);
+#endif
 
 #if defined ZB_BINARY_TRACE && !defined ZB_TRACE_TO_SYSLOG
 
@@ -276,6 +293,17 @@ void zb_trace_msg_bin_file(
     zb_uint16_t file_id,
     zb_int_t line_number,
     zb_int_t args_size, ...);
+
+/**
+ *  @brief Print binary trace message. Option with va_list
+ */
+void zb_trace_msg_bin_file_vl(
+    zb_uint_t mask,
+    zb_uint_t level,
+    zb_uint16_t file_id,
+    zb_int_t line_number,
+    zb_int_t args_size,
+    va_list arglist);
 
 #if defined ZB_BINARY_AND_TEXT_TRACE_MODE
 #define ZB_TRACE_MODE_BINARY 0U
@@ -396,6 +424,15 @@ void zb_trace_msg_port(
   zb_uint16_t line_number,
   zb_uint_t args_size, ...);
 
+/* Option with va_list */
+void zb_trace_msg_port_vl(
+  zb_uint_t mask,
+  zb_uint_t level,
+  zb_uint16_t file_id,
+  zb_uint16_t line_number,
+  zb_uint_t args_size,
+  va_list arglist);
+
 #endif
 
 #ifdef ZB_BINARY_TRACE
@@ -438,7 +475,7 @@ void zb_trace_msg_port(
 #define TRACE_LEAVE_INT()
 
 #endif  /* trace on/off */
-/** @endcond */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /** @cond DSR_TRACE */
 /**
@@ -983,7 +1020,6 @@ typedef struct zb_byte128_struct_s
 #define TRACE_COMMON3 TRACE_SUBSYSTEM_COMMON, 3U
 #define TRACE_COMMON4 TRACE_SUBSYSTEM_COMMON, 4U
 
-/** @cond internals_doc */
 /* osif subsystem is nearly not used. Place it to the same with common and free
  * 1 bit for buffers. */
 #define TRACE_OSIF1 TRACE_SUBSYSTEM_COMMON, 1U
@@ -1046,6 +1082,7 @@ typedef struct zb_byte128_struct_s
 #define TRACE_ZSE3 TRACE_SUBSYSTEM_ZSE, 3U
 #define TRACE_ZSE4 TRACE_SUBSYSTEM_ZSE, 4U
 
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define TRACE_SPI1 TRACE_SUBSYSTEM_SPI, 1U
 #define TRACE_SPI2 TRACE_SUBSYSTEM_SPI, 2U
 #define TRACE_SPI3 TRACE_SUBSYSTEM_SPI, 3U
@@ -1055,12 +1092,14 @@ typedef struct zb_byte128_struct_s
 #define TRACE_SSL2 TRACE_SUBSYSTEM_SSL, 2U
 #define TRACE_SSL3 TRACE_SUBSYSTEM_SSL, 3U
 #define TRACE_SSL4 TRACE_SUBSYSTEM_SSL, 4U
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #define TRACE_APP1 TRACE_SUBSYSTEM_APP, 1U
 #define TRACE_APP2 TRACE_SUBSYSTEM_APP, 2U
 #define TRACE_APP3 TRACE_SUBSYSTEM_APP, 3U
 #define TRACE_APP4 TRACE_SUBSYSTEM_APP, 4U
 
+/** @cond DOXYGEN_INTERNAL_DOC */
 #define TRACE_SPECIAL1 TRACE_SUBSYSTEM_SPECIAL1, 1U
 #define TRACE_SPECIAL2 TRACE_SUBSYSTEM_SPECIAL1, 2U
 #define TRACE_SPECIAL3 TRACE_SUBSYSTEM_SPECIAL1, 3U
@@ -1125,7 +1164,7 @@ typedef struct zb_byte128_struct_s
 #define TRACE_MAC_API2 TRACE_SUBSYSTEM_MAC_API, 2U
 #define TRACE_MAC_API3 TRACE_SUBSYSTEM_MAC_API, 3U
 #define TRACE_MAC_API4 TRACE_SUBSYSTEM_MAC_API, 4U
-/** @endcond */ /* internals_doc */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #ifndef ZB_SET_TRACE_LEVEL
 
@@ -1141,14 +1180,14 @@ typedef struct zb_byte128_struct_s
 /** @} */ /* Debug trace */
 /** @endcond */ /* DSR_TRACE */
 
+#if defined ZB_TRAFFIC_DUMP_ON || defined DOXYGEN
 /**
    @addtogroup DUMP_ON_OFF
    @{
 */
-#if defined ZB_TRAFFIC_DUMP_ON || defined DOXYGEN
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 extern zb_uint8_t g_traf_dump;
-/** @endcond */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 static ZB_INLINE zb_uint8_t zb_get_traf_dump_state(void)
 {
@@ -1166,13 +1205,14 @@ static ZB_INLINE zb_uint8_t zb_get_traf_dump_state(void)
  */
 #define ZB_SET_TRAF_DUMP_ON() g_traf_dump = 1U
 #define ZB_GET_TRAF_DUMP_STATE()  zb_get_traf_dump_state()
+/** @} */ /* DUMP_ON_OFF */
 #else
 #define ZB_SET_TRAF_DUMP_OFF()
 #define ZB_SET_TRAF_DUMP_ON()
 #define ZB_GET_TRAF_DUMP_STATE()  0U
 #endif
-/** @} */ /* DUMP_ON_OFF */
 
+/** @endcond */
 /** @endcond */ /* DOXYGEN_DEBUG_SECTION */
 
 #endif /* ZB_LOGGER_H */

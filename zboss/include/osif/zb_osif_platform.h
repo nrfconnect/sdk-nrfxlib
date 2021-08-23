@@ -20,7 +20,6 @@
 #define ZB_TRACE_OVER_USART
 #define ZB_TRACE_TO_PORT
 #define ZB_BINARY_TRACE
-#define ZB_TRACE_FROM_INTR
 #define ZB_TRAFFIC_DUMP_ON
 #define ZB_TRAF_DUMP_V2
 #endif  /* ZB_TRACE_LEVEL */

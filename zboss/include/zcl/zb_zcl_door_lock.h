@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -70,7 +70,9 @@
  *    Send Door Unlock command:
  *    @snippet HA_samples/door_lock/sample_zed.c send_door_lock_unlock_req
  *
+ *    @cond ZBOSS_SAMPLES_API_DOC_LINE
  *    For more information see HA_samples/door_lock and HA_samples/door_lock_controller samples
+ *    @endcond
  */
 
 /*! @name Door Lock cluster attributes

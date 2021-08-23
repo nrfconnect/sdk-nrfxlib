@@ -499,6 +499,14 @@ zb_bool_t zb_is_device_zc_or_zr(void);
 /** @brief Set LEAVE_REQ_ALLOWED attribute value to 'v' */
 #define ZB_NIB_SET_LEAVE_REQ_ALLOWED( v ) (ZB_NIB().leave_req_allowed = ( v ))
 
+#ifdef SNCP_MODE
+/** Force route record sending */
+/** @brief Get force route record attribute */
+#define ZB_NIB_GET_FORCE_RREC_SENDING() ZB_NIB().nwk_force_rrec_sending
+/** @brief Set force route record attribute value to 'v' */
+#define ZB_NIB_SET_FORCE_RREC_SENDING( v ) (ZB_NIB().nwk_force_rrec_sending = ( v ))
+#endif
+
 /** @brief LEAVE_REQ_WITHOUT_REJOIN_ALLOWED attribute */
 #define ZB_NIB_GET_LEAVE_REQ_WITHOUT_REJOIN_ALLOWED() ZB_NIB().leave_req_without_rejoin_allowed
 /** @brief Set LEAVE_REQ_WITHOUT_REJOIN_ALLOWED attribute value to 'v' */
@@ -814,6 +822,13 @@ typedef struct zb_nib_s
                                               *  is mandatory by ZB spec). If 0, include
                                               *  it for all frame types.
                                               *  Default value is 0. */
+#endif
+
+#ifdef SNCP_MODE
+  zb_bitfield_t nwk_force_rrec_sending:1; /*!< If the flag is set to 1, local Zigbee Router device
+                                            * considers it's working with Low-RAM concentrator
+                                            * unless MTORR is received and sends Route record 
+                                            * before each packet */
 #endif
 
   zb_tx_stat_window_t tx_stat;  /*!< TX/TX fail counters  */

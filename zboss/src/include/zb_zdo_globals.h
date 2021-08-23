@@ -50,6 +50,9 @@
 #include "zb_zdo_rjb.h"
 #include "zb_zdo.h"
 #include "zdo_diagnostics.h"
+#ifdef ZB_PHY_TESTING_MODE
+#include "zboss_api_mac.h"
+#endif /* ZB_PHY_TESTING_MODE */
 
 /*! @cond internals_doc */
 /*! \addtogroup zdo_ib */
@@ -130,10 +133,13 @@ typedef struct zp_zdo_handle_s
                                              * set after device was requested to leave the network
                                              * via mgmt_leave_req */
   zb_zdo_rejoin_ctx_t rejoin_ctx;
- } zp_zdo_handle_t;
+} zp_zdo_handle_t;
 
 /* Flag to set and check if channel update is disabled */
 #define ZB_ZDO_NETWORK_MGMT_CHANNEL_UPDATE_IS_DISABLED() (ZG->zdo.handle.channel_update_disabled != 0U)
+
+/* Flag to set and check if channel update is disabled */
+#define ZB_ZDO_IS_REJOIN_SECURE() (ZG->zdo.handle.rejoin_ctx.secure_rejoin != 0U)
 
 typedef struct zb_zdo_pim_s
 {
@@ -436,6 +442,9 @@ typedef struct zb_zdo_globals_s
 #endif /* defined(ZDO_DIAGNOSTICS) */
 
   zb_zdo_func_selector_t selector;
+#ifdef ZB_PHY_TESTING_MODE
+  zb_phy_test_mode_notification_cb_t test_mode_notification_cb;
+#endif
 } zb_zdo_globals_t;
 
 

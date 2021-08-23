@@ -113,12 +113,7 @@ void lwip_zb_assert(zb_uint16_t file_id, zb_int_t line_number);
 
 #else  /* release */
 
-#ifndef KEIL
 #define ZB_ASSERT(expr) ((void)(expr))
-#else
-#define ZB_ASSERT(expr) ((void)(expr))
-#endif
-
 #define ZB_INLINE_ASSERT_SIMPLE(expr) -1
 #define ZB_INLINE_ASSERT(expr)
 
@@ -230,7 +225,7 @@ while (0)
 #define ZB_P4_ON() 
 #define ZB_P4_OFF()
 
-#if defined DEBUG
+#if defined ZB_TRAFFIC_DUMP_ON
 /**
    Dump array of byte
 
@@ -240,17 +235,13 @@ while (0)
 void dump_traf(zb_uint8_t *buf, zb_ushort_t len);
 #endif /* DEBUG */
 
-#ifdef DEBUG
+#ifdef ZB_TRAFFIC_DUMP_ON
 void dump_usb_traf(zb_uint8_t *buf, zb_ushort_t len);
 #else
 #define dump_usb_traf(buf, len)
 #endif
 
-#if (defined ZB_MAC_TESTING_MODE || defined ZB_DUMP_TRAF) && defined DEBUG
-#define DUMP_TRAF(cmt, buf, len, total) TRACE_MSG(TRACE_SECUR3, #cmt, (FMT__0)); dump_traf(buf, len)
-#else
 #define DUMP_TRAF(comment, buf, len, total)
-#endif
 
 #ifdef DEBUG
 void dump_hex_data(zb_uint_t trace_mask, zb_uint8_t trace_level, zb_uint8_t *buf, zb_ushort_t len);

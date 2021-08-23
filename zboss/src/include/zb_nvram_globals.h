@@ -102,6 +102,8 @@ typedef struct zb_nvram_globals_s
   zb_nvram_read_app_data_t      read_app_data_cb[ZB_NVRAM_APP_DATASET_NUMBER];
   zb_nvram_write_app_data_t     write_app_data_cb[ZB_NVRAM_APP_DATASET_NUMBER];
   zb_nvram_get_app_data_size_t  get_app_data_size_cb[ZB_NVRAM_APP_DATASET_NUMBER];
+  zb_nvram_custom_ds_ctx_t      custom_ds_ctx;
+  
   zb_nvram_ds_filter_cb_t ds_filter_cb; /*!< If assigned function to be called to filter out some datasets at load  */
   zb_nvram_tl_t current_time_label;     /*!< Current time label. Max from wrote NVRAM dataset header */
   zb_nvram_page_state_t pages[ZB_NVRAM_MAX_N_PAGES];
@@ -128,7 +130,6 @@ typedef struct zb_nvram_globals_s
   zb_nvram_pos_payload_checker_t gs_nvram_write_checker;
   zb_nvram_pos_payload_checker_t gs_nvram_read_checker;
 
-  zb_nvram_custom_ds_ctx_t custom_ds_ctx;
 } zb_nvram_globals_t;
 
 #define ZB_NVRAM() ZG->nvram

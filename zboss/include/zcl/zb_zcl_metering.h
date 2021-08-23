@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -351,7 +351,7 @@ enum zb_zcl_metering_attr_e
   ZB_ZCL_ATTR_METERING_LINKY_MODE_OF_OPERATION_ID,        /**< The @e LinkyModeOfOperation attribute is specific to Linky devices. It consists of a single flag
                                                            * (bit 0) which shall be set to FALSE (0) when in 'Simple' Mode and set to TRUE (1) when in
                                                            * Advanced Mode. Bits 1 to 7 are reserved. */
-  /* 0x0208 to 0x02FF reserved */
+  /* 0x020A to 0x02FF reserved */
 
 
   /* Formatting Attribute Set, table D.25 */
@@ -757,7 +757,7 @@ enum zb_zcl_metering_attr_e
           in another it is ZB_ZCL_ATTR_METERING_CURRENT_REACTIVE_SUMMATION_Q1_ID
     NOTE: It is supposed that ZB_ZCL_ATTR_METERING_CURRENT_ACTIVE_SUMMATION_Q1_ID = 0x0D00
    */
-  ZB_ZCL_ATTR_METERING_CURRENT_ACTIVE_SUMMATION_Q1_ID = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_FOUR_QUADRANT_ELECTRICITY, 0x00),  /**< This attribute represents the most
+  ZB_ZCL_ATTR_METERING_CURRENT_ACTIVE_SUMMATION_Q1_ID = ZB_ZCL_ATTR_SET_WITH_ATTR_ID(ZB_ZCL_METERING_SET_FOUR_QUADRANT_ELECTRICITY, 0x01),  /**< This attribute represents the most
                                                                                                                                              * recent summed value of Active Energy (kWh)
                                                                                                                                              * delivered in the quadrant Q1.
                                                                                                                                              */
@@ -1342,7 +1342,7 @@ enum zb_zcl_metering_service_disconnect_reasons_e
 #define ZB_ZCL_METERING_UNIT_OF_MEASURE_DEFAULT_VALUE 0x00
 
 /** @brief Default value for Instantaneous Demand attribute */
-#define ZB_ZCL_METERING_INSTANTANEOUS_DEMAND_DEFAULT_VALUE 0x00
+#define ZB_ZCL_METERING_INSTANTANEOUS_DEMAND_DEFAULT_VALUE ZB_INIT_UINT24(0x00, 0x0000)
 
   /** @brief Default value for DailyFreezeTime attribute */
 #define ZB_ZCL_METERING_DAILY_FREEZE_TIME_DEFAULT_VALUE ((zb_uint16_t)0x0000)
@@ -1379,6 +1379,9 @@ enum zb_zcl_metering_service_disconnect_reasons_e
 
 /** @brief Default value for GasSpecificAlarmMask attribute */
 #define ZB_ZCL_METERING_GAS_SPECIFIC_ALARM_MASK_DEFAULT_VALUE ((zb_uint16_t)0xFFFF)
+
+/** @brief Default value for FastPollUpdatePeriod attribute */
+#define ZB_ZCL_METERING_LINKY_MODE_ON_OPERATION_DEFAULT_VALUE ((zb_uint8_t)0x00)
 /** @} */ /* ZB_ZCL_METERING_SRV_ATTRS */
 
 

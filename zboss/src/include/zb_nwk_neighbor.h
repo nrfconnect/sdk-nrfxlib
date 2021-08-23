@@ -60,6 +60,10 @@ ZB_ASSERT_COMPILE_DECL(ZB_NWK_ROUTER_AGE_LIMIT < 4);
 /* Ext neighbor as an alias to the neighbor entry */
 typedef zb_neighbor_tbl_ent_t zb_ext_neighbor_tbl_ent_t;
 
+typedef struct zb_nbr_iterator_data_s {
+  /*! Stores the neighbour table update counter. */
+  zb_uint32_t update_count;
+} zb_nbr_iterator_data_t;
 
 
 /**
@@ -76,6 +80,7 @@ typedef struct zb_neighbor_tbl_s
   zb_neighbor_tbl_ent_t     *neighbor;
   zb_uint8_t                *addr_to_neighbor;
 #endif
+  zb_nbr_iterator_data_t    iterator_data;
   /*! clock pointer for incoming_frame_counter expire */
   zb_ushort_t               incoming_frame_counter_clock;
 /*Pointer to the end device that expires first*/
@@ -292,6 +297,11 @@ zb_uint8_t zb_nwk_neighbour_get_path_cost(zb_neighbor_tbl_ent_t *nbt);
  */
 zb_uint8_t zb_nwk_neighbor_get_subghz_list(zb_address_ieee_ref_t *ref_list, zb_uint8_t max_records);
 #endif
+
+/**
+   Update the neighbour table update counter.
+ */
+void zb_nwk_nbr_iterator_update_counter(void);
 
 /*! @} */
 /*! @endcond */

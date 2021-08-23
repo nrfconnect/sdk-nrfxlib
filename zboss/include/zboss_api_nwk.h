@@ -522,7 +522,7 @@ zb_nwk_pib_cache_t *zb_nwk_get_pib_cache(void);
  * We ensure that only one instance of the macro is effectively
  * defined here. */
 #ifdef ZB_PIB_CACHE
-#error Please ensure that you are not including any internal headers which redefine ZB_PIB_CACHE macro before incuding this file
+#error Please ensure that you are not including any internal headers which redefine ZB_PIB_CACHE macro before including this file
 #else /* ZB_PIB_CACHE */
 /*cstat !MISRAC2012-Rule-5.2_c99 !MISRAC2012-Rule-5.4_c99 */
 #define ZB_PIB_CACHE() zb_nwk_get_pib_cache()
@@ -747,7 +747,89 @@ void zb_set_nbt_transmit_failure_timeout(zb_uint8_t transmit_failure_timeout);
    @return Short address of the parent node or ZB_UNKNOWN_SHORT_ADDR if the device isn't joined to a network.
  */
 zb_uint16_t zb_nwk_get_parent(void);
+
+#define ZB_NWK_NBR_ITERATOR_INDEX_EOT 0xFFFFU /*! Index, indicating that the iterator reached boundaries of the neighbour table. */
+
+typedef ZB_PACKED_PRE struct zb_nwk_nbr_iterator_cb_params_s {
+   zb_uint16_t index;        /*!< In the callback function:
+                              *     Index of the returned neighbour table entry.
+                              *     The falue of ZB_NWK_NBR_ITERATOR_INDEX_EOT
+                              *     indicates that the entry was not returned and
+                              *     the buffer payload should be ignored.
+                              *   If the structure is passed as the API call parameters:
+                              *     Index, from which the next neighbour table
+                              *     entry should be searched.
+                              */
+   zb_uint32_t update_count; /*!< In the callback function:
+                              *     The current value of the table update counter.
+                              *     This parameter is ignored in the API call parameters.
+                              */
+} ZB_PACKED_STRUCT
+zb_nwk_nbr_iterator_params_t;
+
+typedef ZB_PACKED_PRE struct zb_nwk_nbr_iterator_entry_s
+{
+  zb_ieee_addr_t  ieee_addr;            /*!< Long address (EUI64) of the device. */
+  zb_uint16_t     short_addr;           /*!< Short address (network address) of the device. */
+
+  zb_uint8_t      device_type;          /*!< Neighbor device type - @see @ref nwk_device_type */
+  zb_uint8_t      depth;                /*!< The network depth of this device.
+                                         *    A value of 0x00 indicates that this device is the
+                                         *    Zigbee coordinator for the network.
+                                         */
+  zb_uint8_t      rx_on_when_idle;      /*!< Indicates if neighbour receiver enabled during idle periods:
+                                         *     TRUE = Receiver is on
+                                         *     FALSE = Receiver is off
+                                         *   This field should be present for entries that record the parent or
+                                         *   children of a Zigbee router or Zigbee coordinator.
+                                         */
+  zb_uint8_t      relationship;         /*!< The relationship between the neighbour and the current device.
+                                         *   This field shall be present in every neighbour table entry.
+                                         *   @if DOXYGEN_INTERNAL_DOC See @ref nwk_relationship @endif
+                                         */
+  zb_uint8_t      send_via_routing;     /*!< Due to bad link to that device send packets
+                                         *   via NWK routing.
+                                         */
+
+  zb_uint8_t      keepalive_received;   /*!< This value indicates at least one keepalive
+                                         *   has been received from the end device since
+                                         *   the router has rebooted.
+                                         */
+  zb_uint8_t      mac_iface_idx;        /*!< An index into the MAC Interface Table
+                                         * indicating what interface the neighbour or
+                                         * child is bound to.
+                                         */
+
+  zb_uint8_t      transmit_failure_cnt; /*!< Transmit failure counter (used to initiate
+                                         * device address search).
+                                         */
+  zb_uint8_t      lqi;                  /*!< Link quality. Also used to calculate
+                                         * incoming cost
+                                         */
+  zb_int8_t       rssi;                 /*!< Received signal strength indicator */
+  zb_uint8_t      outgoing_cost;        /*!< The cost of an outgoing link. Got from link status. */
+  zb_uint8_t      age;                  /*!< Counter value for router aging.
+                                         *   The number of nwkLinkStatusPeriod intervals since a
+                                         *   link status command was received.
+                                         */
+  zb_uint32_t     device_timeout;       /*!< Configured end device timeout, in seconds. */
+  zb_uint32_t     timeout_counter;      /*!< Timeout value ED aging, in milliseconds. */
+} ZB_PACKED_STRUCT
+zb_nwk_nbr_iterator_entry_t;
+
+/**
+   Read the next active entry from the NWK neighbour table.
+   The index indicates the point, from which the entry will be searched in the neighbour table.
+   This API returns neighbour table entry inisde the buffer payload, that are connected to the same PAN
+   and their entries are not marked as stale or timed out.
+   The index of the entry is passed as buffer parameters.
+
+   @param  bufid  The ZBOSS buffer, containing arguments defined by zb_nwk_nbr_iterator_params_t structure, passed as buffer parameters.
+   @param  cb     Callback function, that will get the next neighbour table entry.
+ */
+zb_ret_t zb_nwk_nbr_iterator_next(zb_uint8_t bufid, zb_callback_t cb);
+
 /** @} */ /* nwk_management_service */
-/** @} */
+/** @} */ /* nwk_api */
 
 #endif /*#ifndef ZB_ZBOSS_API_NWK_H*/

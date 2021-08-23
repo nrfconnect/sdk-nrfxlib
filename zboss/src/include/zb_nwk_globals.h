@@ -134,8 +134,9 @@ typedef ZB_PACKED_PRE struct zb_nwk_broadcast_retransmit_s
   zb_bitfield_t retries_left:2;        /*!< Number of currently available transmission attempts */
 
   zb_bitfield_t been_broadcasted:1;  /*<! Whether the buffer was broadcasted at least once */
-#define BRRT_MAX_RETRANSMIT_COUNTDOWN_VALUE  0X1FU /* ((1<<5) - 1) */
-  zb_bitfield_t retransmit_countdown:5; /* Number of BI until tx. */
+#define BRRT_MAX_RETRANSMIT_COUNTDOWN_VALUE  0XFU /* ((1<<4) - 1) */
+  zb_bitfield_t retransmit_countdown:4; /* Number of BI until tx. */
+  zb_bitfield_t mcps_data_req_in_buf:1; /* If 1, buffer has mcps-data.req in its params section, else apsde-data.ind params */
   zb_uint8_t buf;                     /* <! Buffer to be sent broadcast */
   /* 01/15/2019 EE CR:MAJOR Can we exclude neighbor_table_iterator by passing it via second parameter of 2-arguments callback?
 
@@ -174,11 +175,11 @@ typedef struct zb_in_mgmt_leave_pending_list_s /* do not pack for IAR */
 } ZB_PACKED_STRUCT zb_in_mgmt_leave_pending_list_t;
 
 
-typedef struct zb_leave_ind_prnt_s
+typedef struct zb_leave_ind_notify_s
 {
   zb_address_ieee_ref_t addr_ref;       /*!< Address of device for leave */
   zb_uint8_t rejoin;                    /*!< Is rejoin after leave */
-} zb_leave_ind_prnt_t;
+} zb_leave_ind_notify_t;
 
 /**
   leave context
@@ -187,7 +188,8 @@ typedef struct zb_leave_context_s
 {
   /*!< * Pending incoming mgmt leave req, or self mgmt leave req */
   zb_in_mgmt_leave_pending_list_t pending_list[ZB_ZDO_PENDING_LEAVE_SIZE];
-  zb_leave_ind_prnt_t leave_ind_prnt;                               /*!< */
+  zb_leave_ind_notify_t leave_ind_prnt;                             /*!< */
+  zb_leave_ind_notify_t leave_ind_zed;                              /*!< */
   zb_uint8_t pending_list_bm;                                       /*!< */
   zb_bitfield_t rejoin_after_leave:1;                               /*!< */
   zb_bitfield_t remove_children:1;                                  /*!< */
@@ -356,20 +358,6 @@ typedef struct zb_nwk_handle_s  /* do not pac for IAR */
   zb_uint8_t        ed_list_param;                           /*!< Index of buffer for ED scan results. */
 } zb_nwk_handle_t;
 
-
-#ifdef ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL
-#define ZB_NWK_INTRP_NON_DEFAULT_CHAN() ZG->nwk.intrp_non_default_chan
-
-/* Declare ring buffer for storing queued NWK packets */
-ZB_RING_BUFFER_DECLARE(zb_nwk_lock_queue, zb_bufid_t, NWK_INTRP_LOCK_QUEUE_SIZE);
-
-typedef struct zb_nwk_intrp_non_default_chan_s
-{
-  zb_bool_t intrp_busy;
-  zb_nwk_lock_queue_t lock_queue;
-} zb_nwk_interp_non_default_chan_t;
-#endif
-
 #ifdef ZB_ROUTER_ROLE
 #define ZB_INVALID_BRRT_IDX 0xFFU
 ZB_ASSERT_COMPILE_DECL(ZB_NWK_BRR_TABLE_SIZE < ZB_INVALID_BRRT_IDX);
@@ -503,9 +491,6 @@ typedef struct zb_nwk_globals_s
     zb_bool_t (*should_accept_frame_before_join)(zb_bufid_t);
   } selector;
 
-#ifdef ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL
-  zb_nwk_interp_non_default_chan_t intrp_non_default_chan;
-#endif
 } zb_nwk_globals_t;
 
 

@@ -236,7 +236,7 @@ void zb_zcl_ias_zone_set_test_bit(zb_uint8_t param, zb_uint16_t user_param)
 /** @brief Initiate Normal mode command */
 static zb_ret_t zb_zcl_ias_zone_init_normal_mode_handler(zb_uint8_t param)
 {
-  zb_uint8_t alarm_buf_param;
+  zb_uint8_t alarm_buf_param = 0;
   zb_zcl_parsed_hdr_t cmd_info;
   zb_uint8_t endpoint;
   zb_zcl_attr_t *attr_desc_int_ctx;

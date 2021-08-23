@@ -209,6 +209,10 @@ zb_zcl_cluster_write_attr_hook_t zb_zcl_get_control4_cluster_write_attr_hook(zb_
 #define ZB_ZCL_CLUSTER_CLIENT_ROLE 0x02U
 /** Internal value - used for searching any role (on the moment when cluster role is not known yet). */
 #define ZB_ZCL_CLUSTER_ANY_ROLE 0x03U
+/** Reverts cluster role */
+#define ZB_ZCL_REVERT_CLUSTER_ROLE(_d) \
+  (((_d) != ZB_ZCL_CLUSTER_ANY_ROLE) ? (((_d) == ZB_ZCL_CLUSTER_SERVER_ROLE) ? ZB_ZCL_CLUSTER_CLIENT_ROLE : ZB_ZCL_CLUSTER_SERVER_ROLE) :  \
+   ZB_ZCL_CLUSTER_ANY_ROLE)
 /** @} */
 
 /**

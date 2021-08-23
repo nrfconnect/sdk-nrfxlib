@@ -261,6 +261,15 @@ zb_time_t zb_timer_get(void);
  * Convert from seconds to milliseconds
  */
 #define ZB_SECONDS_TO_MILLISECONDS(_s) (1000ul*(_s))
+
+/**
+ Convert from seconds to beacon
+
+ This macro works correctly on 32-bit platforms for intervals smaller than 71 minutes.
+ The calculation was not tested on 16-bit platforms.
+*/
+#define ZB_SECONDS_TO_BEACON_INTERVAL(_s) ZB_MILLISECONDS_TO_BEACON_INTERVAL(1000UL * (_s))
+
 /**
  Convert from milliseconds to microseconds
 */
@@ -435,6 +444,22 @@ zb_ret_t zb_schedule_get_alarm_time(zb_callback_t func, zb_uint8_t param, zb_tim
 */
 #define ZB_SCHEDULE_GET_ALARM_TIME(func, param, timeout_bi) zb_schedule_get_alarm_time(func, param, timeout_bi)
 
+/** @cond internals_doc */
+/**
+   Is scheduler stop - Is scheduler running now
+
+   @return ZB_TRUE in case of scheduler is stopped or ZB_FALSE otherwise
+ */
+zb_bool_t zb_scheduler_is_stop(void);
+/** @endcond */ /* internals_doc */
+
+/**
+   Is scheduler stop - Is scheduler running now
+
+   @return ZB_TRUE in case of scheduler is stopped or ZB_FALSE otherwise
+*/
+#define ZB_SCHEDULER_IS_STOP() zb_scheduler_is_stop()
+
 /*! @} */
 
 
@@ -489,6 +514,13 @@ zb_uint32_t zb_random_val(zb_uint32_t max_value);
  * The function sets individually every byte of provided memory region to zero.
  */
 void zb_bzero_volatile(volatile void *s, zb_uint_t size);
+
+/** @brief Fill in memory with PRBS9 pattern using linear-feedback shift registers.
+    @param dest - Pointer to the block of memory to fill.
+    @param cnt - Number of bytes to be set.
+    @param seed - Random seed
+ */
+void zb_generate_prbs9(zb_uint8_t *dest, zb_uint16_t cnt, zb_uint16_t seed);
 
 /*! @} */
 
