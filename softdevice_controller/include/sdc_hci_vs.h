@@ -317,7 +317,7 @@ typedef __PACKED_STRUCT
     uint32_t conn_interval_us;
     /** @brief Slave latency for the connection in number of connection events. */
     uint16_t conn_latency;
-    /** @brief Supervision timeout for the LE Link in 10 ms units. Range 100 ms to 32 ms. */
+    /** @brief Supervision timeout for the LE Link in 10 ms units. Range 100 ms to 32 s. */
     uint16_t supervision_timeout;
 } sdc_hci_cmd_vs_conn_update_t;
 

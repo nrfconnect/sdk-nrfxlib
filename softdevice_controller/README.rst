@@ -35,13 +35,14 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 
 Proprietary feature support:
 
-+--------------------------+-----------------+--------------+-----------+
-|                          | Peripheral-only | Central-only | Multirole |
-+==========================+=================+==============+===========+
-| Low Latency Packet mode  |                 |              | X         |
-+--------------------------+-----------------+--------------+-----------+
-| QoS Conn Event Reports   | X               | X            | X         |
-+--------------------------+-----------------+--------------+-----------+
++--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
+|                          | Peripheral-only | Central-only | Multirole | Description                                                                 |
++==========================+=================+==============+===========+=============================================================================+
+| Low Latency Packet mode  |                 |              | X         | Enables using connection intervals below 7.5 ms                             |
++--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
+| QoS Conn Event Reports   | X               | X            | X         | Reports QoS for every connection event.                                     |
+|                          |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
++--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
 
 
 .. note::
@@ -53,6 +54,7 @@ Proprietary feature support:
    :caption: Subpages:
 
    doc/softdevice_controller
+   doc/scheduling
    limitations
    CHANGELOG
    doc/api
