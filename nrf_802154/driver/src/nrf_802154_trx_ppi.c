@@ -45,7 +45,7 @@
 #include "nrf_802154_debug_log.h"
 #include "nrf_802154_peripherals.h"
 
-#include "mpsl_fem_protocol_api.h"
+#include "protocol/mpsl_fem_protocol_api.h"
 
 #include "hal/nrf_egu.h"
 #include "hal/nrf_ppi.h"
@@ -65,6 +65,16 @@
 #define PPI_EGU_TIMER_START        NRF_802154_PPI_EGU_TO_TIMER_START          ///< PPI that connects EGU event with TIMER START task
 #define PPI_TIMER_TX_ACK           NRF_802154_PPI_TIMER_COMPARE_TO_RADIO_TXEN ///< PPI that connects TIMER COMPARE event with RADIO TXEN task
 #define PPI_RADIO_SYNC_EGU_SYNC    NRF_802154_PPI_RADIO_SYNC_TO_EGU_SYNC      ///< PPI that connects RADIO SYNC event with EGU task for SYNC channel
+
+void nrf_802154_trx_ppi_for_enable(void)
+{
+    // Intentionally empty.
+}
+
+void nrf_802154_trx_ppi_for_disable(void)
+{
+    // Intentionally empty.
+}
 
 void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool start_timer)
 {

@@ -30,8 +30,8 @@ config NRF_802154_SL
 	select MPSL
 	select ZERO_LATENCY_IRQS
 	select DYNAMIC_INTERRUPTS
-	select SENSOR
-	select TEMP_NRF5_MPSL
+	select SENSOR if NRF_802154_TEMPERATURE_UPDATE
+	select TEMP_NRF5_MPSL if NRF_802154_TEMPERATURE_UPDATE
 	depends on !NRF_802154_SOURCE_HAL_NORDIC
 	help
 		Use of Nordic Semiconductor proprietary implementation of nRF 802.15.4 Service Layer.

@@ -54,10 +54,44 @@
 #define DPPI_CHGRP_RAMP_UP          NRF_DPPI_CHANNEL_GROUP0 ///< PPI group used to disable self-disabling PPIs
 #define DPPI_CHGRP_RAMP_UP_DIS_TASK NRF_DPPI_TASK_CHG0_DIS  ///< PPI task used to disable self-disabling PPIs
 
-#define PPI_DISABLED_EGU            NRF_802154_DPPI_RADIO_DISABLED_TO_EGU
+#define PPI_DISABLED_EGU            NRF_802154_DPPI_RADIO_DISABLED
 #define PPI_EGU_RAMP_UP             NRF_802154_DPPI_EGU_TO_RADIO_RAMP_UP
 #define PPI_TIMER_TX_ACK            NRF_802154_DPPI_TIMER_COMPARE_TO_RADIO_TXEN
 #define PPI_RADIO_SYNC_EGU_SYNC     NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC
+
+void nrf_802154_trx_ppi_for_enable(void)
+{
+    nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_DISABLED, PPI_DISABLED_EGU);
+    nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_READY, NRF_802154_DPPI_RADIO_READY);
+    nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_ADDRESS, NRF_802154_DPPI_RADIO_ADDRESS);
+    nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_END, NRF_802154_DPPI_RADIO_END);
+    nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_PHYEND, NRF_802154_DPPI_RADIO_PHYEND);
+    nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_CCAIDLE, NRF_802154_DPPI_RADIO_CCAIDLE);
+    nrf_dppi_channels_enable(NRF_DPPIC,
+                             (1UL << PPI_DISABLED_EGU) |
+                             (1UL << NRF_802154_DPPI_RADIO_READY) |
+                             (1UL << NRF_802154_DPPI_RADIO_ADDRESS) |
+                             (1UL << NRF_802154_DPPI_RADIO_END) |
+                             (1UL << NRF_802154_DPPI_RADIO_PHYEND) |
+                             (1UL << NRF_802154_DPPI_RADIO_CCAIDLE));
+}
+
+void nrf_802154_trx_ppi_for_disable(void)
+{
+    nrf_dppi_channels_disable(NRF_DPPIC,
+                              (1UL << PPI_DISABLED_EGU) |
+                              (1UL << NRF_802154_DPPI_RADIO_READY) |
+                              (1UL << NRF_802154_DPPI_RADIO_ADDRESS) |
+                              (1UL << NRF_802154_DPPI_RADIO_END) |
+                              (1UL << NRF_802154_DPPI_RADIO_PHYEND) |
+                              (1UL << NRF_802154_DPPI_RADIO_CCAIDLE));
+    nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_CCAIDLE);
+    nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_PHYEND);
+    nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_END);
+    nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_ADDRESS);
+    nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_READY);
+    nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
+}
 
 void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool start_timer)
 {
@@ -77,11 +111,9 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool star
     }
 
     nrf_egu_subscribe_set(NRF_802154_EGU_INSTANCE, EGU_TASK, PPI_DISABLED_EGU);
-    nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_DISABLED, PPI_DISABLED_EGU);
 
     nrf_dppi_channels_enable(NRF_DPPIC,
-                             (1UL << PPI_EGU_RAMP_UP) |
-                             (1UL << PPI_DISABLED_EGU));
+                             (1UL << PPI_EGU_RAMP_UP));
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
@@ -91,8 +123,7 @@ void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool st
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
     nrf_dppi_channels_disable(NRF_DPPIC,
-                              (1UL << PPI_EGU_RAMP_UP) |
-                              (1UL << PPI_DISABLED_EGU));
+                              (1UL << PPI_EGU_RAMP_UP));
 
     nrf_egu_publish_clear(NRF_802154_EGU_INSTANCE, EGU_EVENT);
     nrf_radio_subscribe_clear(NRF_RADIO, ramp_up_task);
@@ -105,7 +136,6 @@ void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool st
     }
 
     nrf_egu_subscribe_clear(NRF_802154_EGU_INSTANCE, EGU_TASK);
-    nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }

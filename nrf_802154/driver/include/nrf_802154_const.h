@@ -40,9 +40,6 @@
 #ifndef NRF_802154_CONST_H_
 #define NRF_802154_CONST_H_
 
-#include <stdint.h>
-#include "nrf_802154_config.h"
-
 #define ACK_HEADER_WITH_PENDING         0x12                                         ///< The first byte of an ACK frame containing a pending bit.
 #define ACK_HEADER_WITHOUT_PENDING      0x02                                         ///< The first byte of an ACK frame without a pending bit.
 
@@ -228,18 +225,10 @@ typedef enum
     REQ_ORIG_HIGHER_LAYER,
     REQ_ORIG_CORE,
     REQ_ORIG_RSCH,
-#if NRF_802154_CSMA_CA_ENABLED
     REQ_ORIG_CSMA_CA,
-#endif // NRF_802154_CSMA_CA_ENABLED
-#if NRF_802154_ACK_TIMEOUT_ENABLED
     REQ_ORIG_ACK_TIMEOUT,
-#endif // NRF_802154_ACK_TIMEOUT_ENABLED
-#if NRF_802154_DELAYED_TRX_ENABLED
     REQ_ORIG_DELAYED_TRX,
-#endif // NRF_802154_DELAYED_TRX_ENABLED
-#if NRF_802154_IFS_ENABLED
     REQ_ORIG_IFS,
-#endif // NRF_802154_IFS_ENABLED
 } req_originator_t;
 
 #endif // NRF_802154_CONST_H_

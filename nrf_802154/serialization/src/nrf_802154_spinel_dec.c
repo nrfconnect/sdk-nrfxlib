@@ -58,7 +58,6 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd(const void * p_packet_data,
 
     if (siz < 0)
     {
-        assert(false);
         return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
     }
 
