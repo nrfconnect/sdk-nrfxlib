@@ -47,6 +47,21 @@
 #include "hal/nrf_radio.h"
 
 /**
+ * @brief Configures (D)PPI connections required for TRX operation.
+ *
+ * Actions performed by this function in DPPI variant:
+ *   - RADIO_DISABLED event is published to DPPI designated by NRF_802154_DPPI_RADIO_DISABLED
+ *   - NRF_RADIO_EVENT_CCAIDLE is published to DPPI designated by NRF_802154_DPPI_RADIO_CCAIDLE
+ * The DPPIs mentioned above may be then subscribed to.
+ */
+void nrf_802154_trx_ppi_for_enable(void);
+
+/**
+ * @brief Clears (D)PPI connections required for TRX operation.
+ */
+void nrf_802154_trx_ppi_for_disable(void);
+
+/**
  * @brief Set PPIs to connect RADIO DISABLED event with tasks needed to ramp up.
  *
  * Connections created by this function in DPPI variant:

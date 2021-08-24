@@ -57,8 +57,8 @@
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_critical_section.h"
 #include "mpsl_fem_config_common.h"
-#include "mpsl_fem_protocol_api.h"
 #include "platform/nrf_802154_irq.h"
+#include "protocol/mpsl_fem_protocol_api.h"
 
 #include "nrf_802154_sl_ant_div.h"
 
@@ -133,9 +133,8 @@ void nrf_802154_radio_irq_handler(void); ///< Prototype required by internal RAD
 /// Common parameters for the FEM handling.
 static const mpsl_fem_event_t m_activate_rx_cc0 =
 {
-    .type         = MPSL_FEM_EVENT_TYPE_TIMER,
-    .override_ppi = false,
-    .event.timer  =
+    .type        = MPSL_FEM_EVENT_TYPE_TIMER,
+    .event.timer =
     {
         .p_timer_instance     = NRF_802154_TIMER_INSTANCE,
         .compare_channel_mask = ((1 << NRF_TIMER_CC_CHANNEL0) | (1 << NRF_TIMER_CC_CHANNEL2)),
@@ -147,9 +146,8 @@ static const mpsl_fem_event_t m_activate_rx_cc0 =
 
 static const mpsl_fem_event_t m_activate_tx_cc0 =
 {
-    .type         = MPSL_FEM_EVENT_TYPE_TIMER,
-    .override_ppi = false,
-    .event.timer  =
+    .type        = MPSL_FEM_EVENT_TYPE_TIMER,
+    .event.timer =
     {
         .p_timer_instance     = NRF_802154_TIMER_INSTANCE,
         .compare_channel_mask = ((1 << NRF_TIMER_CC_CHANNEL0) | (1 << NRF_TIMER_CC_CHANNEL2)),
@@ -161,10 +159,14 @@ static const mpsl_fem_event_t m_activate_tx_cc0 =
 
 static const mpsl_fem_event_t m_ccaidle =
 {
-    .type                           = MPSL_FEM_EVENT_TYPE_GENERIC,
-    .override_ppi                   = true,
-    .ppi_ch_id                      = PPI_CCAIDLE_FEM,
-    .event.generic.register_address = ((uint32_t)RADIO_BASE + (uint32_t)NRF_RADIO_EVENT_CCAIDLE)
+    .type = MPSL_FEM_EVENT_TYPE_GENERIC,
+#if defined(NRF52_SERIES)
+    .override_ppi        = true,
+    .ppi_ch_id           = PPI_CCAIDLE_FEM,
+    .event.generic.event = ((uint32_t)RADIO_BASE + (uint32_t)NRF_RADIO_EVENT_CCAIDLE)
+#elif defined(NRF53_SERIES)
+    .event.generic.event = NRF_802154_DPPI_RADIO_CCAIDLE
+#endif
 };
 
 /**@brief Fal event used by @ref nrf_802154_trx_transmit_ack and @ref txack_finish */
@@ -409,25 +411,28 @@ static void fem_for_tx_reset(bool cca)
 static void device_config_254_apply_tx(void)
 {
     uint32_t ficr_reg1 = *(volatile uint32_t *)0x10000330UL;
+    uint32_t ficr_reg2 = *(volatile uint32_t *)0x10000334UL;
+    uint32_t ficr_reg3 = *(volatile uint32_t *)0x10000338UL;
 
-    /* Check if the device is fixed by testing FICR register value.
-     *
-     * Only one of the FICR register is tested to optimize the procedure. All the registers shall
-     * have consistent values, i.e. all registers contain reset values or all registers contain
-     * values that shall be written to to the radio registers. If it is not true, then it is
-     * a hardware bug.
-     */
+    /* Check if the device is fixed by testing every FICR register's value separately. */
     if (ficr_reg1 != 0xffffffffUL)
     {
         volatile uint32_t * p_radio_reg1 = (volatile uint32_t *)0x4000174cUL;
-        volatile uint32_t * p_radio_reg2 = (volatile uint32_t *)0x40001584UL;
-        volatile uint32_t * p_radio_reg3 = (volatile uint32_t *)0x40001588UL;
-
-        uint32_t ficr_reg2 = *(volatile uint32_t *)0x10000334UL;
-        uint32_t ficr_reg3 = *(volatile uint32_t *)0x10000338UL;
 
         *p_radio_reg1 = ficr_reg1;
+    }
+
+    if (ficr_reg2 != 0xffffffffUL)
+    {
+        volatile uint32_t * p_radio_reg2 = (volatile uint32_t *)0x40001584UL;
+
         *p_radio_reg2 = ficr_reg2;
+    }
+
+    if (ficr_reg3 != 0xffffffffUL)
+    {
+        volatile uint32_t * p_radio_reg3 = (volatile uint32_t *)0x40001588UL;
+
         *p_radio_reg3 = ficr_reg3;
     }
 }
@@ -493,6 +498,8 @@ void nrf_802154_trx_enable(void)
     // Configure CRC
     nrf_radio_crc_configure(NRF_RADIO, CRC_LENGTH, NRF_RADIO_CRC_ADDR_IEEE802154, CRC_POLYNOMIAL);
 
+    nrf_802154_trx_ppi_for_enable();
+
     // Configure CCA
     cca_configuration_update();
 
@@ -512,6 +519,9 @@ void nrf_802154_trx_enable(void)
     defined(NRF52811_XXAA)
     mpsl_fem_abort_set(nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_DISABLED),
                        PPI_CHGRP_ABORT);
+#elif defined(NRF53_SERIES)
+    mpsl_fem_abort_set(NRF_802154_DPPI_RADIO_DISABLED,
+                       0U); /* The group parameter is ignored by FEM for nRF53 */
 #endif
 
     mpsl_fem_deactivate_now(MPSL_FEM_ALL);
@@ -575,6 +585,7 @@ static void ppi_all_clear(void)
         default:
             assert(false);
     }
+    nrf_802154_trx_ppi_for_disable();
 }
 
 static void fem_power_down_now(void)

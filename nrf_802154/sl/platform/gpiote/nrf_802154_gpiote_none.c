@@ -39,7 +39,7 @@ void nrf_802154_gpiote_init(void)
 
         case NRF_802154_WIFI_COEX_IF_3WIRE:
         {
-            nrf_802154_wifi_coex_3wire_if_config_t cfg;
+            nrf_802154_wifi_coex_3wire_if_config_t cfg = {{0}};
 
             nrf_802154_wifi_coex_cfg_3wire_get(&cfg);
 

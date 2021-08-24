@@ -39,6 +39,7 @@
 
 #include "hal/nrf_ecb.h"
 #include "nrf_802154_const.h"
+#include "nrf_802154_config.h"
 #include "nrf_802154_tx_work_buffer.h"
 #include "platform/nrf_802154_irq.h"
 

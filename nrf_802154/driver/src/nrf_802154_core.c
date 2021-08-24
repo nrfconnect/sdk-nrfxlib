@@ -67,7 +67,6 @@
 #include "nrf_802154_utils.h"
 #include "drivers/nrfx_errors.h"
 #include "hal/nrf_radio.h"
-#include "mpsl_fem_protocol_api.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "mac_features/nrf_802154_filter.h"
 #include "mac_features/nrf_802154_frame_parser.h"
@@ -79,6 +78,7 @@
 #include "timer/nrf_802154_timer_sched.h"
 #include "platform/nrf_802154_hp_timer.h"
 #include "platform/nrf_802154_irq.h"
+#include "protocol/mpsl_fem_protocol_api.h"
 
 #include "nrf_802154_core_hooks.h"
 #include "nrf_802154_sl_ant_div.h"

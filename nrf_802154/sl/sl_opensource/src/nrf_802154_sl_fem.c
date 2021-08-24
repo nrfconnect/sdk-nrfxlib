@@ -37,7 +37,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "mpsl_fem_protocol_api.h"
+#include "protocol/mpsl_fem_protocol_api.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -39,6 +39,7 @@
 #include <stdint.h>
 
 #include "nrf_802154_const.h"
+#include "nrf_802154_config.h"
 #include "nrf_802154_types.h"
 
 #if NRF_802154_DELAYED_TRX_ENABLED

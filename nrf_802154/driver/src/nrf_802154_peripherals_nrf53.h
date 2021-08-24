@@ -113,15 +113,63 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_DPPI_RADIO_DISABLED_TO_EGU
+ * @def NRF_802154_DPPI_RADIO_DISABLED
  *
- * The DPPI channel that connects RADIO_DISABLED event to EGU task.
+ * The DPPI channel that publishes RADIO_DISABLED event.
  *
  * @note This option is used by the core module regardless of the driver configuration.
  *
  */
-#ifndef NRF_802154_DPPI_RADIO_DISABLED_TO_EGU
-#define NRF_802154_DPPI_RADIO_DISABLED_TO_EGU 6U
+#ifndef NRF_802154_DPPI_RADIO_DISABLED
+#define NRF_802154_DPPI_RADIO_DISABLED 7U
+#endif
+
+/**
+ * @def NRF_802154_DPPI_RADIO_READY
+ *
+ * The DPPI channel that publishes RADIO_READY event.
+ *
+ * @note This option is used by the core module regardless of the driver configuration.
+ *
+ */
+#ifndef NRF_802154_DPPI_RADIO_READY
+#define NRF_802154_DPPI_RADIO_READY 4U
+#endif
+
+/**
+ * @def NRF_802154_DPPI_RADIO_ADDRESS
+ *
+ * The DPPI channel that publishes RADIO_ADDRESS event.
+ *
+ * @note This option is used by the core module regardless of the driver configuration.
+ *
+ */
+#ifndef NRF_802154_DPPI_RADIO_ADDRESS
+#define NRF_802154_DPPI_RADIO_ADDRESS 5U
+#endif
+
+/**
+ * @def NRF_802154_DPPI_RADIO_END
+ *
+ * The DPPI channel that publishes RADIO_END event.
+ *
+ * @note This option is used by the core module regardless of the driver configuration.
+ *
+ */
+#ifndef NRF_802154_DPPI_RADIO_END
+#define NRF_802154_DPPI_RADIO_END 6U
+#endif
+
+/**
+ * @def NRF_802154_DPPI_RADIO_PHYEND
+ *
+ * The DPPI channel that publishes RADIO_PHYEND event.
+ *
+ * @note This option is used by the core module regardless of the driver configuration.
+ *
+ */
+#ifndef NRF_802154_DPPI_RADIO_PHYEND
+#define NRF_802154_DPPI_RADIO_PHYEND 12U
 #endif
 
 /**
@@ -134,7 +182,7 @@ extern "C" {
  *
  */
 #ifndef NRF_802154_DPPI_EGU_TO_RADIO_RAMP_UP
-#define NRF_802154_DPPI_EGU_TO_RADIO_RAMP_UP 7U
+#define NRF_802154_DPPI_EGU_TO_RADIO_RAMP_UP 10U
 #endif
 
 /**
@@ -147,7 +195,7 @@ extern "C" {
  *
  */
 #ifndef NRF_802154_DPPI_TIMER_COMPARE_TO_RADIO_TXEN
-#define NRF_802154_DPPI_TIMER_COMPARE_TO_RADIO_TXEN 7U
+#define NRF_802154_DPPI_TIMER_COMPARE_TO_RADIO_TXEN 10U
 #endif
 
 /**
@@ -162,16 +210,30 @@ extern "C" {
 #endif
 
 /**
+ * @def NRF_802154_DPPI_RADIO_CCAIDLE
+ *
+ * The DPPI channel that RADIO.CCAIDLE event publishes to
+ */
+#ifndef NRF_802154_DPPI_RADIO_CCAIDLE
+#define NRF_802154_DPPI_RADIO_CCAIDLE 9U
+#endif
+
+/**
  * @def NRF_802154_DPPI_CHANNELS_USED_MASK
  *
  * Bit mask of DPPI channels used by the 802.15.4 driver.
  */
 #ifndef NRF_802154_DPPI_CHANNELS_USED_MASK
 #define NRF_802154_DPPI_CHANNELS_USED_MASK (                   \
-        (1UL << NRF_802154_DPPI_RADIO_DISABLED_TO_EGU) |       \
+        (1UL << NRF_802154_DPPI_RADIO_DISABLED) |              \
+        (1UL << NRF_802154_DPPI_RADIO_READY) |                 \
+        (1UL << NRF_802154_DPPI_RADIO_ADDRESS) |               \
+        (1UL << NRF_802154_DPPI_RADIO_END) |                   \
+        (1UL << NRF_802154_DPPI_RADIO_PHYEND) |                \
         (1UL << NRF_802154_DPPI_EGU_TO_RADIO_RAMP_UP) |        \
         (1UL << NRF_802154_DPPI_TIMER_COMPARE_TO_RADIO_TXEN) | \
-        (1UL << NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC))
+        (1UL << NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC) |      \
+        (1UL << NRF_802154_DPPI_RADIO_CCAIDLE))
 #endif // NRF_802154_DPPI_CHANNELS_USED_MASK
 
 /**
