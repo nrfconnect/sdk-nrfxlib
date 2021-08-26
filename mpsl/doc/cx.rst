@@ -30,14 +30,14 @@ This experimental feature has several limitations:
 Implementation
 **************
 
-To use the radio coexistence feature, you can either select the implementation available in nRF Connect SDK or replace it with another implementation compatible with your PTA.
+To use the radio coexistence feature, you can either select the implementation available in NCS or replace it with another implementation compatible with your PTA.
 Each implementation exposes the same API to allow for an easier replacement that does not require modifications to the radio protocols.
 
-The radio coexistence implementation provided in nRF Connect SDK is the following:
+The radio coexistence implementation provided in NCS is the following:
 
-*Thread Radio Coexistence*
-   This PTA interface is compatible with the 3-wire PTA interface defined in the *Thread Radio Coexistence recommendations* document available to Thread Group members.
-   It is also compatible with any IEEE 802.15.4 protocol (including Thread), with |BLE|, and with other radio protocols.
+* *Thread Radio Coexistence*.
+  This PTA interface is compatible with the 3-wire PTA interface defined in the *Thread Radio Coexistence recommendations* document.
+  It is also compatible with any IEEE 802.15.4 protocol (including Thread), with |BLE|, and with other radio protocols.
 
 Configuration
 *************
@@ -64,7 +64,7 @@ The radio protocol must register a callback function in the radio coexistence mo
 Implementation of a new radio coexistence module
 ************************************************
 
-If the radio coexistence implementation provided in nRF Connect SDK is not compatible with the PTA used in your system, you can implement a software module compatible with your PTA that exposes the radio coexistence API, using the :file:`nrf/subsys/mpsl/cx/thread/mpsl_cx_thread.c` file as an example.
+If the radio coexistence implementation provided in NCS is not compatible with the PTA used in your system, you can implement a software module compatible with your PTA that exposes the radio coexistence API, using the :file:`nrf/subsys/mpsl/cx/thread/mpsl_cx_thread.c` file as an example.
 
 The radio coexistence implementation must implement the interface defined in the ``mpsl_cx_interface_t`` structure in the :file:`nrfxlib/mpsl/include/mpsl_cx_abstract_interface.h` file.
 Each function from this interface is described in details in the :file:`nrfxlib/mpsl/include/protocol/mpsl_cx_protocol_api.h` file.
