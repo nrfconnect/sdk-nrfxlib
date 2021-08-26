@@ -103,7 +103,7 @@ static void mutex_init_platform(nrf_cc3xx_platform_mutex_t *mutex)
         platform_abort_apis.abort_fn("mutex_init called with NULL parameter");
     }
 
-    if (mutex->flag == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID)
+    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID)
     {
         mutex->mutex = (void*)xSemaphoreCreateMutex();
         if (mutex->mutex == NULL) {

@@ -28,8 +28,8 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#define NRF_KMU_FIRST_SLOT              (0U)    //!< First addressable key slot in KMU (reserved for Kdr)
-#define NRF_KMU_SECOND_SLOT             (1U)    //!< Second addressable key slot in KMU (reserved for Kdr)
+#define NRF_KMU_FIRST_SLOT              (0U)    //!< First addressable key slot in KMU
+#define NRF_KMU_SECOND_SLOT             (1U)    //!< Second addressable key slot in KMU
 #define NRF_KMU_LAST_SLOT               (127U)  //!< Last addressable key slot in KMU.
 
 #define NRF_KMU_SLOT_KDR                (0U)    //!< Key slot reserved for Kdr (Also known as HUK or Root derivation key).
@@ -77,10 +77,8 @@ extern "C"
  *          If derived key usage is intended, please use the API
  *          nrf_cc3xx_platform_kmu_aes_setkey_enc_shadow_key_derived.
  *
- * @note    KMU slots 0 and 1 is reserved for Kdr and can't be used directly.
- *
  * @param   ctx         AES context to set the key by KMU slot
- * @param   slot_id     Identifier of the key slot (2 - 127)
+ * @param   slot_id     Identifier of the key slot (0 - 127)
  * @param   keybits     Key size in bits
  *
  * @returns 0 on success, otherwise a negative number.
@@ -103,10 +101,8 @@ int mbedtls_aes_setkey_enc_shadow_key(
  *          If derived key usage is intended, please use the API
  *          nrf_cc3xx_platform_kmu_aes_setkey_dec_shadow_key_derived.
  *
- * @note    KMU slots 0 and 1 is reserved for Kdr and can't be used directly.
- *
  * @param   ctx         AES context to set the key by KMU slot.
- * @param   slot_id     Identifier of the key slot (2 - 127).
+ * @param   slot_id     Identifier of the key slot (0 - 127).
  * @param   keybits     Key size in bits.
  *
  * @returns 0 on success, otherwise a negative number.
@@ -214,11 +210,9 @@ extern "C"
  *          If derived key usage is intended, please use the API
  *          nrf_cc3xx_platform_kmu_aes_setkey_enc_shadow_key_derived.
  *
- * @note    KMU slots 0 and 1 is reserved for Kdr and can't be used directly.
- *
  * @param   ctx         AES context to set the key by KMU slot.
  * @param   cipher      Cipher id to use.
- * @param   slot_id     Identifier of the key slot  (2 - 127).
+ * @param   slot_id     Identifier of the key slot  (0 - 127).
  * @param   keybits     Key size in bits.
  *
  * @returns 0 on success, otherwise a negative number.
@@ -296,11 +290,9 @@ extern "C"
  *          If derived key usage is intended, please use the API
  *          nrf_cc3xx_platform_kmu_aes_setkey_enc_shadow_key_derived.
  *
- * @note    KMU slots 0 and 1 is reserved for Kdr and can't be used directly.
- *
  * @param   ctx         AES context to set the key by KMU slot.
  * @param   cipher      Cipher id to use.
- * @param   slot_id     Identifier of the key slot (2 - 127).
+ * @param   slot_id     Identifier of the key slot (0 - 127).
  * @param   keybits     Key size in bits.
  *
  * @returns 0 on success, otherwise a negative number.

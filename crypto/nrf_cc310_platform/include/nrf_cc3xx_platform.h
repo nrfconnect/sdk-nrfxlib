@@ -46,8 +46,8 @@ int nrf_cc3xx_platform_init(void);
 /**@brief Function to initialize the nrf_cc3xx_platform with rng.
  *        The function is using HMAC_DRBG to generate a random seed.
  *
- *@note If this is called after nrf_cc3xx_platform_init it will
- *      create a new random seed using HMAC_DRBG.
+ * @note If this is called after nrf_cc3xx_platform_init it will
+ *       create a new random seed using HMAC_DRBG.
  *
  * @return Zero on success, otherwise a non-zero error code.
  */

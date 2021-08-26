@@ -23,11 +23,12 @@ extern "C"
 {
 #endif
 
-#define NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID        (0)         /*!< Mask indicating that the mutex is invalid (not initialized or allocated). */
-#define NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID       (1<<0)      /*!< Mask value indicating that the mutex is valid for use. */
-#define NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ALLOCATED   (1<<1)      /*!< Mask value indicating that the mutex is allocated and requires deallocation once freed. */
-#define NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC      (1<<2)      /*!< Mask value indicating that the mutex is atomic type. */
-#define NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX    (1<<3)      /*!< Mask value indicating that the mutex is hardware mutex type. */
+#define NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID                        (0)         /*!< Mask indicating that the mutex is invalid (not initialized or allocated). */
+#define NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID                       (1<<0)      /*!< Mask value indicating that the mutex is valid for use. */
+#define NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ALLOCATED                   (1<<1)      /*!< Mask value indicating that the mutex is allocated and requires deallocation once freed. */
+#define NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC                      (1<<2)      /*!< Mask value indicating that the mutex is atomic type. */
+#define NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX                    (1<<3)      /*!< Mask value indicating that the mutex is hardware mutex type. */
+#define NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_INTERNAL_MUTEX              (1<<4)      /*!< Mask value indicating that the mutex is an internal CryptoCell mutex. */
 
 /** @brief Type definition of architecture neutral mutex type */
 typedef struct nrf_cc3xx_platform_mutex

@@ -126,9 +126,6 @@ int nrf_cc3xx_platform_kmu_write_key(
  * @note    The default mask for permissions is recommended to use.
  *          Please see @ref NRF_CC3XX_PLATFORM_KMU_DEFAULT_PERMISSIONS.
  *
- * @note    Slot 0 and 1 is reserved for KDR use. See
- *          @ref nrf_cc3xx_platform_kmu_write_kdr_slot.
- *
  * @note AES keys of 128 bits can use @ref NRF_CC3XX_PLATFORM_KMU_AES_ADDR as the key_addr.
  *       ChaChaPoly keys of 128 bits can use NRF_CC3XX_PLATFORM_KMU_CHACHAPOLY_ADDR as the
  *       key addr.
@@ -161,7 +158,7 @@ int nrf_cc3xx_platform_kmu_write_key_slot(
 
 #if defined(NRF9160_XXAA)
 
-/** @brief Write a 128 bit AES key into the KMU slot 0 for KDR use
+/** @brief Write a 128 bit AES key into a KMU slot for KDR use
  *
  * @details This writes a key to KMU with the destination of the subsequent
  *          push operation set to the address of the KDR registers in
@@ -175,11 +172,11 @@ int nrf_cc3xx_platform_kmu_write_key_slot(
  *
  * @return NRF_CC3XX_PLATFORM_SUCCESS on success, otherwise a negative value.
  */
-int nrf_cc3xx_platform_kmu_write_kdr_slot(const uint8_t key[16]);
+int nrf_cc3xx_platform_kmu_write_kdr_slot(uint32_t slot_id, const uint8_t key[16]);
 
 
-/** @brief Push the 128 bit AES key in KMU slot 0 (reserved for KDR) into
- *         CryptoCell KDR registers and set LCS state to secure
+/** @brief Push the 128 bit AES key from a KMU slot into CryptoCell KDR
+ *         registers and set LCS state to secure
  *
  *  @note This function must be run once on every boot to load the KDR key
  *        and to set the LCS state to secure.
@@ -190,7 +187,7 @@ int nrf_cc3xx_platform_kmu_write_kdr_slot(const uint8_t key[16]);
  *
  * @return NRF_CC3XX_PLATFORM_SUCCESS on success, otherwise a negative value.
  */
-int nrf_cc3xx_platform_kmu_push_kdr_slot_and_lock(void);
+int nrf_cc3xx_platform_kmu_push_kdr_slot_and_lock(uint32_t slot_id);
 
 #endif // defined(NRF9160_XXAA)
 
