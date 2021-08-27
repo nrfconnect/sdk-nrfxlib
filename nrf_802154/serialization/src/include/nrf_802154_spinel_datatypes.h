@@ -273,6 +273,18 @@ typedef enum
     SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TIME_GET =
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 34,
 
+    /**
+     * Vendor property for nrf_802154_cca_cfg_get serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_GET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 35,
+
+    /**
+     * Vendor property for nrf_802154_cca_cfg_set serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_SET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 36,
+
 } spinel_prop_vendor_key_t;
 
 /**
@@ -370,16 +382,42 @@ typedef enum
  */
 #define SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_METADATA_S \
     SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* frame_props */
+
 /**
  * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_METADATA_S data type.
  */
 #define NRF_802154_TRANSMIT_CSMA_CA_METADATA_ENCODE(tx_metadata) \
     NRF_802154_TRANSMITTED_FRAME_PROPS_ENCODE((tx_metadata).frame_props)
+
 /**
  * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_METADATA_S data type.
  */
 #define NRF_802154_TRANSMIT_CSMA_CA_METADATA_DECODE(tx_metadata) \
     NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE((tx_metadata).frame_props)
+
+/**
+ * @brief Spinel data type description for nrf_802154_cca_cfg_t.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CCA_CFG_S     \
+    SPINEL_DATATYPE_UINT8_S /* mode */           \
+    SPINEL_DATATYPE_UINT8_S /* ed_threshold */   \
+    SPINEL_DATATYPE_UINT8_S /* corr_threshold */ \
+    SPINEL_DATATYPE_UINT8_S /* corr_limit */
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_CCA_CFG_S data type.
+ */
+#define NRF_802154_CCA_CFG_ENCODE(cca_cfg) \
+    ((cca_cfg).mode), ((cca_cfg).ed_threshold), ((cca_cfg).corr_threshold), ((cca_cfg).corr_limit)
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_CCA_CFG_S data type.
+ */
+#define NRF_802154_CCA_CFG_DECODE(cca_cfg) \
+    (&(cca_cfg).mode),                     \
+    (&(cca_cfg).ed_threshold),             \
+    (&(cca_cfg).corr_threshold),           \
+    (&(cca_cfg).corr_limit)
 
 /**
  * @brief Spinel data type description for SPINEL_PROP_LAST_STATUS.
@@ -683,6 +721,21 @@ typedef enum
  * @brief Spinel data type description for nrf_802154_time_get_ret.
  */
 #define SPINEL_DATATYPE_NRF_802154_TIME_GET_RET         SPINEL_DATATYPE_UINT32_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_cca_cfg_get.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CCA_CFG_GET          SPINEL_DATATYPE_NULL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_cca_cfg_get_ret.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CCA_CFG_GET_RET      SPINEL_DATATYPE_NRF_802154_CCA_CFG_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_cca_cfg_get.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CCA_CFG_SET          SPINEL_DATATYPE_NRF_802154_CCA_CFG_S
 
 #ifdef __cplusplus
 }

@@ -88,7 +88,24 @@ typedef uint8_t nrf_802154_ed_error_t;
  */
 typedef uint8_t nrf_802154_cca_error_t;
 
-#define NRF_802154_CCA_ERROR_ABORTED 0x01 // !< Procedure was aborted by another operation.
+#define NRF_802154_CCA_ERROR_ABORTED      0x01 // !< Procedure was aborted by another operation.
+
+/** @brief RADIO Clear Channel Assessment modes. */
+#define NRF_RADIO_CCA_MODE_ED             0x00
+#define NRF_RADIO_CCA_MODE_CARRIER        0x01
+#define NRF_RADIO_CCA_MODE_CARRIER_AND_ED 0x02
+#define NRF_RADIO_CCA_MODE_CARRIER_OR_ED  0x03
+
+/**
+ * @brief Structure for configuring CCA.
+ */
+typedef struct
+{
+    uint8_t mode;           // !< CCA mode.
+    uint8_t ed_threshold;   // !< Busy threshold of the CCA energy. Not used in @ref NRF_RADIO_CCA_MODE_CARRIER.
+    uint8_t corr_threshold; // !< Busy threshold of the CCA correlator. Not used in @ref NRF_RADIO_CCA_MODE_ED.
+    uint8_t corr_limit;     // !< Limit of occurrences above the busy threshold of the CCA correlator. Not used in @ref NRF_RADIO_CCA_MODE_ED.
+} nrf_802154_cca_cfg_t;
 
 /**
  * @brief Types of data that can be set in an ACK message.

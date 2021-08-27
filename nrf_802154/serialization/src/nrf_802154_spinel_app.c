@@ -322,6 +322,52 @@ bail:
     return error;
 }
 
+/**
+ * @brief Wait with timeout for CCA configuration property to be received.
+ *
+ * @param[in]  timeout  Timeout in us.
+ * @param[out] p_cfg    Pointer to the CCA configuration variable which needs to be populated.
+ *
+ * @returns  zero on success or negative error value on failure.
+ *
+ */
+static nrf_802154_ser_err_t cca_cfg_await(uint32_t               timeout,
+                                          nrf_802154_cca_cfg_t * p_cfg)
+{
+    nrf_802154_ser_err_t              res;
+    nrf_802154_spinel_notify_buff_t * p_notify_data = NULL;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    p_notify_data = nrf_802154_spinel_response_notifier_property_await(
+        timeout);
+
+    SERIALIZATION_ERROR_IF(p_notify_data == NULL,
+                           NRF_802154_SERIALIZATION_ERROR_RESPONSE_TIMEOUT,
+                           error,
+                           bail);
+
+    res = nrf_802154_spinel_decode_prop_nrf_802154_cca_cfg_get_ret(p_notify_data->data,
+                                                                   p_notify_data->data_len,
+                                                                   p_cfg);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    NRF_802154_SPINEL_LOG_BANNER_RESPONSE();
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->mode, "Mode");
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->ed_threshold, "ED threshold");
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->corr_threshold, "Corr threshold");
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->corr_limit, "Corr limit");
+
+bail:
+    if (p_notify_data != NULL)
+    {
+        nrf_802154_spinel_response_notifier_free(p_notify_data);
+    }
+
+    return error;
+}
+
 void nrf_802154_init(void)
 {
     nrf_802154_serialization_init();
@@ -1123,6 +1169,61 @@ bail:
     SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
 
     return time;
+}
+
+void nrf_802154_cca_cfg_set(const nrf_802154_cca_cfg_t * p_cfg)
+{
+    nrf_802154_ser_err_t res;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->mode, "Mode");
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->ed_threshold, "ED threshold");
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->corr_threshold, "Corr threshold");
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", p_cfg->corr_limit, "Corr limit");
+
+    nrf_802154_spinel_response_notifier_lock_before_request(SPINEL_PROP_LAST_STATUS);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_SET,
+        SPINEL_DATATYPE_NRF_802154_CCA_CFG_SET,
+        NRF_802154_CCA_CFG_ENCODE(*p_cfg));
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return;
+}
+
+void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cfg)
+{
+    nrf_802154_ser_err_t res;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+
+    nrf_802154_spinel_response_notifier_lock_before_request(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_GET);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_GET,
+        SPINEL_DATATYPE_NRF_802154_CCA_CFG_GET,
+        NULL);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = cca_cfg_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT, p_cfg);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
 }
 
 int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level)

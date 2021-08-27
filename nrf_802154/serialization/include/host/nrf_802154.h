@@ -200,6 +200,21 @@ bool nrf_802154_pending_bit_for_addr_clear(const uint8_t * p_addr, bool extended
 void nrf_802154_pending_bit_for_addr_reset(bool extended);
 
 /**
+ * @brief Configures the radio CCA mode and threshold.
+ *
+ * @param[in]  p_cca_cfg  Pointer to the CCA configuration structure. Only fields relevant to
+ *                        the selected mode are updated.
+ */
+void nrf_802154_cca_cfg_set(const nrf_802154_cca_cfg_t * p_cca_cfg);
+
+/**
+ * @brief Gets the current radio CCA configuration.
+ *
+ * @param[out]  p_cca_cfg  Pointer to the structure for the current CCA configuration.
+ */
+void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg);
+
+/**
  * @brief Initializes the 802.15.4 driver.
  *
  * This function initializes the RADIO peripheral in the @ref RADIO_STATE_SLEEP state.
