@@ -356,7 +356,6 @@ static bool full_parse(nrf_802154_frame_parser_data_t * p_parser_data)
     const uint8_t * p_ie_header;
     const uint8_t * p_mfr;
     const uint8_t * p_iterator;
-    const uint8_t * p_ie_end_addr;
 
     if (((psdu_length + PHR_SIZE) != p_parser_data->valid_data_len) ||
         (psdu_length > MAX_PACKET_SIZE))
@@ -374,20 +373,31 @@ static bool full_parse(nrf_802154_frame_parser_data_t * p_parser_data)
 
         while (nrf_802154_frame_parser_ie_iterator_end(p_iterator, p_mfr) == false)
         {
-            p_ie_end_addr = nrf_802154_frame_parser_ie_content_address_get(p_iterator) +
-                            nrf_802154_frame_parser_ie_length_get(p_iterator);
+            p_iterator = nrf_802154_frame_parser_ie_iterator_next(p_iterator);
 
-            // Boundary check
-            if (p_ie_end_addr > p_mfr)
+            if (p_iterator > p_mfr)
             {
+                // Boundary check failed
                 return false;
             }
-
-            p_iterator = nrf_802154_frame_parser_ie_iterator_next(p_iterator);
+            else if (p_iterator == p_mfr)
+            {
+                // End of frame; IE header has no termination.
+                offset = p_iterator - p_parser_data->p_frame;
+                break;
+            }
+            else if (nrf_802154_frame_parser_ie_iterator_end(p_iterator, p_mfr))
+            {
+                // End of IE header; termination reached.
+                offset = nrf_802154_frame_parser_ie_content_address_get(p_iterator) -
+                         p_parser_data->p_frame;
+                break;
+            }
+            else
+            {
+                // Intentionally empty
+            }
         }
-
-        offset = nrf_802154_frame_parser_ie_content_address_get(p_iterator) -
-                 p_parser_data->p_frame;
     }
 
     if (offset != nrf_802154_frame_parser_mfr_offset_get(p_parser_data))

@@ -908,6 +908,43 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_time_get(
         time);
 }
 
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_cca_cfg_get(const void * p_property_data,
+                                                                      size_t       property_data_len)
+{
+    (void)p_property_data;
+    (void)property_data_len;
+
+    nrf_802154_cca_cfg_t cfg;
+
+    nrf_802154_cca_cfg_get(&cfg);
+
+    return nrf_802154_spinel_send_cmd_prop_value_is(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_GET,
+        SPINEL_DATATYPE_NRF_802154_CCA_CFG_GET_RET,
+        NRF_802154_CCA_CFG_ENCODE(cfg));
+}
+
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_cca_cfg_set(const void * p_property_data,
+                                                                      size_t       property_data_len)
+{
+    nrf_802154_cca_cfg_t cfg;
+    spinel_ssize_t       siz;
+
+    siz = spinel_datatype_unpack(p_property_data,
+                                 property_data_len,
+                                 SPINEL_DATATYPE_NRF_802154_CCA_CFG_SET,
+                                 NRF_802154_CCA_CFG_DECODE(cfg));
+
+    if (siz < 0)
+    {
+        return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
+    }
+
+    nrf_802154_cca_cfg_set(&cfg);
+
+    return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
+}
+
 nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_cmd_data,
                                                                  size_t       cmd_data_len)
 {
@@ -1011,6 +1048,12 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TIME_GET:
             return spinel_decode_prop_nrf_802154_time_get(p_property_data,
                                                           property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_GET:
+            return spinel_decode_prop_nrf_802514_cca_cfg_get(p_property_data, property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_SET:
+            return spinel_decode_prop_nrf_802514_cca_cfg_set(p_property_data, property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_SET:
             return spinel_decode_prop_nrf_802154_ack_data_set(p_property_data,

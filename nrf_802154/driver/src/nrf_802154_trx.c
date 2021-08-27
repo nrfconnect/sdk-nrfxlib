@@ -76,6 +76,7 @@
 #elif defined(NRF5340_XXAA)
 #define PPI_CCAIDLE_FEM  0
 #define RADIO_BASE       NRF_RADIO_NS_BASE
+#define FICR_BASE        NRF_FICR_NS_BASE
 #endif
 
 #if NRF_802154_DISABLE_BCC_MATCHING
@@ -439,6 +440,23 @@ static void device_config_254_apply_tx(void)
 
 #endif
 
+/** @brief Applies ERRATA-117
+ *
+ * Shall be called after setting RADIO mode to NRF_RADIO_MODE_IEEE802154_250KBIT.
+ */
+#if defined(NRF5340_XXAA)
+static void errata_117_apply(void)
+{
+    /* Register at 0x01FF0084. */
+    uint32_t ficr_reg = *(volatile uint32_t *)(FICR_BASE + 0x84UL);
+    /* Register at 0x41008588. */
+    volatile uint32_t * p_radio_reg = (volatile uint32_t *)(RADIO_BASE + 0x588UL);
+
+    *p_radio_reg = ficr_reg;
+}
+
+#endif
+
 void nrf_802154_trx_module_reset(void)
 {
     m_trx_state                      = TRX_STATE_DISABLED;
@@ -485,6 +503,11 @@ void nrf_802154_trx_enable(void)
     nrf_radio_packet_conf_t packet_conf;
 
     nrf_radio_mode_set(NRF_RADIO, NRF_RADIO_MODE_IEEE802154_250KBIT);
+
+#if defined(NRF5340_XXAA)
+    // Apply ERRATA-117 after setting RADIO mode to NRF_RADIO_MODE_IEEE802154_250KBIT.
+    errata_117_apply();
+#endif
 
     memset(&packet_conf, 0, sizeof(packet_conf));
     packet_conf.lflen  = 8;
@@ -619,14 +642,9 @@ void nrf_802154_trx_disable(void)
 
         nrf_radio_power_set(NRF_RADIO, true);
 
-#if defined(NRF52840_XXAA) ||     \
-        defined(NRF52833_XXAA) || \
-        defined(NRF52820_XXAA) || \
-        defined(NRF52811_XXAA)
         mpsl_fem_lna_configuration_clear();
         mpsl_fem_pa_configuration_clear();
         mpsl_fem_abort_clear();
-#endif
 
         if (m_trx_state != TRX_STATE_IDLE)
         {
