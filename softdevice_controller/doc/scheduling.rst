@@ -315,6 +315,19 @@ The following figure shows a Scanner with a long :math:`\mathsf{scanWindow}` whi
 
    Scanner timing - one connection, long window
 
+Primary channel cooperative scanning
+------------------------------------
+
+When the scan window is set equal to the scan interval, the |controller| will schedule new primary channel scanner timing-events cooperatively.
+This allows other timing-events, such as advertising, to be interleaved with the scanning activity.
+
+.. figure:: pic/schedule/scanner_timing_coop.svg
+   :alt: Alt text: A diagram showing other timing activities interleaving primary channel scanning.
+   :align: center
+   :width: 80%
+
+   Scanner timing - when window is equal to interval, scanning is cooperative
+
 Secondary channel Scanner timing
 ================================
 

@@ -36,6 +36,9 @@ Bug fixes
 * Fixed an issue where the channel map provided by the "LE Host Set Channel Classification" HCI command was not always applied on the secondary advertising channels (DRGN-15695).
 * Fixed an issue on the nRF53 Series where an assert could occur while scanning using legacy commands (DRGN-15852).
 * Fixed an issue on the nRF53 Series where the scanner could generate corrupted advertising reports (DRGN-15852).
+* Fixed an issue where the ``mpsl_tx_power_channel_map_set()`` API would not work on peripheral-only or central-only configurations (DRGN-16091).
+* Fixed an issue where an assert may occur when legacy advertiser is used after "HCI LE Clear Advertising Sets" (DRGN-15993).
+* Fixed an issue where an assert could occur when in LLPM mode and the connection interval was more than 1 ms (DRGN-16079).
 
 Changes
 =======
