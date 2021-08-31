@@ -9,7 +9,7 @@ GNSS socket
 
 .. note::
 
-   Starting from Modem library v1.2.0, the GNSS socket is deprecated and replaced with the `GNSS interface <https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrfxlib/nrf_modem/doc/gnss_interface.html>`_.
+   Starting from Modem library v1.2.0, the GNSS socket is deprecated and replaced with the :ref:`gnss_interface`.
 
 `Global navigation satellite system (GNSS)`_ socket is one of the socket types supported by the Modem library.
 This socket type is used to configure and fetch GPS position fix data from the GPS module, and to write `A-GPS`_ data to the GPS module.

@@ -23,6 +23,12 @@
 
 .. _`nRF IEEE 802.15.4 radio driver documentation`: https://infocenter.nordicsemi.com/topic/15.4_radio_driver_v2.0.0-1.prealpha/index.html
 
+.. _Radio Driver section: https://infocenter.nordicsemi.com/topic/15.4_radio_driver_v1.10.0/rd_release_notes.html
+
+.. _nRF21540: https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF21540
+
+.. _nRF21540 Product Specification: https://infocenter.nordicsemi.com/topic/struct_fem/struct/nrf21540_ps.html
+
 .. _`Infocenter`: https://infocenter.nordicsemi.com/index.jsp
 
 .. _`Thread CIDs for nRF5340`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf5340/COMP/nrf5340/nrf5340_thread_cids.html
