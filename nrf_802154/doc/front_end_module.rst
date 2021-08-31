@@ -12,8 +12,6 @@ The range increase depends on the FEM used.
 
 The radio driver library includes FEM support for the `nRF21540`_ (PCA10112).
 
-.. _nRF21540: https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF21540
-
 .. _rd_fem_implementations:
 
 FEM implementations
@@ -132,8 +130,6 @@ Configuring pins
 ================
 
 Other FEM pins (like **ANT_SEL**, **MODE**, **MOSI**, **MISO**, **CLK**, **CSN** for the nRF21540) are not supported by the MPSL library and must be set to the safe state described in the specific FEM documentation (for example, `nRF21540 Product Specification`_).
-
-.. _nRF21540 Product Specification: https://infocenter.nordicsemi.com/topic/struct_fem/struct/nrf21540_ps.html
 
 .. note::
    The current implementation of the FEM support does not implement the SPI interface or MODE pin support and does not change the transmission power after the initialization.

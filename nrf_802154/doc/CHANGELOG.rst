@@ -66,8 +66,6 @@ Notable Changes
 * The 802.15.4 Radio Driver API has been modified to support more than a single delayed reception window simultaneously.
   The :c:func:`nrf_802154_receive_at`, :c:func:`nrf_802154_receive_at_cancel`, and :c:func:`nrf_802154_receive_failed` functions take an additional parameter that identifies a given reception window unambiguously.
 
-.. _Radio Driver section: https://infocenter.nordicsemi.com/topic/15.4_radio_driver_v1.10.0/rd_release_notes.html
-
 nRF 802.15.4 Service Layer 0.5.0
 ********************************
 
