@@ -13,6 +13,7 @@ The descriptions are valid for both RTOS and RTOS-free environments.
 For the nRF53 Series, the requirements described are only relevant for applications running alongside the MPSL on the network processor.
 
 The following peripherals are owned by MPSL and must not be accessed directly by the application:
+
  * ``RTC0``
  * ``TIMER0``
  * ``TIMER1`` (for the nRF53 Series)
