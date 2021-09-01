@@ -1,22 +1,23 @@
 .. _mpsl_clock:
 
 MPSL Clock
-**********
+##########
+
+.. contents::
+    :local:
+    :depth: 2
 
 The MPSL clock module provides access to the low-frequency clock (LFCLK) configuration and allows the application to request the crystal oscillator source of the high-frequency clock (HFCLK).
 
-Design description
-==================
-
-See the following <Low-frequency clock (LFCLK)>_ and <High-frequency clock (HFCLK)>_ sections for a description of the design.
+See the following `Low-frequency clock (LFCLK)`_ and `High-frequency clock (HFCLK)`_ sections for a description of the design.
 
 Low-frequency clock (LFCLK)
----------------------------
+***************************
 
-MPSL can use one of the two available low-frequency clock (LFCLK) sources:
+MPSL can use one of the following available low-frequency clock (LFCLK) sources:
 
-* the 32.768 kHz internal RC oscillator (LFRC)
-* the 32.768 kHz crystal oscillator (LFXO)
+* 32.768 kHz internal RC oscillator (LFRC)
+* 32.768 kHz crystal oscillator (LFXO)
 
 When MPSL is enabled, the application must provide the selected LFCLK source, calibration configurations, and clock accuracy.
 The selected accuracy is meant to be forwarded only to the protocol stacks.
@@ -35,7 +36,7 @@ As the MPSL clock module runs the calibration automatically, the application mus
    It is recommended to use a temperature polling interval of 4 seconds, and to force the clock calibration every second interval (``.rc_ctiv=16``, ``.rc_temp_ctiv=2``).
 
 High-frequency clock (HFCLK)
-----------------------------
+****************************
 
 The high-frequency clock (HFCLK) controller supports the following HFCLK sources:
 

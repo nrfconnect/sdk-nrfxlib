@@ -20,11 +20,12 @@ Implementation
 
 Two FEM implementations are provided:
 
-* *nRF21540 GPIO*.
-  It is compatible with the nRF21540 FEM and implements a 3-pin interface.
-* *Simple GPIO*.
-  It is a simplified version, made to be compatible with other front-end modules.
-  It implements a 2-pin interface.
+* nRF21540 GPIO.
+   It is compatible with the nRF21540 FEM and implements a 3-pin interface.
+
+* Simple GPIO.
+   It is a simplified version, made to be compatible with other front-end modules.
+   It implements a 2-pin interface.
 
 Both implementations use PA and LNA pins for controlling the FEM.
 Additionally, the nRF21540 GPIO implementation uses the PDN pin for powering down the FEM internal circuits, to reduce energy consumption.
