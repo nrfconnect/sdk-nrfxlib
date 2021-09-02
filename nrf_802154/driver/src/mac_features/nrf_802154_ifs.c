@@ -99,11 +99,16 @@ static bool is_ifs_needed_by_address(const uint8_t * p_frame)
                                                     PARSE_LEVEL_ADDRESSING_END,
                                                     &frame_data);
 
-    assert(result);
-    (void)result;
-
-    addr        = nrf_802154_frame_parser_dst_addr_get(&frame_data);
-    is_extended = nrf_802154_frame_parser_dst_addr_is_extended(&frame_data);
+    if (result)
+    {
+        addr        = nrf_802154_frame_parser_dst_addr_get(&frame_data);
+        is_extended = nrf_802154_frame_parser_dst_addr_is_extended(&frame_data);
+    }
+    else
+    {
+        addr        = NULL;
+        is_extended = false;
+    }
 
     if (!addr)
     {
@@ -226,11 +231,16 @@ void nrf_802154_ifs_transmitted_hook(const uint8_t * p_frame)
                                                     PARSE_LEVEL_ADDRESSING_END,
                                                     &frame_data);
 
-    assert(result);
-    (void)result;
-
-    addr                       = nrf_802154_frame_parser_dst_addr_get(&frame_data);
-    m_is_last_address_extended = nrf_802154_frame_parser_dst_addr_is_extended(&frame_data);
+    if (result)
+    {
+        addr                       = nrf_802154_frame_parser_dst_addr_get(&frame_data);
+        m_is_last_address_extended = nrf_802154_frame_parser_dst_addr_is_extended(&frame_data);
+    }
+    else
+    {
+        addr                       = NULL;
+        m_is_last_address_extended = false;
+    }
 
     if (!addr)
     {

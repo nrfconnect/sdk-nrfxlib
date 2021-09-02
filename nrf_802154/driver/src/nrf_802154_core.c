@@ -2250,8 +2250,11 @@ static bool ack_match_check_version_2(const uint8_t * p_tx_frame, const uint8_t 
                                                      p_tx_frame[PHR_OFFSET] + PHR_SIZE,
                                                      PARSE_LEVEL_ADDRESSING_END,
                                                      &tx_data);
-    assert(parse_result);
-    (void)parse_result;
+    if (!parse_result)
+    {
+        return false;
+    }
+
     parse_result = nrf_802154_frame_parser_data_init(p_ack_frame,
                                                      p_ack_frame[PHR_OFFSET] + PHR_SIZE,
                                                      PARSE_LEVEL_ADDRESSING_END,
