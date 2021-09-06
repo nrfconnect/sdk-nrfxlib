@@ -15,6 +15,10 @@
 # Note: The OUTPUT is the same as input in the current version of the script.
 #       This will change in an upcoming refactoring
 #
+if(DEFINED INCLUDE)
+  include(${INCLUDE})
+endif()
+
 execute_process(
   COMMAND ${CMAKE_COMMAND} -E make_directory ${OUT_FOLDER}
 )
