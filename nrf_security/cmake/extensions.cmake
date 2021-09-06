@@ -649,15 +649,24 @@ function(nrf_security_target_embed_objects)
         ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${backend_name}.txt
       )
 
+      set(symbol_rename_include"\
+        set(CMAKE_OBJCOPY ${CMAKE_OBJCOPY})\n\
+        set(CMAKE_AR ${CMAKE_AR})\n\
+        set(OBJECTS $<TARGET_OBJECTS:${target}>)\n\
+        set(ARCHIVE $<TARGET_FILE:${SEC_LIBS_TARGET}>)\n\
+        set(RENAME ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${backend_name}.txt)\n\
+        set(OUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}/${backend_name})\n"
+      )
+
+      file(GENERATE OUTPUT
+        ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${target}_include.cmake
+	CONTENT "${symbol_rename_include}"
+      )
+
       add_custom_command(TARGET ${SEC_LIBS_TARGET}
         POST_BUILD
         COMMAND ${CMAKE_COMMAND}
-          -DCMAKE_OBJCOPY=${CMAKE_OBJCOPY}
-          -DCMAKE_AR=${CMAKE_AR}
-          -DOBJECTS="$<TARGET_OBJECTS:${target}>"
-          -DARCHIVE=$<TARGET_FILE:${SEC_LIBS_TARGET}>
-          -DRENAME="${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${backend_name}.txt"
-          -DOUT_FOLDER=${CMAKE_CURRENT_BINARY_DIR}/${backend_name}
+          -DINCLUDE=${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${target}_include.cmake
           -P ${NRF_SECURITY_ROOT}/cmake/symbol_rename_archive_script.cmake
       )
     else()
