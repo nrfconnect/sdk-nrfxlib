@@ -235,6 +235,8 @@ Currently, the only supported start mode is optimized for multiple hot starts.
 This is enabled by default and does not need to be set using a function.
 However, whenever the :c:func:`nrf_modem_gnss_use_case_set` function is called, the bit :c:data:`NRF_MODEM_GNSS_USE_CASE_MULTIPLE_HOT_START` should be set.
 
+.. _gnss_int_low_accuracy_mode:
+
 Low accuracy mode
 -----------------
 
@@ -246,10 +248,8 @@ In normal accuracy mode, four or more satellites are used.
 For a possible position fix using only three satellites, GNSS must have a reference altitude that has been updated in the last 24 hours.
 The reference altitude is obtained from one of the following sources:
 
-* A GNSS fix using five or more satellites.
-   In the subsequent time window following the fix using five satellites, any fix that uses five or more satellites results in the extension of the 24-hour time window.
-* A-GPS assistance data.
-   The assistance data is injected to GNSS using the :c:type:`nrf_modem_gnss_agps_data_location` A-GPS data location struct, as shown in the example code below:
+* A GNSS fix using five or more satellites - In the subsequent time window following the fix using five satellites, any fix that uses five or more satellites results in the extension of the 24-hour time window.
+* A-GPS assistance data - The assistance data is injected to GNSS using the :c:type:`nrf_modem_gnss_agps_data_location` A-GPS data location struct, as shown in the example code below:
 
   .. code-block:: c
 
@@ -497,6 +497,8 @@ In cases where GNSS is not running continuously, it may be beneficial to change 
 .. note::
 
    1PPS is only supported by modem firmware v1.3.0 or later.
+
+.. _gnss_int_agps_data:
 
 A-GPS data
 **********
