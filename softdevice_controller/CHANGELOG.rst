@@ -9,10 +9,10 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
-Master branch
-*************
+nRF Connect SDK v1.7.0
+**********************
 
-All the notable changes added to the master branch are documented in this section.
+All the notable changes included in the |NCS| v1.7.0 release are documented in this section.
 
 Added
 =====
@@ -28,6 +28,7 @@ Changes
 * The scanner is now scheduling cooperatively when the scan window is equal to the scan interval.
   This improves the performance in the case of Bluetooth Mesh applications (DRGN-13146).
 * Support for radio front-end module (FEM) in nRF53 Series, based on the :ref:`mpsl_fem` (DRGN-14908).
+* The application must now call the APIs prefixed with ``sdc_support_`` before calling :c:func:`sdc_cfg_set` (DRGN-15899).
 
 Bug fixes
 =========
@@ -39,11 +40,6 @@ Bug fixes
 * Fixed an issue where the ``mpsl_tx_power_channel_map_set()`` API would not work on peripheral-only or central-only configurations (DRGN-16091).
 * Fixed an issue where an assert may occur when legacy advertiser is used after "HCI LE Clear Advertising Sets" (DRGN-15993).
 * Fixed an issue where an assert could occur when in LLPM mode and the connection interval was more than 1 ms (DRGN-16079).
-
-Changes
-=======
-
-* The application must now call the APIs prefixed with ``sdc_support_` before calling :c:func:`sdc_cfg_set` (DRGN-15899).
 
 nRF Connect SDK v1.6.0
 **********************

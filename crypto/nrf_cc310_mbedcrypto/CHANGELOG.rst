@@ -10,7 +10,7 @@ Changelog - nrf_cc3xx_mbedcrypto
 All notable changes to this project are documented in this file.
 
 nrf_cc3xx_mbedcrypto - 0.9.11
-****************************
+*****************************
 
 New version of the runtime library with the following bug fix:
 
