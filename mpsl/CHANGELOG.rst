@@ -9,10 +9,10 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
-Master branch
-*************
+nRF Connect SDK v1.7.0
+**********************
 
-All the notable changes added to the master branch are documented in this section.
+All the notable changes included in the |NCS| v1.7.0 release are documented in this section.
 
 Added
 =====
