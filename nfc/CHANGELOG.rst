@@ -9,6 +9,28 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+master
+******
+
+Added
+=====
+
+* A dedicated header file :file:`nrf_nfc_errno.h` with error codes.
+* A source file that translates nrfx error codes to NFC library error codes.
+* Definitions for returned error codes in the API documentation.
+
+Modified
+========
+
+* The library returns specific errors codes from the :file:`nrf_nfc_errno.h` file instead of Zephyr error codes.
+* Removed unit tests dependencies from the header files :file:`nfc_t2t_lib.h` and :file:`nrf_t4t_lib.h`.
+
+Bug fixes
+=========
+
+ * Fixed handling R(NAK) frame after sending R(ACK) frame.
+   The Tag should respond with last transmitted R(ACK) frame.
+
 nRF Connect SDK v1.8.0
 **********************
 
@@ -16,8 +38,6 @@ No changes in this release.
 
 nRF Connect SDK v1.7.0
 **********************
-
-All the notable changes included in the |NCS| v1.7.0 release are documented in this section.
 
 Modified
 ========

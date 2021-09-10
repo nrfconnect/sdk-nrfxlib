@@ -1,13 +1,50 @@
-/*
- * Copyright (c) 2018 Nordic Semiconductor ASA
+/**
+ * Copyright (c) 2015, Telit Communications Cyprus Ltd
  *
- * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form, except as embedded into a Nordic
+ *    Semiconductor ASA integrated circuit in a product or a software update for
+ *    such product, must reproduce the above copyright notice, this list of
+ *    conditions and the following disclaimer in the documentation and/or other
+ *    materials provided with the distribution.
+ *
+ * 3. Neither the name of Nordic Semiconductor ASA nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
+ *
+ * 4. This software, with or without modification, must only be used with a
+ *    Nordic Semiconductor ASA integrated circuit.
+ *
+ * 5. Any software provided in binary form under this license must not be reverse
+ *    engineered, decompiled, modified and/or disassembled.
+ *
+ * THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
+ * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
 
 #ifndef NFC_T2T_LIB_H__
 #define NFC_T2T_LIB_H__
 
-/** @file
+/** @file nfc_t2t_lib.h
+ *
+ * @defgroup nfc_t2t NFC Type 2 Tag
+ * @brief Implementation of NFC Type 2 Tag.
  *
  * @defgroup nfc_t2t_lib NFC tag 2 type emulation library
  * @{
@@ -30,7 +67,8 @@ extern "C" {
 #define NFC_T2T_MAX_PAYLOAD_SIZE_RAW  1008
 
 /** @brief Events passed to the callback function. */
-enum nfc_t2t_event {
+typedef enum
+{
 	/** Not used.*/
 	NFC_T2T_EVENT_NONE,
 
@@ -54,11 +92,10 @@ enum nfc_t2t_event {
 	 *  @ref nfc_t2t_done.
 	 */
 	NFC_T2T_EVENT_STOPPED
-};
+} nfc_t2t_event_t;
 
-enum nfc_t2t_param_id {
-	/** Used for unit tests.*/
-	NFC_T2T_PARAM_TESTING,
+typedef enum
+{
 	/** NFCID1 value, data can be 4, 7, or 10 bytes long (single, double,
 	 * or triple size). To use default NFCID1 of specific length pass one
 	 * byte containing requested length. Default 7-byte NFCID1 will be
@@ -67,7 +104,7 @@ enum nfc_t2t_param_id {
 	 * later.
 	 */
 	NFC_T2T_PARAM_NFCID1,
-};
+} nfc_t2t_param_id_t;
 
 /**@brief Callback to pass events from NFC T2T Library to application.
  *
@@ -77,7 +114,7 @@ enum nfc_t2t_param_id {
  * @param data_length Length of the data.
  */
 typedef void (*nfc_t2t_callback_t)(void *context,
-				   enum nfc_t2t_event event,
+				   nfc_t2t_event_t event,
 				   const uint8_t *data,
 				   size_t data_length);
 
@@ -91,8 +128,9 @@ typedef void (*nfc_t2t_callback_t)(void *context,
  * @param context Pointer to a memory area used by the callback for
  * execution (optional).
  *
- * @retval 0 If the application callback was registered successfully. If one of
- * the arguments was invalid, an error code is returned.
+ * @retval 0 Success.
+ * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer))
+ * @retval -NRF_EOPNOTSUPP If emulation is in running state.
  */
 int nfc_t2t_setup(nfc_t2t_callback_t callback, void *context);
 
@@ -104,9 +142,10 @@ int nfc_t2t_setup(nfc_t2t_callback_t callback, void *context);
  * @param data Pointer to a buffer containing the data to set.
  * @param data_length Size of the buffer containing the data to set.
  *
- * @retval Zero on success or (negative) error code otherwise.
+ * @retval 0 Success.
+ * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
  */
-int nfc_t2t_parameter_set(enum nfc_t2t_param_id  id,
+int nfc_t2t_parameter_set(nfc_t2t_param_id_t id,
 			  void *data,
 			  size_t data_length);
 
@@ -122,9 +161,10 @@ int nfc_t2t_parameter_set(enum nfc_t2t_param_id  id,
  * @param max_data_length Size of the buffer, receives actual size of
  *	  queried data.
  *
- * @retval Zero on success or (negative) error code otherwise.
+ * @retval 0 Success.
+ * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
  */
-int nfc_t2t_parameter_get(enum nfc_t2t_param_id id,
+int nfc_t2t_parameter_get(nfc_t2t_param_id_t id,
 			  void *data,
 			  size_t *max_data_length);
 
@@ -155,7 +195,9 @@ int nfc_t2t_parameter_get(enum nfc_t2t_param_id id,
  * payload to send.
  * @param payload_length Size of the payload in bytes.
  *
- * @retval Zero on success or (negative) error code otherwise.
+ * @retval 0 Success.
+ * @retval -NRF_EINVAL Invalid @p payload_length.
+ * @retval -NRF_EOPNOTSUPP Payload has been already set.
  */
 int nfc_t2t_payload_set(const uint8_t *payload, size_t payload_length);
 
@@ -185,8 +227,9 @@ int nfc_t2t_payload_set(const uint8_t *payload, size_t payload_length);
  * payload to send.
  * @param payload_length Size of the payload in bytes.
  *
- * @retval 0 If the operation was successful. If one of the arguments was
- * invalid, an error code is returned.
+ * @retval 0 Success.
+ * @retval -NRF_EINVAL Invalid @p payload_length.
+ * @retval -NRF_EOPNOTSUPP Payload has been already set.
  */
 int nfc_t2t_payload_raw_set(const uint8_t *payload,
 			    size_t payload_length);
@@ -202,13 +245,13 @@ int nfc_t2t_payload_raw_set(const uint8_t *payload,
  * remain valid after the function returns.
  *
  * @note When modifying the internal bytes, remember that they must be
- *	 consistent with the NFC hardware register settings
+ *	 consistent with the NFC hardware register settings.
  *
  * @param data Pointer to the memory area containing the data.
  * @param data_length Size of the data in bytes.
  *
- * @retval 0 If the operation was successful. If the data was not NULL and the
- * data length was not 10, an error code is returned.
+ * @retval 0 Success.
+ * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
  */
 int nfc_t2t_internal_set(const uint8_t *data, size_t data_length);
 
@@ -217,8 +260,8 @@ int nfc_t2t_internal_set(const uint8_t *data, size_t data_length);
  * You must call this function so that events are posted to the application
  * callback.
  *
- * @retval 0 If the NFC frontend was activated successfully. If the lower layer
- * could not be started, an error code is returned.
+ * @retval 0 Success.
+ * @retval -NRF_EOPNOTSUPP Already started.
  */
 int nfc_t2t_emulation_start(void);
 
@@ -227,8 +270,8 @@ int nfc_t2t_emulation_start(void);
  * After calling this function, no more events will be posted to the
  * application callback.
  *
- * @retval 0 If the NFC frontend was deactivated successfully. If the lower
- * layer could not be stopped, an error code is returned.
+ * @retval 0 Success.
+ * @retval -NRF_EOPNOTSUPP Emulation has been already stopped.
  */
 int nfc_t2t_emulation_stop(void);
 
@@ -237,7 +280,8 @@ int nfc_t2t_emulation_stop(void);
  * After calling this function, the passed callback pointer is no longer
  * considered valid.
  *
- * @retval 0 This function always succeeds.
+ * @retval 0 Success.
+ * @retval -NRF_EOPNOTSUPP The NFC T4T has been de-initialized already.
  */
 int nfc_t2t_done(void);
 

@@ -17,17 +17,18 @@ if(NOT EXISTS ${NFC_LIB_DIR})
 endif()
 
 zephyr_include_directories(include)
+zephyr_sources(src/nfc_nrfx_error_to_nfc.c)
 
 if (NOT CONFIG_SOC_SERIES)
 	message(WARNING "CONFIG_SOC_SERIES must be specified.")
 endif()
 
 if(CONFIG_NFC_T2T_NRFXLIB)
-	zephyr_link_libraries(${NFC_LIB_DIR}/libnfct2t_${CONFIG_SOC_SERIES}.a)
+	zephyr_link_libraries(${NFC_LIB_DIR}/libnfc_t2t.a)
 endif()
 
 if(CONFIG_NFC_T4T_NRFXLIB)
-	zephyr_link_libraries(${NFC_LIB_DIR}/libnfct4t_${CONFIG_SOC_SERIES}.a)
+	zephyr_link_libraries(${NFC_LIB_DIR}/libnfc_t4t.a)
 endif()
 
 if (NOT CONFIG_NFC_T2T_NRFXLIB AND NOT CONFIG_NFC_T4T_NRFXLIB)
