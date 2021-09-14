@@ -24,10 +24,10 @@ doc/*                                     @b-gent
 
 # All subfolders
 /.github/                                 @thst-nordic
-/softdevice_controller/                   @joerchan @rugeGerritsen
+/softdevice_controller/                   @rugeGerritsen
 /nrf_modem/                               @rlubos @lemrey @evenl
 /crypto/                                  @frkv @tejlmand
-/mpsl/                                    @joerchan @rugeGerritsen
+/mpsl/                                    @rugeGerritsen
 /nfc/                                     @anangl @grochu
 /nrf_802154/                              @czeslawmakarski
 /nrf_security/                            @frkv @tejlmand
