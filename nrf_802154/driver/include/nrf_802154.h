@@ -102,11 +102,12 @@ void nrf_802154_deinit(void);
  */
 extern void nrf_802154_custom_part_of_radio_init(void);
 
-#if !NRF_802154_INTERNAL_RADIO_IRQ_HANDLING
+#if !NRF_802154_INTERNAL_RADIO_IRQ_HANDLING || defined(DOXYGEN)
+
 /**
  * @brief Handles the interrupt request from the RADIO peripheral.
  *
- * @note If NRF_802154_INTERNAL_RADIO_IRQ_HANDLING is enabled, the driver internally handles the
+ * @note If @ref NRF_802154_INTERNAL_RADIO_IRQ_HANDLING is enabled, the driver internally handles the
  *       RADIO IRQ, and this function must not be called.
  *
  * This function is intended for use in an operating system environment, where the OS handles IRQ
@@ -114,13 +115,15 @@ extern void nrf_802154_custom_part_of_radio_init(void);
  * radio IRQ to the driver (that is, SoftDevice).
  */
 void nrf_802154_radio_irq_handler(void);
+
 #endif // !NRF_802154_INTERNAL_RADIO_IRQ_HANDLING
 
-#if !NRF_802154_INTERNAL_SWI_IRQ_HANDLING
+#if !NRF_802154_INTERNAL_SWI_IRQ_HANDLING || defined(DOXYGEN)
+
 /**
  * @brief Handles the interrupt request from the RADIO peripheral.
  *
- * @note If NRF_802154_INTERNAL_SWI_IRQ_HANDLING is enabled, the driver internally handles the
+ * @note If @ref NRF_802154_INTERNAL_SWI_IRQ_HANDLING is enabled, the driver internally handles the
  *       SWI IRQ, and this function must not be called.
  *
  * This function is intended for use in an operating system environment, where the OS handles IRQ
@@ -128,6 +131,7 @@ void nrf_802154_radio_irq_handler(void);
  * radio IRQ to the driver (that is, SoftDevice).
  */
 void nrf_802154_swi_irq_handler(void);
+
 #endif // !NRF_802154_INTERNAL_SWI_IRQ_HANDLING
 
 /**
@@ -204,8 +208,8 @@ nrf_802154_sl_ant_div_mode_t nrf_802154_antenna_diversity_tx_mode_get(void);
  * @brief Manually selects the antenna to be used for rx.
  *
  * For antenna to be switched, antenna diversity rx mode needs
- * to be @ref NRF_802154_SL_ANT_DIV_MODE_MANUAL. Otherwise, antenna will
- * be only switched after @ref NRF_802154_SL_ANT_DIV_MODE_MANUAL is set.
+ * to be @c NRF_802154_SL_ANT_DIV_MODE_MANUAL. Otherwise, antenna will
+ * be only switched after @c NRF_802154_SL_ANT_DIV_MODE_MANUAL is set.
  *
  * @param[in] antenna Antenna to be used.
  *
@@ -218,9 +222,8 @@ bool nrf_802154_antenna_diversity_rx_antenna_set(nrf_802154_sl_ant_div_antenna_t
  * @brief Gets antenna currently used for rx.
  *
  * @note The antenna read by this function is currently used rx antenna only if
- * antenna diversity rx mode is set to @ref NRF_802154_SL_ANT_DIV_MODE_MANUAL. Otherwise,
+ * antenna diversity rx mode is set to @c NRF_802154_SL_ANT_DIV_MODE_MANUAL. Otherwise,
  * currently used antenna may be different.
- * @sa nrf_802154_sl_ant_div_mode_set
  *
  * @return Currently used antenna.
  */
@@ -230,8 +233,8 @@ nrf_802154_sl_ant_div_antenna_t nrf_802154_antenna_diversity_rx_antenna_get(void
  * @brief Manually selects the antenna to be used for tx.
  *
  * For antenna to be switched, antenna diversity tx mode needs
- * to be @ref NRF_802154_SL_ANT_DIV_MODE_MANUAL. Otherwise, antenna will
- * be only switched after @ref NRF_802154_SL_ANT_DIV_MODE_MANUAL is set.
+ * to be @c NRF_802154_SL_ANT_DIV_MODE_MANUAL. Otherwise, antenna will
+ * be only switched after @c NRF_802154_SL_ANT_DIV_MODE_MANUAL is set.
  *
  * @param[in] antenna Antenna to be used.
  *
@@ -244,9 +247,8 @@ bool nrf_802154_antenna_diversity_tx_antenna_set(nrf_802154_sl_ant_div_antenna_t
  * @brief Gets antenna currently used for tx.
  *
  * @note The antenna read by this function is currently used tx antenna only if
- * antenna diversity tx mode is set to @ref NRF_802154_SL_ANT_DIV_MODE_MANUAL. Otherwise,
+ * antenna diversity tx mode is set to @c NRF_802154_SL_ANT_DIV_MODE_MANUAL. Otherwise,
  * currently used antenna may be different.
- * @sa nrf_802154_sl_ant_div_mode_set
  *
  * @return Currently used antenna.
  */
@@ -255,7 +257,7 @@ nrf_802154_sl_ant_div_antenna_t nrf_802154_antenna_diversity_tx_antenna_get(void
 /**
  * @brief Gets which antenna was selected as best for the last reception.
  *
- * @note In three cases @ref NRF_802154_SL_ANT_DIV_ANTENNA_NONE may be returned:
+ * @note In three cases @c NRF_802154_SL_ANT_DIV_ANTENNA_NONE may be returned:
  *  - No frame was received yet.
  *  - Last frame was received with antenna diversity auto mode disabled.
  *  - RSSI measurements didn't have enough time to finish during last frame reception
@@ -327,14 +329,13 @@ void nrf_802154_antenna_diversity_timer_irq_handler(void);
  * @brief Gets the current time.
  *
  * The time returned by this function is to be used to calculate timing parameters for
- * @ref nrf_802154_transmit_at and @ref nrf_802154_receive_at functions.
+ * @ref nrf_802154_transmit_raw_at and @ref nrf_802154_receive_at functions.
  *
  * @returns Current time in microseconds.
  */
 uint32_t nrf_802154_time_get(void);
 
 /**
- * @}
  * @defgroup nrf_802154_addresses Setting addresses and PAN ID of the device
  * @{
  */
@@ -462,7 +463,7 @@ bool nrf_802154_receive(void);
  * This function works as a delayed version of @ref nrf_802154_receive. It is asynchronous.
  * It queues the delayed reception using the Radio Scheduler module.
  * If the delayed reception cannot be performed (@ref nrf_802154_receive_at would return false)
- * or the requested reception timeslot is denied, @ref nrf_drv_radio802154_receive_failed is called
+ * or the requested reception timeslot is denied, @ref nrf_802154_receive_failed is called
  * with the @ref NRF_802154_RX_ERROR_DELAYED_TIMESLOT_DENIED argument.
  *
  * If the requested reception time is in the past, the function returns false and does not
@@ -509,23 +510,26 @@ bool nrf_802154_receive_at(uint32_t t0,
  */
 bool nrf_802154_receive_at_cancel(uint32_t id);
 
-#if NRF_802154_USE_RAW_API
+#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
+
 /**
  * @brief Changes the radio state to @ref RADIO_STATE_TX.
  *
  * @note If the CPU is halted or interrupted while this function is executed,
- *       @ref nrf_802154_transmitted or @ref nrf_802154_transmit_failed can be called before this
+ *       @ref nrf_802154_transmitted_raw or @ref nrf_802154_transmit_failed can be called before this
  *       function returns a result.
  *
  * @note This function is implemented in zero-copy fashion. It passes the given buffer pointer to
  *       the RADIO peripheral.
+ *
+ * @note This function is available if @ref NRF_802154_USE_RAW_API is enabled.
  *
  * In the transmit state, the radio transmits a given frame. If requested, it waits for
  * an ACK frame. Depending on @ref NRF_802154_ACK_TIMEOUT_ENABLED, the radio driver automatically
  * stops waiting for an ACK frame or waits indefinitely for an ACK frame. If it is configured to
  * wait, the MAC layer is responsible for calling @ref nrf_802154_receive or
  * @ref nrf_802154_sleep after the ACK timeout.
- * The transmission result is reported to the higher layer by calls to @ref nrf_802154_transmitted
+ * The transmission result is reported to the higher layer by calls to @ref nrf_802154_transmitted_raw
  * or @ref nrf_802154_transmit_failed.
  *
  * @verbatim
@@ -543,8 +547,11 @@ bool nrf_802154_receive_at_cancel(uint32_t id);
  *                         The CRC is computed automatically by the radio hardware. Therefore,
  *                         the FCS field can contain any bytes.
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
- *                         to transmit and additional parameters for the procedure.
- *                         If NULL, @ref NRF_802154_TRANSMIT_METADATA_DEFAULT_INIT is used.
+ *                         to transmit. If @c NULL following metadata are used:
+ *                         Field           | Value
+ *                         ----------------|-----------------------------------------------------
+ *                         @c frame_props  | @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
+ *                         @c cca          | @c true
  *
  * @retval  true   The transmission procedure was scheduled.
  * @retval  false  The driver could not schedule the transmission procedure.
@@ -552,7 +559,9 @@ bool nrf_802154_receive_at_cancel(uint32_t id);
 bool nrf_802154_transmit_raw(uint8_t                              * p_data,
                              const nrf_802154_transmit_metadata_t * p_metadata);
 
-#else // NRF_802154_USE_RAW_API
+#endif // NRF_802154_USE_RAW_API
+
+#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
 
 /**
  * @brief Changes the radio state to transmit.
@@ -564,6 +573,8 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
  * @note This function copies the given buffer. It maintains an internal buffer, which is used to
  *       make a frame copy. To prevent unnecessary memory consumption and to perform zero-copy
  *       transmission, use @ref nrf_802154_transmit_raw instead.
+ *
+ * @note This function is available if @ref NRF_802154_USE_RAW_API is disabled.
  *
  * In the transmit state, the radio transmits a given frame. If requested, it waits for
  * an ACK frame. Depending on @ref NRF_802154_ACK_TIMEOUT_ENABLED, the radio driver automatically
@@ -588,8 +599,11 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
  * @param[in]  length      Length of the given frame. This value must exclude PHR and FCS fields
  *                         from the given frame (exact size of buffer pointed to by @p p_data).
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
- *                         to transmit and additional parameters for the procedure.
- *                         If NULL, @ref NRF_802154_TRANSMIT_METADATA_DEFAULT_INIT is used.
+ *                         to transmit. If @c NULL following metadata are used:
+ *                         Field           | Value
+ *                         ----------------|-----------------------------------------------------
+ *                         @c frame_props  | @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
+ *                         @c cca          | @c true
  *
  * @retval  true   The transmission procedure was scheduled.
  * @retval  false  The driver could not schedule the transmission procedure.
@@ -598,7 +612,7 @@ bool nrf_802154_transmit(const uint8_t                        * p_data,
                          uint8_t                                length,
                          const nrf_802154_transmit_metadata_t * p_metadata);
 
-#endif // NRF_802154_USE_RAW_API
+#endif // !NRF_802154_USE_RAW_API
 
 /**
  * @brief Requests transmission at the specified time.
@@ -606,18 +620,19 @@ bool nrf_802154_transmit(const uint8_t                        * p_data,
  * @note This function is implemented in a zero-copy fashion. It passes the given buffer pointer to
  *       the RADIO peripheral.
  *
+ *
  * This function works as a delayed version of @ref nrf_802154_transmit_raw. It is asynchronous.
  * It queues the delayed transmission using the Radio Scheduler module and performs it
  * at the specified time.
  *
- * If the delayed transmission is successfully performed, @ref nrf_802154_transmitted is called.
- * If the delayed transmission cannot be performed (@ref nrf_802154_transmit_raw would return false)
+ * If the delayed transmission is successfully performed, @ref nrf_802154_transmitted_raw is called.
+ * If the delayed transmission cannot be performed ( @ref nrf_802154_transmit_raw would return @c false)
  * or the requested transmission timeslot is denied, @ref nrf_802154_transmit_failed with the
  * @ref NRF_802154_TX_ERROR_TIMESLOT_DENIED argument is called.
  *
  * This function is designed to transmit the first symbol of SHR at the given time.
  *
- * If the requested transmission time is in the past, the function returns false and does not
+ * If the requested transmission time is in the past, the function returns @c false and does not
  * schedule transmission.
  *
  * A successfully scheduled transmission can be cancelled by a call
@@ -631,8 +646,12 @@ bool nrf_802154_transmit(const uint8_t                        * p_data,
  *                         in microseconds (us).
  * @param[in]  dt          Delta of delay time from @p t0, in microseconds (us).
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
- *                         to transmit and additional parameters for the procedure.
- *                         If NULL, @ref NRF_802154_TRANSMIT_METADATA_DEFAULT_INIT is used.
+ *                         to transmit. If @c NULL following metadata are used:
+ *                         Field           | Value
+ *                         ----------------|-----------------------------------------------------
+ *                         @c frame_props  | @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
+ *                         @c cca          | @c true
+ *                         @c channel      | As returned by @ref nrf_802154_channel_get
  *
  * @retval  true   The transmission procedure was scheduled.
  * @retval  false  The driver could not schedule the transmission procedure.
@@ -732,7 +751,7 @@ bool nrf_802154_modulated_carrier(const uint8_t * p_data);
  */
 extern void nrf_802154_tx_ack_started(const uint8_t * p_data);
 
-#if NRF_802154_USE_RAW_API
+#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
 
 /**
  * @brief Notifies that a frame was received.
@@ -741,6 +760,9 @@ extern void nrf_802154_tx_ack_started(const uint8_t * p_data);
  *       to receive a frame) until @ref nrf_802154_buffer_free_raw is called.
  * @note The buffer pointed to by @p p_data may be modified by the function handler (and other
  *       modules) until @ref nrf_802154_buffer_free_raw is called.
+ * @note This callout is called by the nRF 802.15.4 Radio Driver if @ref NRF_802154_USE_RAW_API
+ *       is enabled. Default implementation of this function provided by
+ *       the nRF 802.15.4 Radio Driver calls @ref nrf_802154_received_timestamp_raw .
  *
  * @verbatim
  * p_data
@@ -771,6 +793,8 @@ extern void nrf_802154_received_raw(uint8_t * p_data, int8_t power, uint8_t lqi)
  *       the timestamp may be invalid. This erroneous situation is indicated by
  *       the @ref NRF_802154_NO_TIMESTAMP value of the @p time parameter.
  *
+ * @note This callout is called by the default implementation of @ref nrf_802154_received_raw.
+ *
  * @param[in]  p_data  Pointer to a buffer that contains PHR and PSDU of the received frame.
  *                     The first byte in the buffer is the length of the frame (PHR). The following
  *                     bytes contain the frame itself (PSDU). The length byte (PHR) includes FCS.
@@ -786,8 +810,9 @@ extern void nrf_802154_received_timestamp_raw(uint8_t * p_data,
                                               uint8_t   lqi,
                                               uint32_t  time);
 
-#else // NRF_802154_USE_RAW_API
+#endif // NRF_802154_USE_RAW_API
 
+#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
 /**
  * @brief Notifies that a frame was received.
  *
@@ -795,6 +820,9 @@ extern void nrf_802154_received_timestamp_raw(uint8_t * p_data,
  *       be used to receive a frame) until @ref nrf_802154_buffer_free is called.
  * @note The buffer pointed to by @p p_data can be modified by the function handler (and other
  *       modules) until @ref nrf_802154_buffer_free is called.
+ * @note This callout is called by the nRF 802.15.4 Radio Driver if @ref NRF_802154_USE_RAW_API
+ *       is disabled. Default implementation of this function provided by
+ *       the nRF 802.15.4 Radio Driver calls @ref nrf_802154_received_timestamp .
  *
  * @verbatim
  *       p_data
@@ -822,6 +850,7 @@ extern void nrf_802154_received(uint8_t * p_data, uint8_t length, int8_t power, 
  * @note The received frame usually contains a timestamp. However, due to a race condition,
  *       the timestamp may be invalid. This erroneous situation is indicated by
  *       the @ref NRF_802154_NO_TIMESTAMP value of the @p time parameter.
+ * @note This callout is called by the default implementation of @ref nrf_802154_received .
  *
  * @param[in]  p_data  Pointer to a buffer that contains only the payload of the received frame
  *                     (PSDU without FCS).
@@ -865,50 +894,53 @@ extern void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id);
  */
 extern void nrf_802154_tx_started(const uint8_t * p_frame);
 
-#if NRF_802154_USE_RAW_API
-
+#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
 /**
  * @brief Notifies that a frame was transmitted.
  *
  * @note If ACK was requested for the transmitted frame, this function is called after a proper ACK
  *       is received. If ACK was not requested, this function is called just after transmission has
  *       ended.
- * @note The buffer pointed to by @ref nrf_802154_transmit_done_metadata_t.data.transmitted.p_ack
+ * @note The buffer pointed to by @c nrf_802154_transmit_done_metadata_t::data.transmitted.p_ack
  *       is not modified by the radio driver (and cannot be used to receive a frame) until
  *       @ref nrf_802154_buffer_free_raw is called.
- * @note The buffer pointed to by @ref nrf_802154_transmit_done_metadata_t.data.transmitted.p_ack
+ * @note The buffer pointed to by @c nrf_802154_transmit_done_metadata_t::data.transmitted.p_ack
  *       may be modified by the function handler (and other modules) until
  *       @ref nrf_802154_buffer_free_raw is called.
- * @note @ref nrf_802154_transmit_done_metadata_t.data.transmitted.time granularity depends on the
+ * @note @c nrf_802154_transmit_done_metadata_t::data.transmitted.time granularity depends on the
  *       granularity of the timer driver in the
  *       platform/timer directory.
+ * @note This callout is called by the nRF 802.15.4 Radio Driver if @ref NRF_802154_USE_RAW_API
+ *       is enabled.
  *
  * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the transmitted frame.
  * @param[in]  p_metadata   Pointer to a metadata structure describing frame passed in @p p_frame.
  */
 extern void nrf_802154_transmitted_raw(uint8_t                                   * p_frame,
                                        const nrf_802154_transmit_done_metadata_t * p_metadata);
+#endif // NRF_802154_USE_RAW_API
 
-#else // NRF_802154_USE_RAW_API
-
+#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
 /**
  * @brief Notifies that a frame was transmitted.
  *
  * @note If ACK was requested for the transmitted frame, this function is called after a proper ACK
  *       is received. If ACK was not requested, this function is called just after transmission has
  *       ended.
- * @note The buffer pointed to by @ref nrf_802154_transmit_done_metadata_t.data.transmitted.p_ack
+ * @note The buffer pointed to by @c nrf_802154_transmit_done_metadata_t::data.transmitted.p_ack
  *       is not modified by the radio driver (and cannot be used to receive a frame) until
- *       @ref nrf_802154_buffer_free_raw is called.
- * @note The buffer pointed to by @ref nrf_802154_transmit_done_metadata_t.data.transmitted.p_ack
+ *       @ref nrf_802154_buffer_free is called.
+ * @note The buffer pointed to by @c nrf_802154_transmit_done_metadata_t::data.transmitted.p_ack
  *       may be modified by the function handler (and other modules) until
- *       @ref nrf_802154_buffer_free_raw is called.
+ *       @ref nrf_802154_buffer_free is called.
  * @note The next higher layer must handle either @ref nrf_802154_transmitted or
  *       @ref nrf_802154_transmitted_raw. It should not handle both functions.
- * @note @ref nrf_802154_transmit_done_metadata_t.data.transmitted.time granularity depends on the
+ * @note @c nrf_802154_transmit_done_metadata_t::data.transmitted.time granularity depends on the
  *       granularity of the timer driver in the platform/timer directory.
  * @note Including a timestamp for received frames uses resources like CPU time and memory. If the
  *       timestamp is not required, use @ref nrf_802154_received instead.
+ * @note This callout is called by the nRF 802.15.4 Radio Driver if @ref NRF_802154_USE_RAW_API
+ *       is disabled.
  *
  * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the transmitted frame.
  * @param[in]  p_metadata   Pointer to a metadata structure describing frame passed in @p p_frame.
@@ -923,7 +955,7 @@ extern void nrf_802154_transmitted(uint8_t                                   * p
  *
  * This function is called if the transmission procedure fails.
  *
- * @note Frame data values in @ref nrf_802154_transmit_done_metadata_t.data are invalid for
+ * @note Frame data values in @ref nrf_802154_transmit_done_metadata_t::data are invalid for
  *       @ref nrf_802154_transmit_failed callout.
  *
  * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the frame that was not
@@ -973,7 +1005,7 @@ extern void nrf_802154_cca_failed(nrf_802154_cca_error_t error);
  * @{
  */
 
-#if NRF_802154_USE_RAW_API
+#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
 
 /**
  * @brief Notifies the driver that the buffer containing the received frame is not used anymore.
@@ -981,6 +1013,7 @@ extern void nrf_802154_cca_failed(nrf_802154_cca_error_t error);
  * @note The buffer pointed to by @p p_data may be modified by this function.
  * @note This function can be safely called only from the main context. To free the buffer from
  *       a callback or the IRQ context, use @ref nrf_802154_buffer_free_immediately_raw.
+ * @note This function is available if @ref NRF_802154_USE_RAW_API is enabled.
  *
  * @param[in]  p_data  Pointer to the buffer containing the received data that is no longer needed
  *                     by the higher layer.
@@ -994,6 +1027,7 @@ void nrf_802154_buffer_free_raw(uint8_t * p_data);
  * @note This function can be safely called from any context. If the driver is busy processing
  *       a request called from a context with lower priority, this function returns false and
  *       the caller should free the buffer later.
+ * @note This function is available if @ref NRF_802154_USE_RAW_API is enabled.
  *
  * @param[in]  p_data  Pointer to the buffer containing the received data that is no longer needed
  *                     by the higher layer.
@@ -1003,7 +1037,9 @@ void nrf_802154_buffer_free_raw(uint8_t * p_data);
  */
 bool nrf_802154_buffer_free_immediately_raw(uint8_t * p_data);
 
-#else // NRF_802154_USE_RAW_API
+#endif // NRF_802154_USE_RAW_API
+
+#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
 
 /**
  * @brief Notifies the driver that the buffer containing the received frame is not used anymore.
@@ -1011,6 +1047,7 @@ bool nrf_802154_buffer_free_immediately_raw(uint8_t * p_data);
  * @note The buffer pointed to by @p p_data may be modified by this function.
  * @note This function can be safely called only from the main context. To free the buffer from
  *       a callback or IRQ context, use @ref nrf_802154_buffer_free_immediately.
+ * @note This function is available if @ref NRF_802154_USE_RAW_API is disabled.
  *
  * @param[in]  p_data  Pointer to the buffer containing the received data that is no longer needed
  *                     by the higher layer.
@@ -1024,6 +1061,7 @@ void nrf_802154_buffer_free(uint8_t * p_data);
  * @note This function can be safely called from any context. If the driver is busy processing
  *       a request called from a context with lower priority, this function returns false and
  *       the caller should free the buffer later.
+ * @note This function is available if @ref NRF_802154_USE_RAW_API is disabled.
  *
  * @param[in]  p_data  Pointer to the buffer containing the received data that is no longer needed
  *                     by the higher layer.
@@ -1033,7 +1071,7 @@ void nrf_802154_buffer_free(uint8_t * p_data);
  */
 bool nrf_802154_buffer_free_immediately(uint8_t * p_data);
 
-#endif // NRF_802154_USE_RAW_API
+#endif // !NRF_802154_USE_RAW_API
 
 /**
  * @}
@@ -1145,10 +1183,6 @@ bool nrf_802154_pan_coord_get(void);
  *
  * @note This method should be called after driver initialization, but before transceiver is enabled.
  *
- * When calling @ref nrf_802154_ack_data_pending_bit_should_be_set, one of several algorithms
- * for source address matching will be chosen. To ensure a specific algorithm is selected,
- * call this function before @ref rf_802154_ack_data_pending_bit_should_be_set.
- *
  * @param[in]  match_method Source address matching method to be used.
  */
 void nrf_802154_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_method);
@@ -1185,6 +1219,7 @@ void nrf_802154_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_m
  * To better illustrate, if RSSI is to be inserted into ACKs for specific address,
  * following ie data needs to be prepared:
  *
+ * @verbatim
  * +------------+----------------------+---------------------------------+-----------------------------+
  * | Bytes: 0-1 |          2-4         |                5                |              6              |
  * +------------+----------------------+---------------------------------+-----------------------------+
@@ -1192,11 +1227,12 @@ void nrf_802154_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_m
  * +------------+----------------------+---------------------------------+-----------------------------+
  *                                     |                                                               |
  *                                     | <------------------IE Vendor-specific data------------------> |
+ * @endverbatim
  *
  * When sending ACK with this data, before transmission, RSSI of the last received frame
  * will be written into byte 6.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
@@ -1225,7 +1261,7 @@ bool nrf_802154_ack_data_set(const uint8_t       * p_addr,
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
@@ -1269,7 +1305,7 @@ void nrf_802154_auto_pending_bit_set(bool enabled);
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @note This function makes a copy of the given address.
  *
@@ -1291,7 +1327,7 @@ bool nrf_802154_pending_bit_for_addr_set(const uint8_t * p_addr, bool extended);
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
@@ -1311,7 +1347,7 @@ bool nrf_802154_pending_bit_for_addr_clear(const uint8_t * p_addr, bool extended
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  extended  If the function is to remove all extended MAC addresses or all short
  *                       addresses.
@@ -1344,8 +1380,8 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg);
  * @defgroup nrf_802154_csma CSMA-CA procedure
  * @{
  */
-#if NRF_802154_CSMA_CA_ENABLED
-#if NRF_802154_USE_RAW_API
+#if NRF_802154_CSMA_CA_ENABLED || defined(DOXYGEN)
+#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
 
 /**
  * @brief Performs the CSMA-CA procedure and transmits a frame in case of success.
@@ -1360,10 +1396,15 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg);
  *       to time out waiting for the ACK frame. This timer can be started
  *       by @ref nrf_802154_tx_started. When the timer expires, the MAC layer is expected
  *       to call @ref nrf_802154_receive or @ref nrf_802154_sleep to stop waiting for the ACK frame.
+ * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled and
+ *       @ref NRF_802154_USE_RAW_API is enabled.
  *
  * @param[in]  p_data      Pointer to the frame to transmit. See also @ref nrf_802154_transmit_raw.
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
- *                         to transmit. If NULL, @ref NRF_802154_TRANSMIT_METADATA_DEFAULT_INIT is used.
+ *                         to transmit. If @c NULL following metadata are used:
+ *                         Field           | Value
+ *                         ----------------|-----------------------------------------------------
+ *                         @c frame_props  | @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
  *
  * @retval  true   The chain of CSMA-CA and transmission procedure was scheduled.
  * @retval  false  The driver could not schedule the procedure chain.
@@ -1386,12 +1427,16 @@ bool nrf_802154_transmit_csma_ca_raw(uint8_t                                    
  *       to time out waiting for the ACK frame. This timer can be started
  *       by @ref nrf_802154_tx_started. When the timer expires, the MAC layer is expected
  *       to call @ref nrf_802154_receive or @ref nrf_802154_sleep to stop waiting for the ACK frame.
+ * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled and
+ *       @ref NRF_802154_USE_RAW_API is disabled.
  *
  * @param[in]  p_data      Pointer to the frame to transmit. See also @ref nrf_802154_transmit.
  * @param[in]  length      Length of the given frame. See also @ref nrf_802154_transmit.
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
- *                         to transmit. If NULL, @ref NRF_802154_TRANSMIT_METADATA_DEFAULT_INIT
- *                         is used.
+ *                         to transmit. If @c NULL following metadata are used:
+ *                         Field           | Value
+ *                         ----------------|-----------------------------------------------------
+ *                         @c frame_props  | @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
  *
  * @retval  true   The chain of CSMA-CA and transmission procedure was scheduled.
  * @retval  false  The driver could not schedule the procedure chain.
@@ -1405,6 +1450,8 @@ bool nrf_802154_transmit_csma_ca(const uint8_t                                * 
 /**
  * @brief Sets the minimum value of the backoff exponent (BE) in the CSMA-CA algorithm.
  *
+ * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled.
+ *
  * @param[in] min_be  Minimum value of the backoff exponent.
  *
  * @retval true   When value provided by @p min_be has been set successfully.
@@ -1415,12 +1462,16 @@ bool nrf_802154_csma_ca_min_be_set(uint8_t min_be);
 /**
  * @brief Gets the minimum value of the backoff exponent (BE) in the CSMA-CA algorithm.
  *
+ * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled.
+ *
  * @return Current minimum value of the backoff exponent.
  */
 uint8_t nrf_802154_csma_ca_min_be_get(void);
 
 /**
  * @brief Sets the maximum value of the backoff exponent (BE) in the CSMA-CA algorithm.
+ *
+ * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled.
  *
  * @param[in] max_be  Maximum value of the backoff exponent.
  *
@@ -1432,6 +1483,8 @@ bool nrf_802154_csma_ca_max_be_set(uint8_t max_be);
 /**
  * @brief Gets the maximum value of the backoff exponent (BE) in the CSMA-CA algorithm.
  *
+ * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled.
+ *
  * @return Current maximum value of the backoff exponent.
  */
 uint8_t nrf_802154_csma_ca_max_be_get(void);
@@ -1440,6 +1493,8 @@ uint8_t nrf_802154_csma_ca_max_be_get(void);
  * @brief Sets the maximum number of backoffs the CSMA-CA algorithm will attempt before declaring
  *        a channel access failure.
  *
+ * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled.
+ *
  * @param[in] max_backoffs  Maximum number of backoffs.
  */
 void nrf_802154_csma_ca_max_backoffs_set(uint8_t max_backoffs);
@@ -1447,6 +1502,8 @@ void nrf_802154_csma_ca_max_backoffs_set(uint8_t max_backoffs);
 /**
  * @brief Gets the maximum number of backoffs the CSMA-CA algorithm will attempt before declaring
  *        a channel access failure.
+ *
+ * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled.
  *
  * @return Current maximum number of backoffs.
  */
@@ -1459,12 +1516,14 @@ uint8_t nrf_802154_csma_ca_max_backoffs_get(void);
  * @defgroup nrf_802154_timeout ACK timeout procedure
  * @{
  */
-#if NRF_802154_ACK_TIMEOUT_ENABLED
+#if NRF_802154_ACK_TIMEOUT_ENABLED || defined(DOXYGEN)
 
 /**
  * @brief Sets timeout for the ACK timeout feature.
  *
  * A timeout is notified by @ref nrf_802154_transmit_failed.
+ *
+ * @note This function is available if @ref NRF_802154_ACK_TIMEOUT_ENABLED is enabled.
  *
  * @param[in]  time  Timeout in microseconds (us).
  *                   A default value is defined in nrf_802154_config.h.
@@ -1612,10 +1671,12 @@ void nrf_802154_stat_totals_get(nrf_802154_stat_totals_t * p_stat_totals);
  * @defgroup nrf_802154_ifs Inter-frame spacing feature
  * @{
  */
-#if NRF_802154_IFS_ENABLED
+#if NRF_802154_IFS_ENABLED || defined(DOXYGEN)
 
 /**
  * @brief Gets IFS operation mode.
+ *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
  *
  * @return Current IFS operation mode. Refer to @ref nrf_802154_ifs_mode_t for details.
  */
@@ -1623,6 +1684,8 @@ nrf_802154_ifs_mode_t nrf_802154_ifs_mode_get(void);
 
 /**
  * @brief Sets IFS operation mode.
+ *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
  *
  * @param[in] mode  IFS operation mode. Refer to @ref nrf_802154_ifs_mode_t for details.
  *
@@ -1634,12 +1697,16 @@ bool nrf_802154_ifs_mode_set(nrf_802154_ifs_mode_t mode);
 /**
  * @brief Gets Short IFS period in microseconds.
  *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
+ *
  * @return Current Short IFS period in microseconds.
  */
 uint16_t nrf_802154_ifs_min_sifs_period_get(void);
 
 /**
  * @brief Sets Short IFS period in microseconds.
+ *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
  *
  * @param[in] period Short IFS period in microseconds.
  */
@@ -1648,12 +1715,16 @@ void nrf_802154_ifs_min_sifs_period_set(uint16_t period);
 /**
  * @brief Gets Long IFS period in microseconds.
  *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
+ *
  * @return Current Long IFS period in microseconds.
  */
 uint16_t nrf_802154_ifs_min_lifs_period_get(void);
 
 /**
  * @brief Sets Long IFS period in microseconds.
+ *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
  *
  * @param[in] period Long IFS period in microseconds.
  */
@@ -1673,8 +1744,6 @@ void nrf_802154_ifs_min_lifs_period_set(uint16_t period);
  * @return Capabilities of the radio driver.
  */
 nrf_802154_capabilities_t nrf_802154_capabilities_get(void);
-
-/** @} */
 
 /**
  * @}

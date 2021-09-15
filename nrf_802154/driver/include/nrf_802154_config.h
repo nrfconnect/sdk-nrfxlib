@@ -106,7 +106,6 @@ extern "C" {
  * In this case, the internal handling must be disabled.
  *
  */
-
 #ifndef NRF_802154_INTERNAL_RADIO_IRQ_HANDLING
 #define NRF_802154_INTERNAL_RADIO_IRQ_HANDLING 0
 #endif
@@ -120,7 +119,6 @@ extern "C" {
  * In this case, the internal handling must be disabled.
  *
  */
-
 #ifndef NRF_802154_INTERNAL_SWI_IRQ_HANDLING
 #define NRF_802154_INTERNAL_SWI_IRQ_HANDLING 1
 #endif
@@ -162,7 +160,7 @@ extern "C" {
  * When this flag is set, the RAW API is available for the MAC layer. It is recommended to use
  * the RAW API because it provides more optimized functions.
  *
- * @note If the RAW API is not available for the MAC layer, only less optimized functions performing
+ * @note If the RAW API is not enabled for the MAC layer, only less optimized functions performing
  *       copy are available.
  *
  */
@@ -231,8 +229,10 @@ extern "C" {
  *
  * If timestamps are to be added to the frames received.
  * Enabling this feature enables the functions @ref nrf_802154_received_timestamp_raw,
- * @ref nrf_802154_received_timestamp, @ref nrf_802154_transmitted_timestamp_raw, and
- * @ref nrf_802154_transmitted_timestamp, which add timestamps to the frames received.
+ * @ref nrf_802154_received_timestamp which add timestamps to the frames received.
+ * Enables also proper value of frame timestamp
+ * ( @c nrf_802154_transmit_done_metadata_t::data.transmitted.time ) passed as metadata to
+ * @ref nrf_802154_transmitted and @ref nrf_802154_transmitted_raw,
  * This option also enables timestamping in stats.
  *
  */
@@ -287,7 +287,7 @@ extern "C" {
  * (see IEEE 802.15.4-2015: 6.2.5.1).
  *
  * @note The minimum value of the backoff exponent may be changed from default by calling the
- *       @ref nrf_802154_pib_csmaca_min_be_set function.
+ *       @ref nrf_802154_csma_ca_min_be_set function.
  *
  */
 #ifdef NRF_802154_CSMA_CA_MIN_BE
@@ -304,7 +304,7 @@ extern "C" {
  * (see IEEE 802.15.4-2015: 6.2.5.1).
  *
  * @note The maximum value of the backoff exponent may be changed from default by calling the
- *       @ref nrf_802154_pib_csmaca_max_be_set function.
+ *       @ref nrf_802154_csma_ca_max_be_set function.
  *
  */
 #ifdef NRF_802154_CSMA_CA_MAX_BE
@@ -321,7 +321,7 @@ extern "C" {
  * a channel access failure.
  *
  * @note The maximum number of backoffs may be changed from default by calling the
- *       @ref nrf_802154_pib_csmaca_max_backoffs_set function.
+ *       @ref nrf_802154_csma_ca_max_backoffs_set function.
  *
  */
 #ifdef NRF_802154_CSMA_CA_MAX_CSMA_BACKOFFS
@@ -376,7 +376,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_ACK_TIMEOUT_DEFAULT_TIMEOUT
+ * @def NRF_802154_PRECISE_ACK_TIMEOUT_DEFAULT_TIMEOUT
  *
  * The default timeout in microseconds (us) for the precise ACK timeout feature.
  *
@@ -435,7 +435,7 @@ extern "C" {
 
 /**
  * @}
- * @defgroup nrf_802154_coex WiFi coexistence feature configuration
+ * @defgroup nrf_802154_config_coex WiFi coexistence feature configuration
  * @{
  */
 
@@ -450,7 +450,7 @@ extern "C" {
 
 /**
  * @}
- * @defgroup nrf_802154_stats Statistics configuration
+ * @defgroup nrf_802154_config_stats Statistics configuration
  * @{
  */
 
@@ -482,7 +482,7 @@ extern "C" {
 
 /**
  * @}
- * @defgroup nrf_802154_security Security configuration
+ * @defgroup nrf_802154_config_security Security configuration
  * @{
  */
 
@@ -533,12 +533,16 @@ extern "C" {
 #define NRF_802154_IE_WRITER_ENABLED 1
 #endif
 
+/**
+ *@}
+ **/
+
+/**
+ *@}
+ **/
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif // NRF_802154_CONFIG_H__
-
-/**
- *@}
- **/

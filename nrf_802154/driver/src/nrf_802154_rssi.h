@@ -38,7 +38,7 @@
 #include <stdint.h>
 
 /**
- * @defgroup nrf_802154_rssi RSSI calculations used internally in the 802.15.4 driver
+ * @defgroup nrf_802154_rssi RSSI measurement function
  * @{
  * @ingroup nrf_802154
  * @brief RSSI calculations used internally in the 802.15.4 driver.

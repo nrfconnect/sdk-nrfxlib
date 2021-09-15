@@ -115,7 +115,7 @@ void nrf_802154_ack_data_reset(bool extended, nrf_802154_ack_data_t data_type);
  *
  * When calling @ref nrf_802154_ack_data_pending_bit_should_be_set, one of several algorithms
  * for source address matching will be chosen. To ensure a specific algorithm is selected,
- * call this function before @ref rf_802154_ack_data_pending_bit_should_be_set.
+ * call this function before @ref nrf_802154_ack_data_pending_bit_should_be_set.
  *
  * @param[in]  match_method Source matching method to be used.
  */

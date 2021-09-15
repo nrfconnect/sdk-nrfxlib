@@ -63,10 +63,10 @@
     nrf_802154_sl_log_local_event(verbosity, local_event_id, param_u16)
 
 /**@brief Records log about event (with parameter) related to global resource.
- * @param verbosity     Verbosity level of the module in which log is recorded required to emit log.
- * @param event_id      Event identifier whose meaning is defined globally. Possible values 0...63
- * @param param_u16     Additional parameter to be logged with event. Meaning
- *                      of the parameter is defined by value of global_event_id.
+ * @param verbosity         Verbosity level of the module in which log is recorded required to emit log.
+ * @param global_event_id   Event identifier whose meaning is defined globally. Possible values 0...63
+ * @param param_u16         Additional parameter to be logged with event. Meaning
+ *                          of the parameter is defined by value of global_event_id.
  */
 #define nrf_802154_log_global_event(verbosity, global_event_id, param_u16) \
     nrf_802154_sl_log_global_event(verbosity, global_event_id, param_u16)

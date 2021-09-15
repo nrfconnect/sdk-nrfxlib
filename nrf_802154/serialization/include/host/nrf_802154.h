@@ -77,7 +77,7 @@ void nrf_802154_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_m
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
@@ -106,7 +106,7 @@ bool nrf_802154_ack_data_set(const uint8_t       * p_addr,
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
@@ -150,7 +150,7 @@ void nrf_802154_auto_pending_bit_set(bool enabled);
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @note This function makes a copy of the given address.
  *
@@ -172,7 +172,7 @@ bool nrf_802154_pending_bit_for_addr_set(const uint8_t * p_addr, bool extended);
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  p_addr    Array of bytes containing the address of the node (little-endian).
  * @param[in]  extended  If the given address is an extended MAC address or a short MAC address.
@@ -192,7 +192,7 @@ bool nrf_802154_pending_bit_for_addr_clear(const uint8_t * p_addr, bool extended
  *   - For Standard-compliant, @ref NRF_802154_SRC_ADDR_MATCH_ALWAYS_1
  * For more information, see @ref nrf_802154_src_addr_match_t.
  *
- * The method can be set during initialization phase by calling @ref nrf_802154_src_matching_method.
+ * The method can be set during initialization phase by calling @ref nrf_802154_src_addr_matching_method_set.
  *
  * @param[in]  extended  If the function is to remove all extended MAC addresses or all short
  *                       addresses.
@@ -381,8 +381,11 @@ bool nrf_802154_energy_detection(uint32_t time_us);
  *                         The CRC is computed automatically by the radio hardware. Therefore,
  *                         the FCS field can contain any bytes.
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
- *                         to transmit and additional parameters for the procedure.
- *                         If NULL, @ref NRF_802154_TRANSMIT_METADATA_DEFAULT_INIT is used.
+ *                         to transmit. If @c NULL following metadata are used:
+ *                         Field           | Value
+ *                         ----------------|-----------------------------------------------------
+ *                         @c frame_props  | @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
+ *                         @c cca          | @c true
  *
  * @retval  true   The transmission procedure was scheduled.
  * @retval  false  The driver could not schedule the transmission procedure.
@@ -406,7 +409,10 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
  *
  * @param[in]  p_data      Pointer to the frame to transmit. See also @ref nrf_802154_transmit_raw.
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
- *                         to transmit. If NULL, @ref NRF_802154_TRANSMIT_METADATA_DEFAULT_INIT is used.
+ *                         to transmit. If @c NULL following metadata are used:
+ *                         Field           | Value
+ *                         ----------------|-----------------------------------------------------
+ *                         @c frame_props  | @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
  *
  * @retval  true   The chain of CSMA-CA and transmission procedure was scheduled.
  * @retval  false  The driver could not schedule the procedure chain.

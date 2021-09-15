@@ -100,9 +100,8 @@ const uint8_t * nrf_802154_tx_work_buffer_get(const uint8_t * p_original_frame);
  * buffer. This function performs all necessary updates of the original buffer in place.
  *
  * @param[inout]    p_original_frame    Pointer to the original frame to be transmitted.
- * @param[out]      p_frame_props       Pointer to a structure to which @ref m_is_secured and
- *                                      @ref m_is_dynamic_data_updated flags' values are to be
- *                                      stored.
+ * @param[out]      p_frame_props       Pointer to a structure to which properties of the frame
+ *                                      to be transmitted are stored.
  */
 void nrf_802154_tx_work_buffer_original_frame_update(
     uint8_t                              * p_original_frame,
