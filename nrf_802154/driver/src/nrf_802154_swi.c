@@ -48,7 +48,6 @@
 #include "nrf_802154.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_peripherals.h"
-#include "nrf_802154_utils.h"
 #include "platform/nrf_802154_irq.h"
 
 #if NRF_802154_INTERNAL_SWI_IRQ_HANDLING

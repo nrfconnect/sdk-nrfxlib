@@ -170,7 +170,7 @@ typedef uint8_t nrf_802154_ack_data_t;
  * @brief Methods of source address matching.
  *
  * You can use one of the following methods that can be set during the initialization phase
- * by calling @ref nrf_802154_src_matching_method:
+ * by calling @ref nrf_802154_src_addr_matching_method_set :
  *   - For Thread: @ref NRF_802154_SRC_ADDR_MATCH_THREAD -- The pending bit is set only for the addresses found in the list.
  *   - For Zigbee: @ref NRF_802154_SRC_ADDR_MATCH_ZIGBEE -- The pending bit is cleared only for the short addresses found in the list.\n
  *     This method does not set pending bit in non-command and non-data-request frames.

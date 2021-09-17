@@ -57,7 +57,6 @@
 #include "nrf_802154_nrfx_addons.h"
 #include "nrf_802154_pib.h"
 #include "nrf_802154_request.h"
-#include "nrf_802154_rssi.h"
 #include "nrf_802154_rx_buffer.h"
 #include "nrf_802154_stats.h"
 #include "hal/nrf_radio.h"

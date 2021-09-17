@@ -50,7 +50,7 @@ extern "C" {
 /**
  * @defgroup nrf_802154_random Random Abstraction Layer for the 802.15.4 driver
  * @{
- * @ingroup nrf_802154_random
+ * @ingroup nrf_802154
  * @brief The pseudo-random number generator Abstraction Layer interface for the 802.15.4 driver.
  *
  * The Random Abstraction Layer is an abstraction layer of a pseudo-random number generator that is

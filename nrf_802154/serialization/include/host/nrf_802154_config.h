@@ -44,7 +44,6 @@ extern "C" {
 #endif
 
 /**
- * @}
  * @defgroup nrf_802154_config_csma CSMA/CA procedure configuration
  * @{
  */
@@ -62,12 +61,12 @@ extern "C" {
 #endif
 #endif
 
+/**
+ *@}
+ **/
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif // NRF_802154_CONFIG_H__
-
-/**
- *@}
- **/

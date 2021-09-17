@@ -22,7 +22,6 @@
 #include "nrf.h"
 #include "hal/nrf_timer.h"
 
-#include "nrf_802154_sl_config.h"
 #include "nrf_802154_sl_periphs.h"
 
 /**@brief Timer instance. */

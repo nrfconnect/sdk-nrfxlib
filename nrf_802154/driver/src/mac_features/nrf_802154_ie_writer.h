@@ -41,7 +41,7 @@
 #include "nrf_802154_types.h"
 
 /**
- * @defgroup nrf_802154_ie_writer 802.15.4 driver Information Element writer
+ * @defgroup nrf_802154_ie_writer Radio driver Information Element data injection feature.
  * @{
  * @ingroup nrf_802154
  * @brief Information element writer module.
