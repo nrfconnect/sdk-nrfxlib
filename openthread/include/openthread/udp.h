@@ -131,6 +131,17 @@ typedef struct otUdpSocket
 } otUdpSocket;
 
 /**
+ * This enumeration defines the OpenThread network interface identifiers.
+ *
+ */
+typedef enum otNetifIdentifier
+{
+    OT_NETIF_UNSPECIFIED = 0, ///< Unspecified network interface.
+    OT_NETIF_THREAD,          ///< The Thread interface.
+    OT_NETIF_BACKBONE,        ///< The Backbone interface.
+} otNetifIdentifier;
+
+/**
  * Allocate a new message buffer for sending a UDP message.
  *
  * @note If @p aSettings is 'NULL', the link layer security is enabled and the message priority is set to
@@ -161,6 +172,17 @@ otMessage *otUdpNewMessage(otInstance *aInstance, const otMessageSettings *aSett
 otError otUdpOpen(otInstance *aInstance, otUdpSocket *aSocket, otUdpReceive aCallback, void *aContext);
 
 /**
+ * Check if a UDP socket is open.
+ *
+ * @param[in]  aInstance  A pointer to an OpenThread instance.
+ * @param[in]  aSocket    A pointer to a UDP socket structure.
+ *
+ * @returns Whether the UDP socket is open.
+ *
+ */
+bool otUdpIsOpen(otInstance *aInstance, const otUdpSocket *aSocket);
+
+/**
  * Close a UDP/IPv6 socket.
  *
  * @param[in]  aInstance  A pointer to an OpenThread instance.
@@ -178,12 +200,13 @@ otError otUdpClose(otInstance *aInstance, otUdpSocket *aSocket);
  * @param[in]  aInstance  A pointer to an OpenThread instance.
  * @param[in]  aSocket    A pointer to a UDP socket structure.
  * @param[in]  aSockName  A pointer to an IPv6 socket address structure.
+ * @param[in]  aNetif     The network interface to bind.
  *
  * @retval OT_ERROR_NONE   Bind operation was successful.
  * @retval OT_ERROR_FAILED Failed to bind UDP socket.
  *
  */
-otError otUdpBind(otInstance *aInstance, otUdpSocket *aSocket, const otSockAddr *aSockName);
+otError otUdpBind(otInstance *aInstance, otUdpSocket *aSocket, const otSockAddr *aSockName, otNetifIdentifier aNetif);
 
 /**
  * Connect a UDP/IPv6 socket.
@@ -288,6 +311,18 @@ void otUdpForwardReceive(otInstance *        aInstance,
                          uint16_t            aPeerPort,
                          const otIp6Address *aPeerAddr,
                          uint16_t            aSockPort);
+
+/**
+ * Determines if the given UDP port is exclusively opened by OpenThread API.
+ *
+ * @param[in]  aInstance            A pointer to an OpenThread instance.
+ * @param[in]  port                 UDP port number to verify.
+ *
+ * @retval true    The port is being used exclusively by OpenThread.
+ * @retval false   The port is not used by any of the OpenThread API or is shared (e.g. is Backbone socket).
+ *
+ */
+bool otUdpIsPortInUse(otInstance *aInstance, uint16_t port);
 
 /**
  * @}
