@@ -208,23 +208,53 @@ typedef struct otSockAddr
 } otSockAddr;
 
 /**
+ * ECN statuses, represented as in the IP header.
+ *
+ */
+enum
+{
+    OT_ECN_NOT_CAPABLE = 0x0, ///< Non-ECT
+    OT_ECN_CAPABLE_0   = 0x2, ///< ECT(0)
+    OT_ECN_CAPABLE_1   = 0x1, ///< ECT(1)
+    OT_ECN_MARKED      = 0x3, ///< Congestion encountered (CE)
+};
+
+/**
  * This structure represents the local and peer IPv6 socket addresses.
  *
  */
 typedef struct otMessageInfo
 {
-    otIp6Address mSockAddr;      ///< The local IPv6 address.
-    otIp6Address mPeerAddr;      ///< The peer IPv6 address.
-    uint16_t     mSockPort;      ///< The local transport-layer port.
-    uint16_t     mPeerPort;      ///< The peer transport-layer port.
-    const void * mLinkInfo;      ///< A pointer to link-specific information.
-    uint8_t      mHopLimit;      ///< The IPv6 Hop Limit value. Only applies if `mAllowZeroHopLimit` is FALSE.
-                                 ///< If `0`, IPv6 Hop Limit is default value `OPENTHREAD_CONFIG_IP6_HOP_LIMIT_DEFAULT`.
-                                 ///< Otherwise, specifies the IPv6 Hop Limit.
-    bool mIsHostInterface : 1;   ///< TRUE if packets sent/received via host interface, FALSE otherwise.
-    bool mAllowZeroHopLimit : 1; ///< TRUE to allow IPv6 Hop Limit 0 in `mHopLimit`, FALSE otherwise.
-    bool mMulticastLoop : 1;     ///< TRUE to allow looping back multicast, FALSE otherwise.
+    otIp6Address mSockAddr; ///< The local IPv6 address.
+    otIp6Address mPeerAddr; ///< The peer IPv6 address.
+    uint16_t     mSockPort; ///< The local transport-layer port.
+    uint16_t     mPeerPort; ///< The peer transport-layer port.
+    const void * mLinkInfo; ///< A pointer to link-specific information.
+    uint8_t      mHopLimit; ///< The IPv6 Hop Limit value. Only applies if `mAllowZeroHopLimit` is FALSE.
+                            ///< If `0`, IPv6 Hop Limit is default value `OPENTHREAD_CONFIG_IP6_HOP_LIMIT_DEFAULT`.
+                            ///< Otherwise, specifies the IPv6 Hop Limit.
+    uint8_t mEcn : 2;       ///< The ECN status of the packet, represented as in the IPv6 header.
+    bool    mIsHostInterface : 1;   ///< TRUE if packets sent/received via host interface, FALSE otherwise.
+    bool    mAllowZeroHopLimit : 1; ///< TRUE to allow IPv6 Hop Limit 0 in `mHopLimit`, FALSE otherwise.
+    bool    mMulticastLoop : 1;     ///< TRUE to allow looping back multicast, FALSE otherwise.
 } otMessageInfo;
+
+/**
+ * Internet Protocol Numbers.
+ *
+ */
+enum
+{
+    OT_IP6_PROTO_HOP_OPTS = 0,  ///< IPv6 Hop-by-Hop Option
+    OT_IP6_PROTO_TCP      = 6,  ///< Transmission Control Protocol
+    OT_IP6_PROTO_UDP      = 17, ///< User Datagram
+    OT_IP6_PROTO_IP6      = 41, ///< IPv6 encapsulation
+    OT_IP6_PROTO_ROUTING  = 43, ///< Routing Header for IPv6
+    OT_IP6_PROTO_FRAGMENT = 44, ///< Fragment Header for IPv6
+    OT_IP6_PROTO_ICMP6    = 58, ///< ICMP for IPv6
+    OT_IP6_PROTO_NONE     = 59, ///< No Next Header for IPv6
+    OT_IP6_PROTO_DST_OPTS = 60, ///< Destination Options for IPv6
+};
 
 /**
  * This function brings up/down the IPv6 interface.
@@ -562,6 +592,18 @@ const uint16_t *otIp6GetUnsecurePorts(otInstance *aInstance, uint8_t *aNumEntrie
 bool otIp6IsAddressEqual(const otIp6Address *aFirst, const otIp6Address *aSecond);
 
 /**
+ * Test if two IPv6 prefixes are the same.
+ *
+ * @param[in]  aFirst   A pointer to the first IPv6 prefix to compare.
+ * @param[in]  aSecond  A pointer to the second IPv6 prefix to compare.
+ *
+ * @retval TRUE   The two IPv6 prefixes are the same.
+ * @retval FALSE  The two IPv6 prefixes are not the same.
+ *
+ */
+bool otIp6ArePrefixesEqual(const otIp6Prefix *aFirst, const otIp6Prefix *aSecond);
+
+/**
  * This function converts a human-readable IPv6 address string into a binary representation.
  *
  * @param[in]   aString   A pointer to a NULL-terminated string.
@@ -589,6 +631,24 @@ otError otIp6AddressFromString(const char *aString, otIp6Address *aAddress);
  *
  */
 void otIp6AddressToString(const otIp6Address *aAddress, char *aBuffer, uint16_t aSize);
+
+#define OT_IP6_SOCK_ADDR_STRING_SIZE 48 ///< Recommended size for string representation of an IPv6 socket address.
+
+/**
+ * This function converts a given IPv6 socket address to a human-readable string.
+ *
+ * The IPv6 socket address string is formatted as "[<address>]:<port>" where `<address> is shown as 16 hex values
+ * separated by ':' and `<port>` is the port number in decimal format (i.e., "[%x:%x:...:%x]:%u")
+ *
+ * If the resulting string does not fit in @p aBuffer (within its @p aSize characters), the string will be truncated
+ * but the outputted string is always null-terminated.
+ *
+ * @param[in]  aSockAddr A pointer to an IPv6 socket address (MUST NOT be NULL).
+ * @param[out] aBuffer   A pointer to a char array to output the string (MUST NOT be NULL).
+ * @param[in]  aSize     The size of @p aBuffer (in bytes). Recommended to use `OT_IP6_SOCK_ADDR_STRING_SIZE`.
+ *
+ */
+void otIp6SockAddrToString(const otSockAddr *aSockAddr, char *aBuffer, uint16_t aSize);
 
 #define OT_IP6_PREFIX_STRING_SIZE 45 ///< Recommended size for string representation of an IPv6 prefix.
 
@@ -766,6 +826,16 @@ otError otIp6RegisterMulticastListeners(otInstance *                            
  *
  */
 otError otIp6SetMeshLocalIid(otInstance *aInstance, const otIp6InterfaceIdentifier *aIid);
+
+/**
+ * This function converts a given IP protocol number to a human-readable string.
+ *
+ * @param[in] aIpProto   An IP protocol number (`OT_IP6_PROTO_*` enumeration).
+ *
+ * @returns A string representing @p aIpProto.
+ *
+ */
+const char *otIp6ProtoToString(uint8_t aIpProto);
 
 /**
  * @}
