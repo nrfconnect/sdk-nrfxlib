@@ -130,7 +130,7 @@ if (CONFIG_OPENTHREAD_LIBRARY_1_1)
     )
     zephyr_library_import(
       openthread-rcp-ftd
-      ${OT_LIB_PATH}/libopenthread-rcp-ftd.a
+      ${OT_LIB_PATH}/libopenthread-rcp.a
     )
   endif()
 
