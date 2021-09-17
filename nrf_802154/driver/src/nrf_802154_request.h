@@ -139,6 +139,7 @@ bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl);
  * @brief Requests entering the @ref RADIO_STATE_MODULATED_CARRIER state.
  *
  * @param[in]  term_lvl  Termination level of this request. Selects procedures to abort.
+ * @param[in]  p_data    Pointer to a buffer to modulate the carrier with.
  *
  * @retval  true   The driver will enter the modulated carrier state.
  * @retval  false  The driver cannot enter the modulated carrier state due to an ongoing operation.

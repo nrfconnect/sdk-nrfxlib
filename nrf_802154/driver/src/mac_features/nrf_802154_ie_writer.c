@@ -45,7 +45,6 @@
 #include "nrf_802154_core.h"
 #include "nrf_802154_nrfx_addons.h"
 #include "nrf_802154_tx_work_buffer.h"
-#include "nrf_802154_utils.h"
 #include "nrf_802154_utils_byteorder.h"
 
 #include <assert.h>

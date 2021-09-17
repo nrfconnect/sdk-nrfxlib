@@ -47,7 +47,6 @@
 
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
-#include "nrf_802154_nrfx_addons.h"
 #include "nrf_802154_utils.h"
 #include "fal/nrf_802154_fal.h"
 

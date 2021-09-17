@@ -44,7 +44,6 @@
 #include "mac_features/nrf_802154_security_pib.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
-#include "nrf_802154_notification.h"
 #include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_utils_byteorder.h"
 

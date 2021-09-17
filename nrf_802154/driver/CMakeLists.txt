@@ -101,8 +101,6 @@ if (SL_OPENSOURCE OR NRF53_SERIES)
       NRF_802154_DELAYED_TRX_ENABLED=0
       # Disable IFS
       NRF_802154_IFS_ENABLED=0
-      # Disable IE writer
-      NRF_802154_IE_WRITER_ENABLED=0
   )
 endif()
 

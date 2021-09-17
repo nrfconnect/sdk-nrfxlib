@@ -41,7 +41,6 @@
 
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
-#include "nrf_802154_nrfx_addons.h"
 #include "nrf_802154_types.h"
 #include "nrf_802154_peripherals.h"
 #include "nrf_802154_pib.h"

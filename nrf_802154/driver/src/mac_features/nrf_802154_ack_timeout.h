@@ -42,7 +42,7 @@
 #include "nrf_802154_types.h"
 
 /**
- * @defgroup nrf_802154_csma_ca 802.15.4 driver ACK timeout support
+ * @defgroup nrf_802154_ack_timeout 802.15.4 driver ACK timeout support
  * @{
  * @ingroup nrf_802154
  * @brief ACK timeout feature.

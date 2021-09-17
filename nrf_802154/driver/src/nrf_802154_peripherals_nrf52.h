@@ -344,7 +344,7 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_80254_PPI_CHANNELS_USED_MASK
+ * @def NRF_802154_PPI_CHANNELS_USED_MASK
  *
  * Bit mask of PPI channels used by the 802.15.4 driver.
  */
