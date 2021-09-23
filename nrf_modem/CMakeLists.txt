@@ -15,7 +15,12 @@ if(CONFIG_NRF_MODEM_LINK_BINARY)
                    " (${NRF_MODEM_PATH} doesn't exist.)")
   endif()
 
-  zephyr_library_import(modem ${NRF_MODEM_PATH}/libmodem.a)
+  if(CONFIG_NRF_MODEM_LOG)
+    zephyr_library_import(modem ${NRF_MODEM_PATH}/libmodem_log.a)
+  else()
+    zephyr_library_import(modem ${NRF_MODEM_PATH}/libmodem.a)
+  endif()
+
   zephyr_include_directories(include)
 
 endif()

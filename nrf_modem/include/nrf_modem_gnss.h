@@ -754,22 +754,24 @@ struct nrf_modem_gnss_agps_data_integrity {
  * @brief Bitmask values to be used as an argument for function #nrf_modem_gnss_nv_data_delete.
  * @{
  */
-/** @brief Ephemerides data. */
-#define NRF_MODEM_GNSS_DELETE_EPHEMERIDES	   0x01
-/** @brief Almanac data (excluding leap second and ionospheric correction). */
-#define NRF_MODEM_GNSS_DELETE_ALMANACS		   0x02
-/** @brief Ionospheric correction parameters data. */
-#define NRF_MODEM_GNSS_DELETE_IONO_CORRECTION_DATA 0x04
-/** @brief Last good fix (the last position) data. */
-#define NRF_MODEM_GNSS_DELETE_LAST_GOOD_FIX	   0x08
-/** @brief GPS time-of-week (TOW) data. */
-#define NRF_MODEM_GNSS_DELETE_GPS_TOW		   0x10
-/** @brief GPS week number data. */
-#define NRF_MODEM_GNSS_DELETE_GPS_WEEK		   0x20
-/** @brief Leap second (UTC parameters) data. */
-#define NRF_MODEM_GNSS_DELETE_UTC_DATA		   0x40
-/** @brief Local clock (TCXO) frequency offset data. */
-#define NRF_MODEM_GNSS_DELETE_TCXO_OFFSET	   0x80
+/** @brief Ephemerides. */
+#define NRF_MODEM_GNSS_DELETE_EPHEMERIDES	   0x001
+/** @brief Almanacs (excluding leap second and ionospheric correction). */
+#define NRF_MODEM_GNSS_DELETE_ALMANACS		   0x002
+/** @brief Ionospheric correction parameters. */
+#define NRF_MODEM_GNSS_DELETE_IONO_CORRECTION_DATA 0x004
+/** @brief Last good fix (the last position). */
+#define NRF_MODEM_GNSS_DELETE_LAST_GOOD_FIX	   0x008
+/** @brief GPS time-of-week (TOW). */
+#define NRF_MODEM_GNSS_DELETE_GPS_TOW		   0x010
+/** @brief GPS week number. */
+#define NRF_MODEM_GNSS_DELETE_GPS_WEEK		   0x020
+/** @brief Leap second (UTC parameters). */
+#define NRF_MODEM_GNSS_DELETE_UTC_DATA		   0x040
+/** @brief Local clock (TCXO) frequency offset. */
+#define NRF_MODEM_GNSS_DELETE_TCXO_OFFSET	   0x080
+/** @brief Precision estimate of GPS time-of-week (TOW). */
+#define NRF_MODEM_GNSS_DELETE_GPS_TOW_PRECISION	   0x100
 /** @} */
 
 /**
@@ -801,7 +803,7 @@ typedef void (*nrf_modem_gnss_event_handler_type_t)(int event);
  *          other function can be used.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if the interface is already initialized.
+ * @retval -NRF_EPERM if the interface is already initialized.
  */
 int32_t nrf_modem_gnss_init(void);
 
@@ -811,7 +813,7 @@ int32_t nrf_modem_gnss_init(void);
  *          when this function is called.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
  */
 int32_t nrf_modem_gnss_deinit(void);
 
@@ -828,7 +830,7 @@ int32_t nrf_modem_gnss_deinit(void);
  * @param[in] handler Pointer to the event handler function or NULL.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
  */
 int32_t nrf_modem_gnss_event_handler_set(nrf_modem_gnss_event_handler_type_t handler);
 
@@ -842,9 +844,9 @@ int32_t nrf_modem_gnss_event_handler_set(nrf_modem_gnss_event_handler_type_t han
  * @param[in] system_mask System bitmask, see @ref nrf_modem_gnss_system_bitmask.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_system_mask_set(uint8_t system_mask);
 
@@ -858,9 +860,9 @@ int32_t nrf_modem_gnss_system_mask_set(uint8_t system_mask);
  * @param[in] angle Value between 0 and 90 (degrees above the horizon).
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_elevation_threshold_set(uint8_t angle);
 
@@ -871,9 +873,9 @@ int32_t nrf_modem_gnss_elevation_threshold_set(uint8_t angle);
  * @param[in] use_case Bit mask, see @ref nrf_modem_gnss_use_case_bitmask.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_use_case_set(uint8_t use_case);
 
@@ -898,9 +900,9 @@ int32_t nrf_modem_gnss_use_case_set(uint8_t use_case);
  * @param[in] fix_interval 0 for single fix, 1 for continuous navigation or fix interval in seconds.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_fix_interval_set(uint16_t fix_interval);
 
@@ -922,9 +924,9 @@ int32_t nrf_modem_gnss_fix_interval_set(uint16_t fix_interval);
  * @param[in] fix_retry Fix retry period in seconds.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_fix_retry_set(uint16_t fix_retry);
 
@@ -935,9 +937,9 @@ int32_t nrf_modem_gnss_fix_retry_set(uint16_t fix_retry);
  * @param[in] nmea_mask Bit mask, see @ref nrf_modem_gnss_nmea_string_bitmask.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_nmea_mask_set(uint16_t nmea_mask);
 
@@ -950,9 +952,9 @@ int32_t nrf_modem_gnss_nmea_mask_set(uint16_t nmea_mask);
  * @param[in] power_mode See @ref nrf_modem_gnss_power_save_modes.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_power_mode_set(uint8_t power_mode);
 
@@ -972,9 +974,9 @@ int32_t nrf_modem_gnss_power_mode_set(uint8_t power_mode);
  * @param[in] timing_source See @ref nrf_modem_gnss_timing_source.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_timing_source_set(uint8_t timing_source);
 
@@ -991,9 +993,9 @@ int32_t nrf_modem_gnss_timing_source_set(uint8_t timing_source);
  * @param[in] nmea_mode See @ref nrf_modem_gnss_qzss_nmea_mode.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_qzss_nmea_mode_set(uint8_t nmea_mode);
 
@@ -1011,27 +1013,27 @@ int32_t nrf_modem_gnss_qzss_nmea_mode_set(uint8_t nmea_mode);
  * @param[in] prn_mask QZSS PRN mask.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_qzss_prn_mask_set(uint16_t prn_mask);
 
 /** @brief Starts GNSS.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_start(void);
 
 /** @brief Stops GNSS.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is not running.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is not running.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_stop(void);
 
@@ -1047,9 +1049,9 @@ int32_t nrf_modem_gnss_stop(void);
  *                        @ref nrf_modem_gnss_delete_bitmask.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_nv_data_delete(uint32_t delete_mask);
 
@@ -1073,18 +1075,18 @@ int32_t nrf_modem_gnss_nv_data_delete(uint32_t delete_mask);
  * @note Priority will not stop LTE connections.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is not running.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is not running.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_prio_mode_enable(void);
 
 /** @brief Disables GNSS priority over LTE idle mode procedures.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is not running.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is not running.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_prio_mode_disable(void);
 
@@ -1102,9 +1104,9 @@ int32_t nrf_modem_gnss_prio_mode_disable(void);
  * @param[in] mode Selected dynamics mode, see @ref nrf_modem_gnss_dynamics_mode.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is not running.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is not running.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_dyn_mode_change(uint32_t mode);
 
@@ -1119,9 +1121,9 @@ int32_t nrf_modem_gnss_dyn_mode_change(uint32_t mode);
  * @param[in] config Pointer to the configuration struct.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if the config pointer is NULL or GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if the config pointer is NULL or GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_1pps_enable(const struct nrf_modem_gnss_1pps_config *config);
 
@@ -1130,9 +1132,9 @@ int32_t nrf_modem_gnss_1pps_enable(const struct nrf_modem_gnss_1pps_config *conf
  * @note This feature is only supported by modem firmware v1.3.0 or later.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is running or not initialized.
- * @retval NRF_EINVAL if GNSS returned an error.
- * @retval NRF_EAGAIN if out of memory.
+ * @retval -NRF_EPERM if GNSS is running or not initialized.
+ * @retval -NRF_EINVAL if GNSS returned an error.
+ * @retval -NRF_EAGAIN if out of memory.
  */
 int32_t nrf_modem_gnss_1pps_disable(void);
 
@@ -1146,11 +1148,11 @@ int32_t nrf_modem_gnss_1pps_disable(void);
  * @param[in] type The data type to read, see @ref nrf_modem_gnss_data_type.
  *
  * @retval 0 on success.
- * @retval NRF_EPERM if GNSS is not running.
- * @retval NRF_EINVAL if the selected data type don't exist or supplied buffer is NULL.
- * @retval NRF_EMSGSIZE if the buffer supplied by the application is too small for the selected
+ * @retval -NRF_EPERM if GNSS is not running.
+ * @retval -NRF_EINVAL if the selected data type don't exist or supplied buffer is NULL.
+ * @retval -NRF_EMSGSIZE if the buffer supplied by the application is too small for the selected
  *         data type.
- * @retval NRF_EIO if there is no data to read for the selected data type.
+ * @retval -NRF_EIO if there is no data to read for the selected data type.
  */
 int32_t nrf_modem_gnss_read(void *buf, int32_t buf_len, int type);
 
@@ -1163,11 +1165,11 @@ int32_t nrf_modem_gnss_read(void *buf, int32_t buf_len, int type);
  * @param[in] type A-GPS data type identifier, see @ref nrf_modem_gnss_agps_data_type.
  *
  * @retval 0 on success.
- * @retval NRF_EINVAL if the buffer supplied by the application is NULL, buffer length is 0 or
+ * @retval -NRF_EINVAL if the buffer supplied by the application is NULL, buffer length is 0 or
  *         the A-GPS data type doesn't exist.
- * @retval NRF_EPERM if GNSS is not initialized.
- * @retval NRF_EAGAIN if out of memory.
- * @retval NRF_EIO if the A-GPS data was not accepted by GNSS.
+ * @retval -NRF_EPERM if GNSS is not initialized.
+ * @retval -NRF_EAGAIN if out of memory.
+ * @retval -NRF_EIO if the A-GPS data was not accepted by GNSS.
  */
 int32_t nrf_modem_gnss_agps_write(void *buf, int32_t buf_len, uint16_t type);
 

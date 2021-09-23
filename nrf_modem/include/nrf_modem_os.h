@@ -27,6 +27,14 @@ extern "C" {
 /** Infinite time-out. */
 #define NRF_MODEM_OS_FOREVER -1
 
+enum log_level {
+	NRF_MODEM_LOG_LEVEL_NONE,
+	NRF_MODEM_LOG_LEVEL_ERR,
+	NRF_MODEM_LOG_LEVEL_WRN,
+	NRF_MODEM_LOG_LEVEL_INF,
+	NRF_MODEM_LOG_LEVEL_DBG,
+};
+
 /**
  * @brief Initialize the glue layer.
  */
@@ -179,6 +187,44 @@ int32_t nrf_modem_os_trace_put(const uint8_t *data, uint32_t len);
  * Call this function when handling the Trace IRQ.
  */
 void nrf_modem_os_trace_irq_handler(void);
+
+/** @brief Copy transient string to a buffer from internal, logger pool.
+ *
+ * Function should be used when transient string is intended to be logged.
+ * Logger allocates a buffer and copies input string returning a pointer to the
+ * copy. Logger ensures that buffer is freed when logger message is freed.
+ *
+ * Depending on configuration, this function may do nothing and just pass
+ * along the supplied string pointer. Do not rely on this function to always
+ * make a copy!
+ *
+ * @param str Transient string.
+ *
+ * @return Copy of the string or default string if buffer could not be
+ *	   allocated. String may be truncated if input string does not fit in
+ *	   a buffer from the pool (see CONFIG_LOG_STRDUP_MAX_STRING). In
+ *	   some configurations, the original string pointer is returned.
+ */
+const char *nrf_modem_os_log_strdup(const char *str);
+
+/**
+ * @brief Generic logging procedure.
+ *
+ * @param level Log level.
+ * @param fmt Format string.
+ * @param ... Varargs.
+ */
+void nrf_modem_os_log(int level, const char *fmt, ...);
+
+/**
+ * @brief Logging procedure for dumping hex representation of object.
+ *
+ * @param level Log level.
+ * @param str String to print in the log.
+ * @param data Data whose hex representation we want to log.
+ * @param len Length of the data to hex dump.
+ */
+void nrf_modem_os_logdump(int level, const char *str, const void *data, size_t len);
 
 #ifdef __cplusplus
 }

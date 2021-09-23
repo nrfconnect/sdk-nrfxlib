@@ -11,6 +11,9 @@ config NRF_MODEM_LINK_BINARY
 
 endchoice
 
+config NRF_MODEM_LOG
+	bool "Enable library logging"
+
 # This configuration is auto-generated.
 # Do not edit.
 config NRF_MODEM_SHMEM_CTRL_SIZE
