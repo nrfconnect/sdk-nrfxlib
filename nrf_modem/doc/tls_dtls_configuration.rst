@@ -49,13 +49,13 @@ The following code snippet shows how to set up strict peer verification for a so
 
    verify = REQUIRED;
 
-   err = nrf_setsockopt(fd, NRF_SOL_TLS, NRF_TLS_PEER_VERIFY, &verify, sizeof(verify));
+   err = nrf_setsockopt(fd, NRF_SOL_SECURE, NRF_TLS_PEER_VERIFY, &verify, sizeof(verify));
    if (err) {
 	   /* Failed to set up peer verification. */
 	   return -1;
    }
 
-   err = nrf_setsockopt(fd, NRF_SOL_TLS, NRF_TLS_SEC_TAG_LIST, sec_tag_list, sizeof(sec_tag_t) * ARRAY_SIZE(sec_tag_list));
+   err = nrf_setsockopt(fd, NRF_SOL_SECURE, NRF_TLS_SEC_TAG_LIST, sec_tag_list, sizeof(sec_tag_t) * ARRAY_SIZE(sec_tag_list));
    if (err) {
 	   /* Failed to set up socket security tag. */
 	   return -1;
@@ -89,7 +89,7 @@ For example, see the following code:
    /* TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA */
    nrf_sec_cipher_t cipher_list[] = { 0xC014 };
 
-   err = nrf_setsockopt(fd, NRF_SOL_TLS, NRF_SO_CIPHERSUITE_LIST, cipher_list, sizeof(cipher_list));
+   err = nrf_setsockopt(fd, NRF_SOL_SECURE, NRF_SO_CIPHERSUITE_LIST, cipher_list, sizeof(cipher_list));
    if (err) {
       /* Failed to set up cipher suite list. */
       return -1;
