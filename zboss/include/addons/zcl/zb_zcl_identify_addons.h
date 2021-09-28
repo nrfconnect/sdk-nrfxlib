@@ -12,7 +12,7 @@
 /*! \addtogroup zb_zcl_identify_addons */
 /*! @{ */
 
-/**@brief Macro equivalent to @ref ZB_ZCL_IDENTIFY_SEND_TRIGGER_VARIANT, but command is sent without APS ACK. */
+/**@brief Macro equivalent to @ref ZB_ZCL_IDENTIFY_SEND_TRIGGER_VARIANT_REQ, but command is sent without APS ACK. */
 #define ZB_ZCL_IDENTIFY_SEND_TRIGGER_VARIANT_REQ_NO_APS_ACK(                                        \
   buffer, addr, dst_addr_mode, dst_ep, ep, prof_id, def_resp, cb, effect_id, effect_var)            \
 {                                                                                                   \

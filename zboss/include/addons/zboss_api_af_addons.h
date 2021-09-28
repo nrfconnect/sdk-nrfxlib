@@ -14,23 +14,25 @@
 
 /**@brief Redefinition of __CAT__ as variadic macro.
  *
- * @param[IN]  a   Mandatory argument to concatenate.
- * @param[IN]  b   Mandatory argument to concatenate.
- * @param[IN]  ... Optional argument to concatenate.
+ * @param[in]  a   Mandatory argument to concatenate.
+ * @param[in]  b   Mandatory argument to concatenate.
+ * @param[in]  ... Optional argument to concatenate.
  */
 #define __CAT_VA__(a, b, ...)                               a## __VA_ARGS__## b
 
 /**@brief Redefinition of ZB_AF_SIMPLE_DESC_TYPE as variadic macro.
  *
- * @param[IN]  ...      Optional argument to concatenate to the type name.
+ * @param[in]  in_num   Number of input clusters.
+ * @param[in]  out_num  Number of output clusters.
+ * @param[in]  ...      Optional argument to concatenate to the type name.
  */
 #define ZB_AF_SIMPLE_DESC_TYPE_VA(in_num, out_num, ...)     __CAT_VA__(zb_af_simple_desc_, _t, __VA_ARGS__)
 
 /**@brief Redefinition of ZB_DECLARE_SIMPLE_DESC as variadic macro.
  *
- * @param[IN]  in_clusters_count   Number of input clusters.
- * @param[IN]  out_clusters_count  Number of output clusters.
- * @param[IN]  ...                 Optional argument to concatenate to the type name.
+ * @param[in]  in_clusters_count   Number of input clusters.
+ * @param[in]  out_clusters_count  Number of output clusters.
+ * @param[in]  ...                 Optional argument to concatenate to the type name.
  */
 #define ZB_DECLARE_SIMPLE_DESC_VA(in_clusters_count, out_clusters_count, ...)             \
   typedef ZB_PACKED_PRE struct zb_af_simple_desc_## __VA_ARGS__## _s                      \
@@ -49,8 +51,8 @@
 
 /**@brief Redefinition of ZBOSS_DECLARE_DEVICE_CTX_N_EP as variadic macro.
  *
- * @param[IN] device_ctx_name  Device context variable name.
- * @param[IN] ...              Variables holding context for endpoints.
+ * @param[in] device_ctx_name  Device context variable name.
+ * @param[in] ...              Variables holding context for endpoints.
  */
 #define ZBOSS_DECLARE_DEVICE_CTX_EP_VA(device_ctx_name, ...)            \
   zb_af_endpoint_desc_t *ep_list_##device_ctx_name[] = {                \
