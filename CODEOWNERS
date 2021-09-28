@@ -22,6 +22,14 @@ Kconfig*                                  @tejlmand
 *.rst                                     @b-gent
 doc/*                                     @b-gent
 
+# All doc image subfolders
+/mpsl/doc/pic/                            @Avalei
+/nrf_802154/doc/images/                   @Avalei
+/nrf_modem/doc/images/                    @Avalei
+/nrf_rpc/doc/img/                         @Avalei
+/softdevice_controller/doc/pic/           @Avalei
+/zboss/doc/images/                        @Avalei
+
 # All subfolders
 /.github/                                 @thst-nordic
 /softdevice_controller/                   @rugeGerritsen
