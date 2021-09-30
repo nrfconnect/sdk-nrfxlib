@@ -649,7 +649,7 @@ function(nrf_security_target_embed_objects)
         ${CMAKE_CURRENT_BINARY_DIR}/symbol_rename_${backend_name}.txt
       )
 
-      set(symbol_rename_include"\
+      set(symbol_rename_include "\
         set(CMAKE_OBJCOPY ${CMAKE_OBJCOPY})\n\
         set(CMAKE_AR ${CMAKE_AR})\n\
         set(OBJECTS $<TARGET_OBJECTS:${target}>)\n\
