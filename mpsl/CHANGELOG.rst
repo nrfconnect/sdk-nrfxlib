@@ -9,6 +9,16 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
+Master branch
+*************
+
+All the notable changes added to the master branch are documented in this section.
+
+Added
+=====
+
+* Added support for the Simple GPIO Front-End Module implementation on nRF53 Series.
+
 nRF Connect SDK v1.7.0
 **********************
 
