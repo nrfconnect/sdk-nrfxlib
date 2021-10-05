@@ -1,18 +1,51 @@
-/*
- * Copyright (c) 2018 Nordic Semiconductor ASA
+/**
+ * Copyright (c) 2016, Telit Communications Cyprus Ltd
  *
- * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form, except as embedded into a Nordic
+ *    Semiconductor ASA integrated circuit in a product or a software update for
+ *    such product, must reproduce the above copyright notice, this list of
+ *    conditions and the following disclaimer in the documentation and/or other
+ *    materials provided with the distribution.
+ *
+ * 3. Neither the name of Nordic Semiconductor ASA nor the names of its
+ *    contributors may be used to endorse or promote products derived from this
+ *    software without specific prior written permission.
+ *
+ * 4. This software, with or without modification, must only be used with a
+ *    Nordic Semiconductor ASA integrated circuit.
+ *
+ * 5. Any software provided in binary form under this license must not be reverse
+ *    engineered, decompiled, modified and/or disassembled.
+ *
+ * THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
+ * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
+
 
 #ifndef NFC_T4T_LIB_H__
 #define NFC_T4T_LIB_H__
 
-/** @file
+/** @file nfc_t4t_lib.h
  *
- * @addtogroup nfc_api
  *
  * @defgroup nfc_t4t NFC Type 4 Tag
- * @ingroup nfc_api
  * @brief Implementation of NFC Type 4 Tag.
  *
  * @defgroup nfc_t4t_lib NFC tag 4 type emulation library
@@ -45,8 +78,8 @@
  * B or C) library will use TIMER 4 to apply workarounds for the anomalies.
  */
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <string.h>
 
 #ifdef __cplusplus
@@ -56,13 +89,15 @@ extern "C" {
 #define NFC_T4T_MAX_PAYLOAD_SIZE  0xFFF0U
 
 /**< @brief Emulation mode. */
-enum nfc_t4t_emu_mode {
+typedef enum
+{
 	NFC_T4T_EMUMODE_NDEF,   /**< Emulated NDEF AID and EF-Files. */
 	NFC_T4T_EMUMODE_PICC    /**< Run just ISO-DEP, deliver I-Frames up. */
-};
+} nfc_t4t_emu_mode_t;
 
 /**< @brief Event identifiers used by the @ref nfc_t4t_callback_t */
-enum nfc_t4t_event {
+typedef enum
+{
 	NFC_T4T_EVENT_NONE,
 	/**< This ID is never used. Dummy value for completeness. */
 
@@ -121,21 +156,23 @@ enum nfc_t4t_event {
 	 * @param data_length Length of data.
 	 * @param flags @ref nfc_t4t_data_ind_flags.
 	 */
-};
+} nfc_t4t_event_t;
 
 /**< @brief Flags coming with nfc_t4t_callback_t at @ref
  *   NFC_T4T_EVENT_DATA_IND event.
  */
-enum nfc_t4t_data_ind_flags {
+typedef enum
+{
 	NFC_T4T_DI_FLAG_NONE = 0x00,  /**< Dummy value. */
 	NFC_T4T_DI_FLAG_MORE = 0x01
 	/**< This signals that more data is expected to be received. */
-};
+} nfc_t4t_data_ind_flags_t;
 
 /**< @brief Parameter IDs that can be set/get with @ref nfc_t4t_parameter_set or
  *   @ref nfc_t4t_parameter_get.
  */
-enum nfc_t4t_param_id {
+typedef enum
+{
 	NFC_T4T_PARAM_TESTING,	/**< Internal usage only for Unit-Testing. */
 	NFC_T4T_PARAM_FWI,	/**< Frame Wait Time parameter */
 	NFC_T4T_PARAM_SELRES,
@@ -148,7 +185,7 @@ enum nfc_t4t_param_id {
 	 *   before nfc_t2t_setup() to set initial NFCID1 and it can be changed
 	 *   later.
 	 */
-};
+} nfc_t4t_param_id_t;
 
 /** @brief Callback to pass events from NFCLib to application.
  *
@@ -162,7 +199,7 @@ enum nfc_t4t_param_id {
  * @param flags Some events deliver flags. see @ref nfc_t4t_event for details.
  */
 typedef void (*nfc_t4t_callback_t)(void *context,
-				   enum nfc_t4t_event event,
+				   nfc_t4t_event_t event,
 				   const uint8_t *data,
 				   size_t data_length,
 				   uint32_t flags);
@@ -188,7 +225,8 @@ typedef void (*nfc_t4t_callback_t)(void *context,
  * (optional).
  *
  * @retval 0 Success.
- * @retval -ENOTSUP If emulation is in running state.
+ * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer))
+ * @retval -NRF_EOPNOTSUPP If emulation is in running state.
  */
 int nfc_t4t_setup(nfc_t4t_callback_t callback, void *context);
 
@@ -206,9 +244,9 @@ int nfc_t4t_setup(nfc_t4t_callback_t callback, void *context);
  * @param buffer_length Length of buffer (maximum writable NDEF size)
  *
  * @retval 0 Success.
- * @retval -EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
- * @retval -ENOTSUP If the new buffer has a different length than the first one.
- * @retval -EFAULT If the provided buffer is the currently used buffer.
+ * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
+ * @retval -NRF_EOPNOTSUPP If the new buffer has a different length than the first one.
+ * @retval -NRF_EFAULT If the provided buffer is the currently used buffer.
  */
 int nfc_t4t_ndef_rwpayload_set(uint8_t *emulation_buffer,
 			       size_t buffer_length);
@@ -224,8 +262,8 @@ int nfc_t4t_ndef_rwpayload_set(uint8_t *emulation_buffer,
  * @param buffer_length Length of contained NDEF payload message
  *
  * @retval 0 Success.
- * @retval -EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
- * @retval -ENOTSUP Emulation is in running stated.
+ * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer)).
+ * @retval -NRF_EOPNOTSUPP Emulation is in running stated.
  */
 int nfc_t4t_ndef_staticpayload_set(const uint8_t *emulation_buffer,
 				   size_t buffer_length);
@@ -244,8 +282,8 @@ int nfc_t4t_ndef_staticpayload_set(const uint8_t *emulation_buffer,
  * @param pdu_length Length of PDU.
  *
  * @retval 0 Success.
- * @retval -EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
- * @retval -ENOTSUP Emulation is in running state.
+ * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
+ * @retval -NRF_EOPNOTSUPP Emulation is in running state.
  */
 int nfc_t4t_response_pdu_send(const uint8_t *pdu, size_t pdu_length);
 
@@ -258,9 +296,9 @@ int nfc_t4t_response_pdu_send(const uint8_t *pdu, size_t pdu_length);
  * @param data_length Size of the buffer containing the data to set.
  *
  * @retval 0 Success.
- * @retval -EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
+ * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
  */
-int nfc_t4t_parameter_set(enum nfc_t4t_param_id id,
+int nfc_t4t_parameter_set(nfc_t4t_param_id_t id,
 			  void *data,
 			  size_t data_length);
 
@@ -277,9 +315,9 @@ int nfc_t4t_parameter_set(enum nfc_t4t_param_id id,
  * data.
  *
  * @retval 0 Success.
- * @retval -EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
+ * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
  */
-int nfc_t4t_parameter_get(enum nfc_t4t_param_id id,
+int nfc_t4t_parameter_get(nfc_t4t_param_id_t id,
 			  void *data,
 			  size_t *max_data_length);
 
@@ -289,7 +327,7 @@ int nfc_t4t_parameter_get(enum nfc_t4t_param_id id,
  * callback.
  *
  * @retval 0 Success.
- * @retval -ENOTSUP Already started.
+ * @retval -NRF_EOPNOTSUPP Already started.
  */
 int nfc_t4t_emulation_start(void);
 
@@ -300,7 +338,7 @@ int nfc_t4t_emulation_start(void);
  * callback.
  *
  * @retval 0 Success.
- * @retval -ENOTSUP Emulation was already stopped
+ * @retval -NRF_EOPNOTSUPP Emulation was already stopped.
  */
 int nfc_t4t_emulation_stop(void);
 
@@ -314,7 +352,8 @@ int nfc_t4t_emulation_stop(void);
  *
  * You need to restart with @ref nfc_t4t_setup to run a new Emulation.
  *
- * @retval 0 Always succeeds.
+ * @retval 0 Success.
+ * @retval -NRF_EOPNOTSUPP The NFC T4T has been de-initialized already.
  */
 int nfc_t4t_done(void);
 
