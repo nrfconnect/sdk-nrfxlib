@@ -6,11 +6,14 @@
 
 nrfxlib_calculate_lib_path(lib_path)
 
-set(NFC_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
+nrfxlib_calculate_lib_path(NFC_LIB_DIR
+  BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
+  SOFT_FLOAT_FALLBACK
+)
 
-if(NOT EXISTS ${NFC_LIB_PATH})
+if(NOT EXISTS ${NFC_LIB_DIR})
   message(WARNING "This combination of SoC and floating point ABI is not supported by the nfc lib."
-                  "(${NFC_LIB_PATH} doesn't exist.)")
+                  "(${NFC_LIB_DIR} doesn't exist.)")
 endif()
 
 zephyr_include_directories(include)
@@ -20,11 +23,11 @@ if (NOT CONFIG_SOC_SERIES)
 endif()
 
 if(CONFIG_NFC_T2T_NRFXLIB)
-	zephyr_link_libraries(${NFC_LIB_PATH}/libnfct2t_${CONFIG_SOC_SERIES}.a)
+	zephyr_link_libraries(${NFC_LIB_DIR}/libnfct2t_${CONFIG_SOC_SERIES}.a)
 endif()
 
 if(CONFIG_NFC_T4T_NRFXLIB)
-	zephyr_link_libraries(${NFC_LIB_PATH}/libnfct4t_${CONFIG_SOC_SERIES}.a)
+	zephyr_link_libraries(${NFC_LIB_DIR}/libnfct4t_${CONFIG_SOC_SERIES}.a)
 endif()
 
 if (NOT CONFIG_NFC_T2T_NRFXLIB AND NOT CONFIG_NFC_T4T_NRFXLIB)
