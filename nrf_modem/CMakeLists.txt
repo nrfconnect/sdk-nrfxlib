@@ -6,16 +6,16 @@
 
 if(CONFIG_NRF_MODEM_LINK_BINARY)
 
-  nrfxlib_calculate_lib_path(lib_path)
+  nrfxlib_calculate_lib_path(NRF_MODEM_LIB_DIR
+    BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
+    SOFT_FLOAT_FALLBACK
+  )
 
-  set(NRF_MODEM_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
-
-  if(NOT EXISTS ${NRF_MODEM_PATH})
-     message(ERROR " This combination of SoC and floating point ABI is not supported by libmodem"
-                   " (${NRF_MODEM_PATH} doesn't exist.)")
+  if(NOT NRF_MODEM_LIB_DIR)
+     message(ERROR " This combination of SoC and floating point ABI is not supported by libmodem.")
   endif()
 
-  zephyr_library_import(modem ${NRF_MODEM_PATH}/libmodem.a)
+  zephyr_library_import(modem ${NRF_MODEM_LIB_DIR}/libmodem.a)
   zephyr_include_directories(include)
 
 endif()

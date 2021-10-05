@@ -4,15 +4,15 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-nrfxlib_calculate_lib_path(lib_path)
+nrfxlib_calculate_lib_path(MPSL_LIB_DIR
+  BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
+  SOFT_FLOAT_FALLBACK
+)
 
-set(MPSL_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
-
-if(NOT EXISTS ${MPSL_LIB_PATH})
-  message(WARNING "This combination of SoC and floating point ABI is not supported by the MPSL lib."
-                  "(${MPSL_LIB_PATH} doesn't exist.)")
+if(NOT MPSL_LIB_DIR)
+  message(WARNING "This combination of SoC and floating point ABI is not supported by the MPSL lib.")
 endif()
 
 zephyr_include_directories(include)
 zephyr_include_directories(include/protocol)
-zephyr_link_libraries(${MPSL_LIB_PATH}/libmpsl.a)
+zephyr_link_libraries(${MPSL_LIB_DIR}/libmpsl.a)

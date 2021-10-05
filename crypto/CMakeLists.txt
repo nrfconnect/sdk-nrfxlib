@@ -12,15 +12,17 @@ add_library(nrfxlib_crypto INTERFACE)
 
 if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM)
 
-  # The oberon library doesn't have a softfp version so we replace its path with the soft-float one
-  if (CONFIG_FP_SOFTABI)
-        string(REGEX REPLACE "softfp-float" "soft-float"  lib_path ${lib_path})
-  endif()
-
   set(OBERON_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_oberon)
   set(OBERON_VER 3.0.8)
-  set(OBERON_LIB ${OBERON_BASE}/${lib_path}/liboberon_${OBERON_VER}.a)
-  set(OBERON_MBEDTLS_LIB ${OBERON_BASE}/${lib_path}/liboberon_mbedtls_${OBERON_VER}.a)
+
+  nrfxlib_calculate_lib_path(OBERON_LIB_DIR
+    BASE_DIR ${OBERON_BASE}
+    SOFT_FLOAT_FALLBACK
+  )
+
+  set(OBERON_LIB ${OBERON_LIB_DIR}/liboberon_${OBERON_VER}.a)
+  set(OBERON_MBEDTLS_LIB ${OBERON_LIB_DIR}/liboberon_mbedtls_${OBERON_VER}.a)
+
   if(NOT EXISTS ${OBERON_LIB})
     message(WARNING "This combination of SoC and floating point ABI is not supported by the nrf_oberon lib."
                     "(${OBERON_LIB} doesn't exist.)")
@@ -73,7 +75,16 @@ if (CONFIG_NRF_CC310_BL)
     set(CC310_FLAVOR no-interrupts)
   endif()
   set(CC310_BL_VER 0.9.12)
-  set(CC310_BL_LIB ${CC310_BL_BASE}/${lib_path}/${CC310_FLAVOR}/libnrf_cc310_bl_${CC310_BL_VER}.a)
+
+  nrfxlib_calculate_lib_path(CC310_BL_LIB_DIR
+    BASE_DIR ${CC310_BL_BASE}
+    SOFT_FLOAT_FALLBACK
+  )
+
+  set(CC310_BL_LIB
+    ${CC310_BL_LIB_DIR}/${CC310_FLAVOR}/libnrf_cc310_bl_${CC310_BL_VER}.a
+  )
+
   if(NOT EXISTS ${CC310_BL_LIB})
     message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_cc310_bl lib."
                     "(${CC310_BL_LIB} doesn't exist.)")
@@ -93,8 +104,14 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   if (NOT CONFIG_HW_CC3XX_INTERRUPT)
     set(CC3XX_PLATFORM_FLAVOR no-interrupts)
   endif()
+
+  nrfxlib_calculate_lib_path(NRF_CC3XX_PLATFORM_LIB_DIR
+    BASE_DIR ${NRF_CC3XX_PLATFORM_BASE}
+    SOFT_FLOAT_FALLBACK
+  )
+
   set(NRF_CC3XX_PLATFORM_LIB
-    ${NRF_CC3XX_PLATFORM_BASE}/${lib_path}/${CC3XX_PLATFORM_FLAVOR}/libnrf_${CC3XX_ARCH}_platform_${NRF_CC3XX_PLATFORM_VER}.a
+    ${NRF_CC3XX_PLATFORM_LIB_DIR}/${CC3XX_PLATFORM_FLAVOR}/libnrf_${CC3XX_ARCH}_platform_${NRF_CC3XX_PLATFORM_VER}.a
   )
 
   if (NOT EXISTS ${NRF_CC3XX_PLATFORM_LIB})
@@ -135,9 +152,16 @@ if (CONFIG_CC3XX_BACKEND)
   if (NOT CONFIG_HW_CC3XX_INTERRUPT)
     set(CC3XX_FLAVOR no-interrupts)
   endif()
-  set(NRF_CC3XX_LIB
-    ${NRF_CC3XX_BASE}/${lib_path}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_mbedcrypto_${NRF_CC3XX_VER}.a
+
+  nrfxlib_calculate_lib_path(NRF_CC3XX_LIB_DIR
+    BASE_DIR ${NRF_CC3XX_BASE}
+    SOFT_FLOAT_FALLBACK
   )
+
+  set(NRF_CC3XX_LIB
+    ${NRF_CC3XX_LIB_DIR}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_mbedcrypto_${NRF_CC3XX_VER}.a
+  )
+
   if(NOT EXISTS ${NRF_CC3XX_LIB})
     message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_${CC3XX_ARCH}_mbedcryto lib."
                     "(${NRF_CC3XX_LIB} doesn't exist.)")

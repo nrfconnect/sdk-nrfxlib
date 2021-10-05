@@ -10,13 +10,14 @@ if(CONFIG_BT_LL_SOFTDEVICE OR
 endif()
 
 if(CONFIG_BT_LL_SOFTDEVICE)
-  nrfxlib_calculate_lib_path(lib_path)
+  nrfxlib_calculate_lib_path(SOFTDEVICE_CONTROLLER_LIB_DIR
+    BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
+    SOFT_FLOAT_FALLBACK
+  )
 
-  set(SOFTDEVICE_CONTROLLER_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
-
-  if(NOT EXISTS ${SOFTDEVICE_CONTROLLER_LIB_PATH})
-    message(WARNING "This combination of SoC and floating point ABI is not supported by the SoftDevice Controller lib."
-      "(${SOFTDEVICE_CONTROLLER_LIB_PATH} doesn't exist.)")
+  if(NOT SOFTDEVICE_CONTROLLER_LIB_DIR)
+    message(WARNING "This combination of SoC and floating point ABI is not"
+      "supported by the SoftDevice Controller lib.")
   endif()
 
   if(CONFIG_SOFTDEVICE_CONTROLLER_PERIPHERAL)
@@ -30,7 +31,7 @@ if(CONFIG_BT_LL_SOFTDEVICE)
   endif()
 
   set(SOFTDEVICE_CONTROLLER_LIB
-    ${SOFTDEVICE_CONTROLLER_LIB_PATH}/libsoftdevice_controller_${softdevice_controller_variant}.a)
+    ${SOFTDEVICE_CONTROLLER_LIB_DIR}/libsoftdevice_controller_${softdevice_controller_variant}.a)
   zephyr_link_libraries(${SOFTDEVICE_CONTROLLER_LIB})
 
 endif()
