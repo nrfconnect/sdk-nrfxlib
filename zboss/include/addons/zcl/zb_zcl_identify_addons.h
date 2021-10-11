@@ -22,7 +22,7 @@
             ZB_ZCL_CMD_IDENTIFY_TRIGGER_EFFECT_ID);                                                 \
     ZB_ZCL_PACKET_PUT_DATA8(ptr, (effect_id));                                                      \
     ZB_ZCL_PACKET_PUT_DATA8(ptr, (effect_var));                                                     \
-  ZB_ZCL_SEND_COMMAND_SHORT_WITHOUT_ACK((buffer), ptr, (zb_addr_u *)(&(addr), dst_addr_mode,        \
+    ZB_ZCL_SEND_COMMAND_SHORT_WITHOUT_ACK((buffer), ptr, addr, dst_addr_mode,                       \
                                 dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_IDENTIFY, cb, 0);            \
 }
 

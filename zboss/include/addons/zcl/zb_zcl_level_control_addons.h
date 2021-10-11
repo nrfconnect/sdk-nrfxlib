@@ -40,7 +40,7 @@ typedef struct
   ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_size));                            \
   ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                 \
   ZB_ZCL_SEND_COMMAND_SHORT_WITHOUT_ACK((buffer), ptr,                  \
-                            (zb_addr_u *)(&(addr), dst_addr_mode,       \
+                            addr, dst_addr_mode,                        \
                             dst_ep, ep, prfl_id,                        \
                             ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb, 0);    \
 }

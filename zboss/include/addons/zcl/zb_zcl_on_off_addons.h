@@ -28,7 +28,7 @@ typedef struct
   zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                     \
   ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, dis_default_resp)            \
   ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), command_id);           \
-  ZB_ZCL_SEND_COMMAND_SHORT_WITHOUT_ACK((buffer), ptr, (zb_addr_u *)(&(addr),           \
+  ZB_ZCL_SEND_COMMAND_SHORT_WITHOUT_ACK((buffer), ptr, addr,                            \
             dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_ON_OFF, cb, 0);       \
 }
 
