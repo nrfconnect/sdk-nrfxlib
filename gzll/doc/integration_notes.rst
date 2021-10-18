@@ -1,0 +1,71 @@
+.. _gzll_integration_notes:
+
+Integration notes
+#################
+
+.. contents::
+   :local:
+   :depth: 2
+
+RTOS
+****
+
+Gazell Link Layer API is not reentrant.
+It should be called by only a single thread in an RTOS.
+
+Glue layer
+**********
+
+The glue layer lets you to select the hardware resources for Gazell.
+
+Radio
+=====
+
+Gazell accesses directly the nRF5 radio peripheral.
+
+When nRF5 radio makes an interrupt request, the glue function :c:func:`nrf_gzll_radio_irq_handler` needs to be called for Gazell processing.
+
+Timer
+=====
+
+Gazell requires a timer peripheral for timing purposes.
+It accesses directly the timer instance provided by the :c:var:`nrf_gzll_timer` variable.
+It consults the :c:var:`nrf_gzll_timer_irqn` variable for the interrupt number of the timer.
+
+When nRF5 timer makes an interrupt request, the glue function :c:func:`nrf_gzll_timer_irq_handler` needs to be called for Gazell processing.
+
+Software interrupt
+==================
+
+Gazell consults the :c:var:`nrf_gzll_swi_irqn` variable for the software interrupt number to use.
+
+When nRF5 software interrupt is triggered, the glue function :c:func:`nrf_gzll_swi_irq_handler` needs to be called for Gazell processing.
+
+PPI channels
+============
+
+Gazell takes three PPI channels.
+It consults the following variables for the PPI channel numbers, event end points (EEP) and task end points (TEP):
+
+* :c:var:`nrf_gzll_ppi_eep0`
+* :c:var:`nrf_gzll_ppi_tep0`
+* :c:var:`nrf_gzll_ppi_eep1`
+* :c:var:`nrf_gzll_ppi_tep1`
+* :c:var:`nrf_gzll_ppi_eep2`
+* :c:var:`nrf_gzll_ppi_tep2`
+* :c:var:`nrf_gzll_ppi_chen_msk_0_and_1`
+* :c:var:`nrf_gzll_ppi_chen_msk_2`
+
+High frequency clock
+====================
+
+You can configure Gazell to automatically switch on and off the high frequency oscillator (:c:enumerator:`NRF_GZLL_XOSC_CTL_AUTO`).
+It calls the following glue functions for high frequency clock requests:
+
+* :c:func:`nrf_gzll_request_xosc`
+* :c:func:`nrf_gzll_release_xosc`
+
+Microseconds delay
+==================
+
+Gazell calls the glue function :c:func:`nrf_gzll_delay_us` to delay a number of microseconds.
