@@ -14,6 +14,7 @@ Refer to their respective documentation for more information.
    :caption: Contents:
 
    crypto/README
+   gzll/README
    nrf_modem/README
    mpsl/README
    nrf_802154/README
