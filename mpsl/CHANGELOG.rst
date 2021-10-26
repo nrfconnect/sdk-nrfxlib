@@ -9,10 +9,10 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
-Master branch
-*************
+Main branch
+***********
 
-All the notable changes added to the master branch are documented in this section.
+All the notable changes added to the main branch are documented in this section.
 
 Added
 =====
