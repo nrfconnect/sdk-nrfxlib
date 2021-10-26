@@ -4,10 +4,9 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-if(CONFIG_BT_LL_SOFTDEVICE OR
-   CONFIG_BT_LL_SOFTDEVICE_VS_INCLUDE)
-  zephyr_include_directories(include)
-endif()
+zephyr_interface_library_named (SOFTDEVICE_CONTROLLER_LIB_HEADERS)
+target_include_directories(SOFTDEVICE_CONTROLLER_LIB_HEADERS
+  INTERFACE include)
 
 if(CONFIG_BT_LL_SOFTDEVICE)
   nrfxlib_calculate_lib_path(SOFTDEVICE_CONTROLLER_LIB_DIR
