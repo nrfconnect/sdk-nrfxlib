@@ -24,9 +24,6 @@ Two FEM implementations are provided:
    It is a simplified version, made to be compatible with other front-end modules.
    It implements a 2-pin interface.
 
-.. note::
-   The nRF53 Series supports only the nRF21540 GPIO Front-End Module.
-
 Both implementations use PA and LNA pins for controlling the FEM.
 Additionally, the nRF21540 GPIO implementation uses the PDN pin for powering down the FEM internal circuits, to reduce energy consumption.
 

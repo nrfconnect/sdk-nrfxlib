@@ -22,9 +22,10 @@ This library provides the following key features:
   It supports only the nRF52 Series.
 * SoC Temperature.
   It provides an API for obtaining the temperature measured on the SoC.
-* Radio coexistence.
-  It allows the application to interface with several types of packet traffic arbiters (PTAs).
-
+* IEEE 802.15.4 External Radio Coexistence.
+  It provides an API to control coexistence with IEEE 802.15.4.
+* Bluetooth External Radio Coexistence.
+  It provides an API to control coexistence with bluetooth.
 
 .. toctree::
    :maxdepth: 2
@@ -37,5 +38,6 @@ This library provides the following key features:
    doc/tx_power_control
    doc/fem
    doc/cx
+   doc/bluetooth_coex
    CHANGELOG
    doc/api
