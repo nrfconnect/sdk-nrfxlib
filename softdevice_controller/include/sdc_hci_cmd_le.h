@@ -135,6 +135,12 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_REMOVE_ADV_SET = 0x203c,
     /** @brief See @ref sdc_hci_cmd_le_clear_adv_sets(). */
     SDC_HCI_OPCODE_CMD_LE_CLEAR_ADV_SETS = 0x203d,
+    /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_params(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_PARAMS = 0x203e,
+    /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_data(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_DATA = 0x203f,
+    /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_enable(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_ENABLE = 0x2040,
     /** @brief See @ref sdc_hci_cmd_le_set_ext_scan_params(). */
     SDC_HCI_OPCODE_CMD_LE_SET_EXT_SCAN_PARAMS = 0x2041,
     /** @brief See @ref sdc_hci_cmd_le_set_ext_scan_enable(). */
@@ -676,6 +682,32 @@ typedef __PACKED_STRUCT
 {
     uint8_t adv_handle;
 } sdc_hci_cmd_le_remove_adv_set_t;
+
+/** @brief LE Set Periodic Advertising Parameters command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t adv_handle;
+    uint16_t periodic_adv_interval_min;
+    uint16_t periodic_adv_interval_max;
+    uint16_t periodic_adv_properties;
+} sdc_hci_cmd_le_set_periodic_adv_params_t;
+
+/** @brief LE Set Periodic Advertising Data command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t adv_handle;
+    uint8_t operation;
+    uint8_t adv_data_length;
+    /** @brief Size: adv_data_length. */
+    uint8_t adv_data[];
+} sdc_hci_cmd_le_set_periodic_adv_data_t;
+
+/** @brief LE Set Periodic Advertising Enable command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t enable;
+    uint8_t adv_handle;
+} sdc_hci_cmd_le_set_periodic_adv_enable_t;
 
 /** @brief LE Set Extended Scan Parameters command parameter(s). */
 typedef __PACKED_STRUCT
@@ -2780,6 +2812,185 @@ uint8_t sdc_hci_cmd_le_remove_adv_set(const sdc_hci_cmd_le_remove_adv_set_t * p_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_clear_adv_sets(void);
+
+/** @brief LE Set Periodic Advertising Parameters.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.61
+ *
+ * The HCI_LE_Set_Periodic_Advertising_Parameters command is used by the
+ * Host to set the parameters for periodic advertising.
+ *
+ * The Advertising_Handle parameter identifies the advertising set whose
+ * periodic advertising parameters are being configured. If the corresponding
+ * advertising set does not already exist, then the Controller shall return the error
+ * code Unknown Advertising Identifier (0x42).
+ *
+ * The Periodic_Advertising_Interval_Min parameter shall be less than or equal to
+ * the Periodic_Advertising_Interval_Max parameter. The
+ * Periodic_Advertising_Interval_Min and Periodic_Advertising_Interval_Max
+ * parameters should not be the same value to enable the Controller to determine
+ * the best advertising interval given other activities.
+ *
+ * The Periodic_Advertising_Properties parameter indicates which fields should
+ * be included in the advertising packet.
+ *
+ * If the advertising set identified by the Advertising_Handle specified scannable,
+ * connectable, legacy, or anonymous advertising, the Controller shall return the
+ * error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command when periodic advertising is enabled for the
+ * specified advertising set, the Controller shall return the error code Command
+ * Disallowed (0x0C).
+ *
+ * If the Advertising_Handle does not identify an advertising set that is already
+ * configured for periodic advertising and the Controller is unable to support more
+ * periodic advertising at present, the Controller shall return the error code
+ * Memory Capacity Exceeded (0x07).
+ *
+ * If the advertising set already contains periodic advertising data and the length
+ * of the data is greater than the maximum that the Controller can transmit within
+ * a periodic advertising interval of Periodic_Advertising_Interval_Max, the
+ * Controller shall return the error code Packet Too Long (0x45). If advertising on
+ * the LE Coded PHY, the S=8 coding shall be assumed.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Periodic_Advertising_Parameters command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_periodic_adv_params(const sdc_hci_cmd_le_set_periodic_adv_params_t * p_params);
+
+/** @brief LE Set Periodic Advertising Data.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.62
+ *
+ * The HCI_LE_Set_Periodic_Advertising_Data command is used to set the data
+ * used in periodic advertising PDUs. This command may be issued at any time
+ * after the advertising set identified by the Advertising_Handle parameter has
+ * been configured for periodic advertising using the
+ * HCI_LE_Set_Periodic_Advertising_Parameters command (see Section
+ * 7.8.61), regardless of whether periodic advertising in that set is enabled or
+ * disabled. If the advertising set has not been configured for periodic advertising,
+ * then the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If periodic advertising is currently enabled for the specified advertising set, the
+ * Controller shall use the new data in subsequent periodic advertising events for
+ * this advertising set. If a periodic advertising event is in progress when this
+ * command is issued, the Controller may use the old or new data for that event.
+ *
+ * If periodic advertising is currently disabled for the specified advertising set, the
+ * data shall be kept by the Controller and used once periodic advertising is
+ * enabled for that set. The data shall be discarded when the advertising set is
+ * removed.
+ *
+ * Only the significant part of the periodic advertising data should be transmitted
+ * in the advertising packets as defined in [Vol 3] Part C, Section 11.
+ *
+ * The Host may set the periodic advertising data in one or more operations using
+ * the Operation parameter in the command. If the combined length of the data
+ * exceeds the capacity of the advertising set identified by the
+ * Advertising_Handle parameter (see Section 7.8.57 LE Read Maximum
+ * Advertising Data Length command) or the amount of memory currently
+ * available, all the data shall be discarded and the Controller shall return the
+ * error code Memory Capacity Exceeded (0x07).
+ *
+ * If the combined length of the data is greater than the maximum that the
+ * Controller can transmit within the current periodic advertising interval (if
+ * periodic advertising is currently enabled) or the
+ * Periodic_Advertising_Interval_Max for the advertising set (if currently
+ * disabled), all the data shall be discarded and the Controller shall return the
+ * error code Packet Too Long (0x45). If advertising on the LE Coded PHY, the
+ * S=8 coding shall be assumed.
+ * If Operation indicates the start of new data (values 0x01 or 0x03), then any
+ * existing partial or complete data shall be discarded.
+ *
+ * If the periodic advertising data is discarded by the command or the combined
+ * length of the data after the command completes is zero, the advertising set will
+ * have no periodic advertising data.
+ *
+ * If periodic advertising is currently enabled for the specified advertising set and
+ * Operation does not have the value 0x03, the Controller shall return the error
+ * code Command Disallowed (0x0C).
+ *
+ * If the advertising set corresponding to the Advertising_Handle parameter does
+ * not exist, then the Controller shall return the error code Unknown Advertising
+ * Identifier (0x42).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Periodic_Advertising_Data command has completed,
+ * an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_periodic_adv_data(const sdc_hci_cmd_le_set_periodic_adv_data_t * p_params);
+
+/** @brief LE Set Periodic Advertising Enable.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.63
+ *
+ * The HCI_LE_Set_Periodic_Advertising_Enable command is used to request
+ * the Controller to enable or disable the periodic advertising for the advertising
+ * set specified by the Advertising_Handle parameter (ordinary advertising is not
+ * affected).
+ *
+ * If the advertising set is not currently enabled (see the
+ * HCI_LE_Set_Extended_Advertising_Enable command), the periodic
+ * advertising is not started until the advertising set is enabled. Once the
+ * advertising set has been enabled, the Controller shall continue periodic
+ * advertising until the Host issues an HCI_LE_Set_Periodic_Advertising_Enable
+ * command with Enable set to 0x00 (periodic advertising is disabled). Disabling
+ * the advertising set has no effect on the periodic advertising once the
+ * advertising set has been enabled.
+ *
+ * The Controller manages the timing of advertisements in accordance with the
+ * advertising parameters given in the
+ * HCI_LE_Set_Periodic_Advertising_Parameters command.
+ *
+ * If the advertising set corresponding to the Advertising_Handle parameter does
+ * not exist, the Controller shall return the error code Unknown Advertising
+ * Identifier (0x42).
+ *
+ * If Enable is set to 0x01 (periodic advertising is enabled) and the periodic
+ * advertising data in the advertising set is not complete, the Controller shall
+ * return the error code Command Disallowed (0x0C).
+ *
+ * If Enable is set to 0x01 and the length of the periodic advertising data is greater
+ * than the maximum that the Controller can transmit within the chosen periodic
+ * advertising interval, the Controller shall return the error code Packet Too Long
+ * (0x45). If advertising on the LE Coded PHY, the S=8 coding shall be assumed.
+ *
+ * If Enable is set to 0x01 and the advertising set identified by the
+ * Advertising_Handle specified scannable, connectable, legacy, or anonymous
+ * advertising, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * Enabling periodic advertising when it is already enabled can cause the random
+ * address to change. Disabling periodic advertising when it is already disabled
+ * has no effect.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Periodic_Advertising_Enable command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_periodic_adv_enable(const sdc_hci_cmd_le_set_periodic_adv_enable_t * p_params);
 
 /** @brief LE Set Extended Scan Parameters.
  *

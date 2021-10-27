@@ -59,4 +59,4 @@ extern "C" {
 
 /** @} end of nrf_errno_ble */
 
-#endif // NRF_ERRNO_H__
+#endif /* NRF_ERRNO_H__ */

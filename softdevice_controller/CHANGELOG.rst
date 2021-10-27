@@ -9,6 +9,36 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
+Main branch
+***********
+
+All the notable changes added to the main branch are documented in this section.
+
+Added
+=====
+
+* Added experimental support for Periodic Advertising.
+  ``SDC_CFG_TYPE_PERIODIC_ADV_COUNT`` can be used to set the number of periodic advertisers.
+  The following HCI commands are now supported (DRGN-11505):
+
+    * LE Set Periodic Advertising Data
+    * LE Set Periodic Advertising Enable
+    * LE Set Periodic Advertising Parameters
+
+Changes
+=======
+
+* The default advertising data size is now 31 bytes, even for extended advertising.
+  ``SDC_CFG_TYPE_ADV_BUFFER_CFG`` can be used to change the maximum buffer size before enabling the controller.
+  The required memory for an advertising set with a given advertising data size will then be returned by ``SDC_MEM_PER_ADV_SET``.
+
+Bug fixes
+=========
+
+* Fixed an issue where the active scanner could assert when performing extended scanning on Coded PHY with a full whitelist (DRGN-16113 and DRGN-16013).
+* Fixed an issue where extended advertising reports with advertising data with length 228 were lost (DRGN-16341).
+* Fixed an issue where the peripheral would always listen on data channel 0 if the initiator sent a connection request with all channels marked as bad (DRGN-16394).
+
 nRF Connect SDK v1.7.0
 **********************
 
@@ -21,7 +51,7 @@ Added
 * Added ``SDC_CFG_TYPE_ADV_BUFFER_CFG`` to allow the application to configure the maximum advertising buffer size (DRGN-15661).
 
 Changes
-=========
+=======
 
 * The ``Direct_Address_Type`` and the ``Direct_Address`` in extended advertising reports are updated to reflect the latest BLE specification.
   See Specification errata 14566 and 15752 (DRGN-15927).
