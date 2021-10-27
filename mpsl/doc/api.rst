@@ -70,9 +70,15 @@ MPSL FEM Simple GPIO
    :project: nrfxlib
    :members:
 
-MPSL Coexistence
-****************
+IEEE 802.15.4 External Radio Coexistence
+****************************************
 .. doxygengroup:: mpsl_cx
+   :project: nrfxlib
+   :members:
+
+Bluetooth External Radio Coexistence
+************************************
+.. doxygengroup:: mpsl_coex
    :project: nrfxlib
    :members:
 

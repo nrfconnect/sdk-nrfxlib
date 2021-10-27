@@ -18,6 +18,13 @@ Added
 =====
 
 * Added support for the Simple GPIO Front-End Module implementation on the nRF53 Series.
+* Added support and separate documentation for Bluetooth External Radio Coexistence on the nRF52 Series (DRGN-11849).
+
+Changes
+=======
+
+* References to Bluetooth support were moved away from :file:`projects/mpsl/doc/public/doc/cx.rst`.
+  Its scope is now limited to IEEE 802.15.4 External Radio Coexistence.
 
 nRF Connect SDK v1.7.0
 **********************

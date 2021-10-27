@@ -1,14 +1,14 @@
 .. _mpsl_cx:
 
-Radio coexistence feature
-#########################
+IEEE 802.15.4 External Radio Coexistence
+########################################
 
 .. contents::
    :local:
    :depth: 2
 
 The radio coexistence feature allows the application to interface with several types of packet traffic arbiters (PTAs).
-This allows for better radio performance for devices using multiple interfering radios simultaneously, like a combination of |BLE| and Wi-Fi, or IEEE 802.15.4 and Wi-Fi.
+This allows for better radio performance for devices using multiple interfering radios simultaneously, like a combination of IEEE 802.15.4 and Wi-Fi.
 The PTA arbitrates the requested radio operations between all radios to avoid interference, increasing the performance of the radio protocols enabled simultaneously.
 The exact arbitration algorithm is dependent on the specific PTA used.
 
@@ -20,7 +20,6 @@ Limitations
 
 This experimental feature has several limitations:
 
-* It supports only the IEEE 802.15.4 protocol.
 * It supports only the nRF52 SoC family.
 * It does not use radio operation priorities, as the radio protocol requests each operation with a priority value of ``1``.
 * The PTA can deny only TX operations.
@@ -37,7 +36,7 @@ The radio coexistence implementation provided in nRF Connect SDK is the followin
 
 *Thread Radio Coexistence*
    This PTA interface is compatible with the 3-wire PTA interface defined in the *Thread Radio Coexistence recommendations* document available to Thread Group members.
-   It is also compatible with any IEEE 802.15.4 protocol (including Thread), with |BLE|, and with other radio protocols.
+   It is also compatible with any IEEE 802.15.4 protocol (including Thread).
 
 Configuration
 *************
@@ -51,7 +50,7 @@ To configure the Thread Radio Coexistence implementation you must define each pi
 General usage
 *************
 
-Each radio protocol using the radio coexistence feature (like IEEE 802.15.4 or |BLE|) can enable a transceiver only when the PTA allows a given radio operation.
+Each radio protocol using the radio coexistence feature (like IEEE 802.15.4) can enable a transceiver only when the PTA allows a given radio operation.
 When the PTA denies the ongoing radio operation, the radio protocol must abort this operation immediately.
 
 The radio protocol implementation must inform the radio coexistence module about which radio operations it wants to perform at that moment or shortly after, and what is the priority of each radio operation.
