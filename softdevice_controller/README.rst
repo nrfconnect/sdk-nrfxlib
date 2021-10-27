@@ -30,6 +30,8 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 +--------------------------+-----------------+--------------+-----------+
 | Advertising Extensions   |                 |              | X         |
 +--------------------------+-----------------+--------------+-----------+
+| Periodic Advertising     |                 |              | X         |
++--------------------------+-----------------+--------------+-----------+
 | Coded PHY (Long Range)   |                 |              | X         |
 +--------------------------+-----------------+--------------+-----------+
 
@@ -48,6 +50,10 @@ Proprietary feature support:
 .. note::
 
    Low Latency Packet mode is not supported on the nRF53 Series.
+
+.. note::
+
+   Periodic Advertising is supported as an experimental feature only.
 
 .. toctree::
    :maxdepth: 2

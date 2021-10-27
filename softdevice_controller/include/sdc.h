@@ -35,6 +35,9 @@ extern "C" {
 /** @brief Default maximum number of concurrent advertisers. */
 #define SDC_DEFAULT_ADV_COUNT     1
 
+/** @brief Default maximum number of concurrent periodic advertisers. */
+#define SDC_DEFAULT_PERIODIC_ADV_COUNT 0
+
 /** @brief Default maximum number of concurrent slave links. */
 #define SDC_DEFAULT_SLAVE_COUNT   1
 
@@ -89,35 +92,17 @@ extern "C" {
  * @{
  */
 
-/** @brief Maximum number of bytes required per advertiser. */
-#define SDC_MEM_DEFAULT_ADV_SIZE 848
-
-/** @brief Maximum number of bytes required per master link for the default buffer configuration. */
-#define SDC_MEM_DEFAULT_MASTER_LINK_SIZE 830
-
-/** @brief Maximum number of bytes required per slave link for the default buffer configuration. */
-#define SDC_MEM_DEFAULT_SLAVE_LINK_SIZE 894
-
-/** @brief Memory overhead per LL packet buffer. */
-#define SDC_MEM_BUFFER_OVERHEAD_SIZE 7
-
-/** @brief Maximum additional number of bytes required per link.
- *
- * This macro will return the additional memory required per link
- * if non-default buffer sizes are used.
- *
- * @param[in] tx_size Link Layer TX packet size.
- * @param[in] rx_size Link Layer RX packet size.
- * @param[in] tx_count Link Layer TX packet count.
- * @param[in] rx_count Link Layer RX packet count.
- */
-#define SDC_MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
+/** @brief Auxiliary defines, not to be used outside of this file. */
+#define __MEM_DEFAULT_MASTER_LINK_SIZE 838
+#define __MEM_DEFAULT_SLAVE_LINK_SIZE 902
+#define __MEM_BUFFER_OVERHEAD_SIZE 7
+#define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * (tx_size - SDC_DEFAULT_TX_PACKET_SIZE) + \
      (rx_count) * (rx_size - SDC_DEFAULT_RX_PACKET_SIZE) + \
      (tx_count - SDC_DEFAULT_TX_PACKET_COUNT) * \
-        (SDC_MEM_BUFFER_OVERHEAD_SIZE + SDC_DEFAULT_TX_PACKET_SIZE) + \
+        (__MEM_BUFFER_OVERHEAD_SIZE + SDC_DEFAULT_TX_PACKET_SIZE) + \
      (rx_count - SDC_DEFAULT_RX_PACKET_COUNT) * \
-        (SDC_MEM_BUFFER_OVERHEAD_SIZE + SDC_DEFAULT_RX_PACKET_SIZE))
+        (__MEM_BUFFER_OVERHEAD_SIZE + SDC_DEFAULT_RX_PACKET_SIZE))
 
 /** @brief Maximum memory required per master link.
  *
@@ -127,8 +112,8 @@ extern "C" {
  * @param[in] rx_count Link Layer RX packet count.
  */
 #define SDC_MEM_PER_MASTER_LINK(tx_size, rx_size, tx_count, rx_count) \
-    (SDC_MEM_DEFAULT_MASTER_LINK_SIZE + \
-     SDC_MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
+    (__MEM_DEFAULT_MASTER_LINK_SIZE + \
+     __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
 
 /** @brief Maximum memory required per slave link.
  *
@@ -138,8 +123,8 @@ extern "C" {
  * @param[in] rx_count Link Layer RX packet count.
  */
 #define SDC_MEM_PER_SLAVE_LINK(tx_size, rx_size, tx_count, rx_count) \
-    (SDC_MEM_DEFAULT_SLAVE_LINK_SIZE + \
-     SDC_MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
+    (__MEM_DEFAULT_SLAVE_LINK_SIZE + \
+     __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
 
 /** Maximum shared memory required for master links. */
 #define SDC_MEM_MASTER_LINKS_SHARED 24
@@ -148,16 +133,37 @@ extern "C" {
 #define SDC_MEM_SLAVE_LINKS_SHARED  24
 
 /** Memory required for scanner buffers when only supporting legacy scanning. */
-#define SDC_MEM_SCAN_BUFFER(buffer_count) ((buffer_count) * 0)
+#define SDC_MEM_SCAN_BUFFER(buffer_count) (75 + (buffer_count) * 71)
 
 /** Memory required for scanner buffers when supporting extended scanning. */
-#define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) ((buffer_count) * 0)
+#define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (40 + (buffer_count) * 290)
+
+/** @brief Auxiliary defines, not to be used outside of this file. */
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4109+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (598+(max_adv_data))
+#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((1858+(max_adv_data)*18)/10)
+#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (377+(max_adv_data))
 
 /** @brief Maximum required memory for a given advertising buffer size.
  *
- * @param[in] max_buffer_size The desired advertising data size.
+ * @param[in] max_adv_data The desired advertising data size.
  */
-#define SDC_MEM_ADV_BUF_SIZE(max_buffer_size) ((max_buffer_size)*0)
+#define SDC_MEM_PER_ADV_SET(max_adv_data) ((max_adv_data<255)?\
+    (__MEM_PER_ADV_SET_LOW(max_adv_data)):\
+    (__MEM_PER_ADV_SET_HIGH(max_adv_data)))
+
+/** @brief Additional memory required for periodic advertising, if configured.
+ *
+ * @note The max_adv_data must be the same as for advertising in @ref SDC_MEM_PER_ADV_SET.
+ *
+ * @param[in] max_adv_data The desired periodic advertising data size.
+ */
+#define SDC_MEM_PER_PERIODIC_ADV_SET(max_adv_data) ((max_adv_data<255)?\
+     (__MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data)):\
+     (__MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data)))
+
+/** @brief Maximum number of bytes required per advertiser. */
+#define SDC_MEM_DEFAULT_ADV_SIZE SDC_MEM_PER_ADV_SET(SDC_DEFAULT_ADV_BUF_SIZE_EXT)
 
 /** @} end of sdc_mem_defines */
 
@@ -212,6 +218,10 @@ enum sdc_cfg_type
      *  See also @ref sdc_cfg_t::adv_buffer_cfg.
      */
     SDC_CFG_TYPE_ADV_BUFFER_CFG = 7,
+    /** Number of concurrent periodic advertisers.
+     *  See also @ref sdc_cfg_t::periodic_adv_count.
+     */
+    SDC_CFG_TYPE_PERIODIC_ADV_COUNT = 8,
 };
 
 
@@ -268,8 +278,7 @@ typedef struct
      * If set to 31, the controller will support 31 bytes of advertising data and scan response data.
      * Setting a value larger than 31 bytes is only useful when supporting extended advertising.
      *
-     * Default: @ref SDC_DEFAULT_ADV_BUF_SIZE_EXT if extended advertising is supported,
-     *          @ref SDC_DEFAULT_ADV_BUF_SIZE otherwise.
+     * Default: @ref SDC_DEFAULT_ADV_BUF_SIZE.
      */
     uint16_t max_adv_data;
 } sdc_cfg_adv_buffer_cfg_t;
@@ -295,6 +304,7 @@ typedef union
      */
     sdc_cfg_event_length_t event_length;
     /** Max number of concurrent advertisers.
+     *  Must be more than or equal to @ref sdc_cfg_t::periodic_adv_count.
      *  Default: @ref SDC_DEFAULT_ADV_COUNT.
      */
     sdc_cfg_role_count_t   adv_count;
@@ -306,6 +316,11 @@ typedef union
      *  Default: See @ref sdc_cfg_adv_buffer_cfg_t.
      */
     sdc_cfg_adv_buffer_cfg_t adv_buffer_cfg;
+    /** Configures the maximum number of concurrent periodic advertisers.
+     *  Must be less than or equal to @ref sdc_cfg_t::adv_count.
+     *  Default: @ref SDC_DEFAULT_PERIODIC_ADV_COUNT.
+     */
+    sdc_cfg_role_count_t periodic_adv_count;
 } sdc_cfg_t;
 
 
@@ -516,6 +531,20 @@ int32_t sdc_support_le_2m_phy(void);
  * @retval -NRF_EOPNOTSUPP  LE Coded PHY is not supported.
  */
 int32_t sdc_support_le_coded_phy(void);
+
+/** @brief Support LE Periodic Advertising in the Advertising state
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the Periodic Advertising State.
+ *
+ * The application shall also call @ref sdc_support_ext_adv() to enable
+ * support for extended advertising before enabling support for periodic advertising.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Periodic advertising is not supported.
+ */
+int32_t sdc_support_le_periodic_adv(void);
 
 #ifdef __cplusplus
 }
