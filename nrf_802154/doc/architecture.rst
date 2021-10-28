@@ -12,7 +12,9 @@ The driver allows sharing the RADIO peripheral with other PHY protocol drivers, 
 Radio drivers request access to the peripheral from an arbiter.
 The arbiter grants or denies access.
 
-The nRF IEEE 802.15.4 radio driver cooperates with the radio arbiter included  in :ref:`mpsl` (MPSL).
+The nRF IEEE 802.15.4 radio driver cooperates with the radio arbiter included  in `MPSL`_ (MultiProtocol Service Layer).
 
 .. figure:: images/radio_driver_architecture.svg
    :alt: nRF IEEE 802.15.4 radio driver architecture
+
+.. _MPSL: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrfxlib/mpsl/README.html

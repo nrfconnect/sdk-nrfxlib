@@ -367,12 +367,6 @@ typedef struct
 } nrf_802154_key_t;
 
 /**
- * @brief Function pointer used for notifying about transmission failure.
- */
-typedef void (* nrf_802154_transmit_failed_notification_t)(uint8_t             * p_frame,
-                                                           nrf_802154_tx_error_t error);
-
-/**
  * @brief Structure with frame properties associated with the transmission operation.
  *
  * @note When using to request transmission, parameters contained here influence whether or not
@@ -465,6 +459,14 @@ typedef struct
     bool                                 immediate;   // !< If true, the driver schedules transmission immediately or never. If false, the transmission may be postponed
                                                       // until its preconditions are met.
 } nrf_802154_transmit_params_t;
+
+/**
+ * @brief Function pointer used for notifying about transmission failure.
+ */
+typedef void (* nrf_802154_transmit_failed_notification_t)(
+    uint8_t                                   * p_frame,
+    nrf_802154_tx_error_t                       error,
+    const nrf_802154_transmit_done_metadata_t * p_meta);
 
 /**
  *@}

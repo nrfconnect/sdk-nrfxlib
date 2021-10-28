@@ -356,7 +356,10 @@ bool nrf_802154_encrypt_tx_setup(
 
     if (!success)
     {
-        notify_function(p_frame, NRF_802154_TX_ERROR_KEY_ID_INVALID);
+        nrf_802154_transmit_done_metadata_t metadata = {};
+
+        metadata.frame_props = p_params->frame_props;
+        notify_function(p_frame, NRF_802154_TX_ERROR_KEY_ID_INVALID, &metadata);
     }
 
     return success;

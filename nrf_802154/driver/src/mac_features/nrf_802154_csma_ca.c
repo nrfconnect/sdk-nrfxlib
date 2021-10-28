@@ -143,7 +143,12 @@ static void notify_busy_channel(bool result)
     // the comparison uses `greater or equal` instead of `greater than`.
     if (!result && (m_nb >= nrf_802154_pib_csmaca_max_backoffs_get()))
     {
-        nrf_802154_notify_transmit_failed(mp_data, NRF_802154_TX_ERROR_BUSY_CHANNEL);
+        // core rejected attempt, use my current frame_props
+        nrf_802154_transmit_done_metadata_t metadata = {};
+
+        metadata.frame_props = m_data_props;
+
+        nrf_802154_notify_transmit_failed(mp_data, NRF_802154_TX_ERROR_BUSY_CHANNEL, &metadata);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);

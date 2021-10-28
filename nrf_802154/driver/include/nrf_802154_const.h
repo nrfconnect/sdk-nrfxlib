@@ -170,6 +170,7 @@
 
 #define TURNAROUND_TIME                 192UL                                        ///< RX-to-TX or TX-to-RX turnaround time (aTurnaroundTime), in microseconds (us).
 #define CCA_TIME                        128UL                                        ///< Time required to perform CCA detection (aCcaTime), in microseconds (us).
+#define ACK_IFS                         TURNAROUND_TIME                              ///< Ack Inter Frame Spacing [us] - delay between last symbol of received frame and first symbol of transmitted Ack
 #define UNIT_BACKOFF_PERIOD             (TURNAROUND_TIME + CCA_TIME)                 ///< Number of symbols in the basic time period used by CSMA-CA algorithm (aUnitBackoffPeriod), in (us).
 
 #define PHY_US_PER_SYMBOL               16                                           ///< Duration of a single symbol in microseconds (us).
