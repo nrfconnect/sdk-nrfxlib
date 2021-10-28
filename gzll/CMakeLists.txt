@@ -6,37 +6,14 @@
 
 include(${NRFXLIB_DIR}/common.cmake)
 
-nrfxlib_calculate_lib_path(lib_path)
-
-set(GZLL_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
-
-if(NOT EXISTS ${GZLL_LIB_PATH})
-  message(WARNING "This combination of SoC and floating point ABI is not supported by the gzll lib."
-                  "(${GZLL_LIB_PATH} doesn't exist.)")
-endif()
-
 zephyr_include_directories(include)
 
-if(CONFIG_SOC_NRF52832)
-  set(GZLL_LIB_VARIANT nrf52)
-elseif(CONFIG_SOC_NRF52810)
-  set(GZLL_LIB_VARIANT nrf52810)
-elseif(CONFIG_SOC_NRF52811)
-  set(GZLL_LIB_VARIANT nrf52811)
-elseif(CONFIG_SOC_NRF52820)
-  set(GZLL_LIB_VARIANT nrf52820)
-elseif(CONFIG_SOC_NRF52833)
-  set(GZLL_LIB_VARIANT nrf52833)
-elseif(CONFIG_SOC_NRF52840)
-  set(GZLL_LIB_VARIANT nrf52840)
-else()
-  set(GZLL_LIB_VARIANT nrf5x)
-endif()
+nrfxlib_calculate_lib_path(lib_path SOC_MODE)
 
-set(GZLL_LIB ${GZLL_LIB_PATH}/libgzll_${GZLL_LIB_VARIANT}.a)
+set(GZLL_LIB ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path}/libgzll.a)
 
 if(NOT EXISTS ${GZLL_LIB})
-  message(WARNING "SoC is not supported by the gzll lib. "
+  message(WARNING "This combination of SoC and floating point ABI is not supported by the GZLL lib. "
                   "(${GZLL_LIB} doesn't exist.)")
 endif()
 
