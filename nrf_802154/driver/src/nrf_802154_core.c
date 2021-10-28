@@ -89,12 +89,10 @@
 /// Overhead of hardware preparation for ED procedure (aTurnaroundTime) [number of iterations]
 #define ED_ITERS_OVERHEAD           2U
 
-#define ACK_IFS                     TURNAROUND_TIME ///< Ack Inter Frame Spacing [us] - delay between last symbol of received frame and first symbol of transmitted Ack
+#define MAX_CRIT_SECT_TIME          60   ///< Maximal time that the driver spends in single critical section.
 
-#define MAX_CRIT_SECT_TIME          60              ///< Maximal time that the driver spends in single critical section.
-
-#define LQI_VALUE_FACTOR            4               ///< Factor needed to calculate LQI value based on data from RADIO peripheral
-#define LQI_MAX                     0xff            ///< Maximal LQI value
+#define LQI_VALUE_FACTOR            4    ///< Factor needed to calculate LQI value based on data from RADIO peripheral
+#define LQI_MAX                     0xff ///< Maximal LQI value
 
 /** Get LQI of given received packet. If CRC is calculated by hardware LQI is included instead of CRC
  *  in the frame. Length is stored in byte with index 0; CRC is 2 last bytes.
@@ -293,9 +291,7 @@ static uint32_t timer_coord_timestamp_get(void)
 
 static void received_frame_notify(uint8_t * p_data)
 {
-    nrf_802154_notify_received(p_data,      // data
-                               m_last_rssi, // rssi
-                               m_last_lqi); // lqi
+    nrf_802154_notify_received(p_data, m_last_rssi, m_last_lqi);
 }
 
 /** Allow nesting critical sections and notify MAC layer that a frame was received. */
@@ -313,7 +309,9 @@ static void receive_failed_notify(nrf_802154_rx_error_t error)
 {
     nrf_802154_critical_section_nesting_allow();
 
-    nrf_802154_notify_receive_failed(error, m_rx_window_id);
+    // Don't care about the result - if the notification cannot be performed
+    // no impact on the device's operation is expected
+    (void)nrf_802154_notify_receive_failed(error, m_rx_window_id, true);
 
     nrf_802154_critical_section_nesting_deny();
 }
@@ -377,20 +375,24 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
 }
 
 /** Notify MAC layer that transmission procedure failed. */
-static void transmit_failed_notify(uint8_t * p_frame, nrf_802154_tx_error_t error)
+static void transmit_failed_notify(uint8_t                                   * p_frame,
+                                   nrf_802154_tx_error_t                       error,
+                                   const nrf_802154_transmit_done_metadata_t * p_meta)
 {
     if (nrf_802154_core_hooks_tx_failed(p_frame, error))
     {
-        nrf_802154_notify_transmit_failed(p_frame, error);
+        nrf_802154_notify_transmit_failed(p_frame, error, p_meta);
     }
 }
 
 /** Allow nesting critical sections and notify MAC layer that transmission procedure failed. */
-static void transmit_failed_notify_and_nesting_allow(nrf_802154_tx_error_t error)
+static void transmit_failed_notify_and_nesting_allow(
+    nrf_802154_tx_error_t                       error,
+    const nrf_802154_transmit_done_metadata_t * p_meta)
 {
     nrf_802154_critical_section_nesting_allow();
 
-    transmit_failed_notify(mp_tx_data, error);
+    transmit_failed_notify(mp_tx_data, error, p_meta);
 
     nrf_802154_critical_section_nesting_deny();
 }
@@ -719,7 +721,11 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
         case RADIO_STATE_RX:
             if (receiving_psdu_now)
             {
-                nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_ABORTED, m_rx_window_id);
+                // Don't care about the result - if the notification cannot be performed
+                // no impact on the device's operation is expected
+                (void)nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_ABORTED,
+                                                       m_rx_window_id,
+                                                       true);
             }
 
             break;
@@ -732,12 +738,22 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
 
         case RADIO_STATE_CCA_TX:
         case RADIO_STATE_TX:
-            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_ABORTED);
-            break;
+        {
+            nrf_802154_transmit_done_metadata_t metadata = {};
+
+            nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_ABORTED, &metadata);
+        }
+        break;
 
         case RADIO_STATE_RX_ACK:
-            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_ABORTED);
-            break;
+        {
+            nrf_802154_transmit_done_metadata_t metadata = {};
+
+            nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_ABORTED, &metadata);
+        }
+        break;
 
         case RADIO_STATE_ED:
             nrf_802154_notify_energy_detection_failed(NRF_802154_ED_ERROR_ABORTED);
@@ -1215,9 +1231,15 @@ static void on_timeslot_ended(void)
             case RADIO_STATE_CCA_TX:
             case RADIO_STATE_TX:
             case RADIO_STATE_RX_ACK:
+            {
                 state_set(RADIO_STATE_RX);
-                transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_TIMESLOT_ENDED);
-                break;
+                nrf_802154_transmit_done_metadata_t metadata = {};
+
+                nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+                transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_TIMESLOT_ENDED,
+                                                         &metadata);
+            }
+            break;
 
             case RADIO_STATE_ED:
             case RADIO_STATE_CCA:
@@ -1728,7 +1750,11 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
             // which could result in spurious RF emission.
             rx_init();
 
-            nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_TIMESLOT_ENDED, m_rx_window_id);
+            // Don't care about the result - if the notification cannot be performed
+            // no impact on the device's operation is expected
+            (void)nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_TIMESLOT_ENDED,
+                                                   m_rx_window_id,
+                                                   true);
         }
     }
 
@@ -2318,7 +2344,10 @@ static void on_bad_ack(void)
 
     rx_init();
 
-    transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_INVALID_ACK);
+    nrf_802154_transmit_done_metadata_t metadata = {};
+
+    nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+    transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_INVALID_ACK, &metadata);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -2427,7 +2456,10 @@ void nrf_802154_trx_transmit_frame_ccabusy(void)
     state_set(RADIO_STATE_RX);
     rx_init();
 
-    transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_BUSY_CHANNEL);
+    nrf_802154_transmit_done_metadata_t metadata = {};
+
+    nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+    transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_BUSY_CHANNEL, &metadata);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }

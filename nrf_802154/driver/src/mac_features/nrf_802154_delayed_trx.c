@@ -434,8 +434,15 @@ static void notify_rx_timeout(void * p_context)
                                  DELAYED_TRX_OP_STATE_ONGOING,
                                  DELAYED_TRX_OP_STATE_STOPPED))
             {
-                nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_DELAYED_TIMEOUT,
-                                                 p_dly_op_data->id);
+                bool notified = nrf_802154_notify_receive_failed(
+                    NRF_802154_RX_ERROR_DELAYED_TIMEOUT,
+                    p_dly_op_data->id,
+                    false);
+
+                // It should always be possible to notify DRX result
+                assert(notified);
+                (void)notified;
+
                 dly_ts_slot_release(p_dly_op_data);
             }
 
@@ -467,8 +474,13 @@ static void dly_tx_result_notify(bool result)
 
     if (!result)
     {
+        // core rejected attempt, use my current frame_props
+        nrf_802154_transmit_done_metadata_t metadata = {};
+
+        metadata.frame_props = p_dly_op_data->tx.params.frame_props;
         nrf_802154_notify_transmit_failed(p_dly_op_data->tx.p_data,
-                                          NRF_802154_TX_ERROR_TIMESLOT_DENIED);
+                                          NRF_802154_TX_ERROR_TIMESLOT_DENIED,
+                                          &metadata);
     }
 
     dly_ts_slot_release(p_dly_op_data);
@@ -509,8 +521,14 @@ static void dly_rx_result_notify(bool result)
             assert(state_set);
             (void)state_set;
 
-            nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_DELAYED_ABORTED,
-                                             p_parallel_ongoing_dly_op_data->id);
+            bool notified = nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_DELAYED_ABORTED,
+                                                             p_parallel_ongoing_dly_op_data->id,
+                                                             false);
+
+            // It should always be possible to notify DRX result
+            assert(notified);
+            (void)notified;
+
             dly_ts_slot_release(p_parallel_ongoing_dly_op_data);
         }
 
@@ -542,8 +560,15 @@ static void dly_rx_result_notify(bool result)
         assert(state_set);
         (void)state_set;
 
-        nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_DELAYED_TIMESLOT_DENIED,
-                                         p_dly_op_data->id);
+        bool notified = nrf_802154_notify_receive_failed(
+            NRF_802154_RX_ERROR_DELAYED_TIMESLOT_DENIED,
+            p_dly_op_data->id,
+            false);
+
+        // It should always be possible to notify DRX result
+        assert(notified);
+        (void)notified;
+
         dly_ts_slot_release(p_dly_op_data);
     }
 
@@ -843,8 +868,15 @@ bool nrf_802154_delayed_trx_abort(nrf_802154_term_t term_lvl, req_originator_t r
                                  DELAYED_TRX_OP_STATE_ONGOING,
                                  DELAYED_TRX_OP_STATE_STOPPED))
             {
-                nrf_802154_notify_receive_failed(NRF_802154_RX_ERROR_DELAYED_ABORTED,
-                                                 p_dly_op_data->id);
+                bool notified = nrf_802154_notify_receive_failed(
+                    NRF_802154_RX_ERROR_DELAYED_ABORTED,
+                    p_dly_op_data->id,
+                    false);
+
+                // It should always be possible to notify DRX result
+                assert(notified);
+                (void)notified;
+
                 dly_ts_slot_release(p_dly_op_data);
             }
 

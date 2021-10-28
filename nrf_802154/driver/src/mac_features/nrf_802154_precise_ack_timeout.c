@@ -50,6 +50,7 @@
 #include "nrf_802154_notification.h"
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_request.h"
+#include "nrf_802154_tx_work_buffer.h"
 #include "timer/nrf_802154_timer_sched.h"
 
 #if NRF_802154_ACK_TIMEOUT_ENABLED
@@ -68,7 +69,11 @@ static void notify_tx_error(bool result)
 {
     if (result)
     {
-        nrf_802154_notify_transmit_failed(mp_frame, NRF_802154_TX_ERROR_NO_ACK);
+        // If waiting for ack timeout occurred, the transmission must had already finished.
+        nrf_802154_transmit_done_metadata_t metadata = {0};
+
+        nrf_802154_tx_work_buffer_original_frame_update(mp_frame, &metadata.frame_props);
+        nrf_802154_notify_transmit_failed(mp_frame, NRF_802154_TX_ERROR_NO_ACK, &metadata);
     }
 }
 

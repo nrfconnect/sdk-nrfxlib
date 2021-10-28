@@ -79,14 +79,18 @@ void nrf_802154_notify_received(uint8_t * p_data, int8_t power, uint8_t lqi);
 /**
  * @brief Notifies the next higher layer that the reception of a frame failed.
  *
- * @param[in]  error  Error code that indicates the reason of the failure.
- * @param[in]  id     Identifier of reception window the error occurred in.
- *                    If the error is related to a delayed reception window requested through
- *                    @ref nrf_802154_receive_at, the value of @p id equals the identifier
- *                    of the scheduled reception window. Otherwise, the value of @p id equals
- *                    @ref NRF_802154_RESERVED_IMM_RX_WINDOW_ID.
+ * @param[in]  error       Error code that indicates the reason of the failure.
+ * @param[in]  id          Identifier of reception window the error occurred in.
+ *                         If the error is related to a delayed reception window requested through
+ *                         @ref nrf_802154_receive_at, the value of @p id equals the identifier
+ *                         of the scheduled reception window. Otherwise, the value of @p id equals
+ *                         @ref NRF_802154_RESERVED_IMM_RX_WINDOW_ID.
+ * @param[in]  allow_drop  Indicates if the notification can be dropped safely.
+ *
+ * @retval   true    The next higher layer is bound to be notified about the frame reception failure.
+ * @retval   false   Notification could not be executed.
  */
-void nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id);
+bool nrf_802154_notify_receive_failed(nrf_802154_rx_error_t error, uint32_t id, bool allow_drop);
 
 /**
  * @brief Notifies the next higher layer that a frame was transmitted.
@@ -109,9 +113,11 @@ void nrf_802154_notify_transmitted(uint8_t                             * p_frame
  * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the frame that failed
  *                          the transmission operation.
  * @param[in]  error        An error code indicating the reason of the failure.
+ * @param[in]  p_metadata   Pointer to a metadata structure to be notified.
  */
-void nrf_802154_notify_transmit_failed(uint8_t             * p_frame,
-                                       nrf_802154_tx_error_t error);
+void nrf_802154_notify_transmit_failed(uint8_t                                   * p_frame,
+                                       nrf_802154_tx_error_t                       error,
+                                       const nrf_802154_transmit_done_metadata_t * p_metadata);
 
 /**
  * @brief Notifies the next higher layer that the energy detection procedure ended.

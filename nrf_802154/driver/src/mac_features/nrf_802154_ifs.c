@@ -72,7 +72,12 @@ static void ifs_tx_result_notify(bool result)
 {
     if (!result)
     {
-        nrf_802154_notify_transmit_failed(m_context.p_data, NRF_802154_TX_ERROR_TIMESLOT_DENIED);
+        nrf_802154_transmit_done_metadata_t metadata = {};
+
+        metadata.frame_props = m_context.params.frame_props;
+        nrf_802154_notify_transmit_failed(m_context.p_data,
+                                          NRF_802154_TX_ERROR_TIMESLOT_DENIED,
+                                          &metadata);
     }
 }
 
@@ -278,8 +283,14 @@ bool nrf_802154_ifs_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
             if (was_running)
             {
                 ifs_operation_t * p_op = (ifs_operation_t *)m_timer.p_context;
+                // The IFS was still waiting, so the transmission didn't occur
+                // at all. Notify with frame_props passed in nrf_802154_ifs_pretransmission hook
+                nrf_802154_transmit_done_metadata_t metadata = {};
 
-                nrf_802154_notify_transmit_failed(p_op->p_data, NRF_802154_TX_ERROR_ABORTED);
+                metadata.frame_props = m_context.params.frame_props;
+                nrf_802154_notify_transmit_failed(p_op->p_data,
+                                                  NRF_802154_TX_ERROR_ABORTED,
+                                                  &metadata);
             }
         }
         else

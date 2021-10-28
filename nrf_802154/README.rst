@@ -59,6 +59,7 @@ The lists of the necessary files can be found in the following locations:
    doc/front_end_module
    doc/hardware_resources
    doc/multiprotocol_support
+   doc/antenna_diversity
    doc/rd_service_layer_lib
    doc/CHANGELOG
    doc/api
