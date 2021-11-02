@@ -18,58 +18,53 @@ endif()
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/nrf_security_debug.cmake)
 
-if(CONFIG_BUILD_WITH_TFM)
-  nrf_security_debug("TF-M is enabled, nRF Security will build as part of TF-M")
+#
+# Populate ARM_MBEDTLS_PATH
+#
+get_mbedtls_dir(ARM_MBEDTLS_PATH)
 
+# MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER must be disabled for Zephyr
+# builds or when MBEDTLS_USE_PSA_CRYPTO is enabled (e.g. for TLS/DTLS
+# and x.509 support) Note: This configuration is internal and may be
+# removed with a new mbed TLS version
+set(MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER       False)
+
+if(NOT CONFIG_BUILD_WITH_TFM)
+  nrf_security_debug("Building for pure Zephyr")
+
+  # Pure Zephyr requires build of Zephyr APIs
+  set(COMPILE_PSA_APIS                              True)
+
+  set(MBEDTLS_PLATFORM_EXIT_ALT                     True)
+
+else()
   # TF-M is enabled and we are not inside the TF-M build system.
-  # Thus, do not build regular `mbedcrypto` library, instead export needed
-  # settings to the TF-M build system using the `nrf_security_target`.
+  # Thus, do not build regular `mbedcrypto` library, instead export
+  # needed settings to the TF-M build system using TFM_CMAKE_OPTIONS.
 
   # NS-build: PSA APIs are already compiled in TF-M image
   set(COMPILE_PSA_APIS                              False)
 
-  # NS-build can't set key ID encodes owner
-  set(MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER       False)
-
-  # Add a library to propagate configurations and paths to TF-M
-  add_custom_target(nrf_security_target)
-
-  # Pass any settings for nrf security build in TF-M context here in the form of:
-  # "key0=value0;key1=value1;..."
-  get_mbedtls_dir(ARM_MBEDTLS_PATH)
-  set_property(TARGET nrf_security_target
-    PROPERTY CMAKE_ARGS
-      "ZEPHYR_DOTCONFIG=${DOTCONFIG}"
-      "GCC_M_CPU=${GCC_M_CPU}"
-      "ARM_MBEDTLS_PATH=${ARM_MBEDTLS_PATH}"
-      "ZEPHYR_AUTOCONF=${AUTOCONF_H}"
-    )
-
-  # Set the MBEDTLS_CFG_FILE to the named configuration file
-  set_property(TARGET nrf_security_target
-    PROPERTY MBEDTLS_CFG_FILE
-      ${CONFIG_MBEDTLS_CFG_FILE}
-  )
-
-  # Set up configurations for TF-M on zephyr_property_target
   set_property(TARGET zephyr_property_target
     APPEND PROPERTY TFM_CMAKE_OPTIONS
-      -DNRF_SECURITY_SETTINGS=\"$<TARGET_PROPERTY:nrf_security_target,CMAKE_ARGS>\"
-      -DTFM_MBEDCRYPTO_CONFIG_PATH:STRING=$<TARGET_PROPERTY:nrf_security_target,MBEDTLS_CFG_FILE>
-      -DMCUBOOT_MBEDCRYPTO_CONFIG_PATH=$<TARGET_PROPERTY:nrf_security_target,MBEDTLS_CFG_FILE>
+    -DNRF_SECURITY_SETTINGS=\"ZEPHYR_DOTCONFIG=${DOTCONFIG}
+      GCC_M_CPU=${GCC_M_CPU}
+      ARM_MBEDTLS_PATH=${ARM_MBEDTLS_PATH}
+      ZEPHYR_AUTOCONF=${AUTOCONF_H}\"
+	)
+
+  set_property(TARGET zephyr_property_target
+    APPEND PROPERTY TFM_CMAKE_OPTIONS
+      -DTFM_MBEDCRYPTO_CONFIG_PATH:STRING=${CONFIG_MBEDTLS_CFG_FILE}
+      -DMCUBOOT_MBEDCRYPTO_CONFIG_PATH=${CONFIG_MBEDTLS_CFG_FILE}
   )
 
   if(CONFIG_MBEDTLS_ENABLE_HEAP)
-    set_property(TARGET nrf_security_target
-      PROPERTY MBEDTLS_HEAP_SIZE
-        ${CONFIG_MBEDTLS_HEAP_SIZE}
-    )
-
-    # The ENGINE_BUF_SIZE holds the dynamic allocation buffer for TF-M, which is the equivalent
-    # of dynamic allocation in MBEDTLS
+    # The ENGINE_BUF_SIZE holds the dynamic allocation buffer for
+    # TF-M, which is the equivalent of dynamic allocation in MBEDTLS
     set_property(TARGET zephyr_property_target
       APPEND PROPERTY TFM_CMAKE_OPTIONS
-        -DCRYPTO_ENGINE_BUF_SIZE=$<TARGET_PROPERTY:nrf_security_target,MBEDTLS_HEAP_SIZE>
+        -DCRYPTO_ENGINE_BUF_SIZE=${CONFIG_MBEDTLS_HEAP_SIZE}
     )
   endif()
 
@@ -155,22 +150,6 @@ if(CONFIG_BUILD_WITH_TFM)
   # 7. Special case: Handle platform specific configurations
   set(MBEDTLS_PLATFORM_EXIT_ALT                     False)
   set(CONFIG_MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT    False)
-
-else()
-  nrf_security_debug("Building for pure Zephyr")
-
-  # Pure Zephyr requires build of Zephyr APIs
-  set(COMPILE_PSA_APIS                              True)
-
-  # Pure Zephyr can't set key ID encodes owner
-  set(MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER       False)
-
-  set(MBEDTLS_PLATFORM_EXIT_ALT                     True)
-  #
-  # Populate ARM_MBEDTLS_PATH
-  #
-  get_mbedtls_dir(ARM_MBEDTLS_PATH)
-
 endif()
 
 # If nrf_security generates config file, include cmake script that
