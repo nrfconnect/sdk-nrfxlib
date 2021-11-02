@@ -14,12 +14,8 @@
 # This macro strips away CONFIG_ to make a define usable in mbed TLS config file
 #
 macro(kconfig_mbedtls_config base)
-  if (CONFIG_${base})
-    nrf_security_debug("Setting ${base} to TRUE")
-    set(${base} TRUE)
-  endif()
+  kconfig_mbedtls_config_val(${base} TRUE)
 endmacro()
-
 
 #
 # Internal macro which will enable the define in mbed TLS config file based on
