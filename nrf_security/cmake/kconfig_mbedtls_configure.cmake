@@ -63,9 +63,17 @@ macro(nrf_security_configure_file mbedtls_config file)
 endmacro()
 
 #
-# Include PSA configuration
+# PSA configuration
 #
-include(${CMAKE_CURRENT_LIST_DIR}/kconfig_psa_configure.cmake)
+# The purpose of this is to set specific MBEDTLS config file defines
+# based on the Kconfig settings. When all values has been processed,
+# the mbedtls config file will be generated.
+#
+# Enabling core functionality
+#
+kconfig_mbedtls_config("MBEDTLS_PSA_CRYPTO_C")
+kconfig_mbedtls_config("MBEDTLS_PSA_CRYPTO_SPM")
+kconfig_mbedtls_config("MBEDTLS_PSA_CRYPTO_STORAGE_C")
 
 #
 # Remove previously generated files from include folder
