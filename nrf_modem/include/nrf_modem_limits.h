@@ -30,11 +30,6 @@ extern "C" {
 /**@brief Maximum TLS message size in bytes. */
 #define NRF_MODEM_TLS_MAX_MESSAGE_SIZE 2048
 
-/**
- * @brief Maximum number of PDN connections that can be created.
- */
-#define NRF_MODEM_MAX_PDN_COUNT 10
-
 #ifdef __cplusplus
 }
 #endif

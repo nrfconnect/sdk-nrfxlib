@@ -12,7 +12,7 @@ nrf_modem_os.c->nrf_modem_os.c: NVIC_SetPendingIRQ(EGU2);
 nrf_modem<-nrf_modem_os.c;
 ---: Waiting for EGU2 to hit ...;
 nrf_modem_os.c<-: EGU2_IRQHandler (Priority 6);
-nrf_modem<-nrf_modem_os.c: nrf_modem_os_trace_irq_handler();
+nrf_modem<-nrf_modem_os.c: nrf_modem_trace_irq_handler();
 activate nrf_modem;
 nrf_modem->nrf_modem_os.c: nrf_modem_os_trace_irq_clear();
 activate nrf_modem_os.c;

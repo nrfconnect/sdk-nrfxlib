@@ -9,6 +9,34 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.4.0
+***************
+
+* The PDN socket has been removed.
+* The GNSS socket has been removed.
+* nrf_errno errno values have been aligned with those of newlibc.
+* The :ref:`Modem API <nrf_modem_api>` (:file:`nrf_modem.h`) has been updated to return negative errno values on error.
+* The :ref:`Full Modem DFU API <nrf_modem_full_dfu_api>` (:file:`nrf_modem_full_dfu.h`) has been updated to return negative errno values on error.
+* The :ref:`GNSS API <nrf_modem_gnss_api>` (:file:`nrf_modem_gnss.h`) has been updated to return negative errno values on error.
+* The :c:func:`nrf_modem_gnss_init` and :c:func:`nrf_modem_gnss_deinit` functions have been removed.
+* Added the GNSS velocity estimate validity bit ``NRF_MODEM_GNSS_PVT_FLAG_VELOCITY_VALID``.
+* Added the GNSS delete bitmask ``NRF_MODEM_GNSS_DELETE_GPS_TOW_PRECISION`` for time-of-week precision estimate.
+* Added support for several new fields in the GNSS PVT notification.
+* Added support for retrieving GNSS A-GPS data expiry.
+* Added the :c:func:`nrf_modem_at_cmd_filter_set` function to set a callback for custom AT commands.
+* Fixed a bug in :c:func:`nrf_modem_at_cmd_async` which could result in the wrong response being returned, or a bad memory access.
+* The application can no longer specify the APN to be used with a socket using the ``NRF_SO_BINDTODEVICE`` socket option.
+* The application can no longer specify the APN to be used for DNS queries using the ``ai_canonname`` field of the input hints structure in :c:func:`nrf_getaddrinfo`.
+* Fixed a potential concurrency issue in :c:func:`nrf_getaddrinfo` that would cause the output ``hints`` structure to contain no address upon successful completion.
+* Fixed a bug in :c:func:`nrf_getsockopt` that would let the function return an incorrect value in case of error when called on TLS and DTLS sockets.
+* Added a parameter to :c:func:`nrf_setdnsaddr` to specify the size of the supplied address.
+* Updated :c:func:`nrf_setdnsaddr` to return -1 and set errno on error.
+* The :c:func:`nrf_modem_os_application_irq_handler` and :c:func:`nrf_modem_os_trace_irq_handler` functions have been renamed to :c:func:`nrf_modem_application_irq_handler` and :c:func:`nrf_modem_trace_irq_handler` respectively, and their definition has been moved to :file:`nrf_modem.h`.
+* Added support for APN rate control feature of modem firmware v1.3.1.
+* The glue layer now defines a few new functions used for logging.
+* An additional version of the library is released, which is capable of outputting logs. A minimal set of logs has been added for this release.
+* All library versions are now released with debugging symbols.
+
 nrf_modem 1.3.0
 ***************
 
@@ -16,22 +44,22 @@ nrf_modem 1.3.0
 * Added new Delta DFU interface for modem firmware delta updates.
 * The AT socket has been deprecated.
 * The DFU socket has been deprecated.
-* Fixed a bug in :c:func:`nrf_send()` for blocking sockets where calling the function very quickly would cause the application to hang up.
+* Fixed a bug in :c:func:`nrf_send` for blocking sockets where calling the function very quickly would cause the application to hang up.
 
 nrf_modem 1.2.2
 ***************
 
-* Fixed a memory leak in :c:func:`nrf_recv()` when reading many packets quickly.
-* Fixed a bug in :c:func:`nrf_getaddrinfo()` where the function was not returning the proper protocol suggested by the hints.
-* Fixed a bug in :c:func:`nrf_getaddrinfo()` where specifying ``NRF_AF_UNSPEC`` would incorrectly return an error.
-* Fixed a bug in :c:func:`nrf_setsockopt()` where the option ``NRF_SO_HOSTNAME`` would incorrectly return an error when the hostname was NULL and optlen was 0.
-* Fixed a bug in :c:func:`nrf_modem_gnss_init()` where calling the function would lead to field accuracy speed to always be 0 and to the new GNSS events not working.
+* Fixed a memory leak in :c:func:`nrf_recv` when reading many packets quickly.
+* Fixed a bug in :c:func:`nrf_getaddrinfo` where the function was not returning the proper protocol suggested by the hints.
+* Fixed a bug in :c:func:`nrf_getaddrinfo` where specifying ``NRF_AF_UNSPEC`` would incorrectly return an error.
+* Fixed a bug in :c:func:`nrf_setsockopt` where the option ``NRF_SO_HOSTNAME`` would incorrectly return an error when the hostname was NULL and optlen was 0.
+* Fixed a bug in :c:func:`nrf_modem_gnss_init` where calling the function would lead to field accuracy speed to always be 0 and to the new GNSS events not working.
   This issue would occur when GNSS is not enabled in %XSYSTEMMODE and modem functional mode is not online.
 
 nrf_modem 1.2.1
 ***************
 
-* Fixed an issue where :c:func:`nrf_getaddrinfo()` would set a wrong errno when returning ``NRF_EAI_SYSTEM``.
+* Fixed an issue where :c:func:`nrf_getaddrinfo` would set a wrong errno when returning ``NRF_EAI_SYSTEM``.
 * Fixed an issue where the ``NRF_SO_TCP_SRV_SESSTIMEO``, ``NRF_SO_SILENCE_IP_ECHO_REPLY`` and ``NRF_SO_SILENCE_IPV6_ECHO_REPLY`` socket options returned an error when set via :c:func:`nrf_setsockopt`.
 * Renamed the socket option ``NRF_SO_SILENCE_IP_ECHO_REPLY`` to ``NRF_SO_IP_ECHO_REPLY``.
 * Renamed the socket option ``NRF_SO_SILENCE_IPV6_ECHO_REPLY`` to ``NRF_SO_IPV6_ECHO_REPLY``.

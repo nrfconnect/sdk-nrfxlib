@@ -13,7 +13,7 @@ The current implementation of the Modem library supports the following features 
 * AT commands
 * GNSS
 * A-GPS
-* PDN management
+* PDN selection for network sockets and DNS queries
 * Modem DFU
 
 .. note::

@@ -129,7 +129,11 @@ char *nrf_modem_build_version(void);
  * @retval A positive value from @ref nrf_modem_dfu when executing
  *         Modem firmware updates.
  *
- * @retval -1 on error.
+ * @retval -NRF_EFAULT @c init_params is @c NULL.
+ * @retval -NRF_ENOMEM Not enough shared memory for this operation.
+ * @retval -NRF_EPERM The Modem library is already initialized.
+ * @retval -NRF_ETIMEDOUT Modem timed out.
+ * @retval -NRF_EIO IPC State fault or missing root digest.
  */
 int nrf_modem_init(const nrf_modem_init_params_t *init_params,
 		   enum nrf_modem_mode_t mode);
@@ -144,7 +148,8 @@ int nrf_modem_init(const nrf_modem_init_params_t *init_params,
  * the library is shutdown.
  *
  * @retval Zero on success.
- * @retval -1 on error.
+ * @retval -NRF_EPERM The Modem library is not initialized.
+ * @retval -NRF_ENOMEM Not enough shared memory for this operation.
  */
 int nrf_modem_shutdown(void);
 
@@ -154,6 +159,20 @@ int nrf_modem_shutdown(void);
  * @param[in] error The error reason.
  */
 extern void nrf_modem_recoverable_error_handler(uint32_t error);
+
+/**
+ * @brief Application IRQ handler in the modem library.
+ *
+ * Call this function when handling the Application IRQ.
+ */
+void nrf_modem_application_irq_handler(void);
+
+/**
+ * @brief Trace IRQ handler in the modem library.
+ *
+ * Call this function when handling the Trace IRQ.
+ */
+void nrf_modem_trace_irq_handler(void);
 
 #ifdef __cplusplus
 }

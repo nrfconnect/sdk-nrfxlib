@@ -10,32 +10,6 @@ GNSS interface
 `Global Navigation Satellite System (GNSS)`_ interface in the Modem library is used to control the GNSS module.
 The interface configures and fetches data from the GNSS module and writes `A-GPS`_ data to the GNSS module.
 
-Initializing the GNSS interface
-*******************************
-
-Before the GNSS interface can be used, the interface needs to be initialized using the :c:func:`nrf_modem_gnss_init` function.
-
-.. code-block:: c
-
-   err = nrf_modem_gnss_init();
-
-After the function call, the GNSS module will be in the stopped mode and it does not generate fixes.
-
-.. note::
-
-   The GNSS interface and the GNSS socket cannot be used at the same time.
-   When the GNSS interface has been initialized, the GNSS socket can no longer be used until the GNSS interface has been deinitialized.
-
-Deinitializing the GNSS interface
-*********************************
-
-Normally, there is no need to deinitialize the GNSS interface.
-However, if you want to use the GNSS socket, the GNSS interface needs to be deinitialized first using the :c:func:`nrf_modem_gnss_deinit` function.
-
-.. code-block:: c
-
-   err = nrf_modem_gnss_deinit();
-
 Handling events and reading data from GNSS
 ******************************************
 

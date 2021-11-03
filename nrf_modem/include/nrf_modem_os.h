@@ -27,6 +27,14 @@ extern "C" {
 /** Infinite time-out. */
 #define NRF_MODEM_OS_FOREVER -1
 
+enum log_level {
+	NRF_MODEM_LOG_LEVEL_NONE,
+	NRF_MODEM_LOG_LEVEL_ERR,
+	NRF_MODEM_LOG_LEVEL_WRN,
+	NRF_MODEM_LOG_LEVEL_INF,
+	NRF_MODEM_LOG_LEVEL_DBG,
+};
+
 /**
  * @brief Initialize the glue layer.
  */
@@ -148,13 +156,6 @@ void nrf_modem_os_application_irq_set(void);
 void nrf_modem_os_application_irq_clear(void);
 
 /**
- * @brief Application IRQ handler in the modem library.
- *
- * Call this function when handling the Application IRQ.
- */
-void nrf_modem_os_application_irq_handler(void);
-
-/**
  * @brief Set the Trace IRQ.
  */
 void nrf_modem_os_trace_irq_set(void);
@@ -174,11 +175,36 @@ void nrf_modem_os_trace_irq_clear(void);
 int32_t nrf_modem_os_trace_put(const uint8_t *data, uint32_t len);
 
 /**
- * @brief Trace IRQ handler in the modem library.
+ * @brief Prepare to log a transient string.
  *
- * Call this function when handling the Trace IRQ.
+ * The modem library calls this function on each string that it logs
+ * that does not reside in read-only memory, to accommodate for
+ * any eventual copy that the logging function may need
+ * due to, for example, deferred logging.
+ *
+ * @param str The string to be logged.
+ * @return const char* The pointer to the string to be passed to the logging functions.
  */
-void nrf_modem_os_trace_irq_handler(void);
+const char *nrf_modem_os_log_strdup(const char *str);
+
+/**
+ * @brief Generic logging procedure.
+ *
+ * @param level Log level.
+ * @param fmt Format string.
+ * @param ... Varargs.
+ */
+void nrf_modem_os_log(int level, const char *fmt, ...);
+
+/**
+ * @brief Logging procedure for dumping hex representation of object.
+ *
+ * @param level Log level.
+ * @param str String to print in the log.
+ * @param data Data whose hex representation we want to log.
+ * @param len Length of the data to hex dump.
+ */
+void nrf_modem_os_logdump(int level, const char *str, const void *data, size_t len);
 
 #ifdef __cplusplus
 }

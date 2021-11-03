@@ -13,7 +13,7 @@ nrf_modem_os.c->nrf_modem_os.c: Start timer/thread;
 nrf_modem_os.c->nrf_modem_os.c: Sleep;
 ---: Waiting for EGU1 to hit ...;
 nrf_modem_os.c<-: EGU1_IRQHandler (Priority 6);
-nrf_modem<-nrf_modem_os.c: nrf_modem_os_application_irq_handler();
+nrf_modem<-nrf_modem_os.c: nrf_modem_application_irq_handler();
 activate nrf_modem;
 nrf_modem->nrf_modem_os.c: nrf_modem_os_application_irq_clear();
 activate nrf_modem_os.c;
