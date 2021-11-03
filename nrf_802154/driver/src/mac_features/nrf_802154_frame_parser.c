@@ -354,7 +354,7 @@ static bool full_parse(nrf_802154_frame_parser_data_t * p_parser_data)
     uint8_t         offset      = p_parser_data->helper.aux_sec_hdr_end_offset;
     uint8_t         psdu_length = nrf_802154_frame_parser_frame_length_get(p_parser_data);
     const uint8_t * p_ie_header;
-    const uint8_t * p_mfr;
+    const uint8_t * p_end_addr;
     const uint8_t * p_iterator;
 
     if (((psdu_length + PHR_SIZE) != p_parser_data->valid_data_len) ||
@@ -368,25 +368,25 @@ static bool full_parse(nrf_802154_frame_parser_data_t * p_parser_data)
         p_parser_data->mhr.header_ie_offset = offset;
 
         p_ie_header = &p_parser_data->p_frame[offset];
-        p_mfr       = nrf_802154_frame_parser_mfr_get(p_parser_data);
+        p_end_addr  = nrf_802154_frame_parser_mfr_get(p_parser_data) - mic_size_get(p_parser_data);
         p_iterator  = nrf_802154_frame_parser_header_ie_iterator_begin(p_ie_header);
 
-        while (nrf_802154_frame_parser_ie_iterator_end(p_iterator, p_mfr) == false)
+        while (!nrf_802154_frame_parser_ie_iterator_end(p_iterator, p_end_addr))
         {
             p_iterator = nrf_802154_frame_parser_ie_iterator_next(p_iterator);
 
-            if (p_iterator > p_mfr)
+            if (p_iterator > p_end_addr)
             {
                 // Boundary check failed
                 return false;
             }
-            else if (p_iterator == p_mfr)
+            else if (p_iterator == p_end_addr)
             {
                 // End of frame; IE header has no termination.
                 offset = p_iterator - p_parser_data->p_frame;
                 break;
             }
-            else if (nrf_802154_frame_parser_ie_iterator_end(p_iterator, p_mfr))
+            else if (nrf_802154_frame_parser_ie_iterator_end(p_iterator, p_end_addr))
             {
                 // End of IE header; termination reached.
                 offset = nrf_802154_frame_parser_ie_content_address_get(p_iterator) -
