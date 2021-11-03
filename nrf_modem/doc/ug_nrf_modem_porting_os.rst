@@ -136,15 +136,35 @@ This function puts the trace string to the desired medium, typically UART.
 However, the medium used to forward and store the traces is up to the implementation and must be initialized correctly before using.
 If you are not interested in traces, they can be ignored, and this function can be empty and simply return.
 
-nrf_modem_os_application_irq_handler
-====================================
+nrf_modem_application_irq_handler
+=================================
 
 This function is implemented in the Modem library and must be called upon the low priority Modem library IRQ handler, triggered by the :c:func:`nrf_modem_os_application_irq_set` function.
 
-nrf_modem_os_trace_irq_handler
-==============================
+nrf_modem_trace_irq_handler
+===========================
 
 This function is implemented in the Modem library and must be called upon the low priority trace IRQ handler, triggered by the :c:func:`nrf_modem_os_trace_irq_set` function.
+
+nrf_modem_os_log
+================
+
+This function is called by the library to output logs.
+This function can be called in an interrupt context.
+
+nrf_modem_os_logdump
+====================
+
+This function is called by the library to dump binary data.
+This function can be called in an interrupt context.
+
+nrf_modem_os_log_strdup
+=======================
+
+The Modem library calls this function for each logged string that does not reside in read-only memory.
+The returned value will be a pointer to a string that can be logged correctly by the logging functions.
+This function might be necessary for some implementations of the logging functions, which might, for example, defer the logging at a later point in time.
+
 
 Other scenarios to handle in nrf_modem_os.c
 ===========================================
@@ -287,7 +307,7 @@ You can use it as a template and customize it for your OS or scheduler.
    }
 
    void NRF_MODEM_APPLCAITON_IRQ_HANDLER(void) {
-       nrf_modem_os_application_irq_handler();
+       nrf_modem_application_irq_handler();
    }
 
    void nrf_modem_os_trace_irq_set(void) {
@@ -299,7 +319,7 @@ You can use it as a template and customize it for your OS or scheduler.
    }
 
    void TRACE_IRQ_HANDLER(void) {
-       nrf_modem_os_trace_irq_handler();
+       nrf_modem_trace_irq_handler();
    }
 
    int32_t nrf_modem_os_trace_put(const uint8_t * const p_buffer, uint32_t buf_len) {

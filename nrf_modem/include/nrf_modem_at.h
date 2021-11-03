@@ -46,6 +46,35 @@ typedef void (*nrf_modem_at_notif_handler_t)(const char *notif);
  */
 typedef void (*nrf_modem_at_resp_handler_t)(const char *resp);
 
+/** @brief AT filter callback function format
+ *
+ * @note This declaration is used for the callback functions
+ * of AT commands in the nRF SDK.
+ *
+ * @param buf Buffer to receive the response into.
+ * @param len Buffer length.
+ * @param at_cmd AT command.
+ *
+ * @retval  0 On "OK" responses.
+ * @returns A positive value On "ERROR", "+CME ERROR", and "+CMS ERROR" responses.
+ *	    The type of error can be distinguished using @c nrf_modem_at_err_type.
+ *	    The error value can be retrieved using @c nrf_modem_at_err.
+ * @retval -NRF_EPERM The Modem library is not initialized.
+ * @retval -NRF_EFAULT @c buf or @c fmt are @c NULL.
+ * @retval -NRF_ENOMEM Not enough shared memory for this request.
+ * @retval -NRF_E2BIG The response is larger than the supplied buffer @c buf.
+ */
+typedef int (*nrf_modem_at_cmd_handler_t)(char *buf, size_t len, const char *at_cmd);
+
+/* Struct for AT filter
+ * Contains string for which the AT commands are compared
+ * and a function pointer for the function to call on detection.
+ */
+struct nrf_modem_at_cmd_filter {
+	const char * const cmd;
+	nrf_modem_at_cmd_handler_t callback;
+};
+
 /**
  * @brief Set a handler function for AT notifications.
  *
@@ -115,6 +144,7 @@ int nrf_modem_at_scanf(const char *cmd, const char *fmt, ...);
  * @retval -NRF_EFAULT @c buf or @c fmt are @c NULL.
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  * @retval -NRF_E2BIG The response is larger than the supplied buffer @c buf.
+ * @retval -NRF_EINVAL If @c len is zero.
  */
 int nrf_modem_at_cmd(void *buf, size_t len, const char *fmt, ...);
 
@@ -167,6 +197,25 @@ static inline int nrf_modem_at_err(int error)
 {
 	return (error & 0xff00ffff);
 }
+
+/**
+ * @brief Set a list of AT commands to be filtered by @c nrf_modem_at_cmd.
+ *
+ * When a filter list is set, AT commands sent via @c nrf_modem_at_cmd that match any
+ * AT command in the filter will be redirected to the filter callback function instead
+ * of being sent to the modem.
+ *
+ * @note The filter is disabled by passing NULL to the @c filters and
+ * 0 to the @c len.
+ *
+ * @param filters AT filter list.
+ * @param len AT filter list size.
+ *
+ * @retval  0 On a success.
+ * @retval -NRF_EINVAL On invalid parameters.
+ */
+int nrf_modem_at_cmd_filter_set(const struct nrf_modem_at_cmd_filter *filters,
+		size_t len);
 
 #ifdef __cplusplus
 }

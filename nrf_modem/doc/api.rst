@@ -7,10 +7,6 @@ API documentation
    :local:
    :depth: 2
 
-.. note::
-
-   Starting from Modem library v1.2.0, the GNSS socket is deprecated and replaced with the :ref:`nrf_modem_gnss_api`.
-
 Library Management
 ******************
 
@@ -116,60 +112,6 @@ DTLS handshake timeout values
    :project: nrfxlib
    :members:
 
-GNSS socket
-***********
-
-GNSS socket options
-===================
-
-.. doxygengroup:: nrf_socket_gnss_options
-   :project: nrfxlib
-   :members:
-
-GNSS socket option data types
-=============================
-
-.. doxygengroup:: nrf_socketopt_gnss_types
-   :project: nrfxlib
-   :members:
-
-NMEA mask enumerator
-====================
-
-.. doxygengroup:: nrf_socket_gnss_nmea_str_mask
-   :project: nrfxlib
-   :members:
-
-Power save mode enumerator
-==========================
-
-.. doxygengroup:: nrf_socket_gnss_psm_modes
-   :project: nrfxlib
-   :members:
-
-Use case enumerator
-===================
-
-.. doxygengroup:: nrf_socket_gnss_use_case_modes
-   :project: nrfxlib
-   :members:
-
-GNSS socket data frames
-=======================
-
-.. doxygengroup:: nrf_socket_gnss_data_frame
-   :project: nrfxlib
-   :members:
-
-.. _gnss_socket_agps_df:
-
-GNSS socket AGPS data frames
-============================
-
-.. doxygengroup:: nrf_socket_gnss_data_agps
-   :project: nrfxlib
-   :members:
-
 DFU socket
 **********
 
@@ -181,13 +123,6 @@ DFU errors
 ==========
 
 .. doxygengroup:: nrf_dfu_errors
-   :project: nrfxlib
-   :members:
-
-PDN socket
-**********
-
-.. doxygengroup:: nrf_socket_pdn
    :project: nrfxlib
    :members:
 

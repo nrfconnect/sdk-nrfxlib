@@ -7,12 +7,8 @@ Limitations
    :local:
    :depth: 2
 
-GNSS, AGPS, and modem DFU are not part of the generic sockets.
-Therefore, operating on them using ``poll`` is not possible.
-
-PDN sockets only support ``open``, ``close``, ``setsockopt``, and ``getsockopt`` to configure a PDN with an APN name.
-Therefore, there is no data communication on the socket, and it is not pollable.
-
+The Modem DFU socket is not part of the generic sockets.
+Therefore, operating on it using ``poll`` is not possible.
 
 Modem firmware limitations
 **************************

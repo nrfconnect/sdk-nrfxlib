@@ -51,7 +51,8 @@ struct nrf_modem_full_dfu_uuid {
 	uint8_t data[NRF_MODEM_FULL_DFU_UUID_LEN];
 };
 
-/**@brief Set modem in full DFU mode.
+/**
+ * @brief Set modem in full DFU mode.
  *
  * Reset the modem and set it into a state ready for full DFU operation.
  * Before initialization, the modem library must be shut down and
@@ -68,17 +69,12 @@ struct nrf_modem_full_dfu_uuid {
  * @param[out]  digest_buffer       Pointer to the buffer to store digest hash.
  *                                  If NULL, digest skipped.
  *
- * On failure, errno is set to one of following values:
- *
- * - \c NRF_EFAULT When modem responded with error codes.
- * - \c NRF_ETIMEDOUT When modem did not respond.
- * - \c NRF_EIO When incorrect response received after modem reset.
- *
- * @return 0 if the procedure succeeds, -1 otherwise.
+ * @retval 0 if the procedure succeeds.
  */
 int nrf_modem_full_dfu_init(struct nrf_modem_full_dfu_digest *digest_buffer);
 
-/**@brief Write a booloader chunk to the modem.
+/**
+ * @brief Write a booloader chunk to the modem.
  *
  * Call after nrf_modem_full_dfu_init() to upload modem bootloader segments.
  * Bootloader segments are appended together, so the full bootloader
@@ -87,25 +83,17 @@ int nrf_modem_full_dfu_init(struct nrf_modem_full_dfu_digest *digest_buffer);
  *
  * Firmware segments can be uploaded after successful bootloader upload.
  *
- * On failure, errno is set to one of following values:
- *
- * - \c NRF_EINVAL When src pointer is NULL or user tries to upload too big
- *                 bootloader.
- * - \c NRF_EOPNOTSUPP If the modem is not in a state to receive.
- * - \c NRF_EFAULT When modem responded with error codes.
- * - \c NRF_EPERM When modem did not accept the flash programming request.
- * - \c NRF_ENOEXEC When flash programming failed.
- * - \c NRF_ETIMEDOUT When modem did not respond.
- * - \c NRF_EIO When incorrect response received from modem.
- *
  * @param[in]   len    Length of data to be written.
  * @param[in]   src    Pointer to the buffer where chunk data is stored.
  *
- * @return 0 if the procedure succeeds, -1 otherwise.
+ * @retval 0 if the procedure succeeds.
+ * @retval -NRF_EINVAL When src pointer is NULL or user tries to upload too big bootloader.
+ * @retval -NRF_EOPNOTSUPP If the modem is not in a state to receive.
  */
 int nrf_modem_full_dfu_bl_write(uint32_t len, void *src);
 
-/**@brief Write a memory chunk to the modem.
+/**
+ * @brief Write a memory chunk to the modem.
  *
  * Call after bootloader have been upload to the modem.
  *
@@ -115,100 +103,83 @@ int nrf_modem_full_dfu_bl_write(uint32_t len, void *src);
  * written to a modem. After all firmware segments have been written, call
  * nrf_modem_full_dfu_apply() to complete writing of the last buffer.
  *
- * On failure, errno is set to one of following values:
- *
- * - \c NRF_EINVAL When src pointer is NULL, or user tries to upload too big
- *                 bootloader, or addr parameter is zero after a bootloader
- *                 upload.
- * - \c NRF_EOPNOTSUPP If the modem is not in a state to receive.
- * - \c NRF_EFAULT When modem responded with error codes.
- * - \c NRF_EPERM When modem did not accept the flash programming request.
- * - \c NRF_ENOEXEC When flash programming failed.
- * - \c NRF_ETIMEDOUT When modem did not respond.
- * - \c NRF_EIO When incorrect response received from modem.
- *
  * @param[in]   addr   Address where the data to be written.
  * @param[in]   len    Length of data to be written.
  * @param[in]   src    Pointer to the buffer where chunk data is stored.
  *
- * @return 0 if the procedure succeeds, -1 otherwise.
+ * @retval 0 if the procedure succeeds.
+ * @retval -NRF_EINVAL When src pointer is NULL, or user tries to upload too big
+ *                 bootloader, or addr parameter is zero after a bootloader
+ *                 upload.
+ * @retval -NRF_EOPNOTSUPP If the modem is not in a state to receive.
+ * @retval -NRF_EPERM When modem did not accept the flash programming request.
+ * @retval -NRF_ENOEXEC When flash programming failed.
+ * @retval -NRF_ETIMEDOUT When modem did not respond.
+ * @retval -NRF_EIO When incorrect response received from modem.
  */
 int nrf_modem_full_dfu_fw_write(uint32_t addr, uint32_t len, void *src);
 
-/**@brief Complete previous write cycle.
+/**
+ * @brief Complete previous write cycle.
  *
  * This call ensures that all parts from internal DFU buffers have been written
  * to the modem. Call after final bootloader chunk have been written as well
  * as when final firmware segment have been written.
  *
- * On failure, errno is set to one of following values:
- *
- * - \c NRF_EOPNOTSUPP If the modem is not in a state to receive.
- * - \c NRF_EFAULT When modem responded with error codes.
- * - \c NRF_EPERM When modem did not accept the flash programming request.
- * - \c NRF_ENOEXEC When flash programming failed.
- * - \c NRF_ETIMEDOUT When modem did not respond.
- * - \c NRF_EIO When incorrect response received from modem.
- *
- * @return 0 if the procedure succeeds, -1 otherwise.
+ * @retval 0 if the procedure succeeds.
+ * @retval -NRF_EOPNOTSUPP If the modem is not in a state to receive.
+ * @retval -NRF_EPERM When modem did not accept the flash programming request.
+ * @retval -NRF_ENOEXEC When flash programming failed.
+ * @retval -NRF_ETIMEDOUT When modem did not respond.
+ * @retval -NRF_EIO When incorrect response received from modem.
  */
 int nrf_modem_full_dfu_apply(void);
 
-/**@brief Read a digest hash data from the modem.
- *
- * On failure, errno is to one of following values:
- *
- * - \c NRF_EINVAL When digest_buffer pointer is NULL.
- * - \c NRF_EOPNOTSUPP If bootloader is not programmed.
- * - \c NRF_EFAULT When modem responded with error codes.
- * - \c NRF_EPERM When modem did not accept RPC command.
- * - \c NRF_ENOEXEC When RPC command failed.
- * - \c NRF_ETIMEDOUT When modem did not respond.
- * - \c NRF_EIO When incorrect response received from modem.
+/**
+ * @brief Read a digest hash data from the modem.
  *
  * @param[in]   addr            Start address.
  * @param[in]   size            Size of hash data.
  * @param[out]  digest_buffer   Pointer to the buffer to store digest hash data.
  *
- * @return 0 if the procedure succeeds, -1 otherwise.
+ * @retval 0 if the procedure succeeds.
+ * @retval -NRF_EINVAL When digest_buffer pointer is NULL.
+ * @retval -NRF_EOPNOTSUPP If bootloader is not programmed.
+ * @retval -NRF_EPERM When modem did not accept RPC command.
+ * @retval -NRF_ENOEXEC When RPC command failed.
+ * @retval -NRF_ETIMEDOUT When modem did not respond.
+ * @retval -NRF_EIO When incorrect response received from modem.
  */
 int nrf_modem_full_dfu_digest(uint32_t addr, uint32_t size,
 			     struct nrf_modem_full_dfu_digest *digest_buffer);
 
-/**@brief Read an uuid data from the modem.
- *
- * On failure, errno is set to one of following values:
- *
- * - \c NRF_EINVAL When modem_uuid pointer is NULL.
- * - \c NRF_EOPNOTSUPP If bootloader is not programmed.
- * - \c NRF_EFAULT When modem responded with error codes.
- * - \c NRF_EPERM When modem did not accept RPC command.
- * - \c NRF_ENOEXEC When RPC command failed.
- * - \c NRF_ETIMEDOUT When modem did not respond.
- * - \c NRF_EIO When incorrect response received from modem.
+/**
+ * @brief Read an uuid data from the modem.
  *
  * @param[out]  modem_uuid      Pointer to the buffer to store uuid data.
  *
- * @return 0 if the procedure succeeds, -1 otherwise.
+ * @retval 0 if the procedure succeeds.
+ * @retval -NRF_EINVAL When modem_uuid pointer is NULL.
+ * @retval -NRF_EOPNOTSUPP If bootloader is not programmed.
+ * @retval -NRF_EPERM When modem did not accept RPC command.
+ * @retval -NRF_ENOEXEC When RPC command failed.
+ * @retval -NRF_ETIMEDOUT When modem did not respond.
+ * @retval -NRF_EIO When incorrect response received from modem.
  */
 int nrf_modem_full_dfu_uuid(struct nrf_modem_full_dfu_uuid *modem_uuid);
 
-/**@brief Verify the modem firmware signature.
- *
- * On failure, errno is set to one of following values:
- *
- * - \c NRF_EINVAL When data pointer is NULL.
- * - \c NRF_EOPNOTSUPP If bootloader is not programmed.
- * - \c NRF_EFAULT When modem responded with error codes.
- * - \c NRF_EPERM When modem did not accept RPC command.
- * - \c NRF_ENOEXEC When RPC command failed.
- * - \c NRF_ETIMEDOUT When modem did not respond.
- * - \c NRF_EIO When incorrect response received from modem.
+/**
+ * @brief Verify the modem firmware signature.
  *
  * @param[in]  bytes      Size of signature.
  * @param[in]  data       Pointer to the buffer where signature is stored.
  *
- * @return 0 if the procedure succeeds, -1 otherwise.
+ * @retval 0 if the procedure succeeds.
+ * @retval -NRF_EINVAL When data pointer is NULL.
+ * @retval -NRF_EPERM When modem did not accept RPC command.
+ * @retval -NRF_ENOEXEC When RPC command failed.
+ * @retval -NRF_ETIMEDOUT When modem did not respond.
+ * @retval -NRF_EIO When incorrect response received from modem.
  */
 int nrf_modem_full_dfu_verify(uint32_t bytes, const void *data);
 

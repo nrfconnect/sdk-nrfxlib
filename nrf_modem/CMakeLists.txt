@@ -15,7 +15,12 @@ if(CONFIG_NRF_MODEM_LINK_BINARY)
      message(ERROR " This combination of SoC and floating point ABI is not supported by libmodem.")
   endif()
 
-  zephyr_library_import(modem ${NRF_MODEM_LIB_DIR}/libmodem.a)
+  if(CONFIG_NRF_MODEM_LOG)
+    zephyr_library_import(modem ${NRF_MODEM_LIB_DIR}/libmodem_log.a)
+  else()
+    zephyr_library_import(modem ${NRF_MODEM_LIB_DIR}/libmodem.a)
+  endif()
+
   zephyr_include_directories(include)
 
 endif()
