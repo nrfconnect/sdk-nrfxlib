@@ -16,5 +16,5 @@ When doing so, you must make sure that the system is working. First, use Kconfig
 .. note::
    When providing a custom Mbed TLS configuration header, it is important that the following criteria are still met:
 
-   * Entropy length of 144, i.e. ``#define MBEDTLS_ENTROPY_MAX_GATHER 144``
+   * Entropy length of 144, that is, ``#define MBEDTLS_ENTROPY_MAX_GATHER 144``
    * Force SHA256

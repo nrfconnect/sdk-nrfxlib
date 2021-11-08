@@ -65,7 +65,7 @@ nrf_modem 1.2.1
 ***************
 
 * Fixed an issue where :c:func:`nrf_getaddrinfo` would set a wrong errno when returning ``NRF_EAI_SYSTEM``.
-* Fixed an issue where the ``NRF_SO_TCP_SRV_SESSTIMEO``, ``NRF_SO_SILENCE_IP_ECHO_REPLY`` and ``NRF_SO_SILENCE_IPV6_ECHO_REPLY`` socket options returned an error when set via :c:func:`nrf_setsockopt`.
+* Fixed an issue where the ``NRF_SO_TCP_SRV_SESSTIMEO``, ``NRF_SO_SILENCE_IP_ECHO_REPLY`` and ``NRF_SO_SILENCE_IPV6_ECHO_REPLY`` socket options returned an error when set using :c:func:`nrf_setsockopt`.
 * Renamed the socket option ``NRF_SO_SILENCE_IP_ECHO_REPLY`` to ``NRF_SO_IP_ECHO_REPLY``.
 * Renamed the socket option ``NRF_SO_SILENCE_IPV6_ECHO_REPLY`` to ``NRF_SO_IPV6_ECHO_REPLY``.
 
@@ -267,7 +267,7 @@ bsdlib 0.5.0
 ************
 
 * bsd_irrecoverable_handler() has been removed.
-  The application no longer needs to implement it to receive errors during initialization, which are instead reported via bsd_init().
+  The application no longer needs to implement it to receive errors during initialization, which are instead reported through bsd_init().
 * bsd_shutdown() now returns an integer.
 * Added RAW socket support.
 * Added missing AGPS data models.

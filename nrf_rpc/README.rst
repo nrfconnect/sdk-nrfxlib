@@ -10,7 +10,7 @@ It is designed to be used with an underlying transport layer, for example `OpenA
 The nRF RPC library allows for calling a function on remote processors from a local processor, in both synchronous and asynchronous way.
 
 Depending on the transport layer, the remote processor is not limited to a single device.
-It can also be a separate device of any type (e.g. a PC), or another core on the same system.
+It can also be a separate device of any type (for example, a PC), or another core on the same system.
 
 The nRF RPC library simplifies the serialization of user APIs, such as a Bluetooth stack, and executing of functions implementing those APIs on a remote CPU.
 The library is operating system independent so it can be used with any operating system after porting the OS-dependent layers of the library.

@@ -45,7 +45,7 @@ See :ref:`trace_output_function` for more information.
 * Initialize timers/threads.
 * Configure low priority Modem library scheduling IRQ (SoftIRQ).
 * Configure low priority trace scheduling IRQ (SoftIRQ).
-* Configure medium for trace (UART/SPI etc.).
+* Configure medium for trace (for example, UART or SPI).
 
 nrf_modem_os_timedwait
 ======================

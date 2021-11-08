@@ -67,7 +67,7 @@ The following image presents sample command and response flows.
 
    nRF RPC simple command flow
 
-A thread waiting for a response can be reused to receive a new incoming command from the remote thread that the local thread is waiting for, e.g. when a callback is called synchronously.
+A thread waiting for a response can be reused to receive a new incoming command from the remote thread for which the local thread is waiting, for example, when a callback is called synchronously.
 The following diagram demonstrates this situation.
 
 .. figure:: img/cmd_recursive.svg
