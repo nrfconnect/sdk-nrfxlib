@@ -56,7 +56,7 @@
 #endif
 
 #ifndef ZBOSS_MINOR
-#define ZBOSS_MINOR 8U
+#define ZBOSS_MINOR 9U
 #endif
 
 #endif /* ZB_VERSION_H */

@@ -194,7 +194,7 @@ void lwip_zb_assert(zb_uint16_t file_id, zb_int_t line_number);
 #ifdef ZB_ARRAYS_CHECK
 /**
    Address all array elements. Use this macro to test that array really inited
-   by valgring in Linux
+   by valgrind in Linux
  */
 #define ZB_CHK_ARR(arr, len)                       \
   do                                               \

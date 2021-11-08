@@ -76,10 +76,6 @@
         @snippet HA_samples/range_extender/sample_zc.c ZCL_COMMAND_HANDLER
 
     @par
-
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    The complete set of Range Extended device samples can be found in /application/HA_samples/range_extender
-    @endcond
 */
 
 #define ZB_HA_DEVICE_VER_RANGE_EXTENDER 0  /*!< Range extender device version */

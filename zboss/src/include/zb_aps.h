@@ -51,10 +51,10 @@
 
 /* APS Information Base default values. */
 
-/** @brief Default value for AIB non-member radius atribute */
+/** @brief Default value for AIB non-member radius attribute */
 #define ZB_APS_AIB_DEFAULT_NONMEMBER_RADIUS        0x02U
 
-/** @brief Default value for AIB maximum non-member radius atribute.
+/** @brief Default value for AIB maximum non-member radius attribute.
   *
   * Possible values from 0x00 to 0x06.
   */
@@ -187,7 +187,7 @@ typedef ZB_PACKED_PRE struct zb_apsde_data_confirm_s
 
 /** @brief NLDE-DATA.request primitive
 
-   This function can be called via scheduler, returns immediatly.
+   This function can be called via scheduler, returns immediately.
    Later zb_nlde_data_confirm will be called to pass NLDE-DATA.request result up.
 
    @param param - packet to send (\ref zb_buf_t) and parameters at buffer tail
@@ -220,7 +220,6 @@ typedef ZB_PACKED_PRE struct zb_apsde_data_confirm_s
   }
 @endcode
 
-See zdo_startup sample
  */
 void zb_apsde_data_request(zb_uint8_t param);
 
@@ -236,10 +235,6 @@ void zb_apsde_data_request(zb_uint8_t param);
   * MAX_FRM_COUNTER, NO_KEY, BAD_CCM_OUTPUT, ROUTE_ERROR, BT_TABLE_FULL, FRAME_NOT_BUFFERED or any
   * status values returned from security suite or the MCPS-DATA.confirm primitive.
   * @li handle - The handle associated with the NSDU being confirmed.
-  *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See nwk_addr sample
-  * @endcond
   */
 void zb_apsde_data_confirm(zb_uint8_t param);
 
@@ -252,10 +247,6 @@ void zb_apsde_data_confirm(zb_uint8_t param);
   * @param param - The set of octets comprising the NSDU to be transferred (with length).
   *
   * Other fields got from MAC nsdu by macros.
-  *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See nwk_addr sample
-  * @endcond
   */
 void zb_apsde_data_indication(zb_uint8_t param);
 
@@ -272,7 +263,6 @@ void zb_apsde_data_indication(zb_uint8_t param);
    @snippet tp_aps_bv_19_i_zr1.c data_indication
    @par
 
-   See tp_aps_bv-19-i sample
  */
 #define ZB_APS_HDR_CUT_P(packet, ptr)                   \
   ptr = zb_buf_cut_left(packet, zb_aps_full_hdr_size(zb_buf_begin(packet)))
@@ -443,7 +433,7 @@ void zb_aps_send_command(zb_uint8_t param, zb_uint16_t dest_addr, zb_uint8_t com
 /**
  * @name APS frame type
  * @anchor aps_frame_type
- * 
+ *
  * Note: These values were members of `enum zb_aps_frame_type_e` type but were converted to a
  * set of macros due to MISRA violations.
  */
@@ -530,10 +520,6 @@ void zb_aps_hdr_parse(zb_bufid_t packet, zb_aps_hdr_t *aps_hdr, zb_bool_t cut_nw
  * @par Example
  * @snippet tp_pro_bv-52_zr1.c tp_pro_bv-52_zr1
  * @par
- *
- * @cond ZBOSS_SAMPLES_API_DOC_LINE
- * See tp_pro_bv-52 sample
- * @endcond
  * */
 zb_bool_t zb_aps_is_in_group(zb_uint16_t grp_id);
 
@@ -593,10 +579,6 @@ zb_ret_t zb_apsme_remove_group_internal(zb_uint16_t group, zb_uint8_t ep);
   * @par Example
   * @snippet start_ze.c zb_apsme_get_request
   * @par
-  *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See aib_nib_pib_test sample
-  * @endcond
   */
 void zb_apsme_get_request(zb_uint8_t param);
 
@@ -607,9 +589,6 @@ void zb_apsme_get_request(zb_uint8_t param);
   * @snippet start_ze.c zb_apsme_set_request
   * @par
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See aib_nib_pib_test sample
-  * @endcond
   */
 void zb_apsme_set_request(zb_uint8_t param);
 

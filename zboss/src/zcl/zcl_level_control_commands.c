@@ -214,7 +214,7 @@ static zb_bool_t level_control_check_req_options(zb_uint8_t param, zb_uint8_t en
        Options bitmap, unless the OptionsMask field is present and has the corresponding bit set to
        1, in which case the corresponding bit in the OptionsOverride field SHALL determine the
        corresponding bit in the temporary Options bitmap.
-       The resulting teporary Options bitmap SHALL be processed as defined in section 3.10.2.2.8.
+       The resulting temporary Options bitmap SHALL be processed as defined in section 3.10.2.2.8.
     */
 
     if (have_options_in_req)
@@ -261,7 +261,7 @@ static zb_bool_t level_control_check_req_options(zb_uint8_t param, zb_uint8_t en
         attr_desc = zb_zcl_get_attr_desc(cluster_desc, ZB_ZCL_ATTR_ON_OFF_ON_OFF_ID);
 
         if (attr_desc &&
-            !ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc) && /* On/Off attrbute is Off */
+            !ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc) && /* On/Off attribute is Off */
             !ZB_CHECK_BIT_IN_BIT_VECTOR(&options, ZB_ZCL_LEVEL_CONTROL_OPTIONS_EXECUTE_IF_OFF)) /* ExecuteIfOff
                                                                                                * is False */
         {
@@ -405,7 +405,7 @@ static void move_to_level_handler(
     input_var.current_value16 = move_variables->curr_level;
     input_var.end_value16 = move_to_level_req.level;
 
-/* This needed to set OFF from move_to_level_continue() when nesessary */
+/* This needed to set OFF from move_to_level_continue() when necessary */
     move_variables->end_level = move_to_level_req.level;
 
     input_var.buf_id = 0;

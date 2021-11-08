@@ -72,7 +72,7 @@ zb_discover_cmd_list_t gs_daily_schedule_server_cmd_list =
  * @param _fn - sending cluster command function
  * @param _param - user parameter
  * @param _cmd_info - command info
- * @param _payload - sending payload. Corresoponds to sending command.
+ * @param _payload - sending payload. Corresponds to sending command.
  * @param _cb - Callback which should be called when the ZCL stack receives
  * APS ack.
  */

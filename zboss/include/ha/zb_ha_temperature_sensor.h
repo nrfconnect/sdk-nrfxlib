@@ -75,11 +75,6 @@
         @snippet HA_samples/temperature_sensor/sample_zc.c ZCL_COMMAND_HANDLER
 
     @par
-
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    See Temperature Sensor device sample in application/HA_samples/temperature_sensor
-    @endcond
-
 */
 
 #define ZB_HA_DEVICE_VER_TEMPERATURE_SENSOR 0  /*!< Temperature sensor device version */

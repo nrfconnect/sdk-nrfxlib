@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -57,7 +57,7 @@
      Time subtraction: subtract 'b' from 'a'for 32bit-time
 
      Take overflow into account: change sign (subtraction order) if result >
-     values_diapasin/2.
+     values_diapason/2.
      Suppose a always >= b, so result is never negative.
      This macro will be used to calculate, for example, amount of time to sleep
      - it is positive by definition.
@@ -92,7 +92,7 @@
 
      @param a - first time value to compare
      @param b - second time value to compare
-     @return 1 is a >= b, 0 otherwhise
+     @return 1 is a >= b, 0 otherwise
    */
 #define ZB_TIME32_GE(a, b) ((zb_uint32_t)((a) - (b)) < ZB_HALF_MAX_TIME32_VAL)
 
@@ -122,6 +122,7 @@ typedef struct zb_timer_s
   zb_time_t timer; /*!< current time, measured in beacon intervals */
 
 #ifndef ZB_ALIEN_TIMER
+  zb_uint32_t sleep_tmo_remainder_ms; /*!< slept time remainder, used for timer corrections */
   zb_time_t   timer_stop; /*!< time to stop timer (disable timer interrupts etc) */
   zb_bool_t   started;  /*!< flag - timer is started */
   zb_bool_t   canstop;  /*!< flag - Can the timer be stopped? */

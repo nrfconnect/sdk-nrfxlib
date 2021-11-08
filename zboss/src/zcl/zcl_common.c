@@ -587,17 +587,17 @@ zb_uint8_t zb_zcl_get_tsn_from_packet(zb_bufid_t buffer)
   TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_get_tsn_from_packet %p", (FMT__P, buffer));
 
   /* ZCL spec 2.3.1 ZCL frame format */
-  /* | Fram control 1b | Manuf code 0/2b | TSN 1b | Cmd id 1b | Payload xx b | */
+  /* | Frame control 1b | Manuf code 0/2b | TSN 1b | Cmd id 1b | Payload xx b | */
 
   /* cmd_buf points to Frame control */
   if (!ZB_ZCL_IS_MANUF_SPECIFIC(*cmd_buf))
   {
-    /* no mamufacturer code */
+    /* no manufacturer code */
     tsn = *(cmd_buf + sizeof(zb_uint8_t));
   }
   else
   {
-    /* mamufacturer specific code is set */
+    /* manufacturer specific code is set */
     tsn = *(cmd_buf + sizeof(zb_uint8_t) + sizeof(zb_uint16_t));
   }
 
@@ -675,7 +675,7 @@ zb_ret_t zb_zcl_ack_callback(zb_uint8_t param)
     {
       TRACE_MSG(TRACE_ZCL2, "found callback %p", (FMT__P, ZCL_CTX().zcl_cb[i].func));
 
-      /* Added +1 turbo poll inzb_zcl_finish_and_send_packet_common() but failed
+      /* Added +1 turbo poll in zb_zcl_finish_and_send_packet_common() but failed
        * to send - need not turbo poll for the next packet. Else may increase
        * turbo poll count multiple times. */
       if (ZB_IS_DEVICE_ZED())
@@ -705,7 +705,7 @@ zb_ret_t zb_zcl_ack_callback(zb_uint8_t param)
   while (i != hash);
 
   /* It is ok to have no entry in zcl_cb if zb_zcl_register_cb was called with
-   * zero cb and then overwriten by another entry. */
+   * zero cb and then overwritten by another entry. */
   TRACE_MSG(TRACE_ZCL3, "buf 0x%hx not found - maybe, it is ok", (FMT__H, param));
 
   /* free buffer on caller level */
@@ -775,7 +775,7 @@ void zb_zcl_fix_endian(zb_uint8_t *data_ptr, zb_uint8_t data_type)
 #endif /* ZB_LITTLE_ENDIAN */
 
 /* Check, if attribute value maybe set to a new value
- * Note: check_access specifies if it is needed to perfrorm read-only
+ * Note: check_access specifies if it is needed to perform read-only
  * check: end-user application may chanage read-only attributes
 */
 zb_uint8_t zb_zcl_check_attribute_writable(
@@ -901,7 +901,7 @@ static void zb_zcl_conform_singleton(zb_uint8_t ep_first, zb_uint16_t cluster_id
 
 /* Sets attribute value, perform all needed checks before and after
  * setting new value
- * Note: access_check specifies if it is needed to perfrorm read-only
+ * Note: access_check specifies if it is needed to perform read-only
  * check: end-user application may chanage read-only attributes
 */
 zb_zcl_status_t zb_zcl_set_attr_val(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role,
@@ -1196,7 +1196,7 @@ static void ep_process_zcl_cmd(zb_uint8_t param)
 #if defined ZB_SE_COMMISSIONING || (defined ZB_ZCL_SUPPORT_CLUSTER_WWAH && defined ZB_ZCL_ENABLE_WWAH_SERVER)
       && (ZCL_SELECTOR().block_zcl_cmd == NULL
           || !ZCL_SELECTOR().block_zcl_cmd(&cmd_info))
-#endif /* ZB_SE_COMMISSINONING || (ZB_ZCL_SUPPORT_CLUSTER_WWAH && ZB_ZCL_ENABLE_WWAH_SERVER) */
+#endif /* ZB_SE_COMMISSIONING || (ZB_ZCL_SUPPORT_CLUSTER_WWAH && ZB_ZCL_ENABLE_WWAH_SERVER) */
     )
   {
     status = (*ep_desc->device_handler)(param) != 0U ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_FAIL;
@@ -1273,7 +1273,7 @@ static void broadcast_endpoint_delivery_step(zb_uint8_t param, zb_uint16_t bc_bu
   /* Proceed to next endpoint */
   else
   {
-    TRACE_MSG(TRACE_ZCL3, "wait new buf to handle ep %hd, jitted %d", (FMT__H_D, ep, process_command_jitter));
+    TRACE_MSG(TRACE_ZCL3, "wait new buf to handle ep %hd, jitter %d", (FMT__H_D, ep, process_command_jitter));
 
     ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info_ptr).dst_endpoint = ep;
     ZB_ASSERT(bc_buf_ref <= ZB_UINT8_MAX);
@@ -1876,7 +1876,7 @@ static zb_ret_t zb_zcl_finish_and_send_packet_common(zb_bufid_t buffer,
           || ((apsde_req->addr_mode == ZB_APS_ADDR_MODE_16_ENDP_PRESENT) &&
               (ZB_NWK_IS_ADDRESS_BROADCAST(dst_addr->addr_short))))
    /* "Require APS ACKs on Unicasts" command enforces that all unicast commands have APS ACKs enabled,
-    * except for clusters in excemption list. This also applies to global cluster commands (i.e.
+    * except for clusters in exception list. This also applies to global cluster commands (i.e.
     * read/write attribute commands). */
       && ZB_ZDO_CHECK_IF_APS_ACK_NEEDED(cluster_id)
       && !disable_aps_ack
@@ -2029,7 +2029,7 @@ static zb_ret_t zb_zcl_finish_and_send_packet_common(zb_bufid_t buffer,
         if ((zcl_cmd->command_id == ZB_ZCL_CMD_DEFAULT_RESP)
             && (zcl_cmd->frame_ctrl.manufacturer == 0U)
             && (zcl_cmd->frame_ctrl.frame_type == ZB_ZCL_FRAME_TYPE_COMMON)
-            /* TODO: describe where is that status in thye packet. Ref to the spec etc. */
+            /* TODO: describe where is that status in the packet. Ref to the spec etc. */
             && (*((zb_uint8_t *)zcl_cmd + 4U * sizeof(zb_uint8_t)) == ZB_ZCL_STATUS_FAIL))
         {
           TRACE_MSG(TRACE_ERROR,

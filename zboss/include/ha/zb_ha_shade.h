@@ -81,10 +81,6 @@
         @snippet HA_samples/shade/sample_zc.c ZCL_COMMAND_HANDLER
 
     @par
-
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    See Shade device sample in application/HA_samples/shade
-    @endcond
 */
 
 #define ZB_HA_DEVICE_VER_SHADE 0  /*!< Shade device version */

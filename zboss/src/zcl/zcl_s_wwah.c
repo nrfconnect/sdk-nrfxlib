@@ -283,7 +283,7 @@ zb_bool_t zb_zcl_wwah_check_new_panid(zb_uint16_t new_panid)
 
 /*
  * Check if Zigbee non-Green Power Inter-pan messages supported
- * @return ZB_TRUE interan message allowed
+ * @return ZB_TRUE interpan message allowed
  *         ZB_FALSE otherwise
  */
 
@@ -953,14 +953,11 @@ zb_ret_t zb_zcl_wwah_get_rejoin_tmo(zb_uint16_t attempt, zb_time_t *tmo)
     fast_rejoin_attempts = (WWAH_CTX().rejoin_alg.fast_rejoin_timeout_in_seconds / WWAH_CTX().rejoin_alg.duration_between_each_rejoin_in_seconds) + 1;
   }
 
-  backoff_attempt = (attempt / fast_rejoin_attempts);
+  backoff_attempt = ((attempt - 1) / fast_rejoin_attempts);
   TRACE_MSG(TRACE_ZCL1, "backoff_attempt %d", (FMT__D, backoff_attempt));
   TRACE_MSG(TRACE_ZCL1, "fast_rejoin_attempts %d", (FMT__D, fast_rejoin_attempts));
 
-  if (!wwah_attr.wwah_rejoin_enabled ||
-      /* A value of 0x00 means do not reset the backoff duration */
-      (WWAH_CTX().rejoin_alg.max_backoff_iterations &&
-       backoff_attempt >= WWAH_CTX().rejoin_alg.max_backoff_iterations))
+  if (!wwah_attr.wwah_rejoin_enabled)
   {
     /* Wait for next Rejoin cycle */
     ret = RET_EXIT;
@@ -988,7 +985,14 @@ zb_ret_t zb_zcl_wwah_get_rejoin_tmo(zb_uint16_t attempt, zb_time_t *tmo)
       }
       else
       {
-        *tmo = (WWAH_CTX().rejoin_alg.fast_rejoin_first_backoff_in_seconds * backoff_attempt);
+        /* A value of 0x00 means do not reset the backoff duration */
+        if (WWAH_CTX().rejoin_alg.max_backoff_iterations
+            && backoff_attempt >= WWAH_CTX().rejoin_alg.max_backoff_iterations)
+        {
+          backoff_attempt %= WWAH_CTX().rejoin_alg.max_backoff_iterations;
+        }
+
+        *tmo = (WWAH_CTX().rejoin_alg.fast_rejoin_first_backoff_in_seconds * (1l << backoff_attempt));
         if (*tmo > WWAH_CTX().rejoin_alg.rejoin_max_backoff_time_in_seconds)
         {
           *tmo = WWAH_CTX().rejoin_alg.rejoin_max_backoff_time_in_seconds;
@@ -2585,17 +2589,17 @@ void zb_zcl_wwah_trace_ctx(zb_uint8_t param)
   TRACE_MSG(TRACE_ZCL3, "aps_ack_exempt_table: %hd elements", (FMT__H, WWAH_CTX().aps_ack_exempt_table_cnt));
   for(i = 0; i < WWAH_CTX().aps_ack_exempt_table_cnt; ++i)
   {
-    TRACE_MSG(TRACE_ZCL3, "  [%hd]: clister_id 0x%x", (FMT__H_D, i, WWAH_CTX().aps_ack_exempt_table[i]));
+    TRACE_MSG(TRACE_ZCL3, "  [%hd]: cluster_id 0x%x", (FMT__H_D, i, WWAH_CTX().aps_ack_exempt_table[i]));
   }
   TRACE_MSG(TRACE_ZCL3, "aps_link_key_authorization_table: %hd elements", (FMT__H, WWAH_CTX().aps_link_key_authorization_table_cnt));
   for(i = 0; i < WWAH_CTX().aps_link_key_authorization_table_cnt; ++i)
   {
-    TRACE_MSG(TRACE_ZCL3, "  [%hd]: clister_id 0x%x", (FMT__H_D, i, WWAH_CTX().aps_link_key_authorization_table[i]));
+    TRACE_MSG(TRACE_ZCL3, "  [%hd]: cluster_id 0x%x", (FMT__H_D, i, WWAH_CTX().aps_link_key_authorization_table[i]));
   }
   TRACE_MSG(TRACE_ZCL3, "use_trust_center_for_cluster_table: %hd elements", (FMT__H, WWAH_CTX().use_trust_center_for_cluster_table_cnt));
   for(i = 0; i < WWAH_CTX().use_trust_center_for_cluster_table_cnt; ++i)
   {
-    TRACE_MSG(TRACE_ZCL3, "  [%hd]: clister_id 0x%x", (FMT__H_D, i, WWAH_CTX().use_trust_center_for_cluster_table[i]));
+    TRACE_MSG(TRACE_ZCL3, "  [%hd]: cluster_id 0x%x", (FMT__H_D, i, WWAH_CTX().use_trust_center_for_cluster_table[i]));
   }
 
   TRACE_MSG(TRACE_ZCL3, "<< WWAH CTX", (FMT__0));

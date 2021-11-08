@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*  PURPOSE: Classiz ZB commissioning: defined in Core specification and HA
+/*  PURPOSE: Classic ZB commissioning: defined in Core specification and HA
 */
 
 
@@ -72,7 +72,7 @@ void zdo_classic_initiate_commissioning(zb_uint8_t param)
   /* a. Maybe Formation */
   if (ZB_IS_DEVICE_ZC()
 #if defined ZB_ROUTER_ROLE && defined ZB_DISTRIBUTED_SECURITY_ON
-      /* Not joned ZR with TC addr -1 means: start Distributed formation.*/
+      /* Not joined ZR with TC addr -1 means: start Distributed formation.*/
       || (zb_tc_is_distributed()
           && ZB_IS_DEVICE_ZR()
           && !zb_zdo_joined())
@@ -407,7 +407,7 @@ static void zdo_classic_handle_secured_rejoin_signal(zb_bufid_t param)
     It IS possible to work not in BDB but require TCLK update (use case: certification tests).
     But update_trust_center_link_keys_required flag is always presend and initialized to 1 during BDB init.
   */
-  /* Note: is fomewhere in time we put update_trust_center_link_keys_required under ifdef, need to check for ZB_IN_BDB() here.
+  /* Note: is somewhere in time we put update_trust_center_link_keys_required under ifdef, need to check for ZB_IN_BDB() here.
      Remember ZB_IN_BDB() can be just 1 (BDB-only build). */
   if (ZB_TCPOL().update_trust_center_link_keys_required
       && !IS_DISTRIBUTED_SECURITY()

@@ -69,6 +69,7 @@ typedef zb_int32_t zb_ret_t;
 #define   ERROR_CATEGORY_SERIAL   8
 #define   ERROR_CATEGORY_NVRAM    9
 #define   ERROR_CATEGORY_MACSPLIT 10
+#define   ERROR_CATEGORY_NCP      11
 
 /* Let's always return 0 for RET_OK - in any category. */
 #define ERROR_CODE(category, code) ((zb_ret_t)(((zb_ret_t)code) != 0 ? -(((category) * ERROR_CATEGORY_INTERVAL) + ((zb_ret_t)code)) : 0))
@@ -142,6 +143,7 @@ typedef zb_int32_t zb_ret_t;
 #define  RET_AGAIN                               ERROR_CODE(ERROR_CATEGORY_GENERIC, 70)
 #define  RET_DEVICE_NOT_FOUND                    ERROR_CODE(ERROR_CATEGORY_GENERIC, 71)
 #define  RET_OBSOLETE                            ERROR_CODE(ERROR_CATEGORY_GENERIC, 72)
+#define  RET_INTERRUPTED                         ERROR_CODE(ERROR_CATEGORY_GENERIC, 73)
 
 /** @} */ /* Error codes */
 

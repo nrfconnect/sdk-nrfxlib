@@ -170,6 +170,7 @@ typedef struct zb_buffer_test_req_param_s
   zb_uint8_t src_ep;        /*!< Source endpoint */
   zb_uint8_t dst_ep;        /*!< Destination endpoint */
   zb_uint8_t radius;        /*!< Radius */
+  zb_uint8_t tx_options;    /*!< TX Options */
   zb_uint16_t profile_id;    /*!< profile id */
 }
 zb_buffer_test_req_param_t;
@@ -187,6 +188,7 @@ zb_buffer_test_req_param_t;
 		                                      _p->src_ep = ZB_TEST_PROFILE_EP;                    \
 		                                      _p->dst_ep = ZB_TEST_PROFILE_EP;                    \
 		                                      _p->radius = MAX_NWK_RADIUS;                        \
+		                                      _p->tx_options = 0;                        \
                                                       _p->profile_id = ZB_TEST_PROFILE_ID
 
 /**
@@ -241,6 +243,7 @@ typedef ZB_PACKED_PRE struct zb_buffer_test_response_param_s
   zb_uint8_t addr_mode; /*!< address type (group or device address) */
   zb_uint8_t src_ep;    /*!< Source endpoint */
   zb_uint8_t dst_ep;    /*!< Destination endpoint */
+  zb_uint8_t tx_options;/*!< TX Options */
 }
 ZB_PACKED_STRUCT
 zb_buffer_test_response_param_t;
@@ -252,7 +255,6 @@ zb_buffer_test_response_param_t;
 
    @snippet tp_aps_bv_21_i_zed2.c zb_test_profile_indication
 
-   See tp_aps_bv-21-i sample
  */
 void zb_test_profile_indication(zb_uint8_t param);
 
@@ -312,7 +314,6 @@ void tp_send_req_by_short_ext(zb_uint16_t command_id,
     @snippet tp_r21_bv-25_gzr_c.c zb_tp_transmit_counted_packets_req_ext
     @snippet tp_r21_bv-25_gzr_r.c zb_tp_transmit_counted_packets_req_ext
 
-    See tp_r21_bv-25 sample
  */
 void zb_tp_transmit_counted_packets_req_ext(zb_uint8_t param, zb_callback_t cb);
 
@@ -349,7 +350,6 @@ void tp_send_req_by_short(zb_uint16_t command_id,
 
     @snippet tp_aps_bv_09_zc.c zb_tp_transmit_counted_packets_req
 
-    See tp_aps_bv-13 sample
  */
 void zb_tp_transmit_counted_packets_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -370,7 +370,6 @@ void tp_packet_ack(zb_uint8_t param);
 
     @snippet TP_PRO_BV-46/tp_pro_bv-46_zc.c tp_pro_bv-46_zc
 
-    See tp_pro_bv_20, tp_pro_bv-46, tp_pro_bv-52, etc samples.
  */
 void zb_tp_buffer_test_request(zb_uint8_t param, zb_callback_t cb);
 
@@ -382,7 +381,6 @@ void zb_tp_buffer_test_request(zb_uint8_t param, zb_callback_t cb);
 
     @snippet tp_zdo_bv_12_zed1.c zb_tp_buffer_test_request_EP
 
-    See tp_zdo_bv-12 sample.
  */
 void zb_tp_buffer_test_request_EP(zb_uint8_t param, zb_callback_t cb);
 
@@ -415,7 +413,7 @@ void zb_tp_retrive_packet_count(zb_uint8_t param);
 #endif
 
 #if defined ZB_PRO_STACK && defined ZB_TEST_CUSTOM_LINK_STATUS && defined ZB_ROUTER_ROLE
-/* Custom link status command for testing puprpose only
+/* Custom link status command for testing purpose only
  * (allow to send cmd from some predefined adddress)
  */
 zb_bool_t zb_tp_send_link_status_command(zb_uint8_t param, zb_uint16_t short_addr);

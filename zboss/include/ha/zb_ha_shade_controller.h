@@ -79,10 +79,6 @@
 
     @par
 
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    See Shade Controller sample in application/HA_samples/shade_controller
-    @endcond
-
 */
 
 #define ZB_HA_DEVICE_VER_SHADE 0  /*!< Shade controller device version */

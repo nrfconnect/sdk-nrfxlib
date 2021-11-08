@@ -486,7 +486,7 @@ zb_ret_t check_value_thermostat_server(zb_uint16_t attr_id, zb_uint8_t endpoint,
         break;
     }
   }
-  TRACE_MSG(TRACE_ZCL1, "check_value_thermsotat ret %hd", (FMT__H, ret));
+  TRACE_MSG(TRACE_ZCL1, "check_value_thermsostat ret %hd", (FMT__H, ret));
   return ret;
 }
 
@@ -497,7 +497,7 @@ void zb_zcl_thermostat_invoke_user_app(zb_uint8_t param, zb_uint16_t endpoint16)
 {
   zb_ret_t result;
 
-  TRACE_MSG(TRACE_ZCL1, "> zb_zcl_thermostat_invoke_user_app %hx epndpoint %d",
+  TRACE_MSG(TRACE_ZCL1, "> zb_zcl_thermostat_invoke_user_app %hx endpoint %d",
       (FMT__H_D, param, endpoint16));
 
   if (ZCL_CTX().device_cb != NULL && g_thermostat_context.setpoint_mode != ZB_ZCL_THERMOSTAT_PROCESS_NONE)

@@ -266,7 +266,7 @@ while(0)
 /**
    Global lock operation - call from the interrupt handler
 
-   @return RET_OK if success, RET_BUZY if locked by userspace
+   @return RET_OK if success, RET_BUSY if locked by userspace
  */
 #define ZB_SCHED_GLOBAL_LOCK_INT() ZB_OSIF_GLOBAL_LOCK_INT
 

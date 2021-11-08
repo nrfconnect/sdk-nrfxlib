@@ -79,10 +79,6 @@
         @snippet HA_samples/on_off_switch/sample_zc.c ZCL_COMMAND_HANDLER
 
     @par
-
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    The complete set of On/Off samples can be found in /application/HA_samples/on_off_switch
-    @endcond
 */
 
 /** @cond internals_doc */

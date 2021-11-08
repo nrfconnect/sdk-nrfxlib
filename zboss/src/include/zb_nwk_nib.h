@@ -383,7 +383,7 @@ zb_bool_t zb_is_device_zc_or_zr(void);
 
 #else
 
-/* Full build: zc-zr-zed switcheable at runtime */
+/* Full build: zc-zr-zed switchable at runtime */
 
 /** @brief returns true if device is Coordinator */
 #define ZB_IS_DEVICE_ZC() (zb_is_device_zc())
@@ -671,7 +671,7 @@ typedef ZB_PACKED_PRE struct zb_nwk_mac_iface_tbl_ent_s
 ZB_PACKED_STRUCT zb_nwk_mac_iface_tbl_ent_t;
 
 /**
-   This is NWK NIB residental in memory.
+   This is NWK NIB residential in memory.
    It is not clear yet when it will be save to nvram and when read.
 */
 typedef struct zb_nib_s
@@ -790,11 +790,9 @@ typedef struct zb_nib_s
                                                       * key_seq_number == active_key_seq_number  */
 
   zb_bitfield_t           nwk_hub_connectivity:1; /*!< This indicates whether
-                                                   * the router has Hub Con-
-                                                   * nectivity as defined by a
+                                                   * the router has Hub Connectivity as defined by a
                                                    * higher level application.
-                                                   * The higher level applica-
-                                                   * tion sets this value and the
+                                                   * The higher level application sets this value and the
                                                    * stack advertises it.
                                                    *
                                                    * see r23 spec, 3.5.2 NWK Information Base

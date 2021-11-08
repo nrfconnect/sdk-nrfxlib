@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -172,11 +172,11 @@ void zb_on_off_schedule_user_app(zb_bufid_t buffer, zb_zcl_parsed_hdr_t *pcmd_in
  *
  * If attr OnTime >0 then decrement OnTime and
  *                          if OnTime stay =0 prepare to set OnOff = false
- * else if attr OffWaitTime >0 then decriment OffWaitTime
+ * else if attr OffWaitTime >0 then decrement OffWaitTime
  *
  * if prepare to set OnOff = false then invoke User App
  *
- * if OnTime or OffWaitTime >0 then shedule timer else send responce command
+ * if OnTime or OffWaitTime >0 then schedule timer else send responce command
  *
  * Timer period = 1/10 sec
  * */
@@ -482,7 +482,7 @@ void zb_zcl_on_off_effect_invoke_user_app(zb_uint8_t param)
  * A: YES. Spec 6.6.1.4.4.3 - both paragraf ended "...shall enter its off state
  * and update the OnOff attribute accordingly."
  * */
-/* 2013-01-09 CR:MAJOR:FIXED No need to call user appllication callback zb_zcl_on_off_invoke_user_app()
+/* 2013-01-09 CR:MAJOR:FIXED No need to call user application callback zb_zcl_on_off_invoke_user_app()
  * here - need only set attribute value to Off and OnTime attribute
  * to 0x0000
  * A: Not sure, but change*/
@@ -703,7 +703,7 @@ static zb_ret_t zb_zcl_process_on_off_on_with_timed_off_handler(zb_uint8_t param
     {
       // if payload.on_off==1 and attribute On/Off == 0 then
       // discarded
-      /*2019-04-10 Condition is changed and checked on the ceritification On/Off Cluster tests */
+      /*2019-04-10 Condition is changed and checked on the certification On/Off Cluster tests */
       if ( ((on_timed_off_payload.on_off & ZB_ZCL_ON_OFF_ACCEPT_ONLY_WHEN_ON) && ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc_on_off)) ||
            !(on_timed_off_payload.on_off & ZB_ZCL_ON_OFF_ACCEPT_ONLY_WHEN_ON ) )
       {

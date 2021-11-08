@@ -80,10 +80,6 @@
         @snippet HA_samples/ias_ancillary_control_equipment/sample_zc.c ZCL_COMMAND_HANDLER
 
     @par
-
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    The complete set of IAS Ancillary Control Equipment samples can be found in /application/HA_samples/ias_ancillary_control_equipment
-    @endcond
 */
 
 #define ZB_HA_IAS_ANCILLARY_CONTROL_EQUIPMENT_VER 0  /*!< IAS ACE device version */

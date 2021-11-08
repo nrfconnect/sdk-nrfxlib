@@ -119,7 +119,7 @@
 /**
    APS Device Key Pair Set structure
 
-   Structure contain record Application key with attributes (address, global/unque, etc.)
+   Structure contain record Application key with attributes (address, global/unique, etc.)
  */
 /* Since that structire used to save into nvram, pack it! */
 typedef ZB_PACKED_PRE struct zb_aps_secur_common_data_s
@@ -432,7 +432,7 @@ void zb_aps_secur_init(void);
    it to only a single byte input, but that's all Zigbee ever uses.
 
    The output of this function is an ep_alloced buffer containing
-   the key-hashed output, and is garaunteed never to return NULL.
+   the key-hashed output, and is guaranteed never to return NULL.
 
    @param key   - Zigbee Security Key (must be ZBEE_SEC_CONST_KEYSIZE) in length.
    @param input - key index
@@ -477,7 +477,7 @@ zb_bool_t zb_sec_b6_hash(zb_uint8_t *input, zb_uint32_t input_len, zb_uint8_t *o
    See BDB 10.3.3 Behavior when a known node joins.
 
    @param address - IEEE address
-   @param attr - key attribue to search.
+   @param attr - key attribute to search.
    @return Key Pair Set structure
  */
 zb_aps_device_key_pair_set_t *zb_secur_get_link_key_by_address(zb_ieee_addr_t address,
@@ -491,7 +491,7 @@ zb_aps_device_key_pair_set_t *zb_secur_get_link_key_by_address(zb_ieee_addr_t ad
    See BDB 10.3.3 Behavior when a known node joins.
 
    @param address - IEEE address
-   @param attr - key attribue to search.
+   @param attr - key attribute to search.
    @return keypair index if link key exists, -1 otherwise
  */
 zb_uint16_t zb_aps_keypair_get_index_by_addr(zb_ieee_addr_t dev_addr,
@@ -524,7 +524,7 @@ void zb_aes128_dec(zb_uint8_t *key, zb_uint8_t *msg, zb_uint8_t *c);
    @param key   - 16-bytes key
    @param nonce - 16-bytes nonce - see 4.5.2.2 "CCM nonce" for details
    @param string_a - 'a' parameter - authentication string -
-                     NwkHeader||AuxuluaryHeader for Standard security. See 4.3.1.1 for details
+                     NwkHeader||AuxiliaryHeader for Standard security. See 4.3.1.1 for details
    @param string_a_len - l(a)
    @param string_m - 'm' parameter - text data -
                      Payload for Standard security. See 4.3.1.1 for details
@@ -554,7 +554,7 @@ zb_ccm_encrypt_n_auth(
    @param nonce - 16-bytes nonce - see 4.5.2.2 "CCM nonce" for details
    @param buf   - buffer with encrypted_text [IN], for decryption result [OUT]
    @param string_a_len - length string_a - authentication string -
-                     NwkHeader||AuxuluaryHeader for Standard security. See 4.3.1.1 for details
+                     NwkHeader||AuxiliaryHeader for Standard security. See 4.3.1.1 for details
    @param string_c_len - length text data -
                      Payload for Standard security. See 4.3.1.1 for details
 
@@ -629,7 +629,7 @@ zb_ret_t zb_nwk_unsecure_frame(zb_uint8_t param);
 
 
 /**
-   Allocate and fill space for auxiluary security header in the APS data or command frame.
+   Allocate and fill space for auxiliary security header in the APS data or command frame.
 
    @param p - pointer to the aux hdr
    @param key_type - key type for aux header see 4.5.1.1.2, @see @ref secur_key_id
@@ -739,7 +739,7 @@ typedef struct zb_apsme_transport_key_req_s
       zb_uint8_t key[ZB_CCM_KEY_SIZE];      /*!< Key */
       zb_ieee_addr_t partner_address;       /*!< Partner address */
       zb_uint8_t initiator;                 /*!< Is initiator.
-                                                 @note Exisis in r20, no in r21, seems, still necessary. */
+                                                 @note Exists in r20, no in r21, seems, still necessary. */
     } app;                                  /*!< Use for transmit Application key */
   } key;
   /* mega-hack: zb_aps_secure_frame uses dest_address to seek APS key. But,
@@ -919,8 +919,6 @@ typedef ZB_PACKED_PRE struct zb_apsme_remove_device_ind_s
    @param param - packet buffer filled be \see zb_apsme_request_key_req_t
 
    @snippet tp_sec_bv_28_zc.c zb_secur_apsme_remove_device
-
-   See tp_sec_bv-28 sample
  */
 void zb_secur_apsme_remove_device(zb_uint8_t param);
 #endif
@@ -998,7 +996,7 @@ typedef struct zb_apsme_verify_key_ind_s
  */
 typedef struct zb_apsme_confirm_key_req_s
 {
-  zb_uint8_t status;          /*!< A value indicating the success or failure of a pre-vious attempt to verify the trust center link key. See Table 2.27*/
+  zb_uint8_t status;          /*!< A value indicating the success or failure of a previous attempt to verify the trust center link key. See Table 2.27*/
   zb_ieee_addr_t dest_address;  /*!< Destination address.   */
   zb_uint8_t key_type;          /*!< key type. Only ZB_TC_LINK_KEY is legal.  */
 } zb_apsme_confirm_key_req_t;
@@ -1009,7 +1007,7 @@ typedef struct zb_apsme_confirm_key_req_s
  */
 typedef ZB_PACKED_PRE struct zb_apsme_confirm_key_pkt_s
 {
-  zb_uint8_t status; /*!< A value indicating the success or failure of a pre-vious attempt to
+  zb_uint8_t status; /*!< A value indicating the success or failure of a previous attempt to
                              verify the trust center link key. See Table 2.27*/
   zb_uint8_t key_type;    /*!< key type. Only ZB_TC_LINK_KEY is legal.  */
   zb_ieee_addr_t dest_address; /*!< Dest address. */
@@ -1021,7 +1019,7 @@ typedef ZB_PACKED_PRE struct zb_apsme_confirm_key_pkt_s
  */
 typedef struct zb_apsme_confirm_key_ind_s
 {
-  zb_uint8_t status; /*!< A value indicating the success or failure of a pre-vious attempt to
+  zb_uint8_t status; /*!< A value indicating the success or failure of a previous attempt to
                              verify the trust center link key. See Table 2.27*/
   zb_uint8_t key_type;    /*!< key type. Only ZB_TC_LINK_KEY is legal.  */
   zb_ieee_addr_t src_address; /*!< The extended 64-bit address of the device that sent the
@@ -1095,9 +1093,6 @@ zb_uint8_t *secur_nwk_key_by_seq(zb_ushort_t key_seq_number);
   @return pointer to the keypair updated/created or NULL in case of error
 
   @snippet tp_pro_bv-56_zr.c tp_pro_bv-56_zr
-
-  See tp_pro_bv-56 sample
-
  */
 zb_aps_device_key_pair_set_t * zb_secur_update_key_pair(zb_ieee_addr_t address,
                                                         zb_uint8_t* key,
@@ -1202,7 +1197,7 @@ void zb_secur_switch_nwk_key_br(zb_uint8_t param);
    Return true if network key is empty (all zeroes).
 
    @param key - key
-   @return ZB_TRUE if key is empty, ZB_FALSE otherwhise
+   @return ZB_TRUE if key is empty, ZB_FALSE otherwise
  */
 zb_bool_t secur_nwk_key_is_empty(zb_uint8_t *key);
 
@@ -1243,7 +1238,7 @@ void zb_apsme_switch_key_indication(zb_uint8_t param);
 void zb_aps_in_transport_key(zb_uint8_t param, zb_uint16_t keypair_i, zb_secur_key_id_t key_id);
 
 /**
-   Analize trust frame by command ID, security level and key type
+   Analyze trust frame by command ID, security level and key type
 
     @param cmd_id - command ID
     @param secured - frame is crypt

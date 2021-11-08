@@ -85,7 +85,7 @@ ZB_PACKED_STRUCT zb_zdo_beacon_survey_configuration_t;
  */
 typedef ZB_PACKED_PRE struct zb_zdo_beacon_survey_results_t
 {
-  /*!< Number of pontential parents from the current Zigbee Network */
+  /*!< Number of potential parents from the current Zigbee Network */
   zb_uint8_t num_potential_parents_current_zbn;
 
   /*!< Number of detected non-Zigbee networks */

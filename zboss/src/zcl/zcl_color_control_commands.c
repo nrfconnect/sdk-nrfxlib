@@ -299,9 +299,9 @@ typedef struct zb_zcl_color_control_color_convert_s
 {
   zb_uint8_t hue;           /** Hue */
   zb_uint8_t saturation;    /** Saturation */
-  zb_uint8_t color_x;       /** Color X, higt byte */
-  zb_uint8_t color_y;       /** Color Y, higt byte */
-  zb_uint16_t color_temp;    /** Color Temperature, higt byte */
+  zb_uint8_t color_x;       /** Color X, high byte */
+  zb_uint8_t color_y;       /** Color Y, high byte */
+  zb_uint16_t color_temp;    /** Color Temperature, high byte */
 } zb_zcl_color_control_color_convert_t;
 
 #define ZB_ZCL_COLOR_CONTROL_CONVERT_COLOR_COUNT  8
@@ -564,7 +564,7 @@ static void zb_zcl_color_control_update_color_attrbute(zb_uint8_t endpoint)
 }
 
 /** Convert ColorXY to Color temperature
- * T - Color tempetature, t_kelvin=1000000/T, see spec 5.2.2.2.1.8
+ * T - Color temperature, t_kelvin=1000000/T, see spec 5.2.2.2.1.8
  * T = 1000000/t_kelvin
  * */
 #define XY_to_KELVIN(x, y, T)                                                 \
@@ -735,7 +735,7 @@ static zb_bool_t color_control_check_req_options(zb_uint8_t param, zb_uint8_t en
        Options bitmap, unless the OptionsMask field is present and has the corresponding bit set to
        1, in which case the corresponding bit in the OptionsOverride field SHALL determine the
        corresponding bit in the temporary Options bitmap.
-       The resulting teporary Options bitmap SHALL be processed as defined in section 3.10.2.2.8.
+       The resulting temporary Options bitmap SHALL be processed as defined in section 3.10.2.2.8.
     */
 
     TRACE_MSG(TRACE_ZCL1, "have_options_in_req %hd", (FMT__H, have_options_in_req));
@@ -851,7 +851,7 @@ static void zb_zcl_process_color_control_move_loop(zb_uint8_t param)
     }
   }
 
-  // if second attribute is exsist
+  // if second attribute is exist
   if(loop_data.attr_id2!=0)
   {
   // calc delta attribute value and update non-used msec for second attribute
@@ -917,7 +917,7 @@ static void zb_zcl_process_color_control_move_to_loop(zb_uint8_t param)
       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, ZB_ZCL_CLUSTER_SERVER_ROLE, loop_data.attr_id);
   ZB_ASSERT(attr_desc);
 
-  TRACE_MSG(TRACE_ZCL2, "start time %d curr time %d all time %d delta time %d remaing time %d", (FMT__D_D_D_D_D,
+  TRACE_MSG(TRACE_ZCL2, "start time %d curr time %d all time %d delta time %d remaining time %d", (FMT__D_D_D_D_D,
       loop_data.start_time, current_time, loop_data.transition_time, delta_time, rm_time_unit));
 
   // process first attribute
@@ -979,7 +979,7 @@ static void zb_zcl_process_color_control_move_to_loop(zb_uint8_t param)
     status = zb_zcl_color_control_invoke_user_app(param, ZB_ZCL_PARSED_HDR_SHORT_DATA(&(loop_data.cmd_info)).dst_endpoint, loop_data.attr_id2, val);
   }
 
-  // set Remaining Time attr, if exsist
+  // set Remaining Time attr, if exist
   TRACE_MSG(TRACE_ZCL2, "Remaining Time units %d", (FMT__D, rm_time_unit));
   zb_zcl_color_control_set16(ZB_ZCL_PARSED_HDR_SHORT_DATA(&(loop_data.cmd_info)).dst_endpoint,
       ZB_ZCL_ATTR_COLOR_CONTROL_REMAINING_TIME_ID,
@@ -1082,8 +1082,8 @@ static void zb_zcl_process_color_control_step_loop(zb_uint8_t param)
  * @see zb_zcl_color_control_move_loop_t, @see zb_zcl_color_control_step_loop_t)
  * contain @see zb_zcl_parsed_hdr_t as first field.
  *
- * Fuction find and remove schedule alarm by 'func' paramenets,
- * get assotiation buffer, copy @see zb_zcl_parsed_hdr_t struct by size_loop_data
+ * Fuction find and remove schedule alarm by 'func' parameters,
+ * get association buffer, copy @see zb_zcl_parsed_hdr_t struct by size_loop_data
  * parameter and invoke ZB_ZCL_PROCESS_COMMAND_FINISH.
  * */
 static void zb_zcl_process_color_control_stop(zb_callback_t func, zb_uint8_t size_loop_data)
@@ -2206,7 +2206,7 @@ static zb_ret_t zb_zcl_process_color_control_enhanced_move_to_hue_saturation_han
 /** @brief Process Color Loop Set command
  *
  *
- * Its continious loop:
+ * Its continuous loop:
  * If the color loop is active, the device shall cycle over the complete range of values of the  1
  * EnhancedCurrentHue attribute in the direction of the ColorLoopDirection attribute over the time  2
  * specified in the ColorLoopTime attribute.
@@ -2426,7 +2426,7 @@ static zb_ret_t zb_zcl_process_color_control_stop_move_step_handler(zb_uint8_t p
   return ret;
 }
 
-/* Get Temperature Libit by payload max/min field & direction */
+/* Get Temperature Limit by payload max/min field & direction */
 static zb_uint16_t zb_zcl_color_control_get_color_temperature_limit(
     zb_uint8_t endpoint, zb_bool_t is_up, zb_uint16_t min, zb_uint16_t max)
 {

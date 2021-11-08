@@ -115,7 +115,7 @@ typedef struct zb_nvram_globals_s
   zb_bitfield_t empty:1;             /*!< if true, NVRAM is empty (maybe, except NWK
                                  * counter), so device is factory new  */
   zb_bitfield_t inited:1;            /*!< if true, NVRAM is inited (read/write operations are
-                                      * alowed) */
+                                      * allowed) */
   zb_bitfield_t alignment:4;
 
 #ifdef ZB_NVRAM_ENABLE_DIRECT_API

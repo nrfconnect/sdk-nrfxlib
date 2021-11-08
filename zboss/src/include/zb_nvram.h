@@ -378,7 +378,7 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_common_ver_1_0_s
   zb_uint8_t tc_standard_key[ZB_CCM_KEY_SIZE];      /*!< Trust Center Standard Key */
   zb_uint8_t tc_alternative_key[ZB_CCM_KEY_SIZE];   /*!< Trust Center Alternative Key */
 
-  /* Custom fiedls*/
+  /* Custom fields*/
   zb_uint8_t channel;                       /*!< Current channel. Custom field */
   zb_uint8_t aligned[2];
 
@@ -411,7 +411,7 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_common_ver_2_0_s
   zb_uint8_t nwk_key_seq;
   zb_uint8_t tc_standard_key[ZB_CCM_KEY_SIZE];      /*!< Trust Center Standard Key */
 
-  /* Custom fiedls*/
+  /* Custom fields*/
   zb_uint8_t channel;                       /*!< Current channel. Custom field */
   zb_uint8_t aligned[2];
 
@@ -446,7 +446,7 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_common_ver_3_0_s
   zb_uint8_t nwk_key_seq;
   zb_uint8_t tc_standard_key[ZB_CCM_KEY_SIZE];      /*!< Trust Center Standard Key */
 
-  /* Custom fiedls*/
+  /* Custom fields*/
   zb_uint8_t channel;                       /*!< Current channel. Custom field
                                              * */
   zb_uint8_t page;                       /*!< Current page. Custom field
@@ -894,8 +894,8 @@ typedef ZB_PACKED_PRE struct zb_nvram_zgp_sink_tbl_entry_ver_6_0_s
  * [4]          sn_expired      Sequence number expired
  * [5]          is_manuf_id     Is manufactured device id
  * [6]          is_used_entry   Is used entry
- * [7-8]        sec_lvl         Sequrity level
- * [9-11]       sec_key_type    Sequrity key type
+ * [7-8]        sec_lvl         Security level
+ * [9-11]       sec_key_type    Security key type
  *
  */
   zb_uint16_t      options;
@@ -1117,7 +1117,7 @@ ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_addr_map_rec_v2_t);
 
 typedef ZB_PACKED_PRE struct zb_nvram_neighbour_hdr_v0_s
 {
-  zb_uint8_t nbr_rec_num; /*!< Strores number of stored neigbour devices */
+  zb_uint8_t nbr_rec_num; /*!< Strores number of stored neighbour devices */
   zb_uint8_t version;     /*!< Stores version of the dataset */
 }
 ZB_PACKED_STRUCT
@@ -1125,7 +1125,7 @@ zb_nvram_neighbour_hdr_v0_t;
 
 typedef ZB_PACKED_PRE struct zb_nvram_neighbour_hdr_v1_s
 {
-  zb_uint8_t nbr_rec_num; /*!< Strores number of stored neigbour devices */
+  zb_uint8_t nbr_rec_num; /*!< Strores number of stored neighbour devices */
   zb_uint8_t version;     /*!< Stores version of the dataset */
   zb_uint8_t aligned[2];
 }

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -174,7 +174,7 @@ enum zb_zcl_power_config_attr_e
 
   ZB_ZCL_ATTR_POWER_CONFIG_BATTERY3_ALARM_STATE_ID               = 0x007e,
   /** @cond internals_doc */
-  /* Custom attribures */
+  /* Custom attributes */
   ZB_ZCL_ATTR_POWER_CONFIG_CUSTOM_BATTERY_VOLTAGE_SHARP_ID  = 0x8020
   /*! @}
    *  @endcond */ /* internals_doc */
@@ -641,7 +641,7 @@ enum zb_zcl_power_config_battery_alarm_state_e
 
 /** @brief Declare attribute list for Power Configuration cluster - server side (Mains
     attribute set)
-    @param attr_list - attribure list name
+    @param attr_list - attribute list name
     @param voltage - pointer to variable to store MainsVoltage attribute
     @param frequency - pointer to variable to store MainsFrequency attribute
     @param alarm_mask - pointer to variable to store BatteryAlarmMask attribute

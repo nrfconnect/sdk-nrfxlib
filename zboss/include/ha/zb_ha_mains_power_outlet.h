@@ -79,10 +79,6 @@
         @snippet HA_samples/mains_power_outlet/sample_zc.c ZCL_COMMAND_HANDLER
 
     @par
-
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    The complete set of Mains Power Outlet device samples can be found in application/HA_samples/mains_power_outlet
-    @endcond
 */
 
 #define ZB_HA_DEVICE_VER_MAINS_POWER_OUTLET 0  /*!< Mains power outlet device version */

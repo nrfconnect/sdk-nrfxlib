@@ -80,7 +80,7 @@
 */
 typedef ZB_PACKED_PRE struct zb_dev_manufacturer_s
 {
-  zb_uint8_t device_manufacturer[3]; /*!< Manufactureer identifier - 3 octets */
+  zb_uint8_t device_manufacturer[3]; /*!< Manufacturer identifier - 3 octets */
 }
 ZB_PACKED_STRUCT
 zb_dev_manufacturer_t;

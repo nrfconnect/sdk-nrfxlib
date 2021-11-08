@@ -68,7 +68,7 @@ void zb_led_init(void) ZB_DEPRECATED;
 /**
  * Stop blinking on given LED
  *
- * See ZB_LED_ARG_CREATE() for contructing led_arg
+ * See ZB_LED_ARG_CREATE() for constructing led_arg
  */
 void zb_led_blink_off(zb_uint8_t led_arg);
 
@@ -139,7 +139,7 @@ void zb_button_on_cb(zb_uint8_t butt_no);
 /**
  * @brief Set state of given button to off and invoke button handler.
  *
- * Handler to invoke is chosed by botton and duration of button press.
+ * Handler to invoke is chosen by botton and duration of button press.
  * See @ref zb_button_register_handler() for how to setup button handlers
  *
  * @param butt_no - number of button being released

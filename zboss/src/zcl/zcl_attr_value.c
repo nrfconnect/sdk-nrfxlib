@@ -184,4 +184,4 @@ void zb_zcl_write_attr_hook(
   TRACE_MSG(TRACE_ZCL1, "<< zb_zcl_write_attr_hook", (FMT__0));
 }
 
-#endif /* ZB_ENBLE_ZCL */
+#endif /* ZB_ENABLE_ZCL */

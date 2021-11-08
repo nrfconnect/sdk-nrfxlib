@@ -52,7 +52,7 @@
 
 #if defined ZB_CONFIGURABLE_MEM || defined DOXYGEN
 /*
-  When configuring some memory object sizes at applicationl link time
+  When configuring some memory object sizes at application link time
   instead of ZBOSS library compile time, use variables instead of
   constants in ZBOSS.
 
@@ -139,16 +139,16 @@ extern zb_uint8_t gc_nwk_max_source_routes;
 /*! @{ */
 
 /**
-   \par Define 'global context' - comon global data structure.
+   \par Define 'global context' - common global data structure.
    Vladimir got strange problems in Keil with accessing global variables
    implemented in another modules.
-   Also, wants to easiely track memory usage.
+   Also, wants to easily track memory usage.
    So, unite it all into global context.
 
    Initially suppose global context will be defined here and implemented in the
    single .c module and passed to all functions by pointer.
    To be able to exclude such pointer pass let's define global context access by
-   a macro. The macro can be easiely substituted by the global variable access
+   a macro. The macro can be easily substituted by the global variable access
    or parameter access.
 
    Globals can be accessed using ZG macro in constructions like ZG->foo.
@@ -243,7 +243,7 @@ typedef struct zb_sec_globals_s
   zb_tcswap_t tcswap;
 #endif
 #ifdef SNCP_MODE
-  zb_bitbool_t accept_partner_lk:1;   /**!< enable/disable acceptance of partner LK establisment procedure */
+  zb_bitbool_t accept_partner_lk:1;   /**!< enable/disable acceptance of partner LK establishment procedure */
 #endif
 } zb_sec_globals_t;
 
@@ -322,7 +322,7 @@ typedef struct zb_cert_hacks_s
                                                       "gZC causes DUT ZED2 to be removed from the network
                                                       via APS Remove by including ZED2 in the exclusion list
                                                       of the trust center".
-                                                      This is not full-features excludion list. */
+                                                      This is not full-features exclusion list. */
   zb_uint8_t     override_nwk_protocol_version;  /*!< Override protocol version in nwk header
                                                       debug feature for 13.68 NWK Unknown NWK
                                                       Protocol Version. */
@@ -334,7 +334,7 @@ typedef struct zb_cert_hacks_s
                                                       @see tp_r20_bv-01_zr.c */
 
   zb_req_key_ind_cb_t            req_key_ind_cb;            /*!< This callback is called on TC when
-                                                                 TC receives Requets Key command
+                                                                 TC receives Request Key command
                                                                  during TC LK update.
                                                                  @ee tests CS-ICK-TC-02 and
                                                                  CS-ICK-TC-03 */
@@ -426,7 +426,7 @@ typedef struct zb_cert_hacks_s
                                                                     @see cs-nfs-tc-02 */
   zb_bitfield_t pass_incoming_zdo_cmd_to_app: 1;               /*!< If set to 1 stack will pass incoming
                                                                     ZDO clients commands to application.
-                                                                    Use zdo_af_handler_cb to hadnle them.
+                                                                    Use zdo_af_handler_cb to handle them.
                                                                     @see fp-bpre-tc-03a */
   zb_bitfield_t disable_frame_retransmission: 1;               /*!< If set to 1 device will not retransmit
                                                                     packet from to another devices.
@@ -481,7 +481,7 @@ typedef struct zb_cert_hacks_s
   zb_bitfield_t zdo_mgmt_nwk_update_force_scan_count:1; /*!< If set to 1, scan_count field will always
                                                          * be appended to Mgmt_NWK_Update_req packet */
   zb_bitfield_t disable_addr_conflict_check_on_update_device:1; /* Disable check for address conflict
-                                                                 * upon receptionof Update device - refer to
+                                                                 * upon reception of Update device - refer to
                                                                  * TP/PRO/BV-17 SECURED network */
   zb_bitfield_t disable_discovery_route:1; /*!< Disable Discovery route bitfield in NWK FC */
   zb_uint8_t disable_frame_retransmission_countdown; 	/*!< Number of retransmitted packets to another
@@ -512,7 +512,7 @@ typedef struct zb_cert_hacks_s
   zb_bitfield_t make_frame_not_valid:1;       /*!< Make a combination of MAC frame control fields not valid. Once. */
   zb_bitfield_t zc_flood_mode:1;              /*!< Forces the MAC to send packets without CSMA-CA */
   zb_bitfield_t use_transport_key_for_aps_frames:1; /*!< Use transport key to secure APS frame. Once. */
-  zb_bitfield_t certificate_priority_from_certdb:1; /*!< Change certificate source prority for CBKE:
+  zb_bitfield_t certificate_priority_from_certdb:1; /*!< Change certificate source priority for CBKE:
                                                            1. from cert db (NVRAM);
                                                            2. from production configuration.
                                                          In a normal situation, vice versa. */
@@ -524,6 +524,8 @@ typedef struct zb_cert_hacks_s
 
   zb_bitfield_t tc_rejoin_mac_cap_wrong_dev_type:1; /* Toggle FFD bit in MAC capabilities for rejoin req */
   zb_bitfield_t tc_rejoin_mac_cap_wrong_rx_on_when_idle:1; /* Toggle FFD bit in MAC capabilities for rejoin req */
+  zb_bitfield_t aps_drop_next_ack:1; /* Drop next APS ack */
+  zb_bitfield_t aps_send_dup_tunneled_frame:1;
 
   zb_ieee_addr_t nwk_leave_from_unknown_ieee_addr; /*!< IEEE source address used in nwk_leave if `nwk_leave_from_unknown_addr` is set */
   zb_uint16_t nwk_leave_from_unknown_short_addr; /*!< Short source address used in nwk_leave if `nwk_leave_from_unknown_addr` is set */

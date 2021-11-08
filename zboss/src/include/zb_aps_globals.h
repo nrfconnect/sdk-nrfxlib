@@ -183,7 +183,7 @@ typedef struct zb_tc_policy_s
   zb_bitbool_t accept_new_unsolicited_application_link_key:1;
   zb_bitbool_t waiting_for_tclk_exchange:1;       /*!< Set to 1 when node start Link Key exchange
                                                    * procedure. Reset to zero when TC LK exchange
-                                                   * successfully copmletes or failed */
+                                                   * successfully completes or failed */
   zb_bitbool_t is_distributed:1;
 
 #ifdef ZB_CONTROL4_NETWORK_SUPPORT
@@ -232,7 +232,7 @@ typedef struct zb_apsib_s
 
   zb_bitfield_t   aps_use_nvram:1; /*!< if 1, use nvram (load/save)   */
   zb_bitfield_t   aps_nvram_erase_at_start:1; /*!< if 1, erase nvram at start  */
-  zb_bitfield_t   always_rejoin:1; /*!< if 1, forbidden Assotiation if Rewjoin fail */
+  zb_bitfield_t   always_rejoin:1; /*!< if 1, forbidden Association if Rejoin fail */
   zb_bitfield_t   is_tc:1;             /*!< true if this is a trusted center */
   zb_bitfield_t   tc_address_locked:1; /*!< true if TC address was locked */
   zb_bitfield_t   reserve : 1;
@@ -564,7 +564,7 @@ void zb_aib_tcpol_set_authenticate_always(zb_bool_t authenticate_always);
    fields aliases
  */
 
-/* ZB_BDB was an alias to TCPOLUICY. To divide ZBOSS by NCP Host and SoC let's
+/* ZB_BDB was an alias to TCPOLICY. To divide ZBOSS by NCP Host and SoC let's
  * put commissioning-related BDB context into ZCL while keep security-related
  * fields in TCPOL trying to make BDB security more generic. */
 #define ZB_BDB() BDB_COMM_CTX()

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -738,7 +738,7 @@ void zb_zcl_ias_zone_change_status(zb_uint8_t param);
 typedef struct zb_zcl_ias_zone_status_param_s
 {
   zb_uint16_t bits;           /*!< Bits map, see @ref zb_zcl_ias_zone_zonestatus_e */
-  zb_bool_t is_set;           /*!< true - set, fasle - clean */
+  zb_bool_t is_set;           /*!< true - set, false - clean */
   zb_uint8_t endpoint;        /*!< endpoint */
 
 } zb_zcl_ias_zone_status_param_t;
@@ -802,8 +802,8 @@ zb_zcl_ias_zone_notification_param_t;
    notification will NOT be sent
    @return Returns ZB_TRUE if notification is scheduled for send,
    ZB_FALSE otherwise
-   @note Notifiacation send result is reported to user App using
-   callback that is registered with zb_zcl_ias_zone_registrer_cb()
+   @note Notification send result is reported to user App using
+   callback that is registered with zb_zcl_ias_zone_register_cb()
 */
 zb_bool_t zb_zcl_ias_zone_set_status(
   zb_uint8_t ep,
