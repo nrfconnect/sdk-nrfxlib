@@ -12,7 +12,7 @@ It can be used to run several radio protocols simultaneously without the time-ex
 Switching between protocols requires only a reinitialization of the radio peripheral, since protocols may operate on different frequencies and/or modulations.
 Therefore, the time required for the switching is much shorter than in the switched multiprotocol method, where you need to completely shut down one protocol before enabling another.
 
-The driver can use the basic version of the Radio Arbiter via the open-source Service Layer, and the fully-featured one via the closed-source Service Layer.
+The driver can use the basic version of the Radio Arbiter through the open-source Service Layer, and the fully-featured one through the closed-source Service Layer.
 
 .. _rd_multiprotocol_support_implemented:
 
