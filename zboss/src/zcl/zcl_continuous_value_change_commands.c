@@ -449,7 +449,7 @@ static void zb_zcl_cvc_next_step_alarm(zb_uint8_t alarm_id)
           {
             change_var->input_var.transition_time -= change_var->delta_time;
 
-/* if incr_time is needed for step then additionaly decrease transition_time*/
+            /* if incr_time is needed for step then additionally decrease transition_time*/
             if (change_var->steps_number <= change_var->extra_inc_time_step)
             {
               --(change_var->input_var.transition_time);
@@ -707,7 +707,7 @@ zb_uint8_t zb_zcl_cvc_start_alarm(zb_uint8_t endpoint_id,
    is in progress (alarm_id != ZB_ZCL_CVC_INVALID_ALARM_ID), we dont need to search and
    can use its alarm_info. Else we need to check, is there any free alarm_info's (while
    (alarm_info->is_used == ZB_TRUE) go to next alarm_info). If alarm_id >=
-   ZCL_CTX().device_ctx->cvc_alarm_count, we checked all list and didnt
+   ZCL_CTX().device_ctx->cvc_alarm_count, we checked all list and didn't
    found free alarm_info (need to exit with INVALID_ALARM_ID return), else - use founded alarm_info
    and start alarm.
 */
@@ -746,7 +746,7 @@ zb_uint8_t zb_zcl_cvc_start_alarm(zb_uint8_t endpoint_id,
 
           change_var = ZB_BUF_GET_PARAM(alarm_info->alarm_buf_id, zb_zcl_cvc_variables_t);
 
-          //sheduling
+          //scheduling
           switch (change_var->steps_number)
           {
             case 0:

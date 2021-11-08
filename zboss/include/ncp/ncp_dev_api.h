@@ -46,17 +46,33 @@
 #include "zb_types.h"
 #include "zb_ncp.h"
 
+/** @cond DOXYGEN_NCP_SECTION */
+
+/** @addtogroup ncp_dev_api
+  *  @{
+  */
+
+/** Return code which is raised if @ref zb_ncp_custom_response will be called later*/
 #define NCP_RET_LATER (255U)
+
+/**
+ * @brief It is used to create and read a response sent by @ref zb_ncp_custom_response
+ */
+typedef ZB_PACKED_PRE struct ncp_hl_custom_resp_s
+{
+  zb_ret_t status;
+  zb_uint8_t tsn;
+} ZB_PACKED_STRUCT ncp_hl_custom_resp_t;
 
 /** The custom request callback.
  *
- * @param param - the buffer with request data from host and tsn (zb_uint8_t) as a parameter.
+ * @param param - the buffer with request data from host and tsn (@ref zb_uint8_t) as a parameter.
  *                It's freed by the stack afterwards.
  *
  * @return The length of a response returned by @ref zb_ncp_custom_response if it is called within callback.
- *         NCP_RET_LATER if zb_ncp_custom_response is called later.
+ *         @ref NCP_RET_LATER if @ref zb_ncp_custom_response is called later.
  *
- * @note If neither length nor NCP_RET_LATER status is returned, the response is generated and sent automatically.
+ * @note If neither length nor @ref NCP_RET_LATER status is returned, the response is generated and sent automatically.
  */
 typedef zb_ret_t (*zb_ncp_custom_request_cb_t)(zb_uint8_t param);
 
@@ -67,21 +83,25 @@ typedef zb_ret_t (*zb_ncp_custom_request_cb_t)(zb_uint8_t param);
  */
 void zb_ncp_custom_register_request_cb(zb_ncp_custom_request_cb_t cb);
 
-/** Sends the indication to the host.
+/** Sends the indication to the Host.
  *
- * @param param - the zboss buffer with payload. It's freed by the stack.
+ * @param param - the ZBOSS buffer with payload. It's freed by the stack.
  */
 void zb_ncp_custom_indication(zb_uint8_t param);
 
 /** Sends a custom response.
  *
- * @param param - the zboss buffer with response payload and @ref ncp_hl_custom_resp_t as a parameter.
+ * @param param - the ZBOSS buffer with response payload and @ref ncp_hl_custom_resp_t as a parameter.
  *                It's freed by the stack.
  *
- * @return response length
+ * @return Response length
  *
- * @note Should be called within @ref zb_ncp_custom_request_cb_t unless NCP_RET_LATER is not returned from callback.
+ * @note Should be called within @ref zb_ncp_custom_request_cb_t unless @ref NCP_RET_LATER is not returned from callback.
  */
 zb_ret_t zb_ncp_custom_response(zb_uint8_t param);
+
+/** @} */ /* ncp_dev_api */
+
+/** @endcond */ /* DOXYGEN_NCP_SECTION */
 
 #endif /* NCP_DEV_API_H */

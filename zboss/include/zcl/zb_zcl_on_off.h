@@ -62,9 +62,6 @@
  *
  *    Other two commands can be sent in the same way using appropriate macros.
  *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see 5.7.3_onoff_server sample
- *    @endcond
  */
 
 /* Cluster ZB_ZCL_CLUSTER_ID_ON_OFF */

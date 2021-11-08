@@ -82,9 +82,6 @@
  *    to well-known key. To be used in certification tests mainly.
  *  @snippet simple_gw/simple_gw.c zb_secur_setup_preconfigured_key_value
  *  @snippet simple_gw/simple_gw.c zb_secur_setup_preconfigured_key
- * @cond ZBOSS_SAMPLES_API_DOC_LINE
- *  @see TP_R20_BV-01 sample.
- * @endcond
  */
 void zb_secur_setup_nwk_key(zb_uint8_t *key, zb_uint8_t i);
 
@@ -439,8 +436,6 @@ void since_you_got_that_symbol_unresolved_you_probably_use_ZB_ED_ROLE_preprocess
 void since_you_got_that_symbol_unresolved_you_probably_forget_use_ZB_ED_ROLE_preprocessor_define_while_linking_with_zed_library(void);
 #endif /* ZB_ED_ROLE */
 
-/* minor internal hack for CI system */
-#define ZB_SET_NS_UART_CB_STUB()
 
 /** @endcond*/ /* DOXYGEN_INTERNAL_DOC */
 
@@ -460,14 +455,11 @@ void since_you_got_that_symbol_unresolved_you_probably_forget_use_ZB_ED_ROLE_pre
 @code
   ZB_INIT("zdo_zc");
 @endcode
-
-  See any sample
  */
 #define ZB_INIT(trace_comment)               \
 {                                            \
   ZB_CHECK_LIBRARY();                        \
   zb_init((zb_char_t *)trace_comment);       \
-  ZB_SET_NS_UART_CB_STUB();                  \
 }
 /** @cond DOXYGEN_INTERNAL_DOC */
 /** @brief Global stack initialization.
@@ -490,14 +482,11 @@ void zb_init(zb_char_t *trace_comment);
 @code
   ZB_INIT("zdo_zc");
 @endcode
-
-  See any sample
  */
 #define ZB_INIT(trace_comment)               \
 {                                            \
   ZB_CHECK_LIBRARY();                        \
   zb_init();                                 \
-  ZB_SET_NS_UART_CB_STUB();                  \
 }
 void zb_init(void);
 #endif  /* ZB_INIT_HAS_ARGS || defined DOXYGEN */
@@ -1159,10 +1148,6 @@ void zb_nvram_register_app4_write_cb(
  *
  * @b Example
  * @snippet light_sample/dimmable_light/bulb.c nvram_usage_example
- *
- * @cond ZBOSS_SAMPLES_API_DOC_LINE
- * See light_sample
- * @endcond
  */
 zb_ret_t zb_nvram_write_dataset(zb_nvram_dataset_types_t t);
 

@@ -80,10 +80,6 @@
         @snippet HA_samples/level_controllable_output/sample_zc.c ZCL_COMMAND_HANDLER
 
     @par
-
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    The complete set of Level Control device samples can be found in /application/HA_samples/level_control_output
-    @endcond
 */
 
 /*!< Level Controllable Output device version */

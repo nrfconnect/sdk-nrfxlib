@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -648,7 +648,6 @@ void zb_free_buf(TRACE_PROTO zb_buf_t *buf);
  *
  * @param buf - packet buffer.
  *
- * See any sample.
  */
 #define ZB_FREE_BUF(buf) zb_free_buf_leg(buf)
 
@@ -704,7 +703,7 @@ zb_ret_t zb_get_out_buf_delayed(
 /**
  * @brief Allocate OUT buffer, call a callback when the buffer is available.
  *
- * If buffer is available, schedules callback for execution immediatly. If no buffers are available now,
+ * If buffer is available, schedules callback for execution immediately. If no buffers are available now,
  * schedule callback later, when buffer will be available.
  *
  * @param callback to call.
@@ -724,7 +723,7 @@ zb_ret_t zb_get_out_buf_delayed(
  * @brief Allocate buffer of given type and  call a callback with extra user parameter
  * when buffer of this type is available.
  *
- * If buffer is available, schedules callback for execution immediatly. If no buffers are available now,
+ * If buffer is available, schedules callback for execution immediately. If no buffers are available now,
  * schedule callback later, when buffer will be available.
  *
  * @note Don't call it directly, use @ref ZB_GET_OUT_BUF_DELAYED2() (for out buffers) instead
@@ -748,7 +747,7 @@ zb_ret_t zb_get_buf_delayed_2param(
 /**
  * @brief Allocate out buffer, call a callback with extra user parameter when the buffer is available.
  *
- * If buffer is available, schedules callback for execution immediatly. If no buffers are available now,
+ * If buffer is available, schedules callback for execution immediately. If no buffers are available now,
  * schedule callback later, when buffer will be available.
  *
  * @param callback - callback to call

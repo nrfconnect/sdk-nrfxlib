@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -184,7 +184,7 @@ typedef enum zb_zcl_meter_identification_data_quality_e
 /** @brief Max length of Company Name attribute */
 #define ZB_ZCl_ATTR_METER_IDENTIFICATION_COMPANY_NAME_MAX_LENGTH 16
 
-/** @brief Max length of POD (Poinf of Delivery) attribute */
+/** @brief Max length of POD (Point of Delivery) attribute */
 #define ZB_ZCl_ATTR_METER_IDENTIFICATION_POD_MAX_LENGTH 16
 
 /** @brief Declare attribute list for Thermostat cluster

@@ -60,7 +60,7 @@
   Also modified calls to zcl_ota_abort_and_set_tc() and zb_zcl_process_ota_upgrade_default_response_commands(().
   First called via small adapter using non-standard command ZB_ZCL_CMD_OTA_UPGRADE_INTERNAL_ABORT_ID.
   Second called from zb_zcl_handle_default_response_commands()->zb_zcl_handle_specific_commands().
-  For both the idea is: if no clusted, does not call.
+  For both the idea is: if no cluster, does not call.
  */
 
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_OTA_UPGRADE) || defined DOXYGEN
@@ -225,7 +225,7 @@ static void zb_zcl_ota_upgrade_request_server_send(zb_uint8_t param, zb_uint16_t
 
   /* zb_zcl_ota_upgrade_request_server_send is called by delayed buffer alloc,
    * so check for scheduling more than 1 zb_zcl_ota_upgrade_request_server_send
-   * when ZBOS is in OOM state. */
+   * when ZBOSS is in OOM state. */
   if (zb_zcl_ota_upgrade_get_ota_status(endpoint) == ZB_ZCL_OTA_UPGRADE_IMAGE_STATUS_NORMAL)
   {
     manufacturer = zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_MANUFACTURE_ID);
@@ -510,7 +510,13 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
     zb_uint8_t endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
 
     zb_bool_t is_agree_file = ZB_TRUE;
-
+#ifdef ZB_ZCL_SUPPORT_CLUSTER_WWAH
+    if (zb_zcl_wwah_check_if_forced_to_use_tc(ZB_ZCL_CLUSTER_ID_OTA_UPGRADE))
+    {
+      is_agree_file = (cmd_info.addr_data.common_data.source.u.short_addr == 
+                       zb_aib_get_trust_center_short_address());
+    }
+#endif 
     TRACE_MSG(TRACE_ZCL2, "dst_addr 0x%x", (FMT__D, cmd_info.addr_data.common_data.dst_addr));
     if( ZB_NWK_IS_ADDRESS_BROADCAST(cmd_info.addr_data.common_data.dst_addr) )
     {
@@ -519,15 +525,16 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
       switch(payload.payload_type)
       {
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE_IMAGE_VER:
-        is_agree_file &=  ZB_ZCL_OTA_UPGRADE_VERSION_CMP(payload.file_version,
-                          zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID));
+        is_agree_file = is_agree_file && 
+                        ZB_ZCL_OTA_UPGRADE_VERSION_CMP(payload.file_version,
+                        zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID));
         /* FALLTHROUGH */
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE_IMAGE:
-        is_agree_file &=
+        is_agree_file = is_agree_file &&
             (payload.image_type==zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_TYPE_ID));
         /* FALLTHROUGH */
       case ZB_ZCL_OTA_UPGRADE_IMAGE_NOTIFY_PAYLOAD_JITTER_CODE:
-        is_agree_file &=
+        is_agree_file = is_agree_file &&
         (payload.manufacturer==zb_zcl_ota_upgrade_get16(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_MANUFACTURE_ID));
       }
       if(is_agree_file)
@@ -540,12 +547,13 @@ static zb_ret_t image_notify_handler(zb_uint8_t param)
         }
 #endif /* ZB_STACK_REGRESSION_TESTING_API */
         TRACE_MSG(TRACE_ZCL2, "my_jitter_rnd %d", (FMT__H, my_jitter_rnd));
-        is_agree_file &= my_jitter_rnd <= payload.query_jitter;
+        is_agree_file = is_agree_file && (my_jitter_rnd <= payload.query_jitter);
       }
     }
     else
     {
-      is_agree_file = (cmd_info.addr_data.common_data.dst_addr == zb_get_short_address()) ? ZB_TRUE : ZB_FALSE;
+      is_agree_file = is_agree_file &&
+                      (cmd_info.addr_data.common_data.dst_addr == zb_get_short_address());
     }
 
     if (zb_zcl_ota_upgrade_get_ota_status(endpoint) != ZB_ZCL_OTA_UPGRADE_IMAGE_STATUS_NORMAL)
@@ -735,7 +743,7 @@ static void schedule_resend_buffer(zb_uint8_t endpoint)
   ZCL_CTX().ota_cli.resend_retries = 0;
   ZB_SCHEDULE_ALARM_CANCEL(resend_buffer, 0);
   /* Extend resend inteval to exclude situation when we request new block and retransmit APS packet
-   * with old requet. */
+   * with old request. */
   ZB_SCHEDULE_ALARM(resend_buffer, 0, ZB_ZCL_OTA_UPGRADE_RESEND_BUFFER_DELAY + ZB_MILLISECONDS_TO_BEACON_INTERVAL(delay));
 }
 
@@ -825,7 +833,7 @@ static void zcl_ota_abort_and_set_tc_cli()
     zb_aib_get_trust_center_address(tc_long_address);
     if (!IS_DISTRIBUTED_SECURITY() &&
         !ZB_IEEE_ADDR_IS_ZERO(tc_long_address) &&
-        ZB_MEMCMP(attr_desc->data_p, tc_long_address, sizeof(zb_ieee_addr_t)) != 0)
+        (ZB_MEMCMP(attr_desc->data_p, tc_long_address, sizeof(zb_ieee_addr_t)) != 0))
     {
       if (zb_zcl_ota_upgrade_get_ota_status(endpoint) != ZB_ZCL_OTA_UPGRADE_IMAGE_STATUS_NORMAL)
       {
@@ -929,7 +937,7 @@ static void resend_buffer(zb_uint8_t param)
         client_data->img_block_req_sent = 1;
         ZB_SCHEDULE_ALARM_CANCEL(resend_buffer, 0);
         /* Extend resend inteval to exclude situation when we request new block and retransmit APS packet
-         * with old requet. */
+         * with old request. */
         ZB_SCHEDULE_ALARM(resend_buffer, 0, ZB_ZCL_OTA_UPGRADE_RESEND_BUFFER_DELAY + ZB_MILLISECONDS_TO_BEACON_INTERVAL(delay));
       }
       else
@@ -1015,7 +1023,7 @@ static void zb_zcl_ota_upgrade_process_downloaded_image(zb_uint8_t param,
 }
 
 /* public API. Never called */
-/* Resume OTA Upgarde signal from application */
+/* Resume OTA Upgrade signal from application */
 void zb_zcl_ota_upgrade_resume_client(zb_uint8_t param, zb_uint8_t upgrade_status)
 {
   zb_uint8_t endpoint;
@@ -1258,7 +1266,7 @@ static zb_ret_t image_block_resp_handler(zb_uint8_t param)
               }
               else if (upgrade_status == ZB_ZCL_OTA_UPGRADE_STATUS_BUSY)
               {
-                TRACE_MSG(TRACE_ZCL2, "OTA: сlient is busy, suspend OTA and wait for the signal to resume", (FMT__0));
+                TRACE_MSG(TRACE_ZCL2, "OTA: client is busy, suspend OTA and wait for the signal to resume", (FMT__0));
                 /* restore parameters */
                 ZB_MEMCPY(ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), &cmd_info, sizeof(zb_zcl_parsed_hdr_t));
                 ret = RET_BUSY;
@@ -1369,7 +1377,7 @@ static zb_ret_t image_block_resp_handler(zb_uint8_t param)
             TRACE_MSG(TRACE_ZCL2, "OTA: delay32 %d", (FMT__D, (zb_uint16_t)delay32));
 
             /* re-send query next block */
-            /* TODO: ImageBlockResp may also be recevied as a response
+            /* TODO: ImageBlockResp may also be received as a response
              * to ImagePageReq, in this case ImagePageReq should be resent */
             ZB_MEMCPY(ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), &cmd_info, sizeof(zb_zcl_parsed_hdr_t));
             zb_zcl_ota_upgrade_send_block_requset(param, delay32);

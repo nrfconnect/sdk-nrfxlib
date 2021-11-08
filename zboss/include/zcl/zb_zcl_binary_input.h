@@ -63,9 +63,6 @@
  *    @snippet doxygen_snippets.dox Binary input_snippet_binary_input_dut_c
  *    @par
  *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see 544_binary_input sample
- *    @endcond
  */
 
 /* ZB_ZCL_CLUSTER_ID_BINARY_INPUT = 0x000f defined in zb_zcl_common.h ZCL spec 3.14.4 */

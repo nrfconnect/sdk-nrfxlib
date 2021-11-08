@@ -183,7 +183,6 @@ zb_bool_t zb_address_compressed_cmp(zb_ieee_addr_compressed_t *one, zb_ieee_addr
         }
 @endcode
 
-    See nwk_addr sample
  */
 zb_ret_t zb_address_set_pan_id(zb_uint16_t short_pan_id, zb_ext_pan_id_t pan_id, zb_address_pan_id_ref_t *ref);
 
@@ -215,7 +214,6 @@ zb_ret_t zb_address_set_pan_id(zb_uint16_t short_pan_id, zb_ext_pan_id_t pan_id,
     ZB_SCHEDULE_CALLBACK(zb_nlme_network_discovery_confirm, param);
 @endcode
 
-    See nwk_addr sample
  */
 void zb_address_get_pan_id(zb_address_pan_id_ref_t pan_id_ref, zb_ext_pan_id_t pan_id);
 
@@ -226,7 +224,6 @@ void zb_address_get_pan_id(zb_address_pan_id_ref_t pan_id_ref, zb_ext_pan_id_t p
 
    @return nothing
 
-   See zdo_startup_complete_int code
  */
 void zb_address_clear_pan_id_table(zb_ext_pan_id_t pan_id);
 
@@ -235,7 +232,6 @@ void zb_address_clear_pan_id_table(zb_ext_pan_id_t pan_id);
 
    @return nothing
 
-   See zdo_startup_complete_int code
  */
 void zb_address_reset_pan_id_table(void);
 
@@ -333,7 +329,6 @@ zb_bool_t zb_address_cmp_pan_id_by_ref(zb_address_pan_id_ref_t pan_id_ref, zb_ex
   }
 @endcode
 
-  See nwk_addr sample
  */
 zb_ret_t zb_address_update(zb_ieee_addr_t ieee_address, zb_uint16_t short_address, zb_bool_t lock, zb_address_ieee_ref_t *ref_p);
 
@@ -356,7 +351,6 @@ void zb_long_address_update_by_ref(zb_ieee_addr_t ieee_address, zb_address_ieee_
     zb_address_by_ref(resp->extended_address, &resp->network_address, addr_ref);
 @endcode
 
-  See nwk_addr sample
  */
 void zb_address_by_ref(zb_ieee_addr_t ieee_address, zb_uint16_t *short_address_p, zb_address_ieee_ref_t ref);
 
@@ -378,7 +372,6 @@ void func(zb_neighbor_tbl_ent_t *nbt)
 }
 @endcode
 
-  See tp_pro_bv-32 sample
  */
 void zb_address_ieee_by_ref(zb_ieee_addr_t ieee_address, zb_address_ieee_ref_t ref);
 
@@ -402,7 +395,6 @@ void zb_address_ieee_by_ref(zb_ieee_addr_t ieee_address, zb_address_ieee_ref_t r
     }
 @endcode
 
-  See tp_pro_bv-32 sample
  */
 void zb_address_short_by_ref(zb_uint16_t *short_address_p, zb_address_ieee_ref_t ref);
 
@@ -432,7 +424,6 @@ void zb_address_short_by_ref(zb_uint16_t *short_address_p, zb_address_ieee_ref_t
   }
 @endcode
 
-  See nwk_addr sample
  */
 zb_ret_t zb_address_by_ieee(const zb_ieee_addr_t ieee, zb_bool_t create, zb_bool_t lock, zb_address_ieee_ref_t *ref_p);
 
@@ -449,7 +440,6 @@ zb_ret_t zb_address_by_ieee(const zb_ieee_addr_t ieee, zb_bool_t create, zb_bool
    @snippet thermostat/thermostat_zc/thermostat_zc.c address_short_by_ieee
    @par
 
-   See thermostat sample
  */
 zb_uint16_t zb_address_short_by_ieee(zb_ieee_addr_t ieee_address);
 
@@ -465,7 +455,6 @@ zb_uint16_t zb_address_short_by_ieee(zb_ieee_addr_t ieee_address);
    @b Example
    @snippet light_sample_HA_1_2_bulb/light_coordinator_HA_1_2_bulb/light_zc_HA_1_2_bulb.c address_ieee_by_short
 
-   See light_sample
  */
 zb_ret_t zb_address_ieee_by_short(zb_uint16_t short_addr, zb_ieee_addr_t ieee_address);
 
@@ -485,7 +474,6 @@ zb_ret_t zb_address_ieee_by_short(zb_uint16_t short_addr, zb_ieee_addr_t ieee_ad
    @b Example
    @snippet simple_gw/simple_gw.c address_by_short
 
-    See simple_gw sample
  */
 zb_ret_t zb_address_by_short(zb_uint16_t short_address, zb_bool_t create, zb_bool_t lock, zb_address_ieee_ref_t *ref_p);
 

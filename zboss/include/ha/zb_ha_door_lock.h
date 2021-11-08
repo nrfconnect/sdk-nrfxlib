@@ -79,10 +79,6 @@
         @snippet HA_samples/door_lock/sample_zc.c ZCL_COMMAND_HANDLER
 
     @par
-
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    The complete set of Door Lock device samples can be found in /application/HA_samples/door_lock
-    @endcond
 */
 
 #define ZB_HA_DEVICE_VER_DOOR_LOCK      0   /*!< Door Lock device version */

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -3047,7 +3047,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_price_publish_price_payload_s
 /** @def ZB_ZCL_PRICE_PUBLISH_PRICE_PAYLOAD_EXPECTED_SIZE
  *  @brief Returns actual size of payload.
  *  @details PublishPrice packet payload doesn't have fixed length because of 'rate_label'
- *  field. This macro can be used to check payload size of incomming packet.
+ *  field. This macro can be used to check payload size of incoming packet.
  */
 #define ZB_ZCL_PRICE_PUBLISH_PRICE_PAYLOAD_EXPECTED_SIZE(pl) \
  (sizeof(*(pl)) \
@@ -3519,7 +3519,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_price_publish_block_period_payload_s
 } ZB_PACKED_STRUCT zb_zcl_price_publish_block_period_payload_t;
 
 
-/** @ref ZB_ZCL_PRICE_SRV_CMD_PUBLISH_CONVERSION_FACTOR "PublishConversionFactor" comamdn payload
+/** @ref ZB_ZCL_PRICE_SRV_CMD_PUBLISH_CONVERSION_FACTOR "PublishConversionFactor" command payload
  * @see SE spec, subclause D.4.2.4.3.1
  */
 typedef ZB_PACKED_PRE struct zb_zcl_price_publish_conversion_factor_payload_s

@@ -79,6 +79,7 @@ void bdb_network_steering_not_on_network(zb_uint8_t param);
 void bdb_after_mgmt_permit_joining_cb(zb_uint8_t param);
 #ifdef ZB_ZCL_ENABLE_WWAH_SERVER
 static void bdb_rejoin_machine(zb_uint8_t param);
+static void schedule_wwah_rejoin_backoff_attempt(zb_uint8_t param);
 #endif
 
 zb_bool_t bdb_not_ever_joined()
@@ -622,6 +623,17 @@ static void bdb_initialization_machine(zb_uint8_t param)
     case BDB_COMM_SIGNAL_NWK_JOIN_DONE:
       TRACE_MSG(TRACE_ZDO1, "Device is joined", (FMT__0));
 #ifdef ZB_JOIN_CLIENT
+
+#ifdef ZB_ZCL_ENABLE_WWAH_SERVER
+      if (!ZB_PIBCACHE_RX_ON_WHEN_IDLE() 
+          && zb_zcl_wwah_check_if_wwah_rejoin_enabled()
+          && !BDB_COMM_CTX().rejoin.rr_global_retries)
+      {
+        TRACE_MSG(TRACE_ZDO1, "Cancel any scheduled rejoin attempts", (FMT__0));
+        ZB_SCHEDULE_ALARM_CANCEL(zdo_commissioning_initiate_rejoin, ZB_ALARM_ANY_PARAM);
+      }
+#endif
+
       if (!zdo_secur_waiting_for_tclk_update())
 #endif
       {
@@ -1888,6 +1900,38 @@ void bdb_start_rejoin_recovery(zb_uint8_t param, zb_uint16_t user_param)
 #endif
 }
 
+#ifdef ZB_ZCL_ENABLE_WWAH_SERVER
+void schedule_wwah_rejoin_backoff_attempt(zb_uint8_t param)
+{
+  if (!param)
+  {
+    zb_buf_get_out_delayed(schedule_wwah_rejoin_backoff_attempt);
+  }
+  else
+  {
+    zb_time_t backoff_interval = 0;
+    zb_uint8_t *rejoin_reason = NULL;
+
+    TRACE_MSG(TRACE_ZDO1, ">>schedule_wwah_rejoin_backoff_attempt", (FMT__0));
+
+    TRACE_MSG(TRACE_ZDO1, "WWAH rejoin is enabled, scheduling next rejoin attempt", (FMT__0));
+
+    ++BDB_COMM_CTX().rejoin.rr_global_retries;
+    if (zb_zcl_wwah_get_rejoin_tmo(BDB_COMM_CTX().rejoin.rr_global_retries, &backoff_interval) == RET_EXIT)
+    {
+      BDB_COMM_CTX().rejoin.rr_global_retries = 0;
+    }
+
+    TRACE_MSG(TRACE_ZDO1, "Next rejoin attempt in %hd", (FMT__H_H, backoff_interval));
+    rejoin_reason = ZB_BUF_GET_PARAM(param, zb_uint8_t);
+    *rejoin_reason = ZB_REJOIN_REASON_BACKOFF_REJOIN;
+    ZB_SCHEDULE_ALARM(zdo_commissioning_initiate_rejoin, param, backoff_interval);
+
+    TRACE_MSG(TRACE_ZDO1, "<<schedule_wwah_rejoin_backoff_attempt", (FMT__0));
+  }
+}
+#endif
+
 
 #ifdef ZB_JOIN_CLIENT
 
@@ -1924,6 +1968,14 @@ static void bdb_handle_initiate_rejoin_signal(zb_bufid_t param)
     zdo_rejoin_clear_prev_join();
     ZB_BDB().bdb_force_router_rejoin = ZB_TRUE;
     bdb_start_top_level_commissioning(ZB_BDB_NETWORK_STEERING);
+
+#ifdef ZB_ZCL_ENABLE_WWAH_SERVER
+    if (!ZB_PIBCACHE_RX_ON_WHEN_IDLE() 
+        && zb_zcl_wwah_check_if_wwah_rejoin_enabled())
+    {
+      schedule_wwah_rejoin_backoff_attempt(0);
+    }
+#endif
   }
 }
 
@@ -2030,7 +2082,7 @@ static void bdb_handle_leave_with_rejoin_signal(zb_bufid_t param)
   /* VP: currently we have both bdb join/rejoin and old-style join/rejoin logic and they are mixed.
      In some case BDB device receives nwk leave (with rejoin in our case), then performing usual rejoin (without using BDB machine),
      after join failure/success stack uses BDB commissioning machine to complete join process. This leads to calling bdb_commissioning_machine
-     without reset it's logic - then stacl silently completes process without notifying appliation or further join attempts.
+     without reset it's logic - then stack silently completes process without notifying application or further join attempts.
      Temporarily fix: use BDB logic for rejoin on receiving leave (locally or remotely).
   */
   zdo_inform_app_leave(ZB_NWK_LEAVE_TYPE_REJOIN);
@@ -2041,6 +2093,14 @@ static void bdb_handle_leave_with_rejoin_signal(zb_bufid_t param)
   ZB_SCHEDULE_CALLBACK(zdo_commissioning_initiate_rejoin, param);
 #else
   zb_buf_free(param);
+#endif
+
+#ifdef ZB_ZCL_ENABLE_WWAH_SERVER
+  if (!ZB_PIBCACHE_RX_ON_WHEN_IDLE() 
+      && zb_zcl_wwah_check_if_wwah_rejoin_enabled())
+  {
+    BDB_COMM_CTX().rejoin.rr_global_retries = 0;
+  }
 #endif
 }
 
@@ -2062,7 +2122,7 @@ static void bdb_handle_secured_rejoin_signal(zb_bufid_t param)
     It IS possible to work not in BDB but require TCLK update (use case: certification tests).
     But update_trust_center_link_keys_required flag is always presend and initialized to 1 during BDB init.
   */
-  /* Note: is fomewhere in time we put update_trust_center_link_keys_required under ifdef, need to check for ZB_IN_BDB() here.
+  /* Note: is somewhere in time we put update_trust_center_link_keys_required under ifdef, need to check for ZB_IN_BDB() here.
      Remember ZB_IN_BDB() can be just 1 (BDB-only build). */
   if (ZB_TCPOL().update_trust_center_link_keys_required
       && !IS_DISTRIBUTED_SECURITY()

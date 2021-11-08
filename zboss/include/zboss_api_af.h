@@ -427,7 +427,6 @@ zb_af_device_ctx_t;
   @param rep_ctx - reporting context variable name (NULL if no reporting context)
   @param lev_ctrl_count - number of level control attributes
   @param lev_ctrl_ctx - level control context variable name (NULL if no level control context)
-  @see DR-TAR-TC-02 sample
 */
 #define ZB_AF_DECLARE_ENDPOINT_DESC(     \
   ep_name,                               \
@@ -469,8 +468,8 @@ zb_af_device_ctx_t;
  *  @attention Endpoint should be registered. ZB_AF_SET_ENDPOINT_HANDLER() should be called after
  *  device context is registered, using call to ZB_AF_REGISTER_DEVICE_CTX()
  *
- * @cond ZBOSS_SAMPLES_API_DOC_LINE
- *  See HA samples
+ * @cond DOXYGEN_INTERNAL_DOC
+ *  TODO: add snippet
  * @endcond
  */
 #define ZB_AF_SET_ENDPOINT_HANDLER(endpoint, handler)                 \
@@ -483,8 +482,8 @@ zb_af_device_ctx_t;
     @param handler to set
     @attention Assumes that endpoint already registered
  *
- * @cond ZBOSS_SAMPLES_API_DOC_LINE
- *  See HA samples
+ * @cond DOXYGEN_INTERNAL_DOC
+ *  TODO: add snippet
  * @endcond
 */
 #define ZB_AF_SET_IDENTIFY_NOTIFICATION_HANDLER(endpoint, handler)    \

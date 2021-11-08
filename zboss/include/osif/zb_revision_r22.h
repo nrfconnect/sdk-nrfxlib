@@ -22,7 +22,7 @@
 /**
  * Minor version number of the ZBOSS platform for NCS.
  */
-#define ZBOSS_PLATFORM_MINOR 0U
+#define ZBOSS_PLATFORM_MINOR 1U
 
 /**
  * Patch version number of the ZBOSS platform for NCS.

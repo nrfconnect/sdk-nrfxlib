@@ -166,7 +166,7 @@ typedef zb_uint8_t zb_nlde_tx_opt_e;
   * Security Processing of Incoming Frames but not defined in the table 3.42   Status Codes for
   * Network Status Command Frame
   *
-  * Really need this status for intra-pan portrability procedure (AZD601,602). Let's use other
+  * Really need this status for intra-pan portability procedure (AZD601,602). Let's use other
   * security status code.
   */
 #define ZB_NWK_COMMAND_STATUS_FRAME_SECURITY_FAILED  ZB_NWK_COMMAND_STATUS_BAD_KEY_SEQUENCE_NUMBER
@@ -326,9 +326,6 @@ zb_nlme_get_request_t;
   *
   * @snippet start_ze.c zb_nlme_get_request
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See aib_nib_pib_test sample
-  * @endcond
   */
 void zb_nlme_get_request(zb_uint8_t param);
 
@@ -359,9 +356,6 @@ zb_nlme_set_request_t;
   *
   * @snippet start_ze.c zb_nlme_set_request
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See aib_nib_pib_test sample
-  * @endcond
   */
 void zb_nlme_set_request(zb_uint8_t param);
 
@@ -408,7 +402,7 @@ typedef ZB_PACKED_PRE struct zb_nlme_network_descriptor_s
 {
   zb_bitfield_t panid_ref:7; /**< Reference to extended Pan ID
                               * of the network. Was zb_address_pan_id_ref_t.
-                              * Must be beeg enough to hold ZB_PANID_TABLE_SIZE.
+                              * Must be big enough to hold ZB_PANID_TABLE_SIZE.
                               * ZB_PANID_TABLE_SIZE is now 16, so 7 is more than enough.
                               */
   zb_bitfield_t    channel_page:5; /**< channel page. in r22 0 to 31  */
@@ -426,10 +420,10 @@ typedef ZB_PACKED_PRE struct zb_nlme_network_descriptor_s
   zb_bitfield_t superframe_order:4; /**< The length of the active period of the
                                      * superframe  */
 #endif
-  zb_bitfield_t permit_joining:1; /**< Indecates that at least one router on
+  zb_bitfield_t permit_joining:1; /**< Indicates that at least one router on
                                    * the network currently permits joining */
   zb_bitfield_t router_capacity:1; /**< True if device is capable of accepting
-                                    * join requests from roter-capable devices */
+                                    * join requests from router-capable devices */
   zb_bitfield_t end_device_capacity:1; /**< True if device is capable of accepting
                                     * join requests from end devices */
   zb_bitfield_t processed:1; /**< True if record is processed */
@@ -701,7 +695,7 @@ void zb_nlme_beacon_survey_scan_confirm(zb_uint8_t param);
 /** @{ */
 #define ZB_NLME_REJOIN_METHOD_ASSOCIATION    0x00U /**< Throught association */
 #define ZB_NLME_REJOIN_METHOD_DIRECT         0x01U /**< Join directly or rejoining using the orphaning */
-#define ZB_NLME_REJOIN_METHOD_REJOIN         0x02U /**< Using NWK rejoing procedure */
+#define ZB_NLME_REJOIN_METHOD_REJOIN         0x02U /**< Using NWK rejoin procedure */
 #define ZB_NLME_REJOIN_METHOD_CHANGE_CHANNEL 0x03U /**< Changing the network channel  */
 /** @} */
 
@@ -729,7 +723,7 @@ typedef struct zb_nlme_join_request_s
   zb_uint8_t security_enable;   /*!< If the value of RejoinNetwork is 0x02 and this is TRUE than the device will try to rejoin securely.
                                   Otherwise, this is set to FALSE.  */
 
-  /* There was insecure_rejoin: Insecure rejoining. Originaly it was "secure_rejoin,
+  /* There was insecure_rejoin: Insecure rejoining. Originally it was "secure_rejoin,
                                 * as specified in the spec. But because by default it is set to
                                 * ZB_FALSE (zero), let's handle it as "insecure" flag. */
 }
@@ -746,7 +740,6 @@ zb_nlme_join_request_t;
 
    @snippet nwk_leave/zdo_start_zr.c zb_nlme_join_request
 
-   See nwk_leave sample
  */
 void zb_nlme_join_request(zb_uint8_t param);
 
@@ -846,8 +839,6 @@ zb_nlme_leave_request_t;
    @return RET_OK on success, error code otherwise.
 
    @snippet tp_pro_bv-67_zc.c zb_nlme_leave_request
-
-   See 13.67_NWK_Leave_Request_Processing-ZR sample
  */
 void zb_nlme_leave_request(zb_uint8_t param);
 
@@ -981,8 +972,6 @@ zb_nlme_sync_request_t;
    @return RET_OK on success, error code otherwise.
 
    @snippet nwk_sync_ze.c zb_nlme_sync_request
-
-   See nwk_sync sample
  */
 void zb_nlme_sync_request(zb_uint8_t param);
 
@@ -1048,8 +1037,6 @@ zb_nlme_route_discovery_request_t;
    @return RET_OK on success, error code otherwise.
 
    @snippet tp_pro_bv_08_zc.c zb_nlme_route_discovery_request
-
-   See tp_pro_bv-08 sample zb_nlme_route_discovery_request
  */
 void zb_nlme_route_discovery_request(zb_uint8_t param);
 
@@ -1177,7 +1164,7 @@ void zb_nwk_init(void);
   * Also, from 3.6.1.4.1.1    Child Procedure:
   * - The link quality for frames received from this device is such that a link cost of at most
   *   3 is produced when calculated as described in sub-clause 3.6.3.1.
-  *   @return TRUE if it is ok to join to device with such LQI and FALSE otherwhise
+  *   @return TRUE if it is ok to join to device with such LQI and FALSE otherwise
   */
 
 #define ZB_LINK_QUALITY_IS_OK_FOR_JOIN(lqi) (((lqi) / (256U / 8U)) >= 1U)
@@ -1191,7 +1178,7 @@ void zb_nwk_init(void);
 /** @brief NWK multicast control. */
 typedef ZB_PACKED_PRE struct zb_nwk_multicast_control_field_s
 {
-  /* Better not use bitfields for protocols, use bitmask instead. But keep it now: multicast is already obsoilete in r21. */
+  /* Better not use bitfields for protocols, use bitmask instead. But keep it now: multicast is already obsolete in r21. */
 #ifdef ZB_LITTLE_ENDIAN
     zb_bitfield_t multicast_mode:2;          /**< */
     zb_bitfield_t nonmember_radius:3;        /**< */
@@ -1211,7 +1198,7 @@ zb_nwk_multicast_control_field_t;
 
 /** @brief NWK packet header.
 
-   Fields up to seq_num always pesents, other - depending on frame_control
+   Fields up to seq_num always presents, other - depending on frame_control
    contents.
 
    See 3.3.1 for the NWK header definition.
@@ -1490,7 +1477,7 @@ zb_ushort_t zb_nwk_hdr_base_size(zb_uint8_t *fctl);
 
 #endif  /* multicast */
 
-/** @bief Get size of base part of NWK header (without src route and security headers). */
+/** @brief Get size of base part of NWK header (without src route and security headers). */
 #define ZB_NWK_HDR_GET_BASE_SIZE( nwk_hdr ) \
     zb_nwk_hdr_base_size(((zb_nwk_hdr_t *)nwk_hdr)->frame_control)
 /* Get size of NWK header */

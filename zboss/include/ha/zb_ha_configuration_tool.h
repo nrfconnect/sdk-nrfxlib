@@ -77,10 +77,6 @@
         @snippet HA_samples/configuration_tool/sample_zc.c ZCL_COMMAND_HANDLER
 
     @par
-
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    The complete set of Configuration Tool device samples can be found in /application/HA_samples/configuration_tool
-    @endcond
 */
 
 #define ZB_HA_DEVICE_VER_CONFIGURATION_TOOL 0  /*!< Configuration tool device version */

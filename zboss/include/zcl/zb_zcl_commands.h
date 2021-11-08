@@ -302,10 +302,6 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
  *      zb_zcl_default_resp_payload_t* payload = ZB_ZCL_READ_DEFAULT_RESP(zcl_cmd_buf);
  *    @endcode
  *    @par
- *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see any HA sample
- *    @endcond
  */
 
 /**
@@ -591,10 +587,6 @@ typedef ZB_PACKED_PRE struct zb_zcl_default_resp_payload_s
  *
  *    Read attributes request parsing and response filling and sending is implemented in ZCL
  *    library internal functions.
- *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see any HA sample
- *    @endcond
  */
 
 /*! @brief ZCL Read Attribute Command frame
@@ -849,10 +841,6 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
  *    @endcode
  *
  *    Response sending and parsing could be done in the same manner.
- *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see any HA sample
- *    @endcond
  */
 
 /*! @brief ZCL Write Attribute Command frame
@@ -1159,10 +1147,6 @@ zb_zcl_write_attr_res_t;
  *
  *    Discover attributes request parsing and response filling and sending is implemented in ZCL
  *    library internal functions.
- *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see any HA sample
- *    @endcond
  */
 
 /*! @brief ZCL Discover Attribute Command frame
@@ -1372,10 +1356,7 @@ typedef zb_uint8_t zb_zcl_disc_complete_t;
  *    If there are several Configure Reporting response records, they could be processed cyclically
  *    in the same manner as Configure Reporting request ones.
  *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see HA samples
- *    @endcond
-  */
+ */
 
     /** u.clnt: as usual, cluster with client role sends this request
     to a server to configure reporting: how attribute should be reported by a server */
@@ -1646,9 +1627,6 @@ zb_zcl_configure_reporting_res_t;
  *    ZCL spec, subclause 2.4.11. This command can be parsed by cyclical application of @ref
  *    ZB_ZCL_GENERAL_GET_NEXT_REPORT_ATTR_REQ() macro.
  *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see any HA sample
- *    @endcond
  */
 
 /** @cond internals_doc */
@@ -2023,9 +2001,6 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_reporting_cfg_rsp_s
  *    Discovery commands request has fixed length payload.
  *    Discovery commands response has variable-length payload.
  *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see any HA sample
- *    @endcond
  */
 
 /********* request commands ************/

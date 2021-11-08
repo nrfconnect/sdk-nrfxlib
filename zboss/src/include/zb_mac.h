@@ -142,7 +142,7 @@
 /* check specification IEEE 802.15 item 7.3.1.5 */
 
 /**
-   length in bytes of and field containg Pan ID
+   length in bytes of and field containing Pan ID
 */
 #define PAN_ID_LENGTH               2U
 /* check specification IEEE 802.15 item 7.2.1 */
@@ -986,7 +986,7 @@ zb_super_frame_spec_t;
   } while(0)
 
 /**
-   Sets superframe Pan coordinatir flag
+   Sets superframe Pan coordinator flag
    @param superframe - pointer to superframe
    @param pan_coord - Pan coordinator flag value
 */
@@ -1435,9 +1435,9 @@ typedef zb_uint8_t zb_mac_pib_attr_t;
  *  @li bit 3 receive_on_when_idle - the bit is set if the device does not disable its receiver to
  *  conserve power during idle periods. Otherwise the bit shall be set to zero.
  *  @li bit 6 security_capability - the bit is set if the device is capable of sending and
- *  receiving cryptographically proteced MAC frames, Otherwise shall be set to zero .
+ *  receiving cryptographically protected MAC frames, Otherwise shall be set to zero .
  *  @li bit 7 allocate_address - the bit is set if the device wishes the coordinator to allocate
- *  16bit short aaddress as a result of the assciation procedure. Otherwise it shall be set  to
+ *  16bit short address as a result of the association procedure. Otherwise it shall be set  to
  *  zero.
  */
 typedef zb_uint8_t zb_mac_capability_info_t;
@@ -1838,9 +1838,6 @@ zb_mlme_set_ieee_joining_list_req_t;
  *
  *  @snippet aib_nib_pib_test/start_ze.c zb_mlme_get_request
  *
- * @cond ZBOSS_SAMPLES_API_DOC_LINE
- *  See aib_nib_pib_test sample
- * @endcond
  */
 void zb_mlme_get_request(zb_uint8_t param);
 
@@ -1858,9 +1855,6 @@ void zb_mlme_get_confirm(zb_uint8_t param);
  *
  *  @snippet aib_nib_pib_test/start_ze.c zb_mlme_set_request
  *
- * @cond ZBOSS_SAMPLES_API_DOC_LINE
- *  See aib_nib_pib_test sample
- * @endcond
  */
 void zb_mlme_set_request(zb_uint8_t param);
 
@@ -2253,7 +2247,7 @@ typedef ZB_PACKED_PRE struct zb_mlme_sync_loss_ind_s
 {
   zb_uint16_t pan_id; /* Pan ID with which the device lost
 	                   * synchronization or to which it was realigned */
-  zb_uint8_t loss_reason; /* Lost syncronisation reason */
+  zb_uint8_t loss_reason; /* Lost syncronization reason */
   zb_uint8_t logical_channel; /* Logical channel */
   zb_uint8_t channel_page; /* Channel page */
 } ZB_PACKED_STRUCT
@@ -2562,7 +2556,7 @@ void mac_remove_invisible_short(zb_uint16_t addr);
    Main MAC logic iteration.
 
    To be called from the scheduler iteration before executing other callbacks.
-   Called not using callbacks API to achive higher priority then usual
+   Called not using callbacks API to achieve higher priority then usual
    callbacks.
 
    @return RET_OK if success, RET_BLOCKED if MCU can go asleep

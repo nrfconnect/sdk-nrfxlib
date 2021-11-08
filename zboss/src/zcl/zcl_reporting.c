@@ -92,7 +92,7 @@ void zb_zcl_report_attr(zb_uint8_t param);
 
   Note: it is possible that some attribute is reported because of its
   value change and right after it - reported because of periodic
-  reporting. Suppose, it is not very often ocasion and network will
+  reporting. Suppose, it is not very often occasion and network will
   not be overloaded because of it.
 
 
@@ -102,7 +102,7 @@ void zb_zcl_report_attr(zb_uint8_t param);
   not received during <timeout period>, application is informed via
   user callback no_reporting_cb.
   On receiving attribute report, ZCL reporting logic is informed about
-  it and inwait_reporting_timer is restarted. To inform about report
+  it and in wait_reporting_timer is restarted. To inform about report
   receiving application should call zb_zcl_report_received(), it is
   also called from default report attribute handler zb_zcl_report_attr_cmd_handler()
 
@@ -526,7 +526,7 @@ zb_ret_t zb_zcl_put_reporting_info_from_req(zb_zcl_configure_reporting_req_t *co
         ZB_ZCL_CLR_REPORTING_FLAG(rep_info, ZB_ZCL_REPORTING_SLOT_BUSY);
       }
     }
-    /* NK: TODO: Call repoting_cb here - configure some parameters on device if needed. */
+    /* NK: TODO: Call reporting_cb here - configure some parameters on device if needed. */
   }
   else
   {
@@ -730,7 +730,7 @@ void zb_zcl_reporting_timer_handler(zb_uint8_t param)
 
   t = ZB_TIMER_GET();
 
-  /* We're here because some event has been occured. Need to analyse it */
+  /* We're here because some event has been occurred. Need to analyse it */
   for (j = 0; j < ZCL_CTX().device_ctx->ep_count; j++)
   {
     if (ZCL_CTX().device_ctx->ep_desc_list[j]->reporting_info)
@@ -773,7 +773,7 @@ void zb_zcl_reporting_timer_handler(zb_uint8_t param)
               else
               {
                 /* Clear timed callback - reporting flag */
-                /* TODO: DEBUG: when munimum interval is expired BEFORE binding, this record will
+                /* TODO: DEBUG: when minimum interval is expired BEFORE binding, this record will
                  * NEVER be reported! */
                 TRACE_MSG(TRACE_ZCL1, "Zero max_interval time, skip", (FMT__0));
                 ZB_ZCL_CLR_REPORTING_FLAG(rep_info, ZB_ZCL_REPORT_TIMER_STARTED);
@@ -810,7 +810,7 @@ void zb_zcl_reporting_timer_handler(zb_uint8_t param)
 }
 
 /**
-   Returnes reporting info for specified attribute
+   Returns reporting info for specified attribute
  */
 zb_zcl_reporting_info_t* zb_zcl_find_reporting_info(  zb_uint8_t ep,
                                                       zb_uint16_t cluster_id,

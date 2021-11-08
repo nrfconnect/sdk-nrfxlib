@@ -237,8 +237,9 @@ typedef ZB_PACKED_PRE struct zb_aps_dup_tbl_ent_s
 {
   zb_uint8_t addr_ref;          /*!< Reference to addr_map */
   zb_uint8_t counter;                      /*!< APS frame counter */
-  zb_bitfield_t clock:7;                   /*!< Expiry clock counter. Be sure it can hold 2*ZB_APS_DUP_INITIAL_CLOCK */
+  zb_bitfield_t clock:6;                   /*!< Expiry clock counter. Be sure it can hold 2*ZB_APS_DUP_INITIAL_CLOCK */
   zb_bitfield_t is_unicast:1;              /*!< Is delivery mode unicast */
+  zb_bitfield_t is_command:1;              /*!< Is APS command frame */
 } ZB_PACKED_STRUCT zb_aps_dup_tbl_ent_t;
 
 

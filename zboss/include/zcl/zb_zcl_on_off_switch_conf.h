@@ -63,9 +63,6 @@
  *    ZB_ZCL_DECLARE_ON_OFF_SWITCH_CONFIGURATION_ATTRIB_LIST(switch_cfg_attr_list, &attr_switch_type, &attr_switch_actions);
  *    @endcode
  *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see devices_generic sample
- *    @endcond
  *
  */
 
@@ -176,9 +173,7 @@ enum zb_zcl_on_off_switch_configuration_switch_actions_e
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_ON_OFF_SWITCH_CONFIGURATION_SWITCH_ACTIONS_ID, (switch_actions)) \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
-/*! @}
-    @endcond */ /* On/off switch configuration cluster attribute structures */
-
+/*! @} */
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 

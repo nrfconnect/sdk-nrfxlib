@@ -58,8 +58,6 @@
           values are 0xffff, 0xfffd
 
    @snippet tp_pro_bv-64_zc.c zb_secur_send_nwk_key_update_br
-
-   See 13.64_TC_Rejoin-Global_Link_Key sample
  */
 void zb_secur_send_nwk_key_update_br(zb_uint8_t param);
 

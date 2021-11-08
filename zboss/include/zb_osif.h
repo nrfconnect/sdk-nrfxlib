@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Main header for OS and platform depenednt stuff
+/* PURPOSE: Main header for OS and platform dependent stuff
 */
 
 #ifndef ZB_OSIF_H
@@ -90,7 +90,7 @@ zb_osif_platform.h is different in different platforms repo.
  * OSIF timer expiration callback type
  * @param user_data - any user specified data which will be sent to this callback
  * Might be used to determine particular timer which cause callback
- * 
+ *
 */
 typedef void (*zb_osif_timer_exp_cb_t)(void *user_data);
 
@@ -164,10 +164,6 @@ void zb_osif_serial_transport_init();
 void zb_osif_serial_transport_put_bytes(zb_uint8_t *buf, zb_short_t len);
 #endif
 
-/** @cond DOXYGEN_UART_SECTION */
-/*! \addtogroup uart */
-/*! @{ */
-
 #ifndef ZB_SERIAL_INT_DISABLE
 #define ZB_SERIAL_INT_DISABLE()  ZB_OSIF_GLOBAL_LOCK()
 #endif /* ZB_SERIAL_INT_DISABLE */
@@ -180,6 +176,10 @@ void zb_osif_serial_transport_put_bytes(zb_uint8_t *buf, zb_short_t len);
 
 /* Serial interface (trace, traffic dump, serial transport) */
 
+/** @cond DOXYGEN_UART_SECTION */
+/*! \addtogroup uart */
+/*! @{ */
+
 /**
    Initialize UART low level.
 
@@ -190,7 +190,12 @@ void zb_osif_serial_transport_put_bytes(zb_uint8_t *buf, zb_short_t len);
 void zb_osif_serial_init(void);
 
 /**
-   Setup callback to be called when single byte reecived over UART
+   Deinitialize UART low level.
+ */
+void zb_osif_serial_deinit(void);
+
+/**
+   Setup callback to be called when single byte received over UART
 
    @param hnd user's rx callback
  */
@@ -201,11 +206,6 @@ void zb_osif_set_uart_byte_received_cb(zb_callback_t hnd);
 
 #define ZB_ERROR_SERIAL_INIT_FAILED 1U
 #define ZB_ERROR_SERIAL_READ_FAILED 2U
-
-/** @cond internals_doc */
-
-
-/** @endcond*/ /* internals_doc */
 
 /**
    Set user's buffer to be used by UART TX logic.
@@ -576,7 +576,7 @@ void zb_osif_nvram_wait_for_last_op(void);
 
 /**
  * @brief Flush NVRAM page
- * Flish NVRAM page to file or NVRAM.
+ * Flash NVRAM page to file or NVRAM.
  * Different to hardware device
  *
  */
@@ -807,8 +807,8 @@ zb_bool_t zb_osif_prod_cfg_check_presence(void);
 
 /* Read data from production configuration header
  *
- * @param prod_cfg_hdr - pointer to production configarution header
- * @param hdr_len - size of production configarution header
+ * @param prod_cfg_hdr - pointer to production configuration header
+ * @param hdr_len - size of production configuration header
  *
  * @return RET_OK is success, RET_ERROR otherwise
  */
@@ -827,7 +827,7 @@ zb_ret_t zb_osif_prod_cfg_read(zb_uint8_t *buffer, zb_uint16_t len, zb_uint16_t 
 #ifdef ZB_OSIF_CONFIGURABLE_TX_POWER
 /* Set transmit power of radio on selected channel
  *
- * @param channel - channle on which radio applies new transmit power
+ * @param channel - channel on which radio applies new transmit power
  * @param power - transmit power in dBm
  *
  * return RET_OK if power was set successfully, RET_ERROR otherwise

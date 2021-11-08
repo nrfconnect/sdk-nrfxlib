@@ -447,7 +447,6 @@ typedef void (*zb_zcl_modify_attr_value_cb_t)(
     @{
     Use @ref ZB_ZCL_SET_ATTRIBUTE
     @par
-    For more information see HA samples
 */
 
 /** @brief Sets correctly ZCL char string value */
@@ -1429,8 +1428,6 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
       @par Example
       @snippet HA_samples/write_attr_test/sample_zed.c ZB_ZCL_PACKET
       @par
-
-    For more information see HA samples
 */
 
 /**

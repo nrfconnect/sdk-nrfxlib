@@ -116,9 +116,9 @@ typedef zb_channel_page_t zb_channel_list_t[ZB_CHANNEL_PAGES_NUM];
    island due to wide range of Sub GHz.
 
    Remap is based on using of channels range of 2.4GHz to imitate working with
-   Sub GHz. The main idea is to devide channels range of 2.4GHz, where each
+   Sub GHz. The main idea is to divide channels range of 2.4GHz, where each
    channels area corresponds to particular channel page. We have 5 channel
-   pages, so the range of channel numbers of 2.4GHz is devided into 5 areas:
+   pages, so the range of channel numbers of 2.4GHz is divided into 5 areas:
 
    * 0-2   - PAGE0
    * 3-5   - PAGE28
@@ -150,7 +150,7 @@ typedef zb_channel_page_t zb_channel_list_t[ZB_CHANNEL_PAGES_NUM];
                                                                  ZB_PAGES_REMAP_PAGE0_SHIFT)))))
 
 /**
-  Remaps logical channel into correspondong logical channel in 2.4GHz range.
+  Remaps logical channel into corresponding logical channel in 2.4GHz range.
 
   @param channel_page - original channel page
   @param logical_channel - original logical channel in scope of original channel page

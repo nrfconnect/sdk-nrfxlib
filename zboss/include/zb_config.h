@@ -202,7 +202,7 @@ constants etc.
 
 /** @cond DOXYGEN_INTERNAL_DOC */
 /**
-   ZB_ENABLE_SE_MIN_CONFIG - enables CBKE-related structures and functionaity
+   ZB_ENABLE_SE_MIN_CONFIG - enables CBKE-related structures and functionality
    can be defined in vendor file directly, or enabled, when ZB_ENABLE_SE is defined
 */
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
@@ -211,7 +211,7 @@ constants etc.
 #ifndef ZB_SECURITY_INSTALLCODES
 #define ZB_SECURITY_INSTALLCODES
 #endif
-/* ZB_ENABLE_SE coyuld be set to enable only CBKE but not SE commissioninfg */
+/* ZB_ENABLE_SE could be set to enable only CBKE but not SE commissioning */
 #ifndef ZB_NO_SE_COMMISSIONING
 #define ZB_SE_COMMISSIONING
 #endif
@@ -1230,6 +1230,22 @@ exponent.
 #ifndef ZB_LOG_FILE_PATH_PREFIX
 #define ZB_LOG_FILE_PATH_PREFIX ZB_TMP_FILE_PATH_PREFIX
 #endif
+
+#ifdef ZB_USE_LOGFILE_ROTATE
+#ifndef LOG_ROTATE_1K
+#define LOG_ROTATE_1K 1024
+#endif
+#ifndef ZB_DEFAULT_MAX_LOGFILE_SIZE
+#define ZB_DEFAULT_MAX_LOGFILE_SIZE   (720 * LOG_ROTATE_1K)
+#endif
+#ifndef ZB_DEFAULT_TOTAL_LOGS_SIZE
+#define ZB_DEFAULT_TOTAL_LOGS_SIZE    (2160 * LOG_ROTATE_1K)
+#endif
+#ifndef ZB_DEFAULT_MAX_LOGFILE_CNT
+#define ZB_DEFAULT_MAX_LOGFILE_CNT  (ZB_DEFAULT_TOTAL_LOGS_SIZE / ZB_DEFAULT_MAX_LOGFILE_SIZE)
+#endif
+#endif  /* ZB_USE_LOGFILE_ROTATE */
+
 /* #  define ZB_BINARY_TRACE */
 /* #  define ZB_NET_TRACE */
 /* #  define ZB_TRAFFIC_DUMP_ON */
@@ -1564,7 +1580,7 @@ exponent.
 
 #ifndef SNCP_MODE
 /**
-   Do not check for APS security counters inconsistence at unsecure
+   Do not check for APS security counters inconsistency at unsecure
  */
 #ifndef ZB_NO_CHECK_INCOMING_SECURE_APS_FRAME_COUNTERS
 #define ZB_NO_CHECK_INCOMING_SECURE_APS_FRAME_COUNTERS
@@ -1830,7 +1846,7 @@ compatibility with some mammoth shit */
 #endif
 
 #ifdef ZB_ENABLE_INTER_PAN_NON_DEFAULT_CHANNEL
-/* Lock queues size to temporarily store packets when inter-pan procedue is in progress */
+/* Lock queues size to temporarily store packets when inter-pan procedure is in progress */
 #define NWK_INTRP_LOCK_QUEUE_SIZE 5U
 #define APS_LOCK_QUEUE_SIZE 5U
 #endif

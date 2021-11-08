@@ -68,10 +68,6 @@
  *    @snippet light_sample/dimmable_light/bulb.c zb_zcl_set_report_attr_cb
  *    @snippet light_sample/dimmable_light/bulb.c zb_zcl_set_report_attr_cb_example
  *    @par
- *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see light_sample/dimmable_light sample
- *    @endcond
  */
 
 /* Boundary and default values are defined by application profile */

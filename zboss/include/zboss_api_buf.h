@@ -348,7 +348,6 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
  *
  * @param buf - buffer ID
  *
- * See any sample.
  */
 #define zb_buf_free(buf) zb_buf_free_func(TRACE_CALL (buf))
 
@@ -469,7 +468,7 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
    @endcode
  */
 /* Note: MISRA C-STAT analysis gives false positive for rule 20.7 violation on ZB_BUF_GET_PARAM()
- * due to missing parenthesis around "type" on pointer type cast. This is a misinterpertation
+ * due to missing parenthesis around "type" on pointer type cast. This is a misinterpretation
  * of the rule by C-STAT tool, since this rule refers only to expressions, and not data type casts
  * like it is used here. */
 #define ZB_BUF_GET_PARAM(buf, type) ((type *)zb_buf_get_tail_func(TRACE_CALL (buf), sizeof(type)))

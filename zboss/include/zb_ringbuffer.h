@@ -197,7 +197,7 @@ do                                                   \
   ZB_RING_BUFFER_LINEAR_PORTION((rb), ZB_RING_BUFFER_FREE_SPACE(rb))
 
 /**
-   Batch put data inro ringbuffer
+   Batch put data into ringbuffer
 
    To be used to copy from external buffer to ring buffer
 

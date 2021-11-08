@@ -14,10 +14,24 @@ Main branch
 
 All the notable changes included in the |NCS| main branch are documented in this section.
 
-Changes
+Added
+=====
+
+* Added APS command duplicate detection.
+* Added NCP protocol version checks.
+
+Updated
 =======
 
+* Updated the ZBOSS stack to version ``3.9.0.1+4.1.0``.
+  For detailed information, see `ZBOSS stack release notes`_ for the main branch.
 * Removed precompiled libraries for Zigbee Green Power Combo Basic functionality.
+
+Bug fixes
+=========
+
+ * Fixed an issue where Zigbee Router would go out of capacity due to too many joins or rejoins.
+ * Fixed an issue where unsolicited NCP commands would not be handled correctly.
 
 nRF Connect SDK v1.7.0
 **********************

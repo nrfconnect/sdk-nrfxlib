@@ -70,9 +70,6 @@
  *    Send Door Unlock command:
  *    @snippet HA_samples/door_lock/sample_zed.c send_door_lock_unlock_req
  *
- *    @cond ZBOSS_SAMPLES_API_DOC_LINE
- *    For more information see HA_samples/door_lock and HA_samples/door_lock_controller samples
- *    @endcond
  */
 
 /*! @name Door Lock cluster attributes

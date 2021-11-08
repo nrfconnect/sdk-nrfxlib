@@ -618,7 +618,7 @@ enum zb_zcl_diagnostics_attr_e
  *   Important note:
  * We have asynchronous reading the Diagnostics attributes:
  * in the zb_zcl_read_attr_handler() we call zdo_diagnostics_get_stats()
- * that will copy all counters to the same bufer from the first byte.
+ * that will copy all counters to the same buffer from the first byte.
  * What the problem? We have the following buffer stucture:
  *   a) buffer begin (from zero byte! not from zb_buf_begin()) - will contain all counters;
  *   b) buffer middle (from zb_buf_begin()) - contains one or more zb_zcl_read_attr_req_t;

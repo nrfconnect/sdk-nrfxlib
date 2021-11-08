@@ -342,12 +342,12 @@ static void add_group_handler(zb_uint8_t param, zb_bool_t check_identifying)
        * call APS. In this case command result is returned via
        * confirmation - call to callback.
        * To simplify current implementation, call APS directly:
-       * result will be received immediatly.
+       * result will be received immediately.
        * To improve source code and to use ZDO, need to implement hash to
        * store cmd_info - it is need to send response to peer. */
       /* zb_apsme_add_group_request calls ZDO_RUN_CALLBACK_BY_INDEX that
          kills buffer if callback not found; register dummy handler
-         to aviod this situation. */
+         to avoid this situation. */
 
       aps_req->confirm_cb = NULL;
 
@@ -458,7 +458,7 @@ static void view_group_handler(zb_uint8_t param)
   }
 
   /** [ZB_ZCL_CONSTRUCT_FRAME_HEADER] */
-  /* Construct response packet headr */
+  /* Construct response packet header */
   resp_data = ZB_ZCL_START_PACKET(param);
 
   /* NOTE: currently, manufacturer specific is not supported */
@@ -513,7 +513,7 @@ static void get_group_membership_handler(zb_uint8_t param)
     TRACE_MSG(TRACE_ZCL2, "group count %hd", (FMT__H, get_member_req->group_count));
 
     /* use runtime buffer - to simplify passing parameters, just copy
-     * it to the beginnig of this buffer */
+     * it to the beginning of this buffer */
     zb_buf_reuse(ZCL_CTX().runtime_buf);
     aps_req = zb_buf_initial_alloc(
         ZCL_CTX().runtime_buf,
@@ -586,7 +586,7 @@ static void remove_group_send_remove_group_resp(zb_uint8_t param, zb_zcl_parsed_
 
   TRACE_MSG(TRACE_ZCL1, ">> remove_group_send_remove_group_resp", (FMT__0));
 
-  /* Construct response packet headr */
+  /* Construct response packet header */
   resp_data = ZB_ZCL_START_PACKET(param);
 
   /* NOTE: currently, manufacturer specific is not supported */

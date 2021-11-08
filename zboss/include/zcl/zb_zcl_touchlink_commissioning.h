@@ -358,7 +358,7 @@ typedef ZB_PACKED_PRE struct zb_zll_commissioning_scan_res_s
  */
 
 /*
-  AT: looks like that is a error, it completely brokes security subsystem for Touchlink commissioning,
+  AT: looks like that is a error, it completely breaks security subsystem for Touchlink commissioning,
   so i remove this code from ZB_ZLL_COMMISSIONING_SEND_SCAN_RES macro
   ZLL_DEVICE_INFO().response_id = ZLL_TRAN_CTX().transaction_id;
   TRACE_MSG(TRACE_ZLL1, "resp id %d", (FMT__P, ZLL_DEVICE_INFO().transaction_id));
@@ -479,7 +479,7 @@ typedef ZB_PACKED_PRE struct zb_zll_commissioning_device_information_req_s
   * @param start_index [IN] - device index to start reporting with.
   * @param dst_addr [IN] - IEEE device address to send packet to.
   * @param callback [IN] - callback to schedule on packet send confirmation.
-  * @param status [OUT] - packet schedule status (xsee @ref zb_ret_t).
+  * @param status [OUT] - packet schedule status (see @ref zb_ret_t).
   */
 #define ZB_ZLL_COMMISSIONING_SEND_DEVICE_INFO_REQ(                          \
     buffer,                                                                 \
@@ -799,7 +799,7 @@ typedef ZB_PACKED_PRE struct zb_zll_commissioning_identify_req_param_s
 
 /**
  *  @brief Extract Identify request parameters from the buffer.
- *  @param data_ptr [OUT] - pointer to a memory region to put request aprameters to. Must be
+ *  @param data_ptr [OUT] - pointer to a memory region to put request parameters to. Must be
  *  capable of storing value of type @ref zb_zll_commissioning_identify_req_param_s.
  *  @param buffer [IN] - index @ref zb_bufid_t of the buffer containing request parameters (as
  *  a tail parameter).
@@ -1974,9 +1974,9 @@ typedef ZB_PACKED_PRE struct zb_zll_commissioning_endpoint_information_s
 
 /** @brief Schedules sending Commissioning.EndpointInformation command.
   * @param buffer to put packet to (by pointer).
-  * @param endpoint_id - endpoint identificator.
-  * @param profile - profile identificator.
-  * @param device - device identificator.
+  * @param endpoint_id - endpoint identifier.
+  * @param profile - profile identifier.
+  * @param device - device identifier.
   * @param version_ - device version.
   * @param dst_addr - IEEE device address to send packet to.
   * @param dst_ep - endpoint of device to send packet to.

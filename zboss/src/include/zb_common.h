@@ -83,7 +83,7 @@ void zb_globals_init(void);
 /*! @{ */
 
 /**
-   Set Informational Bases refaults.
+   Set Informational Bases defaults.
 
    @param rx_pipe - rx pipe name (for Unix) or node number (for ns build
                             in 8051 simulator)
@@ -172,7 +172,7 @@ extern char** g_argv;
  *   ZB_ASSERT(ZB_THEREFORE(ret == RET_OK, *p != NULL));
  * }
  *  @endcode
- * This aproach avoid dead code when ZB_ASSERT is not defined
+ * This approach avoid dead code when ZB_ASSERT is not defined
  */
 #define ZB_THEREFORE(a, b) (!(a) || (b))
 

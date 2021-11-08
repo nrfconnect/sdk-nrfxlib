@@ -71,10 +71,6 @@
     Example of command handler
     @snippet ias_zone_sensor/src/izs_device.c HANDLER
     @par
-
-    @cond ZBOSS_SAMPLES_API_DOC_LINE
-    The complete set of IAS Zone samples can be found in /application/ias_zone_sensor
-    @endcond
 */
 
 /** HA IAS Zone device version */

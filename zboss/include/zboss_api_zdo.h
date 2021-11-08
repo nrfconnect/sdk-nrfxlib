@@ -1162,7 +1162,6 @@ zb_zdo_nwk_addr_resp_ext2_t;
 @b Example:
 @snippet doxygen_snippets.dox zboss_api_zdo_h_1
 
-See tp_zdo_bv-31 sample
 */
 zb_uint8_t zb_zdo_nwk_addr_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1296,9 +1295,6 @@ zb_zdo_ieee_addr_resp_ext2_t;
   *
   * @endcode
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See tp_zdo_bv-31 sample
-  * @endcond
   */
 zb_uint8_t zb_zdo_ieee_addr_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1423,9 +1419,6 @@ zb_zdo_power_desc_resp_t;
   * @snippet onoff_server/on_off_switch_zed.c send_node_desc_req
   * @snippet onoff_server/on_off_switch_zed.c node_req_cb
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See application/onoff_server sample
-  * @endcond
   */
 zb_uint8_t zb_zdo_node_desc_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1452,9 +1445,6 @@ typedef ZB_PACKED_PRE struct zb_zdo_power_desc_req_s
   * @snippet onoff_server/on_off_switch_zed.c send_power_desc_req
   * @snippet onoff_server/on_off_switch_zed.c power_desc_cb
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See application/onoff_server sample
-  * @endcond
   */
 zb_uint8_t zb_zdo_power_desc_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1482,9 +1472,6 @@ typedef ZB_PACKED_PRE struct zb_zdo_simple_desc_req_s
   * @snippet onoff_server/on_off_switch_zed.c send_simple_desc_req
   * @snippet onoff_server/on_off_switch_zed.c simple_desc_cb
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See application/onoff_server sample
-  * @endcond
   */
 zb_uint8_t zb_zdo_simple_desc_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1524,9 +1511,6 @@ zb_zdo_ep_resp_t;
  * @snippet onoff_server/on_off_switch_zed.c send_active_ep_req
  * @snippet onoff_server/on_off_switch_zed.c active_ep_cb
  *
- * @cond ZBOSS_SAMPLES_API_DOC_LINE
- * See application/onoff_server sample
- * @endcond
  */
 zb_uint8_t zb_zdo_active_ep_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1619,8 +1603,6 @@ zb_zdo_match_desc_resp_t;
 
    @b Example:
    @snippet light_sample/light_control/light_control.c zdo_match_desc_req
-
-   See light_sample
 */
 zb_uint8_t zb_zdo_match_desc_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -1670,9 +1652,6 @@ zb_zdo_system_server_discovery_resp_t;
  *  @snippet onoff_server/on_off_switch_zed.c system_server_discovery_req
  *  @snippet onoff_server/on_off_switch_zed.c system_server_discovery_cb
  *
- * @cond ZBOSS_SAMPLES_API_DOC_LINE
- * See application/onoff_server sample
- * @endcond
  */
 zb_uint8_t zb_zdo_system_server_discovery_req(zb_uint8_t param, zb_callback_t cb);
 #endif  /*ZB_LITE_NO_ZDO_SYSTEM_SERVER_DISCOVERY */
@@ -1826,7 +1805,7 @@ void mgmt_nwk_update_ok_cb(zb_uint8_t param)
 }
 @endcode
 
-See TP_PRO_BV-37 sample
+
  */
 zb_uint8_t zb_zdo_mgmt_nwk_update_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -2019,7 +1998,6 @@ zb_zdo_neighbor_table_record_t;
    @b Example:
 @snippet doxygen_snippets.dox zboss_api_zdo_h_2
 
-See zdpo_lqi sample
 */
 zb_uint8_t zb_zdo_mgmt_lqi_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -2135,9 +2113,6 @@ zb_zdo_binding_table_record_t;
   * @return 0xFF if operation cannot be
   *         performed now (nor enough memory, resources, etc.)
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See zdo_binding sample
-  * @endcond
   */
 zb_uint8_t zb_zdo_mgmt_bind_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -2232,7 +2207,6 @@ zb_zdo_bind_resp_t;
    @b Example:
 @snippet doxygen_snippets.dox zboss_api_zdo_h_3
 
-See tp_zdo_bv-12 sample
  */
 zb_uint8_t zb_zdo_bind_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -2283,8 +2257,7 @@ void unbind_device1_cb(zb_uint8_t param)
 }
 @endcode
 
-  See tp_aps_bv-23-i, tp_zdo_bv-12 samples
- */
+*/
 zb_uint8_t zb_zdo_unbind_req(zb_uint8_t param, zb_callback_t cb);
 
 
@@ -2377,7 +2350,6 @@ void leave_callback(zb_uint8_t param)
 }
 @endcode
 
-See nwk_leave sample
 */
 zb_uint8_t zdo_mgmt_leave_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -2501,7 +2473,6 @@ zb_zdo_mgmt_permit_joining_req_param_t;
 
    @snippet onoff_server/on_off_switch_zed.c zdo_mgmt_permit_joining_req
 
-   See onoff_server sample
  */
 zb_uint8_t zb_zdo_mgmt_permit_joining_req(zb_uint8_t param, zb_callback_t cb);
 
@@ -2586,7 +2557,6 @@ zb_zdo_mgmt_nwk_ieee_joining_list_rsp_t;
    @b Example
    @snippet doxygen_snippets.dox tp_pro_bv-46_zr_certification_TP_PRO_BV-46_tp_pro_bv-46_zr_c
 
-   See tp_pro_bv-46 sample
  */
 void zb_zdo_add_group_req(zb_uint8_t param);
 
@@ -2595,9 +2565,6 @@ void zb_zdo_add_group_req(zb_uint8_t param);
   * @param param - (in/out) buffer with parameters
   * @snippet doxygen_snippets.dox tp_pro_bv-46_zed_certification_TP_PRO_BV-46_tp_pro_bv-46_zed_c
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See tp_pro_bv-46 sample
-  * @endcond
   */
 void zb_zdo_remove_group_req(zb_uint8_t param);
 
@@ -2606,9 +2573,6 @@ void zb_zdo_remove_group_req(zb_uint8_t param);
   *
   * @snippet doxygen_snippets.dox add_remove_all_groups_aps_group_management_aps_group_zc_c
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See aps_group_management sample
-  * @endcond
   */
 void zb_zdo_remove_all_groups_req(zb_uint8_t param);
 
@@ -2617,9 +2581,6 @@ void zb_zdo_remove_all_groups_req(zb_uint8_t param);
   *
   * @snippet doxygen_snippets.dox zb_zdo_get_group_membership_req_aps_group_membership_req_aps_group_zc_c
   *
-  * @cond ZBOSS_SAMPLES_API_DOC_LINE
-  * See aps_group_management sample
-  * @endcond
   */
 void zb_zdo_get_group_membership_req(zb_uint8_t param);
 

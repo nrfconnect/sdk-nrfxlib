@@ -172,7 +172,6 @@ extern zb_uint_t g_trace_inside_intr;
 /** @endcond */ /* DSR_TRACE */
 /** @} */ /* ZB_TRACE */
 
-/** @cond DSR_TRACE */
 /**
  * @addtogroup ZB_TRACE Debug trace
  * @{
@@ -183,9 +182,9 @@ extern zb_uint_t g_trace_inside_intr;
  * @{
  */
 
-/** @cond DOXYGEN_INTERNAL_DOC */
+#ifndef DOXYGEN
 #define TRACE_ENABLED_(mask,lev) ((lev) <= ZB_TRACE_LEVEL && ((mask) & ZB_TRACE_MASK))
-/** @endcond */ /* DOXYGEN_INTERNAL_DOC*/
+#endif /* DOXYGEN */
 
 /**
  *  @brief Check that trace is enabled for provided level.
@@ -201,9 +200,9 @@ extern zb_uint_t g_trace_inside_intr;
  */
 #define TRACE_ENABLED(m) TRACE_ENABLED_(m)
 
-/** @cond DOXYGEN_INTERNAL_DOC */
+#ifndef DOXYGEN
 zb_uint32_t zb_trace_get_counter(void);
-/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+#endif /* DOXYGEN */
 
 #ifdef DOXYGEN
 /**
@@ -1082,7 +1081,7 @@ typedef struct zb_byte128_struct_s
 #define TRACE_ZSE3 TRACE_SUBSYSTEM_ZSE, 3U
 #define TRACE_ZSE4 TRACE_SUBSYSTEM_ZSE, 4U
 
-/** @cond DOXYGEN_INTERNAL_DOC */
+#ifndef DOXYGEN
 #define TRACE_SPI1 TRACE_SUBSYSTEM_SPI, 1U
 #define TRACE_SPI2 TRACE_SUBSYSTEM_SPI, 2U
 #define TRACE_SPI3 TRACE_SUBSYSTEM_SPI, 3U
@@ -1092,14 +1091,14 @@ typedef struct zb_byte128_struct_s
 #define TRACE_SSL2 TRACE_SUBSYSTEM_SSL, 2U
 #define TRACE_SSL3 TRACE_SUBSYSTEM_SSL, 3U
 #define TRACE_SSL4 TRACE_SUBSYSTEM_SSL, 4U
-/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+#endif /* DOXYGEN */
 
 #define TRACE_APP1 TRACE_SUBSYSTEM_APP, 1U
 #define TRACE_APP2 TRACE_SUBSYSTEM_APP, 2U
 #define TRACE_APP3 TRACE_SUBSYSTEM_APP, 3U
 #define TRACE_APP4 TRACE_SUBSYSTEM_APP, 4U
 
-/** @cond DOXYGEN_INTERNAL_DOC */
+#ifndef DOXYGEN
 #define TRACE_SPECIAL1 TRACE_SUBSYSTEM_SPECIAL1, 1U
 #define TRACE_SPECIAL2 TRACE_SUBSYSTEM_SPECIAL1, 2U
 #define TRACE_SPECIAL3 TRACE_SUBSYSTEM_SPECIAL1, 3U
@@ -1164,7 +1163,7 @@ typedef struct zb_byte128_struct_s
 #define TRACE_MAC_API2 TRACE_SUBSYSTEM_MAC_API, 2U
 #define TRACE_MAC_API3 TRACE_SUBSYSTEM_MAC_API, 3U
 #define TRACE_MAC_API4 TRACE_SUBSYSTEM_MAC_API, 4U
-/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+#endif /* DOXYGEN */
 
 #ifndef ZB_SET_TRACE_LEVEL
 
@@ -1177,8 +1176,8 @@ typedef struct zb_byte128_struct_s
 #endif
 
 /** @} */ /* TRACE_FIRST_ARG */
-/** @} */ /* Debug trace */
 /** @endcond */ /* DSR_TRACE */
+/** @} */ /* Debug trace */
 
 #if defined ZB_TRAFFIC_DUMP_ON || defined DOXYGEN
 /**
@@ -1212,7 +1211,6 @@ static ZB_INLINE zb_uint8_t zb_get_traf_dump_state(void)
 #define ZB_GET_TRAF_DUMP_STATE()  0U
 #endif
 
-/** @endcond */
 /** @endcond */ /* DOXYGEN_DEBUG_SECTION */
 
 #endif /* ZB_LOGGER_H */

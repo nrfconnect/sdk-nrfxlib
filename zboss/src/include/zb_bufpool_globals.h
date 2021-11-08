@@ -102,7 +102,7 @@ typedef struct zb_buf_pool_s
 #else
 
 #ifndef ZB_CONFIGURABLE_MEM
-  zb_buf_ent_t pool[ZB_IOBUF_POOL_SIZE];    /*!< Buffers array (static memory configuratiuon case)*/
+  zb_buf_ent_t pool[ZB_IOBUF_POOL_SIZE];    /*!< Buffers array (static memory configuration case)*/
 #else
   zb_buf_ent_t *pool;               /*!< Pointer to buffers array allocated elsewhere. @see configurable_mem_internals  */
 #endif
@@ -110,7 +110,7 @@ typedef struct zb_buf_pool_s
 #ifdef ZB_LEGACY_BUFS
   zb_buf_t ZB_XDATA *head;                /*!< First free buffer*/
 #endif
-  
+
 #endif /* else #ifdef ZB_USE_STD_MALLOC */
 #ifdef ZB_BIGBUF
   zb_bigbuf_t bpool[ZB_BIGBUF_POOL_SIZE/*ZB_IOBUF_POOL_SIZE*/];
@@ -128,14 +128,14 @@ typedef struct zb_buf_pool_s
                                                          *  buffer:
                                                          * '1' - currently allocated
                                                          * '0' - currently free
-                                                         * It is different from buf_in_use since 
+                                                         * It is different from buf_in_use since
                                                          * 1 allocated buffer may occupy the span
                                                          * of multiple actual buffers.
                                                          */
 #else
   zb_uint8_t *busy_bufs_bitmap;
 #endif
-  
+
 #ifdef ZB_BUF_SHIELD
 #ifndef ZB_CONFIGURABLE_MEM
   zb_uint8_t buf_in_use[(ZB_IOBUF_POOL_SIZE + 7)/8]; /*!< bitmap of allocated

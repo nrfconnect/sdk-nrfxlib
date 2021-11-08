@@ -226,7 +226,7 @@ zb_ushort_t zb_nwk_neighbor_next_rx_on_i(zb_ushort_t i);
 #define ZB_NWK_NEIGHBOR_BY_I(i) (&ZG->nwk.neighbor.neighbor[(i)])
 
 /**
-   Get next child to retransmit broadcast farame to
+   Get next child to retransmit broadcast frame to
 
    @param addr - broadcast address
    @param i - current index in the neighbor table. Use 0 to start iteration.

@@ -1958,7 +1958,6 @@ typedef enum zb_bdb_commissioning_mode_mask_e
                           1 = Attempt to form a network, according to device type2
    */
   ZB_BDB_NETWORK_FORMATION = 4,
-  /** @cond internals_doc */
   /** Finding and binding: 0 = Do not attempt finding and binding;
                           1 = Attempt finding and binding
     @note actually this mode does not call finding and binding procedure. Use
@@ -1966,18 +1965,22 @@ typedef enum zb_bdb_commissioning_mode_mask_e
    */
   ZB_BDB_FINDING_N_BINDING = 8,
 
+  /** @cond internals_doc */
   /* Used internally */
   ZB_BDB_LAST_COMMISSIONING_STEP = 0x10,
   /* Used internally */
   ZB_BDB_COMMISSIONING_STOP = 0x20,
+  /** @endcond */ /* internals_doc */
 
   /** @cond touchlink */
   /* Used internally */
   ZB_BDB_TOUCHLINK_TARGET = 0x40,
   /** @endcond */ /* touchlink */
 #ifndef BDB_OLD
+  /** @cond internals_doc */
   /* Used internally */
   ZB_BDB_REJOIN = 0x80,
+  /** @endcond */ /* internals_doc */
 #endif
 } zb_bdb_commissioning_mode_mask_t;
 
@@ -2233,7 +2236,7 @@ typedef struct zb_zcl_func_selector_s
 #if defined ZB_SE_COMMISSIONING || (defined ZB_ZCL_SUPPORT_CLUSTER_WWAH && defined ZB_ZCL_ENABLE_WWAH_SERVER)
   zb_zcl_block_zcl_cmd_t block_zcl_cmd;
   zb_zcl_read_attr_resp_handler_t read_attr_resp_handler;
-#endif /* ZB_SE_COMMISSINONING || (ZB_ZCL_SUPPORT_CLUSTER_WWAH && ZB_ZCL_ENABLE_WWAH_SERVER) */
+#endif /* ZB_SE_COMMISSIONING || (ZB_ZCL_SUPPORT_CLUSTER_WWAH && ZB_ZCL_ENABLE_WWAH_SERVER) */
 
 #ifdef ZB_BDB_ENABLE_FINDING_BINDING
   zb_callback_t process_identify_query_res;

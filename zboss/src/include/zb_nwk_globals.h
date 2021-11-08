@@ -127,7 +127,7 @@ zb_nwk_btr_t;
 
 /**
    Broadcast retransmition info
-   Impatant! This struct must ZB_PACKED_STRUCT for ZB_NEED_ALIGN
+   Important! This struct must ZB_PACKED_STRUCT for ZB_NEED_ALIGN
  */
 typedef ZB_PACKED_PRE struct zb_nwk_broadcast_retransmit_s
 {
@@ -148,7 +148,7 @@ typedef ZB_PACKED_PRE struct zb_nwk_broadcast_retransmit_s
 
      AN: that would cause the following problems:
        a) We couldn't use delayed buffer allocation for unicast transmissions since there is no guarantee that a BRRT entry would be the same by the time when a buffer is ready. If neighbor_table_iterator is passed as well, that could result in using iterator from one device for another - some packets will not be sent, some will be sent twice.
-       b) Since broadcast retransmission can be completed at muliple points, it is important to always have consistent state at hand. Currently neighbor_table_iterator also serves as an indicator that we are done with the generation of unicast packets and the original buffer can be released.
+       b) Since broadcast retransmission can be completed at multiple points, it is important to always have consistent state at hand. Currently neighbor_table_iterator also serves as an indicator that we are done with the generation of unicast packets and the original buffer can be released.
    */
   zb_uint8_t neighbor_table_iterator; /*!< Next child to unicast broadcast frames to */
 
@@ -275,7 +275,7 @@ typedef struct zb_nwk_handle_s  /* do not pac for IAR */
 #if defined ZB_MAC_POWER_CONTROL
   zb_uint8_t send_power_delta_index; /* Current index of short_sorted address
                                       * table for NWK Power Delta command (notification */
-  zb_uint16_t lpd_resp_addr;         /* Address of receipient, LPD frame
+  zb_uint16_t lpd_resp_addr;         /* Address of recepient, LPD frame
                                       * response to be sent to */
   zb_ieee_addr_t lpd_leave_ieee; /* IEEE to delete from MAC power table */
 #endif

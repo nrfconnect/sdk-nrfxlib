@@ -619,7 +619,7 @@ static void zb_zcl_set_attr_val_cmd_post_process(zb_zcl_parsed_hdr_t *cmd_info,
 
         /* Compare "set CIE address" originator's ieee address to
          * CIE address from request and to current CIE ieee address
-         * in IAS Zone Cluser's attribute */
+         * in IAS Zone Cluster's attribute */
         if (ret != RET_OK)
         {
           TRACE_MSG(TRACE_ZCL2, "Failed to obtain CIE ieee address from addr map, skip addr check!",
@@ -754,7 +754,7 @@ void zb_zcl_write_attr_handler(zb_uint8_t param)
 
   if (ZB_ZCL_CMD_WRITE_ATTRIB_NO_RESP != cmd_info->cmd_id)
   {
-    /* Construct packet headr */
+    /* Construct packet header */
     /* Use runtime_buf buffer for composing and sending response, request buffer
      * will be saved as runtime_buf */
     resp_data = ZB_ZCL_START_PACKET(ZCL_CTX().runtime_buf);
@@ -816,7 +816,7 @@ void zb_zcl_write_attr_handler(zb_uint8_t param)
       }
       else if (attr_desc->type != write_attr_req->attr_type)
       {
-        TRACE_MSG(TRACE_ZCL1, "error, icorrect attr type", (FMT__0));
+        TRACE_MSG(TRACE_ZCL1, "error, incorrect attr type", (FMT__0));
         status = ZB_ZCL_STATUS_INVALID_TYPE;
       }
       else
@@ -859,9 +859,9 @@ void zb_zcl_write_attr_handler(zb_uint8_t param)
               /*cstat !MISRAC2012-Rule-13.5 */
               (resp_data != NULL) &&
               /* The following violation of Rule 13.5 seems to be
-               * a false positive. There are no side effect to 'zb_zcl_can_cluster_be_framgented()'.
+               * a false positive. There are no side effect to 'zb_zcl_can_cluster_be_fragmented()'.
                * This violation seems to be caused by the fact that
-               * 'zb_zcl_can_cluster_be_framgented()' is an
+               * 'zb_zcl_can_cluster_be_fragmented()' is an
                * external function, which cannot be analyzed by C-STAT. */
               (ZB_ZCL_GET_BYTES_AVAILABLE(ZCL_CTX().runtime_buf, resp_data,
                                           cmd_info->profile_id, cmd_info->cluster_id)
@@ -1858,7 +1858,7 @@ zb_bool_t zb_zcl_handle_general_commands(zb_uint8_t param)
       {
         processed = ZCL_SELECTOR().read_attr_resp_handler(param);
       }
-#endif /* ZB_SE_COMMISSINONING || (ZB_ZCL_SUPPORT_CLUSTER_WWAH && ZB_ZCL_ENABLE_WWAH_SERVER) */
+#endif /* ZB_SE_COMMISSIONING || (ZB_ZCL_SUPPORT_CLUSTER_WWAH && ZB_ZCL_ENABLE_WWAH_SERVER) */
 
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_TIME)
       if (!processed && (ZB_ZCL_CLUSTER_ID_TIME == cmd_info->cluster_id))

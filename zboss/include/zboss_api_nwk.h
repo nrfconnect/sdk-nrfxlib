@@ -655,7 +655,7 @@ void zb_enable_auto_pan_id_conflict_resolution(zb_bool_t status);
 
 /** @cond internals_doc */
 /**
-   Toogles panid conflict resolution.
+   Toggles panid conflict resolution.
 
    Call of that function forces linking of panid conflict resolution
    code and allows switching on/off panid conflict resolution and detection
@@ -753,7 +753,7 @@ zb_uint16_t zb_nwk_get_parent(void);
 typedef ZB_PACKED_PRE struct zb_nwk_nbr_iterator_cb_params_s {
    zb_uint16_t index;        /*!< In the callback function:
                               *     Index of the returned neighbour table entry.
-                              *     The falue of ZB_NWK_NBR_ITERATOR_INDEX_EOT
+                              *     The value of ZB_NWK_NBR_ITERATOR_INDEX_EOT
                               *     indicates that the entry was not returned and
                               *     the buffer payload should be ignored.
                               *   If the structure is passed as the API call parameters:
@@ -820,7 +820,7 @@ zb_nwk_nbr_iterator_entry_t;
 /**
    Read the next active entry from the NWK neighbour table.
    The index indicates the point, from which the entry will be searched in the neighbour table.
-   This API returns neighbour table entry inisde the buffer payload, that are connected to the same PAN
+   This API returns neighbour table entry inside the buffer payload, that are connected to the same PAN
    and their entries are not marked as stale or timed out.
    The index of the entry is passed as buffer parameters.
 

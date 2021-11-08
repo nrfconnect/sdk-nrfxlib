@@ -192,7 +192,6 @@ typedef void (*zb_zdo_duty_cycle_mode_ind_cb_t) (zb_uint8_t mode);
   * @endcode
   * @return RET_OK on success.
   *
-  * See also any sample
   */
 zb_ret_t zdo_dev_start(void);
 
@@ -219,7 +218,6 @@ zb_ret_t zdo_dev_start(void);
   }
 @endcode
 
-See any sample
  */
 void zdo_main_loop(void);
 
@@ -241,7 +239,6 @@ void zdo_main_loop(void);
   zdo_main_loop();
 @endcode
 
-See sample iaz_zone_sample_secur.zed
  */
 zb_ret_t zb_zdo_dev_init(void);
 
@@ -254,7 +251,6 @@ zb_ret_t zb_zdo_start_no_autostart(void);
    ZDO device start procedure
   Use when init device and start device process cut HW test/init procedure
 
-See sample iaz_zone_sample_secur.zed
  */
 void zb_zdo_dev_start_cont(zb_uint8_t param);
 
@@ -268,7 +264,6 @@ void zb_zdo_dev_start_cont(zb_uint8_t param);
 @b Example:
 @snippet tp_pro_bv_20_zc.c zb_af_set_data_indication
 
-See tp_pro_bv_20, tp_aps_bv-19-i samples
  */
 void zb_zdo_startup_complete(zb_uint8_t param);
 
@@ -353,21 +348,21 @@ zb_ret_t zb_zdo_simple_desc_resp_convert_zboss(zb_uint8_t param);
 
 /**
    Copies node descriptor, taking into account endian
-   @param dst_desc - destinition descriptor
+   @param dst_desc - destination descriptor
    @param src_desc - source descriptor
 */
 void zb_copy_node_desc(zb_af_node_desc_t *dst_desc, zb_af_node_desc_t *src_desc);
 
 /**
    Copies node power descriptor, taking into accaunt endian
-   @param dst_desc - destinition descriptor
+   @param dst_desc - destination descriptor
    @param src_desc - source descriptor
 */
 void zb_copy_power_desc(zb_af_node_power_desc_t *dst_desc, zb_af_node_power_desc_t *src_desc);
 
 /**
    Copies simple descriptor, taking into accaunt endian
-   @param dst_desc - destinition descriptor
+   @param dst_desc - destination descriptor
    @param src_desc - source descriptor
 */
 void zb_copy_simple_desc(zb_af_simple_desc_1_1_t* dst_desc, zb_af_simple_desc_1_1_t*src_desc);
@@ -457,7 +452,7 @@ zb_bool_t zb_zdo_is_rejoin_active(void);
  *  @param ext_pan_id [IN] - Extended Pan ID of PAN to rejoin to; use same Pan ID
  *  (either aps_use_extended_pan_id or nib_ext_pan_id)
  *  @param channels_list [IN] - scanned channels
- *  @param secure [IN] - if saet to ZB_TRUE, device will perform secured rejoin;
+ *  @param secure [IN] - if set to ZB_TRUE, device will perform secured rejoin;
  *  if ZB_FALSE - device will do unsecure rejoin
  *  @return NLME-JOIN.request schedule result.
  * TODO: write comments
@@ -547,7 +542,7 @@ zb_uint8_t zb_zdo_mgmt_nwk_ieee_joining_list_req(zb_uint8_t param, zb_callback_t
 
 /**
    Allocates buffer and schedules to execute zb_get_peer_short_addr()
-   @param dst_addr_ref - reference to destinition IEEE address
+   @param dst_addr_ref - reference to destination IEEE address
    @param cb - callback to run on get peer address finish
    @param param - parameter for callback function
  */
@@ -591,7 +586,7 @@ void zdo_mgmt_leave_srv(zb_uint8_t param);
    @param param - ref to the buffer used for overall LEAVE operation
    @param status - status to pass to the peer
 
-   @return TRUE if resp sent, FALSE otherwhise
+   @return TRUE if resp sent, FALSE otherwise
  */
 zb_bool_t zdo_try_send_mgmt_leave_rsp(zb_uint8_t param, zb_uint8_t status);
 
@@ -859,7 +854,7 @@ typedef enum zb_poll_mode_e
   ZB_ZDO_PIM_TURBO              /*!< Turbo poll  */
 #ifdef SNCP_MODE
   ,
-  ZB_ZDO_PIM_STOP               /*!< Poll stoppped */
+  ZB_ZDO_PIM_STOP               /*!< Poll stopped */
 #endif
 } zb_poll_mode_t;
 
@@ -1141,7 +1136,6 @@ void zb_set_network_ed_role_legacy(zb_uint32_t channel_mask);
   @snippet doxygen_snippets.dox zb_set_simple_descriptor_certification_TP_ZDO_BV-09_tp_zdo_bv_09_zc_c
   @par
 
-  See tp_zdo_bv_09, tp_zdo_bv-11 samples
 */
 void zb_set_simple_descriptor(zb_af_simple_desc_1_1_t *simple_desc,
                               zb_uint8_t  endpoint, zb_uint16_t app_profile_id,
@@ -1158,7 +1152,6 @@ void zb_set_simple_descriptor(zb_af_simple_desc_1_1_t *simple_desc,
   @snippet doxygen_snippets.dox zb_set_simple_descriptor_certification_TP_ZDO_BV-09_tp_zdo_bv_09_zc_c
   @par
 
-  See tp_zdo_bv_09, tp_zdo_bv-11 samples
 */
 void zb_set_input_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t cluster_number, zb_uint16_t cluster_id);
 
@@ -1171,7 +1164,6 @@ void zb_set_input_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t cl
   @snippet doxygen_snippets.dox zb_set_simple_descriptor_certification_TP_ZDO_BV-09_tp_zdo_bv_09_zc_c
   @par
 
-  See tp_zdo_bv_09, tp_zdo_bv-11 samples
 */
 void zb_set_output_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t cluster_number, zb_uint16_t cluster_id);
 
@@ -1183,7 +1175,6 @@ void zb_set_output_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t c
     zb_set_default_ffd_descriptor_values(ZB_COORDINATOR);
   @endcode
 
-  See tp_zdo_bv_09, tp_zdo_bv-11 samples
  */
 void zb_set_default_ffd_descriptor_values(zb_logical_type_t device_type);
 
@@ -1201,7 +1192,6 @@ void zb_set_default_ed_descriptor_values(void);
   @snippet tp_zdo_bv_09_zc.c zb_set_simple_descriptor
   @par
 
-  See tp_zdo_bv_09, tp_zdo_bv-11 samples
  */
 zb_ret_t zb_add_simple_descriptor(zb_af_simple_desc_1_1_t *simple_desc);
 
@@ -1346,8 +1336,6 @@ void zb_set_node_descriptor(zb_logical_type_t device_type, zb_bool_t power_src, 
   @snippet tp_zdo_bv_09_zc.c zb_set_node_power_descriptor
   @par
 
-  See tp_zdo_bv_09 sample
-
   NOTE: zboss_start() overwrites this descriptor with default values
         if ZB_SET_DEFAULT_POWER_DESCRIPTOR is defined
 */
@@ -1467,8 +1455,8 @@ zb_bool_t zb_production_configuration_check_presence(void);
 /**
  * Read data from production configuration header
  *
- * @param prod_cfg_hdr - pointer to production configarution header
- * @param hdr_len - size of production configarution header
+ * @param prod_cfg_hdr - pointer to production configuration header
+ * @param hdr_len - size of production configuration header
  *
  * @return RET_OK is success, RET_ERROR otherwise
  */

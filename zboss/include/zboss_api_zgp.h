@@ -408,8 +408,6 @@ enum zb_zgp_data_handle_e
 #define ZB_CGP_DATA_REQ_USE_MAC_ACK_BIT 0X02
 
 #endif  /* ZB_ENABLE_ZGP_DIRECT */
-/*! @} */
-/*! @endcond */
 
 /********************************************************************/
 /*********************** Proxy definitions **************************/
@@ -449,8 +447,7 @@ typedef enum zgp_commissioning_exit_mode_e
                                                                      ZGP_COMMISSIONING_EXIT_MODE_ON_GP_PROXY_COMMISSIONING_MODE_EXIT)
 } zgp_commissioning_exit_mode_t;
 
-/*! @}
- *  @endcond*/
+/*! @} */
 
 /********************************************************************/
 /******************** Commissioning definitions *********************/
@@ -478,11 +475,11 @@ typedef enum zb_zgp_comm_status_e
   /** No functionality match with commissioning device is found.
    *  Maybe matching table is not provided by user application */
   ZB_ZGP_COMMISSIONING_NO_MATCH_ERROR,
-  /** Commissioning failed, because some internal error occured in stack.
+  /** Commissioning failed, because some internal error occurred in stack.
    * This type of error is recoverable, so next commissioning attempt can
    * be successful */
   ZB_ZGP_COMMISSIONING_INTERNAL_ERROR,
-  /** Commissioning failed, because some critical error has occured.
+  /** Commissioning failed, because some critical error has occurred.
    * Normal functioning of ZGP subsystem is not possible
    * (e.g. physical operational channel can't be changed) */
   ZB_ZGP_COMMISSIONING_CRITICAL_ERROR,
@@ -1356,7 +1353,7 @@ void zb_zgps_send_data(zb_uint8_t param);
  * It is safe to call this function when device is already in
  * commissioning mode. In this case function does nothing.
  *
- * @param timeout [in]  Maximum commissioning time in beacon intervals. \n
+ * @param[in] timeout       Maximum commissioning time in beacon intervals. \n
  *                      0 means no timeout. \n
  *                      If timeout occurs, then result of commissioning is
  *                      @ref ZB_ZGP_COMMISSIONING_TIMED_OUT
@@ -1677,7 +1674,7 @@ void zb_zgp_cluster_gp_pairing_req(zb_uint8_t     param,
                                    zb_callback_t  cb);
 
 /**
- * @brief Perform send zcl gp sink table request for ZGP clister
+ * @brief Perform send zcl gp sink table request for ZGP cluster
  *
  * @param buf_ref        [in]  Buffer reference
  * @param dst_addr       [in]  Destination address
@@ -1699,7 +1696,7 @@ void zgp_cluster_send_gp_sink_table_request(zb_uint8_t    buf_ref,
                                             zb_callback_t cb);
 
 /**
- * @brief Perform send zcl gp proxy table request for ZGP clister
+ * @brief Perform send zcl gp proxy table request for ZGP cluster
  *
  * @param buf_ref        [in]  Buffer reference
  * @param dst_addr       [in]  Destination address
@@ -1736,7 +1733,7 @@ typedef ZB_PACKED_PRE struct zgp_pair_group_list_s
 }
 ZB_PACKED_STRUCT zgp_pair_group_list_t;
 
-/* >> Data structures for Application Desription */
+/* >> Data structures for Application Description */
 typedef enum zgp_app_descr_status_e
 {
   ZGP_APP_TBL_ENT_STATUS_FREE              = 0,
@@ -1779,7 +1776,7 @@ typedef struct zgp_runtime_app_tbl_ent_s
   zgp_app_tbl_ent_t base;
 }zgp_runtime_app_tbl_ent_t;
 
-/* << Data structures for Application Desription */
+/* << Data structures for Application Description */
 
 typedef struct zgp_tbl_ent_s
 {

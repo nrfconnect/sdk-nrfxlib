@@ -264,12 +264,12 @@ key. They use same algorithm.
 /*!
  APS: The base amount of delay before each broadcast parent announce is sent.
  */
-#define ZB_APS_PARENT_ANNOUNCE_BASE_TIMER  (10U * ZB_TIME_ONE_SECOND)
+#define ZB_APS_PARENT_ANNOUNCE_BASE_TIMER (ZB_SECONDS_TO_BEACON_INTERVAL(10U))
 
 /*!
 The max amount of jitter that is added to the apsParentAnnounceBaseTimer before each broadcast parent announce is sent.
 */
-#define ZB_APS_PARENT_ANNOUNCE_JITTER_MAX (10U * ZB_TIME_ONE_SECOND)
+#define ZB_APS_PARENT_ANNOUNCE_JITTER_MAX (ZB_SECONDS_TO_BEACON_INTERVAL(10U) - 2U)
 /** @endcond */ /*internals_doc*/
 
 /**
@@ -667,7 +667,7 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
 #endif
 
 /* 01/15/2019 EE CR:MINOR Can't it be better to keep ZB_NWK_MAX_BROADCAST_JITTER_INTERVAL define but internally define it using octets?
-   In such case you minimize code modifications. same for all similar cases. Why movve "octets" to the upper layer? */
+   In such case you minimize code modifications. same for all similar cases. Why move "octets" to the upper layer? */
 /* nwkcMaxBroadcastJitter */
 /* 01/15/2019 EE CR:MINOR Add reference to the specification: here and in similar cases */
 #define ZB_NWKC_MAX_BROADCAST_JITTER_OCTETS 0x7d0U
@@ -892,7 +892,7 @@ Workaround for secure rejoin
 #define ZB_ZDO_1_MIN_TIMEOUT (ZB_TIME_ONE_SECOND * 60U)
 
 /* Default values: see HA spec 9.6.4.2 Attribute Settings and Battery Life Considerations */
-/** @endcond *//* intrenals_doc */
+/** @endcond *//* internals_doc */
 /*!
    Default fast poll timeout
  */
@@ -1384,7 +1384,7 @@ request command frame.
  */
 #define ZB_MAC_SUB_GHZ_PHR_LEN_BYTES 2U
 
-/* @breief CCA period for Sub-GHz PHY in symbols */
+/* @brief CCA period for Sub-GHz PHY in symbols */
 #define ZB_MAC_SUB_GHZ_CCA_PERIOD_SYMBOLS 16U
 
 /* IMPORTANT!!!

@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/*  PURPOSE: Common rules for ZBOSS application-sude memory configuring
+/*  PURPOSE: Common rules for ZBOSS application-side memory configuring
 
 That file is to be included from zb_mem_config_xxxx.h after basic
 selectors defined.
@@ -49,7 +49,7 @@ Do not include that file directly into the application source!
 #define ZB_MEM_CONFIG_COMMON_H 1
 
 /*
-  That file is useful only for ZBOSS buld with memory configurable by the user without ZBOSS lib recompile.
+  That file is useful only for ZBOSS build with memory configurable by the user without ZBOSS lib recompile.
  */
 #ifdef ZB_CONFIGURABLE_MEM
 
@@ -101,7 +101,7 @@ APPLICATION_SIMPLE / APPLICATION_MODERATE / APPLICATION_COMPLEX
  */
 
 /*
-  Total network size: set at upperl level, just a verification here.
+  Total network size: set at upper level, just a verification here.
  */
 #ifndef ZB_CONFIG_OVERALL_NETWORK_SIZE
 #error Define ZB_CONFIG_OVERALL_NETWORK_SIZE!
@@ -158,7 +158,7 @@ APPLICATION_SIMPLE / APPLICATION_MODERATE / APPLICATION_COMPLEX
 /* Set it here big enough; may decrease it later */
 #define ZB_CONFIG_IEEE_ADDR_TABLE_SIZE ZB_CONFIG_OVERALL_NETWORK_SIZE
 
-/* ZED needs neighbor table at join time only. More devices and nets around - biger nbt required. Let's use some euristics. */
+/* ZED needs neighbor table at join time only. More devices and nets around - bigger nbt required. Let's use some heuristics. */
 #if ZB_CONFIG_OVERALL_NETWORK_SIZE < 8U
 #define ZB_CONFIG_NEIGHBOR_TABLE_SIZE 8U
 #elif ZB_CONFIG_OVERALL_NETWORK_SIZE < 32U
