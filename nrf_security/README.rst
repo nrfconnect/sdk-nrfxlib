@@ -11,12 +11,16 @@ This module includes an Mbed TLS glue layer to enable both hardware-accelerated 
    The nrf_security module interfaces with the :ref:`nrf_cc3xx_mbedcrypto_readme`.
    This library conforms to a specific version of Mbed TLS.
 
+Prerequisites
+*************
+
+Mbed TLS is required and usually provided by west, but it can also be
+manually configured with the CMake variable ``ARM_MBEDTLS_PATH``.
 
 .. toctree::
    :maxdepth: 2
    :caption: Subpages:
 
-   doc/prerequisites
    doc/configuration
    doc/backends
    doc/glue_layer
