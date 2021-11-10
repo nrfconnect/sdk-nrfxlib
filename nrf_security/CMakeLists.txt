@@ -56,8 +56,14 @@ else()
   set_property(TARGET zephyr_property_target
     APPEND PROPERTY TFM_CMAKE_OPTIONS
       -DTFM_MBEDCRYPTO_CONFIG_PATH:STRING=${CONFIG_MBEDTLS_CFG_FILE}
-      -DMCUBOOT_MBEDCRYPTO_CONFIG_PATH=${CONFIG_MBEDTLS_CFG_FILE}
   )
+
+  if(CONFIG_TFM_BL2)
+    set_property(TARGET zephyr_property_target
+      APPEND PROPERTY TFM_CMAKE_OPTIONS
+        -DMCUBOOT_MBEDCRYPTO_CONFIG_PATHPATH:STRING=${CONFIG_MBEDTLS_CFG_FILE}
+    )
+  endif()
 
   if(CONFIG_MBEDTLS_ENABLE_HEAP)
     # The ENGINE_BUF_SIZE holds the dynamic allocation buffer for
