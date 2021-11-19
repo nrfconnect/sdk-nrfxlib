@@ -7,11 +7,11 @@ Bluetooth External Radio Coexistence
    :local:
    :depth: 2
 
-The Bluetooth® coexistence feature can use the the 3-wire Packet Traffic Arbitration protocol or the 1-wire LTE coexistence protocol.
+The Bluetooth® coexistence feature can use the 3-wire Packet Traffic Arbitration protocol or the 1-wire LTE coexistence protocol.
 
 **Application Programming Interface:**
 
-Details of the API for 3-wire and 1-wire can be found in file :file:`nrfxlib/mpsl/include/mpsl_coex.h`.
+Details of the API for 3-wire and 1-wire can be found in the file :file:`nrfxlib/mpsl/include/mpsl_coex.h`.
 
 
 .. NOTE::
