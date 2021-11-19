@@ -18,10 +18,12 @@ Added
 =====
 
 * Added experimental support for Periodic Advertising.
-  Use :c:func:`sdc_support_le_periodic_adv` and/or :c:func:`sdc_support_le_periodic_sync` to enable this feature.
-  ``SDC_CFG_TYPE_PERIODIC_ADV_COUNT`` can be used to set the number of periodic advertisers.
-  ``SDC_CFG_TYPE_PERIODIC_SYNC_COUNT`` can be used to set the number of synchronizations to periodic advertisers.
-  ``SDC_CFG_TYPE_PERIODIC_SYNC_BUFFER_CFG`` can be used to configure the number of periodic synchronization report buffers.
+  Use :c:func:`sdc_support_le_periodic_adv` or :c:func:`sdc_support_le_periodic_sync` or both to enable this feature.
+
+  * ``SDC_CFG_TYPE_PERIODIC_ADV_COUNT`` can be used to set the number of periodic advertisers.
+  * ``SDC_CFG_TYPE_PERIODIC_SYNC_COUNT`` can be used to set the number of synchronizations to periodic advertisers.
+  * ``SDC_CFG_TYPE_PERIODIC_SYNC_BUFFER_CFG`` can be used to configure the number of periodic synchronization report buffers.
+  
   The following HCI commands are now supported (DRGN-11505):
 
     * LE Set Periodic Advertising Data
