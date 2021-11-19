@@ -61,6 +61,7 @@ Proprietary feature support:
 
    doc/softdevice_controller
    doc/scheduling
+   doc/bluetooth_coex_example_diagrams
    limitations
    CHANGELOG
    doc/api
