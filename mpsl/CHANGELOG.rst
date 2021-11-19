@@ -19,6 +19,7 @@ Added
 
 * Added support for the Simple GPIO Front-End Module implementation on the nRF53 Series.
 * Added support and separate documentation for Bluetooth External Radio Coexistence on the nRF52 Series (DRGN-11849).
+* Added experimental support for the 1-wire coexistence interface on the nRF52 Series (DRGN-16439).
 
 Changes
 =======

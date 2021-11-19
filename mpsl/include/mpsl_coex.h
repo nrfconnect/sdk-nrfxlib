@@ -37,6 +37,10 @@ typedef enum
                                              To support this interface,
                                              @ref mpsl_coex_support_802152_3wire_gpiote_if()
                                              must be called. */
+  MPSL_COEX_1WIRE_GPIOTE_ID        = 1, /**< 1-wire GPIO coexistence interface.
+                                             To support this interface,
+                                             @ref mpsl_coex_support_1wire_gpiote_if()
+                                             must be called. */
 } mpsl_coex_if_id_t;
 
 /**
@@ -83,6 +87,28 @@ typedef struct
 } mpsl_coex_802152_3wire_gpiote_if_t;
 
 /**
+ * @brief Concurrency mode with the external modem supported by 1-wire coexistence.
+ */
+typedef enum
+{
+  MPSL_COEX_1WIRE_CONCURRENCY_NONE    = 0, /**< 1-wire configuration to allow no concurrency with the external modem. */
+  MPSL_COEX_1WIRE_CONCURRENCY_RX_ONLY = 1, /**< 1-wire configuration to allow RX only concurrency with the external modem. */
+} mpsl_coex_1wire_concurrency_mode_t;
+
+/**
+ * @brief GPIOs configuration for 1-wire coexistence arbitrator.
+ *
+ * 1-wire interface is exposed by following signals:
+ * GRANT - Asserted to indicate whether the external modem is active.
+ *
+ */
+typedef struct
+{
+  mpsl_coex_gpiote_cfg_t grant_cfg;                    /**< Grant line configuration. */
+  mpsl_coex_1wire_concurrency_mode_t concurrency_mode; /**< Concurrency mode configuration. */
+} mpsl_coex_1wire_gpiote_if_t;
+
+/**
  * @brief Configuration of the coexistence interface.
  *
  * This option configures MPSL to support interface for requesting and granting access to the media
@@ -94,6 +120,7 @@ typedef struct
   union
   {
     mpsl_coex_802152_3wire_gpiote_if_t coex_3wire_gpiote;    /**<  Configuration parameters of 3-wire GPIO based coexistence. */
+    mpsl_coex_1wire_gpiote_if_t coex_1wire_gpiote;           /**<  Configuration parameters of 1-wire GPIO based coexistence. */
   } interfaces;                                              /**<  Union with supported coexistence interfaces. */
 } mpsl_coex_if_t;
 
@@ -109,6 +136,13 @@ typedef void mpsl_coex_on_complete_callback_t(void);
  * @ref MPSL_COEX_802152_3WIRE_GPIOTE_ID.
  */
 void mpsl_coex_support_802152_3wire_gpiote_if(void);
+
+/** @brief Enable support for the 1-Wire coexistence interface.
+ *
+ * After this API is called, it is possible to configure MPSL with the coexistence interface
+ * @ref MPSL_COEX_1WIRE_GPIOTE_ID.
+ */
+void mpsl_coex_support_1wire_gpiote_if(void);
 
 /** @brief Configures and enables the coexistence interface.
  *
