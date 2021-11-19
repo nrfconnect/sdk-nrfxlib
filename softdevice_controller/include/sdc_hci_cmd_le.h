@@ -147,10 +147,26 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_EXT_SCAN_ENABLE = 0x2042,
     /** @brief See @ref sdc_hci_cmd_le_ext_create_conn(). */
     SDC_HCI_OPCODE_CMD_LE_EXT_CREATE_CONN = 0x2043,
+    /** @brief See @ref sdc_hci_cmd_le_periodic_adv_create_sync(). */
+    SDC_HCI_OPCODE_CMD_LE_PERIODIC_ADV_CREATE_SYNC = 0x2044,
+    /** @brief See @ref sdc_hci_cmd_le_periodic_adv_create_sync_cancel(). */
+    SDC_HCI_OPCODE_CMD_LE_PERIODIC_ADV_CREATE_SYNC_CANCEL = 0x2045,
+    /** @brief See @ref sdc_hci_cmd_le_periodic_adv_terminate_sync(). */
+    SDC_HCI_OPCODE_CMD_LE_PERIODIC_ADV_TERMINATE_SYNC = 0x2046,
+    /** @brief See @ref sdc_hci_cmd_le_add_device_to_periodic_adv_list(). */
+    SDC_HCI_OPCODE_CMD_LE_ADD_DEVICE_TO_PERIODIC_ADV_LIST = 0x2047,
+    /** @brief See @ref sdc_hci_cmd_le_remove_device_from_periodic_adv_list(). */
+    SDC_HCI_OPCODE_CMD_LE_REMOVE_DEVICE_FROM_PERIODIC_ADV_LIST = 0x2048,
+    /** @brief See @ref sdc_hci_cmd_le_clear_periodic_adv_list(). */
+    SDC_HCI_OPCODE_CMD_LE_CLEAR_PERIODIC_ADV_LIST = 0x2049,
+    /** @brief See @ref sdc_hci_cmd_le_read_periodic_adv_list_size(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_PERIODIC_ADV_LIST_SIZE = 0x204a,
     /** @brief See @ref sdc_hci_cmd_le_read_transmit_power(). */
     SDC_HCI_OPCODE_CMD_LE_READ_TRANSMIT_POWER = 0x204b,
     /** @brief See @ref sdc_hci_cmd_le_set_privacy_mode(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PRIVACY_MODE = 0x204e,
+    /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_receive_enable(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_RECEIVE_ENABLE = 0x2059,
 };
 
 /** @brief LE Extended Create Connection array parameters. */
@@ -738,6 +754,46 @@ typedef __PACKED_STRUCT
     sdc_hci_le_ext_create_conn_array_params_t array_params[];
 } sdc_hci_cmd_le_ext_create_conn_t;
 
+/** @brief LE Periodic Advertising Create Sync command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t options;
+    uint8_t adv_sid;
+    uint8_t adv_address_type;
+    uint8_t adv_address[6];
+    uint16_t skip;
+    uint16_t sync_timeout;
+    uint8_t sync_cte_type;
+} sdc_hci_cmd_le_periodic_adv_create_sync_t;
+
+/** @brief LE Periodic Advertising Terminate Sync command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t sync_handle;
+} sdc_hci_cmd_le_periodic_adv_terminate_sync_t;
+
+/** @brief LE Add Device To Periodic Advertiser List command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t adv_address_type;
+    uint8_t adv_address[6];
+    uint8_t adv_sid;
+} sdc_hci_cmd_le_add_device_to_periodic_adv_list_t;
+
+/** @brief LE Remove Device From Periodic Advertiser List command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t adv_address_type;
+    uint8_t adv_address[6];
+    uint8_t adv_sid;
+} sdc_hci_cmd_le_remove_device_from_periodic_adv_list_t;
+
+/** @brief LE Read Periodic Advertiser List Size return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t periodic_adv_list_size;
+} sdc_hci_cmd_le_read_periodic_adv_list_size_return_t;
+
 /** @brief LE Read Transmit Power return parameter(s). */
 typedef __PACKED_STRUCT
 {
@@ -752,6 +808,13 @@ typedef __PACKED_STRUCT
     uint8_t peer_identity_address[6];
     uint8_t privacy_mode;
 } sdc_hci_cmd_le_set_privacy_mode_t;
+
+/** @brief LE Set Periodic Advertising Receive Enable command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t sync_handle;
+    uint8_t enable;
+} sdc_hci_cmd_le_set_periodic_adv_receive_enable_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -3237,6 +3300,272 @@ uint8_t sdc_hci_cmd_le_set_ext_scan_enable(const sdc_hci_cmd_le_set_ext_scan_ena
  */
 uint8_t sdc_hci_cmd_le_ext_create_conn(const sdc_hci_cmd_le_ext_create_conn_t * p_params);
 
+/** @brief LE Periodic Advertising Create Sync.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.67
+ *
+ * The HCI_LE_Periodic_Advertising_Create_Sync command is used to
+ * synchronize with a periodic advertising train from an advertiser and begin
+ * receiving periodic advertising packets.
+ *
+ * This command may be issued whether or not scanning is enabled and
+ * scanning may be enabled and disabled (see the LE Set Extended Scan Enable
+ * command) while this command is pending. However, synchronization can only
+ * occur when scanning is enabled. While scanning is disabled, no attempt to
+ * synchronize will take place.
+ *
+ * The Options parameter is used to determine whether the Periodic Advertiser
+ * List is used and whether HCI_Periodic_Advertising_Report events for this
+ * periodic advertising train are initially enabled or disabled. If the Periodic
+ * Advertiser List is not used, the Advertising_SID, Advertiser Address_Type, and
+ * Advertiser Address parameters specify the periodic advertising device to listen
+ * to; otherwise they shall be ignored.
+ *
+ * The Advertising_SID parameter, if used, specifies the value that must match
+ * the Advertising SID subfield in the ADI field of the received advertisement for it
+ * to be used to synchronize.
+ *
+ * The Skip parameter specifies the maximum number of consecutive periodic
+ * advertising events that the receiver may skip after successfully receiving a
+ * periodic advertising packet.
+ *
+ * The Sync_Timeout parameter specifies the maximum permitted time between
+ * successful receives. If this time is exceeded, synchronization is lost.
+ *
+ * The Sync_CTE_Type parameter specifies whether to only synchronize to
+ * periodic advertising with certain types of Constant Tone Extension (a value of 0
+ * indicates that the presence or absence of a Constant Tone Extension is
+ * irrelevant). If the periodic advertising has the wrong type of Constant Tone
+ * Extension then:
+ * • If bit 0 of Options is set, the Controller shall ignore this address and SID and
+ *   continue to search for other periodic advertisements.
+ * • Otherwise, the Controller shall cancel the synchronization with the error
+ *   code Unsupported Remote Feature/Unsupported LMP Feature (0x1A).
+ *
+ * If the periodic advertiser changes the type of Constant Tone Extension after the
+ * scanner has synchronized with the periodic advertising, the scanner's Link
+ * Layer shall remain synchronized.
+ *
+ * If the Host sets all the non-reserved bits of the Sync_CTE_Type parameter to
+ * 1, the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * Irrespective of the value of the Skip parameter, the Controller should stop
+ * skipping packets before the Sync_Timeout would be exceeded.
+ *
+ * If the Host issues this command when another
+ * HCI_LE_Periodic_Advertising_Create_Sync command is pending (see page
+ * 2625), the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Host issues this command with bit 0 of Options not set and with
+ * Advertising_SID, Advertising_Address_Type, and Advertiser_Address the
+ * same as those of a periodic advertising train that the Controller is already
+ * synchronized to, the Controller shall return the error code Connection Already
+ * Exists (0x0B).
+ *
+ * If the Host issues this command and the Controller has insufficient resources to
+ * handle any more periodic advertising trains, the Controller shall return the error
+ * code Memory Capacity Exceeded (0x07).
+ *
+ * If bit 1 of the Options parameter is set to 1 and the Controller does not support
+ * the HCI_LE_Set_Periodic_Advertising_Receive_Enable command, the
+ * Controller shall return the error code Connection Failed to be Established /
+ * Synchronization Timeout (0x3E).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Periodic_Advertising_Create_Sync command has been
+ * received, the Controller sends the HCI_Command_Status event to the Host.
+ * An HCI_LE_Periodic_Advertising_Sync_Established event shall be generated
+ * when the Controller starts receiving periodic advertising packets; until the event
+ * is generated, the command is considered to be pending.
+ *
+ * When the Controller receives periodic advertising packets then, if reporting is
+ * enabled, it sends HCI_LE_Periodic_Advertising_Report events to the Host.
+ *
+ * Note: No HCI_Command_Complete event is sent by the Controller to indicate
+ * that this command has been completed. Instead, the
+ * HCI_LE_Periodic_Advertising_Sync_Established event indicates that this
+ * command has been completed.
+ *
+ * Note: The HCI_LE_Periodic_Advertising_Sync_Established event can be sent
+ * as a result of synchronization being canceled by an
+ * HCI_LE_Periodic_Advertising_Create_Sync_Cancel command.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_periodic_adv_create_sync(const sdc_hci_cmd_le_periodic_adv_create_sync_t * p_params);
+
+/** @brief LE Periodic Advertising Create Sync Cancel.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.68
+ *
+ * The HCI_LE_Periodic_Advertising_Create_Sync_Cancel command is used to
+ * cancel the HCI_LE_Periodic_Advertising_Create_Sync command while it is
+ * pending.
+ *
+ * If the Host issues this command while no
+ * HCI_LE_Periodic_Advertising_Create_Sync command is pending, the
+ * Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Periodic_Advertising_Create_Sync_Cancel command has
+ * completed, the Controller sends an HCI_Command_Complete event to the
+ * Host.
+ *
+ * After the HCI_Command_Complete is sent and if the cancellation was
+ * successful, the Controller sends an
+ * HCI_LE_Periodic_Advertising_Sync_Established event to the Host with the
+ * error code Operation Cancelled by Host (0x44).
+ *
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_periodic_adv_create_sync_cancel(void);
+
+/** @brief LE Periodic Advertising Terminate Sync.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.69
+ *
+ * The HCI_LE_Periodic_Advertising_Terminate_Sync command is used to stop
+ * reception of the periodic advertising train identified by the Sync_Handle
+ * parameter.
+ *
+ * If the periodic advertising train corresponding to the Sync_Handle parameter
+ * does not exist, then the Controller shall return the error code Unknown
+ * Advertising Identifier (0x42).
+ *
+ * Following successful completion of this command the Sync_Handle is
+ * destroyed.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Periodic_Advertising_Terminate_Sync command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_periodic_adv_terminate_sync(const sdc_hci_cmd_le_periodic_adv_terminate_sync_t * p_params);
+
+/** @brief LE Add Device To Periodic Advertiser List.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.70
+ *
+ * The HCI_LE_Add_Device_To_Periodic_Advertiser_List command is used to
+ * add an entry, consisting of a single device address and SID, to the Periodic
+ * Advertiser list stored in the Controller. Any additions to the Periodic Advertiser
+ * list take effect immediately. If the entry is already on the list, the Controller shall
+ * return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command when an
+ * HCI_LE_Periodic_Advertising_Create_Sync command is pending, the
+ * Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * When a Controller cannot add an entry to the Periodic Advertiser list because
+ * the list is full, the Controller shall return the error code Memory Capacity
+ * Exceeded (0x07).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Add_Device_To_Periodic_Advertiser_List command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_add_device_to_periodic_adv_list(const sdc_hci_cmd_le_add_device_to_periodic_adv_list_t * p_params);
+
+/** @brief LE Remove Device From Periodic Advertiser List.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.71
+ *
+ * The HCI_LE_Remove_Device_From_Periodic_Advertiser_List command is
+ * used to remove one entry from the list of Periodic Advertisers stored in the
+ * Controller. Removals from the Periodic Advertisers List take effect immediately.
+ *
+ * If the Host issues this command when an
+ * HCI_LE_Periodic_Advertising_Create_Sync command is pending, the
+ * Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * When a Controller cannot remove an entry from the Periodic Advertiser list
+ * because it is not found, the Controller shall return the error code Unknown
+ * Advertising Identifier (0x42).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Remove_Device_From_Periodic_Advertiser_List
+ * command has completed, an HCI_Command_Complete event shall be
+ * generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_remove_device_from_periodic_adv_list(const sdc_hci_cmd_le_remove_device_from_periodic_adv_list_t * p_params);
+
+/** @brief LE Clear Periodic Advertiser List.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.72
+ *
+ * The HCI_LE_Clear_Periodic_Advertiser_List command is used to remove all
+ * entries from the list of Periodic Advertisers in the Controller.
+ *
+ * If this command is used when an HCI_LE_Periodic_Advertising_Create_Sync
+ * command is pending, the Controller shall return the error code Command
+ * Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Clear_Periodic_Advertiser_List command has completed,
+ * an HCI_Command_Complete event shall be generated.
+ *
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_clear_periodic_adv_list(void);
+
+/** @brief LE Read Periodic Advertiser List Size.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.73
+ *
+ * The HCI_LE_Read_Periodic_Advertiser_List_Size command is used to read
+ * the total number of Periodic Advertiser list entries that can be stored in the
+ * Controller.
+ *
+ * Note: The number of entries that can be stored is not fixed and the Controller
+ * can change it at any time (e.g., because the memory used to store the list can
+ * also be used for other purposes).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Read_Periodic_Advertiser_List_Size command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_periodic_adv_list_size(sdc_hci_cmd_le_read_periodic_adv_list_size_return_t * p_return);
+
 /** @brief LE Read Transmit Power.
  *
  * The description below is extracted from Core_v5.2,
@@ -3294,6 +3623,34 @@ uint8_t sdc_hci_cmd_le_read_transmit_power(sdc_hci_cmd_le_read_transmit_power_re
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_privacy_mode(const sdc_hci_cmd_le_set_privacy_mode_t * p_params);
+
+/** @brief LE Set Periodic Advertising Receive Enable.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.88
+ *
+ * The HCI_LE_Set_Periodic_Advertising_Receive_Enable command will enable
+ * or disable reports for the periodic advertising train identified by the
+ * Sync_Handle parameter.
+ *
+ * The Enable parameter determines whether reporting is enabled or disabled. If
+ * the value is the same as the current state, the command has no effect.
+ *
+ * If the periodic advertising train corresponding to the Sync_Handle parameter
+ * does not exist, the Controller shall return the error code Unknown Advertising
+ * Identifier (0x42).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Periodic_Advertising_Receive_Enable command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_periodic_adv_receive_enable(const sdc_hci_cmd_le_set_periodic_adv_receive_enable_t * p_params);
 
 /** @} end of HCI_VS_API */
 

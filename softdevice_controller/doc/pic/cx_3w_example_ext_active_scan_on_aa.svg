@@ -1,0 +1,853 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xml:space="preserve"
+   width="523.68799pt"
+   height="100.14539pt"
+   viewBox="0 0 523.688 100.14538"
+   version="1.1"
+   id="svg352"
+   sodipodi:docname="example_legacy_scannable_adv_Ext. Scanning on AA.svg"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"><metadata
+   id="metadata358"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs356" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="750"
+   inkscape:window-height="480"
+   id="namedview354"
+   showgrid="false"
+   inkscape:zoom="0.44719771"
+   inkscape:cx="641.05778"
+   inkscape:cy="1119.0493"
+   inkscape:window-x="56"
+   inkscape:window-y="27"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="svg352" />
+ <v:documentProperties>
+  <v:userDefs>
+   <v:ud
+   v:nameU="msvNoAutoConnect"
+   v:val="1" />
+  </v:userDefs>
+ </v:documentProperties>
+ <g
+   id="SFixTitle"
+   transform="translate(-30.151553,-17.716512)" />
+ <g
+   id="SContent"
+   transform="translate(-30.151553,-17.716512)">
+  <g
+   id="g347">
+   <g
+   transform="matrix(1,0,0,-1,0,1445.6693)"
+   id="g345">
+    <g
+   transform="translate(17.716537,1368.4252)"
+   v:mID="43"
+   id="g9">
+     <title
+   id="title3">Shape43</title>
+     <g
+   transform="translate(1.4173203,-1.0629921)"
+   id="g7">
+      <text
+   x="9.9382601"
+   y="6.5990548"
+   class="TextStyle0"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,10.031812)"
+   id="text5">BLE_REQUEST</text>
+     </g>
+    </g>
+    <g
+   transform="translate(17.716537,1348.5826)"
+   v:mID="44"
+   id="g17">
+     <title
+   id="title11">Shape44</title>
+     <g
+   transform="translate(1.4173203,-1.0629921)"
+   id="g15">
+      <text
+   x="10.145018"
+   y="6.5990548"
+   class="TextStyle0"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,10.031812)"
+   id="text13">BLE_PRIORITY</text>
+     </g>
+    </g>
+    <g
+   transform="translate(17.716537,1328.0315)"
+   v:mID="1"
+   id="g25">
+     <title
+   id="title19">Shape1</title>
+     <g
+   transform="translate(1.4173203,-1.0629921)"
+   id="g23">
+      <text
+   x="14.862847"
+   y="6.5990548"
+   class="TextStyle0"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,10.031812)"
+   id="text21">BLE_GRANT</text>
+     </g>
+    </g>
+    <g
+   transform="translate(133.93701,1403.1497)"
+   v:mID="210000"
+   id="g43">
+     <title
+   id="title27">Shape210000</title>
+     <g
+   v:mID="2"
+   id="g31">
+      <title
+   id="title29">Shape2</title>
+     </g>
+     <g
+   v:mID="3"
+   id="g41">
+      <title
+   id="title33">Shape3</title>
+      <path
+   d="m 0,0 h 74.409447 v 0 24.094488 0 H 0 v 0 V 0"
+   stroke="none"
+   stroke-width="0"
+   fill="#88b7e4"
+   fill-rule="evenodd"
+   id="path35" />
+      <g
+   transform="translate(-0.7086601,-0.70866203)"
+   id="g39">
+       <text
+   x="14.137615"
+   y="4.9492912"
+   class="TextStyle1"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,15.230552)"
+   id="text37">ADV_EXT_IND</text>
+      </g>
+     </g>
+    </g>
+    <g
+   transform="translate(248.0315,1403.1497)"
+   v:mID="410000"
+   id="g61">
+     <title
+   id="title45">Shape410000</title>
+     <g
+   v:mID="4"
+   id="g49">
+      <title
+   id="title47">Shape4</title>
+     </g>
+     <g
+   v:mID="5"
+   id="g59">
+      <title
+   id="title51">Shape5</title>
+      <path
+   d="m 0,0 h 79.370071 v 0 24.094488 0 H 0 v 0 V 0"
+   stroke="none"
+   stroke-width="0"
+   fill="#88b7e4"
+   fill-rule="evenodd"
+   id="path53" />
+      <g
+   transform="translate(-0.70866394,-0.70866203)"
+   id="g57">
+       <text
+   x="15.608978"
+   y="4.9492912"
+   class="TextStyle1"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,15.230552)"
+   id="text55">AUX_ADV_IND</text>
+      </g>
+     </g>
+    </g>
+    <g
+   transform="translate(442.2047,1403.8583)"
+   v:mID="610000"
+   id="g79">
+     <title
+   id="title63">Shape610000</title>
+     <g
+   v:mID="6"
+   id="g67">
+      <title
+   id="title65">Shape6</title>
+     </g>
+     <g
+   v:mID="7"
+   id="g77">
+      <title
+   id="title69">Shape7</title>
+      <path
+   d="m 0,0 h 85.748032 v 0 24.094488 0 H 0 v 0 V 0"
+   stroke="none"
+   stroke-width="0"
+   fill="#88b7e4"
+   fill-rule="evenodd"
+   id="path71" />
+      <g
+   transform="translate(-0.70866394,-0.70866203)"
+   id="g75">
+       <text
+   x="16.892836"
+   y="4.9492912"
+   class="TextStyle1"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,15.230552)"
+   id="text73">AUX_SCAN_RSP</text>
+      </g>
+     </g>
+    </g>
+    <g
+   transform="translate(342.99213,1403.8583)"
+   v:mID="810000"
+   id="g97">
+     <title
+   id="title81">Shape810000</title>
+     <g
+   v:mID="8"
+   id="g85">
+      <title
+   id="title83">Shape8</title>
+     </g>
+     <g
+   v:mID="9"
+   id="g95">
+      <title
+   id="title87">Shape9</title>
+      <path
+   d="m 0,0 h 85.748032 v 0 24.094488 0 H 0 v 0 V 0"
+   stroke="none"
+   stroke-width="0"
+   fill="#88b7e4"
+   fill-rule="evenodd"
+   id="path89" />
+      <g
+   transform="translate(-0.70866394,-0.70866203)"
+   id="g93">
+       <text
+   x="16.129578"
+   y="4.9492912"
+   class="TextStyle1"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,15.230552)"
+   id="text91">AUX_SCAN_REQ</text>
+      </g>
+     </g>
+    </g>
+    <g
+   transform="translate(249.44882,1388.9763)"
+   v:mID="10"
+   id="g103">
+     <title
+   id="title99">Shape10</title>
+     <path
+   d="M 0,0 H 14.173228"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path101" />
+    </g>
+    <g
+   transform="rotate(90,-557.36207,822.75583)"
+   v:mID="11"
+   id="g109">
+     <title
+   id="title105">Shape11</title>
+     <path
+   d="M 0,0 H 22.677166"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   stroke-dasharray="4, 3"
+   fill="none"
+   stroke-opacity="0.388235"
+   id="path107" />
+    </g>
+    <g
+   transform="rotate(90,-560.90556,809.64575)"
+   v:mID="12"
+   id="g115">
+     <title
+   id="title111">Shape12</title>
+     <path
+   d="M 0,0 H 31.889763"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   stroke-dasharray="4, 3"
+   fill="none"
+   stroke-opacity="0.388235"
+   id="path113" />
+    </g>
+    <g
+   transform="translate(233.85826,1387.5591)"
+   v:mID="1310000"
+   id="g133">
+     <title
+   id="title117">Shape1310000</title>
+     <g
+   v:mID="13"
+   id="g121">
+      <title
+   id="title119">Shape13</title>
+     </g>
+     <g
+   v:mID="14"
+   id="g131">
+      <title
+   id="title123">Shape14</title>
+      <g
+   transform="translate(-9.212598,-8.801575)"
+   id="g129">
+       <text
+   x="0"
+   y="0"
+   class="TextStyle0"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,16.764093)"
+   id="text125">t</text>
+       <text
+   x="3.6840427"
+   y="0"
+   class="TextStyle2"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,16.764093)"
+   id="text127">aa</text>
+      </g>
+     </g>
+    </g>
+    <g
+   transform="rotate(90,-508.81887,851.81103)"
+   v:mID="15"
+   id="g139">
+     <title
+   id="title135">Shape15</title>
+     <path
+   d="M 0,0 H 43.228348"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   stroke-dasharray="4, 3"
+   fill="none"
+   stroke-opacity="0.388235"
+   id="path137" />
+    </g>
+    <g
+   transform="rotate(90,-512.00782,848.26768)"
+   v:mID="16"
+   id="g145">
+     <title
+   id="title141">Shape16</title>
+     <path
+   d="M 0,0 H 66.614174"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   stroke-dasharray="4, 3"
+   fill="none"
+   stroke-opacity="0.388235"
+   id="path143" />
+    </g>
+    <g
+   transform="translate(297.6378,1366.2992)"
+   v:mID="1710000"
+   id="g163">
+     <title
+   id="title147">Shape1710000</title>
+     <g
+   v:mID="17"
+   id="g151">
+      <title
+   id="title149">Shape17</title>
+     </g>
+     <g
+   v:mID="18"
+   id="g161">
+      <title
+   id="title153">Shape18</title>
+      <g
+   transform="translate(-3.8976378,-8.801575)"
+   id="g159">
+       <text
+   x="0"
+   y="0"
+   class="TextStyle0"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,16.764093)"
+   id="text155">t</text>
+       <text
+   x="3.6840427"
+   y="0"
+   class="TextStyle2"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,16.764093)"
+   id="text157">radio</text>
+      </g>
+     </g>
+    </g>
+    <g
+   transform="translate(344.40945,1369.8425)"
+   v:mID="19"
+   id="g169">
+     <title
+   id="title165">Shape19</title>
+     <path
+   d="M 0,0 H 14.173228"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path167" />
+    </g>
+    <g
+   transform="translate(320.31497,1369.8425)"
+   v:mID="20"
+   id="g175">
+     <title
+   id="title171">Shape20</title>
+     <path
+   d="M 0,0 H 14.173228"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path173" />
+    </g>
+    <g
+   transform="rotate(90,-454.25196,896.45664)"
+   v:mID="21"
+   id="g181">
+     <title
+   id="title177">Shape21</title>
+     <path
+   d="M 0,0 H 53.149605"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   stroke-dasharray="4, 3"
+   fill="none"
+   stroke-opacity="0.388235"
+   id="path179" />
+    </g>
+    <g
+   transform="rotate(90,-462.4015,897.874)"
+   v:mID="22"
+   id="g187">
+     <title
+   id="title183">Shape22</title>
+     <path
+   d="M 0,0 H 66.614174"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   stroke-dasharray="4, 3"
+   fill="none"
+   stroke-opacity="0.388235"
+   id="path185" />
+    </g>
+    <g
+   transform="translate(396.14172,1366.2992)"
+   v:mID="2310000"
+   id="g205">
+     <title
+   id="title189">Shape2310000</title>
+     <g
+   v:mID="23"
+   id="g193">
+      <title
+   id="title191">Shape23</title>
+     </g>
+     <g
+   v:mID="24"
+   id="g203">
+      <title
+   id="title195">Shape24</title>
+      <g
+   transform="translate(-3.8976378,-8.801575)"
+   id="g201">
+       <text
+   x="0"
+   y="0"
+   class="TextStyle0"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,16.764093)"
+   id="text197">t</text>
+       <text
+   x="3.6840427"
+   y="0"
+   class="TextStyle2"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,16.764093)"
+   id="text199">radio</text>
+      </g>
+     </g>
+    </g>
+    <g
+   transform="translate(442.9134,1369.8425)"
+   v:mID="25"
+   id="g211">
+     <title
+   id="title207">Shape25</title>
+     <path
+   d="M 0,0 H 14.173228"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path209" />
+    </g>
+    <g
+   transform="translate(418.8189,1369.8425)"
+   v:mID="26"
+   id="g217">
+     <title
+   id="title213">Shape26</title>
+     <path
+   d="M 0,0 H 14.173228"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path215" />
+    </g>
+    <g
+   transform="translate(135.35434,1389.685)"
+   v:mID="27"
+   id="g223">
+     <title
+   id="title219">Shape27</title>
+     <path
+   d="M 0,0 H 14.173228"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path221" />
+    </g>
+    <g
+   transform="rotate(90,-614.76373,765.35426)"
+   v:mID="28"
+   id="g229">
+     <title
+   id="title225">Shape28</title>
+     <path
+   d="M 0,0 H 22.677166"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   stroke-dasharray="4, 3"
+   fill="none"
+   stroke-opacity="0.388235"
+   id="path227" />
+    </g>
+    <g
+   transform="rotate(90,-618.30708,752.59842)"
+   v:mID="29"
+   id="g235">
+     <title
+   id="title231">Shape29</title>
+     <path
+   d="M 0,0 H 31.181103"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   stroke-dasharray="4, 3"
+   fill="none"
+   stroke-opacity="0.388235"
+   id="path233" />
+    </g>
+    <g
+   transform="translate(120.47244,1388.2677)"
+   v:mID="3010000"
+   id="g253">
+     <title
+   id="title237">Shape3010000</title>
+     <g
+   v:mID="30"
+   id="g241">
+      <title
+   id="title239">Shape30</title>
+     </g>
+     <g
+   v:mID="31"
+   id="g251">
+      <title
+   id="title243">Shape31</title>
+      <g
+   transform="translate(-9.212598,-8.801575)"
+   id="g249">
+       <text
+   x="0"
+   y="0"
+   class="TextStyle0"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,16.764093)"
+   id="text245">t</text>
+       <text
+   x="3.6840427"
+   y="0"
+   class="TextStyle2"
+   fill="#000000"
+   opacity="1"
+   transform="matrix(1,0,0,-1,0,16.764093)"
+   id="text247">aa</text>
+      </g>
+     </g>
+    </g>
+    <g
+   transform="translate(528.66144,1369.1339)"
+   v:mID="32"
+   id="g259">
+     <title
+   id="title255">Dynamic connector.32</title>
+     <path
+   d="M 0,0.70866144 H 23.385826"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path257" />
+    </g>
+    <g
+   transform="translate(115.51181,1349.2914)"
+   v:mID="33"
+   id="g265">
+     <title
+   id="title261">Dynamic connector.33</title>
+     <path
+   d="M 0,0.70866144 H 220.39371"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path263" />
+    </g>
+    <g
+   transform="translate(114.80313,1335.8268)"
+   v:mID="34"
+   id="g271">
+     <title
+   id="title267">Dynamic connector.34</title>
+     <path
+   d="M 0,0.70866144 H 438.66144"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path269" />
+    </g>
+    <g
+   transform="translate(145.2756,1379.7637)"
+   v:mID="35"
+   id="g277">
+     <title
+   id="title273">Dynamic connector.35</title>
+     <path
+   d="M 0,0.70866144 H 63.779526"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path275" />
+    </g>
+    <g
+   transform="translate(335.90552,1359.9213)"
+   v:mID="36"
+   id="g283">
+     <title
+   id="title279">Dynamic connector.36</title>
+     <path
+   d="M 0,0.70866144 H 99.212601"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path281" />
+    </g>
+    <g
+   transform="translate(527.95276,1369.8425)"
+   v:mID="37"
+   id="g289">
+     <title
+   id="title285">Dynamic connector.37</title>
+     <path
+   d="M 0,9.9212589 V 0"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path287" />
+    </g>
+    <g
+   transform="translate(335.90552,1350)"
+   v:mID="38"
+   id="g295">
+     <title
+   id="title291">Dynamic connector.38</title>
+     <path
+   d="M 0,10.629922 V 0"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path293" />
+    </g>
+    <g
+   transform="translate(435.1181,1350)"
+   v:mID="39"
+   id="g301">
+     <title
+   id="title297">Dynamic connector.39</title>
+     <path
+   d="M 0,10.629922 V 0"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path299" />
+    </g>
+    <g
+   transform="translate(435.1181,1349.9999)"
+   v:mID="40"
+   id="g307">
+     <title
+   id="title303">Dynamic connector.40</title>
+     <path
+   d="M 0,0 116.92913,0.70866144"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path305" />
+    </g>
+    <g
+   transform="translate(209.05513,1369.8425)"
+   v:mID="41"
+   id="g313">
+     <title
+   id="title309">Dynamic connector.41</title>
+     <path
+   d="M 0,10.629922 V 0"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path311" />
+    </g>
+    <g
+   transform="translate(209.05511,1369.1339)"
+   v:mID="45"
+   id="g319">
+     <title
+   id="title315">Dynamic connector.45</title>
+     <path
+   d="M 0,0.70866144 H 55.984253"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path317" />
+    </g>
+    <g
+   transform="translate(265.03937,1379.055)"
+   v:mID="46"
+   id="g325">
+     <title
+   id="title321">Dynamic connector.46</title>
+     <path
+   d="M 0,0.70866144 H 262.91339"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path323" />
+    </g>
+    <g
+   transform="translate(145.2756,1369.8425)"
+   v:mID="47"
+   id="g331">
+     <title
+   id="title327">Dynamic connector.47</title>
+     <path
+   d="M 0,0 V 10.629922"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path329" />
+    </g>
+    <g
+   transform="translate(115.5118,1369.1339)"
+   v:mID="48"
+   id="g337">
+     <title
+   id="title333">Dynamic connector.48</title>
+     <path
+   d="M 0,0.70866144 H 29.763781"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path335" />
+    </g>
+    <g
+   transform="translate(265.03937,1369.8425)"
+   v:mID="49"
+   id="g343">
+     <title
+   id="title339">Dynamic connector.49</title>
+     <path
+   d="M 0,9.9212589 V 0"
+   stroke="#000000"
+   stroke-width="0.75"
+   stroke-linecap="round"
+   fill="none"
+   id="path341" />
+    </g>
+   </g>
+  </g>
+ </g>
+ <style
+   type="text/css"
+   id="style350"><![CDATA[ .TextStyle2 {font-family:Calibri;font-size:9.165331px;}.TextStyle1 {font-family:Calibri;font-size:8.248819px;}.TextStyle0 {font-family:Calibri;font-size:10.998425px;} ]]></style>
+</svg>

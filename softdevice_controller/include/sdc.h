@@ -38,6 +38,10 @@ extern "C" {
 /** @brief Default maximum number of concurrent periodic advertisers. */
 #define SDC_DEFAULT_PERIODIC_ADV_COUNT 0
 
+/** @brief Default maximum number of concurrent synchronizations
+ * to periodic advertisers. */
+#define SDC_DEFAULT_PERIODIC_SYNC_COUNT 0
+
 /** @brief Default maximum number of concurrent slave links. */
 #define SDC_DEFAULT_SLAVE_COUNT   1
 
@@ -69,11 +73,11 @@ extern "C" {
  */
 #define SDC_DEFAULT_SCAN_BUFFER_COUNT 3
 
+/** @brief Default maximum number of periodic advertising reports available. */
+#define SDC_DEFAULT_PERIODIC_SYNC_BUFFER_COUNT 2
+
 /** @brief Default advertising data size when legacy advertising is supported. */
 #define SDC_DEFAULT_ADV_BUF_SIZE 31
-
-/** @brief Default advertising data size when extended advertising is supported. */
-#define SDC_DEFAULT_ADV_BUF_SIZE_EXT 255
 
 /** @brief Default connection event length. */
 #define SDC_DEFAULT_EVENT_LENGTH_US 7500UL
@@ -162,8 +166,11 @@ extern "C" {
      (__MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data)):\
      (__MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data)))
 
-/** @brief Maximum number of bytes required per advertiser. */
-#define SDC_MEM_DEFAULT_ADV_SIZE SDC_MEM_PER_ADV_SET(SDC_DEFAULT_ADV_BUF_SIZE_EXT)
+/** Memory required per periodic sync
+ *
+ * @param[in] buffer_count The number of periodic synchronization receive buffers.
+ */
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (160 + 264 * (buffer_count))
 
 /** @} end of sdc_mem_defines */
 
@@ -190,11 +197,11 @@ enum sdc_cfg_type
 {
     /** No configuration update. */
     SDC_CFG_TYPE_NONE         = 0,
-    /** Number of concurrent master roles.
+    /** Maximum number of concurrent master roles.
      *  See also @ref sdc_cfg_t::master_count.
      */
     SDC_CFG_TYPE_MASTER_COUNT = 1,
-    /** Number of concurrent slave roles.
+    /** Maximum number of concurrent slave roles.
      *  See also @ref sdc_cfg_t::slave_count.
      */
     SDC_CFG_TYPE_SLAVE_COUNT  = 2,
@@ -206,7 +213,7 @@ enum sdc_cfg_type
      * See also @ref sdc_cfg_t::event_length.
      */
     SDC_CFG_TYPE_EVENT_LENGTH = 4,
-    /** Number of concurrent advertisers.
+    /** Maximum number of concurrent advertisers.
      *  See also @ref sdc_cfg_t::adv_count.
      */
     SDC_CFG_TYPE_ADV_COUNT    = 5,
@@ -218,10 +225,19 @@ enum sdc_cfg_type
      *  See also @ref sdc_cfg_t::adv_buffer_cfg.
      */
     SDC_CFG_TYPE_ADV_BUFFER_CFG = 7,
-    /** Number of concurrent periodic advertisers.
+    /** Maximum number of concurrent periodic advertisers.
      *  See also @ref sdc_cfg_t::periodic_adv_count.
      */
     SDC_CFG_TYPE_PERIODIC_ADV_COUNT = 8,
+    /** Maximum number of concurrent synchronizations to periodic advertisers
+     *  See also @ref sdc_cfg_t::periodic_sync_count.
+     */
+    SDC_CFG_TYPE_PERIODIC_SYNC_COUNT = 9,
+    /** Number of periodic synchronization receive buffers per
+     *  synchronization to a periodic advertiser.
+     *  See also @ref sdc_cfg_t::periodic_sync_buffer_cfg.
+     */
+    SDC_CFG_TYPE_PERIODIC_SYNC_BUFFER_CFG = 10,
 };
 
 
@@ -253,22 +269,11 @@ typedef struct
 } sdc_cfg_event_length_t;
 
 
+/** @brief Buffer count configuration. */
 typedef struct
 {
-    /** @brief Number of buffers available in the scanner.
-     *
-     * The buffers are used for processing incoming packets
-     * and storing advertising reports.
-     *
-     * The minimum allowed number of buffers is 2.
-     *
-     * It is recommended to support at least three buffers,
-     * otherwise the scan response report will likely not be generated.
-     *
-     * Default: @ref SDC_DEFAULT_SCAN_BUFFER_COUNT.
-     */
-    uint8_t count;
-} sdc_cfg_scan_buffer_cfg_t;
+    uint8_t count;   /**< Number of buffers. */
+} sdc_cfg_buffer_count_t;
 
 
 typedef struct
@@ -309,9 +314,15 @@ typedef union
      */
     sdc_cfg_role_count_t   adv_count;
     /** Configures the maximum number of advertising reports available in the scanner.
-     *  Default: See @ref sdc_cfg_scan_buffer_cfg_t.
+     *
+     *  The minimum allowed number of buffers is 2.
+     *
+     *  It is recommended to support at least three buffers,
+     *  otherwise the scan response report will likely not be generated.
+     *
+     *  Default: @ref SDC_DEFAULT_SCAN_BUFFER_COUNT.
      */
-    sdc_cfg_scan_buffer_cfg_t scan_buffer_cfg;
+    sdc_cfg_buffer_count_t scan_buffer_cfg;
     /** Configures the maximum advertising data per advertising set.
      *  Default: See @ref sdc_cfg_adv_buffer_cfg_t.
      */
@@ -321,6 +332,22 @@ typedef union
      *  Default: @ref SDC_DEFAULT_PERIODIC_ADV_COUNT.
      */
     sdc_cfg_role_count_t periodic_adv_count;
+    /** Configures the maximum number of concurrent synchronizations
+     *  to periodic advertisers.
+     *  Default: @ref SDC_DEFAULT_PERIODIC_SYNC_COUNT.
+     */
+    sdc_cfg_role_count_t periodic_sync_count;
+    /** Configures the maximum number of periodic advertising reports available
+     *  for each synchronization to a periodic advertiser.
+     *
+     *  Each synchronization to a periodic advertiser allocates its own buffer
+     *  pool.
+     *
+     *  The minimum allowed number of buffers is 2.
+     *
+     *  Default: @ref SDC_DEFAULT_PERIODIC_SYNC_BUFFER_COUNT.
+     */
+    sdc_cfg_buffer_count_t periodic_sync_buffer_cfg;
 } sdc_cfg_t;
 
 
@@ -360,8 +387,10 @@ int32_t sdc_init(sdc_fault_handler_t fault_handler);
  * @param[in]  p_resource_cfg   Configuration to be changed.
  *
  * @returns Required memory size for the current configuration in bytes.
- * @retval -NRF_EOPNOTSUPP    Unsupported configuration
- * @retval -NRF_EINVAL        Invalid argument provided
+ * @retval -NRF_EOPNOTSUPP    Unsupported configuration.
+ * @retval -NRF_ENOMEM        Configuration required over 64 kB of RAM that is
+                              not supported currently.
+ * @retval -NRF_EINVAL        Invalid argument provided.
  * @retval -NRF_EPERM         This API was called after @ref sdc_enable().
  */
 int32_t sdc_cfg_set(uint8_t config_tag,
@@ -545,6 +574,21 @@ int32_t sdc_support_le_coded_phy(void);
  * @retval -NRF_EOPNOTSUPP  LE Periodic advertising is not supported.
  */
 int32_t sdc_support_le_periodic_adv(void);
+
+/** @brief Support LE Periodic Advertising in the Synchronization state
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the Synchronization State.
+ *
+ * The application shall also call @ref sdc_support_ext_scan() to enable
+ * support for scanning for periodic advertisers before enabling support for
+ * this feature.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Periodic advertising is not supported.
+ */
+int32_t sdc_support_le_periodic_sync(void);
 
 #ifdef __cplusplus
 }

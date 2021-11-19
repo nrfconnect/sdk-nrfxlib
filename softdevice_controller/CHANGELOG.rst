@@ -18,19 +18,31 @@ Added
 =====
 
 * Added experimental support for Periodic Advertising.
+  Use :c:func:`sdc_support_le_periodic_adv` and/or :c:func:`sdc_support_le_periodic_sync` to enable this feature.
   ``SDC_CFG_TYPE_PERIODIC_ADV_COUNT`` can be used to set the number of periodic advertisers.
+  ``SDC_CFG_TYPE_PERIODIC_SYNC_COUNT`` can be used to set the number of synchronizations to periodic advertisers.
+  ``SDC_CFG_TYPE_PERIODIC_SYNC_BUFFER_CFG`` can be used to configure the number of periodic synchronization report buffers.
   The following HCI commands are now supported (DRGN-11505):
 
     * LE Set Periodic Advertising Data
     * LE Set Periodic Advertising Enable
     * LE Set Periodic Advertising Parameters
+    * LE Periodic Advertising Create Sync
+    * LE Periodic Advertising Create Sync Cancel
+    * LE Periodic Advertising Terminate Sync
+    * LE Add Device To Periodic Advertiser List
+    * LE Remove Device From Periodic Advertiser List
+    * LE Clear Periodic Advertiser List
+    * LE Read Periodic Advertiser List Size
+    * LE Set Periodic Advertising Receive Enable
 
 Changes
 =======
 
-* The default advertising data size is now 31 bytes, even for extended advertising.
+* The default advertising data size is now 31 bytes, even for extended advertising (DRGN-16209).
   ``SDC_CFG_TYPE_ADV_BUFFER_CFG`` can be used to change the maximum buffer size before enabling the controller.
   The required memory for an advertising set with a given advertising data size will then be returned by ``SDC_MEM_PER_ADV_SET``.
+* The type ``sdc_cfg_scan_buffer_cfg_t`` is replaced with ``sdc_cfg_buffer_count_t``.
 
 Bug fixes
 =========
@@ -38,6 +50,13 @@ Bug fixes
 * Fixed an issue where the active scanner could assert when performing extended scanning on Coded PHY with a full whitelist (DRGN-16113 and DRGN-16013).
 * Fixed an issue where extended advertising reports with advertising data with length 228 were lost (DRGN-16341).
 * Fixed an issue where the peripheral would always listen on data channel 0 if the initiator sent a connection request with all channels marked as bad (DRGN-16394).
+* Fixed an issue where an assert may occur when switching from a faster to a slower PHY (DRGN-15547).
+  The assert would only occur when:
+
+  * :c:union:`sdc_cfg_t` with :c:member:`event_length` is set to less than 2500 us and the PHY is updated from 2M to 1M, or from either 1M or 2M to Coded PHY.
+  * :c:union:`sdc_cfg_t` with :c:member:`event_length` is set to less than 7500 us and a PHY update to Coded PHY is performed.
+
+* Fixed an issue where the host callback was called after an advertising event even if there were no events generated (DRGN-16405).
 
 nRF Connect SDK v1.7.0
 **********************
