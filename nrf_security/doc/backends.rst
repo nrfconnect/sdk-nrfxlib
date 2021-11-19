@@ -11,16 +11,12 @@ The nrf_security module supports multiple enabled backends at the same time.
 This mechanism is intended to extend the available feature set of hardware-accelerated cryptography or to provide alternative implementations of the Mbed TLS APIs.
 Enabling one or more backends adds more configuration options grouped into classes of cryptographic algorithms.
 
-Note that some cryptographic features are provided as an option regardless of the backend enabled.
-In such cases, the feature is compiled using open-source software from the original Arm Mbed TLS project.
-An example of this is `SHA-512`, which is only accessible using open-source software from the Arm Mbed TLS project.
-
 The configuration options added after enabling one or more backends will change based on the number of enabled backends.
 Some configuration options allow for adding support from multiple backends by utilizing the Mbed TLS glue layer, while other provide a selection between the enabled backends (as radio buttons).
 
 The nrf_security module supports the following backends:
 
-* Arm CryptoCell cc3xx (in nRF52840, nRF9160, and nRF5340)
+* Arm CryptoCell cc3xx
 * nrf_oberon binary library
 * Original Mbed TLS
 
@@ -47,15 +43,21 @@ Enabling the Arm CryptoCell cc3xx backend
 
 The Arm CryptoCell cc3xx backend can be enabled by setting the :kconfig:`CONFIG_CC3XX_BACKEND` Kconfig variable.
 
-.. note:: This backend is only available in nRF52840 and nRF9160.
 
+Using the Arm CryptoCell cc3xx backend
+======================================
+
+To use the :ref:`nrf_cc3xx_mbedcrypto_readme` as a backend, the Arm CryptoCell cc310/cc312 hardware must be first initialized.
+
+The Arm CryptoCell cc3xx hardware is initialized in :file:`<NCS>/nrf/drivers/hw_cc310/hw_cc310.c` and is controlled with the :kconfig:`CONFIG_HW_CC3XX` Kconfig variable.
+The Kconfig variable has a default value of 'y' when cc3xx is available in the SoC.
 
 .. _nrf_security_backends_oberon:
 
 nrf_oberon backend
 ******************
 
-The :ref:`nrf_oberon_readme` library is a binary library that provides select cryptographic algorithms optimized for use in nRF devices.
+The :ref:`nrf_oberon_readme` is distributed as a closed-source binary that provides select cryptographic algorithms optimized for use in nRF devices.
 This provides faster execution than the original Mbed TLS implementation.
 
 The nrf_oberon backend provides support for AES ciphers, SHA-1, SHA-256, and ECC (ECDH, ECDSA, and ECJPAKE) using NIST curve secp256r1.
@@ -83,12 +85,3 @@ Enabling the original Mbed TLS backend
 ======================================
 
 To enable the original Mbed TLS backend, set the :kconfig:`CONFIG_MBEDTLS_VANILLA_BACKEND` Kconfig variable to true.
-
-
-Using the nrf_cc3xx_mbedcrypto as backend
-*****************************************
-
-To use the :ref:`nrf_cc3xx_mbedcrypto_readme` as a backend, the Arm CryptoCell cc310/cc312 hardware must be first initialized.
-
-The Arm CryptoCell cc3xx hardware is initialized in :file:`<NCS>/nrf/drivers/hw_cc310/hw_cc310.c` and is controlled with the :kconfig:`CONFIG_HW_CC3XX` Kconfig variable.
-The Kconfig variable has a default value of 'y' when cc3xx is available in the SoC.

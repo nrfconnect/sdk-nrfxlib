@@ -7,42 +7,33 @@ Backend configurations and supported features
    :local:
    :depth: 2
 
-This section covers the configurations available when one or more nrf_security backends are enabled.
-This includes linking directly to the backend library or utilizing the Mbed TLS glue layer.
+This section covers the configurations available when either linking directly to a backend library or when using the Mbed TLS glue layer.
 
 .. _nrf_security_backend_config_multiple:
 
 Configuring multiple backends
 *****************************
 
-Different backends can support different cryptographic algorithms.
-The configuration options listed in subsequent sections are either *Glue*, *Shared*, or *Choice*.
+Different backends support different cryptographic algorithms.
+The algorithms listed in subsequent sections are implemented either as *Glue* or *Choice*.
 
 Glue
-   The configuration options will list `Glue` for the cryptographic algorithms that can be enabled in multiple backends at the same time.
-Shared
-   For some cryptographic features, the implementation is only available in the :ref:`nrf_security_backends_orig_mbedtls`.
-   For convenience, this is made available in any backend, although the implementation will always use open-source code from the Arm Mbed TLS project.
+   Algorithms that can be enabled in multiple backends simultaneously.
 Choice
-   The configuration options will list `Choice` for the cryptographic algorithms that are supported by multiple backends, but only one of them can be enabled at the same time.
-   To enable the cryptographic algorithm, a `base` configuration must be enabled, and then the backend can be selected using a setting prefixed with ``CONFIG_CHOICE_``.
+   Algorithms that can not be enabled in multiple backends simultaneously.
+   To enable the algorithm, a `base` configuration must first be enabled, and then the backend is chosen using a Kconfig option prefixed with ``CONFIG_CHOICE_``.
+   If no backend is explicitly chosen it will be selected automatically with :ref:`nrf_security_backends_cc3xx` having precedence over :ref:`nrf_security_backends_oberon` and :ref:`nrf_security_backends_oberon` having precedence over :ref:`nrf_security_backends_orig_mbedtls`.
 
-If only a subset of the backends supports a given feature, this information is provided in the tables.
-
-.. note::
-   The first ordered item in the list of available choices is selected by default.
-
+It will be noted in the below tables when only some backends support a feature.
 
 AES configuration
 *****************
 
-AES core support can be enabled by setting the :kconfig:`CONFIG_MBEDTLS_AES_C` Kconfig variable.
-Enabling AES core support enables AES ECB cipher mode and allows for the following ciphers to be configured: CTR, OFB, CFB, CBC, XTS, CMAC, CCM/CCM*, and GCM.
+The AES core is enabled with the Kconfig option :kconfig:`CONFIG_MBEDTLS_AES_C`.
+This enables AES ECB cipher mode and allows the ciphers and modes CTR, OFB, CFB, CBC, XTS, CMAC, CCM/CCM*, and GCM to be configured.
 
 Single backend
 ==============
-
-AES core support can be enabled by setting the :kconfig:`CONFIG_MBEDTLS_AES_C` Kconfig variable.
 
 +--------------+------------------------------------+
 | Cipher mode  | Configurations                     |
@@ -56,8 +47,6 @@ AES core support can be enabled by setting the :kconfig:`CONFIG_MBEDTLS_AES_C` K
 Multiple backends
 =================
 
-AES core support can be enabled by setting setting the :kconfig:`CONFIG_MBEDTLS_AES_C` Kconfig variable, and one or more of the following Kconfig variables:
-
 +--------------+----------------+------------------------------------------------------------+
 | Cipher mode  | Support        | Configurations                                             |
 +==============+================+============================================================+
@@ -69,9 +58,8 @@ AES core support can be enabled by setting setting the :kconfig:`CONFIG_MBEDTLS_
 +--------------+----------------+------------------------------------------------------------+
 
 .. note::
-   * Enabling the :ref:`nrf_security_backends_oberon` replaces select internal APIs for AES block encrypt/decrypt and set key operations for encrypt/decrypt.
-   * If both nrf_oberon backend and :ref:`nrf_security_backends_orig_mbedtls` are enabled, the implementation from
-     nrf_oberon backend will provide support for AES ECB.
+   * The :ref:`nrf_security_backends_oberon` uses some functionality from Original Mbed TLS for AES operations.
+   * The :ref:`nrf_security_backends_oberon` has priority over the :ref:`nrf_security_backends_orig_mbedtls`.
 
 Feature support
 ===============
@@ -855,7 +843,7 @@ SHA support can be enabled by setting Kconfig according to the following table:
 +--------------+--------------------+--------------------------------------+
 | SHA-256      |                    | :kconfig:`CONFIG_MBEDTLS_SHA256_C`   |
 +--------------+--------------------+--------------------------------------+
-| SHA-512      | Shared             | :kconfig:`CONFIG_MBEDTLS_SHA512_C`   |
+| SHA-512      |                    | :kconfig:`CONFIG_MBEDTLS_SHA512_C`   |
 +--------------+--------------------+--------------------------------------+
 
 Multiple backends
@@ -907,7 +895,7 @@ SHA-256 support can be configured by setting the :kconfig:`CONFIG_MBEDTLS_SHA512
 +--------------+-----------------+-----------------------------------------------------------------+
 | Algorithm    | Support         | Backend selection                                               |
 +==============+=================+=================================================================+
-| SHA-512      | Shared          | :kconfig:`CONFIG_MBEDTLS_SHA512_C`                              |
+| SHA-512      |                 | :kconfig:`CONFIG_MBEDTLS_SHA512_C`                              |
 +--------------+-----------------+-----------------------------------------------------------------+
 
 .. note::
