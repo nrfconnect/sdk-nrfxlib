@@ -349,7 +349,7 @@ bool nrf_gzll_add_packet_to_tx_fifo(uint32_t pipe, uint8_t const * p_payload, ui
  *
  * @param pipe      Pipe from which to fetch the payload. This value must be < NRF_GZLL_CONST_PIPE_COUNT.
  * @param p_payload Pointer to copy the payload to.
- * @param p_length  Length must be at least as large as the the number of bytes
+ * @param p_length  Length must be at least as large as the number of bytes
  *                  in the received payload length.
  *
  * @retval true  If the fetch was successful.
