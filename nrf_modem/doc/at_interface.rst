@@ -20,10 +20,27 @@ Initialization
 
 The AT interface can be used once the application initializes the Modem library in :c:enum:`NORMAL_MODE` by calling :c:func:`nrf_modem_init`.
 
+The API and the C library
+*************************
+
+The AT interface is modelled after the C library :c:func:`printf` and :c:func:`scanf` functions, which are two powerful functions to print output and scan input according to a specified format.
+Internally, the AT interface implementation uses the :c:func:`vsnprintf` and :c:func:`vsscanf` functions from the standard C library, therefore, the behavior of this API is affected by that of said functions.
+
+.. important::
+
+The Modem library requires a C library implementation that provides both :c:func:`vsnprintf` and :c:func:`vsscanf`.
+
+Depending on which implementaton of the C library is built with the application, some format specifiers and length modifiers might not be supported or may not behave as expected when using the AT interface functions.
+This might be the case for format specifiers or length modifiers introduced in newer version of the C standard, as is the case for the `hh`, `ll`, `j`, `z` and `t` length modifiers introduced in C99.
+
+Newlibc is a common C library for embedded systems that can be used in |NCS| which comes in two flavours, "nano" and "vanilla", the former having a smaller feature set and reduced ROM footprint.
+Generally, the "vanilla" version will support more format and length modifiers than the "nano" version. Keep in mind that the Newlibc C library implementation is provided by the compiler toolchain, and the choice of a toolchain can indirectly affects the functionality of the C library.
+Between the "nano" and the "vanilla" Newlibc C library flavours, only the latter is known to support C99 length specifiers when using Zephyr's `sdk-ng` toolchain or the third-party GNU Arm embedded toolchain `gnuarmemb`.
+
 Sending AT commands
 *******************
 
-The application can use :c:func:`nrf_modem_at_printf` to send a formatted AT command to the modem for generic result of the operation, for example, ``OK``, ``ERROR``, ``+CME ERROR`` or ``+CMS ERROR``.
+The application can use :c:func:`nrf_modem_at_printf` to send a formatted AT command to the modem when it is interested only the result of the operation, for example, ``OK``, ``ERROR``, ``+CME ERROR`` or ``+CMS ERROR``.
 This function works similarly to :c:func:`printf` from the standard C library, and it supports all the format specifiers supported by the :c:func:`printf` implementation of the selected C library.
 
 The following snippet shows how to use :c:func:`nrf_modem_at_printf` to send a formatted AT command to the modem and check the result of the operation:
@@ -72,6 +89,22 @@ Negative values indicate that the Modem library has failed to send the AT comman
 Positive values indicate that the modem has received the AT command and has responded with an error.
 When a positive value is returned, the error type can be retrieved using the :c:func:`nrf_modem_at_err_type` helper function, and the error value (in case of CME or CMS errors) can be retrieved with the :c:func:`nrf_modem_at_err` helper function.
 
+When possible, prefer sending unformatted AT commands instead of formatting the whole command as a string.
+Avoiding formatting reduces the stack requirements for the call.
+
+.. code-block:: c
+
+	nrf_modem_at_printf("AT");			/* sends "AT", low stack usage */
+	nrf_modem_at_printf("%s", "AT");	/* sends "AT", high stack usage */
+
+	char buf[] = "AT";
+	nrf_modem_at_printf(buf);			/* sends "AT", low stack usage */
+	nrf_modem_at_printf("%s", buf);		/* sends "AT", high stack usage */
+
+.. note::
+   The application needs to escape characters in AT commands as it would when formatting it using :c:func:`printf`.
+   For example, the `%` needs to be escaped as `%%`.
+
 Reading data from an AT response
 ********************************
 
@@ -101,13 +134,19 @@ The following snippet shows how to use :c:func:`nrf_modem_at_scanf` to read the 
 		}
 	}
 
-Advanced usage
-**************
+.. important::
+   :c:func:`nrf_modem_at_scanf` has a stack usage of at least 512 bytes, which increases, like for all functions, with the number of arguments passed to the function.
+   The actual stack usage depends on the :c:func:`vsscanf` implementation found in the C library that is compiled with the application.
+   If the stack requirements for this function can not be met by the calling thread, the application can instead call :c:func:`nrf_modem_at_cmd` and parse the response manually.
 
-The remaining two functions, :c:func:`nrf_modem_at_cmd` and its asynchronous version, :c:func:`nrf_modem_at_cmd_async`, cover more advanced use cases.
+Sending an AT command and reading the response
+**********************************************
 
 The application can use :c:func:`nrf_modem_at_cmd` to send a formatted AT command to the modem and copy the AT response into the buffer that is supplied to the function.
 The application can then parse the buffer as necessary, for example, by using the C library function :c:func:`sscanf`, thus achieving the combined functionality of :c:func:`nrf_modem_at_printf` and :c:func:`nrf_modem_at_scanf`.
+Alternatively, the application can parse the response in any other way, as necessary.
+
+This function works similarly to :c:func:`printf` from the standard C library, and it supports all the format specifiers supported by the :c:func:`printf` implementation of the selected C library.
 The following snippet shows how to use the :c:func:`nrf_modem_at_cmd` function to change the function mode by using the ``AT+CFUN`` command and read the modem response:
 
 .. code-block:: c
@@ -153,6 +192,29 @@ The following snippet shows how to use the :c:func:`nrf_modem_at_cmd_async` func
    The user is responsible for rescheduling any processing of the response as appropriate.
 
    When there is a pending response, all other functions belonging to the AT API will block until the response is received in the callback function.
+
+.. note::
+   The application needs to escape characters in AT commands as it would when formatting it using :c:func:`printf`.
+   For example, the `%` needs to be escaped as `%%`.
+
+Differences with nrf_modem_at_printf
+====================================
+
+Both functions can be used to send a formatted AT command to the modem, the main difference is how the AT response is handled.
+:c:func:`nrf_modem_at_cmd` will will parse the modem AT response and return an error accordingly, in addition, it will copy the whole modem AT response to the supplied buffer.
+:c:func:`nrf_modem_at_printf` will parse the modem AT response and return an error accordingly, however, it will not make a copy of the AT response.
+
+When interested in the result of the AT command, for example "OK" or "ERROR", use :c:func:`nrf_modem_at_printf`.
+When interested in the contents of the AT response, use :c:func:`nrf_modem_at_cmd` (or :c:func:`nrf_modem_at_scanf`).
+
+Differences with nrf_modem_at_scanf
+===================================
+
+The application can use :c:func:`nrf_modem_at_scanf` when it is convenient to parse the modem response based on a :c:func:`scanf` format.
+In this case, the application does not need to provide any intermediate buffers and can instead parse the response directly into the provided arguments, thus avoiding any extra copy operations.
+
+Conversely, :c:func:`nrf_modem_at_cmd` is the only function in the AT interface that will copy the whole modem response from the shared memory into the provided input buffer, which is owned by the application.
+Therefore, this function can be used when the application is interested in the whole AT command response, as received from the modem, or in those cases when the stack requirements of :c:func:`nrf_modem_at_scanf` are too high for the calling thread, or when parsing the response using a :c:func:`scanf` format would be be hard.
 
 Receiving AT notifications
 **************************
