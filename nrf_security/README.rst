@@ -27,4 +27,5 @@ manually configured with the CMake variable ``ARM_MBEDTLS_PATH``.
    doc/backend_config
    doc/adv_backend_config
    doc/mbed_tls_header
+   doc/different_tfm_config
    doc/api
