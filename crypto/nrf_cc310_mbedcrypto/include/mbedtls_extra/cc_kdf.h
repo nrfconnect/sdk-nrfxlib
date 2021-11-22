@@ -104,7 +104,7 @@ typedef enum
 /*! KDF structure, containing pointers to OtherInfo data entries and sizes.
 
    The structure contains two arrays: one for data pointers and one for sizes, placed according
-   to the order given in the the ANSI X9.42-2003: Public Key Cryptography for the Financial Services
+   to the order given in the ANSI X9.42-2003: Public Key Cryptography for the Financial Services
    Industry: Agreement of Symmetric Keys Using Discrete Logarithm Cryptography standard
    and defined in CCKdfOtherInfoEntries_t enumerator.
    On KDF ASN1 mode this order is mandatory. On other KDF modes the user may insert
