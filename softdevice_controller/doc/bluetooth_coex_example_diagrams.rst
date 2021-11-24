@@ -17,20 +17,6 @@ Timing parameters
 
 .. include:: /mpsl/doc/bluetooth_coex_3w_interface_shared_section.rst
 
-Priority and priority escalation
-================================
-
-Radio activity requests are associated with a Bluetooth Low Energy Link Layer state, such as advertising, scanning/initiating, or connected either as a master or a slave.
-In the context of the coexistence interface, the application can specify the priority level of a state.
-The priority level of a state can be either high or low.
-Requests inherit their priority level from their associated state.
-
-The application can enable priority escalation for a low priority state by setting a priority escalation threshold for it.
-The threshold determines the required number of consecutively rejected requests before the priority is escalated.
-Once a request is granted, the priority is reset to low for subsequent requests.
-
-All timing diagrams assume that all supported states have been configured as low priority.
-
 Connection event
 ----------------
 
@@ -73,16 +59,11 @@ Compared to *Legacy scannable advertising* figure above, the BLE_REQUEST signal 
 Scanning
 --------
 
-When in scanning/initiating state, a request for radio activity to PTA can be configured to begin in the following cases:
+When in scanning/initiating state, a request for radio activity to PTA begins when the access address of an advertising packet has been received.
+Examples of this configuration are depicted in the following figures *Legacy active scanning, request on access address match* and *Extended active scanning, request on access address match*.
+The timing interval t\ :sub:`aa`\  represents the time needed to perform the access address match.
 
-* When the access address of an advertising packet has been received.
-  Examples of this configuration are depicted in the following figures *Legacy active scanning, request on access address match* and *Extended active scanning, request on access address match*.
-  The timing interval t\ :sub:`aa`\  represents the time needed to perform the access address match.
-* Before the transmission of a scan or connect request.
-  An example of this configuration is depicted in the *Legacy active scanning, request before transmission* figure.
-
-Both configurations presume that the :ref:`softdevice_controller` is using the radio for reception before submitting a request and without informing PTA.
-In both cases, any subsequent radio activity triggered by the reception of an advertising indication, such as the transmission of a scan request and the reception of a scan response, is part of the same request.
+Any subsequent radio activity triggered by the reception of an advertising indication, such as the transmission of a scan request and the reception of a scan response, is part of the same request.
 
 .. figure:: pic/cx_3w_example_legacy_active_scan_on_aa.svg
    :alt: Legacy active scanning, request on access address match
@@ -93,11 +74,6 @@ In both cases, any subsequent radio activity triggered by the reception of an ad
    :alt: Extended active scanning, request on access address match
 
    Extended active scanning, request on access address match
-
-.. figure:: pic/cx_3w_example_legacy_active_scan_on_tx.svg
-   :alt: Legacy active scanning, request before transmission
-
-   Legacy active scanning, request before transmission
 
 Request denial
 --------------

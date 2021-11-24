@@ -55,3 +55,6 @@ DRGN-12259: HCI Receiver and Transmitter Test commands not available
 
   * For nRF52, use the DTM application in the nRF5 SDK.
   * For nRF53, use :ref:`direct_test_mode`.
+
+DRGN-15989: In some cases the SDC can connect to the peer it is already connected to.
+  To prevent this, the application can remove the already connected peer from the Filter Accept List, or from the Resolving List, or not use that peer's address in Create Connection command.

@@ -23,7 +23,7 @@ Added
   * ``SDC_CFG_TYPE_PERIODIC_ADV_COUNT`` can be used to set the number of periodic advertisers.
   * ``SDC_CFG_TYPE_PERIODIC_SYNC_COUNT`` can be used to set the number of synchronizations to periodic advertisers.
   * ``SDC_CFG_TYPE_PERIODIC_SYNC_BUFFER_CFG`` can be used to configure the number of periodic synchronization report buffers.
-  
+
   The following HCI commands are now supported (DRGN-11505):
 
     * LE Set Periodic Advertising Data
@@ -45,6 +45,7 @@ Changes
   ``SDC_CFG_TYPE_ADV_BUFFER_CFG`` can be used to change the maximum buffer size before enabling the controller.
   The required memory for an advertising set with a given advertising data size will then be returned by ``SDC_MEM_PER_ADV_SET``.
 * The type ``sdc_cfg_scan_buffer_cfg_t`` is replaced with ``sdc_cfg_buffer_count_t``.
+* The controller will now prevent establishing a connection to a device it is already connected to (DRGN-15989).
 
 Bug fixes
 =========
