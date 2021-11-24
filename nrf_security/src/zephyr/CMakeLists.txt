@@ -97,10 +97,6 @@ if(CONFIG_BUILD_WITH_TFM)
     add_dependencies(${mbedcrypto_target} tfm_mbedtls_headers_copy)
   endif()
 
-  zephyr_include_directories(
-    ${ZEPHYR_TRUSTED_FIRMWARE_M_MODULE_DIR}/trusted-firmware-m/interface/include
-  )
-
 endif()
 
 zephyr_link_libraries(mbedtls_external)
