@@ -97,8 +97,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_DEFAULT_MASTER_LINK_SIZE 838
-#define __MEM_DEFAULT_SLAVE_LINK_SIZE 902
+#define __MEM_DEFAULT_MASTER_LINK_SIZE 846
+#define __MEM_DEFAULT_SLAVE_LINK_SIZE 910
 #define __MEM_BUFFER_OVERHEAD_SIZE 7
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * (tx_size - SDC_DEFAULT_TX_PACKET_SIZE) + \
@@ -145,8 +145,8 @@ extern "C" {
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4109+(max_adv_data)*18)/10)
 #define __MEM_PER_ADV_SET_HIGH(max_adv_data) (598+(max_adv_data))
-#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((1858+(max_adv_data)*18)/10)
-#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (377+(max_adv_data))
+#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2098+(max_adv_data)*18)/10)
+#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (401+(max_adv_data))
 
 /** @brief Maximum required memory for a given advertising buffer size.
  *
