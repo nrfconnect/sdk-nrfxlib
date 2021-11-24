@@ -27,6 +27,12 @@ Changes
 * References to Bluetooth support were moved away from :file:`projects/mpsl/doc/public/doc/cx.rst`.
   Its scope is now limited to IEEE 802.15.4 External Radio Coexistence.
 
+Bug fixes
+=========
+
+* Fixed an issue where the current consumption in some cases was high after the end of a timeslot when using ``MPSL_TIMESLOT_HFCLK_CFG_NO_GUARANTEE``.
+  Now the time from the request with type ``MPSL_TIMESLOT_REQ_TYPE_EARLIEST`` until the event starts is in some cases increased (DRGN-16506).
+
 nRF Connect SDK v1.7.0
 **********************
 
