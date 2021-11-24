@@ -3,9 +3,9 @@
 Gazell Link Layer
 #################
 
-Gazell is a protocol for setting up a robust wireless link between a single Host and up to eight Devices in a star network topology.
-
 The Gazell Link Layer library is available as soft-float and hard-float builds for the nRF52 Series.
+
+See the :ref:`nrf:ug_gzll` user guide for information about how to use the libraries in the |NCS|.
 
 .. toctree::
    :maxdepth: 2
