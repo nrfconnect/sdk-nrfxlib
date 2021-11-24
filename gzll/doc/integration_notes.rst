@@ -7,11 +7,27 @@ Integration notes
    :local:
    :depth: 2
 
+To integrate the Gazell Link Layer library in your application, you need to:
+
+* Link in the GZLL library. See the :ref:`gzll_configuration` section.
+* Supply the glue code used by the library. See the :ref:`gzll_glue_layer` section.
+
 RTOS
 ****
 
 Gazell Link Layer API is not reentrant.
 It should be called by only a single thread in an RTOS.
+
+.. _gzll_configuration:
+
+Configuration
+*************
+
+In the |NCS|, you can enable the GZLL library using the :kconfig:`CONFIG_GZLL` Kconfig option.
+Look for the menu item "Enable Gazell Link Layer".
+The build system will link in the appropriate library for your nRF5 SoC.
+
+.. _gzll_glue_layer:
 
 Glue layer
 **********
