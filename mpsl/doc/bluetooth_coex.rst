@@ -133,7 +133,7 @@ Whenever the nRF SoC requires the use of the radio for any RF activity, it needs
 
 The figure below illustrates these timings with regard to the LTE and BLE_GRANT signal.
 
-.. figure:: pic/mpsl_coex_1wire_timing_grant.png
+.. figure:: pic/mpsl_coex_1wire_timing_grant.svg
 
    1-wire LTE Coexistence protocol timing
 
