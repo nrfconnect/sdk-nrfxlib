@@ -9,10 +9,10 @@ Changelog
 
 All notable changes to this project in the |NCS| are documented in this file.
 
-Main branch
-***********
+nRF Connect SDK v1.8.0
+**********************
 
-All the notable changes included in the |NCS| main branch are documented in this section.
+All the notable changes included in the |NCS| v1.8.0 release are documented in this section.
 
 Added
 =====
@@ -108,6 +108,7 @@ Changes
 Limitations
 ***********
 
-This sections lists limitations that apply to all versions of nRF Connect SDK.
+This sections lists limitations that apply to all versions of the |NCS|.
 
 * On average, ZBOSS alarms last longer by 6.4 percent than Zephyr alarms.
+* The maximum size of a reportable attribute is 8 bytes.
