@@ -9,10 +9,10 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
-Main branch
-***********
+nRF Connect SDK v1.8.0
+**********************
 
-All the notable changes added to the main branch are documented in this section.
+All the notable changes included in the |NCS| v1.8.0 release are documented in this section.
 
 Added
 =====
@@ -60,6 +60,7 @@ Bug fixes
   * :c:union:`sdc_cfg_t` with :c:member:`event_length` is set to less than 7500 us and a PHY update to Coded PHY is performed.
 
 * Fixed an issue where the host callback was called after an advertising event even if there were no events generated (DRGN-16405).
+* Fixed an issue where a MPU fault may occur when switching between extended and legacy advertising (NCSIDB-572).
 
 nRF Connect SDK v1.7.0
 **********************

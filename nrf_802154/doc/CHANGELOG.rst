@@ -9,8 +9,22 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-nRF Connect SDK 1.7.0 - nRF 802.15.4 Radio Driver
-*************************************************
+nRF Connect SDK v1.8.0 - nRF 802.15.4 Radio Driver
+**************************************************
+
+Notable changes
+===============
+
+* Incoming frames with Header IEs present but with no payload IEs and with no payload do not need IE Termination Header provided anymore. (KRKNWK-11875)
+
+Bug fixes
+=========
+
+* Fixed an issue where the notification queue would be overflowed under stress. (KRKNWK-11606)
+* Fixed an issue where ``nrf_802154_transmit_failed`` callout would not always correctly propagate the frame properties. (KRKNWK-11605)
+
+nRF Connect SDK v1.7.0 - nRF 802.15.4 Radio Driver
+**************************************************
 
 Added
 =====
@@ -40,8 +54,8 @@ Limitations
 * Transmitting an 802.15.4 frame with improperly populated Auxiliary Security Header field might result in assert.
   Make sure that you populate the Auxiliary Security Header field according to the IEEE Std 802.15.4-2015 specification, section 9.4.
 
-nRF Connect SDK 1.6.0 - nRF 802.15.4 Radio Driver
-*************************************************
+nRF Connect SDK v1.6.0 - nRF 802.15.4 Radio Driver
+**************************************************
 
 Initial common release.
 
