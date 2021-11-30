@@ -112,7 +112,7 @@ int nrf_cc3xx_platform_derived_key_set_auth_info(nrf_cc3xx_platform_derived_key_
  *
  * @param[in,out]   ctx             Pointer to the derived key context.
  * @param[out]      output          Pointer to the output buffer.
- * @param[in]       output_size     The size of the output buffer in bytes.
+ * @param[in]       input_size      The size of the output buffer in bytes.
  * @param[in]       input           Pointer to the input buffer.
  *
  * @return NRF_CC3XX_PLATFORM_SUCCESS on success, otherwise a negative value.
@@ -129,7 +129,7 @@ int nrf_cc3xx_platform_derived_key_encrypt(nrf_cc3xx_platform_derived_key_ctx_t 
  *
  * @param[in,out]   ctx             Pointer to the derived key context.
  * @param[out]      output          Pointer to the output buffer.
- * @param[in]       output_size     The size of the output buffer in bytes.
+ * @param[in]       input_size      The size of the output buffer in bytes.
  * @param[in]       input           Pointer to the input buffer.
  *
  * @return NRF_CC3XX_PLATFORM_SUCCESS on success, otherwise a negative value.

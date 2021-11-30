@@ -157,7 +157,7 @@ typedef void (*mbedtls_dhm_free_fn)(mbedtls_dhm_context *ctx);
  *
  * @return 0 if operation was successful, otherwise a negative value corresponding to the error.
  */
-typedef int (*mbedtls_dhm_parse_dhm_fn)(mbedtls_dhm_context *dhm, const unsigned char *dhmin, size_t dhminlen);
+typedef int (*mbedtls_dhm_parse_dhm_fn)(mbedtls_dhm_context *ctx, const unsigned char *dhmin, size_t dhminlen);
 
 
 /**@brief Function pointer to parse DHM parameters from a file.
@@ -165,11 +165,11 @@ typedef int (*mbedtls_dhm_parse_dhm_fn)(mbedtls_dhm_context *dhm, const unsigned
  * @details This function pointer has a signature equal to @c mbedtls_dhm_parse_dhmfile.
  *
  * @param[in,out]       ctx         Pointer to the context for the operation.
- * param[in]            path        Path of the file to read DHM parameters from.
+ * @param[in]           path        Path of the file to read DHM parameters from.
  *
  * @return 0 if operation was successful, otherwise a negative value corresponding to the error.
  */
-typedef int (*mbedtls_dhm_parse_dhmfile_fn)(mbedtls_dhm_context *dhm, const char *path);
+typedef int (*mbedtls_dhm_parse_dhmfile_fn)(mbedtls_dhm_context *ctx, const char *path);
 
 
 /**@brief Structure type holding the CMAC calling interface for a backend.

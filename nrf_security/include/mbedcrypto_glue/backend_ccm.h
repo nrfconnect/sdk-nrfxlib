@@ -31,7 +31,7 @@
  *          support the AES CCM cipher (mode, keysize etc). If the value is positive,
  *          then the backend with the highest value is selected (priority based).
  *
- * @param[in]   mode        AES CCM mode.
+ * @param[in]   cipher      Cipher ID.
  * @param[in]   keybits     Key size in bits for the AES functionality.
  *
  * @return 0 if the AES CCM functionality is not supported, otherwise a priority where higher is better.

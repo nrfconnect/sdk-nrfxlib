@@ -214,7 +214,7 @@ int nrf_cc3xx_platform_hmac_drbg_get_with_add(nrf_cc3xx_platform_hmac_drbg_conte
  *
  * @param[in,out]   context     Pointer to structure holding the hmac_drbg context.
  * @param[out]      buffer      Pointer to buffer to hold PRNG data.
- * @param[in]       length      Length of PRNG to get in bytes.
+ * @param[in]       len         Length of PRNG to get in bytes.
  * @param[out]      olen        Actual number of bytes put into the buffer.
  *
  * @return 0 on success, otherwise a non-zero failure according to the API

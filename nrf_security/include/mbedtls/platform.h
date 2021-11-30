@@ -48,14 +48,6 @@
 extern "C" {
 #endif
 
-/**
- * \name SECTION: Module settings
- *
- * The configuration options you can set for this module are in this section.
- * Either change them in config.h or define them on the compiler command line.
- * \{
- */
-
 /* The older Microsoft Windows common runtime provides non-conforming
  * implementations of some standard library functions, including snprintf
  * and vsnprintf. This affects MSVC and MinGW builds.
@@ -123,9 +115,6 @@ extern "C" {
 #include MBEDTLS_PLATFORM_STD_MEM_HDR
 #endif
 #endif /* MBEDTLS_PLATFORM_NO_STD_FUNCTIONS */
-
-
-/* \} name SECTION: Module settings */
 
 /*
  * The function pointers for calloc and free.
