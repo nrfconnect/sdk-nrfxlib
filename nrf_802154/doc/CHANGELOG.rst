@@ -16,7 +16,7 @@ Added
 =====
 
 * Adopted usage of the Zephyr temperature platform for the RSSI correction.
-* Support for the coexistence feature from :ref:`nrfxlib:mpsl`.
+* Support for the coexistence feature from :ref:`mpsl`.
 * Support for nRF21540 FEM GPIO interface on nRF53 Series.
 
 Notable changes
@@ -36,7 +36,7 @@ Bug fixes
 Limitations
 ===========
 
-* Application and device drivers (excluding those compliant with :ref:`nrfxlib:mpsl`) must not use IRQ priority higher than :c:macro:`NRF_802154_SWI_PRIORITY` and :c:macro:`NRF_802154_SL_RTC_IRQ_PRIORITY`.
+* Application and device drivers (excluding those compliant with :ref:`mpsl`) must not use IRQ priority higher than :c:macro:`NRF_802154_SWI_PRIORITY` and :c:macro:`NRF_802154_SL_RTC_IRQ_PRIORITY`.
 * Transmitting an 802.15.4 frame with improperly populated Auxiliary Security Header field might result in assert.
   Make sure that you populate the Auxiliary Security Header field according to the IEEE Std 802.15.4-2015 specification, section 9.4.
 
