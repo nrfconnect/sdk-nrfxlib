@@ -112,7 +112,7 @@ typedef int (*mbedtls_rsa_complete_fn)(mbedtls_rsa_context *ctx);
  * @param[out]          P           Pointer to an MPI to hold the first prime factor, or NULL if not to export.
  * @param[out]          Q           Pointer to an MPI to hold the second prime factor, or NULL if not to export.
  * @param[out]          D           Pointer to an MPI to hold the private exponent, or NULL if not to export.
- * @param[out]          Q           Pointer to an MPI to hold the public exponent, or NULL if not to export.
+ * @param[out]          E           Pointer to an MPI to hold the public exponent, or NULL if not to export.
  *
  * @return 0 if operation was successful, otherwise a negative value corresponding to the error.
  */
@@ -227,7 +227,7 @@ typedef int (*mbedtls_rsa_check_privkey_fn)(const mbedtls_rsa_context *ctx);
  *
  * @return 0 if operation was successful, otherwise a negative value corresponding to the error.
  */
-typedef int (*mbedtls_rsa_check_pub_priv_fn)(const mbedtls_rsa_context *pub, const mbedtls_rsa_context *prv);
+typedef int (*mbedtls_rsa_check_pub_priv_fn)(const mbedtls_rsa_context *pub, const mbedtls_rsa_context *priv);
 
 
 /**@brief Function pointer to perform an RSA public key operation.
@@ -275,6 +275,7 @@ typedef int (*mbedtls_rsa_private_fn)(mbedtls_rsa_context *ctx, int (*f_rng)(voi
  * @param[in]       f_rng   RNG function.
  * @param[in,out]   p_rng   RNG context.
  * @param[in]       mode    Mode of operation.
+ * @param[in]       ilen    Input length
  * @param[in]       input   Pointer to the buffer holding the input.
  * @param[out]      output  Pointer to the buffer to hold the output.
  *

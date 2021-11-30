@@ -48,6 +48,7 @@ typedef int (*mbedtls_ecdsa_check_fn)(mbedtls_ecp_group *grp, mbedtls_ecp_group_
  * @param[in]       grp         Pointer to an ECP group.
  * @param[out]      r           Pointer to the MPI context to store the first part of the signature. Must be initialized.
  * @param[out]      s           Pointer to the MPI context to store the second part of the signature. Must be initialized.
+ * @param[out]      d           Pointer to the MPI context to the private key used for signing.
  * @param[in]       buf         Pointer to the buffer holding the hash to be signed.
  * @param[in]       blen        Length of the buffer to sign.
  * @param[in]       f_rng       RNG function.
