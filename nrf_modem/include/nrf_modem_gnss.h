@@ -524,8 +524,8 @@ struct nrf_modem_gnss_agps_expiry {
 	/** @brief Flags indicating the A-GPS data types needed by GNSS.
 	 *
 	 * @details See @ref nrf_modem_gnss_agps_data_bitmask. If bit
-	 *          @NRF_MODEM_GNSS_AGPS_SYS_TIME_AND_SV_TOW_REQUEST is set, GNSS doesn't have
-	 *          GPS system time and the expiry time fields are not valid.
+	 *          @ref NRF_MODEM_GNSS_AGPS_SYS_TIME_AND_SV_TOW_REQUEST is set,
+	 *          GNSS doesn't have GPS system time and the expiry time fields are not valid.
 	 *
 	 * @note Only supported by modem firmware v1.3.2 or later.
 	 */
