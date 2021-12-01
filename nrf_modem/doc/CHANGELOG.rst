@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.4.1
+***************
+
+* Fixed a bug in :c:func:`nrf_send` which could result in the function incorrectly returning -1 and setting the errno to ``NRF_EINPROGRESS``.
+
 nrf_modem 1.4.0
 ***************
 
