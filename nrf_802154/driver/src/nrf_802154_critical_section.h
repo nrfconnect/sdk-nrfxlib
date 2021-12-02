@@ -107,19 +107,16 @@ bool nrf_802154_critical_section_is_nested(void);
 uint32_t nrf_802154_critical_section_active_vector_priority_get(void);
 
 /**
- * @brief Function for entering a critical section in the RSCH module.
- */
-extern void nrf_802154_critical_section_rsch_enter(void);
-
-/**
- * @brief Function for exiting a critical section in the RSCH module.
- */
-extern void nrf_802154_critical_section_rsch_exit(void);
-
-/**
  * @brief Checks if there is a pending event in the RSCH critical section.
  */
 extern bool nrf_802154_critical_section_rsch_event_is_pending(void);
+
+/**
+ * @brief Process a pending RSCH event.
+ *
+ * This function must be called from inside of the critical section.
+ */
+extern void nrf_802154_critical_section_rsch_process_pending(void);
 
 /**
  *@}
