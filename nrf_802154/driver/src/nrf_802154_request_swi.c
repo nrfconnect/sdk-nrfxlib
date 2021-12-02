@@ -52,9 +52,11 @@
 #include "nrf_802154_queue.h"
 #include "nrf_802154_rx_buffer.h"
 #include "nrf_802154_swi.h"
+#include "nrf_802154_types.h"
 #include "nrf_802154_utils.h"
 #include "hal/nrf_radio.h"
 #include "hal/nrf_egu.h"
+#include "mac_features/nrf_802154_delayed_trx.h"
 #include "platform/nrf_802154_irq.h"
 
 #include <nrf.h>
@@ -85,6 +87,10 @@ typedef enum
     REQ_TYPE_RSSI_MEASURE,
     REQ_TYPE_RSSI_GET,
     REQ_TYPE_ANTENNA_UPDATE,
+    REQ_TYPE_TRANSMIT_AT,
+    REQ_TYPE_TRANSMIT_AT_CANCEL,
+    REQ_TYPE_RECEIVE_AT,
+    REQ_TYPE_RECEIVE_AT_CANCEL,
 } nrf_802154_req_type_t;
 
 /// Request data in request queue.
@@ -178,7 +184,41 @@ typedef struct
         {
             bool * p_result; ///< Antenna update request result.
         } antenna_update;    ///< Antenna update request details.
-    } data;                  ///< Request data depending on its type.
+
+#if NRF_802154_DELAYED_TRX_ENABLED
+        struct
+        {
+            uint8_t                                 * p_data;
+            uint32_t                                  t0;
+            uint32_t                                  dt;
+            const nrf_802154_transmit_at_metadata_t * p_metadata;
+            bool                                    * p_result;
+        } transmit_at;
+
+        struct
+        {
+            bool * p_result;
+        } transmit_at_cancel;
+
+        struct
+        {
+            uint32_t t0;
+            uint32_t dt;
+            uint32_t timeout;
+            uint8_t  channel;
+            uint32_t id;
+            bool   * p_result;
+        } receive_at;
+
+        struct
+        {
+            uint32_t id;
+            bool   * p_result;
+        } receive_at_cancel;
+
+#endif // NRF_802154_DELAYED_TRX_ENABLED
+
+    } data;  ///< Request data depending on its type.
 } nrf_802154_req_data_t;
 
 /**@brief Instance of a requests queue */
@@ -527,6 +567,68 @@ static void swi_rssi_measurement_get(int8_t * p_rssi, bool * p_result)
     req_exit();
 }
 
+#if NRF_802154_DELAYED_TRX_ENABLED
+static void swi_transmit_at(uint8_t                                 * p_data,
+                            uint32_t                                  t0,
+                            uint32_t                                  dt,
+                            const nrf_802154_transmit_at_metadata_t * p_metadata,
+                            bool                                    * p_result)
+{
+    nrf_802154_req_data_t * p_slot = req_enter();
+
+    p_slot->type                        = REQ_TYPE_TRANSMIT_AT;
+    p_slot->data.transmit_at.p_data     = p_data;
+    p_slot->data.transmit_at.t0         = t0;
+    p_slot->data.transmit_at.dt         = dt;
+    p_slot->data.transmit_at.p_metadata = p_metadata;
+    p_slot->data.transmit_at.p_result   = p_result;
+
+    req_exit();
+}
+
+static void swi_transmit_at_cancel(bool * p_result)
+{
+    nrf_802154_req_data_t * p_slot = req_enter();
+
+    p_slot->type                             = REQ_TYPE_TRANSMIT_AT_CANCEL;
+    p_slot->data.transmit_at_cancel.p_result = p_result;
+
+    req_exit();
+}
+
+static void swi_receive_at(uint32_t t0,
+                           uint32_t dt,
+                           uint32_t timeout,
+                           uint8_t  channel,
+                           uint32_t id,
+                           bool   * p_result)
+{
+    nrf_802154_req_data_t * p_slot = req_enter();
+
+    p_slot->type                     = REQ_TYPE_RECEIVE_AT;
+    p_slot->data.receive_at.t0       = t0;
+    p_slot->data.receive_at.dt       = dt;
+    p_slot->data.receive_at.timeout  = timeout;
+    p_slot->data.receive_at.channel  = channel;
+    p_slot->data.receive_at.id       = id;
+    p_slot->data.receive_at.p_result = p_result;
+
+    req_exit();
+}
+
+static void swi_receive_at_cancel(uint32_t id, bool * p_result)
+{
+    nrf_802154_req_data_t * p_slot = req_enter();
+
+    p_slot->type                            = REQ_TYPE_RECEIVE_AT_CANCEL;
+    p_slot->data.receive_at_cancel.id       = id;
+    p_slot->data.receive_at_cancel.p_result = p_result;
+
+    req_exit();
+}
+
+#endif // NRF_802154_DELAYED_TRX_ENABLED
+
 void nrf_802154_request_init(void)
 {
     nrf_802154_queue_init(&m_requests_queue,
@@ -636,6 +738,36 @@ bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi)
                      p_rssi)
 }
 
+#if NRF_802154_DELAYED_TRX_ENABLED
+bool nrf_802154_request_transmit_raw_at(uint8_t                                 * p_data,
+                                        uint32_t                                  t0,
+                                        uint32_t                                  dt,
+                                        const nrf_802154_transmit_at_metadata_t * p_metadata)
+{
+    REQUEST_FUNCTION(nrf_802154_delayed_trx_transmit, swi_transmit_at, p_data, t0, dt, p_metadata);
+}
+
+bool nrf_802154_request_transmit_at_cancel(void)
+{
+    REQUEST_FUNCTION_NO_ARGS(nrf_802154_delayed_trx_transmit_cancel, swi_transmit_at_cancel);
+}
+
+bool nrf_802154_request_receive_at(uint32_t t0,
+                                   uint32_t dt,
+                                   uint32_t timeout,
+                                   uint8_t  channel,
+                                   uint32_t id)
+{
+    REQUEST_FUNCTION(nrf_802154_delayed_trx_receive, swi_receive_at, t0, dt, timeout, channel, id);
+}
+
+bool nrf_802154_request_receive_at_cancel(uint32_t id)
+{
+    REQUEST_FUNCTION(nrf_802154_delayed_trx_receive_cancel, swi_receive_at_cancel, id);
+}
+
+#endif // NRF_802154_DELAYED_TRX_ENABLED
+
 /**@brief Handles REQ_EVENT on NRF_802154_EGU_INSTANCE */
 static void irq_handler_req_event(void)
 {
@@ -718,6 +850,35 @@ static void irq_handler_req_event(void)
             case REQ_TYPE_ANTENNA_UPDATE:
                 *(p_slot->data.antenna_update.p_result) = nrf_802154_core_antenna_update();
                 break;
+
+#if NRF_802154_DELAYED_TRX_ENABLED
+            case REQ_TYPE_TRANSMIT_AT:
+                *(p_slot->data.transmit_at.p_result) =
+                    nrf_802154_delayed_trx_transmit(p_slot->data.transmit_at.p_data,
+                                                    p_slot->data.transmit_at.t0,
+                                                    p_slot->data.transmit_at.dt,
+                                                    p_slot->data.transmit_at.p_metadata);
+                break;
+
+            case REQ_TYPE_TRANSMIT_AT_CANCEL:
+                *(p_slot->data.transmit_at_cancel.p_result) =
+                    nrf_802154_delayed_trx_transmit_cancel();
+                break;
+
+            case REQ_TYPE_RECEIVE_AT:
+                *(p_slot->data.receive_at.p_result) =
+                    nrf_802154_delayed_trx_receive(p_slot->data.receive_at.t0,
+                                                   p_slot->data.receive_at.dt,
+                                                   p_slot->data.receive_at.timeout,
+                                                   p_slot->data.receive_at.channel,
+                                                   p_slot->data.receive_at.id);
+                break;
+
+            case REQ_TYPE_RECEIVE_AT_CANCEL:
+                *(p_slot->data.receive_at_cancel.p_result) =
+                    nrf_802154_delayed_trx_receive_cancel(p_slot->data.receive_at_cancel.id);
+                break;
+#endif // NRF_802154_DELAYED_TRX_ENABLED
 
             default:
                 assert(false);

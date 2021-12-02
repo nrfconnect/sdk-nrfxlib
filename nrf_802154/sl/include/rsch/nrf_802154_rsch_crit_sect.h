@@ -43,33 +43,12 @@
  * @defgroup nrf_802154_rsch_crit_sect RSCH event queue used during critical sections
  * @{
  * @ingroup nrf_802154_rsch
- * @brief The critical section implementation for the RSCH module.
  */
-
-/**
- * @brief Pointer to function used to enter critical section.
- */
-typedef bool (* nrf_802154_sl_crit_sect_enter_t)(void);
-
-/**
- * @brief Pointer to function used to exit critical section.
- */
-typedef void (* nrf_802154_sl_crit_sect_exit_t)(void);
-
-/**
- * @brief Structure that holds interface of Radio Scheduler critical sections.
- */
-typedef struct
-{
-    nrf_802154_sl_crit_sect_enter_t enter;
-    nrf_802154_sl_crit_sect_exit_t  exit;
-} nrf_802154_sl_crit_sect_interface_t;
 
 /**
  * @brief Initializes the RSCH critical section module.
  */
-void nrf_802154_rsch_crit_sect_init(
-    const nrf_802154_sl_crit_sect_interface_t * p_crit_sect_interface);
+void nrf_802154_rsch_crit_sect_init(void);
 
 /**
  * @brief Requests the priority level from RSCH through the critical section module.
