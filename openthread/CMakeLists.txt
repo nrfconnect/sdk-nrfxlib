@@ -7,6 +7,8 @@ include(cmake/extensions.cmake)
 
 set(OPENTHREAD_LIB_MBEDTLS_CONF_FILE "nrf_security_mbedtls_configuration.h")
 
+get_openthread_libraries(OPENTHREAD_LIBRARIES)
+
 if(CONFIG_OPENTHREAD_SOURCES)
   message(DEBUG "Building OT from sources, config file will be generated.")
 
@@ -24,8 +26,7 @@ if(CONFIG_OPENTHREAD_SOURCES)
   set(NRF_SECURITY_MBEDTLS_CONFIG_FILE ${CMAKE_CURRENT_BINARY_DIR}/../nrf_security/include/${CONFIG_MBEDTLS_CFG_FILE})
 
   if(CONFIG_OPENTHREAD_BUILD_OUTPUT_STRIPPED)
-    foreach(target openthread-ftd openthread-mtd openthread-radio openthread-cli-ftd openthread-cli-mtd openthread-ncp-ftd openthread-ncp-mtd
-      openthread-spinel-ncp openthread-spinel-rcp openthread-hdlc openthread-rcp)
+    foreach(target IN LISTS OPENTHREAD_LIBRARIES)
 
       list(APPEND OPENTHREAD_STRIP_COMMAND
            COMMAND $<TARGET_PROPERTY:bintools,strip_command>
@@ -42,21 +43,16 @@ if(CONFIG_OPENTHREAD_SOURCES)
     )
     set(OPENTHREAD_LIB_INSTALL_POSTFIX ".strip")
   endif()
+
   list(APPEND INSTALL_COMMANDS
     COMMAND ${CMAKE_COMMAND} -E echo "Installing OpenThread libraries into: ${OPENTHREAD_DST_DIR}"
     COMMAND ${CMAKE_COMMAND} -E make_directory "${OPENTHREAD_DST_DIR}"
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ftd>${OPENTHREAD_LIB_INSTALL_POSTFIX}  ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-ftd>
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-mtd>${OPENTHREAD_LIB_INSTALL_POSTFIX}  ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-mtd>
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-radio>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-radio>
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-cli-ftd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-cli-ftd>
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-cli-mtd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-cli-mtd>
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ncp-ftd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-ncp-ftd>
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-ncp-mtd>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-ncp-mtd>
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-spinel-ncp>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-spinel-ncp>
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-spinel-rcp>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-spinel-rcp>
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-hdlc>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-hdlc>
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:openthread-rcp>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:openthread-rcp>
   )
+
+  foreach(target IN LISTS OPENTHREAD_LIBRARIES)
+    list(APPEND INSTALL_COMMANDS
+      COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${target}>${OPENTHREAD_LIB_INSTALL_POSTFIX} ${OPENTHREAD_DST_DIR}/$<TARGET_FILE_NAME:${target}>)
+  endforeach()
 
   list(APPEND INSTALL_COMMANDS
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${OPENTHREAD_HEADERS_DIR} ${OPENTHREAD_HEADERS_DST_DIR}
@@ -81,70 +77,14 @@ if (CONFIG_OPENTHREAD_LIBRARY_1_1)
   endif()
 
   check_openthread_version()
-  check_openthread_dependencies("${OT_LIB_PATH}/${OPENTHREAD_LIB_MBEDTLS_CONF_FILE}")
 
-  if(CONFIG_OPENTHREAD_SHELL)
-    if(CONFIG_OPENTHREAD_FTD)
-      zephyr_library_import(
-        openthread-cli-ftd
-        ${OT_LIB_PATH}/libopenthread-cli-ftd.a
-      )
-    elseif(CONFIG_OPENTHREAD_MTD)
-      zephyr_library_import(
-        openthread-cli-mtd
-        ${OT_LIB_PATH}/libopenthread-cli-mtd.a
-      )
-    endif()
+  if(NOT CONFIG_OPENTHREAD_COPROCESSOR_RCP)
+    check_openthread_dependencies("${OT_LIB_PATH}/${OPENTHREAD_LIB_MBEDTLS_CONF_FILE}")
   endif()
 
-  if(CONFIG_OPENTHREAD_COPROCESSOR_NCP)
-    zephyr_library_import(
-      libopenthread-spinel-ncp
-      ${OT_LIB_PATH}/libopenthread-spinel-ncp.a
-    )
-    zephyr_library_import(
-      openthread-hdlc
-      ${OT_LIB_PATH}/libopenthread-hdlc.a
-    )
-    if(CONFIG_OPENTHREAD_FTD)
-      zephyr_library_import(
-        openthread-ncp-ftd
-        ${OT_LIB_PATH}/libopenthread-ncp-ftd.a
-      )
-    elseif(CONFIG_OPENTHREAD_MTD)
-      zephyr_library_import(
-        openthread-ncp-mtd
-        ${OT_LIB_PATH}/libopenthread-ncp-mtd.a
-      )
-    endif()
-  endif()
-
-  if(CONFIG_OPENTHREAD_COPROCESSOR_RCP)
-    zephyr_library_import(
-      libopenthread-spinel-rcp
-      ${OT_LIB_PATH}/libopenthread-spinel-rcp.a
-    )
-    zephyr_library_import(
-      openthread-hdlc
-      ${OT_LIB_PATH}/libopenthread-hdlc.a
-    )
-    zephyr_library_import(
-      openthread-rcp-ftd
-      ${OT_LIB_PATH}/libopenthread-rcp.a
-    )
-  endif()
-
-  if(CONFIG_OPENTHREAD_FTD)
-    zephyr_library_import(
-      openthread-ftd
-      ${OT_LIB_PATH}/libopenthread-ftd.a
-    )
-  elseif(CONFIG_OPENTHREAD_MTD)
-    zephyr_library_import(
-      openthread-mtd
-      ${OT_LIB_PATH}/libopenthread-mtd.a
-    )
-  endif()
+  foreach(target IN LISTS OPENTHREAD_LIBRARIES)
+    zephyr_library_import("lib${target}" "${OT_LIB_PATH}/lib${target}.a")
+  endforeach()
 
   zephyr_include_directories(include)
 

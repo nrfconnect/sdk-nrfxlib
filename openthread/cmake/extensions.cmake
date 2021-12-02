@@ -26,9 +26,16 @@ function(openthread_calculate_lib_path ot_version lib_path)
   endif()
 
   nrfxlib_calculate_lib_path(nrfxlib_path)
-  set(${lib_path}
-    "${ZEPHYR_NRFXLIB_MODULE_DIR}/openthread/${nrfxlib_path}/${ot_version}/${ot_feature_set}/${nrf_security_backend}"
-    PARENT_SCOPE)
+  if(CONFIG_OPENTHREAD_COPROCESSOR_RCP)
+    set(${lib_path}
+      "${ZEPHYR_NRFXLIB_MODULE_DIR}/openthread/${nrfxlib_path}/${ot_version}/rcp"
+      PARENT_SCOPE)
+  else()
+    set(${lib_path}
+      "${ZEPHYR_NRFXLIB_MODULE_DIR}/openthread/${nrfxlib_path}/${ot_version}/${ot_feature_set}/${nrf_security_backend}"
+      PARENT_SCOPE)
+  endif()
+
 endfunction()
 
 macro(get_git_decribe repo)
@@ -121,3 +128,40 @@ function(check_openthread_version)
     message(WARNING "The Openthread source code version (${OPENTHREAD_SOURCE_API_VERSION}) is not equal to compiled Openthread library version (${OPENTHREAD_LIB_API_VERSION}).")
   endif()
 endfunction()
+
+macro(get_openthread_libraries ot_libs)
+  if(CONFIG_OPENTHREAD_FTD)
+    set(CLI_LIBRARIES openthread-cli-ftd)
+  elseif(CONFIG_OPENTHREAD_MTD)
+    set(CLI_LIBRARIES openthread-cli-mtd)
+  endif()
+
+  if(CONFIG_OPENTHREAD_SHELL)
+    list(APPEND ${ot_libs} ${CLI_LIBRARIES})
+  endif()
+
+  if(CONFIG_OPENTHREAD_COPROCESSOR_RCP)
+    list(APPEND ${ot_libs} openthread-rcp)
+    list(APPEND ${ot_libs} openthread-spinel-rcp)
+    list(APPEND ${ot_libs} openthread-radio)
+    list(APPEND ${ot_libs} openthread-hdlc)
+  endif()
+
+  if(CONFIG_OPENTHREAD_COPROCESSOR_NCP)
+    if(CONFIG_OPENTHREAD_FTD)
+      list(APPEND ${ot_libs} openthread-ncp-ftd)
+    elseif(CONFIG_OPENTHREAD_MTD)
+      list(APPEND ${ot_libs} openthread-ncp-mtd)
+    endif()
+    list(APPEND ${ot_libs} openthread-hdlc)
+    list(APPEND ${ot_libs} openthread-spinel-ncp)
+  endif()
+
+  if(NOT CONFIG_OPENTHREAD_COPROCESSOR_RCP)
+    if(CONFIG_OPENTHREAD_FTD)
+      list(APPEND ${ot_libs} openthread-ftd)
+    elseif(CONFIG_OPENTHREAD_MTD)
+      list(APPEND ${ot_libs} openthread-mtd)
+    endif()
+  endif()
+endmacro()
