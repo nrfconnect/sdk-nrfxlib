@@ -2896,7 +2896,7 @@
  *            it, and considering stronger message digests instead.
  *
  */
-#define MBEDTLS_MD5_C
+/* #undef MBEDTLS_MD5_C */
 
 /**
  * \def MBEDTLS_MEMORY_BUFFER_ALLOC_C
