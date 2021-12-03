@@ -47,6 +47,7 @@ target_sources(nrf-802154-sl
     src/nrf_802154_sl_ant_div.c
     src/nrf_802154_sl_capabilities.c
     src/nrf_802154_sl_coex.c
+    src/nrf_802154_sl_crit_sect_if.c
     src/nrf_802154_sl_fem.c
     src/nrf_802154_sl_log.c
     src/nrf_802154_sl_rsch.c

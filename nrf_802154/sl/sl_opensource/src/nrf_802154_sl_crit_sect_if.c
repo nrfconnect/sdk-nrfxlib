@@ -32,43 +32,13 @@
  *
  */
 
-#ifndef NRF_802154_RSCH_CRIT_SECT_H__
-#define NRF_802154_RSCH_CRIT_SECT_H__
+#include "nrf_802154_sl_crit_sect_if.h"
 
-#include <stdbool.h>
+/**@brief Pointer to an interface of critical section. */
+const nrf_802154_sl_crit_sect_interface_t * gp_nrf_802154_sl_crit_sect_interface;
 
-#include "rsch/nrf_802154_rsch.h"
-
-/**
- * @defgroup nrf_802154_rsch_crit_sect RSCH event queue used during critical sections
- * @{
- * @ingroup nrf_802154_rsch
- */
-
-/**
- * @brief Initializes the RSCH critical section module.
- */
-void nrf_802154_rsch_crit_sect_init(void);
-
-/**
- * @brief Requests the priority level from RSCH through the critical section module.
- *
- * @param[in]  prio  Requested priority level.
- */
-void nrf_802154_rsch_crit_sect_prio_request(rsch_prio_t prio);
-
-/**
- * @brief Notifies the core that the approved RSCH priority has changed.
- *
- * @note This function is called from the critical section context and does not preempt
- *       other critical sections.
- *
- * @param[in]  prio  Approved priority level.
- */
-extern void nrf_802154_rsch_crit_sect_prio_changed(rsch_prio_t prio);
-
-/**
- *@}
- **/
-
-#endif // NRF_802154_RSCH_CRIT_SECT_H__
+void nrf_802154_sl_crit_sect_init(
+    const nrf_802154_sl_crit_sect_interface_t * p_crit_sect_interface)
+{
+    gp_nrf_802154_sl_crit_sect_interface = p_crit_sect_interface;
+}

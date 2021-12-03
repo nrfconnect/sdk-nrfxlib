@@ -286,12 +286,6 @@ void nrf_802154_transmitted_raw(uint8_t                                   * p_fr
     uint32_t  ack_len    = 0;
     uint8_t * p_ack      = p_metadata->data.transmitted.p_ack;
 
-    /* Forcefully overwrite frame's properties due to KRKNWK-10114 not being implemented.
-     * This overwrite makes state of the frame consistent with its properties.
-     */
-    ((nrf_802154_transmit_done_metadata_t *)p_metadata)->frame_props =
-        NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT;
-
     SERIALIZATION_ERROR_INIT(error);
 
     NRF_802154_SPINEL_LOG_BANNER_CALLING();
@@ -356,12 +350,6 @@ void nrf_802154_transmit_failed(uint8_t                                   * p_fr
 
     NRF_802154_SPINEL_LOG_BANNER_CALLING();
     NRF_802154_SPINEL_LOG_BUFF(p_frame, p_frame[0]);
-
-    /* Forcefully overwrite frame's properties due to KRKNWK-10114 not being implemented.
-     * This overwrite makes state of the frame consistent with its properties.
-     */
-    ((nrf_802154_transmit_done_metadata_t *)p_metadata)->frame_props =
-        NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT;
 
     // Search for the handle to the original frame buffer based on the local pointer
     bool frame_found = nrf_802154_buffer_mgr_dst_search_by_local_pointer(

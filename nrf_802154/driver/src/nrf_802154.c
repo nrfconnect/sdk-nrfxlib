@@ -78,6 +78,7 @@
 #include "mac_features/ack_generator/nrf_802154_ack_data.h"
 
 #include "nrf_802154_sl_ant_div.h"
+#include "nrf_802154_sl_crit_sect_if.h"
 #include "nrf_802154_sl_capabilities.h"
 
 #define RAW_LENGTH_OFFSET  0
@@ -202,7 +203,7 @@ uint32_t nrf_802154_first_symbol_timestamp_get(uint32_t end_timestamp, uint8_t p
 
 void nrf_802154_init(void)
 {
-    nrf_802154_sl_crit_sect_interface_t crit_sect_int =
+    static const nrf_802154_sl_crit_sect_interface_t crit_sect_int =
     {
         .enter = nrf_802154_critical_section_enter,
         .exit  = nrf_802154_critical_section_exit
@@ -212,6 +213,7 @@ void nrf_802154_init(void)
     nrf_802154_core_init();
     nrf_802154_clock_init();
     nrf_802154_critical_section_init();
+    nrf_802154_sl_crit_sect_init(&crit_sect_int);
     nrf_802154_debug_init();
     nrf_802154_notification_init();
     nrf_802154_lp_timer_init();
@@ -220,7 +222,7 @@ void nrf_802154_init(void)
     nrf_802154_rsch_prio_drop_init();
     nrf_802154_random_init();
     nrf_802154_request_init();
-    nrf_802154_rsch_crit_sect_init(&crit_sect_int);
+    nrf_802154_rsch_crit_sect_init();
     nrf_802154_rsch_init();
     nrf_802154_rx_buffer_init();
     nrf_802154_temperature_init();
@@ -541,7 +543,7 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
     result = are_frame_properties_valid(&p_metadata->frame_props);
     if (result)
     {
-        result = nrf_802154_delayed_trx_transmit(p_data, t0, dt, p_metadata);
+        result = nrf_802154_request_transmit_raw_at(p_data, t0, dt, p_metadata);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -554,7 +556,7 @@ bool nrf_802154_transmit_at_cancel(void)
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    result = nrf_802154_delayed_trx_transmit_cancel();
+    result = nrf_802154_request_transmit_at_cancel();
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;
@@ -570,7 +572,7 @@ bool nrf_802154_receive_at(uint32_t t0,
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    result = nrf_802154_delayed_trx_receive(t0, dt, timeout, channel, id);
+    result = nrf_802154_request_receive_at(t0, dt, timeout, channel, id);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;
@@ -582,7 +584,7 @@ bool nrf_802154_receive_at_cancel(uint32_t id)
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    result = nrf_802154_delayed_trx_receive_cancel(id);
+    result = nrf_802154_request_receive_at_cancel(id);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;

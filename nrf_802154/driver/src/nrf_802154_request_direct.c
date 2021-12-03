@@ -44,6 +44,7 @@
 #include <stdint.h>
 
 #include "nrf_802154_core.h"
+#include "mac_features/nrf_802154_delayed_trx.h"
 #include "hal/nrf_radio.h"
 
 #define REQUEST_FUNCTION_PARMS(func_core, ...) \
@@ -148,3 +149,38 @@ bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi)
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_last_rssi_measurement_get, p_rssi)
 }
+
+static inline bool are_frame_properties_valid(const nrf_802154_transmitted_frame_props_t * p_props)
+{
+    return p_props->dynamic_data_is_set || !(p_props->is_secured);
+}
+
+#if NRF_802154_DELAYED_TRX_ENABLED
+bool nrf_802154_request_transmit_raw_at(uint8_t                                 * p_data,
+                                        uint32_t                                  t0,
+                                        uint32_t                                  dt,
+                                        const nrf_802154_transmit_at_metadata_t * p_metadata)
+{
+    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_transmit, p_data, t0, dt, p_metadata);
+}
+
+bool nrf_802154_request_transmit_at_cancel(void)
+{
+    REQUEST_FUNCTION(nrf_802154_delayed_trx_transmit_cancel);
+}
+
+bool nrf_802154_request_receive_at(uint32_t t0,
+                                   uint32_t dt,
+                                   uint32_t timeout,
+                                   uint8_t  channel,
+                                   uint32_t id)
+{
+    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_receive, t0, dt, timeout, channel, id);
+}
+
+bool nrf_802154_request_receive_at_cancel(uint32_t id)
+{
+    REQUEST_FUNCTION_PARMS(nrf_802154_delayed_trx_receive_cancel, id);
+}
+
+#endif
