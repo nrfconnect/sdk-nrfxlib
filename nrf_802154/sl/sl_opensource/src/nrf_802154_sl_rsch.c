@@ -157,6 +157,11 @@ bool nrf_802154_critical_section_rsch_event_is_pending(void)
     return false;
 }
 
+void nrf_802154_critical_section_rsch_process_pending(void)
+{
+    // Intentionally empty
+}
+
 bool nrf_802154_rsch_delayed_timeslot_request(const rsch_dly_ts_param_t * p_dly_ts_param)
 {
     (void)p_dly_ts_param;
