@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.0.1-1
+*****************
+
+* Fixed a bug where stopping GNSS using ``NRF_SO_GNSS_STOP`` would let ongoing :c:func:`nrf_recv` calls on the GNSS socket block indefinitely.
+
 nrf_modem 1.0.1
 ***************
 
