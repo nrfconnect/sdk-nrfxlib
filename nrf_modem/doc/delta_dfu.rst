@@ -27,8 +27,7 @@ Modem delta update files are part of the official modem releases and can be foun
 
 .. note::
    Delta update files might not be available for any two of the modem firmware versions but only for specific versions, as applicable.
-   This might depend on the extent of the update, which cannot exceed the size of the scratch area of the source firmware version.
-
+   This might depend on the extent of the update, which cannot exceed the size of the scratch area of the modem firmware version it applies to.
 
 Limitations
 ===========
@@ -37,7 +36,13 @@ The size of the scratch area can be retrieved with the :c:func:`nrf_modem_delta_
 A limitation of delta updates is that the size of the update must not exceed the area of flash memory that a given modem firmware version has dedicated for this operation.
 The size of this area varies for any given modem firmware version and it can be retrieved with the Modem library :c:func:`nrf_modem_delta_dfu_area` function.
 In general, this function can be useful when the size of the largest delta update that can be received needs to be reported to an external service, for example an LwM2M server.
-In practice, the application does not use this function in the normal update process, since all delta update files that are part of the `nRF9160 modem firmware zip file`_ are guaranteed to fit in the scratch area of the firmware version that they apply to.
+In practice, the application does not use this function in the normal update process, since all delta update files that are part of the `nRF9160 modem firmware zip file`_ are guaranteed to fit in the scratch area of the modem firmware version that they apply to.
+
+Reading the modem firmware UUID
+*******************************
+
+A modem firmware UUID is a unique identifier for a modem firmware version build.
+The modem firmware UUID for given firmware version is found in the :file:`README.txt` file of the `nRF9160 modem firmware zip file`_, and can also be retrieved by using the :c:func:`nrf_modem_delta_dfu_uuid` function.
 
 Features
 ********
@@ -69,7 +74,6 @@ If the modem does not detect problems during boot, it runs the new firmware.
 If the application detects issues with the new modem firmware, it can manually roll back to the previous modem firmware by calling :c:func:`nrf_modem_delta_dfu_rollback`.
 The operation is scheduled, and the modem performs a rollback to the previous modem firmware version the next time it boots.
 Since the same firmware delta update file can be used to both update to a newer modem firmware and roll back to the previous firmware version, the application can perform a rollback offline.
-
 
 Update resumption
 =================
@@ -172,8 +176,12 @@ The application schedules the execution of a firmware delta update by calling :c
 Upon success, the operation is scheduled and the modem updates its firmware the next time the application boots the modem by calling :c:func:`nrf_modem_init`.
 
 .. note::
-   The return value of :c:func:`nrf_modem_delta_dfu_update` only indicates that the modem has scheduled the update and does not represent the result of the actual update operation.
-   The result is returned by :c:func:`nrf_modem_init`.
+   The return value of :c:func:`nrf_modem_delta_dfu_update` only indicates whether the modem has scheduled the update and does not represent the result of the actual update operation.
+
+.. figure:: images/delta_dfu_update.svg
+   :alt: Modem delta DFU update flowchart
+
+   Modem delta DFU update flowchart
 
 Reinitializing the modem to perform the update
 ==============================================
@@ -199,12 +207,6 @@ The application can reinitialize the Modem library by calling :c:func:`nrf_modem
 If the update is successful, the modem runs the new modem firmware.
 The application can verify that by reading the modem firmware UUID or reading the ``AT+CGMR`` command response.
 
-Reading the modem firmware UUID
-*******************************
-
-A modem firmware UUID is a unique identifier for a modem firmware version build.
-The modem firmware UUID for given firmware version is found in the :file:`README.txt` file of the `nRF9160 modem firmware zip file`_, and can also be retrieved by using the :c:func:`nrf_modem_delta_dfu_uuid` function.
-
 Rolling back to a previous firmware
 ***********************************
 
@@ -212,12 +214,41 @@ The application can roll back to the previous modem firmware version after it ha
 The same firmware delta that is used to update to a new firmware version can be used to roll back to the previous firmware version.
 Thus, the application need not download the previous modem firmware version but can perform the rollback entirely in an offline mode, without registering to the network.
 
-To roll back to the previous modem firmware version, the application calls :c:func:`nrf_modem_delta_dfu_rollback`.
-Upon success, the operation is scheduled and the modem performs a rollback to the previous modem firmware when the application boots it by calling :c:func:`nrf_modem_init`.
-
-.. note::
+.. important::
    The rollback functionality is only available as long as the application does not erase the contents of the scratch area by calling :c:func:`nrf_modem_delta_dfu_erase`.
    Once the application has called :c:func:`nrf_modem_delta_dfu_erase` it can no longer roll back to a previous modem firmware version using the delta DFU API.
 
-.. note::
-   The modem must be shut down by calling :c:func:`nrf_modem_shutdown` prior to calling :c:func:`nrf_modem_init`.
+To roll back to the previous modem firmware version, the application calls :c:func:`nrf_modem_delta_dfu_rollback`.
+Upon success, the operation is scheduled and the modem performs a rollback to the previous modem firmware when the application boots it by calling :c:func:`nrf_modem_init`.
+The return value of :c:func:`nrf_modem_delta_dfu_rollback` only indicates whether the modem has scheduled the rollback and does not represent the result of the actual rollback operation.
+
+The figure below shows the flow chart for the rollback operation.
+
+.. figure:: images/delta_dfu_rollback.svg
+   :alt: Modem delta DFU rollback flowchart
+
+   Modem delta DFU rollback flowchart
+
+Reinitializing the modem to perform the rollback
+================================================
+
+To let the modem perform the rollback, the application must reinitialize the modem by calling :c:func:`nrf_modem_shutdown` followed by :c:func:`nrf_modem_init`.
+
+Checking the result of the rollback
+===================================
+
+:c:func:`nrf_modem_init` will return one of the following values:
+
+* ``MODEM_DFU_RESULT_OK`` - The rollback is successful. The modem will run the previous firmware the next time it boots.
+* ``MODEM_DFU_RESULT_AUTH_ERROR`` - The rollback did not take place. The modem will run the same firmware the next time it boots.
+* ``MODEM_DFU_RESULT_UUID_ERROR`` - The rollback did not take place. The modem will run the same firmware the next time it boots.
+* ``MODEM_DFU_RESULT_INTERNAL_ERROR`` - The modem encountered an internal error while executing the rollback, and it will not boot to prevent executing unintended operations. For subsequent programming, the modem can only be programmed through the :ref:`nrf_modem_full_dfu_api`.
+* ``MODEM_DFU_RESULT_HARDWARE_ERROR`` - The modem encountered a hardware error while executing the rollback, and it will not boot to prevent executing unintended operations. For subsequent programming, the modem can only be programmed through the :ref:`nrf_modem_full_dfu_api`.
+
+Reinitializing the modem to run the firmware
+============================================
+
+Regardless of the value returned by :c:func:`nrf_modem_init`, the application must reinitialize the modem by reinitializing the :ref:`nrf_modem` to run the modem firmware.
+The application can reinitialize the Modem library by calling :c:func:`nrf_modem_shutdown` followed by :c:func:`nrf_modem_init`.
+If the rollback is successful, the modem runs the previous modem firmware.
+The application can verify that by reading the modem firmware UUID or the ``AT+CGMR`` command response.
