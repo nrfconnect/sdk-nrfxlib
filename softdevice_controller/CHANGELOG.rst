@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF Connect SDK v1.5.2
+**********************
+
+No changes in this release.
+
 nRF Connect SDK v1.5.1
 **********************
 
