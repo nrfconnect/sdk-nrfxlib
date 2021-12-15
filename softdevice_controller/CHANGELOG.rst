@@ -9,6 +9,16 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Added
+=====
+
+* Added support for a vendor-specific HCI command setting the periodic advertising event length (DRGN-16513).
+
 nRF Connect SDK v1.8.0
 **********************
 
