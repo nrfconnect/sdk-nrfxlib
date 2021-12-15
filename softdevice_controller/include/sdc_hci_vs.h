@@ -65,6 +65,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_QOS_CONN_EVENT_REPORT_ENABLE = 0xfd04,
     /** @brief See @ref sdc_hci_cmd_vs_event_length_set(). */
     SDC_HCI_OPCODE_CMD_VS_EVENT_LENGTH_SET = 0xfd05,
+    /** @brief See @ref sdc_hci_cmd_vs_periodic_adv_event_length_set(). */
+    SDC_HCI_OPCODE_CMD_VS_PERIODIC_ADV_EVENT_LENGTH_SET = 0xfd06,
 };
 
 /** @brief VS subevent Code values. */
@@ -94,6 +96,7 @@ typedef __PACKED_STRUCT
     uint8_t conn_event_extend : 1;
     uint8_t qos_conn_event_report_enable : 1;
     uint8_t event_length_set : 1;
+    uint8_t periodic_adv_event_length_set : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Adress type. */
@@ -341,6 +344,13 @@ typedef __PACKED_STRUCT
     /** @brief Allocated event length in microseconds. */
     uint32_t event_length_us;
 } sdc_hci_cmd_vs_event_length_set_t;
+
+/** @brief Set event length for periodic advertisers command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Allocated periodic advertising event length in microseconds. */
+    uint32_t event_length_us;
+} sdc_hci_cmd_vs_periodic_adv_event_length_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -643,6 +653,28 @@ uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_con
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t * p_params);
+
+/** @brief Set event length for periodic advertisers.
+ *
+ * Set the allocated event length for new periodic advertisers.
+ * The SoftDevice Controller will ensure that the anchor points of periodic advertising events are
+ * spaced event_length_us apart.
+ * If the advertiser requires less time to transmit all the data, the distance to the next
+ * scheduling activity will still be equal to the configured event length.
+ * If the advertiser requires more time to transmit all the data, scheduling conflicts may occur.
+ *
+ * This API must be called before configuring a periodic advertiser for the event length to be
+ * applied.
+ *
+ * The default event length is @ref SDC_DEFAULT_EVENT_LENGTH_US.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_periodic_adv_event_length_set(const sdc_hci_cmd_vs_periodic_adv_event_length_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 
