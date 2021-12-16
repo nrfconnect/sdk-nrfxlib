@@ -63,6 +63,11 @@ typedef struct
 } nrf_802154_aes_ccm_data_t;
 
 /**
+ * @brief Resets AES-CCM* transformation.
+ */
+void nrf_802154_aes_ccm_transform_reset(void);
+
+/**
  * @brief Prepares AES-CCM* transformation.
  *
  * @param[in]  p_aes_ccm_data   Data to be used for the AES-CCM* transformation.
