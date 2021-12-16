@@ -485,6 +485,11 @@ static void start_ecb_auth_transformation(void)
     nrf_ecb_task_trigger(NRF_ECB, NRF_ECB_TASK_STARTECB);
 }
 
+void nrf_802154_aes_ccm_transform_reset(void)
+{
+    m_aes_ccm_data.raw_frame = NULL;
+}
+
 bool nrf_802154_aes_ccm_transform_prepare(const nrf_802154_aes_ccm_data_t * p_aes_ccm_data)
 {
     // Verify that all necessary data is available
@@ -572,4 +577,6 @@ void nrf_802154_aes_ccm_transform_abort(uint8_t * p_frame)
     nrf_ecb_task_trigger(NRF_ECB, NRF_ECB_TASK_STOPECB);
     nrf_ecb_event_clear(NRF_ECB, NRF_ECB_EVENT_ENDECB);
     nrf_ecb_int_enable(NRF_ECB, NRF_ECB_INT_ENDECB_MASK);
+
+    m_aes_ccm_data.raw_frame = NULL;
 }
