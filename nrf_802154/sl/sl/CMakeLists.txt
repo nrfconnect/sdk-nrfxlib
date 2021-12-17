@@ -4,6 +4,8 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
+if (CONFIG_NRF_802154_RADIO_DRIVER)
+
 add_library(nrf-802154-sl INTERFACE)
 
 nrfxlib_calculate_lib_path(lib_path SOC_MODE)
@@ -19,3 +21,5 @@ target_link_libraries(nrf-802154-sl
   INTERFACE
     ${NRF_802154_SL_LIB_PATH}/libnrf-802154-sl.a
 )
+
+endif ()
