@@ -534,6 +534,16 @@ extern "C" {
 #endif
 
 /**
+ * @def NRF_802154_CARRIER_FUNCTIONS_ENABLED
+ *
+ * Enables functions used for test purposes: nrf_802154_continuous_carrier and
+ * nrf_802154_modulated_carrier
+ */
+#ifndef NRF_802154_CARRIER_FUNCTIONS_ENABLED
+#define NRF_802154_CARRIER_FUNCTIONS_ENABLED 1
+#endif
+
+/**
  *@}
  **/
 

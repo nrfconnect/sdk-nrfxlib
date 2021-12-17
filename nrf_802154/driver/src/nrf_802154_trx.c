@@ -209,8 +209,12 @@ static void receive_ack_abort(void);
 static void transmit_frame_abort(void);
 static void transmit_ack_abort(void);
 static void standalone_cca_abort(void);
+
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
 static void continuous_carrier_abort(void);
 static void modulated_carrier_abort(void);
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 static void energy_detection_abort(void);
 
 /** Clear flags describing frame being received. */
@@ -589,6 +593,7 @@ static void ppi_all_clear(void)
             nrf_802154_trx_ppi_for_fem_clear();
             break;
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case TRX_STATE_CONTINUOUS_CARRIER:
             nrf_802154_trx_ppi_for_ramp_up_clear(NRF_RADIO_TASK_TXEN, false);
             nrf_802154_trx_ppi_for_fem_clear();
@@ -598,6 +603,7 @@ static void ppi_all_clear(void)
             nrf_802154_trx_ppi_for_ramp_up_clear(NRF_RADIO_TASK_TXEN, false);
             nrf_802154_trx_ppi_for_fem_clear();
             break;
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
         case TRX_STATE_ENERGY_DETECTION:
             nrf_802154_trx_ppi_for_ramp_up_clear(NRF_RADIO_TASK_RXEN, false);
@@ -787,11 +793,13 @@ void nrf_802154_trx_antenna_update(void)
         case TRX_STATE_STANDALONE_CCA:
         case TRX_STATE_RXACK:
         case TRX_STATE_TXFRAME:
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case TRX_STATE_CONTINUOUS_CARRIER:
         case TRX_STATE_MODULATED_CARRIER:
             tx_antenna_update();
             break;
 
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
         default:
             /* Intentionally empty */
             break;
@@ -1515,6 +1523,7 @@ void nrf_802154_trx_abort(void)
             standalone_cca_abort();
             break;
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case TRX_STATE_CONTINUOUS_CARRIER:
             continuous_carrier_abort();
             break;
@@ -1522,6 +1531,7 @@ void nrf_802154_trx_abort(void)
         case TRX_STATE_MODULATED_CARRIER:
             modulated_carrier_abort();
             break;
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
         case TRX_STATE_ENERGY_DETECTION:
             energy_detection_abort();
@@ -1759,6 +1769,8 @@ static void standalone_cca_abort(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
 void nrf_802154_trx_continuous_carrier(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -1877,6 +1889,8 @@ static void modulated_carrier_abort()
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 void nrf_802154_trx_energy_detection(uint32_t ed_count)
 {
@@ -2534,3 +2548,57 @@ void nrf_802154_trx_swi_irq_handler(void)
 }
 
 #endif
+
+const nrf_802154_sl_event_handle_t * nrf_802154_trx_radio_end_event_handle_get(void)
+{
+    static const nrf_802154_sl_event_handle_t r = {
+#if defined(DPPI_PRESENT)
+        .event_addr = NRF_802154_DPPI_RADIO_END,
+        .shared     = true
+#else
+        .event_addr = (uint32_t)&NRF_RADIO->EVENTS_END
+#endif
+    };
+
+    return &r;
+}
+
+const nrf_802154_sl_event_handle_t * nrf_802154_trx_radio_ready_event_handle_get(void)
+{
+    static const nrf_802154_sl_event_handle_t r = {
+#if defined(DPPI_PRESENT)
+        .event_addr = NRF_802154_DPPI_RADIO_READY,
+        .shared     = true
+#else
+        .event_addr = (uint32_t)&NRF_RADIO->EVENTS_READY
+#endif
+    };
+
+    return &r;
+}
+
+const nrf_802154_sl_event_handle_t * nrf_802154_trx_radio_crcok_event_handle_get(void)
+{
+    static const nrf_802154_sl_event_handle_t r = {
+        .event_addr = (uint32_t)&NRF_RADIO->EVENTS_CRCOK,
+#if defined(DPPI_PRESENT)
+        .shared = false
+#endif
+    };
+
+    return &r;
+}
+
+const nrf_802154_sl_event_handle_t * nrf_802154_trx_radio_phyend_event_handle_get(void)
+{
+    static const nrf_802154_sl_event_handle_t r = {
+#if defined(DPPI_PRESENT)
+        .event_addr = NRF_802154_DPPI_RADIO_PHYEND,
+        .shared     = true
+#else
+        .event_addr = (uint32_t)&NRF_RADIO->EVENTS_PHYEND
+#endif
+    };
+
+    return &r;
+}

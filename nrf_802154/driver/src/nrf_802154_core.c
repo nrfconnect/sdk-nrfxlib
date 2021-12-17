@@ -54,7 +54,6 @@
 #include "nrf_802154_debug.h"
 #include "nrf_802154_notification.h"
 #include "nrf_802154_nrfx_addons.h"
-#include "nrf_802154_peripherals.h"
 #include "nrf_802154_pib.h"
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_rssi.h"
@@ -582,8 +581,10 @@ static rsch_prio_t min_required_rsch_prio(radio_state_t state)
 
         case RADIO_STATE_TX:
         case RADIO_STATE_TX_ACK:
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case RADIO_STATE_CONTINUOUS_CARRIER:
         case RADIO_STATE_MODULATED_CARRIER:
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
             return RSCH_PRIO_TX;
 
         case RADIO_STATE_CCA_TX:
@@ -683,8 +684,10 @@ static bool can_terminate_current_operation(radio_state_t     state,
     {
         case RADIO_STATE_SLEEP:
         case RADIO_STATE_FALLING_ASLEEP:
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case RADIO_STATE_CONTINUOUS_CARRIER:
         case RADIO_STATE_MODULATED_CARRIER:
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
             result = true;
             break;
 
@@ -714,8 +717,10 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
     {
         case RADIO_STATE_SLEEP:
         case RADIO_STATE_FALLING_ASLEEP:
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case RADIO_STATE_CONTINUOUS_CARRIER:
         case RADIO_STATE_MODULATED_CARRIER:
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
             break;
 
         case RADIO_STATE_RX:
@@ -914,7 +919,11 @@ static bool current_operation_terminate(nrf_802154_term_t term_lvl,
 /** Enter Sleep state. */
 static void sleep_init(void)
 {
-    nrf_802154_timer_coord_stop();
+    // This function is always executed from a critical section, so this check is safe.
+    if (timeslot_is_granted())
+    {
+        nrf_802154_timer_coord_stop();
+    }
 }
 
 /** Initialize Falling Asleep operation. */
@@ -1040,12 +1049,10 @@ static void rx_init(void)
 #if (NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED)
     // Configure the timer coordinator to get a timestamp of the END event which
     // fires several cycles after CRCOK or CRCERROR events.
-    nrf_802154_timer_coord_timestamp_prepare(
-        nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_END));
+    nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_end_event_handle_get());
 #else
     // Configure the timer coordinator to get a timestamp of the CRCOK event.
-    nrf_802154_timer_coord_timestamp_prepare(nrf_radio_event_address_get(NRF_RADIO,
-                                                                         NRF_RADIO_EVENT_CRCOK));
+    nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_crcok_event_handle_get());
 #endif
 #endif
 
@@ -1082,14 +1089,12 @@ static bool tx_init(const uint8_t * p_data, bool cca)
         // Configure the timer coordinator to get a time stamp of the READY event.
         // Note: This event triggers CCASTART, so the time stamp of READY event
         // is the time stamp when CCA started.
-        nrf_802154_timer_coord_timestamp_prepare(nrf_radio_event_address_get(NRF_RADIO,
-                                                                             NRF_RADIO_EVENT_READY));
+        nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_ready_event_handle_get());
     }
     else
     {
         // Configure the timer coordinator to get a time stamp of the PHYEND event.
-        nrf_802154_timer_coord_timestamp_prepare(nrf_radio_event_address_get(NRF_RADIO,
-                                                                             NRF_RADIO_EVENT_PHYEND));
+        nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_phyend_event_handle_get());
     }
 #endif
 
@@ -1145,6 +1150,8 @@ static void cca_init(void)
     nrf_802154_trx_standalone_cca();
 }
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
 /** Initialize Continuous Carrier operation. */
 static void continuous_carrier_init(void)
 {
@@ -1176,6 +1183,8 @@ static void modulated_carrier_init(const uint8_t * p_data)
 
     nrf_802154_trx_modulated_carrier(p_data);
 }
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 /***************************************************************************************************
  * @section Radio Scheduler notification handlers
@@ -1243,8 +1252,10 @@ static void on_timeslot_ended(void)
 
             case RADIO_STATE_ED:
             case RADIO_STATE_CCA:
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
             case RADIO_STATE_CONTINUOUS_CARRIER:
             case RADIO_STATE_MODULATED_CARRIER:
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
             case RADIO_STATE_SLEEP:
                 // Intentionally empty.
                 break;
@@ -1305,8 +1316,10 @@ static void on_preconditions_denied(radio_state_t state)
 
         case RADIO_STATE_ED:
         case RADIO_STATE_CCA:
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case RADIO_STATE_CONTINUOUS_CARRIER:
         case RADIO_STATE_MODULATED_CARRIER:
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case RADIO_STATE_SLEEP:
             // Intentionally empty.
             break;
@@ -1352,6 +1365,7 @@ static void on_preconditions_approved(radio_state_t state)
             cca_init();
             break;
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case RADIO_STATE_CONTINUOUS_CARRIER:
             continuous_carrier_init();
             break;
@@ -1359,6 +1373,7 @@ static void on_preconditions_approved(radio_state_t state)
         case RADIO_STATE_MODULATED_CARRIER:
             modulated_carrier_init(mp_tx_data);
             break;
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
         default:
             assert(false);
@@ -1874,8 +1889,7 @@ void nrf_802154_trx_receive_frame_crcerror(void)
 
     // Configure the timer coordinator to get a timestamp of the END event which
     // fires several cycles after CRCOK or CRCERROR events.
-    nrf_802154_timer_coord_timestamp_prepare(
-        nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_END));
+    nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_end_event_handle_get());
 #endif
 
 #else
@@ -2200,12 +2214,10 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
 #if (NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED)
         // Configure the timer coordinator to get a timestamp of the END event which
         // fires several cycles after CRCOK or CRCERROR events.
-        nrf_802154_timer_coord_timestamp_prepare(
-            nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_END));
+        nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_end_event_handle_get());
 #else
         // Configure the timer coordinator to get a timestamp of the CRCOK event.
-        nrf_802154_timer_coord_timestamp_prepare(nrf_radio_event_address_get(NRF_RADIO,
-                                                                             NRF_RADIO_EVENT_CRCOK));
+        nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_crcok_event_handle_get());
 #endif
 #endif
 
@@ -2425,8 +2437,7 @@ void nrf_802154_trx_transmit_frame_ccaidle(void)
     uint32_t ts = timer_coord_timestamp_get();
 
     // Configure the timer coordinator to get a timestamp of the PHYEND event.
-    nrf_802154_timer_coord_timestamp_prepare(nrf_radio_event_address_get(NRF_RADIO,
-                                                                         NRF_RADIO_EVENT_PHYEND));
+    nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_phyend_event_handle_get());
 
     // Update stat timestamp of CCASTART event
     nrf_802154_stat_timestamp_write(last_cca_start_timestamp, ts);
@@ -2756,6 +2767,8 @@ bool nrf_802154_core_cca(nrf_802154_term_t term_lvl)
     return result;
 }
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
 bool nrf_802154_core_continuous_carrier(nrf_802154_term_t term_lvl)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2805,6 +2818,8 @@ bool nrf_802154_core_modulated_carrier(nrf_802154_term_t term_lvl,
 
     return result;
 }
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 bool nrf_802154_core_notify_buffer_free(uint8_t * p_data)
 {
@@ -2856,6 +2871,7 @@ bool nrf_802154_core_channel_update(req_originator_t req_orig)
                 }
                 break;
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
             case RADIO_STATE_CONTINUOUS_CARRIER:
                 if (timeslot_is_granted())
                 {
@@ -2870,6 +2886,7 @@ bool nrf_802154_core_channel_update(req_originator_t req_orig)
                 }
                 break;
 
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
             default:
                 // Don't perform any additional action in any other state.
                 break;

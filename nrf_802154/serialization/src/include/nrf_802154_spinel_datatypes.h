@@ -285,6 +285,108 @@ typedef enum
     SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_SET =
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 36,
 
+    /**
+     * Vendor property for nrf_802154_transmit_raw_at serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW_AT =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 37,
+
+    /**
+     * Vendor property for nrf_802154_transmit_at_cancel serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_AT_CANCEL =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 38,
+
+    /**
+     * Vendor property for nrf_802154_receive_at serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 39,
+
+    /**
+     * Vendor property for nrf_802154_receive_at_cancel serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT_CANCEL =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 40,
+
+    /**
+     * Vendor property for nrf_802154_security_global_frame_counter_set serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_GLOBAL_FRAME_COUNTER_SET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 41,
+
+    /**
+     * Vendor property for nrf_802154_security_key_store serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_STORE =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 42,
+
+    /**
+     * Vendor property for nrf_802154_security_key_remove serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_REMOVE =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 43,
+
+    /**
+     * Vendor property for nrf_802154_csl_writer_period_set serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSL_WRITER_PERIOD_SET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 44,
+
+    /**
+     * Vendor property for nrf_802154_csma_ca_min_be_set serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MIN_BE_SET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 45,
+
+    /**
+     * Vendor property for nrf_802154_csma_ca_min_be_get serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MIN_BE_GET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 46,
+
+    /**
+     * Vendor property for nrf_802154_csma_ca_max_be_set serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BE_SET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 47,
+
+    /**
+     * Vendor property for nrf_802154_csma_ca_max_be_get serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BE_GET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 48,
+
+    /**
+     * Vendor property for nrf_802154_csma_ca_max_backoffs_set serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BACKOFFS_SET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 49,
+
+    /**
+     * Vendor property for nrf_802154_csma_ca_max_backoffs_get serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BACKOFFS_GET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 50,
+
+    /**
+     * Vendor property for nrf_802154_stat_timestamps_get serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_STAT_TIMESTAMPS_GET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 51,
+
+    /**
+     * Vendor property for nrf_802154_continuous_carrier serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CONTINUOUS_CARRIER =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 52,
+
+    /**
+     * Vendor property for nrf_802154_modulated_carrier serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_MODULATED_CARRIER =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 53,
+
 } spinel_prop_vendor_key_t;
 
 /**
@@ -396,6 +498,85 @@ typedef enum
     NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE((tx_metadata).frame_props)
 
 /**
+ * @brief Spinel data type description for nrf_802154_csma_ca_min_be_set.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_SET           SPINEL_DATATYPE_UINT8_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csma_ca_min_be_set result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_SET_RET       SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csma_ca_min_be_get.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_GET           SPINEL_DATATYPE_NULL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csma_ca_min_be_get result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_GET_RET       SPINEL_DATATYPE_UINT8_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csma_ca_max_be_set.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_SET           SPINEL_DATATYPE_UINT8_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csma_ca_max_be_set result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_SET_RET       SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csma_ca_max_be_get.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_GET           SPINEL_DATATYPE_NULL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csma_ca_max_be_get result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_GET_RET       SPINEL_DATATYPE_UINT8_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csma_ca_max_backoffs_set.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BACKOFFS_SET     SPINEL_DATATYPE_UINT8_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csma_ca_max_backoffs_get.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BACKOFFS_GET     SPINEL_DATATYPE_NULL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csma_ca_max_backoffs_get result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BACKOFFS_GET_RET SPINEL_DATATYPE_UINT8_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_transmit_at_metadata_t.
+ */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_METADATA_S                  \
+    SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* frame_props */ \
+    SPINEL_DATATYPE_BOOL_S                               /* cca */         \
+    SPINEL_DATATYPE_UINT8_S                              /* channel */
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_METADATA_S data type.
+ */
+#define NRF_802154_TRANSMIT_AT_METADATA_ENCODE(tx_at_metadata)               \
+    NRF_802154_TRANSMITTED_FRAME_PROPS_ENCODE((tx_at_metadata).frame_props), \
+    ((tx_at_metadata).cca),                                                  \
+    ((tx_at_metadata).channel)
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_METADATA_S data type.
+ */
+#define NRF_802154_TRANSMIT_AT_METADATA_DECODE(tx_at_metadata)               \
+    NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE((tx_at_metadata).frame_props), \
+    (&(tx_at_metadata).cca),                                                 \
+    (&(tx_at_metadata).channel)
+
+/**
  * @brief Spinel data type description for nrf_802154_cca_cfg_t.
  */
 #define SPINEL_DATATYPE_NRF_802154_CCA_CFG_S     \
@@ -420,29 +601,87 @@ typedef enum
     (&(cca_cfg).corr_limit)
 
 /**
+ * @brief Spinel data type description for nrf_802154_stat_timestamps_t
+ */
+#define SPINEL_DATATYPE_NRF_802154_STAT_TIMESTAMPS_S \
+    SPINEL_DATATYPE_UINT32_S                         \
+    SPINEL_DATATYPE_UINT32_S                         \
+    SPINEL_DATATYPE_UINT32_S                         \
+    SPINEL_DATATYPE_UINT32_S                         \
+    SPINEL_DATATYPE_UINT32_S                         \
+    SPINEL_DATATYPE_UINT32_S
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_STAT_TIMESTAMPS_S data type.
+ */
+#define NRF_802154_STAT_TIMESTAMPS_ENCODE(stat_timestamps) \
+    ((stat_timestamps).last_csmaca_start_timestamp),       \
+    ((stat_timestamps).last_cca_start_timestamp),          \
+    ((stat_timestamps).last_cca_idle_timestamp),           \
+    ((stat_timestamps).last_tx_end_timestamp),             \
+    ((stat_timestamps).last_ack_end_timestamp),            \
+    ((stat_timestamps).last_rx_end_timestamp)
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_STAT_TIMESTAMPS_S data type.
+ */
+#define NRF_802154_STAT_TIMESTAMPS_DECODE(stat_timestamps) \
+    (&(stat_timestamps).last_csmaca_start_timestamp),      \
+    (&(stat_timestamps).last_cca_start_timestamp),         \
+    (&(stat_timestamps).last_cca_idle_timestamp),          \
+    (&(stat_timestamps).last_tx_end_timestamp),            \
+    (&(stat_timestamps).last_ack_end_timestamp),           \
+    (&(stat_timestamps).last_rx_end_timestamp)
+
+/**
  * @brief Spinel data type description for SPINEL_PROP_LAST_STATUS.
  */
-#define SPINEL_DATATYPE_SPINEL_PROP_LAST_STATUS            SPINEL_DATATYPE_UINT_PACKED_S
+#define SPINEL_DATATYPE_SPINEL_PROP_LAST_STATUS SPINEL_DATATYPE_UINT_PACKED_S
 
 /**
  * @brief Spinel data type description for nrf_802154_sleep.
  */
-#define SPINEL_DATATYPE_NRF_802154_SLEEP                   SPINEL_DATATYPE_NULL_S
+#define SPINEL_DATATYPE_NRF_802154_SLEEP        SPINEL_DATATYPE_NULL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_sleep result.
  */
-#define SPINEL_DATATYPE_NRF_802154_SLEEP_RET               SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_SLEEP_RET    SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_receive.
  */
-#define SPINEL_DATATYPE_NRF_802154_RECEIVE                 SPINEL_DATATYPE_NULL_S
+#define SPINEL_DATATYPE_NRF_802154_RECEIVE      SPINEL_DATATYPE_NULL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_receive result.
  */
-#define SPINEL_DATATYPE_NRF_802154_RECEIVE_RET             SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_RECEIVE_RET  SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_receive_at.
+ */
+#define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT \
+    SPINEL_DATATYPE_UINT32_S /* t0 */         \
+    SPINEL_DATATYPE_UINT32_S /* dt */         \
+    SPINEL_DATATYPE_UINT32_S /* timeout */    \
+    SPINEL_DATATYPE_UINT8_S  /* channel */    \
+    SPINEL_DATATYPE_UINT32_S /* window id */  \
+
+/**
+ * @brief Spinel data type description for nrf_802154_receive_at result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_RET          SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_receive_at_cancel.
+ */
+#define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_CANCEL       SPINEL_DATATYPE_UINT32_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_receive_at_cancel result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_CANCEL_RET   SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_pan_id_set.
@@ -510,6 +749,26 @@ typedef enum
 #define SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTION_FAILED SPINEL_DATATYPE_UINT8_S
 
 /**
+ * @brief Spinel data type description for nrf_802154_continuous_carrier.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CONTINUOUS_CARRIER      SPINEL_DATATYPE_NULL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_nrf_802154_continuous_carrier result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CONTINUOUS_CARRIER_RET  SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_modulated_carrier.
+ */
+#define SPINEL_DATATYPE_NRF_802154_MODULATED_CARRIER       SPINEL_DATATYPE_DATA_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_nrf_802154_modulated_carrier result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_MODULATED_CARRIER_RET   SPINEL_DATATYPE_BOOL_S
+
+/**
  * @brief Spinel data type description for nrf_802154_tx_power_get.
  */
 #define SPINEL_DATATYPE_NRF_802154_TX_POWER_GET            SPINEL_DATATYPE_NULL_S
@@ -568,6 +827,16 @@ typedef enum
  * @brief Spinel data type description for return value of nrf_802154_transmit_csma_ca_raw
  */
 #define SPINEL_DATATYPE_NRF_802154_TRANSMIT_CSMA_CA_RAW_RET       SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type description for return value of nrf_802154_transmit_raw_at
+ */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW_AT_RET            SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type description for return value of nrf_802154_transmit_at_cancel
+ */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_CANCEL_RET         SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type desription for nrf_802154_auto_pending_bit_set.
@@ -645,6 +914,20 @@ typedef enum
     SPINEL_DATATYPE_NRF_802154_HDATA_S /* Frame to transmit with its handle */
 
 /**
+ * @brief Spinel data type description for nrf_802154_transmit_raw_at
+ */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW_AT    \
+    SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_METADATA_S \
+    SPINEL_DATATYPE_UINT32_S           /* t0 */       \
+    SPINEL_DATATYPE_UINT32_S           /* dt */       \
+    SPINEL_DATATYPE_NRF_802154_HDATA_S /* Frame to transmit with its handle */
+
+/**
+ * @brief Spinel data type description for nrf_802154_sleep.
+ */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_CANCEL SPINEL_DATATYPE_NULL_S
+
+/**
  * @brief Spinel data type description for nrf_802154_transmit_done_metadata.
  */
 #define SPINEL_DATATYPE_NRF_802154_TRANSMIT_DONE_METADATA_S                \
@@ -659,7 +942,7 @@ typedef enum
  * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_DONE_METADATA_S data type.
  *
  * @param[in]  metadata    Transmit done metadata structure to be decoded.
- * @param[in]  ack_handle  Variable containing handle to
+ * @param[in]  ack_handle  Variable containing handle to remote ack frame.
  */
 #define NRF_802154_TRANSMIT_DONE_METADATA_ENCODE(metadata, ack_handle) \
     NRF_802154_TRANSMITTED_FRAME_PROPS_ENCODE((metadata).frame_props), \
@@ -688,19 +971,103 @@ typedef enum
     NRF_802154_HDATA_DECODE(ack_handle, (metadata).data.transmitted.p_ack, ack_length)
 
 /**
+ * @brief Spinel data type description for nrf_802154_transmit_failed_metadata.
+ */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED_METADATA_S \
+    SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* Frame props */
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED_METADATA_S data type.
+ *
+ * @param[in]  metadata    Transmit failed metadata structure to be encoded.
+ */
+#define NRF_802154_TRANSMIT_FAILED_METADATA_ENCODE(metadata) \
+    NRF_802154_TRANSMITTED_FRAME_PROPS_ENCODE((metadata).frame_props)
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED_METADATA_S data type.
+ *
+ * @param[out]  metadata    Transmit failed metadata structure to which store decoded data.
+ */
+#define NRF_802154_TRANSMIT_FAILED_METADATA_DECODE(metadata) \
+    NRF_802154_TRANSMITTED_FRAME_PROPS_DECODE((metadata).frame_props)
+
+/**
  * @brief Spinel data type description for nrf_802154_transmitted_raw.
  */
-#define SPINEL_DATATYPE_NRF_802154_TRANSMITTED_RAW                                        \
-    SPINEL_DATATYPE_UINT32_S                            /* Handle to transmitted frame */ \
+#define SPINEL_DATATYPE_NRF_802154_TRANSMITTED_RAW                                            \
+    SPINEL_DATATYPE_NRF_802154_HDATA_S                  /* Transmitted frame and its handle*/ \
     SPINEL_DATATYPE_NRF_802154_TRANSMIT_DONE_METADATA_S /* Transmit done metadata */
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMITTED_RAW data type.
+ *
+ * @param[in]  frame_handle Variable containing remote frame handle.
+ * @param[in]  frame_data   Pointer to contents of frame.
+ * @param[in]  metadata     Transmit done metadata structure to be encoded.
+ * @param[in]  ack_handle   Variable containing handle to received Ack.
+ */
+#define NRF_802154_TRANSMITTED_RAW_ENCODE(frame_handle, frame_data, metadata, ack_handle) \
+    NRF_802154_HDATA_ENCODE(frame_handle, frame_data, frame_data[0] + 1),                 \
+    NRF_802154_TRANSMIT_DONE_METADATA_ENCODE(metadata, ack_handle)
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMITTED_RAW data type.
+ *
+ * @param[out]  frame_handle  Pointer variable to which store handle of transmitted frame.
+ * @param[out]  frame_data    Pointer to memory to which store contents of transmitted frame.
+ * @param[out]  frame_length  Variable to which store length of the decoded frame.
+ * @param[out]  metadata      Transmit done metadata structure to which store decoded data.
+ * @param[out]  ack_handle    Pointer variable to which store handle of ACK frame.
+ * @param[out]  ack_length    Variable to which store length of the decoded ACK frame.
+ */
+#define NRF_802154_TRANSMITTED_RAW_DECODE(frame_handle,              \
+                                          frame_data,                \
+                                          frame_length,              \
+                                          metadata,                  \
+                                          ack_handle,                \
+                                          ack_length)                \
+    NRF_802154_HDATA_DECODE(frame_handle, frame_data, frame_length), \
+    NRF_802154_TRANSMIT_DONE_METADATA_DECODE(metadata, ack_handle, ack_length)
 
 /**
  * @brief Spinel data type description for nrf_802154_transmit_failed.
  */
-#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED                                         \
-    SPINEL_DATATYPE_UINT32_S                             /* Handle to transmitted frame */ \
-    SPINEL_DATATYPE_UINT8_S                              /* Error code */                  \
-    SPINEL_DATATYPE_NRF_802154_TRANSMITTED_FRAME_PROPS_S /* Frame props */
+#define SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED                                                                        \
+    SPINEL_DATATYPE_NRF_802154_HDATA_S                    /* Frame that was attempted to be transmitted and its handle */ \
+    SPINEL_DATATYPE_UINT8_S                               /* Error code */                                                \
+    SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED_METADATA_S /* Transmit failed metadata */
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED data type.
+ *
+ * @param[in]  frame_handle Variable containing remote frame handle.
+ * @param[in]  frame_data   Pointer to contents of frame.
+ * @param[in]  error_code   Error code to be encoded.
+ * @param[in]  metadata     Transmit failed metadata structure to be encoded.
+ */
+#define NRF_802154_TRANSMIT_FAILED_ENCODE(frame_handle, frame_data, error_code, metadata) \
+    NRF_802154_HDATA_ENCODE(frame_handle, frame_data, frame_data[0] + 1),                 \
+    error_code,                                                                           \
+    NRF_802154_TRANSMIT_FAILED_METADATA_ENCODE(metadata)
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_TRANSMIT_FAILED data type.
+ *
+ * @param[out]  frame_handle    Pointer variable to which store handle of frame failed to transmit.
+ * @param[out]  frame_data      Pointer to memory to which store contents of frame failed to transmit.
+ * @param[out]  frame_length    Variable to which store length of the decoded frame.
+ * @param[in]   error_code      Variable to which store decode error code.
+ * @param[out]  metadata        Transmit failed metadata structure to which store decoded data.
+ */
+#define NRF_802154_TRANSMIT_FAILED_DECODE(frame_handle,              \
+                                          frame_data,                \
+                                          frame_length,              \
+                                          error_code,                \
+                                          metadata)                  \
+    NRF_802154_HDATA_DECODE(frame_handle, frame_data, frame_length), \
+    &error_code,                                                     \
+    NRF_802154_TRANSMIT_FAILED_METADATA_DECODE(metadata)
 
 /**
  * @brief Spinel data type description for nrf_802154_capabilities_get.
@@ -730,12 +1097,120 @@ typedef enum
 /**
  * @brief Spinel data type description for nrf_802154_cca_cfg_get_ret.
  */
-#define SPINEL_DATATYPE_NRF_802154_CCA_CFG_GET_RET      SPINEL_DATATYPE_NRF_802154_CCA_CFG_S
+#define SPINEL_DATATYPE_NRF_802154_CCA_CFG_GET_RET \
+    SPINEL_DATATYPE_NRF_802154_CCA_CFG_S
 
 /**
  * @brief Spinel data type description for nrf_802154_cca_cfg_get.
  */
-#define SPINEL_DATATYPE_NRF_802154_CCA_CFG_SET          SPINEL_DATATYPE_NRF_802154_CCA_CFG_S
+#define SPINEL_DATATYPE_NRF_802154_CCA_CFG_SET \
+    SPINEL_DATATYPE_NRF_802154_CCA_CFG_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_security_global_frame_counter_set.
+ */
+#define SPINEL_DATATYPE_NRF_802154_SECURITY_GLOBAL_FRAME_COUNTER_SET SPINEL_DATATYPE_UINT32_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_security_key_store.
+ */
+#define SPINEL_DATATYPE_NRF_802154_SECURITY_KEY_STORE \
+    SPINEL_DATATYPE_STRUCT_S(                         \
+        SPINEL_DATATYPE_DATA_S  /* Key value */       \
+                            )                         \
+    SPINEL_DATATYPE_STRUCT_S(                         \
+        SPINEL_DATATYPE_UINT8_S /* Key mode */        \
+        SPINEL_DATATYPE_DATA_S  /* Key ID */          \
+                            )                         \
+    SPINEL_DATATYPE_UINT32_S    /* Key type */        \
+    SPINEL_DATATYPE_UINT32_S    /* Frame counter */   \
+    SPINEL_DATATYPE_BOOL_S      /* Whether to use global frame counter */
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_SECURITY_KEY_STORE data type.
+ *
+ * @param[in]  key          Key structure (of @ref nrf_802154_key_t type) to be encoded.
+ * @param[in]  key_size     Size of the key data, i.e. cleartext size.
+ * @param[in]  key_id_size  Size of the key id in @p key structure.
+ */
+#define NRF_802154_SECURITY_KEY_STORE_ENCODE(key, key_size, key_id_size) \
+    (key).value.p_cleartext_key,                                         \
+    (key_size),                                                          \
+    (key).id.mode,                                                       \
+    (key).id.p_key_id,                                                   \
+    (key_id_size),                                                       \
+    (key).type,                                                          \
+    (key).frame_counter,                                                 \
+    (key).use_global_frame_counter
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_SECURITY_KEY_STORE data type.
+ *
+ * @param[out]  key          Key structure (of @ref nrf_802154_key_t type) to which store decoded data.
+ * @param[out]  key_size     Variable to which store size of the decoded key, i.e. cleartext size.
+ * @param[out]  key_id_size  Variable to which store size of the decoded key ID.
+ */
+#define NRF_802154_SECURITY_KEY_STORE_DECODE(key, key_size, key_id_size) \
+    & (key).value.p_cleartext_key,                                       \
+    &(key_size),                                                         \
+    &(key).id.mode,                                                      \
+    &(key).id.p_key_id,                                                  \
+    &(key_id_size),                                                      \
+    &(key).type,                                                         \
+    &(key).frame_counter,                                                \
+    &(key).use_global_frame_counter
+
+/**
+ * @brief Spinel data type description for nrf_802154_security_key_remove.
+ */
+#define SPINEL_DATATYPE_NRF_802154_SECURITY_KEY_REMOVE \
+    SPINEL_DATATYPE_STRUCT_S(                          \
+        SPINEL_DATATYPE_UINT8_S /* Key mode */         \
+        SPINEL_DATATYPE_DATA_S  /* Key ID */           \
+                            )
+
+/**
+ * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_SECURITY_KEY_REMOVE data type.
+ *
+ * @param[in]  key_id       Key ID structure (of @ref nrf_802154_key_id_t type) to be encoded.
+ * @param[in]  key_id_size  Size of the key id in @p key_id structure.
+ */
+#define NRF_802154_SECURITY_KEY_REMOVE_ENCODE(key_id, key_id_size) \
+    (key_id).mode,                                                 \
+    (key_id).p_key_id,                                             \
+    (key_id_size)
+
+/**
+ * @brief Decodes an instance of @ref SPINEL_DATATYPE_NRF_802154_SECURITY_KEY_STORE data type.
+ *
+ * @param[out]  key_id       Key ID structure (of @ref nrf_802154_key_id_t type) to which store decoded data.
+ * @param[out]  key_id_size  Variable to which store size of the decoded key ID.
+ */
+#define NRF_802154_SECURITY_KEY_REMOVE_DECODE(key_id, key_id_size) \
+    & (key_id).mode,                                               \
+    &(key_id).p_key_id,                                            \
+    &(key_id_size)
+
+/**
+ * @brief Spinel data type description for return type for security commands.
+ */
+#define SPINEL_DATATYPE_NRF_802154_SECURITY_ERROR_RET    SPINEL_DATATYPE_UINT8_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csl_writer_period_set.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSL_WRITER_PERIOD_SET SPINEL_DATATYPE_UINT16_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_stat_timestamps_get
+ */
+#define SPINEL_DATATYPE_NRF_802154_STAT_TIMESTAMPS_GET   SPINEL_DATATYPE_NULL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_stat_timestamps_get_ret.
+ */
+#define SPINEL_DATATYPE_NRF_802154_STAT_TIMESTAMPS_GET_RET \
+    SPINEL_DATATYPE_NRF_802154_STAT_TIMESTAMPS_S
 
 #ifdef __cplusplus
 }

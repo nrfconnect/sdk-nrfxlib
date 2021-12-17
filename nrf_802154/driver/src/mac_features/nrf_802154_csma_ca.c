@@ -45,7 +45,6 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdlib.h>
 
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"

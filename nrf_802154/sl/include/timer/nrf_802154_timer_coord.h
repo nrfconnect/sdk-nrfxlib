@@ -43,6 +43,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "nrf_802154_sl_types.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -89,10 +91,9 @@ void nrf_802154_timer_coord_stop(void);
 /**
  * @brief Prepares for getting a precise timestamp of the given event.
  *
- * @param[in]  event_addr  Address of the peripheral register corresponding to the event that
- *                         is to be time-stamped.
+ * @param[in] p_event   Pointer to structure describing a hardware event to be timestamped.
  */
-void nrf_802154_timer_coord_timestamp_prepare(uint32_t event_addr);
+void nrf_802154_timer_coord_timestamp_prepare(const nrf_802154_sl_event_handle_t * p_event);
 
 /**
  * @brief Gets the timestamp of the recently prepared event.

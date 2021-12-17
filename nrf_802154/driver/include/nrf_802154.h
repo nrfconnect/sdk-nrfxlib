@@ -710,6 +710,8 @@ bool nrf_802154_energy_detection(uint32_t time_us);
  */
 bool nrf_802154_cca(void);
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
 /**
  * @brief Changes the radio state to continuous carrier.
  *
@@ -741,6 +743,8 @@ bool nrf_802154_modulated_carrier(const uint8_t * p_data);
  * @defgroup nrf_802154_calls Calls to higher layer
  * @{
  */
+
+#endif
 
 /**
  * @brief Notifies about the start of the ACK frame transmission.

@@ -41,7 +41,6 @@
 #include "nrf_802154_ack_generator.h"
 
 #include <assert.h>
-#include <stdlib.h>
 
 #include "nrf_802154_const.h"
 #include "nrf_802154_enh_ack_generator.h"

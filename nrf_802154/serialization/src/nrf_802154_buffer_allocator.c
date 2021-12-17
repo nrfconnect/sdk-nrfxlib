@@ -45,7 +45,6 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <string.h>
 
 static uint8_t * buffer_alloc(nrf_802154_buffer_t * p_buffer_pool, size_t buffer_pool_len)
 {

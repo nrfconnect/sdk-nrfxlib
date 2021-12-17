@@ -44,6 +44,7 @@
 #include <nrfx.h>
 #include "nrf_802154_config.h"
 #include "nrf_802154_debug.h"
+#include "nrf_802154_sl_periphs.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -219,6 +220,19 @@ extern "C" {
 #endif
 
 /**
+ * @def NRF_802154_DPPI_TIMESTAMPS_USED_MASK
+ *
+ * Helper bit mask of DPPI channels used by the 802.15.4 driver for timestamping.
+ */
+#ifdef NRF_802154_FRAME_TIMESTAMP_ENABLED
+#define NRF_802154_DPPI_TIMESTAMPS_USED_MASK                \
+    ((1UL << NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE) | \
+     (1UL << NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE))
+#else // NRF_802154_FRAME_TIMESTAMP_ENABLED
+#define NRF_802154_DPPI_TIMESTAMPS_USED_MASK 0U
+#endif  // NRF_802154_FRAME_TIMESTAMP_ENABLED
+
+/**
  * @def NRF_802154_DPPI_CHANNELS_USED_MASK
  *
  * Bit mask of DPPI channels used by the 802.15.4 driver.
@@ -233,7 +247,8 @@ extern "C" {
         (1UL << NRF_802154_DPPI_EGU_TO_RADIO_RAMP_UP) |        \
         (1UL << NRF_802154_DPPI_TIMER_COMPARE_TO_RADIO_TXEN) | \
         (1UL << NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC) |      \
-        (1UL << NRF_802154_DPPI_RADIO_CCAIDLE))
+        (1UL << NRF_802154_DPPI_RADIO_CCAIDLE) |               \
+        NRF_802154_DPPI_TIMESTAMPS_USED_MASK)
 #endif // NRF_802154_DPPI_CHANNELS_USED_MASK
 
 /**
