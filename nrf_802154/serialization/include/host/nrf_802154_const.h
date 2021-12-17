@@ -40,6 +40,9 @@
 #ifndef NRF_802154_CONST_H_
 #define NRF_802154_CONST_H_
 
+#define RAW_LENGTH_OFFSET               0                                            ///< Byte containing the frame length in a raw frame.
+#define RAW_PAYLOAD_OFFSET              1                                            ///< Offset of the frame payload in a raw frame
+
 #define ACK_HEADER_WITH_PENDING         0x12                                         ///< The first byte of an ACK frame containing a pending bit.
 #define ACK_HEADER_WITHOUT_PENDING      0x02                                         ///< The first byte of an ACK frame without a pending bit.
 

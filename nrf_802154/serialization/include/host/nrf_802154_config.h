@@ -65,6 +65,53 @@ extern "C" {
  *@}
  **/
 
+/**
+ * @defgroup nrf_802154_config_dtrx Delayed operations configuration
+ * @{
+ */
+
+/**
+ * @def NRF_802154_DELAYED_TRX_ENABLED
+ *
+ * If the delayed transmission and the receive window features are available.
+ *
+ */
+#if !defined(CONFIG_NRF_802154_SL_OPENSOURCE)
+#ifndef NRF_802154_DELAYED_TRX_ENABLED
+#define NRF_802154_DELAYED_TRX_ENABLED 1
+#endif
+#endif
+
+/**
+ * @}
+ * @defgroup nrf_802154_config_security Security configuration
+ * @{
+ */
+
+/**
+ * @def NRF_802154_SECURITY_KEY_STORAGE_SIZE
+ *
+ * Configures the number of keys which are available in the Key Storage.
+ * This configuration is implementation-independent.
+ */
+#ifndef NRF_802154_SECURITY_KEY_STORAGE_SIZE
+#define NRF_802154_SECURITY_KEY_STORAGE_SIZE 3
+#endif
+
+/**
+ *@}
+ **/
+
+/**
+ * @def NRF_802154_CARRIER_FUNCTIONS_ENABLED
+ *
+ * Enables functions used for test purposes: nrf_802154_continuous_carrier and
+ * nrf_802154_modulated_carrier
+ */
+#ifndef NRF_802154_CARRIER_FUNCTIONS_ENABLED
+#define NRF_802154_CARRIER_FUNCTIONS_ENABLED 1
+#endif
+
 #ifdef __cplusplus
 }
 #endif

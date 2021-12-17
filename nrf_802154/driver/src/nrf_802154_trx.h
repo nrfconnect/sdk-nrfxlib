@@ -46,6 +46,7 @@
 #include <stdint.h>
 
 #include "nrf_802154_config.h"
+#include "nrf_802154_sl_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -383,6 +384,8 @@ bool nrf_802154_trx_go_idle(void);
  */
 void nrf_802154_trx_standalone_cca(void);
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
 /**@brief Starts generating continuous carrier.
  *
  * Generation of a continuous carrier generates no handlers. It may be terminated by a call to
@@ -408,6 +411,8 @@ void nrf_802154_trx_modulated_carrier(const void * p_transmit_buffer);
 
 /** @brief Restarts generating modulated carrier.*/
 void nrf_802154_trx_modulated_carrier_restart(void);
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 /**@brief Puts trx module into energy detection mode.
  *
@@ -761,6 +766,30 @@ extern void nrf_802154_trx_standalone_cca_finished(bool channel_was_idle);
  * @param ed_sample     Sample of detected energy.
  */
 extern void nrf_802154_trx_energy_detection_finished(uint8_t ed_sample);
+
+/**@brief Returns RADIO->EVENTS_END handle that hardware can subscribe to.
+ *
+ * @return RADIO->EVENTS_END handle that hardware can subscribe to.
+ */
+const nrf_802154_sl_event_handle_t * nrf_802154_trx_radio_end_event_handle_get(void);
+
+/**@brief Returns RADIO->EVENTS_READY handle that hardware can subscribe to.
+ *
+ * @return RADIO->EVENTS_READY handle that hardware can subscribe to.
+ */
+const nrf_802154_sl_event_handle_t * nrf_802154_trx_radio_ready_event_handle_get(void);
+
+/**@brief Returns RADIO->EVENTS_CRCOK handle that hardware can subscribe to.
+ *
+ * @return RADIO->EVENTS_CRCOK handle that hardware can subscribe to.
+ */
+const nrf_802154_sl_event_handle_t * nrf_802154_trx_radio_crcok_event_handle_get(void);
+
+/**@brief Returns RADIO->EVENTS_PHYEND handle that hardware can subscribe to.
+ *
+ * @return RADIO->EVENTS_PHYEND handle that hardware can subscribe to.
+ */
+const nrf_802154_sl_event_handle_t * nrf_802154_trx_radio_phyend_event_handle_get(void);
 
 #ifdef __cplusplus
 }

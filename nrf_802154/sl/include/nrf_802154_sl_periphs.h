@@ -42,7 +42,38 @@
 
 #include <nrf.h>
 #include <nrfx.h>
+#if defined(DPPI_PRESENT)
+#include "hal/nrf_dppi.h"
+#else
 #include "hal/nrf_ppi.h"
+#endif
+
+/**
+ * @def NRF_802154_EGU_INSTANCE_NO
+ *
+ * Id of the EGU instance used by the driver to synchronize DPPIs and for requests and
+ * notifications if SWI is in use.
+ *
+ */
+#ifndef NRF_802154_EGU_INSTANCE_NO
+#define NRF_802154_EGU_INSTANCE_NO 0
+#endif
+
+/**
+ * @def NRF_802154_EGU_INSTANCE
+ *
+ * The EGU instance used by the driver to synchronize PPIs and for requests and notifications if
+ * SWI is in use.
+ *
+ * @note This option is used by the core module regardless of the driver configuration.
+ *
+ */
+#define NRF_802154_EGU_INSTANCE          NRFX_CONCAT_2(NRF_EGU, NRF_802154_EGU_INSTANCE_NO)
+
+/**
+ * @def NRF_802154_EGU_TIMESTAMP_CHANNEL
+ */
+#define NRF_802154_EGU_TIMESTAMP_CHANNEL 4
 
 /**
  * @def NRF_802154_RTC_INSTANCE_NO
@@ -122,7 +153,11 @@
  *
  */
 #ifndef NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE
+#if defined(DPPI_PRESENT)
+#define NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE 13U
+#else
 #define NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE NRF_PPI_CHANNEL13
+#endif
 #endif
 
 /**
@@ -135,7 +170,11 @@
  *
  */
 #ifndef NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE
+#if defined(DPPI_PRESENT)
+#define NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE 11U
+#else
 #define NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE NRF_PPI_CHANNEL14
+#endif
 #endif
 
 /**
@@ -157,7 +196,11 @@
  *
  */
 #ifndef NRF_802154_PPI_TIMESTAMP_GROUP
+#if defined(DPPI_PRESENT)
+#define NRF_802154_PPI_TIMESTAMP_GROUP NRF_DPPI_CHANNEL_GROUP1
+#else
 #define NRF_802154_PPI_TIMESTAMP_GROUP NRF_PPI_CHANNEL_GROUP2
+#endif
 #endif
 
 #endif // NRF_802154_SL_PERIPHS_H__

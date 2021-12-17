@@ -109,6 +109,8 @@ bool nrf_802154_request_cca(nrf_802154_term_t term_lvl)
     REQUEST_FUNCTION_PARMS(nrf_802154_core_cca, term_lvl)
 }
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
 bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl)
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_continuous_carrier, term_lvl)
@@ -119,6 +121,8 @@ bool nrf_802154_request_modulated_carrier(nrf_802154_term_t term_lvl,
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_modulated_carrier, term_lvl, p_data)
 }
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 bool nrf_802154_request_buffer_free(uint8_t * p_data)
 {

@@ -125,6 +125,8 @@ bool nrf_802154_request_energy_detection(nrf_802154_term_t term_lvl, uint32_t ti
  */
 bool nrf_802154_request_cca(nrf_802154_term_t term_lvl);
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
 /**
  * @brief Requests entering the @ref RADIO_STATE_CONTINUOUS_CARRIER state.
  *
@@ -146,6 +148,8 @@ bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl);
  */
 bool nrf_802154_request_modulated_carrier(nrf_802154_term_t term_lvl,
                                           const uint8_t   * p_data);
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 /**
  * @brief Requests the driver to free the given buffer.

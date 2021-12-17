@@ -60,12 +60,12 @@ extern "C" {
 #endif /* CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT */
 
 /**
- * @brief Maximal size of a Spinel frame in 802.15.4 serializaiton.
+ * @brief Maximal size of a Spinel frame in 802.15.4 serialization.
  */
-#define NRF_802154_SPINEL_FRAME_MAX_SIZE    256
+#define NRF_802154_SPINEL_FRAME_MAX_SIZE    296
 
 /**
- * @brief Buffer size for Spinel frame in 802.15.4 serializaiton.
+ * @brief Buffer size for Spinel frame in 802.15.4 serialization.
  *
  * This macro can used as a replacement for @ref SPINEL_FRAME_BUFFER_SIZE in 802.15.4 serialization
  * to reduce memory required for Spinel frame processing.

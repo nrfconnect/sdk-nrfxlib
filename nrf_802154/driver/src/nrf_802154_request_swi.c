@@ -139,6 +139,7 @@ typedef struct
             bool            * p_result; ///< CCA request result.
         } cca;                          ///< CCA request details.
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         struct
         {
             nrf_802154_term_t term_lvl; ///< Request priority.
@@ -151,6 +152,7 @@ typedef struct
             const uint8_t   * p_data;   ///< Pointer to a buffer to modulate the carrier wave with.
             bool            * p_result; ///< Modulated carrier request result.
         } modulated_carrier;            ///< Modulated carrier request details.
+#endif  // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
         struct
         {
@@ -428,6 +430,8 @@ static void swi_cca(nrf_802154_term_t term_lvl, bool * p_result)
     req_exit();
 }
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
 /**
  * @brief Requests entering the @ref RADIO_STATE_CONTINUOUS_CARRIER state from the SWI priority.
  *
@@ -465,6 +469,8 @@ static void swi_modulated_carrier(nrf_802154_term_t term_lvl,
 
     req_exit();
 }
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 /**
  * @brief Notifies the core module that the given buffer is not used anymore and can be freed.
@@ -690,6 +696,7 @@ bool nrf_802154_request_cca(nrf_802154_term_t term_lvl)
     REQUEST_FUNCTION(nrf_802154_core_cca, swi_cca, term_lvl)
 }
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
 bool nrf_802154_request_continuous_carrier(nrf_802154_term_t term_lvl)
 {
     REQUEST_FUNCTION(nrf_802154_core_continuous_carrier,
@@ -705,6 +712,8 @@ bool nrf_802154_request_modulated_carrier(nrf_802154_term_t term_lvl,
                      term_lvl,
                      p_data)
 }
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 bool nrf_802154_request_buffer_free(uint8_t * p_data)
 {
@@ -812,6 +821,8 @@ static void irq_handler_req_event(void)
                 *(p_slot->data.cca.p_result) = nrf_802154_core_cca(p_slot->data.cca.term_lvl);
                 break;
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
             case REQ_TYPE_CONTINUOUS_CARRIER:
                 *(p_slot->data.continuous_carrier.p_result) =
                     nrf_802154_core_continuous_carrier(
@@ -823,6 +834,8 @@ static void irq_handler_req_event(void)
                     nrf_802154_core_modulated_carrier(p_slot->data.modulated_carrier.term_lvl,
                                                       p_slot->data.modulated_carrier.p_data);
                 break;
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
             case REQ_TYPE_BUFFER_FREE:
                 *(p_slot->data.buffer_free.p_result) =

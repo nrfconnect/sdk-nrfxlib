@@ -92,7 +92,7 @@ else ()
   )
 endif ()
 
-if (SL_OPENSOURCE OR NRF53_SERIES)
+if (SL_OPENSOURCE)
   target_compile_definitions(nrf-802154-driver-interface
     INTERFACE
       # Disable Frame Timestamps
@@ -101,6 +101,20 @@ if (SL_OPENSOURCE OR NRF53_SERIES)
       NRF_802154_DELAYED_TRX_ENABLED=0
       # Disable IFS
       NRF_802154_IFS_ENABLED=0
+  )
+elseif (NRF53_SERIES)
+  target_compile_definitions(nrf-802154-driver-interface
+    INTERFACE
+      # Disable IFS
+      NRF_802154_IFS_ENABLED=0
+  )
+endif()
+
+if (NRF_802154_PROJECT_CONFIG)
+  target_compile_definitions(nrf-802154-driver-interface
+    INTERFACE
+      # Propagate project config from build system defines
+      NRF_802154_PROJECT_CONFIG="${NRF_802154_PROJECT_CONFIG}"
   )
 endif()
 
