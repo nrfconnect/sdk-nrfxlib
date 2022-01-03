@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 #include <kernel.h>
-#include <power/reboot.h>
+#include <sys/reboot.h>
 //#include <logging/log.h>
 //LOG_MODULE_DECLARE(cc3xx_platform);
 
