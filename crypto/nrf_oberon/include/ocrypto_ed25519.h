@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_ed25519 Ed25519 APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_ed25519 Ed25519 APIs
+ * @ingroup ocrypto
  * @{
  * @brief Type declarations and APIs for the Ed25519 algorithm.
  *
@@ -22,8 +22,7 @@
 #ifndef OCRYPTO_ED25519_H
 #define OCRYPTO_ED25519_H
 
-#include <stddef.h>
-#include <stdint.h>
+#include "ocrypto_types.h"
 
 
 #ifdef __cplusplus
@@ -56,8 +55,9 @@ extern "C" {
  * @param[out] pk Generated public key.
  * @param      sk Secret key. Must be pre-filled with random data.
  */
-void ocrypto_ed25519_public_key(uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES],
-                                const uint8_t sk[ocrypto_ed25519_SECRET_KEY_BYTES]);
+void ocrypto_ed25519_public_key(
+    uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES],
+    const uint8_t sk[ocrypto_ed25519_SECRET_KEY_BYTES]);
 
 /**
  * Ed25519 signature generate.
@@ -71,10 +71,11 @@ void ocrypto_ed25519_public_key(uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES],
  * @param      sk    Secret key.
  * @param      pk    Public key.
  */
-void ocrypto_ed25519_sign(uint8_t sig[ocrypto_ed25519_BYTES],
-                          const uint8_t *m, size_t m_len,
-                          const uint8_t sk[ocrypto_ed25519_SECRET_KEY_BYTES],
-                          const uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES]);
+void ocrypto_ed25519_sign(
+    uint8_t sig[ocrypto_ed25519_BYTES],
+    const uint8_t *m, size_t m_len,
+    const uint8_t sk[ocrypto_ed25519_SECRET_KEY_BYTES],
+    const uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES]);
 
 /**
  * Ed25519 signature verification.
@@ -90,14 +91,73 @@ void ocrypto_ed25519_sign(uint8_t sig[ocrypto_ed25519_BYTES],
  * @retval 0  If the signature is valid.
  * @retval -1 Otherwise.
  */
-int ocrypto_ed25519_verify(const uint8_t sig[ocrypto_ed25519_BYTES],
-                           const uint8_t *m, size_t m_len,
-                           const uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES]);
+int ocrypto_ed25519_verify(
+    const uint8_t sig[ocrypto_ed25519_BYTES],
+    const uint8_t *m, size_t m_len,
+    const uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES]);
+
+
+/**
+ * Ed25519 signature key pair generation with context.
+ *
+ * Given a secret key @p sk, the corresponding public key is computed and put
+ * into @p pk. The key pair can then be used to sign and verify message signatures.
+ *
+ * @param      ctx Context.
+ * @param[out] pk  Generated public key.
+ * @param      sk  Secret key. Must be pre-filled with random data.
+ */
+void ocrypto_ed25519_public_key_ctx(
+    ocrypto_ed25519_ctx *ctx,
+    uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES],
+    const uint8_t sk[ocrypto_ed25519_SECRET_KEY_BYTES]);
+
+/**
+ * Ed25519 signature generate with context.
+ *
+ * The message @p m is signed using the secret key @p sk and the corresponding
+ * public key @p pk. The signature is put into @p sig.
+ *
+ * @param      ctx   Context.
+ * @param[out] sig   Generated signature.
+ * @param      m     Input message.
+ * @param      m_len Length of @p m.
+ * @param      sk    Secret key.
+ * @param      pk    Public key.
+ */
+void ocrypto_ed25519_sign_ctx(
+    ocrypto_ed25519_ctx *ctx,
+    uint8_t sig[ocrypto_ed25519_BYTES],
+    const uint8_t *m, size_t m_len,
+    const uint8_t sk[ocrypto_ed25519_SECRET_KEY_BYTES],
+    const uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES]);
+
+/**
+ * Ed25519 signature verification with context.
+ *
+ * The signature @p sig of the input message @p m is verified using the signer's
+ * public key @p pk.
+ *
+ * @param ctx   Context.
+ * @param sig   Input signature.
+ * @param m     Input message.
+ * @param m_len Length of @p m.
+ * @param pk    Signer's public key.
+ *
+ * @retval 0  If the signature is valid.
+ * @retval -1 Otherwise.
+ */
+int ocrypto_ed25519_verify_ctx(
+    ocrypto_ed25519_ctx *ctx,
+    const uint8_t sig[ocrypto_ed25519_BYTES],
+    const uint8_t *m, size_t m_len,
+    const uint8_t pk[ocrypto_ed25519_PUBLIC_KEY_BYTES]);
+
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_ED25519_H */
+#endif
 
 /** @} */

@@ -1,25 +1,27 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_ecjpake EC-JPAKE
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_ecjpake EC-JPAKE APIs
+ * @ingroup ocrypto
  * @{
- * @brief Type declaration and APIs for EC-JPAKE.
- *
+ * @brief Type declarations and APIs for EC-JPAKE-P256.
  */
+
 #ifndef OCRYPTO_ECJPAKE_P256_H
 #define OCRYPTO_ECJPAKE_P256_H
 
 #include <stddef.h>
 #include <stdint.h>
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**
  * EC-JPAKE-P256 public key and zero knowledge proof generation.
@@ -28,8 +30,8 @@ extern "C" {
  * @param[out] V       ZKP ephemeral public key.
  * @param[out] r       ZKP signature.
  * @param      G       Generator. May be NULL to use the default generator.
- * @param      x       Secret key. 0 < x < group order.
- * @param      v       ZKP ephemeral secret key. 0 < v < group order.
+ * @param      x       Secret key. 0 < x < group order
+ * @param      v       ZKP ephemeral secret key. 0 < v < group order
  * @param      id      Identity of originator.
  * @param      id_len  Identity length.
  *
@@ -133,6 +135,6 @@ int ocrypto_ecjpake_get_secret_key(
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_ECJPAKE_P256_H */
+#endif
 
 /** @} */

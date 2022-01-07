@@ -1,14 +1,14 @@
 /*
- * Copyright (c) 2021 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_ecdsa_p224 ECDSA secp224r1 low-level APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_ecdsa_p224 ECDSA secp224r1 low-level APIs
+ * @ingroup ocrypto_ecdsa
  * @{
- * @brief Type declarations and APIs to do Elliptic Curve Digital Signature Algorith using the
+ * @brief Type declarations and APIs to do Elliptic Curve Digital Signature Algorithm using the
  *        NIST secp224r1 curve.
  *
  * ECDSA P-224 is a specific implementation of a digital signature scheme.

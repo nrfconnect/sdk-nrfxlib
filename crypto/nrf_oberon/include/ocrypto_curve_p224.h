@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2021 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_p224 ECC secp224r1 low-level APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_p224 ECC secp224r1 low-level APIs
+ * @ingroup ocrypto
  * @{
  * @brief Type declarations and APIs for low-level elliptic curve point operations
  * based on the NIST secp224r1 curve.
@@ -22,7 +22,7 @@ extern "C" {
 #endif
 
 
-// (x,y) only Jacobian coordinates
+// (x,y) only jacobian coordinates
 /**@cond */
 typedef struct {
     ocrypto_mod_p224 x;
@@ -116,5 +116,3 @@ int ocrypto_curve_p224_add(ocrypto_cp_p224 *r, const ocrypto_cp_p224 *p, const o
 #endif /* #ifndef OCRYPTO_CURVE_P224_H */
 
 #endif
-
-/** @} */
