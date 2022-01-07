@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_curve25519 ECC Curve25519 low-level APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_curve25519 ECC Curve25519 low-level APIs
+ * @ingroup ocrypto
  * @{
  * @brief Type declarations and APIs for low-level elliptic curve point operations
  * based on Curve25519.
@@ -21,7 +21,7 @@
 #ifndef OCRYPTO_CURVE25519_H
 #define OCRYPTO_CURVE25519_H
 
-#include <stdint.h>
+#include "ocrypto_types.h"
 
 
 #ifdef __cplusplus
@@ -46,12 +46,10 @@ extern "C" {
  * Given a secret key @p n, the corresponding Curve25519 public key is computed
  * and put into @p r.
  *
- * The inverse of this function is difficult to compute.
- *
  * @param[out] r Resulting curve point.
  * @param[in]  n Scalar factor.
  *
- * @remark @p r and @p n can point to the same address.
+ * @remark @p r may be same as @p n.
  */
 void ocrypto_curve25519_scalarmult_base(
     uint8_t r[ocrypto_curve25519_BYTES],
@@ -69,9 +67,48 @@ void ocrypto_curve25519_scalarmult_base(
  * @param[in]  n Scalar factor.
  * @param[in]  p Point factor.
  *
- * @remark @p r and @p n can point to the same address.
+ * @remark @p r may be same as @p n.
  */
 void ocrypto_curve25519_scalarmult(
+    uint8_t r[ocrypto_curve25519_BYTES],
+    const uint8_t n[ocrypto_curve25519_SCALAR_BYTES],
+    const uint8_t p[ocrypto_curve25519_BYTES]);
+
+
+/**
+ * Curve25519 scalar multiplication `r = n * basePoint` with context.
+ *
+ * Given a secret key @p n, the corresponding Curve25519 public key is computed
+ * and put into @p r.
+ *
+ * @param      ctx Context.
+ * @param[out] r   Resulting curve point.
+ * @param[in]  n   Scalar factor.
+ *
+ * @remark @p r may be same as @p n.
+ */
+void ocrypto_curve25519_scalarmult_base_ctx(
+    ocrypto_curve25519_ctx *ctx,
+    uint8_t r[ocrypto_curve25519_BYTES],
+    const uint8_t n[ocrypto_curve25519_SCALAR_BYTES]);
+
+/**
+ * Curve25519 scalar multiplication `r = n * p` with context.
+ *
+ * A shared secret is computed from the local secret key @p n and another
+ * party's public key @p p and put into @p r. The same shared secret is
+ * generated when the other party combines its private key with the local public
+ * key.
+ *
+ * @param      ctx Context.
+ * @param[out] r   Resulting curve point.
+ * @param[in]  n   Scalar factor.
+ * @param[in]  p   Point factor.
+ *
+ * @remark @p r may be same as @p n.
+ */
+void ocrypto_curve25519_scalarmult_ctx(
+    ocrypto_curve25519_ctx *ctx,
     uint8_t r[ocrypto_curve25519_BYTES],
     const uint8_t n[ocrypto_curve25519_SCALAR_BYTES],
     const uint8_t p[ocrypto_curve25519_BYTES]);
@@ -80,6 +117,6 @@ void ocrypto_curve25519_scalarmult(
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_CURVE25519_H */
+#endif
 
 /** @} */

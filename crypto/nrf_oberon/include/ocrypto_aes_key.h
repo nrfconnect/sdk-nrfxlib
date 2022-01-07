@@ -1,17 +1,23 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_aes_key AES key sizes
- * @ingroup nrf_oberon_aes
+ * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
+ * @ingroup ocrypto
+ * @{
+ * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
+ * AES transfers a 128-bit block of data into an encrypted block of the same size.
+ * @}
+ *
+ * @defgroup ocrypto_aes_key AES key sizes
+ * @ingroup ocrypto_aes
  * @{
  * @brief Type definition of AES key sizes.
  *
- * AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
- * AES transfers a 128-bit block of data into an encrypted block of the same size.
+ * AES key sizes in bytes.
  */
 
 #ifndef OCRYPTO_AES_KEY_H
@@ -25,14 +31,26 @@
 extern "C" {
 #endif
 
-#define ocrypto_aes128_KEY_BYTES ((size_t) 16)  //!< AES-128 key size in bytes
-#define ocrypto_aes192_KEY_BYTES ((size_t) 24)  //!< AES-192 key size in bytes
-#define ocrypto_aes256_KEY_BYTES ((size_t) 32)  //!< AES-256 key size in bytes
+
+/**
+ * Length of AES-128 key.
+ */
+#define ocrypto_aes128_KEY_BYTES ((size_t) 16)
+
+/**
+ * Length of AES-192 key.
+ */
+#define ocrypto_aes192_KEY_BYTES ((size_t) 24)
+
+/**
+ * Length of AES-256 key.
+ */
+#define ocrypto_aes256_KEY_BYTES ((size_t) 32)
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_AES_KEY_H */
+#endif
 
 /** @} */

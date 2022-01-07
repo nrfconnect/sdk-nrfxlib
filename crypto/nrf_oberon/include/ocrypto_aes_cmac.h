@@ -1,17 +1,21 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_aes_cmac AES CMAC APIs
- * @ingroup nrf_oberon_aes
+ * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
+ * @ingroup ocrypto
  * @{
- * @brief Type definitions and APIS for AES CMAC (AES Cipher-based Message Authentication Code)
- *
- * AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
+ * @brief AES (advanced encryption standard) is a symmetric encryption algorithm standardized by NIST.
  * AES transfers a 128-bit block of data into an encrypted block of the same size.
+ * @}
+ *
+ * @defgroup ocrypto_aes_cmac AES-CMAC - AES Cipher-based Message Authentication Code APIs
+ * @ingroup ocrypto_aes
+ * @{
+ * @brief Type definitions and APIs for AES-CMAC (AES Cipher-based Message Authentication Code).
  *
  * AES-CMAC (AES Cipher-based Message Authentication Code) is a block cipher-based message
  * authentication code algorithm. The AES block cipher primitive is used in variant of the
@@ -45,7 +49,7 @@ extern "C" {
  * @param      key     AES key.
  * @param      size    Key size (16, 24, or 32).
  */
-void ocrypto_aes_cmac_authenticate (
+void ocrypto_aes_cmac_authenticate(
     uint8_t *tag, size_t tag_len,
     const uint8_t *msg, size_t msg_len,
     const uint8_t *key, size_t size);
@@ -59,7 +63,7 @@ void ocrypto_aes_cmac_authenticate (
  * @param      key     Key.
  * @param      key_len Key length.
  */
-void ocrypto_aes_cmac_prf128 (
+void ocrypto_aes_cmac_prf128(
     uint8_t prf[ocrypto_aes_cmac_prf128_BYTES],
     const uint8_t *msg, size_t msg_len,
     const uint8_t *key, size_t key_len);
@@ -69,6 +73,6 @@ void ocrypto_aes_cmac_prf128 (
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_AES_CMAC_H */
+#endif
 
 /** @} */

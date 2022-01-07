@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -15,11 +15,9 @@ extern "C" {
 
 // P-256 scalar modulo group order
 /**@cond */
-typedef struct
-{
+typedef struct {
     uint32_t w[8]; // little endian
-}
-ocrypto_sc_p256;
+} ocrypto_sc_p256;
 /**@endcond */
 
 // modulo P-256 number

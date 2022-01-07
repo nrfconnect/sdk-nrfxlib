@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2021 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_sha_384 SHA-384 APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_sha_384 SHA-384 APIs
+ * @ingroup ocrypto_sha
  * @{
  * @brief Type declarations and APIs for the SHA-384 algorithm.
  *
