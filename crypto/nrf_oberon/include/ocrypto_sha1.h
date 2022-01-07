@@ -1,18 +1,24 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_sha_1 SHA-1 APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_sha SHA APIs
+ * @ingroup ocrypto
+ * @{
+ * @brief SHA algorithms.
+ * @}
+ *
+ * @defgroup ocrypto_sha_1 SHA-1 APIs
+ * @ingroup ocrypto_sha
  * @{
  * @brief Type declarations and APIs for the SHA-1 algorithm.
  *
- * A fixed-sized message digest is computed from variable length input data.
- * The function is practically impossible to revert, and small changes in the
- * input message lead to major changes in the message digest.
+ * A fixed-sized message digest is computed from input data with arbitrary
+ * length. The function is practically impossible to revert, and small changes
+ * in the input message lead to major changes in the message digest.
  *
  * SHA-1 is no longer considered secure against well-funded opponents;
  * replacement by SHA-2 or SHA-3 is recommended.
@@ -38,10 +44,10 @@ extern "C" {
 
 /**@cond */
 typedef struct {
-    uint32_t h[5];
-    uint8_t  padded[64];
+    uint32_t h[5], w[80];
+    uint8_t  buffer[64];
     uint32_t length;
-    size_t   bytes;
+    size_t   in_length;
 } ocrypto_sha1_ctx;
 /**@endcond */
 
@@ -119,6 +125,6 @@ void ocrypto_sha1(
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_SHA1_H */
+#endif
 
 /** @} */

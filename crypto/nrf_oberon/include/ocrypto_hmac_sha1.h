@@ -1,21 +1,27 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_hmac_1 HMAC APIs using SHA-1
- * @ingroup nrf_oberon_hmac
+ * @defgroup ocrypto_hmac HMAC - Hash-based Message Authentication Code
+ * @ingroup ocrypto
+ * @{
+ * @brief HMAC is a hash-based Message Authentication Code utilizing a secure hash function.
+ * @}
+ *
+ * @defgroup ocrypto_hmac_sha1 HMAC APIs using SHA-1
+ * @ingroup ocrypto_hmac
  * @{
  * @brief Type declarations and APIs for the HMAC-SHA1 algorithm.
  *
  * HMAC-SHA1 is an algorithm for message authentication using the
- * cryptographic hash function SHA-1 and a reusable secret key. Users in
+ * cryptographic hash function SHA1 and a reusable secret key. Users in
  * possession of the key can verify the integrity and authenticity of the
  * message.
  *
- * @see [RFC 2104 - HMAC: Keyed-Hashing for Message Authentication](https://tools.ietf.org/html/rfc2104)
+ * @see [RFC 2104 - HMAC: Keyed-Hashing for Message Authentication](http://tools.ietf.org/html/rfc2104)
  */
 
 #ifndef OCRYPTO_HMAC_SHA1_H
@@ -31,11 +37,6 @@ extern "C" {
 
 
 /**
- * Maximum key length.
- */
-#define ocrypto_hmac_sha1_KEY_BYTES_MAX (64)
-
-/**
  * Length of the authenticator.
  */
 #define ocrypto_hmac_sha1_BYTES (20)
@@ -44,14 +45,14 @@ extern "C" {
 /**
  * HMAC-SHA1 algorithm.
  *
- * The input message @p in is authenticated using the key @p k. The computed
+ * The input message @p in is authenticated using the key @p key. The computed
  * authenticator is put into @p r. To verify the authenticator, the recipient
  * needs to recompute the HMAC authenticator and can then compare it with the
  * received authenticator.
  *
  * @param[out] r       HMAC output.
  * @param      key     HMAC key.
- * @param      key_len Length of @p key. 0 <= @p key_len <= @c ocrypto_hmac_sha1_KEY_BYTES_MAX.
+ * @param      key_len Length of @p key.
  * @param      in      Input data.
  * @param      in_len  Length of @p in.
  */
@@ -65,14 +66,14 @@ void ocrypto_hmac_sha1(
  *
  * @param[out] r       HMAC output
  * @param      key     HMAC key.
- * @param      key_len Length of @p key. 0 <= @p key_len <= @c ocrypto_hmac_sha1_KEY_BYTES_MAX.
+ * @param      key_len Length of @p key.
  * @param      in      Input data.
  * @param      in_len  Length of @p in.
  * @param      aad     Additional authentication data. May be NULL.
  * @param      aad_len Length of @p aad.
  */
 void ocrypto_hmac_sha1_aad(
-    uint8_t r[20],
+    uint8_t r[ocrypto_hmac_sha1_BYTES],
     const uint8_t* key, size_t key_len,
     const uint8_t* in, size_t in_len,
     const uint8_t* aad, size_t aad_len);
@@ -81,6 +82,6 @@ void ocrypto_hmac_sha1_aad(
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_HMAC_SHA1_H */
+#endif
 
 /** @} */

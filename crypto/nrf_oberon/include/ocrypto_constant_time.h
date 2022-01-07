@@ -1,28 +1,21 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon Oberon cryptographic library
- * @{
- * @brief Highly optimized cryptographic algorithm implementation for Cortex-M0, Cortex-M4,
- * and Cortex-M33. Created by Oberon, under distribution license with Nordic Semiconductor ASA.
- * @}
- *
- * @defgroup nrf_oberon_constant_time Constant time APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_constant_time Constant-time APIs
+ * @ingroup ocrypto
  * @{
  * @brief Timing-invariant functions to use with cryptography.
- *
- * Collection of timing-invariant implementations of basic functions.
  */
 
 #ifndef OCRYPTO_CONSTANT_TIME_H
 #define OCRYPTO_CONSTANT_TIME_H
 
 #include <stddef.h>
+#include <string.h>
 
 
 #ifdef __cplusplus
@@ -45,7 +38,7 @@ int ocrypto_constant_time_equal(const void *x, const void *y, size_t length);
 /**
  * Variable length compare to zero.
  *
- * @param x      Pointer to memory region that will be compared.
+ * @param x      Memory region that will be compared.
  * @param length Number of bytes to compare, @p length > 0.
  *
  * @retval 1 If @p x is equal to a zero memory region.
@@ -56,24 +49,38 @@ int ocrypto_constant_time_is_zero(const void *x, size_t length);
 /**
  * Variable length copy.
  *
- * @param x      Pointer to memory region to copy @p y to.
- * @param y      Pointer to memory region to copy to @p x.
+ * @param x      Memory region to copy @p y to.
+ * @param y      Memory region to copy to @p x.
  * @param length Number of bytes to copy, @p length > 0.
  */
-void ocrypto_constant_time_copy(void *x, const void *y, size_t length);
+// void ocrypto_constant_time_copy(void *x, const void *y, size_t length);
+#define ocrypto_constant_time_copy(x, y, length) memcpy(x, y, length)
 
 /**
  * Variable length fill with zero.
  *
- * @param x      Pointer to memory region to be filled with zero.
+ * @param x      Memory region to be filled with zero.
  * @param length Number of bytes to fill, @p length > 0.
  */
-void ocrypto_constant_time_fill_zero(void *x, size_t length);
+// void ocrypto_constant_time_fill_zero(void *x, size_t length);
+#define ocrypto_constant_time_fill_zero(x, length) memset(x, 0, length)
+
+/**
+ * Variable length bitwise xor.
+ *
+ * @param r      Memory region to store the result.
+ * @param x      Memory region containing the first argument.
+ * @param y      Memory region containing the second argument.
+ * @param length Number of bytes in both arguments, @p length > 0.
+ *
+ * @remark @p r may be same as @p x or @p y.
+ */
+void ocrypto_constant_time_xor(void *r, const void *x, const void *y, size_t length);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_CONSTANT_TIME_H */
+#endif
 
 /** @} */

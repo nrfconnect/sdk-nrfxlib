@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_sha_512 SHA-512 APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_sha_512 SHA-512 APIs
+ * @ingroup ocrypto_sha
  * @{
  * @brief Type declarations and APIs for the SHA-512 algorithm.
  *
@@ -38,15 +38,15 @@ extern "C" {
 
 /**@cond */
 typedef struct {
-    uint64_t h[8];
-    uint8_t  padded[128];
+    uint64_t h[8], v[8], w[16];
+    uint8_t  buffer[128];
     uint32_t length;
-    size_t   bytes;
+    size_t   in_length;
 } ocrypto_sha512_ctx;
 /**@endcond */
 
 
-/**@name Incremental SHA-512 generator
+/**@name Incremental SHA-512 generator.
  *
  * This group of functions can be used to incrementally compute the SHA-512
  * hash for a given message.
@@ -118,6 +118,6 @@ void ocrypto_sha512(
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_SHA512_H */
+#endif
 
 /** @} */

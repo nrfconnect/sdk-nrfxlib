@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -7,7 +7,7 @@
 #ifndef POLY1305_ALT_H
 #define POLY1305_ALT_H
 
-#include "mbedtls/config.h"
+#include "common.h"
 
 
 #ifdef __cplusplus
@@ -17,10 +17,7 @@ extern "C" {
 
 typedef struct mbedtls_poly1305_context
 {
-    uint32_t state[5];
-    uint8_t key[32];
-    uint8_t data[16];
-    size_t bytes;
+    uint32_t state[18];
 } mbedtls_poly1305_context;
 
 

@@ -1,26 +1,34 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_ecdh_p256 ECDH APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_ecdh ECDH - Elliptic Curve Diffie-Hellman APIs
+ * @ingroup ocrypto
  * @{
- * @brief APIs to do Elliptic Curve Diffie-Hellman using the NIST secp256r1 curve.
+ * @brief ECDH (Elliptic Curve Diffie-Hellman) elliptic curve point operations
+ *        to do Elliptic Curve Diffie-Hellman Algorithm.
+ * @}
+ *
+ * @defgroup ocrypto_ecdh_p256 ECDH P256 APIs
+ * @ingroup ocrypto_ecdh
+ * @{
+ * @brief Type declarations and APIs for low-level elliptic curve point operations
+ *        to do Elliptic Curve Diffie-Hellman based on the NIST secp256r1 curve.
  */
 
 #ifndef OCRYPTO_ECDH_P256_H
 #define OCRYPTO_ECDH_P256_H
 
-#include <stdint.h>
-#include "ocrypto_curve_p256.h"
+#include "ocrypto_types.h"
 
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /**@cond */
 typedef struct {
@@ -33,38 +41,38 @@ typedef struct {
 /**
  * ECDH P-256 public key generation `r = n * p`.
  *
- * Given a secret key @p s the corresponding public key is computed and put
+ * Given a secret key @p sk the corresponding public key is computed and put
  * into @p r.
  *
- * @param[out] r Generated public key.
- * @param      s Secret key. Must be pre-filled with random data.
+ * @param[out] r  Generated public key.
+ * @param      sk Secret key. Must be pre-filled with random data.
  *
- * @retval 0  If @p s is a valid secret key.
+ * @retval 0  If @p sk is a valid secret key.
  * @retval -1 Otherwise.
  *
- * @remark @p r may be same as @p s.
+ * @remark @p r may be same as @p sk.
  */
-int ocrypto_ecdh_p256_public_key(uint8_t r[64], const uint8_t s[32]);
+int ocrypto_ecdh_p256_public_key(uint8_t r[64], const uint8_t sk[32]);
 
 /**
  * ECDH P-256 common secret.
  *
- * The common secret is computed from both the client's public key @p p
- * and the server's secret key @p s and put into @p r.
+ * The common secret is computed from both the client's public key @p pk
+ * and the server's secret key @p sk and put into @p r.
  *
- * @param[out] r Generated common secret.
- * @param      s Server private key.
- * @param      p Client public key.
+ * @param[out] r  Generated common secret.
+ * @param      sk Server private key.
+ * @param      pk Client public key.
  *
- * @retval 0  If @p s is a valid secret key and @p p is a valid public key.
+ * @retval 0  If @p sk is a valid secret key and @p pk is a valid public key.
  * @retval -1 Otherwise.
  *
- * @remark @p r may be same as @p s or @p p.
+ * @remark @p r may be same as @p sk or @p pk.
  */
-int ocrypto_ecdh_p256_common_secret(uint8_t r[32], const uint8_t s[32], const uint8_t p[64]);
+int ocrypto_ecdh_p256_common_secret(uint8_t r[32], const uint8_t sk[32], const uint8_t pk[64]);
 
 
-/**@name Incremental ECDH P-256 calculation
+/**@name Incremental ECDH P-256 calculation.
  *
  * This group of functions can be used to incrementally calculate
  * the ECDH P-256 public key and common secret.
@@ -82,7 +90,7 @@ int ocrypto_ecdh_p256_common_secret(uint8_t r[32], const uint8_t s[32], const ui
  * @code
  *   ocrypto_ecdh_p256_common_secret_init(ctx, sKey, pKey);
  *   while (ocrypto_ecdh_p256_common_secret_iterate(ctx));
- *   res = ocrypto_ecdh_p256_common_secret_final(ctx, secret);
+ *   res = ocrypto_ecdh_p256_common_secret_final(ctx, secet);
  * @endcode
  */
 /**@{*/
@@ -93,9 +101,9 @@ int ocrypto_ecdh_p256_common_secret(uint8_t r[32], const uint8_t s[32], const ui
  * Key generation is started and the context @p ctx is initialized by this function.
  *
  * @param[out] ctx Context.
- * @param      s   Secret key. Must be pre-filled with random data.
+ * @param      sk  Secret key. Must be pre-filled with random data.
  */
-void ocrypto_ecdh_p256_public_key_init(ocrypto_ecdh_p256_context *ctx, const uint8_t s[32]);
+void ocrypto_ecdh_p256_public_key_init(ocrypto_ecdh_p256_context *ctx, const uint8_t sk[32]);
 
 /**
  * Incremental ECDH P-256 public key generation step.
@@ -117,7 +125,7 @@ int ocrypto_ecdh_p256_public_key_iterate(ocrypto_ecdh_p256_context *ctx);
  * @param      ctx Context.
  * @param[out] r   Generated public key.
  *
- * @retval 0  If @p s is a valid secret key.
+ * @retval 0  If @p sk is a valid secret key.
  * @retval -1 Otherwise.
  */
 int ocrypto_ecdh_p256_public_key_final(ocrypto_ecdh_p256_context *ctx, uint8_t r[64]);
@@ -128,10 +136,10 @@ int ocrypto_ecdh_p256_public_key_final(ocrypto_ecdh_p256_context *ctx, uint8_t r
  * Common secret calculation is started and the context @p ctx is initialized by this function.
  *
  * @param[out] ctx Context.
- * @param      s   Server private key.
- * @param      p   Client public key.
+ * @param      sk  Server private key.
+ * @param      pk  Client public key.
  */
-void ocrypto_ecdh_p256_common_secret_init(ocrypto_ecdh_p256_context *ctx, const uint8_t s[32], const uint8_t p[64]);
+void ocrypto_ecdh_p256_common_secret_init(ocrypto_ecdh_p256_context *ctx, const uint8_t sk[32], const uint8_t pk[64]);
 
 /**
  * Incremental ECDH P-256 common secret generation step.
@@ -153,17 +161,17 @@ int ocrypto_ecdh_p256_common_secret_iterate(ocrypto_ecdh_p256_context *ctx);
  * @param      ctx Context.
  * @param[out] r   Generated common secret.
  *
- * @retval 0  If @p s is a valid secret key and @p p is a valid public key.
+ * @retval 0  If @p sk is a valid secret key and @p pk is a valid public key.
  * @retval -1 Otherwise.
  */
 int ocrypto_ecdh_p256_common_secret_final(ocrypto_ecdh_p256_context *ctx, uint8_t r[32]);
+/**@}*/
 
-/** @} */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_ECDH_P256_H */
+#endif
 
 /** @} */

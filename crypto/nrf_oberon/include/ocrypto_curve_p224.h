@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -22,7 +22,7 @@ extern "C" {
 #endif
 
 
-// (x,y) only Jacobian coordinates
+// (x,y) only jacobian coordinates
 /**@cond */
 typedef struct {
     ocrypto_mod_p224 x;
@@ -106,7 +106,7 @@ int ocrypto_curve_p224_scalarmult_base(ocrypto_cp_p224 *r, const ocrypto_sc_p224
  * @param       q       input point.
  *
  * @retval -1 if r = [0,0].
- * @retval 0 if successful.
+ * @etval 0 if successfull.
  */
 int ocrypto_curve_p224_add(ocrypto_cp_p224 *r, const ocrypto_cp_p224 *p, const ocrypto_cp_p224 *q);
 
@@ -116,5 +116,3 @@ int ocrypto_curve_p224_add(ocrypto_cp_p224 *r, const ocrypto_cp_p224 *p, const o
 #endif /* #ifndef OCRYPTO_CURVE_P224_H */
 
 #endif
-
-/** @} */

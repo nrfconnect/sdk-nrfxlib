@@ -1,22 +1,23 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**@file
- * @defgroup nrf_oberon_rsa RSA - Rivest-Shamir-Adleman algorithm
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_rsa RSA - Rivest-Shamir-Adleman algorithm
+ * @ingroup ocrypto
  * @{
  * @brief RSA is a number theoretic public-key encryption and signature algorithm.
  * @}
- * @defgroup nrf_oberon_rsa_api RSA APIs
- * @ingroup nrf_oberon_rsa
+ *
+ * @defgroup ocrypto_rsa_api RSA APIs
+ * @ingroup ocrypto_rsa
  * @{
  * @brief APIs to for RSA encryption/decryption and sign/verify using PKCS1 v1.5, OEAP and PSS.
  *
- * These functions support RSA encryption and signatures with 1024 and 2048-bit
- * modulo and PKCS1 V1.5 padding.
+ * These functions support RSA encryption and signatures with 1024 and 2048 bit
+ * modulo, PKCS1 V1.5, OEAP and PSS padding.
  */
 
 #ifndef OCRYPTO_RSA_H
@@ -45,23 +46,23 @@ extern "C" {
  *
  * @param[out] c         The generated 128-byte ciphertext.
  * @param      m         The message to be encrypted.
- * @param      mlen      Length of @p m. 0 <= mlen <= 117.
+ * @param      m_len     Length of @p m. 0 <= m_len <= 117.
  * @param      seed      The random seed to be used for the padding.
- * @param      slen      Length of @p seed. @p slen >= 125 - @p mlen.
+ * @param      s_len     Length of @p seed. @p s_len >= 125 - @p m_len
  * @param      pk        A valid 1024-bit RSA public key.
  *
- * @retval -1 If the message is too long (mlen > 117).
- * @retval -2 If the seed is too short (slen < 125 - mlen).
+ * @retval -1 If the message is too long (m_len > 117).
+ * @retval -2 If the seed is too short (s_len < 125 - m_len).
  * @retval 0  Otherwise.
  *
  * @remark The key @p pk should be initialized with @c ocrypto_rsa1024_init_pub_key.
  * @remark The @p seed should consist of non-zero random bytes.
- * @remark @p c and @p m can point to the same address.
+ * @remark @p c may be same as @p m.
  */
 int ocrypto_rsa1024_pkcs1_v15_encrypt(
     uint8_t c[128],
-    const uint8_t *m, size_t mlen,
-    const uint8_t *seed, size_t slen,
+    const uint8_t *m, size_t m_len,
+    const uint8_t *seed, size_t s_len,
     const ocrypto_rsa1024_pub_key *pk);
 
 /**
@@ -70,21 +71,21 @@ int ocrypto_rsa1024_pkcs1_v15_encrypt(
  * The ciphertext @p c is decrypted to the message returned in @p m.
  *
  * @param[out] m       The decrypted message. The buffer must be long enough to hold the message.
- * @param      mlen    Length of @p m.
+ * @param      m_len   Length of @p m.
  * @param      c       The 128-byte ciphertext to decrypt.
- * @param      k       A valid 1024-bit RSA secret key.
+ * @param      sk      A valid 1024-bit RSA secret key.
  *
  * @retval -1 If decryption failed.
- * @retval -2 If the output buffer is too short (mlen < length of message).
+ * @retval -2 If the output buffer is too short (m_len < length of message).
  * @retval  n If a message of length n was successfully decrypted.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa1024_init_key.
- * @remark @p m and @p c can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_key.
+ * @remark @p m may be same as @p c.
  */
 int ocrypto_rsa1024_pkcs1_v15_decrypt(
-    uint8_t *m, size_t mlen,
+    uint8_t *m, size_t m_len,
     const uint8_t c[128],
-    const ocrypto_rsa1024_key *k);
+    const ocrypto_rsa1024_key *sk);
 
 /**
  * 1024-bit RSA PKCS1 V1.5 decryption with CRT acceleration.
@@ -92,21 +93,21 @@ int ocrypto_rsa1024_pkcs1_v15_decrypt(
  * The ciphertext @p c is decrypted to the message returned in @p m.
  *
  * @param[out] m       The decrypted message. The buffer must be long enough to hold the message.
- * @param      mlen    Length of @p m.
+ * @param      m_len   Length of @p m.
  * @param      c       The 128-byte ciphertext to decrypt.
- * @param      k       A valid 1024-bit RSA secret key with CRT coefficients.
+ * @param      sk      A valid 1024-bit RSA secret key with CRT coefficients.
  *
  * @retval -1  If decryption failed.
- * @retval -2  If the output buffer is too short (mlen < length of message).
+ * @retval -2  If the output buffer is too short (m_len < length of message).
  * @retval  n  If a message of length n was successfully decrypted.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa1024_init_crt_key.
- * @remark @p m and @p c can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_crt_key.
+ * @remark @p m may be same as @p c.
  */
 int ocrypto_rsa1024_pkcs1_v15_crt_decrypt(
-    uint8_t *m, size_t mlen,
+    uint8_t *m, size_t m_len,
     const uint8_t c[128],
-    const ocrypto_rsa1024_crt_key *k);
+    const ocrypto_rsa1024_crt_key *sk);
 
 /**
  * 1024-bit RSA OAEP SHA256 encryption.
@@ -115,49 +116,49 @@ int ocrypto_rsa1024_pkcs1_v15_crt_decrypt(
  *
  * @param[out] c         The generated 128-byte ciphertext.
  * @param      m         The message to be encrypted.
- * @param      mlen      Length of @p m. 0 <= mlen <= 62.
+ * @param      m_len     Length of @p m. 0 <= m_len <= 62.
  * @param      label     The label associated with the message.
- * @param      llen      Length of @p label. May be 0.
+ * @param      l_len     Length of @p label. May be 0.
  * @param      seed      32-byte random seed.
  * @param      pk        A valid 1024-bit RSA public key.
  *
- * @retval -1 If the message is too long (mlen > 62).
+ * @retval -1 If the message is too long (m_len > 62).
  * @retval 0  Otherwise.
  *
  * @remark The key @p pk should be initialized with @c ocrypto_rsa1024_init_pub_key.
- * @remark @p c and @p m can point to the same address.
+ * @remark @p c may be same as @p m.
  */
 int ocrypto_rsa1024_oaep_sha256_encrypt(
     uint8_t c[128],
-    const uint8_t *m, size_t mlen,
-    const uint8_t *label, size_t llen,
+    const uint8_t *m, size_t m_len,
+    const uint8_t *label, size_t l_len,
     const uint8_t seed[32],
     const ocrypto_rsa1024_pub_key *pk);
 
 /**
- * 1024-bit RSA OAEP SHA256 decryption.
+ * 1024 bit RSA OAEP SHA256 decryption.
  *
  * The ciphertext @p c is decrypted to the message returned in @p m.
  *
  * @param[out] m       The decrypted message. The buffer must be long enough to hold the message.
- * @param      mlen    Length of @p m.
- * @param      c       The 128-byte ciphertext to decrypt.
+ * @param      m_len   Length of @p m.
+ * @param      c       The 128 byte ciphertext to decrypt.
  * @param      label   The label associated with the message.
- * @param      llen    Length of @p label. May be 0.
- * @param      k       A valid 1024-bit RSA secret key.
+ * @param      l_len   Length of @p label. May be 0.
+ * @param      sk      A valid 1024 bit RSA secret key.
  *
  * @retval -1 If decryption failed.
- * @retval -2 If the output buffer is too short (mlen < length of message).
+ * @retval -2 If the output buffer is too short (m_len < length of message).
  * @retval  n If a message of length n was successfully decrypted.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa1024_init_key.
- * @remark @p m and @p c can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_key.
+ * @remark @p m may be same as @p c.
  */
 int ocrypto_rsa1024_oaep_sha256_decrypt(
-    uint8_t *m, size_t mlen,
+    uint8_t *m, size_t m_len,
     const uint8_t c[128],
-    const uint8_t *label, size_t llen,
-    const ocrypto_rsa1024_key *k);
+    const uint8_t *label, size_t l_len,
+    const ocrypto_rsa1024_key *sk);
 
 /**
  * 1024-bit RSA OAEP SHA256 decryption with CRT acceleration.
@@ -165,24 +166,24 @@ int ocrypto_rsa1024_oaep_sha256_decrypt(
  * The ciphertext @p c is decrypted to the message returned in @p m.
  *
  * @param[out] m       The decrypted message. The buffer must be long enough to hold the message.
- * @param      mlen    Length of @p m.
+ * @param      m_len   Length of @p m.
  * @param      c       The 128-byte ciphertext to decrypt.
  * @param      label   The label associated with the message.
- * @param      llen    Length of @p label. May be 0.
- * @param      k       A valid 1024-bit RSA secret key with CRT coefficients.
+ * @param      l_len   Length of @p label. May be 0.
+ * @param      sk      A valid 1024-bit RSA secret key with CRT coefficients.
  *
  * @retval -1  If decryption failed.
- * @retval -2  If the output buffer is too short (mlen < length of message).
+ * @retval -2  If the output buffer is too short (m_len < length of message).
  * @retval  n  If a message of length n was successfully decrypted.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa1024_init_crt_key.
- * @remark @p m and @p c can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_crt_key.
+ * @remark @p m may be same as @p c.
  */
 int ocrypto_rsa1024_oaep_sha256_crt_decrypt(
-    uint8_t *m, size_t mlen,
+    uint8_t *m, size_t m_len,
     const uint8_t c[128],
-    const uint8_t *label, size_t llen,
-    const ocrypto_rsa1024_crt_key *k);
+    const uint8_t *label, size_t l_len,
+    const ocrypto_rsa1024_crt_key *sk);
 
 /**
  * 1024-bit RSA PKCS1 V1.5 SHA-256 sign.
@@ -191,18 +192,18 @@ int ocrypto_rsa1024_oaep_sha256_crt_decrypt(
  *
  * @param[out] s       The generated 128-byte signature.
  * @param      m       The message to be signed.
- * @param      mlen    Length of @p m.
- * @param      k       A valid 1024-bit RSA secret key.
+ * @param      m_len   Length of @p m.
+ * @param      sk      A valid 1024-bit RSA secret key.
  *
- * @return 0
+ * @retval 0
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa1024_init_key.
- * @remark @p s and @p m can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_key.
+ * @remark @p s may be same as @p m.
  */
 int ocrypto_rsa1024_pkcs1_v15_sha256_sign(
     uint8_t s[128],
-    const uint8_t *m, size_t mlen,
-    const ocrypto_rsa1024_key *k);
+    const uint8_t *m, size_t m_len,
+    const ocrypto_rsa1024_key *sk);
 
 /**
  * 1024-bit RSA PKCS1 V1.5 SHA-256 sign with CRT acceleration.
@@ -211,18 +212,18 @@ int ocrypto_rsa1024_pkcs1_v15_sha256_sign(
  *
  * @param[out] s       The generated 128-byte signature.
  * @param      m       The message to be signed.
- * @param      mlen    Length of @p m.
- * @param      k       A valid 1024-bit RSA secret key with CRT coefficients.
+ * @param      m_len   Length of @p m.
+ * @param      sk      A valid 1024-bit RSA secret key with CRT coefficients.
  *
- * @return 0
+ * @retval 0
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa1024_init_crt_key.
- * @remark @p s and @p m can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_crt_key.
+ * @remark @p s may be same as @p m.
  */
 int ocrypto_rsa1024_pkcs1_v15_sha256_crt_sign(
     uint8_t s[128],
-    const uint8_t *m, size_t mlen,
-    const ocrypto_rsa1024_crt_key *k);
+    const uint8_t *m, size_t m_len,
+    const ocrypto_rsa1024_crt_key *sk);
 
 /**
  * 1024-bit RSA PKCS1 V1.5 SHA-256 signature verify.
@@ -231,7 +232,7 @@ int ocrypto_rsa1024_pkcs1_v15_sha256_crt_sign(
  *
  * @param s      The 128-byte signature.
  * @param m      The signed message.
- * @param mlen   Length of @p m.
+ * @param m_len  Length of @p m.
  * @param pk     A valid 1024-bit RSA public key.
  *
  * @retval 0  If the signature is valid.
@@ -241,7 +242,7 @@ int ocrypto_rsa1024_pkcs1_v15_sha256_crt_sign(
  */
 int ocrypto_rsa1024_pkcs1_v15_sha256_verify(
     const uint8_t s[128],
-    const uint8_t *m, size_t mlen,
+    const uint8_t *m, size_t m_len,
     const ocrypto_rsa1024_pub_key *pk);
 
 /**
@@ -251,22 +252,22 @@ int ocrypto_rsa1024_pkcs1_v15_sha256_verify(
  *
  * @param[out] s       The generated 128-byte signature.
  * @param      m       The message to be signed.
- * @param      mlen    Length of @p m.
+ * @param      m_len   Length of @p m.
  * @param      salt    The salt to be used.
- * @param      slen    Length of @p salt.
- * @param      k       A valid 1024-bit RSA secret key.
+ * @param      s_len   Length of @p salt.
+ * @param      sk      A valid 1024-bit RSA secret key.
  *
  * @retval -2  If the salt is too long.
  * @retval 0   Otherwise.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa1024_init_key.
- * @remark @p s and @p m can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_key.
+ * @remark @p s may be same as @p m.
  */
 int ocrypto_rsa1024_pss_sha256_sign(
     uint8_t s[128],
-    const uint8_t *m, size_t mlen,
-    const uint8_t *salt, size_t slen,
-    const ocrypto_rsa1024_key *k);
+    const uint8_t *m, size_t m_len,
+    const uint8_t *salt, size_t s_len,
+    const ocrypto_rsa1024_key *sk);
 
 /**
  * 1024-bit RSA PSS SHA-256 sign with CRT acceleration.
@@ -275,22 +276,22 @@ int ocrypto_rsa1024_pss_sha256_sign(
  *
  * @param[out] s       The generated 128-byte signature.
  * @param      m       The message to be signed.
- * @param      mlen    Length of @p m.
+ * @param      m_len   Length of @p m.
  * @param      salt    The salt to be used.
- * @param      slen    Length of @p salt.
- * @param      k       A valid 1024-bit RSA secret key with CRT coefficients.
+ * @param      s_len   Length of @p salt.
+ * @param      sk      A valid 1024-bit RSA secret key with CRT coefficients.
  *
  * @retval -2  If the salt is too long.
  * @retval 0   Otherwise.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa1024_init_crt_key.
- * @remark @p s and @p m can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_crt_key.
+ * @remark @p s may be same as @p m.
  */
 int ocrypto_rsa1024_pss_sha256_crt_sign(
     uint8_t s[128],
-    const uint8_t *m, size_t mlen,
-    const uint8_t *salt, size_t slen,
-    const ocrypto_rsa1024_crt_key *k);
+    const uint8_t *m, size_t m_len,
+    const uint8_t *salt, size_t s_len,
+    const ocrypto_rsa1024_crt_key *sk);
 
 /**
  * 1024-bit RSA PSS SHA-256 signature verify.
@@ -299,8 +300,8 @@ int ocrypto_rsa1024_pss_sha256_crt_sign(
  *
  * @param s      The 128-byte signature.
  * @param m      The signed message.
- * @param mlen   Length of @p m.
- * @param slen   The length of the salt.
+ * @param m_len  Length of @p m.
+ * @param s_len  The length of the salt.
  * @param pk     A valid 1024-bit RSA public key.
  *
  * @retval 0   If the signature is valid.
@@ -311,8 +312,8 @@ int ocrypto_rsa1024_pss_sha256_crt_sign(
  */
 int ocrypto_rsa1024_pss_sha256_verify(
     const uint8_t s[128],
-    const uint8_t *m, size_t mlen,
-    size_t slen, // salt length
+    const uint8_t *m, size_t m_len,
+    size_t s_len,
     const ocrypto_rsa1024_pub_key *pk);
 /**@}*/
 
@@ -327,12 +328,12 @@ int ocrypto_rsa1024_pss_sha256_verify(
  *
  * The message @p m is encrypted to a ciphertext returned in @p c.
  *
- * @param[out] c         The generated 256-byte ciphertext.
- * @param      m         The message to be encrypted.
- * @param      mlen      Length of @p m. 0 <= @p mlen <= 245.
- * @param      seed      The random seed to be used for the padding.
- * @param      slen      Length of @p seed. @p slen >= 253 - @p mlen.
- * @param      pk        A valid 2048-bit RSA public key.
+ * @param[out] c      The generated 256-byte ciphertext.
+ * @param      m      The message to be encrypted.
+ * @param      mlen   Length of @p m. 0 <= @p mlen <= 245.
+ * @param      seed   The random seed to be used for the padding.
+ * @param      slen   Length of @p seed. @p slen >= 253 - @p mlen.
+ * @param      pk     A valid 2048-bit RSA public key.
  *
  * @retval -1 If the message is too long (mlen > 245).
  * @retval -2 If the seed is too short (slen < 253 - mlen).
@@ -340,7 +341,7 @@ int ocrypto_rsa1024_pss_sha256_verify(
  *
  * @remark The key @p pk should be initialized with @c ocrypto_rsa2048_init_pub_key.
  * @remark The @p seed should consist of non-zero random bytes.
- * @remark @p c and @p m can point to the same address.
+ * @remark @p c may be same as @p m.
  */
 int ocrypto_rsa2048_pkcs1_v15_encrypt(
     uint8_t c[256],
@@ -356,19 +357,19 @@ int ocrypto_rsa2048_pkcs1_v15_encrypt(
  * @param[out] m       The decrypted message. The buffer must be long enough to hold the message.
  * @param      mlen    Length of @p m.
  * @param      c       The 256-byte ciphertext to decrypt.
- * @param      k       A valid 2048-bit RSA secret key.
+ * @param      sk      A valid 2048-bit RSA secret key.
 
  * @retval -1 If decryption failed.
  * @retval -2 If the output buffer is too short (mlen < length of message).
  * @retval n  If a message of length n was successfully decrypted.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa2048_init_key.
- * @remark @p m and @p c can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa2048_init_key.
+ * @remark @p m may be same as @p c.
  */
 int ocrypto_rsa2048_pkcs1_v15_decrypt(
     uint8_t *m, size_t mlen,
     const uint8_t c[256],
-    const ocrypto_rsa2048_key *k);
+    const ocrypto_rsa2048_key *sk);
 
 /**
  * 2048-bit RSA PKCS1 V1.5 decryption with CRT acceleration.
@@ -378,19 +379,19 @@ int ocrypto_rsa2048_pkcs1_v15_decrypt(
  * @param[out] m       The decrypted message. The buffer must be long enough to hold the message.
  * @param      mlen    Length of @p m.
  * @param      c       The 256-byte ciphertext to decrypt.
- * @param      k       A valid 2048-bit RSA secret key with CRT coefficients.
+ * @param      sk      A valid 2048-bit RSA secret key with CRT coefficients.
 
  * @retval -1  If decryption failed.
  * @retval -2  If the output buffer is too short (mlen < length of message).
  * @retval  n  If a message of length n was successfully decrypted.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa2048_init_crt_key.
- * @remark @p m and @p c can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa2048_init_crt_key.
+ * @remark @p m may be same as @p c.
  */
 int ocrypto_rsa2048_pkcs1_v15_crt_decrypt(
     uint8_t *m, size_t mlen,
     const uint8_t c[256],
-    const ocrypto_rsa2048_crt_key *k);
+    const ocrypto_rsa2048_crt_key *sk);
 
 /**
  * 2048-bit RSA OAEP SHA256 encryption.
@@ -409,7 +410,7 @@ int ocrypto_rsa2048_pkcs1_v15_crt_decrypt(
  * @retval 0  Otherwise.
  *
  * @remark The key @p pk should be initialized with @c ocrypto_rsa2048_init_pub_key.
- * @remark @p c and @p m can point to the same address.
+ * @remark @p c may be same as @p m.
  */
 int ocrypto_rsa2048_oaep_sha256_encrypt(
     uint8_t c[256],
@@ -428,20 +429,20 @@ int ocrypto_rsa2048_oaep_sha256_encrypt(
  * @param      c       The 256-byte ciphertext to decrypt.
  * @param      label   The label associated with the message.
  * @param      llen    Length of @p label. May be 0.
- * @param      k       A valid 2048-bit RSA secret key.
+ * @param      sk      A valid 2048-bit RSA secret key.
  *
  * @retval -1 If decryption failed.
  * @retval -2 If the output buffer is too short (mlen < length of message).
  * @retval  n If a message of length n was successfully decrypted.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa2048_init_key.
- * @remark @p m and @p c can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa2048_init_key.
+ * @remark @p m may be same as @p c.
  */
 int ocrypto_rsa2048_oaep_sha256_decrypt(
     uint8_t *m, size_t mlen,
     const uint8_t c[256],
     const uint8_t *label, size_t llen,
-    const ocrypto_rsa2048_key *k);
+    const ocrypto_rsa2048_key *sk);
 
 /**
  * 2048-bit RSA OAEP SHA256 decryption with CRT acceleration.
@@ -453,20 +454,20 @@ int ocrypto_rsa2048_oaep_sha256_decrypt(
  * @param      c       The 256-byte ciphertext to decrypt.
  * @param      label   The label associated with the message.
  * @param      llen    Length of @p label. May be 0.
- * @param      k       A valid 2048-bit RSA secret key with CRT coefficients.
+ * @param      sk      A valid 2048-bit RSA secret key with CRT coefficients.
  *
  * @retval -1  If decryption failed.
  * @retval -2  If the output buffer is too short (mlen < length of message).
  * @retval  n  If a message of length n was successfully decrypted.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa2048_init_crt_key.
- * @remark @p m and @p c can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa2048_init_crt_key.
+ * @remark @p m may be same as @p c.
  */
 int ocrypto_rsa2048_oaep_sha256_crt_decrypt(
     uint8_t *m, size_t mlen,
     const uint8_t c[256],
     const uint8_t *label, size_t llen,
-    const ocrypto_rsa2048_crt_key *k);
+    const ocrypto_rsa2048_crt_key *sk);
 
 /**
  * 2048-bit RSA PKCS1 V1.5 SHA-256 sign.
@@ -476,17 +477,17 @@ int ocrypto_rsa2048_oaep_sha256_crt_decrypt(
  * @param[out] s       The generated 256-byte signature.
  * @param      m       The message to be signed.
  * @param      mlen    Length of @p m.
- * @param      k       A valid 2048-bit RSA secret key.
+ * @param      sk      A valid 2048-bit RSA secret key.
 
- * @returns 0
+ * @retval 0
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa2048_init_key.
- * @remark @p s and @p m can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa2048_init_key.
+ * @remark @p s may be same as @p m.
  */
 int ocrypto_rsa2048_pkcs1_v15_sha256_sign(
     uint8_t s[256],
     const uint8_t *m, size_t mlen,
-    const ocrypto_rsa2048_key *k);
+    const ocrypto_rsa2048_key *sk);
 
 /**
  * 2048-bit RSA PKCS1 V1.5 SHA-256 sign with CRT acceleration.
@@ -496,22 +497,22 @@ int ocrypto_rsa2048_pkcs1_v15_sha256_sign(
  * @param[out] s       The generated 256-byte signature.
  * @param      m       The message to be signed.
  * @param      mlen    Length of @p m.
- * @param      k       A valid 2048-bit RSA secret key with CRT coefficients.
+ * @param      sk      A valid 2048-bit RSA secret key with CRT coefficients.
 
- * @returns 0
+ * @retval 0
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa2048_init_crt_key.
- * @remark @p s and @p m can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa2048_init_crt_key.
+ * @remark @p s may be same as @p m.
  */
 int ocrypto_rsa2048_pkcs1_v15_sha256_crt_sign(
     uint8_t s[256],
     const uint8_t *m, size_t mlen,
-    const ocrypto_rsa2048_crt_key *k);
+    const ocrypto_rsa2048_crt_key *sk);
 
 /**
  * 2048-bit RSA PKCS1 V1.5 SHA-256 signature verify.
  *
- * The signature @p s is verified for a correct signature of message @p m.
+ * The signature @p s is verified for a valid signature of message @p m.
  *
  * @param s      The 256-byte signature.
  * @param m      The signed message.
@@ -538,19 +539,19 @@ int ocrypto_rsa2048_pkcs1_v15_sha256_verify(
  * @param      mlen    Length of @p m.
  * @param      salt    The salt to be used.
  * @param      slen    Length of @p salt.
- * @param      k       A valid 2048-bit RSA secret key.
+ * @param      sk      A valid 2048-bit RSA secret key.
  *
  * @retval -2  If the salt is too long.
  * @retval 0   Otherwise.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa2048_init_key.
- * @remark @p s and @p m can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa2048_init_key.
+ * @remark @p s may be same as @p m.
  */
 int ocrypto_rsa2048_pss_sha256_sign(
     uint8_t s[256],
     const uint8_t *m, size_t mlen,
     const uint8_t *salt, size_t slen,
-    const ocrypto_rsa2048_key *k);
+    const ocrypto_rsa2048_key *sk);
 
 /**
  * 2048-bit RSA PSS SHA-256 sign with CRT acceleration.
@@ -562,19 +563,19 @@ int ocrypto_rsa2048_pss_sha256_sign(
  * @param      mlen    Length of @p m.
  * @param      salt    The salt to be used.
  * @param      slen    Length of @p salt.
- * @param      k       A valid 2048-bit RSA secret key with CRT coefficients.
+ * @param      sk      A valid 2048-bit RSA secret key with CRT coefficients.
  *
  * @retval -2  If the salt is too long.
  * @retval 0   Otherwise.
  *
- * @remark The key @p k should be initialized with @c ocrypto_rsa2048_init_crt_key.
- * @remark @p s and @p m can point to the same address.
+ * @remark The key @p sk should be initialized with @c ocrypto_rsa2048_init_crt_key.
+ * @remark @p s may be same as @p m.
  */
 int ocrypto_rsa2048_pss_sha256_crt_sign(
     uint8_t s[256],
     const uint8_t *m, size_t mlen,
     const uint8_t *salt, size_t slen,
-    const ocrypto_rsa2048_crt_key *k);
+    const ocrypto_rsa2048_crt_key *sk);
 
 /**
  * 2048-bit RSA PSS SHA-256 signature verify.
@@ -605,6 +606,6 @@ int ocrypto_rsa2048_pss_sha256_verify(
 }
 #endif
 
-#endif /* #ifndef OCRYPTO_RSA_H */
+#endif
 
 /** @} */
