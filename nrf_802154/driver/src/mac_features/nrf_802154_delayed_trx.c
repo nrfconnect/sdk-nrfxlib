@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2021, Nordic Semiconductor ASA
+ * Copyright (c) 2018 - 2022, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -921,7 +921,7 @@ bool nrf_802154_delayed_trx_nearest_drx_time_to_midpoint_get(uint32_t * p_drx_ti
 {
     bool     result            = false;
     uint32_t min_time_to_start = 0xffffffff;
-    uint32_t drx_time_to_start;
+    uint32_t drx_time_to_start = 0;
     uint32_t drx_time_to_midpoint;
 
     for (int i = 0; i < sizeof(m_dly_rx_data) / sizeof(m_dly_rx_data[0]); i++)

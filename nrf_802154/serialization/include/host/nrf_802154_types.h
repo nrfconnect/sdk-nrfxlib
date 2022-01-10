@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2021, Nordic Semiconductor ASA
+ * Copyright (c) 2020 - 2022, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -82,6 +82,14 @@ typedef uint8_t nrf_802154_rx_error_t;
 typedef uint8_t nrf_802154_ed_error_t;
 
 #define NRF_802154_ED_ERROR_ABORTED 0x01 // !< Procedure was aborted by another operation.
+
+/**
+ * @brief Possible errors during sleep procedure call.
+ */
+typedef uint8_t nrf_802154_sleep_error_t;
+
+#define NRF_802154_SLEEP_ERROR_NONE 0x00 // !< There is no error.
+#define NRF_802154_SLEEP_ERROR_BUSY 0x01 // !< The driver cannot enter the sleep state due to the ongoing operation.
 
 /**
  * @brief Possible errors during the CCA procedure.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2021, Nordic Semiconductor ASA
+ * Copyright (c) 2020 - 2022, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -72,6 +72,28 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_sleep(const void * p_p
     return nrf_802154_spinel_send_cmd_prop_value_is(SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP,
                                                     SPINEL_DATATYPE_NRF_802154_SLEEP_RET,
                                                     sleep_response);
+}
+
+/**
+ * @brief Deal with SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP_IF_IDLE request and send response.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer - unused here (no additional data to decode).
+ * @param[in]  property_data_len  Size of the @ref p_data buffer - unused here.
+ *
+ */
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_sleep_if_idle(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    (void)p_property_data;
+    (void)property_data_len;
+
+    nrf_802154_sleep_error_t sleep_response = nrf_802154_sleep_if_idle();
+
+    return nrf_802154_spinel_send_cmd_prop_value_is(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP_IF_IDLE,
+        SPINEL_DATATYPE_NRF_802154_SLEEP_IF_IDLE_RET,
+        sleep_response);
 }
 
 /**
@@ -1528,6 +1550,9 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
     {
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP:
             return spinel_decode_prop_nrf_802154_sleep(p_property_data, property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP_IF_IDLE:
+            return spinel_decode_prop_nrf_802154_sleep_if_idle(p_property_data, property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE:
             return spinel_decode_prop_nrf_802154_receive(p_property_data, property_data_len);
