@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2021, Nordic Semiconductor ASA
+ * Copyright (c) 2020 - 2022, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -565,6 +565,8 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_is(
         case SPINEL_PROP_LAST_STATUS:
         // fall through
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP:
+        // fall through
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP_IF_IDLE:
         // fall through
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE:
         // fall through

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2021, Nordic Semiconductor ASA
+ * Copyright (c) 2020 - 2022, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -255,6 +255,21 @@ void nrf_802154_init(void);
  * @retval  false  The driver could not schedule changing state.
  */
 bool nrf_802154_sleep(void);
+
+/**
+ * @brief Changes the radio state to the @ref RADIO_STATE_SLEEP state if the radio is idle.
+ *
+ * The sleep state is the lowest power state. In this state, the radio cannot transmit or receive
+ * frames. It is the only state in which the driver releases the high-frequency clock and does not
+ * request timeslots from a radio arbiter.
+ *
+ * @note If another module requests it, the high-frequency clock may be enabled even in the radio
+ *       sleep state.
+ *
+ * @retval  NRF_802154_SLEEP_ERROR_NONE  The radio changes its state to the low power mode.
+ * @retval  NRF_802154_SLEEP_ERROR_BUSY  The driver could not schedule changing state.
+ */
+nrf_802154_sleep_error_t nrf_802154_sleep_if_idle(void);
 
 /**
  * @brief Changes the radio state to @ref RADIO_STATE_RX.
