@@ -1,0 +1,144 @@
+#
+# Copyright (c) 2021-2022 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+if PSA_CRYPTO_DRIVER_OBERON
+
+config MBEDTLS_PSA_BUILTIN_ALG_CBC_MAC
+	bool
+	#prompt "PSA CBC MAC support - builtin" if !PSA_PROMPTLESS - Currently not supported
+	#default y if PSA_WANT_ALG_CBC_MAC && !PSA_CRYPTO_DRIVER_ALG_CBC_MAC_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_CBC_NO_PADDING_OBERON
+	bool
+	prompt "PSA CBC support (without padding) - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_CBC_NO_PADDING && \
+		    !PSA_CRYPTO_DRIVER_ALG_CBC_NO_PADDING_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_CBC_PKCS7_OBERON
+	bool
+	prompt "PSA CBC support (padded with PKCS#7) - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_CBC_PKCS7 && \
+		     !PSA_CRYPTO_DRIVER_ALG_CBC_PKCS7_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_CCM_OBERON
+	bool
+	prompt "PSA AES CCM support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_CCM && \
+		     !PSA_CRYPTO_DRIVER_ALG_CCM_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_CHACHA20_POLY1305_OBERON
+	bool
+	prompt "PSA ChaCha20/Poly1305 support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_CHACHA20_POLY1305 && \
+		     !PSA_CRYPTO_DRIVER_ALG_CHACHA20_POLY1305_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_CMAC_OBERON
+	bool
+	prompt "PSA AES CMAC support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_CMAC && \
+		     !PSA_CRYPTO_DRIVER_ALG_CMAC_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_CTR_OBERON
+	bool
+	prompt "PSA AES CTR mode support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_CTR && \
+		     !PSA_CRYPTO_DRIVER_ALG_CTR_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_DETERMINISTIC_ECDSA_OBERON
+	bool
+	prompt "PSA ECDSA support (deterministic mode) - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_DETERMINISTIC_ECDSA && \
+		     !PSA_CRYPTO_DRIVER_ALG_DETERMINISTIC_ECDSA_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_ECB_NO_PADDING_OBERON
+	bool
+	prompt "PSA AES ECB (no padding) - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_ECB_NO_PADDING && \
+		     !PSA_CRYPTO_DRIVER_ALG_ECB_NO_PADDING_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_ECDH_OBERON
+	bool
+	prompt "PSA ECDH support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_ECDH && \
+		     !PSA_CRYPTO_DRIVER_ALG_ECDH_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_ECDSA_OBERON
+	bool
+	prompt "PSA ECDSA support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_ECDSA && \
+		     !PSA_CRYPTO_DRIVER_ALG_ECDSA_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_GCM_OBERON
+	bool
+	prompt "PSA AES GCM support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_GCM && \
+		     !PSA_CRYPTO_DRIVER_ALG_GCM_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_HKDF_OBERON
+	bool
+	prompt "PSA HKDF support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_HKDF && \
+		     !PSA_CRYPTO_DRIVER_ALG_HKDF_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_HMAC_OBERON
+	bool
+	prompt "PSA HMAC support  - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_HMAC && \
+		     !PSA_CRYPTO_DRIVER_ALG_HMAC_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_SHA_1_OBERON
+	bool
+	prompt "PSA SHA1 support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_SHA_1 && \
+		     !PSA_CRYPTO_DRIVER_ALG_SHA_1_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_SHA_224_OBERON
+	bool
+	prompt "PSA SHA-224 support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_SHA_224 && \
+		     !PSA_CRYPTO_DRIVER_ALG_SHA_224_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_SHA_256_OBERON
+	bool
+	prompt "PSA SSH-256 support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_SHA_256 && \
+		     !PSA_CRYPTO_DRIVER_ALG_SHA_256_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_SHA_384_OBERON
+	bool
+	prompt "PSA SHA-384 support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_SHA_384 && \
+		     !PSA_CRYPTO_DRIVER_ALG_SHA_384_CC3XX
+
+config PSA_CRYPTO_DRIVER_ALG_SHA_512_OBERON
+	bool
+	prompt "PSA SHA-512 support - oberon"
+	default y if PSA_WANT_ALG_SHA_512
+
+config PSA_CRYPTO_DRIVER_ALG_STREAM_CIPHER_OBERON
+	bool
+	prompt "PSA stream cipher support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ALG_STREAM_CIPHER && \
+		     !PSA_CRYPTO_DRIVER_ALG_STREAM_CIPHER_CC3XX
+
+config PSA_CRYPTO_DRIVER_ECC_MONTGOMERY_255_OBERON
+	bool
+	prompt "PSA ECC Curve25519 support - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ECC_MONTGOMERY_255 && \
+		     !PSA_CRYPTO_DRIVER_ECC_MONTGOMERY_255_CC3XX
+
+config PSA_CRYPTO_DRIVER_ECC_SECP_R1_224
+	bool
+	prompt "PSA ECC secp224r1 - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ECC_SECP_R1_224 && \
+		     !PSA_CRYPTO_DRIVER_ECC_SECP_R1_224_CC3XX
+
+config PSA_CRYPTO_DRIVER_ECC_SECP_R1_256
+	bool
+	prompt "PSA ECC secp256r1 - oberon"
+	default y if !PSA_DEFAULT_OFF && PSA_WANT_ECC_SECP_R1_256 && \
+		     !PSA_CRYPTO_DRIVER_ECC_SECP_R1_256_CC3XX
+
+endif
