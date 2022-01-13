@@ -1,53 +1,49 @@
 #
-# Copyright (c) 2021 Nordic Semiconductor
+# Copyright (c) 2021-2022 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
-target_link_libraries(zephyr_interface INTERFACE mbedcrypto_generated_includes)
-target_link_libraries(zephyr_interface INTERFACE mbedcrypto_includes)
 
+# Additional build logic for Zephyr builds
 
-# Add mbed TLS heap library - Not for TF-M
+# Add mbedcrypto common includes and definitions to zephyr build
+target_link_libraries(zephyr_interface INTERFACE mbedcrypto_common)
+
+# Add mbed TLS heap library - Not for TF-M build
 if(CONFIG_MBEDTLS_ENABLE_HEAP)
   list(APPEND src_zephyr
-    ${NRF_SECURITY_ROOT}/src/mbedtls/mbedtls_heap.c
-  )
-
-  # Add replacement for memory_buffer_alloc only for non TF-M builds
-  # Use original non TF-M and for NS image when building TF-M
-  if((CONFIG_CC3XX_BACKEND AND CONFIG_BUILD_TFM) OR
-     (CONFIG_CC3XX_BACKEND AND NOT CONFIG_BUILD_WITH_TFM))
-    list(APPEND src_zephyr
-      ${NRF_SECURITY_ROOT}/src/mbedtls/replacements/memory_buffer_alloc.c
-    )
-  else()
-    list(APPEND src_zephyr
-      ${ARM_MBEDTLS_PATH}/library/memory_buffer_alloc.c
-    )
-  endif()
-endif()
-
-if(CONFIG_BUILD_WITH_TFM)
-  list(APPEND src_zephyr
-    ${NRF_SECURITY_ROOT}/src/mbedtls/exit.c
-    ${ARM_MBEDTLS_PATH}/library/platform.c
+    ${NRF_SECURITY_ROOT}/src/legacy/mbedtls_heap.c
   )
 endif()
-
-# This configuration ensures that MBEDTLS_CONFIG_FILE is set for the zephyr
-# build (TF-M and non TF-M)
-target_compile_definitions(${mbedcrypto_target}
-  INTERFACE
-    -DMBEDTLS_CONFIG_FILE="${CONFIG_MBEDTLS_CFG_FILE}"
-)
 
 # Add entropy_poll only if NRF_CC3XX_PLATFORM is not added
 # This file is not useful for TF-M build where entropy should come
 # from SPE image, using psa_generate_random
 if(NOT CONFIG_NRF_CC3XX_PLATFORM)
+  list(APPEND src_zephyr
+    ${NRF_SECURITY_ROOT}/src/legacy/entropy_poll.c
+  )
+endif()
+
+if(CONFIG_BUILD_WITH_TFM)
+  # Add replacement for memory_buffer_alloc.c for NS build
+  if(CONFIG_MBEDTLS_ENABLE_HEAP)
     list(APPEND src_zephyr
-      ${NRF_SECURITY_ROOT}/src/backend/entropy/entropy_poll.c
+      ${NRF_SECURITY_ROOT}/src/legacy/memory_buffer_alloc.c
     )
+  endif()
+
+  # Add the TF-M interface to zephyr includes
+  zephyr_include_directories(
+    ${ZEPHYR_TRUSTED_FIRMWARE_M_MODULE_DIR}/trusted-firmware-m/interface/include
+  )
+else()
+  # Use the standard memory_buffer_alloc.c
+  if (CONFIG_MBEDTLS_ENABLE_HEAP)
+    list(APPEND src_zephyr
+      ${ARM_MBEDTLS_PATH}/library/memory_buffer_alloc.c
+    )
+  endif()
 endif()
 
 # Add the zephyr-specific sources neccessary for nrf_security
@@ -67,6 +63,9 @@ if(DEFINED src_zephyr)
 
   zephyr_library_app_memory(k_mbedtls_partition)
 endif()
+
+# Add configuration/options from zephyr interface libraries
+nrf_security_add_zephyr_options(${mbedcrypto_target})
 
 # Add the generic mbedtls_external library to interface with zephyr
 add_library(mbedtls_external INTERFACE)

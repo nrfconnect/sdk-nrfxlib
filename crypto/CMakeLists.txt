@@ -10,10 +10,11 @@ nrfxlib_calculate_lib_path(lib_path)
 
 add_library(nrfxlib_crypto INTERFACE)
 
-if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM)
+
+if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_OBERON_BACKEND OR CONFIG_PSA_CRYPTO_DRIVER_OBERON)
 
   set(OBERON_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_oberon)
-  set(OBERON_VER 3.0.8)
+  set(OBERON_VER 3.0.9)
 
   nrfxlib_calculate_lib_path(OBERON_LIB_DIR
     BASE_DIR ${OBERON_BASE}
@@ -22,13 +23,16 @@ if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM)
 
   set(OBERON_LIB ${OBERON_LIB_DIR}/liboberon_${OBERON_VER}.a)
   set(OBERON_MBEDTLS_LIB ${OBERON_LIB_DIR}/liboberon_mbedtls_${OBERON_VER}.a)
+  set(OBERON_PSA_LIB ${OBERON_LIB_DIR}/liboberon_psa_${OBERON_VER}.a)
 
-  if(NOT EXISTS ${OBERON_LIB})
+  if(NOT EXISTS ${OBERON_LIB} OR
+     NOT EXISTS ${OBERON_MBEDTLS_LIB} OR
+     NOT EXISTS ${OBERON_PSA_LIB})
     message(WARNING "This combination of SoC and floating point ABI is not supported by the nrf_oberon lib."
-                    "(${OBERON_LIB} doesn't exist.)")
+                    "(${OBERON_LIB}, ${OBERON_MBEDTLS_LIB} or ${OBERON_PSA_LIB} doesn't exist.)")
   endif()
 
-  if (NOT CONFIG_BUILD_WITH_TFM AND NOT CONFIG_OBERON_BACKEND)
+  if (NOT CONFIG_BUILD_WITH_TFM AND NOT CONFIG_OBERON_BACKEND AND NOT CONFIG_PSA_CRYPTO_DRIVER_OBERON)
     target_include_directories(nrfxlib_crypto INTERFACE ${OBERON_BASE}/include)
     target_link_libraries(nrfxlib_crypto INTERFACE ${OBERON_LIB})
   else()
@@ -38,33 +42,51 @@ if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM)
     endif()
 
     #
-    # Add mbedcrypto_oberon_imported that points to the actual library
-    # This library will be stripped for unneeded symbols and combined into
-    # library target mbedcrypto_oberon
+    # Add mbedcrypto_oberon_imported - Contains proprietary nrf_oberon APIs
     #
     add_library(mbedcrypto_oberon_imported STATIC IMPORTED GLOBAL)
-    set_target_properties(
-      mbedcrypto_oberon_imported PROPERTIES
-        IMPORTED_LOCATION "${OBERON_LIB}"
-        BACKEND_NAME "oberon"
+    set_target_properties(mbedcrypto_oberon_imported PROPERTIES
+      IMPORTED_LOCATION
+        "${OBERON_LIB}"
     )
-    target_include_directories(mbedcrypto_oberon_imported INTERFACE
-                              "${OBERON_BASE}/include")
+    target_include_directories(mbedcrypto_oberon_imported
+      INTERFACE
+        "${OBERON_BASE}/include"
+    )
 
     #
-    # Add mbedcrypto_oberon_mbedtls_imported that points to the actual library
-    # This library will be stripped for unneeded symbols and combined into
-    # library target mbedcrypto_oberon
+    # Add mbedcrypto_oberon_mbedtls_imported - contains legacy crypto APIs
     #
     add_library(mbedcrypto_oberon_mbedtls_imported STATIC IMPORTED GLOBAL)
-    set_target_properties(
-      mbedcrypto_oberon_mbedtls_imported PROPERTIES
-        IMPORTED_LOCATION "${OBERON_MBEDTLS_LIB}"
-        BACKEND_NAME "oberon"
+    set_target_properties(mbedcrypto_oberon_mbedtls_imported PROPERTIES
+      IMPORTED_LOCATION
+        "${OBERON_MBEDTLS_LIB}"
     )
-    target_include_directories(mbedcrypto_oberon_mbedtls_imported INTERFACE
-                               "${OBERON_BASE}/include/mbedtls")
-    target_link_libraries(mbedcrypto_oberon_mbedtls_imported INTERFACE mbedcrypto_oberon_imported)
+    target_include_directories(mbedcrypto_oberon_mbedtls_imported
+      INTERFACE
+        "${OBERON_BASE}/include/mbedtls"
+    )
+    target_link_libraries(mbedcrypto_oberon_mbedtls_imported
+      INTERFACE
+        mbedcrypto_oberon_imported
+    )
+
+    #
+    # Add mbedcrypto_oberon_psa_imported - contains PSA crypto APIs
+    #
+    add_library(mbedcrypto_oberon_psa_imported STATIC IMPORTED GLOBAL)
+    set_target_properties(mbedcrypto_oberon_psa_imported PROPERTIES
+      IMPORTED_LOCATION
+        "${OBERON_PSA_LIB}"
+    )
+    target_include_directories(mbedcrypto_oberon_psa_imported
+      INTERFACE
+        "${OBERON_BASE}/include/psa")
+    target_link_libraries(mbedcrypto_oberon_psa_imported
+      INTERFACE
+        mbedcrypto_oberon_imported
+    )
+
   endif()
 endif()
 

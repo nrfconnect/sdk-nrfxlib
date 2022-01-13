@@ -80,12 +80,24 @@ kconfig_check_and_set_base(MBEDTLS_SHA224_C)
 kconfig_check_and_set_base(MBEDTLS_SHA256_ALT)
 kconfig_check_and_set_base(MBEDTLS_SHA256_C)
 kconfig_check_and_set_base(MBEDTLS_SHA384_C)
+kconfig_check_and_set_base(MBEDTLS_SHA384_ALT)
 kconfig_check_and_set_base(MBEDTLS_SHA512_C)
+kconfig_check_and_set_base(MBEDTLS_SHA512_ALT)
 kconfig_check_and_set_base(MBEDTLS_HKDF_C)
 kconfig_check_and_set_base(MBEDTLS_MD_C)
 kconfig_check_and_set_base(MBEDTLS_PK_C)
 kconfig_check_and_set_base(MBEDTLS_PK_PARSE_C)
 kconfig_check_and_set_base(MBEDTLS_PK_WRITE_C)
+
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_EXIT_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_FPRINTF_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_PRINTF_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_SNPRINTF_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_ENTROPY_HARDWARE_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_THREADING_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_ZEROIZE_ALT)
+
 
 Kconfig_check_and_set_base(MBEDTLS_X509_USE_C)
 Kconfig_check_and_set_base(MBEDTLS_X509_CREATE_C)
@@ -116,6 +128,8 @@ if (CONFIG_CC3XX_BACKEND)
     set(MBEDTLS_THREADING_ALT TRUE)
   endif()
 endif()
+
+
 
 
 # Compare the following with check-config.h in mbed TLS
