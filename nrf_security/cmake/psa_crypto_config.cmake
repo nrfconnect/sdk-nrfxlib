@@ -3,12 +3,6 @@
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
-
-#
-# Remove previously generated files from include folder
-#
-file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/include/)
-
 # Convert all standard Kconfig variables for mbed TLS (strip CONFIG_)
 kconfig_check_and_set_base_to_one(PSA_WANT_ALG_CTR_DRBG)
 kconfig_check_and_set_base_to_one(PSA_WANT_ALG_HMAC_DRBG)
@@ -198,18 +192,55 @@ kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_MEMORY)
 kconfig_check_and_set_base_to_one(MBEDTLS_NO_PLATFORM_ENTROPY)
 kconfig_check_and_set_base_to_one(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
 
-# Legacy configurations for mbed TLS APIs
+# Platform configurations for _ALT defines
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_EXIT_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_FPRINTF_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_PRINTF_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_SNPRINTF_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_ENTROPY_HARDWARE_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_THREADING_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_ZEROIZE_ALT)
+
+# Legacy configurations for _ALT defines
+kconfig_check_and_set_base_to_one(MBEDTLS_AES_SETKEY_ENC_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_AES_SETKEY_DEC_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_AES_ENCRYPT_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_AES_DECRYPT_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_AES_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_CMAC_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_CCM_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_GCM_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_CHACHA20_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_POLY1305_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_CHACHAPOLY_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_DHM_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_ECP_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_ECDH_GEN_PUBLIC_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_ECDH_COMPUTE_SHARED_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_ECDSA_GENKEY_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_ECDSA_SIGN_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_ECDSA_VERIFY_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_ECJPAKE_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_RSA_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_SHA1_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_SHA224_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_SHA256_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_SHA384_ALT)
+kconfig_check_and_set_base_to_one(MBEDTLS_SHA512_ALT)
+
+# Legacy configurations for RNG
 kconfig_check_and_set_base_to_one(MBEDTLS_ENTROPY_FORCE_SHA256)
-kconfig_check_and_set_base_to_one(MBEDTLS_ENTROPY_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_CTR_DRBG_C)
+kconfig_check_and_set_base_to_one(MBEDTLS_NO_PLATFORM_ENTROPY)
+kconfig_check_and_set_base_int(MBEDTLS_ENTROPY_MAX_SOURCES)
+
+# Legacy configurations for mbed TLS APIs
 kconfig_check_and_set_base_to_one(MBEDTLS_CIPHER_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_PK_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_PK_WRITE_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_MD_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_CIPHER_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_THREADING_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_THREADING_ALT)
-
 
 # Set the max curve bits for the PSA APIs without using MBEDTLS defines
 if (CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_R1_521_CC3XX)
@@ -229,8 +260,117 @@ elseif(CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_R1_192_CC3XX
   set(PSA_VENDOR_ECC_MAX_CURVE_BITS 192)
 endif()
 
-# Set generated_include_path
-set(generated_include_path "${CMAKE_CURRENT_BINARY_DIR}/include/generated")
+# TLS/DTLS configurations
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_ALL_ALERT_MESSAGES)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_ALL_ALERT_MESSAGES)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_DTLS_CONNECTION_ID)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_CONTEXT_SERIALIZATION)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_DEBUG_ALL)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_ENCRYPT_THEN_MAC)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_EXTENDED_MASTER_SECRET)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_KEEP_PEER_CERTIFICATE)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_RENEGOTIATION)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_MAX_FRAGMENT_LENGTH)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_PROTO_TLS1_2)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_PROTO_DTLS)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_ALPN)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_DTLS_ANTI_REPLAY)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_DTLS_HELLO_VERIFY)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_DTLS_SRTP)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_DTLS_CLIENT_PORT_REUSE)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_SESSION_TICKETS)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_EXPORT_KEYS)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_SERVER_NAME_INDICATION)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_VARIABLE_BUFFER_LENGTH)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_CACHE_C)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_TICKET_C)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_CLI_C)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_SRV_C)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_TLS_C)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_IN_CONTENT_LEN)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_OUT_CONTENT_LEN)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_CIPHERSUITES)
+kconfig_check_and_set_base_to_one(MBEDTLS_SSL_COOKIE_C)
+
+# x509 configurations
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_RSASSA_PSS_SUPPORT)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_USE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CRT_PARSE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CRL_PARSE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CSR_PARSE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CREATE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CRT_WRITE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CSR_WRITE_C)
+
+
+
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_PSK_ENABLED
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED
+  PSA_WANT_ALG_ECDH
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED
+  PSA_HAS_RSA_SUPPORT
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_RSA_ENABLED
+  PSA_HAS_RSA_SUPPORT
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_DHE_RSA_ENABLED
+  PSA_HAS_RSA_SUPPORT
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
+  PSA_HAS_ECC_SUPPORT
+  PSA_HAS_RSA_SUPPORT
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
+  PSA_WANT_ALG_ECDSA
+  PSA_WANT_ALG_ECDH
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED
+  PSA_WANT_ALG_ECDSA
+  PSA_WANT_ALG_ECDH
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED
+  PSA_HAS_RSA_SUPPORT
+  PSA_WANT_ALG_ECDH
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
 
 if(CONFIG_GENERATE_MBEDTLS_CFG_FILE)
   # Copy the mbed TLS config file (default: nrf-config.h)

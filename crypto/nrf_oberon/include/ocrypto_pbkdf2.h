@@ -5,8 +5,8 @@
  */
 
 /**@file
- * @defgroup nrf_oberon_pbkdf2 PBKDF2 APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_pbkdf2 PBKDF2 APIs
+ * @ingroup ocrypto
  * @{
  * @brief Type declaration and APIs for PBKDF2 with HMAC-SHA1.
  *

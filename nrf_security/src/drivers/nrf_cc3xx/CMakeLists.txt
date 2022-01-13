@@ -22,7 +22,6 @@ endif()
 # Link to library containing PSA Crypto Driver
 target_link_libraries(${mbedcrypto_target}
   PRIVATE
-    mbedcrypto_common
     cc3xx_psa_crypto
     cc3xx_mbedcrypto
     c

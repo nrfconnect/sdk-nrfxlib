@@ -23,7 +23,6 @@
 #define OCRYPTO_ECDH_P256_H
 
 #include "ocrypto_types.h"
-#include "ocrypto_curve_p256.h"
 
 
 #ifdef __cplusplus

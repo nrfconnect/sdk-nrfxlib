@@ -5,8 +5,8 @@
  */
 
 /**@file
- * @defgroup nrf_oberon_chacha_poly_inc ChaCha20-Poly1305 incremental APIs
- * @ingroup nrf_oberon_chacha_poly
+ * @defgroup ocrypto_chacha_poly_inc ChaCha20-Poly1305 incremental APIs
+ * @ingroup ocrypto_chacha_poly
  * @{
  * @brief Type declaration and APIs for authenticated encryption and additional data using
  *        the ChaCha20-Poly1305 algorithm in incremental steps.
@@ -24,7 +24,6 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "ocrypto_chacha20_poly1305.h"
 #include "ocrypto_poly1305.h"
 
 
