@@ -32,7 +32,7 @@ config NRF_SECURITY
 	bool
 	prompt "Use nrf_security module" if !PSA_PROMPTLESS
 	depends on SOC_FAMILY_NRF
-	default y
+	default y if BUILD_WITH_TFM
 	select ENTROPY_GENERATOR
 	help
 	  Set this configuration to enable nrf_security module. This provides
