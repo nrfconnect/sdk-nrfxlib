@@ -23,32 +23,27 @@ extern "C" {
 /****************************************************************/
 
 #if defined(PSA_WANT_ALG_DETERMINISTIC_ECDSA)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_DETERMINISTIC_ECDSA)
 #define MBEDTLS_ECDSA_DETERMINISTIC
 #define MBEDTLS_ECDSA_C
 #define MBEDTLS_HMAC_DRBG_C
 #define MBEDTLS_MD_C
 #endif
-#endif
 
 #if defined(PSA_WANT_ALG_ECDH)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_ECDH)
 #define MBEDTLS_ECDH_C
 #define MBEDTLS_ECP_C
 #define MBEDTLS_BIGNUM_C
 #endif
-#endif
 
 #if defined(PSA_WANT_ALG_ECDSA)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_ECDSA)
 #define MBEDTLS_ECDSA_C
-#endif
+#define MBEDTLS_ECP_C
+#define MBEDTLS_ASN1_PARSE_C
+#define MBEDTLS_ASN1_WRITE_C
 #endif
 
 #if defined(PSA_WANT_ALG_MD5)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_MD5)
 #define MBEDTLS_MD5_C
-#endif
 #endif
 
 #if defined(PSA_WANT_ALG_RIPEMD160)
@@ -58,42 +53,43 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_ALG_RSA_OAEP)
-//#if defined(MBEDTLS_PSA_BUILTIN_ALG_RSA_OAEP)
 #define MBEDTLS_RSA_C
 #define MBEDTLS_BIGNUM_C
 #define MBEDTLS_OID_C
 #define MBEDTLS_PKCS1_V21
 #define MBEDTLS_MD_C
-//#endif
+#ifndef MBEDTLS_PSA_BUILTIN_ALG_RSA_OAEP
+#define MBEDTLS_PSA_BUILTIN_ALG_RSA_OAEP
+#endif
 #endif
 
 #if defined(PSA_WANT_ALG_RSA_PKCS1V15_CRYPT)
-//#if defined(MBEDTLS_PSA_BUILTIN_ALG_RSA_PKCS1V15_CRYPT)
 #define MBEDTLS_RSA_C
 #define MBEDTLS_BIGNUM_C
 #define MBEDTLS_OID_C
 #define MBEDTLS_PKCS1_V15
-//#endif
+#ifndef MBEDTLS_PSA_BUILTIN_ALG_RSA_PKCS1V15_CRYPT
+#define MBEDTLS_PSA_BUILTIN_ALG_RSA_PKCS1V15_CRYPT
+#endif
 #endif
 
 #if defined(PSA_WANT_ALG_RSA_PKCS1V15_SIGN)
-//#if defined(MBEDTLS_PSA_BUILTIN_ALG_RSA_PKCS1V15_SIGN)
 #define MBEDTLS_RSA_C
 #define MBEDTLS_BIGNUM_C
 #define MBEDTLS_OID_C
 #define MBEDTLS_PKCS1_V15
 #define MBEDTLS_MD_C
-//#endif
+#ifndef MBEDTLS_PSA_BUILTIN_ALG_RSA_PKCS1V15_SIGN
+#define MBEDTLS_PSA_BUILTIN_ALG_RSA_PKCS1V15_SIGN
+#endif
 #endif
 
 #if defined(PSA_WANT_ALG_RSA_PSS)
-//#if defined(MBEDTLS_PSA_BUILTIN_ALG_RSA_PSS)
 #define MBEDTLS_RSA_C
 #define MBEDTLS_BIGNUM_C
 #define MBEDTLS_OID_C
 #define MBEDTLS_PKCS1_V21
 #define MBEDTLS_MD_C
-//#endif
 #endif
 
 #if defined(PSA_WANT_ALG_SHA_1)
@@ -103,28 +99,22 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_ALG_SHA_224)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_SHA_224)
 #define MBEDTLS_SHA224_C
-#endif
+#define MBEDTLS_SHA256_C
 #endif
 
 #if defined(PSA_WANT_ALG_SHA_256)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_SHA_256)
+#define MBEDTLS_SHA224_C
 #define MBEDTLS_SHA256_C
-#endif
 #endif
 
 #if defined(PSA_WANT_ALG_SHA_384)
-//#if defined(MBEDTLS_PSA_BUILTIN_ALG_SHA_384)
 #define MBEDTLS_SHA384_C
 #define MBEDTLS_SHA512_C
-//#endif
 #endif
 
 #if defined(PSA_WANT_ALG_SHA_512)
-//#if defined(MBEDTLS_PSA_BUILTIN_ALG_SHA_512)
 #define MBEDTLS_SHA512_C
-//#endif
 #endif
 
 #if defined(PSA_WANT_KEY_TYPE_ECC_KEY_PAIR)
@@ -142,7 +132,6 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_KEY_TYPE_RSA_KEY_PAIR)
-//#if defined(MBEDTLS_PSA_BUILTIN_KEY_TYPE_RSA_KEY_PAIR)
 #define MBEDTLS_RSA_C
 #define MBEDTLS_BIGNUM_C
 #define MBEDTLS_OID_C
@@ -150,27 +139,24 @@ extern "C" {
 #define MBEDTLS_PK_PARSE_C
 #define MBEDTLS_PK_WRITE_C
 #define MBEDTLS_PK_C
-//#endif
+#define MBEDTLS_PSA_BUILTIN_KEY_TYPE_RSA_KEY_PAIR
 #endif
 
 #if defined(PSA_WANT_KEY_TYPE_RSA_PUBLIC_KEY)
-//#if defined(MBEDTLS_PSA_BUILTIN_KEY_TYPE_RSA_PUBLIC_KEY)
 #define MBEDTLS_RSA_C
 #define MBEDTLS_BIGNUM_C
 #define MBEDTLS_OID_C
 #define MBEDTLS_PK_PARSE_C
 #define MBEDTLS_PK_WRITE_C
 #define MBEDTLS_PK_C
-//#endif
+#define MBEDTLS_PSA_BUILTIN_KEY_TYPE_RSA_PUBLIC_KEY
 #endif
 
 
 // Not using PSA_HAS_CIPHER_SUPPORT
 #if defined(PSA_WANT_KEY_TYPE_AES)
-#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_AES)
 #define MBEDTLS_PSA_BUILTIN_KEY_TYPE_AES 1
 #define MBEDTLS_AES_C
-#endif
 #endif
 
 // Not using PSA_HAS_CIPHER_SUPPORT
@@ -204,21 +190,15 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_ALG_CMAC)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_CMAC)
 #define MBEDTLS_CMAC_C
-#endif
 #endif
 
 #if defined(PSA_WANT_ALG_CTR)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_CTR)
 #define MBEDTLS_CIPHER_MODE_CTR
-#endif
 #endif
 
 #if defined(PSA_WANT_ALG_CFB)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_CFB)
 #define MBEDTLS_CIPHER_MODE_CFB
-#endif
 #endif
 
 #if defined(PSA_WANT_ALG_OFB)
@@ -228,66 +208,58 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_ALG_XTS)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_XTS)
 #define MBEDTLS_CIPHER_MODE_XTS
 #endif
+
+#if defined(PSA_WANT_ALG_HKDF)
+#define MBEDTLS_PSA_BUILTIN_ALG_HKDF
+#endif
+
+#if defined(PSA_WANT_ALG_TLS12_PRF)
+#define MBEDTLS_PSA_BUILTIN_ALG_TLS12_PRF
+#endif
+
+#if defined(PSA_WANT_ALG_TLS12_PSK_TO_MS)
+#define MBEDTLS_PSA_BUILTIN_ALG_TLS12_PSK_TO_MS
 #endif
 
 #if defined(PSA_WANT_ALG_CBC_NO_PADDING)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_CBC_NO_PADDING)
 #define MBEDTLS_CIPHER_MODE_CBC
-#endif
 #endif
 
 #if defined(PSA_WANT_ALG_CBC_PKCS7)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_CBC_PKCS7)
 #define MBEDTLS_CIPHER_MODE_CBC
 #define MBEDTLS_CIPHER_PADDING_PKCS7
 #endif
-#endif
 
 #if defined(PSA_WANT_ALG_CCM)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_CCM)
 #define MBEDTLS_CCM_C
-#endif
 #endif
 
 #if defined(PSA_WANT_ALG_GCM)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_GCM)
 #define MBEDTLS_GCM_C
-#endif
 #endif
 
 #if defined(PSA_WANT_ALG_CHACHA20_POLY1305)
 #if defined(PSA_WANT_KEY_TYPE_CHACHA20)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_GCM)
 #define MBEDTLS_CHACHAPOLY_C
-#endif
 #endif
 #endif
 
 #if defined(PSA_WANT_ECC_BRAINPOOL_P_R1_256)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_BRAINPOOL_P_R1_256)
 #define MBEDTLS_ECP_DP_BP256R1_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_BRAINPOOL_P_R1_384)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_BRAINPOOL_P_R1_384)
 #define MBEDTLS_ECP_DP_BP384R1_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_BRAINPOOL_P_R1_512)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_BRAINPOOL_P_R1_512)
 #define MBEDTLS_ECP_DP_BP512R1_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_MONTGOMERY_255)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_MONTGOMERY_255)
 #define MBEDTLS_ECP_DP_CURVE25519_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_MONTGOMERY_448)
@@ -298,54 +270,39 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_ECC_SECP_R1_192)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_192)
 #define MBEDTLS_ECP_DP_SECP192R1_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_SECP_R1_224)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_224)
 #define MBEDTLS_ECP_DP_SECP224R1_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_SECP_R1_256)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_256)
 #define MBEDTLS_ECP_DP_SECP256R1_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_SECP_R1_384)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_384)
 #define MBEDTLS_ECP_DP_SECP384R1_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_SECP_R1_521)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_521)
 #define MBEDTLS_ECP_DP_SECP521R1_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_SECP_K1_192)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_SECP_K1_192)
 #define MBEDTLS_ECP_DP_SECP192K1_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_SECP_K1_224)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_SECP_K1_224)
 #error "SECP224K1 is buggy via the PSA API in Mbed TLS."
 #define MBEDTLS_ECP_DP_SECP224K1_ENABLED
-//#endif
 #endif
 
 #if defined(PSA_WANT_ECC_SECP_K1_256)
-//#if defined(MBEDTLS_PSA_BUILTIN_ECC_SECP_K1_256)
 #define MBEDTLS_ECP_DP_SECP256K1_ENABLED
-//#endif
 #endif
 
+// Nordic added
 #if defined(MBEDTLS_PK_PARSE_C)
 #define MBEDTLS_ASN1_PARSE_C
 #endif
@@ -353,6 +310,46 @@ extern "C" {
 #if defined(MBEDTLS_PK_WRITE_C)
 #define MBEDTLS_ASN1_WRITE_C
 #endif
+
+#if defined(PSA_WANT_ALG_CTR_DRBG)
+#define MBEDTLS_ENTROPY_C
+#define MBEDTLS_SHA224_C
+#define MBEDTLS_SHA256_C
+#define MBEDTLS_CTR_DRBG_C
+#endif
+
+#if defined(PSA_WANT_ALG_HMAC_DRBG)
+#define MBEDTLS_ENTROPY_C
+#define MBEDTLS_SHA224_C
+#define MBEDTLS_SHA256_C
+#define MBEDTLS_MD_C
+#define MBEDTLS_HMAC_DRBG_C
+#endif
+
+// TLS/DTLS additions
+#if defined(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED)    || \
+    defined(MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED)     || \
+    defined(MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED)   || \
+    defined(MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED)      || \
+    defined(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED)    || \
+    defined(MBEDTLS_KEY_EXCHANGE_PSK_ENABLED)           || \
+    defined(MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED)       || \
+    defined(MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED)       || \
+    defined(MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED)     || \
+    defined(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED)
+#define MBEDTLS_ECJPAKE_C
+#define MBEDTLS_X509_CRT_PARSE_C
+#define MBEDTLS_ASN1_PARSE_C
+#define MBEDTLS_ASN1_WRITE_C
+#define MBEDTLS_X509_USE_C
+#define MBEDTLS_PK_PARSE_C
+#define MBEDTLS_PK_C
+#define MBEDTLS_OID_C
+#define MBEDTLS_DHM_C
+#endif
+
+
+
 
 #ifdef __cplusplus
 }
