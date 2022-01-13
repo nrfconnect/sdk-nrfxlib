@@ -1,5 +1,7 @@
 /*
- *  Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
+ *  FIPS-197 compliant AES implementation
+ *
+ *  Copyright The Mbed TLS Contributors
  *  SPDX-License-Identifier: Apache-2.0
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -13,14 +15,14 @@
  *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
- *  This file is part of mbed TLS (https://tls.mbed.org)
  */
-#if !defined(MBEDTLS_CONFIG_FILE)
-#include "mbedtls/config.h"
-#else
-#include MBEDTLS_CONFIG_FILE
-#endif
+/*
+ *  The AES block cipher was designed by Vincent Rijmen and Joan Daemen.
+ *
+ *  http://csrc.nist.gov/encryption/aes/rijndael/Rijndael.pdf
+ *  http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf
+ */
+#include "common.h"
 
 #include <string.h>
 

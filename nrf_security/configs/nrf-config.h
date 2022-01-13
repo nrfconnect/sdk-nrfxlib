@@ -167,10 +167,10 @@ extern "C" {
 
 // Not using PSA_HAS_CIPHER_SUPPORT
 #if defined(PSA_WANT_KEY_TYPE_AES)
-#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_AES)
+//#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_AES)
 #define MBEDTLS_PSA_BUILTIN_KEY_TYPE_AES 1
 #define MBEDTLS_AES_C
-#endif
+//#endif
 #endif
 
 // Not using PSA_HAS_CIPHER_SUPPORT
@@ -233,6 +233,18 @@ extern "C" {
 #endif
 #endif
 
+#if defined(PSA_WANT_ALG_HKDF)
+#define MBEDTLS_PSA_BUILTIN_ALG_HKDF
+#endif
+
+#if defined(PSA_WANT_ALG_TLS12_PRF)
+#define MBEDTLS_PSA_BUILTIN_ALG_TLS12_PRF
+#endif
+
+#if defined(PSA_WANT_ALG_TLS12_PSK_TO_MS)
+#define MBEDTLS_PSA_BUILTIN_ALG_TLS12_PSK_TO_MS
+#endif
+
 #if defined(PSA_WANT_ALG_CBC_NO_PADDING)
 #if defined(MBEDTLS_PSA_BUILTIN_ALG_CBC_NO_PADDING)
 #define MBEDTLS_CIPHER_MODE_CBC
@@ -247,22 +259,22 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_ALG_CCM)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_CCM)
+//#if defined(MBEDTLS_PSA_BUILTIN_ALG_CCM)
 #define MBEDTLS_CCM_C
-#endif
+//#endif
 #endif
 
 #if defined(PSA_WANT_ALG_GCM)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_GCM)
+//#if defined(MBEDTLS_PSA_BUILTIN_ALG_GCM)
 #define MBEDTLS_GCM_C
-#endif
+//#endif
 #endif
 
 #if defined(PSA_WANT_ALG_CHACHA20_POLY1305)
 #if defined(PSA_WANT_KEY_TYPE_CHACHA20)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_GCM)
+//#if defined(MBEDTLS_PSA_BUILTIN_ALG_GCM)
 #define MBEDTLS_CHACHAPOLY_C
-#endif
+//#endif
 #endif
 #endif
 
@@ -346,12 +358,28 @@ extern "C" {
 //#endif
 #endif
 
+// Nordic added
 #if defined(MBEDTLS_PK_PARSE_C)
 #define MBEDTLS_ASN1_PARSE_C
 #endif
 
 #if defined(MBEDTLS_PK_WRITE_C)
 #define MBEDTLS_ASN1_WRITE_C
+#endif
+
+#if defined(PSA_WANT_ALG_CTR_DRBG)
+#define MBEDTLS_ENTROPY_C
+#define MBEDTLS_SHA224_C
+#define MBEDTLS_SHA256_C
+#define MBEDTLS_CTR_DRBG_C
+#endif
+
+#if defined(PSA_WANT_ALG_HMAC_DRBG)
+#define MBEDTLS_ENTROPY_C
+#define MBEDTLS_SHA224_C
+#define MBEDTLS_SHA256_C
+#define MBEDTLS_MD_C
+#define MBEDTLS_HMAC_DRBG_C
 #endif
 
 #ifdef __cplusplus

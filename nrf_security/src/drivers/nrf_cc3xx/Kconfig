@@ -57,7 +57,7 @@ config PSA_CRYPTO_DRIVER_ALG_CTR_CC3XX
 	default y if !PSA_DEFAULT_OFF
 	depends on PSA_WANT_ALG_CTR
 
-config PSA_CRYPTO_DRIVER_ALG_DETERMINISTIC_ECDSA_CC3X
+config PSA_CRYPTO_DRIVER_ALG_DETERMINISTIC_ECDSA_CC3XX
 	bool
 	prompt "PSA ECDSA support (deterministic mode) - cc3xx" if !PSA_PROMPTLESS
 	default y if !PSA_DEFAULT_OFF

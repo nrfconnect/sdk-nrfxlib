@@ -1,8 +1,94 @@
 #
-# Copyright (c) 2021 Nordic Semiconductor ASA
+# Copyright (c) 2021 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
+
+config MBEDTLS_PSA_CRYPTO_C
+	bool
+	prompt "Enable PSA crypto APIs"
+	default y
+	help
+	  Enable the Platform Security Architecture cryptography API.
+	  Corresponds to  setting in mbed TLS config file.
+
+if MBEDTLS_PSA_CRYPTO_C
+
+config MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER
+	bool
+
+source "modules/mbedtls/Kconfig.psa"
+
+config MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG
+	bool
+	default y if CRYPTOCELL_USABLE
+
+comment "PSA Driver Support"
+
+config MBEDTLS_PSA_CRYPTO_DRIVERS
+	bool
+	default y
+
+config PSA_DEFAULT_OFF
+	bool
+
+config PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT
+	bool
+	depends on PSA_CRYPTO_DRIVER_CC3XX 	|| \
+			   PSA_CRYPTO_DRIVER_OBERON
+	default y
+	help
+		Internal configuration that is set if any driver is
+		enabled
+
+config PSA_CRYPTO_SECURE
+	bool
+
+config MBEDTLS_PSA_CRYPTO_CLIENT
+	bool
+	default y
+
+menuconfig PSA_CRYPTO_DRIVER_CC3XX
+    bool
+    prompt "PSA CryptoCell Driver" if !PSA_PROMPTLESS
+    depends on CRYPTOCELL_USABLE
+    # default y if !MBEDTLS_TLS_LIBRARY
+    select NRF_CC3XX_PLATFORM if !BUILD_WITH_TFM
+	help
+	  Enable PSA Driver for CryptoCell
+
+if PSA_CRYPTO_DRIVER_CC3XX
+
+rsource "src/drivers/nrf_cc3xx/Kconfig"
+
+endif # PSA_CRYPTO_DRIVER_CC3XX
+
+menuconfig PSA_CRYPTO_DRIVER_OBERON
+    bool
+    prompt "PSA Oberon Driver" if !PSA_PROMPTLESS
+    default y
+    select NRF_OBERON
+	help
+	  Enable PSA Driver for nrf_oberon
+
+if PSA_CRYPTO_DRIVER_OBERON
+
+rsource "src/drivers/nrf_oberon/Kconfig"
+
+endif # PSA_CRYPTO_DRIVER_OBERON
+
+menuconfig PSA_CRYPTO_DRIVER_BUILTIN
+	bool
+	prompt "PSA Builtin" if !PSA_PROMPTLESS
+	default y if !CRYPTOCELL_USABLE
+	help
+	  Enables PSA builtin support
+
+if PSA_CRYPTO_DRIVER_BUILTIN
+
+rsource "src/drivers/builtin/Kconfig"
+
+endif # PSA_CRYPTO_DRIVER_BUILTIN
 
 menu "PSA API support"
 
@@ -20,8 +106,7 @@ config MBEDTLS_PSA_CRYPTO_STORAGE_C
 
 config MBEDTLS_USE_PSA_CRYPTO
 	bool "PSA APIs for X.509 and TLS library"
-	default y if BUILD_WITH_TFM
-	select NRF_SECURITY_ADVANCED
+	#default y if BUILD_WITH_TFM
 	help
 	  Corresponds to MBEDTLS_USE_PSA_CRYPTO setting in mbed TLS config file.
 
@@ -67,4 +152,6 @@ endif # PSA_EITS_BACKEND_ZEPHYR
 
 endif # PSA_NATIVE_ITS
 
-endmenu
+endmenu # PSA API support
+
+endif # MBEDTLS_PSA_CRYPTO_C
