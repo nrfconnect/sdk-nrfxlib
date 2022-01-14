@@ -5,6 +5,12 @@
  */
 
 /**@file
+ * @defgroup ocrypto_chacha_poly ChaCha20-Poly1305
+ * @ingroup ocrypto
+ * @{
+ * @brief ChaCha20-Poly1305 is an authenticated encryption algorithm with optional
+ *        additional authenticated data developed by Daniel J.Bernstein.
+ * @}
  * @defgroup ocrypto_chacha_poly_inc ChaCha20-Poly1305 incremental APIs
  * @ingroup ocrypto_chacha_poly
  * @{
