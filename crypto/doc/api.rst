@@ -98,7 +98,7 @@ KMU/KDR APIs
 nrf_oberon crypto library
 *************************
 
-.. doxygengroup:: nrf_oberon
+.. doxygengroup:: ocrypto
    :project: nrfxlib
    :members:
 
