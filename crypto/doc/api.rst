@@ -105,63 +105,63 @@ nrf_oberon crypto library
 AES - Advanced Encryption Standard APIs
 =======================================
 
-.. doxygengroup:: nrf_oberon_aes
+.. doxygengroup:: ocrypto_aes
    :project: nrfxlib
    :members:
 
 AES-CTR - AES Counter Mode
 --------------------------
 
-.. doxygengroup:: nrf_oberon_aes_ctr
+.. doxygengroup:: ocrypto_aes_ctr
    :project: nrfxlib
    :members:
 
 AES EAX APIs
 ------------
 
-.. doxygengroup:: nrf_oberon_aes_eax
+.. doxygengroup:: ocrypto_aes_eax
    :project: nrfxlib
    :members:
 
 AES GCM - AES Galois/Counter Mode APIs
 --------------------------------------
 
-.. doxygengroup:: nrf_oberon_aes_gcm
+.. doxygengroup:: ocrypto_aes_gcm
    :project: nrfxlib
    :members:
 
 AES key sizes
 -------------
 
-.. doxygengroup:: nrf_oberon_aes_key
+.. doxygengroup:: ocrypto_aes_key
    :project: nrfxlib
    :members:
 
 ChaCha20-Poly1305
 =================
 
-.. doxygengroup:: nrf_oberon_chacha_poly
+.. doxygengroup:: ocrypto_chacha_poly
    :project: nrfxlib
    :members:
 
 ChaCha20-Poly1305 APIs
 ----------------------
 
-.. doxygengroup:: nrf_oberon_chacha_poly_apis
+.. doxygengroup:: ocrypto_chacha_poly_apis
    :project: nrfxlib
    :members:
 
 ChaCha20 APIs
 -------------
 
-.. doxygengroup:: nrf_oberon_chacha
+.. doxygengroup:: ocrypto_chacha
    :project: nrfxlib
    :members:
 
 ChaCha20-Poly1305 incremental APIs
 ----------------------------------
 
-.. doxygengroup:: nrf_oberon_chacha_poly_inc
+.. doxygengroup:: ocrypto_chacha_poly_inc
    :project: nrfxlib
    :members:
 
