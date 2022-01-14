@@ -83,23 +83,9 @@ endif()
 target_link_libraries(mbedtls_external INTERFACE ${mbedcrypto_target})
 
 if(CONFIG_BUILD_WITH_TFM)
-
-  if(TARGET mbedtls)
-    add_dependencies(mbedtls tfm_mbedtls_headers_copy)
-  endif()
-
-  if(TARGET mbedx509)
-    add_dependencies(mbedx509 tfm_mbedtls_headers_copy)
-  endif()
-
-  if(TARGET ${mbedcrypto_target})
-    add_dependencies(${mbedcrypto_target} tfm_mbedtls_headers_copy)
-  endif()
-
   zephyr_include_directories(
     ${ZEPHYR_TRUSTED_FIRMWARE_M_MODULE_DIR}/trusted-firmware-m/interface/include
   )
-
 endif()
 
 zephyr_link_libraries(mbedtls_external)
