@@ -38,6 +38,9 @@ config NRF_SECURITY
 	  Set this configuration to enable nrf_security module. This provides
 	  Arm PSA cryptography APIs with RNG support (optionally).
 
+config PSA_PROMPTLESS
+	bool
+
 if NRF_SECURITY
 
 config MBEDTLS_CFG_FILE

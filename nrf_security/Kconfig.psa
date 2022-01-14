@@ -27,9 +27,6 @@ config MBEDTLS_PSA_CRYPTO_DRIVERS
 	bool
 	default y
 
-config PSA_PROMPTLESS
-	bool
-
 config PSA_DEFAULT_OFF
 	bool
 
