@@ -198,8 +198,19 @@ if (CONFIG_CC3XX_BACKEND)
   set_target_properties(mbedcrypto_cc3xx_imported PROPERTIES
     IMPORTED_LOCATION "${NRF_CC3XX_LIB}"
     BACKEND_NAME "cc3xx"
-  )
-  target_include_directories(mbedcrypto_cc3xx_imported INTERFACE
-                             "${NRF_CC3XX_BASE}/include/mbedtls")
+	)
+
+  # *_alt.h headers and cc3xx_kmu.h
+  set(mbedtls_includes ${NRF_CC3XX_BASE}/include/mbedtls)
+
+  target_include_directories(mbedcrypto_cc3xx_imported INTERFACE ${mbedtls_includes})
+
   target_link_libraries(mbedcrypto_cc3xx_imported INTERFACE platform_cc3xx)
+
+  target_link_libraries(nrfxlib_crypto INTERFACE mbedcrypto_cc3xx_imported)
+
+  if (TARGET zephyr_interface)
+	zephyr_include_directories(${mbedtls_includes})
+  endif()
+
 endif()
