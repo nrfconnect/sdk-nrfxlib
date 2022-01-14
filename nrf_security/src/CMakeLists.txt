@@ -70,6 +70,14 @@ else()
   include(${NRF_SECURITY_ROOT}/cmake/psa_crypto_config.cmake)
 endif()
 
+if(CONFIG_GENERATE_MBEDTLS_CFG_FILE)
+  # Add the generated CONFIG_MBEDTLS_CFG_FILE file to the include path
+  target_include_directories(mbedcrypto_common
+    INTERFACE
+    ${generated_include_path} # From cmake/*_crypto_config.cmake
+)
+endif()
+
 # x509 files
 append_with_prefix(src_x509 ${ARM_MBEDTLS_PATH}/library
     x509.c
