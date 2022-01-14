@@ -1179,3 +1179,17 @@ __WEAK void nrf_802154_cca_failed(nrf_802154_cca_error_t error)
 {
     (void)error;
 }
+
+#if NRF_802154_TEST_MODES_ENABLED
+
+nrf_802154_test_mode_csmaca_backoff_t nrf_802154_test_mode_csmaca_backoff_get(void)
+{
+    return nrf_802154_pib_test_mode_csmaca_backoff_get();
+}
+
+void nrf_802154_test_mode_csmaca_backoff_set(nrf_802154_test_mode_csmaca_backoff_t value)
+{
+    nrf_802154_pib_test_mode_csmaca_backoff_set(value);
+}
+
+#endif // NRF_802154_TEST_MODES_ENABLED

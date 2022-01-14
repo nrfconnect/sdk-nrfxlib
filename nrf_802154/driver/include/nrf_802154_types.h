@@ -189,6 +189,20 @@ typedef uint8_t nrf_802154_src_addr_match_t;
 #define NRF_802154_RSSI_INVALID            INT8_MAX
 
 /**
+ * @brief Type holding the CSMA/CA backoff control test mode
+ *
+ * Possible values:
+ * - @ref NRF_802154_TEST_MODE_CSMACA_BACKOFF_RANDOM
+ * - @ref NRF_802154_TEST_MODE_CSMACA_BACKOFF_ALWAYS_MAX
+ * - @ref NRF_802154_TEST_MODE_CSMACA_BACKOFF_ALWAYS_MIN
+ */
+typedef uint8_t nrf_802154_test_mode_csmaca_backoff_t;
+
+#define NRF_802154_TEST_MODE_CSMACA_BACKOFF_RANDOM     0x00 // !< The CSMA/CA uses random number of backoff periods (IEEE Std. 802.15.4 compliant)
+#define NRF_802154_TEST_MODE_CSMACA_BACKOFF_ALWAYS_MAX 0x01 // !< The CSMA/CA uses always maximum backoff periods (Test mode, non-compliant to IEEE Std. 802.15.4)
+#define NRF_802154_TEST_MODE_CSMACA_BACKOFF_ALWAYS_MIN 0x02 // !< The CSMA/CA uses always minimum backoff periods (Test mode, non-compliant to IEEE Std. 802.15.4)
+
+/**
  * @brief Mode of triggering receive request to Coex arbiter.
  *
  * Possible values:
