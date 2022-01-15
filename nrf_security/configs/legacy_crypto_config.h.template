@@ -1,3 +1,13 @@
+/*
+ * Copyright (c) 2022 Nordic Semiconductor
+ *
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ *
+ */
+
+#ifndef LEGACY_CRYPTO_CONFIG_H
+#define LEGACY_CRYPTO_CONFIG_H
+
 /**
  * \file mbedtls_config.h
  *
@@ -3312,3 +3322,5 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 
 
 /* \} name SECTION: Customisation configuration options */
+
+#endif /* LEGACY_CRYPTO_CONFIG_H */
