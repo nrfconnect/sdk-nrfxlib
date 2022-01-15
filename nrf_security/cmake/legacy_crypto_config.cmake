@@ -109,6 +109,8 @@ Kconfig_check_and_set_base(MBEDTLS_X509_CRT_PARSE_C)
 Kconfig_check_and_set_base(MBEDTLS_X509_CSR_PARSE_C)
 
 Kconfig_check_and_set_base(MBEDTLS_SSL_PROTO_DTLS)
+Kconfig_check_and_set_base(MBEDTLS_SSL_CLI_C)
+Kconfig_check_and_set_base(MBEDTLS_SSL_SRV_C)
 Kconfig_check_and_set_base(MBEDTLS_SSL_TLS_C)
 Kconfig_check_and_set_base(MBEDTLS_SSL_PROTO_TLS1_2)
 
