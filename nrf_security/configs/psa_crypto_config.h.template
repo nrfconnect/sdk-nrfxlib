@@ -283,8 +283,8 @@
 
 /* Legacy configurations for mbed TLS APIs */
 #cmakedefine MBEDTLS_CIPHER_C                                   @MBEDTLS_CIPHER_C@
-//#cmakedefine MBEDTLS_PK_C                                       @MBEDTLS_PK_C@
-//#cmakedefine MBEDTLS_PK_WRITE_C                                 @MBEDTLS_PK_WRITE_C@
+//#define MBEDTLS_PK_C                                       @MBEDTLS_PK_C@
+//#define MBEDTLS_PK_WRITE_C                                 @MBEDTLS_PK_WRITE_C@
 #cmakedefine MBEDTLS_MD_C                                       @MBEDTLS_MD_C@
 
 /* Max curve bits for PSA APIs */
