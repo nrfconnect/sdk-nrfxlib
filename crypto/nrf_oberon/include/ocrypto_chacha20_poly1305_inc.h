@@ -24,7 +24,6 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "ocrypto_chacha20_poly1305.h"
 #include "ocrypto_poly1305.h"
 
 
