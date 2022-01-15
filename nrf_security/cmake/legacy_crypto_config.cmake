@@ -131,18 +131,20 @@ Kconfig_check_and_set_base(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
 kconfig_check_and_set_base(MBEDTLS_THREADING_C)
 kconfig_check_and_set_base(MBEDTLS_THREADING_ALT)
 if (CONFIG_CC3XX_BACKEND)
+  # TODO: Why don't we use kconfig_check_and_set_base for
+  # MBEDTLS_PLATFORM_ZEROIZE_ALT ?
   set(MBEDTLS_PLATFORM_ZEROIZE_ALT TRUE)
+  
   if(NOT DEFINED MBEDTLS_THREADING_C)
-    set(MBEDTLS_THREADING_C TRUE)
-  endif()
 
-  if(NOT DEFINED MBEDTLS_THREADING_C)
+	# TODO: Why do we override these when CONFIG_CC3XX_BACKEND?
+	# Shouldn't the Kconfig be corrected instead? Now we have Kconfig
+	# and mbedtls configs saying conlficting things, which is not
+	# great.
+    set(MBEDTLS_THREADING_C TRUE)
     set(MBEDTLS_THREADING_ALT TRUE)
   endif()
 endif()
-
-
-
 
 # Compare the following with check-config.h in mbed TLS
 #
