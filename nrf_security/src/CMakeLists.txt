@@ -166,6 +166,15 @@ target_link_libraries(${mbedcrypto_target}
     mbedcrypto_common
 )
 
+# Don't be too strict with warnings on mbedtls code. This code is not
+# ours, so it's not necessary to do too much static analysis on
+# it. And any warnings that do pop up are difficult to fix as they
+# require changes far upstream.
+target_compile_options(${mbedcrypto_target} PRIVATE
+  -Wno-unused-function
+  -Wno-unused-variable
+  )
+
 #target_link_libraries(${mbedcrypto_target}
 #  INTERFACE
 #    mbedcrypto_common
