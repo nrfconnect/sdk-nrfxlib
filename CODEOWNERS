@@ -40,7 +40,7 @@ doc/*                                     @b-gent
 /nfc/                                     @anangl @grochu @KAGA164
 /nrf_802154/                              @czeslawmakarski
 /nrf_security/                            @frkv @tejlmand
-/openthread/                              @MarekPorwisz @lmaciejonczyk
+/openthread/                              @lmaciejonczyk @edmont @canisLupus1313
 /zboss/                                   @tomchy
 /zephyr/                                  @carlescufi
 /nrf_rpc/                                 @doki-nordic @KAGA164
