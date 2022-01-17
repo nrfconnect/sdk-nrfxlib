@@ -192,6 +192,9 @@ uint32_t mpsl_cx_req_grant_delay_get(void);
  * When radio protocol stops using Coexistence interface to hand it over to another protocol,
  * it shall reset callback by calling this function with NULL value passed in @p cb.
  *
+ * This functions executes gpiote_irq_callback on registering callback in order to manually
+ * check if any radio operations were granted prior to initialization. 
+ *
  * @param[in] cb  Pointer to a callback function called when radio operations granted by PTA
  *                change. If NULL, callback function is reset and nothing is called when
  *                granted radio operations change.
