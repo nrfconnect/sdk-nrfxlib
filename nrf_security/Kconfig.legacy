@@ -382,6 +382,16 @@ config MBEDTLS_CIPHER_PADDING_ZEROS
 	  Enable support for zeros padding for CBC cipher functions in mbedTLS.
 	  That is, fill buffer with 00 .. 00.
 
+config MBEDTLS_AES_FEWER_TABLES
+	bool
+	prompt "Use fewer tables for AES"
+	depends on !(OBERON_BACKEND || CC3XX_BACKEND)
+
+config MBEDTLS_AES_FEWER_TABLES
+	bool
+	prompt "Use AES tables in ROM"
+	depends on !(OBERON_BACKEND || CC3XX_BACKEND)
+
 endmenu # CBC cipher padding modes
 
 config MBEDTLS_CIPHER_MODE_CTR
@@ -687,6 +697,12 @@ config MBEDTLS_SHA256_C
 	help
 	  SHA-256 hash functionality.
 
+config MBEDTLS_SHA256_SMALLER
+	bool
+	prompt "Use smaller SHA-256 implementation"
+	depends on !(OBERON_BACKEND || CC3XX_BACKEND)
+	depends on MBEDTLS_SHA256_C
+
 config MBEDTLS_SHA384_C
 	bool
 	prompt "SHA-384 hash functionality"
@@ -701,6 +717,12 @@ config MBEDTLS_SHA512_C
 	default y
 	help
 	  SHA-512 hash functionality.
+
+config MBEDTLS_512_SMALLER
+	bool
+	prompt "Use smaller SHA-256 implementation"
+	depends on !(OBERON_BACKEND || CC3XX_BACKEND)
+	depends on MBEDTLS_SHA512_C
 
 endmenu # SHA - Secure Hash Algorithm
 
@@ -730,71 +752,5 @@ config MBEDTLS_PK_PARSE_C
 	bool
 	prompt "Enable PK parse support"
 	default y if MBEDTLS_TLS_LIBRARY
-
-config MBEDTLS_SSL_RENEGOTIATION
-	bool
-    prompt "SSL - Renegotiation"
-	depends on MBEDTLS_TLS_LIBRARY
-	help
-	  Enable support for TLS renegotiation.
-
-config MBEDTLS_SSL_DTLS_CLIENT_PORT_REUSE
-	bool
-    prompt "SSL - DTLS client port reuse"
-	depends on MBEDTLS_TLS_LIBRARY
-	help
-	  Enable server-side support for clients that reconnect from the same port.
-
-config MBEDTLS_SSL_DTLS_BADMAC_LIMIT
-	bool
-    prompt "SSL - DTLS bad MAC limit"
-	depends on MBEDTLS_TLS_LIBRARY
-	help
-	  Enable support for a limit of records with bad MAC.
-
-config MBEDTLS_SSL_SESSION_TICKETS
-	bool
-    prompt "SSL - RFC 5077 session tickets support"
-	depends on MBEDTLS_TLS_LIBRARY
-	help
-	  Enable support for RFC 5077 session tickets in SSL.
-
-config MBEDTLS_SSL_SERVER_NAME_INDICATION
-	bool
-    prompt "SSL - RFC 6066 SNI"
-	depends on MBEDTLS_TLS_LIBRARY
-	help
-	  Enable support for RFC 6066 server name indication (SNI) in SSL.
-
-config MBEDTLS_SSL_CACHE_C
-	bool
-    prompt "SSL - cache"
-	depends on MBEDTLS_TLS_LIBRARY
-	help
-	  Enable simple SSL cache implementation.
-
-config MBEDTLS_SSL_TICKET_C
-	bool
-    prompt "SSL - tickets"
-	depends on MBEDTLS_TLS_LIBRARY
-	help
-	  Enable an implementation of TLS server-side callbacks for session tickets.
-
-config MBEDTLS_SSL_CONTEXT_SERIALIZATION
-	bool
-    prompt "SSL - context serialization"
-	depends on MBEDTLS_TLS_LIBRARY
-	help
-	  Enable serialization of the TLS context structures.
-	  Enabling this allows faster resume but also makes some SSL structures larger
-
-config MBEDTLS_SSL_DTLS_CONNECTION_ID
-	bool
-    prompt "SSL - DTLS connection ID"
-	depends on MBEDTLS_TLS_LIBRARY
-	help
-	  Enable support for the DTLS Connection ID extension which allows to
-	  identify DTLS connections across changes in the underlying transport.
-	  The Connection ID extension is still in draft state.
 
 endmenu # Legacy mbed TLS crypto APIs

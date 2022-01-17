@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 Nordic Semiconductor
+# Copyright (c) 2021-2022 Nordic Semiconductor
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
@@ -19,6 +19,11 @@ config MBEDTLS_X509_USE_C
 	default y
 	help
 	  Enable X.509 core for using certificates.
+
+config MBEDTLS_X509_CREATE_C
+	bool "X.509 - creating certificates core"
+	help
+	  Enable X.509 core for creating certificates.
 
 config MBEDTLS_X509_CHECK_KEY_USAGE
 	bool "X.509 - check key usage"
@@ -50,17 +55,12 @@ config MBEDTLS_X509_CRT_PARSE_C
 	help
 	  Enable X.509 CTR parsing
 
-config MBEDTLS_X509_CREATE_C
-	bool "X.509 - creating certificates core"
-	help
-	  Enable X.509 core for creating certificates.
-
 config MBEDTLS_X509_CSR_WRITE_C
 	bool "X.509 - CSR writing"
 	help
 	  Enable creating X.509 Certificate Signing Requests (CSR).
 
-endif 
+endif
 
 menuconfig MBEDTLS_TLS_LIBRARY
 	bool
@@ -74,22 +74,10 @@ menuconfig MBEDTLS_TLS_LIBRARY
 
 if MBEDTLS_TLS_LIBRARY
 
-config MBEDTLS_SSL_TLS_C
-	bool
-	default y
-	help
-	  Corresponds to MBEDTLS_SSL_TLS_C in mbed TLS config file
-
-config MBEDTLS_SSL_PROTO_TLS1_2
-	bool
-	default y
-	help
-	  Enable the TLS 1.2 protocol
-	  Corresponds to MBEDTLS_SSL_PROTO_TLS1_2 in mbed TLS config file
-
 config MBEDTLS_SSL_CLI_C
 	bool "Enable the SSL/TLS client code"
 	default y
+	depends on MBEDTLS_SSL_TLS_C
 	help
 	  This setting enables SSL/TLS client functionality.
 	  Corresponds to MBEDTLS_SSL_CLI_C in mbed TLS config file
@@ -97,12 +85,173 @@ config MBEDTLS_SSL_CLI_C
 config MBEDTLS_SSL_SRV_C
 	bool "Enable the SSL/TLS server code"
 	default y
+	depends on MBEDTLS_SSL_TLS_C
 	help
 	  This setting enables SSL/TLS server functionality.
 	  Corresponds to MBEDTLS_SSL_SRV_C in mbed TLS config file.
 
-# config MBEDTLS_KEY_EXCHANGE_SOME_PSK_ENABLED
-# 	bool
-# 	default y
+config MBEDTLS_SSL_TLS_C
+	bool
+	default y
+	depends on MBEDTLS_CIPHER_C && MBEDTLS_MD_C
+	help
+	  Corresponds to MBEDTLS_SSL_TLS_C in mbed TLS config file
+
+config MBEDTLS_SSL_PROTO_TLS1_2
+	bool "Enable TLS version 1.2 protocol"
+	default y
+	depends on (MBEDTLS_SHA1_C || MBEDTLS_SHA256_C || MBEDTLS_SHA512_C)
+	help
+	  Enable the TLS 1.2 protocol
+	  Corresponds to MBEDTLS_SSL_PROTO_TLS1_2 in mbed TLS config file
+
+if MBEDTLS_SSL_PROTO_TLS1_2
+
+config MBEDTLS_SSL_ENCRYPT_THEN_MAC
+	bool
+	default y
+	depends on MBEDTLS_SSL_PROTO_TLS1_2
+	help
+	  This setting enable support for Encrypt-then-MAC, RFC 7366.
+	  Note: This only affects CBC ciphersuites and is useless if none is defined.
+	  Corresponds to MBEDTLS_SSL_ENCRYPT_THEN_MAC in mbed TLS config file.
+
+config MBEDTLS_SSL_EXTENDED_MASTER_SECRET
+	bool
+	default y
+	depends on MBEDTLS_SSL_PROTO_TLS1_2
+	help
+	  This setting enables supprtfor RFC: 7627: Session Has and Extended Master
+	  Secret Extension.This was introduced as the "proper fix" tot the Triple
+	  Handshake attacks, but is recommended to always be used.
+	  Corresponds to MBEDTLS_SSL_EXTENDED_MASTER_SECRET in mbed TLS config file.
+
+
+endif # MBEDTLS_SSL_PROTO_TLS1_2
+
+config MBEDTLS_SSL_PROTO_DTLS
+	bool "Enable support for DTLS"
+	depends on MBEDTLS_SSL_PROTO_TLS1_2
+	help
+	  Enables all version of DTLS
+
+if MBEDTLS_SSL_PROTO_DTLS
+
+config MBEDTLS_SSL_DTLS_ANTI_REPLAY
+	bool "Provide DTLS Anti-replay functionality"
+	default y
+	help
+	  Disabling this often constitutes a security risk!
+	  See mbedtls_ssl_conf_dtls_anti_replay() for details.
+
+config MBEDTLS_SSL_DTLS_HELLO_VERIFY
+	bool "Enable support for HellyVerifyRequiest on DTLS servers"
+	default y
+	help
+	  Enable this to ensure DTLS servers can't be used in certain DoS
+	  attacks.
+
+config MBEDTLS_SSL_DTLS_SRTP
+	bool "Enable DTLS-SRTP (RFC5764)"
+
+config MBEDTLS_SSL_DTLS_CLIENT_PORT_REUSE
+	bool
+	prompt "SSL - DTLS client port reuse"
+	depends on MBEDTLS_SSL_DTLS_HELLO_VERIFY
+	help
+	  Enable server-side support for clients that reconnect from the same port.
+
+config MBEDTLS_SSL_DTLS_CONNECTION_ID
+	bool
+	prompt "SSL - DTLS connection ID"
+	help
+	  Enable support for the DTLS Connection ID extension which allows to
+	  identify DTLS connections across changes in the underlying transport.
+	  The Connection ID extension is still in draft state.
+
+config MBEDTLS_SSL_DTLS_BADMAC_LIMIT
+	bool
+	prompt "SSL - DTLS bad MAC limit"
+	help
+	  Enable support for a limit of records with bad MAC.
+
+endif # MBEDTLS_SSL_PROTO_DTLS
+
+config MBEDTLS_SSL_ALL_ALERT_MESSAGES
+	bool
+	prompt "Enable all SSL alert messages"
+	default y
+	help
+	  This setting enables alert messages beingsentin case of failures.
+	  Disabling this will enure that no information is given about reasons
+	  for failures.
+	  Corresponds to MBEDTLS_SSL_ALL_ALERT_MESSAGES in mbed TLS config file.
+
+config MBEDTLS_SSL_CONTEXT_SERIALIZATION
+	bool
+	prompt "Enable serialization of TLS conftext structures"
+	default y
+	help
+	  This setting enables serialization of TLS structures, throught use of
+	  the mbedtls_ssl_context_save() and mbedtls_ssl_context_load().
+	  Corresponds to MBEDTLS_SSL_CONTEXT_SERIALIZATION in mbed TLS config file.
+
+config MBEDTLS_SSL_DEBUG_ALL
+	bool
+	prompt "Enable debug messages in SSL module for all issues."
+	help
+	  This setting enable the debug messages in SSL module for all issues.
+	  Note: Some debug messages have been enabled to prevent timing attacks.
+	  Corresponds to MBEDTLS_SSL_DEBUG_ALL in mbed TLS config file.
+
+config MBEDTLS_SSL_KEEP_PEER_CERTIFICATE
+	bool
+	prompt "Give acces to peer certificate after handshake"
+	default y
+	help
+	  Provides mbedtls_ssl_get_peer_cert() the ability to give the
+	  peer's certificate after completion of handshake. Disabling this
+	  reduces RAM usage.
+	  Corresponds to MBEDTLS_SSL_KEEP_PEER_CERTIFICATE in mbed TLS config file.
+
+config MBEDTLS_SSL_RENEGOTIATION
+	bool
+	prompt "SSL - Renegotiation"
+	help
+	  Enable support for TLS renegotiation.
+
+config MBEDTLS_SSL_SESSION_TICKETS
+	bool
+	prompt "SSL - RFC 5077 session tickets support"
+	help
+	  Enable support for RFC 5077 session tickets in SSL.
+
+config MBEDTLS_SSL_SERVER_NAME_INDICATION
+	bool
+	prompt "SSL - RFC 6066 SNI"
+	depends on MBEDTLS_X509_CRT_PARSE_C
+	help
+	  Enable support for RFC 6066 server name indication (SNI) in SSL.
+
+config MBEDTLS_SSL_CACHE_C
+	bool
+	prompt "SSL - cache"
+	help
+	  Enable simple SSL cache implementation.
+
+config MBEDTLS_SSL_TICKET_C
+	bool
+	prompt "SSL - tickets"
+	depends on MBEDTLS_CIPHER_C
+	help
+	  Enable an implementation of TLS server-side callbacks for session tickets.
+
+
+config MBEDTLS_SSL_EXPORT_KEYS
+	prompt "Enable support for exporting keys"
+	default y
+	help
+	  Enables suppport for exporting key block and master secret.
+
 
 endif # MBEDTLS_TLS_LIBRARY

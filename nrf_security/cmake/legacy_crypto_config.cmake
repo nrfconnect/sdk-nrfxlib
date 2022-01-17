@@ -69,7 +69,7 @@ kconfig_check_and_set_base(MBEDTLS_ECP_DP_CURVE25519_ENABLED)
 kconfig_check_and_set_base(MBEDTLS_ECP_DP_CURVE448_ENABLED)
 kconfig_check_and_set_base(MBEDTLS_RSA_C)
 kconfig_check_and_set_base(MBEDTLS_RSA_ALT)
-Kconfig_check_and_set_base(MBEDTLS_GENPRIME)
+kconfig_check_and_set_base(MBEDTLS_GENPRIME)
 kconfig_check_and_set_base(MBEDTLS_PKCS1_V15)
 kconfig_check_and_set_base(MBEDTLS_PKCS1_V21)
 kconfig_check_and_set_base(MBEDTLS_MD5_C)
@@ -98,33 +98,39 @@ kconfig_check_and_set_base_to_one(MBEDTLS_ENTROPY_HARDWARE_ALT)
 kconfig_check_and_set_base_to_one(MBEDTLS_THREADING_ALT)
 kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_ZEROIZE_ALT)
 
+kconfig_check_and_set_base(MBEDTLS_X509_USE_C)
+kconfig_check_and_set_base(MBEDTLS_X509_CHECK_KEY_USAGE)
+kconfig_check_and_set_base(MBEDTLS_X509_CHECK_EXTENDED_KEY_USAGE)
+kconfig_check_and_set_base(MBEDTLS_X509_CREATE_C)
+kconfig_check_and_set_base(MBEDTLS_X509_CRL_PARSE_C)
+kconfig_check_and_set_base(MBEDTLS_X509_CRT_PARSE_C)
+kconfig_check_and_set_base(MBEDTLS_X509_CSR_PARSE_C)
+kconfig_check_and_set_base(MBEDTLS_X509_CSR_WRITE_C)
 
-Kconfig_check_and_set_base(MBEDTLS_X509_USE_C)
-Kconfig_check_and_set_base(MBEDTLS_X509_CREATE_C)
-Kconfig_check_and_set_base(MBEDTLS_X509_CSR_WRITE_C)
-Kconfig_check_and_set_base(MBEDTLS_X509_CHECK_KEY_USAGE)
-Kconfig_check_and_set_base(MBEDTLS_X509_CHECK_EXTENDED_KEY_USAGE)
-Kconfig_check_and_set_base(MBEDTLS_X509_CRL_PARSE_C)
-Kconfig_check_and_set_base(MBEDTLS_X509_CRT_PARSE_C)
-Kconfig_check_and_set_base(MBEDTLS_X509_CSR_PARSE_C)
+kconfig_check_and_set_base(MBEDTLS_SSL_CLI_C)
+kconfig_check_and_set_base(MBEDTLS_SSL_SRV_C)
+kconfig_check_and_set_base(MBEDTLS_SSL_TLS_C)
+kconfig_check_and_set_base(MBEDTLS_SSL_PROTO_TLS1_2)
 
-Kconfig_check_and_set_base(MBEDTLS_SSL_PROTO_DTLS)
-Kconfig_check_and_set_base(MBEDTLS_SSL_CLI_C)
-Kconfig_check_and_set_base(MBEDTLS_SSL_SRV_C)
-Kconfig_check_and_set_base(MBEDTLS_SSL_TLS_C)
-Kconfig_check_and_set_base(MBEDTLS_SSL_PROTO_TLS1_2)
-
-kconfig_check_and_set_base(MBEDTLS_SSL_RENEGOTIATION)
+kconfig_check_and_set_base(MBEDTLS_SSL_PROTO_DTLS)
+kconfig_check_and_set_base(MBEDTLS_SSL_DTLS_ANTI_REPLAY)
+kconfig_check_and_set_base(MBEDTLS_SSL_DTLS_HELLO_VERIFY)
+kconfig_check_and_set_base(MBEDTLS_SSL_DTLS_SRTP)
 kconfig_check_and_set_base(MBEDTLS_SSL_DTLS_CLIENT_PORT_REUSE)
+kconfig_check_and_set_base(MBEDTLS_SSL_DTLS_CONNECTION_ID)
 kconfig_check_and_set_base(MBEDTLS_SSL_DTLS_BADMAC_LIMIT)
+
+kconfig_check_and_set_base(MBEDTLS_SSL_ALL_ALERT_MESSAGES)
+kconfig_check_and_set_base(MBEDTLS_SSL_CONTEXT_SERIALIZATION)
+kconfig_check_and_set_base(MBEDTLS_SSL_DEBUG_ALL)
+kconfig_check_and_set_base(MBEDTLS_SSL_KEEP_PEER_CERTIFICATE)
+kconfig_check_and_set_base(MBEDTLS_SSL_RENEGOTIATION)
 kconfig_check_and_set_base(MBEDTLS_SSL_SESSION_TICKETS)
 kconfig_check_and_set_base(MBEDTLS_SSL_SERVER_NAME_INDICATION)
 kconfig_check_and_set_base(MBEDTLS_SSL_CACHE_C)
 kconfig_check_and_set_base(MBEDTLS_SSL_TICKET_C)
-kconfig_check_and_set_base(MBEDTLS_SSL_CONTEXT_SERIALIZATION)
-kconfig_check_and_set_base(MBEDTLS_SSL_DTLS_CONNECTION_ID)
 
-Kconfig_check_and_set_base(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
+kconfig_check_and_set_base(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
 #
 # CC3XX flags for threading and platform zeroize
 #
@@ -134,7 +140,7 @@ if (CONFIG_CC3XX_BACKEND)
   # TODO: Why don't we use kconfig_check_and_set_base for
   # MBEDTLS_PLATFORM_ZEROIZE_ALT ?
   set(MBEDTLS_PLATFORM_ZEROIZE_ALT TRUE)
-  
+
   if(NOT DEFINED MBEDTLS_THREADING_C)
 
 	# TODO: Why do we override these when CONFIG_CC3XX_BACKEND?
@@ -146,13 +152,9 @@ if (CONFIG_CC3XX_BACKEND)
   endif()
 endif()
 
-# Compare the following with check-config.h in mbed TLS
 #
-kconfig_check_and_set_base_depends(MBEDTLS_SSL_DTLS_ANTI_REPLAY MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-  MBEDTLS_SSL_PROTO_DTLS
-)
-
+# Auto-enable key exchange based on supported features
+#
 kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED
   MBEDTLS_ECDH_C
   MBEDTLS_TLS_LIBRARY
@@ -221,21 +223,11 @@ kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
   MBEDTLS_X509_LIBRARY
 )
 
+
+
 kconfig_check_and_set_base_depends(MBEDTLS_ECDSA_DETERMINISTIC
   MBEDTLS_ECDSA_C
   MBEDTLS_HMAC_DRBG_C
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_SSL_ENCRYPT_THEN_MAC
-  MBEDTLS_SSL_PROTO_TLS1_2
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_SSL_EXTENDED_MASTER_SECRET
-  MBEDTLS_SSL_PROTO_TLS1_2
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_SSL_SERVER_NAME_INDICATION
-  MBEDTLS_X509_CRT_PARSE_C
 )
 
 # Set generated_include_path
