@@ -65,6 +65,7 @@ if (CONFIG_OBERON_BACKEND)
   list(APPEND src_crypto_legacy
     ${CMAKE_CURRENT_LIST_DIR}/aes.c
     ${CMAKE_CURRENT_LIST_DIR}/aes_oberon.c
+    ${CMAKE_CURRENT_LIST_DIR}/ecjpake_oberon.c
   )
 else()
   list(APPEND src_crypto_legacy
