@@ -168,25 +168,25 @@ Constant time APIs
 ECC secp256r1 low-level APIs
 ============================
 
-.. doxygengroup:: nrf_oberon_p256
+.. doxygengroup:: ocrypto_p256
    :project: nrfxlib
    :members:
 
 ECC Curve25519 low-level APIs
 =============================
 
-.. doxygengroup:: nrf_oberon_curve25519
+.. doxygengroup:: ocrypto_curve25519
    :project: nrfxlib
    :members:
 
 ECDH APIs
 =========
 
-.. doxygengroup:: nrf_oberon_ecdh_p256
+.. doxygengroup:: ocrypto_ecdh_p256
    :project: nrfxlib
    :members:
 
-.. doxygengroup:: nrf_oberon_ecdh_p224
+.. doxygengroup:: ocrypto_ecdh_p224
    :project: nrfxlib
    :members:
 
@@ -194,108 +194,108 @@ ECDH APIs
 ECDSA APIs
 ==========
 
-.. doxygengroup:: nrf_oberon_ecdsa_p256
+.. doxygengroup:: ocrypto_ecdsa_p256
    :project: nrfxlib
    :members:
 
-.. doxygengroup:: nrf_oberon_ecdsa_p224
+.. doxygengroup:: ocrypto_ecdsa_p224
    :project: nrfxlib
    :members:
 
 Ed25519 APIs
 =============
 
-.. doxygengroup:: nrf_oberon_ed25519
+.. doxygengroup:: ocrypto_ed25519
    :project: nrfxlib
    :members:
 
 HKDF - HMAC based Key Derivation Function
 =========================================
 
-.. doxygengroup:: nrf_oberon_hkdf
+.. doxygengroup:: ocrypto_hkdf
    :project: nrfxlib
    :members:
 
 HKDF APIs using SHA-256
 -----------------------
 
-.. doxygengroup:: nrf_oberon_hkdf_256
+.. doxygengroup:: ocrypto_hkdf_256
    :project: nrfxlib
    :members:
 
 HKDF APIs using SHA-512
 -----------------------
 
-.. doxygengroup:: nrf_oberon_hkdf_512
+.. doxygengroup:: ocrypto_hkdf_512
    :project: nrfxlib
    :members:
 
 HMAC - Hash-based Aessage Authentication Code
 =============================================
 
-.. doxygengroup:: nrf_oberon_hmac
+.. doxygengroup:: oberon_hmac
    :project: nrfxlib
    :members:
 
 HMAC APIs using SHA-256
 -----------------------
 
-.. doxygengroup:: nrf_oberon_hmac_256
+.. doxygengroup:: ocrypto_hmac_256
    :project: nrfxlib
    :members:
 
 HMAC APIs using SHA-512
 -----------------------
 
-.. doxygengroup:: nrf_oberon_hmac_512
+.. doxygengroup:: ocrypto_hmac_512
    :project: nrfxlib
    :members:
 
 RSA - Rivest-Shamir-Adleman algorithm
 =====================================
 
-.. doxygengroup:: nrf_oberon_rsa
+.. doxygengroup:: ocrypto_rsa
    :project: nrfxlib
    :members:   
 
 RSA APIs
 --------
 
-.. doxygengroup:: nrf_oberon_rsa_api
+.. doxygengroup:: ocrypto_rsa_api
    :project: nrfxlib
    :members:   
 
 RSA key APIs
 ------------
 
-.. doxygengroup:: nrf_oberon_rsa_key
+.. doxygengroup:: ocrypto_rsa_key
    :project: nrfxlib
    :members:   
 
 SHA-256 APIs
 ============
 
-.. doxygengroup:: nrf_oberon_sha_256
+.. doxygengroup:: ocrypto_sha_256
    :project: nrfxlib
    :members:
 
 SHA-512 APIs
 ============
 
-.. doxygengroup:: nrf_oberon_sha_512
+.. doxygengroup:: ocrypto_sha_512
    :project: nrfxlib
    :members:
 
 SRP - Secure Remote Password APIs
 =================================
 
-.. doxygengroup:: nrf_oberon_srp
+.. doxygengroup:: ocrypto_srp
    :project: nrfxlib
    :members:
 
 SRPT - Secure Real-Time Transport Protocol APIs
 ===============================================
 
-.. doxygengroup:: nrf_oberon_srpt
+.. doxygengroup:: ocrypto_srpt
    :project: nrfxlib
    :members:
