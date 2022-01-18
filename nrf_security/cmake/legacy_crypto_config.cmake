@@ -129,6 +129,7 @@ kconfig_check_and_set_base(MBEDTLS_SSL_SESSION_TICKETS)
 kconfig_check_and_set_base(MBEDTLS_SSL_SERVER_NAME_INDICATION)
 kconfig_check_and_set_base(MBEDTLS_SSL_CACHE_C)
 kconfig_check_and_set_base(MBEDTLS_SSL_TICKET_C)
+kconfig_check_and_set_base(MBEDTLS_SSL_EXPORT_KEYS)
 
 kconfig_check_and_set_base(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
 #
