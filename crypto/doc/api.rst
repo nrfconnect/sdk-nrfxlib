@@ -158,13 +158,6 @@ ChaCha20 APIs
    :project: nrfxlib
    :members:
 
-ChaCha20-Poly1305 incremental APIs
-----------------------------------
-
-.. doxygengroup:: ocrypto_chacha_poly_inc
-   :project: nrfxlib
-   :members:
-
 Constant time APIs
 ==================
 
