@@ -7,7 +7,17 @@ Changelog
    :local:
    :depth: 2
 
-All the notable changes to this project are documented in this file.
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Added
+=====
+
+* Added a new header :file:`mpsl_dppi_protocol_api.h` which exposes DPPI channels that have a fixed configuration during the lifetime of a radio event (DRGN-16308).
+  This will facilitate debugging protocol implementations.
+  Currently these channels are only guaranteed to be applied correctly for Bluetooth.
 
 nRF Connect SDK v1.8.0
 **********************
