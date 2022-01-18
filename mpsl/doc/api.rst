@@ -88,3 +88,11 @@ MPSL Temp
 .. doxygengroup:: mpsl_temp
    :project: nrfxlib
    :members:
+
+MPSL DPPI Protocol
+******************
+
+.. doxygengroup:: mpsl_dppi_protocol_api
+   :project: nrfxlib
+   :members:
+
