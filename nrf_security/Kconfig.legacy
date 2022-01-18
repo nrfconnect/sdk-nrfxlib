@@ -387,7 +387,7 @@ config MBEDTLS_AES_FEWER_TABLES
 	prompt "Use fewer tables for AES"
 	depends on !(OBERON_BACKEND || CC3XX_BACKEND)
 
-config MBEDTLS_AES_FEWER_TABLES
+config MBEDTLS_AES_ROM_TABLES
 	bool
 	prompt "Use AES tables in ROM"
 	depends on !(OBERON_BACKEND || CC3XX_BACKEND)
