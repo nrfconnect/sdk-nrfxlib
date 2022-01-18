@@ -18,6 +18,7 @@ Added
 =====
 
 * Added support for a vendor-specific HCI command setting the periodic advertising event length (DRGN-16513).
+* Added ``SDC_CFG_TYPE_PERIODIC_ADV_LIST_SIZE`` to allow the application to configure the size of the periodic advertiser list (DRGN-16357).
 
 nRF Connect SDK v1.8.0
 **********************
