@@ -162,7 +162,7 @@ nrf_security_debug_list_target_files(${mbedcrypto_target})
 
 # Add regular mbedcrypto common includes and configurations
 target_link_libraries(${mbedcrypto_target}
-  PRIVATE
+  PUBLIC
     mbedcrypto_common
 )
 
@@ -174,11 +174,6 @@ target_compile_options(${mbedcrypto_target} PRIVATE
   -Wno-unused-function
   -Wno-unused-variable
   )
-
-#target_link_libraries(${mbedcrypto_target}
-#  INTERFACE
-#    mbedcrypto_common
-#)
 
 # Add drivers if enabled
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/drivers)
@@ -211,31 +206,30 @@ if (CONFIG_MBEDTLS_X509_LIBRARY)
 
   target_link_libraries(${mbedx509_target}
     PRIVATE
-      mbedcrypto_common
       ${mbedcrypto_target}
+    PUBLIC
+      mbedcrypto_common
   )
 endif()
 
+# Library for TLS protocol support
+if (CONFIG_MBEDTLS_TLS_LIBRARY)
+  add_library(${mbedtls_target} STATIC
+    ${src_tls}
+    ${src_tls_replacement}
+  )
 
-if(NOT CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
-  # Library for TLS protocol support
-  if (CONFIG_MBEDTLS_TLS_LIBRARY)
-    add_library(${mbedtls_target} STATIC
-      ${src_tls}
-      ${src_tls_replacement}
-    )
+  # Add options from Zephyr build
+  nrf_security_add_zephyr_options(${mbedtls_target})
 
-    # Add options from Zephyr build
-    nrf_security_add_zephyr_options(${mbedtls_target})
-
-    target_link_libraries(${mbedtls_target}
-      PRIVATE
-        mbedcrypto_common
-        ${MBEDTLS_TARGET_PREFIX}${mbedx509_target}
-        ${mbedcrypto_target}
-    )
-  endif()
-endif(NOT CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
+  target_link_libraries(${mbedtls_target}
+    PRIVATE
+      ${mbedx509_target}
+      ${mbedcrypto_target}
+    PUBLIC
+      mbedcrypto_common
+  )
+endif()
 
 # Include EITS in Zephyr build
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/psa)
