@@ -161,7 +161,7 @@ ChaCha20 APIs
 Constant time APIs
 ==================
 
-.. doxygengroup:: nrf_oberon_constant_time
+.. doxygengroup:: ocrypto_constant_time
    :project: nrfxlib
    :members:
 
