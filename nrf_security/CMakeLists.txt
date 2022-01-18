@@ -36,7 +36,7 @@ get_mbedtls_dir(ARM_MBEDTLS_PATH)
 # builds or when MBEDTLS_USE_PSA_CRYPTO is enabled (e.g. for TLS/DTLS
 # and x.509 support) Note: This configuration is internal and may be
 # removed with a new mbed TLS version
-set(MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER     False)
+set(CONFIG_MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER     False)
 
 if(NOT CONFIG_BUILD_WITH_TFM)
   nrf_security_debug("Building for pure Zephyr")

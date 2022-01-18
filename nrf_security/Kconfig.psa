@@ -15,6 +15,9 @@ config MBEDTLS_PSA_CRYPTO_C
 
 if MBEDTLS_PSA_CRYPTO_C
 
+config MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER
+	bool
+
 source "modules/mbedtls/Kconfig.psa"
 
 config MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG

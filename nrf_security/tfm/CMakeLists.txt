@@ -52,6 +52,12 @@ set(CONFIG_NRF_CC3XX_PLATFORM                       True)
 # Set the a define stating that KEY_ID encodes owner
 set(CONFIG_MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER  True)
 
+
+set(CONFIG_MBEDTLS_PSA_BUILTIN_ALG_TLS12_PRF        True)
+set(CONFIG_MBEDTLS_PSA_BUILTIN_ALG_TLS12_PSK_TO_MS  True)
+set(CONFIG_MBEDTLS_X509_LIBRARY                     True)
+set(CONFIG_MBEDTLS_TLS_LIBRARY                      True)
+
 # Set the a _usage_ of PSA crypto to false for TF-M image build
 set(CONFIG_MBEDTLS_USE_PSA_CRYPTO                   False)
 
@@ -74,6 +80,8 @@ set(COMPILE_PSA_APIS                                True)
 # This currently doesn't do a mutex on heap access according to cc3xx rtos
 # methods...
 list(APPEND src_crypto ${ARM_MBEDTLS_PATH}/library/memory_buffer_alloc.c)
+
+add_subdirectory(${NRF_SECURITY_ROOT}/../crypto ${CMAKE_CURRENT_BINARY_DIR}/nrf_security_crypto)
 
 # Add mbed TLS libraries
 add_subdirectory(${NRF_SECURITY_ROOT}/src ${CMAKE_CURRENT_BINARY_DIR}/nrf_security_src)
