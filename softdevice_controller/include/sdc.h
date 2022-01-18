@@ -79,6 +79,9 @@ extern "C" {
 /** @brief Default advertising data size when legacy advertising is supported. */
 #define SDC_DEFAULT_ADV_BUF_SIZE 31
 
+/** @brief Default number of devices that can be added to the periodic advertiser list. */
+#define SDC_DEFAULT_PERIODIC_ADV_LIST_SIZE 0
+
 /** @brief Default connection event length. */
 #define SDC_DEFAULT_EVENT_LENGTH_US 7500UL
 
@@ -172,6 +175,12 @@ extern "C" {
  */
 #define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (160 + 264 * (buffer_count))
 
+/** Memory required for the periodic adv list.
+ *
+ * @param[in] list_size The number of entries the list can fit.
+ */
+#define SDC_MEM_PERIODIC_ADV_LIST(list_size) (8 * (list_size))
+
 /** @} end of sdc_mem_defines */
 
 /** @brief Function prototype for the fault handler.
@@ -238,6 +247,10 @@ enum sdc_cfg_type
      *  See also @ref sdc_cfg_t::periodic_sync_buffer_cfg.
      */
     SDC_CFG_TYPE_PERIODIC_SYNC_BUFFER_CFG = 10,
+    /** Number devices that can be placed in the periodic advertiser list.
+     *  See also @ref sdc_cfg_t::periodic_adv_list_size.
+     */
+    SDC_CFG_TYPE_PERIODIC_ADV_LIST_SIZE = 11,
 };
 
 
@@ -348,6 +361,13 @@ typedef union
      *  Default: @ref SDC_DEFAULT_PERIODIC_SYNC_BUFFER_COUNT.
      */
     sdc_cfg_buffer_count_t periodic_sync_buffer_cfg;
+    /** Configures the size of the periodic advertiser list.
+     *
+     * The maximum number of supported devices is 8.
+     *
+     * Default: @ref SDC_DEFAULT_PERIODIC_ADV_LIST_SIZE.
+     */
+    uint8_t periodic_adv_list_size;
 } sdc_cfg_t;
 
 
