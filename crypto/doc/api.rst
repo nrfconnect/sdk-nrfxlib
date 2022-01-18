@@ -219,14 +219,14 @@ HKDF - HMAC based Key Derivation Function
 HKDF APIs using SHA-256
 -----------------------
 
-.. doxygengroup:: ocrypto_hkdf_256
+.. doxygengroup:: ocrypto_hkdf_sha256
    :project: nrfxlib
    :members:
 
 HKDF APIs using SHA-512
 -----------------------
 
-.. doxygengroup:: ocrypto_hkdf_512
+.. doxygengroup:: ocrypto_hkdf_sha512
    :project: nrfxlib
    :members:
 
