@@ -1,4 +1,3 @@
-
 /*
  *  Elliptic curve J-PAKE
  *
