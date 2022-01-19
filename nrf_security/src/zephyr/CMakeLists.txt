@@ -35,9 +35,12 @@ if(CONFIG_BUILD_WITH_TFM)
     )
   endif()
 
+  # For some reason $<TARGET_PROPERTY:tfm,TFM_BINARY_DIR> does not work here
+  set(TFM_BINARY_DIR ${CMAKE_BINARY_DIR}/tfm)
+
   # Add the TF-M interface to zephyr includes
   zephyr_include_directories(
-    ${ZEPHYR_TRUSTED_FIRMWARE_M_MODULE_DIR}/trusted-firmware-m/interface/include
+    ${TFM_BINARY_DIR}/install/interface/include
   )
 else()
   # Use the standard memory_buffer_alloc.c
@@ -83,11 +86,5 @@ endif()
 
 # Link with mbedcrypto library (in NS build or by default)
 target_link_libraries(mbedtls_external INTERFACE ${mbedcrypto_target})
-
-if(CONFIG_BUILD_WITH_TFM)
-  zephyr_include_directories(
-    ${ZEPHYR_TRUSTED_FIRMWARE_M_MODULE_DIR}/trusted-firmware-m/interface/include
-  )
-endif()
 
 zephyr_link_libraries(mbedtls_external)
