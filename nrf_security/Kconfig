@@ -92,6 +92,13 @@ config MBEDTLS_HEAP_SIZE
 	  Ensure to adjust the heap size according to the need of the
 	  application.
 
+config MBEDTLS_HARDWARE_POLL_WORKAROUND
+	bool "Entropy hardware poll workaround"
+	help
+	  Temporary workaround for the mbedtls_hardware_poll function not being
+	  defined. Provides an implementation through zephyrs chosen entropy
+	  driver.
+
 # Include TLS/DTLS and x509 configurations
 rsource "Kconfig.tls"
 
