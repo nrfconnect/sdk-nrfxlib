@@ -233,6 +233,18 @@ extern "C" {
 #endif
 #endif
 
+#if defined(PSA_WANT_ALG_HKDF)
+#define MBEDTLS_PSA_BUILTIN_ALG_HKDF
+#endif
+
+#if defined(PSA_WANT_ALG_TLS12_PRF)
+#define MBEDTLS_PSA_BUILTIN_ALG_TLS12_PRF
+#endif
+
+#if defined(PSA_WANT_ALG_TLS12_PSK_TO_MS)
+#define MBEDTLS_PSA_BUILTIN_ALG_TLS12_PSK_TO_MS
+#endif
+
 #if defined(PSA_WANT_ALG_CBC_NO_PADDING)
 #if defined(MBEDTLS_PSA_BUILTIN_ALG_CBC_NO_PADDING)
 #define MBEDTLS_CIPHER_MODE_CBC
