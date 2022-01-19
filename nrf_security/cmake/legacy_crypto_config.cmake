@@ -90,6 +90,7 @@ kconfig_check_and_set_base(MBEDTLS_SHA512_ALT)
 kconfig_check_and_set_base(MBEDTLS_HKDF_C)
 kconfig_check_and_set_base(MBEDTLS_MD_C)
 kconfig_check_and_set_base(MBEDTLS_PK_C)
+kconfig_check_and_set_base(MBEDTLS_PKCS5_C)
 kconfig_check_and_set_base(MBEDTLS_PK_PARSE_C)
 kconfig_check_and_set_base(MBEDTLS_PK_WRITE_C)
 

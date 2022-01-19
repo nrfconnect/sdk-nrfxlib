@@ -741,7 +741,12 @@ config MBEDTLS_MD_C
 config MBEDTLS_PK_C
 	bool
 	prompt "Enable PK support"
-	#default y if (MBEDTLS_USE_PSA_CRYPTO || MBEDTLS_TLS_LIBRARY)
+
+config MBEDTLS_PKCS5_C
+	bool
+	prompt "Enable PKCS5 support"
+	default y
+	depends on MBEDTLS_MD_C
 
 config MBEDTLS_PK_WRITE_C
 	bool
