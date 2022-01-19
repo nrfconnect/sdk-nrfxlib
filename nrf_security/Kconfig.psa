@@ -7,7 +7,6 @@
 config MBEDTLS_PSA_CRYPTO_C
 	bool
 	prompt "Enable PSA crypto APIs"
-	depends on !MBEDTLS_LEGACY_CRYPTO_C
 	default y
 	help
 	  Enable the Platform Security Architecture cryptography API.
