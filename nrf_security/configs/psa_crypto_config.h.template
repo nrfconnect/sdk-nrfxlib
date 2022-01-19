@@ -243,6 +243,7 @@
 #cmakedefine MBEDTLS_PLATFORM_SNPRINTF_ALT                      @MBEDTLS_PLATFORM_SNPRINTF_ALT@
 #cmakedefine MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT                @MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT@
 #cmakedefine MBEDTLS_ENTROPY_HARDWARE_ALT                       @MBEDTLS_ENTROPY_HARDWARE_ALT@
+#cmakedefine MBEDTLS_THREADING_C                                @MBEDTLS_THREADING_C@
 #cmakedefine MBEDTLS_THREADING_ALT                              @MBEDTLS_THREADING_ALT@
 #cmakedefine MBEDTLS_PLATFORM_ZEROIZE_ALT                       @MBEDTLS_PLATFORM_ZEROIZE_ALT@
 
@@ -289,7 +290,5 @@
 
 /* Max curve bits for PSA APIs */
 #cmakedefine PSA_VENDOR_ECC_MAX_CURVE_BITS                      @PSA_VENDOR_ECC_MAX_CURVE_BITS@
-
-
 
 #endif /* PSA_CRYPTO_CONFIG_H */
