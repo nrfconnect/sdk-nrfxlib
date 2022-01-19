@@ -1001,6 +1001,7 @@ static nrf_802154_trx_transmit_notifications_t make_trx_frame_transmit_notificat
         {
             case NRF_802154_COEX_TX_REQUEST_MODE_FRAME_READY:
             case NRF_802154_COEX_TX_REQUEST_MODE_CCA_START:
+            case NRF_802154_COEX_TX_REQUEST_MODE_ON_CCA_TOGGLE:
                 /* No additional notifications required. */
                 break;
 
