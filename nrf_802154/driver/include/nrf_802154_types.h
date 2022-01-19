@@ -189,6 +189,20 @@ typedef uint8_t nrf_802154_src_addr_match_t;
 #define NRF_802154_RSSI_INVALID            INT8_MAX
 
 /**
+ * @brief Type holding the CSMA/CA backoff control test mode
+ *
+ * Possible values:
+ * - @ref NRF_802154_TEST_MODE_CSMACA_BACKOFF_RANDOM
+ * - @ref NRF_802154_TEST_MODE_CSMACA_BACKOFF_ALWAYS_MAX
+ * - @ref NRF_802154_TEST_MODE_CSMACA_BACKOFF_ALWAYS_MIN
+ */
+typedef uint8_t nrf_802154_test_mode_csmaca_backoff_t;
+
+#define NRF_802154_TEST_MODE_CSMACA_BACKOFF_RANDOM     0x00 // !< The CSMA/CA uses random number of backoff periods (IEEE Std. 802.15.4 compliant)
+#define NRF_802154_TEST_MODE_CSMACA_BACKOFF_ALWAYS_MAX 0x01 // !< The CSMA/CA uses always maximum backoff periods (Test mode, non-compliant to IEEE Std. 802.15.4)
+#define NRF_802154_TEST_MODE_CSMACA_BACKOFF_ALWAYS_MIN 0x02 // !< The CSMA/CA uses always minimum backoff periods (Test mode, non-compliant to IEEE Std. 802.15.4)
+
+/**
  * @brief Mode of triggering receive request to Coex arbiter.
  *
  * Possible values:
@@ -208,13 +222,15 @@ typedef uint8_t nrf_802154_coex_rx_request_mode_t;
  * Possible values:
  * - @ref NRF_802154_COEX_TX_REQUEST_MODE_FRAME_READY,
  * - @ref NRF_802154_COEX_TX_REQUEST_MODE_CCA_START,
- * - @ref NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE
+ * - @ref NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE,
+ * - @ref NRF_802154_COEX_TX_REQUEST_MODE_ON_CCA_TOGGLE
  */
 typedef uint8_t nrf_802154_coex_tx_request_mode_t;
 
-#define NRF_802154_COEX_TX_REQUEST_MODE_FRAME_READY 0x01 // !< Coex requests to arbiter in transmit mode when the frame is ready to be transmitted.
-#define NRF_802154_COEX_TX_REQUEST_MODE_CCA_START   0x02 // !< Coex requests to arbiter in transmit mode before CCA is started.
-#define NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE    0x03 // !< Coex requests to arbiter in transmit mode after CCA is finished.
+#define NRF_802154_COEX_TX_REQUEST_MODE_FRAME_READY   0x01 // !< Coex requests to arbiter in transmit mode when the frame is ready to be transmitted.
+#define NRF_802154_COEX_TX_REQUEST_MODE_CCA_START     0x02 // !< Coex requests to arbiter in transmit mode before CCA is started.
+#define NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE      0x03 // !< Coex requests to arbiter in transmit mode after CCA is finished.
+#define NRF_802154_COEX_TX_REQUEST_MODE_ON_CCA_TOGGLE 0x04 // !< Coex requests to arbiter in transmit mode before CCA is started and releases the request if CCA reports busy channel.
 
 /**
  * @brief Mode of handling Interframe spacing.

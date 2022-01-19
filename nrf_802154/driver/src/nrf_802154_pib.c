@@ -78,6 +78,14 @@ typedef struct
 
 #endif  // NRF_802154_IFS_ENABLED
 
+#if NRF_802154_TEST_MODES_ENABLED
+typedef struct
+{
+    nrf_802154_test_mode_csmaca_backoff_t csmaca_backoff; ///< CSMA/CA control mode
+} nrf_802154_pib_test_modes_t;
+
+#endif  // NRF_802154_TEST_MODES_ENABLED
+
 typedef struct
 {
     int8_t                  tx_power;                             ///< Transmit power.
@@ -98,6 +106,11 @@ typedef struct
 
 #if NRF_802154_IFS_ENABLED
     nrf_802154_pib_ifs_t ifs; ///< IFS-related fields.
+
+#endif
+
+#if NRF_802154_TEST_MODES_ENABLED
+    nrf_802154_pib_test_modes_t test_modes; ///< Test modes
 
 #endif
 
@@ -183,6 +196,7 @@ static bool coex_tx_request_mode_is_supported(nrf_802154_coex_tx_request_mode_t 
         case NRF_802154_COEX_TX_REQUEST_MODE_FRAME_READY:
         case NRF_802154_COEX_TX_REQUEST_MODE_CCA_START:
         case NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE:
+        case NRF_802154_COEX_TX_REQUEST_MODE_ON_CCA_TOGGLE:
             result = true;
             break;
 
@@ -246,7 +260,7 @@ void nrf_802154_pib_init(void)
 #else
     m_data.coex.rx_request_mode = NRF_802154_COEX_RX_REQUEST_MODE_DESTINED;
 #endif
-    m_data.coex.tx_request_mode = NRF_802154_COEX_TX_REQUEST_MODE_FRAME_READY;
+    m_data.coex.tx_request_mode = NRF_802154_COEX_TX_REQUEST_MODE_ON_CCA_TOGGLE;
 
 #if NRF_802154_CSMA_CA_ENABLED
     m_data.csmaca.min_be       = NRF_802154_CSMA_CA_MIN_BE_DEFAULT;
@@ -259,6 +273,11 @@ void nrf_802154_pib_init(void)
     m_data.ifs.min_lifs_period_us = MIN_LIFS_PERIOD_US;
     m_data.ifs.mode               = NRF_802154_IFS_MODE_DISABLED;
 #endif // NRF_802154_IFS_ENABLED
+
+#if NRF_802154_TEST_MODES_ENABLED
+    m_data.test_modes.csmaca_backoff = NRF_802154_TEST_MODE_CSMACA_BACKOFF_RANDOM;
+#endif
+
 }
 
 bool nrf_802154_pib_promiscuous_get(void)
@@ -498,3 +517,16 @@ void nrf_802154_pib_ifs_min_lifs_period_set(uint16_t period)
 }
 
 #endif // NRF_802154_IFS_ENABLED
+
+#if NRF_802154_TEST_MODES_ENABLED
+nrf_802154_test_mode_csmaca_backoff_t nrf_802154_pib_test_mode_csmaca_backoff_get(void)
+{
+    return m_data.test_modes.csmaca_backoff;
+}
+
+void nrf_802154_pib_test_mode_csmaca_backoff_set(nrf_802154_test_mode_csmaca_backoff_t value)
+{
+    m_data.test_modes.csmaca_backoff = value;
+}
+
+#endif // NRF_802154_TEST_MODES_ENABLED

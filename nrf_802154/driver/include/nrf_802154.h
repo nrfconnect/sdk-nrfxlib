@@ -1810,6 +1810,30 @@ nrf_802154_security_error_t nrf_802154_security_key_remove(nrf_802154_key_id_t *
  */
 void nrf_802154_csl_writer_period_set(uint16_t period);
 
+/**
+ * @}
+ * @defgroup nrf_802154_test_modes Test modes
+ * @{
+ */
+
+#if NRF_802154_TEST_MODES_ENABLED
+/**
+ * @brief Gets the current CSMA/CA backoff test mode.
+ *
+ * @return Current CSMA/CA backoff test mode.
+ */
+nrf_802154_test_mode_csmaca_backoff_t nrf_802154_test_mode_csmaca_backoff_get(void);
+
+/**
+ * @brief Sets the csmaca backoff test mode.
+ *
+ * @param[in] value     CSMA/CA backoff test mode (See @ref nrf_802154_test_mode_csmaca_backoff_t
+ *                      for defined values).
+ */
+void nrf_802154_test_mode_csmaca_backoff_set(nrf_802154_test_mode_csmaca_backoff_t value);
+
+#endif // NRF_802154_TEST_MODES_ENABLED
+
 /** @} */
 
 #ifdef __cplusplus
