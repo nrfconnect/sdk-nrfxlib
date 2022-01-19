@@ -167,10 +167,10 @@ extern "C" {
 
 // Not using PSA_HAS_CIPHER_SUPPORT
 #if defined(PSA_WANT_KEY_TYPE_AES)
-#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_AES)
+//#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_AES)
 #define MBEDTLS_PSA_BUILTIN_KEY_TYPE_AES 1
 #define MBEDTLS_AES_C
-#endif
+//#endif
 #endif
 
 // Not using PSA_HAS_CIPHER_SUPPORT
@@ -247,22 +247,22 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_ALG_CCM)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_CCM)
+//#if defined(MBEDTLS_PSA_BUILTIN_ALG_CCM)
 #define MBEDTLS_CCM_C
-#endif
+//#endif
 #endif
 
 #if defined(PSA_WANT_ALG_GCM)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_GCM)
+//#if defined(MBEDTLS_PSA_BUILTIN_ALG_GCM)
 #define MBEDTLS_GCM_C
-#endif
+//#endif
 #endif
 
 #if defined(PSA_WANT_ALG_CHACHA20_POLY1305)
 #if defined(PSA_WANT_KEY_TYPE_CHACHA20)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_GCM)
+//#if defined(MBEDTLS_PSA_BUILTIN_ALG_GCM)
 #define MBEDTLS_CHACHAPOLY_C
-#endif
+//#endif
 #endif
 #endif
 
