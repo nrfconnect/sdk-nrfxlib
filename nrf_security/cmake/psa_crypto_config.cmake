@@ -234,12 +234,10 @@ kconfig_check_and_set_base_to_one(MBEDTLS_SHA256_ALT)
 kconfig_check_and_set_base_to_one(MBEDTLS_SHA384_ALT)
 kconfig_check_and_set_base_to_one(MBEDTLS_SHA512_ALT)
 
-# Legacy configurations for RNG on non CryptoCell devices
-kconfig_check_and_set_base_to_one(MBEDTLS_ENTROPY_C)
+# Legacy configurations for RNG
 kconfig_check_and_set_base_to_one(MBEDTLS_ENTROPY_FORCE_SHA256)
-kconfig_check_and_set_base_to_one(MBEDTLS_CTR_DRBG_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_SHA224_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_SHA256_C)
+kconfig_check_and_set_base_to_one(MBEDTLS_ENTROPY_MAX_SOURCES)
+kconfig_check_and_set_base_to_one(MBEDTLS_NO_PLATFORM_ENTROPY)
 
 # Legacy configurations for mbed TLS APIs
 kconfig_check_and_set_base_to_one(MBEDTLS_CIPHER_C)

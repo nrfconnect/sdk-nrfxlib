@@ -187,12 +187,7 @@ config MBEDTLS_SHA384_ALT
 config MBEDTLS_SHA512_ALT
 	bool
 
-# Items required for non CryptoCell RNG in PSA scope
-if (!CRYPTOCELL_USABLE && !BUILD_WITH_TFM)
-
-config MBEDTLS_ENTROPY_C
-	bool
-	default y
+# Legacy configurations required for RNG in Legacy and PSA scope
 
 config MBEDTLS_ENTROPY_FORCE_SHA256
 	bool
@@ -207,16 +202,9 @@ config MBEDTLS_ENTROPY_MAX_SOURCES
 	help
 	  Max entropy sources (Defaults to 1)
 
-config MBEDTLS_CTR_DRBG_C
+config MBEDTLS_NO_PLATFORM_ENTROPY
+ 	bool
 	default y
-
-config MBEDTLS_SHA224_C
-	default y
-
-config MBEDTLS_SHA256_C
-	default y
-
-endif
 
 # End items required for non CryptoCell RNG in PSA scope
 
@@ -272,10 +260,6 @@ config OBERON_BACKEND
 	  This configuration enables legacy mbed TLS APIs using nrf_oberon.
 	  PSA_CRYPTO_DRIVER_OBERON should be used instead and will replace this once
 	  PSA crypto APIs are standardized.
-
-config MBEDTLS_NO_PLATFORM_ENTROPY
- 	bool
-	default y
 
 menuconfig NRF_SECURITY_RNG
 	bool

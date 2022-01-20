@@ -8,6 +8,9 @@
 #ifndef PSA_CRYPTO_CONFIG_H
 #define PSA_CRYPTO_CONFIG_H
 
+
+#cmakedefine PSA_WANT_ALG_CTR_DRBG                              @PSA_WANT_ALG_CTR_DRBG@
+#cmakedefine PSA_WANT_ALG_HMAC_DRBG                             @PSA_WANT_ALG_HMAC_DRBG@
 /*
  * CBC-MAC is not yet supported via the PSA API in Mbed TLS.
  */
@@ -274,13 +277,10 @@
 #cmakedefine MBEDTLS_SHA384_ALT                                 @MBEDTLS_SHA384_ALT@
 #cmakedefine MBEDTLS_SHA512_ALT                                 @MBEDTLS_SHA512_ALT@
 
-/* Legacy configuration for RNG on non CryptoCell devices */
-#cmakedefine MBEDTLS_ENTROPY_C                                  @MBEDTLS_ENTROPY_C@
+/* Legacy configuration for RNG */
 #cmakedefine MBEDTLS_ENTROPY_FORCE_SHA256                       @MBEDTLS_ENTROPY_FORCE_SHA256@
-#cmakedefine MBEDTLS_CTR_DRBG_C                                 @MBEDTLS_CTR_DRBG_C@
-#cmakedefine MBEDTLS_SHA224_C                                   @MBEDTLS_SHA224_C@
-#cmakedefine MBEDTLS_SHA256_C                                   @MBEDTLS_SHA256_C@
-#define MBEDTLS_NO_PLATFORM_ENTROPY
+#cmakedefine MBEDTLS_ENTROPY_MAX_SOURCES                        @MBEDTLS_ENTROPY_MAX_SOURCES@
+#cmakedefine MBEDTLS_NO_PLATFORM_ENTROPY                        @MBEDTLS_NO_PLATFORM_ENTROPY@
 
 /* Legacy configurations for mbed TLS APIs */
 #cmakedefine MBEDTLS_CIPHER_C                                   @MBEDTLS_CIPHER_C@

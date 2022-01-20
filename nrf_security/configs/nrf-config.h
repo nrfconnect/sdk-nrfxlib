@@ -358,12 +358,27 @@ extern "C" {
 //#endif
 #endif
 
+// Nordic added
 #if defined(MBEDTLS_PK_PARSE_C)
 #define MBEDTLS_ASN1_PARSE_C
 #endif
 
 #if defined(MBEDTLS_PK_WRITE_C)
 #define MBEDTLS_ASN1_WRITE_C
+#endif
+
+#if defined(PSA_WANT_ALG_CTR_DRBG)
+#define MBEDTLS_ENTROPY_C
+#define MBEDTLS_SHA224_C
+#define MBEDTLS_SHA256_C
+#define MBEDTLS_CTR_DRBG_C
+#endif
+
+#if defined(PSA_WANT_ALG_HMAC_DRBG)
+#define MBEDTLS_ENTROPY_C
+#define MBEDTLS_SHA224_C
+#define MBEDTLS_SHA256_C
+#define MBEDTLS_HMAC_DRBG_C
 #endif
 
 #ifdef __cplusplus
