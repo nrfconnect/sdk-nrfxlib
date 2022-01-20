@@ -378,6 +378,7 @@ extern "C" {
 #define MBEDTLS_ENTROPY_C
 #define MBEDTLS_SHA224_C
 #define MBEDTLS_SHA256_C
+#define MBEDTLS_MD_C
 #define MBEDTLS_HMAC_DRBG_C
 #endif
 
