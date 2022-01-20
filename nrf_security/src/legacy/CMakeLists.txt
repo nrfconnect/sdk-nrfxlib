@@ -46,6 +46,12 @@ if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C OR
   )
 endif()
 
+if(CONFIG_CRYPTOCELL_CC310_USABLE)
+append_with_prefix(src_crypto_legacy ${ARM_MBEDTLS_PATH}/library
+  gcm.c
+)
+endif()
+
 # Legacy files should only be added in certain configurations
 if(NOT (MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG OR CONFIG_MBEDTLS_PSA_CRYPTO_SPM))
   append_with_prefix(src_crypto_legacy ${ARM_MBEDTLS_PATH}/library
