@@ -233,7 +233,7 @@ HKDF APIs using SHA-512
 HMAC - Hash-based Aessage Authentication Code
 =============================================
 
-.. doxygengroup:: oberon_hmac
+.. doxygengroup:: ocrypto_hmac
    :project: nrfxlib
    :members:
 
