@@ -59,8 +59,8 @@ set(CONFIG_NRF_CC3XX_PLATFORM                       True)
 set(CONFIG_MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER  True)
 
 
-set(CONFIG_MBEDTLS_PSA_BUILTIN_ALG_TLS12_PRF        True)
-set(CONFIG_MBEDTLS_PSA_BUILTIN_ALG_TLS12_PSK_TO_MS  True)
+set(CONFIG_PSA_WANT_ALG_TLS12_PRF                   True)
+set(CONFIG_PSA_WANT_ALG_TLS12_PSK_TO_MS             True)
 set(CONFIG_MBEDTLS_X509_LIBRARY                     True)
 set(CONFIG_MBEDTLS_TLS_LIBRARY                      True)
 
