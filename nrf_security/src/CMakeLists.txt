@@ -145,7 +145,7 @@ if (COMPILE_PSA_APIS)
 endif()
 
 # Add PSA RNG API for the entropy driver
-if(CONFIG_NRF_CC3XX_PLATFORM)
+if(CONFIG_MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG AND NOT BUILD_WITH_TFM)
   list(APPEND src_crypto
     ${CMAKE_CURRENT_LIST_DIR}/random_ext.c
   )

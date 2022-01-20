@@ -47,7 +47,7 @@ if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C OR
 endif()
 
 # Legacy files should only be added in certain configurations
-if(NOT COMPILE_PSA_APIS OR (COMPILE_PSA_APIS AND NOT CONFIG_CRYPTOCELL_USABLE))
+if(NOT (MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG OR CONFIG_MBEDTLS_PSA_CRYPTO_SPM))
   append_with_prefix(src_crypto_legacy ${ARM_MBEDTLS_PATH}/library
     ctr_drbg.c
     entropy.c
