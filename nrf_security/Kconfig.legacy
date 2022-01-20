@@ -506,6 +506,7 @@ if MBEDTLS_ECDSA_C
 
 config MBEDTLS_ECDSA_DETERMINISTIC
 	bool "Enable deterministic ECDSA (RFC 6979)"
+	select MBEDTLS_HMAC_DRBG_C
 	default y
 
 endif # MBEDTLS_ECDSA_C

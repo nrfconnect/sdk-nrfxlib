@@ -35,6 +35,7 @@ if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C OR
     ecp_curves.c
     gcm.c
     hkdf.c
+    hmac_drbg.c
     md5.c
     ripemd160.c
     sha1.c
@@ -49,7 +50,6 @@ endif()
 if(NOT COMPILE_PSA_APIS OR (COMPILE_PSA_APIS AND NOT CONFIG_CRYPTOCELL_USABLE))
   append_with_prefix(src_crypto_legacy ${ARM_MBEDTLS_PATH}/library
     ctr_drbg.c
-    hmac_drbg.c
     entropy.c
   )
 endif()
