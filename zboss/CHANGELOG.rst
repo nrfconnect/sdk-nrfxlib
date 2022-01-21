@@ -19,6 +19,7 @@ Added
 
 * Development ZBOSS stack library version based on the ZBOSS build v3.10.0.780+v5.1.0.
   This library version is dedicated for testing ZCL v8 features.
+* ZBOSS libraries variant with ZBOSS Traces enabled.
 
 Updated
 =======

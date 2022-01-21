@@ -58,7 +58,13 @@ if ((NOT DEFINED CONFIG_ZBOSS_SOURCES_AVAILABLE) OR
     (CONFIG_ZBOSS_LIBRARY_PRECOMPILED))
 
   nrfxlib_calculate_lib_path(lib_path)
-  set(ZBOSS_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
+  if (CONFIG_ZIGBEE_ENABLE_TRACES)
+    set(ZBOSS_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/trace/${lib_path})
+    set(ZBOSS_LIB_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/trace/include)
+  else()
+    set(ZBOSS_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
+    set(ZBOSS_LIB_CONFIG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/osif)
+  endif()
   if(NOT EXISTS ${ZBOSS_LIB_PATH})
     message(WARNING "This combination of SoC and floating point ABI is not supported by the ZBOSS lib."
                     "(${ZBOSS_LIB_PATH} doesn't exist.)")
@@ -86,7 +92,7 @@ if ((NOT DEFINED CONFIG_ZBOSS_SOURCES_AVAILABLE) OR
   # Include the static library to the ZBOSS interface definition and select
   # ZBOSS configuration header file by defining compile-time definition.
   target_link_libraries(zboss INTERFACE ${ZBOSS_LIB_PATH}/libzboss${LIB_VARIANT}.a)
-  target_compile_definitions(zboss INTERFACE LIBZBOSS_CONFIG_FILE="libzboss_config${LIB_VARIANT}.h")
+  target_compile_definitions(zboss INTERFACE LIBZBOSS_CONFIG_FILE="${ZBOSS_LIB_CONFIG_DIR}/libzboss_config${LIB_VARIANT}.h")
 
   # Include the selected subset of Zigbee Green Power functionalities
   if (CONFIG_ZIGBEE_ROLE_COORDINATOR OR CONFIG_ZIGBEE_ROLE_ROUTER)
