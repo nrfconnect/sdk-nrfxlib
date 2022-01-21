@@ -68,6 +68,7 @@ config ZIGBEE_GP_PB
 
 config ZIGBEE_GP_CB
 	bool "Enable Zigbee Green Power Combo Basic functionality [EXPERIMENTAL]"
+	select EXPERIMENTAL
 	depends on !ZIGBEE_ROLE_END_DEVICE && ZBOSS_SOURCES_AVAILABLE
 
 endchoice
