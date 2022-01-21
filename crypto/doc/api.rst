@@ -296,6 +296,6 @@ SRP - Secure Remote Password APIs
 SRPT - Secure Real-Time Transport Protocol APIs
 ===============================================
 
-.. doxygengroup:: ocrypto_srpt
+.. doxygengroup:: ocrypto_srtp
    :project: nrfxlib
    :members:
