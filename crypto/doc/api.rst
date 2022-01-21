@@ -240,14 +240,14 @@ HMAC - Hash-based Aessage Authentication Code
 HMAC APIs using SHA-256
 -----------------------
 
-.. doxygengroup:: ocrypto_hmac_256
+.. doxygengroup:: ocrypto_hmac_sha256
    :project: nrfxlib
    :members:
 
 HMAC APIs using SHA-512
 -----------------------
 
-.. doxygengroup:: ocrypto_hmac_512
+.. doxygengroup:: ocrypto_hmac_sha512
    :project: nrfxlib
    :members:
 
