@@ -72,6 +72,13 @@ config ZIGBEE_GP_CB
 
 endchoice
 
+config ZIGBEE_ENABLE_TRACES
+	bool "Use ZBOSS libraries, dedicated for debugging issues [EXPERIMENTAL]"
+	select EXPERIMENTAL
+	help
+	  Those libraries do not include additional debug symbols, but they include
+	  extended set of ZBOSS binary traces, that allow Nordic's support team to debug issues.
+
 config APP_LINK_WITH_ZBOSS
 	bool
 	help
