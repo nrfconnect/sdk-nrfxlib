@@ -236,8 +236,8 @@ kconfig_check_and_set_base_to_one(MBEDTLS_SHA512_ALT)
 
 # Legacy configurations for RNG
 kconfig_check_and_set_base_to_one(MBEDTLS_ENTROPY_FORCE_SHA256)
-kconfig_check_and_set_base_to_one(MBEDTLS_ENTROPY_MAX_SOURCES)
 kconfig_check_and_set_base_to_one(MBEDTLS_NO_PLATFORM_ENTROPY)
+kconfig_check_and_set_base_int(MBEDTLS_ENTROPY_MAX_SOURCES)
 
 # Legacy configurations for mbed TLS APIs
 kconfig_check_and_set_base_to_one(MBEDTLS_CIPHER_C)

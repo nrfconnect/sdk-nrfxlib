@@ -5,18 +5,20 @@
 #
 
 #
-# This macro creates a variable for a base input if CONFIG_<base> is set
+# This macro creates a variable for a base input if CONFIG_<base> is set and
+# sets it to True
 #
 macro(kconfig_check_and_set_base base)
   if (CONFIG_${base})
-    nrf_security_debug("Setting ${base} to TRUE")
+    nrf_security_debug("Setting ${base} to True")
     set(${base} TRUE)
   endif()
 endmacro()
 
 
 #
-# This macro creates a variable with a value for a base input if CONFIG_<base> is set
+# This macro creates a variable with a value for a base input if CONFIG_<base>
+# is set
 #
 macro(kconfig_check_and_set_base_val base val)
   if (CONFIG_${base})
@@ -30,6 +32,14 @@ endmacro()
 #
 macro(kconfig_check_and_set_base_to_one base)
   kconfig_check_and_set_base_val(${base} 1)
+endmacro()
+
+#
+# This macro expects the CONFIG_<base> to be a int value and creates a variable
+# named base with the value of CONFIG_<base>
+#
+macro(kconfig_check_And_set_base_int base)
+  kconfig_check_and_set_base_val(${base} "${CONFIG_${base}}")
 endmacro()
 
 #

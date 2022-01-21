@@ -254,4 +254,18 @@ config MBEDTLS_SSL_EXPORT_KEYS
 	  Enables suppport for exporting key block and master secret.
 
 
+config MBEDTLS_SSL_OUT_CONTENT_LEN
+	prompt "Max length for TLS outgoing fragments"
+	int
+	range 0 16384
+	default 900 if OPENTHREAD_NRF_SECURITY
+	default 16380
+
+config MBEDTLS_SSL_IN_CONTENT_LEN
+	prompt "Max length for TLS outgoing fragments"
+	int
+	range 0 16384
+	default 900 if OPENTHREAD_NRF_SECURITY
+	default 16380
+
 endif # MBEDTLS_TLS_LIBRARY

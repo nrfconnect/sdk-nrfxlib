@@ -137,6 +137,12 @@ kconfig_check_and_set_base(MBEDTLS_SSL_TICKET_C)
 kconfig_check_and_set_base(MBEDTLS_SSL_EXPORT_KEYS)
 
 kconfig_check_and_set_base(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
+
+# Set integer values from Kconfig
+kconfig_check_and_set_base_int(MBEDTLS_SSL_OUT_CONTENT_LEN)
+kconfig_check_and_set_base_int(MBEDTLS_SSL_IN_CONTENT_LEN)
+kconfig_check_and_set_base_int(MBEDTLS_ENTROPY_MAX_SOURCES)
+
 #
 # CC3XX flags for threading and platform zeroize
 #
