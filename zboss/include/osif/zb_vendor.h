@@ -97,12 +97,17 @@
 #define ZB_CONTROL4_NETWORK_SUPPORT
 #endif
 
-#ifdef CONFIG_ZB_R22_MULTIMAC
-#define ZB_R22_MULTIMAC
+#ifdef CONFIG_ZB_R22_MULTIMAC_MODE
+#define ZB_R22_MULTIMAC_MODE
+#endif
+
+#ifdef CONFIG_ZB_MAC_INTERFACE_SINGLE
+#define ZB_MAC_INTERFACE_SINGLE
 #endif
 
 #ifdef CONFIG_ZB_MAC_TESTING_MODE
 #define ZB_MAC_TESTING_MODE
+#define ZB_MAC_API_TRACE_PRIMITIVES
 #endif
 
 #ifdef CONFIG_ZB_MAC_DUTY_CYCLE_MONITORING
@@ -111,6 +116,18 @@
 
 #ifdef CONFIG_ZB_MAC_POWER_CONTROL
 #define ZB_MAC_POWER_CONTROL
+#endif
+
+#ifdef CONFIG_ZB_MAC_CONFIGURABLE_TX_POWER
+#define ZB_MAC_CONFIGURABLE_TX_POWER
+#endif
+
+#ifdef CONFIG_ZB_MAC_QUEUE_SIZE
+#define ZB_MAC_QUEUE_SIZE CONFIG_ZB_MAC_QUEUE_SIZE
+#endif
+
+#ifdef CONFIG_ZB_NWK_CHANNEL_ACCEPT_LEVEL
+#define ZB_NWK_CHANNEL_ACCEPT_LEVEL CONFIG_ZB_NWK_CHANNEL_ACCEPT_LEVEL
 #endif
 
 #ifdef CONFIG_ZB_FILTER_OUT_CLUSTERS
@@ -283,8 +300,6 @@
 
 /* ZBOSS stack options non-configurable via Kconfig. */
 
-/* Remove upper layers when building MAC tests. */
-
 /* Include Zigbee BDB implementation (always defined, except macsplit). */
 #define ZB_BDB_MODE
 
@@ -318,7 +333,6 @@
 #ifndef ZB_USE_SLEEP
 #define ZB_USE_SLEEP
 #endif
-
 
 /* Enter TX mode directly from radio sleep sate. */
 #define ZB_TRANSCEIVER_ON_BEFORE_TX  0

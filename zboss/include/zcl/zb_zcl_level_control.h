@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -384,22 +384,22 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_req_options_s
   sizeof(zb_zcl_level_control_req_options_t)
 
 /** @internal Macro for getting Move to Level command */
-#define ZB_ZCL_LEVEL_CONTROL_GET_CMD_OPTIONS(data_buf, req_options, status) \
+#define ZB_ZCL_LEVEL_CONTROL_GET_CMD_OPTIONS(data_buf, req_options)     \
 {                                                                       \
   zb_zcl_level_control_req_options_t *req_options_ptr;                  \
   (req_options_ptr) = zb_buf_len(data_buf) >=                           \
     ZB_ZCL_LEVEL_CONTROL_REQ_OPTIONS_PAYLOAD_LEN ?                      \
     (zb_zcl_level_control_req_options_t*)zb_buf_begin(data_buf) : NULL; \
-  if (req_options_ptr != NULL)                                                  \
+  if (req_options_ptr != NULL)                                          \
   {                                                                     \
     req_options.options_mask = req_options_ptr->options_mask;           \
     req_options.options_override = req_options_ptr->options_override;   \
-    status = ZB_TRUE;                                                   \
     (void)zb_buf_cut_left(data_buf, sizeof(zb_zcl_level_control_req_options_t)); \
   }                                                                     \
   else                                                                  \
   {                                                                     \
-    status = ZB_FALSE;                                                  \
+    req_options.options_mask = (zb_uint8_t)0x00;                        \
+    req_options.options_override = (zb_uint8_t)0x00;                    \
   }                                                                     \
 }
 
@@ -696,7 +696,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_step_req_s
   sizeof(zb_zcl_level_control_step_req_t)
 
 
-/** @internal Macro for sending Step command */
+/** @brief Macro for sending Step command */
 #define ZB_ZCL_LEVEL_CONTROL_SEND_STEP_CMD(buffer,                      \
                                            addr,                        \
                                            dst_addr_mode,               \

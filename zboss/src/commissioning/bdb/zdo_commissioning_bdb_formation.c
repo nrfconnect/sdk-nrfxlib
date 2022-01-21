@@ -58,6 +58,10 @@
 
 #if defined ZB_FORMATION
 
+#ifndef NCP_MODE_HOST
+static void nwk_cancel_network_formation_response(zb_bufid_t buf);
+#endif /* NCP_MODE_HOST */
+
 static void bdb_formation(zb_uint8_t param)
 {
   TRACE_MSG(TRACE_ZDO3, "bdb_formation param %hd", (FMT__H, param));
@@ -71,7 +75,8 @@ static void bdb_formation(zb_uint8_t param)
     ZB_BDB().bdb_commissioning_status = ZB_BDB_STATUS_IN_PROGRESS;
     ZB_BDB().v_scan_channels = ZB_BDB().bdb_primary_channel_set;
     TRACE_MSG(TRACE_ZDO1, "Doing formation channel mask 0x%lx", (FMT__L, ZB_BDB().v_scan_channels));
-    ZB_SCHEDULE_CALLBACK(zdo_start_formation, param);
+    /* call directly to simplify cancellation logic */
+    zdo_start_formation(param);
   }
   else if ((ZB_BDB().v_do_primary_scan == ZB_BDB_JOIN_MACHINE_SECONDARY_SCAN_START
             && ZB_BDB().bdb_secondary_channel_set != 0)
@@ -84,7 +89,8 @@ static void bdb_formation(zb_uint8_t param)
     ZB_BDB().v_do_primary_scan = ZB_BDB_JOIN_MACHINE_SECONDARY_SCAN_DONE;
     ZB_BDB().v_scan_channels = ZB_BDB().bdb_secondary_channel_set;
     TRACE_MSG(TRACE_ZDO1, "Doing formation channel mask 0x%lx", (FMT__L, ZB_BDB().v_scan_channels));
-    ZB_SCHEDULE_CALLBACK(zdo_start_formation, param);
+    /* call directly to simplify cancellation logic */
+    zdo_start_formation(param);
   }
   else
   {
@@ -121,6 +127,10 @@ static void bdb_commissioning_formation_channels_mask(zb_channel_list_t list)
 
 static void bdb_formation_force_link(void)
 {
+#ifndef NCP_MODE_HOST
+  /* introduce some kind of setter? To be solved in the scope of ZBS-241 */
+  ZG->nwk.selector.nwk_cancel_nwk_form_resp = nwk_cancel_network_formation_response;
+#endif /* NCP_MODE_HOST */
   zdo_formation_force_link();
 
   FORMATION_SELECTOR().start_formation = bdb_formation;
@@ -155,6 +165,155 @@ void zb_enable_distributed(void)
   bdb_formation_force_link();
 }
 
+void zb_disable_distributed(void)
+{
+  FORMATION_SELECTOR().start_formation = NULL;
+  FORMATION_SELECTOR().get_formation_channels_mask = NULL;
+}
+
 #endif /* ZB_DISTRIBUTED_SECURITY_ON */
+
+#ifndef NCP_MODE_HOST
+/* these functions are not supported for NCP now.
+   Will be resolved in scope of ZBS-241 */
+
+static void bdb_send_formation_cancelled_signal(zb_bufid_t buf, zb_ret_t status)
+{
+  TRACE_MSG(TRACE_ZDO1, "bdb_send_formation_cancelled_signal, buf %d, status %d",
+            (FMT__D_D, buf, status));
+
+  (void)zb_app_signal_pack_with_detailed_status(buf, ZB_BDB_SIGNAL_FORMATION_CANCELLED, status, 0);
+  ZB_SCHEDULE_CALLBACK(zboss_signal_handler, buf);
+}
+
+
+void bdb_cancel_formation(zb_bufid_t buf)
+{
+  /* The states this function can be called:
+     1. No formation (initiated by bdb_start_top_level_commissioning) is in progress
+        Conditions: ZB_BDB().bdb_commissioning_mode != ZB_BDB_NETWORK_FORMATION
+        Actions: return RET_INVALID_STATE
+     2. Formation is in progress, network formation is not sent yet
+        Conditions: ZB_BDB().bdb_commissioning_step <= ZB_BDB_NETWORK_FORMATION
+        Actions: set ZB_BDB().bdb_op_cancelled flag
+                 return RET_OK
+     3. Formation is in progress, network formation is scheduled
+        Conditions: ZB_BDB().bdb_commissioning_step == ZB_BDB_NETWORK_FORMATION
+        Actions: call zb_nwk_cancel_network_formation()
+                 zb_nwk_cancel_network_formation will return RET_OK
+                 return RET_OK
+     4. Formation is in progress, NWK layer formation is in progress
+        Conditions: ZB_BDB().bdb_commissioning_step == ZB_BDB_NETWORK_FORMATION
+        Actions: call zb_nwk_cancel_network_formation()
+                 zb_nwk_cancel_network_formation will return RET_OK (if it possible to cancel)
+                 or RET_INVALID_STATE (if it is too late to cancel a formation)
+                 return RET_OK or RET_PENDING
+     5. Formation is in progress, formation confirm is scheduled
+        Conditions: ZB_BDB().bdb_commissioning_step == ZB_BDB_NETWORK_FORMATION
+        Actions: call zb_nwk_cancel_network_formation()
+                 zb_nwk_cancel_network_formation will return RET_INVALID_STATE
+                 return RET_PENDING
+     6. Formation is in progress, formation confirm is scheduled
+        Conditions: ZB_BDB().bdb_commissioning_step == ZB_BDB_NETWORK_FORMATION
+        Actions: call zb_nwk_cancel_network_formation()
+                 zb_nwk_cancel_network_formation will return RET_INVALID_STATE
+                 return RET_PENDING
+     7. Formation is in progress, NWK layer formation is already cancelled
+        Conditions: ZB_BDB().bdb_commissioning_step == ZB_BDB_NETWORK_FORMATION
+        Actions: call zb_nwk_cancel_network_formation()
+                 zb_nwk_cancel_network_formation() will return RET_IGNORE
+                 return RET_IGNORE
+     8. Formation is in progress, but already cancelled
+        Conditions: ZB_BDB().bdb_commissioning_step == ZB_BDB_NETWORK_FORMATION
+                    ZB_BDB().bdb_op_cancelled == ZB_TRUE
+        Actions: return RET_IGNORE
+  */
+
+  zb_ret_t ret;
+
+  TRACE_MSG(TRACE_ZDO1, ">> bdb_cancel_formation, buf %d", (FMT__D, buf));
+
+  if (buf == 0U)
+  {
+    TRACE_MSG(TRACE_ERROR, "no buffer provided, ignore this request", (FMT__0));
+    return;
+  }
+
+  do
+  {
+    if (ZB_BDB().bdb_op_cancelled == ZB_TRUE)
+    {
+      ret = RET_IGNORE;
+      break;
+    }
+
+    if (ZB_BDB().bdb_commissioning_mode != ZB_BDB_NETWORK_FORMATION)
+    {
+      ret = RET_INVALID_STATE;
+      break;
+    }
+
+    if (ZB_BDB().bdb_commissioning_step > ZB_BDB_NETWORK_FORMATION)
+    {
+      ret = RET_PENDING;
+      break;
+    }
+
+    ZB_BDB().bdb_op_cancelled = ZB_TRUE;
+
+    if (ZB_BDB().bdb_commissioning_step < ZB_BDB_NETWORK_FORMATION)
+    {
+      ret = RET_OK;
+      break;
+    }
+
+    ZB_SCHEDULE_CALLBACK(zb_nwk_cancel_network_formation, buf);
+    ret = RET_BUSY;
+  } while (0);
+
+  if (ret != RET_BUSY)
+  {
+    TRACE_MSG(TRACE_ZDO1, "status %d, calling a cb", (FMT__D, ret));
+    bdb_send_formation_cancelled_signal(buf, ret);
+  }
+
+  TRACE_MSG(TRACE_ZDO1, "<< bdb_cancel_formation", (FMT__0));
+}
+
+
+static void nwk_cancel_network_formation_response(zb_bufid_t buf)
+{
+  zb_ret_t status;
+
+  TRACE_MSG(TRACE_ZDO1, ">> nwk_cancel_network_formation_response, buf %d", (FMT__D, buf));
+
+  ZB_ASSERT(buf != 0U);
+
+  status = *ZB_BUF_GET_PARAM(buf, zb_ret_t);
+
+  TRACE_MSG(TRACE_ZDO1, "status %d", (FMT__D, status));
+
+  switch(status)
+  {
+    case RET_OK:
+    case RET_IGNORE:
+      /* pass the status to the app */
+      break;
+    case RET_INVALID_STATE:
+      /* it is too late to cancel formation */
+      status = RET_PENDING;
+      break;
+    default:
+      TRACE_MSG(TRACE_ERROR, "unexpected status: %d", (FMT__D, status));
+      ZB_ASSERT(0);
+      break;
+  }
+
+  bdb_send_formation_cancelled_signal(buf, status);
+
+  TRACE_MSG(TRACE_ZDO1, "<< nwk_cancel_network_formation_response", (FMT__0));
+}
+
+#endif /* NCP_MODE_HOST */
 
 #endif /* ZB_FORMATION */

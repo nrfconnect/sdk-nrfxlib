@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -845,7 +845,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_store_scene_req_s
 */
 #define ZB_ZCL_SCENES_GET_STORE_SCENE_REQ(buffer, cmd_struct_ptr)        \
   {                                                                      \
-    if (sizeof(zb_zcl_scenes_store_scene_req_t) != zb_buf_len((buffer))) \
+    if (sizeof(zb_zcl_scenes_store_scene_req_t) > zb_buf_len((buffer)))  \
     {                                                                    \
       (cmd_struct_ptr) = NULL;                                           \
     }                                                                    \
@@ -865,13 +865,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_recall_scene_req_s
 {
   zb_uint16_t group_id; /*!< Scene group identifier */
   zb_uint8_t scene_id;  /*!< Scene identifier */
+  zb_uint16_t transition_time; /*!< Transition Time identifier */
 } ZB_PACKED_STRUCT zb_zcl_scenes_recall_scene_req_t;
-
-/*! @brief Recall scene command transition_time payload structure */
-typedef ZB_PACKED_PRE struct zb_zcl_scenes_recall_scene_transition_time_req_s
-{
-  zb_uint16_t transition_time; /*!< Scene group identifier */
-} ZB_PACKED_STRUCT zb_zcl_scenes_recall_scene_transition_time_req_t;
 
 /*! @brief Send Recall scene command
 
@@ -923,59 +918,47 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_recall_scene_transition_time_req_s
         callback);                                      \
   }
 
-/** @brief Move to Level payload length macro */
-#define ZB_ZCL_SCENES_RECALL_SCENE_REQ_TRANSITION_TIME_PAYLOAD_LEN \
-  sizeof(zb_zcl_scenes_recall_scene_transition_time_req_t)
 
-/** @internal Macro for getting Move to Color command */
-#define ZB_ZCL_SCENES_GET_RECALL_SCENE_CMD_TRANSITION_TIME(data_buf, req_transition_time, status)    \
-{                                                                                                    \
-  zb_zcl_scenes_recall_scene_transition_time_req_t *req_transition_time_ptr;                         \
-  (req_transition_time_ptr) = ZB_BUF_LEN(data_buf) >=                                                \
-    ZB_ZCL_SCENES_RECALL_SCENE_REQ_TRANSITION_TIME_PAYLOAD_LEN ?                                     \
-    (zb_zcl_scenes_recall_scene_transition_time_req_t*)ZB_BUF_BEGIN(data_buf) : NULL;                \
-  if (req_transition_time_ptr)                                                                       \
-  {                                                                                                  \
-    ZB_HTOLE16(&(req_transition_time).transition_time, &(req_transition_time_ptr->transition_time)); \
-    status = ZB_TRUE;                                                                                \
-    (void)zb_buf_cut_left(data_buf, ZB_ZCL_SCENES_RECALL_SCENE_REQ_TRANSITION_TIME_PAYLOAD_LEN);     \
-  }                                                                                                  \
-  else                                                                                               \
-  {                                                                                                  \
-    status = ZB_FALSE;                                                                               \
-  }                                                                                                  \
-}
-
-/** @brief Move to Level payload length macro */
+/** @brief Recall scene payload length macro */
 #define ZB_ZCL_SCENES_RECALL_SCENE_REQ_PAYLOAD_LEN \
   sizeof(zb_zcl_scenes_recall_scene_req_t)
+
+/** @brief Transition Time field of Recall scene payload length macro */
+#define ZB_ZCL_SCENES_RECALL_SCENE_REQ_TRANSITION_TIME_PAYLOAD_LEN \
+  sizeof(zb_uint16_t)
+
+/** @brief Transition Time field invalid value */
+#define ZB_ZCL_SCENES_RECALL_SCENE_REQ_TRANSITION_TIME_INVALID_VALUE \
+  (zb_uint16_t)0xFFFF
 
 /** @brief Parse Recall Scene command
     @param buffer containing Store scene command payload
     @param cmd_struct_ptr - pointer to the request representation structure (of
     type @ref zb_zcl_scenes_recall_scene_req_s) or NULL pointer if payload size
     is too small
+    @param req_len - length of ZCL command
     @attention The macro changes content of the buffer
 */
-#define ZB_ZCL_SCENES_GET_RECALL_SCENE_REQ(buffer, cmd_struct_ptr)        \
-{                                                                         \
-  zb_zcl_scenes_recall_scene_req_t *recall_scene_req_ptr;                 \
-  (recall_scene_req_ptr) = zb_buf_len(buffer) >=                          \
-    ZB_ZCL_SCENES_RECALL_SCENE_REQ_PAYLOAD_LEN ?                          \
-    (zb_zcl_scenes_recall_scene_req_t*)zb_buf_begin(buffer) : NULL;       \
-  if (recall_scene_req_ptr)                                               \
-  {                                                                       \
-      ZB_ZCL_HTOLE16_INPLACE(zb_buf_begin((buffer)));                     \
-      (cmd_struct_ptr) =                                                  \
-        (zb_zcl_scenes_recall_scene_req_t*)zb_buf_begin(buffer);          \
-      (void)zb_buf_cut_left(                                              \
-          (buffer),                                                       \
-          sizeof(zb_zcl_scenes_recall_scene_req_t));                      \
-  }                                                                       \
-  else                                                                    \
-  {                                                                       \
-    cmd_struct_ptr = NULL;                                                \
-  }                                                                       \
+#define ZB_ZCL_SCENES_GET_RECALL_SCENE_REQ(buffer, cmd_struct_ptr, req_len)                                     \
+{                                                                                                               \
+  zb_zcl_scenes_recall_scene_req_t *recall_scene_req_ptr;                                                       \
+  req_len = zb_buf_len(buffer);                                                                                 \
+  (recall_scene_req_ptr) = (req_len) >=                                                                         \
+    (ZB_ZCL_SCENES_RECALL_SCENE_REQ_PAYLOAD_LEN - ZB_ZCL_SCENES_RECALL_SCENE_REQ_TRANSITION_TIME_PAYLOAD_LEN) ? \
+    (zb_zcl_scenes_recall_scene_req_t*)zb_buf_begin(buffer) : NULL;                                             \
+  if (recall_scene_req_ptr)                                                                                     \
+  {                                                                                                             \
+      ZB_ZCL_HTOLE16_INPLACE(zb_buf_begin((buffer)));                                                           \
+      (cmd_struct_ptr) =                                                                                        \
+        (zb_zcl_scenes_recall_scene_req_t*)zb_buf_begin(buffer);                                                \
+      (void)zb_buf_cut_left(                                                                                    \
+          (buffer),                                                                                             \
+          (req_len));                                                                                           \
+  }                                                                                                             \
+  else                                                                                                          \
+  {                                                                                                             \
+    cmd_struct_ptr = NULL;                                                                                      \
+  }                                                                                                             \
 }
 
 /*! @brief Get scene membership command payload structure */

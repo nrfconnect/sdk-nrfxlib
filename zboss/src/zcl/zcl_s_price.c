@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -222,11 +222,11 @@ void zb_zcl_price_send_cmd_get_current_price(
   zb_callback_t cb
 )
 {
-  zb_zcl_price_get_current_price_payload_t payload = 0;
+  zb_zcl_price_get_current_price_payload_t payload = ZB_ZCL_PRICE_GET_CURRENT_PRICE_PAYLOAD_INIT;
 
   if (rx_on_when_idle)
   {
-    ZB_ZCL_PRICE_SET_REQUESTOR_RX_ON_WHEN_IDLE(&payload);
+    ZB_ZCL_PRICE_SET_REQUESTOR_RX_ON_WHEN_IDLE(&payload.command_options);
   }
 
   zb_zcl_send_cmd(param,
@@ -543,14 +543,21 @@ static void zb_zcl_price_process_get_current_price(zb_uint8_t param,
   const zb_zcl_parsed_hdr_t *cmd_info)
 {
   zb_bool_t                                price_data_is_available = ZB_FALSE;
-  zb_zcl_price_get_current_price_payload_t pl_in                   = 0;
+  zb_zcl_price_get_current_price_payload_t pl_in                   = ZB_ZCL_PRICE_GET_CURRENT_PRICE_PAYLOAD_INIT;
   zb_zcl_price_publish_price_payload_t     pl_out                  = ZB_ZCL_PRICE_PUBLISH_PRICE_PAYLOAD_INIT;
   zb_uint8_t                              *data                    = zb_buf_begin(param);
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_price_process_get_current_price", (FMT__0));
 
+  if (!ZB_ZCL_PRICE_GET_CURRENT_PRICE_PAYLOAD_SIZE_IS_VALID(zb_buf_len(param)))
+  {
+    TRACE_MSG(TRACE_ZCL1, "Invalid packet len (%hd).", (FMT__H, zb_buf_len(param)));
+    zb_zcl_send_default_handler(param, cmd_info, ZB_ZCL_STATUS_INVALID_FIELD);
+    return;
+  }
+
   /* Input payload: get Command Options (see D.4.2.3.2.1.1).*/
-  ZB_ZCL_PACKET_GET_DATA8(&pl_in, data);
+  ZB_ZCL_PACKET_GET_DATA8(&pl_in.command_options, data);
 
   /* 0. Allocate params and fill it with default values */
   ZB_ZCL_DEVICE_CMD_PARAM_INIT_WITH(param,

@@ -58,6 +58,17 @@
 #include "zb_bdb_internal.h"
 
 
+static void zdo_classic_commissioning_force_link(void);
+
+#ifdef ZB_FORMATION
+static void zdo_classic_formation_force_link(void);
+#endif /* ZB_FORMATION */
+
+#ifdef ZB_JOIN_CLIENT
+static void zdo_restart_association(zb_uint8_t param);
+#endif /* ZB_JOIN_CLIENT */
+
+
 void zdo_classic_initiate_commissioning(zb_uint8_t param)
 {
   zb_ext_pan_id_t use_ext_pan_id;
@@ -70,6 +81,7 @@ void zdo_classic_initiate_commissioning(zb_uint8_t param)
   zb_get_use_extended_pan_id(use_ext_pan_id);
 
   /* a. Maybe Formation */
+  /*cstat -MISRAC2012-Rule-2.1_b*/
   if (ZB_IS_DEVICE_ZC()
 #if defined ZB_ROUTER_ROLE && defined ZB_DISTRIBUTED_SECURITY_ON
       /* Not joined ZR with TC addr -1 means: start Distributed formation.*/
@@ -79,6 +91,8 @@ void zdo_classic_initiate_commissioning(zb_uint8_t param)
 #endif
     )
   {
+    /** @mdr{00012,44} */
+    /*cstat +MISRAC2012-Rule-2.1_b*/
 #if defined ZB_FORMATION
     ZB_ASSERT(FORMATION_SELECTOR().start_formation);
     ZB_SCHEDULE_CALLBACK(FORMATION_SELECTOR().start_formation, param);
@@ -95,9 +109,9 @@ void zdo_classic_initiate_commissioning(zb_uint8_t param)
        use apsChannelMask as channel mask and do unsecure rejoin
        if we are not authenticated.
     */
-    zdo_initiate_rejoin(param, ZB_NIB_EXT_PAN_ID(),
-                        ZB_AIB().aps_channel_mask_list,
-                        zb_zdo_authenticated());
+    (void)zdo_initiate_rejoin(param, ZB_NIB_EXT_PAN_ID(),
+                              ZB_AIB().aps_channel_mask_list,
+                              zb_zdo_authenticated());
   }
   /* Rejoin to the net defined by aps_use_extended_pan_id */
   else if (!ZB_EXTPANID_IS_ZERO(use_ext_pan_id))
@@ -109,9 +123,9 @@ void zdo_classic_initiate_commissioning(zb_uint8_t param)
        ScanChannels parameter of the primitive equal to the value of the apsChannelMask
        configuration attribute. The RejoinNetwork parameter of the NLME-JOIN.request
        primitive should have a value of 0x02 indicating rejoin. */
-    zdo_initiate_rejoin(param, use_ext_pan_id,
-                        ZB_AIB().aps_channel_mask_list,
-                        ZB_FALSE);
+    (void)zdo_initiate_rejoin(param, use_ext_pan_id,
+                              ZB_AIB().aps_channel_mask_list,
+                              ZB_FALSE);
   }
   else
   {
@@ -129,7 +143,7 @@ void zdo_classic_initiate_commissioning(zb_uint8_t param)
 }
 
 #ifdef ZB_JOIN_CLIENT
-void zdo_restart_association(zb_uint8_t param)
+static void zdo_restart_association(zb_uint8_t param)
 {
   zb_nlme_network_discovery_request_t *req = ZB_BUF_GET_PARAM(param, zb_nlme_network_discovery_request_t);
   TRACE_MSG(TRACE_ERROR, "rejoin failed - try association", (FMT__0));
@@ -144,23 +158,20 @@ void zdo_restart_association(zb_uint8_t param)
   COMM_CTX().discovery_ctx.disc_count = COMM_CTX().discovery_ctx.nwk_scan_attempts;
   ZB_SCHEDULE_CALLBACK(zb_nlme_network_discovery_request, param);
 }
-#endif  /* ZB_JOIN_CLIENT */
 
-
-#ifdef ZB_JOIN_CLIENT
 
 static void zdo_classic_handle_nwk_disc_failed_signal(zb_bufid_t param)
 {
   TRACE_MSG(TRACE_ZDO2, "Calling zb_zdo_startup_complete_int to indicate nwk discovery failure",
             (FMT__0));
-  zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, ZB_NWK_STATUS_NOT_PERMITTED, 0);
+  (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, (zb_int16_t)ZB_NWK_STATUS_NOT_PERMITTED, 0U);
   ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
 }
 
 
 static void zdo_classic_handle_join_failed_signal(zb_bufid_t param)
 {
-  if (ZG->zdo.handle.rejoin && ZB_AIB().aps_insecure_join && !ZB_AIB().always_rejoin)
+  if (ZB_U2B(ZG->zdo.handle.rejoin) && ZB_U2B(ZB_AIB().aps_insecure_join) && !ZB_U2B(ZB_AIB().always_rejoin))
   {
     /* FIXME: Do we really need to mix rejoin - Association - rejoin - Association - ... ?
        Also - if we dropped to association, looks like we need to erase network data before. It
@@ -172,7 +183,7 @@ static void zdo_classic_handle_join_failed_signal(zb_bufid_t param)
   }
   else
   {
-    if (COMM_CTX().discovery_ctx.scanlist_ref)
+    if (ZB_U2B(COMM_CTX().discovery_ctx.scanlist_ref))
     {
       zb_buf_free(param);
       TRACE_MSG(TRACE_ZDO1, "{re}join failed", (FMT__0));
@@ -181,7 +192,7 @@ static void zdo_classic_handle_join_failed_signal(zb_bufid_t param)
     else
     {
       TRACE_MSG(TRACE_ZDO1, "{re}join totally failed - inform user", (FMT__0));
-      zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, ZB_NWK_STATUS_NOT_PERMITTED, 0);
+      (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, (zb_int16_t)ZB_NWK_STATUS_NOT_PERMITTED, 0U);
       ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
     }
   }
@@ -228,8 +239,8 @@ static void zdo_classic_handle_authentication_failed_signal(zb_bufid_t param)
       zb_ext_pan_id_t ext_pan_id;
       zb_get_extended_pan_id(ext_pan_id);
       /* force unsecure (AKA Trust Center) rejoin to current pan */
-      zdo_initiate_rejoin(param, ext_pan_id,
-                          ZB_AIB().aps_channel_mask_list, ZB_FALSE);
+      (void)zdo_initiate_rejoin(param, ext_pan_id,
+                                ZB_AIB().aps_channel_mask_list, ZB_FALSE);
     }
   }
   else
@@ -241,7 +252,7 @@ static void zdo_classic_handle_authentication_failed_signal(zb_bufid_t param)
 #else
     ZB_SET_JOINED_STATUS(ZB_FALSE);
     zb_buf_free(param);
-    zb_buf_get_out_delayed_ext(zb_zdo_startup_complete_int_delayed, ZB_NWK_STATUS_NO_KEY);
+    (void)zb_buf_get_out_delayed_ext(zb_zdo_startup_complete_int_delayed, ZB_NWK_STATUS_NO_KEY);
 #endif
   }
 }
@@ -255,23 +266,26 @@ static void zdo_classic_handle_initiate_rejoin_signal(zb_bufid_t param)
   zb_nwk_blacklist_reset();
 #endif
   zb_get_extended_pan_id(ext_pan_id);
-  zdo_initiate_rejoin(param, ext_pan_id,
-                      ZB_AIB().aps_channel_mask_list, zb_zdo_authenticated());
+  (void)zdo_initiate_rejoin(param, ext_pan_id,
+                            ZB_AIB().aps_channel_mask_list, zb_zdo_authenticated());
 }
 
 
 static void zdo_classic_handle_dev_annce_sent_signal(zb_bufid_t param)
 {
+  zb_aps_device_key_pair_set_t *key_pair =
+    zb_secur_get_link_key_by_address(ZB_AIB().trust_center_address, ZB_SECUR_ANY_KEY_ATTR);
+
   /* TODO: Implement me correctly!!! */
-  if ( !ZB_NIB_SECURITY_LEVEL() ||
-       (zb_secur_get_link_key_by_address(ZB_AIB().trust_center_address, ZB_SECUR_ANY_KEY_ATTR)
-        && ZG->zdo.handle.rejoin) )
+  if ( (ZB_NIB_SECURITY_LEVEL() == 0U) ||
+       ((key_pair != NULL)
+        && ZB_U2B(ZG->zdo.handle.rejoin)))
   {
     /* When joins to unsecured network and after secured rejoin - indicate startup immediately;
      * suppose that after secured rejoin we have VERIFIED key (otherwise device will try to obtain new link key with TC). */
 
     /* TODO: This reboot is also not so well defined  */
-    zb_app_signal_pack(param, ZB_SIGNAL_DEVICE_REBOOT, zb_buf_get_status(param), 0);
+    (void)zb_app_signal_pack(param, ZB_SIGNAL_DEVICE_REBOOT, (zb_int16_t)zb_buf_get_status(param), 0U);
     ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
   }
   else
@@ -283,14 +297,14 @@ static void zdo_classic_handle_dev_annce_sent_signal(zb_bufid_t param)
 
 static void zdo_classic_handle_router_started_signal(zb_bufid_t param)
 {
-  if (ZB_NIB_SECURITY_LEVEL() == 0
-#ifdef ZB_JOIN_CLIENT
-      || !zdo_secur_waiting_for_tclk_update()
-#endif
+  zb_bool_t is_waiting = zdo_secur_waiting_for_tclk_update();
+
+  if (ZB_NIB_SECURITY_LEVEL() == 0U
+      || !is_waiting
       || ZB_IS_DEVICE_ZC())
   {
     TRACE_MSG(TRACE_ZDO1, "calling zdo_startup_complete", (FMT__0));
-    zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, zb_buf_get_status(param), 0);
+    (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, (zb_int16_t)zb_buf_get_status(param), 0U);
     /* Router start is last step in join. */
     ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
   }
@@ -303,14 +317,14 @@ static void zdo_classic_handle_router_started_signal(zb_bufid_t param)
 
 static void zdo_classic_handle_tclk_update_complete_signal(zb_bufid_t param)
 {
-  (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, RET_OK, 0);
+  (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, (zb_int16_t)RET_OK, 0U);
   ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
 }
 
 
 static void zdo_classic_handle_leave_done_signal(zb_bufid_t param)
 {
-  if (ZB_ZDO_GET_UNAUTH())
+  if (ZB_U2B(ZB_ZDO_GET_UNAUTH()))
   {
     ZB_ZDO_CLEAR_UNAUTH();
     if (param != ZB_BUF_INVALID)
@@ -319,7 +333,7 @@ static void zdo_classic_handle_leave_done_signal(zb_bufid_t param)
     }
     else
     {
-      zb_buf_get_out_delayed_ext(zb_zdo_startup_complete_int_delayed, ZB_NWK_STATUS_NO_KEY, 0);
+      (void)zb_buf_get_out_delayed_ext(zb_zdo_startup_complete_int_delayed, ZB_NWK_STATUS_NO_KEY, 0);
     }
   }
   else
@@ -346,7 +360,11 @@ static void zdo_classic_handle_auth_ok_signal(zb_bufid_t param)
   {
     /* If not bdb and I am ZED (no need to start router), I am is started. */
     TRACE_MSG(TRACE_SECUR3, "!BDB ZED - complete start", (FMT__0));
-    zb_buf_get_out_delayed_ext(zb_zdo_startup_complete_int_delayed, RET_OK, 0);
+    (void)zb_buf_get_out_delayed_ext(zb_zdo_startup_complete_int_delayed, RET_OK, 0);
+  }
+  else
+  {
+    /* MISRA rule 15.7 requires empty 'else' branch. */
   }
 
   if (param != ZB_BUF_INVALID)
@@ -361,7 +379,7 @@ static void zdo_classic_handle_secur_failed_signal(zb_bufid_t param)
   zb_apsme_confirm_key_ind_t *ind = ZB_BUF_GET_PARAM(param, zb_apsme_confirm_key_ind_t);
 
   TRACE_MSG(TRACE_ZDO1, "report error status %hd, zb_app_signal_pack", (FMT__H, ind->status));
-  (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, ind->status, 0);
+  (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, (zb_int16_t)ind->status, 0U);
   ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
 }
 
@@ -371,7 +389,7 @@ static void zdo_classic_handle_rejoin_after_secur_failed_signal(zb_bufid_t param
   zb_ext_pan_id_t ext_pan_id;
   /* rejoin to current pan */
   zb_get_extended_pan_id(ext_pan_id);
-  zdo_initiate_rejoin(param, ext_pan_id, ZB_AIB().aps_channel_mask_list, ZB_FALSE);
+  (void)zdo_initiate_rejoin(param, ext_pan_id, ZB_AIB().aps_channel_mask_list, ZB_FALSE);
 }
 
 
@@ -398,6 +416,7 @@ static void zdo_classic_handle_leave_with_rejoin_signal(zb_bufid_t param)
 static void zdo_classic_handle_secured_rejoin_signal(zb_bufid_t param)
 {
   zb_apsme_transport_key_req_t *req = ZB_BUF_GET_PARAM(param, zb_apsme_transport_key_req_t);
+  zb_aps_device_key_pair_set_t *key_pair = zb_secur_get_link_key_by_address(req->dest_address.addr_long, ZB_SECUR_VERIFIED_KEY);
   /* r21 doesn't use empty keys
    * In r21 setup alarm waiting for unique TCLK request.
    * Note: param must hold transport key request even while we do not
@@ -411,7 +430,7 @@ static void zdo_classic_handle_secured_rejoin_signal(zb_bufid_t param)
      Remember ZB_IN_BDB() can be just 1 (BDB-only build). */
   if (ZB_TCPOL().update_trust_center_link_keys_required
       && !IS_DISTRIBUTED_SECURITY()
-      && !zb_secur_get_link_key_by_address(req->dest_address.addr_long, ZB_SECUR_VERIFIED_KEY))
+      && (key_pair == NULL))
   {
     ZB_SCHEDULE_ALARM(bdb_link_key_refresh_alarm, param, ZB_TCPOL().trust_center_node_join_timeout);
   }
@@ -438,14 +457,14 @@ static void zdo_classic_handle_device_left_signal(zb_address_ieee_ref_t param)
 #ifdef ZB_FORMATION
 static void zdo_classic_handle_formation_done_signal(zb_bufid_t param)
 {
-  zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, zb_buf_get_status(param), 0);
+  (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, zb_buf_get_status(param), 0);
   ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
 }
 
 
 static void zdo_classic_handle_formation_failed_signal(zb_bufid_t param)
 {
-  zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, zb_buf_get_status(param), 0);
+  (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, zb_buf_get_status(param), 0);
   ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
 }
 #endif /* ZB_FORMATION */
@@ -533,6 +552,7 @@ static void zdo_classic_handle_comm_signal(zb_commissioning_signal_t signal, zb_
       {
         zb_buf_free(param);
       }
+      break;
   }
 
   TRACE_MSG(TRACE_ZDO1, "<< zdo_classic_handle_comm_signal", (FMT__0));
@@ -543,18 +563,18 @@ static void zdo_classic_handle_comm_signal(zb_commissioning_signal_t signal, zb_
 
 static zb_uint8_t zdo_classic_get_permit_join_duration(void)
 {
-  zb_int_t ret;
+  zb_uint8_t duration;
 
-  if (ZB_NIB().max_children != 0)
+  if (ZB_NIB().max_children != 0U)
   {
-    ret = ZDO_CTX().conf_attr.permit_join_duration;
+    duration = ZDO_CTX().conf_attr.permit_join_duration;
   }
   else
   {
-    ret = 0;
+    duration = 0U;
   }
 
-  return ret;
+  return duration;
 }
 
 #endif  /* #ifdef ZB_ROUTER_ROLE */
@@ -562,8 +582,11 @@ static zb_uint8_t zdo_classic_get_permit_join_duration(void)
 static zb_bool_t zdo_classic_must_use_installcode(zb_bool_t is_client)
 {
   ZVUNUSED(is_client);
-
+#ifdef ZB_SECURITY_INSTALLCODES
   return (zb_bool_t)ZB_TCPOL().require_installcodes;
+#else
+  return ZB_FALSE;
+#endif /* ZB_SECURITY_INSTALLCODES */
 }
 
 
@@ -615,17 +638,21 @@ static void zdo_classic_formation_force_link(void)
 void zb_set_network_coordinator_role_legacy(zb_uint32_t channel_mask)
 {
   zdo_classic_commissioning_force_link();
+#ifdef ZB_FORMATION
+  /* [VK]: it's impossible to explain to MISRA that ZB_FORMATION is defined with ZB_COORDINATOR_ROLE always */
   zdo_classic_formation_force_link();
-
+#endif /* ZB_FORMATION */
   zb_set_network_coordinator_role_with_mode(channel_mask, ZB_COMMISSIONING_CLASSIC);
 }
 
 
-void zb_set_network_coordinator_role_legacy_ext(zb_channel_list_t channel_list)
+void zb_set_nwk_coordinator_role_legacy_ext(zb_channel_list_t channel_list)
 {
   zdo_classic_commissioning_force_link();
+#ifdef ZB_FORMATION
+  /* [VK]: it's impossible to explain to MISRA that ZB_FORMATION is defined with ZB_COORDINATOR_ROLE always */
   zdo_classic_formation_force_link();
-
+#endif /* ZB_FORMATION */
   zb_set_nwk_role_mode_common_ext(ZB_NWK_DEVICE_TYPE_COORDINATOR,
                                   channel_list,
                                   ZB_COMMISSIONING_CLASSIC);
@@ -639,25 +666,23 @@ void zb_set_network_coordinator_role_legacy_ext(zb_channel_list_t channel_list)
 void zb_set_network_router_role_legacy(zb_uint32_t channel_mask)
 {
   zdo_classic_commissioning_force_link();
-
+#if defined ZB_FORMATION && defined ZB_DISTRIBUTED_SECURITY_ON
   /* enable distributed security, not optimal, but no need to optimize legacy commissioning */
+  /* [VK]: it's impossible to explain to MISRA that ZB_FORMATION is defined with ZB_ROUTER_ROLE always */
   zdo_classic_formation_force_link();
-
-#ifdef ZB_DISTRIBUTED_SECURITY_ON
-  zdo_classic_formation_force_link();
-#endif /* ZB_DISTRIBUTED_SECURITY_ON */
-
+#endif /* ZB_FORMATION && ZB_DISTRIBUTED_SECURITY_ON */
   zb_set_network_router_role_with_mode(channel_mask, ZB_COMMISSIONING_CLASSIC);
 }
 
 
-void zb_set_network_router_role_legacy_ext(zb_channel_list_t channel_list)
+void zb_set_nwk_router_role_legacy_ext(zb_channel_list_t channel_list)
 {
   zdo_classic_commissioning_force_link();
-
+#if defined ZB_FORMATION && defined ZB_DISTRIBUTED_SECURITY_ON
   /* enable distributed security, not optimal, but no need to optimize legacy commissioning */
+  /* [VK]: it's impossible to explain to MISRA that ZB_FORMATION is defined with ZB_ROUTER_ROLE always */
   zdo_classic_formation_force_link();
-
+#endif /* ZB_FORMATION && ZB_DISTRIBUTED_SECURITY_ON */
   zb_set_nwk_role_mode_common_ext(ZB_NWK_DEVICE_TYPE_ROUTER,
                                   channel_list,
                                   ZB_COMMISSIONING_CLASSIC);
@@ -675,7 +700,7 @@ void zb_set_network_ed_role_legacy(zb_uint32_t channel_mask)
   zb_set_network_ed_role_with_mode(channel_mask, ZB_COMMISSIONING_CLASSIC);
 }
 
-void zb_set_network_ed_role_legacy_ext(zb_channel_list_t channel_list)
+void zb_set_nwk_ed_role_legacy_ext(zb_channel_list_t channel_list)
 {
   zdo_classic_commissioning_force_link();
 

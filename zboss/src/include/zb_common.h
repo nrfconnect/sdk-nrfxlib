@@ -129,6 +129,7 @@ extern char** g_argv;
 #define ZB_MCPS_DATA_INDICATION void TN_CAT(ZB_TEST_NAME,_zb_mcps_data_indication)
 #define ZB_MCPS_DATA_CONFIRM void TN_CAT(ZB_TEST_NAME,_zb_mcps_data_confirm)
 #define ZB_MLME_DUTY_CYCLE_MODE_INDICATION void TN_CAT(ZB_TEST_NAME,_zb_mlme_duty_cycle_mode_indication)
+#define ZB_PLME_CCA_CONFIRM void TN_CAT(ZB_TEST_NAME,_zb_plme_cca_confirm)
 
 #else  /* ZB_MULTI_TEST */
 
@@ -149,6 +150,7 @@ extern char** g_argv;
 #define ZB_MCPS_DATA_INDICATION void zb_mcps_data_indication
 #define ZB_MCPS_DATA_CONFIRM void zb_mcps_data_confirm
 #define ZB_MLME_DUTY_CYCLE_MODE_INDICATION void zb_mlme_duty_cycle_mode_indication
+#define ZB_PLME_CCA_CONFIRM void zb_plme_cca_confirm
 
 #define ZB_ARGV argv
 #define ZB_ARGC argc

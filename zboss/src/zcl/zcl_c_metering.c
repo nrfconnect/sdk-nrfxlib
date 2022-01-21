@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -202,7 +202,7 @@ static const zb_uint8_t *zb_zcl_metering_request_fast_poll_mode_response_parse_p
 
   TRACE_MSG(TRACE_ZCL1, ">>zb_zcl_metering_request_fast_poll_mode_response_parse_payload", (FMT__0));
 
-  if (data_size != sizeof(zb_zcl_metering_request_fast_poll_mode_response_payload_t))
+  if (data_size < sizeof(zb_zcl_metering_request_fast_poll_mode_response_payload_t))
   {
     TRACE_MSG(TRACE_ZCL1, "Malformed packet", (FMT__0));
     return NULL;

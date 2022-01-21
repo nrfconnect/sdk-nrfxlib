@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -550,6 +550,7 @@ void aps_send_fail_confirm(zb_uint8_t param, zb_ret_t status);
 
 void zb_apsme_unbind_by_ref(zb_address_ieee_ref_t addr_ref);
 
+zb_ret_t zb_check_binding_table_whitelist(zb_apsme_binding_req_t *apsreq);
 
 /* Functions for accessing and modifying a group table */
 zb_ret_t zb_aps_group_table_add(zb_aps_group_table_t *table, zb_uint16_t group, zb_uint8_t ep);
@@ -591,5 +592,15 @@ void zb_apsme_get_request(zb_uint8_t param);
   *
   */
 void zb_apsme_set_request(zb_uint8_t param);
+
+/*!
+ * @brief Add entry to binding whitelist table
+ *
+ * @param ep_id - endpoint ID
+ * @param cluster_id - endpoint ID
+ * @param cluster_role - endpoint ID
+ * @param ieee_addr - IEEE addr
+ */
+zb_ret_t zb_aps_add_binding_whitelist_entry(zb_uint8_t ep_id, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_ieee_addr_t ieee_addr);
 
 #endif /* ZB_APS_H */

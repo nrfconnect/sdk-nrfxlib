@@ -11,31 +11,30 @@
  * Please use release scripts to update it's contents.
  *
  * Repositories:
- * platform_ncs       ff349986361ae5ec866f8c01fe97497268404a5a https://bitbucket.dsr-corporation.com/scm/ZOI/platform_ncs.git
- * zboss-stack-src    f13ed9c5229f669f5927b6ca559863f74eaf626d https://bitbucket.dsr-corporation.com/scm/zoi/zboss_stable
- * zboss-stack-doc    c754bdad9873f3675da8cd741c6c2fcec1b5f23c https://bitbucket.dsr-corporation.com/scm/zoi/zboss_doc
- * nrf                b4e92be57b04458bf5241e8d23f657e7cbfe8d27 https://github.com/nrfconnect/sdk-nrf
- * zephyr             15be5e615498377e9326cb2eb5819c7c62005299 https://github.com/nrfconnect/sdk-zephyr
- * mcuboot            7606d9cad32c95a0d6fb7e872b070c71e85f931d https://github.com/nrfconnect/sdk-mcuboot
- * nrfxlib            03bf990a704df2438f4219344085505e19417736 https://github.com/nrfconnect/sdk-nrfxlib
- * trusted-firmware-m d2e93153863e7add9fae3849faf7de430258c0de https://github.com/nrfconnect/sdk-trusted-firmware-m
+ * platform_ncs       4b810a3e9c03738cafc59e85212577d6789ea19f https://bitbucket.dsr-corporation.com/scm/ZOI/platform_ncs.git
+ * zboss-stack-src    96321f6ea3981707172575df86a2ab2a041bba42 https://bitbucket.dsr-corporation.com/scm/zoi/zboss_stable
+ * zboss-stack-doc    c3be2c43afdf338363a4e9a5d84f745edaa3d200 https://bitbucket.dsr-corporation.com/scm/zoi/zboss_doc
+ * nrf                ee58bec2d223d7b9f383d8c6167870ec1f62b075 https://github.com/nrfconnect/sdk-nrf
+ * zephyr             f295fb7c67ca6895a98bc33c1cf0a837d2f5383e https://github.com/nrfconnect/sdk-zephyr
+ * mcuboot            4e4e979c1998e6dad7e47011e6e076b861921645 https://github.com/nrfconnect/sdk-mcuboot
+ * nrfxlib            4ea65aa99ac65fd193eace18d441c77831c4f41c https://github.com/nrfconnect/sdk-nrfxlib
+ * trusted-firmware-m 336ef5f18546bea384fac0dcf3349ebf5125b885 https://github.com/nrfconnect/sdk-trusted-firmware-m
  * tfm-mcuboot        4aa516e7281fc6f9a2dce0b0efda9acc580fa254 https://github.com/nrfconnect/sdk-mcuboot
- * matter             174bac11aa51c6a5b10d3bd7507a51135faf3cc0 https://github.com/nrfconnect/sdk-connectedhomeip
+ * matter             154748803b3f83f15364b42eaf94c75fb977ac77 https://github.com/nrfconnect/sdk-connectedhomeip
  * cjson              c6af068b7f05207b28d68880740e4b9ec1e4b50a https://github.com/nrfconnect/sdk-cjson
- * openthread         de387884c80094df8e310353c3a487c13c0c056b https://github.com/nrfconnect/sdk-openthread
  * cmock              9d092898ef26ece140d9225e037274b64d4f851e https://github.com/ThrowTheSwitch/cmock
  * unity              74cde089e65c3435ce9aa87d5c69f4f16b7f6ade https://github.com/ThrowTheSwitch/unity
  * mbedtls-nrf        e483a77c85e1f9c1dd2eb1c5a8f552d2617fe400 https://github.com/ARMmbed/mbedtls
  * Alexa-Gadgets-Embedded-Sample-Code face92d8c62184832793f518bb1f19379538c5c1 https://github.com/alexa/Alexa-Gadgets-Embedded-Sample-Code
  * mbed-cloud-client  d7edc529ed3722c811ff401440ef58ea980bf543 https://github.com/PelionIoT/mbed-cloud-client
- * cddl-gen           24f1b2b0c64c694b7f9ac1b7eab60b39236ca0bf https://github.com/NordicSemiconductor/cddl-gen
- * memfault-firmware-sdk 5e35eb8b2deaab28cef4c611818887b3a3898f83 https://github.com/memfault/memfault-firmware-sdk
+ * cddl-gen           1c2656daa87ebf4cd3c45ee8eafa336260d589bc https://github.com/NordicSemiconductor/cddl-gen
+ * memfault-firmware-sdk 8585f81453af37cd97c47816cc61395cbabdf1fe https://github.com/memfault/memfault-firmware-sdk
  * canopennode        f167efe85c8c7de886f1bc47f9173cfb8a346bb5 https://github.com/zephyrproject-rtos/canopennode
  * civetweb           094aeb41bb93e9199d24d665ee43e9e05d6d7b1c https://github.com/zephyrproject-rtos/civetweb
- * cmsis              c3bd2094f92d574377f7af2aec147ae181aa5f8e https://github.com/zephyrproject-rtos/cmsis
- * edtt               7dd56fc100d79cc45c33d43e7401d1803e26f6e7 https://github.com/zephyrproject-rtos/edtt
- * fatfs              1d1fcc725aa1cb3c32f366e0c53d7490d0fe1109 https://github.com/zephyrproject-rtos/fatfs
- * hal_nordic         a6e5299041f152da5ae0ab17b2e44e088bb96d6d https://github.com/zephyrproject-rtos/hal_nordic
+ * cmsis              b0612c97c1401feeb4160add6462c3627fe90fc7 https://github.com/zephyrproject-rtos/cmsis
+ * edtt               31badfbbd04f2948e3df6ebf329f930317550961 https://github.com/zephyrproject-rtos/edtt
+ * fatfs              94fcd6bfb3801ac0a5e12ea2f52187e0a688b90e https://github.com/zephyrproject-rtos/fatfs
+ * hal_nordic         cad21db72a61b8dde0aabf95301dfd9dee119018 https://github.com/zephyrproject-rtos/hal_nordic
  * hal_st             575de9d461aa6f430cf62c58a053675377e700f3 https://github.com/zephyrproject-rtos/hal_st
  * libmetal           39d049d4ae68e6f6d595fce7de1dcfc1024fb4eb https://github.com/zephyrproject-rtos/libmetal
  * littlefs           9e4498d1c73009acd84bb36036ee5e2869112a6c https://github.com/zephyrproject-rtos/littlefs
@@ -49,24 +48,25 @@
  * net-tools          f49bd1354616fae4093bf36e5eaee43c51a55127 https://github.com/zephyrproject-rtos/net-tools
  * nrf_hw_models      a47e326ca772ddd14cc3b9d4ca30a9ab44ecca16 https://github.com/zephyrproject-rtos/nrf_hw_models
  * open-amp           6010f0523cbc75f551d9256cf782f173177acdef https://github.com/zephyrproject-rtos/open-amp
+ * openthread         69eb7030c5eb479e2d387408f7b3814c58963804 https://github.com/zephyrproject-rtos/openthread
  * segger             3a52ab222133193802d3c3b4d21730b9b1f1d2f6 https://github.com/zephyrproject-rtos/segger
  * tinycbor           40daca97b478989884bffb5226e9ab73ca54b8c4 https://github.com/zephyrproject-rtos/tinycbor
  * tinycrypt          3e9a49d2672ec01435ffbf0d788db6d95ef28de0 https://github.com/zephyrproject-rtos/tinycrypt
- * TraceRecorderSource 5b5f8d7adbf0e93a09087e8f5708f0eebb8b25bf https://github.com/zephyrproject-rtos/TraceRecorderSource
+ * TraceRecorderSource 36c577727642457b0db7274298a4b96558374832 https://github.com/zephyrproject-rtos/TraceRecorderSource
  */
 
 
 /** ZBOSS build tag */
-#define ZBOSS_BUILD_TAG "ncs_release-3.9.0.1"
+#define ZBOSS_BUILD_TAG "zoi_release-3.11.0.0"
 
 /** ZBOSS platform build tag */
-#define ZBOSS_PLATFORM_BUILD_TAG "v3.9.0.1+v4.1.0"
+#define ZBOSS_PLATFORM_BUILD_TAG "v3.11.0.0+v5.1.0"
 
 /** ZBOSS build date (UTC) */
-#define ZBOSS_BUILD_DATE 20211109
+#define ZBOSS_BUILD_DATE 20220121
 
 /** ZBOSS build time (UTC) */
-#define ZBOSS_BUILD_TIME 180352
+#define ZBOSS_BUILD_TIME 112205
 
 
 #endif /* ZBOSS_BUILD_INFO_H__ */

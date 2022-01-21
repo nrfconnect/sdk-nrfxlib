@@ -160,7 +160,7 @@
 /**
  * Enable buttons abstract for ZBOSS OSIF
  */
-/* #undef CONFIG_ZB_USE_BUTTONS */
+#define CONFIG_ZB_USE_BUTTONS y
 
 /**
  * NVRAM migration
@@ -238,7 +238,12 @@
 /**
  * Enable R22 extension for for mutitple MAC interfaces support.
  */
-#define CONFIG_ZB_R22_MULTIMAC y
+/* #undef CONFIG_ZB_R22_MULTIMAC_MODE */
+
+/**
+ * Enable R22 extension for for mutitple MAC interfaces support. - Enable single-MAC interface support
+ */
+#define CONFIG_ZB_MAC_INTERFACE_SINGLE y
 
 /**
  * WWAH cluster
@@ -333,12 +338,12 @@
 #define CONFIG_ZB_TEST_GROUP_ALL y
 
 /**
- * Test mode - Enable Zigbee MAC test mode
+ * Enable Zigbee test mode and features - Enable Zigbee MAC test mode extensions
  */
 /* #undef CONFIG_ZB_TEST_MODE_MAC */
 
 /**
- * Test mode - Enable Zigbee PRO test mode
+ * Enable Zigbee test mode and features - Enable Zigbee PRO test mode extensions
  */
 #define CONFIG_ZB_TEST_MODE_PRO y
 
@@ -394,6 +399,32 @@
  * Enable per-device MAC TX power control
  */
 /* #undef CONFIG_ZB_MAC_POWER_CONTROL */
+
+/**
+ * Enable per-channel MAC TX power control
+ */
+#define CONFIG_ZB_MAC_CONFIGURABLE_TX_POWER y
+
+/**
+ * Length of the internal ZBOSS MAC TX queue
+ *
+ * The value of NRF_802154_RX_BUFFERS (ZIGBEE_RX_QUEUE_LENGTH in nRF5 SDK)
+ * should not be greater than ZB_MAC_QUEUE_SIZE.
+ * If the node is flooded with requests, that require a response to be sent,
+ * the node should be able to schedule responses for each buffer,
+ * stored inside MAC LL RX queue.
+ * The receiver gets disabled only if the MAC LL RX queue is full.
+ * The TX queue is unable to block incoming requests.
+ */
+#define CONFIG_ZB_MAC_QUEUE_SIZE 17
+
+/**
+ * Acceptable noise floor (in ED units) to form a network
+ *
+ * If the MAC LL layer returns energy higher than this value for a given channel,
+ * the node will skip this channel after passive channel scan.
+ */
+#define CONFIG_ZB_NWK_CHANNEL_ACCEPT_LEVEL 200
 
 /**
  * Enable internal clusters through filters

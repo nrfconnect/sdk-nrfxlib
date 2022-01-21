@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -3037,12 +3037,10 @@ typedef ZB_PACKED_PRE struct zb_zcl_price_publish_price_payload_s
 
 
 /** @def ZB_ZCL_PRICE_PUBLISH_PRICE_PAYLOAD_SIZE_IS_VALID
- *  @brief Returns 'true' if payload is in range [min_payload_size, max_payload_size]
  */
 #define ZB_ZCL_PRICE_PUBLISH_PRICE_PAYLOAD_SIZE_IS_VALID(size) \
-  (size <= sizeof(zb_zcl_price_publish_price_payload_t)) \
-  && (size > (sizeof(zb_zcl_price_publish_price_payload_t) \
-              - ZB_SIZEOF_FIELD(zb_zcl_price_publish_price_payload_t, rate_label)))
+  (size > (sizeof(zb_zcl_price_publish_price_payload_t) \
+           - ZB_SIZEOF_FIELD(zb_zcl_price_publish_price_payload_t, rate_label)))
 
 /** @def ZB_ZCL_PRICE_PUBLISH_PRICE_PAYLOAD_EXPECTED_SIZE
  *  @brief Returns actual size of payload.
@@ -3119,7 +3117,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_price_ack_payload_s
 /** Check if @ref ZB_ZCL_PRICE_CLI_CMD_PRICE_ACK "PriceAcknowledgement" Command payload is valid
  */
 #define ZB_ZCL_PRICE_ACK_PAYLOAD_SIZE_IS_VALID(size) \
-  ((size) == sizeof(zb_zcl_price_ack_payload_t))
+  ((size) >= sizeof(zb_zcl_price_ack_payload_t))
 
 /** @ref zb_zcl_price_ack_payload_t initializer */
 #define ZB_ZCL_PRICE_ACK_PAYLOAD_INIT (zb_zcl_price_ack_payload_t) {0}
@@ -3137,6 +3135,27 @@ typedef ZB_PACKED_PRE struct zb_zcl_price_ack_payload_s
 
 /** @endcond */ /* internals_doc */
 
+/** @brief @ref ZB_ZCL_PRICE_CLI_CMD_GET_CURRENT_PRICE "GetCurrentPrice" Command Payload Format
+ */
+typedef ZB_PACKED_PRE struct zb_zcl_price_get_current_price_payload_s
+{
+  /** @e CommandOptions field is 8 Bits in length
+   * @note Zero bit is Requestor Rx On When Idle, others are reserved.
+   */
+  zb_uint8_t command_options;
+} ZB_PACKED_STRUCT zb_zcl_price_get_current_price_payload_t;
+
+/** @def ZB_ZCL_PRICE_GET_CURRENT_PRICE_PAYLOAD_INIT
+ *  @brief Macro for initializing @ref ZB_ZCL_PRICE_CLI_CMD_GET_CURRENT_PRICE "GetCurrentPrice" Command payload
+ */
+#define ZB_ZCL_PRICE_GET_CURRENT_PRICE_PAYLOAD_INIT \
+  (zb_zcl_price_get_current_price_payload_t) {0}
+
+/** @def ZB_ZCL_PRICE_GET_CURRENT_PRICE_PAYLOAD_SIZE_IS_VALID
+ *  @brief Check if @ref ZB_ZCL_PRICE_CLI_CMD_GET_CURRENT_PRICE "GetCurrentPrice" Command payload is valid
+ */
+#define ZB_ZCL_PRICE_GET_CURRENT_PRICE_PAYLOAD_SIZE_IS_VALID(size) \
+  ((size) >= sizeof(zb_zcl_price_get_current_price_payload_t))
 
 /** @brief @ref ZB_ZCL_PRICE_CLI_CMD_GET_SCHEDULED_PRICES "GetScheduledPrices" Command Payload Format
  *  @see SE spec, D.4.2.3.3.1
@@ -3166,10 +3185,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_price_get_scheduled_prices_payload_s
  *  @brief Check if @ref ZB_ZCL_PRICE_CLI_CMD_GET_SCHEDULED_PRICES "GetScheduledPrices" Command payload is valid
  */
 #define ZB_ZCL_PRICE_GET_SCHEDULED_PRICES_PAYLOAD_SIZE_IS_VALID(size) \
-  ((size) == sizeof(zb_zcl_price_get_scheduled_prices_payload_t))
-
-/** @brief @ref ZB_ZCL_PRICE_CLI_CMD_GET_CURRENT_PRICE "GetCurrentPrice" Command Payload Format */
-typedef zb_uint8_t zb_zcl_price_get_current_price_payload_t;
+  ((size) >= sizeof(zb_zcl_price_get_scheduled_prices_payload_t))
 
 /** @ref ZB_ZCL_PRICE_CLI_CMD_GET_BLOCK_PERIOD "GetBlockPeriod" command payload
  * @see SE spec, subclause D.4.2.3.5
@@ -3338,7 +3354,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_price_get_tier_labels_payload_s
 } ZB_PACKED_STRUCT zb_zcl_price_get_tier_labels_payload_t;
 
 #define ZB_ZCL_PRICE_GET_TIER_LABELS_PAYLOAD_SIZE_IS_VALID(size) \
-  ((size) == sizeof(zb_zcl_price_get_tier_labels_payload_t))
+  ((size) >= sizeof(zb_zcl_price_get_tier_labels_payload_t))
 
 /** @ref ZB_ZCL_PRICE_CLI_CMD_GET_BILLING_PERIOD "GetBillingPeriod" command payload
  * @see SE spec, subclause D.4.2.3.13.2

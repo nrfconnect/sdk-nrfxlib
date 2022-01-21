@@ -52,6 +52,22 @@
 
 #define ZB_UNKNOWN_SHORT_ADDR 0xFFFFU
 
+#ifdef ZB_DEBUG_ADDR
+#define TRACE_ADDR_PROTO_VOID    zb_uint16_t from_file, zb_uint16_t from_line
+#define TRACE_ADDR_CALL_VOID     ZB_TRACE_FILE_ID, __LINE__
+#define TRACE_ADDR_FORWARD_VOID  from_file, from_line
+#define TRACE_ADDR_PROTO         TRACE_ADDR_PROTO_VOID ,
+#define TRACE_ADDR_CALL          TRACE_ADDR_CALL_VOID ,
+#define TRACE_ADDR_FORWARD       TRACE_ADDR_FORWARD_VOID ,
+#else
+#define TRACE_ADDR_PROTO_VOID
+#define TRACE_ADDR_CALL_VOID
+#define TRACE_ADDR_FORWARD_VOID
+#define TRACE_ADDR_PROTO
+#define TRACE_ADDR_CALL
+#define TRACE_ADDR_FORWARD
+#endif  /* ZB_DEBUG_ADDR */
+
 /**
    Compressed IEEE address. One byte  device manufacturer - reference to
    \see zb_dev_manufacturer_t array.
@@ -356,7 +372,7 @@ void zb_address_by_ref(zb_ieee_addr_t ieee_address, zb_uint16_t *short_address_p
 
 /**
    Get IEEE address with address reference.
-   
+
    Get existing IEEE address(long address) with address reference. Update address alive time if it not locked.
 
    @param ieee_address  - (out) long address
@@ -519,7 +535,9 @@ zb_bool_t zb_address_is_locked(zb_address_ieee_ref_t ref);
 
    @return RET_OK or RET_ERROR
  */
-zb_ret_t zb_address_lock(zb_address_ieee_ref_t ref);
+#define zb_address_lock(ref) zb_address_lock_func(TRACE_ADDR_CALL ref)
+
+zb_ret_t zb_address_lock_func(TRACE_ADDR_PROTO zb_address_ieee_ref_t ref);
 
 
 /**
@@ -528,7 +546,9 @@ zb_ret_t zb_address_lock(zb_address_ieee_ref_t ref);
 
    @param ref - IEEE/network address pair reference
  */
-void zb_address_unlock(zb_address_ieee_ref_t ref);
+#define zb_address_unlock(ref) zb_address_unlock_func(TRACE_ADDR_CALL ref)
+
+void zb_address_unlock_func(TRACE_ADDR_PROTO zb_address_ieee_ref_t ref);
 
 /**
    Delete address.

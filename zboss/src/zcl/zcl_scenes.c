@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -707,10 +707,11 @@ static void zb_zcl_scenes_process_recall_scene_command(zb_uint8_t param, const z
   zb_zcl_scenes_recall_scene_req_t* req;
   zb_zcl_scenes_recall_scene_req_t req_copy;
   zb_zcl_status_t recall_scene_status = ZB_ZCL_STATUS_SUCCESS;
+  zb_uint8_t req_len;
 
   TRACE_MSG( TRACE_ZCL1, "> zb_zcl_scenes_process_recall_scene_command param %hd", (FMT__H, param));
 
-  ZB_ZCL_SCENES_GET_RECALL_SCENE_REQ(param, req);
+  ZB_ZCL_SCENES_GET_RECALL_SCENE_REQ(param, req, req_len);
 
   if (!req)
   {
@@ -719,7 +720,11 @@ static void zb_zcl_scenes_process_recall_scene_command(zb_uint8_t param, const z
   }
   else
   {
-    ZB_MEMCPY(&req_copy, req, sizeof(zb_zcl_scenes_recall_scene_req_t));
+    ZB_MEMCPY(&req_copy, req, req_len);
+    if (req_len < ZB_ZCL_SCENES_RECALL_SCENE_REQ_PAYLOAD_LEN)
+    {
+      req_copy.transition_time = ZB_ZCL_SCENES_RECALL_SCENE_REQ_TRANSITION_TIME_INVALID_VALUE;  
+    }
     recall_scene_status = (zb_zcl_status_t)zb_zcl_scenes_process_recall_scene(param, &req_copy, cmd_info);
   }
 

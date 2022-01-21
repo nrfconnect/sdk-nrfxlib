@@ -451,21 +451,13 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
 
    Usually used to place external information _func(some parameters) to the buffer
 
-   @param buf - buffer ID
-   @param type - data type that will be placed at the buffer end
+   @param[in] buf - buffer ID
+   @param[in] type - data type that will be placed at the buffer end
 
    @return pointer to the buffer tail casted to _func(type*)
 
    @b Example
-   @code
-     zb_zdo_nwk_addr_req_param_t *req = ZB_BUF_GET_PARAM(buf, zb_zdo_nwk_addr_req_param_t);
-
-     req->dst_addr = 0xffff;
-     ZB_IEEE_ADDR_COPY_func(req->ieee_addr, g_ieee_addr_r4);
-     req->start_index  = 0;
-     req->request_type = 0x00;
-     zb_zdo_nwk_addr_req(ZB_REF_FROM_BUF_func(buf), NULL);
-   @endcode
+   @snippet linky_sample/erl_gw/erl_gw.c zb_buf_get_param_snippet
  */
 /* Note: MISRA C-STAT analysis gives false positive for rule 20.7 violation on ZB_BUF_GET_PARAM()
  * due to missing parenthesis around "type" on pointer type cast. This is a misinterpretation

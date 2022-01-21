@@ -196,9 +196,9 @@ extern const zb_uint8_t zb_ic_size_by_type[ZB_IC_TYPE_MAX];
 
 #define ZB_IC_TYPE_MAX_SIZE 16U
 
-#define ZB_IC_SIZE_BY_TYPE(t) ( ( t ) < ZB_IC_TYPE_MAX ? zb_ic_size_by_type[( t )]:(ZB_IC_TYPE_MAX-1U) )
+#define ZB_IC_SIZE_BY_TYPE(t) ( ( t ) < ZB_IC_TYPE_MAX ? zb_ic_size_by_type[( t )]:zb_ic_size_by_type[(ZB_IC_TYPE_MAX - 1U)] )
 
-#define ZB_IC_GET_TYPE_FROM_REC(r) ( (r)->options & 0x3U)
+#define ZB_IC_GET_TYPE_FROM_OPT(opt) ( (opt) & 0x7U )
 /* zb_aps_installcode_storage_t moved to zboss_api_internal.h */
 
 typedef struct zb_secur_ic_add_s
@@ -280,24 +280,6 @@ typedef zb_uint8_t zb_secur_key_attributes_t;
  * @ref secur_key_id were declared previously as enum.
  */
 typedef zb_uint8_t zb_secur_key_id_t;
-
-/**
- * @name Security/rejoin states of the 'status' field of APSME-Update-Device
- * @see Table 4.40
- * @anchor secur_upd_device_status
- *
- * Note: These values were members of `enum zb_secur_upd_device_status_e` type but were converted to a
- * set of macros due to MISRA violations.
- */
-/** @{ */
-#define ZB_STD_SEQ_SECURED_REJOIN    0U /*!< Device rejoin with standard security */
-#define ZB_STD_SEQ_UNSECURED_JOIN    1U /*!< Device join without security */
-#define ZB_DEVICE_LEFT               2U /*!< Device left */
-#define ZB_STD_SEQ_UNSECURED_REJOIN  3U /*!< Device rejoin without standard security */
-#define ZB_HIGH_SEQ_SECURED_REJOIN   4U /*!< Device rejoin with high security */
-#define ZB_HIGH_SEQ_UNSECURED_JOIN   5U /*!< Device join without high security */
-#define ZB_HIGH_SEQ_UNSECURED_REJOIN 7U /*!< Device rejoin without high security */
-/** @} */
 
 /**
    Auxiliary frame header (4.5.1) for NWK frame and NWK key

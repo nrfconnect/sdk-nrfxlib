@@ -44,7 +44,7 @@
 #define NCP_DEV_API_H 1
 
 #include "zb_types.h"
-#include "zb_ncp.h"
+#include "ncp_common_api.h"
 
 /** @cond DOXYGEN_NCP_SECTION */
 
@@ -55,14 +55,6 @@
 /** Return code which is raised if @ref zb_ncp_custom_response will be called later*/
 #define NCP_RET_LATER (255U)
 
-/**
- * @brief It is used to create and read a response sent by @ref zb_ncp_custom_response
- */
-typedef ZB_PACKED_PRE struct ncp_hl_custom_resp_s
-{
-  zb_ret_t status;
-  zb_uint8_t tsn;
-} ZB_PACKED_STRUCT ncp_hl_custom_resp_t;
 
 /** The custom request callback.
  *
@@ -72,9 +64,9 @@ typedef ZB_PACKED_PRE struct ncp_hl_custom_resp_s
  * @return The length of a response returned by @ref zb_ncp_custom_response if it is called within callback.
  *         @ref NCP_RET_LATER if @ref zb_ncp_custom_response is called later.
  *
- * @note If neither length nor @ref NCP_RET_LATER status is returned, the response is generated and sent automatically.
+ * @note If returned length is equal to 0, the response is generated and sent automatically.
  */
-typedef zb_ret_t (*zb_ncp_custom_request_cb_t)(zb_uint8_t param);
+typedef zb_uint16_t (*zb_ncp_custom_request_cb_t)(zb_uint8_t param);
 
 /** Registers a callback, that is called once the zb_ncp_custom_request is called on the host side
  *  and the corresponding NCP command is received.
@@ -98,7 +90,7 @@ void zb_ncp_custom_indication(zb_uint8_t param);
  *
  * @note Should be called within @ref zb_ncp_custom_request_cb_t unless @ref NCP_RET_LATER is not returned from callback.
  */
-zb_ret_t zb_ncp_custom_response(zb_uint8_t param);
+zb_uint16_t zb_ncp_custom_response(zb_uint8_t param);
 
 /** @} */ /* ncp_dev_api */
 

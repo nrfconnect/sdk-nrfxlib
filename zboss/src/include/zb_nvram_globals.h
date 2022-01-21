@@ -85,7 +85,7 @@ typedef struct zb_nvram_custom_ds_entry_s
   zb_nvram_ds_write_cb_t write;
 } zb_nvram_custom_ds_entry_t;
 
-#define ZB_NVRAM_CUSTOM_DS_MAX_NUMBER 2
+#define ZB_NVRAM_CUSTOM_DS_MAX_NUMBER 2U
 
 typedef struct zb_nvram_custom_ds_ctx_s
 {
@@ -129,6 +129,7 @@ typedef struct zb_nvram_globals_s
   /* Checker for nvram read/write calls */
   zb_nvram_pos_payload_checker_t gs_nvram_write_checker;
   zb_nvram_pos_payload_checker_t gs_nvram_read_checker;
+  zb_nvram_pos_payload_checker_t gs_nvram_read_checker_cache;
 
 } zb_nvram_globals_t;
 

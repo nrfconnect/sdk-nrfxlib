@@ -114,7 +114,9 @@ void get_pib_max_frame_retries(zb_uint8_t param)
   req = zb_buf_initial_alloc(param, sizeof(zb_mlme_get_request_t));
   req->pib_attr = ZB_PIB_ATTRIBUTE_MAX_FRAME_RETRIES;
   req->confirm_cb_u.cb = get_pib_max_frame_retries_confirm;
-  zb_mlme_get_request(param);
+  req->iface_id = ZB_PIBCACHE_PRIMARY_IFACE();
+
+  zb_multimac_mlme_get_request_proxy(param);
 }
 
 static zb_bool_t wwah_handle_read_attr_resp(zb_bufid_t param)

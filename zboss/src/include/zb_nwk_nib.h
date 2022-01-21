@@ -296,8 +296,6 @@ zb_nib_attribute_t;
 /**
  * Returns current type of the device.
  */
-zb_nwk_device_type_t zb_get_device_type(void);
-
 zb_bool_t zb_is_device_zc(void);
 
 zb_bool_t zb_is_device_zr(void);
@@ -825,7 +823,7 @@ typedef struct zb_nib_s
 #ifdef SNCP_MODE
   zb_bitfield_t nwk_force_rrec_sending:1; /*!< If the flag is set to 1, local Zigbee Router device
                                             * considers it's working with Low-RAM concentrator
-                                            * unless MTORR is received and sends Route record 
+                                            * unless MTORR is received and sends Route record
                                             * before each packet */
 #endif
 

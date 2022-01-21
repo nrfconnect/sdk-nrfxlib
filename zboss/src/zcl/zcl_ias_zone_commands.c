@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -125,10 +125,28 @@ zb_ret_t check_value_ias_zone_server(zb_uint16_t attr_id, zb_uint8_t endpoint, z
   switch( attr_id )
   {
     case ZB_ZCL_ATTR_IAS_ZONE_NUMBER_OF_ZONE_SENSITIVITY_LEVELS_SUPPORTED_ID:
+    {
       if( ZB_ZCL_IAS_ZONE_NUMBER_OF_ZONE_SENSITIVITY_LEVELS_SUPPORTED_MIN_VALUE > *value )
       {
         ret = RET_ERROR;
       }
+      break;
+    }
+    case ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID:
+    {
+      zb_zcl_attr_t *attr_desc = zb_zcl_get_attr_desc_a(endpoint,
+        ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_CUSTOM_CIE_ADDR_IS_SET);
+      ZB_ASSERT(attr_desc != NULL);
+      if (ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc) == ZB_B2U(ZB_TRUE))
+      {
+        attr_desc = zb_zcl_get_attr_desc_a(endpoint,
+          ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID);
+        if (ZB_MEMCMP(attr_desc->data_p, value, zb_zcl_get_attribute_size(attr_desc->type, value)) != 0)
+        {
+          ret = RET_UNAUTHORIZED;
+        }
+      }
+    }
     default:
       break;
   }
@@ -136,6 +154,57 @@ zb_ret_t check_value_ias_zone_server(zb_uint16_t attr_id, zb_uint8_t endpoint, z
   TRACE_MSG(TRACE_ZCL1, "check_value_ias_zone ret %hd", (FMT__H, ret));
   return ret;
 }
+
+static zb_ret_t check_cie_establishment(zb_uint8_t endpoint)
+{
+  zb_ret_t ret = RET_OK;
+
+  zb_zcl_attr_t *attr_desc = zb_zcl_get_attr_desc_a(endpoint,
+    ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_CUSTOM_CIE_ADDR_IS_SET);
+  ZB_ASSERT(attr_desc);
+
+  if (ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc) == ZB_B2U(ZB_FALSE))
+  {
+    TRACE_MSG(TRACE_ZCL1, "CIE addr isn't set on IAS Zone server", (FMT__0));
+    ret = RET_UNAUTHORIZED;
+  }
+
+  return ret;
+}
+
+static zb_bool_t check_cie_authorization(zb_uint8_t endpoint, zb_uint16_t short_addr)
+{
+  zb_uint16_t cie_short_addr;
+
+  zb_zcl_attr_t *attr_desc = zb_zcl_get_attr_desc_a(endpoint,
+    ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID);
+  ZB_ASSERT(attr_desc);
+
+  /* AN: We have already put entry in adress table during step 2 of each commissioning method. */
+  cie_short_addr = zb_address_short_by_ieee(attr_desc->data_p);
+
+  attr_desc = zb_zcl_get_attr_desc_a(endpoint,
+    ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_CUSTOM_CIE_SHORT_ADDR);
+
+  ZB_ASSERT(attr_desc);
+
+  return (cie_short_addr == ZB_ZCL_GET_ATTRIBUTE_VAL_16(attr_desc) && 
+          cie_short_addr == short_addr) ? ZB_TRUE : ZB_FALSE;
+}
+
+zb_ret_t zb_zcl_ias_zone_put_cie_address_to_binding_whitelist(zb_uint8_t ep_id)
+{
+  zb_ret_t ret = RET_OK;
+
+  zb_zcl_attr_t *attr_desc = zb_zcl_get_attr_desc_a(ep_id,
+    ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID);
+  ZB_ASSERT(attr_desc);
+
+  ret = zb_aps_add_binding_whitelist_entry(ep_id, ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, (zb_uint8_t *)attr_desc->data_p);
+
+  return ret;
+}
+
 /** @brief Initiate Test mode command */
 static zb_ret_t zb_zcl_ias_zone_init_test_mode_handler(zb_uint8_t param)
 {
@@ -160,43 +229,54 @@ static zb_ret_t zb_zcl_ias_zone_init_test_mode_handler(zb_uint8_t param)
   }
   else
   {
-    zb_zcl_attr_t *attr_desc_level = zb_zcl_get_attr_desc_a(endpoint,
-      ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_CURRENT_ZONE_SENSITIVITY_LEVEL_ID);
-    zb_zcl_attr_t *attr_desc_int_ctx = zb_zcl_get_attr_desc_a(endpoint,
-      ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_INT_CTX_ID);
-    zb_zcl_ias_zone_int_ctx_t *int_ctx;
-    zb_ret_t retcode;
+    ret = check_cie_establishment(endpoint);
 
-    ZB_ASSERT(attr_desc_level != NULL);
-    ZB_ASSERT(attr_desc_int_ctx != NULL);
-
-    int_ctx = (zb_zcl_ias_zone_int_ctx_t*)attr_desc_int_ctx->data_p;
-    int_ctx->restore_current_zone_sens_level = ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc_level);
-
-    /* NK: Set attribute value directly. Reason: do not call general_cb with SENSITIVITY_SET param here,
-     * use only one general_cb - with TEST_MODE. It can do some specific checks of this attribute
-     * and return some result with retcode. */
-    ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc_level, payload.current_zone_sens_level);
-
-
-    retcode = zb_zcl_ias_zone_init_mode(int_ctx, ZB_ZCL_INIT_TEST_MODE, payload.current_zone_sens_level);
-
-    if (retcode == RET_INVALID_PARAMETER)
+    if (ret == RET_OK)
     {
-      /* NK: Send ZCL response with invalid parameter code. */
-      ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc_level, int_ctx->restore_current_zone_sens_level);
-      return retcode;
-    }
-    else
-    {
-      /* NK: If zb_zcl_ias_zone_init_mode() returned RET_OK, than do not set test bit from ZCL layer. */
-      if (retcode != RET_OK)
+      if(check_cie_authorization(endpoint, cmd_info.addr_data.common_data.source.u.short_addr))
       {
-        zb_zcl_ias_zone_set_test_bit_delayed(endpoint, 1);
-      }
+        zb_zcl_attr_t *attr_desc_level = zb_zcl_get_attr_desc_a(endpoint,
+          ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_CURRENT_ZONE_SENSITIVITY_LEVEL_ID);
+        zb_zcl_attr_t *attr_desc_int_ctx = zb_zcl_get_attr_desc_a(endpoint,
+          ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_INT_CTX_ID);
+        zb_zcl_ias_zone_int_ctx_t *int_ctx;
+        zb_ret_t retcode;
 
-      /* Schedule current_zone_sens_level restore and turning to normal mode */
-      ZB_SCHEDULE_ALARM(zb_zcl_ias_zone_restore_normal_mode, endpoint, payload.test_mode_duration * ZB_TIME_ONE_SECOND);
+        ZB_ASSERT(attr_desc_level != NULL);
+        ZB_ASSERT(attr_desc_int_ctx != NULL);
+
+        int_ctx = (zb_zcl_ias_zone_int_ctx_t*)attr_desc_int_ctx->data_p;
+        int_ctx->restore_current_zone_sens_level = ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc_level);
+
+        /* NK: Set attribute value directly. Reason: do not call general_cb with SENSITIVITY_SET param here,
+         * use only one general_cb - with TEST_MODE. It can do some specific checks of this attribute
+         * and return some result with retcode. */
+        ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc_level, payload.current_zone_sens_level);
+
+        retcode = zb_zcl_ias_zone_init_mode(int_ctx, ZB_ZCL_INIT_TEST_MODE, payload.current_zone_sens_level);
+
+        if (retcode == RET_INVALID_PARAMETER)
+        {
+          /* NK: Send ZCL response with invalid parameter code. */
+          ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc_level, int_ctx->restore_current_zone_sens_level);
+          return retcode;
+        }
+        else
+        {
+          /* NK: If zb_zcl_ias_zone_init_mode() returned RET_OK, than do not set test bit from ZCL layer. */
+          if (retcode != RET_OK)
+          {
+            zb_zcl_ias_zone_set_test_bit_delayed(endpoint, 1);
+          }
+
+          /* Schedule current_zone_sens_level restore and turning to normal mode */
+          ZB_SCHEDULE_ALARM(zb_zcl_ias_zone_restore_normal_mode, endpoint, payload.test_mode_duration * ZB_TIME_ONE_SECOND);
+        }
+      }
+      else
+      {
+        ret = RET_UNAUTHORIZED;
+      }
     }
   }
 
@@ -248,33 +328,45 @@ static zb_ret_t zb_zcl_ias_zone_init_normal_mode_handler(zb_uint8_t param)
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
   endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
 
-  attr_desc_int_ctx = zb_zcl_get_attr_desc_a(endpoint,
-    ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_INT_CTX_ID);
+  retcode = check_cie_establishment(endpoint);
 
-  ZB_ASSERT(attr_desc_int_ctx != NULL);
-
-  int_ctx = (zb_zcl_ias_zone_int_ctx_t*)attr_desc_int_ctx->data_p;
-
-  ZB_SCHEDULE_ALARM_CANCEL_AND_GET_BUF(zb_zcl_ias_zone_restore_normal_mode, ZB_ALARM_ANY_PARAM, &alarm_buf_param);
-
-  if (alarm_buf_param)
+  if (retcode == RET_OK)
   {
-    zb_zcl_ias_zone_restore_normal_mode(alarm_buf_param);
-  }
-  else
-  {
-    /* NK: Turn on Normal Mode even if it was no Test Mode command before. */
-    retcode = zb_zcl_ias_zone_init_mode(int_ctx, ZB_ZCL_INIT_NORMAL_MODE, 0);
-
-    /* NK: If zb_zcl_ias_zone_init_mode() returned RET_OK, then do not set test bit from ZCL layer. */
-    if (retcode != RET_OK)
+    if(check_cie_authorization(endpoint, cmd_info.addr_data.common_data.source.u.short_addr))
     {
-      zb_zcl_ias_zone_set_test_bit_delayed(endpoint, 0);
+      attr_desc_int_ctx = zb_zcl_get_attr_desc_a(endpoint,
+        ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_INT_CTX_ID);
+
+      ZB_ASSERT(attr_desc_int_ctx != NULL);
+
+      int_ctx = (zb_zcl_ias_zone_int_ctx_t*)attr_desc_int_ctx->data_p;
+
+            ZB_SCHEDULE_ALARM_CANCEL_AND_GET_BUF(zb_zcl_ias_zone_restore_normal_mode, ZB_ALARM_ANY_PARAM, &alarm_buf_param);
+
+      if (alarm_buf_param)
+      {
+        zb_zcl_ias_zone_restore_normal_mode(alarm_buf_param);
+      }
+      else
+      {
+        /* NK: Turn on Normal Mode even if it was no Test Mode command before. */
+        retcode = zb_zcl_ias_zone_init_mode(int_ctx, ZB_ZCL_INIT_NORMAL_MODE, 0);
+
+        /* NK: If zb_zcl_ias_zone_init_mode() returned RET_OK, then do not set test bit from ZCL layer. */
+        if (retcode != RET_OK)
+        {
+          zb_zcl_ias_zone_set_test_bit_delayed(endpoint, 0);
+          retcode = RET_OK;
+        }
+      }
+      TRACE_MSG(TRACE_ZCL1, "< zb_zcl_ias_zone_init_normal_mode_handler", (FMT__0));
+    }
+    else
+    {
+      retcode = RET_UNAUTHORIZED;
     }
   }
-
-  TRACE_MSG(TRACE_ZCL1, "< zb_zcl_ias_zone_init_normal_mode_handler", (FMT__0));
-  return RET_OK;
+  return retcode;
 }
 
 #if defined ZB_ENABLE_HA
@@ -340,67 +432,49 @@ static zb_ret_t zone_enroll_res_handler(zb_uint8_t param)
   }
   else
   {
-    zb_uint16_t cie_short_addr;
-    zb_zcl_attr_t *attr_desc = zb_zcl_get_attr_desc_a(endpoint,
-      ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID);
-    ZB_ASSERT(attr_desc);
+    ret = check_cie_establishment(endpoint);
 
-    /* if command sent as multihop, ED can not get CIE short addr via CIE long
-       => get saved CIE short addr value. There is a risk that this value is not set yet
-       => need TODO: correct fix - store CIE long addr in address map table */
-
-    cie_short_addr = zb_address_short_by_ieee(attr_desc->data_p);
-    if (cie_short_addr == ZB_UNKNOWN_SHORT_ADDR)
+    if (ret == RET_OK)
     {
-      attr_desc = zb_zcl_get_attr_desc_a(endpoint,
-        ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_CUSTOM_CIE_SHORT_ADDR);
-      ZB_ASSERT(attr_desc);
-
-      cie_short_addr = ZB_ZCL_GET_ATTRIBUTE_VAL_16(attr_desc);
-    }
-
-    if(cie_short_addr==cmd_info.addr_data.common_data.source.u.short_addr)
-    {
-      attr_desc = zb_zcl_get_attr_desc_a(endpoint,
+      if(check_cie_authorization(endpoint, cmd_info.addr_data.common_data.source.u.short_addr))
+      {
+        zb_zcl_attr_t *attr_desc = zb_zcl_get_attr_desc_a(endpoint,
             ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_ZONESTATE_ID);
-      ZB_ASSERT(attr_desc);
+        ZB_ASSERT(attr_desc);
 
-      ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc,
+        ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc,
           payload.code==ZB_ZCL_IAS_ZONE_ENROLL_RESPONCE_CODE_SUCCESS ?
-              ZB_ZCL_IAS_ZONE_ZONESTATE_ENROLLED :
-              ZB_ZCL_IAS_ZONE_ZONESTATE_NOT_ENROLLED);
+          ZB_ZCL_IAS_ZONE_ZONESTATE_ENROLLED :
+          ZB_ZCL_IAS_ZONE_ZONESTATE_NOT_ENROLLED);
 
 #if defined ZB_ENABLE_HA
 
-      /* ZLC 8.2.2.3.1.1 says (about 'zone_id' field):
-         "This field is only relevant if the response code is success". */
-      if (payload.code == ZB_ZCL_IAS_ZONE_ENROLL_RESPONCE_CODE_SUCCESS)
-      {
-      attr_desc = zb_zcl_get_attr_desc_a(endpoint,
+        /* ZCL 8.2.2.3.1.1 says (about 'zone_id' field):
+           "This field is only relevant if the response code is success". */
+        if (payload.code == ZB_ZCL_IAS_ZONE_ENROLL_RESPONCE_CODE_SUCCESS)
+        {
+          attr_desc = zb_zcl_get_attr_desc_a(endpoint,
             ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_ZONEID_ID);
-      ZB_ASSERT(attr_desc);
-
-      if ((*(zb_uint8_t*)attr_desc->data_p) != (zb_uint8_t)payload.zone_id)
-      {
-        ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc, payload.zone_id);
+          ZB_ASSERT(attr_desc);
+          if ((*(zb_uint8_t*)attr_desc->data_p) != (zb_uint8_t)payload.zone_id)
+          {
+            ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc, payload.zone_id);
 #ifdef ZB_USE_NVRAM
-        /* If we fail, trace is given and assertion is triggered */
-        (void)zb_nvram_write_dataset(ZB_NVRAM_HA_DATA);
+            /* If we fail, trace is given and assertion is triggered */
+            (void)zb_nvram_write_dataset(ZB_NVRAM_HA_DATA);
 #endif
-      }
-      }
-
-      ZB_ZCL_IAS_ZONE_ENROLL_RESPONSE_SCHEDULE_USER_APP(param, &cmd_info,
-                                                        payload.code,
-                                                        payload.zone_id);
-
-      ret = RET_BUSY;
-
+          }
+        }
+        ZB_ZCL_IAS_ZONE_ENROLL_RESPONSE_SCHEDULE_USER_APP(param, &cmd_info,
+                                                          payload.code,
+                                                          payload.zone_id);
+        ret = RET_BUSY;
 #endif /* defined ZB_ENABLE_HA */
-    }
-    else
-    {
-
+      }
+      else
+      {
+        ret = RET_UNAUTHORIZED;
+      }
     }
   }
 
@@ -505,6 +579,19 @@ zb_bool_t zb_zcl_process_ias_zone_specific_commands(zb_uint8_t param)
     }
     else if (status != RET_BUSY)
     {
+      zb_uint8_t zcl_status = ZB_ZCL_STATUS_SUCCESS;
+      switch (status)
+      {
+        case RET_UNAUTHORIZED:
+          zcl_status = ZB_ZCL_STATUS_NOT_AUTHORIZED;
+          break;
+        case RET_INVALID_PARAMETER: 
+        case RET_INVALID_PARAMETER_1:
+          zcl_status = ZB_ZCL_STATUS_INVALID_FIELD;
+          break;
+        default:
+          break;
+      }
       ZB_ZCL_SEND_DEFAULT_RESP_DIRECTION( param,
           ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).source.u.short_addr,
           ZB_APS_ADDR_MODE_16_ENDP_PRESENT,
@@ -514,7 +601,7 @@ zb_bool_t zb_zcl_process_ias_zone_specific_commands(zb_uint8_t param)
           ZB_ZCL_CLUSTER_ID_IAS_ZONE,
           cmd_info.seq_number,
           cmd_info.cmd_id,
-          status==RET_OK ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_INVALID_FIELD,
+          zcl_status,
           cmd_info.cmd_direction==ZB_ZCL_FRAME_DIRECTION_TO_SRV
             ? ZB_ZCL_FRAME_DIRECTION_TO_CLI
             : ZB_ZCL_FRAME_DIRECTION_TO_SRV);
@@ -829,6 +916,16 @@ void zb_zcl_ias_zone_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t att
     if (!ZB_IEEE_ADDR_IS_ZERO(new_value))
     {
       TRACE_MSG(TRACE_ZCL1, "valid CIE addr is being set", (FMT__0));
+      attr_desc = zb_zcl_get_attr_desc_a(endpoint,
+                                     ZB_ZCL_CLUSTER_ID_IAS_ZONE,
+                                     ZB_ZCL_CLUSTER_SERVER_ROLE,
+                                     ZB_ZCL_ATTR_CUSTOM_CIE_ADDR_IS_SET);
+      ZB_ASSERT(attr_desc != NULL);
+
+      if (ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc) == ZB_B2U(ZB_FALSE))
+      {
+        ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc, ZB_B2U(ZB_TRUE));
+      }
       if (int_ctx->general_cb)
       {
         int_ctx->general_cb(ZB_ZCL_VALID_CIE_ADDR_SET, 0);
@@ -845,42 +942,16 @@ void zb_zcl_ias_zone_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t att
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_ias_zone_write_attr_hook", (FMT__0));
 }
 
-
-  /* ZCL 8.2.2.2.3:
-   * "Any attempt via the ZDO bind or unbind request to create, modify or remove binding
-   * table entry on a device embodying the IAS Zone server SHALL be rejected and responded
-   * with the status NOT_AUTHORIZED, if the subjected binding table entry is related to an
-   * IAS Zone server cluster and the ZDP request does not come from the paired IAS CIE" */
-
-zb_bool_t zb_zcl_ias_zone_check_bind_unbind_request(zb_apsme_binding_req_t *aps_bind_req)
+void zb_zcl_ias_zone_check_cie_addr_on_zcl_initialization(zb_uint8_t ep_id)
 {
-  zb_bool_t ret = ZB_TRUE;
-  zb_af_endpoint_desc_t *ep_desc;
-  zb_zcl_cluster_desc_t *cluster_desc;
-  zb_zcl_attr_t *attr_desc;
-
-  if (aps_bind_req->clusterid == ZB_ZCL_CLUSTER_ID_IAS_ZONE)
+  zb_ret_t ret;
+  zb_ieee_addr_t zeroed_ieee_addr = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  ret = zb_aps_add_binding_whitelist_entry(ep_id, ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, zeroed_ieee_addr);
+  if (ret != RET_OK)
   {
-    ep_desc = zb_af_get_endpoint_desc(aps_bind_req->src_endpoint);
-    if (ep_desc)
-    {
-      cluster_desc = get_cluster_desc(ep_desc, aps_bind_req->clusterid, ZB_ZCL_CLUSTER_SERVER_ROLE);
-      if (cluster_desc)
-      {
-        attr_desc = zb_zcl_get_attr_desc_a(aps_bind_req->src_endpoint, aps_bind_req->clusterid, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID);
-        /* Check if binding request sender is CIE */
-        if (attr_desc)
-        {
-          if (ZB_IEEE_ADDR_IS_VALID(attr_desc->data_p) &&
-            !ZB_MEMCMP(aps_bind_req->dst_addr.addr_long, attr_desc->data_p, sizeof(zb_ieee_addr_t)))
-          {
-            ret = ZB_FALSE;
-          }
-        }
-      }
-    }
+    TRACE_MSG(TRACE_ERROR, "Add binding whitelist zeroed IEEE addr entry for ias zone failed ret=%hu", (FMT__D, ret));
+    ZB_ASSERT(0);
   }
-  return ret;
 }
 
 #endif /* ZB_ZCL_SUPPORT_CLUSTER_IAS_ZONE */

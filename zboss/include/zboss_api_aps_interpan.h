@@ -182,7 +182,7 @@ zb_ret_t zb_intrp_data_request_with_chan_change(zb_bufid_t buffer, zb_channel_pa
   *
   * @param cb - callback function to be called when inter-pan packet is received.
   * @note If packet is processed in the callback function and no longer shall be processed
-  *       by the stack, callback function shall free buffer and return RET_OK. Return RET_ERROR otherwise.
+  *       by the stack, callback function shall free buffer and return ZB_TRUE. Return ZB_FALSE otherwise.
   *       Buffer has data put in the beginning of the buffer with inter-pan header truncated
   *       and contains @ref zb_intrp_data_ind_t given as buffer's parameter.
   */

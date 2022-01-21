@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -419,7 +419,7 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_common_ver_2_0_s
 zb_nvram_dataset_common_ver_2_0_t;
 
 
-typedef ZB_PACKED_PRE struct zb_nvram_dataset_common_ver_3_0_s
+typedef ZB_PACKED_PRE struct zb_nvram_dataset_common_ver_4_0_s
 {
   zb_bitfield_t   aps_designated_coordinator : 1; /*!< This boolean flag indicates whether the
                                               device should assume on startup that it must
@@ -447,14 +447,12 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_common_ver_3_0_s
   zb_uint8_t tc_standard_key[ZB_CCM_KEY_SIZE];      /*!< Trust Center Standard Key */
 
   /* Custom fields*/
-  zb_uint8_t channel;                       /*!< Current channel. Custom field
-                                             * */
-  zb_uint8_t page;                       /*!< Current page. Custom field
-                                             * */
-  zb_nwk_mac_iface_tbl_ent_t mac_iface_tbl[ZB_NWK_MAC_IFACE_TBL_SIZE]; /*!<
-                                                                        * nwkMacInterfaceTable
-                                                                        * from
-                                                                        * NWK NIB()*/
+  /* In default configuration ZB_NWK_MAC_IFACE_TBL_SIZE is 1, so the dataset is compatible with previous stack versions.
+   * When multple interfaces are enabled, the dataset will become incompatible with default configuration and
+   * migrations between single-MAC and multi-MAC NVRAM are not supported now */
+  zb_uint8_t channel[ZB_NWK_MAC_IFACE_TBL_SIZE]; /*!< Current channel. Custom field */
+  zb_uint8_t page[ZB_NWK_MAC_IFACE_TBL_SIZE];    /*!< Current page. Custom field */
+  zb_nwk_mac_iface_tbl_ent_t mac_iface_tbl[ZB_NWK_MAC_IFACE_TBL_SIZE]; /*!< nwkMacInterfaceTable from NWK NIB()*/
   /* There was 1 reserved byte */
   zb_bitfield_t   hub_connectivity:1; /*!< gub connectivity for WWAH and r23 all hubs  */
   zb_bitfield_t   rx_on:1;            /*!< rx-on-when-idle for ZED  */
@@ -463,10 +461,23 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_common_ver_3_0_s
                                      * detected TC swapout, not all precessing
                                      * completed. */
   zb_bitfield_t   reserved:5;
-} ZB_PACKED_STRUCT
-zb_nvram_dataset_common_ver_3_0_t;
+#if ZB_NWK_MAC_IFACE_TBL_SIZE == 1
+#elif ZB_NWK_MAC_IFACE_TBL_SIZE == 2
+  /* sizeof(zb_nvram_dataset_common_ver_3_0_t) == 106 (without additional reserved bytes) */
+  zb_uint8_t mm_reserved[2];
+#else
+  #error Current Multi-MAC configuration is not supported
+#endif
 
-typedef zb_nvram_dataset_common_ver_3_0_t zb_nvram_dataset_common_t;
+} ZB_PACKED_STRUCT
+zb_nvram_dataset_common_ver_4_0_t;
+
+/* The new dataset does not introduce new fields, but renames the previously reserved fields,
+ * so we can use the new dataset definition while loading legacy structure.
+ */
+typedef zb_nvram_dataset_common_ver_4_0_t zb_nvram_dataset_common_ver_3_0_t;
+
+typedef zb_nvram_dataset_common_ver_4_0_t zb_nvram_dataset_common_t;
 
 /**
  * @name NVRAM dataset common versions
@@ -479,9 +490,10 @@ typedef zb_nvram_dataset_common_ver_3_0_t zb_nvram_dataset_common_t;
 #define ZB_NVRAM_COMMON_DATA_DS_VER_1 0U
 #define ZB_NVRAM_COMMON_DATA_DS_VER_2 1U
 #define ZB_NVRAM_COMMON_DATA_DS_VER_3 2U
+#define ZB_NVRAM_COMMON_DATA_DS_VER_4 3U
 /** @} */
 
-#define ZB_NVRAM_COMMON_DATA_DS_VER ZB_NVRAM_COMMON_DATA_DS_VER_3
+#define ZB_NVRAM_COMMON_DATA_DS_VER ZB_NVRAM_COMMON_DATA_DS_VER_4
 
 
 /* Check dataset alignment for IAR compiler and ARM Cortex target platfrom */
@@ -546,12 +558,7 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_ha_s
   zb_uint16_t join_indication; /*Number of join attempts*/
   zb_uint16_t packet_buffer_allocate_failures; /*Number of buffer allocation errors*/
 
-  /* EE: 12/16/2016: CR:MAJOR What is meaning of 1 byte after 2-bytes variable?
-     It could be useful if commission_state moved here.
-     Not sure: can we do that?
-     Also, remove any platform defines: NVRAM must have aligned records at any
-     platform. Here and everywhere. */
-  zb_uint8_t aligned[1];
+  zb_uint8_t   cie_address_is_set;  /*!< Is CIE address set */
 } ZB_PACKED_STRUCT
 zb_nvram_dataset_ha_t;
 
@@ -622,7 +629,7 @@ ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_dataset_diagnostics_v1_t);
 
 #endif /* ZDO_DIAGNOSTICS */
 
-#if (defined ZB_PLATFORM_NRF52 && defined ZB_CONFIGURABLE_MEM)
+#ifdef ZB_CONFIGURABLE_MEM
 
 #define ZB_NVRAM_APS_BINDING_TABLE_SPECIFIC_MIGRATION
 
@@ -634,14 +641,14 @@ ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_dataset_diagnostics_v1_t);
 #define ZB_APS_DST_BINDING_TABLE_SIZE_OLD 16U
 #endif  /* ZB_ED_ROLE */
 
-#else /* defined ZB_PLATFORM_NRF52 && defined ZB_CONFIGURABLE_MEM */
+#else /* defined ZB_CONFIGURABLE_MEM */
 
 #define ZB_APS_SRC_BINDING_TABLE_SIZE_OLD ZB_APS_SRC_BINDING_TABLE_SIZE
 #define ZB_APS_DST_BINDING_TABLE_SIZE_OLD ZB_APS_DST_BINDING_TABLE_SIZE
 
 #define ZB_SINGLE_TRANS_INDEX_SIZE_OLD ((ZB_APS_BIND_TRANS_TABLE_SIZE + 7U) / 8U)
 
-#endif /* defined ZB_PLATFORM_NRF52 && defined ZB_CONFIGURABLE_MEM */
+#endif /* defined ZB_CONFIGURABLE_MEM */
 
 typedef ZB_PACKED_PRE struct zb_aps_bind_dst_table_old_s
 {
@@ -664,10 +671,8 @@ typedef ZB_PACKED_PRE struct zb_aps_bind_dst_table_old_s
 
 typedef ZB_PACKED_PRE struct zb_aps_binding_table_old_s
 {
-#ifndef ZB_CONFIGURABLE_MEM
   zb_aps_bind_src_table_t src_table[ZB_APS_SRC_BINDING_TABLE_SIZE_OLD]; /*!< Source table */
   zb_aps_bind_dst_table_old_t dst_table[ZB_APS_DST_BINDING_TABLE_SIZE_OLD]; /*!< Destination table */
-#endif
   zb_uint8_t              src_n_elements;                               /*!< Count elements in source table */
   zb_uint8_t              dst_n_elements;                               /*!< Count elements in destination table */
 #ifdef SNCP_MODE
@@ -681,17 +686,39 @@ typedef ZB_PACKED_PRE struct zb_aps_binding_table_old_s
   zb_uint8_t              trans_table[ZB_APS_BIND_TRANS_TABLE_SIZE];    /*!< Buffers for simultaneous sendings */
 #else
   zb_uint8_t              *trans_table;
-  zb_aps_bind_src_table_t *src_table;
-  zb_aps_bind_dst_table_old_t *dst_table;
 #endif
 } ZB_PACKED_STRUCT zb_aps_binding_table_old_t;
 
 typedef zb_aps_binding_table_old_t zb_nvram_dataset_binding_v1_t;
 
+typedef ZB_PACKED_PRE struct zb_aps_bind_dst_table_v2_s
+{
+#ifdef ZB_CONFIGURABLE_MEM
+  /* WARNING: this field will be rewritten if APS binding dataset is present in NVRAM */
+  zb_uint8_t            *trans_index;
+#endif /* defined ZB_CONFIGURABLE_MEM */
+
+  ZB_PACKED_PRE union
+  {
+    zb_uint16_t group_addr;                /*!< group address */
+    zb_aps_bind_long_dst_addr_t long_addr; /*!< @see zb_asp_long_dst_addr_t */
+  } u;
+
+#ifndef ZB_CONFIGURABLE_MEM
+  zb_uint8_t            trans_index[ZB_SINGLE_TRANS_INDEX_SIZE];
+#endif /* defined ZB_CONFIGURABLE_MEM */
+  zb_uint8_t            align;
+
+  zb_bitfield_t         dst_addr_mode:3;   /*!< destination address mode flag, 0
+                                            * - group address, otherwise long
+                                            * address plus dest endpoint */
+  zb_bitfield_t         src_table_index:5; /*!< index from zb_asp_src_table_t */
+} ZB_PACKED_STRUCT zb_aps_bind_dst_table_v2_t;
+
 /**
  * @brief APS binding NVRAM dataset.
  */
-typedef ZB_PACKED_PRE struct zb_nvram_dataset_binding_v2_s
+typedef ZB_PACKED_PRE struct zb_nvram_dataset_binding_v3_s
 {
   zb_uint8_t src_n_elements;  /*!< Count elements in source table */
   zb_uint8_t dst_n_elements;  /*!< Count elements in destination table */
@@ -702,7 +729,16 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_binding_v2_s
   zb_uint8_t align[2];
 #endif
 } ZB_PACKED_STRUCT
-zb_nvram_dataset_binding_v2_t;
+zb_nvram_dataset_binding_v3_t;
+
+/* The new dataset header does not introduce new fields, but renames the previously reserved fields,
+ * so we can use the new dataset header definition while loading legacy structure.
+ * The binding dataset contents have changed, because the zb_aps_bind_dst_table_t has a different size.
+ * The v2 loading function uses the zb_aps_bind_dst_table_v2_t type instead.
+ */
+typedef zb_nvram_dataset_binding_v3_t zb_nvram_dataset_binding_v2_t;
+
+typedef zb_nvram_dataset_binding_v3_t zb_nvram_dataset_binding_t;
 
 /**
  * @name NVRAM dataset binding versions
@@ -714,12 +750,13 @@ zb_nvram_dataset_binding_v2_t;
 /** @{ */
 #define ZB_NVRAM_APS_BINDING_DATA_DS_VER_1 0U
 #define ZB_NVRAM_APS_BINDING_DATA_DS_VER_2 1U
+#define ZB_NVRAM_APS_BINDING_DATA_DS_VER_3 2U
 /** @} */
 
-#define ZB_NVRAM_APS_BINDING_DATA_DS_VER ZB_NVRAM_APS_BINDING_DATA_DS_VER_2
+#define ZB_NVRAM_APS_BINDING_DATA_DS_VER ZB_NVRAM_APS_BINDING_DATA_DS_VER_3
 
 /* Check dataset alignment for IAR compiler and ARM Cortex target platfrom */
-ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_dataset_binding_v2_t);
+ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_dataset_binding_v3_t);
 
 typedef ZB_PACKED_PRE struct zb_nvram_dataset_groups_hdr_s
 {
@@ -791,7 +828,7 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_wwah_s
 
   zb_uint8_t aps_link_key_authorization_table_cnt;
   zb_uint8_t use_trust_center_for_cluster_table_cnt;
-  zb_uint8_t reserved;          /* there was classification mask */
+  zb_uint8_t reserved;          /* there was classification mask - no longer needed, may be ignored while loading old datasets. */
   zb_zcl_wwah_periodic_checkins_data_t periodic_checkins;
   /* <<< WWAH CTX */
 
@@ -1268,6 +1305,13 @@ void zb_nvram_local_init(void *id);
  */
 void zb_nvram_load(void);
 
+#ifdef ZB_ZBOSS_DEINIT
+/**
+   Denit nvram
+ */
+void zb_nvram_deinit(void);
+#endif
+
 /**
    Save Informational Bases to NVRAM or other persistent storage
  */
@@ -1340,6 +1384,7 @@ zb_ret_t zb_nvram_write_poll_control_dataset(zb_uint8_t page, zb_uint32_t pos);
 #endif /* defined ZB_HA_ENABLE_POLL_CONTROL_SERVER || defined DOXYGEN */
 
 #define ZB_ERROR_NVRAM_READ_FAILURE 1
+#define ZB_ERROR_NVRAM_WRITE_FAILURE 2
 
 #if defined(ZDO_DIAGNOSTICS)
 

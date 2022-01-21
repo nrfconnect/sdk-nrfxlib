@@ -127,6 +127,7 @@ PUT_PL_START(zb_zcl_daily_schedule_publish_schedule_payload_t, pl)
   ZB_ZCL_PACKET_PUT_DATA32(data, &pl->provider_id);
   ZB_ZCL_PACKET_PUT_DATA32(data, &pl->issuer_event_id);
   ZB_ZCL_PACKET_PUT_DATA32(data, &pl->schedule_id);
+  ZB_ZCL_PACKET_PUT_DATA16(data, &pl->day_id);
   ZB_ZCL_PACKET_PUT_DATA32(data, &pl->start_time);
   ZB_ZCL_PACKET_PUT_DATA8 (data, pl->schedule_type);
   ZB_ZCL_PACKET_PUT_DATA8 (data, pl->schedule_time_reference);
@@ -225,6 +226,21 @@ void zb_zcl_daily_schedule_send_cmd_cancel_schedule(zb_uint8_t param,
                        cb);
 }
 
+void zb_zcl_daily_schedule_send_cmd_cancel_all_schedules(zb_uint8_t param,
+  const zb_addr_u *dst_addr, zb_aps_addr_mode_t dst_addr_mode,
+  zb_uint8_t dst_ep, zb_uint8_t src_ep,
+  zb_callback_t cb
+)
+{
+  zb_zcl_send_cmd(param, dst_addr, dst_addr_mode, dst_ep,
+                       ZB_ZCL_FRAME_DIRECTION_TO_CLI,
+                       src_ep, NULL, 0,
+                       NULL,
+                       ZB_ZCL_CLUSTER_ID_DAILY_SCHEDULE,
+                       ZB_ZCL_ENABLE_DEFAULT_RESPONSE,
+                       ZB_ZCL_DAILY_SCHEDULE_SRV_CMD_CANCEL_ALL_SCHEDULES,
+                       cb);
+}
 /******************************************************************************/
 /* Server definitions */
 
@@ -366,7 +382,16 @@ static zb_bool_t zb_zcl_daily_schedule_process_get_schedule_cancellation(zb_uint
 
   if (ZB_ZCL_DEVICE_CMD_PARAM_STATUS(param) == RET_OK)
   {
+#ifdef ZB_ZCL_DAILY_SCHEDULE_CANCEL_PARTICULAR_SCHEDULE
     ZB_ZCL_DAILY_SCHEDULE_SEND_CMD_HELPER(zb_zcl_daily_schedule_send_cmd_cancel_schedule, param, cmd_info, &pl_out, NULL);
+#else
+    zb_zcl_daily_schedule_send_cmd_cancel_all_schedules(param,
+                                                        (zb_addr_u *) &ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source,
+                                                        ZB_APS_ADDR_MODE_16_ENDP_PRESENT,
+                                                        ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).src_endpoint,
+                                                        ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
+                                                        NULL);
+#endif
   }
   else
   {

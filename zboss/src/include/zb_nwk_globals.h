@@ -76,7 +76,7 @@ zb_uint_t zb_calc_non_zero_bits_in_bit_vector(zb_uint8_t *vector, zb_uint_t size
 #define ZB_NLME_STATE_ED_SCAN                   6U
 #define ZB_NLME_STATE_REJOIN                    7U
 #define ZB_NLME_STATE_ORPHAN_SCAN               8U
-#define ZB_NLME_STATE_RESET                     9U
+#define ZB_NLME_STATE_RESET                     9U /* unused currently */
 /* Specific case for searching networks in BDB:
  * when device failed authentication it leaves network
  * but does not clear nib to be able join to other networks.
@@ -209,6 +209,7 @@ typedef struct zb_rejoin_context_s /* do not pack for IAR */
   zb_uint16_t addr;                     /*!< */
   zb_address_ieee_ref_t addr_ref;
   zb_uint8_t secure_rejoin;
+  zb_uint8_t rx_on;
 } ZB_PACKED_STRUCT zb_rejoin_context_t;
 
 
@@ -236,7 +237,7 @@ typedef struct zb_nwk_blacklist_s
 typedef struct zb_nwk_handle_s  /* do not pac for IAR */
 {
   zb_uint8_t state;        /*!< Current network subsystem state @ref nlme_state */
-
+  zb_bool_t operation_cancelled; /*!< Network formation or network discovery is cancelled */
   zb_address_ieee_ref_t parent; /*!< parent address (valid if the device is not ZC and joined)  */
 
   union tmp_u
@@ -489,7 +490,10 @@ typedef struct zb_nwk_globals_s
     zb_callback_t panid_conflict_network_update_recv;
     zb_callback_t no_active_links_left_cb;
     zb_bool_t (*should_accept_frame_before_join)(zb_bufid_t);
+    zb_callback_t nwk_cancel_nwk_disc_resp;
+    zb_callback_t nwk_cancel_nwk_form_resp;
   } selector;
+
 
 } zb_nwk_globals_t;
 
@@ -513,6 +517,9 @@ typedef struct zb_nwk_globals_s
 #endif
 
 #define ZB_NWK_GET_RREQ_ID() (++ZB_NIB().rreq_id)
+
+#define ZB_NWK_MAC_IFACE_TBL() ZB_NIB().mac_iface_tbl
+#define ZB_NWK_MAC_IFACE_TBL_ENTRY(iface_id) (&ZB_NIB().mac_iface_tbl[iface_id])
 
 #ifdef ZB_NWK_USE_SEND_JITTER
 #define ZB_NWK_JITTER(interval) ((interval) + ZB_RANDOM_JTR(ZB_NWK_OCTETS_TO_BI(ZB_NWKC_MAX_BROADCAST_JITTER_OCTETS)))

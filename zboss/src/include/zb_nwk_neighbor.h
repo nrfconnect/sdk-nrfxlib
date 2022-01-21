@@ -193,6 +193,11 @@ void zb_nwk_neighbor_clear(void);
 
 
 /**
+   Remove all non-extneighbors.
+*/
+void zb_nwk_neighbor_remove_non_extnbrs(void);
+
+/**
    Copy ext entry to base, to be able to send packet to it.
 
    @param ext_ent - pointer to external table entry

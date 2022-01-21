@@ -395,6 +395,10 @@ zb_nlme_network_discovery_request_t;
  */
 void zb_nlme_network_discovery_request(zb_uint8_t param);
 
+
+void zb_nwk_cancel_network_discovery(zb_bufid_t buf);
+
+
 /** @brief Network descriptor.
  *  This is a part of network discovery confirm result.
  */
@@ -492,6 +496,9 @@ zb_nlme_network_formation_request_t;
    @snippet zdo_app.c zb_nlme_network_formation_request
  */
 void zb_nlme_network_formation_request(zb_uint8_t param);
+
+void zb_nwk_cancel_network_formation(zb_bufid_t param);
+
 #endif /* ZB_FORMATION */
 
 /**
@@ -910,7 +917,6 @@ void zb_nlme_leave_confirm(zb_uint8_t param);
 typedef ZB_PACKED_PRE struct zb_nlme_reset_request_s
 {
   zb_bool_t warm_start; /**< if false - reset all stack values */
-  zb_bool_t no_nib_reinit;
 } ZB_PACKED_STRUCT
 zb_nlme_reset_request_t;
 
@@ -1245,7 +1251,9 @@ typedef ZB_PACKED_PRE struct zb_apsde_data_ind_params_s
 
   zb_int8_t   rssi;
 
-  zb_uint8_t  handle;       /*!<handle for transmitted/received packet */
+  zb_uint8_t  handle;       /**< handle for transmitted/received packet */
+
+  zb_uint8_t  iface_id;     /**< ID of MAC interface that received the packet */
 } ZB_PACKED_STRUCT zb_apsde_data_ind_params_t;
 
 /** @brief Frame type value from the NWK FCF field: data. */
@@ -1818,10 +1826,10 @@ void nwk_timeout_resp_handler(zb_bufid_t buf, zb_nwk_hdr_t *nwk_hdr, zb_nwk_ed_t
  */
 typedef enum zb_nwk_power_delta_cmd_options_e
 {
-  ZB_NWK_LPD_CMD_OPTIONS_NOTIFICATION = 0x0,
-  ZB_NWK_LPD_CMD_OPTIONS_REQUEST      = 0x1,
-  ZB_NWK_LPD_CMD_OPTIONS_RESPONSE     = 0x2,
-  ZB_NWK_LPD_CMD_OPTIONS_RESERVED     = 0x3,
+  ZB_NWK_LPD_CMD_OPTIONS_NOTIFICATION = 0x0U,
+  ZB_NWK_LPD_CMD_OPTIONS_REQUEST      = 0x1U,
+  ZB_NWK_LPD_CMD_OPTIONS_RESPONSE     = 0x2U,
+  ZB_NWK_LPD_CMD_OPTIONS_RESERVED     = 0x3U,
 } zb_nwk_power_delta_cmd_options_t;
 
 #define ZB_NWK_LPD_CMD_OPTIONS_MASK 0x03U
@@ -1869,23 +1877,24 @@ zb_ret_t zb_nwk_test_dev_annce(zb_uint16_t addr, zb_ieee_addr_t ieee_addr);
   Set NWK PIB attribute
 
   @param param - buffer
+  @param iface_id - MAC interface ID
   @param attr - attribute ID
   @param value - attribute value
   @param value_size - size of attribute value
   @param cb - callback for run after
  */
-void zb_nwk_pib_set(zb_uint8_t param, zb_uint8_t attr, void *value,
+void zb_nwk_pib_set(zb_uint8_t param, zb_uint8_t iface_id, zb_uint8_t attr, void *value,
                     zb_ushort_t value_size, zb_callback_t cb);
 
 /**
   Get NWK PIB attribute
 
   @param param - buffer
+  @param iface_id - MAC interface id
   @param attr - attribute ID
   @param cb - callback for run after
  */
-void zb_nwk_pib_get(zb_uint8_t param, zb_uint8_t attr,
-                    zb_callback_t cb);
+void zb_nwk_pib_get(zb_uint8_t param, zb_uint8_t iface_id, zb_uint8_t attr, zb_callback_t cb);
 
 /** @} */
 /** @endcond */
@@ -2166,16 +2175,9 @@ void nwk_set_tc_connectivity(zb_uint8_t val);
 zb_bool_t nwk_get_tc_connectivity(void);
 #endif /* ZB_PARENT_CLASSIFICATION && ZB_ROUTER_ROLE */
 
-#if defined R22_MULTIMAC
-
-zb_int32_t zb_nwk_get_octet_duration_us();
-#define ZB_NWK_OCTET_DURATION_US (zb_nwk_get_octet_duration_us())
-
-#else
 
 #define ZB_NWK_OCTET_DURATION_US (zb_uint32_t)(ZB_2_4_GHZ_OCTET_DURATION_USEC)
 
-#endif
 
 /* 01/15/2019 EE CR:MINOR For 2.4-only mode this solution is ok from
  * the code size point of view: you pass your octets up to the top and

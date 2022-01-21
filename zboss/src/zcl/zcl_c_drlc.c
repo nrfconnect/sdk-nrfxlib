@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -183,6 +183,13 @@ zb_ret_t zb_drlc_client_handle_load_control_event(zb_uint8_t param, const zb_zcl
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_drlc_client_handle_load_control_event", (FMT__0));
 
+  if (!ZB_ZCL_DRLC_SRV_CMD_LOAD_CONTROL_EVENT_IS_VALID(zb_buf_len(param)))
+  {
+    TRACE_MSG(TRACE_ZCL1, "Invalid packet len (%hd).", (FMT__H, zb_buf_len(param)));
+    zb_zcl_send_default_handler(param, cmd_info, ZB_ZCL_STATUS_INVALID_FIELD);
+    return RET_INVALID_FORMAT;
+  }
+
   ZB_ZCL_PACKET_GET_DATA32(&pl_in.issuer_event_id, data);
   ZB_ZCL_PACKET_GET_DATA16(&pl_in.device_class, data);
   ZB_ZCL_PACKET_GET_DATA8(&pl_in.utility_enrollment_group, data);
@@ -235,6 +242,13 @@ zb_ret_t zb_drlc_client_handle_cancel_load_control_event(zb_uint8_t param, const
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_drlc_client_handle_cancel_load_control_event", (FMT__0));
 
+  if (!ZB_ZCL_DRLC_SRV_CMD_CANCEL_LOAD_CONTROL_EVENT_IS_VALID(zb_buf_len(param)))
+  {
+    TRACE_MSG(TRACE_ZCL1, "Invalid packet len (%hd).", (FMT__H, zb_buf_len(param)));
+    zb_zcl_send_default_handler(param, cmd_info, ZB_ZCL_STATUS_INVALID_FIELD);
+    return RET_INVALID_FORMAT;
+  }
+
   ZB_ZCL_PACKET_GET_DATA32(&pl_in.issuer_event_id, data);
   ZB_ZCL_PACKET_GET_DATA16(&pl_in.device_class, data);
   ZB_ZCL_PACKET_GET_DATA8(&pl_in.utility_enrollment_group, data);
@@ -282,12 +296,19 @@ device shall reply using the "Report Event Status Command" with an Event Status 
 zb_ret_t zb_drlc_client_handle_cancel_all_load_control_events(zb_uint8_t param,
   const zb_zcl_parsed_hdr_t *cmd_info)
 {
-  zb_uint8_t  pl_in = 0;
+  zb_zcl_drlc_cancel_alce_payload_t  pl_in = ZB_ZCL_DRLC_CANCEL_ALCE_PAYLOAD_INIT;
   zb_uint8_t *data = zb_buf_begin(param);
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_drlc_client_handle_cancel_all_load_control_events", (FMT__0));
 
-  ZB_ZCL_PACKET_GET_DATA8(&pl_in, data);
+  if (!ZB_ZCL_DRLC_SRV_CMD_CANCEL_ALL_LOAD_CONTROL_EVENTS_IS_VALID(zb_buf_len(param)))
+  {
+    TRACE_MSG(TRACE_ZCL1, "Invalid packet len (%hd).", (FMT__H, zb_buf_len(param)));
+    zb_zcl_send_default_handler(param, cmd_info, ZB_ZCL_STATUS_INVALID_FIELD);
+    return RET_INVALID_FORMAT;
+  }
+
+  ZB_ZCL_PACKET_GET_DATA8(&pl_in.cancel_control, data);
   ZB_ZCL_DEVICE_CMD_PARAM_INIT_WITH(param,
     ZB_ZCL_DRLC_CANCEL_ALL_LOAD_CONTROL_EVENTS_CB_ID, RET_OK, cmd_info, &pl_in, NULL);
 
@@ -323,17 +344,20 @@ static zb_bool_t zb_zcl_process_drlc_client_commands(zb_uint8_t param,
   {
     case ZB_ZCL_DRLC_SRV_CMD_LOAD_CONTROL_EVENT:
       result = zb_drlc_client_handle_load_control_event(param, cmd_info);
-      status = (RET_OK == result) ? ZB_ZCL_STATUS_SUCCESS: ZB_ZCL_STATUS_FAIL;
+      status = (RET_OK == result) ? ZB_ZCL_STATUS_SUCCESS: 
+               ((RET_INVALID_FORMAT == result) ? ZB_ZCL_STATUS_INVALID_FIELD : ZB_ZCL_STATUS_FAIL);
       processed = ZB_TRUE;
       break;
     case ZB_ZCL_DRLC_SRV_CMD_CANCEL_LOAD_CONTROL_EVENT:
       result = zb_drlc_client_handle_cancel_load_control_event(param, cmd_info);
-      status = (RET_OK == result) ? ZB_ZCL_STATUS_SUCCESS: ZB_ZCL_STATUS_FAIL;
+      status = (RET_OK == result) ? ZB_ZCL_STATUS_SUCCESS: 
+               ((RET_INVALID_FORMAT == result) ? ZB_ZCL_STATUS_INVALID_FIELD : ZB_ZCL_STATUS_FAIL);
       processed = ZB_TRUE;
       break;
     case ZB_ZCL_DRLC_SRV_CMD_CANCEL_ALL_LOAD_CONTROL_EVENTS:
       result = zb_drlc_client_handle_cancel_all_load_control_events(param, cmd_info);
-      status = (RET_OK == result) ? ZB_ZCL_STATUS_SUCCESS: ZB_ZCL_STATUS_FAIL;
+      status = (RET_OK == result) ? ZB_ZCL_STATUS_SUCCESS: 
+               ((RET_INVALID_FORMAT == result) ? ZB_ZCL_STATUS_INVALID_FIELD : ZB_ZCL_STATUS_FAIL);
       processed = ZB_TRUE;
       break;
     default:

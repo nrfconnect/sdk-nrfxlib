@@ -218,7 +218,6 @@ constants etc.
 #ifndef APS_FRAGMENTATION
 #define APS_FRAGMENTATION
 #endif
-#define ZB_MGMT_NWK_ENHANCED_UPDATE_ENABLED
 
 #ifndef ZB_SE_DISABLE_TIME_SYNC
 #define ZB_ENABLE_TIME_SYNC
@@ -246,9 +245,6 @@ constants etc.
  * ZB_SUBGHZ_ONLY_MODE  - only Sub-GHz band supported
  * Nothing of above     - only 2.4GHz band supported
  */
-#if defined ZB_SUBGHZ_ONLY_MODE && defined ZB_R22_MULTIMAC_MODE
-#error ZB_SUBGHZ_ONLY_MODE && ZB_R22_MULTIMAC_MODE defined!
-#endif /* ZB_SUBGHZ_ONLY_MODE && ZB_R22_MULTIMAC_MODE */
 
 #if defined ZB_SUBGHZ_ONLY_MODE || defined ZB_R22_MULTIMAC_MODE
 /* Sub-GHz is used without reference to 2.4GHz band enabled */
@@ -262,7 +258,10 @@ constants etc.
 #define ZB_JOINING_LIST_SUPPORT
 #define ZB_SUB_GHZ_ZB30_SUPPORT
 #define ZB_FILTER_OUT_CLUSTERS
+#if !defined SNCP_MODE
 #define ZB_ZCL_SUPPORT_CLUSTER_SUBGHZ
+#endif
+#define ZB_MGMT_NWK_ENHANCED_UPDATE_ENABLED
 
 #endif /* ZB_SUBGHZ_ONLY_MODE || ZB_R22_MULTIMAC_MODE */
 
@@ -483,6 +482,33 @@ Ideally should rework the whole zb_config.h to suit better for that new concept.
 #define ZB_NWK_SRC_ROUTE_TABLE_EXPIRY 60U
 
 
+
+#if defined ZB_MAC_PENDING_BIT_SOURCE_MATCHING
+
+#if !defined ZB_MAC_SWITCHABLE_PB_MATCHING && defined ZB_MAC_SOFTWARE_PB_MATCHING && defined ZB_MAC_HARDWARE_PB_MATCHING
+#error "Do not define SW and HW pending bit matching at the same time! Use ZB_MAC_SWITCHABLE_PB_MATCHING instead of it!"
+#endif /* !ZB_MAC_SWITCHABLE_PB_MATCHING && ZB_MAC_SOFTWARE_PB_MATCHING && ZB_MAC_HARDWARE_PB_MATCHING */
+
+#if defined ZB_MAC_SWITCHABLE_PB_MATCHING
+#ifndef ZB_MAC_SOFTWARE_PB_MATCHING
+#define ZB_MAC_SOFTWARE_PB_MATCHING
+#endif
+
+#ifndef ZB_MAC_HARDWARE_PB_MATCHING
+#define ZB_MAC_HARDWARE_PB_MATCHING
+#endif
+#endif /* ZB_MAC_SWITCHABLE_PB_MATCHING */
+
+#endif /* ZB_MAC_PENDING_BIT_SOURCE_MATCHING */
+
+
+#if defined ZB_MAC_SWITCHABLE_PB_MATCHING || defined ZB_MAC_SOFTWARE_PB_MATCHING || defined ZB_MAC_HARDWARE_PB_MATCHING
+
+#ifndef ZB_MAC_PENDING_BIT_SOURCE_MATCHING
+#error "ZB_MAC_PENDING_BIT_SOURCE_MATCHING must be defined in your vendor or platform config file either!"
+#endif /* !ZB_MAC_PENDING_BIT_SOURCE_MATCHING */
+
+#endif /* ZB_MAC_SWITCHABLE_PB_MATCHING || ZB_MAC_SOFTWARE_PB_MATCHING || ZB_MAC_HARDWARE_PB_MATCHING */
 
 
 /****************************Zigbee Roles*******************************/
@@ -855,7 +881,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
 /**
    NWK: default energy/active scan duration
 */
-#define ZB_DEFAULT_SCAN_DURATION 3U
+#define ZB_DEFAULT_SCAN_DURATION 4U
 
 #ifdef ZB_SUBGHZ_BAND_ENABLED
 /** @cond DOXYGEN_SUBGHZ_FEATURE */
@@ -929,16 +955,6 @@ ZB_ED_RX_OFF_WHEN_IDLE
 #define ZB_NWK_ROUTING_TABLE_SIZE 5U
 #endif
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
-
-/** @cond DOXYGEN_MULTIMAC_SECTION */
-#ifndef ZB_NWK_MAC_IFACE_TBL_SIZE
-/* For now we use only 1 MAC interface (maybe, working in 2.4 os sub-gig) */
-/**
-   NWK MultiMAC content
-*/
-#define ZB_NWK_MAC_IFACE_TBL_SIZE 1U
-#endif  /* ZB_NWK_MAC_IFACE_TBL_SIZE */
-/** @endcond */ /* DOXYGEN_MULTIMAC_SECTION */
 
 /**
    Size of channel list structure
@@ -1333,7 +1349,7 @@ exponent.
 #ifdef ZB_CERTIFICATION_HACKS
 #if !defined ZB_LIMIT_VISIBILITY && !defined ZB_MEMORY_COMPACT
 #define ZB_LIMIT_VISIBILITY
-#endif /*!defined ZB_LIMIT_VISIBILITY && !defined ZB_MEMORY_COMPACT*/
+#endif /*!ZB_LIMIT_VISIBILITY && !ZB_MEMORY_COMPACT */
 #endif /* ZB_CERTIFICATION_HACKS */
 
 #ifdef ZB_LIMIT_VISIBILITY
@@ -1371,7 +1387,6 @@ exponent.
 //#define TP_PRO_BV_31
 
 //#define TP_PRO_BV_38
-
 
 /* Put radio into RX mode before transmitting. */
 #ifndef ZB_TRANSCEIVER_ON_BEFORE_TX
@@ -1612,8 +1627,8 @@ exponent.
 /**
    Treat all APS keys as Unique.
 (Unique vs Global is brain-damaging flag to define encryption/non encryption at
-APS of some APS commands, like Update Device. It introduced in r20 probably for
-compatibility with some mammoth shit */
+APS of some APS commands, like Update Device. It was introduced in r20 probably for
+compatibility with some old code. */
 //#define ZB_LITE_NO_GLOBAL_VS_UNIQUE_KEYS
 #endif
 
@@ -1823,6 +1838,12 @@ compatibility with some mammoth shit */
 #ifdef ZB_MAC_SOFTWARE_PB_MATCHING
 #undef ZB_MAC_SOFTWARE_PB_MATCHING
 #endif
+#ifdef ZB_MAC_HARDWARE_PB_MATCHING
+#undef ZB_MAC_HARDWARE_PB_MATCHING
+#endif
+#ifdef ZB_MAC_SWITCHABLE_PB_MATCHING
+#undef ZB_MAC_SWITCHABLE_PB_MATCHING
+#endif
 #endif
 
 #ifdef ZB_COORDINATOR_ONLY
@@ -1875,11 +1896,12 @@ compatibility with some mammoth shit */
 #endif /*ZB_PRODUCTION_CONFIG*/
 /*! @} */
 
-#if defined USE_ZB_WATCHDOG || defined ZB_MACSPLIT_DEVICE
+/* Note: MAC split SoC doesn't sleep on hardware, but can sleep on Linux platform */
+#if defined USE_ZB_WATCHDOG || (defined(ZB_MACSPLIT_DEVICE) && !defined(ZB_PLATFORM_LINUX))
 #define ZB_NEVER_STOP_TIMER
 #endif
 
-#ifndef DEBUG
+#ifdef ZB_DISABLE_BIN_TRACE_DUMP_EXPOSE_KEYS
 #ifdef DEBUG_EXPOSE_KEYS
 #warning undefining DEBUG_EXPOSE_KEYS for release build
 #undef DEBUG_EXPOSE_KEYS
@@ -1901,15 +1923,15 @@ compatibility with some mammoth shit */
 #define ZB_TRAFFIC_DUMP_OFF
 #endif
 
-#endif /* DEBUG */
+#endif /* ZB_DISABLE_BIN_TRACE_DUMP_EXPOSE_KEYS */
 
 #ifndef ZB_USE_ERROR_INDICATION
 #define ZB_USE_ERROR_INDICATION
 #endif /* !ZB_USE_ERROR_INDICATION */
 
-#ifdef NCP_MODE_HOST
+#if defined NCP_MODE_HOST && !defined SNCP_MODE
 #define HAVE_TOP_LEVEL_ERROR_HANDLER
-#endif
+#endif /* NCP_MODE_HOST && !SNCP_MODE */
 
 #ifndef ZB_APS_USER_PAYLOAD
 #define ZB_APS_USER_PAYLOAD
@@ -1921,5 +1943,16 @@ compatibility with some mammoth shit */
 #define ZB_DEPRECATED_API
 #endif
 #endif
+
+/** @cond DOXYGEN_MULTIMAC_SECTION */
+/* Monolithic MAC is a default interface and used when enabled interfaces are not specified in vendors */
+#if !defined(ZB_MAC_MONOLITHIC) && !defined(ZB_MACSPLIT_HOST) && !defined(ZB_MACSPLIT_DEVICE) && !defined(ZB_MAC_SUBGHZ) && !defined(NCP_MODE_HOST)
+  #define ZB_MAC_MONOLITHIC
+#endif /* !ZB_MAC_MONOLITHIC && !ZB_MACSPLIT_HOST && !ZB_MACSPLIT_DEVICE && !ZB_MAC_SUBGHZ &&  */
+
+#if (defined(ZB_MAC_MONOLITHIC) || defined(ZB_MACSPLIT_DEVICE)) && !defined(ZB_ALIEN_MAC)
+  #define ZB_COMPILE_MAC_MONOLITHIC
+#endif
+/** @endcond */ /* DOXYGEN_MULTIMAC_SECTION */
 
 #endif /* ZB_CONFIG_H */

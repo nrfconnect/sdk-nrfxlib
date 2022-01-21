@@ -332,15 +332,24 @@ zgps_dev_cluster_rec_t;
 
 typedef ZB_PACKED_PRE union zgps_device_id_u
 {
+  /* dev_id.zgpd_dev_id matches with ZGPD Device ID from Commissioning frame @see zb_zgpd_dev_id_t */
   zb_uint8_t  zgpd_dev_id;
+  /* match with app_info.manuf_model_id. */
   zb_uint16_t	zgpd_manuf_model;
 }
 zgps_device_id_t;
 
 typedef ZB_PACKED_PRE struct zgps_dev_match_rec_s
 {
+  /* Cluster idxes possible for that device id. Not used slots must be filled by ZB_ZCL_CLUSTER_IDX_UNDEFINED.
+     Cluster idx - index in zgps_dev_cluster_rec_t clusters_tbl[].
+   */
   zb_uint16_t		clusters[ZB_ZGP_TBL_MAX_CLUSTERS];
   zb_uint16_t           manuf_id;
+  /* match with device info from Commissioning frame:
+     if zgpd_dev_id != ZB_ZGP_MANUF_SPECIFIC_DEV_ID, match by GPD Device id
+     if zgpd_dev_id == ZB_ZGP_MANUF_SPECIFIC_DEV_ID, match by app_info.manuf_model_id
+  */
   zgps_device_id_t 	dev_id;
 }
 ZB_PACKED_STRUCT zgps_dev_match_rec_t;
@@ -348,6 +357,25 @@ ZB_PACKED_STRUCT zgps_dev_match_rec_t;
 #define IS_STANDART_ZGPS_DEVICE(dev_match_rec) \
   (dev_match_rec->manuf_id == ZB_ZGPD_MANUF_ID_UNSPEC)
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+
+
+/*
+  Using of match table.
+
+  Match table is a static const data declared in the application.
+
+  During GPD commissioning, using information from Commissiponing frame, ZBOSS seeks for matched entry in match_tbl.
+  Match is done by device id or model id - see calls to zb_zgps_get_dev_matching_tbl_index() or zb_zgps_get_ms_dev_matching_tbl_index()
+  Entry index is written into the Sink table.
+
+  Command translation (without details about attr reporting):
+  - get Sink table entry by GPD address
+  - get matxh_tbl entry by index in Sink table.
+  - scan entire match_tbl[]: use match_tbl[i].clusters as an index in clusters_tbl.
+  - in each clusters_tbl entry scan clusters_tbl[i].cmd_ids[] for matching GPD command
+  - seek for appropriate clister in out local Simple desc (decide which EP to map to)
+  - map GPD command to ZCL command by scanning cmd_mapping[]
+ */
 
 /**
  * @brief Necessary information for filling translation table for any ZGPD
@@ -359,10 +387,12 @@ ZB_PACKED_STRUCT zgps_dev_match_rec_t;
 typedef struct zb_zgps_match_info_s
 {
   const zb_uint8_t                       match_tbl_size;
+  /* clusters list to be matched by device id or manufacturer id got from Commissioning frame. */
   const ZB_CODE zgps_dev_match_rec_t    *match_tbl;
   const zb_uint8_t                       cmd_mappings_count;
   const ZB_CODE zgp_to_zb_cmd_mapping_t *cmd_mapping;
   const zb_uint8_t                       clusters_tbl_size;
+  /* clusters table used to translate ZB_GPDF_CMD_ATTR_REPORT / ZB_GPDF_CMD_MANUF_SPEC_ATTR_REPORT */
   const ZB_CODE zgps_dev_cluster_rec_t  *clusters_tbl;
 }
 zb_zgps_match_info_t;
@@ -1787,7 +1817,7 @@ typedef struct zgp_tbl_ent_s
 
   zb_uint32_t      security_counter; /**< The incoming security frame counter for ZGPD */
   zb_uint8_t       zgpd_key[ZB_CCM_KEY_SIZE]; /**< Security key for the GPD */
-  zb_uint8_t       endpoint;
+  zb_uint8_t       endpoint;                  /**< Endpoint pair of IEEE:EP if App ID is 010.  */
   zb_uint8_t       sec_options;               /**< Security options */
   zb_uint8_t       groupcast_radius;    /**< To limit the range of the groupcast */
 
@@ -1806,9 +1836,9 @@ typedef struct zgp_tbl_ent_s
     } proxy;
     struct zgp_sink_tbl_ent_s
     {
-      zb_uint8_t       device_id;           /**< ZGPD Device ID @see zb_zgpd_dev_id_t */
+      zb_uint8_t       device_id;           /**< ZGPD Device ID fot from Commissioning frame @see zb_zgpd_dev_id_t */
       zgp_pair_group_list_t sgrp[ZB_ZGP_MAX_SINK_GROUP_PER_GPD];
-      zb_uint8_t match_dev_tbl_idx;
+      zb_uint8_t match_dev_tbl_idx; /**< index in matching table matched by device_id or app_info.manuf_model_id  */
       /**
        * Extension to the table (field is not presented in specification).
        *

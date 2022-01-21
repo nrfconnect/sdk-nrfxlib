@@ -254,6 +254,8 @@ typedef ZB_PACKED_PRE struct zb_aps_hdr_s
   zb_uint8_t tsn;               /*!< Transaction sequence number for ZDO/ZCL command. */
   zb_uint8_t block_num;         /*!< Fragmentation: block number. */
   zb_uint8_t block_ack;         /*!< Fragmentation: block ack. */
+  zb_uint8_t radius;            /*!< radius from nwk header */
+  zb_uint8_t align[3];
 } ZB_PACKED_STRUCT zb_aps_hdr_t;
 
 
@@ -571,6 +573,25 @@ zb_uint8_t *zb_aps_get_aps_payload(zb_uint8_t param, zb_uint8_t *aps_payload_siz
  * @param cb - pointer to a callback
  */
 void zb_aps_set_user_data_tx_cb(zb_aps_user_payload_callback_t cb);
+
+/*!
+ * @brief Set callback to be called when ZDO command packet is sent.
+ *
+ * That callback is to be used when application wants to know the fact that ZDO
+ * command send is completed.
+ *
+ * Callback provided to ZBOSS ZDO request function (second parameter of
+ * zb_zdo_node_desc_req and similar function) not always can be used for that
+ * purpose. ZBOSS calls ZDO callback immediately when a) unicast transmit of APS
+ * message failed (no ACK) and b) this is ZDO message that does not suppose to
+ * have an answer, like broadcast NWK Update req.  In other cases if callback is
+ * set using zb_af_set_zdo_data_conf_cb, it is called when outgoing ZDO command
+ * is sent; callback passed to zb_zdo_node_desc_req and friends is called when
+ * ZBOSS got response/responses to ZDO command, or ZDO command is timed out.
+ *
+ * @param cb - callback. The buffer passed to the callback has zb_apsde_data_confirm_t in parameters section.
+ */
+void zb_af_set_zdo_data_conf_cb(zb_callback_t cb);
 
 /** @} */ /* aps_user_payload */
 

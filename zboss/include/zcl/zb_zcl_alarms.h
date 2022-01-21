@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -294,7 +294,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_alarm_get_alarm_res_s
  */
 #define ZB_ZCL_ALARMS_GET_ALARM_RES(data_ptr, buffer, status)           \
 {                                                                       \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_alarms_alarm_res_t))        \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_alarms_alarm_res_t))         \
   {                                                                     \
     (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                             \
   }                                                                     \

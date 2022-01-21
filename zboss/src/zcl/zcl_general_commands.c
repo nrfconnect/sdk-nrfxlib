@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -617,9 +617,17 @@ static void zb_zcl_set_attr_val_cmd_post_process(zb_zcl_parsed_hdr_t *cmd_info,
         ret = zb_address_ieee_by_short(ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr,
                                        aps_bind_req->dst_addr.addr_long);
 
+        /* If address table entry doesn't exist, it should be added */
+
+        if (ret == RET_NOT_FOUND)
+        {
+          zb_address_ieee_ref_t addr_ref;
+          zb_address_update(value, ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr, ZB_TRUE, &addr_ref);
+        }
         /* Compare "set CIE address" originator's ieee address to
          * CIE address from request and to current CIE ieee address
          * in IAS Zone Cluster's attribute */
+
         if (ret != RET_OK)
         {
           TRACE_MSG(TRACE_ZCL2, "Failed to obtain CIE ieee address from addr map, skip addr check!",
@@ -655,9 +663,18 @@ static void zb_zcl_set_attr_val_cmd_post_process(zb_zcl_parsed_hdr_t *cmd_info,
           TRACE_MSG(TRACE_ZCL2, "Originator's ieee check failed!", (FMT__0));
         }
 
+        ret = zb_zcl_ias_zone_put_cie_address_to_binding_whitelist(ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint);
 
         if (ret == RET_OK)
         {
+          attr_desc = zb_zcl_get_attr_desc_a(ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
+                                     cmd_info->cluster_id, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_CUSTOM_CIE_EP);
+          ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc,ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).src_endpoint);
+
+          attr_desc = zb_zcl_get_attr_desc_a(ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
+                                     cmd_info->cluster_id, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_CUSTOM_CIE_SHORT_ADDR);
+          ZB_ZCL_SET_DIRECTLY_ATTR_VAL16(attr_desc,ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr);
+
           /* Fill in the rest fields of binding request */
           zb_get_long_address(aps_bind_req->src_addr);
           aps_bind_req->src_endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint;

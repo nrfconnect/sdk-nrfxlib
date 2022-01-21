@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -715,7 +715,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_door_lock_read_lock_door_res_payload_s
     buffer data will be overwritten.
 */
 #define ZB_ZCL_DOOR_LOCK_READ_LOCK_DOOR_RES(buffer)                                   \
-  (   (zb_buf_len((buffer)) != sizeof(zb_zcl_door_lock_read_lock_door_res_payload_t)) \
+  (   (zb_buf_len((buffer)) < sizeof(zb_zcl_door_lock_read_lock_door_res_payload_t))  \
    ?  NULL                                                                            \
    : (zb_zcl_door_lock_read_lock_door_res_payload_t*)zb_buf_begin((buffer)))
 
@@ -733,7 +733,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_door_lock_read_unlock_door_res_payload_s
     being valid until buffer data will be overwritten.
 */
 #define ZB_ZCL_DOOR_LOCK_READ_UNLOCK_DOOR_RES(buffer)                                   \
-  (   (zb_buf_len((buffer)) != sizeof(zb_zcl_door_lock_read_unlock_door_res_payload_t)) \
+  (   (zb_buf_len((buffer)) < sizeof(zb_zcl_door_lock_read_unlock_door_res_payload_t))  \
    ?  NULL                                                                              \
    : (zb_zcl_door_lock_read_unlock_door_res_payload_t*)zb_buf_begin((buffer)))
 

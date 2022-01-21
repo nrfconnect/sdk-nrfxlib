@@ -146,13 +146,12 @@ void zdo_commissioning_start(zb_uint8_t param);
 #if !defined NCP_MODE_HOST && defined ZB_SECURITY_INSTALLCODES && !defined ZB_SECURITY_INSTALLCODES_ONLY
 zb_bool_t zdo_secur_must_use_installcode(zb_bool_t is_client);
 #endif /* !NCP_MODE_HOST && ZB_SECURITY_INSTALLCODES && !ZB_SECURITY_INSTALLCODES_ONLY */
-void zdo_commissioning_update_tclk_done(zb_uint8_t param);
 void zdo_comm_set_permit_join_after_router_start(zb_uint8_t param);
 void zdo_handle_nlme_network_discovery_confirm(zb_uint8_t param);
 void zdo_join_to_nwk_descr(zb_uint8_t param);
 void zdo_authenticated_send_device_annce(zb_uint8_t param);
 void zdo_reset_scanlist(zb_bool_t do_free);
-void zdo_call_nlme_reset(zb_uint8_t param, zb_bool_t warm_start, zb_bool_t nib_reinit, zb_callback_t cb);
+void zdo_call_nlme_reset(zb_uint8_t param, zb_bool_t warm_start, zb_callback_t cb);
 void zdo_next_nwk_discovery_req(zb_uint8_t param);
 zb_bool_t zb_distributed_security_enabled(void);
 #if !defined NCP_MODE_HOST && defined ZB_COORDINATOR_ROLE

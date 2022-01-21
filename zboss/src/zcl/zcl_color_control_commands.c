@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -706,7 +706,6 @@ static zb_bool_t color_control_check_req_options(zb_uint8_t param, zb_uint8_t en
 {
   zb_zcl_color_control_req_options_t req_options;
   zb_bool_t res = ZB_TRUE;
-  zb_bool_t have_options_in_req = ZB_TRUE;
   zb_zcl_attr_t *attr_desc;
 
 #ifdef ZB_ZCL_SUPPORT_CLUSTER_ON_OFF
@@ -724,41 +723,25 @@ static zb_bool_t color_control_check_req_options(zb_uint8_t param, zb_uint8_t en
   {
     zb_uint8_t options = ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc);
 
-    ZB_ZCL_COLOR_CONTROL_GET_CMD_OPTIONS(param, req_options, have_options_in_req);
+    ZB_ZCL_COLOR_CONTROL_GET_CMD_OPTIONS(param, req_options);
 
-    /* ZCL7, 3.10.2.3.1.2 Effect on Receipt
-       The OptionsMask & OptionsOverride fields SHALL both be present or both omitted in the
-       command. A temporary Options bitmap SHALL be created from the Options attribute, using
-       OptionsMask & OptionsOverride fields, if present. Each bit of the temporary Options bitmap
-       SHALL be determined as follows:
-       Each bit in the Options attribute SHALL determine the corresponding bit in the temporary
-       Options bitmap, unless the OptionsMask field is present and has the corresponding bit set to
-       1, in which case the corresponding bit in the OptionsOverride field SHALL determine the
-       corresponding bit in the temporary Options bitmap.
-       The resulting temporary Options bitmap SHALL be processed as defined in section 3.10.2.2.8.
-    */
-
-    TRACE_MSG(TRACE_ZCL1, "have_options_in_req %hd", (FMT__H, have_options_in_req));
-
-    if (have_options_in_req)
+    /* Check and override bits if needed */
+    if (ZB_CHECK_BIT_IN_BIT_VECTOR(&req_options.options_mask,
+                                   ZB_ZCL_COLOR_CONTROL_OPTIONS_EXECUTE_IF_OFF))
     {
-      /* Check and override bits if needed */
-      if (ZB_CHECK_BIT_IN_BIT_VECTOR(&req_options.options_mask,
+      if (ZB_CHECK_BIT_IN_BIT_VECTOR(&req_options.options_override,
                                      ZB_ZCL_COLOR_CONTROL_OPTIONS_EXECUTE_IF_OFF))
       {
-        if (ZB_CHECK_BIT_IN_BIT_VECTOR(&req_options.options_override,
-                                       ZB_ZCL_COLOR_CONTROL_OPTIONS_EXECUTE_IF_OFF))
-        {
-          ZB_SET_BIT_IN_BIT_VECTOR(&options,
-                                   ZB_ZCL_COLOR_CONTROL_OPTIONS_EXECUTE_IF_OFF);
-        }
-        else
-        {
-          ZB_CLR_BIT_IN_BIT_VECTOR(&options,
-                                   ZB_ZCL_COLOR_CONTROL_OPTIONS_EXECUTE_IF_OFF);
-        }
+        ZB_SET_BIT_IN_BIT_VECTOR(&options,
+                                 ZB_ZCL_COLOR_CONTROL_OPTIONS_EXECUTE_IF_OFF);
+      }
+      else
+      {
+        ZB_CLR_BIT_IN_BIT_VECTOR(&options,
+                                 ZB_ZCL_COLOR_CONTROL_OPTIONS_EXECUTE_IF_OFF);
       }
     }
+    
 
 #ifdef ZB_ZCL_SUPPORT_CLUSTER_ON_OFF
     /* ZCL7, 5.2.2.2.1.30 ExecuteIfOff Options Bit

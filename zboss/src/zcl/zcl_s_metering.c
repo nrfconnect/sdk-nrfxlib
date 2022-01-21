@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -596,7 +596,7 @@ static const zb_uint8_t *zb_zcl_metering_get_snapshot_data_parse_payload(zb_zcl_
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_metering_get_snapshot_data_parse_payload", (FMT__0));
 
-  if (data_size != sizeof(zb_zcl_metering_get_snapshot_payload_t))
+  if (data_size < sizeof(zb_zcl_metering_get_snapshot_payload_t))
   {
     TRACE_MSG(TRACE_ZCL1, "Invalid payload size %hd", (FMT__H, data_size));
     return NULL;
@@ -622,7 +622,7 @@ static const zb_uint8_t *zb_zcl_metering_request_fast_poll_mode_parse_payload(
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_metering_request_fast_poll_mode_parse_payload", (FMT__0));
 
-  if (data_size != sizeof(zb_zcl_metering_request_fast_poll_mode_payload_t))
+  if (data_size < sizeof(zb_zcl_metering_request_fast_poll_mode_payload_t))
   {
     TRACE_MSG(TRACE_ZCL1, "Invalid payload size %hd", (FMT__H, data_size));
     return NULL;
@@ -645,7 +645,7 @@ static const zb_uint8_t *zb_zcl_metering_get_sampled_data_parse_payload(zb_zcl_m
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_metering_get_sampled_data_parse_payload", (FMT__0));
 
-  if (data_size != sizeof(zb_zcl_metering_get_sampled_data_payload_t))
+  if (data_size < sizeof(zb_zcl_metering_get_sampled_data_payload_t))
   {
     TRACE_MSG(TRACE_ZCL1, "Invalid payload size %hd", (FMT__H, data_size));
     return NULL;

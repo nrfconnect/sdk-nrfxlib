@@ -196,6 +196,8 @@ typedef void (*zb_zdo_duty_cycle_mode_ind_cb_t) (zb_uint8_t mode);
 zb_ret_t zdo_dev_start(void);
 
 
+/* TODO: [Multi-MAC] do not use PIB in samples here, do not use direct contexts access,
+ * rewrite example with modern ZBOSS public API */
 /**
    Application main loop.
 
@@ -736,12 +738,15 @@ void zb_zdo_register_set_channel_confirm_cb(zb_zdo_set_channel_confirm_cb_t cb);
  * @param short_addr - short address of the updated device
  * @param status - the updated status of the device
  *        (see r21 spec, Table 4.14 APSME-UPDATE-DEVICE.request Parameters)
+ * @param parent_short - short address of the device parent, 0xffff if unknown
+ * @param action - action TC made - @see secur_tc_action
  */
 void zb_send_device_update_signal(zb_uint8_t param,
                                   zb_ieee_addr_t long_addr,
                                   zb_uint16_t short_addr,
-                                  zb_uint8_t status);
-
+                                  zb_uint8_t status,
+                                  zb_uint16_t parent_short,
+                                  zb_uint8_t action);
 /**
  * @brief Prepare parameters and send
  *        @ZB_ZDO_SIGNAL_DEVICE_UPDATE signal with delay
@@ -750,8 +755,10 @@ void zb_send_device_update_signal(zb_uint8_t param,
  *                    (need to getting @zb_address_ieee_ref_t)
  * @param status - status of the updated device
  *                 (see r21 spec, Table 4.14 APSME-UPDATE-DEVICE.request Parameters)
+ * @param parent_addr - long address of the parent
+ * @param ret - return status of TC authorization procedure
  */
-void zb_prepare_and_send_device_update_signal(zb_ieee_addr_t long_addr, zb_uint8_t status);
+void zb_prepare_and_send_device_update_signal(zb_ieee_addr_t long_addr, zb_uint8_t status, zb_ieee_addr_t parent_addr, zb_ret_t ret);
 
 /* **************************** Device Authorized Signal functions **************************** */
 
@@ -1008,21 +1015,75 @@ void zb_set_zdo_descriptor(void);
 
 void zdo_rejoin_clear_prev_join(void);
 
+typedef enum zb_zdo_tsn_policy_e
+{
+  ZDO_TSN_POLICY_FULL_RANGE,       /*!< ZBOSS is allowed to manage full the range of ZDO TSN */
+  ZDO_TSN_POLICY_RANGE_128_254,    /*!< ZBOSS TSN pool is reduced to the range of ZDO TSN from 128 to 254
+                                        (it is assumed that APP is in charge to manage ZDO TSN range from 0 to 127) */
+} zb_zdo_tsn_policy_t;
 
-/* EES: reserve for not used ZDO TSN values at upper layers */
-#define ZDO_TSN_INC()\
-  ZDO_CTX().tsn++;\
-  if (ZDO_CTX().tsn == 0xFFu)\
-  {\
-    ZDO_CTX().tsn = 0U;\
-  }
+/**
+   set the policy to update ZDO TSN value
+ */
+void zdo_tsn_policy_set(zb_zdo_tsn_policy_t policy);
 
-#define ZDO_TSN_DEC()\
-  ZDO_CTX().tsn--;\
-  if (ZDO_CTX().tsn == 0xFFu)\
-  {\
-    ZDO_CTX().tsn = 0xFEU;\
-  }
+/**
+   predict (not really increment) ZDO TSN value according to the policy
+
+   @return ZDO TSN predicted value
+ */
+zb_uint8_t zdo_tsn_predict(void);
+
+/**
+   update (increment) ZDO TSN value according to the policy
+
+   @return ZDO TSN updated value
+ */
+zb_uint8_t zdo_tsn_inc(void);
+
+/**
+   get current ZDO TSN value
+
+   @return ZDO TSN current value
+ */
+zb_uint8_t zdo_tsn_get(void);
+
+#ifdef ZBOSS_ZDO_APP_TSN_ENABLE
+/* Yes, it is not so good solution.
+   But it allows an application to generate its own ZDO requests
+   with custom ZDO sequence numbers.
+   Unfortunately, some of application requires such a behaviour.
+
+   The main idea is to assign a ZDO sequence number with buffer ID of the request,
+   so zdo_send_req function can use this sequence number instead of internal counter.
+   Unfortunately, we can't pass the ZDO sequence number in the same buffer
+   as a parameter due to the different implementations of ZDO interface functions.
+   These parameters sometime are passed as buffer param, but sometime in the beginning
+   of the buffer as a data ready to be used for the low level apsde data request interface.
+  */
+typedef struct zdo_app_tsn_entry_s
+{
+  zb_bufid_t buf_ref;
+  zb_uint8_t app_tsn;
+} zdo_app_tsn_entry_t;
+
+/**
+   allocate an entry of ZDO APP TSN
+
+   @return ZDO APP TSN entry or NULL in case there's no available slot in the table
+ */
+zdo_app_tsn_entry_t * zdo_app_tsn_allocate(zb_bufid_t buf_ref);
+
+/**
+   release an entry of ZDO APP TSN
+ */
+void zdo_app_tsn_release(zb_bufid_t buf_ref);
+
+/**
+   get an entry of ZDO APP TSN by buffer id
+ */
+zdo_app_tsn_entry_t * zdo_app_tsn_get_by_buf_ref(zb_bufid_t buf_ref);
+#endif  /* ZBOSS_ZDO_APP_TSN_ENABLE */
 
 /**
    ZBOSS commissioning type
@@ -1106,21 +1167,32 @@ ZB_RING_BUFFER_DECLARE(zb_joining_list_op_q, zb_jl_q_ent_t, ZB_JOINING_LIST_Q_SI
 /*Legacy API for device role selection. Used in some old tests*/
 #ifdef ZB_COORDINATOR_ROLE
 void zb_set_network_coordinator_role_with_mode(zb_uint32_t channel_mask, zb_uint8_t bdb_mode);
-#endif
-void zb_set_network_router_role_with_mode(zb_uint32_t channel_mask, zb_commissioning_type_t bdb_mode);
-void zb_set_network_ed_role_with_mode(zb_uint32_t channel_mask, zb_commissioning_type_t bdb_mode);
+void zb_set_nwk_coordinator_role_legacy_ext(zb_channel_list_t channel_list);
+#endif /* ZB_COORDINATOR_ROLE */
 
-void zb_set_network_coordinator_role_legacy_ext(zb_channel_list_t channel_list);
-void zb_set_network_router_role_legacy_ext(zb_channel_list_t channel_list);
-void zb_set_network_ed_role_legacy_ext(zb_channel_list_t channel_list);
+#ifdef ZB_ROUTER_ROLE
+void zb_set_network_router_role_with_mode(zb_uint32_t channel_mask, zb_commissioning_type_t bdb_mode);
+void zb_set_nwk_router_role_legacy_ext(zb_channel_list_t channel_list);
+#endif /* ZB_ROUTER_ROLE */
+
+#ifdef ZB_ED_FUNC
+void zb_set_network_ed_role_with_mode(zb_uint32_t channel_mask, zb_commissioning_type_t bdb_mode);
+void zb_set_nwk_ed_role_legacy_ext(zb_channel_list_t channel_list);
+#endif /* ZB_ED_FUNC */
 
 #ifdef ZB_USE_INTERNAL_HEADERS
 #ifdef ZB_COORDINATOR_ROLE
 void zb_set_network_coordinator_role_legacy(zb_uint32_t channel_mask);
-#endif
+#endif /* ZB_COORDINATOR_ROLE */
+
+#ifdef ZB_ROUTER_ROLE
 void zb_set_network_router_role_legacy(zb_uint32_t channel_mask);
+#endif /* ZB_ROUTER_ROLE */
+
+#ifdef ZB_ED_FUNC
 void zb_set_network_ed_role_legacy(zb_uint32_t channel_mask);
-#endif
+#endif /* ZB_ED_FUNC */
+#endif /* ZB_USE_INTERNAL_HEADERS */
 
 /**
   Set simple descriptor parameters

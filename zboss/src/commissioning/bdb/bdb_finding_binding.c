@@ -88,19 +88,13 @@ void zb_bdb_finding_binding_init_ctx()
 F & B Target
 */
 
-/* Starts EZ-Mode Finding and binding mechanism at the target's endpoint */
-zb_ret_t zb_bdb_finding_binding_target(zb_uint8_t endpoint)
+/* Starts EZ-Mode Finding and binding mechanism at the target's endpoint internal fuction */
+zb_ret_t zb_bdb_finding_binding_target_func(zb_uint8_t endpoint, zb_uint8_t commissioning_time_secs)
 {
   zb_ret_t ret = RET_OK;
   zb_bool_t bdb_finding_binding_started;
 
-  TRACE_MSG(TRACE_ZCL1, "> bdb_finding_binding_target endpoint %hd", (FMT__H, endpoint));
-
-  /* Check arguments passed */
-  if(!ZB_AF_IS_EP_REGISTERED(endpoint))
-  {
-    ret = RET_INVALID_PARAMETER_1;
-  }
+  TRACE_MSG(TRACE_ZCL1, "> bdb_finding_binding_target_func endpoint %hd", (FMT__H, endpoint));
 
   bdb_finding_binding_started =
 	  (zb_bool_t)((zb_bdb_commissioning_mode_mask_t)ZB_BDB().bdb_commissioning_step != ZB_BDB_COMMISSIONING_STOP);
@@ -122,8 +116,8 @@ zb_ret_t zb_bdb_finding_binding_target(zb_uint8_t endpoint)
   {
     /* Clear BDB Comissioning Mode state after identifying has finished */
     ZB_SCHEDULE_ALARM(zb_bdb_finding_binding_target_alarm, 0,
-                      ZB_MILLISECONDS_TO_BEACON_INTERVAL(ZB_BDB().bdb_commissioning_time * 1000));
-    ret = ( zb_zcl_start_identifying(endpoint, ZB_BDB().bdb_commissioning_time) == ZB_ZCL_STATUS_SUCCESS ?
+                      ZB_MILLISECONDS_TO_BEACON_INTERVAL(commissioning_time_secs * 1000));
+    ret = ( zb_zcl_start_identifying(endpoint, commissioning_time_secs) == ZB_ZCL_STATUS_SUCCESS ?
             RET_OK : RET_ERROR );
   }
   if (ret == RET_OK)
@@ -134,7 +128,59 @@ zb_ret_t zb_bdb_finding_binding_target(zb_uint8_t endpoint)
     BDB_COMM_CTX().ep = endpoint;
   }
 
+  TRACE_MSG(TRACE_ZCL1, "< bdb_finding_binding_target_func ret %hd", (FMT__H, ret));
+
+  return ret;
+}
+
+
+/* Starts EZ-Mode Finding and binding mechanism at the target's endpoint with default time */
+zb_ret_t zb_bdb_finding_binding_target(zb_uint8_t endpoint)
+{
+  zb_ret_t ret = RET_OK;
+
+  TRACE_MSG(TRACE_ZCL1, "> bdb_finding_binding_target endpoint %hd", (FMT__H, endpoint));
+
+  /* Check arguments passed */
+  if (!ZB_AF_IS_EP_REGISTERED(endpoint))
+  {
+    ret = RET_INVALID_PARAMETER_1;
+  }
+
+  if (ret == RET_OK)
+  {
+    ret = zb_bdb_finding_binding_target_func(endpoint, ZB_BDB().bdb_commissioning_time);
+  }
+
   TRACE_MSG(TRACE_ZCL1, "< bdb_finding_binding_target ret %hd", (FMT__H, ret));
+
+  return ret;
+}
+
+
+/* Starts EZ-Mode Finding and binding mechanism at the target's endpoint with time in parameter */
+zb_ret_t zb_bdb_finding_binding_target_ext(zb_uint8_t endpoint, zb_uint8_t commissioning_time_secs)
+{
+  zb_ret_t ret = RET_OK;
+
+  TRACE_MSG(TRACE_ZCL1, "> bdb_finding_binding_target_ext endpoint %hd", (FMT__H, endpoint));
+
+  /* Check arguments passed */
+  if (!ZB_AF_IS_EP_REGISTERED(endpoint))
+  {
+    ret = RET_INVALID_PARAMETER_1;
+  }
+  else if (commissioning_time_secs < ZB_BDBC_MIN_COMMISSIONING_TIME_S)
+  {
+    ret = RET_INVALID_PARAMETER_2;
+  }
+
+  if (ret == RET_OK)
+  {
+    ret = zb_bdb_finding_binding_target_func(endpoint, commissioning_time_secs);
+  }
+
+  TRACE_MSG(TRACE_ZCL1, "< bdb_finding_binding_target_ext ret %hd", (FMT__H, ret));
 
   return ret;
 }
@@ -446,6 +492,9 @@ static zb_ret_t bind_respondent_cluster(zb_bdb_comm_respondent_info_t *responden
 
     respondent->curr_bind_req_buf = param;
     aps_bind_req->confirm_cb = handle_bind_confirm;
+#ifdef SNCP_MODE
+    aps_bind_req->remote_bind = ZB_B2U(ZB_TRUE);
+#endif
     zb_apsme_bind_request(param);
   }
 

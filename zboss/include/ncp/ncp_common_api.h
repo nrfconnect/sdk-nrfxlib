@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -38,25 +38,33 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: ZBOSS version declare
+/*  PURPOSE: API shared for host and dev
 */
+#ifndef NCP_COMMON_API_H
+#define NCP_COMMON_API_H 1
 
-#ifndef ZB_VERSION_H
-#define ZB_VERSION_H 1
+#include "zb_types.h"
+#include "zb_errors.h"
 
-/*
-  ZBOSS Core version: A.B.C
-  <A> - ZBOSS_MAJOR (defines ZBOSS core version)
-  <B> - ZBOSS_MINOR (defines ZBOSS core version)
-  <C> - ZBOSS SDK revision
-*/
+/** @cond DOXYGEN_NCP_SECTION */
 
-#ifndef ZBOSS_MAJOR
-#define ZBOSS_MAJOR 3U
-#endif
+/** @addtogroup ncp_common_api
+ * @{
+ */
 
-#ifndef ZBOSS_MINOR
-#define ZBOSS_MINOR 11U
-#endif
+/**
+ * @brief It is used to create and read a response sent by @ref zb_ncp_custom_response
+ */
+typedef ZB_PACKED_PRE struct ncp_hl_custom_resp_s
+{
+  zb_ret_t status;
+  zb_uint8_t tsn;
+} ZB_PACKED_STRUCT ncp_hl_custom_resp_t;
 
-#endif /* ZB_VERSION_H */
+
+
+/** @} */ /* ncp_common_api */
+
+/** @endcond */ /* DOXYGEN_NCP_SECTION */
+
+#endif /* NCP_COMMON_API_H */

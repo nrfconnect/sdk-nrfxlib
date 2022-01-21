@@ -296,9 +296,9 @@ zb_ret_t zb_zcl_put_reporting_info(zb_zcl_reporting_info_t* rep_info_ptr, zb_boo
           /* [AN] 3/3/2020 maybe we should report only in case, when maximum interval is non-zero*/
           if (rep_info->u.send_info.max_interval)
           {
-          zb_zcl_mark_attr_for_reporting(rep_info->ep, rep_info->cluster_id, rep_info->cluster_role, rep_info->attr_id);
+            zb_zcl_mark_attr_for_reporting(rep_info->ep, rep_info->cluster_id, rep_info->cluster_role, rep_info->attr_id);
+          }
         }
-      }
       }
       else
       {
@@ -429,15 +429,11 @@ zb_ret_t zb_zcl_put_reporting_info_from_req(zb_zcl_configure_reporting_req_t *co
     ZB_ZCL_CLR_ALL_REPORTING_FLAGS(rep_info);
 
     ZB_ZCL_SET_REPORTING_FLAG(rep_info, ZB_ZCL_REPORTING_SLOT_BUSY);
-    /* Set reported_value to 0xff - it is most likely not the default value and not the first change
-       for the attribute.
-       Rationale: we do not have a flag to check is it first or non-first report. Furthermore, we
-       do reporting checks AFTER applying new value to attribute. Because of that, if first
-       attribute change is to the value equal to initial reported_value (it is 0), this change
-       will not be reportable.
-       0xff value is invalid for the most of attributes, so looks like it is more safe to use.
+    /* We can't use 0xff as reported value, it can be default value for reportable attribute.
+       E.g RMSVoltage attribute of Electrical measurement cluster
+       So, let's use ZB_ZCL_REPORT_IS_FIRST flag for this purpose
     */
-    ZB_MEMSET(&rep_info->u.send_info.reported_value, -1, sizeof(union zb_zcl_attr_var_u));
+    ZB_ZCL_SET_REPORTING_FLAG(rep_info, ZB_ZCL_REPORT_IS_FIRST);
     rep_info->direction = config_rep_req->direction;
     rep_info->ep = attr_addr_info->src_ep;
       TRACE_MSG(TRACE_ZCL3, "put_reporting_info ep %i", (FMT__H, rep_info->ep));
@@ -1249,12 +1245,12 @@ static zb_bool_t check_delta_value(zb_zcl_reporting_info_t *rep_info)
   {
     if (zb_zcl_is_analog_data_type(attr_desc->type))
     {
-      if (rep_info->u.send_info.reported_value.u48.high == 0xFFFF &&
-          rep_info->u.send_info.reported_value.u48.low == 0xFFFFFFFF)
+      if (ZB_ZCL_GET_REPORTING_FLAG(rep_info, ZB_ZCL_REPORT_IS_FIRST))
       {
         /* Special reported_value indicates that it is first check_delta_value() call - report any
          * value first time. */
         TRACE_MSG(TRACE_ZCL3, "First report!", (FMT__0));
+        ZB_ZCL_CLR_REPORTING_FLAG(rep_info, ZB_ZCL_REPORT_IS_FIRST);
         ret = RET_OK;
       }
       else

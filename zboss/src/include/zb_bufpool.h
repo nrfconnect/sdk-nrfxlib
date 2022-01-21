@@ -71,6 +71,8 @@
 #define ZB_NWK_UNLOCK_IN(bufid)
 #endif
 
+#define ZB_BUF_GET_MULTIPLICITY(buf_hdr) ((buf_hdr)->multiplicity)
+
 /* Differing definitions */
 
 #if defined ZB_LEGACY_BUFS /* old buffer implementation */

@@ -9,6 +9,17 @@ Changelog
 
 All notable changes to this project in the |NCS| are documented in this file.
 
+Main branch
+***********
+
+All the notable changes included in the |NCS| main branch are documented in this section.
+
+Updated
+=======
+
+* Updated the ZBOSS stack to version ``3.11.0.0+5.1.0``.
+  For detailed information, see `ZBOSS stack release notes`_ for the main branch.
+
 nRF Connect SDK v1.8.0
 **********************
 

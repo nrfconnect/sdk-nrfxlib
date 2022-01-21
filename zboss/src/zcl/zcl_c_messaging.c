@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -138,6 +138,14 @@ static void zb_zcl_messaging_client_handle_cancel_message(zb_uint8_t param,
   zb_uint8_t                            *data = zb_buf_begin(param);
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_messaging_client_handle_cancel_message", (FMT__0));
+
+  if (!ZB_ZCL_MESSAGING_MSG_CANCEL_MESSAGE_SIZE_IS_VALID(zb_buf_len(param)))
+  {
+    TRACE_MSG(TRACE_ZCL1, "malformed packet (small), prevented buffer overflow (%hd)",
+              (FMT__H, zb_buf_len(param)));
+    zb_zcl_send_default_handler(param, cmd_info, ZB_ZCL_STATUS_INVALID_FIELD);
+    return;
+  }
 
   ZB_ZCL_PACKET_GET_DATA32(&pl.message_id, data);
   ZB_ZCL_PACKET_GET_DATA8(&pl.message_control, data);

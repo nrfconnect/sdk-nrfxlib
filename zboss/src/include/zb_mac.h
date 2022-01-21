@@ -52,11 +52,13 @@
 /* Include platform-specific MAC stuff from the separate repo */
 #include "mac_platform.h"
 
-#ifdef ZB_ALIEN_MAC
-#define ZB_TRANSCEIVER_START_CHANNEL_NUMBER 11U
-#define ZB_TRANSCEIVER_MAX_CHANNEL_NUMBER   26U
+#ifndef ZB_TRANSCEIVER_START_CHANNEL_NUMBER
+  #define ZB_TRANSCEIVER_START_CHANNEL_NUMBER 11U
 #endif
 
+#ifndef ZB_TRANSCEIVER_MAX_CHANNEL_NUMBER
+  #define ZB_TRANSCEIVER_MAX_CHANNEL_NUMBER   26U
+#endif
 
 #define ZB_MAC_IS_ADDRESS_BROADCAST(addr) ( ((addr) & 0xFFF0U) == 0xFFF0U )
 
@@ -1269,8 +1271,10 @@ zb_pending_address_spec_t;
    each channel is [ aBaseSuperframeDuration * ( 2n + 1 ) ] symbols, where n is the value of the
    ScanDuration parameter.
 
+   @param mac_iface_id - index of interface that will be used for scanning
+   TODO [Multi-MAC] will it be better to just extract iface_id from _channel_page and _channels?
 */
-#define ZB_MLME_BUILD_SCAN_REQUEST( buf, _channel_page, _channels, type, duration)                   \
+#define ZB_MLME_BUILD_SCAN_REQUEST( buf, _channel_page, _channels, type, duration, mac_iface_id)     \
 do                                                                                                   \
 {                                                                                                    \
   zb_mlme_scan_params_t *_p = zb_buf_alloc_tail((buf), sizeof(zb_mlme_scan_params_t));               \
@@ -1278,6 +1282,7 @@ do                                                                              
   _p->channels = _channels;                                                                          \
   _p->scan_type = type;                                                                              \
   _p->scan_duration = duration;                                                                      \
+  _p->iface_id = mac_iface_id;                                                                       \
 } while( 0 )
 
 #define ZB_MLME_SCAN_REQUEST_IE_SIZES_HDR_LEN 2U
@@ -1327,6 +1332,7 @@ do                                                                              
 
 typedef ZB_PACKED_PRE struct zb_mac_scan_confirm_s
 {
+  zb_uint8_t  iface_id;
   zb_uint8_t  status;
   zb_uint8_t  scan_type;
   zb_uint8_t  channel_page;
@@ -1501,6 +1507,7 @@ typedef zb_uint8_t zb_mac_capability_info_t;
 #define MAC_UNSUPPORTED_LEGACY      0xdeU
 #define MAC_UNSUPPORTED_SECURITY    0xdfU /*!< Security on received frame is not supported */
 #define MAC_PURGED                  0xdaU /*!< Custom status: the packet has been purged */
+#define MAC_INTERRUPTED             0xd0U /*!< Custom status: the operation has been interrupted */
 /** @} */
 
 /**
@@ -1615,6 +1622,7 @@ typedef ZB_PACKED_PRE struct zb_mcps_data_req_params_s
   zb_uint8_t      key_source[8];    /**< */
   zb_uint8_t      key_index;        /**< */
 #endif
+  zb_uint8_t iface_id;
 } ZB_PACKED_STRUCT
 zb_mcps_data_req_params_t;
 
@@ -1652,6 +1660,7 @@ typedef ZB_PACKED_PRE struct zb_mcps_data_confirm_params_s
   zb_uint8_t nwk_retry_cnt;
 #endif
   zb_uint8_t msdu_handle;   /**< MSDU handle value. */
+  zb_uint8_t iface_id;
 } ZB_PACKED_STRUCT zb_mcps_data_confirm_params_t;
 
 /**
@@ -1738,7 +1747,7 @@ union zb_cb_align64_u
 typedef ZB_PACKED_PRE struct zb_mlme_get_request_s
 {
   zb_uint8_t            pib_attr;
-  zb_uint8_t            pib_index;
+  zb_uint8_t            iface_id;
   union zb_cb_align64_u confirm_cb_u;
 } ZB_PACKED_STRUCT zb_mlme_get_request_t;
 
@@ -1747,7 +1756,7 @@ typedef ZB_PACKED_PRE struct zb_mlme_get_confirm_s
 {
   zb_mac_status_t    status;
   zb_uint8_t  pib_attr;
-  zb_uint8_t         pib_index;
+  zb_uint8_t         iface_id;
   zb_uint8_t         pib_length;
 } ZB_PACKED_STRUCT
 zb_mlme_get_confirm_t;
@@ -1756,7 +1765,7 @@ zb_mlme_get_confirm_t;
 typedef ZB_PACKED_PRE struct zb_mlme_set_request_s
 {
   zb_uint8_t  pib_attr;
-  zb_uint8_t         pib_index;
+  zb_uint8_t         iface_id;
   zb_uint8_t         pib_length;
   union zb_cb_align64_u    confirm_cb_u;
 } ZB_PACKED_STRUCT
@@ -1767,7 +1776,7 @@ typedef ZB_PACKED_PRE struct zb_mlme_set_confirm_s
 {
   zb_mac_status_t status;
   zb_uint8_t pib_attr;
-  zb_uint8_t pib_index; /*!< MAC Interface #  */
+  zb_uint8_t iface_id; /*!< MAC Interface #  */
   ZB_PACKED_PRE union zb_cb_align64_u confirm_cb_u;
 } ZB_PACKED_STRUCT zb_mlme_set_confirm_t;
 
@@ -1869,6 +1878,7 @@ void zb_mlme_set_confirm(zb_uint8_t param);
 /** @brief Parameters for start request. */
 typedef ZB_PACKED_PRE struct zb_mlme_start_req_s
 {
+  zb_uint8_t  iface_id;
   zb_uint16_t pan_id;                               /**< Pan ID */
   zb_uint8_t  logical_channel;                      /**< Logical channel */
   zb_uint8_t  channel_page;                         /**< The channel page to use */
@@ -1881,7 +1891,6 @@ typedef ZB_PACKED_PRE struct zb_mlme_start_req_s
 } ZB_PACKED_STRUCT
 zb_mlme_start_req_t;
 
-
 /**
  *  @brief Handles start request.
  *  @param param - reference to buffer, contains zb_mlme_start_req_t parameters for start.
@@ -1889,13 +1898,14 @@ zb_mlme_start_req_t;
  *  @snippet tp_pro_bv_29_zc2.c zb_mlme_start_request
  *
  */
-void zb_mlme_start_request (zb_uint8_t param);
+void zb_mlme_start_request(zb_uint8_t param);
+
 
 /**
  *  @brief Confirms start procedure.
  *  @param param - reference to buffer.
  */
-void zb_mlme_start_confirm (zb_uint8_t param);
+void zb_mlme_start_confirm(zb_uint8_t param);
 
 /** @brief Parameter for the zb_mlme_reset_request(). */
 typedef ZB_PACKED_PRE struct zb_mlme_reset_request_s
@@ -1905,9 +1915,7 @@ typedef ZB_PACKED_PRE struct zb_mlme_reset_request_s
                                            MAC sublayer is reset, but all MAC PIB attributes retain
                                            their values prior to the generation of the
                                            MLME-RESET.request primitive.  */
-#ifdef ZB_MAC_RESET_AT_SHUT
-  zb_uint8_t           reset_at_shut;
-#endif
+  zb_uint8_t iface_id;
 } ZB_PACKED_STRUCT
 zb_mlme_reset_request_t;
 
@@ -1915,12 +1923,13 @@ zb_mlme_reset_request_t;
  *  @brief Handles MLME-RESET.request.
  *  @param param - parameter (packet buffer), see @ref zb_mlme_reset_request_s is on its tail.
  */
-void zb_mlme_reset_request (zb_uint8_t param);
+void zb_mlme_reset_request(zb_uint8_t param);
 
 /** @brief Parameter for the zb_mlme_reset_confirm(). */
 typedef ZB_PACKED_PRE struct zb_mlme_reset_confirm_s
 {
   zb_uint8_t status; /**< Status */
+  zb_uint8_t iface_id;
 } ZB_PACKED_STRUCT
 zb_mlme_reset_confirm_t;
 
@@ -1976,6 +1985,7 @@ typedef ZB_PACKED_PRE struct
                                 channels are to be scanned (1=scan, 0=do not
                                 scan) for each of the 27 channels supported by
                                 the ChannelPage parameter.  */
+  zb_uint8_t iface_id;      /**< MAC interface index */
 } ZB_PACKED_STRUCT zb_mlme_scan_params_t;
 
 /**
@@ -1984,7 +1994,7 @@ typedef ZB_PACKED_PRE struct
  *
  *  @snippet start_ze_s05.c zb_mlme_scan_request
  */
-void zb_mlme_scan_request (zb_uint8_t param);
+void zb_mlme_scan_request(zb_uint8_t param);
 
 
 /**
@@ -1992,6 +2002,11 @@ void zb_mlme_scan_request (zb_uint8_t param);
  *  @param param - reference to buffer.
  */
 void zb_mlme_scan_confirm(zb_uint8_t param);
+
+
+void zb_mac_cancel_scan(zb_bufid_t buf);
+
+void zb_mac_cancel_scan_response(zb_bufid_t buf);
 
 /**
  * @brief Beacon type
@@ -2026,6 +2041,7 @@ typedef enum zb_mac_beacon_type_e
  */
 typedef ZB_PACKED_PRE struct zb_mac_beacon_notify_indication_s
 {
+  zb_uint8_t                iface_id;
   zb_uint8_t                bsn;
   zb_pan_descriptor_t       pan_descriptor;
   zb_pending_address_spec_t pend_addr_spec;
@@ -2118,6 +2134,7 @@ do                                                                    \
  */
 typedef ZB_PACKED_PRE struct zb_mlme_associate_indication_s
 {
+  zb_uint8_t               iface_id;
   zb_ieee_addr_t           device_address;
   zb_mac_capability_info_t capability;
   zb_uint8_t               lqi; /* non-standard, but MAC has it and we really
@@ -2200,7 +2217,7 @@ typedef ZB_PACKED_PRE struct zb_mlme_associate_confirm_s
  *
  *  @snippet association_04_rfd.c ZB_MLME_BUILD_ASSOCIATE_REQUEST
  */
-void zb_mlme_associate_request (zb_uint8_t param);
+void zb_mlme_associate_request(zb_uint8_t param);
 
 /**
  *  @brief Associate responce - coordinator side.
@@ -2209,11 +2226,17 @@ void zb_mlme_associate_request (zb_uint8_t param);
  *
  *  @snippet data_01_ffd.c ZB_MLME_BUILD_ASSOCIATE_RESPONSE
  */
-void zb_mlme_associate_response (zb_uint8_t param);
+void zb_mlme_associate_response(zb_uint8_t param);
 
 void zb_mlme_associate_indication(zb_uint8_t param);
 
 void zb_mlme_associate_confirm(zb_uint8_t param);
+
+/** @brief Parameters for poll indication. */
+typedef ZB_PACKED_PRE struct zb_mcps_poll_indication_param_s
+{
+  zb_uint8_t               iface_id;
+} ZB_PACKED_STRUCT zb_mcps_poll_indication_param_t;
 
 /** @brief Parameters for poll request. */
 typedef ZB_PACKED_PRE struct zb_mlme_poll_request_s
@@ -2285,6 +2308,7 @@ typedef ZB_PACKED_PRE struct zb_mlme_comm_status_indication_s
                                 */
   zb_uint16_t pan_id;           /* 16-bit Pan ID of the device from which the frame was
                                    received or to which the frame was being sent. */
+  zb_bool_t is_orphaning;
 } ZB_PACKED_STRUCT
 zb_mlme_comm_status_indication_t;
 
@@ -2325,7 +2349,7 @@ typedef ZB_PACKED_PRE struct zb_mac_power_ctrl_info_tbl_ent_s
   zb_ieee_addr_t ieee_addr;
   zb_int8_t tx_power;           /* TX power level */
   zb_int8_t last_rssi;          /* Last RSSI level */
-  zb_uint8_t nwk_negotiated;    /* NWK negotiated */
+  zb_bool_t nwk_negotiated;     /* NWK negotiated */
 } ZB_PACKED_STRUCT zb_mac_power_ctrl_info_tbl_ent_t;
 
 typedef ZB_PACKED_PRE struct zb_mlme_get_power_info_tbl_req_s
@@ -2334,7 +2358,22 @@ typedef ZB_PACKED_PRE struct zb_mlme_get_power_info_tbl_req_s
   zb_ieee_addr_t ieee_addr;
 } ZB_PACKED_STRUCT zb_mlme_get_power_info_tbl_req_t;
 
-void zb_mlme_get_power_information_table_request(zb_uint8_t param);
+/*!
+*   Optimal signal level should be +20dB above the reference sensitivity
+*   @ref ZB_EU_FSK_REFERENCE_SENSITIVITY
+*   @ref ZB_NA_FSK_REFERENCE_SENSITIVITY
+*
+*   See reference document 20-66955-016 section D.9.2.4.2. Zigbee Specification
+*/
+#define ZB_MAC_POWER_CONTROL_OPT_SIGNAL_LEVEL(page) \
+  ((ZB_LOGICAL_PAGE_IS_SUB_GHZ_NA_FSK(page) ? (ZB_NA_FSK_REFERENCE_SENSITIVITY) : (ZB_EU_FSK_REFERENCE_SENSITIVITY)) + 20)
+
+/* [VK]: Get/set power information table req/conf functions
+ *       were renamed not to trigger MISRAC2012-Rule-5.1:
+ *       The external identifier 'func_name' clashes with other
+ *       identifier(s) in the first 31 characters 1 time(s).
+ */
+void zb_mlme_get_power_info_table_request(zb_uint8_t param);
 
 typedef ZB_PACKED_PRE struct zb_mlme_get_power_info_tbl_conf_s
 {
@@ -2342,21 +2381,21 @@ typedef ZB_PACKED_PRE struct zb_mlme_get_power_info_tbl_conf_s
   zb_mac_power_ctrl_info_tbl_ent_t ent;
 } ZB_PACKED_STRUCT zb_mlme_get_power_info_tbl_conf_t;
 
-void zb_mlme_get_power_information_table_confirm(zb_uint8_t param);
+void zb_mlme_get_power_info_table_confirm(zb_uint8_t param);
 
 typedef ZB_PACKED_PRE struct zb_mlme_set_power_info_tbl_req_s
 {
   zb_mac_power_ctrl_info_tbl_ent_t ent;
 } ZB_PACKED_STRUCT zb_mlme_set_power_info_tbl_req_t;
 
-void zb_mlme_set_power_information_table_request(zb_uint8_t param);
+void zb_mlme_set_power_info_table_request(zb_uint8_t param);
 
 typedef ZB_PACKED_PRE struct zb_mlme_set_power_info_tbl_conf_s
 {
   zb_uint8_t status;
 } ZB_PACKED_STRUCT zb_mlme_set_power_info_tbl_conf_t;
 
-void zb_mlme_set_power_information_table_confirm(zb_uint8_t param);
+void zb_mlme_set_power_info_table_confirm(zb_uint8_t param);
 
 #endif  /* ZB_MAC_POWER_CONTROL */
 
@@ -2457,6 +2496,7 @@ typedef struct zb_mlme_data_req_params_s
 typedef struct zb_mac_orphan_ind_s
 {
   zb_ieee_addr_t orphan_addr; /*<! The 64-bits address of the orphaned device */
+  zb_uint8_t iface_id; /*<! MAC interface id */
 }
   zb_mac_orphan_ind_t;
 
@@ -2526,6 +2566,9 @@ void zb_mac_resp_by_empty_frame(zb_uint8_t param);
 
 #if defined ZB_TRAFFIC_DUMP_ON || defined ZB_NSNG || defined ZB_MAC_TESTING_MODE
 void zb_mac_fcs_add(zb_bufid_t buf);
+#define MAC_ADD_FCS(buf) zb_mac_fcs_add(buf)
+#else
+#define MAC_ADD_FCS(buf)
 #endif /* ZB_TRAFFIC_DUMP_ON || ZB_NSNG || ZB_MAC_TESTING_MODE */
 
 void zb_mlme_orphan_indication(zb_uint8_t param);
@@ -2547,9 +2590,9 @@ void mac_remove_invisible_short(zb_uint16_t addr);
 #define MAC_ADD_INVISIBLE_SHORT(addr) mac_add_invisible_short(addr)
 #define MAC_REMOVE_INVISIBLE_SHORT(addr) mac_remove_invisible_short(addr)
 #else
-#define MAC_ADD_VISIBLE_LONG(long_addr)
-#define MAC_ADD_INVISIBLE_SHORT(addr)
-#define MAC_REMOVE_INVISIBLE_SHORT(addr)
+#define MAC_ADD_VISIBLE_LONG(long_addr) (void)(long_addr)
+#define MAC_ADD_INVISIBLE_SHORT(addr) (void)(addr)
+#define MAC_REMOVE_INVISIBLE_SHORT(addr) (void)addr
 #endif
 
 /**
@@ -2561,8 +2604,10 @@ void mac_remove_invisible_short(zb_uint16_t addr);
 
    @return RET_OK if success, RET_BLOCKED if MCU can go asleep
 */
+zb_ret_t zb_multimac_mac_logic_iteration_proxy(void);
 zb_ret_t zb_mac_logic_iteration(void);
-#define ZB_MAC_LOGIC_ITERATION() (zb_mac_logic_iteration())
+
+#define ZB_MAC_LOGIC_ITERATION() zb_multimac_mac_logic_iteration_proxy()
 
 #if !defined ZB_MACSPLIT_HOST && !defined NCP_MODE_HOST
 /**
@@ -2589,15 +2634,6 @@ void zb_mac_diag_data_get(zb_uint16_t short_address, zb_uint8_t *lqi, zb_int8_t 
 /** @} */
 /** @endcond */
 
-#ifdef MAC_CERT_TEST_HACKS
-/**
-   Handles MLME-purge.request
-
-   @param param - parameter (packet buffer), @see zb_mlme_purge_request_t is on its tail
-*/
-void zb_mlme_purge_request(zb_uint8_t param);
-
-#endif  /* MAC_CERT_TEST_HACKS */
 
 #if defined MAC_CERT_TEST_HACKS || defined ZB_MAC_TESTING_MODE
 
@@ -2620,6 +2656,7 @@ typedef struct zb_mlme_purge_request_s
 typedef zb_mlme_purge_request_t zb_mlme_purge_confirm_t;
 
 #endif
+
 
 #if defined ZB_MAC_PENDING_BIT_SOURCE_MATCHING
 
@@ -2648,10 +2685,10 @@ typedef ZB_PACKED_PRE struct zb_mac_src_match_params_s
 #endif /* ZB_MAC_POLL_INDICATION_CALLS_REDUCED */
 } ZB_PACKED_STRUCT zb_mac_src_match_params_t;
 
-#ifdef ZB_MAC_SOFTWARE_PB_MATCHING
-#define MAC_PENDING_BITMAP_GET(idx) (!!(MAC_CTX().pending_bitmap[(idx) / 32U] & (1U << ((idx) % 32U))))
-#define MAC_PENDING_BITMAP_SET(idx) MAC_CTX().pending_bitmap[(idx) / 32U] |= (1U << ((idx) % 32U))
-#define MAC_PENDING_BITMAP_CLR(idx) MAC_CTX().pending_bitmap[(idx) / 32U] &= ~(1U << ((idx) % 32U))
+#if defined(ZB_MAC_SOFTWARE_PB_MATCHING) || defined(ZB_MAC_CONTROLLABLE_PB_MATCHING)
+#define MAC_PENDING_BITMAP_GET(idx) ZB_B2U(ZB_BIT_IS_SET(MAC_CTX().pending_bitmap[(idx) / 32U], ((zb_uint32_t)1U << ((zb_uint32_t)(idx) % (zb_uint32_t)32U))))
+#define MAC_PENDING_BITMAP_SET(idx) MAC_CTX().pending_bitmap[(idx) / 32U] |= ((zb_uint32_t)1U << ((zb_uint32_t)(idx) % (zb_uint32_t)32U))
+#define MAC_PENDING_BITMAP_CLR(idx) MAC_CTX().pending_bitmap[(idx) / 32U] &= ~((zb_uint32_t)1U << ((zb_uint32_t)(idx) % (zb_uint32_t)32U))
 
 #ifdef ZB_MAC_POLL_INDICATION_CALLS_REDUCED
 #define MAC_POLL_TIMESTAMP_GET(idx) (MAC_CTX().poll_timestamp_table[(idx)])
@@ -2660,10 +2697,83 @@ typedef ZB_PACKED_PRE struct zb_mac_src_match_params_s
 #define MAC_POLL_TIMEOUT_SET(idx, tmo) MAC_CTX().poll_timeout_table[(idx)] = tmo
 #endif /* ZB_MAC_POLL_INDICATION_CALLS_REDUCED */
 
-#endif /* ZB_MAC_SOFTWARE_PB_MATCHING */
+#endif /* ZB_MAC_SOFTWARE_PB_MATCHING || ZB_MAC_CONTROLLABLE_PB_MATCHING */
 
 #endif  /* ZB_MAC_PENDING_BIT_SOURCE_MATCHING */
 
+
+  #if   defined(ZB_MAC_MONOLITHIC)
+    #define ZB_MAC_CALL_INTERFACE(interface_id, primitive, param) ((void)interface_id, ZB_SCHEDULE_CALLBACK(zb_##primitive, param))
+    #define ZB_MAC_CALL_INTERFACE_ALARM(interface_id, primitive, param, delay) ((void)interface_id, ZB_SCHEDULE_ALARM(zb_##primitive, param, delay))
+  #elif defined(ZB_MAC_BLE)
+    #define ZB_MAC_CALL_INTERFACE(interface_id, primitive, param) ((void)interface_id, ZB_SCHEDULE_CALLBACK(zb_##primitive##_ble, param))
+    #define ZB_MAC_CALL_INTERFACE_ALARM(interface_id, primitive, param, delay) ((void)interface_id, ZB_SCHEDULE_ALARM(zb_##primitive##ble, param, delay))
+  #elif defined(ZB_MAC_SUBGHZ)
+    #define ZB_MAC_CALL_INTERFACE(interface_id, primitive, param) ((void)interface_id, ZB_SCHEDULE_CALLBACK(zb_##primitive##_subghz, param))
+    #define ZB_MAC_CALL_INTERFACE_ALARM(interface_id, primitive, param, delay) ((void)interface_id, ZB_SCHEDULE_ALARM(zb_##primitive##_subghz, param, delay))
+  #elif defined(NCP_MODE_HOST)
+    #define ZB_MAC_CALL_INTERFACE(interface_id, primitive, param) ((void)interface_id, (void)primitive, (void)param, ZB_ASSERT(ZB_FALSE))
+    #define ZB_MAC_CALL_INTERFACE_ALARM(interface_id, primitive, param, delay) ((void)interface_id, (void)primitive, (void)param, (void)delay, ZB_ASSERT(ZB_FALSE))
+  #else
+    #error At least one of ZB_MAC_xxx directives must be defined!
+  #endif
+
+  #define ZB_MULTIMAC_IS_INTERFACE_ACTIVE(interface_id) (ZB_TRUE)
+
+/**
+ * @brief This parameter is added to buffer on MAC interface layer to
+ *  determine MAC interface that is used for receiving the packet on upper stack layers
+ */
+typedef struct zb_mcps_data_indication_param_s
+{
+  zb_uint8_t iface_id;
+  zb_time_t timestamp;
+}
+zb_mcps_data_indication_param_t;
+
+/** @endcond */ /* DOXYGEN_MULTIMAC_SECTION */
+
+/**
+ * Defines internal constants for mac interface enumeration
+ *
+ */
+typedef enum zb_mac_interface_type_e
+{
+  MAC_INTERFACE_TYPE_MONOLITHIC      = 0,
+  MAC_INTERFACE_TYPE_MACSPLIT_HOST   = 1,
+  MAC_INTERFACE_TYPE_MACSPLIT_DEVICE = 2,
+  MAC_INTERFACE_TYPE_SUBGHZ          = 3,
+  MAC_INTERFACE_TYPE_BLE             = 4,
+  MAC_INTERFACE_TYPE_MAX
+} zb_mac_interface_type_t;
+
+typedef void (*zb_mac_interface_func_t)(zb_bufid_t param);
+typedef struct zb_mac_interface_s {
+    zb_mac_interface_func_t mcps_data_request;
+    zb_mac_interface_func_t mcps_purge_indirect_queue_request;
+    zb_mac_interface_func_t mlme_get_request;
+    zb_mac_interface_func_t mlme_set_request;
+    zb_mac_interface_func_t mlme_reset_request;
+    zb_mac_interface_func_t mlme_scan_request;
+    zb_mac_interface_func_t mlme_associate_request;
+    zb_mac_interface_func_t mlme_associate_response;
+    zb_mac_interface_func_t mlme_poll_request;
+    zb_mac_interface_func_t mlme_orphan_response;
+    zb_mac_interface_func_t mlme_start_request;
+    zb_mac_interface_func_t mac_resp_by_empty_frame;
+} zb_mac_interface_t;
+
+
+
+typedef ZB_PACKED_PRE struct zb_mlme_multimac_start_req_s
+{
+  zb_mlme_start_req_t start_params;
+#if ZB_NWK_MAC_IFACE_TBL_SIZE >= 2
+  zb_uint8_t  logical_channel[ZB_NWK_MAC_IFACE_TBL_SIZE - 1]; /**< Logical channel */
+  zb_uint8_t  channel_page[ZB_NWK_MAC_IFACE_TBL_SIZE - 1]; /**< The channel page to use */
+#endif
+} ZB_PACKED_STRUCT
+zb_mlme_multimac_start_req_t;
 
 #if defined ZB_ALIEN_MAC || defined ZB_NSNG
 
@@ -2778,4 +2888,5 @@ void zb_mac_phy_testing_tx_done(void);
 void zb_mac_phy_testing_mode_notification(zb_bufid_t param);
 
 #endif
+
 #endif  /* ZB_MAC_API_INCLUDED */

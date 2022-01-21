@@ -343,7 +343,6 @@ static zb_bool_t zb_zcl_daily_schedule_process_publish_day_profile(zb_uint8_t pa
   return ZB_TRUE;
 }
 
-
 static zb_bool_t zb_zcl_daily_schedule_process_cancel_schedule(zb_uint8_t param,
                                                     const zb_zcl_parsed_hdr_t *cmd_info)
 {
@@ -373,6 +372,25 @@ static zb_bool_t zb_zcl_daily_schedule_process_cancel_schedule(zb_uint8_t param,
   return ZB_TRUE;
 }
 
+static zb_bool_t zb_zcl_daily_schedule_process_cancel_all_schedules(zb_uint8_t param,
+                                                    const zb_zcl_parsed_hdr_t *cmd_info)
+{
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_daily_schedule_process_cancel_all_schedules", (FMT__0));
+
+  ZB_ZCL_DEVICE_CMD_PARAM_INIT_WITH(param, ZB_ZCL_DAILY_SCHEDULE_CANCEL_ALL_SCHEDULES_CB_ID,
+                                    RET_NOT_FOUND, cmd_info, NULL, NULL);
+  if (ZCL_CTX().device_cb)
+  {
+    (ZCL_CTX().device_cb)(param);
+  }
+
+  zb_zcl_send_default_handler(param, cmd_info,
+    (ZB_ZCL_DEVICE_CMD_PARAM_STATUS(param) == RET_OK) ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_FAIL);
+
+  TRACE_MSG(TRACE_ZCL1, "<< zb_zcl_daily_schedule_process_cancel_all_schedules", (FMT__0));
+
+  return ZB_TRUE;
+}
 
 static zb_bool_t zb_zcl_process_daily_schedule_cli_cmd(zb_uint8_t param,
                                             const zb_zcl_parsed_hdr_t *cmd_info)
@@ -389,6 +407,9 @@ static zb_bool_t zb_zcl_process_daily_schedule_cli_cmd(zb_uint8_t param,
       break;
     case ZB_ZCL_DAILY_SCHEDULE_SRV_CMD_CANCEL_SCHEDULE:
       processed = zb_zcl_daily_schedule_process_cancel_schedule(param, cmd_info);
+      break;
+    case ZB_ZCL_DAILY_SCHEDULE_SRV_CMD_CANCEL_ALL_SCHEDULES:
+      processed = zb_zcl_daily_schedule_process_cancel_all_schedules(param, cmd_info);
       break;
     /* FIXME: add default case */
 #ifdef WIP

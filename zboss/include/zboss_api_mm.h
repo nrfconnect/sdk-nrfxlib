@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -38,25 +38,60 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: ZBOSS version declare
+/*  PURPOSE: Public Multi-MAC layer API
 */
+#ifndef ZBOSS_API_MM_H
+#define ZBOSS_API_MM_H 1
 
-#ifndef ZB_VERSION_H
-#define ZB_VERSION_H 1
+/** \addtogroup mm_api */
+/** @{ */
 
-/*
-  ZBOSS Core version: A.B.C
-  <A> - ZBOSS_MAJOR (defines ZBOSS core version)
-  <B> - ZBOSS_MINOR (defines ZBOSS core version)
-  <C> - ZBOSS SDK revision
-*/
+enum zb_mac_interfaces_counter_e {
+  #if defined(ZB_MAC_MONOLITHIC)
+    ZB_MAC_INTERFACE_MONOLITHIC,
+  #endif
+  #if defined(ZB_MAC_BLE)
+    ZB_MAC_INTERFACE_BLE,
+  #endif
+  #if defined(ZB_MAC_SUBGHZ)
+    ZB_MAC_INTERFACE_SUBGHZ,
+  #endif
+    ZB_MAC_INTERFACE_MAX
+};
 
-#ifndef ZBOSS_MAJOR
-#define ZBOSS_MAJOR 3U
+#if defined(ZB_MAC_MONOLITHIC)
+  #define ZB_MAC_INTERFACE_MONOLITHIC_ID ((zb_uint8_t)ZB_MAC_INTERFACE_MONOLITHIC)
+#endif
+#if defined(ZB_MAC_BLE)
+  #define ZB_MAC_INTERFACE_BLE_ID ((zb_uint8_t)ZB_MAC_INTERFACE_BLE)
+#endif
+#if defined(ZB_MAC_SUBGHZ)
+  #define ZB_MAC_INTERFACE_SUBGHZ_ID ((zb_uint8_t)ZB_MAC_INTERFACE_SUBGHZ)
 #endif
 
-#ifndef ZBOSS_MINOR
-#define ZBOSS_MINOR 11U
+/* C-STAT does not allow to assign ZB_MAC_INTERFACE_MAX to ZB_NWK_MAC_IFACE_TBL_SIZE,
+ * so check configurations manually */
+#if   defined(ZB_MAC_MONOLITHIC) && defined(ZB_MAC_BLE)
+  #define ZB_NWK_MAC_IFACE_TBL_SIZE 2U
+#elif defined(ZB_MAC_MONOLITHIC) && !defined(ZB_MACSPLIT_HOST) && !defined(ZB_MAC_BLE) && !defined(ZB_MACSPLIT_DEVICE) && !defined(ZB_MAC_SUBGHZ)
+  #define ZB_NWK_MAC_IFACE_TBL_SIZE 1U
+#elif defined(NCP_MODE_HOST)
+  /* Preserve default table size to keep previous stack behaviour, but
+   * do not use any interfaces in that case */
+  #define ZB_NWK_MAC_IFACE_TBL_SIZE 1U
+#else
+  #error Multi-MAC configuration is not supported, at least one interface should be enabled
 #endif
 
-#endif /* ZB_VERSION_H */
+#if ZB_NWK_MAC_IFACE_TBL_SIZE > 1U && defined(ZB_MAC_INTERFACE_SINGLE)
+  #error ZB_MAC_INTERFACE_SINGLE requires to enable only one interface
+#endif
+
+/**
+ * @brief Flag that is used to perform some action on all interfaces together
+ */
+#define ZB_NWK_MULTIMAC_ALL_INTERFACES 0xFFU
+
+/** @} */ /* mm_api */
+
+#endif /*ZBOSS_API_MM_H*/

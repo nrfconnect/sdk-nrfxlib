@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -351,8 +351,8 @@ typedef enum zb_zcl_parse_status_e
 /** @brief Attribute Reporting Status. */
 typedef enum zb_zcl_attribute_reporting_status_e
 {
-  ZB_ZCL_AR_STATUS_PENDING	=0x00,  	/**< Pending. */
-  ZB_ZCL_AR_STATUS_COMPLETE =0x01 	 	/**< Attribute Reporting Complete. */
+  ZB_ZCL_AR_STATUS_PENDING  = 0x00,  /**< Pending. */
+  ZB_ZCL_AR_STATUS_COMPLETE = 0x01  /**< Attribute Reporting Complete. */
 } zb_zcl_attribute_reporting_status_t;
 
 /**
@@ -364,7 +364,7 @@ typedef enum zb_zcl_attribute_reporting_status_e
 /** @{ */
 #define ZB_ZCL_STATUS_SUCCESS               0x00U /*!< ZCL Success */
 #define ZB_ZCL_STATUS_FAIL                  0x01U /*!< ZCL Fail */
-#define ZB_ZCL_STATUS_NOT_AUTHORIZED        0x7EU /*!< Server is not authorized to upgrade the client */
+#define ZB_ZCL_STATUS_NOT_AUTHORIZED        0x7EU /*!< The sender of the command does not have authorization to carry out this command. */
 #define ZB_ZCL_STATUS_MALFORMED_CMD         0x80U /*!< Malformed command */
 #define ZB_ZCL_STATUS_UNSUP_CLUST_CMD       0x81U /*!< Unsupported cluster command */
 #define ZB_ZCL_STATUS_UNSUP_GEN_CMD         0x82U /*!< Unsupported general command */

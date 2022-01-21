@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -181,7 +181,7 @@ zb_bool_t zb_zcl_time_server_read_attr_handle(zb_uint8_t param)
 
 static void zb_zcl_time_server_start_search_cb(zb_uint8_t param)
 {
-  zb_zdo_match_desc_resp_t *resp = ZB_BUF_GET_PARAM(param, zb_zdo_match_desc_resp_t);
+  zb_zdo_match_desc_resp_t *resp = (zb_zdo_match_desc_resp_t *)zb_buf_begin(param);
   zb_uint8_t dst_endpoint;
   zb_uint16_t short_addr;
   zb_uint8_t *match_ep;
@@ -191,6 +191,7 @@ static void zb_zcl_time_server_start_search_cb(zb_uint8_t param)
   TRACE_MSG(TRACE_ZCL1, "> zb_zcl_time_server_start_search_cb %hd", (FMT__H, param));
 
   TRACE_MSG(TRACE_ZCL2, "resp match_len %hd", (FMT__H, resp->match_len));
+
   if (resp->status == ZB_ZDP_STATUS_SUCCESS && resp->match_len > 0)
   {
     /* Match EP list follows right after response header */
