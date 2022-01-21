@@ -63,22 +63,22 @@ zb_uint32_t zb_random_jitter(void);
 /**
    Generate CRC8 hash
  */
-zb_uint8_t zb_crc8(zb_uint8_t *p, zb_uint8_t crc, zb_uint_t len);
+zb_uint8_t zb_crc8(const zb_uint8_t *p, zb_uint8_t crc, zb_uint_t len);
 
 /**
    Generate CRC16 hash for string
  */
-zb_uint16_t zb_crc16(zb_uint8_t *p, zb_uint16_t crc, zb_uint_t len);
+zb_uint16_t zb_crc16(const zb_uint8_t *p, zb_uint16_t crc, zb_uint_t len);
 
 
 /**
    Generate CRC32 hash
  */
-zb_uint32_t zb_crc32(zb_uint8_t *message, int len);
+zb_uint32_t zb_crc32(const zb_uint8_t *p, zb_uint_t len);
 
-zb_uint32_t zb_crc32_next(zb_uint32_t prev_crc, zb_uint8_t *message, int len);
+zb_uint32_t zb_crc32_next(zb_uint32_t prev_crc, zb_uint8_t *p, zb_uint_t len);
 
-zb_uint32_t zb_crc32_next_v2(zb_uint32_t prev_crc, zb_uint8_t *message, zb_uint16_t len);
+zb_uint32_t zb_crc32_next_v2(zb_uint32_t prev_crc, zb_uint8_t *p, zb_uint16_t len);
 
 /**
  * Calculates number of '1' in 16bit bitmask

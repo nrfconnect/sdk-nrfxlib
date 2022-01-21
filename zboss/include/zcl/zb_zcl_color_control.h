@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -1137,7 +1137,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_req_options_s
   sizeof(zb_zcl_color_control_req_options_t)
 
 /** @internal Macro for getting Move to Color command */
-#define ZB_ZCL_COLOR_CONTROL_GET_CMD_OPTIONS(data_buf, req_options, status) \
+#define ZB_ZCL_COLOR_CONTROL_GET_CMD_OPTIONS(data_buf, req_options)         \
 {                                                                           \
   zb_zcl_color_control_req_options_t *req_options_ptr;                      \
   (req_options_ptr) = zb_buf_len(data_buf) >=                               \
@@ -1147,12 +1147,12 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_req_options_s
   {                                                                         \
     req_options.options_mask = req_options_ptr->options_mask;               \
     req_options.options_override = req_options_ptr->options_override;       \
-    status = ZB_TRUE;                                                       \
     (void)zb_buf_cut_left(data_buf, sizeof(zb_zcl_color_control_req_options_t)); \
   }                                                                         \
   else                                                                      \
   {                                                                         \
-    status = ZB_FALSE;                                                      \
+    req_options.options_mask = (zb_uint8_t)0x00;                            \
+    req_options.options_override = (zb_uint8_t)0x00;                        \
   }                                                                         \
 }
 

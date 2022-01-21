@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -139,32 +139,80 @@ enum zb_zcl_occupancy_sensing_attr_e
    *  @endcond */ /* internals_doc */
 };
 
+/** @brief Minimal value for PIROccToUnoccDelay attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_PIR_OCC_TO_UNOCC_DELAY_MIN_VALUE ((zb_uint16_t)0x0000)
+
+/** @brief Maximal value for PIROccToUnoccDelay attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_PIR_OCC_TO_UNOCC_DELAY_MAX_VALUE ((zb_uint16_t)0xfffe)
+
 /** @brief Default value for PIROccToUnoccDelay attribute */
-#define ZB_ZCL_OCCUPANCY_SENSING_PIR_OCC_TO_UNOCC_DELAY_DEFAULT_VALUE ((zb_uint16_t)0x00)
+#define ZB_ZCL_OCCUPANCY_SENSING_PIR_OCC_TO_UNOCC_DELAY_DEFAULT_VALUE ZB_ZCL_OCCUPANCY_SENSING_PIR_OCC_TO_UNOCC_DELAY_MIN_VALUE
+
+/** @brief Minimal value for PIRUnoccToOccDelay attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_PIR_UNOCC_TO_OCC_DELAY_MIN_VALUE ((zb_uint16_t)0x0000)
+
+/** @brief Maximal value for PIRUnoccToOccDelay attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_PIR_UNOCC_TO_OCC_DELAY_MAX_VALUE ((zb_uint16_t)0xfffe)
 
 /** @brief Default value for PIRUnoccToOccDelay attribute */
-#define ZB_ZCL_OCCUPANCY_SENSING_PIR_UNOCC_TO_OCC_DELAY_DEFAULT_VALUE ((zb_uint16_t)0x00)
+#define ZB_ZCL_OCCUPANCY_SENSING_PIR_UNOCC_TO_OCC_DELAY_DEFAULT_VALUE ZB_ZCL_OCCUPANCY_SENSING_PIR_UNOCC_TO_OCC_DELAY_MIN_VALUE
+
+/** @brief Minimal value for PIRUnoccToOccThreshold attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_PIR_UNOCC_TO_OCC_THRESHOLD_MIN_VALUE ((zb_uint8_t)0x01)
+
+/** @brief Maximal value for PIRUnoccToOccThreshold attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_PIR_UNOCC_TO_OCC_THRESHOLD_MAX_VALUE ((zb_uint8_t)0xfe)
 
 /** @brief Default value for PIRUnoccToOccThreshold attribute */
-#define ZB_ZCL_OCCUPANCY_SENSING_PIR_UNOCC_TO_OCC_THRESHOLD_DEFAULT_VALUE ((zb_uint8_t)0x01)
+#define ZB_ZCL_OCCUPANCY_SENSING_PIR_UNOCC_TO_OCC_THRESHOLD_DEFAULT_VALUE ZB_ZCL_OCCUPANCY_SENSING_PIR_UNOCC_TO_OCC_THRESHOLD_MIN_VALUE
+
+/** @brief Minimal value for UltrasonicOccupiedToUnoccupiedDelay attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_OCCUPIED_TO_UNOCCUPIED_DELAY_MIN_VALUE ((zb_uint16_t)0x0000)
+
+/** @brief Maximal value for UltrasonicOccupiedToUnoccupiedDelay attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_OCCUPIED_TO_UNOCCUPIED_DELAY_MAX_VALUE ((zb_uint16_t)0xfffe)
 
 /** @brief Default value for UltrasonicOccupiedToUnoccupiedDelay attribute */
-#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_OCCUPIED_TO_UNOCCUPIED_DELAY_DEFAULT_VALUE ((zb_uint16_t)0x00)
+#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_OCCUPIED_TO_UNOCCUPIED_DELAY_DEFAULT_VALUE ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_OCCUPIED_TO_UNOCCUPIED_DELAY_MIN_VALUE
+
+/** @brief Minimal value for UltrasonicUnoccupiedToOccupiedDelay attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_UNOCCUPIED_TO_OCCUPIED_DELAY_MIN_VALUE ((zb_uint16_t)0x0000)
+
+/** @brief Maximal value for UltrasonicUnoccupiedToOccupiedDelay attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_UNOCCUPIED_TO_OCCUPIED_DELAY_MAX_VALUE ((zb_uint16_t)0xfffe)
 
 /** @brief Default value for UltrasonicUnoccupiedToOccupiedDelay attribute */
-#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_UNOCCUPIED_TO_OCCUPIED_DELAY_DEFAULT_VALUE ((zb_uint16_t)0x00)
+#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_UNOCCUPIED_TO_OCCUPIED_DELAY_DEFAULT_VALUE ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_UNOCCUPIED_TO_OCCUPIED_DELAY_MIN_VALUE
+
+/** @brief Minimal value for UltrasonicUnoccupiedToOccupiedThreshold attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_UNOCCUPIED_TO_OCCUPIED_THRESHOLD_MIN_VALUE ((zb_uint8_t)0x01)
+
+/** @brief Maximal value for UltrasonicUnoccupiedToOccupiedThreshold attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_UNOCCUPIED_TO_OCCUPIED_THRESHOLD_MAX_VALUE ((zb_uint8_t)0xfe)
 
 /** @brief Default value for UltrasonicUnoccupiedToOccupiedThreshold attribute */
-#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_UNOCCUPIED_TO_OCCUPIED_THRESHOLD_DEFAULT_VALUE ((zb_uint8_t)0x01)
+#define ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_UNOCCUPIED_TO_OCCUPIED_THRESHOLD_DEFAULT_VALUE ZB_ZCL_OCCUPANCY_SENSING_ULTRASONIC_UNOCCUPIED_TO_OCCUPIED_THRESHOLD_MIN_VALUE
 
 /** @brief Default value for PhysicalContactOccupiedToUnoccupiedDelay attribute */
 #define ZB_ZCL_OCCUPANCY_SENSING_PHYSICAL_CONTACT_OCCUPIED_TO_UNOCCUPIED_DELAY_DEFAULT_VALUE ((zb_uint16_t)0x0000)
 
+/** @brief No-reporting value for PhysicalContactOccupiedToUnoccupiedDelay attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_PHYSICAL_CONTACT_OCCUPIED_TO_UNOCCUPIED_DELAY_NO_REPORTING_VALUE ((zb_uint16_t)0xffff)
+
 /** @brief Default value for PhysicalContactUnoccupiedToOccupiedDelay attribute */
 #define ZB_ZCL_OCCUPANCY_SENSING_PHYSICAL_CONTACT_UNOCCUPIED_TO_OCCUPIED_DELAY_DEFAULT_VALUE ((zb_uint16_t)0x0000)
 
+/** @brief No-reporting value for PhysicalContactUnoccupiedToOccupiedDelay attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_PHYSICAL_CONTACT_UNOCCUPIED_TO_OCCUPIED_DELAY_NO_REPORTING_VALUE ((zb_uint16_t)0xffff)
+
+/** @brief Minimal value for PhysicalContactUnoccupiedToOccupiedThreshold attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_PHYSICAL_CONTACT_UNOCCUPIED_TO_OCCUPIED_THRESHOLD_MIN_VALUE ((zb_uint8_t)0x01)
+
+/** @brief Maximal value for PhysicalContactUnoccupiedToOccupiedThreshold attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_PHYSICAL_CONTACT_UNOCCUPIED_TO_OCCUPIED_THRESHOLD_MAX_VALUE ((zb_uint8_t)0xfe)
+
 /** @brief Default value for PhysicalContactUnoccupiedToOccupiedThreshold attribute */
-#define ZB_ZCL_OCCUPANCY_SENSING_PHYSICAL_CONTACT_UNOCCUPIED_TO_OCCUPIED_THRESHOLD_DEFAULT_VALUE ((zb_uint8_t)0x01)
+#define ZB_ZCL_OCCUPANCY_SENSING_PHYSICAL_CONTACT_UNOCCUPIED_TO_OCCUPIED_THRESHOLD_DEFAULT_VALUE ZB_ZCL_OCCUPANCY_SENSING_PHYSICAL_CONTACT_UNOCCUPIED_TO_OCCUPIED_THRESHOLD_DEFAULT_VALUE
 
 /*! @brief Permissible values for Occupancy attribute
     @see ZCL spec, subclause 4.8.2.2.1.1

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -77,6 +77,18 @@ typedef ZB_PACKED_PRE struct zb_aps_bind_dst_record_s
 #define ZB_APS_IS_TRANS_INDEX(dtbli, tansi) \
   (ZG->aps.binding.dst_table[(dtbli)].trans_index[(tansi)/8U] & (1U << ((tansi)%8U)))
 
+#define ZB_APS_BINDING_TABLE_WHITELIST_SIZE 4U
+/**
+   Binding table whitelist
+ */
+typedef ZB_PACKED_PRE struct zb_aps_binding_table_whitelist_s
+{
+  zb_uint8_t ep_id;                        /*!< Endpoint ID */
+  zb_uint16_t cluster_id;                  /*!< Cluster ID */
+  zb_uint8_t cluster_role;                 /*!< Cluster role */
+  zb_ieee_addr_t addr;                     /*!< Whitelist address */
+} ZB_PACKED_STRUCT zb_aps_binding_table_whitelist_t;
+
 /**
    Global binding table
 */
@@ -84,12 +96,12 @@ typedef ZB_PACKED_PRE struct zb_aps_binding_table_s
 {
   zb_uint8_t              src_n_elements;                               /*!< Count elements in source table */
   zb_uint8_t              dst_n_elements;                               /*!< Count elements in destination table */
+  zb_uint8_t              whitelist_n_elements;                         /*!< Count elements in whitelist table */
 #ifdef SNCP_MODE
   zb_uint8_t              remote_bind_offset;                           /*!< Offset to attribute id's to remote binding requests */
-  zb_uint8_t              align;
 #else
   /* FIXME: why align here? */
-  zb_uint8_t              align[2];
+  zb_uint8_t              align[1];
 #endif
 #ifndef ZB_CONFIGURABLE_MEM
   zb_uint8_t              trans_table[ZB_APS_BIND_TRANS_TABLE_SIZE];    /*!< Buffers for simultaneous sendings */
@@ -100,6 +112,8 @@ typedef ZB_PACKED_PRE struct zb_aps_binding_table_s
   zb_aps_bind_src_table_t *src_table;
   zb_aps_bind_dst_table_t *dst_table;
 #endif
+  zb_aps_binding_table_whitelist_t whitelist_table[ZB_APS_BINDING_TABLE_WHITELIST_SIZE]; /*!< Whitelist table */
+
 } ZB_PACKED_STRUCT zb_aps_binding_table_t;
 
 ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_aps_binding_table_t);
@@ -540,6 +554,7 @@ zb_bool_t zb_aib_tcpol_get_allow_unsecure_tc_rejoins(void);
 
 #ifdef ZB_DISTRIBUTED_SECURITY_ON
 void zb_aib_tcpol_set_is_distributed_security(zb_bool_t enable);
+void zb_aib_tcpol_clear_is_distributed_security(void);
 zb_bool_t zb_aib_tcpol_get_is_distributed_security(void);
 #endif /* ZB_DISTRIBUTED_SECURITY_ON */
 
@@ -588,7 +603,11 @@ void zb_aib_tcpol_set_authenticate_always(zb_bool_t authenticate_always);
 /** @def ZB_SE_MODE
  *  @brief if 1, then SE mode is enabled
  */
+#if defined ZB_ENABLE_SE || defined SNCP_MODE
+#define ZB_SE_MODE() (ZB_COMMISSIONING_TYPE() == ZB_COMMISSIONING_SE)
+#else
 #define ZB_SE_MODE() ZB_FALSE
+#endif
 
 /*! @} */
 /*! @endcond */

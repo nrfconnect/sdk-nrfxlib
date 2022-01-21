@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -272,7 +272,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_ias_wd_start_warning_s
   */
 #define ZB_ZCL_IAS_WD_GET_START_WARNING_REQ(data_ptr, buffer, status)       \
 {                                                                           \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_ias_wd_start_warning_t))        \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_ias_wd_start_warning_t))         \
   {                                                                         \
     (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                 \
   }                                                                         \
@@ -376,7 +376,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_ias_wd_squawk_s
   */
 #define ZB_ZCL_IAS_WD_GET_SQUAWK_REQ(data_ptr, buffer, status)      \
 {                                                                   \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_ias_wd_squawk_t))       \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_ias_wd_squawk_t))        \
   {                                                                 \
     (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                         \
   }                                                                 \

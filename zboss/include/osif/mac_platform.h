@@ -13,10 +13,9 @@
 
 
 #define ZB_MAC_HARDWARE_PB_MATCHING
-#define ZB_MAC_CONFIGURABLE_TX_POWER
 #define ZB_MAC_MANUAL_DUPS
 #define ZB_MAC_SINGLE_PACKET_IN_FIFO
-//#define ZB_MAC_RX_QUEUE_CAP 5
+#define ZB_OPTIONAL_MAC_FEATURES
 
 #define ZB_MAC_PENDING_BIT_SOURCE_MATCHING
 #define ZB_AUTO_ACK_TX
@@ -208,7 +207,7 @@ zb_transceiver_ctx_t;
 
 
 /*PHY tests specific API. Implement for PHY tests only.*/
-#define ZB_TRANSCEIVER_PERFORM_CCA()                     zb_macll_cca()
+#define ZB_TRANSCEIVER_PERFORM_CCA(rssi)                 zb_macll_cca(rssi)
 #define ZB_TRANS_TX_CARRIER_DATA(channel, timeout_bi)    zb_macll_tx_carrier(channel, timeout_bi)
 
 #define ZB_TRANSCEIVER_SET_TX_POWER(new_power)           zb_macll_set_tx_power(new_power)

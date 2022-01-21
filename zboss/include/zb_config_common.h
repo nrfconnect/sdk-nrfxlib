@@ -952,7 +952,7 @@ Workaround for secure rejoin
 /*!
    Minimal possible turbo poll interval
  */
-#if defined ZB_SUBGHZ_ONLY_MODE || defined ZB_R22_MULTIMAC_MODE
+#if defined ZB_SUBGHZ_ONLY_MODE || defined ZB_R22_MULTIMAC_MODE && !defined SNCP_MODE
 #define ZB_PIM_DEFAULT_MIN_TURBO_POLL_INTERVAL ZB_MILLISECONDS_TO_BEACON_INTERVAL(250U)
 #else
 #define ZB_PIM_DEFAULT_MIN_TURBO_POLL_INTERVAL ZB_MILLISECONDS_TO_BEACON_INTERVAL(100U)
@@ -1222,12 +1222,28 @@ The CCA detection time shall be equal to 8 symbol periods.
 /*! Percentage of failures. Use it as divider to get 25 % */
 #define ZB_FAILS_PERCENTAGE   4U
 /*! MAC queue size */
+/* Since the ZB_MAC_RX_QUEUE_CAP can be configured by the Vendor, the ZB_MAC_QUEUE_SIZE
+ * should be configurable too.
+ *
+ * If ZB_MAC_RX_QUEUE_CAP is larger than ZB_MAC_QUEUE_SIZE and the node is flooded
+ * with requests, that require a response to be sent, the node enters a weird state:
+ *  - For each request a response is generated.
+ *  - Each response is scheduled.
+ *  - Part of the responses are not sent and the error -774 is returned in the callback for the response packet.
+ * This is a totally valid behavior, but there is no clean way of handling this case
+ * in the application logic.
+ *
+ * If the ZB_MAC_RX_QUEUE_CAP is smaller than ZB_MAC_QUEUE_SIZE this situation is avoided,
+ * since the node stops sending MAC ACKs for frames that it cannot send a response to immediately.
+ */
+#ifndef ZB_MAC_QUEUE_SIZE
 #if defined ZB_SUBGHZ_ONLY_MODE || defined ZB_R22_MULTIMAC_MODE
 /* Increased MAC queue size for Sub-GHz because the LBT mechanism periodically blocks the radio */
 #define ZB_MAC_QUEUE_SIZE 7U
 #else
 #define ZB_MAC_QUEUE_SIZE 5U
 #endif
+#endif /* ZB_MAC_QUEUE_SIZE */
 
 /*
 The maximum time, in
@@ -1346,6 +1362,7 @@ request command frame.
 *
  */
 #define ZB_EU_FSK_REFERENCE_SENSITIVITY -99
+#define ZB_NA_FSK_REFERENCE_SENSITIVITY -91
 
 /*
  * 02/01/2021: After discussions in ZigBee Sub-GHz task group, agreed that
@@ -1472,8 +1489,8 @@ request command frame.
 *   The level (in dBm) at which the receiver determines whether there
 *   is activity in a low power channel (+14 dBm Tx).
 */
-#define ZB_MAC_LBT_GB_THRESHOLD_LEVEL_LP  (-80)
-#define ZB_MAC_LBT_EU_THRESHOLD_LEVEL_LP  (-80)
+#define ZB_MAC_LBT_GB_THRESHOLD_LEVEL_LP  (-87)
+#define ZB_MAC_LBT_EU_THRESHOLD_LEVEL_LP  (-87)
 #define ZB_MAC_LBT_NA_THRESHOLD_LEVEL_LP  (-79) /* 08/25/2020: see TP/154/PHYRFS1/RECEIVER-07 test */
 
 /* aLBTThresholdLevelHp */
@@ -1541,13 +1558,6 @@ request command frame.
 #define ZB_MAC_POWER_CONTROL_INFO_TABLE_SIZE 10U
 /*! MAC power control expiration time out */
 #define ZB_MAC_POWER_CONTROL_EXPIRATION_TIMEOUT (10U * ZB_TIME_ONE_SECOND)
-/*!
-*   Optimal signal level for Eu FSK should be +20dB above the reference sensitivity @ref ZB_EU_FSK_REFERENCE_SENSITIVITY
-*
-*   See reference document 05-3474-22 section D.9.2.4.2. Zigbee Specification R22
- */
-#define ZB_MAC_POWER_CONTROL_OPT_SIGNAL_LEVEL (ZB_EU_FSK_REFERENCE_SENSITIVITY + 20)
-
 
 #ifndef ZB_MAC_DEFAULT_TX_POWER_GB_EU_SUB_GHZ
 /*! Default MAC transmission power for GB and EU Sub-GHz PHY */

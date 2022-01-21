@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -253,7 +253,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_en50523_appl_ev_and_alerts_get_alerts_resp_s
 #define ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_GET_GET_ALERTS_RESP(data_ptr, buffer, status) \
 {                                                                    \
   zb_uint8_t *data = zb_buf_begin(buffer);                           \
-  if (zb_buf_len((buffer)) !=                                        \
+  if (zb_buf_len((buffer)) <                                         \
       ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_GET_ALERTS_RESP_PAYLOAD_SIZE(data)) \
   {                                                                  \
     (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                          \
@@ -344,7 +344,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_en50523_appl_ev_and_alerts_alerts_notif_s
 #define ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_GET_ALERTS_NOTIF(data_ptr, buffer, status) \
 {                                                                    \
   zb_uint8_t *data = zb_buf_begin(buffer);                           \
-  if (zb_buf_len((buffer)) !=                                        \
+  if (zb_buf_len((buffer)) <                                         \
       ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_ALERTS_NOTIF_PAYLOAD_SIZE(data)) \
   {                                                                  \
     (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                          \
@@ -422,7 +422,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_en50523_appl_ev_and_alerts_event_notif_s
 #define ZB_ZCL_EN50523_APPL_EV_AND_ALERTS_GET_EVENT_NOTIF(data_ptr, buffer, status) \
 {                                                              \
   zb_uint8_t *data = zb_buf_begin(buffer);                     \
-  if (zb_buf_len((buffer)) !=                                  \
+  if (zb_buf_len((buffer)) <                                   \
       sizeof(zb_zcl_en50523_appl_ev_and_alerts_event_notif_t)) \
   {                                                            \
     (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                    \

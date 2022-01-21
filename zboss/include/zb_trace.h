@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -43,7 +43,9 @@
 #ifndef ZB_LOGGER_H
 #define ZB_LOGGER_H 1
 
+#ifdef ZB_TRACE_USE_VA_LIST
 #include <stdarg.h>
+#endif
 
 /** @cond DOXYGEN_DEBUG_SECTION */
 /**
@@ -161,6 +163,7 @@ extern zb_uint_t g_trace_inside_intr;
 #define TRACE_SUBSYSTEM_JSON      0x1000000U /**< JSON subsystem */
 #define TRACE_SUBSYSTEM_HTTP      0x2000000U /**< HTTP subsystem */
 #define TRACE_SUBSYSTEM_CLOUD     0x4000000U /**< Interface to the Cloud */
+#define TRACE_SUBSYSTEM_ZBDIRECT  0x8000000U /**< Zigbee Direct subsystem */
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #define TRACE_SUBSYSTEM_INFO      ((zb_uint_t)-1)  /**< Common subsystem */
@@ -237,6 +240,11 @@ zb_bool_t zb_osif_is_inside_isr(void);
 #endif
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
+/**
+ *  @brief A universal way to print raw string as trace message.
+ */
+void zb_trace_str(const zb_char_t *str);
+
 #if defined ZB_TRACE_TO_FILE || defined ZB_TRACE_TO_SYSLOG || defined DOXYGEN
 /** @cond DOXYGEN_INTERNAL_DOC */
 /**
@@ -246,6 +254,7 @@ zb_bool_t zb_osif_is_inside_isr(void);
 void zb_trace_init_file(zb_char_t *name);
 void zb_trace_deinit_file(void);
 void zb_file_trace_commit(void);
+void zb_trace_disable_deinit(void);
 
 /**
 
@@ -262,9 +271,9 @@ void zb_file_trace_commit(void);
 #define TRACE_DEINIT zb_trace_deinit_file
 
 /** @cond DOXYGEN_INTERNAL_DOC */
-#define _T0(...) __VA_ARGS__
+#define ZB_T0_TRACE(...) __VA_ARGS__
 
-#if defined ZB_BINARY_AND_TEXT_TRACE_MODE || defined ZB_TRACE_TO_SYSLOG || !defined ZB_BINARY_TRACE
+#if defined ZB_TRACE_USE_VA_LIST && (defined ZB_BINARY_AND_TEXT_TRACE_MODE || defined ZB_TRACE_TO_SYSLOG || !defined ZB_BINARY_TRACE)
 /**
  *  @brief Print trace message. Option with va_list
  */
@@ -293,6 +302,7 @@ void zb_trace_msg_bin_file(
     zb_int_t line_number,
     zb_int_t args_size, ...);
 
+#ifdef ZB_TRACE_USE_VA_LIST
 /**
  *  @brief Print binary trace message. Option with va_list
  */
@@ -303,6 +313,7 @@ void zb_trace_msg_bin_file_vl(
     zb_int_t line_number,
     zb_int_t args_size,
     va_list arglist);
+#endif
 
 #if defined ZB_BINARY_AND_TEXT_TRACE_MODE
 #define ZB_TRACE_MODE_BINARY 0U
@@ -316,27 +327,27 @@ void zb_trace_set_mode(zb_uint8_t mode);
 void zb_trace_msg_txt_file(
     zb_uint_t mask,
     zb_uint_t level,
-    zb_char_t *format,
-    zb_char_t *file_name,
+    const zb_char_t *format,
+    const zb_char_t *file_name,
     zb_uint16_t file_id,
     zb_int_t line_number,
     zb_int_t args_size, ...);
 
-#define _T1(s, l, fmts, args)                  \
+#define ZB_T1_TRACE(s, l, fmts, args)                  \
   if ((zb_int_t)ZB_TRACE_LEVEL>=(zb_int_t)l && \
       ((s) & ZB_TRACE_MASK))                   \
   {                                            \
     if (g_trace_text_mode == 0U)               \
     {                                          \
-      zb_trace_msg_bin_file(s, l, _T0 args);   \
+      zb_trace_msg_bin_file(s, l, ZB_T0_TRACE args);   \
     }                                          \
     else                                       \
     {                                          \
-      zb_trace_msg_txt_file(s, l, fmts, _T0 args); \
+      zb_trace_msg_txt_file(s, l, fmts, ZB_T0_TRACE args); \
     }                                          \
   }
 #else
-#define _T1(s, l, fmts, args) if ((zb_int_t)ZB_TRACE_LEVEL>=(zb_int_t)l && ((s) & ZB_TRACE_MASK)) zb_trace_msg_bin_file(s, l, _T0 args)
+#define ZB_T1_TRACE(s, l, fmts, args) if ((zb_int_t)ZB_TRACE_LEVEL>=(zb_int_t)l && ((s) & ZB_TRACE_MASK)) zb_trace_msg_bin_file(s, l, ZB_T0_TRACE args)
 #endif
 #else
 /**
@@ -350,7 +361,7 @@ void zb_trace_msg_txt_file(
     zb_int_t line_number,
     zb_int_t args_size, ...);
 
-#define _T1(s, l, fmts, args) if ((zb_int_t)ZB_TRACE_LEVEL>=(zb_int_t)l && ((s) & ZB_TRACE_MASK)) zb_trace_msg_txt_file(s, l, fmts, _T0 args)
+#define ZB_T1_TRACE(s, l, fmts, args) if ((zb_int_t)ZB_TRACE_LEVEL>=(zb_int_t)l && ((s) & ZB_TRACE_MASK)) zb_trace_msg_txt_file(s, l, fmts, ZB_T0_TRACE args)
 #endif
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
@@ -366,7 +377,7 @@ void zb_trace_msg_txt_file(
  */
 #define TRACE_MSG(lm, fmts, args) \
   do { \
-    _T1(lm, fmts, args); \
+    ZB_T1_TRACE(lm, fmts, args); \
   } while (0)
 
 /** @cond DOXYGEN_INTERNAL_DOC */
@@ -423,6 +434,7 @@ void zb_trace_msg_port(
   zb_uint16_t line_number,
   zb_uint_t args_size, ...);
 
+#ifdef ZB_TRACE_USE_VA_LIST
 /* Option with va_list */
 void zb_trace_msg_port_vl(
   zb_uint_t mask,
@@ -431,22 +443,23 @@ void zb_trace_msg_port_vl(
   zb_uint16_t line_number,
   zb_uint_t args_size,
   va_list arglist);
+#endif
 
 #endif
 
 #ifdef ZB_BINARY_TRACE
-#define _T0(...) __VA_ARGS__
-#define _T1(s, l, args) if ((zb_int_t)ZB_TRACE_LEVEL>=(zb_int_t)l && ((s) == (zb_uint_t)-1 || (s) & ZB_TRACE_MASK) && !ZB_TRACE_INSIDE_INTR_BLOCK()) zb_trace_msg_port(s, l, _T0 args)
+#define ZB_T0_TRACE(...) __VA_ARGS__
+#define ZB_T1_TRACE(s, l, args) if ((zb_int_t)ZB_TRACE_LEVEL>=(zb_int_t)l && ((s) == (zb_uint_t)-1 || (s) & ZB_TRACE_MASK) && !ZB_TRACE_INSIDE_INTR_BLOCK()) zb_trace_msg_port(s, l, ZB_T0_TRACE args)
 
 #else
-#define _T1(s, l, args) \
+#define ZB_T1_TRACE(s, l, args) \
   if ((zb_int_t)ZB_TRACE_LEVEL>=(zb_int_t)l && ((s) == -1 || ((s) & ZB_TRACE_MASK)) && !ZB_TRACE_INSIDE_INTR_BLOCK()) zb_trace_msg_port args
 #endif
 
 
 #define TRACE_MSG(lm, fmt, args) \
   do { \
-    _T1(lm, args); \
+    ZB_T1_TRACE(lm, args); \
   } while (0)
 
 #else
@@ -749,6 +762,7 @@ typedef struct zb_byte128_struct_s
 #define FMT__H_D_H_D                                    TRACE_ARG_SIZE(2,2,0,0,0)
 #define FMT__H_D_H_D_D                                  TRACE_ARG_SIZE(2,3,0,0,0)
 #define FMT__H_D_H_D_H_H                                TRACE_ARG_SIZE(4,2,0,0,0)
+#define FMT__H_D_H_A                                    TRACE_ARG_SIZE(2,1,0,0,1)
 #define FMT__H_D_H_H                                    TRACE_ARG_SIZE(3,1,0,0,0)
 #define FMT__H_D_H_H_H                                  TRACE_ARG_SIZE(4,1,0,0,0)
 #define FMT__H_D_H_H_H_H                                TRACE_ARG_SIZE(5,1,0,0,0)
@@ -790,9 +804,11 @@ typedef struct zb_byte128_struct_s
 #define FMT__H_H_H_H_H_H_P_P_P_P                        TRACE_ARG_SIZE(6,2,0,4,0)
 #define FMT__H_H_H_H_P_P_P                              TRACE_ARG_SIZE(4,0,0,3,0)
 #define FMT__H_H_H_P                                    TRACE_ARG_SIZE(3,0,0,1,0)
+#define FMT__H_D_H_P                                    TRACE_ARG_SIZE(2,1,0,1,0)
 #define FMT__H_H_L                                      TRACE_ARG_SIZE(2,0,1,0,0)
 #define FMT__H_H_L_H                                    TRACE_ARG_SIZE(3,0,1,0,0)
 #define FMT__H_H_H_L                                    TRACE_ARG_SIZE(3,0,1,0,0)
+#define FMT__H_H_H_H_L                                  TRACE_ARG_SIZE(4,0,1,0,0)
 #define FMT__H_H_L_H_P                                  TRACE_ARG_SIZE(3,0,1,4,0)
 #define FMT__H_H_P                                      TRACE_ARG_SIZE(2,0,0,1,0)
 #define FMT__H_H_P_D                                    TRACE_ARG_SIZE(2,1,0,1,0)
@@ -957,6 +973,7 @@ typedef struct zb_byte128_struct_s
 #define FMT__H_B_H_B                                    TRACE_ARG_SIZE(2,0,0,0,4)
 #define FMT__B_A                                        TRACE_ARG_SIZE(0,0,0,0,3)
 #define FMT__D_H_A                                      TRACE_ARG_SIZE(1,1,0,0,1)
+#define FMT__D_H_A_H                                    TRACE_ARG_SIZE(2,1,0,0,1)
 #define FMT__D_A_H                                      TRACE_ARG_SIZE(1,1,0,0,1)
 #define FMT__D_D_D_A_B                                  TRACE_ARG_SIZE(0,3,0,0,3)
 #define FMT__D_B_A                                      TRACE_ARG_SIZE(0,1,0,0,3)
@@ -1007,6 +1024,8 @@ typedef struct zb_byte128_struct_s
 #define FMT__H_P_P_H                                    TRACE_ARG_SIZE(2,0,0,2,0)
 #define FMT__D_P_D_D_P                                  TRACE_ARG_SIZE(0,3,0,2,0)
 #define FMT__D_D_D_A_A                                  TRACE_ARG_SIZE(0,3,0,0,2)
+#define FMT__H_D_A_D_D_D                                TRACE_ARG_SIZE(1,4,0,0,1)
+#define FMT__H_D_A_P                                    TRACE_ARG_SIZE(1,1,0,1,1)
 
 /** @} */ /* TRACE_DATA_FORMAT */
 
@@ -1163,6 +1182,11 @@ typedef struct zb_byte128_struct_s
 #define TRACE_MAC_API2 TRACE_SUBSYSTEM_MAC_API, 2U
 #define TRACE_MAC_API3 TRACE_SUBSYSTEM_MAC_API, 3U
 #define TRACE_MAC_API4 TRACE_SUBSYSTEM_MAC_API, 4U
+
+#define TRACE_ZBDIRECT1 TRACE_SUBSYSTEM_ZBDIRECT, 1U
+#define TRACE_ZBDIRECT2 TRACE_SUBSYSTEM_ZBDIRECT, 2U
+#define TRACE_ZBDIRECT3 TRACE_SUBSYSTEM_ZBDIRECT, 3U
+#define TRACE_ZBDIRECT4 TRACE_SUBSYSTEM_ZBDIRECT, 4U
 #endif /* DOXYGEN */
 
 #ifndef ZB_SET_TRACE_LEVEL

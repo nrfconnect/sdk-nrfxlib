@@ -48,21 +48,29 @@
 /*! \addtogroup ZB_BASE */
 /*! @{ */
 
+/* DJB2 algorithm magic number */
 #define ZB_HASH_MAGIC_VAL 5381UL
 
-/* TODO: check is this hash optimal for ints */
+/**
+ * DJB2 hash function step
+ *
+ * See: [Hash Functions](www.cse.yorku.ca/~oz/hash.html)
+ */
 #define ZB_HASH_FUNC_STEP(hash_var, v) ((((hash_var) << 5) + (hash_var)) + (v))
 #define ZB_4INT_HASH_FUNC(v1, v2, v3, v4) (ZB_HASH_FUNC_STEP(ZB_HASH_FUNC_STEP( ZB_HASH_FUNC_STEP( ZB_HASH_FUNC_STEP(ZB_HASH_MAGIC_VAL, (v1)), (v2)), (v3)), (v4)) & ZB_INT_MASK)
 #define ZB_2INT_HASH_FUNC(v1, v2)      (ZB_HASH_FUNC_STEP(ZB_HASH_FUNC_STEP(ZB_HASH_MAGIC_VAL, (v1)), (v2)) & ZB_INT_MASK)
 
 #define ZB_1INT_HASH_FUNC(v1)          (ZB_HASH_FUNC_STEP(ZB_HASH_MAGIC_VAL, (v1)) & ZB_INT_MASK)
 
+/* Calculate a hash using DJB2 hash function */
 zb_uint32_t zb_64bit_hash(zb_uint8_t *data);
 
-/* Calculate Fowler-Noll-Vo hash for random number generator. */
-zb_uint32_t zb_get_fnv_hash(zb_uint8_t *buffer);
-#define FNV_32_FNV0 ((zb_uint32_t)0x811c9dc5U)
-#define FNV_32_PRIME ((zb_uint32_t)0x01000193U)
+/**
+ * Calculate Fowler-Noll-Vo hash.
+ *
+ * See: [FNV Hash](www.isthe.com/chongo/tech/comp/fnv/)
+ */
+zb_uint32_t zb_fnv_32a_uint16(zb_uint16_t v);
 
 /*! @} */
 /*! @endcond */

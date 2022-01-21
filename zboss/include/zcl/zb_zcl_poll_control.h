@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -478,7 +478,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_poll_control_check_in_res_s
   */
 #define ZB_ZCL_POLL_CONTROL_GET_CHECK_IN_RES(data_ptr, buffer, status)    \
 {                                                                         \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_poll_control_check_in_res_t)) \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_poll_control_check_in_res_t))  \
   {                                                                       \
    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                \
   }                                                                       \
@@ -561,7 +561,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_poll_control_set_long_poll_interval_req_s
   */
 #define ZB_ZCL_POLL_CONTROL_GET_SET_LONG_POLL_INTERVAL_REQ(data_ptr, buffer, status)  \
 {                                                                                   \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_poll_control_set_long_poll_interval_t)) \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_poll_control_set_long_poll_interval_t))  \
   {                                                                                 \
    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                          \
   }                                                                                 \
@@ -618,7 +618,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_poll_control_set_short_poll_interval_req_s
   */
 #define ZB_ZCL_POLL_CONTROL_GET_SET_SHORT_POLL_INTERVAL_REQ(data_ptr, buffer, status)  \
 {                                                                                   \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_poll_control_set_short_poll_interval_t))\
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_poll_control_set_short_poll_interval_t)) \
   {                                                                                 \
    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                          \
   }                                                                                 \

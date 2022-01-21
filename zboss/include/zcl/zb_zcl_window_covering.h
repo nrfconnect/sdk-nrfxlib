@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -628,7 +628,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_go_to_tilt_percentage_req_s
   data_buf, lift_percentage_req, status)                                \
 {                                                                       \
   zb_zcl_go_to_lift_percentage_req_t *lift_percentage_req_ptr;          \
-  (lift_percentage_req_ptr) = zb_buf_len(data_buf) ==                   \
+  (lift_percentage_req_ptr) = zb_buf_len(data_buf) >=                   \
     sizeof(zb_zcl_go_to_lift_percentage_req_t) ?                        \
     (zb_zcl_go_to_lift_percentage_req_t*)zb_buf_begin(data_buf) : NULL; \
   if (lift_percentage_req_ptr != NULL)                                  \
@@ -679,7 +679,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_go_to_tilt_percentage_req_s
   data_buf, tilt_percentage_req, status)                                \
 {                                                                       \
   zb_zcl_go_to_tilt_percentage_req_t *tilt_percentage_req_ptr;          \
-  (tilt_percentage_req_ptr) = zb_buf_len(data_buf) ==                   \
+  (tilt_percentage_req_ptr) = zb_buf_len(data_buf) >=                   \
     sizeof(zb_zcl_go_to_tilt_percentage_req_t) ?                        \
     (zb_zcl_go_to_tilt_percentage_req_t*)zb_buf_begin(data_buf) : NULL; \
   if (tilt_percentage_req_ptr != NULL)                                  \

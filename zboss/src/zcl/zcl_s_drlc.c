@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -191,6 +191,13 @@ zb_ret_t zb_drlc_server_handle_report_event_status(zb_uint8_t param, const zb_zc
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_drlc_server_handle_report_event_status", (FMT__0));
 
+  if (!ZB_ZCL_DRLC_CLI_CMD_REPORT_EVENT_STATUS_IS_VALID(zb_buf_len(param)))
+  {
+    TRACE_MSG(TRACE_ZCL1, "Invalid packet len (%hd).", (FMT__H, zb_buf_len(param)));
+    zb_zcl_send_default_handler(param, cmd_info, ZB_ZCL_STATUS_INVALID_FIELD);
+    return RET_INVALID_FORMAT;
+  }
+
   ZB_ZCL_PACKET_GET_DATA32(&pl.issuer_event_id, data);
   ZB_ZCL_PACKET_GET_DATA8(&pl.event_status, data);
   ZB_ZCL_PACKET_GET_DATA32(&pl.event_status_time, data);
@@ -226,12 +233,38 @@ zb_ret_t zb_drlc_server_handle_get_scheduled_events(zb_uint8_t param, const zb_z
   zb_addr_u                                  dst_addr = ZB_ADDR_INIT_FROM_CMD_INFO(cmd_info);
   zb_uint8_t                                *data = zb_buf_begin(param);
 
+  zb_int32_t data_remaining = 0;
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_drlc_server_handle_get_scheduled_events", (FMT__0));
 
-  ZB_ZCL_PACKET_GET_DATA32(&pl_in.start_time, data);
-  ZB_ZCL_PACKET_GET_DATA8(&pl_in.number_of_events, data);
-  ZB_ZCL_PACKET_GET_DATA32(&pl_in.issuer_event_id, data);
+  data_remaining = zb_buf_len(param);
+
+  if (!ZB_ZCL_DRLC_GET_SCHEDULED_EVENTS_PAYLOAD_SIZE_IS_VALID((zb_uint8_t)data_remaining))
+  {
+    TRACE_MSG(TRACE_ZCL1, "zb_drlc_server_handle_get_scheduled_events: "
+              "ERROR: invalid payload len (%d)",
+              (FMT__D, data_remaining));
+    zb_zcl_send_default_handler(param, cmd_info, ZB_ZCL_STATUS_INVALID_FIELD);
+    return RET_INVALID_FORMAT;
+  }
+
+  ZB_ZCL_PACKET_GET_DATA32(&pl_in.start_time, data); data_remaining -= 4;
+  ZB_ZCL_PACKET_GET_DATA8(&pl_in.number_of_events, data); data_remaining --;
+
+  if (data_remaining>0)
+  {
+    ZB_ZCL_PACKET_GET_DATA32(&pl_in.issuer_event_id, data); data_remaining -= 4;
+  }
+
+
+  if (data_remaining<0)
+  {
+    TRACE_MSG(TRACE_ZCL1, "zb_drlc_server_handle_get_scheduled_events: "
+              "ERROR: invalid issuer event id field length.",
+              (FMT__0));
+    zb_zcl_send_default_handler(param, cmd_info, ZB_ZCL_STATUS_INVALID_FIELD);
+    return RET_INVALID_FORMAT;
+  }
 
   ZB_ZCL_DEVICE_CMD_PARAM_INIT_WITH(param,
     ZB_ZCL_DRLC_GET_SCHEDULED_EVENTS_CB_ID, RET_ERROR, cmd_info, &pl_in, &pl_out);
@@ -274,7 +307,18 @@ static zb_bool_t zb_zcl_process_drlc_server_commands(zb_uint8_t param, const zb_
   {
     case ZB_ZCL_DRLC_CLI_CMD_REPORT_EVENT_STATUS:
       result = zb_drlc_server_handle_report_event_status(param, cmd_info);
-      status = ( RET_OK == result )? ZB_ZCL_STATUS_SUCCESS: ZB_ZCL_STATUS_FAIL;
+      if ( RET_OK == result )
+      {
+        status = ZB_ZCL_STATUS_SUCCESS;
+      }
+      else if (RET_INVALID_FORMAT == result)
+      {
+        status = ZB_ZCL_STATUS_INVALID_FIELD;
+      }
+      else
+      {
+        status = ZB_ZCL_STATUS_FAIL;
+      }
       processed = ZB_TRUE;
       break;
     case ZB_ZCL_DRLC_CLI_CMD_GET_SCHEDULED_EVENTS:
@@ -283,6 +327,11 @@ static zb_bool_t zb_zcl_process_drlc_server_commands(zb_uint8_t param, const zb_
       {
         processed = ZB_TRUE;
         status = ZB_ZCL_STATUS_SUCCESS;
+      }
+      else if (RET_INVALID_FORMAT == result)
+      {
+        processed = ZB_TRUE;
+        status = ZB_ZCL_STATUS_INVALID_FIELD;
       }
       else
       {

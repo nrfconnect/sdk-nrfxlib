@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -191,7 +191,7 @@ ZB_ZCL_SEND_COMMAND_SHORT(                                                      
   */
 #define ZB_ZCL_IDENTIFY_GET_TRIGGER_VARIANT_REQ(data_ptr, buffer, status)    \
 {                                                                            \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_identify_effect_req_t))          \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_identify_effect_req_t))           \
   {                                                                          \
    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                   \
   }                                                                          \
@@ -355,16 +355,16 @@ typedef ZB_PACKED_PRE struct zb_zcl_identify_query_res_s
 */
 #define ZB_ZCL_IDENTIFY_GET_IDENTIFY_REQ(data_ptr, buffer, status)      \
 {                                                                       \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_identify_req_t))            \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_identify_req_t))             \
   {                                                                     \
     (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                             \
   }                                                                     \
   else                                                                  \
   {                                                                     \
     zb_zcl_identify_req_t *src_ptr =                                    \
-      (zb_zcl_identify_req_t*)zb_buf_begin((buffer));      		\
+      (zb_zcl_identify_req_t*)zb_buf_begin((buffer));                   \
     (status) = ZB_ZCL_PARSE_STATUS_SUCCESS;                             \
-    ZB_HTOLE16(&((data_ptr)->timeout), &(src_ptr->timeout));        	\
+    ZB_HTOLE16(&((data_ptr)->timeout), &(src_ptr->timeout));            \
   }                                                                     \
 }
 
@@ -374,19 +374,19 @@ typedef ZB_PACKED_PRE struct zb_zcl_identify_query_res_s
   * @param buffer containing the packet (by pointer).
   * @param status - variable to put parse status to (see @ref zb_zcl_parse_status_t).
   */
-#define ZB_ZCL_IDENTIFY_GET_IDENTIFY_QUERY_RES(data_ptr, buffer, status)	\
-{                                                                       	\
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_identify_query_res_t))            	\
-  {                                                                     	\
-    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                             	\
-  }                                                                     	\
-  else                                                                  	\
-  {                                                                     	\
-    zb_zcl_identify_query_res_t *src_ptr =                                    	\
-      (zb_zcl_identify_query_res_t*)zb_buf_begin((buffer));                   	\
-    (status) = ZB_ZCL_PARSE_STATUS_SUCCESS;                             	\
-    ZB_HTOLE16(&((data_ptr)->timeout), &(src_ptr->timeout));            	\
-  }                                                                     	\
+#define ZB_ZCL_IDENTIFY_GET_IDENTIFY_QUERY_RES(data_ptr, buffer, status) \
+{                                                                        \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_identify_query_res_t))        \
+  {                                                                      \
+    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                              \
+  }                                                                      \
+  else                                                                   \
+  {                                                                      \
+    zb_zcl_identify_query_res_t *src_ptr =                               \
+      (zb_zcl_identify_query_res_t*)zb_buf_begin((buffer));              \
+    (status) = ZB_ZCL_PARSE_STATUS_SUCCESS;                              \
+    ZB_HTOLE16(&((data_ptr)->timeout), &(src_ptr->timeout));             \
+  }                                                                      \
 }
 
 /*! @} */ /* Identify cluster command structures and definitions */

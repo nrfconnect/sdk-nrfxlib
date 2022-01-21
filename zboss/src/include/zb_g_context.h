@@ -234,10 +234,13 @@ extern zb_intr_globals_t g_izb;
 
 typedef struct zb_sec_globals_s
 {
-  zb_bufid_t              encryption_buf; /* buffer used for NWK encryption */
+  zb_bufid_t              encryption_buf[ZB_NWK_MAC_IFACE_TBL_SIZE]; /* buffer used for NWK encryption */
+
 /* 08/22/2018 EE CR:MINOR APS_FRAME_SECURITY is never used now. */
-#if defined ZB_ALIEN_MAC || defined ZB_ENABLE_ZGP_SECUR || defined APS_FRAME_SECURITY
-  zb_bufid_t              encryption_buf2; /* buffer used for APS encryption */
+/* MAC-split host is not considered as alien MAC in multi-MAC configuration, but
+ * it also requires second encryption buffer */
+#if defined ZB_ALIEN_MAC || defined ZB_ENABLE_ZGP_SECUR || defined APS_FRAME_SECURITY || !defined ZB_MAC_INTERFACE_SINGLE
+  zb_bufid_t              encryption_buf2[ZB_NWK_MAC_IFACE_TBL_SIZE]; /* buffer used for APS encryption */
 #endif
 #if defined TC_SWAPOUT && defined ZB_COORDINATOR_ROLE
   zb_tcswap_t tcswap;
@@ -483,6 +486,9 @@ typedef struct zb_cert_hacks_s
   zb_bitfield_t disable_addr_conflict_check_on_update_device:1; /* Disable check for address conflict
                                                                  * upon reception of Update device - refer to
                                                                  * TP/PRO/BV-17 SECURED network */
+  zb_bitfield_t delayed_rejoin_resp:1;                  /* Send rejoin resp after nwk status pkt
+                                                           during address conflict resolution */
+  zb_bitfield_t disable_beacon_send:1;                  /* Disabled responding with a beacon TP/PRO/BV-17 */
   zb_bitfield_t disable_discovery_route:1; /*!< Disable Discovery route bitfield in NWK FC */
   zb_uint8_t disable_frame_retransmission_countdown; 	/*!< Number of retransmitted packets to another
 						         *   devices, before retransmission will
@@ -527,6 +533,7 @@ typedef struct zb_cert_hacks_s
   zb_bitfield_t aps_drop_next_ack:1; /* Drop next APS ack */
   zb_bitfield_t aps_send_dup_tunneled_frame:1;
 
+  zb_bitfield_t tc_rejoin_aps_decrypt_error:1; /* Simulate TC rejoin without known aps key */
   zb_ieee_addr_t nwk_leave_from_unknown_ieee_addr; /*!< IEEE source address used in nwk_leave if `nwk_leave_from_unknown_addr` is set */
   zb_uint16_t nwk_leave_from_unknown_short_addr; /*!< Short source address used in nwk_leave if `nwk_leave_from_unknown_addr` is set */
 } zb_cert_hacks_t;
@@ -698,6 +705,7 @@ struct zb_intr_globals_s
 #ifdef ZB_HAVE_IOCTX
   zb_io_ctx_t             ioctx;
 #endif
+/* Note: MAC split I/O context is not used on hardware, but it's used on Linux platform */
 #if defined( ENABLE_USB_SERIAL_IMITATOR )
   zb_usbc_ctx_t           usbctx; /*!< USB imitator IO context. */
 #endif /* defined( ENABLE_USB_SERIAL_IMITATOR ) */
@@ -706,6 +714,7 @@ struct zb_intr_globals_s
 
 
 #define ZB_IOCTX() g_izb.ioctx
+#define ZB_MACSPLIT_IOCTX() g_izb.macsplit_ioctx
 #define ZB_TIMER_CTX() g_izb.time
 #define SER_CTX() ZB_IOCTX().serial_ctx
 #define USB_CTX() ZB_IOCTX().userial_ctx

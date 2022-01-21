@@ -387,7 +387,7 @@ typedef ZB_PACKED_PRE struct zb_zll_commissioning_scan_res_s
   ZB_HTOLE32_VAL(&(scan_data->resp_id), ZLL_DEVICE_INFO().response_id);                               \
   ZB_IEEE_ADDR_COPY(scan_data->ext_pan_id, zb_zll_get_nib_ext_pan_id());                              \
   scan_data->nwk_upd_id = (ZB_ZLL_IS_FACTORY_NEW() ? 0x00 : zb_zll_get_nib_update_id());              \
-  scan_data->channel = ZB_PIBCACHE_CURRENT_CHANNEL();                                                 \
+  scan_data->channel = ZB_PIBCACHE_CURRENT_CHANNEL();                                           \
   ZB_HTOLE16_VAL(&(scan_data->pan_id), ZB_PIBCACHE_PAN_ID());                                         \
   ZB_HTOLE16_VAL(&(scan_data->nwk_addr), ZB_PIBCACHE_NETWORK_ADDRESS());                              \
   scan_data->n_subdevs = ZCL_CTX().device_ctx->ep_count;                                              \
@@ -1142,36 +1142,37 @@ typedef ZB_PACKED_PRE struct zb_zll_commissioning_network_join_router_req_s
  *  @param callback [IN] - callback to schedule on packet send confirmation.
  *  @param status [OUT] - packet send schedule status (see @ref zb_ret_t).
   */
-#define ZB_ZLL_COMMISSIONING_SEND_NETWORK_JOIN_ROUTER_REQ(                  \
-    buffer,                                                                 \
-    key_index,                                                              \
-    encrypted_nwk_key,                                                      \
-    nwk_addr,                                                               \
-    grp_ids_begin,                                                          \
-    grp_ids_end,                                                            \
-    free_nwk_addrs_begin_,                                                  \
-    free_nwk_addrs_end_,                                                    \
-    free_group_ids_begin_,                                                  \
-    free_group_ids_end_,                                                    \
-    dst_addr,                                                               \
-    callback,                                                               \
-    status)                                                                 \
-{                                                                           \
-  zb_zll_commissioning_network_join_router_req_t* req_data;                 \
-  zb_uint8_t* data_ptr = ZB_ZCL_START_PACKET(buffer);                       \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RESP_FRAME_CONTROL_A(data_ptr,          \
-      ZB_ZCL_FRAME_DIRECTION_TO_SRV, ZB_ZCL_NOT_MANUFACTURER_SPECIFIC);     \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER(                                          \
-      data_ptr,                                                             \
-      ZB_ZCL_GET_SEQ_NUM(),                                                 \
-      ZB_ZLL_CMD_COMMISSIONING_NETWORK_JOIN_ROUTER_REQ);                    \
-  req_data = (zb_zll_commissioning_network_join_router_req_t*)data_ptr;     \
-  ZB_HTOLE32(&(req_data->trans_id), &(ZLL_TRAN_CTX().transaction_id));      \
-  ZB_IEEE_ADDR_COPY(req_data->ext_pan_id, zb_zll_get_nib_ext_pan_id());     \
+#define ZB_ZLL_COMMISSIONING_SEND_NETWORK_JOIN_ROUTER_REQ(                    \
+    buffer,                                                                   \
+    key_index,                                                                \
+    encrypted_nwk_key,                                                        \
+    nwk_addr,                                                                 \
+    grp_ids_begin,                                                            \
+    grp_ids_end,                                                              \
+    free_nwk_addrs_begin_,                                                    \
+    free_nwk_addrs_end_,                                                      \
+    free_group_ids_begin_,                                                    \
+    free_group_ids_end_,                                                      \
+    dst_addr,                                                                 \
+    callback,                                                                 \
+    status)                                                                   \
+{                                                                             \
+  zb_zll_commissioning_network_join_router_req_t* req_data;                   \
+  zb_uint8_t* data_ptr = ZB_ZCL_START_PACKET(buffer);                         \
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RESP_FRAME_CONTROL_A(data_ptr,            \
+      ZB_ZCL_FRAME_DIRECTION_TO_SRV, ZB_ZCL_NOT_MANUFACTURER_SPECIFIC);       \
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER(                                            \
+      data_ptr,                                                               \
+      ZB_ZCL_GET_SEQ_NUM(),                                                   \
+      ZB_ZLL_CMD_COMMISSIONING_NETWORK_JOIN_ROUTER_REQ);                      \
+  req_data = (zb_zll_commissioning_network_join_router_req_t*)data_ptr;       \
+  ZB_HTOLE32(&(req_data->trans_id), &(ZLL_TRAN_CTX().transaction_id));        \
+  ZB_IEEE_ADDR_COPY(req_data->ext_pan_id, zb_zll_get_nib_ext_pan_id());       \
   req_data->key_idx = (key_index);                                            \
   ZB_MEMCPY(req_data->encr_nwk_key, (encrypted_nwk_key), 16);                 \
   req_data->nwk_upd_id = zb_zll_get_nib_update_id();                          \
-  req_data->channel = (ZLL_DEVICE_INFO().nwk_channel) ? ZLL_DEVICE_INFO().nwk_channel : ZB_PIBCACHE_CURRENT_CHANNEL(); \
+  req_data->channel = (ZLL_DEVICE_INFO().nwk_channel) ?                       \
+    ZLL_DEVICE_INFO().nwk_channel : ZB_PIBCACHE_CURRENT_CHANNEL();      \
   ZB_HTOLE16_VAL(&(req_data->pan_id), ZB_PIBCACHE_PAN_ID());                  \
   ZB_HTOLE16_VAL(&(req_data->short_addr), (nwk_addr));                        \
   ZB_HTOLE16_VAL(&(req_data->group_ids_begin), (grp_ids_begin));              \
@@ -1181,7 +1182,7 @@ typedef ZB_PACKED_PRE struct zb_zll_commissioning_network_join_router_req_s
   ZB_HTOLE16_VAL(&(req_data->free_group_ids_begin), (free_group_ids_begin_)); \
   ZB_HTOLE16_VAL(&(req_data->free_group_ids_end), (free_group_ids_end_));     \
   data_ptr += sizeof(zb_zll_commissioning_network_join_router_req_t);         \
-  (status) = ZB_ZLL_SEND_PACKET((buffer), data_ptr, (dst_addr), (callback));   \
+  (status) = ZB_ZLL_SEND_PACKET((buffer), data_ptr, (dst_addr), (callback));  \
 }
 
 /** @brief Parses Commissioning.NetworkJoinRouterRequest.

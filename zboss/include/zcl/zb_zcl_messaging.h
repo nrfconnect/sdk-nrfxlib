@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -363,9 +363,9 @@ typedef enum zb_zcl_messaging_message_control_message_confirmation_e
 /** Check if some size in range of variable size of specified payload.
  */
 #define ZB_ZCL_MESSAGING_DISPLAY_MSG_PAYLOAD_SIZE_IS_VALID(size) \
-((size) > ((zb_int16_t)sizeof(zb_zcl_messaging_display_message_payload_t) - \
-(zb_int16_t)ZB_SIZEOF_FIELD(zb_zcl_messaging_display_message_payload_t, \
-  message) - 1/*extended_message_control field is optional*/))
+((size) >= ((zb_int16_t)sizeof(zb_zcl_messaging_display_message_payload_t) - \
+(zb_int16_t)ZB_SIZEOF_FIELD(zb_zcl_messaging_display_message_payload_t, message) -\
+(zb_int16_t)ZB_SIZEOF_FIELD(zb_zcl_messaging_display_message_payload_t, extended_message_control)))
 
 /* 8/16/2017 NK CR:MINOR Do all compilers support such initializing? More common way to initialize
  * is to provide pointer as parameter and operate with it inside the macro. */
@@ -394,9 +394,9 @@ typedef ZB_PACKED_PRE struct zb_zcl_messaging_cancel_message_payload_s
 #define ZB_ZCL_MESSAGING_CANCEL_MSG_PAYLOAD_INIT \
   (zb_zcl_messaging_cancel_message_payload_t) {0}
 
-
-/* Get last message command has no payload */
-
+/** Check if some size in range of variable size of specified payload. */
+#define ZB_ZCL_MESSAGING_MSG_CANCEL_MESSAGE_SIZE_IS_VALID(size) \
+  ((size) >= sizeof(zb_zcl_messaging_cancel_message_payload_t))
 
 /** Message Confirmation Control
  * @see SE spec, Table D-120
@@ -460,17 +460,15 @@ typedef ZB_PACKED_PRE struct zb_zcl_messaging_get_message_cancellation_payload_s
 
 /** Check if some size in range of variable size of specified payload. */
 #define ZB_ZCL_MESSAGING_MSG_CONFIRM_PAYLOAD_SIZE_IS_VALID(size) \
-  ((size) <= sizeof(zb_zcl_messaging_message_confirm_payload_t)) && \
-  ((size) > sizeof(zb_zcl_messaging_message_confirm_payload_t) - \
-   ZB_SIZEOF_FIELD(zb_zcl_messaging_message_confirm_payload_t, \
-                   message_confirmation_response))
+  ((size) >= sizeof(zb_zcl_messaging_message_confirm_payload_t) - \
+   ZB_SIZEOF_FIELD(zb_zcl_messaging_message_confirm_payload_t, message_confirmation_control) -\
+   ZB_SIZEOF_FIELD(zb_zcl_messaging_message_confirm_payload_t, message_confirmation_response))
 
 typedef enum zb_zcl_messaging_response_type_e {
   ZB_ZCL_MESSAGING_RESPONSE_TYPE_NORMAL,
   ZB_ZCL_MESSAGING_RESPONSE_TYPE_PROTECTED,
   ZB_ZCL_MESSAGING_RESPONSE_TYPE_NOT_FOUND,
 } zb_zcl_messaging_response_type_t;
-
 
 /** According to SE spec, server could send following responses to
  *  @ref ZB_ZCL_MESSAGING_CLI_CMD_GET_LAST_MESSAGE "GetLastMessage" command:

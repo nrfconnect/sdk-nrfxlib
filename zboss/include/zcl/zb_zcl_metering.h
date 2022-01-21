@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -1621,7 +1621,7 @@ enum zb_zcl_metering_profile_interval_period_e
 };
 
 #define ZB_ZCL_METERING_GET_PROFILE_PAYLOAD_SIZE_IS_VALID(current_size) \
-  ((current_size == sizeof(zb_zcl_metering_get_profile_payload_t) ? ZB_TRUE : ZB_FALSE))
+  ((current_size >= sizeof(zb_zcl_metering_get_profile_payload_t) ? ZB_TRUE : ZB_FALSE))
 
 /** @ref ZB_ZCL_METERING_SRV_CMD_GET_PROFILE_RESPONSE "GetProfileResponse" command payload
  *  @see SE spec, subclause D.3.2.3.1.1.1
@@ -1769,24 +1769,25 @@ typedef ZB_PACKED_PRE struct zb_zcl_metering_get_snapshot_payload_s
  */
 enum zb_zcl_metering_snapshot_cause_e
 {
-  ZB_ZCL_METERING_CAUSE_GENERAL                         =  0,  /**< General */
-  ZB_ZCL_METERING_CAUSE_END_OF_BILLING_PERIOD           =  1,  /**< End of Billing Period */
-  ZB_ZCL_METERING_CAUSE_END_OF_BLOCK_PERIOD             =  2,  /**< End of Block Period */
-  ZB_ZCL_METERING_CAUSE_CHANGE_OF_TARIFF_INFORMATION    =  3,  /**< Change of Tariff Information */
-  ZB_ZCL_METERING_CAUSE_CHANGE_OF_PRICE_MATRIX          =  4,  /**< Change of Price Matrix */
-  ZB_ZCL_METERING_CAUSE_CHANGE_OF_BLOCK_THRESHOLDS      =  5,  /**< Change of Block Thresholds */
-  ZB_ZCL_METERING_CAUSE_CHANGE_OF_CV                    =  6,  /**< Change of CV */
-  ZB_ZCL_METERING_CAUSE_CHANGE_OF_CF                    =  7,  /**< Change of CF */
-  ZB_ZCL_METERING_CAUSE_CHANGE_OF_CALENDAR              =  8,  /**< Change of Calendar */
-  ZB_ZCL_METERING_CAUSE_CRITICAL_PEAK_PRICING           =  9,  /**< Critical Peak Pricing */
-  ZB_ZCL_METERING_CAUSE_MANUALLY_TRIGGERED_FROM_CLIENT  = 10,  /**< Manually Triggered from Client */
-  ZB_ZCL_METERING_CAUSE_END_OF_RESOLVE_PERIOD           = 11,  /**< End of Resolve Period */
-  ZB_ZCL_METERING_CAUSE_CHANGE_OF_TENANCY               = 12,  /**< Change of Tenancy */
-  ZB_ZCL_METERING_CAUSE_CHANGE_OF_SUPPLIER              = 13,  /**< Change of Supplier */
-  ZB_ZCL_METERING_CAUSE_CHANGE_OF_METER_MODE            = 14,  /**< Change of (Meter) Mode */
-  ZB_ZCL_METERING_CAUSE_DEBT_PAYMENT                    = 15,  /**< Debt Payment */
-  ZB_ZCL_METERING_CAUSE_SCHEDULED_SNAPSHOT              = 16,  /**< Scheduled Snapshot */
-  ZB_ZCL_METERING_CAUSE_OTA_FIRMWARE_DOWNLOAD           = 17   /**< OTA Firmware Download */
+  ZB_ZCL_METERING_CAUSE_GENERAL                         = 1 << 0,  /**< General */
+  ZB_ZCL_METERING_CAUSE_END_OF_BILLING_PERIOD           = 1 << 1,  /**< End of Billing Period */
+  ZB_ZCL_METERING_CAUSE_END_OF_BLOCK_PERIOD             = 1 << 2,  /**< End of Block Period */
+  ZB_ZCL_METERING_CAUSE_CHANGE_OF_TARIFF_INFORMATION    = 1 << 3,  /**< Change of Tariff Information */
+  ZB_ZCL_METERING_CAUSE_CHANGE_OF_PRICE_MATRIX          = 1 << 4,  /**< Change of Price Matrix */
+  ZB_ZCL_METERING_CAUSE_CHANGE_OF_BLOCK_THRESHOLDS      = 1 << 5,  /**< Change of Block Thresholds */
+  ZB_ZCL_METERING_CAUSE_CHANGE_OF_CV                    = 1 << 6,  /**< Change of CV */
+  ZB_ZCL_METERING_CAUSE_CHANGE_OF_CF                    = 1 << 7,  /**< Change of CF */
+  ZB_ZCL_METERING_CAUSE_CHANGE_OF_CALENDAR              = 1 << 8,  /**< Change of Calendar */
+  ZB_ZCL_METERING_CAUSE_CRITICAL_PEAK_PRICING           = 1 << 9,  /**< Critical Peak Pricing */
+  ZB_ZCL_METERING_CAUSE_MANUALLY_TRIGGERED_FROM_CLIENT  = 1 << 10,  /**< Manually Triggered from Client */
+  ZB_ZCL_METERING_CAUSE_END_OF_RESOLVE_PERIOD           = 1 << 11,  /**< End of Resolve Period */
+  ZB_ZCL_METERING_CAUSE_CHANGE_OF_TENANCY               = 1 << 12,  /**< Change of Tenancy */
+  ZB_ZCL_METERING_CAUSE_CHANGE_OF_SUPPLIER              = 1 << 13,  /**< Change of Supplier */
+  ZB_ZCL_METERING_CAUSE_CHANGE_OF_METER_MODE            = 1 << 14,  /**< Change of (Meter) Mode */
+  ZB_ZCL_METERING_CAUSE_DEBT_PAYMENT                    = 1 << 15,  /**< Debt Payment */
+  ZB_ZCL_METERING_CAUSE_SCHEDULED_SNAPSHOT              = 1 << 16,  /**< Scheduled Snapshot */
+  ZB_ZCL_METERING_CAUSE_OTA_FIRMWARE_DOWNLOAD           = 1 << 17,   /**< OTA Firmware Download */
+  ZB_ZCL_METERING_CAUSE_SELECT_ALL_SNAPSHOTS            = 0xFFFFFFFF  /**< Select All Snapshots */
 };
 
 

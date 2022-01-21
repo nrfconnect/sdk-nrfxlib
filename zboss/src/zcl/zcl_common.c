@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -145,6 +145,12 @@ void zb_zcl_init_endpoint(zb_af_endpoint_desc_t* ep)
     {
       ep->cluster_desc_list[j].cluster_init();
     }
+#if defined ZB_ZCL_SUPPORT_CLUSTER_IAS_ZONE
+    if (ep->cluster_desc_list[j].cluster_id == ZB_ZCL_CLUSTER_ID_IAS_ZONE && ZB_BIT_IS_SET(ep->cluster_desc_list[j].role_mask, ZB_ZCL_CLUSTER_SERVER_ROLE))
+    {
+      zb_zcl_ias_zone_check_cie_addr_on_zcl_initialization(ep->ep_id);
+    }
+#endif
 #ifndef ZB_ZCL_DISABLE_REPORTING
     /* Configure default reporting */
     zb_zcl_put_default_reporting_info_for_cluster(
@@ -827,6 +833,11 @@ zb_uint8_t zb_zcl_check_attribute_writable(
         TRACE_MSG(TRACE_ZCL1, "limit reached value", (FMT__0));
         status = ZB_ZCL_STATUS_LIMIT_REACHED;
       }
+      else if (ret == RET_UNAUTHORIZED)
+      {
+        TRACE_MSG(TRACE_ZCL1, "unathorized value", (FMT__0));
+        status = ZB_ZCL_STATUS_NOT_AUTHORIZED;
+      }
       else
       {
         /* MISRA rule 15.7 requires empty 'else' branch. */
@@ -1122,7 +1133,11 @@ static void ep_process_zcl_cmd(zb_uint8_t param)
   ep_desc = zb_af_get_endpoint_desc(ep);
   ZB_ASSERT(ep_desc);
 
+#if defined SNCP_MODE
+  if (!ZB_SE_MODE())
+#else
   if (ZB_SE_MODE())
+#endif
   /*cstat !MISRAC2012-Rule-2.1_b */
   /** @mdr{00010,3} */
   {

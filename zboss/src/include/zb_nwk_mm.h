@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -53,5 +53,46 @@ zb_uint8_t zb_nwk_mm_get_freq_band(void);
 void zb_nlme_set_interface_request(zb_uint8_t param);
 
 void zb_nlme_get_interface_request(zb_uint8_t param);
+
+zb_uint8_t zb_multimac_get_iface_id_by_channel_page(zb_uint8_t page_idx, zb_uint8_t channel_idx);
+
+/* Multi-MAC proxy functions */
+void zb_nwk_handle_mlme_start_confirm(zb_uint8_t param);
+void zb_nwk_handle_mlme_reset_confirm(zb_uint8_t param);
+void zb_nwk_handle_mcps_data_confirm(zb_uint8_t param);
+
+void zb_multimac_mlme_start_request_proxy(zb_uint8_t param);
+void zb_multimac_mlme_start_confirm_proxy(zb_uint8_t param);
+void zb_multimac_mcps_data_request_proxy(zb_uint8_t param);
+void zb_multimac_mlme_set_request_proxy(zb_uint8_t param);
+void zb_multimac_mlme_reset_request_proxy(zb_uint8_t param);
+void zb_multimac_mlme_reset_confirm_proxy(zb_uint8_t param);
+void zb_multimac_mlme_get_request_proxy(zb_uint8_t param);
+
+void zb_multimac_mlme_scan_request_proxy(zb_uint8_t param);
+void zb_multimac_mlme_scan_confirm_proxy(zb_uint8_t param);
+
+void zb_multimac_mcps_data_confirm_proxy(zb_uint8_t param);
+
+void zb_multimac_mac_init(void);
+
+/* ZB_MACSPLIT_DEVICE just uses monolithic MAC now */
+  #define ZB_MAC_INIT() zb_mac_init()
+
+/* MAC split interface API */
+
+/**
+ * @brief Synchronizes association parameters (MAC short address, coordinator extended address)
+ * from primary interface with other interfaces
+ *
+ * @param param
+ */
+void zb_nwk_mm_sync_assoc(zb_uint8_t param);
+
+
+/**
+   Get the primary MAC interface.
+*/
+zb_uint8_t zb_get_primary_interface(void);
 
 #endif /* ZB_NWK_MM_H */

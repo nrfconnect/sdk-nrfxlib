@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -96,11 +96,9 @@ void zb_nvram_read_ha_dataset(
 
       attr_desc = zb_zcl_get_attr_desc_a(
        endpoint,
-      ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_ZONEID_ID);
-      if(attr_desc)
-      {
+       ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_ZONEID_ID);
+      ZB_ASSERT(attr_desc);
       ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc, ds.zone_id);
-      }
 
       attr_desc = zb_zcl_get_attr_desc_a(
         endpoint,
@@ -117,6 +115,22 @@ void zb_nvram_read_ha_dataset(
       ZB_ASSERT(attr_desc);
 
       ZB_ZCL_SET_DIRECTLY_ATTR_VAL16(attr_desc, ds.cie_short_addr);
+
+      attr_desc = zb_zcl_get_attr_desc_a(
+        endpoint,
+        ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_CUSTOM_CIE_ADDR_IS_SET);
+      ZB_ASSERT(attr_desc);
+
+      ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc, ds.cie_address_is_set);
+
+      if (ZB_U2B(ds.cie_address_is_set))
+      {
+        ret = zb_zcl_ias_zone_put_cie_address_to_binding_whitelist(endpoint);
+        if (ret != RET_OK)
+        {
+          TRACE_MSG(TRACE_ERROR, "Put CIE address to binding whitelist failed ret %hu", (FMT__D, ret));
+        }
+      }
     }
 #endif
 #ifdef ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL
@@ -219,7 +233,7 @@ zb_ret_t zb_nvram_write_ha_dataset(zb_uint8_t page, zb_uint32_t pos)
       ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_IAS_ZONE_ZONEID_ID);
     if (attr_desc)
     {
-    ds.zone_id = ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc);
+      ds.zone_id = ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc);
     }
     else
     {
@@ -232,6 +246,13 @@ zb_ret_t zb_nvram_write_ha_dataset(zb_uint8_t page, zb_uint32_t pos)
     ZB_ASSERT(attr_desc);
 
     ds.cie_short_addr = ZB_ZCL_GET_ATTRIBUTE_VAL_16(attr_desc);
+
+    attr_desc = zb_zcl_get_attr_desc_a(
+      endpoint,
+      ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_CUSTOM_CIE_ADDR_IS_SET);
+    ZB_ASSERT(attr_desc);
+
+    ds.cie_address_is_set = ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc);
   }
 #endif
 #ifdef ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL

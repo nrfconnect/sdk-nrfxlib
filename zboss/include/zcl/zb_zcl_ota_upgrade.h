@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -961,7 +961,7 @@ enum zb_zcl_ota_upgrade_query_next_image_fc_e
     expected_payload_len -= sizeof(zb_uint16_t);                                   \
   }                                                                                \
                                                                                    \
-  if (zb_buf_len((buffer)) != expected_payload_len)                                \
+  if (zb_buf_len((buffer)) < expected_payload_len)                                 \
   {                                                                                \
    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                        \
   }                                                                               \
@@ -1072,7 +1072,7 @@ enum zb_zcl_ota_upgrade_image_block_fc_e
   zb_zcl_ota_upgrade_image_block_t *src_ptr =                             \
        (zb_zcl_ota_upgrade_image_block_t*)zb_buf_begin((buffer));         \
                                                                           \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_ota_upgrade_image_block_t) -  \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_ota_upgrade_image_block_t) -   \
       ( !(src_ptr->fc & ZB_ZCL_OTA_UPGRADE_QUERY_IMAGE_BLOCK_IEEE_PRESENT) ? sizeof(zb_ieee_addr_t) : 0) -    \
       ( !(src_ptr->fc & ZB_ZCL_OTA_UPGRADE_QUERY_IMAGE_BLOCK_DELAY_PRESENT) ? sizeof(zb_uint16_t) : 0) )      \
   {                                                                       \
@@ -1182,7 +1182,7 @@ enum zb_zcl_ota_upgrade_image_page_fc_e
   zb_zcl_ota_upgrade_image_page_t *src_ptr =                              \
        (zb_zcl_ota_upgrade_image_page_t*)zb_buf_begin((buffer));          \
                                                                           \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_ota_upgrade_image_page_t) -   \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_ota_upgrade_image_page_t) -    \
       ((src_ptr->fc & ZB_ZCL_OTA_UPGRADE_QUERY_IMAGE_PAGE_IEEE_PRESENT) ? sizeof(zb_ieee_addr_t) : 0) )      \
   {                                                                       \
    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                \
@@ -1264,7 +1264,7 @@ enum zb_zcl_ota_upgrade_image_page_fc_e
   zb_zcl_ota_upgrade_upgrade_end_t *src_ptr =                             \
        (zb_zcl_ota_upgrade_upgrade_end_t*)zb_buf_begin((buffer));         \
                                                                           \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_ota_upgrade_upgrade_end_t) )  \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_ota_upgrade_upgrade_end_t) )   \
   {                                                                       \
    (status_) = ZB_ZCL_PARSE_STATUS_FAILURE;                               \
   }                                                                       \
@@ -1334,7 +1334,7 @@ enum zb_zcl_ota_upgrade_image_page_fc_e
   */
 #define ZB_ZCL_OTA_UPGRADE_GET_QUERY_SPECIFIC_FILE_REQ(data_ptr, buffer, status)  \
 {                                                                         \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_ota_upgrade_query_specific_file_t) )  \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_ota_upgrade_query_specific_file_t) )   \
   {                                                                       \
    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                \
   }                                                                       \
@@ -1511,7 +1511,7 @@ enum zb_zcl_ota_upgrade_image_notify_payload_type_e
   zb_zcl_ota_upgrade_query_next_image_res_t *src_ptr =                        \
        (zb_zcl_ota_upgrade_query_next_image_res_t*)zb_buf_begin((buffer));    \
                                                                               \
-  if (zb_buf_len((buffer)) != ( (src_ptr->status)==ZB_ZCL_STATUS_SUCCESS ?    \
+  if (zb_buf_len((buffer)) < ( (src_ptr->status)==ZB_ZCL_STATUS_SUCCESS ?     \
      sizeof(zb_zcl_ota_upgrade_query_next_image_res_t) : sizeof(zb_uint8_t))) \
   {                                                                           \
     (status_) = ZB_ZCL_PARSE_STATUS_FAILURE;                                  \
@@ -1666,7 +1666,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_image_block_res_s
   zb_zcl_ota_upgrade_image_block_res_t *src_ptr =                             \
        (zb_zcl_ota_upgrade_image_block_res_t*)zb_buf_begin((buffer));         \
                                                                               \
-  if (zb_buf_len((buffer)) != sizeof(zb_uint8_t) +                            \
+  if (zb_buf_len((buffer)) < sizeof(zb_uint8_t) +                             \
       ((src_ptr->status)==ZB_ZCL_STATUS_SUCCESS ?                             \
           sizeof(src_ptr->response.success) - sizeof(zb_uint8_t*)+            \
                 src_ptr->response.success.data_size : 0) +                    \
@@ -1765,7 +1765,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_upgrade_end_res_s
   */
 #define ZB_ZCL_OTA_UPGRADE_GET_UPGRADE_END_RES(data_ptr, buffer, status_)     \
 {                                                                             \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_ota_upgrade_upgrade_end_res_t) )  \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_ota_upgrade_upgrade_end_res_t) )   \
   {                                                                           \
     (status_) = ZB_ZCL_PARSE_STATUS_FAILURE;                                  \
   }                                                                           \
@@ -1842,7 +1842,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_upgrade_end_res_s
 {                                                                                   \
   zb_zcl_ota_upgrade_query_specific_file_res_t *src_ptr =                           \
        (zb_zcl_ota_upgrade_query_specific_file_res_t*)zb_buf_begin((buffer));       \
-  if (zb_buf_len((buffer)) != ( (src_ptr->status)==ZB_ZCL_STATUS_SUCCESS ?          \
+  if (zb_buf_len((buffer)) < ( (src_ptr->status)==ZB_ZCL_STATUS_SUCCESS ?           \
       sizeof(zb_zcl_ota_upgrade_query_specific_file_res_t) : sizeof(zb_uint8_t) ) ) \
   {                                                                                 \
     (status_) = ZB_ZCL_PARSE_STATUS_FAILURE;                                  \
@@ -2118,6 +2118,7 @@ typedef struct zb_zcl_ota_upgrade_cli_ctx_s
   zb_zcl_ota_upgrade_image_block_res_t payload_2;
   zb_uint_t resend_retries;
   zb_uint8_t ota_restart_after_rejoin;
+  zb_uint16_t ota_period_backup;
 } zb_zcl_ota_upgrade_cli_ctx_t;
 #endif
 

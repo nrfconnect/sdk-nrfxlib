@@ -154,6 +154,7 @@ typedef struct zb_sched_globals_s
   zb_uint8_t tm_buffer_usage;   /*!< Usage of timer queue  */
   zb_uint8_t delayed_buf_usage; /*!< Usage of waiting for free buffer queue  */
   zb_bool_t stop;
+  zb_bool_t stopping;
 } zb_sched_globals_t;
 
 /**
@@ -436,6 +437,16 @@ zb_ret_t zb_schedule_alarm(zb_callback_t func, zb_uint8_t param, zb_time_t timeo
    See reporting_srv sample
  */
 #define ZB_SCHEDULE_ALARM_CANCEL_AND_GET_BUF(func, param, p_param) (void)zb_schedule_alarm_cancel((func), (param), (p_param))
+
+
+/**
+   Start ZBOSS shutdown procedure in the scheduler.
+
+   Drop all callbacks and alarms, disable alarms planning - but keep callbacks
+   planning and scheduler working.
+   That is necessary to complete MAC reset at shut.
+ */
+void zb_scheduler_start_shutting(void);
 
 /** @endcond */ /* internals_doc */
 /*! @} */

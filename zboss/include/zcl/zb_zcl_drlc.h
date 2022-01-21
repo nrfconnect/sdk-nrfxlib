@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -297,6 +297,10 @@ typedef ZB_PACKED_PRE struct zb_zcl_drlc_lce_payload_s {
   zb_uint8_t event_control;                          /* (M) */
 } ZB_PACKED_STRUCT zb_zcl_drlc_lce_payload_t;
 
+/** @def ZB_ZCL_DRLC_SRV_CMD_LOAD_CONTROL_EVENT_IS_VALID
+ */
+#define ZB_ZCL_DRLC_SRV_CMD_LOAD_CONTROL_EVENT_IS_VALID(size) \
+  ((size) >= sizeof(zb_zcl_drlc_lce_payload_t))
 
 /** @ref ZB_ZCL_DRLC_SRV_CMD_CANCEL_LOAD_CONTROL_EVENT "CancelLoadControlEvent" command payload
  * @see SE spec, Figure D-3
@@ -332,6 +336,30 @@ typedef ZB_PACKED_PRE struct zb_zcl_drlc_cancel_lce_payload_s {
     */
   zb_uint32_t effective_time;                        /* (M) */
 } ZB_PACKED_STRUCT zb_zcl_drlc_cancel_lce_payload_t;
+
+/** @def ZB_ZCL_DRLC_SRV_CMD_CANCEL_LOAD_CONTROL_EVENT_IS_VALID
+ */
+#define ZB_ZCL_DRLC_SRV_CMD_CANCEL_LOAD_CONTROL_EVENT_IS_VALID(size) \
+  ((size) >= sizeof(zb_zcl_drlc_cancel_lce_payload_t))
+
+
+/** @ref ZB_ZCL_DRLC_SRV_CMD_CANCEL_ALL_LOAD_CONTROL_EVENTS "CancelAllLoadControlEvents" command payload
+ * @see SE spec, Figure D-3
+ */
+typedef ZB_PACKED_PRE struct zb_zcl_drlc_cancel_alce_payload_s {
+  /* Mandatory fields. */
+
+  /** Where the Cancel Control field indicates that randomization is to be used, the receiving device should first
+    * check whether Duration Time was to be randomized and, if so, termination of the event should be adjusted
+    * according to the value of the DurationRandomizationMinutes attribute. 
+    */
+  zb_uint8_t cancel_control;                       /* (M) */
+} ZB_PACKED_STRUCT zb_zcl_drlc_cancel_alce_payload_t;
+
+/** @def ZB_ZCL_DRLC_SRV_CMD_CANCEL_ALL_LOAD_CONTROL_EVENTS_IS_VALID
+ */
+#define ZB_ZCL_DRLC_SRV_CMD_CANCEL_ALL_LOAD_CONTROL_EVENTS_IS_VALID(size) \
+  ((size) >= sizeof(zb_zcl_drlc_cancel_alce_payload_t))
 
 /** @ref ZB_ZCL_DRLC_CLI_CMD_REPORT_EVENT_STATUS "ReportEventStatus" command payload
  * @see SE spec, Figure D-5
@@ -389,6 +417,10 @@ typedef ZB_PACKED_PRE struct zb_zcl_drlc_report_event_status_payload_s {
   zb_uint8_t signature[42];                             /* (O) */
 } ZB_PACKED_STRUCT zb_zcl_drlc_report_event_status_payload_t;
 
+/** @def ZB_ZCL_DRLC_CLI_CMD_REPORT_EVENT_STATUS_IS_VALID
+ */
+#define ZB_ZCL_DRLC_CLI_CMD_REPORT_EVENT_STATUS_IS_VALID(size) \
+  ((size) >= sizeof(zb_zcl_drlc_report_event_status_payload_t)) 
 
 /** @ref ZB_ZCL_DRLC_CLI_CMD_GET_SCHEDULED_EVENTS "GetScheduledEvents" command payload
  * @see SE spec, Figure D-6
@@ -414,6 +446,10 @@ typedef ZB_PACKED_PRE struct zb_zcl_drlc_get_scheduled_events_payload_s {
   zb_uint32_t issuer_event_id;                   /* (O) */
 } ZB_PACKED_STRUCT zb_zcl_drlc_get_scheduled_events_payload_t;
 
+/** @def ZB_ZCL_DRLC_CLI_CMD_GET_SCHEDULED_EVENTS_IS_VALID
+ */
+#define ZB_ZCL_DRLC_CLI_CMD_GET_SCHEDULED_EVENTS_IS_VALID(size) \
+  ((size) >= sizeof(zb_zcl_drlc_get_scheduled_events_payload_t)) 
 
 /** Initialize @ref ZB_ZCL_DRLC_SRV_CMD_LOAD_CONTROL_EVENT "LoadControlEvent" command @ref zb_zcl_drlc_lce_payload_t payload*/
 #define ZB_ZCL_DRLC_LCE_PAYLOAD_INIT                \
@@ -430,6 +466,10 @@ typedef ZB_PACKED_PRE struct zb_zcl_drlc_get_scheduled_events_payload_s {
 /** Initialize @ref ZB_ZCL_DRLC_SRV_CMD_CANCEL_LOAD_CONTROL_EVENT "CancelLoadControlEvent" command @ref zb_zcl_drlc_cancel_lce_payload_t payload */
 #define ZB_ZCL_DRLC_CANCEL_LCE_PAYLOAD_INIT \
   (zb_zcl_drlc_cancel_lce_payload_t) {0}
+
+/** Initialize @ref ZB_ZCL_DRLC_SRV_CMD_CANCEL_ALL_LOAD_CONTROL_EVENTS "CancelAllLoadControlEvents" command @ref zb_zcl_drlc_cancel_alce_payload_t payload */
+#define ZB_ZCL_DRLC_CANCEL_ALCE_PAYLOAD_INIT \
+  (zb_zcl_drlc_cancel_alce_payload_t) {0}
 
 /** Initialize @ref ZB_ZCL_DRLC_CLI_CMD_REPORT_EVENT_STATUS "ReportEventStatus" command @ref zb_zcl_drlc_report_event_status_payload_t payload */
 #define ZB_ZCL_DRLC_REPORT_EVENT_STATUS_PAYLOAD_INIT    \
@@ -450,6 +490,12 @@ typedef ZB_PACKED_PRE struct zb_zcl_drlc_get_scheduled_events_payload_s {
     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,                 \
   },                                                    \
 }
+
+/** Check if some size in range of variable size of specified payload.
+ */
+#define ZB_ZCL_DRLC_GET_SCHEDULED_EVENTS_PAYLOAD_SIZE_IS_VALID(size) \
+((size) >= ((zb_int16_t)sizeof(zb_zcl_drlc_get_scheduled_events_payload_t) - \
+(zb_int16_t)ZB_SIZEOF_FIELD(zb_zcl_drlc_get_scheduled_events_payload_t, issuer_event_id)))
 
 /** Initialize @ref ZB_ZCL_DRLC_CLI_CMD_GET_SCHEDULED_EVENTS "GetScheduledEvents" command @ref zb_zcl_drlc_get_scheduled_events_payload_t payload */
 #define ZB_ZCL_DRLC_CMD_GET_SCHEDULED_EVENTS_PAYLOAD_INIT \

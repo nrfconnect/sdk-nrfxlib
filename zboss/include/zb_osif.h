@@ -364,6 +364,7 @@ int zb_osif_file_is_eof(zb_osif_file_t *f);
 int zb_osif_file_is_err(zb_osif_file_t *f);
 int zb_osif_file_flush(zb_osif_file_t *f);
 int zb_osif_file_seek(zb_osif_file_t *f, zb_uint32_t off, zb_uint8_t mode);
+int zb_osif_file_get_size(zb_osif_file_t *f);
 int zb_osif_file_truncate(zb_osif_file_t *f, zb_uint32_t off);
 int zb_osif_file_sync(zb_osif_file_t *f);
 void zb_osif_trace_get_time(zb_uint_t *sec, zb_uint_t *msec);
@@ -471,6 +472,12 @@ zb_uint8_t zb_get_reset_source(void);
  * @brief osif NVRAM initializer
  */
 void zb_osif_nvram_init(const zb_char_t *name);
+
+
+/**
+ * @brief Deinitialize osif-layer NVRAM support
+ */
+void zb_osif_nvram_deinit(void);
 
 /**
  * @brief Get NVRAM page length

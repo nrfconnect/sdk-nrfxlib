@@ -84,6 +84,10 @@
 #define ZB_XDATA
 #define ZB_CODE
 #define ZB_IAR_CODE
+#elif defined __LINT__
+#define ZB_XDATA
+#define ZB_CODE
+#define ZB_IAR_CODE
 #elif defined KEIL
 #define ZB_XDATA xdata
 #define ZB_CODE  code
@@ -224,8 +228,8 @@ typedef int16_t            zb_int16_t;
 typedef uint32_t           zb_uint32_t;
 typedef int32_t            zb_int32_t;
 
-typedef long long          zb_int64_t;
-typedef unsigned long long zb_uint64_t;
+typedef int64_t            zb_int64_t;
+typedef uint64_t           zb_uint64_t;
 
 typedef char               zb_char_t;
 typedef unsigned char      zb_uchar_t;
@@ -784,8 +788,8 @@ void* zb_put_next_2_htole32(zb_uint8_t *dst, zb_uint32_t val1, zb_uint32_t val2)
 #define ZB_GET_LOW_BYTE(val) (zb_uint8_t)((val) & 0xFFU)
 #define ZB_GET_HI_BYTE(val)  (zb_uint8_t)(((val) >> 8U) & 0xFFU)
 
-#define ZB_SET_LOW_BYTE(res, val) (res) = ((((zb_uint16_t)res) & 0xFF00U) | (((zb_uint16_t)val) & 0xFFU))
-#define ZB_SET_HI_BYTE(res, val) (res) = (((((zb_uint16_t)val) << 8U) & 0xFF00U) | (((zb_uint16_t)res) & 0xFFU))
+#define ZB_SET_LOW_BYTE(res, val) (res) = ((((zb_uint16_t)(res)) & 0xFF00U) | (((zb_uint16_t)(val)) & 0xFFU))
+#define ZB_SET_HI_BYTE(res, val) (res) = (((((zb_uint16_t)(val)) << 8U) & 0xFF00U) | (((zb_uint16_t)(res)) & 0xFFU))
 
 #define ZB_PKT_16B_ZERO_BYTE 0U
 #define ZB_PKT_16B_FIRST_BYTE 1U

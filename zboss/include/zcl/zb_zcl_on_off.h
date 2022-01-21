@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -182,6 +182,8 @@ enum zb_zcl_on_off_cmd_e
 
 #define ZB_ZCL_CLUSTER_ID_ON_OFF_SERVER_ROLE_RECEIVED_CMD_LIST ZB_ZCL_CLUSTER_ID_ON_OFF_CLIENT_ROLE_GENERATED_CMD_LIST
 
+/** @endcond */ /* internals_doc */
+
 /*! @brief General macro for sending On/Off cluster command
     @param buffer to put data to
     @param addr - address of the device to send command to
@@ -203,8 +205,6 @@ enum zb_zcl_on_off_cmd_e
   ZB_ZCL_SEND_COMMAND_SHORT(                                                            \
       buffer, addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_ON_OFF, cb);  \
 }
-
-/** @endcond */ /* internals_doc */
 
 /*! Specific macro for sending Off command */
 #define ZB_ZCL_ON_OFF_SEND_OFF_REQ(                                         \
@@ -344,7 +344,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_on_off_on_with_timed_off_req_s
   */
 #define ZB_ZCL_ON_OFF_GET_OFF_WITH_EFFECT_REQ(data_ptr, buffer, status)             \
 {                                                                                   \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_on_off_off_with_effect_req_t))          \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_on_off_off_with_effect_req_t))           \
   {                                                                                 \
    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                          \
   }                                                                                 \
@@ -366,7 +366,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_on_off_on_with_timed_off_req_s
   */
 #define ZB_ZCL_ON_OFF_GET_ON_WITH_TIMED_OFF_REQ(data_ptr, buffer, status)           \
 {                                                                                   \
-  if (zb_buf_len((buffer)) != sizeof(zb_zcl_on_off_on_with_timed_off_req_t))        \
+  if (zb_buf_len((buffer)) < sizeof(zb_zcl_on_off_on_with_timed_off_req_t))         \
   {                                                                                 \
    (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                          \
   }                                                                                 \
