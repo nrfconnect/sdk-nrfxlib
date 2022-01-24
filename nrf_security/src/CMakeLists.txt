@@ -38,6 +38,8 @@ target_compile_definitions(mbedcrypto_common
 
 set(generated_include_path "${CMAKE_CURRENT_BINARY_DIR}/include/generated")
 
+# Empty out previous versions of config-files
+file(REMOVE_RECURSE ${generated_include_path})
 # Add generated path first in list (order dependent)
 target_include_directories(mbedcrypto_common
     INTERFACE

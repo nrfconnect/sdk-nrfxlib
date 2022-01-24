@@ -3,12 +3,7 @@
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
-
-#
-# Remove previously generated files from include folder
-#
-file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/include/)
-
+# Convert all standard Kconfig variables for mbed TLS (strip CONFIG_)
 kconfig_check_and_set_base(MBEDTLS_PLATFORM_MEMORY)
 kconfig_check_and_set_base(MBEDTLS_PLATFORM_C)
 kconfig_check_and_set_base(MBEDTLS_MEMORY_C)
@@ -242,8 +237,6 @@ kconfig_check_and_set_base_depends(MBEDTLS_ECDSA_DETERMINISTIC
   MBEDTLS_HMAC_DRBG_C
 )
 
-# Set generated_include_path
-set(generated_include_path "${CMAKE_CURRENT_BINARY_DIR}/include/generated")
 
 if(CONFIG_GENERATE_MBEDTLS_CFG_FILE)
   # Generate the mbed TLS config file (default nrf-config.h)

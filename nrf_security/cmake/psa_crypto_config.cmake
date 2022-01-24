@@ -3,11 +3,6 @@
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
-
-#
-# Remove previously generated files from include folder
-#
-file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/include/)
 # Convert all standard Kconfig variables for mbed TLS (strip CONFIG_)
 kconfig_check_and_set_base_to_one(PSA_WANT_ALG_CTR_DRBG)
 kconfig_check_and_set_base_to_one(PSA_WANT_ALG_HMAC_DRBG)
@@ -265,8 +260,6 @@ elseif(CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_R1_192_CC3XX
   set(PSA_VENDOR_ECC_MAX_CURVE_BITS 192)
 endif()
 
-# Set generated_include_path
-set(generated_include_path "${CMAKE_CURRENT_BINARY_DIR}/include/generated")
 # TLS/DTLS configurations
 kconfig_check_and_set_base_to_one(MBEDTLS_SSL_ALL_ALERT_MESSAGES)
 kconfig_check_and_set_base_to_one(MBEDTLS_SSL_ALL_ALERT_MESSAGES)
