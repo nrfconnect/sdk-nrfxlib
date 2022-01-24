@@ -1357,7 +1357,7 @@
  *
  * Comment to disable the context serialization APIs.
  */
-#cmakedefine MBEDTLS_SSL_CONTEXT_SERIALIZATION -- TODO Add this
+#cmakedefine MBEDTLS_SSL_CONTEXT_SERIALIZATION
 
 /**
  * \def MBEDTLS_SSL_DEBUG_ALL
@@ -1526,7 +1526,7 @@
  *
  * Comment this to disable anti-replay in DTLS.
  */
-#cmakedefine MBEDTLS_SSL_DTLS_ANTI_REPLAY -- TOD: Depends
+#cmakedefine MBEDTLS_SSL_DTLS_ANTI_REPLAY
 
 /**
  * \def MBEDTLS_SSL_DTLS_HELLO_VERIFY
