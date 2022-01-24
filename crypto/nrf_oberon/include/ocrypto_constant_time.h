@@ -5,12 +5,6 @@
  */
 
 /**@file
- * @defgroup ocrypto Oberon cryptographic library
- * @{
- * @brief Highly optimized cryptographic algorithm implementation for Cortex-M0, Cortex-M4,
- * and Cortex-M33. Created by Oberon, under distribution license with Nordic Semiconductor ASA.
- * @}
- *
  * @defgroup ocrypto_constant_time Constant-time APIs
  * @ingroup ocrypto
  * @{

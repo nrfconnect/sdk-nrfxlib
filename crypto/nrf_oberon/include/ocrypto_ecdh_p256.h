@@ -90,7 +90,7 @@ int ocrypto_ecdh_p256_common_secret(uint8_t r[32], const uint8_t sk[32], const u
  * @code
  *   ocrypto_ecdh_p256_common_secret_init(ctx, sKey, pKey);
  *   while (ocrypto_ecdh_p256_common_secret_iterate(ctx));
- *   res = ocrypto_ecdh_p256_common_secret_final(ctx, secret);
+ *   res = ocrypto_ecdh_p256_common_secret_final(ctx, secet);
  * @endcode
  */
 /**@{*/

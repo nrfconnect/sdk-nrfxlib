@@ -60,7 +60,7 @@ typedef struct {
 /**
  * AES-CCM initialization.
  *
- * The context @p ctx is initialized using the given key @p key.
+ * The context @p ctx is initialized using the given key @p key and initial vector @p iv.
  *
  * @param[out] ctx     Context.
  * @param      key     AES key.
@@ -84,7 +84,7 @@ void ocrypto_aes_ccm_init(ocrypto_aes_ccm_ctx *ctx, const uint8_t *key, size_t s
  *
  * @param      ctx    Generator state.
  * @param      aa     Additional authenticated data.
- * @param      aa_len Length of @p aa.
+ * @param      aa_len Length of @p a.
  *
  * @remark Initialization of the context @p ctx through
  *         @c ocrypto_aes_ccm_init is required before this function can be called.

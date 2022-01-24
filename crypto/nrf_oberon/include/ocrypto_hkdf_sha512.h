@@ -11,7 +11,7 @@
  * @brief HKDF is a key derivation function based on HMAC Extract-and-Expand
  * @}
  *
- * @defgroup ocrypto_hkdf_sha512 HKDF APIs using SHA-512
+ * @defgroup ocrypto_hkdf_512 HKDF APIs using SHA-512
  * @ingroup ocrypto_hkdf
  * @{
  * @brief Type declaration and APIs for the HKDF-SHA512 algorithm.

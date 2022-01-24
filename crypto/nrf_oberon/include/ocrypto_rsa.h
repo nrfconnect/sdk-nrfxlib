@@ -195,7 +195,7 @@ int ocrypto_rsa1024_oaep_sha256_crt_decrypt(
  * @param      m_len   Length of @p m.
  * @param      sk      A valid 1024-bit RSA secret key.
  *
- * @retval 0 on success.
+ * @retval 0
  *
  * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_key.
  * @remark @p s may be same as @p m.
