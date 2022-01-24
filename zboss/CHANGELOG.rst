@@ -20,12 +20,23 @@ Added
 * Development ZBOSS stack library version based on the ZBOSS build v3.10.0.780+v5.1.0.
   This library version is dedicated for testing ZCL v8 features.
 * ZBOSS libraries variant with ZBOSS Traces enabled.
+* ZBOSS signal on Permit Joining Request.
+* IdentifyTime parameter to zb_bdb_finding_binding_target().
 
 Updated
 =======
 
 * Updated the ZBOSS stack to version ``3.11.0.0+5.1.0``.
   For detailed information, see `ZBOSS stack release notes`_ for the main branch.
+* Updated BDB to specification version ``3.0.1``.
+* Replaced ZB_IC_GET_TYPE_FROM_REC macro with ZB_IC_GET_TYPE_FROM_OPT.
+
+Bug fixes
+=========
+
+* Fixed an issue where ZBOSS based device fails OTA Test Case OTA-TC-17C.
+* Fixed an issue where ZCL Occupancy Sensing cluster was missing an implementation.
+* Fixed an issue where device association fails if the Request Key packet is retransmitted.
 
 nRF Connect SDK v1.8.0
 **********************
