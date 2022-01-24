@@ -763,6 +763,16 @@ psa_status_t psa_driver_wrapper_import_key(
             if( status != PSA_ERROR_NOT_SUPPORTED )
                 return( status );
 #endif /* PSA_CRYPTO_DRIVER_TEST */
+#if defined(PSA_CRYPTO_DRIVER_CC3XX)
+           status = cc3xx_import_key(
+                         attributes,
+                         data, data_length,
+                         key_buffer, key_buffer_size,
+                         key_buffer_length, bits );
+           /* Declared with fallback == true */
+           if( status != PSA_ERROR_NOT_SUPPORTED )
+               return( status );
+#endif
 //TODO: Either remove or adjust when mac is available in Oberon
 #if defined(PSA_CRYPTO_DRIVER_OBERON)
            status = oberon_import_key(
