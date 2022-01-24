@@ -220,6 +220,7 @@ menu "Legacy mbed TLS crypto APIs"
 config MBEDTLS_LEGACY_CRYPTO_C
 	bool
 	prompt "Enable (legacy) mbed TLS crypto APIs"
+	default y if BUILD_WITH_TFM
 	help
 	  Enable support for legacy mbed TLS APIs.
 	  Note that this is a configuration that may be removed at some point.
@@ -468,7 +469,7 @@ endmenu # AEAD  - Authenticated Encryption with Associated Data
 config MBEDTLS_DHM_C
 	bool
 	prompt "DHM   - Diffie-Hellman-Merkel"
-	default y
+	# default y
 	help
 	  Enable the DHM module.
 	  MBEDTLS_DHM_C setting in mbed TLS config file.
@@ -721,7 +722,7 @@ config MBEDTLS_CIPHER_C
 config MBEDTLS_MD_C
 	bool
 	prompt "Enable MD support"
-	default y if MBEDTLS_USE_PSA_CRYPTO || MBEDTLS_LEGACY_CRYPTO_C
+	default y if MBEDTLS_PSA_CRYPTO_C || MBEDTLS_USE_PSA_CRYPTO || MBEDTLS_LEGACY_CRYPTO_C
 
 config MBEDTLS_PK_C
 	bool

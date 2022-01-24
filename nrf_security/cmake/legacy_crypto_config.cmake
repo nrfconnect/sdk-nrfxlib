@@ -159,11 +159,16 @@ if (CONFIG_CC3XX_BACKEND)
   endif()
 endif()
 
+kconfig_check_and_set_base_depends(MBEDTLS_SHA224_C
+  MBEDTLS_SHA256_C
+)
+
 #
 # Auto-enable key exchange based on supported features
 #
 kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED
   MBEDTLS_ECDH_C
+  MBEDTLS_ECDSA_C
   MBEDTLS_TLS_LIBRARY
   MBEDTLS_X509_LIBRARY
 )
@@ -235,6 +240,85 @@ kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
 kconfig_check_and_set_base_depends(MBEDTLS_ECDSA_DETERMINISTIC
   MBEDTLS_ECDSA_C
   MBEDTLS_HMAC_DRBG_C
+)
+
+# Convert defines required even in PSA mode
+kconfig_check_and_set_base_depends(MBEDTLS_SHA1_C
+  PSA_WANT_ALG_SHA_1
+)
+
+kconfig_check_and_set_base_depends(MBEDTLS_SHA256_C
+  PSA_WANT_ALG_SHA_256
+)
+
+kconfig_check_and_set_base_depends(MBEDTLS_SHA512_C
+  PSA_WANT_ALG_SHA_512
+)
+
+kconfig_check_and_set_base_depends(MBEDTLS_ECP_C
+  PSA_HAS_ECC_SUPPORT
+)
+
+kconfig_check_and_set_base_depends(MBEDTLS_ECDH_C
+  PSA_WANT_ALG_ECDH
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECDSA_C
+  PSA_WANT_ALG_ECDSA
+)
+
+
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_SECP192R1_ENABLED
+  PSA_WANT_ECC_SECP_R1_192
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_SECP224R1_ENABLED
+  PSA_WANT_ECC_SECP_R1_224
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_SECP256R1_ENABLED
+  PSA_WANT_ECC_SECP_R1_256
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_SECP384R1_ENABLED
+  PSA_WANT_ECC_SECP_R1_384
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_SECP521R1_ENABLED
+  PSA_WANT_ECC_SECP_R1_521
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_SECP192K1_ENABLED
+  PSA_WANT_ECC_SECP_K1_192
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_SECP224K1_ENABLED
+  PSA_WANT_ECC_SECP_K1_224
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_SECP256K1_ENABLED
+  PSA_WANT_ECC_SECP_K1_256
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_BP256R1_ENABLED
+  PSA_WANT_ECC_BRAINPOOL_P_R1_256
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_BP384R1_ENABLED
+  PSA_WANT_ECC_BRAINPOOL_P_R1_384
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_BP512R1_ENABLED
+  PSA_WANT_ECC_BRAINPOOL_P_R1_512
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_CURVE25519_ENABLED
+  PSA_WANT_ECC_MONTGOMERY_255
+)
+
+Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_CURVE448_ENABLED
+  PSA_WANT_ECC_MONTGOMERY_448
 )
 
 

@@ -100,7 +100,8 @@ config MBEDTLS_SSL_TLS_C
 config MBEDTLS_SSL_PROTO_TLS1_2
 	bool "Enable TLS version 1.2 protocol"
 	default y
-	depends on (MBEDTLS_SHA1_C || MBEDTLS_SHA256_C || MBEDTLS_SHA512_C)
+	depends on (MBEDTLS_SHA1_C || MBEDTLS_SHA256_C || MBEDTLS_SHA512_C) || \
+		    MBEDTLS_PSA_CRYPTO_C
 	help
 	  Enable the TLS 1.2 protocol
 	  Corresponds to MBEDTLS_SSL_PROTO_TLS1_2 in mbed TLS config file

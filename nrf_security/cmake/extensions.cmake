@@ -58,6 +58,21 @@ macro(kconfig_check_and_set_base_depends base)
 endmacro()
 
 #
+# Internal macro which will create a variable base and set to 1 if dependent
+# Kconfig variables in the ARGN list (stripped for CONFIG_ is given)
+#
+macro(kconfig_check_and_set_base_to_one_depends base)
+  set(${base} 1)
+  foreach(arg ${ARGN})
+    if (NOT CONFIG_${arg})
+      nrf_security_debug("Unsetting ${base} because ${arg} is not set")
+      unset(${base})
+      break()
+    endif()
+  endforeach()
+endmacro()
+
+#
 # Internal macro to configure file if Kconfig config is set
 #
 # This needs some work

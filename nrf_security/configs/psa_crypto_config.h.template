@@ -286,7 +286,7 @@
 #cmakedefine MBEDTLS_CIPHER_C                                   @MBEDTLS_CIPHER_C@
 //#define MBEDTLS_PK_C                                       @MBEDTLS_PK_C@
 //#define MBEDTLS_PK_WRITE_C                                 @MBEDTLS_PK_WRITE_C@
-#cmakedefine MBEDTLS_MD_C                                       @MBEDTLS_MD_C@
+//#cmakedefine MBEDTLS_MD_C                                       @MBEDTLS_MD_C@
 
 /* Max curve bits for PSA APIs */
 #cmakedefine PSA_VENDOR_ECC_MAX_CURVE_BITS                      @PSA_VENDOR_ECC_MAX_CURVE_BITS@
@@ -343,5 +343,6 @@
 #cmakedefine MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED            @MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED@
 
 #cmakedefine MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED               @MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED@
+
 
 #endif /* PSA_CRYPTO_CONFIG_H */

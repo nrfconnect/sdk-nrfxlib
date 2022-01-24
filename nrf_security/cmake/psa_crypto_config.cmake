@@ -238,7 +238,6 @@ kconfig_check_and_set_base_to_one(MBEDTLS_CIPHER_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_PK_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_PK_WRITE_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_MD_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_CIPHER_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_THREADING_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_THREADING_ALT)
 
@@ -287,19 +286,94 @@ kconfig_check_and_set_base_to_one(MBEDTLS_SSL_TICKET_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_SSL_CLI_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_SSL_SRV_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_SSL_TLS_C)
-
-# x509 configurations
-kconfig_check_and_set_base_to_one(MBEDTLS_X509_RSASSA_PSS_SUPPORT)
-kconfig_check_and_set_base_to_one(MBEDTLS_X509_USE_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_X509_CRT_PARSE_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_X509_CRL_PARSE_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_X509_CSR_PARSE_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_X509_CREATE_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_X509_CRT_WRITE_C)
-kconfig_check_and_set_base_to_one(MBEDTLS_X509_CSR_WRITE_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_SSL_IN_CONTENT_LEN)
 kconfig_check_and_set_base_to_one(MBEDTLS_SSL_OUT_CONTENT_LEN)
 kconfig_check_and_set_base_to_one(MBEDTLS_SSL_CIPHERSUITES)
+
+# x509 configurations
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_RSASSA_PSS_SUPPORT)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_USE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CRT_PARSE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CRL_PARSE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CSR_PARSE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CREATE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CRT_WRITE_C)
+# kconfig_check_and_set_base_to_one(MBEDTLS_X509_CSR_WRITE_C)
+
+
+
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_PSK_ENABLED
+  PSA_WANT_ALG_TLS12_PSK_TO_MS
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED
+  PSA_WANT_ALG_TLS12_PSK_TO_MS
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED
+  PSA_WANT_ALG_TLS12_PSK_TO_MS
+  PSA_WANT_ALG_ECDH
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED
+  PSA_HAS_RSA_SUPPORT
+  PSA_WANT_ALG_TLS12_PSK_TO_MS
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_RSA_ENABLED
+  PSA_HAS_RSA_SUPPORT
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_DHE_RSA_ENABLED
+  PSA_HAS_RSA_SUPPORT
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
+  PSA_HAS_ECC_SUPPORT
+  PSA_HAS_RSA_SUPPORT
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
+  PSA_WANT_ALG_ECDSA
+  PSA_WANT_ALG_ECDH
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED
+  PSA_WANT_ALG_ECDSA
+  PSA_WANT_ALG_ECDH
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED
+  PSA_HAS_RSA_SUPPORT
+  PSA_WANT_ALG_ECDH
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
+
+kconfig_check_and_set_base_to_one_depends(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
+  PSA_WANT_ALG_TLS12_PSK_TO_MS
+  MBEDTLS_TLS_LIBRARY
+  MBEDTLS_X509_LIBRARY
+)
 
 if(CONFIG_GENERATE_MBEDTLS_CFG_FILE)
   # Copy the mbed TLS config file (default: nrf-config.h)
