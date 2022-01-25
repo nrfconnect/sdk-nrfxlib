@@ -1,9 +1,13 @@
 .. _bluetooth_coex_example_diagrams:
 
-Bluetooth External Radio Coexistence Examples
+Bluetooth External Radio Coexistence examples
 #############################################
 
-3-Wire Interface
+.. contents::
+   :local:
+   :depth: 2
+
+3-Wire interface
 ****************
 
 This section contains example timing diagrams for each supported Bluetooth® Low Energy Link Layer state.

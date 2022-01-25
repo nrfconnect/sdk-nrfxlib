@@ -3,6 +3,10 @@
 Configuration
 #############
 
+.. contents::
+   :local:
+   :depth: 2
+
 The Nordic Security Module is enabled through Kconfig with the option :kconfig:`CONFIG_NORDIC_SECURITY_BACKEND` and additional configuration is usually done with Kconfig.
 
 These configurations are then used to generate an Mbed TLS configuration file used during compilation.
