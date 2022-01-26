@@ -1678,6 +1678,12 @@ psa_status_t psa_driver_wrapper_hash_compute(
     size_t hash_size,
     size_t *hash_length)
 {
+#if defined(MBEDTLS_PSA_CRYPTO_SPM)
+    if (alg == PSA_ALG_SHA_1) {
+        return PSA_ERROR_NOT_SUPPORTED;
+    }
+#endif
+
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
 
     /* Try accelerators first */
@@ -1724,6 +1730,12 @@ psa_status_t psa_driver_wrapper_hash_setup(
     psa_algorithm_t alg )
 {
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
+
+#if defined(MBEDTLS_PSA_CRYPTO_SPM)
+    if (alg == PSA_ALG_SHA_1) {
+        return PSA_ERROR_NOT_SUPPORTED;
+    }
+#endif
 
     /* Try setup on accelerators first */
 #if defined(PSA_CRYPTO_DRIVER_TEST)
