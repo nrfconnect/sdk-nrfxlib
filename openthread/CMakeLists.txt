@@ -67,8 +67,8 @@ if(CONFIG_OPENTHREAD_SOURCES)
   add_custom_target(install_openthread_libraries ${INSTALL_COMMANDS})
 endif()
 
-if (CONFIG_OPENTHREAD_LIBRARY_1_1)
-  openthread_calculate_lib_path("v1.1" OT_LIB_PATH)
+if (CONFIG_OPENTHREAD_NORDIC_LIBRARY)
+  openthread_calculate_lib_path("v${CONFIG_OPENTHREAD_THREAD_VERSION}" OT_LIB_PATH)
 
   if(NOT EXISTS ${OT_LIB_PATH})
     message(FATAL_ERROR

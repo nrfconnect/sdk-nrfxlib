@@ -19,11 +19,19 @@ choice OPENTHREAD_IMPLEMENTATION
 	  Select OpenThread to use for build. Custom OpenThread implementations
 	  can be added to the application Kconfig.
 
-config OPENTHREAD_LIBRARY_1_1
-	bool "OpenThread 1.1 from library"
+config OPENTHREAD_LIBRARY
+	bool "OpenThread from library"
 	select OPENTHREAD_NORDIC_LIBRARY
 	help
-	  Uses prebuilt library of openthread instead of building from sources.
+	  Build OpenThread from a prebuilt library instead of building from sources.
+	  CONFIG_OPENTHREAD_THREAD_VERSION determines which version of the library is to be used.
+
+config OPENTHREAD_LIBRARY_1_1
+	bool "(Legacy) OpenThread 1.1 from library"
+	depends on OPENTHREAD_THREAD_VERSION_1_1
+	select OPENTHREAD_NORDIC_LIBRARY
+	help
+	  Legacy option to use prebuilt OpenThread 1.1 library.
 
 endchoice
 
