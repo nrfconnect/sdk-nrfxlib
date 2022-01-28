@@ -17,7 +17,7 @@ All the notable changes included in the |NCS| main branch are documented in this
 Added
 =====
 
-* Development ZBOSS stack library version based on the ZBOSS build v3.10.0.780+v5.1.0.
+* Development ZBOSS stack library version based on the ZBOSS build v3.11.1.177+v5.1.1.
   This library version is dedicated for testing ZCL v8 features.
 * ZBOSS libraries variant with ZBOSS Traces enabled.
 * ZBOSS signal on Permit Joining Request.
@@ -26,7 +26,7 @@ Added
 Updated
 =======
 
-* Updated the ZBOSS stack to version ``3.11.0.0+5.1.0``.
+* Updated the ZBOSS stack to version ``3.11.1.0+5.1.1``.
   For detailed information, see `ZBOSS stack release notes`_ for the main branch.
 * Updated BDB to specification version ``3.0.1``.
 * Replaced ZB_IC_GET_TYPE_FROM_REC macro with ZB_IC_GET_TYPE_FROM_OPT.
@@ -37,6 +37,7 @@ Bug fixes
 * Fixed an issue where ZBOSS based device fails OTA Test Case OTA-TC-17C.
 * Fixed an issue where ZCL Occupancy Sensing cluster was missing an implementation.
 * Fixed an issue where device association fails if the Request Key packet is retransmitted.
+* Fixed an issue where a device enters undefined state after leave request, sent right after successfull association.
 
 nRF Connect SDK v1.8.0
 **********************
