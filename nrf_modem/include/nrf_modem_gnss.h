@@ -1221,6 +1221,12 @@ int32_t nrf_modem_gnss_agps_write(void *buf, int32_t buf_len, uint16_t type);
  *          This function can be called at any time. If GNSS doesn't know the current GPS
  *          system time, the expiry times can not be calculated
  *
+ * @note When A-GPS data has been injected but GNSS has not yet been started, ephemerides and
+ *       almanacs are in some cases reported as expired. This happens when ephemerides and almanacs
+ *       are injected before GPS system time. This can be prevented by either injecting GPS system
+ *       time before ephemerides and almanacs or briefly starting and stopping GNSS before calling
+ *       the function.
+ *
  * @note Only supported by modem firmware v1.3.2 or later.
  *
  * @param[out] agps_expiry Pointer to a buffer where the data is stored to.

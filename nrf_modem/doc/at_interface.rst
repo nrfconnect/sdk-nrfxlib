@@ -259,11 +259,3 @@ Thread safety
 *************
 
 The AT API is thread safe and can be used by multiple threads.
-
-Use with legacy AT socket
-*************************
-
-The AT interface and the AT socket do not interfere with each other, and it is possible to use both in the same application.
-
-.. note::
-   Usage of the AT interface does not count towards the maximum number of AT and IP sockets.

@@ -75,20 +75,12 @@ typedef int32_t ssize_t;
  */
 /** Unspecified address family */
 #define NRF_AF_UNSPEC 0
-/** Family to identify protocols/operations local to Nordic device.
- *  @deprecated since v1.3.0.
- */
-#define NRF_AF_LOCAL 1
 /** IPv4 socket family. */
 #define NRF_AF_INET 2
 /** Raw packet family. */
 #define NRF_AF_PACKET 5
 /** IPv6 socket family. */
 #define NRF_AF_INET6 10
-/** Nordic proprietary LTE socket family.
- *  @deprecated since v1.3.0.
- */
-#define NRF_AF_LTE 102
 /**@} */
 
 /**@defgroup nrf_socket_types Socket type.
@@ -100,11 +92,6 @@ typedef int32_t ssize_t;
 #define NRF_SOCK_DGRAM 2
 /** RAW socket type. */
 #define NRF_SOCK_RAW 3
-
-/** Nordic specific management socket. Used for system or link management.
- *  @deprecated since v1.1.0.
- */
-#define NRF_SOCK_MGMT 512
 /**@} */
 
 /**@defgroup nrf_socket_protocols Socket protocols.
@@ -123,14 +110,6 @@ typedef int32_t ssize_t;
 /** DTLS1v2 protocol. */
 #define NRF_SPROTO_DTLS1v2 270
 
-/** AT command protocol.
- *  @deprecated since v1.3.0.
- */
-#define NRF_PROTO_AT 513
-/** DFU protocol.
- *  @deprecated since v1.3.0.
- */
-#define NRF_PROTO_DFU 515
 /**@} */
 
 /**
@@ -227,85 +206,8 @@ typedef uint32_t nrf_fd_set;
 #define NRF_SO_SEC_SESSION_CACHE_PURGE 9
 /**@} */
 
-/**@defgroup nrf_socket_dfu DFU socket
- * @brief DFU socket API
- * @deprecated since v1.3.0.
- * @{
- */
-/**@brief
- * Socket option to read the modem firmware version (UUID).
- * @sa nrf_dfu_fw_version_t.
- *
- * @deprecated since v1.3.0.
- */
-#define NRF_SO_DFU_FW_VERSION 1
-
-/**@brief
- * Socket option to retrieve the size of the largest firmware image
- * that can be transferred to the modem for firmware updates.
- * @sa nrf_dfu_resources_t.
- *
- * @deprecated since v1.3.0.
- */
-#define NRF_SO_DFU_RESOURCES 2
-
-/**@brief
- * Socket option to control the timeout to send a firmware fragment.
- * @note Not implemented.
- *
- * @deprecated since v1.3.0.
- */
-#define NRF_SO_DFU_TIMEO 3
-
-/**@brief
- * Socket option to schedule a modem firmware update at next boot.
- * The result of the update is returned by nrf_modem_init, at next boot.
- * The modem needs to be reset once more to run the updated firmware.
- *
- * @deprecated since v1.3.0.
- */
-#define NRF_SO_DFU_APPLY 4
-
-/**@brief
- * Socket option to schedule a rollback of a firmware update at next boot.
- *
- * @deprecated since v1.3.0.
- */
-#define NRF_SO_DFU_REVERT 5
-
-/**@brief
- * Socket option to delete a modem firmware image from the modem's scratch area.
- * This option removes the possibility to rollback to a previous version,
- * and is necessary to receive new firmware images.
- *
- * @deprecated since v1.3.0.
- */
-#define NRF_SO_DFU_BACKUP_DELETE 6
-
-/**@brief
- * Socket option read and write the offset of the downloaded firmware image
- * in the modem's scratch area. This option is used to determine whether
- * a firmware image exists in the modem's scratch area and its size.
- * A value of 2.5 megabytes (2621440 bytes) is returned if the scratch area
- * is dirty, and needs erasing (via NRF_SO_DFU_BACKUP_DELETE).
- * If non-zero and different from 2.5 megabytes, the value indicates the size
- * of the firmware image received so far.
- *
- * @deprecated since v1.3.0.
- */
-#define NRF_SO_DFU_OFFSET 7
-
-/**@brief
- * Socket option to retrieve the latest DFU error, see @ref nrf_dfu_errors.
- * Read-only.
- * @deprecated since v1.3.0.
- */
-#define NRF_SO_DFU_ERROR 20
-
-/** @} */
-
 /**@defgroup nrf_socket_options_sockets Generic socket options
- * @brief Socket options used with both AT and IP sockets
+ * @brief Socket options used with IP sockets
  * @ingroup nrf_socket
  * @{
  */
@@ -355,8 +257,6 @@ typedef uint32_t nrf_fd_set;
  */
 #define NRF_SOL_SOCKET 1
 #define NRF_SOL_SECURE 282
-/** @deprecated since v1.3.0. */
-#define NRF_SOL_DFU    515
 /**@} */
 
 /**@defgroup nrf_socket_send_recv_flags Socket send/recv flags.
@@ -378,7 +278,7 @@ typedef uint32_t nrf_fd_set;
 /**@} */
 
 /**@defgroup nrf_fcnt_commands Descriptor manipulate API
- * @brief API used to manipulate the behaviour of AT and IP sockets using nrf_fcntl().
+ * @brief API used to manipulate the behaviour of IP sockets using nrf_fcntl().
  * @ingroup nrf_socket
  * @{
  */
@@ -656,65 +556,6 @@ struct nrf_ifreq {
 	char ifr_name[NRF_IFNAMSIZ]; /* Interface name */
 };
 /**@} */
-
-/**@addtogroup nrf_socket_dfu
- * @{
- */
-
-/**@brief
- * Universally unique identifier of the modem firmware version.
- * The UUID format is defined by RFC 4122.
- * @deprecated since v1.3.0.
- */
-typedef uint8_t nrf_dfu_fw_version_t[36];
-
-/**@brief
- * Maximum size for a firmware image, in bytes.
- * @deprecated since v1.3.0.
- */
-typedef uint32_t nrf_dfu_resources_t;
-
-/**@brief
- * Size of the firmware image stored in flash, in bytes.
- * @deprecated since v1.3.0.
- */
-typedef uint32_t nrf_dfu_fw_offset_t;
-
-/**@defgroup nrf_dfu_errors DFU errors
- * @brief    DFU socket errors.
- * @deprecated since v1.3.0.
- * @{
- */
-
-/**@brief DFU socket error.
- * @deprecated since v1.3.0.
- */
-typedef int32_t nrf_dfu_err_t;
-
-#define DFU_NO_ERROR		     0
-#define DFU_RECEIVER_OUT_OF_MEMORY   -1
-#define DFU_RECEIVER_BLOCK_TOO_LARGE -2
-#define DFU_INVALID_HEADER_DATA	     -3
-#define DFU_ERROR_INTERNAL_00	     -4
-#define DFU_INVALID_DATA	     -5
-#define DFU_ERROR_INTERNAL_01	     -6
-#define DFU_ERROR_INTERNAL_02	     -7
-#define DFU_ERROR_INTERNAL_03	     -8
-#define DFU_INVALID_UUID	     -9
-#define DFU_INVALID_ADDRESS	     -10
-#define DFU_AREA_NOT_BLANK	     -11
-#define DFU_WRITE_ERROR		     -12
-#define DFU_ERASE_ERROR		     -13
-#define DFU_INVALID_FILE_OFFSET	     -14
-#define DFU_PROGRESS_LOG_INVALID     -15
-#define DFU_INVALID_RESUME_ATTEMPT   -16
-#define DFU_ERASE_PENDING	     -17
-#define DFU_OPERATION_NOT_ALLOWED    -18
-#define DFU_INCOMPLETE_DATA	     -19
-#define DFU_INTERRUPTED_WRITE	     -20
-
-/** @} */
-/** @} */
 
 /**@defgroup nrf_socket_api nRF Socket interface
  * @{

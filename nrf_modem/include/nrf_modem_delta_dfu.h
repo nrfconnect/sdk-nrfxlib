@@ -19,7 +19,7 @@
 extern "C" {
 #endif
 
-/**@defgroup nrf_delta_dfu_errors DFU errors
+/**@defgroup nrf_modem_delta_dfu_errors DFU errors
  * @brief    Delta DFU errors.
  * @{
  */

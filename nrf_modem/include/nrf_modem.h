@@ -171,8 +171,26 @@ void nrf_modem_application_irq_handler(void);
  * @brief Trace IRQ handler in the modem library.
  *
  * Call this function when handling the Trace IRQ.
+ *
  */
 void nrf_modem_trace_irq_handler(void);
+
+/**
+ * @brief Function to indicate that the application has completed the processing of a trace buffer
+ *
+ * The application shall call this function to let the modem library free the trace memory
+ * pointed to by @p buf. It is the application's responsibility to call this function with
+ * the same parameter values as received in the @ref nrf_modem_os_trace_put function.
+ * Calling this function with incorrect values leads to undefined behavior.
+ *
+ * @param buf Pointer to the memory buffer as received in @ref nrf_modem_os_trace_put
+ * @param len Length of memory buffer as received in @ref nrf_modem_os_trace_put
+ * @retval Zero on success.
+ * @retval -NRF_EINVAL @p buf is @c NULL or an invalid trace buffer
+ * @retval -NRF_EINVAL @p len is too large to be a valid trace length
+ * @retval -NRF_EAGAIN Resource temporarily unavailable. Try again with same parameters.
+ */
+int nrf_modem_trace_processed_callback(const uint8_t *buf, uint32_t len);
 
 #ifdef __cplusplus
 }

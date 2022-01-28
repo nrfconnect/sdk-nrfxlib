@@ -81,10 +81,9 @@ struct nrf_modem_at_cmd_filter {
  * @note The callback is executed in an interrupt service routine.
  *	 Take care to offload any processing as appropriate.
  *
- * @param callback The AT notification callback.
+ * @param callback The AT notification callback. Use @c NULL to unset handler.
  *
  * @retval 0 On success.
- * @retval -NRF_EFAULT Callback is @c NULL.
  */
 int nrf_modem_at_notif_handler_set(nrf_modem_at_notif_handler_t callback);
 
