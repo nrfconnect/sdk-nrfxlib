@@ -112,20 +112,6 @@ DTLS handshake timeout values
    :project: nrfxlib
    :members:
 
-DFU socket
-**********
-
-.. doxygengroup:: nrf_socket_dfu
-   :project: nrfxlib
-   :members:
-
-DFU errors
-==========
-
-.. doxygengroup:: nrf_dfu_errors
-   :project: nrfxlib
-   :members:
-
 Socket address resolution API
 *****************************
 
@@ -181,6 +167,10 @@ Delta DFU API
 *************
 
 .. doxygengroup:: nrf_modem_delta_dfu
+   :project: nrfxlib
+   :members:
+
+.. doxygengroup:: nrf_modem_delta_dfu_errors
    :project: nrfxlib
    :members:
 

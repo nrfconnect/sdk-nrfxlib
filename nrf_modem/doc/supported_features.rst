@@ -16,9 +16,6 @@ The current implementation of the Modem library supports the following features 
 * PDN selection for network sockets and DNS queries
 * Modem DFU
 
-.. note::
-   The DNS address management protocol is not yet implemented.
-
 The library implements the following socket API functions:
 
 * socket
@@ -41,6 +38,3 @@ The library implements the following socket API functions:
 * inet_ntop
 * getaddrinfo
 * freeaddrinfo
-
-.. note::
-   Each socket supports a subset of these functions.

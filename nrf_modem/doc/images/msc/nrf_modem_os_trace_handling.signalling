@@ -22,6 +22,8 @@ deactivate nrf_modem_os.c;
 nrf_modem->nrf_modem_os.c: nrf_modem_os_trace_put(buffer);
 activate nrf_modem_os.c;
 nrf_modem_os.c--nrf_modem_os.c: Store the buffer to\ndesired medium (UART, SDcard etc.);
+nrf_modem_os.c->nrf_modem: nrf_modem_trace_processed_callback();
+nrf_modem>>nrf_modem_os.c;
 nrf_modem<<nrf_modem_os.c;
 deactivate nrf_modem_os.c;
 nrf_modem>>nrf_modem_os.c;

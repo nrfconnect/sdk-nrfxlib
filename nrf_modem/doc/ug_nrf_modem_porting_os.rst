@@ -134,7 +134,10 @@ nrf_modem_os_trace_put
 
 This function puts the trace string to the desired medium, typically UART.
 However, the medium used to forward and store the traces is up to the implementation and must be initialized correctly before using.
-If you are not interested in traces, they can be ignored, and this function can be empty and simply return.
+Once the traces are processed or stored, the :c:func:`nrf_modem_trace_processed_callback` must be called.
+Even if you do not want the traces further, you need to ensure that :c:func:`nrf_modem_trace_processed_callback` is called for each received trace.
+Until the :c:func:`nrf_modem_trace_processed_callback` is called, the Modem library do not free up the memory allocated for that trace in the trace memory area.
+Since the modem uses this trace memory area to send traces, not calling the :c:func:`nrf_modem_trace_processed_callback`, leads to losing modem traces.
 
 nrf_modem_application_irq_handler
 =================================
@@ -208,37 +211,34 @@ Message sequence diagrams
 
 The following message sequence diagrams show the interactions between the application, Modem library, and the OS.
 
-1. Sequence of the initialization of the Modem library.
+#. Sequence of the initialization of the Modem library.
    Configuration of the high and low priority IRQs:
 
-.. figure:: images/msc_init.svg
-   :alt: Initialization (main thread)
+    .. figure:: images/msc_init.svg
+        :alt: Initialization (main thread)
 
-   Initialization (main thread)
-
+        Initialization (main thread)
 
 #. Handling an event sent from the Modem library to a lower priority to be able to receive new events:
 
-.. figure:: images/msc_event.svg
-   :alt: Event handling, lowering priority
+    .. figure:: images/msc_event.svg
+        :alt: Event handling, lowering priority
 
-   Event handling, lowering priority
-
+        Event handling, lowering priority
 
 #. Handling traces:
 
-.. figure:: images/msc_trace.svg
-   :alt: Trace handling, lowering priority
+    .. figure:: images/msc_trace.svg
+        :alt: Trace handling, lowering priority
 
-   Trace handling, lowering priority
-
+        Trace handling, lowering priority
 
 #. Handling a timeout or sleep:
 
-.. figure:: images/msc_timers.svg
-   :alt: Timers
+    .. figure:: images/msc_timers.svg
+        :alt: Timers
 
-   Timers
+        Timers
 
 
 Reference template for the nrf_modem_os.c file
@@ -306,7 +306,7 @@ You can use it as a template and customize it for your OS or scheduler.
        NVIC_ClearPendingIRQ(NRF_MODEM_APPLICATION_IRQ);
    }
 
-   void NRF_MODEM_APPLCAITON_IRQ_HANDLER(void) {
+   void NRF_MODEM_APPLICATION_IRQ_HANDLER(void) {
        nrf_modem_application_irq_handler();
    }
 
@@ -325,5 +325,8 @@ You can use it as a template and customize it for your OS or scheduler.
    int32_t nrf_modem_os_trace_put(const uint8_t * const p_buffer, uint32_t buf_len) {
        // Store buffer to chosen medium.
        // Traces can be dropped if not needed.
+       // Either call nrf_modem_trace_processed_callback() here or at a later point (for example, in a
+       // thread or a work queue handler function).
+       int err = nrf_modem_trace_processed_callback(p_buffer, buf_len);
        return 0;
    }

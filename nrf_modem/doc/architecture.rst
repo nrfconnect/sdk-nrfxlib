@@ -81,8 +81,7 @@ This area of memory is optional, and the area size can be configured to be zero,
 Library heap
 ************
 
-The Modem library needs to dynamically allocate memory (a heap) for proper functioning.
-This memory is used to store the internal data structures that are used to manage the communication between the application core and the modem core.
+The Modem library dynamically allocates memory during some operations, for example tracing and DNS lookups.
 This memory is never shared with the modem core and hence, it can be located anywhere in the application core's RAM instead of the shared memory regions.
 The library OS abstraction layer defines the following functions to allocate and free up dynamic memory for the library:
 

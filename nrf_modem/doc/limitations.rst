@@ -7,9 +7,6 @@ Limitations
    :local:
    :depth: 2
 
-The Modem DFU socket is not part of the generic sockets.
-Therefore, operating on it using ``poll`` is not possible.
-
 Modem firmware limitations
 **************************
 
