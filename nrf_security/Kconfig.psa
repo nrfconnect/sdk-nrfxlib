@@ -48,47 +48,9 @@ config MBEDTLS_PSA_CRYPTO_CLIENT
 	bool
 	default y
 
-menuconfig PSA_CRYPTO_DRIVER_CC3XX
-    bool
-    prompt "PSA CryptoCell Driver" if !PSA_PROMPTLESS
-    depends on CRYPTOCELL_USABLE
-    # default y if !MBEDTLS_TLS_LIBRARY
-    select NRF_CC3XX_PLATFORM if !BUILD_WITH_TFM
-	help
-	  Enable PSA Driver for CryptoCell
+rsource "src/drivers/Kconfig"
 
-if PSA_CRYPTO_DRIVER_CC3XX
 
-rsource "src/drivers/nrf_cc3xx/Kconfig"
-
-endif # PSA_CRYPTO_DRIVER_CC3XX
-
-menuconfig PSA_CRYPTO_DRIVER_OBERON
-    bool
-    prompt "PSA Oberon Driver" if !PSA_PROMPTLESS
-    default y
-    select NRF_OBERON
-	help
-	  Enable PSA Driver for nrf_oberon
-
-if PSA_CRYPTO_DRIVER_OBERON
-
-rsource "src/drivers/nrf_oberon/Kconfig"
-
-endif # PSA_CRYPTO_DRIVER_OBERON
-
-menuconfig PSA_CRYPTO_DRIVER_BUILTIN
-	bool
-	prompt "PSA Builtin" if !PSA_PROMPTLESS
-	default y if !CRYPTOCELL_USABLE
-	help
-	  Enables PSA builtin support
-
-if PSA_CRYPTO_DRIVER_BUILTIN
-
-rsource "src/drivers/builtin/Kconfig"
-
-endif # PSA_CRYPTO_DRIVER_BUILTIN
 
 menu "PSA API support"
 
@@ -106,7 +68,7 @@ config MBEDTLS_PSA_CRYPTO_STORAGE_C
 
 config MBEDTLS_USE_PSA_CRYPTO
 	bool "PSA APIs for X.509 and TLS library"
-	#default y if BUILD_WITH_TFM
+	default y
 	help
 	  Corresponds to MBEDTLS_USE_PSA_CRYPTO setting in mbed TLS config file.
 

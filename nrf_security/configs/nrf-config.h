@@ -211,10 +211,6 @@ extern "C" {
 #define MBEDTLS_CIPHER_MODE_XTS
 #endif
 
-#if defined(PSA_WANT_ALG_HKDF)
-#define MBEDTLS_PSA_BUILTIN_ALG_HKDF
-#endif
-
 #if defined(PSA_WANT_ALG_TLS12_PRF)
 #define MBEDTLS_PSA_BUILTIN_ALG_TLS12_PRF
 #endif
