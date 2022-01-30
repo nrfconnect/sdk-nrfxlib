@@ -38,7 +38,6 @@ config PSA_CRYPTO_DRIVER_ALG_CFB_CC3XX
 	default y if !PSA_DEFAULT_OFF
 	depends on PSA_WANT_ALG_CFB
 
-
 config PSA_CRYPTO_DRIVER_ALG_CHACHA20_POLY1305_CC3XX
 	bool
 	prompt "PSA ChaCha20/Poly1305 support - cc3xx" if !PSA_PROMPTLESS
@@ -99,15 +98,9 @@ config PSA_CRYPTO_DRIVER_ALG_HMAC_CC3XX
 	default y if !PSA_DEFAULT_OFF
 	depends on PSA_WANT_ALG_HMAC
 
-config PSA_CRYPTO_DRIVER_ALG_OFB_CC3XX
-	bool
-	# prompt "PSA AES OFB support - cc3xx" if !PSA_PROMPTLESS - Currently not supported
-	# default y if PSA_WANT_ALG_OFB
+# PSA_CRYPTO_DRIVER_ALG_OFB_CC3XX - Currently not supported
 
-config PSA_CRYPTO_DRIVER_ALG_PBKDF2_HMAC_CC3XX
-	bool
-	# prompt "PSA PBKDF2 HMAC support" if !PSA_PROMPTLESS - Currently not supported
-	# default y if PSA_WANT_ALG_PBKDF2_HMAC
+# PSA_CRYPTO_DRIVER_ALG_PBKDF2_HMAC_CC3XX - Currently not supported
 
 config PSA_CRYPTO_DRIVER_ALG_RSA_OAEP_CC3XX
 	bool
@@ -151,12 +144,6 @@ config PSA_CRYPTO_DRIVER_ALG_SHA_256_CC3XX
 	default y if !PSA_DEFAULT_OFF
 	depends on PSA_WANT_ALG_SHA_256
 
-config PSA_CRYPTO_DRIVER_ALG_SHA_384_CC3XX
-	bool
-	prompt "PSA SHA-384 support - cc3xx" if !PSA_PROMPTLESS
-	default y if !PSA_DEFAULT_OFF
-	depends on PSA_WANT_ALG_SHA_384
-
 config PSA_CRYPTO_DRIVER_ALG_STREAM_CIPHER_CC3XX
 	bool
 	prompt "PSA stream cipher support - cc3xx" if !PSA_PROMPTLESS
@@ -181,10 +168,7 @@ config PSA_CRYPTO_DRIVER_ECC_SECP_K1_192_CC3XX
 	default y if !PSA_DEFAULT_OFF
 	depends on PSA_WANT_ECC_SECP_K1_192
 
-config PSA_CRYPTO_DRIVER_ECC_SECP_K1_224_CC3XX
-	bool
-	#prompt "PSA ECC secp192k1 support - cc3xx" if !PSA_PROMPTLESS - Currently not supported
-	#default y if !PSA_DEFAULT_OFF && PSA_WANT_ECC_SECP_K1_224
+# PSA_CRYPTO_DRIVER_ECC_SECP_K1_224_CC3XX - Currently not supported
 
 config PSA_CRYPTO_DRIVER_ECC_SECP_K1_256_CC3XX
 	bool
@@ -216,9 +200,6 @@ config PSA_CRYPTO_DRIVER_ECC_SECP_R1_521_CC3XX
 	prompt "PSA ECC secp521r1 - cc3xx" if !PSA_PROMPTLESS
 	default y if !PSA_DEFAULT_OFF && PSA_WANT_ECC_SECP_R1_521
 
-config PSA_CRYPTO_DRIVER_ALG_XTS_CC3XX
-	bool
-	#prompt "PSA AES XTS support"  if !PSA_PROMPTLESS - Currently not supported
-	#default y !PSA_DEFAULT_OFF && PSA_WANT_ALG_XTS
+# PSA_CRYPTO_DRIVER_ALG_XTS_CC3XX - Currently not supported
 
 endif # PSA_CRYPTO_DRIVER_CC3XX
