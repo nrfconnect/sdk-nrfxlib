@@ -8,7 +8,6 @@ menu "nrf_security module"
 
 config NORDIC_SECURITY_PROMPTLESS
 	bool
-	default y if BUILD_WITH_TFM
 	help
 	  Internal setting to disable the Nordic security backend
 	  This setting is Kconfig internal that must be used by subsystems that
@@ -18,6 +17,7 @@ config NORDIC_SECURITY_PROMPTLESS
 config NORDIC_SECURITY_BACKEND
 	bool
 	prompt "Use nrf_security module" if !NORDIC_SECURITY_PROMPTLESS
+	default y if BUILD_WITH_TFM
 	depends on SOC_FAMILY_NRF
 	select NRF_SECURITY
 	select MBEDTLS_LEGACY_CRYPTO_C
