@@ -151,6 +151,7 @@ kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED)
 kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED)
 kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED)
 kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED)
+
 #
 # CC3XX flags for threading and platform zeroize
 #
@@ -172,6 +173,8 @@ if (CONFIG_CC3XX_BACKEND)
   endif()
 endif()
 
+# Ensure that MBEDTLS_SHA224_C is set if MBEDTLS_SHA256_C
+# to prevent build errors.
 kconfig_check_and_set_base_depends(MBEDTLS_SHA224_C
   MBEDTLS_SHA256_C
 )

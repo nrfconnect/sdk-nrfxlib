@@ -125,13 +125,14 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_KEY_TYPE_ECC_PUBLIC_KEY)
-#if defined(MBEDTLS_PSA_BUILTIN_KEY_TYPE_ECC_PUBLIC_KEY)
+#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_ECC_PUBLIC_KEY)
 #define MBEDTLS_ECP_C
 #define MBEDTLS_BIGNUM_C
 #endif
 #endif
 
 #if defined(PSA_WANT_KEY_TYPE_RSA_KEY_PAIR)
+#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_RSA_KEY_PAIR)
 #define MBEDTLS_RSA_C
 #define MBEDTLS_BIGNUM_C
 #define MBEDTLS_OID_C
@@ -139,27 +140,26 @@ extern "C" {
 #define MBEDTLS_PK_PARSE_C
 #define MBEDTLS_PK_WRITE_C
 #define MBEDTLS_PK_C
-#define MBEDTLS_PSA_BUILTIN_KEY_TYPE_RSA_KEY_PAIR
+#endif
 #endif
 
 #if defined(PSA_WANT_KEY_TYPE_RSA_PUBLIC_KEY)
+#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_RSA_PUBLIC_KEY)
 #define MBEDTLS_RSA_C
 #define MBEDTLS_BIGNUM_C
 #define MBEDTLS_OID_C
 #define MBEDTLS_PK_PARSE_C
 #define MBEDTLS_PK_WRITE_C
 #define MBEDTLS_PK_C
-#define MBEDTLS_PSA_BUILTIN_KEY_TYPE_RSA_PUBLIC_KEY
+#endif
 #endif
 
-
-// Not using PSA_HAS_CIPHER_SUPPORT
 #if defined(PSA_WANT_KEY_TYPE_AES)
-#define MBEDTLS_PSA_BUILTIN_KEY_TYPE_AES 1
+#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_AES) 
 #define MBEDTLS_AES_C
 #endif
+#endif
 
-// Not using PSA_HAS_CIPHER_SUPPORT
 #if defined(PSA_WANT_KEY_TYPE_CAMELLIA)
 #if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_CAMELLIA)
 #define MBEDTLS_PSA_BUILTIN_KEY_TYPE_CAMELLIA 1
@@ -167,7 +167,6 @@ extern "C" {
 #endif
 #endif
 
-// Not using PSA_HAS_CIPHER_SUPPORT
 #if defined(PSA_WANT_KEY_TYPE_DES)
 #if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_DES)
 #define MBEDTLS_PSA_BUILTIN_KEY_TYPE_DES 1
@@ -175,7 +174,6 @@ extern "C" {
 #endif
 #endif
 
-// Not using PSA_HAS_CIPHER_SUPPORT
 #if defined(PSA_WANT_KEY_TYPE_CHACHA20)
 #if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_CHACHA20)
 #define MBEDTLS_PSA_BUILTIN_KEY_TYPE_CHACHA20 1
@@ -191,6 +189,7 @@ extern "C" {
 
 #if defined(PSA_WANT_ALG_CMAC)
 #define MBEDTLS_CMAC_C
+#define MBEDTLS_AES_C
 #endif
 
 #if defined(PSA_WANT_ALG_CTR)
@@ -231,6 +230,7 @@ extern "C" {
 
 #if defined(PSA_WANT_ALG_GCM)
 #define MBEDTLS_GCM_C
+#define MBEDTLS_AES_C
 #endif
 
 #if defined(PSA_WANT_ALG_CHACHA20_POLY1305)
@@ -305,18 +305,23 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_ALG_CTR_DRBG)
+#if !defined(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
 #define MBEDTLS_ENTROPY_C
 #define MBEDTLS_SHA224_C
 #define MBEDTLS_SHA256_C
 #define MBEDTLS_CTR_DRBG_C
+#define MBEDTLS_AES_C
+#endif
 #endif
 
 #if defined(PSA_WANT_ALG_HMAC_DRBG)
+#if !defined(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
 #define MBEDTLS_ENTROPY_C
 #define MBEDTLS_SHA224_C
 #define MBEDTLS_SHA256_C
 #define MBEDTLS_MD_C
 #define MBEDTLS_HMAC_DRBG_C
+#endif
 #endif
 
 // TLS/DTLS additions

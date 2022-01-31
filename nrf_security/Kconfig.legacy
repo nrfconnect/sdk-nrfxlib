@@ -232,6 +232,7 @@ if MBEDTLS_LEGACY_CRYPTO_C
 
 config CC3XX_BACKEND
 	bool
+	# default y if CRYPTOCELL_USABLE
 	prompt "Configuration to enable CryptoCell CC3XX for legacy mbed TLS APIs"
 	help
 	  This configuration enables legacy mbed TLS APIs using cc3xx.
@@ -508,6 +509,7 @@ if MBEDTLS_ECDSA_C
 config MBEDTLS_ECDSA_DETERMINISTIC
 	bool "Enable deterministic ECDSA (RFC 6979)"
 	select MBEDTLS_HMAC_DRBG_C
+	depends on MBEDTLS_ECDSA_C
 	default y
 
 endif # MBEDTLS_ECDSA_C
@@ -737,7 +739,7 @@ config MBEDTLS_PKCS5_C
 config MBEDTLS_PK_WRITE_C
 	bool
 	prompt "Enable PK write support"
-	default y if MBEDTLS_USE_PSA_CRYPTO
+	# default y if MBEDTLS_USE_PSA_CRYPTO && !MBEDTLS_PSA_CRYPTO_SPM
 
 config MBEDTLS_PK_PARSE_C
 	bool
