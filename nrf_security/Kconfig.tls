@@ -258,17 +258,16 @@ config MBEDTLS_SSL_TICKET_C
 	help
 	  Enable an implementation of TLS server-side callbacks for session tickets.
 
-
 config MBEDTLS_SSL_EXPORT_KEYS
+	bool
 	prompt "Enable support for exporting keys"
 	default y
 	help
-	  Enables suppport for exporting key block and master secret.
-
+	  Enables support for exporting key block and master secret.
 
 config MBEDTLS_SSL_OUT_CONTENT_LEN
-	prompt "Max length for TLS outgoing fragments"
 	int
+	prompt "Max length for TLS outgoing fragments"
 	range 0 16384
 	default 900 if OPENTHREAD_NRF_SECURITY
 	default 16380
@@ -279,5 +278,136 @@ config MBEDTLS_SSL_IN_CONTENT_LEN
 	range 0 16384
 	default 900 if OPENTHREAD_NRF_SECURITY
 	default 16380
+
+
+config MBEDTLS_SSL_CIPHERSUITES
+	string "SSL - Cipher suites tuning"
+	help
+	  List of cipher suites to support in SSL/TLS.
+	  The cipher suites are given as a comma separated string, and in order of preference.
+	  This list can only be used for restricting cipher suites available in the system.
+	  Warning: This field has offers no validation checks.
+	  MBEDTLS_SSL_CIPHERSUITES setting in mbed TLS config file.
+
+menu "TLS/DTL Cipher Suites"
+
+config MBEDTLS_HAS_CBC_CIPHERSUITE_REQUIREMENTS
+	bool
+	default y
+	depends on MBEDTLS_CIPHER_MODE_CBC || PSA_WANT_ALG_CBC_PKCS7
+
+config MBEDTLS_HAS_GCM_CIPHERSUITE_REQUIREMENT
+	bool
+	default y
+	depends on MBEDTLS_GCM_C || PSA_WANT_ALG_GCM
+
+config MBEDTLS_HAS_CBC_OR_GCM_CIPHERSUITE_REQUIREMENTS
+	bool
+	default y
+	depends on MBEDTLS_HAS_CBC_CIPHERSUITE_REQUIREMENTS || \
+		   MBEDTLS_HAS_GCM_CIPHERSUITE_REQUIREMENT
+
+config MBEDTLS_HAS_ECDH_CIPHERSUITE_REQUIREMENTS
+	bool
+	default y
+	depends on (MBEDTLS_ECDH_C || PSA_WANT_ALG_ECDH)
+
+config MBEDTLS_HAS_ECDSA_CIPHERSUITE_REQUIREMENTS
+	bool
+	default y
+	depends on (MBEDTLS_ECDSA_C || PSA_WANT_ALG_ECDSA)
+
+config MBEDTLS_HAS_RSA_CIPHERSUITE_REQUIREMENTS
+	bool
+	default y
+	depends on (MBEDTLS_RSA_C && MBEDTLS_PKCS1_V15) || \
+		   (PSA_WANT_ALG_RSA_PKCS1V15_CRYPT && PSA_WANT_ALG_RSA_PKCS1V15_SIGN)
+
+config MBEDTLS_HAS_ECJPAKE_CIPHERSUITE_REQUIREMENTS
+	bool
+	default y
+	depends on MBEDTLS_ECJPAKE_C && MBEDTLS_SHA256_C && \
+		   MBEDTLS_ECP_DP_SECP256R1_ENABLED
+
+config MBEDTLS_KEY_EXCHANGE_PSK_ENABLED
+	bool
+	prompt "PSK"
+	default y
+	depends on MBEDTLS_HAS_CBC_OR_GCM_CIPHERSUITE_REQUIREMENTS
+
+config MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED
+	bool
+	prompt "DHE PSK"
+	default y
+	depends on MBEDTLS_HAS_CBC_OR_GCM_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_RSA_CIPHERSUITE_REQUIREMENTS
+
+config MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED
+	bool
+	prompt "ECDHE PSK"
+	default y
+	depends on MBEDTLS_HAS_CBC_OR_GCM_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_ECDH_CIPHERSUITE_REQUIREMENTS
+
+config MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED
+	bool
+	prompt "RSA PSK"
+	default y
+	depends on MBEDTLS_HAS_CBC_OR_GCM_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_RSA_CIPHERSUITE_REQUIREMENTS
+
+config MBEDTLS_KEY_EXCHANGE_RSA_ENABLED
+	bool
+	prompt "RSA"
+	default y
+	depends on MBEDTLS_HAS_RSA_CIPHERSUITE_REQUIREMENTS
+
+config MBEDTLS_KEY_EXCHANGE_DHE_RSA_ENABLED
+	bool
+	prompt "DHE RSA"
+	default y
+	depends on MBEDTLS_HAS_CBC_OR_GCM_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_RSA_CIPHERSUITE_REQUIREMENTS
+
+config MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
+	bool
+	prompt "ECDHE RSA"
+	default y
+	depends on MBEDTLS_HAS_CBC_OR_GCM_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_ECDH_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_RSA_CIPHERSUITE_REQUIREMENTS
+
+config MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
+	bool
+	prompt "ECDHE ECDSA"
+	default y
+	depends on MBEDTLS_HAS_CBC_OR_GCM_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_ECDH_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_ECDSA_CIPHERSUITE_REQUIREMENTS
+
+config MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED
+	bool
+	prompt "ECDH ECDSA"
+	default y
+	depends on MBEDTLS_HAS_CBC_OR_GCM_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_ECDH_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_ECDSA_CIPHERSUITE_REQUIREMENTS
+
+config MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED
+	bool
+	prompt "ECDH RSA"
+	default y
+	depends on MBEDTLS_HAS_CBC_OR_GCM_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_ECDH_CIPHERSUITE_REQUIREMENTS && \
+		   MBEDTLS_HAS_RSA_CIPHERSUITE_REQUIREMENTS
+
+config MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
+	bool
+	prompt "ECJPAKE"
+	default y
+	depends on MBEDTLS_HAS_ECJPAKE_CIPHERSUITE_REQUIREMENTS
+
+endmenu
+
 
 endif # MBEDTLS_TLS_LIBRARY

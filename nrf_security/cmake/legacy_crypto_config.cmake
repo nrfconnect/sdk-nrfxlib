@@ -130,6 +130,7 @@ kconfig_check_and_set_base(MBEDTLS_SSL_SERVER_NAME_INDICATION)
 kconfig_check_and_set_base(MBEDTLS_SSL_CACHE_C)
 kconfig_check_and_set_base(MBEDTLS_SSL_TICKET_C)
 kconfig_check_and_set_base(MBEDTLS_SSL_EXPORT_KEYS)
+kconfig_check_and_set_base(MBEDTLS_SSL_CIPHERSUITES)
 
 kconfig_check_and_set_base(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
 
@@ -138,6 +139,18 @@ kconfig_check_and_set_base_int(MBEDTLS_SSL_OUT_CONTENT_LEN)
 kconfig_check_and_set_base_int(MBEDTLS_SSL_IN_CONTENT_LEN)
 kconfig_check_and_set_base_int(MBEDTLS_ENTROPY_MAX_SOURCES)
 
+# Set all enabled TLS/DTLS key exchange methods
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_PSK_ENABLED)
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED)
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED)
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED)
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_RSA_ENABLED)
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_DHE_RSA_ENABLED)
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED)
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED)
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED)
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED)
+kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED)
 #
 # CC3XX flags for threading and platform zeroize
 #
@@ -161,85 +174,6 @@ endif()
 
 kconfig_check_and_set_base_depends(MBEDTLS_SHA224_C
   MBEDTLS_SHA256_C
-)
-
-#
-# Auto-enable key exchange based on supported features
-#
-kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED
-  MBEDTLS_ECDH_C
-  MBEDTLS_ECDSA_C
-  MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_ECDH_RSA_ENABLED
-  MBEDTLS_RSA_C
-  MBEDTLS_ECDH_C
-  MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED
-  MBEDTLS_DHM_C
-  MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED
-  MBEDTLS_ECDH_C
-  MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_DHE_RSA_ENABLED
-  MBEDTLS_DHM_C
-  MBEDTLS_RSA_C
-  MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-  MBEDTLS_PKCS1_V15
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
-  MBEDTLS_ECDH_C
-  MBEDTLS_RSA_C
-  MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-  MBEDTLS_PKCS1_V15
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED
-  MBEDTLS_ECDH_C
-  MBEDTLS_ECDSA_C
-  MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED
-  MBEDTLS_RSA_C
-  MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-  MBEDTLS_PKCS1_V15
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_RSA_ENABLED
-  MBEDTLS_RSA_C
-  MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-  MBEDTLS_PKCS1_V15
-)
-
-kconfig_check_and_set_base_depends(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED
-  MBEDTLS_ECJPAKE_C
-  MBEDTLS_TLS_LIBRARY
-  MBEDTLS_X509_LIBRARY
-)
-
-
-
-kconfig_check_and_set_base_depends(MBEDTLS_ECDSA_DETERMINISTIC
-  MBEDTLS_ECDSA_C
-  MBEDTLS_HMAC_DRBG_C
 )
 
 # Convert defines required even in PSA mode
