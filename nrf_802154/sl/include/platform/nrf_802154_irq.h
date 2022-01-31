@@ -83,6 +83,18 @@ typedef void (* nrf_802154_isr_t)();
 void nrf_802154_irq_init(uint32_t irqn, uint32_t prio, nrf_802154_isr_t isr);
 
 /**
+ * @brief Initializes a provided interrupt line as Zero Latency Interrupt (ZLI)
+ *
+ * @note This function does not enable the interrupt. In order to enable it,  additional call
+ *       to @ref nrf_802154_irq_enable is necessary.
+ *
+ * @param[in] irqn  IRQ line number.
+ * @param[in] prio  Priority of the IRQ.
+ * @param[in] isr   Pointer to ISR.
+ */
+void nrf_802154_irq_init_zli(uint32_t irqn, uint32_t prio, nrf_802154_isr_t isr);
+
+/**
  * @brief Enables an interrupt.
  *
  * @param[in] irqn  IRQ line number.

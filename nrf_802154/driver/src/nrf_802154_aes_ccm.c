@@ -128,7 +128,7 @@ static void ecb_init(void)
 
     if (!m_initialized)
     {
-        nrf_802154_irq_init(ECB_IRQn, NRF_802154_ECB_PRIORITY, ecb_irq_handler);
+        nrf_802154_irq_init_zli(ECB_IRQn, NRF_802154_ECB_PRIORITY, ecb_irq_handler);
         m_initialized = true;
     }
 
