@@ -58,15 +58,12 @@ set(CONFIG_MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG          True)
 # enable it manually.
 set(CONFIG_NRF_CC3XX_PLATFORM                       True)
 
+# Disable threading for TF-M SPM image
+set(MBEDTLS_THREADING_ALT                     False)
+set(MBEDTLS_THREADING_C                       False)
+
 # Set the a define stating that KEY_ID encodes owner
 set(CONFIG_MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER  True)
-
-
-set(CONFIG_PSA_WANT_ALG_TLS12_PRF                   True)
-set(CONFIG_PSA_WANT_ALG_TLS12_PSK_TO_MS             True)
-set(CONFIG_MBEDTLS_X509_LIBRARY                     True)
-set(CONFIG_MBEDTLS_TLS_LIBRARY                      True)
-set(CONFIG_MBEDTLS_PSA_BUILTIN_ALG_HMAC             True)
 
 # Set the a _usage_ of PSA crypto to false for TF-M image build
 set(CONFIG_MBEDTLS_USE_PSA_CRYPTO                   False)
