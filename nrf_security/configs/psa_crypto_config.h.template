@@ -332,14 +332,14 @@
 #cmakedefine MBEDTLS_SSL_OUT_CONTENT_LEN                        @MBEDTLS_SSL_OUT_CONTENT_LEN@
 #cmakedefine MBEDTLS_SSL_CIPHERSUITES                           @MBEDTLS_SSL_CIPHERSUITES@
 
-// #cmakedefine MBEDTLS_X509_RSASSA_PSS_SUPPORT                 @MBEDTLS_X509_RSASSA_PSS_SUPPORT@
-// #cmakedefine MBEDTLS_X509_USE_C                              @MBEDTLS_X509_USE_C@
-// #cmakedefine MBEDTLS_X509_CRT_PARSE_C                        @MBEDTLS_X509_CRT_PARSE_C@
-// #cmakedefine MBEDTLS_X509_CRL_PARSE_C                        @MBEDTLS_X509_CRL_PARSE_C@
-// #cmakedefine MBEDTLS_X509_CSR_PARSE_C                        @MBEDTLS_X509_CSR_PARSE_C@
-// #cmakedefine MBEDTLS_X509_CREATE_C                           @MBEDTLS_X509_CREATE_C@
-// #cmakedefine MBEDTLS_X509_CRT_WRITE_C                        @MBEDTLS_X509_CRT_WRITE_C@
-// #cmakedefine MBEDTLS_X509_CSR_WRITE_C                        @MBEDTLS_X509_CSR_WRITE_C@
+#cmakedefine MBEDTLS_X509_RSASSA_PSS_SUPPORT                 @MBEDTLS_X509_RSASSA_PSS_SUPPORT@
+#cmakedefine MBEDTLS_X509_USE_C                              @MBEDTLS_X509_USE_C@
+#cmakedefine MBEDTLS_X509_CRT_PARSE_C                        @MBEDTLS_X509_CRT_PARSE_C@
+#cmakedefine MBEDTLS_X509_CRL_PARSE_C                        @MBEDTLS_X509_CRL_PARSE_C@
+#cmakedefine MBEDTLS_X509_CSR_PARSE_C                        @MBEDTLS_X509_CSR_PARSE_C@
+#cmakedefine MBEDTLS_X509_CREATE_C                           @MBEDTLS_X509_CREATE_C@
+#cmakedefine MBEDTLS_X509_CRT_WRITE_C                        @MBEDTLS_X509_CRT_WRITE_C@
+#cmakedefine MBEDTLS_X509_CSR_WRITE_C                        @MBEDTLS_X509_CSR_WRITE_C@
 
 #cmakedefine MBEDTLS_KEY_EXCHANGE_PSK_ENABLED                   @MBEDTLS_KEY_EXCHANGE_PSK_ENABLED@
 #cmakedefine MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED               @MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED@

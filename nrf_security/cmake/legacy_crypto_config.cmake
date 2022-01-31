@@ -204,7 +204,14 @@ Kconfig_check_and_set_base_depends(MBEDTLS_ECDSA_C
   PSA_WANT_ALG_ECDSA
 )
 
+kconfig_check_and_set_base_depends(MBEDTLS_ECDSA_DETERMINISTIC
+  PSA_WANT_ALG_DETERMINISTIC_ECDSA
+  PSA_WANT_HMAC_DRBG_C
+)
 
+kconfig_check_and_set_base_depends(MBEDTLS_HMAC_DRBG_C
+  PSA_WANT_HMAC_DRBG_C
+)
 
 Kconfig_check_and_set_base_depends(MBEDTLS_ECP_DP_SECP192R1_ENABLED
   PSA_WANT_ECC_SECP_R1_192
