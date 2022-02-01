@@ -7,17 +7,17 @@ Changelog
    :local:
    :depth: 2
 
-Main branch
-***********
+nRF Connect SDK v1.9.0
+**********************
 
-All the notable changes included in the main branch are documented in this section.
+All the notable changes included in the |NCS| v1.9.0 release are documented in this section.
 
 Added
 =====
 
-* Added a new header :file:`mpsl_dppi_protocol_api.h` which exposes DPPI channels that have a fixed configuration during the lifetime of a radio event (DRGN-16308).
-  This will facilitate debugging protocol implementations.
-  Currently these channels are only guaranteed to be applied correctly for Bluetooth.
+* Added a new header file :file:`mpsl_dppi_protocol_api.h` which exposes DPPI channels that have a fixed configuration during the lifetime of a radio event (DRGN-16308).
+  This will facilitate debugging of protocol implementations.
+  Currently these channels are guaranteed to be applied correctly for Bluetooth only.
 
 nRF Connect SDK v1.8.0
 **********************

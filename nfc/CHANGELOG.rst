@@ -9,8 +9,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-master
-******
+nRF Connect SDK v1.9.0
+**********************
 
 Added
 =====
@@ -22,14 +22,14 @@ Added
 Modified
 ========
 
-* The library returns specific errors codes from the :file:`nrf_nfc_errno.h` file instead of Zephyr error codes.
-* Removed unit tests dependencies from the header files :file:`nfc_t2t_lib.h` and :file:`nrf_t4t_lib.h`.
+* The library returns specific error codes from the :file:`nrf_nfc_errno.h` file instead of Zephyr error codes.
+* Removed unit test dependencies from the header files :file:`nfc_t2t_lib.h` and :file:`nrf_t4t_lib.h`.
 
 Bug fixes
 =========
 
- * Fixed handling R(NAK) frame after sending R(ACK) frame.
-   The Tag should respond with last transmitted R(ACK) frame.
+ * Fixed handling the R(NAK) frame after sending the R(ACK) frame.
+   The Tag should respond with the last transmitted R(ACK) frame.
  * Fixed the race condition that occurred when the S(WTX) frame was scheduled and the library tried to send a data chunk.
  * Fixed a possible memory overwrite in the :ref:`type_4_tag` library when the reader device sends an incorrect APDU Update command.
 
