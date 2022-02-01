@@ -79,8 +79,11 @@ typedef void (* nrf_802154_isr_t)();
  * @param[in] irqn  IRQ line number.
  * @param[in] prio  Priority of the IRQ.
  * @param[in] isr   Pointer to ISR.
+ *
+ * @note Interpretation of the value represented by @p prio is platform-dependent and defined by
+ *       the implementation.
  */
-void nrf_802154_irq_init(uint32_t irqn, uint32_t prio, nrf_802154_isr_t isr);
+void nrf_802154_irq_init(uint32_t irqn, int32_t prio, nrf_802154_isr_t isr);
 
 /**
  * @brief Enables an interrupt.

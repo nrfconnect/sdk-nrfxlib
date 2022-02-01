@@ -13,7 +13,7 @@
 
 #include "nrf.h"
 
-void nrf_802154_irq_init(uint32_t irqn, uint32_t prio, nrf_802154_isr_t isr)
+void nrf_802154_irq_init(uint32_t irqn, int32_t prio, nrf_802154_isr_t isr)
 {
     /* This implementation assumes that:
      *   - a vector table entry related to IRQ line number irqn is provided by the caller
@@ -40,7 +40,7 @@ void nrf_802154_irq_init(uint32_t irqn, uint32_t prio, nrf_802154_isr_t isr)
      */
     (void)isr;
 
-    NVIC_SetPriority((IRQn_Type)irqn, prio);
+    NVIC_SetPriority((IRQn_Type)irqn, (uint32_t)prio);
     NVIC_ClearPendingIRQ((IRQn_Type)irqn);
 }
 
