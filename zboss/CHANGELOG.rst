@@ -9,10 +9,10 @@ Changelog
 
 All notable changes to this project in the |NCS| are documented in this file.
 
-Main branch
-***********
+nRF Connect SDK v1.9.0
+**********************
 
-All the notable changes included in the |NCS| main branch are documented in this section.
+All the notable changes included in the |NCS| v1.9.0 release are documented in this section.
 
 Added
 =====
@@ -27,7 +27,7 @@ Updated
 =======
 
 * Updated the ZBOSS stack to version ``3.11.1.0+5.1.1``.
-  For detailed information, see `ZBOSS stack release notes`_ for the main branch.
+  For detailed information, see `ZBOSS stack release notes`_ for the |NCS| v1.9.0.
 * Updated BDB to specification version ``3.0.1``.
 * Replaced ZB_IC_GET_TYPE_FROM_REC macro with ZB_IC_GET_TYPE_FROM_OPT.
 
@@ -54,7 +54,7 @@ Updated
 =======
 
 * Updated the ZBOSS stack to version ``3.9.0.1+4.1.0``.
-  For detailed information, see `ZBOSS stack release notes`_ for the main branch.
+  For detailed information, see `ZBOSS stack release notes`_ for the |NCS| v1.8.0.
 * Removed precompiled libraries for Zigbee Green Power Combo Basic functionality.
 
 Bug fixes
