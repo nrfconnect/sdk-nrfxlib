@@ -27,8 +27,8 @@ If timing-activity :math:`\mathsf{B}` increases its priority and requests again,
    See `Bluetooth Core Specification`_ for the complete sequence of packets.
 
 
-|controller| timing-activities and priorities
-*********************************************
+Timing-activities and priorities
+********************************
 
 The |controller| supports running multiple connections, Advertisers, Scanners, and timeslot events simultaneously.
 
@@ -59,6 +59,10 @@ The following table summarizes the priorities.
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Second priority             | * Central connection setup (waiting for ACK from peer)                                            |
    |                             | * Initiator                                                                                       |
+   |                             | * Periodic advertiser sending a channel map update                                                |
+   |                             | * Scanner in the synchronizing state                                                              |
+   |                             | * Scanner in the synchronized state where the synchronization is about to be lost                 |
+   |                             | * Scanner in the synchronized state receiving auxiliary packets (AUX_CHAIN_IND's)                 |
    |                             | * Connectable Advertiser/Broadcaster/Scanner which has been blocked consecutively for a few times |
    |                             | * Scanner which is receiving an advertising packet on a secondary advertising channel             |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
@@ -158,6 +162,7 @@ The Initiator has now become a Central (:math:`\mathsf{C3}`) and its link is pla
 
    Initiator - scheduling and connection setup
 
+.. _central_timing:
 
 Connection timing as a Central
 ******************************
@@ -375,6 +380,28 @@ Therefore, the Scanner cannot decide when the secondary scanning timing-events w
    Scanner timing - secondary scan timing-events will interleave with connections
 
 
+Timing when synchronized to a periodic advertiser
+*************************************************
+
+These timing-events are added as per the timing dictated by the periodic advertiser, and may therefore collide with other timing-events.
+
+.. figure:: pic/schedule/sched_periodic_sync_collision.svg
+   :alt: Alt text: A diagram showing that timing-events may collide
+   :align: center
+   :width: 80%
+
+   Timing when synchronized to a periodic advertiser - timing-events may collide
+
+The |controller| will schedule a new timing-event when the advertiser indicates there are more packets for a given advertising event.
+
+.. figure:: pic/schedule/sched_periodic_sync_chains.svg
+   :alt: Alt text: Data from the periodic advertiser is received in multiple events
+   :align: center
+   :width: 80%
+
+   Timing when synchronized to a periodic advertiser - timing-events from unrelated sources can be interleaved
+
+
 Advertiser Timing
 *****************
 
@@ -407,6 +434,26 @@ The events can include packets sent on both the primary and the secondary advert
 The duration of an extended advertising event depends on the mode, data length, and on which PHY the advertising packets are sent.
 The |controller| will send as few secondary advertising channel packets as possible with each packet containing the maximum allowed amount of data.
 The packets are sent with an AUX frame space of 330 µs.
+
+
+Periodic Advertiser Timing
+**************************
+
+The duration of a periodic advertising event depends on data length and on which PHY the advertising packets are sent.
+The |controller| will attempt to mimimize the number of packets while maximizing the amount of data in each packet.
+The packets are sent with an AUX frame space of 330 µs.
+
+Periodic advertiser timing-events are scheduled similarly to a Central device, meaning they are added relative to already running central link or periodic advertising timing-events.
+See :ref:`central_timing` for more information.
+The timing-events are offset from each other by :math:`\mathsf{t_{event}}`, which can be configured using a vendor-specific HCI command.
+Scheduling conflicts can occur if the length of the periodic advertising data exceeds what can be transmitted in the allocated time.
+
+.. figure:: pic/schedule/sched_periodic_adv.svg
+   :alt: Alt text: Periodic advertiser timing
+   :align: center
+   :width: 80%
+
+   Periodic advertiser timing-events are scheduled relative to other Central device events
 
 
 Peripheral connection setup and connection timing
