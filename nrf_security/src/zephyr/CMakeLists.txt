@@ -19,9 +19,7 @@ endif()
 # Add entropy_poll only if NRF_CC3XX_PLATFORM is not added
 # This file is not useful for TF-M build where entropy should come
 # from SPE image, using psa_generate_random
-if((NOT CONFIG_NRF_CC3XX_PLATFORM AND
-    NOT CONFIG_BUILD_WITH_TFM) OR
-    CONFIG_MBEDTLS_HARDWARE_POLL_WORKAROUND)
+if(NOT CONFIG_NRF_CC3XX_PLATFORM AND NOT CONFIG_BUILD_WITH_TFM)
   list(APPEND src_zephyr
     ${NRF_SECURITY_ROOT}/src/legacy/entropy_poll.c
   )
