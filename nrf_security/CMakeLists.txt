@@ -107,6 +107,9 @@ else()
 
 endif()
 
+#finally adding the crypto lib
+add_subdirectory(../crypto crypto_copy)
+
 # Add mbed TLS Libraries
 add_subdirectory(src)
 

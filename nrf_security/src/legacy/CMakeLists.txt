@@ -4,16 +4,38 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-# Legacy APIs missing driver support or APIs assumed to be
-# deprecated with more PSA API awareness.
-append_with_prefix(src_crypto_legacy ${ARM_MBEDTLS_PATH}/library
+# Add files that are required by PSA drivers (by default)
+# This is added in mbedcrypto_base to prevent cyclic dependency of mbedcrypto
+append_with_prefix(src_crypto_legacy_base ${ARM_MBEDTLS_PATH}/library
   aesni.c
   aria.c
   camellia.c
   cipher.c
   cipher_wrap.c
   des.c
+  ecdh.c
+  ecdsa.c
+  ecp.c
+  ecp_curves.c
+  md.c
+  pk.c
+  pk_wrap.c
+  hmac_drbg.c
+  md5.c
+  ripemd160.c
+  rsa.c
+  rsa_alt_helpers.c
+  sha1.c
+  sha256.c
+  sha512.c
+)
+
+# Legacy APIs missing driver support or APIs assumed to be
+# deprecated with more PSA API awareness.
+append_with_prefix(src_crypto_legacy ${ARM_MBEDTLS_PATH}/library
   dhm.c
+  cipher.c
+  cipher_wrap.c
   md.c
   pk.c
   pk_wrap.c
@@ -35,12 +57,6 @@ if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C OR
     ecp_curves.c
     gcm.c
     hkdf.c
-    hmac_drbg.c
-    md5.c
-    ripemd160.c
-    sha1.c
-    sha256.c
-    sha512.c
     rsa.c
     rsa_alt_helpers.c
   )
@@ -89,7 +105,13 @@ if(DEFINED src_crypto_legacy)
   )
 endif()
 
-if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C AND CONFIG_OBERON_BACKEND)
+if(DEFINED src_crypto_legacy_base)
+  target_sources(mbedcrypto_base
+    PRIVATE
+      ${src_crypto_legacy_base}
+  )
+endif()
+
 if(TARGET mbedcrypto_oberon_mbedtls_imported)
 
   # Get the include paths from nrf_oberon libraries
@@ -105,6 +127,11 @@ if(TARGET mbedcrypto_oberon_mbedtls_imported)
     PRIVATE
       mbedcrypto_oberon_mbedtls_imported
   )
+
+target_link_libraries(mbedcrypto_oberon_mbedtls_imported
+  INTERFACE
+    mbedcrypto_base
+)
 
   # Add nrf_oberon includes to mbedcrypto library
   target_include_directories(${mbedcrypto_target}
@@ -127,7 +154,7 @@ if(TARGET mbedcrypto_cc3xx_imported)
   )
 
   # Add cc3xx platform/mbedcrypto includes to mbedcrypto library
-  target_include_directories(${mbedcrypto_target}
+  target_include_directories(mbedcrypto_common
     INTERFACE
       $<TARGET_PROPERTY:mbedcrypto_cc3xx_imported,INTERFACE_INCLUDE_DIRECTORIES>
   )
