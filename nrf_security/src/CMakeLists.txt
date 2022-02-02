@@ -105,24 +105,7 @@ append_with_prefix(src_tls ${ARM_MBEDTLS_PATH}/library
     ssl_tls13_keys.c
 )
 
-# Base mbed TLS files (not in drivers or builtin's)
-append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library
-    asn1parse.c
-    asn1write.c
-    base64.c
-    bignum.c
-    nist_kw.c
-    oid.c
-    padlock.c
-    pem.c
-    pkcs12.c
-    pkcs5.c
-    pkparse.c
-    pkwrite.c
-    platform.c
-    platform_util.c
-    version.c
-)
+
 
 if (COMPILE_PSA_APIS)
   # Add files for PSA build
@@ -160,7 +143,42 @@ add_library(${mbedcrypto_target}
     ${src_crypto_replacements}
 )
 
-nrf_security_debug_list_target_files(${mbedcrypto_target})
+nrf_security_add_zephyr_options(${mbedcrypto_target})
+
+# Base mbed TLS files (not in drivers or builtin's)
+append_with_prefix(src_crypto_base ${ARM_MBEDTLS_PATH}/library
+    asn1parse.c
+    asn1write.c
+    base64.c
+    bignum.c
+    nist_kw.c
+    oid.c
+    padlock.c
+    pem.c
+    pkcs12.c
+    pkcs5.c
+    pkparse.c
+    pkwrite.c
+    platform.c
+    platform_util.c
+    version.c
+)
+
+# Add base library with files required by all drivers/backends.
+add_library(mbedcrypto_base
+  STATIC
+    ${src_crypto_base}
+)
+
+target_link_libraries(mbedcrypto_base 
+  PRIVATE
+    mbedcrypto_common
+)
+
+target_link_libraries(${mbedcrypto_target}
+  PRIVATE
+    mbedcrypto_base
+)
 
 # Add regular mbedcrypto common includes and configurations
 target_link_libraries(${mbedcrypto_target}
@@ -196,6 +214,7 @@ set_property(TARGET ${mbedcrypto_target}
 # NEWLIB requires linking with the C library
 if (CONFIG_NEWLIB_LIBC)
   target_link_libraries(${mbedcrypto_target} PRIVATE -lc)
+  target_link_libraries(mbedcrypto_base PRIVATE -lc)
 endif()
 
 if (CONFIG_MBEDTLS_X509_LIBRARY)
@@ -209,6 +228,7 @@ if (CONFIG_MBEDTLS_X509_LIBRARY)
   target_link_libraries(${mbedx509_target}
     PRIVATE
       ${mbedcrypto_target}
+      mbedcrypto_base
     PUBLIC
       mbedcrypto_common
   )
@@ -228,6 +248,7 @@ if (CONFIG_MBEDTLS_TLS_LIBRARY)
     PRIVATE
       ${mbedx509_target}
       ${mbedcrypto_target}
+      mbedcrypto_base
     PUBLIC
       mbedcrypto_common
   )

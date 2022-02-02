@@ -210,11 +210,6 @@ extern "C" {
 #define MBEDTLS_CIPHER_MODE_XTS
 #endif
 
-
-#if defined(PSA_WANT_ALG_TLS12_PSK_TO_MS)
-#define MBEDTLS_PSA_BUILTIN_ALG_TLS12_PSK_TO_MS
-#endif
-
 #if defined(PSA_WANT_ALG_CBC_NO_PADDING)
 #define MBEDTLS_CIPHER_MODE_CBC
 #endif
@@ -322,6 +317,18 @@ extern "C" {
 #define MBEDTLS_MD_C
 #define MBEDTLS_HMAC_DRBG_C
 #endif
+#endif
+
+#if defined(PSA_WANT_ALG_HKDF)
+#define MBEDTLS_PSA_BUILTIN_ALG_HKDF 1
+#endif
+
+#if defined(PSA_WANT_ALG_TLS12_PRF)
+#define MBEDTLS_PSA_BUILTIN_ALG_TLS12_PRF 1
+#endif
+
+#if defined(PSA_WANT_ALG_TLS12_PSK_TO_MS)
+#define MBEDTLS_PSA_BUILTIN_ALG_TLS12_PSK_TO_MS 1
 #endif
 
 // TLS/DTLS additions

@@ -71,6 +71,7 @@ endif()
 
 # Add configuration/options from zephyr interface libraries
 nrf_security_add_zephyr_options(${mbedcrypto_target})
+nrf_security_add_zephyr_options(mbedcrypto_base)
 
 # Add the generic mbedtls_external library to interface with zephyr
 add_library(mbedtls_external INTERFACE)

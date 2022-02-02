@@ -36,9 +36,6 @@ endforeach()
 include(${ZEPHYR_BASE}/cmake/extensions.cmake)
 import_kconfig(CONFIG_ ${ZEPHYR_DOTCONFIG})
 
-# Include nrfxlib common to get nrf_platform_cc3xx and other crypto libs
-include(../../common.cmake)
-
 # Additional TF-M build only settings:
 # Set the MBEDTLS_PSA_CRYPTO_SPM configuration to ensure the PSA has
 # prefixed names for mbedcrypto symbols (mbedcrypto__)
@@ -83,6 +80,9 @@ if (${PROJECT_NAME} STREQUAL "Bootloader")
   set(CONFIG_MBEDTLS_PSA_CRYPTO_SPM False)
 endif()
 set(COMPILE_PSA_APIS                                True)
+
+# Include nrfxlib common to get nrf_platform_cc3xx and other crypto libs
+include(../../common.cmake)
 
 # The TF-M build needs a standard version of memory_buffer_alloc.c
 # This currently doesn't do a mutex on heap access according to cc3xx rtos
