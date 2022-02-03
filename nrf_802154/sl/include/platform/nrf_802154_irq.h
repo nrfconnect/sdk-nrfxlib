@@ -46,12 +46,6 @@
 #include <stdint.h>
 
 /**
- * @brief Checks if the given IRQ priority is within the range implemented by the MCU.
- */
-#define NRF_802154_IRQ_PRIORITY_ALLOWED(priority) \
-    (((priority) >= 0) && ((priority) < (1U << (__NVIC_PRIO_BITS))))
-
-/**
  * @brief Function pointer used for IRQ handling.
  *
  * This type intentionally does not specify any parameters of the function.

@@ -87,10 +87,6 @@ static void swi_irq_handler(void)
 
 void nrf_802154_swi_init(void)
 {
-#if !NRF_802154_IRQ_PRIORITY_ALLOWED(NRF_802154_SWI_PRIORITY)
-#error NRF_802154_SWI_PRIORITY value out of the allowed range.
-#endif
-
     static bool initialized = false;
 
     if (!initialized)
