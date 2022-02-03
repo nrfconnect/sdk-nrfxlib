@@ -17,8 +17,7 @@ New version of the nrf_oberon library with the following changes.
 Added
 =====
 
-* Fixed an issue with the ChaChaPoly PSA APIs where
-  more IV sizes than supported by the APIs were accepted.
+* Fixed an issue with the ChaChaPoly PSA APIs where more IV sizes than supported by the APIs were accepted.
 
 Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
 
@@ -87,14 +86,14 @@ New version of the nrf_oberon library with the following changes.
 Added
 =====
 
-* Added PSA API support..
+* Added PSA API support.
 
 Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
 
 .. note::
    The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
-* nrf_oberon, nRF9160 and nRF53 application core variants
+* nrf_oberon, nRF9160, and nRF53 application core variants
 
   * ``cortex-m33/hard-float/liboberon_3.0.9.a``
   * ``cortex-m33/soft-float/liboberon_3.0.9.a``
