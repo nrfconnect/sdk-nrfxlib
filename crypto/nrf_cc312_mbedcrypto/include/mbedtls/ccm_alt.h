@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2001-2019, Arm Limited and Contributors. All rights reserved.
  *
- * SPDX-License-Identifier: BSD-3-Clause OR Arm’s non-OSI source license
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #ifndef MBEDTLS_CCM_ALT_H
@@ -21,7 +21,7 @@
 #define MBEDTLS_ERR_CCM_AUTH_FAILED    -0x000F /**< Authenticated decryption failed. */
 
 /* The Size of the CCM context.*/
-#define MBEDTLS_CCM_CONTEXT_SIZE_IN_WORDS (29)
+#define MBEDTLS_CCM_CONTEXT_SIZE_IN_WORDS (33)
 
 #ifdef __cplusplus
 extern "C" {

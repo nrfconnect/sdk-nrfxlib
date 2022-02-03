@@ -14,7 +14,7 @@ nrf_cc3xx_platform - 0.9.12
 
 New version of the library with bug fixes and added features:
 
-* Fixed an issue with KMU loading for nRF9160 devices.
+* Fixed issue with KMU loading for nRF9160 devices.
   The issue is only present in certain builds, but it is highly recommended to update to this version of the library if you are using nRF9160.
 
 Library built against Mbed TLS version 2.26.0.
@@ -751,7 +751,7 @@ Changed name of configurations from CC310 to CC3XX. This is reflected in the hea
 
 Added new version of libraries nrf_cc310_platform/nrf_cc312_platform built with Mbed TLS version 2.23.0.
 
-Added APIs for storing keys in the KMU peripheral (nRF9160, nRF5340).
+Added APIs for storing keys in the the KMU peripheral (nRF9160, nRF5340).
 See :file:`include/nrf_cc3xx_platform_kmu.h`.
 
 Added APIs for generating CSPRNG using CTR_DRBG.

@@ -168,7 +168,6 @@ int nrf_cc3xx_platform_kmu_write_key_slot(
  *          and pushable". Please see
  *          @ref NRF_CC3XX_PLATFORM_KMU_DEFAULT_PERMISSIONS.
  *
- * @param[in]   slot_id     KMU slot ID for the new key.
  * @param[in]   key         Array with the 128 bit key to put in the KMU slot.
  *
  * @return NRF_CC3XX_PLATFORM_SUCCESS on success, otherwise a negative value.
