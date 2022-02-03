@@ -20,7 +20,7 @@ config CRYPTOCELL_USABLE
 
 config NRF_OBERON
 	bool "nrf_oberon SW crypto library for nRF5x."
-	select NRFXLIB_CRYPTO
+	select NRFXLIB_CRYPTO if !BUILD_WITH_TFM
 	help
 	  This configuration is only available for direct use of nrf_oberon
 	  To use, link with nrfxlib_crypto in CMake.
