@@ -450,7 +450,7 @@ config MBEDTLS_CIPHER_MODE_OFB
 config MBEDTLS_CIPHER_MODE_XTS
 	bool "AES-XTS - AES Xor-encrypt-xor with ciphertext stealing mode"
 	depends on OBERON_BACKEND
-	default y
+	# default y - Currently not supported
 	help
 	  Enable the AES Xor-encrypt-xor with ciphertext stealing mode (XTS) mode,
 	  MBEDTLS_CIPHER_MODE_XTS setting in mbed TLS config file.
