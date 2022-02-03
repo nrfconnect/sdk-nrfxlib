@@ -122,10 +122,6 @@ static void ecb_irq_handler(void);
  */
 static void ecb_init(void)
 {
-#if !NRF_802154_IRQ_PRIORITY_ALLOWED(NRF_802154_ECB_PRIORITY)
-#error NRF_802154_ECB_PRIORITY value out of the allowed range.
-#endif
-
     if (!m_initialized)
     {
         nrf_802154_irq_init(ECB_IRQn, NRF_802154_ECB_PRIORITY, ecb_irq_handler);

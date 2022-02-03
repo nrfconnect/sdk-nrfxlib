@@ -386,9 +386,6 @@ void nrf_802154_lp_timer_init(void)
     }
 
     // Setup RTC timer.
-#if !NRF_802154_IRQ_PRIORITY_ALLOWED(NRF_802154_SL_RTC_IRQ_PRIORITY)
-#error NRF_802154_SL_RTC_IRQ_PRIORITY value out of the allowed range.
-#endif
     nrf_802154_irq_init(NRF_802154_RTC_IRQN, NRF_802154_SL_RTC_IRQ_PRIORITY, rtc_irq_handler);
     nrf_802154_irq_enable(NRF_802154_RTC_IRQN);
 
