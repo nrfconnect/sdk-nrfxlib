@@ -192,64 +192,6 @@ psa_status_t psa_driver_wrapper_verify_message(
             /* Key is stored in the slot in export representation, so
              * cycle through all known transparent accelerators */
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
-#if defined(PSA_CRYPTO_DRIVER_CC3XX)
-            status = cc3xx_verify_message(
-                        attributes,
-                        key_buffer,
-                        key_buffer_size,
-                        alg,
-                        input,
-                        input_length,
-                        signature,
-                        signature_length );
-            /* Declared with fallback == true */
-            if( status != PSA_ERROR_NOT_SUPPORTED )
-                return( status );
-#endif /* PSA_CRYPTO_DRIVER_CC3XX */
-#if defined(PSA_CRYPTO_DRIVER_OBERON)
-        {
-            /* Workaround NCSDK-13486
-             * oberon_verify_message does not support PSA_KEY_TYPE_CATEGORY_KEY_PAIR.
-             * Export a key that is PSA_KEY_TYPE_CATEGORY_PUBLIC_KEY instead.
-             */
-            psa_key_attributes_t attributes_copy = *attributes;
-            psa_key_type_t key_type = psa_get_key_type(&attributes_copy);
-
-            size_t exported_length = 0;
-            uint8_t exported[PSA_KEY_EXPORT_ECC_PUBLIC_KEY_MAX_SIZE(256)];
-
-            if (PSA_KEY_TYPE_IS_KEY_PAIR(key_type)) {
-                mbedtls_svc_key_id_t key = psa_get_key_id(&attributes_copy);
-
-                status = psa_export_public_key(key, exported, sizeof(exported),
-                                               &exported_length);
-                if (status != PSA_SUCCESS) {
-                    return status;
-                }
-
-                key_type &= ~PSA_KEY_TYPE_CATEGORY_FLAG_PAIR;
-                psa_set_key_type(&attributes_copy, key_type);
-
-                key_buffer_size = exported_length;
-                key_buffer = exported;
-
-                attributes = &attributes_copy;
-            }
-
-            status = oberon_verify_message(
-                        attributes,
-                        key_buffer,
-                        key_buffer_size,
-                        alg,
-                        input,
-                        input_length,
-                        signature,
-                        signature_length );
-            /* Declared with fallback == true */
-            if( status != PSA_ERROR_NOT_SUPPORTED )
-                return( status );
-        }
-#endif /* PSA_CRYPTO_DRIVER_OBERON */
 #if defined(PSA_CRYPTO_DRIVER_TEST)
             status = mbedtls_test_transparent_signature_verify_message(
                         attributes,
@@ -465,14 +407,45 @@ psa_status_t psa_driver_wrapper_verify_hash(
                 return( status );
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
 #if defined(PSA_CRYPTO_DRIVER_OBERON)
-            status = oberon_verify_hash( attributes,
-                                        key_buffer,
-                                        key_buffer_size,
-                                        alg,
-                                        hash,
-                                        hash_length,
-                                        signature,
-                                        signature_length);
+            {
+                /* Workaround NCSDK-13486
+                * oberon_verify_hash does not support PSA_KEY_TYPE_CATEGORY_KEY_PAIR.
+                * Export a key that is PSA_KEY_TYPE_CATEGORY_PUBLIC_KEY instead.
+                */
+                psa_key_attributes_t attributes_copy = *attributes;
+                psa_key_type_t key_type = psa_get_key_type(&attributes_copy);
+
+                size_t exported_length = 0;
+                uint8_t exported[PSA_KEY_EXPORT_ECC_PUBLIC_KEY_MAX_SIZE(256)];
+
+                if (PSA_KEY_TYPE_IS_KEY_PAIR(key_type)) {
+                    mbedtls_svc_key_id_t key = psa_get_key_id(&attributes_copy);
+
+                    status = psa_export_public_key(key, exported, sizeof(exported),
+                                                &exported_length);
+                    if (status != PSA_SUCCESS) {
+                        return status;
+                    }
+
+                    key_type &= ~PSA_KEY_TYPE_CATEGORY_FLAG_PAIR;
+                    psa_set_key_type(&attributes_copy, key_type);
+
+                    key_buffer_size = exported_length;
+                    key_buffer = exported;
+
+                    attributes = &attributes_copy;
+                }
+
+                status = oberon_verify_hash( attributes,
+                                            key_buffer,
+                                            key_buffer_size,
+                                            alg,
+                                            hash,
+                                            hash_length,
+                                            signature,
+                                            signature_length);
+            }
+
             /* Declared with fallback == true */
             if( status != PSA_ERROR_NOT_SUPPORTED )
                 return( status );
