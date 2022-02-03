@@ -142,7 +142,7 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
     set (CC3XX_ARCH cc310)
   endif()
   set (NRF_CC3XX_PLATFORM_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_platform)
-  set (NRF_CC3XX_PLATFORM_VER 0.9.12)
+  set (NRF_CC3XX_PLATFORM_VER 0.9.13)
   if (NOT CONFIG_HW_CC3XX_INTERRUPT)
     set(CC3XX_PLATFORM_FLAVOR no-interrupts)
   endif()
@@ -190,7 +190,7 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
     set (CC3XX_ARCH cc310)
   endif()
   set(NRF_CC3XX_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_mbedcrypto)
-  set(NRF_CC3XX_VER 0.9.12)
+  set(NRF_CC3XX_VER 0.9.13)
   if (NOT CONFIG_HW_CC3XX_INTERRUPT)
     set(CC3XX_FLAVOR no-interrupts)
   endif()
@@ -236,6 +236,25 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
   endif()
 
   add_library(cc3xx_psa_crypto STATIC IMPORTED GLOBAL)
+
+  set(CC3XX_PSA_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_platform)
+  set(CC3XX_PSA_VER 0.9.13)
+
+  if (NOT CONFIG_HW_CC3XX_INTERRUPT)
+    set(CC3XX_PSA_FLAVOR no-interrupts)
+  endif()
+
+  nrfxlib_calculate_lib_path(CC3XX_PSA_LIB_DIR
+    BASE_DIR ${CC3XX_PSA_BASE}
+    SOFT_FLOAT_FALLBACK
+  )
+
+  set(NRF_CC3XX_PSA_LIB
+    ${NRF_CC3XX_LIB_DIR}/${CC3XX_PSA_FLAVOR}/libnrf_${CC3XX_ARCH}_psa_crypto_${CC3XX_PSA_VER}.a
+  )
+
+  set_property(TARGET cc3xx_psa_crypto PROPERTY
+               IMPORTED_LOCATION "${NRF_CC3XX_PSA_LIB}")
 
   target_link_libraries(cc3xx_psa_crypto INTERFACE mbedcrypto_cc3xx_imported)
 
