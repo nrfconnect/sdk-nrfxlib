@@ -18,11 +18,6 @@ config CRYPTOCELL_USABLE
 	depends on CRYPTOCELL_CC310_USABLE || CRYPTOCELL_CC312_USABLE
 	default y
 
-config CRYPTOCELL_FOR_TFM
-	bool
-	depends on CRYPTOCELL_USABLE && TRUSTED_EXECUTION_NONSECURE
-	default y
-
 config NRF_OBERON
 	bool "nrf_oberon SW crypto library for nRF5x."
 	select NRFXLIB_CRYPTO
@@ -45,10 +40,10 @@ endif
 
 menuconfig NRF_CC3XX_PLATFORM
 	bool "nrf_cc3xx_platform HW crypto library for nRF devices with CryptoCell CC3xx."
-	select NRFXLIB_CRYPTO
 	depends on CRYPTOCELL_USABLE && !BUILD_WITH_TFM
 	help
-		To use, link with nrfxlib_crypto in CMake.
+	  This configuration is only available for direct use of nrf_cc3xx_platform
+	  To use, link with nrfxlib_crypto in CMake.
 
 if NRF_CC3XX_PLATFORM
 

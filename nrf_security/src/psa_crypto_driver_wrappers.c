@@ -83,7 +83,7 @@
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
 
 #if defined(PSA_CRYPTO_DRIVER_OBERON)
-#define PSA_CRYPTO_OBERON_DRIVER_ID (4)
+#define PSA_CRYPTO_OBERON_DRIVER_ID (5)
 #endif /* PSA_CRYPTO_DRIVER_OBERON */
 
 /* Support the 'old' SE interface when asked to */
@@ -118,36 +118,6 @@ psa_status_t psa_driver_wrapper_sign_message(
             /* Key is stored in the slot in export representation, so
              * cycle through all known transparent accelerators */
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
-#if defined(PSA_CRYPTO_DRIVER_CC3XX)
-            status = cc3xx_sign_message(
-                        attributes,
-                        key_buffer,
-                        key_buffer_size,
-                        alg,
-                        input,
-                        input_length,
-                        signature,
-                        signature_size,
-                        signature_length );
-            /* Declared with fallback == true */
-            if( status != PSA_ERROR_NOT_SUPPORTED )
-                return( status );
-#endif /* PSA_CRYPTO_DRIVER_CC3XX */
-#if defined(PSA_CRYPTO_DRIVER_OBERON)
-            status = oberon_sign_message(
-                         attributes,
-                         key_buffer,
-                         key_buffer_size,
-                         alg,
-                         input,
-                         input_length,
-                         signature,
-                         signature_size,
-                         signature_length );
-            /* Declared with fallback == true */
-            if( status != PSA_ERROR_NOT_SUPPORTED )
-                return( status );
-#endif /* PSA_CRYPTO_DRIVER_OBERON */
 #if defined(PSA_CRYPTO_DRIVER_TEST)
             status = mbedtls_test_transparent_signature_sign_message(
                         attributes,

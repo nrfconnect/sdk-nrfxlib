@@ -328,7 +328,7 @@
 //#define MBEDTLS_MD5_ALT
 #cmakedefine MBEDTLS_POLY1305_ALT
 //#define MBEDTLS_RIPEMD160_ALT
-//#define MBEDTLS_RSA_ALT
+#cmakedefine MBEDTLS_RSA_ALT
 #cmakedefine MBEDTLS_SHA1_ALT
 #cmakedefine MBEDTLS_SHA256_ALT
 #cmakedefine MBEDTLS_SHA512_ALT
@@ -342,7 +342,7 @@
  * macros as described above. The only difference is that you have to make sure
  * that you provide functionality for both .c files.
  */
-//#define MBEDTLS_ECP_ALT
+#cmakedefine MBEDTLS_ECP_ALT
 
 /**
  * \def MBEDTLS_SHA256_PROCESS_ALT
@@ -1220,7 +1220,7 @@
  * Requires: MBEDTLS_PSA_CRYPTO_C
  *
  */
-//#define MBEDTLS_PSA_CRYPTO_SPM
+#cmakedefine MBEDTLS_PSA_CRYPTO_SPM
 
 /**
  * \def MBEDTLS_PSA_INJECT_ENTROPY

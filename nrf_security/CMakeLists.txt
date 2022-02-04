@@ -46,9 +46,6 @@ if(NOT CONFIG_BUILD_WITH_TFM)
     set(COMPILE_PSA_APIS                        True)
   endif()
 
-  # Add external platform exit function
-  set(MBEDTLS_PLATFORM_EXIT_ALT                 True)
-
 else()
   # TF-M is enabled and we are not inside the TF-M build system.
   # Thus, do not build regular `mbedcrypto` library, instead export
@@ -82,6 +79,8 @@ else()
   set(CONFIG_CC3XX_BACKEND                      False)
   set(CONFIG_CC310_BACKEND                      False)
   set(CONFIG_CC312_BACKEND                      False)
+  set(CONFIG_NRF_CC3XX_PLATFORM                 False)
+  set(CONFIG_PSA_CRYPTO_DRIVER_CC3XX            False)
 
   # 2. Special case: _ALT in CC3XX, not in OBERON (set  to False)
   set(CONFIG_MBEDTLS_AES_ALT                    False)
@@ -98,13 +97,13 @@ else()
   set(CONFIG_MBEDTLS_ECJPAKE_ALT                True)
 
   # 4. Special case: Handle platform specific configurations
-  set(MBEDTLS_PLATFORM_EXIT_ALT                 False)
-  set(MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT       False)
+  set(CONFIG_MBEDTLS_PLATFORM_EXIT_ALT                 False)
+  set(CONFIG_MBEDTLS_PLATFORM_SETUP_TEARDOWN_ALT       False)
 
   # 5. Threading is not used for TF-M NS build
   # Force this to false to disable it.
-  set(MBEDTLS_THREADING_ALT                     False)
-  set(MBEDTLS_THREADING_C                       False)
+  set(CONFIG_MBEDTLS_THREADING_ALT                     False)
+  set(CONFIG_MBEDTLS_THREADING_C                       False)
 
 endif()
 
