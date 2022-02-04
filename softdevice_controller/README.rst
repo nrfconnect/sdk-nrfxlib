@@ -51,10 +51,6 @@ Proprietary feature support:
 
    Low Latency Packet mode is not supported on the nRF53 Series.
 
-.. note::
-
-   Periodic Advertising is supported as an experimental feature only.
-
 .. toctree::
    :maxdepth: 2
    :caption: Subpages:
