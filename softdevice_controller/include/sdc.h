@@ -173,7 +173,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (164 + 264 * (buffer_count))
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (168 + 264 * (buffer_count))
 
 /** Memory required for the periodic adv list.
  *
