@@ -30,6 +30,8 @@ Bug fixes
 
  * Fixed handling R(NAK) frame after sending R(ACK) frame.
    The Tag should respond with last transmitted R(ACK) frame.
+ * Fixed the race condition that occurred when the S(WTX) frame was scheduled and the library tried to send a data chunk.
+ * Fixed a possible memory overwrite in the :ref:`type_4_tag` library when the reader device sends an incorrect APDU Update command.
 
 nRF Connect SDK v1.8.0
 **********************
