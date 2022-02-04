@@ -22,7 +22,6 @@ config NORDIC_SECURITY_BACKEND
 	select NRF_SECURITY
 	select MBEDTLS_LEGACY_CRYPTO_C
 	select OBERON_BACKEND
-	select DISABLE_MBEDTLS_BUILTIN if MBEDTLS
 	help
 	  Using this configuration enables legacy support for mbed TLS APIs
 	  This configuration is not to be used for PSA API support.
@@ -35,7 +34,6 @@ config NRF_SECURITY
 	depends on SOC_FAMILY_NRF
 	default y if BUILD_WITH_TFM
 	select ENTROPY_GENERATOR
-	select DISABLE_MBEDTLS_BUILTIN if MBEDTLS
 	help
 	  Set this configuration to enable nrf_security module. This provides
 	  Arm PSA cryptography APIs with RNG support (optionally).
