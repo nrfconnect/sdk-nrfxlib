@@ -183,7 +183,7 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   endif()
 endif()
 
-if (CONFIG_CC3XX_BACKEND)
+if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_TFM))
   if(CONFIG_SOC_NRF5340_CPUAPP)
     set (CC3XX_ARCH cc312)
   else()
@@ -221,7 +221,9 @@ if (CONFIG_CC3XX_BACKEND)
 	)
 
   # *_alt.h headers and cc3xx_kmu.h
-  set(mbedtls_includes ${NRF_CC3XX_BASE}/include/mbedtls)
+  set(mbedtls_includes ${NRF_CC3XX_BASE}/include/
+                       ${NRF_CC3XX_BASE}/include/mbedtls)
+
 
   target_include_directories(mbedcrypto_cc3xx_imported INTERFACE ${mbedtls_includes})
 
@@ -232,5 +234,9 @@ if (CONFIG_CC3XX_BACKEND)
   if (TARGET zephyr_interface)
 	zephyr_include_directories(${mbedtls_includes})
   endif()
+
+  add_library(cc3xx_psa_crypto STATIC IMPORTED GLOBAL)
+
+  target_link_libraries(cc3xx_psa_crypto INTERFACE mbedcrypto_cc3xx_imported)
 
 endif()

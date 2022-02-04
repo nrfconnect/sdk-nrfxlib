@@ -27,7 +27,6 @@ config MBEDTLS_THREADING_C
 # Platform configurations for _ALT defines
 config MBEDTLS_PLATFORM_EXIT_ALT
 	bool
-	default y if !BUILD_WITH_TFM
 
 config MBEDTLS_PLATFORM_FPRINTF_ALT
 	bool
@@ -52,7 +51,7 @@ config MBEDTLS_THREADING_ALT
 
 config MBEDTLS_PLATFORM_ZEROIZE_ALT
 	bool
-	default y if CC3XX_BACKEND || PSA_CRYPTO_DRIVER_CC3XX
+	default y if NRF_CC3XX_PLATFORM
 
 # Legacy configurations for _ALT defines
 config MBEDTLS_AES_SETKEY_ENC_ALT
@@ -115,8 +114,8 @@ config MBEDTLS_CHACHAPOLY_ALT
 
 config MBEDTLS_DHM_ALT
 	bool
-	depends on CC3XX_BACKEND || PSA_CRYPTO_DRIVER_CC3XX
-	default y
+	#depends on CC3XX_BACKEND || PSA_CRYPTO_DRIVER_CC3XX
+	#default y - Currently not supported
 
 config MBEDTLS_ECP_ALT
 	bool
@@ -223,7 +222,7 @@ config CC310_ONLY_PSA_ENABLED
 	depends on CRYPTOCELL_CC310_USABLE && !PSA_CRYPTO_DRIVER_OBERON && \
 		   !(MBEDTLS_PSA_BUILTIN_CIPHER || MBEDTLS_PSA_BUILTIN_AEAD)
 
-config CC310_ONLY_PSA_ENABLED
+config CC312_ONLY_PSA_ENABLED
 	bool
 	default y
 	depends on CRYPTOCELL_CC312_USABLE && !PSA_CRYPTO_DRIVER_OBERON && \
@@ -267,34 +266,42 @@ config MBEDTLS_LEGACY_CRYPTO_C
 
 if MBEDTLS_LEGACY_CRYPTO_C
 
-config CC3XX_BACKEND
-	bool
-	# default y if CaRYPTOCELL_USABLE
-	prompt "Configuration to enable CryptoCell CC3XX for legacy mbed TLS APIs"
-	help
-	  This configuration enables legacy mbed TLS APIs using cc3xx.
-	  PSA_CRYPTO_DRIVER_CC3XX should be used instead, and will replace this once
-	  PSA crypto APIs are standardized.
-
 config CC310_BACKEND
 	bool
-	depends on CRYPTOCELL_CC310_USABLE && (PSA_CRYPTO_DRIVER_CC3XX || CC3XX_BACKEND)
+	depends on CRYPTOCELL_CC310_USABLE && !BUILD_WITH_TFM && \
+		   (PSA_CRYPTO_DRIVER_CC3XX || CC3XX_BACKEND)
 	default y
 	help
 	  Convenience configuration to state explicitly that CryptoCell CC310 is enabled.
 
 config CC312_BACKEND
 	bool
-	depends on CRYPTOCELL_CC312_USABLE && (PSA_CRYPTO_DRIVER_CC3XX || CC3XX_BACKEND)
+	depends on CRYPTOCELL_CC312_USABLE && !BUILD_WITH_TFM && \
+		   (PSA_CRYPTO_DRIVER_CC3XX || CC3XX_BACKEND)
 	default y
 	help
 	  Convenience configuration to state explicitly that CryptoCell CC312 is enabled.
 
+config CC3XX_BACKEND_FORCED
+	bool
+
+config OBERON_BACKEND_FORCED
+	bool
+	
+config CC3XX_BACKEND
+	bool
+	depends on CRYPTOCELL_USABLE && !OBERON_BACKEND_FORCED
+	prompt "Configuration to enable CryptoCell CC3XX for legacy mbed TLS APIs"
+	help
+	  This configuration enables legacy mbed TLS APIs using cc3xx.
+	  PSA_CRYPTO_DRIVER_CC3XX should be used instead, and will replace this once
+	  PSA crypto APIs are standardized.
+
 config OBERON_BACKEND
 	bool
 	prompt "Configuration to enable nrf_oberon for legacy mbed TLS APIs"
-	default y
 	select NRF_OBERON
+	depends on !CC3XX_BACKEND_FORCED && !CC3XX_BACKEND
 	help
 	  This configuration enables legacy mbed TLS APIs using nrf_oberon.
 	  PSA_CRYPTO_DRIVER_OBERON should be used instead and will replace this once

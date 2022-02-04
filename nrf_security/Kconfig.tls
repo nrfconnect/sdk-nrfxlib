@@ -66,7 +66,6 @@ menuconfig MBEDTLS_TLS_LIBRARY
 	bool
 	prompt "Create mbed TLS transport layer security library"
 	select MBEDTLS_X509_LIBRARY
-	select PSA_CRYPTO_DRIVER_OBERON if MBEDTLS_PSA_CRYPTO_C
 	default y if MBEDTLS_PSA_CRYPTO_C && (MBEDTLS_ECDSA_C || MBEDTLS_ECDH_C)
 	help
 	  Create the mbed SSL/TLS library in addition to the mbed crypto

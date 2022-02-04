@@ -90,6 +90,7 @@ if(DEFINED src_crypto_legacy)
 endif()
 
 if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C AND CONFIG_OBERON_BACKEND)
+if(TARGET mbedcrypto_oberon_mbedtls_imported)
 
   # Get the include paths from nrf_oberon libraries
   get_target_property(NRF_OBERON_MBEDTLS_INCLUDE_PATH mbedcrypto_oberon_mbedtls_imported
@@ -100,8 +101,9 @@ if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C AND CONFIG_OBERON_BACKEND)
   )
 
   # Link to the nrf_oberon mbedcrypto library
-  target_link_libraries(${mbedcrypto_target} PRIVATE
-    mbedcrypto_oberon_mbedtls_imported
+  target_link_libraries(${mbedcrypto_target}
+    PRIVATE
+      mbedcrypto_oberon_mbedtls_imported
   )
 
   # Add nrf_oberon includes to mbedcrypto library
@@ -110,11 +112,18 @@ if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C AND CONFIG_OBERON_BACKEND)
       ${NRF_OBERON_MBEDTLS_INCLUDE_PATH}
       ${NRF_OBERON_INCLUDE_PATH}
   )
-elseif(CONFIG_MBEDTLS_LEGACY_CRYPTO_C AND CONFIG_CC3XX_BACKEND)
+endif()
+
+if(TARGET mbedcrypto_cc3xx_imported)
 
   # Link directly with cc3xx platform/mbedcrypto libraries
   target_link_libraries(${mbedcrypto_target} PRIVATE
     mbedcrypto_cc3xx_imported
+  )
+
+  target_link_libraries(mbedcrypto_cc3xx_imported
+    INTERFACE
+      mbedcrypto_base
   )
 
   # Add cc3xx platform/mbedcrypto includes to mbedcrypto library
@@ -122,7 +131,21 @@ elseif(CONFIG_MBEDTLS_LEGACY_CRYPTO_C AND CONFIG_CC3XX_BACKEND)
     INTERFACE
       $<TARGET_PROPERTY:mbedcrypto_cc3xx_imported,INTERFACE_INCLUDE_DIRECTORIES>
   )
+endif()
 
+if(TARGET mbedcrypto_cc3xx_imported)
+  # The CC3XX needs funcionality which is provided by the inluded source files in src_crypto_legacy
+  # Link CC3XX with mbedcrypto_target because of link order dependency
+  target_link_libraries(mbedcrypto_cc3xx_imported INTERFACE
+    ${mbedcrypto_target}
+  )
+
+  get_target_property(NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH mbedcrypto_cc3xx_imported INTERFACE_INCLUDE_DIRECTORIES)
+
+  target_include_directories(mbedcrypto_common
+    INTERFACE
+      ${NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH}
+  )
 endif()
 
 target_include_directories(${mbedcrypto_target}

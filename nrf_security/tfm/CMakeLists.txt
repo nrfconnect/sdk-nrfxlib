@@ -57,10 +57,11 @@ set(CONFIG_MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG          True)
 # control of the CryptoCell. Therefore, specifically for building TF-M we
 # enable it manually.
 set(CONFIG_NRF_CC3XX_PLATFORM                       True)
+set(CONFIG_MBEDTLS_PLATFORM_ZEROIZE_ALT             True)
 
 # Disable threading for TF-M SPM image
-set(MBEDTLS_THREADING_ALT                     False)
-set(MBEDTLS_THREADING_C                       False)
+set(CONFIG_MBEDTLS_THREADING_ALT                    False)
+set(CONFIG_MBEDTLS_THREADING_C                      False)
 
 # Set the a define stating that KEY_ID encodes owner
 set(CONFIG_MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER  True)
