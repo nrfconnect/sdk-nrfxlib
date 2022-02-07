@@ -54,6 +54,7 @@
 #include "nrf_802154_swi.h"
 #include "nrf_802154_types.h"
 #include "nrf_802154_utils.h"
+#include "mac_features/nrf_802154_csma_ca.h"
 #include "hal/nrf_radio.h"
 #include "hal/nrf_egu.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
@@ -91,6 +92,7 @@ typedef enum
     REQ_TYPE_TRANSMIT_AT_CANCEL,
     REQ_TYPE_RECEIVE_AT,
     REQ_TYPE_RECEIVE_AT_CANCEL,
+    REQ_TYPE_CSMA_CA_START,
 } nrf_802154_req_type_t;
 
 /// Request data in request queue.
@@ -220,7 +222,14 @@ typedef struct
 
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
-    } data;  ///< Request data depending on its type.
+        struct
+        {
+            uint8_t                                      * p_data;
+            const nrf_802154_transmit_csma_ca_metadata_t * p_metadata;
+            bool                                         * p_result;
+        } csma_ca_start; ///< Antenna update request details.
+
+    } data;              ///< Request data depending on its type.
 } nrf_802154_req_data_t;
 
 /**@brief Instance of a requests queue */
@@ -635,6 +644,19 @@ static void swi_receive_at_cancel(uint32_t id, bool * p_result)
 
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
+static void swi_csma_ca_start(uint8_t                                      * p_data,
+                              const nrf_802154_transmit_csma_ca_metadata_t * p_metadata,
+                              bool                                         * p_result)
+{
+    nrf_802154_req_data_t * p_slot = req_enter();
+
+    p_slot->type                          = REQ_TYPE_CSMA_CA_START;
+    p_slot->data.csma_ca_start.p_data     = p_data;
+    p_slot->data.csma_ca_start.p_metadata = p_metadata;
+    p_slot->data.csma_ca_start.p_result   = p_result;
+    req_exit();
+}
+
 void nrf_802154_request_init(void)
 {
     nrf_802154_queue_init(&m_requests_queue,
@@ -775,6 +797,15 @@ bool nrf_802154_request_receive_at_cancel(uint32_t id)
     REQUEST_FUNCTION(nrf_802154_delayed_trx_receive_cancel, swi_receive_at_cancel, id);
 }
 
+bool nrf_802154_request_csma_ca_start(uint8_t                                      * p_data,
+                                      const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
+{
+    REQUEST_FUNCTION(nrf_802154_csma_ca_start,
+                     swi_csma_ca_start,
+                     p_data,
+                     p_metadata);
+}
+
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
 /**@brief Handles REQ_EVENT on NRF_802154_EGU_INSTANCE */
@@ -890,6 +921,12 @@ static void irq_handler_req_event(void)
             case REQ_TYPE_RECEIVE_AT_CANCEL:
                 *(p_slot->data.receive_at_cancel.p_result) =
                     nrf_802154_delayed_trx_receive_cancel(p_slot->data.receive_at_cancel.id);
+                break;
+
+            case REQ_TYPE_CSMA_CA_START:
+                *(p_slot->data.receive_at_cancel.p_result) =
+                    nrf_802154_csma_ca_start(p_slot->data.csma_ca_start.p_data,
+                                             p_slot->data.csma_ca_start.p_metadata);
                 break;
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 

@@ -53,6 +53,11 @@ extern "C" {
 bool nrf_802154_encrypt_ack_prepare(const nrf_802154_frame_parser_data_t * p_ack_data);
 
 /**
+ * @brief Resets encryption of ACK
+ */
+void nrf_802154_encrypt_ack_reset(void);
+
+/**
  * @brief Transmission setup hook for the encryption module.
  *
  * This hook prepares encryption data for provided frame.

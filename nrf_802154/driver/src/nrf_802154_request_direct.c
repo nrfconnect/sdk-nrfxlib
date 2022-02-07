@@ -45,6 +45,7 @@
 
 #include "nrf_802154_core.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
+#include "mac_features/nrf_802154_csma_ca.h"
 #include "hal/nrf_radio.h"
 
 #define REQUEST_FUNCTION_PARMS(func_core, ...) \
@@ -188,3 +189,9 @@ bool nrf_802154_request_receive_at_cancel(uint32_t id)
 }
 
 #endif
+
+bool nrf_802154_request_csma_ca_start(uint8_t                                      * p_data,
+                                      const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
+{
+    REQUEST_FUNCTION(nrf_802154_csma_ca_start, p_data, p_metadata);
+}

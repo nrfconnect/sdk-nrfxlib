@@ -190,7 +190,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_receive_at_cancel(
         result);
 }
 
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_channel_get(const void * p_property_data,
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_channel_get(const void * p_property_data,
                                                                       size_t       property_data_len)
 {
     (void)p_property_data;
@@ -204,7 +204,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_channel_get(const void
         channel);
 }
 
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_channel_set(const void * p_property_data,
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_channel_set(const void * p_property_data,
                                                                       size_t       property_data_len)
 {
     uint8_t        channel;
@@ -878,7 +878,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_csma_ca_raw(
  * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
  *
  */
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_min_be_set(
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_csma_ca_min_be_set(
     const void * p_property_data,
     size_t       property_data_len)
 {
@@ -888,7 +888,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_min_be_set(
 
     siz = spinel_datatype_unpack(p_property_data,
                                  property_data_len,
-                                 SPINEL_DATATYPE_NRF_802154_CHANNEL_SET,
+                                 SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_SET,
                                  &min_be);
 
     if (siz < 0)
@@ -911,7 +911,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_min_be_set(
  * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
  *
  */
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_min_be_get(
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_csma_ca_min_be_get(
     const void * p_property_data,
     size_t       property_data_len)
 {
@@ -933,7 +933,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_min_be_get(
  * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
  *
  */
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_max_be_set(
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_csma_ca_max_be_set(
     const void * p_property_data,
     size_t       property_data_len)
 {
@@ -943,7 +943,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_max_be_set(
 
     siz = spinel_datatype_unpack(p_property_data,
                                  property_data_len,
-                                 SPINEL_DATATYPE_NRF_802154_CHANNEL_SET,
+                                 SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_SET,
                                  &max_be);
 
     if (siz < 0)
@@ -966,7 +966,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_max_be_set(
  * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
  *
  */
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_max_be_get(
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_csma_ca_max_be_get(
     const void * p_property_data,
     size_t       property_data_len)
 {
@@ -988,7 +988,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_max_be_get(
  * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
  *
  */
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_max_backoffs_set(
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_csma_ca_max_backoffs_set(
     const void * p_property_data,
     size_t       property_data_len)
 {
@@ -997,7 +997,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_max_backoffs_s
 
     siz = spinel_datatype_unpack(p_property_data,
                                  property_data_len,
-                                 SPINEL_DATATYPE_NRF_802154_CHANNEL_SET,
+                                 SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BACKOFFS_SET,
                                  &max_backoffs);
 
     if (siz < 0)
@@ -1017,7 +1017,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_max_backoffs_s
  * @param[in]  property_data_len  Size of the @ref p_data buffer.
  *
  */
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_max_backoffs_get(
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_csma_ca_max_backoffs_get(
     const void * p_property_data,
     size_t       property_data_len)
 {
@@ -1033,6 +1033,60 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_csma_ca_max_backoffs_g
 }
 
 #endif // NRF_802154_CSMA_CA_ENABLED
+
+#if NRF_802154_TEST_MODES_ENABLED
+/**
+ * @brief Decode and dispatch SPINEL_DATATYPE_NRF_802154_TEST_MODE_CSMACA_BACKOFF_SET.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
+ * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
+ *
+ */
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_test_mode_csmaca_backoff_set(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    nrf_802154_test_mode_csmaca_backoff_t value;
+    spinel_ssize_t                        siz;
+
+    siz = spinel_datatype_unpack(p_property_data,
+                                 property_data_len,
+                                 SPINEL_DATATYPE_NRF_802154_TEST_MODE_CSMACA_BACKOFF_SET,
+                                 &value);
+
+    if (siz < 0)
+    {
+        return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
+    }
+
+    nrf_802154_test_mode_csmaca_backoff_set(value);
+
+    return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
+}
+
+/**
+ * @brief Decode and dispatch SPINEL_DATATYPE_NRF_802154_TEST_MODE_CSMACA_BACKOFF_GET.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
+ * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
+ *
+ */
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_test_mode_csmaca_backoff_get(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    (void)p_property_data;
+    (void)property_data_len;
+
+    nrf_802154_test_mode_csmaca_backoff_t value = nrf_802154_test_mode_csmaca_backoff_get();
+
+    return nrf_802154_spinel_send_cmd_prop_value_is(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TEST_MODE_CSMACA_BACKOFF_GET,
+        SPINEL_DATATYPE_NRF_802154_TEST_MODE_CSMACA_BACKOFF_GET_RET,
+        value);
+}
+
+#endif // NRF_802154_TEST_MODES_ENABLED
 
 /**
  * @brief Decode and dispatch SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW.
@@ -1344,7 +1398,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_time_get(
         time);
 }
 
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_cca_cfg_get(const void * p_property_data,
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_cca_cfg_get(const void * p_property_data,
                                                                       size_t       property_data_len)
 {
     (void)p_property_data;
@@ -1360,7 +1414,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_cca_cfg_get(const void
         NRF_802154_CCA_CFG_ENCODE(cfg));
 }
 
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_stat_timestamps_get(
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_stat_timestamps_get(
     const void * p_property_data,
     size_t       property_data_len)
 {
@@ -1377,7 +1431,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_stat_timestamps_get(
         NRF_802154_STAT_TIMESTAMPS_ENCODE(t));
 }
 
-static nrf_802154_ser_err_t spinel_decode_prop_nrf_802514_cca_cfg_set(const void * p_property_data,
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_cca_cfg_set(const void * p_property_data,
                                                                       size_t       property_data_len)
 {
     nrf_802154_cca_cfg_t cfg;
@@ -1565,10 +1619,10 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
                                                                    property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CHANNEL_GET:
-            return spinel_decode_prop_nrf_802514_channel_get(p_property_data, property_data_len);
+            return spinel_decode_prop_nrf_802154_channel_get(p_property_data, property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CHANNEL_SET:
-            return spinel_decode_prop_nrf_802514_channel_set(p_property_data, property_data_len);
+            return spinel_decode_prop_nrf_802154_channel_set(p_property_data, property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_AUTO_PENDING_BIT_SET:
             return spinel_decode_prop_nrf_802154_auto_pending_bit_set(p_property_data,
@@ -1639,29 +1693,39 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
                                                                       property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MIN_BE_SET:
-            return spinel_decode_prop_nrf_802514_csma_ca_min_be_set(p_property_data,
+            return spinel_decode_prop_nrf_802154_csma_ca_min_be_set(p_property_data,
                                                                     property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MIN_BE_GET:
-            return spinel_decode_prop_nrf_802514_csma_ca_min_be_get(p_property_data,
+            return spinel_decode_prop_nrf_802154_csma_ca_min_be_get(p_property_data,
                                                                     property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BE_SET:
-            return spinel_decode_prop_nrf_802514_csma_ca_max_be_set(p_property_data,
+            return spinel_decode_prop_nrf_802154_csma_ca_max_be_set(p_property_data,
                                                                     property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BE_GET:
-            return spinel_decode_prop_nrf_802514_csma_ca_max_be_get(p_property_data,
+            return spinel_decode_prop_nrf_802154_csma_ca_max_be_get(p_property_data,
                                                                     property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BACKOFFS_SET:
-            return spinel_decode_prop_nrf_802514_csma_ca_max_backoffs_set(p_property_data,
+            return spinel_decode_prop_nrf_802154_csma_ca_max_backoffs_set(p_property_data,
                                                                           property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BACKOFFS_GET:
-            return spinel_decode_prop_nrf_802514_csma_ca_max_backoffs_get(p_property_data,
+            return spinel_decode_prop_nrf_802154_csma_ca_max_backoffs_get(p_property_data,
                                                                           property_data_len);
 #endif // NRF_802154_CSMA_CA_ENABLED
+
+#if NRF_802154_TEST_MODES_ENABLED
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TEST_MODE_CSMACA_BACKOFF_SET:
+            return spinel_decode_prop_nrf_802154_test_mode_csmaca_backoff_set(p_property_data,
+                                                                              property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TEST_MODE_CSMACA_BACKOFF_GET:
+            return spinel_decode_prop_nrf_802154_test_mode_csmaca_backoff_get(p_property_data,
+                                                                              property_data_len);
+#endif // NRF_802154_TEST_MODES_ENABLED
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW:
             return spinel_decode_prop_nrf_802154_transmit_raw(p_property_data, property_data_len);
@@ -1687,10 +1751,10 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
                                                           property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_GET:
-            return spinel_decode_prop_nrf_802514_cca_cfg_get(p_property_data, property_data_len);
+            return spinel_decode_prop_nrf_802154_cca_cfg_get(p_property_data, property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_CFG_SET:
-            return spinel_decode_prop_nrf_802514_cca_cfg_set(p_property_data, property_data_len);
+            return spinel_decode_prop_nrf_802154_cca_cfg_set(p_property_data, property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_SET:
             return spinel_decode_prop_nrf_802154_ack_data_set(p_property_data,
@@ -1719,7 +1783,7 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
 #endif // NRF_802154_DELAYED_TRX_ENABLED && NRF_802154_IE_WRITER_ENABLED
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_STAT_TIMESTAMPS_GET:
-            return spinel_decode_prop_nrf_802514_stat_timestamps_get(p_property_data,
+            return spinel_decode_prop_nrf_802154_stat_timestamps_get(p_property_data,
                                                                      property_data_len);
 
         default:

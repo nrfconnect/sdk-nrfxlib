@@ -59,13 +59,24 @@
 
 #if NRF_802154_CSMA_CA_ENABLED
 
+/**
+ * @brief States of the CSMA-CA procedure.
+ */
+typedef enum
+{
+    PROCEDURE_STOPPED,
+    PROCEDURE_RUNNING,
+    PROCEDURE_ABORTING
+} procedure_state_t;
+
 static uint8_t m_nb;                                      ///< The number of times the CSMA-CA algorithm was required to back off while attempting the current transmission.
 static uint8_t m_be;                                      ///< Backoff exponent, which is related to how many backoff periods a device shall wait before attempting to assess a channel.
 
 static uint8_t                            * mp_data;      ///< Pointer to a buffer containing PHR and PSDU of the frame being transmitted.
 static nrf_802154_transmitted_frame_props_t m_data_props; ///< Structure containing detailed properties of data in buffer.
-static bool m_is_running;                                 ///< Indicates if CSMA-CA procedure is running.
+static procedure_state_t                    m_proc_state; ///< The current state of the CSMA-CA procedure.
 
+static volatile bool m_nested_timeslot_cancel;            ///< Variable protecting against cancelling the timeslot nested inside nrf_802154_rsch_delayed_timeslot_request
 /**
  * @brief Perform appropriate actions for busy channel conditions.
  *
@@ -86,23 +97,31 @@ static bool channel_busy(void);
  */
 static bool procedure_is_running(void)
 {
-    return m_is_running;
+    return PROCEDURE_RUNNING == m_proc_state;
 }
 
 /**
- * @brief Stop CSMA-CA procedure.
+ * @brief Set state of CSMA-CA procedure.
+ *
+ * @param[in]  state  The new state of the procedure
  */
-static void procedure_stop(void)
+static void set_procedure_state(procedure_state_t state)
 {
-    if (procedure_is_running())
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+    assert(PROCEDURE_ABORTING != state || PROCEDURE_RUNNING == m_proc_state);
+    assert(PROCEDURE_ABORTING != m_proc_state || PROCEDURE_STOPPED == state);
+
+    if (m_proc_state != state)
     {
-        nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
-
-        nrf_802154_rsch_delayed_timeslot_cancel(NRF_802154_RESERVED_CSMACA_ID);
-        m_is_running = false;
-
-        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+        if (procedure_is_running() && !m_nested_timeslot_cancel)
+        {
+            // Stopping/aborting CSMA-CA
+            nrf_802154_rsch_delayed_timeslot_cancel(NRF_802154_RESERVED_CSMACA_ID);
+        }
+        m_proc_state = state;
     }
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
 static void priority_leverage(void)
@@ -128,6 +147,21 @@ static void priority_leverage(void)
 }
 
 /**
+ * @brief Notify MAC layer that CSMA-CA failed
+ *
+ * @param[in]  error  The error that caused the failure
+ */
+static void notify_failed(nrf_802154_tx_error_t error)
+{
+    // core rejected attempt, use my current frame_props
+    nrf_802154_transmit_done_metadata_t metadata = {};
+
+    metadata.frame_props = m_data_props;
+
+    nrf_802154_notify_transmit_failed(mp_data, error, &metadata);
+}
+
+/**
  * @brief Notify MAC layer that channel is busy if tx request failed and there are no retries left.
  *
  * @param[in]  result  Result of TX request.
@@ -142,12 +176,7 @@ static void notify_busy_channel(bool result)
     // the comparison uses `greater or equal` instead of `greater than`.
     if (!result && (m_nb >= nrf_802154_pib_csmaca_max_backoffs_get()))
     {
-        // core rejected attempt, use my current frame_props
-        nrf_802154_transmit_done_metadata_t metadata = {};
-
-        metadata.frame_props = m_data_props;
-
-        nrf_802154_notify_transmit_failed(mp_data, NRF_802154_TX_ERROR_BUSY_CHANNEL, &metadata);
+        notify_failed(NRF_802154_TX_ERROR_BUSY_CHANNEL);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -288,10 +317,16 @@ static void random_backoff_start(void)
         nrf_802154_rsch_delayed_timeslot_cancel(NRF_802154_RESERVED_CSMACA_ID);
     }
 
+    m_nested_timeslot_cancel = true;
     // Delayed timeslot with these parameters should always be scheduled
     if (!nrf_802154_rsch_delayed_timeslot_request(&backoff_ts_param))
     {
         assert(false);
+    }
+    m_nested_timeslot_cancel = false;
+    if (!procedure_is_running())
+    {
+        nrf_802154_rsch_delayed_timeslot_cancel(NRF_802154_RESERVED_CSMACA_ID);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -314,7 +349,7 @@ static bool channel_busy(void)
 
         if (m_nb > nrf_802154_pib_csmaca_max_backoffs_get())
         {
-            procedure_stop();
+            set_procedure_state(PROCEDURE_STOPPED);
         }
         else
         {
@@ -328,7 +363,7 @@ static bool channel_busy(void)
     return result;
 }
 
-void nrf_802154_csma_ca_start(uint8_t                                      * p_data,
+bool nrf_802154_csma_ca_start(uint8_t                                      * p_data,
                               const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -345,11 +380,13 @@ void nrf_802154_csma_ca_start(uint8_t                                      * p_d
     m_data_props = p_metadata->frame_props;
     m_nb         = 0;
     m_be         = nrf_802154_pib_csmaca_min_be_get();
-    m_is_running = true;
+    set_procedure_state(PROCEDURE_RUNNING);
 
     random_backoff_start();
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+
+    return true;
 }
 
 bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
@@ -366,8 +403,11 @@ bool nrf_802154_csma_ca_abort(nrf_802154_term_t term_lvl, req_originator_t req_o
 
     if (term_lvl >= NRF_802154_TERM_802154)
     {
-        // Stop CSMA-CA if termination level is high enough.
-        procedure_stop();
+        // Abort CSMA-CA if termination level is high enough.
+        if (procedure_is_running())
+        {
+            set_procedure_state(PROCEDURE_ABORTING);
+        }
     }
     else
     {
@@ -388,17 +428,35 @@ bool nrf_802154_csma_ca_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t 
 
     switch (error)
     {
-        /* Below errors mean a failure occurred during the frame processing and the frame cannot be
-         * transmitted unless a higher layer takes appropriate actions, hence the CSMA-CA procedure
-         * shall be stopped.
-         */
+        // Below errors mean a failure occurred during the frame processing and the frame cannot be
+        // transmitted unless a higher layer takes appropriate actions, hence the CSMA-CA procedure
+        // shall be stopped.
+
         case NRF_802154_TX_ERROR_KEY_ID_INVALID:
         /* Fallthrough. */
         case NRF_802154_TX_ERROR_FRAME_COUNTER_ERROR:
-            procedure_stop();
+            set_procedure_state(PROCEDURE_STOPPED);
             result = true;
             break;
 
+        case NRF_802154_TX_ERROR_ABORTED:
+            if (PROCEDURE_ABORTING == m_proc_state)
+            {
+                // If CSMA-CA was aborted when another (for example a delayed TX) operation was holding
+                // the mp_tx_data in nrf_802154_core.c then the higher layer would only be notified
+                // about the failure of this other operation, not CSMA-CA, so we should notify here
+                // Otherwise core will notify
+                set_procedure_state(PROCEDURE_STOPPED);
+
+                if (p_frame != mp_data)
+                {
+                    notify_failed(NRF_802154_TX_ERROR_ABORTED);
+                }
+
+                break;
+            }
+
+        // else fallthrough
         default:
             if (p_frame == mp_data)
             {
@@ -417,7 +475,7 @@ bool nrf_802154_csma_ca_tx_started_hook(uint8_t * p_frame)
     {
         nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-        procedure_stop();
+        set_procedure_state(PROCEDURE_STOPPED);
 
         nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     }

@@ -301,8 +301,6 @@ bool nrf_802154_encrypt_ack_prepare(const nrf_802154_frame_parser_data_t * p_ack
     nrf_802154_aes_ccm_data_t aes_ccm_data;
     bool                      success = false;
 
-    nrf_802154_aes_ccm_transform_reset();
-
     if (!nrf_802154_frame_parser_security_enabled_bit_is_set(p_ack_data))
     {
         success = true;
@@ -318,6 +316,11 @@ bool nrf_802154_encrypt_ack_prepare(const nrf_802154_frame_parser_data_t * p_ack
     }
 
     return success;
+}
+
+void nrf_802154_encrypt_ack_reset(void)
+{
+    nrf_802154_aes_ccm_transform_reset();
 }
 
 bool nrf_802154_encrypt_tx_setup(
