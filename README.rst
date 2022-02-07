@@ -19,9 +19,9 @@ Refer to their respective documentation for more information.
    mpsl/README
    nrf_802154/README
    nfc/README
+   nrf_dm/README
    nrf_security/README
    openthread/README
    nrf_rpc/README
    softdevice_controller/README
    zboss/README
-   nrf_dm/README
