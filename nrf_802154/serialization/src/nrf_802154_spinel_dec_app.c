@@ -628,6 +628,12 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_is(
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSMA_CA_MAX_BACKOFFS_GET:
             // fall through
 #endif // NRF_802154_CSMA_CA_ENABLED
+#if NRF_802154_TEST_MODES_ENABLED
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TEST_MODE_CSMACA_BACKOFF_SET:
+        // fall through
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TEST_MODE_CSMACA_BACKOFF_GET:
+            // fall through
+#endif // NRF_802154_TEST_MODES_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_STAT_TIMESTAMPS_GET:
             nrf_802154_spinel_response_notifier_property_notify(property,
                                                                 p_property_data,

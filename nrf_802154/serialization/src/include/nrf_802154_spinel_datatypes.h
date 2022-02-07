@@ -393,6 +393,18 @@ typedef enum
     SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP_IF_IDLE =
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 54,
 
+    /**
+     * Vendor property for nrf_802154_test_mode_csmaca_backoff_set serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TEST_MODE_CSMACA_BACKOFF_SET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 55,
+
+    /**
+     * Vendor property for nrf_802154_test_mode_csmaca_backoff_get serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TEST_MODE_CSMACA_BACKOFF_GET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 56,
+
 } spinel_prop_vendor_key_t;
 
 /**
@@ -506,57 +518,72 @@ typedef enum
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_min_be_set.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_SET           SPINEL_DATATYPE_UINT8_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_SET               SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_min_be_set result.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_SET_RET       SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_SET_RET           SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_min_be_get.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_GET           SPINEL_DATATYPE_NULL_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_GET               SPINEL_DATATYPE_NULL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_min_be_get result.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_GET_RET       SPINEL_DATATYPE_UINT8_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MIN_BE_GET_RET           SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_max_be_set.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_SET           SPINEL_DATATYPE_UINT8_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_SET               SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_max_be_set result.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_SET_RET       SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_SET_RET           SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_max_be_get.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_GET           SPINEL_DATATYPE_NULL_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_GET               SPINEL_DATATYPE_NULL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_max_be_get result.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_GET_RET       SPINEL_DATATYPE_UINT8_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BE_GET_RET           SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_max_backoffs_set.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BACKOFFS_SET     SPINEL_DATATYPE_UINT8_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BACKOFFS_SET         SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_max_backoffs_get.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BACKOFFS_GET     SPINEL_DATATYPE_NULL_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BACKOFFS_GET         SPINEL_DATATYPE_NULL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csma_ca_max_backoffs_get result.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BACKOFFS_GET_RET SPINEL_DATATYPE_UINT8_S
+#define SPINEL_DATATYPE_NRF_802154_CSMA_CA_MAX_BACKOFFS_GET_RET     SPINEL_DATATYPE_UINT8_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_test_mode_csmaca_backoff_set.
+ */
+#define SPINEL_DATATYPE_NRF_802154_TEST_MODE_CSMACA_BACKOFF_SET     SPINEL_DATATYPE_UINT8_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_test_mode_csmaca_backoff_get.
+ */
+#define SPINEL_DATATYPE_NRF_802154_TEST_MODE_CSMACA_BACKOFF_GET     SPINEL_DATATYPE_NULL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_test_mode_csmaca_backoff_get result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_TEST_MODE_CSMACA_BACKOFF_GET_RET SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for nrf_802154_transmit_at_metadata_t.

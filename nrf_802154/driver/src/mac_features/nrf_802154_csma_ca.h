@@ -64,8 +64,10 @@
  *                         to be transmitted.
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
  *                         to transmit.
+ *
+ * @retval true   The function always returns true for compatibility reasons
  */
-void nrf_802154_csma_ca_start(uint8_t                                      * p_data,
+bool nrf_802154_csma_ca_start(uint8_t                                      * p_data,
                               const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
 
 /**

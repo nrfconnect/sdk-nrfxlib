@@ -256,6 +256,17 @@ bool nrf_802154_request_receive_at_cancel(uint32_t id);
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
 /**
+ * @brief Requests CSMA-CA procedure for the transmission of a given frame.
+ *
+ * @param[in]  p_data      Pointer to a buffer the contains PHR and PSDU of the frame that is
+ *                         to be transmitted.
+ * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
+ *                         to transmit.
+ */
+bool nrf_802154_request_csma_ca_start(uint8_t                                      * p_data,
+                                      const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
+
+/**
  *@}
  **/
 
