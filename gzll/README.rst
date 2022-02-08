@@ -12,4 +12,5 @@ See the :ref:`nrf:ug_gzll` user guide for information about how to use the libra
    :caption: Subpages:
 
    doc/integration_notes
+   CHANGELOG
    doc/api
