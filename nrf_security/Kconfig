@@ -21,7 +21,7 @@ config NORDIC_SECURITY_BACKEND
 	depends on SOC_FAMILY_NRF
 	select NRF_SECURITY
 	select MBEDTLS_LEGACY_CRYPTO_C
-	select OBERON_BACKEND
+	select OBERON_BACKEND if BUILD_WITH_TFM
 	select DISABLE_MBEDTLS_BUILTIN if MBEDTLS
 	help
 	  Using this configuration enables legacy support for mbed TLS APIs
