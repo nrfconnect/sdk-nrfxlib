@@ -90,6 +90,24 @@ extern "C" {
 #define MBEDTLS_OID_C
 #define MBEDTLS_PKCS1_V21
 #define MBEDTLS_MD_C
+#ifndef MBEDTLS_PSA_BUILTIN_KEY_TYPE_RSA_KEY_PAIR
+#define MBEDTLS_PSA_BUILTIN_KEY_TYPE_RSA_KEY_PAIR
+#endif
+#ifndef MBEDTLS_PSA_BUILTIN_ALG_RSA_PSS
+#define MBEDTLS_PSA_BUILTIN_ALG_RSA_PSS
+#endif
+#endif
+
+#if defined(PSA_WANT_ALG_RSA)                || \
+    defined(PSA_WANT_ALG_RSA_OAEP)           || \
+    defined(PSA_WANT_ALG_RSA_PKCS1V15_CRYPT) || \
+    defined(PSA_WANT_ALG_RSA_PKCS1V15_SIGN)  || \
+    defined(PSA_WANT_ALG_RSA_PSS)
+
+#if defined(PSA_WANT_ALG_SHA_1)
+#define MBEDTLS_PSA_BUILTIN_ALG_SHA_1
+#endif
+
 #endif
 
 #if defined(PSA_WANT_ALG_SHA_1)
