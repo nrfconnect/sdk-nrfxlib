@@ -56,22 +56,22 @@ config MBEDTLS_PLATFORM_ZEROIZE_ALT
 # Legacy configurations for _ALT defines
 config MBEDTLS_AES_SETKEY_ENC_ALT
 	bool
-	depends on OBERON_BACKEND || PSA_CRYPTO_DRIVER_OBERON
+	depends on OBERON_ONLY_ENABLED
 	default y
 
 config MBEDTLS_AES_SETKEY_DEC_ALT
 	bool
-	depends on OBERON_BACKEND || PSA_CRYPTO_DRIVER_OBERON
+	depends on OBERON_ONLY_ENABLED
 	default y
 
 config MBEDTLS_AES_ENCRYPT_ALT
 	bool
-	depends on OBERON_BACKEND || PSA_CRYPTO_DRIVER_OBERON
+	depends on OBERON_ONLY_ENABLED
 	default y
 
 config MBEDTLS_AES_DECRYPT_ALT
 	bool
-	depends on OBERON_BACKEND || PSA_CRYPTO_DRIVER_OBERON
+	depends on OBERON_ONLY_ENABLED
 	default y
 
 config MBEDTLS_AES_ALT
@@ -154,7 +154,7 @@ config MBEDTLS_ECDSA_VERIFY_ALT
 
 config MBEDTLS_ECJPAKE_ALT
 	bool
-	depends on OBERON_BACKEND || PSA_CRYPTO_DRIVER_OBERON
+	depends on OBERON_ONLY_ENABLED
 	default y
 
 config MBEDTLS_RSA_ALT
@@ -243,7 +243,8 @@ config CC312_ONLY_ENABLED
 config OBERON_ONLY_PSA_ENABLED
 	bool
 	default y
-	depends on (PSA_CRYPTO_DRIVER_OBERON && !PSA_CRYPTO_DRIVER_CC3XX)
+	depends on (PSA_CRYPTO_DRIVER_OBERON && !PSA_CRYPTO_DRIVER_CC3XX) && \
+		   !CC3XX_BACKEND
 
 config OBERON_ONLY_ENABLED
 	bool

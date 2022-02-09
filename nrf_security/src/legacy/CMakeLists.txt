@@ -85,7 +85,7 @@ if(NOT CONFIG_OBERON_BACKEND)
 endif()
 
 # Add oberon-specific replacement files
-if (CONFIG_OBERON_BACKEND OR PSA_CRYPTO_DRIVER_OBERON)
+if (CONFIG_OBERON_ONLY_ENABLED)
   list(APPEND src_crypto_legacy
     ${CMAKE_CURRENT_LIST_DIR}/aes.c
     ${CMAKE_CURRENT_LIST_DIR}/aes_oberon.c
