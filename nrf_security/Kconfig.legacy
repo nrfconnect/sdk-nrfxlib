@@ -114,8 +114,8 @@ config MBEDTLS_CHACHAPOLY_ALT
 
 config MBEDTLS_DHM_ALT
 	bool
-	#depends on CC3XX_BACKEND || PSA_CRYPTO_DRIVER_CC3XX
-	#default y - Currently not supported
+	depends on CC3XX_BACKEND || PSA_CRYPTO_DRIVER_CC3XX
+	default y
 
 config MBEDTLS_ECP_ALT
 	bool

@@ -94,6 +94,7 @@ if (CONFIG_OBERON_BACKEND OR PSA_CRYPTO_DRIVER_OBERON)
 else()
   list(APPEND src_crypto_legacy
     ${ARM_MBEDTLS_PATH}/library/aes.c
+    ${CMAKE_CURRENT_LIST_DIR}/dhm_ext.c
   )
 endif()
 
