@@ -17,7 +17,7 @@ All the notable changes included in the main branch are documented in this secti
 Added
 =====
 
-* Added support for Periodic Advertising for production.
+* Periodic Advertising is now supported for production.
 * Added support for a vendor-specific HCI command setting the periodic advertising event length (DRGN-16513).
 * Added ``SDC_CFG_TYPE_PERIODIC_ADV_LIST_SIZE`` to allow the application to configure the size of the periodic advertiser list (DRGN-16357).
 
