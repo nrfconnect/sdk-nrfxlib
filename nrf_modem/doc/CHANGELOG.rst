@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.5.1
+***************
+
+* Fixed a bug where :c:func:`nrf_modem_trace_processed_callback` could crash in some cases.
+
 nrf_modem 1.5.0
 ***************
 
