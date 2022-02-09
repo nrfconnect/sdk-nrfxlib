@@ -9,6 +9,90 @@ Changelog - nrf_cc3xx_mbedcrypto
 
 All notable changes to this project are documented in this file.
 
+nrf_cc3xx_mbedcrypto - 0.9.13
+*****************************
+
+New version of the runtime library with the following :
+
+* Added compatibility with Mbed TLS 3.0.0.
+* The library now also supports PSA APIs.
+* The Mbed TLS SHA-256 API now supports data directly from the flash (only for data <= 128 bytes).
+
+Library built against Mbed TLS version 3.0.0.
+
+This version is dependent on the nrf_cc310_platform or nrf_cc312_platform library for low-level initialization of the system and proper RTOS integration.
+
+Added
+=====
+
+Added a new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+
+.. note::
+
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+
+* nrf_cc312_mbedcrypto, nRF5340 variants
+
+  * ``cortex-m33/hard-float/libnrf_cc312_mbedcrypto_0.9.13.a``
+  * ``cortex-m33/soft-float/libnrf_cc312_mbedcrypto_0.9.13.a``
+
+  * No interrupts
+
+    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_mbedcrypto_0.9.13.a``
+    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_mbedcrypto_0.9.13.a``
+
+  * short-wchar
+
+    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_mbedcrypto_0.9.13.a``
+    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_mbedcrypto_0.9.13.a``
+
+  * short-wchar, no interrupts
+
+    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_mbedcrypto_0.9.13.a``
+    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_mbedcrypto_0.9.13.a``
+
+
+* nrf_cc310_mbedcrypto, nRF9160 variants
+
+  * ``cortex-m33/hard-float/libnrf_cc312_mbedcrypto_0.9.13.a``
+  * ``cortex-m33/soft-float/libnrf_cc310_mbedcrypto_0.9.13.a``
+
+  * No interrupts
+
+    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_mbedcrypto_0.9.13.a``
+    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_mbedcrypto_0.9.13.a``
+
+  * short-wchar
+
+    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.13.a``
+    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.13.a``
+
+  * short-wchar, no interrupts
+
+    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.13.a``
+    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.13.a``
+
+
+* nrf_cc310_mbedcrypto, nRF52840 variants
+
+  * ``cortex-m4/soft-float/libnrf_cc310_mbedcrypto_0.9.13.a``
+  * ``cortex-m4/hard-float/libnrf_cc310_mbedcrypto_0.9.13.a``
+
+  * No interrupts
+
+    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_mbedcrypto_0.9.13.a``
+    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_mbedcrypto_0.9.13.a``
+
+  * short-wchar
+
+    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.13.a``
+    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_mbedcrypto_0.9.13.a``
+
+  * short-wchar, no interrupts
+
+    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.13.a``
+    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_mbedcrypto_0.9.13.a``
+
 nrf_cc3xx_mbedcrypto - 0.9.12
 *****************************
 

@@ -18,6 +18,7 @@ Added
 =====
 
 * Fixed an issue with the ChaChaPoly PSA APIs where more IV sizes than supported by the APIs were accepted.
+* Added support for the PSA APIs.
 
 Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
 
