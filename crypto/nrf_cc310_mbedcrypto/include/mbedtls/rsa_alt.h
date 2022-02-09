@@ -62,6 +62,8 @@ typedef struct
                                       encoding                          */
 #if defined(MBEDTLS_THREADING_C)
     mbedtls_threading_mutex_t mutex;    /*!<  Thread-safety mutex       */
+#else
+    uint8_t dummy[8];                   /*!<  Ensuring same size when threading is disabled */
 #endif
 
     mbedtls_mpi NP;                     /*!< Barrett mod N tag NP for N-modulus */
