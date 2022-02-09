@@ -280,6 +280,20 @@ psa_status_t psa_driver_wrapper_sign_hash(
              * cycle through all known transparent accelerators */
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
+            /* Do not call the cc3xx_sign_hash for RSA keys since it still in early development */
+            if(PSA_KEY_TYPE_IS_RSA(attributes->core.type)){
+                return( psa_sign_hash_builtin( attributes,
+                                            key_buffer,
+                                            key_buffer_size,
+                                            alg,
+                                            hash,
+                                            hash_length,
+                                            signature,
+                                            signature_size,
+                                            signature_length ) );
+
+            }
+
             status = cc3xx_sign_hash( attributes,
                                       key_buffer,
                                       key_buffer_size,
@@ -393,6 +407,17 @@ psa_status_t psa_driver_wrapper_verify_hash(
              * cycle through all known transparent accelerators */
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
+            /* Do not call the cc3xx_verify_hash for RSA keys since it still in early development */
+            if(PSA_KEY_TYPE_IS_RSA(attributes->core.type)){
+                return( psa_verify_hash_builtin( attributes,
+                                                key_buffer,
+                                                key_buffer_size,
+                                                alg,
+                                                hash,
+                                                hash_length,
+                                                signature,
+                                                signature_length ) );
+            }
 
             status = cc3xx_verify_hash( attributes,
                                         key_buffer,
@@ -725,6 +750,15 @@ psa_status_t psa_driver_wrapper_import_key(
         case PSA_KEY_LOCATION_LOCAL_STORAGE:
             /* Key is stored in the slot in export representation, so
              * cycle through all known transparent accelerators */
+
+            /* RSA are not fully supported yet in the PSA drivers. This is a workaround
+             * to make sure that only the builtin solution is being used. */
+            if(PSA_KEY_TYPE_IS_RSA(attributes->core.type)){
+                return( psa_import_key_into_slot( attributes,
+                                                data, data_length,
+                                                key_buffer, key_buffer_size,
+                                                key_buffer_length, bits ) );
+            }
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
 #if defined(PSA_CRYPTO_DRIVER_TEST)
             status = mbedtls_test_transparent_import_key(
@@ -874,6 +908,17 @@ psa_status_t psa_driver_wrapper_export_public_key(
         case PSA_KEY_LOCATION_LOCAL_STORAGE:
             /* Key is stored in the slot in export representation, so
              * cycle through all known transparent accelerators */
+
+            /* RSA are not fully supported yet in the PSA drivers. This is a workaround
+             * to make sure that only the builtin solution is being used. */
+            if(PSA_KEY_TYPE_IS_RSA(attributes->core.type)){
+                return( psa_export_public_key_internal( attributes,
+                                                        key_buffer,
+                                                        key_buffer_size,
+                                                        data,
+                                                        data_size,
+                                                        data_length ) );
+            }
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
             status = cc3xx_export_public_key(
