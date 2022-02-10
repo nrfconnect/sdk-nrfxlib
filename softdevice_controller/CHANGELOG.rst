@@ -21,6 +21,11 @@ Added
 * Added support for a vendor-specific HCI command setting the periodic advertising event length (DRGN-16513).
 * Added ``SDC_CFG_TYPE_PERIODIC_ADV_LIST_SIZE`` to allow the application to configure the size of the periodic advertiser list (DRGN-16357).
 
+Bug fixes
+=========
+
+* Fixed an issue on the nRF53 Series where an assert could occur on when connected as a peripheral, and the RC oscillator is used as the Low Frequency Clock source (DRGN-16808).
+
 nRF Connect SDK v1.8.0
 **********************
 
