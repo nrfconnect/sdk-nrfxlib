@@ -24,7 +24,7 @@ Added
 Bug fixes
 =========
 
-* Fixed an issue on the nRF53 Series where an assert could occur on when connected as a peripheral, and the RC oscillator is used as the Low Frequency Clock source (DRGN-16808).
+* Fixed an issue on the nRF53 Series where an assert could occur when connected as a peripheral, and the RC oscillator is used as the Low Frequency Clock source (DRGN-16808).
 
 nRF Connect SDK v1.8.0
 **********************
