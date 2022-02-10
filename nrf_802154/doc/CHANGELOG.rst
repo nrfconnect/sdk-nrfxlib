@@ -9,6 +9,24 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF Connect SDK v1.9.0 - nRF 802.15.4 Radio Driver
+**************************************************
+
+Added
+=====
+
+* Delayed transmission and reception feature support for nRF5340. (KRKNWK-12074)
+* Backforwarding of transmitted frames to support retransmissions through serialization for nRF5340. (KRKNWK-10114)
+* Serialization of API required by Thread 1.2 (KRKNWK-12077) and other API for nRF5340.
+
+Bug fixes
+=========
+
+* Fixed an issue where interleaving transmissions of encrypted and unencrypted frames could cause memory corruption. (KRKNWK-12261)
+* Fixed an issue where interruption of a reception of encrypted frame could cause memory corruption. (KRKNWK-12622)
+* Fixed an issue where transmission of an encrypted frame could transmit a frame filled partially with zeros instead of proper ciphertext. (KRKNWK-12770)
+* Fixed stability issues related to CSMA-CA occurring with enabled experimental coexistence feature from :ref:`mpsl`. (KRKNWK-12701)
+
 nRF Connect SDK v1.8.0 - nRF 802.15.4 Radio Driver
 **************************************************
 
