@@ -617,7 +617,7 @@
  * Uncomment this macro to use a 128-bit key in the CTR_DRBG module.
  * By default, CTR_DRBG uses a 256-bit key.
  */
-#define MBEDTLS_CTR_DRBG_USE_128_BIT_KEY
+/* #undef MBEDTLS_CTR_DRBG_USE_128_BIT_KEY */
 
 /**
  * \def MBEDTLS_ECP_DP_SECP192R1_ENABLED
