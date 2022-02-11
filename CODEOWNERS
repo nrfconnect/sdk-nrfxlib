@@ -7,7 +7,7 @@
 /CODEOWNERS                               @carlescufi
 /LICENSE                                  @carlescufi
 /Jenkinsfile                              @thst-nordic
-/README.rst                               @ru-fu @carlescufi
+/README.rst                               @carlescufi
 /.checkpatch.conf                         @carlescufi
 /.gitattributes                           @thst-nordic
 /.gitlint                                 @thst-nordic
@@ -32,8 +32,9 @@ doc/*                                     @b-gent
 
 # All subfolders
 /.github/                                 @thst-nordic
+/.github/test-spec.yml                    @nrfconnect/ncs-test-leads
 /softdevice_controller/                   @rugeGerritsen
-/nrf_modem/                               @rlubos @lemrey @evenl
+/nrf_modem/                               @rlubos @lemrey
 /crypto/                                  @frkv @tejlmand
 /gzll/                                    @leewkb4567
 /mpsl/                                    @rugeGerritsen
