@@ -1,0 +1,101 @@
+# This is the Jenkins ci variant of the .github/labler.yaml
+
+"CI-iot-samples-test":
+  - "**/*"
+
+"CI-iot-libraries-test":
+  - "**/*"
+
+"CI-lwm2m-test":
+  - "**/*"
+
+"CI-boot-dfu-test":
+  - "**/*"
+
+"CI-tfm-test":
+  - "**/*"
+
+"CI-ble-test":
+  - "softdevice_controller/include/**/*"
+  - "softdevice_controller/lib/**/*"
+  - "mpsl/include/**/*"
+  - "mpsl/lib/**/*"
+
+"CI-mesh-test":
+  - "**/*"
+
+"CI-zigbee-test":
+  - "softdevice_controller/include/**/*"
+  - "softdevice_controller/lib/**/*"
+  - "mpsl/include/**/*"
+  - "mpsl/lib/**/*"
+  - "nrf_802154/driver/**/*"
+  - "nrf_802154/serialization/**/*"
+  - "nrf_802154/sl/**/*"
+  - any:
+    - "zboss/**/*"
+    - "!zboss/*.rst"
+    - "!zboss/doc/**/*"
+
+"CI-thingy91-test":
+  - "**/*"
+
+"CI-desktop-test":
+  - "softdevice_controller/include/**/*"
+  - "softdevice_controller/lib/**/*"
+
+"CI-crypto-test":
+  - "**/*"
+
+"CI-rs-test":
+  - "mpsl/include/**/*"
+  - "mpsl/lib/**/*"
+
+"CI-homekit-test":
+  - "crypto/**/*"
+  - "openthread/**/*"
+  - "softdevice_controller/include/**/*"
+  - "softdevice_controller/lib/**/*"
+  - "mpsl/include/**/*"
+  - "mpsl/lib/**/*"
+  - "nfc/**/*"
+  - "nrf_802154/driver/**/*"
+  - "nrf_802154/serialization/**/*"
+  - "nrf_802154/sl/**/*"
+  - "nrf_security/**/*"
+
+"CI-thread-test":
+  - "softdevice_controller/include/**/*"
+  - "softdevice_controller/lib/**/*"
+  - "mpsl/include/**/*"
+  - "mpsl/lib/**/*"
+  - "nrf_802154/driver/**/*"
+  - "nrf_802154/serialization/**/*"
+  - "nrf_802154/sl/**/*"
+  - "crypto/**/*"
+  - any:
+    - "openthread/**/*"
+    - "!openthread/*.rst"
+    - "!openthread/doc/**/*"
+
+"CI-nfc-test":
+  - "**/*"
+
+"CI-matter-test":
+  - "mpsl/include/**/*"
+  - "mpsl/lib/**/*"
+
+"CI-find-my-test":
+  - "**/*"
+
+"CI-gazell-test":
+  - "**/*"
+
+"CI-rpc-test":
+  - "**/*"
+
+"CI-modemshell-test":
+  - "**/*"
+
+"CI-positioning-test":
+  - "**/*"
