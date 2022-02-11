@@ -1,0 +1,25 @@
+# This is the Jenkins ci variant of the .github/labler.yaml
+
+CI-ble-test:
+  - 'softdevice_controller/**/*'
+  - 'mpsl/**/*'
+
+CI-zigbee-test:
+  - 'mpsl/**/*'
+  - 'softdevice_controller/**/*'
+
+CI-desktop-test:
+  - 'softdevice_controller/*'
+
+CI-rs-test:
+  - 'mpsl/**/*'
+
+CI-homekit-test:
+  - 'mpsl/**/*'
+  - 'softdevice_controller/**/*'
+
+CI-thread-test:
+  - 'mpsl/**/*'
+
+CI-matter-test:
+  - 'mpsl/**/*'
