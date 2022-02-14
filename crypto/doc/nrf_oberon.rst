@@ -45,12 +45,30 @@ The supported features for the Mbed TLS companion library are:
 * AES (all ciphers, all key sizes)
 * AES CCM
 * CMAC
-* ECDSA (secp256r1 only)
-* ECDH (secp256r1 only)
-* ECJPAKE (secp256r1 only)
+* ECDSA (secp224r1 and secp256r1 only)
+* ECDH (secp224r1 and secp256r1 only)
+* ECJPAKE (secp224r1 and secp256r1 only)
 * SHA-1
 * SHA-256
 
+
+PSA driver integration
+======================
+Starting from version 3.0.9, the nrf_oberon library contains a companion library that provides PSA driver integration for select features.
+This must be used with the :ref:`nrf_security`.
+
+Supported features
+------------------
+The supported features for the PSA driver companion library are:
+
+* AES CTR/CBC/ECB/CCM/GCM (all key sizes)
+* ChaCha20 and Poly1305 (256 bit keys)
+* ECDSA (secp224r1 and secp256r1 only)
+* ECDH (secp224r1 and secp256r1 only)
+* SHA-1
+* SHA-224
+* SHA-256
+* SHA-512
 
 nrf_oberon crypto library API
 =============================
