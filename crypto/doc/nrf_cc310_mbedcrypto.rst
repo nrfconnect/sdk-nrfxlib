@@ -131,6 +131,27 @@ The :c:func:`calloc` and :c:func:`free` functions can be changed with the follow
 This API must be called prior to calling :c:func:`mbedtls_platform_setup`.
 Otherwise, the library will default to use the clib functions :c:func:`calloc` and :c:func:`free`.
 
+PSA driver integration
+======================
+Starting from version 0.9.13, the nrf_oberon library contains a companion library that provides PSA driver integration for select features.
+This must be used with the :ref:`nrf_security`.
+
+Supported features
+------------------
+The supported features for the PSA driver companion library are:
+
+* AES CTR/CBC/ECB/CCM (192/256 bit keys are only supported by CryptoCell 312)
+* AES GCM (only supported by CryptoCell 312)
+* ChaCha20 and Poly1305 (256 bit keys only)
+* ECDSA (secp224r1, secp256r1 and secp384r1 only)
+* ECDH
+* RSA (PKCS1V15 with 1024 bits keys only)
+* HMAC
+* CMAC (192/256 bit keys are only supported by CryptoCell 312)
+* HKDF
+* SHA-1
+* SHA-224
+* SHA-256
 
 Initializing the library
 ------------------------
