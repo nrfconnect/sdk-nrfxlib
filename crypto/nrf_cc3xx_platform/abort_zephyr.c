@@ -3,10 +3,9 @@
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
+
 #include <kernel.h>
 #include <sys/reboot.h>
-//#include <logging/log.h>
-//LOG_MODULE_DECLARE(cc3xx_platform);
 
 #include "nrf_cc3xx_platform_abort.h"
 
@@ -15,12 +14,9 @@
  */
 static void abort_function(char const * const reason)
 {
-	//LOG_ERR("Reason: %s", reason);
 #ifdef CONFIG_REBOOT
-	//LOG_ERR("Rebooting");
 	sys_reboot(SYS_REBOOT_WARM);
 #else
-	//LOG_ERR("Halted");
 	while(1);
 #endif
 }
