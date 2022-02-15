@@ -174,7 +174,7 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
     #
     # Add companion sources to directly to zephyr
     #
-    zephyr_sources(${NRF_CC3XX_PLATFORM_BASE}/src/nrf_cc3xx_platform_abort_zephyr.c)
+    zephyr_sources(nrf_cc3xx_platform/abort_zephyr.c)
     if (CONFIG_MULTITHREADING)
       zephyr_sources(${NRF_CC3XX_PLATFORM_BASE}/src/nrf_cc3xx_platform_mutex_zephyr.c)
     else()
