@@ -7,6 +7,17 @@ Changelog
    :local:
    :depth: 2
 
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue where MPSL could assert when radio notifications on ACTIVE (:c:enumerator:`MPSL_RADIO_NOTIFICATION_TYPE_INT_ON_ACTIVE` or :c:enumerator:`MPSL_RADIO_NOTIFICATION_TYPE_INT_ON_BOTH`) were used (DRGN-16642).
+* Fixed an issue where :c:func:`mpsl_uninit` would hang indefinitely when the RC oscillator was used as the Low Frequency Clock source (DRGN-16515).
+
 nRF Connect SDK v1.9.0
 **********************
 
