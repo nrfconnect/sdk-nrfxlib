@@ -67,7 +67,14 @@ void nrf_802154_trx_ppi_for_enable(void)
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_END, NRF_802154_DPPI_RADIO_END);
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_PHYEND, NRF_802154_DPPI_RADIO_PHYEND);
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_CCAIDLE, NRF_802154_DPPI_RADIO_CCAIDLE);
+#if NRF_802154_TEST_MODES_ENABLED
+    nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_CCABUSY, NRF_802154_DPPI_RADIO_CCABUSY);
+#endif // NRF_802154_TEST_MODES_ENABLED
+
     nrf_dppi_channels_enable(NRF_DPPIC,
+#if NRF_802154_TEST_MODES_ENABLED
+                             (1UL << NRF_802154_DPPI_RADIO_CCABUSY) |
+#endif // NRF_802154_TEST_MODES_ENABLED
                              (1UL << PPI_DISABLED_EGU) |
                              (1UL << NRF_802154_DPPI_RADIO_READY) |
                              (1UL << NRF_802154_DPPI_RADIO_ADDRESS) |
@@ -79,12 +86,19 @@ void nrf_802154_trx_ppi_for_enable(void)
 void nrf_802154_trx_ppi_for_disable(void)
 {
     nrf_dppi_channels_disable(NRF_DPPIC,
+#if NRF_802154_TEST_MODES_ENABLED
+                              (1UL << NRF_802154_DPPI_RADIO_CCABUSY) |
+#endif // NRF_802154_TEST_MODES_ENABLED
                               (1UL << PPI_DISABLED_EGU) |
                               (1UL << NRF_802154_DPPI_RADIO_READY) |
                               (1UL << NRF_802154_DPPI_RADIO_ADDRESS) |
                               (1UL << NRF_802154_DPPI_RADIO_END) |
                               (1UL << NRF_802154_DPPI_RADIO_PHYEND) |
                               (1UL << NRF_802154_DPPI_RADIO_CCAIDLE));
+
+#if NRF_802154_TEST_MODES_ENABLED
+    nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_CCABUSY);
+#endif // NRF_802154_TEST_MODES_ENABLED
     nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_CCAIDLE);
     nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_PHYEND);
     nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_END);

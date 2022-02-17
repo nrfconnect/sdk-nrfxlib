@@ -155,6 +155,20 @@ typedef uint8_t nrf_802154_src_addr_match_t;
 #define NRF_802154_SRC_ADDR_MATCH_ALWAYS_1 0x02 // !< Standard compliant implementation.
 
 /**
+ * @brief Mode of handling Interframe spacing.
+ *
+ * Possible values:
+ * - @ref NRF_802154_IFS_MODE_DISABLED,
+ * - @ref NRF_802154_IFS_MODE_MATCHING_ADDRESSES,
+ * - @ref NRF_802154_IFS_MODE_ALWAYS
+ */
+typedef uint8_t nrf_802154_ifs_mode_t;
+
+#define NRF_802154_IFS_MODE_DISABLED           0x00 // !< Interframe spacing is never inserted.
+#define NRF_802154_IFS_MODE_MATCHING_ADDRESSES 0x01 // !< Interframe spacing is inserted only on matching addresses.
+#define NRF_802154_IFS_MODE_ALWAYS             0x02 // !< Interframe spacing is always inserted.
+
+/**
  * @brief Capabilites of nrf 802.15.4 radio driver
  *
  * Possible values:

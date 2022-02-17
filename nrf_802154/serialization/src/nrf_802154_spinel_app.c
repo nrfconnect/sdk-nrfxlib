@@ -193,6 +193,51 @@ bail:
     return error;
 }
 
+#if NRF_802154_IFS_ENABLED
+/**
+ * @brief Wait with timeout for some single uint16_t property to be received.
+ *
+ * @param[in]  timeout          Timeout in us.
+ * @param[out] p_net_response   Pointer to the uint16_t variable which needs to be populated.
+ *
+ * @returns  zero on success or negative error value on failure.
+ *
+ */
+static nrf_802154_ser_err_t net_generic_uint16_response_await(uint32_t   timeout,
+                                                              uint16_t * p_net_response)
+{
+    nrf_802154_ser_err_t              res;
+    nrf_802154_spinel_notify_buff_t * p_notify_data = NULL;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    p_notify_data = nrf_802154_spinel_response_notifier_property_await(timeout);
+
+    SERIALIZATION_ERROR_IF(p_notify_data == NULL,
+                           NRF_802154_SERIALIZATION_ERROR_RESPONSE_TIMEOUT,
+                           error,
+                           bail);
+
+    res = nrf_802154_spinel_decode_prop_generic_uint16(p_notify_data->data,
+                                                       p_notify_data->data_len,
+                                                       p_net_response);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    NRF_802154_SPINEL_LOG_BANNER_RESPONSE();
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%u", *p_net_response, "net response");
+
+bail:
+    if (p_notify_data != NULL)
+    {
+        nrf_802154_spinel_response_notifier_free(p_notify_data);
+    }
+
+    return error;
+}
+
+#endif
+
 /**
  * @brief Wait with timeout for TX Power property to be received.
  *
@@ -1904,3 +1949,176 @@ void nrf_802154_stat_timestamps_get(nrf_802154_stat_timestamps_t * p_stat_timest
 bail:
     SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
 }
+
+#if NRF_802154_IFS_ENABLED
+
+nrf_802154_ifs_mode_t nrf_802154_ifs_mode_get(void)
+{
+    nrf_802154_ser_err_t  res;
+    nrf_802154_ifs_mode_t mode = NRF_802154_IFS_MODE_DISABLED;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+
+    nrf_802154_spinel_response_notifier_lock_before_request(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MODE_GET);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MODE_GET,
+        SPINEL_DATATYPE_NRF_802154_IFS_MODE_GET,
+        NULL);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = net_generic_uint8_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
+                                           &mode);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return mode;
+}
+
+bool nrf_802154_ifs_mode_set(nrf_802154_ifs_mode_t mode)
+{
+    nrf_802154_ser_err_t res;
+    bool                 result = false;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+    NRF_802154_SPINEL_LOG_VAR("%u", mode);
+
+    nrf_802154_spinel_response_notifier_lock_before_request(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MODE_SET);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MODE_SET,
+        SPINEL_DATATYPE_NRF_802154_IFS_MODE_SET,
+        mode);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = net_generic_bool_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
+                                          &result);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return result;
+}
+
+uint16_t nrf_802154_ifs_min_sifs_period_get(void)
+{
+    nrf_802154_ser_err_t res;
+    uint16_t             period = 0U;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+
+    nrf_802154_spinel_response_notifier_lock_before_request(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_SIFS_PERIOD_GET);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_SIFS_PERIOD_GET,
+        SPINEL_DATATYPE_NRF_802154_IFS_MIN_SIFS_PERIOD_GET,
+        NULL);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = net_generic_uint16_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
+                                            &period);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return period;
+}
+
+void nrf_802154_ifs_min_sifs_period_set(uint16_t period)
+{
+    nrf_802154_ser_err_t res;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+
+    nrf_802154_spinel_response_notifier_lock_before_request(SPINEL_PROP_LAST_STATUS);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_SIFS_PERIOD_SET,
+        SPINEL_DATATYPE_NRF_802154_IFS_MIN_SIFS_PERIOD_SET,
+        period);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return;
+}
+
+uint16_t nrf_802154_ifs_min_lifs_period_get(void)
+{
+    nrf_802154_ser_err_t res;
+    uint16_t             period = 0U;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+
+    nrf_802154_spinel_response_notifier_lock_before_request(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_LIFS_PERIOD_GET);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_LIFS_PERIOD_GET,
+        SPINEL_DATATYPE_NRF_802154_IFS_MIN_LIFS_PERIOD_GET,
+        NULL);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = net_generic_uint16_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
+                                            &period);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return period;
+}
+
+void nrf_802154_ifs_min_lifs_period_set(uint16_t period)
+{
+    nrf_802154_ser_err_t res;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+
+    nrf_802154_spinel_response_notifier_lock_before_request(SPINEL_PROP_LAST_STATUS);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_LIFS_PERIOD_SET,
+        SPINEL_DATATYPE_NRF_802154_IFS_MIN_LIFS_PERIOD_SET,
+        period);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return;
+}
+
+#endif // NRF_802154_IFS_ENABLED

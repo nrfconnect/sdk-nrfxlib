@@ -721,6 +721,72 @@ uint32_t nrf_802154_first_symbol_timestamp_get(uint32_t end_timestamp, uint8_t p
 
 /**
  * @}
+ * @defgroup nrf_802154_ifs Inter-frame spacing feature
+ * @{
+ */
+#if NRF_802154_IFS_ENABLED || defined(DOXYGEN)
+
+/**
+ * @brief Gets IFS operation mode.
+ *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
+ *
+ * @return Current IFS operation mode. Refer to @ref nrf_802154_ifs_mode_t for details.
+ */
+nrf_802154_ifs_mode_t nrf_802154_ifs_mode_get(void);
+
+/**
+ * @brief Sets IFS operation mode.
+ *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
+ *
+ * @param[in] mode  IFS operation mode. Refer to @ref nrf_802154_ifs_mode_t for details.
+ *
+ * @retval    true  The update of IFS operation mode was successful.
+ * @retval    false The update of IFS operation mode failed. Provided mode is unsupported
+ */
+bool nrf_802154_ifs_mode_set(nrf_802154_ifs_mode_t mode);
+
+/**
+ * @brief Gets Short IFS period in microseconds.
+ *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
+ *
+ * @return Current Short IFS period in microseconds.
+ */
+uint16_t nrf_802154_ifs_min_sifs_period_get(void);
+
+/**
+ * @brief Sets Short IFS period in microseconds.
+ *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
+ *
+ * @param[in] period Short IFS period in microseconds.
+ */
+void nrf_802154_ifs_min_sifs_period_set(uint16_t period);
+
+/**
+ * @brief Gets Long IFS period in microseconds.
+ *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
+ *
+ * @return Current Long IFS period in microseconds.
+ */
+uint16_t nrf_802154_ifs_min_lifs_period_get(void);
+
+/**
+ * @brief Sets Long IFS period in microseconds.
+ *
+ * @note This function is available if @ref NRF_802154_IFS_ENABLED is enabled.
+ *
+ * @param[in] period Long IFS period in microseconds.
+ */
+void nrf_802154_ifs_min_lifs_period_set(uint16_t period);
+
+#endif // NRF_802154_IFS_ENABLED
+
+/**
+ * @}
  * @defgroup nrf_802154_capabilities Radio driver run-time capabilities feature.
  * @{
  */
