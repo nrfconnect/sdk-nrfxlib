@@ -102,12 +102,6 @@ if (SL_OPENSOURCE)
       # Disable IFS
       NRF_802154_IFS_ENABLED=0
   )
-elseif (NRF53_SERIES)
-  target_compile_definitions(nrf-802154-driver-interface
-    INTERFACE
-      # Disable IFS
-      NRF_802154_IFS_ENABLED=0
-  )
 endif()
 
 if (NRF_802154_PROJECT_CONFIG)

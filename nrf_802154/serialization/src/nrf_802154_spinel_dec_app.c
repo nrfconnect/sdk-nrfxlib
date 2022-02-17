@@ -468,6 +468,20 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_prop_generic_uint8(
             NRF_802154_SERIALIZATION_ERROR_OK);
 }
 
+nrf_802154_ser_err_t nrf_802154_spinel_decode_prop_generic_uint16(
+    const void * p_property_data,
+    size_t       property_data_len,
+    uint16_t   * p_uint16_response)
+{
+    spinel_ssize_t siz = spinel_datatype_unpack(p_property_data,
+                                                property_data_len,
+                                                SPINEL_DATATYPE_UINT16_S,
+                                                p_uint16_response);
+
+    return ((siz) < 0 ? NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE :
+            NRF_802154_SERIALIZATION_ERROR_OK);
+}
+
 nrf_802154_ser_err_t nrf_802154_spinel_decode_prop_nrf_802154_tx_power_get_ret(
     const void * p_property_data,
     size_t       property_data_len,
@@ -634,6 +648,16 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_is(
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TEST_MODE_CSMACA_BACKOFF_GET:
             // fall through
 #endif // NRF_802154_TEST_MODES_ENABLED
+#if NRF_802154_IFS_ENABLED
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MODE_SET:
+        // fall through
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MODE_GET:
+        // fall through
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_SIFS_PERIOD_GET:
+        // fall through
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_LIFS_PERIOD_GET:
+            // fall through
+#endif // NRF_802154_IFS_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_STAT_TIMESTAMPS_GET:
             nrf_802154_spinel_response_notifier_property_notify(property,
                                                                 p_property_data,

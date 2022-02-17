@@ -103,6 +103,23 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_prop_generic_uint8(
     uint8_t    * p_uint8_response);
 
 /**
+ * @brief Decode SPINEL_DATATYPE_UINT16_S.
+ *
+ * @note This is used to decode `uint16_t` responses for several kinds of requests in 802.15.4 radio driver.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
+ * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
+ * @param[out] p_uint8_response   Pointer to decoded response value.
+ *
+ * @returns zero on success or negative error value on failure.
+ *
+ */
+nrf_802154_ser_err_t nrf_802154_spinel_decode_prop_generic_uint16(
+    const void * p_property_data,
+    size_t       property_data_len,
+    uint16_t   * p_uint16_response);
+
+/**
  * @brief Decode SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TX_POWER_GET.
  *
  * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
