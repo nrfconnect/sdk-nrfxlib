@@ -176,7 +176,7 @@
       ep_id,                                                      \
       ZB_HA_TEMPERATURE_SENSOR_IN_CLUSTER_NUM,                    \
       ZB_HA_TEMPERATURE_SENSOR_OUT_CLUSTER_NUM);                  \
-  ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## device_ctx_name,            \
+  ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## ep_name,            \
                                      ZB_HA_TEMPERATURE_SENSOR_REPORT_ATTR_COUNT); \
   ZB_AF_DECLARE_ENDPOINT_DESC(ep_name, ep_id,                                              \
       ZB_AF_HA_PROFILE_ID,                                        \
@@ -185,7 +185,7 @@
       ZB_ZCL_ARRAY_SIZE(cluster_list, zb_zcl_cluster_desc_t),     \
       cluster_list,                                               \
       (ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1)*)&simple_desc_##ep_name,                           \
-      ZB_HA_TEMPERATURE_SENSOR_REPORT_ATTR_COUNT, reporting_info## device_ctx_name, 0, NULL)
+      ZB_HA_TEMPERATURE_SENSOR_REPORT_ATTR_COUNT, reporting_info## ep_name, 0, NULL)
 
 /** @brief Declare Temperature Sensor device context.
     @param device_ctx - device context variable name.

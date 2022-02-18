@@ -168,14 +168,14 @@
 #define ZB_HA_DECLARE_CUSTOM_ATTR_EP(ep_name, ep_id, cluster_list)        \
   ZB_ZCL_DECLARE_CUSTOM_ATTR_SIMPLE_DESC(ep_name, ep_id,                  \
     ZB_HA_CUSTOM_ATTR_IN_CLUSTER_NUM, ZB_HA_CUSTOM_ATTR_OUT_CLUSTER_NUM); \
-  ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## device_ctx_name, 20);  \
+  ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## ep_name, 20);  \
   ZB_AF_DECLARE_ENDPOINT_DESC(ep_name, ep_id, ZB_AF_HA_PROFILE_ID,                    \
     0,                                                                    \
     NULL,                                                                 \
     ZB_ZCL_ARRAY_SIZE(cluster_list, zb_zcl_cluster_desc_t), cluster_list, \
                           (ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1)*)&simple_desc_##ep_name,  \
                           ZB_ZCL_ARRAY_SIZE(ep_name, zb_af_endpoint_desc_t), \
-                          20, reporting_info## device_ctx_name, 0, NULL)
+                          20, reporting_info## ep_name, 0, NULL)
 
 
 #define ZB_HA_DECLARE_CUSTOM_ATTR_CTX(device_ctx, ep_name)              \

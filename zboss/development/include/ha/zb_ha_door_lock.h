@@ -191,7 +191,7 @@
 #define ZB_HA_DECLARE_DOOR_LOCK_EP(ep_name, ep_id, cluster_list)                \
       ZB_ZCL_DECLARE_DOOR_LOCK_SIMPLE_DESC(ep_name, ep_id,                      \
           ZB_HA_DOOR_LOCK_IN_CLUSTER_NUM, ZB_HA_DOOR_LOCK_OUT_CLUSTER_NUM);     \
-      ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## device_ctx_name,            \
+      ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## ep_name,            \
                                          ZB_HA_DOOR_LOCK_REPORT_ATTR_COUNT);          \
       ZB_AF_DECLARE_ENDPOINT_DESC(ep_name, ep_id, ZB_AF_HA_PROFILE_ID,                         \
             0,                                                                        \
@@ -200,7 +200,7 @@
                               cluster_list,                                           \
                               (ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1)*)&simple_desc_##ep_name,       \
                               ZB_HA_DOOR_LOCK_REPORT_ATTR_COUNT,                      \
-                              reporting_info## device_ctx_name,                       \
+                              reporting_info## ep_name,                       \
                               0, NULL)
 
 

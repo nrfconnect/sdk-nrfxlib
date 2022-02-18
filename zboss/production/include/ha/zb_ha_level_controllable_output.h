@@ -203,9 +203,9 @@ zb_zcl_cluster_desc_t cluster_list_name[] =                    \
    ep_id,                                                                                        \
    ZB_HA_LEVEL_CONTROLLABLE_OUTPUT_IN_CLUSTER_NUM,                                               \
    ZB_HA_LEVEL_CONTROLLABLE_OUTPUT_OUT_CLUSTER_NUM);                                             \
-  ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## device_ctx_name,                           \
+  ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## ep_name,                           \
                                      ZB_HA_LEVEL_CONTROLLABLE_OUTPUT_REPORT_ATTR_COUNT);         \
-  ZBOSS_DEVICE_DECLARE_LEVEL_CONTROL_CTX(cvc_alarm_info## device_ctx_name,                       \
+  ZBOSS_DEVICE_DECLARE_LEVEL_CONTROL_CTX(cvc_alarm_info## ep_name,                       \
                                          ZB_HA_LEVEL_CONTROLLABLE_OUTPUT_CVC_ATTR_COUNT);        \
   ZB_AF_DECLARE_ENDPOINT_DESC(ep_name, ep_id, ZB_AF_HA_PROFILE_ID,                               \
                               0,                                        \
@@ -213,9 +213,9 @@ zb_zcl_cluster_desc_t cluster_list_name[] =                    \
                           ZB_ZCL_ARRAY_SIZE(cluster_list, zb_zcl_cluster_desc_t), cluster_list,  \
                           (ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1)*)&simple_desc_##ep_name,                      \
                           ZB_HA_LEVEL_CONTROLLABLE_OUTPUT_REPORT_ATTR_COUNT,                     \
-                          reporting_info## device_ctx_name,                                      \
+                          reporting_info## ep_name,                                      \
                           ZB_HA_LEVEL_CONTROLLABLE_OUTPUT_CVC_ATTR_COUNT,                        \
-                          cvc_alarm_info## device_ctx_name)
+                          cvc_alarm_info## ep_name)
 
 /*!
   @brief Declare application's device context for Level Control Switch device
