@@ -47,7 +47,7 @@ This method requires concurrent (time-multiplex) radio access.
 
 The figure below shows how IEEE 802.15.4 based protocols and Bluetooth Low Energy protocols operate in dynamic multiprotocol mode.
 
-.. figure:: images/dynamic_multiprotocol.png
+.. figure:: images/dynamic_multiprotocol.svg
    :alt: IEEE 802.15.4 based protocols and Bluetooth Low Energy protocols operating in dynamic multiprotocol mode
 
 .. _rd_multiprotocol_support_implemented_mpsl_arbiter_1:
@@ -59,7 +59,7 @@ The nRF IEEE 802.15.4 radio driver manages its radio transactions through a radi
 
 The figure below presents the internal interactions between radio arbiter, radio driver, and application.
 
-.. figure:: images/dynamic_multiprotocol_requests.png
+.. figure:: images/dynamic_multiprotocol_requests.svg
    :alt: Internal interactions between the radio arbiter, the radio driver, and the application
 
 The MPSL includes a Radio Event Manager (REM) that manages radio arbitration and exposes the Timeslot API for any other radio driver.
