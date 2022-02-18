@@ -73,11 +73,11 @@ typedef struct zb_zdo_configuration_attributes_e
 
   zb_af_node_desc_t       node_desc;        /*!< Node Descriptors */
   zb_af_node_power_desc_t node_power_desc;  /*!< Node Power Descriptors */
-  zb_af_simple_desc_8_9_t zdo_simple_desc; /* TODO: remove it, ZDO simple descriptor is not needed - simple descriptors for EP >= 1 are used */
+  ZB_AF_SIMPLE_DESC_TYPE(general, 8, 9) zdo_simple_desc; /* TODO: remove it, ZDO simple descriptor is not needed - simple descriptors for EP >= 1 are used */
   /* TODO: make real list support, if multiple EP are supported */
   /* TODO: each Zigbee device application declares a device context and a list of EPs. Each EP
      stores its simple descriptor => no need store it here, it is better to use that storage */
-  zb_af_simple_desc_1_1_t *simple_desc_list[ZB_MAX_EP_NUMBER];  /*!< Simple Descriptors table */
+  ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1) *simple_desc_list[ZB_MAX_EP_NUMBER];  /*!< Simple Descriptors table */
   zb_uint8_t simple_desc_number;                                /*!< Number elements of Simple Descriptors table */
 
 #ifndef ZB_LITE_NO_END_DEVICE_BIND

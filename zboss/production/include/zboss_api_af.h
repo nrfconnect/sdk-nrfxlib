@@ -217,10 +217,11 @@ typedef ZB_PACKED_PRE struct zb_af_node_power_desc_s
 
 /** @cond DOXYGEN_INTERNAL_DOC */
 #define CAT5(a, b, c, d, e) a##b##c##d##e
+#define CAT6(a, b, c, d, e,f) a##b##c##d##e##f
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 /** Generate simple descriptor type name */
-#define ZB_AF_SIMPLE_DESC_TYPE(in_num, out_num)  CAT5(zb_af_simple_desc_,in_num,_,out_num,_t)
+#define ZB_AF_SIMPLE_DESC_TYPE(epname, in_num, out_num)  CAT6(zb_af_simple_desc_,epname, in_num,_,out_num,_t)
 
 /**
    Declares Simple descriptor type
@@ -234,8 +235,9 @@ typedef ZB_PACKED_PRE struct zb_af_node_power_desc_s
    @endcode
  */
 
-#define ZB_DECLARE_SIMPLE_DESC(in_clusters_count, out_clusters_count)   \
-  typedef ZB_PACKED_PRE struct zb_af_simple_desc_ ## in_clusters_count ## _ ## out_clusters_count ## _s \
+#define ZB_DECLARE_SIMPLE_DESC(epname, in_clusters_count, out_clusters_count)   \
+/* #define HO_ ## in_clusters_count ## _ ## out_clusters_count 1 \ */ \
+  typedef ZB_PACKED_PRE struct zb_af_simple_desc_ ## epname ## in_clusters_count ## _ ## out_clusters_count ## _s \
   {                                                                                       \
     zb_uint8_t    endpoint;                 /* Endpoint */                                \
     zb_uint16_t   app_profile_id;           /* Application profile identifier */          \
@@ -247,7 +249,7 @@ typedef ZB_PACKED_PRE struct zb_af_node_power_desc_s
     /* Application input and output cluster list */                                       \
     zb_uint16_t   app_cluster_list[(in_clusters_count) + (out_clusters_count)];               \
   } ZB_PACKED_STRUCT                                                                      \
-  zb_af_simple_desc_ ## in_clusters_count ## _ ## out_clusters_count ## _t
+  zb_af_simple_desc_ ## epname ## in_clusters_count ## _ ## out_clusters_count ## _t 
 
 /** @} */ /* af_data_service */
 
@@ -256,9 +258,9 @@ typedef ZB_PACKED_PRE struct zb_af_node_power_desc_s
  * @{
  */
 /** General descriptor type */
-ZB_DECLARE_SIMPLE_DESC(1,1);
+ZB_DECLARE_SIMPLE_DESC(general, 1,1);
 /** ZDO descriptor type */
-ZB_DECLARE_SIMPLE_DESC(8,9);
+ZB_DECLARE_SIMPLE_DESC(general, 8,9);
 /** @} */ /* af_management_service */
 
 /**
@@ -350,7 +352,8 @@ typedef ZB_PACKED_PRE struct zb_af_endpoint_desc_s
   void* reserved_ptr; /*!< Unused parameter (reserved for future use) */
   zb_uint8_t cluster_count;       /*!< Number of supported clusters */
   struct zb_zcl_cluster_desc_s *cluster_desc_list;  /*!< Supported clusters list */
-  zb_af_simple_desc_1_1_t *simple_desc; /*!< Simple descriptor */
+  /* zb_af_simple_desc_general_1_1_t *simple_desc; */ /*!< Simple descriptor */
+  ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1) * simple_desc;
 #if defined ZB_ENABLE_ZLL || defined DOXYGEN
   zb_uint8_t group_id_count;
 #endif /* defined ZB_ENABLE_ZLL || defined DOXYGEN */

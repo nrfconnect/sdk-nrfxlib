@@ -74,6 +74,13 @@ enum zb_ha_standard_devs_e
   /*! Range Extender */
   ZB_HA_RANGE_EXTENDER_DEVICE_ID      = 0x0008,
   /*! Mains Power Outlet */
+  /* Psychogenic MOD: 
+   * This may be standard:
+   * ZB_HA_MAINS_POWER_OUTLET_DEVICE_ID  = 0x0009,
+   * but real-world devices seem to recognize
+   * ZB_HA_MAINS_POWER_OUTLET_DEVICE_ID  = 0x010A,
+   * instead
+   * */
   ZB_HA_MAINS_POWER_OUTLET_DEVICE_ID  = 0x0009,
   /*! Door lock client */
   ZB_HA_DOOR_LOCK_DEVICE_ID           = 0x000A,

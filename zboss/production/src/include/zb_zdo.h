@@ -367,7 +367,7 @@ void zb_copy_power_desc(zb_af_node_power_desc_t *dst_desc, zb_af_node_power_desc
    @param dst_desc - destination descriptor
    @param src_desc - source descriptor
 */
-void zb_copy_simple_desc(zb_af_simple_desc_1_1_t* dst_desc, zb_af_simple_desc_1_1_t*src_desc);
+void zb_copy_simple_desc(ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1)* dst_desc, ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1)*src_desc);
 
 /**
    NWK_addr_req  primitive.
@@ -1209,7 +1209,7 @@ void zb_set_network_ed_role_legacy(zb_uint32_t channel_mask);
   @par
 
 */
-void zb_set_simple_descriptor(zb_af_simple_desc_1_1_t *simple_desc,
+void zb_set_simple_descriptor(ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1) *simple_desc,
                               zb_uint8_t  endpoint, zb_uint16_t app_profile_id,
                               zb_uint16_t app_device_id, zb_bitfield_t app_device_version,
                               zb_uint8_t app_input_cluster_count, zb_uint8_t app_output_cluster_count);
@@ -1225,7 +1225,7 @@ void zb_set_simple_descriptor(zb_af_simple_desc_1_1_t *simple_desc,
   @par
 
 */
-void zb_set_input_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t cluster_number, zb_uint16_t cluster_id);
+void zb_set_input_cluster_id(ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1) *simple_desc, zb_uint8_t cluster_number, zb_uint16_t cluster_id);
 
 /*! @brief Set output cluster item
     @param simple_desc - pointer to simple descriptor
@@ -1237,7 +1237,7 @@ void zb_set_input_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t cl
   @par
 
 */
-void zb_set_output_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t cluster_number, zb_uint16_t cluster_id);
+void zb_set_output_cluster_id(ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1) *simple_desc, zb_uint8_t cluster_number, zb_uint16_t cluster_id);
 
 /**
   Set default descriptors values for FFD.
@@ -1265,7 +1265,7 @@ void zb_set_default_ed_descriptor_values(void);
   @par
 
  */
-zb_ret_t zb_add_simple_descriptor(zb_af_simple_desc_1_1_t *simple_desc);
+zb_ret_t zb_add_simple_descriptor(ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1) *simple_desc);
 
 /**
   Set node descriptor for FFD

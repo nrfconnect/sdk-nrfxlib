@@ -1429,7 +1429,7 @@ typedef zb_zdo_desc_resp_hdr_t            zb_zdo_user_desc_conf_hdr_t;
 typedef ZB_PACKED_PRE struct zb_zdo_simple_desc_resp_s
 {
   zb_zdo_simple_desc_resp_hdr_t hdr;  /*!< header for response */
-  zb_af_simple_desc_1_1_t simple_desc; /*!< Simple Descriptor */
+  ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1) simple_desc; /*!< Simple Descriptor */
 } ZB_PACKED_STRUCT
 zb_zdo_simple_desc_resp_t;
 

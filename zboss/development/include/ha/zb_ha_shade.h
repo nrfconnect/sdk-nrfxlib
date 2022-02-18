@@ -183,8 +183,8 @@
   @param out_clust_num - number of supported output clusters
 */
 #define ZB_ZCL_DECLARE_SHADE_SIMPLE_DESC(ep_name, ep_id, in_clust_num, out_clust_num) \
-  ZB_DECLARE_SIMPLE_DESC(in_clust_num, out_clust_num);                                \
-  ZB_AF_SIMPLE_DESC_TYPE(in_clust_num, out_clust_num) simple_desc_##ep_name =         \
+  ZB_DECLARE_SIMPLE_DESC(ep_name,in_clust_num, out_clust_num);                                \
+  ZB_AF_SIMPLE_DESC_TYPE(ep_name, in_clust_num, out_clust_num) simple_desc_##ep_name =         \
   {                                                                                   \
     ep_id,                                                                            \
     ZB_AF_HA_PROFILE_ID,                                                              \
@@ -229,7 +229,7 @@
     NULL,                                                                 \
                               ZB_ZCL_ARRAY_SIZE(cluster_list, zb_zcl_cluster_desc_t), \
                               cluster_list,                                           \
-                              (zb_af_simple_desc_1_1_t*)&simple_desc_##ep_name,       \
+                              (ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1)*)&simple_desc_##ep_name,       \
                               ZB_HA_SHADE_REPORT_ATTR_COUNT,                          \
                               reporting_info## device_ctx_name,                       \
                               ZB_HA_SHADE_CVC_ATTR_COUNT, cvc_alarm_info## device_ctx_name)
