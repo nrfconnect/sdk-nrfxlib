@@ -1,3 +1,108 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" style="background-color: rgb(255, 255, 255);" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="441px" height="211px" viewBox="-0.5 -0.5 441 211" content="&lt;mxfile host=&quot;app.diagrams.net&quot; modified=&quot;2020-04-15T12:20:45.422Z&quot; agent=&quot;Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:74.0) Gecko/20100101 Firefox/74.0&quot; etag=&quot;BdQRVAYM-zVWdhfrxDXK&quot; version=&quot;12.9.3&quot; type=&quot;device&quot;&gt;&lt;diagram id=&quot;xv89Uy8OLaYbrheZVMvn&quot; name=&quot;Page-1&quot;&gt;7VjBcpswEP0aH8MgZGx8dGwnPSSdtE6n6ckjgwxqBKJCjqFfXwmEQcZ20owzcSflYvS0rKR9T7s77sFJnF9zlEa3LMC059hB3oPTnuMA6LryRyFFhQyBVwEhJ4E2aoA5+Y01aGt0TQKcGYaCMSpIaoI+SxLsCwNDnLONabZi1Fw1RSHuAHMf0S76nQQiqlDPtRv8EyZhVK8MbD0To9pYA1mEArZpQXDWgxPOmKje4nyCqQpeHZfqu6sDs9uNcZyIl3zwLZwG65vocQOA74y/+AUcDi6g3pso6gPjQJ5fDxkXEQtZguisQS85WycBVl5tOWpsbhhLJQgk+BMLUWgy0VowCUUipnoW50Q8tN5/aFfqfZq3B0o0g3p0hzmJscC8tkgELx7ag9KR1Xc92H7q2cZ1OSrao67vYKzUI4cJS3CFXBFK9Xw3+JqPjK25j49EvBYx4iEWR+ycyk7R0VpAU3uNmdwtL6QBxxQJ8mTKFWnVh1u7RhjyRWvjL3QyqPw+IbrWK3296khH4FyYTCNKwkS++zJMKraXT5gLIm/XWE/EJAgqUeGM/EbL0pUKcMpIIspTuJc9dyoRipaYXiL/MSwFOGGU8XJduCqfvawcE73aC857e7KI3odxUY2g668ubAs6to6NTnCatxfTop3fqfM2ngGUMjb8XnimD7ZaZVJAu8RuN/l6rvvnnxNA//mkYMGh204MwMgD4OMmgvJTeShUtAz0fTsoyD70DDn2zWojXyqPJ1Wi28k648/3i/ns5p9NPf0Tpp7+yB6aKeI0ucezBo7pFziWvePm7dIP6JCeqFpjz9mkQ/u2p1K8BSiLtimoQ39LGpng7HHbzpVIhFLlMs5D1cZamEoquFKLRVlI/EWIBM6sX6t0QfxaEBOpBaEdpCSZp8gnSSgBzy4XQVzcEbWHDFcWN+qr+6JcyV9n4lj66CjkoBJGtll/PD3eNO2qUzelUatV3YInbxbq3v0MKog1cA8WEfh8CTlSQN69fjgvrB+js2okATgfbThgYDzDjy4V76yk4nQKwdXs9j1KAFpKc+QLK17njhJgirk8P1POAyzB0yRyODJbLMdzO5nc25PIgfNWidzrMNAJf91VlbXtjmVEx2XJhGBxFddX8LPbrAl10Y9xxFFAmIXklUJ0cbFA0mWSoAU4DTWuvVNkh90iC/dQ038rZkb/mdnPDHS6l+ZEzMhh829d1e02/3nC2R8=&lt;/diagram&gt;&lt;/mxfile&gt;"><defs/><g><path d="M 200 70 L 308 70" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 61px; margin-left: 251px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; background-color: #ffffff; white-space: nowrap; ">RF</div></div></div></foreignObject><text x="251" y="64" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">RF</text></switch></g><path d="M 200 150 L 348 150 L 348 135" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 140px; margin-left: 251px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; background-color: #ffffff; white-space: nowrap; ">ANT_SEL</div></div></div></foreignObject><text x="251" y="144" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">ANT_SEL</text></switch></g><path d="M 15 20 L 185 20 L 190 25 L 190 195 L 185 200 L 15 200 L 10 195 L 10 25 Z" fill="#ffffff" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/><g fill="#000000" font-family="Arial,Helvetica" text-anchor="middle" font-size="9.600000000000001px"/><path d="M 0 70 L 10 70 M 190 70 L 200 70 M 0 150 L 10 150 M 190 150 L 200 150 M 60 10 L 60 20 M 60 200 L 60 210 M 140 10 L 140 20 M 140 200 L 140 210" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/><ellipse cx="180" cy="190" rx="5" ry="5" fill="#000000" stroke="#000000" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 110px; margin-left: 100px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: nowrap; ">nRF SoC</div></div></div></foreignObject><text x="100" y="114" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">nRF SoC</text></switch></g><path d="M 388 96 L 425 96 L 425 95" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 388 44 L 425 44 L 425 40" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 378 15 L 318 27 L 318 113 L 378 125 Z" fill="#ffffff" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/><g fill="#000000" font-family="Arial,Helvetica" text-anchor="middle" font-size="6px"><text x="373.5" y="46.5">0</text></g><g fill="#000000" font-family="Arial,Helvetica" text-anchor="middle" font-size="6px"><text x="373.5" y="98.5">1</text></g><g fill="#000000" font-family="Arial,Helvetica" text-anchor="middle" font-size="6px"><text x="352.5" y="132.5">S0</text></g><path d="M 308 70 L 318 70 M 378 44 L 388 44 M 378 96 L 388 96 M 348 119 L 348 135" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 1px; height: 1px; padding-top: 75px; margin-left: 348px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: nowrap; ">FEM</div></div></div></foreignObject><text x="348" y="79" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">FEM</text></switch></g><path d="M 410 0 L 425 16 L 440 0 M 425 0 L 425 40" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/><path d="M 410 55 L 425 71 L 440 55 M 425 55 L 425 95" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/></g><switch><g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/><a transform="translate(0,-5)" xlink:href="https://desk.draw.io/support/solutions/articles/16000042487" target="_blank"><text text-anchor="middle" font-size="10px" x="50%" y="100%">Viewer does not support full SVG 1.1</text></a></switch></svg>
+<!-- Generated by Microsoft Visio, SVG Export ant_diversity_interface.svg Page-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		width="7.1665in" height="3.43127in" viewBox="0 0 515.988 247.051" xml:space="preserve" color-interpolation-filters="sRGB"
+		class="st7">
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:none}
+		.st2 {stroke:#000000;stroke-linecap:butt;stroke-width:0.75}
+		.st3 {fill:none;stroke:none;stroke-linecap:butt;stroke-width:0.75}
+		.st4 {fill:#000000;font-family:Arial;font-size:1.00001em}
+		.st5 {fill:#ffffff;stroke:#000000;stroke-linecap:butt;stroke-width:0.75}
+		.st6 {fill:#000000;stroke:#000000;stroke-linecap:butt;stroke-width:0.75}
+		.st7 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g>
+		<title>Page-1</title>
+		<g id="shape89-1" transform="translate(234.608,-164.451)">
+			<title>Sheet.89</title>
+			<path d="M0 247.05 L126.28 247.05 L0 247.05 Z" class="st1"/>
+			<path d="M0 247.05 L126.28 247.05" class="st2"/>
+		</g>
+		<g id="shape90-4" transform="translate(280.172,-168.426)">
+			<title>Sheet.90</title>
+			<desc>RF</desc>
+			<rect x="0" y="230.213" width="28.1409" height="16.8378" class="st3"/>
+			<text x="6.07" y="242.23" class="st4">RF</text>		</g>
+		<g id="shape91-7" transform="translate(234.608,-70.9075)">
+			<title>Sheet.91</title>
+			<path d="M0 247.05 L173.06 247.05 L173.06 229.51 L0 247.05 Z" class="st1"/>
+			<path d="M0 247.05 L173.06 247.05 L173.06 229.51" class="st2"/>
+		</g>
+		<g id="shape92-10" transform="translate(245.093,-74.8831)">
+			<title>Sheet.92</title>
+			<desc>ANT_SEL</desc>
+			<rect x="0" y="230.213" width="98.2984" height="16.8378" class="st3"/>
+			<text x="22.47" y="242.23" class="st4">ANT_SEL</text>		</g>
+		<g id="shape93-13" transform="translate(12.4429,-12.4429)">
+			<title>Sheet.93</title>
+			<desc>nRF SoC</desc>
+			<path d="M5.85 36.58 L204.63 36.58 L210.47 42.43 L210.47 241.2 L204.63 247.05 L5.85 247.05 L0 241.2 L0 42.43 L5.85 36.58
+						 Z" class="st5"/>
+			<text x="80.56" y="145.42" class="st4">nRF SoC</text>		</g>
+		<g id="shape94-16" transform="translate(0.75,-0.75)">
+			<title>Sheet.94</title>
+			<path d="M0 83.35 L11.69 83.35 L0 83.35 ZM222.17 83.35 L233.86 83.35 L222.17 83.35 ZM0 176.89 L11.69 176.89 L0 176.89
+						 ZM222.17 176.89 L233.86 176.89 L222.17 176.89 ZM70.16 13.19 L70.16 24.89 L70.16 13.19 ZM70.16 235.36 L70.16
+						 247.05 L70.16 235.36 ZM163.7 13.19 L163.7 24.89 L163.7 13.19 ZM163.7 235.36 L163.7 247.05 L163.7 235.36
+						 Z" class="st1"/>
+			<path d="M0 83.35 L11.69 83.35M222.17 83.35 L233.86 83.35M0 176.89 L11.69 176.89M222.17 176.89 L233.86 176.89M70.16 13.19
+						 L70.16 24.89M70.16 235.36 L70.16 247.05M163.7 13.19 L163.7 24.89M163.7 235.36 L163.7 247.05" class="st2"/>
+		</g>
+		<g id="shape95-19" transform="translate(205.376,-18.2894)">
+			<title>Sheet.95</title>
+			<ellipse cx="5.84646" cy="241.205" rx="5.84646" ry="5.84646" class="st6"/>
+		</g>
+		<g id="shape97-21" transform="translate(454.435,-134.049)">
+			<title>Sheet.97</title>
+			<path d="M0 247.05 L43.26 247.05 L43.26 245.88 L0 247.05 Z" class="st1"/>
+			<path d="M0 247.05 L43.26 247.05 L43.26 245.88" class="st2"/>
+		</g>
+		<g id="shape98-24" transform="translate(454.435,-194.852)">
+			<title>Sheet.98</title>
+			<path d="M0 247.05 L43.26 247.05 L43.26 242.37 L0 247.05 Z" class="st1"/>
+			<path d="M0 247.05 L43.26 247.05 L43.26 242.37" class="st2"/>
+		</g>
+		<g id="shape99-27" transform="translate(372.585,-100.14)">
+			<title>Sheet.99</title>
+			<desc>FEM</desc>
+			<path d="M70.16 118.43 L0 132.46 L0 233.02 L70.16 247.05 L70.16 118.43 Z" class="st5"/>
+			<text x="22.41" y="186.34" class="st4">FEM</text>		</g>
+		<g id="shape100-30" transform="translate(433.972,-189.824)">
+			<title>Sheet.100</title>
+			<desc>0</desc>
+			<rect x="0" y="238.632" width="7.01575" height="8.4189" class="st3"/>
+			<text x="0.17" y="246.44" class="st4">0</text>		</g>
+		<g id="shape101-33" transform="translate(433.972,-129.021)">
+			<title>Sheet.101</title>
+			<desc>1</desc>
+			<rect x="0" y="238.632" width="7.01575" height="8.4189" class="st3"/>
+			<text x="0.17" y="246.44" class="st4">1</text>		</g>
+		<g id="shape102-36" transform="translate(405.909,-89.2654)">
+			<title>Sheet.102</title>
+			<desc>S0</desc>
+			<rect x="0" y="238.632" width="22.8402" height="8.4189" class="st3"/>
+			<text x="4.08" y="246.44" class="st4">S0</text>		</g>
+		<g id="shape103-39" transform="translate(360.892,-88.4468)">
+			<title>Sheet.103</title>
+			<path d="M0 171.05 L11.69 171.05 L0 171.05 ZM81.85 140.65 L93.54 140.65 L81.85 140.65 ZM81.85 201.45 L93.54 201.45 L81.85
+						 201.45 ZM46.77 228.34 L46.77 247.05 L46.77 228.34 Z" class="st1"/>
+			<path d="M0 171.05 L11.69 171.05M81.85 140.65 L93.54 140.65M81.85 201.45 L93.54 201.45M46.77 228.34 L46.77 247.05"
+					class="st2"/>
+		</g>
+		<g id="shape105-42" transform="translate(480.159,-199.53)">
+			<title>Sheet.105</title>
+			<path d="M0 200.28 L17.54 218.99 L35.08 200.28 L0 200.28 ZM17.54 200.28 L17.54 247.05 L17.54 200.28 Z" class="st1"/>
+			<path d="M0 200.28 L17.54 218.99 L35.08 200.28M17.54 200.28 L17.54 247.05" class="st2"/>
+		</g>
+		<g id="shape106-45" transform="translate(480.159,-135.219)">
+			<title>Sheet.106</title>
+			<path d="M0 200.28 L17.54 218.99 L35.08 200.28 L0 200.28 ZM17.54 200.28 L17.54 247.05 L17.54 200.28 Z" class="st1"/>
+			<path d="M0 200.28 L17.54 218.99 L35.08 200.28M17.54 200.28 L17.54 247.05" class="st2"/>
+		</g>
+	</g>
+</svg>

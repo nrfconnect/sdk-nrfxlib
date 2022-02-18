@@ -85,7 +85,7 @@ The following mode is instead available only for RX operations:
 
 * Automatic - the :ref:`antenna diversity algorithm <ant_diversity_algorithm>` chooses the optimal antenna for each RX operation.
 
-.. figure:: images/ant_diversity_manual.png
+.. figure:: images/ant_diversity_manual.svg
    :alt: Antenna selection with RX and TX both in manual mode
 
    Antenna selection with RX and TX both in manual mode
@@ -131,7 +131,7 @@ The state transitions are triggered either internally or by the radio driver in 
 * Detecting the end of PSDU
 * Timing out the detected preamble
 
-.. figure:: images/ant_diversity_rx_procedure.png
+.. figure:: images/ant_diversity_rx_procedure.svg
    :alt: Simplified state machine used for the automatic selection of the best antenna for reception.
 
    Simplified state machine used for the automatic selection of the best antenna for reception.
@@ -192,7 +192,7 @@ For this reason, the duration of the scheduled energy detection procedure cannot
 Also, any procedure shorter than 256 us is performed only using a single antenna, even in automatic RX mode.
 In this case, it is not specified which antenna is used for energy detection.
 
-.. figure:: images/ant_diversity_energy_detection.png
+.. figure:: images/ant_diversity_energy_detection.svg
    :alt: Energy detection procedure with antenna diversity enabled
 
    Energy detection procedure with antenna diversity enabled
@@ -229,12 +229,12 @@ The following timings are constant when the antenna diversity module operates in
 .. note::
    Since the antenna does not change during the software lag, there is no need to wait for the RSSI to settle for another 15 us.
 
-.. figure:: images/ant_diversity_rx_timing.png
+.. figure:: images/ant_diversity_rx_timing.svg
    :alt: Timings while operating in RX automatic mode.
 
    Timings while operating in RX automatic mode.
 
-.. figure:: images/ant_diversity_rx_timeout.png
+.. figure:: images/ant_diversity_rx_timeout.svg
    :alt: A false positive on preamble detection scenario during the automatic antenna selection
 
    A false positive on preamble detection scenario during the automatic antenna selection
