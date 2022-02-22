@@ -1,3 +1,241 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="401px" height="761px" viewBox="-0.5 -0.5 401 761" content="&lt;mxfile host=&quot;Electron&quot; modified=&quot;2020-06-22T12:11:12.925Z&quot; agent=&quot;5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/12.9.9 Chrome/80.0.3987.163 Electron/8.2.1 Safari/537.36&quot; etag=&quot;MopyI-w3lt75gN8uTKdj&quot; compressed=&quot;false&quot; version=&quot;12.9.9&quot; type=&quot;device&quot;&gt;&lt;diagram id=&quot;C9T8B3GyTnIfjEEUA7BR&quot; name=&quot;Page-1&quot;&gt;7Vtbc9o4FP41zOw+kPEFE/PY0KTdTnZmh+w03X1hhC2wd23LkeUE8ut7ZEv4ggDH4eKWwkyCjmUhnaPvOxeZnjkOl58oir0/iYuDnqG5y575sWcYo4EBf7lglQssWwgW1HdzkV4IHvxXLISakKa+i5NKR0ZIwPy4KnRIFGGHVWSIUvJS7TYnQfVbY7TAG4IHBwWb0kffZV4utS2tkH/G/sKT36xr4kqIZGchSDzkkpeSyLztmWNKCMs/hcsxDrjupF7y++62XF1PjOKINbnBmizYNxQuh0/TL9dfr/uvs4nVN8UwzyhIxYp7xjCAAW+SGEV82mwldDF8Svlcb+YkYv0ks9QH6KDbMRj7prgOnxbiPwpj+BDNkjhraw1EExwShvkXg+HlXGBV+XTkyEZlZgYlaeRivlAdLr94PsMPMXL41RfYliDzWBiIy4g6Yp8NoPWMKfPB3h8CfxGBbEYYIyHvJgQBnstVi9t0W7bFDPiocz8IxiQgFNoRiTDXIKPkfyyFPcMcZa/1Asq2k3aA2eBlSSRs+QmTEDO6gi4CSOZI7KuXYlsO5ObzSlvSvBZCJKCwWI9V7Bb4IDbMGzaPMVJtnhY2vydggLXJD2fbmgnrpmYk7pJhz2dIFQkcxgq6WdMgKMtF2J47R1PjUqowv0P6nU20mIZCycNj6ViFlZqOsQuuRzQJZR5ZkAgFt4X0prCCBq2izz3hWznT/X+YsZXQPkoZqVqmZoq5xd/tTJGQlDp4x4oHwl0jusBsRz8778dXv9OwFAeI+c9Vx3xwOw22OsSZdD8RnU9p7Eyd0P3t6urq95KXmh3GRb3dTJy1SvL8dRgk6aOrkfii/GVXkKWClj48JbR0fUPbJ4ASXvrsG7/9yhKtf0pXPi7FyFljJRqnhJ/dEH4y0u4I/uwG+JvcQY/JX2O+PIqiJAbzqUEo7qRSEqMkgXQC8hHEEL/dw9nKKjHnpSDXPCVyv64mT/bceLQD89H8+/Py3/h+1jeGLZDrpPR5bY6zwPgYcJUwLONVqTN92Cm8ynk3BazrQybneJhuAWwlMUgwhJJeBtg56FriFUBMHB8xsDtsVBS5AR/uUmA7OD9sRx2FrbYTtmARuirdxJtrsPNGcVvWOircRw3dsxyxK3BX5vxb4V5P/Xf4aClo69EpTlK4xuuDkijqfYOD1Rk6xRfrEmNn/LrZJiL/RRAq3O+NB6xO8YOhqiXVED5j0wSWxabIfd6RQKu5Y90B8B6TKMHlEGD/MC52iJvxhQz9c9b4acngpOm5Olqwf5HBO8nAbFpLk+65I2xgvqGaRpP4EqppdXyeP5pvk4OfJe3ehkjtuIhUZ+ENvfPgXHjcNeuDO2efO1SIrYMsI59TEq4dbJpwx6xxr7uxzwAyrLotqqYSx22KEzh5sueA4WD8zbO90HfdbKequKG6ew8A6v2HTSd2ufvtLAOfhsYlM4b8iJu3nlTNVpdla0PrmLFNhbHf4y6L01tDcWZxZ/F3O1ZtDSj9lMe3aiVrG0rtRhB71Er1Lpe2NxbtlutrEIludX0F2QHB+cBHrzyD3F6dqj6rVGVTlE0150vQPoLVYVoZbueTTj8NjTZA+NFo9Es0vvkDm/dY60+SKBhpIVn225SsLikx3VV82hsGG53iAusgXEAxS2nUmgiq9acLQ389iDop/NWpkcpBHCaM0q2OhFHW2cMow+wOyzYuNhgHqjZUwsH2nCsfANhPut1iXTnvprQ7FWX9LfTblHfrFf910HXxMZeKDk5cp7juaFb140RgetPn/Mxu5WN6gwf9jsAGOFKf/10YE2wUsc5PBVaHqOD6x+QC6fD3P0N4tmfud877nQmZigOy4jVeYifNnhZ8T0BfP0a0Hewc/Wcseu24cHhEoEKz+Dlidq30m07z9js=&lt;/diagram&gt;&lt;/mxfile&gt;"><defs/><g><rect x="0" y="390" width="400" height="370" rx="14.8" ry="14.8" fill="none" stroke="#999999" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-end; justify-content: unsafe flex-start; width: 398px; height: 1px; padding-top: 757px; margin-left: 2px;"><div style="box-sizing: border-box; font-size: 0; text-align: left; "><div style="display: inline-block; font-size: 18px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; font-weight: bold; white-space: normal; word-wrap: normal; "><span style="font-size: 18px">     Remote side</span></div></div></div></foreignObject><text x="2" y="757" fill="#000000" font-family="Helvetica" font-size="18px" font-weight="bold">     Remote side</text></switch></g><rect x="0" y="0" width="400" height="370" rx="14.8" ry="14.8" fill="none" stroke="#999999" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-start; justify-content: unsafe flex-start; width: 398px; height: 1px; padding-top: 7px; margin-left: 2px;"><div style="box-sizing: border-box; font-size: 0; text-align: left; "><div style="display: inline-block; font-size: 18px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; font-weight: bold; white-space: normal; word-wrap: normal; ">     Local side</div></div></div></foreignObject><text x="2" y="25" fill="#000000" font-family="Helvetica" font-size="18px" font-weight="bold">     Local side</text></switch></g><rect x="40" y="50" width="320" height="60" rx="7.8" ry="7.8" fill="#dae8fc" stroke="#999999" pointer-events="all"/><path d="M 99.94 310 L 99.94 343.63" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 99.94 348.88 L 96.44 341.88 L 99.94 343.63 L 103.44 341.88 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="19.94" y="250" width="160" height="60" rx="9" ry="9" fill="#f5f5f5" stroke="#999999" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 280px; margin-left: 21px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #333333; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>nrf_rpc_cmd(...)</b></div></div></div></foreignObject><text x="100" y="284" fill="#333333" font-family="Helvetica" font-size="12px" text-anchor="middle">nrf_rpc_cmd(...)</text></switch></g><path d="M 99.94 410 L 99.94 443.63" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 99.94 448.88 L 96.44 441.88 L 99.94 443.63 L 103.44 441.88 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="19.94" y="350" width="160" height="60" rx="9" ry="9" fill="#f5f5f5" stroke="#999999" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 380px; margin-left: 21px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #333333; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>nRF RPC transport</b><br />passes data the remote side</div></div></div></foreignObject><text x="100" y="384" fill="#333333" font-family="Helvetica" font-size="12px" text-anchor="middle">nRF RPC transport...</text></switch></g><path d="M 99.94 510 Q 99.9 530 109.95 530 Q 120 530 120 543.63" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 120 548.88 L 116.5 541.88 L 120 543.63 L 123.5 541.88 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="19.94" y="450" width="160" height="60" rx="9" ry="9" fill="#f5f5f5" stroke="#999999" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 480px; margin-left: 21px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #333333; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>nRF RPC dispacher</b> searches for the associated handler</div></div></div></foreignObject><text x="100" y="484" fill="#333333" font-family="Helvetica" font-size="12px" text-anchor="middle">nRF RPC dispacher searches...</text></switch></g><path d="M 300 350 Q 300 350 300 316.37" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 300 311.12 L 303.5 318.12 L 300 316.37 L 296.5 318.12 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="220" y="350" width="160" height="60" rx="9" ry="9" fill="#f5f5f5" stroke="#999999" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 380px; margin-left: 221px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #333333; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>nRF RPC </b><b>transport</b><br />passes result to the<br />local side</div></div></div></foreignObject><text x="300" y="384" fill="#333333" font-family="Helvetica" font-size="12px" text-anchor="middle">nRF RPC transport...</text></switch></g><path d="M 300 250 Q 300 230 290 230 Q 280 230 280 216.37" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 280 211.12 L 283.5 218.12 L 280 216.37 L 276.5 218.12 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="220" y="250" width="160" height="60" rx="9" ry="9" fill="#f5f5f5" stroke="#999999" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 280px; margin-left: 221px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #333333; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>bt_start_adv(...)</b> <b>response handler</b> decodes the result</div></div></div></foreignObject><text x="300" y="284" fill="#333333" font-family="Helvetica" font-size="12px" text-anchor="middle">bt_start_adv(...) response...</text></switch></g><path d="M 300 450 Q 300 450 300 416.37" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 300 411.12 L 303.5 418.12 L 300 416.37 L 296.5 418.12 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="220" y="450" width="160" height="60" rx="9" ry="9" fill="#f5f5f5" stroke="#999999" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 480px; margin-left: 221px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #333333; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>nrf_rpc_rsp(...)</b></div></div></div></foreignObject><text x="300" y="484" fill="#333333" font-family="Helvetica" font-size="12px" text-anchor="middle">nrf_rpc_rsp(...)</text></switch></g><path d="M 120 110 L 120 143.63" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 120 148.88 L 116.5 141.88 L 120 143.63 L 123.5 141.88 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="40" y="50" width="160" height="60" fill="none" stroke="none" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 80px; margin-left: 41px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>bt_start_adv(...)</b> is called from the user code</div></div></div></foreignObject><text x="120" y="84" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">bt_start_adv(...) is calle...</text></switch></g><rect x="200" y="50" width="160" height="60" fill="none" stroke="none" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 80px; margin-left: 201px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>result</b> is obtained<br />by the user code</div></div></div></foreignObject><text x="280" y="84" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">result is obtained...</text></switch></g><rect x="40" y="150" width="320" height="60" rx="12" ry="12" fill="#f5f5f5" stroke="#999999" pointer-events="all"/><path d="M 120 210 Q 120 230 109.95 230 Q 99.9 230 99.9 243.63" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 99.9 248.88 L 96.4 241.88 L 99.9 243.63 L 103.4 241.88 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="40" y="150" width="160" height="60" fill="none" stroke="none" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 180px; margin-left: 41px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>bt_start_adv(...)<br />serializes</b><span> all the parameteres</span></div></div></div></foreignObject><text x="120" y="184" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">bt_start_adv(...)...</text></switch></g><path d="M 280 150 L 280 116.37" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 280 111.12 L 283.5 118.12 L 280 116.37 L 276.5 118.12 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="200" y="150" width="160" height="60" fill="none" stroke="none" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 180px; margin-left: 201px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>bt_start_adv(...)<br />returns</b><span> the result</span></div></div></div></foreignObject><text x="280" y="184" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">bt_start_adv(...)...</text></switch></g><rect x="40" y="550" width="320" height="60" rx="9" ry="9" fill="#f5f5f5" stroke="#999999" pointer-events="all"/><path d="M 120 610 Q 120 630 140 630 Q 160 630 160 643.63" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 160 648.88 L 156.5 641.88 L 160 643.63 L 163.5 641.88 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="40" y="550" width="160" height="60" fill="none" stroke="none" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 580px; margin-left: 41px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>bt_start_adv_handler(...)<br /></b><span>decodes the parameters</span></div></div></div></foreignObject><text x="120" y="584" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">bt_start_adv_handler(...)...</text></switch></g><path d="M 280 550 Q 280 530 290 530 Q 300 530 300 516.37" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 300 511.12 L 303.5 518.12 L 300 516.37 L 296.5 518.12 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="200" y="550" width="160" height="60" fill="none" stroke="none" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 580px; margin-left: 201px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>bt_start_adv_handler(...)<br /></b><span>encodes the result</span></div></div></div></foreignObject><text x="280" y="584" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">bt_start_adv_handler(...)...</text></switch></g><path d="M 240 650 Q 240 630 260 630 Q 280 630 280 616.37" fill="none" stroke="#999999" stroke-miterlimit="10" pointer-events="stroke"/><path d="M 280 611.12 L 283.5 618.12 L 280 616.37 L 276.5 618.12 Z" fill="#999999" stroke="#999999" stroke-miterlimit="10" pointer-events="all"/><rect x="120" y="650" width="160" height="60" rx="9" ry="9" fill="#f8cecc" stroke="#999999" pointer-events="all"/><g transform="translate(-0.5 -0.5)"><switch><foreignObject style="overflow: visible; text-align: left;" pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"><div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 158px; height: 1px; padding-top: 680px; margin-left: 121px;"><div style="box-sizing: border-box; font-size: 0; text-align: center; "><div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: #000000; line-height: 1.2; pointer-events: all; white-space: normal; word-wrap: normal; "><b>bt_start_adv(...)<br /></b>is executed</div></div></div></foreignObject><text x="200" y="684" fill="#000000" font-family="Helvetica" font-size="12px" text-anchor="middle">bt_start_adv(...)...</text></switch></g></g><switch><g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/><a transform="translate(0,-5)" xlink:href="https://desk.draw.io/support/solutions/articles/16000042487" target="_blank"><text text-anchor="middle" font-size="10px" x="50%" y="100%">Viewer does not support full SVG 1.1</text></a></switch></svg>
+<!-- Generated by Microsoft Visio, SVG Export cmd_flow.svg Page-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		width="5.73644in" height="8.19313in" viewBox="0 0 413.024 589.905" xml:space="preserve" color-interpolation-filters="sRGB"
+		class="st12">
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:none;stroke:#0077c8;stroke-width:1}
+		.st2 {fill:#0077c8;font-family:Arial;font-size:1.16666em}
+		.st3 {fill:#0033a0;stroke:none;stroke-width:1}
+		.st4 {fill:none;stroke:none;stroke-width:1}
+		.st5 {fill:#ffffff;font-family:Arial;font-size:1.00001em}
+		.st6 {font-size:1em}
+		.st7 {fill:#0077c8;stroke:none;stroke-width:1}
+		.st8 {fill:#00a9ce;stroke:none;stroke-width:1}
+		.st9 {marker-start:url(#mrkr4-96);stroke:#333f48;stroke-linecap:butt;stroke-width:1}
+		.st10 {fill:#333f48;fill-opacity:1;stroke:#333f48;stroke-opacity:1;stroke-width:0.28409090909091}
+		.st11 {marker-end:url(#mrkr4-102);stroke:#333f48;stroke-linecap:butt;stroke-width:1}
+		.st12 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend4">
+			<path d="M 2 1 L 0 0 L 2 -1 L 2 1 " style="stroke:none"/>
+		</g>
+		<marker id="mrkr4-96" class="st10" refX="6.68" orient="auto" markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(3.52) "/>
+		</marker>
+		<marker id="mrkr4-102" class="st10" refX="-7.04" orient="auto" markerUnits="strokeWidth" overflow="visible">
+			<use xlink:href="#lend4" transform="scale(-3.52,-3.52) "/>
+		</marker>
+	</defs>
+	<g>
+		<title>Page-1</title>
+		<g id="shape64-1" transform="translate(1,-301.297)">
+			<title>Nordic Light Grey</title>
+			<desc>Local side</desc>
+			<rect x="0" y="302.297" width="411.024" height="287.608" class="st1"/>
+			<text x="4" y="318.9" class="st2">Local side</text>		</g>
+		<g id="shape65-4" transform="translate(1,-1)">
+			<title>Nordic Middle Grey</title>
+			<desc>Remote side</desc>
+			<rect x="0" y="302.297" width="411.024" height="287.608" class="st1"/>
+			<text x="4" y="581.71" class="st2">Remote side</text>		</g>
+		<g id="group89-7" transform="translate(131.793,-24.0291)">
+			<title>Sheet.89</title>
+			<g id="shape87-8">
+				<title>Nordic Blue.87</title>
+				<rect x="0" y="535.265" width="149.438" height="54.6402" class="st3"/>
+			</g>
+			<g id="shape88-10" transform="translate(26.6858,-9.04664)">
+				<title>Sheet.88</title>
+				<desc>bt_start_adv(…) is executed</desc>
+				<rect x="0" y="553.359" width="96.0659" height="36.547" class="st4"/>
+				<text x="5.02" y="568.03" class="st5">bt_start_adv(…) <tspan x="17.68" dy="1.2em" class="st6">is executed</tspan></text>			</g>
+		</g>
+		<g id="group90-14" transform="translate(49.5067,-499.142)">
+			<title>Sheet.90</title>
+			<g id="shape66-15">
+				<title>Nordic Blue</title>
+				<rect x="0" y="535.265" width="314.01" height="54.6402" class="st7"/>
+			</g>
+			<g id="shape67-17" transform="translate(0,-8.61842)">
+				<title>Sheet.67</title>
+				<desc>bt_start_adv(…) is called from the user code</desc>
+				<rect x="0" y="553.359" width="149.438" height="36.547" class="st4"/>
+				<text x="8.36" y="568.03" class="st5">bt_start_adv(…) is called <tspan x="24.69" dy="1.2em" class="st6">from the user code</tspan></text>			</g>
+			<g id="shape68-21" transform="translate(164.573,-8.61842)">
+				<title>Sheet.68</title>
+				<desc>Result is obtained by the user code</desc>
+				<rect x="0" y="553.359" width="149.438" height="36.547" class="st4"/>
+				<text x="9.01" y="568.03" class="st5">Result is obtained by the <tspan x="48.37" dy="1.2em" class="st6">user code</tspan></text>			</g>
+		</g>
+		<g id="group91-25" transform="translate(49.5067,-420.469)">
+			<title>Sheet.91</title>
+			<g id="shape69-26">
+				<title>Nordic Blue.69</title>
+				<rect x="0" y="535.265" width="314.01" height="54.6402" class="st8"/>
+			</g>
+			<g id="shape70-28" transform="translate(0,-8.61842)">
+				<title>Sheet.70</title>
+				<desc>bt_start_adv(…) serializes all the parameters</desc>
+				<rect x="0" y="553.359" width="149.438" height="36.547" class="st4"/>
+				<text x="5.03" y="568.03" class="st5">bt_start_adv(…) serializes <tspan x="26.69" dy="1.2em" class="st6">all the parameters</tspan></text>			</g>
+			<g id="shape71-32" transform="translate(164.573,-8.61842)">
+				<title>Sheet.71</title>
+				<desc>bt_start_adv(…) returns the result</desc>
+				<rect x="0" y="553.359" width="149.438" height="36.547" class="st4"/>
+				<text x="11.36" y="568.03" class="st5">bt_start_adv(…) returns <tspan x="50.04" dy="1.2em" class="st6">the result</tspan></text>			</g>
+		</g>
+		<g id="group98-36" transform="translate(49.5067,-102.701)">
+			<title>Sheet.98</title>
+			<g id="shape84-37">
+				<title>Nordic Blue.84</title>
+				<rect x="0" y="535.265" width="314.01" height="54.6402" class="st8"/>
+			</g>
+			<g id="shape85-39" transform="translate(0,-9.04664)">
+				<title>Sheet.85</title>
+				<desc>bt_start_adv_handler(…) decodes the parameters</desc>
+				<rect x="0" y="553.359" width="149.438" height="36.547" class="st4"/>
+				<text x="8.35" y="568.03" class="st5">bt_start_adv_handler(…) <tspan x="10.01" dy="1.2em" class="st6">decodes the parameters</tspan></text>			</g>
+			<g id="shape86-43" transform="translate(164.573,-9.04664)">
+				<title>Sheet.86</title>
+				<desc>bt_start_adv_handler(…) encodes the result</desc>
+				<rect x="0" y="553.359" width="149.438" height="36.547" class="st4"/>
+				<text x="8.35" y="568.03" class="st5">bt_start_adv_handler(…) <tspan x="25.69" dy="1.2em" class="st6">encodes the result</tspan></text>			</g>
+		</g>
+		<g id="group99-47" transform="translate(14.0736,-340.771)">
+			<title>Sheet.99</title>
+			<g id="group92-48" transform="translate(0,-1.02634)">
+				<title>Sheet.92</title>
+				<g id="shape72-49">
+					<title>Nordic Blue.72</title>
+					<rect x="0" y="535.265" width="186.451" height="54.6402" class="st8"/>
+				</g>
+				<g id="shape73-51" transform="translate(18.5068,-9.04664)">
+					<title>Sheet.73</title>
+					<desc>nrf_rpc_cmd(…)</desc>
+					<rect x="0" y="553.359" width="149.438" height="36.547" class="st4"/>
+					<text x="31.38" y="575.23" class="st5">nrf_rpc_cmd(…)</text>				</g>
+			</g>
+			<g id="group97-54" transform="translate(198.425,1.13687E-13)">
+				<title>Sheet.97</title>
+				<g id="shape74-55">
+					<title>Nordic Blue.74</title>
+					<rect x="0" y="535.265" width="186.451" height="54.6402" class="st8"/>
+				</g>
+				<g id="shape75-57" transform="translate(18.5068,-9.04664)">
+					<title>Sheet.75</title>
+					<desc>bt_start_adv(…) response handler decodes the result</desc>
+					<rect x="0" y="553.359" width="149.438" height="36.547" class="st4"/>
+					<text x="5.35" y="568.03" class="st5">bt_start_adv(…) response <tspan x="4" dy="1.2em" class="st6">handler decodes the result</tspan></text>				</g>
+			</g>
+		</g>
+		<g id="group100-61" transform="translate(14.0736,-261.072)">
+			<title>Sheet.100</title>
+			<g id="group93-62" transform="translate(0,-1.02634)">
+				<title>Sheet.93</title>
+				<g id="shape76-63">
+					<title>Nordic Blue.76</title>
+					<rect x="0" y="535.265" width="186.451" height="54.6402" class="st8"/>
+				</g>
+				<g id="shape77-65" transform="translate(13.8964,-9.04664)">
+					<title>Sheet.77</title>
+					<desc>nRF RPC transport passes data to the remote side</desc>
+					<rect x="0" y="553.359" width="158.659" height="36.547" class="st4"/>
+					<text x="7.64" y="568.03" class="st5">nRF RPC transport passes <tspan x="17.96" dy="1.2em" class="st6">data to the remote side</tspan></text>				</g>
+			</g>
+			<g id="group96-69" transform="translate(198.425,1.13687E-13)">
+				<title>Sheet.96</title>
+				<g id="shape78-70">
+					<title>Nordic Blue.78</title>
+					<rect x="0" y="535.265" width="186.451" height="54.6402" class="st8"/>
+				</g>
+				<g id="shape79-72" transform="translate(13.8964,-9.04664)">
+					<title>Sheet.79</title>
+					<desc>nRF RPC transport passes result to the local side</desc>
+					<rect x="0" y="553.359" width="158.659" height="36.547" class="st4"/>
+					<text x="7.64" y="568.03" class="st5">nRF RPC transport passes <tspan x="21.3" dy="1.2em" class="st6">result to the local side</tspan></text>				</g>
+			</g>
+		</g>
+		<g id="group101-76" transform="translate(14.0736,-181.374)">
+			<title>Sheet.101</title>
+			<g id="group94-77" transform="translate(0,-1.02634)">
+				<title>Sheet.94</title>
+				<g id="shape80-78">
+					<title>Nordic Blue.80</title>
+					<rect x="0" y="535.265" width="186.451" height="54.6402" class="st8"/>
+				</g>
+				<g id="shape81-80" transform="translate(18.5068,-9.04664)">
+					<title>Sheet.81</title>
+					<desc>nRF RPC dispatcher searches for the associated handler</desc>
+					<rect x="0" y="553.359" width="149.438" height="36.547" class="st4"/>
+					<text x="19.7" y="560.83" class="st5">nRF RPC dispatcher <tspan x="31.7" dy="1.2em" class="st6">searches for the </tspan><tspan
+								x="24.35" dy="1.2em" class="st6">associated handler</tspan></text>				</g>
+			</g>
+			<g id="group95-85" transform="translate(198.425,1.13687E-13)">
+				<title>Sheet.95</title>
+				<g id="shape82-86">
+					<title>Nordic Blue.82</title>
+					<rect x="0" y="535.265" width="186.451" height="54.6402" class="st8"/>
+				</g>
+				<g id="shape83-88" transform="translate(18.5068,-9.04664)">
+					<title>Sheet.83</title>
+					<desc>nrf_rpc_rsp(…)</desc>
+					<rect x="0" y="553.359" width="149.438" height="36.547" class="st4"/>
+					<text x="34.38" y="575.23" class="st5">nrf_rpc_rsp(…)</text>				</g>
+			</g>
+		</g>
+		<g id="shape102-91" transform="translate(282.197,-499.864)">
+			<title>Dynamic connector</title>
+			<path d="M7.09 596.59 L7.09 596.95 L7.09 614.66" class="st9"/>
+		</g>
+		<g id="shape103-97" transform="translate(116.937,-499.142)">
+			<title>Dynamic connector.103</title>
+			<path d="M7.09 589.91 L7.09 606.9" class="st11"/>
+		</g>
+		<g id="shape104-103" transform="translate(100.213,-420.469)">
+			<title>Dynamic connector.104</title>
+			<path d="M7.09 589.91 L7.09 606.9" class="st11"/>
+		</g>
+		<g id="shape105-108" transform="translate(298.638,-420.469)">
+			<title>Dynamic connector.105</title>
+			<path d="M7.09 596.59 L7.09 596.95 L7.09 614.96" class="st9"/>
+		</g>
+		<g id="shape106-113" transform="translate(298.638,-340.771)">
+			<title>Dynamic connector.106</title>
+			<path d="M7.09 596.59 L7.09 596.95 L7.09 614.96" class="st9"/>
+		</g>
+		<g id="shape107-118" transform="translate(298.638,-261.072)">
+			<title>Dynamic connector.107</title>
+			<path d="M7.09 596.59 L7.09 596.95 L7.09 614.96" class="st9"/>
+		</g>
+		<g id="shape108-123" transform="translate(282.764,-181.374)">
+			<title>Dynamic connector.108</title>
+			<path d="M7.09 596.59 L7.09 596.95 L7.09 613.94" class="st9"/>
+		</g>
+		<g id="shape109-128" transform="translate(100.213,-341.797)">
+			<title>Dynamic connector.109</title>
+			<path d="M7.09 589.91 L7.09 607.92" class="st11"/>
+		</g>
+		<g id="shape110-133" transform="translate(100.213,-262.099)">
+			<title>Dynamic connector.110</title>
+			<path d="M7.09 589.91 L7.09 607.92" class="st11"/>
+		</g>
+		<g id="shape111-138" transform="translate(120.622,-182.4)">
+			<title>Dynamic connector.111</title>
+			<path d="M7.09 589.91 L7.09 607.92" class="st11"/>
+		</g>
+		<g id="shape112-143" transform="translate(241.945,-102.701)">
+			<title>Dynamic connector.112</title>
+			<path d="M7.09 596.59 L7.09 596.95 L7.09 613.94" class="st9"/>
+		</g>
+		<g id="shape113-148" transform="translate(162.008,-103.728)">
+			<title>Dynamic connector.113</title>
+			<path d="M7.09 589.91 L7.09 607.92" class="st11"/>
+		</g>
+	</g>
+</svg>
