@@ -43,7 +43,7 @@ The Arm CryptoCell cc3xx driver is only available on the following devices:
 Enabling the Arm CryptoCell cc3xx driver
 ========================================
 
-The Arm CryptoCell cc3xx driver can be enabled by setting the :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_CC3XX` Kconfig option.
+The Arm CryptoCell cc3xx driver can be enabled by setting the :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_CC3XX` Kconfig option.
 
 
 Using the Arm CryptoCell cc3xx driver
@@ -51,7 +51,7 @@ Using the Arm CryptoCell cc3xx driver
 
 To use the :ref:`nrf_cc3xx_mbedcrypto_readme` PSA driver, the Arm CryptoCell cc310/cc312 hardware must be first initialized.
 
-The Arm CryptoCell cc3xx hardware is initialized in the :file:`hw_cc310.c` file, located under :file:`nrf/drivers/hw_cc310/`, and is controlled with the :kconfig:`CONFIG_HW_CC3XX` Kconfig option.
+The Arm CryptoCell cc3xx hardware is initialized in the :file:`hw_cc310.c` file, located under :file:`nrf/drivers/hw_cc310/`, and is controlled with the :kconfig:option:`CONFIG_HW_CC3XX` Kconfig option.
 The Kconfig option has a default value of 'y' when cc3xx is available in the SoC.
 
 .. _nrf_security_drivers_oberon:
@@ -67,7 +67,7 @@ The nrf_oberon driver provides support for AES ciphers, SHA-1, SHA-256, SHA-384,
 Enabling the nrf_oberon driver
 ==============================
 
-The :ref:`nrf_oberon_readme` PSA driver can be enabled by setting the :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_OBERON` Kconfig option.
+The :ref:`nrf_oberon_readme` PSA driver can be enabled by setting the :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_OBERON` Kconfig option.
 
 .. _nrf_security_drivers_builtin:
 
@@ -89,7 +89,7 @@ Similarly, you can use the built-in Mbed TLS to add support for features not ava
 Enabling the built-in Mbed TLS support
 ======================================
 
-To enable the built-in Mbed TLS support, set the :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_BUILTIN` Kconfig option to true.
+To enable the built-in Mbed TLS support, set the :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_BUILTIN` Kconfig option to true.
 
 It is generally not needed to enable built-in Mbed TLS support manually, as there is Kconfig logic that does that, depending on the enabled cryptographic features or algorithms and the configuration of PSA drivers.
 
@@ -109,7 +109,7 @@ Enabling legacy Mbed TLS support
 
 The legacy Mbed TLS APIs can be configured by setting the option kconfig:`CONFIG_NORDIC_SECURITY_BACKEND` instead of setting the option kconfig:`CONFIG_NRF_SECURITY`.
 
-Additionally either :kconfig:`CONFIG_CC3XX_BACKEND` or :kconfig:`CONFIG_OBERON_BACKEND` must be enabled.
+Additionally either :kconfig:option:`CONFIG_CC3XX_BACKEND` or :kconfig:option:`CONFIG_OBERON_BACKEND` must be enabled.
 
 .. note::
-   Enabling the CryptoCell by using :kconfig:`CONFIG_CC3XX_BACKEND` in a non-secure image of a TF-M build will have no effect.
+   Enabling the CryptoCell by using :kconfig:option:`CONFIG_CC3XX_BACKEND` in a non-secure image of a TF-M build will have no effect.

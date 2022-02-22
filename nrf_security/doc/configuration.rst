@@ -12,7 +12,7 @@ You can enable the Nordic Security Module using `PSA driver support`_ or with `L
 PSA driver support
 ******************
 
-To enable Nordic Security Module with the PSA driver support, set the :kconfig:`CONFIG_NRF_SECURITY` Kconfig option along with additional configuration options, as described in :ref:`nrf_security_driver_config`.
+To enable Nordic Security Module with the PSA driver support, set the :kconfig:option:`CONFIG_NRF_SECURITY` Kconfig option along with additional configuration options, as described in :ref:`nrf_security_driver_config`.
 
 The PSA driver support requires using PSA Crypto APIs.
 
@@ -30,11 +30,11 @@ Custom Mbed TLS configuration files
 
 The Nordic Security Module (nrf_security) Kconfig options are used to generate an Mbed TLS configuration file.
 
-Although not recommended, it is possible to provide a custom Mbed TLS configuration file by disabling :kconfig:`CONFIG_GENERATE_MBEDTLS_CFG_FILE`.
+Although not recommended, it is possible to provide a custom Mbed TLS configuration file by disabling :kconfig:option:`CONFIG_GENERATE_MBEDTLS_CFG_FILE`.
 See :ref:`nrf_security_tls_header`.
 
 Building with TF-M
 ******************
 
-If :kconfig:`CONFIG_BUILD_WITH_TFM` is enabled together with :kconfig:`CONFIG_NRF_SECURITY`, the TF-M secure image will enable the use of the hardware acceleration of Arm CryptoCell.
+If :kconfig:option:`CONFIG_BUILD_WITH_TFM` is enabled together with :kconfig:option:`CONFIG_NRF_SECURITY`, the TF-M secure image will enable the use of the hardware acceleration of Arm CryptoCell.
 In this case, the Kconfig configurations in the Nordic Security Module control the features enabled in TF-M.

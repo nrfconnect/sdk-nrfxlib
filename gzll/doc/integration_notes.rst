@@ -23,7 +23,7 @@ It should be called by only a single thread in an RTOS.
 Configuration
 *************
 
-In the |NCS|, you can enable the GZLL library using the :kconfig:`CONFIG_GZLL` Kconfig option.
+In the |NCS|, you can enable the GZLL library using the :kconfig:option:`CONFIG_GZLL` Kconfig option.
 Look for the menu item "Enable Gazell Link Layer".
 The build system will link in the appropriate library for your nRF5 SoC.
 

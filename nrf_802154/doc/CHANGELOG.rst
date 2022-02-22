@@ -61,7 +61,7 @@ Notable changes
 Bug fixes
 =========
 
-* Fixed an issue where it would not be possible to transmit frames with invalid Auxiliary Security Header if :kconfig:`CONFIG_NRF_802154_ENCRYPTION` was set to ``n``. (KRKNWK-11218)
+* Fixed an issue where it would not be possible to transmit frames with invalid Auxiliary Security Header if :kconfig:option:`CONFIG_NRF_802154_ENCRYPTION` was set to ``n``. (KRKNWK-11218)
 * Fix an issue with the IE Vendor OUI endianness. (KRKNWK-10633)
 * Fixed various bugs in the MAC Encryption layer. (KRKNWK-10646)
 
