@@ -8,13 +8,13 @@ The |NCS|'s :ref:`nrf:ug_zigbee` stack uses ZBOSS – a portable, high-performan
 The nrfxlib repository contains the following versions of the ZBOSS libraries:
 
 * *Production* version that contains the latest stable ZBOSS libraries.
-  This version is enabled with the :kconfig:`CONFIG_ZIGBEE_LIBRARY_PRODUCTION` Kconfig option and its files are located in the :file:`zboss/production/` directory.
+  This version is enabled with the :kconfig:option:`CONFIG_ZIGBEE_LIBRARY_PRODUCTION` Kconfig option and its files are located in the :file:`zboss/production/` directory.
   This version is enabled by default.
 
   The production libraries fully conform to the certification, but they are not necessarily certified.
 
 * *Development* version that contains the latest version of ZBOSS libraries, with experimental features included.
-  This version is enabled with the :kconfig:`CONFIG_ZIGBEE_LIBRARY_DEVELOPMENT` Kconfig option and its files are located in the :file:`zboss/development/` directory.
+  This version is enabled with the :kconfig:option:`CONFIG_ZIGBEE_LIBRARY_DEVELOPMENT` Kconfig option and its files are located in the :file:`zboss/development/` directory.
 
   This version might not conform to the latest Zigbee Pro R22 test specification.
   There is no guarantee that the library conforms to the certification.
