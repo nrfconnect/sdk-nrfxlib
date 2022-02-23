@@ -9,6 +9,12 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.5.2
+***************
+
+* Added :c:func:`nrf_modem_os_trace_irq_enable` and :c:func:`nrf_modem_os_trace_irq_disable` functions.
+* Added support for calling :c:func:`nrf_modem_trace_processed_callback` from a thread.
+
 nrf_modem 1.5.1
 ***************
 

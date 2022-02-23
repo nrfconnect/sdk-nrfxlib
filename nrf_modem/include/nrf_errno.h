@@ -113,8 +113,8 @@ extern "C" {
 }
 #endif
 
-#endif /* NRF_ERRNO_H__ */
-
 /**
  * @}
  */
+
+#endif /* NRF_ERRNO_H__ */
