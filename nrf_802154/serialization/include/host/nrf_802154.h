@@ -302,10 +302,8 @@ bool nrf_802154_receive(void);
  * to an active delayed operation if the request is successful. In particular, none of the reserved
  * identifiers can be used.
  *
- * @param[in]   t0       Base of delay time - absolute time used by the Timer Scheduler,
- *                       in microseconds (us).
- * @param[in]   dt       Delta of delay time from @p t0, in microseconds (us).
- * @param[in]   timeout  Reception timeout (counted from @p t0 + @p dt), in microseconds (us).
+ * @param[in]   rx_time  Absolute time used by the SL Timer, in microseconds (us).
+ * @param[in]   timeout  Reception timeout (counted from @p rx_time), in microseconds (us).
  * @param[in]   channel  Radio channel on which the frame is to be received.
  * @param[in]   id       Identifier of the scheduled reception window. If the reception has been
  *                       scheduled successfully, the value of this parameter can be used in
@@ -314,8 +312,7 @@ bool nrf_802154_receive(void);
  * @retval  true   The reception procedure was scheduled.
  * @retval  false  The driver could not schedule the reception procedure.
  */
-bool nrf_802154_receive_at(uint32_t t0,
-                           uint32_t dt,
+bool nrf_802154_receive_at(uint64_t rx_time,
                            uint32_t timeout,
                            uint8_t  channel,
                            uint32_t id);
@@ -635,9 +632,7 @@ uint8_t nrf_802154_csma_ca_max_backoffs_get(void);
  *                         the frame length (including FCS). The following bytes contain data.
  *                         The CRC is computed automatically by the radio hardware. Therefore,
  *                         the FCS field can contain any bytes.
- * @param[in]  t0          Base of delay time - absolute time used by the Timer Scheduler,
- *                         in microseconds (us).
- * @param[in]  dt          Delta of delay time from @p t0, in microseconds (us).
+ * @param[in]  tx_time     Absolute time used by the SL Timer, in microseconds (us).
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
  *                         to transmit. If @c NULL following metadata are used:
  *                         Field           | Value
@@ -650,8 +645,7 @@ uint8_t nrf_802154_csma_ca_max_backoffs_get(void);
  * @retval  false  The driver could not schedule the transmission procedure.
  */
 bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data,
-                                uint32_t                                  t0,
-                                uint32_t                                  dt,
+                                uint64_t                                  tx_time,
                                 const nrf_802154_transmit_at_metadata_t * p_metadata);
 
 /**
@@ -717,7 +711,7 @@ int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level);
  * @return  Timestamp of the beginning of the first preamble symbol of a given frame,
  *          in microseconds.
  */
-uint32_t nrf_802154_first_symbol_timestamp_get(uint32_t end_timestamp, uint8_t psdu_length);
+uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length);
 
 /**
  * @}
@@ -806,7 +800,7 @@ nrf_802154_capabilities_t nrf_802154_capabilities_get(void);
  *
  * @returns Current time in microseconds.
  */
-uint32_t nrf_802154_time_get(void);
+uint64_t nrf_802154_time_get(void);
 
 /**
  * @}

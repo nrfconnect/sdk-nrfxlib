@@ -163,8 +163,7 @@ typedef void (* rsch_dly_ts_started_callback_t)(rsch_dly_ts_id_t dly_ts_id);
  */
 typedef struct
 {
-    uint32_t                       t0;               ///< Base time of the timestamp of the timeslot start, in microseconds.
-    uint32_t                       dt;               ///< Time delta between @p t0 and the timestamp of the timeslot start, in microseconds.
+    uint64_t                       trigger_time;     ///< Trigger time of the timeslot start, in microseconds.
     rsch_prio_t                    prio;             ///< Priority level required for the delayed timeslot.
     rsch_dly_ts_op_t               op;               ///< Operation to be performed in the requested timeslot.
     rsch_dly_ts_type_t             type;             ///< Type of the requested timeslot.
@@ -252,7 +251,7 @@ bool nrf_802154_rsch_timeslot_request(uint32_t length_us);
  * @note @p p_dly_ts_param->started_callback can be delayed and it is up to
  *       the called module to check the delay and decide if it causes any issues.
  *
- * @note The time parameters use the same units that are used in the Timer Scheduler module.
+ * @note The time parameters use the same units that are used in the SL Timer module.
  *
  * @param[in]   p_dly_ts_param  Parameters of the requested delayed timeslot.
  *
@@ -264,13 +263,23 @@ bool nrf_802154_rsch_delayed_timeslot_request(const rsch_dly_ts_param_t * p_dly_
 /**
  * @brief Cancels a requested future timeslot.
  *
+ * The delayed timeslot must be explicitly cancelled from the @p p_dly_ts_param->started_callback
+ * handler function passed to @ref nrf_802154_rsch_delayed_timeslot_request. When timeslot is
+ * released from the handler context, the @p handler flag must be set to @p true.
+ * Otherwise, the timeslot can be cancelled before it requests desired preconditions.
+ * The @p handler flag must be set to @p false in this case.
+ *
+ * Because @p RSCH_DLY_TS_TYPE_RELAXED request preconditions immedialy, the timeslots of this type
+ * cannot be cancelled before the timeslot starts.
+ *
  * @param[in] dly_ts_id  Identifier of the requested timeslot. If the provided value does not refer
  *                       to any scheduled delayed timeslot, the function returns false.
+ * @param[in] handler    Indicates whether the requested timeslot is released from handler function.
  *
  * @retval true     Scheduled timeslot has been cancelled.
  * @retval false    No scheduled timeslot has been requested (nothing to cancel).
  */
-bool nrf_802154_rsch_delayed_timeslot_cancel(rsch_dly_ts_id_t dly_ts_id);
+bool nrf_802154_rsch_delayed_timeslot_cancel(rsch_dly_ts_id_t dly_ts_id, bool handler);
 
 /**
  * @brief Updates priority of a requested delayed timeslot.
@@ -296,7 +305,7 @@ bool nrf_802154_rsch_delayed_timeslot_priority_update(rsch_dly_ts_id_t dly_ts_id
  * @retval false    The given timeslot was not scheduled and p_time_to_start was not modified.
  */
 bool nrf_802154_rsch_delayed_timeslot_time_to_start_get(rsch_dly_ts_id_t dly_ts_id,
-                                                        uint32_t       * p_time_to_start);
+                                                        uint64_t       * p_time_to_start);
 /**
  * @brief Checks if there is a pending timeslot request.
  *

@@ -60,6 +60,11 @@
 void nrf_802154_delayed_trx_init(void);
 
 /**
+ * @brief Deinitializes delayed transmission and reception window features.
+ */
+void nrf_802154_delayed_trx_deinit(void);
+
+/**
  * @brief Requests transmission of a frame at a given time.
  *
  * If the requested transmission is successful and the frame is transmitted, the
@@ -72,14 +77,12 @@ void nrf_802154_delayed_trx_init(void);
  *
  * @param[in]  p_data       Pointer to a buffer containing PHR and PSDU of the frame to be
  *                          transmitted.
- * @param[in]  t0           Base of delay time in microseconds.
- * @param[in]  dt           Delta of the delay time from @p t0 in microseconds.
+ * @param[in]  tx_time      Absolute time used by the SL Timer, in microseconds (us).
  * @param[in]  p_metadata   Pointer to metadata structure. Contains detailed properties of data
  *                          to transmit and additional parameters for the procedure.
  */
 bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p_data,
-                                     uint32_t                                  t0,
-                                     uint32_t                                  dt,
+                                     uint64_t                                  tx_time,
                                      const nrf_802154_transmit_at_metadata_t * p_metadata);
 
 /**
@@ -109,9 +112,8 @@ bool nrf_802154_delayed_trx_transmit_cancel(void);
  * to an active delayed operation if the request is successful. In particular, none of the reserved
  * identifiers can be used.
  *
- * @param[in]  t0       Base of delay time in microseconds.
- * @param[in]  dt       Delta of delay time from @p t0 in microseconds.
- * @param[in]  timeout  Reception timeout (counted from @p t0 + @p dt) in microseconds.
+ * @param[in]  rx_time  Absolute time used by the SL Timer, in microseconds (us).
+ * @param[in]  timeout  Reception timeout (counted from @p rx_time) in microseconds.
  * @param[in]  channel  Number of the channel on which the frame is to be received.
  * @param[in]  id       Identifier of the scheduled reception window. If the reception has been
  *                      scheduled successfully, the value of this parameter can be used in
@@ -120,8 +122,7 @@ bool nrf_802154_delayed_trx_transmit_cancel(void);
  * @retval  true   The reception procedure was scheduled.
  * @retval  false  The driver could not schedule the reception procedure.
  */
-bool nrf_802154_delayed_trx_receive(uint32_t t0,
-                                    uint32_t dt,
+bool nrf_802154_delayed_trx_receive(uint64_t rx_time,
                                     uint32_t timeout,
                                     uint8_t  channel,
                                     uint32_t id);

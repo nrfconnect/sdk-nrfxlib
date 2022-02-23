@@ -51,7 +51,7 @@
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_request.h"
 #include "nrf_802154_tx_work_buffer.h"
-#include "timer/nrf_802154_timer_sched.h"
+#include "nrf_802154_sl_timer.h"
 
 #if NRF_802154_ACK_TIMEOUT_ENABLED
 
@@ -60,10 +60,11 @@
 
 static void timeout_timer_retry(void);
 
-static uint32_t           m_timeout = NRF_802154_PRECISE_ACK_TIMEOUT_DEFAULT_TIMEOUT; ///< ACK timeout in us.
-static nrf_802154_timer_t m_timer;                                                    ///< Timer used to notify when the ACK frama is not received for too long.
-static volatile bool      m_procedure_is_active;
-static uint8_t          * mp_frame;
+static uint32_t              m_timeout = NRF_802154_PRECISE_ACK_TIMEOUT_DEFAULT_TIMEOUT; ///< ACK timeout in us.
+static nrf_802154_sl_timer_t m_timer;                                                    ///< Timer used to notify when the ACK frame is not received for too long.
+static uint32_t              m_dt;                                                       ///< Length [us] of the originally scheduled timeout plus any retry extensions used.
+static volatile bool         m_procedure_is_active;
+static uint8_t             * mp_frame;
 
 static void notify_tx_error(bool result)
 {
@@ -77,11 +78,11 @@ static void notify_tx_error(bool result)
     }
 }
 
-static void timeout_timer_fired(void * p_context)
+static void timeout_timer_fired(nrf_802154_sl_timer_t * p_timer)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    (void)p_context;
+    (void)p_timer;
 
     if (m_procedure_is_active)
     {
@@ -104,24 +105,36 @@ static void timeout_timer_fired(void * p_context)
 
 static void timeout_timer_retry(void)
 {
-    m_timer.dt += RETRY_DELAY;
-    assert(m_timer.dt <= MAX_RETRY_DELAY);
+    m_dt += RETRY_DELAY;
+    assert(m_dt <= MAX_RETRY_DELAY);
 
-    nrf_802154_timer_sched_add(&m_timer, true);
+    m_timer.trigger_time += RETRY_DELAY;
+
+    nrf_802154_sl_timer_ret_t ret;
+
+    ret = nrf_802154_sl_timer_add(&m_timer);
+    assert(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
+    (void)ret;
 }
 
 static void timeout_timer_start(void)
 {
-    m_timer.callback  = timeout_timer_fired;
-    m_timer.p_context = NULL;
-    m_timer.t0        = nrf_802154_timer_sched_time_get();
-    m_timer.dt        = m_timeout +
-                        IMM_ACK_DURATION +
-                        nrf_802154_frame_duration_get(mp_frame[0], false, true);
+    uint64_t                  now = nrf_802154_sl_timer_current_time_get();
+    nrf_802154_sl_timer_ret_t ret;
+
+    m_dt = m_timeout +
+           IMM_ACK_DURATION +
+           nrf_802154_frame_duration_get(mp_frame[0], false, true);
+
+    m_timer.action_type              = NRF_802154_SL_TIMER_ACTION_TYPE_CALLBACK;
+    m_timer.action.callback.callback = timeout_timer_fired;
+    m_timer.trigger_time             = now + m_dt;
 
     m_procedure_is_active = true;
 
-    nrf_802154_timer_sched_add(&m_timer, true);
+    ret = nrf_802154_sl_timer_add(&m_timer);
+    assert(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
+    (void)ret;
 }
 
 static void timeout_timer_stop(void)
@@ -132,7 +145,22 @@ static void timeout_timer_stop(void)
     // this function.
     __DMB();
 
-    nrf_802154_timer_sched_remove(&m_timer, NULL);
+    (void)nrf_802154_sl_timer_remove(&m_timer);
+}
+
+void nrf_802154_ack_timeout_init(void)
+{
+    m_timeout             = NRF_802154_PRECISE_ACK_TIMEOUT_DEFAULT_TIMEOUT;
+    m_dt                  = 0;
+    m_procedure_is_active = false;
+    mp_frame              = NULL;
+
+    nrf_802154_sl_timer_init(&m_timer);
+}
+
+void nrf_802154_ack_timeout_deinit(void)
+{
+    nrf_802154_sl_timer_deinit(&m_timer);
 }
 
 void nrf_802154_ack_timeout_time_set(uint32_t time)

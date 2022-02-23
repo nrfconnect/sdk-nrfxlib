@@ -50,7 +50,10 @@
 #include "nrf_802154.h"
 #include "nrf_802154_config.h"
 
+#if NRF_802154_DELAYED_TRX_ENABLED
 static uint8_t * mp_transmit_at_frame; ///< Pointer to the frame that was requested to delay-transmit
+
+#endif
 
 /**
  * @brief Deal with SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SLEEP request and send response.
@@ -118,6 +121,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_receive(const void * p
                                                     receive_response);
 }
 
+#if NRF_802154_DELAYED_TRX_ENABLED
 /**
  * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT.
  *
@@ -129,8 +133,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_receive_at(
     const void * p_property_data,
     size_t       property_data_len)
 {
-    uint32_t       t0;
-    uint32_t       dt;
+    uint64_t       rx_time;
     uint32_t       timeout;
     uint8_t        channel;
     uint32_t       id;
@@ -139,8 +142,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_receive_at(
     siz = spinel_datatype_unpack(p_property_data,
                                  property_data_len,
                                  SPINEL_DATATYPE_NRF_802154_RECEIVE_AT,
-                                 &t0,
-                                 &dt,
+                                 &rx_time,
                                  &timeout,
                                  &channel,
                                  &id);
@@ -150,7 +152,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_receive_at(
         return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
     }
 
-    bool result = nrf_802154_receive_at(t0, dt, timeout, channel, id);
+    bool result = nrf_802154_receive_at(rx_time, timeout, channel, id);
 
     return nrf_802154_spinel_send_cmd_prop_value_is(
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT,
@@ -189,6 +191,8 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_receive_at_cancel(
         SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_CANCEL_RET,
         result);
 }
+
+#endif // NRF_802154_DELAYED_TRX_ENABLED
 
 static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_channel_get(const void * p_property_data,
                                                                       size_t       property_data_len)
@@ -1305,6 +1309,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_raw(
         result);
 }
 
+#if NRF_802154_DELAYED_TRX_ENABLED
 /**
  * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW_AT.
  *
@@ -1321,16 +1326,14 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_raw_at(
     size_t                            frame_hdata_len;
     void                            * p_local_frame_ptr;
     nrf_802154_transmit_at_metadata_t tx_metadata;
-    uint32_t                          t0;
-    uint32_t                          dt;
+    uint64_t                          tx_time;
 
     spinel_ssize_t siz = spinel_datatype_unpack(
         p_property_data,
         property_data_len,
         SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW_AT,
         NRF_802154_TRANSMIT_AT_METADATA_DECODE(tx_metadata),
-        &t0,
-        &dt,
+        &tx_time,
         NRF_802154_HDATA_DECODE(remote_frame_handle, p_frame, frame_hdata_len));
 
     if (siz < 0)
@@ -1351,7 +1354,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_raw_at(
         return NRF_802154_SERIALIZATION_ERROR_NO_MEMORY;
     }
 
-    bool result = nrf_802154_transmit_raw_at(p_local_frame_ptr, t0, dt, &tx_metadata);
+    bool result = nrf_802154_transmit_raw_at(p_local_frame_ptr, tx_time, &tx_metadata);
 
     if (!result)
     {
@@ -1411,6 +1414,8 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_at_cancel(
         SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_CANCEL_RET,
         result);
 }
+
+#endif // NRF_802154_DELAYED_TRX_ENABLED
 
 /**
  * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_BUFFER_FREE_RAW.
@@ -1549,7 +1554,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_time_get(
     (void)p_property_data;
     (void)property_data_len;
 
-    uint32_t time;
+    uint64_t time;
 
     time = nrf_802154_time_get();
 
@@ -1772,6 +1777,7 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE:
             return spinel_decode_prop_nrf_802154_receive(p_property_data, property_data_len);
 
+#if NRF_802154_DELAYED_TRX_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT:
             return spinel_decode_prop_nrf_802154_receive_at(p_property_data, property_data_len);
 
@@ -1779,6 +1785,7 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
             return spinel_decode_prop_nrf_802154_receive_at_cancel(p_property_data,
                                                                    property_data_len);
 
+#endif // NRF_802154_DELAYED_TRX_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CHANNEL_GET:
             return spinel_decode_prop_nrf_802154_channel_get(p_property_data, property_data_len);
 
@@ -1918,6 +1925,7 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW:
             return spinel_decode_prop_nrf_802154_transmit_raw(p_property_data, property_data_len);
 
+#if NRF_802154_DELAYED_TRX_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW_AT:
             return spinel_decode_prop_nrf_802154_transmit_raw_at(p_property_data,
                                                                  property_data_len);
@@ -1926,6 +1934,7 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
             return spinel_decode_prop_nrf_802154_transmit_at_cancel(p_property_data,
                                                                     property_data_len);
 
+#endif // NRF_802154_DELAYED_TRX_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_BUFFER_FREE_RAW:
             return spinel_decode_prop_nrf_802154_buffer_free_raw(p_property_data,
                                                                  property_data_len);

@@ -49,6 +49,16 @@
  */
 
 /**
+ * @brief Initializes the ACK timeout handling feature.
+ */
+void nrf_802154_ack_timeout_init(void);
+
+/**
+ * @brief Deinitializes the ACK timeout handling feature.
+ */
+void nrf_802154_ack_timeout_deinit(void);
+
+/**
  * @brief Sets the timeout time for the ACK timeout feature.
  *
  * @param[in]  time  Timeout time in microseconds.

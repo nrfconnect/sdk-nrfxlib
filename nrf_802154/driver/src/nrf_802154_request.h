@@ -193,9 +193,7 @@ bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi);
  *                         the frame length (including FCS). The following bytes contain data.
  *                         The CRC is computed automatically by the radio hardware. Therefore,
  *                         the FCS field can contain any bytes.
- * @param[in]  t0          Base of delay time - absolute time used by the Timer Scheduler,
- *                         in microseconds (us).
- * @param[in]  dt          Delta of delay time from @p t0, in microseconds (us).
+ * @param[in]  tx_time     Absolute time used by the SL timer, in microseconds (us).
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
  *                         to transmit. If @c NULL following metadata are used:
  *                         Field           | Value
@@ -208,8 +206,7 @@ bool nrf_802154_request_rssi_measurement_get(int8_t * p_rssi);
  * @retval  false  The driver could not schedule the transmission procedure.
  */
 bool nrf_802154_request_transmit_raw_at(uint8_t                                 * p_data,
-                                        uint32_t                                  t0,
-                                        uint32_t                                  dt,
+                                        uint64_t                                  tx_time,
                                         const nrf_802154_transmit_at_metadata_t * p_metadata);
 
 /**
@@ -223,10 +220,8 @@ bool nrf_802154_request_transmit_at_cancel(void);
 /**
  * @brief Requests a call to @ref nrf_802154_delayed_trx_receive.
  *
- * @param[in]   t0       Base of delay time - absolute time used by the Timer Scheduler,
- *                       in microseconds (us).
- * @param[in]   dt       Delta of delay time from @p t0, in microseconds (us).
- * @param[in]   timeout  Reception timeout (counted from @p t0 + @p dt), in microseconds (us).
+ * @param[in]   rx_time  Absolute time used by the SL Timer, in microseconds (us).
+ * @param[in]   timeout  Reception timeout (counted from @p rx_time), in microseconds (us).
  * @param[in]   channel  Radio channel on which the frame is to be received.
  * @param[in]   id       Identifier of the scheduled reception window. If the reception has been
  *                       scheduled successfully, the value of this parameter can be used in
@@ -235,8 +230,7 @@ bool nrf_802154_request_transmit_at_cancel(void);
  * @retval  true   The reception procedure was scheduled.
  * @retval  false  The driver could not schedule the reception procedure.
  */
-bool nrf_802154_request_receive_at(uint32_t t0,
-                                   uint32_t dt,
+bool nrf_802154_request_receive_at(uint64_t rx_time,
                                    uint32_t timeout,
                                    uint8_t  channel,
                                    uint32_t id);

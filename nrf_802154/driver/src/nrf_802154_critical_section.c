@@ -49,7 +49,7 @@
 #include "nrf_802154_debug.h"
 #include "nrf_802154_utils.h"
 #include "rsch/nrf_802154_rsch.h"
-#include "platform/nrf_802154_lp_timer.h"
+#include "platform/nrf_802154_platform_sl_lptimer.h"
 #include "platform/nrf_802154_irq.h"
 
 #include <nrf.h>
@@ -132,7 +132,7 @@ static bool critical_section_enter(bool forced)
 
         if (cnt == 1U)
         {
-            nrf_802154_lp_timer_critical_section_enter();
+            nrf_802154_platform_sl_lptimer_critical_section_enter();
             radio_critical_section_enter();
         }
 
@@ -172,7 +172,7 @@ static void critical_section_exit(void)
             }
 
             radio_critical_section_exit();
-            nrf_802154_lp_timer_critical_section_exit();
+            nrf_802154_platform_sl_lptimer_critical_section_exit();
         }
 
         m_nested_critical_section_counter = cnt;

@@ -100,6 +100,16 @@ typedef enum
  // Possible "RADIO_RESET" parameter values are : 0 (the only possible value)
 } nrf_802154_drv_global_events_list_t;
 
+typedef enum
+{
+    NRF_802154_LOG_L_EVENT_DEFINE(DELAYED_TRX, SET_STATE, 1, delayed_trx_op_state_t)
+} nrf_802154_drv_local_events_in_DELAYED_TRX_t;
+
+typedef enum
+{
+    NRF_802154_LOG_L_EVENT_DEFINE(CSMACA, SET_STATE, 1, csma_ca_state_t)
+} nrf_802154_drv_local_events_in_CSMACA_t;
+
 /**
  * @brief List of all definitions that are needed for the correct presentation of debug logs
  *
@@ -108,10 +118,12 @@ typedef enum
  */
 typedef union
 {
-    uint8_t                               dummy00tag;
-    nrf_802154_drv_modules_list_t         dummy01tag;
-    nrf_802154_drv_global_events_list_t   dummy02tag;
-    nrf_802154_drv_local_events_in_CORE_t dummy03tag;
+    uint8_t                                      dummy00tag;
+    nrf_802154_drv_modules_list_t                dummy01tag;
+    nrf_802154_drv_global_events_list_t          dummy02tag;
+    nrf_802154_drv_local_events_in_CORE_t        dummy03tag;
+    nrf_802154_drv_local_events_in_DELAYED_TRX_t dummy04tag;
+    nrf_802154_drv_local_events_in_CSMACA_t      dummy05tag;
 } nrf_802154_drv_typedefs_to_save_in_elf_t;
 
 #endif /* NRF_802154_DEBUG_LOG_CODES_H_ */

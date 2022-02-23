@@ -202,7 +202,7 @@ static nrf_802154_ser_err_t last_tx_ack_started_send(void)
 void nrf_802154_received_timestamp_raw(uint8_t * p_data,
                                        int8_t    power,
                                        uint8_t   lqi,
-                                       uint32_t  time)
+                                       uint64_t  time)
 {
     nrf_802154_ser_err_t res;
     uint32_t             local_data_handle;

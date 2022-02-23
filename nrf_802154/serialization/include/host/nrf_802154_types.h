@@ -199,17 +199,17 @@ typedef uint32_t nrf_802154_capabilities_t;
 typedef struct
 {
     /**@brief Time stamp of last CSMA/CA procedure started. */
-    uint32_t last_csmaca_start_timestamp;
+    uint64_t last_csmaca_start_timestamp;
     /**@brief Time stamp of last CCA start attempt. */
-    uint32_t last_cca_start_timestamp;
+    uint64_t last_cca_start_timestamp;
     /**@brief Time stamp of last CCA attempt finished with CCA IDLE (channel was free to transmit). */
-    uint32_t last_cca_idle_timestamp;
+    uint64_t last_cca_idle_timestamp;
     /**@brief Time stamp when last bit of transmitted frame was sent on the air. */
-    uint32_t last_tx_end_timestamp;
+    uint64_t last_tx_end_timestamp;
     /**@brief Time stamp when last bit of acknowledge frame was received */
-    uint32_t last_ack_end_timestamp;
+    uint64_t last_ack_end_timestamp;
     /**@brief Time stamp when last bit of received frame was received. */
-    uint32_t last_rx_end_timestamp;
+    uint64_t last_rx_end_timestamp;
 } nrf_802154_stat_timestamps_t;
 
 /**
@@ -290,7 +290,7 @@ typedef struct
             uint8_t  length; // !< Length of the received ACK payload or 0 if @ref p_ack is NULL.
             int8_t   power;  // !< RSSI of the received frame or 0 if @ref p_ack is NULL.
             uint8_t  lqi;    // !< LQI of the received frame or 0 if @ref p_ack is NULL.
-            uint32_t time;   // !< Timestamp taken when the last symbol of ACK is received. If @ref p_ack is NULL, this field is set to 0, but is considered invalid.
+            uint64_t time;   // !< Timestamp taken when the last symbol of ACK is received. If @ref p_ack is NULL, this field is set to 0, but is considered invalid.
         } transmitted;       // !< Result values for a successful frame transmission.
     } data;                  // !< Result values that are valid only for successful operations.
 } nrf_802154_transmit_done_metadata_t;

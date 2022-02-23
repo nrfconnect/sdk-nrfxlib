@@ -58,6 +58,8 @@
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_rssi.h"
 #include "nrf_802154_rx_buffer.h"
+#include "nrf_802154_sl_timer.h"
+#include "nrf_802154_sl_utils.h"
 #include "nrf_802154_stats.h"
 #include "nrf_802154_utils.h"
 #include "nrf_802154_trx.h"
@@ -72,7 +74,6 @@
 #include "rsch/nrf_802154_rsch.h"
 #include "rsch/nrf_802154_rsch_crit_sect.h"
 #include "timer/nrf_802154_timer_coord.h"
-#include "timer/nrf_802154_timer_sched.h"
 #include "platform/nrf_802154_hp_timer.h"
 #include "platform/nrf_802154_irq.h"
 #include "protocol/mpsl_fem_protocol_api.h"
@@ -143,7 +144,8 @@ static nrf_802154_trx_receive_notifications_t m_trx_receive_frame_notifications_
 /** @brief Value of argument @c notifications_mask to @ref nrf_802154_trx_transmit_frame */
 static nrf_802154_trx_transmit_notifications_t m_trx_transmit_frame_notifications_mask;
 
-static nrf_802154_timer_t m_rx_prestarted_timer;
+static volatile uint8_t      m_rx_prestarted_trig_count;
+static nrf_802154_sl_timer_t m_rx_prestarted_timer;
 
 /** @brief Value of Coex TX Request mode */
 static nrf_802154_coex_tx_request_mode_t m_coex_tx_request_mode;
@@ -265,9 +267,9 @@ static uint8_t lqi_get(const uint8_t * p_data)
  * @returns Timestamp [us] of the last event captured by timer coordinator frame or
  *          @ref NRF_802154_NO_TIMESTAMP if the timestamp is inaccurate.
  */
-static uint32_t timer_coord_timestamp_get(void)
+static uint64_t timer_coord_timestamp_get(void)
 {
-    uint32_t timestamp          = NRF_802154_NO_TIMESTAMP;
+    uint64_t timestamp          = NRF_802154_NO_TIMESTAMP;
     bool     timestamp_received = nrf_802154_timer_coord_timestamp_get(&timestamp);
 
     if (!timestamp_received)
@@ -361,7 +363,7 @@ static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
     }
     else
     {
-        metadata.data.transmitted.time = nrf_802154_stat_timestamp_read(last_ack_end_timestamp);
+        nrf_802154_stat_timestamp_read(&metadata.data.transmitted.time, last_ack_end_timestamp);
     }
 
     nrf_802154_critical_section_nesting_allow();
@@ -888,7 +890,8 @@ static bool current_operation_terminate(nrf_802154_term_t term_lvl,
             {
                 /* When in rx mode, nrf_802154_trx_receive_frame_prestarted handler might
                  * have already been called. We need to stop counting timeout. */
-                nrf_802154_timer_sched_remove(&m_rx_prestarted_timer, NULL);
+                m_rx_prestarted_trig_count = 0;
+                (void)nrf_802154_sl_timer_remove(&m_rx_prestarted_timer);
 
                 /* Notify antenna diversity module that RX has been aborted. */
                 nrf_802154_sl_ant_div_rx_aborted_notify();
@@ -1490,9 +1493,9 @@ void nrf_802154_trx_receive_ack_started(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-static void on_rx_prestarted_timeout(void * p_context)
+static void on_rx_prestarted_timeout(nrf_802154_sl_timer_t * p_timer)
 {
-    (void)p_context;
+    (void)p_timer;
 
     /* If we were in critical section this handler would not be called.
      * If we were outside of critical section this handler could be called,
@@ -1518,16 +1521,34 @@ static void on_rx_prestarted_timeout(void * p_context)
 
     nrf_802154_sl_ant_div_rx_preamble_timeout_notify();
 
-    /**
-     * If timer is still running here, it means that timer handling has been preempted by HELPER1
-     * radio event after removing the timer from scheduler, but before handling this callback.
-     * In that case, process the timeout as usual, but notify antenna diversity module that another
-     * preamble was detected in order to repeat RSSI measurements.
-     */
-    if (nrf_802154_timer_sched_is_running(&m_rx_prestarted_timer))
+    do
     {
-        nrf_802154_sl_ant_div_rx_preamble_detected_notify();
+        /**
+         * Multiple, rapidly consecutive reception start events without later moving to the next
+         * step are possible. There is a special handling for this case here.
+         */
+        if (m_rx_prestarted_trig_count > 1)
+        {
+            uint64_t now = nrf_802154_sl_timer_current_time_get();
+
+            /**
+             * If the value of trigger_time field is a moment in the future, it means that timer
+             * handling has been preempted by HELPER1 radio event after removing the timer from
+             * scheduler, but before handling this callback. In that case, process the timeout
+             * as usual, but notify  antenna diversity module that another preamble was detected
+             * in order to repeat RSSI measurements.
+             */
+            if (nrf_802154_sl_time64_is_in_future(now, m_rx_prestarted_timer.trigger_time))
+            {
+                m_rx_prestarted_trig_count = 1;
+                nrf_802154_sl_ant_div_rx_preamble_detected_notify();
+                break;
+            }
+        }
+
+        m_rx_prestarted_trig_count = 0;
     }
+    while (0);
 
     /* If nrf_802154_trx_receive_frame_prestarted boosted preconditions beyond those normally
      * required by current state, they need to be restored now.
@@ -1584,15 +1605,21 @@ void nrf_802154_trx_receive_frame_prestarted(void)
     if (rx_timeout_should_be_started)
     {
 
-        uint32_t now = nrf_802154_timer_sched_time_get();
+        uint64_t now = nrf_802154_sl_timer_current_time_get();
 
-        nrf_802154_timer_sched_remove(&m_rx_prestarted_timer, NULL);
+        (void)nrf_802154_sl_timer_remove(&m_rx_prestarted_timer);
 
-        m_rx_prestarted_timer.t0       = now;
-        m_rx_prestarted_timer.dt       = PRESTARTED_TIMER_TIMEOUT_US;
-        m_rx_prestarted_timer.callback = on_rx_prestarted_timeout;
+        m_rx_prestarted_timer.trigger_time             = now + PRESTARTED_TIMER_TIMEOUT_US;
+        m_rx_prestarted_timer.action_type              = NRF_802154_SL_TIMER_ACTION_TYPE_CALLBACK;
+        m_rx_prestarted_timer.action.callback.callback = on_rx_prestarted_timeout;
 
-        nrf_802154_timer_sched_add(&m_rx_prestarted_timer, true);
+        nrf_802154_sl_timer_ret_t ret;
+
+        ret = nrf_802154_sl_timer_add(&m_rx_prestarted_timer);
+        assert(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
+        (void)ret;
+
+        m_rx_prestarted_trig_count += 1;
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -1612,7 +1639,8 @@ void nrf_802154_trx_receive_frame_started(void)
     switch (nrf_802154_pib_coex_rx_request_mode_get())
     {
         case NRF_802154_COEX_RX_REQUEST_MODE_ENERGY_DETECTION:
-            nrf_802154_timer_sched_remove(&m_rx_prestarted_timer, NULL);
+            m_rx_prestarted_trig_count = 0;
+            (void)nrf_802154_sl_timer_remove(&m_rx_prestarted_timer);
         /* Fallthrough */
 
         case NRF_802154_COEX_RX_REQUEST_MODE_PREAMBLE:
@@ -1628,7 +1656,8 @@ void nrf_802154_trx_receive_frame_started(void)
     {
         // If antenna diversity is enabled, rx_prestarted_timer would be started even
         // in different coex rx request modes than NRF_802154_COEX_RX_REQUEST_MODE_ENERGY_DETECTION
-        nrf_802154_timer_sched_remove(&m_rx_prestarted_timer, NULL);
+        m_rx_prestarted_trig_count = 0;
+        (void)nrf_802154_sl_timer_remove(&m_rx_prestarted_timer);
         nrf_802154_sl_ant_div_rx_frame_started_notify();
     }
 
@@ -2005,7 +2034,7 @@ void nrf_802154_trx_receive_frame_received(void)
         nrf_802154_stat_counter_increment(received_frames);
 
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
-        uint32_t ts = timer_coord_timestamp_get();
+        uint64_t ts = timer_coord_timestamp_get();
 
         nrf_802154_stat_timestamp_write(last_rx_end_timestamp, ts);
 #endif
@@ -2168,7 +2197,7 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
 #endif
 
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
-    uint32_t ts = timer_coord_timestamp_get();
+    uint64_t ts = timer_coord_timestamp_get();
 
     // ts holds now timestamp of the PHYEND event
     nrf_802154_stat_timestamp_write(last_tx_end_timestamp, ts);
@@ -2183,9 +2212,12 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
         nrf_802154_stat_timestamp_write(last_cca_idle_timestamp, ts);
 
 #if (NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED)
-        t_listening += RX_RAMP_UP_TIME +
-                       (ts - nrf_802154_stat_timestamp_read(last_cca_start_timestamp));
-        t_transmit += RX_TX_TURNAROUND_TIME;
+        uint64_t cca_start_ts;
+
+        nrf_802154_stat_timestamp_read(&cca_start_ts, last_cca_start_timestamp);
+
+        t_listening += RX_RAMP_UP_TIME + (uint32_t)(ts - cca_start_ts);
+        t_transmit  += RX_TX_TURNAROUND_TIME;
 #endif
     }
     else
@@ -2384,7 +2416,7 @@ void nrf_802154_trx_receive_ack_received(void)
     if (ack_match_check(mp_tx_data, p_ack_data))
     {
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
-        uint32_t ts = timer_coord_timestamp_get();
+        uint64_t ts = timer_coord_timestamp_get();
 
         nrf_802154_stat_timestamp_write(last_ack_end_timestamp, ts);
 #endif
@@ -2435,7 +2467,7 @@ void nrf_802154_trx_transmit_frame_ccaidle(void)
     assert(m_trx_transmit_frame_notifications_mask & TRX_TRANSMIT_NOTIFICATION_CCAIDLE);
 
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
-    uint32_t ts = timer_coord_timestamp_get();
+    uint64_t ts = timer_coord_timestamp_get();
 
     // Configure the timer coordinator to get a timestamp of the PHYEND event.
     nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_phyend_event_handle_get());
@@ -2526,6 +2558,9 @@ void nrf_802154_core_init(void)
 {
     m_state                    = RADIO_STATE_SLEEP;
     m_rsch_timeslot_is_granted = false;
+    m_rx_prestarted_trig_count = 0;
+
+    nrf_802154_sl_timer_init(&m_rx_prestarted_timer);
 
     nrf_802154_trx_init();
     nrf_802154_ack_generator_init();
@@ -2544,6 +2579,8 @@ void nrf_802154_core_deinit(void)
 
     nrf_802154_irq_disable(RADIO_IRQn);
     nrf_802154_irq_clear_pending(RADIO_IRQn);
+
+    nrf_802154_sl_timer_deinit(&m_rx_prestarted_timer);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }

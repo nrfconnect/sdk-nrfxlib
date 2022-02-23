@@ -136,7 +136,7 @@ static inline bool shall_strike(uint64_t now)
  */
 static inline uint64_t time_to_ticks(uint64_t time)
 {
-    return NRF_802154_SL_US_TO_RTC_TICKS(time);
+    return NRF_802154_SL_US_TO_RTC_TICKS(time, true);
 }
 
 /** @brief Convert RTC ticks to time in [us].
