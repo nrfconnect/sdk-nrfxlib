@@ -188,7 +188,6 @@ void nrf_modem_trace_irq_handler(void);
  * @retval Zero on success.
  * @retval -NRF_EINVAL @p buf is @c NULL or an invalid trace buffer
  * @retval -NRF_EINVAL @p len is too large to be a valid trace length
- * @retval -NRF_EAGAIN Resource temporarily unavailable. Try again with same parameters.
  */
 int nrf_modem_trace_processed_callback(const uint8_t *buf, uint32_t len);
 

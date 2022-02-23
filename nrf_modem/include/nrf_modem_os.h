@@ -168,6 +168,16 @@ void nrf_modem_os_trace_irq_set(void);
 void nrf_modem_os_trace_irq_clear(void);
 
 /**
+ * @brief Enable the Trace IRQ.
+ */
+void nrf_modem_os_trace_irq_enable(void);
+
+/**
+ * @brief Disable the Trace IRQ.
+ */
+void nrf_modem_os_trace_irq_disable(void);
+
+/**
  * @brief Receive trace data from the modem.
  *
  * The modem library calls this function to forward trace data to the application.
