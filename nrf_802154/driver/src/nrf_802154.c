@@ -61,24 +61,24 @@
 #include "nrf_802154_stats.h"
 #include "hal/nrf_radio.h"
 #include "platform/nrf_802154_clock.h"
-#include "platform/nrf_802154_lp_timer.h"
 #include "platform/nrf_802154_random.h"
 #include "platform/nrf_802154_temperature.h"
 #include "rsch/nrf_802154_rsch.h"
 #include "rsch/nrf_802154_rsch_crit_sect.h"
 #include "rsch/nrf_802154_rsch_prio_drop.h"
 #include "timer/nrf_802154_timer_coord.h"
-#include "timer/nrf_802154_timer_sched.h"
 
 #include "mac_features/nrf_802154_ack_timeout.h"
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "mac_features/nrf_802154_ie_writer.h"
+#include "mac_features/nrf_802154_ifs.h"
 #include "mac_features/nrf_802154_security_pib.h"
 #include "mac_features/ack_generator/nrf_802154_ack_data.h"
 
 #include "nrf_802154_sl_ant_div.h"
 #include "nrf_802154_sl_crit_sect_if.h"
 #include "nrf_802154_sl_capabilities.h"
+#include "nrf_802154_sl_timer.h"
 
 #if !NRF_802154_USE_RAW_API || NRF_802154_CARRIER_FUNCTIONS_ENABLED
 /** Static transmit buffer used by @sa nrf_802154_transmit() family of functions.
@@ -209,7 +209,7 @@ uint8_t nrf_802154_ccaedthres_from_dbm_calculate(int8_t dbm)
     return dbm - ED_MIN_DBM;
 }
 
-uint32_t nrf_802154_first_symbol_timestamp_get(uint32_t end_timestamp, uint8_t psdu_length)
+uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
 {
     uint32_t frame_symbols = PHY_SHR_SYMBOLS;
 
@@ -233,9 +233,9 @@ void nrf_802154_init(void)
     nrf_802154_sl_crit_sect_init(&crit_sect_int);
     nrf_802154_debug_init();
     nrf_802154_notification_init();
-    nrf_802154_lp_timer_init();
     nrf_802154_pib_init();
     nrf_802154_security_pib_init();
+    nrf_802154_sl_timer_module_init();
     nrf_802154_rsch_prio_drop_init();
     nrf_802154_random_init();
     nrf_802154_request_init();
@@ -244,23 +244,36 @@ void nrf_802154_init(void)
     nrf_802154_rx_buffer_init();
     nrf_802154_temperature_init();
     nrf_802154_timer_coord_init();
-    nrf_802154_timer_sched_init();
+#if NRF_802154_ACK_TIMEOUT_ENABLED
+    nrf_802154_ack_timeout_init();
+#endif
 #if NRF_802154_DELAYED_TRX_ENABLED
     nrf_802154_delayed_trx_init();
+#endif
+#if NRF_802154_IFS_ENABLED
+    nrf_802154_ifs_init();
 #endif
 }
 
 void nrf_802154_deinit(void)
 {
-    nrf_802154_timer_sched_deinit();
     nrf_802154_timer_coord_uninit();
     nrf_802154_temperature_deinit();
     nrf_802154_rsch_uninit();
     nrf_802154_random_deinit();
     nrf_802154_security_pib_deinit();
-    nrf_802154_lp_timer_deinit();
+    nrf_802154_sl_timer_module_uninit();
     nrf_802154_clock_deinit();
     nrf_802154_core_deinit();
+#if NRF_802154_ACK_TIMEOUT_ENABLED
+    nrf_802154_ack_timeout_deinit();
+#endif
+#if NRF_802154_DELAYED_TRX_ENABLED
+    nrf_802154_delayed_trx_deinit();
+#endif
+#if NRF_802154_IFS_ENABLED
+    nrf_802154_ifs_deinit();
+#endif
 }
 
 bool nrf_802154_antenna_diversity_rx_mode_set(nrf_802154_sl_ant_div_mode_t mode)
@@ -542,8 +555,7 @@ bool nrf_802154_transmit(const uint8_t                        * p_data,
 
 #if NRF_802154_DELAYED_TRX_ENABLED
 bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data,
-                                uint32_t                                  t0,
-                                uint32_t                                  dt,
+                                uint64_t                                  tx_time,
                                 const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
     bool                              result;
@@ -564,7 +576,7 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
     result = are_frame_properties_valid(&p_metadata->frame_props);
     if (result)
     {
-        result = nrf_802154_request_transmit_raw_at(p_data, t0, dt, p_metadata);
+        result = nrf_802154_request_transmit_raw_at(p_data, tx_time, p_metadata);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -583,8 +595,7 @@ bool nrf_802154_transmit_at_cancel(void)
     return result;
 }
 
-bool nrf_802154_receive_at(uint32_t t0,
-                           uint32_t dt,
+bool nrf_802154_receive_at(uint64_t rx_time,
                            uint32_t timeout,
                            uint8_t  channel,
                            uint32_t id)
@@ -593,7 +604,7 @@ bool nrf_802154_receive_at(uint32_t t0,
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    result = nrf_802154_request_receive_at(t0, dt, timeout, channel, id);
+    result = nrf_802154_request_receive_at(rx_time, timeout, channel, id);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;
@@ -1006,7 +1017,7 @@ nrf_802154_capabilities_t nrf_802154_capabilities_get(void)
     caps_drv |= ((NRF_802154_SECURITY_WRITER_ENABLED && NRF_802154_ENCRYPTION_ENABLED) ?
                  NRF_802154_CAPABILITY_SECURITY : 0UL);
 
-    /* Both IFS and ACK Timeout features require timer scheduler, however
+    /* Both IFS and ACK Timeout features require SL timer, however
      * using them both at the same time requires that SL is able to schedule
      * several timers simultaneously.
      *
@@ -1024,9 +1035,9 @@ nrf_802154_capabilities_t nrf_802154_capabilities_get(void)
     return caps_drv;
 }
 
-uint32_t nrf_802154_time_get(void)
+uint64_t nrf_802154_time_get(void)
 {
-    return nrf_802154_timer_sched_time_get();
+    return nrf_802154_sl_timer_current_time_get();
 }
 
 void nrf_802154_security_global_frame_counter_set(uint32_t frame_counter)
@@ -1066,16 +1077,20 @@ __WEAK void nrf_802154_tx_ack_started(const uint8_t * p_data)
 #if NRF_802154_USE_RAW_API
 __WEAK void nrf_802154_received_raw(uint8_t * p_data, int8_t power, uint8_t lqi)
 {
+    uint64_t timestamp;
+
+    nrf_802154_stat_timestamp_read(&timestamp, last_rx_end_timestamp);
+
     nrf_802154_received_timestamp_raw(p_data,
                                       power,
                                       lqi,
-                                      nrf_802154_stat_timestamp_read(last_rx_end_timestamp));
+                                      timestamp);
 }
 
 __WEAK void nrf_802154_received_timestamp_raw(uint8_t * p_data,
                                               int8_t    power,
                                               uint8_t   lqi,
-                                              uint32_t  time)
+                                              uint64_t  time)
 {
     (void)power;
     (void)lqi;

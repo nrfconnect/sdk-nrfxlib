@@ -47,9 +47,30 @@
 #include "nrf_802154_pib.h"
 #include "nrf_802154_request.h"
 #include "mac_features/nrf_802154_frame_parser.h"
-#include "timer/nrf_802154_timer_sched.h"
+#include "nrf_802154_sl_timer.h"
+#include "nrf_802154_sl_utils.h"
+#include "nrf_802154_sl_atomics.h"
 
 #if NRF_802154_IFS_ENABLED
+
+/**
+ * @brief States of IFS handling procedure.
+ */
+typedef enum
+{
+    IFS_STATE_STOPPED  = (1U << 0), ///< IFS procedure stopped.
+    IFS_STATE_ARMED    = (1U << 1), ///< The @c m_timer is scheduled and waiting to fire.
+    IFS_STATE_FIRED    = (1U << 2), ///< The @c m_timer fired and associated callback is in progress.
+    IFS_STATE_ABORTING = (1U << 3)  ///< Abort request occurred. Resource release and notification are ongoing.
+} ifs_state_t;
+
+#define IFS_STATE_MASK ((ifs_state_t)(IFS_STATE_STOPPED | \
+                                      IFS_STATE_ARMED |   \
+                                      IFS_STATE_FIRED |   \
+                                      IFS_STATE_ABORTING))
+
+static ifs_state_t m_state;
+
 typedef struct
 {
     uint8_t                    * p_data;
@@ -58,15 +79,34 @@ typedef struct
 
 static union
 {
-    uint8_t sh[SHORT_ADDRESS_SIZE];                   ///< Short address of the last frame transmitted.
-    uint8_t ext[EXTENDED_ADDRESS_SIZE];               ///< Extended address of the last frame transmitted.
+    uint8_t sh[SHORT_ADDRESS_SIZE];                      ///< Short address of the last frame transmitted.
+    uint8_t ext[EXTENDED_ADDRESS_SIZE];                  ///< Extended address of the last frame transmitted.
 } m_last_address;
 
-static bool               m_is_last_address_extended; ///< Whether the last transmitted frame had the extended address populated.
-static uint32_t           m_last_frame_timestamp;     ///< Timestamp of the last transmitted frame (end of frame).
-static uint8_t            m_last_frame_length;        ///< Length in bytes of the last transmitted frame.
-static ifs_operation_t    m_context;                  ///< Context passed to the timer.
-static nrf_802154_timer_t m_timer;                    ///< Interframe space timer.
+static bool                  m_is_last_address_extended; ///< Whether the last transmitted frame had the extended address populated.
+static uint64_t              m_last_frame_timestamp;     ///< Timestamp of the last transmitted frame (end of frame).
+static uint8_t               m_last_frame_length;        ///< Length in bytes of the last transmitted frame.
+static ifs_operation_t       m_context;                  ///< Context passed to the timer.
+static nrf_802154_sl_timer_t m_timer;                    ///< Interframe space timer.
+
+/**
+ * Set state of IFS procedure.
+ *
+ * @param[in]  expected_state  Expected IFS state prior state transition.
+ * @param[in]  new_state       IFS procedure state to enter.
+ *
+ * @retval true   Successfully set the new state.
+ * @retval false  Failed to set the new state.
+ */
+static bool ifs_state_set(ifs_state_t expected_state, ifs_state_t new_state)
+{
+    return nrf_802154_sl_atomic_cas_u8(&m_state, &expected_state, new_state);
+}
+
+static bool ifs_state_is(ifs_state_t expected_state_mask)
+{
+    return ((m_state & expected_state_mask) != 0);
+}
 
 static void ifs_tx_result_notify(bool result)
 {
@@ -81,15 +121,20 @@ static void ifs_tx_result_notify(bool result)
     }
 }
 
-static void callback_fired(void * p_context)
+static void callback_fired(nrf_802154_sl_timer_t * p_timer)
 {
-    ifs_operation_t * p_ctx = (ifs_operation_t *)p_context;
+    ifs_operation_t * p_ctx = (ifs_operation_t *)p_timer->user_data.p_pointer;
 
-    nrf_802154_request_transmit(NRF_802154_TERM_NONE,
-                                REQ_ORIG_IFS,
-                                p_ctx->p_data,
-                                &p_ctx->params,
-                                ifs_tx_result_notify);
+    if (ifs_state_set(IFS_STATE_ARMED, IFS_STATE_FIRED))
+    {
+        nrf_802154_request_transmit(NRF_802154_TERM_NONE,
+                                    REQ_ORIG_IFS,
+                                    p_ctx->p_data,
+                                    &p_ctx->params,
+                                    ifs_tx_result_notify);
+
+        ifs_state_set(IFS_STATE_FIRED, IFS_STATE_STOPPED);
+    }
 }
 
 /**@brief Checks if the IFS is needed by comparing the addresses of the actual and the last frames. */
@@ -137,9 +182,9 @@ static bool is_ifs_needed_by_address(const uint8_t * p_frame)
 /**@brief Checks if the IFS is needed by measuring time between the actual and the last frames.
  *        Returns the needed ifs, 0 if none.
  */
-static uint16_t ifs_needed_by_time(uint32_t current_timestamp)
+static uint16_t ifs_needed_by_time(uint64_t current_timestamp)
 {
-    if (!nrf_802154_timer_sched_time_is_in_future(m_last_frame_timestamp, 0, current_timestamp))
+    if (!nrf_802154_sl_time64_is_in_future(m_last_frame_timestamp, current_timestamp))
     {
         /* Explicitly allow case where the timstamps are equal, i.e. we are running very fast. */
         if (current_timestamp != m_last_frame_timestamp)
@@ -148,7 +193,7 @@ static uint16_t ifs_needed_by_time(uint32_t current_timestamp)
         }
     }
     uint16_t ifs_period;
-    uint32_t dt = current_timestamp - m_last_frame_timestamp;
+    uint64_t dt = current_timestamp - m_last_frame_timestamp;
 
     if (m_last_frame_length > MAX_SIFS_FRAME_SIZE)
     {
@@ -165,6 +210,22 @@ static uint16_t ifs_needed_by_time(uint32_t current_timestamp)
     }
 
     return ifs_period;
+}
+
+void nrf_802154_ifs_init(void)
+{
+    m_state                    = IFS_STATE_STOPPED;
+    m_is_last_address_extended = false;
+    m_last_frame_timestamp     = 0;
+    m_last_frame_length        = 0;
+    m_context                  = (ifs_operation_t){ .p_data = NULL };
+
+    nrf_802154_sl_timer_init(&m_timer);
+}
+
+void nrf_802154_ifs_deinit(void)
+{
+    nrf_802154_sl_timer_deinit(&m_timer);
 }
 
 bool nrf_802154_ifs_pretransmission(
@@ -200,7 +261,7 @@ bool nrf_802154_ifs_pretransmission(
         return true;
     }
 
-    uint32_t current_timestamp = nrf_802154_timer_sched_time_get();
+    uint64_t current_timestamp = nrf_802154_sl_timer_current_time_get();
     uint32_t dt                = ifs_needed_by_time(current_timestamp);
 
     if (dt == 0)
@@ -208,16 +269,26 @@ bool nrf_802154_ifs_pretransmission(
         return true;
     }
 
-    m_context.p_data             = p_frame;
-    m_context.params.frame_props = p_params->frame_props;
-    m_context.params.cca         = p_params->cca;
-    m_context.params.immediate   = true;
-    m_timer.t0                   = m_last_frame_timestamp;
-    m_timer.dt                   = dt;
-    m_timer.callback             = callback_fired;
-    m_timer.p_context            = &m_context;
+    if (!ifs_state_set(IFS_STATE_STOPPED, IFS_STATE_ARMED))
+    {
+        assert(false);
+    }
+    else
+    {
+        m_context.p_data                 = p_frame;
+        m_context.params.frame_props     = p_params->frame_props;
+        m_context.params.cca             = p_params->cca;
+        m_context.params.immediate       = true;
+        m_timer.trigger_time             = m_last_frame_timestamp + dt;
+        m_timer.action_type              = NRF_802154_SL_TIMER_ACTION_TYPE_CALLBACK;
+        m_timer.action.callback.callback = callback_fired;
+        m_timer.user_data.p_pointer      = &m_context;
 
-    nrf_802154_timer_sched_add(&m_timer, true);
+        if (nrf_802154_sl_timer_add(&m_timer) != NRF_802154_SL_TIMER_RET_SUCCESS)
+        {
+            assert(false);
+        }
+    }
 
     return false;
 }
@@ -226,7 +297,7 @@ void nrf_802154_ifs_transmitted_hook(const uint8_t * p_frame)
 {
     assert(p_frame[0] != 0U);
 
-    m_last_frame_timestamp = nrf_802154_timer_sched_time_get();
+    m_last_frame_timestamp = nrf_802154_sl_timer_current_time_get();
 
     nrf_802154_frame_parser_data_t frame_data;
     const uint8_t                * addr;
@@ -268,8 +339,7 @@ void nrf_802154_ifs_transmitted_hook(const uint8_t * p_frame)
 
 bool nrf_802154_ifs_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
 {
-    bool result      = true;
-    bool was_running = false;
+    bool result = true;
 
     if (req_orig == REQ_ORIG_IFS)
     {
@@ -279,10 +349,10 @@ bool nrf_802154_ifs_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
     {
         if (term_lvl >= NRF_802154_TERM_802154)
         {
-            nrf_802154_timer_sched_remove(&m_timer, &was_running);
-            if (was_running)
+            if (ifs_state_set(IFS_STATE_ARMED, IFS_STATE_ABORTING))
             {
-                ifs_operation_t * p_op = (ifs_operation_t *)m_timer.p_context;
+                ifs_operation_t * p_op = (ifs_operation_t *)m_timer.user_data.p_pointer;
+
                 // The IFS was still waiting, so the transmission didn't occur
                 // at all. Notify with frame_props passed in nrf_802154_ifs_pretransmission hook
                 nrf_802154_transmit_done_metadata_t metadata = {};
@@ -292,10 +362,12 @@ bool nrf_802154_ifs_abort(nrf_802154_term_t term_lvl, req_originator_t req_orig)
                                                   NRF_802154_TX_ERROR_ABORTED,
                                                   &metadata);
             }
+
+            ifs_state_set(IFS_STATE_MASK, IFS_STATE_STOPPED);
         }
         else
         {
-            result = !nrf_802154_timer_sched_is_running(&m_timer);
+            result = !ifs_state_is(IFS_STATE_ARMED | IFS_STATE_FIRED);
         }
     }
 

@@ -177,7 +177,7 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_received_timestamp_raw
     size_t   frame_hdata_len;
     int8_t   power;
     uint8_t  lqi;
-    uint32_t timestamp;
+    uint64_t timestamp;
     void   * p_local_ptr;
 
     spinel_ssize_t siz = spinel_datatype_unpack(p_property_data,
@@ -513,7 +513,7 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_prop_nrf_802154_capabilities_get_r
 nrf_802154_ser_err_t nrf_802154_spinel_decode_prop_nrf_802154_time_get_ret(
     const void * p_property_data,
     size_t       property_data_len,
-    uint32_t   * p_time)
+    uint64_t   * p_time)
 {
     spinel_ssize_t siz = spinel_datatype_unpack(p_property_data,
                                                 property_data_len,
@@ -729,7 +729,7 @@ nrf_802154_ser_err_t nrf_802154_spinel_dispatch_cmd(spinel_command_t cmd,
 __WEAK void nrf_802154_received_timestamp_raw(uint8_t * p_data,
                                               int8_t    rssi,
                                               uint8_t   lqi,
-                                              uint32_t  timestamp)
+                                              uint64_t  timestamp)
 {
     (void)p_data;
     (void)rssi;

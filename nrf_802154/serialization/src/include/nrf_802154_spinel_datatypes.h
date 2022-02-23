@@ -673,12 +673,12 @@ typedef enum
  * @brief Spinel data type description for nrf_802154_stat_timestamps_t
  */
 #define SPINEL_DATATYPE_NRF_802154_STAT_TIMESTAMPS_S \
-    SPINEL_DATATYPE_UINT32_S                         \
-    SPINEL_DATATYPE_UINT32_S                         \
-    SPINEL_DATATYPE_UINT32_S                         \
-    SPINEL_DATATYPE_UINT32_S                         \
-    SPINEL_DATATYPE_UINT32_S                         \
-    SPINEL_DATATYPE_UINT32_S
+    SPINEL_DATATYPE_UINT64_S                         \
+    SPINEL_DATATYPE_UINT64_S                         \
+    SPINEL_DATATYPE_UINT64_S                         \
+    SPINEL_DATATYPE_UINT64_S                         \
+    SPINEL_DATATYPE_UINT64_S                         \
+    SPINEL_DATATYPE_UINT64_S
 
 /**
  * @brief Encodes an instance of @ref SPINEL_DATATYPE_NRF_802154_STAT_TIMESTAMPS_S data type.
@@ -741,8 +741,7 @@ typedef enum
  * @brief Spinel data type description for nrf_802154_receive_at.
  */
 #define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT \
-    SPINEL_DATATYPE_UINT32_S /* t0 */         \
-    SPINEL_DATATYPE_UINT32_S /* dt */         \
+    SPINEL_DATATYPE_UINT64_S /* rx_time */    \
     SPINEL_DATATYPE_UINT32_S /* timeout */    \
     SPINEL_DATATYPE_UINT8_S  /* channel */    \
     SPINEL_DATATYPE_UINT32_S /* window id */  \
@@ -869,7 +868,7 @@ typedef enum
     SPINEL_DATATYPE_NRF_802154_HDATA_S /* Received frame */ \
     SPINEL_DATATYPE_INT8_S             /* Power */          \
     SPINEL_DATATYPE_UINT8_S            /* lqi */            \
-    SPINEL_DATATYPE_UINT32_S           /* timestamp */
+    SPINEL_DATATYPE_UINT64_S           /* timestamp */
 
 /**
  * @brief Spinel data type description for nrf_802154_receive_failed
@@ -997,8 +996,7 @@ typedef enum
  */
 #define SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW_AT    \
     SPINEL_DATATYPE_NRF_802154_TRANSMIT_AT_METADATA_S \
-    SPINEL_DATATYPE_UINT32_S           /* t0 */       \
-    SPINEL_DATATYPE_UINT32_S           /* dt */       \
+    SPINEL_DATATYPE_UINT64_S           /* tx_time */  \
     SPINEL_DATATYPE_NRF_802154_HDATA_S /* Frame to transmit with its handle */
 
 /**
@@ -1014,7 +1012,7 @@ typedef enum
     SPINEL_DATATYPE_UINT8_S                              /* Length */      \
     SPINEL_DATATYPE_INT8_S                               /* Power */       \
     SPINEL_DATATYPE_UINT8_S                              /* LQI */         \
-    SPINEL_DATATYPE_UINT32_S                             /* Timestamp */   \
+    SPINEL_DATATYPE_UINT64_S                             /* Timestamp */   \
     SPINEL_DATATYPE_NRF_802154_HDATA_S                   /* Ack frame with its handle */
 
 /**
@@ -1166,7 +1164,7 @@ typedef enum
 /**
  * @brief Spinel data type description for nrf_802154_time_get_ret.
  */
-#define SPINEL_DATATYPE_NRF_802154_TIME_GET_RET         SPINEL_DATATYPE_UINT32_S
+#define SPINEL_DATATYPE_NRF_802154_TIME_GET_RET         SPINEL_DATATYPE_UINT64_S
 
 /**
  * @brief Spinel data type description for nrf_802154_cca_cfg_get.

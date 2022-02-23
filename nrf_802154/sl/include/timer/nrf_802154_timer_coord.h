@@ -109,7 +109,7 @@ void nrf_802154_timer_coord_timestamp_prepare(const nrf_802154_sl_event_handle_t
  * @retval true   Timestamp is available.
  * @retval false  Timestamp is unavailable.
  */
-bool nrf_802154_timer_coord_timestamp_get(uint32_t * p_timestamp);
+bool nrf_802154_timer_coord_timestamp_get(uint64_t * p_timestamp);
 
 /**
  *@}

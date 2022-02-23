@@ -40,8 +40,7 @@
 #include <kernel.h>
 #include <assert.h>
 
-#include "timer/nrf_802154_timer_coord.h"
-#include "timer/nrf_802154_timer_sched.h"
+#include "nrf_802154_sl_timer.h"
 
 static void timeout_handler(struct k_timer * timer_id);
 
@@ -67,100 +66,88 @@ void nrf_802154_timer_coord_stop(void)
     // Intentionally empty
 }
 
-void nrf_802154_timer_sched_init(void)
+void nrf_802154_sl_timer_module_init(void)
 {
     BUILD_ASSERT(CONFIG_SYS_CLOCK_TICKS_PER_SEC == NRF_802154_SL_RTC_FREQUENCY);
 }
 
-void nrf_802154_timer_sched_deinit(void)
+void nrf_802154_sl_timer_module_uninit(void)
 {
     // Intentionally empty
 }
 
-uint32_t nrf_802154_timer_sched_time_get(void)
+uint64_t nrf_802154_sl_timer_current_time_get(void)
 {
     return NRF_802154_SL_RTC_TICKS_TO_US(k_uptime_ticks());
 }
 
-void nrf_802154_timer_sched_add(nrf_802154_timer_t * p_timer, bool round_up)
+void nrf_802154_sl_timer_init(nrf_802154_sl_timer_t * p_timer)
 {
-    (void)round_up;
-    assert(!(p_timer->p_next)); // Only one timer is allowed to run at a time.
-
-    uint32_t now    = nrf_802154_timer_sched_time_get();
-    uint32_t target = p_timer->t0 + p_timer->dt - now;
-
-    k_timer_user_data_set(&timer, (void *)p_timer->callback); // Passing arguments is not supported.
-    k_timer_start(&timer, K_USEC(target), K_NO_WAIT);
+    // Intentionally empty
 }
 
-void nrf_802154_timer_sched_remove(nrf_802154_timer_t * p_timer, bool * p_was_running)
+nrf_802154_sl_timer_ret_t nrf_802154_sl_timer_add(nrf_802154_sl_timer_t * p_timer)
 {
+    uint64_t now    = nrf_802154_sl_timer_current_time_get();
+    int32_t  target = p_timer->trigger_time - now;
+
+    target = MAX(target, 1);
+
+    k_timer_user_data_set(&timer, p_timer); // Passing arguments is not supported.
+    k_timer_start(&timer, K_USEC(target), K_NO_WAIT);
+
+    return NRF_802154_SL_TIMER_RET_SUCCESS;
+}
+
+nrf_802154_sl_timer_ret_t nrf_802154_sl_timer_remove(nrf_802154_sl_timer_t * p_timer)
+{
+    nrf_802154_sl_timer_ret_t ret;
+
     if (k_timer_status_get(&timer) > 0)
     {
         /* Timer has expired. */
-        if (p_was_running)
-        {
-            *p_was_running = false;
-        }
+        ret = NRF_802154_SL_TIMER_RET_INACTIVE;
     }
     else if (k_timer_remaining_get(&timer) == 0)
     {
         /* Timer was stopped (by someone else) before expiring. */
-        if (p_was_running)
-        {
-            *p_was_running = false;
-        }
+        ret = NRF_802154_SL_TIMER_RET_INACTIVE;
     }
     else
     {
         /* Timer is still running. */
         k_timer_stop(&timer);
-        if (p_was_running)
-        {
-            *p_was_running = true;
-        }
-    }
-}
 
-bool nrf_802154_timer_sched_time_is_in_future(uint32_t now, uint32_t t0, uint32_t dt)
-{
-    (void)now;
-    (void)t0;
-    (void)dt;
-    return false;
+        ret = NRF_802154_SL_TIMER_RET_SUCCESS;
+    }
+
+    return ret;
 }
 
 static void timeout_handler(struct k_timer * timer_id)
 {
-    nrf_802154_timer_callback_t callback =
-        (nrf_802154_timer_callback_t)k_timer_user_data_get(timer_id);
+    nrf_802154_sl_timer_t * p_timer =
+        (nrf_802154_sl_timer_t *)k_timer_user_data_get(timer_id);
 
-    callback(NULL); // Passing arguments is not supported.
+    p_timer->action.callback.callback(p_timer);
 }
 
-bool nrf_802154_timer_sched_is_running(nrf_802154_timer_t * p_timer)
-{
-    (void)p_timer;
-    return k_timer_status_get(&timer) < 0;
-}
-
-void nrf_802154_lp_timer_init(void)
+void nrf_802154_platform_sl_lp_timer_init(void)
 {
     // Intentionally empty
 }
 
-void nrf_802154_lp_timer_deinit(void)
+void nrf_802154_platform_sl_lp_timer_deinit(void)
 {
     // Intentionally empty
 }
 
-void nrf_802154_lp_timer_critical_section_enter(void)
+void nrf_802154_platform_sl_lptimer_critical_section_enter(void)
 {
     // Intentionally empty
 }
 
-void nrf_802154_lp_timer_critical_section_exit(void)
+void nrf_802154_platform_sl_lptimer_critical_section_exit(void)
 {
     // Intentionally empty
 }

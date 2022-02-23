@@ -40,7 +40,9 @@
 #ifndef NRF_802154_SL_UTILS_H__
 #define NRF_802154_SL_UTILS_H__
 
+#include <stdbool.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include "nrf.h"
 
 /**@brief RTC clock frequency. */
@@ -64,8 +66,14 @@
         (ticks) * (NRF_802154_SL_US_PER_S >> NRF_802154_SL_FREQUENCY_US_PER_S_GCD_BITS), \
         (NRF_802154_SL_RTC_FREQUENCY >> NRF_802154_SL_FREQUENCY_US_PER_S_GCD_BITS))
 
-/**@brief Converts microseconds (us) to RTC ticks. */
-uint64_t NRF_802154_SL_US_TO_RTC_TICKS(uint64_t time);
+/**@brief Converts microseconds (us) to RTC ticks.
+ *
+ * @param time      Time is us to be converted to RTC ticks.
+ * @param round_up  Round up resulting value, otherwise the result is rounded down.
+ *
+ * @return Time converted to RTC ticks.
+ */
+uint64_t NRF_802154_SL_US_TO_RTC_TICKS(uint64_t time, bool round_up);
 
 /**@brief Type holding MCU critical section state.
  *
@@ -109,5 +117,22 @@ typedef uint32_t nrf_802154_sl_mcu_critical_state_t;
         __set_PRIMASK(mcu_critical_state);                  \
     }                                                       \
     while (0)
+
+/**
+ * @brief Checks if the given time is in the future.
+ *
+ * The value of @p now is assumed to be based on a 64-bit time source that never overflows.
+ * These assumptions are met, for example, by @ref nrf_802154_sl_timer_current_time_get().
+ *
+ * @param[in]  now  Current time.
+ * @param[in]  t0   The time value to be checked.
+ *
+ * @retval true   Given time @p t0 is in future (compared to given @p now).
+ * @retval false  Given time @p t0 is not in future (compared to given @p now).
+ */
+static inline bool nrf_802154_sl_time64_is_in_future(uint64_t now, uint64_t t0)
+{
+    return now < t0;
+}
 
 #endif // NRF_802154_SL_UTILS_H__

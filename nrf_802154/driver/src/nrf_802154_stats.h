@@ -67,13 +67,25 @@ extern volatile nrf_802154_stat_totals_t g_nrf_802154_stat_totals;
 #define nrf_802154_stat_timestamp_write(field_name, value)    \
     do                                                        \
     {                                                         \
+        nrf_802154_mcu_critical_state_t mcu_cs;               \
+                                                              \
+        nrf_802154_mcu_critical_enter(mcu_cs);                \
         (g_nrf_802154_stats.timestamps.field_name) = (value); \
+        nrf_802154_mcu_critical_exit(mcu_cs);                 \
     }                                                         \
     while (0)
 
 /**@brief Read one of the @ref nrf_802154_stat_timestamps_t fields. */
-#define nrf_802154_stat_timestamp_read(field_name) \
-    (g_nrf_802154_stats.timestamps.field_name)
+#define nrf_802154_stat_timestamp_read(variable, field_name)    \
+    do                                                          \
+    {                                                           \
+        nrf_802154_mcu_critical_state_t mcu_cs;                 \
+                                                                \
+        nrf_802154_mcu_critical_enter(mcu_cs);                  \
+        *(variable) = g_nrf_802154_stats.timestamps.field_name; \
+        nrf_802154_mcu_critical_exit(mcu_cs);                   \
+    }                                                           \
+    while (0)
 
 #define nrf_802154_stat_totals_increment(field_name, value) \
     do                                                      \
@@ -97,13 +109,14 @@ extern void nrf_802154_stat_totals_get_notify(void);
     nrf_802154_stat_timestamp_write_func(offsetof(nrf_802154_stat_timestamps_t, field_name), \
                                          (value))
 
-#define nrf_802154_stat_timestamp_read(field_name) \
-    nrf_802154_stat_timestamp_read_func(offsetof(nrf_802154_stat_timestamps_t, field_name))
+#define nrf_802154_stat_timestamp_read(variable, field_name)                                 \
+    *(variable) = nrf_802154_stat_timestamp_read_func(offsetof(nrf_802154_stat_timestamps_t, \
+                                                               field_name))
 
 // Functions for which mocks are generated.
 void nrf_802154_stat_counter_increment_func(size_t field_offset);
-void nrf_802154_stat_timestamp_write_func(size_t field_offset, uint32_t value);
-uint32_t nrf_802154_stat_timestamp_read_func(size_t field_offset);
+void nrf_802154_stat_timestamp_write_func(size_t field_offset, uint64_t value);
+uint64_t nrf_802154_stat_timestamp_read_func(size_t field_offset);
 
 #endif // !defined(UNIT_TEST)
 

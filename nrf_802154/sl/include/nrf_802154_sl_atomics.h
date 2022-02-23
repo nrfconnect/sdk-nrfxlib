@@ -37,6 +37,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <nrf.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -86,6 +87,207 @@ typedef volatile uint8_t nrf_802154_sl_atomic_uint8_t;
  * @param p_value   Pointer to a value to be incremented.
  */
 void nrf_802154_sl_atomic_uint8_inc(nrf_802154_sl_atomic_uint8_t * p_value);
+
+/**@brief Atomic strong compare-and-swap operation (word variant).
+ *
+ * Performs compare-and-swap operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ * @param[in] p_expected  Pointer to expected value.
+ *                        In case of CAS failure the argument will be updated with current obj value.
+ * @param[in] desired     Desired object value.
+ *
+ * @retval  true   The object was assigned new value.
+ * @retval  false  The object was not modified.
+ */
+static inline bool nrf_802154_sl_atomic_cas_u32(uint32_t * p_obj,
+                                                uint32_t * p_expected,
+                                                uint32_t   desired)
+{
+    __DMB();
+
+    do
+    {
+        uint32_t old_val = __LDREXW((volatile uint32_t *)p_obj);
+
+        if ( old_val != *p_expected)
+        {
+            *p_expected = old_val;
+            __CLREX();
+            return false;
+        }
+    }
+    while (__STREXW(desired, (volatile uint32_t *)p_obj));
+
+    __DMB();
+
+    return true;
+}
+
+/**@brief Atomic strong compare-and-swap operation (half-word variant).
+ *
+ * Performs compare-and-swap operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ * @param[in] p_expected  Pointer to expected value.
+ *                        In case of CAS failure the argument will be updated with current obj value.
+ * @param[in] desired     Desired object value.
+ *
+ * @retval  true   The object was assigned new value.
+ * @retval  false  The object was not modified.
+ */
+static inline bool nrf_802154_sl_atomic_cas_u16(uint16_t * p_obj,
+                                                uint16_t * p_expected,
+                                                uint16_t   desired)
+{
+    __DMB();
+
+    do
+    {
+        uint16_t old_val = __LDREXH((volatile uint16_t *)p_obj);
+
+        if ( old_val != *p_expected)
+        {
+            *p_expected = old_val;
+            __CLREX();
+            return false;
+        }
+    }
+    while (__STREXH(desired, (volatile uint16_t *)p_obj));
+
+    __DMB();
+
+    return true;
+}
+
+/**@brief Atomic strong compare-and-swap operation (byte variant).
+ *
+ * Performs compare-and-swap operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ * @param[in] p_expected  Pointer to expected value.
+ *                        In case of CAS failure the argument will be updated with current obj value.
+ * @param[in] desired     Desired object value.
+ *
+ * @retval  true   The object was assigned new value.
+ * @retval  false  The object was not modified.
+ */
+static inline bool nrf_802154_sl_atomic_cas_u8(uint8_t * p_obj,
+                                               uint8_t * p_expected,
+                                               uint8_t   desired)
+{
+    __DMB();
+
+    do
+    {
+        uint8_t old_val = __LDREXB((volatile uint8_t *)p_obj);
+
+        if ( old_val != *p_expected)
+        {
+            *p_expected = old_val;
+            __CLREX();
+            return false;
+        }
+    }
+    while (__STREXB(desired, (volatile uint8_t *)p_obj));
+
+    __DMB();
+
+    return true;
+}
+
+/**@brief Atomic store operation (word variant).
+ *
+ * Performs store operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj     Atomic variable object.
+ * @param[in] value     New object value.
+ */
+static inline void nrf_802154_sl_atomic_store_u32(uint32_t * p_obj, uint32_t value)
+{
+    __DMB();
+    *p_obj = value;
+    __DMB();
+}
+
+/**@brief Atomic store operation (half-word variant).
+ *
+ * Performs store operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj     Atomic variable object.
+ * @param[in] value     New object value.
+ */
+static inline void nrf_802154_sl_atomic_store_u16(uint16_t * p_obj, uint16_t value)
+{
+    __DMB();
+    *p_obj = value;
+    __DMB();
+}
+
+/**@brief Atomic store operation (byte variant).
+ *
+ * Performs store operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj     Atomic variable object.
+ * @param[in] value     New object value.
+ */
+static inline void nrf_802154_sl_atomic_store_u8(uint8_t * p_obj, uint8_t value)
+{
+    __DMB();
+    *p_obj = value;
+    __DMB();
+}
+
+/**@brief Atomic load operation (word variant).
+ *
+ * Performs load operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ */
+static inline uint32_t nrf_802154_sl_atomic_load_u32(uint32_t * p_obj)
+{
+    uint32_t value;
+
+    __DMB();
+    value = *p_obj;
+    __DMB();
+
+    return value;
+}
+
+/**@brief Atomic load operation (half-word variant).
+ *
+ * Performs load operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ */
+static inline uint16_t nrf_802154_sl_atomic_load_u16(uint16_t * p_obj)
+{
+    uint16_t value;
+
+    __DMB();
+    value = *p_obj;
+    __DMB();
+
+    return value;
+}
+
+/**@brief Atomic load operation (byte variant).
+ *
+ * Performs load operation with sequentially consistent memory ordering.
+ *
+ * @param[in] p_obj       Atomic variable object.
+ */
+static inline uint8_t nrf_802154_sl_atomic_load_u8(uint8_t * p_obj)
+{
+    uint8_t value;
+
+    __DMB();
+    value = *p_obj;
+    __DMB();
+
+    return value;
+}
 
 #ifdef __cplusplus
 }

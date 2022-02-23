@@ -333,7 +333,7 @@ bail:
  *
  */
 static nrf_802154_ser_err_t time_await(uint32_t   timeout,
-                                       uint32_t * p_time)
+                                       uint64_t * p_time)
 {
     nrf_802154_ser_err_t              res;
     nrf_802154_spinel_notify_buff_t * p_notify_data = NULL;
@@ -355,7 +355,7 @@ static nrf_802154_ser_err_t time_await(uint32_t   timeout,
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 
     NRF_802154_SPINEL_LOG_BANNER_RESPONSE();
-    NRF_802154_SPINEL_LOG_VAR_NAMED("%lu", *p_time, "Time");
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%llu", *p_time, "Time");
 
 bail:
     if (p_notify_data != NULL)
@@ -505,8 +505,7 @@ bail:
     return receive_remote_resp;
 }
 
-bool nrf_802154_receive_at(uint32_t t0,
-                           uint32_t dt,
+bool nrf_802154_receive_at(uint64_t rx_time,
                            uint32_t timeout,
                            uint8_t  channel,
                            uint32_t id)
@@ -524,8 +523,7 @@ bool nrf_802154_receive_at(uint32_t t0,
     res = nrf_802154_spinel_send_cmd_prop_value_set(
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RECEIVE_AT,
         SPINEL_DATATYPE_NRF_802154_RECEIVE_AT,
-        t0,
-        dt,
+        rx_time,
         timeout,
         channel,
         id);
@@ -1467,8 +1465,7 @@ bail:
 }
 
 bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data,
-                                uint32_t                                  t0,
-                                uint32_t                                  dt,
+                                uint64_t                                  tx_time,
                                 const nrf_802154_transmit_at_metadata_t * p_metadata)
 {
     nrf_802154_ser_err_t res;
@@ -1505,8 +1502,7 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154_TRANSMIT_RAW_AT,
         SPINEL_DATATYPE_NRF_802154_TRANSMIT_RAW_AT,
         NRF_802154_TRANSMIT_AT_METADATA_ENCODE(*p_metadata),
-        t0,
-        dt,
+        tx_time,
         NRF_802154_HDATA_ENCODE(data_handle, p_data, p_data[0]));
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
@@ -1685,10 +1681,10 @@ bail:
     return caps;
 }
 
-uint32_t nrf_802154_time_get(void)
+uint64_t nrf_802154_time_get(void)
 {
     int32_t  res;
-    uint32_t time = 0UL;
+    uint64_t time = 0UL;
 
     SERIALIZATION_ERROR_INIT(error);
 
@@ -1773,7 +1769,7 @@ int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level)
     return ED_MIN_DBM + (energy_level / ED_RESULT_FACTOR);
 }
 
-uint32_t nrf_802154_first_symbol_timestamp_get(uint32_t end_timestamp, uint8_t psdu_length)
+uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
 {
     uint32_t frame_symbols = PHY_SHR_SYMBOLS;
 
