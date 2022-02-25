@@ -27,6 +27,18 @@
 extern "C" {
 #endif
 
+#define MPSL_COEX_ESCALATION_THRESHOLD_OFF  UINT8_MAX   /**< Setting for coexistence interface API to switch off escalation. */
+
+/**
+ * @brief Possible priorities to handle related BLE event.
+ */
+enum MPSL_COEX_PRIORITY
+{
+  MPSL_COEX_PRIORITY_LOW,    /**< Low priority for the related coexistence interface event. */
+  MPSL_COEX_PRIORITY_HIGH,   /**< High priority for the related coexistence interface event. */
+  MPSL_COEX_PRIORITY_NUMBER  /**< Number of priorities in the coexistence interface. */
+};
+
 /**
  * @brief Ids of the supported coexistence interfaces.
  */

@@ -23,6 +23,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 #include "nrf.h"
+#include "nrf_peripherals.h"
 #include "nrf_errno.h"
 #include "mpsl_clock.h"
 
@@ -37,9 +38,9 @@ extern "C" {
 #define MPSL_BUILD_REVISION_SIZE 20
 
 /** @brief Bitmask of (D)PPI channels reserved for MPSL. */
-#if defined(NRF52_SERIES)
+#if defined(PPI_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
-#elif defined(NRF53_SERIES)
+#elif defined(DPPI_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
 #else
 #error Unknown NRF series.
