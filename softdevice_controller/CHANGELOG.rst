@@ -9,6 +9,23 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Added
+=====
+
+* Added support for periodic advertising intervals larger than ten seconds (DRGN-16873).
+
+Bug fixes
+=========
+
+* Fixed an issue where setting advertiser radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned "Unknown Advertiser Identifier (0x42)".
+* Fixed an issue where an assert could occur if :c:func:`sdc_disable` was called while a Bluetooth role was running (DRGN-16515).
+* Fixed an issue where the advertiser would incorrectly set Offset Adjust in the SyncInfo when the offset to the ``AUX_SYNC_IND`` is large (DRGN-16887).
+
 nRF Connect SDK v1.9.0
 **********************
 
