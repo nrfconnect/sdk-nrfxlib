@@ -35,10 +35,10 @@ extern "C" {
 
 /** @brief The longest timeslot distance in microseconds allowed for the distance parameter
            see @ref mpsl_timeslot_request_normal_t. */
-#define MPSL_TIMESLOT_DISTANCE_MAX_US                  (128000000UL - 1UL)
+#define MPSL_TIMESLOT_DISTANCE_MAX_US                  (256000000UL - 1UL)
 
 /**@brief The longest timeout in microseconds allowed when requesting the earliest possible timeslot. */
-#define MPSL_TIMESLOT_EARLIEST_TIMEOUT_MAX_US          (128000000UL - 1UL)
+#define MPSL_TIMESLOT_EARLIEST_TIMEOUT_MAX_US          (256000000UL - 1UL)
 
 /** @brief The maximum jitter in @ref MPSL_TIMESLOT_SIGNAL_START relative to the requested start time. */
 #define MPSL_TIMESLOT_START_JITTER_US                  (1UL)

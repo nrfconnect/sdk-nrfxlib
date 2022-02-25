@@ -74,7 +74,7 @@ typedef struct
    *  How often (in number of calibration intervals) the RC oscillator shall be
    *  calibrated if the temperature hasn't changed.
    *  * 0: Always calibrate even if the temperature hasn't changed.
-   *  * 2-33: Check the temperature and only calibrate if it has changed,
+   *  * 1-33: Check the temperature and only calibrate if it has changed,
    *          however calibration will take place every rc_temp_ctiv intervals in any case.
    *
    *  @note Must be 0 if source is not ::MPSL_CLOCK_LF_SRC_RC.
