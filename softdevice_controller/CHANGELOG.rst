@@ -18,6 +18,7 @@ Added
 =====
 
 * Added support for periodic advertising intervals larger than ten seconds (DRGN-16873).
+* Added support for periodic sync timeouts larger than 128 seconds (DRGN-16434).
 
 Bug fixes
 =========
