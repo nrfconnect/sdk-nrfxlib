@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 /**@file
  * @defgroup ocrypto_ecdh ECDH - Elliptic Curve Diffie-Hellman APIs
  * @ingroup ocrypto
@@ -35,7 +36,7 @@ extern "C" {
 typedef struct {
     ocrypto_p256_mult_context mul;
     int ret;
-} ocrypto_ecdh_p256_context;
+} ocrypto_ecdh_p256_ctx;
 /**@endcond */
 
 
@@ -91,7 +92,7 @@ int ocrypto_ecdh_p256_common_secret(uint8_t r[32], const uint8_t sk[32], const u
  * @code
  *   ocrypto_ecdh_p256_common_secret_init(ctx, sKey, pKey);
  *   while (ocrypto_ecdh_p256_common_secret_iterate(ctx));
- *   res = ocrypto_ecdh_p256_common_secret_final(ctx, secret);
+ *   res = ocrypto_ecdh_p256_common_secret_final(ctx, secet);
  * @endcode
  */
 /**@{*/
@@ -104,7 +105,7 @@ int ocrypto_ecdh_p256_common_secret(uint8_t r[32], const uint8_t sk[32], const u
  * @param[out] ctx Context.
  * @param      sk  Secret key. Must be pre-filled with random data.
  */
-void ocrypto_ecdh_p256_public_key_init(ocrypto_ecdh_p256_context *ctx, const uint8_t sk[32]);
+void ocrypto_ecdh_p256_public_key_init(ocrypto_ecdh_p256_ctx *ctx, const uint8_t sk[32]);
 
 /**
  * Incremental ECDH P-256 public key generation step.
@@ -116,7 +117,7 @@ void ocrypto_ecdh_p256_public_key_init(ocrypto_ecdh_p256_context *ctx, const uin
  * @retval 1  If another call to @c ocrypto_ecdh_p256_public_key_init is needed.
  * @retval 0  If key generation should be completed by a call to @c ocrypto_ecdh_p256_public_key_final.
  */
-int ocrypto_ecdh_p256_public_key_iterate(ocrypto_ecdh_p256_context *ctx);
+int ocrypto_ecdh_p256_public_key_iterate(ocrypto_ecdh_p256_ctx *ctx);
 
 /**
  * Incremental ECDH P-256 public key generation final step.
@@ -129,7 +130,7 @@ int ocrypto_ecdh_p256_public_key_iterate(ocrypto_ecdh_p256_context *ctx);
  * @retval 0  If @p sk is a valid secret key.
  * @retval -1 Otherwise.
  */
-int ocrypto_ecdh_p256_public_key_final(ocrypto_ecdh_p256_context *ctx, uint8_t r[64]);
+int ocrypto_ecdh_p256_public_key_final(ocrypto_ecdh_p256_ctx *ctx, uint8_t r[64]);
 
 /**
  * Incremental ECDH P-256 common secret generation start.
@@ -140,7 +141,7 @@ int ocrypto_ecdh_p256_public_key_final(ocrypto_ecdh_p256_context *ctx, uint8_t r
  * @param      sk  Server private key.
  * @param      pk  Client public key.
  */
-void ocrypto_ecdh_p256_common_secret_init(ocrypto_ecdh_p256_context *ctx, const uint8_t sk[32], const uint8_t pk[64]);
+void ocrypto_ecdh_p256_common_secret_init(ocrypto_ecdh_p256_ctx *ctx, const uint8_t sk[32], const uint8_t pk[64]);
 
 /**
  * Incremental ECDH P-256 common secret generation step.
@@ -152,7 +153,7 @@ void ocrypto_ecdh_p256_common_secret_init(ocrypto_ecdh_p256_context *ctx, const 
  * @retval 1  If another call to @c ocrypto_ecdh_p256_common_secret_iterate is needed.
  * @retval 0  If key generation should be completed by a call to @c ocrypto_ecdh_p256_common_secret_final.
  */
-int ocrypto_ecdh_p256_common_secret_iterate(ocrypto_ecdh_p256_context *ctx);
+int ocrypto_ecdh_p256_common_secret_iterate(ocrypto_ecdh_p256_ctx *ctx);
 
 /**
  * Incremental ECDH P-256 common secret generation final step.
@@ -165,7 +166,7 @@ int ocrypto_ecdh_p256_common_secret_iterate(ocrypto_ecdh_p256_context *ctx);
  * @retval 0  If @p sk is a valid secret key and @p pk is a valid public key.
  * @retval -1 Otherwise.
  */
-int ocrypto_ecdh_p256_common_secret_final(ocrypto_ecdh_p256_context *ctx, uint8_t r[32]);
+int ocrypto_ecdh_p256_common_secret_final(ocrypto_ecdh_p256_ctx *ctx, uint8_t r[32]);
 /**@}*/
 
 
@@ -173,6 +174,6 @@ int ocrypto_ecdh_p256_common_secret_final(ocrypto_ecdh_p256_context *ctx, uint8_
 }
 #endif
 
-#endif
+#endif /* OCRYPTO_ECDH_P256_H */
 
 /** @} */

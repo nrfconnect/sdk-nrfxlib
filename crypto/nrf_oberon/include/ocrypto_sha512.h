@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 /**@file
  * @defgroup ocrypto_sha_512 SHA-512 APIs
  * @ingroup ocrypto_sha

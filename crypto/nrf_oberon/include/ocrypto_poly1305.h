@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 /**@file
  * @defgroup ocrypto_poly1305 Poly1305 APIs
  * @ingroup ocrypto_chacha_poly

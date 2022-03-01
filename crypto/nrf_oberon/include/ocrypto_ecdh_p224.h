@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 /**@file
  * @defgroup ocrypto_ecdh_p224 ECDH P224 APIs
  * @ingroup ocrypto_ecdh
@@ -61,6 +62,6 @@ int ocrypto_ecdh_p224_common_secret(uint8_t r[28], const uint8_t sk[28], const u
 }
 #endif
 
-#endif
+#endif /* OCRYPTO_ECDH_P224_H */
 
 /** @} */

@@ -118,6 +118,22 @@ psa_status_t psa_driver_wrapper_sign_message(
             /* Key is stored in the slot in export representation, so
              * cycle through all known transparent accelerators */
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
+#if defined(PSA_CRYPTO_DRIVER_OBERON)
+            status = oberon_sign_message(
+                        attributes,
+                        key_buffer,
+                        key_buffer_size,
+                        alg,
+                        input,
+                        input_length,
+                        signature,
+                        signature_size,
+                        signature_length );
+            /* Declared with fallback == true */
+            if( status != PSA_ERROR_NOT_SUPPORTED )
+                return( status );
+#endif /* PSA_CRYPTO_DRIVER_OBERON */
+
 #if defined(PSA_CRYPTO_DRIVER_TEST)
             status = mbedtls_test_transparent_signature_sign_message(
                         attributes,
@@ -192,6 +208,22 @@ psa_status_t psa_driver_wrapper_verify_message(
             /* Key is stored in the slot in export representation, so
              * cycle through all known transparent accelerators */
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
+
+#if defined(PSA_CRYPTO_DRIVER_OBERON)
+            status = oberon_verify_message(
+                        attributes,
+                        key_buffer,
+                        key_buffer_size,
+                        alg,
+                        input,
+                        input_length,
+                        signature,
+                        signature_length );
+            /* Declared with fallback == true */
+            if( status != PSA_ERROR_NOT_SUPPORTED )
+                return( status );
+#endif /* PSA_CRYPTO_DRIVER_OBERON */
+
 #if defined(PSA_CRYPTO_DRIVER_TEST)
             status = mbedtls_test_transparent_signature_verify_message(
                         attributes,
@@ -293,7 +325,6 @@ psa_status_t psa_driver_wrapper_sign_hash(
                                             signature_length ) );
 
             }
-
             status = cc3xx_sign_hash( attributes,
                                       key_buffer,
                                       key_buffer_size,
@@ -3172,15 +3203,15 @@ psa_status_t psa_driver_wrapper_key_agreement(
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
 #if defined(PSA_CRYPTO_DRIVER_OBERON)
 
-            status = oberon_key_agreement( alg,
-                                                       attributes,
-                                                       priv_key,
-                                                       priv_key_size,
-                                                       publ_key,
-                                                       publ_key_size,
-                                                       output,
-                                                       output_size,
-                                                       output_length );
+            status = oberon_key_agreement(attributes,
+                                          priv_key,
+                                          priv_key_size,
+                                          publ_key,
+                                          publ_key_size,
+                                          output,
+                                          output_size,
+                                          output_length,
+                                          alg);
             return( status );
 #endif /* PSA_CRYPTO_DRIVER_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */

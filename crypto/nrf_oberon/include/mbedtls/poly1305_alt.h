@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 #ifndef POLY1305_ALT_H
 #define POLY1305_ALT_H
 

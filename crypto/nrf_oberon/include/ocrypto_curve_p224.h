@@ -106,13 +106,15 @@ int ocrypto_curve_p224_scalarmult_base(ocrypto_cp_p224 *r, const ocrypto_sc_p224
  * @param       q       input point.
  *
  * @retval -1 if r = [0,0].
- * @retval 0 if successful.
+ * @retval 0 if successfull.
  */
 int ocrypto_curve_p224_add(ocrypto_cp_p224 *r, const ocrypto_cp_p224 *p, const ocrypto_cp_p224 *q);
 
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif /* #ifndef OCRYPTO_CURVE_P224_H */
 
-#endif
+/** @} */

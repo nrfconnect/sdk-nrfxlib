@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 /**@file
  * @defgroup ocrypto_ecdsa_p224 ECDSA secp224r1 low-level APIs
  * @ingroup ocrypto_ecdsa

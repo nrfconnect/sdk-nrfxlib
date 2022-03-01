@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 /**@file
  * @defgroup ocrypto_rsa RSA - Rivest-Shamir-Adleman algorithm
  * @ingroup ocrypto

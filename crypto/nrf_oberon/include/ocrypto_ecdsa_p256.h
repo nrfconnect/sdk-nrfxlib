@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 /**@file
  * @defgroup ocrypto_ecdsa ECDSA - Elliptic Curve Digital Signature Algorithm APIs
  * @ingroup ocrypto
