@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 /**@file
  * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
  * @ingroup ocrypto
@@ -66,8 +67,22 @@ typedef struct {
  * @param      key   AES key.
  * @param      size  Key size (16, 24, or 32 bytes).
  * @param      iv    Initial vector.
+ *
+ * @remark If @p key is NULL only @p iv is set. If @p iv is NULL only @p key is set.
+           Both @p key and @p iv must be set before update is called.
  */
 void ocrypto_aes_gcm_init(ocrypto_aes_gcm_ctx *ctx, const uint8_t *key, size_t size, const uint8_t iv[12]);
+
+/**
+ * AES-GCM iv initialization.
+ *
+ * The context @p ctx is initialized using the given initial vector @p iv.
+ *
+ * @param[out] ctx   Context.
+ * @param      iv    Initial vector.
+ * @param      iv_len Length of @p iv.
+ */
+void ocrypto_aes_gcm_init_iv(ocrypto_aes_gcm_ctx* ctx, const uint8_t* iv, size_t iv_len);
 
 /**
  * AES-GCM incremental aad input.

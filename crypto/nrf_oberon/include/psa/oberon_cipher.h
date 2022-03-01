@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 #ifndef OBERON_CIPHER_H
 #define OBERON_CIPHER_H
 

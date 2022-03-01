@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 #ifndef CHACHA20_ALT_H
 #define CHACHA20_ALT_H
 

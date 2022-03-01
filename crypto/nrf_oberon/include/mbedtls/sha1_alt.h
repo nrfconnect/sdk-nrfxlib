@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 #ifndef SHA1_ALT_H
 #define SHA1_ALT_H
 
