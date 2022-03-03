@@ -15,6 +15,9 @@ However, these libraries are only periodically verified by external test service
 
    Zigbee certification levels
 
+Certification levels
+********************
+
 The certification is based on CSA's `certification policy`_, which distinguishes the following levels of certification:
 
 * Compliant Platform
@@ -25,4 +28,10 @@ The certification guarantees that a platform or product will work and will inter
 Nordic Semiconductor provides the Zigbee Compliant Platform.
 You can use this plaform as the building block for your Zigbee Certified Product, which is conformant with the ZCL and BDB standard.
 
-The latest certification entries for the combination of the ZBOSS v3.3 or newer stack, the |NCS|, and Nordic Semiconductor's SoCs are available on the CSA's `Zigbee Compliant Platforms page`_.
+Certification IDs
+*****************
+
+Check the compatibility matrices in the `Infocenter`_ for information about the latest certification ID entries (CIDs) for the combination of the ZBOSS stack v3.3 (or newer), the |NCS| version, and Nordic Semiconductor's SoCs:
+
+* `Zigbee CIDs for nRF52840`_
+* `Zigbee CIDs for nRF52833`_
