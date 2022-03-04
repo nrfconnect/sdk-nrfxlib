@@ -923,7 +923,7 @@ bool nrf_802154_delayed_trx_nearest_drx_time_to_midpoint_get(uint32_t * p_drx_ti
 {
     bool     result            = false;
     uint32_t min_time_to_start = 0xffffffff;
-    uint64_t drx_time_to_start;
+    uint64_t drx_time_to_start = UINT64_C(0xffffffff);
     uint32_t drx_time_to_midpoint;
 
     for (int i = 0; i < sizeof(m_dly_rx_data) / sizeof(m_dly_rx_data[0]); i++)
