@@ -11,6 +11,14 @@ config NRF_MODEM_LINK_BINARY
 
 endchoice
 
+config NRF_MODEM_NETWORK_IRQ_PRIORITY
+	int "Modem network layer communication interrupt priority"
+	default 1
+
+config NRF_MODEM_APPLICATION_IRQ_PRIORITY
+	int "Modem application layer communication interrupt priority"
+	default 4
+
 config NRF_MODEM_LOG
 	bool "Enable library logging"
 
