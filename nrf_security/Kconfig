@@ -187,7 +187,6 @@ config MBEDTLS_MAC_SHA256_ENABLED
 config MBEDTLS_CTR_DRBG_ENABLED
 	bool "Enable the CTR_DRBG AES-256-based random generator"
 	select PSA_WANT_ALG_CTR_DRBG
-	default y
 
 config MBEDTLS_HMAC_DRBG_ENABLED
 	bool "Enable the HMAC_DRBG random generator"
