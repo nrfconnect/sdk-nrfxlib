@@ -33,7 +33,8 @@ foreach(setting ${NRF_SECURITY_SETTINGS})
 endforeach()
 
 # Standard extensions of Zephyr included in the TF-M build
-include(${ZEPHYR_BASE}/cmake/extensions.cmake)
+list(APPEND CMAKE_MODULE_PATH ${ZEPHYR_BASE}/cmake/modules)
+include(extensions)
 import_kconfig(CONFIG_ ${ZEPHYR_DOTCONFIG})
 
 # Additional TF-M build only settings:
