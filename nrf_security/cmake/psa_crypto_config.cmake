@@ -302,10 +302,12 @@ if (NOT CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
   kconfig_check_and_set_base_to_one(MBEDTLS_SSL_CLI_C)
   kconfig_check_and_set_base_to_one(MBEDTLS_SSL_SRV_C)
   kconfig_check_and_set_base_to_one(MBEDTLS_SSL_TLS_C)
-  kconfig_check_and_set_base_to_one(MBEDTLS_SSL_IN_CONTENT_LEN)
-  kconfig_check_and_set_base_to_one(MBEDTLS_SSL_OUT_CONTENT_LEN)
-  kconfig_check_and_set_base_to_one(MBEDTLS_SSL_CIPHERSUITES)
   kconfig_check_and_set_base_to_one(MBEDTLS_SSL_COOKIE_C)
+  
+  kconfig_check_and_set_base_int(MBEDTLS_SSL_IN_CONTENT_LEN)
+  kconfig_check_and_set_base_int(MBEDTLS_SSL_OUT_CONTENT_LEN)
+  kconfig_check_and_set_base(MBEDTLS_SSL_CIPHERSUITES)
+  
 
   # x509 configurations
   # kconfig_check_and_set_base_to_one(MBEDTLS_X509_RSASSA_PSS_SUPPORT)
