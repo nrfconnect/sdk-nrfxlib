@@ -73,6 +73,11 @@ menuconfig MBEDTLS_TLS_LIBRARY
 
 if MBEDTLS_TLS_LIBRARY
 
+# Enact override to set this configuration in case MBEDTLS_TLS_LIBRARY is enabled
+config PSA_WANT_ALG_TLS12_PRF
+	bool
+	default y
+
 config MBEDTLS_SSL_CLI_C
 	bool "Enable the SSL/TLS client code"
 	default y
