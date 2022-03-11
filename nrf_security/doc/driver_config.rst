@@ -20,7 +20,7 @@ To enable a PSA driver, set the configurations according to the following table:
 
 +---------------+-------------------------------------------+------------------------------------------------+
 | PSA driver    | Configuration option                      | Notes                                          |
-+================+==========================================+================================================+
++===============+===========================================+================================================+
 | nrf_cc3xx     | :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_CC3XX` | Only on nRF52840, nRF9160, and nRF5340 devices |
 +---------------+-------------------------------------------+------------------------------------------------+
 | nrf_oberon    | :kconfig:`CONFIG_PSA_RYPTO_DRIVER_OBERON` |                                                |
@@ -106,9 +106,9 @@ You can use the Kconfig options in the following table for fine-grained control 
 | MAC cipher     | nrf_cc3xx driver support                           | nrf_oberon driver support  |
 +================+====================================================+============================+
 | ECB_NO_PADDING | :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CMAC_CC3XX` | Not supported              |
-+----------------+----------------+-----------------------------------+----------------------------+
++----------------+----------------------------------------------------+----------------------------+
 | CBC_NO_PADDING | :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_ALG_HMAC_CC3XX` | Not supported              |
-+----------------+----------------+-----------------------------------+----------------------------+
++----------------+----------------------------------------------------+----------------------------+
 
 .. note::
    * If a MAC algorithm is enabled and no PSA driver enables or supports it, then :ref:`nrf_security_drivers_builtin` support is enabled and used.
@@ -162,7 +162,7 @@ You can enable Elliptic Curve Cryptography (ECC) by setting one or more Kconfig 
 | ECC algorithm         | Configuration option                               |
 +=======================+====================================================+
 | ECDH                  | :kconfig:`CONFIG_PSA_WANT_ALG_ECDH`                |
-+----------------+-----------------------------------------------------------+
++-----------------------+----------------------------------------------------+
 | ECDSA                 | :kconfig:`CONFIG_PSA_WANT_ALG_ECDSA`               |
 +-----------------------+----------------------------------------------------+
 | ECDSA (deterministic) | :kconfig:`CONFIG_PSA_WANT_ALG_DETERMINISTIC_ECDSA` |
@@ -180,7 +180,7 @@ You can use the Kconfig options in the following table for fine-grained control 
 | ECC algorithm         | nrf_cc3xx driver support                                          | nrf_oberon driver support                                          |
 +=======================+===================================================================+====================================================================+
 | ECDH                  | :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_ALG_ECDH_CC3XX`                | :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_ALG_ECDSA_OBERON`               |
-+----------------+--------------------------------------------------------------------------+--------------------------------------------------------------------+
++-----------------------+-------------------------------------------------------------------+--------------------------------------------------------------------+
 | ECDSA                 | :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_ALG_ECDSA_CC3XX`               | :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_ALG_ECDSA_OBERON`               |
 +-----------------------+-------------------------------------------------------------------+--------------------------------------------------------------------+
 | ECDSA (deterministic) | :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_ALG_DETERMINISTIC_ECDSA_CC3XX` | :kconfig:`CONFIG_PSA_CRYPTO_DRIVER_ALG_DETERMINISTIC_ECDSA_OBERON` |
