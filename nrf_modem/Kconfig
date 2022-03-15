@@ -1,18 +1,27 @@
+# Selected by NRF_MODEM_LIB in sdk-nrf
 config NRF_MODEM
 	bool
 	imply FPU_SHARING
 
+menu "nrf_modem (Modem library)"
+	visible if NRF_MODEM
+
 choice NRF_MODEM_BUILD_STRATEGY
 	depends on NRF_MODEM
-	prompt "Modem library build strategy"
+	prompt "Build strategy"
 
 config NRF_MODEM_LINK_BINARY
 	bool "Link binary"
-
 endchoice
 
 config NRF_MODEM_LOG
-	bool "Enable library logging"
+	depends on NRF_MODEM_LINK_BINARY
+	bool "Use version of the library with logs"
+	help
+	  Links the application with the library version capable of emitting logs.
+	  This increases the final size of the application.
+
+endmenu
 
 # This configuration is auto-generated.
 # Do not edit.
