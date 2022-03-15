@@ -86,6 +86,11 @@ void nrf_802154_sl_timer_init(nrf_802154_sl_timer_t * p_timer)
     // Intentionally empty
 }
 
+void nrf_802154_sl_timer_deinit(nrf_802154_sl_timer_t * p_timer)
+{
+    // Intentionally empty
+}
+
 nrf_802154_sl_timer_ret_t nrf_802154_sl_timer_add(nrf_802154_sl_timer_t * p_timer)
 {
     uint64_t now    = nrf_802154_sl_timer_current_time_get();

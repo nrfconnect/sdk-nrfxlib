@@ -87,7 +87,6 @@ else ()
   target_sources(nrf-802154-driver
     PRIVATE
       src/nrf_802154_notification_swi.c
-      src/nrf_802154_priority_drop_swi.c
       src/nrf_802154_request_swi.c
   )
 endif ()
