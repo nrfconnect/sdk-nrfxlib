@@ -1,25 +1,35 @@
 # This is the Jenkins ci variant of the .github/labler.yaml
 
 CI-ble-test:
-  - 'softdevice_controller/**/*'
-  - 'mpsl/**/*'
+  - 'softdevice_controller/include/**/*'
+  - 'softdevice_controller/lib/**/*'
+  - 'mpsl/include/**/*'
+  - 'mpsl/lib/**/*'
 
 CI-zigbee-test:
-  - 'mpsl/**/*'
-  - 'softdevice_controller/**/*'
+  - 'softdevice_controller/include/**/*'
+  - 'softdevice_controller/lib/**/*'
+  - 'mpsl/include/**/*'
+  - 'mpsl/lib/**/*'
 
 CI-desktop-test:
-  - 'softdevice_controller/*'
+  - 'softdevice_controller/include/**/*'
+  - 'softdevice_controller/lib/**/*'
 
 CI-rs-test:
-  - 'mpsl/**/*'
+  - 'mpsl/include/**/*'
+  - 'mpsl/lib/**/*'
 
 CI-homekit-test:
-  - 'mpsl/**/*'
-  - 'softdevice_controller/**/*'
+  - 'softdevice_controller/include/**/*'
+  - 'softdevice_controller/lib/**/*'
+  - 'mpsl/include/**/*'
+  - 'mpsl/lib/**/*'
 
 CI-thread-test:
-  - 'mpsl/**/*'
+  - 'mpsl/include/**/*'
+  - 'mpsl/lib/**/*'
 
 CI-matter-test:
-  - 'mpsl/**/*'
+  - 'mpsl/include/**/*'
+  - 'mpsl/lib/**/*'
