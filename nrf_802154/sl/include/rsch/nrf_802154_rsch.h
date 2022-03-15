@@ -266,11 +266,12 @@ bool nrf_802154_rsch_delayed_timeslot_request(const rsch_dly_ts_param_t * p_dly_
  * The delayed timeslot must be explicitly cancelled from the @p p_dly_ts_param->started_callback
  * handler function passed to @ref nrf_802154_rsch_delayed_timeslot_request. When timeslot is
  * released from the handler context, the @p handler flag must be set to @p true.
- * Otherwise, the timeslot can be cancelled before it requests desired preconditions.
- * The @p handler flag must be set to @p false in this case.
+ * Otherwise, the timeslot can be cancelled before it starts, which may be earlier than entering the
+ * @p p_dly_ts_param->started_callback handler function.
  *
- * Because @p RSCH_DLY_TS_TYPE_RELAXED request preconditions immedialy, the timeslots of this type
- * cannot be cancelled before the timeslot starts.
+ * Care must be taken when canceling a timeslot from an interrupt context. Delayed timeslots with
+ * type @p RSCH_DLY_TS_TYPE_PRECISE cannot be safely canceled from an interrupt context with higher
+ * priority than delayed timeslot callback context.
  *
  * @param[in] dly_ts_id  Identifier of the requested timeslot. If the provided value does not refer
  *                       to any scheduled delayed timeslot, the function returns false.

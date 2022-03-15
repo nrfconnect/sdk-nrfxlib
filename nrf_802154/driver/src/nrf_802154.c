@@ -65,7 +65,6 @@
 #include "platform/nrf_802154_temperature.h"
 #include "rsch/nrf_802154_rsch.h"
 #include "rsch/nrf_802154_rsch_crit_sect.h"
-#include "rsch/nrf_802154_rsch_prio_drop.h"
 #include "timer/nrf_802154_timer_coord.h"
 
 #include "mac_features/nrf_802154_ack_timeout.h"
@@ -236,7 +235,6 @@ void nrf_802154_init(void)
     nrf_802154_pib_init();
     nrf_802154_security_pib_init();
     nrf_802154_sl_timer_module_init();
-    nrf_802154_rsch_prio_drop_init();
     nrf_802154_random_init();
     nrf_802154_request_init();
     nrf_802154_rsch_crit_sect_init();

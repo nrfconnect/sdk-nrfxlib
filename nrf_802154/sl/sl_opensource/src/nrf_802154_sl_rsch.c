@@ -132,11 +132,6 @@ void nrf_802154_rsch_crit_sect_prio_request(rsch_prio_t prio)
     }
 }
 
-void nrf_802154_rsch_prio_drop_init(void)
-{
-    // Intentionally empty
-}
-
 void nrf_802154_rsch_crit_sect_init(void)
 {
     // Intentionally empty
