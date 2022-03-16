@@ -19,6 +19,14 @@ Added
 
 * Added support for periodic advertising intervals larger than ten seconds (DRGN-16873).
 * Added support for periodic sync timeouts larger than 128 seconds (DRGN-16434).
+* Added :c:func:`sdc_support_ext_master` which makes the extended initiator role configurable (DRGN-16392).
+
+Changes
+=======
+
+* The binary size of an application using the scanner but not the master role is decreased (DRGN-16392).
+* The functions :c:func:`sdc_support_scan` and :c:func:`sdc_support_ext_scan` can no longer be called together with :c:func:`sdc_support_master` (DRGN-16392).
+* Removed support for running the SoftDevice Controller on the nRF5340 PDK (DRGN-15174).
 
 Bug fixes
 =========
