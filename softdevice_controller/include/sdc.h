@@ -507,6 +507,12 @@ int32_t sdc_support_slave(void);
  * After this API is called, the controller will support the HCI commands
  * and events related to the scanning state.
  *
+ * To reduce the size of the final linked image, the application should
+ * not call both @ref sdc_support_scan() and @ref sdc_support_ext_scan().
+ *
+ * This API shall not be called together with
+ * @ref sdc_support_master() or @ref sdc_support_ext_master().
+ *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  Scanning state is not supported.
@@ -519,7 +525,10 @@ int32_t sdc_support_scan(void);
  * and events related to both legacy and extended scanning.
  *
  * To reduce the size of the final linked image, the application should
- * call either @ref sdc_support_scan() or @ref sdc_support_ext_scan().
+ * not call both @ref sdc_support_scan() and @ref sdc_support_ext_scan().
+ *
+ * This API shall not be called together with
+ * @ref sdc_support_master() or @ref sdc_support_ext_master().
  *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
@@ -527,20 +536,39 @@ int32_t sdc_support_scan(void);
  */
 int32_t sdc_support_ext_scan(void);
 
-/** @brief Support Master role
+/** @brief Support Scanner, Initiator, and Master role
  *
  * After this API is called, the controller will support the HCI commands
- * and events related to the master role.
+ * and events related to the scanner, initiator, and master role.
  *
- * The application shall call either @ref sdc_support_scan() or
- * @ref sdc_support_ext_scan() to be able to support connection
- * establishment.
+ * To reduce the size of the final linked image, the application should
+ * not call both @ref sdc_support_master() and @ref sdc_support_ext_master().
+ *
+ * This API shall not be called together with
+ * @ref sdc_support_scan() or @ref sdc_support_ext_scan().
  *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Master role is not supported.
+ * @retval -NRF_EOPNOTSUPP  These features are not supported.
  */
 int32_t sdc_support_master(void);
+
+/** @brief Support Extended Scanner, Extended Initiator, and Master role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * and events related to the extended scanner, initiator, and master role.
+ *
+ * To reduce the size of the final linked image, the application should
+ * not call both @ref sdc_support_master() and @ref sdc_support_ext_master().
+ *
+ * This API shall not be called together with
+ * @ref sdc_support_scan() or @ref sdc_support_ext_scan().
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  These features are not supported.
+ */
+int32_t sdc_support_ext_master(void);
 
 /** @brief Support Data Length Extensions
  *
