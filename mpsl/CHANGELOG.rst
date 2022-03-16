@@ -15,6 +15,7 @@ All the notable changes included in the main branch are documented in this secti
 Changes
 =======
 
+* Removed support for running MPSL on the nRF5340 PDK (DRGN-15174).
 * Timeslot API values ``MPSL_TIMESLOT_DISTANCE_MAX_US`` and ``MPSL_TIMESLOT_EARLIEST_TIMEOUT_MAX_US`` increased to 256 seconds (DRGN-16800).
 
 Bug fixes

@@ -186,8 +186,9 @@ uint32_t mpsl_cx_req_grant_delay_get(void);
 /**
  * @brief Register callback function called when radio operations granted by PTA change.
  *
- * This function is used by radio protocols that require CPU processing when granted operations.
- * One example is protocol waiting with asynchronous transmission until TX operation is granted.
+ * This function is used by radio protocols that require CPU processing when list of granted
+ * operations changes. One example is a protocol waiting with asynchronous transmission until TX
+ * operation is granted.
  *
  * When radio protocol stops using Coexistence interface to hand it over to another protocol,
  * it shall reset callback by calling this function with NULL value passed in @p cb.
