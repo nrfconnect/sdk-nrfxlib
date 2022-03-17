@@ -11,6 +11,13 @@ CI-zigbee-test:
   - 'softdevice_controller/lib/**/*'
   - 'mpsl/include/**/*'
   - 'mpsl/lib/**/*'
+  - 'nrf_802154/driver/**/*'
+  - 'nrf_802154/serialization/**/*'
+  - 'nrf_802154/sl/**/*'
+  - any:
+    - 'zboss/**/*'
+    - '!zboss/*.rst'
+    - '!zboss/doc/**/*'
 
 CI-desktop-test:
   - 'softdevice_controller/include/**/*'
