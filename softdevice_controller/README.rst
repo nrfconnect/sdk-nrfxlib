@@ -35,6 +35,9 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 | Coded PHY (Long Range)   |                 |              | X         |
 +--------------------------+-----------------+--------------+-----------+
 
+.. note::
+   Periodic Advertising is supported as an experimental feature on the nRF53 Series.
+
 Proprietary feature support:
 
 +--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
