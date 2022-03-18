@@ -32,6 +32,11 @@ CI-homekit-test:
   - 'softdevice_controller/lib/**/*'
   - 'mpsl/include/**/*'
   - 'mpsl/lib/**/*'
+  - 'nrf_802154/driver/**/*'
+  - 'nrf_802154/serialization/**/*'
+  - 'nrf_802154/sl/**/*'
+  - 'openthread/**/*'
+  - 'nrf_security/**/*'
 
 CI-thread-test:
   - 'mpsl/include/**/*'
