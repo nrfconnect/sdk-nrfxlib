@@ -2,12 +2,24 @@
 
 "CI-iot-samples-test":
   - "**/*"
+  - !"softdevice_controller/include/**/*"
+  - !"softdevice_controller/lib/**/*"
+  - !"mpsl/include/**/*"
+  - !"mpsl/lib/**/*"
 
 "CI-iot-libraries-test":
   - "**/*"
+  - !"softdevice_controller/include/**/*"
+  - !"softdevice_controller/lib/**/*"
+  - !"mpsl/include/**/*"
+  - !"mpsl/lib/**/*"
 
 "CI-lwm2m-test":
   - "**/*"
+  - !"softdevice_controller/include/**/*"
+  - !"softdevice_controller/lib/**/*"
+  - !"mpsl/include/**/*"
+  - !"mpsl/lib/**/*"
 
 "CI-boot-dfu-test":
   - "**/*"
@@ -96,6 +108,14 @@
 
 "CI-modemshell-test":
   - "**/*"
+  - !"softdevice_controller/include/**/*"
+  - !"softdevice_controller/lib/**/*"
+  - !"mpsl/include/**/*"
+  - !"mpsl/lib/**/*"
 
 "CI-positioning-test":
   - "**/*"
+  - !"softdevice_controller/include/**/*"
+  - !"softdevice_controller/lib/**/*"
+  - !"mpsl/include/**/*"
+  - !"mpsl/lib/**/*"
