@@ -88,6 +88,10 @@
 
 "CI-nfc-test":
   - "**/*"
+  - "!softdevice_controller/include/**/*"
+  - "!softdevice_controller/lib/**/*"
+  - "!mpsl/include/**/*"
+  - "!mpsl/lib/**/*"
 
 "CI-matter-test":
   - "mpsl/include/**/*"
