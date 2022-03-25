@@ -165,6 +165,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_READ_TRANSMIT_POWER = 0x204b,
     /** @brief See @ref sdc_hci_cmd_le_set_privacy_mode(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PRIVACY_MODE = 0x204e,
+    /** @brief See @ref sdc_hci_cmd_le_set_connless_cte_transmit_params(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_CONNLESS_CTE_TRANSMIT_PARAMS = 0x2051,
+    /** @brief See @ref sdc_hci_cmd_le_set_connless_cte_transmit_enable(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_CONNLESS_CTE_TRANSMIT_ENABLE = 0x2052,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_receive_enable(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_RECEIVE_ENABLE = 0x2059,
 };
@@ -268,6 +272,12 @@ typedef __PACKED_STRUCT
     uint8_t le_power_change_indication : 1;
     uint8_t le_path_loss_monitoring : 1;
 } sdc_hci_le_le_features_t;
+
+/** @brief LE Set Connectionless CTE Transmit Parameters array parameters. */
+typedef __PACKED_STRUCT
+{
+    uint8_t antenna_ids;
+} sdc_hci_le_set_connless_cte_transmit_params_array_params_t;
 
 /** @brief LE Set Extended Advertising Enable array parameters. */
 typedef __PACKED_STRUCT
@@ -808,6 +818,24 @@ typedef __PACKED_STRUCT
     uint8_t peer_identity_address[6];
     uint8_t privacy_mode;
 } sdc_hci_cmd_le_set_privacy_mode_t;
+
+/** @brief LE Set Connectionless CTE Transmit Parameters command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t adv_handle;
+    uint8_t cte_length;
+    uint8_t cte_type;
+    uint8_t cte_count;
+    uint8_t switching_pattern_length;
+    sdc_hci_le_set_connless_cte_transmit_params_array_params_t array_params[];
+} sdc_hci_cmd_le_set_connless_cte_transmit_params_t;
+
+/** @brief LE Set Connectionless CTE Transmit Enable command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t adv_handle;
+    uint8_t cte_enable;
+} sdc_hci_cmd_le_set_connless_cte_transmit_enable_t;
 
 /** @brief LE Set Periodic Advertising Receive Enable command parameter(s). */
 typedef __PACKED_STRUCT
@@ -3623,6 +3651,132 @@ uint8_t sdc_hci_cmd_le_read_transmit_power(sdc_hci_cmd_le_read_transmit_power_re
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_privacy_mode(const sdc_hci_cmd_le_set_privacy_mode_t * p_params);
+
+/** @brief LE Set Connectionless CTE Transmit Parameters.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.80
+ *
+ * The HCI_LE_Set_Connectionless_CTE_Transmit_Parameters command is
+ * used to set the type, length, and antenna switching pattern for the transmission
+ * of Constant Tone Extensions in any periodic advertising on the advertising set
+ * identified by the Advertising_Handle parameter.
+ *
+ * The CTE_Count parameter specifies how many packets with a Constant Tone
+ * Extension are to be transmitted in each periodic advertising event. If the
+ * number of packets that would otherwise be transmitted is less than this, the
+ * Controller shall transmit sufficient AUX_CHAIN_IND PDUs with no AdvData to
+ * make up the number. However, if a change in circumstances since this
+ * command was issued means that the Controller can no longer schedule all of
+ * these packets, it should transmit as many as possible.
+ *
+ * If the Host issues this command when Constant Tone Extensions have been
+ * enabled in the advertising set, the Controller shall return the error code
+ * Command Disallowed (0x0C).
+ *
+ * The Switching_Pattern_Length and Antenna_IDs[i] parameters are only used
+ * when transmitting an AoD Constant Tone Extension and shall be ignored if
+ * CTE_Type specifies an AoA Constant Tone Extension.
+ *
+ * If the CTE_Length parameter is greater than the maximum length of Constant
+ * Tone Extension supported, the Controller shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Host requests a type of Constant Tone Extension that the Controller does
+ * not support, the Controller shall return the error code Unsupported Feature or
+ * Parameter Value (0x11).
+ *
+ * If the Controller is unable to schedule CTE_Count packets in each event, the
+ * Controller shall return the error code Unsupported Feature or Parameter Value
+ * (0x11).
+ *
+ * If the advertising set corresponding to the Advertising_Handle parameter does
+ * not exist, the Controller shall return the error code Unknown Advertising
+ * Identifier (0x42).
+ *
+ * If Switching_Pattern_Length is greater than the maximum length of switching
+ * pattern supported by the Controller (see Section 7.8.87), the Controller shall
+ * return the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Controller determines that any of the Antenna_IDs[i] values do not
+ * identify an antenna in the device's antenna array, it shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * Note: Some Controllers may be unable to determine which values do or do not
+ * identify an antenna.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Connectionless_CTE_Transmit_Parameters
+ * command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_params(const sdc_hci_cmd_le_set_connless_cte_transmit_params_t * p_params);
+
+/** @brief LE Set Connectionless CTE Transmit Enable.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.81
+ *
+ * The HCI_LE_Set_Connectionless_CTE_Transmit_Enable command is used to
+ * request that the Controller enables or disables the use of Constant Tone
+ * Extensions in any periodic advertising on the advertising set identified by
+ * Advertising_Handle.
+ *
+ * In order to start sending periodic advertisements containing a Constant Tone
+ * Extension, the Host must also enable periodic advertising using the
+ * HCI_LE_Set_Periodic_Advertising_Enable command (see Section 7.8.63).
+ *
+ * Note: Periodic advertising can only be enabled when advertising is enabled on
+ * the same advertising set, but can continue after advertising has been disabled.
+ *
+ * If the Host issues this command before it has issued the
+ * HCI_LE_Set_Periodic_Advertising_Parameters command (see Section 7.8.61)
+ * for the advertising set, the Controller shall return the error code Command
+ * Disallowed (0x0C).
+ *
+ * Once enabled, the Controller shall continue advertising with Constant Tone
+ * Extensions until either one of the following occurs
+ *
+ * • The Host issues an HCI_LE_Set_Connectionless_CTE_Transmit_Enable
+ *   command with CTE_Enable set to 0x00 (disabling Constant Tone
+ *   Extensions but allowing periodic advertising to continue).
+ * • The Host issues an HCI_LE_Set_Periodic_Advertising_Enable command
+ *   (see Section 7.8.63) with Enable set to 0x00 (disabling periodic advertising).
+ *   If periodic advertising is re-enabled then it shall continue to contain Constant
+ *   Tone Extensions.
+ *
+ * If the Host issues this command before it has issued the
+ * HCI_LE_Set_Connectionless_CTE_Transmit_Parameters command for the
+ * advertising set, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * If the periodic advertising is on a PHY that does not allow Constant Tone
+ * Extensions, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * If the advertising set corresponding to the Advertising_Handle parameter does
+ * not exist, the Controller shall return the error code Unknown Advertising
+ * Identifier (0x42).
+ *
+ * The Host may issue this command when advertising or periodic advertising is
+ * enabled in the advertising set.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Connectionless_CTE_Transmit_Enable command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_enable(const sdc_hci_cmd_le_set_connless_cte_transmit_enable_t * p_params);
 
 /** @brief LE Set Periodic Advertising Receive Enable.
  *
