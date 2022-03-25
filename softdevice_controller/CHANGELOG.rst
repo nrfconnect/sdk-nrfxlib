@@ -24,6 +24,7 @@ Added
 Changes
 =======
 
+* The scanner now waits until the host has pulled the previous event's periodic advertising reports before enqueuing a report for the next event. Note that this does not apply to single-PDU periodic advertising events (DRGN-16920).
 * The binary size of an application using the scanner but not the master role is decreased (DRGN-16392).
 * The functions :c:func:`sdc_support_scan` and :c:func:`sdc_support_ext_scan` can no longer be called together with :c:func:`sdc_support_master` (DRGN-16392).
 * Removed support for running the SoftDevice Controller on the nRF5340 PDK (DRGN-15174).
@@ -31,6 +32,8 @@ Changes
 Bug fixes
 =========
 
+* Fixed an issue where Advertiser Address Type in the LE Periodic Advertising Sync Established event was never set to 0x02 or 0x03, even if the advertiser's address was resolved (DRGN-17110).
+* Fixed an issue where Advertiser Address Type was not set in the LE Periodic Advertising Sync Established event when using the Periodic Advertiser List (DRGN-17110).
 * Fixed an issue where setting advertiser radio output power using the vendor-specific HCI command Zephyr Write TX Power Level returned "Unknown Advertiser Identifier (0x42)".
 * Fixed an issue where reading advertiser radio output power using the vendor-specific HCI command Zephyr Read TX Power Level returned "Unknown Advertiser Identifier (0x42)".
 * Fixed an issue where an assert could occur if :c:func:`sdc_disable` was called while a Bluetooth role was running (DRGN-16515).

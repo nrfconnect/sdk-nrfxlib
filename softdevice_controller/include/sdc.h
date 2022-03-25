@@ -358,6 +358,9 @@ typedef union
      *
      *  The minimum allowed number of buffers is 2.
      *
+     *  No reports for a new advertising event containing chained PDUs will be
+     *  enqueued until the host has emptied the previous event's buffers.
+     *
      *  Default: @ref SDC_DEFAULT_PERIODIC_SYNC_BUFFER_COUNT.
      */
     sdc_cfg_buffer_count_t periodic_sync_buffer_cfg;
