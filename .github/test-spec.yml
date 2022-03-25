@@ -14,6 +14,10 @@
 
 "CI-tfm-test":
   - "**/*"
+  - "!softdevice_controller/include/**/*"
+  - "!softdevice_controller/lib/**/*"
+  - "!mpsl/include/**/*"
+  - "!mpsl/lib/**/*"
 
 "CI-ble-test":
   - "softdevice_controller/include/**/*"
@@ -46,6 +50,10 @@
 
 "CI-crypto-test":
   - "**/*"
+  - "!softdevice_controller/include/**/*"
+  - "!softdevice_controller/lib/**/*"
+  - "!mpsl/include/**/*"
+  - "!mpsl/lib/**/*"
 
 "CI-rs-test":
   - "mpsl/include/**/*"
