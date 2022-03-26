@@ -346,7 +346,7 @@ enum zb_zcl_diagnostics_attr_e
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_MAC_RX_UCAST_ID(data_ptr) \
 {                                                               \
-  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_BCAST_ID,                      \
+  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_RX_UCAST_ID,                      \
   ZB_ZCL_ATTR_TYPE_U32,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
   (void*) data_ptr                                              \
@@ -362,7 +362,7 @@ enum zb_zcl_diagnostics_attr_e
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_RETRY_ID(data_ptr) \
 {                                                               \
-  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_ID,                      \
+  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_RETRY_ID,                \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
   (void*) data_ptr                                              \
@@ -370,7 +370,7 @@ enum zb_zcl_diagnostics_attr_e
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_FAIL_ID(data_ptr) \
 {                                                               \
-  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_ID,                      \
+  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_FAIL_ID,                 \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
   (void*) data_ptr                                              \
