@@ -9,9 +9,6 @@
 "CI-lwm2m-test":
   - "nrf_modem/**/*"
 
-"CI-boot-dfu-test":
-  - "**/*"
-
 "CI-tfm-test":
   - "**/*"
   - "!softdevice_controller/include/**/*"
