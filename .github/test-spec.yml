@@ -98,7 +98,7 @@
   - "**/*"
 
 "CI-rpc-test":
-  - "**/*"
+  - "nrf_rpc/**/*"
 
 "CI-modemshell-test":
   - "nrf_modem/**/*"
