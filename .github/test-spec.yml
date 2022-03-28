@@ -112,9 +112,10 @@
 "CI-gazell-test":
   - "**/*"
 
-"CI-rpc-test":
-  - "**/*"
-
+ 
+ "CI-rpc-test":
+  - "nrf_rpc/**/*"
+  
 "CI-modemshell-test":
   - "**/*"
   - !"softdevice_controller/include/**/*"
