@@ -53,9 +53,6 @@
     - "!zboss/*.rst"
     - "!zboss/doc/**/*"
 
-"CI-thingy91-test":
-  - "**/*"
-
 "CI-desktop-test":
   - "softdevice_controller/include/**/*"
   - "softdevice_controller/lib/**/*"
