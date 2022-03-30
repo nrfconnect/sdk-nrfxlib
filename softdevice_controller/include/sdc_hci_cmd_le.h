@@ -169,6 +169,8 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_CONNLESS_CTE_TRANSMIT_PARAMS = 0x2051,
     /** @brief See @ref sdc_hci_cmd_le_set_connless_cte_transmit_enable(). */
     SDC_HCI_OPCODE_CMD_LE_SET_CONNLESS_CTE_TRANSMIT_ENABLE = 0x2052,
+    /** @brief See @ref sdc_hci_cmd_le_read_antenna_information(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_ANTENNA_INFORMATION = 0x2058,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_receive_enable(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_RECEIVE_ENABLE = 0x2059,
 };
@@ -836,6 +838,15 @@ typedef __PACKED_STRUCT
     uint8_t adv_handle;
     uint8_t cte_enable;
 } sdc_hci_cmd_le_set_connless_cte_transmit_enable_t;
+
+/** @brief LE Read Antenna Information return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t supported_switching_sampling_rates;
+    uint8_t num_antennae;
+    uint8_t max_switching_pattern_length;
+    uint8_t max_cte_length;
+} sdc_hci_cmd_le_read_antenna_information_return_t;
 
 /** @brief LE Set Periodic Advertising Receive Enable command parameter(s). */
 typedef __PACKED_STRUCT
@@ -3777,6 +3788,28 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_params(const sdc_hci_cmd_le_set
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_enable(const sdc_hci_cmd_le_set_connless_cte_transmit_enable_t * p_params);
+
+/** @brief LE Read Antenna Information.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.87
+ *
+ * The HCI_LE_Read_Antenna_Information command allows the Host to read
+ * the switching rates, the sampling rates, the number of antennae, and the
+ * maximum length of a transmitted Constant Tone Extension supported by the
+ * Controller.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Read_Antenna_Information command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_antenna_information(sdc_hci_cmd_le_read_antenna_information_return_t * p_return);
 
 /** @brief LE Set Periodic Advertising Receive Enable.
  *
