@@ -406,6 +406,19 @@ typedef struct
 } nrf_802154_transmitted_frame_props_t;
 
 /**
+ * @brief Structure passed in transmit metadata with information needed to set transmission power.
+ *
+ * If the @p use_metadata_value field is set to true the power in dBm used to transmit the frame is set to the value of the
+ * field @p power.
+ * Otherwise the value from PIB set by @ref nrf_802154_tx_power_set is used
+ */
+typedef struct
+{
+    bool   use_metadata_value; // !< Set to true if the value in @p power should be used as the TX power in dBm
+    int8_t power;              // !< Transmission power in dBm
+} nrf_802154_tx_power_metadata_t;
+
+/**
  * @brief Default initializer for nrf_802154_transmitted_frame_props_t.
  */
 #define NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT \
@@ -421,6 +434,7 @@ typedef struct
 {
     nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the frame to be transmitted.
     bool                                 cca;         // !< If the driver is to perform a CCA procedure before transmission.
+    nrf_802154_tx_power_metadata_t       tx_power;    // !< Information about the TX power to be used
 } nrf_802154_transmit_metadata_t;
 
 /**
@@ -431,6 +445,7 @@ typedef struct
     nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the frame to be transmitted.
     bool                                 cca;         // !< If the driver is to perform a CCA procedure before transmission.
     uint8_t                              channel;     // !< Radio channel on which the frame is to be transmitted.
+    nrf_802154_tx_power_metadata_t       tx_power;    // !< Information about the TX power to be used
 } nrf_802154_transmit_at_metadata_t;
 
 /**
@@ -439,6 +454,7 @@ typedef struct
 typedef struct
 {
     nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the frame to be transmitted.
+    nrf_802154_tx_power_metadata_t       tx_power;    // !< Information about the TX power to be used
 } nrf_802154_transmit_csma_ca_metadata_t;
 
 /**
@@ -471,6 +487,7 @@ typedef struct
 typedef struct
 {
     nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the frame to be transmitted.
+    int8_t                               tx_power;    // !< Power to be used when transmitting the frame.
     bool                                 cca;         // !< If the driver is to perform CCA procedure before transmission.
     bool                                 immediate;   // !< If true, the driver schedules transmission immediately or never. If false, the transmission may be postponed
                                                       // until its preconditions are met.

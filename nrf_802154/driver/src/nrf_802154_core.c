@@ -64,6 +64,7 @@
 #include "nrf_802154_utils.h"
 #include "nrf_802154_trx.h"
 #include "nrf_802154_tx_work_buffer.h"
+#include "nrf_802154_tx_power.h"
 #include "nrf_802154_types.h"
 #include "nrf_802154_utils.h"
 #include "drivers/nrfx_errors.h"
@@ -120,6 +121,7 @@ static uint32_t  m_ed_time_left;                               ///< Remaining ti
 static uint8_t   m_ed_result;                                  ///< Result of the current energy detection procedure.
 static uint8_t   m_last_lqi;                                   ///< LQI of the last received non-ACK frame, corrected for the temperature.
 static int8_t    m_last_rssi;                                  ///< RSSI of the last received non-ACK frame, corrected for the temperature.
+static int8_t    m_tx_power;                                   ///< Power in dBm to be used to transmit the current frame.
 
 static nrf_802154_frame_parser_data_t m_current_rx_frame_data; ///< RX frame parser data.
 
@@ -1043,7 +1045,9 @@ static void rx_init(void)
 
     nrf_802154_trx_receive_buffer_set(rx_buffer_get());
 
-    nrf_802154_trx_receive_frame(BCC_INIT / 8U, m_trx_receive_frame_notifications_mask);
+    nrf_802154_trx_receive_frame(BCC_INIT / 8U,
+                                 m_trx_receive_frame_notifications_mask,
+                                 nrf_802154_tx_power_constrained_pib_power_get());
 
 #if NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
     m_listening_start_hp_timestamp = nrf_802154_hp_timer_current_time_get();
@@ -1105,6 +1109,7 @@ static bool tx_init(const uint8_t * p_data, bool cca)
     m_flags.tx_with_cca = cca;
     nrf_802154_trx_transmit_frame(nrf_802154_tx_work_buffer_get(p_data),
                                   cca,
+                                  m_tx_power,
                                   m_trx_transmit_frame_notifications_mask);
 
     return true;
@@ -1169,7 +1174,7 @@ static void continuous_carrier_init(void)
         return;
     }
 
-    nrf_802154_trx_continuous_carrier();
+    nrf_802154_trx_continuous_carrier(nrf_802154_tx_power_constrained_pib_power_get());
 }
 
 /** Initialize Modulated Carrier operation. */
@@ -1185,7 +1190,7 @@ static void modulated_carrier_init(const uint8_t * p_data)
         return;
     }
 
-    nrf_802154_trx_modulated_carrier(p_data);
+    nrf_802154_trx_modulated_carrier(p_data, nrf_802154_tx_power_constrained_pib_power_get());
 }
 
 #endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
@@ -1912,7 +1917,9 @@ void nrf_802154_trx_receive_frame_crcerror(void)
     // We don't change receive buffer, receive will go to the same that was already used
 #if !NRF_802154_DISABLE_BCC_MATCHING
     request_preconditions_for_state(m_state);
-    nrf_802154_trx_receive_frame(BCC_INIT / 8U, m_trx_receive_frame_notifications_mask);
+    nrf_802154_trx_receive_frame(BCC_INIT / 8U,
+                                 m_trx_receive_frame_notifications_mask,
+                                 nrf_802154_tx_power_constrained_pib_power_get());
 
 #if NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
     m_listening_start_hp_timestamp = nrf_802154_hp_timer_current_time_get();
@@ -2711,6 +2718,7 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
 
                 state_set(p_params->cca ? RADIO_STATE_CCA_TX : RADIO_STATE_TX);
                 mp_tx_data = p_data;
+                m_tx_power = p_params->tx_power;
 
                 // coverity[check_return]
                 result = tx_init(p_data, p_params->cca);

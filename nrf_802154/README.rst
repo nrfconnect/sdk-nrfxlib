@@ -57,6 +57,7 @@ The lists of the necessary files can be found in the following locations:
    doc/architecture
    doc/feature_description
    doc/front_end_module
+   doc/wifi_coex_module
    doc/hardware_resources
    doc/multiprotocol_support
    doc/antenna_diversity

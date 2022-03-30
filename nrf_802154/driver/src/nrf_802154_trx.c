@@ -908,7 +908,8 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer)
 }
 
 void nrf_802154_trx_receive_frame(uint8_t                                bcc,
-                                  nrf_802154_trx_receive_notifications_t notifications_mask)
+                                  nrf_802154_trx_receive_notifications_t notifications_mask,
+                                  int8_t                                 ack_tx_power)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -927,7 +928,7 @@ void nrf_802154_trx_receive_frame(uint8_t                                bcc,
 
     m_flags.rssi_settled = false;
 
-    nrf_radio_txpower_set(NRF_RADIO, nrf_802154_pib_tx_power_get());
+    nrf_radio_txpower_set(NRF_RADIO, (nrf_radio_txpower_t)ack_tx_power);
 
     if (mp_receive_buffer != NULL)
     {
@@ -1139,6 +1140,7 @@ bool nrf_802154_trx_rssi_sample_is_available(void)
 
 void nrf_802154_trx_transmit_frame(const void                            * p_transmit_buffer,
                                    bool                                    cca,
+                                   int8_t                                  tx_power,
                                    nrf_802154_trx_transmit_notifications_t notifications_mask)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -1151,7 +1153,7 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
     m_trx_state         = TRX_STATE_TXFRAME;
     m_transmit_with_cca = cca;
 
-    nrf_radio_txpower_set(NRF_RADIO, nrf_802154_pib_tx_power_get());
+    nrf_radio_txpower_set(NRF_RADIO, (nrf_radio_txpower_t)tx_power);
     nrf_radio_packetptr_set(NRF_RADIO, p_transmit_buffer);
 
     // Set shorts
@@ -1767,7 +1769,7 @@ static void standalone_cca_abort(void)
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
-void nrf_802154_trx_continuous_carrier(void)
+void nrf_802154_trx_continuous_carrier(int8_t tx_power)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -1776,7 +1778,7 @@ void nrf_802154_trx_continuous_carrier(void)
     m_trx_state = TRX_STATE_CONTINUOUS_CARRIER;
 
     // Set Tx Power
-    nrf_radio_txpower_set(NRF_RADIO, nrf_802154_pib_tx_power_get());
+    nrf_radio_txpower_set(NRF_RADIO, (nrf_radio_txpower_t)tx_power);
 
     // Set FEM
     fem_for_pa_set();
@@ -1822,7 +1824,7 @@ static void continuous_carrier_abort(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
-void nrf_802154_trx_modulated_carrier(const void * p_transmit_buffer)
+void nrf_802154_trx_modulated_carrier(const void * p_transmit_buffer, int8_t tx_power)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -1832,7 +1834,7 @@ void nrf_802154_trx_modulated_carrier(const void * p_transmit_buffer)
     m_trx_state = TRX_STATE_MODULATED_CARRIER;
 
     // Set Tx Power
-    nrf_radio_txpower_set(NRF_RADIO, nrf_802154_pib_tx_power_get());
+    nrf_radio_txpower_set(NRF_RADIO, (nrf_radio_txpower_t)tx_power);
 
     // Set Tx buffer
     nrf_radio_packetptr_set(NRF_RADIO, p_transmit_buffer);
