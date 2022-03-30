@@ -1,10 +1,10 @@
 # This is the Jenkins ci variant of the .github/labler.yaml
 
 "CI-iot-samples-test":
-  - "**/*"
+  - "nrf_modem/**/*"
 
 "CI-iot-libraries-test":
-  - "**/*"
+  - "nrf_modem/**/*"
 
 "CI-lwm2m-test":
   - "**/*"
