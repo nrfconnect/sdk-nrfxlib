@@ -36,6 +36,25 @@ target_compile_definitions(mbedcrypto_common
     -DMBEDTLS_USER_CONFIG_FILE="${CONFIG_MBEDTLS_USER_CONFIG_FILE}"
 )
 
+if (CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
+  # Building as part of the TF-M build system.
+  # In order to support FPU in TF-M the following is documented by the TF-M
+  # build system:
+  #
+  #   Secure and non-secure libraries are compiled with COMPILER_CP_FLAG and
+  #   linked with LINKER_CP_OPTION for different FP ABI types. All those
+  #   libraries shall be built with COMPILER_CP_FLAG
+  target_compile_options(mbedcrypto_common
+    INTERFACE
+      ${COMPILER_CP_FLAG}
+  )
+
+  target_link_options(mbedcrypto_common
+    INTERFACE
+      ${LINKER_CP_OPTION}
+  )
+endif()
+
 set(generated_include_path "${CMAKE_CURRENT_BINARY_DIR}/include/generated")
 
 # Empty out previous versions of config-files
