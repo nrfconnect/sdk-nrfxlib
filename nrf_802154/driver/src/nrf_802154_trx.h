@@ -208,9 +208,11 @@ void nrf_802154_trx_cca_configuration_update(void);
  * @param[in] notifications_mask Selects additional notifications generated during a frame reception.
  *                  It is bitwise combination of @ref nrf_802154_trx_receive_notifications_t values.
  *                  When NRF_802154_DISABLE_BCC_MATCHING != 0, flag @ref TRX_RECEIVE_NOTIFICATION_PRESTARTED is forbidden.
+ * @param[in] ack_tx_power Selects the power which should be used to transmitted an ACK if required.
  */
 void nrf_802154_trx_receive_frame(uint8_t                                bcc,
-                                  nrf_802154_trx_receive_notifications_t notifications_mask);
+                                  nrf_802154_trx_receive_notifications_t notifications_mask,
+                                  int8_t                                 ack_tx_power);
 
 /**@brief Puts the trx module into receive ACK mode.
  *
@@ -335,17 +337,17 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer);
  *                           bytes following p_transmit_buffer[0] to send.
  *                           The number of bytes pointed by p_transmit buffer must
  *                           be at least 1 and not less than p_transmit_buffer[0] + 1.
- *
  * @param cca                Selects if CCA procedure should be performed prior to
  *                           real transmission. If false no cca will be performed.
  *                           If true, cca will be performed.
- *
+ * @param tx_power           Transmit power in dBm.
  * @param notifications_mask Selects additional notifications generated during a frame transmission.
  *                           It is bitwise combination of @ref nrf_802154_trx_transmit_notifications_t values.
  * @note To transmit ack after frame is received use @ref nrf_802154_trx_transmit_ack.
  */
 void nrf_802154_trx_transmit_frame(const void                            * p_transmit_buffer,
                                    bool                                    cca,
+                                   int8_t                                  tx_power,
                                    nrf_802154_trx_transmit_notifications_t notifications_mask);
 
 /**@brief Puts the trx module into transmit ACK mode.
@@ -388,10 +390,12 @@ void nrf_802154_trx_standalone_cca(void);
 
 /**@brief Starts generating continuous carrier.
  *
+ * @param[in] tx_power  Transmit power in dBm.
+ *
  * Generation of a continuous carrier generates no handlers. It may be terminated by a call to
  * @ref nrf_802154_trx_abort or @ref nrf_802154_trx_disable.
  */
-void nrf_802154_trx_continuous_carrier(void);
+void nrf_802154_trx_continuous_carrier(int8_t tx_power);
 
 /**@brief Restarts generating continuous carrier
  *
@@ -406,8 +410,9 @@ void nrf_802154_trx_continuous_carrier_restart(void);
 /**@brief Starts generating modulated carrier with given buffer.
  *
  * @param[in] p_transmit_buffer Pointer to a buffer used for modulating the carrier wave.
+ * @param[in] tx_power          Transmit power in dBm.
  */
-void nrf_802154_trx_modulated_carrier(const void * p_transmit_buffer);
+void nrf_802154_trx_modulated_carrier(const void * p_transmit_buffer, int8_t tx_power);
 
 /** @brief Restarts generating modulated carrier.*/
 void nrf_802154_trx_modulated_carrier_restart(void);

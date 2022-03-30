@@ -1129,6 +1129,7 @@ bool nrf_802154_transmit_csma_ca_raw(uint8_t                                    
         static const nrf_802154_transmit_csma_ca_metadata_t metadata_default =
         {
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
+            .tx_power    = {.use_metadata_value = false}
         };
 
         p_metadata = &metadata_default;
@@ -1424,7 +1425,8 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
         static const nrf_802154_transmit_metadata_t metadata_default =
         {
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
-            .cca         = true
+            .cca         = true,
+            .tx_power    = {.use_metadata_value = false}
         };
 
         p_metadata = &metadata_default;
@@ -1487,7 +1489,8 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
         {
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
             .cca         = true,
-            .channel     = 11
+            .channel     = 11,
+            .tx_power    = {.use_metadata_value = false}
         };
 
         p_metadata = &metadata_default;

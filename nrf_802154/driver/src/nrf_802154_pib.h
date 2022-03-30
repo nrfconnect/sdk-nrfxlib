@@ -118,7 +118,7 @@ void nrf_802154_pib_channel_set(uint8_t channel);
  *
  * @returns  Transmit power in dBm.
  */
-nrf_radio_txpower_t nrf_802154_pib_tx_power_get(void);
+int8_t nrf_802154_pib_tx_power_get(void);
 
 /**
  * @brief Sets the transmit power used for ACK frames.
