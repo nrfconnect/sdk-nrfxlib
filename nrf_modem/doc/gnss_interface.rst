@@ -10,6 +10,10 @@ GNSS interface
 `Global Navigation Satellite System (GNSS)`_ interface in the Modem library is used to control the GNSS module.
 The interface configures and fetches data from the GNSS module and writes `A-GPS`_ data to the GNSS module.
 
+.. note::
+
+   You need to enable GNSS in modem system mode and activate it in modem functional mode before starting or configuring the GNSS module.
+
 Handling events and reading data from GNSS
 ******************************************
 
@@ -409,7 +413,7 @@ Usually, this is not necessary when either eDRX or PSM (or both) is used, but if
 Priority for GNSS should be used only when a fix has been blocked by LTE idle mode operations, which can be detected by :c:data:`NRF_MODEM_GNSS_PVT_FLAG_NOT_ENOUGH_WINDOW_TIME` bit being set in the PVT data frame flags member.
 The application should not make the decision based on a single PVT event, but should enable priority only in case this flag has been set in several consecutive PVT events.
 
-Priority mode is disabled automatically after producing the first fix.
+Priority mode is disabled automatically after the first fix or after 40 seconds.
 It can also be disabled by the application by calling the :c:func:`nrf_modem_gnss_prio_mode_disable` function.
 
 .. note::
