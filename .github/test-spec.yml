@@ -2,6 +2,8 @@
 
 "CI-iot-samples-test":
   - "nrf_modem/**/*"
+  - "nrf_security/src/**/*"
+  - "crypto/nrf_oberon/**/*"
 
 "CI-iot-libraries-test":
   - "nrf_modem/**/*"
