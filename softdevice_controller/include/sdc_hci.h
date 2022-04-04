@@ -32,6 +32,7 @@ extern "C" {
 
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "nrf_errno.h"
 
 /** @brief The size of a command packet header. */
@@ -64,7 +65,6 @@ extern "C" {
 /** @brief The maximum size of an HCI packet. */
 #define HCI_MSG_BUFFER_MAX_SIZE HCI_CMD_PACKET_MAX_SIZE
 
-
 /** @brief Send an HCI command packet to the SoftDevice Controller.
  *
  * @param[in] p_cmd_in  HCI Command packet. The first byte in the buffer should correspond to
@@ -87,41 +87,23 @@ int32_t sdc_hci_cmd_put(uint8_t const * p_cmd_in);
 int32_t sdc_hci_data_put(uint8_t const * p_data_in);
 
 
-/** @brief Retrieve an HCI event packet from the SoftDevice Controller.
+/** @brief Retrieve an HCI packet from the SoftDevice Controller.
  *
  * This API is non-blocking.
  *
  * @note The application should ensure that the size of the provided buffer is at least
- *       @ref HCI_EVENT_PACKET_MAX_SIZE bytes.
+ *       @ref HCI_MSG_BUFFER_MAX_SIZE bytes.
  *
- * @param[in,out] p_evt_out Buffer where the HCI event will be stored.
- *                          If an event is retrieved, the first byte corresponds to Event Code,
- *                          as specified by the Bluetooth Core Specification.
+ * @param[in,out] p_packet_out Buffer where the HCI packet will be stored.
+ *                             If an event is retrieved, the first byte corresponds to the Event Code.
+ *                             If a data packet is retrieved, the first byte corresponds to the Handle.
+ * @param[out] p_is_data_out   True if the packet contains data, false if it contains an event.
  *
  * @retval 0              Success
  * @retval -NRF_EAGAIN  No event available
  * @retval -NRF_EINVAL  Invalid input
  */
-int32_t sdc_hci_evt_get(uint8_t * p_evt_out);
-
-
-/** @brief Retrieve an HCI data packet from the SoftDevice Controller.
- *
- * This API is non-blocking.
- *
- * @note The application should ensure that the size of the provided buffer is at least
- *       @ref HCI_DATA_PACKET_MAX_SIZE bytes.
- *
- * @param[in,out] p_data_out Buffer where the HCI data packet will be stored.
- *                           If an data packet is retrieved, the first byte corresponds to Handle,
- *                           as specified by the Bluetooth Core Specification.
- *
- * @retval 0              Success
- * @retval -NRF_EAGAIN    No data available
- * @retval -NRF_EINVAL    Invalid input
- */
-int32_t sdc_hci_data_get(uint8_t * p_data_out);
-
+int32_t sdc_hci_get(uint8_t * p_packet_out, bool * p_is_data_out);
 
 #ifdef __cplusplus
 }

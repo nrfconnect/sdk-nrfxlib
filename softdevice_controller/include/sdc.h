@@ -100,9 +100,9 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_DEFAULT_MASTER_LINK_SIZE 846
-#define __MEM_DEFAULT_SLAVE_LINK_SIZE 910
-#define __MEM_BUFFER_OVERHEAD_SIZE 7
+#define __MEM_DEFAULT_MASTER_LINK_SIZE 952
+#define __MEM_DEFAULT_SLAVE_LINK_SIZE 1032
+#define __MEM_BUFFER_OVERHEAD_SIZE 20
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * (tx_size - SDC_DEFAULT_TX_PACKET_SIZE) + \
      (rx_count) * (rx_size - SDC_DEFAULT_RX_PACKET_SIZE) + \
@@ -140,14 +140,14 @@ extern "C" {
 #define SDC_MEM_SLAVE_LINKS_SHARED  24
 
 /** Memory required for scanner buffers when only supporting legacy scanning. */
-#define SDC_MEM_SCAN_BUFFER(buffer_count) (75 + (buffer_count) * 71)
+#define SDC_MEM_SCAN_BUFFER(buffer_count) (75 + (buffer_count) * 90)
 
 /** Memory required for scanner buffers when supporting extended scanning. */
-#define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (40 + (buffer_count) * 290)
+#define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (42 + (buffer_count) * 307)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4109+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (598+(max_adv_data))
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4509+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (638+(max_adv_data))
 #define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2258+(max_adv_data)*18)/10)
 #define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (417+(max_adv_data))
 
@@ -173,7 +173,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (168 + 264 * (buffer_count))
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (193 + 282 * (buffer_count))
 
 /** Memory required for the periodic adv list.
  *
@@ -428,7 +428,7 @@ int32_t sdc_cfg_set(uint8_t config_tag,
  * @param[in] callback  The callback will be executed when HCI data or and HCI
  *                      event is available. The callback will be executed in
  *                      the same context as @ref mpsl_low_priority_process.
- *                      See also @ref sdc_hci_evt_get() and @ref sdc_hci_data_get().
+ *                      See also @ref sdc_hci_get().
  * @param[in]  p_mem    Provide memory for the current resource configuration. If
  *                      custom resource configurations are used, use the value
  *                      returned from @ref sdc_cfg_set().
