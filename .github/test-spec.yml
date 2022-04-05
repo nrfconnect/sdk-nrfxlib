@@ -52,6 +52,9 @@
 "CI-rs-test":
   - "mpsl/include/**/*"
   - "mpsl/lib/**/*"
+  - "softdevice_controller/include/**/*"
+  - "softdevice_controller/lib/**/*"
+  - "nrf_802154/**/*"
 
 "CI-homekit-test":
   - "crypto/**/*"
