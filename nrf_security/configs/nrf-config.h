@@ -382,8 +382,10 @@ extern "C" {
 #define MBEDTLS_DHM_C
 #endif
 
-
-
+#if defined(MBEDTLS_PSA_BUILTIN_ALG_CMAC) || \
+    defined(MBEDTLS_PSA_BUILTIN_ALG_HMAC)
+#define MBEDTLS_PSA_BUILTIN_MAC
+#endif
 
 #ifdef __cplusplus
 }
