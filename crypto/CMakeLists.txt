@@ -77,16 +77,16 @@ if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_OBERON_BACKEND OR CONFI
       # Generate a new library with this symbol redefined.
       set(OBERON_MBEDCRYPTO__PSA_LIB ${CMAKE_CURRENT_BINARY_DIR}/liboberon_mbedcrypto__psa_${OBERON_VER}.a)
 
-      add_custom_target(mbedcrypto_oberon_mbedcrypto__psa_rename
+      add_custom_command(
+        OUTPUT ${OBERON_MBEDCRYPTO__PSA_LIB}
         COMMAND ${CMAKE_OBJCOPY}
-        "${OBERON_PSA_LIB}"
-        "${OBERON_MBEDCRYPTO__PSA_LIB}"
-        --redefine-sym psa_generate_random=mbedcrypto__psa_generate_random
-        BYPRODUCTS
-        "${OBERON_MBEDCRYPTO__PSA_LIB}"
+          ${OBERON_PSA_LIB}
+          ${OBERON_MBEDCRYPTO__PSA_LIB}
+          --redefine-sym psa_generate_random=mbedcrypto__psa_generate_random
       )
-      add_dependencies(mbedcrypto_oberon_imported
-      mbedcrypto_oberon_mbedcrypto__psa_rename)
+      add_custom_target(mbedcrypto_oberon_mbedcrypto__psa_rename DEPENDS ${OBERON_MBEDCRYPTO__PSA_LIB})
+
+      add_dependencies(mbedcrypto_oberon_imported mbedcrypto_oberon_mbedcrypto__psa_rename)
 
       set(OBERON_PSA_LIB ${OBERON_MBEDCRYPTO__PSA_LIB})
     endif()
