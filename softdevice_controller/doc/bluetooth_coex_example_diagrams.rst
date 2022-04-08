@@ -10,7 +10,7 @@ Bluetooth External Radio Coexistence examples
 3-Wire interface
 ****************
 
-This section contains example timing diagrams for each supported Bluetooth® Low Energy Link Layer state.
+This section contains example timing diagrams for each supported Bluetooth® Low Energy Link Layer role.
 The diagrams describe the coexistence interface's signal activity and the related radio activity.
 
 .. NOTE::
@@ -21,25 +21,38 @@ Timing parameters
 
 .. include:: /mpsl/doc/bluetooth_coex_3w_interface_shared_section.rst
 
+Priority and priority escalation
+================================
+
+Radio activity requests are associated with a Bluetooth Low Energy Link Layer role, such as advertiser, scanner, central and peripheral.
+In the context of the coexistence interface, the application can specify the priority level of a role, either high or low.
+Requests inherit their priority level from their associated role.
+
+The application can enable priority escalation for a low priority role by setting a priority escalation threshold for it.
+The threshold determines the required number of consecutively rejected requests before the priority is escalated.
+Once a request is granted, the priority is reset to low for subsequent requests.
+
+All timing diagrams assume that all supported roles have been configured as low priority.
+
 Connection event
 ----------------
 
 When in a connected state, a request for radio activity to PTA consists of a single TX-RX pair.
 A connection event may consist of a multitude of such pairs.
 
-An example of a connection event where the :ref:`softdevice_controller` is in a connected state as a slave is shown below.
+An example of a connection event where the :ref:`softdevice_controller` is connected as peripheral is shown below.
 The depicted connection event consists of two TX-RX pairs.
 Within the request and when the BLE_REQUEST signal is active, the BLE_PRIORITY signal toggles t\ :sub:`radio`\  prior to reception.
 
 .. figure:: pic/cx_3w_example_connection.svg
-   :alt: Connection event as slave
+   :alt: Connection event as peripheral
 
-   Connection event as slave
+   Connection event as peripheral
 
 Advertising
 -----------
 
-When in the advertising state, a request for radio activity to PTA  consists of the transmission of a single advertising indication.
+When in advertiser role, a request for radio activity to PTA  consists of the transmission of a single advertising indication.
 Any subsequent radio activity triggered by such a packet, for example receiving and responding to a scan request, is part of the same request.
 The transmission of a legacy scannable advertising indication in all three primary advertising channels is shown below.
 
@@ -63,11 +76,16 @@ Compared to *Legacy scannable advertising* figure above, the BLE_REQUEST signal 
 Scanning
 --------
 
-When in scanning/initiating state, a request for radio activity to PTA begins when the access address of an advertising packet has been received.
-Examples of this configuration are depicted in the following figures *Legacy active scanning, request on access address match* and *Extended active scanning, request on access address match*.
-The timing interval t\ :sub:`aa`\  represents the time needed to perform the access address match.
+When in scanner/initiator role, a request for radio activity to PTA can be configured to begin in the following cases:
 
-Any subsequent radio activity triggered by the reception of an advertising indication, such as the transmission of a scan request and the reception of a scan response, is part of the same request.
+* When the access address of an advertising packet has been received.
+  Examples of this configuration are depicted in the figures *Legacy active scanning, request on access address match* and *Extended active scanning, request on access address match*.
+  The timing interval t\ :sub:`aa`\  represents the time needed to perform the access address match.
+* Before the transmission of a scan or connect request.
+  An example of this configuration is depicted in the *Legacy active scanning, request before transmission* figure.
+
+Both configurations presume that the :ref:`softdevice_controller` is using the radio for reception before submitting a request and without informing PTA.
+In both cases, any subsequent radio activity triggered by the reception of an advertising indication, such as the transmission of a scan request and the reception of a scan response, is part of the same request.
 
 .. figure:: pic/cx_3w_example_legacy_active_scan_on_aa.svg
    :alt: Legacy active scanning, request on access address match
@@ -79,13 +97,18 @@ Any subsequent radio activity triggered by the reception of an advertising indic
 
    Extended active scanning, request on access address match
 
+.. figure:: pic/cx_3w_example_legacy_active_scan_on_tx.svg
+   :alt: Legacy active scanning, request before transmission
+
+   Legacy active scanning, request before transmission
+
 Request denial
 --------------
 
 PTA can deny a request at any time after the request has been considered granted.
 A denial is indicated by a deactivation of the BLE_GRANT signal.
 
-An example of a connection event where the :ref:`softdevice_controller` is in a connected state as a slave is shown below.
+An example of a connection event where the :ref:`softdevice_controller` is connected as peripheral is shown below.
 In the example, the request for the first TX-RX pair is denied during the request.
 There is no subsequent request for the following TX-RX pair.
 In general, when a request associated with a connected state is denied, the corresponding connection event is aborted.
