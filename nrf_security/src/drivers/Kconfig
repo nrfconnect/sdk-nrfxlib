@@ -72,6 +72,10 @@ menuconfig PSA_CRYPTO_DRIVER_BUILTIN
 	default y if PSA_CRYPTO_DRIVER_OBERON && !PSA_CRYPTO_DRIVER_CC3XX && \
 		     (PSA_WANT_ALG_CBC_PKCS7 || PSA_WANT_ALG_CMAC || \
 		      PSA_WANT_ALG_HMAC || PSA_WANT_ALG_HKDF)
+	# Fix for NCSDK-13536: Enable builtin if SHA-384 or SHA-512 is enabled
+	# as CryptoCell or nrf_oberon don't support it.
+	default y if (PSA_WANT_ALG_SHA_384 || PSA_WANT_ALG_SHA_512) && \
+		     (PSA_WANT_ALG_HMAC || PSA_WANT_ALG_HKDF)
 	# nrf_oberon lacks RSA support
 	default y if PSA_CRYPTO_DRIVER_OBERON && !PSA_CRYPTO_DRIVER_CC3XX && \
 		     (PSA_WANT_ALG_RSA_OAEP || PSA_WANT_ALG_RSA_PKCS1V15_CRYPT || \
