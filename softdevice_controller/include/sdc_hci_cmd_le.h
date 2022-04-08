@@ -169,8 +169,14 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_CONNLESS_CTE_TRANSMIT_PARAMS = 0x2051,
     /** @brief See @ref sdc_hci_cmd_le_set_connless_cte_transmit_enable(). */
     SDC_HCI_OPCODE_CMD_LE_SET_CONNLESS_CTE_TRANSMIT_ENABLE = 0x2052,
+    /** @brief See @ref sdc_hci_cmd_le_read_antenna_information(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_ANTENNA_INFORMATION = 0x2058,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_receive_enable(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_RECEIVE_ENABLE = 0x2059,
+    /** @brief See @ref sdc_hci_cmd_le_periodic_adv_sync_transfer(). */
+    SDC_HCI_OPCODE_CMD_LE_PERIODIC_ADV_SYNC_TRANSFER = 0x205a,
+    /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_SYNC_TRANSFER_PARAMS = 0x205c,
 };
 
 /** @brief LE Extended Create Connection array parameters. */
@@ -837,12 +843,51 @@ typedef __PACKED_STRUCT
     uint8_t cte_enable;
 } sdc_hci_cmd_le_set_connless_cte_transmit_enable_t;
 
+/** @brief LE Read Antenna Information return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t supported_switching_sampling_rates;
+    uint8_t num_antennae;
+    uint8_t max_switching_pattern_length;
+    uint8_t max_cte_length;
+} sdc_hci_cmd_le_read_antenna_information_return_t;
+
 /** @brief LE Set Periodic Advertising Receive Enable command parameter(s). */
 typedef __PACKED_STRUCT
 {
     uint16_t sync_handle;
     uint8_t enable;
 } sdc_hci_cmd_le_set_periodic_adv_receive_enable_t;
+
+/** @brief LE Periodic Advertising Sync Transfer command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint16_t service_data;
+    uint16_t sync_handle;
+} sdc_hci_cmd_le_periodic_adv_sync_transfer_t;
+
+/** @brief LE Periodic Advertising Sync Transfer return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_periodic_adv_sync_transfer_return_t;
+
+/** @brief LE Set Periodic Advertising Sync Transfer Parameters command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t mode;
+    uint16_t skip;
+    uint16_t sync_timeout;
+    uint8_t cte_type;
+} sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params_t;
+
+/** @brief LE Set Periodic Advertising Sync Transfer Parameters return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params_return_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -3778,6 +3823,28 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_params(const sdc_hci_cmd_le_set
  */
 uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_enable(const sdc_hci_cmd_le_set_connless_cte_transmit_enable_t * p_params);
 
+/** @brief LE Read Antenna Information.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.87
+ *
+ * The HCI_LE_Read_Antenna_Information command allows the Host to read
+ * the switching rates, the sampling rates, the number of antennae, and the
+ * maximum length of a transmitted Constant Tone Extension supported by the
+ * Controller.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Read_Antenna_Information command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_antenna_information(sdc_hci_cmd_le_read_antenna_information_return_t * p_return);
+
 /** @brief LE Set Periodic Advertising Receive Enable.
  *
  * The description below is extracted from Core_v5.2,
@@ -3805,6 +3872,113 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_enable(const sdc_hci_cmd_le_set
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_periodic_adv_receive_enable(const sdc_hci_cmd_le_set_periodic_adv_receive_enable_t * p_params);
+
+/** @brief LE Periodic Advertising Sync Transfer.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.89
+ *
+ * The HCI_LE_Periodic_Advertising_Sync_Transfer command is used to
+ * instruct the Controller to send synchronization information about the periodic
+ * advertising train identified by the Sync_Handle parameter to a connected
+ * device.
+ *
+ * The Service_Data parameter is a value provided by the Host for use by the
+ * Host of the peer device. It is not used by the Controller.
+ *
+ * The connected device is identified by the Connection_Handle parameter.
+ *
+ * If the periodic advertising train corresponding to the Sync_Handle parameter
+ * does not exist, the Controller shall return the error code Unknown Advertising
+ * Identifier (0x42).
+ *
+ * If the Connection_Handle parameter does not identify a current connection, the
+ * Controller shall return the error code Unknown Connection Identifier (0x02).
+ *
+ * If the remote device has not indicated support for the Periodic Advertising Sync
+ * Transfer - Recipient feature, the Controller shall return the error code
+ * Unsupported Remote Feature / Unsupported LMP Feature (0x1A).
+ *
+ * Note: This command may complete before the periodic advertising
+ * synchronization information is sent. No indication is given as to how the
+ * recipient handled the information.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Periodic_Advertising_Sync_Transfer command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_periodic_adv_sync_transfer(const sdc_hci_cmd_le_periodic_adv_sync_transfer_t * p_params,
+                                                  sdc_hci_cmd_le_periodic_adv_sync_transfer_return_t * p_return);
+
+/** @brief LE Set Periodic Advertising Sync Transfer Parameters.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.91
+ *
+ * The HCI_LE_Set_Periodic_Advertising_Sync_Transfer_Parameters command
+ * is used to specify how the Controller will process periodic advertising
+ * synchronization information received from the device identified by the
+ * Connection_Handle parameter (the "transfer mode").
+ *
+ * The Mode parameter specifies the action to be taken when periodic advertising
+ * synchronization information is received. If Mode is 0x00, the Controller will
+ * ignore the information. Otherwise it will notify the Host and synchronize to the
+ * periodic advertising. Mode also specifies whether periodic advertising reports
+ * are initially enabled or disabled.
+ *
+ * The Skip parameter specifies the number of consecutive periodic advertising
+ * packets that the receiver may skip after successfully receiving a periodic
+ * advertising packet.
+ *
+ * The Sync_Timeout parameter specifies the maximum permitted time between
+ * successful receives. If this time is exceeded, synchronization is lost.
+ *
+ * Irrespective of the value of the Skip parameter, the Controller should stop
+ * skipping packets before the Sync_Timeout would be exceeded.
+ *
+ * The CTE_Type parameter specifies whether to only synchronize to periodic
+ * advertising with certain types of Constant Tone Extension. If the periodic
+ * advertiser changes the type of the Constant Tone Extension after the Controller
+ * has synchronized with the periodic advertising, it shall remain synchronized.
+ *
+ * Note: A value of 0 (i.e. all bits clear) indicates that the presence or absence of
+ * a Constant Tone Extension is irrelevant.
+ *
+ * This command does not affect any processing of any periodic advertising
+ * synchronization information already received from the peer device, whether or
+ * not the Controller has yet synchronized to the periodic advertising train it
+ * describes.
+ *
+ * The parameter values provided by this command override those provided via
+ * the HCI_LE_Set_Default_Periodic_Advertising_Sync_Transfer_Parameters
+ * command (Section 7.8.92) or any preferences previously set using the
+ * HCI_LE_Set_Periodic_Advertising_Sync_Transfer_Parameters command on
+ * the same connection.
+ *
+ * If the Connection_Handle parameter does not identify a current connection, the
+ * Controller shall return the error code Unknown Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Periodic_Advertising_Sync_Transfer_Parameters
+ * command has completed, an HCI_Command_Complete event shall be
+ * generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params(const sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params_t * p_params,
+                                                             sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params_return_t * p_return);
 
 /** @} end of HCI_VS_API */
 

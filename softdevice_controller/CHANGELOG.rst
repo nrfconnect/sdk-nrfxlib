@@ -17,9 +17,17 @@ All the notable changes included in the main branch are documented in this secti
 Added
 =====
 
+* Added vendor-specific HCI commands to set the priority and scan mode of Wi-Fi coexistence.
+  See :c:func:`sdc_hci_cmd_vs_coex_priority_config` and :c:func:`sdc_hci_cmd_vs_coex_scan_mode_config` (DRGN-16518).
 * Added support for periodic advertising intervals larger than ten seconds (DRGN-16873).
 * Added support for periodic sync timeouts larger than 128 seconds (DRGN-16434).
 * Added :c:func:`sdc_support_ext_master` which makes the extended initiator role configurable (DRGN-16392).
+* Added experimental support for connectionless angle of arrival (AoA) transmitter (DRGN-16588).
+  The following HCI commands are now supported (DRGN-16713):
+
+    * LE Set Connectionless CTE Transmit Parameters
+    * LE Set Connectionless CTE Transmit Enable
+    * LE Read Antenna Information
 
 Changes
 =======
