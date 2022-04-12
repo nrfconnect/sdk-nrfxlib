@@ -36,7 +36,6 @@ if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C OR
     chachapoly.c
     ecdh.c
     ecdsa.c
-    ecjpake.c
     ecp.c
     ecp_curves.c
     gcm.c
@@ -66,6 +65,7 @@ if(NOT CONFIG_OBERON_BACKEND)
   append_with_prefix(src_crypto_legacy ${ARM_MBEDTLS_PATH}/library
     chacha20.c
     poly1305.c
+    ecjpake.c
   )
 endif()
 
