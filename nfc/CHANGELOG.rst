@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+master
+******
+
+Bug fixes
+=========
+
+ * Fixed the Type 2 Tag initialization, where the return value of the :c:func:`nfc_platform_nfcid1_default_bytes_get()` function was not converted to the local NFC error code resulting in incorrect NFCID1 values.
+
 nRF Connect SDK v1.9.0
 **********************
 
@@ -28,8 +36,8 @@ Modified
 Bug fixes
 =========
 
- * Fixed handling the R(NAK) frame after sending the R(ACK) frame.
-   The Tag should respond with the last transmitted R(ACK) frame.
+ * Fixed the R(NAK) frame handling after sending the R(ACK) frame.
+   The Tag now responds with the last transmitted R(ACK) frame.
  * Fixed the race condition that occurred when the S(WTX) frame was scheduled and the library tried to send a data chunk.
  * Fixed a possible memory overwrite in the :ref:`type_4_tag` library when the reader device sends an incorrect APDU Update command.
 
