@@ -38,3 +38,10 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+ 
+/*
+ *  The following tags tell the "west ncs-sbom" tool which files are covered
+ *  by the license information above.
+ *  SPDX-License-Identifier:  LicenseRef-ZBOSS-4-Clause
+ *  NCS-SBOM-Apply-To-File: ./**/*.a
+ */
