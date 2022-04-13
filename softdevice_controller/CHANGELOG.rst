@@ -36,6 +36,7 @@ Changes
 * The binary size of an application using the scanner but not the master role is decreased (DRGN-16392).
 * The functions :c:func:`sdc_support_scan` and :c:func:`sdc_support_ext_scan` can no longer be called together with :c:func:`sdc_support_master` (DRGN-16392).
 * Removed support for running the SoftDevice Controller on the nRF5340 PDK (DRGN-15174).
+* The ``VersNr`` field in the ``LL_VERSION_IND`` packet now contains the value 0x0C to indicate compatibility with Bluetooth Core Specification v5.3 (DRGN-16109).
 
 Bug fixes
 =========
