@@ -59,6 +59,7 @@
 #include "nrf_802154_request.h"
 #include "nrf_802154_rx_buffer.h"
 #include "nrf_802154_tx_power.h"
+#include "nrf_802154_rssi.h"
 #include "nrf_802154_stats.h"
 #include "hal/nrf_radio.h"
 #include "platform/nrf_802154_clock.h"
@@ -201,12 +202,12 @@ void nrf_802154_short_address_set(const uint8_t * p_short_address)
 
 int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level)
 {
-    return ED_MIN_DBM + (energy_level / ED_RESULT_FACTOR);
+    return nrf_802154_addons_dbm_from_energy_level_calculate(energy_level);
 }
 
 uint8_t nrf_802154_ccaedthres_from_dbm_calculate(int8_t dbm)
 {
-    return dbm - ED_MIN_DBM;
+    return dbm - ED_RSSIOFFS;
 }
 
 uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
