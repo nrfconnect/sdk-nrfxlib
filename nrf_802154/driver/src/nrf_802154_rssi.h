@@ -80,7 +80,7 @@ uint8_t nrf_802154_rssi_lqi_corrected_get(uint8_t lqi);
  *
  * @returns EDSAMPLE value corrected by a temperature factor.
  */
-uint8_t nrf_802154_rssi_ed_corrected_get(uint8_t ed);
+int16_t nrf_802154_rssi_ed_corrected_get(int16_t ed);
 
 /**
  * @brief Adjusts the CCA ED threshold value using a temperature correction factor.
@@ -90,6 +90,24 @@ uint8_t nrf_802154_rssi_ed_corrected_get(uint8_t ed);
  * @returns CCA ED threshold value corrected by a temperature factor.
  */
 uint8_t nrf_802154_rssi_cca_ed_threshold_corrected_get(uint8_t cca_ed);
+
+/**
+ * @brief Convert the hardware reported energy detection value to a value compliant with the 802.15.4 specification.
+ *
+ * @param[in]  edsample  The hardware reported value
+ *
+ * @returns 802.15.4 compliant energy detection value.
+ */
+uint8_t nrf_802154_rssi_ed_sample_convert(uint8_t ed_sample);
+
+/**
+ * @brief  Converts the energy level received during the energy detection procedure to a dBm value.
+ *
+ * @param[in]  energy_level  Energy level passed by @ref nrf_802154_energy_detected.
+ *
+ * @return  Result of the energy detection procedure in dBm.
+ */
+int8_t nrf_802154_rssi_dbm_from_energy_level_calculate(uint8_t energy_level);
 
 /**
  *@}

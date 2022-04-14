@@ -499,26 +499,6 @@ static bool ack_is_requested(const uint8_t * p_frame)
  * @section Energy detection management
  **************************************************************************************************/
 
-/** Get ED result value.
- *
- *  @param[in]  ed_sample   Energy Detection sample gathered from TRX module
- *  @returns ED result based on data collected during Energy Detection procedure.
- */
-static uint8_t ed_result_get(uint8_t ed_sample)
-{
-    uint32_t result;
-
-    result  = nrf_802154_rssi_ed_corrected_get(ed_sample);
-    result *= ED_RESULT_FACTOR;
-
-    if (result > ED_RESULT_MAX)
-    {
-        result = ED_RESULT_MAX;
-    }
-
-    return (uint8_t)result;
-}
-
 /** Setup next iteration of energy detection procedure.
  *
  *  Energy detection procedure is performed in iterations to make sure it is performed for requested
@@ -2550,7 +2530,7 @@ void nrf_802154_trx_energy_detection_finished(uint8_t ed_sample)
         state_set(RADIO_STATE_RX);
         rx_init();
 
-        energy_detected_notify(ed_result_get(m_ed_result));
+        energy_detected_notify(nrf_802154_rssi_ed_sample_convert(m_ed_result));
 
     }
 

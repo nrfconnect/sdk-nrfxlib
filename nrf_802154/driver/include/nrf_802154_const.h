@@ -180,6 +180,8 @@
 #define PHY_SYMBOLS_PER_OCTET           2                                            ///< Number of symbols in a single byte (octet).
 #define PHY_SHR_SYMBOLS                 10                                           ///< Number of symbols in the Synchronization Header (SHR).
 
+#define PHY_MIN_RECEIVER_SENSITIVITY    -85                                          ///< Lowest receiver sensitivity level in dBm according to 802.15.4-2020 specification, chapter 12.3.4
+
 #define ED_RESULT_MAX                   0xff                                         ///< Maximal ED result.
 
 #define BROADCAST_ADDRESS               ((uint8_t[SHORT_ADDRESS_SIZE]) {0xff, 0xff}) ///< Broadcast short address.

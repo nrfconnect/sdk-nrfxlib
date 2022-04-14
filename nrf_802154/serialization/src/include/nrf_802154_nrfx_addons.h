@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2022, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -38,7 +38,7 @@
 #include "nrf.h"
 #include "nrf_802154_const.h"
 
-/* The usage of ED_RSSISCALE is described inprecisely in the nRF product specifications. The meaning of
+/* The usage of ED_RSSISCALE is described imprecisely in the nRF product specifications. The meaning of
    this constant is the following: If we calculate ed_scaled =  EDSAMPLE *  ED_RSSISCALE, then
    it is guaranteed that in the range 0-255 ed_scaled maps linearly to the ED power in dBm. This means,
    that the maximum value in EDSAMPLE which can be reported in compliance with the 802.15.4 specification is

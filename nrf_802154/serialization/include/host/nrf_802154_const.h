@@ -179,6 +179,8 @@
 #define PHY_SYMBOLS_PER_OCTET           2                                            ///< Number of symbols in a single byte (octet).
 #define PHY_SHR_SYMBOLS                 10                                           ///< Number of symbols in the Synchronization Header (SHR).
 
+#define PHY_MIN_RECEIVER_SENSITIVITY    -85                                          ///< Lowest receiver sensitivity level in dBm according to 802.15.4-2020 specification, chapter 12.3.4
+
 #define ED_RESULT_MAX                   0xff                                         ///< Maximal ED result.
 
 #define BROADCAST_ADDRESS               ((uint8_t[SHORT_ADDRESS_SIZE]) {0xff, 0xff}) ///< Broadcast short address.
@@ -222,8 +224,5 @@
 #define IE_ID_OFFSET_1                  0x01                                         ///< Offset of the octed containing the second part of the IE identifier.
 #define IE_DATA_OFFSET                  0x02                                         ///< Information element data offset
 #define IE_HEADER_ELEMENT_ID_OFFSET     0x07                                         ///< Bit offset of Element ID field in a Header IE header.
-
-#define ED_MIN_DBM                      (-92)                                        ///< dBm value corresponding to value 0 in the EDSAMPLE register.
-#define ED_RESULT_FACTOR                4                                            ///< Factor needed to calculate the ED result based on the data from the RADIO peripheral.
 
 #endif  // NRF_802154_CONST_H_

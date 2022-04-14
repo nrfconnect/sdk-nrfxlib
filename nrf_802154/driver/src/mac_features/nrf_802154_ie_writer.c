@@ -243,7 +243,7 @@ static void link_metrics_ie_write_commit(bool * p_written)
 
         if (mp_lm_margin_addr != NULL)
         {
-            *mp_lm_margin_addr = margin_scale((int16_t)rssi - ED_MIN_DBM);
+            *mp_lm_margin_addr = margin_scale((int16_t)rssi - ED_RSSIOFFS);
             *p_written         = true;
         }
     }

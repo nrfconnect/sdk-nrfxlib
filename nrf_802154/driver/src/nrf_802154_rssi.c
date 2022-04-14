@@ -38,6 +38,8 @@
  *
  */
 #include "nrf_802154_rssi.h"
+#include "nrf_802154_nrfx_addons.h"
+#include "nrf_802154_const.h"
 
 #include "nrf.h"
 #include <stdint.h>
@@ -86,6 +88,8 @@ int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
     }
     else
     {
+        // nRF52840 cannot work for a temperature above 85 degrees Celsius, so this part won't affect its operation,
+        // even if it isn't present in its errata.
         result = -4;
     }
 #else
@@ -107,10 +111,10 @@ int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
  *
  *  Coefficients were calculated as round(x * RSSI_COEFF_BASE) based on Errata 87.
  */
-#define RSSI_COEFF_A0   30198989L /* Initial value: 7.2    */
-#define RSSI_COEFF_A1   6543114L  /* Initial value: 1.56   */
-#define RSSI_COEFF_A2   41524L    /* Initial value: 9.9e-3 */
-#define RSSI_COEFF_A3   205L      /* Initial value: 4.9e-5 */
+#define RSSI_COEFF_A0   30198989L /* Initial value: 7.2           */
+#define RSSI_COEFF_A1   6543114L  /* Initial value: 1.56          */
+#define RSSI_COEFF_A2   41524L    /* Initial value: 9.9e-3        */
+#define RSSI_COEFF_A3   205L      /* Initial value: 4.9e-5        */
 #define RSSI_COEFF_TEMP 209715L   /* Initial value: 0.05   */
 /** @brief Value used to increase precision of calculations. */
 #define RSSI_COEFF_BASE (1UL << 22U)
@@ -164,7 +168,7 @@ uint8_t nrf_802154_rssi_lqi_corrected_get(uint8_t lqi)
     return lqi - nrf_802154_rssi_sample_temp_corr_value_get(lqi);
 }
 
-uint8_t nrf_802154_rssi_ed_corrected_get(uint8_t ed)
+int16_t nrf_802154_rssi_ed_corrected_get(int16_t ed)
 {
     return ed - nrf_802154_rssi_sample_temp_corr_value_get(ed);
 }
@@ -172,4 +176,32 @@ uint8_t nrf_802154_rssi_ed_corrected_get(uint8_t ed)
 uint8_t nrf_802154_rssi_cca_ed_threshold_corrected_get(uint8_t cca_ed)
 {
     return cca_ed - nrf_802154_rssi_sample_temp_corr_value_get(cca_ed);
+}
+
+uint8_t nrf_802154_rssi_ed_sample_convert(uint8_t ed_sample)
+{
+    int16_t result;
+
+    result = nrf_802154_rssi_ed_corrected_get(ed_sample);
+    result = ED_RESULT_MAX * (result - EDSAMPLE_MIN_REPORTED_VALUE) /
+             (EDSAMPLE_MAX_REPORTED_VALUE - EDSAMPLE_MIN_REPORTED_VALUE);
+
+    if (result < 0)
+    {
+        result = 0;
+    }
+
+    if (result > ED_RESULT_MAX)
+    {
+        result = ED_RESULT_MAX;
+    }
+
+    return (uint8_t)result;
+}
+
+int8_t nrf_802154_rssi_dbm_from_energy_level_calculate(uint8_t energy_level)
+{
+    return ((int16_t)(EDSAMPLE_MAX_REPORTED_VALUE - EDSAMPLE_MIN_REPORTED_VALUE) *
+            ((int16_t)energy_level)) /
+           ED_RESULT_MAX + EDSAMPLE_MIN_REPORTED_VALUE + ED_RSSIOFFS;
 }

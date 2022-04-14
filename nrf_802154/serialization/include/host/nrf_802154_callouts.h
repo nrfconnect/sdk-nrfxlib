@@ -72,7 +72,9 @@ extern void nrf_802154_cca_failed(nrf_802154_cca_error_t error);
  * @brief Notifies that the energy detection procedure finished.
  *
  * @note This function passes the EnergyLevel defined in the 802.15.4-2006 specification:
- *       0x00 - 0xff, proportionally to the detected energy level (dBm above receiver sensitivity).
+ *       0x00 - 0xff, where 0x00 represents -75dBm (10dBm above the worst allowed sensitivity level,
+ *       which is -85dBm) and 0xff is the highest possible energy detection level, for which
+ *       the measurements are guaranteed map linearly to the real energy level in dBm.
  *       To calculate the result in dBm, use @ref nrf_802154_dbm_from_energy_level_calculate.
  *
  * @param[in]  result  Maximum energy detected during the energy detection procedure.

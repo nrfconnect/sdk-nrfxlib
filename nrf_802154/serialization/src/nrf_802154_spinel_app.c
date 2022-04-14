@@ -63,6 +63,7 @@
 #include "nrf_802154.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_types.h"
+#include "nrf_802154_nrfx_addons.h"
 
 /**
  * @brief Wait with timeout for SPINEL_STATUS_OK to be received.
@@ -1769,7 +1770,7 @@ bail:
 
 int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level)
 {
-    return ED_MIN_DBM + (energy_level / ED_RESULT_FACTOR);
+    return nrf_802154_addons_dbm_from_energy_level_calculate(energy_level);
 }
 
 uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
