@@ -112,6 +112,37 @@ typedef struct
                                 dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb, 0);       \
 }
 
+/**
+ *  @brief Declare attribute list for Color control cluster (client).
+ *  @param attr_list - attribute list name.
+ */
+#define ZB_ZCL_DECLARE_COLOR_CONTROL_CLIENT_ATTRIB_LIST(attr_list)                   \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_COLOR_CONTROL) \
+  ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
+/*!
+  @brief Declare attribute list for Color Control cluster (extended with hue and saturation attributes)
+  @param attr_list - attribute list name
+  @param current_hue - pointer to variable to store current_hue attribute value
+  @param current_saturation - pointer to variable to store current_saturation attribute value
+  @param color_mode - pointer to variable to store color_mode attribute value
+  @param options - pointer to variable to store options attribute value
+  @param number_primaries - pointer to variable to store number_primaries attribute value
+  @param enhanced_color_mode - pointer to variable to store Enhanced Color Mode attribute value
+  @param color_capabilities - pointer to variable to store Color Capabilities attribute value
+*/
+#define ZB_ZCL_DECLARE_COLOR_CONTROL_ATTRIB_LIST_HS(attr_list, current_hue, current_saturation,    \
+    color_mode, options, number_primaries, enhanced_color_mode, color_capabilities)                \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_COLOR_CONTROL)               \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_HUE_ID, (current_hue))                    \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_SATURATION_ID, (current_saturation))      \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_COLOR_CONTROL_COLOR_MODE_ID, (color_mode))                      \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_COLOR_CONTROL_OPTIONS_ID, (options))                            \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_COLOR_CONTROL_NUMBER_OF_PRIMARIES_ID, (number_primaries))       \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_COLOR_CONTROL_ENHANCED_COLOR_MODE_ID, (enhanced_color_mode))    \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_COLOR_CONTROL_COLOR_CAPABILITIES_ID, (color_capabilities))      \
+  ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
 /** @} */
 
 #endif /* ZB_ZCL_COLOR_CONTROL_ADDONS_H__ */
