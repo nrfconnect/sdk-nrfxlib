@@ -12,7 +12,7 @@
 /*! \addtogroup zb_zcl_on_off_addons */
 /*! @{ */
 
-/**@brief On/Off cluster attributes according to ZCL Spec 3.8.2.2. */
+/**@brief On/Off cluster attributes with optional fields according to ZCL Spec 3.8.2.2. */
 typedef struct
 {
     zb_bool_t   on_off;
@@ -31,6 +31,14 @@ typedef struct
   ZB_ZCL_SEND_COMMAND_SHORT_WITHOUT_ACK((buffer), ptr, addr,                            \
             dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_ON_OFF, cb, 0);       \
 }
+
+/**
+ *  @brief Declare attribute list for On/Off cluster (client).
+ *  @param attr_list - attribute list name.
+ */
+#define ZB_ZCL_DECLARE_ON_OFF_CLIENT_ATTRIB_LIST(attr_list)                   \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_ON_OFF) \
+  ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
 /** @} */
 

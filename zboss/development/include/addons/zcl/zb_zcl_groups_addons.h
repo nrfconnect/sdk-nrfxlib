@@ -18,6 +18,14 @@ typedef struct
     zb_uint8_t name_support;
 } zb_zcl_groups_attrs_t;
 
+/**
+ *  @brief Declare attribute list for Groups cluster (client).
+ *  @param attr_list - attribute list name.
+ */
+#define ZB_ZCL_DECLARE_GROUPS_CLIENT_ATTRIB_LIST(attr_list)                   \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_GROUPS) \
+  ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
 /** @} */
 
 #endif /* ZB_ZCL_GROUPS_ADDONS_H__ */

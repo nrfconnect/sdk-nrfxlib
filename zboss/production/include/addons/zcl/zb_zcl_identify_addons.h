@@ -26,6 +26,24 @@
                                 dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_IDENTIFY, cb, 0);            \
 }
 
+/**
+ *  @brief Declare attribute list for Identify cluster (client).
+ *  @param attr_list - attribute list name.
+ */
+#define ZB_ZCL_DECLARE_IDENTIFY_CLIENT_ATTRIB_LIST(attr_list)                   \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_IDENTIFY) \
+  ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
+/**
+ *  @brief Declare attribute list for Identify cluster (server).
+ *  @param attr_list - attribute list name
+ *  @param identify_time - pointer to variable to store identify time attribute value
+ */
+#define ZB_ZCL_DECLARE_IDENTIFY_SERVER_ATTRIB_LIST(attr_list, identify_time)    \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_IDENTIFY) \
+  ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_IDENTIFY_IDENTIFY_TIME_ID, (identify_time))  \
+  ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
 /** @} */
 
 #endif /* ZB_ZCL_IDENTIFY_ADDONS_H__ */

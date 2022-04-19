@@ -72,6 +72,14 @@ typedef struct
                                      ZB_ZCL_CMD_LEVEL_CONTROL_STEP); \
 }
 
+/**
+ *  @brief Declare attribute list for Level control cluster (client).
+ *  @param attr_list - attribute list name.
+ */
+#define ZB_ZCL_DECLARE_LEVEL_CONTROL_CLIENT_ATTRIB_LIST(attr_list)                   \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_LEVEL_CONTROL) \
+  ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
 /** @} */
 
 #endif /* ZB_ZCL_LEVEL_CONTROL_ADDONS_H__ */
