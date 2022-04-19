@@ -29,6 +29,8 @@ Added
     * LE Set Connectionless CTE Transmit Enable
     * LE Read Antenna Information
 
+* Added support for Periodic Advertising ADI (DRGN-16759).
+
 Changes
 =======
 

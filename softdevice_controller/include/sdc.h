@@ -620,6 +620,8 @@ int32_t sdc_support_le_coded_phy(void);
  * The application shall also call @ref sdc_support_ext_adv() to enable
  * support for extended advertising before enabling support for periodic advertising.
  *
+ * @note This API also enables support for ADI in periodic advertising packets.
+ *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  LE Periodic advertising is not supported.
