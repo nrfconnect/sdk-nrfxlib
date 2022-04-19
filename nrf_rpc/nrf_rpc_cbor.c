@@ -33,7 +33,7 @@ int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 	};
 
 	if (!zcbor_nil_put(ctx->zs, NULL)) {
-		NRF_RPC_CBOR_DISCARD(*ctx);
+		NRF_RPC_CBOR_DISCARD(group, *ctx);
 		return -NRF_ENOMEM;
 	}
 
@@ -51,8 +51,9 @@ int nrf_rpc_cbor_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd,
 	size_t len;
 	size_t rsp_size;
 
+
 	if (!zcbor_nil_put(ctx->zs, NULL)) {
-		NRF_RPC_CBOR_DISCARD(*ctx);
+		NRF_RPC_CBOR_DISCARD(group, *ctx);
 		return -NRF_ENOMEM;
 	}
 
@@ -104,7 +105,7 @@ int nrf_rpc_cbor_evt(const struct nrf_rpc_group *group, uint8_t evt,
 	size_t len;
 
 	if (!zcbor_nil_put(ctx->zs, NULL)) {
-		NRF_RPC_CBOR_DISCARD(*ctx);
+		NRF_RPC_CBOR_DISCARD(group, *ctx);
 		return -NRF_ENOMEM;
 	}
 
@@ -127,41 +128,41 @@ void nrf_rpc_cbor_evt_no_err(const struct nrf_rpc_group *group, uint8_t evt,
 
 }
 
-int nrf_rpc_cbor_rsp(struct nrf_rpc_cbor_ctx *ctx)
+int nrf_rpc_cbor_rsp(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx)
 {
 
 	size_t len;
 
 	if (!zcbor_nil_put(ctx->zs, NULL)) {
-		NRF_RPC_CBOR_DISCARD(*ctx);
+		NRF_RPC_CBOR_DISCARD(group, *ctx);
 		return -NRF_ENOMEM;
 	}
 
 	len = nrf_rpc_cbor_data_len(ctx);
 
-	return nrf_rpc_rsp(ctx->out_packet, len);
+	return nrf_rpc_rsp(group, ctx->out_packet, len);
 }
 
-void nrf_rpc_cbor_rsp_no_err(struct nrf_rpc_cbor_ctx *ctx)
+void nrf_rpc_cbor_rsp_no_err(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx)
 {
 	int err;
 
-	err = nrf_rpc_cbor_rsp(ctx);
+	err = nrf_rpc_cbor_rsp(group, ctx);
 	if (err < 0) {
 		NRF_RPC_ERR("Unhandled command send error %d", err);
-		nrf_rpc_err(err, NRF_RPC_ERR_SRC_SEND, NULL, NRF_RPC_ID_UNKNOWN,
+		nrf_rpc_err(err, NRF_RPC_ERR_SRC_SEND, group, NRF_RPC_ID_UNKNOWN,
 			    NRF_RPC_PACKET_TYPE_RSP);
 	}
 
 }
 
-void nrf_rpc_cbor_decoding_done(struct nrf_rpc_cbor_ctx *ctx)
+void nrf_rpc_cbor_decoding_done(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx)
 {
-	nrf_rpc_decoding_done(ctx->out_packet);
+	nrf_rpc_decoding_done(group, ctx->out_packet);
 }
 
-void _nrf_rpc_cbor_proxy_handler(const uint8_t *packet, size_t len,
-				void *handler_data)
+void _nrf_rpc_cbor_proxy_handler(const struct nrf_rpc_group *group, const uint8_t *packet,
+				 size_t len, void *handler_data)
 {
 	struct nrf_rpc_cbor_ctx ctx;
 
@@ -173,7 +174,7 @@ void _nrf_rpc_cbor_proxy_handler(const uint8_t *packet, size_t len,
 	zcbor_new_decode_state(ctx.zs, ARRAY_SIZE(ctx.zs), ctx.out_packet, len,
 			       NRF_RPC_MAX_PARAMETERS);
 
-	return cbor_handler->handler(&ctx, cbor_handler->handler_data);
+	return cbor_handler->handler(group, &ctx, cbor_handler->handler_data);
 }
 
 void _nrf_rpc_cbor_prepare(struct nrf_rpc_cbor_ctx *ctx, size_t len)

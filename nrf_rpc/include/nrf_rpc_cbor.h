@@ -39,10 +39,12 @@ struct nrf_rpc_cbor_ctx;
 
 /** @brief Callback that handles decoding of commands, events and responses.
  *
+ * @param group        nRF RPC group.
  * @param ctx          CBOR decoding context
  * @param handler_data Custom handler data.
  */
-typedef void (*nrf_rpc_cbor_handler_t)(struct nrf_rpc_cbor_ctx *ctx, void *handler_data);
+typedef void (*nrf_rpc_cbor_handler_t)(const struct nrf_rpc_group *group,
+				       struct nrf_rpc_cbor_ctx *ctx, void *handler_data);
 
 /* Structure used internally to define TinCBOR command or event decoder. */
 struct _nrf_rpc_cbor_decoder {
@@ -110,23 +112,28 @@ struct nrf_rpc_cbor_ctx {
  * Memory is automatically deallocated when it is passed to any of the send
  * functions. If not @ref NRF_RPC_CBOR_DISCARD() can be used.
  *
- * @param[out] _ctx  Variable of type @ref nrf_rpc_cbor_ctx or
- *                   @ref nrf_rpc_cbor_rsp_ctx that will hold newly allocated
- *                   resources to encode and send a packet.
- * @param[in]  _len  Requested length of the packet.
+ * @param[in]  _group nRF RPC group.
+ * @param[out] _ctx   Variable of type @ref nrf_rpc_cbor_ctx or
+ *                    @ref nrf_rpc_cbor_rsp_ctx that will hold newly allocated
+ *                    resources to encode and send a packet.
+ * @param[in]  _len   Requested length of the packet.
  */
-#define NRF_RPC_CBOR_ALLOC(_ctx, _len)					       \
-	NRF_RPC_ALLOC((_ctx).out_packet, (_len) + 1);			       \
-	_nrf_rpc_cbor_prepare((struct nrf_rpc_cbor_ctx *)(&(_ctx)), (_len) + 1)
+#define NRF_RPC_CBOR_ALLOC(_group, _ctx, _len)                                           \
+	do {                                                                             \
+		nrf_rpc_alloc_tx_buf(_group, &((_ctx).out_packet), (_len) + 1);		 \
+		_nrf_rpc_cbor_prepare((struct nrf_rpc_cbor_ctx *)(&(_ctx)), (_len) + 1); \
+	} while (0)
 
 /** @brief Deallocate memory for a packet.
  *
  * This macro should be used if memory was allocated, but it will not be sent
  * with any of the send functions.
  *
+ * @param _group nRF RPC group, used for allocation.
  * @param _ctx Packet that was previously allocated.
  */
-#define NRF_RPC_CBOR_DISCARD(_ctx) NRF_RPC_DISCARD((_ctx).out_packet)
+#define NRF_RPC_CBOR_DISCARD(_group, _ctx)            \
+	nrf_rpc_free_tx_buf(_group, (_ctx).out_packet)
 
 /** @brief Send a command and provide callback to handle response.
  *
@@ -225,12 +232,13 @@ void nrf_rpc_cbor_evt_no_err(const struct nrf_rpc_group *group, uint8_t evt,
 
 /** @brief Send a response.
  *
+ * @param group  Group that response belongs to.
  * @param ctx    Context allocated by @ref NRF_RPC_CBOR_ALLOC.
  *
  * @return       0 on success or negative error code if a transport layer
  *               reported a sendig error.
  */
-int nrf_rpc_cbor_rsp(struct nrf_rpc_cbor_ctx *ctx);
+int nrf_rpc_cbor_rsp(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx);
 
 /** @brief Send a response and pass any error to an error handler.
  *
@@ -238,9 +246,10 @@ int nrf_rpc_cbor_rsp(struct nrf_rpc_cbor_ctx *ctx);
  * returned from the transport layer is passed to the error handler.
  * Source of error is @ref NRF_RPC_ERR_SRC_SEND.
  *
+ * @param group  Group that response belongs to.
  * @param ctx    Context allocated by @ref NRF_RPC_CBOR_ALLOC.
  */
-void nrf_rpc_cbor_rsp_no_err(struct nrf_rpc_cbor_ctx *ctx);
+void nrf_rpc_cbor_rsp_no_err(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx);
 
 /** @brief Indicate that decoding of the input packet is done.
  *
@@ -250,13 +259,16 @@ void nrf_rpc_cbor_rsp_no_err(struct nrf_rpc_cbor_ctx *ctx);
  * automatically deallocated after completetion of the response handler
  * function, so this `nrf_rpc_cbor_decoding_done` is not needed in response
  * handler.
+ *
+ * @param group  Group that response belongs to.
+ * @param ctx    Context allocated by @ref NRF_RPC_CBOR_ALLOC.
  */
-void nrf_rpc_cbor_decoding_done(struct nrf_rpc_cbor_ctx *ctx);
+void nrf_rpc_cbor_decoding_done(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx);
 
 /* Functions used internally by the macros, not intended to be used directly. */
 void _nrf_rpc_cbor_prepare(struct nrf_rpc_cbor_ctx *ctx, size_t len);
-void _nrf_rpc_cbor_proxy_handler(const uint8_t *packet, size_t len,
-				 void *handler_data);
+void _nrf_rpc_cbor_proxy_handler(const struct nrf_rpc_group *group, const uint8_t *packet,
+				 size_t len, void *handler_data);
 
 /**
  * @}
