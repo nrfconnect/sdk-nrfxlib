@@ -22,6 +22,14 @@ typedef struct
     zb_uint16_t current_group;
 } zb_zcl_scenes_attrs_t;
 
+/**
+ *  @brief Declare attribute list for Scenes cluster (client).
+ *  @param attr_list - attribute list name.
+ */
+#define ZB_ZCL_DECLARE_SCENES_CLIENT_ATTRIB_LIST(attr_list)                     \
+    ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_SCENES) \
+    ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
 /** @} */
 
 #endif /* ZB_ZCL_SCENES_ADDONS_H__ */
