@@ -9,6 +9,16 @@ Changelog
 
 All notable changes to this project in the |NCS| are documented in this file.
 
+Main branch
+***********
+
+All the notable changes included in the |NCS| main branch are documented in this section.
+
+Added
+=====
+
+* Precompiled libraries for experimental Zigbee Green Power Combo Basic functionality for Router and Coordinator roles.
+
 nRF Connect SDK v1.9.0
 **********************
 
