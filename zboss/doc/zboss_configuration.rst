@@ -58,5 +58,4 @@ To enable additional features in the ZBOSS libraries, you can use the following 
   This option is enabled by default in the :ref:`Zigbee NCP sample <nrf:zigbee_ncp_sample>`.
   This option uses a production version of ZBOSS that has not been certified.
 * :kconfig:option:`CONFIG_ZIGBEE_GP_CB` - With this option enabled, the application can support the Green Power Combo feature, which implements the basic set of Green Power Proxy and Green Power Sink functionalities within a single device.
-  This option can only be enabled for application that is built from ZBOSS stack sources.
   This option is added only for evaluation purposes and does not have a dedicated sample.
