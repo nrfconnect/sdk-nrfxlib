@@ -202,6 +202,7 @@ kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_C)
 kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_MEMORY)
 kconfig_check_and_set_base_to_one(MBEDTLS_NO_PLATFORM_ENTROPY)
 kconfig_check_and_set_base_to_one(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
+kconfig_check_and_set_base_to_one(MBEDTLS_DEBUG_C)
 
 # Platform configurations for _ALT defines
 kconfig_check_and_set_base_to_one(MBEDTLS_PLATFORM_EXIT_ALT)
