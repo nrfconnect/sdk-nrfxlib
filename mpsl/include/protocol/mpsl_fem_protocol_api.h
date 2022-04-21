@@ -301,6 +301,9 @@ void mpsl_fem_cleanup(void);
  */
 void mpsl_fem_pa_is_configured(int8_t * const p_gain);
 
+/** @brief Checks if the LNA signal is configured and enabled */
+bool mpsl_fem_lna_is_configured(void);
+
 /** @brief Prepares the Front End Module to switch to the Power Down state.
  *
  *  @deprecated This function is deprecated. Use @ref mpsl_fem_disable instead.
