@@ -19,6 +19,11 @@ Added
 
 * Precompiled libraries for experimental Zigbee Green Power Combo Basic functionality for Router and Coordinator roles.
 
+Removed
+=======
+
+* Precompiled libraries for experimental Zigbee Green Power Proxy Basic functionality for End Device role.
+
 nRF Connect SDK v1.9.0
 **********************
 
