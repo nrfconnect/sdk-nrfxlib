@@ -237,7 +237,7 @@ typedef __PACKED_STRUCT
 
 /** @brief LE features.
  *
- * See Core_v5.2, Vol 6, Part B, Section 4.6
+ * See Core_v5.3, Vol 6, Part B, Section 4.6
  */
 typedef __PACKED_STRUCT
 {
@@ -277,6 +277,10 @@ typedef __PACKED_STRUCT
     uint8_t le_power_control_request : 1;
     uint8_t le_power_change_indication : 1;
     uint8_t le_path_loss_monitoring : 1;
+    uint8_t periodic_advertising_adi_support : 1;
+    uint8_t connection_subrating : 1;
+    uint8_t connection_subrating_host_support : 1;
+    uint8_t channel_classification : 1;
 } sdc_hci_le_le_features_t;
 
 /** @brief LE Set Connectionless CTE Transmit Parameters array parameters. */
@@ -988,7 +992,7 @@ uint8_t sdc_hci_cmd_le_read_buffer_size(sdc_hci_cmd_le_read_buffer_size_return_t
 
 /** @brief LE Read Local Supported Features.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.8.3
  *
  * This command requests the list of the supported LE features for the Controller.
