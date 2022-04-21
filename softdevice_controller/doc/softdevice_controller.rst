@@ -53,11 +53,11 @@ The application can choose the features that are enabled and the number of links
     Host rbox Controller [label = "Library configuration"];
     Host->Controller      [label="sdc_rand_source_register(...)"];
     Host->Controller      [label="sdc_cfg_set(SDC_CFG_TYPE_ADV_COUNT)"];
-    Host->Controller      [label="sdc_cfg_set(SDC_CFG_TYPE_MASTER_COUNT)"];
-    Host->Controller      [label="sdc_cfg_set(SDC_CFG_TYPE_SLAVE_COUNT)"];
+    Host->Controller      [label="sdc_cfg_set(SDC_CFG_TYPE_CENTRAL_COUNT)"];
+    Host->Controller      [label="sdc_cfg_set(SDC_CFG_TYPE_PERIPHERAL_COUNT)"];
     Host rbox Controller[label = "Feature inclusion"];
     Host->Controller      [label="sdc_support_adv()"];
-    Host->Controller      [label="sdc_support_slave()"];
+    Host->Controller      [label="sdc_support_peripheral()"];
     Host->Controller      [label="sdc_support_2m_phy()"];
     Host rbox Controller [label = "Enable the SoftDevice Controller"];
     Host->Controller      [label="sdc_enable()"];
