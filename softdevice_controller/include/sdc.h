@@ -370,13 +370,6 @@ typedef union
      */
     uint8_t periodic_adv_list_size;
 
-    /** Depecated field, to be replaced with central_count
-     */
-    sdc_cfg_role_count_t   master_count;
-    /** Depecated field, to be replaced with peripheral_count
-     */
-    sdc_cfg_role_count_t   slave_count;
-
 } sdc_cfg_t;
 
 
@@ -649,19 +642,6 @@ int32_t sdc_support_le_periodic_adv(void);
  */
 int32_t sdc_support_le_periodic_sync(void);
 
-#define sdc_support_master            sdc_support_central
-#define sdc_support_slave             sdc_support_peripheral
-#define sdc_support_ext_master        sdc_support_ext_central
-#define SDC_DEFAULT_MASTER_COUNT      SDC_DEFAULT_MASTER_COUNT
-#define SDC_DEFAULT_SLAVE_COUNT       SDC_DEFAULT_PERIPHERAL_COUNT
-#define SDC_MEM_PER_MASTER_LINK       SDC_MEM_PER_CENTRAL_LINK
-#define SDC_MEM_PER_SLAVE_LINK        SDC_MEM_PER_PERIPHERAL_LINK
-#define SDC_MEM_MASTER_LINKS_SHARED   SDC_MEM_CENTRAL_LINKS_SHARED
-#define SDC_MEM_SLAVE_LINKS_SHARED    SDC_MEM_PERIPHERAL_LINKS_SHARED
-#define SDC_CFG_TYPE_MASTER_COUNT     SDC_CFG_TYPE_CENTRAL_COUNT
-#define SDC_CFG_TYPE_SLAVE_COUNT      SDC_CFG_TYPE_PERIPHERAL_COUNT
-#define __MEM_DEFAULT_MASTER_LINK_SIZE __MEM_DEFAULT_CENTRAL_LINK_SIZE
-#define __MEM_DEFAULT_SLAVE_LINK_SIZE  __MEM_DEFAULT_PERIPHERAL_LINK_SIZE
 #ifdef __cplusplus
 }
 #endif
