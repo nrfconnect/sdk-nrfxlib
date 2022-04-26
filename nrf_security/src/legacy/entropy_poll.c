@@ -15,7 +15,7 @@ int mbedtls_hardware_poll(void *data,
                           size_t len,
                           size_t *olen )
 {
-    const struct device *dev;
+    const struct device *dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_entropy));
     size_t chunk_size;
 
     (void)data;
@@ -35,11 +35,9 @@ int mbedtls_hardware_poll(void *data,
         return -1;
     }
 
-    dev = device_get_binding(DT_CHOSEN_ZEPHYR_ENTROPY_LABEL);
-
-    if (!dev)
+    if (!device_is_ready(dev))
     {
-        return MBEDTLS_ERR_ENTROPY_NO_SOURCES_DEFINED;
+        return MBEDTLS_ERR_ENTROPY_SOURCE_FAILED;
     }
 
     while (len > 0)
