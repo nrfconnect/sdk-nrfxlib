@@ -21,7 +21,7 @@ Added
   See :c:func:`sdc_hci_cmd_vs_coex_priority_config` and :c:func:`sdc_hci_cmd_vs_coex_scan_mode_config` (DRGN-16518).
 * Added support for periodic advertising intervals larger than ten seconds (DRGN-16873).
 * Added support for periodic sync timeouts larger than 128 seconds (DRGN-16434).
-* Added :c:func:`sdc_support_ext_master` which makes the extended initiator role configurable (DRGN-16392).
+* Added :c:func:`sdc_support_ext_central` which makes the extended initiator role configurable (DRGN-16392).
 * Added experimental support for connectionless angle of arrival (AoA) transmitter (DRGN-16588).
   The following HCI commands are now supported (DRGN-16713):
 
@@ -37,7 +37,6 @@ Changes
 * Update public API terms to Bluetooth Core Specification v5.3 (DRGN-16271)
 
     * :c:func:`sdc_support_master` and :c:func:`sdc_support_slave` have been renamed to :c:func:`sdc_support_central` and :c:func:`sdc_support_peripheral`.
-    * :c:func:`sdc_support_ext_master` has been renamed to :c:func:`sdc_support_ext_central`.
     * :c:macro:`SDC_DEFAULT_MASTER_COUNT` and :c:macro:`SDC_DEFAULT_SLAVE_COUNT` have been renamed to :c:macro:`SDC_DEFAULT_CENTRAL_COUNT` and :c:macro:`SDC_DEFAULT_PERIPHERAL_COUNT`.
     * :c:macro:`SDC_MEM_PER_MASTER_LINK` and :c:macro:`SDC_MEM_PER_SLAVE_LINK` have been renamed to :c:macro:`SDC_MEM_PER_CENTRAL_LINK` and :c:macro:`SDC_MEM_PER_PERIPHERAL_LINK`.
     * :c:macro:`SDC_MEM_MASTER_LINKS_SHARED` and :c:macro:`SDC_MEM_SLAVE_LINKS_SHARED` have been renamed to :c:macro:`SDC_MEM_CENTRAL_LINKS_SHARED` and :c:macro:`SDC_MEM_PERIPHERAL_LINKS_SHARED`.
