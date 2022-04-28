@@ -519,7 +519,7 @@ void zb_trace_msg_port_vl(
 #define TRACE_ARG_64(a) (zb_uint8_t)((a)[7]),(zb_uint8_t)((a)[6]),(zb_uint8_t)((a)[5]),(zb_uint8_t)((a)[4]),(zb_uint8_t)((a)[3]),(zb_uint8_t)((a)[2]),(zb_uint8_t)((a)[1]),(zb_uint8_t)((a)[0])
 
 /**
-   Trace format arguments for 128-bit numver.
+   Trace format arguments for 128-bit number.
 
    @snippet se/energy_service_interface/se_esi_zc.c TRACE_128
 */
@@ -625,7 +625,6 @@ typedef struct zb_byte128_struct_s
 
 #endif
 
-
 #define FMT__0                                          TRACE_ARG_SIZE(0,0,0,0,0)
 #define FMT__A                                          TRACE_ARG_SIZE(0,0,0,0,1)
 #define FMT__A_A                                        TRACE_ARG_SIZE(0,0,0,0,2)
@@ -697,6 +696,7 @@ typedef struct zb_byte128_struct_s
 #define FMT__D_H                                        TRACE_ARG_SIZE(1,1,0,0,0)
 #define FMT__D_H_D                                      TRACE_ARG_SIZE(1,2,0,0,0)
 #define FMT__D_H_D_D                                    TRACE_ARG_SIZE(1,3,0,0,0)
+#define FMT__D_H_D_D_H                                  TRACE_ARG_SIZE(2,3,0,0,0)
 #define FMT__D_H_D_D_H_D                                TRACE_ARG_SIZE(2,4,0,0,0)
 #define FMT__D_H_D_H                                    TRACE_ARG_SIZE(2,2,0,0,0)
 #define FMT__D_H_D_H_H                                  TRACE_ARG_SIZE(3,2,0,0,0)
@@ -761,9 +761,11 @@ typedef struct zb_byte128_struct_s
 #define FMT__H_D_H                                      TRACE_ARG_SIZE(2,1,0,0,0)
 #define FMT__H_D_H_D                                    TRACE_ARG_SIZE(2,2,0,0,0)
 #define FMT__H_D_H_D_D                                  TRACE_ARG_SIZE(2,3,0,0,0)
+#define FMT__H_D_H_D_H                                  TRACE_ARG_SIZE(3,2,0,0,0)
 #define FMT__H_D_H_D_H_H                                TRACE_ARG_SIZE(4,2,0,0,0)
 #define FMT__H_D_H_A                                    TRACE_ARG_SIZE(2,1,0,0,1)
 #define FMT__H_D_H_H                                    TRACE_ARG_SIZE(3,1,0,0,0)
+#define FMT__H_D_H_P_D                                  TRACE_ARG_SIZE(2,2,0,1,0)
 #define FMT__H_D_H_H_H                                  TRACE_ARG_SIZE(4,1,0,0,0)
 #define FMT__H_D_H_H_H_H                                TRACE_ARG_SIZE(5,1,0,0,0)
 #define FMT__H_D_H_H_H_H_H_H                            TRACE_ARG_SIZE(7,1,0,0,0)
@@ -828,9 +830,13 @@ typedef struct zb_byte128_struct_s
 #define FMT__H_L_H_H_P                                  TRACE_ARG_SIZE(3,0,1,4,0)
 #define FMT__H_L_L_H_A                                  TRACE_ARG_SIZE(2,0,2,0,1)
 #define FMT__H_L_D_D_H                                  TRACE_ARG_SIZE(2,2,1,0,0)
+#define FMT__H_P_D_P                                    TRACE_ARG_SIZE(1,1,0,2,0)
+#define FMT__H_P_P_D_P                                  TRACE_ARG_SIZE(1,1,0,3,0)
+#define FMT__H_P_D_D_H                                  TRACE_ARG_SIZE(2,2,0,1,0)
 #define FMT__H_P                                        TRACE_ARG_SIZE(1,0,0,1,0)
 #define FMT__H_P_D                                      TRACE_ARG_SIZE(1,1,0,1,0)
 #define FMT__H_P_D_D_H_P                                TRACE_ARG_SIZE(2,2,0,2,0)
+#define FMT__H_P_D_D_P                                  TRACE_ARG_SIZE(1,2,0,2,0)
 #define FMT__H_P_H                                      TRACE_ARG_SIZE(2,0,0,1,0)
 #define FMT__H_P_H_D                                    TRACE_ARG_SIZE(2,1,0,1,0)
 #define FMT__H_P_H_D_H                                  TRACE_ARG_SIZE(3,1,0,1,0)

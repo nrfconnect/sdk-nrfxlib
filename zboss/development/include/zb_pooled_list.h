@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -161,7 +161,7 @@ instead of pointer.
 
 
 /**
-  Insert after existend elem_indexry
+  Insert after existed elem_indexry
  */
 
 #define ZB_POOLED_LIST8_INSERT_AFTER( base, list, link_field, elem_index, new_elem_index ) do \
@@ -341,7 +341,7 @@ while( 0 )                                                              \
 
 
 /**
-  Insert after existend elem_indexry
+  Insert after existed elem_indexry
  */
 
 #define ZB_POOLED_LIST16_INSERT_AFTER( base, list, link_field, elem_index, new_elem_index ) do \

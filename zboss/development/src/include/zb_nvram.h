@@ -310,15 +310,19 @@ typedef struct zb_nvram_position_s
 #define ZB_NVRAM_VER_7_0  6U /* Used for ZBOSS SDK: stub for the next versions */
 #define ZB_NVRAM_VER_8_0  7U /* Used before introducing dataset tails */
 #define ZB_NVRAM_VER_9_0  8U /* Version of NVRAM having additional dataset trailers */
-#define ZB_NVRAM_VER_10_0 9U
-#define ZB_NVRAM_LAST_VER ZB_NVRAM_VER_10_0 /* Should always be equal to the highest version */
+#define ZB_NVRAM_VER_10_0 9U /* Version with unused CRC field in tail */
+#define ZB_NVRAM_VER_11_0 10U /* Version with used CRC field in tail */
+#define ZB_NVRAM_LAST_VER ZB_NVRAM_VER_11_0 /* Should always be equal to the highest version */
 /*------------------*/
 #define ZB_NVRAM_VER_COUNT (ZB_NVRAM_LAST_VER + 1U)
 /** @} */
 
 
 #define ZB_MIN_NVRAM_VER_WITH_DS_TRAILERS ZB_NVRAM_VER_9_0
+#define ZB_MIN_NVRAM_VER_WITH_DS_CRC_IN_TAIL ZB_NVRAM_VER_11_0
 
+/* Initnial value for crc calculation */
+#define ZB_NVRAM_CRC_DEFAULT_VALUE 0xFFFFU
 
 typedef zb_uint16_t zb_nvram_ver_t;
 
@@ -448,13 +452,13 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_common_ver_4_0_s
 
   /* Custom fields*/
   /* In default configuration ZB_NWK_MAC_IFACE_TBL_SIZE is 1, so the dataset is compatible with previous stack versions.
-   * When multple interfaces are enabled, the dataset will become incompatible with default configuration and
+   * When multiple interfaces are enabled, the dataset will become incompatible with default configuration and
    * migrations between single-MAC and multi-MAC NVRAM are not supported now */
   zb_uint8_t channel[ZB_NWK_MAC_IFACE_TBL_SIZE]; /*!< Current channel. Custom field */
   zb_uint8_t page[ZB_NWK_MAC_IFACE_TBL_SIZE];    /*!< Current page. Custom field */
   zb_nwk_mac_iface_tbl_ent_t mac_iface_tbl[ZB_NWK_MAC_IFACE_TBL_SIZE]; /*!< nwkMacInterfaceTable from NWK NIB()*/
   /* There was 1 reserved byte */
-  zb_bitfield_t   hub_connectivity:1; /*!< gub connectivity for WWAH and r23 all hubs  */
+  zb_bitfield_t   hub_connectivity:1; /*!< hub connectivity for WWAH and r23 all hubs  */
   zb_bitfield_t   rx_on:1;            /*!< rx-on-when-idle for ZED  */
   zb_bitfield_t   tc_swapped:1;     /*!< TC swapout is in progress for ZC (not
                                      * all known devices came back) / Joiner
@@ -496,10 +500,8 @@ typedef zb_nvram_dataset_common_ver_4_0_t zb_nvram_dataset_common_t;
 #define ZB_NVRAM_COMMON_DATA_DS_VER ZB_NVRAM_COMMON_DATA_DS_VER_4
 
 
-/* Check dataset alignment for IAR compiler and ARM Cortex target platfrom */
+/* Check dataset alignment for IAR compiler and ARM Cortex target platform */
 ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_dataset_common_t);
-
-#ifdef ZB_STORE_COUNTERS
 
 typedef ZB_PACKED_PRE struct zb_nvram_dataset_counters_ver_1_0_s
 {
@@ -526,10 +528,8 @@ zb_nvram_dataset_counters_ver_2_0_t;
 typedef zb_nvram_dataset_counters_ver_2_0_t zb_nvram_dataset_counters_t;
 #define ZB_IB_COUNTERS_DS_VER ZB_IB_COUNTERS_DS_VER_2
 
-/* Check dataset alignment for IAR compiler and ARM Cortex target platfrom */
+/* Check dataset alignment for IAR compiler and ARM Cortex target platform */
 ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_dataset_counters_t);
-
-#endif
 
 #if defined ZB_ENABLE_HA
 
@@ -570,7 +570,7 @@ zb_nvram_dataset_ha_versions_t;
 
 #define ZB_NVRAM_HA_DATA_DS_VER ZB_NVRAM_HA_DATA_DS_VER_1
 
-/* Check dataset alignment for IAR compiler and ARM Cortex target platfrom */
+/* Check dataset alignment for IAR compiler and ARM Cortex target platform */
 ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_dataset_ha_t);
 
 #endif /*defined ZB_ENABLE_HA*/
@@ -624,7 +624,7 @@ zb_nvram_dataset_diagnostics_v1_t;
 
 #define ZB_NVRAM_DIAGNOSTICS_DATA_DS_VER ZB_NVRAM_DIAGNOSTICS_DATA_DS_VER_1
 
-/* Check dataset alignment for IAR compiler and ARM Cortex target platfrom */
+/* Check dataset alignment for IAR compiler and ARM Cortex target platform */
 ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_dataset_diagnostics_v1_t);
 
 #endif /* ZDO_DIAGNOSTICS */
@@ -755,7 +755,7 @@ typedef zb_nvram_dataset_binding_v3_t zb_nvram_dataset_binding_t;
 
 #define ZB_NVRAM_APS_BINDING_DATA_DS_VER ZB_NVRAM_APS_BINDING_DATA_DS_VER_3
 
-/* Check dataset alignment for IAR compiler and ARM Cortex target platfrom */
+/* Check dataset alignment for IAR compiler and ARM Cortex target platform */
 ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_dataset_binding_v3_t);
 
 typedef ZB_PACKED_PRE struct zb_nvram_dataset_groups_hdr_s
@@ -799,7 +799,7 @@ typedef ZB_PACKED_PRE struct zb_nvram_dataset_poll_control_s
 } ZB_PACKED_STRUCT
 zb_nvram_dataset_poll_control_t;
 
-/* Check dataset alignment for IAR compiler and ARM Cortex target platfrom */
+/* Check dataset alignment for IAR compiler and ARM Cortex target platform */
 ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_dataset_poll_control_t);
 
 typedef enum zb_nvram_dataset_poll_control_versions_e
@@ -876,46 +876,6 @@ zb_nvram_dataset_wwah_versions_t;
 
 #ifdef ZB_ENABLE_ZGP
 
-typedef ZB_PACKED_PRE struct zb_nvram_zgp_transl_tbl_entry_ver_1_0_s
-{
-  zb_ieee_addr_t         zgpd_id;
-  zb_uint16_t            Zigbee_profile_id;
-  zb_uint16_t            cluster_id;
-
-  zb_uint8_t             Zigbee_cmd_id;
-  zb_uint8_t             options;
-  zb_uint8_t             zgpd_cmd_id;
-  zb_uint8_t             endpoint;
-
-  zb_uint8_t             payload_len;
-  zb_uint8_t             payload_data[ZB_ZGP_TRANSL_CMD_PLD_MAX_SIZE];
-  zb_uint8_t             aligned[2];
-}
-ZB_PACKED_STRUCT
-zb_nvram_zgp_transl_tbl_entry_ver_1_0_t;
-
-typedef zb_nvram_zgp_transl_tbl_entry_ver_1_0_t zb_nvram_zgp_transl_tbl_t;
-
-typedef ZB_PACKED_PRE struct zb_nvram_zgp_sink_tbl_entry_ver_1_0_s
-{
-  zb_ieee_addr_t   zgpd_id;
-
-  zb_uint16_t      options;
-  zb_uint16_t      zgpd_assigned_alias;
-  zb_uint32_t      zgpd_sec_frame_counter;
-
-  zb_uint8_t       device_id;
-  zb_uint8_t       groupcast_radius;
-  zb_uint8_t       sec_options;
-  zb_uint8_t       zgpd_key[ZB_CCM_KEY_SIZE];
-  zb_uint8_t       dup_counter_expired;
-}
-ZB_PACKED_STRUCT
-zb_nvram_zgp_sink_tbl_entry_ver_1_0_t;
-
-/* Check dataset alignment for IAR compiler and ARM Cortex target platfrom */
-ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_zgp_sink_tbl_entry_ver_1_0_t);
-
 typedef ZB_PACKED_PRE struct zb_nvram_zgp_sink_tbl_entry_ver_6_0_s
 {
   zb_uint32_t      src_id;
@@ -944,31 +904,10 @@ typedef ZB_PACKED_PRE struct zb_nvram_zgp_sink_tbl_entry_ver_6_0_s
 ZB_PACKED_STRUCT
 zb_nvram_zgp_sink_tbl_entry_ver_6_0_t;
 
-/* Check dataset alignment for IAR compiler and ARM Cortex target platfrom */
+/* Check dataset alignment for IAR compiler and ARM Cortex target platform */
 ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_zgp_sink_tbl_entry_ver_6_0_t);
 
 typedef zb_nvram_zgp_sink_tbl_entry_ver_6_0_t zb_nvram_zgp_sink_tbl_t;
-
-/* Format of old ZGP dataset used before ZB_NVRAM_VER_2_0 */
-#define ZB_NVRAM_ZGP_TRANSL_TBL_SIZE_1_0  64U
-#define ZB_NVRAM_ZGP_SINK_TBL_SIZE_1_0    32U
-typedef ZB_PACKED_PRE struct zb_nvram_zgp_dataset_ver_1_0_s
-{
-  zb_nvram_zgp_transl_tbl_t zgp_translate_tbl[ZB_NVRAM_ZGP_TRANSL_TBL_SIZE_1_0];
-  zb_nvram_zgp_sink_tbl_t   zgp_sink_tbl[ZB_NVRAM_ZGP_SINK_TBL_SIZE_1_0];
-  zb_uint32_t               zgp_sink_tbl_used_entries;
-}
-ZB_PACKED_STRUCT
-zb_nvram_zgp_dataset_ver_1_0_t;
-
-typedef ZB_PACKED_PRE struct zb_nvram_zgp_dataset_info_ver_2_0_s
-{
-  zb_uint16_t               zgp_sink_tbl_size;
-  zb_uint32_t               zgp_sink_tbl_used_entries;
-  zb_uint16_t               zgp_transl_tbl_size;
-}
-ZB_PACKED_STRUCT
-zb_nvram_zgp_dataset_info_ver_2_0_t;
 
 typedef ZB_PACKED_PRE struct zb_nvram_zgp_dataset_info_ver_6_0_s
 {
@@ -1154,7 +1093,7 @@ ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_nvram_addr_map_rec_v2_t);
 
 typedef ZB_PACKED_PRE struct zb_nvram_neighbour_hdr_v0_s
 {
-  zb_uint8_t nbr_rec_num; /*!< Strores number of stored neighbour devices */
+  zb_uint8_t nbr_rec_num; /*!< Stores number of stored neighbour devices */
   zb_uint8_t version;     /*!< Stores version of the dataset */
 }
 ZB_PACKED_STRUCT
@@ -1162,7 +1101,7 @@ zb_nvram_neighbour_hdr_v0_t;
 
 typedef ZB_PACKED_PRE struct zb_nvram_neighbour_hdr_v1_s
 {
-  zb_uint8_t nbr_rec_num; /*!< Strores number of stored neighbour devices */
+  zb_uint8_t nbr_rec_num; /*!< Stores number of stored neighbour devices */
   zb_uint8_t version;     /*!< Stores version of the dataset */
   zb_uint8_t aligned[2];
 }

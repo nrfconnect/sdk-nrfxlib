@@ -75,6 +75,7 @@ static zb_discover_cmd_list_t gs_color_control_server_cmd_list =
 };
 
 zb_ret_t check_value_color_control_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
+zb_ret_t check_value_color_control_client(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
 zb_bool_t zb_zcl_process_color_control_specific_commands_srv(zb_uint8_t param);
 zb_bool_t zb_zcl_process_color_control_specific_commands_cli(zb_uint8_t param);
 void zb_zcl_process_color_control_specific_commands_srv_2param(zb_uint8_t buf2_param, zb_uint16_t cmd_param);
@@ -92,7 +93,7 @@ void zb_zcl_color_control_init_client()
 {
   zb_zcl_add_cluster_handlers(ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
                               ZB_ZCL_CLUSTER_CLIENT_ROLE,
-                              (zb_zcl_cluster_check_value_t)NULL,
+                              check_value_color_control_client,
                               (zb_zcl_cluster_write_attr_hook_t)NULL,
                               zb_zcl_process_color_control_specific_commands_cli);
 }
@@ -130,11 +131,38 @@ zb_ret_t check_value_color_control_server(zb_uint16_t attr_id, zb_uint8_t endpoi
     case ZB_ZCL_ATTR_COLOR_CONTROL_COLOR_CAPABILITIES_ID:
       ret = (ZB_ZCL_ATTR_GET16(value) <= ZB_ZCL_COLOR_CONTROL_COLOR_CAPABILITIES_MAX_VALUE) ? RET_OK : RET_ERROR;
       break;
+    case ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID:
+      if( ZB_ZCL_ATTR_GET16(value) > ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX )
+      {
+        ret = RET_ERROR;
+      }
+      break;
     default:
       break;
   }
 
   TRACE_MSG(TRACE_ZCL1, "check_value_color_control ret %hd", (FMT__H, ret));
+  return ret;
+}
+
+zb_ret_t check_value_color_control_client(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value)
+{
+  zb_ret_t ret = RET_OK;
+
+  ZVUNUSED(endpoint);
+
+  switch( attr_id )
+  {
+    case ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID:
+      if( ZB_ZCL_ATTR_GET16(value) > ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX )
+      {
+        ret = RET_ERROR;
+      }
+      break;
+    default:
+      break;
+  }
+
   return ret;
 }
 /** @addtogroup ZB_ZCL_COLOR_CONTROL
@@ -287,7 +315,7 @@ static zb_ret_t zb_zcl_color_control_invoke_user_and_set_attribute(zb_uint8_t pa
 */
 
 /** @addtogroup ZB_ZCL_COLOR_CONTROL
-    ZCL Color Control cluster Convert color between triplex "Hue,Saturation" - "ColorXY" - "Color Temperature"
+    ZCL Color Control cluster Convert color between "Hue,Saturation" - "ColorXY" - "Color Temperature"
     @{
     Use convert in/out RGB
     Need to recode without use float type.
@@ -646,7 +674,7 @@ static zb_bool_t zb_zcl_color_control_invoke_user_app(zb_bufid_t buf, zb_uint8_t
   return ((zb_bool_t) zb_zcl_color_control_invoke_user_and_set_attribute(buf));
 }
 
-/** @brief Process one interation of move or step command for one attribute
+/** @brief Process one interaction of move or step command for one attribute
  * @param el_data - pointer on data, @see zb_zcl_color_control_loop_element_t
  * @return result invoke User App */
 static zb_bool_t zb_zcl_process_color_control_element_loop(zb_zcl_color_control_loop_element_t *el_data)
@@ -741,11 +769,11 @@ static zb_bool_t color_control_check_req_options(zb_uint8_t param, zb_uint8_t en
                                  ZB_ZCL_COLOR_CONTROL_OPTIONS_EXECUTE_IF_OFF);
       }
     }
-    
+
 
 #ifdef ZB_ZCL_SUPPORT_CLUSTER_ON_OFF
     /* ZCL7, 5.2.2.2.1.30 ExecuteIfOff Options Bit
-       Command execution SHALL NOT continue beyond the Options procedding if all of thee criteria
+       Command execution SHALL NOT continue beyond the Options proceeding if all of thee criteria
        are true:
        - The On/Off cluster exists on the same endpoint as this cluster
        - The OnOff attribute of the On/Off cluster, on this endpoint, is 0x00 (FALSE)
@@ -772,6 +800,73 @@ static zb_bool_t color_control_check_req_options(zb_uint8_t param, zb_uint8_t en
   }
 
   TRACE_MSG(TRACE_ZCL1, "color_control_check_req_options: enabled %hd", (FMT__H, res));
+  return res;
+}
+
+static zb_bool_t color_control_check_color_capabilities(zb_uint8_t endpoint, zb_uint8_t cmd_id)
+{
+  zb_bool_t res = ZB_FALSE;
+  zb_zcl_attr_t *attr_desc;
+
+  attr_desc = zb_zcl_get_attr_desc_a(
+    endpoint,
+    ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+    ZB_ZCL_CLUSTER_SERVER_ROLE,
+    ZB_ZCL_ATTR_COLOR_CONTROL_COLOR_CAPABILITIES_ID);
+
+  if (attr_desc != NULL)
+  {
+    zb_uint16_t color_capabilites = ZB_ZCL_GET_ATTRIBUTE_VAL_16(attr_desc);
+
+    switch (cmd_id)
+    {
+      case ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE:
+      case ZB_ZCL_CMD_COLOR_CONTROL_MOVE_HUE:
+      case ZB_ZCL_CMD_COLOR_CONTROL_STEP_HUE:
+      case ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_SATURATION:
+      case ZB_ZCL_CMD_COLOR_CONTROL_MOVE_SATURATION:
+      case ZB_ZCL_CMD_COLOR_CONTROL_STEP_SATURATION:
+      case ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE_SATURATION:
+        res = (zb_bool_t)(color_capabilites & ZB_ZCL_COLOR_CONTROL_CAPABILITIES_HUE_SATURATION);
+        break;
+
+      case ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_COLOR:
+      case ZB_ZCL_CMD_COLOR_CONTROL_MOVE_COLOR:
+      case ZB_ZCL_CMD_COLOR_CONTROL_STEP_COLOR:
+        res = (zb_bool_t)(color_capabilites & ZB_ZCL_COLOR_CONTROL_CAPABILITIES_X_Y);
+        break;
+
+      case ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE:
+      case ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_HUE:
+      case ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_STEP_HUE:
+      case ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE_SATURATION:
+        res = (zb_bool_t)(color_capabilites & ZB_ZCL_COLOR_CONTROL_CAPABILITIES_EX_HUE);
+        break;
+
+      case ZB_ZCL_CMD_COLOR_CONTROL_COLOR_LOOP_SET:
+        res = (zb_bool_t)(color_capabilites & ZB_ZCL_COLOR_CONTROL_CAPABILITIES_COLOR_LOOP);
+        break;
+
+      case ZB_ZCL_CMD_COLOR_CONTROL_STOP_MOVE_STEP:
+        res = (zb_bool_t)((color_capabilites & ZB_ZCL_COLOR_CONTROL_CAPABILITIES_HUE_SATURATION)
+                       || (color_capabilites & ZB_ZCL_COLOR_CONTROL_CAPABILITIES_EX_HUE)
+                       || (color_capabilites & ZB_ZCL_COLOR_CONTROL_CAPABILITIES_X_Y)
+                       || (color_capabilites & ZB_ZCL_COLOR_CONTROL_CAPABILITIES_COLOR_TEMP));
+        break;
+
+      case ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_COLOR_TEMPERATURE:
+      case ZB_ZCL_CMD_COLOR_CONTROL_MOVE_COLOR_TEMPERATURE:
+      case ZB_ZCL_CMD_COLOR_CONTROL_STEP_COLOR_TEMPERATURE:
+        res = (zb_bool_t)(color_capabilites & ZB_ZCL_COLOR_CONTROL_CAPABILITIES_COLOR_TEMP);
+        break;
+
+      default:
+        res = ZB_FALSE;
+    }
+  }
+
+  TRACE_MSG(TRACE_ZCL1, "color_control_check_color_capabilities: supported %hd", (FMT__H, res));
+
   return res;
 }
 
@@ -868,7 +963,7 @@ static void zb_zcl_process_color_control_move_loop(zb_uint8_t param)
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_process_color_control_move_loop", (FMT__0));
 }
 
-/** @brief Process one interation of "move to" command
+/** @brief Process one iteration of "move to" command
  * @param param - buffer with move to loop data, @see zb_zcl_color_control_move_to_loop_t
  *
  * Function convert from time offset between current time and last processed time plus
@@ -984,7 +1079,7 @@ static void zb_zcl_process_color_control_move_to_loop(zb_uint8_t param)
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_process_color_control_move_to_loop", (FMT__0));
 }
 
-/** @brief Process one interation of step command
+/** @brief Process one iteration of step command
  * @param param - buffer with step loop data, @see zb_zcl_color_control_step_loop_t
  *
  * Function calculate number steps between between current time and last processed time.
@@ -1058,14 +1153,14 @@ static void zb_zcl_process_color_control_step_loop(zb_uint8_t param)
 }
 
 /** @brief Stop any loop command
- * @param func - address loop funcion
+ * @param func - address loop function
  * @param size_loop_data - sizeof of loop data structure
  *
  * All struct data for loop command (@see zb_zcl_color_control_move_to_loop_t,
  * @see zb_zcl_color_control_move_loop_t, @see zb_zcl_color_control_step_loop_t)
  * contain @see zb_zcl_parsed_hdr_t as first field.
  *
- * Fuction find and remove schedule alarm by 'func' parameters,
+ * Function find and remove schedule alarm by 'func' parameters,
  * get association buffer, copy @see zb_zcl_parsed_hdr_t struct by size_loop_data
  * parameter and invoke ZB_ZCL_PROCESS_COMMAND_FINISH.
  * */
@@ -1117,7 +1212,12 @@ static zb_ret_t zb_zcl_process_color_control_move_to_hue_handler(zb_uint8_t para
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_MOVE_TO_HUE_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_MOVE_TO_HUE_REQ",
         (FMT__0));
@@ -1204,7 +1304,12 @@ static zb_ret_t zb_zcl_process_color_control_move_hue_handler(zb_uint8_t param, 
   endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
 
   ZB_ZCL_COLOR_CONTROL_GET_MOVE_HUE_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_MOVE_HUE_REQ",
         (FMT__0));
@@ -1273,7 +1378,12 @@ static zb_ret_t zb_zcl_process_color_control_step_hue_handler(zb_uint8_t param, 
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_STEP_HUE_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_STEP_HUE_REQ",
         (FMT__0));
@@ -1341,7 +1451,12 @@ static zb_ret_t zb_zcl_process_color_control_move_to_saturation_handler(zb_uint8
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_MOVE_TO_SATURATION_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_MOVE_TO_SATURATION_REQ",
         (FMT__0));
@@ -1406,7 +1521,12 @@ static zb_ret_t zb_zcl_process_color_control_move_saturation_handler(zb_uint8_t 
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_MOVE_SATURATION_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_MOVE_SATURATION_REQ",
         (FMT__0));
@@ -1473,7 +1593,12 @@ static zb_ret_t zb_zcl_process_color_control_step_saturation_handler(zb_uint8_t 
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_STEP_SATURATION_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_STEP_SATURATION_REQ",
         (FMT__0));
@@ -1539,7 +1664,12 @@ static zb_ret_t zb_zcl_process_color_control_move_to_hue_saturation_handler(zb_u
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_MOVE_TO_HUE_SATURATION_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_MOVE_TO_HUE_SATURATION_REQ",
         (FMT__0));
@@ -1614,7 +1744,12 @@ static zb_ret_t zb_zcl_process_color_control_move_to_color_handler(zb_uint8_t pa
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_MOVE_TO_COLOR_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_MOVE_TO_COLOR_REQ",
         (FMT__0));
@@ -1698,7 +1833,12 @@ static zb_ret_t zb_zcl_process_color_control_move_color_handler(zb_uint8_t param
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_MOVE_COLOR_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_MOVE_COLOR_REQ",
         (FMT__0));
@@ -1766,7 +1906,12 @@ static zb_ret_t zb_zcl_process_color_control_step_color_handler(zb_uint8_t param
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_STEP_COLOR_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_STEP_COLOR_REQ",
         (FMT__0));
@@ -1832,7 +1977,12 @@ static zb_ret_t zb_zcl_process_color_control_move_to_color_temp_handler(zb_uint8
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_MOVE_TO_COLOR_TEMPERATURE_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_MOVE_TO_COLOR_TEMP_REQ",
         (FMT__0));
@@ -1913,7 +2063,12 @@ static zb_ret_t zb_zcl_process_color_control_enhanced_move_to_hue_handler(zb_uin
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_ENHANCED_MOVE_TO_HUE_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_ENHANCED_MOVE_TO_HUE_REQ",
         (FMT__0));
@@ -1997,7 +2152,12 @@ static zb_ret_t zb_zcl_process_color_control_enhanced_move_hue_handler(zb_uint8_
   endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
 
   ZB_ZCL_COLOR_CONTROL_GET_ENHANCED_MOVE_HUE_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_ENHANCED_MOVE_HUE_REQ",
         (FMT__0));
@@ -2065,7 +2225,12 @@ static zb_ret_t zb_zcl_process_color_control_enhanced_step_hue_handler(zb_uint8_
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_ENHANCED_STEP_HUE_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_ENHANCED_STEP_HUE_REQ",
         (FMT__0));
@@ -2132,7 +2297,12 @@ static zb_ret_t zb_zcl_process_color_control_enhanced_move_to_hue_saturation_han
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
   ZB_ZCL_COLOR_CONTROL_GET_ENHANCED_MOVE_TO_HUE_SATURATION_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_ENHANCED_MOVE_TO_HUE_SATURATION_REQ",
         (FMT__0));
@@ -2289,7 +2459,12 @@ static zb_ret_t zb_zcl_process_color_control_color_loop_set_handler(zb_uint8_t p
   endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
 
   ZB_ZCL_COLOR_CONTROL_GET_COLOR_LOOP_SET_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_COLOR_LOOP_SET_REQ",
         (FMT__0));
@@ -2397,7 +2572,12 @@ static zb_ret_t zb_zcl_process_color_control_stop_move_step_handler(zb_uint8_t p
     ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
     endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
 
-  if (color_control_check_req_options(param, endpoint))
+  if (!color_control_check_color_capabilities(endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (color_control_check_req_options(param, endpoint))
   {
     zb_zcl_color_control_set16(endpoint, ZB_ZCL_ATTR_COLOR_CONTROL_REMAINING_TIME_ID, 0);
 
@@ -2442,7 +2622,12 @@ static zb_ret_t zb_zcl_process_color_control_move_color_temp_handler(zb_uint8_t 
   endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
 
   ZB_ZCL_COLOR_CONTROL_GET_MOVE_COLOR_TEMP_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_MOVE_COLOR_TEMP_REQ",
         (FMT__0));
@@ -2513,7 +2698,12 @@ static zb_ret_t zb_zcl_process_color_control_step_color_temp_handler(zb_uint8_t 
   endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
 
   ZB_ZCL_COLOR_CONTROL_GET_STEP_COLOR_TEMP_REQ(param, payload, status);
-  if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
+  if (!color_control_check_color_capabilities(endpoint, cmd_info.cmd_id))
+  {
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, ZB_ZCL_STATUS_UNSUP_CMD);
+    ret = RET_BUSY;   // not need send answer yet
+  }
+  else if (status != ZB_ZCL_PARSE_STATUS_SUCCESS)
   {
     TRACE_MSG(TRACE_ZCL1, "Error payload of ZB_ZCL_COLOR_CONTROL_GET_STEP_COLOR_TEMP_REQ",
         (FMT__0));
@@ -2735,6 +2925,2571 @@ zb_bool_t zb_zcl_process_color_control_specific_commands_cli(zb_uint8_t param)
     return ZB_TRUE;
   }
   return ZB_FALSE;
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE implementation */
+
+static inline void zb_zcl_color_control_send_move_to_hue_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                    zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                    zb_uint8_t ep, zb_uint16_t prof_id,
+                                                    zb_uint8_t def_resp, zb_callback_t cb,
+                                                    zb_uint8_t hue, zb_uint8_t direction,
+                                                    zb_uint16_t transition_time,
+                                                    zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (hue));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (direction));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_move_to_hue_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                  zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                  zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                  zb_uint8_t def_resp, zb_callback_t cb,
+                                                                  zb_uint8_t hue, zb_uint8_t direction,
+                                                                  zb_uint16_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (hue));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (direction));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_move_to_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                    zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                    zb_uint8_t ep, zb_uint16_t prof_id,
+                                                    zb_uint8_t def_resp, zb_callback_t cb,
+                                                    zb_uint8_t hue, zb_uint8_t direction,
+                                                    zb_uint16_t transition_time,
+                                                    zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_to_hue_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_to_hue_req_rev1(buffer, dst_addr,
+                                                     dst_addr_mode, dst_ep,
+                                                     ep, prof_id,
+                                                     def_resp, cb,
+                                                     hue, direction,
+                                                     transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_to_hue_req_rev3(buffer, dst_addr,
+                                                     dst_addr_mode, dst_ep,
+                                                     ep, prof_id,
+                                                     def_resp, cb,
+                                                     hue, direction,
+                                                     transition_time,
+                                                     options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_to_hue_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_move_to_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                               zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                               zb_uint8_t ep, zb_uint16_t prof_id,
+                                               zb_uint8_t def_resp, zb_callback_t cb,
+                                               zb_uint8_t hue, zb_uint8_t direction,
+                                               zb_uint16_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_to_hue_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_to_hue_req_rev1(buffer, dst_addr,
+                                                     dst_addr_mode, dst_ep,
+                                                     ep, prof_id,
+                                                     def_resp, cb,
+                                                     hue, direction,
+                                                     transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_to_hue_req_rev3(buffer, dst_addr,
+                                                     dst_addr_mode, dst_ep,
+                                                     ep, prof_id,
+                                                     def_resp, cb,
+                                                     hue, direction,
+                                                     transition_time,
+                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_to_hue_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_MOVE_HUE implementation */
+
+static inline void zb_zcl_color_control_send_move_hue_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                 zb_uint8_t move_mode, zb_uint8_t rate,
+                                                 zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_HUE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (rate));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_move_hue_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                               zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                               zb_uint8_t ep, zb_uint16_t prof_id,
+                                                               zb_uint8_t def_resp, zb_callback_t cb,
+                                                               zb_uint8_t move_mode, zb_uint8_t rate)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_HUE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (rate));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_move_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                 zb_uint8_t move_mode, zb_uint8_t rate,
+                                                 zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_hue_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_hue_req_rev1(buffer, dst_addr,
+                                                  dst_addr_mode, dst_ep,
+                                                  ep, prof_id,
+                                                  def_resp, cb,
+                                                  move_mode, rate);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_hue_req_rev3(buffer, dst_addr,
+                                                  dst_addr_mode, dst_ep,
+                                                  ep, prof_id,
+                                                  def_resp, cb,
+                                                  move_mode, rate,
+                                                  options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_hue_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_move_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                            zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                            zb_uint8_t ep, zb_uint16_t prof_id,
+                                            zb_uint8_t def_resp, zb_callback_t cb,
+                                            zb_uint8_t move_mode, zb_uint8_t rate)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_hue_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_hue_req_rev1(buffer, dst_addr,
+                                                     dst_addr_mode, dst_ep,
+                                                     ep, prof_id,
+                                                     def_resp, cb,
+                                                     move_mode, rate);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_hue_req_rev3(buffer, dst_addr,
+                                                     dst_addr_mode, dst_ep,
+                                                     ep, prof_id,
+                                                     def_resp, cb,
+                                                     move_mode, rate,
+                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_hue_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_STEP_HUE implementation */
+
+static inline void zb_zcl_color_control_send_step_hue_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                 zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                 zb_uint8_t transition_time,
+                                                 zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_HUE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_size));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_step_hue_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                               zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                               zb_uint8_t ep, zb_uint16_t prof_id,
+                                                               zb_uint8_t def_resp, zb_callback_t cb,
+                                                               zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                               zb_uint8_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_HUE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_size));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_step_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                 zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                 zb_uint8_t transition_time,
+                                                 zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_step_hue_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_step_hue_req_rev1(buffer, dst_addr,
+                                                  dst_addr_mode, dst_ep,
+                                                  ep, prof_id,
+                                                  def_resp, cb,
+                                                  step_mode, step_size,
+                                                  transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_step_hue_req_rev3(buffer, dst_addr,
+                                                  dst_addr_mode, dst_ep,
+                                                  ep, prof_id,
+                                                  def_resp, cb,
+                                                  step_mode, step_size,
+                                                  transition_time,
+                                                  options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_step_hue_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_step_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                            zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                            zb_uint8_t ep, zb_uint16_t prof_id,
+                                            zb_uint8_t def_resp, zb_callback_t cb,
+                                            zb_uint8_t step_mode, zb_uint8_t step_size,
+                                            zb_uint8_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_step_hue_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_step_hue_req_rev1(buffer, dst_addr,
+                                                  dst_addr_mode, dst_ep,
+                                                  ep, prof_id,
+                                                  def_resp, cb,
+                                                  step_mode, step_size,
+                                                  transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_step_hue_req_rev3(buffer, dst_addr,
+                                                  dst_addr_mode, dst_ep,
+                                                  ep, prof_id,
+                                                  def_resp, cb,
+                                                  step_mode, step_size,
+                                                  transition_time,
+                                                  ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                  ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_step_hue_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_SATURATION implementation */
+
+static inline void zb_zcl_color_control_send_move_to_saturation_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                           zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                           zb_uint8_t ep, zb_uint16_t prof_id,
+                                                           zb_uint8_t def_resp, zb_callback_t cb,
+                                                           zb_uint8_t saturation,
+                                                           zb_uint16_t transition_time,
+                                                           zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_SATURATION);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (saturation));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_move_to_saturation_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                         zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                         zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                         zb_uint8_t def_resp, zb_callback_t cb,
+                                                                         zb_uint8_t saturation,
+                                                                         zb_uint16_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_SATURATION);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (saturation));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_move_to_saturation_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                           zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                           zb_uint8_t ep, zb_uint16_t prof_id,
+                                                           zb_uint8_t def_resp, zb_callback_t cb,
+                                                           zb_uint8_t saturation,
+                                                           zb_uint16_t transition_time,
+                                                           zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_to_saturation_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_to_saturation_req_rev1(buffer, dst_addr,
+                                                            dst_addr_mode, dst_ep,
+                                                            ep, prof_id,
+                                                            def_resp, cb,
+                                                            saturation,
+                                                            transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_to_saturation_req_rev3(buffer, dst_addr,
+                                                            dst_addr_mode, dst_ep,
+                                                            ep, prof_id,
+                                                            def_resp, cb,
+                                                            saturation,
+                                                            transition_time,
+                                                            options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_to_saturation_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_move_to_saturation_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                      zb_uint8_t saturation,
+                                                      zb_uint16_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_to_saturation_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_to_saturation_req_rev1(buffer, dst_addr,
+                                                            dst_addr_mode, dst_ep,
+                                                            ep, prof_id,
+                                                            def_resp, cb,
+                                                            saturation,
+                                                            transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_to_saturation_req_rev3(buffer, dst_addr,
+                                                            dst_addr_mode, dst_ep,
+                                                            ep, prof_id,
+                                                            def_resp, cb,
+                                                            saturation,
+                                                            transition_time,
+                                                            ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                            ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_to_saturation_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_MOVE_SATURATION implementation */
+
+static inline void zb_zcl_color_control_send_move_saturation_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint8_t move_mode, zb_uint8_t rate,
+                                                        zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_SATURATION);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (rate));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_move_saturation_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                                      zb_uint8_t move_mode, zb_uint8_t rate)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_SATURATION);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (rate));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_move_saturation_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint8_t move_mode, zb_uint8_t rate,
+                                                        zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_saturation_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_saturation_req_rev1(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         move_mode,
+                                                         rate);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_saturation_req_rev3(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         move_mode,
+                                                         rate,
+                                                         options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_saturation_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_move_saturation_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint8_t move_mode, zb_uint8_t rate)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_saturation_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_saturation_req_rev1(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         move_mode,
+                                                         rate);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_saturation_req_rev3(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         move_mode,
+                                                         rate,
+                                                         ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                         ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_saturation_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_STEP_SATURATION implementation */
+
+static inline void zb_zcl_color_control_send_step_saturation_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                        zb_uint8_t transition_time,
+                                                        zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_SATURATION);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_size));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_step_saturation_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                                      zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                                      zb_uint8_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_SATURATION);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_size));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_step_saturation_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                        zb_uint8_t transition_time,
+                                                        zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_step_saturation_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_step_saturation_req_rev1(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         step_mode, step_size,
+                                                         transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_step_saturation_req_rev3(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         step_mode, step_size,
+                                                         transition_time,
+                                                         options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_step_saturation_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_step_saturation_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                   zb_uint8_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_step_saturation_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_step_saturation_req_rev1(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         step_mode, step_size,
+                                                         transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_step_saturation_req_rev3(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         step_mode, step_size,
+                                                         transition_time,
+                                                         ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                         ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_step_saturation_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE_SATURATION implementation */
+
+static inline void zb_zcl_color_control_send_move_to_hue_saturation_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                               zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                               zb_uint8_t ep, zb_uint16_t prof_id,
+                                                               zb_uint8_t def_resp, zb_callback_t cb,
+                                                               zb_uint8_t hue,
+                                                               zb_uint8_t saturation,
+                                                               zb_uint16_t transition_time,
+                                                               zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE_SATURATION);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (hue));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (saturation));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_move_to_hue_saturation_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                                                             zb_uint8_t hue,
+                                                                             zb_uint8_t saturation,
+                                                                             zb_uint16_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE_SATURATION);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (hue));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (saturation));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_move_to_hue_saturation_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                               zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                               zb_uint8_t ep, zb_uint16_t prof_id,
+                                                               zb_uint8_t def_resp, zb_callback_t cb,
+                                                               zb_uint8_t hue,
+                                                               zb_uint8_t saturation,
+                                                               zb_uint16_t transition_time,
+                                                               zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_to_hue_saturation_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_to_hue_saturation_req_rev1(buffer, dst_addr,
+                                                                dst_addr_mode, dst_ep,
+                                                                ep, prof_id,
+                                                                def_resp, cb,
+                                                                hue,
+                                                                saturation,
+                                                                transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_to_hue_saturation_req_rev3(buffer, dst_addr,
+                                                                dst_addr_mode, dst_ep,
+                                                                ep, prof_id,
+                                                                def_resp, cb,
+                                                                hue,
+                                                                saturation,
+                                                                transition_time,
+                                                                options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_to_hue_saturation_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_move_to_hue_saturation_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                          zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                          zb_uint8_t ep, zb_uint16_t prof_id,
+                                                          zb_uint8_t def_resp, zb_callback_t cb,
+                                                          zb_uint8_t hue,
+                                                          zb_uint8_t saturation,
+                                                          zb_uint16_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_to_hue_saturation_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_to_hue_saturation_req_rev1(buffer, dst_addr,
+                                                                dst_addr_mode, dst_ep,
+                                                                ep, prof_id,
+                                                                def_resp, cb,
+                                                                hue,
+                                                                saturation,
+                                                                transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_to_hue_saturation_req_rev3(buffer, dst_addr,
+                                                                dst_addr_mode, dst_ep,
+                                                                ep, prof_id,
+                                                                def_resp, cb,
+                                                                hue,
+                                                                saturation,
+                                                                transition_time,
+                                                                ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                                ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_to_hue_saturation_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_COLOR implementation */
+
+static inline void zb_zcl_color_control_send_move_to_color_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                      zb_uint16_t color_x,
+                                                      zb_uint16_t color_y,
+                                                      zb_uint16_t transition_time,
+                                                      zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_COLOR);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_x));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_y));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_move_to_color_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                    zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                    zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                    zb_uint8_t def_resp, zb_callback_t cb,
+                                                                    zb_uint16_t color_x,
+                                                                    zb_uint16_t color_y,
+                                                                    zb_uint16_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_COLOR);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_x));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_y));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_move_to_color_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                      zb_uint16_t color_x,
+                                                      zb_uint16_t color_y,
+                                                      zb_uint16_t transition_time,
+                                                      zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_to_color_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_to_color_req_rev1(buffer, dst_addr,
+                                                       dst_addr_mode, dst_ep,
+                                                       ep, prof_id,
+                                                       def_resp, cb,
+                                                       color_x,
+                                                       color_y,
+                                                       transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_to_color_req_rev3(buffer, dst_addr,
+                                                       dst_addr_mode, dst_ep,
+                                                       ep, prof_id,
+                                                       def_resp, cb,
+                                                       color_x,
+                                                       color_y,
+                                                       transition_time,
+                                                       options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_to_color_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_move_to_color_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                 zb_uint16_t color_x,
+                                                 zb_uint16_t color_y,
+                                                 zb_uint16_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_to_color_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_to_color_req_rev1(buffer, dst_addr,
+                                                       dst_addr_mode, dst_ep,
+                                                       ep, prof_id,
+                                                       def_resp, cb,
+                                                       color_x,
+                                                       color_y,
+                                                       transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_to_color_req_rev3(buffer, dst_addr,
+                                                       dst_addr_mode, dst_ep,
+                                                       ep, prof_id,
+                                                       def_resp, cb,
+                                                       color_x,
+                                                       color_y,
+                                                       transition_time,
+                                                       ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                       ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_to_color_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_MOVE_COLOR implementation */
+
+static inline void zb_zcl_color_control_send_move_color_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint16_t rate_x,
+                                                   zb_uint16_t rate_y,
+                                                   zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_COLOR);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate_x));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate_y));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_move_color_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                                 zb_uint16_t rate_x,
+                                                                 zb_uint16_t rate_y)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_COLOR);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate_x));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate_y));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_move_color_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint16_t rate_x,
+                                                   zb_uint16_t rate_y,
+                                                   zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_color_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_color_req_rev1(buffer, dst_addr,
+                                                    dst_addr_mode, dst_ep,
+                                                    ep, prof_id,
+                                                    def_resp, cb,
+                                                    rate_x,
+                                                    rate_y);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_color_req_rev3(buffer, dst_addr,
+                                                    dst_addr_mode, dst_ep,
+                                                    ep, prof_id,
+                                                    def_resp, cb,
+                                                    rate_x,
+                                                    rate_y,
+                                                    options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_color_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_move_color_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                              zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                              zb_uint8_t ep, zb_uint16_t prof_id,
+                                              zb_uint8_t def_resp, zb_callback_t cb,
+                                              zb_uint16_t rate_x,
+                                              zb_uint16_t rate_y)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_color_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_color_req_rev1(buffer, dst_addr,
+                                                    dst_addr_mode, dst_ep,
+                                                    ep, prof_id,
+                                                    def_resp, cb,
+                                                    rate_x,
+                                                    rate_y);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_color_req_rev3(buffer, dst_addr,
+                                                    dst_addr_mode, dst_ep,
+                                                    ep, prof_id,
+                                                    def_resp, cb,
+                                                    rate_x,
+                                                    rate_y,
+                                                    ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                    ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_color_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_STEP_COLOR implementation */
+
+static inline void zb_zcl_color_control_send_step_color_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint16_t step_x,
+                                                   zb_uint16_t step_y,
+                                                   zb_uint16_t transition_time,
+                                                   zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_COLOR);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_x));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_y));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_step_color_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                                 zb_uint16_t step_x,
+                                                                 zb_uint16_t step_y,
+                                                                 zb_uint16_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_COLOR);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_x));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_y));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_step_color_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint16_t step_x,
+                                                   zb_uint16_t step_y,
+                                                   zb_uint16_t transition_time,
+                                                   zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_step_color_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_step_color_req_rev1(buffer, dst_addr,
+                                                    dst_addr_mode, dst_ep,
+                                                    ep, prof_id,
+                                                    def_resp, cb,
+                                                    step_x,
+                                                    step_y,
+                                                    transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_step_color_req_rev3(buffer, dst_addr,
+                                                    dst_addr_mode, dst_ep,
+                                                    ep, prof_id,
+                                                    def_resp, cb,
+                                                    step_x,
+                                                    step_y,
+                                                    transition_time,
+                                                    options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_step_color_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_step_color_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                              zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                              zb_uint8_t ep, zb_uint16_t prof_id,
+                                              zb_uint8_t def_resp, zb_callback_t cb,
+                                              zb_uint16_t step_x,
+                                              zb_uint16_t step_y,
+                                              zb_uint16_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_step_color_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_step_color_req_rev1(buffer, dst_addr,
+                                                    dst_addr_mode, dst_ep,
+                                                    ep, prof_id,
+                                                    def_resp, cb,
+                                                    step_x,
+                                                    step_y,
+                                                    transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_step_color_req_rev3(buffer, dst_addr,
+                                                    dst_addr_mode, dst_ep,
+                                                    ep, prof_id,
+                                                    def_resp, cb,
+                                                    step_x,
+                                                    step_y,
+                                                    transition_time,
+                                                    ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                    ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_step_color_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_COLOR_TEMPERATURE implementation */
+
+static inline void zb_zcl_color_control_send_move_to_color_temperature_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                  zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                  zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                  zb_uint8_t def_resp, zb_callback_t cb,
+                                                                  zb_uint16_t color_temperature,
+                                                                  zb_uint16_t transition_time,
+                                                                  zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_COLOR_TEMPERATURE);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temperature));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_move_to_color_temperature_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                                zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                                zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                                zb_uint8_t def_resp, zb_callback_t cb,
+                                                                                zb_uint16_t color_temperature,
+                                                                                zb_uint16_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_COLOR_TEMPERATURE);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temperature));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_move_to_color_temperature_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                  zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                  zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                  zb_uint8_t def_resp, zb_callback_t cb,
+                                                                  zb_uint16_t color_temperature,
+                                                                  zb_uint16_t transition_time,
+                                                                  zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_to_color_temperature_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_to_color_temperature_req_rev1(buffer, dst_addr,
+                                                                   dst_addr_mode, dst_ep,
+                                                                   ep, prof_id,
+                                                                   def_resp, cb,
+                                                                   color_temperature,
+                                                                   transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_to_color_temperature_req_rev3(buffer, dst_addr,
+                                                                   dst_addr_mode, dst_ep,
+                                                                   ep, prof_id,
+                                                                   def_resp, cb,
+                                                                   color_temperature,
+                                                                   transition_time,
+                                                                   options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_to_color_temperature_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_move_to_color_temperature_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                                             zb_uint16_t color_temperature,
+                                                             zb_uint16_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_to_color_temperature_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_to_color_temperature_req_rev1(buffer, dst_addr,
+                                                                   dst_addr_mode, dst_ep,
+                                                                   ep, prof_id,
+                                                                   def_resp, cb,
+                                                                   color_temperature,
+                                                                   transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_to_color_temperature_req_rev3(buffer, dst_addr,
+                                                                   dst_addr_mode, dst_ep,
+                                                                   ep, prof_id,
+                                                                   def_resp, cb,
+                                                                   color_temperature,
+                                                                   transition_time,
+                                                                   ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                                   ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_to_color_temperature_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE implementation */
+
+static inline void zb_zcl_color_control_send_enhanced_move_to_hue_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                                             zb_uint16_t enhanced_hue,
+                                                             zb_uint8_t direction,
+                                                             zb_uint16_t transition_time,
+                                                             zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (enhanced_hue));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (direction));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_enhanced_move_to_hue_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                           zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                           zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                           zb_uint8_t def_resp, zb_callback_t cb,
+                                                                           zb_uint16_t enhanced_hue,
+                                                                           zb_uint8_t direction,
+                                                                           zb_uint16_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (enhanced_hue));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (direction));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_enhanced_move_to_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                                             zb_uint16_t enhanced_hue,
+                                                             zb_uint8_t direction,
+                                                             zb_uint16_t transition_time,
+                                                             zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_enhanced_move_to_hue_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_enhanced_move_to_hue_req_rev1(buffer, dst_addr,
+                                                              dst_addr_mode, dst_ep,
+                                                              ep, prof_id,
+                                                              def_resp, cb,
+                                                              enhanced_hue,
+                                                              direction,
+                                                              transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_enhanced_move_to_hue_req_rev3(buffer, dst_addr,
+                                                              dst_addr_mode, dst_ep,
+                                                              ep, prof_id,
+                                                              def_resp, cb,
+                                                              enhanced_hue,
+                                                              direction,
+                                                              transition_time,
+                                                              options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_enhanced_move_to_hue_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_enhanced_move_to_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint16_t enhanced_hue,
+                                                        zb_uint8_t direction,
+                                                        zb_uint16_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_enhanced_move_to_hue_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_enhanced_move_to_hue_req_rev1(buffer, dst_addr,
+                                                              dst_addr_mode, dst_ep,
+                                                              ep, prof_id,
+                                                              def_resp, cb,
+                                                              enhanced_hue,
+                                                              direction,
+                                                              transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_enhanced_move_to_hue_req_rev3(buffer, dst_addr,
+                                                              dst_addr_mode, dst_ep,
+                                                              ep, prof_id,
+                                                              def_resp, cb,
+                                                              enhanced_hue,
+                                                              direction,
+                                                              transition_time,
+                                                              ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                              ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_enhanced_move_to_hue_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_HUE implementation */
+
+static inline void zb_zcl_color_control_send_enhanced_move_hue_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                          zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                          zb_uint8_t ep, zb_uint16_t prof_id,
+                                                          zb_uint8_t def_resp, zb_callback_t cb,
+                                                          zb_uint8_t move_mode,
+                                                          zb_uint16_t rate,
+                                                          zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_HUE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_enhanced_move_hue_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                                        zb_uint8_t move_mode,
+                                                                        zb_uint16_t rate)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_HUE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_enhanced_move_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                          zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                          zb_uint8_t ep, zb_uint16_t prof_id,
+                                                          zb_uint8_t def_resp, zb_callback_t cb,
+                                                          zb_uint8_t move_mode,
+                                                          zb_uint16_t rate,
+                                                          zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_enhanced_move_hue_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_enhanced_move_hue_req_rev1(buffer, dst_addr,
+                                                           dst_addr_mode, dst_ep,
+                                                           ep, prof_id,
+                                                           def_resp, cb,
+                                                           move_mode,
+                                                           rate);
+      break;
+    case 3:
+      zb_zcl_color_control_send_enhanced_move_hue_req_rev3(buffer, dst_addr,
+                                                           dst_addr_mode, dst_ep,
+                                                           ep, prof_id,
+                                                           def_resp, cb,
+                                                           move_mode,
+                                                           rate,
+                                                           options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_enhanced_move_hue_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_enhanced_move_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                     zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                     zb_uint8_t ep, zb_uint16_t prof_id,
+                                                     zb_uint8_t def_resp, zb_callback_t cb,
+                                                     zb_uint8_t move_mode,
+                                                     zb_uint16_t rate)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_enhanced_move_hue_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_enhanced_move_hue_req_rev1(buffer, dst_addr,
+                                                           dst_addr_mode, dst_ep,
+                                                           ep, prof_id,
+                                                           def_resp, cb,
+                                                           move_mode,
+                                                           rate);
+      break;
+    case 3:
+      zb_zcl_color_control_send_enhanced_move_hue_req_rev3(buffer, dst_addr,
+                                                           dst_addr_mode, dst_ep,
+                                                           ep, prof_id,
+                                                           def_resp, cb,
+                                                           move_mode,
+                                                           rate,
+                                                           ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                           ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_enhanced_move_hue_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_STEP_HUE implementation */
+
+static inline void zb_zcl_color_control_send_enhanced_step_hue_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                          zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                          zb_uint8_t ep, zb_uint16_t prof_id,
+                                                          zb_uint8_t def_resp, zb_callback_t cb,
+                                                          zb_uint8_t step_mode,
+                                                          zb_uint16_t step_size,
+                                                          zb_uint16_t transition_time,
+                                                          zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_STEP_HUE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_size));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_enhanced_step_hue_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                                        zb_uint8_t step_mode,
+                                                                        zb_uint16_t step_size,
+                                                                        zb_uint16_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_STEP_HUE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_size));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_enhanced_step_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                          zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                          zb_uint8_t ep, zb_uint16_t prof_id,
+                                                          zb_uint8_t def_resp, zb_callback_t cb,
+                                                          zb_uint8_t step_mode,
+                                                          zb_uint16_t step_size,
+                                                          zb_uint16_t transition_time,
+                                                          zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_enhanced_step_hue_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_enhanced_step_hue_req_rev1(buffer, dst_addr,
+                                                           dst_addr_mode, dst_ep,
+                                                           ep, prof_id,
+                                                           def_resp, cb,
+                                                           step_mode,
+                                                           step_size,
+                                                           transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_enhanced_step_hue_req_rev3(buffer, dst_addr,
+                                                           dst_addr_mode, dst_ep,
+                                                           ep, prof_id,
+                                                           def_resp, cb,
+                                                           step_mode,
+                                                           step_size,
+                                                           transition_time,
+                                                           options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_enhanced_step_hue_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_enhanced_step_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                     zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                     zb_uint8_t ep, zb_uint16_t prof_id,
+                                                     zb_uint8_t def_resp, zb_callback_t cb,
+                                                     zb_uint8_t step_mode,
+                                                     zb_uint16_t step_size,
+                                                     zb_uint16_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_enhanced_step_hue_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_enhanced_step_hue_req_rev1(buffer, dst_addr,
+                                                           dst_addr_mode, dst_ep,
+                                                           ep, prof_id,
+                                                           def_resp, cb,
+                                                           step_mode,
+                                                           step_size,
+                                                           transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_enhanced_step_hue_req_rev3(buffer, dst_addr,
+                                                           dst_addr_mode, dst_ep,
+                                                           ep, prof_id,
+                                                           def_resp, cb,
+                                                           step_mode,
+                                                           step_size,
+                                                           transition_time,
+                                                           ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                           ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_enhanced_step_hue_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE_SATURATION implementation */
+
+static inline void zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                                        zb_uint16_t enhanced_hue,
+                                                                        zb_uint8_t saturation,
+                                                                        zb_uint16_t transition_time,
+                                                                        zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE_SATURATION);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (enhanced_hue));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (saturation));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                                                      zb_uint16_t enhanced_hue,
+                                                                                      zb_uint8_t saturation,
+                                                                                      zb_uint16_t transition_time)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE_SATURATION);
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (enhanced_hue));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (saturation));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                                        zb_uint16_t enhanced_hue,
+                                                                        zb_uint8_t saturation,
+                                                                        zb_uint16_t transition_time,
+                                                                        zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_rev1(buffer, dst_addr,
+                                                                         dst_addr_mode, dst_ep,
+                                                                         ep, prof_id,
+                                                                         def_resp, cb,
+                                                                         enhanced_hue,
+                                                                         saturation,
+                                                                         transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_rev3(buffer, dst_addr,
+                                                                         dst_addr_mode, dst_ep,
+                                                                         ep, prof_id,
+                                                                         def_resp, cb,
+                                                                         enhanced_hue,
+                                                                         saturation,
+                                                                         transition_time,
+                                                                         options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                                   zb_uint16_t enhanced_hue,
+                                                                   zb_uint8_t saturation,
+                                                                   zb_uint16_t transition_time)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_rev1(buffer, dst_addr,
+                                                                         dst_addr_mode, dst_ep,
+                                                                         ep, prof_id,
+                                                                         def_resp, cb,
+                                                                         enhanced_hue,
+                                                                         saturation,
+                                                                         transition_time);
+      break;
+    case 3:
+      zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_rev3(buffer, dst_addr,
+                                                                         dst_addr_mode, dst_ep,
+                                                                         ep, prof_id,
+                                                                         def_resp, cb,
+                                                                         enhanced_hue,
+                                                                         saturation,
+                                                                         transition_time,
+                                                                         ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                                         ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_COLOR_LOOP_SET implementation */
+
+static inline void zb_zcl_color_control_send_color_loop_set_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                       zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                       zb_uint8_t ep, zb_uint16_t prof_id,
+                                                       zb_uint8_t def_resp, zb_callback_t cb,
+                                                       zb_uint8_t update_flags,
+                                                       zb_uint8_t action,
+                                                       zb_uint8_t direction,
+                                                       zb_uint16_t time,
+                                                       zb_uint16_t start_hue,
+                                                       zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_COLOR_LOOP_SET);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (update_flags));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (action));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (direction));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (time));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (start_hue));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_color_loop_set_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                     zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                     zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                     zb_uint8_t def_resp, zb_callback_t cb,
+                                                                     zb_uint8_t update_flags,
+                                                                     zb_uint8_t action,
+                                                                     zb_uint8_t direction,
+                                                                     zb_uint16_t time,
+                                                                     zb_uint16_t start_hue)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_COLOR_LOOP_SET);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (update_flags));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (action));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (direction));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (time));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (start_hue));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_color_loop_set_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                       zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                       zb_uint8_t ep, zb_uint16_t prof_id,
+                                                       zb_uint8_t def_resp, zb_callback_t cb,
+                                                       zb_uint8_t update_flags,
+                                                       zb_uint8_t action,
+                                                       zb_uint8_t direction,
+                                                       zb_uint16_t time,
+                                                       zb_uint16_t start_hue,
+                                                       zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_color_loop_set_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_color_loop_set_req_rev1(buffer, dst_addr,
+                                                        dst_addr_mode, dst_ep,
+                                                        ep, prof_id,
+                                                        def_resp, cb,
+                                                        update_flags,
+                                                        action,
+                                                        direction,
+                                                        time,
+                                                        start_hue);
+      break;
+    case 3:
+      zb_zcl_color_control_send_color_loop_set_req_rev3(buffer, dst_addr,
+                                                        dst_addr_mode, dst_ep,
+                                                        ep, prof_id,
+                                                        def_resp, cb,
+                                                        update_flags,
+                                                        action,
+                                                        direction,
+                                                        time,
+                                                        start_hue,
+                                                        options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_color_loop_set_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_color_loop_set_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                  zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                  zb_uint8_t ep, zb_uint16_t prof_id,
+                                                  zb_uint8_t def_resp, zb_callback_t cb,
+                                                  zb_uint8_t update_flags,
+                                                  zb_uint8_t action,
+                                                  zb_uint8_t direction,
+                                                  zb_uint16_t time,
+                                                  zb_uint16_t start_hue)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_color_loop_set_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_color_loop_set_req_rev1(buffer, dst_addr,
+                                                        dst_addr_mode, dst_ep,
+                                                        ep, prof_id,
+                                                        def_resp, cb,
+                                                        update_flags,
+                                                        action,
+                                                        direction,
+                                                        time,
+                                                        start_hue);
+      break;
+    case 3:
+      zb_zcl_color_control_send_color_loop_set_req_rev3(buffer, dst_addr,
+                                                        dst_addr_mode, dst_ep,
+                                                        ep, prof_id,
+                                                        def_resp, cb,
+                                                        update_flags,
+                                                        action,
+                                                        direction,
+                                                        time,
+                                                        start_hue,
+                                                        ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                        ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_color_loop_set_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_STOP_MOVE_STEP implementation */
+
+static inline void zb_zcl_color_control_send_stop_move_step_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                       zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                       zb_uint8_t ep, zb_uint16_t prof_id,
+                                                       zb_uint8_t def_resp, zb_callback_t cb,
+                                                       zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STOP_MOVE_STEP);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_stop_move_step_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                     zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                     zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                     zb_uint8_t def_resp, zb_callback_t cb)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STOP_MOVE_STEP);
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_stop_move_step_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                       zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                       zb_uint8_t ep, zb_uint16_t prof_id,
+                                                       zb_uint8_t def_resp, zb_callback_t cb,
+                                                       zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_stop_move_step_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_stop_move_step_req_rev1(buffer, dst_addr,
+                                                        dst_addr_mode, dst_ep,
+                                                        ep, prof_id,
+                                                        def_resp, cb);
+      break;
+    case 3:
+      zb_zcl_color_control_send_stop_move_step_req_rev3(buffer, dst_addr,
+                                                        dst_addr_mode, dst_ep,
+                                                        ep, prof_id,
+                                                        def_resp, cb,
+                                                        options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_stop_move_step_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_stop_move_step_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                  zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                  zb_uint8_t ep, zb_uint16_t prof_id,
+                                                  zb_uint8_t def_resp, zb_callback_t cb)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_stop_move_step_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_stop_move_step_req_rev1(buffer, dst_addr,
+                                                        dst_addr_mode, dst_ep,
+                                                        ep, prof_id,
+                                                        def_resp, cb);
+      break;
+    case 3:
+      zb_zcl_color_control_send_stop_move_step_req_rev3(buffer, dst_addr,
+                                                        dst_addr_mode, dst_ep,
+                                                        ep, prof_id,
+                                                        def_resp, cb,
+                                                        ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                        ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_stop_move_step_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_MOVE_COLOR_TEMPERATURE implementation */
+
+static inline void zb_zcl_color_control_send_move_color_temp_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                       zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                       zb_uint8_t ep, zb_uint16_t prof_id,
+                                                       zb_uint8_t def_resp, zb_callback_t cb,
+                                                       zb_uint8_t move_mode,
+                                                       zb_uint16_t rate,
+                                                       zb_uint16_t color_temp_min,
+                                                       zb_uint16_t color_temp_max,
+                                                       zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_COLOR_TEMPERATURE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_min));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_max));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_move_color_temp_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                                      zb_uint8_t move_mode,
+                                                                      zb_uint16_t rate,
+                                                                      zb_uint16_t color_temp_min,
+                                                                      zb_uint16_t color_temp_max)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_COLOR_TEMPERATURE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_min));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_max));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_move_color_temp_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                       zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                       zb_uint8_t ep, zb_uint16_t prof_id,
+                                                       zb_uint8_t def_resp, zb_callback_t cb,
+                                                       zb_uint8_t move_mode,
+                                                       zb_uint16_t rate,
+                                                       zb_uint16_t color_temp_min,
+                                                       zb_uint16_t color_temp_max,
+                                                       zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_color_temp_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_color_temp_req_rev1(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         move_mode,
+                                                         rate,
+                                                         color_temp_min,
+                                                         color_temp_max);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_color_temp_req_rev3(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         move_mode,
+                                                         rate,
+                                                         color_temp_min,
+                                                         color_temp_max,
+                                                         options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_color_temp_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_move_color_temp_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                  zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                  zb_uint8_t ep, zb_uint16_t prof_id,
+                                                  zb_uint8_t def_resp, zb_callback_t cb,
+                                                  zb_uint8_t move_mode,
+                                                  zb_uint16_t rate,
+                                                  zb_uint16_t color_temp_min,
+                                                  zb_uint16_t color_temp_max)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_move_color_temp_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_move_color_temp_req_rev1(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         move_mode,
+                                                         rate,
+                                                         color_temp_min,
+                                                         color_temp_max);
+      break;
+    case 3:
+      zb_zcl_color_control_send_move_color_temp_req_rev3(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         move_mode,
+                                                         rate,
+                                                         color_temp_min,
+                                                         color_temp_max,
+                                                         ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                         ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_move_color_temp_req", (FMT__0));
+}
+
+/* ZB_ZCL_CMD_COLOR_CONTROL_STEP_COLOR_TEMPERATURE implementation */
+
+static inline void zb_zcl_color_control_send_step_color_temp_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint8_t step_mode,
+                                                        zb_uint16_t step_size,
+                                                        zb_uint16_t transition_time,
+                                                        zb_uint16_t color_temp_min,
+                                                        zb_uint16_t color_temp_max,
+                                                        zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_COLOR_TEMPERATURE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_size));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_min));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_max));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+static inline void zb_zcl_color_control_send_step_color_temp_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                                      zb_uint8_t step_mode,
+                                                                      zb_uint16_t step_size,
+                                                                      zb_uint16_t transition_time,
+                                                                      zb_uint16_t color_temp_min,
+                                                                      zb_uint16_t color_temp_max)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_COLOR_TEMPERATURE);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_size));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_min));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_max));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);
+}
+
+void zb_zcl_color_control_send_step_color_temp_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint8_t step_mode,
+                                                        zb_uint16_t step_size,
+                                                        zb_uint16_t transition_time,
+                                                        zb_uint16_t color_temp_min,
+                                                        zb_uint16_t color_temp_max,
+                                                        zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_step_color_temp_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_step_color_temp_req_rev1(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         step_mode,
+                                                         step_size,
+                                                         transition_time,
+                                                         color_temp_min,
+                                                         color_temp_max);
+      break;
+    case 3:
+      zb_zcl_color_control_send_step_color_temp_req_rev3(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         step_mode,
+                                                         step_size,
+                                                         transition_time,
+                                                         color_temp_min,
+                                                         color_temp_max,
+                                                         options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_step_color_temp_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_color_control_send_step_color_temp_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint8_t step_mode,
+                                                   zb_uint16_t step_size,
+                                                   zb_uint16_t transition_time,
+                                                   zb_uint16_t color_temp_min,
+                                                   zb_uint16_t color_temp_max)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_color_control_send_step_color_temp_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_COLOR_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_color_control_send_step_color_temp_req_rev1(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         step_mode,
+                                                         step_size,
+                                                         transition_time,
+                                                         color_temp_min,
+                                                         color_temp_max);
+      break;
+    case 3:
+      zb_zcl_color_control_send_step_color_temp_req_rev3(buffer, dst_addr,
+                                                         dst_addr_mode, dst_ep,
+                                                         ep, prof_id,
+                                                         def_resp, cb,
+                                                         step_mode,
+                                                         step_size,
+                                                         transition_time,
+                                                         color_temp_min,
+                                                         color_temp_max,
+                                                         ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                         ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_color_control_send_step_color_temp_req", (FMT__0));
 }
 
 /**

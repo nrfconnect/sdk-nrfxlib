@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -57,7 +57,6 @@
 #include "zb_nvram.h"
 #include "zb_bdb_internal.h"
 
-
 static void zdo_classic_commissioning_force_link(void);
 
 #ifdef ZB_FORMATION
@@ -91,6 +90,8 @@ void zdo_classic_initiate_commissioning(zb_uint8_t param)
 #endif
     )
   {
+    BDB_COMM_CTX().bdb_application_signal = ZB_ZDO_SIGNAL_DEFAULT_START;
+
     /** @mdr{00012,44} */
     /*cstat +MISRAC2012-Rule-2.1_b*/
 #if defined ZB_FORMATION
@@ -109,6 +110,7 @@ void zdo_classic_initiate_commissioning(zb_uint8_t param)
        use apsChannelMask as channel mask and do unsecure rejoin
        if we are not authenticated.
     */
+    BDB_COMM_CTX().bdb_application_signal = ZB_BDB_SIGNAL_DEVICE_REBOOT;
     (void)zdo_initiate_rejoin(param, ZB_NIB_EXT_PAN_ID(),
                               ZB_AIB().aps_channel_mask_list,
                               zb_zdo_authenticated());
@@ -116,6 +118,7 @@ void zdo_classic_initiate_commissioning(zb_uint8_t param)
   /* Rejoin to the net defined by aps_use_extended_pan_id */
   else if (!ZB_EXTPANID_IS_ZERO(use_ext_pan_id))
   {
+    BDB_COMM_CTX().bdb_application_signal = ZB_BDB_SIGNAL_DEVICE_REBOOT;
     /* If the device is not the designated coordinator and apsUseExtendedPANID
        has a non-zero value, the device should attempt to rejoin the network
        specified in apsUseExtendedPANID. To do this, it should use NLME-JOIN.request
@@ -257,40 +260,69 @@ static void zdo_classic_handle_authentication_failed_signal(zb_bufid_t param)
   }
 }
 
-
-static void zdo_classic_handle_initiate_rejoin_signal(zb_bufid_t param)
+static void zdo_classic_rejoin(zb_bufid_t param)
 {
   zb_ext_pan_id_t ext_pan_id;
 
-#ifdef ZB_NWK_BLACKLIST
-  zb_nwk_blacklist_reset();
-#endif
   zb_get_extended_pan_id(ext_pan_id);
   (void)zdo_initiate_rejoin(param, ext_pan_id,
                             ZB_AIB().aps_channel_mask_list, zb_zdo_authenticated());
 }
 
 
+static void zdo_classic_handle_initiate_rejoin_signal(zb_bufid_t param)
+{
+  zb_uint8_t *p = zb_buf_get_tail(param, sizeof(zb_uint8_t));
+  zb_uint8_t rejoin_reason = *p;
+
+  if (rejoin_reason == ZB_REJOIN_REASON_DEV_ANNCE_SENDING_FAILED)
+  {
+    TRACE_MSG(TRACE_ZDO1, "DEV_ANNCE_SENDING_FAILED, buf status: %d", (FMT__D, zb_buf_get_status(param)));
+    (void)zb_app_signal_pack(param, BDB_COMM_CTX().bdb_application_signal, (zb_int16_t)zb_buf_get_status(param), 0U);
+    ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
+  }
+
+  BDB_COMM_CTX().bdb_application_signal = ZB_BDB_SIGNAL_DEVICE_REBOOT;
+
+  zb_buf_get_out_delayed(zdo_classic_rejoin);
+}
+
+
 static void zdo_classic_handle_dev_annce_sent_signal(zb_bufid_t param)
 {
-  zb_aps_device_key_pair_set_t *key_pair =
-    zb_secur_get_link_key_by_address(ZB_AIB().trust_center_address, ZB_SECUR_ANY_KEY_ATTR);
+  zb_uint16_t aps_key_idx = (zb_uint16_t)-1;
 
-  /* TODO: Implement me correctly!!! */
-  if ( (ZB_NIB_SECURITY_LEVEL() == 0U) ||
-       ((key_pair != NULL)
-        && ZB_U2B(ZG->zdo.handle.rejoin)))
+  if (!ZB_IEEE_ADDR_IS_ZERO(ZB_AIB().trust_center_address))
   {
-    /* When joins to unsecured network and after secured rejoin - indicate startup immediately;
-     * suppose that after secured rejoin we have VERIFIED key (otherwise device will try to obtain new link key with TC). */
+    aps_key_idx = zb_aps_keypair_get_index_by_addr(ZB_AIB().trust_center_address,
+                                                    ZB_SECUR_VERIFIED_KEY);
+  }
 
-    /* TODO: This reboot is also not so well defined  */
-    (void)zb_app_signal_pack(param, ZB_SIGNAL_DEVICE_REBOOT, (zb_int16_t)zb_buf_get_status(param), 0U);
-    ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
+  if (!IS_DISTRIBUTED_SECURITY()
+      && ZB_TCPOL().update_trust_center_link_keys_required
+      && !ZB_TCPOL().waiting_for_tclk_exchange
+      && aps_key_idx == (zb_uint16_t)-1) /* TCLK is not already in progress */
+  {
+
+    TRACE_MSG(TRACE_SECUR3, "Found key idx %d", (FMT__D, aps_key_idx));
+
+    if (aps_key_idx == (zb_uint16_t)-1)
+    {
+      TRACE_MSG(TRACE_SECUR3, "BDB & !distributed - get TCLK over APS", (FMT__0));
+      zdo_initiate_tclk_gen_over_aps(0);
+    }
   }
   else
   {
-    zb_buf_free(param);
+    if (ZB_IS_DEVICE_ZR())
+    {
+      ZB_SCHEDULE_CALLBACK(zb_zdo_start_router, param);
+    }
+    else
+    {
+      (void)zb_app_signal_pack(param, BDB_COMM_CTX().bdb_application_signal, (zb_int16_t)zb_buf_get_status(param), 0U);
+      ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
+    }
   }
 }
 
@@ -301,10 +333,10 @@ static void zdo_classic_handle_router_started_signal(zb_bufid_t param)
 
   if (ZB_NIB_SECURITY_LEVEL() == 0U
       || !is_waiting
-      || ZB_IS_DEVICE_ZC())
+      || ZB_IS_DEVICE_ZC_OR_ZR())
   {
     TRACE_MSG(TRACE_ZDO1, "calling zdo_startup_complete", (FMT__0));
-    (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, (zb_int16_t)zb_buf_get_status(param), 0U);
+    (void)zb_app_signal_pack(param, BDB_COMM_CTX().bdb_application_signal, (zb_int16_t)zb_buf_get_status(param), 0U);
     /* Router start is last step in join. */
     ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
   }
@@ -317,8 +349,19 @@ static void zdo_classic_handle_router_started_signal(zb_bufid_t param)
 
 static void zdo_classic_handle_tclk_update_complete_signal(zb_bufid_t param)
 {
-  (void)zb_app_signal_pack(param, ZB_ZDO_SIGNAL_DEFAULT_START, (zb_int16_t)RET_OK, 0U);
-  ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
+#ifdef ZB_NWK_BLACKLIST
+  zb_nwk_blacklist_reset();
+#endif
+
+  if (ZB_IS_DEVICE_ZR())
+  {
+    ZB_SCHEDULE_CALLBACK(zb_zdo_start_router, param);
+  }
+  else
+  {
+    (void)zb_app_signal_pack(param, BDB_COMM_CTX().bdb_application_signal, (zb_int16_t)zb_buf_get_status(param), 0U);
+    ZB_SCHEDULE_CALLBACK(zb_zdo_startup_complete_int, param);
+  }
 }
 
 
@@ -348,25 +391,6 @@ static void zdo_classic_handle_leave_done_signal(zb_bufid_t param)
 
 static void zdo_classic_handle_auth_ok_signal(zb_bufid_t param)
 {
-  if (!IS_DISTRIBUTED_SECURITY() && ZB_TCPOL().update_trust_center_link_keys_required)
-  {
-    /* Quite unsure, but... maybe, use same logic as for NCP and do not re-establish TCLK? */
-    TRACE_MSG(TRACE_SECUR3,
-              "!BDB & !distributed & update_trust_center_link_keys_required - get TCLK over APS",
-              (FMT__0));
-    zdo_initiate_tclk_gen_over_aps(0);
-  }
-  else if (ZB_IS_DEVICE_ZED())
-  {
-    /* If not bdb and I am ZED (no need to start router), I am is started. */
-    TRACE_MSG(TRACE_SECUR3, "!BDB ZED - complete start", (FMT__0));
-    (void)zb_buf_get_out_delayed_ext(zb_zdo_startup_complete_int_delayed, RET_OK, 0);
-  }
-  else
-  {
-    /* MISRA rule 15.7 requires empty 'else' branch. */
-  }
-
   if (param != ZB_BUF_INVALID)
   {
     zb_buf_free(param);
@@ -407,6 +431,8 @@ static void zdo_classic_handle_leave_with_rejoin_signal(zb_bufid_t param)
   zdo_inform_app_leave(ZB_NWK_LEAVE_TYPE_REJOIN);
 
   zb_nwk_do_rejoin_after_leave(param);
+
+  BDB_COMM_CTX().bdb_application_signal = ZB_BDB_SIGNAL_DEVICE_REBOOT;
 }
 
 #endif /* ZB_JOIN_CLIENT */
@@ -417,6 +443,17 @@ static void zdo_classic_handle_secured_rejoin_signal(zb_bufid_t param)
 {
   zb_apsme_transport_key_req_t *req = ZB_BUF_GET_PARAM(param, zb_apsme_transport_key_req_t);
   zb_aps_device_key_pair_set_t *key_pair = zb_secur_get_link_key_by_address(req->dest_address.addr_long, ZB_SECUR_VERIFIED_KEY);
+  zb_address_ieee_ref_t ref_to_addr;
+
+  /* Try to close link_key_alarm if address is found.
+      It's needed to remove possibility of
+      'bdb_link_key_refresh_alarm' duplication
+  */
+  if (zb_address_by_ieee(req->dest_address.addr_long, ZB_FALSE, ZB_FALSE, &ref_to_addr) == RET_OK)
+  {
+    bdb_cancel_link_key_refresh_alarm(bdb_link_key_refresh_alarm, ref_to_addr);
+  }
+
   /* r21 doesn't use empty keys
    * In r21 setup alarm waiting for unique TCLK request.
    * Note: param must hold transport key request even while we do not
@@ -476,6 +513,13 @@ static void zdo_classic_handle_comm_signal(zb_commissioning_signal_t signal, zb_
 
   switch(signal)
   {
+    case ZB_COMM_SIGNAL_INIT:
+      zdo_classic_commissioning_force_link();
+      if (param != ZB_BUF_INVALID)
+      {
+        zb_buf_free(param);
+      }
+      break;
     case ZB_COMM_SIGNAL_START:
       zdo_classic_initiate_commissioning(param);
       break;
@@ -565,7 +609,11 @@ static zb_uint8_t zdo_classic_get_permit_join_duration(void)
 {
   zb_uint8_t duration;
 
-  if (ZB_NIB().max_children != 0U)
+  if ((ZB_NIB().max_children != 0U)
+#ifdef ZB_CERTIFICATION_HACKS
+      && (ZB_CERT_HACKS().max_joins != 0U)
+#endif /* ZB_CERTIFICATION_HACKS */
+    )
   {
     duration = ZDO_CTX().conf_attr.permit_join_duration;
   }

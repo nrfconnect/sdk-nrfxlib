@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -580,7 +580,7 @@ void zdo_mgmt_leave_srv(zb_uint8_t param);
    Try to send mgmt_leave_rsp if somebody waiting for it.
 
    mgmt_leave operation is registered in the leave pending list: after LEAVE
-   command send confirm must send responce.
+   command send confirm must send response.
    Search is done using buffer ref: it always same.
    If nothing found in the pending list, can proceed with leave.confirm
    operations (clear addresses), else need to wait until response sent.
@@ -645,7 +645,16 @@ void zb_zdo_do_set_channel(zb_uint8_t channel);
 
 void zb_zdo_mgmt_permit_joining_confirm_handle(zb_uint8_t param);
 
-#endif
+#ifdef ZB_CERTIFICATION_HACKS
+/* ZB_UINT8_MAX used as a special value
+  (this value forces stack to not consider this value at all)
+*/
+void zb_set_max_joins(zb_uint8_t max_joins);
+
+zb_uint8_t zb_get_max_joins(void);
+
+#endif /* ZB_CERTIFICATION_HACKS */
+#endif /* ZB_ROUTER_ROLE */
 
 #ifndef ZB_LITE_NO_ZDO_RESPONSE_VALIDATION
 zb_bool_t zb_zdo_validate_reponse(zb_bufid_t buf, zb_uint16_t cluster_id);
@@ -786,7 +795,7 @@ void zb_send_device_authorized_signal(zb_uint8_t param,
  * @brief Prepare parameters and send the
  *        @ZB_ZDO_SIGNAL_DEVICE_AUTHORIZED signal with delay
  *
- * @param long_addr - lond address of the authorized device
+ * @param long_addr - long address of the authorized device
  *                    (need to getting the @zb_address_ieee_ref_t)
  * @param authorization_type - authorization type (legacy, r21 TCLK, )
  * @param authorization_status - authorization status (depends on authorization_type)
@@ -1204,10 +1213,6 @@ void zb_set_network_ed_role_legacy(zb_uint32_t channel_mask);
   @param app_input_cluster_count - Application input cluster count
   @param app_output_cluster_count - Application output cluster count
 
-  @par Example
-  @snippet doxygen_snippets.dox zb_set_simple_descriptor_certification_TP_ZDO_BV-09_tp_zdo_bv_09_zc_c
-  @par
-
 */
 void zb_set_simple_descriptor(zb_af_simple_desc_1_1_t *simple_desc,
                               zb_uint8_t  endpoint, zb_uint16_t app_profile_id,
@@ -1220,10 +1225,6 @@ void zb_set_simple_descriptor(zb_af_simple_desc_1_1_t *simple_desc,
   @param cluster_number - cluster item number
   @param cluster_id - cluster ID
 
-  @par Example
-  @snippet doxygen_snippets.dox zb_set_simple_descriptor_certification_TP_ZDO_BV-09_tp_zdo_bv_09_zc_c
-  @par
-
 */
 void zb_set_input_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t cluster_number, zb_uint16_t cluster_id);
 
@@ -1231,10 +1232,6 @@ void zb_set_input_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t cl
     @param simple_desc - pointer to simple descriptor
     @param cluster_number - cluster item number
     @param cluster_id - cluster ID
-
-  @par Example
-  @snippet doxygen_snippets.dox zb_set_simple_descriptor_certification_TP_ZDO_BV-09_tp_zdo_bv_09_zc_c
-  @par
 
 */
 void zb_set_output_cluster_id(zb_af_simple_desc_1_1_t *simple_desc, zb_uint8_t cluster_number, zb_uint16_t cluster_id);
@@ -1342,7 +1339,7 @@ void zb_set_node_descriptor(zb_logical_type_t device_type, zb_bool_t power_src, 
 
 /** @cond internals_doc */
 /* Macro to set node descriptor, 2.3.2.3 Node Descriptor  */
-#define ZB_SET_NODE_DESCRIPTOR(logical_type_p, frequence_band_p, mac_capability_flags_p, manufacturer_code_p, \
+#define ZB_SET_NODE_DESCRIPTOR(logical_type_p, frequency_band_p, mac_capability_flags_p, manufacturer_code_p, \
                                 max_buf_size_p, max_incoming_transfer_size_p, server_mask_p, \
                                 max_outgoing_transfer_size_p, desc_capability_field_p) \
   do \
@@ -1351,7 +1348,7 @@ void zb_set_node_descriptor(zb_logical_type_t device_type, zb_bool_t power_src, 
     ZB_SET_NODE_DESC_COMPLEX_DESC_AVAIL(ZB_ZDO_NODE_DESC(), 0U);  /* complex desc is not supported */ \
     ZB_SET_NODE_DESC_USER_DESC_AVAIL(ZB_ZDO_NODE_DESC(), 0U);     /* usr desc is not supported */ \
     ZB_SET_NODE_DESC_APS_FLAGS(ZB_ZDO_NODE_DESC(), 0U); /* not supported by spec */ \
-    ZB_SET_NODE_DESC_FREQ_BAND(ZB_ZDO_NODE_DESC(), ((zb_uint16_t)frequence_band_p)); \
+    ZB_SET_NODE_DESC_FREQ_BAND(ZB_ZDO_NODE_DESC(), ((zb_uint16_t)frequency_band_p)); \
     ZB_ZDO_NODE_DESC()->mac_capability_flags = (mac_capability_flags_p);          \
     ZB_ZDO_NODE_DESC()->manufacturer_code = (zb_uint16_t)(manufacturer_code_p); \
     ZB_ZDO_NODE_DESC()->max_buf_size = (zb_uint8_t)(max_buf_size_p);              \
@@ -1403,10 +1400,6 @@ void zb_set_node_descriptor(zb_logical_type_t device_type, zb_bool_t power_src, 
   @param available_power_sources - available power sources
   @param current_power_source - current power source
   @param current_power_source_level - current power source level
-
-  @par Example
-  @snippet tp_zdo_bv_09_zc.c zb_set_node_power_descriptor
-  @par
 
   NOTE: zboss_start() overwrites this descriptor with default values
         if ZB_SET_DEFAULT_POWER_DESCRIPTOR is defined
@@ -1490,9 +1483,11 @@ void zb_set_nwk_role_mode_common(zb_nwk_device_type_t device_type,
                                           zb_uint32_t channel_mask,
                                           zb_commissioning_type_t mode);
 
+#ifndef NCP_MODE_HOST
 void zb_set_nwk_role_mode_common_ext(zb_nwk_device_type_t device_type,
                                               zb_channel_list_t channel_list,
                                               zb_commissioning_type_t mode);
+#endif
 
 zb_commissioning_type_t zb_zdo_get_commissioning_type(void);
 
@@ -1508,7 +1503,7 @@ void zb_af_handle_zcl_frame_data_confirm(zb_uint8_t param);
 zb_bool_t zb_af_handle_zcl_frame(zb_uint8_t param);
 #endif /* ZB_ENABLE_ZCL */
 
-void zb_send_leave_indication_signal(zb_uint8_t param, zb_ieee_addr_t device_addr, zb_uint8_t rejoin);
+void zb_send_leave_indication_signal(zb_uint8_t param);
 
 void zdo_send_signal_no_args(zb_uint8_t param, zb_uint16_t signal);
 
@@ -1546,5 +1541,11 @@ zb_ret_t zb_production_cfg_read_header(zb_uint8_t *prod_cfg_hdr, zb_uint16_t hdr
 zb_ret_t zb_production_cfg_read(zb_uint8_t *buffer, zb_uint16_t len, zb_uint16_t offset);
 
 #endif
+
+/**
+   Performs active scan.
+   @param param - index of buffer with zb_nlme_network_discovery_request_t param
+*/
+void zb_zdo_active_scan_request(zb_uint8_t param);
 
 #endif /* ZB_ZDO_H */

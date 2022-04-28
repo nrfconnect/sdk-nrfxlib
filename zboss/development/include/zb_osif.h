@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -159,7 +159,7 @@ zb_uint32_t osif_get_time_ms(void);
 zb_ret_t osif_set_transmit_power(zb_uint8_t channel, zb_int8_t power);
 void osif_set_default_trasnmit_powers(zb_int8_t *tx_powers);
 
-#if defined ZB_MACSPLIT_TRANSPORT_SERIAL
+#if defined ZB_MACSPLIT_TRANSPORT_SERIAL || defined ZB_NCP_TRANSPORT_TYPE_SERIAL
 void zb_osif_serial_transport_init();
 void zb_osif_serial_transport_put_bytes(zb_uint8_t *buf, zb_short_t len);
 #endif
@@ -320,6 +320,15 @@ void zb_osif_serial_set_cb_send_data(serial_send_data_cb_t cb);
 void zb_osif_serial_put_bytes(const zb_uint8_t *buf, zb_short_t len);
 #endif
 
+#ifdef ZB_OSIF_SERIAL_GET_FD
+/**
+ * @brief Get the file descriptor used for the serial port.
+ *
+ * @return file descriptor used for the serial port, or -1 if the serial port is not in use now.
+ */
+zb_int_t zb_osif_serial_get_fd(void);
+#endif
+
 #if defined ZB_SERIAL_FOR_TRACE && !defined ZB_OSIF_SERIAL_FLUSH
 #define ZB_OSIF_SERIAL_FLUSH()
 #endif /* ZB_SERIAL_FOR_TRACE && !ZB_OSIF_SERIAL_FLUSH */
@@ -395,7 +404,7 @@ enum zb_file_path_base_type_e
 
 #ifdef ZB_FILE_PATH_MGMNT
 #ifndef ZB_FILE_PATH_MAX_TYPES
-#define ZB_FILE_PATH_MAX_TYPES (ZB_FILE_PATH_BASE_MAX_TYPE - 1)
+#define ZB_FILE_PATH_MAX_TYPES ZB_FILE_PATH_BASE_MAX_TYPE
 #endif
 
 typedef struct zb_file_path_base_type_s
@@ -724,7 +733,7 @@ zb_bool_t zb_osif_ota_verify_integrity_async(void *dev, zb_uint32_t raw_len);
 /**
  * Check whether OTA image recording was successful and finalize OTA.
  *
- * @param integrity_is_ok - is verification of OTA image recording successfull
+ * @param integrity_is_ok - is verification of OTA image recording successful
  */
 void zb_osif_ota_verify_integrity_done(zb_uint8_t integrity_is_ok);
 

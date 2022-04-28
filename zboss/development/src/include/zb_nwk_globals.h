@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -96,9 +96,10 @@ zb_uint_t zb_calc_non_zero_bits_in_bit_vector(zb_uint8_t *vector, zb_uint_t size
 #define ZB_NLME_STATE_PIB_LOAD9                 21U
 #define ZB_NLME_STATE_PIB_LOAD10                22U
 #define ZB_NLME_STATE_PIB_LOAD_SRC_MATCH_TBL    23U
+#define ZB_NLME_STATE_PIB_LOAD_BEACON_JITTER    24U
 
 /*!< State to execute the 'Survey Beacon' procedure */
-#define ZB_NLME_STATE_SURVEY_BEACON             24U
+#define ZB_NLME_STATE_SURVEY_BEACON             25U
 /** @} */
 
 /* Broadcast transaction record */
@@ -126,7 +127,7 @@ zb_nwk_btr_t;
 #define ZB_NWK_BRCST_PASSIVE_ACK_ARRAY_SIZE ((ZB_NEIGHBOR_TABLE_SIZE + 7U) / 8U)
 
 /**
-   Broadcast retransmition info
+   Broadcast retransmission info
    Important! This struct must ZB_PACKED_STRUCT for ZB_NEED_ALIGN
  */
 typedef ZB_PACKED_PRE struct zb_nwk_broadcast_retransmit_s
@@ -192,8 +193,7 @@ typedef struct zb_leave_context_s
   zb_leave_ind_notify_t leave_ind_zed;                              /*!< */
   zb_uint8_t pending_list_bm;                                       /*!< */
   zb_bitfield_t rejoin_after_leave:1;                               /*!< */
-  zb_bitfield_t remove_children:1;                                  /*!< */
-  zb_bitfield_t reserved:6;
+  zb_bitfield_t reserved:7;
 } zb_leave_context_t;
 
 #define ZB_SET_LEAVE_PENDING(i) ZG->nwk.leave_context.pending_list_bm |= (1U<<(i))
@@ -276,7 +276,7 @@ typedef struct zb_nwk_handle_s  /* do not pac for IAR */
 #if defined ZB_MAC_POWER_CONTROL
   zb_uint8_t send_power_delta_index; /* Current index of short_sorted address
                                       * table for NWK Power Delta command (notification */
-  zb_uint16_t lpd_resp_addr;         /* Address of recepient, LPD frame
+  zb_uint16_t lpd_resp_addr;         /* Address of recipient, LPD frame
                                       * response to be sent to */
   zb_ieee_addr_t lpd_leave_ieee; /* IEEE to delete from MAC power table */
 #endif
@@ -293,7 +293,7 @@ typedef struct zb_nwk_handle_s  /* do not pac for IAR */
 
 #ifdef ZB_ROUTER_ROLE
   zb_nwk_broadcast_retransmit_t brrt[ZB_NWK_BRR_TABLE_SIZE]; /* Broadcast
-                                                              * retransmition
+                                                              * retransmission
                                                               table */
   zb_uint8_t brrt_cnt;
   zb_uint8_t brrt_in_progress;                               /* Broadcast retransmission is in progress */

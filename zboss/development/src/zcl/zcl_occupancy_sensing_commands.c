@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -53,7 +53,7 @@
     @{
 */
 
-zb_ret_t check_value_occupancy_sensing_server(zb_uint16_t attr_id, zb_uint8_t endpont, zb_uint8_t *value);
+zb_ret_t check_value_occupancy_sensing_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
 
 void zb_zcl_occupancy_sensing_init_server()
 {

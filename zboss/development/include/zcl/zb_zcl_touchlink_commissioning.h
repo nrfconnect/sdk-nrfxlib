@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -925,7 +925,7 @@ typedef ZB_PACKED_PRE struct zb_zll_commissioning_network_start_req_s
  *  @param encrypted_nwk_key [IN] - encrypted network key.
  *  @param logical_channel [IN] - Touchlink channel to be used for the new network.
  *  @param pan_id_ [IN] - new network Pan ID.
- *  @param nwk_addr [IN] - short network address for the recepient.
+ *  @param nwk_addr [IN] - short network address for the recipient.
  *  @param grp_ids_begin [IN] - group identifiers begin field.
  *  @param grp_ids_end [IN] - group identifiers end field.
  *  @param free_nwk_addrs_begin_ [IN] - free network addresses begin field.
@@ -1142,7 +1142,7 @@ typedef ZB_PACKED_PRE struct zb_zll_commissioning_network_join_router_req_s
  *  @param buffer to put packet to (by pointer).
  *  @param key_index [IN] - index of the field to be used in the encrypted network key field.
  *  @param encrypted_nwk_key [IN] - encrypted network key.
- *  @param nwk_addr [IN] - short network address for the recepient.
+ *  @param nwk_addr [IN] - short network address for the recipient.
  *  @param grp_ids_begin [IN] - group identifiers begin field.
  *  @param grp_ids_end [IN] - group identifiers end field.
  *  @param free_nwk_addrs_begin_ [IN] - free network addresses begin field.
@@ -1320,7 +1320,7 @@ typedef ZB_PACKED_PRE struct zb_zll_commissioning_network_join_end_device_req_s
  *  @param key_index [IN] - index of the field to be used in the encrypted network key field.
  *  @param encrypted_nwk_key [IN] - encrypted network key.
  *  @param logical_channel [IN] - Touchlink channel to be used for the new network.
- *  @param nwk_addr [IN] - short network address for the recepient.
+ *  @param nwk_addr [IN] - short network address for the recipient.
  *  @param grp_ids_begin [IN] - group identifiers begin field.
  *  @param grp_ids_end [IN] - group identifiers end field.
  *  @param free_nwk_addrs_begin_ [IN] - free network addresses begin field.

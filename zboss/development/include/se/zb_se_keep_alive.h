@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -51,11 +51,11 @@
  *    @details
  *    Using of this SE cluster header is deprecated. The header was moved from SE to ZCL in ZCL8. Use ZCL Keep Alive Cluster instead (include/zcl/zb_zcl_keep_alive.h).
  *    @deprecated
- *    This cluster header as a part of SE will be removed in November 2022 in favor of its heir ZCL Keep Alive Cluster.
+ *    This cluster header as a part of SE will be removed in February 2023 in favor of its heir ZCL Keep Alive Cluster.
  *
  */
 
-/* Deprecated cluster ZB_ZCL_CLUSTER_ID_KEEP_ALIVE */
+/* Deprecated header ZB_SE_KEEP_ALIVE_H */
 
 /*! @} */ /* SE Keep-Alive cluster definitions */
 

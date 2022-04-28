@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -307,6 +307,7 @@ typedef struct zgp_to_zb_cmd_mapping_s
 }
 zgp_to_zb_cmd_mapping_t;
 
+#ifdef ZB_ZGP_SINK_SUPPORT_LEGACY_MATCH_INFO
 typedef struct zgps_cluster_rec_s
 {
   zb_uint16_t cluster_id;   /** Cluster ID to which specified ZGPD commands are translated
@@ -365,7 +366,7 @@ ZB_PACKED_STRUCT zgps_dev_match_rec_t;
   Match table is a static const data declared in the application.
 
   During GPD commissioning, using information from Commissiponing frame, ZBOSS seeks for matched entry in match_tbl.
-  Match is done by device id or model id - see calls to zb_zgps_get_dev_matching_tbl_index() or zb_zgps_get_ms_dev_matching_tbl_index()
+  Match is done by device id or model id - see calls to zb_zgps_get_dev_matching_tbl_index()
   Entry index is written into the Sink table.
 
   Command translation (without details about attr reporting):
@@ -396,6 +397,113 @@ typedef struct zb_zgps_match_info_s
   const ZB_CODE zgps_dev_cluster_rec_t  *clusters_tbl;
 }
 zb_zgps_match_info_t;
+#endif  /* ZB_ZGP_SINK_SUPPORT_LEGACY_MATCH_INFO */
+
+/*
+  Using of Translation Table.
+
+  By default, ZBOSS contains generic translation rules functionality according to the specification.
+
+  Translation Table is a specific translation rules declared in the application.
+  The specific translation supersedes the generic one.
+
+  The application MAY or MAY not to declare Translation Table.
+  If application declares Translation Table it SHOULD persist this data by its own.
+
+  Translation Table entries SHALL be added upon successful completion of proximity and multi-hop commissioning,
+  and upon reception of GP Pairing Configuration leading to Sink Table entry creation (as described in A.3.5.2.5);
+  those entries SHALL then contain the ApplicationID and GPD ID type and value of the GPD ID (and GPD Endpoint,
+  matching or 0x00 or 0xff, if ApplicationID = 0b010) for which they are created;
+  mapping the GPD commands to their ZCL equivalents.
+
+  Supported features:
+
+  - There SHOULD be only one entry in the GPD Command Translation Table for each
+    (GPD ID, GPD Endpoint, GPD Command, EndPoint, Zigbee Profile, Zigbee Cluster) tuple.
+  - For a single GPD ID (and GPD Endpoint, if ApplicationID = 0b010), there MAY be multiple
+    entries, e.g. for multiple GPD commands.
+
+  GPD Command:
+  - If the GPD Command field is set to 0xAF, all of the following GPD sensor report commands: 0xA0 – 0xA3 are supported.
+  - If the GPD Command field is set to 0xFF, it indicates all GPD commands.
+
+  Zigbee Endpoint:
+  - If the EndPoint field is set to 0xfd, there are no paired endpoints.
+  - If the EndPoint field is set to 0xff, all matching endpoints are paired.
+  - If the EndPoint field is set to 0xfc, the raw GPD command is passed up to the application,
+    and no translation is performed in the GPEP.
+
+  Zigbee Cluster:
+  - If the Zigbee Cluster field is set to 0xffff, the ClusterID from the triggering GPD command is to be used.
+  - If the Zigbee Cluster field is set to value other than 0xffff, then for GPD command carrying
+    a ClusterID field (as e.g. for the GPD commands 0xA0 – 0xA3), the two ClusterID values SHALL exactly match.
+
+  ZCL Payload Length:
+  - If the Length sub-field of the Zigbee Command payload field is set to 0x00,
+    the Payload sub-field is not present, and the Zigbee command is sent without payload.
+  - If the Length sub-field of the Zigbee Command payload field is set to 0xff,
+    the Payload sub-field is not present, and the payload from the triggering GPD command
+    is to be copied verbatim into the Zigbee command.
+  - If the Length sub-field of the Zigbee Command payload field is set to 0xfe,
+    the Payload sub-field is not present, and the payload from the triggering GPD command needs to be parsed.
+  - For all other values of the Length sub-field, the Payload sub-field is present,
+    has a length as defined in the Length sub-field and specifies the payload to be used.
+
+  Not supported features:
+
+  - For a single GPD ID (and GPD Endpoint, if ApplicationID = 0b010),
+    the same GPD Command could result in different translated Zigbee CommandIDs,
+    for different EndPoint, Profile and Cluster values.
+  - For a single GPD ID, if ApplicationID = 0b010, there MAY be multiple entries,
+    for multiple GPD Endpoints, even for identical GPD commands.
+  - The Additional information block field is not supported yet.
+ */
+
+#define ZB_ZGP_TRANSLATION_ENTRY_ENDPOINT_PASS_RAW_GPDF_TO_APP (0xfc)
+#define ZB_ZGP_TRANSLATION_ENTRY_ENDPOINT_NO_PAIRS             (0xfd)
+#define ZB_ZGP_TRANSLATION_ENTRY_ENDPOINT_ALL_ARE_MATCHED      (0xff)
+
+#define ZB_ZGP_TRANSLATION_ENTRY_NO_PAYLOAD     (0x00)
+#define ZB_ZGP_TRANSLATION_ENTRY_GPDF_PAYLOAD   (0xff)
+#define ZB_ZGP_TRANSLATION_ENTRY_PARSED_PAYLOAD (0xfe)
+
+typedef ZB_PACKED_PRE struct zb_zgps_translation_payload_s
+{
+  zb_uint8_t length;
+  zb_uint8_t data[];
+} ZB_PACKED_STRUCT zb_zgps_translation_payload_t;
+
+/**
+ * @brief Translation table entry structure
+ */
+typedef ZB_PACKED_PRE struct zb_zgps_translation_entry_s
+{
+  zb_uint8_t  options;   /**< Options related to this table entry */
+  zb_zgpd_addr_t gpd_id; /**< Identifier of the GPD */
+  zb_uint8_t  gpd_endpoint;
+  zb_uint8_t  gpd_command; /**< The GPD command to be translated */
+  zb_uint8_t  endpoint;  /**< The EndPoint for which the translation is valid */
+  zb_uint16_t profile;   /**< The Profile of the command after translation */
+  zb_uint16_t cluster;   /**< The cluster of the Profile on the endpoint */
+  zb_uint8_t  zcl_command; /**< The Command ID of the Cluster into which GP Command is translated */
+  zb_zgps_translation_payload_t zcl_payload;  /**< The payload for the Zigbee Command */
+} ZB_PACKED_STRUCT zb_zgps_translation_entry_t;
+
+/** @cond DOXYGEN_INTERNAL_DOC */
+void zb_zgps_set_translation_table(const zb_zgps_translation_entry_t * table, zb_uint_t table_size);
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+
+/**
+ * @ingroup zgp_sink
+ * @brief Set translation table information that is used to fill ZGP command - ZCL
+ * cluster translation table.
+ * @param [in]  table  Translation information, array of type @ref zb_zgps_translation_entry_t
+ * @param [in]  table_size  Size if the table in count of entries that can be iterated
+ */
+#define ZB_ZGP_SET_TRANSLATION_TABLE(table, table_size)     \
+{ \
+  zb_zgps_set_translation_table((table), (table_size));     \
+}
 /** @} */ /* zgp_sink */
 #endif  /* ZB_ENABLE_ZGP_SINK */
 
@@ -633,7 +741,7 @@ typedef void (ZB_CODE * zb_zgp_app_comm_ind_cb_t)(
    @addtogroup zgp_sink
    @{
 */
-
+#ifdef ZB_ZGP_SINK_SUPPORT_LEGACY_MATCH_INFO
 /** @cond DOXYGEN_INTERNAL_DOC */
 void zb_zgps_set_match_info(const zb_zgps_match_info_t *info);
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
@@ -647,6 +755,7 @@ void zb_zgps_set_match_info(const zb_zgps_match_info_t *info);
 { \
   zb_zgps_set_match_info((info));               \
 }
+#endif  /* ZB_ZGP_SINK_SUPPORT_LEGACY_MATCH_INFO */
 
 /** @cond DOXYGEN_INTERNAL_DOC */
 void zb_zgps_register_comm_req_cb(zb_zgp_comm_req_cb_t cb);
@@ -720,6 +829,10 @@ enum zb_zgpd_switch_type_e
  * @brief Command identifiers sent from or to ZGPD */
 enum zb_zgpd_cmd_id_e
 {
+  /* identify */
+  ZB_GPDF_CMD_IDENTIFY                             = 0x00,
+  /* 0x01 – 0x0F: Reserved */
+  /* scenes */
   ZB_GPDF_CMD_RECALL_SCENE0                        = 0x10,
   ZB_GPDF_CMD_RECALL_SCENE1                        = 0x11,
   ZB_GPDF_CMD_RECALL_SCENE2                        = 0x12,
@@ -736,18 +849,21 @@ enum zb_zgpd_cmd_id_e
   ZB_GPDF_CMD_RECALL_SCENE9                        = 0x19,
   ZB_GPDF_CMD_RECALL_SCENE10                       = 0x1A,
   ZB_GPDF_CMD_RECALL_SCENE11                       = 0x1B,
-#define ZB_GPDF_CMD_STORE_SCENE0                       ZB_GPDF_CMD_RECALL_SCENE8
-#define ZB_GPDF_CMD_STORE_SCENE1                       ZB_GPDF_CMD_RECALL_SCENE9
-#define ZB_GPDF_CMD_STORE_SCENE2                       ZB_GPDF_CMD_RECALL_SCENE10
-#define ZB_GPDF_CMD_STORE_SCENE3                       ZB_GPDF_CMD_RECALL_SCENE11
-  ZB_GPDF_CMD_STORE_SCENE4                        = 0x1C,
-  ZB_GPDF_CMD_STORE_SCENE5                        = 0x1D,
-  ZB_GPDF_CMD_STORE_SCENE6                        = 0x1E,
-  ZB_GPDF_CMD_STORE_SCENE7                        = 0x1F,
+#define ZB_GPDF_CMD_STORE_SCENE0 ZB_GPDF_CMD_RECALL_SCENE8
+#define ZB_GPDF_CMD_STORE_SCENE1 ZB_GPDF_CMD_RECALL_SCENE9
+#define ZB_GPDF_CMD_STORE_SCENE2 ZB_GPDF_CMD_RECALL_SCENE10
+#define ZB_GPDF_CMD_STORE_SCENE3 ZB_GPDF_CMD_RECALL_SCENE11
+  ZB_GPDF_CMD_STORE_SCENE4                         = 0x1C,
+  ZB_GPDF_CMD_STORE_SCENE5                         = 0x1D,
+  ZB_GPDF_CMD_STORE_SCENE6                         = 0x1E,
+  ZB_GPDF_CMD_STORE_SCENE7                         = 0x1F,
   /* on/off */
   ZB_GPDF_CMD_OFF                                  = 0x20,
   ZB_GPDF_CMD_ON                                   = 0x21,
   ZB_GPDF_CMD_TOGGLE                               = 0x22,
+  /* ------- */
+  ZB_GPDF_CMD_RELEASE                              = 0x23,
+  /* 0x24 – 0x2F: Reserved */
   /* level control */
   ZB_GPDF_CMD_MOVE_UP                              = 0x30,
   ZB_GPDF_CMD_MOVE_DOWN                            = 0x31,
@@ -763,6 +879,7 @@ enum zb_zgpd_cmd_id_e
 #define ZB_GPDF_CMD_MOVE_STEP_ON ZB_GPDF_CMD_STEP_UP_W_ONOFF
   ZB_GPDF_CMD_STEP_DOWN_W_ONOFF                    = 0x38,
 #define ZB_GPDF_CMD_MOVE_STEP_OFF ZB_GPDF_CMD_STEP_DOWN_W_ONOFF
+  /* 0x39 – 0x3F: Reserved */
   /* Color Control */
   ZB_GPDF_CMD_MOVE_HUE_STOP                        = 0x40,
   ZB_GPDF_CMD_MOVE_HUE_UP                          = 0x41,
@@ -776,15 +893,26 @@ enum zb_zgpd_cmd_id_e
   ZB_GPDF_CMD_STEP_SATURATION_DOWN                 = 0x49,
   ZB_GPDF_CMD_MOVE_COLOR                           = 0x4A,
   ZB_GPDF_CMD_STEP_COLOR                           = 0x4B,
+  /* 0x4C – 0x4F: Reserved */
+  /* Door Lock */
+  ZB_GPDF_CMD_LOCK_DOOR                            = 0x50,
+  ZB_GPDF_CMD_UNLOCK_DOOR                          = 0x51,
+  /* 0x52 – 0x5F: Reserved */
   /* Simple Generic Switch */
   ZB_GPDF_CMD_PRESS_1_OF_1                         = 0x60,
   ZB_GPDF_CMD_RELEASE_1_OF_1                       = 0x61,
   ZB_GPDF_CMD_PRESS_1_OF_2                         = 0x62,
-  ZB_GPDF_CMD_RELEASE_1_OF_2                       = 0X63,
+  ZB_GPDF_CMD_RELEASE_1_OF_2                       = 0x63,
+  ZB_GPDF_CMD_PRESS_2_OF_2                         = 0x64,
+  ZB_GPDF_CMD_RELEASE_2_OF_2                       = 0x65,
+  ZB_GPDF_CMD_SHORT_PRESS_1_OF_1                   = 0x66,
+  ZB_GPDF_CMD_SHORT_PRESS_1_OF_2                   = 0x67,
+  ZB_GPDF_CMD_SHORT_PRESS_2_OF_2                   = 0x68,
 
-  ZB_GPDF_CMD_8BIT_VECTOR_PRESS                    = 0X69,
-  ZB_GPDF_CMD_8BIT_VECTOR_RELEASE                  = 0X6A,
-
+  ZB_GPDF_CMD_8BIT_VECTOR_PRESS                    = 0x69,
+  ZB_GPDF_CMD_8BIT_VECTOR_RELEASE                  = 0x6A,
+  /* 0x6b-0x6f: Reserved */
+  /* 0x70-0x9f: Reserved */
   ZB_GPDF_CMD_ATTR_REPORT                          = 0xA0,
   ZB_GPDF_CMD_MANUF_SPEC_ATTR_REPORT               = 0xA1,
   ZB_GPDF_CMD_MULTI_CLUSTER_ATTR_REPORT            = 0xA2,
@@ -793,26 +921,43 @@ enum zb_zgpd_cmd_id_e
   ZB_GPDF_CMD_READ_ATTR_RESP                       = 0xA5,
 
   ZB_GPDF_CMD_ZCL_TUNNELING_FROM_ZGPD              = 0xA6,
-
+  /* 0xA7: Reserved */
   ZB_GPDF_CMD_COMPACT_ATTR_REPORTING               = 0xA8,
+  /* 0xA9 – 0xAE: Reserved */
+  ZB_GPDF_CMD_ATTR_REPORT_ANY                      = 0xAF,
   /* Manufacturer-defined GPD commands (payload is manufacturer-specific) */
   ZB_GPDF_CMD_MANUF_DEFINED_B0                     = 0xB0,
+  /* 0xB1 - 0xBE: Manufacturer-defined GPD commands (payload is manufacturer-specific) */
   ZB_GPDF_CMD_MANUF_DEFINED_BF                     = 0xBF,
+  /* 0xC0 - 0xDF: Reserved */
   /* commissioning from ZGPD */
   ZB_GPDF_CMD_COMMISSIONING                        = 0xE0,
   ZB_GPDF_CMD_DECOMMISSIONING                      = 0xE1,
   ZB_GPDF_CMD_SUCCESS                              = 0xE2,
   ZB_GPDF_CMD_CHANNEL_REQUEST                      = 0xE3,
   ZB_GPDF_CMD_APPLICATION_DESCR                    = 0xE4,
-
+  /* 0xE5 – 0xEF: Reserved */
   /* GPDF commands sent to GPD */
   ZB_GPDF_CMD_COMMISSIONING_REPLY                  = 0xF0,
   ZB_GPDF_CMD_WRITE_ATTRIBUTES                     = 0xF1,
   ZB_GPDF_CMD_READ_ATTRIBUTES                      = 0xF2,
   ZB_GPDF_CMD_CHANNEL_CONFIGURATION                = 0xF3,
-
+  /* 0xF4 – 0xF5: Reserved for other commands sent to the GPD */
   ZB_GPDF_CMD_ZCL_TUNNELING_TO_ZGPD                = 0xF6,
+  /* 0xF7 – 0xFF: Reserved for other commands sent to the GPD */
 };
+
+#define ZB_GPDF_CMD_IS_SCENE_CMD(_cmd_id)    \
+  ((_cmd_id) >= ZB_GPDF_CMD_RECALL_SCENE0 && \
+   (_cmd_id) <= ZB_GPDF_CMD_STORE_SCENE7)
+
+#define ZB_GPDF_CMD_IS_RECALL_SCENE(_cmd_id) \
+  ((_cmd_id) >= ZB_GPDF_CMD_RECALL_SCENE0 && \
+   (_cmd_id) <= ZB_GPDF_CMD_RECALL_SCENE7)
+
+#define ZB_GPDF_CMD_IS_STORE_SCENE(_cmd_id) \
+  ((_cmd_id) >= ZB_GPDF_CMD_STORE_SCENE0 && \
+   (_cmd_id) <= ZB_GPDF_CMD_STORE_SCENE1)
 
 /*! @} */
 
@@ -1555,6 +1700,19 @@ zb_ret_t zb_zgp_convert_8bit_vector(zb_uint8_t vector_8bit_cmd_id,      /* press
                                     zb_uint8_t contact_status,
                                     zb_uint8_t *zgp_cmd_out);
 
+/**
+ * @brief Application function to override allows custom handling incoming raw GPDF packet
+ *
+ * If this function os not implemented by the application, then ZBOSS
+ * drops the buffer without any additional handling.
+ *
+ * If this function is implemented by the application, the application itself
+ * shall carry to free this resource.
+ *
+ * @param buf_ref
+ */
+void zb_zgp_gpdf_raw_indication(zb_bufid_t buf_ref);
+
 #ifdef ZB_ENABLE_ZGP_DIRECT
 /**
    Set ZBOSS to skip all incoming GPDF.
@@ -1836,7 +1994,7 @@ typedef struct zgp_tbl_ent_s
     } proxy;
     struct zgp_sink_tbl_ent_s
     {
-      zb_uint8_t       device_id;           /**< ZGPD Device ID fot from Commissioning frame @see zb_zgpd_dev_id_t */
+      zb_uint8_t       device_id;           /**< ZGPD Device ID from Commissioning frame @see zb_zgpd_dev_id_t */
       zgp_pair_group_list_t sgrp[ZB_ZGP_MAX_SINK_GROUP_PER_GPD];
       zb_uint8_t match_dev_tbl_idx; /**< index in matching table matched by device_id or app_info.manuf_model_id  */
       /**

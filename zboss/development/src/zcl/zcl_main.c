@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -141,7 +141,23 @@ zb_uint8_t zb_zcl_handle(zb_uint8_t param)     /* VS Fixed */
       /* TODO: return correct status by zb_zcl_handle_general_commands() */
       TRACE_MSG(TRACE_ZCL1, "command is not processed", (FMT__0));
       /* ZCL8: CCB 2477: use UNSUP_COMMAND instead of any other Unsupported command status */
-      status = ZB_ZCL_STATUS_UNSUP_CMD;
+      if (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE)
+      {
+        status = ZB_ZCL_STATUS_UNSUP_CMD;
+      }
+      else
+      {
+        if (cmd_info_ptr->is_manuf_specific)
+        {
+          status = cmd_info_ptr->is_common_command ?
+            ZB_ZCL_STATUS_UNSUP_MANUF_GEN_CMD : ZB_ZCL_STATUS_UNSUP_MANUF_CLUST_CMD;
+        }
+        else
+        {
+          status = cmd_info_ptr->is_common_command ?
+            ZB_ZCL_STATUS_UNSUP_GEN_CMD : ZB_ZCL_STATUS_UNSUP_CLUST_CMD;
+        }
+      }
     }
   } /* zb_zcl_check_accept_command() */
   else
@@ -762,26 +778,42 @@ void zb_zcl_send_cmd(
 zb_bool_t zb_zcl_send_default_handler(zb_uint8_t param,
   const zb_zcl_parsed_hdr_t *cmd_info, zb_zcl_status_t status)
 {
-  if (!ZB_ZCL_CHECK_IF_SEND_DEFAULT_RESP(*cmd_info, status))
+  zb_bool_t ret;
+
+  TRACE_MSG(TRACE_ZCL3, ">zb_zcl_send_default_handler param %hd, status: %hd", (FMT__H_H, param, status));
+
+  do
+  {
+    if (!ZB_ZCL_CHECK_IF_SEND_DEFAULT_RESP(*cmd_info, status))
+    {
+      ret = ZB_FALSE;
+      break;
+    }
+
+    ZB_ZCL_SEND_DEFAULT_RESP_DIRECTION(
+      param,
+      ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr,
+      ZB_APS_ADDR_MODE_16_ENDP_PRESENT,
+      ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).src_endpoint,
+      ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
+      cmd_info->profile_id,
+      cmd_info->cluster_id,
+      cmd_info->seq_number,
+      cmd_info->cmd_id,
+      status,
+      ZB_ZCL_REVERT_DIRECTION(cmd_info->cmd_direction));
+
+    param = 0;
+    ret = ZB_TRUE;
+  } while (0);
+
+  if (param != 0u)
   {
     zb_buf_free(param);
-    return ZB_FALSE;
   }
 
-  ZB_ZCL_SEND_DEFAULT_RESP_DIRECTION(
-    param,
-    ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr,
-    ZB_APS_ADDR_MODE_16_ENDP_PRESENT,
-    ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).src_endpoint,
-    ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
-    cmd_info->profile_id,
-    cmd_info->cluster_id,
-    cmd_info->seq_number,
-    cmd_info->cmd_id,
-    status,
-    ZB_ZCL_REVERT_DIRECTION(cmd_info->cmd_direction));
-
-  return ZB_TRUE;
+  TRACE_MSG(TRACE_ZCL3, "<zb_zcl_send_default_handler %d", (FMT__D, ret));
+  return ret;
 }
 
 void zb_zcl_process_command_finish(zb_bufid_t buffer, zb_zcl_parsed_hdr_t *pcmd_info, zb_uint8_t status)

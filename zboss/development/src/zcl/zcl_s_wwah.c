@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -53,6 +53,7 @@
 #include "zdo_wwah_parent_classification.h"
 #include "zb_bdb_internal.h"
 #include "zdo_hubs.h"
+#include "zb_error_indication.h"
 
 /* #include "zb_mac_globals.h" */
 /* #include "mac_internal.h" */
@@ -1985,6 +1986,9 @@ void zb_zcl_wwah_periodic_checkin_match_desc_req(zb_uint8_t param)
         break;
     }
 
+    /* Verify ep_desc assignment. It will unrecoverably fail if ep_desc is NULL */
+    ZB_VERIFY(ep_desc != NULL, RET_UNINITIALIZED);
+
     req->profile_id = ep_desc->simple_desc->app_profile_id;
 
     TRACE_MSG(TRACE_ZCL1, "send match descr for cluster 0x%x", (FMT__D, req->cluster_list[0]));
@@ -2177,7 +2181,7 @@ void zb_zcl_wwah_periodic_checkin_tc_poll(zb_uint8_t param)
   else
   {
     WWAH_CTX().periodic_checkins.tsn = ZCL_CTX().seq_number - 1;
-    /* Need to wait some time for the answer (unicast). Minumum border is
+    /* Need to wait some time for the answer (unicast). Minimum border is
      * ZB_N_APS_ACK_WAIT_DURATION_FROM_NON_SLEEPY * ZB_N_APS_MAX_FRAME_RETRIES, but intermediate
      * hops may add some additional delay. */
     ZB_SCHEDULE_ALARM(zb_zcl_wwah_periodic_checkin_timeout, 0, ZB_N_APS_ACK_WAIT_DURATION_FROM_NON_SLEEPY * ZB_N_APS_MAX_FRAME_RETRIES);

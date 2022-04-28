@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -63,7 +63,7 @@ void zb_abort(char *caller_file, int caller_line);
    @param file_name - source file name
    @param line_number - line in the source
 */
-void zb_assert(const zb_char_t *file_name, zb_int_t line_number);
+ZB_NORETURN void zb_assert(const zb_char_t *file_name, zb_int_t line_number);
 /** @endcond */
 /**
    Check for expression in runtime and call zb_assert() if it is false.
@@ -84,7 +84,7 @@ void zb_assert(const zb_char_t *file_name, zb_int_t line_number);
    @param file_id - source file id
    @param line_number - line in the source
 */
-void zb_assert(zb_uint16_t file_id, zb_int_t line_number);
+ZB_NORETURN void zb_assert(zb_uint16_t file_id, zb_int_t line_number);
 /**
    Check for expression in runtime and call zb_assert() if it is false.
 
@@ -153,7 +153,9 @@ void lwip_zb_assert(zb_uint16_t file_id, zb_int_t line_number);
 
    @param expr - expression to check.
  */
-#if (defined __GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+#ifdef __cplusplus
+#define ZB_ASSERT_COMPILE_DECL(expr) __extension__ static_assert(expr, "Assert at line __LINE__")
+#elif (defined __GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
 #define ZB_ASSERT_COMPILE_DECL(expr) __extension__ _Static_assert(expr, "Assert at line __LINE__")
 #elif defined(__COUNTER__)
 #define ZB_ASSERT_COMPILE_DECL(expr) typedef zb_int_t ZB_ASSERT_CAT(assert, ZB_ASSERT_CAT(__LINE__, __COUNTER__))[(expr) ? 1 : -1]
@@ -222,7 +224,7 @@ while (0)
 
 #define ZB_P3_ON()
 #define ZB_P3_OFF()
-#define ZB_P4_ON() 
+#define ZB_P4_ON()
 #define ZB_P4_OFF()
 
 #if defined ZB_TRAFFIC_DUMP_ON

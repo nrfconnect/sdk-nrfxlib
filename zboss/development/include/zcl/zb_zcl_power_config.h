@@ -255,6 +255,9 @@ enum zb_zcl_power_config_mains_alarm_mask_e
 /** @brief Default value for BatteryAlarmState attribute */
 #define ZB_ZCL_POWER_CONFIG_BATTERY_ALARM_STATE_DEFAULT_VALUE ((zb_uint32_t)0x00000000)
 
+/** @brief MainsVoltageMinThreshold and MainsVoltageMaxThreshold values when alarm should not be generated*/
+#define ZB_ZCL_POWER_CONFIG_THRESHOLD_ALARM_OMISSION_VALUE ((zb_uint16_t)0xFFFF)
+
 /** @brief Mains attribute set the least significant nibble*/
 #define ZB_ZCL_POWER_CONFIG_MAINS_ATTRIBUTE_SET 0
 

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -66,7 +66,7 @@
   *   1) if current retry count(crc) equals zero it means that last poll was success
   *   2) crc >= maximum_retry_count leads to polling stop
   *   3) crc % (wwah_retry_cnt + 1) shows current iteration of additional polling,
-  *      i.e. loop steps 1-2 above. If remainder is zero - wait for standart timeout,
+  *      i.e. loop steps 1-2 above. If remainder is zero - wait for standard timeout,
   *      or additional timeout otherwise.
   */
 

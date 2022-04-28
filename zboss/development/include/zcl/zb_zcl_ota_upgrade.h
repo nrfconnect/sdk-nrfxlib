@@ -2091,6 +2091,8 @@ void zb_zcl_ota_upgrade_set_ota_status(zb_uint8_t endpoint, zb_uint8_t status);
 
 zb_uint8_t zb_zcl_ota_upgrade_get_ota_status(zb_uint8_t endpoint);
 
+zb_uint8_t zb_zcl_process_ota_upgrade_default_response_commands(zb_uint8_t param);
+
 void zb_zcl_ota_upgrade_send_upgrade_end_req(zb_uint8_t param, zb_uint8_t status);
 
 void zb_zcl_ota_restart_after_rejoin(zb_uint8_t endpoint);

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -115,6 +115,10 @@
 /** An attempt was made to use a MAC Interface with state that is currently set to FALSE (disabled)
  * or that is unknown to the stack. */
 #define ZB_NWK_STATUS_INVALID_INTERFACE      0xD5U
+/** A request was interrupted by a higher layer. */
+#define ZB_NWK_STATUS_INTERRUPTED            0xD6U
+/** An error occurred during executing a request. */
+#define ZB_NWK_STATUS_ERROR                  0xD7U
 /** @} */
 
 /**
@@ -146,7 +150,7 @@ zb_nwk_multicast_mode_t;
 #define ZB_NLDE_OPT_FORCE_MESH_ROUTE_DISC (1U << 0)
 /** Non-spec extension: Force send route record */
 #define ZB_NLDE_OPT_FORCE_SEND_ROUTE_REC (1U << 1)
-/** Non-spec extension: Force send route record. Auxillary bitfield for marking route as many-to-one
+/** Non-spec extension: Force send route record. Auxiliary bitfield for marking route as many-to-one
  * for force rrec sending */
 #define ZB_NLDE_OPT_TEMPORARY_MARK_ROUTE_AS_MTO (1U << 2)
 /** @} */
@@ -380,6 +384,7 @@ typedef struct zb_nlme_network_discovery_request_s
                                                                * within those pages that the discovery shall
                                                                * be performed upon. */
   zb_uint8_t        scan_duration;                            /**< Time to spend scanning each channel */
+  zb_callback_t     cb;                                       /* used by zb_zdo_active_scan_request */
 }
 zb_nlme_network_discovery_request_t;
 
@@ -700,7 +705,7 @@ void zb_nlme_beacon_survey_scan_confirm(zb_uint8_t param);
  * @anchor nlme_rejoin_method
  */
 /** @{ */
-#define ZB_NLME_REJOIN_METHOD_ASSOCIATION    0x00U /**< Throught association */
+#define ZB_NLME_REJOIN_METHOD_ASSOCIATION    0x00U /**< Through association */
 #define ZB_NLME_REJOIN_METHOD_DIRECT         0x01U /**< Join directly or rejoining using the orphaning */
 #define ZB_NLME_REJOIN_METHOD_REJOIN         0x02U /**< Using NWK rejoin procedure */
 #define ZB_NLME_REJOIN_METHOD_CHANGE_CHANNEL 0x03U /**< Changing the network channel  */
@@ -830,8 +835,6 @@ typedef ZB_PACKED_PRE struct zb_nlme_leave_request_s
 {
   zb_ieee_addr_t device_address; /**< 64-bit IEEE address of the device to
                                   * remove, zero fill if device itself */
-  zb_uint8_t remove_children; /**< If true - remove child devices from the
-                                    * network */
   zb_uint8_t rejoin; /**< If true - Join after leave */
 } ZB_PACKED_STRUCT
 zb_nlme_leave_request_t;
@@ -845,7 +848,6 @@ zb_nlme_leave_request_t;
    zb_nlme_leave_request_t
    @return RET_OK on success, error code otherwise.
 
-   @snippet tp_pro_bv-67_zc.c zb_nlme_leave_request
  */
 void zb_nlme_leave_request(zb_uint8_t param);
 
@@ -962,7 +964,7 @@ void zb_nlme_reset_confirm(zb_uint8_t param);
 */
 typedef ZB_PACKED_PRE struct zb_nlme_sync_request_s
 {
-  zb_uint8_t track; /**< Whether ot not the sync should be maintained for
+  zb_uint8_t track; /**< Whether to not the sync should be maintained for
                      * future beacons */
   zb_time_t  poll_rate; /*!< MAC poll rate */
 } ZB_PACKED_STRUCT
@@ -1042,7 +1044,6 @@ zb_nlme_route_discovery_request_t;
    zb_nlme_route_discovery_request_t
    @return RET_OK on success, error code otherwise.
 
-   @snippet tp_pro_bv_08_zc.c zb_nlme_route_discovery_request
  */
 void zb_nlme_route_discovery_request(zb_uint8_t param);
 
@@ -1125,8 +1126,8 @@ void zb_nlme_send_status(zb_uint8_t param);
   (*((a) + sizeof(zb_uint16_t)) = ((*((a) + sizeof(zb_uint16_t)) & 0x70U) >> 4U) & 0x07U)
 #define ZB_GET_INCOMING_COST(a)                                                    \
   (*((a) + sizeof(zb_uint16_t)) & 0x7U)
-#define ZB_LS_SET_INCOMING_COST(a, b) ( *(a) = (*(a) & 0xF8U) | ( (b) & 0x07U) )
-#define ZB_LS_SET_OUTGOING_COST(a, b) ( *(a) = (*(a) & 0x0FU) | ( (b) << 4U) )
+#define ZB_LS_SET_INCOMING_COST(a, b) ( *(a) = (*(a) & 0x70U) | ( (b) & 0x07U) )
+#define ZB_LS_SET_OUTGOING_COST(a, b) ( *(a) = (*(a) & 0x07U) | ( ((b) & 0x07U) << 4U) )
 
 #define ZB_NWK_LS_GET_COUNT(a) ((a) & ZB_NWK_LS_COUNT_MASK)
 #define ZB_NWK_LS_SET_COUNT(_a, _b) ((*(_a)) |= ((*(_a)) & (~ZB_NWK_LS_COUNT_MASK)) | (_b))

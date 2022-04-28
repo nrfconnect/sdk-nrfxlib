@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -57,7 +57,6 @@
    @param param - buffer with single parameter - short broadcast address. Valid
           values are 0xffff, 0xfffd
 
-   @snippet tp_pro_bv-64_zc.c zb_secur_send_nwk_key_update_br
  */
 void zb_secur_send_nwk_key_update_br(zb_uint8_t param);
 

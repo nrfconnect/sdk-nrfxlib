@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -41,8 +41,8 @@
 /* PURPOSE: Internal BDB header file.
 */
 
-#ifndef ZB_BDB_COMISSIONING_H
-#define ZB_BDB_COMISSIONING_H 1
+#ifndef ZB_BDB_COMMISSIONING_H
+#define ZB_BDB_COMMISSIONING_H 1
 
 #ifdef ZB_BDB_MODE
 /**
@@ -297,13 +297,15 @@ zb_bool_t bdb_joined(void);
 
 void bdb_force_link(void);
 
+zb_uint8_t bdb_get_scan_duration(void);
+
 #endif /* ZB_BDB_MODE && !BDB_OLD */
 
 
-/** @}  */ /* bdb_mode_comissioning */
+/** @}  */ /* bdb_mode_commissioning */
 
 /** @} */ /* bdb_mode_commissioning */
 
 #endif /* ZB_BDB_MODE */
 
-#endif /* ZB_BDB_COMISSIONING_H */
+#endif /* ZB_BDB_COMMISSIONING_H */

@@ -369,7 +369,7 @@ static void add_group_handler(zb_uint8_t param, zb_bool_t check_identifying)
       resp_cmd_info = zb_buf_initial_alloc(param, sizeof(zb_zcl_parsed_hdr_t));
       ZB_MEMCPY(resp_cmd_info, &cmd_info, sizeof(zb_zcl_parsed_hdr_t));
 
-      zb_apsme_add_group_request(param);
+      zb_zdo_add_group_req(param);
     }
     else
     {
@@ -446,11 +446,12 @@ static void view_group_handler(zb_uint8_t param)
 
     aps_req->n_groups = 1;
     aps_req->groups[0] = view_group_req.group_id;
+    aps_req->endpoint = cmd_info.addr_data.common_data.dst_endpoint;
 
     /* TODO: do not rely on function synchronicity and send response from confirm_cb */
     /* See comment to zb_apsme_add_group_request() call */
     aps_req->confirm_cb = dummy_handler;
-    zb_apsme_get_group_membership_request(param);
+    zb_zdo_get_group_membership_req(param);
     conf = ZB_BUF_GET_PARAM(param, zb_apsme_get_group_membership_conf_t);
 
     TRACE_MSG(TRACE_ZCL2, "n_groups %hd", (FMT__H, conf->n_groups));
@@ -535,7 +536,8 @@ static void get_group_membership_handler(zb_uint8_t param)
 
     /* TODO: do not rely on function synchronicity and send response from confirm_cb */
     aps_req->confirm_cb = dummy_handler;
-    zb_apsme_get_group_membership_request(ZCL_CTX().runtime_buf);
+    aps_req->endpoint = cmd_info.addr_data.common_data.dst_endpoint;
+    zb_zdo_get_group_membership_req(ZCL_CTX().runtime_buf);
 
     TRACE_MSG(TRACE_ZCL2, "get conf...", (FMT__0));
     conf = ZB_BUF_GET_PARAM(ZCL_CTX().runtime_buf, zb_apsme_get_group_membership_conf_t);
@@ -678,7 +680,7 @@ static void remove_group_handler(zb_uint8_t param)
 
     /* See comment for zb_apsme_add_group_request() call */
     aps_req->confirm_cb = remove_group_cb_send_remove_group_resp;
-    zb_apsme_remove_group_request(param);
+    zb_zdo_remove_group_req(param);
   }
   else
   {
@@ -776,7 +778,7 @@ static void remove_all_groups_handler(zb_uint8_t param)
 
   /* See comment for zb_apsme_add_group_request() call */
   aps_req->confirm_cb = remove_all_groups_cb_send_default_resp;
-  zb_apsme_remove_all_groups_request(param);
+  zb_zdo_remove_all_groups_req(param);
 
   TRACE_MSG(TRACE_ZCL1, "<< remove_all_groups_handler", (FMT__0));
 }

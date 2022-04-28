@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -394,7 +394,7 @@ static void zb_zcl_control4_network_cluster_send_attr_report(zb_bufid_t buffer, 
   zb_uint16_t bytes_avail;
   zb_uint8_t attr_size;
   zb_uint32_t i;
-  /* Keep track of the index of latest attribute reported in case all atributes do not fit in one packet */
+  /* Keep track of the index of latest attribute reported in case all attributes do not fit in one packet */
   static zb_uint8_t attr_index = 0;
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_control4_network_cluster_send_attr_report: addr 0x%x buffer %hd", (FMT__D_H, short_addr, buffer));

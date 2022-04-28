@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -362,6 +362,19 @@ typedef struct zb_zcl_basic_disable_local_conf_s
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_POWER_SOURCE_ID, (power_source))    \
     ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
+/** @brief Declare attribute list for Basic cluster
+    @param attr_list - attribute list name
+    @param zcl_version - pointer to variable to store zcl version  attribute value
+    @param power_source - pointer to variable to store power source attribute value
+    @param device_enabled - pointer to variable to store device enabled attribute value
+*/
+#define ZB_ZCL_DECLARE_BASIC_WITH_DEVICE_ENABLED_ATTRIB_LIST(attr_list, zcl_version, power_source, device_enabled) \
+    ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_BASIC)     \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_ZCL_VERSION_ID, (zcl_version))          \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_POWER_SOURCE_ID, (power_source))        \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_DEVICE_ENABLED_ID, (device_enabled))    \
+    ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
 /**
  *  @brief Declare attribute list for Basic cluster (extended attribute set).
  *  @param attr_list [IN] - attribute list name.
@@ -403,6 +416,51 @@ typedef struct zb_zcl_basic_disable_local_conf_s
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_SW_BUILD_ID, (sw_build_id))              \
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_DEVICE_ENABLED_ID,                       \
                          &(device_enable_##attr_list))                              \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_LOCATION_DESCRIPTION_ID, (location_id))  \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_PHYSICAL_ENVIRONMENT_ID, (ph_env))       \
+    ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
+/**
+ *  @brief Declare attribute list for Basic cluster (extended attribute set).
+ *  @param attr_list [IN] - attribute list name.
+ *  @param zcl_version [IN] - pointer to variable storing ZCL version  attribute value.
+ *  @param app_version [IN] - pointer to the variable storing application version.
+ *  @param stack_version [IN] - pointer to the variable storing stack version.
+ *  @param hardware_version [IN] - pointer to the variable storing hardware version.
+ *  @param manufacturer_name [IN] - pointer to the variable storing manufacturer name.
+ *  @param model_id [IN] - pointer to the variable storing model identifier.
+ *  @param date_code [IN] - pointer to the variable storing date code.
+ *  @param power_source [IN] - pointer to variable storing power source attribute value.
+ *  @param location_id [IN] - pointer to variable storing location description attribute value.
+ *  @param ph_env [IN] - pointer to variable storing physical environment attribute value.
+ *  @param sw_build_id [IN] - pointer to the variable storing software version reference.
+ *  @param device_enabled - pointer to the variable storing device enabled reference.
+ */
+#define ZB_ZCL_DECLARE_BASIC_WITH_DEVICE_ENABLED_ATTRIB_LIST_EXT(                   \
+  attr_list,                                                                        \
+  zcl_version,                                                                      \
+  app_version,                                                                      \
+  stack_version,                                                                    \
+  hardware_version,                                                                 \
+  manufacturer_name,                                                                \
+  model_id,                                                                         \
+  date_code,                                                                        \
+  power_source,                                                                     \
+  location_id,                                                                      \
+  ph_env,                                                                           \
+  sw_build_id,                                                                      \
+  device_enabled)                                                                   \
+    ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_BASIC)      \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_ZCL_VERSION_ID, (zcl_version))           \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_APPLICATION_VERSION_ID, (app_version))   \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_STACK_VERSION_ID, (stack_version))       \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_HW_VERSION_ID, (hardware_version))       \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_MANUFACTURER_NAME_ID, (manufacturer_name))\
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_MODEL_IDENTIFIER_ID, (model_id))         \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_DATE_CODE_ID, (date_code))               \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_POWER_SOURCE_ID, (power_source))         \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_SW_BUILD_ID, (sw_build_id))              \
+    ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_DEVICE_ENABLED_ID, (device_enabled))     \
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_LOCATION_DESCRIPTION_ID, (location_id))  \
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_BASIC_PHYSICAL_ENVIRONMENT_ID, (ph_env))       \
     ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
@@ -502,6 +560,16 @@ enum zb_zcl_basic_cmd_e
     result = user_app_data->status;                                 \
   }                                                                 \
 }
+
+/*! @brief Check Device Enabled attribute value and should the stack process command or not.
+    @see ZCL spec, subclause 3.2.2.2.18 DeviceEnabled Attribute
+    @param ep_id Endpoint ID
+    @param cmd_id Command ID
+    @param cluster_id Cluster ID
+    @param is_common_command Is command common or cluster specific
+    @return ZB_TRUE if command should be processed or sent, ZB_FALSE otherwise
+*/
+zb_bool_t zb_zcl_check_is_device_enabled(zb_uint8_t ep_id, zb_uint8_t cmd_id, zb_uint16_t cluster_id, zb_bool_t is_common_command);
 
 /** @} */ /* Basic cluster commands */
 

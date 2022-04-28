@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -135,30 +135,9 @@ zb_ret_t check_value_door_lock_server(zb_uint16_t attr_id, zb_uint8_t endpoint, 
 
 static zb_zcl_status_t zb_zcl_door_lock_map_ret_code_to_zcl_status(zb_ret_t ret_code)
 {
-  zb_zcl_status_t status;
-
   ZB_ASSERT(ret_code != RET_BUSY);
 
-  switch (ret_code)
-  {
-    case RET_OK:
-      status = ZB_ZCL_STATUS_SUCCESS;
-      break;
-    case RET_INVALID_PARAMETER_1:
-      status = ZB_ZCL_STATUS_INVALID_FIELD;
-      break;
-    case RET_INVALID_PARAMETER:
-      status = ZB_ZCL_STATUS_INVALID_VALUE;
-      break;
-    case RET_ERROR:
-      status = ZB_ZCL_STATUS_FAIL;
-      break;
-    default:
-      status = ZB_ZCL_STATUS_FAIL;
-      break;
-  }
-
-  return status;
+  return zb_zcl_get_zcl_status_from_ret(ret_code);
 }
 
 /** @brief Lock Door command */
@@ -183,15 +162,23 @@ static zb_ret_t zb_zcl_door_lock_lock_door_handler(zb_uint8_t param, const zb_zc
 
   if (ZB_ZCL_DEVICE_CMD_PARAM_STATUS(param) == RET_OK)
   {
-    ZB_ZCL_DOOR_LOCK_SEND_LOCK_DOOR_RES(param,
-      ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr,
-      ZB_APS_ADDR_MODE_16_ENDP_PRESENT,
-      ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).src_endpoint,
-      ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
-      cmd_info->profile_id,
-      cmd_info->seq_number,
-      pl_out.status,
-      security);
+    /* prevent to send response on ZGP command */
+    if (!ZB_ZCL_ADDR_TYPE_IS_GPD(cmd_info->addr_data.common_data.source.addr_type))
+    {
+      ZB_ZCL_DOOR_LOCK_SEND_LOCK_DOOR_RES(param,
+        ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr,
+        ZB_APS_ADDR_MODE_16_ENDP_PRESENT,
+        ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).src_endpoint,
+        ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
+        cmd_info->profile_id,
+        cmd_info->seq_number,
+        pl_out.status,
+        security);
+    }
+    else
+    {
+      zb_buf_free(param);
+    }
     ret = RET_BUSY;
   }
   else
@@ -225,15 +212,23 @@ static zb_ret_t zb_zcl_door_lock_unlock_door_handler(zb_uint8_t param, const zb_
 
   if (ZB_ZCL_DEVICE_CMD_PARAM_STATUS(param) == RET_OK)
   {
-    ZB_ZCL_DOOR_LOCK_SEND_UNLOCK_DOOR_RES(param,
-      ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr,
-      ZB_APS_ADDR_MODE_16_ENDP_PRESENT,
-      ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).src_endpoint,
-      ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
-      cmd_info->profile_id,
-      cmd_info->seq_number,
-      pl_out.status,
-      security);
+    /* prevent to send response on ZGP command */
+    if (!ZB_ZCL_ADDR_TYPE_IS_GPD(cmd_info->addr_data.common_data.source.addr_type))
+    {
+      ZB_ZCL_DOOR_LOCK_SEND_UNLOCK_DOOR_RES(param,
+        ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr,
+        ZB_APS_ADDR_MODE_16_ENDP_PRESENT,
+        ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).src_endpoint,
+        ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
+        cmd_info->profile_id,
+        cmd_info->seq_number,
+        pl_out.status,
+        security);
+    }
+    else
+    {
+      zb_buf_free(param);
+    }
     ret = RET_BUSY;
   }
   else

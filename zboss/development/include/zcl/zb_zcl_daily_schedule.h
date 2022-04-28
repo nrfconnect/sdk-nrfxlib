@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Daily Schedule cluster defintions
+/* PURPOSE: Daily Schedule cluster definitions
 */
 
 #ifndef ZB_ZCL_DAILY_SCHEDULE_H_
@@ -128,7 +128,7 @@ typedef enum zb_zcl_daily_schedule_srv_schedule_attr_set_e
   /* (O) */
   ZB_ZCL_ATTR_DAILY_SCHEDULE_PEAK_END_TIME = 0x0105,       /**< The @e PeakEndTime attribute */
   /* (O) */
-  ZB_ZCL_ATTR_DAILY_SCHEDULE_CURR_TARIFF_LABEL = 0x0106,   /**< The @e CurrentTariffLabel attrubute */
+  ZB_ZCL_ATTR_DAILY_SCHEDULE_CURR_TARIFF_LABEL = 0x0106,   /**< The @e CurrentTariffLabel attribute */
 } zb_zcl_daily_schedule_srv_schedule_attr_set_t;
 
 

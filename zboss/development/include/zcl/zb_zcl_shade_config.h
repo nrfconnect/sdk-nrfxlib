@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -75,7 +75,7 @@ enum zb_zcl_shade_config_info_attr_e
    *  position that the shade can physically move to. */
   ZB_ZCL_ATTR_SHADE_CONFIG_PHYSICAL_CLOSED_LIMIT_ID = 0x0000,
   /** The MotorStepSize attribute indicates the angle the shade motor moves for one step,
-   *  measured in 1/10ths of a degree. */
+   *  measured in 1/10th of a degree. */
   ZB_ZCL_ATTR_SHADE_CONFIG_MOTOR_STEP_SIZE_ID       = 0x0001,
   /** @brief Status attribute */
   ZB_ZCL_ATTR_SHADE_CONFIG_STATUS_ID                = 0x0002

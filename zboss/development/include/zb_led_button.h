@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -139,7 +139,7 @@ void zb_button_on_cb(zb_uint8_t butt_no);
 /**
  * @brief Set state of given button to off and invoke button handler.
  *
- * Handler to invoke is chosen by botton and duration of button press.
+ * Handler to invoke is chosen by button and duration of button press.
  * See @ref zb_button_register_handler() for how to setup button handlers
  *
  * @param butt_no - number of button being released

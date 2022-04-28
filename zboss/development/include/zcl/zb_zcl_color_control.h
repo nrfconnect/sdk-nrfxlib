@@ -211,6 +211,9 @@ enum zb_zcl_color_control_attr_e
 /** @brief Default value for Color control cluster revision global attribute */
 #define ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0003u)
 
+/** @brief Maximal value for implemented Color control cluster revision global attribute */
+#define ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_MAX ZB_ZCL_COLOR_CONTROL_CLUSTER_REVISION_DEFAULT
+
 /** @brief Current Hue attribute minimum value */
 #define ZB_ZCL_COLOR_CONTROL_CURRENT_HUE_MIN_VALUE          0
 
@@ -1199,11 +1202,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_hue_req_s
 
 /*! @brief Send Move to Hue command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param hue - Hue value
@@ -1212,46 +1215,55 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_hue_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,                       \
-                                                       dst_ep, ep, prfl_id, def_resp, cb, hue, direction, \
-                                                       transition_time, options_mask, options_override)   \
-{                                                                                                         \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                       \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                                    \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE);   \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (hue));                                                                    \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (direction));                                                              \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                                   \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                           \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                       \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                                     \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                              \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);                \
-}
+void zb_zcl_color_control_send_move_to_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                    zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                    zb_uint8_t ep, zb_uint16_t prof_id,
+                                                    zb_uint8_t def_resp, zb_callback_t cb,
+                                                    zb_uint8_t hue, zb_uint8_t direction,
+                                                    zb_uint16_t transition_time,
+                                                    zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Move to Hue command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_REQ_ZCL8 instead.
+/*! @brief Send Move to Hue command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_move_to_hue_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param hue - Hue value
     @param direction - Direction value, see @ref zb_zcl_color_control_move_to_hue_direction_e
     @param transition_time - Transition Time value
 */
+void zb_zcl_color_control_send_move_to_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                               zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                               zb_uint8_t ep, zb_uint16_t prof_id,
+                                               zb_uint8_t def_resp, zb_callback_t cb,
+                                               zb_uint8_t hue, zb_uint8_t direction,
+                                               zb_uint16_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_to_hue_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,                       \
+                                                       dst_ep, ep, prfl_id, def_resp, cb, hue, direction, \
+                                                       transition_time, options_mask, options_override)   \
+{                                                                                                         \
+  zb_zcl_color_control_send_move_to_hue_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,             \
+                                                 dst_ep, ep, prfl_id, def_resp, cb, hue, direction,       \
+                                                 transition_time, options_mask, options_override);        \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_to_hue_req function
+ */
 #define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_REQ(buffer, addr, dst_addr_mode,                               \
                                                   dst_ep, ep, prfl_id, def_resp, cb, hue, direction,         \
                                                   transition_time)                                           \
 {                                                                                                            \
-  ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id,           \
-                                                 def_resp, cb, hue, direction, transition_time,              \
-                                                 ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,      \
-                                                 ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE)  \
+  zb_zcl_color_control_send_move_to_hue_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                     \
+                                            dst_ep, ep, prfl_id, def_resp, cb, hue, direction,               \
+                                            transition_time);                                                \
 }
 
 /** @brief Macro for getting Move to Hue command
@@ -1298,11 +1310,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_hue_req_s
 
 /*! @brief Send Move Hue command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param move_mode - Move mode, see @ref zb_zcl_color_control_move_direction_e
@@ -1310,43 +1322,50 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_hue_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,                    \
-                                                    dst_ep, ep, prfl_id, def_resp, cb, move_mode,   \
-                                                    rate, options_mask, options_override)           \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_HUE);\
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (rate));                                                             \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_move_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                 zb_uint8_t move_mode, zb_uint8_t rate,
+                                                 zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Move Hue command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_MOVE_HUE_REQ_ZCL8 instead.
+/*! @brief Send Move Hue command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_move_hue_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param move_mode - Move mode, see @ref zb_zcl_color_control_move_direction_e
     @param rate - Rate
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_HUE_REQ(buffer, addr, dst_addr_mode,                               \
-  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate)                                                     \
-{                                                                                                         \
-  ZB_ZCL_COLOR_CONTROL_SEND_MOVE_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,                                \
-                                              dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate,         \
-                                              ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,      \
-                                              ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE)  \
+void zb_zcl_color_control_send_move_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                            zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                            zb_uint8_t ep, zb_uint16_t prof_id,
+                                            zb_uint8_t def_resp, zb_callback_t cb,
+                                            zb_uint8_t move_mode, zb_uint8_t rate);
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_hue_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,                    \
+                                                    dst_ep, ep, prfl_id, def_resp, cb, move_mode,   \
+                                                    rate, options_mask, options_override)           \
+{                                                                                                   \
+  zb_zcl_color_control_send_move_hue_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,          \
+                                              dst_ep, ep, prfl_id, def_resp, cb, move_mode,         \
+                                              rate, options_mask, options_override);                \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_hue_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_HUE_REQ(buffer, addr, dst_addr_mode,                   \
+  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate)                                         \
+{                                                                                             \
+  zb_zcl_color_control_send_move_hue_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,         \
+                                         dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate); \
 }
 
 /** @brief Macro for getting Move Hue command
@@ -1395,11 +1414,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_hue_req_s
 
 /*! @brief Send Step Hue command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param step_mode - step mode value, see @ref zb_zcl_color_control_step_mode_e
@@ -1408,47 +1427,55 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_hue_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,                         \
-                                                    dst_ep, ep, prfl_id, def_resp, cb, step_mode,        \
-                                                    step_size, transition_time, options_mask,            \
-                                                    options_override)                                    \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_HUE);\
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_size));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                             \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_step_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                 zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                 zb_uint8_t transition_time,
+                                                 zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Step Hue command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_STEP_HUE_REQ_ZCL8 instead.
+/*! @brief Send Step Hue command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_step_hue_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param step_mode - step mode value, see @ref zb_zcl_color_control_step_mode_e
     @param step_size - step size value
     @param transition_time - Transition Time value
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_HUE_REQ(buffer, addr, dst_addr_mode,                               \
-  dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time)                               \
-{                                                                                                         \
-  ZB_ZCL_COLOR_CONTROL_SEND_STEP_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,                                \
-                                              dst_ep, ep, prfl_id, def_resp, cb, step_mode,               \
-                                              step_size, transition_time,                                 \
-                                              ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,      \
-                                              ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE)  \
+void zb_zcl_color_control_send_step_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                            zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                            zb_uint8_t ep, zb_uint16_t prof_id,
+                                            zb_uint8_t def_resp, zb_callback_t cb,
+                                            zb_uint8_t step_mode, zb_uint8_t step_size,
+                                            zb_uint8_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_step_hue_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,                  \
+                                                    dst_ep, ep, prfl_id, def_resp, cb, step_mode, \
+                                                    step_size, transition_time, options_mask,     \
+                                                    options_override)                             \
+{                                                                                                 \
+  zb_zcl_color_control_send_step_hue_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,        \
+                                             dst_ep, ep, prfl_id, def_resp, cb, step_mode,        \
+                                             step_size, transition_time, options_mask,            \
+                                             options_override);                                   \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_step_hue_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_HUE_REQ(buffer, addr, dst_addr_mode,                                         \
+  dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time)                                         \
+{                                                                                                                   \
+  zb_zcl_color_control_send_step_hue_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                               \
+                                         dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time); \
 }
 
 /** @brief Macro for getting Step Hue command
@@ -1496,11 +1523,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_saturation_req_s
 
 /*! @brief Send Move to Saturation command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param saturation - saturation
@@ -1508,45 +1535,54 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_saturation_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,               \
-                                                              dst_ep, ep, prfl_id, def_resp, cb,         \
-                                                              saturation, transition_time, options_mask, \
-                                                              options_override)                          \
-{                                                                                                        \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                      \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                                   \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_SATURATION);    \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (saturation));                                                            \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                                  \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                          \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                      \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                                    \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                             \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);               \
-}
+void zb_zcl_color_control_send_move_to_saturation_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                           zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                           zb_uint8_t ep, zb_uint16_t prof_id,
+                                                           zb_uint8_t def_resp, zb_callback_t cb,
+                                                           zb_uint8_t saturation,
+                                                           zb_uint16_t transition_time,
+                                                           zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Move to Saturation command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_SATURATION_REQ_ZCL8 instead.
+/*! @brief Send Move to Saturation command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_move_to_saturation_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param saturation - saturation
     @param transition_time - Transition Time value
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_SATURATION_REQ(buffer, addr, dst_addr_mode,                               \
-  dst_ep, ep, prfl_id, def_resp, cb, saturation, transition_time)                                                   \
-{                                                                                                                   \
-  ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,                                \
-                                                        dst_ep, ep, prfl_id, def_resp, cb,                          \
-                                                        saturation, transition_time,                                \
-                                                        ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,      \
-                                                        ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE)  \
+void zb_zcl_color_control_send_move_to_saturation_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                      zb_uint8_t saturation,
+                                                      zb_uint16_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_to_saturation_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,               \
+                                                              dst_ep, ep, prfl_id, def_resp, cb,         \
+                                                              saturation, transition_time, options_mask, \
+                                                              options_override)                          \
+{                                                                                                        \
+  zb_zcl_color_control_send_move_to_saturation_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,     \
+                                                        dst_ep, ep, prfl_id, def_resp, cb,               \
+                                                        saturation, transition_time, options_mask,       \
+                                                        options_override);                               \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_to_saturation_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_SATURATION_REQ(buffer, addr, dst_addr_mode,           \
+  dst_ep, ep, prfl_id, def_resp, cb, saturation, transition_time)                               \
+{                                                                                               \
+  zb_zcl_color_control_send_move_to_saturation_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, \
+  dst_ep, ep, prfl_id, def_resp, cb, saturation, transition_time);                              \
 }
 
 /** @brief Macro for getting Move To Saturation command
@@ -1592,11 +1628,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_saturation_req_s
 
 /*! @brief Send Move Saturation command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param move_mode - Move mode, see @ref zb_zcl_color_control_move_direction_e
@@ -1604,44 +1640,50 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_saturation_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,                        \
-                                                           dst_ep, ep, prfl_id, def_resp, cb, move_mode,       \
-                                                           rate, options_mask, options_override)               \
-{                                                                                                              \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                            \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                                         \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_SATURATION);    \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));                                                                   \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (rate));                                                                        \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                                \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                            \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                                          \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                                   \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);                     \
-}
+void zb_zcl_color_control_send_move_saturation_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint8_t move_mode, zb_uint8_t rate,
+                                                        zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Move Saturation command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_MOVE_SATURATION_REQ_ZCL8 instead.
+/*! @brief Send Move Saturation command (pew-ZCL8)
+    Use @ref zb_zcl_color_control_send_move_saturation_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param move_mode - Move mode, see @ref zb_zcl_color_control_move_direction_e
     @param rate - Rate
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_SATURATION_REQ(buffer, addr, dst_addr_mode,                               \
-  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate)                                                            \
-{                                                                                                                \
-  ZB_ZCL_COLOR_CONTROL_SEND_MOVE_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,                                \
-                                                     dst_ep, ep, prfl_id, def_resp, cb, move_mode,               \
-                                                     rate,                                                       \
-                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,      \
-                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE)  \
+void zb_zcl_color_control_send_move_saturation_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint8_t move_mode, zb_uint8_t rate);
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_saturation_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,                  \
+                                                           dst_ep, ep, prfl_id, def_resp, cb, move_mode, \
+                                                           rate, options_mask, options_override)         \
+{                                                                                                        \
+  zb_zcl_color_control_send_move_saturation_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,        \
+                                                     dst_ep, ep, prfl_id, def_resp, cb, move_mode,       \
+                                                     rate, options_mask, options_override);              \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_saturation_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_SATURATION_REQ(buffer, addr, dst_addr_mode,           \
+  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate)                                        \
+{                                                                                            \
+  zb_zcl_color_control_send_move_saturation_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, \
+  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate);                                       \
 }
 
 /** @brief Macro for getting Move Saturation command
@@ -1690,11 +1732,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_saturation_req_s
 
 /*! @brief Send Step Saturation command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param step_mode - step mode value, see @ref zb_zcl_color_control_step_mode_e
@@ -1703,47 +1745,55 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_saturation_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,                     \
-                                                           dst_ep, ep, prfl_id, def_resp, cb, step_mode,    \
-                                                           step_size, transition_time, options_mask,        \
-                                                           options_override)                                \
-{                                                                                                           \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                         \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                                      \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_SATURATION); \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));                                                                \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_size));                                                                \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (transition_time));                                                          \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                             \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                         \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                                       \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                                \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);                  \
-}
+void zb_zcl_color_control_send_step_saturation_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                        zb_uint8_t transition_time,
+                                                        zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Step Saturation command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_STEP_SATURATION_REQ_ZCL8 instead.
+/*! @brief Send Step Saturation command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_step_saturation_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param step_mode - step mode value, see @ref zb_zcl_color_control_step_mode_e
     @param step_size - step size value
     @param transition_time - Transition Time value
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_SATURATION_REQ(buffer, addr, dst_addr_mode,                              \
-  dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time)                                     \
-{                                                                                                               \
-  ZB_ZCL_COLOR_CONTROL_SEND_STEP_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,                               \
-                                                     dst_ep, ep, prfl_id, def_resp, cb, step_mode,              \
-                                                     step_size, transition_time,                                \
-                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,     \
-                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_step_saturation_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                   zb_uint8_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_step_saturation_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,                  \
+                                                           dst_ep, ep, prfl_id, def_resp, cb, step_mode, \
+                                                           step_size, transition_time, options_mask,     \
+                                                           options_override)                             \
+{                                                                                                        \
+  zb_zcl_color_control_send_step_saturation_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,        \
+                                                     dst_ep, ep, prfl_id, def_resp, cb, step_mode,       \
+                                                     step_size, transition_time, options_mask,           \
+                                                     options_override);                                  \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_step_saturation_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_SATURATION_REQ(buffer, addr, dst_addr_mode,                                         \
+  dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time)                                                \
+{                                                                                                                          \
+  zb_zcl_color_control_send_step_saturation_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                               \
+                                                dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time); \
 }
 
 /** @brief Macro for getting Step Saturation command
@@ -1793,11 +1843,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_hue_saturation_req_s
 
 /*! @brief Send Move to Hue and Saturation command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param hue - hue
@@ -1806,47 +1856,57 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_hue_saturation_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,           \
-                                                                  dst_ep, ep, prfl_id, def_resp, cb,     \
-                                                                  hue, saturation, transition_time,      \
-                                                                  options_mask, options_override)        \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_HUE_SATURATION);\
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (hue));                                                              \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (saturation));                                                       \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                             \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_move_to_hue_saturation_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                               zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                               zb_uint8_t ep, zb_uint16_t prof_id,
+                                                               zb_uint8_t def_resp, zb_callback_t cb,
+                                                               zb_uint8_t hue,
+                                                               zb_uint8_t saturation,
+                                                               zb_uint16_t transition_time,
+                                                               zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Move to Hue and Saturation command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_SATURATION_REQ_ZCL8 instead.
+/*! @brief Send Move to Hue and Saturation command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_move_to_hue_saturation_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param hue - hue
     @param saturation - saturation
     @param transition_time - Transition Time value
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_SATURATION_REQ(buffer, addr, dst_addr_mode,           \
-  dst_ep, ep, prfl_id, def_resp, cb, hue, saturation, transition_time)                              \
-{                                                                                                   \
-  ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,            \
-                                                            dst_ep, ep, prfl_id, def_resp, cb,      \
-                                                            hue, saturation, transition_time,       \
-                                                            ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,\
-                                                            ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_move_to_hue_saturation_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                          zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                          zb_uint8_t ep, zb_uint16_t prof_id,
+                                                          zb_uint8_t def_resp, zb_callback_t cb,
+                                                          zb_uint8_t hue,
+                                                          zb_uint8_t saturation,
+                                                          zb_uint16_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_to_hue_saturation_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,           \
+                                                                  dst_ep, ep, prfl_id, def_resp, cb,     \
+                                                                  hue, saturation, transition_time,      \
+                                                                  options_mask, options_override)        \
+{                                                                                                        \
+  zb_zcl_color_control_send_move_to_hue_saturation_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, \
+                                                            dst_ep, ep, prfl_id, def_resp, cb,           \
+                                                            hue, saturation, transition_time,            \
+                                                            options_mask, options_override);             \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_to_hue_saturation_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_HUE_SATURATION_REQ(buffer, addr, dst_addr_mode,                                    \
+  dst_ep, ep, prfl_id, def_resp, cb, hue, saturation, transition_time)                                                       \
+{                                                                                                                            \
+  zb_zcl_color_control_send_move_to_hue_saturation_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                          \
+                                                       dst_ep, ep, prfl_id, def_resp, cb, hue, saturation, transition_time); \
 }
 
 /** @brief Macro for getting Move To Hue and Saturation command
@@ -1896,11 +1956,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_color_req_s
 
 /*! @brief Send Move to Color command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param color_x - colorX
@@ -1909,47 +1969,57 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_color_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_REQ_ZCL8(buffer, addr, dst_addr_mode,                    \
-                                                         dst_ep, ep, prfl_id, def_resp, cb, color_x,     \
-                                                         color_y, transition_time,                       \
-                                                         options_mask, options_override)                 \
-{                                                                                                        \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                      \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                                   \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_COLOR);\
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_x));                                                          \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_y));                                                          \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                                  \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                          \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                      \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                                    \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                             \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);               \
-}
+void zb_zcl_color_control_send_move_to_color_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                      zb_uint16_t color_x,
+                                                      zb_uint16_t color_y,
+                                                      zb_uint16_t transition_time,
+                                                      zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Move to Color command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_REQ_ZCL8 instead.
+/*! @brief Send Move to Color command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_move_to_color_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param color_x - colorX
     @param color_y - colorY
     @param transition_time - Transition Time value
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_REQ(buffer, addr, dst_addr_mode,                    \
-  dst_ep, ep, prfl_id, def_resp, cb, color_x, color_y, transition_time)                             \
-{                                                                                                   \
-  ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_REQ_ZCL8(buffer, addr, dst_addr_mode,                     \
-                                                   dst_ep, ep, prfl_id, def_resp, cb, color_x,      \
-                                                   color_y, transition_time,                        \
-                                                   ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,     \
-                                                   ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_move_to_color_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                 zb_uint16_t color_x,
+                                                 zb_uint16_t color_y,
+                                                 zb_uint16_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_to_color_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_REQ_ZCL8(buffer, addr, dst_addr_mode,                \
+                                                         dst_ep, ep, prfl_id, def_resp, cb, color_x, \
+                                                         color_y, transition_time,                   \
+                                                         options_mask, options_override)             \
+{                                                                                                    \
+  zb_zcl_color_control_send_move_to_color_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,      \
+                                                   dst_ep, ep, prfl_id, def_resp, cb, color_x,       \
+                                                   color_y, transition_time,                         \
+                                                   options_mask, options_override);                  \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_to_color_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_REQ(buffer, addr, dst_addr_mode,                                     \
+  dst_ep, ep, prfl_id, def_resp, cb, color_x, color_y, transition_time)                                              \
+{                                                                                                                    \
+  zb_zcl_color_control_send_move_to_color_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                           \
+                                              dst_ep, ep, prfl_id, def_resp, cb, color_x, color_y, transition_time); \
 }
 
 
@@ -1998,11 +2068,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_req_s
 
 /*! @brief Send Move Color command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param rate_x - RateX
@@ -2010,43 +2080,52 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_REQ_ZCL8(buffer, addr, dst_addr_mode,                       \
-                                                      dst_ep, ep, prfl_id, def_resp, cb, rate_x, rate_y, \
-                                                      options_mask, options_override)                    \
-{                                                                                                        \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                      \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                                   \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_COLOR);   \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate_x));                                                           \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate_y));                                                           \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                          \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                      \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                                    \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                             \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);               \
-}
+void zb_zcl_color_control_send_move_color_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint16_t rate_x,
+                                                   zb_uint16_t rate_y,
+                                                   zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Move Color command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_REQ_ZCL8 instead.
+/*! @brief Send Move Color command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_move_color_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param rate_x - RateX
     @param rate_y - RateY
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_REQ(buffer, addr, dst_addr_mode,                              \
-    dst_ep, ep, prfl_id, def_resp, cb, rate_x, rate_y)                                                     \
-{                                                                                                          \
-  ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_REQ_ZCL8(buffer, addr, dst_addr_mode,                               \
-                                                dst_ep, ep, prfl_id, def_resp, cb, rate_x, rate_y,         \
-                                                ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,     \
-                                                ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_move_color_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                              zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                              zb_uint8_t ep, zb_uint16_t prof_id,
+                                              zb_uint8_t def_resp, zb_callback_t cb,
+                                              zb_uint16_t rate_x,
+                                              zb_uint16_t rate_y);
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_color_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_REQ_ZCL8(buffer, addr, dst_addr_mode,                       \
+                                                      dst_ep, ep, prfl_id, def_resp, cb, rate_x, rate_y, \
+                                                      options_mask, options_override)                    \
+{                                                                                                        \
+  zb_zcl_color_control_send_move_color_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,             \
+                                                dst_ep, ep, prfl_id, def_resp, cb, rate_x, rate_y,       \
+                                                options_mask, options_override);                         \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_color_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_REQ(buffer, addr, dst_addr_mode,                  \
+    dst_ep, ep, prfl_id, def_resp, cb, rate_x, rate_y)                                         \
+{                                                                                              \
+  zb_zcl_color_control_send_move_color_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,        \
+                                           dst_ep, ep, prfl_id, def_resp, cb, rate_x, rate_y); \
 }
 
 /** @brief Macro for getting Move Color command
@@ -2095,11 +2174,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_req_s
 
 /*! @brief Send Step Color command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param step_x - StepX
@@ -2108,47 +2187,57 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_REQ_ZCL8(buffer, addr, dst_addr_mode,                      \
-                                                      dst_ep, ep, prfl_id, def_resp, cb, step_x, step_y,\
-                                                      transition_time,                                  \
-                                                      options_mask, options_override)                   \
-{                                                                                                       \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                     \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                                  \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_COLOR);  \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_x));                                                          \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_y));                                                          \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                                 \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                         \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                     \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                                   \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                            \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);              \
-}
+void zb_zcl_color_control_send_step_color_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint16_t step_x,
+                                                   zb_uint16_t step_y,
+                                                   zb_uint16_t transition_time,
+                                                   zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Step Color command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_REQ_ZCL8 instead.
+/*! @brief Send Step Color command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_step_color_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param step_x - StepX
     @param step_y - StepY
     @param transition_time - Transition Time value
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_REQ(buffer, addr, dst_addr_mode,                       \
-  dst_ep, ep, prfl_id, def_resp, cb, step_x, step_y, transition_time)                               \
-{                                                                                                   \
-  ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_REQ_ZCL8(buffer, addr, dst_addr_mode,                        \
-                                                dst_ep, ep, prfl_id, def_resp, cb, step_x, step_y,  \
-                                                transition_time,                                    \
-                                                ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,     \
-                                                ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_step_color_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                              zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                              zb_uint8_t ep, zb_uint16_t prof_id,
+                                              zb_uint8_t def_resp, zb_callback_t cb,
+                                              zb_uint16_t step_x,
+                                              zb_uint16_t step_y,
+                                              zb_uint16_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_step_color_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_REQ_ZCL8(buffer, addr, dst_addr_mode,                      \
+                                                      dst_ep, ep, prfl_id, def_resp, cb, step_x, step_y,\
+                                                      transition_time,                                  \
+                                                      options_mask, options_override)                   \
+{                                                                                                       \
+  zb_zcl_color_control_send_step_color_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,            \
+                                                dst_ep, ep, prfl_id, def_resp, cb, step_x, step_y,      \
+                                                transition_time,                                        \
+                                                options_mask, options_override);                        \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_step_color_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_REQ(buffer, addr, dst_addr_mode,                                   \
+  dst_ep, ep, prfl_id, def_resp, cb, step_x, step_y, transition_time)                                           \
+{                                                                                                               \
+  zb_zcl_color_control_send_step_color_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                         \
+                                           dst_ep, ep, prfl_id, def_resp, cb, step_x, step_y, transition_time); \
 }
 
 /** @brief Macro for getting Move Color command
@@ -2193,14 +2282,13 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_color_temperature_req_
 #define ZB_ZCL_COLOR_CONTROL_MOVE_TO_COLOR_TEMP_REQ_PAYLOAD_LEN \
   sizeof(zb_zcl_color_control_move_to_color_temperature_req_t)
 
-
 /*! @brief Send Move To Color Temperature command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param color_temperature - Color Temperature
@@ -2208,45 +2296,54 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_to_color_temperature_req_
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_TEMPERATURE_REQ_ZCL8(buffer, addr, dst_addr_mode,        \
-                                                                     dst_ep, ep, prfl_id, def_resp, cb,  \
-                                                                     color_temperature, transition_time, \
-                                                                     options_mask, options_override)     \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_TO_COLOR_TEMPERATURE);  \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temperature));                                           \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                             \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_move_to_color_temperature_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                  zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                  zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                  zb_uint8_t def_resp, zb_callback_t cb,
+                                                                  zb_uint16_t color_temperature,
+                                                                  zb_uint16_t transition_time,
+                                                                  zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Move To Color Temperature command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_TEMPERATURE_REQ_ZCL8 instead.
+/*! @brief Send Move To Color Temperature command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_move_to_color_temperature_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param color_temperature - Color Temperature
     @param transition_time - Transition Time value
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_TEMPERATURE_REQ(buffer, addr, dst_addr_mode,        \
-  dst_ep, ep, prfl_id, def_resp, cb, color_temperature, transition_time)                            \
-{                                                                                                   \
-  ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_TEMPERATURE_REQ_ZCL8(buffer, addr, dst_addr_mode,         \
-                                                               dst_ep, ep, prfl_id, def_resp, cb,   \
-                                                               color_temperature, transition_time,  \
-                                                               ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,     \
-                                                               ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_move_to_color_temperature_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                                             zb_uint16_t color_temperature,
+                                                             zb_uint16_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_to_color_temperature_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_TEMPERATURE_REQ_ZCL8(buffer, addr, dst_addr_mode,           \
+                                                                     dst_ep, ep, prfl_id, def_resp, cb,     \
+                                                                     color_temperature, transition_time,    \
+                                                                     options_mask, options_override)        \
+{                                                                                                           \
+  zb_zcl_color_control_send_move_to_color_temperature_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, \
+                                                               dst_ep, ep, prfl_id, def_resp, cb,           \
+                                                               color_temperature, transition_time,          \
+                                                               options_mask, options_override);             \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_to_color_temperature_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_TO_COLOR_TEMPERATURE_REQ(buffer, addr, dst_addr_mode,                                      \
+  dst_ep, ep, prfl_id, def_resp, cb, color_temperature, transition_time)                                                          \
+{                                                                                                                                 \
+  zb_zcl_color_control_send_move_to_color_temperature_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                            \
+                                                          dst_ep, ep, prfl_id, def_resp, cb, color_temperature, transition_time); \
 }
 
 /** @brief Macro for getting Move to Color Temperature command
@@ -2295,60 +2392,70 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_to_hue_req_s
 
 /*! @brief Send Enhanced Move to Hue command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
-    @param ex_hue - Enhanced Hue value
+    @param enhanced_hue - Enhanced Hue value
     @param direction - Direction value, see @ref zb_zcl_color_control_move_to_hue_direction_e
     @param transition_time - Transition Time value
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,        \
-                                                                dst_ep, ep, prfl_id, def_resp, cb,  \
-                                                                ex_hue, direction, transition_time, \
-                                                                options_mask, options_override)     \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE); \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (ex_hue));                                                      \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (direction));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                             \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_enhanced_move_to_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                                             zb_uint16_t enhanced_hue,
+                                                             zb_uint8_t direction,
+                                                             zb_uint16_t transition_time,
+                                                             zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Enhanced Move to Hue command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_REQ_ZCL8 instead.
+/*! @brief Send Enhanced Move to Hue command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_enhanced_move_to_hue_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
-    @param ex_hue - Enhanced Hue value
+    @param enhanced_hue - Enhanced Hue value
     @param direction - Direction value, see @ref zb_zcl_color_control_move_to_hue_direction_e
     @param transition_time - Transition Time value
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_REQ(buffer, addr, dst_addr_mode,             \
-  dst_ep, ep, prfl_id, def_resp, cb, ex_hue, direction, transition_time)                            \
-{                                                                                                   \
-  ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,              \
-                                                          dst_ep, ep, prfl_id, def_resp, cb,        \
-                                                          ex_hue, direction, transition_time,       \
-                                                          ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,\
-                                                          ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_enhanced_move_to_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint16_t enhanced_hue,
+                                                        zb_uint8_t direction,
+                                                        zb_uint16_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_enhanced_move_to_hue_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,          \
+                                                                dst_ep, ep, prfl_id, def_resp, cb,    \
+                                                                ex_hue, direction, transition_time,   \
+                                                                options_mask, options_override)       \
+{                                                                                                     \
+  zb_zcl_color_control_send_enhanced_move_to_hue_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,\
+                                                          dst_ep, ep, prfl_id, def_resp, cb,          \
+                                                          ex_hue, direction, transition_time,         \
+                                                          options_mask, options_override);            \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_enhanced_move_to_hue_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_REQ(buffer, addr, dst_addr_mode,                                     \
+  dst_ep, ep, prfl_id, def_resp, cb, ex_hue, direction, transition_time)                                                    \
+{                                                                                                                           \
+  zb_zcl_color_control_send_enhanced_move_to_hue_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                           \
+                                                    dst_ep, ep, prfl_id, def_resp, cb, ex_hue, direction, transition_time); \
 }
 
 /** @brief Macro for getting Enhanced Move to Hue command
@@ -2396,11 +2503,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_hue_req_s
 
 /*! @brief Send Enhanced Move Hue command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param move_mode - Move mode, see @ref zb_zcl_color_control_move_direction_e
@@ -2408,45 +2515,54 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_hue_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,           \
-                                                             dst_ep, ep, prfl_id, def_resp, cb,     \
-                                                             move_mode, rate,                       \
-                                                             options_mask, options_override)        \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_HUE);  \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_enhanced_move_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                          zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                          zb_uint8_t ep, zb_uint16_t prof_id,
+                                                          zb_uint8_t def_resp, zb_callback_t cb,
+                                                          zb_uint8_t move_mode,
+                                                          zb_uint16_t rate,
+                                                          zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Enhanced Move Hue command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_HUE_REQ_ZCL8 instead.
+/*! @brief Send Enhanced Move Hue command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_enhanced_move_hue_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param move_mode - Move mode, see @ref zb_zcl_color_control_move_direction_e
     @param rate - Rate
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_HUE_REQ(buffer, addr, dst_addr_mode,               \
-  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate)                                              \
-{                                                                                                  \
-  ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,                \
-                                                       dst_ep, ep, prfl_id, def_resp, cb,          \
-                                                       move_mode, rate,                            \
-                                                       ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,     \
-                                                       ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_enhanced_move_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                     zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                     zb_uint8_t ep, zb_uint16_t prof_id,
+                                                     zb_uint8_t def_resp, zb_callback_t cb,
+                                                     zb_uint8_t move_mode,
+                                                     zb_uint16_t rate);
+
+/** Macro for calling @ref zb_zcl_color_control_send_enhanced_move_hue_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,           \
+                                                             dst_ep, ep, prfl_id, def_resp, cb,     \
+                                                             move_mode, rate,                       \
+                                                             options_mask, options_override)        \
+{                                                                                                   \
+  zb_zcl_color_control_send_enhanced_move_hue_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, \
+                                                       dst_ep, ep, prfl_id, def_resp, cb,           \
+                                                       move_mode, rate,                             \
+                                                       options_mask, options_override);             \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_enhanced_move_hue_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_HUE_REQ(buffer, addr, dst_addr_mode,                   \
+  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate)                                                  \
+{                                                                                                      \
+  zb_zcl_color_control_send_enhanced_move_hue_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,         \
+                                                  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate); \
 }
 
 /** @brief Macro for getting Enhanced Move Hue command
@@ -2495,11 +2611,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_step_hue_req_s
 
 /*! @brief Send Enhanced Step Hue command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param step_mode - step mode value, see @ref zb_zcl_color_control_step_mode_e
@@ -2508,47 +2624,57 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_step_hue_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_STEP_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,           \
-                                                             dst_ep, ep, prfl_id, def_resp, cb,     \
-                                                             step_mode, step_size, transition_time, \
-                                                             options_mask, options_override)        \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_STEP_HUE);    \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_size));                                                   \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                             \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_enhanced_step_hue_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                          zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                          zb_uint8_t ep, zb_uint16_t prof_id,
+                                                          zb_uint8_t def_resp, zb_callback_t cb,
+                                                          zb_uint8_t step_mode,
+                                                          zb_uint16_t step_size,
+                                                          zb_uint16_t transition_time,
+                                                          zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Enhanced Step Hue command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_STEP_HUE_REQ_ZCL8 instead.
+/*! @brief Send Enhanced Step Hue command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_enhanced_step_hue_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param step_mode - step mode value, see @ref zb_zcl_color_control_step_mode_e
     @param step_size - step size value
     @param transition_time - Transition Time value
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_STEP_HUE_REQ(buffer, addr, dst_addr_mode,               \
-  dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time)                        \
-{                                                                                                  \
-  ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_STEP_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,                \
-                                                       dst_ep, ep, prfl_id, def_resp, cb,          \
-                                                       step_mode, step_size, transition_time,      \
-                                                       ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,     \
-                                                       ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_enhanced_step_hue_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                     zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                     zb_uint8_t ep, zb_uint16_t prof_id,
+                                                     zb_uint8_t def_resp, zb_callback_t cb,
+                                                     zb_uint8_t step_mode,
+                                                     zb_uint16_t step_size,
+                                                     zb_uint16_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_enhanced_step_hue_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_STEP_HUE_REQ_ZCL8(buffer, addr, dst_addr_mode,           \
+                                                             dst_ep, ep, prfl_id, def_resp, cb,     \
+                                                             step_mode, step_size, transition_time, \
+                                                             options_mask, options_override)        \
+{                                                                                                   \
+  zb_zcl_color_control_send_enhanced_step_hue_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, \
+                                                       dst_ep, ep, prfl_id, def_resp, cb,           \
+                                                       step_mode, step_size, transition_time,       \
+                                                       options_mask, options_override);             \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_enhanced_step_hue_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_STEP_HUE_REQ(buffer, addr, dst_addr_mode,                                         \
+  dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time)                                                  \
+{                                                                                                                            \
+  zb_zcl_color_control_send_enhanced_step_hue_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                               \
+                                                  dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time); \
 }
 
 /** @brief Macro for getting Enhanced Step Hue command
@@ -2598,11 +2724,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_to_hue_saturatio
 
 /*! @brief Send Enhanced Move to Hue and Saturation command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param enhanced_hue - enhanced hue
@@ -2611,49 +2737,59 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_enhanced_move_to_hue_saturatio
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,    \
-                                                                           dst_ep, ep, prfl_id, def_resp,  \
-                                                                           cb, enhanced_hue, saturation,   \
-                                                                           transition_time,                \
-                                                                           options_mask, options_override) \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_ENHANCED_MOVE_TO_HUE_SATURATION);    \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (enhanced_hue));                                                \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (saturation));                                                       \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                             \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                                        zb_uint16_t enhanced_hue,
+                                                                        zb_uint8_t saturation,
+                                                                        zb_uint16_t transition_time,
+                                                                        zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Enhanced Move to Hue and Saturation command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_SATURATION_REQ_ZCL8 instead.
+/*! @brief Send Enhanced Move to Hue and Saturation command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param enhanced_hue - enhanced hue
     @param saturation - saturation
     @param transition_time - Transition Time value
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_SATURATION_REQ(buffer, addr, dst_addr_mode,  \
-  dst_ep, ep, prfl_id, def_resp, cb, enhanced_hue, saturation, transition_time)                     \
-{                                                                                                   \
-  ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,   \
-                                                                     dst_ep, ep, prfl_id, def_resp, \
-                                                                     cb, enhanced_hue, saturation,  \
-                                                                     transition_time,               \
-                                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,\
-                                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                                   zb_uint16_t enhanced_hue,
+                                                                   zb_uint8_t saturation,
+                                                                   zb_uint16_t transition_time);
+
+/** Macro for calling @ref zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_SATURATION_REQ_ZCL8(buffer, addr, dst_addr_mode,           \
+                                                                           dst_ep, ep, prfl_id, def_resp,         \
+                                                                           cb, enhanced_hue, saturation,          \
+                                                                           transition_time,                       \
+                                                                           options_mask, options_override)        \
+{                                                                                                                 \
+  zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, \
+                                                                     dst_ep, ep, prfl_id, def_resp,               \
+                                                                     cb, enhanced_hue, saturation,                \
+                                                                     transition_time,                             \
+                                                                     options_mask, options_override);             \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_ENHANCED_MOVE_TO_HUE_SATURATION_REQ(buffer, addr, dst_addr_mode,                                             \
+  dst_ep, ep, prfl_id, def_resp, cb, enhanced_hue, saturation, transition_time)                                                                \
+{                                                                                                                                              \
+  zb_zcl_color_control_send_enhanced_move_to_hue_saturation_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                                   \
+                                                                dst_ep, ep, prfl_id, def_resp, cb, enhanced_hue, saturation, transition_time); \
 }
 
 /** @brief Macro for getting Enhanced Move To Hue and Saturation command
@@ -2763,11 +2899,11 @@ typedef struct zb_zcl_color_control_color_loop_set_s
 
 /*! @brief Send Color Loop Set command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param update_flags - update flags, see @ref zb_zcl_color_control_color_loop_update_e
@@ -2778,35 +2914,25 @@ typedef struct zb_zcl_color_control_color_loop_set_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_COLOR_LOOP_SET_REQ_ZCL8(buffer, addr, dst_addr_mode,                    \
-                                                          dst_ep, ep, prfl_id, def_resp, cb, update_flags,\
-                                                          action, direction, time, start_hue,             \
-                                                          options_mask, options_override)                 \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_COLOR_LOOP_SET);  \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (update_flags));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (action));                                                           \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (direction));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (time));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (start_hue));                                                   \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_color_loop_set_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                       zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                       zb_uint8_t ep, zb_uint16_t prof_id,
+                                                       zb_uint8_t def_resp, zb_callback_t cb,
+                                                       zb_uint8_t update_flags,
+                                                       zb_uint8_t action,
+                                                       zb_uint8_t direction,
+                                                       zb_uint16_t time,
+                                                       zb_uint16_t start_hue,
+                                                       zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Color Loop Set command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_COLOR_LOOP_SET_REQ_ZCL8 instead.
+/*! @brief Send Color Loop Set command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_color_loop_set_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param update_flags - update flags, see @ref zb_zcl_color_control_color_loop_update_e
@@ -2815,14 +2941,36 @@ typedef struct zb_zcl_color_control_color_loop_set_s
     @param time - time
     @param start_hue - start hue
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_COLOR_LOOP_SET_REQ(buffer, addr, dst_addr_mode,                    \
-  dst_ep, ep, prfl_id, def_resp, cb, update_flags, action, direction, time, start_hue)               \
-{                                                                                                    \
-  ZB_ZCL_COLOR_CONTROL_SEND_COLOR_LOOP_SET_REQ_ZCL8(buffer, addr, dst_addr_mode,                     \
-                                                    dst_ep, ep, prfl_id, def_resp, cb, update_flags, \
-                                                    action, direction, time, start_hue,              \
-                                                    ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,     \
-                                                    ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_color_loop_set_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                  zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                  zb_uint8_t ep, zb_uint16_t prof_id,
+                                                  zb_uint8_t def_resp, zb_callback_t cb,
+                                                  zb_uint8_t update_flags,
+                                                  zb_uint8_t action,
+                                                  zb_uint8_t direction,
+                                                  zb_uint16_t time,
+                                                  zb_uint16_t start_hue);
+
+/** Macro for calling @ref zb_zcl_color_control_send_color_loop_set_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_COLOR_LOOP_SET_REQ_ZCL8(buffer, addr, dst_addr_mode,                    \
+                                                          dst_ep, ep, prfl_id, def_resp, cb, update_flags,\
+                                                          action, direction, time, start_hue,             \
+                                                          options_mask, options_override)                 \
+{                                                                                                         \
+  zb_zcl_color_control_send_color_loop_set_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,          \
+                                                    dst_ep, ep, prfl_id, def_resp, cb, update_flags,      \
+                                                    action, direction, time, start_hue,                   \
+                                                    options_mask, options_override);                      \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_color_loop_set_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_COLOR_LOOP_SET_REQ(buffer, addr, dst_addr_mode,                                                   \
+  dst_ep, ep, prfl_id, def_resp, cb, update_flags, action, direction, time, start_hue)                                              \
+{                                                                                                                                   \
+  zb_zcl_color_control_send_color_loop_set_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                                         \
+                                               dst_ep, ep, prfl_id, def_resp, cb, update_flags, action, direction, time, start_hue);\
 }
 
 /** @brief Macro for getting Color Loop Set command
@@ -2858,49 +3006,56 @@ typedef struct zb_zcl_color_control_color_loop_set_s
 
 /*! @brief Stop move step command, see ZCL8 spec 5.2.2.3.20
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_STOP_MOVE_STEP_REQ_ZCL8(buffer, addr, dst_addr_mode,              \
-                                                          dst_ep, ep, prfl_id, def_resp, cb,        \
-                                                          options_mask, options_override)           \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STOP_MOVE_STEP);  \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_stop_move_step_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                       zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                       zb_uint8_t ep, zb_uint16_t prof_id,
+                                                       zb_uint8_t def_resp, zb_callback_t cb,
+                                                       zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Stop move step command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_STOP_MOVE_STEP_REQ_ZCL8 instead.
+/*! @brief Stop move step command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_stop_move_step_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_STOP_MOVE_STEP_REQ(buffer, addr, dst_addr_mode,                   \
-  dst_ep, ep, prfl_id, def_resp, cb)                                                                \
-{                                                                                                   \
-  ZB_ZCL_COLOR_CONTROL_SEND_STOP_MOVE_STEP_REQ_ZCL8(buffer, addr, dst_addr_mode,                    \
-                                                    dst_ep, ep, prfl_id, def_resp, cb,              \
-                                                    ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,     \
-                                                    ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_stop_move_step_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                  zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                  zb_uint8_t ep, zb_uint16_t prof_id,
+                                                  zb_uint8_t def_resp, zb_callback_t cb);
+
+/** Macro for calling @ref zb_zcl_color_control_send_stop_move_step_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_STOP_MOVE_STEP_REQ_ZCL8(buffer, addr, dst_addr_mode,           \
+                                                          dst_ep, ep, prfl_id, def_resp, cb,     \
+                                                          options_mask, options_override)        \
+{                                                                                                \
+  zb_zcl_color_control_send_stop_move_step_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, \
+                                                    dst_ep, ep, prfl_id, def_resp, cb,           \
+                                                    options_mask, options_override);             \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_stop_move_step_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_STOP_MOVE_STEP_REQ(buffer, addr, dst_addr_mode,           \
+  dst_ep, ep, prfl_id, def_resp, cb)                                                        \
+{                                                                                           \
+  zb_zcl_color_control_send_stop_move_step_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, \
+                                               dst_ep, ep, prfl_id, def_resp, cb);          \
 }
 
 /******************************* Move color temperature command ******************************/
@@ -2925,11 +3080,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_temp_req_s
 
 /*! @brief Send Move color temperature command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param move_mode - move mode, see @ref zb_zcl_color_control_move_direction_e
@@ -2939,34 +3094,24 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_temp_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_TEMP_REQ_ZCL8(buffer, addr, dst_addr_mode,                  \
-                                                           dst_ep, ep, prfl_id, def_resp, cb, move_mode, \
-                                                           rate, color_temp_min, color_temp_max,         \
-                                                           options_mask, options_override)               \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_MOVE_COLOR_TEMPERATURE);  \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (rate));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_min));                                              \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_max));                                              \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_move_color_temp_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                       zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                       zb_uint8_t ep, zb_uint16_t prof_id,
+                                                       zb_uint8_t def_resp, zb_callback_t cb,
+                                                       zb_uint8_t move_mode,
+                                                       zb_uint16_t rate,
+                                                       zb_uint16_t color_temp_min,
+                                                       zb_uint16_t color_temp_max,
+                                                       zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Send Move color temperature command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_TEMP_REQ_ZCL8 instead.
+/*! @brief Send Move color temperature command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_move_color_temp_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param move_mode - move mode, see @ref zb_zcl_color_control_move_direction_e
@@ -2974,14 +3119,35 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_move_color_temp_req_s
     @param color_temp_min - color temperature minimum
     @param color_temp_max - color temperature maximum
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_TEMP_REQ(buffer, addr, dst_addr_mode,                  \
-  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate, color_temp_min, color_temp_max)               \
-{                                                                                                   \
-  ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_TEMP_REQ_ZCL8(buffer, addr, dst_addr_mode,                   \
-                                                     dst_ep, ep, prfl_id, def_resp, cb, move_mode,  \
-                                                     rate, color_temp_min, color_temp_max,          \
-                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,     \
-                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_move_color_temp_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                  zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                  zb_uint8_t ep, zb_uint16_t prof_id,
+                                                  zb_uint8_t def_resp, zb_callback_t cb,
+                                                  zb_uint8_t move_mode,
+                                                  zb_uint16_t rate,
+                                                  zb_uint16_t color_temp_min,
+                                                  zb_uint16_t color_temp_max);
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_color_temp_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_TEMP_REQ_ZCL8(buffer, addr, dst_addr_mode,                  \
+                                                           dst_ep, ep, prfl_id, def_resp, cb, move_mode, \
+                                                           rate, color_temp_min, color_temp_max,         \
+                                                           options_mask, options_override)               \
+{                                                                                                        \
+  zb_zcl_color_control_send_move_color_temp_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,        \
+                                                     dst_ep, ep, prfl_id, def_resp, cb, move_mode,       \
+                                                     rate, color_temp_min, color_temp_max,               \
+                                                     options_mask, options_override);                    \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_move_color_temp_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_MOVE_COLOR_TEMP_REQ(buffer, addr, dst_addr_mode,                                                   \
+  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate, color_temp_min, color_temp_max)                                                \
+{                                                                                                                                    \
+  zb_zcl_color_control_send_move_color_temp_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                                         \
+                                                dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate, color_temp_min, color_temp_max); \
 }
 
 /** @brief Macro for getting Move color temperature command
@@ -3036,11 +3202,11 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_temp_req_s
 
 /*! @brief Step color temperature command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param step_mode - move mode, see @ref zb_zcl_color_control_step_mode_e
@@ -3051,36 +3217,25 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_temp_req_s
     @param options_mask - Options Mask
     @param options_override - Options Override
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_TEMP_REQ_ZCL8(buffer, addr, dst_addr_mode,                  \
-                                                           dst_ep, ep, prfl_id, def_resp, cb, step_mode, \
-                                                           step_size, transition_time, color_temp_min,   \
-                                                           color_temp_max,                               \
-                                                           options_mask, options_override)               \
-{                                                                                                   \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                                 \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                              \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_COLOR_CONTROL_STEP_COLOR_TEMPERATURE);  \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));                                                        \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (step_size));                                                   \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                             \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_min));                                              \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (color_temp_max));                                              \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));                                                     \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));                                                 \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                               \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                        \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, cb);          \
-}
+void zb_zcl_color_control_send_step_color_temp_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                                        zb_uint8_t step_mode,
+                                                        zb_uint16_t step_size,
+                                                        zb_uint16_t transition_time,
+                                                        zb_uint16_t color_temp_min,
+                                                        zb_uint16_t color_temp_max,
+                                                        zb_uint8_t options_mask, zb_uint8_t options_override);
 
-/*! @brief Step color temperature command (deprecated since ZCL8)
-    @deprecated This function will be removed in November 2022.
-    Use ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_TEMP_REQ_ZCL8 instead.
+/*! @brief Step color temperature command (pre-ZCL8)
+    Use @ref zb_zcl_color_control_send_step_color_temp_req_zcl8 for ZCL8 revision call.
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
     @param step_mode - move mode, see @ref zb_zcl_color_control_step_mode_e
@@ -3089,15 +3244,38 @@ typedef ZB_PACKED_PRE struct zb_zcl_color_control_step_color_temp_req_s
     @param color_temp_min - color temperature minimum
     @param color_temp_max - color temperature maximum
 */
-#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_TEMP_REQ(buffer, addr, dst_addr_mode,                          \
-  dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time, color_temp_min, color_temp_max) \
-{                                                                                                           \
-  ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_TEMP_REQ_ZCL8(buffer, addr, dst_addr_mode,                           \
-                                                     dst_ep, ep, prfl_id, def_resp, cb, step_mode,          \
-                                                     step_size, transition_time, color_temp_min,            \
-                                                     color_temp_max,                                        \
-                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE, \
-                                                     ZB_ZCL_COLOR_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE) \
+void zb_zcl_color_control_send_step_color_temp_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                   zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                   zb_uint8_t ep, zb_uint16_t prof_id,
+                                                   zb_uint8_t def_resp, zb_callback_t cb,
+                                                   zb_uint8_t step_mode,
+                                                   zb_uint16_t step_size,
+                                                   zb_uint16_t transition_time,
+                                                   zb_uint16_t color_temp_min,
+                                                   zb_uint16_t color_temp_max);
+
+/** Macro for calling @ref zb_zcl_color_control_send_step_color_temp_req_zcl8 function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_TEMP_REQ_ZCL8(buffer, addr, dst_addr_mode,                  \
+                                                           dst_ep, ep, prfl_id, def_resp, cb, step_mode, \
+                                                           step_size, transition_time, color_temp_min,   \
+                                                           color_temp_max,                               \
+                                                           options_mask, options_override)               \
+{                                                                                                        \
+  zb_zcl_color_control_send_step_color_temp_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,        \
+                                                     dst_ep, ep, prfl_id, def_resp, cb, step_mode,       \
+                                                     step_size, transition_time, color_temp_min,         \
+                                                     color_temp_max,                                     \
+                                                     options_mask, options_override);                    \
+}
+
+/** Macro for calling @ref zb_zcl_color_control_send_step_color_temp_req function
+ */
+#define ZB_ZCL_COLOR_CONTROL_SEND_STEP_COLOR_TEMP_REQ(buffer, addr, dst_addr_mode,                                                                         \
+  dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time, color_temp_min, color_temp_max)                                                \
+{                                                                                                                                                          \
+  zb_zcl_color_control_send_step_color_temp_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                                                               \
+                                                dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time, color_temp_min, color_temp_max); \
 }
 
 /** @brief Macro for getting Move color temperature command

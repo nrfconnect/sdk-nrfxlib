@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -123,7 +123,7 @@
 
 
 /**
-   If user did not owerwrite default memory configuration, that variable value is 1, else 0.
+   If user did not overwrite default memory configuration, that variable value is 1, else 0.
 
    Currently used in trace only, but, maybe, implement user API for it if customer require it?
  */

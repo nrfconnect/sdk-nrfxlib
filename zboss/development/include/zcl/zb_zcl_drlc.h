@@ -67,6 +67,9 @@
 /** @brief Default value for DRLC cluster revision global attribute */
 #define ZB_ZCL_DRLC_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
 
+/** @brief Maximal value for implemented DRLC cluster revision global attribute */
+#define ZB_ZCL_DRLC_CLUSTER_REVISION_MAX ZB_ZCL_DRLC_CLUSTER_REVISION_DEFAULT
+
 /** DRLC Client attributes. @see SE spec, subclause D.2.3.2 */
 typedef enum zb_zcl_drlc_cli_attr_e
 {
@@ -448,11 +451,6 @@ typedef ZB_PACKED_PRE struct zb_zcl_drlc_get_scheduled_events_payload_s {
     */
   zb_uint32_t issuer_event_id;                   /* (O) */
 } ZB_PACKED_STRUCT zb_zcl_drlc_get_scheduled_events_payload_t;
-
-/** @def ZB_ZCL_DRLC_CLI_CMD_GET_SCHEDULED_EVENTS_IS_VALID
- */
-#define ZB_ZCL_DRLC_CLI_CMD_GET_SCHEDULED_EVENTS_IS_VALID(size) \
-  ((size) >= sizeof(zb_zcl_drlc_get_scheduled_events_payload_t)) 
 
 /** Initialize @ref ZB_ZCL_DRLC_SRV_CMD_LOAD_CONTROL_EVENT "LoadControlEvent" command @ref zb_zcl_drlc_lce_payload_t payload*/
 #define ZB_ZCL_DRLC_LCE_PAYLOAD_INIT                \

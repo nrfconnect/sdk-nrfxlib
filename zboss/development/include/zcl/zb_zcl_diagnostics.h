@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -349,7 +349,7 @@ enum zb_zcl_diagnostics_attr_e
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_MAC_RX_UCAST_ID(data_ptr) \
 {                                                               \
-  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_BCAST_ID,                      \
+  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_RX_UCAST_ID,                      \
   ZB_ZCL_ATTR_TYPE_U32,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
   (void*) data_ptr                                              \
@@ -365,7 +365,7 @@ enum zb_zcl_diagnostics_attr_e
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_RETRY_ID(data_ptr) \
 {                                                               \
-  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_ID,                      \
+  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_RETRY_ID,                \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
   (void*) data_ptr                                              \
@@ -373,7 +373,7 @@ enum zb_zcl_diagnostics_attr_e
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_FAIL_ID(data_ptr) \
 {                                                               \
-  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_ID,                      \
+  ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_UCAST_FAIL_ID,                 \
   ZB_ZCL_ATTR_TYPE_U16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
   (void*) data_ptr                                              \
@@ -622,7 +622,7 @@ enum zb_zcl_diagnostics_attr_e
  * We have asynchronous reading the Diagnostics attributes:
  * in the zb_zcl_read_attr_handler() we call zdo_diagnostics_get_stats()
  * that will copy all counters to the same buffer from the first byte.
- * What the problem? We have the following buffer stucture:
+ * What the problem? We have the following buffer structure:
  *   a) buffer begin (from zero byte! not from zb_buf_begin()) - will contain all counters;
  *   b) buffer middle (from zb_buf_begin()) - contains one or more zb_zcl_read_attr_req_t;
  *   c) buffer end (can be get with ZB_BUF_GET_PARAM()) - contains zb_zcl_parsed_hdr_t.
@@ -645,7 +645,7 @@ void zb_zcl_diagnostics_init_client(void);
  * @brief Synchronize MAC and ZDO counters with ZCL attributes.
  *
  * Call this function each time when you want to get an attribute value
- * and proccess statistic using @zb_zcl_get_attr_desc_a
+ * and process statistic using @zb_zcl_get_attr_desc_a
  *
  * When synchronization will be finished, users callback
  * with a specified parameter will be called.

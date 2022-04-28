@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -45,28 +45,8 @@
 #define ZB_ERROR_INDICATION_H 1
 
 #include "zb_types.h"
-
 #include "zb_errors.h"
-
-#define ZB_ERROR_SEVERITY_MINOR 0x01
-#define ZB_ERROR_SEVERITY_FATAL 0xFF
-
-typedef zb_bool_t (*zb_error_handler_t)(zb_uint8_t severity,
-                                        zb_ret_t error_code,
-                                        void *additional_info);
-
-typedef struct zb_error_indication_ctx_s
-{
-  zb_error_handler_t app_err_handler;
-} zb_error_indication_ctx_t;
-
-/**
- * Set application error handler.
- *
- * @param cb - an error handler to setAddr
- */
-void zb_error_register_app_handler(zb_error_handler_t cb);
-
+#include "zboss_api_error.h"
 
 /**
  * Raise an error. Use ZB_ERROR_RAISE macro instead of this function.
@@ -86,11 +66,7 @@ void zb_error_raise(zb_uint8_t severity, zb_ret_t err_code, void *additional_inf
 zb_bool_t zb_error_top_level_handler(zb_uint8_t severity, zb_ret_t err_code, void *additional_info);
 #endif /* HAVE_TOP_LEVEL_ERROR_HANDLER */
 
-#ifdef ZB_USE_ERROR_INDICATION
 #define ZB_ERROR_RAISE(severity, err_code, additional_info) \
   zb_error_raise((severity), (err_code), (additional_info))
-#else
-#define ZB_ERROR_RAISE(severity, err_code, additional_info)
-#endif /* ZB_USE_ERROR_INDICATION */
 
 #endif  /* ZB_ERROR_INDICATION_H */

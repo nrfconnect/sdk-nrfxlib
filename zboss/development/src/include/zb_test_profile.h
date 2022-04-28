@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -414,7 +414,7 @@ void zb_tp_retrive_packet_count(zb_uint8_t param);
 
 #if defined ZB_PRO_STACK && defined ZB_TEST_CUSTOM_LINK_STATUS && defined ZB_ROUTER_ROLE
 /* Custom link status command for testing purpose only
- * (allow to send cmd from some predefined adddress)
+ * (allow to send cmd from some predefined address)
  */
 zb_bool_t zb_tp_send_link_status_command(zb_uint8_t param, zb_uint16_t short_addr);
 #endif

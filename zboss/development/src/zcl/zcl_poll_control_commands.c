@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -438,7 +438,8 @@ static void check_in_res_handler_check_binding_response_cb(zb_bufid_t param)
   */
   if (!check_binding_resp->exists)
   {
-    status = ZB_ZCL_STATUS_FAIL;
+    status = (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE) ?
+                ZB_ZCL_STATUS_FAIL : ZB_ZCL_STATUS_ACTION_DENIED;
   }
 
   if (status == ZB_ZCL_STATUS_SUCCESS)
@@ -550,12 +551,14 @@ static zb_ret_t check_in_res_handler(zb_uint8_t param)
 }
 
 
+#ifndef ZB_COORDINATOR_ONLY
 static void fast_poll_stop_handler_send_default_response(zb_uint8_t param)
 {
   /* ZCL8: Table 2-12. Enumerated Command Status Values:
    * ACTION_DENIED is DEPRECATED: use FAILURE
    */
-  zb_zcl_status_t status = ZB_ZCL_STATUS_FAIL;
+  zb_zcl_status_t status = (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE) ?
+                ZB_ZCL_STATUS_FAIL : ZB_ZCL_STATUS_ACTION_DENIED;
   zb_zdo_pim_stop_fast_poll_extended_resp_t *resp = ZB_BUF_GET_PARAM(param, zb_zdo_pim_stop_fast_poll_extended_resp_t);
   zb_zcl_parsed_hdr_t *cmd_info = NULL;
 
@@ -567,6 +570,7 @@ static void fast_poll_stop_handler_send_default_response(zb_uint8_t param)
   cmd_info = (zb_zcl_parsed_hdr_t*)zb_buf_begin(param);
   poll_control_send_default_response(param, cmd_info, status);
 }
+#endif
 
 
 static void fast_poll_stop_handler_check_binding_response_cb(zb_bufid_t param)
@@ -603,7 +607,8 @@ static void fast_poll_stop_handler_check_binding_response_cb(zb_bufid_t param)
     /* ZCL8: Table 2-12. Enumerated Command Status Values:
      * ACTION_DENIED is DEPRECATED: use FAILURE
      */
-    poll_control_send_default_response(param, cmd_info, ZB_ZCL_STATUS_FAIL);
+    poll_control_send_default_response(param, cmd_info, (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE) ?
+                                       ZB_ZCL_STATUS_FAIL : ZB_ZCL_STATUS_ACTION_DENIED);
   }
 
   TRACE_MSG(TRACE_ZCL2, "<< fast_poll_stop_handler_check_binding_response_cb", (FMT__0));
@@ -787,7 +792,8 @@ zb_bool_t zb_zcl_process_poll_control_specific_commands_srv(zb_uint8_t param)
        * ACTION_DENIED is DEPRECATED: use FAILURE
        */
       case RET_INVALID_STATE:
-        resp_code = ZB_ZCL_STATUS_FAIL;
+        resp_code = (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE) ?
+                    ZB_ZCL_STATUS_FAIL : ZB_ZCL_STATUS_ACTION_DENIED;
         break;
 
       case RET_TIMEOUT:
@@ -809,7 +815,7 @@ zb_bool_t zb_zcl_process_poll_control_specific_commands_srv(zb_uint8_t param)
 }
 
 
-/** @brief Run Check-in command if Check in Responce not receive
+/** @brief Run Check-in command if Check in Response not receive
  * */
 void zb_zcl_poll_control_check_in_non_response(zb_uint8_t endpoint)
 {
