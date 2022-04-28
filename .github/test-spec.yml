@@ -10,11 +10,8 @@
   - "nrf_modem/**/*"
 
 "CI-tfm-test":
-  - "**/*"
-  - "!softdevice_controller/include/**/*"
-  - "!softdevice_controller/lib/**/*"
-  - "!mpsl/include/**/*"
-  - "!mpsl/lib/**/*"
+  - "crypto/**/*"
+  - "nrf_security/**/*"
 
 "CI-ble-test":
   - "softdevice_controller/include/**/*"
@@ -46,11 +43,8 @@
   - "softdevice_controller/lib/**/*"
 
 "CI-crypto-test":
-  - "**/*"
-  - "!softdevice_controller/include/**/*"
-  - "!softdevice_controller/lib/**/*"
-  - "!mpsl/include/**/*"
-  - "!mpsl/lib/**/*"
+  - "crypto/**/*"
+  - "nrf_security/**/*"
 
 "CI-rs-test":
   - "mpsl/include/**/*"
