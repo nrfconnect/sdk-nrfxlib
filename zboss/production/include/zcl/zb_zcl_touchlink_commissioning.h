@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -52,6 +52,17 @@
     Touchlink Commissioning cluster
     @{
 */
+
+/** @brief Default value for Touchlink Commissioning cluster revision global attribute */
+#define ZB_ZCL_TOUCHLINK_COMMISSIONING_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0003u)
+
+/*!
+  @brief Declare attribute list for Touchlink Commissioning cluster (only cluster revision attribute)
+  @param attr_list - attribute list name
+*/
+#define ZB_ZCL_DECLARE_TOUCHLINK_COMMISSIONING_ATTR_LIST(attr_list)                            \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_TOUCHLINK_COMMISSIONING) \
+  ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
 /** @brief First primary Touchlink channels mask. */
 #define ZB_ZLL_PRIMARY_CHANNEL_MASK ((1l << 11) | (1l << 15) | (1l << 20) | (1l << 25))

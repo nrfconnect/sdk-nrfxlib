@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -194,6 +194,9 @@ enum zb_zcl_diagnostics_attr_e
    *  because the broadcast table was full. */
   ZB_ZCL_ATTR_DIAGNOSTICS_CUSTOM_ATTR_BCAST_TABLE_FULL_ID    = 0xff02
 };
+
+/** @brief Default value for Diagnostics cluster revision global attribute */
+#define ZB_ZCL_DIAGNOSTICS_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0003u)
 
 /** @brief Default value for number_of_resets attribute */
 #define ZB_ZCL_DIAGNOSTICS_NUMBER_OF_RESETS_DEFAULT_VALUE ((zb_uint16_t)0x00000000)
@@ -556,7 +559,7 @@ enum zb_zcl_diagnostics_attr_e
     @param attr_list - attribute list name
 */
 #define ZB_ZCL_DECLARE_DIAGNOSTICS_ATTRIB_LIST(attr_list)               \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                           \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_DIAGNOSTICS)                           \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_MAC_RX_BCAST_ID,                    &diagnostics_ctx_zcl.mac_data.mac_rx_bcast) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_MAC_TX_BCAST_ID,                    &diagnostics_ctx_zcl.mac_data.mac_tx_bcast) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DIAGNOSTICS_MAC_RX_UCAST_ID,                    &diagnostics_ctx_zcl.mac_data.mac_rx_ucast) \

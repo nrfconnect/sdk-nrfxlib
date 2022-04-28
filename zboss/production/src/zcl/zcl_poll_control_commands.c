@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -432,13 +432,14 @@ static void check_in_res_handler_check_binding_response_cb(zb_bufid_t param)
   check_binding_resp = ZB_BUF_GET_PARAM(param, zb_aps_check_binding_resp_t);
 
   /*
-    ZCL 6.0: If the Poll Control Server receives a Check-In Response from a client
+    ZCL8: If the Poll Control Server receives a Check-In Response from a client
     for which there is no binding (unbound), it SHOULD respond with a Default Response
-    with a status value indicating ACTION_DENIED.
+    with a status value indicating FAILURE.
   */
   if (!check_binding_resp->exists)
   {
-    status = ZB_ZCL_STATUS_ACTION_DENIED;
+    status = (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE) ?
+                ZB_ZCL_STATUS_FAIL : ZB_ZCL_STATUS_ACTION_DENIED;
   }
 
   if (status == ZB_ZCL_STATUS_SUCCESS)
@@ -448,9 +449,9 @@ static void check_in_res_handler_check_binding_response_cb(zb_bufid_t param)
   }
 
   /*
-    ZCL 6.0: If the Poll Control Server receives a Check-In Response from a bound client
+    ZCL8: If the Poll Control Server receives a Check-In Response from a bound client
     after temporary fast poll mode is completed it SHOULD respond with a Default Response
-    with a status value indicating TIMEOUT.
+    with a status value indicating FAILURE.
    */
   if (status == ZB_ZCL_STATUS_SUCCESS)
   {
@@ -461,7 +462,7 @@ static void check_in_res_handler_check_binding_response_cb(zb_bufid_t param)
 
     if (ret != RET_OK)
     {
-      status = ZB_ZCL_STATUS_TIMEOUT;
+      status = ZB_ZCL_STATUS_FAIL;
     }
   }
 
@@ -531,9 +532,9 @@ static zb_ret_t check_in_res_handler(zb_uint8_t param)
   }
 
   /*
-    ZCL 6.0: If the Poll Control Server receives a Check-In Response from a client
+    ZCL8: If the Poll Control Server receives a Check-In Response from a client
     for which there is no binding (unbound), it SHOULD respond with a Default Response
-    with a status value indicating ACTION_DENIED.
+    with a status value indicating FAILURE.
   */
   if (ret == RET_OK)
   {
@@ -552,7 +553,11 @@ static zb_ret_t check_in_res_handler(zb_uint8_t param)
 
 static void fast_poll_stop_handler_send_default_response(zb_uint8_t param)
 {
-  zb_zcl_status_t status = ZB_ZCL_STATUS_ACTION_DENIED;
+  /* ZCL8: Table 2-12. Enumerated Command Status Values:
+   * ACTION_DENIED is DEPRECATED: use FAILURE
+   */
+  zb_zcl_status_t status = (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE) ?
+                ZB_ZCL_STATUS_FAIL : ZB_ZCL_STATUS_ACTION_DENIED;
   zb_zdo_pim_stop_fast_poll_extended_resp_t *resp = ZB_BUF_GET_PARAM(param, zb_zdo_pim_stop_fast_poll_extended_resp_t);
   zb_zcl_parsed_hdr_t *cmd_info = NULL;
 
@@ -578,15 +583,16 @@ static void fast_poll_stop_handler_check_binding_response_cb(zb_bufid_t param)
   if (check_binding_resp->exists)
   {
     /*
-      ZCL 6.0: If the Poll Control Server is unable to stop fast
+      ZCL8: If the Poll Control Server is unable to stop fast
       polling due to the fact that there is another bound client
       which has requested that polling continue
-      it SHOULD respond with a Default Response with a status of “ACTION_DENIED”
+      it SHOULD respond with a Default Response with a status value
+      indicating FAILURE
     */
     /*
       So call stop_fast_poll anyway to decrement internal counter
       and then recheck if we are still in fast poll and send
-      ACTION_DENIED in such case
+      FAILURE in such case
     */
 
     zb_zdo_pim_stop_fast_poll_extended_req(param, fast_poll_stop_handler_send_default_response);
@@ -596,7 +602,11 @@ static void fast_poll_stop_handler_check_binding_response_cb(zb_bufid_t param)
     zb_zcl_parsed_hdr_t *cmd_info = NULL;
 
     cmd_info = (zb_zcl_parsed_hdr_t*)zb_buf_begin(param);
-    poll_control_send_default_response(param, cmd_info, ZB_ZCL_STATUS_ACTION_DENIED);
+    /* ZCL8: Table 2-12. Enumerated Command Status Values:
+     * ACTION_DENIED is DEPRECATED: use FAILURE
+     */
+    poll_control_send_default_response(param, cmd_info, (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE) ?
+                                       ZB_ZCL_STATUS_FAIL : ZB_ZCL_STATUS_ACTION_DENIED);
   }
 
   TRACE_MSG(TRACE_ZCL2, "<< fast_poll_stop_handler_check_binding_response_cb", (FMT__0));
@@ -776,8 +786,12 @@ zb_bool_t zb_zcl_process_poll_control_specific_commands_srv(zb_uint8_t param)
         resp_code = ZB_ZCL_STATUS_SUCCESS;
         break;
 
+      /* ZCL8: Table 2-12. Enumerated Command Status Values:
+       * ACTION_DENIED is DEPRECATED: use FAILURE
+       */
       case RET_INVALID_STATE:
-        resp_code = ZB_ZCL_STATUS_ACTION_DENIED;
+        resp_code = (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE) ?
+                    ZB_ZCL_STATUS_FAIL : ZB_ZCL_STATUS_ACTION_DENIED;
         break;
 
       case RET_TIMEOUT:

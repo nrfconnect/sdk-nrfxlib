@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -240,7 +240,8 @@ void send_alarm(zb_uint8_t param)
       ZB_ZCL_ATTR_POWER_CONFIG_MAINS_VOLTAGE_MAX_THRESHOLD);
     threshold = ZB_ZCL_GET_ATTRIBUTE_VAL_16(attr_desc);
     if (((alarm_code == ZB_ZCL_POWER_CONFIG_MAINS_VOLTAGE_MIN_THRESHOLD_ALARM_CODE) && (val >= threshold)) ||
-        ((alarm_code == ZB_ZCL_POWER_CONFIG_MAINS_VOLTAGE_MAX_THRESHOLD_ALARM_CODE) && (val <= threshold)) )
+        ((alarm_code == ZB_ZCL_POWER_CONFIG_MAINS_VOLTAGE_MAX_THRESHOLD_ALARM_CODE) && (val <= threshold)) ||
+        (threshold == ZB_ZCL_POWER_CONFIG_THRESHOLD_ALARM_OMISSION_VALUE))
     {
       ret = ZB_FALSE;
     }
@@ -314,7 +315,7 @@ void zcl_pwr_cfg_check_mains_voltage(zb_uint8_t ep, zb_uint16_t val)
     if (attr_desc)
     {
       threshold = ZB_ZCL_GET_ATTRIBUTE_VAL_16(attr_desc);
-      if (val < threshold)
+      if (val < threshold && threshold != ZB_ZCL_POWER_CONFIG_THRESHOLD_ALARM_OMISSION_VALUE)
       {
         ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc_mask, ZB_ZCL_POWER_CONFIG_MAINS_VOLTAGE_ALARM_CODE_MIN_THRESHOLD);
         ret = ZB_TRUE;
@@ -330,7 +331,7 @@ void zcl_pwr_cfg_check_mains_voltage(zb_uint8_t ep, zb_uint16_t val)
       if (attr_desc)
       {
         threshold = ZB_ZCL_GET_ATTRIBUTE_VAL_16(attr_desc);
-        if (val > threshold)
+        if (val > threshold && threshold != ZB_ZCL_POWER_CONFIG_THRESHOLD_ALARM_OMISSION_VALUE)
         {
           ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc_mask, ZB_ZCL_POWER_CONFIG_MAINS_VOLTAGE_ALARM_CODE_MAX_THRESHOLD);
           ret = ZB_TRUE;

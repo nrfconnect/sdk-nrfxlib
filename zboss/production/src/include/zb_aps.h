@@ -296,7 +296,7 @@ void data_indication(zb_uint8_t param)
 /** @cond internals_doc */
 
 /** @brief Structure for Get Group Membership Command.
-  * @see ZCL spec, subclause 3.6.2.2.5.
+  * @see ZCL8 spec, subclause 3.6.2.3.4.
   */
 typedef ZB_PACKED_PRE struct zb_apsme_get_group_membership_req_s
 {

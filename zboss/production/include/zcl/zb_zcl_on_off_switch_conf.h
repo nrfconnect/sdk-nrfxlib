@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -94,6 +94,9 @@ enum zb_zcl_on_off_switch_configuration_switch_type_e
   ZB_ZCL_ON_OFF_SWITCH_CONFIGURATION_SWITCH_TYPE_MULTIFUNCTION = 2
 };
 
+/** @brief Default value for On/off switch configuration cluster revision global attribute */
+#define ZB_ZCL_ON_OFF_SWITCH_CONFIGURATION_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0001u)
+
 /*! @brief Maximal value for switch type attribute */
 #define ZB_ZCL_ON_OFF_SWITCH_CONFIGURATION_SWITCH_TYPE_MAX_VALUE \
   (ZB_ZCL_ON_OFF_SWITCH_CONFIGURATION_SWITCH_TYPE_MULTIFUNCTION)
@@ -168,7 +171,7 @@ enum zb_zcl_on_off_switch_configuration_switch_actions_e
     @param switch_actions - pointer to variable to store switch action attribute value
 */
 #define ZB_ZCL_DECLARE_ON_OFF_SWITCH_CONFIGURATION_ATTRIB_LIST(attr_list, switch_type, switch_actions) \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_ON_OFF_SWITCH_CONFIGURATION)  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_ON_OFF_SWITCH_CONFIGURATION_SWITCH_TYPE_ID, (switch_type))       \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_ON_OFF_SWITCH_CONFIGURATION_SWITCH_ACTIONS_ID, (switch_actions)) \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST

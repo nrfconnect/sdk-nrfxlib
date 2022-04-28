@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -97,30 +97,9 @@ void zb_zcl_en50523_appliance_events_and_alerts_init_client()
 
 static zb_zcl_status_t zb_zcl_en50523_appliance_events_and_alerts_map_ret_code_to_zcl_status(zb_ret_t ret_code)
 {
-  zb_zcl_status_t status;
-
   ZB_ASSERT(ret_code != RET_BUSY);
 
-  switch (ret_code)
-  {
-    case RET_OK:
-      status = ZB_ZCL_STATUS_SUCCESS;
-      break;
-    case RET_INVALID_PARAMETER_1:
-      status = ZB_ZCL_STATUS_INVALID_FIELD;
-      break;
-    case RET_INVALID_PARAMETER:
-      status = ZB_ZCL_STATUS_INVALID_VALUE;
-      break;
-    case RET_ERROR:
-      status = ZB_ZCL_STATUS_HW_FAIL;
-      break;
-    default:
-      status = ZB_ZCL_STATUS_FAIL;
-      break;
-  }
-
-  return status;
+  return zb_zcl_get_zcl_status_from_ret(ret_code);
 }
 
 static zb_ret_t zb_zcl_en50523_appliance_events_and_alerts_get_alerts_handler(zb_uint8_t param, const zb_zcl_parsed_hdr_t *cmd_info)

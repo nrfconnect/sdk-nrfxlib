@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -259,7 +259,7 @@ static void add_group_send_add_group_resp(zb_uint8_t param, zb_zcl_parsed_hdr_t 
   ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RES_FRAME_CONTROL(resp_data);
   ZB_ZCL_CONSTRUCT_COMMAND_HEADER(resp_data, cmd_info->seq_number, ZB_ZCL_CMD_GROUPS_ADD_GROUP_RES);
 
-  /* Add group response format, ZCL spec 3.2.6.3.1 */
+  /* Add group response format, ZCL8 spec 3.6.2.4.1 */
   /* | status 1b | group id 2b | */
 
   ZB_ZCL_PACKET_PUT_DATA8(resp_data, status);
@@ -310,6 +310,9 @@ static void add_group_handler(zb_uint8_t param, zb_bool_t check_identifying)
 
   ZB_ZCL_COPY_PARSED_HEADER(param, &cmd_info);
 
+  /* ZCL8 spec. 3.6.2.3.7.2 Effect on Receipt (for Add Group If Identifying Command)
+   * 1. The device verifies that it is currently identifying itself...
+   */
   if (check_identifying)
   {
     add_group = zb_zcl_is_identifying(ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint)
@@ -326,7 +329,7 @@ static void add_group_handler(zb_uint8_t param, zb_bool_t check_identifying)
         "group_id %d, ep %hd",
         (FMT__D_H, add_group_req.group_id, ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint));
 
-    /* ZCL spec. 3.6.2.3.2.2: The device verifies that the Group ID field contains a valid group identifier
+    /* ZCL8 spec. 3.6.2.3.2.2, 3.6.2.3.7.2: The device verifies that the Group ID field contains a valid group identifier
      * in the range 0x0001 – 0xfff7. If the Group ID field contains a group identifier outside this range,
      * the status SHALL be INVALID_VALUE and the device continues from step 5.*/
     if (add_group_req.group_id >= ZB_ZCL_ATTR_SCENES_CURRENT_GROUP_MIN_VALUE &&
@@ -366,12 +369,12 @@ static void add_group_handler(zb_uint8_t param, zb_bool_t check_identifying)
       resp_cmd_info = zb_buf_initial_alloc(param, sizeof(zb_zcl_parsed_hdr_t));
       ZB_MEMCPY(resp_cmd_info, &cmd_info, sizeof(zb_zcl_parsed_hdr_t));
 
-      zb_apsme_add_group_request(param);
+      zb_zdo_add_group_req(param);
     }
     else
     {
-      TRACE_MSG(TRACE_ERROR, "Error, invalid add group request", (FMT__0));
-      status = ZB_ZCL_STATUS_FAIL;
+      TRACE_MSG(TRACE_ERROR, "Error, invalid group ID for add group request", (FMT__0));
+      status = ZB_ZCL_STATUS_INVALID_VALUE;
 
       if (!check_identifying)
       {
@@ -392,6 +395,9 @@ static void add_group_handler(zb_uint8_t param, zb_bool_t check_identifying)
     }
   }
   else
+  /* ZCL8 spec. 3.6.2.3.7.2 Effect on Receipt (for Add Group If Identifying Command)
+   * 1. ... If the device it not currently identifying itself ...
+   */
   {
     respond_with_default_resp = ZB_TRUE;
   } /* id add_group */
@@ -401,9 +407,12 @@ static void add_group_handler(zb_uint8_t param, zb_bool_t check_identifying)
     if (!add_group)
     {
       TRACE_MSG(TRACE_ZCL2, "Can't add group - no identifying", (FMT__0));
-      /* Sending default response is not described in spec, put this
-       * "inconsistent" status to signal that group was not added
-       * UPDATE: Test spec, G-TC-02S - status should be SUCCESS.
+      /* ZCL8 spec. 3.6.2.3.7.2 Effect on Receipt (for Add Group If Identifying Command)
+       * 1. ...If the device it not currently identifying
+       * itself, the Add Group If Identifying command was received as unicast and a default response is
+       * requested, the device SHALL generate a Default Response command with the Status field set to
+       * SUCCESS and SHALL transmit it back to the originator of the Add Group If Identifying command...
+       * Test spec, G-TC-02S - status should be SUCCESS.
        */
       status = ZB_ZCL_STATUS_SUCCESS;
     }
@@ -453,8 +462,8 @@ static void view_group_handler(zb_uint8_t param)
   }
   else
   {
-    TRACE_MSG(TRACE_ERROR, "Error, invalid view group request", (FMT__0));
-    status = ZB_ZCL_STATUS_FAIL;
+    TRACE_MSG(TRACE_ERROR, "Error, invalid group ID for view group request", (FMT__0));
+    status = ZB_ZCL_STATUS_INVALID_VALUE;
   }
 
   /** [ZB_ZCL_CONSTRUCT_FRAME_HEADER] */
@@ -469,7 +478,7 @@ static void view_group_handler(zb_uint8_t param)
       ZB_ZCL_CMD_GROUPS_VIEW_GROUP_RES);
   /** [ZB_ZCL_CONSTRUCT_FRAME_HEADER] */
 
-  /* Add group response format, ZCL spec 3.2.6.3.1 */
+  /* View group response format, ZCL8 spec 3.6.2.4.2.1 */
   /* | status 1b | group id 2b | Group name XXb| */
 
   ZB_ZCL_PACKET_PUT_DATA8(resp_data, status);
@@ -549,7 +558,7 @@ static void get_group_membership_handler(zb_uint8_t param)
         "capacity %hd, n_groups %hd",
         (FMT__H_H, conf->capacity, conf->n_groups));
 
-    /* Get group membership response format, ZCL spec 3.6.2.3.3 */
+    /* Get group membership response format, ZCL8 spec 3.6.2.4.3.1 */
     /* | capacity 1b | group count 1b | Group id 2b x NN | */
 
     ZB_ZCL_PACKET_PUT_DATA8(resp_data, conf->capacity);
@@ -596,7 +605,7 @@ static void remove_group_send_remove_group_resp(zb_uint8_t param, zb_zcl_parsed_
       cmd_info->seq_number,
       ZB_ZCL_CMD_GROUPS_REMOVE_GROUP_RES);
 
-  /* Remove group response format, ZCL spec 3.2.6.3.4 */
+  /* Remove group response format, ZCL8 spec 3.6.2.4.4.1 */
   /* | status 1b | group id 2b | */
 
   ZB_ZCL_PACKET_PUT_DATA8(resp_data, status);
@@ -669,12 +678,12 @@ static void remove_group_handler(zb_uint8_t param)
 
     /* See comment for zb_apsme_add_group_request() call */
     aps_req->confirm_cb = remove_group_cb_send_remove_group_resp;
-    zb_apsme_remove_group_request(param);
+    zb_zdo_remove_group_req(param);
   }
   else
   {
-    TRACE_MSG(TRACE_ERROR, "Error, invalid add group request", (FMT__0));
-    status = ZB_ZCL_STATUS_FAIL;
+    TRACE_MSG(TRACE_ERROR, "Error, invalid group ID for remove group request", (FMT__0));
+    status = ZB_ZCL_STATUS_INVALID_VALUE;
 
     remove_group_send_remove_group_resp(param, &cmd_info, status, rem_group_req.group_id);
   }
@@ -699,7 +708,7 @@ static void remove_all_groups_cb_send_default_resp(zb_uint8_t param)
   /* Map APS status to ZCL status */
   status = aps_status_to_zcl_status(conf_param->status);
 
-  /* If no groups founded answer with success status. See ZCL Spec  3.6.2.4 */
+  /* If no groups founded answer with success status. See ZCL8 Spec  3.6.2.3.6.2 */
   if (status == ZB_ZCL_STATUS_NOT_FOUND)
   {
     status = ZB_ZCL_STATUS_SUCCESS;
@@ -767,7 +776,7 @@ static void remove_all_groups_handler(zb_uint8_t param)
 
   /* See comment for zb_apsme_add_group_request() call */
   aps_req->confirm_cb = remove_all_groups_cb_send_default_resp;
-  zb_apsme_remove_all_groups_request(param);
+  zb_zdo_remove_all_groups_req(param);
 
   TRACE_MSG(TRACE_ZCL1, "<< remove_all_groups_handler", (FMT__0));
 }

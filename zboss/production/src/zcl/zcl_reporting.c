@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -1214,19 +1214,9 @@ void zb_zcl_save_reported_value(zb_zcl_reporting_info_t *rep_info, zb_zcl_attr_t
   {
     TRACE_MSG(TRACE_ZCL3, "descrete attr type", (FMT__0));
     attr_size = zb_zcl_get_attribute_size(attr_desc->type, attr_desc->data_p);
-    if (attr_size > sizeof(union zb_zcl_attr_var_u))
-    {
-      TRACE_MSG(TRACE_ERROR, "Reporting of attribute with this type is not supported. type %hd, size %hd",
-                (FMT__H_H, attr_desc->type, attr_size));
-    }
-    else
-    {
-      ZB_MEMCPY(rep_info->u.send_info.reported_value.data_buf, attr_desc->data_p, attr_size);
-      TRACE_MSG(TRACE_ZCL3, "reported attr size %hd [%hd %hd %hd %hd]",
-                (FMT__H_H_H_H_H, attr_size,
-                 rep_info->u.send_info.reported_value.data_buf[0], rep_info->u.send_info.reported_value.data_buf[1],
-                 rep_info->u.send_info.reported_value.data_buf[2], rep_info->u.send_info.reported_value.data_buf[3]));
-    }
+    rep_info->u.send_info.reported_value.data_buf_crc32 = zb_crc32(attr_desc->data_p, attr_size);
+    TRACE_MSG(TRACE_ZCL3, "reported attr size %hd, data crc32 = 0x%08x",
+              (FMT__H_D, attr_size, rep_info->u.send_info.reported_value.data_buf_crc32));
   }
 
   TRACE_MSG(TRACE_ZCL1, "<< save_reported_value", (FMT__0));
@@ -1262,7 +1252,7 @@ static zb_bool_t check_delta_value(zb_zcl_reporting_info_t *rep_info)
           {
             zb_uint8_t delta;
 
-            delta = ZB_ABS(*(zb_uint8_t*)(attr_desc->data_p) - rep_info->u.send_info.reported_value.u8);
+            delta = ZB_ABS((zb_int16_t)*(zb_uint8_t*)(attr_desc->data_p) - rep_info->u.send_info.reported_value.u8);
 
             TRACE_MSG(TRACE_ZCL3, "U8 delta %hd, min delta %hd", (FMT__H_H, delta, rep_info->u.send_info.delta.u8));
             ret = (delta >= rep_info->u.send_info.delta.u8)?(RET_OK ):(RET_IGNORE );
@@ -1379,18 +1369,10 @@ static zb_bool_t check_delta_value(zb_zcl_reporting_info_t *rep_info)
     {
       TRACE_MSG(TRACE_ZCL3, "discrete/unknown analog attr type, check if value was changed or not", (FMT__0));
       attr_size = zb_zcl_get_attribute_size(attr_desc->type, attr_desc->data_p);
-      if (attr_size > sizeof(union zb_zcl_attr_var_u))
+      if(rep_info->u.send_info.reported_value.data_buf_crc32 != zb_crc32(attr_desc->data_p, attr_size))
       {
-        TRACE_MSG(TRACE_ERROR, "Reporting of attribute with this type is not supported. type %hd, size %hd",
-                  (FMT__H_H, attr_desc->type, attr_size));
-      }
-      else
-      {
-        if (ZB_MEMCMP(attr_desc->data_p, rep_info->u.send_info.reported_value.data_buf, attr_size))
-        {
           TRACE_MSG(TRACE_ZCL1, "Value was changed, report it", (FMT__0));
           ret = RET_OK;
-        }
       }
     }
   }

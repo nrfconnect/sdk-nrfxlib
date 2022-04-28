@@ -87,14 +87,27 @@ void zb_zcl_drlc_init_client()
 
 static zb_ret_t check_value_drlc(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value)
 {
-  ZVUNUSED(attr_id);
-  ZVUNUSED(value);
+  zb_ret_t ret = RET_OK;
+
   ZVUNUSED(endpoint);
 
+  switch( attr_id )
+  {
+    case ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID:
+      if( ZB_ZCL_ATTR_GET16(value) > ZB_ZCL_DRLC_CLUSTER_REVISION_MAX )
+      {
+        ret = RET_ERROR;
+      }
+      break;
+    default:
+      ret = RET_OK;
+      break;
+  }
+  
   /* All values for mandatory attributes are allowed, extra check for
    * optional attributes is needed */
 
-  return RET_OK;
+  return ret;
 }
 /**
  * Client
@@ -338,7 +351,8 @@ static zb_bool_t zb_zcl_process_drlc_client_commands(zb_uint8_t param,
 {
   zb_uint8_t processed = ZB_FALSE;
   zb_ret_t result = RET_ERROR;
-  zb_uint8_t status = ZB_ZCL_STATUS_UNSUP_CLUST_CMD;
+  /* ZCL8: CCB 2477: use UNSUP_COMMAND instead of Unsupported cluster command status */
+  zb_uint8_t status = ZB_ZCL_STATUS_UNSUP_CMD;
 
   switch ((zb_zcl_drlc_srv_cmd_t) cmd_info->cmd_id)
   {

@@ -301,7 +301,8 @@ static zb_bool_t zb_zcl_process_drlc_server_commands(zb_uint8_t param, const zb_
 {
   zb_uint8_t processed = ZB_FALSE;
   zb_ret_t   result = RET_ERROR;
-  zb_zcl_status_t status = ZB_ZCL_STATUS_UNSUP_CLUST_CMD;
+  /* ZCL8: CCB 2477: use UNSUP_COMMAND instead of any other Unsupported command status */
+  zb_zcl_status_t status = ZB_ZCL_STATUS_UNSUP_CMD;
 
   switch ((zb_zcl_drlc_cli_cmd_t) cmd_info->cmd_id)
   {

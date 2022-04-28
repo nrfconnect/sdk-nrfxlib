@@ -138,7 +138,7 @@ typedef zb_ret_t (*zb_zcl_cluster_check_value_t)(zb_uint16_t attr_id, zb_uint8_t
     handler).
     @param endpoint - Device Endpoint
     @param attr_id - ZCL Attribute ID
-    @param value - pointer to the new Attribute Value
+    @param new_value - pointer to the new Attribute Value
 */
 typedef void (*zb_zcl_cluster_write_attr_hook_t)(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value);
 
@@ -358,47 +358,52 @@ typedef enum zb_zcl_attribute_reporting_status_e
 /**
  * @name ZCL status values
  * @anchor zcl_status
- * @see ZCL spec, subclause 2.5.3
+ * @see ZCL8 spec, subclause 2.6.3, Table 2-12
  * @note The enumeration does not contain statuses not used in ZB HA profile
  */
 /** @{ */
-#define ZB_ZCL_STATUS_SUCCESS               0x00U /*!< ZCL Success */
-#define ZB_ZCL_STATUS_FAIL                  0x01U /*!< ZCL Fail */
-#define ZB_ZCL_STATUS_NOT_AUTHORIZED        0x7EU /*!< The sender of the command does not have authorization to carry out this command. */
-#define ZB_ZCL_STATUS_MALFORMED_CMD         0x80U /*!< Malformed command */
-#define ZB_ZCL_STATUS_UNSUP_CLUST_CMD       0x81U /*!< Unsupported cluster command */
-#define ZB_ZCL_STATUS_UNSUP_GEN_CMD         0x82U /*!< Unsupported general command */
-#define ZB_ZCL_STATUS_UNSUP_MANUF_CLUST_CMD 0x83U /*!< Unsupported manuf-specific clust command */
-#define ZB_ZCL_STATUS_UNSUP_MANUF_GEN_CMD   0x84U /*!< Unsupported manuf-specific general command */
-#define ZB_ZCL_STATUS_INVALID_FIELD         0x85U /*!< Invalid field */
-#define ZB_ZCL_STATUS_UNSUP_ATTRIB          0x86U /*!< Unsupported attribute */
-#define ZB_ZCL_STATUS_INVALID_VALUE         0x87U /*!< Invalid value */
-#define ZB_ZCL_STATUS_READ_ONLY             0x88U /*!< Read only */
-#define ZB_ZCL_STATUS_INSUFF_SPACE          0x89U /*!< Insufficient space */
-#define ZB_ZCL_STATUS_DUPE_EXISTS           0x8aU /*!< Duplicate exists */
-#define ZB_ZCL_STATUS_NOT_FOUND             0x8bU /*!< Not found */
-#define ZB_ZCL_STATUS_UNREPORTABLE_ATTRIB   0x8cU /*!< Unreportable attribute */
-#define ZB_ZCL_STATUS_INVALID_TYPE          0x8dU /*!< Invalid type */
-#define ZB_ZCL_STATUS_WRITE_ONLY            0x8fU /*!< Write only */
-#define ZB_ZCL_STATUS_INCONSISTENT          0x92U /*!< Supplied values are inconsistent */
-/** The credentials presented by the device sending the command are not sufficient to perform this
- * action. */
-#define ZB_ZCL_STATUS_ACTION_DENIED         0x93U
-#define ZB_ZCL_STATUS_TIMEOUT               0x94U /*!< Timeout */
-#define ZB_ZCL_STATUS_ABORT                 0x95U /*!< Abort */
-#define ZB_ZCL_STATUS_INVALID_IMAGE         0x96U /*!< Invalid OTA upgrade image */
-#define ZB_ZCL_STATUS_WAIT_FOR_DATA         0x97U /*!< Server does not have data block available yet */
+#define ZB_ZCL_STATUS_SUCCESS                       0x00U /*!< ZCL Success */
+#define ZB_ZCL_STATUS_FAIL                          0x01U /*!< ZCL Fail */
+#define ZB_ZCL_STATUS_NOT_AUTHORIZED                0x7EU /*!< The sender of the command does not have authorization to carry out this command. */
+#define ZB_ZCL_STATUS_RESERVED                      0x7FU /*!< CCB 2318 a reserved field may be used in the future and then be non-zero. */
+#define ZB_ZCL_STATUS_MALFORMED_CMD                 0x80U /*!< Malformed command */
+#define ZB_ZCL_STATUS_UNSUP_CMD                     0x81U /*!< ZCL8: Unsupported command */
+#define ZB_ZCL_STATUS_UNSUP_CLUST_CMD               0x81U /*!< ZCL7: Unsupported cluster command, ZCL8: use UNSUP_COMMAND*/
+#define ZB_ZCL_STATUS_UNSUP_GEN_CMD                 0x82U /*!< ZCL7: Unsupported general command, ZCL8: use UNSUP_COMMAND*/
+#define ZB_ZCL_STATUS_UNSUP_MANUF_CLUST_CMD         0x83U /*!< ZCL7: Unsupported manuf-specific clust command, ZCL8: use UNSUP_COMMAND*/
+#define ZB_ZCL_STATUS_UNSUP_MANUF_GEN_CMD           0x84U /*!< ZCL7: Unsupported manuf-specific general command, ZCL8: use UNSUP_COMMAND*/
+#define ZB_ZCL_STATUS_INVALID_FIELD                 0x85U /*!< Invalid field */
+#define ZB_ZCL_STATUS_UNSUP_ATTRIB                  0x86U /*!< Unsupported attribute */
+#define ZB_ZCL_STATUS_INVALID_VALUE                 0x87U /*!< Invalid value */
+#define ZB_ZCL_STATUS_READ_ONLY                     0x88U /*!< Read only */
+#define ZB_ZCL_STATUS_INSUFF_SPACE                  0x89U /*!< Insufficient space */
+#define ZB_ZCL_STATUS_DUPE_EXISTS                   0x8aU /*!< ZCL7: Duplicate exists, ZCL8: use SUCCESS*/
+#define ZB_ZCL_STATUS_NOT_FOUND                     0x8bU /*!< Not found */
+#define ZB_ZCL_STATUS_UNREPORTABLE_ATTRIB           0x8cU /*!< Unreportable attribute */
+#define ZB_ZCL_STATUS_INVALID_TYPE                  0x8dU /*!< Invalid type */
+#define ZB_ZCL_STATUS_WRITE_ONLY                    0x8fU /*!< ZCL7: Write only, ZCL8: use NOT_AUTHORIZED*/
+#define ZB_ZCL_STATUS_INCONSISTENT_STARTUP_STATE    0x90U /*!< ZCL7: The value can put the device in an inconsistent state on startup, ZCL8: FAILURE, CCB 2477 Status Code Cleanup: never used */
+#define ZB_ZCL_STATUS_DEFINED_OUT_OF_BAND           0x91U /*!< ZCL7: Out-of-band method to write an attribute, ZCL8: FAILURE, CCB 2477 Status Code Cleanup: never used */
+#define ZB_ZCL_STATUS_INCONSISTENT                  0x92U /*!< ZCL7: Supplied values are inconsistent, ZCL8: reserved, CCB 2477 Status Code Cleanup: never used */
+/** ZCL7: The credentials presented by the device sending the command are not sufficient to perform this
+ * action.
+ * ZCL8: use FAILURE*/
+#define ZB_ZCL_STATUS_ACTION_DENIED                 0x93U
+#define ZB_ZCL_STATUS_TIMEOUT                       0x94U /*!< Timeout */
+#define ZB_ZCL_STATUS_ABORT                         0x95U /*!< Abort */
+#define ZB_ZCL_STATUS_INVALID_IMAGE                 0x96U /*!< Invalid OTA upgrade image */
+#define ZB_ZCL_STATUS_WAIT_FOR_DATA                 0x97U /*!< Server does not have data block available yet */
 /**< No OTA upgrade image available for a particular client. */
-#define ZB_ZCL_STATUS_NO_IMAGE_AVAILABLE    0x98U
+#define ZB_ZCL_STATUS_NO_IMAGE_AVAILABLE            0x98U
 /** The client still requires more OTA upgrade image files in order to successfully upgrade. */
-#define ZB_ZCL_STATUS_REQUIRE_MORE_IMAGE    0x99U
+#define ZB_ZCL_STATUS_REQUIRE_MORE_IMAGE            0x99U
 /** The command has been received and is being processed.*/
-#define ZB_ZCL_STATUS_NOTIFICATION_PENDING  0x9AU
-#define ZB_ZCL_STATUS_HW_FAIL               0xc0U /*!< Hardware failure */
-#define ZB_ZCL_STATUS_SW_FAIL               0xc1U /*!< Software failure */
-#define ZB_ZCL_STATUS_CALIB_ERR             0xc2U /*!< Calibration error */
-#define ZB_ZCL_STATUS_UNSUP_CLUST           0xc3U /*!< Cluster is not found on the target endpoint */
-#define ZB_ZCL_STATUS_LIMIT_REACHED         0xc4U /*!< Cluster is not found on the target endpoint */
+#define ZB_ZCL_STATUS_NOTIFICATION_PENDING          0x9AU
+#define ZB_ZCL_STATUS_HW_FAIL                       0xc0U /*!< ZCL7: Hardware failure, ZCL8: use FAILURE */
+#define ZB_ZCL_STATUS_SW_FAIL                       0xc1U /*!< ZCL7: Software failure, ZCL8: use FAILURE */
+#define ZB_ZCL_STATUS_CALIB_ERR                     0xc2U /*!< ZCL7: Calibration error, ZCL8: reserved, CCB 2477 Status Code Cleanup: never used  */
+#define ZB_ZCL_STATUS_UNSUP_CLUST                   0xc3U /*!< Cluster is not found on the target endpoint */
+#define ZB_ZCL_STATUS_LIMIT_REACHED                 0xc4U /*!< ZCL7: Cluster is not found on the target endpoint, ZCL8: use SUCCESS */
 /** @} */
 
 /**
@@ -409,10 +414,59 @@ typedef enum zb_zcl_attribute_reporting_status_e
  */
 typedef zb_uint8_t zb_zcl_status_t;
 
-/** @brief ZCL global attribute: cluster version returned by default.
+/** @brief ZCL global attribute: cluster revision returned by default.
     Used if the GLOBAL_CLUSTER_REVISION attribute is undefined for the cluster/role.
 */
-#define ZB_ZCL_GLOBAL_CLUSTER_VERSION_DEFAULT 1
+#define ZB_ZCL_GLOBAL_CLUSTER_REVISION_DEFAULT 1
+
+/** @brief ZCL pre-ZCL8 API default cluster revision (minimal Cluster revision)
+*/
+#define ZB_ZCL_CLUSTER_REV_MIN    ZB_ZCL_GLOBAL_CLUSTER_REVISION_DEFAULT
+
+/** @brief ZCL unknown peer Cluster revision value
+*/
+#define ZB_ZCL_PEER_CLUSTER_REV_UNKNOWN 0xFFFFu
+
+/**
+ * @name ZCL backward compatibility modes
+ * @anchor zcl_backward_compatibility_modes
+ * @brief ZCL backward compatibility modes, introduced for ZCL8:
+ *  ZB_ZCL_LEGACY_MODE (default mode) - pre-ZCL8 API sends packets in pre-ZCL8 format as is, no conversion applied
+ *                                      ZCL8 API transforms packets into format according to the revision set in Cluster revision attribute value
+ *  ZB_ZCL_AUTO_MODE - both pre-ZCL8 API and ZCL8 API transforms packets into format according to revision set in Cluster revision attribute value
+ *  ZB_ZCL_COMPATIBILITY_MODE - both pre-ZCL8 API and ZCL8 API transforms packets into format according to peer Cluster revision provided by the application
+ *                              if the peer Cluster revision is greater than Cluster revision attribute value, then the Cluster revision will be used
+ *                              if there is no peer Cluster revision, the packet format is converted to the lowest possible Cluster revision
+ */
+/** @{ */
+#define ZB_ZCL_LEGACY_MODE        0x00U /*!< ZBOSS ZCL legacy mode */
+#define ZB_ZCL_AUTO_MODE          0x01U /*!< ZBOSS ZCL auto mode */
+#define ZB_ZCL_COMPATIBILITY_MODE 0x02U /*!< ZBOSS ZCL compatibility mode */
+/** @} */
+
+/**
+ * @name ZCL backward compatibility status modes
+ * @anchor zcl_backward_compatibility_status_modes
+ * @brief ZCL backward compatibility status modes, introduced for ZCL8:
+ * ZCL8 spec merges some statuses defined in previous ZCL specs into one
+ *   LIMIT_REACHED, DUPLICATE_EXISTS, SUCCESS ==> SUCCESS
+ *   INCONSISTENT_STARTUP_STATE, DEFINED_OUT_OF_BAND, ACTION_DENIED, HARDWARE_FAILURE, SOFTWARE_FAILURE ==> FAILURE
+ *   WRITE_ONLY, NOT_AUTHORIZED ==> NOT_AUTHORIZED
+ *   MALFORMED_COMMAND, INVALID_FIELD ==> INVALID_FIELD
+ *   UNSUP_CLUSTER_COMMAND, UNSUP_GENERAL_COMMAND, UNSUP_MANUF_CLUSTER_COMMAND, UNSUP_MANUF_GENERAL_COMMAND ==> UNSUP_COMMAND
+ *   INCONSISTENT, CALIBRATION_ERROR, RESERVED ==> RESERVED
+ * There is no well-defined mechanism how to define which version of ZCL is used by the peer. It looks like the optimal solution is to
+ * send statuses according to ZCL6 and ZCL7 specifications. In that case there will be no miscommunication with legacy devices.
+ * Other ZCL8 devices should process obsolete statuses correctly because of backward compatibility required by ZCL8 spec.
+ * If application requires send statuses defined strictly according to ZCL8 spec, the device can be switch to this mode (and vice versa)
+ * in runtime to ZCL8 statuses mode via zb_zcl_set_backward_compatible_statuses_mode API function
+ *   ZB_ZCL_STATUSES_PRE_ZCL8_MODE (default mode) - statuses will be send according to pre ZCL8 specifications
+ *   ZB_ZCL_STATUSES_ZCL8_MODE                    - statuses will be send according to ZCL8 specification
+*/
+/** @{ */
+#define ZB_ZCL_STATUSES_PRE_ZCL8_MODE 0x00U /*!< ZBOSS ZCL statuses Pre ZCL8 mode */
+#define ZB_ZCL_STATUSES_ZCL8_MODE     0x01U /*!< ZBOSS ZCL statuses ZCL8 mode */
+/** @} */
 
 #if defined ZB_ENABLE_HA
 
@@ -744,6 +798,32 @@ zb_zcl_attr_t;
     (void*) &(cluster_revision_##attrs_desc_name)                                                  \
   },
 
+/** @endcond */ /* internals_doc */
+
+/*! @brief Start declaration of attributes list with cluster revision */
+#define ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attrs_desc_name, cluster_name)           \
+  zb_uint16_t cluster_revision_##attrs_desc_name = cluster_name##_CLUSTER_REVISION_DEFAULT;        \
+  zb_zcl_attr_t attrs_desc_name [] = {                                                             \
+  {                                                                                                \
+    ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID,                                                        \
+    ZB_ZCL_ATTR_TYPE_U16,                                                                          \
+    ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+    (void*) &(cluster_revision_##attrs_desc_name)                                                  \
+  },
+
+/** @cond internals_doc */
+
+/*! @internal @brief Start declaration of static attributes list with cluster revision */
+#define ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION_STATIC(attrs_desc_name, cluster_name)    \
+  static zb_uint16_t cluster_revision_##attrs_desc_name = cluster_name##_CLUSTER_REVISION_DEFAULT; \
+  static zb_zcl_attr_t attrs_desc_name [] = {                                                      \
+  {                                                                                                \
+    ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID,                                                        \
+    ZB_ZCL_ATTR_TYPE_U16,                                                                          \
+    ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+    (void*) &(cluster_revision_##attrs_desc_name)                                                  \
+  },
+
 /*! @internal @brief End declaration of attributes list */
 #define ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST \
   {                                       \
@@ -1034,6 +1114,16 @@ zb_zcl_frame_hdr_short_t;
 #define ZB_ZCL_ADDR_TYPE_IEEE_GPD   1U
 #define ZB_ZCL_ADDR_TYPE_SRC_ID_GPD 2U
 #define ZB_ZCL_ADDR_TYPE_IEEE       3U
+/** @} */
+
+/**
+ * @name ZCL GPD address type
+ * @brief Macro helps to see whether addr_type belongs to GPD subgroup
+ */
+/** @{ */
+#define ZB_ZCL_ADDR_TYPE_IS_GPD(_addr_type)     \
+  ((_addr_type) == ZB_ZCL_ADDR_TYPE_IEEE_GPD || \
+   (_addr_type) == ZB_ZCL_ADDR_TYPE_SRC_ID_GPD)
 /** @} */
 
 /**
@@ -1885,6 +1975,17 @@ typedef void (*zb_zcl_set_default_value_attr_cb_t)(zb_uint8_t ep);
 typedef zb_ret_t (*zb_zcl_app_check_attr_value_cb_t)
     (zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *value);
 
+/** @brief Get peer Cluster revision callback
+    @param ieee_addr - IEEE address
+    @param cluster_id - Cluster ID
+    @param cluster_role - cluster role (@ref zcl_cluster_role)
+    @param endpoint - endpoint number
+
+    @return peer Cluster revision attribute value, 0xFFFF - if the revision is unknown
+*/
+typedef zb_uint16_t (*zb_zcl_peer_revision_cb_t)
+    (zb_ieee_addr_t ieee_addr, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint8_t endpoint);
+
 /* ZCL common functions */
 
 /*! @brief Get registered attribute description by cluster descriptor
@@ -1921,6 +2022,15 @@ zb_uint8_t zb_zcl_check_attribute_writable(
 */
 void zb_zcl_write_attr_hook(zb_uint8_t endpoint, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id, zb_uint8_t *new_value);
 
+/*!
+  Set attribute value cluster specific postprocessing
+  @param cmd_info - cluster role (@ref zcl_cluster_role)
+  @param attr_id - attribute ID
+  @param value - new value of attribute
+*/
+void zb_zcl_set_attr_val_post_process_cluster_specific(zb_zcl_parsed_hdr_t *cmd_info,
+                                                       zb_uint16_t attr_id,
+                                                       zb_uint8_t *value);
 /**
  * @brief Get size of value of given attribute type
  *
@@ -1956,9 +2066,8 @@ zb_bool_t zb_zcl_is_analog_data_type(zb_uint8_t attr_type);
  * @param attr_id - attribute ID
  * @param value - pointer to attribute data
  *
- * @return ZB_TRUE if data value is valid, ZB_FALSE otherwise
+ * @return RET_OK if data value is valid, some error code otherwise
  */
-/*zb_bool_t zb_zcl_check_attr_value(zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *value);*/
 zb_ret_t zb_zcl_check_attr_value(zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *value);
 
 zb_bool_t zb_zcl_is_target_endpoint(zb_af_endpoint_desc_t *ep_desc, zb_uint16_t profile_id);
@@ -2081,6 +2190,12 @@ zb_ret_t zb_zcl_ack_callback(zb_uint8_t param);
  */
 zb_uint8_t zb_zcl_check_accept_command(zb_uint8_t param);
 
+/** @cond DOXYGEN_INTERNAL_DOC */
+/*! Get endpoint ID that is under initialization at the moment
+    @return endpoint ID
+ */
+zb_uint8_t zb_get_current_endpoint_id(void);
+
 /** @brief Common continue command
 
     Usually use after invoke User App. If invoke User App finished with error (status!=RET_OK),
@@ -2191,6 +2306,71 @@ typedef struct zb_zcl_set_attr_value_param_s
 /** @endcond */
 
 /**
+ * @brief Set ZCL backward compatibility modes
+ *
+ * @ref ZB_ZCL_LEGACY_MODE is default mode
+ *
+ * @param mode - see @ref zcl_backward_compatibility_modes
+ *
+ * @return RET_OK if ZCL backward compatibility modes were set
+ * @return RET_OUT_OF_RANGE if parameter is out of range
+ */
+zb_ret_t zb_zcl_set_backward_comp_mode(zb_uint8_t mode);
+
+/**
+ * @brief Get ZCL backward compatibility modes
+ *
+ * @return current backward compatibility mode - see @ref zcl_backward_compatibility_modes
+ */
+zb_uint8_t zb_zcl_get_backward_comp_mode(void);
+
+/**
+ * @brief Get cluster revision depending on current ZCL backward compatibility mode, see @ref zcl_backward_compatibility_modes
+ *
+ * @param api_revision -
+ * @param dst_addr destination address pointer (see zb_addr_u)
+ * @param dst_addr_mode destination address mode (only @ref ZB_APS_ADDR_MODE_16_GROUP_ENDP_NOT_PRESENT and
+ * @ref ZB_APS_ADDR_MODE_16_ENDP_PRESENT are supported)
+ * @param dst_ep destination endpoint
+ * @param cluster_id cluster identifier
+ * @param cluster_role cluster role
+ * @param src_ep source endpoint
+ *
+ * @return cluster revision for the specific cluster
+ */
+zb_uint16_t zb_zcl_get_cluster_rev_by_mode(zb_uint16_t api_revision, const zb_addr_u *dst_addr,
+                                           zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                           zb_uint16_t cluster_id, zb_uint8_t cluster_role,
+                                           zb_uint8_t src_ep);
+
+/**
+ * @brief Set peer revision callback, see @ref zb_zcl_peer_revision_cb_t
+ * If the callback is set, ZB_ZCL_COMPATIBILITY_MODE will be enabled automatically
+ *
+ * @param cb - peer revision callback, NULL if the callback should be removed
+ *
+ * @return RET_OK if callback was set, otherwise an error
+ */
+zb_ret_t zb_zcl_set_peer_revision_callback(zb_zcl_peer_revision_cb_t cb);
+
+/**
+ * @brief Returns Backward compatible status values mode
+ * When enabled it diversifies some common statuses as it was in ZCL6 and ZCL7
+ *
+ * @return @ref zcl_backward_compatibility_status_modes
+ */
+zb_uint8_t zb_zcl_get_backward_compatible_statuses_mode(void);
+
+/**
+ * @brief Set Backward compatible status values mode
+ *
+ * @param statuses_mode - see @ref zcl_backward_compatibility_status_modes
+ *
+ * @return RET_OK if the mode was set, RET_OUT_OF_RANGE if value is invalid
+ */
+zb_ret_t zb_zcl_set_backward_compatible_statuses_mode(zb_uint8_t statuses_mode);
+
+/**
  * @}
  */
 
@@ -2200,7 +2380,7 @@ void zb_zcl_schedule_status_abort(zb_bufid_t  buffer, zb_addr_u *addr,
 
 zb_bool_t zb_zcl_handle_specific_commands(zb_uint8_t param);
 zb_bool_t cluster_needs_aps_encryption(zb_uint8_t endpoint_id, zb_uint16_t cluster_id);
-
+zb_zcl_status_t zb_zcl_get_zcl_status_from_ret(zb_ret_t result);
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
 #endif /* ZB_ZCL_COMMON_H */

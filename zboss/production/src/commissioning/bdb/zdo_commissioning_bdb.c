@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -216,6 +216,9 @@ void bdb_check_fn()
 
 static void bdb_init(void)
 {
+  TRACE_MSG(TRACE_ZDO1, "bdb_init", (FMT__0));
+  ZB_BDB().bdb_commissioning_step = ZB_BDB_INITIALIZATION;
+  ZB_BDB().bdb_commissioning_status = ZB_BDB_STATUS_SUCCESS;
   ZB_BDB().bdb_commissioning_group_id = (zb_uint16_t)-1;
   /* ZBOSS "autostart" mode:
      - ZC, not on a network: Formation

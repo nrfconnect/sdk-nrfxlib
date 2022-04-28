@@ -200,6 +200,9 @@ enum zb_zcl_door_lock_lock_state_e
   ZB_ZCL_ATTR_DOOR_LOCK_LOCK_STATE_UNDEFINED         = 0xff
 };
 
+/** @brief Default value for Door Lock cluster revision global attribute */
+#define ZB_ZCL_DOOR_LOCK_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0003u)
+
 /** @brief Default value for Lock State attribute. */
 #define ZB_ZCL_ATTR_DOOR_LOCK_LOCK_STATE_DEFAULT_VALUE ZB_ZCL_ATTR_DOOR_LOCK_LOCK_STATE_UNDEFINED
 
@@ -263,7 +266,7 @@ enum zb_zcl_door_lock_door_state_e
                                              lock_state,                              \
                                              lock_type,                               \
                                              actuator_enabled)                        \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                         \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_DOOR_LOCK)      \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DOOR_LOCK_LOCK_STATE_ID, (lock_state))             \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DOOR_LOCK_LOCK_TYPE_ID, (lock_type))               \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_DOOR_LOCK_ACTUATOR_ENABLED_ID, (actuator_enabled)) \

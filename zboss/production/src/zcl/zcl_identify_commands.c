@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -146,10 +146,10 @@ void zb_zcl_identify_effect_invoke_user_app(zb_uint8_t param)
   }
   else
   {
-    result = RET_ERROR;
+    result = RET_NOT_IMPLEMENTED;
   }
 
-  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, result==RET_OK ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_HW_FAIL);
+  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, zb_zcl_get_zcl_status_from_ret(result));
 
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_on_off_effect_invoke_user_app param", (FMT__0));
 }
@@ -438,7 +438,7 @@ void zb_zcl_identify_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t att
   TRACE_MSG(TRACE_ZCL1, "> zb_zcl_identify_write_attr_hook endpoint %hx attr_id %d",
       (FMT__H_D, endpoint, attr_id));
 
- /* ZCL7, 3.5.2.1.1 IdentifyTime attribute:
+ /* ZCL8, 3.5.2.2.1 IdentifyTime attribute:
   * If this attribute is set to a value other than 0x0000 then the device SHALL enter its
   * identification procedure, in order to indicate to an observer which of several devices it is. It
   * is recommended that this procedure consists of flashing a light with a period of 0.5

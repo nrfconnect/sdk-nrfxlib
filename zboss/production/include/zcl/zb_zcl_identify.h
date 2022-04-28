@@ -71,13 +71,16 @@
   */
 
 /** @brief Identify cluster attribute identifier
-    @see ZCL spec, subclause 3.5.2.2
+    @see ZCL8 spec, subclause 3.5.2.2
 */
 enum zb_zcl_identify_attr_e
 {
   /*! Identify time attribute */
   ZB_ZCL_ATTR_IDENTIFY_IDENTIFY_TIME_ID = 0x0000
 };
+
+/** @brief Default value for Identify cluster revision global attribute */
+#define ZB_ZCL_IDENTIFY_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
 
 /** @brief Default value for Identify attribute */
 #define ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE 0x0000
@@ -89,7 +92,7 @@ enum zb_zcl_identify_attr_e
 */
 
 /** @brief Command identifiers for "Identify" cluster
-    @see ZCL spec, subclauses 3.5.2.3, 3.5.2.4
+    @see ZCL8 spec, subclauses 3.5.2.3, 3.5.2.4
 */
 enum zb_zcl_identify_cmd_e
 {
@@ -116,7 +119,7 @@ enum zb_zcl_identify_cmd_e
  *  @endcond */ /* internals_doc */
 
 /** Effect identifier enum
- * @see ZCL spec 3.5.2.2.3.1 */
+ * @see ZCL8 spec 3.5.2.3.3.1 */
 enum zb_zcl_identify_trigger_effect_e
 {
   /**< Effect identifier field value: Light is turned on/off once */
@@ -129,7 +132,7 @@ enum zb_zcl_identify_trigger_effect_e
   ZB_ZCL_IDENTIFY_EFFECT_ID_OKAY            = 0x02,
   /**< Effect identifier field value: Colored light turns orange for 8 seconds; non-colored
    * light switches to maximum brightness for 0.5s and then minimum brightness for 7.5s */
-  ZB_ZCL_IDENTIFY_EFFECT_ID_CHANNEL_CHANGE  = 0xb,
+  ZB_ZCL_IDENTIFY_EFFECT_ID_CHANNEL_CHANGE  = 0x0b,
   /**< Effect identifier field value: Complete the current effect sequence before terminating.
    * E.g., if in the middle of a breathe effect (as above), first complete the current 1s
    * breathe effect and then terminate the effect*/
@@ -139,8 +142,8 @@ enum zb_zcl_identify_trigger_effect_e
 };
 
 
-/** Effect identifier enum
- * @see ZCL spec 3.5.2.2.3.2 */
+/** Effect variant enum
+ * @see ZCL8 spec 3.5.2.3.3.2 */
 enum zb_zcl_identify_trigger_variant_e
 {
   /**< Effect variant field value: Default */
@@ -420,7 +423,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_identify_query_res_s
   @param identify_time - pointer to variable to store identify time attribute value
 */
 #define ZB_ZCL_DECLARE_IDENTIFY_ATTRIB_LIST(attr_list, identify_time)   \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                           \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_IDENTIFY) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_IDENTIFY_IDENTIFY_TIME_ID, (identify_time)) \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 

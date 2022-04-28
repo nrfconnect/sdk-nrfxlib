@@ -79,7 +79,8 @@ zb_discover_cmd_list_t gs_level_server_cmd_list =
 static void move_to_level_continue(zb_uint8_t param);
 static void level_control_stop_internal(zb_uint8_t endpoint);
 
-zb_ret_t check_value_level_control_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
+static zb_ret_t check_value_level_control_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
+static zb_ret_t check_value_level_control_client(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
 
 zb_bool_t zb_zcl_process_level_specific_commands_srv(zb_uint8_t param);
 zb_bool_t zb_zcl_process_level_specific_commands_cli(zb_uint8_t param);
@@ -97,22 +98,55 @@ void zb_zcl_level_control_init_client()
 {
   zb_zcl_add_cluster_handlers(ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL,
                               ZB_ZCL_CLUSTER_CLIENT_ROLE,
-                              (zb_zcl_cluster_check_value_t)NULL,
+                              check_value_level_control_client,
                               (zb_zcl_cluster_write_attr_hook_t)NULL,
                               zb_zcl_process_level_specific_commands_cli);
 }
 
-zb_ret_t check_value_level_control_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value)
+static zb_ret_t check_value_level_control_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value)
 {
-  ZVUNUSED(attr_id);
-  ZVUNUSED(value);
+  zb_ret_t ret = RET_OK;
+
   ZVUNUSED(endpoint);
 
-  /* All values for mandatory attributes are allowed, extra check for
-   * optional attributes is needed */
+  switch( attr_id )
+  {
+    case ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID:
+      if( ZB_ZCL_ATTR_GET16(value) > ZB_ZCL_LEVEL_CONTROL_CLUSTER_REVISION_MAX )
+      {
+        ret = RET_ERROR;
+      }
+      break;
+    default:
+      ret = RET_OK;
+      break;
+  }
 
-  return RET_OK;
+  return ret;
 }
+
+static zb_ret_t check_value_level_control_client(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value)
+{
+  zb_ret_t ret = RET_OK;
+
+  ZVUNUSED(endpoint);
+
+  switch( attr_id )
+  {
+    case ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID:
+      if( ZB_ZCL_ATTR_GET16(value) > ZB_ZCL_LEVEL_CONTROL_CLUSTER_REVISION_MAX )
+      {
+        ret = RET_ERROR;
+      }
+      break;
+    default:
+      ret = RET_OK;
+      break;
+  }
+
+  return ret;
+}
+
 zb_zcl_level_control_move_variables_t *level_control_get_move_variables(zb_uint8_t endpoint)
 {
   zb_zcl_attr_t* move_status_desc;
@@ -339,6 +373,10 @@ zb_bool_t level_control_calculate_and_start_cvc(zb_zcl_cvc_input_variables_t *in
                            (zb_uint8_t*)&remaining_time,
                            ZB_FALSE);
     }
+    else
+    {
+      zb_buf_free(alarm_buf_id);
+    }
   }
 
   return status;
@@ -362,45 +400,52 @@ static void move_to_level_handler(
 
   ZB_ZCL_LEVEL_CONTROL_GET_MOVE_TO_LEVEL_REQ(param, move_to_level_req, status);
 
-  if (status == ZB_TRUE && level_control_check_req_options(param, endpoint))
+  if (status == ZB_TRUE)
   {
-    TRACE_MSG(TRACE_ZCL1,
-              "ZB_ZCL_LEVEL_CONTROL_GET_MOVE_TO_LEVEL_REQ: new level is %i",
-              (FMT__H, move_to_level_req.level));
-
-    TRACE_MSG(TRACE_ZCL1,
-              "ZB_ZCL_LEVEL_CONTROL_GET_MOVE_TO_LEVEL_REQ: transition time is %d",
-              (FMT__D, move_to_level_req.transition_time));
-
-    level_control_stop_internal(endpoint);
-
-    if (move_to_level_req.transition_time != 0)
+    if (!level_control_check_req_options(param, endpoint))
     {
-      input_var.transition_time = move_to_level_req.transition_time;
+      TRACE_MSG(TRACE_ZCL1, "Command execution SHALL NOT continue beyond the Options processing", (FMT__0));
     }
     else
     {
-      /*If Transition Time given is 0, then need to to move as fast as able */
-      input_var.transition_time = ZB_ZCL_LEVEL_CONTROL_TRANSITION_TIME_AS_FAST_AS_ABLE;
-    };
+      TRACE_MSG(TRACE_ZCL1,
+              "ZB_ZCL_LEVEL_CONTROL_GET_MOVE_TO_LEVEL_REQ: new level is %i",
+              (FMT__H, move_to_level_req.level));
 
-    move_variables->is_onoff = is_onoff;
+      TRACE_MSG(TRACE_ZCL1,
+              "ZB_ZCL_LEVEL_CONTROL_GET_MOVE_TO_LEVEL_REQ: transition time is %d",
+              (FMT__D, move_to_level_req.transition_time));
 
-    input_var.current_value16 = move_variables->curr_level;
-    input_var.end_value16 = move_to_level_req.level;
+      level_control_stop_internal(endpoint);
 
-/* This needed to set OFF from move_to_level_continue() when necessary */
-    move_variables->end_level = move_to_level_req.level;
+      if (move_to_level_req.transition_time != 0)
+      {
+        input_var.transition_time = move_to_level_req.transition_time;
+      }
+      else
+      {
+        /*If Transition Time given is 0, then need to to move as fast as able */
+        input_var.transition_time = ZB_ZCL_LEVEL_CONTROL_TRANSITION_TIME_AS_FAST_AS_ABLE;
+      };
 
-    input_var.buf_id = 0;
-    input_var.after_processing_cb = move_to_level_continue;
-    input_var.value_set_func = level_control_value_set_func;
+      move_variables->is_onoff = is_onoff;
 
-    input_var.min_value16 = min_value;
-    input_var.max_value16 = max_value;
-    input_var.overlap = ZB_FALSE;
+      input_var.current_value16 = move_variables->curr_level;
+      input_var.end_value16 = move_to_level_req.level;
 
-    status = level_control_calculate_and_start_cvc(&input_var, is_onoff, endpoint);
+      /* This needed to set OFF from move_to_level_continue() when necessary */
+      move_variables->end_level = move_to_level_req.level;
+
+      input_var.buf_id = 0;
+      input_var.after_processing_cb = move_to_level_continue;
+      input_var.value_set_func = level_control_value_set_func;
+
+      input_var.min_value16 = min_value;
+      input_var.max_value16 = max_value;
+      input_var.overlap = ZB_FALSE;
+
+      status = level_control_calculate_and_start_cvc(&input_var, is_onoff, endpoint);
+    }
   }
   else
   {
@@ -464,82 +509,89 @@ static void move_handler(zb_uint8_t param, zb_bool_t is_onoff, zb_uint8_t endpoi
 
   ZB_ZCL_LEVEL_CONTROL_GET_MOVE_REQ(param, move_req, status);
 
-  if (status == ZB_TRUE && level_control_check_req_options(param, endpoint))
+  if (status == ZB_TRUE)
   {
-    TRACE_MSG(TRACE_ZCL1, "move_mode = %i", (FMT__H, move_req.move_mode));
-    TRACE_MSG(TRACE_ZCL1, "rate = %i", (FMT__H, move_req.rate));
-
-    level_control_stop_internal(endpoint);
-
-    if (move_req.move_mode <= ZB_ZCL_LEVEL_CONTROL_MOVE_MODE_DOWN)
+    if (!level_control_check_req_options(param, endpoint))
     {
-      move_variables->is_onoff = is_onoff;
-
-      /* end_level for Move command is MIN_VALUE or MAX_VALUE */
-      if (!move_req.move_mode)
-      {
-        move_variables->end_level = ZB_ZCL_LEVEL_CONTROL_LEVEL_MAX_VALUE;
-      }
-      else
-      {
-        move_variables->end_level = ZB_ZCL_LEVEL_CONTROL_LEVEL_MIN_VALUE;
-      }
-
-      TRACE_MSG(TRACE_ZCL1, "end_level = %i", (FMT__H, move_variables->end_level));
-
-      /* If Rate is 0xff, need to move fast as able, so transition time setting to minimum,
-         see ZCL spec */
-
-      if (move_req.rate == ZB_ZCL_LEVEL_CONTROL_RATE_AS_FAST_AS_ABLE)
-      {
-        /* Its minimal transition time */
-        input_var.transition_time = ZB_ZCL_LEVEL_CONTROL_TRANSITION_TIME_AS_FAST_AS_ABLE;
-      }
-      else
-      {
-        tmp = move_variables->curr_level - move_variables->end_level;
-
-        tmp = ZB_ABS(tmp);
-        diff = (zb_uint8_t)tmp;
-
-/* NK: we can work with 1/10 of second already here, to increase accuracy of Move command */
-        input_var.transition_time = (diff * ZB_LEVEL_CONTROL_TRANSITION_TIME_ONE_SECOND) / move_req.rate;
-
-        /* Move command operates with seconds, when transition_time is in 1/10 of second.
-           If rate is greater then diff, need to do one transition (1 second) for setting level */
-        if (!input_var.transition_time)
-        {
-          input_var.transition_time = ZB_LEVEL_CONTROL_TRANSITION_TIME_ONE_SECOND;
-        }
-      }
-
-      TRACE_MSG(TRACE_ZCL1,
-                "Redirect to Move to Level: level = %i",
-                (FMT__D, move_variables->end_level));
-
-      TRACE_MSG(TRACE_ZCL1,
-                "Redirect to Move to Level: transition time = %d",
-                (FMT__D, input_var.transition_time));
-
-
-      //TODO: CVC start
-      input_var.current_value16 = move_variables->curr_level;
-      input_var.end_value16 = move_variables->end_level;
-
-      input_var.buf_id = 0;
-      input_var.after_processing_cb = move_to_level_continue;
-      input_var.value_set_func = level_control_value_set_func;
-
-      input_var.min_value16 = min_value;
-      input_var.max_value16 = max_value;
-      input_var.overlap = ZB_FALSE;
-
-      status = level_control_calculate_and_start_cvc(&input_var, is_onoff, endpoint);
-        }
+      TRACE_MSG(TRACE_ZCL1, "Command execution SHALL NOT continue beyond the Options processing", (FMT__0));
+    }
     else
     {
-      TRACE_MSG(TRACE_ERROR, "Mode parameter is invalid", (FMT__0));
-      status = ZB_FALSE;
+      TRACE_MSG(TRACE_ZCL1, "move_mode = %i", (FMT__H, move_req.move_mode));
+      TRACE_MSG(TRACE_ZCL1, "rate = %i", (FMT__H, move_req.rate));
+
+      level_control_stop_internal(endpoint);
+
+      if (move_req.move_mode <= ZB_ZCL_LEVEL_CONTROL_MOVE_MODE_DOWN)
+      {
+        move_variables->is_onoff = is_onoff;
+
+        /* end_level for Move command is MIN_VALUE or MAX_VALUE */
+        if (!move_req.move_mode)
+        {
+          move_variables->end_level = ZB_ZCL_LEVEL_CONTROL_LEVEL_MAX_VALUE;
+        }
+        else
+        {
+          move_variables->end_level = ZB_ZCL_LEVEL_CONTROL_LEVEL_MIN_VALUE;
+        }
+
+        TRACE_MSG(TRACE_ZCL1, "end_level = %i", (FMT__H, move_variables->end_level));
+
+        /* If Rate is 0xff, need to move fast as able, so transition time setting to minimum,
+           see ZCL spec */
+
+        if (move_req.rate == ZB_ZCL_LEVEL_CONTROL_RATE_AS_FAST_AS_ABLE)
+        {
+          /* Its minimal transition time */
+          input_var.transition_time = ZB_ZCL_LEVEL_CONTROL_TRANSITION_TIME_AS_FAST_AS_ABLE;
+        }
+        else
+        {
+          tmp = move_variables->curr_level - move_variables->end_level;
+
+          tmp = ZB_ABS(tmp);
+          diff = (zb_uint8_t)tmp;
+
+          /* NK: we can work with 1/10 of second already here, to increase accuracy of Move command */
+          input_var.transition_time = (diff * ZB_LEVEL_CONTROL_TRANSITION_TIME_ONE_SECOND) / move_req.rate;
+
+          /* Move command operates with seconds, when transition_time is in 1/10 of second.
+             If rate is greater then diff, need to do one transition (1 second) for setting level */
+          if (!input_var.transition_time)
+          {
+            input_var.transition_time = ZB_LEVEL_CONTROL_TRANSITION_TIME_ONE_SECOND;
+          }
+        }
+
+        TRACE_MSG(TRACE_ZCL1,
+                  "Redirect to Move to Level: level = %i",
+                  (FMT__D, move_variables->end_level));
+
+        TRACE_MSG(TRACE_ZCL1,
+                  "Redirect to Move to Level: transition time = %d",
+                  (FMT__D, input_var.transition_time));
+
+
+        //TODO: CVC start
+        input_var.current_value16 = move_variables->curr_level;
+        input_var.end_value16 = move_variables->end_level;
+
+        input_var.buf_id = 0;
+        input_var.after_processing_cb = move_to_level_continue;
+        input_var.value_set_func = level_control_value_set_func;
+
+        input_var.min_value16 = min_value;
+        input_var.max_value16 = max_value;
+        input_var.overlap = ZB_FALSE;
+
+        status = level_control_calculate_and_start_cvc(&input_var, is_onoff, endpoint);
+      }
+      else
+      {
+        TRACE_MSG(TRACE_ERROR, "Mode parameter is invalid", (FMT__0));
+        status = ZB_FALSE;
+      }
     }
   }
   else
@@ -581,84 +633,89 @@ static void step_handler(
 
   ZB_ZCL_LEVEL_CONTROL_GET_STEP_REQ(param, step_req, status);
 
-  if (status == ZB_TRUE && level_control_check_req_options(param, endpoint))
+  if (status == ZB_TRUE)
   {
-    TRACE_MSG(TRACE_ZCL1, "step_mode = %i", (FMT__H, step_req.step_mode));
-    TRACE_MSG(TRACE_ZCL1, "step_size = %i", (FMT__H, step_req.step_size));
-    TRACE_MSG(TRACE_ZCL1, "transition_time = %d", (FMT__D, step_req.transition_time));
-
-    level_control_stop_internal(endpoint);
-
-    if (step_req.step_mode <= ZB_ZCL_LEVEL_CONTROL_STEP_MODE_DOWN)
+    if (!level_control_check_req_options(param, endpoint))
     {
-      move_variables->is_onoff = is_onoff;
+      TRACE_MSG(TRACE_ZCL1, "Command execution SHALL NOT continue beyond the Options processing", (FMT__0));
+    }
+    else
+    {
+      TRACE_MSG(TRACE_ZCL1, "step_mode = %i", (FMT__H, step_req.step_mode));
+      TRACE_MSG(TRACE_ZCL1, "step_size = %i", (FMT__H, step_req.step_size));
+      TRACE_MSG(TRACE_ZCL1, "transition_time = %d", (FMT__D, step_req.transition_time));
 
-      if (step_req.transition_time == 0)
-      {
-      /*If Transition Time given is 0, then need to to move as fast as able */
-        input_var.transition_time = ZB_ZCL_LEVEL_CONTROL_TRANSITION_TIME_AS_FAST_AS_ABLE;
-      }
+      level_control_stop_internal(endpoint);
 
-      if (!step_req.step_mode)
+      if (step_req.step_mode <= ZB_ZCL_LEVEL_CONTROL_STEP_MODE_DOWN)
       {
-        tmp = move_variables->curr_level + step_req.step_size;
-        if (tmp > ZB_ZCL_LEVEL_CONTROL_LEVEL_MAX_VALUE)
+        move_variables->is_onoff = is_onoff;
+
+        if (step_req.transition_time == 0)
         {
-          move_variables->end_level = ZB_ZCL_LEVEL_CONTROL_LEVEL_MAX_VALUE;
-          diff = move_variables->end_level - move_variables->curr_level;
+          /*If Transition Time given is 0, then need to to move as fast as able */
+          input_var.transition_time = ZB_ZCL_LEVEL_CONTROL_TRANSITION_TIME_AS_FAST_AS_ABLE;
+        }
 
-          input_var.transition_time = diff *
-            step_req.transition_time / step_req.step_size + 1;
+        if (!step_req.step_mode)
+        {
+          tmp = move_variables->curr_level + step_req.step_size;
+          if (tmp > ZB_ZCL_LEVEL_CONTROL_LEVEL_MAX_VALUE)
+          {
+            move_variables->end_level = ZB_ZCL_LEVEL_CONTROL_LEVEL_MAX_VALUE;
+            diff = move_variables->end_level - move_variables->curr_level;
+
+            input_var.transition_time = diff * step_req.transition_time / step_req.step_size + 1;
+          }
+          else
+          {
+            move_variables->end_level = tmp;
+            input_var.transition_time = step_req.transition_time;
+          }
         }
         else
         {
-          move_variables->end_level = tmp;
-          input_var.transition_time = step_req.transition_time;
+          tmp = move_variables->curr_level - step_req.step_size;
+          if (tmp < ZB_ZCL_LEVEL_CONTROL_LEVEL_MIN_VALUE)
+          {
+            move_variables->end_level = ZB_ZCL_LEVEL_CONTROL_LEVEL_MIN_VALUE;
+            diff = move_variables->curr_level - move_variables->end_level;
+            input_var.transition_time = diff * step_req.transition_time / step_req.step_size + 1;
+          }
+          else
+          {
+            move_variables->end_level = tmp;
+            input_var.transition_time = step_req.transition_time;
+          }
         }
+
+        TRACE_MSG(TRACE_ZCL1, "end level = %i", (FMT__H, move_variables->end_level));
+        TRACE_MSG(TRACE_ZCL1,
+                  "Redirect to Move to Level: level = %i",
+                  (FMT__D, move_variables->end_level));
+
+        TRACE_MSG(TRACE_ZCL1,
+                  "Redirect to Move to Level: transition time = %d",
+                  (FMT__D, input_var.transition_time));
+
+        input_var.current_value16 = move_variables->curr_level;
+        input_var.end_value16 = move_variables->end_level;
+
+        input_var.buf_id = 0;
+        input_var.after_processing_cb = move_to_level_continue;
+        input_var.value_set_func = level_control_value_set_func;
+
+        input_var.min_value16 = min_value;
+        input_var.max_value16 = max_value;
+        input_var.overlap = ZB_FALSE;
+
+        status = level_control_calculate_and_start_cvc(&input_var, is_onoff, endpoint);
       }
       else
       {
-        tmp = move_variables->curr_level - step_req.step_size;
-        if (tmp < ZB_ZCL_LEVEL_CONTROL_LEVEL_MIN_VALUE)
-        {
-          move_variables->end_level = ZB_ZCL_LEVEL_CONTROL_LEVEL_MIN_VALUE;
-          diff = move_variables->curr_level - move_variables->end_level;
-          input_var.transition_time = diff *
-            step_req.transition_time / step_req.step_size + 1;
-        }
-        else
-        {
-          move_variables->end_level = tmp;
-          input_var.transition_time = step_req.transition_time;
-        }
+        TRACE_MSG(TRACE_ERROR, "step_mode parameter is invalid", (FMT__0));
+        status = ZB_FALSE;
       }
-
-      TRACE_MSG(TRACE_ZCL1, "end level = %i", (FMT__H, move_variables->end_level));
-      TRACE_MSG(TRACE_ZCL1,
-                "Redirect to Move to Level: level = %i",
-                (FMT__D, move_variables->end_level));
-
-      TRACE_MSG(TRACE_ZCL1,
-                "Redirect to Move to Level: transition time = %d",
-                (FMT__D, input_var.transition_time));
-
-      input_var.current_value16 = move_variables->curr_level;
-      input_var.end_value16 = move_variables->end_level;
-
-      input_var.buf_id = 0;
-      input_var.after_processing_cb = move_to_level_continue;
-      input_var.value_set_func = level_control_value_set_func;
-
-      input_var.min_value16 = min_value;
-      input_var.max_value16 = max_value;
-      input_var.overlap = ZB_FALSE;
-
-      status = level_control_calculate_and_start_cvc(&input_var, is_onoff, endpoint);
-        }
-    else
-    {
-      TRACE_MSG(TRACE_ERROR, "step_mode parameter is invalid", (FMT__0));
-      status = ZB_FALSE;
     }
   }
   else
@@ -735,6 +792,10 @@ static void stop_handler(zb_uint8_t param, zb_uint8_t endpoint)
   if (level_control_check_req_options(param, endpoint))
   {
     level_control_stop_internal(endpoint);
+  }
+  else
+  {
+    TRACE_MSG(TRACE_ZCL1, "Command execution SHALL NOT continue beyond the Options processing", (FMT__0));
   }
 
   if (!(status && move_variables->addr.disable_default_response))
@@ -878,6 +939,500 @@ zb_bool_t zb_zcl_process_level_specific_commands_cli(zb_uint8_t param)
     return ZB_TRUE;
   }
   return zb_zcl_process_level_control_specific_commands(param);
+}
+
+static inline void zb_zcl_level_control_send_move_cmd_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                           zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                           zb_uint8_t ep, zb_uint16_t prof_id,
+                                                           zb_uint8_t def_resp, zb_callback_t cb,
+                                                           zb_uint8_t move_mode, zb_uint8_t rate,
+                                                           zb_uint8_t cmd_id)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, def_resp)
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), cmd_id);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (rate));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb);
+}
+
+static inline void zb_zcl_level_control_send_move_cmd_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                             zb_uint8_t move_mode, zb_uint8_t rate,
+                                             zb_uint8_t options_mask, zb_uint8_t options_override,
+                                             zb_uint8_t cmd_id)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, def_resp)
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), cmd_id);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (rate));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb);
+}
+
+void zb_zcl_level_control_send_move_cmd_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                             zb_uint8_t move_mode, zb_uint8_t rate,
+                                             zb_uint8_t options_mask, zb_uint8_t options_override,
+                                             zb_uint8_t cmd_id)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_level_control_send_move_cmd_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_LEVEL_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_level_control_send_move_cmd_rev1(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb,
+                                              move_mode, rate,
+                                              cmd_id);
+      break;
+    case 3:
+      zb_zcl_level_control_send_move_cmd_rev3(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb,
+                                              move_mode, rate,
+                                              options_mask, options_override,
+                                              cmd_id);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_level_control_send_move_cmd_zcl8", (FMT__0));
+}
+
+void zb_zcl_level_control_send_move_cmd(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                        zb_uint8_t move_mode, zb_uint8_t rate,
+                                        zb_uint8_t cmd_id)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_level_control_send_move_cmd", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_level_control_send_move_cmd_rev1(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb,
+                                              move_mode, rate,
+                                              cmd_id);
+      break;
+    case 3:
+      zb_zcl_level_control_send_move_cmd_rev3(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb,
+                                              move_mode, rate,
+                                              ZB_ZCL_LEVEL_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                              ZB_ZCL_LEVEL_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE,
+                                              cmd_id);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_level_control_send_move_cmd", (FMT__0));
+}
+
+static inline void zb_zcl_level_control_send_move_to_level_cmd_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                                    zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                                    zb_uint8_t ep, zb_uint16_t prof_id,
+                                                                    zb_uint8_t def_resp, zb_callback_t cb,
+                                                                    zb_uint8_t level, zb_uint16_t transition_time,
+                                                                    zb_uint8_t cmd_id)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), (cmd_id));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (level));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb);
+}
+
+static inline void zb_zcl_level_control_send_move_to_level_cmd_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                      zb_uint8_t level, zb_uint16_t transition_time,
+                                                      zb_uint8_t options_mask, zb_uint8_t options_override,
+                                                      zb_uint8_t cmd_id)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), (cmd_id));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (level));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb);
+}
+
+void zb_zcl_level_control_send_move_to_level_cmd_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                      zb_uint8_t level, zb_uint16_t transition_time,
+                                                      zb_uint8_t options_mask, zb_uint8_t options_override,
+                                                      zb_uint8_t cmd_id)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_level_control_send_move_to_level_cmd_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_LEVEL_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_level_control_send_move_to_level_cmd_rev1(buffer, dst_addr,
+                                                       dst_addr_mode, dst_ep,
+                                                       ep, prof_id,
+                                                       def_resp, cb,
+                                                       level, transition_time,
+                                                       cmd_id);
+      break;
+    case 3:
+      zb_zcl_level_control_send_move_to_level_cmd_rev3(buffer, dst_addr,
+                                                       dst_addr_mode, dst_ep,
+                                                       ep, prof_id,
+                                                       def_resp, cb,
+                                                       level, transition_time,
+                                                       options_mask, options_override,
+                                                       cmd_id);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_level_control_send_move_to_level_cmd_zcl8", (FMT__0));
+}
+
+void zb_zcl_level_control_send_move_to_level_cmd(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                 zb_uint8_t level, zb_uint16_t transition_time,
+                                                 zb_uint8_t cmd_id)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_level_control_send_move_to_level_cmd", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_level_control_send_move_to_level_cmd_rev1(buffer, dst_addr,
+                                                       dst_addr_mode, dst_ep,
+                                                       ep, prof_id,
+                                                       def_resp, cb,
+                                                       level, transition_time,
+                                                       cmd_id);
+      break;
+    case 3:
+      zb_zcl_level_control_send_move_to_level_cmd_rev3(buffer, dst_addr,
+                                                       dst_addr_mode, dst_ep,
+                                                       ep, prof_id,
+                                                       def_resp, cb,
+                                                       level, transition_time,
+                                                       ZB_ZCL_LEVEL_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                                       ZB_ZCL_LEVEL_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE,
+                                                       cmd_id);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_level_control_send_move_to_level_cmd", (FMT__0));
+}
+
+static inline void zb_zcl_level_control_send_step_cmd_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                           zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                           zb_uint8_t ep, zb_uint16_t prof_id,
+                                                           zb_uint8_t def_resp, zb_callback_t cb,
+                                                           zb_uint8_t step_mode, zb_uint8_t step_size,
+                                                           zb_uint16_t transition_time,
+                                                           zb_uint8_t cmd_id)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, def_resp)
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), cmd_id);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_size));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb);
+}
+
+static inline void zb_zcl_level_control_send_step_cmd_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                             zb_uint8_t step_mode, zb_uint8_t step_size,
+                                             zb_uint16_t transition_time,
+                                             zb_uint8_t options_mask, zb_uint8_t options_override,
+                                             zb_uint8_t cmd_id)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, def_resp)
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), cmd_id);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_size));
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb);
+}
+
+void zb_zcl_level_control_send_step_cmd_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                             zb_uint8_t step_mode, zb_uint8_t step_size,
+                                             zb_uint16_t transition_time,
+                                             zb_uint8_t options_mask, zb_uint8_t options_override,
+                                             zb_uint8_t cmd_id)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_level_control_send_step_cmd_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_LEVEL_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_level_control_send_step_cmd_rev1(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb,
+                                              step_mode, step_size, transition_time,
+                                              cmd_id);
+      break;
+    case 3:
+      zb_zcl_level_control_send_step_cmd_rev3(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb,
+                                              step_mode, step_size, transition_time,
+                                              options_mask, options_override,
+                                              cmd_id);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_level_control_send_step_cmd_zcl8", (FMT__0));
+}
+
+void zb_zcl_level_control_send_step_cmd(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                        zb_uint8_t step_mode, zb_uint8_t step_size,
+                                        zb_uint16_t transition_time,
+                                        zb_uint8_t cmd_id)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_level_control_send_step_cmd", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_level_control_send_step_cmd_rev1(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb,
+                                              step_mode, step_size, transition_time,
+                                              cmd_id);
+      break;
+    case 3:
+      zb_zcl_level_control_send_step_cmd_rev3(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb,
+                                              step_mode, step_size, transition_time,
+                                              ZB_ZCL_LEVEL_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                              ZB_ZCL_LEVEL_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE,
+                                              cmd_id);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_level_control_send_step_cmd", (FMT__0));
+}
+
+static inline void zb_zcl_level_control_send_stop_req_rev1(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                           zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                           zb_uint8_t ep, zb_uint16_t prof_id,
+                                                           zb_uint8_t def_resp, zb_callback_t cb)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, def_resp)
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_LEVEL_CONTROL_STOP);
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb);
+}
+
+static inline void zb_zcl_level_control_send_stop_req_rev3(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                             zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)
+  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, def_resp)
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_LEVEL_CONTROL_STOP);
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_mask));
+  ZB_ZCL_PACKET_PUT_DATA8(ptr, (options_override));
+  zb_zcl_finish_and_send_packet(buffer, ptr, dst_addr, dst_addr_mode, dst_ep, ep, prof_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb);
+}
+
+void zb_zcl_level_control_send_stop_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                             zb_uint8_t options_mask, zb_uint8_t options_override)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_level_control_send_stop_req_zcl8", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_LEVEL_CONTROL_CLUSTER_REVISION_MAX,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_level_control_send_stop_req_rev1(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb);
+      break;
+    case 3:
+      zb_zcl_level_control_send_stop_req_rev3(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb,
+                                              options_mask, options_override);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_level_control_send_stop_req_zcl8", (FMT__0));
+}
+
+void zb_zcl_level_control_send_stop_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                        zb_uint8_t def_resp, zb_callback_t cb)
+{
+  zb_uint16_t rev;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_level_control_send_stop_req", (FMT__0));
+
+  rev = zb_zcl_get_cluster_rev_by_mode(ZB_ZCL_CLUSTER_REV_MIN,
+                                       dst_addr, dst_addr_mode, dst_ep,
+                                       ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL,
+                                       ZB_ZCL_CLUSTER_CLIENT_ROLE, ep);
+
+  TRACE_MSG(TRACE_ZCL3, "rev is %d", (FMT__D, rev));
+
+  switch(rev)
+  {
+    case ZB_ZCL_CLUSTER_REV_MIN:
+      /* FALLTHROUGH */
+    case 2:
+      zb_zcl_level_control_send_stop_req_rev1(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb);
+      break;
+    case 3:
+      zb_zcl_level_control_send_stop_req_rev3(buffer, dst_addr,
+                                              dst_addr_mode, dst_ep,
+                                              ep, prof_id,
+                                              def_resp, cb,
+                                              ZB_ZCL_LEVEL_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE,
+                                              ZB_ZCL_LEVEL_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE);
+      break;
+    default:
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_level_control_send_stop_req", (FMT__0));
 }
 
 #ifdef ZB_COMPILE_ZCL_SAMPLE

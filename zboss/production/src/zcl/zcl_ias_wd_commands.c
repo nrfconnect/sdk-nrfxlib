@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -143,10 +143,10 @@ void zb_zcl_ias_wd_start_warning_invoke_user_app(zb_uint8_t param)
   }
   else
   {
-    result = RET_ERROR;
+    result = RET_NOT_IMPLEMENTED;
   }
 
-  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, result==RET_OK ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_HW_FAIL);
+  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, zb_zcl_get_zcl_status_from_ret(result));
 
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_ias_wd_start_warning_invoke_user_app", (FMT__0));
 }
@@ -223,10 +223,10 @@ void zb_zcl_ias_wd_squawk_invoke_user_app(zb_uint8_t param)
   }
   else
   {
-    result = RET_ERROR;
+    result = RET_NOT_IMPLEMENTED;
   }
 
-  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, result==RET_OK ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_HW_FAIL);
+  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, zb_zcl_get_zcl_status_from_ret(result));
 
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_ias_wd_squawk_invoke_user_app", (FMT__0));
 }

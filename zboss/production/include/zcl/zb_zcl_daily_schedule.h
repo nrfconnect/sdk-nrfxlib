@@ -141,6 +141,17 @@ typedef ZB_PACKED_PRE struct zb_zcl_daily_schedule_attr_linky_peak_period_status
   zb_bitfield_t current_day_color:2;
 } zb_zcl_daily_schedule_attr_linky_peak_period_status_t;
 
+/** @brief Default value for Daily Schedule cluster revision global attribute (not defined anywhere) */
+#define ZB_ZCL_DAILY_SCHEDULE_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0001u)
+
+/*!
+  @brief Declare attribute list for Daily Schedule cluster (only cluster revision attribute)
+  @param attr_list - attribute list name
+*/
+#define ZB_ZCL_DECLARE_DAILY_SCHEDULE_ATTR_LIST(attr_list)                            \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_DAILY_SCHEDULE) \
+  ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
+
 /* Constants for Current Day Color and Next Day Color subfields */
 #define ZB_ZCL_ATTR_LINKY_PEAK_PERIOD_STATUS_COLOR_UNUSED       0b00
 #define ZB_ZCL_ATTR_LINKY_PEAK_PERIOD_STATUS_COLOR_LOW_BLUE     0b01

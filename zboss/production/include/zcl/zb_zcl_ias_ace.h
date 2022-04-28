@@ -75,6 +75,9 @@ typedef ZB_PACKED_PRE struct zb_zcl_ias_ace_zone_table_s
   zb_char_t *zone_label;
 } ZB_PACKED_STRUCT zb_zcl_ias_ace_zone_table_t;
 
+/** @brief Default value for IAS ACE cluster revision global attribute */
+#define ZB_ZCL_IAS_ACE_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0001u)
+
 /** @brief IAS ACE Zone Table maximum length */
 #define ZB_ZCL_IAS_ACE_ZONE_TABLE_LENGTH      255
 
@@ -137,7 +140,7 @@ enum zb_zcl_ias_ace_attr_e
     see ZCL spec 8.3.2.3, table 8.11
 */
 #define ZB_ZCL_DECLARE_IAS_ACE_ATTRIB_LIST(attr_list, length, table)        \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                               \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_IAS_ACE) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_IAS_ACE_ZONE_TABLE_LENGTH_ID, (length))  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_IAS_ACE_ZONE_TABLE_ID, (table))          \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
@@ -711,18 +714,36 @@ typedef ZB_PACKED_PRE struct zb_zcl_ias_ace_get_zone_status_s
 /******************************* Arm Response command ******************************/
 
 /*! @brief Values of the Arm Notification
- * see ZCL spec 8.3.2.5.1.2
+ * see ZCL8 spec 8.3.2.4.1.2
 */
 enum zb_zcl_ias_ace_arm_not_e
 {
-  /*! All Zones Disarmed */
+  /*! @brief All Zones Disarmed
+      @deprecated Enumerator is deprecated. It will be removed after February 2023. Use ZB_ZCL_IAS_ACE_ARM_NOTIF_ALL_ZONES_DISARMED instead.*/
   ZB_ZCL_IAS_ACE_ARM_NOT_DISARM  = 0x00,
-  /*! Only Day/Home Zones Armed */
+  /*! @brief All Zones Disarmed */
+  ZB_ZCL_IAS_ACE_ARM_NOTIF_ALL_ZONES_DISARMED = 0x00,
+  /*! @brief Only Day/Home Zones Armed
+      @deprecated Enumerator is deprecated. It will be removed after February 2023. Use ZB_ZCL_IAS_ACE_ARM_NOTIF_ONLY_DAY_HOME_ZONES_ARMED instead.*/
   ZB_ZCL_IAS_ACE_ARM_NOT_DAY     = 0x01,
-  /*! Only Night/Sleep Zones Armed */
+  /*! @brief Only Day/Home Zones Armed */
+  ZB_ZCL_IAS_ACE_ARM_NOTIF_ONLY_DAY_HOME_ZONES_ARMED = 0x01,
+  /*! @brief Only Night/Sleep Zones Armed
+      @deprecated Enumerator is deprecated. It will be removed after February 2023. Use ZB_ZCL_IAS_ACE_ARM_NOTIF_ONLY_NIGHT_SLEEP_ZONES_ARMED instead.*/
   ZB_ZCL_IAS_ACE_ARM_NOT_NIGHT   = 0x02,
-  /*! All Zones Armed */
+  /*! @brief Only Night/Sleep Zones Armed */
+  ZB_ZCL_IAS_ACE_ARM_NOTIF_ONLY_NIGHT_SLEEP_ZONES_ARMED = 0x02,
+  /*! @brief All Zones Armed
+      @deprecated Enumerator is deprecated. It will be removed after February 2023. Use ZB_ZCL_IAS_ACE_ARM_NOTIF_ALL_ZONES_ARMED instead.*/
   ZB_ZCL_IAS_ACE_ARM_NOT_ALL     = 0x03,
+  /*! @brief All Zones Armed */
+  ZB_ZCL_IAS_ACE_ARM_NOTIF_ALL_ZONES_ARMED = 0x03,
+  /*! @brief Invalid Arm/Disarm Code */
+  ZB_ZCL_IAS_ACE_ARM_NOTIF_INVALID_ARM_DISARM_CODE = 0x04,
+  /*! @brief Not ready to arm */
+  ZB_ZCL_IAS_ACE_ARM_NOTIF_NOT_READY_TO_ARM = 0x05,
+  /*! @brief Already disarmed */
+  ZB_ZCL_IAS_ACE_ARM_NOTIF_ALREADY_DISARMED = 0x06,
 };
 
 /*! @brief Structure representation of Arm Response command, ZCL spec 8.3.2.5.1  */

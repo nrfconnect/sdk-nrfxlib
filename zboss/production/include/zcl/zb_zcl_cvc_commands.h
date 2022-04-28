@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -57,8 +57,8 @@
 #define ZB_ZCL_CVC_TRANSITION_TIME_AS_FAST_AS_ABLE 0xffff
 /** @brief CVC Transition Time minimal */
 #define ZB_ZCL_CVC_TRANSITION_TIME_MINIMAL 0x0001
-/** @brief CVC Transition Time error */
-#define ZB_ZCL_CVC_TRANSITION_TIME_ERROR 20
+/** @brief CVC Transition Time error (in time units) */
+#define ZB_ZCL_CVC_TRANSITION_TIME_ERROR_TU 1
 /** @brief CVC Transition Time Unit (in msec) */
 #define ZB_ZCL_CVC_TRANSITION_TIME_UNIT_MS 100
 /** @brief CVC Transition Time Unit (in beacon intervals) */
@@ -70,9 +70,9 @@
 /** @brief CVC Transition Timer Quant (in msec) */
 #define ZB_ZCL_CVC_TRANSITION_TIMER_QUANT_MS 16
 /** @brief CVC Transition Timer Quant */
-#define ZB_ZCL_CVC_TRANSITION_TIMER_QUANT_BE \
-  ZB_MILLISECONDS_TO_BEACON_INTERVAL(ZB_ZCL_CVC_TRANSITION_TIMER_QUANT_MS)
-/** @brief CVC Transition Time Unit */
+#define ZB_ZCL_CVC_TRANSITION_TIMER_QUANT_TO_BE(quant) \
+  ZB_MILLISECONDS_TO_BEACON_INTERVAL((quant) * ZB_ZCL_CVC_TRANSITION_TIMER_QUANT_MS)
+/** @brief CVC alarm quants in a single CVC Transition Time Unit */
 #define ZB_ZCL_CVC_TRANSITION_TIME_UNIT_IN_QUANTS \
   (ZB_ZCL_CVC_TRANSITION_TIME_UNIT_MS / ZB_ZCL_CVC_TRANSITION_TIMER_QUANT_MS)
 
@@ -114,19 +114,15 @@ typedef struct zb_zcl_cvc_variables_s
 /** @brief Input variables */
   zb_zcl_cvc_input_variables_t input_var;
 /** @brief Time to next scheduled operation (delta time) */
-  zb_uint16_t delta_time;
+  zb_uint16_t delta_time_q;
 /** @brief Delta value for one step */
   zb_int16_t delta_value16;
 /** @brief Number of remaining steps for transition */
   zb_uint16_t steps_number;
-/** @brief Step number for extra increment delta value */
-  zb_uint16_t extra_inc_value_step;
-/** @brief Step number for extra increment delta time */
-  zb_uint16_t extra_inc_time_step;
+/** @brief Transition Time remainder */
+  zb_uint16_t transition_time_q;
 /** @brief End time of transition */
-  zb_time_t end_time;
-/** @brief Available time error */
-  zb_uint16_t time_err;
+  zb_time_t end_time_tu;
 } zb_zcl_cvc_variables_t;
 
 /** @internal Structure of Alarm variables

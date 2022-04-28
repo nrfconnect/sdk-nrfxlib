@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -105,6 +105,9 @@ enum zb_zcl_thermostat_ui_config_keypad_lockout_e
   ZB_ZCL_THERMOSTAT_UI_CONFIG_KEYPAD_LOCKOUT_RESERVED   = 0x06
 };
 
+/** @brief Default value for Thermostat UI Configuration cluster revision global attribute */
+#define ZB_ZCL_THERMOSTAT_UI_CONFIG_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0001u)
+
 /** @brief Default value for Temperature Display Mode attribute */
 #define ZB_ZCL_THERMOSTAT_UI_CONFIG_TEMPERATURE_DISPLAY_MODE_DEFAULT_VALUE 0x00
 
@@ -120,7 +123,7 @@ enum zb_zcl_thermostat_ui_config_keypad_lockout_e
     @param keypad_lockout - pointer to variable to store Keypad Lockout attribute value
 */
 #define ZB_ZCL_DECLARE_THERMOSTAT_UI_CONFIG_ATTRIB_LIST(attr_list, temperature_display_mode, keypad_lockout)     \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                                    \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_THERMOSTAT)                                \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_THERMOSTAT_UI_CONFIG_TEMPERATURE_DISPLAY_MODE_ID, (temperature_display_mode)) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_THERMOSTAT_UI_CONFIG_KEYPAD_LOCKOUT_ID, (keypad_lockout))                     \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST

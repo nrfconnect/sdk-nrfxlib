@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -142,5 +142,46 @@ void zb_zcl_ota_upgrade_set_ota_status(zb_uint8_t endpoint, zb_uint8_t status)
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_ota_upgrade_set_ota_status", (FMT__0));
 }
 
+/** @brief Default Response command */
+zb_uint8_t zb_zcl_process_ota_upgrade_default_response_commands(zb_uint8_t param)
+{
+  zb_uint8_t ret = ZB_FALSE;
+  zb_zcl_parsed_hdr_t *cmd_info = ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t);
+  zb_zcl_default_resp_payload_t* default_res;
+
+  TRACE_MSG(TRACE_ZCL1, "> zb_zcl_process_ota_upgrade_default_response_commands %hx", (FMT__H, param));
+
+  if( cmd_info -> cmd_direction == ZB_ZCL_FRAME_DIRECTION_TO_CLI &&
+      cmd_info -> is_common_command &&
+      cmd_info -> cmd_id == ZB_ZCL_CMD_DEFAULT_RESP)
+  {
+    zb_uint8_t endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint;
+    zb_zcl_attr_t *attr_desc = zb_zcl_get_attr_desc_a(endpoint,
+         ZB_ZCL_CLUSTER_ID_OTA_UPGRADE, ZB_ZCL_CLUSTER_CLIENT_ROLE, ZB_ZCL_ATTR_OTA_UPGRADE_IMAGE_STATUS_ID);
+     ZB_ASSERT(attr_desc);
+
+    default_res = ZB_ZCL_READ_DEFAULT_RESP(param);
+    TRACE_MSG(TRACE_ZCL2, "ZB_ZCL_CMD_DEFAULT_RESP: command_id 0x%hx, status: 0x%hx",
+              (FMT__H_H, default_res->command_id, default_res->status));
+
+    if(ZB_ZCL_OTA_UPGRADE_IMAGE_STATUS_NORMAL != ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc) &&
+        ZB_ZCL_STATUS_ABORT== default_res->status)
+    {
+      // set attribute
+      zb_zcl_ota_upgrade_set_ota_status(endpoint, ZB_ZCL_OTA_UPGRADE_IMAGE_STATUS_NORMAL);
+
+      // call User App
+      ZB_ZCL_OTA_UPGRADE_ABORT_USER_APP(param);
+    }
+
+    zb_buf_free(param);
+
+    ret = ZB_TRUE;
+  }
+
+  TRACE_MSG(TRACE_ZCL1, "< zb_zcl_process_ota_upgrade_default_response_commands", (FMT__0));
+
+  return ret;
+}
 
 #endif /* defined ZB_ZCL_SUPPORT_CLUSTER_OTA_UPGRADE || defined DOXYGEN */

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -91,6 +91,9 @@ enum zb_zcl_custom_cluster_attr_e
 #define ZB_ZCL_CUSTOM_CLUSTER_ATTR_BYTE_ARRAY_DEFAULT_VALUE { 0 }
 #define ZB_ZCL_CUSTOM_CLUSTER_ATTR_BOOL_DEFAULT_VALUE ZB_FALSE
 #define ZB_ZCL_CUSTOM_CLUSTER_ATTR_128_BIT_KEY_DEFAULT_VALUE { 0 }
+
+/** @brief Default value for Custom cluster revision global attribute */
+#define ZB_ZCL_CUSTOM_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0001u)
 
 /*! @brief Max size of char string attribute (with length byte) */
 #define ZB_ZCL_CUSTOM_CLUSTER_ATTR_CHAR_STRING_MAX_SIZE 11
@@ -468,7 +471,7 @@ ZB_PACKED_STRUCT zb_zcl_custom_cluster_cmd3_req_t;
 #define ZB_ZCL_DECLARE_CUSTOM_ATTR_CLUSTER_ATTRIB_LIST(                                   \
   attr_list, u8_attr, s16_attr, _24bit_attr, _32bitmap_attr, ieee_attr,                   \
   char_string_attr, utc_time_attr, octet_string_attr, bool_attr, _128_bit_key_attr)       \
-    ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                           \
+    ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_CUSTOM)   \
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_CUSTOM_CLUSTER_ATTR_U8_ID, (u8_attr))                     \
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_CUSTOM_CLUSTER_ATTR_S16_ID, (s16_attr))                   \
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_CUSTOM_CLUSTER_ATTR_24BIT_ID, (_24bit_attr))              \

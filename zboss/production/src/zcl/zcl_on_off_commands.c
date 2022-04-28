@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -82,6 +82,7 @@ zb_discover_cmd_list_t gs_on_off_server_cmd_list =
 };
 
 void zb_zcl_on_off_invoke_user_app(zb_uint8_t param);
+static zb_ret_t zb_zcl_call_on_off_attr_device_cb(zb_uint8_t param, zb_uint8_t dst_ep, zb_uint8_t value);
 
 zb_ret_t check_value_on_off_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
 zb_bool_t zb_zcl_process_on_off_specific_commands_srv(zb_uint8_t param);
@@ -166,6 +167,25 @@ void zb_on_off_schedule_user_app(zb_bufid_t buffer, zb_zcl_parsed_hdr_t *pcmd_in
 
 #define ZB_ZCL_ON_OFF_GLOBAL_SCENE_NA       ZB_TRUE
 
+static zb_ret_t zb_zcl_call_on_off_attr_device_cb(zb_uint8_t param, zb_uint8_t dst_ep, zb_uint8_t value)
+{
+  zb_zcl_device_callback_param_t *user_app_invoke_data =
+    ZB_BUF_GET_PARAM(param, zb_zcl_device_callback_param_t);
+
+  TRACE_MSG(TRACE_ZCL1, ">>zb_zcl_call_on_off_attr_device_cb(), param %hd, dst_ep %hd, value %hd",
+            (FMT__H_H_H, param, dst_ep, value));
+
+  user_app_invoke_data->device_cb_id = ZB_ZCL_SET_ATTR_VALUE_CB_ID;
+  user_app_invoke_data->endpoint = dst_ep;
+  user_app_invoke_data->cb_param.set_attr_value_param.cluster_id = ZB_ZCL_CLUSTER_ID_ON_OFF;
+  user_app_invoke_data->cb_param.set_attr_value_param.attr_id = ZB_ZCL_ATTR_ON_OFF_ON_OFF_ID;
+  user_app_invoke_data->cb_param.set_attr_value_param.values.data8 = value;
+  user_app_invoke_data->status = RET_OK;
+  (ZCL_CTX().device_cb)(param);
+
+  TRACE_MSG(TRACE_ZCL1, "<<zb_zcl_call_on_off_attr_device_cb(), status 0x%lx", (FMT__L, user_app_invoke_data->status));
+  return user_app_invoke_data->status;
+}
 
 /* Timer for "On with timed off" command, see Spec 6.6.1.4.6.4
  * @param param - buffer
@@ -201,7 +221,7 @@ void zb_zcl_on_off_timer_handler(zb_uint8_t param)
   attr_desc_off_wait_time = zb_zcl_get_attr_desc_a(endpoint,
           ZB_ZCL_CLUSTER_ID_ON_OFF, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_ON_OFF_OFF_WAIT_TIME);
 
-  TRACE_MSG(TRACE_ZCL1, "zb_zcl_on_off_timer_handler %hd", (FMT__H, endpoint));
+  TRACE_MSG(TRACE_ZCL1, "dst_ep %hd", (FMT__H, endpoint));
 
   ZB_ASSERT(attr_desc_on_off);
   ZB_ASSERT(attr_desc_on_time);
@@ -252,6 +272,14 @@ void zb_zcl_on_off_timer_handler(zb_uint8_t param)
                          ZB_ZCL_ATTR_ON_OFF_ON_OFF_ID,
                          (zb_uint8_t *)&val,
                          ZB_FALSE);
+
+    if (ZCL_CTX().device_cb != NULL)
+    {
+      (void)zb_zcl_call_on_off_attr_device_cb(
+        param,
+        ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
+        val);
+    }
   }
   else
   {
@@ -472,7 +500,7 @@ void zb_zcl_on_off_effect_invoke_user_app(zb_uint8_t param)
   }
   else
   {
-    result = RET_ERROR;
+    result = RET_NOT_IMPLEMENTED;
   }
 
   if (result == RET_OK)
@@ -500,7 +528,7 @@ void zb_zcl_on_off_effect_invoke_user_app(zb_uint8_t param)
     ZB_ZCL_SET_DIRECTLY_ATTR_VAL16(attr_desc_on_time, 0x0000);
   }
 
-  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, result==RET_OK ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_HW_FAIL);
+  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, zb_zcl_get_zcl_status_from_ret(result));
 
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_on_off_effect_invoke_user_app param", (FMT__0));
 }
@@ -790,8 +818,8 @@ zb_bool_t  zb_zcl_process_on_off_specific_commands(zb_uint8_t param)
   ZB_ZCL_COPY_PARSED_HEADER(param, &cmd_info);
 
   TRACE_MSG( TRACE_ZCL1,
-             "> zb_zcl_process_on_off_specific_commands: param %hd",
-             (FMT__H, param));
+             "> zb_zcl_process_on_off_specific_commands: param %hd, cmd_info.cmd_id 0x%hx",
+             (FMT__H_H, param, cmd_info.cmd_id));
 
   ZB_ASSERT(ZB_ZCL_CLUSTER_ID_ON_OFF == cmd_info.cluster_id);
   ZB_ASSERT(ZB_ZCL_FRAME_DIRECTION_TO_SRV == cmd_info.cmd_direction);
@@ -895,20 +923,10 @@ void zb_zcl_on_off_invoke_user_app(zb_uint8_t param)
 
   if (ZCL_CTX().device_cb != NULL)
   {
-    zb_zcl_device_callback_param_t *user_app_invoke_data =
-        ZB_BUF_GET_PARAM(param, zb_zcl_device_callback_param_t);
-
-    user_app_invoke_data->device_cb_id = ZB_ZCL_SET_ATTR_VALUE_CB_ID;
-    user_app_invoke_data->endpoint = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
-    user_app_invoke_data->cb_param.set_attr_value_param.cluster_id = ZB_ZCL_CLUSTER_ID_ON_OFF;
-    user_app_invoke_data->cb_param.set_attr_value_param.attr_id = ZB_ZCL_ATTR_ON_OFF_ON_OFF_ID;
-    user_app_invoke_data->cb_param.set_attr_value_param.values.data8 = on_off;
-    user_app_invoke_data->status = RET_OK;
-    (ZCL_CTX().device_cb)(param);
-    //user_app_invoke_data = ZB_BUF_GET_PARAM(param, zb_zcl_device_callback_param_t);
-    /* TODO: check - free buffer after a call? */
-    result = user_app_invoke_data->status;
-    TRACE_MSG(TRACE_ZCL1, "result %hd", (FMT__H, result));
+    result = zb_zcl_call_on_off_attr_device_cb(
+      param,
+      ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint,
+      on_off);
   }
   else
   {
@@ -935,8 +953,7 @@ void zb_zcl_on_off_invoke_user_app(zb_uint8_t param)
   }
   else
   {
-    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info,
-        result==RET_OK ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_HW_FAIL);
+    ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, zb_zcl_get_zcl_status_from_ret(result));
   }
 
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_on_off_invoke_user_app", (FMT__0));

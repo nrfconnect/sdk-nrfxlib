@@ -129,6 +129,12 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_LEVEL_CONTROL_OPTIONS_RESERVED          = 1,
 };
 
+/** @brief Default value for Level control cluster revision global attribute */
+#define ZB_ZCL_LEVEL_CONTROL_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0003u)
+
+/** @brief Maximal value for implemented Level control cluster revision global attribute */
+#define ZB_ZCL_LEVEL_CONTROL_CLUSTER_REVISION_MAX ZB_ZCL_LEVEL_CONTROL_CLUSTER_REVISION_DEFAULT
+
 /** @brief Current Level attribute minimum value */
 #define ZB_ZCL_LEVEL_CONTROL_LEVEL_MIN_VALUE 0x00
 
@@ -194,7 +200,7 @@ enum zb_zcl_level_control_options_e
 */
 #define ZB_ZCL_DECLARE_LEVEL_CONTROL_ATTRIB_LIST(attr_list, current_level, remaining_time)  \
   zb_zcl_level_control_move_status_t move_status_data_ctx## _attr_list;                     \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                               \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_LEVEL_CONTROL)        \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_LEVEL_CONTROL_CURRENT_LEVEL_ID, (current_level))         \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_LEVEL_CONTROL_REMAINING_TIME_ID, (remaining_time))       \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_LEVEL_CONTROL_MOVE_STATUS_ID,                            \
@@ -213,7 +219,7 @@ enum zb_zcl_level_control_options_e
 #define ZB_ZCL_DECLARE_LEVEL_CONTROL_ATTRIB_LIST_EXT(attr_list, current_level, remaining_time,        \
                                                  start_up_current_level, options)                     \
   zb_zcl_level_control_move_status_t move_status_data_ctx## _attr_list;                               \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                         \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_LEVEL_CONTROL)                  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_LEVEL_CONTROL_CURRENT_LEVEL_ID, (current_level))                   \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_LEVEL_CONTROL_REMAINING_TIME_ID, (remaining_time))                 \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_LEVEL_CONTROL_OPTIONS_ID, (options))                               \
@@ -365,6 +371,12 @@ enum zb_zcl_level_control_cmd_e
 /*! @}
  *  @endcond */ /* internals_doc */
 
+/*! Default OptionsMask value */
+#define ZB_ZCL_LEVEL_CONTROL_OPTIONS_MASK_DEFAULT_FIELD_VALUE ((zb_uint8_t)0x00)
+
+/*! Default OptionsOverride value */
+#define ZB_ZCL_LEVEL_CONTROL_OPTIONS_OVERRIDE_DEFAULT_FIELD_VALUE ((zb_uint8_t)0x00)
+
 /************************** Level Control cluster command definitions ****************************/
 
 /* command request structure */
@@ -417,18 +429,67 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_move_to_level_req_s
 #define ZB_ZCL_LEVEL_CONTROL_MOVE_TO_LEVEL_REQ_PAYLOAD_LEN \
   sizeof(zb_zcl_level_control_move_to_level_req_t)
 
+/*! @brief Send Move to Level command
+    @param buffer - to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param level - Level value
+    @param transition_time - Transition Time value
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
+    @param cmd_id - command id
+*/
+void zb_zcl_level_control_send_move_to_level_cmd_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                      zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                      zb_uint8_t ep, zb_uint16_t prof_id,
+                                                      zb_uint8_t def_resp, zb_callback_t cb,
+                                                      zb_uint8_t level, zb_uint16_t transition_time,
+                                                      zb_uint8_t options_mask, zb_uint8_t options_override,
+                                                      zb_uint8_t cmd_id);
+
+/*! @brief Send Move to Level command (pre-ZCL8)
+    Use @ref zb_zcl_level_control_send_move_to_level_cmd_zcl8 for ZCL8 revision call.
+    @param buffer - to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param level - Level value
+    @param transition_time - Transition Time value
+    @param cmd_id - command id
+*/
+void zb_zcl_level_control_send_move_to_level_cmd(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                                 zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                                 zb_uint8_t ep, zb_uint16_t prof_id,
+                                                 zb_uint8_t def_resp, zb_callback_t cb,
+                                                 zb_uint8_t level, zb_uint16_t transition_time,
+                                                 zb_uint8_t cmd_id);
+
 /** @internal Macro for sending Move to Level command */
-#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_TO_LEVEL_CMD(buffer, addr, dst_addr_mode,           \
-  dst_ep, ep, prfl_id, def_resp, cb, level, transition_time, cmd_id)                       \
-{                                                                                          \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                        \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, (def_resp))                     \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), (cmd_id));                \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (level));                                                   \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                                    \
-  ZB_ZCL_FINISH_PACKET((buffer), ptr)                                                      \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                               \
-   buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb); \
+#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_TO_LEVEL_CMD_ZCL8(buffer, addr, dst_addr_mode,                   \
+  dst_ep, ep, prfl_id, def_resp, cb, level, transition_time, options_mask,                              \
+  options_override, cmd_id)                                                                             \
+{                                                                                                       \
+  zb_zcl_level_control_send_move_to_level_cmd_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, dst_ep, \
+                                                   ep, prfl_id, def_resp, cb, level, transition_time,   \
+                                                   options_mask, options_override, cmd_id);             \
+}
+
+/** Macro for calling @ref zb_zcl_level_control_send_move_to_level_cmd function
+ */
+#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_TO_LEVEL_CMD(buffer, addr, dst_addr_mode,                          \
+  dst_ep, ep, prfl_id, def_resp, cb, level, transition_time, cmd_id)                                      \
+{                                                                                                         \
+  zb_zcl_level_control_send_move_to_level_cmd(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, dst_ep,        \
+                                              ep, prfl_id, def_resp, cb, level, transition_time, cmd_id); \
 }
 
 /** @internal Macro for getting Move to Level command */
@@ -452,6 +513,42 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_move_to_level_req_s
 }
 
 /*! @brief Send Move to Level command
+    @param buffer - to put packet to
+    @param addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prfl_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param level - Level value
+    @param transition_time - Transition Time value
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
+*/
+
+#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_TO_LEVEL_REQ_ZCL8(buffer, addr, dst_addr_mode, \
+  dst_ep, ep, prfl_id, def_resp, cb, level, transition_time, options_mask,            \
+  options_override)                                                                   \
+{                                                                                     \
+  ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_TO_LEVEL_CMD_ZCL8(                                   \
+                                              buffer,                                 \
+                                              addr,                                   \
+                                              dst_addr_mode,                          \
+                                              dst_ep,                                 \
+                                              ep,                                     \
+                                              prfl_id,                                \
+                                              def_resp,                               \
+                                              cb,                                     \
+                                              level,                                  \
+                                              transition_time,                        \
+                                              options_mask,                           \
+                                              options_override,                       \
+                                              ZB_ZCL_CMD_LEVEL_CONTROL_MOVE_TO_LEVEL) \
+}
+
+/*! @brief Send Move to Level command (pre-ZCL8)
+    Use #ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_TO_LEVEL_REQ_ZCL8 for ZCL8 revision call.
     @param buffer - to put packet to
     @param addr - address to send packet to
     @param dst_addr_mode - addressing mode
@@ -494,6 +591,41 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_move_to_level_req_s
 }
 
 /*! @brief Send Move to Level with On/Off command
+    @param buffer - to put packet to
+    @param addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prfl_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param level - Level value
+    @param transition_time - Transition Time value
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
+*/
+
+#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_TO_LEVEL_WITH_ON_OFF_REQ_ZCL8(buffer, addr, dst_addr_mode, \
+  dst_ep, ep, prfl_id, def_resp, cb, level, transition_time, options_mask, options_override)      \
+{                                                                                                 \
+  ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_TO_LEVEL_CMD_ZCL8(                                               \
+                                              buffer,                                             \
+                                              addr,                                               \
+                                              dst_addr_mode,                                      \
+                                              dst_ep,                                             \
+                                              ep,                                                 \
+                                              prfl_id,                                            \
+                                              def_resp,                                           \
+                                              cb,                                                 \
+                                              level,                                              \
+                                              transition_time,                                    \
+                                              options_mask,                                       \
+                                              options_override,                                   \
+                                              ZB_ZCL_CMD_LEVEL_CONTROL_MOVE_TO_LEVEL_WITH_ON_OFF) \
+}
+
+/*! @brief Send Move to Level with On/Off command (pre-ZCL8)
+    Use #ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_TO_LEVEL_WITH_ON_OFF_REQ_ZCL8 for ZCL8 revision call.
     @param buffer - to put packet to
     @param addr - address to send packet to
     @param dst_addr_mode - addressing mode
@@ -557,18 +689,67 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_move_req_s
 #define ZB_ZCL_LEVEL_CONTROL_MOVE_REQ_PAYLOAD_LEN \
   sizeof(zb_zcl_level_control_move_req_t)
 
+/*! @brief Send Move command
+    @param buffer - to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param move_mode - Move Mode value
+    @param rate - Rate value
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
+    @param cmd_id - command id
+*/
+void zb_zcl_level_control_send_move_cmd_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                             zb_uint8_t move_mode, zb_uint8_t rate,
+                                             zb_uint8_t options_mask, zb_uint8_t options_override,
+                                             zb_uint8_t cmd_id);
+
+/*! @brief Send Move command (pre-ZCL8)
+    Use @ref zb_zcl_level_control_send_move_cmd_zcl8 for ZCL8 revision call.
+    @param buffer - to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param move_mode - Move Mode value
+    @param rate - Rate value
+    @param cmd_id - command id
+*/
+void zb_zcl_level_control_send_move_cmd(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                        zb_uint8_t move_mode, zb_uint8_t rate,
+                                        zb_uint8_t cmd_id);
+
 /** @internal Macro for sending Move command */
-#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_CMD(                                                 \
-  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate, cmd_id)  \
-{                                                                                           \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                            \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, def_resp)                       \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), cmd_id);                       \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (move_mode));                                                \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (rate));                                                     \
-  ZB_ZCL_FINISH_PACKET(buffer, ptr)                                                        \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                \
-    buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb); \
+#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_CMD_ZCL8(                                               \
+  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate,             \
+  options_mask, options_override, cmd_id)                                                      \
+{                                                                                              \
+  zb_zcl_level_control_send_move_cmd_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, dst_ep, \
+                                          ep, prfl_id, def_resp, cb, move_mode, rate,          \
+                                          options_mask, options_override, cmd_id);             \
+}
+
+/** Macro for calling @ref zb_zcl_level_control_send_move_cmd function
+ */
+#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_CMD(                                                  \
+  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate, cmd_id)   \
+{                                                                                            \
+  zb_zcl_level_control_send_move_cmd(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, dst_ep,    \
+                                     ep, prfl_id, def_resp, cb, move_mode, rate, cmd_id);    \
 }
 
 /** @internal Macro for getting Move command */
@@ -600,21 +781,55 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_move_req_s
     @param cb - callback for getting command send status
     @param move_mode - Move Mode value
     @param rate - Rate value
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
 */
-#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_REQ(buffer, addr, dst_addr_mode, \
-  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate)                   \
-{                                                                       \
-  ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_CMD(buffer,                            \
-                                     addr,                              \
-                                     dst_addr_mode,                     \
-                                     dst_ep,                            \
-                                     ep,                                \
-                                     prfl_id,                           \
-                                     def_resp,                          \
-                                     cb,                                \
-                                     move_mode,                         \
-                                     rate,                              \
-                                     ZB_ZCL_CMD_LEVEL_CONTROL_MOVE);    \
+#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_REQ_ZCL8(buffer, addr, dst_addr_mode,    \
+  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate, options_mask,             \
+  options_override)                                                             \
+{                                                                               \
+  ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_CMD_ZCL8(buffer,                               \
+                                          addr,                                 \
+                                          dst_addr_mode,                        \
+                                          dst_ep,                               \
+                                          ep,                                   \
+                                          prfl_id,                              \
+                                          def_resp,                             \
+                                          cb,                                   \
+                                          move_mode,                            \
+                                          rate,                                 \
+                                          options_mask,                         \
+                                          options_override,                     \
+                                          ZB_ZCL_CMD_LEVEL_CONTROL_MOVE);       \
+}
+
+/*! @brief Send Move command (pre-ZCL8)
+    Use #ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_REQ_ZCL8 for ZCL8 revision call.
+    @param buffer - to put packet to
+    @param addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prfl_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param move_mode - Move Mode value
+    @param rate - Rate value
+*/
+#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_REQ(buffer, addr, dst_addr_mode,    \
+  dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate)                      \
+{                                                                          \
+  ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_CMD(buffer,                               \
+                                     addr,                                 \
+                                     dst_addr_mode,                        \
+                                     dst_ep,                               \
+                                     ep,                                   \
+                                     prfl_id,                              \
+                                     def_resp,                             \
+                                     cb,                                   \
+                                     move_mode,                            \
+                                     rate,                                 \
+                                     ZB_ZCL_CMD_LEVEL_CONTROL_MOVE);       \
 }
 
 /*!
@@ -632,6 +847,41 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_move_req_s
 }
 
 /*! @brief Send Move with On/Off command
+    @param buffer - to put packet to
+    @param addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prfl_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param move_mode - Move Mode value
+    @param rate - Rate value
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
+*/
+
+#define ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_WITH_ON_OFF_REQ_ZCL8(                            \
+  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb, move_mode, rate,      \
+  options_mask, options_override)                                                       \
+{                                                                                       \
+  ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_CMD_ZCL8(buffer,                                       \
+                                          addr,                                         \
+                                          dst_addr_mode,                                \
+                                          dst_ep,                                       \
+                                          ep,                                           \
+                                          prfl_id,                                      \
+                                          def_resp,                                     \
+                                          cb,                                           \
+                                          move_mode,                                    \
+                                          rate,                                         \
+                                          options_mask,                                 \
+                                          options_override,                             \
+                                          ZB_ZCL_CMD_LEVEL_CONTROL_MOVE_WITH_ON_OFF);   \
+}
+
+/*! @brief Send Move with On/Off command (pre-ZCL8)
+    Use #ZB_ZCL_LEVEL_CONTROL_SEND_MOVE_WITH_ON_OFF_REQ_ZCL8 for ZCL8 revision call.
     @param buffer - to put packet to
     @param addr - address to send packet to
     @param dst_addr_mode - addressing mode
@@ -695,8 +945,88 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_step_req_s
 #define ZB_ZCL_LEVEL_CONTROL_STEP_REQ_PAYLOAD_LEN \
   sizeof(zb_zcl_level_control_step_req_t)
 
+/*! @brief Send Step command
+    @param buffer - to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param step_mode - Step Mode value
+    @param step_size - Step Size value
+    @param transition_time - Transition Time value
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
+    @param cmd_id - command id
+*/
+void zb_zcl_level_control_send_step_cmd_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                             zb_uint8_t step_mode, zb_uint8_t step_size,
+                                             zb_uint16_t transition_time,
+                                             zb_uint8_t options_mask, zb_uint8_t options_override,
+                                             zb_uint8_t cmd_id);
+
+/*! @brief Send Step command (pre-ZCL8)
+    Use @ref zb_zcl_level_control_send_step_cmd_zcl8 for ZCL8 revision call.
+    @param buffer - to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param step_mode - Step Mode value
+    @param step_size - Step Size value
+    @param transition_time - Transition Time value
+    @param cmd_id - command id
+*/
+void zb_zcl_level_control_send_step_cmd(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                        zb_uint8_t def_resp, zb_callback_t cb,
+                                        zb_uint8_t step_mode, zb_uint8_t step_size,
+                                        zb_uint16_t transition_time,
+                                        zb_uint8_t cmd_id);
 
 /** @brief Macro for sending Step command */
+#define ZB_ZCL_LEVEL_CONTROL_SEND_STEP_CMD_ZCL8(buffer,                 \
+                                                addr,                   \
+                                                dst_addr_mode,          \
+                                                dst_ep,                 \
+                                                ep,                     \
+                                                prfl_id,                \
+                                                def_resp,               \
+                                                cb,                     \
+                                                step_mode,              \
+                                                step_size,              \
+                                                transition_time,        \
+                                                options_mask,           \
+                                                options_override,       \
+                                                cmd_id)                 \
+{                                                                       \
+  zb_zcl_level_control_send_step_cmd_zcl8(buffer,                       \
+                                          ZB_ADDR_U_CAST(addr),         \
+                                          dst_addr_mode,                \
+                                          dst_ep,                       \
+                                          ep,                           \
+                                          prfl_id,                      \
+                                          def_resp,                     \
+                                          cb,                           \
+                                          step_mode,                    \
+                                          step_size,                    \
+                                          transition_time,              \
+                                          options_mask,                 \
+                                          options_override,             \
+                                          cmd_id);                      \
+}
+
+/** Macro for calling @ref zb_zcl_level_control_send_step_cmd function
+ */
 #define ZB_ZCL_LEVEL_CONTROL_SEND_STEP_CMD(buffer,                      \
                                            addr,                        \
                                            dst_addr_mode,               \
@@ -710,21 +1040,18 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_step_req_s
                                            transition_time,             \
                                            cmd_id)                      \
 {                                                                       \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                        \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, def_resp)   \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), cmd_id);   \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_mode));                            \
-  ZB_ZCL_PACKET_PUT_DATA8(ptr, (step_size));                            \
-  ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (transition_time));                 \
-  ZB_ZCL_FINISH_PACKET(buffer, ptr)                                    \
-  ZB_ZCL_SEND_COMMAND_SHORT(buffer,                                     \
-                            addr,                                       \
-                            dst_addr_mode,                              \
-                            dst_ep,                                     \
-                            ep,                                         \
-                            prfl_id,                                    \
-                            ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL,            \
-                            cb);                                        \
+  zb_zcl_level_control_send_step_cmd(buffer,                            \
+                                     ZB_ADDR_U_CAST(addr),              \
+                                     dst_addr_mode,                     \
+                                     dst_ep,                            \
+                                     ep,                                \
+                                     prfl_id,                           \
+                                     def_resp,                          \
+                                     cb,                                \
+                                     step_mode,                         \
+                                     step_size,                         \
+                                     transition_time,                   \
+                                     cmd_id);                           \
 }
 
 
@@ -760,32 +1087,79 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_step_req_s
     @param step_mode - Step Mode value
     @param step_size - Step Size value
     @param transition_time - Transition Time value
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
 */
 
-#define ZB_ZCL_LEVEL_CONTROL_SEND_STEP_REQ(buffer,                   \
-                                           addr,                     \
-                                           dst_addr_mode,            \
-                                           dst_ep,                   \
-                                           ep,                       \
-                                           prfl_id,                  \
-                                           def_resp,                 \
-                                           cb,                       \
-                                           step_mode,                \
-                                           step_size,                \
-                                           transition_time)          \
-{                                                                    \
-  ZB_ZCL_LEVEL_CONTROL_SEND_STEP_CMD(buffer,                         \
-                                     addr,                           \
-                                     dst_addr_mode,                  \
-                                     dst_ep,                         \
-                                     ep,                             \
-                                     prfl_id,                        \
-                                     def_resp,                       \
-                                     cb,                             \
-                                     step_mode,                      \
-                                     step_size,                      \
-                                     transition_time,                \
-                                     ZB_ZCL_CMD_LEVEL_CONTROL_STEP); \
+#define ZB_ZCL_LEVEL_CONTROL_SEND_STEP_REQ_ZCL8(buffer,                    \
+                                                addr,                      \
+                                                dst_addr_mode,             \
+                                                dst_ep,                    \
+                                                ep,                        \
+                                                prfl_id,                   \
+                                                def_resp,                  \
+                                                cb,                        \
+                                                step_mode,                 \
+                                                step_size,                 \
+                                                transition_time,           \
+                                                options_mask,              \
+                                                options_override)          \
+{                                                                          \
+  ZB_ZCL_LEVEL_CONTROL_SEND_STEP_CMD_ZCL8(buffer,                          \
+                                          addr,                            \
+                                          dst_addr_mode,                   \
+                                          dst_ep,                          \
+                                          ep,                              \
+                                          prfl_id,                         \
+                                          def_resp,                        \
+                                          cb,                              \
+                                          step_mode,                       \
+                                          step_size,                       \
+                                          transition_time,                 \
+                                          options_mask,                    \
+                                          options_override,                \
+                                          ZB_ZCL_CMD_LEVEL_CONTROL_STEP);  \
+}
+
+/*! @brief Send Step command (pre-ZCL8)
+    Use #ZB_ZCL_LEVEL_CONTROL_SEND_STEP_REQ_ZCL8 for ZCL8 revision call.
+    @param buffer - to put packet to
+    @param addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prfl_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param step_mode - Step Mode value
+    @param step_size - Step Size value
+    @param transition_time - Transition Time value
+*/
+
+#define ZB_ZCL_LEVEL_CONTROL_SEND_STEP_REQ(buffer,                    \
+                                           addr,                      \
+                                           dst_addr_mode,             \
+                                           dst_ep,                    \
+                                           ep,                        \
+                                           prfl_id,                   \
+                                           def_resp,                  \
+                                           cb,                        \
+                                           step_mode,                 \
+                                           step_size,                 \
+                                           transition_time)           \
+{                                                                     \
+  ZB_ZCL_LEVEL_CONTROL_SEND_STEP_CMD(buffer,                          \
+                                     addr,                            \
+                                     dst_addr_mode,                   \
+                                     dst_ep,                          \
+                                     ep,                              \
+                                     prfl_id,                         \
+                                     def_resp,                        \
+                                     cb,                              \
+                                     step_mode,                       \
+                                     step_size,                       \
+                                     transition_time,                 \
+                                     ZB_ZCL_CMD_LEVEL_CONTROL_STEP);  \
 }
 
 /*!
@@ -803,7 +1177,54 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_step_req_s
 }
 
 /*! @brief Send Step with On/Off command
-  @param buffer - to put packet to
+    @param buffer - to put packet to
+    @param addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prfl_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param step_mode - Step Mode value
+    @param step_size - Step Size value
+    @param transition_time - Transition Time value
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
+*/
+
+#define ZB_ZCL_LEVEL_CONTROL_SEND_STEP_WITH_ON_OFF_REQ_ZCL8(buffer,                   \
+                                                            addr,                     \
+                                                            dst_addr_mode,            \
+                                                            dst_ep,                   \
+                                                            ep,                       \
+                                                            prfl_id,                  \
+                                                            def_resp,                 \
+                                                            cb,                       \
+                                                            step_mode,                \
+                                                            step_size,                \
+                                                            transition_time,          \
+                                                            options_mask,             \
+                                                            options_override)         \
+{                                                                                     \
+  ZB_ZCL_LEVEL_CONTROL_SEND_STEP_CMD_ZCL8(buffer,                                     \
+                                          addr,                                       \
+                                          dst_addr_mode,                              \
+                                          dst_ep,                                     \
+                                          ep,                                         \
+                                          prfl_id,                                    \
+                                          def_resp,                                   \
+                                          cb,                                         \
+                                          step_mode,                                  \
+                                          step_size,                                  \
+                                          transition_time,                            \
+                                          options_mask,                               \
+                                          options_override,                           \
+                                          ZB_ZCL_CMD_LEVEL_CONTROL_STEP_WITH_ON_OFF); \
+}
+
+/*! @brief Send Step with On/Off command (pre-ZCL8)
+    Use #ZB_ZCL_LEVEL_CONTROL_SEND_STEP_WITH_ON_OFF_REQ_ZCL8 for ZCL8 revision call.
+    @param buffer - to put packet to
     @param addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
@@ -858,24 +1279,54 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_step_req_s
 
 /*! @brief Send Stop command
     @param buffer - to put packet to
-    @param addr - address to send packet to
+    @param dst_addr - address to send packet to
     @param dst_addr_mode - addressing mode
     @param dst_ep - destination endpoint
     @param ep - sending endpoint
-    @param prfl_id - profile identifier
+    @param prof_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
+*/
+void zb_zcl_level_control_send_stop_req_zcl8(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                             zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                             zb_uint8_t ep, zb_uint16_t prof_id,
+                                             zb_uint8_t def_resp, zb_callback_t cb,
+                                             zb_uint8_t options_mask, zb_uint8_t options_override);
+
+/*! @brief Send Stop command (pre-ZCL8)
+    Use @ref zb_zcl_level_control_send_stop_req_zcl8 for ZCL8 revision call.
+    @param buffer - to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
 */
+void zb_zcl_level_control_send_stop_req(zb_bufid_t buffer, const zb_addr_u *dst_addr,
+                                        zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                        zb_uint8_t ep, zb_uint16_t prof_id,
+                                        zb_uint8_t def_resp, zb_callback_t cb);
 
-#define ZB_ZCL_LEVEL_CONTROL_SEND_STOP_REQ(                                                  \
-  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb)                            \
-{                                                                                            \
-  zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)                                             \
-  ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(ptr, def_resp)                        \
-  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_LEVEL_CONTROL_STOP); \
-  ZB_ZCL_FINISH_PACKET(buffer, ptr)                                                         \
-  ZB_ZCL_SEND_COMMAND_SHORT(                                                                 \
-    buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, ZB_ZCL_CLUSTER_ID_LEVEL_CONTROL, cb);  \
+/** Macro for calling @ref zb_zcl_level_control_send_stop_req_zcl8 function
+ */
+#define ZB_ZCL_LEVEL_CONTROL_SEND_STOP_REQ_ZCL8(                                                                          \
+  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb, options_mask,                                           \
+  options_override)                                                                                                       \
+{                                                                                                                         \
+  zb_zcl_level_control_send_stop_req_zcl8(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb, \
+                                          options_mask, options_override);                                                \
+}
+
+/** Macro for calling @ref zb_zcl_level_control_send_stop_req function
+ */
+#define ZB_ZCL_LEVEL_CONTROL_SEND_STOP_REQ(                                                                           \
+  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb)                                                     \
+{                                                                                                                     \
+  zb_zcl_level_control_send_stop_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb); \
 }
 
 /*! @brief Send Stop with On/off command
@@ -887,12 +1338,36 @@ typedef ZB_PACKED_PRE struct zb_zcl_level_control_step_req_s
     @param prfl_id - profile identifier
     @param def_resp - enable/disable default response
     @param cb - callback for getting command send status
+    @param options_mask - Options Mask value
+    @param options_override - Options Override value
 */
 
-#define ZB_ZCL_LEVEL_CONTROL_SEND_STOP_WITH_ON_OFF_REQ(                                      \
-  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb)                            \
-  ZB_ZCL_LEVEL_CONTROL_SEND_STOP_REQ(buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb)
+#define ZB_ZCL_LEVEL_CONTROL_SEND_STOP_WITH_ON_OFF_REQ_ZCL8(                                 \
+  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb, options_mask,              \
+  options_override)                                                                          \
+{                                                                                            \
+  ZB_ZCL_LEVEL_CONTROL_SEND_STOP_REQ_ZCL8(buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id,  \
+    def_resp, cb, options_mask, options_override)                                            \
+}
 
+/*! @brief Send Stop with On/off command (pre-ZCL8)
+    Use #ZB_ZCL_LEVEL_CONTROL_SEND_STOP_WITH_ON_OFF_REQ_ZCL8 for ZCL8 revision call.
+    @param buffer - to put packet to
+    @param addr - address to send packet to
+    @param dst_addr_mode - addressing mode
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prfl_id - profile identifier
+    @param def_resp - enable/disable default response
+    @param cb - callback for getting command send status
+*/
+
+#define ZB_ZCL_LEVEL_CONTROL_SEND_STOP_WITH_ON_OFF_REQ(                                   \
+  buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb)                         \
+{                                                                                         \
+    ZB_ZCL_LEVEL_CONTROL_SEND_STOP_REQ(buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id,  \
+    def_resp, cb)                                                                         \
+}
 /** @cond internals_doc */
 typedef struct zb_zcl_level_control_set_value_param_s
 {
