@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -25,6 +25,7 @@
 
 #include <nrf.h>
 #include "nrf_errno.h"
+#include "mpsl_tx_power.h"
 
 /** @brief PA and LNA functionality types. */
 typedef enum
@@ -102,6 +103,16 @@ typedef struct
     uint8_t                    ppi_ch_id;
 #endif
 } mpsl_fem_event_t;
+
+/** @brief Represents components of tx_power to be applied for stages on transmit path. */
+typedef struct
+{
+    /** TX power to be applied to the RADIO peripheral. */
+    mpsl_tx_power_t radio_tx_power;
+
+    /** Gain of the Front-End Module in dB. */
+    int8_t fem_gain;
+} mpsl_tx_power_split_t;
 
 /** @brief Disable Front End Module.
  *
@@ -291,6 +302,38 @@ int32_t mpsl_fem_abort_clear(void);
  *  The function is intended to be called after the radio DISABLED signal.
  */
 void mpsl_fem_cleanup(void);
+
+/** @brief Splits transmit power value into components to be applied on each stage on transmit path.
+ *
+ * @note If the exact value of @p power cannot be achieved, this function attempts to use less
+ * power to not exceed constraint. However, if @p power is lower than the minimum achievable power,
+ * or larger than the maximum achievable power, the function returns failure.
+ *
+ * @param[in]  power            TX power requested for transmission on air.
+ * @param[out] p_tx_power_split Components of tx_power to be applied for stages on transmit path.
+ *
+ * @retval  0               Calculation performed successfully.
+ * @retval  - ::NRF_EINVAL  Given @p power cannot be achieved. If requested value is too high
+ *                          the @p p_tx_power_split will be set to a value representing maximum
+ *                          achievable power. If the requested value is too low, the
+ *                          @p p_tx_power_split will be set to a value representing minimum
+ *                          achievable power.
+ */
+int32_t mpsl_fem_tx_power_split(const mpsl_tx_power_t power,
+                                mpsl_tx_power_split_t *const p_tx_power_split);
+
+/** @brief Sets PA gain.
+ *
+ * @note The gain set by this function will be applied to radio transmissions
+ * following the call. If the function is called during radio transmission
+ * or during ramp-up for transmission it is unspecified if the gain is applied.
+ *
+ * @param[in] gain Gain in dB to be set.
+ *
+ * @retval   0             Gain has been set successfully.
+ * @retval   -NRF_EINVAL   Gain could not be set. Provided @p gain is invalid.
+ */
+int32_t mpsl_fem_pa_gain_set(int8_t gain);
 
 /** @brief Checks if the PA signaling is configured and enabled, and gets
  *  the configured gain in dB.
