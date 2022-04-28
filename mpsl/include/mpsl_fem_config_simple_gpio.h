@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Nordic Semiconductor ASA
+ * Copyright (c) Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -19,6 +19,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "mpsl_fem_config_common.h"
+#include "nrf.h"
 
 #ifdef __cplusplus
 extern "C" {
