@@ -77,6 +77,13 @@ enum zb_zcl_scene_attr_e
       that associated with the CurrentScene and CurrentGroup attributes
       @li TRUE indicates that these attributes are valid
       @li FALSE indicates that they are not valid
+      
+      SceneValid attribute has to be maintained by the application according to ZCL spec snippet below:
+      
+      > Before a scene has been stored or recalled, this attribute is set to FALSE. After a successful Store Scene or
+      > Recall Scene command it is set to TRUE. If, after a scene is stored or recalled, the state of the device is
+      > modified, this attribute is set to FALSE.
+      
   */
   ZB_ZCL_ATTR_SCENES_SCENE_VALID_ID   = 0x003,
   /* TODO Remove default value for Name support attribute when scene name
@@ -105,6 +112,9 @@ enum zb_zcl_scene_attr_e
 /** @brief Default value for Scenes cluster revision global attribute */
 #define ZB_ZCL_SCENES_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0003u)
 
+/** @brief Maximal value for implemented Scenes cluster revision global attribute */
+#define ZB_ZCL_SCENES_CLUSTER_REVISION_MAX ZB_ZCL_SCENES_CLUSTER_REVISION_DEFAULT
+
 /** @brief Mask to extract Name support bit */
 #define ZB_ZCL_SCENES_NAME_SUPPORT_BIT_MASK 0x80
 
@@ -126,6 +136,9 @@ enum zb_zcl_scene_attr_e
 
 /** @brief Default value for Scene valid attribute */
 #define ZB_ZCL_SCENES_SCENE_VALID_DEFAULT_VALUE 0
+
+/** @brief "Not used" value for Recall scene transition time */
+#define ZB_ZCL_RECALL_SCENES_TRANSITION_TIME_NOT_USED_VALUE 0xffff
 
 /*
  * TODO: Remove default value for Scenes.NameSupport attribute when scene names
@@ -380,7 +393,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_add_scene_req_s
 } ZB_PACKED_STRUCT zb_zcl_scenes_add_scene_req_t;
 
 
-/*! @brief Start filling Add scene command frame
+/*! @brief Common macro to start filling Add scene command frame
 
     Fills the constant-structure part of the command payload only.
 
@@ -395,6 +408,46 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_add_scene_req_s
     @param group_id - group identifier for the scene to store
     @param scene_id - scene identifier for the scene to store
     @param transition_time - scene transition time
+    @param add_scene_cmd_id - a scene cmd ID (Add Scene or Enh Add Scene)
+*/
+#define ZB_ZCL_SCENES_INIT_ADD_SCENE_REQ_COMMON(                     \
+    buffer,                                                          \
+    cmd_struct_ptr,                                                  \
+    dis_default_resp,                                                \
+    group_id,                                                        \
+    scene_id,                                                        \
+    transition_time,                                                 \
+    add_scene_cmd_id)                                                \
+  {                                                                  \
+    cmd_struct_ptr = ZB_ZCL_START_PACKET_REQ(buffer)                 \
+    ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(             \
+      cmd_struct_ptr,                                                \
+      dis_default_resp)                                              \
+    ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(                             \
+      cmd_struct_ptr,                                                \
+      ZB_ZCL_GET_SEQ_NUM(),                                          \
+      add_scene_cmd_id);                                             \
+    ZB_ZCL_PACKET_PUT_DATA16_VAL(cmd_struct_ptr, (group_id));        \
+    ZB_ZCL_PACKET_PUT_DATA8(cmd_struct_ptr, (scene_id));             \
+    ZB_ZCL_PACKET_PUT_DATA16_VAL(cmd_struct_ptr, (transition_time)); \
+    ZB_ZCL_PACKET_PUT_DATA8(cmd_struct_ptr, 0);                      \
+  }
+
+/*! @brief Start filling Add scene command frame
+
+    Fills the constant-structure part of the command payload only.
+
+    Command can contain no fieldsets defining empty scene. The new scene can be
+    used, for example, for storing fieldsets with Store scene command.
+    @note According to a 3.7.2.4.2. subclause of ZCL spec, the command shall be
+    addressed to a single device (not a group).
+    @param buffer to put packet to
+    @param cmd_struct_ptr - pointer to the place variable-structure part of the
+    command payload (fieldsets) should be placed.
+    @param dis_default_resp - enable/disable default response
+    @param group_id - group identifier for the scene to store
+    @param scene_id - scene identifier for the scene to store
+    @param transition_time - scene transition time (in seconds)
 */
 #define ZB_ZCL_SCENES_INIT_ADD_SCENE_REQ(                            \
     buffer,                                                          \
@@ -403,20 +456,50 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_add_scene_req_s
     group_id,                                                        \
     scene_id,                                                        \
     transition_time)                                                 \
-  {                                                                  \
-    cmd_struct_ptr = ZB_ZCL_START_PACKET_REQ(buffer)                 \
-    ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(             \
-        cmd_struct_ptr,                                              \
-        dis_default_resp)                                            \
-    ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(                             \
-        cmd_struct_ptr,                                              \
-        ZB_ZCL_GET_SEQ_NUM(),                                        \
-        ZB_ZCL_CMD_SCENES_ADD_SCENE);                                \
-    ZB_ZCL_PACKET_PUT_DATA16_VAL(cmd_struct_ptr, (group_id));        \
-    ZB_ZCL_PACKET_PUT_DATA8(cmd_struct_ptr, (scene_id));             \
-    ZB_ZCL_PACKET_PUT_DATA16_VAL(cmd_struct_ptr, (transition_time)); \
-    ZB_ZCL_PACKET_PUT_DATA8(cmd_struct_ptr, 0);                      \
-  }
+  ZB_ZCL_SCENES_INIT_ADD_SCENE_REQ_COMMON(                           \
+    (buffer),                                                        \
+    (cmd_struct_ptr),                                                \
+    (dis_default_resp),                                              \
+    (group_id),                                                      \
+    (scene_id),                                                      \
+    (transition_time),                                               \
+    (ZB_ZCL_CMD_SCENES_ADD_SCENE))
+
+#ifndef ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED
+
+/*! @brief Start filling Enhanced Add scene command frame
+
+    Fills the constant-structure part of the command payload only.
+
+    Command can contain no fieldsets defining empty scene. The new scene can be
+    used, for example, for storing fieldsets with Store scene command.
+    @note According to a 3.7.2.4.2. subclause of ZCL spec, the command shall be
+    addressed to a single device (not a group).
+    @param buffer to put packet to
+    @param cmd_struct_ptr - pointer to the place variable-structure part of the
+    command payload (fieldsets) should be placed.
+    @param dis_default_resp - enable/disable default response
+    @param group_id - group identifier for the scene to store
+    @param scene_id - scene identifier for the scene to store
+    @param transition_time - scene transition time (in tenths of a second)
+*/
+#define ZB_ZCL_SCENES_INIT_ENHANCED_ADD_SCENE_REQ(                   \
+    buffer,                                                          \
+    cmd_struct_ptr,                                                  \
+    dis_default_resp,                                                \
+    group_id,                                                        \
+    scene_id,                                                        \
+    transition_time)                                                 \
+  ZB_ZCL_SCENES_INIT_ADD_SCENE_REQ_COMMON(                           \
+    (buffer),                                                        \
+    (cmd_struct_ptr),                                                \
+    (dis_default_resp),                                              \
+    (group_id),                                                      \
+    (scene_id),                                                      \
+    (transition_time),                                               \
+    (ZB_ZCL_CMD_SCENES_ENHANCED_ADD_SCENE))
+
+#endif /* !ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED */
 
 /*! @brief Sends Add scene command
 
@@ -439,7 +522,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_add_scene_req_s
     prof_id,                                      \
     callback)                                     \
   {                                               \
-    ZB_ZCL_FINISH_PACKET(buffer, cmd_struct_ptr) \
+    ZB_ZCL_FINISH_PACKET(buffer, cmd_struct_ptr)  \
     ZB_ZCL_SEND_COMMAND_SHORT(                    \
         buffer,                                   \
         dst_addr,                                 \
@@ -558,7 +641,57 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_view_scene_req_s
   zb_uint8_t scene_id;  /*!< Scene identifier */
 } ZB_PACKED_STRUCT zb_zcl_scenes_view_scene_req_t;
 
-/*! @brief Send View Scene command
+/*! @brief Common macro to send View Scene commands
+
+    @note According to a 3.7.2.4.2. subclause of ZCL spec, the command shall be
+    addressed to a single device (not a group).
+    The command can be sent to device or group of devices either
+    @param buffer to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param dis_default_resp - enable/disable default response
+    @param callback for getting command send status
+    @param group_id - group identifier for the scene to store
+    @param scene_id - scene identifier for the scene to store
+    @param view_scene_cmd_id - command ID (View Scene or Enhanced View Scene)
+*/
+#define ZB_ZCL_SCENES_SEND_VIEW_SCENE_REQ_COMMON(        \
+    buffer,                                              \
+    dst_addr,                                            \
+    dst_ep,                                              \
+    ep,                                                  \
+    prof_id,                                             \
+    dis_default_resp,                                    \
+    callback,                                            \
+    group_id,                                            \
+    scene_id,                                            \
+    view_scene_cmd_id)                                   \
+  {                                                      \
+    zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)      \
+    ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL( \
+        ptr,                                             \
+        dis_default_resp)                               \
+    ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(                     \
+        ptr,                                             \
+        ZB_ZCL_GET_SEQ_NUM(),                            \
+        view_scene_cmd_id);                              \
+    ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (group_id));       \
+    ZB_ZCL_PACKET_PUT_DATA8(ptr, (scene_id));            \
+    ZB_ZCL_FINISH_PACKET(buffer, ptr)                   \
+    ZB_ZCL_SEND_COMMAND_SHORT(                           \
+        buffer,                                          \
+        dst_addr,                                        \
+        ZB_APS_ADDR_MODE_16_ENDP_PRESENT,                \
+        dst_ep,                                          \
+        ep,                                              \
+        prof_id,                                         \
+        ZB_ZCL_CLUSTER_ID_SCENES,                        \
+        callback);                                       \
+  }
+
+/*! @brief Send View Scene commands
 
     @note According to a 3.7.2.4.2. subclause of ZCL spec, the command shall be
     addressed to a single device (not a group).
@@ -574,6 +707,16 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_view_scene_req_s
     @param scene_id - scene identifier for the scene to store
 */
 #define ZB_ZCL_SCENES_SEND_VIEW_SCENE_REQ(               \
+  buffer,                                                \
+  dst_addr,                                              \
+  dst_ep,                                                \
+  ep,                                                    \
+  prof_id,                                               \
+  dis_default_resp,                                      \
+  callback,                                              \
+  group_id,                                              \
+  scene_id)                                              \
+  ZB_ZCL_SCENES_SEND_VIEW_SCENE_REQ_COMMON(              \
     buffer,                                              \
     dst_addr,                                            \
     dst_ep,                                              \
@@ -582,29 +725,49 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_view_scene_req_s
     dis_default_resp,                                    \
     callback,                                            \
     group_id,                                            \
-    scene_id)                                            \
-  {                                                      \
-    zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)      \
-    ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL( \
-        ptr,                                             \
-        dis_default_resp)                               \
-    ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(                     \
-        ptr,                                             \
-        ZB_ZCL_GET_SEQ_NUM(),                            \
-        ZB_ZCL_CMD_SCENES_VIEW_SCENE);                   \
-    ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (group_id));       \
-    ZB_ZCL_PACKET_PUT_DATA8(ptr, (scene_id));            \
-    ZB_ZCL_FINISH_PACKET(buffer, ptr)                   \
-    ZB_ZCL_SEND_COMMAND_SHORT(                           \
-        buffer,                                          \
-        dst_addr,                                        \
-        ZB_APS_ADDR_MODE_16_ENDP_PRESENT,                \
-        dst_ep,                                          \
-        ep,                                              \
-        prof_id,                                         \
-        ZB_ZCL_CLUSTER_ID_SCENES,                        \
-        callback);                                       \
-  }
+    scene_id,                                            \
+    ZB_ZCL_CMD_SCENES_VIEW_SCENE)
+
+#ifndef ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED
+
+/*! @brief Send Enhanced View Scene command
+
+    @note According to a 3.7.2.4.2. subclause of ZCL spec, the command shall be
+    addressed to a single device (not a group).
+    The command can be sent to device or group of devices either
+    @param buffer to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param dis_default_resp - enable/disable default response
+    @param callback for getting command send status
+    @param group_id - group identifier for the scene to store
+    @param scene_id - scene identifier for the scene to store
+*/
+#define ZB_ZCL_SCENES_SEND_ENHANCED_VIEW_SCENE_REQ(      \
+  buffer,                                                \
+  dst_addr,                                              \
+  dst_ep,                                                \
+  ep,                                                    \
+  prof_id,                                               \
+  dis_default_resp,                                      \
+  callback,                                              \
+  group_id,                                              \
+  scene_id)                                              \
+  ZB_ZCL_SCENES_SEND_VIEW_SCENE_REQ_COMMON(              \
+    buffer,                                              \
+    dst_addr,                                            \
+    dst_ep,                                              \
+    ep,                                                  \
+    prof_id,                                             \
+    dis_default_resp,                                    \
+    callback,                                            \
+    group_id,                                            \
+    scene_id,                                            \
+    ZB_ZCL_CMD_SCENES_ENHANCED_VIEW_SCENE)
+
+#endif /* !ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED */
 
 /** @brief Parses Scenes.ViewScene command payload
     @param buffer to get data from
@@ -869,8 +1032,42 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_recall_scene_req_s
   zb_uint16_t transition_time; /*!< Transition Time identifier */
 } ZB_PACKED_STRUCT zb_zcl_scenes_recall_scene_req_t;
 
-/*! @brief Send Recall scene command
+/*! @brief Recall scene command transition_time payload structure */
+typedef ZB_PACKED_PRE struct zb_zcl_scenes_recall_scene_transition_time_req_s
+{
+  zb_uint16_t transition_time; /*!< Determines how long the transition takes from the old cluster state to the new cluster state */
+} ZB_PACKED_STRUCT zb_zcl_scenes_recall_scene_transition_time_req_t;
 
+/*! @brief Send Recall scene command
+    The command can be sent to device or group of devices either
+    @param buffer to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_addr_mode - addressing mode. Either @ref
+    ZB_APS_ADDR_MODE_16_ENDP_PRESENT or @ref
+    ZB_APS_ADDR_MODE_16_GROUP_ENDP_NOT_PRESENT will fit
+    @param dst_ep - destination endpoint (if sendting to a particular device)
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param dis_default_resp - enable/disable default response
+    @param callback for getting command send status
+    @param group_id - group identifier for the scene to store
+    @param scene_id - scene identifier for the scene to store
+    @param transition_time - determines how long the transition takes from the old cluster state to the new cluster state
+*/
+void zb_zcl_scenes_send_recall_scene_req_zcl8(zb_bufid_t buffer,
+                                              const zb_addr_u *dst_addr,
+                                              zb_uint8_t dst_addr_mode,
+                                              zb_uint8_t dst_ep,
+                                              zb_uint8_t ep,
+                                              zb_uint16_t prof_id,
+                                              zb_uint8_t dis_default_resp,
+                                              zb_callback_t callback,
+                                              zb_uint16_t group_id,
+                                              zb_uint8_t scene_id,
+                                              zb_uint16_t transition_time);
+
+/*! @brief Send Recall scene command (pre-ZCL8)
+    Use @ref zb_zcl_scenes_send_recall_scene_req_zcl8 for ZCL8 revision call.
     The command can be sent to device or group of devices either
     @param buffer to put packet to
     @param dst_addr - address to send packet to
@@ -885,38 +1082,71 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_recall_scene_req_s
     @param group_id - group identifier for the scene to store
     @param scene_id - scene identifier for the scene to store
 */
-#define ZB_ZCL_SCENES_SEND_RECALL_SCENE_REQ(            \
-    buffer,                                             \
-    dst_addr,                                           \
-    dst_addr_mode,                                      \
-    dst_ep,                                             \
-    ep,                                                 \
-    prof_id,                                            \
-    dis_default_resp,                                   \
-    callback,                                           \
-    group_id,                                           \
-    scene_id)                                           \
-  {                                                     \
-    zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)      \
-    ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL \
-    (ptr                                                \
-     , dis_default_resp)                               \
-    ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(                    \
-        ptr,                                            \
-        ZB_ZCL_GET_SEQ_NUM(),                           \
-        ZB_ZCL_CMD_SCENES_RECALL_SCENE);                \
-    ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (group_id));      \
-    ZB_ZCL_PACKET_PUT_DATA8(ptr, (scene_id));           \
-    ZB_ZCL_FINISH_PACKET(buffer, ptr)                  \
-    ZB_ZCL_SEND_COMMAND_SHORT(                          \
-        buffer,                                         \
-        dst_addr,                                       \
-        dst_addr_mode,                                  \
-        dst_ep,                                         \
-        ep,                                             \
-        prof_id,                                        \
-        ZB_ZCL_CLUSTER_ID_SCENES,                       \
-        callback);                                      \
+void zb_zcl_scenes_send_recall_scene_req(zb_bufid_t buffer,
+                                         const zb_addr_u *dst_addr,
+                                         zb_uint8_t dst_addr_mode,
+                                         zb_uint8_t dst_ep,
+                                         zb_uint8_t ep,
+                                         zb_uint16_t prof_id,
+                                         zb_uint8_t dis_default_resp,
+                                         zb_callback_t callback,
+                                         zb_uint16_t group_id,
+                                         zb_uint8_t scene_id);
+
+/** Macro for call @ref zb_zcl_scenes_send_recall_scene_req_zcl8 function
+ */
+#define ZB_ZCL_SCENES_SEND_RECALL_SCENE_REQ_ZCL8( \
+    buffer,                                       \
+    dst_addr,                                     \
+    dst_addr_mode,                                \
+    dst_ep,                                       \
+    ep,                                           \
+    prof_id,                                      \
+    dis_default_resp,                             \
+    callback,                                     \
+    group_id,                                     \
+    scene_id,                                     \
+    transition_time)                              \
+  {                                               \
+    zb_zcl_scenes_send_recall_scene_req_zcl8(     \
+    buffer,                                       \
+    ZB_ADDR_U_CAST(dst_addr),                     \
+    dst_addr_mode,                                \
+    dst_ep,                                       \
+    ep,                                           \
+    prof_id,                                      \
+    dis_default_resp,                             \
+    callback,                                     \
+    group_id,                                     \
+    scene_id,                                     \
+    transition_time);                             \
+  }
+
+/** Macro for calling @ref zb_zcl_scenes_send_recall_scene_req function
+ */
+#define ZB_ZCL_SCENES_SEND_RECALL_SCENE_REQ( \
+    buffer,                                  \
+    dst_addr,                                \
+    dst_addr_mode,                           \
+    dst_ep,                                  \
+    ep,                                      \
+    prof_id,                                 \
+    dis_default_resp,                        \
+    callback,                                \
+    group_id,                                \
+    scene_id)                                \
+  {                                          \
+    zb_zcl_scenes_send_recall_scene_req(     \
+    buffer,                                  \
+    ZB_ADDR_U_CAST(dst_addr),                \
+    dst_addr_mode,                           \
+    dst_ep,                                  \
+    ep,                                      \
+    prof_id,                                 \
+    dis_default_resp,                        \
+    callback,                                \
+    group_id,                                \
+    scene_id);                               \
   }
 
 
@@ -1015,6 +1245,119 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_get_scene_membership_req_s
         callback);                                       \
   }
 
+#ifndef ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED
+
+/*! @brief Send Copy scene command
+
+    The command can be sent to device or group of devices either
+    @param buffer to put packet to
+    @param dst_addr - address to send packet to
+    @param dst_ep - destination endpoint (if sendting to a particular device)
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param dis_default_resp - enable/disable default response
+    @param callback for getting command send status
+    @param mode - a scene copying mode
+    @param group_id_from - group identifier for the scene to copy from
+    @param scene_id_from - scene identifier to copy from
+    @param group_id_to - group identifier for the scene to copy to
+    @param scene_id_to - scene identifier to copy to
+*/
+#define ZB_ZCL_SCENES_SEND_COPY_SCENE_REQ(                      \
+  buffer,                                                       \
+  dst_addr,                                                     \
+  dst_ep,                                                       \
+  ep,                                                           \
+  prof_id,                                                      \
+  dis_default_resp,                                             \
+  callback,                                                     \
+  mode,                                                         \
+  group_id_from,                                                \
+  scene_id_from,                                                \
+  group_id_to,                                                  \
+  scene_id_to)                                                  \
+  {                                                             \
+    zb_uint8_t* ptr = ZB_ZCL_START_PACKET_REQ(buffer)           \
+      ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_REQ_FRAME_CONTROL(      \
+        ptr,                                                    \
+        dis_default_resp)                                       \
+      ZB_ZCL_CONSTRUCT_COMMAND_HEADER_REQ(                      \
+        ptr,                                                    \
+        ZB_ZCL_GET_SEQ_NUM(),                                   \
+        ZB_ZCL_CMD_SCENES_COPY_SCENE);                          \
+    ZB_ZCL_PACKET_PUT_DATA8(ptr, (mode));                       \
+    ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (group_id_from));         \
+    ZB_ZCL_PACKET_PUT_DATA8(ptr, (scene_id_from));              \
+    ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (group_id_to));           \
+    ZB_ZCL_PACKET_PUT_DATA8(ptr, (scene_id_to));                \
+    ZB_ZCL_FINISH_PACKET(buffer, ptr)                           \
+      ZB_ZCL_SEND_COMMAND_SHORT(                                \
+        buffer,                                                 \
+        dst_addr,                                               \
+        ZB_APS_ADDR_MODE_16_ENDP_PRESENT,                       \
+        dst_ep,                                                 \
+        ep,                                                     \
+        prof_id,                                                \
+        ZB_ZCL_CLUSTER_ID_SCENES,                               \
+        callback);                                              \
+  }
+
+/*! @brief Send Copy scene Response command
+
+    The command can be sent to device or group of devices either
+
+    @attention - Application must send reply for this command.
+
+    @param buffer to put packet to
+    @param cmd_struct_ptr - pointer to the place variable-structure part of the
+    command payload (fieldsets) should be placed.
+    @param seq_num - ZCL sequence number
+    @param dst_addr - address to send packet to
+    @param dst_ep - destination endpoint (if sendting to a particular device)
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param callback - for getting command send status
+    @param status - copying status
+    @param group_id_from - a group ID to copy from
+    @param scene_id_from - a scene ID to copy from
+*/
+#define ZB_ZCL_SCENES_SEND_COPY_SCENE_RES(                              \
+  buffer,                                                               \
+  cmd_struct_ptr,                                                       \
+  seq_num,                                                              \
+  dst_addr,                                                             \
+  dst_ep,                                                               \
+  ep,                                                                   \
+  prof_id,                                                              \
+  callback,                                                             \
+  status,                                                               \
+  group_id_from,                                                        \
+  scene_id_from)                                                        \
+  {                                                                     \
+    cmd_struct_ptr = ZB_ZCL_START_PACKET(buffer);                       \
+    ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RES_FRAME_CONTROL(                \
+      cmd_struct_ptr);                                                  \
+    ZB_ZCL_CONSTRUCT_COMMAND_HEADER(                                    \
+      cmd_struct_ptr,                                                   \
+      seq_num,                                                          \
+      ZB_ZCL_CMD_SCENES_COPY_SCENE_RESPONSE);                           \
+    ZB_ZCL_PACKET_PUT_DATA8(cmd_struct_ptr, (status));                  \
+    ZB_ZCL_PACKET_PUT_DATA16_VAL(cmd_struct_ptr, (group_id_from));      \
+    ZB_ZCL_PACKET_PUT_DATA8(cmd_struct_ptr, (scene_id_from));           \
+    ZB_ZCL_FINISH_PACKET(buffer, cmd_struct_ptr)                        \
+      ZB_ZCL_SEND_COMMAND_SHORT(                                        \
+        buffer,                                                         \
+        dst_addr,                                                       \
+        ZB_APS_ADDR_MODE_16_ENDP_PRESENT,                               \
+        dst_ep,                                                         \
+        ep,                                                             \
+        prof_id,                                                        \
+        ZB_ZCL_CLUSTER_ID_SCENES,                                       \
+        callback);                                                      \
+  }
+
+#endif /* !ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED */
+
 /** @brief Parses Scenes.GetSceneMembership command payload
     @param buffer to get data from
     @param cmd_struct_ptr - pointer to the request representation structure (of
@@ -1037,6 +1380,51 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_get_scene_membership_req_s
     }                                                                      \
   }
 
+#ifndef ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED
+
+#define ZB_ZCL_COPY_ALL_SCENES_ENABLED 0x01U
+#define ZB_ZCL_COPY_ALL_SCENES_DISABLED 0x00U
+
+/*! @brief Scene copying mode bitfield */
+typedef ZB_PACKED_PRE struct zb_zcl_scenes_copy_scene_mode_s
+{
+  zb_bitfield_t copy_all_scenes:1; /*!< The Copy All Scenes subfield is 1-bit in length and
+                                     indicates whether all scenes are to be copied. If this value
+                                     is set to 1, all scenes are to be copied and the Scene Identifier From
+                                     and Scene Identifier To fields SHALL be ignored.
+                                     Otherwise this field is set to 0. */
+  zb_bitfield_t reserved:7;        /*!< Reserved field */
+} ZB_PACKED_STRUCT zb_zcl_scenes_copy_scene_mode_t;
+
+/*! @brief Copy scene command payload structure */
+typedef ZB_PACKED_PRE struct zb_zcl_scenes_copy_scene_req_s
+{
+  zb_zcl_scenes_copy_scene_mode_t mode;  /*!< The mode field is 8-bits in length and contains
+                                           information of how the scene copy is to proceed.
+                                           See @ref zb_zcl_scenes_copy_scene_mode_s */
+  zb_uint16_t group_id_from;             /*!< Scene group identifier from */
+  zb_uint8_t scene_id_from;              /*!< Scene identifier from */
+  zb_uint16_t group_id_to;               /*!< Scene group identifier to */
+  zb_uint8_t scene_id_to;                /*!< Scene identifier to */
+} ZB_PACKED_STRUCT zb_zcl_scenes_copy_scene_req_t;
+
+#define ZB_ZCL_SCENES_GET_COPY_SCENE_REQ(buffer, cmd_struct_ptr)         \
+  {                                                                      \
+    if (sizeof(zb_zcl_scenes_copy_scene_req_t) > zb_buf_len((buffer)))   \
+    {                                                                    \
+      (cmd_struct_ptr) = NULL;                                           \
+    }                                                                    \
+    else                                                                 \
+    {                                                                    \
+      (cmd_struct_ptr) =                                                 \
+        (zb_zcl_scenes_copy_scene_req_t*)zb_buf_begin(buffer);           \
+      ZB_ZCL_HTOLE16_INPLACE(&(cmd_struct_ptr)->group_id_from);          \
+      ZB_ZCL_HTOLE16_INPLACE(&(cmd_struct_ptr)->group_id_to);            \
+    }                                                                    \
+  }
+
+#endif /* !ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED */
+
 /*! @brief Add scene response payload structure */
 typedef ZB_PACKED_PRE struct zb_zcl_scenes_add_scene_res_s
 {
@@ -1044,6 +1432,59 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_add_scene_res_s
   zb_uint16_t group_id; /*!< Scene group identifier */
   zb_uint8_t scene_id;  /*!< Scene identifier */
 } ZB_PACKED_STRUCT zb_zcl_scenes_add_scene_res_t;
+
+/*! @brief Common macro to send Add Scene response
+
+    @param buffer to put packet to
+    @param seq_num - ZCL sequence number
+    @param dst_addr - address to send packet to
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param callback for getting command send status
+    @param status of the corresponding Add scene command execution. Appropriate
+    values (defined in @ref zcl_status enumeration)are:
+    @li @ref ZB_ZCL_STATUS_SUCCESS for successful result
+    @li @ref ZB_ZCL_STATUS_INSUFF_SPACE if the scene table is full
+    @li @ref ZB_ZCL_STATUS_INVALID_FIELD if the group is not present in the
+    Group Table
+    @param group_id - group identifier for the scene to store
+    @param scene_id - scene identifier for the scene to store
+    @param cmd_id - a response cmd ID (Add Scene or Enh Add Scene)
+*/
+#define ZB_ZCL_SCENES_SEND_ADD_SCENE_RES_COMMON(              \
+    buffer,                                                   \
+    seq_num,                                                  \
+    dst_addr,                                                 \
+    dst_ep,                                                   \
+    ep,                                                       \
+    prof_id,                                                  \
+    callback,                                                 \
+    status,                                                   \
+    group_id,                                                 \
+    scene_id,                                                 \
+    cmd_id)                                                   \
+  {                                                           \
+    zb_uint8_t* ptr = ZB_ZCL_START_PACKET(buffer);            \
+    ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RES_FRAME_CONTROL(ptr); \
+    ZB_ZCL_CONSTRUCT_COMMAND_HEADER(                          \
+        ptr,                                                  \
+        seq_num,                                              \
+        cmd_id);                                              \
+    ZB_ZCL_PACKET_PUT_DATA8(ptr, (status));                   \
+    ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (group_id));            \
+    ZB_ZCL_PACKET_PUT_DATA8(ptr, (scene_id));                 \
+    ZB_ZCL_FINISH_PACKET(buffer, ptr)                        \
+    ZB_ZCL_SEND_COMMAND_SHORT(                                \
+        buffer,                                               \
+        dst_addr,                                             \
+        ZB_APS_ADDR_MODE_16_ENDP_PRESENT,                     \
+        dst_ep,                                               \
+        ep,                                                   \
+        prof_id,                                              \
+        ZB_ZCL_CLUSTER_ID_SCENES,                             \
+        callback);                                            \
+  }
 
 /*! @brief Send Add Scene response
 
@@ -1064,6 +1505,17 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_add_scene_res_s
     @param scene_id - scene identifier for the scene to store
 */
 #define ZB_ZCL_SCENES_SEND_ADD_SCENE_RES(                     \
+  buffer,                                                     \
+  seq_num,                                                    \
+  dst_addr,                                                   \
+  dst_ep,                                                     \
+  ep,                                                         \
+  prof_id,                                                    \
+  callback,                                                   \
+  status,                                                     \
+  group_id,                                                   \
+  scene_id)                                                   \
+  ZB_ZCL_SCENES_SEND_ADD_SCENE_RES_COMMON(                    \
     buffer,                                                   \
     seq_num,                                                  \
     dst_addr,                                                 \
@@ -1073,28 +1525,54 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_add_scene_res_s
     callback,                                                 \
     status,                                                   \
     group_id,                                                 \
-    scene_id)                                                 \
-  {                                                           \
-    zb_uint8_t* ptr = ZB_ZCL_START_PACKET(buffer);            \
-    ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RES_FRAME_CONTROL(ptr); \
-    ZB_ZCL_CONSTRUCT_COMMAND_HEADER(                          \
-        ptr,                                                  \
-        seq_num,                                              \
-        ZB_ZCL_CMD_SCENES_ADD_SCENE_RESPONSE);                \
-    ZB_ZCL_PACKET_PUT_DATA8(ptr, (status));                   \
-    ZB_ZCL_PACKET_PUT_DATA16_VAL(ptr, (group_id));            \
-    ZB_ZCL_PACKET_PUT_DATA8(ptr, (scene_id));                 \
-    ZB_ZCL_FINISH_PACKET(buffer, ptr)                        \
-    ZB_ZCL_SEND_COMMAND_SHORT(                                \
-        buffer,                                               \
-        dst_addr,                                             \
-        ZB_APS_ADDR_MODE_16_ENDP_PRESENT,                     \
-        dst_ep,                                               \
-        ep,                                                   \
-        prof_id,                                              \
-        ZB_ZCL_CLUSTER_ID_SCENES,                             \
-        callback);                                            \
-  }
+    scene_id,                                                 \
+    ZB_ZCL_CMD_SCENES_ADD_SCENE_RESPONSE)
+
+#ifndef ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED
+
+/*! @brief Send Enhanced Add Scene response
+
+    @param buffer to put packet to
+    @param seq_num - ZCL sequence number
+    @param dst_addr - address to send packet to
+    @param dst_ep - destination endpoint
+    @param ep - sending endpoint
+    @param prof_id - profile identifier
+    @param callback for getting command send status
+    @param status of the corresponding Add scene command execution. Appropriate
+    values (defined in @ref zcl_status enumeration)are:
+    @li @ref ZB_ZCL_STATUS_SUCCESS for successful result
+    @li @ref ZB_ZCL_STATUS_INSUFF_SPACE if the scene table is full
+    @li @ref ZB_ZCL_STATUS_INVALID_FIELD if the group is not present in the
+    Group Table
+    @param group_id - group identifier for the scene to store
+    @param scene_id - scene identifier for the scene to store
+*/
+#define ZB_ZCL_SCENES_SEND_ENHANCED_ADD_SCENE_RES(            \
+  buffer,                                                     \
+  seq_num,                                                    \
+  dst_addr,                                                   \
+  dst_ep,                                                     \
+  ep,                                                         \
+  prof_id,                                                    \
+  callback,                                                   \
+  status,                                                     \
+  group_id,                                                   \
+  scene_id)                                                   \
+  ZB_ZCL_SCENES_SEND_ADD_SCENE_RES_COMMON(                    \
+    buffer,                                                   \
+    seq_num,                                                  \
+    dst_addr,                                                 \
+    dst_ep,                                                   \
+    ep,                                                       \
+    prof_id,                                                  \
+    callback,                                                 \
+    status,                                                   \
+    group_id,                                                 \
+    scene_id,                                                 \
+    ZB_ZCL_CMD_SCENES_ENHANCED_ADD_SCENE_RESPONSE)
+
+#endif /* !ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED */
 
 /** @brief Parses Scenes.AddSceneResponse command payload
     @param buffer to get data from
@@ -1138,6 +1616,44 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_view_scene_res_fixed_size_s
   zb_uint8_t scene_name[1];
 } ZB_PACKED_STRUCT zb_zcl_scenes_view_scene_res_fixed_size_t;
 
+/*! @brief Common macro to start filling View scene response frame
+
+    Fills the mandatory part of the View scene response payload.
+
+    @param buffer to put packet to
+    @param cmd_struct_ptr - pointer to the place variable-structure part of the
+    command payload (fieldsets) should be placed.
+    @param seq_num - ZCL sequence number
+    @param status of the command execution. Appropriate values (defined in @ref
+    zcl_status enumeration) are:
+    @li ZB_ZCL_STATUS_SUCCESS for successful result
+    @li ZB_ZCL_STATUS_INSUFF_SPACE if fieldsets don't fit into packet
+    @li ZB_ZCL_STATUS_INVALID_FIELD if the group is not present in the
+    @param group_id - group identifier for the scene to store
+    @param scene_id - scene identifier for the scene to store
+    @param view_res_cmd_id - a command ID (View Response or Enh View Response)
+*/
+#define ZB_ZCL_SCENES_INIT_VIEW_SCENE_RES_COMMON(             \
+    buffer,                                                   \
+    cmd_struct_ptr,                                           \
+    seq_num,                                                  \
+    status,                                                   \
+    group_id,                                                 \
+    scene_id,                                                 \
+    view_res_cmd_id)                                          \
+  {                                                           \
+    cmd_struct_ptr = ZB_ZCL_START_PACKET(buffer);             \
+    ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RES_FRAME_CONTROL(      \
+        cmd_struct_ptr);                                      \
+    ZB_ZCL_CONSTRUCT_COMMAND_HEADER(                          \
+        cmd_struct_ptr,                                       \
+        seq_num,                                              \
+        view_res_cmd_id);                                     \
+    ZB_ZCL_PACKET_PUT_DATA8(cmd_struct_ptr, (status));        \
+    ZB_ZCL_PACKET_PUT_DATA16_VAL(cmd_struct_ptr, (group_id)); \
+    ZB_ZCL_PACKET_PUT_DATA8(cmd_struct_ptr, (scene_id));      \
+  }
+
 /*! @brief Start filling View scene response frame
 
     Fills the mandatory part of the View scene response payload.
@@ -1148,31 +1664,64 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_view_scene_res_fixed_size_s
     @param seq_num - ZCL sequence number
     @param status of the command execution. Appropriate values (defined in @ref
     zcl_status enumeration) are:
-    @li ZB_ZCL_STATUS_SUCCESS for successfull result
+    @li ZB_ZCL_STATUS_SUCCESS for successful result
     @li ZB_ZCL_STATUS_INSUFF_SPACE if fieldsets don't fit into packet
     @li ZB_ZCL_STATUS_INVALID_FIELD if the group is not present in the
     @param group_id - group identifier for the scene to store
     @param scene_id - scene identifier for the scene to store
 */
 #define ZB_ZCL_SCENES_INIT_VIEW_SCENE_RES(                    \
+  buffer,                                                     \
+  cmd_struct_ptr,                                             \
+  seq_num,                                                    \
+  status,                                                     \
+  group_id,                                                   \
+  scene_id)                                            \
+  ZB_ZCL_SCENES_INIT_VIEW_SCENE_RES_COMMON(                   \
     buffer,                                                   \
     cmd_struct_ptr,                                           \
     seq_num,                                                  \
     status,                                                   \
     group_id,                                                 \
-    scene_id)                                                 \
-  {                                                           \
-    cmd_struct_ptr = ZB_ZCL_START_PACKET(buffer);             \
-    ZB_ZCL_CONSTRUCT_SPECIFIC_COMMAND_RES_FRAME_CONTROL(      \
-        cmd_struct_ptr);                                      \
-    ZB_ZCL_CONSTRUCT_COMMAND_HEADER(                          \
-        cmd_struct_ptr,                                       \
-        seq_num,                                              \
-        ZB_ZCL_CMD_SCENES_VIEW_SCENE_RESPONSE);               \
-    ZB_ZCL_PACKET_PUT_DATA8(cmd_struct_ptr, (status));        \
-    ZB_ZCL_PACKET_PUT_DATA16_VAL(cmd_struct_ptr, (group_id)); \
-    ZB_ZCL_PACKET_PUT_DATA8(cmd_struct_ptr, (scene_id));      \
-  }
+    scene_id,                                                 \
+    ZB_ZCL_CMD_SCENES_VIEW_SCENE_RESPONSE)
+
+
+#ifndef ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED
+
+/*! @brief Start filling Enhanced View scene response frame
+
+    Fills the mandatory part of the View scene response payload.
+
+    @param buffer to put packet to
+    @param cmd_struct_ptr - pointer to the place variable-structure part of the
+    command payload (fieldsets) should be placed.
+    @param seq_num - ZCL sequence number
+    @param status of the command execution. Appropriate values (defined in @ref
+    zcl_status enumeration) are:
+    @li ZB_ZCL_STATUS_SUCCESS for successful result
+    @li ZB_ZCL_STATUS_INSUFF_SPACE if fieldsets don't fit into packet
+    @li ZB_ZCL_STATUS_INVALID_FIELD if the group is not present in the
+    @param group_id - group identifier for the scene to store
+    @param scene_id - scene identifier for the scene to store
+*/
+#define ZB_ZCL_SCENES_INIT_ENHANCED_VIEW_SCENE_RES(           \
+  buffer,                                                     \
+  cmd_struct_ptr,                                             \
+  seq_num,                                                    \
+  status,                                                     \
+  group_id,                                                   \
+  scene_id)                                                   \
+  ZB_ZCL_SCENES_INIT_VIEW_SCENE_RES_COMMON(                   \
+    buffer,                                                   \
+    cmd_struct_ptr,                                           \
+    seq_num,                                                  \
+    status,                                                   \
+    group_id,                                                 \
+    scene_id,                                                 \
+    ZB_ZCL_CMD_SCENES_ENHANCED_VIEW_SCENE_RESPONSE)
+
+#endif /* !ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED */
 
 /*! @brief Sends View scene response
 
@@ -1281,7 +1830,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_remove_scene_res_s
     @param callback for getting command send status
     @param status of the corresponding Add scene command execution. Appropriate
     values (defined in @ref zcl_status enumeration)are:
-    @li @ref ZB_ZCL_STATUS_SUCCESS for successfull result
+    @li @ref ZB_ZCL_STATUS_SUCCESS for successful result
     @li @ref ZB_ZCL_STATUS_NOT_FOUND if the scene is not present in the scene table
     @li @ref ZB_ZCL_STATUS_INVALID_FIELD if the group is not present in the
     Group Table
@@ -1360,7 +1909,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_remove_all_scenes_res_s
     @param callback for getting command send status
     @param status of the corresponding Add scene command execution. Appropriate
     values (defined in @ref zcl_status enumeration)are:
-    @li @ref ZB_ZCL_STATUS_SUCCESS for successfull result
+    @li @ref ZB_ZCL_STATUS_SUCCESS for successful result
     @li @ref ZB_ZCL_STATUS_INVALID_FIELD if the group is not present in the
     Group Table
     @param group_id - group identifier for the scene to store
@@ -1437,7 +1986,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_store_scene_res_s
     @param callback for getting command send status
     @param status of the corresponding Add scene command execution. Appropriate
     values (defined in @ref zcl_status enumeration)are:
-    @li @ref ZB_ZCL_STATUS_SUCCESS for successfull result
+    @li @ref ZB_ZCL_STATUS_SUCCESS for successful result
     @li ZB_ZCL_STATUS_INSUFF_SPACE if fieldsets don't fit into packet
     @li @ref ZB_ZCL_STATUS_INVALID_FIELD if the group is not present in the
     Group Table
@@ -1566,7 +2115,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_scenes_get_scene_membership_res_s
     @param cap_ptr - pointer to the capacity fields of the response
     @param status of the command execution. Appropriate values (defined in @ref
     zcl_status enumeration) are:
-    @li ZB_ZCL_STATUS_SUCCESS for successfull result
+    @li ZB_ZCL_STATUS_SUCCESS for successful result
     @li ZB_ZCL_STATUS_INVALID_FIELD if the group is not present in the
     @param capacity of the scene table
     @param group_id - group identifier for the scene to store

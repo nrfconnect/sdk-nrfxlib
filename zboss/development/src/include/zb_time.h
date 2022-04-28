@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -141,6 +141,11 @@ void zb_timer_enable_stop(void);
    Disable ability to stop times saving power.
  */
 void zb_timer_disable_stop(void);
+
+/**
+   Get current transceiver time value in usec
+ */
+zb_uint64_t osif_transceiver_time_get_long(void);
 
 /**
    Get current transceiver time value in usec

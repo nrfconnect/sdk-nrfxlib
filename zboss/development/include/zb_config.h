@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -97,6 +97,7 @@ constants etc.
 #define ZB_ENABLE_ZGP_DIRECT
 #define ZB_ENABLE_ZGP_SECUR
 #define APP_ONLY_NVRAM
+#define ZB_MAC_INTERFACE_SINGLE
 #elif defined ZB_ENABLE_ZGP && !defined ZB_ENABLE_ZGP_TARGET && defined ZB_ED_ROLE
 #undef ZB_ENABLE_ZGP
 #endif
@@ -122,14 +123,24 @@ constants etc.
 #define ZB_ENABLE_ZGP_TX_QUEUE
 #endif
 
-/** Maximum payload length in translation table entry */
-#ifndef ZB_ZGP_TRANSL_CMD_PLD_MAX_SIZE
-#define ZB_ZGP_TRANSL_CMD_PLD_MAX_SIZE  3U
-#endif
-
 #if (defined ZB_ENABLE_ZGP_COMBO || defined ZB_ENABLE_ZGP_TARGET || defined ZB_ENABLE_ZGP_TARGET_PLUS || defined ZGP_COMMISSIONING_TOOL)
 #define ZB_ENABLE_ZGP_SINK
 
+/* Old implementation of 8 bit vector handling on ZGP Sink Side is deprecated now.
+ *   Let's keep it until SC will decide to discontinue it
+ *   All the code under this define should be removed once it will be discontinued */
+#ifndef ZB_ZGP_SINK_SUPPORT_LEGACY_8BIT_VECTOR_HANDLING
+#define ZB_ZGP_SINK_SUPPORT_LEGACY_8BIT_VECTOR_HANDLING
+#endif
+
+/**< ZGP Sink Match Info is legacy and is deprecated now.
+ *   Let's keep it until SC will decide to discontinue it
+ *   All the code under this define should be removed once it will be discontinued */
+#ifndef ZB_ZGP_SINK_SUPPORT_LEGACY_MATCH_INFO
+#define ZB_ZGP_SINK_SUPPORT_LEGACY_MATCH_INFO
+#endif
+
+#ifdef ZB_ZGP_SINK_SUPPORT_LEGACY_MATCH_INFO
 /** Max number of command identifiers in one
  *  functionality matching table entry */
 #define ZB_ZGP_MATCH_TBL_MAX_CMDS_FOR_MATCH 5U
@@ -137,6 +148,8 @@ constants etc.
 /** Max number of cluster identifiers in one
  *  functionality matching table entry */
 #define ZB_ZGP_TBL_MAX_CLUSTERS 5U
+#endif  /* ZB_ZGP_SINK_SUPPORT_LEGACY_MATCH_INFO */
+
 #endif
 
 /** Sink table size */
@@ -144,13 +157,6 @@ constants etc.
 #define ZB_ZGP_SINK_TBL_SIZE 32U
 #endif /* ZB_ZGP_SINK_TBL_SIZE */
 
-
-
-/* Obsolete define to support old sink table migration
- * Looks like for correct migration needs to upgrade old system to zgp_dataset_info_ver_6_0_s using
- * the same ZB_ZGP_SINK_TBL_SIZE number */
-/* Anyway we don't need do migration for translation table so let's keep this define as is. */
-#define ZB_ZGP_TRANSL_TBL_SIZE 4U*ZB_ZGP_SINK_TBL_SIZE
 
 /* 5.1.2.3.2 test specification - The default value for DUT-GPP being a Basic Combo pr a Basic Proxy
  * is "ZigBeeAlliance09", i.e. {0x5A 0x69 0x67 0x42 0x65 0x65 0x41 0x6C 0x6C 0x69 0x61 0x6E
@@ -735,7 +741,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
 
 #ifndef ZB_APS_GROUP_TABLE_SIZE
 /**
-   APS: man number of groups in the system
+   APS: max number of groups in the system
 */
 #define ZB_APS_GROUP_TABLE_SIZE       16U
 #endif
@@ -771,7 +777,7 @@ ZB_ED_RX_OFF_WHEN_IDLE
 
 #ifndef ZB_APS_GROUP_TABLE_SIZE
 /**
-   APS: man number of groups in the system
+   APS: max number of groups in the system
 */
 #define ZB_APS_GROUP_TABLE_SIZE       4U
 #endif
@@ -1495,10 +1501,7 @@ exponent.
 /************************NVRAM SUPPORT*******************/
 
 #if defined ZB_USE_NVRAM
-/**
-   Storing NWK security counter in NVRAM
-*/
-#define ZB_STORE_COUNTERS
+
 /**
    Interval in which counter is stored
 */
@@ -1658,7 +1661,7 @@ compatibility with some old code. */
 /**
    Do not try to inject LEAVE on data request from ZED which we already timed out.
 
-   That define removes stupid r21 feature which requires from us to always set
+   That define removes some r21 feature which requires from us to always set
    pending bit in any our real devices (just because we are a) not so fast to check
    _absence_ of device in the neighbor table and replay with MAC ACK and b) want
    to use auto-ack feature of radio which support it - like TI devices).
@@ -1886,10 +1889,42 @@ compatibility with some old code. */
  *
  * Note: These values were members of `enum zb_production_config_version_e` type but were converted
  * to a set of macros due to MISRA violations.
+ *
+ * Versions description:
+ * v1:
+ *    stack compatibility: R21
+ *    supported channels: only 2.4Ghz 11-26
+ *    features: R21 compatible, its own crc `zb_crc32_next_v2`, supports tx_power settings for 2.4GHz
+ * v2:
+ *    stack compatibility: R22
+ *    supported channels:
+ *      1. 2.4 GHz 11-26
+ *      2. Subghz page 28 channels 0-26
+ *      2. Subghz page 29 channels 27-34, 62
+ *      2. Subghz page 30 channels 35-61
+ *      2. Subghz page 31 channels 0-26
+ *    features: not compatible with R21, normal crc, less memory consumed,
+ *              most devices in fields support it, supports tx_power settings for 2.4GHz and 4 subghz pages
+ *
+ * v3:
+ *    stack compatibility: R22
+ *    supported channels:
+ *      1. 2.4 GHz 11-26
+ *      2. Subghz page 23 channels 0-24
+ *      2. Subghz page 24 channels 56-76
+ *      2. Subghz page 25 channels 0-26
+ *      2. Subghz page 26 channels 27-34
+ *      2. Subghz page 27 channels 35-55
+ *      2. Subghz page 28 channels 0-26
+ *      2. Subghz page 29 channels 27-34, 62
+ *      2. Subghz page 30 channels 35-61
+ *      2. Subghz page 31 channels 0-26
+ *    features: not compatible with R21, normal crc, supports tx_power for 2.4 GHz and 9 subghz pages.
  */
 /** @{ */
 #define ZB_PRODUCTION_CONFIG_VERSION_1_0 0x01U
 #define ZB_PRODUCTION_CONFIG_VERSION_2_0 0x02U
+#define ZB_PRODUCTION_CONFIG_VERSION_3_0 0x03U
 /** @} */
 
 #define ZB_PRODUCTION_CONFIG_CURRENT_VERSION   ZB_PRODUCTION_CONFIG_VERSION_2_0
@@ -1925,10 +1960,6 @@ compatibility with some old code. */
 
 #endif /* ZB_DISABLE_BIN_TRACE_DUMP_EXPOSE_KEYS */
 
-#ifndef ZB_USE_ERROR_INDICATION
-#define ZB_USE_ERROR_INDICATION
-#endif /* !ZB_USE_ERROR_INDICATION */
-
 #if defined NCP_MODE_HOST && !defined SNCP_MODE
 #define HAVE_TOP_LEVEL_ERROR_HANDLER
 #endif /* NCP_MODE_HOST && !SNCP_MODE */
@@ -1946,7 +1977,7 @@ compatibility with some old code. */
 
 /** @cond DOXYGEN_MULTIMAC_SECTION */
 /* Monolithic MAC is a default interface and used when enabled interfaces are not specified in vendors */
-#if !defined(ZB_MAC_MONOLITHIC) && !defined(ZB_MACSPLIT_HOST) && !defined(ZB_MACSPLIT_DEVICE) && !defined(ZB_MAC_SUBGHZ) && !defined(NCP_MODE_HOST)
+#if !defined(ZB_MAC_MONOLITHIC) && !defined(ZB_MACSPLIT_HOST) && !defined(ZB_MACSPLIT_DEVICE) && !defined(ZB_MAC_SUBGHZ) && !defined(NCP_MODE_HOST) && !defined (ZB_EXTMAC)
   #define ZB_MAC_MONOLITHIC
 #endif /* !ZB_MAC_MONOLITHIC && !ZB_MACSPLIT_HOST && !ZB_MACSPLIT_DEVICE && !ZB_MAC_SUBGHZ &&  */
 

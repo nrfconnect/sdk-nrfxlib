@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -94,7 +94,7 @@ enum zb_zcl_dehumidification_control_attr_e
 /** @brief Min value for RHDehumidification Setpoint attribute */
 #define ZB_ZCL_DEHUMIDIFICATION_CONTROL_RHDEHUMIDIFICATION_SETPOINT_MIN_VALUE 0x1e
 
-/** @brief Man value for RHDehumidification Setpoint attribute */
+/** @brief Max value for RHDehumidification Setpoint attribute */
 #define ZB_ZCL_DEHUMIDIFICATION_CONTROL_RHDEHUMIDIFICATION_SETPOINT_MAX_VALUE 0x64
 
 /** @brief Default value for RHDehumidification Setpoint attribute */

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -48,6 +48,8 @@
 
 #ifdef ZB_ENABLE_ZGP_SINK
 #include "zboss_api_zgp.h"
+
+#ifdef ZB_ZGP_SINK_SUPPORT_LEGACY_MATCH_INFO
 
 /** 
  * @ingroup zgp_sink
@@ -96,5 +98,6 @@ zb_zgps_match_info_t  g_default_zgps_match_info =
   0,
   NULL
 };
+#endif  /* ZB_ZGP_SINK_SUPPORT_LEGACY_MATCH_INFO */
 #endif  /* ZB_ENABLE_ZGP_SINK */
 #endif //ZB_ZGP_DEFAULT_MATCH_INFO_H

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -135,6 +135,7 @@ static void bdb_formation_force_link(void)
 
   FORMATION_SELECTOR().start_formation = bdb_formation;
   FORMATION_SELECTOR().get_formation_channels_mask = bdb_commissioning_formation_channels_mask;
+  FORMATION_SELECTOR().get_scan_duration = bdb_get_scan_duration;
 }
 
 #ifdef ZB_COORDINATOR_ROLE
@@ -146,6 +147,7 @@ void zb_set_network_coordinator_role(zb_uint32_t channel_mask)
   zb_set_network_coordinator_role_with_mode(channel_mask, ZB_COMMISSIONING_BDB);
 }
 
+#ifndef NCP_MODE_HOST
 void zb_set_network_coordinator_role_ext(zb_channel_list_t channel_list)
 {
   bdb_force_link();
@@ -154,6 +156,7 @@ void zb_set_network_coordinator_role_ext(zb_channel_list_t channel_list)
                                   channel_list,
                                   ZB_COMMISSIONING_BDB);
 }
+#endif /* !NCP_MODE_HOST */
 
 #endif /* ZB_COORDINATOR_ROLE */
 
@@ -169,6 +172,7 @@ void zb_disable_distributed(void)
 {
   FORMATION_SELECTOR().start_formation = NULL;
   FORMATION_SELECTOR().get_formation_channels_mask = NULL;
+  ZB_IEEE_ADDR_COPY(ZB_AIB().trust_center_address, g_zero_addr);
 }
 
 #endif /* ZB_DISTRIBUTED_SECURITY_ON */

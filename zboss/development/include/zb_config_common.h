@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -327,6 +327,12 @@ At the worst case our NWK can skip long address at tx: 8 bytes of reserve.
    Maximal frame size
  */
 #define MAX_PHY_FRM_SIZE              127U
+
+/**
+   MAC overhead for unicast frame with Pan ID compression (normal case when
+   sending via nwk), including FCS bytes
+*/
+#define MAX_MAC_OVERHEAD_SHORT_ADDRS  11U
 
 /* ZB packet length must not exceed 127 bytes
  *
@@ -1288,8 +1294,11 @@ request command frame.
 *  IEEE Standard for Low-Rate Wireless Networks 2006, section 7.4.2 MAC PIB attributes.
 *
 *  @note Make sure the time value is not too big.
+*  There is no defined value for sub-ghz now. In case of aLBTTxMinOff frame can be sent with a
+*  delay in case of it's own transmission right before Received Date Req. This value calculated
+*  taking into account this possible situation.
 */
-#define ZB_MAX_FRAME_TOTAL_WAIT_TIME_SUB_GHZ (ZB_MILLISECONDS_TO_BEACON_INTERVAL(48U) + 1U)
+#define ZB_MAX_FRAME_TOTAL_WAIT_TIME_SUB_GHZ (ZB_MILLISECONDS_TO_BEACON_INTERVAL(136U) + 1U)
 
 
 /*!
@@ -1510,7 +1519,7 @@ request command frame.
 #define ZB_MAC_LBT_MAX_TX_RETRIES 3U
 
 /* Tuned to fit to 2 beacon intervals */
-/*! LBT transmition wait period in ms */
+/*! LBT transmission wait period in ms */
 #define ZB_MAC_LBT_TX_WAIT_QUANT_MS        33U
 
 /* aDUTYCYCLEMeasurementPeriod */

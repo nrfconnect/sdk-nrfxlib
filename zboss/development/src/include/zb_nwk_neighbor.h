@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -317,5 +317,7 @@ void zb_nwk_nbr_iterator_update_counter(void);
 #ifdef ZB_ROUTER_ROLE
 zb_bool_t zb_nwk_ed_is_our_child(zb_uint16_t addr);
 #endif /* ZB_ROUTER_ROLE */
+
+void zb_nwk_nbt_print(void);
 
 #endif /* ZB_NWK_NEIGHBOR_H */

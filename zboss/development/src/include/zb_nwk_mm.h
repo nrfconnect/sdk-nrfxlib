@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -75,9 +75,11 @@ void zb_multimac_mlme_scan_confirm_proxy(zb_uint8_t param);
 void zb_multimac_mcps_data_confirm_proxy(zb_uint8_t param);
 
 void zb_multimac_mac_init(void);
+void zb_multimac_mac_deinit(void);
 
-/* ZB_MACSPLIT_DEVICE just uses monolithic MAC now */
-  #define ZB_MAC_INIT() zb_mac_init()
+#define ZB_MAC_INIT() zb_multimac_mac_init()
+
+#define ZB_MAC_DEINIT() zb_multimac_mac_deinit()
 
 /* MAC split interface API */
 

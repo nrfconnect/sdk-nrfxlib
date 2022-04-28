@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -183,7 +183,7 @@ typedef ZB_PACKED_PRE struct zdo_cb_hash_ent_s
 
 #define ZB_ZDO_CHECK_FAILS_MASK     1U      /* flag to check if channel interference check is in progress */
 #define ZB_ZDO_SEND_WITH_ACK_MASK   (1U << 1U) /* flag to specify sending with acknowledgement */
-#define ZB_ZDO_CHANNEL_CHANGED_MASK (1U << 2U) /* flag shows that channel change opration was performed recently (server side) */
+#define ZB_ZDO_CHANNEL_CHANGED_MASK (1U << 2U) /* flag shows that channel change operation was performed recently (server side) */
 #define ZB_ZDO_TC_REJOIN_ENABLE_MASK (1U << 3U) /* flag that allows or disallows Trust Center Rejoin (Unsequred rejoin) */
 #define ZB_ZDO_UNAUTH_MASK (1U << 4U) /* indicates unauthenticated join case */
 
@@ -478,7 +478,7 @@ typedef struct zb_zdo_globals_s
 
 /* Converts a buffer with data into a packed signal with the data */
 void zb_app_signal_pack_with_data(zb_uint8_t param, zb_uint32_t signal_code, zb_int16_t status);
-/* Buffer is replaced with signal information, data_size bytes are reserved for additional singal data */
+/* Buffer is replaced with signal information, data_size bytes are reserved for additional signal data */
 void *zb_app_signal_pack(zb_uint8_t param, zb_uint32_t signal_code, zb_int16_t status, zb_uint8_t data_size);
 
 void *zb_app_signal_pack_with_detailed_status(zb_uint8_t param, zb_uint32_t signal_code,

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -56,12 +56,6 @@
  *    commands. Cluster attributes could be queried with
  *    @ref ZB_ZCL_COMMANDS "general ZCL commands".
  *
- *    @par Example
- *    @code
- *    #define DUT_ENDPOINT 5
- *    @endcode
- *    @snippet doxygen_snippets.dox Binary input_snippet_binary_input_dut_c
- *    @par
  *
  */
 

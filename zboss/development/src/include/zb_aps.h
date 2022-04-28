@@ -259,10 +259,6 @@ void zb_apsde_data_indication(zb_uint8_t param);
    @param packet - APS packet
    @param ptr - (out) pointer to the APS data begin
 
-   @par Example
-   @snippet tp_aps_bv_19_i_zr1.c data_indication
-   @par
-
  */
 #define ZB_APS_HDR_CUT_P(packet, ptr)                   \
   ptr = zb_buf_cut_left(packet, zb_aps_full_hdr_size(zb_buf_begin(packet)))
@@ -302,6 +298,8 @@ typedef ZB_PACKED_PRE struct zb_apsme_get_group_membership_req_s
 {
   zb_callback_t  confirm_cb;    /*!< The callback to be called when the operation is completed. */
   zb_ushort_t    n_groups;      /*!< Group addresses amount. */
+  zb_uint8_t     endpoint;      /*!< The endpoint which the groups are assigned to. */
+  zb_uint8_t     align[1];
   zb_uint16_t    groups[1];     /*!< First element if list with group addresses. */
 } ZB_PACKED_STRUCT zb_apsme_get_group_membership_req_t;
 
@@ -517,9 +515,6 @@ void zb_aps_hdr_parse(zb_bufid_t packet, zb_aps_hdr_t *aps_hdr, zb_bool_t cut_nw
 /** @internal
  * @brief Check element in the group array by GroupID.
  *
- * @par Example
- * @snippet tp_pro_bv-52_zr1.c tp_pro_bv-52_zr1
- * @par
  * */
 zb_bool_t zb_aps_is_in_group(zb_uint16_t grp_id);
 

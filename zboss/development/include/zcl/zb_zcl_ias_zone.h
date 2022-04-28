@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: IAS Zone cluster defintions
+/* PURPOSE: IAS Zone cluster definitions
 */
 
 #ifndef ZB_ZCL_IAS_ZONE_H
@@ -812,7 +812,7 @@ zb_zcl_ias_zone_notification_param_t;
    the current implementation.
    @param ep - local endpoint number
    @param new_val - new value for ZoneStatus
-   @param delay - delay in quater seconds (actual only for HA ZCL
+   @param delay - delay in quarter seconds (actual only for HA ZCL
    version, is ignored for pure ZCL implementation)
    @param buf_param - reference to a buffer that will be used for
    sending notification. If buffer reference is not specified,
@@ -907,6 +907,11 @@ void zb_zcl_ias_zone_check_cie_addr_on_zcl_initialization(zb_uint8_t ep_id);
 */
 zb_ret_t zb_zcl_ias_zone_put_cie_address_to_binding_whitelist(zb_uint8_t endpoint);
 
+/**
+   @brief IAS Zone specific set attribute value postprocessing
+*/
+void zb_zcl_ias_set_attr_val_post_process(zb_zcl_parsed_hdr_t *cmd_info, zb_uint16_t attr_id, zb_uint8_t *value);
+
 /*! @} */ /* ZCL IAS Zone cluster definitions */
 
 /** @endcond */ /* DOXYGEN_ZCL_SECTION */
@@ -917,6 +922,5 @@ void zb_zcl_ias_zone_init_client(void);
 #define ZB_ZCL_CLUSTER_ID_IAS_ZONE_CLIENT_ROLE_INIT zb_zcl_ias_zone_init_client
 
 zb_bool_t zb_zcl_process_ias_zone_specific_commands(zb_uint8_t param);
-zb_bool_t zb_zcl_ias_zone_check_bind_unbind_request(zb_apsme_binding_req_t *aps_bind_req);
 
 #endif /* ZB_ZCL_IAS_ZONE_H */

@@ -278,11 +278,16 @@ ZB_ASSERT_IF_NOT_ALIGNED_TO_4(zb_apsde_data_indication_t);
   * @{
   */
 
-/** @brief APSME binding structure.
-  *
-  * This data structure passed to @ref zb_apsme_bind_request()
-  * and to @ref zb_apsme_unbind_request().
-  */
+/**
+ * @brief APSME binding structure.
+ *
+ * This data structure passed to @ref zb_apsme_bind_request()
+ * and to @ref zb_apsme_unbind_request().
+ *
+ * @deprecated Corresponding function @ref zb_apsme_unbind_request() is deprecated and it will be
+ * moved to the private header in November 2022. Do not use this structure and corresponding function
+ * in the applications.
+ */
 typedef struct zb_apsme_binding_req_s
 {
   zb_ieee_addr_t  src_addr;       /*!< The source IEEE address for the binding entry. */
@@ -307,9 +312,8 @@ typedef struct zb_apsme_binding_req_s
 } zb_apsme_binding_req_t;
 
 
-
 /**
-  * This data structure passed to @ref zb_aps_check_binding_request().
+  * This data structure passed to @ref zb_zdo_check_binding_request().
   */
 typedef struct zb_aps_check_binding_req_s
 {
@@ -320,7 +324,7 @@ typedef struct zb_aps_check_binding_req_s
 
 
 /**
-  * This data structure passed to callback passed to @ref zb_aps_check_binding_request().
+  * This data structure passed to callback passed to @ref zb_zdo_check_binding_request().
   */
 typedef struct zb_aps_check_binding_resp_s
 {
@@ -329,7 +333,7 @@ typedef struct zb_aps_check_binding_resp_s
   zb_bool_t exists; /* whether the binding with specified parameters exists */
 } zb_aps_check_binding_resp_t;
 
-/** @brief APSME-ADD-GROUP.request primitive parameters. */
+/** @brief APSME-ADD-GROUP.request primitive parameters, should be passed to @ref zb_zdo_add_group_req() */
 typedef struct zb_apsme_add_group_req_s
 {
   zb_uint16_t     group_address; /*!< The 16-bit address of the group being added.  */
@@ -345,13 +349,13 @@ typedef struct zb_apsme_add_group_conf_s
   zb_ret_t  status;           /*!< Request send status. */
 } zb_apsme_add_group_conf_t;
 
-/** @brief APSME-REMOVE-GROUP.request primitive parameters.  */
+/** @brief APSME-REMOVE-GROUP.request primitive parameters, should be passed to @ref zb_zdo_add_group_req()  */
 typedef struct zb_apsme_add_group_req_s zb_apsme_remove_group_req_t;
 
 /** @brief APSME-REMOVE-GROUP.confirm primitive parameters.  */
 typedef struct zb_apsme_add_group_conf_s zb_apsme_remove_group_conf_t;
 
-/** @brief APSME-REMOVE-ALL-GROUPS.request primitive parameters.  */
+/** @brief APSME-REMOVE-ALL-GROUPS.request primitive parameters, should be passed to @ref zb_zdo_remove_all_groups_req().  */
 typedef struct zb_apsme_remove_all_groups_req_s
 {
   zb_uint8_t    endpoint;      /*!< The endpoint to which the given group is being removed. */
@@ -369,7 +373,7 @@ zb_bool_t zb_aps_is_endpoint_in_group(
     zb_uint16_t group_id,
     zb_uint8_t endpoint);
 
-/** @cond internals_doc */
+/** @cond DOXYGEN_INTERNAL_DOC */
 /** @brief APSME GET request structure. */
 typedef struct zb_apsme_get_request_s
 {
@@ -402,76 +406,82 @@ typedef ZB_PACKED_PRE struct zb_apsme_set_confirm_s
   zb_aps_aib_attr_id_t aib_attr;  /*!< The identifier of the AIB attribute that was written. */
 } ZB_PACKED_STRUCT zb_apsme_set_confirm_t;
 
-/** @endcond */
-/** @brief APSME-BIND.request primitive.
-  * @param param - index of buffer containing request data (see @ref
-  * zb_apsme_binding_req_t).
-  *
-  * @par Example
-  * @snippet light_sample/light_control/light_control.c apsme_bind_req
-  * @par
-  */
+/** @endcond */ /* DOXYGEN_INTERNAL_DOC */
+
+/**
+ * @brief APSME-BIND.request primitive.
+ * @param param - index of buffer containing request data (see @ref
+ * zb_apsme_binding_req_t).
+ *
+ * @deprecated This function will be moved to the private header in November 2022. Use @ref
+ * zb_zdo_bind_req() instead.
+ */
 void zb_apsme_bind_request(zb_uint8_t param);
 
-/** @brief APSME-UNBIND.request primitive.
-  * @param param - index of buffer containing request data (see @ref
-  * zb_apsme_binding_req_t).
-  *
-  * @par Example
-  * @snippet doxygen_snippets.dox zb_apsme_unbind_request_tests_aps_bind_aps_binding_test_c
-  * @par
-  *
-  */
+/**
+ * @brief APSME-UNBIND.request primitive.
+ * @param param - index of buffer containing request data (see @ref
+ * zb_apsme_binding_req_t).
+ *
+ * @deprecated This function will be moved to the private header in November 2022. Use @ref
+ * zb_zdo_unbind_req() instead.
+ */
 void zb_apsme_unbind_request(zb_uint8_t param);
 
-/** @brief Perform unbind all entries. This custom function and it is not described
+/**
+ *@brief Perform unbind all entries. This custom function and it is not described
  * in Zigbee specification.
  * @param param - not used.
+ *
+ * @deprecated This function will be moved to the private header in November 2022. Use @ref
+ * zb_zdo_unbind_all_local() instead.
  */
 void zb_apsme_unbind_all(zb_uint8_t param);
 
 /**
- * Checks if the binding with specified parameters exists
+ * @brief Checks if the binding with specified parameters exists
+ *
+ * @deprecated This function will be moved to the private header in November 2022. Use @ref
+ * zb_zdo_check_binding_request() instead.
  */
 void zb_aps_check_binding_request(zb_bufid_t param);
 
-/** @brief APSME-ADD-GROUP.request primitive.
-  *
-  * @param param - index of buffer with parameter. See @ref zb_apsme_add_group_req_t.
-  *
-  * @par Example
-  * @snippet scenes/scenes_zed.c apsme_add_group_req
-  * @par
-  *
-  */
+/**
+ * @brief APSME-ADD-GROUP.request primitive.
+ *
+ * @param param - index of buffer with parameter. See @ref zb_apsme_add_group_req_t.
+ *
+ * @deprecated This function will be moved to the private header in November 2022. Use @ref
+ * zb_zdo_add_group_req() instead.
+ */
 void zb_apsme_add_group_request(zb_uint8_t param);
 
-/** @brief APSME-REMOVE-GROUP.request primitive.
-  *
-  * @internal
-  * Use macro @ref ZDO_REGISTER_CALLBACK to register APSME-REMOVE-GROUP.confirm callback.
-  * @endinternal
-  * @param param - index of buffer with parameter. See @ref zb_apsme_remove_group_req_t.
-  *
-  * @par Example
-  * @snippet doxygen_snippets.dox zb_apsme_remove_group_request_certification_TP_APS_BV-17_tp_aps_bv-17_zed_c
-  * @par
-  *
-  */
+/**
+ * @brief APSME-REMOVE-GROUP.request primitive.
+ *
+ * @internal
+ * Use macro @ref ZDO_REGISTER_CALLBACK to register APSME-REMOVE-GROUP.confirm callback.
+ * @endinternal
+ * @param param - index of buffer with parameter. See @ref zb_apsme_remove_group_req_t.
+ *
+ * @deprecated This function will be moved to the private header in November 2022. Use @ref
+ * zb_zdo_remove_group_req() instead.
+ *
+ */
 void zb_apsme_remove_group_request(zb_uint8_t param);
 
-/** @brief APSME-REMOVE-ALL-GROUPS.request primitive.
-  *
-  * @internal
-  * Use macro @ref ZDO_REGISTER_CALLBACK to register APSME-REMOVE-ALL-GROUPS.confirm callback.
-  * @endinternal
-  * @param param - index of buffer with parameter. See @ref zb_apsme_remove_all_groups_req_t.
-  *
-  * @par Example
-  * @snippet doxygen_snippets.dox zb_apsme_remove_all_groups_request_tests_certification_TP_APS_BV-18_tp_aps_bv-18_zed_c
-  * @par
-  *
-  */
+/**
+ * @brief APSME-REMOVE-ALL-GROUPS.request primitive.
+ *
+ * @internal
+ * Use macro @ref ZDO_REGISTER_CALLBACK to register APSME-REMOVE-ALL-GROUPS.confirm callback.
+ * @endinternal
+ * @param param - index of buffer with parameter. See @ref zb_apsme_remove_all_groups_req_t.
+ *
+ * @deprecated This function will be moved to the private header in November 2022. Use @ref
+ * zb_zdo_remove_all_groups_req() instead.
+ *
+ */
 void zb_apsme_remove_all_groups_request(zb_uint8_t param);
 
 /** @} */ /* APS management service data structures and API. */

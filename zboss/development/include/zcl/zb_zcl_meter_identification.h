@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: Meter Identification cluster defintions
+/* PURPOSE: Meter Identification cluster definitions
 */
 
 #ifndef ZB_ZCL_METER_IDENTIFICATION_H
@@ -196,7 +196,7 @@ typedef enum zb_zcl_meter_identification_data_quality_e
     @param meter_type_id - pointer to variable to store Meter Type ID attribute value
     @param data_quality_id - pointer to variable to store Data Quality ID attribute value
     @param pod - pointer to variable to store POD (Point of Delivery) attribute value
-    @param available_power - pointer to variable to store Availabe Power attribute value
+    @param available_power - pointer to variable to store Available Power attribute value
     @param power_threshold - pointer to variable to store Power Threshold attribute value
 */
 #define ZB_ZCL_DECLARE_METER_IDENTIFICATION_ATTRIB_LIST(attr_list,                           \

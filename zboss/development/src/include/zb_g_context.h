@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -200,9 +200,7 @@ extern zb_intr_globals_t g_izb;
 #include "zb_led_button.h"
 #endif
 
-#ifdef ZB_USE_ERROR_INDICATION
 #include "zb_error_indication.h"
-#endif
 
 #ifdef USE_ZB_WATCHDOG
 #include "zb_watchdog.h"
@@ -374,6 +372,11 @@ typedef struct zb_cert_hacks_s
                                                                  in arguments.
                                                                  @see fb-pre-tc-03a */
 
+  zb_callback_t mcps_data_confirm_handler_cb; /*!< Callback that will be called
+                                                                    when handling confirmation after
+                                                                    completion of request.
+                                                                    @see rtp_bdb_23 */
+
   zb_bitfield_t override_tc_significance_flag: 1;              /*!< Allows to override default value
                                                                     of tc_significance in MgmtPermitJoin;
                                                                     Default value is 0 -
@@ -536,10 +539,18 @@ typedef struct zb_cert_hacks_s
   zb_bitfield_t tc_rejoin_aps_decrypt_error:1; /* Simulate TC rejoin without known aps key */
   zb_ieee_addr_t nwk_leave_from_unknown_ieee_addr; /*!< IEEE source address used in nwk_leave if `nwk_leave_from_unknown_addr` is set */
   zb_uint16_t nwk_leave_from_unknown_short_addr; /*!< Short source address used in nwk_leave if `nwk_leave_from_unknown_addr` is set */
+#ifdef ZB_R22_CERT_MULTITEST_MANUAL_RUN
+  zb_bitfield_t nwk_parent_information_bit_reset_on_rejoin_rsp:1; /*!< Reset nwkParentInformation on rejoin response so the next packets until End Device Timeout response have End Device Initiator to 0 */
+#endif /* ZB_R22_CERT_MULTITEST_MANUAL_RUN */
+  zb_uint8_t joins_ctr; /*!< count of joins to our device */
+  zb_uint8_t max_joins; /*!< max number of successful joins */
 } zb_cert_hacks_t;
 
 #define ZB_CERT_HACKS() ZG->cert_hacks
-#endif
+
+/* Value that means that ZB_CERT_HACKS().max_joins is uninitialized */
+#define ZB_MAX_JOINS_UNINITIALIZED ZB_UINT8_MAX
+#endif /* ZB_CERTIFICATION_HACKS */
 
 #ifdef ZB_STACK_REGRESSION_TESTING_API
 
@@ -576,7 +587,7 @@ typedef struct zb_reg_api_s
                                                          *   on NVRAM write */
   zb_bool_t disable_sending_nwk_key;                    /*!< Do not send nwk key during association to
                                                          *   the next device which attempts to associate.
-                                                         *   After one first usage flag will be resetted. */
+                                                         *   After one first usage flag will be reset. */
   zb_bool_t extended_beacon_send_delay;                 /*!< If set to 1, a larger delay will be
                                                          *    used when handling a beacon request. */
   zb_bool_t enable_custom_best_parent;                  /*!< Enable custom short address for the first
@@ -660,9 +671,7 @@ struct zb_globals_s
 #ifdef ZB_USE_BUTTONS
   zb_buttons_global_t    button;
 #endif
-#ifdef ZB_USE_ERROR_INDICATION
   zb_error_indication_ctx_t err_ind;
-#endif /* ZB_USE_ERROR_INDICATION */
 #ifdef USE_ZB_WATCHDOG
   zb_watchdog_t watchdog[ZB_N_WATCHDOG];
 #endif

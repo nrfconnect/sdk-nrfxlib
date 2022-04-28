@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -472,6 +472,21 @@ zb_bool_t zb_scheduler_is_stop(void);
 */
 #define ZB_SCHEDULER_IS_STOP() zb_scheduler_is_stop()
 
+/**
+   Is scheduler is going to stop/stopped - Is scheduler running now
+
+   @return ZB_TRUE in case of scheduler is going to stop/stopped or ZB_FALSE otherwise
+ */
+zb_bool_t zb_scheduler_is_going_to_stop(void);
+/** @endcond */ /* internals_doc */
+
+/**
+   Is scheduler is going to stop/stopped - Is scheduler running now
+
+   @return ZB_TRUE in case of scheduler is going to stop/stopped or ZB_FALSE otherwise
+*/
+#define ZB_SCHEDULER_IS_GOING_TO_STOP() zb_scheduler_is_going_to_stop()
+
 /*! @} */
 
 
@@ -521,7 +536,7 @@ zb_uint32_t zb_random_val(zb_uint32_t max_value);
  *
  * A custom version should be implemented because there is no standard library function for that
  * purpose. Also, this function is not platform-dependent in contrast to ZB_BZERO() macro and
- * therefore can't be overriden by specific ZBOSS platform.
+ * therefore can't be overridden by specific ZBOSS platform.
  *
  * The function sets individually every byte of provided memory region to zero.
  */

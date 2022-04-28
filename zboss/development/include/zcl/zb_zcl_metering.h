@@ -134,7 +134,7 @@ enum zb_zcl_metering_attr_e
                                                                          *   captured at the time indicated by attribute @ref ZB_ZCL_ATTR_METERING_DAILY_FREEZE_TIME_ID "DailyFreezeTime". */
   ZB_ZCL_ATTR_METERING_DAILY_FREEZE_TIME_ID,                            /**< @e DailyFreezeTime attribute represents the time of day when DFTSummation is captured
                                                                          *   (hour and minutes). */
-  ZB_ZCL_ATTR_METERING_POWER_FACTOR_ID,                                 /**< @e PowerFactor attribute contains the Average Power Factor ratio in 1/100ths. Valid
+  ZB_ZCL_ATTR_METERING_POWER_FACTOR_ID,                                 /**< @e PowerFactor attribute contains the Average Power Factor ratio in 1/100th. Valid
                                                                          *   values are 0 to 99. */
   ZB_ZCL_ATTR_METERING_READING_SNAPSHOT_TIME_ID,                        /**< @e ReadingSnapshotTime attribute represents the last time all of the
                                                                          *   @ref ZB_ZCL_ATTR_METERING_CURRENT_SUMMATION_DELIVERED_ID "CurrentSummationDelivered",

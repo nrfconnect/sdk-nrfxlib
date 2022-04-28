@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -121,7 +121,7 @@
 
    Structure contain record Application key with attributes (address, global/unique, etc.)
  */
-/* Since that structire used to save into nvram, pack it! */
+/* Since that structure used to save into nvram, pack it! */
 typedef ZB_PACKED_PRE struct zb_aps_secur_common_data_s
 {
   zb_uint8_t coordinator_version;
@@ -192,6 +192,7 @@ typedef ZB_PACKED_PRE struct zb_aps_installcode_nvram_s
   /*hint:we can remove 2b crc at the end of installcode, but we must keep ic type, thus align to dword and don't change it*/
 } ZB_PACKED_STRUCT zb_aps_installcode_nvram_t;
 
+#ifdef ZB_SECURITY_INSTALLCODES
 extern const zb_uint8_t zb_ic_size_by_type[ZB_IC_TYPE_MAX];
 
 #define ZB_IC_TYPE_MAX_SIZE 16U
@@ -208,6 +209,7 @@ typedef struct zb_secur_ic_add_s
   zb_uint8_t do_update;
   zb_uint8_t type;
 } zb_secur_ic_add_t;
+#endif
 
 
 /**
@@ -413,7 +415,7 @@ void zb_aps_secur_init(void);
    there is nothing about the Keyed Hash Function which restricts
    it to only a single byte input, but that's all Zigbee ever uses.
 
-   The output of this function is an ep_alloced buffer containing
+   The output of this function is an ep_allocated buffer containing
    the key-hashed output, and is guaranteed never to return NULL.
 
    @param key   - Zigbee Security Key (must be ZBEE_SEC_CONST_KEYSIZE) in length.
@@ -899,8 +901,6 @@ typedef ZB_PACKED_PRE struct zb_apsme_remove_device_ind_s
    APSME-REMOVE-DEVICE.request command
 
    @param param - packet buffer filled be \see zb_apsme_request_key_req_t
-
-   @snippet tp_sec_bv_28_zc.c zb_secur_apsme_remove_device
  */
 void zb_secur_apsme_remove_device(zb_uint8_t param);
 #endif
@@ -1074,7 +1074,6 @@ zb_uint8_t *secur_nwk_key_by_seq(zb_ushort_t key_seq_number);
 
   @return pointer to the keypair updated/created or NULL in case of error
 
-  @snippet tp_pro_bv-56_zr.c tp_pro_bv-56_zr
  */
 zb_aps_device_key_pair_set_t * zb_secur_update_key_pair(zb_ieee_addr_t address,
                                                         zb_uint8_t* key,

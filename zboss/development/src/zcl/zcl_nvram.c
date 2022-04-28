@@ -73,6 +73,11 @@ void zb_nvram_read_ha_dataset(
     zb_uint8_t endpoint;
     zb_zcl_attr_t *attr_desc;
 
+#if !defined ZB_ZCL_SUPPORT_CLUSTER_IAS_ZONE || !defined ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL
+  ZVUNUSED(endpoint);
+  ZVUNUSED(attr_desc);
+#endif /* !ZB_ZCL_SUPPORT_CLUSTER_IAS_ZONE ||  !ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL */
+
 #ifdef ZB_ZCL_SUPPORT_CLUSTER_IAS_ZONE
     /********** IAS Zone Data set *************/
     endpoint = get_endpoint_by_cluster(ZB_ZCL_CLUSTER_ID_IAS_ZONE, ZB_ZCL_CLUSTER_SERVER_ROLE);
@@ -199,6 +204,11 @@ zb_ret_t zb_nvram_write_ha_dataset(zb_uint8_t page, zb_uint32_t pos)
       (FMT__H_L, page, pos));
 
   ZB_BZERO(&ds, sizeof(ds));
+
+#if !defined ZB_ZCL_SUPPORT_CLUSTER_IAS_ZONE || !defined ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL
+  ZVUNUSED(endpoint);
+  ZVUNUSED(attr_desc);
+#endif /* !ZB_ZCL_SUPPORT_CLUSTER_IAS_ZONE ||  !ZB_ZCL_SUPPORT_CLUSTER_POLL_CONTROL */
 
   /********** IAS Zone Data set *************/
 #ifdef ZB_ZCL_SUPPORT_CLUSTER_IAS_ZONE

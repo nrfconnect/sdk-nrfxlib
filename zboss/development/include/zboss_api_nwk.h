@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -455,10 +455,15 @@ zb_nlme_status_indication_t;
                                               ZB_PAGE0_2_4_GHZ_START_CHANNEL_NUMBER  + 1U)
 /** @cond DOXYGEN_SE_SECTION */
 /**
-   Maximal number of channels for all pages
+   Maximal number of ed scan channels for all pages
 */
 #define ZB_ED_SCAN_MAX_CHANNELS_COUNT                                   \
   ((ZB_IO_BUF_SIZE - sizeof(zb_uint8_t)) / sizeof(zb_energy_detect_channel_info_t))
+/**
+   Max # of network descriptors which can fit into a single buffer.
+*/
+#define ZB_ACTIVE_SCAN_MAX_NETWORK_COUNT                                   \
+  ((ZB_IO_BUF_SIZE - sizeof(zb_nlme_network_discovery_confirm_t)) / sizeof(zb_nlme_network_descriptor_t))
 
 #define ZB_CHANNEL_PAGE_MAX_CHANNELS_COUNT ZB_PAGE28_SUB_GHZ_MAX_CHANNELS_COUNT
 /** @endcond */ /* DOXYGEN_SE_SECTION */

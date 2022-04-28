@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -331,7 +331,7 @@ zb_uint8_t zb_ref_from_buf(zb_buf_t *buf);
  *
  * @return pointer to beginning of data in buffer
  *
- * @note see @ref ZB_BUF_GET_ARRAY_PTR() which returns begining of buffer
+ * @note see @ref ZB_BUF_GET_ARRAY_PTR() which returns beginning of buffer
  */
 #define ZB_BUF_BEGIN(zbbuf) zb_buf_begin_leg(TRACE_CALL zbbuf)
 

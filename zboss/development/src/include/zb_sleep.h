@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -45,7 +45,13 @@
 
 #if defined ZB_USE_SLEEP
 
-#define ZB_SCHED_SLEEP_NO_TM_BI ZB_MILLISECONDS_TO_BEACON_INTERVAL(10000U) /* Sleep time when it is no delayed cbs. */
+/* Sleep time when it is no delayed cbs. */
+#ifdef ZB_SCHED_SLEEP_NO_TM_MS
+#define ZB_SCHED_SLEEP_NO_TM_BI ZB_MILLISECONDS_TO_BEACON_INTERVAL(ZB_SCHED_SLEEP_NO_TM_MS)
+#else
+#define ZB_SCHED_SLEEP_NO_TM_BI ZB_MILLISECONDS_TO_BEACON_INTERVAL(10000U)
+#endif
+
 #define ZB_SLEEP_INVALID_VALUE  (zb_uint32_t)(~0u)
 
 typedef struct zb_sleep_ctx_s

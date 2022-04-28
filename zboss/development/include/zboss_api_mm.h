@@ -56,11 +56,17 @@ enum zb_mac_interfaces_counter_e {
   #if defined(ZB_MAC_SUBGHZ)
     ZB_MAC_INTERFACE_SUBGHZ,
   #endif
+  #if defined(ZB_EXTMAC)
+    ZB_MAC_INTERFACE_EXTMAC,
+  #endif
     ZB_MAC_INTERFACE_MAX
 };
 
 #if defined(ZB_MAC_MONOLITHIC)
   #define ZB_MAC_INTERFACE_MONOLITHIC_ID ((zb_uint8_t)ZB_MAC_INTERFACE_MONOLITHIC)
+#endif
+#if defined(ZB_EXTMAC)
+  #define ZB_MAC_INTERFACE_EXTMAC_ID ((zb_uint8_t)ZB_MAC_INTERFACE_EXTMAC)
 #endif
 #if defined(ZB_MAC_BLE)
   #define ZB_MAC_INTERFACE_BLE_ID ((zb_uint8_t)ZB_MAC_INTERFACE_BLE)
@@ -78,6 +84,8 @@ enum zb_mac_interfaces_counter_e {
 #elif defined(NCP_MODE_HOST)
   /* Preserve default table size to keep previous stack behaviour, but
    * do not use any interfaces in that case */
+  #define ZB_NWK_MAC_IFACE_TBL_SIZE 1U
+#elif defined(ZB_EXTMAC)
   #define ZB_NWK_MAC_IFACE_TBL_SIZE 1U
 #else
   #error Multi-MAC configuration is not supported, at least one interface should be enabled

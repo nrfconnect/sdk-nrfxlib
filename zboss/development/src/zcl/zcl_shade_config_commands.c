@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -48,6 +48,7 @@
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_SHADE_CONFIG)
 
 #include "zb_zcl.h"
+#include "zb_error_indication.h"
 
 #define CONFIGURE_MOST_OPENED 0
 #define CONFIGURE_MOST_CLOSED 1
@@ -109,7 +110,10 @@ void shade_normal_processing(zb_uint8_t ep_id, zb_uint16_t cluster_id, zb_uint8_
                                      ZB_ZCL_CLUSTER_SERVER_ROLE,
                                      ZB_ZCL_ATTR_SHADE_CONFIG_MODE_ID);
 
-  ZB_ASSERT(closed_limit_desc != NULL && mode_desc != NULL);
+  /* Verification: closed_limit_desc and/or mode_desc pointer must not be NULL,
+     since they will be accessed in the lines below. This function does not return 
+     anything, so the caller will assume it worked. */
+  ZB_VERIFY((closed_limit_desc != NULL) && (mode_desc != NULL), RET_NULL_POINTER);
 
   closed_limit = (zb_uint16_t*)closed_limit_desc->data_p;
   mode = (zb_uint8_t*)mode_desc->data_p;

@@ -153,16 +153,16 @@ static void zb_zcl_ota_upgrade_block_req_cb(zb_uint8_t param)
     ZB_N_APS_ACK_WAIT_DURATION_FROM_NON_SLEEPY * (ZB_N_APS_MAX_FRAME_RETRIES - 1) / ZB_APS_DUPS_TABLE_SIZE )
 #define OTA_BLOCK_REQ_DELAY(_delay) (((_delay > OTA_MIN_BLOCK_REQ_DELAY)) ? (_delay) : OTA_MIN_BLOCK_REQ_DELAY)
 
-static void zb_zcl_ota_upgrade_send_block_request(zb_uint8_t param, zb_time_t current_delay)
+static void zb_zcl_ota_upgrade_send_block_request(zb_uint8_t param, zb_uint64_t current_delay)
 {
   zb_zcl_parsed_hdr_t cmd_info;
-  zb_ieee_addr_t our_long_address;
   zb_uint8_t endpoint;
   zb_uint16_t manufacturer;
   zb_uint16_t image_type;
   zb_uint32_t file_version;
   zb_uint32_t current_offset;
   zb_zcl_ota_upgrade_client_variable_t *client_data;
+  zb_ieee_addr_t our_long_address = {0};
 
   TRACE_MSG(TRACE_ZCL1, "> zb_zcl_ota_upgrade_send_block_request param %hx", (FMT__H, param));
 
@@ -763,7 +763,7 @@ static void schedule_resend_buffer(zb_uint8_t endpoint)
 
   ZCL_CTX().ota_cli.resend_retries = 0;
   ZB_SCHEDULE_ALARM_CANCEL(resend_buffer, 0);
-  /* Extend resend inteval to exclude situation when we request new block and retransmit APS packet
+  /* Extend resend interval to exclude situation when we request new block and retransmit APS packet
    * with old request. */
   ZB_SCHEDULE_ALARM(resend_buffer, 0, ZB_ZCL_OTA_UPGRADE_RESEND_BUFFER_DELAY + ZB_MILLISECONDS_TO_BEACON_INTERVAL(delay));
 }
@@ -972,7 +972,7 @@ static void resend_buffer(zb_uint8_t param)
                                                 delay, OTA_BLOCK_REQ_DELAY(delay));
         client_data->img_block_req_sent = 1;
         ZB_SCHEDULE_ALARM_CANCEL(resend_buffer, 0);
-        /* Extend resend inteval to exclude situation when we request new block and retransmit APS packet
+        /* Extend resend interval to exclude situation when we request new block and retransmit APS packet
          * with old request. */
         ZB_SCHEDULE_ALARM(resend_buffer, 0, ZB_ZCL_OTA_UPGRADE_RESEND_BUFFER_DELAY + ZB_MILLISECONDS_TO_BEACON_INTERVAL(delay));
       }
@@ -1377,6 +1377,7 @@ static zb_ret_t image_block_resp_handler(zb_uint8_t param)
             zb_zcl_ota_upgrade_client_variable_t *client_data = get_upgrade_client_variables(endpoint);
           */
           zb_uint32_t delay32;
+          zb_uint64_t delay64;
 
           TRACE_MSG(TRACE_ZCL2, "set delay attr %d",
                     (FMT__D, payload.response.wait_for_data.delay));
@@ -1408,21 +1409,21 @@ static zb_ret_t image_block_resp_handler(zb_uint8_t param)
                                          payload.response.wait_for_data.current_time);
 
             /* request/current time is sent in UTC (seconds), translate it to ms */
-            delay32 = ZB_SECONDS_TO_MILLISECONDS(delay32);
+            delay64 = 1000ull * (delay32);
 
-            if (delay32 == 0)
+            if (delay64 == 0)
             {
               /* if time delta is zero, use BlockRequestDelay value */
-              delay32 = payload.response.wait_for_data.delay;
+              delay64 = payload.response.wait_for_data.delay;
             }
 
-            TRACE_MSG(TRACE_ZCL2, "OTA: delay32 %d", (FMT__D, (zb_uint16_t)delay32));
+            TRACE_MSG(TRACE_ZCL2, "OTA: delay32 %ds", (FMT__D, (zb_uint16_t)delay32));
 
             /* re-send query next block */
             /* TODO: ImageBlockResp may also be received as a response
              * to ImagePageReq, in this case ImagePageReq should be resent */
             ZB_MEMCPY(ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), &cmd_info, sizeof(zb_zcl_parsed_hdr_t));
-            zb_zcl_ota_upgrade_send_block_request(param, delay32);
+            zb_zcl_ota_upgrade_send_block_request(param, delay64);
 
             ret = RET_BUSY;
             /* cancel resend */
@@ -1720,6 +1721,14 @@ static zb_bool_t zb_zcl_process_ota_cli_upgrade_specific_commands(zb_uint8_t par
       zcl_ota_abort_and_set_tc_cli();
       break;
 #endif /* defined ZB_ZCL_SUPPORT_CLUSTER_WWAH && !defined ZB_COORDINATOR_ONLY */
+
+    case ZB_ZCL_CMD_DEFAULT_RESP:
+      /* This is not a normall call to specific commands processing.
+         This is a replacement of direct call from zb_zcl_handle_default_response_commands().
+         It made to exclude OTA code linking if OTA cluster is not declared by the app.
+       */
+      return (zb_bool_t)zb_zcl_process_ota_upgrade_default_response_commands(param);
+      break;
 
     default:
       processed = ZB_FALSE;

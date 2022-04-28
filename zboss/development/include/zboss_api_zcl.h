@@ -1544,6 +1544,58 @@ typedef enum zb_zcl_device_callback_id_e
    *
    */
   ZB_ZCL_SCENES_GET_SCENE_MEMBERSHIP_CB_ID,
+#ifndef ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED
+  /** @b Server. Inform application about incoming Enhanced Add Scene request.
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_scenes_add_scene_req_t Fixed part of Enhanced Add Scene request - it is
+   * the same as for the Add Scene request, but the Transition Time field is measured in tenths of a second
+   * rather than in seconds. Scene Extension Set is placed after this structure (no little-endian conversion).
+   * @param[out] param_out @ref zb_uint8_t ZCL status - @ref ZB_ZCL_STATUS_INVALID_FIELD,
+   * @ref ZB_ZCL_STATUS_SUCCESS or @ref ZB_ZCL_STATUS_INSUFF_SPACE
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command (except the case of updating existing entry). Send
+   * @ref ZB_ZCL_CMD_SCENES_ADD_SCENE_RESPONSE "Add Scene Response" command (with ZCL status from
+   * param_out).
+   * @return RET_ALREADY_EXISTS - successfully handle command (update existing entry). Send
+   * @ref ZB_ZCL_CMD_SCENES_ADD_SCENE_RESPONSE "Add Scene Response" command (with ZCL status from param_out).
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   *
+   */
+  ZB_ZCL_SCENES_ENHANCED_ADD_SCENE_CB_ID,
+  /** @b Server. Inform application about incoming Enhanced View Scene request.
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_scenes_view_scene_req_t - it is the same as for View Scene request.
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command. In this case application must send
+   * @ref ZB_ZCL_CMD_SCENES_VIEW_SCENE_RESPONSE "View Scene Response" using new buffer. Stack free
+   * buffer in this case.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   *
+   */
+  ZB_ZCL_SCENES_ENHANCED_VIEW_SCENE_CB_ID,
+  /** @b Server. Inform application about incoming Copy Scene request.
+   *
+   * User's application callback is initialized by RET_ERROR status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_scenes_copy_scene_req_t
+   * @param[out] param_out zb_uint8_t *num_copied_scenes - a number of copied scenes.
+   * It is used to increase @ref ZB_ZCL_ATTR_SCENES_SCENE_COUNT_ID attribute value in case of successfully scenes copying.
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command. In this case application must send
+   * @ref ZB_ZCL_CMD_SCENES_COPY_SCENE_RESPONSE "Copy Scene Response" using new buffer. Stack free
+   * buffer in this case.
+   * @return RET_ERROR - command is handled with errors. Default Response will be send if requested.
+   *
+   */
+  ZB_ZCL_SCENES_COPY_SCENE_CB_ID,
+#endif /* !ZB_ZCL_SCENES_OPTIONAL_COMMANDS_DISABLED */
   /** @b Server. Internal: indicate to application that it is needed to remove all scenes on all
    * endpoints for given group_id.
    *
@@ -1939,7 +1991,8 @@ enum zb_bdb_error_codes_e
   ZB_BDB_STATUS_TCLK_EX_FAILURE,             /*!< The Trust Center link key exchange procedure has failed attempting to join a centralized security network.*/
   ZB_BDB_STATUS_NOT_ON_A_NETWORK,            /*!< A commissioning procedure was forbidden since the node was not currently on a network.*/
   ZB_BDB_STATUS_ON_A_NETWORK,                /*!< A commissioning procedure was forbidden since the node was currently on a network.*/
-  ZB_BDB_STATUS_CANCELLED                    /*!< The current operation (steering or formation) was cancelled by an app */
+  ZB_BDB_STATUS_CANCELLED,                    /*!< The current operation (steering or formation) was cancelled by an app */
+  ZB_BDB_STATUS_DEV_ANNCE_SEND_FAILURE        /*!< A device announce sending has been failed (e.g. device announce haven't acked by parent router). */
 };
 /** @endcond */ /* internals_doc */
 /** @} */
@@ -2055,6 +2108,19 @@ void bdb_cancel_joining(zb_bufid_t buf);
 */
 void bdb_cancel_formation(zb_bufid_t buf);
 
+
+/**
+   @brief Set scan duration for ED and Active scan
+
+   @param duration - scan duration. Scan time is (aBaseSuperframeDuration * ((1<<duration) + 1)). In seconds - ((1l << duration) + 1) * 15360 / 1000000.
+
+       For duration 8 ~4s
+       For duration 5 ~0.5s
+       For duration 2 ~0.08s
+       For duration 1 ~0.05s (0.046s)
+ */
+void bdb_set_scan_duration(zb_uint8_t duration);
+
 /**
  * @brief Close the network
  *
@@ -2068,7 +2134,7 @@ void bdb_cancel_formation(zb_bufid_t buf);
  * @param buf - a ZBOSS buffer, if zero is passed, a new buffer will be allocated
  * @return RET_OK if broadcast was successful
  * @return RET_NO_MEMORY if buffer allocation failed
- * @return RET_ERROR if any error occured
+ * @return RET_ERROR if any error occurred
  *
  * @snippet thermostat/thermostat_zr/thermostat_zr.c close_network_example
  */
@@ -2124,7 +2190,7 @@ zb_ret_t zb_bdb_finding_binding_target(zb_uint8_t endpoint);
    @return RET_INVALID_PARAMETER_2 - commissioning_time_secs is less than ZB_BDBC_MIN_COMMISSIONING_TIME_S
    @return RET_INVALID_STATE - Finding and Binding already started or device is not joined
   */
-zb_ret_t zb_bdb_finding_binding_target_ext(zb_uint8_t endpoint, zb_uint8_t commissioning_time_secs);
+zb_ret_t zb_bdb_finding_binding_target_ext(zb_uint8_t endpoint, zb_uint16_t commissioning_time_secs);
 
 
 /**
@@ -2180,8 +2246,17 @@ typedef zb_bool_t (ZB_CODE * zb_bdb_comm_binding_callback_t)(
  */
 zb_ret_t zb_bdb_finding_binding_initiator(zb_uint8_t endpoint, zb_bdb_comm_binding_callback_t user_binding_cb);
 
-/** Cancel previously started finding and binding procedure on target */
+/**
+ *  @brief Cancel previously started finding and binding procedure on all target endpoints
+ */
 void zb_bdb_finding_binding_target_cancel(void);
+
+/**
+ *  @brief  Cancel previously started finding and binding procedure on particular target endpoint
+ *
+ *  @param endpoint - target endpoint. The ZB_ZCL_BROADCAST_ENDPOINT(0xFF) value is treated as cancel on all target endpoints
+ */
+void zb_bdb_finding_binding_target_cancel_ep(zb_uint8_t endpoint);
 
 /** Cancel previously started finding and binding procedure on initiator */
 void zb_bdb_finding_binding_initiator_cancel(void);
@@ -2198,11 +2273,15 @@ void zb_bdb_finding_binding_initiator_cancel(void);
    Set the primary channel set for the BDB energy scan. Beacon request
    will be send on these channels
    @param channel_mask - Channel mask.
+
+   @note Channel set is reset to zero after changing network role of the device
 */
 void zb_set_bdb_primary_channel_set(zb_uint32_t channel_mask);
 /**
    Get the primary channel set for the BDB energy scan.
    @return channel_mask - Channel mask.
+
+   @note Channel set is reset to zero after changing network role of the device
 */
 zb_uint32_t zb_get_bdb_primary_channel_set(void);
 
@@ -2393,6 +2472,15 @@ typedef struct zb_zcl_globals_s
 #if defined ZB_ENABLE_SE || defined ZB_BDB_ENABLE_FINDING_BINDING || defined ZB_ZCL_SUPPORT_CLUSTER_WWAH
   zb_zcl_func_selector_t selector;
 #endif /* ZB_ENABLE_SE || ZB_BDB_ENABLE_FINDING_BINDING || ZB_ZCL_SUPPORT_CLUSTER_WWAH */
+
+  /** @internal ZCL backward compatibility mode for ZCL8 support, packets format depends on the mode */
+  zb_uint8_t backward_comp_mode;
+
+  /** @internal Through the callback ZBOSS requests an application for a peer Cluster revision attribute value */
+  zb_zcl_peer_revision_cb_t peer_revision_cb;
+
+  /** @internal Backward compatible status values mode. When enabled if diversifies some common statuses as it was in zcl6 and zcl7*/
+  zb_uint8_t backward_compatible_statuses_mode;
 } zb_zcl_globals_t;
 
 #define ZCL_SELECTOR() ZG->zcl.selector
@@ -2453,5 +2541,21 @@ zb_bool_t zb_zcl_send_default_handler(zb_uint8_t param,
 void zb_zcl_send_default_resp_ext(zb_uint8_t param,
   const zb_zcl_parsed_hdr_t *cmd_info, zb_zcl_status_t status);
 
+
+/**
+   Convert deprecated statuses into ZCL8 statuses.
+   Status enumerations (see ZCL8 spec 2.6.3) list was changed in ZCL8 spec.
+     LIMIT_REACHED, DUPLICATE_EXISTS, SUCCESS ==> SUCCESS
+     INCONSISTENT_STARTUP_STATE, DEFINED_OUT_OF_BAND, ACTION_DENIED, HARDWARE_FAILURE, SOFTWARE_FAILURE ==> FAILURE
+     WRITE_ONLY, NOT_AUTHORIZED ==> NOT_AUTHORIZED
+     MALFORMED_COMMAND, INVALID_FIELD ==> INVALID_FIELD
+     UNSUP_CLUSTER_COMMAND, UNSUP_GENERAL_COMMAND, UNSUP_MANUF_CLUSTER_COMMAND, UNSUP_MANUF_GENERAL_COMMAND ==> UNSUP_COMMAND
+     INCONSISTENT, CALIBRATION_ERROR, RESERVED ==> RESERVED
+   The function will convert statuses in ZB_ZCL_AUTO_MODE and ZB_ZCL_COMPATIBILITY_MODE ZCL8 backward compatibility modes.
+   ZB_ZCL_LEGACY_MODE implies that application can still use obsolete statuses, so in that mode the function doesn't make any conversion.
+   @param status - Status got over the air.
+   @return - Converted status.
+*/
+zb_zcl_status_t zb_zcl_zcl8_statuses_conversion(zb_zcl_status_t status);
 
 #endif /* ZBOSS_API_ZCL_H */

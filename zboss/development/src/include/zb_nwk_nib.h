@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -709,7 +709,7 @@ typedef struct zb_nib_s
 
 #if defined ZB_NWK_DISTRIBUTED_ADDRESS_ASSIGN && defined ZB_ROUTER_ROLE
   zb_uint8_t     max_routers;            /*!< The number of routers any one device is allowed to have as children. */
-  zb_uint16_t    cskip;                  /*!< Cskip value - size of the address sub-block beeing distributed */
+  zb_uint16_t    cskip;                  /*!< Cskip value - size of the address sub-block being distributed */
 #endif
   zb_uint8_t     depth;                  /*!< current node depth */
 

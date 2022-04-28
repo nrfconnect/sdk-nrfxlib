@@ -38,7 +38,7 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* PURPOSE: CLIENT: Demand Response and Load Control cluster defintions
+/* PURPOSE: CLIENT: Demand Response and Load Control cluster definitions
 
 */
 
@@ -87,14 +87,27 @@ void zb_zcl_drlc_init_client()
 
 static zb_ret_t check_value_drlc(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value)
 {
-  ZVUNUSED(attr_id);
-  ZVUNUSED(value);
+  zb_ret_t ret = RET_OK;
+
   ZVUNUSED(endpoint);
 
+  switch( attr_id )
+  {
+    case ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID:
+      if( ZB_ZCL_ATTR_GET16(value) > ZB_ZCL_DRLC_CLUSTER_REVISION_MAX )
+      {
+        ret = RET_ERROR;
+      }
+      break;
+    default:
+      ret = RET_OK;
+      break;
+  }
+  
   /* All values for mandatory attributes are allowed, extra check for
    * optional attributes is needed */
 
-  return RET_OK;
+  return ret;
 }
 /**
  * Client

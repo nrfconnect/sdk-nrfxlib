@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -65,7 +65,7 @@
 
 #define ZB_BUF_IS_OOM_STATE() (ZB_BUF_IS_OOM_STATE_IN() || ZB_BUF_IS_OOM_STATE_OUT())
 
-#if !defined ZB_MACSPLIT_DEVICE && !defined ZB_MINIMAL_CONTEXT
+#if !defined ZB_MACSPLIT_DEVICE && !defined ZB_MINIMAL_CONTEXT && !defined ZB_ZGPD_ROLE
 #define ZB_NWK_UNLOCK_IN(bufid) zb_nwk_unlock_in((bufid))
 #else
 #define ZB_NWK_UNLOCK_IN(bufid)

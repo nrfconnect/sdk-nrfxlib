@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -164,7 +164,7 @@ void zboss_enable_interpan_with_chan_change(void);
   * @param buffer - reference (index) of the packet buffer.
   * @param channel_page_mask - Channel Page structure - binary encoded channel page
   *                            and channels mask as list of channels to send packet at.
-  * @param chan_wait_ms - time in miliseconds to wait at channel after the packet is sent.
+  * @param chan_wait_ms - time in milliseconds to wait at channel after the packet is sent.
   * @param cb - user callback function called after the procedure is finished.
   * @return Returns RET_OK if procedure has started successfully,
   *         RET_BUSY if procedure is on-going,

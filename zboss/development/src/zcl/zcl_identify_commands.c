@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -119,7 +119,7 @@ zb_ret_t check_value_identify_server(zb_uint16_t attr_id, zb_uint8_t endpoint, z
  *
  * Invoke User App with effect parameters : EffectId and EffectVariant
  * if invoke result RET_OK then schedule invoke User App with attribute Identify
- * else send responce command with error
+ * else send response command with error
  */
 void zb_zcl_identify_effect_invoke_user_app(zb_uint8_t param)
 {
@@ -146,10 +146,10 @@ void zb_zcl_identify_effect_invoke_user_app(zb_uint8_t param)
   }
   else
   {
-    result = RET_ERROR;
+    result = RET_NOT_IMPLEMENTED;
   }
 
-  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, result==RET_OK ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_FAIL);
+  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, zb_zcl_get_zcl_status_from_ret(result));
 
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_on_off_effect_invoke_user_app param", (FMT__0));
 }

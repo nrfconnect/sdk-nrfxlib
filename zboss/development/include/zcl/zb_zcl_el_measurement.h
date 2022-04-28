@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -203,7 +203,7 @@ enum zb_zcl_electrical_measurement_attr_e
   /** Represents the single phase or Phase A, current demand of apparent (Square root
    *  of active and reactive power) power, in @e VA. */
   ZB_ZCL_ATTR_ELECTRICAL_MEASUREMENT_APPARENT_POWER_ID                            = 0x050F,
-  /** Contains the single phase or PhaseA, Power Factor ratio in 1/100ths. */
+  /** Contains the single phase or PhaseA, Power Factor ratio in 1/100th. */
   ZB_ZCL_ATTR_ELECTRICAL_MEASUREMENT_POWER_FACTOR_ID                              = 0x0510,
   /** The Period in seconds that the RMS voltage is averaged over. */
   ZB_ZCL_ATTR_ELECTRICAL_MEASUREMENT_AVERAGE_RMSVOLTAGE_MEASUREMENT_PERIOD_ID     = 0x0511,
@@ -308,7 +308,7 @@ enum zb_zcl_electrical_measurement_attr_e
   /** Represents the Phase B, current demand of apparent (Square root of active and
    *  reactive power) power, in @e VA. */
   ZB_ZCL_ATTR_ELECTRICAL_MEASUREMENT_APPARENT_POWER_PHB_ID                        = 0x090F,
-  /** Contains the PhaseB, Power Factor ratio in 1/100ths. */
+  /** Contains the PhaseB, Power Factor ratio in 1/100th. */
   ZB_ZCL_ATTR_ELECTRICAL_MEASUREMENT_POWER_FACTOR_PH_B_ID                         = 0x0910,
   /** The number of times the average RMS voltage, has been above the
    *  @e AverageRMS @e OverVoltage threshold since last reset. */
@@ -361,7 +361,7 @@ enum zb_zcl_electrical_measurement_attr_e
   /** Represents the Phase C, current demand of apparent (Square root of active and
    *  reactive power) power, in @e VA. */
   ZB_ZCL_ATTR_ELECTRICAL_MEASUREMENT_APPARENT_POWER_PHC_ID                        = 0x0A0F,
-  /** Contains the Phase C, Power Factor ratio in 1/100ths. */
+  /** Contains the Phase C, Power Factor ratio in 1/100th. */
   ZB_ZCL_ATTR_ELECTRICAL_MEASUREMENT_POWER_FACTOR_PH_C_ID                         = 0x0a10,
   /** The Period in seconds that the RMS voltage is averaged over*/
   ZB_ZCL_ATTR_ELECTRICAL_MEASUREMENT_AVERAGE_RMSVOLTAGE_MEASUREMENT_PERIOD_PHC_ID = 0x0A11,
