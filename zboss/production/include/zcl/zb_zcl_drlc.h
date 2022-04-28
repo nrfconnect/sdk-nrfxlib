@@ -64,6 +64,12 @@
  *    This section describes DRLC client attributes and common cluster enumerations.
  */
 
+/** @brief Default value for DRLC cluster revision global attribute */
+#define ZB_ZCL_DRLC_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
+
+/** @brief Maximal value for implemented DRLC cluster revision global attribute */
+#define ZB_ZCL_DRLC_CLUSTER_REVISION_MAX ZB_ZCL_DRLC_CLUSTER_REVISION_DEFAULT
+
 /** DRLC Client attributes. @see SE spec, subclause D.2.3.2 */
 typedef enum zb_zcl_drlc_cli_attr_e
 {
@@ -446,11 +452,6 @@ typedef ZB_PACKED_PRE struct zb_zcl_drlc_get_scheduled_events_payload_s {
   zb_uint32_t issuer_event_id;                   /* (O) */
 } ZB_PACKED_STRUCT zb_zcl_drlc_get_scheduled_events_payload_t;
 
-/** @def ZB_ZCL_DRLC_CLI_CMD_GET_SCHEDULED_EVENTS_IS_VALID
- */
-#define ZB_ZCL_DRLC_CLI_CMD_GET_SCHEDULED_EVENTS_IS_VALID(size) \
-  ((size) >= sizeof(zb_zcl_drlc_get_scheduled_events_payload_t)) 
-
 /** Initialize @ref ZB_ZCL_DRLC_SRV_CMD_LOAD_CONTROL_EVENT "LoadControlEvent" command @ref zb_zcl_drlc_lce_payload_t payload*/
 #define ZB_ZCL_DRLC_LCE_PAYLOAD_INIT                \
   (zb_zcl_drlc_lce_payload_t)                       \
@@ -658,7 +659,7 @@ void zb_drlc_client_send_get_scheduled_events(zb_uint8_t param,
  */
  #define ZB_ZCL_DECLARE_DRLC_ATTRIB_LIST(attr_list, utility_enrollment_group,   \
   start_randomization_munutes, duration_randomization_minutes, device_class)    \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                   \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_DRLC)     \
   ZB_ZCL_SET_ATTR_DESC_M(ZB_ZCL_ATTR_DRLC_UTILITY_ENROLLMENT_GROUP, (utility_enrollment_group), ZB_ZCL_ATTR_TYPE_8BIT, ZB_ZCL_ATTR_ACCESS_READ_WRITE) \
   ZB_ZCL_SET_ATTR_DESC_M(ZB_ZCL_ATTR_DRLC_START_RANDOMIZATION_MINUTES, (start_randomization_munutes), ZB_ZCL_ATTR_TYPE_8BIT, ZB_ZCL_ATTR_ACCESS_READ_WRITE) \
   ZB_ZCL_SET_ATTR_DESC_M(ZB_ZCL_ATTR_DRLC_DURATION_RANDOMIZATION_MINUTES, (duration_randomization_minutes), ZB_ZCL_ATTR_TYPE_8BIT, ZB_ZCL_ATTR_ACCESS_READ_WRITE) \

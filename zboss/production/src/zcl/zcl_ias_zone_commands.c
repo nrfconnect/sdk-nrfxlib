@@ -99,11 +99,15 @@ zb_bool_t zb_zcl_process_ias_zone_specific_commands_cli(zb_uint8_t param);
 
 void zb_zcl_ias_zone_init_server()
 {
+  zb_uint8_t ep_id = zb_get_current_endpoint_id();
+
   zb_zcl_add_cluster_handlers(ZB_ZCL_CLUSTER_ID_IAS_ZONE,
                               ZB_ZCL_CLUSTER_SERVER_ROLE,
                               check_value_ias_zone_server,
                               zb_zcl_ias_zone_write_attr_hook_server,
                               zb_zcl_process_ias_zone_specific_commands_srv);
+
+  zb_zcl_ias_zone_check_cie_addr_on_zcl_initialization(ep_id);
 }
 
 void zb_zcl_ias_zone_init_client()
@@ -399,10 +403,10 @@ void zb_zcl_ias_zone_enroll_response_invoke_user_app(zb_uint8_t param)
   }
   else
   {
-    result = RET_ERROR;
+    result = RET_NOT_IMPLEMENTED;
   }
 
-  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, result==RET_OK ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_HW_FAIL);
+  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, zb_zcl_get_zcl_status_from_ret(result));
 
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_ias_zone_enroll_response_invoke_user_app", (FMT__0));
 }
@@ -893,6 +897,38 @@ void zb_zcl_ias_zone_register_cb(
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_ias_zone_queue_registry", (FMT__0));
 }
 
+static void handle_bind_confirm(zb_uint8_t param)
+{
+  if (zb_buf_get_status(param) != RET_OK)
+  {
+    TRACE_MSG(TRACE_ZCL1, "Failed to create CIE apt binding!", (FMT__0));
+  }
+
+  zb_buf_free(param);
+}
+
+static void handle_bind_check_response(zb_bufid_t param)
+{
+  zb_aps_check_binding_resp_t *check_binding_resp = NULL;
+
+  check_binding_resp = ZB_BUF_GET_PARAM(param, zb_aps_check_binding_resp_t);
+
+  if (check_binding_resp->exists == ZB_TRUE)
+  {
+    TRACE_MSG(TRACE_ZCL3, "CIE binding already exists!", (FMT__0));
+    zb_buf_free(param);
+  }
+  else
+  {
+    /* zb_zcl_set_attr_val_cmd_post_process put zdo bind request params into the buffer body */
+    ZB_MEMCPY(ZB_BUF_GET_PARAM(param, zb_zdo_bind_req_param_t),
+              zb_buf_begin(param),
+              sizeof(zb_zdo_bind_req_param_t));
+
+    zb_zdo_bind_req(param, handle_bind_confirm);
+  }
+}
+
 void zb_zcl_ias_zone_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value)
 {
   zb_zcl_attr_t* attr_desc;
@@ -954,4 +990,117 @@ void zb_zcl_ias_zone_check_cie_addr_on_zcl_initialization(zb_uint8_t ep_id)
   }
 }
 
+void zb_zcl_ias_set_attr_val_post_process(zb_zcl_parsed_hdr_t *cmd_info, zb_uint16_t attr_id, zb_uint8_t *value)
+{
+  ZVUNUSED(cmd_info);
+  ZVUNUSED(attr_id);
+  ZVUNUSED(value);
+
+  if (attr_id == ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID)
+  {
+    /* ZCL 8.2.2.2.3 (Trip-to-Pair, Auto-Enroll-Response, Auto-Enroll-Request):
+     * "The IAS Zone server MAY configure a binding table entry for the IAS CIE’s
+     * address because all of its communication will be directed to the IAS CIE." */
+    zb_zdo_bind_req_param_t *zdo_bind_req;
+    zb_aps_check_binding_req_t *check_binding_req;
+    zb_zcl_attr_t *attr_desc;
+    zb_ret_t ret;
+
+    zb_bufid_t buf = zb_buf_get_out();
+
+    ZB_ASSERT(buf != ZB_BUF_INVALID);
+
+    attr_desc = zb_zcl_get_attr_desc_a(ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
+                                       cmd_info->cluster_id, ZB_ZCL_CLUSTER_SERVER_ROLE, attr_id);
+
+    zdo_bind_req = (zb_zdo_bind_req_param_t *)zb_buf_initial_alloc(buf, sizeof(*zdo_bind_req));
+
+    ZB_BZERO(zdo_bind_req, sizeof(zb_zdo_bind_req_param_t));
+
+    /* get "set CIE address" originator's ieee address */
+
+    ret = zb_address_ieee_by_short(ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr,
+                                   zdo_bind_req->dst_address.addr_long);
+
+    /* If address table entry doesn't exist, it should be added */
+
+    if (ret == RET_NOT_FOUND)
+    {
+      zb_address_ieee_ref_t addr_ref;
+      zb_address_update(value, ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr, ZB_TRUE, &addr_ref);
+    }
+    /* Compare "set CIE address" originator's ieee address to
+     * CIE address from request and to current CIE ieee address
+     * in IAS Zone Cluster's attribute */
+
+    if (ret != RET_OK)
+    {
+      TRACE_MSG(TRACE_ZCL2, "Failed to obtain CIE ieee address from addr map, skip addr check!",
+                (FMT__0));
+
+      ZB_IEEE_ADDR_COPY(zdo_bind_req->dst_address.addr_long, value);
+      ret = RET_OK;
+    }
+    else
+    {
+      if (ZB_MEMCMP(zdo_bind_req->dst_address.addr_long, value,
+                    zb_zcl_get_attribute_size(attr_desc->type, value)) != 0)
+      {
+        ret = RET_ERROR;
+      }
+    }
+
+    /* Check the attribute was really updated with the new address value.
+       If not, don't create a new binding */
+    if (ret == RET_OK)
+    {
+      if (ZB_MEMCMP(attr_desc->data_p, value,
+                    zb_zcl_get_attribute_size(attr_desc->type, value)) != 0)
+      {
+        ret = RET_ERROR;
+      }
+    }
+
+    if (ret == RET_ERROR)
+    {
+      TRACE_MSG(TRACE_ZCL2, "Originator's ieee check failed!", (FMT__0));
+    }
+
+    ret = zb_zcl_ias_zone_put_cie_address_to_binding_whitelist(ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint);
+
+    if (ret == RET_OK)
+    {
+      attr_desc = zb_zcl_get_attr_desc_a(ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
+                                         cmd_info->cluster_id, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_CUSTOM_CIE_EP);
+      ZB_ZCL_SET_DIRECTLY_ATTR_VAL8(attr_desc,ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).src_endpoint);
+
+      attr_desc = zb_zcl_get_attr_desc_a(ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint,
+                                         cmd_info->cluster_id, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_CUSTOM_CIE_SHORT_ADDR);
+      ZB_ZCL_SET_DIRECTLY_ATTR_VAL16(attr_desc,ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).source.u.short_addr);
+
+      /* Fill in the rest fields of binding request */
+      zb_get_long_address(zdo_bind_req->src_address);
+      zdo_bind_req->src_endp = ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint;
+      zdo_bind_req->dst_endp = ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).src_endpoint;
+      zdo_bind_req->cluster_id = cmd_info->cluster_id;
+      zdo_bind_req->dst_addr_mode = ZB_APS_ADDR_MODE_64_ENDP_PRESENT;
+      zdo_bind_req->req_dst_addr = zb_get_short_address();
+
+      check_binding_req = ZB_BUF_GET_PARAM(buf, zb_aps_check_binding_req_t);
+      ZB_BZERO(check_binding_req, sizeof(*check_binding_req));
+
+      check_binding_req->cluster_id = cmd_info->cluster_id;
+      check_binding_req->src_endpoint = ZB_ZCL_BROADCAST_ENDPOINT;
+      check_binding_req->response_cb = handle_bind_check_response;
+
+      zb_aps_check_binding_request(buf);
+      buf = ZB_BUF_INVALID;
+    }
+
+    if (buf != ZB_BUF_INVALID)
+    {
+      zb_buf_free(buf);
+    }
+  }
+}
 #endif /* ZB_ZCL_SUPPORT_CLUSTER_IAS_ZONE */

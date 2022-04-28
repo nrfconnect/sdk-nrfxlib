@@ -1321,6 +1321,8 @@ enum zb_zcl_metering_service_disconnect_reasons_e
                                                                             I < In (Maximum Current) - other */
 };
 
+/** @brief Default value for Metering cluster revision global attribute */
+#define ZB_ZCL_METERING_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
 
 /*! @brief If set, suppress leading zeros */
 #define ZB_ZCL_METERING_FORMATTING_SUPPRESS_ZERO(b)    (((b) & 0x80)==0x80)
@@ -2453,7 +2455,7 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
 */
 #define ZB_ZCL_DECLARE_METERING_ATTRIB_LIST(attr_list, curr_summ_delivered, status, unit_of_measure, \
                                             summation_formatting, metering_device_type)              \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                        \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_METERING)                      \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_METERING_CURRENT_SUMMATION_DELIVERED_ID, (curr_summ_delivered))   \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_METERING_STATUS_ID, (status))                                     \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_METERING_UNIT_OF_MEASURE_ID, (unit_of_measure))                   \
@@ -2478,7 +2480,7 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
 #define ZB_ZCL_DECLARE_METERING_ATTRIB_LIST_EXT(attr_list,                                           \
       curr_summ_delivered, status, unit_of_measure, summation_formatting, metering_device_type,      \
       instantaneous_demand, demand_formatting, historical_consumption_formatting, multiplier, divisor)     \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                        \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_METERING)                      \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_METERING_CURRENT_SUMMATION_DELIVERED_ID, (curr_summ_delivered))   \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_METERING_STATUS_ID, (status))                                     \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_METERING_UNIT_OF_MEASURE_ID, (unit_of_measure))                   \

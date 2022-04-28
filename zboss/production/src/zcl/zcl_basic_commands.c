@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -104,7 +104,7 @@ zb_ret_t check_value_basic_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_u
 static void zb_zcl_basic_reset_invoke_user_app(zb_uint8_t param)
 {
   zb_zcl_parsed_hdr_t cmd_info;
-  zb_ret_t result = RET_OK;
+  zb_ret_t result = RET_NOT_IMPLEMENTED;
 
   TRACE_MSG(TRACE_ZCL1, "> zb_zcl_basic_reset_invoke_user_app param %hd", (FMT__H, param));
 
@@ -119,9 +119,48 @@ static void zb_zcl_basic_reset_invoke_user_app(zb_uint8_t param)
     ZB_ZCL_RESET_TO_FACTORY_DEFAULTS_USER_APP(param, ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint, result);
   }
 
-  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, result==RET_OK ? ZB_ZCL_STATUS_SUCCESS : ZB_ZCL_STATUS_HW_FAIL);
+  ZB_ZCL_PROCESS_COMMAND_FINISH(param, &cmd_info, zb_zcl_get_zcl_status_from_ret(result));
 
   TRACE_MSG(TRACE_ZCL1, "< zb_zcl_basic_reset_invoke_user_app", (FMT__0));
+}
+
+zb_bool_t zb_zcl_check_is_device_enabled(zb_uint8_t ep_id, zb_uint8_t cmd_id, zb_uint16_t cluster_id, zb_bool_t is_common_command)
+{
+  zb_ret_t ret = ZB_TRUE;
+  zb_zcl_cluster_desc_t *cluster_desc = get_cluster_desc(zb_af_get_endpoint_desc(ep_id), ZB_ZCL_CLUSTER_ID_BASIC, ZB_ZCL_CLUSTER_SERVER_ROLE);
+
+  if (cluster_desc)
+  {
+    zb_zcl_attr_t *attr_desc = zb_zcl_get_attr_desc_a(ep_id, ZB_ZCL_CLUSTER_ID_BASIC,
+                                                      ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_BASIC_DEVICE_ENABLED_ID);
+
+    TRACE_MSG(TRACE_ZCL1, "> zb_zcl_check_is_device_enabled ep_id %hd, cmd_id %hd, cluster_id %d, is_common_command %hd", (FMT__H_H_D_H, ep_id, cmd_id, cluster_id, ZB_B2U(is_common_command)));
+    if (attr_desc)
+    {
+      /* See ZCL spec 3.2.2.2.18 DeviceEnabled Attribute */
+      if (!ZB_U2B(ZB_ZCL_GET_ATTRIBUTE_VAL_8(attr_desc)))
+      {
+        ret = ZB_FALSE;
+        if ((is_common_command && (cmd_id == ZB_ZCL_CMD_READ_ATTRIB ||
+                                   cmd_id == ZB_ZCL_CMD_READ_ATTRIB_RESP ||
+                                   cmd_id == ZB_ZCL_CMD_WRITE_ATTRIB ||
+                                   cmd_id == ZB_ZCL_CMD_WRITE_ATTRIB_UNDIV ||
+                                   cmd_id == ZB_ZCL_CMD_WRITE_ATTRIB_RESP ||
+                                   cmd_id == ZB_ZCL_CMD_WRITE_ATTRIB_NO_RESP)) ||
+            (!is_common_command && cluster_id == ZB_ZCL_CLUSTER_ID_IDENTIFY) ||
+            (is_common_command && cmd_id == ZB_ZCL_CMD_DEFAULT_RESP && cluster_id == ZB_ZCL_CLUSTER_ID_IDENTIFY))
+        {
+          ret = ZB_TRUE;
+        }
+      }
+    }
+    if (!ret)
+    {
+      TRACE_MSG(TRACE_ZCL1, "Device is disabled. The command should be dropped", (FMT__0));
+    }
+  }
+  TRACE_MSG(TRACE_ZCL1, "< zb_zcl_check_is_device_enabled ret %hd", (FMT__H, ZB_B2U(ret)));
+  return ret;
 }
 
 zb_bool_t zb_zcl_process_basic_specific_commands_cli(zb_uint8_t param)

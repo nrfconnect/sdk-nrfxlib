@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -75,32 +75,32 @@ enum zb_zcl_thermostat_attr_e
 {
   /** @brief Local Temperature attribute */
   ZB_ZCL_ATTR_THERMOSTAT_LOCAL_TEMPERATURE_ID                     = 0x0000,
-  /** OutdoorTemperature represents the outdoor temperature in degrees Celsius,
+  /** @brief OutdoorTemperature represents the outdoor temperature in degrees Celsius,
    *  as measured locally or remotely (over the network). */
   ZB_ZCL_ATTR_THERMOSTAT_OUTDOOR_TEMPERATURE_ID                   = 0x0001,
-  /** Occupancy specifies whether the heated/cooled space is occupied or not,
+  /** @brief Occupancy specifies whether the heated/cooled space is occupied or not,
    *  as measured locally or remotely (over the network). */
   ZB_ZCL_ATTR_THERMOSTAT_OCCUPANCY_ID                             = 0x0002,
-  /** The AbsMinHeatSetpointLimit attribute specifies the absolute minimum level
+  /** @brief The AbsMinHeatSetpointLimit attribute specifies the absolute minimum level
    *  that the heating setpoint MAY be set to. */
   ZB_ZCL_ATTR_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT_ID           = 0x0003,
-  /** The AbsMaxHeatSetpointLimit attribute specifies the absolute maximum level
+  /** @brief The AbsMaxHeatSetpointLimit attribute specifies the absolute maximum level
    *  that the heating setpoint MAY be set to. */
   ZB_ZCL_ATTR_THERMOSTAT_ABS_MAX_HEAT_SETPOINT_LIMIT_ID           = 0x0004,
-  /** The AbsMinCoolSetpointLimit attribute specifies the absolute minimum level
+  /** @brief The AbsMinCoolSetpointLimit attribute specifies the absolute minimum level
    *  that the cooling setpoint MAY be set to. */
   ZB_ZCL_ATTR_THERMOSTAT_ABS_MIN_COOL_SETPOINT_LIMIT_ID           = 0x0005,
-  /** The AbsMaxCoolSetpointLimit attribute specifies the absolute maximum level
+  /** @brief The AbsMaxCoolSetpointLimit attribute specifies the absolute maximum level
    *  that the cooling setpoint MAY be set to. */
   ZB_ZCL_ATTR_THERMOSTAT_ABS_MAX_COOL_SETPOINT_LIMIT_ID           = 0x0006,
-  /** The PICoolingDemand attribute is 8 bits in length and specifies the level
+  /** @brief The PICoolingDemand attribute is 8 bits in length and specifies the level
    *  of cooling demanded by the PI (proportional integral) control loop in use
    *  by the thermostat (if any), in percent. */
   ZB_ZCL_ATTR_THERMOSTAT_PI_COOLING_DEMAND_ID                     = 0x0007,
-  /** The PIHeatingDemand attribute is 8 bits in length and specifies the level
+  /** @brief The PIHeatingDemand attribute is 8 bits in length and specifies the level
    *  of heating demanded by the PI loop in percent. */
   ZB_ZCL_ATTR_THERMOSTAT_PI_HEATING_DEMAND_ID                     = 0x0008,
-  /** The HVACSystemTypeConfiguration attribute specifies the HVAC system type
+  /** @brief The HVACSystemTypeConfiguration attribute specifies the HVAC system type
    *  controlled by the thermostat. */
   ZB_ZCL_ATTR_THERMOSTAT_HVAC_SYSTEM_TYPE_CONFIGURATION_ID        = 0x0009,
   /** @brief Local Temperature Calibration */
@@ -113,22 +113,22 @@ enum zb_zcl_thermostat_attr_e
   ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_COOLING_SETPOINT_ID           = 0x0013,
   /** @brief Unoccupied Heating Setpoint attribute */
   ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_HEATING_SETPOINT_ID           = 0x0014,
-  /** The MinHeatSetpointLimit attribute specifies the minimum level that the heating
+  /** @brief The MinHeatSetpointLimit attribute specifies the minimum level that the heating
    *  setpoint MAY be set to. */
   ZB_ZCL_ATTR_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT_ID               = 0x0015,
-  /** The MaxHeatSetpointLimit attribute specifies the maximum level that the heating
+  /** @brief The MaxHeatSetpointLimit attribute specifies the maximum level that the heating
    *  setpoint MAY be set to. */
   ZB_ZCL_ATTR_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT_ID               = 0x0016,
-  /** The MinCoolSetpointLimit attribute specifies the minimum level that the cooling
+  /** @brief The MinCoolSetpointLimit attribute specifies the minimum level that the cooling
    *  setpoint MAY be set to. */
   ZB_ZCL_ATTR_THERMOSTAT_MIN_COOL_SETPOINT_LIMIT_ID               = 0x0017,
-  /** The MaxCoolSetpointLimit attribute specifies the maximum level that the cooling
+  /** @brief The MaxCoolSetpointLimit attribute specifies the maximum level that the cooling
    *  setpoint MAY be set to. */
   ZB_ZCL_ATTR_THERMOSTAT_MAX_COOL_SETPOINT_LIMIT_ID               = 0x0018,
-  /** The MinSetpointDeadBand attribute specifies the minimum difference between the
+  /** @brief The MinSetpointDeadBand attribute specifies the minimum difference between the
    *  Heat Setpoint and the Cool SetPoint, in steps of 0.1C. */
   ZB_ZCL_ATTR_THERMOSTAT_MIN_SETPOINT_DEAD_BAND_ID                = 0x0019,
-  /** The RemoteSensing attribute is an 8-bit bitmap that specifies whether the local
+  /** @brief The RemoteSensing attribute is an 8-bit bitmap that specifies whether the local
    *  temperature, outdoor temperature and occupancy are being sensed by internal sensors
    *  or remote networked sensors. */
   ZB_ZCL_ATTR_THERMOSTAT_REMOTE_SENSING_ID                        = 0x001a,
@@ -142,83 +142,83 @@ enum zb_zcl_thermostat_attr_e
   ZB_ZCL_ATTR_THERMOSTAT_RUNNING_MODE_ID                          = 0x001e,
   /*! @brief Start of Week attribute */
   ZB_ZCL_ATTR_THERMOSTAT_START_OF_WEEK_ID                         = 0x0020,
-  /** NumberOfWeeklyTransitions attribute determines how many weekly schedule
+  /** @brief NumberOfWeeklyTransitions attribute determines how many weekly schedule
    *  transitions the thermostat is capable of handling. */
   ZB_ZCL_ATTR_THERMOSTAT_NUMBER_OF_WEEKLY_TRANSITIONS_ID          = 0x0021,
-  /** NumberOfDailyTransitions attribute determines how many daily schedule
+  /** @brief NumberOfDailyTransitions attribute determines how many daily schedule
    *  transitions the thermostat is capable of handling. */
   ZB_ZCL_ATTR_THERMOSTAT_NUMBER_OF_DAILY_TRANSITIONS_ID           = 0x0022,
-  /** TemperatureSetpointHold specifies the temperature hold status on the thermostat. */
+  /** @brief TemperatureSetpointHold specifies the temperature hold status on the thermostat. */
   ZB_ZCL_ATTR_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_ID             = 0x0023,
-  /** TemperatureSetpointHoldDuration sets the period in minutes for which a setpoint
+  /** @brief TemperatureSetpointHoldDuration sets the period in minutes for which a setpoint
    *  hold is active. */
   ZB_ZCL_ATTR_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_DURATION_ID    = 0x0024,
-  /** The ThermostatProgrammingOperationMode attribute determines the operational state
+  /** @brief The ThermostatProgrammingOperationMode attribute determines the operational state
    *  of the thermostats programming. */
   ZB_ZCL_ATTR_THERMOSTAT_THERMOSTAT_PROGRAMMING_OPERATION_MODE_ID = 0x0025,
-  /** ThermostatRunningState represents the current relay state of the heat, cool,
+  /** @brief ThermostatRunningState represents the current relay state of the heat, cool,
    *  and fan relays. */
   ZB_ZCL_ATTR_THERMOSTAT_THERMOSTAT_RUNNING_STATE_ID              = 0x0029,
-  /** The SetpointChangeSource attribute specifies the source of the current active
+  /** @brief The SetpointChangeSource attribute specifies the source of the current active
    *  OccupiedCoolingSetpoint or OccupiedHeatingSetpoint (i.e., who or what determined
    *  the current setpoint). */
   ZB_ZCL_ATTR_THERMOSTAT_SETPOINT_CHANGE_SOURCE_ID                = 0x0030,
-  /** The SetpointChangeAmount attribute specifies the delta between the current active
+  /** @brief The SetpointChangeAmount attribute specifies the delta between the current active
    *  OccupiedCoolingSetpoint or OccupiedHeatingSetpoint and the previous active
    *  setpoint. */
   ZB_ZCL_ATTR_THERMOSTAT_SETPOINT_CHANGE_AMOUNT_ID                = 0x0031,
-  /** The SetpointChangeSourceTimestamp attribute specifies the time in UTC at which
+  /** @brief The SetpointChangeSourceTimestamp attribute specifies the time in UTC at which
    *  the SetpointChangeSourceAmount attribute change was recorded. */
   ZB_ZCL_ATTR_THERMOSTAT_SETPOINT_CHANGE_SOURCE_TIMESTAMP_ID      = 0x0032,
-  /** Specifies the degrees Celsius, in 0.1 degree increments, the Thermostat server
+  /** @brief Specifies the degrees Celsius, in 0.1 degree increments, the Thermostat server
    *  will allow the LocalTemperature attribute to float above the OccupiedCooling
    *  setpoint (i.e., OccupiedCooling + OccupiedSetback) or below the OccupiedHeating
    *  setpoint (i.e., occupiedHeating, OccupiedSetback) before initiating a state change
    *  to bring the temperature back to the users desired setpoint. */
   ZB_ZCL_ATTR_THERMOSTAT_OCCUPIED_SETBACK_ID                      = 0x0034,
-  /** Specifies the minimum degrees Celsius, in 0.1 degree increments,
+  /** @brief Specifies the minimum degrees Celsius, in 0.1 degree increments,
    *  the Thermostat server will allow the OccupiedSetback attribute
    *  to be configured by a user. */
   ZB_ZCL_ATTR_THERMOSTAT_OCCUPIED_SETBACK_MIN_ID                  = 0x0035,
-  /** Specifies the maximum degrees Celsius, in 0.1 degree increments,
+  /** @brief Specifies the maximum degrees Celsius, in 0.1 degree increments,
    *  the Thermostat server will allow the OccupiedSetback attribute
    *  to be configured by a user. */
   ZB_ZCL_ATTR_THERMOSTAT_OCCUPIED_SETBACK_MAX_ID                  = 0x0036,
-  /** Specifies the degrees Celsius, in 0.1 degree increments, the Thermostat server
+  /** @brief Specifies the degrees Celsius, in 0.1 degree increments, the Thermostat server
    *  will allow the LocalTemperature attribute to float above the UnoccupiedCooling
    *  setpoint (i.e., UnoccupiedCooling + UnoccupiedSetback) or below the
    *  UnoccupiedHeating setpoint (i.e., UnoccupiedHeating - UnoccupiedSetback)
    *  before initiating a state change to bring the temperature back
    *  to the users desired setpoint. */
   ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_SETBACK_ID                    = 0x0037,
-  /** Specifies the minimum degrees Celsius, in 0.1 degree increments, the Thermostat
+  /** @brief Specifies the minimum degrees Celsius, in 0.1 degree increments, the Thermostat
    *  server will allow the UnoccupiedSetback attribute to be configured by a user. */
   ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_SETBACK_MIN_ID                = 0x0038,
-  /** Specifies the maximum degrees Celsius, in 0.1 degree increments, the Thermostat
+  /** @brief Specifies the maximum degrees Celsius, in 0.1 degree increments, the Thermostat
    *  server will allow the UnoccupiedSetback attribute to be configured by a user. */
   ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_SETBACK_MAX_ID                = 0x0039,
-  /** Specifies the delta, in 0.1 degrees Celsius, between LocalTemperature and
+  /** @brief Specifies the delta, in 0.1 degrees Celsius, between LocalTemperature and
    *  the OccupiedHeatingSetpoint or UnoccupiedHeatingSetpoint attributes at which
    *  the Thermostat server will operate in emergency heat mode. */
   ZB_ZCL_ATTR_THERMOSTAT_EMERGENCY_HEAT_DELTA_ID                  = 0x003a,
-  /** Indicates the type of Mini Split ACType of Mini Split AC is defined depending
+  /** @brief Indicates the type of Mini Split ACType of Mini Split AC is defined depending
    *  on how Cooling and Heating condition is achieved by Mini Split AC. */
   ZB_ZCL_ATTR_THERMOSTAT_AC_TYPE_ID                               = 0x0040,
-  /** Indicates capacity of Mini Split AC in terms of the format defined by
+  /** @brief Indicates capacity of Mini Split AC in terms of the format defined by
    *  the ACCapacityFormat attribute. */
   ZB_ZCL_ATTR_THERMOSTAT_AC_CAPACITY_ID                           = 0x0041,
-  /** Indicates type of refrigerant used within the Mini Split AC. */
+  /** @brief Indicates type of refrigerant used within the Mini Split AC. */
   ZB_ZCL_ATTR_THERMOSTAT_AC_REFRIGERANT_TYPE_ID                   = 0x0042,
-  /** This indicates type of Compressor used within the Mini Split AC. */
+  /** @brief This indicates type of Compressor used within the Mini Split AC. */
   ZB_ZCL_ATTR_THERMOSTAT_AC_COMPRESSOR_TYPE_ID                    = 0x0043,
-  /** This indicates the type of errors encountered within the Mini Split AC. */
+  /** @brief This indicates the type of errors encountered within the Mini Split AC. */
   ZB_ZCL_ATTR_THERMOSTAT_AC_ERROR_CODE_ID                         = 0x0044,
   /** @brief AC Louver position attribute */
   ZB_ZCL_ATTR_THERMOSTAT_AC_LOUVER_POSITION_ID                    = 0x0045,
-  /** ACCoilTemperature represents the temperature in degrees Celsius, as measured
+  /** @brief ACCoilTemperature represents the temperature in degrees Celsius, as measured
    *  locally or remotely (over the network). */
   ZB_ZCL_ATTR_THERMOSTAT_AC_COIL_TEMPERATURE_ID                   = 0x0046,
-  /** This is the format for the ACCapacity attribute. */
+  /** @brief This is the format for the ACCapacity attribute. */
   ZB_ZCL_ATTR_THERMOSTAT_AC_CAPACITY_FORMAT_ID                    = 0x0047,
 };
 
@@ -300,6 +300,16 @@ enum zb_zcl_thermostat_start_of_week_e
   ZB_ZCL_THERMOSTAT_START_OF_WEEK_SATURDAY       = 0x06,
 };
 
+/*! @brief Values for Temperature Setpoint Hold attribute,
+    @see ZCL spec, subclause 6.3.2.2.3.4 */
+enum zb_zcl_thermostat_temperature_setpoint_hold_e
+{
+  /*! Off value */
+  ZB_ZCL_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_OFF = 0x00,
+  /*! On value */
+  ZB_ZCL_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_ON  = 0x01,
+};
+
 /*! @brief Thermostat Alarm Code for Alarming
     @see ZCL spec 6.3.2.2.2.14, Table 6-18
 */
@@ -313,6 +323,10 @@ enum zb_zcl_thermostat_alarm_code_e
    * BatteryPercentageMinThreshold reached for Battery Source 1 */
     ZB_ZCL_THERMOSTAT_ALARM_CODE_SELFCALIBRATION_FAILURE = 0x02,
 };
+
+/** @brief Default value for Thermostat cluster revision global attribute */
+#define ZB_ZCL_THERMOSTAT_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0003u)
+
 /* Default value for Start Of Week attribute */
 #define ZB_ZCL_THERMOSTAT_START_OF_WEEK_DEFAULT_VALUE ZB_ZCL_THERMOSTAT_START_OF_WEEK_SUNDAY
 
@@ -322,8 +336,17 @@ enum zb_zcl_thermostat_alarm_code_e
 /** @brief Max value for Local Temperature attribute */
 #define ZB_ZCL_THERMOSTAT_LOCAL_TEMPERATURE_MAX_VALUE 0x7fff
 
+/** @brief Min value for Outdoor Temperature attribute */
+#define ZB_ZCL_THERMOSTAT_OUTDOOR_TEMPERATURE_MIN_VALUE 0x954d
+
+/** @brief Max value for Outdoor Temperature attribute */
+#define ZB_ZCL_THERMOSTAT_OUTDOOR_TEMPERATURE_MAX_VALUE 0x7fff
+
 /** @brief Invalid value for Local Temperature attribute */
-#define ZB_ZCL_THERMOSTAT_LOCAL_TEMPERATURE_INVALID 0x8000
+#define ZB_ZCL_THERMOSTAT_LOCAL_TEMPERATURE_INVALID ZB_ZCL_NON_VALUE_INT16
+
+/** @brief Default value for Local Temperature attribute */
+#define ZB_ZCL_THERMOSTAT_LOCAL_TEMPERATURE_DEFAULT_VALUE 0xffff
 
 /** @brief Min value for Local Temperature Calibration attribute */
 #define ZB_ZCL_THERMOSTAT_LOCAL_TEMPERATURE_CALIBRATION_MIN_VALUE 0xe7
@@ -355,16 +378,14 @@ enum zb_zcl_thermostat_alarm_code_e
 /** @brief Max value for Min Setpoint Dead Band attribute */
 #define ZB_ZCL_THERMOSTAT_MIN_SETPOINT_DEAD_BAND_MAX_VALUE 0x19
 
+/** @brief Local Temperature Sensed Remotely bit of Remote Sensing attribute  */
 #define ZB_ZCL_THERMOSTAT_REMOTE_SENSING_LOCAL_TEMPERATURE_SENSED_REMOTELY_BIT (1<<0)
 
+/** @brief Outdoor Temperature Sensed Remotely bit of Remote Sensing attribute  */
 #define ZB_ZCL_THERMOSTAT_REMOTE_SENSING_OUTDOOR_TEMPERATURE_SENSED_REMOTELY_BIT (1<<1)
 
+/** @brief Occupancy Sensed Sensed Remotely bit of Remote Sensing attribute  */
 #define ZB_ZCL_THERMOSTAT_REMOTE_SENSING_OCCUPANCY_SENSED_REMOTELY_BIT (1<<2)
-
-#define ZB_ZCL_THERMOSTAT_REMOTE_SENSING_RESERVED_BITS                  \
-  (~(ZB_ZCL_THERMOSTAT_REMOTE_SENSING_LOCAL_TEMPERATURE_SENSED_REMOTELY_BIT \
-     | ZB_ZCL_THERMOSTAT_REMOTE_SENSING_OUTDOOR_TEMPERATURE_SENSED_REMOTELY_BIT \
-     | ZB_ZCL_THERMOSTAT_REMOTE_SENSING_OCCUPANCY_SENSED_REMOTELY_BIT))
 
 /** @brief Default value for Control Sequence Of Operation attribute */
 #define ZB_ZCL_THERMOSTAT_CONTROL_SEQ_OF_OPERATION_DEFAULT_VALUE 0x04
@@ -373,7 +394,10 @@ enum zb_zcl_thermostat_alarm_code_e
 #define ZB_ZCL_THERMOSTAT_CONTROL_SYSTEM_MODE_DEFAULT_VALUE 0x01
 
 /** @brief Default value for Occupancy attribute */
-#define ZB_ZCL_THERMOSTAT_OCCUPANCY_DEFAULT_VALUE ((zb_uint8_t)0)
+#define ZB_ZCL_THERMOSTAT_OCCUPANCY_DEFAULT_VALUE ((zb_uint8_t)1U)
+
+/** @brief Bitmask for Occupancy attribute */
+#define ZB_ZCL_THERMOSTAT_OCCUPANCY_BITMASK ((zb_uint8_t)0x01)
 
 /** @brief Default value for AbsMinHeatSetpointLimit attribute */
 #define ZB_ZCL_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT_DEFAULT_VALUE ((zb_int16_t)0x02BC)
@@ -386,6 +410,18 @@ enum zb_zcl_thermostat_alarm_code_e
 
 /** @brief Default value for AbsMaxCoolSetpointLimit attribute */
 #define ZB_ZCL_THERMOSTAT_ABS_MAX_COOL_SETPOINT_LIMIT_DEFAULT_VALUE ((zb_int16_t)0x0C80)
+
+/** @brief Min value for PICoolingDemand attribute */
+#define ZB_ZCL_THERMOSTAT_PI_COOLING_DEMAND_MIN_VALUE ((zb_uint8_t)0x00)
+
+/** @brief Max value for PICoolingDemand attribute */
+#define ZB_ZCL_THERMOSTAT_PI_COOLING_DEMAND_MAX_VALUE ((zb_uint8_t)0x64)
+
+/** @brief Min value for PIHeatingDemand attribute */
+#define ZB_ZCL_THERMOSTAT_PI_HEATING_DEMAND_MIN_VALUE ((zb_uint8_t)0x00)
+
+/** @brief Max value for PIHeatingDemand attribute */
+#define ZB_ZCL_THERMOSTAT_PI_HEATING_DEMAND_MAX_VALUE ((zb_uint8_t)0x64)
 
 /** @brief Default value for HVACSystemTypeConfiguration attribute */
 #define ZB_ZCL_THERMOSTAT_HVAC_SYSTEM_TYPE_CONFIGURATION_DEFAULT_VALUE ((zb_uint8_t)0)
@@ -429,11 +465,26 @@ enum zb_zcl_thermostat_alarm_code_e
 /** @brief Default value for RunningMode attribute */
 #define ZB_ZCL_THERMOSTAT_RUNNING_MODE_DEFAULT_VALUE ((zb_uint8_t)0x00)
 
+/** @brief Off value for RunningMode attribute */
+#define ZB_ZCL_THERMOSTAT_RUNNING_MODE_OFF_VALUE ((zb_uint8_t)0x00)
+
+/** @brief Cool value for RunningMode attribute */
+#define ZB_ZCL_THERMOSTAT_RUNNING_MODE_COOL_VALUE ((zb_uint8_t)0x03)
+
+/** @brief Heat value for RunningMode attribute */
+#define ZB_ZCL_THERMOSTAT_RUNNING_MODE_HEAT_VALUE ((zb_uint8_t)0x04)
+
 /** @brief Default value for TemperatureSetpointHold attribute */
 #define ZB_ZCL_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_DEFAULT_VALUE ((zb_uint8_t)0x00)
 
 /** @brief Default value for TemperatureSetpointHoldDuration attribute */
 #define ZB_ZCL_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_DURATION_DEFAULT_VALUE ((zb_uint16_t)0xFFFF)
+
+/** @brief Min value for TemperatureSetpointHoldDuration attribute */
+#define ZB_ZCL_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_DURATION_MIN_VALUE ((zb_uint16_t)0x0000)
+
+/** @brief Max value for TemperatureSetpointHoldDuration attribute */
+#define ZB_ZCL_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_DURATION_MAX_VALUE ((zb_uint16_t)0x05a0)
 
 /** @brief Default value for ThermostatProgrammingOperationMode attribute */
 #define ZB_ZCL_THERMOSTAT_THERMOSTAT_PROGRAMMING_OPERATION_MODE_DEFAULT_VALUE ((zb_uint8_t)0)
@@ -471,23 +522,143 @@ enum zb_zcl_thermostat_alarm_code_e
 /** @brief Default value for ACType attribute */
 #define ZB_ZCL_THERMOSTAT_AC_TYPE_DEFAULT_VALUE ((zb_uint8_t)0x00)
 
+/** @brief Unknown value for ACType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_TYPE_UNKNOWN_VALUE ZB_ZCL_THERMOSTAT_AC_TYPE_DEFAULT_VALUE
+
+/** @brief Cooling and Fixed Speed value for ACType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_TYPE_COOLING_AND_FIXED_SPEED_VALUE ((zb_uint8_t)0x01)
+
+/** @brief Heat Pump and Fixed Speed value for ACType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_TYPE_HEAT_PUMP_AND_FIXED_SPEED_VALUE ((zb_uint8_t)0x02)
+
+/** @brief Cooling and Inverter value for ACType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_TYPE_COOLING_AND_INVERTER_VALUE ((zb_uint8_t)0x03)
+
+/** @brief Heat Pump and Inverter value value for ACType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_TYPE_HEAT_PUMP_AND_INVERTER_VALUE ((zb_uint8_t)0x04)
+
 /** @brief Default value for ACCapacity attribute */
 #define ZB_ZCL_THERMOSTAT_AC_CAPACITY_DEFAULT_VALUE ((zb_uint16_t)0x0000)
 
 /** @brief Default value for ACRefrigerantType attribute */
 #define ZB_ZCL_THERMOSTAT_AC_REFRIGERANT_TYPE_DEFAULT_VALUE ((zb_uint8_t)0x00)
 
+/** @brief Unknown value for ACRefrigerantType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_REFRIGERANT_TYPE_UNKNOWN_VALUE ZB_ZCL_THERMOSTAT_AC_REFRIGERANT_TYPE_DEFAULT_VALUE
+
+/** @brief R22 value for ACRefrigerantType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_REFRIGERANT_TYPE_R22_VALUE ((zb_uint8_t)0x01)
+
+/** @brief R410a value for ACRefrigerantType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_REFRIGERANT_TYPE_R410A_VALUE ((zb_uint8_t)0x02)
+
+/** @brief R407c value for ACRefrigerantType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_REFRIGERANT_TYPE_R407C_VALUE ((zb_uint8_t)0x03)
+
 /** @brief Default value for ACCompressorType attribute */
 #define ZB_ZCL_THERMOSTAT_AC_COMPRESSOR_TYPE_DEFAULT_VALUE ((zb_uint8_t)0x00)
+
+/** @brief Unknown value for ACCompressorType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_COMPRESSOR_TYPE_UNKNOWN_VALUE ZB_ZCL_THERMOSTAT_AC_COMPRESSOR_TYPE_DEFAULT_VALUE
+
+/** @brief T1(Max working ambient 43 ºC) value for ACCompressorType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_COMPRESSOR_TYPE_T1_VALUE ((zb_uint8_t)0x01)
+
+/** @brief T2(Max working ambient 35 ºC) value for ACCompressorType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_COMPRESSOR_TYPE_T2_VALUE ((zb_uint8_t)0x02)
+
+/** @brief T3(Max working ambient 52 ºC) value for ACCompressorType attribute */
+#define ZB_ZCL_THERMOSTAT_AC_COMPRESSOR_TYPE_T3_VALUE ((zb_uint8_t)0x03)
 
 /** @brief Default value for ACErrorCode attribute */
 #define ZB_ZCL_THERMOSTAT_AC_ERROR_CODE_DEFAULT_VALUE ((zb_uint32_t)0x00000000)
 
+/** @brief Compressor Failure or Refrigerant Leakage bit of AC Error Code attribute  */
+#define ZB_ZCL_THERMOSTAT_AC_ERROR_CODE_COMPRESSOR_FAILURE_OR_REFRIGERANT_LEAKAGE_BIT (1<<0)
+
+/** @brief Room Temperature Sensor Failure bit of AC Error Code attribute  */
+#define ZB_ZCL_THERMOSTAT_AC_ERROR_CODE_ROOM_TEMPERATURE_SENSOR_FAILURE_BIT (1<<1)
+
+/** @brief Outdoor Temperature Sensor Failure bit of AC Error Code attribute  */
+#define ZB_ZCL_THERMOSTAT_AC_ERROR_CODE_OUTDOOR_TEMPERATURE_SENSOR_FAILURE_BIT (1<<2)
+
+/** @brief Indoor Coil Temperature Sensor Failure bit of AC Error Code attribute  */
+#define ZB_ZCL_THERMOSTAT_AC_ERROR_CODE_INDOOR_COIL_TEMPERATURE_SENSOR_FAILURE_BIT (1<<3)
+
+/** @brief Fan Failure bit of AC Error Code attribute  */
+#define ZB_ZCL_THERMOSTAT_AC_ERROR_CODE_FAN_FAILURE_BIT (1<<4)
+
 /** @brief Default value for ACLouverPosition attribute */
 #define ZB_ZCL_THERMOSTAT_AC_LOUVER_POSITION_DEFAULT_VALUE ((zb_uint8_t)0x00)
 
+/** @brief Fully Closed value for ACLouverPosition attribute */
+#define ZB_ZCL_THERMOSTAT_AC_LOUVER_POSITION_FULLY_CLOSED_VALUE ((zb_uint8_t)0x01)
+
+/** @brief Fully Open value for ACLouverPosition attribute */
+#define ZB_ZCL_THERMOSTAT_AC_LOUVER_POSITION_FULLY_OPEN_VALUE ((zb_uint8_t)0x02)
+
+/** @brief Quarter Open value for ACLouverPosition attribute */
+#define ZB_ZCL_THERMOSTAT_AC_LOUVER_POSITION_QUARTER_OPEN_VALUE ((zb_uint8_t)0x03)
+
+/** @brief Three Quarters Open value for ACLouverPosition attribute */
+#define ZB_ZCL_THERMOSTAT_AC_LOUVER_POSITION_THREE_QUARTERS_OPEN_VALUE ((zb_uint8_t)0x05)
+
+/** @brief Half Open value for ACLouverPosition attribute */
+#define ZB_ZCL_THERMOSTAT_AC_LOUVER_POSITION_HALF_OPEN_VALUE ((zb_uint8_t)0x04)
+
+/** @brief Min value for AC Coil Temperature attribute */
+#define ZB_ZCL_THERMOSTAT_AC_COIL_TEMPERATURE_MIN_VALUE 0x954d
+
+/** @brief Max value for AC Coil Temperature attribute */
+#define ZB_ZCL_THERMOSTAT_AC_COIL_TEMPERATURE_MAX_VALUE 0x7fff
+
+/** @brief Default value for AC Capacity Format attribute */
+#define ZB_ZCL_THERMOSTAT_AC_CAPACITY_FORMAT_DEFAULT_VALUE ((zb_uint8_t)0x00)
+
+/** @brief BTUh value for AC Capacity Format attribute */
+#define ZB_ZCL_THERMOSTAT_AC_CAPACITY_FORMAT_BTUH_VALUE ZB_ZCL_THERMOSTAT_AC_CAPACITY_FORMAT_DEFAULT_VALUE
+
 /** @brief Default value for ACCapacityFormat attribute */
 #define ZB_ZCL_THERMOSTAT_AC_CAPACITY_FORMAT_DEFAULT_VALUE ((zb_uint8_t)0x00)
+
+/** @brief Initialization failure bit of Alarm Mask attribute  */
+#define ZB_ZCL_THERMOSTAT_ALARM_MASK_INITIALIZATION_FAILURE_BIT (1<<0)
+
+/** @brief Hardware Failure bit of Alarm Mask attribute  */
+#define ZB_ZCL_THERMOSTAT_ALARM_MASK_HARDWARE_FAILURE_BIT (1<<1)
+
+/** @brief Self-Calibration Failure bit of Alarm Mask attribute  */
+#define ZB_ZCL_THERMOSTAT_ALARM_MASK_SELFCALIBRATION_FAILURE_BIT (1<<2)
+
+/** @brief Simple/Setpoint(0) or Schedule_Programming(1) mode bit of Thermostat Programming Operation Mode attribute  */
+#define ZB_ZCL_THERMOSTAT_PROGRAMMING_OPERATION_MODE_SIMPLE_SETPOINT_OR_PROGRAMMING_MODE_BIT  (1<<0)
+
+/** @brief Auto/recovery mode bit of Thermostat Programming Operation Mode attribute  */
+#define ZB_ZCL_THERMOSTAT_PROGRAMMING_OPERATION_MODE_AUTO_RECOVERY_MODE_BIT  (1<<1)
+
+/** @brief Economy/EnergyStar mode bit of Thermostat Programming Operation Mode attribute  */
+#define ZB_ZCL_THERMOSTAT_PROGRAMMING_OPERATION_MODE_ECONOMY_ENERGY_STAR_MODE_BIT  (1<<2)
+
+/** @brief Heat State On bit of Thermostat Running State attribute  */
+#define ZB_ZCL_THERMOSTAT_RUNNNING_STATE_HEAT_STATE_ON_BIT (1<<0)
+
+/** @brief Cool State On bit of Thermostat Running State attribute  */
+#define ZB_ZCL_THERMOSTAT_RUNNNING_STATE_COOL_STATE_ON_BIT (1<<1)
+
+/** @brief Fan State On bit of Thermostat Running State attribute  */
+#define ZB_ZCL_THERMOSTAT_RUNNNING_STATE_FAN_STATE_ON_BIT (1<<2)
+
+/** @brief Heat 2nd Stage State On bit of Thermostat Running State attribute  */
+#define ZB_ZCL_THERMOSTAT_RUNNNING_STATE_HEAT_2ND_STAGE_STATE_ON_BIT (1<<3)
+
+/** @brief Cool 2nd Stage State On bit of Thermostat Running State attribute  */
+#define ZB_ZCL_THERMOSTAT_RUNNNING_STATE_COOL_2ND_STAGE_STATE_ON_BIT (1<<4)
+
+/** @brief Fan 2nd Stage State On bit of Thermostat Running State attribute  */
+#define ZB_ZCL_THERMOSTAT_RUNNNING_STATE_FAN_2ND_STAGE_STATE_ON_BIT (1<<5)
+
+/** @brief Fan 3rd Stage State On bit of Thermostat Running State attribute  */
+#define ZB_ZCL_THERMOSTAT_RUNNNING_STATE_FAN_3RD_STAGE_STATE_ON_BIT (1<<6)
 
 /** @brief Declare attribute list for Thermostat cluster
     @param attr_list - attribute list name
@@ -502,7 +673,7 @@ enum zb_zcl_thermostat_alarm_code_e
 #define ZB_ZCL_DECLARE_THERMOSTAT_ATTRIB_LIST(attr_list,                                                \
       local_temperature, local_temperature_calibration, occupied_cooling_setpoint,                      \
       occupied_heating_setpoint, control_seq_of_operation, system_mode, start_of_week) \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                           \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_THERMOSTAT)                       \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_THERMOSTAT_LOCAL_TEMPERATURE_ID, (local_temperature))                \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_THERMOSTAT_LOCAL_TEMPERATURE_CALIBRATION_ID, (local_temperature_calibration))                        \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_THERMOSTAT_OCCUPIED_COOLING_SETPOINT_ID, (occupied_cooling_setpoint))        \
@@ -521,8 +692,11 @@ enum zb_zcl_thermostat_alarm_code_e
     @param abs_max_cool_setpoint_limit - pointer to variable to store Abs Max Cool Setpoint Limit attribute value
     @param PI_cooling_demand - pointer to variable to store PI Cooling Demand attribute value
     @param PI_heating_demand - pointer to variable to store PI Heating Demand attribute value
-    @param HVAC_system_type_configuration - pointer to variable to store HVAC system type configuration attribute value
-    @param local_temperature_calibration - pointer to variable to store Local Temperature Calibration attribute value
+    @param HVAC_system_type_configuration - pointer to variable to store HVAC system type
+    configuration attribute value; write-optional access according to ZCL8 specification, be careful
+    when redefining its handling
+    @param local_temperature_calibration - pointer to variable to store Local Temperature
+    Calibration attribute value
     @param occupied_cooling_setpoint - pointer to variable to store Occupied Cooling Setpoint attribute value
     @param occupied_heating_setpoint - pointer to variable to store Occupied Heating Setpoint attribute value
     @param unoccupied_cooling_setpoint - pointer to variable to store Unoccupied Cooling Setpoint attribute value
@@ -531,7 +705,9 @@ enum zb_zcl_thermostat_alarm_code_e
     @param max_heat_setpoint_limit - pointer to variable to store Max Heat Setpoint Limit attribute value
     @param min_cool_setpoint_limit - pointer to variable to store Min Cool Setpoint Limit attribute value
     @param max_cool_setpoint_limit - pointer to variable to store Max Cool Setpoint Limit attribute value
-    @param min_setpoint_dead_band - pointer to variable to store Min Setpoint Dead Band attribute value
+    @param min_setpoint_dead_band - pointer to variable to store Min Setpoint Dead Band attribute
+    value; write-optional access according to ZCL8 specification, be careful
+    when redefining its handling
     @param remote_sensing - pointer to variable to store remote Sensing attribute value
     @param control_seq_of_operation - pointer to variable to store Control Sequence Of Operation attribute value
     @param system_mode - pointer to variable to store System Mode attribute value
@@ -543,7 +719,7 @@ enum zb_zcl_thermostat_alarm_code_e
       local_temperature_calibration, occupied_cooling_setpoint, occupied_heating_setpoint, unoccupied_cooling_setpoint,       \
       unoccupied_heating_setpoint, min_heat_setpoint_limit, max_heat_setpoint_limit, min_cool_setpoint_limit,                 \
       max_cool_setpoint_limit, min_setpoint_dead_band, remote_sensing, control_seq_of_operation, system_mode, start_of_week)  \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                                                 \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_THERMOSTAT)                                             \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_THERMOSTAT_LOCAL_TEMPERATURE_ID, (local_temperature))                                      \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT_ID, (abs_min_heat_setpoint_limit))                  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_THERMOSTAT_ABS_MAX_HEAT_SETPOINT_LIMIT_ID, (abs_max_heat_setpoint_limit))                  \
@@ -649,6 +825,22 @@ enum zb_zcl_thermostat_cmd_resp_ha_e
   (void*) data_ptr                                                                          \
 }
 
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_OUTDOOR_TEMPERATURE_ID(data_ptr)           \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_OUTDOOR_TEMPERATURE_ID,                                                 \
+  ZB_ZCL_ATTR_TYPE_S16,                                                                          \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_OCCUPANCY_ID(data_ptr)                     \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_OCCUPANCY_ID,                                                           \
+  ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                      \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT_ID(data_ptr)   \
 {                                                                                                \
   ZB_ZCL_ATTR_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT_ID,                                         \
@@ -697,12 +889,33 @@ enum zb_zcl_thermostat_cmd_resp_ha_e
   (void*) data_ptr                                                                          \
 }
 
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_THERMOSTAT_PROGRAMMING_OPERATION_MODE_ID(data_ptr)   \
+{                                                                                                   \
+  ZB_ZCL_ATTR_THERMOSTAT_THERMOSTAT_PROGRAMMING_OPERATION_MODE_ID,                                  \
+  ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                         \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE | ZB_ZCL_ATTR_ACCESS_REPORTING,                                     \
+  (void*) data_ptr                                                                                  \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_THERMOSTAT_RUNNING_STATE_ID(data_ptr)         \
+{                                                                                                   \
+  ZB_ZCL_ATTR_THERMOSTAT_THERMOSTAT_RUNNING_STATE_ID,                                               \
+  ZB_ZCL_ATTR_TYPE_16BITMAP,                                                                         \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                     \
+  (void*) data_ptr                                                                                  \
+}
+
+/** According to ZCL8, Table 6-11. Attributes of the Thermostat Information Attribute Set,
+ * ZB_ZCL_ATTR_THERMOSTAT_HVAC_SYSTEM_TYPE_CONFIGURATION_ID attribute access was changed to Read and Write
+ * Optional. For compatibility reasons access rights in the following constructor were not changed.
+ *
+ * If it is needed to change access rights to this attribute, this macros should be modified. */
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_HVAC_SYSTEM_TYPE_CONFIGURATION_ID(data_ptr)   \
 {                                                                                                   \
   ZB_ZCL_ATTR_THERMOSTAT_HVAC_SYSTEM_TYPE_CONFIGURATION_ID,                                         \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                         \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                    \
-  (void*) data_ptr                                                                             \
+  (void*) data_ptr                                                                                  \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_LOCAL_TEMPERATURE_CALIBRATION_ID(data_ptr) \
@@ -777,12 +990,17 @@ enum zb_zcl_thermostat_cmd_resp_ha_e
   (void*) data_ptr                                                                          \
 }
 
+/** According to ZCL8, Table 6-13. Attributes of the Thermostat Settings Attribute Set,
+ * ZB_ZCL_ATTR_THERMOSTAT_MIN_SETPOINT_DEAD_BAND_ID attribute access was changed to Read and Write
+ * Optional. For compatibility reasons access rights in the following constructor were not changed.
+ *
+ * If it is needed to change access rights to this attribute, this macros should be modified. */
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_MIN_SETPOINT_DEAD_BAND_ID(data_ptr)        \
 {                                                                                                \
   ZB_ZCL_ATTR_THERMOSTAT_MIN_SETPOINT_DEAD_BAND_ID,                                              \
   ZB_ZCL_ATTR_TYPE_S8,                                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
-  (void*) data_ptr                                                                          \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_REMOTE_SENSING_ID(data_ptr)                \
@@ -809,11 +1027,203 @@ enum zb_zcl_thermostat_cmd_resp_ha_e
   (void*) data_ptr                                                                          \
 }
 
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_ALARM_MASK_ID(data_ptr)                    \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_ALARM_MASK_ID,                                                          \
+  ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                      \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_RUNNING_MODE_ID(data_ptr)                  \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_RUNNING_MODE_ID,                                                        \
+  ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                    \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_START_OF_WEEK_ID(data_ptr)                 \
 {                                                                                                \
   ZB_ZCL_ATTR_THERMOSTAT_START_OF_WEEK_ID,                                                       \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                    \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_NUMBER_OF_WEEKLY_TRANSITIONS_ID(data_ptr)  \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_NUMBER_OF_WEEKLY_TRANSITIONS_ID,                                        \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                           \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_NUMBER_OF_DAILY_TRANSITIONS_ID(data_ptr)   \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_NUMBER_OF_DAILY_TRANSITIONS_ID,                                         \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                           \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_ID(data_ptr)     \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_ID,                                           \
+  ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                    \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_DURATION_ID(data_ptr)     \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_TEMPERATURE_SETPOINT_HOLD_DURATION_ID,                                  \
+  ZB_ZCL_ATTR_TYPE_U16,                                                                          \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_SETPOINT_CHANGE_SOURCE_ID(data_ptr)        \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_SETPOINT_CHANGE_SOURCE_ID,                                              \
+  ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                    \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_SETPOINT_CHANGE_AMOUNT_ID(data_ptr)        \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_SETPOINT_CHANGE_AMOUNT_TIMESTAMP_ID,                                    \
+  ZB_ZCL_ATTR_TYPE_U16,                                                                          \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_SETPOINT_CHANGE_SOURCE_TIMESTAMP_ID(data_ptr) \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_SETPOINT_CHANGE_SOURCE_TIMESTAMP_ID,                                    \
+  ZB_ZCL_ATTR_TYPE_UTC_TIME,                                                                     \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_OCCUPIED_SETBACK_ID(data_ptr)              \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_OCCUPIED_SETBACK_ID,                                                    \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                           \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_OCCUPIED_SETBACK_MIN_ID(data_ptr)          \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_OCCUPIED_SETBACK_MIN_ID,                                                \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                           \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_OCCUPIED_SETBACK_MAX_ID(data_ptr)          \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_OCCUPIED_SETBACK_MAX_ID,                                                \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                           \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_SETBACK_ID(data_ptr)            \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_SETBACK_ID,                                                  \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                           \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_SETBACK_MIN_ID(data_ptr)        \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_SETBACK_MIN_ID,                                              \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                           \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_SETBACK_MAX_ID(data_ptr)        \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_UNOCCUPIED_SETBACK_MAX_ID,                                              \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                           \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_EMERGENCY_HEAT_DELTA_ID(data_ptr)          \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_EMERGENCY_HEAT_DELTA_ID,                                                \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                           \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_AC_TYPE_ID(data_ptr)                       \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_AC_TYPE_ID,                                                             \
+  ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                    \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_AC_CAPACITY_ID(data_ptr)                   \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_AC_CAPACITY_ID,                                                         \
+  ZB_ZCL_ATTR_TYPE_U16,                                                                          \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_AC_REFRIGERANT_TYPE_ID(data_ptr)           \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_AC_REFRIGERANT_TYPE_ID,                                                 \
+  ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                    \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_AC_COMPRESSOR_TYPE_ID(data_ptr)            \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_AC_COMPRESSOR_TYPE_ID,                                                  \
+  ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                    \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_AC_ERROR_CODE_ID(data_ptr)                 \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_AC_ERROR_CODE_ID,                                                       \
+  ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                      \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_AC_LOUVER_POSITION_ID(data_ptr)            \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_AC_LOUVER_POSITION_ID,                                                  \
+  ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                    \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_AC_COIL_TEMPERATURE_ID(data_ptr)           \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_AC_COIL_TEMPERATURE_ID,                                                 \
+  ZB_ZCL_ATTR_TYPE_S16,                                                                          \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+  (void*) data_ptr                                                                          \
+}
+
+#define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_AC_CAPACITY_FORMAT_ID(data_ptr)            \
+{                                                                                                \
+  ZB_ZCL_ATTR_THERMOSTAT_AC_CAPACITY_FORMAT_ID,                                                  \
+  ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                    \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
   (void*) data_ptr                                                                          \
 }
 

@@ -85,6 +85,8 @@ enum zb_zcl_tunneling_attr_e
   ZB_ZCL_ATTR_TUNNELING_CLOSE_TUNNEL_TIMEOUT_ID = 0
 };
 
+/** @brief Default value for Tunneling cluster revision global attribute */
+#define ZB_ZCL_TUNNELING_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
 
 /** @brief Min value for the @e CloseTunnelTimeout attribute
  *  @see ZB_ZCL_ATTR_TUNNELING_CLOSE_TUNNEL_TIMEOUT_ID */
@@ -113,7 +115,7 @@ enum zb_zcl_tunneling_attr_e
   * @param[in] close_tunnel_timeout - pointer to variable to store On/Tunneling attribute value
   */
 #define ZB_ZCL_DECLARE_TUNNELING_ATTRIB_LIST(attr_list, close_tunnel_timeout)                 \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                 \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_TUNNELING)              \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_TUNNELING_CLOSE_TUNNEL_TIMEOUT_ID, (close_tunnel_timeout)) \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 

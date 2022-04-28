@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -136,6 +136,9 @@ enum zb_zcl_wwah_attr_e
 
 /** @brief Minimum value for Cluster Revision attribute */
 #define ZB_ZCL_WWAH_CLUSTER_REVISION_MIN_VALUE 0x0001
+
+/** @brief Default value for WWAH cluster revision global attribute */
+#define ZB_ZCL_WWAH_CLUSTER_REVISION_DEFAULT ZB_ZCL_WWAH_CLUSTER_REVISION_MIN_VALUE
 
 /** @brief Default value for MGMTLeaveWithoutRejoinEnabled attribute */
 #define ZB_ZCL_WWAH_MGMT_LEAVE_WITHOUT_REJOIN_ENABLED_DEFAULT_VALUE ZB_TRUE
@@ -1193,7 +1196,7 @@ extern zb_zcl_wwah_attr_t wwah_attr;
 
   /* Declare Cluster Revision Attribute */
 #define ZB_ZCL_DECLARE_WWAH_CLIENT_ATTRIB_LIST(attr_list) \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)      \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_WWAH)      \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST                \
 
 /*! @internal Number of attributes mandatory for reporting in WWAH cluster */

@@ -225,6 +225,16 @@ typedef enum zb_zcl_messaging_message_control_transmission_mechanism_e
                                                                 */
 } zb_zcl_messaging_control_field_transmission_mechanism_t;
 
+/** @brief Default value for Messaging cluster revision global attribute */
+#define ZB_ZCL_MESSAGING_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
+
+/*!
+  @brief Declare attribute list for Messaging cluster (only cluster revision attribute)
+  @param attr_list - attribute list name
+*/
+#define ZB_ZCL_DECLARE_MESSAGING_ATTR_LIST(attr_list)                            \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_MESSAGING) \
+  ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
 /**
  * Set @e MessageControl's transmission mechanism value

@@ -29,11 +29,11 @@
  *
  * Note: This value is automatically updated by the release script.
  */
-#define ZBOSS_PLATFORM_PATCH 1U
+#define ZBOSS_PLATFORM_PATCH 2U
 
 /**
  * Patch version number of the ZBOSS core.
  *
  * Note: This value is automatically updated by the release script.
  */
-#define ZBOSS_PATCH 1U
+#define ZBOSS_PATCH 2U

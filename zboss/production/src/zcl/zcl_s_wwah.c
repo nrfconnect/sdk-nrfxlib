@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -57,7 +57,7 @@
 /* #include "zb_mac_globals.h" */
 /* #include "mac_internal.h" */
 #include "zb_aps.h"
-#include "se/zb_se_keep_alive.h"
+#include "zcl/zb_zcl_keep_alive.h"
 
 #ifdef ZB_ZCL_ENABLE_WWAH_SERVER
 
@@ -2518,7 +2518,8 @@ zb_bool_t zb_zcl_process_wwah_specific_commands(zb_uint8_t param)
       status_code = ZB_ZCL_STATUS_INVALID_FIELD;
       break;
     case RET_IGNORE:
-      status_code = ZB_ZCL_STATUS_UNSUP_CLUST_CMD;
+      /* ZCL8: CCB 2477: use UNSUP_COMMAND instead of any other Unsupported command status */
+      status_code = ZB_ZCL_STATUS_UNSUP_CMD;
       break;
     case RET_NOT_FOUND:
       status_code = ZB_ZCL_STATUS_NOT_FOUND;

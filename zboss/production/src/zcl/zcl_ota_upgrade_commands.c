@@ -153,7 +153,7 @@ static void zb_zcl_ota_upgrade_block_req_cb(zb_uint8_t param)
     ZB_N_APS_ACK_WAIT_DURATION_FROM_NON_SLEEPY * (ZB_N_APS_MAX_FRAME_RETRIES - 1) / ZB_APS_DUPS_TABLE_SIZE )
 #define OTA_BLOCK_REQ_DELAY(_delay) (((_delay > OTA_MIN_BLOCK_REQ_DELAY)) ? (_delay) : OTA_MIN_BLOCK_REQ_DELAY)
 
-static void zb_zcl_ota_upgrade_send_block_request(zb_uint8_t param, zb_time_t current_delay)
+static void zb_zcl_ota_upgrade_send_block_request(zb_uint8_t param, zb_uint64_t current_delay)
 {
   zb_zcl_parsed_hdr_t cmd_info;
   zb_ieee_addr_t our_long_address;
@@ -685,7 +685,7 @@ static zb_ret_t query_next_image_resp_handler(zb_uint8_t param)
         if (payload.file_version ==
             zb_zcl_ota_upgrade_get32(endpoint, ZB_ZCL_ATTR_OTA_UPGRADE_FILE_VERSION_ID))
         {
-          /* ZCL7, 11.13.5.4 Effect on receipt:
+          /* ZCL8, 11.13.5.4 Effect on receipt:
              If the file version contained in the Query Next Image Response is the same as the
              CurrentFileVersion attribute (the current running version of software) or the
              DownloadedFileVersion attribute for the specified Image Type, then the message SHOULD
@@ -1377,6 +1377,7 @@ static zb_ret_t image_block_resp_handler(zb_uint8_t param)
             zb_zcl_ota_upgrade_client_variable_t *client_data = get_upgrade_client_variables(endpoint);
           */
           zb_uint32_t delay32;
+          zb_uint64_t delay64;
 
           TRACE_MSG(TRACE_ZCL2, "set delay attr %d",
                     (FMT__D, payload.response.wait_for_data.delay));
@@ -1408,21 +1409,21 @@ static zb_ret_t image_block_resp_handler(zb_uint8_t param)
                                          payload.response.wait_for_data.current_time);
 
             /* request/current time is sent in UTC (seconds), translate it to ms */
-            delay32 = ZB_SECONDS_TO_MILLISECONDS(delay32);
+            delay64 = 1000ull * (delay32);
 
-            if (delay32 == 0)
+            if (delay64 == 0)
             {
               /* if time delta is zero, use BlockRequestDelay value */
-              delay32 = payload.response.wait_for_data.delay;
+              delay64 = payload.response.wait_for_data.delay;
             }
 
-            TRACE_MSG(TRACE_ZCL2, "OTA: delay32 %d", (FMT__D, (zb_uint16_t)delay32));
+            TRACE_MSG(TRACE_ZCL2, "OTA: delay32 %ds", (FMT__D, (zb_uint16_t)delay32));
 
             /* re-send query next block */
             /* TODO: ImageBlockResp may also be received as a response
              * to ImagePageReq, in this case ImagePageReq should be resent */
             ZB_MEMCPY(ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), &cmd_info, sizeof(zb_zcl_parsed_hdr_t));
-            zb_zcl_ota_upgrade_send_block_request(param, delay32);
+            zb_zcl_ota_upgrade_send_block_request(param, delay64);
 
             ret = RET_BUSY;
             /* cancel resend */
@@ -1721,6 +1722,14 @@ static zb_bool_t zb_zcl_process_ota_cli_upgrade_specific_commands(zb_uint8_t par
       break;
 #endif /* defined ZB_ZCL_SUPPORT_CLUSTER_WWAH && !defined ZB_COORDINATOR_ONLY */
 
+    case ZB_ZCL_CMD_DEFAULT_RESP:
+      /* This is not a normall call to specific commands processing.
+         This is a replacement of direct call from zb_zcl_handle_default_response_commands().
+         It made to exclude OTA code linking if OTA cluster is not declared by the app.
+       */
+      return (zb_bool_t)zb_zcl_process_ota_upgrade_default_response_commands(param);
+      break;
+
     default:
       processed = ZB_FALSE;
       break;
@@ -1732,6 +1741,13 @@ static zb_bool_t zb_zcl_process_ota_cli_upgrade_specific_commands(zb_uint8_t par
          (cmd_info.disable_default_response)) && status == RET_OK)
     {
       TRACE_MSG( TRACE_ZCL3, "Default response disabled", (FMT__0));
+      zb_buf_free(param);
+    }
+    /* Fixed according to CCB 2519, malformed command should be ignored, default response should
+     * not be sent, see ZCL8 spec subclause 11.13.3.5.1 */
+    else if ((cmd_info.cmd_id == ZB_ZCL_CMD_OTA_UPGRADE_IMAGE_NOTIFY_ID) && (ZB_NWK_IS_ADDRESS_BROADCAST(cmd_info.addr_data.common_data.dst_addr)) && (status == RET_INVALID_PARAMETER_1 || status == RET_INVALID_PARAMETER_2))
+    {
+      TRACE_MSG(TRACE_ZCL3, "Got malformed packet, no further processing should be done", (FMT__0));
       zb_buf_free(param);
     }
     else if (status != RET_BUSY)

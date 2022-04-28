@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -81,6 +81,9 @@ enum zb_zcl_temp_measurement_attr_e
 #endif
 };
 
+/** @brief Default value for Temperature Measurement cluster revision global attribute */
+#define ZB_ZCL_TEMP_MEASUREMENT_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0003u)
+
 /** @brief MeasuredValue attribute unknown value */
 #define ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_UNKNOWN                  ((zb_int16_t)0x8000)
 
@@ -103,7 +106,7 @@ enum zb_zcl_temp_measurement_attr_e
 #define ZB_ZCL_ATTR_TEMP_MEASUREMENT_MAX_VALUE_INVALID              ((zb_int16_t)0x8000)
 
 
- /* (See: Table 4.13 Temperature Measurement Information Attribute Set) */
+ /* (See: Table 4-13 Temperature Measurement Information Attribute Set) */
 
 /** @brief Tolerance attribute minimum value */
 #define ZB_ZCL_ATTR_TEMP_MEASUREMENT_TOLERANCE_MIN_VALUE            0x0000
@@ -112,13 +115,13 @@ enum zb_zcl_temp_measurement_attr_e
 #define ZB_ZCL_ATTR_TEMP_MEASUREMENT_TOLERANCE_MAX_VALUE            0x0800
 
 /** @brief Default value for Value attribute */
-#define ZB_ZCL_TEMP_MEASUREMENT_VALUE_DEFAULT_VALUE ((zb_int16_t)0xFFFF)
+#define ZB_ZCL_TEMP_MEASUREMENT_VALUE_DEFAULT_VALUE ZB_ZCL_NON_VALUE_INT16
 
 /** @brief Default value for MinValue attribute */
-#define ZB_ZCL_TEMP_MEASUREMENT_MIN_VALUE_DEFAULT_VALUE ((zb_int16_t)0x8000)
+#define ZB_ZCL_TEMP_MEASUREMENT_MIN_VALUE_DEFAULT_VALUE ZB_ZCL_NON_VALUE_INT16
 
 /** @brief Default value for MaxValue attribute */
-#define ZB_ZCL_TEMP_MEASUREMENT_MAX_VALUE_DEFAULT_VALUE ((zb_int16_t)0x8000)
+#define ZB_ZCL_TEMP_MEASUREMENT_MAX_VALUE_DEFAULT_VALUE ZB_ZCL_NON_VALUE_INT16
 
 /** @cond internals_doc */
 /*! @internal @name Temperature Measurement cluster internals
@@ -178,7 +181,7 @@ void zb_zcl_temp_measurement_write_attr_hook(
 */
 #define ZB_ZCL_DECLARE_TEMP_MEASUREMENT_ATTRIB_LIST(attr_list,                  \
     value, min_value, max_value, tolerance)                                     \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                   \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_TEMP_MEASUREMENT) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID, (value))          \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_TEMP_MEASUREMENT_MIN_VALUE_ID, (min_value))  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_TEMP_MEASUREMENT_MAX_VALUE_ID, (max_value))  \

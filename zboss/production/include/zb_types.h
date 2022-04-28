@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -564,6 +564,8 @@ typedef ZB_PACKED_PRE union zb_addr_u_t
   zb_ieee_addr_t addr_long;
 } ZB_PACKED_STRUCT
 zb_addr_u;
+
+#define ZB_ADDR_U_CAST(addr) ((const zb_addr_u *)(const void *)(&(addr)))
 
 /*
  definitions for constants of given type

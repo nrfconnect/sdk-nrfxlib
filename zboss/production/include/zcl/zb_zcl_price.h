@@ -2209,6 +2209,9 @@ enum zb_zcl_price_set_received_extended_price_information_e
   /* reserved 0x8530 - 0x85FF */
 };
 
+/** @brief Default value for Price cluster revision global attribute */
+#define ZB_ZCL_PRICE_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
+
 /** @brief Default value for Tier1_PriceLabel attribute */
 #define ZB_ZCL_PRICE_SRV_TIER1_PRICE_LABEL_DEFAULT_VALUE {0x54, 0x49, 0x45, 0x52, 0x20, 0x31 ,0x00}
 
@@ -2512,7 +2515,7 @@ enum zb_zcl_price_set_received_billing_information
  *  @param commodity_type - pointer to variable to store @ref ZB_ZCL_ATTR_PRICE_SRV_COMMODITY_TYPE "CommodityType" attribute value.
 */
 #define ZB_ZCL_DECLARE_PRICE_SRV_ATTRIB_LIST(attr_list, commodity_type)           \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                   \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_PRICE)    \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_PRICE_SRV_COMMODITY_TYPE, (commodity_type))  \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
@@ -2579,7 +2582,7 @@ typedef enum zb_zcl_price_cli_attr_e
  *  @param commodity_type - pointer to variable to store "CommodityType" attribute value.
  */
 #define ZB_ZCL_DECLARE_PRICE_CLI_ATTRIB_LIST(attr_list, inc_rand_min, dec_rand_min, commodity_type) \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                   \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_PRICE)                    \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_PRICE_CLI_PRICE_INCREASE_RANDOMIZE_MINUTES, (inc_rand_min))  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_PRICE_CLI_PRICE_DECREASE_RANDOMIZE_MINUTES, (dec_rand_min))  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_PRICE_CLI_COMMODITY_TYPE, (commodity_type))  \

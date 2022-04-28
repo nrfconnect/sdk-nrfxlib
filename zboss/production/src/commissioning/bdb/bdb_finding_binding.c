@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -68,6 +68,8 @@ void zb_bdb_process_ext_addr_resp(zb_uint8_t param);
 
 static zb_ret_t zb_bdb_find_respondent(zb_uint16_t nwk_addr, zb_uint8_t *resp_index);
 static void zb_bdb_finding_binding_initiator_stop(  zb_uint8_t param, zb_uint16_t status);
+static zb_ret_t zb_bdb_finding_binding_target_func(zb_uint8_t endpoint, zb_uint16_t commissioning_time_secs);
+
 /*
   Initialization of EZ-Mode context
 */
@@ -89,7 +91,7 @@ F & B Target
 */
 
 /* Starts EZ-Mode Finding and binding mechanism at the target's endpoint internal fuction */
-zb_ret_t zb_bdb_finding_binding_target_func(zb_uint8_t endpoint, zb_uint8_t commissioning_time_secs)
+static zb_ret_t zb_bdb_finding_binding_target_func(zb_uint8_t endpoint, zb_uint16_t commissioning_time_secs)
 {
   zb_ret_t ret = RET_OK;
   zb_bool_t bdb_finding_binding_started;
@@ -149,7 +151,7 @@ zb_ret_t zb_bdb_finding_binding_target(zb_uint8_t endpoint)
 
   if (ret == RET_OK)
   {
-    ret = zb_bdb_finding_binding_target_func(endpoint, ZB_BDB().bdb_commissioning_time);
+    ret = zb_bdb_finding_binding_target_func(endpoint, (zb_uint16_t)ZB_BDB().bdb_commissioning_time);
   }
 
   TRACE_MSG(TRACE_ZCL1, "< bdb_finding_binding_target ret %hd", (FMT__H, ret));
@@ -157,13 +159,12 @@ zb_ret_t zb_bdb_finding_binding_target(zb_uint8_t endpoint)
   return ret;
 }
 
-
 /* Starts EZ-Mode Finding and binding mechanism at the target's endpoint with time in parameter */
-zb_ret_t zb_bdb_finding_binding_target_ext(zb_uint8_t endpoint, zb_uint8_t commissioning_time_secs)
+zb_ret_t zb_bdb_finding_binding_target_ext(zb_uint8_t endpoint, zb_uint16_t commissioning_time_secs)
 {
   zb_ret_t ret = RET_OK;
 
-  TRACE_MSG(TRACE_ZCL1, "> bdb_finding_binding_target_ext endpoint %hd", (FMT__H, endpoint));
+  TRACE_MSG(TRACE_ZCL1, "> bdb_finding_binding_target_ext endpoint %hd commissioning_time_secs %d", (FMT__H_D, endpoint, commissioning_time_secs));
 
   /* Check arguments passed */
   if (!ZB_AF_IS_EP_REGISTERED(endpoint))
@@ -180,7 +181,7 @@ zb_ret_t zb_bdb_finding_binding_target_ext(zb_uint8_t endpoint, zb_uint8_t commi
     ret = zb_bdb_finding_binding_target_func(endpoint, commissioning_time_secs);
   }
 
-  TRACE_MSG(TRACE_ZCL1, "< bdb_finding_binding_target_ext ret %hd", (FMT__H, ret));
+  TRACE_MSG(TRACE_ZCL1, "< bdb_finding_binding_target_ext ret 0x%lx", (FMT__L, ret));
 
   return ret;
 }

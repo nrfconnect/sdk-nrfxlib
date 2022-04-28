@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -108,6 +108,8 @@ enum zb_zcl_control4_networking_device_type_e
   ZB_ZCL_CONTROL4_NETWORKING_DEVICE_TYPE_SLEEPY_END_DEVICE  = 0x04
 };
 
+/** @brief Default value for Control4 networking cluster revision global attribute */
+#define ZB_ZCL_CONTROL4_NETWORKING_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0001u)
 
 #define ZB_ZCL_CONTROL4_NETWORKING_REFLASH_VERSION_VENDOR_SPECIFIC 0xff
 
@@ -159,7 +161,7 @@ enum zb_zcl_control4_networking_device_type_e
 #define ZB_ZCL_DECLARE_CONTROL4_NETWORKING_ATTRIB_LIST_SRV(attr_list, device_type, firmware_version,        \
   reflash_version, boot_count, product_string, access_point_node_ID, access_point_long_ID,                  \
   access_point_cost, mesh_channel)                                                                          \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                               \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_CONTROL4_NETWORKING)                  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_CONTROL4_NETWORKING_DEVICE_TYPE_ID, (device_type))                       \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_CONTROL4_NETWORKING_FIRMWARE_VERSION_ID, (firmware_version))             \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_CONTROL4_NETWORKING_REFLASH_VERSION_ID, (reflash_version))               \
@@ -194,7 +196,7 @@ enum zb_zcl_control4_networking_device_type_e
   reflash_version, boot_count, product_string, access_point_node_ID, access_point_long_ID,                  \
   access_point_cost, mesh_channel,                                                                          \
   avg_RSSI, avg_LQI, battery_level, radio_4_bars)                                                           \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                               \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_CONTROL4_NETWORKING)                  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_CONTROL4_NETWORKING_DEVICE_TYPE_ID, (device_type))                       \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_CONTROL4_NETWORKING_ANNOUNCE_WINDOW_ID, (announce_window))               \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_CONTROL4_NETWORKING_MTORR_PERIOD_ID, (MTORR_period))                     \

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -90,6 +90,7 @@ union zb_zcl_attr_var_u
   zb_int32_t s32;
   zb_uint48_t u48;
   zb_uint8_t data_buf[4];
+  zb_uint32_t data_buf_crc32;
 };
 
 /** @cond internals_doc */
@@ -190,6 +191,7 @@ typedef void (*zb_zcl_no_reporting_cb_t)(
     @param ep - source endpoint number
     @param cluster_id - cluster ID
     @param attr_id - attribute ID
+    @param attr_type - attribute type
     @param value - pointer to reported data value
 */
 

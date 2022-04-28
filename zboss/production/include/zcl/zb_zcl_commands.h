@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -265,7 +265,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
                                              zb_uint16_t addr, zb_uint8_t dst_addr_mode,
                                              zb_uint8_t dst_ep, zb_uint8_t ep,
                                              zb_uint16_t prof_id, zb_uint16_t cluster_id,
-                                             zb_callback_t cb, zb_uint16_t delay);
+                                             zb_callback_t cb, zb_uint64_t delay);
 
 /** @internal @brief Send ZCL request command with delay (ms)
 
@@ -448,11 +448,12 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
    @param _status - status of the handled command
  */
 #define ZB_ZCL_CHECK_IF_SEND_DEFAULT_RESP(_cmd_info, _status)                         \
-  ZB_ZCL_CHECK_IF_SEND_DEFAULT_RESP_EXT(                                              \
+ (ZB_ZCL_CHECK_IF_SEND_DEFAULT_RESP_EXT(                                              \
     ZB_NWK_IS_ADDRESS_BROADCAST((_cmd_info).addr_data.common_data.dst_addr),          \
     ZB_APS_FC_GET_DELIVERY_MODE((_cmd_info).addr_data.common_data.fc),                \
     (_cmd_info).disable_default_response, _status,                                    \
-    ((_cmd_info).is_common_command && (_cmd_info).cmd_id == ZB_ZCL_CMD_DEFAULT_RESP))
+    ((_cmd_info).is_common_command && (_cmd_info).cmd_id == ZB_ZCL_CMD_DEFAULT_RESP)) \
+  && !ZB_ZCL_ADDR_TYPE_IS_GPD((_cmd_info).addr_data.common_data.source.addr_type))
 
 /**
  * @brief General API for sending Default response command
@@ -556,10 +557,15 @@ typedef ZB_PACKED_PRE struct zb_zcl_default_resp_payload_s
     @attention returned pointer will point to the same data in the buffer thus
     being valid until buffer data will be overwritten.
 */
-#define ZB_ZCL_READ_DEFAULT_RESP(buffer)                              \
-  ( (zb_buf_len((buffer)) != sizeof(zb_zcl_default_resp_payload_t)) ? \
-    NULL                                                            : \
-    (zb_zcl_default_resp_payload_t*)zb_buf_begin((buffer)))
+#define ZB_ZCL_READ_DEFAULT_RESP(buffer)                                                                                      \
+  ( (zb_buf_len((buffer)) < sizeof(zb_zcl_default_resp_payload_t)) ?                                                          \
+    NULL                                                            :                                                         \
+    (zb_zcl_default_resp_payload_t*)zb_buf_begin((buffer)));                                                                  \
+  if (zb_buf_len((buffer)) >= sizeof(zb_zcl_default_resp_payload_t))                                                          \
+  {                                                                                                                           \
+    zb_zcl_default_resp_payload_t *default_resp_payload = (zb_zcl_default_resp_payload_t*)zb_buf_begin((buffer));             \
+    default_resp_payload->status = zb_zcl_zcl8_statuses_conversion(default_resp_payload->status);                             \
+  }
 
 /** @} */ /* Default response command sending and parsing. */
 
@@ -637,6 +643,7 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_attr_res_s
                                                                                                \
   if (read_attr_resp != NULL)                                                                  \
   {                                                                                            \
+    (read_attr_resp)->status = zb_zcl_zcl8_statuses_conversion((read_attr_resp)->status);      \
     resp_size = ZB_ZCL_READ_ATTR_RESP_SIZE;                                                    \
     ZB_ZCL_HTOLE16_INPLACE(&(read_attr_resp)->attr_id);                                        \
     if ((read_attr_resp)->status == ZB_ZCL_STATUS_SUCCESS)                                     \
@@ -928,25 +935,27 @@ zb_zcl_write_attr_res_t;
 
    If response contains invalid data, NULL is returned.
    @param data_buf - ID zb_bufid_t of a buffer containing write attribute response data
-   @param write_attr_res - out pointer to zb_zcl_write_attr_res_t, containing Write attribute status
+   @param write_attr_resp - out pointer to zb_zcl_write_attr_res_t, containing Write attribute status
    @note data_buf buffer should contain Write attribute response payload, without ZCL header.  Each
    parsed Write attribute response is extracted from initial data_buf buffer
  */
-#define ZB_ZCL_GET_NEXT_WRITE_ATTR_RES(data_buf, write_attr_res)           \
+#define ZB_ZCL_GET_NEXT_WRITE_ATTR_RES(data_buf, write_attr_resp)          \
 {                                                                          \
   zb_uint8_t res_size;                                                     \
-  (write_attr_res) = zb_buf_len(data_buf) >= ZB_ZCL_WRITE_ATTR_RES_SIZE ?  \
+  (write_attr_resp) = zb_buf_len(data_buf) >= ZB_ZCL_WRITE_ATTR_RES_SIZE ? \
     (zb_zcl_write_attr_res_t*)zb_buf_begin(data_buf) : NULL;               \
                                                                            \
-  if (write_attr_res)                                                      \
+  if (write_attr_resp)                                                     \
   {                                                                        \
-    if ((write_attr_res)->status != ZB_ZCL_STATUS_SUCCESS)                 \
+    (write_attr_resp)->status =                                            \
+      zb_zcl_zcl8_statuses_conversion((write_attr_resp)->status);          \
+    if ((write_attr_resp)->status != ZB_ZCL_STATUS_SUCCESS)                \
     {                                                                      \
       /* In case of error, attribute id is reported */                     \
       res_size = sizeof(zb_zcl_write_attr_res_t);                          \
       if (res_size <= zb_buf_len(data_buf))                                \
       {                                                                    \
-        ZB_ZCL_HTOLE16_INPLACE(&(write_attr_res)->attr_id);                \
+        ZB_ZCL_HTOLE16_INPLACE(&(write_attr_resp)->attr_id);               \
       }                                                                    \
     }                                                                      \
     else                                                                   \
@@ -960,7 +969,7 @@ zb_zcl_write_attr_res_t;
   }                                                                        \
   else                                                                     \
   {                                                                        \
-    (write_attr_res) = NULL;                                               \
+    (write_attr_resp) = NULL;                                              \
   }                                                                        \
   }                                                                        \
 }
@@ -1511,6 +1520,8 @@ zb_zcl_configure_reporting_res_t;
                                                                                     \
   if (config_rep_res)                                                               \
   {                                                                                 \
+    (config_rep_res)->status =                                                      \
+      zb_zcl_zcl8_statuses_conversion((config_rep_res)->status);                    \
     if ((config_rep_res)->status != ZB_ZCL_STATUS_SUCCESS                           \
          && (config_rep_res)->status != ZB_ZCL_STATUS_MALFORMED_CMD)                \
     {                                                                               \
@@ -1955,6 +1966,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_reporting_cfg_rsp_s
                                                                                            \
   if (read_rep_conf_res)                                                                   \
   {                                                                                        \
+    (read_rep_conf_res)->status =                                                          \
+      zb_zcl_zcl8_statuses_conversion((read_rep_conf_res)->status);                        \
     if ((read_rep_conf_res)->status != ZB_ZCL_STATUS_SUCCESS                               \
          && (read_rep_conf_res)->status != ZB_ZCL_STATUS_MALFORMED_CMD)                    \
     {                                                                                      \

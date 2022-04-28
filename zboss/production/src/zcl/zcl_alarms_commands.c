@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -111,7 +111,8 @@ static zb_zcl_status_t zb_zcl_alarms_map_ret_code_to_zcl_status(zb_ret_t ret_cod
       status = ZB_ZCL_STATUS_INVALID_VALUE;
       break;
     case RET_ERROR:
-      status = ZB_ZCL_STATUS_HW_FAIL;
+      status = (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE) ?
+                ZB_ZCL_STATUS_FAIL : ZB_ZCL_STATUS_HW_FAIL;
       break;
     default:
       status = ZB_ZCL_STATUS_FAIL;

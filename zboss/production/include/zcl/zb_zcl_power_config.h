@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -195,6 +195,9 @@ enum zb_zcl_power_config_mains_alarm_mask_e
 
 };
 
+/** @brief Default value for Power Configuration cluster revision global attribute */
+#define ZB_ZCL_POWER_CONFIG_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
+
 /** @brief Default value for MainsAlarmMask attribute */
 #define ZB_ZCL_POWER_CONFIG_MAINS_ALARM_MASK_DEFAULT_VALUE ((zb_uint8_t)0x00)
 
@@ -251,6 +254,9 @@ enum zb_zcl_power_config_mains_alarm_mask_e
 
 /** @brief Default value for BatteryAlarmState attribute */
 #define ZB_ZCL_POWER_CONFIG_BATTERY_ALARM_STATE_DEFAULT_VALUE ((zb_uint32_t)0x00000000)
+
+/** @brief MainsVoltageMinThreshold and MainsVoltageMaxThreshold values when alarm should not be generated*/
+#define ZB_ZCL_POWER_CONFIG_THRESHOLD_ALARM_OMISSION_VALUE ((zb_uint16_t)0xFFFF)
 
 /** @brief Mains attribute set the least significant nibble*/
 #define ZB_ZCL_POWER_CONFIG_MAINS_ATTRIBUTE_SET 0
@@ -616,7 +622,7 @@ enum zb_zcl_power_config_battery_alarm_state_e
 #define ZB_ZCL_DECLARE_POWER_CONFIG_ATTRIB_LIST(attr_list,                                   \
                                                 voltage, size, quantity, rated_voltage,      \
                                                 alarm_mask, voltage_min_threshold)           \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_POWER_CONFIG)          \
   ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_ID(voltage, ),             \
   ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_SIZE_ID(size, ),                   \
   ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_QUANTITY_ID(quantity, ),           \
@@ -652,7 +658,7 @@ enum zb_zcl_power_config_battery_alarm_state_e
 #define ZB_ZCL_DECLARE_POWER_CONFIG_MAINS_ATTRIB_LIST(attr_list, voltage, frequency, alarm_mask,    \
                                                       voltage_min_threshold, voltage_max_threshold, \
                                                       dwell_trip_point)                             \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                               \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_POWER_CONFIG)         \
   ZB_ZCL_POWER_CONFIG_MAINS_ATTRIB_LIST(voltage, frequency, alarm_mask,                     \
                                               voltage_min_threshold, voltage_max_threshold, \
                                               dwell_trip_point)                             \
@@ -706,7 +712,7 @@ enum zb_zcl_power_config_battery_alarm_state_e
     voltage, size, quantity, rated_voltage, alarm_mask, voltage_min_threshold,              \
     remaining, threshold1, threshold2, threshold3, min_threshold, percent_threshold1,       \
     percent_threshold2, percent_threshold3, alarm_state)                                    \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                               \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_POWER_CONFIG)         \
   ZB_ZCL_POWER_CONFIG_BATTERY_ATTRIB_LIST_EXT(bat_num,                                      \
     voltage, size, quantity, rated_voltage, alarm_mask, voltage_min_threshold,              \
     remaining, threshold1, threshold2, threshold3, min_threshold, percent_threshold1,       \

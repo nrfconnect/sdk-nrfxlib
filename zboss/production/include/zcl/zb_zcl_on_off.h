@@ -108,6 +108,10 @@ enum zb_zcl_on_off_start_up_on_off_e
   /*! "Previous" value */
   ZB_ZCL_ON_OFF_START_UP_ON_OFF_IS_PREVIOUS = 0xFF
 };
+
+/** @brief Default value for OnOff cluster revision global attribute */
+#define ZB_ZCL_ON_OFF_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
+
 /** @brief Default value for OnOff attribute */
 #define ZB_ZCL_ON_OFF_ON_OFF_DEFAULT_VALUE (ZB_ZCL_ON_OFF_IS_OFF)
 
@@ -125,7 +129,7 @@ enum zb_zcl_on_off_start_up_on_off_e
     @param on_off - pointer to variable to store On/Off attribute value
 */
 #define ZB_ZCL_DECLARE_ON_OFF_ATTRIB_LIST(attr_list, on_off)            \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                           \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_ON_OFF) \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_ON_OFF_ON_OFF_ID, (on_off))          \
   ZB_ZCL_FINISH_DECLARE_ATTRIB_LIST
 
@@ -140,7 +144,7 @@ enum zb_zcl_on_off_start_up_on_off_e
 #define ZB_ZCL_DECLARE_ON_OFF_ATTRIB_LIST_EXT(                                                  \
     attr_list, on_off, global_scene_ctrl, on_time, off_wait_time                                \
     )                                                                                           \
-    ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                 \
+    ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_ON_OFF)                 \
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_ON_OFF_ON_OFF_ID, (on_off))                                \
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_ON_OFF_GLOBAL_SCENE_CONTROL, (global_scene_ctrl))          \
     ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_ON_OFF_ON_TIME, (on_time))                                 \

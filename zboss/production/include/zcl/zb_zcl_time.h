@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -222,6 +222,8 @@ enum zb_zcl_time_time_status_e
 */
 #define ZB_ZCL_TIME_TIME_STATUS_SUPERSEDING_BIT_IS_SET(val) ((val) & (1 << ZB_ZCL_TIME_SUPERSEDING))
 
+/** @brief Default value for Time cluster revision global attribute */
+#define ZB_ZCL_TIME_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
 
 /** @brief Invalid value of Time attribute */
 #define ZB_ZCL_TIME_TIME_INVALID_VALUE ((zb_time_t)0xFFFFFFFF)
@@ -264,8 +266,8 @@ enum zb_zcl_time_time_status_e
 
 /** @brief Declare attribute list for Time cluster
     @param attr_list - attribute list name
-    @param time - pointer to variable to store Time attribute value
-    @param time_status - pointer to variable to store Time Status attribute value
+    @param time - pointer to variable to store Time attribute value; write-optional acc.to ZCL8, be careful when redefining its handling
+    @param time_status - pointer to variable to store Time Status attribute value; write-optional acc.to ZCL8, be careful when redefining its handling
     @param time_zone - pointer to variable to store Time Zone attribute value
     @param dst_start - pointer to variable to store Dst Start attribute value
     @param dst_end - pointer to variable to store Dst End attribute value
@@ -274,10 +276,15 @@ enum zb_zcl_time_time_status_e
     @param local_time - pointer to variable to store Local Time attribute value
     @param last_set_time - pointer to variable to store Last Set Time attribute value
     @param valid_until_time - pointer to variable to store Valid Until Time attribute value
+
+    Time and TimeStatus attributes are Read & Write-Optional acc. to ZCL8 spec.
+    Due to internal implementation specifics Read-Write access mode is used for
+    declaring the attributes, while optional writability is blocked by the stack
+    in runtime automatically according to conditions from ZCL8 spec sections 3.12.2.2.1-3.12.2.2.2.
 */
 #define ZB_ZCL_DECLARE_TIME_ATTRIB_LIST(attr_list, time, time_status, time_zone,             \
   dst_start, dst_end, dst_shift, standard_time, local_time, last_set_time, valid_until_time) \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_TIME)                  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_TIME_TIME_ID, (time))                                     \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_TIME_TIME_STATUS_ID, (time_status))                       \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_TIME_TIME_ZONE_ID, (time_zone))                           \
@@ -300,7 +307,10 @@ enum zb_zcl_time_time_status_e
 
 
 /** @cond internals_doc */
-
+/** Acc. to ZCL8 Table 3-69 and section 3.12.2.2.1 "Time Attribute" Time attribute is write-optional.
+ *  The corresponding conditions are checked in the stack, but be careful when redefining
+ *  processing of the attribute in applications.
+ */
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_TIME_ID(data_ptr)             \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_TIME_ID,                                                   \
@@ -309,6 +319,10 @@ enum zb_zcl_time_time_status_e
   (void*) data_ptr                                                       \
 }
 
+/** Acc. to ZCL8 Table 3-69 and section 3.12.2.2.2 "TimeStatus Attribute" TimeStatus attribute is write-optional.
+ *  The corresponding conditions are checked in the stack, but be careful when redefining
+ *  processing of the attribute in applications.
+ */
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_TIME_STATUS_ID(data_ptr)      \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_TIME_STATUS_ID,                                            \

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -138,6 +138,9 @@ enum zb_zcl_occupancy_sensing_attr_e
   /*! @}
    *  @endcond */ /* internals_doc */
 };
+
+/** @brief Default value for Occupancy Sensing cluster revision global attribute */
+#define ZB_ZCL_OCCUPANCY_SENSING_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
 
 /** @brief Minimal value for PIROccToUnoccDelay attribute */
 #define ZB_ZCL_OCCUPANCY_SENSING_PIR_OCC_TO_UNOCC_DELAY_MIN_VALUE ((zb_uint16_t)0x0000)
@@ -309,7 +312,7 @@ enum zb_zcl_custom_learn_type_e
     @param occupancy_sensor_type_bitmap - pointer to variable to store Occupancy Sensor Type Bitmap attribute value
 */
 #define ZB_ZCL_DECLARE_OCCUPANCY_SENSING_ATTRIB_LIST(attr_list, occupancy, occupancy_sensor_type, occupancy_sensor_type_bitmap) \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                                                   \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_OCCUPANCY_SENSING)                                        \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_ID, (occupancy))                                                 \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_SENSOR_TYPE_ID, (occupancy_sensor_type))                         \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_SENSOR_TYPE_BITMAP_ID, (occupancy_sensor_type_bitmap))           \

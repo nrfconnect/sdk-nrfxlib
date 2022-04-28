@@ -127,6 +127,22 @@ void zb_zcl_register_device_ctx(zb_af_device_ctx_t *device_ctx)
   }
 }
 
+/* The purpose of this variable is to provide an access to endpoint ID
+ * that is under initialization at the moment for cluster initialization functions
+ * The best soultion is to add ep_id as an input parameter to
+ * void (*zb_zcl_cluster_init_t)(void)
+ */
+
+static zb_uint8_t g_current_endpoint_id = ZB_ZCL_BROADCAST_ENDPOINT;
+
+/*! @brief get endpoint ID that is under initialization
+    @return endpoint ID
+ */
+zb_uint8_t zb_get_current_endpoint_id(void)
+{
+  return g_current_endpoint_id;
+}
+
 void zb_zcl_init_endpoint(zb_af_endpoint_desc_t* ep)
 {
   zb_uindex_t j;
@@ -138,6 +154,8 @@ void zb_zcl_init_endpoint(zb_af_endpoint_desc_t* ep)
   {
     (ZCL_CTX().set_default_attr_cb)(ep->ep_id);
   }
+
+  g_current_endpoint_id = ep->ep_id;
   /* For every cluster in ep_desc - add declared handlers to table */
   for (j = 0; j < ep->cluster_count; j++)
   {
@@ -145,12 +163,6 @@ void zb_zcl_init_endpoint(zb_af_endpoint_desc_t* ep)
     {
       ep->cluster_desc_list[j].cluster_init();
     }
-#if defined ZB_ZCL_SUPPORT_CLUSTER_IAS_ZONE
-    if (ep->cluster_desc_list[j].cluster_id == ZB_ZCL_CLUSTER_ID_IAS_ZONE && ZB_BIT_IS_SET(ep->cluster_desc_list[j].role_mask, ZB_ZCL_CLUSTER_SERVER_ROLE))
-    {
-      zb_zcl_ias_zone_check_cie_addr_on_zcl_initialization(ep->ep_id);
-    }
-#endif
 #ifndef ZB_ZCL_DISABLE_REPORTING
     /* Configure default reporting */
     zb_zcl_put_default_reporting_info_for_cluster(
@@ -159,6 +171,7 @@ void zb_zcl_init_endpoint(zb_af_endpoint_desc_t* ep)
       &ep->cluster_desc_list[j]);
 #endif
   }
+  g_current_endpoint_id = ZB_ZCL_BROADCAST_ENDPOINT;
 
   TRACE_MSG(TRACE_ZCL2, "<< zb_zcl_init_endpoint", (FMT__0));
 }
@@ -830,8 +843,13 @@ zb_uint8_t zb_zcl_check_attribute_writable(
       }
       else if (ret == RET_OUT_OF_RANGE)
       {
-        TRACE_MSG(TRACE_ZCL1, "limit reached value", (FMT__0));
-        status = ZB_ZCL_STATUS_LIMIT_REACHED;
+        TRACE_MSG(TRACE_ZCL1, "limit reached value, return SUCCESS acc. to ZCL8", (FMT__0));
+        status = ZB_ZCL_STATUS_SUCCESS;
+      }
+      else if (ret == RET_BLOCKED)
+      {
+        TRACE_MSG(TRACE_ZCL1, "Blocked by internal check, response of status READ_ONLY.", (FMT__0));
+        status = ZB_ZCL_STATUS_READ_ONLY;
       }
       else if (ret == RET_UNAUTHORIZED)
       {
@@ -1132,6 +1150,15 @@ static void ep_process_zcl_cmd(zb_uint8_t param)
   ep = ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).dst_endpoint;
   ep_desc = zb_af_get_endpoint_desc(ep);
   ZB_ASSERT(ep_desc);
+
+#ifdef ZB_ZCL_SUPPORT_CLUSTER_BASIC
+  if(!zb_zcl_check_is_device_enabled(ep, cmd_info.cmd_id, cmd_info.cluster_id, cmd_info.is_common_command))
+  {
+    zb_buf_free(param);
+    status = ZB_ZCL_STATUS_SUCCESS;
+    goto send_default_response; /* to avoid sending default response */
+  }
+#endif
 
 #if defined SNCP_MODE
   if (!ZB_SE_MODE())
@@ -1565,15 +1592,23 @@ zb_uint8_t zb_zcl_check_accept_command(zb_uint8_t param)
   /* if command is manufacturer specific - skip handling it by default */
   TRACE_MSG(TRACE_ZCL2, "manuf_spec %hd", (FMT__H, cmd_info->is_manuf_specific));
 
-  if (cmd_info->is_manuf_specific)
+  /* ZCL8: CCB 2477: use UNSUP_COMMAND instead of any other Unsupported command status */
+  if (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE)
   {
-    status = cmd_info->is_common_command ?
-      ZB_ZCL_STATUS_UNSUP_MANUF_GEN_CMD : ZB_ZCL_STATUS_UNSUP_MANUF_CLUST_CMD;
+    status = ZB_ZCL_STATUS_UNSUP_CMD;
   }
   else
   {
-    status = cmd_info->is_common_command ?
-      ZB_ZCL_STATUS_UNSUP_GEN_CMD : ZB_ZCL_STATUS_UNSUP_CLUST_CMD;
+    if (cmd_info->is_manuf_specific)
+    {
+      status = cmd_info->is_common_command ?
+        ZB_ZCL_STATUS_UNSUP_MANUF_GEN_CMD : ZB_ZCL_STATUS_UNSUP_MANUF_CLUST_CMD;
+    }
+    else
+    {
+      status = cmd_info->is_common_command ?
+        ZB_ZCL_STATUS_UNSUP_GEN_CMD : ZB_ZCL_STATUS_UNSUP_CLUST_CMD;
+    }
   }
 
   TRACE_MSG(TRACE_ZCL1, "check cluster, cluster_desc %p cluster_desc->attr_desc_list %p",
@@ -1742,7 +1777,19 @@ void zb_zcl_send_command_short_alias(zb_bufid_t buffer,
                                           zb_uint8_t radius, zb_callback_t cb, zb_uint8_t use_alias,
                                           zb_uint16_t alias_addr, zb_uint8_t alias_seq)
 {
-  zb_apsde_data_req_t *apsde_req = ZB_BUF_GET_PARAM(buffer, zb_apsde_data_req_t);
+  zb_apsde_data_req_t *apsde_req;
+#ifdef ZB_ZCL_SUPPORT_CLUSTER_BASIC
+  zb_zcl_frame_hdr_short_t *zcl_cmd = (zb_zcl_frame_hdr_short_t *)zb_buf_begin(buffer);
+  if (!zb_zcl_check_is_device_enabled(ep,
+                                      zcl_cmd->command_id,
+                                      cluster_id,
+                                      (zcl_cmd->frame_ctrl.frame_type == ZB_ZCL_FRAME_TYPE_COMMON) ? ZB_TRUE : ZB_FALSE))
+  {
+    (cb != NULL) ? ZB_ZCL_SCHEDULE_STATUS_ABORT(buffer, addr, dst_addr_mode, dst_ep, ep, cb) : zb_buf_free(buffer);
+    return;
+  }
+#endif
+  apsde_req = ZB_BUF_GET_PARAM(buffer, zb_apsde_data_req_t);
 
   ZB_BZERO(apsde_req, sizeof(zb_apsde_data_req_t));
   apsde_req->addr_mode = dst_addr_mode;
@@ -1769,7 +1816,7 @@ void zb_zcl_send_command_short_alias(zb_bufid_t buffer,
   if (zb_zcl_register_cb(buffer, cb) == RET_OK)
   {
     ZB_ZCL_DEBUG_DUMP_COMMAND(buffer);
-  TRACE_MSG(TRACE_ZDO3, "Call zb_zdo_pim_start_turbo_poll_packets 1", (FMT__0));
+    TRACE_MSG(TRACE_ZDO3, "Call zb_zdo_pim_start_turbo_poll_packets 1", (FMT__0));
     zb_zdo_pim_start_turbo_poll_packets(1);
     ZB_SCHEDULE_CALLBACK(zb_apsde_data_request, buffer);
   }
@@ -1785,9 +1832,23 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
                                              zb_uint16_t addr, zb_uint8_t dst_addr_mode,
                                              zb_uint8_t dst_ep, zb_uint8_t ep,
                                              zb_uint16_t prof_id, zb_uint16_t cluster_id,
-                                             zb_callback_t cb, zb_uint16_t delay)
+                                             zb_callback_t cb, zb_uint64_t delay)
 {
-  zb_apsde_data_req_t *apsde_req = ZB_BUF_GET_PARAM(buffer, zb_apsde_data_req_t);
+  zb_apsde_data_req_t *apsde_req;
+#ifdef ZB_ZCL_SUPPORT_CLUSTER_BASIC
+  zb_zcl_frame_hdr_short_t *zcl_cmd = (zb_zcl_frame_hdr_short_t *)zb_buf_begin(buffer);
+  if (!zb_zcl_check_is_device_enabled(ep,
+                                      zcl_cmd->command_id,
+                                      cluster_id,
+                                      (zcl_cmd->frame_ctrl.frame_type == ZB_ZCL_FRAME_TYPE_COMMON) ? ZB_TRUE : ZB_FALSE))
+  {
+    zb_addr_u short_addr;
+    short_addr.addr_short = addr;
+    (cb != NULL) ? ZB_ZCL_SCHEDULE_STATUS_ABORT(buffer, &short_addr, dst_addr_mode, dst_ep, ep, cb) : zb_buf_free(buffer);
+    return;
+  }
+#endif
+  apsde_req = ZB_BUF_GET_PARAM(buffer, zb_apsde_data_req_t);
 
   ZB_BZERO(apsde_req, sizeof(zb_apsde_data_req_t));
   apsde_req->addr_mode = dst_addr_mode;
@@ -1807,7 +1868,7 @@ void zb_zcl_send_command_short_schedule(zb_bufid_t buffer,
   {
     ZB_ZCL_DEBUG_DUMP_COMMAND(buffer);
 #ifdef ZB_ED_FUNC
-  TRACE_MSG(TRACE_ZDO3, "Call zb_zdo_pim_start_turbo_poll_packets 1 after alarm", (FMT__0));
+    TRACE_MSG(TRACE_ZDO3, "Call zb_zdo_pim_start_turbo_poll_packets 1 after alarm", (FMT__0));
     ZB_SCHEDULE_ALARM(zb_zdo_pim_start_turbo_poll_packets, 1, ZB_MILLISECONDS_TO_BEACON_INTERVAL(delay));
 #endif
     ZB_SCHEDULE_ALARM(zb_apsde_data_request, buffer, ZB_MILLISECONDS_TO_BEACON_INTERVAL(delay));
@@ -1857,19 +1918,41 @@ static zb_ret_t zb_zcl_finish_and_send_packet_common(zb_bufid_t buffer,
                                                      zb_bool_t disable_aps_ack,
                                                      zb_uint16_t delay)
 {
+#ifdef APS_FRAGMENTATION
+  zb_bool_t frag;
+#endif
+
+  zb_ret_t res = RET_OK;
   zb_apsde_data_req_t *apsde_req = ZB_BUF_GET_PARAM(buffer, zb_apsde_data_req_t);
+  zb_zcl_frame_hdr_short_t *zcl_cmd = (zb_zcl_frame_hdr_short_t *)zb_buf_begin(buffer);
+
   zb_uint8_t dst_addr_mode = apsde_req->addr_mode;
   zb_addr_u *dst_addr = &apsde_req->dst_addr;
   zb_uint8_t dst_ep = apsde_req->dst_endpoint;
   zb_uint8_t ep = apsde_req->src_endpoint;
   zb_uint16_t cluster_id = apsde_req->clusterid;
-  zb_zcl_frame_hdr_short_t *zcl_cmd = (zb_zcl_frame_hdr_short_t *)zb_buf_begin(buffer);
-  zb_ret_t res = RET_OK;
-#ifdef APS_FRAGMENTATION
-  zb_bool_t frag;
-#endif
 
   TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_finish_and_send_packet_common param %hd delay %d", (FMT__H_D, buffer, delay));
+
+#ifdef ZB_ZCL_SUPPORT_CLUSTER_BASIC
+  if (!zb_zcl_check_is_device_enabled(apsde_req->src_endpoint,
+                                      zcl_cmd->command_id ,
+                                      apsde_req->clusterid,
+                                      (zcl_cmd->frame_ctrl.frame_type == ZB_ZCL_FRAME_TYPE_COMMON) ? ZB_TRUE : ZB_FALSE))
+  {
+    if (cb != NULL) 
+    {
+      ZB_ZCL_SCHEDULE_STATUS_ABORT(buffer, dst_addr, dst_addr_mode, dst_ep, ep, cb);
+      /* If cb isn't NULL caller should handle result in zb_zcl_command_send_status_t param */
+      return RET_OK;
+    }
+    else
+    {
+      zb_buf_free(buffer);
+      return RET_CANCELLED;
+    }
+  }
+#endif
 
 #ifdef APS_FRAGMENTATION
   frag = zb_zcl_can_cluster_be_fragmented(apsde_req->profileid, cluster_id);
@@ -1895,7 +1978,7 @@ static zb_ret_t zb_zcl_finish_and_send_packet_common(zb_bufid_t buffer,
     * read/write attribute commands). */
       && ZB_ZDO_CHECK_IF_APS_ACK_NEEDED(cluster_id)
       && !disable_aps_ack
-     )
+      )
   {
     apsde_req->tx_options |= ZB_APSDE_TX_OPT_ACK_TX;
   }
@@ -1989,7 +2072,7 @@ static zb_ret_t zb_zcl_finish_and_send_packet_common(zb_bufid_t buffer,
       zb_ieee_addr_t dst_ieee;
       zb_aps_device_key_pair_set_t *key = NULL;
       zb_secur_key_attributes_t key_attrib =
-        ZB_SECUR_VERIFIED_KEY;
+          ZB_SECUR_VERIFIED_KEY;
 
       TRACE_MSG(TRACE_ZCL2, "ZCL (out): cluster: 0x%x, APS security required: yes",
                 (FMT__D, cluster_id));
@@ -2072,17 +2155,17 @@ static zb_ret_t zb_zcl_finish_and_send_packet_common(zb_bufid_t buffer,
                 (FMT__D, cluster_id));
     }
 
-    /*
-     * APS Acknowledgments shall be suppressed on High Frequency messages
-     * (messages that are 2811 repeated at a rate higher than once every 30
-     * seconds) when utilizing sub-GHz frequencies; the 2812 Acknowledgement
-     * Request sub-field in the Frame Control field of the APDU Frame Header
-     * shall 2813 be set to 0.
-     *
-     * The Disable Default Response sub-field in the ZCL Frame Control field
-     * shall be set to 1 2815 (disables positive Default Responses) on High
-     * Frequency messages when utilizing sub-GHz 2816 frequencies.
-     */
+      /*
+       * APS Acknowledgments shall be suppressed on High Frequency messages
+       * (messages that are repeated at a rate higher than once every 30
+       * seconds) when utilizing sub-GHz frequencies; the Acknowledgement
+       * Request sub-field in the Frame Control field of the APDU Frame Header
+       * shall be set to 0.
+       *
+       * The Disable Default Response sub-field in the ZCL Frame Control field
+       * shall be set to 1 (disables positive Default Responses) on High
+       * Frequency messages when utilizing sub-GHz 2816 frequencies.
+       */
   }
 
   if (res == RET_OK)
@@ -2185,6 +2268,228 @@ void *zb_zcl_start_command_header(zb_bufid_t zbbuf, zb_uint8_t frame_ctl, zb_uin
 zb_zcl_globals_t *zb_zcl_get_ctx()
 {
   return &ZG->zcl;
+}
+
+zb_zcl8_globals_t *zb_zcl8_get_ctx()
+{
+  static zb_zcl8_globals_t zb_zcl8_ctx;
+
+  return &zb_zcl8_ctx;
+}
+
+zb_ret_t zb_zcl_set_peer_revision_callback(zb_zcl_peer_revision_cb_t cb)
+{
+  ZCL8_CTX().peer_revision_cb = cb;
+
+  /* NULL, if a user wants to reset the callback */
+  if (NULL == cb)
+  {
+    return RET_OK;
+  }
+  else
+  {
+    return zb_zcl_set_backward_comp_mode(ZB_ZCL_COMPATIBILITY_MODE);
+  }
+}
+
+zb_ret_t zb_zcl_set_backward_comp_mode(zb_uint8_t mode)
+{
+  if (mode > ZB_ZCL_COMPATIBILITY_MODE)
+  {
+    return RET_OUT_OF_RANGE;
+  }
+  else
+  {
+    ZCL8_CTX().backward_comp_mode = mode;
+    return RET_OK;
+  }
+}
+
+zb_uint8_t zb_zcl_get_backward_comp_mode(void)
+{
+  return ZCL8_CTX().backward_comp_mode;
+}
+
+zb_uint16_t zb_zcl_get_cluster_rev_by_mode(zb_uint16_t api_revision, const zb_addr_u *dst_addr, 
+                                           zb_uint8_t dst_addr_mode, zb_uint8_t dst_ep,
+                                           zb_uint16_t cluster_id, zb_uint8_t cluster_role,
+                                           zb_uint8_t src_ep)
+{
+  zb_uint8_t mode;
+  zb_zcl_attr_t *attr_desc_cluster_rev;
+  zb_uint16_t rev;
+  zb_uint16_t rev_attr_value;
+  zb_ieee_addr_t ieee_addr;
+  zb_uint16_t short_addr;
+  zb_ret_t ret = RET_OK;
+
+  TRACE_MSG(TRACE_ZCL3, "> zb_zcl_get_cluster_rev_by_mode", (FMT__0));
+
+  mode = zb_zcl_get_backward_comp_mode();
+
+  TRACE_MSG(TRACE_ZCL3, "mode %d", (FMT__H, mode));
+
+  attr_desc_cluster_rev = zb_zcl_get_attr_desc_a(src_ep, cluster_id,
+                                       cluster_role,
+                                       ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID);
+
+  if (attr_desc_cluster_rev != NULL)
+  {
+    rev_attr_value  = ZB_ZCL_GET_ATTRIBUTE_VAL_16(attr_desc_cluster_rev);
+  }
+  else
+  {
+    /* it means the attribute wasn't declared for the cluster */
+    rev_attr_value = ZB_ZCL_CLUSTER_REV_MIN;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "rev_attr_value %d", (FMT__D, rev_attr_value));
+
+  switch(mode)
+  {
+    case ZB_ZCL_LEGACY_MODE:
+      rev = (api_revision > rev_attr_value) ? rev_attr_value : api_revision;
+      break;
+    case ZB_ZCL_AUTO_MODE:
+      /* rev_attr_value is compared to maximum available cluster revision while the revision value is being set,
+         so we don't have to check for maximum value here */
+      rev = rev_attr_value;
+      break;
+    case ZB_ZCL_COMPATIBILITY_MODE:
+      if (NULL == ZCL8_CTX().peer_revision_cb)
+      {
+        rev = ZB_ZCL_CLUSTER_REV_MIN;
+      }
+      else
+      {        
+        if (dst_addr_mode == ZB_APS_ADDR_MODE_64_ENDP_PRESENT)
+        {
+          ZB_IEEE_ADDR_COPY(ieee_addr, dst_addr);
+        }
+        else
+        {
+          ZB_MEMCPY(&short_addr, (dst_addr), sizeof(short_addr));
+          ret = zb_address_ieee_by_short(short_addr, ieee_addr);
+        }
+        if (RET_OK == ret)
+        {
+          rev = (*ZCL8_CTX().peer_revision_cb)(ieee_addr, cluster_id,
+                                              ZB_ZCL_REVERT_CLUSTER_ROLE(cluster_role), dst_ep);
+          if (ZB_ZCL_PEER_CLUSTER_REV_UNKNOWN == rev)
+          {
+            rev = ZB_ZCL_CLUSTER_REV_MIN;
+          }
+          else
+          {
+            rev = (rev > rev_attr_value) ? rev_attr_value : rev;
+          }
+        }
+        else
+        {
+          rev = ZB_ZCL_CLUSTER_REV_MIN;
+        }
+      }
+      break;
+    default:
+      rev = rev_attr_value;
+      break;
+  }
+
+  TRACE_MSG(TRACE_ZCL3, "< zb_zcl_get_cluster_rev_by_mode %d", (FMT__H, rev));
+
+  return rev;
+}
+
+zb_uint8_t zb_zcl_get_backward_compatible_statuses_mode(void)
+{
+  return ZCL8_CTX().backward_compatible_statuses_mode;
+}
+
+zb_ret_t zb_zcl_set_backward_compatible_statuses_mode(zb_uint8_t statuses_mode)
+{
+  if (statuses_mode > ZB_ZCL_STATUSES_ZCL8_MODE)
+  {
+    return RET_OUT_OF_RANGE;
+  }
+  else
+  {
+    ZCL8_CTX().backward_compatible_statuses_mode = statuses_mode;
+    return RET_OK;
+  }
+}
+
+zb_zcl_status_t zb_zcl_zcl8_statuses_conversion(zb_zcl_status_t status)
+{
+  if (zb_zcl_get_backward_comp_mode() == ZB_ZCL_LEGACY_MODE)
+  {
+    return status;
+  }
+  else
+  {
+    zb_zcl_status_t ret_status;
+    switch(status)
+    {
+      case ZB_ZCL_STATUS_DUPE_EXISTS: /* FALLTHROUGH */
+      case ZB_ZCL_STATUS_LIMIT_REACHED:
+        ret_status = ZB_ZCL_STATUS_SUCCESS;
+        break;
+      case ZB_ZCL_STATUS_INCONSISTENT_STARTUP_STATE: /* FALLTHROUGH */
+      case ZB_ZCL_STATUS_DEFINED_OUT_OF_BAND: /* FALLTHROUGH */
+      case ZB_ZCL_STATUS_ACTION_DENIED: /* FALLTHROUGH */
+      case ZB_ZCL_STATUS_HW_FAIL: /* FALLTHROUGH */
+      case ZB_ZCL_STATUS_SW_FAIL:
+        ret_status = ZB_ZCL_STATUS_FAIL;
+        break;
+      case ZB_ZCL_STATUS_INCONSISTENT: /* FALLTHROUGH */
+      case ZB_ZCL_STATUS_CALIB_ERR:
+        ret_status = ZB_ZCL_STATUS_RESERVED;
+        break;
+      case ZB_ZCL_STATUS_UNSUP_CLUST_CMD: /* FALLTHROUGH */
+      case ZB_ZCL_STATUS_UNSUP_GEN_CMD: /* FALLTHROUGH */
+      case ZB_ZCL_STATUS_UNSUP_MANUF_CLUST_CMD: /* FALLTHROUGH */
+      case ZB_ZCL_STATUS_UNSUP_MANUF_GEN_CMD:
+        ret_status = ZB_ZCL_STATUS_UNSUP_CMD;
+        break;
+      case ZB_ZCL_STATUS_WRITE_ONLY:
+        ret_status = ZB_ZCL_STATUS_NOT_AUTHORIZED;
+        break;
+      default:
+        ret_status = status;
+        break;
+    }
+    return ret_status;
+  }
+}
+
+zb_zcl_status_t zb_zcl_get_zcl_status_from_ret(zb_ret_t result)
+{
+  zb_zcl_status_t zcl_result;
+
+  switch (result)
+  {
+    case RET_OK:
+      zcl_result = ZB_ZCL_STATUS_SUCCESS;
+      break;
+
+    case RET_INVALID_PARAMETER_1:
+      zcl_result = ZB_ZCL_STATUS_INVALID_FIELD;
+      break;
+
+    case RET_INVALID_PARAMETER:
+      zcl_result = ZB_ZCL_STATUS_INVALID_VALUE;
+      break;
+
+    case RET_NOT_IMPLEMENTED:
+      zcl_result = ZB_ZCL_STATUS_UNSUP_CMD;
+      break;
+
+    default:
+      zcl_result = (zb_zcl_get_backward_compatible_statuses_mode() == ZB_ZCL_STATUSES_ZCL8_MODE) ?
+                  ZB_ZCL_STATUS_FAIL : ZB_ZCL_STATUS_HW_FAIL;
+      break;
+  }
+
+  return zcl_result;
 }
 
 #endif /* defined (ZB_ENABLE_ZCL) */

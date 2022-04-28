@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -163,6 +163,9 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCL_DATA_QUALITY_NOT_CERTIFIED_DATA                       = 0x0003   /**< Not Certified data */
 } zb_zcl_meter_identification_data_quality_t;
 
+/** @brief Default value for Meter Identification cluster revision global attribute */
+#define ZB_ZCL_METER_IDENTIFICATION_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0002u)
+
 /** @brief Default value for Company Name attribute */
 #define ZB_ZCl_ATTR_METER_IDENTIFICATION_COMPANY_NAME_DEFAULT_VALUE { 0 }
 
@@ -199,7 +202,7 @@ typedef enum zb_zcl_meter_identification_data_quality_e
 #define ZB_ZCL_DECLARE_METER_IDENTIFICATION_ATTRIB_LIST(attr_list,                           \
   company_name, meter_type_id, data_quality_id,                                              \
   pod, available_power, power_threshold)                                                     \
-  ZB_ZCL_START_DECLARE_ATTRIB_LIST(attr_list)                                                \
+  ZB_ZCL_START_DECLARE_ATTRIB_LIST_CLUSTER_REVISION(attr_list, ZB_ZCL_METER_IDENTIFICATION)  \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_METER_IDENTIFICATION_COMPANY_NAME, (company_name))        \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_METER_IDENTIFICATION_METER_TYPE_ID, (meter_type_id))      \
   ZB_ZCL_SET_ATTR_DESC(ZB_ZCL_ATTR_METER_IDENTIFICATION_DATA_QUALITY_ID, (data_quality_id))  \
