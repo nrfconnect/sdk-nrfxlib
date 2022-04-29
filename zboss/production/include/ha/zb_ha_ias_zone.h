@@ -163,8 +163,8 @@
  */
 #define ZB_HA_DECLARE_IAS_ZONE_SIMPLE_DESC(                     \
   ep_name, ep_id, in_clust_num, out_clust_num)                  \
-      ZB_DECLARE_SIMPLE_DESC(in_clust_num, out_clust_num);      \
-      ZB_AF_SIMPLE_DESC_TYPE(in_clust_num, out_clust_num)       \
+      ZB_DECLARE_SIMPLE_DESC(ep_name,in_clust_num, out_clust_num);      \
+      ZB_AF_SIMPLE_DESC_TYPE(ep_name, in_clust_num, out_clust_num)       \
             simple_desc_##ep_name =                             \
       {                                                         \
         ep_id,                                                  \
@@ -196,7 +196,7 @@
           ep_id,                                                \
           ZB_HA_IAS_ZONE_IN_CLUSTER_NUM,                        \
           ZB_HA_IAS_ZONE_OUT_CLUSTER_NUM);                      \
-  ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## device_ctx_name,  \
+  ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## ep_name,  \
                                      ZB_HA_IAS_ZONE_REPORT_ATTR_COUNT); \
   ZB_AF_DECLARE_ENDPOINT_DESC(                                          \
     ep_name,                                                            \
@@ -208,8 +208,8 @@
                 cluster_list,                                   \
                 zb_zcl_cluster_desc_t),                         \
             cluster_list,                                       \
-    (zb_af_simple_desc_1_1_t*)&simple_desc_##ep_name,                   \
-    ZB_HA_IAS_ZONE_REPORT_ATTR_COUNT, reporting_info## device_ctx_name, \
+    (ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1)*)&simple_desc_##ep_name,                   \
+    ZB_HA_IAS_ZONE_REPORT_ATTR_COUNT, reporting_info## ep_name, \
     0, NULL)
 
 /**

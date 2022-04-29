@@ -157,8 +157,8 @@
   @param out_clust_num - number of supported output clusters
 */
 #define ZB_ZCL_DECLARE_HA_DIMMABLE_LIGHT_SIMPLE_DESC(ep_name, ep_id, in_clust_num, out_clust_num) \
-  ZB_DECLARE_SIMPLE_DESC(in_clust_num, out_clust_num);                                         \
-  ZB_AF_SIMPLE_DESC_TYPE(in_clust_num, out_clust_num) simple_desc_##ep_name =                  \
+  ZB_DECLARE_SIMPLE_DESC(ep_name, in_clust_num, out_clust_num);                                         \
+  ZB_AF_SIMPLE_DESC_TYPE(ep_name, in_clust_num, out_clust_num) simple_desc_##ep_name =                  \
   {                                                                                            \
     ep_id,                                                                                     \
     ZB_AF_HA_PROFILE_ID,                                                                       \
@@ -189,19 +189,19 @@
 #define ZB_HA_DECLARE_DIMMABLE_LIGHT_EP(ep_name, ep_id, cluster_list)           \
   ZB_ZCL_DECLARE_HA_DIMMABLE_LIGHT_SIMPLE_DESC(ep_name, ep_id,                     \
     ZB_HA_DIMMABLE_LIGHT_IN_CLUSTER_NUM, ZB_HA_DIMMABLE_LIGHT_OUT_CLUSTER_NUM); \
-  ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## device_ctx_name,          \
+  ZBOSS_DEVICE_DECLARE_REPORTING_CTX(reporting_info## ep_name,          \
                                      ZB_HA_DIMMABLE_LIGHT_REPORT_ATTR_COUNT);   \
-  ZBOSS_DEVICE_DECLARE_LEVEL_CONTROL_CTX(cvc_alarm_info## device_ctx_name,      \
+  ZBOSS_DEVICE_DECLARE_LEVEL_CONTROL_CTX(cvc_alarm_info## ep_name,      \
                                          ZB_HA_DIMMABLE_LIGHT_CVC_ATTR_COUNT);  \
   ZB_AF_DECLARE_ENDPOINT_DESC(ep_name, ep_id, ZB_AF_HA_PROFILE_ID,                       \
     0,                                                                          \
     NULL,                                                                       \
     ZB_ZCL_ARRAY_SIZE(cluster_list, zb_zcl_cluster_desc_t), cluster_list,       \
-                          (zb_af_simple_desc_1_1_t*)&simple_desc_##ep_name,     \
+                          (ZB_AF_SIMPLE_DESC_TYPE(general, 1, 1)*)&simple_desc_##ep_name,     \
                           ZB_HA_DIMMABLE_LIGHT_REPORT_ATTR_COUNT,               \
-                          reporting_info## device_ctx_name,                     \
+                          reporting_info## ep_name,                     \
                           ZB_HA_DIMMABLE_LIGHT_CVC_ATTR_COUNT,                  \
-                          cvc_alarm_info## device_ctx_name)
+                          cvc_alarm_info## ep_name)
 
 /**
   @brief Declare application's device context for Dimmable Light device
