@@ -73,3 +73,5 @@
 .. _`NMEA report sample`: http://aprs.gids.nl/nmea/#gsa
 
 .. _`Bluetooth Core Specification`: https://www.bluetooth.com/specifications/specs/core-specification/
+
+.. _`Appropriate Language Mapping Table`: https://www.bluetooth.com/language-mapping/Appropriate-Language-Mapping-Table
