@@ -482,12 +482,21 @@ typedef struct
 } nrf_802154_transmit_done_metadata_t;
 
 /**
+ * @brief Represents components of tx_power to be applied for stages on transmit path.
+ */
+typedef struct
+{
+    nrf_radio_txpower_t radio_tx_power; // !< TX power to be applied to the RADIO peripheral.
+    int8_t              fem_gain;       // !< Gain of the Front-End Module in dB.
+} nrf_802154_tx_power_split_t;
+
+/**
  * @brief Structure that holds transmission parameters.
  */
 typedef struct
 {
     nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the frame to be transmitted.
-    int8_t                               tx_power;    // !< Power to be used when transmitting the frame.
+    nrf_802154_tx_power_split_t          tx_power;    // !< Power to be used when transmitting the frame, split into components to be applied on each stage on transmit path.
     bool                                 cca;         // !< If the driver is to perform CCA procedure before transmission.
     bool                                 immediate;   // !< If true, the driver schedules transmission immediately or never. If false, the transmission may be postponed
                                                       // until its preconditions are met.

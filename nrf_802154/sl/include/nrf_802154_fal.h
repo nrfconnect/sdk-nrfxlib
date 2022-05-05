@@ -33,18 +33,56 @@
  */
 
 /**
- * @file
- *   This file contains implementation of the nRF 802.15.4 FEM abstraction layer.
+ * @brief This module defines the nRF 802.15.4 Frontend Module abstraction layer.
  *
  */
 
+#ifndef NRF_802154_FAL_H_
+#define NRF_802154_FAL_H_
+
 #include <stdint.h>
 
-#include "nrf_802154_fal.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-int8_t nrf_802154_fal_tx_power_get(const uint8_t channel, const int8_t power)
+/**
+ * @brief Represents components of tx_power to be applied for stages on transmit path.
+ */
+typedef struct
 {
-    (void)channel;
+    int8_t radio_tx_power; // !< TX power in dBm to be applied to the RADIO peripheral.
+    int8_t fem_gain;       // !< Gain of the Front-End Module in dB.
+} nrf_802154_fal_tx_power_split_t;
 
-    return power;
+/**
+ * @brief Returns 'power' value.
+ *
+ * @note This is a stub implementation used when MPSL is not linked.
+ *
+ * @param[in]  channel  Ignored.
+ * @param[in]  power    TX power in dbm.
+ *
+ * @returns Value of 'power' argument.
+ */
+int8_t nrf_802154_fal_tx_power_get(const uint8_t channel, const int8_t power);
+
+/** @brief Splits transmit power value into components to be applied on each stage on the transmit path.
+ *
+ * @note This is a stub implementation used when MPSL is not linked.
+ *
+ * @param[in]  channel          Ignored.
+ * @param[in]  power            TX power in dBm requested for transmission on air.
+ * @param[out] p_tx_power_split Components of tx_power to be applied for stages on transmit path.
+ *
+ * @returns Always 0.
+ */
+int32_t nrf_802154_fal_tx_power_split(const uint8_t                           channel,
+                                      const int8_t                            power,
+                                      nrf_802154_fal_tx_power_split_t * const p_tx_power_split);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* NRF_802154_FAL_H_ */

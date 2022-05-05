@@ -77,7 +77,7 @@ static uint8_t m_be;                                      ///< Backoff exponent,
 
 static uint8_t                            * mp_data;      ///< Pointer to a buffer containing PHR and PSDU of the frame being transmitted.
 static nrf_802154_transmitted_frame_props_t m_data_props; ///< Structure containing detailed properties of data in buffer.
-static int8_t                               m_tx_power;   ///< Power in dBm to be used when transmitting the frame.
+static nrf_802154_tx_power_split_t          m_tx_power;   ///< Power to be used when transmitting the frame split into components.
 static csma_ca_state_t                      m_state;      ///< The current state of the CSMA-CA procedure.
 
 /**
@@ -363,9 +363,9 @@ bool nrf_802154_csma_ca_start(uint8_t                                      * p_d
     m_data_props = p_metadata->frame_props;
     m_nb         = 0;
     m_be         = nrf_802154_pib_csmaca_min_be_get();
-    m_tx_power   =
-        nrf_802154_tx_power_convert_metadata_to_raw_value(nrf_802154_pib_channel_get(),
-                                                          p_metadata->tx_power);
+    (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(nrf_802154_pib_channel_get(),
+                                                                 p_metadata->tx_power,
+                                                                 &m_tx_power);
 
     random_backoff_start();
 

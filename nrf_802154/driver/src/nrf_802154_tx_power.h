@@ -39,37 +39,63 @@
 
 #include "nrf_802154.h"
 
-/**@brief Convert tx_power value passed through metadata to a raw value in dBm used by the core module.
+/**@brief Convert tx_power value passed through metadata to raw components in dBms to be applied
+ *        on each stage of the transmit path.
 
- * This function also ensures that the value meets the constraints for the current channel.
+ * This function also ensures that the values meet the constraints for the given channel.
  *
- * @param[in] channel      The channel to be used for transmission
- * @param[in] tx_power     The value passed to the transmit metadata.
+ * @param[in]  channel             The channel to be used for transmission
+ * @param[in]  tx_power            The value passed to the transmit metadata.
+ * @param[out] p_tx_power_split    Pointer to the structure holding TX power split into raw components in dBm.
  *
- * @retval                 Returns the power in dBm which will be used to transmit the frame.
+ * @retval  true            Calculation performed successfully.
+ * @retval  false           Given @p tx_power cannot be achieved. If requested value is too high
+ *                          the @p p_tx_power_split will be set to a value representing maximum
+ *                          achievable power. If the requested value is too low, the
+ *                          @p p_tx_power_split will be set to a value representing minimum
+ *                          achievable power.
  *
  */
-nrf_radio_txpower_t nrf_802154_tx_power_convert_metadata_to_raw_value(
-    uint8_t                        channel,
-    nrf_802154_tx_power_metadata_t tx_power);
+bool nrf_802154_tx_power_convert_metadata_to_tx_power_split(
+    uint8_t                             channel,
+    nrf_802154_tx_power_metadata_t      tx_power,
+    nrf_802154_tx_power_split_t * const p_tx_power_split);
 
-/**@brief Get the transmit power stored in PIB after applying the power constraints for the current channel.
+/**@brief Get the transmit power stored in PIB after applying the power constraints for the current channel and splitting
+ *        into components to be applied on each stage of the transmit path.
  *
  * The current channel is acquired from PIB.
  *
- * @retval                 Returns the constrained power in dBm which will be used to transmit the frame.
+ * @param[out] p_split_power  Pointer to the structure holding TX power split into components in dBm.
  *
- */
-nrf_radio_txpower_t nrf_802154_tx_power_constrained_pib_power_get(void);
+ * @retval  true            Calculation performed successfully.
+ * @retval  false           cannot be achieved. If requested value is too high
+ *                          Current power set in PIB the @p p_split_power will be set to a value representing maximum
+ *                          achievable power. If the requested value is too low, the
+ *                          @p p_split_power will be set to a value representing minimum
+ *                          achievable power.
 
-/**@brief Get the transmit power stored in PIB after applying the power constraints for the given channel.
- *
- * @param[in] channel      The channel based on which the power should be constrained
- *
- * @retval                 Returns the power in dBm which will be used to transmit the frame.
  *
  */
-nrf_radio_txpower_t nrf_802154_tx_power_constrained_pib_power_for_channel_get(uint8_t channel);
+bool nrf_802154_tx_power_split_pib_power_get(nrf_802154_tx_power_split_t * const p_split_power);
+
+/**@brief Get the transmit power stored in PIB after applying the power constraints for the given channel and splitting
+ *        into components to be applied on each stage of the transmit path.
+ *
+ * @param[in]  channel        The channel based on which the power should be constrained
+ * @param[out] p_split_power  Pointer to the structure holding TX power split into components in dBm.
+ *
+ * @retval  true            Calculation performed successfully.
+ * @retval  false           Current power set in PIB cannot be achieved. If requested value is too high
+ *                          the @p p_split_power will be set to a value representing maximum
+ *                          achievable power. If the requested value is too low, the
+ *                          @p p_split_power will be set to a value representing minimum
+ *                          achievable power.
+ *
+ */
+bool nrf_802154_tx_power_split_pib_power_for_channel_get(
+    uint8_t                             channel,
+    nrf_802154_tx_power_split_t * const p_split_power);
 
 /**
  *@}
