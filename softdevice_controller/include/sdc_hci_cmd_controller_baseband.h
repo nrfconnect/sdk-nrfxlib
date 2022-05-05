@@ -69,9 +69,9 @@ typedef __PACKED_STRUCT
     uint8_t disconnection_complete_event : 1;
     uint8_t authentication_complete_event : 1;
     uint8_t remote_name_request_complete_event : 1;
-    uint8_t encryption_change_event : 1;
+    uint8_t encryption_change_event_v1 : 1;
     uint8_t change_connection_link_key_complete_event : 1;
-    uint8_t master_link_key_complete_event : 1;
+    uint8_t link_key_type_changed_event : 1;
     uint8_t read_remote_supported_features_complete_event : 1;
     uint8_t read_remote_version_information_complete_event : 1;
     uint8_t qos_setup_complete_event : 1;
@@ -89,7 +89,7 @@ typedef __PACKED_STRUCT
     uint8_t read_clock_offset_complete_event : 1;
     uint8_t connection_packet_type_changed_event : 1;
     uint8_t qos_violation_event : 1;
-    uint8_t page_scan_mode_change_event : 1;
+    uint8_t previously_used30 : 1;
     uint8_t page_scan_repetition_mode_change_event : 1;
     uint8_t flow_specification_complete_event : 1;
     uint8_t inquiry_result_with_rssi_event : 1;
@@ -120,31 +120,32 @@ typedef __PACKED_STRUCT
  */
 typedef __PACKED_STRUCT
 {
-    uint8_t physical_link_complete_event : 1;
-    uint8_t channel_selected_event : 1;
-    uint8_t disconnection_physical_link_complete_event : 1;
-    uint8_t physical_link_loss_early_warning_event : 1;
-    uint8_t physical_link_recovery_event : 1;
-    uint8_t logical_link_complete_event : 1;
-    uint8_t disconnection_logical_link_complete_event : 1;
-    uint8_t flow_spec_modify_complete_event : 1;
+    uint8_t previously_used0 : 1;
+    uint8_t previously_used1 : 1;
+    uint8_t previously_used2 : 1;
+    uint8_t previously_used3 : 1;
+    uint8_t previously_used4 : 1;
+    uint8_t previously_used5 : 1;
+    uint8_t previously_used6 : 1;
+    uint8_t previously_used7 : 1;
     uint8_t number_of_completed_data_blocks_event : 1;
-    uint8_t amp_start_test_event : 1;
-    uint8_t amp_test_end_event : 1;
-    uint8_t amp_receiver_report_event : 1;
-    uint8_t short_range_mode_change_complete_event : 1;
-    uint8_t amp_status_change_event : 1;
+    uint8_t previously_used9 : 1;
+    uint8_t previously_used10 : 1;
+    uint8_t previously_used11 : 1;
+    uint8_t previously_used12 : 1;
+    uint8_t previously_used13 : 1;
     uint8_t triggered_clock_capture_event : 1;
     uint8_t synchronization_train_complete_event : 1;
     uint8_t synchronization_train_received_event : 1;
-    uint8_t connectionless_slave_broadcast_receive_event : 1;
-    uint8_t connectionless_slave_broadcast_timeout_event : 1;
+    uint8_t connectionless_peripheral_broadcast_receive_event : 1;
+    uint8_t connectionless_peripheral_broadcast_timeout_event : 1;
     uint8_t truncated_page_complete_event : 1;
-    uint8_t slave_page_response_timeout_event : 1;
-    uint8_t connectionless_slave_broadcast_channel_map_change_event : 1;
+    uint8_t peripheral_page_response_timeout_event : 1;
+    uint8_t connectionless_peripheral_broadcast_channel_map_change_event : 1;
     uint8_t inquiry_response_notification_event : 1;
     uint8_t authenticated_payload_timeout_expired_event : 1;
     uint8_t sam_status_change_event : 1;
+    uint8_t encryption_change_event_v2 : 1;
 } sdc_hci_cb_event_mask_page_2_t;
 
 /** @brief Host Number Of Completed Packets array parameters. */
@@ -245,7 +246,7 @@ typedef __PACKED_STRUCT
  */
 /** @brief Set Event Mask.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.1
  *
  * The HCI_Set_Event_Mask command is used to control which events are
@@ -273,24 +274,20 @@ uint8_t sdc_hci_cmd_cb_set_event_mask(const sdc_hci_cmd_cb_set_event_mask_t * p_
 
 /** @brief Reset.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.2
  *
  * The HCI_Reset command will reset the Controller and the Link Manager on the
- * BR/EDR Controller, the PAL on an AMP Controller, or the Link Layer on an LE
- * Controller. If the Controller supports both BR/EDR and LE then the HCI_Reset
- * command shall reset the Link Manager, Baseband and Link Layer. The
- * HCI_Reset command shall not affect the used HCI transport layer since the
- * HCI transport layers may have reset mechanisms of their own. After the reset
- * is completed, the current operational state will be lost, the Controller will enter
- * standby mode and the Controller will automatically revert to the default values
- * for the parameters for which default values are defined in the specification.
+ * BR/EDR Controller or the Link Layer on an LE Controller. If the Controller
+ * supports both BR/EDR and LE then the HCI_Reset command shall reset the
+ * Link Manager, Baseband and Link Layer. The HCI_Reset command shall not
+ * affect the used HCI transport layer since the HCI transport layers may have
+ * reset mechanisms of their own. After the reset is completed, the current
+ * operational state will be lost, the Controller will enter standby mode and the
+ * Controller will automatically revert to the default values for the parameters for
+ * which default values are defined in the specification.
  * Note: The HCI_Reset command will not necessarily perform a hardware reset.
  * This is implementation defined.
- * On an AMP Controller, the HCI_Reset command shall reset the service
- * provided at the logical HCI to its initial state, but beyond this the exact effect on
- * the Controller device is implementation defined and should not interrupt the
- * service provided to other protocol stacks.
  * The Host shall not send additional HCI commands before the
  * HCI_Command_Complete event related to the HCI_Reset command has been
  * received.
@@ -308,7 +305,7 @@ uint8_t sdc_hci_cmd_cb_reset(void);
 
 /** @brief Read Transmit Power Level.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.35
  *
  * This command reads the values for the TX_Power_Level parameter for the
@@ -331,7 +328,7 @@ uint8_t sdc_hci_cmd_cb_read_transmit_power_level(const sdc_hci_cmd_cb_read_trans
 
 /** @brief Set Controller To Host Flow Control.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.38
  *
  * This command is used by the Host to turn flow control on or off for data and/or
@@ -339,19 +336,18 @@ uint8_t sdc_hci_cmd_cb_read_transmit_power_level(const sdc_hci_cmd_cb_read_trans
  * off, the Host should not send the HCI_Host_Number_Of_Completed_Packets
  * command. That command will be ignored by the Controller if it is sent by the
  * Host and flow control is off. If flow control is turned on for HCI ACL Data packets
- * and off for HCI Synchronous Data packets,
- * HCI_Host_Number_Of_Completed_Packets commands sent by the Host should
- * only contain Connection_Handles for ACL connections. If flow control is turned
- * off for HCI ACL Data packets and on for HCI Synchronous Data packets,
- * HCI_Host_Number_Of_Completed_Packets commands sent by the Host should
- * only contain Connection_Handles for synchronous connections. If flow control is
- * turned on for HCI ACL Data packets and HCI Synchronous Data packets, the
- * Host will send HCI_Host_Number_Of_Completed_Packets commands both for
- * ACL connections and synchronous connections.
+ * and off for HCI Synchronous Data packets, HCI_Host_Number_Of_Completed_-
+ * Packets commands sent by the Host should only contain Connection_Handles
+ * for ACL connections. If flow control is turned off for HCI ACL Data packets and
+ * on for HCI Synchronous Data packets, HCI_Host_Number_Of_Completed_-
+ * Packets commands sent by the Host should only contain Connection_Handles
+ * for synchronous connections. If flow control is turned on for HCI ACL Data
+ * packets and HCI Synchronous Data packets, the Host will send HCI_Host_-
+ * Number_Of_Completed_Packets commands both for ACL connections and
+ * synchronous connections.
  *
  * The Flow_Control_Enable parameter shall only be changed if no connections
  * exist.
- *
  * Event(s) generated (unless masked away):
  * When the HCI_Set_Controller_To_Host_Flow_Control command has
  * completed, an HCI_Command_Complete event shall be generated.
@@ -366,7 +362,7 @@ uint8_t sdc_hci_cmd_cb_set_controller_to_host_flow_control(const sdc_hci_cmd_cb_
 
 /** @brief Host Buffer Size.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.39
  *
  * The HCI_Host_Buffer_Size command is used by the Host to notify the
@@ -419,51 +415,43 @@ uint8_t sdc_hci_cmd_cb_host_buffer_size(const sdc_hci_cmd_cb_host_buffer_size_t 
 
 /** @brief Host Number Of Completed Packets.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.40
  *
  * The HCI_Host_Number_Of_Completed_Packets command is used by the
  * Host to indicate to the Controller the number of HCI Data packets that have
- * been completed for each Connection_Handle since the previous
- * HCI_Host_Number_Of_Completed_Packets command was sent to the
- * Controller. This means that the corresponding buffer space has been freed in
- * the Host. Based on this information, and the
- * Host_Total_Num_ACL_Data_Packets and
- * Host_Total_Num_Synchronous_Data_Packets command parameters of the
- * HCI_Host_Buffer_Size command, the Controller can determine for which
- * Connection_Handles the following HCI Data packets should be sent to the
- * Host. The command should only be issued by the Host if flow control in the
- * direction from the Controller to the Host is on and there is at least one
- * connection, or if the Controller is in local loopback mode. Otherwise, the
- * command will be ignored by the Controller. When the Host has completed one
- * or more HCI Data packet(s) it shall send an
- * HCI_Host_Number_Of_Completed_Packets command to the Controller, until it
- * finally reports that all pending HCI Data packets have been completed. The
- * frequency at which this command is sent is manufacturer specific.
+ * been completed for each Connection_Handle since the previous HCI_Host_-
+ * Number_Of_Completed_Packets command was sent to the Controller. This
+ * means that the corresponding buffer space has been freed in the Host and is
+ * available for new packets to be sent. Based on this information, and the
+ * Host_Total_Num_ACL_Data_Packets and Host_Total_Num_Synchronous_-
+ * Data_Packets command parameters of the HCI_Host_Buffer_Size command,
+ * the Controller can determine for which Connection_Handles the following HCI
+ * Data packets should be sent to the Host. When the Host has completed one or
+ * more HCI Data packet(s) it shall send an HCI_Host_Number_Of_Completed_-
+ * Packets command to the Controller, until it finally reports that all pending HCI
+ * Data packets have been completed. The frequency at which this command is
+ * sent is manufacturer specific.
  *
  * The Set Controller To Host Flow Control command is used to turn flow control on
- * or off. If flow control from the Controller to the Host is turned on, the
- * HCI_Host_Buffer_Size command shall always be sent by the Host after a power-
- * on or a reset before the first HCI_Host_Number_Of_Completed_Packets
- * command is sent.
+ * or off. If flow control from the Controller to the Host is turned on, the HCI_Host_-
+ * Buffer_Size command shall always be sent by the Host after a power-on or a
+ * reset before the first HCI_Host_Number_Of_Completed_Packets command is
+ * sent.
  *
- * Note: The HCI_Host_Number_Of_Completed_Packets command is a special
- * command in the sense that no event is normally generated after the command
- * has completed. The command may be sent at any time by the Host when there
- * is at least one connection, or if the Controller is in local loopback mode
- * independent of other commands. The normal flow control for commands is not
- * used for the HCI_Host_Number_Of_Completed_Packets command.
+ * The HCI_Host_Number_Of_Completed_Packets command may be sent at
+ * any time by the Host when there is at least one connection, or if the Controller
+ * is in local loopback mode, independent of other commands. If the Host issues
+ * this command when neither of these cases applies, the Controller shall ignore
+ * it.
  *
  * Event(s) generated (unless masked away):
- * Normally, no event is generated after the
- * HCI_Host_Number_Of_Completed_Packets command has completed.
- * However, if the HCI_Host_Number_Of_Completed_Packets command
- * contains one or more invalid parameters, the Controller shall return an
- * HCI_Command_Complete event with a failure status indicating the Invalid HCI
- * Command Parameters error code. The Host may send the
- * HCI_Host_Number_Of_Completed_Packets command at any time when there
- * is at least one connection, or if the Controller is in local loopback mode. The
- * normal flow control for commands is not used for this command.
+ * Normally, no event is generated after the HCI_Host_Number_Of_Completed_-
+ * Packets command has completed. However, if the HCI_Host_Number_Of_-
+ * Completed_Packets command contains one or more invalid parameters, the
+ * Controller shall return an HCI_Command_Complete event containing the error
+ * code Invalid HCI Command Parameters (0x12). The normal flow control for
+ * commands is not used for this command.
  *
  * @param[in]  p_params Input parameters.
  *
@@ -475,7 +463,7 @@ uint8_t sdc_hci_cmd_cb_host_number_of_completed_packets(const sdc_hci_cmd_cb_hos
 
 /** @brief Set Event Mask Page 2.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.69
  *
  * The HCI_Set_Event_Mask_Page_2 command is used to control which events
@@ -503,13 +491,13 @@ uint8_t sdc_hci_cmd_cb_set_event_mask_page_2(const sdc_hci_cmd_cb_set_event_mask
 
 /** @brief Read Authenticated Payload Timeout.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.93
  *
  * This command reads the Authenticated_Payload_Timeout
  * (authenticatedPayloadTO, see [Vol 2] Part B, Appendix B for BR/EDR
  * connections and [Vol 6] Part B, Section 5.4 for LE connections) parameter in
- * the Primary Controller on the specified Connection_Handle.
+ * the Controller on the specified Connection_Handle.
  *
  * When the Connection_Handle identifies a BR/EDR synchronous connection,
  * the Controller shall return the error code Command Disallowed (0x0C).
@@ -530,13 +518,13 @@ uint8_t sdc_hci_cmd_cb_read_authenticated_payload_timeout(const sdc_hci_cmd_cb_r
 
 /** @brief Write Authenticated Payload Timeout.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.94
  *
  * This command writes the Authenticated_Payload_Timeout
  * (authenticatedPayloadTO, see [Vol 2] Part B, Appendix B and [Vol 6] Part B,
- * Section 5.4 for the LE connection) parameter in the Primary Controller for the
- * specified Connection_Handle.
+ * Section 5.4 for the LE connection) parameter in the Controller for the specified
+ * Connection_Handle.
  *
  * When the Connection_Handle identifies a BR/EDR ACL connection:
  * • If the connection is in Sniff mode, the Authenticated_Payload_Timeout shall
@@ -553,7 +541,7 @@ uint8_t sdc_hci_cmd_cb_read_authenticated_payload_timeout(const sdc_hci_cmd_cb_r
  *
  * When the Connection_Handle identifies an LE connection, the
  * Authenticated_Payload_Timeout shall be equal to or greater than
- * connInterval * (1 + connSlaveLatency).
+ * connInterval × connSubrateFactor × (1 + connPeripheralLatency).
  *
  * When the Connection_Handle is associated with an ACL connection, the Link
  * Manager will use this parameter to determine when to use the LMP ping

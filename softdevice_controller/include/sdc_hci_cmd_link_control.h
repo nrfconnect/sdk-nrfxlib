@@ -69,7 +69,7 @@ typedef __PACKED_STRUCT
  */
 /** @brief Disconnect.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.1.6
  *
  * The HCI_Disconnect command is used to terminate an existing connection.
@@ -77,21 +77,23 @@ typedef __PACKED_STRUCT
  * be disconnected. The Reason command parameter indicates the reason for
  * ending the connection and is copied into the error code field of the
  * LMP_DETACH PDU on a BR/EDR connection or the error code field of the
- * LL_TERMINATE_IND PDU, or the LL_CIS_TERMINATE_IND PDU on an LE
+ * LL_TERMINATE_IND or LL_CIS_TERMINATE_IND PDU on an LE
  * connection. All SCO, eSCO, and CIS connections on a physical link should be
  * disconnected before the ACL connection on the same physical connection is
  * disconnected. If it does not, they will be implicitly disconnected as part of the
  * ACL disconnection.
  *
- * If this command is used to disconnect a CIS, the connection handle of the CIS
- * and the associated data paths of the CIS shall remain valid.
+ * If, on the Central, the Host issues this command before issuing the
+ * HCI_LE_Create_CIS command for the same CIS, then the Controller shall
+ * return the error code Command Disallowed (0x0C).
  *
- * If this command is issued for a CIS before the Controller has generated the
- * HCI_CIS_Established event for that CIS, the Controller shall return the error
- * code Command Disallowed (0x0C).
+ * If, on the Peripheral, the Host issues this command before the Controller has
+ * generated the HCI_LE_CIS_Established event for that CIS, then the Controller
+ * shall return the error code Command Disallowed (0x0C).
  *
- * Note: The Host can recreate a disconnected CIS at a later point in time using
- * the same connection handle.
+ * Note: As specified in Section 7.7.5, on the Central, the handle for a CIS
+ * remains valid even after disconnection and, therefore, the Host can recreate a
+ * disconnected CIS at a later point in time using the same connection handle.
  *
  * Event(s) generated (unless masked away):
  * When the Controller receives the HCI_Disconnect command, it shall send the
@@ -107,10 +109,10 @@ typedef __PACKED_STRUCT
  * parameter on the local Host should instead be set to the value LMP Response
  * Timeout / LL Response Timeout (0x22).
  *
- * Note: No HCI_Command_Complete event will be sent by the Controller to
- * indicate that this command has been completed. Instead, the
- * HCI_Disconnection_Complete event will indicate that this command has been
- * completed.
+ * If this command is issued for a CIS on the Central and the CIS is successfully
+ * terminated before being established, then an HCI_LE_CIS_Established event
+ * shall also be sent for this CIS with the Status Operation Cancelled by Host
+ * (0x44).
  *
  * @param[in]  p_params Input parameters.
  *
@@ -122,7 +124,7 @@ uint8_t sdc_hci_cmd_lc_disconnect(const sdc_hci_cmd_lc_disconnect_t * p_params);
 
 /** @brief Read Remote Version Information.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.1.23
  *
  * This command will obtain the values for the version information for the remote
@@ -139,11 +141,6 @@ uint8_t sdc_hci_cmd_lc_disconnect(const sdc_hci_cmd_lc_disconnect_t * p_params);
  * HCI_Read_Remote_Version_Information_Complete event contains the status
  * of this command, and parameters describing the version and subversion of the
  * LMP or Link Layer used by the remote device.
- *
- * Note: No HCI_Command_Complete event will be sent by the Controller to
- * indicate that this command has been completed. Instead, the
- * HCI_Read_Remote_Version_Information_Complete event will indicate that
- * this command has been completed.
  *
  * @param[in]  p_params Input parameters.
  *
