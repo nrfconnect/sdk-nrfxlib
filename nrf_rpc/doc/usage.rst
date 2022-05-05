@@ -24,9 +24,12 @@ RPC encoders
 
 RPC encoders encode commands and events into serialized packets.
 Creating an encoder is similar for all packet types.
-The first step is the allocation of a buffer using :c:macro:`NRF_RPC_ALLOC`.
-After that, you can encode parameters directly into the buffer or use the `TinyCBOR`_ library.
-In the last step, the packet is sent using one of the sending functions: :c:func:`nrf_rpc_cmd`, :c:func:`nrf_rpc_cbor_evt`, or similar.
+To create an encoder, complete the following steps:
+
+1. Allocate a buffer using :c:func:`nrf_rpc_alloc_tx_buf`.
+#. Encode parameters directly into the buffer or use the `TinyCBOR`_ library.
+
+The packet is sent using one of the sending functions: :c:func:`nrf_rpc_cmd`, :c:func:`nrf_rpc_cbor_evt`, or similar.
 
 After sending the command, a response is received, so it must be parsed.
 There are two ways to parse a response.
@@ -55,7 +58,7 @@ It returns 0 on success or a negative error code if communication with the remot
 	/* Defines a group that contains functions implemented in this
 	 * sample.
 	 */
-	NRF_RPC_GROUP_DEFINE(math_group, "sample_math", NULL, NULL, NULL);
+	NRF_RPC_GROUP_DEFINE(math_group, "sample_math", &transport, NULL, NULL, NULL);
 
 	/* Defines a helper structure to pass the results.
 	 */
@@ -70,7 +73,7 @@ It returns 0 on success or a negative error code if communication with the remot
 		struct remote_inc_result result;
 		struct nrf_rpc_cbor_ctx ctx;
 
-		NRF_RPC_CBOR_ALLOC(ctx, MAX_ENCODED_LEN);
+		NRF_RPC_CBOR_ALLOC(&math_group, ctx, MAX_ENCODED_LEN);
 
 		cbor_encode_int(&ctx.encoder, input);
 
@@ -90,7 +93,7 @@ The following code shows how this function might look.
 
 .. code-block:: c
 
-	static void remote_inc_rsp(CborValue *value, void *handler_data)
+	static void remote_inc_rsp(const struct nrf_rpc_group *group, CborValue *value, void *handler_data)
 	{
 		CborError cbor_err;
 		struct remote_inc_result *result =
@@ -126,10 +129,10 @@ A RPC decoder associated with the example above can be implemented in the follow
 	 * sample. Second parameter have to be the same in both remote
 	 * and local side.
 	 */
-	NRF_RPC_GROUP_DEFINE(math_group, "sample_math", NULL, NULL, NULL);
+	NRF_RPC_GROUP_DEFINE(math_group, "sample_math", &transport, NULL, NULL, NULL);
 
 
-	static void remote_inc_handler(CborValue *value, void* handler_data)
+	static void remote_inc_handler(const struct nrf_rpc_group *group, CborValue *value, void* handler_data)
 	{
 		int err;
 		int input = 0;
@@ -142,7 +145,7 @@ A RPC decoder associated with the example above can be implemented in the follow
 			cbor_value_get_int(value, &input);
 		}
 
-		nrf_rpc_cbor_decoding_done(value);
+		nrf_rpc_cbor_decoding_done(group, value);
 
 		/* Actual hard work is done in below line */
 
@@ -150,11 +153,11 @@ A RPC decoder associated with the example above can be implemented in the follow
 
 		/* Encoding and sending the response */
 
-		NRF_RPC_CBOR_ALLOC(ctx, MAX_ENCODED_LEN);
+		NRF_RPC_CBOR_ALLOC(group, ctx, MAX_ENCODED_LEN);
 
 		cbor_encode_int(&ctx.encoder, output);
 
-		err = nrf_rpc_cbor_rsp(&ctx);
+		err = nrf_rpc_cbor_rsp(group, &ctx);
 
 		if (err < 0) {
 			fatal_error(err);

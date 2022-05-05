@@ -32,9 +32,8 @@ The following image shows an example of the command and response flow.
    nRF RPC command and response flow
 
 **Events** are intended to be used for asynchronous function calls.
-The caller sends an event to the other side and returns immediately if there is a free thread in the thread pool.
+The caller sends an event to the other side and returns immediately.
 See the :ref:`nrf_rpc_architecture_threads` section.
-Otherwise, it waits for an available thread.
 It is not possible to return anything from the remote side after receiving an event, but it is possible to send an event in the opposite direction.
 The following image shows an example of the event flow.
 
@@ -54,9 +53,7 @@ For this reason, each side of nRF RPC contains a thread pool.
 The thread pool is OS-dependent and implemented in the OS abstraction layer.
 The number of threads in a thread pool is configurable.
 
-When a caller wants to call a remote procedure, nRF RPC checks if there is a thread available in a pool.
-If there is none, then it waits until one becomes available, blocking the caller.
-After that, nRF RPC sends a packet and it is executed by an available thread from a thread pool.
+The nRF RPC sends a packet and it is executed by an available thread from a thread pool.
 In the case of a command being received, a response is sent directly to a waiting thread, so no new thread is allocated for a response.
 
 The following image presents sample command and response flows.
@@ -122,12 +119,19 @@ Transport
 ---------
 
 The main role of a transport is to transfer packets between two sides.
-You can select the transport implementation using the library configuration.
+You can implement your own transport for any nRF RPC group.
+The transport layer defines a destination remote CPU.
 
-Currently the default transport is `OpenAMP`_ on `Zephyr`_.
+The header file describing the nRF RPC transport API is :file:`include/nrf_rpc_tr.h`.
 
-The template header describing the nRF RPC transport API is :file:`template/nrf_rpc_tr_tmpl.h`.
-The header file :file:`include/rp_trans.h` is responsible for including the right transport header file based on the configuration.
+Assign your transport interface to the nRF RPC group as follows:
+
+.. code-block:: c
+
+   /* Setup this structure with your transport API and transport specific data. */
+   struct nrf_rpc_tr your_transport;
+
+   NRF_RPC_GROUP_DEFINE(math_group, "sample_math", &your_transport, NULL, NULL, NULL);
 
 Operating system abstraction
 ----------------------------
