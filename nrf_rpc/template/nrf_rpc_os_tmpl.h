@@ -26,6 +26,9 @@
 extern "C" {
 #endif
 
+#define NRF_RPC_OS_WAIT_FOREVER -1
+#define NRF_RPC_OS_NO_WAIT 0
+
 /** @brief Structure to pass events between threads. */
 struct nrf_rpc_os_event;
 
@@ -82,9 +85,14 @@ void nrf_rpc_os_event_set(struct nrf_rpc_os_event *event);
 
 /** @brief Wait for an event.
  *
- * @param event Event to wait for.
+ * @param event   Event to wait for.
+ * @param timeout Timeout in milliseconds.
+ *		  @c NRF_RPC_OS_WAIT_FOREVER indicates infinite timeout.
+ *		  @c NRF_RPC_OS_NO_WAIT indicates no timeout.
+ *
+ * @return        0 on success or negative error code.
  */
-void nrf_rpc_os_event_wait(struct nrf_rpc_os_event *event);
+int nrf_rpc_os_event_wait(struct nrf_rpc_os_event *event, int32_t timeout);
 
 /** @brief Initialize message passing structure.
  *

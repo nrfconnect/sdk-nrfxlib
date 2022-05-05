@@ -515,7 +515,8 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 			nrf_rpc_os_msg_set(&cmd_ctx->recv_msg, packet, len);
 
 			if (auto_free_rx_buf(transport)) {
-				nrf_rpc_os_event_wait(&group->data->decode_done_event);
+				nrf_rpc_os_event_wait(&group->data->decode_done_event,
+						      NRF_RPC_OS_WAIT_FOREVER);
 			}
 
 		}
@@ -526,7 +527,8 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 		nrf_rpc_os_thread_pool_send(packet, len);
 
 		if (auto_free_rx_buf(transport)) {
-			nrf_rpc_os_event_wait(&group->data->decode_done_event);
+			nrf_rpc_os_event_wait(&group->data->decode_done_event,
+					      NRF_RPC_OS_WAIT_FOREVER);
 		}
 
 		return;

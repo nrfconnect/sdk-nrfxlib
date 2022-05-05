@@ -30,6 +30,15 @@ config NRF_RPC_CMD_CTX_POOL_SIZE
 	  that is ensured to work without waiting is the sum of the number of
 	  threads in both local and remote pool.
 
+config NRF_RPC_GROUP_INIT_WAIT_TIME
+	int "Group initialization timeout"
+	default 1000
+	range 10 5000
+	help
+	  The time period to wait for the remote cores to send group init responses with
+	  destination group ids.
+	  The time is given in miliseconds.
+
 config NRF_RPC_THREAD_POOL_SIZE
 	int "Number of threads in local thread pool"
 	default 3
