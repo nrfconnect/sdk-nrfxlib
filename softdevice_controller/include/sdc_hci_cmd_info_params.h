@@ -47,7 +47,7 @@ enum sdc_hci_opcode_ip
 
 /** @brief LMP features.
  *
- * See Core_v5.2, Vol 2, Part C, Section 3.3
+ * See Core_v5.3, Vol 2, Part C, Section 3.3
  */
 typedef __PACKED_STRUCT
 {
@@ -84,16 +84,16 @@ typedef __PACKED_STRUCT
     uint8_t ev4_packets : 1;
     uint8_t ev5_packets : 1;
     uint8_t rfu2 : 1;
-    uint8_t afh_capable_slave : 1;
-    uint8_t afh_classification_slave : 1;
+    uint8_t afh_capable_peripheral : 1;
+    uint8_t afh_classification_peripheral : 1;
     uint8_t bdedr_not_supported : 1;
     uint8_t le_supported : 1;
     uint8_t slot3_enhanced_data_rate : 1;
     uint8_t slot5_enhanced_data_rate : 1;
     uint8_t sniff_subrating : 1;
     uint8_t pause_encryption : 1;
-    uint8_t afh_capable_master : 1;
-    uint8_t afh_classification_master : 1;
+    uint8_t afh_capable_central : 1;
+    uint8_t afh_classification_central : 1;
     uint8_t enhanced_data_rate_esco_2mbps_mode : 1;
     uint8_t enhanced_data_rate_esco_3mbps_mode : 1;
     uint8_t slot3_enhanced_data_rate_esco : 1;
@@ -117,7 +117,7 @@ typedef __PACKED_STRUCT
 
 /** @brief Supported HCI commands.
  *
- * See Core_v5.2, Vol 4, Part E, Section 6.27
+ * See Core_v5.3, Vol 4, Part E, Section 6.27
  */
 typedef __PACKED_STRUCT
 {
@@ -127,7 +127,7 @@ typedef __PACKED_STRUCT
     uint8_t hci_exit_periodic_inquiry_mode : 1;
     uint8_t hci_create_connection : 1;
     uint8_t hci_disconnect : 1;
-    uint8_t hci_add_sco_connection : 1;
+    uint8_t previously_used_0_6 : 1;
     uint8_t hci_create_connection_cancel : 1;
     uint8_t hci_accept_connection_request : 1;
     uint8_t hci_reject_connection_request : 1;
@@ -139,7 +139,7 @@ typedef __PACKED_STRUCT
     uint8_t hci_authentication_requested : 1;
     uint8_t hci_set_connection_encryption : 1;
     uint8_t hci_change_connection_link_key : 1;
-    uint8_t hci_master_link_key : 1;
+    uint8_t hci_link_key_selection : 1;
     uint8_t hci_remote_name_request : 1;
     uint8_t hci_remote_name_request_cancel : 1;
     uint8_t hci_read_remote_supported_features : 1;
@@ -147,18 +147,18 @@ typedef __PACKED_STRUCT
     uint8_t hci_read_remote_version_information : 1;
     uint8_t hci_read_clock_offset : 1;
     uint8_t hci_read_lmp_handle : 1;
-    uint8_t rfu1 : 1;
-    uint8_t rfu2 : 1;
-    uint8_t rfu3 : 1;
-    uint8_t rfu4 : 1;
-    uint8_t rfu5 : 1;
-    uint8_t rfu6 : 1;
-    uint8_t rfu7 : 1;
+    uint8_t rfu_3_2 : 1;
+    uint8_t rfu_3_3 : 1;
+    uint8_t rfu_3_4 : 1;
+    uint8_t rfu_3_5 : 1;
+    uint8_t rfu_3_6 : 1;
+    uint8_t rfu_3_7 : 1;
+    uint8_t rfu_4_0 : 1;
     uint8_t hci_hold_mode : 1;
     uint8_t hci_sniff_mode : 1;
     uint8_t hci_exit_sniff_mode : 1;
-    uint8_t previously_used1 : 1;
-    uint8_t previously_used2 : 1;
+    uint8_t previously_used_4_4 : 1;
+    uint8_t previously_used_4_5 : 1;
     uint8_t hci_qos_setup : 1;
     uint8_t hci_role_discovery : 1;
     uint8_t hci_switch_role : 1;
@@ -173,7 +173,7 @@ typedef __PACKED_STRUCT
     uint8_t hci_flush : 1;
     uint8_t hci_read_pin_type : 1;
     uint8_t hci_write_pin_type : 1;
-    uint8_t previously_used3 : 1;
+    uint8_t previously_used_6_4 : 1;
     uint8_t hci_read_stored_link_key : 1;
     uint8_t hci_write_stored_link_key : 1;
     uint8_t hci_delete_stored_link_key : 1;
@@ -191,8 +191,8 @@ typedef __PACKED_STRUCT
     uint8_t hci_write_inquiry_scan_activity : 1;
     uint8_t hci_read_authentication_enable : 1;
     uint8_t hci_write_authentication_enable : 1;
-    uint8_t hci_read_encryption_mode : 1;
-    uint8_t hci_write_encryption_mode : 1;
+    uint8_t previously_used_8_6 : 1;
+    uint8_t previously_used_8_7 : 1;
     uint8_t hci_read_class_of_device : 1;
     uint8_t hci_write_class_of_device : 1;
     uint8_t hci_read_voice_setting : 1;
@@ -214,13 +214,13 @@ typedef __PACKED_STRUCT
     uint8_t hci_read_number_of_supported_iac : 1;
     uint8_t hci_read_current_iac_lap : 1;
     uint8_t hci_write_current_iac_lap : 1;
-    uint8_t hci_read_page_scan_mode_period : 1;
-    uint8_t hci_write_page_scan_mode_period : 1;
-    uint8_t hci_read_page_scan_mode : 1;
-    uint8_t hci_write_page_scan_mode : 1;
+    uint8_t previously_used_11_5 : 1;
+    uint8_t previously_used_11_6 : 1;
+    uint8_t previously_used_11_7 : 1;
+    uint8_t previously_used_12_0 : 1;
     uint8_t hci_set_afh_host_channel_classification : 1;
-    uint8_t rfu8 : 1;
-    uint8_t rfu9 : 1;
+    uint8_t rfu_12_2 : 1;
+    uint8_t rfu_12_3 : 1;
     uint8_t hci_read_inquiry_scan_type : 1;
     uint8_t hci_write_inquiry_scan_type : 1;
     uint8_t hci_read_inquiry_mode : 1;
@@ -229,19 +229,19 @@ typedef __PACKED_STRUCT
     uint8_t hci_write_page_scan_type : 1;
     uint8_t hci_read_afh_channel_assessment_mode : 1;
     uint8_t hci_write_afh_channel_assessment_mode : 1;
-    uint8_t rfu10 : 1;
-    uint8_t rfu11 : 1;
-    uint8_t rfu12 : 1;
-    uint8_t rfu13 : 1;
-    uint8_t rfu14 : 1;
-    uint8_t rfu15 : 1;
-    uint8_t rfu16 : 1;
+    uint8_t rfu_13_4 : 1;
+    uint8_t rfu_13_5 : 1;
+    uint8_t rfu_13_6 : 1;
+    uint8_t rfu_13_7 : 1;
+    uint8_t rfu_14_0 : 1;
+    uint8_t rfu_14_1 : 1;
+    uint8_t rfu_14_2 : 1;
     uint8_t hci_read_local_version_information : 1;
-    uint8_t rfu17 : 1;
+    uint8_t rfu_14_4 : 1;
     uint8_t hci_read_local_supported_features : 1;
     uint8_t hci_read_local_extended_features : 1;
     uint8_t hci_read_buffer_size : 1;
-    uint8_t hci_read_country_code : 1;
+    uint8_t previously_used_15_0 : 1;
     uint8_t hci_read_bd_addr : 1;
     uint8_t hci_read_failed_contact_counter : 1;
     uint8_t hci_reset_failed_contact_counter : 1;
@@ -255,12 +255,12 @@ typedef __PACKED_STRUCT
     uint8_t hci_setup_synchronous_connection_request : 1;
     uint8_t hci_accept_synchronous_connection_request : 1;
     uint8_t hci_reject_synchronous_connection_request : 1;
-    uint8_t rfu18 : 1;
-    uint8_t rfu19 : 1;
+    uint8_t rfu_16_6 : 1;
+    uint8_t rfu_16_7 : 1;
     uint8_t hci_read_extended_inquiry_response : 1;
     uint8_t hci_write_extended_inquiry_response : 1;
     uint8_t hci_refresh_encryption_key : 1;
-    uint8_t rfu20 : 1;
+    uint8_t rfu_17_3 : 1;
     uint8_t hci_sniff_subrating : 1;
     uint8_t hci_read_simple_pairing_mode : 1;
     uint8_t hci_write_simple_pairing_mode : 1;
@@ -269,9 +269,9 @@ typedef __PACKED_STRUCT
     uint8_t hci_write_inquiry_transmit_power_level : 1;
     uint8_t hci_read_default_erroneous_data_reporting : 1;
     uint8_t hci_write_default_erroneous_data_reporting : 1;
-    uint8_t rfu21 : 1;
-    uint8_t rfu22 : 1;
-    uint8_t rfu23 : 1;
+    uint8_t rfu_18_4 : 1;
+    uint8_t rfu_18_5 : 1;
+    uint8_t rfu_18_6 : 1;
     uint8_t hci_io_capability_request_reply : 1;
     uint8_t hci_user_confirmation_request_reply : 1;
     uint8_t hci_user_confirmation_request_negative_reply : 1;
@@ -281,50 +281,50 @@ typedef __PACKED_STRUCT
     uint8_t hci_write_simple_pairing_debug_mode : 1;
     uint8_t hci_enhanced_flush : 1;
     uint8_t hci_remote_oob_data_request_negative_reply : 1;
-    uint8_t rfu24 : 1;
-    uint8_t rfu25 : 1;
+    uint8_t rfu_20_0 : 1;
+    uint8_t rfu_20_1 : 1;
     uint8_t hci_send_keypress_notification : 1;
     uint8_t hci_io_capability_request_negative_reply : 1;
     uint8_t hci_read_encryption_key_size : 1;
-    uint8_t rfu26 : 1;
-    uint8_t rfu27 : 1;
-    uint8_t rfu28 : 1;
-    uint8_t hci_create_physical_link : 1;
-    uint8_t hci_accept_physical_link : 1;
-    uint8_t hci_disconnect_physical_link : 1;
-    uint8_t hci_create_logical_link : 1;
-    uint8_t hci_accept_logical_link : 1;
-    uint8_t hci_disconnect_logical_link : 1;
-    uint8_t hci_logical_link_cancel : 1;
-    uint8_t hci_flow_spec_modify : 1;
-    uint8_t hci_read_logical_link_accept_timeout : 1;
-    uint8_t hci_write_logical_link_accept_timeout : 1;
+    uint8_t rfu_20_5 : 1;
+    uint8_t rfu_20_6 : 1;
+    uint8_t rfu_20_7 : 1;
+    uint8_t previously_used_21_0 : 1;
+    uint8_t previously_used_21_1 : 1;
+    uint8_t previously_used_21_2 : 1;
+    uint8_t previously_used_21_3 : 1;
+    uint8_t previously_used_21_4 : 1;
+    uint8_t previously_used_21_5 : 1;
+    uint8_t previously_used_21_6 : 1;
+    uint8_t previously_used_21_7 : 1;
+    uint8_t previously_used_22_0 : 1;
+    uint8_t previously_used_22_1 : 1;
     uint8_t hci_set_event_mask_page_2 : 1;
-    uint8_t hci_read_location_data : 1;
-    uint8_t hci_write_location_data : 1;
-    uint8_t hci_read_local_amp_info : 1;
-    uint8_t hci_read_local_amp_assoc : 1;
-    uint8_t hci_write_remote_amp_assoc : 1;
+    uint8_t previously_used_22_3 : 1;
+    uint8_t previously_used_22_4 : 1;
+    uint8_t previously_used_22_5 : 1;
+    uint8_t previously_used_22_6 : 1;
+    uint8_t previously_used_22_7 : 1;
     uint8_t hci_read_flow_control_mode : 1;
     uint8_t hci_write_flow_control_mode : 1;
     uint8_t hci_read_data_block_size : 1;
-    uint8_t rfu29 : 1;
-    uint8_t rfu30 : 1;
-    uint8_t hci_enable_amp_receiver_reports : 1;
-    uint8_t hci_amp_test_end : 1;
-    uint8_t hci_amp_test : 1;
+    uint8_t rfu_23_3 : 1;
+    uint8_t rfu_23_4 : 1;
+    uint8_t previously_used_23_5 : 1;
+    uint8_t previously_used_23_6 : 1;
+    uint8_t previously_used_23_7 : 1;
     uint8_t hci_read_enhanced_transmit_power_level : 1;
-    uint8_t rfu31 : 1;
-    uint8_t hci_read_best_effort_flush_timeout : 1;
-    uint8_t hci_write_best_effort_flush_timeout : 1;
-    uint8_t hci_short_range_mode : 1;
+    uint8_t rfu_24_1 : 1;
+    uint8_t previously_used_24_2 : 1;
+    uint8_t previously_used_24_3 : 1;
+    uint8_t previously_used_24_4 : 1;
     uint8_t hci_read_le_host_support : 1;
     uint8_t hci_write_le_host_support : 1;
-    uint8_t rfu32 : 1;
+    uint8_t rfu_24_7 : 1;
     uint8_t hci_le_set_event_mask : 1;
     uint8_t hci_le_read_buffer_size_v1 : 1;
     uint8_t hci_le_read_local_supported_features : 1;
-    uint8_t rfu33 : 1;
+    uint8_t rfu_25_3 : 1;
     uint8_t hci_le_set_random_address : 1;
     uint8_t hci_le_set_advertising_parameters : 1;
     uint8_t hci_le_read_advertising_physical_channel_tx_power : 1;
@@ -335,10 +335,10 @@ typedef __PACKED_STRUCT
     uint8_t hci_le_set_scan_enable : 1;
     uint8_t hci_le_create_connection : 1;
     uint8_t hci_le_create_connection_cancel : 1;
-    uint8_t hci_le_read_white_list_size : 1;
-    uint8_t hci_le_clear_white_list : 1;
-    uint8_t hci_le_add_device_to_white_list : 1;
-    uint8_t hci_le_remove_device_from_white_list : 1;
+    uint8_t hci_le_read_filter_accept_list_size : 1;
+    uint8_t hci_le_clear_filter_accept_list : 1;
+    uint8_t hci_le_add_device_to_filter_accept_list : 1;
+    uint8_t hci_le_remove_device_from_filter_accept_list : 1;
     uint8_t hci_le_connection_update : 1;
     uint8_t hci_le_set_host_channel_classification : 1;
     uint8_t hci_le_read_channel_map : 1;
@@ -352,10 +352,10 @@ typedef __PACKED_STRUCT
     uint8_t hci_le_receiver_test_v1 : 1;
     uint8_t hci_le_transmitter_test_v1 : 1;
     uint8_t hci_le_test_end : 1;
-    uint8_t rfu34 : 1;
-    uint8_t rfu35 : 1;
-    uint8_t rfu36 : 1;
-    uint8_t rfu37 : 1;
+    uint8_t rfu_28_7 : 1;
+    uint8_t rfu_29_0 : 1;
+    uint8_t rfu_29_1 : 1;
+    uint8_t rfu_29_2 : 1;
     uint8_t hci_enhanced_setup_synchronous_connection : 1;
     uint8_t hci_enhanced_accept_synchronous_connection : 1;
     uint8_t hci_read_local_supported_codecs : 1;
@@ -369,13 +369,13 @@ typedef __PACKED_STRUCT
     uint8_t hci_set_triggered_clock_capture : 1;
     uint8_t hci_truncated_page : 1;
     uint8_t hci_truncated_page_cancel : 1;
-    uint8_t hci_set_connectionless_slave_broadcast : 1;
-    uint8_t hci_set_connectionless_slave_broadcast_receive : 1;
+    uint8_t hci_set_connectionless_peripheral_broadcast : 1;
+    uint8_t hci_set_connectionless_peripheral_broadcast_receive : 1;
     uint8_t hci_start_synchronization_train : 1;
     uint8_t hci_receive_synchronization_train : 1;
     uint8_t hci_set_reserved_lt_addr : 1;
     uint8_t hci_delete_reserved_lt_addr : 1;
-    uint8_t hci_set_connectionless_slave_broadcast_data : 1;
+    uint8_t hci_set_connectionless_peripheral_broadcast_data : 1;
     uint8_t hci_read_synchronization_train_parameters : 1;
     uint8_t hci_write_synchronization_train_parameters : 1;
     uint8_t hci_remote_oob_extended_data_request_reply : 1;
@@ -487,8 +487,16 @@ typedef __PACKED_STRUCT
     uint8_t hci_read_local_supported_codec_capabilities : 1;
     uint8_t hci_read_local_supported_controller_delay : 1;
     uint8_t hci_configure_data_path : 1;
-    uint8_t rfu38 : 1;
-    uint8_t rfu39 : 1;
+    uint8_t hci_le_set_data_related_address_changes : 1;
+    uint8_t hci_set_min_encryption_key_size : 1;
+    uint8_t hci_le_set_default_subrate_command : 1;
+    uint8_t hci_le_subrate_request_command : 1;
+    uint8_t rfu_46_2 : 1;
+    uint8_t rfu_46_3 : 1;
+    uint8_t rfu_46_4 : 1;
+    uint8_t rfu_46_5 : 1;
+    uint8_t rfu_46_6 : 1;
+    uint8_t rfu_46_7 : 1;
 } sdc_hci_ip_supported_commands_t;
 
 /** @} end of HCI_TYPES */
@@ -502,10 +510,10 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     uint8_t hci_version;
-    uint16_t hci_revision;
-    uint8_t lmp_pal_version;
-    uint16_t manufacturer_name;
-    uint16_t lmp_pal_subversion;
+    uint16_t hci_subversion;
+    uint8_t lmp_version;
+    uint16_t company_identifier;
+    uint16_t lmp_subversion;
 } sdc_hci_cmd_ip_read_local_version_information_return_t;
 
 /** @brief Read Local Supported Commands return parameter(s). */
@@ -516,10 +524,9 @@ typedef __PACKED_UNION
 } sdc_hci_cmd_ip_read_local_supported_commands_return_t;
 
 /** @brief Read Local Supported Features return parameter(s). */
-typedef __PACKED_UNION
+typedef __PACKED_STRUCT
 {
-    sdc_hci_ip_lmp_features_t params;
-    uint8_t raw[8];
+    sdc_hci_ip_lmp_features_t lmp_features;
 } sdc_hci_cmd_ip_read_local_supported_features_return_t;
 
 /** @brief Read BD_ADDR return parameter(s). */
@@ -536,17 +543,17 @@ typedef __PACKED_STRUCT
  */
 /** @brief Read Local Version Information.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.4.1
  *
  * This command reads the values for the version information for the local
  * Controller.
  *
  * The HCI_Version information defines the version information of the HCI layer.
- * The LMP_PAL_Version information defines the version of the LMP or PAL. The
- * Manufacturer_Name information indicates the manufacturer of the local device.
+ * The LMP_Version information defines the version of the LMP. The
+ * Company_Identifier information indicates the manufacturer of the local device.
  *
- * The HCI_Revision and LMP_PAL_Subversion are implementation dependent.
+ * The HCI_Subversion and LMP_Subversion are vendor-specific.
  *
  * Event(s) generated (unless masked away):
  * When the HCI_Read_Local_Version_Information command has completed, an
@@ -562,15 +569,14 @@ uint8_t sdc_hci_cmd_ip_read_local_version_information(sdc_hci_cmd_ip_read_local_
 
 /** @brief Read Local Supported Commands.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.4.2
  *
  * This command reads the list of HCI commands supported for the local
  * Controller.
  *
  * This command shall return the Supported_Commands configuration
- * parameter. It is implied that if a command is listed as supported, the feature
- * underlying that command is also supported.
+ * parameter.
  *
  * See Section 6.27 for more information.
  *
@@ -588,7 +594,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_commands(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read Local Supported Features.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.4.3
  *
  * This command requests a list of the supported features for the local BR/EDR
@@ -609,7 +615,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_features(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read BD_ADDR.
  *
- * The description below is extracted from Core_v5.2,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.4.6
  *
  * On a BR/EDR Controller, this command reads the Bluetooth Controller address
