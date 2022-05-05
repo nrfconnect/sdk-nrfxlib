@@ -157,7 +157,11 @@ void nrf_802154_tx_power_set(int8_t power)
 
 int8_t nrf_802154_tx_power_get(void)
 {
-    return nrf_802154_tx_power_constrained_pib_power_get();
+    nrf_802154_tx_power_split_t split_power = {0};
+
+    (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
+
+    return split_power.fem_gain + split_power.radio_tx_power;
 }
 
 bool nrf_802154_coex_rx_request_mode_set(nrf_802154_coex_rx_request_mode_t mode)
@@ -491,12 +495,14 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
     nrf_802154_transmit_params_t params =
     {
         .frame_props = p_metadata->frame_props,
-        .tx_power    = nrf_802154_tx_power_convert_metadata_to_raw_value(
-            nrf_802154_pib_channel_get(),
-            p_metadata->tx_power),
-        .cca       = p_metadata->cca,
-        .immediate = false
+        .tx_power    = {0},
+        .cca         = p_metadata->cca,
+        .immediate   = false
     };
+
+    (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(nrf_802154_pib_channel_get(),
+                                                                 p_metadata->tx_power,
+                                                                 &params.tx_power);
 
     result = are_frame_properties_valid(&params.frame_props);
     if (result)
@@ -537,12 +543,14 @@ bool nrf_802154_transmit(const uint8_t                        * p_data,
     nrf_802154_transmit_params_t params =
     {
         .frame_props = p_metadata->frame_props,
-        .tx_power    = nrf_802154_tx_power_convert_metadata_to_raw_value(
-            nrf_802154_pib_channel_get(),
-            p_metadata->tx_power),
-        .cca       = p_metadata->cca,
-        .immediate = false
+        .tx_power    = {0},
+        .cca         = p_metadata->cca,
+        .immediate   = false
     };
+
+    (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(nrf_802154_pib_channel_get(),
+                                                                 p_metadata->tx_power,
+                                                                 &params.tx_power);
 
     result = are_frame_properties_valid(&params.frame_props);
     if (result)

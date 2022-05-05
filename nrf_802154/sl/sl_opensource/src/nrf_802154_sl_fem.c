@@ -37,6 +37,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "nrf_802154_fal.h"
+
 #include "protocol/mpsl_fem_protocol_api.h"
 
 #ifdef __cplusplus
@@ -110,6 +112,22 @@ void mpsl_fem_cleanup(void)
     // Intentionally empty
 }
 
+int32_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
+                                mpsl_tx_power_split_t * const p_tx_power_split)
+{
+    p_tx_power_split->radio_tx_power = power;
+    p_tx_power_split->fem_gain       = 0;
+
+    return 0;
+}
+
+int32_t mpsl_fem_pa_gain_set(int8_t gain)
+{
+    (void)gain;
+
+    return 0;
+}
+
 void mpsl_fem_pa_is_configured(int8_t * const p_gain)
 {
     (void)p_gain;
@@ -136,6 +154,18 @@ int8_t nrf_802154_fal_tx_power_get(const uint8_t channel, const int8_t power)
 {
     (void)channel;
     return power;
+}
+
+int32_t nrf_802154_fal_tx_power_split(const uint8_t                           channel,
+                                      const int8_t                            power,
+                                      nrf_802154_fal_tx_power_split_t * const p_tx_power_split)
+{
+    (void)channel;
+
+    p_tx_power_split->radio_tx_power = power;
+    p_tx_power_split->fem_gain       = 0;
+
+    return 0;
 }
 
 #ifdef __cplusplus
