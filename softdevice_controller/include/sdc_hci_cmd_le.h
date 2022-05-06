@@ -65,10 +65,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_READ_FILTER_ACCEPT_LIST_SIZE = 0x200f,
     /** @brief See @ref sdc_hci_cmd_le_read_white_list_size(). */
     SDC_HCI_OPCODE_CMD_LE_READ_WHITE_LIST_SIZE = 0x200f,
-    /** @brief See @ref sdc_hci_cmd_le_clear_filter_accept_list(). */
-    SDC_HCI_OPCODE_CMD_LE_CLEAR_FILTER_ACCEPT_LIST = 0x2010,
     /** @brief See @ref sdc_hci_cmd_le_clear_white_list(). */
     SDC_HCI_OPCODE_CMD_LE_CLEAR_WHITE_LIST = 0x2010,
+    /** @brief See @ref sdc_hci_cmd_le_clear_filter_accept_list(). */
+    SDC_HCI_OPCODE_CMD_LE_CLEAR_FILTER_ACCEPT_LIST = 0x2010,
     /** @brief See @ref sdc_hci_cmd_le_add_device_to_white_list(). */
     SDC_HCI_OPCODE_CMD_LE_ADD_DEVICE_TO_WHITE_LIST = 0x2011,
     /** @brief See @ref sdc_hci_cmd_le_add_device_to_filter_accept_list(). */
@@ -1553,6 +1553,32 @@ uint8_t sdc_hci_cmd_le_read_filter_accept_list_size(sdc_hci_cmd_le_read_filter_a
  */
 uint8_t sdc_hci_cmd_le_read_white_list_size(sdc_hci_cmd_le_read_white_list_size_return_t * p_return);
 
+/** @brief LE Clear White List.
+ *
+ * The description below is extracted from Core_v5.2,
+ * Vol 4, Part E, Section 7.8.15
+ *
+ * The HCI_LE_Clear_White_List command is used to clear the White List stored
+ * in the Controller.
+ *
+ * This command shall not be used when:
+ * • any advertising filter policy uses the White List and advertising is enabled,
+ * • the scanning filter policy uses the White List and scanning is enabled, or
+ * • the initiator filter policy uses the White List and an
+ *   HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection
+ *   command is outstanding.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Clear_White_List command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_clear_white_list(void);
+
 /** @brief LE Clear Filter Accept List.
  *
  * The description below is extracted from Core_v5.3,
@@ -1581,32 +1607,6 @@ uint8_t sdc_hci_cmd_le_read_white_list_size(sdc_hci_cmd_le_read_white_list_size_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_clear_filter_accept_list(void);
-
-/** @brief LE Clear White List.
- *
- * The description below is extracted from Core_v5.2,
- * Vol 4, Part E, Section 7.8.15
- *
- * The HCI_LE_Clear_White_List command is used to clear the White List stored
- * in the Controller.
- *
- * This command shall not be used when:
- * • any advertising filter policy uses the White List and advertising is enabled,
- * • the scanning filter policy uses the White List and scanning is enabled, or
- * • the initiator filter policy uses the White List and an
- *   HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection
- *   command is outstanding.
- *
- * Event(s) generated (unless masked away):
- * When the HCI_LE_Clear_White_List command has completed, an
- * HCI_Command_Complete event shall be generated.
- *
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_le_clear_white_list(void);
 
 /** @brief LE Add Device To White List.
  *
