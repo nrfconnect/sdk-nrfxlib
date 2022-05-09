@@ -6,13 +6,13 @@
 
 # Get include directories for nrf_cc3xx_platform
 get_target_property(NRF_CC3XX_PLATFORM_INCLUDE_DIRECTORIES
-  platform_cc3xx INTERFACE_INCLUDE_DIRECTORIES
+  nrf_cc3xx_platform INTERFACE_INCLUDE_DIRECTORIES
 )
 
-# Link with nrf_platform_cc3xx for driver usage
+# Link with nrf_cc3xx_platform for driver usage
 target_link_libraries(${mbedcrypto_target}
   PRIVATE
-    platform_cc3xx
+    nrf_cc3xx_platform
 )
 
 # Add nrf_cc3xx_platform includes for mbedcrypto

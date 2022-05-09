@@ -82,7 +82,7 @@ if (${PROJECT_NAME} STREQUAL "Bootloader")
 endif()
 set(COMPILE_PSA_APIS                                True)
 
-# Include nrfxlib common to get nrf_platform_cc3xx and other crypto libs
+# Include nrfxlib common to get nrf_cc3xx_platform and other crypto libs
 include(../../common.cmake)
 
 # The TF-M build needs a standard version of memory_buffer_alloc.c

@@ -28,7 +28,7 @@ extern "C"
 
 /*! The size of the context prototype of the user in words.
 See ::CCHashUserContext_t. */
-#define CC_HASH_USER_CTX_SIZE_IN_WORDS 60
+#define CC_HASH_USER_CTX_SIZE_IN_WORDS 108
 
 
 #ifdef __cplusplus

@@ -86,8 +86,7 @@ words. */
 /*! The size of the ECC Montgomery temporary buffer in words. */
 #define CC_EC_MONT_TEMP_BUFF_SIZE_IN_32BIT_WORDS  (8 * CC_EC_MONT_EDW_MODULUS_MAX_SIZE_IN_WORDS) /*!< \internal Change according to actual requirements */
 /*! The size of the ECC Edwards temporary buffer in words. */
-#define CC_EC_EDW_TEMP_BUFF_SIZE_IN_32BIT_WORDS   (8*CC_EC_MONT_EDW_MODULUS_MAX_SIZE_IN_WORDS + (sizeof(CCHashUserContext_t)+CC_32BIT_WORD_SIZE-1)/CC_32BIT_WORD_SIZE)
-
+#define CC_EC_EDW_TEMP_BUFF_SIZE_IN_31BIT_WORDS   (8*CC_EC_MONT_EDW_MODULUS_MAX_SIZE_IN_WORDS + (sizeof(CCHashUserContext_t)+CC_32BIT_WORD_SIZE-1)/CC_32BIT_WORD_SIZE)
 /*!
  @}
  */

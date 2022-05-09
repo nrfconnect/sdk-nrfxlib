@@ -16,7 +16,7 @@
 
 #if defined (MBEDTLS_SHA1_ALT)
 
-#define CC_HASH_USER_CTX_SIZE_IN_WORDS 60
+#define SHA_1_CONTEXT_SIZE_IN_WORDS 60
 
 #define MBEDTLS_ERR_SHA1_HW_ACCEL_FAILED                  -0x0035  /**< SHA-1 hardware accelerator failed */
 
@@ -29,7 +29,7 @@ extern "C" {
  */
 typedef struct mbedtls_sha1_context {
         /*! Internal buffer */
-        uint32_t buff[CC_HASH_USER_CTX_SIZE_IN_WORDS]; // defined in cc_hash_defs_proj.h
+        uint32_t buff[SHA_1_CONTEXT_SIZE_IN_WORDS]; // defined in cc_hash_defs_proj.h
 } mbedtls_sha1_context;
 
 #ifdef __cplusplus

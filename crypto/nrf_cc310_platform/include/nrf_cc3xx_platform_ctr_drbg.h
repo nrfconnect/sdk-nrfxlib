@@ -36,7 +36,7 @@ extern "C"
  * mbedtls_entropy_context and mbedtls_ctr_drbg_context in Arm CryptoCell
  * code base which is sized differently than in vanilla mbed TLS software.
  */
-#define NRF_CC3XX_PLATFORM_ENTROPY_SIZE_WORDS (110)
+#define NRF_CC3XX_PLATFORM_ENTROPY_SIZE_WORDS (111)
 
 /**@brief Opaque type for the context required for ctr_drbg generation
  *

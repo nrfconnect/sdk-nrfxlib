@@ -123,9 +123,8 @@ if (COMPILE_PSA_APIS)
   )
 
   # Add the local version of psa_crypto_driver_wrappers.c
-  append_with_prefix(src_crypto
-    ${CMAKE_CURRENT_LIST_DIR}
-      psa_crypto_driver_wrappers.c
+  append_with_prefix(src_crypto ${CMAKE_CURRENT_LIST_DIR}
+    psa_crypto_driver_wrappers.c
   )
 endif()
 
@@ -135,6 +134,14 @@ if(CONFIG_MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG AND NOT CONFIG_BUILD_WITH_TFM)
     ${CMAKE_CURRENT_LIST_DIR}/random_ext.c
   )
 endif()
+
+append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library
+  pem.c
+  pkcs12.c
+  pkcs5.c
+  pkparse.c
+  pkwrite.c
+)
 
 # Library for mbed TLS crypto toolbox functionality
 add_library(${mbedcrypto_target}
@@ -147,21 +154,16 @@ nrf_security_add_zephyr_options(${mbedcrypto_target})
 
 # Base mbed TLS files (not in drivers or builtin's)
 append_with_prefix(src_crypto_base ${ARM_MBEDTLS_PATH}/library
-    asn1parse.c
-    asn1write.c
-    base64.c
-    bignum.c
-    nist_kw.c
-    oid.c
-    padlock.c
-    pem.c
-    pkcs12.c
-    pkcs5.c
-    pkparse.c
-    pkwrite.c
-    platform.c
-    platform_util.c
-    version.c
+  asn1parse.c
+  asn1write.c
+  base64.c
+  bignum.c
+  nist_kw.c
+  oid.c
+  padlock.c
+  platform.c
+  platform_util.c
+  version.c
 )
 
 # Add base library with files required by all drivers/backends.
@@ -170,7 +172,7 @@ add_library(mbedcrypto_base
     ${src_crypto_base}
 )
 
-target_link_libraries(mbedcrypto_base 
+target_link_libraries(mbedcrypto_base
   PRIVATE
     mbedcrypto_common
 )

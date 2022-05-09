@@ -90,6 +90,24 @@ bool nrf_cc3xx_platform_rng_is_initialized(void);
  */
 void CRYPTOCELL_IRQHandler(void);
 
+
+/** @brief Function to get the nonce seed used for encrypted ITS usage
+ *
+ * @param[in]	buffer 	Buffer to fill the nonce seed generated during boot.
+ *
+ * @return Zero on success, otherwise a non-zero error code.
+ */
+int nrf_cc3xx_platform_get_nonce_seed(uint8_t buffer[8]);
+
+
+/** @brief Function to get the boot seed used by TF-M attestation
+ *
+ * @param[in]	buffer 	Buffer to fill the boot seed generated during boot.
+ *
+ * @return Zero on success, otherwise a non-zero error code.
+ */
+int nrf_cc3xx_plaform_get_boot_seed(uint8_t buffer[32]);
+
 #ifdef __cplusplus
 }
 #endif

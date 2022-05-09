@@ -29,7 +29,7 @@
 
 #include "common.h"
 
-#if defined(MBEDTLS_DHM_C) && defined(CONFIG_CC3XX_BACKEND)
+#if defined(MBEDTLS_DHM_C) && (defined(CONFIG_CC3XX_BACKEND) || defined(CONFIG_PSA_CRYPTO_DRIVER_CC3XX))
 
 #include "mbedtls/dhm.h"
 #include "mbedtls/platform_util.h"

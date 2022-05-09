@@ -145,11 +145,11 @@ psa_status_t cc3xx_aead_set_nonce(
 
 /*!
  * \brief Declare the lengths of the message and additional data for AEAD
- * 
+ *
  * \param[in] operation        Active AEAD operation.
  * \param[in] ad_length        Size of the additional data in bytes.
  * \param[in] plaintext_length Size of the plaintext to encrypt in bytes.
- * 
+ *
  * \retval #PSA_SUCCESS
  * \retval #PSA_ERROR_INVALID_ARGUMENT
  * \retval #PSA_ERROR_CORRUPTION_DETECTED
@@ -162,11 +162,11 @@ psa_status_t cc3xx_aead_set_lengths(
 
 /*!
  * \brief Pass additional data to an active AEAD operation
- * 
+ *
  * \param[in] operation    Active AEAD operation.
  * \param[in] input        Buffer containing the additional data.
  * \param[in] input_length Size of the input buffer in bytes.
- * 
+ *
  * \retval #PSA_SUCCESS
  * \retval #PSA_ERROR_INVALID_ARGUMENT
  * \retval #PSA_ERROR_CORRUPTION_DETECTED
@@ -180,14 +180,14 @@ psa_status_t cc3xx_aead_update_ad(
 
 /*!
  * \brief Encrypt or decrypt a message fragment in an active AEAD operation.
- * 
+ *
  * \param[in]  operation     Active AEAD operation.
  * \param[in]  input         Buffer containing the message fragment.
  * \param[in]  input_length  Size of the input buffer in bytes.
  * \param[out] output        Buffer where the output is to be written.
  * \param[in]  output_size   Size of the output buffer in bytes.
  * \param[out] output_length The number of bytes that make up the output.
- * 
+ *
  * \retval #PSA_SUCCESS
  * \retval #PSA_ERROR_INVALID_ARGUMENT
  * \retval #PSA_ERROR_CORRUPTION_DETECTED
@@ -204,7 +204,7 @@ psa_status_t cc3xx_aead_update(
 
 /*!
  * \brief Finish encrypting a message in an AEAD operation.
- * 
+ *
  * \param[in] operation          Active AEAD operation.
  * \param[out] ciphertext        Buffer containing the ciphertext.
  * \param[in] ciphertext_size    Size of the ciphertext buffer in bytes.
@@ -229,14 +229,14 @@ psa_status_t cc3xx_aead_finish(
 
 /*!
  * \brief Finish decrypting a message in an AEAD operation.
- * 
+ *
  * \param[in] operation         Active AEAD operation.
  * \param[out] plaintext        Buffer containing the plaintext.
  * \param[in] plaintext_size    Size of the plaintext buffer in bytes.
  * \param[out] plaintext_length The number of bytes that make up the plaintext
  * \param[in] tag               Buffer containing the tag
  * \param[in] tag_length        Size of the tag buffer in bytes
- * 
+ *
  * \retval #PSA_SUCCESS
  * \retval #PSA_ERROR_INVALID_ARGUMENT
  * \retval #PSA_ERROR_CORRUPTION_DETECTED
