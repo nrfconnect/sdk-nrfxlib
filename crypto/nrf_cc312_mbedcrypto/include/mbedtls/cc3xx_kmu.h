@@ -28,18 +28,7 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#define NRF_KMU_FIRST_SLOT              (0U)    //!< First addressable key slot in KMU
-#define NRF_KMU_SECOND_SLOT             (1U)    //!< Second addressable key slot in KMU
-#define NRF_KMU_LAST_SLOT               (127U)  //!< Last addressable key slot in KMU.
-
-#define NRF_KMU_SLOT_KDR                (0U)    //!< Key slot reserved for Kdr (Also known as HUK or Root derivation key).
-#define NRF_KMU_SLOT_KDR_RESERVED       (1U)    //!< Key slot reserved for Kdr (CC312: Used for last 128 bits of key material).
-
-#define NRF_KMU_SLOT_MKEK               (2U)    //!< Key slot reserved for MKEK (Master Key Encryption Key).
-#define NRF_KMU_SLOT_MKEK_RESERVED      (3U)    //!< Key slot reserved for MKEK (CC312: Used for last 128 bits of key material).
-
-#define NRF_KMU_SLOT_MEXT               (4U)    //!< Key slot reserved for MEXT (Master Key Encryption Key).
-#define NRF_KMU_SLOT_MEXT_RESERVED      (5U)    //!< Key slot reserved for MEXT (CC312: Used for last 128 bits of key material).
+#include "nrf_cc3xx_platform_defines.h"
 
 
 #define MBEDTLS_SHADOW_KEY_KDF_MAX_LABEL_SIZE_IN_BYTES      (64)    //!< KDF input "label" can be 0 to 64 bytes.
@@ -54,7 +43,6 @@
 #define MBEDTLS_ERR_SHADOW_KEY_KDF_INVALID_CONTEXT  (-4)    //!< The KDF input context is invalid
 #define MBEDTLS_ERR_SHADOW_KEY_KDF_INVALID_INPUT    (-5)    //!< The KDF input is invalid
 #define MBEDTLS_ERR_SHADOW_KEY_INTERNAL_ERROR       (-6)    //!< KMU/KDF internal error.
-
 
 #if defined(MBEDTLS_AES_C)
 

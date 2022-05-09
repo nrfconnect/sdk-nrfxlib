@@ -4,32 +4,6 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-# Add files that are required by PSA drivers (by default)
-# This is added in mbedcrypto_base to prevent cyclic dependency of mbedcrypto
-append_with_prefix(src_crypto_legacy_base ${ARM_MBEDTLS_PATH}/library
-  aesni.c
-  aria.c
-  camellia.c
-  cipher.c
-  cipher_wrap.c
-  des.c
-  ecdh.c
-  ecdsa.c
-  ecp.c
-  ecp_curves.c
-  md.c
-  pk.c
-  pk_wrap.c
-  hmac_drbg.c
-  md5.c
-  ripemd160.c
-  rsa.c
-  rsa_alt_helpers.c
-  sha1.c
-  sha256.c
-  sha512.c
-)
-
 # Legacy APIs missing driver support or APIs assumed to be
 # deprecated with more PSA API awareness.
 append_with_prefix(src_crypto_legacy ${ARM_MBEDTLS_PATH}/library
@@ -39,6 +13,16 @@ append_with_prefix(src_crypto_legacy ${ARM_MBEDTLS_PATH}/library
   md.c
   pk.c
   pk_wrap.c
+  pkwrite.c
+  sha1.c
+  sha256.c
+  sha512.c
+  ripemd160.c
+  md5.c
+  aesni.c
+  aria.c
+  camellia.c
+  des.c
 )
 
 # Add all files that are neccessary for nrf_oberon + builtin in legacy mode
@@ -57,6 +41,7 @@ if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C OR
     ecp_curves.c
     gcm.c
     hkdf.c
+    hmac_drbg.c
     rsa.c
     rsa_alt_helpers.c
   )
@@ -142,14 +127,14 @@ target_link_libraries(mbedcrypto_oberon_mbedtls_imported
   )
 endif()
 
-if(TARGET mbedcrypto_cc3xx_imported)
 
+if(CONFIG_MBEDTLS_LEGACY_CRYPTO_C AND CONFIG_CC3XX_BACKEND)
   # Link directly with cc3xx platform/mbedcrypto libraries
   target_link_libraries(${mbedcrypto_target} PRIVATE
-    mbedcrypto_cc3xx_imported
+    nrf_cc3xx_legacy_crypto_imported
   )
 
-  target_link_libraries(mbedcrypto_cc3xx_imported
+  target_link_libraries(nrf_cc3xx_core_imported
     INTERFACE
       mbedcrypto_base
   )
@@ -157,18 +142,18 @@ if(TARGET mbedcrypto_cc3xx_imported)
   # Add cc3xx platform/mbedcrypto includes to mbedcrypto library
   target_include_directories(mbedcrypto_common
     INTERFACE
-      $<TARGET_PROPERTY:mbedcrypto_cc3xx_imported,INTERFACE_INCLUDE_DIRECTORIES>
+      $<TARGET_PROPERTY:nrf_cc3xx_core_imported,INTERFACE_INCLUDE_DIRECTORIES>
   )
 endif()
 
-if(TARGET mbedcrypto_cc3xx_imported)
+if(TARGET nrf_cc3xx_core_imported)
   # The CC3XX needs funcionality which is provided by the inluded source files in src_crypto_legacy
   # Link CC3XX with mbedcrypto_target because of link order dependency
-  target_link_libraries(mbedcrypto_cc3xx_imported INTERFACE
+  target_link_libraries(nrf_cc3xx_core_imported INTERFACE
     ${mbedcrypto_target}
   )
 
-  get_target_property(NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH mbedcrypto_cc3xx_imported INTERFACE_INCLUDE_DIRECTORIES)
+  get_target_property(NRF_CC3XX_MBEDCRYPTO_INCLUDE_PATH nrf_cc3xx_core_imported INTERFACE_INCLUDE_DIRECTORIES)
 
   target_include_directories(mbedcrypto_common
     INTERFACE
@@ -178,5 +163,5 @@ endif()
 
 target_include_directories(${mbedcrypto_target}
 INTERFACE
-  $<$<TARGET_EXISTS:platform_cc3xx>:$<TARGET_PROPERTY:platform_cc3xx,INTERFACE_INCLUDE_DIRECTORIES>>
+  $<$<TARGET_EXISTS:nrf_cc3xx_platform>:$<TARGET_PROPERTY:nrf_cc3xx_platform,INTERFACE_INCLUDE_DIRECTORIES>>
 )

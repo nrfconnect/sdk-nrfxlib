@@ -17,36 +17,39 @@
 
 /** @brief Enum with the encryption/decryption algorithms supported with derived keys */
 typedef enum {
-    ALG_AES_128_BIT           = 1,
-    ALG_AES_256_BIT           = 2,
-    ALG_CHACHAPOLY_256_BIT    = 3
+    ALG_AES_128_BIT         = 1,
+    ALG_AES_256_BIT         = 2,
+    ALG_CHACHA20_256_BIT    = 3,
+    ALG_CHACHAPOLY_256_BIT  = 3
 } nrf_cc3xx_platform_cipher_info_t;
 
 /** @brief Structure containing information for doing the key derivation using AES CMAC */
 typedef struct{
-    uint32_t            slot_id;    /**<  The slot id containing the AES key used in the derivation process. */
-    size_t              key_size;   /**<  The size of the AES key in bits. */
-    const uint8_t     * label;      /**<  Buffer containing the label used in the derivation process. */
-    size_t              label_size; /**<  The size of the label in bytes. */
+    uint32_t            slot_id;        /**< The slot id containing the AES key used in the derivation process. */
+    size_t              key_size;       /**< The size of the AES key in bits. */
+    const uint8_t     * label;          /**< Buffer containing the label used in the derivation process. */
+    size_t              label_size;     /**< The size of the label in bytes. */
+    const uint8_t     * context;        /**< Buffer containing the context used in the derivation process. */
+    size_t              context_size;   /**< The size of the context in bytes. */
 } nrf_cc3xx_platform_derivation_info_t;
 
 /** @brief Authenticated encryption/decryption info */
 typedef struct{
-    const uint8_t     * nonce;      /**<  Buffer containing the nonce used in the authenticated encryption/decryption. */
-    size_t              nonce_size; /**<  The nonce size in bytes. */
-    const uint8_t     * aad;        /**<  Buffer containing the additional data used in the authenticated encryption/decryption. */
-    size_t              aad_size;   /**<  The additional data size in bytes. */
-    uint8_t           * tag;        /**<  Buffer containing the authentication tag. */
-    size_t              tag_size;   /**<  The tag size in bytes. */
+    const uint8_t     * nonce;      /**< Buffer containing the nonce used in the authenticated encryption/decryption. */
+    size_t              nonce_size; /**< The nonce size in bytes. */
+    const uint8_t     * aad;        /**< Buffer containing the additional data used in the authenticated encryption/decryption. */
+    size_t              aad_size;   /**< The additional data size in bytes. */
+    uint8_t           * tag;        /**< Buffer containing the authentication tag. */
+    size_t              tag_size;   /**< The tag size in bytes. */
 
 } nrf_cc3xx_platform_auth_info_t;
 
 /** @brief Derived key context */
 typedef struct{
-    nrf_cc3xx_platform_derivation_info_t    deriv_info;
-    nrf_cc3xx_platform_cipher_info_t        cipher_info;
-    nrf_cc3xx_platform_auth_info_t          auth_info;
-    size_t                                  state;
+    nrf_cc3xx_platform_derivation_info_t    deriv_info;     /**< Derivation info. */
+    nrf_cc3xx_platform_cipher_info_t        cipher_info;    /**< Cipher info. */
+    nrf_cc3xx_platform_auth_info_t          auth_info;      /**< Authentication info. */
+    size_t                                  state;          /**< State info. */
 } nrf_cc3xx_platform_derived_key_ctx_t;
 
 /**@brief Function to initialize the derived key context
@@ -112,7 +115,7 @@ int nrf_cc3xx_platform_derived_key_set_auth_info(nrf_cc3xx_platform_derived_key_
  *
  * @param[in,out]   ctx             Pointer to the derived key context.
  * @param[out]      output          Pointer to the output buffer.
- * @param[in]       output_size     The size of the output buffer in bytes.
+ * @param[in]       input_size      The size of the input buffer in bytes.
  * @param[in]       input           Pointer to the input buffer.
  *
  * @return NRF_CC3XX_PLATFORM_SUCCESS on success, otherwise a negative value.
@@ -129,7 +132,7 @@ int nrf_cc3xx_platform_derived_key_encrypt(nrf_cc3xx_platform_derived_key_ctx_t 
  *
  * @param[in,out]   ctx             Pointer to the derived key context.
  * @param[out]      output          Pointer to the output buffer.
- * @param[in]       output_size     The size of the output buffer in bytes.
+ * @param[in]       input_size      The size of the input buffer in bytes.
  * @param[in]       input           Pointer to the input buffer.
  *
  * @return NRF_CC3XX_PLATFORM_SUCCESS on success, otherwise a negative value.

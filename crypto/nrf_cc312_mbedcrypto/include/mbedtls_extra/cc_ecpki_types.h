@@ -24,9 +24,6 @@
 #include "cc_hash_defs.h"
 #include "cc_pka_defs_hw.h"
 #include "cc_pal_compiler.h"
-#ifdef USE_MBEDTLS_CRYPTOCELL
-#include "mbedtls/md.h"
-#endif
 
 #ifdef __cplusplus
 extern "C"
@@ -319,14 +316,7 @@ typedef  struct
 {
     /*! The data of the private key. */
     CCEcpkiUserPrivKey_t     ECDSA_SignerPrivKey;
-
-#ifdef USE_MBEDTLS_CRYPTOCELL
-    /*! The hash context. */
-    mbedtls_md_context_t     hash_ctx;
-#else
-    /*! The hash context. */
-    CCHashUserContext_t      hashUserCtxBuff;
-#endif
+    CCHashUserContext_t      hash_ctx;
     /*! The hash result buffer. */
     CCHashResultBuf_t        hashResult;
     /*! The size of the hash result in words. */
@@ -372,13 +362,7 @@ typedef  struct
     /*! The data of the public key. */
     CCEcpkiUserPublKey_t        ECDSA_SignerPublKey;
 
-#ifdef USE_MBEDTLS_CRYPTOCELL
-    /*! The hash context. */
-    mbedtls_md_context_t        hash_ctx;
-#else
-    /*! The hash context. */
-    CCHashUserContext_t         hashUserCtxBuff;
-#endif
+    CCHashUserContext_t         hash_ctx;
     /*! The hash result. */
     CCHashResultBuf_t           hashResult;
     /*! The size of the hash result in words. */

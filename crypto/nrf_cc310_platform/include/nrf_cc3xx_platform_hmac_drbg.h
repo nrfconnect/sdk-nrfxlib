@@ -36,7 +36,7 @@ extern "C"
  * mbedtls_entropy_context and mbedtls_hmac_drbg_context in Arm CryptoCell
  * code base which is sized differently than in vanilla mbed TLS software.
  */
-#define NRF_CC3XX_PLATFORM_HMAC_CTX_SIZE_WORDS (145)
+#define NRF_CC3XX_PLATFORM_HMAC_CTX_SIZE_WORDS (147)
 
 /**@brief Opaque type for the context required for hmac_drbg generation
  *
@@ -214,7 +214,7 @@ int nrf_cc3xx_platform_hmac_drbg_get_with_add(nrf_cc3xx_platform_hmac_drbg_conte
  *
  * @param[in,out]   context     Pointer to structure holding the hmac_drbg context.
  * @param[out]      buffer      Pointer to buffer to hold PRNG data.
- * @param[in]       length      Length of PRNG to get in bytes.
+ * @param[in]       len         Length of PRNG to get in bytes.
  * @param[out]      olen        Actual number of bytes put into the buffer.
  *
  * @return 0 on success, otherwise a non-zero failure according to the API

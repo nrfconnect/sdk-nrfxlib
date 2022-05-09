@@ -16,7 +16,7 @@
 
 #if defined (MBEDTLS_SHA256_ALT)
 
-#define CC_HASH_USER_CTX_SIZE_IN_WORDS 60
+#define SHA_256_CONTEXT_SIZE_IN_WORDS 60
 
 #define MBEDTLS_ERR_SHA256_HW_ACCEL_FAILED                -0x0037  /**< SHA-256 hardware accelerator failed */
 
@@ -28,8 +28,8 @@ extern "C" {
  * \brief          SHA-256 context structure
  */
 typedef struct mbedtls_sha256_context {
-        /*! Internal buffer */
-        uint32_t buff[CC_HASH_USER_CTX_SIZE_IN_WORDS]; // defined in cc_hash_defs.h
+        uint32_t reserved;
+        uint32_t buff[SHA_256_CONTEXT_SIZE_IN_WORDS]; // defined in cc_hash_defs.h
 } mbedtls_sha256_context;
 
 #ifdef __cplusplus

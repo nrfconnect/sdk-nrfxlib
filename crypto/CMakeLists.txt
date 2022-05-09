@@ -141,8 +141,9 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   else()
     set (CC3XX_ARCH cc310)
   endif()
+
   set (NRF_CC3XX_PLATFORM_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_platform)
-  set (NRF_CC3XX_PLATFORM_VER 0.9.13)
+  set (NRF_CC3XX_PLATFORM_VER 0.9.14)
   if (NOT CONFIG_HW_CC3XX_INTERRUPT)
     set(CC3XX_PLATFORM_FLAVOR no-interrupts)
   endif()
@@ -163,14 +164,14 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   #
   # Uses a normal add_library to avoid --whole-archive
   #
-  add_library(platform_cc3xx STATIC IMPORTED GLOBAL)
-  set_target_properties(platform_cc3xx PROPERTIES
+  add_library(nrf_cc3xx_platform STATIC IMPORTED GLOBAL)
+  set_target_properties(nrf_cc3xx_platform PROPERTIES
     IMPORTED_LOCATION "${NRF_CC3XX_PLATFORM_LIB}"
   )
-  target_include_directories(platform_cc3xx INTERFACE
+  target_include_directories(nrf_cc3xx_platform INTERFACE
       "${NRF_CC3XX_PLATFORM_BASE}/include")
   if (TARGET zephyr_interface)
-    zephyr_link_libraries(platform_cc3xx)
+    zephyr_link_libraries(nrf_cc3xx_platform)
     #
     # Add companion sources to directly to zephyr
     #
@@ -190,7 +191,7 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
     set (CC3XX_ARCH cc310)
   endif()
   set(NRF_CC3XX_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_mbedcrypto)
-  set(NRF_CC3XX_VER 0.9.13)
+  set(NRF_CC3XX_VER 0.9.14)
   if (NOT CONFIG_HW_CC3XX_INTERRUPT)
     set(CC3XX_FLAVOR no-interrupts)
   endif()
@@ -200,62 +201,85 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
     SOFT_FLOAT_FALLBACK
   )
 
-  set(NRF_CC3XX_LIB
-    ${NRF_CC3XX_LIB_DIR}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_mbedcrypto_${NRF_CC3XX_VER}.a
+  set(NRF_CC3XX_CORE_LIB
+    ${NRF_CC3XX_LIB_DIR}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_core_${NRF_CC3XX_VER}.a
   )
 
-  if(NOT EXISTS ${NRF_CC3XX_LIB})
+  if(NOT EXISTS ${NRF_CC3XX_CORE_LIB})
     message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_${CC3XX_ARCH}_mbedcryto lib."
                     "(${NRF_CC3XX_LIB} doesn't exist.)")
   endif()
 
   #
-  # Add mbedcrypto_cc3xx_imported that points links to the actual library
-  # This library will be stripped for unneeded symbols and combined into
-  # library target mbedcrypto_cc3xx
+  # Add nrf_cc3xx_core_imported library
   #
-  add_library(mbedcrypto_cc3xx_imported STATIC IMPORTED GLOBAL)
-  set_target_properties(mbedcrypto_cc3xx_imported PROPERTIES
-    IMPORTED_LOCATION "${NRF_CC3XX_LIB}"
-    BACKEND_NAME "cc3xx"
+  add_library(nrf_cc3xx_core_imported STATIC IMPORTED GLOBAL)
+  set_target_properties(nrf_cc3xx_core_imported PROPERTIES
+    IMPORTED_LOCATION "${NRF_CC3XX_CORE_LIB}"
 	)
 
   # *_alt.h headers and cc3xx_kmu.h
-  set(mbedtls_includes ${NRF_CC3XX_BASE}/include/
+  set(mbedcrypto_includes ${NRF_CC3XX_BASE}/include/
                        ${NRF_CC3XX_BASE}/include/mbedtls)
 
 
-  target_include_directories(mbedcrypto_cc3xx_imported INTERFACE ${mbedtls_includes})
+  target_include_directories(nrf_cc3xx_core_imported INTERFACE ${mbedcrypto_includes})
 
-  target_link_libraries(mbedcrypto_cc3xx_imported INTERFACE platform_cc3xx)
+  target_link_libraries(nrf_cc3xx_core_imported INTERFACE nrf_cc3xx_platform)
 
-  target_link_libraries(nrfxlib_crypto INTERFACE mbedcrypto_cc3xx_imported)
+  target_link_libraries(nrfxlib_crypto INTERFACE nrf_cc3xx_core_imported)
 
   if (TARGET zephyr_interface)
-	zephyr_include_directories(${mbedtls_includes})
+	  zephyr_include_directories(${mbedcrypto_includes})
   endif()
 
-  add_library(cc3xx_psa_crypto STATIC IMPORTED GLOBAL)
+  #
+  # Add nrf_cc3xx_legacy_crypto_imported library (for mbedtls_ prfixed APIs)
+  #
+  add_library(nrf_cc3xx_legacy_crypto_imported STATIC IMPORTED GLOBAL)
 
-  set(CC3XX_PSA_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_${CC3XX_ARCH}_platform)
-  set(CC3XX_PSA_VER 0.9.13)
+  target_link_libraries(nrf_cc3xx_legacy_crypto_imported
+    INTERFACE
+      nrf_cc3xx_core_imported
+      mbedcrypto_base
+    )
 
-  if (NOT CONFIG_HW_CC3XX_INTERRUPT)
-    set(CC3XX_PSA_FLAVOR no-interrupts)
-  endif()
-
-  nrfxlib_calculate_lib_path(CC3XX_PSA_LIB_DIR
-    BASE_DIR ${CC3XX_PSA_BASE}
-    SOFT_FLOAT_FALLBACK
+  set(NRF_CC3XX_MBEDTLS_LEGACY_LIB
+    ${NRF_CC3XX_LIB_DIR}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_legacy_crypto_${NRF_CC3XX_VER}.a
   )
+
+  if(NOT EXISTS ${NRF_CC3XX_MBEDTLS_LEGACY_LIB})
+    message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_${CC3XX_ARCH}_legacy_crypto lib."
+                  "(${NRF_CC3XX_MBEDTLS_LEGACY_LIB} doesn't exist.)")
+  endif()
+
+  set_property(TARGET nrf_cc3xx_legacy_crypto_imported PROPERTY
+               IMPORTED_LOCATION "${NRF_CC3XX_MBEDTLS_LEGACY_LIB}")
+
+  #
+  # Add nrf_cc3xx_psa_crypto_imported_imported library (for PSA APIs)
+  #
+  add_library(nrf_cc3xx_psa_crypto_imported STATIC IMPORTED GLOBAL)
+
+  target_link_libraries(nrf_cc3xx_psa_crypto_imported 
+    INTERFACE 
+      nrf_cc3xx_legacy_crypto_imported
+      nrf_cc3xx_core_imported
+      nrf_cc3xx_platform
+    )
 
   set(NRF_CC3XX_PSA_LIB
-    ${NRF_CC3XX_LIB_DIR}/${CC3XX_PSA_FLAVOR}/libnrf_${CC3XX_ARCH}_psa_crypto_${CC3XX_PSA_VER}.a
+    ${NRF_CC3XX_LIB_DIR}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_psa_crypto_${NRF_CC3XX_VER}.a
   )
 
-  set_property(TARGET cc3xx_psa_crypto PROPERTY
+  if(NOT EXISTS ${NRF_CC3XX_PSA_LIB})
+    message(WARNING "This combination of SoC, floating point ABI, and interrupts settings is not supported by the nrf_${CC3XX_ARCH}_psa_crypto lib."
+                  "(${NRF_CC3XX_PSA_LIB} doesn't exist.)")
+  endif()
+
+  set_property(TARGET nrf_cc3xx_psa_crypto_imported PROPERTY
                IMPORTED_LOCATION "${NRF_CC3XX_PSA_LIB}")
 
-  target_link_libraries(cc3xx_psa_crypto INTERFACE mbedcrypto_cc3xx_imported)
+
 
 endif()

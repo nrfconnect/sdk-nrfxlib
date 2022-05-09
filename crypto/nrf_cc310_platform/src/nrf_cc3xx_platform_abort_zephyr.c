@@ -6,7 +6,7 @@
 #include <kernel.h>
 #include <sys/reboot.h>
 //#include <logging/log.h>
-//LOG_MODULE_DECLARE(cc3xx_platform);
+//LOG_MODULE_DECLARE(nrf_cc3xx_platform);
 
 #include "nrf_cc3xx_platform_abort.h"
 
