@@ -254,6 +254,11 @@ config OBERON_ONLY_ENABLED
 
 menu "Legacy mbed TLS crypto APIs"
 
+config MBEDTLS_MPI_MAX_SIZE
+	int
+	default 256 if CRYPTOCELL_CC310_USABLE || !CRYPTOCELL_USABLE
+	default 384 if CRYPTOCELL_CC312_USABLE
+
 config MBEDTLS_LEGACY_CRYPTO_C
 	bool
 	prompt "Enable (legacy) mbed TLS crypto APIs"

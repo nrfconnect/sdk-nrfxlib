@@ -147,6 +147,7 @@ kconfig_check_and_set_base(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
 kconfig_check_and_set_base_int(MBEDTLS_SSL_OUT_CONTENT_LEN)
 kconfig_check_and_set_base_int(MBEDTLS_SSL_IN_CONTENT_LEN)
 kconfig_check_and_set_base_int(MBEDTLS_ENTROPY_MAX_SOURCES)
+kconfig_check_and_set_base_int(MBEDTLS_MPI_MAX_SIZE)
 
 # Set all enabled TLS/DTLS key exchange methods
 kconfig_check_and_set_base(MBEDTLS_KEY_EXCHANGE_PSK_ENABLED)
