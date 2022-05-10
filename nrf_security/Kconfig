@@ -110,7 +110,6 @@ menu "Zephyr legacy configurations"
 
 config MBEDTLS_TLS_VERSION_1_2
 	bool "Enable support for TLS 1.2 (DTLS 1.2)"
-	default y if !NET_L2_OPENTHREAD
 	select PSA_WANT_ALG_SHA_1
 	select PSA_WANT_ALG_SHA_224
 	select PSA_WANT_ALG_SHA_256
