@@ -34,12 +34,3 @@ if(CONFIG_TFM_BL2)
       -DMCUBOOT_MBEDCRYPTO_CONFIG_FILEPATH:STRING=${CONFIG_MBEDTLS_CFG_FILE}
   )
 endif()
-
-if(CONFIG_MBEDTLS_ENABLE_HEAP)
-  # The ENGINE_BUF_SIZE holds the dynamic allocation buffer for
-  # TF-M, which is the equivalent of dynamic allocation in MBEDTLS
-  set_property(TARGET zephyr_property_target
-    APPEND PROPERTY TFM_CMAKE_OPTIONS
-      -DCRYPTO_ENGINE_BUF_SIZE=${CONFIG_MBEDTLS_HEAP_SIZE}
-  )
-endif()
