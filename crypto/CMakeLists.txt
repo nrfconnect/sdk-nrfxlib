@@ -170,6 +170,11 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   )
   target_include_directories(nrf_cc3xx_platform INTERFACE
       "${NRF_CC3XX_PLATFORM_BASE}/include")
+
+  # Add fallback to play nice with
+  add_library(platform_cc3xx INTERFACE)
+  target_link_libraries(platform_cc3xx INTERFACE nrf_cc3xx_platform)
+
   if (TARGET zephyr_interface)
     zephyr_link_libraries(nrf_cc3xx_platform)
     #
