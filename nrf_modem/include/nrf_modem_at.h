@@ -103,6 +103,7 @@ int nrf_modem_at_notif_handler_set(nrf_modem_at_notif_handler_t callback);
  * @retval -NRF_EPERM The Modem library is not initialized.
  * @retval -NRF_EFAULT @c fmt is @c NULL.
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
+ * @retval -NRF_ESHUTDOWN If modem was shut down.
  */
 int nrf_modem_at_printf(const char *fmt, ...);
 
@@ -123,6 +124,7 @@ int nrf_modem_at_printf(const char *fmt, ...);
  * @retval -NRF_EFAULT @c cmd or @c fmt are @c NULL.
  * @retval -NRF_EBADMSG No arguments were matched.
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
+ * @retval -NRF_ESHUTDOWN If the modem was shut down.
  */
 int nrf_modem_at_scanf(const char *cmd, const char *fmt, ...);
 
@@ -144,6 +146,7 @@ int nrf_modem_at_scanf(const char *cmd, const char *fmt, ...);
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  * @retval -NRF_E2BIG The response is larger than the supplied buffer @c buf.
  * @retval -NRF_EINVAL If @c len is zero.
+ * @retval -NRF_ESHUTDOWN If the modem was shut down.
  */
 int nrf_modem_at_cmd(void *buf, size_t len, const char *fmt, ...);
 
@@ -166,6 +169,7 @@ int nrf_modem_at_cmd(void *buf, size_t len, const char *fmt, ...);
  * @retval -NRF_EFAULT @c callback or @c fmt are @c NULL.
  * @retval -NRF_EINPROGRESS An asynchrounous request is already in progress.
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
+ * @retval -NRF_ESHUTDOWN If the modem was shut down.
  */
 int nrf_modem_at_cmd_async(nrf_modem_at_resp_handler_t callback, const char *fmt, ...);
 

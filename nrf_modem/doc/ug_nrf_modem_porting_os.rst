@@ -53,11 +53,29 @@ nrf_modem_os_timedwait
 This function is called by the Modem library when a timed context or sleep is required.
 A blind return value of 0 will make all the Modem library operations always blocking.
 
-*Required actions* to make the operations non-blocking:
+.. note::
+   To ensure all waiting threads are awake on the  :c:func:`nrf_modem_event_notify` function, the waiting threads must not be cleared on :c:func:`nrf_modem_os_init` or :c:func:`nrf_modem_os_shutdown` functions.
+
+*Required actions* to be taken that do not block the operations:
 
 * Start counting the time (this can be based on a Timer or Thread for instance).
-* Report back the remaining time of the timer if the specific timer is interrupted.
-* If timed out, report NRF_ETIMEDOUT.
+* In the case of a call to :c:func:`nrf_modem_os_event_notify` function, all waiting threads must wake up, reporting back the remaining time of the timer through the :c:var:`timeout` variable.
+
+The following points decide the *Function return value*:
+
+* If the modem is not initialized, that is, if :c:func:`nrf_modem_is_initialized` returns false, function return value will be ``-NRF_ESHUTDOWN``.
+* If there is a time out, function return value will be ``-NRF_EAGAIN``.
+* In all other cases, function return value will be ``0``.
+
+nrf_modem_os_event_notify
+=========================
+
+This function is called by the Modem library when an event occurs and all threads waiting in :c:func:`nrf_modem_os_timedwait` function wake up.
+
+*Required action*:
+
+Wake up all sleeping threads in :c:func:`nrf_modem_os_timedwait` function.
+For details, see :c:func:`nrf_modem_os_timedwait`.
 
 nrf_modem_os_alloc
 ==================
@@ -250,83 +268,88 @@ You can use it as a template and customize it for your OS or scheduler.
 
 .. code-block:: c
 
-   #include <nrf_modem_os.h>
-   #include <nrf_errno.h>
-   #include <nrf_modem_platform.h>
-   #include <nrf_modem_limits.h>
+	#include <nrf_modem_os.h>
+	#include <nrf_errno.h>
+	#include <nrf_modem_platform.h>
+	#include <nrf_modem_limits.h>
 
-   #include <nrf.h>
-   #include "errno.h"
+	#include <nrf.h>
+	#include "errno.h"
 
-   #define TRACE_IRQ          EGU2_IRQn
-   #define TRACE_IRQ_PRIORITY 6
-   #define TRACE_IRQ_HANDLER  EGU2_IRQHandler
+	#define TRACE_IRQ EGU2_IRQn
+	#define TRACE_IRQ_PRIORITY 6
+	#define TRACE_IRQ_HANDLER EGU2_IRQHandler
 
-   void read_task_create(void)
-   {
-       // The read task is achieved using SW interrupt.
-       NVIC_SetPriority(NRF_MODEM_APPLICATION_IRQ, NRF_MODEM_APPLICATION_IRQ_PRIORITY);
-       NVIC_ClearPendingIRQ(NRF_MODEM_APPLICATION_IRQ);
-       NVIC_EnableIRQ(NRF_MODEM_APPLICATION_IRQ);
-   }
+	void read_task_create(void)
+	{
+		// The read task is achieved using SW interrupt.
+		NVIC_SetPriority(NRF_MODEM_APPLICATION_IRQ, NRF_MODEM_APPLICATION_IRQ_PRIORITY);
+		NVIC_ClearPendingIRQ(NRF_MODEM_APPLICATION_IRQ);
+		NVIC_EnableIRQ(NRF_MODEM_APPLICATION_IRQ);
+	}
 
-   void trace_task_create(void) {
-       NVIC_SetPriority(TRACE_IRQ, TRACE_IRQ_PRIORITY);
-       NVIC_ClearPendingIRQ(TRACE_IRQ);
-       NVIC_EnableIRQ(TRACE_IRQ);
-   }
+	void trace_task_create(void) {
+		NVIC_SetPriority(TRACE_IRQ, TRACE_IRQ_PRIORITY);
+		NVIC_ClearPendingIRQ(TRACE_IRQ);
+		NVIC_EnableIRQ(TRACE_IRQ);
+	}
 
-   void nrf_modem_os_init(void) {
-       read_task_create();
-       trace_task_create();
-       // Initialize timers / sleeping threads used in the nrf_modem_os_timedwait function.
-       // Initialize trace medium used in the nrf_modem_os_trace_put function.
-   }
+	void nrf_modem_os_init(void) {
+		read_task_create();
+		trace_task_create();
+		// Initialize timers / sleeping threads used in the nrf_modem_os_timedwait function.
+		// Initialize trace medium used in the nrf_modem_os_trace_put function.
+	}
 
-   int32_t nrf_modem_os_timedwait(uint32_t context, int32_t * timeout)
-   {
-       // Return remaining time by reference in timeout parameter,
-       // if not yet timed out.
-       // Else return NRF_ETIMEDOUT if timeout has triggered.
-       // A blind return value of 0 will make all Modem library operations
-       // always block.
-       return 0;
-   }
+	int32_t nrf_modem_os_timedwait(uint32_t context, int32_t * timeout)
+	{
+		// Return remaining time by reference in timeout parameter,
+		// if not yet timed out.
+		// Else return NRF_ETIMEDOUT if timeout has triggered.
+		// A blind return value of 0 will make all Modem library operations
+		// always block.
+		return 0;
+	}
 
-   void nrf_modem_os_errno_set(int errno_val) {
-       // Translate nrf_errno.h errno to the OS specific value.
-   }
+	void nrf_modem_os_event_notify()
+	{
+		// Wake threads in nrf_modem_os_timedwait()
+	}
 
-   void nrf_modem_os_application_irq_set(void) {
-       NVIC_SetPendingIRQ(NRF_MODEM_APPLICATION_IRQ);
-   }
+	void nrf_modem_os_errno_set(int errno_val) {
+		// Translate nrf_errno.h errno to the OS specific value.
+	}
 
+	void nrf_modem_os_application_irq_set(void) {
+		NVIC_SetPendingIRQ(NRF_MODEM_APPLICATION_IRQ);
+	}
 
-   void nrf_modem_os_application_irq_clear(void) {
-       NVIC_ClearPendingIRQ(NRF_MODEM_APPLICATION_IRQ);
-   }
+	void nrf_modem_os_application_irq_clear(void) {
+		NVIC_ClearPendingIRQ(NRF_MODEM_APPLICATION_IRQ);
+	}
 
-   void NRF_MODEM_APPLICATION_IRQ_HANDLER(void) {
-       nrf_modem_application_irq_handler();
-   }
+	void NRF_MODEM_APPLICATION_IRQ_HANDLER(void) {
+		nrf_modem_application_irq_handler();
+	}
 
-   void nrf_modem_os_trace_irq_set(void) {
-       NVIC_SetPendingIRQ(TRACE_IRQ);
-   }
+	void nrf_modem_os_trace_irq_set(void) {
+		NVIC_SetPendingIRQ(TRACE_IRQ);
+	}
 
-   void nrf_modem_os_trace_irq_clear(void) {
-       NVIC_ClearPendingIRQ(TRACE_IRQ);
-   }
+	void nrf_modem_os_trace_irq_clear(void)
+	{
+		NVIC_ClearPendingIRQ(TRACE_IRQ);
+	}
 
-   void TRACE_IRQ_HANDLER(void) {
-       nrf_modem_trace_irq_handler();
-   }
+	void TRACE_IRQ_HANDLER(void) {
+		nrf_modem_trace_irq_handler();
+	}
 
-   int32_t nrf_modem_os_trace_put(const uint8_t * const p_buffer, uint32_t buf_len) {
-       // Store buffer to chosen medium.
-       // Traces can be dropped if not needed.
-       // Either call nrf_modem_trace_processed_callback() here or at a later point (for example, in a
-       // thread or a work queue handler function).
-       int err = nrf_modem_trace_processed_callback(p_buffer, buf_len);
-       return 0;
-   }
+	int32_t nrf_modem_os_trace_put(const uint8_t * const p_buffer, uint32_t buf_len) {
+		// Store buffer to chosen medium.
+		// Traces can be dropped if not needed.
+		// Either call nrf_modem_trace_processed_callback() here or at a later point (for example, in a
+		// thread or a work queue handler function).
+		int err = nrf_modem_trace_processed_callback(p_buffer, buf_len);
+		return 0;
+	}

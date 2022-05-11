@@ -14,6 +14,7 @@
 #define NRF_MODEM_H__
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -82,12 +83,66 @@ struct nrf_modem_shmem_cfg {
 	} trace;
 };
 
+/**
+ * @defgroup nrf_modem_fault_handling Modem fault handling
+ *
+ * @ingroup nrf_modem
+ * @{
+ */
+
+/** Undefined fault (e.g. undefined interrupt) */
+#define NRF_MODEM_FAULT_UNDEFINED 0x001
+/** HW WD reset detected */
+#define NRF_MODEM_FAULT_HW_WD_RESET 0x002
+/** Hard fault */
+#define NRF_MODEM_FAULT_HARDFAULT 0x003
+/** Memory management fault */
+#define NRF_MODEM_FAULT_MEM_MANAGE 0x004
+/** Bus fault */
+#define NRF_MODEM_FAULT_BUS 0x005
+/** Usage fault */
+#define NRF_MODEM_FAULT_USAGE 0x006
+/** Modem has been reset due to secure ctrl */
+#define NRF_MODEM_FAULT_SECURE_RESET 0x007
+/** Error handler has crashed */
+#define NRF_MODEM_FAULT_PANIC_DOUBLE 0x008
+/** Modem startup has failed four times in row */
+#define NRF_MODEM_FAULT_PANIC_RESET_LOOP 0x009
+/** Assert */
+#define NRF_MODEM_FAULT_ASSERT 0x010
+/** Unconditional SW reset */
+#define NRF_MODEM_FAULT_PANIC 0x011
+/** Flash erase fault */
+#define NRF_MODEM_FAULT_FLASH_ERASE 0x012
+/** Flash write fault */
+#define NRF_MODEM_FAULT_FLASH_WRITE 0x013
+/** Undervoltage fault */
+#define NRF_MODEM_FAULT_POFWARN 0x014
+/** Overtemperature fault */
+#define NRF_MODEM_FAULT_THWARN 0x015
+
+
+/** @brief Modem fault info struct. */
+struct nrf_modem_fault_info {
+	uint32_t reason;
+	uint32_t program_counter;
+};
+
+/**
+ * @brief Modem fault handler.
+ */
+typedef void (*nrf_modem_fault_handler_t)(struct nrf_modem_fault_info *fault_info);
+
+/**@} */
+
 /** @brief Modem library initialization parameters. */
 typedef struct {
 	/** Shared memory configuration */
 	struct nrf_modem_shmem_cfg shmem;
 	/** IPC IRQ priority */
 	uint32_t ipc_irq_prio;
+	/** Modem fault handler */
+	nrf_modem_fault_handler_t fault_handler;
 } nrf_modem_init_params_t;
 
 /**@brief Modem library mode */
@@ -122,7 +177,6 @@ char *nrf_modem_build_version(void);
  * called in between.
  *
  * @param[in] init_params Initialization parameters.
- *                        Cannot be NULL.
  * @param[in] mode Library mode.
  *
  * @retval Zero on success.
@@ -132,11 +186,21 @@ char *nrf_modem_build_version(void);
  * @retval -NRF_EFAULT @c init_params is @c NULL.
  * @retval -NRF_ENOMEM Not enough shared memory for this operation.
  * @retval -NRF_EPERM The Modem library is already initialized.
- * @retval -NRF_ETIMEDOUT Modem timed out.
+ * @retval -NRF_ETIMEDOUT Operation timed out.
+ * @retval -NRF_EINVAL RPC control region size is incorrect.
+ * @retval -NRF_EOPNOTSUPP RPC version mismatch.
  * @retval -NRF_EIO IPC State fault or missing root digest.
  */
 int nrf_modem_init(const nrf_modem_init_params_t *init_params,
 		   enum nrf_modem_mode_t mode);
+
+/**
+ * @brief Check whether the modem is initialized.
+ *
+ * @retval true If the modem is initialized.
+ * @retval false If the modem is uninitialized or in a fault state.
+ */
+bool nrf_modem_is_initialized(void);
 
 /**
  * @brief Shutdown the Modem library.
@@ -152,13 +216,6 @@ int nrf_modem_init(const nrf_modem_init_params_t *init_params,
  * @retval -NRF_ENOMEM Not enough shared memory for this operation.
  */
 int nrf_modem_shutdown(void);
-
-/**
- * @brief Handler for library errors.
- *
- * @param[in] error The error reason.
- */
-extern void nrf_modem_recoverable_error_handler(uint32_t error);
 
 /**
  * @brief Application IRQ handler in the modem library.
