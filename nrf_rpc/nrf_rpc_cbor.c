@@ -15,37 +15,16 @@
 
 struct handler_proxy_ctx {
 	CborValue value;
-	CborParser parser;
+	//CborParser parser;
+	zcbor_decoder_t parser;
 	struct cbor_buf_reader reader;
 	const uint8_t *in_packet;
 };
 
-/* All Context structures are independently defined for API user convenient, but
- * they need the same layout to allow casting between them. Following asserts
- * ensures that.
- */
-NRF_RPC_STATIC_ASSERT(offsetof(struct nrf_rpc_cbor_ctx, encoder) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, encoder),
-		      "Context structures fields does not match");
-NRF_RPC_STATIC_ASSERT(offsetof(struct nrf_rpc_cbor_ctx, out_packet) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, out_packet),
-		      "Context structures fields does not match");
-NRF_RPC_STATIC_ASSERT(offsetof(struct nrf_rpc_cbor_ctx, writer) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, writer),
-		      "Context structures fields does not match");
-
-NRF_RPC_STATIC_ASSERT(offsetof(struct handler_proxy_ctx, value) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, value),
-		      "Context structures fields does not match");
-NRF_RPC_STATIC_ASSERT(offsetof(struct handler_proxy_ctx, parser) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, parser),
-		      "Context structures fields does not match");
-NRF_RPC_STATIC_ASSERT(offsetof(struct handler_proxy_ctx, reader) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, reader),
-		      "Context structures fields does not match");
-NRF_RPC_STATIC_ASSERT(offsetof(struct handler_proxy_ctx, in_packet) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, in_packet),
-		      "Context structures fields does not match");
+inline static size_t nrf_rpc_cbor_data_len(const struct nrf_rpc_cbor_ctx *ctx)
+{
+	return ctx->zs->payload_mut - ctx->out_packet;
+}
 
 int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 		     struct nrf_rpc_cbor_ctx *ctx,
@@ -58,12 +37,12 @@ int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 		.decoding_done_required = false,
 	};
 
-	if (cbor_encode_null(&ctx->encoder) != CborNoError) {
+	if (!zcbor_nul_put(ctx->zs)) {
 		NRF_RPC_CBOR_DISCARD(*ctx);
 		return -NRF_ENOMEM;
 	}
 
-	len = cbor_buf_writer_buffer_size(&ctx->writer, ctx->out_packet);
+	len = nrf_rpc_cbor_data_len(ctx);
 
 	return nrf_rpc_cmd(group, cmd, ctx->out_packet, len,
 				&_nrf_rpc_cbor_proxy_handler,
@@ -71,35 +50,37 @@ int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 }
 
 int nrf_rpc_cbor_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd,
-			 struct nrf_rpc_cbor_rsp_ctx *ctx)
+			 struct nrf_rpc_cbor_ctx *ctx)
 {
 	int err;
 	size_t len;
 	size_t rsp_size;
 
-	if (cbor_encode_null(&ctx->encoder) != CborNoError) {
+	if (!zcbor_nul_put(ctx->zs)) {
 		NRF_RPC_CBOR_DISCARD(*ctx);
 		return -NRF_ENOMEM;
 	}
 
-	len = cbor_buf_writer_buffer_size(&ctx->writer, ctx->out_packet);
+	len = nrf_rpc_cbor_data_len(ctx);
 
-	err = nrf_rpc_cmd_rsp(group, cmd, ctx->out_packet, len,
-				&ctx->in_packet, &rsp_size);
+	err = nrf_rpc_cmd_rsp(group, cmd, ctx->packet, len,
+				&ctx->packet, &rsp_size);
 
 	if (err < 0) {
-		cbor_buf_reader_init(&ctx->reader, "", 0);
 	} else {
-		cbor_buf_reader_init(&ctx->reader, ctx->in_packet, rsp_size);
+		zcbor_new_decode_state(ctx->sz, ARRAY_SIZE(ctx->zs). ctx->packet,
+					rsp_size, 1);
 	}
 
+/*
 	if (cbor_parser_init(&ctx->reader.r, 0, &ctx->parser, &ctx->value)
 				!= CborNoError && err >= 0) {
 
-		nrf_rpc_decoding_done(ctx->in_packet);
+		nrf_rpc_decoding_done(ctx->packet);
 		err = -NRF_EBADMSG;
 	}
 	ctx->value.remaining = UINT32_MAX;
+*/
 
 	return err;
 }
@@ -120,7 +101,7 @@ void nrf_rpc_cbor_cmd_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
 }
 
 void nrf_rpc_cbor_cmd_rsp_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
-				 struct nrf_rpc_cbor_rsp_ctx *ctx)
+				 struct nrf_rpc_cbor_ctx *ctx)
 {
 	int err;
 
@@ -138,12 +119,12 @@ int nrf_rpc_cbor_evt(const struct nrf_rpc_group *group, uint8_t evt,
 
 	size_t len;
 
-	if (cbor_encode_null(&ctx->encoder) != CborNoError) {
+	if (!zcbor_nul_put(ctx->zs)) {
 		NRF_RPC_CBOR_DISCARD(*ctx);
 		return -NRF_ENOMEM;
 	}
 
-	len = cbor_buf_writer_buffer_size(&ctx->writer, ctx->out_packet);
+	len = nrf_rpc_cbor_data_len(ctx);
 
 	return nrf_rpc_evt(group, evt, ctx->out_packet, len);
 }
@@ -167,12 +148,12 @@ int nrf_rpc_cbor_rsp(struct nrf_rpc_cbor_ctx *ctx)
 
 	size_t len;
 
-	if (cbor_encode_null(&ctx->encoder) != CborNoError) {
+	if (!zcbor_nul_put(ctx->zs)) {
 		NRF_RPC_CBOR_DISCARD(*ctx);
 		return -NRF_ENOMEM;
 	}
 
-	len = cbor_buf_writer_buffer_size(&ctx->writer, ctx->out_packet);
+	len = nrf_rpc_cbor_data_len(ctx);
 
 	return nrf_rpc_rsp(ctx->out_packet, len);
 }
@@ -227,6 +208,7 @@ void _nrf_rpc_cbor_proxy_handler(const uint8_t *packet, size_t len,
 
 void _nrf_rpc_cbor_prepare(struct nrf_rpc_cbor_ctx *ctx, size_t len)
 {
-	cbor_buf_writer_init(&ctx->writer, ctx->out_packet, len);
-	cbor_encoder_init(&ctx->encoder, &ctx->writer.enc, 0);
+	zcbor_new_encode_state(ctx->zs, ARRAY_SIZE(ctx->zs), ctx->packet, len, 0);
+	ctx->zs->constant_state->stop_on_error = true;
+	ctx->error = 0;
 }

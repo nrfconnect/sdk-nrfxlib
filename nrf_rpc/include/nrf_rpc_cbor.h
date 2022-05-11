@@ -11,9 +11,14 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+/*
 #include <tinycbor/cbor.h>
 #include <tinycbor/cbor_buf_writer.h>
 #include <tinycbor/cbor_buf_reader.h>
+*/
+#include <zcbor_common.h>
+#include <zcbor_decoder.h>
+#include <zcbor_encoder.h>
 
 #include <nrf_rpc.h>
 
@@ -50,34 +55,8 @@ struct _nrf_rpc_cbor_decoder {
  * significant for the API, other fields are internal.
  */
 struct nrf_rpc_cbor_ctx {
-	/** @brief TinyCBOR encoder. */
-	CborEncoder encoder;
-	struct cbor_buf_writer writer;
-	uint8_t *out_packet;
-};
-
-/** @brief Context for encoding commands, sending commands, receiving responses
- * and parsing them.
- *
- * Initialize it with @ref NRF_RPC_CBOR_ALLOC macro. Only `encoder` and `value`
- * fields are significant for the API, other fields are internal.
- */
-struct nrf_rpc_cbor_rsp_ctx {
-	union {
-		struct {
-			/** @brief TinyCBOR encoder for encoding command. */
-			CborEncoder encoder;
-			struct cbor_buf_writer writer;
-			uint8_t *out_packet;
-		};
-		struct {
-			/** @brief TinyCBOR value for parsing response. */
-			CborValue value;
-			CborParser parser;
-			struct cbor_buf_reader reader;
-			const uint8_t *in_packet;
-		};
-	};
+	zcbor_state_t zs[2]
+	uint8_t *packet;
 };
 
 /** @brief Register a command decoder.
@@ -132,7 +111,7 @@ struct nrf_rpc_cbor_rsp_ctx {
  * @param[in]  _len  Requested length of the packet.
  */
 #define NRF_RPC_CBOR_ALLOC(_ctx, _len)					       \
-	NRF_RPC_ALLOC((_ctx).out_packet, (_len) + 1);			       \
+	NRF_RPC_ALLOC((_ctx).packet, (_len) + 1);			       \
 	_nrf_rpc_cbor_prepare((struct nrf_rpc_cbor_ctx *)(&(_ctx)), (_len) + 1)
 
 /** @brief Deallocate memory for a packet.
@@ -142,7 +121,7 @@ struct nrf_rpc_cbor_rsp_ctx {
  *
  * @param _ctx Packet that was previously allocated.
  */
-#define NRF_RPC_CBOR_DISCARD(_ctx) NRF_RPC_DISCARD((_ctx).out_packet)
+#define NRF_RPC_CBOR_DISCARD(_ctx) NRF_RPC_DISCARD((_ctx).packet)
 
 /** @brief Send a command and provide callback to handle response.
  *
@@ -176,7 +155,7 @@ int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
  *               layer reported a sendig error.
  */
 int nrf_rpc_cbor_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd,
-			 struct nrf_rpc_cbor_rsp_ctx *ctx);
+			 struct nrf_rpc_cbor_ctx *ctx);
 
 /** @brief Send a command, provide callback to handle response and pass any
  * error to an error handler.
@@ -212,7 +191,7 @@ void nrf_rpc_cbor_cmd_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
  * @param ctx    Context allocated by @ref NRF_RPC_CBOR_ALLOC.
  */
 void nrf_rpc_cbor_cmd_rsp_no_err(const struct nrf_rpc_group *group,
-				 uint8_t cmd, struct nrf_rpc_cbor_rsp_ctx *ctx);
+				 uint8_t cmd, struct nrf_rpc_cbor_ctx *ctx);
 
 /** @brief Send an event.
  *
