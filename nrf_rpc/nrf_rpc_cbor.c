@@ -13,39 +13,13 @@
 #include <nrf_rpc_cbor.h>
 #include <nrf_rpc_common.h>
 
-struct handler_proxy_ctx {
-	CborValue value;
-	CborParser parser;
-	struct cbor_buf_reader reader;
-	const uint8_t *in_packet;
-};
+/* Maximum RPC parameters that can be passed */
+#define NRF_RPC_MAX_PARAMETERS 255
 
-/* All Context structures are independently defined for API user convenient, but
- * they need the same layout to allow casting between them. Following asserts
- * ensures that.
- */
-NRF_RPC_STATIC_ASSERT(offsetof(struct nrf_rpc_cbor_ctx, encoder) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, encoder),
-		      "Context structures fields does not match");
-NRF_RPC_STATIC_ASSERT(offsetof(struct nrf_rpc_cbor_ctx, out_packet) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, out_packet),
-		      "Context structures fields does not match");
-NRF_RPC_STATIC_ASSERT(offsetof(struct nrf_rpc_cbor_ctx, writer) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, writer),
-		      "Context structures fields does not match");
-
-NRF_RPC_STATIC_ASSERT(offsetof(struct handler_proxy_ctx, value) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, value),
-		      "Context structures fields does not match");
-NRF_RPC_STATIC_ASSERT(offsetof(struct handler_proxy_ctx, parser) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, parser),
-		      "Context structures fields does not match");
-NRF_RPC_STATIC_ASSERT(offsetof(struct handler_proxy_ctx, reader) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, reader),
-		      "Context structures fields does not match");
-NRF_RPC_STATIC_ASSERT(offsetof(struct handler_proxy_ctx, in_packet) ==
-		      offsetof(struct nrf_rpc_cbor_rsp_ctx, in_packet),
-		      "Context structures fields does not match");
+static inline size_t nrf_rpc_cbor_data_len(const struct nrf_rpc_cbor_ctx *ctx)
+{
+	return ctx->zs->payload_mut - ctx->out_packet;
+}
 
 int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 		     struct nrf_rpc_cbor_ctx *ctx,
@@ -58,12 +32,12 @@ int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 		.decoding_done_required = false,
 	};
 
-	if (cbor_encode_null(&ctx->encoder) != CborNoError) {
+	if (!zcbor_nil_put(ctx->zs, NULL)) {
 		NRF_RPC_CBOR_DISCARD(*ctx);
 		return -NRF_ENOMEM;
 	}
 
-	len = cbor_buf_writer_buffer_size(&ctx->writer, ctx->out_packet);
+	len = nrf_rpc_cbor_data_len(ctx);
 
 	return nrf_rpc_cmd(group, cmd, ctx->out_packet, len,
 				&_nrf_rpc_cbor_proxy_handler,
@@ -71,35 +45,26 @@ int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 }
 
 int nrf_rpc_cbor_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd,
-			 struct nrf_rpc_cbor_rsp_ctx *ctx)
+			 struct nrf_rpc_cbor_ctx *ctx)
 {
 	int err;
 	size_t len;
 	size_t rsp_size;
 
-	if (cbor_encode_null(&ctx->encoder) != CborNoError) {
+	if (!zcbor_nil_put(ctx->zs, NULL)) {
 		NRF_RPC_CBOR_DISCARD(*ctx);
 		return -NRF_ENOMEM;
 	}
 
-	len = cbor_buf_writer_buffer_size(&ctx->writer, ctx->out_packet);
+	len = nrf_rpc_cbor_data_len(ctx);
 
-	err = nrf_rpc_cmd_rsp(group, cmd, ctx->out_packet, len,
-				&ctx->in_packet, &rsp_size);
+	err = nrf_rpc_cmd_rsp(group, cmd, ctx->out_packet, len, &ctx->in_packet,
+			      &rsp_size);
 
-	if (err < 0) {
-		cbor_buf_reader_init(&ctx->reader, "", 0);
-	} else {
-		cbor_buf_reader_init(&ctx->reader, ctx->in_packet, rsp_size);
+	if (err >= 0) {
+		zcbor_new_decode_state(ctx->zs, ARRAY_SIZE(ctx->zs),
+				       ctx->out_packet, rsp_size, 1);
 	}
-
-	if (cbor_parser_init(&ctx->reader.r, 0, &ctx->parser, &ctx->value)
-				!= CborNoError && err >= 0) {
-
-		nrf_rpc_decoding_done(ctx->in_packet);
-		err = -NRF_EBADMSG;
-	}
-	ctx->value.remaining = UINT32_MAX;
 
 	return err;
 }
@@ -120,7 +85,7 @@ void nrf_rpc_cbor_cmd_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
 }
 
 void nrf_rpc_cbor_cmd_rsp_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
-				 struct nrf_rpc_cbor_rsp_ctx *ctx)
+				 struct nrf_rpc_cbor_ctx *ctx)
 {
 	int err;
 
@@ -138,12 +103,12 @@ int nrf_rpc_cbor_evt(const struct nrf_rpc_group *group, uint8_t evt,
 
 	size_t len;
 
-	if (cbor_encode_null(&ctx->encoder) != CborNoError) {
+	if (!zcbor_nil_put(ctx->zs, NULL)) {
 		NRF_RPC_CBOR_DISCARD(*ctx);
 		return -NRF_ENOMEM;
 	}
 
-	len = cbor_buf_writer_buffer_size(&ctx->writer, ctx->out_packet);
+	len = nrf_rpc_cbor_data_len(ctx);
 
 	return nrf_rpc_evt(group, evt, ctx->out_packet, len);
 }
@@ -167,12 +132,12 @@ int nrf_rpc_cbor_rsp(struct nrf_rpc_cbor_ctx *ctx)
 
 	size_t len;
 
-	if (cbor_encode_null(&ctx->encoder) != CborNoError) {
+	if (!zcbor_nil_put(ctx->zs, NULL)) {
 		NRF_RPC_CBOR_DISCARD(*ctx);
 		return -NRF_ENOMEM;
 	}
 
-	len = cbor_buf_writer_buffer_size(&ctx->writer, ctx->out_packet);
+	len = nrf_rpc_cbor_data_len(ctx);
 
 	return nrf_rpc_rsp(ctx->out_packet, len);
 }
@@ -190,43 +155,30 @@ void nrf_rpc_cbor_rsp_no_err(struct nrf_rpc_cbor_ctx *ctx)
 
 }
 
-void nrf_rpc_cbor_decoding_done(CborValue *value)
+void nrf_rpc_cbor_decoding_done(struct nrf_rpc_cbor_ctx *ctx)
 {
-	struct handler_proxy_ctx *ctx =
-		NRF_RPC_CONTAINER_OF(value, struct handler_proxy_ctx, value);
-
-	nrf_rpc_decoding_done(ctx->in_packet);
+	nrf_rpc_decoding_done(ctx->out_packet);
 }
 
 void _nrf_rpc_cbor_proxy_handler(const uint8_t *packet, size_t len,
 				void *handler_data)
 {
-	struct handler_proxy_ctx ctx;
+	struct nrf_rpc_cbor_ctx ctx;
 
 	ctx.in_packet = packet;
 
 	struct _nrf_rpc_cbor_decoder *cbor_handler =
 		(struct _nrf_rpc_cbor_decoder *)handler_data;
 
-	cbor_buf_reader_init(&ctx.reader, packet, len);
+	zcbor_new_decode_state(ctx.zs, ARRAY_SIZE(ctx.zs), ctx.out_packet, len,
+			       NRF_RPC_MAX_PARAMETERS);
 
-	if (cbor_parser_init(&ctx.reader.r, 0, &ctx.parser, &ctx.value) !=
-	    CborNoError) {
-
-		if (cbor_handler->decoding_done_required) {
-			nrf_rpc_decoding_done(packet);
-		}
-		nrf_rpc_err(-NRF_EBADMSG, NRF_RPC_ERR_SRC_RECV, NULL,
-			    NRF_RPC_ID_UNKNOWN, NRF_RPC_PACKET_TYPE_CMD);
-		return;
-	}
-	ctx.value.remaining = UINT32_MAX;
-
-	return cbor_handler->handler(&ctx.value, cbor_handler->handler_data);
+	return cbor_handler->handler(&ctx, cbor_handler->handler_data);
 }
 
 void _nrf_rpc_cbor_prepare(struct nrf_rpc_cbor_ctx *ctx, size_t len)
 {
-	cbor_buf_writer_init(&ctx->writer, ctx->out_packet, len);
-	cbor_encoder_init(&ctx->encoder, &ctx->writer.enc, 0);
+	zcbor_new_encode_state(ctx->zs, ARRAY_SIZE(ctx->zs), ctx->out_packet,
+			       len, 0);
+	ctx->zs->constant_state->stop_on_error = true;
 }

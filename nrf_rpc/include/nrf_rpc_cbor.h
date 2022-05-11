@@ -11,11 +11,16 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include <tinycbor/cbor.h>
-#include <tinycbor/cbor_buf_writer.h>
-#include <tinycbor/cbor_buf_reader.h>
+#include <zcbor_common.h>
+#include <zcbor_decode.h>
+#include <zcbor_encode.h>
 
 #include <nrf_rpc.h>
+
+/* Max ZCBOR states: 2 means that no backups are available but we can use constant state
+ * to enable stop_on_error.
+ */
+#define NRF_RPC_ZCBOR_STATES	2
 
 /**
  * @defgroup nrf_rpc_cbor TinyCBOR serialization layer for nRF RPC.
@@ -30,12 +35,14 @@
 extern "C" {
 #endif
 
+struct nrf_rpc_cbor_ctx;
+
 /** @brief Callback that handles decoding of commands, events and responses.
  *
- * @param value        TinyCBOR value to decode.
+ * @param ctx          CBOR decoding context
  * @param handler_data Custom handler data.
  */
-typedef void (*nrf_rpc_cbor_handler_t)(CborValue *value, void *handler_data);
+typedef void (*nrf_rpc_cbor_handler_t)(struct nrf_rpc_cbor_ctx *ctx, void *handler_data);
 
 /* Structure used internally to define TinCBOR command or event decoder. */
 struct _nrf_rpc_cbor_decoder {
@@ -50,33 +57,10 @@ struct _nrf_rpc_cbor_decoder {
  * significant for the API, other fields are internal.
  */
 struct nrf_rpc_cbor_ctx {
-	/** @brief TinyCBOR encoder. */
-	CborEncoder encoder;
-	struct cbor_buf_writer writer;
-	uint8_t *out_packet;
-};
-
-/** @brief Context for encoding commands, sending commands, receiving responses
- * and parsing them.
- *
- * Initialize it with @ref NRF_RPC_CBOR_ALLOC macro. Only `encoder` and `value`
- * fields are significant for the API, other fields are internal.
- */
-struct nrf_rpc_cbor_rsp_ctx {
+	zcbor_state_t zs[NRF_RPC_ZCBOR_STATES];
 	union {
-		struct {
-			/** @brief TinyCBOR encoder for encoding command. */
-			CborEncoder encoder;
-			struct cbor_buf_writer writer;
-			uint8_t *out_packet;
-		};
-		struct {
-			/** @brief TinyCBOR value for parsing response. */
-			CborValue value;
-			CborParser parser;
-			struct cbor_buf_reader reader;
-			const uint8_t *in_packet;
-		};
+		uint8_t *out_packet;
+		const uint8_t *in_packet;
 	};
 };
 
@@ -176,7 +160,7 @@ int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
  *               layer reported a sendig error.
  */
 int nrf_rpc_cbor_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd,
-			 struct nrf_rpc_cbor_rsp_ctx *ctx);
+			 struct nrf_rpc_cbor_ctx *ctx);
 
 /** @brief Send a command, provide callback to handle response and pass any
  * error to an error handler.
@@ -212,7 +196,7 @@ void nrf_rpc_cbor_cmd_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
  * @param ctx    Context allocated by @ref NRF_RPC_CBOR_ALLOC.
  */
 void nrf_rpc_cbor_cmd_rsp_no_err(const struct nrf_rpc_group *group,
-				 uint8_t cmd, struct nrf_rpc_cbor_rsp_ctx *ctx);
+				 uint8_t cmd, struct nrf_rpc_cbor_ctx *ctx);
 
 /** @brief Send an event.
  *
@@ -267,7 +251,7 @@ void nrf_rpc_cbor_rsp_no_err(struct nrf_rpc_cbor_ctx *ctx);
  * function, so this `nrf_rpc_cbor_decoding_done` is not needed in response
  * handler.
  */
-void nrf_rpc_cbor_decoding_done(CborValue *value);
+void nrf_rpc_cbor_decoding_done(struct nrf_rpc_cbor_ctx *ctx);
 
 /* Functions used internally by the macros, not intended to be used directly. */
 void _nrf_rpc_cbor_prepare(struct nrf_rpc_cbor_ctx *ctx, size_t len);
