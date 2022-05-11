@@ -12,10 +12,12 @@ menuconfig NRF_RPC
 if NRF_RPC
 
 config NRF_RPC_CBOR
-	bool "Add TinyCBOR layer"
+	bool "Add CBOR layer"
 	default y
+	select ZCBOR
+	select ZCBOR_STOP_ON_ERROR
 	help
-	  Adds API that helps use of TinyCBOR library for data serialization.
+	  Adds API that helps use of CBOR library for data serialization.
 
 choice
 	prompt "nRF RPC transport layer"
