@@ -9,6 +9,33 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.0.0
+***************
+
+* Numerous fixes and improvements to networking sockets.
+* Increased logging output (in log version of the library).
+* Improved modem fault handling.
+  A new field has been added to :c:type:`nrf_modem_init_params_t` to receive a callback upon modem faults.
+* Added modem fault reasons to the :file:`nrf_modem.h` file.
+* Added :c:func:`nrf_modem_is_initialized` function to query the modem initialization status.
+* Added :c:func:`nrf_modem_os_event_notify` function to wake up threads sleeping in the :c:func:`nrf_modem_os_timedwait` function.
+* Added :c:func:`nrf_modem_os_sem_count_get` function to retrieve a semaphore's count.
+* Added :c:func:`nrf_modem_os_trace_alloc` and :c:func:`nrf_modem_os_trace_free` functions to allocate trace metadata on a dedicated memory heap.
+* Updated :c:func:`nrf_modem_shutdown` function to shutdown quicker when a debugger is attached or the modem has faulted.
+* Updated :c:func:`nrf_modem_os_timedwait` function to return negative values, aligning with other APIs.
+* Updated :c:func:`nrf_modem_os_sem_take` function to return ``-NRF_EAGAIN`` on error.
+* Renamed the option ``NRF_SO_HOSTNAME`` to ``NRF_SO_SEC_HOSTNAME``.
+* Renamed the option ``NRF_SO_CIPHERSUITE_LIST`` to ``NRF_SO_SEC_CIPHERSUITE_LIST``.
+* Renamed the option ``NRF_SO_CIPHER_IN_USE`` to ``NRF_SO_SEC_CIPHER_IN_USE``.
+* Fixed a bug which could lead to ``NRF_MODEM_GNSS_EVT_FIX`` event being sent before ``NRF_MODEM_GNSS_EVT_UNBLOCKED`` event.
+* Removed the :c:func:`nrf_modem_recoverable_error_handler` function.
+* Removed the :c:func:`nrf_modem_os_log_strdup` function.
+* Removed ``NRF_MODEM_AT_MAX_CMD_SIZE`` and ``NRF_MODEM_IP_MAX_MESSAGE_SIZE`` macros from :file:`nrf_modem_limits.h`.
+* Removed unused ``NRF_SPROTO_TLS1v3`` macro.
+* Removed unused ``NRF_MSG_DONTROUTE``, ``NRF_MSG_OOB``, ``NRF_MSG_TRUNC`` macros.
+* Removed unimplemented ``nrf_select`` function and relative ``NRF_FD_*`` macros.
+* Removed unused ``nrf_sec_config_t`` type.
+
 nrf_modem 1.5.2
 ***************
 

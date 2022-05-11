@@ -27,7 +27,7 @@ extern "C" {
 /** Infinite time-out. */
 #define NRF_MODEM_OS_FOREVER -1
 /** Number of OS semaphores required. */
-#define NRF_MODEM_OS_NUM_SEM_REQUIRED 3
+#define NRF_MODEM_OS_NUM_SEM_REQUIRED 4
 
 enum log_level {
 	NRF_MODEM_LOG_LEVEL_NONE,
@@ -43,10 +43,19 @@ enum log_level {
 void nrf_modem_os_init(void);
 
 /**
+ * @brief Deinitialize the glue layer.
+ *
+ * When shutdown is called, all pending calls to @c nrf_modem_os_timedwait shall exit
+ * and return -NRF_ESHUTDOWN.
+ */
+void nrf_modem_os_shutdown(void);
+
+
+/**
  * @brief Allocate a buffer on the TX area of shared memory.
  *
  * @param bytes Buffer size.
- * @return void*
+ * @returns A pointer to the allocated memory buffer or @c NULL if allocation failed.
  */
 void *nrf_modem_os_shm_tx_alloc(size_t bytes);
 
@@ -61,7 +70,7 @@ void nrf_modem_os_shm_tx_free(void *mem);
  * @brief Allocate a buffer on the library heap.
  *
  * @param bytes Buffer size.
- * @return void*
+ * @returns A pointer to the allocated memory buffer or @c NULL if allocation failed.
  */
 void *nrf_modem_os_alloc(size_t bytes);
 
@@ -73,13 +82,31 @@ void *nrf_modem_os_alloc(size_t bytes);
 void nrf_modem_os_free(void *mem);
 
 /**
+ * @brief Allocate a buffer on dedicated trace heap.
+ *
+ * @param bytes Buffer size.
+ * @returns A pointer to the allocated memory buffer or @c NULL if allocation failed.
+ */
+void *nrf_modem_os_trace_alloc(size_t bytes);
+
+/**
+ * @brief Free a memory buffer in dedicated trace heap.
+ *
+ * @param mem Buffer to free.
+ */
+void nrf_modem_os_trace_free(void *mem);
+
+/**
  * @brief Busy wait.
  *
  * @param usec Microseconds to busy wait for.
  */
 void nrf_modem_os_busywait(int32_t usec);
 
-/* @brief Put a thread to a sleep for a specific time or until an event occurs.
+/**
+ * @brief Put a thread to sleep for a specific time or until an event occurs.
+ *
+ * All waiting threads shall be woken by @c nrf_modem_event_notify.
  *
  * @param[in]      context   A unique identifier assigned by the library
  *                           to identify the context.
@@ -87,10 +114,18 @@ void nrf_modem_os_busywait(int32_t usec);
  *                           Contains the timeout value as input and the
  *                           remainig time to sleep as output.
  *
- * @return Zero if the thread is woken before the timeout expired,
- *         or NRF_ETIMEDOUT otherwise.
+ * @retval 0 The thread is woken before the timeout expired.
+ * @retval -NRF_EAGAIN The timeout expired.
+ * @retval -NRF_ESHUTDOWN Modem is not initialized, or was shut down.
  */
 int32_t nrf_modem_os_timedwait(uint32_t context, int32_t *timeout);
+
+/**
+ * @brief Notify the application that an event has occurred.
+ *
+ * This function shall wake all threads sleeping in @c nrf_modem_os_timedwait.
+ */
+void nrf_modem_os_event_notify(void);
 
 /**
  * @brief Set errno.
@@ -102,12 +137,12 @@ void nrf_modem_os_errno_set(int errno_val);
 /**
  * @brief Check if executing in interrupt context.
  *
- * @return true If in interrupt context.
- * @return false If not in interrupt context.
+ * @retval true If in interrupt context.
+ * @retval false If not in interrupt context.
  */
 bool nrf_modem_os_is_in_isr(void);
 
-/*
+/**
  * @brief Initialize a semaphore.
  *
  * The function shall allocate and initialize a semaphore and return its address
@@ -118,7 +153,7 @@ bool nrf_modem_os_is_in_isr(void);
  * @param initial_count Initial semaphore count.
  * @param limit Maximum semaphore count.
  *
- * @return int Zero on success, or a negative value otherwise.
+ * @returns 0 on success, a negative errno otherwise.
  */
 int nrf_modem_os_sem_init(void **sem,
 			  unsigned int initial_count,
@@ -143,9 +178,18 @@ void nrf_modem_os_sem_give(void *sem);
  *
  * @note @a timeout shall be set to NRF_MODEM_OS_NO_WAIT if called from ISR.
  *
- * @return int Zero on success or NRF_ETIMEDOUT if the timeout expired.
+ * @retval 0 on success.
+ * @retval -NRF_EAGAIN If the semaphore could not be taken.
  */
 int nrf_modem_os_sem_take(void *sem, int timeout);
+
+/**
+ * @brief Get a semaphore's count.
+ *
+ * @param sem The semaphore.
+ * @returns Current semaphore count.
+ */
+unsigned int nrf_modem_os_sem_count_get(void *sem);
 
 /**
  * @brief Set the application IRQ, @c NRF_MODEM_APPLICATION_IRQ.
@@ -188,22 +232,9 @@ void nrf_modem_os_trace_irq_disable(void);
  *
  * @param data Memory buffer containing the output trace data.
  * @param len  Memory buffer length.
- * @return int32_t 0 on success, an errno otherwise.
+ * @returns 0 on success, a negative errno otherwise.
  */
 int32_t nrf_modem_os_trace_put(const uint8_t *data, uint32_t len);
-
-/**
- * @brief Prepare to log a transient string.
- *
- * The modem library calls this function on each string that it logs
- * that does not reside in read-only memory, to accommodate for
- * any eventual copy that the logging function may need
- * due to, for example, deferred logging.
- *
- * @param str The string to be logged.
- * @return const char* The pointer to the string to be passed to the logging functions.
- */
-const char *nrf_modem_os_log_strdup(const char *str);
 
 /**
  * @brief Generic logging procedure.

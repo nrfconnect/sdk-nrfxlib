@@ -17,33 +17,26 @@
 extern "C" {
 #endif
 
-#if !defined(__GNUC__) || (__GNUC__ == 0)
 typedef int32_t ssize_t;
-#else
-#include <sys/types.h>
-#ifdef __SES_ARM
-typedef int32_t ssize_t;
-#endif
-#endif
 
 /**@addtogroup nrf_socket_address_resolution
  *@{
  */
 
-/**@brief Host to network byte-orders on half word. */
-#define NRF_HTONS(val) ((uint16_t)((((val)&0xff00) >> 8) | ((((val)&0x00ff) << 8))))
+/** @brief Host to network byte-orders on half word. */
+#define NRF_HTONS(x) ((uint16_t) ((((x) & 0xff00) >> 8) | (((x) & 0x00ff) << 8)))
 
-/**@brief Host to network byte-orders on full word. */
-#define NRF_HTONL(val) ((((uint32_t)(val)&0xff000000) >> 24) | \
-			(((uint32_t)(val)&0x00ff0000) >> 8) |  \
-			(((uint32_t)(val)&0x0000ff00) << 8) |  \
-			(((uint32_t)(val)&0x000000ff) << 24))
+/** @brief Host to network byte-orders on full word. */
+#define NRF_HTONL(x) ((uint32_t) ((((x) & 0xff000000) >> 24)	| \
+				  (((x) & 0x00ff0000) >> 8)	| \
+				  (((x) & 0x0000ff00) << 8)	| \
+				  (((x) & 0x000000ff) << 24)))
 
-/**@brief Network to host byte-orders on half word. */
-#define NRF_NTOHS(val) NRF_HTONS(val)
+/** @brief Network to host byte-orders on half word. */
+#define NRF_NTOHS(x) NRF_HTONS(x)
 
-/**@brief Network to host byte-orders on full word. */
-#define NRF_NTOHL(val) NRF_HTONL(val)
+/** @brief Network to host byte-orders on full word. */
+#define NRF_NTOHL(x) NRF_HTONL(x)
 
 /** Convert byte order from host to network (short). */
 #define nrf_htons(x) NRF_HTONS(x)
@@ -57,10 +50,10 @@ typedef int32_t ssize_t;
 /** Convert byte order from network to host (long). */
 #define nrf_ntohl(x) NRF_NTOHL(x)
 
-/**@brief Maximum length of IPv4 in string form, including null-termination character. */
+/** @brief Maximum length of IPv4 in string form, including null-termination character. */
 #define NRF_INET_ADDRSTRLEN 16
 
-/**@brief Maximum length of IPv6 in string form, including null-termination character. */
+/** @brief Maximum length of IPv6 in string form, including null-termination character. */
 #define NRF_INET6_ADDRSTRLEN 46
 
 /**@}*/
@@ -76,11 +69,11 @@ typedef int32_t ssize_t;
 /** Unspecified address family */
 #define NRF_AF_UNSPEC 0
 /** IPv4 socket family. */
-#define NRF_AF_INET 2
+#define NRF_AF_INET 1
+/** IPv6 socket family. */
+#define NRF_AF_INET6 2
 /** Raw packet family. */
 #define NRF_AF_PACKET 5
-/** IPv6 socket family. */
-#define NRF_AF_INET6 10
 /**@} */
 
 /**@defgroup nrf_socket_types Socket type.
@@ -96,65 +89,49 @@ typedef int32_t ssize_t;
 
 /**@defgroup nrf_socket_protocols Socket protocols.
  * @{
+ * @brief Protocol numbers from IANA/BSD.
  */
 
+/** IP protocol (pseudo-val for setsockopt()) */
+#define NRF_IPPROTO_IP 0
 /** TCP protocol. */
-#define NRF_IPPROTO_TCP 1
+#define NRF_IPPROTO_TCP 6
 /** UDP protocol. */
-#define NRF_IPPROTO_UDP 2
+#define NRF_IPPROTO_UDP 17
+/** IPv6 protocol (pseudo-val for setsockopt()) */
+#define NRF_IPPROTO_IPV6 41
+/** Raw IP packets */
+#define NRF_IPPROTO_RAW 255
+/** IPv4 and IPv6 protocol (pseudo-val for setsockopt()) */
+#define NRF_IPPROTO_ALL 512
 
 /** TLS1v2 protocol. */
-#define NRF_SPROTO_TLS1v2 260
-/** TLS1v3 protocol. */
-#define NRF_SPROTO_TLS1v3 261
+#define NRF_SPROTO_TLS1v2 258
 /** DTLS1v2 protocol. */
-#define NRF_SPROTO_DTLS1v2 270
-
-/**@} */
-
-/**
- * @defgroup nrf_fd_set_api Descriptor sets API
- * @brief Types and macros used to manipulate the input data argument to the nrf_select() function.
- * @details File descriptor sets are used as input to the nrf_select() function for doing I/O
- *          multiplexing. The maximum number of descriptors contained in a set is defined by
- *          NRF_FD_SETSIZE.
- *
- * @{
- */
-typedef uint32_t nrf_fd_set;
-/** Clear the entire set. */
-#define NRF_FD_ZERO(set) (*(set) = 0)
-/** Set a bit in the set. */
-#define NRF_FD_SET(fd, set) (*(set) |= (1u << (fd)))
-/** Clear a bit in the set. */
-#define NRF_FD_CLR(fd, set) (*(set) &= ~(1u << (fd)))
-/** Check if a bit in the set is set. */
-#define NRF_FD_ISSET(fd, set) (*(set) & (1u << (fd)))
-/** The max size of a set. */
-#define NRF_FD_SETSIZE sizeof(nrf_fd_set)
+#define NRF_SPROTO_DTLS1v2 273
 
 /**@} */
 
 /**@defgroup nrf_socket_tls TLS socket
- * @brief TLS socket API
+ * @brief TLS socket API.
  * @{
  */
 
-/**@brief
- * Socket option to set role for the connection.
+/** @brief
+ * Write-only socket option to set role for the connection.
  * Accepts an nrf_sec_role_t with values:
  *  - 0 - Client role.
  *  - 1 - Server role.
  */
 #define NRF_SO_SEC_ROLE 1
 
-/**@brief
- * Socket option to select the security tags to be used.
+/** @brief
+ * Write-only socket option to select the security tags to be used.
  * @sa nrf_sec_tag_t.
  */
 #define NRF_SO_SEC_TAG_LIST 2
 
-/**@brief
+/** @brief
  * Socket option to control TLS session caching.
  * Accepts an nrf_sec_session_cache_t with values:
  *  - 0 - Disabled.
@@ -163,7 +140,7 @@ typedef uint32_t nrf_fd_set;
  */
 #define NRF_SO_SEC_SESSION_CACHE 3
 
-/**@brief
+/** @brief
  * Socket option to set peer verification level.
  * This option accepts an nrf_sec_peer_verify_t with values:
  *  - 0 - None
@@ -173,33 +150,33 @@ typedef uint32_t nrf_fd_set;
  */
 #define NRF_SO_SEC_PEER_VERIFY 4
 
-/**@brief
+/** @brief
  * Socket option to set the hostname used for peer verification.
  * This option accepts a string containing the hostname, and its length.
  * The length may be set to zero to disable hostname verification.
  */
-#define NRF_SO_HOSTNAME 5
+#define NRF_SO_SEC_HOSTNAME 5
 
-/**@brief
- * Socket option to select which ciphersuites to use.
+/** @brief
+ * Write-only socket option to select which ciphersuites to use.
  * @sa nrf_sec_cipher_t.
  */
-#define NRF_SO_CIPHERSUITE_LIST 6
+#define NRF_SO_SEC_CIPHERSUITE_LIST 6
 
-/**@brief
+/** @brief
  * Socket option to retrieve the ciphersuites used during the handshake.
  * Currently unsupported.
  * @sa nrf_sec_cipher_t.
  */
-#define NRF_SO_CIPHER_IN_USE 7
+#define NRF_SO_SEC_CIPHER_IN_USE 7
 
-/**@brief
+/** @brief
  * Socket option to set DTLS handshake timeout value.
  * Please see @ref nrf_socket_tls_dtls_handshake_timeouts for allowed values.
  */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO 8
 
-/**@brief
+/** @brief
  * Socket option to purge session cache immediately.
  * This option accepts any value.
  */
@@ -207,48 +184,64 @@ typedef uint32_t nrf_fd_set;
 /**@} */
 
 /**@defgroup nrf_socket_options_sockets Generic socket options
- * @brief Socket options used with IP sockets
+ * @brief Socket options used with IP sockets.
  * @ingroup nrf_socket
  * @{
  */
-#define NRF_SO_ERROR		       4
-#define NRF_SO_RCVTIMEO		       20
-#define NRF_SO_SNDTIMEO		       21
-#define NRF_SO_BINDTODEVICE	       25
-#define NRF_SO_SILENCE_ALL	       30
-/** Boolean control for ICMP echo reply disable/enable (0/1). Default is 1 (enabled). */
-#define NRF_SO_IP_ECHO_REPLY	       31
-/** Boolean control for ICMPv6 echo reply disable/enable (0/1). Default is 1 (enabled). */
-#define NRF_SO_IPV6_ECHO_REPLY	       32
-#define NRF_SO_REUSEADDR	       40
-/** Release Assistance Indication feature: This will indicate that the next call to send/sendto will
- * be the last one for some time, which means that the modem can get out of connected mode quicker
- * when this data is sent.
+/** Enable reuse of server addresses */
+#define NRF_SO_REUSEADDR 2
+/** Read and clear socket error status (read only). */
+#define NRF_SO_ERROR 4
+/** Receive timeout. */
+#define NRF_SO_RCVTIMEO 20
+/** Send timeout. */
+#define NRF_SO_SNDTIMEO 21
+/** Bind a socket to network interface identified by a Packet Data Network ID. */
+#define NRF_SO_BINDTODEVICE 25
+/** Disable ICMP echo replies on both IPv4 and IPv6.
+ *  Set to 1 to enable, or to 0 to disable. Default is 0, disabled.
  */
-#define NRF_SO_RAI_LAST                    50
-/** Release Assistance Indication feature: This will indicate that the application will not send any
- * more data. This socket option will apply immediately, and does not require a call to send
- * afterwards.
- */
-#define NRF_SO_RAI_NO_DATA                 51
-/** Release Assistance Indication feature: This will indicate that after the next call to
- * send/sendto, the application is expecting to receive one more data packet before this socket
- * will not be used again for some time.
- */
-#define NRF_SO_RAI_ONE_RESP                52
-/** Release Assistance Indication feature: If a client application expects to use the socket more
- * it can indicate that by setting this socket option before the next send call which will keep
- * the modem in connected mode longer.
- */
-#define NRF_SO_RAI_ONGOING                 53
-/** Release Assistance Indication feature: If a server application expects to use the socket more
- * it can indicate that by setting this socket option before the next send call.
- */
-#define NRF_SO_RAI_WAIT_MORE               54
+#define NRF_SO_SILENCE_ALL 30
+/** Enable ICMP echo reply. Set to 1 to enable, or to 0 to disable. Default is 1, enabled. */
+#define NRF_SO_IP_ECHO_REPLY 31
+/** Enable ICMPv6 echo reply. Set to 1 to enable, or to 0 to disable. Default is 1, enabled. */
+#define NRF_SO_IPV6_ECHO_REPLY 32
 /** Configurable TCP server session timeout in minutes.
- * Range is 0 to 135. 0 is no timeout and 135 is 2 h 15 min. Default is 0 (no timeout).
+ *  Range is 0 to 135. 0 is no timeout and 135 is 2 h 15 min. Default is 0 (no timeout).
  */
-#define NRF_SO_TCP_SRV_SESSTIMEO           55
+#define NRF_SO_TCP_SRV_SESSTIMEO 55
+
+/** Release Assistance Indication.
+ *  Indicate that the application does not intend to send more data.
+ *  This socket option applies immediately and lets the modem exit connected mode more quickly.
+ */
+#define NRF_SO_RAI_NO_DATA 50
+
+/** Release Assistance Indication.
+ *  Indicate that the application does not intend to send more data
+ *  after the next call to send() or sendto().
+ *  This lets the modem exit connected mode more quickly after sending the data.
+ */
+#define NRF_SO_RAI_LAST 51
+
+/** Release Assistance Indication.
+ *  Indicate that the application is expecting to receive just one data packet
+ *  after the next call to send() or sendto().
+ *  This lets the modem exit connected mode more quickly after having received the data.
+ */
+#define NRF_SO_RAI_ONE_RESP 52
+
+/** Release Assistance Indication.
+ *  Indicate that the socket is in active use by a client application.
+ *  This lets the modem stay in connected mode longer.
+ */
+#define NRF_SO_RAI_ONGOING 53
+
+/** Release Assistance Indication.
+ *  Indicate that the socket is in active use by a server application.
+ *  This lets the modem stay in connected mode longer.
+ */
+#define NRF_SO_RAI_WAIT_MORE 54
 /**@} */
 
 /**@defgroup nrf_socket_options_levels Socket option levels enumerator
@@ -263,18 +256,12 @@ typedef uint32_t nrf_fd_set;
  *@ingroup nrf_socket_api_enumerators
  * @{
  */
-/** Send only to hosts on directly connected networks. */
-#define NRF_MSG_DONTROUTE 0x01
-/** Enables non-blocking operation. */
-#define NRF_MSG_DONTWAIT 0x02
-/** Sends out-of-band data on sockets that support this. */
-#define NRF_MSG_OOB 0x04
 /** Return data from the beginning of receive queue without removing data from the queue. */
-#define NRF_MSG_PEEK 0x08
+#define NRF_MSG_PEEK 0x02
+/** Enables non-blocking operation. */
+#define NRF_MSG_DONTWAIT 0x40
 /** Request a blocking operation until the request is satisfied. */
-#define NRF_MSG_WAITALL 0x10
-/** Control the data truncation. */
-#define NRF_MSG_TRUNC 0x20
+#define NRF_MSG_WAITALL 0x100
 /**@} */
 
 /**@defgroup nrf_fcnt_commands Descriptor manipulate API
@@ -282,10 +269,10 @@ typedef uint32_t nrf_fd_set;
  * @ingroup nrf_socket
  * @{
  */
-/** Set flag. */
-#define NRF_F_SETFL 1
 /** Get flag. */
-#define NRF_F_GETFL 2
+#define NRF_F_GETFL 3
+/** Set flag. */
+#define NRF_F_SETFL 4
 
 /** Use non-blocking I/O. */
 #define NRF_O_NONBLOCK 0x01
@@ -378,8 +365,7 @@ extern const struct nrf_in_addr nrf_inaddr_any;
 /**
  * @brief Address record for IPv6 addresses.
  *
- * @details Contains the address and port of the host, as well as other socket options. All fields
- *          in this structure are compatible with the POSIX variant for API compatibility.
+ * Contains the address and port of the host.
  */
 struct nrf_sockaddr_in6 {
 	/** Length of this data structure. */
@@ -399,8 +385,7 @@ struct nrf_sockaddr_in6 {
 /**
  * @brief Address record for IPv4 addresses.
  *
- * @details Contains the address and port of the host. All fields
- *          in this structure are compatible with the POSIX variant for API compatibility.
+ * Contains the address and port of the host.
  */
 struct nrf_sockaddr_in {
 	/** Length of this data structure. */
@@ -419,10 +404,8 @@ typedef struct nrf_in6_addr nrf_in6_addr;
 typedef struct nrf_in6_addr nrf_in6_addr_t;
 typedef struct nrf_sockaddr_in nrf_sockaddr_in_t;
 
-/**
- * @brief Socket module size type.
- */
 typedef uint32_t nrf_socklen_t;
+typedef uint32_t nrf_nfds_t;
 
 /**
  * @brief Generic socket address.
@@ -440,13 +423,9 @@ typedef struct nrf_sockaddr {
 
 /* Flags for getaddrinfo() hints. */
 
-/** Assume `service` (port) is numeric.
- *  When specified together with the NRF_AI_PDNSERV flag,
- *  `service` shall be formatted as follows: "port:pdn_id"
- *  where "port" is the port number and "pdn_id" is the PDN ID.
- *  Example: "8080:1", port 8080 PDN ID 1.
- *  Example: "42:0", port 42 PDN ID 0.
- */
+/** Fill in ai_canonname */
+#define NRF_AI_CANONNAME 0x2
+/** Assume `service` (port) is numeric. */
 #define NRF_AI_NUMERICSERV 0x400
 /** Assume `service` contains a Packet Data Network (PDN) ID.
  *  When specified together with the NRF_AI_NUMERICSERV flag,
@@ -457,7 +436,7 @@ typedef struct nrf_sockaddr {
  */
 #define NRF_AI_PDNSERV 0x1000
 
-/**@brief Address information. */
+/** @brief Address information. */
 struct nrf_addrinfo {
 	/** Input flags. */
 	int ai_flags;
@@ -483,14 +462,14 @@ struct nrf_addrinfo {
  * @{
  */
 
-/**@brief
+/** @brief
  * TLS role for the connection.
  *  - 0 - TLS client role.
  *  - 1 - TLS server role.
  */
 typedef uint32_t nrf_sec_role_t;
 
-/**@brief
+/** @brief
  * Security tags used on the TLS socket.
  *
  * More than one security tags may be used on a socket.
@@ -500,7 +479,7 @@ typedef uint32_t nrf_sec_role_t;
  */
 typedef uint32_t nrf_sec_tag_t;
 
-/**@brief
+/** @brief
  * Session cache configuration for the TLS connection.
  *  - 0 - Disabled.
  *  - 1 - Enabled.
@@ -508,9 +487,9 @@ typedef uint32_t nrf_sec_tag_t;
  * By default, the session cache is enabled.
  * @note Session cache, may not be used if the peer does not support it.
  */
-typedef uint8_t nrf_sec_session_cache_t;
+typedef uint32_t nrf_sec_session_cache_t;
 
-/**@brief
+/** @brief
  * Peer verification level for the TLS connection.
  *  - 0 - None.
  *  - 1 - Optional.
@@ -520,28 +499,10 @@ typedef uint8_t nrf_sec_session_cache_t;
  */
 typedef uint32_t nrf_sec_peer_verify_t;
 
-/**@brief
+/** @brief
  * A IANA cipher suite identifier.
  */
 typedef uint32_t nrf_sec_cipher_t;
-
-/**@brief Data type to combine all security configuration parameters. */
-typedef struct {
-	/** Local role to be played. See nrf_sec_role_t for details. */
-	nrf_sec_role_t role;
-	/** Indicates the preference for peer verification. See nrf_sec_peer_verify_t for details. */
-	nrf_sec_peer_verify_t peer_verify;
-	/** Indicates the preference for session caching. See nrf_sec_session_cache_t for details. */
-	nrf_sec_session_cache_t session_cache;
-	/** Indicates the number of entries in the cipher list. */
-	uint32_t cipher_count;
-	/** Indicates the list of ciphers to be used for the session. See nrf_sec_cipher_t for details. */
-	nrf_sec_cipher_t *p_cipher_list;
-	/** Indicates the number of entries in the sec tag list. */
-	uint32_t sec_tag_count;
-	/** Indicates the list of security tags to be used for the session. See nrf_sec_tag_t for details. */
-	nrf_sec_tag_t *p_sec_tag_list;
-} nrf_sec_config_t;
 
 /**
  * @brief Maximum network interface name size.
@@ -549,7 +510,7 @@ typedef struct {
  */
 #define NRF_IFNAMSIZ 64
 
-/**@brief Data type for network interface.
+/** @brief Data type for network interface.
  * @deprecated since v1.1.0.
  */
 struct nrf_ifreq {
@@ -562,31 +523,28 @@ struct nrf_ifreq {
  */
 
 /**
- * @brief Function for creating a socket.
+ * @brief Create a network socket.
  *
- * @details API to create a socket that can be used for network communication independently
- *          of lower protocol layers.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in] family    The protocol family of the network protocol to use.
- * @param[in] type      The protocol type to use for this socket.
- * @param[in] protocol  The transport protocol to use for this socket.
- *
- * @return A non-negative socket descriptor on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_socket(int family, int type, int protocol);
 
 /**
- * @brief Function for closing a socket and freeing any resources held by it.
+ * @brief Close a network socket.
  *
- * @details If the socket is already closed, this function does nothing.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/close.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in] sock  The socket to close.
- *
- * @return 0 on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
-int nrf_close(int sock);
+int nrf_close(int fildes);
 
 /**
  * @brief Function for controlling file descriptor options.
@@ -607,185 +565,97 @@ int nrf_close(int sock);
 int nrf_fcntl(int fd, int cmd, int flags);
 
 /**
- * @brief Function for connecting to an endpoint with a given address.
+ * @brief Connect a socket.
  *
- * @details The socket handle must be a valid handle that has not yet been connected. Running
- *          connect on a connected handle will return an error.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in] sock          The socket to use for connection.
- * @param[in] p_servaddr    The address of the server to connect to.
- * @param[in] addrlen       The size of the p_servaddr argument.
- *
- * @return 0 on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
-int nrf_connect(int sock, const void *p_servaddr, nrf_socklen_t addrlen);
+int nrf_connect(int socket, const struct nrf_sockaddr *address, nrf_socklen_t address_len);
 
 /**
- * @brief Function for sending data through a socket.
+ * @brief Send a message on a connected socket.
  *
- * @details By default, this function will block unless the NRF_O_NONBLOCK
- *          socket option has been set, OR NRF_MSG_DONTWAIT is passed as a flag. In that case, the
- *          method will return immediately.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/send.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in] sock     The socket to write data to.
- * @param[in] p_buff   Buffer containing the data to send.
- * @param[in] nbytes   Size of data contained on p_buff.
- * @param[in] flags    Flags to control send behavior.
- *
- * @return The number of bytes that were sent on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
-ssize_t nrf_send(int sock, const void *p_buff, size_t nbytes, int flags);
+ssize_t nrf_send(int socket, const void *buffer, size_t length, int flags);
 
 /**
- * @brief Function for sending datagram through a socket.
+ * @brief Send a message on a socket.
  *
- * @details By default, this function will block if the lower layers are not able to process the
- *          packet, unless the NRF_O_NONBLOCK socket option has been set, OR NRF_MSG_DONTWAIT is passed as a flag.
- *          In that case, the method will return immediately.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in] sock          The socket to write data to.
- * @param[in] p_buff        Buffer containing the data to send.
- * @param[in] nbytes        Size of data contained in p_buff.
- * @param[in] flags         Flags to control send behavior.
- * @param[in] p_servaddr    The address of the server to send to.
- * @param[in] addrlen       The size of the p_servaddr argument.
- *
- * @return The number of bytes that were sent on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
-ssize_t nrf_sendto(int sock,
-		   const void *p_buff,
-		   size_t nbytes,
-		   int flags,
-		   const void *p_servaddr,
-		   nrf_socklen_t addrlen);
+ssize_t nrf_sendto(int socket, const void *message, size_t length, int flags,
+		   const struct nrf_sockaddr *dest_addr, nrf_socklen_t dest_len);
 
 /**
- * @brief Function for writing data to a socket. See \ref nrf_send() for details.
+ * @brief Receive a message from a connected socket.
  *
- * @param[in] sock     The socket to write data to.
- * @param[in] p_buff   Buffer containing the data to send.
- * @param[in] nbytes   Size of data contained in p_buff.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recv.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @return The number of bytes that were sent on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
-ssize_t nrf_write(int sock, const void *p_buff, size_t nbytes);
+ssize_t nrf_recv(int socket, void *buffer, size_t length, int flags);
 
 /**
- * @brief Function for receiving data on a socket.
+ * @brief Receive a message from a socket.
  *
- * @details API for receiving data from a socket. By default, this function will block, unless the
- *          NRF_O_NONBLOCK socket option has been set, or NRF_MSG_DONTWAIT is passed as a flag.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in]  sock     The socket to receive data from.
- * @param[out] p_buff   Buffer to hold the data to be read.
- * @param[in]  nbytes   Number of bytes to read. Should not be larger than the size of p_buff.
- * @param[in]  flags    Flags to control receive behavior.
- *
- * @return The number of bytes that were read.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
-ssize_t nrf_recv(int sock, void *p_buff, size_t nbytes, int flags);
-
-/**
- * @brief Function for receiving datagram on a socket.
- *
- * @details API for receiving data from a socket. By default, this function will block, unless the
- *          NRF_O_NONBLOCK socket option has been set, or NRF_MSG_DONTWAIT is passed as a flag.
- *
- * @param[in]    sock         The socket to receive data from.
- * @param[out]   p_buff       Buffer to hold the data to be read.
- * @param[in]    nbytes       Number of bytes to read. Should not be larger than the size of p_buff.
- * @param[in]    flags        Flags to control receive behavior.
- * @param[out]   p_cliaddr    Socket address that will be set to the client's address.
- * @param[inout] p_addrlen    The size of the p_cliaddr passed. Might be modified by the function.
- *
- * @return The number of bytes that were read.
- *         -1 on error, and errno indicates the reason for failure.
- */
-ssize_t nrf_recvfrom(int sock,
-		     void *p_buff,
-		     size_t nbytes,
-		     int flags,
-		     void *p_cliaddr,
-		     nrf_socklen_t *p_addrlen);
-
-/**
- * @brief Function for reading data from a socket. See \ref nrf_recv() for details.
- *
- * @param[in]  sock     The socket to receive data from.
- * @param[out] p_buff   Buffer to hold the data to be read.
- * @param[in]  nbytes   Number of bytes to read. Should not be larger than the size of p_buff.
- *
- * @return The number of bytes that were read.
- *         -1 on error, and errno indicates the reason for failure.
- */
-ssize_t nrf_read(int sock, void *p_buff, size_t nbytes);
-
-/**
- * @brief Function for waiting for read, write, or exception events on a socket.
- *
- * @details Wait for a set of socket descriptors to be ready for reading, writing, or having
- *          exceptions. The set of socket descriptors is configured before calling this function.
- *          This function will block until any of the descriptors in the set has any of the required
- *          events. This function is mostly useful when using NRF_O_NONBLOCK or NRF_MSG_DONTWAIT
- *          options to enable asynchronous operation.
- *
- * @param[in]    nfds          The highest socket descriptor value contained in the sets.
- * @param[inout] p_readset     The set of descriptors for which to wait for read events. Set to NULL
- *                             if not used.
- * @param[inout] p_writeset    The set of descriptors for which to wait for write events. Set to NULL
- *                             if not used.
- * @param[inout] p_exceptset   The set of descriptors for which to wait for exception events. Set to
- *                             NULL if not used.
- * @param[in]    p_timeout     The timeout to use for select call. Set to NULL if waiting forever.
- *
- * @return The number of ready descriptors contained in the descriptor sets on success.
- *         -1 on error, and errno indicates the reason for failure.
- */
-int nrf_select(int nfds,
-	       nrf_fd_set *p_readset,
-	       nrf_fd_set *p_writeset,
-	       nrf_fd_set *p_exceptset,
-	       const struct nrf_timeval *p_timeout);
+ssize_t nrf_recvfrom(int socket, void *restrict buffer, size_t length, int flags,
+		     struct nrf_sockaddr *restrict address, nrf_socklen_t *restrict address_len);
 
 /** @} */
 
 /**
  * @defgroup nrf_socket_api_poll Socket polling API
  * @brief Data types and defines for use with nrf_poll().
- * @details Necessary data types and defines to poll for
- *          events on one or more sockets using nrf_poll().
- *
  * @{
  */
 
 /**
- *  @details This structure is used to describe which events to poll for a given socket. Which is then given as argument
- *           to nrf_poll().
+ * @brief This structure is used to describe which events to poll for a given socket.
  */
 struct nrf_pollfd {
-	/** Socket handle. */
+	/** Socket handle */
 	int fd;
-	/** Requested events, is a mask of events. */
+	/** The input event flags */
 	short events;
-	/** Returned events, is a mask of events. */
+	/** The output event flags */
 	short revents;
 };
 
-/** Event for data receive. Can be requested and returned. */
-#define NRF_POLLIN 0x0001
-/** Event for data send. Can be requested and returned. */
-#define NRF_POLLOUT 0x0002
-/** Event for error on the polled socket. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
-#define NRF_POLLERR 0x0004
-/** Event to indicate that the polled socket has been closed by the peer. Ignored in requested events. Subsequent calls to read the socket will be possible until all outstanding data has been read, and return zero-length packets (EOF). */
-#define NRF_POLLHUP 0x0008
-/** Event to indicate the polled socket is not open. Is set in returned events to indicate error on a polled socket. Ignored in requested events. */
-#define NRF_POLLNVAL 0x0010
+/** Data other than high-priority data may be read without blocking */
+#define NRF_POLLIN 0x1
+/** Data may be written without blocking */
+#define NRF_POLLOUT 0x4
+/** An error has occurred (revents only) */
+#define NRF_POLLERR 0x8
+/** Device has been disconnected (revents only) */
+#define NRF_POLLHUP 0x10
+/** Invalid fd member (revents only) */
+#define NRF_POLLNVAL 0x20
 /**@} */
 
 /**@addtogroup nrf_socket_api
@@ -793,108 +663,82 @@ struct nrf_pollfd {
  */
 
 /**
- * @brief Method to poll for events on one or more sockets.
+ * @brief Poll multiple sockets for events.
  *
- * @param[in,out] p_fds    An array of sockets, and respective for each socket that the caller polls for.
- *                         The occurred events per socket is returned in the revents field of nrf_pollfd structure.
- *                         Shall not be NULL.
- * @param[in]     nfds     Positive number of sockets being polled for events.
- *                         Shall not be more than NRF_MODEM_MAX_SOCKET_COUNT.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/poll.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in]     timeout  Timeout in milliseconds.
- *                         The methods waits for this time period for the events to occur on the sockets.
- *
- * @return A positive number less than or equal to nfds indicating sockets on which events occurred.
- *         0 indicates the timed out occurred and no file descriptors were ready.
- *         -1 on error, and errno indicates the reason for failure.
+ * @note In Modem library, this function works only with Modem library sockets,
+ *       not arbitrary file descriptors.
  */
-int nrf_poll(struct nrf_pollfd *p_fds, uint32_t nfds, int timeout);
+int nrf_poll(struct nrf_pollfd fds[], nrf_nfds_t nfds, int timeout);
 
 /**
- * @brief Function for setting socket options for a given socket.
+ * @brief Set the socket options.
  *
- * @details The options are grouped by level, and the option value should be the expected for the
- *          given option, and the lifetime must be longer than that of the socket.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/setsockopt.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in] sock      The socket for which to set the option.
- * @param[in] level     The level or group to which the option belongs.
- * @param[in] optname   The name of the socket option.
- * @param[in] p_optval  The value to be stored for this option.
- * @param[in] optlen    The size of p_optval.
+ * @note In Modem library this function supports a subset
+ *       of socket options described by POSIX, but also some additional options.
  *
- * @return 0 on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
-int nrf_setsockopt(int sock,
-		   int level,
-		   int optname,
-		   const void *p_optval,
-		   nrf_socklen_t optlen);
+int nrf_setsockopt(int socket, int level, int option_name,
+		   const void *option_value, nrf_socklen_t option_len);
 
 /**
- * @brief Function for getting socket options for a given socket.
+ * @brief Get the socket options.
  *
- * @details The options are grouped by level, and the option value is the value described by the
- *          option name.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/getsockopt.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in]       sock      The socket for which to set the option.
- * @param[in]       level     The level or group to which the option belongs.
- * @param[in]       optname   The name of the socket option.
- * @param[out]      p_optval  Pointer to the storage for the option value.
- * @param[in,out]   p_optlen  The size of p_optval. Can be modified to the actual size of p_optval.
- *
- * @return 0 on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In Modem library this function supports a subset
+ * of socket options described by POSIX, but also some additional options.
  */
-int nrf_getsockopt(int sock,
-		   int level,
-		   int optname,
-		   void *p_optval,
-		   nrf_socklen_t *p_optlen);
+int nrf_getsockopt(int socket, int level, int option_name,
+		   void *restrict option_value, nrf_socklen_t *restrict option_len);
 
 /**
- * @brief Function for binding a socket to an address and port.
+ * @brief Bind a name to a socket.
  *
- * @details The provided address must be supported by the socket protocol family.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in] sock      The socket descriptor to bind.
- * @param[in] p_myaddr  The address to bind this socket to.
- * @param[in] addrlen   The size of p_myaddr.
- *
- * @return 0 on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
-int nrf_bind(int sock, const void *p_myaddr, nrf_socklen_t addrlen);
+int nrf_bind(int socket, const struct nrf_sockaddr *address, nrf_socklen_t address_len);
 
 /**
- * @brief Function to put the socket in listening mode for incoming connections.
+ * @brief Listen for socket connections and limit the queue of incoming connections.
  *
- * @details Once a socket is marked to be in the listening state, it remains a listening socket until closed.
- *          It is important to consider the backlog parameter, as it will affect how much memory your application will
- *          use in the worst case.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in] sock      The socket descriptor on which to set the listening options.
- * @param[in] backlog   The max length of the queue of pending connections. A value of 0 means
- *                      infinite.
- *
- * @return 0 on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_listen(int sock, int backlog);
 
 /**
- * @brief Function for waiting for the next client to connect.
+ * @brief Accept a new connection a socket.
  *
- * @details This function will block if there are no clients attempting to connect.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in]  sock         The socket descriptor to use for waiting on client connections.
- * @param[out] p_cliaddr    Socket address that will be set to the client's address.
- * @param[out] p_addrlen    The size of the p_cliaddr passed. Might be modified by the function.
- *
- * @return A non-negative client descriptor on success.
- *         -1 on error, and errno indicates the reason for failure.
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
-int nrf_accept(int sock, void *p_cliaddr, nrf_socklen_t *p_addrlen);
+int nrf_accept(int socket, struct nrf_sockaddr *restrict address,
+	       nrf_socklen_t *restrict address_len);
 
 /**@} */
 
@@ -902,97 +746,77 @@ int nrf_accept(int sock, void *p_cliaddr, nrf_socklen_t *p_addrlen);
 
 /**@defgroup nrf_socket_address_resolution Socket address resolution API
  * @brief Address resolution utility functions.
- * @details Utility functions and macros for resolving host name and converting address information between
- *          human readable and a format the library expect.
  * @ingroup nrf_socket
  * @{
  */
 
 /**
- * @brief Function for converting a human-readable IP address to a form usable by the socket API.
+ * @brief Convert IPv4 and IPv6 addresses between binary and text form.
  *
- * @details This function will convert a string form of addresses and encode it into a byte
- *          array in network byte order.
- *
- * @note    Currently not supporting mixed IPv4 and IPv6 format strings.
- *
- * @param[in]  family  Address family. NRF_AF_INET or NRF_AF_INET6.
- * @param[in]  p_src   Null-terminated string containing the address to convert.
- * @param[out] p_dst   Pointer to a struct nrf_in_addr or nrf_in6_addr where the address will
- *                     be stored.
- *
- * @return 1 on success
- *         0 if p_src does not contain a valid address,
- *         -1 on error, and errno indicates the reason for failure.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/inet_pton.html">
+ * POSIX.1-2017 article</a> for normative description.
  */
-int nrf_inet_pton(int family, const char *p_src, void *p_dst);
+int nrf_inet_pton(int af, const char *restrict src, void *restrict dst);
 
 /**
- * @brief Function for converting an IP address to a human-readable string form.
+ * @brief Convert IPv4 and IPv6 addresses between binary and text form.
  *
- * @details This function will decode the IP bytes from network byte order and convert
- *          it to a string form of the address.
- *
- * @note    Currently not supporting mixed IPv4 and IPv6 format strings.
- *
- * @param[in]  family  Address family. NRF_AF_INET or NRF_AF_INET6.
- * @param[in]  p_src   Pointer to a struct nrf_in_addr or nrf_in6_addr containing the address to convert.
- * @param[out] p_dst   Pointer to a buffer where the string representation of the address will be stored.
- * @param[in]  size    Size of the provided buffer in p_dst.
- *
- * @return Pointer to p_dst on success, NULL and errno set in case of error.
+ * @details
+ * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/inet_ntop.html">
+ * POSIX.1-2017 article</a> for normative description.
  */
-const char *nrf_inet_ntop(int family,
-			  const void *p_src,
-			  char *p_dst,
-			  nrf_socklen_t size);
+const char *nrf_inet_ntop(int af, const void *restrict src, char *restrict dst, nrf_socklen_t size);
 
 /**
- * @brief Function to resolve the host name into IPv4 and/or IPv6 addresses.
+ * @brief Get address information.
  *
- * @note The memory pointed to by @p pp_res must be freed using
- *       nrf_freeaddrinfo when the address is no longer needed
- *       or before calling nrf_getaddrinfo again.
+ * @details
+ * See <a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html">
+ * POSIX.1-2017 article</a> for normative description.
  *
- * @param[in]  p_node     Host name to resolve.
- * @param[in]  p_service  Service to resolve.
- * @param[in]  p_hints    Any hints to be used for the resolution.
- * @param[out] pp_res     Pointer to the linked list of resolved addresses if the procedure
- *                        was successful.
- *
- * @return 0 if the procedure succeeds.
- *		   Positive eai error on failiure
+ * In addition, the function shall return -1 and set the following errno:
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
-int nrf_getaddrinfo(const char *p_node,
-		    const char *p_service,
-		    const struct nrf_addrinfo *p_hints,
-		    struct nrf_addrinfo **pp_res);
+int nrf_getaddrinfo(const char *restrict nodename,
+		    const char *restrict servname,
+		    const struct nrf_addrinfo *restrict hints,
+		    struct nrf_addrinfo **restrict res);
 
 /**
- * @brief Function for freeing the memory allocated for the result of nrf_getaddrinfo.
+ * @brief Free address information returned by @ref nrf_getaddrinfo().
  *
- * @details When the linked list of resolved addresses created by nrf_getaddrinfo
- *          is no longer needed, call this function to free the allocated memory.
- *
- * @param[in] p_res  Pointer to the memory to be freed.
+ * @details
+ * See <a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/freeaddrinfo.html">
+ * POSIX.1-2017 article</a> for normative description.
  */
-void nrf_freeaddrinfo(struct nrf_addrinfo *p_res);
+void nrf_freeaddrinfo(struct nrf_addrinfo *ai);
 
 /**
  * @brief Set a secondary DNS address.
  *
- * @details The secondary DNS address is used automatically in case the primary DNS
- *          address is unreachable, or if no DNS address is provided by the operator.
- *          The secondary DNS address does not override the primary DNS address.
+ * @details
+ * The secondary DNS address is only used in case the primary DNS address is unreachable,
+ * or if no DNS address is provided by the operator. The secondary DNS address does not
+ * override the primary DNS address.
+ *
+ * @note
+ * It is not possible to unset a secondary DNS address set using this function.
  *
  * @param[in] family    Address family.
  * @param[in] in_addr   An IPv4 or IPv6 address encoded in a nrf_in_addr or
  *                      nrf_in6_addr structure, respectively.
- *                      Pass @c NULL to unset the secondary DNS address.
  * @param[in] in_size   Size of the structure pointed to by in_addr.
  *
- * @return 0 on success,
- *		   -1 on error, and errno indicates the reason for failure.
+ * @retval 0  On success
+ * @retval -1 On error, and set @c errno to indicate the reason.
+ *
+ * The function shall return -1 and set the following errno:
+ * [NRF_EPERM] The Modem library is not initialized.
+ * [NRF_EAFNOSUPPORT] The implementation does not support the specified address family.
+ * [NRF_EINVAL] Invalid parameters.
+ * [NRF_ENOBUFS] Not enough shared memory for this request.
+ * [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_setdnsaddr(int family, const void *in_addr, nrf_socklen_t in_size);
 

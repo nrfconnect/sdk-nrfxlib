@@ -17,7 +17,6 @@
 extern "C" {
 #endif
 
-
 /**@defgroup nrf_modem_shmem_cfg Modem library shared memory configuration.
  * @{
  * Memory requirements for control structures.

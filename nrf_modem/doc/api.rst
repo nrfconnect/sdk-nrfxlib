@@ -21,6 +21,15 @@ nrf_modem_init() return values for modem firmware updates
    :project: nrfxlib
    :members:
 
+.. _nrf_modem_fault:
+
+Modem fault reasons
+===================
+
+.. doxygengroup:: nrf_modem_fault_handling
+   :project: nrfxlib
+   :members:
+
 Limits of the Modem library
 ***************************
 
@@ -116,20 +125,6 @@ Socket address resolution API
 *****************************
 
 .. doxygengroup:: nrf_socket_address_resolution
-   :project: nrfxlib
-   :members:
-
-File descriptor sets API
-************************
-
-File descriptor sets are used as input to the nrf_select() function for doing I/O
-multiplexing. The maximum number of descriptors contained in a set is defined by
-NRF_FD_SETSIZE.
-
-.. note::
-   :c:func:`nrf_select` is currently not supported.
-
-.. doxygengroup:: nrf_fd_set_api
    :project: nrfxlib
    :members:
 

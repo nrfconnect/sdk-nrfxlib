@@ -28,6 +28,7 @@ For more information, see :ref:`nrf_modem_ug_porting`.
    doc/delta_dfu
    doc/pdn
    doc/tls_dtls_configuration
+   doc/fault_handling
    doc/limitations
    doc/ug_nrf_modem_porting_os
    doc/CHANGELOG
