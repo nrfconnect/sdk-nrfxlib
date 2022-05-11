@@ -147,6 +147,7 @@ kconfig_check_and_set_base(MBEDTLS_SSL_CACHE_C)
 kconfig_check_and_set_base(MBEDTLS_SSL_TICKET_C)
 kconfig_check_and_set_base(MBEDTLS_SSL_EXPORT_KEYS)
 kconfig_check_and_set_base(MBEDTLS_SSL_CIPHERSUITES)
+kconfig_check_and_set_base(MBEDTLS_SSL_EXTENDED_MASTER_SECRET)
 
 kconfig_check_and_set_base(MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG)
 
