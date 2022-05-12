@@ -18,6 +18,7 @@
 
 #include <stdint.h>
 #include "nrf.h"
+#include "nrf_dm_version.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,6 +33,16 @@ typedef enum {
 	NRF_DM_QUALITY_DO_NOT_USE = 2,
 	NRF_DM_QUALITY_CRC_FAIL = 3,
 } nrf_dm_quality_t;
+
+/**
+ * @brief SINR indicator for IQ measurements
+ */
+typedef enum {
+	NRF_DM_SINR_INDICATOR_HIGH     = 0,
+	NRF_DM_SINR_INDICATOR_MEDIUM   = 1,
+	NRF_DM_SINR_INDICATOR_LOW      = 2,
+	NRF_DM_SINR_INDICATOR_VERY_LOW = 3,
+} nrf_dm_sinr_indicator_t;
 
 /**
  * @brief Role definition
@@ -75,6 +86,13 @@ typedef struct {
 	/** Quadrature-phase measurements of tones from remote device */
 	float q_remote[80];
 } nrf_dm_iq_tones_t;
+
+typedef struct {
+	/** SINR-Indicator for tones on this device */
+	nrf_dm_sinr_indicator_t sinr_indicator_local[80];
+	/** SINR-Indicator for tones on peer device */
+	nrf_dm_sinr_indicator_t sinr_indicator_remote[80];
+} nrf_dm_iq_tones_sinr_indicator_t;
 
 /**
  * @brief Container of distance estimate results for a number of different
@@ -131,7 +149,10 @@ typedef struct {
 	 * for N entries of @ref iq_tones are valid. If the peer uses M antennas, then
 	 * the remote values for M entries of @ref iq_tones are valid.
 	 */
-	nrf_dm_iq_tones_t iq_tones[4];
+	nrf_dm_iq_tones_t iq_tones[NRF_DM_MAX_NUM_ANT];
+
+	/** SINR-Indicators for the tones in iq_tones[0] */
+	nrf_dm_iq_tones_sinr_indicator_t tone_sinr_indicators;
 
 	/** Mode used for ranging */
 	nrf_dm_ranging_mode_t ranging_mode;
@@ -156,18 +177,13 @@ typedef struct {
 
 	/** Quality indicator */
 	nrf_dm_quality_t quality;
-} nrf_dm_report_t;
 
-typedef struct {
-	/** Zero distance error offset - applied for distance evaluated with iFFT method */
-	float ifft;
-	/** Zero distance error offset - applied for distance evaluated with average slope method */
-	float phase_slope;
-	/** Zero distance error offset - applied for distance evaluated with RSSI
-	 * method for openspace conditions
-	 */
-	float rssi_openspace;
-} nrf_dm_dist_offset_err_t;
+	/** Total time measured during RTT measurements */
+	int32_t rtt_accumulated_ns;
+
+	/** Number of RTT measurements taken */
+	uint8_t rtt_count;
+} nrf_dm_report_t;
 
 typedef struct {
 	/** GPIO pin attached to antenna switch. */
@@ -219,8 +235,6 @@ typedef struct {
 	 * nrfXXXXX_bitfields.h, as RADIO_TXPOWER_TXPOWER_YYYYdBm
 	 */
 	uint32_t tx_power_dbm;
-	/** Zero distance error offsets for different distance measurement methods */
-	nrf_dm_dist_offset_err_t dist_offset_err;
 	/** Antenna composition of initiator and reflector. */
 	nrf_dm_antenna_composition_t ant_comp;
 } nrf_dm_config_t;
@@ -239,14 +253,13 @@ typedef struct {
  * @brief Default configuration define, note that both role and access_address
  * needs to be configured even when using the default config.
  */
-#define NRF_DM_DEFAULT_CONFIG                                                                      \
-	((nrf_dm_config_t){                                                                        \
+#define NRF_DM_DEFAULT_CONFIG                                                              \
+	((nrf_dm_config_t){                                                                    \
 		.role = NRF_DM_ROLE_NONE,                                                          \
 		.ranging_mode = NRF_DM_RANGING_MODE_MCPD,                                          \
 		.access_address = 0,                                                               \
 		.tx_power_dbm = NRF_DM_DEFAULT_TX_POWER,                                           \
 		.ant_comp = NRF_DM_ANTENNA_COMP_1_1,                                               \
-		.dist_offset_err = { .ifft = 0.0f, .phase_slope = 0.0f, .rssi_openspace = 0.0f },  \
 	})
 
 /**
@@ -278,24 +291,33 @@ nrf_dm_status_t nrf_dm_configure(const nrf_dm_config_t *config);
 nrf_dm_status_t nrf_dm_proc_execute(uint32_t timeout_us);
 
 /**
+ * @brief Partially populate the report.
+ * This populates the report but does not set the distance estimates and the quality.
+ * @param[out] p_report Report populated with the raw data from the last ranging.
+ */
+void nrf_dm_populate_report(nrf_dm_report_t *p_report);
+
+/**
  * @brief  Estimate the distance
  * Fills @ref nrf_dm_report_t with distance estimates either mcpd or
- * rtt depending on which ranging mode was last executed.
+ * rtt according to the raw data in the report.
+ * @note The report needs to be populated using @ref nrf_dm_populate_report before @ref nrf_dm_calc
+ *       can be called.
+ *
+ * @param[in,out] p_report Report containing the raw data where the result is written into.
  * @return A quality measure of the estimated distance.
  */
-nrf_dm_quality_t nrf_dm_calc(void);
+nrf_dm_quality_t nrf_dm_calc(nrf_dm_report_t *p_report);
 
 /**
  * @brief  Estimate the distance with more computation-intensive higher precision algorithm.
  * @note   Only works with MCPD ranging mode.
+ * @note   The report needs to be populated using @ref nrf_dm_populate_report before
+ *         @ref nrf_dm_high_precision_calc can be called.
+ * @param[in,out] p_report Report containing the raw data where the result is written into.
  * @return The estimated distance in meters.
  */
-float nrf_dm_high_precision_calc(void);
-
-/**
- * @brief Get a pointer to output data from distance estimation
- */
-const nrf_dm_report_t *nrf_dm_report_get(void);
+float nrf_dm_high_precision_calc(nrf_dm_report_t *p_report);
 
 /**
  * @brief Get a null-terminated string containing the library revision.

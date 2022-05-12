@@ -6,7 +6,7 @@
 
 config NRF_DM
 	bool "nRF DM (Distance Measurement) library [EXPERIMENTAL]"
-	select FPU
+	select FPU if !SOC_NRF5340_CPUNET
 	select CMSIS_DSP
 	select CMSIS_DSP_TRANSFORM
 	select CMSIS_DSP_COMPLEXMATH
