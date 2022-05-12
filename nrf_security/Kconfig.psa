@@ -78,6 +78,13 @@ config MBEDTLS_USE_PSA_CRYPTO
 	help
 	  Corresponds to MBEDTLS_USE_PSA_CRYPTO setting in mbed TLS config file.
 
+config PSA_ITS_ENCRYPTED
+	bool
+	depends on MBEDTLS_PSA_CRYPTO_STORAGE_C
+	help
+	  Enables authenticated encryption for PSA Internal Trusted Storage files
+
+
 menuconfig PSA_NATIVE_ITS
 	bool "PSA native Internal Trusted Storage"
 	depends on MBEDTLS_PSA_CRYPTO_STORAGE_C
