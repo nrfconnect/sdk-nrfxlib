@@ -3,7 +3,8 @@
 Nordic Distance Measurement library
 ###################################
 
-The Distance Measurement library measures the distance between nRF52 Series devices.
+The Distance Measurement library measures the distance between devices.
+It can be used with nRF52 Series and nRF53 Series devices.
 It does the following:
 
 * It provides an easy-to-use interface for measuring distances.
@@ -11,7 +12,10 @@ It does the following:
 * It computes the distance based on the measured differential RF physical channel frequency response (MCPD mode) or the real time flight of packets (RTT mode).
 * It performs all the mathematics necessary to compute the distance inside the library.
 
-The library is available as hard-float builds for the nRF52 Series, and it is included as a pre-built static library.
+The library is available as hard-float builds for the nRF52 Series.
+On the nRF53 Series, the library is available as a soft-float build for the network core.
+For the application core of the nRF53 Series there is a hard-float library that contains the compute-intensive post-processing functionality only.
+All libraries are included as pre-built static libraries.
 
 The library has the following dependencies:
 
