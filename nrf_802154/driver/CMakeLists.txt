@@ -101,6 +101,8 @@ if (SL_OPENSOURCE)
       NRF_802154_DELAYED_TRX_ENABLED=0
       # Disable IFS
       NRF_802154_IFS_ENABLED=0
+      # Disable CSMA-CA
+      NRF_802154_CSMA_CA_ENABLED=0
   )
 endif()
 
