@@ -197,6 +197,7 @@ static nrf_802154_flags_t m_flags; ///< Flags used to store the current driver s
 /** @brief Value of TIMER internal counter from which the counting is resumed on RADIO.EVENTS_END event. */
 static volatile uint32_t m_timer_value_on_radio_end_event;
 static volatile bool     m_transmit_with_cca;
+static int8_t            m_fem_gain_in_disabled;
 
 static void rxframe_finish_disable_ppis(void);
 static void rxack_finish_disable_ppis(void);
@@ -463,6 +464,7 @@ void nrf_802154_trx_module_reset(void)
     m_trx_state                      = TRX_STATE_DISABLED;
     m_timer_value_on_radio_end_event = 0;
     m_transmit_with_cca              = false;
+    m_fem_gain_in_disabled           = 0;
     mp_receive_buffer                = NULL;
 
     memset(&m_flags, 0, sizeof(m_flags));
@@ -536,6 +538,8 @@ void nrf_802154_trx_enable(void)
     irq_init();
 
     assert(nrf_radio_shorts_get(NRF_RADIO) == SHORTS_IDLE);
+
+    mpsl_fem_pa_is_configured(&m_fem_gain_in_disabled);
 
 #if defined(NRF52840_XXAA) || \
     defined(NRF52833_XXAA) || \
@@ -648,6 +652,9 @@ void nrf_802154_trx_disable(void)
         mpsl_fem_lna_configuration_clear();
         mpsl_fem_pa_configuration_clear();
         mpsl_fem_abort_clear();
+
+        /* Restore gain of the FEM to the state latched in nrf_802154_trx_enable */
+        (void)mpsl_fem_pa_gain_set(m_fem_gain_in_disabled);
 
         if (m_trx_state != TRX_STATE_IDLE)
         {
