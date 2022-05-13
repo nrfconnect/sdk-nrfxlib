@@ -60,6 +60,14 @@ config MBEDTLS_X509_CSR_WRITE_C
 	help
 	  Enable creating X.509 Certificate Signing Requests (CSR).
 
+config MBEDTLS_X509_REMOVE_INFO
+	bool "X.509 - Remove info"
+	default y
+	help
+	  Disable mbedtls_x509_*_info() and related APIs.
+	  This can save several KB
+
+
 endif
 
 menuconfig MBEDTLS_TLS_LIBRARY
