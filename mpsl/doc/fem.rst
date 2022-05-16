@@ -19,6 +19,7 @@ Two FEM implementations are provided:
 
 * nRF21540 GPIO.
    It is compatible with the nRF21540 FEM and implements a 3-pin interface.
+   Optionally, support for the MODE pin can be enabled.
 
 * Simple GPIO.
    It is a simplified version, made to be compatible with other front-end modules.
@@ -26,6 +27,16 @@ Two FEM implementations are provided:
 
 Both implementations use PA and LNA pins for controlling the FEM.
 Additionally, the nRF21540 GPIO implementation uses the PDN pin for powering down the FEM internal circuits, to reduce energy consumption.
+It can also optionally use the MODE pin for switching PA gain between two preconfigured values.
+
+Tx power split
+**************
+
+When an application requests a given transmission power, it wants to achieve that power at the antenna.
+Usually the application does not know all hardware components, such as RF front-end modules, on the radio signal path.
+To achieve a specific value of transmission power at the antenna, every FEM implementation provides a dedicated API that calculates the PA gain and SoC output power combination that results in the requested power at the antenna.
+
+FEM implementations with multiple PA gains available (e.g. nRF21540 with MODE pin support) choose which gain to use based on hardware limitations and the requested power value.
 
 Configurable timings
 ********************
@@ -136,3 +147,10 @@ The following picture presents the calls between the application, the FEM module
    :alt: Sequence diagram of LNA and PDN control for reception
 
    Sequence diagram of LNA and PDN control for reception
+
+PA gain control
+===============
+
+Optionally, an nRF21540 implementation can control the MODE pin to select one of two available PA gains.
+
+To enable this feature, the MODE pin must be enabled in the interface configuration that the application passes on initialization.

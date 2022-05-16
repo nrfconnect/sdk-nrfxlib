@@ -43,8 +43,14 @@ typedef struct
         uint32_t pdn_settle_us;
         /** The time between deactivating the PA/LNA pin and deactivating the PDN pin. */
         uint32_t trx_hold_us;
-        /** Configurable PA gain. Ignored if the amplifier is not supporting this feature. */
+        /** Default PA gain. Ignored if the amplifier is not supporting this feature. */
         int8_t   pa_gain_db;
+        /** Available PA gains. If runtime MODE pin switching is supported, @c pa_gains_db[0]
+         *  corresponds to POUTA and @c pa_gains_db[1] to POUTB. To enable runtime MODE pin
+         *  switching @c mode_pin_config.enable must be set to true.
+         *  Ignored if runtime MODE pin switching is not supported, or if the amplifier
+         *  is not supporting PA gain. */
+        int8_t   pa_gains_db[2];
         /** Configurable LNA gain. Ignored if the amplifier is not supporting this feature. */
         int8_t   lna_gain_db;
     } fem_config;
@@ -55,6 +61,10 @@ typedef struct
     mpsl_fem_gpiote_pin_config_t lna_pin_config;
     /** PDN pin configuration. */
     mpsl_fem_gpiote_pin_config_t pdn_pin_config;
+    /** MODE pin configuration. If @c mode_pin_config.enable is set to true,
+     *  then the @c fem_config.pa_gains_db must contain correct values corresponding
+     *  to POUTA and POUTB gains */
+    mpsl_fem_gpio_pin_config_t   mode_pin_config;
 
 #if defined(NRF52_SERIES)
     /** Array of PPI channels which need to be provided to Front End Module to operate. */
@@ -81,7 +91,7 @@ typedef struct
  * @param[in] p_config Pointer to the interface parameters for the PA/LNA device.
  *
  * @retval   0              PA/LNA control successfully configured.
- * @retval   -NRF_EPERM     PA/LNA is not available.
+ * @retval   -NRF_EPERM     PA/LNA control configuration error.
  *
  */
 int32_t mpsl_fem_nrf21540_gpio_interface_config_set(mpsl_fem_nrf21540_gpio_interface_config_t const * const p_config);
@@ -110,8 +120,15 @@ int32_t mpsl_fem_nrf21540_gpio_interface_config_set(mpsl_fem_nrf21540_gpio_inter
  * See the Objective Product Specification for more details.
  */
 
-/** Gain of the PA in dB. */
-#define MPSL_FEM_NRF21540_GPIO_PA_DEFAULT_GAIN_DB   20
+
+/** Gain of the PA in dB when using POUTA. */
+#define MPSL_FEM_NRF21540_GPIO_PA_POUTA_DEFAULT_GAIN_DB   20
+
+/** Gain of the PA in dB when using POUTB. */
+#define MPSL_FEM_NRF21540_GPIO_PA_POUTB_DEFAULT_GAIN_DB   10
+
+/** Default gain of the PA in dB. */
+#define MPSL_FEM_NRF21540_GPIO_PA_DEFAULT_GAIN_DB   MPSL_FEM_NRF21540_GPIO_PA_POUTA_DEFAULT_GAIN_DB
 
 /** Gain of the LNA in dB. */
 #define MPSL_FEM_NRF21540_GPIO_LNA_DEFAULT_GAIN_DB  20

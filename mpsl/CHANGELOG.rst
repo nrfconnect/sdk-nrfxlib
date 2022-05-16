@@ -12,11 +12,18 @@ Main branch
 
 All the notable changes included in the main branch are documented in this section.
 
+Added
+=====
+
+* Added support for changing PA gain during runtime through MODE pin switching for the nRF21540 GPIO front-end module.
+
 Changes
 =======
 
 * Removed support for running MPSL on the nRF5340 PDK (DRGN-15174).
 * Timeslot API values ``MPSL_TIMESLOT_DISTANCE_MAX_US`` and ``MPSL_TIMESLOT_EARLIEST_TIMEOUT_MAX_US`` increased to 256 seconds (DRGN-16800).
+* Extended  :c:struct:`mpsl_fem_nrf21540_gpio_interface_config_t` with :c:member:`mpsl_fem_nrf21540_gpio_interface_config_t.mode_pin_config`
+  and :c:member:`mpsl_fem_nrf21540_gpio_interface_config_t.fem_config.pa_gains_db`
 
 Bug fixes
 =========
