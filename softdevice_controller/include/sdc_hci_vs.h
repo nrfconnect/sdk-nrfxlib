@@ -195,9 +195,12 @@ typedef __PACKED_STRUCT
     /** @brief Number of packets received with good CRC during the connection event. */
     uint16_t crc_ok_count;
     /** @brief Number of packets received with bad CRC during the connection event. */
-    uint8_t crc_error_count;
+    uint16_t crc_error_count;
+    /** @brief Number of received Negative Acknowledges from the peer during the connection event.
+     */
+    uint16_t nak_count;
     /** @brief Indicates that the connection event was closed because a packet was not received. */
-    uint8_t rx_timeout;
+    uint8_t rx_timeout : 1;
 } sdc_hci_subevent_vs_qos_conn_event_report_t;
 
 /** @} end of HCI_EVENTS */

@@ -17,6 +17,7 @@ All the notable changes included in the main branch are documented in this secti
 Added
 =====
 
+* Added support for Peripheral-initiated Feature Exchange.
 * Added vendor-specific HCI commands to set the priority and scan mode of Wi-Fi coexistence.
   See :c:func:`sdc_hci_cmd_vs_coex_priority_config` and :c:func:`sdc_hci_cmd_vs_coex_scan_mode_config` (DRGN-16518).
 * Added support for periodic advertising intervals larger than ten seconds (DRGN-16873).
@@ -30,24 +31,38 @@ Added
     * LE Read Antenna Information
 
 * Added support for Periodic Advertising ADI (DRGN-16759).
+* Added ``nak_count`` field into QoS Connection event reports that counts the number of received Negative Acknowledges from the peer during the connection event.
+  See ``sdc_hci_subevent_vs_qos_conn_event_report_t`` (DRGN-17183).
+* Added the ``sdc_coex_adv_mode_configure`` API to configure the behavior of the advertiser when using the coexistence interface (DRGN-16585).
 
 Changes
 =======
 
+* The radio output power is now influenced by the configured FEM gain.
+  If the application requests an output gain of 10 dBm and the FEM has a gain of 20 dBm, the register RADIO->TXPOWER will be set to -10 (KRKNWK-13699).
 * Update public API terms to Bluetooth Core Specification v5.3 (DRGN-16271)
 
-    * :c:func:`sdc_support_master` and :c:func:`sdc_support_slave` have been renamed to :c:func:`sdc_support_central` and :c:func:`sdc_support_peripheral`.
-    * :c:macro:`SDC_DEFAULT_MASTER_COUNT` and :c:macro:`SDC_DEFAULT_SLAVE_COUNT` have been renamed to :c:macro:`SDC_DEFAULT_CENTRAL_COUNT` and :c:macro:`SDC_DEFAULT_PERIPHERAL_COUNT`.
-    * :c:macro:`SDC_MEM_PER_MASTER_LINK` and :c:macro:`SDC_MEM_PER_SLAVE_LINK` have been renamed to :c:macro:`SDC_MEM_PER_CENTRAL_LINK` and :c:macro:`SDC_MEM_PER_PERIPHERAL_LINK`.
-    * :c:macro:`SDC_MEM_MASTER_LINKS_SHARED` and :c:macro:`SDC_MEM_SLAVE_LINKS_SHARED` have been renamed to :c:macro:`SDC_MEM_CENTRAL_LINKS_SHARED` and :c:macro:`SDC_MEM_PERIPHERAL_LINKS_SHARED`.
-    * :c:macro:`SDC_CFG_TYPE_MASTER_COUNT` and :c:macro:`SDC_CFG_TYPE_SLAVE_COUNT` have been renamed to :c:macro:`SDC_CFG_TYPE_CENTRAL_COUNT` and :c:macro:`SDC_CFG_TYPE_PERIPHERAL_COUNT`.
-    * :c:member:`master_count` and :c:member:`slave_count` in :c:union:`sdc_cfg_t` have been renamed to :c:member:`central_count` and :c:member:`peripheral_count`.
+    * :c:macro:`SDC_DEFAULT_MASTER_COUNT` has been renamed to :c:macro:`SDC_DEFAULT_CENTRAL_COUNT`.
+    * :c:macro:`SDC_DEFAULT_SLAVE_COUNT` has been renamed to :c:macro:`SDC_DEFAULT_PERIPHERAL_COUNT`.
+    * :c:macro:`SDC_MEM_PER_MASTER_LINK` has been renamed to :c:macro:`SDC_MEM_PER_CENTRAL_LINK`.
+    * :c:macro:`SDC_MEM_PER_SLAVE_LINK` has been renamed to :c:macro:`SDC_MEM_PER_PERIPHERAL_LINK`.
+    * :c:macro:`SDC_MEM_MASTER_LINKS_SHARED` has been renamed to :c:macro:`SDC_MEM_CENTRAL_LINKS_SHARED`.
+    * :c:macro:`SDC_MEM_SLAVE_LINKS_SHARED` has been renamed to :c:macro:`SDC_MEM_PERIPHERAL_LINKS_SHARED`.
+    * :c:macro:`SDC_CFG_TYPE_MASTER_COUNT` has been renamed to :c:macro:`SDC_CFG_TYPE_CENTRAL_COUNT`.
+    * :c:macro:`SDC_CFG_TYPE_SLAVE_COUNT` has been renamed to :c:macro:`SDC_CFG_TYPE_PERIPHERAL_COUNT`.
+    * :c:member:`master_count` in :c:union:`sdc_cfg_t` has been renamed to :c:member:`central_count`.
+    * :c:member:`slave_count` in :c:union:`sdc_cfg_t` has been renamed to :c:member:`peripheral_count`.
+    * :c:func:`sdc_support_master` has been renamed to :c:func:`sdc_support_central`.
+    * :c:func:`sdc_support_slave` has been renamed to :c:func:`sdc_support_peripheral`.
 
+* HCI interface was updated according to Bluetooth Core Specification v5.3.
+  For a list of the original terms and names and their replacements, refer to `Appropriate Language Mapping Table`_.
 * The scanner now waits until the host has pulled the previous event's periodic advertising reports before enqueuing a report for the next event. Note that this does not apply to single-PDU periodic advertising events (DRGN-16920).
 * The binary size of an application using the scanner but not the central role is decreased (DRGN-16392).
 * The functions :c:func:`sdc_support_scan` and :c:func:`sdc_support_ext_scan` can no longer be called together with :c:func:`sdc_support_central` (DRGN-16392).
 * Removed support for running the SoftDevice Controller on the nRF5340 PDK (DRGN-15174).
 * The ``VersNr`` field in the ``LL_VERSION_IND`` packet now contains the value 0x0C to indicate compatibility with Bluetooth Core Specification v5.3 (DRGN-16109).
+* The ``sdc_hci_subevent_vs_qos_conn_event_report_t`` structure has been redefined (DRGN-17183).
 
 Bug fixes
 =========

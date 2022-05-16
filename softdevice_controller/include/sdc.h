@@ -25,6 +25,7 @@ extern "C" {
 
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "nrf.h"
 #include "nrf_errno.h"
 
@@ -641,6 +642,25 @@ int32_t sdc_support_le_periodic_adv(void);
  * @retval -NRF_EOPNOTSUPP  LE Periodic advertising is not supported.
  */
 int32_t sdc_support_le_periodic_sync(void);
+
+/** @brief Configure the coex advertising mode
+ *
+ * Configure how the advertiser behaves on denial of an advertising packet.
+ * The advertiser can be configured to carry on with the advertisement after the denial or
+ * to abort the advertising event, once an advertising packet gets denied.
+ *
+ * The default behavior is that the advertiser tries to carry on with the advertising event
+ * after the denial.
+ *
+ * @note Setting @p adv_cont_on_denial to True is not supported for the
+ *       @ref MPSL_COEX_1WIRE_GPIOTE_ID coex interface type.
+ *       Using the @ref MPSL_COEX_1WIRE_GPIOTE_ID coex interface without using this
+ *       API call with @p adv_cont_on_denial set to False will result in unexpected behavior.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EOPNOTSUPP  The coexistence feature is not supported.
+ */
+int32_t sdc_coex_adv_mode_configure(bool adv_cont_on_denial);
 
 #ifdef __cplusplus
 }
