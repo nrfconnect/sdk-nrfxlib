@@ -73,6 +73,7 @@ Bug fixes
 * Fixed an issue where reading advertiser radio output power using the vendor-specific HCI command Zephyr Read TX Power Level returned "Unknown Advertiser Identifier (0x42)".
 * Fixed an issue where an assert could occur if :c:func:`sdc_disable` was called while a Bluetooth role was running (DRGN-16515).
 * Fixed an issue where the advertiser would incorrectly set Offset Adjust in the SyncInfo when the offset to the ``AUX_SYNC_IND`` is large (DRGN-16887).
+* Fixed an issue where issuing a legitimate connection update could result in an ``BT_HCI_ERR_INVALID_PARAM`` error (DRGN-17324).
 
 nRF Connect SDK v1.9.0
 **********************
