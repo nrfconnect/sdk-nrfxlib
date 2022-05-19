@@ -48,10 +48,10 @@ Changes
     * :c:macro:`SDC_MEM_PER_SLAVE_LINK` has been renamed to :c:macro:`SDC_MEM_PER_PERIPHERAL_LINK`.
     * :c:macro:`SDC_MEM_MASTER_LINKS_SHARED` has been renamed to :c:macro:`SDC_MEM_CENTRAL_LINKS_SHARED`.
     * :c:macro:`SDC_MEM_SLAVE_LINKS_SHARED` has been renamed to :c:macro:`SDC_MEM_PERIPHERAL_LINKS_SHARED`.
-    * :c:macro:`SDC_CFG_TYPE_MASTER_COUNT` has been renamed to :c:macro:`SDC_CFG_TYPE_CENTRAL_COUNT`.
-    * :c:macro:`SDC_CFG_TYPE_SLAVE_COUNT` has been renamed to :c:macro:`SDC_CFG_TYPE_PERIPHERAL_COUNT`.
-    * :c:member:`master_count` in :c:union:`sdc_cfg_t` has been renamed to :c:member:`central_count`.
-    * :c:member:`slave_count` in :c:union:`sdc_cfg_t` has been renamed to :c:member:`peripheral_count`.
+    * :c:enumerator:`SDC_CFG_TYPE_MASTER_COUNT` has been renamed to :c:enumerator:`SDC_CFG_TYPE_CENTRAL_COUNT`.
+    * :c:enumerator:`SDC_CFG_TYPE_SLAVE_COUNT` has been renamed to :c:enumerator:`SDC_CFG_TYPE_PERIPHERAL_COUNT`.
+    * :c:member:`sdc_cfg_t.master_count` has been renamed to :c:member:`sdc_cfg_t.central_count`.
+    * :c:member:`sdc_cfg_t.slave_count` has been renamed to :c:member:`sdc_cfg_t.peripheral_count`.
     * :c:func:`sdc_support_master` has been renamed to :c:func:`sdc_support_central`.
     * :c:func:`sdc_support_slave` has been renamed to :c:func:`sdc_support_peripheral`.
 
