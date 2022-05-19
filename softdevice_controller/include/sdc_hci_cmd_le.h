@@ -63,20 +63,12 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_CREATE_CONN_CANCEL = 0x200e,
     /** @brief See @ref sdc_hci_cmd_le_read_filter_accept_list_size(). */
     SDC_HCI_OPCODE_CMD_LE_READ_FILTER_ACCEPT_LIST_SIZE = 0x200f,
-    /** @brief See @ref sdc_hci_cmd_le_read_white_list_size(). */
-    SDC_HCI_OPCODE_CMD_LE_READ_WHITE_LIST_SIZE = 0x200f,
-    /** @brief See @ref sdc_hci_cmd_le_clear_white_list(). */
-    SDC_HCI_OPCODE_CMD_LE_CLEAR_WHITE_LIST = 0x2010,
     /** @brief See @ref sdc_hci_cmd_le_clear_filter_accept_list(). */
     SDC_HCI_OPCODE_CMD_LE_CLEAR_FILTER_ACCEPT_LIST = 0x2010,
     /** @brief See @ref sdc_hci_cmd_le_add_device_to_filter_accept_list(). */
     SDC_HCI_OPCODE_CMD_LE_ADD_DEVICE_TO_FILTER_ACCEPT_LIST = 0x2011,
-    /** @brief See @ref sdc_hci_cmd_le_add_device_to_white_list(). */
-    SDC_HCI_OPCODE_CMD_LE_ADD_DEVICE_TO_WHITE_LIST = 0x2011,
     /** @brief See @ref sdc_hci_cmd_le_remove_device_from_filter_accept_list(). */
     SDC_HCI_OPCODE_CMD_LE_REMOVE_DEVICE_FROM_FILTER_ACCEPT_LIST = 0x2012,
-    /** @brief See @ref sdc_hci_cmd_le_remove_device_from_white_list(). */
-    SDC_HCI_OPCODE_CMD_LE_REMOVE_DEVICE_FROM_WHITE_LIST = 0x2012,
     /** @brief See @ref sdc_hci_cmd_le_conn_update(). */
     SDC_HCI_OPCODE_CMD_LE_CONN_UPDATE = 0x2013,
     /** @brief See @ref sdc_hci_cmd_le_set_host_channel_classification(). */
@@ -427,12 +419,6 @@ typedef __PACKED_STRUCT
     uint8_t filter_accept_list_size;
 } sdc_hci_cmd_le_read_filter_accept_list_size_return_t;
 
-/** @brief LE Read White List Size return parameter(s). */
-typedef __PACKED_STRUCT
-{
-    uint8_t white_list_size;
-} sdc_hci_cmd_le_read_white_list_size_return_t;
-
 /** @brief LE Add Device To Filter Accept List command parameter(s). */
 typedef __PACKED_STRUCT
 {
@@ -440,26 +426,12 @@ typedef __PACKED_STRUCT
     uint8_t address[6];
 } sdc_hci_cmd_le_add_device_to_filter_accept_list_t;
 
-/** @brief LE Add Device To White List command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    uint8_t address_type;
-    uint8_t address[6];
-} sdc_hci_cmd_le_add_device_to_white_list_t;
-
 /** @brief E Remove Device From Filter Accept List command parameter(s). */
 typedef __PACKED_STRUCT
 {
     uint8_t address_type;
     uint8_t address[6];
 } sdc_hci_cmd_le_remove_device_from_filter_accept_list_t;
-
-/** @brief LE Remove Device From White List command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    uint8_t address_type;
-    uint8_t address[6];
-} sdc_hci_cmd_le_remove_device_from_white_list_t;
 
 /** @brief LE Connection Update command parameter(s). */
 typedef __PACKED_STRUCT
@@ -1529,56 +1501,6 @@ uint8_t sdc_hci_cmd_le_create_conn_cancel(void);
  */
 uint8_t sdc_hci_cmd_le_read_filter_accept_list_size(sdc_hci_cmd_le_read_filter_accept_list_size_return_t * p_return);
 
-/** @brief LE Read White List Size.
- *
- * The description below is extracted from Core_v5.2,
- * Vol 4, Part E, Section 7.8.14
- *
- * The HCI_LE_Read_White_List_Size command is used to read the total
- * number of White List entries that can be stored in the Controller.
- *
- * Note: The number of entries that can be stored is not fixed and the Controller
- * can change it at any time (e.g. because the memory used to store the White
- * List can also be used for other purposes).
- *
- * Event(s) generated (unless masked away):
- * When the HCI_LE_Read_White_List_Size command has completed, an
- * HCI_Command_Complete event shall be generated.
- *
- * @param[out] p_return Extra return parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_le_read_white_list_size(sdc_hci_cmd_le_read_white_list_size_return_t * p_return);
-
-/** @brief LE Clear White List.
- *
- * The description below is extracted from Core_v5.2,
- * Vol 4, Part E, Section 7.8.15
- *
- * The HCI_LE_Clear_White_List command is used to clear the White List stored
- * in the Controller.
- *
- * This command shall not be used when:
- * • any advertising filter policy uses the White List and advertising is enabled,
- * • the scanning filter policy uses the White List and scanning is enabled, or
- * • the initiator filter policy uses the White List and an
- *   HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection
- *   command is outstanding.
- *
- * Event(s) generated (unless masked away):
- * When the HCI_LE_Clear_White_List command has completed, an
- * HCI_Command_Complete event shall be generated.
- *
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_le_clear_white_list(void);
-
 /** @brief LE Clear Filter Accept List.
  *
  * The description below is extracted from Core_v5.3,
@@ -1646,42 +1568,6 @@ uint8_t sdc_hci_cmd_le_clear_filter_accept_list(void);
  */
 uint8_t sdc_hci_cmd_le_add_device_to_filter_accept_list(const sdc_hci_cmd_le_add_device_to_filter_accept_list_t * p_params);
 
-/** @brief LE Add Device To White List.
- *
- * The description below is extracted from Core_v5.2,
- * Vol 4, Part E, Section 7.8.16
- *
- * The HCI_LE_Add_Device_To_White_List command is used to add a single
- * device to the White List stored in the Controller.
- *
- * This command shall not be used when:
- * • any advertising filter policy uses the White List and advertising is enabled,
- * • the scanning filter policy uses the White List and scanning is enabled, or
- * • the initiator filter policy uses the White List and an
- *   HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection
- *   command is outstanding.
- *
- * When a Controller cannot add a device to the White List because there is no
- * space available, it shall return the error code Memory Capacity Exceeded
- * (0x07).
- *
- * If the device is already in the White List, the Controller should not add the
- * device to the White List again and should return success.
- *
- * Address shall be ignored when Address_Type is set to 0xFF.
- *
- * Event(s) generated (unless masked away):
- * When the HCI_LE_Add_Device_To_White_List command has completed, an
- * HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_le_add_device_to_white_list(const sdc_hci_cmd_le_add_device_to_white_list_t * p_params);
-
 /** @brief E Remove Device From Filter Accept List.
  *
  * The description below is extracted from Core_v5.3,
@@ -1711,34 +1597,6 @@ uint8_t sdc_hci_cmd_le_add_device_to_white_list(const sdc_hci_cmd_le_add_device_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_remove_device_from_filter_accept_list(const sdc_hci_cmd_le_remove_device_from_filter_accept_list_t * p_params);
-
-/** @brief LE Remove Device From White List.
- *
- * The description below is extracted from Core_v5.2,
- * Vol 4, Part E, Section 7.8.17
- *
- * The HCI_LE_Remove_Device_From_White_List command is used to remove
- * a single device from the White List stored in the Controller.
- * This command shall not be used when:
- * • any advertising filter policy uses the White List and advertising is enabled,
- * • the scanning filter policy uses the White List and scanning is enabled, or
- * • the initiator filter policy uses the White List and an
- *   HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection
- *   command is outstanding.
- *
- * Address shall be ignored when Address_Type is set to 0xFF.
- *
- * Event(s) generated (unless masked away):
- * When the HCI_LE_Remove_Device_From_White_List command has
- * completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_le_remove_device_from_white_list(const sdc_hci_cmd_le_remove_device_from_white_list_t * p_params);
 
 /** @brief LE Connection Update.
  *
