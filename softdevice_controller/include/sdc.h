@@ -101,7 +101,7 @@ extern "C" {
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_DEFAULT_CENTRAL_LINK_SIZE 846
-#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 910
+#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 918
 #define __MEM_BUFFER_OVERHEAD_SIZE 7
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * (tx_size - SDC_DEFAULT_TX_PACKET_SIZE) + \
@@ -173,13 +173,13 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (168 + 264 * (buffer_count))
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (168 + (buffer_count) * 264)
 
 /** Memory required for the periodic adv list.
  *
  * @param[in] list_size The number of entries the list can fit.
  */
-#define SDC_MEM_PERIODIC_ADV_LIST(list_size) (8 * (list_size))
+#define SDC_MEM_PERIODIC_ADV_LIST(list_size) ((list_size) * 8)
 
 /** @} end of sdc_mem_defines */
 
