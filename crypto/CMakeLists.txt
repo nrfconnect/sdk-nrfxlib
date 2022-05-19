@@ -171,6 +171,12 @@ if (CONFIG_NRF_CC3XX_PLATFORM)
   target_include_directories(nrf_cc3xx_platform INTERFACE
       "${NRF_CC3XX_PLATFORM_BASE}/include")
 
+  # Make sure that C library is linked after nrf_cc3xx_platform library to
+  # prevent linker errors
+  if (CONFIG_NEWLIB_LIBC)
+    target_link_libraries(nrf_cc3xx_platform INTERFACE -lc)
+  endif()
+
   # Add fallback to play nice with
   add_library(platform_cc3xx INTERFACE)
   target_link_libraries(platform_cc3xx INTERFACE nrf_cc3xx_platform)
