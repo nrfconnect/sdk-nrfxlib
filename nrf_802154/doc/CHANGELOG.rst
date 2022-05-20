@@ -9,6 +9,38 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nRF Connect SDK v2.0.0 - nRF 802.15.4 Radio Driver
+**************************************************
+
+Notable changes
+===============
+
+* Reworked the implementation of the internal timer to support 64-bit timestamps. (KRKNWK-8612)
+* The transmit power is now expressed as antenna output power, including any front-end module used.
+
+Added
+=====
+
+* The transmit power can be set for each transmission request through the transmit metadata. (KRKNWK-13484)
+* The use of runtime gain control of the front-end module is now provided by the MPSL library. (KRKNWK-13713)
+
+Bug fixes
+=========
+
+* Fixed a stability issue where switching the GRANT line of the coexistence interface could cause a crash. (KRKNWK-11900)
+* Fixed an issue where the setting ``NRF_802154_DELAYED_TRX_ENABLED=0`` would make the build fail.
+* Fixed an issue where the CSMA-CA procedure was not aborted by pending operations with higher priority.
+* Fixed an issue where a notification about an HFCLK change could be delayed by a high priority ISR and could cause a crash. (KRKNWK-11466)
+* Fixed an issue where canceling a delayed time slot (for CSMA-CA, delayed transmission, and delayed reception operations) after the preconditions were requested could cause a crash. (KRKNWK-13175)
+* Fixed an issue where a coexistence request would not be released at the end of the time slot while operating in multiprotocol mode.
+* Fixed an issue where the reported ED values with temperature correction were imprecise. (KRKNWK-13599)
+* Disabled the build of CSMA-CA when using the open-source service layer.
+
+Other changes
+=============
+
+* Removed the files :file:`nrf_802154_ack_timeout.c` and :file:`nrf_802154_priority_drop_swi.c`.
+
 nRF Connect SDK v1.9.0 - nRF 802.15.4 Radio Driver
 **************************************************
 
