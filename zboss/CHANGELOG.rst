@@ -17,7 +17,6 @@ All the notable changes included in the |NCS| main branch are documented in this
 Added
 =====
 
-* Precompiled libraries for experimental Zigbee Green Power Combo Basic functionality for Router and Coordinator roles.
 * New ZBOSS API addons, allowing to declare ZCL8-compatible devices.
 
 Updated
