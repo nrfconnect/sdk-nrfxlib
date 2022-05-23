@@ -40,7 +40,7 @@ extern "C" {
 #define NRF_MODEM_APPLICATION_IRQ EGU1_IRQn
 
 /**@brief Interrupt priority used on interrupt for communication with the application layer. */
-#define NRF_MODEM_APPLICATION_IRQ_PRIORITY 6
+#define NRF_MODEM_APPLICATION_IRQ_PRIORITY IRQ_PRIO_LOWEST
 
 /**@} */
 
