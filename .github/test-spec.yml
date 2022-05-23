@@ -1,4 +1,8 @@
 # This is the Jenkins ci variant of the .github/labler.yaml
+"CI-iot-zephyr-lwm2m-test":
+  - "nrf_modem/**/*"
+  - "nrf_security/src/**/*"
+  - "crypto/nrf_oberon/**/*"
 
 "CI-iot-samples-test":
   - "nrf_modem/**/*"
