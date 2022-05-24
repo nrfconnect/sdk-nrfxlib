@@ -14,23 +14,12 @@ The nRF 802.15.4 Service Layer (SL) is a library that implements the following f
 * Timestamping.
   It provides precise frame timestamps.
 
-It also provides an API to retrieve the capabilities of the binary in run-time and defines APIs for features that are not yet supported, as the following:
-
-* WiFi coexistence support.
-  It provides an API for facilitating the integration with an external PTA.
-* Antenna diversity support.
-  It provides an API for runtime antenna selection.
-
+It also provides an API to retrieve the capabilities of the binary in runtime.
 The service layer is available as a binary for the following SoCs:
 
-* nRF52811
 * nRF52833
 * nRF52840
 * nRF5340 Network Core
-
-.. note::
-
-   Currently, only multiprotocol support and CSMA/CA support are available for the nRF5340 Network Core.
 
 For the SOCs equipped with a floating-point unit (nRF52840 and nRF52833), the service layer is available in the soft-float, softfp-float, and hard-float build versions.
 For the other SOCs/SiPs, it is available only in the soft-float build version.
