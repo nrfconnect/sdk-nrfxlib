@@ -72,6 +72,7 @@ Bug fixes
 * Fixed an issue where an assert could occur if :c:func:`sdc_disable` was called while a Bluetooth role was running (DRGN-16515).
 * Fixed an issue where the advertiser would incorrectly set Offset Adjust in the SyncInfo when the offset to the ``AUX_SYNC_IND`` is large (DRGN-16887).
 * Fixed an issue where issuing a legitimate connection update could result in an ``BT_HCI_ERR_INVALID_PARAM`` error (DRGN-17324).
+* Fixed an issue where connecting to the same device using a different address got denied as a duplicate connection (DRGN-17232).
 
 nRF Connect SDK v1.9.0
 **********************
