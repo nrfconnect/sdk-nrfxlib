@@ -36,7 +36,6 @@ The 802.15.4 Radio Driver consists of the following libraries:
 
 The libraries are compatible with the following SoCs:
 
-* nRF52811
 * nRF52833
 * nRF52840
 * nRF5340
@@ -56,7 +55,6 @@ The lists of the necessary files can be found in the following locations:
 
    doc/architecture
    doc/feature_description
-   doc/front_end_module
    doc/wifi_coex_module
    doc/hardware_resources
    doc/multiprotocol_support

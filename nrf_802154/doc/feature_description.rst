@@ -171,8 +171,6 @@ The continuous carrier wave is transmitted when the RADIO peripheral is in TXIDL
 
 .. note::
    * This mode is intended for device testing and must not be used in an end-user application.
-   * The nRF53 series does not support the serialization of this function between the APP and NET cores.
-     Only applications ran entirely on the NET core will be able to call this function.
 
 .. _features_description_mc_transmission:
 
@@ -191,8 +189,6 @@ The modulated carrier is transmitted when the RADIO peripheral is in TX mode wit
 
 .. note::
    * This mode is intended for device testing and must not be used in an end-user application.
-   * The nRF53 series does not support the serialization of this function between the APP and NET cores.
-     Only applications ran entirely on the NET core will be able to call this function.
 
 .. _features_description_csma:
 
@@ -221,7 +217,7 @@ In this scenario, the driver does not verify if the scheduled delayed operations
 If a new delayed operation is scheduled to be executed while a previous one is still ongoing, the driver prematurely aborts the previous operation.
 
 .. note::
-   This feature requires the support for scheduling radio operations in the 802.15.4 Service Layer, which is currently not supported by nRF53 chips.
+   This feature requires the support for scheduling radio operations in the 802.15.4 Service Layer.
 
 .. _features_description_delayed_rx:
 
@@ -259,7 +255,7 @@ As such, the higher layer must prepare a properly formatted frame and the enhanc
 To set the enhanced ACK data containing the CSL Information Element, the higher layer must call the :c:func:`nrf_802154_ack_data_set` function.
 
 .. note::
-   This feature requires the support for scheduling radio operations in the 802.15.4 Service Layer, which is currently not supported by nRF53 chips.
+   This feature requires the support for scheduling radio operations in the 802.15.4 Service Layer.
 
 .. _features_description_frame_security:
 
@@ -361,3 +357,10 @@ The higher layer can implement various retransmission schemes by combining the i
    If the higher layer marks a frame as already secured, it must not expect the driver to update the dynamic data of the frame.
    Transmitting an encrypted frame with its header modified afterward results in a security breach.
    An attempt to transmit a frame with such parameters will fail unconditionally.
+
+Supporting Front-End Modules
+****************************
+
+The driver supports Front-End Modules (FEMs) using an implementation provided by the :ref:`mpsl`.
+If a FEM is used, the value of the transmit power is the output power on the antenna rather than the output power of the SoC.
+The runtime gain control of the FEM is supported.
