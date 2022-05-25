@@ -9,6 +9,12 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.0.1
+***************
+
+* Minor improvements to :c:func:`nrf_modem_shutdown`.
+* Fixed a bug where :c:func:`nrf_modem_build_version` did not give the correct version number.
+
 nrf_modem 2.0.0
 ***************
 
