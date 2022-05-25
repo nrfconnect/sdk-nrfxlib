@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.0.1+b1
+******************
+
+* Corrected the ABI for the hard-float binary.
+
 nrf_modem 2.0.1
 ***************
 
