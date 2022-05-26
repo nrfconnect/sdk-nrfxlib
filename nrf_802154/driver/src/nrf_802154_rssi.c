@@ -56,8 +56,8 @@ int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
     int8_t temp = nrf_802154_temperature_get();
     int8_t result;
 
-#if defined(NRF52840_XXAA) || defined(NRF52820_XXAA) || defined(NRF52833_XXAA)
-    /* Implementation based on Errata 153 for nRF52840 SoC and Errata 225 for nRF52820 nRF52833 SoCs.. */
+#if defined(NRF52840_XXAA) || defined(NRF52833_XXAA)
+    /* Implementation based on Errata 153 for nRF52840 SoC and Errata 225 for nRF52833 SoCs.. */
     if (temp <= -30)
     {
         result = 3;

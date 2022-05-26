@@ -44,10 +44,10 @@
    that the maximum value in EDSAMPLE which can be reported in compliance with the 802.15.4 specification is
    255/ED_RSSISCALE. */
 
-#if defined (NRF52840_XXAA) || defined(NRF52811_XXAA)
+#if defined (NRF52840_XXAA)
 #define ED_RSSIOFFS  (-92) ///< dBm value corresponding to value 0 in the EDSAMPLE register.
 #define ED_RSSISCALE 4     ///< Factor needed to calculate the ED result based on the data from the RADIO peripheral.
-#elif defined (NRF52833_XXAA) || defined(NRF52820_XXAA) || defined(NRF5340_XXAA)
+#elif defined (NRF52833_XXAA) || defined(NRF5340_XXAA)
 #define ED_RSSIOFFS  (-93) ///< dBm value corresponding to value 0 in the EDSAMPLE register.
 #define ED_RSSISCALE 5     ///< Factor needed to calculate the ED result based on the data from the RADIO peripheral.
 #else

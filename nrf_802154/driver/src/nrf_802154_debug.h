@@ -51,25 +51,12 @@
 extern "C" {
 #endif
 
-#ifdef NRF52811_XXAA
-
-#define PIN_DBG_RADIO_EVT_END        13
-#define PIN_DBG_RADIO_EVT_DISABLED   14
-#define PIN_DBG_RADIO_EVT_READY      17
-#define PIN_DBG_RADIO_EVT_FRAMESTART 18
-#define PIN_DBG_RADIO_EVT_EDEND      25
-#define PIN_DBG_RADIO_EVT_PHYEND     24
-
-#else
-
 #define PIN_DBG_RADIO_EVT_END        11
 #define PIN_DBG_RADIO_EVT_DISABLED   12
 #define PIN_DBG_RADIO_EVT_READY      13
 #define PIN_DBG_RADIO_EVT_FRAMESTART 14
 #define PIN_DBG_RADIO_EVT_EDEND      25
 #define PIN_DBG_RADIO_EVT_PHYEND     24
-
-#endif
 
 #define PPI_DBG_RADIO_EVT_END           0
 #define PPI_DBG_RADIO_EVT_DISABLED      1

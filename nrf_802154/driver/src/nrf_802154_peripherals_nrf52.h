@@ -59,11 +59,7 @@ extern "C" {
  */
 #ifndef NRF_802154_EGU_INSTANCE_NO
 
-#if defined(NRF52811_XXAA)
-#define NRF_802154_EGU_INSTANCE_NO 0
-#else
 #define NRF_802154_EGU_INSTANCE_NO 3
-#endif
 
 #endif // NRF_802154_EGU_INSTANCE_NO
 
@@ -112,11 +108,7 @@ extern "C" {
  */
 #ifndef NRF_802154_RTC_INSTANCE_NO
 
-#if defined(NRF52811_XXAA) || defined(NRF52820_XXAA)
-#define NRF_802154_RTC_INSTANCE_NO 0
-#else
 #define NRF_802154_RTC_INSTANCE_NO 2
-#endif
 
 #endif // NRF_802154_RTC_INSTANCE_NO
 
