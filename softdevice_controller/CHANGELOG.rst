@@ -23,7 +23,7 @@ Added
 * Added support for periodic advertising intervals larger than ten seconds (DRGN-16873).
 * Added support for periodic sync timeouts larger than 128 seconds (DRGN-16434).
 * Added :c:func:`sdc_support_ext_central` which makes the extended initiator role configurable (DRGN-16392).
-* Added experimental support for connectionless angle of arrival (AoA) transmitter (DRGN-16588).
+* Added support for connectionless angle of arrival (AoA) transmitter (DRGN-16588).
   The following HCI commands are now supported (DRGN-16713):
 
     * LE Set Connectionless CTE Transmit Parameters
