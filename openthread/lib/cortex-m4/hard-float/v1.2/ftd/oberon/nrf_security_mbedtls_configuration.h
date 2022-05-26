@@ -1798,7 +1798,7 @@
  * and other functions/constants only used by these functions, thus reducing
  * the code footprint by several KB.
  */
-//#define MBEDTLS_X509_REMOVE_INFO
+#define MBEDTLS_X509_REMOVE_INFO
 
 /**
  * \def MBEDTLS_X509_RSASSA_PSS_SUPPORT
@@ -2612,7 +2612,7 @@
  *           or MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG.
  *
  */
-/* #undef MBEDTLS_PSA_CRYPTO_C */
+#define MBEDTLS_PSA_CRYPTO_C
 
 /**
  * \def MBEDTLS_PSA_CRYPTO_SE_C
@@ -3023,8 +3023,8 @@
  */
 
 /* MPI / BIGNUM options */
-//#define MBEDTLS_MPI_WINDOW_SIZE            6 /**< Maximum window size used. */
-//#define MBEDTLS_MPI_MAX_SIZE            1024 /**< Maximum number of bytes for usable MPIs. */
+#define MBEDTLS_MPI_WINDOW_SIZE            3 /**< Maximum window size used. */
+#define MBEDTLS_MPI_MAX_SIZE          256 /**< Maximum number of bytes for usable MPIs. */
 
 /* CTR_DRBG options */
 //#define MBEDTLS_CTR_DRBG_ENTROPY_LEN               48 /**< Amount of entropy used per seed by default (48 with SHA-512, 32 with SHA-256) */
