@@ -64,6 +64,7 @@ if(DEFINED src_zephyr)
     $<TARGET_PROPERTY:${mbedcrypto_target},INTERFACE_COMPILE_DEFINITIONS>
   )
 
+  zephyr_library_sources_ifdef(CONFIG_USERSPACE mbedtls_partition.c)
   zephyr_library_app_memory(k_mbedtls_partition)
 endif()
 
