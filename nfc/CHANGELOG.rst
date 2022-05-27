@@ -9,8 +9,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-master
-******
+nRF Connect SDK v2.0.0
+**********************
 
 Bug fixes
 =========

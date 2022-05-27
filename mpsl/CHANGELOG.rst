@@ -7,15 +7,15 @@ Changelog
    :local:
    :depth: 2
 
-Main branch
-***********
+nRF Connect SDK v2.0.0
+**********************
 
-All the notable changes included in the main branch are documented in this section.
+All the notable changes included in the |NCS| v2.0.0 release are documented in this section.
 
 Added
 =====
 
-* Added support for changing PA gain during runtime through MODE pin switching for the nRF21540 GPIO front-end module.
+* Support for changing PA gain during runtime through MODE pin switching for the nRF21540 GPIO front-end module.
 
 Changes
 =======

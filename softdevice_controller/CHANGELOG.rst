@@ -9,31 +9,31 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
-Main branch
-***********
+nRF Connect SDK v2.0.0
+**********************
 
-All the notable changes included in the main branch are documented in this section.
+All the notable changes included in the |NCS| v2.0.0 release are documented in this section.
 
 Added
 =====
 
-* Added support for Peripheral-initiated Feature Exchange.
-* Added vendor-specific HCI commands to set the priority and scan mode of Wi-Fi coexistence.
+* Support for Peripheral-initiated Feature Exchange.
+* Vendor-specific HCI commands to set the priority and scan mode of Wi-Fi coexistence.
   See :c:func:`sdc_hci_cmd_vs_coex_priority_config` and :c:func:`sdc_hci_cmd_vs_coex_scan_mode_config` (DRGN-16518).
-* Added support for periodic advertising intervals larger than ten seconds (DRGN-16873).
-* Added support for periodic sync timeouts larger than 128 seconds (DRGN-16434).
-* Added :c:func:`sdc_support_ext_central` which makes the extended initiator role configurable (DRGN-16392).
-* Added support for connectionless angle of arrival (AoA) transmitter (DRGN-16588).
+* Support for periodic advertising intervals larger than ten seconds (DRGN-16873).
+* Support for periodic sync timeouts larger than 128 seconds (DRGN-16434).
+* The :c:func:`sdc_support_ext_central` function that makes the extended initiator role configurable (DRGN-16392).
+* Support for connectionless angle of arrival (AoA) transmitter (DRGN-16588).
   The following HCI commands are now supported (DRGN-16713):
 
     * LE Set Connectionless CTE Transmit Parameters
     * LE Set Connectionless CTE Transmit Enable
     * LE Read Antenna Information
 
-* Added support for Periodic Advertising ADI (DRGN-16759).
-* Added ``nak_count`` field into QoS Connection event reports that counts the number of received Negative Acknowledges from the peer during the connection event.
+* Support for Periodic Advertising ADI (DRGN-16759).
+* The ``nak_count`` field into QoS Connection event reports that counts the number of received Negative Acknowledges from the peer during the connection event.
   See ``sdc_hci_subevent_vs_qos_conn_event_report_t`` (DRGN-17183).
-* Added the ``sdc_coex_adv_mode_configure`` API to configure the behavior of the advertiser when using the coexistence interface (DRGN-16585).
+* The ``sdc_coex_adv_mode_configure`` API to configure the behavior of the advertiser when using the coexistence interface (DRGN-16585).
 
 Changes
 =======

@@ -9,10 +9,10 @@ Changelog
 
 All notable changes to this project in the |NCS| are documented in this file.
 
-Main branch
-***********
+nRF Connect SDK v2.0.0
+**********************
 
-All the notable changes included in the |NCS| main branch are documented in this section.
+All the notable changes included in the |NCS| v2.0.0 release are documented in this section.
 
 Added
 =====
@@ -22,11 +22,11 @@ Added
 Updated
 =======
 
-* Updated the ZBOSS stack to version ``3.11.2.0+5.1.2``.
-  For detailed information, see `ZBOSS stack release notes`_ for the main branch.
-* Updated the development ZBOSS stack to version ``3.12.1.0+5.2.0``.
-  For detailed information, see `ZBOSS stack release notes`_ for the main branch.
-* Updated ZCL in all variants of ZBOSS to specification version 8.
+* The ZBOSS stack to version ``3.11.2.0+5.1.2``.
+  For detailed information, see `ZBOSS stack release notes`_ for the |NCS| v2.0.0 release.
+* The development ZBOSS stack to version ``3.12.1.0+5.2.0``.
+  For detailed information, see `ZBOSS stack release notes`_ for the |NCS| v2.0.0 release.
+* ZCL in all variants of ZBOSS to specification version 8.
   This version is backward-compatible with earlier versions of ZCL.
 * Improved the NCP communication stability.
 
