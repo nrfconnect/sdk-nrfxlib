@@ -14,6 +14,7 @@ config MPSL
 	help
 	  Use Nordic Multi Protocol Service Layer (MPSL) implementation,
 	  providing services for single and multi-protocol implementations.
+	  For more information, see :ref:`mpsl`.
 
 if MPSL
 
