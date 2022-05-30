@@ -10,6 +10,8 @@ Integration notes
 This page describes how to integrate the Multiprotocol Service Layer (MPSL) into an application.
 The descriptions are valid for both RTOS and RTOS-free environments.
 
+To enable MPSL in nRF Connect SDK applications, enable :kconfig:option:`CONFIG_MPSL`.
+
 For the nRF53 Series, the requirements described are only relevant for applications running alongside the MPSL on the network processor.
 
 The following peripherals are owned by MPSL and must not be accessed directly by the application:
