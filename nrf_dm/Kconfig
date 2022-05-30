@@ -11,6 +11,7 @@ config NRF_DM
 	select CMSIS_DSP_TRANSFORM
 	select CMSIS_DSP_COMPLEXMATH
 	select CMSIS_DSP_STATISTICS
+	select CMSIS_DSP_MATRIX
 	select EXPERIMENTAL
 	help
 		Enable nRF DM (Distance Measurement) library
