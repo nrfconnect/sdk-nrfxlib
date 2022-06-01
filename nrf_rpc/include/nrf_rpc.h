@@ -26,6 +26,9 @@
 extern "C" {
 #endif
 
+/** @brief nRF RPC protocol version. */
+#define NRF_RPC_PROTOCOL_VERSION 0
+
 /** @brief Special value to indicate that ID is unknown or irrelevant. */
 #define NRF_RPC_ID_UNKNOWN 0xFF
 

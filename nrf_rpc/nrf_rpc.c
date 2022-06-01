@@ -20,6 +20,12 @@
 /* Internal definition used in the macros. */
 #define NRF_RPC_HEADER_SIZE 5
 
+/* Protocol version field size inside initialization packet. */
+#define NRF_RPC_PROTOCOL_VERSION_FIELD_SIZE sizeof(struct protocol_version)
+
+/* Maximum possible protocol version. */
+#define NRF_RPC_MAXIMUM_PROTOCOL_VERSION 15
+
 /* Context holding state of the command execution.
  * Context contains data required to receive response to the command and
  * receive recursice commands. When a thread is waiting for a response
@@ -56,6 +62,22 @@ struct header {
 	uint8_t dst_group_id;
 };
 
+/* Helper structure for encoding and decoding protocol version range from the
+ * initialization packet.
+ */
+struct protocol_version {
+	uint8_t min_version:4; /* Minimum supported protocol version. */
+	uint8_t max_version:4; /* Maximum supported protocol version. */
+} __packed;
+
+/* Group initialization packet data. */
+struct init_packet_data {
+	uint8_t min_version; /* Remote minimum supported protocol version. */
+	uint8_t max_version; /* Remote maximum supported protocol version. */
+	size_t strid_len;    /* Length of the unique identifier of the remote group. */
+	const char *strid;   /* Remote group unique identifier. */
+};
+
 /* Pool of statically allocated command contexts. */
 static struct nrf_rpc_cmd_ctx cmd_ctx_pool[CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE];
 
@@ -71,6 +93,11 @@ static nrf_rpc_err_handler_t global_err_handler;
 
 /* Array with all defiend groups */
 NRF_RPC_AUTO_ARR(nrf_rpc_groups_array, "grp");
+
+/* Check the nRF RPC protocol version. */
+NRF_RPC_STATIC_ASSERT(NRF_RPC_PROTOCOL_VERSION <= NRF_RPC_MAXIMUM_PROTOCOL_VERSION,
+		      "nRF RPC protocol version must be smaller or equal to "
+		      NRF_RPC_STRINGIFY(NRF_RPC_MAXIMUM_PROTOCOL_VERSION));
 
 /* ======================== Common utilities ======================== */
 
@@ -237,6 +264,52 @@ static int simple_send(const struct nrf_rpc_group *group, uint8_t dst, uint8_t t
 	return send(group->transport, tx_buf, NRF_RPC_HEADER_SIZE + len);
 }
 
+static int group_init_send(const struct nrf_rpc_group *group)
+{
+	struct protocol_version *protocol_version;
+	struct header hdr;
+	uint8_t *tx_buf;
+	uint8_t *packet;
+	size_t len;
+
+	hdr.dst = NRF_RPC_ID_UNKNOWN;
+	hdr.type = NRF_RPC_PACKET_TYPE_INIT;
+	hdr.id = 0;
+	hdr.src_group_id = group->data->src_group_id;
+	hdr.dst_group_id = NRF_RPC_ID_UNKNOWN;
+
+	len = strlen(group->strid) + NRF_RPC_PROTOCOL_VERSION_FIELD_SIZE;
+
+	/* Allocates place for packet data and nRF RPC header.
+	 * Returned pointer is set to the first position after header data.
+	 */
+	nrf_rpc_alloc_tx_buf(group, &tx_buf, len);
+	if (tx_buf == NULL) {
+		return -NRF_ENOMEM;
+	}
+
+	packet = tx_buf;
+	/* Calculate the start address of the nRF RPC payload buffer. Pointer returned by
+	 * @ref nrf_rpc_alloc_tx_buf is set to first byte after nRF RPC packet header so
+	 * it is necessary here to subtract the header size.
+	 */
+	tx_buf -= NRF_RPC_HEADER_SIZE;
+
+	header_encode(tx_buf, &hdr);
+
+	/* Encode supported protocol version range. */
+	protocol_version = (struct protocol_version *)packet;
+
+	protocol_version->min_version = NRF_RPC_PROTOCOL_VERSION;
+	protocol_version->max_version = NRF_RPC_PROTOCOL_VERSION;
+
+	packet += NRF_RPC_PROTOCOL_VERSION_FIELD_SIZE;
+
+	memcpy(packet, group->strid, strlen(group->strid));
+
+	return send(group->transport, tx_buf, NRF_RPC_HEADER_SIZE + len);
+}
+
 static inline bool packet_validate(const uint8_t *packet)
 {
 	uintptr_t addr = (uintptr_t)packet;
@@ -274,9 +347,7 @@ static int transport_init(nrf_rpc_tr_receive_handler_t receive_cb)
 			}
 		}
 
-		err = simple_send(group, NRF_RPC_ID_UNKNOWN, NRF_RPC_PACKET_TYPE_INIT,
-				  0, data->src_group_id, NRF_RPC_ID_UNKNOWN, group->strid,
-				  strlen(group->strid));
+		err = group_init_send(group);
 		if (err) {
 			NRF_RPC_ERR("Failed to send group init packet for group id: %d strid: %s",
 				    data->src_group_id, group->strid);
@@ -411,29 +482,30 @@ static void execute_packet(const uint8_t *packet, size_t len)
 	parse_incoming_packet(NULL, packet, len);
 }
 
-static const struct nrf_rpc_group *remote_group_init(struct header *hdr, const uint8_t *packet,
-						     size_t len)
+static bool protocol_version_check(const struct init_packet_data *init_data)
+{
+	uint8_t protocol_version = NRF_RPC_PROTOCOL_VERSION;
+
+	if ((protocol_version >= init_data->min_version) &&
+	    (protocol_version <= init_data->max_version)) {
+		return true;
+	}
+
+	return false;
+}
+static const struct nrf_rpc_group *remote_group_init(uint8_t src_group_id, const char *strid,
+						     size_t strid_len)
 {
 	void *iter;
 	const struct nrf_rpc_group *group;
-	const char *remote_strid;
-	size_t remote_strid_len;
-
-	if (len <= NRF_RPC_HEADER_SIZE) {
-		NRF_RPC_ERR("Init packet does not contain remote group str id");
-		goto error;
-	}
-
-	remote_strid = (char *)&packet[NRF_RPC_HEADER_SIZE];
-	remote_strid_len = len - NRF_RPC_HEADER_SIZE;
 
 	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array,
 				 const struct nrf_rpc_group)) {
-		if ((remote_strid_len == strlen(group->strid)) &&
-		    (memcmp(remote_strid, group->strid, remote_strid_len) == 0)) {
-			group->data->dst_group_id = hdr->src_group_id;
+		if ((strid_len == strlen(group->strid)) &&
+		    (memcmp(strid, group->strid, strid_len) == 0)) {
+			group->data->dst_group_id = src_group_id;
 			NRF_RPC_DBG("Found corresponding local group. Remote id: %d, Local id: %d",
-				    hdr->src_group_id, group->data->dst_group_id);
+				    src_group_id, group->data->dst_group_id);
 
 			return group;
 		}
@@ -441,8 +513,78 @@ static const struct nrf_rpc_group *remote_group_init(struct header *hdr, const u
 
 	NRF_RPC_ERR("Remote group does not match local group");
 
-error:
 	return NULL;
+}
+
+static int init_packet_parse(struct init_packet_data *init_data, const uint8_t *packet, size_t len)
+{
+	struct protocol_version *protocol_version;
+
+	if (len < (NRF_RPC_HEADER_SIZE + NRF_RPC_PROTOCOL_VERSION_FIELD_SIZE)) {
+		NRF_RPC_ERR("To small initialization packet");
+
+		return -NRF_EBADMSG;
+	}
+
+	packet += NRF_RPC_HEADER_SIZE;
+
+	protocol_version = (struct protocol_version *)packet;
+
+	init_data->min_version = protocol_version->min_version;
+	init_data->max_version = protocol_version->max_version;
+
+	packet += NRF_RPC_PROTOCOL_VERSION_FIELD_SIZE;
+
+	init_data->strid_len = len - (NRF_RPC_HEADER_SIZE + NRF_RPC_PROTOCOL_VERSION_FIELD_SIZE);
+
+	if (init_data->strid_len == 0) {
+		NRF_RPC_ERR("Initialization packet does not contain remote group strid");
+
+		return -NRF_EBADMSG;
+	}
+
+	init_data->strid = (char *)packet;
+
+	return 0;
+}
+
+static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **group,
+			      const uint8_t *packet, size_t len)
+{
+	int err;
+	struct init_packet_data init_data = {0};
+
+	*group = NULL;
+
+	err = init_packet_parse(&init_data, packet, len);
+	if (err) {
+		return err;
+	}
+
+	/* Check the protocol version */
+	if (!protocol_version_check(&init_data)) {
+		NRF_RPC_ERR("Unsupported protocol version. Local version: %d, "
+			    "remote protocol version range: %d - %d",
+			    NRF_RPC_PROTOCOL_VERSION, init_data.min_version,
+			    init_data.max_version);
+
+		return -NRF_EPROTONOSUPPORT;
+	}
+
+	/* Check for the corresponding local group and initialize it. */
+	*group = remote_group_init(hdr->src_group_id, init_data.strid, init_data.strid_len);
+	if (*group == NULL) {
+		NRF_RPC_ASSERT(false);
+		return -NRF_EFAULT;
+	}
+
+	initialized_group_count++;
+	if (initialized_group_count == group_count) {
+		/* All group are initialized. */
+		nrf_rpc_os_event_set(&groups_init_event);
+	}
+
+	return 0;
 }
 
 /* Callback from transport layer that handles incoming. */
@@ -549,17 +691,7 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 		break;
 
 	case NRF_RPC_PACKET_TYPE_INIT:
-		group = remote_group_init(&hdr, packet, len);
-		if (group == NULL) {
-			NRF_RPC_ASSERT(0);
-			err = -NRF_EFAULT;
-		} else {
-			initialized_group_count++;
-			if (initialized_group_count == group_count) {
-				nrf_rpc_os_event_set(&groups_init_event);
-			}
-		}
-
+		err = init_packet_handle(&hdr, &group, packet, len);
 		break;
 
 	default:
