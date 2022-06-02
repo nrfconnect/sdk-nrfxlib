@@ -1354,6 +1354,13 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_transmit_raw_at(
         return NRF_802154_SERIALIZATION_ERROR_NO_MEMORY;
     }
 
+    // tx_metadata.channel set to 0 means that NULL was passed as metadata on app core
+    // and the channel should be set to the current channel from PIB
+    if (0 == tx_metadata.channel)
+    {
+        tx_metadata.channel = nrf_802154_channel_get();
+    }
+
     bool result = nrf_802154_transmit_raw_at(p_local_frame_ptr, tx_time, &tx_metadata);
 
     if (!result)

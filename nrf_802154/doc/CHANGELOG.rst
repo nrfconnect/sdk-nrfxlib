@@ -9,6 +9,16 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+Main branch
+***********
+
+Bug fixes
+=========
+
+* Fixed an issue where the channel for the delayed transmission on the nRF5340 SoC when passing NULL metadata would be set to 11.
+  This was inconsistent with the behavior on nRF52 Series' SoCs and the channel now defaults to the value in the Personal Area Network Information Base (PIB). (KRKNWK-13539)
+* Fixed an issue causing the calculated CSL phase to be too small. (KRKNWK-13782)
+
 nRF Connect SDK v2.0.0 - nRF 802.15.4 Radio Driver
 **************************************************
 

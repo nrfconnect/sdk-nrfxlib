@@ -939,6 +939,8 @@ bool nrf_802154_delayed_trx_nearest_drx_time_to_midpoint_get(uint32_t * p_drx_ti
 
         result = nrf_802154_rsch_delayed_timeslot_time_to_start_get(m_dly_rx_data[i].id,
                                                                     &drx_time_to_start);
+        drx_time_to_start += RX_SETUP_TIME + RX_RAMP_UP_TIME;
+
         if (result)
         {
             min_time_to_start = drx_time_to_start < min_time_to_start ?

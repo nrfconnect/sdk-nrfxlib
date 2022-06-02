@@ -1490,8 +1490,9 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
         {
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
             .cca         = true,
-            .channel     = 11,
-            .tx_power    = {.use_metadata_value = false}
+            // channel set to 0 will be replaced on net core by the current channel from PIB
+            .channel  = 0,
+            .tx_power = {.use_metadata_value = false}
         };
 
         p_metadata = &metadata_default;
@@ -1780,6 +1781,11 @@ uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t p
     frame_symbols += (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
 
     return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
+}
+
+uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
+{
+    return end_timestamp - (psdu_length * PHY_SYMBOLS_PER_OCTET * PHY_US_PER_SYMBOL);
 }
 
 void nrf_802154_security_global_frame_counter_set(uint32_t frame_counter)
