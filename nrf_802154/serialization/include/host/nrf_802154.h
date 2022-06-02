@@ -714,6 +714,17 @@ int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level);
 uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length);
 
 /**
+ * @brief  Calculates the timestamp of the MAC Header in a received frame.
+ *
+ * @param[in]  end_timestamp  Timestamp of the end of the last symbol in the frame,
+ *                            in microseconds.
+ * @param[in]  psdu_length    Number of bytes in the frame PSDU.
+ *
+ * @return  Timestamp of the MHR of a given frame, in microseconds.
+ */
+uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length);
+
+/**
  * @}
  * @defgroup nrf_802154_ifs Inter-frame spacing feature
  * @{

@@ -405,6 +405,17 @@ uint8_t nrf_802154_ccaedthres_from_dbm_calculate(int8_t dbm);
 uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length);
 
 /**
+ * @brief  Calculates the timestamp of the MAC Header in a received frame.
+ *
+ * @param[in]  end_timestamp  Timestamp of the end of the last symbol in the frame,
+ *                            in microseconds.
+ * @param[in]  psdu_length    Number of bytes in the frame PSDU.
+ *
+ * @return  Timestamp of the MHR of a given frame, in microseconds.
+ */
+uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length);
+
+/**
  * @}
  * @defgroup nrf_802154_transitions Functions to request FSM transitions and check current state
  * @{
