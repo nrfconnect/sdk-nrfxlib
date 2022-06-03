@@ -9,6 +9,41 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.1.0
+***************
+
+* Major improvements to modem tracing.
+  The application can now obtain trace data using the newly introduced :c:func:`nrf_modem_trace_get` function.
+  Traces can be processed as necessary, and freed using the :c:func:`nrf_modem_trace_processed` function.
+  The following functions have been removed from the OS glue:
+
+    * :c:func:`nrf_modem_os_trace_put`
+    * :c:func:`nrf_modem_os_trace_alloc`
+    * :c:func:`nrf_modem_os_trace_free`
+    * :c:func:`nrf_modem_os_trace_irq_set`
+    * :c:func:`nrf_modem_os_trace_irq_clear`
+    * :c:func:`nrf_modem_os_trace_irq_enable`
+    * :c:func:`nrf_modem_os_trace_irq_disable`
+
+  The following functions have been removed from the :file:`nrf_modem.h` file:
+
+    * :c:func:`nrf_modem_trace_irq_handler`
+    * :c:func:`nrf_modem_trace_processed_callback`
+
+* Improvements to AT filters.
+  AT filters now apply to the formatted AT command.
+  The :c:member:`paused` is added to the :c:type:`nrf_modem_at_cmd_filter` structure to pause filters whenever required.
+* Added support for modem's POFWARN related errors.
+* Fixed a bug where closing a (D)TLS socket during the TLS handshake could make further calls to :c:func:`nrf_connect` fail.
+* Fixed a bug where the :c:func:`nrf_send` function could return an error without setting an errno.
+* When called with ``NRF_MSG_WAITALL``, the :c:func:`nrf_recv` function now returns the number of bytes received so far in case the socket is closed, or when the TCP connection is terminated by the remote peer.
+* Fixed a bug where, in rare cases, the :c:func:`nrf_recv` function on a ``NRF_SOCK_STREAM`` socket incorrectly returned ``0`` even though more bytes were available to read.
+* Fixed a bug where, in rare cases, the :c:func:`nrf_recv` function would crash.
+* Fixed a few instances of incorrect return values from the :c:func:`nrf_getaddrinfo` function.
+* Removed the :c:type:`nrf_socket_family_t` type.
+* Removed the unimplemented ``NRF_SO_SEC_CIPHER_IN_USE`` socket option.
+* Removed several type definitions.
+
 nrf_modem 2.0.1+b1
 ******************
 

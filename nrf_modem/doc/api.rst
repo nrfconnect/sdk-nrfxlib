@@ -21,6 +21,15 @@ nrf_modem_init() return values for modem firmware updates
    :project: nrfxlib
    :members:
 
+.. _nrf_modem_trace:
+
+Modem traces
+============
+
+.. doxygengroup:: nrf_modem_trace
+   :project: nrfxlib
+   :members:
+
 .. _nrf_modem_fault:
 
 Modem fault reasons

@@ -27,7 +27,7 @@ extern "C" {
 /** Infinite time-out. */
 #define NRF_MODEM_OS_FOREVER -1
 /** Number of OS semaphores required. */
-#define NRF_MODEM_OS_NUM_SEM_REQUIRED 4
+#define NRF_MODEM_OS_NUM_SEM_REQUIRED 5
 
 enum log_level {
 	NRF_MODEM_LOG_LEVEL_NONE,
@@ -49,7 +49,6 @@ void nrf_modem_os_init(void);
  * and return -NRF_ESHUTDOWN.
  */
 void nrf_modem_os_shutdown(void);
-
 
 /**
  * @brief Allocate a buffer on the TX area of shared memory.
@@ -80,21 +79,6 @@ void *nrf_modem_os_alloc(size_t bytes);
  * @param mem Buffer to free.
  */
 void nrf_modem_os_free(void *mem);
-
-/**
- * @brief Allocate a buffer on dedicated trace heap.
- *
- * @param bytes Buffer size.
- * @returns A pointer to the allocated memory buffer or @c NULL if allocation failed.
- */
-void *nrf_modem_os_trace_alloc(size_t bytes);
-
-/**
- * @brief Free a memory buffer in dedicated trace heap.
- *
- * @param mem Buffer to free.
- */
-void nrf_modem_os_trace_free(void *mem);
 
 /**
  * @brief Busy wait.
@@ -200,41 +184,6 @@ void nrf_modem_os_application_irq_set(void);
  * @brief Clear the application IRQ, @c NRF_MODEM_APPLICATION_IRQ.
  */
 void nrf_modem_os_application_irq_clear(void);
-
-/**
- * @brief Set the Trace IRQ.
- */
-void nrf_modem_os_trace_irq_set(void);
-
-/**
- * @brief Clear the Trace IRQ.
- */
-void nrf_modem_os_trace_irq_clear(void);
-
-/**
- * @brief Enable the Trace IRQ.
- */
-void nrf_modem_os_trace_irq_enable(void);
-
-/**
- * @brief Disable the Trace IRQ.
- */
-void nrf_modem_os_trace_irq_disable(void);
-
-/**
- * @brief Receive trace data from the modem.
- *
- * The modem library calls this function to forward trace data to the application.
- *
- * The memory pointed to by @p data is not freed until
- * @ref nrf_modem_trace_processed_callback is called.
- * The application may thus defer the processing trace data as necessary.
- *
- * @param data Memory buffer containing the output trace data.
- * @param len  Memory buffer length.
- * @returns 0 on success, a negative errno otherwise.
- */
-int32_t nrf_modem_os_trace_put(const uint8_t *data, uint32_t len);
 
 /**
  * @brief Generic logging procedure.

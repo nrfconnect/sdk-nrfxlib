@@ -23,27 +23,30 @@ extern "C" {
  * @brief    Delta DFU errors.
  * @{
  */
-#define NRF_MODEM_DELTA_DFU_NO_ERROR			 0  /**< No error */
-#define NRF_MODEM_DELTA_DFU_RECEIVER_OUT_OF_MEMORY	 1  /**< Modem out of memory */
-#define NRF_MODEM_DELTA_DFU_RECEIVER_BLOCK_TOO_LARGE	 2  /**< Block too large */
-#define NRF_MODEM_DELTA_DFU_INVALID_HEADER_DATA		 3  /**< Invalid header */
-#define NRF_MODEM_DELTA_DFU_ERROR_INTERNAL_00		 4  /**< Internal error */
-#define NRF_MODEM_DELTA_DFU_INVALID_DATA		 5  /**< Invalid patch */
-#define NRF_MODEM_DELTA_DFU_ERROR_INTERNAL_01		 6  /**< Internal error */
-#define NRF_MODEM_DELTA_DFU_ERROR_INTERNAL_02		 7  /**< Internal error */
-#define NRF_MODEM_DELTA_DFU_ERROR_INTERNAL_03		 8  /**< Internal error */
-#define NRF_MODEM_DELTA_DFU_INVALID_UUID		 9  /**< Wrong patch for current modem */
-#define NRF_MODEM_DELTA_DFU_INVALID_ADDRESS		 10 /**< Invalid address */
-#define NRF_MODEM_DELTA_DFU_AREA_NOT_BLANK		 11 /**< Scratch area not erased */
-#define NRF_MODEM_DELTA_DFU_WRITE_ERROR			 12 /**< Failed to write */
-#define NRF_MODEM_DELTA_DFU_ERASE_ERROR			 13 /**< Failed to erase */
-#define NRF_MODEM_DELTA_DFU_INVALID_FILE_OFFSET		 14 /**< Invalid offset */
-#define NRF_MODEM_DELTA_DFU_PROGRESS_LOG_INVALID	 15 /**< Operation log corrupt */
-#define NRF_MODEM_DELTA_DFU_INVALID_RESUME_ATTEMPT	 16 /**< Invalid resume attempt */
-#define NRF_MODEM_DELTA_DFU_ERASE_PENDING		 17 /**< Erase operation is pending */
-#define NRF_MODEM_DELTA_DFU_OPERATION_NOT_ALLOWED	 18 /**< Operation not allowed */
-#define NRF_MODEM_DELTA_DFU_INCOMPLETE_DATA		 19 /**< Patch is incomplete */
-#define NRF_MODEM_DELTA_DFU_INTERRUPTED_WRITE		 20 /**< Write was interrupted */
+#define NRF_MODEM_DELTA_DFU_NO_ERROR 0			/**< No error */
+#define NRF_MODEM_DELTA_DFU_RECEIVER_OUT_OF_MEMORY 1	/**< Modem out of memory */
+#define NRF_MODEM_DELTA_DFU_RECEIVER_BLOCK_TOO_LARGE 2	/**< Block too large */
+#define NRF_MODEM_DELTA_DFU_INVALID_HEADER_DATA 3	/**< Invalid header */
+#define NRF_MODEM_DELTA_DFU_ERROR_INTERNAL_00 4		/**< Internal error */
+#define NRF_MODEM_DELTA_DFU_INVALID_DATA 5		/**< Invalid patch */
+#define NRF_MODEM_DELTA_DFU_ERROR_INTERNAL_01 6		/**< Internal error */
+#define NRF_MODEM_DELTA_DFU_ERROR_INTERNAL_02 7		/**< Internal error */
+#define NRF_MODEM_DELTA_DFU_ERROR_INTERNAL_03 8		/**< Internal error */
+#define NRF_MODEM_DELTA_DFU_INVALID_UUID 9		/**< Wrong patch for current modem */
+#define NRF_MODEM_DELTA_DFU_INVALID_ADDRESS 10		/**< Invalid address */
+#define NRF_MODEM_DELTA_DFU_AREA_NOT_BLANK 11		/**< Scratch area not erased */
+#define NRF_MODEM_DELTA_DFU_WRITE_ERROR 12		/**< Failed to write */
+#define NRF_MODEM_DELTA_DFU_ERASE_ERROR 13		/**< Failed to erase */
+#define NRF_MODEM_DELTA_DFU_INVALID_FILE_OFFSET 14	/**< Invalid offset */
+#define NRF_MODEM_DELTA_DFU_PROGRESS_LOG_INVALID 15	/**< Operation log corrupt */
+#define NRF_MODEM_DELTA_DFU_INVALID_RESUME_ATTEMPT 16	/**< Invalid resume attempt */
+#define NRF_MODEM_DELTA_DFU_ERASE_PENDING 17		/**< Erase operation is pending */
+#define NRF_MODEM_DELTA_DFU_OPERATION_NOT_ALLOWED 18	/**< Operation not allowed */
+#define NRF_MODEM_DELTA_DFU_INCOMPLETE_DATA 19		/**< Patch is incomplete */
+#define NRF_MODEM_DELTA_DFU_INTERRUPTED_WRITE 20	/**< Write was interrupted */
+#define NRF_MODEM_DELTA_DFU_INVALID_OPERATION 21	/**< Invalid operation */
+#define NRF_MODEM_DELTA_DFU_ERROR_INTERNAL_04 22	/**< Internal error */
+#define NRF_MODEM_DELTA_DFU_NOT_ALLOWED_POFWARN_ON 23	/**< Refused because of POFWARN */
 /** @} */
 
 
