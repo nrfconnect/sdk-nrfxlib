@@ -26,10 +26,8 @@ The library implements the following socket API functions:
 * connect
 * recvfrom
 * recv
-* read
 * sendto
 * send
-* write
 * getsockopt
 * setsockopt
 * fcntl
@@ -38,3 +36,4 @@ The library implements the following socket API functions:
 * inet_ntop
 * getaddrinfo
 * freeaddrinfo
+* setdnsaddr

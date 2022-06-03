@@ -7,11 +7,10 @@ Porting the Modem library to your OS
    :local:
    :depth: 2
 
-The :ref:`nrf_modem` from Nordic Semiconductor is an OS-agnostic C library.
-OS-specific parts are moved out of the library.
+The :ref:`nrf_modem` from Nordic Semiconductor is an OS-agnostic C library where OS-specific parts are moved out of the library.
 To use the library with your OS or scheduler, you must first port it by creating a custom :file:`nrf_modem_os.c` file, which serves as an OS abstraction layer.
 The library exposes a :file:`nrf_modem_os.h` header file that defines the functions that must be implemented in :file:`nrf_modem_os.c`.
-The header file also exposes the functions provided by the library that the OS integration module must interface with.
+The :file:`nrf_modem.h` header file exposes functions provided by the library that the OS integration module can interface with.
 
 The following diagram presents the Modem library OS abstraction layer.
 Arrows indicate that the elements can communicate with each other directly.
@@ -25,36 +24,38 @@ Creating the OS abstraction layer
 *********************************
 
 To create an OS abstraction layer for the Modem library, you must implement the functions in the :file:`nrf_modem_os.h` file.
+An OS abstraction layer implementation for the Zephyr RTOS is also available in the |NCS|.
+See :file:`nrf_modem_os.c` for more details.
+The implementation details for each function are shown in the section following and in the header file:
 
 nrf_modem_os_init()
 ===================
 
 This function is called by the Modem library when the application has issued :c:func:`nrf_modem_init`.
-It is responsible for preparing IRQ for low priority Modem library scheduling and trace scheduling.
+It is responsible for initializing OS-specific functionality related to the Modem library OS abstraction.
 
-.. note::
-   When working with an application based on Zephyr, set the IRQs to a low priority (6 or 7) and enable them before exiting the function.
-
-The function must also initialize the timers and threads (if there is a context that needs a timeout).
-If Nordic Proprietary trace is enabled, the library generates trace data and forwards it to a medium that can be initialized or configured by using the :c:func:`nrf_modem_os_init` function.
-The forwarded trace data is handled in the :c:func:`nrf_modem_os_trace_put` function.
-See :ref:`trace_output_function` for more information.
+If Nordic Proprietary trace is enabled, the library generates trace data that can be retrieved using the :c:func:`nrf_modem_trace_get` function.
+See :ref:`trace_handling` for more information.
 
 *Required actions*:
 
 * Initialize timers/threads.
 * Configure low priority Modem library scheduling IRQ (SoftIRQ).
-* Configure low priority trace scheduling IRQ (SoftIRQ).
-* Configure medium for trace (for example, UART or SPI).
+* Initialize heap memory.
+* If Nordic Proprietary trace is enabled, initialize a trace thread and the trace backend (for example, UART or SPI).
+
+nrf_modem_os_busywait()
+=======================
+
+This function is called by the Modem library when a blocking timed context is required.
+
+.. _nrf_modem_os_timedwait:
 
 nrf_modem_os_timedwait()
 ========================
 
 This function is called by the Modem library when a timed context or sleep is required.
 A blind return value of 0 will make all the Modem library operations always blocking.
-
-.. note::
-   To ensure all waiting threads are awake on the  :c:func:`nrf_modem_event_notify` function, the waiting threads must not be cleared on :c:func:`nrf_modem_os_init` or :c:func:`nrf_modem_os_shutdown` functions.
 
 *Required actions* to be taken that do not block the operations:
 
@@ -70,12 +71,12 @@ The following points decide the *Function return value*:
 nrf_modem_os_event_notify()
 ===========================
 
-This function is called by the Modem library when an event occurs and all threads waiting in :c:func:`nrf_modem_os_timedwait` function wake up.
+This function is called by the Modem library when an event occurs and all threads waiting in :c:func:`nrf_modem_os_timedwait` function must wake up.
 
 *Required action*:
 
-Wake up all sleeping threads in :c:func:`nrf_modem_os_timedwait` function.
-For details, see :c:func:`nrf_modem_os_timedwait`.
+Wake up all threads sleeping in the :c:func:`nrf_modem_os_timedwait` function.
+See :ref:`nrf_modem_os_timedwait` for more details.
 
 nrf_modem_os_alloc()
 ====================
@@ -107,65 +108,64 @@ This function translates errnos from the Modem library to the OS-defined ones.
 *Required action*:
 
 * Implement a translation for each errno set by the Modem library.
-  If it overlaps with your OS errno, the translation is not needed.
-
-nrf_modem_os_application_irq_clear()
-====================================
-
-This function is called by the Modem library when the library wants to clear IRQ on the low priority Modem library scheduling IRQ.
-
-*Required action*:
-
-* Clear the low priority Modem library scheduling IRQ using OS primitives or NVIC functions.
+  If it overlaps with errnos of your OS, the translation is not needed.
 
 nrf_modem_os_application_irq_set()
 ==================================
 
-This function is called by the Modem library when the library wants to set a pending IRQ on the low priority Modem library scheduling IRQ.
+This function is called by the Modem library when the library wants to set a pending IRQ on the low priority scheduling IRQ of the Modem library.
 
 *Required action*:
 
-* Set a pending IRQ on the low priority Modem library scheduling IRQ using OS primitives or NVIC functions.
+* Set a pending IRQ on the low priority scheduling IRQ of the Modem library using OS primitives or NVIC functions.
 
-nrf_modem_os_trace_irq_clear()
-==============================
+nrf_modem_os_application_irq_clear()
+====================================
 
-This function is called by the Modem library when the library wants to clear IRQ on the low priority trace scheduling IRQ.
-
-*Required action*:
-
-* Clear the low priority trace scheduling IRQ using OS primitives or NVIC functions.
-
-nrf_modem_os_trace_irq_set()
-============================
-
-This function is called by the Modem library when the library wants to set a pending IRQ on the low priority trace scheduling IRQ.
+This function is called by the Modem library when the library wants to clear IRQ on the low priority scheduling IRQ of the Modem library.
 
 *Required action*:
 
-* Set a pending IRQ on the low priority trace scheduling IRQ using OS primitives or NVIC functions.
-
-.. _trace_output_function:
-
-nrf_modem_os_trace_put()
-========================
-
-This function puts the trace string to the desired medium, typically UART.
-However, the medium used to forward and store the traces is up to the implementation and must be initialized correctly before using.
-Once the traces are processed or stored, the :c:func:`nrf_modem_trace_processed_callback` must be called.
-Even if you do not want the traces further, you need to ensure that :c:func:`nrf_modem_trace_processed_callback` is called for each received trace.
-Until the :c:func:`nrf_modem_trace_processed_callback` is called, the Modem library do not free up the memory allocated for that trace in the trace memory area.
-Since the modem uses this trace memory area to send traces, not calling the :c:func:`nrf_modem_trace_processed_callback`, leads to losing modem traces.
+* Clear the low priority scheduling IRQ of the Modem library using OS primitives or NVIC functions.
 
 nrf_modem_application_irq_handler()
 ===================================
 
-This function is implemented in the Modem library and must be called upon the low priority Modem library IRQ handler, triggered by the :c:func:`nrf_modem_os_application_irq_set` function.
+This function is implemented in the Modem library and must be called upon the low priority IRQ handler of the Modem library, which is triggered by the :c:func:`nrf_modem_os_application_irq_set` function.
 
-nrf_modem_trace_irq_handler()
-=============================
+nrf_modem_os_event_notify()
+===========================
 
-This function is implemented in the Modem library and must be called upon the low priority trace IRQ handler, triggered by the :c:func:`nrf_modem_os_trace_irq_set` function.
+This function is called by the Modem library when an event occurs and all threads waiting in the :c:func:`nrf_modem_os_timedwait` function must wake up.
+
+*Required action*:
+
+* Wake all threads that are sleeping in :c:func:`nrf_modem_os_timedwait`. For details, see :c:func:`nrf_modem_os_timedwait`.
+
+nrf_modem_os_is_in_isr()
+========================
+
+This function is called by the library to check whether or not it is executing in a interrupt context.
+
+nrf_modem_os_sem_init()
+=======================
+
+This function is called by the library to allocate and initialize a semaphore.
+
+*Required action*:
+
+* Allocate and initialize a semaphore.
+* If an address of an already allocated semaphore is provided as an input, the allocation part is skipped and the semaphore is only reinitialized.
+
+nrf_modem_os_sem_give()
+=======================
+
+This function is called by the library to give a semaphore.
+
+nrf_modem_os_sem_take()
+=======================
+
+This function is called by the library to take a semaphore.
 
 nrf_modem_os_log()
 ==================
@@ -179,21 +179,13 @@ nrf_modem_os_logdump()
 This function is called by the library to dump binary data.
 This function can be called in an interrupt context.
 
-nrf_modem_os_log_strdup()
-=========================
-
-The Modem library calls this function for each logged string that does not reside in read-only memory.
-The returned value will be a pointer to a string that can be logged correctly by the logging functions.
-This function might be necessary for some implementations of the logging functions, which might, for example, defer the logging at a later point in time.
-
-
-Other scenarios to handle in nrf_modem_os.c
+Other scenarios to handle the Modem library
 ===========================================
 
-#. In case the OS has its own IRQ handler scheme, which is not directly forwarding the IPC_IRQHandler to the Modem library, this must be routed by the OS.
-   The OS must call IPC_IRQHandler() upon all IRQs with IRQ number IPC_IRQn.
+#. The Modem library uses the nrfxlib IPC driver.
+   The application must either include the nrfxlib IPC driver or implement its own IPC driver using the same signature as the nrfxlib IPC driver.
 
-#. In :file:`nrf_modem_os.c`, you can configure a desired medium for forwarding the trace data upon :c:func:`nrf_modem_os_trace_put` calls.
+#. If the OS has its own IRQ handler scheme that does not directly forward the IPC_IRQHandler, the OS must route the IPC_IRQHandler to the nrfxlib IPC IRQ handler.
 
 Memory
 ******
@@ -223,6 +215,26 @@ If you are using the hard-float variant of the Modem library, the FPU must be ac
 The :file:`nrfx/mdk/system_nrf9160.c` file provides a template on how to configure the FPU in both cases.
 The system file also provides several Errata workarounds specific to the chip variant used, which are needed for any secure domain application.
 
+Handling of a modem fault
+*************************
+
+On initialization of the Modem library, the application registers a modem fault handler through the initialization parameters.
+If a fault occurs in the modem, the application is notified through the fault handler, which enables the application to read the fault reason (and in some cases the Modem's Program Counter) and take appropriate action.
+
+The following are the three alternatives to how the application can handle the modem fault:
+
+* The application logs the fault with no other action.
+* Restart the application.
+* Shutdown and reinitialize the modem and the Modem library.
+
+.. _trace_handling:
+
+Handling of modem traces
+************************
+
+Modem traces are retrieved by the application and output to a trace medium, typically UART.
+Trace data is retrieved by calling :c:func:`nrf_modem_trace_get`.
+For more information, see :ref:`modem_trace`.
 
 Message sequence diagrams
 *************************
@@ -232,31 +244,24 @@ The following message sequence diagrams show the interactions between the applic
 #. Sequence of the initialization of the Modem library.
    Configuration of the high and low priority IRQs:
 
-    .. figure:: images/msc_init.svg
+    .. figure:: images/nrf_modem_initialization_sequence.svg
         :alt: Initialization (main thread)
 
         Initialization (main thread)
 
 #. Handling an event sent from the Modem library to a lower priority to be able to receive new events:
 
-    .. figure:: images/msc_event.svg
+    .. figure:: images/nrf_modem_event_sequence.svg
         :alt: Event handling, lowering priority
 
         Event handling, lowering priority
 
-#. Handling traces:
-
-    .. figure:: images/msc_trace.svg
-        :alt: Trace handling, lowering priority
-
-        Trace handling, lowering priority
-
 #. Handling a timeout or sleep:
 
-    .. figure:: images/msc_timers.svg
-        :alt: Timers
+    .. figure:: images/nrf_modem_timers_sequence.svg
+        :alt: Timedwait
 
-        Timers
+        Timedwait
 
 
 Reference template for the nrf_modem_os.c file
@@ -267,19 +272,16 @@ You can use it as a template and customize it for your OS or scheduler.
 
 .. code-block:: c
 
-	#include <nrf_modem_os.h>
-	#include <nrf_errno.h>
-	#include <nrf_modem_platform.h>
-	#include <nrf_modem_limits.h>
+   #include <nrf_modem.h>
+   #include <nrf_modem_os.h>
+   #include <nrf_errno.h>
+   #include <nrf_modem_platform.h>
+   #include <nrf_modem_limits.h>
 
-	#include <nrf.h>
-	#include "errno.h"
+   #include <nrf.h>
+   #include "errno.h"
 
-	#define TRACE_IRQ EGU2_IRQn
-	#define TRACE_IRQ_PRIORITY 6
-	#define TRACE_IRQ_HANDLER EGU2_IRQHandler
-
-	void read_task_create(void)
+    void read_task_create(void)
 	{
 		// The read task is achieved using SW interrupt.
 		NVIC_SetPriority(NRF_MODEM_APPLICATION_IRQ, NRF_MODEM_APPLICATION_IRQ_PRIORITY);
@@ -287,39 +289,50 @@ You can use it as a template and customize it for your OS or scheduler.
 		NVIC_EnableIRQ(NRF_MODEM_APPLICATION_IRQ);
 	}
 
-	void trace_task_create(void) {
-		NVIC_SetPriority(TRACE_IRQ, TRACE_IRQ_PRIORITY);
-		NVIC_ClearPendingIRQ(TRACE_IRQ);
-		NVIC_EnableIRQ(TRACE_IRQ);
-	}
+    void nrf_modem_os_init(void)
+    {
+        read_task_create();
+        // Initialize timers / sleeping threads used in the nrf_modem_os_timedwait function.
+        // If enabled, initialize the trace task and mediums.
+    }
 
-	void nrf_modem_os_init(void) {
-		read_task_create();
-		trace_task_create();
-		// Initialize timers / sleeping threads used in the nrf_modem_os_timedwait function.
-		// Initialize trace medium used in the nrf_modem_os_trace_put function.
-	}
+    void *nrf_modem_os_shm_tx_alloc(size_t bytes)
+    {
+        // Allocate a buffer on the TX area of shared memory.
+    }
 
-	int32_t nrf_modem_os_timedwait(uint32_t context, int32_t * timeout)
-	{
-		// Return remaining time by reference in timeout parameter,
-		// if not yet timed out.
-		// Else return NRF_ETIMEDOUT if timeout has triggered.
-		// A blind return value of 0 will make all Modem library operations
-		// always block.
-		return 0;
-	}
+    void nrf_modem_os_shm_tx_free(void *mem)
+    {
+        // Free a shared memory buffer in the TX area.
+    }
 
-	void nrf_modem_os_event_notify()
-	{
-		// Wake threads in nrf_modem_os_timedwait()
-	}
+    void *nrf_modem_os_alloc(size_t bytes)
+    {
+        // Allocate dynamic memory
+    }
 
-	void nrf_modem_os_errno_set(int errno_val) {
-		// Translate nrf_errno.h errno to the OS specific value.
-	}
+    void nrf_modem_os_free(void *mem)
+    {
+        // Free dynamic memory
+    }
 
-	void nrf_modem_os_application_irq_set(void) {
+    void nrf_modem_os_busywait(int32_t usec)
+    {
+        // Busy wait for a given number of microseconds.
+    }
+
+    int32_t nrf_modem_os_timedwait(uint32_t context, int32_t * timeout)
+    {
+        // Return remaining time by reference in timeout parameter,
+        // if not yet timed out and modem is initialized.
+        // Return -NRF_ESHUTDOWN if the modem is not initialized.
+        // Else return -NRF_ETIMEDOUT if timeout has triggered.
+        // A blind return value of 0 will make all Modem library operations
+        // always block.
+        return 0;
+    }
+
+    void nrf_modem_os_application_irq_set(void) {
 		NVIC_SetPendingIRQ(NRF_MODEM_APPLICATION_IRQ);
 	}
 
@@ -331,24 +344,47 @@ You can use it as a template and customize it for your OS or scheduler.
 		nrf_modem_application_irq_handler();
 	}
 
-	void nrf_modem_os_trace_irq_set(void) {
-		NVIC_SetPendingIRQ(TRACE_IRQ);
-	}
+    void nrf_modem_os_errno_set(int errno_val)
+    {
+        // Translate nrf_errno.h errno to the OS specific value.
+    }
 
-	void nrf_modem_os_trace_irq_clear(void)
-	{
-		NVIC_ClearPendingIRQ(TRACE_IRQ);
-	}
+    bool nrf_modem_os_is_in_isr(void)
+    {
+        // Return true if called in an interrupt context, false otherwise.
+    }
 
-	void TRACE_IRQ_HANDLER(void) {
-		nrf_modem_trace_irq_handler();
-	}
+    int nrf_modem_os_sem_init(void **sem,
+                              unsigned int initial_count,
+                              unsigned int limit)
+    {
+        // Allocate and initialize a semaphore.
+        // If an address of an already allocated semaphore is provided as an input,
+        // the allocation part is skipped and the semaphore is only reinitialized.
+    }
 
-	int32_t nrf_modem_os_trace_put(const uint8_t * const p_buffer, uint32_t buf_len) {
-		// Store buffer to chosen medium.
-		// Traces can be dropped if not needed.
-		// Either call nrf_modem_trace_processed_callback() here or at a later point (for example, in a
-		// thread or a work queue handler function).
-		int err = nrf_modem_trace_processed_callback(p_buffer, buf_len);
-		return 0;
-	}
+    void nrf_modem_os_sem_give(void *sem)
+    {
+        // Let the Modem library give back the semaphore.
+    }
+
+    int nrf_modem_os_sem_take(void *sem, int timeout)
+    {
+        // Let the Modem library take the semaphore within a given time.
+        // If taking the semaphore times out, return NRF_ETIMEDOUT
+    }
+
+    void nrf_modem_os_event_notify()
+    {
+      // Wake threads in nrf_modem_os_timedwait()
+    }
+
+    void nrf_modem_os_log(int level, const char *fmt, ...)
+    {
+        // Send modem log to preferred logging interface.
+    }
+
+    void nrf_modem_os_logdump(int level, const char *str, const void *data, size_t len)
+    {
+        //Send modem logdump (hexdump) to preferred logging interface.
+    }

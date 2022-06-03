@@ -219,6 +219,69 @@ In this case, the application need not provide any intermediate buffers and can 
 Conversely, :c:func:`nrf_modem_at_cmd` is the only function in the AT interface that copies the whole response of the modem from the shared memory into the provided input buffer, which is owned by the application.
 Therefore, this function can be used when the application needs the whole AT command response, as received from the modem, or in those cases when the stack requirements of :c:func:`nrf_modem_at_scanf` are too high for the calling thread, or when parsing the response using a :c:func:`scanf` format is hard.
 
+Filtering AT commands
+*********************
+
+The Modem library can filter calls to the :c:func:`nrf_modem_at_cmd` function, sending the AT command to a user-provided callback function instead of the modem.
+You can enable this feature by calling the :c:func:`nrf_modem_at_cmd_filter_set` function with a list of filters defined in the :c:struct:`nrf_modem_at_cmd_filter` structure.
+Only one list of filters can be registered with the Modem library.
+
+When the callback function responds, the Modem library treats the contents of the provided :c:var:`buf` buffer as the modem response.
+The following is the response format that must be the same as the modem's:
+
+* Successful responses end with ``OK\r\n``.
+* For error response, use ``ERROR\r\n``, ``+CME ERROR: <errorcode>``, or ``+CMS ERROR: <errorcode>`` depending on the error.
+
+The following snippet shows how to set up and use an AT filter:
+
+.. code-block:: c
+
+	#define AT_CMD_MAX_ARRAY_SIZE 32
+
+	int my_command_callback(char *buf, size_t len, char *at_cmd);
+	{
+		printf("Received +MYCOMMAND call: %s", at_cmd);
+
+		/* Fill response buffer. */
+		snprintf(buf, len, "+MYCOMMAND: %d\r\nOK\r\n", 1);
+
+		return 0;
+	}
+
+	static struct nrf_modem_at_cmd_filter my_at_cmd_filters[] = {
+		{ .cmd = "AT+MYCOMMAND", .callback = my_command_callback }
+	};
+
+	int foo(void)
+	{
+		int err;
+
+		err = nrf_modem_at_cmd_filter_set(my_at_cmd_filters, 1);
+		if (err) {
+			/* error */
+		}
+
+		return 0;
+	}
+
+	void bar(void)
+	{
+		int err;
+		char buf[AT_CMD_MAX_ARRAY_SIZE];
+
+		err = nrf_modem_at_cmd(buf, sizeof(buf), "AT+MYCOMMAND=%d", 0);
+		if (err) {
+			/* error */
+			return;
+		}
+
+		printf("Received AT response: %s", buf);
+	}
+
+.. note::
+   The filter uses the callback of the first match found in the filter list.
+   Hence, make sure to keep the filters accurately or order them accordingly.
+
 Receiving AT notifications
 **************************
 

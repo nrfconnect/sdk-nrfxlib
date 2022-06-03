@@ -14,6 +14,7 @@
 #define NRF_MODEM_AT_H__
 
 #include <stddef.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -64,7 +65,7 @@ typedef void (*nrf_modem_at_resp_handler_t)(const char *resp);
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  * @retval -NRF_E2BIG The response is larger than the supplied buffer @c buf.
  */
-typedef int (*nrf_modem_at_cmd_handler_t)(char *buf, size_t len, const char *at_cmd);
+typedef int (*nrf_modem_at_cmd_handler_t)(char *buf, size_t len, char *at_cmd);
 
 /* Struct for AT filter
  * Contains string for which the AT commands are compared
@@ -72,7 +73,9 @@ typedef int (*nrf_modem_at_cmd_handler_t)(char *buf, size_t len, const char *at_
  */
 struct nrf_modem_at_cmd_filter {
 	const char * const cmd;
-	nrf_modem_at_cmd_handler_t callback;
+	const nrf_modem_at_cmd_handler_t callback;
+	/** Whether filter is paused. */
+	bool paused;
 };
 
 /**
@@ -217,7 +220,7 @@ static inline int nrf_modem_at_err(int error)
  * @retval  0 On a success.
  * @retval -NRF_EINVAL On invalid parameters.
  */
-int nrf_modem_at_cmd_filter_set(const struct nrf_modem_at_cmd_filter *filters,
+int nrf_modem_at_cmd_filter_set(struct nrf_modem_at_cmd_filter *filters,
 		size_t len);
 
 #ifdef __cplusplus

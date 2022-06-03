@@ -16,18 +16,18 @@
 extern "C" {
 #endif
 
-#define NRF_EAI_ADDRFAMILY      257 /**< Address family for NAME not supported. UNUSED */
-#define NRF_EAI_AGAIN           258 /**< Temporary failure in name resolution UNUSED */
-#define NRF_EAI_BADFLAGS        259 /**< Invalid value for `ai_flags' field. UNUSED */
-#define NRF_EAI_FAIL            260 /**< Non-recoverable failure in name res. UNUSED */
-#define NRF_EAI_FAMILY          270 /**< `ai_family' not supported */
-#define NRF_EAI_MEMORY          271 /**< Memory allocation failure */
-#define NRF_EAI_NODATA          272 /**< No address associated with NAME. UNUSED */
-#define NRF_EAI_NONAME          273 /**< NAME or SERVICE is unknown */
-#define NRF_EAI_SERVICE         274 /**< SRV not supported for `ai_socktype' */
-#define NRF_EAI_SOCKTYPE        275 /**< `ai_socktype' not supported */
-#define NRF_EAI_INPROGRESS      276 /**< Processing request in progress */
-#define NRF_EAI_SYSTEM          277 /**< System error returned in `errno' */
+#define NRF_EAI_BADFLAGS        -1   /**< Invalid value for `ai_flags' field. */
+#define NRF_EAI_NONAME          -2   /**< NAME or SERVICE is unknown */
+#define NRF_EAI_AGAIN           -3   /**< Temporary failure in name resolution */
+#define NRF_EAI_FAIL            -4   /**< Non-recoverable failure in name res. */
+#define NRF_EAI_NODATA          -5   /**< No address associated with NAME. */
+#define NRF_EAI_FAMILY          -6   /**< `ai_family' not supported */
+#define NRF_EAI_SOCKTYPE        -7   /**< `ai_socktype' not supported */
+#define NRF_EAI_SERVICE         -8   /**< SRV not supported for `ai_socktype' */
+#define NRF_EAI_ADDRFAMILY      -9   /**< Address family for NAME not supported. */
+#define NRF_EAI_MEMORY          -10  /**< Memory allocation failure */
+#define NRF_EAI_SYSTEM          -11  /**< System error returned in `errno' */
+#define NRF_EAI_INPROGRESS      -100 /**< Processing request in progress */
 
 #ifdef __cplusplus
 }

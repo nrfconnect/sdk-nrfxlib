@@ -31,7 +31,7 @@ To perform a full firmware update of the modem, the library must be initialized 
 
 .. code-block:: c
 
-   /* Shutdown modem to prepare for DFU */
+   /* Initialize modem to prepare for DFU */
    nrf_modem_init(init_params, FULL_DFU_MODE);
 
 If the library has already been initialized in ``NORMAL_MODE`` mode, it must be shut down through the :c:func:`nrf_modem_shutdown` function and reinitialized as shown in the following code:
@@ -39,7 +39,7 @@ If the library has already been initialized in ``NORMAL_MODE`` mode, it must be 
 .. code-block:: c
 
    nrf_modem_init(init_params, NORMAL_MODE);
-   /* Shutdown modem to prepare for DFU */
+   /* Shutdown and re-initialize modem to prepare for DFU */
    nrf_modem_shutdown();
    nrf_modem_init(init_params, FULL_DFU_MODE);
 
@@ -122,8 +122,10 @@ Firmware segments are written by using the following function call:
 	int nrf_modem_full_dfu_fw_write(uint32_t addr, uint32_t len, void *src)
 
 The modem library buffers the data with the same destination address, until one of the following conditions occur:
+
 * The buffered data reaches 8kb.
 * The destination address changes.
+
 At this point, the buffer is written to the flash.
 When all the segments are written, you must call the following function:
 
