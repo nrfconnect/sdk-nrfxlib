@@ -101,7 +101,7 @@ extern "C" {
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_DEFAULT_CENTRAL_LINK_SIZE 846
-#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 918
+#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 934
 #define __MEM_BUFFER_OVERHEAD_SIZE 7
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * (tx_size - SDC_DEFAULT_TX_PACKET_SIZE) + \
@@ -146,8 +146,8 @@ extern "C" {
 #define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (40 + (buffer_count) * 290)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4109+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (598+(max_adv_data))
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4269+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (614+(max_adv_data))
 #define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2258+(max_adv_data)*18)/10)
 #define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (417+(max_adv_data))
 

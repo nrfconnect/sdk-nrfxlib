@@ -38,6 +38,7 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 +--------------------------------+-----------------+--------------+-----------+
 
 .. note::
+   Periodic Advertising is supported as an experimental feature on the nRF53 Series.
    For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
 
 Proprietary feature support:
