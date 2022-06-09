@@ -26,6 +26,7 @@
 #include "psa_crypto_driver_wrappers.h"
 #include "psa_crypto_hash.h"
 #include "psa_crypto_mac.h"
+#include <string.h>
 
 #include "mbedtls/platform.h"
 
@@ -1084,6 +1085,8 @@ psa_status_t psa_driver_wrapper_cipher_encrypt(
     const uint8_t *key_buffer,
     size_t key_buffer_size,
     psa_algorithm_t alg,
+    const uint8_t *iv,
+    size_t iv_length,
     const uint8_t *input,
     size_t input_length,
     uint8_t *output,
@@ -1115,6 +1118,19 @@ psa_status_t psa_driver_wrapper_cipher_encrypt(
                 return( status );
 #endif /* PSA_CRYPTO_DRIVER_TEST */
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
+            /* Circumvention on API-breaker that breaks runtime compatibility.
+            * Please see NCSDK-15614 and remove this once updated runtimes is created. */
+            if(iv_length > 0)
+            {
+                /* Copying the IV to the output variable because runtime-libraries currently
+                * doesn't support the new parameters in Mbed TLS 3.1.0 (iv and iv_length).
+                * Also updating the output and output_size variables to match with the
+                * expected format of the runtime libraries. */
+                output -= iv_length;
+                memcpy(output, iv, iv_length);
+                output_size += iv_length;
+            }
+
             status = cc3xx_cipher_encrypt( attributes,
                                            key_buffer,
                                            key_buffer_size,
@@ -1124,23 +1140,56 @@ psa_status_t psa_driver_wrapper_cipher_encrypt(
                                            output,
                                            output_size,
                                            output_length );
+            if(iv_length > 0){
+                output += iv_length;
+                output_size -= iv_length;
+                /* The output length will include the IV which is added by the
+                * PSA core after the driver wrapper call so we need to deduct it
+                * from here. */
+                *output_length -= iv_length;
+            }
+
             /* Declared with fallback == true */
             if( status != PSA_ERROR_NOT_SUPPORTED )
                 return( status );
+
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
 #if defined(PSA_CRYPTO_DRIVER_OBERON)
-           status = oberon_cipher_encrypt( attributes,
-                                           key_buffer,
-                                           key_buffer_size,
-                                           alg,
-                                           input,
-                                           input_length,
-                                           output,
-                                           output_size,
-                                           output_length );
-           /* Declared with fallback == true */
-           if( status != PSA_ERROR_NOT_SUPPORTED )
-               return( status );
+            /* Circumvention on API-breaker that breaks runtime compatibility.
+            * Please see NCSDK-15614 and remove this once updated runtimes is created. */
+            if(iv_length > 0)
+            {
+                /* Copying the IV to the output variable because runtime-libraries currently
+                * doesn't support the new parameters in Mbed TLS 3.1.0 (iv and iv_length).
+                * Also updating the output and output_size variables to match with the
+                * expected format of the runtime libraries. */
+                output -= iv_length;
+                memcpy(output, iv, iv_length);
+                output_size += iv_length;
+            }
+
+            status = oberon_cipher_encrypt( attributes,
+                                            key_buffer,
+                                            key_buffer_size,
+                                            alg,
+                                            input,
+                                            input_length,
+                                            output,
+                                            output_size,
+                                            output_length );
+            if(iv_length > 0){
+                output += iv_length;
+                output_size -= iv_length;
+                /* The output length will include the IV which is added by the
+                * PSA core after the driver wrapper call so we need to deduct it
+                * from here. */
+                *output_length -= iv_length;
+            }
+
+            /* Declared with fallback == true */
+            if( status != PSA_ERROR_NOT_SUPPORTED )
+                return( status );
+
 #endif /* PSA_CRYPTO_DRIVER_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
 
@@ -1149,6 +1198,8 @@ psa_status_t psa_driver_wrapper_cipher_encrypt(
                                                 key_buffer,
                                                 key_buffer_size,
                                                 alg,
+                                                iv,
+                                                iv_length,
                                                 input,
                                                 input_length,
                                                 output,
@@ -1166,6 +1217,8 @@ psa_status_t psa_driver_wrapper_cipher_encrypt(
                                                         key_buffer,
                                                         key_buffer_size,
                                                         alg,
+                                                        iv,
+                                                        iv_length,
                                                         input,
                                                         input_length,
                                                         output,
@@ -1180,6 +1233,8 @@ psa_status_t psa_driver_wrapper_cipher_encrypt(
             (void)key_buffer;
             (void)key_buffer_size;
             (void)alg;
+            (void)iv;
+            (void)iv_length;
             (void)input;
             (void)input_length;
             (void)output;
