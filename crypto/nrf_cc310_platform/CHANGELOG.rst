@@ -14,7 +14,7 @@ nrf_cc3xx_platform - 0.9.14
 
 New version of the library with the following features:
 
-* Internal restruture of the library.
+* Internal restructure of the library.
 * Added APIs for storing encrypted identity key in KMU.
 * Added APIs for retrieving boot generated RNG seed and nonce seed.
 
@@ -76,7 +76,7 @@ nrf_cc3xx_platform - 0.9.13
 
 New version of the library with the following features:
 
-* Internal restruture of the library.
+* Internal restructure of the library.
 * Updated to the Mbed TLS version 3.0.0.
 
 Library built against Mbed TLS version 3.0.0.
@@ -873,7 +873,7 @@ Changed name of configurations from CC310 to CC3XX. This is reflected in the hea
 
 Added new version of libraries nrf_cc310_platform/nrf_cc312_platform built with Mbed TLS version 2.23.0.
 
-Added APIs for storing keys in the the KMU peripheral (nRF9160, nRF5340).
+Added APIs for storing keys in the KMU peripheral (nRF9160, nRF5340).
 See :file:`include/nrf_cc3xx_platform_kmu.h`.
 
 Added APIs for generating CSPRNG using CTR_DRBG.

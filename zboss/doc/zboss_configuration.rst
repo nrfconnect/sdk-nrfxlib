@@ -25,8 +25,8 @@ ZBOSS production libraries
 
 For a complete list of the ZBOSS configuration options, see the following files:
 
-* :file:`zboss/production/include/osif/libzboss_config.h` - library for Coordinators and Routers
-* :file:`zboss/production/include/osif/libzboss_config.ed.h` - library for End Devices
+* :file:`zboss/production/include/osif/libzboss_config.h` - Library for Coordinators and Routers
+* :file:`zboss/production/include/osif/libzboss_config.ed.h` - Library for End Devices
 
 The ZBOSS production library version is enabled by default with the :kconfig:option:`CONFIG_ZIGBEE_LIBRARY_PRODUCTION` Kconfig option.
 
@@ -37,8 +37,8 @@ The ZBOSS libraries in the development state include all the production code, bu
 
 For a complete list of the ZBOSS configuration options, see the following files:
 
-* :file:`zboss/development/include/osif/libzboss_config.h` - library for Coordinators and Routers
-* :file:`zboss/development/include/osif/libzboss_config.ed.h` - library for End Devices
+* :file:`zboss/development/include/osif/libzboss_config.h` - Library for Coordinators and Routers
+* :file:`zboss/development/include/osif/libzboss_config.ed.h` - Library for End Devices
 
 You can select the ZBOSS development library version with the :kconfig:option:`CONFIG_ZIGBEE_LIBRARY_DEVELOPMENT` Kconfig option.
 These libraries include implementation of the eight version of the ZCL specification.

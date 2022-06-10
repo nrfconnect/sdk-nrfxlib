@@ -70,7 +70,7 @@ The driver handles the pending bit as follows, depending on the protocol used:
   * If the driver matches the source address with an entry in the array, the pending bit is set (``1``).
   * If the array does not contain an address matching the source address, the pending bit is cleared (``0``).
 
-The driver does not transmit the ACK frame if it can't prepare the ACK frame before the transmission is ready to begin.
+The driver does not transmit the ACK frame if it cannot prepare the ACK frame before the transmission is ready to begin.
 
 .. _features_description_transmission:
 

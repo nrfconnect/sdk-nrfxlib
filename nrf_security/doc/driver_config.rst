@@ -106,9 +106,9 @@ You can use the Kconfig options in the following table for fine-grained control 
 | MAC cipher     | nrf_cc3xx driver support                                  | nrf_oberon driver support  |
 +================+===========================================================+============================+
 | ECB_NO_PADDING | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CMAC_CC3XX` | Not supported              |
-+----------------+----------------+------------------------------------------+----------------------------+
++----------------+-----------------------------------------------------------+----------------------------+
 | CBC_NO_PADDING | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_HMAC_CC3XX` | Not supported              |
-+----------------+----------------+------------------------------------------+----------------------------+
++----------------+-----------------------------------------------------------+----------------------------+
 
 .. note::
    * If a MAC algorithm is enabled and no PSA driver enables or supports it, then :ref:`nrf_security_drivers_builtin` support is enabled and used.
@@ -180,7 +180,7 @@ You can use the Kconfig options in the following table for fine-grained control 
 | ECC algorithm         | nrf_cc3xx driver support                                                 | nrf_oberon driver support                                                 |
 +=======================+==========================================================================+===========================================================================+
 | ECDH                  | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_ECDH_CC3XX`                | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_ECDSA_OBERON`               |
-+-----------------------+---------------------------------------------------------------------------------+--------------------------------------------------------------------+
++-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | ECDSA                 | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_ECDSA_CC3XX`               | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_ECDSA_OBERON`               |
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | ECDSA (deterministic) | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_DETERMINISTIC_ECDSA_CC3XX` | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_DETERMINISTIC_ECDSA_OBERON` |
@@ -296,7 +296,7 @@ You can use the Kconfig options in the following table for fine-grained control 
 
 .. note::
    * If an RSA algorithm is enabled and no PSA driver enables or supports it, then :ref:`nrf_security_drivers_builtin` support is enabled and used.
-   * :ref:`nrf_security_drivers_cc3xx`  is limited to key sizes of <= 2048 bits.
+   * :ref:`nrf_security_drivers_cc3xx`  is limited to key sizes less than or equal to 2048 bits.
 
 
 Secure Hash configurations
@@ -305,7 +305,7 @@ Secure Hash configurations
 You can configure the Secure Hash algorithms by setting one or more Kconfig options according to the following table:
 
 +-----------------------+-----------------------------------------------+
-| Hash algorithm        | Configuration optio                           |
+| Hash algorithm        | Configuration option                          |
 +=======================+===============================================+
 | SHA-1                 | :kconfig:option:`CONFIG_PSA_WANT_ALG_SHA_1`   |
 +-----------------------+-----------------------------------------------+

@@ -24,14 +24,14 @@ The choice of implementation is controlled by setting :kconfig:option:`CONFIG_CC
 cc3xx backend
 =============
 
-Setting the Kconfig option :kconfig:option:`CONFIG_CC3XX_BACKEND` enables legacy crypto support for hardware accelerated cryptography using :ref:`nrf_cc3xx_mbedcrypto_readme`
+Setting the Kconfig option :kconfig:option:`CONFIG_CC3XX_BACKEND` enables legacy crypto support for hardware accelerated cryptography using :ref:`nrf_cc3xx_mbedcrypto_readme`.
 
 .. _nrf_security_backends_oberon:
 
 Oberon backend
 ==============
 
-Setting the Kconfig option :kconfig:option:`CONFIG_CC3XX_OBERON` enables legacy crypto support using :ref:`nrf_oberon_readme`
+Setting the Kconfig option :kconfig:option:`CONFIG_CC3XX_OBERON` enables legacy crypto support using :ref:`nrf_oberon_readme`.
 
 
 .. _nrf_security_backends_orig_mbedtls:
@@ -77,7 +77,7 @@ Feature support
 AES cipher configuration
 ************************
 
-AES cipher modes can be configured by setting Kconfig variables in the following table:
+AES cipher modes can be configured by setting Kconfig options in the following table:
 
 +--------------+----------------------------------------------------+----------------------------------------+
 | Cipher mode  | Configurations                                     | Note                                   |
@@ -94,7 +94,7 @@ AES cipher modes can be configured by setting Kconfig variables in the following
 +--------------+----------------------------------------------------+----------------------------------------+
 
 .. note::
-   * AES cipher modes are dependent on enabling AES core support according to `AES configuration`_.
+   AES cipher modes are dependent on enabling AES core support according to `AES configuration`_.
 
 Feature support
 ===============
@@ -164,7 +164,7 @@ Feature support
 CMAC configuration
 ******************
 
-Cipher-based Message Authentication Code (CMAC) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_CMAC_C` Kconfig variable.
+Cipher-based Message Authentication Code (CMAC) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_CMAC_C` Kconfig option.
 
 Feature support
 ===============
@@ -191,7 +191,7 @@ Feature support
 AEAD configurations
 *******************
 
-Authenticated Encryption with Associated Data (AEAD) can be configured by setting Kconfig variables in the following table:
+Authenticated Encryption with Associated Data (AEAD) can be configured by setting Kconfig options in the following table:
 
 +--------------+------------------------------------------------+-----------------------------------------+
 | AEAD cipher  | Configurations                                 | Note                                    |
@@ -262,7 +262,7 @@ Feature support
 DHM configurations
 ******************
 
-Diffie-Hellman-Merkle (DHM) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_DHM_C` Kconfig variable.
+Diffie-Hellman-Merkle (DHM) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_DHM_C` Kconfig option.
 
 Feature support
 ===============
@@ -283,7 +283,7 @@ ECC configurations
 
 Elliptic Curve Cryptography (ECC) configuration provides support for Elliptic Curve over GF(p).
 
-ECC core support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECP_C` Kconfig variable.
+ECC core support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECP_C` Kconfig option.
 
 Enabling :kconfig:option:`CONFIG_MBEDTLS_ECP_C` will activate configuration options that depend upon ECC, such as ECDH, ECDSA, ECJPAKE, and a selection of ECC curves to support in the system.
 
@@ -321,7 +321,7 @@ Feature support
 ECDH configurations
 *******************
 
-Elliptic Curve Diffie-Hellman (ECDH) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECDH_C` Kconfig variable.
+Elliptic Curve Diffie-Hellman (ECDH) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECDH_C` Kconfig option.
 
 +--------------+---------------------------------------------+
 | Algorithm    | Configurations                              |
@@ -368,7 +368,7 @@ Feature support
 ECDSA configurations
 ********************
 
-Elliptic Curve Digital Signature Algorithm (ECDSA) support can be configured be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECDSA_C` Kconfig variable.
+Elliptic Curve Digital Signature Algorithm (ECDSA) support can be configured be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECDSA_C` Kconfig option.
 
 +--------------+----------------------------------------------+
 | Algorithm    | Configurations                               |
@@ -415,7 +415,7 @@ Feature support
 ECJPAKE configurations
 **********************
 
-Elliptic Curve, Password Authenticated Key Exchange by Juggling (ECJPAKE) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECJPAKE_C` Kconfig variable.
+Elliptic Curve, Password Authenticated Key Exchange by Juggling (ECJPAKE) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECJPAKE_C` Kconfig option.
 
 +--------------+----------------------------------------------+
 | Algorithm    | Configurations                               |
@@ -477,7 +477,7 @@ The following table shows the curves that can be enabled.
 RSA configurations
 ******************
 
-Rivest-Shamir-Adleman (RSA) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_RSA_C` Kconfig variable.
+Rivest-Shamir-Adleman (RSA) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_RSA_C` Kconfig option.
 
 Feature support
 ===============
@@ -496,7 +496,7 @@ Feature support
 Secure Hash configurations
 **************************
 
-The Secure Hash algorithms can be configured by setting Kconfig variables in the following table:
+The Secure Hash algorithms can be configured by setting Kconfig options in the following table:
 
 +--------------+--------------------+---------------------------------------------+
 | Algorithm    | Support            | Backend selection                           |

@@ -198,7 +198,7 @@ An alternative to allocating this on the heap is to provide a reference to a sta
 Usage restrictions
 ------------------
 
-The library can not be used in the non-secure domain of an application that uses ARM TrustZone.
+The library cannot be used in the non-secure domain of an application that uses ARM TrustZone.
 
 The hardware can only process one request at a time.
 Therefore, this library has used mutexes to make the library thread-safe.

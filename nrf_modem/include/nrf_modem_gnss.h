@@ -1115,7 +1115,7 @@ int32_t nrf_modem_gnss_nv_data_delete(uint32_t delete_mask);
  *
  * @details GNSS can produce a cold start fix when there are long enough gaps in LTE idle mode
  *          operations. LTE idle eDRX cycles approximately 1 min and above will usually guarantee
- *          the ablity to produce a fix. Shorter DRX cycles will be enough after GNSS has got
+ *          the ability to produce a fix. Shorter DRX cycles will be enough after GNSS has got
  *          ephemerides. GNSS priority can be enabled to help getting GNSS into that state, if there
  *          are not long enough gaps in LTE idle mode functionality. Priority for GNSS should be
  *          used only when fix has been blocked by LTE idle mode operations, which can be detected

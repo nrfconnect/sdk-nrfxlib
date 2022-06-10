@@ -58,7 +58,7 @@ struct nrf_modem_full_dfu_uuid {
  * Before initialization, the modem library must be shut down and
  * reinitialized with FULL_DFU_MODE.
  *
- * Call once before DFU operations. If the modem goes to a error state,
+ * Call once before DFU operations. If the modem goes to an error state,
  * this can be called again to re-initialize.
  * The root key digest response of the modem is put in the digest_buffer
  * structure.

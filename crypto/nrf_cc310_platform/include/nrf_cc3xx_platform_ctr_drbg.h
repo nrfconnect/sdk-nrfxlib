@@ -50,7 +50,7 @@ typedef struct nrf_cc3xx_platform_ctr_drbg_context_t
 } nrf_cc3xx_platform_ctr_drbg_context_t;
 
 
-/**@brief Function that initializes an ctr_drbg context
+/**@brief Function that initializes a ctr_drbg context
  *
  * @note  If the context is NULL the function uses an internal context.
  *
@@ -165,7 +165,7 @@ int nrf_cc3xx_platform_ctr_drbg_reseed(
  *
  * @note  If the context is NULL the function uses an internal context.
  *
- * This function will calculate PRNG using HW accelarated AES CTR_DRBG with a
+ * This function will calculate PRNG using HW accelerated AES CTR_DRBG with a
  * 16-byte key and reseed with TRNG using ARM CryptoCEll cc3xx HW according
  * to a reseed interval.
  *

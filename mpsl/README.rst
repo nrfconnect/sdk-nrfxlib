@@ -25,7 +25,7 @@ This library provides the following key features:
 * IEEE 802.15.4 External Radio Coexistence.
   It provides an API to control coexistence with IEEE 802.15.4.
 * Bluetooth External Radio Coexistence.
-  It provides an API to control coexistence with bluetooth.
+  It provides an API to control coexistence with Bluetooth.
 
 To enable MPSL in |NCS| applications, use the :kconfig:option:`CONFIG_MPSL` Kconfig option.
 

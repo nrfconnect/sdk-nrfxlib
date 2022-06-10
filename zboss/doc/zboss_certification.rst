@@ -26,7 +26,7 @@ The certification is based on CSA's `certification policy`_, which distinguishes
 The certification guarantees that a platform or product will work and will interoperate with other compliant platforms or certified products, respectively.
 
 Nordic Semiconductor provides the Zigbee Compliant Platform.
-You can use this plaform as the building block for your Zigbee Certified Product, which is conformant with the ZCL and BDB standard.
+You can use this platform as the building block for your Zigbee Certified Product, which is conformant with the ZCL and BDB standard.
 
 Certification IDs
 *****************

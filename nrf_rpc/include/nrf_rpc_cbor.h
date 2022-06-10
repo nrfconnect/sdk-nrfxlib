@@ -146,7 +146,7 @@ struct nrf_rpc_cbor_ctx {
  * @param handler_data Opaque pointer that will be passed to `handler`.
  *
  * @return             0 on success or negative error code if a transport layer
- *                     reported a sendig error.
+ *                     reported a sending error.
  */
 int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 		     struct nrf_rpc_cbor_ctx *ctx,
@@ -164,7 +164,7 @@ int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
  * @param ctx    Context allocated by @ref NRF_RPC_CBOR_ALLOC.
  *
  * @return       0 on success or negative error code if a transport
- *               layer reported a sendig error.
+ *               layer reported a sending error.
  */
 int nrf_rpc_cbor_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd,
 			 struct nrf_rpc_cbor_ctx *ctx);
@@ -212,7 +212,7 @@ void nrf_rpc_cbor_cmd_rsp_no_err(const struct nrf_rpc_group *group,
  * @param ctx    Context allocated by @ref NRF_RPC_CBOR_ALLOC.
  *
  * @return       0 on success or negative error code if a transport layer
- *               reported a sendig error.
+ *               reported a sending error.
  */
 int nrf_rpc_cbor_evt(const struct nrf_rpc_group *group, uint8_t evt,
 		     struct nrf_rpc_cbor_ctx *ctx);
@@ -236,7 +236,7 @@ void nrf_rpc_cbor_evt_no_err(const struct nrf_rpc_group *group, uint8_t evt,
  * @param ctx    Context allocated by @ref NRF_RPC_CBOR_ALLOC.
  *
  * @return       0 on success or negative error code if a transport layer
- *               reported a sendig error.
+ *               reported a sending error.
  */
 int nrf_rpc_cbor_rsp(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx);
 
@@ -256,7 +256,7 @@ void nrf_rpc_cbor_rsp_no_err(const struct nrf_rpc_group *group, struct nrf_rpc_c
  * This function must be called as soon as the input packet was parsed and can
  * be deallocated. It must be called in command decoder, event decoder and after
  * @ref nrf_rpc_cbor_cmd_rsp or @ref nrf_rpc_cbor_cmd_rsp_no_err. Packet is
- * automatically deallocated after completetion of the response handler
+ * automatically deallocated after completion of the response handler
  * function, so this `nrf_rpc_cbor_decoding_done` is not needed in response
  * handler.
  *

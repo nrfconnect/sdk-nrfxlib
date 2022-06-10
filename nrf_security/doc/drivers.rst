@@ -10,9 +10,9 @@ nrf_security drivers
 The nrf_security module supports multiple enabled PSA drivers at the same time.
 This mechanism is intended to extend the available feature set of hardware-accelerated cryptography or to provide alternative implementations of the PSA Crypto APIs.
 
-You can enabling a cryptographic feature or algorithm using PSA Crypto API configurations that follow the format ``PSA_WANT_ALG_XXXX``.
+You can enable a cryptographic feature or algorithm using PSA Crypto API configurations that follow the format ``PSA_WANT_ALG_XXXX``.
 
-Enabling more than one PSA driver may add support for additional key sizes or modes of operation. 
+Enabling more than one PSA driver might add support for additional key sizes or modes of operation. 
 
 It is possible to disable specific features on the PSA driver level to optimize the code size.
 
@@ -52,7 +52,7 @@ Using the Arm CryptoCell cc3xx driver
 To use the :ref:`nrf_cc3xx_mbedcrypto_readme` PSA driver, the Arm CryptoCell cc310/cc312 hardware must be first initialized.
 
 The Arm CryptoCell cc3xx hardware is initialized in the :file:`hw_cc310.c` file, located under :file:`nrf/drivers/hw_cc310/`, and is controlled with the :kconfig:option:`CONFIG_HW_CC3XX` Kconfig option.
-The Kconfig option has a default value of 'y' when cc3xx is available in the SoC.
+The Kconfig option has a default value of ``y`` when cc3xx is available in the SoC.
 
 .. _nrf_security_drivers_oberon:
 
@@ -83,13 +83,13 @@ Built-in Mbed TLS support can be used to add support for features not available 
 Similarly, you can use the built-in Mbed TLS to add support for features not available in the `nrf_oberon driver`_, for example to add support for more ECC curve types.
 
 .. note:
-   nrf_security provides a replacement to the file ``psa_crypto_driver_wrappers.c`` with adjustments to support multiple drivers.
+   nrf_security provides a replacement to the file :file:`psa_crypto_driver_wrappers.c` with adjustments to support multiple drivers.
 
 
 Enabling the built-in Mbed TLS support
 ======================================
 
-To enable the built-in Mbed TLS support, set the :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_BUILTIN` Kconfig option to true.
+To enable the built-in Mbed TLS support, set the :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_BUILTIN` Kconfig option to ``y````.
 
 It is generally not needed to enable built-in Mbed TLS support manually, as there is Kconfig logic that does that, depending on the enabled cryptographic features or algorithms and the configuration of PSA drivers.
 
@@ -107,7 +107,7 @@ Enabling legacy APIs requires enabling one of the available PSA drivers.
 Enabling legacy Mbed TLS support
 ================================
 
-The legacy Mbed TLS APIs can be configured by setting the option kconfig:`CONFIG_NORDIC_SECURITY_BACKEND` instead of setting the option kconfig:`CONFIG_NRF_SECURITY`.
+The legacy Mbed TLS APIs can be configured by setting the option :kconfig:option:`CONFIG_NORDIC_SECURITY_BACKEND` instead of setting the option :kconfig:option:`CONFIG_NRF_SECURITY`.
 
 Additionally either :kconfig:option:`CONFIG_CC3XX_BACKEND` or :kconfig:option:`CONFIG_OBERON_BACKEND` must be enabled.
 

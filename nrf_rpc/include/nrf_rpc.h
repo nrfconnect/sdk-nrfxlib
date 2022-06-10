@@ -260,7 +260,7 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler);
  * @param handler_data Opaque pointer that will be passed to `handler`.
  *
  * @return             0 on success or negative error code if a transport layer
- *                     reported a sendig error.
+ *                     reported a sending error.
  */
 static inline int nrf_rpc_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 			      uint8_t *packet, size_t len,
@@ -282,7 +282,7 @@ static inline int nrf_rpc_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
  * @param[out] rsp_len    Length of `rsp_packet`.
  *
  * @return                0 on success or negative error code if a transport
- *                        layer reported a sendig error.
+ *                        layer reported a sending error.
  */
 static inline int nrf_rpc_cmd_rsp(const struct nrf_rpc_group *group,
 				  uint8_t cmd, uint8_t *packet, size_t len,
@@ -339,7 +339,7 @@ static inline void nrf_rpc_cmd_rsp_no_err(const struct nrf_rpc_group *group,
  * @param len    Length of the packet. Can be smaller than allocated.
  *
  * @return       0 on success or negative error code if a transport layer
- *               reported a sendig error.
+ *               reported a sending error.
  */
 int nrf_rpc_evt(const struct nrf_rpc_group *group, uint8_t evt, uint8_t *packet,
 		size_t len);
@@ -367,7 +367,7 @@ void nrf_rpc_evt_no_err(const struct nrf_rpc_group *group, uint8_t evt,
  * @param len    Length of the packet. Can be smaller than allocated.
  *
  * @return       0 on success or negative error code if a transport layer
- *               reported a sendig error.
+ *               reported a sending error.
  */
 int nrf_rpc_rsp(const struct nrf_rpc_group *group, uint8_t *packet, size_t len);
 
@@ -389,22 +389,22 @@ void nrf_rpc_rsp_no_err(const struct nrf_rpc_group *group, uint8_t *packet, size
  * This function must be called as soon as the input packet was parsed and can
  * be deallocated. It must be called in command decoder, event decoder and after
  * @ref nrf_rpc_cmd_rsp or @ref nrf_rpc_cmd_rsp_no_err. Packet is
- * automatically deallocated after completetion of the response handler
+ * automatically deallocated after completion of the response handler
  * function, so this `nrf_rpc_decoding_done` is not needed in response handler.
  *
  * @param group  Group that decoder belongs to.
- * @param packet Packet which parsing has completed.
+ * @param packet Packet where parsing has completed.
  */
 void nrf_rpc_decoding_done(const struct nrf_rpc_group *group, const uint8_t *packet);
 
-/** @brief Report an error to nRP PRC error handler.
+/** @brief Report an error to nRF RPC error handler.
  *
  * Main intention for exposing this function is to allow serialization layer
  * (e.g. TinyCBOR) report error to the same error handler as entire nRF RPC.
  *
  * @param code        Negative error code.
  * @param src         Source of error.
- * @param group       Group where error happent or NULL if unknown.
+ * @param group       Group where error happens or NULL if unknown.
  * @param id          Command or event id which caused the error or
  *                    @ref NRF_RPC_ID_UNKNOWN if unknown.
  * @param packet_type Type of packet related to this error.
@@ -483,7 +483,7 @@ void nrf_rpc_alloc_tx_buf(const struct nrf_rpc_group *group, uint8_t **buf, size
  * by any transport.
  *
  * @param[in] group nRF RPC group.
- * @param[in] buf Previously allocated buffor for Tx packet.
+ * @param[in] buf Previously allocated buffer for Tx packet.
  */
 void nrf_rpc_free_tx_buf(const struct nrf_rpc_group *group, uint8_t *buf);
 

@@ -34,7 +34,7 @@ Removed
 =======
 
 * Precompiled libraries for experimental Zigbee Green Power Proxy Basic functionality for End Device role.
-* Legacy HA device definitions due to ZCL8 incompatiblities.
+* Legacy HA device definitions due to ZCL8 incompatibilities.
   The sample device definitions can be found inside the :file:`include` directory in every Zigbee sample and application.
 
 Bug fixes
@@ -70,7 +70,7 @@ Bug fixes
 * Fixed an issue where ZBOSS based device fails OTA Test Case OTA-TC-17C.
 * Fixed an issue where ZCL Occupancy Sensing cluster was missing an implementation.
 * Fixed an issue where device association fails if the Request Key packet is retransmitted.
-* Fixed an issue where a device enters undefined state after leave request, sent right after successfull association.
+* Fixed an issue where a device enters undefined state after leave request, sent right after successful association.
 
 nRF Connect SDK v1.8.0
 **********************

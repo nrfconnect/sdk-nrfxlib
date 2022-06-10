@@ -85,7 +85,7 @@ Therefore, make sure that only one MPSL API function is called from the applicat
 Other priorities
 ----------------
 
-MPSL inititialization functions, like :c:func:`mpsl_init` and :c:func:`mpsl_uninit`, are not thread-safe.
+MPSL initialization functions, like :c:func:`mpsl_init` and :c:func:`mpsl_uninit`, are not thread-safe.
 Do not call them while, for example, a protocol timeslot is in progress.
 This must be enforced by application and protocol stacks.
 

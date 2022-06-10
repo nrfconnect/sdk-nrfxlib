@@ -6,8 +6,8 @@ Limitations
 When working with the SoftDevice Controller, you should be aware of the following limitations.
 In addition, see :ref:`nrf:known_issues` for temporary issues that will be fixed in future releases.
 
-YOPAN-87: The RSSI value reported by the Softdevice Controller requires additional temperature compensation.
-  The RSSI value reported by the Softdevice Controller is the raw value from the radio peripheral.
+YOPAN-87: The RSSI value reported by the SoftDevice Controller requires additional temperature compensation
+  The RSSI value reported by the SoftDevice Controller is the raw value from the radio peripheral.
   Some SoCs require compensation of the RSSI value based on the chip temperature.
   See the Errata document for the respective SoC for detailed information.
 
@@ -56,5 +56,5 @@ DRGN-12259: HCI Receiver and Transmitter Test commands not available
   * For nRF52, use the DTM application in the nRF5 SDK.
   * For nRF53, use :ref:`direct_test_mode`.
 
-DRGN-15989: In some cases the SDC can connect to the peer it is already connected to.
+DRGN-15989: In some cases, the SDC can connect to the peer it is already connected to
   To prevent this, the application can remove the already connected peer from the Filter Accept List, or from the Resolving List, or not use that peer's address in Create Connection command.

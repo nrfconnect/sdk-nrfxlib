@@ -123,7 +123,7 @@ typedef __PACKED_STRUCT
     uint8_t coex_scan_mode_config : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
-/** @brief Zephyr Static Adress type. */
+/** @brief Zephyr Static Address type. */
 typedef __PACKED_STRUCT
 {
     /** @brief Static device address. */
