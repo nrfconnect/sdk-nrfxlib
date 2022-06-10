@@ -8,7 +8,6 @@ menu "Nordic nrfxlib"
 
 rsource "nrf_modem/Kconfig"
 rsource "nfc/Kconfig"
-rsource "mpsl/Kconfig"
 rsource "crypto/Kconfig"
 rsource "nrf_security/Kconfig"
 rsource "nrf_rpc/Kconfig"
