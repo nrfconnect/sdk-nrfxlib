@@ -15,7 +15,7 @@ nRF Connect SDK v2.0.0
 Bug fixes
 =========
 
- * Fixed the Type 2 Tag initialization, where the return value of the :c:func:`nfc_platform_nfcid1_default_bytes_get()` function was not converted to the local NFC error code resulting in incorrect NFCID1 values.
+* Fixed the Type 2 Tag initialization, where the return value of the :c:func:`nfc_platform_nfcid1_default_bytes_get()` function was not converted to the local NFC error code resulting in incorrect NFCID1 values.
 
 nRF Connect SDK v1.9.0
 **********************

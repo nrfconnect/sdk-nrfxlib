@@ -14,7 +14,7 @@ The antenna diversity module allows an 802.15.4 radio device, equipped with two 
 Introduction
 ************
 
-The antenna diversity module interfaces with a Front-End Module (FEM), which controls both antennas through a single ``ANT_SEL`` pin
+The antenna diversity module interfaces with a Front-End Module (FEM), which controls both antennas through a single ``ANT_SEL`` pin.
 This pin is used to define which antenna is used for communication.
 
 The FEM must provide, at least, the capability to switch between antennas.
@@ -25,8 +25,8 @@ Switching the antenna might help in minimizing the negative effects that certain
 The driver provides several options to switch between the antennas.
 For reception-related operations, there are two options:
 
-* the :ref:`approach implemented within this module <ant_diversity_algorithm>`, based on RSSI measurements during the preamble of the received frame;
-* an interface provided to the higher layer for implementing a custom antenna selection algorithm.
+* The :ref:`approach implemented within this module <ant_diversity_algorithm>`, based on RSSI measurements during the preamble of the received frame.
+* An interface provided to the higher layer for implementing a custom antenna selection algorithm.
 
 For transmission-related operations, the driver provides this same interface to the higher layer for implementing a custom antenna selection algorithm.
 
@@ -78,12 +78,12 @@ This division identifies the different approaches used to determine the operatio
 
 Because of these different approaches, the following modes of operation are available for both TX and RX operations:
 
-* Disabled - the antenna is not changed for the given operation, and an unspecified antenna is used.
-* Manual - the user chooses a specific antenna for the given operation.
+* Disabled - The antenna is not changed for the given operation, and an unspecified antenna is used.
+* Manual - The user chooses a specific antenna for the given operation.
 
 The following mode is instead available only for RX operations:
 
-* Automatic - the :ref:`antenna diversity algorithm <ant_diversity_algorithm>` chooses the optimal antenna for each RX operation.
+* Automatic - The :ref:`antenna diversity algorithm <ant_diversity_algorithm>` chooses the optimal antenna for each RX operation.
 
 .. figure:: images/ant_diversity_manual.svg
    :alt: Antenna selection with RX and TX both in manual mode
@@ -184,7 +184,7 @@ The highest detected energy across both antennas is reported to the driver.
 
 .. note::
    In manual mode, the module performs energy detection on a single antenna.
-   The application specifies the antenna on which to perfom the energy detection calling the :c:func:`nrf_802154_antenna_diversity_rx_antenna_set` function.
+   The application specifies the antenna on which the energy detection will be performed by calling the :c:func:`nrf_802154_antenna_diversity_rx_antenna_set` function.
 
 The energy detection procedure consists of several iterations lasting 128 us each.
 For this reason, the duration of the scheduled energy detection procedure cannot be shorter than 128 us.
@@ -206,6 +206,7 @@ You can configure the following timings for the automatic antenna selection:
   The time that elapses before switching the antenna while waiting for the preamble detection.
   It can be configured calling the :c:func:`nrf_802154_antenna_diversity_config_set` function.
   Its default value is 40 us, and it is stored in the ``NRF_802154_ANT_DIVERSITY_TOGGLE_TIME_DEFAULT`` macro.
+
 * Preamble time-out.
   The time interval during which the radio driver waits for the arrival of the start of the frame.
   It occurs after the preamble detection.
@@ -218,21 +219,22 @@ You can configure the following timings for the automatic antenna selection:
 
 The following timings are constant when the antenna diversity module operates in RX automatic mode:
 
-* RSSI settle time - 15 us
+* RSSI settle time - 15 us.
   This is the time after the antenna switch, during which the RSSI measurement may not be valid.
   The RSSI settle time is hardware-dependent.
-* RSSI measurement time - 200 ns
-* Software lag during the time-out configuration - 40-50 us
-* Antenna selection time - 15 - 160 us
+
+* RSSI measurement time - 200 ns.
+* Software lag during the time-out configuration - 40-50 us.
+* Antenna selection time - 15 - 160 us.
   This is the time after the SYNC event when the driver selects the antenna with the best RSSI.
 
 .. note::
    Since the antenna does not change during the software lag, there is no need to wait for the RSSI to settle for another 15 us.
 
 .. figure:: images/ant_diversity_rx_timing.svg
-   :alt: Timings while operating in RX automatic mode.
+   :alt: Timings while operating in RX automatic mode
 
-   Timings while operating in RX automatic mode.
+   Timings while operating in RX automatic mode
 
 .. figure:: images/ant_diversity_rx_timeout.svg
    :alt: A false positive on preamble detection scenario during the automatic antenna selection

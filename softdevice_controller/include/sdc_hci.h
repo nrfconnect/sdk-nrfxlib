@@ -113,7 +113,7 @@ int32_t sdc_hci_evt_get(uint8_t * p_evt_out);
  *       @ref HCI_DATA_PACKET_MAX_SIZE bytes.
  *
  * @param[in,out] p_data_out Buffer where the HCI data packet will be stored.
- *                           If an data packet is retrieved, the first byte corresponds to Handle,
+ *                           If a data packet is retrieved, the first byte corresponds to Handle,
  *                           as specified by the Bluetooth Core Specification.
  *
  * @retval 0              Success

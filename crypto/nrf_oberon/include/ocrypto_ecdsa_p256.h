@@ -15,7 +15,7 @@
  * @defgroup ocrypto_ecdsa_p256 ECDSA secp256r1 low-level APIs
  * @ingroup ocrypto_ecdsa
  * @{
- * @brief Type declarations and APIs to do Elliptic Curve Digital Signature Algorith using the
+ * @brief Type declarations and APIs to do Elliptic Curve Digital Signature Algorithm using the
  *        NIST secp256r1 curve.
  *
  * ECDSA P-256 is a specific implementation of a digital signature scheme.

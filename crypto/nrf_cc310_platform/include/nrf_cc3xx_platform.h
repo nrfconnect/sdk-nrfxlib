@@ -8,7 +8,7 @@
  * @{
  * @brief nrf_cc3xx_platform library containing cc3xx
  * hardware initialization and entropy gathering APIs. The library also contains
- * APIs and companion source-files to setus RTOS dependent mutex and abort
+ * APIs and companion source-files to setup RTOS dependent mutex and abort
  * functionality for the nrf_cc3xx_mbedcrypto library in Zephyr RTOS and FreeRTOS.
  * @}
  *

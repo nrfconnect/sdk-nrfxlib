@@ -92,10 +92,16 @@ Therefore, the host should try to pull data and events until it fails.
 Architecture diagrams
 *********************
 
-The image below shows how the |controller| and MPSL integrates into an RTOS-free environment.
+The following image shows how the |controller| and MPSL integrates into an RTOS-free environment:
 
 .. figure:: pic/Architecture_Without_RTOS.svg
+   :alt: Architecture without RTOS
 
-The image below shows how the |controller| and MPSL integrates into an RTOS.
+   Architecture without RTOS
+
+The following image shows how the |controller| and MPSL integrates into an RTOS:
 
 .. figure:: pic/Architecture_With_RTOS.svg
+   :alt: Architecture with RTOS
+
+   Architecture with RTOS

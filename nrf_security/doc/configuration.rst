@@ -20,10 +20,8 @@ The PSA driver support requires using PSA Crypto APIs.
 
 Legacy crypto support
 *********************
-
-To enable the legacy crypto support mode of Nordic Security Module, set the :kconfig:CONFIG_NORDIC_SECURITY_BACKEND` Kconfig option along with additional configuration options, as described in :ref:`nrf_security_legacy_config`.
-
-The legacy crypto support allows backwards compatibility for software that requires usage of Mbed TLS crypto toolbox functions prefixed with `mbedtls_`.
+To enable the legacy crypto support mode of Nordic Security Module, set the :kconfig:option:`CONFIG_NORDIC_SECURITY_BACKEND` Kconfig option along with additional configuration options, as described in :ref:`nrf_security_legacy_config`.
+The legacy crypto support allows backwards compatibility for software that requires usage of Mbed TLS crypto toolbox functions prefixed with ``mbedtls_``.
 
 Custom Mbed TLS configuration files
 ***********************************

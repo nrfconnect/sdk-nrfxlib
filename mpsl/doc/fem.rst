@@ -33,10 +33,10 @@ Tx power split
 **************
 
 When an application requests a given transmission power, it wants to achieve that power at the antenna.
-Usually the application does not know all hardware components, such as RF front-end modules, on the radio signal path.
+Usually, the application does not know all hardware components, such as RF front-end modules, on the radio signal path.
 To achieve a specific value of transmission power at the antenna, every FEM implementation provides a dedicated API that calculates the PA gain and SoC output power combination that results in the requested power at the antenna.
 
-FEM implementations with multiple PA gains available (e.g. nRF21540 with MODE pin support) choose which gain to use based on hardware limitations and the requested power value.
+FEM implementations with multiple PA gains available (for exmaple, nRF21540 with MODE pin support) choose which gain to use based on hardware limitations and the requested power value.
 
 Configurable timings
 ********************
@@ -55,7 +55,7 @@ General usage
 *************
 
 The Power Amplifier and the Low-Noise Amplifier are responsible for, respectively, transmission and reception and are configured and activated independently.
-The two functionalities can't be configured and set to operate simultaneously, because they share some resources.
+The two functionalities cannot be configured and set to operate simultaneously, because they share some resources.
 As such, after operating with a Power Amplifier, the PA configuration must be cleared to be able to configure and use a Low-Noise Amplifier afterward, and vice versa.
 
 Both amplifiers are controlled through activation and deactivation events.

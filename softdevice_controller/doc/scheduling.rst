@@ -440,7 +440,7 @@ Periodic Advertiser Timing
 **************************
 
 The duration of a periodic advertising event depends on data length and on which PHY the advertising packets are sent.
-The |controller| will attempt to mimimize the number of packets while maximizing the amount of data in each packet.
+The |controller| will attempt to minimize the number of packets while maximizing the amount of data in each packet.
 The packets are sent with an AUX frame space of 330 µs.
 
 Periodic advertiser timing-events are scheduled similarly to a Central device, meaning they are added relative to already running central link or periodic advertising timing-events.

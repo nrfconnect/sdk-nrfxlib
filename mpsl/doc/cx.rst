@@ -41,7 +41,7 @@ The radio coexistence implementation provided in nRF Connect SDK is the followin
 Configuration
 *************
 
-To configure the Thread Radio Coexistence implementation you must define each pin used in the 3-wire PTA interface, specifically:
+To configure the Thread Radio Coexistence implementation, you must define each pin used in the 3-wire PTA interface, specifically:
 
 * ``REQUEST``
 * ``PRIORITY``
@@ -66,7 +66,7 @@ Implementation of a new radio coexistence module
 If the radio coexistence implementation provided in nRF Connect SDK is not compatible with the PTA used in your system, you can implement a software module compatible with your PTA that exposes the radio coexistence API, using the :file:`nrf/subsys/mpsl/cx/thread/mpsl_cx_thread.c` file as an example.
 
 The radio coexistence implementation must implement the interface defined in the ``mpsl_cx_interface_t`` structure in the :file:`nrfxlib/mpsl/include/mpsl_cx_abstract_interface.h` file.
-Each function from this interface is described in details in the :file:`nrfxlib/mpsl/include/protocol/mpsl_cx_protocol_api.h` file.
+Each function from this interface is described in detail in the :file:`nrfxlib/mpsl/include/protocol/mpsl_cx_protocol_api.h` file.
 
 Any implementation of the radio coexistence interface must register the interface in MPSL during the system initialization using the :c:func:`mpsl_cx_interface_set()` function.
 You can find an example how to configure a radio coexistence implementation, including the registration of the interface in MPSL, in the :c:func:`mpsl_cx_init()` function described in the :file:`nrf/subsys/mpsl/mpsl_init.c` and :file:`nrf/subsys/mpsl/mpsl_cx.c` files.

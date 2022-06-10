@@ -67,7 +67,7 @@ struct nrf_modem_delta_dfu_uuid {
 /**
  * @brief Retrieve the modem firmware UUID.
  *
- * @param modem_uuid Modem firwmware UUID.
+ * @param modem_uuid Modem firmware UUID.
  *
  * @retval 0 On success.
  * @retval -NRF_EPERM The Modem library is not initialized.

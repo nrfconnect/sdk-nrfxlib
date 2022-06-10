@@ -25,8 +25,7 @@ nrf_modem 2.0.0
 
 * Numerous fixes and improvements to networking sockets.
 * Increased logging output (in log version of the library).
-* Improved modem fault handling.
-  A new field has been added to :c:type:`nrf_modem_init_params_t` to receive a callback upon modem faults.
+* Improved modem fault handling. A new field has been added to :c:type:`nrf_modem_init_params_t` to receive a callback upon modem faults.
 * Added modem fault reasons to the :file:`nrf_modem.h` file.
 * Added :c:func:`nrf_modem_is_initialized` function to query the modem initialization status.
 * Added :c:func:`nrf_modem_os_event_notify` function to wake up threads sleeping in the :c:func:`nrf_modem_os_timedwait` function.
@@ -290,7 +289,7 @@ bsdlib 0.6.2
 ************
 
 * TLS session cache is now disabled by default due to missing support in modem firmware version 1.1.1 and older.
-* When passing an address, the function sendto() now sets the errno to ``NRF_EISCONN`` instead of``NRF_EINVAL`` if the socket type is ``NRF_SOCK_STREAM``.
+* When passing an address, the function sendto() now sets the errno to ``NRF_EISCONN`` instead of ``NRF_EINVAL`` if the socket type is ``NRF_SOCK_STREAM``.
 * Calling connect() on an already connected socket now properly returns ``NRF_EISCONN`` instead of ``NRF_EBADF``.
 * Sockets with family ``NRF_AF_LTE`` must now be created with type ``NRF_SOCK_DGRAM``.
 * Setting the timeout in recv() to a larger than the maximum supported value now properly returns ``NRF_EDOM`` instead of ``NRF_EINVAL``.

@@ -489,7 +489,7 @@ void nrf_gzll_crc_failure_callback_register(nrf_gzll_crc_failure_callback callba
  * It is allowed to change mode when Gazell is enabled. If the mode is
  * being changed while Gazell is enabled, the mode will not change right away.
  * In this case the callback function nrf_gzll_mode_changed() will be called
- * after the mdoe has changed.
+ * after the mode has changed.
  *
  * @retval true  If the parameter was set.
  */

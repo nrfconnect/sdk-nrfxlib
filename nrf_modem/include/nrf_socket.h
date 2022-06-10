@@ -500,7 +500,7 @@ typedef uint32_t nrf_sec_session_cache_t;
 typedef uint32_t nrf_sec_peer_verify_t;
 
 /** @brief
- * A IANA cipher suite identifier.
+ * An IANA cipher suite identifier.
  */
 typedef uint32_t nrf_sec_cipher_t;
 

@@ -49,7 +49,7 @@ typedef enum {
  */
 typedef enum {
 	NRF_DM_ROLE_NONE = 0,
-	/** Act as a initiator */
+	/** Act as an initiator */
 	NRF_DM_ROLE_INITIATOR = 1,
 	/** Act as a reflector */
 	NRF_DM_ROLE_REFLECTOR = 2,

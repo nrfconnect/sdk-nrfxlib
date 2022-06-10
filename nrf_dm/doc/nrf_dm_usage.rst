@@ -34,6 +34,7 @@ nRF53 Series
 ************
 
 The Distance Measurement library comes with two precompiled libraries for the nRF53 Series.
+
 * The :file:`libnrf_dm.a` library implements the interface specified in :file:`nrf_dm.h`.
 * The :file:`libnrf_dm_calc.a` library partially implements the interface specified in :file:`nrf_dm.h`.
 

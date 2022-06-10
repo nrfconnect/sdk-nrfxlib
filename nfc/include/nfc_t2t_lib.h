@@ -177,7 +177,7 @@ int nfc_t2t_parameter_get(nfc_t2t_param_id_t id,
  * The pointer to the payload must stay valid for the duration of the library
  * execution, or until it is explicitly released.
  *
- * If the pointer is not NULL, but the length is zero, the paypload is
+ * If the pointer is not NULL, but the length is zero, the payload is
  * considered to be an empty NDEF message.
  *
  * If a new payload is registered, the previously registered one is considered

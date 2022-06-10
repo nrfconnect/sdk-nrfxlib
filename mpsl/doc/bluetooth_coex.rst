@@ -29,7 +29,7 @@ Since IEEE 802.15.2-2003 is not a standard but a recommendation, implementations
 Interface
 **********
 
-PTA is a system implemented outside of the Bluetooth SoC, and its role can be fulfilled by another wireless device, such as by a WiFi SoC.
+PTA is a system implemented outside of the Bluetooth SoC, and its role can be fulfilled by another wireless device, such as by a Wi-Fi SoC.
 The Bluetooth stack communicates with PTA using a 3-wire hardware interface, with Bluetooth acting as a slave.
 
 When the interface is enabled, the :ref:`softdevice_controller` submits a request to PTA before any radio activity.
@@ -121,7 +121,7 @@ The 1-wire Coexistence protocol requires the following peripherals:
 Interface signals
 =================
 
-The 1-wire interface is a single uni-directional input controlled by the LTE device:
+The 1-wire interface is a single unidirectional input controlled by the LTE device:
 
 .. table:: 1-wire LTE coexistence protocol pin
 
