@@ -9,6 +9,23 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Changes
+=======
+
+* When the SoftDevice Controller is used with the Front-End Module provided by the :ref:`mpsl`, the transmit power is expressed as the power on the antenna instead of the power of the SoC output.
+  This allows dynamic gain control of the Front-End Module if the selected Front-End Module supports it.
+  The default transmit power for Bluetooth LE activities does not change, so if the Front-End Module has an exemplary gain of +10 dB, the output power of the SoC will be decreased accordingly.
+  To achieve higher output powers on the antenna, the user must call the appropriate API.
+  For :c:func:`sdc_hci_cmd_vs_zephyr_write_tx_power` the transmit power is expressed as the maximum power on the antenna.
+  The returned transmit power is the power on the antenna that can be achieved on the current SoC and Front-End Module.
+  For :c:func:`sdc_hci_cmd_vs_zephyr_read_tx_power` the returned transmit power is the power on the antenna that can be achieved on the current SoC and Front-End Module.
+  (KRKNWK-13714)
+
 nRF Connect SDK v2.0.0
 **********************
 
