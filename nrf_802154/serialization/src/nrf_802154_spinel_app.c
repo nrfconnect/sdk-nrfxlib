@@ -1592,11 +1592,17 @@ void nrf_802154_buffer_free_raw(uint8_t * p_data)
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 
+    bool removed = nrf_802154_buffer_mgr_dst_remove_by_local_pointer(
+        nrf_802154_spinel_dst_buffer_mgr_get(),
+        p_data);
+
+    SERIALIZATION_ERROR_IF(!removed,
+                           NRF_802154_SERIALIZATION_ERROR_INVALID_BUFFER,
+                           error,
+                           bail);
+
     res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
     SERIALIZATION_ERROR_CHECK(res, error, bail);
-
-    (void)nrf_802154_buffer_mgr_dst_remove_by_local_pointer(nrf_802154_spinel_dst_buffer_mgr_get(),
-                                                            p_data);
 
 bail:
     SERIALIZATION_ERROR_RAISE_IF_FAILED(error);

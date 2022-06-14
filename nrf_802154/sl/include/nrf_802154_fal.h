@@ -55,18 +55,6 @@ typedef struct
     int8_t fem_gain;       // !< Gain of the Front-End Module in dB.
 } nrf_802154_fal_tx_power_split_t;
 
-/**
- * @brief Returns 'power' value.
- *
- * @note This is a stub implementation used when MPSL is not linked.
- *
- * @param[in]  channel  Ignored.
- * @param[in]  power    TX power in dbm.
- *
- * @returns Value of 'power' argument.
- */
-int8_t nrf_802154_fal_tx_power_get(const uint8_t channel, const int8_t power);
-
 /** @brief Splits transmit power value into components to be applied on each stage on the transmit path.
  *
  * @note This is a stub implementation used when MPSL is not linked.
