@@ -65,9 +65,7 @@
 #define EGU_SYNC_INTMASK NRF_EGU_INT_TRIGGERED3
 
 #if defined(NRF52840_XXAA) || \
-    defined(NRF52833_XXAA) || \
-    defined(NRF52820_XXAA) || \
-    defined(NRF52811_XXAA)
+    defined(NRF52833_XXAA)
 #define PPI_CCAIDLE_FEM  NRF_802154_PPI_RADIO_CCAIDLE_TO_FEM_GPIOTE ///< PPI that connects RADIO CCAIDLE event with GPIOTE tasks used by FEM
 #define PPI_CHGRP_ABORT  NRF_802154_PPI_ABORT_GROUP                 ///< PPI group used to disable PPIs when async event aborting radio operation is propagated through the system
 #define RADIO_BASE       NRF_RADIO_BASE
@@ -404,9 +402,7 @@ static void fem_for_tx_reset(bool cca)
 }
 
 #if defined(NRF52840_XXAA) || \
-    defined(NRF52833_XXAA) || \
-    defined(NRF52820_XXAA) || \
-    defined(NRF52811_XXAA)
+    defined(NRF52833_XXAA)
 /** @brief Applies DEVICE-CONFIG-254.
  *
  * Shall be called after every RADIO peripheral reset.
@@ -493,9 +489,7 @@ void nrf_802154_trx_enable(void)
     nrf_radio_reset();
 
 #if defined(NRF52840_XXAA) || \
-    defined(NRF52833_XXAA) || \
-    defined(NRF52820_XXAA) || \
-    defined(NRF52811_XXAA)
+    defined(NRF52833_XXAA)
     // Apply DEVICE-CONFIG-254 if needed.
     if (mpsl_fem_device_config_254_apply_get())
     {
@@ -542,9 +536,7 @@ void nrf_802154_trx_enable(void)
     mpsl_fem_pa_is_configured(&m_fem_gain_in_disabled);
 
 #if defined(NRF52840_XXAA) || \
-    defined(NRF52833_XXAA) || \
-    defined(NRF52820_XXAA) || \
-    defined(NRF52811_XXAA)
+    defined(NRF52833_XXAA)
     mpsl_fem_abort_set(nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_DISABLED),
                        PPI_CHGRP_ABORT);
 #elif defined(NRF53_SERIES)

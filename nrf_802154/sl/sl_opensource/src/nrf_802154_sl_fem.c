@@ -150,12 +150,6 @@ bool mpsl_fem_device_config_254_apply_get(void)
     return false;
 }
 
-int8_t nrf_802154_fal_tx_power_get(const uint8_t channel, const int8_t power)
-{
-    (void)channel;
-    return power;
-}
-
 int32_t nrf_802154_fal_tx_power_split(const uint8_t                           channel,
                                       const int8_t                            power,
                                       nrf_802154_fal_tx_power_split_t * const p_tx_power_split)
