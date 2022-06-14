@@ -280,9 +280,10 @@ typedef __PACKED_STRUCT
      *         a connection, it specifies a Connection Handle. Otherwise this parameter is ignored.
      */
     uint16_t handle;
-    /** @brief The desired Tx_Power_Level in dBm in signed 1 octet integer format. If set to 127,
-     *         this indicates that the controller shall revert to using its default setting for Tx
-     *         power. If the selected power level is not supported, an error is returned.
+    /** @brief The desired Tx_Power_Level at the antenna in dBm in signed 1 octet integer format. If
+     *         set to 127, this indicates that the controller shall revert to using its default
+     *         setting for Tx power. If the selected power level is not supported, an error is
+     *         returned.
      */
     int8_t tx_power_level;
 } sdc_hci_cmd_vs_zephyr_write_tx_power_t;
@@ -536,7 +537,7 @@ uint8_t sdc_hci_cmd_vs_zephyr_read_chip_temp(sdc_hci_cmd_vs_zephyr_read_chip_tem
 
 /** @brief Zephyr Write Tx Power Level (per Role/Connection).
  *
- * This command dynamically modifies Bluetooth LE Tx power level given a handle and a
+ * This command dynamically modifies Bluetooth LE Tx power level at the antenna given a handle and a
  * handle type (advertiser, scanner, connection).
  *
  * The Tx power of the Bluetooth LE radio interface is modified for any low-level link by
@@ -552,7 +553,10 @@ uint8_t sdc_hci_cmd_vs_zephyr_read_chip_temp(sdc_hci_cmd_vs_zephyr_read_chip_tem
  * enabled.
  *
  * The desired transmitter power level for the selected link instance is inputted
- * as Tx_Power_Level. The power setup and control can be performed dynamically
+ * as Tx_Power_Level. This value represents the actual power level fed to the antenna.
+ * When a Front-End Module is used, gain values for the SoC and FEM are calculated
+ * automatically to guarantee closest possible match to the value requested by the user
+ * at the RF output. The power setup and control can be performed dynamically
  * without the need of restarting the advertiser and scanner role/states. In case
  * of connections, the Tx power changes take effect only if the connections are
  * in a connected state.
