@@ -808,6 +808,15 @@ psa_status_t psa_driver_wrapper_import_key(
                 return( status );
 #endif /* PSA_CRYPTO_DRIVER_TEST */
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
+
+           if(psa_get_key_type(attributes) == PSA_KEY_TYPE_AES) {
+               size_t temp_bits = PSA_BYTES_TO_BITS(key_buffer_size);
+
+               if (temp_bits != 128 && temp_bits != 192 && temp_bits != 256){
+                   return PSA_ERROR_INVALID_ARGUMENT;
+               }
+           }
+
            status = cc3xx_import_key(
                          attributes,
                          data, data_length,
