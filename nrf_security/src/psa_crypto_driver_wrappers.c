@@ -814,8 +814,21 @@ psa_status_t psa_driver_wrapper_import_key(
                          key_buffer, key_buffer_size,
                          key_buffer_length, bits );
            /* Declared with fallback == true */
-           if( status != PSA_ERROR_NOT_SUPPORTED )
+           if( status != PSA_ERROR_NOT_SUPPORTED ){
+
+               /* Ugly hack used because the driver import function sets the
+                * output bits based on the key attributes. The TF-M regression
+                * tests allow importing a key without previously setting the
+                * key bits. The import function is now expected to set the output
+                * bits based on the size of the key buffer. Check: NCSDK-15763
+                */
+               if (attributes->core.bits == 0){
+                   *bits = PSA_BYTES_TO_BITS(data_length);
+               }
+
                return( status );
+           }
+
 #endif
 //TODO: Either remove or adjust when mac is available in Oberon
 #if defined(PSA_CRYPTO_DRIVER_OBERON)
