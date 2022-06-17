@@ -20,6 +20,7 @@
  */
 
 #include "common.h"
+#include "stdbool.h"
 #include "psa_crypto_aead.h"
 #include "psa_crypto_cipher.h"
 #include "psa_crypto_core.h"
@@ -95,6 +96,61 @@
 #define PSA_CRYPTO_DRIVER_PRESENT
 #endif
 #include "psa_crypto_se.h"
+#endif
+
+
+#if defined(PSA_CRYPTO_DRIVER_CC3XX)
+/* This function is exposed in the runtime library, we declare it
+ * here to avoid building warnings. */
+extern psa_status_t cc3xx_asn1_get_tag(unsigned char **p,
+                                       const unsigned char *end,
+                                       size_t *len,
+                                       int tag); 
+
+/* This function calculates the key bits of an RSA key stored in ANS1 format in PSA.
+ * Only tested with Key Pairs at the moment. This is a hack that will be removed
+ * when then runtime library sets the key bits correctly in the import key */
+static size_t rsa_get_key_bits(const uint8_t *key_data, size_t key_size, bool is_keypair){
+    int ret;
+    uint8_t **key_start_pnt = (unsigned char **)&key_data;
+    uint8_t *key_end_pnt = (unsigned char *)key_data + key_size;
+    size_t len;
+    size_t key_bits = 0;
+
+    /* Move the pointer after the sequence */
+    ret = cc3xx_asn1_get_tag(key_start_pnt, key_end_pnt, &len,
+                             0x20 |   /* Constructed */
+                             0x10);  /* Sequence */
+    if (ret < 0) {
+        return 0;
+    }
+
+    if (is_keypair) {
+        /* The key pair has a version number as an interger */
+        ret = cc3xx_asn1_get_tag(key_start_pnt, key_end_pnt, &len,
+                                 0x2);   /* Integer */
+        if (ret < 0) {
+            return 0;
+        }
+
+        *key_start_pnt += len;
+    }
+
+
+
+    /* Get the modulus n */
+    ret = cc3xx_asn1_get_tag(key_start_pnt, key_end_pnt, &len,
+                             0x2); /* Integer */
+    if (ret < 0) {
+        return 0;
+    }
+
+    if (*key_start_pnt[0] == 0x00){
+        len -= 1;
+    }
+
+    return PSA_BYTES_TO_BITS(len);
+}
 #endif
 
 psa_status_t psa_driver_wrapper_init( void )
@@ -835,8 +891,17 @@ psa_status_t psa_driver_wrapper_import_key(
                    *bits = PSA_BYTES_TO_BITS(data_length);
                }
 
-               return( status );
-           }
+               /* Ugly hack to read the RSA key bits from the modulus and
+                * not from the buffer size since the representation of the
+                * RSA keys includes different elements */
+               if(status == PSA_SUCCESS && 
+                  psa_get_key_type(attributes) == PSA_KEY_TYPE_RSA_KEY_PAIR) {
+
+                   *bits = rsa_get_key_bits(data, data_length, true);
+               }
+
+                   return( status );
+               }
 
 #endif
 //TODO: Either remove or adjust when mac is available in Oberon
