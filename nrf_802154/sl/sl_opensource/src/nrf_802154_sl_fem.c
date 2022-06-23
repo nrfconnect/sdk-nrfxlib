@@ -38,12 +38,73 @@
 #include <stdint.h>
 
 #include "nrf_802154_fal.h"
+#include "nrf_802154_types.h"
 
 #include "protocol/mpsl_fem_protocol_api.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**@brief Macro to get the number of elements in an array.
+ *
+ * @param[in] X   Array.
+ */
+#define NUMELTS(X) (sizeof((X)) / sizeof(X[0]))
+
+/**
+ * Converts TX power integer values to RADIO TX power allowed values.
+ *
+ * @param[in]  integer_tx_power  TX power integer value.
+ *
+ * @retval     RADIO TX power allowed value.
+ */
+static nrf_radio_txpower_t to_radio_tx_power_convert(int8_t integer_tx_power)
+{
+    static const nrf_radio_txpower_t allowed_values[] =
+    {
+#if defined(RADIO_TXPOWER_TXPOWER_Neg40dBm)
+        NRF_RADIO_TXPOWER_NEG40DBM, /**< -40 dBm. */
+#endif
+        NRF_RADIO_TXPOWER_NEG20DBM, /**< -20 dBm. */
+        NRF_RADIO_TXPOWER_NEG16DBM, /**< -16 dBm. */
+        NRF_RADIO_TXPOWER_NEG12DBM, /**< -12 dBm. */
+        NRF_RADIO_TXPOWER_NEG8DBM,  /**< -8 dBm. */
+        NRF_RADIO_TXPOWER_NEG4DBM,  /**< -4 dBm. */
+        NRF_RADIO_TXPOWER_0DBM,     /**< 0 dBm. */
+#if defined(RADIO_TXPOWER_TXPOWER_Pos2dBm)
+        NRF_RADIO_TXPOWER_POS2DBM,  /**< 2 dBm. */
+#endif
+#if defined(RADIO_TXPOWER_TXPOWER_Pos3dBm)
+        NRF_RADIO_TXPOWER_POS3DBM,  /**< 3 dBm. */
+#endif
+#if defined(RADIO_TXPOWER_TXPOWER_Pos4dBm)
+        NRF_RADIO_TXPOWER_POS4DBM,  /**< 4 dBm. */
+#endif
+#if defined(RADIO_TXPOWER_TXPOWER_Pos5dBm)
+        NRF_RADIO_TXPOWER_POS5DBM,  /**< 5 dBm. */
+#endif
+#if defined(RADIO_TXPOWER_TXPOWER_Pos6dBm)
+        NRF_RADIO_TXPOWER_POS6DBM,  /**< 6 dBm. */
+#endif
+#if defined(RADIO_TXPOWER_TXPOWER_Pos7dBm)
+        NRF_RADIO_TXPOWER_POS7DBM,  /**< 7 dBm. */
+#endif
+#if defined(RADIO_TXPOWER_TXPOWER_Pos8dBm)
+        NRF_RADIO_TXPOWER_POS8DBM,  /**< 8 dBm. */
+#endif
+    };
+
+    for (uint32_t i = NUMELTS(allowed_values) - 1; i > 0; i--)
+    {
+        if (integer_tx_power >= (int8_t)allowed_values[i])
+        {
+            return allowed_values[i];
+        }
+    }
+
+    return allowed_values[0];
+}
 
 int32_t mpsl_fem_disable(void)
 {
@@ -112,13 +173,11 @@ void mpsl_fem_cleanup(void)
     // Intentionally empty
 }
 
-int32_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
-                                mpsl_tx_power_split_t * const p_tx_power_split)
+void mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
+                             mpsl_tx_power_split_t * const p_tx_power_split)
 {
-    p_tx_power_split->radio_tx_power = power;
+    p_tx_power_split->radio_tx_power = to_radio_tx_power_convert(power);
     p_tx_power_split->fem_gain       = 0;
-
-    return 0;
 }
 
 int32_t mpsl_fem_pa_gain_set(int8_t gain)
@@ -156,7 +215,7 @@ int32_t nrf_802154_fal_tx_power_split(const uint8_t                           ch
 {
     (void)channel;
 
-    p_tx_power_split->radio_tx_power = power;
+    p_tx_power_split->radio_tx_power = to_radio_tx_power_convert(power);
     p_tx_power_split->fem_gain       = 0;
 
     return 0;
