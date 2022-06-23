@@ -38,66 +38,6 @@
 #include "nrf_802154_fal.h"
 
 /**
- * Converts TX power integer values to RADIO TX power allowed values.
- *
- * @param[in]  integer_tx_power  TX power integer value.
- *
- * @retval     RADIO TX power allowed value.
- */
-static nrf_radio_txpower_t to_radio_tx_power_convert(int8_t integer_tx_power)
-{
-    static const nrf_radio_txpower_t allowed_values[] =
-    {
-#if defined(RADIO_TXPOWER_TXPOWER_Neg40dBm)
-        NRF_RADIO_TXPOWER_NEG40DBM, /**< -40 dBm. */
-#endif
-        NRF_RADIO_TXPOWER_NEG20DBM, /**< -20 dBm. */
-        NRF_RADIO_TXPOWER_NEG16DBM, /**< -16 dBm. */
-        NRF_RADIO_TXPOWER_NEG12DBM, /**< -12 dBm. */
-        NRF_RADIO_TXPOWER_NEG8DBM,  /**< -8 dBm. */
-        NRF_RADIO_TXPOWER_NEG4DBM,  /**< -4 dBm. */
-        NRF_RADIO_TXPOWER_0DBM,     /**< 0 dBm. */
-#if defined(RADIO_TXPOWER_TXPOWER_Pos2dBm)
-        NRF_RADIO_TXPOWER_POS2DBM,  /**< 2 dBm. */
-#endif
-#if defined(RADIO_TXPOWER_TXPOWER_Pos3dBm)
-        NRF_RADIO_TXPOWER_POS3DBM,  /**< 3 dBm. */
-#endif
-#if defined(RADIO_TXPOWER_TXPOWER_Pos4dBm)
-        NRF_RADIO_TXPOWER_POS4DBM,  /**< 4 dBm. */
-#endif
-#if defined(RADIO_TXPOWER_TXPOWER_Pos5dBm)
-        NRF_RADIO_TXPOWER_POS5DBM,  /**< 5 dBm. */
-#endif
-#if defined(RADIO_TXPOWER_TXPOWER_Pos6dBm)
-        NRF_RADIO_TXPOWER_POS6DBM,  /**< 6 dBm. */
-#endif
-#if defined(RADIO_TXPOWER_TXPOWER_Pos7dBm)
-        NRF_RADIO_TXPOWER_POS7DBM,  /**< 7 dBm. */
-#endif
-#if defined(RADIO_TXPOWER_TXPOWER_Pos8dBm)
-        NRF_RADIO_TXPOWER_POS8DBM,  /**< 8 dBm. */
-#endif
-    };
-
-    nrf_radio_txpower_t radio_tx_power = allowed_values[NUMELTS(allowed_values) - 1];
-
-    if (integer_tx_power < (int8_t)radio_tx_power)
-    {
-        for (uint32_t i = 0; i < NUMELTS(allowed_values); i++)
-        {
-            if (integer_tx_power <= (int8_t)allowed_values[i])
-            {
-                radio_tx_power = allowed_values[i];
-                break;
-            }
-        }
-    }
-
-    return radio_tx_power;
-}
-
-/**
  * Constrains the TX power by the maximum allowed TX power allowed for a specific channel, splits it into
  * components to be applied on each stage of the transmit path and for the TX power applied to the RADIO peripheral
  * converts the integer value to a RADIO TX power allowed value.
@@ -124,7 +64,7 @@ static bool constrain_split_and_convert_tx_power(
     ret = nrf_802154_fal_tx_power_split(channel, tx_power, &fal_split_power);
 
     split_power->fem_gain       = fal_split_power.fem_gain;
-    split_power->radio_tx_power = to_radio_tx_power_convert(fal_split_power.radio_tx_power);
+    split_power->radio_tx_power = fal_split_power.radio_tx_power;
 
     return (0 == ret);
 }
