@@ -5,16 +5,16 @@
  */
 
 /**
- * @file mpsl_fem_config_nrf21540_gpio.h
+ * @file mpsl_fem_config_nrf21540_gpio_spi.h
  *
- * @defgroup mpsl_fem_nrf21540_gpio MPSL nRF21540 GPIO Front End Module Configuration
+ * @defgroup mpsl_fem_nrf21540_gpio_spi MPSL nRF21540 GPIO/SPI Front End Module Configuration
  * @ingroup  mpsl_fem
  *
  * @{
  */
 
-#ifndef MPSL_FEM_CONFIG_NRF21540_GPIO_H__
-#define MPSL_FEM_CONFIG_NRF21540_GPIO_H__
+#ifndef MPSL_FEM_CONFIG_NRF21540_GPIO_SPI_H__
+#define MPSL_FEM_CONFIG_NRF21540_GPIO_SPI_H__
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -26,8 +26,18 @@
 extern "C" {
 #endif
 
-/** @brief Configuration parameters for the Power Amplifier (PA) and Low Noise
- *  Amplifier (LNA) interface in the nRF21540 GPIO variant.
+/** @brief SPI interface. */
+typedef struct
+{
+    NRF_SPIM_Type * p_spim;     /**< Pointer to the SPI peripheral instance to be used. */
+    mpsl_fem_pin_t  mosi_pin;   /**< MOSI pin. */
+    mpsl_fem_pin_t  miso_pin;   /**< MISO pin. */
+    mpsl_fem_pin_t  sck_pin;    /**< SCK pin. */
+    mpsl_fem_pin_t  cs_pin;     /**< CS pin. */
+} mpsl_fem_spi_config_t;
+
+/** @brief Configuration parameters for the Power Amplifier (PA), the Low Noise
+ *  Amplifier (LNA) and the SPI interface in the nRF21540 GPIO/SPI variant.
  */
 typedef struct
 {
@@ -45,6 +55,9 @@ typedef struct
      *  to POUTA and POUTB gains then. */
     mpsl_fem_gpio_pin_config_t   mode_pin_config;
 
+    /** SPI interface configuration. */
+    mpsl_fem_spi_config_t        spi_config;
+
 #if defined(NRF52_SERIES)
     /** Array of PPI channels which need to be provided to Front End Module to operate. */
     uint8_t                      ppi_channels[3];
@@ -58,14 +71,15 @@ typedef struct
     uint8_t                      egu_channels[3];
 #endif
 
-} mpsl_fem_nrf21540_gpio_interface_config_t;
+} mpsl_fem_nrf21540_gpio_spi_interface_config_t;
 
 /** @brief Configures the PA and LNA device interface.
  *
  * This function sets device interface parameters for the PA/LNA module.
  * The module can then be used to control PA or LNA (or both) through the given interface and resources.
  *
- * The function also sets the PPI and GPIOTE channels to be configured for the PA/LNA interface.
+ * The function also sets the PPI and GPIOTE channels to be configured for the PA/LNA interface as well
+ * as SPI interface to be used.
  *
  * @param[in] p_config Pointer to the interface parameters for the PA/LNA device.
  *
@@ -73,12 +87,12 @@ typedef struct
  * @retval   -NRF_EPERM     PA/LNA control configuration error.
  *
  */
-int32_t mpsl_fem_nrf21540_gpio_interface_config_set(mpsl_fem_nrf21540_gpio_interface_config_t const * const p_config);
+int32_t mpsl_fem_nrf21540_gpio_spi_interface_config_set(mpsl_fem_nrf21540_gpio_spi_interface_config_t const * const p_config);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // MPSL_FEM_CONFIG_NRF21540_GPIO_H__
+#endif // MPSL_FEM_CONFIG_NRF21540_GPIO_SPI_H__
 
 /**@} */

@@ -56,10 +56,24 @@ MPSL FEM common configuration
    :project: nrfxlib
    :members:
 
+MPSL FEM common nRF21540 configuration
+**************************************
+
+.. doxygengroup:: mpsl_fem_nrf21540_common
+   :project: nrfxlib
+   :members:
+
 MPSL FEM nRF21540 GPIO
 **********************
 
 .. doxygengroup:: mpsl_fem_nrf21540_gpio
+   :project: nrfxlib
+   :members:
+
+MPSL FEM nRF21540 GPIO/SPI
+**************************
+
+.. doxygengroup:: mpsl_fem_nrf21540_gpio_spi
    :project: nrfxlib
    :members:
 

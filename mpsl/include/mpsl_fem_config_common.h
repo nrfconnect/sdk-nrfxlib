@@ -28,14 +28,23 @@ extern "C" {
 
 typedef enum
 {
-  MPSL_FEM_PIN_CFG_TYPE_PIN = 0,     /**< Old style configuration, specify pin only. Deprecated. */
-  MPSL_FEM_PIN_CFG_TYPE_PIN_PORT,    /**< New style configuration, specify pin and port. */
+  MPSL_FEM_PIN_CFG_TYPE_MPSL_FEM_PIN = 0, /**< New style configuration, specify mpsl_fem_pin_t. */
+  MPSL_FEM_PIN_CFG_TYPE_PIN_PORT,         /**< Old style configuration, specify pin and port. Deprecated. */
 } mpsl_fem_pin_config_type_t;
 
 #if defined (__CC_ARM)
   #pragma push
   #pragma anon_unions
 #endif
+
+/** @brief GPIO pin and port to be used by Front End Module.
+ */
+typedef struct
+{
+  NRF_GPIO_Type * p_port;    /**< GPIO port register address. */
+  uint8_t         port_no;   /**< GPIO port number. */
+  uint8_t         port_pin;  /**< GPIO pin number relative to the port. */
+} mpsl_fem_pin_t;
 
 /** @brief Configuration parameters for pins that enable or disable (or both) either Power Amplifier (PA) or Low Noise Amplifier (LNA).
  */
@@ -50,7 +59,7 @@ typedef struct
             uint8_t         gpio_port_no;   /**< GPIO port number. */
             uint8_t         gpio_port_pin;  /**< GPIO pin number relative to the port. */
         };
-        uint8_t gpio_pin;                   /**< GPIO pin number */
+        mpsl_fem_pin_t gpio_pin;            /**< GPIO port number, register address and pin number relative to the port. */
     };
     bool            enable;         /**< Enable toggling for this pin. */
     bool            active_high;    /**< If true, the pin will be active high. Otherwise, the pin will be active low. */
@@ -70,7 +79,7 @@ typedef struct
             uint8_t         gpio_port_no;   /**< GPIO port number. */
             uint8_t         gpio_port_pin;  /**< GPIO pin number relative to the port. */
         };
-        uint8_t gpio_pin;                   /**< GPIO pin number */
+        mpsl_fem_pin_t gpio_pin;            /**< GPIO port number, register address and pin number relative to the port. */
     };
     bool            enable;         /**< Enable toggling for this pin. */
     bool            active_high;    /**< If true, the pin will be active high. Otherwise, the pin will be active low. */

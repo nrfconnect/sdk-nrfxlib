@@ -24,6 +24,7 @@
 #include <stdbool.h>
 
 #include <nrf.h>
+#include <nrf_peripherals.h>
 #include "nrf_errno.h"
 #include "mpsl_tx_power.h"
 
@@ -56,7 +57,11 @@ typedef enum
  *  of the provided API. Multiple tasks can then subscribe to the DPPI channel
  *  (by hardware design) thus indirectly to the event.
  */
+#ifdef PPI_PRESENT
 typedef uint32_t mpsl_subscribable_hw_event_t;
+#else
+typedef uint8_t mpsl_subscribable_hw_event_t;
+#endif
 
 /** @brief MPSL Front End Module event. */
 typedef struct
