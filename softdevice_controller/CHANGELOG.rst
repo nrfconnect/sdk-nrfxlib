@@ -14,6 +14,11 @@ Main branch
 
 All the notable changes included in the main branch are documented in this section.
 
+Added
+=====
+
+* Support for changing the radio transmitter's default power level using :c:func:`sdc_default_tx_power_set` (DRGN-15903).
+
 Changes
 =======
 
@@ -25,6 +30,13 @@ Changes
   The returned transmit power is the power on the antenna that can be achieved on the current SoC and Front-End Module.
   For :c:func:`sdc_hci_cmd_vs_zephyr_read_tx_power` the returned transmit power is the power on the antenna that can be achieved on the current SoC and Front-End Module.
   (KRKNWK-13714)
+* Improved channel selection for secondary advertising packets (DRGN-17452).
+* The extended advertiser will now always include the SyncInfo in the AUX_ADV_IND if there is a corresponding periodic advertiser, even if the offset cannot be represented (DRGN-16240).
+
+Bug fixes
+=========
+
+* Fixed an issue where the maximum data length capabilities were set to 27 bytes when the configured event length (:kconfig:option:`CONFIG_BT_CTLR_SDC_MAX_CONN_EVENT_LEN_DEFAULT`) was more than 65535 us (DRGN-17454).
 
 nRF Connect SDK v2.0.0
 **********************

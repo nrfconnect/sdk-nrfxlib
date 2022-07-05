@@ -163,6 +163,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_READ_PERIODIC_ADV_LIST_SIZE = 0x204a,
     /** @brief See @ref sdc_hci_cmd_le_read_transmit_power(). */
     SDC_HCI_OPCODE_CMD_LE_READ_TRANSMIT_POWER = 0x204b,
+    /** @brief See @ref sdc_hci_cmd_le_read_rf_path_compensation(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_RF_PATH_COMPENSATION = 0x204c,
+    /** @brief See @ref sdc_hci_cmd_le_write_rf_path_compensation(). */
+    SDC_HCI_OPCODE_CMD_LE_WRITE_RF_PATH_COMPENSATION = 0x204d,
     /** @brief See @ref sdc_hci_cmd_le_set_privacy_mode(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PRIVACY_MODE = 0x204e,
     /** @brief See @ref sdc_hci_cmd_le_set_connless_cte_transmit_params(). */
@@ -175,8 +179,22 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_RECEIVE_ENABLE = 0x2059,
     /** @brief See @ref sdc_hci_cmd_le_periodic_adv_sync_transfer(). */
     SDC_HCI_OPCODE_CMD_LE_PERIODIC_ADV_SYNC_TRANSFER = 0x205a,
+    /** @brief See @ref sdc_hci_cmd_le_periodic_adv_set_info_transfer(). */
+    SDC_HCI_OPCODE_CMD_LE_PERIODIC_ADV_SET_INFO_TRANSFER = 0x205b,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_SYNC_TRANSFER_PARAMS = 0x205c,
+    /** @brief See @ref sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_DEFAULT_PERIODIC_ADV_SYNC_TRANSFER_PARAMS = 0x205d,
+    /** @brief See @ref sdc_hci_cmd_le_enhanced_read_transmit_power_level(). */
+    SDC_HCI_OPCODE_CMD_LE_ENHANCED_READ_TRANSMIT_POWER_LEVEL = 0x2076,
+    /** @brief See @ref sdc_hci_cmd_le_read_remote_transmit_power_level(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_REMOTE_TRANSMIT_POWER_LEVEL = 0x2077,
+    /** @brief See @ref sdc_hci_cmd_le_set_path_loss_reporting_params(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_PATH_LOSS_REPORTING_PARAMS = 0x2078,
+    /** @brief See @ref sdc_hci_cmd_le_set_path_loss_reporting_enable(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_PATH_LOSS_REPORTING_ENABLE = 0x2079,
+    /** @brief See @ref sdc_hci_cmd_le_set_transmit_power_reporting_enable(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_TRANSMIT_POWER_REPORTING_ENABLE = 0x207a,
 };
 
 /** @brief LE Extended Create Connection array parameters. */
@@ -822,6 +840,20 @@ typedef __PACKED_STRUCT
     int8_t max_tx_power;
 } sdc_hci_cmd_le_read_transmit_power_return_t;
 
+/** @brief LE Read RF Path Compensation return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    int16_t rf_tx_path_compensation_value;
+    int16_t rf_rx_path_compensation_value;
+} sdc_hci_cmd_le_read_rf_path_compensation_return_t;
+
+/** @brief LE Write RF Path Compensation command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    int16_t rf_tx_path_compensation_value;
+    int16_t rf_rx_path_compensation_value;
+} sdc_hci_cmd_le_write_rf_path_compensation_t;
+
 /** @brief LE Set Privacy Mode command parameter(s). */
 typedef __PACKED_STRUCT
 {
@@ -878,6 +910,20 @@ typedef __PACKED_STRUCT
     uint16_t conn_handle;
 } sdc_hci_cmd_le_periodic_adv_sync_transfer_return_t;
 
+/** @brief LE Periodic Advertising Set Info Transfer command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint16_t service_data;
+    uint8_t advertising_handle;
+} sdc_hci_cmd_le_periodic_adv_set_info_transfer_t;
+
+/** @brief LE Periodic Advertising Set Info Transfer return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_periodic_adv_set_info_transfer_return_t;
+
 /** @brief LE Set Periodic Advertising Sync Transfer Parameters command parameter(s). */
 typedef __PACKED_STRUCT
 {
@@ -893,6 +939,82 @@ typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params_return_t;
+
+/** @brief LE Set Default Periodic Advertising Sync Transfer Parameters command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t mode;
+    uint16_t skip;
+    uint16_t sync_timeout;
+    uint8_t cte_type;
+} sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params_t;
+
+/** @brief LE Enhanced Read Transmit Power Level command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t phy;
+} sdc_hci_cmd_le_enhanced_read_transmit_power_level_t;
+
+/** @brief LE Enhanced Read Transmit Power Level return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t phy;
+    int8_t current_tx_power_level;
+    int8_t max_tx_power_level;
+} sdc_hci_cmd_le_enhanced_read_transmit_power_level_return_t;
+
+/** @brief LE Read Remote Transmit Power Level command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t phy;
+} sdc_hci_cmd_le_read_remote_transmit_power_level_t;
+
+/** @brief LE Set Path Loss Reporting Parameters command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t high_threshold;
+    uint8_t high_hysteresis;
+    uint8_t low_threshold;
+    uint8_t low_hysteresis;
+    uint16_t min_time_spent;
+} sdc_hci_cmd_le_set_path_loss_reporting_params_t;
+
+/** @brief LE Set Path Loss Reporting Parameters return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_set_path_loss_reporting_params_return_t;
+
+/** @brief LE Set Path Loss Reporting Enable command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t enable;
+} sdc_hci_cmd_le_set_path_loss_reporting_enable_t;
+
+/** @brief LE Set Path Loss Reporting Enable return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_set_path_loss_reporting_enable_return_t;
+
+/** @brief LE Set Transmit Power Reporting Enable command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t local_enable;
+    uint8_t remote_enable;
+} sdc_hci_cmd_le_set_transmit_power_reporting_enable_t;
+
+/** @brief LE Set Transmit Power Reporting Enable return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_set_transmit_power_reporting_enable_return_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -3783,6 +3905,83 @@ uint8_t sdc_hci_cmd_le_read_periodic_adv_list_size(sdc_hci_cmd_le_read_periodic_
  */
 uint8_t sdc_hci_cmd_le_read_transmit_power(sdc_hci_cmd_le_read_transmit_power_return_t * p_return);
 
+/** @brief LE Read RF Path Compensation.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.75
+ *
+ * The HCI_LE_Read_RF_Path_Compensation command is used to read the RF
+ * path compensation value parameters used in the Tx power level and RSSI
+ * calculation.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Read_RF_Path_Compensation command has completed,
+ * an HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_rf_path_compensation(sdc_hci_cmd_le_read_rf_path_compensation_return_t * p_return);
+
+/** @brief LE Write RF Path Compensation.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.76
+ *
+ * The HCI_LE_Write_RF_Path_Compensation command is used to indicate the
+ * RF path gain or loss between the RF transceiver and the antenna contributed
+ * by intermediate components. A positive value means a net RF path gain and a
+ * negative value means a net RF path loss. The RF_TX_Path_Compensation_-
+ * Value parameter shall be used by the Controller to calculate the radiative Tx
+ * power level used in HCI commands, HCI events, Advertising physical channel
+ * PDUs, and Link Layer Control PDUs using the following equation:
+ *
+ * Radiative Tx power level = Tx power level at RF transceiver output + RF_TX_-
+ * Path_Compensation_Value
+ *
+ * For example, if the Tx power level is +4 (dBm) at RF transceiver output and the
+ * RF_TX_Path_Compensation_Value is -1.5 (dB), the radiative Tx power level is
+ * +4+(-1.5) = 2.5 (dBm).
+ *
+ * The RF_RX_Path_Compensation_Value parameter shall be used by the
+ * Controller to calculate the RSSI value reported to the Host.
+ *
+ * The default values for the RF path compensation are vendor-specific.
+ *
+ * This command can be issued at any time. If this command is issued during an
+ * ongoing over-the-air RF activity, the Controller may apply the Tx path
+ * compensation immediately or after a vendor-specific delay.
+ *
+ * The Controller shall apply a change to the Tx path compensation value either
+ * by leaving the power at the transceiver output unchanged and altering the
+ * radiative Tx power level or by altering the power at the transceiver output to
+ * maintain any previously chosen radiative Tx power level.
+ *
+ * If the Host needs to maintain a specific radiative transmit power level for an
+ * advertising set, it should disable that set before issuing this command then,
+ * after the command completes, reissue the HCI_LE_Set_Extended_-
+ * Advertising_Parameters command for that set and then re-enable it.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Write_RF_Path_Compensation command has completed,
+ * an HCI_Command_Complete event shall be generated.
+ *
+ * If the command leads to a change in the local radiative transmit power level for
+ * an LE ACL connection, then the Controller shall generate an HCI_LE_-
+ * Transmit_Power_Reporting event if local reporting is enabled and initiate a
+ * Link Layer Power Change Indication procedure if remote reporting is enabled.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_write_rf_path_compensation(const sdc_hci_cmd_le_write_rf_path_compensation_t * p_params);
+
 /** @brief LE Set Privacy Mode.
  *
  * The description below is extracted from Core_v5.3,
@@ -4043,6 +4242,56 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_receive_enable(const sdc_hci_cmd_le_set_
 uint8_t sdc_hci_cmd_le_periodic_adv_sync_transfer(const sdc_hci_cmd_le_periodic_adv_sync_transfer_t * p_params,
                                                   sdc_hci_cmd_le_periodic_adv_sync_transfer_return_t * p_return);
 
+/** @brief LE Periodic Advertising Set Info Transfer.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.90
+ *
+ * The HCI_LE_Periodic_Advertising_Set_Info_Transfer command is used to
+ * instruct the Controller to send synchronization information about the periodic
+ * advertising in an advertising set to a connected device.
+ *
+ * The Advertising_Handle parameter identifies the advertising set. If the
+ * parameters in the advertising set have changed since the periodic advertising
+ * was first enabled, the current parameters – not the original ones – are sent.
+ *
+ * The Service_Data parameter is a value provided by the Host to identify the
+ * periodic advertising train to the peer device. It is not used by the Controller.
+ *
+ * The connected device is identified by the Connection_Handle parameter.
+ *
+ * If the advertising set corresponding to the Advertising_Handle parameter does
+ * not exist, the Controller shall return the error code Unknown Advertising
+ * Identifier (0x42).
+ *
+ * If periodic advertising is not currently in progress for the advertising set, the
+ * Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Connection_Handle parameter does not identify a current connection, the
+ * Controller shall return the error code Unknown Connection Identifier (0x02).
+ *
+ * If the remote device has not indicated support for the Periodic Advertising Sync
+ * Transfer - Recipient feature, the Controller shall return the error code
+ * Unsupported Remote Feature (0x1A).
+ *
+ * Note: This command may complete before the periodic advertising
+ * synchronization information is sent. No indication is given as to how the
+ * recipient handled the information.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Periodic_Advertising_Set_Info_Transfer command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_periodic_adv_set_info_transfer(const sdc_hci_cmd_le_periodic_adv_set_info_transfer_t * p_params,
+                                                      sdc_hci_cmd_le_periodic_adv_set_info_transfer_return_t * p_return);
+
 /** @brief LE Set Periodic Advertising Sync Transfer Parameters.
  *
  * The description below is extracted from Core_v5.3,
@@ -4105,6 +4354,292 @@ uint8_t sdc_hci_cmd_le_periodic_adv_sync_transfer(const sdc_hci_cmd_le_periodic_
  */
 uint8_t sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params(const sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params_t * p_params,
                                                              sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params_return_t * p_return);
+
+/** @brief LE Set Default Periodic Advertising Sync Transfer Parameters.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.92
+ *
+ * The HCI_LE_Set_Default_Periodic_Advertising_Sync_Transfer_Parameters
+ * command is used to specify the initial value for the mode, skip, timeout, and
+ * Constant Tone Extension type (set by the HCI_LE_Set_Periodic_Advertising_-
+ * Sync_Transfer_Parameters command; see Section 7.8.91) to be used for all
+ * subsequent connections over the LE transport.
+ *
+ * The Mode parameter specifies the initial action to be taken. If Mode is 0x00,
+ * the Controller will ignore the information. Otherwise it will notify the Host and
+ * synchronize to the periodic advertising. Mode also specifies whether periodic
+ * advertising reports are initially enabled or disabled and whether duplicates are
+ * filtered.
+ *
+ * The Skip parameter specifies the number of consecutive periodic advertising
+ * packets that the receiver may skip after successfully receiving a periodic
+ * advertising packet.
+ *
+ * The Sync_Timeout parameter specifies the maximum permitted time between
+ * successful receives. If this time is exceeded, synchronization is lost.
+ *
+ * The CTE_Type parameter specifies whether to only synchronize to periodic
+ * advertising with certain types of Constant Tone Extension. If the periodic
+ * advertiser changes the type of the Constant Tone Extension after the Controller
+ * has synchronized with the periodic advertising, it shall remain synchronized.
+ *
+ * Note: A value of 0 (i.e. all bits clear) indicates that the presence or absence of
+ * a Constant Tone Extension is irrelevant.
+ *
+ * This command does not affect any existing connection.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Default_Periodic_Advertising_Sync_Transfer_-
+ * Parameters command has completed, an HCI_Command_Complete event
+ * shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(const sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params_t * p_params);
+
+/** @brief LE Enhanced Read Transmit Power Level.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.117
+ *
+ * The HCI_LE_Enhanced_Read_Transmit_Power_Level command is used to
+ * read the current and maximum transmit power levels of the local Controller on
+ * the ACL connection identified by the Connection_Handle parameter and the
+ * PHY indicated by the PHY parameter.
+ *
+ * If the Host sets PHY to a value that the Controller does not support, including a
+ * value that is reserved for future use, the Controller shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Connection_Handle parameter does not identify a current ACL
+ * connection, the Controller shall return the error code Unknown Connection
+ * Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Enhanced_Read_Transmit_Power_Level command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_enhanced_read_transmit_power_level(const sdc_hci_cmd_le_enhanced_read_transmit_power_level_t * p_params,
+                                                          sdc_hci_cmd_le_enhanced_read_transmit_power_level_return_t * p_return);
+
+/** @brief LE Read Remote Transmit Power Level.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.118
+ *
+ * The HCI_LE_Read_Remote_Transmit_Power_Level command is used to read
+ * the transmit power level used by the remote Controller on the ACL connection
+ * that is identified by the Connection_Handle parameter and the PHY indicated
+ * by the PHY parameter.
+ *
+ * The local Controller may use the remote transmit power level value obtained
+ * from a prior Power Change Indication or Power Control Request procedure
+ * (see [Vol 6] Part B, Section 5.1.17 and [Vol 6] Part B, Section 5.1.18). If the
+ * Controller chooses not to use these prior values, or if no prior value is available
+ * for one or more of the remote transmit power level, maximum transmit power
+ * level, or minimum transmit power level, the local Controller shall initiate a new
+ * Power Control Request procedure to obtain the remote transmit power level.
+ *
+ * If the Host sets PHY to a value that the Controller does not support, including a
+ * value that is reserved for future use, the Controller shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Connection_Handle parameter does not identify a current ACL
+ * connection, the Controller shall return the error code Unknown Connection
+ * Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Read_Remote_Transmit_Power_-
+ * Level command, the Controller shall send the HCI_Command_Status event to
+ * the Host. When the Controller has determined the remote transmit power, it
+ * shall generate an HCI_LE_Transmit_Power_Reporting event with Reason 0x02.
+ *
+ * Note: An HCI_Command_Complete event is not sent by the Controller to
+ * indicate that this command has been completed. Instead, the HCI_LE_-
+ * Transmit_Power_Reporting event indicates that this command has been
+ * completed.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_remote_transmit_power_level(const sdc_hci_cmd_le_read_remote_transmit_power_level_t * p_params);
+
+/** @brief LE Set Path Loss Reporting Parameters.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.119
+ *
+ * The HCI_LE_Set_Path_Loss_Reporting_Parameters command is used to set
+ * the path loss threshold reporting parameters for the ACL connection identified
+ * by the Connection_Handle parameter.
+ *
+ * The path loss threshold-based mechanism is described in [Vol 6] Part B,
+ * Section 4.5.16. For each zone boundary, the upwards boundary shall equal the
+ * threshold plus the hysteresis and the downwards boundary shall equal the
+ * threshold minus the hysteresis.
+ *
+ * If the Host issues this command with High_Threshold+High_Hysteresis greater
+ * than 0xFF or with Low_Threshold less than Low_Hysteresis, the Controller
+ * shall return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command with Low_Threshold greater than
+ * High_Threshold or with Low_Threshold+Low_Hysteresis greater than
+ * High_Threshold–High_Hysteresis, the Controller shall return the error code
+ * Invalid HCI Command Parameters (0x12).
+ *
+ * The Min_Time_Spent parameter indicates the minimum time that the Controller
+ * shall observe the path loss has crossed the threshold before the Controller
+ * generates an event for the threshold crossing. The Host should specify a
+ * suitable value based on the connection interval, subrate factor, and Peripheral
+ * latency.
+ *
+ * If the Host issues this command when path loss monitoring is enabled, the
+ * Controller shall override the existing path loss threshold reporting parameters
+ * with the parameters provided in this command.
+ *
+ * The High_Threshold and the Low_Threshold parameters are common to all
+ * PHYs supported by the Controller. However, the Host can reissue this
+ * command with suitable parameters whenever a PHY switch is detected.
+ *
+ * If the Connection_Handle parameter does not identify a current ACL
+ * connection, the Controller shall return the error code Unknown Connection
+ * Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Path_Loss_Reporting_Parameters command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * If the Host issues this command when path loss monitoring is enabled, and if
+ * the new parameters mean that the path loss is now in a different zone, an
+ * HCI_LE_Path_Loss_Threshold event shall be generated as soon as possible
+ * irrespective of the Min_Time_Spent parameter and the timer shall be reset.
+ *
+ * If the Host issues this command with High_Threshold parameter set to 0xFF,
+ * then the Controller shall not generate an HCI_LE_Path_Loss_Threshold event
+ * with Zone_Entered set to 0x02.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_path_loss_reporting_params(const sdc_hci_cmd_le_set_path_loss_reporting_params_t * p_params,
+                                                      sdc_hci_cmd_le_set_path_loss_reporting_params_return_t * p_return);
+
+/** @brief LE Set Path Loss Reporting Enable.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.120
+ *
+ * The HCI_LE_Set_Path_Loss_Reporting_Enable command is used to enable
+ * or disable path loss reporting for the ACL connection identified by the
+ * Connection_Handle parameter.
+ *
+ * If the Enable parameter is set to 0x01 and no prior LE Power Control Request
+ * procedure has been initiated on the ACL connection, then the Controller may
+ * need to initiate a new LE Power Control Request procedure on that ACL.
+ *
+ * Path loss reporting is disabled when the connection is first created.
+ *
+ * If the Host issues this command before it has issued the HCI_LE_Set_Path_-
+ * Loss_Reporting_Parameters command on this connection, the Controller shall
+ * return the error code Command Disallowed (0x0C).
+ *
+ * If the Connection_Handle parameter does not identify a current ACL
+ * connection, the Controller shall return the error code Unknown Connection
+ * Identifier (0x02).
+ *
+ * Enabling path loss monitoring when it is already enabled or disabling path loss
+ * monitoring when it is already disabled has no effect.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Path_Loss_Reporting_Enable command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * When reporting is enabled and was previously disabled, the Controller shall
+ * generate an HCI_LE_Path_Loss_Threshold event as soon as it has a reliable
+ * measurement of the path loss. If the Controller has to query the remote
+ * Controller for its transmit power level, then it shall generate this event within
+ * Tpath_loss_enable from the time it receives a response to its query. Otherwise, the
+ * Controller shall generate this event within Tpath_loss_enable from the time the
+ * command is issued. Tpath_loss_enable shall be Min_Time_Spent + 6 connection
+ * events or, if longer, 2 connection events where the Controller actually receives
+ * a packet from the peer, where Min_Time_Spent is specified by the
+ * HCI_LE_Set_Path_Loss_Reporting_Parameters command.
+ *
+ * After the initial event on reporting being enabled, the Controller shall generate
+ * this event each time it determines that the path loss has moved to a different
+ * zone and stayed in that zone for Min_Time_Spent.As stated in [Vol 6] Part B,
+ * Section 4.5.16, two consecutive events must not indicate the same zone.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_path_loss_reporting_enable(const sdc_hci_cmd_le_set_path_loss_reporting_enable_t * p_params,
+                                                      sdc_hci_cmd_le_set_path_loss_reporting_enable_return_t * p_return);
+
+/** @brief LE Set Transmit Power Reporting Enable.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.121
+ *
+ * The HCI_LE_Set_Transmit_Power_Reporting_Enable command is used to
+ * enable or disable the reporting to the local Host of transmit power level
+ * changes in the local and remote Controllers for the ACL connection identified
+ * by the Connection_Handle parameter.
+ *
+ * If the Remote_Enable parameter is set to 0x01 and no prior LE Power Control
+ * Request procedure has been initiated on the ACL connection, then the
+ * Controller shall initiate a new LE Power Control Request procedure on that ACL.
+ *
+ * Reporting is disabled when the connection is first created.
+ *
+ * If the Connection_Handle parameter does not identify a current ACL
+ * connection, the Controller shall return the error code Unknown Connection
+ * Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Transmit_Power_Reporting_Enable command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * When local reporting is enabled, the Controller shall generate an HCI_LE_-
+ * Transmit_Power_Reporting event with Reason 0x00 each time the local
+ * transmit power level is changed.
+ *
+ * When remote reporting is enabled, the Controller shall generate an HCI_LE_-
+ * Transmit_Power_Reporting event with Reason 0x01 each time it becomes
+ * aware that the remote transmit power level has changed.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_transmit_power_reporting_enable(const sdc_hci_cmd_le_set_transmit_power_reporting_enable_t * p_params,
+                                                           sdc_hci_cmd_le_set_transmit_power_reporting_enable_return_t * p_return);
 
 /** @} end of HCI_VS_API */
 

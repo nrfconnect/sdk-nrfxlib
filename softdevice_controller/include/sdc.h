@@ -100,8 +100,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 854
-#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 942
+#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 894
+#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 990
 #define __MEM_BUFFER_OVERHEAD_SIZE 7
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * (tx_size - SDC_DEFAULT_TX_PACKET_SIZE) + \
@@ -146,10 +146,10 @@ extern "C" {
 #define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (40 + (buffer_count) * 290)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4269+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (614+(max_adv_data))
-#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2258+(max_adv_data)*18)/10)
-#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (417+(max_adv_data))
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4429+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (630+(max_adv_data))
+#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2418+(max_adv_data)*18)/10)
+#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (433+(max_adv_data))
 
 /** @brief Maximum required memory for a given advertising buffer size.
  *
@@ -173,7 +173,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (168 + (buffer_count) * 264)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (184 + (buffer_count) * 264)
 
 /** Memory required for the periodic adv list.
  *
@@ -661,6 +661,21 @@ int32_t sdc_support_le_periodic_sync(void);
  * @retval -NRF_EOPNOTSUPP  The coexistence feature is not supported.
  */
 int32_t sdc_coex_adv_mode_configure(bool adv_cont_on_denial);
+
+/** @brief Support for setting the default radio TX power level
+ *
+ * This API sets the default power level for radio TX activity in the controller.
+ *
+ * The power level set will be equal to or less than the one requested, based on the values
+ * supported by the hardware used. Values outside the suported range will be set to the nearest
+ * supported value.
+ *
+ * @param[in] requested_power_level The power level in dBm to use.
+ *
+ * @retval 0           Success
+ * @retval -NRF_EPERM  This API must be called before @ref sdc_enable().
+ */
+int32_t sdc_default_tx_power_set(int8_t requested_power_level);
 
 #ifdef __cplusplus
 }
