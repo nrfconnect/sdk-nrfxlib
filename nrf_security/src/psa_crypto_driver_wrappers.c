@@ -1723,6 +1723,12 @@ psa_status_t psa_driver_wrapper_cipher_update(
 #endif /* PSA_CRYPTO_DRIVER_TEST */
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
         case PSA_CRYPTO_CC3XX_DRIVER_ID:
+            /* Workaround until the cc3xx driver always return success with input
+             * length == 0. Check: NCSDK-16036
+             */
+            if(input_length == 0){
+                return PSA_SUCCESS;
+            }
             return( cc3xx_cipher_update(
                         &operation->ctx.cc3xx_driver_ctx,
                         input, input_length,
