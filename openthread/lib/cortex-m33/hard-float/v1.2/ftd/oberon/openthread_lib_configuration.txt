@@ -1,6 +1,6 @@
-OpenThread_commit=thread-reference-20200818-ncs1-rc3-759-ge2a765599
-NRFXLIB_commit=v2.0.0-rc2-1-1-g56ed2b3e
-MBEDTLS_commit=v3.0.0-ncs2-rc1-0-gb36261c55
+OpenThread_commit=thread-reference-20200818-ncs1-rc3-760-gb6126a143
+NRFXLIB_commit=v2.0.0-1-g6aa60eb5
+MBEDTLS_commit=v3.0.0-ncs2-0-gb36261c55
 
 CONFIG_OPENTHREAD_BUILD_OUTPUT_STRIPPED=y
 CONFIG_OPENTHREAD_CHANNEL=11
