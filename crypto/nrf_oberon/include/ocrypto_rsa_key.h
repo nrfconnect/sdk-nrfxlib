@@ -124,7 +124,7 @@ typedef struct {
  * @param      n_len    Length of @p n.
  *
  * @retval -1 If the input length is invalid.
- * @retval 0  Otherwise.
+ * @retval 0  On success.
  *
  * @remark The public exponent is fixed at 65537.
  */
@@ -142,7 +142,7 @@ int ocrypto_rsa1024_init_pub_key(
  * @param      d_len   Length of @p d.
  *
  * @retval -1 If the input length is invalid.
- * @retval 0  Otherwise.
+ * @retval 0  On success.
  */
 int ocrypto_rsa1024_init_key(
     ocrypto_rsa1024_key *pk,
@@ -165,7 +165,7 @@ int ocrypto_rsa1024_init_key(
  * @param      qi_len     Length of @p qinv.
  *
  * @retval -1 If the input length is invalid.
- * @retval 0  Otherwise.
+ * @retval 0  On success.
  */
 int ocrypto_rsa1024_init_crt_key(
     ocrypto_rsa1024_crt_key *sk,
@@ -189,7 +189,7 @@ int ocrypto_rsa1024_init_crt_key(
  * @param      n_len   Length of @p n.
  *
  * @retval -1 If the input length is invalid.
- * @retval 0  Otherwise.
+ * @retval 0  On success.
  *
  * @remark The public exponent is fixed at 65537.
  */
@@ -207,7 +207,7 @@ int ocrypto_rsa2048_init_pub_key(
  * @param      d_len   Length of @p d.
  *
  * @retval -1 If the input length is invalid.
- * @retval 0  Otherwise.
+ * @retval 0  On success.
  */
 int ocrypto_rsa2048_init_key(ocrypto_rsa2048_key *sk,
     const uint8_t *n, size_t n_len,
@@ -229,7 +229,7 @@ int ocrypto_rsa2048_init_key(ocrypto_rsa2048_key *sk,
  * @param      qi_len     Length of @p qinv.
  *
  * @retval -1 If the input length is invalid.
- * @retval 0  Otherwise.
+ * @retval 0  On success.
  */
 int ocrypto_rsa2048_init_crt_key(
     ocrypto_rsa2048_crt_key *sk,

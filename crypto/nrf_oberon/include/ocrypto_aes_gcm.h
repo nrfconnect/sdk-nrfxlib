@@ -64,9 +64,9 @@ typedef struct {
  * The context @p ctx is initialized using the given key @p key and initial vector @p iv.
  *
  * @param[out] ctx   Context.
- * @param      key   AES key.
+ * @param      key   AES key. May be NULL.
  * @param      size  Key size (16, 24, or 32 bytes).
- * @param      iv    Initial vector.
+ * @param      iv    Initial vector. May be NULL.
  *
  * @remark If @p key is NULL only @p iv is set. If @p iv is NULL only @p key is set.
            Both @p key and @p iv must be set before update is called.

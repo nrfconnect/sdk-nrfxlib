@@ -1136,36 +1136,18 @@ psa_status_t psa_driver_wrapper_cipher_encrypt(
 
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
 #if defined(PSA_CRYPTO_DRIVER_OBERON)
-            /* Circumvention on API-breaker that breaks runtime compatibility.
-            * Please see NCSDK-15614 and remove this once updated runtimes is created. */
-            if(iv_length > 0)
-            {
-                /* Copying the IV to the output variable because runtime-libraries currently
-                * doesn't support the new parameters in Mbed TLS 3.1.0 (iv and iv_length).
-                * Also updating the output and output_size variables to match with the
-                * expected format of the runtime libraries. */
-                output -= iv_length;
-                memcpy(output, iv, iv_length);
-                output_size += iv_length;
-            }
 
             status = oberon_cipher_encrypt( attributes,
                                             key_buffer,
                                             key_buffer_size,
                                             alg,
+                                            iv,
+                                            iv_length,
                                             input,
                                             input_length,
                                             output,
                                             output_size,
                                             output_length );
-            if(iv_length > 0){
-                output += iv_length;
-                output_size -= iv_length;
-                /* The output length will include the IV which is added by the
-                * PSA core after the driver wrapper call so we need to deduct it
-                * from here. */
-                *output_length -= iv_length;
-            }
 
             /* Declared with fallback == true */
             if( status != PSA_ERROR_NOT_SUPPORTED )

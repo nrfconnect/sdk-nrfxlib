@@ -25,6 +25,78 @@ extern "C" {
 
 
 /**
+ * EC-JPAKE-P256 public key.
+ *
+ * @param[out] X       Public key.
+ * @param      G       Generator. May be NULL to use the default generator.
+ * @param      x       Secret key. 0 < x < group order
+ *
+ * @retval 0  If inputs are valid.
+ * @retval -1 Otherwise.
+ */
+int ocrypto_ecjpake_get_public_key(
+    uint8_t X[64],
+    const uint8_t G[64],
+    const uint8_t x[32]);
+
+/**
+ * EC-JPAKE-P256 zero knowledge proof hash.
+ *
+ * @param[out] hash    Generated hash.
+ * @param      X       Public key.
+ * @param      V       ZKP ephemeral public key.
+ * @param      G       Generator. May be NULL to use the default generator.
+ * @param      id      Identity of originator.
+ * @param      id_len  Identity length.
+ */
+void ocrypto_ecjpake_get_zkp_hash(
+    uint8_t hash[32],
+    const uint8_t X[64],
+    const uint8_t V[64],
+    const uint8_t G[64],
+    const char *id, size_t id_len);
+
+/**
+ * EC-JPAKE-P256 zero knowledge proof generation.
+ *
+ * @param[out] r        ZKP signature.
+ * @param      x       Secret key. 0 < x < group order
+ * @param      v       ZKP ephemeral secret key. 0 < v < group order
+ * @param      hash     Identity of originator.
+ * @param      hash_len Identity length.
+ *
+ * @retval 0  If inputs are valid.
+ * @retval -1 Otherwise.
+ */
+int ocrypto_ecjpake_zkp_sign(
+    uint8_t r[32],
+    const uint8_t x[32],
+    const uint8_t v[32],
+    const uint8_t *hash,
+    size_t hash_len);
+    
+/**
+ * EC-JPAKE-P256 zero knowledge proof verification.
+ *
+ * @param      G        Generator. May be NULL to use the default generator.
+ * @param      X        Public key.
+ * @param      V        ZKP ephemeral public key.
+ * @param      r        ZKP signature.
+ * @param      hash     Identity of originator.
+ * @param      hash_len Identity length.
+ *
+ * @retval 0  If the proof is valid.
+ * @retval -1 Otherwise.
+ */
+int ocrypto_ecjpake_zkp_verify(
+    const uint8_t G[64],
+    const uint8_t X[64],
+    const uint8_t V[64],
+    const uint8_t r[32],
+    const uint8_t *hash,
+    size_t hash_len);
+
+/**
  * EC-JPAKE-P256 public key and zero knowledge proof generation.
  *
  * @param[out] X       Public key.
@@ -113,6 +185,25 @@ int ocrypto_ecjpake_process_shared_secret(
     const uint8_t rs[32]);
 
 /**
+ * EC-JPAKE-P256 premaster secret key generation.
+ *
+ * @param[out] secret  Resulting premaster secret key.
+ * @param      Xr      Remote client/server public key.
+ * @param      X2      Remote public key 2.
+ * @param      xs      Client/server secret key.
+ * @param      x2      Secret key 2.
+ *
+ * @retval 0  If the premaster secret key is valid.
+ * @retval -1 Otherwise.
+ */
+int ocrypto_ecjpake_get_premaster_secret_key(
+    uint8_t secret[32],
+    const uint8_t Xr[64],
+    const uint8_t X2[64],
+    const uint8_t xs[32],
+    const uint8_t x2[32]);
+
+/**
  * EC-JPAKE-P256 secret key generation.
  *
  * @param[out] secret  Resulting premaster secret.
@@ -121,7 +212,7 @@ int ocrypto_ecjpake_process_shared_secret(
  * @param      xs      Client/server secret key.
  * @param      x2      Secret key 2.
  *
- * @retval 0  If the key is valid.
+ * @retval 0  If the secret is valid.
  * @retval -1 Otherwise.
  */
 int ocrypto_ecjpake_get_secret_key(
