@@ -72,15 +72,14 @@ void ocrypto_aes_cbc_pkcs_init(
 /**
  * AES-CBC output size calculation.
  *
- * Calculates the length of the output written to @p ct in a call to @c ocrypto_aes_cbc_pkcs_update. 
- *
- * This function can be called repeatedly until the whole message is processed.
+ * Calculates the length of the output written to @p out in a call to @c ocrypto_aes_cbc_pkcs_update. 
  *
  * @param   ctx    Context.
  * @param   pt_len Length of data to be added.
  * 
  * @returns The length of the output.
  *
+ * @remark @c ocrypto_aes_cbc_pkcs_output_size must be called before @c ocrypto_aes_cbc_pkcs_update.
  * @remark Initialization of the context @p ctx through
  *         @c ocrypto_aes_ctr_init is required before this function can be called.
  */
@@ -89,29 +88,35 @@ size_t ocrypto_aes_cbc_pkcs_output_size(ocrypto_aes_cbc_pkcs_ctx *ctx, size_t pt
 /**
  * AES-CBC incremental encryption/decryption.
  *
- * The plaintext @p pt is encrypted to the ciphertext @p ct using the context @p ctx.
+ * The input @p in is encrypted or decrypted to the output @p out using the context @p ctx.
  *
  * This function can be called repeatedly until the whole message is processed.
  *
  * @param      ctx     Context.
- * @param[out] ct      Ciphertext.
- * @param      pt      Plaintext.
- * @param      pt_len  Length of @p pt and @p ct.
+ * @param[out] out     Output, ciphertext for encryption, plaintext for decryption.
+ * @param      in      Input, plaintext for encryption, ciphertext for decryption.
+ * @param      in_len  Length of @p in.
  *
- * @remark @p ct may be same as @p pt.
+ * @remark @p in may be same as @p out.
+ * @remark A single common buffer may be used for the whole plaintext and ciphertext
+           if @p in and @p out of the first call are equal and incremented individually
+           by the input and output size for each further call (meaning the plaintext
+           and ciphertext are stored contiguously in the common buffer).
  * @remark Initialization of the context @p ctx through
  *         @c ocrypto_aes_ctr_init is required before this function can be called.
+ * @remark The maximum length of @p out is @p in_len + 15.
+ * @remark The exact length of @p out is returned by @c ocrypto_aes_cbc_pkcs_output_size.
  */
 void ocrypto_aes_cbc_pkcs_update(
     ocrypto_aes_cbc_pkcs_ctx *ctx,
-    uint8_t *ct,
-    const uint8_t *pt, size_t pt_len);
+    uint8_t *out,
+    const uint8_t *in, size_t in_len);
 
 /**
  * AES-CBC-PKCS7 final encryption output.
  *
  * @param      ctx    Context.
- * @param[out] ct     Ciphertext.
+ * @param[out] ct     Last ciphertext block.
  */
 void ocrypto_aes_cbc_pkcs_final_enc(ocrypto_aes_cbc_pkcs_ctx *ctx, uint8_t ct[16]);
 
@@ -119,11 +124,15 @@ void ocrypto_aes_cbc_pkcs_final_enc(ocrypto_aes_cbc_pkcs_ctx *ctx, uint8_t ct[16
  * AES-CBC-PKCS7 final decryption output.
  *
  * @param      ctx    Context.
- * @param[out] pt     Plaintext.
- * @param[out] pt_len Plaintext length.
+ * @param[out] pt     Last part of the plaintext.
+ * @param[out] pt_len Length of @p pt.
  *
- * @retval 0  If the input is properly padded.
+ * @retval 0  If the ciphertext input is properly padded.
  * @retval -1 Otherwise.
+ *
+ * @remark The total length of the ciphertext added before a call to this function
+           must be non-zero and a multiple of 16.
+ * @remark The maximum length of @p pt is 15.
  */
 int ocrypto_aes_cbc_pkcs_final_dec(ocrypto_aes_cbc_pkcs_ctx *ctx, uint8_t *pt, size_t *pt_len);
 /** @} */

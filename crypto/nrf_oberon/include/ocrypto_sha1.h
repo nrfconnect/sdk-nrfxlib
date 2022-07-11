@@ -45,8 +45,8 @@ extern "C" {
 
 /**@cond */
 typedef struct {
-    uint32_t h[5], w[80];
-    uint8_t  buffer[64];
+    uint32_t h[5];
+    uint8_t  buffer[80 * 4];
     uint32_t length;
     size_t   in_length;
 } ocrypto_sha1_ctx;

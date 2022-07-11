@@ -41,6 +41,26 @@ typedef struct {
 
 
 /**
+ * ECDH P-256 secret key check.
+ *
+ * @param     sk Secret key to check.
+ *
+ * @retval 0  If @p sk is a valid secret key.
+ * @retval -1 Otherwise.
+ */
+int ocrypto_ecdh_p256_secret_key_check(const uint8_t sk[32]);
+
+/**
+ * ECDH P-256 public key check.
+ *
+ * @param     pk Public key to check.
+ *
+ * @retval 0  If @p pk is a valid public key.
+ * @retval -1 Otherwise.
+ */
+int ocrypto_ecdh_p256_public_key_check(const uint8_t pk[64]);
+
+/**
  * ECDH P-256 public key generation `r = n * p`.
  *
  * Given a secret key @p sk the corresponding public key is computed and put

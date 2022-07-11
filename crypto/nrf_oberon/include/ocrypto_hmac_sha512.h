@@ -31,6 +31,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "ocrypto_sha512.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,6 +43,73 @@ extern "C" {
  */
 #define ocrypto_hmac_sha512_BYTES (64)
 
+
+/**@cond */
+typedef struct {
+    ocrypto_sha512_ctx sha;
+    uint8_t k[128];
+} ocrypto_hmac_sha512_ctx;
+/**@endcond */
+
+
+/**@name Incremental HMAC-SHA-512 generator.
+ *
+ * This group of functions can be used to incrementally compute the HMAC-SHA-512
+ * authenticator for a given message.
+ */
+/**@{*/
+
+/**
+ * HMAC-SHA-512 initialization.
+ *
+ * The generator state @p ctx is initialized by this function.
+ *
+ * @param[out] ctx Generator state.
+ * @param      key     HMAC key.
+ * @param      key_len Length of @p key.
+ */
+void ocrypto_hmac_sha512_init(
+    ocrypto_hmac_sha512_ctx *ctx,
+    const uint8_t* key, size_t key_len);
+
+/**
+ * HMAC-SHA-512 incremental data input.
+ *
+ * The generator state @p ctx is updated to authenticate a message chunk @p in.
+ *
+ * This function can be called repeatedly until the whole message is processed.
+ *
+ * @param      ctx    Generator state.
+ * @param      in     Input data.
+ * @param      in_len Length of @p in.
+ *
+ * @remark Initialization of the generator state @p ctx through
+ *         @c ocrypto_hmac_sha512_init is required before this function can be called.
+ */
+void ocrypto_hmac_sha512_update(
+    ocrypto_hmac_sha512_ctx *ctx,
+    const uint8_t *in, size_t in_len);
+
+/**
+ * HMAC-SHA-512 output.
+ *
+ * The generator state @p ctx is updated to finalize the HMAC for the previously
+ * processed message chunks. The authenticator is put into @p r.
+ *
+ * @param      ctx Generator state.
+ * @param[out] r   Generated HMAC value.
+ *
+ * @remark Initialization of the generator state @p ctx through
+ *         @c ocrypto_hmac_sha512_init is required before this function can be called.
+ *
+ * @remark After return, the generator state @p ctx must no longer be used with
+ *         @c ocrypto_hmac_sha512_update and @c ocrypto_hmac_sha512_final unless it is
+ *         reinitialized using @c ocrypto_hmac_sha512_init.
+ */
+void ocrypto_hmac_sha512_final(
+    ocrypto_hmac_sha512_ctx *ctx,
+    uint8_t r[ocrypto_hmac_sha512_BYTES]);
+/** @} */
 
 /**
  * HMAC-SHA512 algorithm.

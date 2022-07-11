@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 /**@file
  * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
  * @ingroup ocrypto
@@ -55,9 +56,12 @@ typedef struct {
  * The context @p ctx is initialized using the given key @p key and initial vector @p iv.
  *
  * @param[out] ctx   Context.
- * @param      key   AES key.
+ * @param      key   AES key. May be NULL.
  * @param      size  Key size (16, 24, or 32 bytes).
- * @param      iv    Initial vector.
+ * @param      iv    Initial vector. May be NULL.
+ *
+ * @remark If @p key is NULL only @p iv is set. If @p iv is NULL only @p key is set.
+           Both @p key and @p iv must be set before update is called.
  */
 void ocrypto_aes_cbc_init_enc(ocrypto_aes_cbc_ctx *ctx, const uint8_t *key, size_t size, const uint8_t iv[16]);
 
@@ -67,9 +71,12 @@ void ocrypto_aes_cbc_init_enc(ocrypto_aes_cbc_ctx *ctx, const uint8_t *key, size
  * The context @p ctx is initialized using the given key @p key and initial vector @p iv.
  *
  * @param[out] ctx   Context.
- * @param      key   AES key.
+ * @param      key   AES key. May be NULL.
  * @param      size  Key size (16, 24, or 32 bytes).
- * @param      iv    Initial vector.
+ * @param      iv    Initial vector. May be NULL.
+ *
+ * @remark If @p key is NULL only @p iv is set. If @p iv is NULL only @p key is set.
+           Both @p key and @p iv must be set before update is called.
  */
 void ocrypto_aes_cbc_init_dec(ocrypto_aes_cbc_ctx *ctx, const uint8_t *key, size_t size, const uint8_t iv[16]);
 

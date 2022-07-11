@@ -54,7 +54,7 @@ extern "C" {
  *
  * @retval -1 If the message is too long (m_len > 117).
  * @retval -2 If the seed is too short (s_len < 125 - m_len).
- * @retval 0  Otherwise.
+ * @retval 0  On success.
  *
  * @remark The key @p pk should be initialized with @c ocrypto_rsa1024_init_pub_key.
  * @remark The @p seed should consist of non-zero random bytes.
@@ -124,7 +124,7 @@ int ocrypto_rsa1024_pkcs1_v15_crt_decrypt(
  * @param      pk        A valid 1024-bit RSA public key.
  *
  * @retval -1 If the message is too long (m_len > 62).
- * @retval 0  Otherwise.
+ * @retval 0  On success.
  *
  * @remark The key @p pk should be initialized with @c ocrypto_rsa1024_init_pub_key.
  * @remark @p c may be same as @p m.
@@ -229,7 +229,7 @@ int ocrypto_rsa1024_pkcs1_v15_sha256_crt_sign(
 /**
  * 1024-bit RSA PKCS1 V1.5 SHA-256 signature verify.
  *
- * The signature @p s is verified for a valid signature of message @p m.
+ * The signature @p s of the input message @p m is verified.
  *
  * @param s      The 128-byte signature.
  * @param m      The signed message.
@@ -259,7 +259,7 @@ int ocrypto_rsa1024_pkcs1_v15_sha256_verify(
  * @param      sk      A valid 1024-bit RSA secret key.
  *
  * @retval -2  If the salt is too long.
- * @retval 0   Otherwise.
+ * @retval 0   On success.
  *
  * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_key.
  * @remark @p s may be same as @p m.
@@ -283,7 +283,7 @@ int ocrypto_rsa1024_pss_sha256_sign(
  * @param      sk      A valid 1024-bit RSA secret key with CRT coefficients.
  *
  * @retval -2  If the salt is too long.
- * @retval 0   Otherwise.
+ * @retval 0   On success.
  *
  * @remark The key @p sk should be initialized with @c ocrypto_rsa1024_init_crt_key.
  * @remark @p s may be same as @p m.
@@ -297,7 +297,7 @@ int ocrypto_rsa1024_pss_sha256_crt_sign(
 /**
  * 1024-bit RSA PSS SHA-256 signature verify.
  *
- * The signature @p s is verified for a valid signature of message @p m.
+ * The signature @p s of the input message @p m is verified.
  *
  * @param s      The 128-byte signature.
  * @param m      The signed message.
@@ -338,7 +338,7 @@ int ocrypto_rsa1024_pss_sha256_verify(
  *
  * @retval -1 If the message is too long (mlen > 245).
  * @retval -2 If the seed is too short (slen < 253 - mlen).
- * @retval 0  Otherwise.
+ * @retval 0  On success.
  *
  * @remark The key @p pk should be initialized with @c ocrypto_rsa2048_init_pub_key.
  * @remark The @p seed should consist of non-zero random bytes.
@@ -408,7 +408,7 @@ int ocrypto_rsa2048_pkcs1_v15_crt_decrypt(
  * @param      pk        A valid 2048-bit RSA public key.
  *
  * @retval -1 If the message is too long (mlen > 190).
- * @retval 0  Otherwise.
+ * @retval 0  On success.
  *
  * @remark The key @p pk should be initialized with @c ocrypto_rsa2048_init_pub_key.
  * @remark @p c may be same as @p m.
@@ -513,7 +513,7 @@ int ocrypto_rsa2048_pkcs1_v15_sha256_crt_sign(
 /**
  * 2048-bit RSA PKCS1 V1.5 SHA-256 signature verify.
  *
- * The signature @p s is verified for a valid signature of message @p m.
+ * The signature @p s of the input message @p m is verified.
  *
  * @param s      The 256-byte signature.
  * @param m      The signed message.
@@ -543,7 +543,7 @@ int ocrypto_rsa2048_pkcs1_v15_sha256_verify(
  * @param      sk      A valid 2048-bit RSA secret key.
  *
  * @retval -2  If the salt is too long.
- * @retval 0   Otherwise.
+ * @retval 0   On success.
  *
  * @remark The key @p sk should be initialized with @c ocrypto_rsa2048_init_key.
  * @remark @p s may be same as @p m.
@@ -567,7 +567,7 @@ int ocrypto_rsa2048_pss_sha256_sign(
  * @param      sk      A valid 2048-bit RSA secret key with CRT coefficients.
  *
  * @retval -2  If the salt is too long.
- * @retval 0   Otherwise.
+ * @retval 0   On success.
  *
  * @remark The key @p sk should be initialized with @c ocrypto_rsa2048_init_crt_key.
  * @remark @p s may be same as @p m.
@@ -581,7 +581,7 @@ int ocrypto_rsa2048_pss_sha256_crt_sign(
 /**
  * 2048-bit RSA PSS SHA-256 signature verify.
  *
- * The signature @p s is verified for a valid signature of message @p m.
+ * The signature @p s of the input message @p m is verified.
  *
  * @param s      The 256-byte signature.
  * @param m      The signed message.

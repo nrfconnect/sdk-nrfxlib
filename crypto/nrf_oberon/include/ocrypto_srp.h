@@ -154,6 +154,31 @@ void ocrypto_srp_public_key(
     const uint8_t v[ocrypto_srp_VERIFIER_BYTES]);
 /**@}*/
 
+/**
+ * SRP-6 Server Public Key.
+ *
+ * @param[out] pub_b  Generated public key, must be 32 bit aligned.
+ * @param      priv_b Private key.
+ * @param      k      Multiplier.
+ * @param      v      Password verifier.
+ */
+void ocrypto_srp_server_public_key(
+    uint8_t pub_b[ocrypto_srp_PUBLIC_KEY_BYTES],
+    const uint8_t priv_b[ocrypto_srp_SECRET_KEY_BYTES],
+    const uint8_t k[ocrypto_srp_PUBLIC_KEY_BYTES],
+    const uint8_t v[ocrypto_srp_VERIFIER_BYTES]);
+    
+/**
+ * SRP - 6 Client Public Key.
+ *
+ * @param[out] pub_a  Generated public key.
+ * @param      priv_a Private key.
+ * @param      a_len  Length of @p priv_a.
+ */
+void ocrypto_srp_client_public_key(
+    unsigned char pub_a[ocrypto_srp_PUBLIC_KEY_BYTES],
+    const unsigned char *priv_a, size_t a_len);
+
 /**@name SRP-6 session key generation.
  *
  * A premaster secret can be derived from both the client's and server's public
@@ -203,6 +228,54 @@ int ocrypto_srp_premaster_secret(
     const uint8_t v[ocrypto_srp_VERIFIER_BYTES]);
 
 /**
+ * SRP-6 server premaster secret.
+ *
+ * The premaster secret between the client and the server is computed using the
+ * client public key @p pub_a, the server private key @p priv_b, the scrambling
+ * parameter @p u and the password verifier @p v. If the client public key
+ * @p pub_a is valid, the premaster secret is then put into @p s. The premaster
+ * secret can be used to generate encryption keys.
+ *
+ * @param[out] s      Generated premaster secret, must be 32-bit aligned.
+ * @param      pub_a  Client public key.
+ * @param      priv_b Server private key.
+ * @param      u      Scrambling parameter; generated with @c ocrypto_srp_scrambling_parameter.
+ * @param      u_len  Length of @p u.
+ * @param      v      Password verifier.
+ *
+ * @retval 0 If @p pub_a is a valid public key.
+ * @retval 1 Otherwise.
+ */
+int ocrypto_srp_server_premaster_secret(
+    uint8_t s[ocrypto_srp_PREMASTER_SECRET_BYTES],
+    const uint8_t pub_a[ocrypto_srp_PUBLIC_KEY_BYTES],
+    const uint8_t priv_b[ocrypto_srp_SECRET_KEY_BYTES],
+    const uint8_t *u, size_t u_len,
+    const uint8_t v[ocrypto_srp_VERIFIER_BYTES]);
+
+/**
+ * SRP-6 client premaster secret.
+ *
+ * @param[out] s      Generated premaster secret, must be 32 bit aligned.
+ * @param      priv_a Client private key.
+ * @param      pub_b  Server public key.
+ * @param      k      Multiplier.
+ * @param      u      Scrambling parameter; generated with @c srp_scrambling_parameter.
+ * @param      h      Password hash.
+ * @param      h_len  Length of @p h and @p u.
+ *
+ * @retval 0 If @p pub_a is a valid public key.
+ * @retval 1 Otherwise.
+ */
+int ocrypto_srp_client_premaster_secret(
+    uint8_t s[ocrypto_srp_PREMASTER_SECRET_BYTES],
+    const uint8_t priv_a[ocrypto_srp_SECRET_KEY_BYTES],
+    const uint8_t pub_b[ocrypto_srp_PUBLIC_KEY_BYTES],
+    const uint8_t k[ocrypto_srp_PUBLIC_KEY_BYTES],
+    const uint8_t *u,
+    const uint8_t *h, size_t h_len);
+
+ /**
  * SRP-6 SRP session key.
  *
  * Generates the shared SRP session key from the premaster secret @p s and puts
