@@ -18,6 +18,7 @@ Added
 =====
 
 * Support for changing the radio transmitter's default power level using :c:func:`sdc_default_tx_power_set` (DRGN-15903).
+* Support for disabling or enabling peripheral latency using :c:func:`sdc_hci_cmd_vs_peripheral_latency_mode_set` (DRGN-15706).
 
 Changes
 =======

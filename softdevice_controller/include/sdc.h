@@ -100,7 +100,7 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 894
+#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 902
 #define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 990
 #define __MEM_BUFFER_OVERHEAD_SIZE 7
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
@@ -642,6 +642,17 @@ int32_t sdc_support_le_periodic_adv(void);
  * @retval -NRF_EOPNOTSUPP  LE Periodic advertising is not supported.
  */
 int32_t sdc_support_le_periodic_sync(void);
+
+/** @brief Support LE Power Control
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Power Control.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
+ */
+int32_t sdc_support_le_power_control(void);
 
 /** @brief Configure the coex advertising mode
  *

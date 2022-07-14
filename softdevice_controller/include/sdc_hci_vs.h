@@ -71,6 +71,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_COEX_SCAN_MODE_CONFIG = 0xfd07,
     /** @brief See @ref sdc_hci_cmd_vs_coex_priority_config(). */
     SDC_HCI_OPCODE_CMD_VS_COEX_PRIORITY_CONFIG = 0xfd08,
+    /** @brief See @ref sdc_hci_cmd_vs_peripheral_latency_mode_set(). */
+    SDC_HCI_OPCODE_CMD_VS_PERIPHERAL_LATENCY_MODE_SET = 0xfd09,
 };
 
 /** @brief VS subevent Code values. */
@@ -98,6 +100,17 @@ enum sdc_hci_vs_coex_scan_mode
     SDC_HCI_VS_COEX_SCAN_MODE_REQUEST_ON_TX = 0x01,
 };
 
+/** @brief Peripheral latency disable/enable modes. */
+enum sdc_hci_vs_peripheral_latency_mode
+{
+    /** @brief Peripheral latency enable. */
+    SDC_HCI_VS_PERIPHERAL_LATENCY_MODE_ENABLE = 0x00,
+    /** @brief Peripheral latency disable. */
+    SDC_HCI_VS_PERIPHERAL_LATENCY_MODE_DISABLE = 0x01,
+    /** @brief Peripheral latency wait for ack. */
+    SDC_HCI_VS_PERIPHERAL_LATENCY_MODE_WAIT_FOR_ACK = 0x02,
+};
+
 /** @brief TX power handle type. */
 enum sdc_hci_vs_tx_power_handle_type
 {
@@ -121,6 +134,7 @@ typedef __PACKED_STRUCT
     uint8_t periodic_adv_event_length_set : 1;
     uint8_t coex_priority_config : 1;
     uint8_t coex_scan_mode_config : 1;
+    uint8_t peripheral_latency_mode_set : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -403,6 +417,15 @@ typedef __PACKED_STRUCT
      */
     uint8_t escalation_threshold;
 } sdc_hci_cmd_vs_coex_priority_config_t;
+
+/** @brief Set peripheral latency mode command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Connection handle. */
+    uint16_t conn_handle;
+    /** @brief Peripheral latency mode. See @ref sdc_hci_vs_peripheral_latency_mode. */
+    uint8_t mode;
+} sdc_hci_cmd_vs_peripheral_latency_mode_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -808,6 +831,35 @@ uint8_t sdc_hci_cmd_vs_coex_scan_mode_config(const sdc_hci_cmd_vs_coex_scan_mode
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_coex_priority_config(const sdc_hci_cmd_vs_coex_priority_config_t * p_params);
+
+/** @brief Set peripheral latency mode.
+ *
+ * This vendor specific command is used to disable/enable peripheral latency.
+ * Three modes of disable/enable are supported.
+ *
+ * In enable mode, the peripheral will wake up every time it has data to send,
+ * and/or every peripheral latency number of connection events.
+ *
+ * In disable mode, the peripheral will wake up on every connection event
+ * regardless of the requested peripheral latency. This option consumes the most power.
+ *
+ * In wait_for_ack mode, the peripheral will wake up on every connection event if
+ * it has not received an ACK from the master for at least peripheral latency events.
+ * This configuration may increase the power consumption in environments with a lot of radio
+ * activity.
+ *
+ * @note Shall only be called on peripheral links.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_peripheral_latency_mode_set(const sdc_hci_cmd_vs_peripheral_latency_mode_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 

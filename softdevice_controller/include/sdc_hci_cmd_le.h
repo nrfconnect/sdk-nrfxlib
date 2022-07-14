@@ -173,6 +173,10 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_CONNLESS_CTE_TRANSMIT_PARAMS = 0x2051,
     /** @brief See @ref sdc_hci_cmd_le_set_connless_cte_transmit_enable(). */
     SDC_HCI_OPCODE_CMD_LE_SET_CONNLESS_CTE_TRANSMIT_ENABLE = 0x2052,
+    /** @brief See @ref sdc_hci_cmd_le_set_conn_cte_transmit_params(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_CONN_CTE_TRANSMIT_PARAMS = 0x2055,
+    /** @brief See @ref sdc_hci_cmd_le_conn_cte_response_enable(). */
+    SDC_HCI_OPCODE_CMD_LE_CONN_CTE_RESPONSE_ENABLE = 0x2057,
     /** @brief See @ref sdc_hci_cmd_le_read_antenna_information(). */
     SDC_HCI_OPCODE_CMD_LE_READ_ANTENNA_INFORMATION = 0x2058,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_receive_enable(). */
@@ -879,6 +883,35 @@ typedef __PACKED_STRUCT
     uint8_t adv_handle;
     uint8_t cte_enable;
 } sdc_hci_cmd_le_set_connless_cte_transmit_enable_t;
+
+/** @brief LE Set Connection CTE Transmit Parameters command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t cte_types;
+    uint8_t switching_pattern_length;
+    /** @brief Size: switching_pattern_length. */
+    uint8_t array_params[];
+} sdc_hci_cmd_le_set_conn_cte_transmit_params_t;
+
+/** @brief LE Set Connection CTE Transmit Parameters return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_set_conn_cte_transmit_params_return_t;
+
+/** @brief LE Connection CTE Response Enable command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t enable;
+} sdc_hci_cmd_le_conn_cte_response_enable_t;
+
+/** @brief LE Connection CTE Response Enable return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_conn_cte_response_enable_return_t;
 
 /** @brief LE Read Antenna Information return parameter(s). */
 typedef __PACKED_STRUCT
@@ -4142,6 +4175,90 @@ uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_params(const sdc_hci_cmd_le_set
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_connless_cte_transmit_enable(const sdc_hci_cmd_le_set_connless_cte_transmit_enable_t * p_params);
+
+/** @brief LE Set Connection CTE Transmit Parameters.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.84
+ *
+ * The HCI_LE_Set_Connection_CTE_Transmit_Parameters command is used
+ * to set the antenna switching pattern and permitted Constant Tone Extension
+ * types used for transmitting Constant Tone Extensions requested by the peer
+ * device on the connection identified by the Connection_Handle parameter.
+ *
+ * If the Host issues this command when Constant Tone Extension responses
+ * have been enabled on the connection, the Controller shall return the error code
+ * Command Disallowed (0x0C).
+ *
+ * If the CTE_Types parameter has a bit set for a type of Constant Tone
+ * Extension that the Controller does not support, the Controller shall return the
+ * error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * The Switching_Pattern_Length and Antenna_IDs[i] parameters are only used
+ * when transmitting an AoD Constant Tone Extension and shall be ignored when
+ * CTE_Types does not have a bit set for an AoD Constant Tone Extension; they
+ * do not affect the transmission of an AoA Constant Tone Extension.
+ *
+ * If Switching_Pattern_Length is greater than the maximum length of switching
+ * pattern supported by the Controller, the Controller shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Controller determines that any of the Antenna_IDs[i] values do not
+ * identify an antenna in the device's antenna array, it shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * Note: Some Controllers may be unable to determine which values do or do not
+ * identify an antenna.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Connection_CTE_Transmit_Parameters command
+ * has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_conn_cte_transmit_params(const sdc_hci_cmd_le_set_conn_cte_transmit_params_t * p_params,
+                                                    sdc_hci_cmd_le_set_conn_cte_transmit_params_return_t * p_return);
+
+/** @brief LE Connection CTE Response Enable.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.86
+ *
+ * The HCI_LE_Connection_CTE_Response_Enable command is used to
+ * request the Controller to respond to LL_CTE_REQ PDUs with LL_CTE_RSP
+ * PDUs on the specified connection.
+ *
+ * If the Host issues this command before issuing the
+ * HCI_LE_Set_Connection_CTE_Transmit_Parameters command at least once
+ * on the connection, the Controller shall return the error code Command
+ * Disallowed (0x0C).
+ *
+ * If the Host issues this command when the transmitter PHY for the connection is
+ * not a PHY that allows Constant Tone Extensions, the Controller shall return the
+ * error code Command Disallowed (0x0C).
+ *
+ * If the transmitter PHY for the connection changes to a PHY that does not allow
+ * Constant Tone Extensions, then the Controller shall automatically disable
+ * Constant Tone Extension responses.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Connection_CTE_Response_Enable command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_conn_cte_response_enable(const sdc_hci_cmd_le_conn_cte_response_enable_t * p_params,
+                                                sdc_hci_cmd_le_conn_cte_response_enable_return_t * p_return);
 
 /** @brief LE Read Antenna Information.
  *
