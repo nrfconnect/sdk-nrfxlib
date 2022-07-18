@@ -3272,13 +3272,6 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  */
 //#define MBEDTLS_ECDH_VARIANT_EVEREST_ENABLED
 
-/**
- * Nordic added
- *
- * Adding back the legacy ECDH context for binary compatibility
- */
-#define MBEDTLS_ECDH_LEGACY_CONTEXT
-
 #if defined(CONFIG_MBEDTLS_OPENTHREAD_OPTIMIZATIONS_ENABLED)
 #define MBEDTLS_MPI_WINDOW_SIZE            1 /**< Maximum windows size used. */
 #define MBEDTLS_MPI_MAX_SIZE              32 /**< Maximum number of bytes for usable MPIs. */
