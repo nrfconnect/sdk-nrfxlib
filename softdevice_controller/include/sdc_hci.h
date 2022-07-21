@@ -64,6 +64,11 @@ extern "C" {
 /** @brief The maximum size of an HCI packet. */
 #define HCI_MSG_BUFFER_MAX_SIZE HCI_CMD_PACKET_MAX_SIZE
 
+typedef enum
+{
+  SDC_HCI_MSG_TYPE_DATA = 0x02,
+  SDC_HCI_MSG_TYPE_EVT  = 0x04,
+} sdc_hci_msg_type_t;
 
 /** @brief Send an HCI command packet to the SoftDevice Controller.
  *
@@ -122,6 +127,24 @@ int32_t sdc_hci_evt_get(uint8_t * p_evt_out);
  */
 int32_t sdc_hci_data_get(uint8_t * p_data_out);
 
+
+/** @brief Retrieve an HCI packet from the SoftDevice Controller.
+ *
+ * This API is non-blocking.
+ *
+ * @note The application should ensure that the size of the provided buffer is at least
+ *       @ref HCI_MSG_BUFFER_MAX_SIZE bytes.
+ *
+ * @param[in,out] p_packet_out Buffer where the HCI packet will be stored.
+ *                             If an event is retrieved, the first byte corresponds to the Event Code.
+ *                             If a data packet is retrieved, the first byte corresponds to the Handle.
+ * @param[out] p_msg_type_out  Enum indicating the type of HCI packet produced by the controller.
+ *
+ * @retval 0            Success
+ * @retval -NRF_EAGAIN  No event available
+ * @retval -NRF_EINVAL  Invalid input
+ */
+int32_t sdc_hci_get(uint8_t * p_packet_out, sdc_hci_msg_type_t * p_msg_type_out);
 
 #ifdef __cplusplus
 }

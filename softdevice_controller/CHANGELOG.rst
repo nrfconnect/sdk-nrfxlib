@@ -19,6 +19,7 @@ Added
 
 * Support for changing the radio transmitter's default power level using :c:func:`sdc_default_tx_power_set` (DRGN-15903).
 * Support for disabling or enabling peripheral latency using :c:func:`sdc_hci_cmd_vs_peripheral_latency_mode_set` (DRGN-15706).
+* Stub version of :c:func:`sdc_hci_get` for getting all types of HCI packets from the Link Layer (DRGN-17060).
 
 Changes
 =======
@@ -33,6 +34,9 @@ Changes
   (KRKNWK-13714)
 * Improved channel selection for secondary advertising packets (DRGN-17452).
 * The extended advertiser will now always include the SyncInfo in the AUX_ADV_IND if there is a corresponding periodic advertiser, even if the offset cannot be represented (DRGN-16240).
+* Split the function :c:func:`sdc_support_dle` into :c:func:`sdc_support_dle_central` and :c:func:`sdc_support_dle_peripheral`.
+* Added functions :c:func:`sdc_support_phy_update_central` and :c:func:`sdc_support_phy_update_peripheral`, to enable change of PHY independently of the functions :c:func:`sdc_support_le_coded_phy` and :c:func:`sdc_support_le_2m_phy`
+  These changes reduce the code size when using only central or peripheral role. (DRGN-17592)
 
 Bug fixes
 =========
