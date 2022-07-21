@@ -100,8 +100,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 902
-#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 990
+#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 918
+#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 1006
 #define __MEM_BUFFER_OVERHEAD_SIZE 7
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * (tx_size - SDC_DEFAULT_TX_PACKET_SIZE) + \
@@ -173,7 +173,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (184 + (buffer_count) * 264)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (200 + (buffer_count) * 264)
 
 /** Memory required for the periodic adv list.
  *
@@ -587,6 +587,39 @@ int32_t sdc_support_ext_central(void);
  */
 int32_t sdc_support_dle(void);
 
+/** @brief Support Data Length Extensions for a central device
+ *
+ * After this API is called, the controller will support data length extension in the central role.
+ * That is:
+ *  - DLE is marked supported in the LL Feature Exchange procedure.
+ *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
+ *  - when a LL_LENGTH_REQ is received.
+ *
+ * @note The application is required to call both @ref sdc_support_dle_central() and @ref sdc_support_dle_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Data Length Extension or Central Role is not supported.
+ */
+int32_t sdc_support_dle_central(void);
+
+/** @brief Support Data Length Extensions for a peripheral device
+ *
+ * After this API is called, the controller will support data length extension in the peripheral role.
+ * That is:
+ *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
+ *  - when a LL_LENGTH_REQ is received.
+ *
+ * @note The application is required to call both @ref sdc_support_dle_central() and @ref sdc_support_dle_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Data Length Extension or Peripheral Role is not supported.
+ */
+int32_t sdc_support_dle_peripheral(void);
+
 /** @brief Support LE 2M PHY
  *
  * After this API is called, the controller will support LE 2M PHY. That is:
@@ -611,6 +644,34 @@ int32_t sdc_support_le_2m_phy(void);
  * @retval -NRF_EOPNOTSUPP  LE Coded PHY is not supported.
  */
 int32_t sdc_support_le_coded_phy(void);
+
+/** @brief Support PHY Update Procedure for central role
+ *
+ * After this API is called, the controller will support PHY update procedure in central role. That is:
+ *  - All HCI APIs for obtaining or changing PHYs are supported for central role.
+ *
+ * @note The application is required to call both @ref sdc_support_phy_update_central() and @ref sdc_support_phy_update_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Coded PHY is not supported.
+ */
+int32_t sdc_support_phy_update_central(void);
+
+/** @brief Support LE Coded PHY for peripheral role
+ *
+ * After this API is called, the controller will support PHY update procedure in peripheral role. That is:
+ *  - All HCI APIs for obtaining or changing PHYs are supported for peripheral role.
+ *
+ * @note The application is required to call both @ref sdc_support_phy_update_central() and @ref sdc_support_phy_update_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Coded PHY is not supported.
+ */
+int32_t sdc_support_phy_update_peripheral(void);
 
 /** @brief Support LE Periodic Advertising in the Advertising state
  *
