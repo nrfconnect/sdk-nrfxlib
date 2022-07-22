@@ -100,8 +100,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 918
-#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 1006
+#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 934
+#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 1022
 #define __MEM_BUFFER_OVERHEAD_SIZE 7
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * (tx_size - SDC_DEFAULT_TX_PACKET_SIZE) + \
@@ -714,6 +714,34 @@ int32_t sdc_support_le_periodic_sync(void);
  * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
  */
 int32_t sdc_support_le_power_control(void);
+
+/** @brief Support LE Power Control for central role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Power Control.
+ *
+ * @note The application is required to call both @ref sdc_support_le_power_control_central() and @ref sdc_support_le_power_control_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
+ */
+int32_t sdc_support_le_power_control_central(void);
+
+/** @brief Support LE Power Control for peripheral role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Power Control.
+ *
+ * @note The application is required to call both @ref sdc_support_le_power_control_central() and @ref sdc_support_le_power_control_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
+ */
+int32_t sdc_support_le_power_control_peripheral(void);
 
 /** @brief Configure the coex advertising mode
  *
