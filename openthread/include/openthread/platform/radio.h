@@ -442,7 +442,7 @@ const char *otPlatRadioGetVersionString(otInstance *aInstance);
 int8_t otPlatRadioGetReceiveSensitivity(otInstance *aInstance);
 
 /**
- * Get the factory-assigned IEEE EUI-64 for this interface.
+ * Gets the factory-assigned IEEE EUI-64 for this interface.
  *
  * @param[in]  aInstance   The OpenThread instance structure.
  * @param[out] aIeeeEui64  A pointer to the factory-assigned IEEE EUI-64.
@@ -857,6 +857,7 @@ int8_t otPlatRadioGetRssi(otInstance *aInstance);
  * @param[in] aScanDuration  The duration, in milliseconds, for the channel to be scanned.
  *
  * @retval OT_ERROR_NONE             Successfully started scanning the channel.
+ * @retval OT_ERROR_BUSY             The radio is performing enery scanning.
  * @retval OT_ERROR_NOT_IMPLEMENTED  The radio doesn't support energy scanning.
  *
  */
