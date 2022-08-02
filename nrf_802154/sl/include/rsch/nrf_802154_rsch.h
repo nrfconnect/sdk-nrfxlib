@@ -164,6 +164,8 @@ typedef void (* rsch_dly_ts_started_callback_t)(rsch_dly_ts_id_t dly_ts_id);
 typedef struct
 {
     uint64_t                       trigger_time;     ///< Trigger time of the timeslot start, in microseconds.
+    uint8_t                        ppi_trigger_en;   ///< Enable the (D)PPI triggering after the start of the timeslot.
+    uint32_t                       ppi_trigger_dly;  ///< Time delta between @p trigger_time and the moment of (D)PPI triggering.
     rsch_prio_t                    prio;             ///< Priority level required for the delayed timeslot.
     rsch_dly_ts_op_t               op;               ///< Operation to be performed in the requested timeslot.
     rsch_dly_ts_type_t             type;             ///< Type of the requested timeslot.
@@ -281,6 +283,19 @@ bool nrf_802154_rsch_delayed_timeslot_request(const rsch_dly_ts_param_t * p_dly_
  * @retval false    No scheduled timeslot has been requested (nothing to cancel).
  */
 bool nrf_802154_rsch_delayed_timeslot_cancel(rsch_dly_ts_id_t dly_ts_id, bool handler);
+
+/**
+ * @brief Updates the id of (D)PPI channel to be triggered in the current timeslot.
+ *
+ * The update must be done after the start of the timeslot but earlier than @c ppi_trigger_dly.
+ * If updating does not complete on time, (D)PPI triggering may not be performed.
+ *
+ * @retval true     (D)PPI channel has been updated and it was done on time, i.e. before
+ *                  target trigger time.
+ * @retval false    Update could not complete or did not complete on time. Nevertheless,
+ *                  the (D)PPI may have been triggered, but it cannot be stated reliably.
+ */
+bool nrf_802154_rsch_delayed_timeslot_ppi_update(uint32_t ppi_channel);
 
 /**
  * @brief Updates priority of a requested delayed timeslot.

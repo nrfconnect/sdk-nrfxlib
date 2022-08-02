@@ -65,6 +65,7 @@ extern "C" {
  * Possible values:
  * @ref NRF_802154_SL_TIMER_RET_SUCCESS
  * @ref NRF_802154_SL_TIMER_RET_TOO_LATE
+ * @ref NRF_802154_SL_TIMER_RET_TOO_DISTANT
  * @ref NRF_802154_SL_TIMER_RET_NO_RESOURCES
  * @ref NRF_802154_SL_TIMER_RET_INACTIVE
  * @ref NRF_802154_SL_TIMER_RET_BAD_REQUEST
@@ -83,6 +84,14 @@ typedef uint32_t nrf_802154_sl_timer_ret_t;
 /**@brief Operation was requested too late to be performed in requested time. */
 #define NRF_802154_SL_TIMER_RET_TOO_LATE     2U
 
+/**@brief The trigger time time for the requested operation is too distant.
+ *
+ * Some platforms have a limitation to how far in the future operation can be
+ * scheduled. This result may happen for @ref nrf_802154_sl_timer_add with
+ * @ref nrf_802154_sl_timer_t::trigger_time containing a value too far from `now`.
+ */
+#define NRF_802154_SL_TIMER_RET_TOO_DISTANT  3U
+
 /**@brief There were no available resources required to schedule requested activity.
  *
  * This result may happen for @ref nrf_802154_sl_timer_add with
@@ -91,10 +100,10 @@ typedef uint32_t nrf_802154_sl_timer_ret_t;
  * some hardware resources like PPI/DPPI channels, EGU channels, timer compare channels
  * (implementation dependent) were needed, but they were unavailable.
  */
-#define NRF_802154_SL_TIMER_RET_NO_RESOURCES 3U
+#define NRF_802154_SL_TIMER_RET_NO_RESOURCES 4U
 
 /**@brief The timer was inactive at the moment of requested operation. */
-#define NRF_802154_SL_TIMER_RET_INACTIVE     4U
+#define NRF_802154_SL_TIMER_RET_INACTIVE     5U
 
 /**@brief Type representing a timer. */
 typedef struct nrf_802154_sl_timer_s nrf_802154_sl_timer_t;
@@ -114,6 +123,11 @@ typedef uint8_t nrf_802154_sl_timer_action_type_t;
 #define NRF_802154_SL_TIMER_ACTION_TYPE_CALLBACK (1U << 0)
 /**@brief Timer action type mask allowing triggering a hardware task. */
 #define NRF_802154_SL_TIMER_ACTION_TYPE_HARDWARE (1U << 1)
+
+/**
+ * @brief Special value that indicates that (D)PPI configuration is incomplete.
+ */
+#define NRF_802154_SL_TIMER_INVALID_PPI_CHANNEL  UINT32_MAX
 
 /**@brief Structure that represents private fields of a timer required by the implementation. */
 typedef struct
@@ -178,6 +192,11 @@ struct nrf_802154_sl_timer_s
              * of these resources. Moreover, the API user must keep the hardware bindings enabled
              * and functional until the requested hardware task is triggered or until the timer
              * is successfully removed.
+             *
+             * A special value of @ref NRF_802154_SL_TIMER_INVALID_PPI_CHANNEL can be set. In this
+             * case, the binding creation is postponed and the user is required to use the
+             * @ref nrf_802154_sl_timer_update_ppi to complete the configuration. Must do so
+             * before @c trigger_time expires.
              */
             uint32_t ppi_channel;
         } hardware;
@@ -267,6 +286,25 @@ nrf_802154_sl_timer_ret_t nrf_802154_sl_timer_add(nrf_802154_sl_timer_t * p_time
  *      in progress or yet remains to be executed.
  */
 nrf_802154_sl_timer_ret_t nrf_802154_sl_timer_remove(nrf_802154_sl_timer_t * p_timer);
+
+/**@brief Updates the (D)PPI channel to be triggered.
+ *
+ * @param p_timer   Pointer to a timer instance to be removed from the active timers list.
+ * @param ppi_chn   Identifier of (D)PPI channel to be triggered at @c trigger_time.
+ *
+ * @retval NRF_802154_SL_TIMER_RET_SUCCESS
+ *      The (D)PPI channel was updated and it was done on time, i.e. before specified
+ *      trigger time.
+ * @retval NRF_802154_SL_TIMER_RET_TOO_LATE
+ *      It has been detected that the timer has already fired and because of this the update
+ *      could not complete at all or did not complete on time. Nevertheless, the (D)PPI may
+ *      have been triggered, but it cannot be stated reliably.
+ * @retval NRF_802154_SL_TIMER_RET_BAD_REQUEST
+ *      A user passed invalid parameters in @p p_timer, e.g. @c action_type does not contain
+ *      @ref NRF_802154_SL_TIMER_ACTION_TYPE_HARDWARE.
+ */
+nrf_802154_sl_timer_ret_t nrf_802154_sl_timer_update_ppi(nrf_802154_sl_timer_t * p_timer,
+                                                         uint32_t                ppi_chn);
 
 /**
  *@}

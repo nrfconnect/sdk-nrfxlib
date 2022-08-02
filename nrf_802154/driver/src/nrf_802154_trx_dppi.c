@@ -80,7 +80,8 @@ void nrf_802154_trx_ppi_for_enable(void)
                              (1UL << NRF_802154_DPPI_RADIO_ADDRESS) |
                              (1UL << NRF_802154_DPPI_RADIO_END) |
                              (1UL << NRF_802154_DPPI_RADIO_PHYEND) |
-                             (1UL << NRF_802154_DPPI_RADIO_CCAIDLE));
+                             (1UL << NRF_802154_DPPI_RADIO_CCAIDLE) |
+                             (1UL << NRF_802154_DPPI_RADIO_HW_TRIGGER));
 }
 
 void nrf_802154_trx_ppi_for_disable(void)
@@ -94,7 +95,8 @@ void nrf_802154_trx_ppi_for_disable(void)
                               (1UL << NRF_802154_DPPI_RADIO_ADDRESS) |
                               (1UL << NRF_802154_DPPI_RADIO_END) |
                               (1UL << NRF_802154_DPPI_RADIO_PHYEND) |
-                              (1UL << NRF_802154_DPPI_RADIO_CCAIDLE));
+                              (1UL << NRF_802154_DPPI_RADIO_CCAIDLE) |
+                              (1UL << NRF_802154_DPPI_RADIO_HW_TRIGGER));
 
 #if NRF_802154_TEST_MODES_ENABLED
     nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_CCABUSY);
@@ -107,7 +109,14 @@ void nrf_802154_trx_ppi_for_disable(void)
     nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
 }
 
-void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool start_timer)
+uint8_t nrf_802154_trx_ppi_for_ramp_up_channel_id_get(void)
+{
+    return NRF_802154_DPPI_RADIO_HW_TRIGGER;
+}
+
+void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t           ramp_up_task,
+                                        trx_ramp_up_trigger_mode_t trigg_mode,
+                                        bool                       start_timer)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
@@ -115,7 +124,7 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool star
     nrf_egu_event_clear(NRF_802154_EGU_INSTANCE, EGU_EVENT);
 
     nrf_dppi_channels_include_in_group(NRF_DPPIC, 1UL << PPI_EGU_RAMP_UP, DPPI_CHGRP_RAMP_UP);
-    nrf_egu_publish_set(NRF_802154_EGU_INSTANCE, EGU_EVENT, PPI_EGU_RAMP_UP);
+
     nrf_radio_subscribe_set(NRF_RADIO, ramp_up_task, PPI_EGU_RAMP_UP);
     nrf_dppi_subscribe_set(NRF_DPPIC, DPPI_CHGRP_RAMP_UP_DIS_TASK, PPI_EGU_RAMP_UP);
 
@@ -124,12 +133,26 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool star
         nrf_timer_subscribe_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_START, PPI_DISABLED_EGU);
     }
 
+    nrf_egu_publish_set(NRF_802154_EGU_INSTANCE, EGU_EVENT, PPI_EGU_RAMP_UP);
+
     nrf_egu_subscribe_set(NRF_802154_EGU_INSTANCE, EGU_TASK, PPI_DISABLED_EGU);
 
     nrf_dppi_channels_enable(NRF_DPPIC,
                              (1UL << PPI_EGU_RAMP_UP));
 
+    if (trigg_mode == TRX_RAMP_UP_HW_TRIGGER)
+    {
+        nrf_radio_subscribe_set(NRF_RADIO,
+                                NRF_RADIO_TASK_DISABLE,
+                                NRF_802154_DPPI_RADIO_HW_TRIGGER);
+    }
+
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+}
+
+void nrf_802154_trx_ppi_for_ramp_up_reconfigure(void)
+{
+    // Intentionally empty
 }
 
 void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool start_timer)
@@ -141,6 +164,7 @@ void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool st
 
     nrf_egu_publish_clear(NRF_802154_EGU_INSTANCE, EGU_EVENT);
     nrf_radio_subscribe_clear(NRF_RADIO, ramp_up_task);
+    nrf_radio_subscribe_clear(NRF_RADIO, NRF_RADIO_TASK_DISABLE);
     nrf_dppi_subscribe_clear(NRF_DPPIC, DPPI_CHGRP_RAMP_UP_DIS_TASK);
     nrf_dppi_channels_remove_from_group(NRF_DPPIC, 1UL << PPI_EGU_RAMP_UP, DPPI_CHGRP_RAMP_UP);
 

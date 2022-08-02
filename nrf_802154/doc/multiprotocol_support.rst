@@ -22,7 +22,7 @@ Available arbiters
 Currently, the following arbiters are implemented:
 
 * :ref:`rd_multiprotocol_support_implemented_single_phy` - This implementation is used only when the 802.15.4 protocol is using the RADIO peripheral.
-* :ref:`rd_multiprotocol_support_implemented_mpsl_arbiter` - This implementation uses MPSL clients (like the SoftDevice Controller) and the 802.15.4 driver.
+* :ref:`rd_multiprotocol_support_implemented_mpsl_arbiter` - This implementation uses MPSL clients (like the Softdevice Controller) and the 802.15.4 driver.
 
 .. _rd_multiprotocol_support_implemented_single_phy:
 

@@ -45,6 +45,7 @@
 
 #include "hal/nrf_egu.h"
 #include "hal/nrf_radio.h"
+#include "nrf_802154_trx.h"
 
 /**
  * @brief Configures (D)PPI connections required for TRX operation.
@@ -62,34 +63,72 @@ void nrf_802154_trx_ppi_for_enable(void);
 void nrf_802154_trx_ppi_for_disable(void);
 
 /**
- * @brief Set PPIs to connect RADIO DISABLED event with tasks needed to ramp up.
+ * @brief Set PPIs to connect trigger event with tasks needed to ramp up.
  *
- * Connections created by this function in DPPI variant:
+ * When @p trigg_mode is TRX_RAMP_UP_SW_TRIGGER, the trigger event is RADIO_DISABLED and
+ * PPI connections are made to it.
+ * When @p trigg_mode is TRX_RAMP_UP_HW_TRIGGER, the trigger event is defined outside the module
+ * and PPI connections are only partially created. To complete the connection creation, the trigger
+ * event must be connected to the (D)PPI channel specified with
+ * @ref nrf_802154_trx_ppi_for_ramp_up_channel_id_get.
+ *
+ * Connections created by this function in DPPI variant and TRX_RAMP_UP_SW_TRIGGER mode:
  *
  *       RADIO_DISABLED ----> EGU -----> ramp_up_task
  *                      |          \--> self disable
  *               if (start_timer)
  *                      \-------------> TIMER_START
  *
- * Connections created by this function in PPI variant:
+ * Connections created by this function in DPPI variant and TRX_RAMP_UP_HW_TRIGGER mode:
+ *
+ *       [DPPI] ----------------------> ramp_up_task
+ *            \-----------------------> self disable
+ *             \
+ *        if (start_timer)
+ *               \--------------------> TIMER_START
+ *
+ * Connections created by this function in PPI variant and TRX_RAMP_UP_SW_TRIGGER mode:
  *
  *      RADIO_DISABLED ----> EGU -----> ramp_up_task
  *                                 \--> self disable
  *
  *      EGU ---> if (start_timer) ----> TIMER_START
  *
+ * Connections created by this function in PPI variant and TRX_RAMP_UP_HW_TRIGGER mode:
+ *
+ *      [PPI] --------> EGU ----------> ramp_up_task
+ *                                 \--> self disable
+ *
+ *      EGU ---> if (start_timer) ----> TIMER_START
+ *
  * @param[in]  ramp_up_task  Task triggered to start ramp up procedure.
+ * @param[in]  trigg_mode    Trigger mode the connections must conform to.
  * @param[in]  start_timer   If timer is to be started on RADIO DISABLED event.
  */
-void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool start_timer);
+void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t           ramp_up_task,
+                                        trx_ramp_up_trigger_mode_t trigg_mode,
+                                        bool                       start_timer);
 
 /**
- * @brief Clear PPIs to connect RADIO DISABLED event with tasks needed to ramp up.
+ * @brief Reconfigure (D)PPIs for the next steps in receiving or transmitting.
+ */
+void nrf_802154_trx_ppi_for_ramp_up_reconfigure(void);
+
+/**
+ * @brief Clear (D)PPIs that are configured for ramp up procedure.
  *
  * @param[in]  ramp_up_task  Task triggered to start ramp up procedure.
  * @param[in]  start_timer   If timer start on RADIO DISABLED event is to be deconfigured as well. See @ref nrf_802154_trx_ppi_for_ramp_up_set.
  */
 void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool start_timer);
+
+/**
+ * @brief Get (D)PPI channel used to trigger ramp up procedure start.
+ *
+ * @retval  NRF_802154_DPPI_EGU_TO_RADIO_RAMP_UP in DPPI variant.
+ * @retval  NRF_802154_PPI_RADIO_RAMP_UP_TRIGG in PPI variant.
+ */
+uint8_t nrf_802154_trx_ppi_for_ramp_up_channel_id_get(void);
 
 /**
  * @brief Wait until PPIs configured to ramp up radio are propagated through PPI system.
@@ -104,8 +143,13 @@ void nrf_802154_trx_ppi_for_ramp_up_propagation_delay_wait(void);
 /**
  * @brief Detect if PPIs configured to start radio operation were triggered.
  *
- * Radio ramp up starts by design from RADIO DISABLED event. This functions verifies this event
- * and PPIs status.
+ * In TRX_RAMP_UP_SW_TRIGGER mode, radio ramp up starts by design from RADIO DISABLED event.
+ * This functions verifies occurrence of this event and PPIs status.
+ *
+ * The function is intended to be used only when all of the following conditions apply:
+ *   - the connections are already made with @ref nrf_802154_trx_ppi_for_ramp_up_set
+ *   - TRX_RAMP_UP_SW_TRIGGER mode was used to create connections
+ *   - connections have not yet been cleared
  *
  * @retval  true   PPIs were triggered.
  * @retval  false  PPIs were not triggered. To trigger them, the caller must trigger RADIO DISABLE task.

@@ -113,11 +113,29 @@ extern "C" {
 #endif // NRF_802154_RTC_INSTANCE_NO
 
 /**
+ * @def NRF_802154_PPI_RADIO_RAMP_UP_TRIGG
+ *
+ * The PPI channel that connects ramp up triggering event to EGU task.
+ *
+ * @note The peripheral is shared with @ref NRF_802154_PPI_RADIO_DISABLED_TO_EGU in such a way
+ *       that a receive or transmit request causes that ppi to be configured for ramp up
+ *       triggering purpose, while in the EVENT_READY isr the ppi is reconfigured to follow the
+ *       @ref NRF_802154_PPI_RADIO_DISABLED_TO_EGU description.
+ *
+ * @note This option is used regardless of the driver configuration.
+ *
+ */
+#ifndef NRF_802154_PPI_RADIO_RAMP_UP_TRIGG
+#define NRF_802154_PPI_RADIO_RAMP_UP_TRIGG NRF_PPI_CHANNEL6
+#endif
+
+/**
  * @def NRF_802154_PPI_RADIO_DISABLED_TO_EGU
  *
  * The PPI channel that connects RADIO_DISABLED event to EGU task.
  *
  * @note This option is used by the core module regardless of the driver configuration.
+ *       The peripheral is shared with @ref NRF_802154_PPI_RADIO_RAMP_UP_TRIGG.
  *
  */
 #ifndef NRF_802154_PPI_RADIO_DISABLED_TO_EGU
@@ -342,6 +360,7 @@ extern "C" {
  */
 #ifndef NRF_802154_PPI_CHANNELS_USED_MASK
 #define NRF_802154_PPI_CHANNELS_USED_MASK ((1 << NRF_802154_PPI_RADIO_DISABLED_TO_EGU) |            \
+                                           (1 << NRF_802154_PPI_RADIO_RAMP_UP_TRIGG) |              \
                                            (1 << NRF_802154_PPI_EGU_TO_RADIO_RAMP_UP) |             \
                                            (1 << NRF_802154_PPI_EGU_TO_TIMER_START) |               \
                                            (1 << NRF_802154_PPI_RADIO_CRCERROR_TO_TIMER_CLEAR) |    \

@@ -56,6 +56,26 @@
 extern "C" {
 #endif
 
+#define NRF_802154_SL_HW_TASK_PPI_INVALID UINT32_MAX
+
+/**@brief Type of result returned by LPTIMER platform functions. */
+typedef uint32_t nrf_802154_sl_lptimer_platform_result_t;
+
+/**@brief Operation performed successfully. */
+#define NRF_802154_SL_LPTIMER_PLATFORM_SUCCESS      0
+
+/**@brief The timer was scheduled too early in the future. */
+#define NRF_802154_SL_LPTIMER_PLATFORM_TOO_LATE     1
+
+/**@brief The timer was scheduled too far in the future. */
+#define NRF_802154_SL_LPTIMER_PLATFORM_TOO_DISTANT  2
+
+/**@brief No free hardware resources available to perform the operation. */
+#define NRF_802154_SL_LPTIMER_PLATFORM_NO_RESOURCES 3
+
+/**@brief Operation could not be completed due to a wrong state. */
+#define NRF_802154_SL_LPTIMER_PLATFORM_WRONG_STATE  4
+
 /** @brief Initializes the Timer.
  */
 void nrf_802154_platform_sl_lp_timer_init(void);
@@ -119,6 +139,57 @@ void nrf_802154_platform_sl_lptimer_critical_section_enter(void);
 /**@brief Exits out of critical section of the lptimer module.
  */
 void nrf_802154_platform_sl_lptimer_critical_section_exit(void);
+
+/**@brief Prepares hardware bindings for triggering hardware task.
+ *
+ * This function configures timer compare channel to fire at a specified time and publish
+ * the signal to a specific PPI channel. The PPI channel may initially be set to
+ * @ref NRF_802154_SL_HW_TASK_PPI_INVALID and later updated with
+ * @ref nrf_802154_platform_sl_lptimer_hw_task_update_ppi.
+ *
+ * @param[in]  fire_lpticks  Timer state (in @c lpticks) at which timer event should fire.
+ * @param[in]  ppi_channel   (D)PPI channel that compare event will be published to.
+ *
+ * @retval NRF_802154_SL_LPTIMER_PLATFORM_SUCCESS
+ *      The timer was started successfuly and (D)PPI channel was connected, if requested.
+ * @retval NRF_802154_SL_LPTIMER_PLATFORM_TOO_LATE
+ *      The timer was scheduled too early in the future. The (D)PPI channel was not connected.
+ * @retval NRF_802154_SL_LPTIMER_PLATFORM_TOO_DISTANT
+ *      The timer was scheduled too far in the future. The (D)PPI channel was not connected.
+ * @retval NRF_802154_SL_LPTIMER_PLATFORM_NO_RESOURCES
+ *      No available compare channels to schedule a timer. The (D)PPI channel was not connected.
+ */
+nrf_802154_sl_lptimer_platform_result_t nrf_802154_platform_sl_lptimer_hw_task_prepare(
+    uint64_t fire_lpticks,
+    uint32_t ppi_channel);
+
+/**@brief Removes hardware bindings created for hardware task and stops the timer.
+ */
+void nrf_802154_platform_sl_lptimer_hw_task_cleanup(void);
+
+/**@brief Updates the hardware bindings for triggering hardware task.
+ *
+ * If the timer was started with @ref nrf_802154_platform_sl_lptimer_hw_task_prepare
+ * without specifying a valid (D)PPI channel (@ref NRF_802154_SL_HW_TASK_PPI_INVALID)
+ * it is possible to use this function to update the (D)PPI channel to a valid one.
+ *
+ * @param[in]  ppi_channel  (D)PPI channel that compare event will be published to.
+ *
+ * @retval NRF_802154_SL_LPTIMER_PLATFORM_SUCCESS
+ *      The (D)PPI channel was connected and it was done on time, i.e. before specified
+ *      fire time.
+ * @retval NRF_802154_SL_LPTIMER_PLATFORM_TOO_LATE
+ *      The (D)PPI channel was connected, but it is not sure if it was done in time:
+ *      it has been detected that the timer has already fired.
+ * @retval NRF_802154_SL_LPTIMER_PLATFORM_WRONG_STATE
+ *      The (D)PPI channel was not connected, because the timer is not properly configured.
+ */
+nrf_802154_sl_lptimer_platform_result_t nrf_802154_platform_sl_lptimer_hw_task_update_ppi(
+    uint32_t ppi_channel);
+
+/**@brief Checks if (D)PPI triggering has occurred.
+ */
+bool nrf_802154_platform_sl_lptimer_hw_task_check_if_ppi_fired(void);
 
 /**
  * @brief Starts a one-shot synchronization timer that expires at the nearest possible timepoint.

@@ -64,12 +64,13 @@
 
 #if NRF_802154_DELAYED_TRX_ENABLED
 
-/* The following time is the sum of 70us RTC_IRQHandler processing time, 40us of time that elapses
- * from the moment a board starts transmission to the moment other boards (e.g. sniffer) are able
- * to detect that frame and in case of TX - 93us that accounts for a delay of yet unknown origin.
- */
-#define TX_SETUP_TIME 203u ///< Time needed to prepare TX procedure [us]. It does not include TX ramp-up time.
-#define RX_SETUP_TIME 110u ///< Time needed to prepare RX procedure [us]. It does not include RX ramp-up time.
+#if defined(NRF52_SERIES)
+#define TX_SETUP_TIME_MAX 270u ///< Maximum time needed to prepare TX procedure [us]. It does not include TX ramp-up time.
+#define RX_SETUP_TIME_MAX 270u ///< Maximum time needed to prepare RX procedure [us]. It does not include RX ramp-up time.
+#elif defined(NRF53_SERIES)
+#define TX_SETUP_TIME_MAX 360u ///< Maximum time needed to prepare TX procedure [us]. It does not include TX ramp-up time.
+#define RX_SETUP_TIME_MAX 290u ///< Maximum time needed to prepare RX procedure [us]. It does not include RX ramp-up time.
+#endif
 
 /**
  * @brief States of delayed operations.
@@ -760,7 +761,7 @@ bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p
 
     if (p_dly_tx_data != NULL)
     {
-        tx_time -= TX_SETUP_TIME;
+        tx_time -= TX_SETUP_TIME_MAX;
         tx_time -= TX_RAMP_UP_TIME;
 
         if (p_metadata->cca)
@@ -783,6 +784,8 @@ bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p
         rsch_dly_ts_param_t dly_ts_param =
         {
             .trigger_time     = tx_time,
+            .ppi_trigger_en   = true,
+            .ppi_trigger_dly  = TX_SETUP_TIME_MAX,
             .prio             = RSCH_PRIO_TX,
             .op               = RSCH_DLY_TS_OP_DTX,
             .type             = RSCH_DLY_TS_TYPE_PRECISE,
@@ -806,12 +809,13 @@ bool nrf_802154_delayed_trx_receive(uint64_t rx_time,
 
     if (p_dly_rx_data != NULL)
     {
-        rx_time -= RX_SETUP_TIME;
+        rx_time -= RX_SETUP_TIME_MAX;
         rx_time -= RX_RAMP_UP_TIME;
 
         p_dly_rx_data->op = RSCH_DLY_TS_OP_DRX;
 
-        p_dly_rx_data->rx.timeout_length                         = timeout + RX_RAMP_UP_TIME;
+        p_dly_rx_data->rx.timeout_length = timeout + RX_RAMP_UP_TIME +
+                                           RX_SETUP_TIME_MAX;
         p_dly_rx_data->rx.timeout_timer.action.callback.callback = notify_rx_timeout;
 
         p_dly_rx_data->rx.channel = channel;
@@ -820,6 +824,8 @@ bool nrf_802154_delayed_trx_receive(uint64_t rx_time,
         rsch_dly_ts_param_t dly_ts_param =
         {
             .trigger_time     = rx_time,
+            .ppi_trigger_en   = true,
+            .ppi_trigger_dly  = RX_SETUP_TIME_MAX,
             .prio             = RSCH_PRIO_IDLE_LISTENING,
             .op               = RSCH_DLY_TS_OP_DRX,
             .type             = RSCH_DLY_TS_TYPE_PRECISE,
@@ -939,7 +945,7 @@ bool nrf_802154_delayed_trx_nearest_drx_time_to_midpoint_get(uint32_t * p_drx_ti
 
         result = nrf_802154_rsch_delayed_timeslot_time_to_start_get(m_dly_rx_data[i].id,
                                                                     &drx_time_to_start);
-        drx_time_to_start += RX_SETUP_TIME + RX_RAMP_UP_TIME;
+        drx_time_to_start += RX_SETUP_TIME_MAX + RX_RAMP_UP_TIME;
 
         if (result)
         {
