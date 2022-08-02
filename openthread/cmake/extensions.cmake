@@ -83,7 +83,14 @@ function(openthread_libs_configuration_write CONFIG_FILE)
     list(INSERT OPENTHREAD_SETTINGS 0 "OpenThread_commit=${git_describe}")
   endif()
 
-  FILE(WRITE ${CONFIG_FILE} ${OPENTHREAD_SETTINGS})
+  # Store compiler and Zephyr SDK version
+  execute_process(COMMAND ${CMAKE_C_COMPILER} --version
+    OUTPUT_VARIABLE GCC_VERSION)
+  string(REPLACE "\n" ";" GCC_VERSION_LINES ${GCC_VERSION})
+  list(GET GCC_VERSION_LINES 0 GCC_VERSION_LINE)
+  list(INSERT OPENTHREAD_SETTINGS 0 "GCC_version: ${GCC_VERSION_LINE}\n\n")
+
+  file(WRITE ${CONFIG_FILE} ${OPENTHREAD_SETTINGS})
 endfunction()
 
 function(get_active_mbedtls_configs_from_file fileName returnMatch1List)
