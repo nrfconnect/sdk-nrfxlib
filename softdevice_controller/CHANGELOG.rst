@@ -37,11 +37,14 @@ Changes
 * Split the function :c:func:`sdc_support_dle` into :c:func:`sdc_support_dle_central` and :c:func:`sdc_support_dle_peripheral`.
 * Added functions :c:func:`sdc_support_phy_update_central` and :c:func:`sdc_support_phy_update_peripheral`, to enable change of PHY independently of the functions :c:func:`sdc_support_le_coded_phy` and :c:func:`sdc_support_le_2m_phy`
   These changes reduce the code size when using only central or peripheral role. (DRGN-17592)
+* Applications may now configure fewer TX/RX buffers than the default.
+  Note that this may lead to reduced throughput (DRGN-17651).
 
 Bug fixes
 =========
 
 * Fixed an issue where the maximum data length capabilities were set to 27 bytes when the configured event length (:kconfig:option:`CONFIG_BT_CTLR_SDC_MAX_CONN_EVENT_LEN_DEFAULT`) was more than 65535 us (DRGN-17454).
+* Fixed an issue where using the memory macros in :file:`sdc.h` with fewer TX/RX buffers than the default would report incorrect memory usage (DRGN-17651).
 
 nRF Connect SDK v2.0.0
 **********************

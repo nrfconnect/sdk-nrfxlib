@@ -100,8 +100,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 934
-#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 1022
+#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 958
+#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 1054
 #define __MEM_BUFFER_OVERHEAD_SIZE 7
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * (tx_size - SDC_DEFAULT_TX_PACKET_SIZE) + \
@@ -268,9 +268,9 @@ typedef struct
                                    Default: @ref SDC_DEFAULT_TX_PACKET_SIZE. */
     uint8_t rx_packet_size;   /**< Link Layer RX packet size. Valid range: 27-251.
                                    Default: @ref SDC_DEFAULT_RX_PACKET_SIZE. */
-    uint8_t tx_packet_count;  /**< Link Layer TX packet count per link.
+    uint8_t tx_packet_count;  /**< Link Layer TX packet count per link. Minimum of 1.
                                    Default: @ref SDC_DEFAULT_TX_PACKET_COUNT. */
-    uint8_t rx_packet_count;  /**< Link Layer RX packet count per link.
+    uint8_t rx_packet_count;  /**< Link Layer RX packet count per link. Minimum of 1.
                                    Default: @ref SDC_DEFAULT_RX_PACKET_COUNT. */
 } sdc_cfg_buffer_cfg_t;
 
