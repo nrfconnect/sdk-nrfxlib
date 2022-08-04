@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include <zephyr.h>
+#include <zephyr/zephyr.h>
 
 BUILD_ASSERT(!IS_ENABLED(CONFIG_MULTITHREADING),
 	"This file is intended for single-threading, but multi-threading is enabled. "
