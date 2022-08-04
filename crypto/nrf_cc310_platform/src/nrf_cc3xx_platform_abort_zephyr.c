@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
-#include <kernel.h>
-#include <sys/reboot.h>
-//#include <logging/log.h>
+#include <zephyr/kernel.h>
+#include <zephyr/sys/reboot.h>
+//#include <zephyr/logging/log.h>
 //LOG_MODULE_DECLARE(nrf_cc3xx_platform);
 
 #include "nrf_cc3xx_platform_abort.h"
