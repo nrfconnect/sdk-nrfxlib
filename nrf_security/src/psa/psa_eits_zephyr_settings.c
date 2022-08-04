@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
-#include <zephyr.h>
-#include <init.h>
-#include <logging/log.h>
-#include <settings/settings.h>
-#include <sys/printk.h>
-#include <storage/flash_map.h>
+#include <zephyr/zephyr.h>
+#include <zephyr/init.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/settings/settings.h>
+#include <zephyr/sys/printk.h>
+#include <zephyr/storage/flash_map.h>
 
 #include "psa_eits_backend.h"
 

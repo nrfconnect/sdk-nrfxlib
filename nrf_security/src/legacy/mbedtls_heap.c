@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-#include <init.h>
-#include <app_memory/app_memdomain.h>
+#include <zephyr/init.h>
+#include <zephyr/app_memory/app_memdomain.h>
 
 #include "mbedtls/memory_buffer_alloc.h"
 
