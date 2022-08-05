@@ -72,7 +72,7 @@ Feature support
 +-------------+-------------------+-------------+
 
 .. note::
-   * The :ref:`nrf_security_backends_oberon` uses some functionality from Original Mbed TLS for AES operations.
+   The :ref:`nrf_security_backends_oberon` uses some functionality from Original Mbed TLS for AES operations.
 
 AES cipher configuration
 ************************
