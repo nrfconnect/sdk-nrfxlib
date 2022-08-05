@@ -354,9 +354,7 @@ You can use it as a template and customize it for your OS or scheduler.
         // Return true if called in an interrupt context, false otherwise.
     }
 
-    int nrf_modem_os_sem_init(void **sem,
-                              unsigned int initial_count,
-                              unsigned int limit)
+    int nrf_modem_os_sem_init(void *sem, unsigned int initial_count, unsigned int limit)
     {
         // Allocate and initialize a semaphore.
         // If an address of an already allocated semaphore is provided as an input,

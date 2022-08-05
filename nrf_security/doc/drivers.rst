@@ -82,14 +82,13 @@ Built-in Mbed TLS support can be used to add support for features not available 
 
 Similarly, you can use the built-in Mbed TLS to add support for features not available in the `nrf_oberon driver`_, for example to add support for more ECC curve types.
 
-.. note:
+.. note::
    nrf_security provides a replacement to the file :file:`psa_crypto_driver_wrappers.c` with adjustments to support multiple drivers.
-
 
 Enabling the built-in Mbed TLS support
 ======================================
 
-To enable the built-in Mbed TLS support, set the :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_BUILTIN` Kconfig option to ``y````.
+To enable the built-in Mbed TLS support, set the :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_BUILTIN` Kconfig option to ``y``.
 
 It is generally not needed to enable built-in Mbed TLS support manually, as there is Kconfig logic that does that, depending on the enabled cryptographic features or algorithms and the configuration of PSA drivers.
 
