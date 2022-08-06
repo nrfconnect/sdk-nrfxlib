@@ -99,17 +99,20 @@ extern "C" {
  * @{
  */
 
-/** @brief Auxiliary defines, not to be used outside of this file. */
+/* Dummy defines to avoid red CI. TODO DRGN-17651: Remove */
 #define __MEM_DEFAULT_CENTRAL_LINK_SIZE 958
 #define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 1054
-#define __MEM_BUFFER_OVERHEAD_SIZE 7
+
+/** @brief Auxiliary defines, not to be used outside of this file. */
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 864
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 960
+#define __MEM_BUFFER_OVERHEAD_SIZE 16
+
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
-    ((tx_count) * (tx_size - SDC_DEFAULT_TX_PACKET_SIZE) + \
-     (rx_count) * (rx_size - SDC_DEFAULT_RX_PACKET_SIZE) + \
-     (tx_count - SDC_DEFAULT_TX_PACKET_COUNT) * \
-        (__MEM_BUFFER_OVERHEAD_SIZE + SDC_DEFAULT_TX_PACKET_SIZE) + \
-     (rx_count - SDC_DEFAULT_RX_PACKET_COUNT) * \
-        (__MEM_BUFFER_OVERHEAD_SIZE + SDC_DEFAULT_RX_PACKET_SIZE))
+    ((tx_count) * ((tx_size) + __MEM_BUFFER_OVERHEAD_SIZE) - \
+     (SDC_DEFAULT_TX_PACKET_SIZE + __MEM_BUFFER_OVERHEAD_SIZE) + \
+     (rx_count) * ((rx_size) + __MEM_BUFFER_OVERHEAD_SIZE) - \
+     (SDC_DEFAULT_RX_PACKET_SIZE + __MEM_BUFFER_OVERHEAD_SIZE))
 
 /** @brief Maximum memory required per central link.
  *
@@ -119,7 +122,7 @@ extern "C" {
  * @param[in] rx_count Link Layer RX packet count.
  */
 #define SDC_MEM_PER_CENTRAL_LINK(tx_size, rx_size, tx_count, rx_count) \
-    (__MEM_DEFAULT_CENTRAL_LINK_SIZE + \
+    (__MEM_MINIMAL_CENTRAL_LINK_SIZE + \
      __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
 
 /** @brief Maximum memory required per peripheral link.
@@ -130,7 +133,7 @@ extern "C" {
  * @param[in] rx_count Link Layer RX packet count.
  */
 #define SDC_MEM_PER_PERIPHERAL_LINK(tx_size, rx_size, tx_count, rx_count) \
-    (__MEM_DEFAULT_PERIPHERAL_LINK_SIZE + \
+    (__MEM_MINIMAL_PERIPHERAL_LINK_SIZE + \
      __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
 
 /** Maximum shared memory required for central links. */
@@ -769,6 +772,11 @@ int32_t sdc_coex_adv_mode_configure(bool adv_cont_on_denial);
  * The power level set will be equal to or less than the one requested, based on the values
  * supported by the hardware used. Values outside the suported range will be set to the nearest
  * supported value.
+ *
+ * @p requested_power_level represents the actual power level fed to the antenna.
+ * When a Front-End Module is used, gain values for the SoC and FEM are calculated
+ * automatically to guarantee the closest possible match to the value requested by the user
+ * at the RF output.
  *
  * @param[in] requested_power_level The power level in dBm to use.
  *
