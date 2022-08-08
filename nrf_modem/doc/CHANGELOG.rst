@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.1.1
+***************
+
+* Fixed a bug that caused poor tracing performance.
+
 nrf_modem 2.1.0
 ***************
 
