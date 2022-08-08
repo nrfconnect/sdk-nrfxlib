@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+main branch
+***********
+
+Added
+=====
+
+* Support for modifying the Frame Delay Min parameter in the :ref:`type_2_tag` and :ref:`type_4_tag` libraries.
+
 nRF Connect SDK v2.0.0
 **********************
 

@@ -96,6 +96,11 @@ typedef enum
 
 typedef enum
 {
+	/** Frame Delay Time Min parameter.
+	 *  The parameter controls the frame transmission timing during collision resolution.
+	 */
+	NFC_T2T_PARAM_FDT_MIN,
+
 	/** NFCID1 value, data can be 4, 7, or 10 bytes long (single, double,
 	 * or triple size). To use default NFCID1 of specific length pass one
 	 * byte containing requested length. Default 7-byte NFCID1 will be
