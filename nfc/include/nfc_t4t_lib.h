@@ -173,9 +173,17 @@ typedef enum
  */
 typedef enum
 {
-	NFC_T4T_PARAM_FWI,	/**< Frame Wait Time parameter */
+	NFC_T4T_PARAM_FWI,
+	/**< Frame Wait Time parameter */
+
+	NFC_T4T_PARAM_FDT_MIN,	
+	/**< Frame Delay Time Min parameter 
+	 *   The parameter controls the frame transmission timing during collision resolution.
+	 */
+
 	NFC_T4T_PARAM_SELRES,
 	/**< Parameter for setting 'Protocol' bits for SEL_RES packet */
+
 	NFC_T4T_PARAM_NFCID1,
 	/**< NFCID1 value, data can be 4, 7, or 10 bytes long  (single, double,
 	 *   or triple size). To use default NFCID1 of specific length pass one
