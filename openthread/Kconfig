@@ -41,7 +41,7 @@ config OPENTHREAD_NORDIC_LIBRARY
 	bool "Nordic library feature sets"
 	depends on !OPENTHREAD_SOURCES
 
-choice
+choice OPENTHREAD_NORDIC_LIBRARY_CONFIGURATION
 	prompt "Feature set"
 	default OPENTHREAD_USER_CUSTOM_LIBRARY
 	help
