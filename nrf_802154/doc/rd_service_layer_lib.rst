@@ -15,7 +15,6 @@ The nRF 802.15.4 Service Layer (SL) is a library that implements the following f
   It provides precise frame timestamps.
 
 It also provides an API to retrieve the capabilities of the binary in runtime.
-
 The service layer is available as a binary for the following SoCs:
 
 * nRF52833
@@ -29,5 +28,11 @@ When using the |NCS|, the nRF 802.15.4 Radio Driver takes advantage of the servi
 No additional user action is needed.
 Instead, when using the nRF 802.15.4 Radio Driver in your project outside of the |NCS|, you must do the following to let the radio driver take advantage of the features enabled by the service layer:
 
-* Add the header files to the include directories of the project.
+* Add the header files to the include directories of the project
 * Add the binaries to the linking stage of the build.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Subpages:
+
+   CHANGELOG

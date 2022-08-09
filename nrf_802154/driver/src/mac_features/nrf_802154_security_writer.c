@@ -159,6 +159,7 @@ bool nrf_802154_security_writer_tx_setup(
     nrf_802154_key_id_t            key_id;
     bool                           result = false;
 
+    key_id.p_key_id          = NULL;
     m_frame_counter_injected = false;
 
     if (p_params->frame_props.dynamic_data_is_set)

@@ -42,7 +42,6 @@
 #include "nrf_802154_serialization_crit_sect.h"
 
 #include <assert.h>
-#include <inttypes.h>
 #include <stdbool.h>
 #include <stdint.h>
 
