@@ -43,6 +43,7 @@ Changes
 Bug fixes
 =========
 
+* Fixed a HardFault that could occur when receiving legacy PDUs while using the periodic advertising synchronization functionality (DRGN-17656).
 * Fixed an issue where the maximum data length capabilities were set to 27 bytes when the configured event length (:kconfig:option:`CONFIG_BT_CTLR_SDC_MAX_CONN_EVENT_LEN_DEFAULT`) was more than 65535 us (DRGN-17454).
 * Fixed an issue where using the memory macros in :file:`sdc.h` with fewer TX/RX buffers than the default would report incorrect memory usage (DRGN-17651).
 
