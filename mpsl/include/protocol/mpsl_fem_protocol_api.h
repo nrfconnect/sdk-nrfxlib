@@ -345,8 +345,13 @@ int32_t mpsl_fem_pa_gain_set(int8_t gain);
  */
 void mpsl_fem_pa_is_configured(int8_t * const p_gain);
 
-/** @brief Checks if the LNA signal is configured and enabled */
-bool mpsl_fem_lna_is_configured(void);
+/** @brief Returns LNA gain if the LNA signal is configured and enabled, 0 otherwise.
+ *
+ * @param[out] p_gain The configured gain in dB if LNA is configured and enabled.
+ *                    If there is no LNA present or the LNA does not affect
+ *                    the signal gain, returns 0 dB.
+ */
+void mpsl_fem_lna_is_configured(int8_t * const p_gain);
 
 /** @brief Prepares the Front End Module to switch to the Power Down state.
  *
