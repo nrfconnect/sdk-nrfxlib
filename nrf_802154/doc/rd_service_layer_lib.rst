@@ -31,3 +31,9 @@ Instead, when using the nRF 802.15.4 Radio Driver in your project outside of the
 
 * Add the header files to the include directories of the project.
 * Add the binaries to the linking stage of the build.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Subpages:
+
+   CHANGELOG
