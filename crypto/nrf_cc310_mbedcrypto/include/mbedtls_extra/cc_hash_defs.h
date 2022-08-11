@@ -134,4 +134,4 @@ typedef struct CCHashUserContext_t {
 /*!
  @}
  */
-#endif /* #ifndef CC_HASH_DEFS_H */
+#endif /* CC_HASH_DEFS_H */

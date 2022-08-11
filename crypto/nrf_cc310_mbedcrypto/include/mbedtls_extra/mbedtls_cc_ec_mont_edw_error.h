@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef _MBEDTLS_CC_EC_MONT_EDW_ERROR_H
-#define _MBEDTLS_CC_EC_MONT_EDW_ERROR_H
+#ifndef MBEDTLS_CC_EC_MONT_EDW_ERROR_H
+#define MBEDTLS_CC_EC_MONT_EDW_ERROR_H
 
 
 /*!
@@ -81,4 +81,4 @@ extern "C"
 /**
 @}
 */
-#endif//_MBEDTLS_CC_EC_MONT_EDW_ERROR_H
+#endif /* MBEDTLS_CC_EC_MONT_EDW_ERROR_H */

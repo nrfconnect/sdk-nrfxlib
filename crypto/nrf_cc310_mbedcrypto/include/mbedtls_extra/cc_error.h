@@ -18,8 +18,8 @@
 */
 
 
-#ifndef _CC_ERROR_H
-#define _CC_ERROR_H
+#ifndef CC_ERROR_H
+#define CC_ERROR_H
 
 #include "cc_pal_types.h"
 
@@ -296,4 +296,4 @@ extern "C"
 @}
  */
 
-#endif
+#endif /* CC_ERROR_H */

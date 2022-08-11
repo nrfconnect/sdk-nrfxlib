@@ -20,7 +20,7 @@ typedef enum {
     ALG_AES_128_BIT         = 1,
     ALG_AES_256_BIT         = 2,
     ALG_CHACHA20_256_BIT    = 3,
-    ALG_CHACHAPOLY_256_BIT  = 3
+    ALG_CHACHAPOLY_256_BIT  = 3 /* Intentionally the same as CHACHA20 */
 } nrf_cc3xx_platform_cipher_info_t;
 
 /** @brief Structure containing information for doing the key derivation using AES CMAC */

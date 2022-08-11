@@ -5,8 +5,8 @@
  */
 
 
-#ifndef _CC_RND_ERROR_H
-#define _CC_RND_ERROR_H
+#ifndef CC_RND_ERROR_H
+#define CC_RND_ERROR_H
 
 #include "cc_error.h"
 
@@ -117,4 +117,4 @@ extern "C"
 /**
 @}
  */
-#endif
+#endif /* CC_RND_ERROR_H */

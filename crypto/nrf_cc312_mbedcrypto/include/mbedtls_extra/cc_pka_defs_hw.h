@@ -15,8 +15,8 @@
  PKA APIs.
  */
 
-#ifndef _CC_PKA_DEFS_HW_H_
-#define _CC_PKA_DEFS_HW_H_
+#ifndef CC_PKA_DEFS_HW_H
+#define CC_PKA_DEFS_HW_H
 
 #include "cc_pal_types.h"
 #include "cc_pka_hw_plat_defs.h"
@@ -90,4 +90,4 @@ words. */
 /*!
  @}
  */
-#endif /*_CC_PKA_DEFS_HW_H_*/
+#endif /* CC_PKA_DEFS_HW_H */

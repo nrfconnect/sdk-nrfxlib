@@ -21,8 +21,8 @@
  @}
  */
 
-#ifndef _MBEDTLS_CC_HKDF_H
-#define _MBEDTLS_CC_HKDF_H
+#ifndef MBEDTLS_CC_HKDF_H
+#define MBEDTLS_CC_HKDF_H
 
 
 #ifdef __cplusplus
@@ -85,11 +85,11 @@ CCError_t  mbedtls_hkdf_key_derivation(
             uint8_t*                   Salt_ptr,       /*!< [in] A pointer to a non-secret random value. Can be NULL. */
             size_t                     SaltLen,        /*!< [in] The size of the \p Salt_ptr. */
             uint8_t*                   Ikm_ptr,        /*!< [in] A pointer to an input key message. */
-            uint32_t                   IkmLen,         /*!< [in] The size of the input key message */
+            size_t                     IkmLen,         /*!< [in] The size of the input key message */
             uint8_t*                   Info,           /*!< [in] A pointer to an optional context and application-specific information. Can be NULL */
-            uint32_t                   InfoLen,        /*!< [in] The size of the application-specific information. */
+            size_t                     InfoLen,        /*!< [in] The size of the application-specific information. */
             uint8_t*                   Okm,            /*!< [in] A pointer to an output key material. */
-            uint32_t                   OkmLen,         /*!< [in] The size of the output key material. */
+            size_t                     OkmLen,         /*!< [in] The size of the output key material. */
             CCBool                     IsStrongKey     /*!< [in] If TRUE, no need to perform the extraction phase. */
 );
 
@@ -97,4 +97,4 @@ CCError_t  mbedtls_hkdf_key_derivation(
 }
 #endif
 
-#endif
+#endif /* MBEDTLS_CC_HKDF_H */

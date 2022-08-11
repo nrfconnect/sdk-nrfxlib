@@ -21,6 +21,13 @@ extern "C"
  */
 #define NRF_CC3XX_PLATFORM_ENTROPY_MAX_GATHER                   (144)
 
+/** @brief Definition of the nonce size for EITS in bytes
+ */
+#define NRF_CC3XX_PLATFORM_EITS_NONCE_SIZE                      (8)
+
+/** @brief Definition of the TF-M boot seed size in bytes
+ */
+#define NRF_CC3XX_PLATFORM_TFM_BOOT_SEED_SIZE                   (32)
 
 /** @brief Definition of max count of concurrent usage
  *

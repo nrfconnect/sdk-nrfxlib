@@ -70,7 +70,7 @@ int nrf_cc3xx_platform_ctr_drbg_init(
     size_t pers_string_len);
 
 
-/**@brief Function that deintializes an ctr_drbg context
+/**@brief Function that deintializes a ctr_drbg context
  *
  * Param[in,out] context    Pointer to structure holding ctr_drbg context which
  *                          is to be deinitialized.
@@ -165,7 +165,7 @@ int nrf_cc3xx_platform_ctr_drbg_reseed(
  *
  * @note  If the context is NULL the function uses an internal context.
  *
- * This function will calculate PRNG using HW accelarated AES CTR_DRBG with a
+ * This function will calculate PRNG using HW accelerated AES CTR_DRBG with a
  * 16-byte key and reseed with TRNG using ARM CryptoCEll cc3xx HW according
  * to a reseed interval.
  *

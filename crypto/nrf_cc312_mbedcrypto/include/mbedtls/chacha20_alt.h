@@ -24,7 +24,7 @@ extern "C"
 /************************ Defines ******************************/
 
 /*! The size of the ChaCha user-context in words. */
-#define MBEDTLS_CHACHA_USER_CTX_SIZE_IN_WORDS         41
+#define MBEDTLS_CHACHA_USER_CTX_SIZE_IN_WORDS         40
 /*! The size of the ChaCha block in Bytes. */
 #define MBEDTLS_CHACHA_BLOCK_SIZE_BYTES               64
 /*! The size of the ChaCha block in Bytes. As defined in rfc7539 */

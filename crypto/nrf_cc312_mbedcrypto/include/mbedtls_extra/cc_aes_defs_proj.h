@@ -47,4 +47,4 @@ See ::CCAesUserContext_t.*/
  @}
  */
 
-#endif /* #ifndef CC_AES_DEFS_PROJ_H */
+#endif /* CC_AES_DEFS_PROJ_H */

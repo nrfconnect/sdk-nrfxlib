@@ -15,8 +15,8 @@
  @brief This file contains the project-specific definitions of hash APIs.
  */
 
-#ifndef _CC_HASH_DEFS_PROJ_H
-#define _CC_HASH_DEFS_PROJ_H
+#ifndef CC_HASH_DEFS_PROJ_H
+#define CC_HASH_DEFS_PROJ_H
 
 #ifdef __cplusplus
 extern "C"
@@ -38,4 +38,4 @@ See ::CCHashUserContext_t. */
 /*!
  @}
  */
-#endif
+#endif /* CC_HASH_DEFS_PROJ_H */

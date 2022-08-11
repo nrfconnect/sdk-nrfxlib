@@ -22,8 +22,8 @@
  @}
  */
 
-#ifndef _MBEDTLS_CC_AES_KEY_WRAP_H
-#define _MBEDTLS_CC_AES_KEY_WRAP_H
+#ifndef MBEDTLS_CC_AES_KEY_WRAP_H
+#define MBEDTLS_CC_AES_KEY_WRAP_H
 
 #include "cc_pal_types.h"
 #include "cc_error.h"
@@ -132,4 +132,4 @@ CCError_t mbedtls_aes_key_unwrap(
 }
 #endif
 
-#endif /*#ifndef _MBEDTLS_CC_AES_KEY_WRAP_H*/
+#endif /* MBEDTLS_CC_AES_KEY_WRAP_H */
