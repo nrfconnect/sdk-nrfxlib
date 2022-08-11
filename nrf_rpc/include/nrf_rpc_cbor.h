@@ -20,7 +20,7 @@
 /* Max ZCBOR states: 2 means that no backups are available but we can use constant state
  * to enable stop_on_error.
  */
-#define NRF_RPC_ZCBOR_STATES	2
+#define NRF_RPC_ZCBOR_STATES	(2 + CONFIG_NRF_RPC_ZCBOR_BACKUPS)
 
 /**
  * @defgroup nrf_rpc_cbor TinyCBOR serialization layer for nRF RPC.

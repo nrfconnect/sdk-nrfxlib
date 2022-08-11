@@ -19,6 +19,15 @@ config NRF_RPC_CBOR
 	help
 	  Adds API that helps use of CBOR library for data serialization.
 
+config NRF_RPC_ZCBOR_BACKUPS
+	int "Number of ZCBOR backups"
+	default 0
+	help
+	  ZCBOR needs to take a backup for each list/map. The application should
+	  configure this to be the maximum list depth expected in the CBOR data.
+	  E.g., if we have a nested list (2 levels deep) then ZCBOR will need 2
+	  backup states.
+
 config NRF_RPC_CMD_CTX_POOL_SIZE
 	int "Number of available context structures for commands"
 	default 8
