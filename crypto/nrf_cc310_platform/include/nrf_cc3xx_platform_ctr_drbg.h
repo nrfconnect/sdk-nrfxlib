@@ -70,7 +70,7 @@ int nrf_cc3xx_platform_ctr_drbg_init(
     size_t pers_string_len);
 
 
-/**@brief Function that deintializes an ctr_drbg context
+/**@brief Function that deintializes a ctr_drbg context
  *
  * Param[in,out] context    Pointer to structure holding ctr_drbg context which
  *                          is to be deinitialized.

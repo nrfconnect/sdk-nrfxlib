@@ -47,8 +47,8 @@
  */
 
 
-#ifndef _CC_RND_COMMON_H
-#define _CC_RND_COMMON_H
+#ifndef CC_RND_COMMON_H
+#define CC_RND_COMMON_H
 
 #include "cc_error.h"
 #include "cc_aes_defs.h"
@@ -243,4 +243,4 @@ CCError_t CC_RndSetGenerateVectorFunc(
 /*!
  @}
  */
-#endif /* #ifndef _CC_RND_COMMON_H */
+#endif /* CC_RND_COMMON_H */

@@ -19,8 +19,8 @@
  @}
  */
 
-#ifndef _CC_AES_KEYWRAP_ERROR_H
-#define _CC_AES_KEYWRAP_ERROR_H
+#ifndef CC_AES_KEYWRAP_ERROR_H
+#define CC_AES_KEYWRAP_ERROR_H
 
 
 #include "cc_error.h"
@@ -75,4 +75,4 @@ extern "C"
 }
 #endif
 
-#endif /* _CC_AES_KEYWRAP_ERROR_H */
+#endif /* CC_AES_KEYWRAP_ERROR_H */

@@ -97,7 +97,7 @@ void CRYPTOCELL_IRQHandler(void);
  *
  * @return Zero on success, otherwise a non-zero error code.
  */
-int nrf_cc3xx_platform_get_nonce_seed(uint8_t buffer[8]);
+int nrf_cc3xx_platform_get_nonce_seed(uint8_t buffer[NRF_CC3XX_PLATFORM_EITS_NONCE_SIZE]);
 
 
 /** @brief Function to get the boot seed used by TF-M attestation
@@ -106,7 +106,7 @@ int nrf_cc3xx_platform_get_nonce_seed(uint8_t buffer[8]);
  *
  * @return Zero on success, otherwise a non-zero error code.
  */
-int nrf_cc3xx_plaform_get_boot_seed(uint8_t buffer[32]);
+int nrf_cc3xx_plaform_get_boot_seed(uint8_t buffer[NRF_CC3XX_PLATFORM_TFM_BOOT_SEED_SIZE]);
 
 #ifdef __cplusplus
 }

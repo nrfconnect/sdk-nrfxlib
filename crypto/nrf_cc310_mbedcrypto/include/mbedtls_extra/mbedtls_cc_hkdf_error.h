@@ -17,8 +17,8 @@
  @}
  */
 
-#ifndef _MBEDTLS_CC_HKDF_ERROR_H
-#define _MBEDTLS_CC_HKDF_ERROR_H
+#ifndef MBEDTLS_CC_HKDF_ERROR_H
+#define MBEDTLS_CC_HKDF_ERROR_H
 
 #include "cc_error.h"
 
@@ -57,4 +57,4 @@ extern "C"
 }
 #endif
 
-#endif //_MBEDTLS_CC_HKDF_ERROR_H
+#endif /* MBEDTLS_CC_HKDF_ERROR_H */

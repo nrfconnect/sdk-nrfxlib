@@ -9,6 +9,68 @@ Changelog - nrf_cc3xx_platform
 
 All notable changes to this project are documented in this file.
 
+nrf_cc3xx_platform - 0.9.15
+***************************
+
+New version of the library with the following features:
+
+* Added new shadow key APIs for key derivation using KMU, which is compatible with multi-part operations.
+* Ensured that random seeds (for EITS and attestation) are generated only once during boot.
+* Minor bug fixes and improvements.
+
+Library built against Mbed TLS version 3.1.0.
+
+Added
+=====
+
+Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+
+.. note::
+
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+
+* nrf_cc312_platform, nRF5340 variants
+
+  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.15.a``
+  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.15.a``
+
+  * No interrupts
+
+    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.15.a``
+    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.15.a``
+
+  * short-wchar
+
+    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.15.a``
+    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.15.a``
+
+  * short-wchar, no interrupts
+
+    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.15.a``
+    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.15.a``
+
+
+* nrf_cc310_platform, nRF9160 variants
+
+  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.15.a``
+  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.15.a``
+
+  * No interrupts
+
+    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.15.a``
+    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.15.a``
+
+  * short-wchar
+
+    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.15.a``
+    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.15.a``
+
+  * short-wchar, no interrupts
+
+    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.15.a``
+    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.15.a``
+
+
 nrf_cc3xx_platform - 0.9.14
 ***************************
 

@@ -15,8 +15,8 @@
  @brief This file contains the CryptoCell Elliptic Curve Integrated Encryption Scheme (ECIES) APIs.
  */
 
-#ifndef _MBEDTLS_CC_ECIES_H
-#define _MBEDTLS_CC_ECIES_H
+#ifndef MBEDTLS_CC_ECIES_H
+#define MBEDTLS_CC_ECIES_H
 
 
 #include "cc_ecpki_types.h"
@@ -178,4 +178,4 @@ CCError_t mbedtls_ecies_kem_decrypt(
 /*!
  @}
  */
-#endif
+#endif /* MBEDTLS_CC_ECIES_H */

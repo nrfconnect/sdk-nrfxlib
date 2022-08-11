@@ -15,8 +15,8 @@
  CryptoCell ECPKI APIs.
  */
 
-#ifndef _CC_ECPKI_TYPES_H
-#define _CC_ECPKI_TYPES_H
+#ifndef CC_ECPKI_TYPES_H
+#define CC_ECPKI_TYPES_H
 
 
 #include "cc_bitops.h"
@@ -486,4 +486,4 @@ typedef struct CCEcdhFipsKatContext_t{
 /*!
  @}
  */
-#endif
+#endif /* CC_ECPKI_TYPES_H */

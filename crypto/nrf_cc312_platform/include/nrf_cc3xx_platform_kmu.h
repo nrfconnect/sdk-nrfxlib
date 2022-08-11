@@ -191,7 +191,7 @@ int nrf_cc3xx_platform_kmu_write_kdr_slot(uint32_t slot_id, const uint8_t key[16
  *  @note This function must be run once on every boot to load the KDR key
  *        and to set the LCS state to secure.
  *
- * @note The KDR key will be stored in the Always on Domain (AO) untill the next
+ * @note The KDR key will be stored in the Always on Domain (AO) until the next
  *       reset. It is not possible to set the KDR value once the LCS state is
  *       set to secure.
  *

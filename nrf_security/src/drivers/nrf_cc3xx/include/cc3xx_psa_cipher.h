@@ -27,12 +27,12 @@ extern "C" {
  * \brief Setup a cipher encryption object by binding the key to the
  *        context of a multipart cipher operation
  *
- * \param[in] operation   Pointer to the operation object
- * \param[in] attributes  Attributes for the key to be set
- * \param[in] key         Buffer holding key material
- * \param[in] key_lenghth Size in bytes of the key
- * \param[in] alg         Algorithm to setup for which PSA_ALG_IS_CIPHER(alg)
- *                        must be true
+ * \param[in] operation  Pointer to the operation object
+ * \param[in] attributes Attributes for the key to be set
+ * \param[in] key        Buffer holding key material
+ * \param[in] key_length Size in bytes of the key
+ * \param[in] alg        Algorithm to setup for which PSA_ALG_IS_CIPHER(alg)
+ *                       must be true
  *
  * \retval #PSA_SUCCESS
  * \retval #PSA_ERROR_NOT_SUPPORTED
@@ -50,12 +50,12 @@ psa_status_t cc3xx_cipher_encrypt_setup(
  * \brief Setup a cipher decryption object by binding the key to the
  *        context of a multipart cipher operation
  *
- * \param[in] operation   Pointer to the operation object
- * \param[in] attributes  Attributes for the key to be set
- * \param[in] key         Buffer holding key material
- * \param[in] key_lenghth Size in bytes of the key
- * \param[in] alg         Algorithm to setup for which PSA_ALG_IS_CIPHER(alg)
- *                        must be true
+ * \param[in] operation  Pointer to the operation object
+ * \param[in] attributes Attributes for the key to be set
+ * \param[in] key        Buffer holding key material
+ * \param[in] key_length Size in bytes of the key
+ * \param[in] alg        Algorithm to setup for which PSA_ALG_IS_CIPHER(alg)
+ *                       must be true
  *
  * \retval #PSA_SUCCESS
  * \retval #PSA_ERROR_NOT_SUPPORTED
@@ -133,6 +133,8 @@ psa_status_t cc3xx_cipher_abort(
  * \param[in]  key_buffer_size Size in bytes of the key
  * \param[in]  alg             Algorithm to be used for which
  *                             PSA_ALG_IS_CIPHER(alg) is true
+ * \param[in]  iv              Buffer holding the initialization vector
+ * \param[in]  iv_length       Size in bytes of the initialization vector
  * \param[in]  input           Buffer holding the plaintext
  * \param[in]  input_length    Size in bytes of the plaintext
  * \param[out] output          Buffer holding the ciphertext
@@ -147,6 +149,8 @@ psa_status_t cc3xx_cipher_encrypt(
         const uint8_t *key_buffer,
         size_t key_buffer_size,
         psa_algorithm_t alg,
+        const uint8_t *iv,
+        size_t iv_length,
         const uint8_t *input,
         size_t input_length,
         uint8_t *output,

@@ -15,8 +15,8 @@
  definitions.
  */
 
-#ifndef _MBEDTLS_CC_SRP_H
-#define _MBEDTLS_CC_SRP_H
+#ifndef MBEDTLS_CC_SRP_H
+#define MBEDTLS_CC_SRP_H
 
 #include "cc_pal_types.h"
 #include "cc_error.h"
@@ -394,4 +394,4 @@ CIMPORT_C CCError_t  mbedtls_srp_user_proof_verify(
 /*!
  @}
  */
-#endif /* #ifndef _MBEDTLS_CC_SRP_H */
+#endif /* MBEDTLS_CC_SRP_H */

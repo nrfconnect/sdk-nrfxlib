@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef _CC_KDF_H
-#define _CC_KDF_H
+#ifndef CC_KDF_H
+#define CC_KDF_H
 
 
 
@@ -196,4 +196,4 @@ CCError_t  CC_KdfKeyDerivFunc(
 /**
 @}
  */
-#endif
+#endif /* CC_KDF_H */

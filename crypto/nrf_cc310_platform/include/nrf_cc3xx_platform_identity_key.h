@@ -7,6 +7,7 @@
 #define NRF_CC3XX_PLATFORM_IDENTITY_KEY__
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /** @brief Function to store an identity key
  *
@@ -37,6 +38,14 @@ int nrf_cc3xx_platform_identity_key_store(
     uint32_t slot_id,
     const uint8_t key[32]);
 
+/** @brief Function to check if the identity key is already stored in KMU
+ *
+ * @param[in]       slot_id     The first KMU slot ID for the stored identity key (uses 2).
+ *
+ * @return TRUE if they identity key is stored, FALSE otherwise
+ */
+bool nrf_cc3xx_platform_identity_key_is_stored(uint32_t slot_id);
+
 /** @brief Function to retrieve an identity key
  *
  * @details The primary usage of this API is to retrieve assymetric key material
@@ -61,7 +70,6 @@ int nrf_cc3xx_platform_identity_key_store(
 int nrf_cc3xx_platform_identity_key_retrieve(
     uint32_t slot_id,
     uint8_t key[32]);
-
 
 /** @brief Function to clear out an identity key after usage
  *
