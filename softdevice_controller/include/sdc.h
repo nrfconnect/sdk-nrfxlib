@@ -99,20 +99,22 @@ extern "C" {
  * @{
  */
 
-/* Dummy defines to avoid red CI. TODO DRGN-17651: Remove */
-#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 1088
-#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 1192
-
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_MINIMAL_CENTRAL_LINK_SIZE 994
 #define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1098
-#define __MEM_BUFFER_OVERHEAD_SIZE 16
+#define __MEM_TX_BUFFER_OVERHEAD_SIZE 16
+#define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
+
+/* Dummy defines to avoid red CI. TODO DRGN-17651: Remove */
+#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 1000
+#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 1100
+#define __MEM_BUFFER_OVERHEAD_SIZE (__MEM_TX_BUFFER_OVERHEAD_SIZE + __MEM_RX_BUFFER_OVERHEAD_SIZE)
 
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
-    ((tx_count) * ((tx_size) + __MEM_BUFFER_OVERHEAD_SIZE) - \
-     (SDC_DEFAULT_TX_PACKET_SIZE + __MEM_BUFFER_OVERHEAD_SIZE) + \
-     (rx_count) * ((rx_size) + __MEM_BUFFER_OVERHEAD_SIZE) - \
-     (SDC_DEFAULT_RX_PACKET_SIZE + __MEM_BUFFER_OVERHEAD_SIZE))
+    ((tx_count) * ((tx_size) + __MEM_TX_BUFFER_OVERHEAD_SIZE) - \
+     (SDC_DEFAULT_TX_PACKET_SIZE + __MEM_TX_BUFFER_OVERHEAD_SIZE) + \
+     (rx_count) * ((rx_size) + __MEM_RX_BUFFER_OVERHEAD_SIZE) - \
+     (SDC_DEFAULT_RX_PACKET_SIZE + __MEM_RX_BUFFER_OVERHEAD_SIZE))
 
 /** @brief Maximum memory required per central link.
  *
@@ -431,7 +433,7 @@ int32_t sdc_cfg_set(uint8_t config_tag,
  * @param[in] callback  The callback will be executed when HCI data or and HCI
  *                      event is available. The callback will be executed in
  *                      the same context as @ref mpsl_low_priority_process.
- *                      See also @ref sdc_hci_evt_get() and @ref sdc_hci_data_get().
+ *                      See also @ref sdc_hci_get().
  * @param[in]  p_mem    Provide memory for the current resource configuration. If
  *                      custom resource configurations are used, use the value
  *                      returned from @ref sdc_cfg_set().
