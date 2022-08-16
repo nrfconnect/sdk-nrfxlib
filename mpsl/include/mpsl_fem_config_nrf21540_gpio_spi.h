@@ -29,11 +29,11 @@ extern "C" {
 /** @brief SPI interface. */
 typedef struct
 {
-    NRF_SPIM_Type * p_spim;     /**< Pointer to the SPI peripheral instance to be used. */
-    mpsl_fem_pin_t  mosi_pin;   /**< MOSI pin. */
-    mpsl_fem_pin_t  miso_pin;   /**< MISO pin. */
-    mpsl_fem_pin_t  sck_pin;    /**< SCK pin. */
-    mpsl_fem_pin_t  cs_pin;     /**< CS pin. */
+    NRF_SPIM_Type              * p_spim;        /**< Pointer to the SPI peripheral instance to be used. */
+    mpsl_fem_pin_t               mosi_pin;      /**< MOSI pin. */
+    mpsl_fem_pin_t               miso_pin;      /**< MISO pin. */
+    mpsl_fem_pin_t               sck_pin;       /**< SCK pin. */
+    mpsl_fem_gpiote_pin_config_t cs_pin_config; /**< CS pin. */
 } mpsl_fem_spi_config_t;
 
 /** @brief Configuration parameters for the Power Amplifier (PA), the Low Noise
@@ -50,9 +50,7 @@ typedef struct
     mpsl_fem_gpiote_pin_config_t lna_pin_config;
     /** PDN pin configuration. */
     mpsl_fem_gpiote_pin_config_t pdn_pin_config;
-    /** MODE pin configuration. To enable runtime MODE pin switching @c mode_pin_config.enable
-     *  must be set to true. The @c fem_config.pa_gains_db must contain correct values corresponding
-     *  to POUTA and POUTB gains then. */
+    /** MODE pin configuration. */
     mpsl_fem_gpio_pin_config_t   mode_pin_config;
 
     /** SPI interface configuration. */
@@ -60,16 +58,22 @@ typedef struct
 
 #if defined(NRF52_SERIES)
     /** Array of PPI channels which need to be provided to Front End Module to operate. */
-    uint8_t                      ppi_channels[3];
+    uint8_t                      ppi_channels[4];
 #else
     /** Array of DPPI channels which need to be provided to Front End Module to operate. */
-    uint8_t                      dppi_channels[4];
+    uint8_t                      dppi_channels[6];
     /** Number of EGU instance for which @c egu_channels apply. */
     uint8_t                      egu_instance_no;
     /** Array of EGU channels (belonging to EGU instance number @c egu_instance_no) which
      *  need to be provided to Front End Module to operate. */
-    uint8_t                      egu_channels[3];
+    uint8_t                      egu_channels[5];
 #endif
+
+    /** Flag that indicates if PA gain should be changeable in runtime. If this flag is set,
+     *  @c fem_config.pa_gains_db must contain correct values corresponding to POUTA and POUTB gains.
+     *  Otherwise, PA gain is considered constant. In both cases there are SPI transfers performed
+     *  to the nRF21540, so the SPI interface must be configured and operable. */
+    bool                         pa_gain_runtime_control;
 
 } mpsl_fem_nrf21540_gpio_spi_interface_config_t;
 
