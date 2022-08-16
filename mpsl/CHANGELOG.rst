@@ -12,6 +12,13 @@ Main branch
 
 All the notable changes included in the main branch are documented in this section.
 
+Added
+=====
+
+* Support for the nRF21540 GPIO & SPI front-end module.
+  SPI is used to set Tx gain of the nRF21540 in runtime.
+  Support for this mode of operation for nRF21540 with Bluetooth LE is experimental.
+
 Changes
 =======
 
