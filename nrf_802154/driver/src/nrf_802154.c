@@ -59,7 +59,6 @@
 #include "nrf_802154_request.h"
 #include "nrf_802154_rx_buffer.h"
 #include "nrf_802154_tx_power.h"
-#include "nrf_802154_rssi.h"
 #include "nrf_802154_stats.h"
 #include "hal/nrf_radio.h"
 #include "platform/nrf_802154_clock.h"

@@ -50,7 +50,6 @@
 #include "nrf_802154.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_debug.h"
-#include "nrf_802154_peripherals.h"
 #include "nrf_802154_queue.h"
 #include "nrf_802154_swi.h"
 #include "nrf_802154_tx_work_buffer.h"

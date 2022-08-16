@@ -53,7 +53,6 @@
 #include "nrf_802154_critical_section.h"
 #include "nrf_802154_debug.h"
 #include "nrf_802154_notification.h"
-#include "nrf_802154_nrfx_addons.h"
 #include "nrf_802154_pib.h"
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_rssi.h"

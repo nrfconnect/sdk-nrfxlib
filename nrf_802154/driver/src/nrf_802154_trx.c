@@ -51,6 +51,9 @@
 #include "hal/nrf_egu.h"
 #include "hal/nrf_radio.h"
 #include "hal/nrf_timer.h"
+#if defined(NRF53_SERIES)
+#include "hal/nrf_vreqctrl.h"
+#endif
 
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_critical_section.h"
@@ -225,6 +228,22 @@ void rx_flags_clear(void)
 }
 
 static void * volatile mp_receive_buffer;
+
+static void txpower_set(nrf_radio_txpower_t txpower)
+{
+#ifdef NRF53_SERIES
+    bool radio_high_voltage_enable = false;
+
+    if ((int8_t)txpower > 0)
+    {
+        /* To get higher than 0dBm raise operating voltage of the radio, giving 3dBm power boost */
+        radio_high_voltage_enable = true;
+        txpower                  -= 3;
+    }
+    nrf_vreqctrl_radio_high_voltage_set(NRF_VREQCTRL_NS, radio_high_voltage_enable);
+#endif
+    nrf_radio_txpower_set(NRF_RADIO, txpower);
+}
 
 /** Initialize TIMER peripheral used by the driver. */
 void nrf_timer_init(void)
@@ -930,7 +949,7 @@ void nrf_802154_trx_receive_frame(uint8_t                                bcc,
 
     m_flags.rssi_settled = false;
 
-    nrf_radio_txpower_set(NRF_RADIO, p_ack_tx_power->radio_tx_power);
+    txpower_set(p_ack_tx_power->radio_tx_power);
 
     if (mp_receive_buffer != NULL)
     {
@@ -1158,7 +1177,7 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
     m_trx_state         = TRX_STATE_TXFRAME;
     m_transmit_with_cca = cca;
 
-    nrf_radio_txpower_set(NRF_RADIO, p_tx_power->radio_tx_power);
+    txpower_set(p_tx_power->radio_tx_power);
 
     nrf_radio_packetptr_set(NRF_RADIO, p_transmit_buffer);
 
@@ -1784,7 +1803,7 @@ void nrf_802154_trx_continuous_carrier(const nrf_802154_tx_power_split_t * p_tx_
     m_trx_state = TRX_STATE_CONTINUOUS_CARRIER;
 
     // Set Tx Power
-    nrf_radio_txpower_set(NRF_RADIO, p_tx_power->radio_tx_power);
+    txpower_set(p_tx_power->radio_tx_power);
 
     // Set FEM
     fem_for_pa_set(p_tx_power->fem_gain);
@@ -1841,7 +1860,7 @@ void nrf_802154_trx_modulated_carrier(const void                        * p_tran
     m_trx_state = TRX_STATE_MODULATED_CARRIER;
 
     // Set Tx Power
-    nrf_radio_txpower_set(NRF_RADIO, p_tx_power->radio_tx_power);
+    txpower_set(p_tx_power->radio_tx_power);
 
     // Set Tx buffer
     nrf_radio_packetptr_set(NRF_RADIO, p_transmit_buffer);
