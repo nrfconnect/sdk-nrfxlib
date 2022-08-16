@@ -48,7 +48,6 @@
 #include "nrf_802154_core.h"
 #include "nrf_802154_critical_section.h"
 #include "nrf_802154_debug.h"
-#include "nrf_802154_peripherals.h"
 #include "nrf_802154_queue.h"
 #include "nrf_802154_rx_buffer.h"
 #include "nrf_802154_swi.h"

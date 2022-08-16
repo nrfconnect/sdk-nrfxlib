@@ -52,7 +52,6 @@
 
 #include "nrf_802154.h"
 #include "nrf_802154_config.h"
-#include "nrf_802154_const.h"
 
 /**
  * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA_DONE.

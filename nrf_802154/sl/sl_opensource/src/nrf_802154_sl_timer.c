@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include <kernel.h>
+#include <zephyr/kernel.h>
 #include <assert.h>
 
 #include "nrf_802154_sl_timer.h"
