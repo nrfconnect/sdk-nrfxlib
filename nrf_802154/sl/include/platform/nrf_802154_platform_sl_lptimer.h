@@ -164,8 +164,13 @@ nrf_802154_sl_lptimer_platform_result_t nrf_802154_platform_sl_lptimer_hw_task_p
     uint32_t ppi_channel);
 
 /**@brief Removes hardware bindings created for hardware task and stops the timer.
+ *
+ * @retval NRF_802154_SL_LPTIMER_PLATFORM_SUCCESS
+ *      The cleaning was successful.
+ * @retval NRF_802154_SL_LPTIMER_PLATFORM_WRONG_STATE
+ *      Cleaning was not performed because the module is in an unsuitable state.
  */
-void nrf_802154_platform_sl_lptimer_hw_task_cleanup(void);
+nrf_802154_sl_lptimer_platform_result_t nrf_802154_platform_sl_lptimer_hw_task_cleanup(void);
 
 /**@brief Updates the hardware bindings for triggering hardware task.
  *
@@ -186,10 +191,6 @@ void nrf_802154_platform_sl_lptimer_hw_task_cleanup(void);
  */
 nrf_802154_sl_lptimer_platform_result_t nrf_802154_platform_sl_lptimer_hw_task_update_ppi(
     uint32_t ppi_channel);
-
-/**@brief Checks if (D)PPI triggering has occurred.
- */
-bool nrf_802154_platform_sl_lptimer_hw_task_check_if_ppi_fired(void);
 
 /**
  * @brief Starts a one-shot synchronization timer that expires at the nearest possible timepoint.

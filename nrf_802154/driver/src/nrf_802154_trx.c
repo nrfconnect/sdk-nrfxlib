@@ -931,7 +931,7 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer)
 }
 
 void nrf_802154_trx_receive_frame(uint8_t                                bcc,
-                                  trx_ramp_up_trigger_mode_t             rampup_trigg_mode,
+                                  nrf_802154_trx_ramp_up_trigger_mode_t  rampup_trigg_mode,
                                   nrf_802154_trx_receive_notifications_t notifications_mask,
                                   const nrf_802154_tx_power_split_t    * p_ack_tx_power)
 {
@@ -1175,7 +1175,7 @@ bool nrf_802154_trx_rssi_sample_is_available(void)
 }
 
 void nrf_802154_trx_transmit_frame(const void                            * p_transmit_buffer,
-                                   trx_ramp_up_trigger_mode_t              rampup_trigg_mode,
+                                   nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
                                    bool                                    cca,
                                    const nrf_802154_tx_power_split_t     * p_tx_power,
                                    nrf_802154_trx_transmit_notifications_t notifications_mask)

@@ -82,9 +82,9 @@ uint8_t nrf_802154_trx_ppi_for_ramp_up_channel_id_get(void)
     return PPI_RAMP_UP_TRG_EGU;
 }
 
-void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t           ramp_up_task,
-                                        trx_ramp_up_trigger_mode_t trigg_mode,
-                                        bool                       start_timer)
+void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t                      ramp_up_task,
+                                        nrf_802154_trx_ramp_up_trigger_mode_t trigg_mode,
+                                        bool                                  start_timer)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 

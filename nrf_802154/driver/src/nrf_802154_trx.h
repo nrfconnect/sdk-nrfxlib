@@ -91,7 +91,7 @@ typedef enum
 {
     TRX_RAMP_UP_SW_TRIGGER, ///< Triggering by RADIO_DISABLED, which is a software generated event.
     TRX_RAMP_UP_HW_TRIGGER  ///< Triggering by some other event that needs to publish to a dedicated (D)PPI channel.
-} trx_ramp_up_trigger_mode_t;
+} nrf_802154_trx_ramp_up_trigger_mode_t;
 
 /**@brief Notifications that can be enabled for @ref nrf_802154_trx_receive_frame operation. */
 typedef enum
@@ -219,7 +219,7 @@ void nrf_802154_trx_cca_configuration_update(void);
  * @param[in] p_ack_tx_power Selects the power which should be used to transmitted an ACK if required.
  */
 void nrf_802154_trx_receive_frame(uint8_t                                bcc,
-                                  trx_ramp_up_trigger_mode_t             rampup_trigg_mode,
+                                  nrf_802154_trx_ramp_up_trigger_mode_t  rampup_trigg_mode,
                                   nrf_802154_trx_receive_notifications_t notifications_mask,
                                   const nrf_802154_tx_power_split_t    * p_ack_tx_power);
 
@@ -355,7 +355,7 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer);
  * @note To transmit ack after frame is received use @ref nrf_802154_trx_transmit_ack.
  */
 void nrf_802154_trx_transmit_frame(const void                            * p_transmit_buffer,
-                                   trx_ramp_up_trigger_mode_t              rampup_trigg_mode,
+                                   nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
                                    bool                                    cca,
                                    const nrf_802154_tx_power_split_t     * p_tx_power,
                                    nrf_802154_trx_transmit_notifications_t notifications_mask);

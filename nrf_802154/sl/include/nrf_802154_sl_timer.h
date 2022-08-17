@@ -84,7 +84,7 @@ typedef uint32_t nrf_802154_sl_timer_ret_t;
 /**@brief Operation was requested too late to be performed in requested time. */
 #define NRF_802154_SL_TIMER_RET_TOO_LATE     2U
 
-/**@brief The trigger time time for the requested operation is too distant.
+/**@brief The trigger time for the requested operation is too distant.
  *
  * Some platforms have a limitation to how far in the future operation can be
  * scheduled. This result may happen for @ref nrf_802154_sl_timer_add with
@@ -289,7 +289,7 @@ nrf_802154_sl_timer_ret_t nrf_802154_sl_timer_remove(nrf_802154_sl_timer_t * p_t
 
 /**@brief Updates the (D)PPI channel to be triggered.
  *
- * @param p_timer   Pointer to a timer instance to be removed from the active timers list.
+ * @param p_timer   Pointer to a timer instance to be updated.
  * @param ppi_chn   Identifier of (D)PPI channel to be triggered at @c trigger_time.
  *
  * @retval NRF_802154_SL_TIMER_RET_SUCCESS

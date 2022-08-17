@@ -204,7 +204,7 @@ static void state_set(radio_state_t state)
  *
  * @param[in]  request_orig  Module that originates the request.
  */
-static trx_ramp_up_trigger_mode_t ramp_up_mode_choose(req_originator_t request_orig)
+static nrf_802154_trx_ramp_up_trigger_mode_t ramp_up_mode_choose(req_originator_t request_orig)
 {
     return (request_orig == REQ_ORIG_DELAYED_TRX) ?
            TRX_RAMP_UP_HW_TRIGGER : TRX_RAMP_UP_SW_TRIGGER;
@@ -1019,7 +1019,7 @@ static nrf_802154_trx_transmit_notifications_t make_trx_frame_transmit_notificat
  *
  * @param[in] rampup_trigg_mode   Desired trigger mode for radio ramp up.
  */
-static void rx_init(trx_ramp_up_trigger_mode_t rampup_trigg_mode)
+static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode)
 {
     bool free_buffer;
 
@@ -1096,9 +1096,9 @@ static void rx_init(trx_ramp_up_trigger_mode_t rampup_trigg_mode)
 }
 
 /** Initialize TX operation. */
-static bool tx_init(const uint8_t            * p_data,
-                    trx_ramp_up_trigger_mode_t rampup_trigg_mode,
-                    bool                       cca)
+static bool tx_init(const uint8_t                       * p_data,
+                    nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode,
+                    bool                                  cca)
 {
     if (!timeslot_is_granted() || !nrf_802154_rsch_timeslot_request(
             nrf_802154_tx_duration_get(p_data[0], cca, ack_is_requested(p_data))))

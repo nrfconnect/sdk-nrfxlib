@@ -105,9 +105,9 @@ void nrf_802154_trx_ppi_for_disable(void);
  * @param[in]  trigg_mode    Trigger mode the connections must conform to.
  * @param[in]  start_timer   If timer is to be started on RADIO DISABLED event.
  */
-void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t           ramp_up_task,
-                                        trx_ramp_up_trigger_mode_t trigg_mode,
-                                        bool                       start_timer);
+void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t                      ramp_up_task,
+                                        nrf_802154_trx_ramp_up_trigger_mode_t trigg_mode,
+                                        bool                                  start_timer);
 
 /**
  * @brief Reconfigure (D)PPIs for the next steps in receiving or transmitting.
