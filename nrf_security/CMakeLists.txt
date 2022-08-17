@@ -60,9 +60,8 @@ else()
   # Execute Cmake logic to forward configurations to TF-M build
   include(${NRF_SECURITY_ROOT}/cmake/config_to_tf-m.cmake)
 
-  # Add replacement exit and platform.c for NS build
+  # Add replacement platform.c for NS build
   list(APPEND src_zephyr
-    ${NRF_SECURITY_ROOT}/src/legacy/exit.c
     ${ARM_MBEDTLS_PATH}/library/platform.c
   )
 
