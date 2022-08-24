@@ -60,5 +60,6 @@ The lists of the necessary files can be found in the following locations:
    doc/multiprotocol_support
    doc/antenna_diversity
    doc/rd_service_layer_lib
+   doc/rd_limitations
    doc/CHANGELOG
    doc/api
