@@ -33,10 +33,10 @@ Changelog
 
 All notable changes to this project are documented in this section.
 
-main branch
-===========
+nRF Connect SDK v2.1.0
+======================
 
-Initial release.
+Initial release in the sdk-nrxlib repository.
 This release includes the following changes to the codec.
 
 LC3 v1.0.4

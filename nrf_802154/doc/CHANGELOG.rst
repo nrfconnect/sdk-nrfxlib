@@ -8,9 +8,10 @@ Changelog
    :depth: 2
 
 All notable changes to this project are documented in this file.
+See also :ref:`nrf_802154_limitations` for permanent limitations.
 
-Main branch
-***********
+nRF Connect SDK v2.1.0 - nRF 802.15.4 Radio Driver
+**************************************************
 
 Bug fixes
 =========
@@ -108,13 +109,6 @@ Bug fixes
 * Fixed an issue where it would not be possible to transmit frames with invalid Auxiliary Security Header if :kconfig:option:`CONFIG_NRF_802154_ENCRYPTION` was set to ``n``. (KRKNWK-11218)
 * Fix an issue with the IE Vendor OUI endianness. (KRKNWK-10633)
 * Fixed various bugs in the MAC Encryption layer. (KRKNWK-10646)
-
-Limitations
-===========
-
-* Application and device drivers (excluding those compliant with :ref:`mpsl`) must not use IRQ priority higher than :c:macro:`NRF_802154_SWI_PRIORITY` and :c:macro:`NRF_802154_SL_RTC_IRQ_PRIORITY`.
-* Transmitting an 802.15.4 frame with improperly populated Auxiliary Security Header field might result in assert.
-  Make sure that you populate the Auxiliary Security Header field according to the IEEE Std 802.15.4-2015 specification, section 9.4.
 
 nRF Connect SDK v1.6.0 - nRF 802.15.4 Radio Driver
 **************************************************
