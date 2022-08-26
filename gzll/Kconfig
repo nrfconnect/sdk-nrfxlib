@@ -6,4 +6,4 @@
 
 config GZLL
 	bool "Enable Gazell Link Layer"
-	depends on SOC_SERIES_NRF52X
+	depends on SOC_SERIES_NRF52X || SOC_SERIES_NRF53X
