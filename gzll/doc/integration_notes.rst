@@ -25,7 +25,7 @@ Configuration
 
 In the |NCS|, you can enable the GZLL library using the :kconfig:option:`CONFIG_GZLL` Kconfig option.
 Look for the menu item "Enable Gazell Link Layer".
-The build system will link in the appropriate library for your nRF5 SoC.
+The build system will link in the appropriate library for your SoC.
 
 .. _gzll_glue_layer:
 
@@ -37,9 +37,9 @@ The glue layer lets you to select the hardware resources for Gazell.
 Radio
 =====
 
-Gazell accesses directly the nRF5 radio peripheral.
+Gazell accesses directly the 2.4 GHz radio peripheral.
 
-When nRF5 radio makes an interrupt request, the glue function :c:func:`nrf_gzll_radio_irq_handler` needs to be called for Gazell processing.
+When the 2.4 GHz radio makes an interrupt request, the glue function :c:func:`nrf_gzll_radio_irq_handler` needs to be called for Gazell processing.
 
 Timer
 =====
@@ -48,19 +48,19 @@ Gazell requires a timer peripheral for timing purposes.
 It accesses directly the timer instance provided by the :c:var:`nrf_gzll_timer` variable.
 It consults the :c:var:`nrf_gzll_timer_irqn` variable for the interrupt number of the timer.
 
-When nRF5 timer makes an interrupt request, the glue function :c:func:`nrf_gzll_timer_irq_handler` needs to be called for Gazell processing.
+When the timer makes an interrupt request, the glue function :c:func:`nrf_gzll_timer_irq_handler` needs to be called for Gazell processing.
 
 Software interrupt
 ==================
 
 Gazell consults the :c:var:`nrf_gzll_swi_irqn` variable for the software interrupt number to use.
 
-When nRF5 software interrupt is triggered, the glue function :c:func:`nrf_gzll_swi_irq_handler` needs to be called for Gazell processing.
+When the software interrupt is triggered, the glue function :c:func:`nrf_gzll_swi_irq_handler` needs to be called for Gazell processing.
 
 PPI channels
 ============
 
-Gazell takes three PPI channels.
+For the nRF52 Series, Gazell takes three PPI channels.
 It consults the following variables for the PPI channel numbers, event end points (EEP) and task end points (TEP):
 
 * :c:var:`nrf_gzll_ppi_eep0`
@@ -71,6 +71,18 @@ It consults the following variables for the PPI channel numbers, event end point
 * :c:var:`nrf_gzll_ppi_tep2`
 * :c:var:`nrf_gzll_ppi_chen_msk_0_and_1`
 * :c:var:`nrf_gzll_ppi_chen_msk_2`
+
+DPPI channels
+=============
+
+For the nRF53 Series, Gazell takes three DPPI channels.
+It consults the following variables for the DPPI channel numbers:
+
+* :c:var:`nrf_gzll_dppi_ch0`
+* :c:var:`nrf_gzll_dppi_ch1`
+* :c:var:`nrf_gzll_dppi_ch2`
+* :c:var:`nrf_gzll_dppi_chen_msk_0_and_1`
+* :c:var:`nrf_gzll_dppi_chen_msk_2`
 
 High frequency clock
 ====================
