@@ -42,6 +42,7 @@ extern "C" {
 /*
  * PPI configuration
  */
+#if defined(PPI_PRESENT) || defined(DOXYGEN)
 #define NRF_GZLL_PPI_EEP0 (*nrf_gzll_ppi_eep0)                      ///< Gazell PPI event endpoint 0
 #define NRF_GZLL_PPI_TEP0 (*nrf_gzll_ppi_tep0)                      ///< Gazell PPI task endpoint 0
 #define NRF_GZLL_PPI_EEP1 (*nrf_gzll_ppi_eep1)                      ///< Gazell PPI event endpoint 1
@@ -51,6 +52,16 @@ extern "C" {
 
 #define NRF_GZLL_PPI_CHEN_MSK_0_AND_1 (nrf_gzll_ppi_chen_msk_0_and_1) ///< Channel enable/disable mask for PPI endpoint 0 and 1.
 #define NRF_GZLL_PPI_CHEN_MSK_2       (nrf_gzll_ppi_chen_msk_2)       ///< Channel enable/disable mask for PPI endpoint 2.
+#endif
+
+#if defined(DPPI_PRESENT) || defined(DOXYGEN)
+#define NRF_GZLL_DPPI_CH0 (nrf_gzll_dppi_ch0)                       ///< Gazell DPPI channel 0
+#define NRF_GZLL_DPPI_CH1 (nrf_gzll_dppi_ch1)                       ///< Gazell DPPI channel 1
+#define NRF_GZLL_DPPI_CH2 (nrf_gzll_dppi_ch2)                       ///< Gazell DPPI channel 2
+
+#define NRF_GZLL_DPPI_CHEN_MSK_0_AND_1 (nrf_gzll_dppi_chen_msk_0_and_1) ///< Channel enable/disable mask for DPPI channel 0 and 1.
+#define NRF_GZLL_DPPI_CHEN_MSK_2       (nrf_gzll_dppi_chen_msk_2)       ///< Channel enable/disable mask for DPPI channel 2.
+#endif
 /** @} */
 
 /*****************************************************************************/

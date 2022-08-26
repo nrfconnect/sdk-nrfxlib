@@ -15,6 +15,7 @@
  */
 
 #include <nrf.h>
+#include <nrf_peripherals.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,6 +39,7 @@ extern IRQn_Type        const nrf_gzll_timer_irqn;
 /** Interrupt number for the software interrupt. */
 extern IRQn_Type        const nrf_gzll_swi_irqn;
 
+#if defined(PPI_PRESENT) || defined(DOXYGEN)
 /** Gazell PPI event endpoint 0 register address. */
 extern __IOM uint32_t * nrf_gzll_ppi_eep0;
 /** Gazell PPI task endpoint 0 register address. */
@@ -54,6 +56,20 @@ extern __IOM uint32_t * nrf_gzll_ppi_tep2;
 extern       uint32_t   nrf_gzll_ppi_chen_msk_0_and_1;
 /** Channel enable/disable mask for PPI endpoint 2. */
 extern       uint32_t   nrf_gzll_ppi_chen_msk_2;
+#endif
+
+#if defined(DPPI_PRESENT) || defined(DOXYGEN)
+/** Gazell DPPI channel index 0. */
+extern uint8_t nrf_gzll_dppi_ch0;
+/** Gazell DPPI channel index 1. */
+extern uint8_t nrf_gzll_dppi_ch1;
+/** Gazell DPPI channel index 2. */
+extern uint8_t nrf_gzll_dppi_ch2;
+/** Channel enable/disable mask for DPPI channel 0 and 1. */
+extern uint32_t nrf_gzll_dppi_chen_msk_0_and_1;
+/** Channel enable/disable mask for DPPI channel 2. */
+extern uint32_t nrf_gzll_dppi_chen_msk_2;
+#endif
 
 
 /**
