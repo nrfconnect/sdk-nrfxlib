@@ -113,6 +113,14 @@ typedef struct
   bool skip_wait_lfclk_started;
 } mpsl_clock_lfclk_cfg_t;
 
+/* @brief Available options for informing MPSL of the true high-frequency oscillator ramp-up time, in microseconds. */
+typedef enum
+{
+  MPSL_CLOCK_HF_LATENCY_BEST = 396,
+  MPSL_CLOCK_HF_LATENCY_TYPICAL = 854,
+  MPSL_CLOCK_HF_LATENCY_WORST_CASE = 1525,
+} mpsl_clock_hfclk_latency_config_t;
+
 /** @brief High frequency clock callback.
  *
  * This callback will be called when the high frequency clock is started.
@@ -158,6 +166,14 @@ int32_t mpsl_clock_hfclk_release(void);
  * @retval 0  Success
  */
 int32_t mpsl_clock_hfclk_is_running(uint32_t * p_is_running);
+
+/** @brief Informs MPSL about the actual ramp-up time of the high-frequency crystal oscillator.
+ *
+ * @param[in] mpsl_clock_hfclk_latency_config Setting for the time it takes for the HFCLK to ramp up.
+ *
+ * @retval 0  Success
+ */
+int32_t mpsl_clock_hfclk_latency_set(mpsl_clock_hfclk_latency_config_t mpsl_clock_hfclk_latency_config);
 
 #ifdef __cplusplus
 }

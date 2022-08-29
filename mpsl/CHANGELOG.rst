@@ -27,6 +27,9 @@ Changes
   Previously the value needed to be adjusted before applying to the RADIO peripheral. (KRKNWK-14323)
 * Changed :c:struct:`mpsl_fem_gpiote_pin_config_t` and :c:struct:`mpsl_fem_gpio_pin_config_t` to require GPIO port address, port number and relative pin number instead of the absolute pin number. (KRKNWK-11891)
 * Added production support for the 1-wire coexistence interface on the Nordic nRF52 Series. (DRGN-16439)
+* Added :c:func:`mpsl_clock_hfclk_latency_set` which may be used to communicate the true high-frequency oscillator ramp-up time to MPSL.
+  When not used, MPSL will make a worst-case assumption. (DRGN-13559)
+* Added :c:func:`mpsl_tx_power_radio_supported_power_adjust` which lets users adjust the TX power to a value supported by the radio peripheral. (KRKNWK-14770)
 
 nRF Connect SDK v2.0.0
 **********************
