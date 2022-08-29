@@ -100,15 +100,10 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 994
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1098
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1026
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1130
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 16
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 7
-
-/* Dummy defines to avoid red CI. TODO DRGN-17651: Remove */
-#define __MEM_DEFAULT_CENTRAL_LINK_SIZE 1088
-#define __MEM_DEFAULT_PERIPHERAL_LINK_SIZE 1192
-#define __MEM_BUFFER_OVERHEAD_SIZE (__MEM_TX_BUFFER_OVERHEAD_SIZE + __MEM_RX_BUFFER_OVERHEAD_SIZE)
 
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * ((tx_size) + __MEM_TX_BUFFER_OVERHEAD_SIZE) - \
