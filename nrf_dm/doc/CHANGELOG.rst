@@ -9,6 +9,21 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
+main
+****
+
+All the notable changes added to the |NCS| main are documented in this section.
+
+Added
+=====
+* :c:func:`nrf_dm_get_hopping_sequence`, to get the channel hopping sequence used during the measurement procedure.
+* :c:func:`nrf_dm_get_duration_us`, to get the duration of a measurement procedure in microseconds.
+
+Changes
+=======
+* Invalid results of :c:func:`nrf_dm_high_precision_calc` now return `NaN`.
+* The number of measurements with quality :c:enumerator:`NRF_DM_QUALITY_OK` was increased.
+
 nRF Connect SDK v2.0.0
 **********************
 

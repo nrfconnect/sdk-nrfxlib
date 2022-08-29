@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Nordic Semiconductor ASA
+ * Copyright (c) 2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -249,18 +249,20 @@ typedef struct {
 #define NRF_DM_DEFAULT_TX_POWER RADIO_TXPOWER_TXPOWER_0dBm
 #endif
 
+#define NRF_DM_DEFAULT_ANTENNA_COMP (NRF_DM_ANTENNA_COMP_1_1)
 /**
  * @brief Default configuration define, note that both role and access_address
  * needs to be configured even when using the default config.
  */
-#define NRF_DM_DEFAULT_CONFIG                                                              \
-	((nrf_dm_config_t){                                                                    \
-		.role = NRF_DM_ROLE_NONE,                                                          \
-		.ranging_mode = NRF_DM_RANGING_MODE_MCPD,                                          \
-		.access_address = 0,                                                               \
-		.tx_power_dbm = NRF_DM_DEFAULT_TX_POWER,                                           \
-		.ant_comp = NRF_DM_ANTENNA_COMP_1_1,                                               \
+#define NRF_DM_DEFAULT_CONFIG                                                          \
+	((nrf_dm_config_t){                                                            \
+		.role = NRF_DM_ROLE_NONE,                                              \
+		.ranging_mode = NRF_DM_RANGING_MODE_MCPD,                              \
+		.access_address = 0,                                                   \
+		.tx_power_dbm = NRF_DM_DEFAULT_TX_POWER,                               \
+		.ant_comp = NRF_DM_DEFAULT_ANTENNA_COMP,                               \
 	})
+
 
 /**
  * @brief Initialize the distance measurement procedure
@@ -284,9 +286,48 @@ void nrf_dm_init(const nrf_dm_ppi_config_t *ppi_cfg, const nrf_dm_antenna_config
 nrf_dm_status_t nrf_dm_configure(const nrf_dm_config_t *config);
 
 /**
+ * @brief Get the duration in microseconds that it will take to
+ * execute the distance measurement in initiator role
+ * with the given configuration.
+ * A reflector needs to reserve more time because it needs to be
+ * waiting for the initiators initial sync packet.
+ * @note A call to @ref nrf_dm_proc_execute will take more time to
+ * execute for a given config, since that also includes some pre-processing
+ * and post-processing. To get the full expected duration use the constant
+ * defined below @ref NRF_DM_PROC_EXECUTE_DURATION_OVERHEAD_US:
+ * nrf_dm_get_duration_us(&config) + NRF_DM_PROC_EXECUTE_DURATION_OVERHEAD_US
+ *
+ * @param[in] config Pointer to configuration instance
+ * @return Duration in microseconds.
+ */
+uint32_t nrf_dm_get_duration_us(const nrf_dm_config_t *config);
+
+/**
+ * @brief Maximum overhead duration in microseconds for pre-
+ * and post-processing in @ref nrf_dm_proc_execute when executing
+ * in initiator role.The full (expected) duration of the call to
+ * @ref nrf_dm_proc_execute is given by:
+ * nrf_dm_get_duration_us(&config) + NRF_DM_PROC_EXECUTE_DURATION_OVERHEAD_US
+ */
+#define NRF_DM_PROC_EXECUTE_DURATION_OVERHEAD_US (200)
+
+
+/**
  * @brief Start the distance measurement.
  * @note Reflector will wait for sync, while initiator will start immediately.
- * After completion it's possible to request distance with @ref nrf_dm_calc
+ * After completion it's possible to request distance with @ref nrf_dm_calc.
+ *
+ * @param [in] timeout_us If the distance measurement is not complete within this time
+ *             the measurment will be aborted.
+ *             For the measurement to complete the timeout must be at least
+ *             the duration given by @ref nrf_dm_get_duration_us for the used
+ *             configuration @ref nrf_dm_config_t plus the overhead given by the
+ *             constant @ref NRF_DM_PROC_EXECUTE_DURATION_OVERHEAD_US.
+ *             A reflector should typically use a larger timeout because it needs
+ *             to wait for the initial sync packet sent by the initiator.
+ *
+ * @return A status code, NRF_DM_STATUS_SUCCESS if the measurement is successful, otherwise
+ *         an appropriate failure status.
  */
 nrf_dm_status_t nrf_dm_proc_execute(uint32_t timeout_us);
 
@@ -296,6 +337,22 @@ nrf_dm_status_t nrf_dm_proc_execute(uint32_t timeout_us);
  * @param[out] p_report Report populated with the raw data from the last ranging.
  */
 void nrf_dm_populate_report(nrf_dm_report_t *p_report);
+
+/**
+ * @brief This is the length, in number of channels, of the channel map used within the library.
+ */
+#define NRF_DM_CHANNEL_MAP_LEN 75
+
+/**
+ * @brief Get the channel hopping sequence used for a given configuration instance.
+ * @note  The hopping sequence is given as a sequence of indexes, where the corresponding
+ *        RF frequency is 2.4GHz + (index * 1MHz).
+ * @param[in]  config Pointer to configuration instance
+ * @param[out] hopping_sequence Array to which the hopping sequence will be written.
+ *             needs to be of length @ref NRF_DM_CHANNEL_MAP_LEN
+ */
+void nrf_dm_get_hopping_sequence(const nrf_dm_config_t *config,
+				 uint8_t hopping_sequence[NRF_DM_CHANNEL_MAP_LEN]);
 
 /**
  * @brief  Estimate the distance
