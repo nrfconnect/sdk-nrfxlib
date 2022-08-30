@@ -40,7 +40,7 @@
 #include "nrf_802154_aes_ccm.h"
 #include "nrf_802154_const.h"
 #include "nrf_802154_pib.h"
-#include "nrf_802154_types.h"
+#include "nrf_802154_types_internal.h"
 #include "mac_features/nrf_802154_frame_parser.h"
 #include "mac_features/nrf_802154_security_pib.h"
 
