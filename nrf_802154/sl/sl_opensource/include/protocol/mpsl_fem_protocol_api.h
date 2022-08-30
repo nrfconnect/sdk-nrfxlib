@@ -106,14 +106,24 @@ typedef struct
 /** TX power, dBm. */
 typedef int8_t mpsl_tx_power_t;
 
+/**
+ * @brief Represents data needed to set the FEM gain.
+ */
+typedef struct
+{
+    int8_t  gain_db;         // !< Gain in dB.
+    uint8_t private_setting; // !< Setting of the Front-End Module. The interpretation of this field is specific
+                             // for a given Front-End Module implementation.
+} mpsl_fem_gain_t;
+
 /** @brief Represents components of tx_power to be applied for stages on transmit path. */
 typedef struct
 {
     /** TX power to be applied to the RADIO peripheral. */
     mpsl_tx_power_t radio_tx_power;
 
-    /** Gain of the Front-End Module in dB. */
-    int8_t fem_gain;
+    /** Data needed to set the FEM gain. */
+    mpsl_fem_gain_t fem;
 } mpsl_tx_power_split_t;
 
 /** @brief Disable Front End Module.
@@ -331,7 +341,7 @@ void mpsl_fem_tx_power_split(const mpsl_tx_power_t power,
  * @retval   0             Gain has been set successfully.
  * @retval   -NRF_EINVAL   Gain could not be set. Provided @p gain is invalid.
  */
-int32_t mpsl_fem_pa_gain_set(int8_t gain);
+int32_t mpsl_fem_pa_gain_set(const mpsl_fem_gain_t * p_gain);
 
 /** @brief Checks if the PA signaling is configured and enabled, and gets
  *  the configured gain in dB.

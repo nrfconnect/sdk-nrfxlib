@@ -51,7 +51,6 @@
 #include "nrf_802154_queue.h"
 #include "nrf_802154_rx_buffer.h"
 #include "nrf_802154_swi.h"
-#include "nrf_802154_types.h"
 #include "nrf_802154_utils.h"
 #include "mac_features/nrf_802154_csma_ca.h"
 #include "hal/nrf_radio.h"

@@ -38,7 +38,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "nrf_802154_types.h"
+#include "nrf_802154_types_internal.h"
 #include "mac_features/nrf_802154_frame_parser.h"
 
 #ifdef __cplusplus

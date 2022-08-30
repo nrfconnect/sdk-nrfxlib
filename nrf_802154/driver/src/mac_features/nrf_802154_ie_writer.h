@@ -38,7 +38,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "nrf_802154_types.h"
+#include "nrf_802154_types_internal.h"
 
 /**
  * @defgroup nrf_802154_ie_writer Radio driver Information Element data injection feature.
