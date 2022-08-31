@@ -73,6 +73,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_COEX_PRIORITY_CONFIG = 0xfd08,
     /** @brief See @ref sdc_hci_cmd_vs_peripheral_latency_mode_set(). */
     SDC_HCI_OPCODE_CMD_VS_PERIPHERAL_LATENCY_MODE_SET = 0xfd09,
+    /** @brief See @ref sdc_hci_cmd_vs_write_remote_tx_power(). */
+    SDC_HCI_OPCODE_CMD_VS_WRITE_REMOTE_TX_POWER = 0xfd0a,
 };
 
 /** @brief VS subevent Code values. */
@@ -135,6 +137,7 @@ typedef __PACKED_STRUCT
     uint8_t coex_priority_config : 1;
     uint8_t coex_scan_mode_config : 1;
     uint8_t peripheral_latency_mode_set : 1;
+    uint8_t write_remote_tx_power : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -426,6 +429,16 @@ typedef __PACKED_STRUCT
     /** @brief Peripheral latency mode. See @ref sdc_hci_vs_peripheral_latency_mode. */
     uint8_t mode;
 } sdc_hci_cmd_vs_peripheral_latency_mode_set_t;
+
+/** @brief Write remote transmit power level command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    /** @brief Phy value to apply transmit power level adjustment. */
+    uint8_t phy;
+    /** @brief The transmit power level adjustment to request in dBm unit. */
+    int8_t delta;
+} sdc_hci_cmd_vs_write_remote_tx_power_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -860,6 +873,29 @@ uint8_t sdc_hci_cmd_vs_coex_priority_config(const sdc_hci_cmd_vs_coex_priority_c
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_peripheral_latency_mode_set(const sdc_hci_cmd_vs_peripheral_latency_mode_set_t * p_params);
+
+/** @brief Write remote transmit power level.
+ *
+ * This command requests adjustment of radio transmit power level for a connected peer device.
+ *
+ * When this command is issued, the controller initiates Power Control Request procedure
+ * (Core_v5.3, Vol 6, Part B, Section 5.1.17) to request the change from the peer. The
+ * peer responds with the actual transmit power level change and the controller reports
+ * the change to the host with an event.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Status event shall be generated.
+ * When the controller has completed the power control request and if the request has resulted
+ * in a change in the peer's transmit power level, an HCI_LE_Transmit_Power_Reporting event shall
+ * be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_tx_power_t * p_params);
 
 /** @} end of HCI_VS_API */
 
