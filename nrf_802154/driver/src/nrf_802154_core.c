@@ -64,7 +64,7 @@
 #include "nrf_802154_trx.h"
 #include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_tx_power.h"
-#include "nrf_802154_types.h"
+#include "nrf_802154_types_internal.h"
 #include "nrf_802154_utils.h"
 #include "drivers/nrfx_errors.h"
 #include "hal/nrf_radio.h"
@@ -114,13 +114,13 @@ static rx_buffer_t * const mp_current_rx_buffer = &nrf_802154_rx_buffers[0];
 
 #endif
 
-static uint8_t                   * mp_ack;                     ///< Pointer to Ack frame buffer.
-static uint8_t                   * mp_tx_data;                 ///< Pointer to the data to transmit.
-static uint32_t                    m_ed_time_left;             ///< Remaining time of the current energy detection procedure [us].
-static uint8_t                     m_ed_result;                ///< Result of the current energy detection procedure.
-static uint8_t                     m_last_lqi;                 ///< LQI of the last received non-ACK frame, corrected for the temperature.
-static nrf_802154_tx_power_split_t m_tx_power;                 ///< Power to be used to transmit the current frame split into components.
-static int8_t                      m_last_rssi;                ///< RSSI of the last received non-ACK frame, corrected for the temperature.
+static uint8_t                       * mp_ack;                 ///< Pointer to Ack frame buffer.
+static uint8_t                       * mp_tx_data;             ///< Pointer to the data to transmit.
+static uint32_t                        m_ed_time_left;         ///< Remaining time of the current energy detection procedure [us].
+static uint8_t                         m_ed_result;            ///< Result of the current energy detection procedure.
+static uint8_t                         m_last_lqi;             ///< LQI of the last received non-ACK frame, corrected for the temperature.
+static nrf_802154_fal_tx_power_split_t m_tx_power;             ///< Power to be used to transmit the current frame split into components.
+static int8_t                          m_last_rssi;            ///< RSSI of the last received non-ACK frame, corrected for the temperature.
 
 static nrf_802154_frame_parser_data_t m_current_rx_frame_data; ///< RX frame parser data.
 
@@ -1024,7 +1024,7 @@ static void rx_init(void)
 
     nrf_802154_trx_receive_buffer_set(rx_buffer_get());
 
-    nrf_802154_tx_power_split_t split_power = {0};
+    nrf_802154_fal_tx_power_split_t split_power = {0};
 
     (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
 
@@ -1156,7 +1156,7 @@ static void continuous_carrier_init(void)
     {
         return;
     }
-    nrf_802154_tx_power_split_t split_power = {0};
+    nrf_802154_fal_tx_power_split_t split_power = {0};
 
     (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
 
@@ -1176,7 +1176,7 @@ static void modulated_carrier_init(const uint8_t * p_data)
         return;
     }
 
-    nrf_802154_tx_power_split_t split_power = {0};
+    nrf_802154_fal_tx_power_split_t split_power = {0};
 
     (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
 
@@ -1908,7 +1908,7 @@ void nrf_802154_trx_receive_frame_crcerror(void)
 #if !NRF_802154_DISABLE_BCC_MATCHING
     request_preconditions_for_state(m_state);
 
-    nrf_802154_tx_power_split_t split_power = {0};
+    nrf_802154_fal_tx_power_split_t split_power = {0};
 
     (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
 

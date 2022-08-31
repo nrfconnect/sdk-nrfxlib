@@ -53,7 +53,6 @@
 #include "mac_features/nrf_802154_ifs.h"
 #include "nrf_802154_encrypt.h"
 #include "nrf_802154_config.h"
-#include "nrf_802154_types.h"
 
 typedef bool (* abort_hook)(nrf_802154_term_t term_lvl, req_originator_t req_orig);
 typedef bool (* pre_transmission_hook)(uint8_t                                 * p_frame,

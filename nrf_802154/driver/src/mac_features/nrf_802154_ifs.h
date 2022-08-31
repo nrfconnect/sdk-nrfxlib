@@ -39,7 +39,7 @@
 #include <stdint.h>
 
 #include "nrf_802154_const.h"
-#include "nrf_802154_types.h"
+#include "nrf_802154_types_internal.h"
 
 /**
  * @brief Initializes the Interframe Spacing handling feature.

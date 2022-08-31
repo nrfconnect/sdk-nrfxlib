@@ -40,7 +40,7 @@
 
 #include "nrf_802154_const.h"
 #include "nrf_802154_notification.h"
-#include "nrf_802154_types.h"
+#include "nrf_802154_types_internal.h"
 
 #ifdef __cplusplus
 extern "C" {
