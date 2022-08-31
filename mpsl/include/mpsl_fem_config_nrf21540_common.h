@@ -73,10 +73,7 @@ typedef struct
     uint32_t trx_hold_us;
     /** Default PA gain in dB. Ignored if the amplifier is not supporting this feature. */
     int8_t   pa_gain_db;
-    /** Available PA gains in dB. If PA gain runtime control is enabled, either through MODE pin
-     *  switching or through SPI interface, @c pa_gains_db[0] corresponds to POUTA and
-     *  @c pa_gains_db[1] to POUTB. The field is ignored if runtime control of PA gain is not enabled,
-     *  or if the amplifier does not support PA gain at all. */
+    /** Available PA gains in dB. @c pa_gains_db[0] corresponds to POUTA and @c pa_gains_db[1] to POUTB. */
     int8_t   pa_gains_db[2];
     /** Configurable LNA gain in dB. Ignored if the amplifier is not supporting this feature. */
     int8_t   lna_gain_db;
