@@ -39,7 +39,7 @@
 #include <stdint.h>
 
 #include "nrf_802154_const.h"
-#include "nrf_802154_types.h"
+#include "nrf_802154_types_internal.h"
 
 /**
  * @defgroup nrf_802154_hooks Hooks for the 802.15.4 driver core
