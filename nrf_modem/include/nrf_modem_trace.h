@@ -35,12 +35,12 @@ struct nrf_modem_trace_data {
  * Processed data must be freed by calling @c nrf_modem_trace_processed.
  *
  * @param[out] frags On success, @c *frags is an array of trace data fragments.
- * @param[out] nfrags On success, @c *n_frags is the number of fragments in the @c *frags array.
+ * @param[out] n_frags On success, @c *n_frags is the number of fragments in the @c *frags array.
  *
  * @retval 0 on success.
  * @retval -NRF_FAULT If @p frags or @p nfrags is NULL.
  * @retval -NRF_EINPROGRESS Trace is already being processed by the application.
- * @retval -NRF_ENODATA If all data is processed after a coredump.
+ * @retval -NRF_ENODATA No more trace data is available until the modem is restarted.
  * @retval -NRF_ESHUTDOWN Modem was shut down.
  */
 int nrf_modem_trace_get(struct nrf_modem_trace_data **frags, size_t *n_frags);

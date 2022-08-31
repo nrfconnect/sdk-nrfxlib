@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.1.2
+***************
+
+* Fixed a bug where, in rare cases, the :c:func:`nrf_modem_trace_get` function could report the trace length incorrectly.
+
 nrf_modem 2.1.1
 ***************
 
