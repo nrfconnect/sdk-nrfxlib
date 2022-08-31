@@ -161,7 +161,7 @@ void nrf_802154_tx_power_set(int8_t power);
 /**
  * @brief Gets the currently set transmit power.
  *
- * @returns Currently used transmit power, in dBm.
+ * @returns Currently used real total transmit power, in dBm.
  */
 int8_t nrf_802154_tx_power_get(void);
 

@@ -38,7 +38,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "nrf_802154_types.h"
+#include "nrf_802154_types_internal.h"
 
 /**
  * @brief Transmission setup hook for the security writer module.
