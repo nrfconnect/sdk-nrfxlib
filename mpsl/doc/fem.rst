@@ -15,19 +15,22 @@ The exact PA and LNA gains are dependent on the specific FEM used.
 Implementation
 **************
 
-Two FEM implementations are provided:
+Three FEM implementations are provided:
 
-* nRF21540 GPIO.
-   It is compatible with the nRF21540 FEM and implements a 3-pin interface.
-   Optionally, support for the MODE pin can be enabled.
+nRF21540 GPIO
+  Compatible with the nRF21540 FEM and implements a 3-pin interface.
+  It can also optionally use the MODE pin for switching PA gain between two preconfigured values.
 
-* Simple GPIO.
-   It is a simplified version, made to be compatible with other front-end modules.
-   It implements a 2-pin interface.
+nRF21540 GPIO SPI
+  Compatible with the nRF21540 FEM and implements a 3-pin interface to enable and disable the PA and LNA.
+  It also supports PA gain control using the SPI interface.
 
-Both implementations use PA and LNA pins for controlling the FEM.
-Additionally, the nRF21540 GPIO implementation uses the PDN pin for powering down the FEM internal circuits, to reduce energy consumption.
-It can also optionally use the MODE pin for switching PA gain between two preconfigured values.
+Simple GPIO
+  A simplified version, made to be compatible with other front-end modules.
+  It implements a 2-pin interface.
+
+All currently supported implementations use the PA and LNA pins for controlling the FEM.
+Additionally, the nRF21540 implementations use the PDN pin for powering down the FEM internal circuits, to reduce energy consumption.
 
 Tx power split
 **************
@@ -35,8 +38,26 @@ Tx power split
 When an application requests a given transmission power, it wants to achieve that power at the antenna.
 Usually, the application does not know all hardware components, such as RF front-end modules, on the radio signal path.
 To achieve a specific value of transmission power at the antenna, every FEM implementation provides a dedicated API that calculates the PA gain and SoC output power combination that results in the requested power at the antenna.
+It also calculates a private setting value that is applied to the FEM which is needed to achieve the calculated PA gain.
+The meaning of this private setting is specific to each FEM implementation.
 
 FEM implementations with multiple PA gains available (for example, nRF21540 with MODE pin support) choose which gain to use based on hardware limitations and the requested power value.
+Alternatively, an external model can be used to determine the gain.
+
+Tx power split using models
+===========================
+
+The Tx power split can be done using a model.
+This can be done to allow, for example, compensation of external conditions.
+The model can be an external model passed to MPSL or a built-in model.
+
+A built-in model is currently provided only for the nRF21540 GPIO SPI FEM implementation and it is in an experimental stage.
+The provided model allows for temperature, voltage, and frequency compensation.
+
+The model is passed to MPSL before FEM configuration, and contains two callbacks: ``fetch`` and ``init``.
+After it has finished configuration, MPSL calls ``init`` to pass all the calibration and configuration data required by the specific FEM implementation to the model and to initialize the model.
+Each time a Tx power split is needed, MPSL calls the ``fetch`` function and passes the frequency and the requested output power to the model.
+The model then decides how to split this power into components, and calculates both the private setting for the specific FEM implementation and the actually achieved output power.
 
 Configurable timings
 ********************
@@ -151,6 +172,19 @@ The following picture presents the calls between the application, the FEM module
 PA gain control
 ===============
 
-Optionally, an nRF21540 implementation can control the MODE pin to select one of two available PA gains.
+PA switched gain
+----------------
 
-To enable this feature, the MODE pin must be enabled in the interface configuration that the application passes on initialization.
+Optionally, both nRF21540 implementations can control the FEM to select one of two available PA gains without the need to provide any model.
+To do so, the nRF21540 GPIO implementation uses MODE pin switching, while the nRF21540 GPIO SPI implementation performs appropriate SPI transfers.
+
+To enable this feature for the nRF21540 GPIO implementation, the MODE pin must be enabled in the interface configuration that the application passes on initialization.
+For the nRF21540 GPIO SPI implementation, runtime gain control must be enabled in the interface configuration that the application passes on initialization.
+
+PA Gain control using a built-in compensation model
+---------------------------------------------------
+
+The nRF21540 GPIO SPI implementation can be used with a built-in model.
+Using this model allows for compensation of external conditions like temperature, supply voltage and frequency.
+The model is currently in an experimental stage.
+To use this model, the structure containing the model callbacks needs to be acquired from MPSL by its getter function and then passed to MPSL just like all other models.

@@ -27,6 +27,7 @@
 #include <nrf_peripherals.h>
 #include "nrf_errno.h"
 #include "mpsl_tx_power.h"
+#include "mpsl_fem_types.h"
 
 /** @brief PA and LNA functionality types. */
 typedef enum
@@ -115,8 +116,8 @@ typedef struct
     /** TX power to be applied to the RADIO peripheral. */
     mpsl_tx_power_t radio_tx_power;
 
-    /** Gain of the Front-End Module in dB. */
-    int8_t fem_gain;
+    /** FEM gain. */
+    mpsl_fem_gain_t fem;
 } mpsl_tx_power_split_t;
 
 /** @brief Disable Front End Module.
@@ -319,9 +320,14 @@ void mpsl_fem_cleanup(void);
  *                              a value representing maximum achievable power. If the requested
  *                              @p power is too low, the split will be set to a value representing
  *                              minimum achievable power.
+ * @param[in]  freq_mhz         Frequency in MHz to calculate the split for.
+ *
+ * @return  The power in dBm that will be achieved if values returned through @p p_tx_power_split
+ *          are applied.
  */
-void mpsl_fem_tx_power_split(const mpsl_tx_power_t power,
-                             mpsl_tx_power_split_t *const p_tx_power_split);
+int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
+                               mpsl_tx_power_split_t * const p_tx_power_split,
+                               uint16_t                      freq_mhz);
 
 /** @brief Sets PA gain.
  *
@@ -329,12 +335,12 @@ void mpsl_fem_tx_power_split(const mpsl_tx_power_t power,
  * following the call. If the function is called during radio transmission
  * or during ramp-up for transmission it is unspecified if the gain is applied.
  *
- * @param[in] gain Gain in dB to be set.
+ * @param[in] p_gain       Pointer to structure with data needed to apply the gain.
  *
- * @retval   0             Gain has been set successfully.
- * @retval   -NRF_EINVAL   Gain could not be set. Provided @p gain is invalid.
+ * @retval   0             Gain setting has been applied successfully.
+ * @retval   -NRF_EINVAL   Gain setting could not be applied. Provided @p gain_setting is invalid.
  */
-int32_t mpsl_fem_pa_gain_set(int8_t gain);
+int32_t mpsl_fem_pa_gain_set(const mpsl_fem_gain_t * p_gain);
 
 /** @brief Checks if the PA signaling is configured and enabled, and gets
  *  the configured gain in dB.
