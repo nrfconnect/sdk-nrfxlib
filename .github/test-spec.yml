@@ -85,21 +85,20 @@
     - "!openthread/doc/**/*"
 
 "CI-nfc-test":
-  - "**/*"
-  - "!softdevice_controller/include/**/*"
-  - "!softdevice_controller/lib/**/*"
-  - "!mpsl/include/**/*"
-  - "!mpsl/lib/**/*"
+  - "nfc/**/*"
 
 "CI-matter-test":
   - "mpsl/include/**/*"
   - "mpsl/lib/**/*"
 
 "CI-find-my-test":
-  - "**/*"
+  - "crypto/**/*"
+  - "nfc/**/*"
+  - "nrf_security/**/*"
+  - "softdevice_controller/**/*"
 
 "CI-gazell-test":
-  - "**/*"
+  - "gzll/**/*"
 
 "CI-rpc-test":
   - "nrf_rpc/**/*"
