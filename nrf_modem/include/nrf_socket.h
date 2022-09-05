@@ -17,7 +17,22 @@
 extern "C" {
 #endif
 
+#if !defined(__GNUC__) || (__GNUC__ == 0)
 typedef int32_t ssize_t;
+#else
+#include <sys/types.h>
+#ifdef __SES_ARM
+typedef int32_t ssize_t;
+#endif
+#endif
+
+#ifdef __cplusplus
+#   ifdef __GNUC__
+#       define restrict __restrict__ // G++ has restrict
+#   else
+#       define restrict // C++ in general doesn't
+#   endif
+#endif
 
 /**@addtogroup nrf_socket_address_resolution
  *@{
