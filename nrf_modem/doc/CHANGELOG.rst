@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.1.3
+***************
+
+* Fixed a bug that prevented the GNSS API from correctly re-initializing after a modem fault.
+
 nrf_modem 2.1.2
 ***************
 
