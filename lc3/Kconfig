@@ -1,0 +1,114 @@
+#
+# Copyright (c) 2022 Nordic Semiconductor ASA
+#
+# All rights reserved.
+#
+# SPDX-License-Identifier: Nordic-5-Clause
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form, except as embedded into a Nordic
+#    Semiconductor ASA integrated circuit in a product or a software update for
+#    such product, must reproduce the above copyright notice, this list of
+#    conditions and the following disclaimer in the documentation and/or other
+#    materials provided with the distribution.
+#
+# 3. Neither the name of Nordic Semiconductor ASA nor the names of its
+#    contributors may be used to endorse or promote products derived from this
+#    software without specific prior written permission.
+#
+# 4. This software, with or without modification, must only be used with a
+#    Nordic Semiconductor ASA integrated circuit.
+#
+# 5. Any software provided in binary form under this license must not be
+# reverse engineered, decompiled, modified and/or disassembled.
+#
+# THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
+# OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+# OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+config SW_CODEC_LC3_T2_SOFTWARE
+	bool "Select the T2 Software LC3 codec"
+	depends on FP_HARDABI
+
+config LC3_PLC_DISABLED
+	bool "Override the decoded frame with zeroes if PLC was applied"
+	default n
+
+config LC3_ENC_CHAN_MAX
+	int "Max number of encoder channels"
+	default 1
+
+config LC3_DEC_CHAN_MAX
+	int "Max number of decoder channels"
+	default 1
+
+menu "Encoder sample rates"
+
+config LC3_ENC_SAMPLE_RATE_8KHZ_SUPPORT
+	bool "Support encoding 8 kHz"
+	default y
+
+config LC3_ENC_SAMPLE_RATE_16KHZ_SUPPORT
+	bool "Support encoding 16 kHz"
+	default y
+
+config LC3_ENC_SAMPLE_RATE_24KHZ_SUPPORT
+	bool "Support encoding 24 kHz"
+	default y
+
+config LC3_ENC_SAMPLE_RATE_32KHZ_SUPPORT
+	bool "Support encoding 32 kHz"
+	default y
+
+config LC3_ENC_SAMPLE_RATE_441KHZ_SUPPORT
+	bool "Support encoding 44.1 kHz"
+	default y
+
+config LC3_ENC_SAMPLE_RATE_48KHZ_SUPPORT
+	bool "Support encoding 48 kHz"
+	default y
+
+endmenu #Encoder sample rates
+
+#----------------------------------------------------------------------------#
+menu "Decoder sample rates"
+
+config LC3_DEC_SAMPLE_RATE_8KHZ_SUPPORT
+	bool "Support decoding 8 kHz"
+	default y
+
+config LC3_DEC_SAMPLE_RATE_16KHZ_SUPPORT
+	bool "Support decoding 16 kHz"
+	default y
+
+config LC3_DEC_SAMPLE_RATE_24KHZ_SUPPORT
+	bool "Support decoding 24 kHz"
+	default y
+
+config LC3_DEC_SAMPLE_RATE_32KHZ_SUPPORT
+	bool "Support decoding 32 kHz"
+	default y
+
+config LC3_DEC_SAMPLE_RATE_441KHZ_SUPPORT
+	bool "Support decoding 44.1 kHz"
+	default y
+
+config LC3_DEC_SAMPLE_RATE_48KHZ_SUPPORT
+	bool "Support decoding 48 kHz"
+	default y
+
+endmenu #Decoder sample rates

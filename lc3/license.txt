@@ -1,0 +1,48 @@
+LicenseID:  LicenseRef-T2-LC3
+
+ExtractedText: <text>
+Copyright T2 Software, Inc. 2018-2021. All rights reserved.
+
+This Bluetooth LC implementation software (the Software) is compliant to Bluetooth Special Interest
+Group specification “LC3, Low Complexity Communication Codec Version 1.0”, and is owned and
+licensed by T2 Software, Inc. The LC3 technology as such was developed and is owned by Fraunhofer-
+Gesellschaft and the rights thereto are made available to interested parties through the product
+certification by Bluetooth Special Interest Group. 
+
+T2 Software, Inc. make the Software available in binary form to customers of Nordic Semiconductor
+ASA integrated circuits on the following terms and conditions:
+
+1.	The Software may only be used and incorporated into Nordic Semiconductor ASA integrated
+	circuits in a product or a software update for such product.
+2.	The Software may not be modified, translated, decompiled, reverse-engineered,
+	disassembled or otherwise reduced to source code or human perceivable form.
+3.	Neither the name of T2 Software, Inc. or Nordic Semiconductor ASA may be used to endorse
+	or promote products derived from this Software without specific prior written permission.
+4.	T2 Software, Inc. reserve all rights related to the Software not expressly granted herein. T2
+	Software, Inc. is and remain the sole owner of all right, title and interest whatsoever in and
+	to the Software, except for open-source components to which T2 Software, Inc. has obtained
+	the right to grant this license.
+5.	The Software is not fault tolerant and is not designed or intended for use as on-line control
+	equipment in hazardous or “life and death” environments requiring fail-safe performance,
+	such as in the operation of nuclear facilities, aircraft navigation or communications,
+	air traffic control, direct life support machines, or weapons systems, in which the failure
+	of the Software could lead directly to death, personal injury, or severe physical or
+	environmental damage, i.e., “Critical Control Applications”.
+
+THIS SOFTWARE IS PROVIDED BY T2 SOFTWARE, INC. AND NORDIC SEMICONDUCTOR ASA “AS IS” AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY, NON-INFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL T2 SOFTWARE, INC. OR NORDIC SEMICONDUCTOR ASA BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+</text>
+
+
+The following tags tell the "west ncs-sbom" tool which files are covered
+by the license information above.
+SPDX-License-Identifier:  LicenseRef-T2-LC3
+NCS-SBOM-Apply-To-File: ./**/*.a

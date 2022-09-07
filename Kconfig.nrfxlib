@@ -17,5 +17,6 @@ rsource "openthread/Kconfig"
 rsource "nrf_802154/zephyr/Kconfig.nrfxlib"
 rsource "gzll/Kconfig"
 rsource "nrf_dm/Kconfig"
+rsource "lc3/Kconfig"
 
 endmenu
