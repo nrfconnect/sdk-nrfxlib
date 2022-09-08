@@ -63,6 +63,9 @@
 .. _`ZBOSS API documentation`:
 .. _`ZBOSS stack release notes`: https://developer.nordicsemi.com/nRF_Connect_SDK/doc/zboss/index.html
 
+.. _`LC3 API documentation file`: https://developer.nordicsemi.com/nRF_Connect_SDK/nrf5340_audio/lc3_api/T2_LC3_API_Documentation_1.5.pdf
+.. _`Bluetooth® LE Audio specifications`: https://www.bluetooth.com/learn-about-bluetooth/recent-enhancements/le-audio/le-audio-specifications/
+
 .. _`certification policy`: https://zigbeealliance.org/wp-content/uploads/2021/04/07-4842-13-Zigbee-certification-policy.pdf
 
 .. _`Mbed TLS backend`: https://tls.mbed.org/
