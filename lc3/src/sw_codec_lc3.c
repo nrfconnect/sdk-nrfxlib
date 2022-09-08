@@ -196,7 +196,7 @@ int sw_codec_lc3_init(uint8_t *sw_codec_lc3_buffer, uint32_t *sw_codec_lc3_buffe
 
 	/* Set unique session to 0 for using the default sharing memory setting.
 	 *
-	 * This could lead to higher heap consumtion, but is able to manipulate
+	 * This could lead to higher heap consumption, but is able to manipulate
 	 * different sample rate setting between encoder/decoder.
 	 */
 	uint8_t unique_session = 0;
