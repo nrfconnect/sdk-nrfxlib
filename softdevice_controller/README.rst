@@ -1,7 +1,7 @@
 .. _softdevice_controller:
 
 SoftDevice Controller
-###########################
+#####################
 
 The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series.
 It supports Bluetooth 5.
@@ -39,6 +39,8 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 
 .. note::
    For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
+
+.. _sdc_proprietary_feature_support:
 
 Proprietary feature support:
 
