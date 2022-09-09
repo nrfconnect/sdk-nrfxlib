@@ -40,6 +40,9 @@ Changes
   These changes reduce the code size when using only central or peripheral role. (DRGN-17592)
 * Applications may now configure fewer TX/RX buffers than the default.
   Note that this may lead to reduced throughput (DRGN-17651).
+* The scanner is now scheduling cooperatively when the sum of scan windows is equal to the scan interval.
+  This improves scheduling performance when scanning concurrently on multiple PHYs (DRGN-17754).
+* Improved scheduling performance when synchronized to a periodic advertiser sending packets on Coded PHY (DRGN-17754).
 
 Bug fixes
 =========
