@@ -1405,7 +1405,7 @@
  *
  * Comment this macro to disable support for Extended Master Secret.
  */
-/* #undef MBEDTLS_SSL_EXTENDED_MASTER_SECRET */
+#define MBEDTLS_SSL_EXTENDED_MASTER_SECRET
 
 /**
  * \def MBEDTLS_SSL_KEEP_PEER_CERTIFICATE
@@ -3271,13 +3271,6 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
  * MBEDTLS_ECDH_LEGACY_CONTEXT in include/mbedtls/ecdh.h.
  */
 //#define MBEDTLS_ECDH_VARIANT_EVEREST_ENABLED
-
-/**
- * Nordic added
- *
- * Adding back the legacy ECDH context for binary compatibility
- */
-#define MBEDTLS_ECDH_LEGACY_CONTEXT
 
 #if defined(CONFIG_MBEDTLS_OPENTHREAD_OPTIMIZATIONS_ENABLED)
 #define MBEDTLS_MPI_WINDOW_SIZE            1 /**< Maximum windows size used. */
