@@ -21,6 +21,11 @@ static inline size_t nrf_rpc_cbor_data_len(const struct nrf_rpc_cbor_ctx *ctx)
 	return ctx->zs->payload_mut - ctx->out_packet;
 }
 
+bool nrf_rpc_cbor_is_alloc(struct nrf_rpc_cbor_ctx *ctx)
+{
+	return (ctx->out_packet != NULL);
+}
+
 int nrf_rpc_cbor_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
 		     struct nrf_rpc_cbor_ctx *ctx,
 		     nrf_rpc_cbor_handler_t handler, void *handler_data)
