@@ -19,6 +19,12 @@ Added
 
 * Added the :kconfig:option:`CONFIG_NRF_RPC_ZCBOR_BACKUPS` Kconfig option for setting up the number of zcbor backups.
 
+Changes
+=======
+
+* Enabled independent initialization of transport in each group.
+  This makes RPC available for the groups that are ready, even though initialization of others may have failed.
+
 nRF Connect SDK v2.1.0
 **********************
 

@@ -112,18 +112,29 @@ static void free_rx_buf(const struct nrf_rpc_group *group, const uint8_t *packet
 {
 	/* This is an optional transport layer functionality. */
 	if (group->transport->api->rx_buf_free) {
+
+		if (!group->data->transport_initialized) {
+			NRF_RPC_ERR("Transport is not initialized");
+			return;
+		}
+
 		group->transport->api->rx_buf_free(group->transport, (void *)packet);
 	}
 }
 
-static int send(const struct nrf_rpc_tr *transport, const uint8_t *data, size_t length)
+static int send(const struct nrf_rpc_group *group, const uint8_t *data, size_t length)
 {
-	if (!transport->api->send) {
+	if (!group->data->transport_initialized) {
+		NRF_RPC_ERR("Transport is not initialized");
+		return -NRF_ENODEV;
+	}
+
+	if (!group->transport->api->send) {
 		NRF_RPC_ASSERT(false);
 		return -NRF_EIO;
 	}
 
-	return transport->api->send(transport, data, length);
+	return group->transport->api->send(group->transport, data, length);
 }
 
 static inline bool auto_free_rx_buf(const struct nrf_rpc_tr *transport)
@@ -268,7 +279,7 @@ static int simple_send(const struct nrf_rpc_group *group, uint8_t dst, uint8_t t
 		memcpy(&tx_buf[NRF_RPC_HEADER_SIZE], packet, len);
 	}
 
-	return send(group->transport, tx_buf, NRF_RPC_HEADER_SIZE + len);
+	return send(group, tx_buf, NRF_RPC_HEADER_SIZE + len);
 }
 
 static int group_init_send(const struct nrf_rpc_group *group)
@@ -314,7 +325,7 @@ static int group_init_send(const struct nrf_rpc_group *group)
 
 	memcpy(packet, group->strid, strlen(group->strid));
 
-	return send(group->transport, tx_buf, NRF_RPC_HEADER_SIZE + len);
+	return send(group, tx_buf, NRF_RPC_HEADER_SIZE + len);
 }
 
 static inline bool packet_validate(const uint8_t *packet)
@@ -344,25 +355,29 @@ static int transport_init(nrf_rpc_tr_receive_handler_t receive_cb)
 		err = transport->api->init(transport, receive_cb, NULL);
 		if (err) {
 			NRF_RPC_ERR("Failed to initialize transport, err: %d", err);
-			return err;
+			continue;
 		}
 
 		if (auto_free_rx_buf(transport)) {
 			err = nrf_rpc_os_event_init(&data->decode_done_event);
 			if (err < 0) {
-				return err;
+				continue;
 			}
 		}
 
+		group->data->transport_initialized = true;
 		err = group_init_send(group);
 		if (err) {
 			NRF_RPC_ERR("Failed to send group init packet for group id: %d strid: %s",
 				    data->src_group_id, group->strid);
-			return err;
+			continue;
 		}
 	}
 
 	err = nrf_rpc_os_event_wait(&groups_init_event, CONFIG_NRF_RPC_GROUP_INIT_WAIT_TIME);
+	if (err) {
+		NRF_RPC_ERR("Not all groups are ready to use.");
+	}
 
 	return err;
 }
@@ -831,7 +846,7 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 	NRF_RPC_DBG("Sending command 0x%02X from group 0x%02X", cmd,
 		    group->data->src_group_id);
 
-	err = send(group->transport, full_packet, len + NRF_RPC_HEADER_SIZE);
+	err = send(group, full_packet, len + NRF_RPC_HEADER_SIZE);
 
 	if (err >= 0) {
 		wait_for_response(group, cmd_ctx, rsp_packet, rsp_len);
@@ -882,7 +897,7 @@ int nrf_rpc_evt(const struct nrf_rpc_group *group, uint8_t evt, uint8_t *packet,
 	NRF_RPC_DBG("Sending event 0x%02X from group 0x%02X", evt,
 		    group->data->src_group_id);
 
-	err = send(group->transport, full_packet, len + NRF_RPC_HEADER_SIZE);
+	err = send(group, full_packet, len + NRF_RPC_HEADER_SIZE);
 
 	return err;
 }
@@ -922,7 +937,7 @@ int nrf_rpc_rsp(const struct nrf_rpc_group *group, uint8_t *packet, size_t len)
 
 	NRF_RPC_DBG("Sending response");
 
-	err = send(group->transport, full_packet, len + NRF_RPC_HEADER_SIZE);
+	err = send(group, full_packet, len + NRF_RPC_HEADER_SIZE);
 
 	return err;
 }
@@ -1042,6 +1057,11 @@ void nrf_rpc_alloc_tx_buf(const struct nrf_rpc_group *group, uint8_t **buf, size
 
 	*buf = NULL;
 
+	if (!group->data->transport_initialized) {
+		NRF_RPC_ERR("Transport is not initialized");
+		return;
+	}
+
 	if (!group->transport->api->tx_buf_alloc) {
 		NRF_RPC_ASSERT(false);
 		return;
@@ -1069,6 +1089,11 @@ void nrf_rpc_free_tx_buf(const struct nrf_rpc_group *group, uint8_t *buf)
 	if (!group->transport->api->tx_buf_free) {
 		NRF_RPC_ASSERT(false);
 
+		return;
+	}
+
+	if (!group->data->transport_initialized) {
+		NRF_RPC_ERR("Transport is not initialized");
 		return;
 	}
 

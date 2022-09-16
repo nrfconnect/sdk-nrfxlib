@@ -108,6 +108,7 @@ struct nrf_rpc_group_data {
 	uint8_t src_group_id;
 	uint8_t dst_group_id;
 	struct nrf_rpc_os_event decode_done_event;
+	bool transport_initialized;
 };
 
 /** @brief Defines a group of commands and events.
@@ -175,6 +176,7 @@ struct nrf_rpc_err_report {
 	static struct nrf_rpc_group_data NRF_RPC_CONCAT(_name, _group_data) = {   \
 		.src_group_id = NRF_RPC_ID_UNKNOWN,                               \
 		.dst_group_id = NRF_RPC_ID_UNKNOWN,                               \
+		.transport_initialized = false,					  \
 	};                                                                        \
 										  \
 	NRF_RPC_AUTO_ARR_ITEM(const struct nrf_rpc_group, _name, "grp",	         \
@@ -237,6 +239,15 @@ struct nrf_rpc_err_report {
 		.handler = _handler,					       \
 		.handler_data = _data,					       \
 	}
+
+/** @brief Check group status.
+ *
+ * Macro checks whether the group and the transport assigned to it have been initialized.
+ *
+ * @param _group Name of the group.
+ */
+#define NRF_RPC_GROUP_STATUS(_group)								\
+	(_group.data->transport_initialized && (_group.data->dst_group_id != NRF_RPC_ID_UNKNOWN))
 
 /** @brief Initialize the nRF RPC
  *

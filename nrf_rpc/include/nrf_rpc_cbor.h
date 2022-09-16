@@ -135,6 +135,14 @@ struct nrf_rpc_cbor_ctx {
 #define NRF_RPC_CBOR_DISCARD(_group, _ctx)            \
 	nrf_rpc_free_tx_buf(_group, (_ctx).out_packet)
 
+/** @brief Check that the memory for a packet has been allocated.
+ *
+ * @param ctx  Context allocated by @ref NRF_RPC_CBOR_ALLOC.
+ *
+ * @return     true if memory is valid otherwise false.
+ */
+bool nrf_rpc_cbor_is_alloc(struct nrf_rpc_cbor_ctx *ctx);
+
 /** @brief Send a command and provide callback to handle response.
  *
  * @param group        Group that command belongs to.
