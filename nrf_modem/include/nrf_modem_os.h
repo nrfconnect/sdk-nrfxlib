@@ -16,6 +16,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,6 +62,13 @@ void *nrf_modem_os_alloc(size_t bytes);
  */
 void nrf_modem_os_free(void *mem);
 
+/**
+ * @brief Busy wait.
+ *
+ * @param usec Microseconds to busy wait for.
+ */
+void nrf_modem_os_busywait(int32_t usec);
+
 /* @brief Put a thread to a sleep for a specific time or until an event occurs.
  *
  * @param[in]      context   A unique identifier assigned by the library
@@ -82,6 +90,14 @@ int32_t nrf_modem_os_timedwait(uint32_t context, int32_t *timeout);
 void nrf_modem_os_errno_set(int errno_val);
 
 /**
+ * @brief Check if executing in interrupt context.
+ *
+ * @return true If in interrupt context.
+ * @return false If not in interrupt context.
+ */
+bool nrf_modem_os_is_in_isr(void);
+
+/**
  * @brief Set the application IRQ, @c NRF_MODEM_APPLICATION_IRQ.
  */
 void nrf_modem_os_application_irq_set(void);
@@ -90,6 +106,13 @@ void nrf_modem_os_application_irq_set(void);
  * @brief Clear the application IRQ, @c NRF_MODEM_APPLICATION_IRQ.
  */
 void nrf_modem_os_application_irq_clear(void);
+
+/**
+ * @brief Application IRQ handler in the modem library.
+ *
+ * Call this function when handling the Application IRQ.
+ */
+void nrf_modem_os_application_irq_handler(void);
 
 /**
  * @brief Set the Trace IRQ.
@@ -109,13 +132,6 @@ void nrf_modem_os_trace_irq_clear(void);
  * @return int32_t 0 on success, an errno otherwise.
  */
 int32_t nrf_modem_os_trace_put(const uint8_t *data, uint32_t len);
-
-/**
- * @brief Application IRQ handler in the modem library.
- *
- * Call this function when handling the Application IRQ.
- */
-void nrf_modem_os_application_irq_handler(void);
 
 /**
  * @brief Trace IRQ handler in the modem library.

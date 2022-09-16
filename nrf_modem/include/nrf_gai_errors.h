@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 #define NRF_EAI_ADDRFAMILY      257 /**< Address family for NAME not supported. UNUSED */
-#define NRF_EAI_AGAIN           258 /**< Temporary failure in name resolution. */
+#define NRF_EAI_AGAIN           258 /**< Temporary failure in name resolution UNUSED */
 #define NRF_EAI_BADFLAGS        259 /**< Invalid value for `ai_flags' field. UNUSED */
 #define NRF_EAI_FAIL            260 /**< Non-recoverable failure in name res. UNUSED */
 #define NRF_EAI_FAMILY          270 /**< `ai_family' not supported */

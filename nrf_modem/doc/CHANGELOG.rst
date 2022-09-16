@@ -9,6 +9,19 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.2.3
+***************
+
+* Fixed a bug in :c:func:`nrf_recv()` where the socket context would crash during receive when closed by another thread.
+* Fixed a bug where, in rare cases, the :c:func:`nrf_recv()` function would crash.
+* Replaced the error code ``NRF_EINTR`` with ``NRF_ECANCELED`` in :c:func:`nrf_recv()`.
+* Fixed a memory leak in :c:func:`nrf_recv()` when reading many packets quickly.
+* Fixed a bug in :c:func:`nrf_getaddrinfo()` where the function was not returning the proper protocol suggested by the hints.
+* Fixed a bug in :c:func:`nrf_getaddrinfo()` where specifying ``NRF_AF_UNSPEC`` would incorrectly return an error.
+* Fixed a bug in :c:func:`nrf_setsockopt()` where the option ``NRF_SO_HOSTNAME`` would incorrectly return an error when the hostname was NULL and optlen was 0.
+* Fixed a bug in :c:func:`nrf_modem_gnss_init()` where calling the function would lead to field accuracy speed to always be 0 and to the new GNSS events not working.
+  This issue would occur when GNSS is not enabled in ``%XSYSTEMMODE`` and modem functional mode is not online.
+
 nrf_modem 1.2.1
 ***************
 
