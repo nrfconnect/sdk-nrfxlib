@@ -12,7 +12,7 @@ To use the library with your OS or scheduler, you must first port it by creating
 The library exposes a :file:`nrf_modem_os.h` header file that defines the functions that must be implemented in :file:`nrf_modem_os.c`.
 The :file:`nrf_modem.h` header file exposes functions provided by the library that the OS integration module can interface with.
 
-The following diagram presents the Modem library OS abstraction layer.
+The following diagram presents the Modem library :ref:`OS abstraction layer<nrf_OS_abstraction>`.
 Arrows indicate that the elements can communicate with each other directly.
 
 .. figure:: images/nrf_modem_layers.svg
@@ -20,22 +20,150 @@ Arrows indicate that the elements can communicate with each other directly.
 
    Modem library OS abstraction overview
 
-Creating the OS abstraction layer
-*********************************
+To use the Modem library, you must make sure that the following requirements are met:
+
+* The application using the Modem library is run in the non-secure domain.
+* The IPC and FPU peripherals are available in the non-secure domain.
+* The shared memory resides in the lower 128 KB of RAM.
+* The application provides an implementation of the OS interface in the :file:`nrf_modem_os.h` file.
+* The library depends on the nrfx IPC driver or equivalent IPC driver.
+
+Obtaining the Modem library
+***************************
+
+The application can either include nrfxlib or only the Modem library.
+Header files are located in the :file:`nrf_modem/include/` folder.
+You can locate the library binary (for both hard-float and soft-float) in the :file:`nrf_modem/lib/` folder.
+
+IPC driver and interrupt
+************************
+
+The Modem library uses the IPC peripheral for communication with the modem using the nrfx IPC driver.
+The application must either include the nrfx IPC driver or implement its own IPC driver with the same signature as the nrfx IPC driver.
+
+If the OS has its own IRQ handler scheme that does not directly forward the IPC_IRQHandler, the OS must route the IPC_IRQHandler to the nrfx IPC IRQ handler.
+
+Application interrupt
+*********************
+The Modem library receives events from the modem on the high-priority IPC interrupt.
+To continue processing these events on a lower priority, the library uses an application interrupt.
+The library calls the :c:func:`nrf_modem_os_application_irq_set` function to trigger the interrupt.
+The handler for the low-priority interrupt must then call the :c:func:`nrf_modem_application_irq_handler` function and subsequently wake all sleeping threads up using the :c:func:`nrf_modem_os_event_notify` function.
+
+The abstraction layer decides the implementation of the application interrupt.
+Possible solutions for this are either directly setting an IRQ or using an EGU event.
+
+Memory
+******
+
+The Modem library requires the following two types of memories for the modem:
+
+* Library heap
+* Shared memory
+
+The OS abstraction implementation is responsible for providing a dynamic memory allocation for both type of memories.
+
+Library heap
+============
+
+The modem uses the library heap for dynamic memory allocations.
+It has no location requirements and may use the OS provided heap implementation.
+
+Shared memory
+=============
+
+The size of the shared memory regions can be configured during initialization of the library.
+The regions must reside in the lower 128kB of RAM.
+The secure application must configure these regions as non-secure to make these regions accessible by both the modem and the application.
+
+The following RAM overview diagram shows the placement of Modem library in the sequential RAM, and it also indicates the configurable memory position values:
+
+.. figure:: images/nrf_modem_memory.svg
+   :alt: Modem library memory overview
+
+   Modem library memory overview
+
+Following are the minimum sizes of the regions of the Modem Library:
+
+*  The minimum size of the control region is given in the :file:`nrf_modem_platform.h` file.
+*  The RX/TX sizes are set using the  :kconfig:option:`CONFIG_NRF_MODEM_LIB_SHMEM_TX_SIZE` and :kconfig:option:`CONFIG_NRF_MODEM_LIB_SHMEM_RX_SIZE` Kconfig options.
+   The RX/TX must fit the data for the largest command or socket operation executed.
+*  The trace area size can remain zero if traces are not used.
+   If traces are used, refer to :ref:`modem_trace` for more information on the trace area size.
+
+Peripherals
+***********
+
+As the Modem library has been compiled to operate on peripherals in the non-secure domain, the following two peripherals must be configured to be non-secure:
+
+* NRF_IPC
+* NRF_POWER
+
+If you are using the hard-float variant of the Modem library, the FPU must be activated in both the secure domain and the non-secure domain, and must be configured to allow the non-secure application to run FPU instructions.
+
+The :file:`nrfx/mdk/system_nrf9160.c` file provides a template on how to configure the FPU in both cases.
+The system file also provides several Errata workarounds specific to the chip variant used, which are needed for any secure domain application.
+
+Faults and traces
+*****************
+
+The Modem library provides facilities to obtain trace data and handle modem faults.
+Information about these facilities can be found in :ref:`fault_handling` and :ref:`modem_trace`.
+
+Following are the method by which the application can handle the modem fault:
+
+* Re-initialize the modem through :c:func:`nrf_modem_shutdown` and :c:func:`nrf_modem_init` if the application can handle that.
+* Reset the SoC.
+
+Message sequence diagrams
+*************************
+
+The following message sequence diagrams show the interactions between the application, Modem library, and the OS:
+
+#. Sequence of the initialization of the Modem library.
+   Configuration of the high and low priority IRQs:
+
+    .. figure:: images/nrf_modem_initialization_sequence.svg
+        :alt: Initialization (main thread)
+
+        Initialization (main thread)
+
+#. Handling an event sent from the Modem library and lowering its priority to be able to receive new events:
+
+    .. figure:: images/nrf_modem_event_sequence.svg
+        :alt: Event handling, lowering priority
+
+        Event handling, lowering priority
+
+#. Handling a timeout or sleep:
+
+    .. figure:: images/nrf_modem_timers_sequence.svg
+        :alt: Timedwait
+
+        Timedwait
+
+.. _nrf_OS_abstraction:
+
+OS abstraction layer
+********************
 
 To create an OS abstraction layer for the Modem library, you must implement the functions in the :file:`nrf_modem_os.h` file.
+
+Abstraction information
+=======================
+
 An OS abstraction layer implementation for the Zephyr RTOS is also available in the |NCS|.
 See :file:`nrf_modem_os.c` for more details.
 The implementation details for each function are shown in the section following and in the header file:
 
 nrf_modem_os_init()
-===================
+-------------------
 
 This function is called by the Modem library when the application has issued :c:func:`nrf_modem_init`.
 It is responsible for initializing OS-specific functionality related to the Modem library OS abstraction.
 
 If Nordic Proprietary trace is enabled, the library generates trace data that can be retrieved using the :c:func:`nrf_modem_trace_get` function.
-See :ref:`trace_handling` for more information.
+See :ref:`modem_trace` for more information.
 
 *Required actions*:
 
@@ -45,14 +173,14 @@ See :ref:`trace_handling` for more information.
 * If Nordic Proprietary trace is enabled, initialize a trace thread and the trace backend (for example, UART or SPI).
 
 nrf_modem_os_busywait()
-=======================
+-----------------------
 
 This function is called by the Modem library when a blocking timed context is required.
 
 .. _nrf_modem_os_timedwait:
 
 nrf_modem_os_timedwait()
-========================
+------------------------
 
 This function is called by the Modem library when a timed context or sleep is required.
 A blind return value of 0 will make all the Modem library operations always blocking.
@@ -69,7 +197,7 @@ The following points decide the *Function return value*:
 * In all other cases, function return value will be ``0``.
 
 nrf_modem_os_event_notify()
-===========================
+---------------------------
 
 This function is called by the Modem library when an event occurs and all threads waiting in :c:func:`nrf_modem_os_timedwait` function must wake up.
 
@@ -79,29 +207,29 @@ Wake up all threads sleeping in the :c:func:`nrf_modem_os_timedwait` function.
 See :ref:`nrf_modem_os_timedwait` for more details.
 
 nrf_modem_os_alloc()
-====================
+--------------------
 
 This function is called by the library to allocate memory dynamically, and it is like a *malloc* call.
 There are no specific requirements related to the location where this memory must be allocated in RAM.
 
 nrf_modem_os_free()
-===================
+-------------------
 
 This function must free the memory allocated by :c:func:`nrf_modem_os_alloc`.
 
 nrf_modem_os_shm_tx_alloc()
-===========================
+---------------------------
 
 This function is called by the library to dynamically allocate the memory that must be *shared with the modem core*.
 This function allocates memory on the TX memory region that is passed to the :c:func:`nrf_modem_init` function during the initialization.
 
 nrf_modem_os_shm_tx_free()
-==========================
+--------------------------
 
 This function releases the memory allocated by :c:func:`nrf_modem_os_shm_tx_alloc`.
 
 nrf_modem_os_errno_set()
-========================
+------------------------
 
 This function translates errnos from the Modem library to the OS-defined ones.
 
@@ -111,7 +239,7 @@ This function translates errnos from the Modem library to the OS-defined ones.
   If it overlaps with errnos of your OS, the translation is not needed.
 
 nrf_modem_os_application_irq_set()
-==================================
+----------------------------------
 
 This function is called by the Modem library when the library wants to set a pending IRQ on the low priority scheduling IRQ of the Modem library.
 
@@ -120,7 +248,7 @@ This function is called by the Modem library when the library wants to set a pen
 * Set a pending IRQ on the low priority scheduling IRQ of the Modem library using OS primitives or NVIC functions.
 
 nrf_modem_os_application_irq_clear()
-====================================
+------------------------------------
 
 This function is called by the Modem library when the library wants to clear IRQ on the low priority scheduling IRQ of the Modem library.
 
@@ -129,7 +257,7 @@ This function is called by the Modem library when the library wants to clear IRQ
 * Clear the low priority scheduling IRQ of the Modem library using OS primitives or NVIC functions.
 
 nrf_modem_os_event_notify()
-===========================
+---------------------------
 
 This function is called by the Modem library when an event occurs and all threads waiting in the :c:func:`nrf_modem_os_timedwait` function must wake up.
 
@@ -138,12 +266,12 @@ This function is called by the Modem library when an event occurs and all thread
 * Wake all threads that are sleeping in :c:func:`nrf_modem_os_timedwait`. For details, see :c:func:`nrf_modem_os_timedwait`.
 
 nrf_modem_os_is_in_isr()
-========================
+------------------------
 
 This function is called by the library to check whether or not it is executing in a interrupt context.
 
 nrf_modem_os_sem_init()
-=======================
+-----------------------
 
 This function is called by the library to allocate and initialize a semaphore.
 
@@ -158,125 +286,30 @@ This function is called by the library to allocate and initialize a semaphore.
    In this case, the function can blindly return ``0``.
 
 nrf_modem_os_sem_give()
-=======================
+-----------------------
 
 This function is called by the library to give a semaphore.
 
 nrf_modem_os_sem_take()
-=======================
+-----------------------
 
 This function is called by the library to take a semaphore.
 
 nrf_modem_os_log()
-==================
+------------------
 
 This function is called by the library to output logs.
 This function can be called in an interrupt context.
 
 nrf_modem_os_logdump()
-======================
+----------------------
 
 This function is called by the library to dump binary data.
 This function can be called in an interrupt context.
 
-IPC Driver and Interrupt
-************************
-The Modem library uses the nrfxlib IPC driver.
-The application must either include the nrfxlib IPC driver or implement its own IPC driver using the same signature as the nrfxlib IPC driver.
 
-If the OS has its own IRQ handler scheme that does not directly forward the IPC_IRQHandler, the OS must route the IPC_IRQHandler to the nrfxlib IPC IRQ handler.
-
-.. _application_interrupt:
-
-Application Interrupt
-*********************
-The Modem library receives events from the modem on the high-priority IPC interrupt.
-To continue processing these events on a lower priority, an application interrupt is used.
-The library calls the :c:func:`nrf_modem_os_application_irq_set` function to trigger the interrupt.
-The handler for the low-priority interrupt must then call the :c:func:`nrf_modem_application_irq_handler` function and subsequently wake up all sleeping threads using the :c:func:`nrf_modem_os_event_notify` function.
-
-The abstraction layer decides the implementation of the application interrupt.
-Possible solutions for this are either directly setting an IRQ or using an EGU event.
-
-Memory
-******
-
-The Modem library needs a region of RAM within the first lower 128KB to share with the modem.
-To be accessible by both the modem and the application, this region of RAM must be configured as non-secure by the secure application.
-
-The following RAM overview diagram shows the placement of Modem library in the sequential RAM, and it also indicates the configurable memory position values.
-
-
-.. figure:: images/nrf_modem_memory.svg
-   :alt: Modem library memory overview
-
-   Modem library memory overview
-
-
-Peripheral requirements
-***********************
-
-As the Modem library has been compiled to operate on peripherals in the non-secure domain, the following two peripherals must be configured to be non-secure:
-
-* NRF_IPC
-* NRF_POWER
-
-If you are using the hard-float variant of the Modem library, the FPU must be activated in both the secure domain and the non-secure domain, and must be configured to allow the non-secure application to run FPU instructions.
-
-The :file:`nrfx/mdk/system_nrf9160.c` file provides a template on how to configure the FPU in both cases.
-The system file also provides several Errata workarounds specific to the chip variant used, which are needed for any secure domain application.
-
-Handling of a modem fault
-*************************
-
-On initialization of the Modem library, the application registers a modem fault handler through the initialization parameters.
-If a fault occurs in the modem, the application is notified through the fault handler, which enables the application to read the fault reason (and in some cases the Modem's Program Counter) and take appropriate action.
-
-The following are the three alternatives to how the application can handle the modem fault:
-
-* The application logs the fault with no other action.
-* Restart the application.
-* Shutdown and reinitialize the modem and the Modem library.
-
-.. _trace_handling:
-
-Handling of modem traces
-************************
-
-Modem traces are retrieved by the application and output to a trace medium, typically UART.
-Trace data is retrieved by calling :c:func:`nrf_modem_trace_get`.
-For more information, see :ref:`modem_trace`.
-
-Message sequence diagrams
-*************************
-
-The following message sequence diagrams show the interactions between the application, Modem library, and the OS.
-
-#. Sequence of the initialization of the Modem library.
-   Configuration of the high and low priority IRQs:
-
-    .. figure:: images/nrf_modem_initialization_sequence.svg
-        :alt: Initialization (main thread)
-
-        Initialization (main thread)
-
-#. Handling an event sent from the Modem library to a lower priority to be able to receive new events:
-
-    .. figure:: images/nrf_modem_event_sequence.svg
-        :alt: Event handling, lowering priority
-
-        Event handling, lowering priority
-
-#. Handling a timeout or sleep:
-
-    .. figure:: images/nrf_modem_timers_sequence.svg
-        :alt: Timedwait
-
-        Timedwait
-
-
-Reference template for the nrf_modem_os.c file
-**********************************************
+Reference template
+==================
 
 The following code snippet shows a simple implementation of the Modem library OS abstraction layer.
 You can use it as a template and customize it for your OS or scheduler.
