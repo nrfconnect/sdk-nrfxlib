@@ -148,8 +148,8 @@ extern "C" {
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4829+(max_adv_data)*18)/10)
 #define __MEM_PER_ADV_SET_HIGH(max_adv_data) (670+(max_adv_data))
-#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2418+(max_adv_data)*18)/10)
-#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (433+(max_adv_data))
+#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2498+(max_adv_data)*18)/10)
+#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (441+(max_adv_data))
 
 /** @brief Maximum required memory for a given advertising buffer size.
  *
@@ -742,6 +742,34 @@ int32_t sdc_support_le_power_control_central(void);
  * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
  */
 int32_t sdc_support_le_power_control_peripheral(void);
+
+/** @brief Support LE Connection CTE response for central role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Connection CTE Response.
+ *
+ * @note The application is required to call both @ref sdc_support_le_conn_cte_rsp_central() and @ref sdc_support_le_conn_cte_rsp_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Connection CTE Response is not supported.
+ */
+int32_t sdc_support_le_conn_cte_rsp_central(void);
+
+/** @brief Support LE Connection CTE response for peripheral role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Connection CTE Response.
+ *
+ * @note The application is required to call both @ref sdc_support_le_conn_cte_rsp_central() and @ref sdc_support_le_conn_cte_rsp_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Connection CTE Response is not supported.
+ */
+int32_t sdc_support_le_conn_cte_rsp_peripheral(void);
 
 /** @brief Configure the coex advertising mode
  *
