@@ -74,9 +74,9 @@ void OSAL_Free(void *Ptr);
 
 /**@brief Sets buffer entries to a value.
  *
- * @param[in] ptr   Pointer to the buffer to set.
- * @param[in] value Value to set the buffer to.
- * @param[in] num   Size of the buffer.
+ * @param[in] Ptr   Pointer to the buffer to set.
+ * @param[in] Value Value to set the buffer to.
+ * @param[in] Num   Size of the buffer.
  *
  * @returns Pointer to the input buffer.
  */
@@ -106,7 +106,7 @@ int OSAL_Memcmp(const void *Ptr1, const void *Ptr2, size_t Num);
 
 /**@brief Creates a mutex.
  *
- * @param[in] owned Creates the mutex as owned if TRUE or unowned if FALSE.
+ * @param[in] Owned Creates the mutex as owned if TRUE or unowned if FALSE.
  *
  * @returns Handle to the created mutex upon successor NULL upon failure.
  */
@@ -114,7 +114,7 @@ OSAL_Mutex_t OSAL_Create_Mutex(bool_t Owned);
 
 /**@brief Destroys a mutex.
  *
- * @param[in] mutex Handle to the mutex returned from OSAL_Create_Mutex().
+ * @param[in] Mutex Handle to the mutex returned from OSAL_Create_Mutex().
  */
 void OSAL_Close_Mutex(OSAL_Mutex_t Mutex);
 
@@ -130,7 +130,7 @@ bool_t OSAL_Wait_Mutex(OSAL_Mutex_t Mutex, unsigned long Timeout);
 
 /**@brief Releases ownership of a mutex.
  *
- * @param[in] mutex Handle to the mutex returned from OSAL_Create_Mutex().
+ * @param[in] Mutex Handle to the mutex returned from OSAL_Create_Mutex().
  */
 void OSAL_Release_Mutex(OSAL_Mutex_t Mutex);
 
@@ -214,7 +214,7 @@ void OSAL_Close_Event(OSAL_Event_t Event);
 
 /**@brief Outputs Message to Console.
  *
- * @param[in] Format String and Parameters.
+ * @param[in] DebugString String and Parameters.
  */
 void OSAL_OutputMessage(const char *DebugString, ...);
 
@@ -234,6 +234,7 @@ void OSAL_OutputMessageFlush(void);
  *
  * @param[in] dataLength   Length of the Data to Dump.
  * @param[in] dataPtr      Pointer to the Data to Dump.
+ * @param[in] size
  *
  *  @return OSAL_STATUS_SUCCESS upon success or other status value upon failure.
  */
