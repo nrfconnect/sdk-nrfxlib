@@ -9,6 +9,16 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller accepts an LL_PAUSE_ENC_REQ packet received on an unencrypted link (DRGN-17777).
+
 nRF Connect SDK v2.1.0
 **********************
 
