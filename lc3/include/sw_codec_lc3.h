@@ -47,6 +47,9 @@
 
 #define LC3_USE_BITRATE_FROM_INIT 0
 
+/*! \addtogroup LC3_translation
+ *  \{ */
+
 /**@brief	Runs the LC3 encoder
  *
  * @param[in] pcm_data                  Buffer containing PCM data
@@ -150,5 +153,7 @@ int sw_codec_lc3_enc_init(uint16_t pcm_sample_rate, uint8_t pcm_bit_depth, uint1
  */
 int sw_codec_lc3_dec_init(uint16_t pcm_sample_rate, uint8_t pcm_bit_depth, uint16_t framesize_us,
 			  uint8_t num_channels);
+
+/*! \} */    /* LC3_translation */
 
 #endif /* __SW_CODEC_LC3_H__ */
