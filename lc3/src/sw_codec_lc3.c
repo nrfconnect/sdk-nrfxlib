@@ -41,11 +41,11 @@
  *
  */
 
-#include <zephyr.h>
+#include <zephyr/kernel.h>
 #include "sw_codec_lc3.h"
 #include "LC3API.h"
 
-#include <logging/log.h>
+#include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(sw_codec_lc3);
 
 #define ENC_BITRATE_WRN_LVL_LOW 24000
