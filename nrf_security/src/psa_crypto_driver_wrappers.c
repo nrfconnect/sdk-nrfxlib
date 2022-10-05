@@ -27,6 +27,7 @@
 #include "psa_crypto_hash.h"
 #include "psa_crypto_mac.h"
 #include <string.h>
+#include <stdbool.h>
 
 #include "mbedtls/platform.h"
 
@@ -97,6 +98,208 @@
 #include "psa_crypto_se.h"
 #endif
 
+/**
+ * @brief Compare AEAD algorithms and ignoring the output tag length
+ * 
+ */
+#define EQUAL_AEAD_ALG(alg_1, alg_2) ((alg_1 & ~PSA_ALG_AEAD_TAG_LENGTH_MASK) \
+                                == (alg_2 & ~PSA_ALG_AEAD_TAG_LENGTH_MASK)) 
+
+/**
+ * @brief Checks if the given combination of key curve, bit size and algorithm 
+ *  is a valid tuple by the PSA standard
+ * 
+ * @return psa_status_t PSA_ERROR_INVALID_ARGUMENT if invalid else PSA_SUCCESS
+ */
+static psa_status_t validate_ecc_key(psa_ecc_family_t curve, 
+                                     size_t bits,
+                                     psa_algorithm_t algorithm)
+{
+    switch (curve)
+    {
+    case PSA_ECC_FAMILY_SECP_K1:
+        if((PSA_ALG_IS_ECDSA(algorithm) ||
+            PSA_ALG_IS_ECDH(algorithm)) &&
+            //secp224k1 public key is 224 and the private key is 225 bits
+            (bits == 192 || bits == 224 || bits == 225 || bits == 256)){
+            return PSA_SUCCESS;
+        }
+        break;
+
+    case PSA_ECC_FAMILY_SECP_R1:
+        if((PSA_ALG_IS_ECDSA(algorithm) ||
+            PSA_ALG_IS_ECDH(algorithm)) &&
+           (bits == 192 || bits == 224 ||
+            bits == 256 || bits == 384 || bits == 521)){
+            return PSA_SUCCESS;
+        }
+        break;
+
+    case PSA_ECC_FAMILY_SECT_K1:
+        if((PSA_ALG_IS_ECDSA(algorithm) ||
+            PSA_ALG_IS_ECDH(algorithm)) &&
+           (bits == 163 || bits == 233 || bits == 239 ||
+            bits == 283 || bits == 409 || bits == 571)){
+            return PSA_SUCCESS;
+        }
+        break;
+
+    case PSA_ECC_FAMILY_SECT_R1:
+        if((PSA_ALG_IS_ECDSA(algorithm) ||
+            PSA_ALG_IS_ECDH(algorithm)) &&
+           (bits == 163 || bits == 233 || 
+            bits == 283 || bits == 409 || bits == 571)){
+            return PSA_SUCCESS;
+        }
+        break;
+
+    case PSA_ECC_FAMILY_SECT_R2:
+        if((PSA_ALG_IS_ECDSA(algorithm) ||
+            PSA_ALG_IS_ECDH(algorithm)) && bits == 163){
+            return PSA_SUCCESS;
+        }
+        break;
+
+    case PSA_ECC_FAMILY_BRAINPOOL_P_R1:
+        if((PSA_ALG_IS_ECDSA(algorithm) ||
+            PSA_ALG_IS_ECDH(algorithm)) &&
+           (bits == 160 || bits == 192 || bits == 224 ||
+            bits == 256 || bits == 320 || bits == 384 || bits == 512)){
+            return PSA_SUCCESS;
+        }
+        break;
+
+    case PSA_ECC_FAMILY_MONTGOMERY:
+        if(PSA_ALG_IS_ECDH(algorithm) && 
+           (bits == 255 || bits == 448)){ 
+            return PSA_SUCCESS;
+        } 
+        break;
+    
+    case PSA_ECC_FAMILY_TWISTED_EDWARDS:
+        if((algorithm == PSA_ALG_PURE_EDDSA ||
+           algorithm == PSA_ALG_ED25519PH ||    // (Edwards25519 only)
+           algorithm == PSA_ALG_ED448PH) &&     // (Edwards448 only)
+           (bits == 255 || bits == 448)){ 
+            return PSA_SUCCESS;
+        }
+        break;
+
+    default:
+        return( PSA_ERROR_INVALID_ARGUMENT );
+        break;
+    }
+
+    return PSA_ERROR_INVALID_ARGUMENT;
+}
+
+/**
+ * @brief Checks if the given combination of key type, bit size and algorithm 
+ *  is a valid tuple by the PSA crypto spec. 
+ *  
+ * @return psa_status_t PSA_ERROR_INVALID_ARGUMENT if invalid else PSA_SUCCESS
+ */
+static psa_status_t validate_key(psa_key_type_t type, 
+                                 size_t bits, 
+                                 psa_algorithm_t algorithm)
+{
+    // The PSA crypto spec allows the case that any key type is valid if the 
+    // algorithm is not given, therefore return immediately
+    if(algorithm == PSA_ALG_NONE){
+        return PSA_SUCCESS;
+    }
+
+    if (PSA_KEY_TYPE_IS_ECC(type)){
+        psa_ecc_family_t curve = PSA_KEY_TYPE_ECC_GET_FAMILY(type);
+        return validate_ecc_key(curve, bits, algorithm);
+    }
+
+    if( bits % 8 != 0 ) {
+        return( PSA_ERROR_INVALID_ARGUMENT );
+    }
+
+    switch( type )
+    {
+        case PSA_KEY_TYPE_RAW_DATA:
+            //This can be used without an algorithem given 
+            return PSA_SUCCESS;
+        case PSA_KEY_TYPE_DERIVE:
+            if(PSA_ALG_IS_HKDF(algorithm)  ||
+               PSA_ALG_IS_TLS12_PSK_TO_MS(algorithm) ||
+               PSA_ALG_IS_TLS12_PRF (algorithm)){        
+                return PSA_SUCCESS;
+            }
+            break;
+
+        case PSA_KEY_TYPE_HMAC:
+            if(PSA_ALG_IS_HMAC (algorithm)){
+                return PSA_SUCCESS;
+            }
+            break;
+
+        case PSA_KEY_TYPE_PASSWORD:
+        case PSA_KEY_TYPE_PASSWORD_HASH:
+        case PSA_KEY_TYPE_PEPPER:
+            if(PSA_ALG_IS_PBKDF2_HMAC (algorithm) ||
+               algorithm ==  PSA_ALG_PBKDF2_AES_CMAC_PRF_128 ) {
+                return PSA_SUCCESS;
+            }
+            break;
+
+        case PSA_KEY_TYPE_AES:
+        case PSA_KEY_TYPE_ARIA:
+        case PSA_KEY_TYPE_DES: 
+        case PSA_KEY_TYPE_CAMELLIA:
+            /* Check if bit size is a valid AES bit size */
+            if(bits != 128 && bits != 192 && bits != 256 && bits != 384 && bits !=512){
+                return PSA_ERROR_INVALID_ARGUMENT;
+            }
+
+            if(PSA_ALG_IS_BLOCK_CIPHER_MAC (algorithm) || // PSA_ALG_CBC_MAC & PSA_ALG_CMAC
+               algorithm == PSA_ALG_CTR ||
+               algorithm == PSA_ALG_CFB || 
+               algorithm == PSA_ALG_OFB || 
+               algorithm == PSA_ALG_XTS || 
+               algorithm == PSA_ALG_CBC_NO_PADDING ||
+               algorithm == PSA_ALG_CBC_PKCS7 ||
+               algorithm == PSA_ALG_ECB_NO_PADDING ||
+               EQUAL_AEAD_ALG(algorithm, PSA_ALG_CCM) ||
+               EQUAL_AEAD_ALG(algorithm, PSA_ALG_GCM)){
+                return PSA_SUCCESS;            
+            }
+            break;
+
+        case PSA_KEY_TYPE_CHACHA20:
+            if((algorithm == PSA_ALG_STREAM_CIPHER ||
+               EQUAL_AEAD_ALG(algorithm, PSA_ALG_CHACHA20_POLY1305)) &&
+               bits == 256){
+                return PSA_SUCCESS;
+            }
+            break;
+
+        case PSA_KEY_TYPE_RSA_KEY_PAIR:
+        case PSA_KEY_TYPE_RSA_PUBLIC_KEY:
+            /* Check if bit size is a valid RSA bit size */
+            if(bits < 1024) {
+                return( PSA_ERROR_INVALID_ARGUMENT );
+            }
+            if(PSA_ALG_IS_RSA_OAEP (algorithm) ||
+               algorithm == PSA_ALG_RSA_PKCS1V15_CRYPT ||
+               PSA_ALG_IS_RSA_PKCS1V15_SIGN(algorithm) || 
+               algorithm == PSA_ALG_RSA_PKCS1V15_SIGN_RAW ||
+               PSA_ALG_IS_RSA_PSS(algorithm) ||
+               PSA_ALG_IS_RSA_PSS_ANY_SALT(algorithm)){
+                return PSA_SUCCESS;
+            }
+            break;
+
+        default:
+            return( PSA_ERROR_INVALID_ARGUMENT );
+            break;
+    }
+    
+    return( PSA_ERROR_INVALID_ARGUMENT );
+}
 psa_status_t psa_driver_wrapper_init( void )
 {
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
@@ -665,6 +868,14 @@ psa_status_t psa_driver_wrapper_generate_key(
     psa_key_location_t location =
         PSA_KEY_LIFETIME_GET_LOCATION(attributes->core.lifetime);
 
+    status = validate_key(psa_get_key_type(attributes), 
+                          psa_get_key_bits(attributes),
+                          psa_get_key_algorithm(attributes));
+    if( status != PSA_SUCCESS ){
+        return( status );
+    }
+    status = PSA_ERROR_CORRUPTION_DETECTED;
+
     /* Try dynamically-registered SE interface first */
 #if defined(MBEDTLS_PSA_CRYPTO_SE_C)
     const psa_drv_se_t *drv;
@@ -760,6 +971,14 @@ psa_status_t psa_driver_wrapper_import_key(
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
     psa_key_location_t location = PSA_KEY_LIFETIME_GET_LOCATION(
                                       psa_get_key_lifetime( attributes ) );
+
+    status = validate_key(psa_get_key_type(attributes), 
+                          psa_get_key_bits(attributes),
+                          psa_get_key_algorithm(attributes));
+    if( status != PSA_SUCCESS ){
+        return( status );
+    }
+    status = PSA_ERROR_CORRUPTION_DETECTED;
 
     /* Try dynamically-registered SE interface first */
 #if defined(MBEDTLS_PSA_CRYPTO_SE_C)
@@ -1042,6 +1261,14 @@ psa_status_t psa_driver_wrapper_copy_key(
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
     psa_key_location_t location =
         PSA_KEY_LIFETIME_GET_LOCATION( attributes->core.lifetime );
+
+    status = validate_key(psa_get_key_type(attributes), 
+                          psa_get_key_bits(attributes),
+                          psa_get_key_algorithm(attributes));
+    if( status != PSA_SUCCESS ){
+        return( status );
+    }
+    status = PSA_ERROR_CORRUPTION_DETECTED;
 
 #if defined(MBEDTLS_PSA_CRYPTO_SE_C)
     const psa_drv_se_t *drv;
