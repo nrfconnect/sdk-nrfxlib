@@ -24,4 +24,5 @@ nRF RPC requires the Zephyr Project fork of TinyCBOR, because of API differences
 
    doc/architecture
    doc/usage
+   CHANGELOG
    doc/api
