@@ -70,6 +70,7 @@ typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t li
  *       while this function is executing.
  *       Doing so might lead to a deadlock.
  *
+ * @note If only Front End Module functionality is needed, @ref mpsl_fem_init can be called instead.
  *
  * @retval  0               MPSL is successfully initialized.
  * @retval  -NRF_EPERM      MPSL is already initialized.
