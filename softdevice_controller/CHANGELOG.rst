@@ -18,6 +18,7 @@ Bug fixes
 =========
 
 * Fixed an issue where the controller accepts an LL_PAUSE_ENC_REQ packet received on an unencrypted link (DRGN-17777).
+* Fixed an issue where the controller accepts CONNECT_IND, AUX_CONNECT_REQ and CONNECTION_UPDATE_REQ packets with the ``connSupervisionTimeout`` value set to 0 (DRGN-17776).
 
 nRF Connect SDK v2.1.0
 **********************

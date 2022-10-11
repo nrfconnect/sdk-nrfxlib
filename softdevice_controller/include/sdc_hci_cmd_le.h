@@ -448,7 +448,7 @@ typedef __PACKED_STRUCT
     uint8_t address[6];
 } sdc_hci_cmd_le_add_device_to_filter_accept_list_t;
 
-/** @brief E Remove Device From Filter Accept List command parameter(s). */
+/** @brief LE Remove Device From Filter Accept List command parameter(s). */
 typedef __PACKED_STRUCT
 {
     uint8_t address_type;
@@ -1723,7 +1723,7 @@ uint8_t sdc_hci_cmd_le_clear_filter_accept_list(void);
  */
 uint8_t sdc_hci_cmd_le_add_device_to_filter_accept_list(const sdc_hci_cmd_le_add_device_to_filter_accept_list_t * p_params);
 
-/** @brief E Remove Device From Filter Accept List.
+/** @brief LE Remove Device From Filter Accept List.
  *
  * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.8.17

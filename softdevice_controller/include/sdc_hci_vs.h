@@ -704,7 +704,7 @@ uint8_t sdc_hci_cmd_vs_llpm_mode_set(const sdc_hci_cmd_vs_llpm_mode_set_t * p_pa
  * Conn_Interval_Max * 2, where Conn_Interval_Max is given in milliseconds.
  *
  * Event(s) generated (unless masked away):
- * When the Controller receives the command, the Controller sends the HCI_Command_Status
+ * When the Controller receives the command, the Controller sends the HCI_Command_Complete
  * event to the Host. The HCI_LE_Connection_Update_Complete event shall be generated after
  * the connection parameters have been applied by the Controller or if the command
  * subsequently fails.
