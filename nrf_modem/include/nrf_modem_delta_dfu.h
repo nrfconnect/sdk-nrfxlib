@@ -12,7 +12,6 @@
 #ifndef NRF_MODEM_DELTA_DFU_H__
 #define NRF_MODEM_DELTA_DFU_H__
 
-#include <stdint.h>
 #include <stddef.h>
 
 #ifdef __cplusplus

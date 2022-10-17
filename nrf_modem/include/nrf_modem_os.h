@@ -27,7 +27,7 @@ extern "C" {
 /** Infinite time-out. */
 #define NRF_MODEM_OS_FOREVER -1
 /** Number of OS semaphores required. */
-#define NRF_MODEM_OS_NUM_SEM_REQUIRED 5
+#define NRF_MODEM_OS_NUM_SEM_REQUIRED 6
 
 enum log_level {
 	NRF_MODEM_LOG_LEVEL_NONE,
@@ -176,14 +176,9 @@ int nrf_modem_os_sem_take(void *sem, int timeout);
 unsigned int nrf_modem_os_sem_count_get(void *sem);
 
 /**
- * @brief Set the application IRQ, @c NRF_MODEM_APPLICATION_IRQ.
+ * @brief Wake threads waiting in nrf_modem_os_timedwait for a modem event or freeing of memory.
  */
-void nrf_modem_os_application_irq_set(void);
-
-/**
- * @brief Clear the application IRQ, @c NRF_MODEM_APPLICATION_IRQ.
- */
-void nrf_modem_os_application_irq_clear(void);
+void nrf_modem_os_event_notify(void);
 
 /**
  * @brief Generic logging procedure.

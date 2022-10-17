@@ -53,6 +53,8 @@ extern "C" {
 
 /**@} */
 
+#define NRF_MODEM_SHMEM_CTRL_SIZE 0x4e8
+
 /** @brief Shared memory configuration.
  *
  *  @note: Only the lower 128k of RAM may be shared with the modem core.
@@ -60,7 +62,7 @@ extern "C" {
 struct nrf_modem_shmem_cfg {
 	/** Control memory, used for control structures.
 	 *  The size of this area is build constant, and must be equal to
-	 *  @c NRF_MODEM_SHMEM_CTRL_SIZE in @file nrf_modem_platform.h
+	 *  @c NRF_MODEM_SHMEM_CTRL_SIZE.
 	 */
 	struct {
 		uint32_t base;
@@ -164,8 +166,6 @@ char *nrf_modem_build_version(void);
 /**
  * @brief Initialize the Modem library.
  *
- * Once initialized, the library uses the resources defined in nrf_modem_platform.h.
- *
  * Library has two operation modes, normal and DFU.
  * In normal operation mode, the DFU functionality is disabled.
  *
@@ -187,6 +187,7 @@ char *nrf_modem_build_version(void);
  * @retval -NRF_ENOMEM Not enough shared memory for this operation.
  * @retval -NRF_EPERM The Modem library is already initialized.
  * @retval -NRF_ETIMEDOUT Operation timed out.
+ * @retval -NRF_NOLCK Not enough semaphores.
  * @retval -NRF_EINVAL RPC control region size is incorrect.
  * @retval -NRF_EOPNOTSUPP RPC version mismatch.
  * @retval -NRF_EIO IPC State fault or missing root digest.
@@ -208,21 +209,13 @@ bool nrf_modem_is_initialized(void);
  * @note
  * The modem must be put into offline (CFUN=0) mode before shutting it down.
  *
- * Resources reserved by the library in nrf_modem_platform.h are freed when
- * the library is shutdown.
+ * Resources reserved by the library are freed when the library is shutdown.
  *
  * @retval Zero on success.
  * @retval -NRF_EPERM The Modem library is not initialized.
  * @retval -NRF_ENOMEM Not enough shared memory for this operation.
  */
 int nrf_modem_shutdown(void);
-
-/**
- * @brief Application IRQ handler in the modem library.
- *
- * Call this function when handling the Application IRQ.
- */
-void nrf_modem_application_irq_handler(void);
 
 #ifdef __cplusplus
 }

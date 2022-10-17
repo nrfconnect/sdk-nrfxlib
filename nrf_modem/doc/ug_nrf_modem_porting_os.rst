@@ -1,7 +1,7 @@
 .. _nrf_modem_ug_porting:
 
-Porting the Modem library to your OS
-####################################
+Porting to an OS
+################
 
 .. contents::
    :local:
@@ -43,15 +43,18 @@ The application must either include the nrfx IPC driver or implement its own IPC
 
 If the OS has its own IRQ handler scheme that does not directly forward the IPC_IRQHandler, the OS must route the IPC_IRQHandler to the nrfx IPC IRQ handler.
 
-Application interrupt
-*********************
-The Modem library receives events from the modem on the high-priority IPC interrupt.
-To continue processing these events on a lower priority, the library uses an application interrupt.
-The library calls the :c:func:`nrf_modem_os_application_irq_set` function to trigger the interrupt.
-The handler for the low-priority interrupt must then call the :c:func:`nrf_modem_application_irq_handler` function and subsequently wake all sleeping threads up using the :c:func:`nrf_modem_os_event_notify` function.
+Peripheral configuration
+************************
 
-The abstraction layer decides the implementation of the application interrupt.
-Possible solutions for this are either directly setting an IRQ or using an EGU event.
+As the Modem library has been compiled to operate on peripherals in the non-secure domain, the following two peripherals must be configured to be non-secure:
+
+* NRF_IPC
+* NRF_POWER
+
+If you are using the hard-float variant of the Modem library, the FPU must be activated in both the secure domain and the non-secure domain, and must be configured to allow the non-secure application to run FPU instructions.
+
+The :file:`nrfx/mdk/system_nrf9160.c` file provides a template on how to configure the FPU in both cases.
+The system file also provides several Errata workarounds specific to the chip variant used, which are needed for any secure domain application.
 
 Memory
 ******
@@ -91,19 +94,6 @@ Following are the minimum sizes of the regions of the Modem Library:
 *  The trace area size can remain zero if traces are not used.
    If traces are used, refer to :ref:`modem_trace` for more information on the trace area size.
 
-Peripherals
-***********
-
-As the Modem library has been compiled to operate on peripherals in the non-secure domain, the following two peripherals must be configured to be non-secure:
-
-* NRF_IPC
-* NRF_POWER
-
-If you are using the hard-float variant of the Modem library, the FPU must be activated in both the secure domain and the non-secure domain, and must be configured to allow the non-secure application to run FPU instructions.
-
-The :file:`nrfx/mdk/system_nrf9160.c` file provides a template on how to configure the FPU in both cases.
-The system file also provides several Errata workarounds specific to the chip variant used, which are needed for any secure domain application.
-
 Faults and traces
 *****************
 
@@ -128,13 +118,6 @@ The following message sequence diagrams show the interactions between the applic
 
         Initialization (main thread)
 
-#. Handling an event sent from the Modem library and lowering its priority to be able to receive new events:
-
-    .. figure:: images/nrf_modem_event_sequence.svg
-        :alt: Event handling, lowering priority
-
-        Event handling, lowering priority
-
 #. Handling a timeout or sleep:
 
     .. figure:: images/nrf_modem_timers_sequence.svg
@@ -148,13 +131,13 @@ OS abstraction layer
 ********************
 
 To create an OS abstraction layer for the Modem library, you must implement the functions in the :file:`nrf_modem_os.h` file.
-
-Abstraction information
-=======================
-
 An OS abstraction layer implementation for the Zephyr RTOS is also available in the |NCS|.
 See :file:`nrf_modem_os.c` for more details.
-The implementation details for each function are shown in the section following and in the header file:
+
+Specification
+=============
+
+The details for each function are shown in the following section and in the header file:
 
 nrf_modem_os_init()
 -------------------
@@ -167,9 +150,8 @@ See :ref:`modem_trace` for more information.
 
 *Required actions*:
 
-* Initialize timers/threads.
-* Configure low priority Modem library scheduling IRQ (SoftIRQ).
 * Initialize heap memory.
+* Initialize timers/threads.
 * If Nordic Proprietary trace is enabled, initialize a trace thread and the trace backend (for example, UART or SPI).
 
 nrf_modem_os_busywait()
@@ -199,12 +181,11 @@ The following points decide the *Function return value*:
 nrf_modem_os_event_notify()
 ---------------------------
 
-This function is called by the Modem library when an event occurs and all threads waiting in :c:func:`nrf_modem_os_timedwait` function must wake up.
+This function is called by the Modem library when an event occurs and all threads waiting in the :c:func:`nrf_modem_os_timedwait` function must wake up.
 
 *Required action*:
 
-Wake up all threads sleeping in the :c:func:`nrf_modem_os_timedwait` function.
-See :ref:`nrf_modem_os_timedwait` for more details.
+* Wake all threads that are sleeping in :c:func:`nrf_modem_os_timedwait`. For details, see :c:func:`nrf_modem_os_timedwait`.
 
 nrf_modem_os_alloc()
 --------------------
@@ -238,33 +219,6 @@ This function translates errnos from the Modem library to the OS-defined ones.
 * Implement a translation for each errno set by the Modem library.
   If it overlaps with errnos of your OS, the translation is not needed.
 
-nrf_modem_os_application_irq_set()
-----------------------------------
-
-This function is called by the Modem library when the library wants to set a pending IRQ on the low priority scheduling IRQ of the Modem library.
-
-*Required action*:
-
-* Set a pending IRQ on the low priority scheduling IRQ of the Modem library using OS primitives or NVIC functions.
-
-nrf_modem_os_application_irq_clear()
-------------------------------------
-
-This function is called by the Modem library when the library wants to clear IRQ on the low priority scheduling IRQ of the Modem library.
-
-*Required action*:
-
-* Clear the low priority scheduling IRQ of the Modem library using OS primitives or NVIC functions.
-
-nrf_modem_os_event_notify()
----------------------------
-
-This function is called by the Modem library when an event occurs and all threads waiting in the :c:func:`nrf_modem_os_timedwait` function must wake up.
-
-*Required action*:
-
-* Wake all threads that are sleeping in :c:func:`nrf_modem_os_timedwait`. For details, see :c:func:`nrf_modem_os_timedwait`.
-
 nrf_modem_os_is_in_isr()
 ------------------------
 
@@ -295,6 +249,11 @@ nrf_modem_os_sem_take()
 
 This function is called by the library to take a semaphore.
 
+nrf_modem_os_sem_count_get()
+----------------------------
+
+This function is called to retrieve the count of a semaphore.
+
 nrf_modem_os_log()
 ------------------
 
@@ -307,12 +266,11 @@ nrf_modem_os_logdump()
 This function is called by the library to dump binary data.
 This function can be called in an interrupt context.
 
+Template
+========
 
-Reference template
-==================
-
-The following code snippet shows a simple implementation of the Modem library OS abstraction layer.
-You can use it as a template and customize it for your OS or scheduler.
+The following code snippet shows a template implementation of the Modem library OS abstraction layer.
+You can use it as a starting point and customize it for your OS or scheduler.
 
 
 .. code-block:: c
@@ -419,24 +377,6 @@ You can use it as a template and customize it for your OS or scheduler.
     {
         /* Get a semaphore's count. */
         return 0;
-    }
-
-    void nrf_modem_os_application_irq_set(void)
-    {
-        /* Set the application IRQ. */
-    }
-
-    void nrf_modem_os_application_irq_clear(void)
-    {
-        /* Clear the application IRQ. */
-    }
-
-    void NRF_MODEM_APPLICATION_IRQ_HANDLER(void)
-    {
-        /* Handle application IRQ.
-           Wire this handler up to the application interrupt. */
-        nrf_modem_application_irq_handler();
-        nrf_modem_os_event_notify();
     }
 
     void nrf_modem_os_log(int level, const char *fmt, ...)

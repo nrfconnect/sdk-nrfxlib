@@ -252,3 +252,8 @@ Regardless of the value returned by :c:func:`nrf_modem_init`, the application mu
 The application can reinitialize the Modem library by calling :c:func:`nrf_modem_shutdown` followed by :c:func:`nrf_modem_init`.
 If the rollback is successful, the modem runs the previous modem firmware.
 The application can verify that by reading the modem firmware UUID or the ``AT+CGMR`` command response.
+
+Thread safety
+*************
+
+The Delta DFU API is thread safe and can be used by multiple threads.

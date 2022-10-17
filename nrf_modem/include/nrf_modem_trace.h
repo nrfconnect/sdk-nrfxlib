@@ -36,14 +36,17 @@ struct nrf_modem_trace_data {
  *
  * @param[out] frags On success, @c *frags is an array of trace data fragments.
  * @param[out] n_frags On success, @c *n_frags is the number of fragments in the @c *frags array.
+ * @param[in] timeout Time to wait in milliseconds for trace data to become available or one of the
+ *            special values NRF_MODEM_OS_FOREVER or NRF_MODEM_OS_NO_WAIT.
  *
  * @retval 0 on success.
  * @retval -NRF_FAULT If @p frags or @p nfrags is NULL.
  * @retval -NRF_EINPROGRESS Trace is already being processed by the application.
  * @retval -NRF_ENODATA No more trace data is available until the modem is restarted.
  * @retval -NRF_ESHUTDOWN Modem was shut down.
+ * @retval -NRF_EAGAIN If the request timed out.
  */
-int nrf_modem_trace_get(struct nrf_modem_trace_data **frags, size_t *n_frags);
+int nrf_modem_trace_get(struct nrf_modem_trace_data **frags, size_t *n_frags, int timeout);
 
 /**
  * @brief Notify the Modem library that the application has completed processing of trace data.
