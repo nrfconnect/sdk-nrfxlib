@@ -573,27 +573,13 @@ int32_t sdc_support_central(void);
  */
 int32_t sdc_support_ext_central(void);
 
-/** @brief Support Data Length Extensions
- *
- * After this API is called, the controller will support data length extension.
- * That is:
- *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
- *  - when a LL_LENGTH_REQ is received. DLE is marked supported in the LL
- *  - Feature Exchange procedure.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  Data Length Extension is not supported.
- */
-int32_t sdc_support_dle(void);
-
 /** @brief Support Data Length Extensions for a central device
  *
  * After this API is called, the controller will support data length extension in the central role.
  * That is:
  *  - DLE is marked supported in the LL Feature Exchange procedure.
  *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
- *  - when a LL_LENGTH_REQ is received.
+ *    when a LL_LENGTH_REQ is received.
  *
  * @note The application is required to call both @ref sdc_support_dle_central() and @ref sdc_support_dle_peripheral()
  *       if both central and peripheral roles are supported.
@@ -608,8 +594,9 @@ int32_t sdc_support_dle_central(void);
  *
  * After this API is called, the controller will support data length extension in the peripheral role.
  * That is:
+ *  - DLE is marked supported in the LL Feature Exchange procedure.
  *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
- *  - when a LL_LENGTH_REQ is received.
+ *    when a LL_LENGTH_REQ is received.
  *
  * @note The application is required to call both @ref sdc_support_dle_central() and @ref sdc_support_dle_peripheral()
  *       if both central and peripheral roles are supported.
@@ -623,9 +610,11 @@ int32_t sdc_support_dle_peripheral(void);
 /** @brief Support LE 2M PHY
  *
  * After this API is called, the controller will support LE 2M PHY. That is:
- *  - All HCI APIs for obtaining or changing PHYs are supported.
  *  - The controller can use 2M PHY in both the connected and non-connected state.
  *  - LE 2M PHY is marked supported in the LL Feature Exchange procedure.
+ *
+ * @note The application is required to call @ref sdc_support_phy_update_central() and/or @ref sdc_support_phy_update_peripheral()
+ *       to enable the PHY update procedure.
  *
  * @retval 0           Success
  * @retval -NRF_EPERM  This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
@@ -635,9 +624,11 @@ int32_t sdc_support_le_2m_phy(void);
 /** @brief Support LE Coded PHY
  *
  * After this API is called, the controller will support LE Coded PHY. That is:
- *  - All HCI APIs for obtaining or changing PHYs are supported.
  *  - The controller can use LE Coded PHY in both the connected and non-connected state.
  *  - LE Coded PHY is marked supported in the LL Feature Exchange procedure.
+ *
+ * @note The application is required to call @ref sdc_support_phy_update_central() and/or @ref sdc_support_phy_update_peripheral()
+ *       to enable the PHY update procedure.
  *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().

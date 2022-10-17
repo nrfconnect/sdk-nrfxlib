@@ -58,3 +58,6 @@ DRGN-12259: HCI Receiver and Transmitter Test commands not available
 
 DRGN-15989: In some cases, the SDC can connect to the peer it is already connected to
   To prevent this, the application can remove the already connected peer from the Filter Accept List, or from the Resolving List, or not use that peer's address in Create Connection command.
+
+DRGN-17724: The AoA transmitter is not supported in LLPM-mode
+  The AoA transmitter can show unspecified behavior when being used in LLPM-mode.

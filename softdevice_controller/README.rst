@@ -34,11 +34,14 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 +--------------------------------+-----------------+--------------+-----------+
 | Connectionless CTE Advertising |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
+| Connection CTE Response        |                 |              | X         |
++--------------------------------+-----------------+--------------+-----------+
 | Coded PHY (Long Range)         |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
+   For Connection CTE Response, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
 
 .. _sdc_proprietary_feature_support:
 
