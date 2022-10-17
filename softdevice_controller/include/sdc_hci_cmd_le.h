@@ -199,6 +199,8 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_PATH_LOSS_REPORTING_ENABLE = 0x2079,
     /** @brief See @ref sdc_hci_cmd_le_set_transmit_power_reporting_enable(). */
     SDC_HCI_OPCODE_CMD_LE_SET_TRANSMIT_POWER_REPORTING_ENABLE = 0x207a,
+    /** @brief See @ref sdc_hci_cmd_le_set_data_related_address_changes(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_DATA_RELATED_ADDRESS_CHANGES = 0x207c,
 };
 
 /** @brief LE Extended Create Connection array parameters. */
@@ -1048,6 +1050,13 @@ typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_set_transmit_power_reporting_enable_return_t;
+
+/** @brief LE Set Data Related Address Changes command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t adv_handle;
+    uint8_t change_reasons;
+} sdc_hci_cmd_le_set_data_related_address_changes_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -4757,6 +4766,41 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_enable(const sdc_hci_cmd_le_set_p
  */
 uint8_t sdc_hci_cmd_le_set_transmit_power_reporting_enable(const sdc_hci_cmd_le_set_transmit_power_reporting_enable_t * p_params,
                                                            sdc_hci_cmd_le_set_transmit_power_reporting_enable_return_t * p_return);
+
+/** @brief LE Set Data Related Address Changes.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.122
+ *
+ * The HCI_LE_Set_Data_Related_Address_Changes command specifies
+ * circumstances when the Controller shall refresh any Resolvable Private
+ * Address used by the advertising set identified by the Advertising_Handle
+ * parameter, whether or not the address timeout period has been reached. This
+ * command may be used while advertising is enabled.
+ *
+ * The Change_Reasons parameter specifies the reason(s) for refreshing
+ * addresses. The default when an advertising set is created, or if legacy
+ * advertising commands (see Section 3.1.1) are used, is for all bits to be clear.
+ *
+ * If extended advertising commands (see Section 3.1.1) are being used and the
+ * advertising set corresponding to the Advertising_Handle parameter does not
+ * exist, or if no command specified in Table 3.2 has been used, then the
+ * Controller shall return the error code Unknown Advertising Identifier (0x42).
+ *
+ * If legacy advertising commands are being used, the Controller shall ignore the
+ * Advertising_Handle parameter.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Data_Related_Address_Changes command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_data_related_address_changes(const sdc_hci_cmd_le_set_data_related_address_changes_t * p_params);
 
 /** @} end of HCI_VS_API */
 
