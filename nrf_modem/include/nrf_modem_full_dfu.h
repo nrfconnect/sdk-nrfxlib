@@ -20,17 +20,6 @@
 extern "C" {
 #endif
 
-#if !defined(__GNUC__) || (__GNUC__ == 0)
-typedef int32_t ssize_t;
-#else
-#include <sys/types.h>
-#ifdef __SES_ARM
-typedef int32_t ssize_t;
-#endif
-#endif
-
-
-
 /**@brief Digest buffer length. */
 #define NRF_MODEM_FULL_DFU_DIGEST_LEN 32
 /**@brief UUID buffer length. */

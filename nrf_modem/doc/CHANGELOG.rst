@@ -9,6 +9,19 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.2.0
+***************
+
+* Added a ``timeout`` parameter to the :c:func:`nrf_modem_trace_get()` function.
+* Fixed an issue when compiling the :file:`nrf_modem.h` header in C++.
+* The Delta DFU interface (:file:`nrf_modem_delta_dfu.h`) is now thread safe.
+* Fixed possible race conditions in the :c:func:`nrf_modem_init()` and :c:func:`nrf_modem_shutdown()` functions.
+* Fixed a bug in :c:func:`nrf_listen()` function that let the queue of incoming connection requests be of size one.
+* The :c:data:`NRF_MODEM_GNSS_EVT_BLOCKED` event is now sent only when the GNSS stack does not get any runtime due to LTE activity, whereas earlier it could also be sent when the GNSS stack average runtime was too short.
+* Removed the usage of the application software interrupt. The library uses only the IPC peripheral interrupt now.
+* Removed the :c:func:`nrf_modem_application_irq_handler` function.
+* Removed the :file:`nrf_modem_platform.h` file.
+
 nrf_modem 2.1.3
 ***************
 

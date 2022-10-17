@@ -137,10 +137,15 @@ extern "C" {
 /** @brief Notification deadline was missed.
  *
  * @details Indicates that GNSS has not received a time window since the last PVT notification due
- *          to LTE activity.
+ *          to LTE activity, blocking GNSS operation.
  */
 #define NRF_MODEM_GNSS_PVT_FLAG_DEADLINE_MISSED        0x08
-/** @brief Operation is blocked by insufficient time windows. */
+/** @brief Average time windows granted to GNSS may be too short.
+ *
+ * @details Indicates that the inability to produce a valid PVT estimate is likely caused by too
+ *          short GNSS time windows. Usually this happens when eDRX and/or PSM are not used, because
+ *          LTE needs to monitor pagings from the network with a short interval.
+ */
 #define NRF_MODEM_GNSS_PVT_FLAG_NOT_ENOUGH_WINDOW_TIME 0x10
 /** @brief The velocity estimate is valid. */
 #define NRF_MODEM_GNSS_PVT_FLAG_VELOCITY_VALID         0x20

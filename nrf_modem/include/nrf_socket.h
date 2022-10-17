@@ -14,10 +14,35 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+	#ifdef __GNUC__
+		/* GNU C++ compiler supports restrict as __restrict__ */
+		#define restrict __restrict__
+	#else
+		/* Other C++ compilers may not support restrict */
+		#define restrict
+	#endif
 #endif
 
-typedef int32_t ssize_t;
+/* ssize_t is not part of the C library, but is defined by POSIX in <sys/types.h> */
+#ifdef __has_include
+	#if __has_include(<sys/types.h>)
+		#include <sys/types.h>
+	#else
+		/* <sys/types.h> missing, define ssize_t here */
+		typedef int32_t ssize_t;
+	#endif
+#else
+	/* __has_include() not supported, rely on build-system macro */
+	#ifdef NRF_MODEM_HAS_SYS_TYPES
+		#include <sys/types.h>
+	#else
+		typedef int32_t ssize_t;
+	#endif
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**@addtogroup nrf_socket_address_resolution
  *@{

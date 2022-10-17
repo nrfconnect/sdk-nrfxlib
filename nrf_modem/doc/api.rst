@@ -46,17 +46,6 @@ Limits of the Modem library
    :project: nrfxlib
    :members:
 
-Resources for the Modem library
-*******************************
-
-.. doxygengroup:: nrf_modem_platform_ipc
-   :project: nrfxlib
-   :members:
-
-.. doxygengroup:: nrf_modem_reserved_interrupts
-   :project: nrfxlib
-   :members:
-
 Socket parameter enumerators
 ****************************
 
