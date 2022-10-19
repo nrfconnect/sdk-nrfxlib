@@ -14,6 +14,13 @@
 #include "nrf_rpc_tr.h"
 #include "nrf_rpc_os.h"
 
+#if defined(__GNUC__)
+/* Content of "NRF_RPC_AUTO_ARR" arrays are added by the linker script,
+ * so the compiler should ignore any out of bounds warnings.
+ */
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
 /* A pointer value to pass information that response */
 #define RESPONSE_HANDLED_PTR ((uint8_t *)1)
 
