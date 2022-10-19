@@ -1063,7 +1063,7 @@
  * Note that this option is meant for internal use only and may be removed
  * without notice. It is incompatible with MBEDTLS_USE_PSA_CRYPTO.
  */
-//#define MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER
+#define MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER
 
 /**
  * \def MBEDTLS_MEMORY_DEBUG

@@ -172,6 +172,20 @@ nrf_cc3xx_platform_mutex_t heap_mutex = {
                     NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID
 };
 
+static bool mutex_flags_unknown(uint32_t flags){
+    switch(flags){
+        case (NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID | NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_INTERNAL_MUTEX):
+        case (NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID | NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ALLOCATED):
+        case (NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_VALID):
+        case NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID:
+        case NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX:
+        case NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC:
+            return false;
+        default:
+            return true;
+    }
+}
+
 /**@brief static function to initialize a mutex
  */
 static void mutex_init_platform(nrf_cc3xx_platform_mutex_t *mutex) {
@@ -183,6 +197,7 @@ static void mutex_init_platform(nrf_cc3xx_platform_mutex_t *mutex) {
         platform_abort_apis.abort_fn(
             "mutex_init called with NULL parameter");
     }
+
     /* Atomic mutex has been initialized statically */
     if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC ||
         mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX) {
@@ -190,8 +205,8 @@ static void mutex_init_platform(nrf_cc3xx_platform_mutex_t *mutex) {
     }
 
     /* Allocate if this has not been initialized statically */
-    if (mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID &&
-        mutex->mutex == NULL) {
+    if ((mutex->flags == NRF_CC3XX_PLATFORM_MUTEX_MASK_INVALID && mutex->mutex == NULL) ||
+        mutex_flags_unknown(mutex->flags)) {
         /* Allocate some memory for the mutex */
         ret = k_mem_slab_alloc(&mutex_slab, &mutex->mutex, K_FOREVER);
         if(ret != 0 || mutex->mutex == NULL)
@@ -206,7 +221,7 @@ static void mutex_init_platform(nrf_cc3xx_platform_mutex_t *mutex) {
         /** Set a flag to ensure that mutex is deallocated by the freeing
          * operation
          */
-        mutex->flags |= NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ALLOCATED;
+        mutex->flags = NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ALLOCATED;
     }
 
     p_mutex = (struct k_mutex *)mutex->mutex;
