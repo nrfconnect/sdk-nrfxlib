@@ -25,8 +25,9 @@
  *
  * @note    This API assumes no format of the data stored.
  *
- * @note    The key material stored using this API should be kept secret, for instance
- *          by generating it directly or the device or securely provisioning it.
+ * @note    The key material stored using this API may not be in flash
+ *          and should be kept secret, for instance by generating it
+ *          directly on the device or securely provisioning it.
  *
  *
  * @param[in]   slot_id     The first KMU slot ID for the new key (uses 2).

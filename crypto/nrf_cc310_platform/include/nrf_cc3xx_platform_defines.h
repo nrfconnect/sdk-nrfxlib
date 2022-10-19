@@ -84,7 +84,7 @@ extern "C"
 #define NRF_KMU_SLOT_MKEK               (2U)    //!< Key slot reserved for MKEK (Master Key Encryption Key).
 #define NRF_KMU_SLOT_MKEK_RESERVED      (3U)    //!< Key slot reserved for MKEK (CC312: Used for last 128 bits of key material).
 
-#define NRF_KMU_SLOT_MEXT               (4U)    //!< Key slot reserved for MEXT (Master Key Encryption Key).
+#define NRF_KMU_SLOT_MEXT               (4U)    //!< Key slot reserved for MEXT (Master External storage encryption Key).
 #define NRF_KMU_SLOT_MEXT_RESERVED      (5U)    //!< Key slot reserved for MEXT (CC312: Used for last 128 bits of key material).
 
 #define NRF_KMU_SLOT_KIDENT             (6U)    //!< Key slot reserved for the encrypted KIDENT (Identity key).

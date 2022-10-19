@@ -60,7 +60,7 @@ int nrf_cc3xx_platform_init_hmac_drbg(void);
 int nrf_cc3xx_platform_init_no_rng(void);
 
 
-/** @brief Function to deintialize the nrf_cc3xx_platform
+/** @brief Function to deinitialize the nrf_cc3xx_platform
  *
  * @return Zero on success, otherwise a non-zero error code.
  */
@@ -106,7 +106,7 @@ int nrf_cc3xx_platform_get_nonce_seed(uint8_t buffer[NRF_CC3XX_PLATFORM_EITS_NON
  *
  * @return Zero on success, otherwise a non-zero error code.
  */
-int nrf_cc3xx_plaform_get_boot_seed(uint8_t buffer[NRF_CC3XX_PLATFORM_TFM_BOOT_SEED_SIZE]);
+int nrf_cc3xx_platform_get_boot_seed(uint8_t buffer[NRF_CC3XX_PLATFORM_TFM_BOOT_SEED_SIZE]);
 
 #ifdef __cplusplus
 }
