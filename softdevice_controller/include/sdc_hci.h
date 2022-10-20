@@ -110,6 +110,17 @@ int32_t sdc_hci_data_put(uint8_t const * p_data_in);
  */
 int32_t sdc_hci_get(uint8_t * p_packet_out, sdc_hci_msg_type_t * p_msg_type_out);
 
+/** @brief Peek the type of the next HCI packet from the SoftDevice Controller.
+ *
+ * This API is non-blocking.
+ *
+ * @param[out] p_msg_type_out  Enum indicating the type of the next HCI packet produced by the controller.
+ *
+ * @retval 0            Success
+ * @retval -NRF_EAGAIN  No event available
+ */
+int32_t sdc_hci_peek(sdc_hci_msg_type_t * p_msg_type_out);
+
 #ifdef __cplusplus
 }
 #endif
