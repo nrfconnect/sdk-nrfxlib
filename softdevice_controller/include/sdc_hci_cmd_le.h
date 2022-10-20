@@ -703,7 +703,6 @@ typedef __PACKED_STRUCT
     uint8_t operation;
     uint8_t fragment_preference;
     uint8_t adv_data_length;
-    /** @brief Size: adv_data_length. */
     uint8_t adv_data[];
 } sdc_hci_cmd_le_set_ext_adv_data_t;
 
@@ -714,7 +713,6 @@ typedef __PACKED_STRUCT
     uint8_t operation;
     uint8_t fragment_preference;
     uint8_t scan_response_data_length;
-    /** @brief Size: scan_response_data_length. */
     uint8_t scan_response_data[];
 } sdc_hci_cmd_le_set_ext_scan_response_data_t;
 
@@ -759,7 +757,6 @@ typedef __PACKED_STRUCT
     uint8_t adv_handle;
     uint8_t operation;
     uint8_t adv_data_length;
-    /** @brief Size: adv_data_length. */
     uint8_t adv_data[];
 } sdc_hci_cmd_le_set_periodic_adv_data_t;
 
@@ -1681,7 +1678,6 @@ uint8_t sdc_hci_cmd_le_read_filter_accept_list_size(sdc_hci_cmd_le_read_filter_a
  * • the initiator filter policy uses the Filter Accept List and an
  *   HCI_LE_Create_Connection or HCI_LE_Extended_Create_Connection
  *   command is pending.
- *
  *
  * Event(s) generated (unless masked away):
  * When the HCI_LE_Clear_Filter_Accept_List command has completed, an
@@ -4590,7 +4586,8 @@ uint8_t sdc_hci_cmd_le_enhanced_read_transmit_power_level(const sdc_hci_cmd_le_e
  * When the Controller receives the HCI_LE_Read_Remote_Transmit_Power_-
  * Level command, the Controller shall send the HCI_Command_Status event to
  * the Host. When the Controller has determined the remote transmit power, it
- * shall generate an HCI_LE_Transmit_Power_Reporting event with Reason 0x02.
+ * shall generate an HCI_LE_Transmit_Power_Reporting event with Reason
+ * 0x02.
  *
  * Note: An HCI_Command_Complete event is not sent by the Controller to
  * indicate that this command has been completed. Instead, the HCI_LE_-
@@ -4737,7 +4734,8 @@ uint8_t sdc_hci_cmd_le_set_path_loss_reporting_enable(const sdc_hci_cmd_le_set_p
  *
  * If the Remote_Enable parameter is set to 0x01 and no prior LE Power Control
  * Request procedure has been initiated on the ACL connection, then the
- * Controller shall initiate a new LE Power Control Request procedure on that ACL.
+ * Controller shall initiate a new LE Power Control Request procedure on that
+ * ACL.
  *
  * Reporting is disabled when the connection is first created.
  *
