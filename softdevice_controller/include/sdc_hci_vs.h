@@ -698,10 +698,12 @@ uint8_t sdc_hci_cmd_vs_llpm_mode_set(const sdc_hci_cmd_vs_llpm_mode_set_t * p_pa
 /** @brief Connection Update.
  *
  * This vendor specific command is used to change the Link Layer Connection parameters of a
- * connection. This command may be issued by the master only.
+ * connection.
+ * This command may be issued by the master only.
  *
  * The Supervision_Timeout in milliseconds shall be larger than (1 + Conn_Latency) *
- * Conn_Interval_Max * 2, where Conn_Interval_Max is given in milliseconds.
+ * Conn_Interval_Max * 2,
+ * where Conn_Interval_Max is given in milliseconds.
  *
  * Event(s) generated (unless masked away):
  * When the Controller receives the command, the Controller sends the HCI_Command_Complete
@@ -719,10 +721,10 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
 
 /** @brief Enable or Disable Extended Connection Events.
  *
- * When Extended Connection Events are disabled, the maximum connection event length is set by @ref
- * sdc_hci_cmd_vs_event_length_set().
- * When Extended Connection Events are enabled, the controller will extend the connection event as
- * much as possible, if:
+ * When Extended Connection Events are disabled, the maximum connection event length is set
+ * by @ref sdc_hci_cmd_vs_event_length_set(). When Extended Connection Events are enabled, the
+ * controller
+ * will extend the connection event as much as possible, if:
  * - Either of the peers has more data to send.
  *   See also: Core v5.1, Vol 6, Part B, Section 4.5.6
  * - There are no conflicts with other concurrent links.
@@ -769,7 +771,8 @@ uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_con
  * established.
  *
  * The SoftDevice Controller will ensure that the anchor points of master link connections are
- * spaced event_length_us apart.
+ * spaced
+ * event_length_us apart.
  *
  * The default event length is @ref SDC_DEFAULT_EVENT_LENGTH_US.
  *
@@ -790,10 +793,12 @@ uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t 
  *
  * Set the allocated event length for new periodic advertisers.
  * The SoftDevice Controller will ensure that the anchor points of periodic advertising events are
- * spaced event_length_us apart.
- * If the advertiser requires less time to transmit all the data, the distance to the next
- * scheduling activity will still be equal to the configured event length.
- * If the advertiser requires more time to transmit all the data, scheduling conflicts may occur.
+ * spaced
+ * event_length_us apart. If the advertiser requires less time to transmit all the data, the
+ * distance to
+ * the next scheduling activity will still be equal to the configured event length. If the
+ * advertiser
+ * requires more time to transmit all the data, scheduling conflicts may occur.
  *
  * This API must be called before configuring a periodic advertiser for the event length to be
  * applied.
@@ -816,7 +821,8 @@ uint8_t sdc_hci_cmd_vs_periodic_adv_event_length_set(const sdc_hci_cmd_vs_period
  * This vendor specific command is used to configure the way the scanner requests a coexistence
  * session.
  * Either the scanner requests a coex session as soon as it has received a valid access address, or
- * it only requests before transmitting.
+ * it
+ * only requests before transmitting.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -831,8 +837,8 @@ uint8_t sdc_hci_cmd_vs_coex_scan_mode_config(const sdc_hci_cmd_vs_coex_scan_mode
 
 /** @brief Configure Coexistence Per-Role Priority.
  *
- * This vendor specific command is used to configure the external radio coexistence priorities
- * depending on the Bluetooth device role.
+ * This vendor specific command is used to configure the external radio coexistence
+ * priorities depending on the Bluetooth device role.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.

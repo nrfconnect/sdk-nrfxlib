@@ -100,10 +100,10 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1040
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1136
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1048
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1144
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 16
-#define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
+#define __MEM_RX_BUFFER_OVERHEAD_SIZE 16
 
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * ((tx_size) + __MEM_TX_BUFFER_OVERHEAD_SIZE) - \
@@ -140,14 +140,14 @@ extern "C" {
 #define SDC_MEM_PERIPHERAL_LINKS_SHARED  24
 
 /** Memory required for scanner buffers when only supporting legacy scanning. */
-#define SDC_MEM_SCAN_BUFFER(buffer_count) (75 + (buffer_count) * 90)
+#define SDC_MEM_SCAN_BUFFER(buffer_count) (72 + (buffer_count) * 90)
 
 /** Memory required for scanner buffers when supporting extended scanning. */
 #define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (42 + (buffer_count) * 307)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4829+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (670+(max_adv_data))
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4909+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (678+(max_adv_data))
 #define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2498+(max_adv_data)*18)/10)
 #define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (441+(max_adv_data))
 
@@ -173,7 +173,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (231 + (buffer_count) * 283)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (247 + (buffer_count) * 283)
 
 /** Memory required for the periodic adv list.
  *
@@ -694,17 +694,6 @@ int32_t sdc_support_le_periodic_adv(void);
  * @retval -NRF_EOPNOTSUPP  LE Periodic advertising is not supported.
  */
 int32_t sdc_support_le_periodic_sync(void);
-
-/** @brief Support LE Power Control
- *
- * After this API is called, the controller will support the HCI commands
- * related to the LE Power Control.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
- */
-int32_t sdc_support_le_power_control(void);
 
 /** @brief Support LE Power Control for central role
  *
