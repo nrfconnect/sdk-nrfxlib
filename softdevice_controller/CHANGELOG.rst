@@ -18,6 +18,12 @@ Added
 =====
 
 * Support for Connection CTE Response in the angle of arrival (AoA) configuration (DRGN-17365).
+* Support for LE Set Data Related Address Changes HCI command (DRGN-17919).
+
+Changes
+=======
+
+* The functions :c:func:`sdc_hci_evt_get` and :c:func:`sdc_hci_data_get` have been replaced by :c:func:`sdc_hci_get` (DRGN-17060).
 
 Bug fixes
 =========

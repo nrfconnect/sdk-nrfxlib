@@ -75,6 +75,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_PERIPHERAL_LATENCY_MODE_SET = 0xfd09,
     /** @brief See @ref sdc_hci_cmd_vs_write_remote_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_WRITE_REMOTE_TX_POWER = 0xfd0a,
+    /** @brief See @ref sdc_hci_cmd_vs_set_rssi_golden_range(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_RSSI_GOLDEN_RANGE = 0xfd0b,
 };
 
 /** @brief VS subevent Code values. */
@@ -138,6 +140,7 @@ typedef __PACKED_STRUCT
     uint8_t coex_scan_mode_config : 1;
     uint8_t peripheral_latency_mode_set : 1;
     uint8_t write_remote_tx_power : 1;
+    uint8_t set_rssi_golden_range : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -440,6 +443,17 @@ typedef __PACKED_STRUCT
     int8_t delta;
 } sdc_hci_cmd_vs_write_remote_tx_power_t;
 
+/** @brief Set RSSI golden range command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Phy value to set RSSI golden range values. */
+    uint8_t phy;
+    /** @brief The RSSI golden range lower limit in dBm units. */
+    int8_t lower_limit;
+    /** @brief The RSSI golden range upper limit in dBm units. */
+    int8_t upper_limit;
+} sdc_hci_cmd_vs_set_rssi_golden_range_t;
+
 /** @} end of HCI_COMMAND_PARAMETERS */
 
 /**
@@ -698,10 +712,12 @@ uint8_t sdc_hci_cmd_vs_llpm_mode_set(const sdc_hci_cmd_vs_llpm_mode_set_t * p_pa
 /** @brief Connection Update.
  *
  * This vendor specific command is used to change the Link Layer Connection parameters of a
- * connection. This command may be issued by the master only.
+ * connection.
+ * This command may be issued by the master only.
  *
  * The Supervision_Timeout in milliseconds shall be larger than (1 + Conn_Latency) *
- * Conn_Interval_Max * 2, where Conn_Interval_Max is given in milliseconds.
+ * Conn_Interval_Max * 2,
+ * where Conn_Interval_Max is given in milliseconds.
  *
  * Event(s) generated (unless masked away):
  * When the Controller receives the command, the Controller sends the HCI_Command_Complete
@@ -719,10 +735,10 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
 
 /** @brief Enable or Disable Extended Connection Events.
  *
- * When Extended Connection Events are disabled, the maximum connection event length is set by @ref
- * sdc_hci_cmd_vs_event_length_set().
- * When Extended Connection Events are enabled, the controller will extend the connection event as
- * much as possible, if:
+ * When Extended Connection Events are disabled, the maximum connection event length is set
+ * by @ref sdc_hci_cmd_vs_event_length_set(). When Extended Connection Events are enabled, the
+ * controller
+ * will extend the connection event as much as possible, if:
  * - Either of the peers has more data to send.
  *   See also: Core v5.1, Vol 6, Part B, Section 4.5.6
  * - There are no conflicts with other concurrent links.
@@ -769,7 +785,8 @@ uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_con
  * established.
  *
  * The SoftDevice Controller will ensure that the anchor points of master link connections are
- * spaced event_length_us apart.
+ * spaced
+ * event_length_us apart.
  *
  * The default event length is @ref SDC_DEFAULT_EVENT_LENGTH_US.
  *
@@ -790,10 +807,12 @@ uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t 
  *
  * Set the allocated event length for new periodic advertisers.
  * The SoftDevice Controller will ensure that the anchor points of periodic advertising events are
- * spaced event_length_us apart.
- * If the advertiser requires less time to transmit all the data, the distance to the next
- * scheduling activity will still be equal to the configured event length.
- * If the advertiser requires more time to transmit all the data, scheduling conflicts may occur.
+ * spaced
+ * event_length_us apart. If the advertiser requires less time to transmit all the data, the
+ * distance to
+ * the next scheduling activity will still be equal to the configured event length. If the
+ * advertiser
+ * requires more time to transmit all the data, scheduling conflicts may occur.
  *
  * This API must be called before configuring a periodic advertiser for the event length to be
  * applied.
@@ -816,7 +835,8 @@ uint8_t sdc_hci_cmd_vs_periodic_adv_event_length_set(const sdc_hci_cmd_vs_period
  * This vendor specific command is used to configure the way the scanner requests a coexistence
  * session.
  * Either the scanner requests a coex session as soon as it has received a valid access address, or
- * it only requests before transmitting.
+ * it
+ * only requests before transmitting.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -831,8 +851,8 @@ uint8_t sdc_hci_cmd_vs_coex_scan_mode_config(const sdc_hci_cmd_vs_coex_scan_mode
 
 /** @brief Configure Coexistence Per-Role Priority.
  *
- * This vendor specific command is used to configure the external radio coexistence priorities
- * depending on the Bluetooth device role.
+ * This vendor specific command is used to configure the external radio coexistence
+ * priorities depending on the Bluetooth device role.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -896,6 +916,26 @@ uint8_t sdc_hci_cmd_vs_peripheral_latency_mode_set(const sdc_hci_cmd_vs_peripher
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_tx_power_t * p_params);
+
+/** @brief Set RSSI golden range.
+ *
+ * This command sets RSSI golden range that is explained in Core_v5.3, Vol 6, Part B,
+ * Section 5.1.17.1.
+ *
+ * When this command is issued, the controller stores the golden range values per PHY.
+ * These values can be used to keep RSSI (Received Signal Strength Indication) value
+ * to be in the golden range.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_set_rssi_golden_range(const sdc_hci_cmd_vs_set_rssi_golden_range_t * p_params);
 
 /** @} end of HCI_VS_API */
 
