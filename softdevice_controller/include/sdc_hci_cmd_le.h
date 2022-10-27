@@ -308,6 +308,12 @@ typedef __PACKED_STRUCT
     uint8_t channel_classification : 1;
 } sdc_hci_le_le_features_t;
 
+/** @brief LE Set Connection CTE Transmit Parameters array parameters. */
+typedef __PACKED_STRUCT
+{
+    uint8_t antenna_ids;
+} sdc_hci_le_set_conn_cte_transmit_params_array_params_t;
+
 /** @brief LE Set Connectionless CTE Transmit Parameters array parameters. */
 typedef __PACKED_STRUCT
 {
@@ -682,7 +688,7 @@ typedef __PACKED_STRUCT
     uint8_t peer_address_type;
     uint8_t peer_address[6];
     uint8_t adv_filter_policy;
-    uint8_t adv_tx_power;
+    int8_t adv_tx_power;
     uint8_t primary_adv_phy;
     uint8_t secondary_adv_max_skip;
     uint8_t secondary_adv_phy;
@@ -889,8 +895,7 @@ typedef __PACKED_STRUCT
     uint16_t conn_handle;
     uint8_t cte_types;
     uint8_t switching_pattern_length;
-    /** @brief Size: switching_pattern_length. */
-    uint8_t array_params[];
+    sdc_hci_le_set_conn_cte_transmit_params_array_params_t array_params[];
 } sdc_hci_cmd_le_set_conn_cte_transmit_params_t;
 
 /** @brief LE Set Connection CTE Transmit Parameters return parameter(s). */
