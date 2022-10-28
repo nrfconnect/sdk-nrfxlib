@@ -1366,7 +1366,7 @@ psa_status_t psa_driver_wrapper_hash_compute(
     size_t hash_size,
     size_t *hash_length)
 {
-#if defined(MBEDTLS_PSA_CRYPTO_SPM)
+#if !defined(PSA_WANT_ALG_SHA_1)
     if (alg == PSA_ALG_SHA_1) {
         return PSA_ERROR_NOT_SUPPORTED;
     }
@@ -1412,7 +1412,7 @@ psa_status_t psa_driver_wrapper_hash_setup(
 {
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
 
-#if defined(MBEDTLS_PSA_CRYPTO_SPM)
+#if !defined(PSA_WANT_ALG_SHA_1)
     if (alg == PSA_ALG_SHA_1) {
         return PSA_ERROR_NOT_SUPPORTED;
     }
@@ -2191,6 +2191,12 @@ psa_status_t psa_driver_wrapper_mac_compute(
     psa_key_location_t location =
         PSA_KEY_LIFETIME_GET_LOCATION( attributes->core.lifetime );
 
+#if !defined(PSA_WANT_ALG_SHA_1)
+    if (PSA_ALG_HMAC_GET_HASH(alg) == PSA_ALG_SHA_1) {
+        return PSA_ERROR_NOT_SUPPORTED;
+    }
+#endif
+
     switch( location )
     {
         case PSA_KEY_LOCATION_LOCAL_STORAGE:
@@ -2252,6 +2258,12 @@ psa_status_t psa_driver_wrapper_mac_sign_setup(
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
     psa_key_location_t location =
         PSA_KEY_LIFETIME_GET_LOCATION( attributes->core.lifetime );
+
+#if !defined(PSA_WANT_ALG_SHA_1)
+    if (PSA_ALG_HMAC_GET_HASH(alg) == PSA_ALG_SHA_1) {
+        return PSA_ERROR_NOT_SUPPORTED;
+    }
+#endif
 
     switch( location )
     {
@@ -2318,6 +2330,12 @@ psa_status_t psa_driver_wrapper_mac_verify_setup(
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
     psa_key_location_t location =
         PSA_KEY_LIFETIME_GET_LOCATION( attributes->core.lifetime );
+
+#if !defined(PSA_WANT_ALG_SHA_1)
+    if (PSA_ALG_HMAC_GET_HASH(alg) == PSA_ALG_SHA_1) {
+        return PSA_ERROR_NOT_SUPPORTED;
+    }
+#endif
 
     switch( location )
     {
