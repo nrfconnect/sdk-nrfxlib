@@ -141,7 +141,7 @@ int32_t mpsl_fem_power_model_set(const mpsl_fem_power_model_t * p_model);
  * If the value of parameter passed to @ref mpsl_fem_power_model_set was different than the return
  * value of @ref mpsl_fem_nrf21540_power_model_builtin_get, this function does nothing.
  *
- * @note This function takes a significant amount of time to execute. Calling it
+ * @note This function takes a significant amount of time to execute (approximately 5ms). Calling it
  *       from high priority contexts might lead to degraded performance or starving
  *       other contexts of the application.
  *
