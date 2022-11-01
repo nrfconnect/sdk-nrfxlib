@@ -142,7 +142,7 @@ config PSA_CRYPTO_DRIVER_ALG_GCM_CC3XX
 	bool
 	prompt "PSA AES GCM support - cc3xx" if !PSA_PROMPTLESS
 	default y if !PSA_DEFAULT_OFF
-	depends on PSA_WANT_ALG_GCM
+	depends on PSA_WANT_ALG_GCM && CRYPTOCELL_CC312_USABLE
 
 config PSA_CRYPTO_DRIVER_ALG_HKDF_CC3XX
 	bool
