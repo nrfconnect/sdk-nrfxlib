@@ -119,9 +119,9 @@ The :c:func:`calloc` and :c:func:`free` functions can be changed with the follow
 
 .. code-block:: c
     :caption: Setting custom calloc/free
-	
+
     int ret;
-    
+
     ret = mbedtls_platform_set_calloc_free(calloc_fn, free_fn);
     if (ret != 0) {
             /* Failed to set the alternative calloc/free */
@@ -160,10 +160,10 @@ You can initialize it by calling the :c:func:`mbedtls_platform_setup`/:c:func:`m
 
 .. code-block:: c
     :caption: Initializing the library
-	
+
     int ret;
     static mbedtls_platform_context platform_context = {0};
-    
+
     ret = mbedtls_platform_setup(&platform_context);
     if (ret != 0) {
             /* Failed to initialize nrf_cc3xx_mbedcrypto platform */
@@ -183,12 +183,12 @@ An alternative to allocating this on the heap is to provide a reference to a sta
 
 .. code-block:: c
     :caption: Preventing heap-allocation for RNG initialization
-	
+
     int ret;
     static mbedtls_rng_workbuf_internal rng_workbuf;
     static mbedtls_platform_context platform_context = {0};
     platform_context.p_rnd_workbuf = &rng_workbuf;
-    
+
     ret = mbedtls_platform_setup(&platform_context);
     if (ret != 0) {
             /* Failed to initialize nrf_cc3xx_mbedcrypto platform */
@@ -198,7 +198,7 @@ An alternative to allocating this on the heap is to provide a reference to a sta
 Usage restrictions
 ------------------
 
-The library cannot be used in the non-secure domain of an application that uses ARM TrustZone.
+The library cannot be used in the :ref:`Non-Secure Processing Environment (NSPE) <nrf:app_boards_spe_nspe>` of an application that uses ARM TrustZone.
 
 The hardware can only process one request at a time.
 Therefore, this library has used mutexes to make the library thread-safe.

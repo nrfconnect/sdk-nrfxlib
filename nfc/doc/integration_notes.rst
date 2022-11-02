@@ -47,7 +47,7 @@ nfc_platform_setup()
 
 nfc_platform_nfcid1_default_bytes_get()
   This function is used to fetch default bytes for NFCID1 that are stored in FICR registers.
-  Access to FICR registers differs between secure and non-secure environments.
+  Access to FICR registers differs between Secure and Non-Secure Processing Environments.
 
 nfc_platform_event_handler()
   This event handler is called by the NFC libraries to forward NFC events received from the NFCT driver.

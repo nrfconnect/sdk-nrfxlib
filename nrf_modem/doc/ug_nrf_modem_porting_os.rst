@@ -22,8 +22,8 @@ Arrows indicate that the elements can communicate with each other directly.
 
 To use the Modem library, you must make sure that the following requirements are met:
 
-* The application using the Modem library is run in the non-secure domain.
-* The IPC and FPU peripherals are available in the non-secure domain.
+* The application using the Modem library is run in :ref:`Non-Secure Processing Environment (NSPE) <nrf:app_boards_spe_nspe>`.
+* The IPC and FPU peripherals are available in NSPE.
 * The shared memory resides in the lower 128 KB of RAM.
 * The application provides an implementation of the OS interface in the :file:`nrf_modem_os.h` file.
 * The library depends on the nrfx IPC driver or equivalent IPC driver.
@@ -46,15 +46,15 @@ If the OS has its own IRQ handler scheme that does not directly forward the IPC_
 Peripheral configuration
 ************************
 
-As the Modem library has been compiled to operate on peripherals in the non-secure domain, the following two peripherals must be configured to be non-secure:
+As the Modem library has been compiled to operate on peripherals in NSPE, the following two peripherals must be configured to be non-secure:
 
 * NRF_IPC
 * NRF_POWER
 
-If you are using the hard-float variant of the Modem library, the FPU must be activated in both the secure domain and the non-secure domain, and must be configured to allow the non-secure application to run FPU instructions.
+If you are using the hard-float variant of the Modem library, the FPU must be activated in both Secure Processing Environment (SPE) and NSPE, and must be configured to allow the non-secure application to run FPU instructions.
 
 The :file:`nrfx/mdk/system_nrf9160.c` file provides a template on how to configure the FPU in both cases.
-The system file also provides several Errata workarounds specific to the chip variant used, which are needed for any secure domain application.
+The system file also provides several Errata workarounds specific to the chip variant used, which are needed for any SPE application.
 
 Memory
 ******
