@@ -9,6 +9,16 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
+nRF Connect SDK v2.1.2
+**********************
+
+All the notable changes included in the |NCS| v2.1.2 release are documented in this section.
+
+Changes
+=======
+
+* On nRF53, the fix for Errata 158 is now applied.
+
 nRF Connect SDK v2.1.0
 **********************
 
