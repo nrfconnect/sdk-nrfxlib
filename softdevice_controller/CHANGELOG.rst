@@ -19,8 +19,6 @@ Added
 
 * Support for Connection CTE Response in the angle of arrival (AoA) configuration (DRGN-17365).
 * Support for LE Set Data Related Address Changes HCI command (DRGN-17919).
-* Support for changing advertising randomness using :c:func:`sdc_hci_cmd_vs_set_adv_randomness` (DRGN-17872).
-* Support for enabling the sending and receiving of Periodic Advertising Sync Transfer (PAST) using dedicated functions such as :c:func:`sdc_support_periodic_adv_sync_transfer_sender_central` (DRGN-17817).
 
 Changes
 =======

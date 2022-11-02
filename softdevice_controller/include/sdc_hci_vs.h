@@ -75,10 +75,6 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_PERIPHERAL_LATENCY_MODE_SET = 0xfd09,
     /** @brief See @ref sdc_hci_cmd_vs_write_remote_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_WRITE_REMOTE_TX_POWER = 0xfd0a,
-    /** @brief See @ref sdc_hci_cmd_vs_set_rssi_golden_range(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_RSSI_GOLDEN_RANGE = 0xfd0b,
-    /** @brief See @ref sdc_hci_cmd_vs_set_adv_randomness(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_ADV_RANDOMNESS = 0xfd0c,
 };
 
 /** @brief VS subevent Code values. */
@@ -142,8 +138,6 @@ typedef __PACKED_STRUCT
     uint8_t coex_scan_mode_config : 1;
     uint8_t peripheral_latency_mode_set : 1;
     uint8_t write_remote_tx_power : 1;
-    uint8_t set_rssi_golden_range : 1;
-    uint8_t set_adv_randomness : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -445,27 +439,6 @@ typedef __PACKED_STRUCT
     /** @brief The transmit power level adjustment to request in dBm unit. */
     int8_t delta;
 } sdc_hci_cmd_vs_write_remote_tx_power_t;
-
-/** @brief Set RSSI golden range command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Phy value to set RSSI golden range values. */
-    uint8_t phy;
-    /** @brief The RSSI golden range lower limit in dBm units. */
-    int8_t lower_limit;
-    /** @brief The RSSI golden range upper limit in dBm units. */
-    int8_t upper_limit;
-} sdc_hci_cmd_vs_set_rssi_golden_range_t;
-
-/** @brief Set advertising randomness command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Advertising Handle or 0xFF to set the behavior for the very first advertising event.
-     */
-    uint8_t adv_handle;
-    /** @brief Maximum random delay in microseconds, 0 to disable randomness. */
-    uint16_t rand_us;
-} sdc_hci_cmd_vs_set_adv_randomness_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -929,43 +902,6 @@ uint8_t sdc_hci_cmd_vs_peripheral_latency_mode_set(const sdc_hci_cmd_vs_peripher
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_tx_power_t * p_params);
-
-/** @brief Set RSSI golden range.
- *
- * This command sets RSSI golden range that is explained in Core_v5.3, Vol 6, Part B,
- * Section 5.1.17.1.
- *
- * When this command is issued, the controller stores the golden range values per PHY.
- * These values can be used to keep RSSI (Received Signal Strength Indication) value
- * to be in the golden range.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_set_rssi_golden_range(const sdc_hci_cmd_vs_set_rssi_golden_range_t * p_params);
-
-/** @brief Set advertising randomness.
- *
- * This vendor specific command is used to change the randomness of advertisers.
- * The setting applies to all subsequent advertising events of a given set.
- *
- * Event(s) generated (unless masked away):
- * When the Controller receives the command, the Controller sends the HCI_Command_Complete
- * event to the Host.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomness_t * p_params);
 
 /** @} end of HCI_VS_API */
 
