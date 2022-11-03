@@ -100,10 +100,10 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1048
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1144
-#define __MEM_TX_BUFFER_OVERHEAD_SIZE 16
-#define __MEM_RX_BUFFER_OVERHEAD_SIZE 16
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1040
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1152
+#define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
+#define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * ((tx_size) + __MEM_TX_BUFFER_OVERHEAD_SIZE) - \
@@ -146,8 +146,8 @@ extern "C" {
 #define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (42 + (buffer_count) * 307)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4909+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (678+(max_adv_data))
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((5069+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (694+(max_adv_data))
 #define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2498+(max_adv_data)*18)/10)
 #define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (441+(max_adv_data))
 
@@ -206,50 +206,27 @@ enum sdc_cfg_type
 {
     /** No configuration update. */
     SDC_CFG_TYPE_NONE         = 0,
-    /** Maximum number of concurrent central roles.
-     *  See also @ref sdc_cfg_t::central_count.
-     */
+    /** See @ref sdc_cfg_t::central_count. */
     SDC_CFG_TYPE_CENTRAL_COUNT = 1,
-    /** Maximum number of concurrent peripheral roles.
-     *  See also @ref sdc_cfg_t::peripheral_count.
-     */
+    /** See @ref sdc_cfg_t::peripheral_count. */
     SDC_CFG_TYPE_PERIPHERAL_COUNT  = 2,
-    /** Buffer configuration per connection.
-     *  See also @ref sdc_cfg_t::buffer_cfg.
-     */
+    /** See @ref sdc_cfg_t::buffer_cfg. */
     SDC_CFG_TYPE_BUFFER_CFG   = 3,
-    /** Maximum event length.
-     * See also @ref sdc_cfg_t::event_length.
-     */
+    /** See @ref sdc_cfg_t::event_length. */
     SDC_CFG_TYPE_EVENT_LENGTH = 4,
-    /** Maximum number of concurrent advertisers.
-     *  See also @ref sdc_cfg_t::adv_count.
-     */
+    /** See @ref sdc_cfg_t::adv_count. */
     SDC_CFG_TYPE_ADV_COUNT    = 5,
-    /** Number of scan buffers.
-     *  See also @ref sdc_cfg_t::scan_buffer_cfg.
-     */
+    /** See @ref sdc_cfg_t::scan_buffer_cfg. */
     SDC_CFG_TYPE_SCAN_BUFFER_CFG = 6,
-    /** Maximum advertising data buffer per advertising set.
-     *  See also @ref sdc_cfg_t::adv_buffer_cfg.
-     */
+    /** See @ref sdc_cfg_t::adv_buffer_cfg. */
     SDC_CFG_TYPE_ADV_BUFFER_CFG = 7,
-    /** Maximum number of concurrent periodic advertisers.
-     *  See also @ref sdc_cfg_t::periodic_adv_count.
-     */
+    /** See @ref sdc_cfg_t::periodic_adv_count. */
     SDC_CFG_TYPE_PERIODIC_ADV_COUNT = 8,
-    /** Maximum number of concurrent synchronizations to periodic advertisers
-     *  See also @ref sdc_cfg_t::periodic_sync_count.
-     */
+    /** See @ref sdc_cfg_t::periodic_sync_count. */
     SDC_CFG_TYPE_PERIODIC_SYNC_COUNT = 9,
-    /** Number of periodic synchronization receive buffers per
-     *  synchronization to a periodic advertiser.
-     *  See also @ref sdc_cfg_t::periodic_sync_buffer_cfg.
-     */
+    /** See @ref sdc_cfg_t::periodic_sync_buffer_cfg. */
     SDC_CFG_TYPE_PERIODIC_SYNC_BUFFER_CFG = 10,
-    /** Number devices that can be placed in the periodic advertiser list.
-     *  See also @ref sdc_cfg_t::periodic_adv_list_size.
-     */
+    /** See @ref sdc_cfg_t::periodic_adv_list_size. */
     SDC_CFG_TYPE_PERIODIC_ADV_LIST_SIZE = 11,
 };
 
@@ -750,6 +727,50 @@ int32_t sdc_support_le_conn_cte_rsp_central(void);
  * @retval -NRF_EOPNOTSUPP  LE Connection CTE Response is not supported.
  */
 int32_t sdc_support_le_conn_cte_rsp_peripheral(void);
+
+/** @brief Support for sending periodic advertising sync transfers as central role
+ *
+ * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_sender_central()
+ *       and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral() if both central and peripheral roles are supported.
+ *
+ * @retval 0               Success
+ * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP Sending periodic advertising sync transfers is not supported.
+ */
+int32_t sdc_support_periodic_adv_sync_transfer_sender_central(void);
+
+/** @brief Support for sending periodic advertising sync transfers as peripheral role
+ *
+ * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_sender_central()
+ *       and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral() if both central and peripheral roles are supported.
+ *
+ * @retval 0               Success
+ * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP Sending periodic advertising sync transfers is not supported.
+ */
+int32_t sdc_support_periodic_adv_sync_transfer_sender_peripheral(void);
+
+/** @brief Support for receiving periodic advertising sync transfers as central role
+ *
+ * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_receiver_central()
+ *       and @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral() if both central and peripheral roles are supported.
+ *
+ * @retval 0               Success
+ * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP Receiving periodic advertising sync transfers is not supported.
+ */
+int32_t sdc_support_periodic_adv_sync_transfer_receiver_central(void);
+
+/** @brief Support for receiving periodic advertising sync transfers as peripheral role
+ *
+ * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_receiver_central()
+ *       and @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral() if both central and peripheral roles are supported.
+ *
+ * @retval 0               Success
+ * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP Receiving periodic advertising sync transfers is not supported.
+ */
+int32_t sdc_support_periodic_adv_sync_transfer_receiver_peripheral(void);
 
 /** @brief Configure the coex advertising mode
  *
