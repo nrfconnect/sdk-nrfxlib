@@ -1,0 +1,10 @@
+name: License Check
+
+on: pull_request
+
+jobs:
+  call-workflow:
+    uses: doki-nordic/fw-nrfconnect-nrf/.github/workflows/license-reusable.yml
+    with:
+      path: nrfxlib
+      license_allow_list: nrfxlib/scripts/ci/license_allow_list.yaml
