@@ -20,6 +20,12 @@ Added
 * Added the library variant for the nRF5340 network core.
 * Added DPPI to glue layer.
 
+Bug fixes
+=========
+
+* Fixed the :c:func:`nrf_gzll_init` function to avoid calling memcpy() with the same addresses.
+* Applied workarounds for nRF5340 anomalies 117 and 158.
+
 nRF Connect SDK v1.8.0
 **********************
 
