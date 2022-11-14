@@ -182,6 +182,9 @@ config MBEDTLS_MAC_SHA256_ENABLED
 	select PSA_WANT_ALG_SHA_256
 	select PSA_WANT_ALG_HMAC
 
+config MBEDTLS_MAC_MD5_ENABLED
+	bool "MD5 hash algorithm"
+
 config MBEDTLS_CTR_DRBG_ENABLED
 	bool "Enable the CTR_DRBG AES-256-based random generator"
 	select PSA_WANT_ALG_CTR_DRBG
