@@ -46,6 +46,7 @@
 #include "nrf_802154_nrfx_addons.h"
 #include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_utils_byteorder.h"
+#include "nrf_802154_sl_timer.h"
 
 #include <assert.h>
 
@@ -62,9 +63,46 @@ static writer_state_t m_writer_state = IE_WRITER_RESET; ///< IE writer state
 
 #if NRF_802154_DELAYED_TRX_ENABLED
 
-static uint8_t * mp_csl_phase_addr;  ///< Cached CSL information element phase field address
-static uint8_t * mp_csl_period_addr; ///< Cached CSL information element period field address
-static uint16_t  m_csl_period;       ///< CSL period value that will be injected to CSL information element
+static uint8_t * mp_csl_phase_addr;     ///< Cached CSL information element phase field address
+static uint8_t * mp_csl_period_addr;    ///< Cached CSL information element period field address
+static uint16_t  m_csl_period;          ///< CSL period value that will be injected to CSL information element
+static uint64_t  m_csl_anchor_time;     ///< The anchor time based on which CSL window times are calculated
+static bool      m_csl_anchor_time_set; ///< Information if CSL anchor time was set by the higher layer
+
+static bool csl_time_to_nearest_window_midpoint_get(uint32_t * p_time_to_midpoint)
+{
+    bool result = false;
+
+    if (m_csl_anchor_time_set)
+    {
+        result = (m_csl_period != 0);
+
+        if (result)
+        {
+            uint64_t now           = nrf_802154_sl_timer_current_time_get();
+            uint32_t csl_period_us = m_csl_period * IE_CSL_SYMBOLS_PER_UNIT * PHY_US_PER_SYMBOL;
+
+            // Modulo of a negative number possibly will not be positive, so the below if-else clause is needed
+            if (now >= m_csl_anchor_time)
+            {
+                uint32_t time_from_previous_window =
+                    (uint32_t)((now - m_csl_anchor_time) % csl_period_us);
+
+                *p_time_to_midpoint = csl_period_us - time_from_previous_window;
+            }
+            else
+            {
+                *p_time_to_midpoint = (uint32_t)((m_csl_anchor_time - now) % csl_period_us);
+            }
+        }
+    }
+    else
+    {
+        result = nrf_802154_delayed_trx_nearest_drx_time_to_midpoint_get(p_time_to_midpoint);
+    }
+
+    return result;
+}
 
 /**
  * @brief Writes CSL phase to previously set memory address.
@@ -84,7 +122,7 @@ static void csl_ie_write_commit(bool * p_written)
         return;
     }
 
-    if (nrf_802154_delayed_trx_nearest_drx_time_to_midpoint_get(&time_remaining) == false)
+    if (csl_time_to_nearest_window_midpoint_get(&time_remaining) == false)
     {
         // No delayed DRX is pending. Do not write to the CSL IE.
         return;
@@ -503,6 +541,12 @@ void nrf_802154_ie_writer_tx_ack_started_hook(uint8_t * p_ack)
 void nrf_802154_ie_writer_csl_period_set(uint16_t period)
 {
     m_csl_period = period;
+}
+
+void nrf_802154_ie_writer_csl_anchor_time_set(uint64_t anchor_time)
+{
+    m_csl_anchor_time     = anchor_time;
+    m_csl_anchor_time_set = true;
 }
 
 #endif // NRF_802154_DELAYED_TRX_ENABLED

@@ -1902,6 +1902,32 @@ bail:
     return;
 }
 
+void nrf_802154_csl_writer_anchor_time_set(uint64_t anchor_time)
+{
+    nrf_802154_ser_err_t res;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+
+    nrf_802154_spinel_response_notifier_lock_before_request(SPINEL_PROP_LAST_STATUS);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSL_WRITER_ANCHOR_TIME_SET,
+        SPINEL_DATATYPE_NRF_802154_CSL_WRITER_ANCHOR_TIME_SET,
+        anchor_time);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return;
+}
+
 static nrf_802154_ser_err_t stat_timestamps_get_ret_await(uint32_t                       timeout,
                                                           nrf_802154_stat_timestamps_t * p_stat_timestamps)
 {

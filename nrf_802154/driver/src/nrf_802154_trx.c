@@ -250,7 +250,7 @@ void nrf_timer_init(void)
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
     nrf_timer_mode_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_MODE_TIMER);
     nrf_timer_bit_width_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_BIT_WIDTH_32);
-    nrf_timer_frequency_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_FREQ_1MHz);
+    nrf_timer_prescaler_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_FREQ_1MHz);
 
 #if NRF_802154_DISABLE_BCC_MATCHING
     // Setup timer for detecting PSDU reception.

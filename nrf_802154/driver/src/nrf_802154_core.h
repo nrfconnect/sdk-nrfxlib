@@ -58,31 +58,29 @@ extern "C" {
 typedef enum
 {
     // Sleep
-    RADIO_STATE_SLEEP,          ///< Low power mode (disabled) - the only state in which all radio preconditions are not requested.
-    RADIO_STATE_FALLING_ASLEEP, ///< Before entering the sleep state, all radio preconditions are requested.
+    RADIO_STATE_SLEEP,              ///< Low power mode (disabled) - the only state in which all radio preconditions are not requested.
+    RADIO_STATE_FALLING_ASLEEP,     ///< Before entering the sleep state, all radio preconditions are requested.
 
     // Receive
-    RADIO_STATE_RX,             ///< The receiver is enabled and it is receiving frames.
-    RADIO_STATE_TX_ACK,         ///< The frame is received and the ACK is being transmitted.
+    RADIO_STATE_RX,                 ///< The receiver is enabled and it is receiving frames.
+    RADIO_STATE_TX_ACK,             ///< The frame is received and the ACK is being transmitted.
 
     // Transmit
-    RADIO_STATE_CCA_TX,         ///< Performing CCA followed by the frame transmission.
-    RADIO_STATE_TX,             ///< Transmitting data frame (or beacon).
-    RADIO_STATE_RX_ACK,         ///< Receiving ACK after the transmitted frame.
+    RADIO_STATE_CCA_TX,             ///< Performing CCA followed by the frame transmission.
+    RADIO_STATE_TX,                 ///< Transmitting data frame (or beacon).
+    RADIO_STATE_RX_ACK,             ///< Receiving ACK after the transmitted frame.
 
     // Energy Detection
-    RADIO_STATE_ED,             ///< Performing the energy detection procedure.
+    RADIO_STATE_ED,                 ///< Performing the energy detection procedure.
 
     // CCA
-    RADIO_STATE_CCA,            ///< Performing the CCA procedure.
+    RADIO_STATE_CCA,                ///< Performing the CCA procedure.
 
-#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
     // Continuous carrier
     RADIO_STATE_CONTINUOUS_CARRIER, ///< Emitting the continuous carrier wave.
 
     // Modulated carrier
     RADIO_STATE_MODULATED_CARRIER   ///< Emitting the modulated carrier signal.
-#endif  // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 } radio_state_t;
 
