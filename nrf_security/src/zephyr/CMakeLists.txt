@@ -64,8 +64,17 @@ if(DEFINED src_zephyr)
     $<TARGET_PROPERTY:${mbedcrypto_target},INTERFACE_COMPILE_DEFINITIONS>
   )
 
-  zephyr_library_sources_ifdef(CONFIG_USERSPACE mbedtls_partition.c)
+  # We need the k_mbedtls_partition when userspace is
+  # used and nrf_security is enabled. However when CONFIG_MBEDTLS
+  # is enabled the partition is defined by Zephyr and therefore
+  # we cannot redefine it here.
+  # (see zephyr/doc/kernel/usermode/memory_domain.rst)
+  if((NOT CONFIG_MBEDTLS) AND CONFIG_USERSPACE)
+    zephyr_library_sources(mbedtls_partition.c)
+  endif()
+
   zephyr_library_app_memory(k_mbedtls_partition)
+
 endif()
 
 # Add configuration/options from zephyr interface libraries
