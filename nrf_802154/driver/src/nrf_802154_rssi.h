@@ -94,7 +94,7 @@ uint8_t nrf_802154_rssi_cca_ed_threshold_corrected_get(uint8_t cca_ed);
 /**
  * @brief Convert the hardware reported energy detection value to a value compliant with the 802.15.4 specification.
  *
- * @param[in]  edsample  The hardware reported value
+ * @param[in]  ed_sample  The hardware reported value
  *
  * @returns 802.15.4 compliant energy detection value.
  */

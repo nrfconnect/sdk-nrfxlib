@@ -1751,6 +1751,34 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_csl_writer_period_set(
     return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
 }
 
+/**
+ * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSL_WRITER_ANCHOR_TIME_SET.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
+ * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
+ *
+ */
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_csl_writer_anchor_time_set(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    spinel_ssize_t siz;
+    uint64_t       csl_anchor_time;
+
+    siz = spinel_datatype_unpack(p_property_data,
+                                 property_data_len,
+                                 SPINEL_DATATYPE_NRF_802154_CSL_WRITER_ANCHOR_TIME_SET,
+                                 &csl_anchor_time);
+    if (siz < 0)
+    {
+        return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
+    }
+
+    nrf_802154_csl_writer_anchor_time_set(csl_anchor_time);
+
+    return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
+}
+
 #endif // NRF_802154_DELAYED_TRX_ENABLED && NRF_802154_IE_WRITER_ENABLED
 
 nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_cmd_data,
@@ -1984,6 +2012,10 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSL_WRITER_PERIOD_SET:
             return spinel_decode_prop_nrf_802154_csl_writer_period_set(p_property_data,
                                                                        property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSL_WRITER_ANCHOR_TIME_SET:
+            return spinel_decode_prop_nrf_802154_csl_writer_anchor_time_set(p_property_data,
+                                                                            property_data_len);
 #endif // NRF_802154_DELAYED_TRX_ENABLED && NRF_802154_IE_WRITER_ENABLED
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_STAT_TIMESTAMPS_GET:

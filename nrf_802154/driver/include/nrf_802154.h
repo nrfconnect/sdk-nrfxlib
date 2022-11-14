@@ -1819,6 +1819,22 @@ nrf_802154_security_error_t nrf_802154_security_key_remove(nrf_802154_key_id_t *
 void nrf_802154_csl_writer_period_set(uint16_t period);
 
 /**
+ * @brief Sets the anchor time based on which the next CSL window time and the CSL phase is calculated.
+ *
+ * This function sets an anchor time which is a time of a CSL window, based which on the times of future CSL windows are
+ * calculated. It is assumed that all other CSL windows occur at time @c anchor_time + @c n * @c csl_period where @c n is
+ * an integer. Note that the anchor time can be both in the past and in the future.
+ *
+ * This function should be called after calling @ref nrf_802154_csl_writer_period_set and every time when the CSL windows get desynchronized.
+ *
+ * If this function is not called, a legacy CSL operation mode is chosen, where the CSL phase is calculated based on the time of the nearest
+ * scheduled CSL window (and can be undefined, if no such window was scheduled).
+ *
+ * @param[in]  period  Anchor time value.
+ */
+void nrf_802154_csl_writer_anchor_time_set(uint64_t anchor_time);
+
+/**
  * @}
  * @defgroup nrf_802154_test_modes Test modes
  * @{

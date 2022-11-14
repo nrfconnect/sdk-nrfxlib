@@ -441,6 +441,12 @@ typedef enum
     SPINEL_PROP_VENDOR_NORDIC_NRF_802154_IFS_MIN_LIFS_PERIOD_GET =
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 62,
 
+    /**
+     * Vendor property for nrf_802154_csl_writer_anchor_time_set serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSL_WRITER_ANCHOR_TIME_SET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 63,
+
 } spinel_prop_vendor_key_t;
 
 /**
@@ -1299,17 +1305,22 @@ typedef enum
 /**
  * @brief Spinel data type description for return type for security commands.
  */
-#define SPINEL_DATATYPE_NRF_802154_SECURITY_ERROR_RET    SPINEL_DATATYPE_UINT8_S
+#define SPINEL_DATATYPE_NRF_802154_SECURITY_ERROR_RET         SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for nrf_802154_csl_writer_period_set.
  */
-#define SPINEL_DATATYPE_NRF_802154_CSL_WRITER_PERIOD_SET SPINEL_DATATYPE_UINT16_S
+#define SPINEL_DATATYPE_NRF_802154_CSL_WRITER_PERIOD_SET      SPINEL_DATATYPE_UINT16_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_csl_writer_anchor_time_set.
+ */
+#define SPINEL_DATATYPE_NRF_802154_CSL_WRITER_ANCHOR_TIME_SET SPINEL_DATATYPE_UINT64_S
 
 /**
  * @brief Spinel data type description for nrf_802154_stat_timestamps_get
  */
-#define SPINEL_DATATYPE_NRF_802154_STAT_TIMESTAMPS_GET   SPINEL_DATATYPE_NULL_S
+#define SPINEL_DATATYPE_NRF_802154_STAT_TIMESTAMPS_GET        SPINEL_DATATYPE_NULL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_stat_timestamps_get_ret.
