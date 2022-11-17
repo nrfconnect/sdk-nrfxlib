@@ -238,6 +238,13 @@ typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_sub_element_s
 
 } ZB_PACKED_STRUCT zb_zcl_ota_upgrade_sub_element_t;
 
+/*! @brief Structure representation of OTA File Sub-element header */
+typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_sub_element_hdr_s
+{
+  zb_uint16_t tag_id;     /** Tag ID*/
+  zb_uint32_t length;     /** length */
+} ZB_PACKED_STRUCT zb_zcl_ota_upgrade_sub_element_hdr_t;
+
 
 /*! @brief OTA File header - Tag Identifiers
     @see ZCL8 specification, subsection 11.4.4
