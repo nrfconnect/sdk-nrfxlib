@@ -9,6 +9,15 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.2.1
+***************
+
+* Added the ``MODEM_DFU_RESULT_VOLTAGE_LOW`` result to :c:func:`nrf_modem_init()` function.
+  The new value is returned when the voltage is too low for the modem firmware to execute the scheduled modem firmware update.
+  The application can retry the operation by re-initializing the modem when the voltage has increased.
+  Requires modem firmware v1.3.4 or newer.
+* Updated the library to use nrfx v2.10 APIs.
+
 nrf_modem 2.2.0
 ***************
 
