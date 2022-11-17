@@ -50,6 +50,10 @@ extern "C" {
  * firmware on reboot.
  */
 #define MODEM_DFU_RESULT_UUID_ERROR 0x4400004u
+/** Modem firmware update not executed due to low voltage.
+ *  The modem will retry the update on reboot.
+ */
+#define MODEM_DFU_RESULT_VOLTAGE_LOW 0x4400005u
 
 /**@} */
 
