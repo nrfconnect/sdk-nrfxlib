@@ -100,8 +100,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1040
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1152
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1045
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1157
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -148,8 +148,8 @@ extern "C" {
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_PER_ADV_SET_LOW(max_adv_data) ((5069+(max_adv_data)*18)/10)
 #define __MEM_PER_ADV_SET_HIGH(max_adv_data) (694+(max_adv_data))
-#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2498+(max_adv_data)*18)/10)
-#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (441+(max_adv_data))
+#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2578+(max_adv_data)*18)/10)
+#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (449+(max_adv_data))
 
 /** @brief Maximum required memory for a given advertising buffer size.
  *
