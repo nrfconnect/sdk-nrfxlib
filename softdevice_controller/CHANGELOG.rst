@@ -27,6 +27,7 @@ Changes
 =======
 
 * The functions :c:func:`sdc_hci_evt_get` and :c:func:`sdc_hci_data_get` have been replaced by :c:func:`sdc_hci_get` (DRGN-17060).
+* Scheduling performance when doing extended advertising and periodic advertising simultaneously has been improved on Coded PHY (DRGN-17819).
 
 Bug fixes
 =========
@@ -34,6 +35,8 @@ Bug fixes
 * Fixed an issue where the controller accepts an LL_PAUSE_ENC_REQ packet received on an unencrypted link (DRGN-17777).
 * Fixed an issue where the controller accepts CONNECT_IND, AUX_CONNECT_REQ and CONNECTION_UPDATE_REQ packets with the ``connSupervisionTimeout`` value set to 0 (DRGN-17776).
 * Fixed an issue where the controller would assert if trying to sync to a periodic advertiser with a sync timeout shorter than the periodic advertiser interval (DRGN-19744).
+* Fixed an issue where the controller would assert when a Bluetooth role was running (DRGN-17923).
+* Fixed an issue where creating a periodic sync could in some cases erase periodic advertising reports for previously created syncs (DRGN-18089).
 
 nRF Connect SDK v2.1.0
 **********************
