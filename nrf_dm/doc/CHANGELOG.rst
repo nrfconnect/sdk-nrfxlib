@@ -14,6 +14,19 @@ main
 
 All the notable changes added to the |NCS| main are documented in this section.
 
+Changes
+=======
+
+* Increased the synchronization procedure's resilience to interference.
+* Improved the quality of access addresses used internally in the library.
+* Renamed ``access_address`` to ``rng_seed`` in :c:type:`nrf_dm_config_t`.
+* :c:func:`nrf_dm_high_precision_calc` now handles out-of-memory errors by returning `NaN`.
+
+nRF Connect SDK v2.1.0
+**********************
+
+All the notable changes added to the |NCS| v2.1.0 release are documented in this section.
+
 Added
 =====
 * :c:func:`nrf_dm_get_hopping_sequence`, to get the channel hopping sequence used during the measurement procedure.

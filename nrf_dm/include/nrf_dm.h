@@ -229,8 +229,10 @@ typedef struct {
 	nrf_dm_role_t role;
 	/** Ranging mode to use in the procedure */
 	nrf_dm_ranging_mode_t ranging_mode;
-	/** Access address used for packet exchanges */
-	uint32_t access_address;
+	/** Seed used in pseudo random number generation. Needs to be the same for an
+	 *  initiator and a reflector that will range with eachother.
+	 */
+	uint32_t rng_seed;
 	/** Radio transmit power, given in dBm. Valid values defined in
 	 * nrfXXXXX_bitfields.h, as RADIO_TXPOWER_TXPOWER_YYYYdBm
 	 */
@@ -251,14 +253,14 @@ typedef struct {
 
 #define NRF_DM_DEFAULT_ANTENNA_COMP (NRF_DM_ANTENNA_COMP_1_1)
 /**
- * @brief Default configuration define, note that both role and access_address
+ * @brief Default configuration define, note that both role and rng_seed
  * needs to be configured even when using the default config.
  */
 #define NRF_DM_DEFAULT_CONFIG                                                          \
 	((nrf_dm_config_t){                                                            \
 		.role = NRF_DM_ROLE_NONE,                                              \
 		.ranging_mode = NRF_DM_RANGING_MODE_MCPD,                              \
-		.access_address = 0,                                                   \
+		.rng_seed = 0,                                                         \
 		.tx_power_dbm = NRF_DM_DEFAULT_TX_POWER,                               \
 		.ant_comp = NRF_DM_DEFAULT_ANTENNA_COMP,                               \
 	})
