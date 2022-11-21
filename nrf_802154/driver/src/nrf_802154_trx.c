@@ -259,6 +259,37 @@ void nrf_timer_init(void)
 #endif
 }
 
+#if defined(NRF53_SERIES)
+/** Implement the YOPAN-158 workaround. */
+static void yopan_158_workaround(void)
+{
+#define RADIO_ADDRESS_MASK        0xFFFFF000UL
+#define FICR_TRIM_REGISTERS_COUNT 32UL
+    /* This is a workaround for an issue reported in YOPAN-158.
+     *
+     * After RADIO peripheral reset with RADIO.POWER register the trim-values, loaded from FICR at
+     * network core boot time by MDK, are lost. The trim-values are not preserved and re-applied by
+     * hardware.
+     *
+     * Only selected trim-values are restored, those that apply to RADIO peripheral. The check
+     * is done based on destination address.
+     */
+
+    /* Copy all the trimming values from FICR into the target addresses. Trim until one ADDR
+       is not initialized. */
+    for (uint32_t index = 0; index < FICR_TRIM_REGISTERS_COUNT; index++)
+    {
+        if (((volatile uint32_t *)((volatile uintptr_t)NRF_FICR_NS->TRIMCNF[index].ADDR &
+                                   (uintptr_t)RADIO_ADDRESS_MASK) == (uint32_t *)NRF_RADIO))
+        {
+            *((volatile uint32_t *)NRF_FICR_NS->TRIMCNF[index].ADDR) =
+                NRF_FICR_NS->TRIMCNF[index].DATA;
+        }
+    }
+}
+
+#endif /* NRF53_SERIES */
+
 /** Reset radio peripheral. */
 static void nrf_radio_reset(void)
 {
@@ -266,6 +297,10 @@ static void nrf_radio_reset(void)
 
     nrf_radio_power_set(NRF_RADIO, false);
     nrf_radio_power_set(NRF_RADIO, true);
+
+#if defined(NRF53_SERIES)
+    yopan_158_workaround();
+#endif /* NRF53_SERIES */
 
     nrf_802154_log_global_event(NRF_802154_LOG_VERBOSITY_LOW,
                                 NRF_802154_LOG_GLOBAL_EVENT_ID_RADIO_RESET,
