@@ -98,10 +98,8 @@ void nrf_802154_timer_coord_timestamp_prepare(const nrf_802154_sl_event_handle_t
 /**
  * @brief Gets the timestamp of the recently prepared event.
  *
- * If the recently prepared event occurred a few times since the preparation, this function returns
- * the timestamp of the first occurrence.
- * If the requested event did not occur since the preparation or the HP timer is not synchronized,
- * this function returns false.
+ * If the timer coordinator is synchronized, the function returns true and the timestamp of
+ * the recently prepared event. Otherwise, the function returns false.
  *
  * @param[out]  p_timestamp  Precise absolute timestamp of the recently prepared event,
  *                           in microseconds (us).
