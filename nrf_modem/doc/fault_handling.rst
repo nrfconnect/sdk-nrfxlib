@@ -28,6 +28,13 @@ The application can reinitialize the modem by reinitializing the Modem library t
 
    The reinitialization of the Modem library must be done outside of the Modem library fault handler.
 
+.. important::
+   If modem traces are enabled, the modem continues to output trace data (a coredump) in the event of a fault, even after signaling the fault to the application.
+   To make sure the application is able to retrieve the coredump correctly, the application must not re-initialize the modem until all the outstanding trace data has been processed.
+   The :c:func:`nrf_modem_trace_get()` function will return ``-ENODATA`` when all outstanding trace data has been processed by the application.
+
+When the Modem library is used in |NCS|, the :ref:`nrf_modem_lib_readme` handles synchronizing modem re-initialization with tracing operations.
+
 Networking sockets
 ******************
 

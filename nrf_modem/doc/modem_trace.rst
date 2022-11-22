@@ -28,11 +28,6 @@ If the trace data is processed in fragments, this can be split into multiple cal
 
    Modem library trace processing
 
-.. note::
-
-	If no trace data is available, the :c:func:`nrf_modem_trace_get` function blocks until new data becomes available or the modem is shut down or faulted.
-	This require the traces to be processed in its own thread separate from the rest of the application.
-
 Processing modem traces
 ***********************
 
