@@ -178,14 +178,14 @@ config MBEDTLS_PSA_BUILTIN_ALG_HKDF
 	bool
 	prompt "PSA HKDF support - builtin" if !PSA_PROMPTLESS
 	depends on PSA_WANT_ALG_HKDF
-	default y if !PSA_DEFAULT_OFF && \
-		     !(PSA_CRYPTO_DRIVER_ALG_HKDF_CC3XX)
+	default y if !PSA_DEFAULT_OFF
 
 config MBEDTLS_PSA_BUILTIN_ALG_HMAC
 	bool
 	prompt "PSA HMAC support - builtin" if !PSA_PROMPTLESS
 	depends on PSA_WANT_ALG_HMAC
 	default y if !PSA_DEFAULT_OFF && \
+		     (PSA_WANT_ALG_HKDF && (PSA_WANT_ALG_SHA_384 || PSA_WANT_ALG_SHA_512)) || \
 		     !PSA_CRYPTO_DRIVER_ALG_HMAC_CC3XX
 
 config MBEDTLS_PSA_BUILTIN_ALG_MD5
