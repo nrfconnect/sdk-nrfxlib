@@ -4,23 +4,37 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
+config MBEDTLS_PSA_ACCEL_KEY_TYPE_SUPPORT
+	bool
+	default y
+	depends on MBEDTLS_PSA_ACCEL_KEY_TYPE_ECC_KEY_PAIR || \
+		   MBEDTLS_PSA_ACCEL_KEY_TYPE_ECC_PUBLIC_KEY || \
+		   MBEDTLS_PSA_ACCEL_KEY_TYPE_RSA_KEY_PAIR || \
+		   MBEDTLS_PSA_ACCEL_KEY_TYPE_RSA_PUBLIC_KEY || \
+		   MBEDTLS_PSA_ACCEL_KEY_TYPE_AES || \
+		   MBEDTLS_PSA_ACCEL_KEY_TYPE_CHACHA20
+
 config MBEDTLS_PSA_ACCEL_KEY_TYPE_ECC_KEY_PAIR
 	bool
+	default y
 	depends on PSA_WANT_KEY_TYPE_ECC_KEY_PAIR && \
 		   (PSA_CRYPTO_DRIVER_CC3XX || PSA_CRYPTO_DRIVER_OBERON)
 
 config MBEDTLS_PSA_ACCEL_KEY_TYPE_ECC_PUBLIC_KEY
 	bool
+	default y
 	depends on PSA_WANT_KEY_TYPE_ECC_PUBLIC_KEY && \
 		   (PSA_CRYPTO_DRIVER_CC3XX || PSA_CRYPTO_DRIVER_OBERON)
 
 config MBEDTLS_PSA_ACCEL_KEY_TYPE_RSA_KEY_PAIR
 	bool
+	default y
 	depends on PSA_WANT_KEY_TYPE_RSA_KEY_PAIR && \
 		   (PSA_CRYPTO_DRIVER_CC3XX)
 
 config MBEDTLS_PSA_ACCEL_KEY_TYPE_RSA_PUBLIC_KEY
 	bool
+	default y
 	depends on PSA_WANT_KEY_TYPE_RSA_PUBLIC_KEY && \
 		   (PSA_CRYPTO_DRIVER_CC3XX)
 
@@ -40,7 +54,7 @@ menuconfig PSA_CRYPTO_DRIVER_CC3XX
     bool
     prompt "PSA CryptoCell Driver" if !PSA_PROMPTLESS
     depends on CRYPTOCELL_USABLE
-    default n
+    default y if BUILD_WITH_TFM
     select NRF_CC3XX_PLATFORM if !BUILD_WITH_TFM
 	help
 	  Enable PSA Driver for CryptoCell
@@ -54,7 +68,7 @@ endif # PSA_CRYPTO_DRIVER_CC3XX
 menuconfig PSA_CRYPTO_DRIVER_OBERON
     bool
     prompt "PSA Oberon Driver" if !PSA_PROMPTLESS
-    default y #if !CRYPTOCELL_USABLE
+    default y if !CRYPTOCELL_USABLE
     select NRF_OBERON
 	help
 	  Enable PSA Driver for nrf_oberon

@@ -160,29 +160,29 @@ extern "C" {
 
 #if defined(PSA_WANT_KEY_TYPE_RSA_KEY_PAIR)
 #if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_RSA_KEY_PAIR)
-#define MBEDTLS_RSA_C
 #define MBEDTLS_BIGNUM_C
 #define MBEDTLS_OID_C
 #define MBEDTLS_GENPRIME
+#endif
+#define MBEDTLS_RSA_C
 #define MBEDTLS_PK_PARSE_C
 #define MBEDTLS_PK_WRITE_C
 #define MBEDTLS_PK_C
-#endif
 #endif
 
 #if defined(PSA_WANT_KEY_TYPE_RSA_PUBLIC_KEY)
 #if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_RSA_PUBLIC_KEY)
-#define MBEDTLS_RSA_C
 #define MBEDTLS_BIGNUM_C
 #define MBEDTLS_OID_C
+#endif
+#define MBEDTLS_RSA_C
 #define MBEDTLS_PK_PARSE_C
 #define MBEDTLS_PK_WRITE_C
 #define MBEDTLS_PK_C
 #endif
-#endif
 
 #if defined(PSA_WANT_KEY_TYPE_AES)
-#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_AES) 
+#if !defined(MBEDTLS_PSA_ACCEL_KEY_TYPE_AES)
 #define MBEDTLS_AES_C
 #endif
 #endif
@@ -361,6 +361,7 @@ extern "C" {
 #endif
 
 // TLS/DTLS additions
+#if !defined(MBEDTLS_PSA_CRYPTO_SPM)
 #if defined(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED)    || \
     defined(MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED)     || \
     defined(MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED)   || \
@@ -368,19 +369,25 @@ extern "C" {
     defined(MBEDTLS_KEY_EXCHANGE_ECDH_ECDSA_ENABLED)    || \
     defined(MBEDTLS_KEY_EXCHANGE_PSK_ENABLED)           || \
     defined(MBEDTLS_KEY_EXCHANGE_DHE_PSK_ENABLED)       || \
+    defined(MBEDTLS_KEY_EXCHANGE_RSA_ENABLED)           || \
     defined(MBEDTLS_KEY_EXCHANGE_RSA_PSK_ENABLED)       || \
-    defined(MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED)     || \
-    defined(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED)
-#define MBEDTLS_ECJPAKE_C
+    defined(MBEDTLS_KEY_EXCHANGE_ECDHE_PSK_ENABLED)
 #define MBEDTLS_X509_CRT_PARSE_C
 #define MBEDTLS_ASN1_PARSE_C
 #define MBEDTLS_ASN1_WRITE_C
 #define MBEDTLS_X509_USE_C
 #define MBEDTLS_PK_PARSE_C
+#define MBEDTLS_PK_WRITE_C
 #define MBEDTLS_PK_C
 #define MBEDTLS_OID_C
 #define MBEDTLS_DHM_C
 #endif
+
+#if defined(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED)
+    #define MBEDTLS_ECJPAKE_C
+    #define MBEDTLS_ECP_C
+#endif
+#endif /* MBEDTLS_PSA_CRYPTO_SPM */
 
 #if defined(MBEDTLS_PSA_BUILTIN_ALG_CMAC) || \
     defined(MBEDTLS_PSA_BUILTIN_ALG_HMAC)
