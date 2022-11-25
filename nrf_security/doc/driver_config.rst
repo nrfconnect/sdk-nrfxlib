@@ -291,7 +291,7 @@ You can use the Kconfig options in the following table for fine-grained control 
 +-----------------------+--------------------------------------------------------------------------+----------------------------+
 | RSA PKCS#1 v1.5 sign  | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_PKCS1V15_SIGN_CC3XX`   | Not supported              |
 +-----------------------+--------------------------------------------------------------------------+----------------------------+
-| RSA PSS               | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_PSS_CC3XX`             | Not supported              |
+| RSA PSS               | Not supported                                                            | Not supported              |
 +-----------------------+--------------------------------------------------------------------------+----------------------------+
 
 .. note::
