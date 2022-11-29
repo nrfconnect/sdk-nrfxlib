@@ -9,6 +9,20 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+main branch
+***********
+
+Added
+=====
+
+* A callback requested by the :c:func:`nfc_platform_cb_request()` function to allow execution of platform-dependent code before executing the user callback.
+* A header file :file:`nfc_platform.h` for platform layer.
+
+Modified
+========
+
+* The :c:func:`nfc_platform_setup()` function now provides a pointer to the callback resolution function that is used to execute the user-defined NFC callback.
+
 nRF Connect SDK v2.1.0
 **********************
 

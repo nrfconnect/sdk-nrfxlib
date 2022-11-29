@@ -244,14 +244,14 @@ int nfc_t4t_setup(nfc_t4t_callback_t callback, void *context);
  * If an external Reader-Writer changes the NDEF content it is signaled through
  * the app-callback. Buffer can be changed during the lifetime of the emulation,
  * when NDEF READ or UPDATE procedure is pending, and it will be changed after
- * this procedure is finished. To perform this procedure safely use
- * critical sections or disable the interrupts.
+ * this procedure has completed. To perform this procedure safely, make sure to
+ * disable NFC interrupts.
  *
  * @param emulation_buffer Buffer pointer
  * @param buffer_length Length of buffer (maximum writable NDEF size)
  *
  * @retval 0 Success.
- * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
+ * @retval -NRF_EINVAL Invalid argument (for example, wrong data length, NULL pointer).
  * @retval -NRF_EOPNOTSUPP If the new buffer has a different length than the first one.
  * @retval -NRF_EFAULT If the provided buffer is the currently used buffer.
  */
@@ -269,7 +269,7 @@ int nfc_t4t_ndef_rwpayload_set(uint8_t *emulation_buffer,
  * @param buffer_length Length of contained NDEF payload message
  *
  * @retval 0 Success.
- * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer)).
+ * @retval -NRF_EINVAL Invalid argument (for example, wrong data length, NULL pointer).
  * @retval -NRF_EOPNOTSUPP Emulation is in running stated.
  */
 int nfc_t4t_ndef_staticpayload_set(const uint8_t *emulation_buffer,
@@ -289,7 +289,7 @@ int nfc_t4t_ndef_staticpayload_set(const uint8_t *emulation_buffer,
  * @param pdu_length Length of PDU.
  *
  * @retval 0 Success.
- * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
+ * @retval -NRF_EINVAL Invalid argument (for example, wrong data length, NULL pointer).
  * @retval -NRF_EOPNOTSUPP Emulation is in running state.
  */
 int nfc_t4t_response_pdu_send(const uint8_t *pdu, size_t pdu_length);
@@ -303,7 +303,7 @@ int nfc_t4t_response_pdu_send(const uint8_t *pdu, size_t pdu_length);
  * @param data_length Size of the buffer containing the data to set.
  *
  * @retval 0 Success.
- * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
+ * @retval -NRF_EINVAL Invalid argument (for example, wrong data length, NULL pointer).
  */
 int nfc_t4t_parameter_set(nfc_t4t_param_id_t id,
 			  void *data,
@@ -322,7 +322,7 @@ int nfc_t4t_parameter_set(nfc_t4t_param_id_t id,
  * data.
  *
  * @retval 0 Success.
- * @retval -NRF_EINVAL Invalid argument (e.g. wrong data length, NULL pointer).
+ * @retval -NRF_EINVAL Invalid argument (for example, wrong data length, NULL pointer).
  */
 int nfc_t4t_parameter_get(nfc_t4t_param_id_t id,
 			  void *data,
