@@ -3,10 +3,12 @@
 Changelog
 #########
 
-All notable changes to this project are documented in this section.
+All notable changes to this project are documented on this page.
 
-Main branch
-***********
+nRF Connect SDK v2.2.0
+**********************
+
+Here are all the notable changes included in the |NCS| v2.2.0 release:
 
 * Added new documentation pages.
 * Replaced API documentation link with the :ref:`lc3_api` page that includes content generated from sources.
