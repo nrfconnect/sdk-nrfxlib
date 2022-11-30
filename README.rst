@@ -11,7 +11,7 @@ Refer to their respective documentation for more information.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
 
    crypto/README
    gzll/README
