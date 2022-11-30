@@ -118,7 +118,7 @@ typedef union {
 
 /**
  * @brief Configuration options for antenna configurations.
- * @note: Only NRF_DM_ANTENNA_COMP_1_1 is supported.
+ * @note Only NRF_DM_ANTENNA_COMP_1_1 is supported.
  */
 typedef enum {
 	/** Initiator uses 1 antenna, reflector uses 1 antenna. */

@@ -19,4 +19,3 @@ This library conforms to the specific revision of Mbed TLS that is supplied thro
    doc/driver_config
    doc/mbed_tls_header
    doc/backend_config
-   doc/api

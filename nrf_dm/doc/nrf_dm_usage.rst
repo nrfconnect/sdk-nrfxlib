@@ -41,7 +41,7 @@ The Distance Measurement library comes with two precompiled libraries for the nR
   It only includes an implementation for the functions :c:func:`nrf_dm_calc` and :c:func:`nrf_dm_high_precision_calc`.
 
 The :file:`libnrf_dm_calc.a` library allows computing of the distance estimates on the application core.
-On the network core, the calculation is done without an FPU which results in a much higher execution time.
+On the network core, the calculation is done without an FPU, which results in a much higher execution time.
 
 The libraries can be used as follows:
 
