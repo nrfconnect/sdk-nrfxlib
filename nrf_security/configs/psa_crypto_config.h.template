@@ -382,7 +382,7 @@
 #cmakedefine MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED               @MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED@
 
 /* Controlling some MPI sizes */
-#define MBEDTLS_MPI_WINDOW_SIZE            3 /**< Maximum window size used. */
+#cmakedefine MBEDTLS_MPI_WINDOW_SIZE       @MBEDTLS_MPI_WINDOW_SIZE@ /**< Maximum window size used. */
 #cmakedefine MBEDTLS_MPI_MAX_SIZE          @MBEDTLS_MPI_MAX_SIZE@ /**< Maximum number of bytes for usable MPIs. */
 
 #endif /* PSA_CRYPTO_CONFIG_H */

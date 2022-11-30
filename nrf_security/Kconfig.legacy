@@ -254,6 +254,15 @@ config OBERON_ONLY_ENABLED
 
 menu "Legacy mbed TLS crypto APIs"
 
+config MBEDTLS_MPI_WINDOW_SIZE
+	int
+	default 6
+	range 1 6
+	help
+	  Maximum window size used for modular exponentiation.
+	  The default value of 6 is set to match with the configuration used
+	  when building the CryptoCell runtime libraries.
+
 config MBEDTLS_MPI_MAX_SIZE
 	int
 	default 256 if CRYPTOCELL_CC310_USABLE || !CRYPTOCELL_USABLE
