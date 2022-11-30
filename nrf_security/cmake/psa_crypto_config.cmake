@@ -334,6 +334,7 @@ if (NOT CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
   kconfig_check_and_set_base(MBEDTLS_SSL_CIPHERSUITES)
   kconfig_check_and_set_base_to_one(MBEDTLS_SSL_EXTENDED_MASTER_SECRET)
 
+  kconfig_check_and_set_base_int(MBEDTLS_MPI_WINDOW_SIZE)
   kconfig_check_and_set_base_int(MBEDTLS_MPI_MAX_SIZE)
 
   # x509 configurations
