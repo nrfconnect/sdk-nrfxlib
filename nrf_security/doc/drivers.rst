@@ -62,12 +62,20 @@ nrf_oberon driver
 The :ref:`nrf_oberon_readme` is distributed as a closed-source binary that provides select cryptographic algorithms optimized for use in nRF devices.
 This provides faster execution than the original Mbed TLS implementation.
 
-The nrf_oberon driver provides support for AES ciphers, SHA-1, SHA-256, SHA-384, SHA-512, ECDH and ECDSA using NIST curve secp224r1 and secp256r1, and ECJPAKE using NIST curve secp256r1.
+The nrf_oberon driver provides support for the following:
+
+* AES ciphers
+* SHA-1
+* SHA-256
+* SHA-384
+* SHA-512
+* ECDH and ECDSA using NIST curve secp224r1 and secp256r1
+* ECJPAKE using NIST curve secp256r1
 
 Enabling the nrf_oberon driver
 ==============================
 
-The :ref:`nrf_oberon_readme` PSA driver can be enabled by setting the :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_OBERON` Kconfig option.
+To enable the :ref:`nrf_oberon_readme` PSA driver, set the :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_OBERON` Kconfig option.
 
 .. _nrf_security_drivers_builtin:
 
@@ -106,9 +114,9 @@ Enabling legacy APIs requires enabling one of the available PSA drivers.
 Enabling legacy Mbed TLS support
 ================================
 
-The legacy Mbed TLS APIs can be configured by setting the option :kconfig:option:`CONFIG_NORDIC_SECURITY_BACKEND` instead of setting the option :kconfig:option:`CONFIG_NRF_SECURITY`.
+To configure the legacy Mbed TLS APIs, set the option :kconfig:option:`CONFIG_NORDIC_SECURITY_BACKEND` instead of :kconfig:option:`CONFIG_NRF_SECURITY`.
 
-Additionally either :kconfig:option:`CONFIG_CC3XX_BACKEND` or :kconfig:option:`CONFIG_OBERON_BACKEND` must be enabled.
+Additionally, either :kconfig:option:`CONFIG_CC3XX_BACKEND` or :kconfig:option:`CONFIG_OBERON_BACKEND` must be enabled.
 
 .. note::
    Enabling the CryptoCell by using :kconfig:option:`CONFIG_CC3XX_BACKEND` in a non-secure image of a TF-M build will have no effect.

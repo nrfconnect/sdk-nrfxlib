@@ -41,14 +41,21 @@ Original Mbed TLS backend
 
 The Original Mbed TLS backend is no longer available as a configuration option, and is only used if any of the enabled backends does not support a specific cryptographic algorithm or feature.
 
-
-
 AES configuration
 *****************
 
 The AES core is enabled with the Kconfig option :kconfig:option:`CONFIG_MBEDTLS_AES_C`.
 
-This enables AES ECB cipher mode and allows the ciphers and modes CTR, OFB, CFB, CBC, XTS, CMAC, CCM/CCM*, and GCM to be configured.
+This enables AES ECB cipher mode and allows the following ciphers and modes to be configured:
+
+* CTR
+* OFB
+* CFB
+* CBC
+* XTS
+* CMAC
+* CCM/CCM*
+* GCM
 
 Feature support
 ===============
@@ -72,12 +79,12 @@ Feature support
 +-------------+-------------------+-------------+
 
 .. note::
-   The :ref:`nrf_security_backends_oberon` uses some functionality from Original Mbed TLS for AES operations.
+   The :ref:`nrf_security_backends_oberon` uses some functionality from the original Mbed TLS for AES operations.
 
 AES cipher configuration
 ************************
 
-AES cipher modes can be configured by setting Kconfig options in the following table:
+To configure AES cipher modes, set the following Kconfig options:
 
 +--------------+----------------------------------------------------+----------------------------------------+
 | Cipher mode  | Configurations                                     | Note                                   |
@@ -164,7 +171,7 @@ Feature support
 CMAC configuration
 ******************
 
-Cipher-based Message Authentication Code (CMAC) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_CMAC_C` Kconfig option.
+To configure Cipher-based Message Authentication Code (CMAC) support, set the :kconfig:option:`CONFIG_MBEDTLS_CMAC_C` Kconfig option.
 
 Feature support
 ===============
@@ -191,7 +198,7 @@ Feature support
 AEAD configurations
 *******************
 
-Authenticated Encryption with Associated Data (AEAD) can be configured by setting Kconfig options in the following table:
+To configure Authenticated Encryption with Associated Data (AEAD), set the following Kconfig options:
 
 +--------------+------------------------------------------------+-----------------------------------------+
 | AEAD cipher  | Configurations                                 | Note                                    |
@@ -209,7 +216,7 @@ Authenticated Encryption with Associated Data (AEAD) can be configured by settin
 
 .. note::
    * AEAD AES cipher modes are dependent on enabling AES core support according to `AES configuration`_.
-   * When Arm CryptoCell cc310 backend is used, AES GCM is provided by original Mbed TLS implementation.
+   * When Arm CryptoCell cc310 backend is used, AES GCM is provided by the original Mbed TLS implementation.
    * The ChaCha-Poly implemented by the Arm CryptoCell cc3xx backend does not support incremental operations.
    * The ChaCha-Poly implemented by the :ref:`nrf_security_backends_cc3xx` does not support incremental operations.
 
@@ -262,7 +269,7 @@ Feature support
 DHM configurations
 ******************
 
-Diffie-Hellman-Merkle (DHM) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_DHM_C` Kconfig option.
+To configure Diffie-Hellman-Merkle (DHM) support, set the :kconfig:option:`CONFIG_MBEDTLS_DHM_C` Kconfig option.
 
 Feature support
 ===============
@@ -276,16 +283,16 @@ Feature support
 +-----------+-------------------+----------------------+-----------------------+
 
 .. note::
-   The :ref:`nrf_security_backends_oberon` uses functionality from Original Mbed TLS for DHM operations.
+   The :ref:`nrf_security_backends_oberon` uses functionality from the original Mbed TLS for DHM operations.
 
 ECC configurations
 ******************
 
 Elliptic Curve Cryptography (ECC) configuration provides support for Elliptic Curve over GF(p).
 
-ECC core support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECP_C` Kconfig option.
+To configure ECC core support, set the :kconfig:option:`CONFIG_MBEDTLS_ECP_C` Kconfig option.
 
-Enabling :kconfig:option:`CONFIG_MBEDTLS_ECP_C` will activate configuration options that depend upon ECC, such as ECDH, ECDSA, ECJPAKE, and a selection of ECC curves to support in the system.
+Enabling :kconfig:option:`CONFIG_MBEDTLS_ECP_C` will activate configuration options that depend on ECC, such as ECDH, ECDSA, ECJPAKE, and a selection of ECC curves to support in the system.
 
 Feature support
 ===============
@@ -321,7 +328,7 @@ Feature support
 ECDH configurations
 *******************
 
-Elliptic Curve Diffie-Hellman (ECDH) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECDH_C` Kconfig option.
+To configure Elliptic Curve Diffie-Hellman (ECDH) support, set the :kconfig:option:`CONFIG_MBEDTLS_ECDH_C` Kconfig option.
 
 +--------------+---------------------------------------------+
 | Algorithm    | Configurations                              |
@@ -330,7 +337,7 @@ Elliptic Curve Diffie-Hellman (ECDH) support can be configured by setting the :k
 +--------------+---------------------------------------------+
 
 .. note::
-   * ECDH support depends upon `ECC Configurations`_ being enabled.
+   * ECDH support depends on `ECC Configurations`_ being enabled.
    * The :ref:`nrf_cc3xx_mbedcrypto_readme` does not integrate on ECP layer.
      Only the top-level APIs for ECDH are replaced.
 
@@ -368,7 +375,7 @@ Feature support
 ECDSA configurations
 ********************
 
-Elliptic Curve Digital Signature Algorithm (ECDSA) support can be configured be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECDSA_C` Kconfig option.
+To configure Elliptic Curve Digital Signature Algorithm (ECDSA) support, set the :kconfig:option:`CONFIG_MBEDTLS_ECDSA_C` Kconfig option.
 
 +--------------+----------------------------------------------+
 | Algorithm    | Configurations                               |
@@ -377,7 +384,7 @@ Elliptic Curve Digital Signature Algorithm (ECDSA) support can be configured be 
 +--------------+----------------------------------------------+
 
 .. note::
-   * ECDSA support depends upon `ECC Configurations`_ being enabled.
+   * ECDSA support depends on `ECC Configurations`_ being enabled.
    * The :ref:`nrf_cc3xx_mbedcrypto_readme` does not integrate on ECP layer.
      Only the top-level APIs for ECDSA are replaced.
 
@@ -415,7 +422,7 @@ Feature support
 ECJPAKE configurations
 **********************
 
-Elliptic Curve, Password Authenticated Key Exchange by Juggling (ECJPAKE) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_ECJPAKE_C` Kconfig option.
+To configure Elliptic Curve, Password Authenticated Key Exchange by Juggling (ECJPAKE) support, set the :kconfig:option:`CONFIG_MBEDTLS_ECJPAKE_C` Kconfig option.
 
 +--------------+----------------------------------------------+
 | Algorithm    | Configurations                               |
@@ -445,7 +452,7 @@ ECC curves configurations
 
 It is possible to configure the curves that should be supported in the system depending on the backend selected.
 
-The following table shows the curves that can be enabled.
+The following curves can be enabled:
 
 +-----------------------------+------------------------------------------------------------+--------------------------+
 | Curve                       | Configurations                                             | Note                     |
@@ -477,7 +484,7 @@ The following table shows the curves that can be enabled.
 RSA configurations
 ******************
 
-Rivest-Shamir-Adleman (RSA) support can be configured by setting the :kconfig:option:`CONFIG_MBEDTLS_RSA_C` Kconfig option.
+To configure Rivest-Shamir-Adleman (RSA) support, set the :kconfig:option:`CONFIG_MBEDTLS_RSA_C` Kconfig option.
 
 Feature support
 ===============
@@ -491,12 +498,12 @@ Feature support
 +-----------+-------------------+----------------------+-----------------------+
 
 .. note::
-   The :ref:`nrf_security_backends_oberon` uses functionality from Original Mbed TLS for RSA operations.
+   The :ref:`nrf_security_backends_oberon` uses functionality from the original Mbed TLS for RSA operations.
 
 Secure Hash configurations
 **************************
 
-The Secure Hash algorithms can be configured by setting Kconfig options in the following table:
+To configure the Secure Hash algorithms, set the following Kconfig options:
 
 +--------------+--------------------+---------------------------------------------+
 | Algorithm    | Support            | Backend selection                           |

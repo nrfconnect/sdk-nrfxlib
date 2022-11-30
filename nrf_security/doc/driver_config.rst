@@ -16,7 +16,7 @@ Configuring multiple drivers
 
 Multiple PSA drivers can be enabled at the same time, with added support for fine-grained control of which drivers implement support for cryptographic features.
 
-To enable a PSA driver, set the configurations according to the following table:
+To enable a PSA driver, set the following configurations:
 
 +---------------+--------------------------------------------------+------------------------------------------------+
 | PSA driver    | Configuration option                             | Notes                                          |
@@ -35,7 +35,7 @@ If a specific cryptographic feature is not supported by a PSA driver but the alg
 AES cipher configuration
 ************************
 
-AES cipher modes can be enabled by setting one or more of the following Kconfig options:
+To enable AES cipher modes, set one or more of the following Kconfig options:
 
 +----------------+------------------------------------------------------+
 | Cipher mode    | Configuration option                                 |
@@ -59,7 +59,7 @@ AES cipher modes can be enabled by setting one or more of the following Kconfig 
 AES cipher driver configuration
 ===============================
 
-You can use the Kconfig options from the following table for fine-grained control over which drivers provide AES cipher support:
+You can use the following Kconfig options for fine-grained control over which drivers provide AES cipher support:
 
 +----------------+---------------------------------------------------------------------+----------------------------------------------------------------------+
 | Cipher mode    | nrf_cc3xx driver support                                            | nrf_oberon driver support                                            |
@@ -80,14 +80,14 @@ You can use the Kconfig options from the following table for fine-grained contro
 +----------------+---------------------------------------------------------------------+----------------------------------------------------------------------+
 
 .. note::
-   * If an AES cipher mode is enabled and no PSA driver enables or supports it, then :ref:`nrf_security_drivers_builtin` support is enabled and used.
+   * If an AES cipher mode is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
    * The :ref:`nrf_security_drivers_cc3xx` is limited to AES key sizes of 128 bits on devices with Arm CryptoCell cc310.
 
 
 MAC configuration
 *****************
 
-You can enable MAC support by setting one or more Kconfig options in the following table:
+To enable MAC support, set one or more of the following Kconfig options:
 
 +----------------+--------------------------------------------+
 | MAC cipher     | Configuration option                       |
@@ -100,7 +100,7 @@ You can enable MAC support by setting one or more Kconfig options in the followi
 MAC driver configurations
 =========================
 
-You can use the Kconfig options in the following table for fine-grained control over which drivers provide AEAD support:
+You can use the following Kconfig options for fine-grained control over which drivers provide AEAD support:
 
 +----------------+-----------------------------------------------------------+----------------------------+
 | MAC cipher     | nrf_cc3xx driver support                                  | nrf_oberon driver support  |
@@ -111,7 +111,7 @@ You can use the Kconfig options in the following table for fine-grained control 
 +----------------+-----------------------------------------------------------+----------------------------+
 
 .. note::
-   * If a MAC algorithm is enabled and no PSA driver enables or supports it, then :ref:`nrf_security_drivers_builtin` support is enabled and used.
+   * If a MAC algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
    * The :ref:`nrf_security_drivers_cc3xx` is limited to AES CMAC key sizes of 128 bits on devices with Arm CryptoCell cc310.
    * The :ref:`nrf_security_drivers_cc3xx` is limited to HMAC using SHA-1, SHA-224, and SHA-256 on devices with Arm CryptoCell cc310.
 
@@ -119,7 +119,7 @@ You can use the Kconfig options in the following table for fine-grained control 
 AEAD configurations
 *******************
 
-You can enable Authenticated Encryption with Associated Data (AEAD) by setting one or more Kconfig options in the following table:
+To enable Authenticated Encryption with Associated Data (AEAD), set one or more of the following Kconfig options:
 
 +----------------+---------------------------------------------------------+
 | AEAD cipher    | Configuration option                                    |
@@ -135,7 +135,7 @@ You can enable Authenticated Encryption with Associated Data (AEAD) by setting o
 AEAD driver configurations
 ==========================
 
-You can use the Kconfig options in the following table for fine-grained control over which drivers provide AEAD support:
+You can use the following Kconfig options for fine-grained control over which drivers provide AEAD support:
 
 +----------------+------------------------------------------------------------------------+-------------------------------------------------------------------------+
 | AEAD cipher    | nrf_cc3xx driver support                                               | nrf_oberon driver support                                               |
@@ -148,7 +148,7 @@ You can use the Kconfig options in the following table for fine-grained control 
 +----------------+------------------------------------------------------------------------+-------------------------------------------------------------------------+
 
 .. note::
-   * If an AEAD algorithm is enabled and no PSA driver enables or supports it, then :ref:`nrf_security_drivers_builtin` support is enabled and used.
+   * If an AEAD algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
    * The :ref:`nrf_security_drivers_cc3xx` is limited to AES key sizes of 128 bits on devices with Arm CryptoCell cc310.
    * The :ref:`nrf_security_drivers_cc3xx` does not provide hardware support for AES GCM on devices with Arm CryptoCell cc310.
 
@@ -156,7 +156,7 @@ You can use the Kconfig options in the following table for fine-grained control 
 ECC configurations
 ******************
 
-You can enable Elliptic Curve Cryptography (ECC) by setting one or more Kconfig options in the following table:
+To enable Elliptic Curve Cryptography (ECC), set one or more of the following Kconfig options:
 
 +-----------------------+-----------------------------------------------------------+
 | ECC algorithm         | Configuration option                                      |
@@ -174,7 +174,7 @@ The ECC algorithm support is dependent on one or more Kconfig options enabling c
 ECC driver configurations
 =========================
 
-You can use the Kconfig options in the following table for fine-grained control over which drivers provide ECC support:
+You can use the following Kconfig options for fine-grained control over which drivers provide ECC support:
 
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | ECC algorithm         | nrf_cc3xx driver support                                                 | nrf_oberon driver support                                                 |
@@ -194,7 +194,7 @@ You can use the Kconfig options in the following table for fine-grained control 
 ECC curve configurations
 ************************
 
-You can configure elliptic curve support by setting one or more Kconfig options in the following table:
+To configure elliptic curve support, set one or more of the following Kconfig options:
 
 +-----------------------+-----------------------------------------------------------+
 | ECC curve type        | Configuration option                                      |
@@ -228,7 +228,7 @@ You can configure elliptic curve support by setting one or more Kconfig options 
 ECC curve driver configurations
 ===============================
 
-You can sue the Kconfig options in the following table for fine-grained control over which drivers provide elliptic curve support:
+You can use the following Kconfig options for fine-grained control over which drivers provide elliptic curve support:
 
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | ECC curve type        | nrf_cc3xx driver support                                                 | nrf_oberon driver support                                                 |
@@ -262,7 +262,7 @@ You can sue the Kconfig options in the following table for fine-grained control 
 RSA configurations
 ******************
 
-You can enable Rivest-Shamir-Adleman (RSA) support by setting one or more Kconfig options in the following table:
+To enable Rivest-Shamir-Adleman (RSA) support, set one or more of the following Kconfig options:
 
 +-----------------------+----------------------------------------------------------+
 | RSA algorithms        | Configuration option                                     |
@@ -280,7 +280,7 @@ You can enable Rivest-Shamir-Adleman (RSA) support by setting one or more Kconfi
 RSA driver configurations
 =========================
 
-You can use the Kconfig options in the following table for fine-grained control over which drivers provide RSA support:
+You can use the following Kconfig options for fine-grained control over which drivers provide RSA support:
 
 +-----------------------+--------------------------------------------------------------------------+----------------------------+
 | RSA algorithms        | nrf_cc3xx driver support                                                 | nrf_oberon driver support  |
@@ -295,14 +295,14 @@ You can use the Kconfig options in the following table for fine-grained control 
 +-----------------------+--------------------------------------------------------------------------+----------------------------+
 
 .. note::
-   * If an RSA algorithm is enabled and no PSA driver enables or supports it, then :ref:`nrf_security_drivers_builtin` support is enabled and used.
-   * :ref:`nrf_security_drivers_cc3xx`  is limited to key sizes less than or equal to 2048 bits.
+   * If an RSA algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
+   * :ref:`nrf_security_drivers_cc3xx` is limited to key sizes less than or equal to 2048 bits.
 
 
 Secure Hash configurations
 **************************
 
-You can configure the Secure Hash algorithms by setting one or more Kconfig options according to the following table:
+To configure the Secure Hash algorithms, set one or more of the following Kconfig options:
 
 +-----------------------+-----------------------------------------------+
 | Hash algorithm        | Configuration option                          |
@@ -322,7 +322,7 @@ You can configure the Secure Hash algorithms by setting one or more Kconfig opti
 Secure Hash driver configurations
 =================================
 
-You can use the PSA driver-specific configurations provided in this table for fine-grained control over which drivers provide the Secure Hash algorithm.
+You can use the following PSA driver-specific configurations for fine-grained control over which drivers provide the Secure Hash algorithm.
 
 +-----------------------+---------------------------------------------------------------+---------------------------------------------------------------+
 | Hash algorithm        |  nrf_cc3xx driver support                                     | nrf_oberon driver support                                     |
@@ -339,4 +339,4 @@ You can use the PSA driver-specific configurations provided in this table for fi
 +-----------------------+---------------------------------------------------------------+---------------------------------------------------------------+
 
 .. note::
-   * If Secure Hash algorithm is enabled and no PSA driver enables or supports it, then :ref:`nrf_security_drivers_builtin` support is enabled and used.
+   If Secure Hash algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
