@@ -724,19 +724,15 @@ uint8_t sdc_hci_cmd_vs_llpm_mode_set(const sdc_hci_cmd_vs_llpm_mode_set_t * p_pa
 
 /** @brief Connection Update.
  *
- * This vendor specific command is used to change the Link Layer Connection parameters of a
- * connection.
- * This command may be issued by the master only.
- *
- * The Supervision_Timeout in milliseconds shall be larger than (1 + Conn_Latency) *
- * Conn_Interval_Max * 2,
- * where Conn_Interval_Max is given in milliseconds.
+ * This vendor specific command is used instead of HCI_LE_Connection_Update when
+ * it is desirable to provide Connection Interval in microseconds instead of units.
+ * See @ref sdc_hci_cmd_le_conn_update for description of behavior.
  *
  * Event(s) generated (unless masked away):
- * When the Controller receives the command, the Controller sends the HCI_Command_Complete
- * event to the Host. The HCI_LE_Connection_Update_Complete event shall be generated after
- * the connection parameters have been applied by the Controller or if the command
- * subsequently fails.
+ * When the Controller receives the command, the Controller sends the
+ * HCI_Command_Status event to the Host. The HCI_VS_Connection_Update_Complete
+ * event shall be generated after the connection parameters have been applied
+ * by the Controller or if the command subsequently fails.
  *
  * @param[in]  p_params Input parameters.
  *
