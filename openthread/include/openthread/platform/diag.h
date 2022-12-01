@@ -57,6 +57,16 @@ extern "C" {
  */
 
 /**
+ * This enumeration defines the gpio modes.
+ *
+ */
+typedef enum
+{
+    OT_GPIO_MODE_INPUT  = 0, ///< Input mode without pull resistor.
+    OT_GPIO_MODE_OUTPUT = 1, ///< Output mode.
+} otGpioMode;
+
+/**
  * This function processes a factory diagnostics command line.
  *
  * The output of this function (the content written to @p aOutput) MUST terminate with `\0` and the `\0` is within the
@@ -128,6 +138,60 @@ void otPlatDiagRadioReceived(otInstance *aInstance, otRadioFrame *aFrame, otErro
  *
  */
 void otPlatDiagAlarmCallback(otInstance *aInstance);
+
+/**
+ * This function sets the gpio value.
+ *
+ * @param[in]  aGpio   The gpio number.
+ * @param[in]  aValue  true to set the gpio to high level, or false otherwise.
+ *
+ * @retval OT_ERROR_NONE             Successfully set the gpio.
+ * @retval OT_ERROR_INVALID_ARGS     @p aGpio is not supported.
+ * @retval OT_ERROR_NOT_IMPLEMENTED  This function is not implemented on the platform.
+ *
+ */
+otError otPlatDiagGpioSet(uint32_t aGpio, bool aValue);
+
+/**
+ * This function gets the gpio value.
+ *
+ * @param[in]   aGpio   The gpio number.
+ * @param[out]  aValue  A pointer where to put gpio value.
+ *
+ * @retval OT_ERROR_NONE             Successfully got the gpio value.
+ * @retval OT_ERROR_INVALID_ARGS     @p aGpio is not supported or @p aValue is NULL.
+ * @retval OT_ERROR_NOT_IMPLEMENTED  This function is not implemented on the platform.
+ *
+ */
+otError otPlatDiagGpioGet(uint32_t aGpio, bool *aValue);
+
+/**
+ * This function sets the gpio mode.
+ *
+ * @param[in]   aGpio   The gpio number.
+ * @param[out]  aMode   The gpio mode.
+ *
+ * @retval OT_ERROR_NONE             Successfully set the gpio mode.
+ * @retval OT_ERROR_INVALID_ARGS     @p aGpio is not supported.
+ * @retval OT_ERROR_NOT_IMPLEMENTED  This function is not implemented on the platform.
+ *
+ */
+otError otPlatDiagGpioSetMode(uint32_t aGpio, otGpioMode aMode);
+
+/**
+ * This function gets the gpio mode.
+ *
+ * @param[in]   aGpio   The gpio number.
+ * @param[out]  aValue  A pointer where to put gpio value.
+ *
+ * @retval OT_ERROR_NONE             Successfully got the gpio value.
+ * @retval OT_ERROR_FAILED           The gpio is neither in input nor output mode. For example, if the gpio is in
+ *                                   analog mode.
+ * @retval OT_ERROR_INVALID_ARGS     @p aGpio is not supported or @p aMode is NULL.
+ * @retval OT_ERROR_NOT_IMPLEMENTED  This function is not implemented on the platform.
+ *
+ */
+otError otPlatDiagGpioGetMode(uint32_t aGpio, otGpioMode *aMode);
 
 /**
  * @}

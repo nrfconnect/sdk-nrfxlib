@@ -536,7 +536,7 @@ otError otPlatRadioGetCcaEnergyDetectThreshold(otInstance *aInstance, int8_t *aT
 otError otPlatRadioSetCcaEnergyDetectThreshold(otInstance *aInstance, int8_t aThreshold);
 
 /**
- * Get the external FEM's Rx LNA gain in dBm.
+ * Gets the external FEM's Rx LNA gain in dBm.
  *
  * @param[in]  aInstance  The OpenThread instance structure.
  * @param[out] aGain     The external FEM's Rx LNA gain in dBm.
@@ -549,7 +549,7 @@ otError otPlatRadioSetCcaEnergyDetectThreshold(otInstance *aInstance, int8_t aTh
 otError otPlatRadioGetFemLnaGain(otInstance *aInstance, int8_t *aGain);
 
 /**
- * Set the external FEM's Rx LNA gain in dBm.
+ * Sets the external FEM's Rx LNA gain in dBm.
  *
  * @param[in] aInstance  The OpenThread instance structure.
  * @param[in] aGain      The external FEM's Rx LNA gain in dBm.
@@ -969,7 +969,7 @@ void otPlatRadioClearSrcMatchExtEntries(otInstance *aInstance);
 uint32_t otPlatRadioGetSupportedChannelMask(otInstance *aInstance);
 
 /**
- * Get the radio preferred channel mask that the device prefers to form on.
+ * Gets the radio preferred channel mask that the device prefers to form on.
  *
  * @param[in]  aInstance   The OpenThread instance structure.
  *
@@ -1096,6 +1096,7 @@ otError otPlatRadioSetChannelMaxTransmitPower(otInstance *aInstance, uint8_t aCh
  *
  * @retval  OT_ERROR_FAILED           Other platform specific errors.
  * @retval  OT_ERROR_NONE             Successfully set region code.
+ * @retval  OT_ERROR_NOT_IMPLEMENTED  The feature is not implemented.
  *
  */
 otError otPlatRadioSetRegion(otInstance *aInstance, uint16_t aRegionCode);
@@ -1112,6 +1113,7 @@ otError otPlatRadioSetRegion(otInstance *aInstance, uint16_t aRegionCode);
  * @retval  OT_ERROR_INVALID_ARGS     @p aRegionCode is nullptr.
  * @retval  OT_ERROR_FAILED           Other platform specific errors.
  * @retval  OT_ERROR_NONE             Successfully got region code.
+ * @retval  OT_ERROR_NOT_IMPLEMENTED  The feature is not implemented.
  *
  */
 otError otPlatRadioGetRegion(otInstance *aInstance, uint16_t *aRegionCode);
@@ -1134,6 +1136,7 @@ otError otPlatRadioGetRegion(otInstance *aInstance, uint16_t *aRegionCode);
  * @retval  OT_ERROR_INVALID_ARGS    @p aExtAddress is `NULL`.
  * @retval  OT_ERROR_NOT_FOUND       The Initiator indicated by @p aShortAddress is not found when trying to clear.
  * @retval  OT_ERROR_NO_BUFS         No more Initiator can be supported.
+ * @retval  OT_ERROR_NOT_IMPLEMENTED The feature is not implemented.
  *
  */
 otError otPlatRadioConfigureEnhAckProbing(otInstance *        aInstance,
