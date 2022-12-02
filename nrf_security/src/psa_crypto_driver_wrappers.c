@@ -687,6 +687,8 @@ psa_status_t psa_driver_wrapper_import_key(
                                               data, data_length,
                                               key_buffer, key_buffer_size,
                                               key_buffer_length, bits ) );
+#else
+            return ( PSA_ERROR_NOT_SUPPORTED );
 #endif /* !MBEDTLS_PSA_BUILTIN_HAS_KEY_TYPE */
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
@@ -811,6 +813,8 @@ psa_status_t psa_driver_wrapper_export_public_key(
                                                     data,
                                                     data_size,
                                                     data_length ) );
+#else
+            return ( PSA_ERROR_NOT_SUPPORTED );
 #endif /* !MBEDTLS_PSA_BUILTIN_HAS_KEY_TYPE */
         default:
             /* Key is declared with a lifetime not known to us */
