@@ -158,8 +158,6 @@ psa_status_t psa_driver_wrapper_sign_message(
 #endif /* PSA_CRYPTO_DRIVER_HAS_ASYM_SIGN_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
             break;
-#if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
-#endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
         default:
             /* Key is declared with a lifetime not known to us */
             (void)status;
@@ -584,7 +582,6 @@ psa_status_t psa_driver_wrapper_generate_key(
                 if( status != PSA_ERROR_NOT_SUPPORTED )
                     break;
 #endif /* PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_CC3XX */
-// TODO: OBERON does not provice a generate key function, use builtin
 #if defined(PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_OBERON)
                 status = oberon_generate_key(
                     attributes, key_buffer, key_buffer_size,
@@ -669,7 +666,6 @@ psa_status_t psa_driver_wrapper_import_key(
            if( status != PSA_ERROR_NOT_SUPPORTED )
                return( status );
 #endif /* PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_CC3XX */
-//TODO: Either remove or adjust when mac is available in Oberon
 #if defined(PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_OBERON)
            status = oberon_import_key(
                          attributes,
@@ -690,8 +686,6 @@ psa_status_t psa_driver_wrapper_import_key(
 #else
             return ( PSA_ERROR_NOT_SUPPORTED );
 #endif /* !MBEDTLS_PSA_BUILTIN_HAS_KEY_TYPE */
-#if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
-#endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
         default:
             (void)status;
             return( PSA_ERROR_INVALID_ARGUMENT );
