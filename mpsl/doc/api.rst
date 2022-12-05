@@ -1,4 +1,4 @@
-.. _mpsl_api:
+.. mpsl_api:
 
 API documentation
 #################
@@ -81,13 +81,6 @@ MPSL FEM Simple GPIO
 ********************
 
 .. doxygengroup:: mpsl_fem_simple_gpio
-   :project: nrfxlib
-   :members:
-
-MPSL FEM power model
-********************
-
-.. doxygengroup:: mpsl_fem_power_model
    :project: nrfxlib
    :members:
 
