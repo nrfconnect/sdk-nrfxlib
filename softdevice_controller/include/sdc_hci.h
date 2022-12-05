@@ -92,6 +92,42 @@ int32_t sdc_hci_cmd_put(uint8_t const * p_cmd_in);
 int32_t sdc_hci_data_put(uint8_t const * p_data_in);
 
 
+/** @brief Retrieve an HCI event packet from the SoftDevice Controller.
+ *
+ * This API is non-blocking.
+ *
+ * @note The application should ensure that the size of the provided buffer is at least
+ *       @ref HCI_EVENT_PACKET_MAX_SIZE bytes.
+ *
+ * @param[in,out] p_evt_out Buffer where the HCI event will be stored.
+ *                          If an event is retrieved, the first byte corresponds to Event Code,
+ *                          as specified by the Bluetooth Core Specification.
+ *
+ * @retval 0              Success
+ * @retval -NRF_EAGAIN  No event available
+ * @retval -NRF_EINVAL  Invalid input
+ */
+int32_t sdc_hci_evt_get(uint8_t * p_evt_out);
+
+
+/** @brief Retrieve an HCI data packet from the SoftDevice Controller.
+ *
+ * This API is non-blocking.
+ *
+ * @note The application should ensure that the size of the provided buffer is at least
+ *       @ref HCI_DATA_PACKET_MAX_SIZE bytes.
+ *
+ * @param[in,out] p_data_out Buffer where the HCI data packet will be stored.
+ *                           If a data packet is retrieved, the first byte corresponds to Handle,
+ *                           as specified by the Bluetooth Core Specification.
+ *
+ * @retval 0              Success
+ * @retval -NRF_EAGAIN    No data available
+ * @retval -NRF_EINVAL    Invalid input
+ */
+int32_t sdc_hci_data_get(uint8_t * p_data_out);
+
+
 /** @brief Retrieve an HCI packet from the SoftDevice Controller.
  *
  * This API is non-blocking.

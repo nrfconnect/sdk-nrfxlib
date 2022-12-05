@@ -17,36 +17,6 @@ All the notable changes included in the main branch are documented in this secti
 Added
 =====
 
-* Support for Connection CTE Response in the angle of arrival (AoA) configuration (DRGN-17365).
-* Support for LE Set Data Related Address Changes HCI command (DRGN-17919).
-* Support for changing advertising randomness using :c:func:`sdc_hci_cmd_vs_set_adv_randomness` (DRGN-17872).
-* Support for enabling the sending of Periodic Advertising Sync Transfer (PAST) using dedicated functions such as :c:func:`sdc_support_periodic_adv_sync_transfer_sender_central` (DRGN-17817).
-* Experimental support for the LE Power Control Request feature (DRGN-17350).
-
-Changes
-=======
-
-* The functions :c:func:`sdc_hci_evt_get` and :c:func:`sdc_hci_data_get` have been replaced by :c:func:`sdc_hci_get` (DRGN-17060).
-* Scheduling performance when doing extended advertising and periodic advertising simultaneously has been improved on Coded PHY (DRGN-17819).
-
-Bug fixes
-=========
-
-* Fixed an issue where the controller accepts an LL_PAUSE_ENC_REQ packet received on an unencrypted link (DRGN-17777).
-* Fixed an issue where the controller accepts CONNECT_IND, AUX_CONNECT_REQ and CONNECTION_UPDATE_REQ packets with the ``connSupervisionTimeout`` value set to 0 (DRGN-17776).
-* Fixed an issue where the controller would assert if trying to sync to a periodic advertiser with a sync timeout shorter than the periodic advertiser interval (DRGN-19744).
-* Fixed an issue in MPSL where the controller would assert when a Bluetooth role was running (DRGN-17851).
-* Fixed an issue in MPSL where the controller would abandon a link, causing a disconnect on the remote side (DRGN-18105).
-* Fixed an issue where creating a periodic sync could in some cases erase periodic advertising reports for previously created syncs (DRGN-18089).
-
-nRF Connect SDK v2.1.0
-**********************
-
-All the notable changes included in the |NCS| v2.1.0 release are documented in this section.
-
-Added
-=====
-
 * Support for changing the radio transmitter's default power level using :c:func:`sdc_default_tx_power_set` (DRGN-15903).
 * Support for disabling or enabling peripheral latency using :c:func:`sdc_hci_cmd_vs_peripheral_latency_mode_set` (DRGN-15706).
 * Stub version of :c:func:`sdc_hci_get` for getting all types of HCI packets from the Link Layer (DRGN-17060).

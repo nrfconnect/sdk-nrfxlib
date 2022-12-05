@@ -1,7 +1,7 @@
 .. _softdevice_controller:
 
 SoftDevice Controller
-#####################
+###########################
 
 The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series.
 It supports Bluetooth 5.
@@ -34,25 +34,11 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 +--------------------------------+-----------------+--------------+-----------+
 | Connectionless CTE Advertising |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
-| Connection CTE Response        |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
 | Coded PHY (Long Range)         |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| LE Power Control Request       | X               | X            | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| Periodic Advertising Sync      |                 |              | X         |
-| Transfer - Sender              |                 |              |           |
 +--------------------------------+-----------------+--------------+-----------+
 
 .. note::
-   The following limitations apply to the listed features:
-
-   * For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
-   * For Connection CTE Response, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
-   * For the LE Power Control Request feature, the support is experimental, and acceptable power reduction (APR), controller-initiated power level management are not supported.
-   * For Periodic Advertising Sync Transfer - Sender, the support is experimental.
-
-.. _sdc_proprietary_feature_support:
+   For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
 
 Proprietary feature support:
 

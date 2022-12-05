@@ -286,10 +286,8 @@ uint8_t sdc_hci_cmd_cb_set_event_mask(const sdc_hci_cmd_cb_set_event_mask_t * p_
  * operational state will be lost, the Controller will enter standby mode and the
  * Controller will automatically revert to the default values for the parameters for
  * which default values are defined in the specification.
- *
  * Note: The HCI_Reset command will not necessarily perform a hardware reset.
  * This is implementation defined.
- *
  * The Host shall not send additional HCI commands before the
  * HCI_Command_Complete event related to the HCI_Reset command has been
  * received.
@@ -312,7 +310,7 @@ uint8_t sdc_hci_cmd_cb_reset(void);
  *
  * This command reads the values for the TX_Power_Level parameter for the
  * specified Connection_Handle. The Connection_Handle shall be a
- * Connection_Handle for an ACL connection.
+ * Connection_Handle for an ACL connection
  *
  * Event(s) generated (unless masked away):
  * When the HCI_Read_Transmit_Power_Level command has completed, an
@@ -350,7 +348,6 @@ uint8_t sdc_hci_cmd_cb_read_transmit_power_level(const sdc_hci_cmd_cb_read_trans
  *
  * The Flow_Control_Enable parameter shall only be changed if no connections
  * exist.
- *
  * Event(s) generated (unless masked away):
  * When the HCI_Set_Controller_To_Host_Flow_Control command has
  * completed, an HCI_Command_Complete event shall be generated.
@@ -400,9 +397,9 @@ uint8_t sdc_hci_cmd_cb_set_controller_to_host_flow_control(const sdc_hci_cmd_cb_
  * Data_Packets command parameter gives the same information for HCI
  * Synchronous Data packets.
  *
- * Note: The Host_ACL_Data_Packet_Length and Host_Synchronous_Data_-
- * Packet_Length command parameters do not include the length of the HCI ACL
- * Data packet header or the HCI Synchronous Data packet header respectively.
+ * Note: The Host_ACL_Data_Packet_Length and Host_Synchronous_Data_
+ * Packet_Length command parameters do not include the length of the HCI Data
+ * packet header.
  *
  * Event(s) generated (unless masked away):
  * When the HCI_Host_Buffer_Size command has completed, an

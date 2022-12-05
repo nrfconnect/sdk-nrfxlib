@@ -100,10 +100,10 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1054
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1158
-#define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
-#define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1026
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1130
+#define __MEM_TX_BUFFER_OVERHEAD_SIZE 16
+#define __MEM_RX_BUFFER_OVERHEAD_SIZE 7
 
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * ((tx_size) + __MEM_TX_BUFFER_OVERHEAD_SIZE) - \
@@ -140,16 +140,16 @@ extern "C" {
 #define SDC_MEM_PERIPHERAL_LINKS_SHARED  24
 
 /** Memory required for scanner buffers when only supporting legacy scanning. */
-#define SDC_MEM_SCAN_BUFFER(buffer_count) (72 + (buffer_count) * 90)
+#define SDC_MEM_SCAN_BUFFER(buffer_count) (75 + (buffer_count) * 90)
 
 /** Memory required for scanner buffers when supporting extended scanning. */
 #define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (42 + (buffer_count) * 307)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((5069+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (694+(max_adv_data))
-#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2578+(max_adv_data)*18)/10)
-#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (449+(max_adv_data))
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4829+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (670+(max_adv_data))
+#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2418+(max_adv_data)*18)/10)
+#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (433+(max_adv_data))
 
 /** @brief Maximum required memory for a given advertising buffer size.
  *
@@ -173,7 +173,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (247 + (buffer_count) * 283)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (225 + (buffer_count) * 282)
 
 /** Memory required for the periodic adv list.
  *
@@ -206,27 +206,50 @@ enum sdc_cfg_type
 {
     /** No configuration update. */
     SDC_CFG_TYPE_NONE         = 0,
-    /** See @ref sdc_cfg_t::central_count. */
+    /** Maximum number of concurrent central roles.
+     *  See also @ref sdc_cfg_t::central_count.
+     */
     SDC_CFG_TYPE_CENTRAL_COUNT = 1,
-    /** See @ref sdc_cfg_t::peripheral_count. */
+    /** Maximum number of concurrent peripheral roles.
+     *  See also @ref sdc_cfg_t::peripheral_count.
+     */
     SDC_CFG_TYPE_PERIPHERAL_COUNT  = 2,
-    /** See @ref sdc_cfg_t::buffer_cfg. */
+    /** Buffer configuration per connection.
+     *  See also @ref sdc_cfg_t::buffer_cfg.
+     */
     SDC_CFG_TYPE_BUFFER_CFG   = 3,
-    /** See @ref sdc_cfg_t::event_length. */
+    /** Maximum event length.
+     * See also @ref sdc_cfg_t::event_length.
+     */
     SDC_CFG_TYPE_EVENT_LENGTH = 4,
-    /** See @ref sdc_cfg_t::adv_count. */
+    /** Maximum number of concurrent advertisers.
+     *  See also @ref sdc_cfg_t::adv_count.
+     */
     SDC_CFG_TYPE_ADV_COUNT    = 5,
-    /** See @ref sdc_cfg_t::scan_buffer_cfg. */
+    /** Number of scan buffers.
+     *  See also @ref sdc_cfg_t::scan_buffer_cfg.
+     */
     SDC_CFG_TYPE_SCAN_BUFFER_CFG = 6,
-    /** See @ref sdc_cfg_t::adv_buffer_cfg. */
+    /** Maximum advertising data buffer per advertising set.
+     *  See also @ref sdc_cfg_t::adv_buffer_cfg.
+     */
     SDC_CFG_TYPE_ADV_BUFFER_CFG = 7,
-    /** See @ref sdc_cfg_t::periodic_adv_count. */
+    /** Maximum number of concurrent periodic advertisers.
+     *  See also @ref sdc_cfg_t::periodic_adv_count.
+     */
     SDC_CFG_TYPE_PERIODIC_ADV_COUNT = 8,
-    /** See @ref sdc_cfg_t::periodic_sync_count. */
+    /** Maximum number of concurrent synchronizations to periodic advertisers
+     *  See also @ref sdc_cfg_t::periodic_sync_count.
+     */
     SDC_CFG_TYPE_PERIODIC_SYNC_COUNT = 9,
-    /** See @ref sdc_cfg_t::periodic_sync_buffer_cfg. */
+    /** Number of periodic synchronization receive buffers per
+     *  synchronization to a periodic advertiser.
+     *  See also @ref sdc_cfg_t::periodic_sync_buffer_cfg.
+     */
     SDC_CFG_TYPE_PERIODIC_SYNC_BUFFER_CFG = 10,
-    /** See @ref sdc_cfg_t::periodic_adv_list_size. */
+    /** Number devices that can be placed in the periodic advertiser list.
+     *  See also @ref sdc_cfg_t::periodic_adv_list_size.
+     */
     SDC_CFG_TYPE_PERIODIC_ADV_LIST_SIZE = 11,
 };
 
@@ -405,7 +428,7 @@ int32_t sdc_cfg_set(uint8_t config_tag,
  * @param[in] callback  The callback will be executed when HCI data or and HCI
  *                      event is available. The callback will be executed in
  *                      the same context as @ref mpsl_low_priority_process.
- *                      See also @ref sdc_hci_get().
+ *                      See also @ref sdc_hci_evt_get() and @ref sdc_hci_data_get().
  * @param[in]  p_mem    Provide memory for the current resource configuration. If
  *                      custom resource configurations are used, use the value
  *                      returned from @ref sdc_cfg_set().
@@ -550,13 +573,27 @@ int32_t sdc_support_central(void);
  */
 int32_t sdc_support_ext_central(void);
 
+/** @brief Support Data Length Extensions
+ *
+ * After this API is called, the controller will support data length extension.
+ * That is:
+ *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
+ *  - when a LL_LENGTH_REQ is received. DLE is marked supported in the LL
+ *  - Feature Exchange procedure.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Data Length Extension is not supported.
+ */
+int32_t sdc_support_dle(void);
+
 /** @brief Support Data Length Extensions for a central device
  *
  * After this API is called, the controller will support data length extension in the central role.
  * That is:
  *  - DLE is marked supported in the LL Feature Exchange procedure.
  *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
- *    when a LL_LENGTH_REQ is received.
+ *  - when a LL_LENGTH_REQ is received.
  *
  * @note The application is required to call both @ref sdc_support_dle_central() and @ref sdc_support_dle_peripheral()
  *       if both central and peripheral roles are supported.
@@ -571,9 +608,8 @@ int32_t sdc_support_dle_central(void);
  *
  * After this API is called, the controller will support data length extension in the peripheral role.
  * That is:
- *  - DLE is marked supported in the LL Feature Exchange procedure.
  *  - All DLE HCI APIs are supported. The controller replies with LL_LENGTH_RSP
- *    when a LL_LENGTH_REQ is received.
+ *  - when a LL_LENGTH_REQ is received.
  *
  * @note The application is required to call both @ref sdc_support_dle_central() and @ref sdc_support_dle_peripheral()
  *       if both central and peripheral roles are supported.
@@ -587,11 +623,9 @@ int32_t sdc_support_dle_peripheral(void);
 /** @brief Support LE 2M PHY
  *
  * After this API is called, the controller will support LE 2M PHY. That is:
+ *  - All HCI APIs for obtaining or changing PHYs are supported.
  *  - The controller can use 2M PHY in both the connected and non-connected state.
  *  - LE 2M PHY is marked supported in the LL Feature Exchange procedure.
- *
- * @note The application is required to call @ref sdc_support_phy_update_central() and/or @ref sdc_support_phy_update_peripheral()
- *       to enable the PHY update procedure.
  *
  * @retval 0           Success
  * @retval -NRF_EPERM  This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
@@ -601,11 +635,9 @@ int32_t sdc_support_le_2m_phy(void);
 /** @brief Support LE Coded PHY
  *
  * After this API is called, the controller will support LE Coded PHY. That is:
+ *  - All HCI APIs for obtaining or changing PHYs are supported.
  *  - The controller can use LE Coded PHY in both the connected and non-connected state.
  *  - LE Coded PHY is marked supported in the LL Feature Exchange procedure.
- *
- * @note The application is required to call @ref sdc_support_phy_update_central() and/or @ref sdc_support_phy_update_peripheral()
- *       to enable the PHY update procedure.
  *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
@@ -672,6 +704,17 @@ int32_t sdc_support_le_periodic_adv(void);
  */
 int32_t sdc_support_le_periodic_sync(void);
 
+/** @brief Support LE Power Control
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to the LE Power Control.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
+ */
+int32_t sdc_support_le_power_control(void);
+
 /** @brief Support LE Power Control for central role
  *
  * After this API is called, the controller will support the HCI commands
@@ -699,78 +742,6 @@ int32_t sdc_support_le_power_control_central(void);
  * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
  */
 int32_t sdc_support_le_power_control_peripheral(void);
-
-/** @brief Support LE Connection CTE response for central role
- *
- * After this API is called, the controller will support the HCI commands
- * related to the LE Connection CTE Response.
- *
- * @note The application is required to call both @ref sdc_support_le_conn_cte_rsp_central() and @ref sdc_support_le_conn_cte_rsp_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Connection CTE Response is not supported.
- */
-int32_t sdc_support_le_conn_cte_rsp_central(void);
-
-/** @brief Support LE Connection CTE response for peripheral role
- *
- * After this API is called, the controller will support the HCI commands
- * related to the LE Connection CTE Response.
- *
- * @note The application is required to call both @ref sdc_support_le_conn_cte_rsp_central() and @ref sdc_support_le_conn_cte_rsp_peripheral()
- *       if both central and peripheral roles are supported.
- *
- * @retval 0                Success
- * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP  LE Connection CTE Response is not supported.
- */
-int32_t sdc_support_le_conn_cte_rsp_peripheral(void);
-
-/** @brief Support for sending periodic advertising sync transfers as central role
- *
- * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_sender_central()
- *       and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral() if both central and peripheral roles are supported.
- *
- * @retval 0               Success
- * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP Sending periodic advertising sync transfers is not supported.
- */
-int32_t sdc_support_periodic_adv_sync_transfer_sender_central(void);
-
-/** @brief Support for sending periodic advertising sync transfers as peripheral role
- *
- * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_sender_central()
- *       and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral() if both central and peripheral roles are supported.
- *
- * @retval 0               Success
- * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP Sending periodic advertising sync transfers is not supported.
- */
-int32_t sdc_support_periodic_adv_sync_transfer_sender_peripheral(void);
-
-/** @brief Support for receiving periodic advertising sync transfers as central role
- *
- * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_receiver_central()
- *       and @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral() if both central and peripheral roles are supported.
- *
- * @retval 0               Success
- * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP Receiving periodic advertising sync transfers is not supported.
- */
-int32_t sdc_support_periodic_adv_sync_transfer_receiver_central(void);
-
-/** @brief Support for receiving periodic advertising sync transfers as peripheral role
- *
- * @note The application is required to call both @ref sdc_support_periodic_adv_sync_transfer_receiver_central()
- *       and @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral() if both central and peripheral roles are supported.
- *
- * @retval 0               Success
- * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
- * @retval -NRF_EOPNOTSUPP Receiving periodic advertising sync transfers is not supported.
- */
-int32_t sdc_support_periodic_adv_sync_transfer_receiver_peripheral(void);
 
 /** @brief Configure the coex advertising mode
  *

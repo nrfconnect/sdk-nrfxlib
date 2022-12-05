@@ -524,10 +524,9 @@ typedef __PACKED_UNION
 } sdc_hci_cmd_ip_read_local_supported_commands_return_t;
 
 /** @brief Read Local Supported Features return parameter(s). */
-typedef __PACKED_UNION
+typedef __PACKED_STRUCT
 {
-    sdc_hci_ip_lmp_features_t params;
-    uint8_t raw[8];
+    sdc_hci_ip_lmp_features_t lmp_features;
 } sdc_hci_cmd_ip_read_local_supported_features_return_t;
 
 /** @brief Read BD_ADDR return parameter(s). */
