@@ -7,15 +7,14 @@ Changelog
    :local:
    :depth: 2
 
-nRF Connect SDK v2.2.0
-**********************
+Main branch
+***********
 
-All the notable changes included in the |NCS| v2.2.0 release are documented in this section.
+All the notable changes included in the main branch are documented in this section.
 
 Bug fixes
 =========
-
-* Fixed an issue where the scheduler could put events in the past (DRGN-17851, DRGN-18105).
+* Fixed an issue where the scheduler could put events in the past. (DRGN-17851, DRGN-18105)
 
 nRF Connect SDK v2.1.0
 **********************
