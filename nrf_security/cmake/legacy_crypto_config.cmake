@@ -98,6 +98,7 @@ kconfig_check_and_set_base(MBEDTLS_PK_WRITE_C)
 kconfig_check_and_set_base(MBEDTLS_DEBUG_C)
 
 kconfig_check_and_set_base(MBEDTLS_PSA_CRYPTO_SPM)
+kconfig_check_and_set_base(MBEDTLS_PSA_CRYPTO_STORAGE_C)
 
 # PSA is not to be enabled for SPM builds
 if (NOT CONFIG_SPM)
