@@ -7,9 +7,6 @@ Library architecture
    :local:
    :depth: 2
 
-The Modem library is the application interface to the nRF9160 modem firmware, which contains a full IP and DTLS/TLS stack as well as GNSS.
-It provides the standard Socket APIs, to facilitate application development and additional APIs to manage the modem and perform full-modem firmware updates.
-
 The library implements a communication interface between the Application and Modem cores on the nRF9160 through the RPC protocol, using the Inter Processor Communication (IPC) peripheral and a shared region of RAM.
 
 The following figure shows a simplified Modem library architecture:
@@ -22,7 +19,6 @@ The following figure shows a simplified Modem library architecture:
 Shared memory configuration
 ***************************
 
-The Modem library implements a communication interface between the application core and the modem core by using a shared memory area to exchange data.
 The shared memory area can be located anywhere within the first 128 kilobytes of RAM (lowest addresses) and it is logically divided into the following four regions:
 
 * Control

@@ -3,37 +3,23 @@
 Supported features
 ##################
 
-The current implementation of the Modem library supports the following features and protocols:
+The Modem library supports the following features:
 
-* TCP (client/server)
-* UDP
-* RAW sockets
-* DTLS 1.2 client
-* TLS 1.2 client
-* AT commands
-* GNSS
-* A-GPS
-* PDN selection for network sockets and DNS queries
-* Modem DFU
+* AT commands (:file:`nrf_modem_at.h`)
+* Networking sockets (:file:`nrf_socket.h`)
 
-The library implements the following socket API functions:
+  * TCP (client/server)
+  * UDP
+  * RAW
+  * DTLS 1.2 client
+  * TLS 1.2 client
 
-* socket
-* close
-* bind
-* listen
-* accept
-* connect
-* recvfrom
-* recv
-* sendto
-* send
-* getsockopt
-* setsockopt
-* fcntl
-* poll
-* inet_pton
-* inet_ntop
-* getaddrinfo
-* freeaddrinfo
-* setdnsaddr
+* Global Navigation Satellite System (GNSS) (:file:`nrf_modem_gnss.h`)
+
+  * Assisted GPS (A-GPS)
+
+* Modem firmware updates (delta updates) (:file:`nrf_modem_delta_dfu.h`)
+* Modem bootloader (:file:`nrf_modem_full_dfu.h`)
+* Modem Fault handling
+* Modem tracing (:file:`nrf_modem_trace.h`)
+* Logging
