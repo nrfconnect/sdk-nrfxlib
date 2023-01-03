@@ -7,7 +7,17 @@ Changelog
    :local:
    :depth: 2
 
-All the notable changes to this project are documented on this page.
+All the notable changes to this project are documented in this file.
+
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller was using a non-zero randomness for the very first advertising event even after calling :c:func:`sdc_hci_cmd_vs_set_adv_randomness` with a valid ``adv_handle`` parameter (DRGN-18261).
 
 nRF Connect SDK v2.2.0
 **********************
