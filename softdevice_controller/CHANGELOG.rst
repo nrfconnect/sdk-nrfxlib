@@ -9,6 +9,18 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue where the controller was using non-zero randomness for the first advertising event.
+  This happened even after calling :c:func:`sdc_hci_cmd_vs_set_adv_randomness` with a valid ``adv_handle`` parameter (DRGN-18261).
+* Fixed an issue where the controller would end up in the HardFault handler after receiving an invalid response to a scan request (DRGN-18358).
+
 nRF Connect SDK v2.2.0
 **********************
 

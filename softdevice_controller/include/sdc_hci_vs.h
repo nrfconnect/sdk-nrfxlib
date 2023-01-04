@@ -449,8 +449,6 @@ typedef __PACKED_STRUCT
 /** @brief Set RSSI golden range command parameter(s). */
 typedef __PACKED_STRUCT
 {
-    /** @brief Phy value to set RSSI golden range values. */
-    uint8_t phy;
     /** @brief The RSSI golden range lower limit in dBm units. */
     int8_t lower_limit;
     /** @brief The RSSI golden range upper limit in dBm units. */
@@ -931,7 +929,7 @@ uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_t
  * This command sets RSSI golden range that is explained in Core_v5.3, Vol 6, Part B,
  * Section 5.1.17.1.
  *
- * When this command is issued, the controller stores the golden range values per PHY.
+ * When this command is issued, the controller stores the golden range values.
  * These values can be used to keep RSSI (Received Signal Strength Indication) value
  * to be in the golden range.
  *
