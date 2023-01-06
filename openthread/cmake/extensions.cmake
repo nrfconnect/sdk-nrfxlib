@@ -72,8 +72,7 @@ function(openthread_libs_configuration_write CONFIG_FILE)
 
   find_package(Git QUIET)
   if(GIT_FOUND)
-    get_mbedtls_dir(ARM_MBEDTLS_PATH)
-    get_git_decribe(${ARM_MBEDTLS_PATH})
+    get_git_decribe(${ZEPHYR_MBEDTLS_MODULE_DIR})
     list(INSERT OPENTHREAD_SETTINGS 0 "MBEDTLS_commit=${git_describe}\n")
 
     get_git_decribe(${ZEPHYR_NRFXLIB_MODULE_DIR})

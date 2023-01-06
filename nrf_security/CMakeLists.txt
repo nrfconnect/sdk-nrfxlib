@@ -29,8 +29,8 @@ else()
   set(mbedtls_target    mbedtls)
 endif()
 
-# Populate ARM_MBEDTLS_PATH
-get_mbedtls_dir(ARM_MBEDTLS_PATH)
+# Populate ARM_MBEDTLS_PATH with the value of ZEPHYR_MBEDTLS_MODULE_DIR
+set(ARM_MBEDTLS_PATH ${ZEPHYR_MBEDTLS_MODULE_DIR})
 
 # MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER must be disabled for Zephyr
 # builds or when MBEDTLS_USE_PSA_CRYPTO is enabled (e.g. for TLS/DTLS
