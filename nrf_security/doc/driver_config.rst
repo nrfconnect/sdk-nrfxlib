@@ -142,7 +142,7 @@ You can use the following Kconfig options for fine-grained control over which dr
 +================+========================================================================+=========================================================================+
 | AES CCM        | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CCM_CC3XX`               | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CCM_OBERON`               |
 +----------------+------------------------------------------------------------------------+-------------------------------------------------------------------------+
-| AES GCM        | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_GCM_CC3XX`               | Not Supported                                                           |
+| AES GCM        | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_GCM_CC3XX`               | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_GCM_OBERON`               |
 +----------------+------------------------------------------------------------------------+-------------------------------------------------------------------------+
 | ChaCha/Poly    | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CHACHA20_POLY1305_CC3XX` | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CHACHA20_POLY1305_OBERON` |
 +----------------+------------------------------------------------------------------------+-------------------------------------------------------------------------+
