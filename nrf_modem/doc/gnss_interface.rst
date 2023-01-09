@@ -476,6 +476,30 @@ In cases where GNSS is not running continuously, it may be beneficial to change 
 
    1PPS is only supported by modem firmware v1.3.0 or later.
 
+Resolving the UTC time of 1PPS pulse occurrence
+===============================================
+
+As the time of the pulse (aligned to the top of an UTC second) is calculated from the previous valid PVT fix, the latest PVT fix notification needs to be used when resolving the UTC time of the 1PPS pulse.
+While the 1PPS pulse does not have any time delay, the PVT fix notification will always have some delay, both from the PVT solution calculation (approximately 100 ms) and the notification message delivery.
+Therefore, the 1PPS pulse may come before the PVT notification that was used to calculate the exact pulse time.
+
+The UTC time of the 1PPS pulse can be calculated using the following formula:
+
+.. math::
+
+   round\ to\ nearest\ second\ (t_{(PVT,GPST)}+∆t+100 ms)
+
+t\ :sub:`(PVT,GPST)` \ is the GPS time stamp in the previous PVT notification and |delta| t is the time difference between the 1PPS pulse and the reception of previous PVT notification:
+
+.. |delta| unicode:: 0x394 .. capital delta sign
+   :rtrim:
+
+.. math::
+
+   ∆t=t_P-t_{PVT}
+
+Thus, |delta| t is always positive.
+
 .. _gnss_int_agps_data:
 
 A-GPS data
