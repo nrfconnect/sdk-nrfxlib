@@ -274,6 +274,19 @@ The following code shows how to route a DNS query to the PDN with ID 1:
 
    nrf_getaddrinfo("example.com", "pdn1", &hints, &result);
 
+Handling PDN errors on sockets
+==============================
+
+During operation, an active PDN connection may be deactivated due to loss of connectivity or other reasons.
+When a socket operation is attempted on a socket that no longer has an active PDN connection, the operation will return ``-1`` and set ``errno`` to ``NRF_ENETDOWN``.
+If the socket is being polled, the :c:func:`nrf_poll` function will set the ``POLLERR`` flag and set ``errno`` to ``NRF_ENETDOWN``, the error can be retrieved asynchronously using the ``NRF_SO_ERROR`` socket option.
+
+When the ``NRF_ENETDOWN`` error is detected, the socket is no longer usable and must be closed by the application.
+The application is responsible for detecting when the PDN connection is activated again, before re-creating the socket and attempting the failed operation again.
+
+The `nRF9160 modem Packet Domain AT commands`_ can be used to manage packet data networks.
+Alternatively, the :ref:`pdn_readme` library in |NCS| can be used to receive events on PDN connectivity and manage packet data networks.
+
 TLS/DTLS configuration
 **********************
 
