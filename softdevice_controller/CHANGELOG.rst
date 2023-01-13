@@ -14,12 +14,22 @@ Main branch
 
 All the notable changes included in the main branch are documented in this section.
 
+Added
+=====
+
+* Support for enabling the receiving of Periodic Advertising Sync Transfer (PAST) using dedicated functions such as :c:func:`sdc_support_periodic_adv_sync_transfer_receiver_central` (DRGN-16995).
+* Support for LE Request Peer SCA command HCI command (DRGN-17972)
+* Support for Sleep Clock Accuracy Update control procedure (DRGN-17883)
+
 Bug fixes
 =========
 
 * Fixed an issue where the controller was using non-zero randomness for the first advertising event.
   This happened even after calling :c:func:`sdc_hci_cmd_vs_set_adv_randomness` with a valid ``adv_handle`` parameter (DRGN-18261).
 * Fixed an issue where the controller would end up in the HardFault handler after receiving an invalid response to a scan request (DRGN-18358).
+* Fixed a bug where the ``Peer_Address_Type`` parameter in the ``LE Connection Complete`` event was set to 2 or 3 in case the connection was established to a device which address was resolved (DRGN-18411).
+  The least significant bit of the ``Peer_Address_Type`` parameter was set correctly.
+* Fixed an issue where the stack could dereference a NULL pointer when starting a periodic advertiser (DRGN-18420).
 
 nRF Connect SDK v2.2.0
 **********************

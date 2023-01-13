@@ -100,8 +100,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1054
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1190
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1078
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1214
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -699,6 +699,28 @@ int32_t sdc_support_le_power_control_central(void);
  * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
  */
 int32_t sdc_support_le_power_control_peripheral(void);
+
+/** @brief Support Sleep Clock Accuracy (SCA) Update procedure for central role
+ *
+ * @note The application is required to call both @ref sdc_support_sca_central() and @ref sdc_support_sca_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  SCA Update procedure is not supported.
+ */
+int32_t sdc_support_sca_central(void);
+
+/** @brief Support Sleep Clock Accuracy (SCA) Update procedure for peripheral role
+ *
+ * @note The application is required to call both @ref sdc_support_sca_central() and @ref sdc_support_sca_peripheral()
+ *       if both central and peripheral roles are supported.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  SCA Update procedure is not supported.
+ */
+int32_t sdc_support_sca_peripheral(void);
 
 /** @brief Support LE Connection CTE response for central role
  *
