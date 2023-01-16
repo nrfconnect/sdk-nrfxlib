@@ -23,7 +23,7 @@ To enable a PSA driver, set the following configurations:
 +===============+==================================================+================================================+
 | nrf_cc3xx     | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_CC3XX` | Only on nRF52840, nRF9160, and nRF5340 devices |
 +---------------+--------------------------------------------------+------------------------------------------------+
-| nrf_oberon    | :kconfig:option:`CONFIG_PSA_RYPTO_DRIVER_OBERON` |                                                |
+| nrf_oberon    | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_OBERON`|                                                |
 +---------------+--------------------------------------------------+------------------------------------------------+
 
 If multiple drivers are enabled, the first ordered item in this table takes precedence for an enabled cryptographic feature, unless the driver does not enable or support it.
