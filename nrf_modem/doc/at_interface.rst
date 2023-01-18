@@ -286,10 +286,10 @@ Receiving AT notifications
 **************************
 
 The Modem library can dispatch incoming AT notifications from the modem to a user-provided callback function set by :c:func:`nrf_modem_at_notif_handler_set`.
-Only one callback function must be registered with the Modem library.
+Only one callback function can be registered with the Modem library.
 Registering a new callback function will override any callback previously set.
-Multiple parts of an application might require receiving of AT notifications, thus AT notifications need to be dispatched as necessary.
-In |NCS|, :ref:`at_monitor_readme` library takes care of the dispatching of notifications.
+The callback function can be unset by setting ``NULL`` as the callback.
+If multiple parts of your application need to receive AT notifications, you must dispatch them from the callback function that you registered.
 
 The following snippet shows how to setup an AT notification handler:
 
@@ -312,11 +312,16 @@ The following snippet shows how to setup an AT notification handler:
 		return 0;
 	}
 
-.. note::
+The callback is invoked in an interrupt context.
+The user is responsible for rescheduling the processing of AT notifications as appropriate.
 
-   The callback is invoked in an interrupt context.
-   The user is responsible for rescheduling the processing of AT notifications as appropriate.
-   In |NCS|, the :ref:`at_monitor_readme` library and the :ref:`nrf_modem_lib_readme` takes care of the rescheduling.
+In |NCS|, the :ref:`at_monitor_readme` library takes care of dispatching notifications to different parts of the application.
+
+.. important::
+   In NCS applications, many libraries use the :ref:`at_monitor_readme` library to register their own callback with the Modem library using the :c:func:`nrf_modem_at_notif_handler_set` function.
+   If you are building an NCS application, do not use the :c:func:`nrf_modem_at_notif_handler_set` function to register your callback.
+   Instead, use the :ref:`at_monitor_readme` library to dispatch AT notifications to where you need them in your application, and to ensure compatibility with other NCS libraries.
+   The :ref:`at_monitor_readme` library also takes care of rescheduling the notifications to a thread context.
 
 Thread safety
 *************
