@@ -189,6 +189,8 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_SYNC_TRANSFER_PARAMS = 0x205c,
     /** @brief See @ref sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(). */
     SDC_HCI_OPCODE_CMD_LE_SET_DEFAULT_PERIODIC_ADV_SYNC_TRANSFER_PARAMS = 0x205d,
+    /** @brief See @ref sdc_hci_cmd_le_request_peer_sca(). */
+    SDC_HCI_OPCODE_CMD_LE_REQUEST_PEER_SCA = 0x206d,
     /** @brief See @ref sdc_hci_cmd_le_enhanced_read_transmit_power_level(). */
     SDC_HCI_OPCODE_CMD_LE_ENHANCED_READ_TRANSMIT_POWER_LEVEL = 0x2076,
     /** @brief See @ref sdc_hci_cmd_le_read_remote_transmit_power_level(). */
@@ -985,6 +987,12 @@ typedef __PACKED_STRUCT
     uint16_t sync_timeout;
     uint8_t cte_type;
 } sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params_t;
+
+/** @brief LE Request Peer SCA command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_request_peer_sca_t;
 
 /** @brief LE Enhanced Read Transmit Power Level command parameter(s). */
 typedef __PACKED_STRUCT
@@ -4528,6 +4536,45 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params(const sdc_hci_cmd_l
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(const sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params_t * p_params);
+
+/** @brief LE Request Peer SCA.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.108
+ *
+ * This command is used to read the Sleep Clock Accuracy (SCA) of the peer
+ * device.
+ *
+ * The Connection_Handle parameter is the connection handle of the ACL
+ * connection.
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist,
+ * or the Connection_Handle is not for an ACL the Controller shall return the error
+ * code Unknown Connection Identifier (0x02).
+ *
+ * If the Host sends this command and the peer device does not support the
+ * Sleep Clock Accuracy Updates feature, the Controller shall return the error
+ * code Unsupported Feature or Parameter Value (0x11) in the HCI_LE_-
+ * Request_Peer_SCA_Complete event.
+ *
+ * If the Host issues this command when the Controller is aware (e.g., through a
+ * previous feature exchange) that the peer device's Link Layer does not support
+ * the Sleep Clock Accuracy Updates feature, the Controller shall return the error
+ * code Unsupported Remote Feature (0x1A).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Request_Peer_SCA command, the
+ * Controller sends the HCI_Command_Status event to the Host. When the
+ * HCI_LE_Request_Peer_SCA command has completed, the HCI_LE_-
+ * Request_Peer_SCA_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_request_peer_sca(const sdc_hci_cmd_le_request_peer_sca_t * p_params);
 
 /** @brief LE Enhanced Read Transmit Power Level.
  *
