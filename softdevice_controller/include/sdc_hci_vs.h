@@ -75,8 +75,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_PERIPHERAL_LATENCY_MODE_SET = 0xfd09,
     /** @brief See @ref sdc_hci_cmd_vs_write_remote_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_WRITE_REMOTE_TX_POWER = 0xfd0a,
-    /** @brief See @ref sdc_hci_cmd_vs_set_rssi_golden_range(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_RSSI_GOLDEN_RANGE = 0xfd0b,
+    /** @brief See @ref sdc_hci_cmd_vs_set_auto_power_control_request_param(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_AUTO_POWER_CONTROL_REQUEST_PARAM = 0xfd0b,
     /** @brief See @ref sdc_hci_cmd_vs_set_adv_randomness(). */
     SDC_HCI_OPCODE_CMD_VS_SET_ADV_RANDOMNESS = 0xfd0c,
 };
@@ -142,7 +142,7 @@ typedef __PACKED_STRUCT
     uint8_t coex_scan_mode_config : 1;
     uint8_t peripheral_latency_mode_set : 1;
     uint8_t write_remote_tx_power : 1;
-    uint8_t set_rssi_golden_range : 1;
+    uint8_t set_auto_power_control_request_param : 1;
     uint8_t set_adv_randomness : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
@@ -446,14 +446,42 @@ typedef __PACKED_STRUCT
     int8_t delta;
 } sdc_hci_cmd_vs_write_remote_tx_power_t;
 
-/** @brief Set RSSI golden range command parameter(s). */
+/** @brief Set Autonomous LE Power Control Request parameters command parameter(s). */
 typedef __PACKED_STRUCT
 {
-    /** @brief The RSSI golden range lower limit in dBm units. */
+    /** @brief Enable or Disable controller initiated autonomous LE Power Control Request procedure.
+     *         Disabled by default.
+     */
+    uint8_t enable;
+    /** @brief Beta value used for exponential weighted averaging of RSSI in 12-bit fixed point
+     *         fraction. The RSSI is averaged using the following formula, avg[n] = beta * avg[n -
+     *         1] + (1 - beta) * rssi[n] The valid range of beta is [0, 4095]. The beta value used
+     *         in computation is beta/4096. For example, for beta to be 0.25 in the above
+     *         computation, set the beta parameter in the command to 1024. Default value is 2048.
+     */
+    uint16_t beta;
+    /** @brief The lower limit of RSSI golden range that is explained in Core_v5.3, Vol 6, Part B,
+     *         Section 5.1.17.1, in dBm units. Default value is -70 dBm.
+     */
     int8_t lower_limit;
-    /** @brief The RSSI golden range upper limit in dBm units. */
+    /** @brief The upper limit of RSSI golden range that is explained in Core_v5.3, Vol 6, Part B,
+     *         Section 5.1.17.1, in dBm units. Default value is -30 dBm.
+     */
     int8_t upper_limit;
-} sdc_hci_cmd_vs_set_rssi_golden_range_t;
+    /** @brief Target RSSI level in dBm units when the average RSSI level is less than the lower
+     *         limit of RSSI Golden range. Default value is -65 dBm.
+     */
+    int8_t lower_target_rssi;
+    /** @brief Target RSSI level in dBm units when the average RSSI level is greater than the upper
+     *         limit of RSSI Golden range. Default value is -35 dBm.
+     */
+    int8_t upper_target_rssi;
+    /** @brief Duration in seconds to wait before initiating a new LE Power Control Request
+     *         procedure by the controller. 0 seconds value is an invalid value. Default value is 5
+     *         seconds.
+     */
+    uint8_t wait_period;
+} sdc_hci_cmd_vs_set_auto_power_control_request_param_t;
 
 /** @brief Set advertising randomness command parameter(s). */
 typedef __PACKED_STRUCT
@@ -924,14 +952,13 @@ uint8_t sdc_hci_cmd_vs_peripheral_latency_mode_set(const sdc_hci_cmd_vs_peripher
  */
 uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_tx_power_t * p_params);
 
-/** @brief Set RSSI golden range.
+/** @brief Set Autonomous LE Power Control Request parameters.
  *
- * This command sets RSSI golden range that is explained in Core_v5.3, Vol 6, Part B,
- * Section 5.1.17.1.
+ * This command sets the parameters to initiate autonomous LE Power Control Request
+ * procedure by the Link Layer.
  *
- * When this command is issued, the controller stores the golden range values.
- * These values can be used to keep RSSI (Received Signal Strength Indication) value
- * to be in the golden range.
+ * When this command is issued, the controller stores the parameters and
+ * uses them for the subsequent LE Power Control Requests initiated across all the connections.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -942,7 +969,7 @@ uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_t
  * @return Returns value between 0x01-0xFF in case of error.
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
-uint8_t sdc_hci_cmd_vs_set_rssi_golden_range(const sdc_hci_cmd_vs_set_rssi_golden_range_t * p_params);
+uint8_t sdc_hci_cmd_vs_set_auto_power_control_request_param(const sdc_hci_cmd_vs_set_auto_power_control_request_param_t * p_params);
 
 /** @brief Set advertising randomness.
  *
