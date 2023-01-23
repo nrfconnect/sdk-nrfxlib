@@ -124,3 +124,9 @@
 
 "CI-positioning-test":
   - "nrf_modem/**/*"
+
+"CI-cloud-test":
+  - "nrf_modem/**/*"
+  - "nrf_security/**/*"
+  - "crypto/**/*"
+  - "nrf_rpc/**/*"
