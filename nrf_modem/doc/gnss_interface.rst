@@ -223,11 +223,11 @@ The error in position calculation, when compared to the actual position, can be 
 In addition, GNSS might use only three satellites to determine a fix.
 In normal accuracy mode, four or more satellites are used.
 
-For a possible position fix using only three satellites, GNSS must have a reference altitude that has been updated in the last 24 hours.
+For a possible position fix using only three satellites, GNSS must have a reference altitude that has low enough uncertainty.
 The reference altitude is obtained from one of the following sources:
 
-* A GNSS fix using five or more satellites - In the subsequent time window following the fix using five satellites, any fix that uses five or more satellites results in the extension of the 24-hour time window.
-* A-GPS assistance data - The assistance data is injected to GNSS using the :c:type:`nrf_modem_gnss_agps_data_location` A-GPS data location struct, as shown in the example code below:
+* A GNSS fix using five or more satellites.
+* A-GPS assistance data - The assistance data is injected to GNSS using the :c:type:`nrf_modem_gnss_agps_data_location` A-GPS data location struct, as shown in the following example code:
 
   .. code-block:: c
 
@@ -255,7 +255,8 @@ The reference altitude is obtained from one of the following sources:
 If both verified GNSS fix (five or more satellites used in earlier fix) and A-GPS assistance data are available, the altitude from the verified GNSS fix is used.
 
 Thus, if GNSS has started in the low accuracy mode, it will not be able to produce fixes using three satellites until it has a reference altitude from one of the mentioned sources.
-Furthermore, to continue having possible three satellite fixes, the reference altitude must be updated at least once in every 24 hours from one of the sources.
+Over time, the uncertainty of the reference altitude increases unless a GNSS fix is obtained using five or more satellites, or altitude assistance is injected to GNSS.
+See :ref:`ref_alt_exp_evt` for GNSS indication of reference altitude expiry.
 
 .. note::
 
@@ -286,6 +287,8 @@ The low accuracy mode can be enabled as shown in the following example:
    Low accuracy mode is only supported by modem firmware v1.2.2 or later.
 
    Uncertainty value ``255`` is only supported by modem firmware v1.3.0 or later.
+
+.. _ref_alt_exp_evt:
 
 Reference altitude expiration event
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -505,7 +508,18 @@ Thus, |delta| t is always positive.
 A-GPS data
 **********
 
-GNSS automatically requests A-GPS data when GNSS is started for the first time or it determines that the existing data is going to go stale soon.
+You can use GNSS assistance data to shorten TTFF and decrease GNSS power consumption.
+See :ref:`lib_nrf_cloud_agps` and :ref:`lib_nrf_cloud_pgps` for information how to obtain assistance data from :ref:`lib_nrf_cloud` to be used with the nRF9160 SiP.
+
+Determining the assistance data needed by GNSS
+==============================================
+
+The GNSS interface has two methods for getting the current GNSS assistance data need.
+
+A-GPS data need event
+---------------------
+
+GNSS requests A-GPS data when GNSS is started for the first time or it determines that the existing data will expire soon.
 Whenever A-GPS data is needed, GNSS sends the :c:data:`NRF_MODEM_GNSS_EVT_AGPS_REQ` event.
 The payload for this event contains information about what kind of data is needed.
 
@@ -517,8 +531,31 @@ When the event is received, the associated payload can be read like this:
 
    err = nrf_modem_gnss_read(&agps_data, sizeof(agps_data), NRF_MODEM_GNSS_DATA_AGPS_REQ);
 
-After reading the data successfully, the struct contains bitmasks sv_mask_ephe and sv_mask_alm, which indicate the need for ephemerides and almanacs for each GPS satellite.
-The data_flags member is a bitmask for other A-GPS data.
+After reading the data successfully, the struct contains bitmasks ``sv_mask_ephe`` and ``sv_mask_alm``, which indicate the need for ephemerides and almanacs for each GPS satellite.
+The ``data_flags`` member is a bitmask for other A-GPS data.
+
+To prevent triggering assistance data download too often, GNSS sends the :c:data:`NRF_MODEM_GNSS_EVT_AGPS_REQ` event at most once an hour.
+
+A-GPS data expiry query
+-----------------------
+
+You can use the :c:func:`nrf_modem_gnss_agps_expiry_get` function to query assistance data need at any time.
+
+The assistance data need can be read like this:
+
+.. code-block:: c
+
+   struct nrf_modem_gnss_agps_expiry agps_expiry;
+
+   err = nrf_modem_gnss_agps_expiry_get(&agps_expiry);
+
+After reading the data successfully, the struct contains expiration times for different types of assistance data.
+The ``ephe_expiry`` and ``alm_expiry`` arrays contain ephemeris and almanac expiration times for each GPS satellite.
+The struct also contains expiration times, for example, for Klobuchar ionospheric corrections and satellite integrity assistance.
+The ``data_flags`` member contains a bitmask for certain data types, indicating whether the data is currently needed.
+
+Injecting assistance data
+=========================
 
 A-GPS data is injected into GNSS using the :c:func:`nrf_modem_gnss_agps_write` function.
 Each data type has its own struct that is used when A-GPS data is written to GNSS.
