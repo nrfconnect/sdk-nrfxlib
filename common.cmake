@@ -36,6 +36,8 @@ function(nrfxlib_calculate_lib_path lib_path)
   if(${CALC_LIB_PATH_SOC_MODE})
     # CMake regex does not support {4}
     string(REGEX REPLACE "_[a-zA-Z][a-zA-Z][a-zA-Z][a-zA-Z]$" "" arch_soc_dir ${CONFIG_SOC})
+  elseif(CONFIG_SOC_SERIES_BSIM_NRFXX)
+    set(arch_soc_dir "bsim_nrfxx")
   else()
     # Add Arch type
     assert(GCC_M_CPU "GCC_M_CPU must be set to find correct lib.")
