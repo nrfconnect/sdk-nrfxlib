@@ -103,10 +103,11 @@ endif()
 append_with_prefix(src_x509 ${ARM_MBEDTLS_PATH}/library
     x509.c
     x509_create.c
-    x509write_csr.c
     x509_crl.c
     x509_crt.c
     x509_csr.c
+    x509write_crt.c
+    x509write_csr.c
 )
 
 # TLS files
@@ -115,13 +116,17 @@ append_with_prefix(src_tls ${ARM_MBEDTLS_PATH}/library
     net_sockets.c
     ssl_cache.c
     ssl_ciphersuites.c
-    ssl_cli.c
+    ssl_client.c
     ssl_cookie.c
     ssl_msg.c
-    ssl_srv.c
     ssl_ticket.c
     ssl_tls.c
+    ssl_tls12_client.c
+    ssl_tls12_server.c
     ssl_tls13_keys.c
+    ssl_tls13_server.c
+    ssl_tls13_client.c
+    ssl_tls13_generic.c
 )
 
 
