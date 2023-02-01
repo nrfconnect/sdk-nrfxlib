@@ -80,7 +80,11 @@ typedef union {
     mbedtls_transparent_test_driver_aead_operation_t transparent_test_driver_ctx;
 #endif
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
-    cc3xx_aead_operation_t cc3xx_driver_ctx;
+    struct {
+        cc3xx_aead_operation_t cc3xx_driver_ctx;
+        /* NCSDK-19932: get this from the cc3xx_driver_ctx. */
+        size_t cc3xx_driver_ctx_tag_length;
+    };
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
 #if defined(PSA_CRYPTO_DRIVER_OBERON)
     oberon_aead_operation_t oberon_driver_ctx;
