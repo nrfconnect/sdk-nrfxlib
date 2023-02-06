@@ -6,9 +6,9 @@ Limitations
 When working with the SoftDevice Controller, you should be aware of the following limitations.
 In addition, see :ref:`nrf:known_issues` for temporary issues that will be fixed in future releases.
 
-DRGN-17562: One of the LE Transmit Power Reporting Event may not be reported to the host.
+DRGN-17562: One of the LE Transmit Power Reporting Events might not be reported to the host.
   When multiple LE Transmit Power Reporting Events are generated at the same time for the same PHY, one of these events will be missed.
-  This will only occur when there are simultaneous remote and local power level changes on the same PHY.
+  This will occur only when there are simultaneous remote and local power level changes on the same PHY.
 
 YOPAN-87: The RSSI value reported by the SoftDevice Controller requires additional temperature compensation
   The RSSI value reported by the SoftDevice Controller is the raw value from the radio peripheral.

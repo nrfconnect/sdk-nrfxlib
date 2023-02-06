@@ -87,7 +87,7 @@ The following snippet shows how to use :c:func:`nrf_modem_at_printf` to send a f
 	}
 
 Any return value other than zero indicates an error.
-Negative values indicate that the Modem library has failed to send the AT command, and they represent a nrf_errno code that indicates the reason for the failure.
+Negative values indicate that the Modem library has failed to send the AT command, and they represent an ``nrf_errno`` code that indicates the reason for the failure.
 Positive values indicate that the modem has received the AT command and has responded with an error.
 When a positive value is returned, the error type can be retrieved using the :c:func:`nrf_modem_at_err_type` helper function, and the error value (in case of CME or CMS errors) can be retrieved with the :c:func:`nrf_modem_at_err` helper function.
 

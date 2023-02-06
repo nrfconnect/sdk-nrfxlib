@@ -41,55 +41,55 @@ Socket options
 
 The following table shows all socket options supported by the Modem library.
 
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| Option level     | Option                          | Type                | Operations | Description                                                                                |
-+==================+=================================+=====================+============+============================================================================================+
-| NRF_SOL_SOCKET   | NRF_SO_ERROR                    | int                 | get        | Requests and clears pending error information on the socket.                               |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_REUSEADDR                | int                 | set        | Non-zero requests reuse of local addresses in :c:func:`nrf_bind` (protocol-specific).      |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RCVTIMEO                 | struct nrf_timeval  | get/set    | Timeout value for a socket receive operation.                                              |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_SNDTIMEO                 | struct nrf_timeval  | get/set    | Timeout value for a socket send operation.                                                 |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_BINDTODEVICE             | char *              | set        | Bind this socket to a specific PDN like ``pdn0`` as specified in the passed option value.  |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_POLLCB                   | struct nrf_pollcb   | set        | Set callbacks for poll() events on sockets.                                                |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RAI_LAST                 | int                 | set        | Enter Radio Resource Control (RRC) idle immediately after the next send operation.         |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RAI_ONE_RESP             | int                 | set        | Wait for one incoming packet after the next send operation, before entering RRC idle mode. |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RAI_ONGOING              | int                 | set        | Keep RRC in connected mode after the next send operation (client)                          |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RAI_WAIT_MORE            | int                 | set        | Keep RRC in connected mode after the next send operation (server).                         |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RAI_NO_DATA              | int                 | set        | Immediately release the RRC.                                                               |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_IPPROTO_ALL  | NRF_SO_SILENCE_ALL              | int                 | get/set    | Non-zero disables ICMP echo replies on both IPv4 and IPv6.                                 |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_IPPROTO_IP   | NRF_SO_IP_ECHO_REPLY            | int                 | get/set    | Non-zero enables ICMP echo replies on IPv4.                                                |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_IPPROTO_IPV6 | NRF_SO_IPV6_ECHO_REPLY          | int                 | get/set    | Non-zero enables ICMP echo replies on IPv6.                                                |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_IPPROTO_TCP  | NRF_SO_TCP_SRV_SESSTIMEO        | int                 | get/set    | Non-zero enables TCP server session timeout after a configurable period of inactivity.     |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE   | NRF_SO_SEC_TAG_LIST             | nrf_sec_tag_t []    | get/set    | Set/get the security tag associated with a socket.                                         |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE   | NRF_SO_SEC_HOSTNAME             | char *              | get/set    | Set/get the hostname to check against during TLS handshakes.                               |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE   | NRF_SO_SEC_CIPHERSUITE_LIST     | nrf_sec_cipher_t [] | get/set    | Set/get allowed ciphersuite list.                                                          |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE   | NRF_SO_SEC_PEER_VERIFY          | nrf_peer_verify_t   | get/set    | Set/get Peer verification level.                                                           |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE   | NRF_SO_SEC_ROLE                 | nrf_sec_role_t      | get/set    | Set/get TLS role.                                                                          |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE   | NRF_SO_SEC_SESSION_CACHE        | nrf_session_cache_t | get/set    | Non-zero enables TLS session cache.                                                        |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE   | NRF_SO_SEC_SESSION_CACHE_PURGE  | int                 | set        | Delete TLS session cache.                                                                  |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE   | NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO | int                 | get/set    | Set/get DTLS handshake timeout.                                                            |
-+------------------+---------------------------------+---------------------+------------+--------------------------------------------------------------------------------------------+
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| Option level    | Option                          | Type                   | Operations | Description                                                                                |
++=================+=================================+========================+============+============================================================================================+
+| NRF_SOL_SOCKET  | NRF_SO_ERROR                    | int                    | get        | Requests and clears pending error information on the socket.                               |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_REUSEADDR                | int                    | set        | Non-zero requests reuse of local addresses in :c:func:`nrf_bind` (protocol-specific).      |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_RCVTIMEO                 | struct nrf_timeval     | get/set    | Timeout value for a socket receive operation.                                              |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_SNDTIMEO                 | struct nrf_timeval     | get/set    | Timeout value for a socket send operation.                                                 |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_BINDTODEVICE             | char *                 | set        | Bind this socket to a specific PDN like ``pdn0`` as specified in the passed option value.  |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_POLLCB                   | struct nrf_pollcb      | set        | Set callbacks for poll() events on sockets.                                                |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_RAI_LAST                 | int                    | set        | Enter Radio Resource Control (RRC) idle immediately after the next send operation.         |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_RAI_ONE_RESP             | int                    | set        | Wait for one incoming packet after the next send operation, before entering RRC idle mode. |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_RAI_ONGOING              | int                    | set        | Keep RRC in connected mode after the next send operation (client).                         |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_RAI_WAIT_MORE            | int                    | set        | Keep RRC in connected mode after the next send operation (server).                         |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_RAI_NO_DATA              | int                    | set        | Immediately release the RRC.                                                               |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_IPPROTO_ALL | NRF_SO_SILENCE_ALL              | int                    | get/set    | Non-zero disables ICMP echo replies on both IPv4 and IPv6.                                 |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_IPPROTO_IP  | NRF_SO_IP_ECHO_REPLY            | int                    | get/set    | Non-zero enables ICMP echo replies on IPv4.                                                |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_IPPROTO_IPV6| NRF_SO_IPV6_ECHO_REPLY          | int                    | get/set    | Non-zero enables ICMP echo replies on IPv6.                                                |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_IPPROTO_TCP | NRF_SO_TCP_SRV_SESSTIMEO        | int                    | get/set    | Non-zero enables TCP server session timeout after a configurable period of inactivity.     |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_TAG_LIST             | ``nrf_sec_tag_t``      | get/set    | Set/get the security tag associated with a socket.                                         |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_HOSTNAME             | char *                 | get/set    | Set/get the hostname to check against during TLS handshakes.                               |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_CIPHERSUITE_LIST     | ``nrf_sec_cipher_t``   | get/set    | Set/get allowed ciphersuite list.                                                          |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_PEER_VERIFY          | ``nrf_peer_verify_t``  | get/set    | Set/get Peer verification level.                                                           |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_ROLE                 | ``nrf_sec_role_t``     | get/set    | Set/get TLS role.                                                                          |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_SESSION_CACHE        | ``nrf_session_cache_t``| get/set    | Non-zero enables TLS session cache.                                                        |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_SESSION_CACHE_PURGE  | int                    | set        | Delete TLS session cache.                                                                  |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO | int                    | get/set    | Set/get DTLS handshake timeout.                                                            |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 
 The details for each socket are described as follows:
 
@@ -105,7 +105,7 @@ NRF_SO_REUSEADDR
 
 NRF_SO_RCVTIMEO
    Set a timeout value for the :c:func:`nrf_recv` and :c:func:`nrf_recvfrom` operations.
-   This option accepts a :c:struct:`nrf_timeval` structure with a number of seconds and microseconds specifying the limit on how long to wait for an input operation to complete.
+   This option accepts an :c:struct:`nrf_timeval` structure with a number of seconds and microseconds specifying the limit on how long to wait for an input operation to complete.
    If a receive operation has blocked for this much time without receiving additional data, it returns with a partial count, or ``errno`` is set to ``NRF_EAGAIN`` or ``NRF_EWOULDBLOCK`` if no data were received.
    The default for this option is the value ``0``, which indicates that a receive operation will not time out.
 
@@ -114,7 +114,7 @@ NRF_SO_RCVTIMEO
 
 NRF_SO_SNDTIMEO
    Set a timeout value for the :c:func:`nrf_connect`, :c:func:`nrf_send`, and :c:func:`nrf_sendto` operations.
-   The option accepts a :c:struct:`nrf_timeval` structure with a number of seconds and microseconds specifying the limit on how long to wait for an output operation to complete.
+   The option accepts an :c:struct:`nrf_timeval` structure with a number of seconds and microseconds specifying the limit on how long to wait for an output operation to complete.
    The default for this option is the value ``0``, which indicates that these operations will not time out.
 
 .. note::
@@ -230,7 +230,7 @@ NRF_SO_SEC_SESSION_CACHE
 
 NRF_SO_SEC_SESSION_CACHE_PURGE
    Delete TLS session cache.
-   This options is write-only.
+   This option is write-only.
 
 NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO
    Set the DTLS handshake timeout.

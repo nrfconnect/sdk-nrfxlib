@@ -96,7 +96,7 @@ Interface
 **********
 
 The 1-wire protocol lets Bluetooth LE nRF chips coexist alongside an LTE device on a separate chip.
-It was specifically designed for the `coex interface of nRF9160 <https://infocenter.nordicsemi.com/index.jsp?topic=%2Fps_nrf9160%2Fip%2Fradio_lte%2Fdoc%2Fmagpio_if.html>`_.
+It was specifically designed for the `coex interface of nRF9160`_.
 
 
 Hardware resources
