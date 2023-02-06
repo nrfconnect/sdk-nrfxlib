@@ -3,6 +3,10 @@
 Modem fault handling
 ####################
 
+.. contents::
+   :local:
+   :depth: 2
+
 The application core and the modem core are separate cores on the nRF9160 SiP.
 When the modem core on the nRF9160 SiP crashes, it sends a fault signal to the application core.
 
@@ -43,7 +47,7 @@ Socket APIs that require communication with the modem, return ``-1`` and set ``e
 Although the modem has crashed, any data which was stored by the Modem library, including data that was delivered to the Modem library by the modem, remains available until the Modem library is shut down.
 This includes incoming network data, which was received before the crash but has not been read by the application.
 The application can read that data as normal, using the :c:func:`recv` function.
-When no more data is available, the :c:func:`recv` returns ``-1`` and sets ``errno`` to ``NRF_ESHUTDOWN``.
+When no more data is available, the :c:func:`recv` function returns ``-1`` and sets ``errno`` to ``NRF_ESHUTDOWN``.
 
 Ongoing API calls
 *****************

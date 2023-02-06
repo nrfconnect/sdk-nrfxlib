@@ -1056,7 +1056,7 @@ enum zb_zcl_ota_upgrade_image_block_fc_e
     @param data_size_max - Maximum data size
     @param node_addr - Request node address
     @param block_delay - BlockRequestDelay
-    @param current_delay - Delay current send (millisec)
+    @param current_delay - Delay current send (milliseconds)
 */
 #define ZB_ZCL_OTA_UPGRADE_SEND_IMAGE_BLOCK_REQ(                            \
     buffer, addr, dst_addr_mode, dst_ep, ep, prfl_id, def_resp, cb,         \

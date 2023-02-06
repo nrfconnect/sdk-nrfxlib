@@ -9,7 +9,7 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-main branch
+Main branch
 ***********
 
 Added

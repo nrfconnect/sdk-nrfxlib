@@ -44,6 +44,8 @@
 
 .. _`nRF Trace collector`: https://infocenter.nordicsemi.com/index.jsp?topic=%2Fug_trace_collector%2FUG%2Ftrace_collector%2Fintro.html
 
+.. _`coex interface of nRF9160`:  https://infocenter.nordicsemi.com/index.jsp?topic=%2Fps_nrf9160%2Fip%2Fradio_lte%2Fdoc%2Fmagpio_if.html
+
 .. ### Source: www.nordicsemi.com
 
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#0B34B59935AF4AFCB7AB93E9646C1F53
@@ -79,6 +81,6 @@
 
 .. _`NMEA report sample`: http://aprs.gids.nl/nmea/#gsa
 
-.. _`Bluetooth Core Specification`: https://www.bluetooth.com/specifications/specs/core-specification/
+.. _`Bluetooth Core Specification`: https://www.bluetooth.com/specifications/specs/core-specification-5-4/
 
 .. _`Appropriate Language Mapping Table`: https://www.bluetooth.com/language-mapping/Appropriate-Language-Mapping-Table

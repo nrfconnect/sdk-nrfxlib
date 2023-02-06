@@ -96,7 +96,7 @@ void nrf_modem_os_busywait(int32_t usec);
  *
  * @param context Library context.
  * @param[in, out] timeout Timeout in milliseconds, or @c NRF_MODEM_OS_FOREVER for no timeout.
- *			   Specifies the timeout value on input and the remainig
+ *			   Specifies the timeout value on input and the remaining
  *			   time to sleep on output.
  *
  * @retval 0 The thread is woken before the timeout expired.
