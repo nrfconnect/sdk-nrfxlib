@@ -71,6 +71,13 @@ set(CONFIG_MBEDTLS_USE_PSA_CRYPTO                   False)
 # complete build with all libraries and a full mbedcrypto library for linking.
 set(CONFIG_BUILD_WITH_TFM                           False)
 
+# In TF-M 1.7.0 we required mbedtls_hkdf function in HUK derivation.
+if (CONFIG_TFM_PROFILE_TYPE_MINIMAL)
+  set(CONFIG_MBEDTLS_HKDF_C                         False)
+else()
+  set(CONFIG_MBEDTLS_HKDF_C                         True)
+endif()
+
 # TF-M build require that PSA Crypto APIs are compiled
 set(COMPILE_PSA_APIS True)
 
