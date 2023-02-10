@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2020 Nordic Semiconductor ASA
+ * Copyright (c) 2017-2022 Nordic Semiconductor ASA
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -13,12 +13,27 @@
 #ifndef NRF_MODEM_H__
 #define NRF_MODEM_H__
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @defgroup nrf_modem_limits Limits of the Modem library.
+ * @ingroup nrf_modem
+ * @{
+ * @brief Upper and lower bound limits of the Modem library.
+ */
+
+/** @brief Maximum number of AT and IP sockets available at the same time. */
+#define NRF_MODEM_MAX_SOCKET_COUNT 8
+
+/** @brief Maximum size in bytes of shared modem and application memory. */
+#define NRF_MODEM_MAX_SHMEM_SIZE (128 << 10) /* 128KiB */
+
+/**@} */ /* nrf_modem_limits */
 
 /**
  * @defgroup nrf_modem_dfu Modem DFU
@@ -31,38 +46,47 @@ extern "C" {
 /** Modem firmware update successful.
  * The modem will run the updated firmware on reboot.
  */
-#define MODEM_DFU_RESULT_OK 0x5500001u
+#define NRF_MODEM_DFU_RESULT_OK 0x5500001u
 /** Modem firmware update failed.
  * The modem encountered a fatal internal error during firmware update.
  */
-#define MODEM_DFU_RESULT_INTERNAL_ERROR 0x4400001u
+#define NRF_MODEM_DFU_RESULT_INTERNAL_ERROR 0x4400001u
 /** Modem firmware update failed.
  * The modem encountered a fatal hardware error during firmware update.
  */
-#define MODEM_DFU_RESULT_HARDWARE_ERROR 0x4400002u
+#define NRF_MODEM_DFU_RESULT_HARDWARE_ERROR 0x4400002u
 /** Modem firmware update failed, due to an authentication error.
  * The modem will automatically run the previous (non-updated)
  * firmware on reboot.
  */
-#define MODEM_DFU_RESULT_AUTH_ERROR 0x4400003u
+#define NRF_MODEM_DFU_RESULT_AUTH_ERROR 0x4400003u
 /** Modem firmware update failed, due to UUID mismatch.
  * The modem will automatically run the previous (non-updated)
  * firmware on reboot.
  */
-#define MODEM_DFU_RESULT_UUID_ERROR 0x4400004u
+#define NRF_MODEM_DFU_RESULT_UUID_ERROR 0x4400004u
 /** Modem firmware update not executed due to low voltage.
  *  The modem will retry the update on reboot.
  */
-#define MODEM_DFU_RESULT_VOLTAGE_LOW 0x4400005u
+#define NRF_MODEM_DFU_RESULT_VOLTAGE_LOW 0x4400005u
 
 /**@} */
 
+/**
+ * @defgroup nrf_modem_shmem_config Shared memory configuration.
+ *           Only the lower 128k of RAM may be shared with the modem core.
+ *
+ * @ingroup nrf_modem
+ * @{
+ */
+
+/** @brief Shared memory control size
+ *
+ *  @note: The size of this area is build constant.
+ */
 #define NRF_MODEM_SHMEM_CTRL_SIZE 0x4e8
 
-/** @brief Shared memory configuration.
- *
- *  @note: Only the lower 128k of RAM may be shared with the modem core.
- */
+/** @brief Shared memory configuration in normal operation mode. */
 struct nrf_modem_shmem_cfg {
 	/** Control memory, used for control structures.
 	 *  The size of this area is build constant, and must be equal to
@@ -72,22 +96,44 @@ struct nrf_modem_shmem_cfg {
 		uint32_t base;
 		uint32_t size;
 	} ctrl;
-	/** TX memory, used to send data to the modem */
+	/** TX memory, used to send data to the modem.
+	 *  The base address must be word-aligned (4 bytes).
+	 */
 	struct {
 		uint32_t base;
 		uint32_t size;
 	} tx;
-	/** RX memory, used to receive data from the modem */
+	/** RX memory, used to receive data from the modem.
+	 *  The base address must be word-aligned (4 bytes).
+	 */
 	struct {
 		uint32_t base;
 		uint32_t size;
 	} rx;
-	/** Trace memory, used to receive traces from the modem */
+	/** Trace memory, used to receive traces from the modem.
+	 *  The base address must be word-aligned (4 bytes).
+	 */
 	struct {
 		uint32_t base;
 		uint32_t size;
 	} trace;
 };
+
+/** @brief Bootloader shared memory size
+ *
+ *  @note: The size of this area is build constant.
+ */
+#define NRF_MODEM_SHMEM_BOOTLOADER_SIZE 0x201c
+
+/** @brief Shared memory configuration in bootloader mode.
+ *  The base address must be word-aligned (4 bytes).
+ */
+struct nrf_modem_bootloader_shmem_cfg {
+	uint32_t base;
+	uint32_t size;
+};
+
+/**@} */
 
 /**
  * @defgroup nrf_modem_fault_handling Modem fault handling
@@ -151,12 +197,14 @@ struct nrf_modem_init_params {
 	nrf_modem_fault_handler_t fault_handler;
 };
 
-/** @brief Modem library mode */
-enum nrf_modem_mode {
-	/** Normal operation mode */
-	NORMAL_MODE,
-	/** DFU mode */
-	FULL_DFU_MODE,
+/** @brief Modem library bootloader initialization parameters. */
+struct nrf_modem_bootloader_init_params {
+	/** Shared memory configuration */
+	struct nrf_modem_bootloader_shmem_cfg shmem;
+	/** IPC IRQ priority */
+	uint32_t ipc_irq_prio;
+	/** Modem fault handler */
+	nrf_modem_fault_handler_t fault_handler;
 };
 
 /**
@@ -168,36 +216,48 @@ enum nrf_modem_mode {
 char *nrf_modem_build_version(void);
 
 /**
- * @brief Initialize the Modem library.
+ * @brief Initialize the Modem library and turn on the modem.
  *
- * Library has two operation modes, normal and DFU.
- * In normal operation mode, the DFU functionality is disabled.
- *
- * Library can alternatively be initialized in DFU mode, which means that
- * all shared memory regions are now reserved for DFU operation,
- * and therefore no other modem functionality can be used.
- *
- * To switch between DFU and normal modes, nrf_modem_shutdown() should be
+ * @note
+ * To switch between bootloader and normal modes, @c nrf_modem_shutdown must be
  * called in between.
  *
  * @param[in] init_params Initialization parameters.
- * @param[in] mode Library mode.
+ *
+ * @retval Zero on success.
+ * @retval -NRF_EPERM The Modem library is already initialized.
+ * @retval -NRF_EFAULT @c init_params is @c NULL.
+ * @retval -NRF_ENOLCK Not enough semaphores.
+ * @retval -NRF_ENOMEM Not enough shared memory.
+ * @retval -NRF_EINVAL Control region size is incorrect.
+ * @retval -NRF_ENOTSUPP RPC version mismatch.
+ * @retval -NRF_ETIMEDOUT Operation timed out.
+ * @retval -NRF_ACCESS Modem firmware authentication failure.
+ */
+int nrf_modem_init(const struct nrf_modem_init_params *init_params);
+
+/**
+ * @brief Initialize the Modem library and turn on the modem in bootloader mode.
+ *
+ * @note
+ * To switch between bootloader and normal modes, @c nrf_modem_shutdown must be
+ * called in between.
+ *
+ * @param[in] init_params Bootloader initialization parameters.
  *
  * @retval Zero on success.
  * @retval A positive value from @ref nrf_modem_dfu when executing
  *         Modem firmware updates.
  *
- * @retval -NRF_EFAULT @c init_params is @c NULL.
- * @retval -NRF_ENOMEM Not enough shared memory for this operation.
  * @retval -NRF_EPERM The Modem library is already initialized.
+ * @retval -NRF_EFAULT @c init_params is @c NULL.
+ * @retval -NRF_ENOLCK Not enough semaphores.
+ * @retval -NRF_ENOMEM Not enough shared memory.
+ * @retval -NRF_EACCES Bad root digest.
  * @retval -NRF_ETIMEDOUT Operation timed out.
- * @retval -NRF_NOLCK Not enough semaphores.
- * @retval -NRF_EINVAL RPC control region size is incorrect.
- * @retval -NRF_EOPNOTSUPP RPC version mismatch.
- * @retval -NRF_EIO IPC State fault or missing root digest.
+ * @retval -NRF_EIO Bootloader fault.
  */
-int nrf_modem_init(const struct nrf_modem_init_params *init_params,
-		   enum nrf_modem_mode mode);
+int nrf_modem_bootloader_init(const struct nrf_modem_bootloader_init_params *init_params);
 
 /**
  * @brief Check whether the modem is initialized.
@@ -208,16 +268,16 @@ int nrf_modem_init(const struct nrf_modem_init_params *init_params,
 bool nrf_modem_is_initialized(void);
 
 /**
- * @brief Shutdown the Modem library.
+ * @brief De-initialize the Modem library and turn off the modem.
  *
  * @note
- * The modem must be put into offline (CFUN=0) mode before shutting it down.
+ * If the modem is initialized in normal mode, it must be put into offline mode (CFUN=0)
+ * before shutting it down.
  *
  * Resources reserved by the library are freed when the library is shutdown.
  *
  * @retval Zero on success.
  * @retval -NRF_EPERM The Modem library is not initialized.
- * @retval -NRF_ENOMEM Not enough shared memory for this operation.
  */
 int nrf_modem_shutdown(void);
 

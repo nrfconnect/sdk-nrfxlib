@@ -159,18 +159,24 @@ nrf_modem_os_busywait()
 
 This function is called by the Modem library when a blocking timed context is required.
 
+nrf_modem_os_sleep()
+--------------------
+
+This function is called by the Modem library to put a thread to sleep unconditionally for a given amount of time.
+
 .. _nrf_modem_os_timedwait:
 
 nrf_modem_os_timedwait()
 ------------------------
 
-This function is called by the Modem library when a timed context or sleep is required.
-A blind return value of 0 will make all the Modem library operations always blocking.
+This function is called by the Modem library to put a thread to sleep for a certain amount of time or until an event occurs.
 
-*Required actions* to be taken that do not block the operations:
+*Required actions*:
 
-* Start counting the time (this can be based on a Timer or Thread for instance).
-* In the case of a call to :c:func:`nrf_modem_os_event_notify` function, all waiting threads must wake up, reporting back the remaining time of the timer through the ``timeout`` variable.
+* Put the thread to sleep, if applicable, or otherwise wait until the amount of time specified by ``timeout`` has elapsed, or until :c:func:`nrf_modem_os_event_notify` is called with the same ``context`` parameter, or with ``context`` equal to ``0``.
+* After the wait is complete, update the ``timeout`` parameter with the amount of time left to sleep.
+  This will be ``0`` if the timeout has elapsed or the amount of time left to sleep if the wait was interrupted by a call to :c:func:`nrf_modem_os_event_notify`.
+* Check the Modem library initialization status using :c:func:`nrf_modem_is_initialized` and return ``-NRF_ESHUTDOWN`` if that call returns ``false``.
 
 The following points decide the *Function return value*:
 
@@ -181,11 +187,12 @@ The following points decide the *Function return value*:
 nrf_modem_os_event_notify()
 ---------------------------
 
-This function is called by the Modem library when an event occurs and all threads waiting in the :c:func:`nrf_modem_os_timedwait` function must wake up.
+This function is called by the Modem library when an event occurs.
 
 *Required action*:
 
-* Wake all threads that are sleeping in :c:func:`nrf_modem_os_timedwait`. For details, see :c:func:`nrf_modem_os_timedwait`.
+* Wake all threads that are sleeping in :c:func:`nrf_modem_os_timedwait` that have the same ``context``.
+  A ``context`` parameter with value ``0`` shall wake up all threads put to sleep with :c:func:`nrf_modem_os_timedwait`.
 
 nrf_modem_os_alloc()
 --------------------

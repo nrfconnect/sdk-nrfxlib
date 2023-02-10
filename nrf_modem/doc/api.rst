@@ -98,6 +98,10 @@ fcntl parameters
    :project: nrfxlib
    :members:
 
+.. doxygengroup:: nrf_fcnt_flags
+   :project: nrfxlib
+   :members:
+
 Socket API
 **********
 
@@ -145,12 +149,13 @@ AT API
    :project: nrfxlib
    :members:
 
+.. _nrf_modem_bootloader_api:
 .. _nrf_modem_full_dfu_api:
 
-Full DFU API
-************
+Bootloader API
+**************
 
-.. doxygengroup:: nrf_modem_full_dfu
+.. doxygengroup:: nrf_modem_bootloader
    :project: nrfxlib
    :members:
 

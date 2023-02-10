@@ -98,7 +98,7 @@ A delta modem firmware upgrade consists of the following steps:
 Initializing the Modem library
 ==============================
 
-The Delta DFU interface can be used once the application initializes the Modem library in :c:enum:`NORMAL_MODE` by calling :c:func:`nrf_modem_init`.
+The Delta DFU interface can be used once the application initializes the Modem library in normal mode by calling :c:func:`nrf_modem_init`.
 
 Preparing the scratch area
 ==========================
@@ -193,12 +193,12 @@ Checking the result of the update
 
 :c:func:`nrf_modem_init` will return one of the following values:
 
-* ``MODEM_DFU_RESULT_OK`` - The update is successful. The modem will run the updated firmware the next time it boots.
-* ``MODEM_DFU_RESULT_AUTH_ERROR`` - The update did not take place. The modem will run the original firmware the next time it boots.
-* ``MODEM_DFU_RESULT_UUID_ERROR`` - The update did not take place. The modem will run the original firmware the next time it boots.
-* ``MODEM_DFU_RESULT_INTERNAL_ERROR`` - The modem encountered an internal error while updating, and it will not boot to prevent executing unintended operations. The next firmware update operation may only be attempted through the :ref:`nrf_modem_full_dfu_api`.
-* ``MODEM_DFU_RESULT_HARDWARE_ERROR`` - The modem encountered a hardware error while updating, and it will not boot to prevent executing unintended operations. The next firmware update operation may only be attempted through the :ref:`nrf_modem_full_dfu_api`.
-* ``MODEM_DFU_RESULT_VOLTAGE_LOW`` - The modem did not have sufficient voltage to apply the firmware update. The operation will be retried the next time the modem is started.
+* ``NRF_MODEM_DFU_RESULT_OK`` - The update is successful. The modem will run the updated firmware the next time it boots.
+* ``NRF_MODEM_DFU_RESULT_AUTH_ERROR`` - The update did not take place. The modem will run the original firmware the next time it boots.
+* ``NRF_MODEM_DFU_RESULT_UUID_ERROR`` - The update did not take place. The modem will run the original firmware the next time it boots.
+* ``NRF_MODEM_DFU_RESULT_INTERNAL_ERROR`` - The modem encountered an internal error while updating, and it will not boot to prevent executing unintended operations. The next firmware update operation can only be attempted through the :ref:`nrf_modem_bootloader_api`.
+* ``NRF_MODEM_DFU_RESULT_HARDWARE_ERROR`` - The modem encountered a hardware error while updating, and it will not boot to prevent executing unintended operations. The next firmware update operation can only be attempted through the :ref:`nrf_modem_bootloader_api`.
+* ``NRF_MODEM_DFU_RESULT_VOLTAGE_LOW`` - The modem did not have sufficient voltage to apply the firmware update. The operation will be retried the next time the modem is started.
 
 Reinitializing the modem to run the new firmware
 ================================================
@@ -240,11 +240,11 @@ Checking the result of the rollback
 
 :c:func:`nrf_modem_init` will return one of the following values:
 
-* ``MODEM_DFU_RESULT_OK`` - The rollback is successful. The modem will run the previous firmware the next time it boots.
-* ``MODEM_DFU_RESULT_AUTH_ERROR`` - The rollback did not take place. The modem will run the same firmware the next time it boots.
-* ``MODEM_DFU_RESULT_UUID_ERROR`` - The rollback did not take place. The modem will run the same firmware the next time it boots.
-* ``MODEM_DFU_RESULT_INTERNAL_ERROR`` - The modem encountered an internal error while executing the rollback, and it will not boot to prevent executing unintended operations. For subsequent programming, the modem can only be programmed through the :ref:`nrf_modem_full_dfu_api`.
-* ``MODEM_DFU_RESULT_HARDWARE_ERROR`` - The modem encountered a hardware error while executing the rollback, and it will not boot to prevent executing unintended operations. For subsequent programming, the modem can only be programmed through the :ref:`nrf_modem_full_dfu_api`.
+* ``NRF_MODEM_DFU_RESULT_OK`` - The rollback is successful. The modem will run the previous firmware the next time it boots.
+* ``NRF_MODEM_DFU_RESULT_AUTH_ERROR`` - The rollback did not take place. The modem will run the same firmware the next time it boots.
+* ``NRF_MODEM_DFU_RESULT_UUID_ERROR`` - The rollback did not take place. The modem will run the same firmware the next time it boots.
+* ``NRF_MODEM_DFU_RESULT_INTERNAL_ERROR`` - The modem encountered an internal error while executing the rollback, and it will not boot to prevent executing unintended operations. For subsequent programming, the modem can only be programmed through the :ref:`nrf_modem_bootloader_api`.
+* ``NRF_MODEM_DFU_RESULT_HARDWARE_ERROR`` - The modem encountered a hardware error while executing the rollback, and it will not boot to prevent executing unintended operations. For subsequent programming, the modem can only be programmed through the :ref:`nrf_modem_bootloader_api`.
 
 Reinitializing the modem to run the firmware
 ============================================
