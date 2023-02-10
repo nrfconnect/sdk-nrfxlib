@@ -58,21 +58,21 @@
 			<text x="4.43" y="183.28" class="st2">nrf_modem_shutdown()</text>		</g>
 		<g id="shape43-25" transform="translate(223.482,-15.8538)">
 			<title>Dynamic connector.43</title>
-			<path d="M0 183.76 L13.69 183.76" class="st4"/>
+			<path d="M0 183.76 L13.43 183.76" class="st4"/>
 		</g>
-		<g id="shape44-30" transform="translate(244.213,-12.972)">
+		<g id="shape44-30" transform="translate(243.953,-12.972)">
 			<title>Process.44</title>
 			<desc>nrf_modem_init()</desc>
 			<rect x="0" y="170.912" width="80.7479" height="19.9368" class="st1"/>
 			<text x="10.14" y="183.28" class="st2">nrf_modem_init()</text>		</g>
-		<g id="shape45-33" transform="translate(346.226,-1)">
+		<g id="shape45-33" transform="translate(336.503,-1)">
 			<title>Decision.45</title>
-			<desc>MODEM_DFU_RESULT_OK?</desc>
-			<path d="M0 168.91 L75.14 146.97 L150.27 168.91 L75.14 190.85 L0 168.91 Z" class="st1"/>
-			<text x="21.12" y="171.31" class="st2">MODEM_DFU_RESULT_OK?</text>		</g>
-		<g id="shape46-36" transform="translate(421.361,-44.8808)">
+			<desc>NRF_MODEM_DFU_RESULT_OK?</desc>
+			<path d="M0 168.91 L82.83 146.97 L165.66 168.91 L82.83 190.85 L0 168.91 Z" class="st1"/>
+			<text x="18.37" y="171.31" class="st2">NRF_MODEM_DFU_RESULT_OK?</text>		</g>
+		<g id="shape46-36" transform="translate(419.334,-44.8808)">
 			<title>Dynamic connector.46</title>
-			<path d="M0 190.85 L0 180.81 L-38.19 180.81 L-38.19 161.9" class="st4"/>
+			<path d="M0 190.85 L0 180.81 L-36.16 180.81 L-36.16 161.9" class="st4"/>
 		</g>
 		<g id="shape47-41" transform="translate(336.503,-80.8714)">
 			<title>Process.47</title>
@@ -112,9 +112,9 @@
 			<desc>nrf_modem_init()</desc>
 			<rect x="0" y="170.912" width="93.342" height="19.9368" class="st1"/>
 			<text x="16.44" y="183.28" class="st2">nrf_modem_init()</text>		</g>
-		<g id="shape54-65" transform="translate(496.095,-22.9404)">
+		<g id="shape54-65" transform="translate(498.93,-22.9404)">
 			<title>Dynamic connector.54</title>
-			<path d="M0.4 190.85 L13.77 190.85 L13.77 139.96" class="st4"/>
+			<path d="M3.24 190.85 L10.94 190.85 L10.94 139.96" class="st4"/>
 		</g>
 		<g id="shape55-70" transform="translate(502.781,-99.6454)">
 			<title>Dynamic connector.55</title>
@@ -132,9 +132,9 @@
 			<title>Dynamic connector.58</title>
 			<path d="M7.09 190.85 L7.09 170.58" class="st4"/>
 		</g>
-		<g id="shape59-90" transform="translate(324.961,-15.8538)">
+		<g id="shape59-90" transform="translate(323.515,-15.8538)">
 			<title>Dynamic connector.59</title>
-			<path d="M0 183.76 L14.22 183.76" class="st4"/>
+			<path d="M1.19 183.76 L5.95 183.76" class="st4"/>
 		</g>
 		<g id="shape60-95" transform="translate(56.2756,-159.907)">
 			<title>Dynamic connector.60</title>

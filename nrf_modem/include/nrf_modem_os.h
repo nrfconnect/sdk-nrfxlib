@@ -90,13 +90,14 @@ void nrf_modem_os_busywait(int32_t usec);
 /**
  * @brief Put a thread to sleep for a specific time or until an event occurs.
  *
- * All waiting threads shall be woken by @c nrf_modem_event_notify.
+ * The thread is woken by a @c nrf_modem_event_notify call with the same @p context parameter,
+ * or after the @p timeout has expired, whichever happens first. If the timeout has not expired,
+ * the @p timeout parameter is updated to contain the amount of time left to sleep.
  *
- * @param[in]      context   A unique identifier assigned by the library
- *                           to identify the context.
- * @param[in, out] timeout   Timeout in millisec or -1 for infinite timeout.
- *                           Contains the timeout value as input and the
- *                           remainig time to sleep as output.
+ * @param context Library context.
+ * @param[in, out] timeout Timeout in milliseconds, or @c NRF_MODEM_OS_FOREVER for no timeout.
+ *			   Specifies the timeout value on input and the remainig
+ *			   time to sleep on output.
  *
  * @retval 0 The thread is woken before the timeout expired.
  * @retval -NRF_EAGAIN The timeout expired.
@@ -107,9 +108,20 @@ int32_t nrf_modem_os_timedwait(uint32_t context, int32_t *timeout);
 /**
  * @brief Notify the application that an event has occurred.
  *
- * This function shall wake all threads sleeping in @c nrf_modem_os_timedwait.
+ * This function wakes up all threads sleeping in @c nrf_modem_os_timedwait
+ * that have the same @p context, or all sleeping threads if @p context is zero.
+ *
+ * @param context Library context.
  */
-void nrf_modem_os_event_notify(void);
+void nrf_modem_os_event_notify(uint32_t context);
+
+/**
+ * @brief Put a thread to sleep for a specific amount of time.
+ *
+ * @param timeout Timeout in millisec.
+ * @returns 0 on success, a negative errno otherwise.
+ */
+int nrf_modem_os_sleep(uint32_t timeout);
 
 /**
  * @brief Set errno.
@@ -133,15 +145,13 @@ bool nrf_modem_os_is_in_isr(void);
  * as an output. If an address of an already allocated semaphore is provided as
  * an input, the allocation part is skipped and the semaphore is only reinitialized.
  *
- * @param[inout] sem The address of the semaphore.
+ * @param[in, out] sem The address of the semaphore.
  * @param initial_count Initial semaphore count.
  * @param limit Maximum semaphore count.
  *
  * @returns 0 on success, a negative errno otherwise.
  */
-int nrf_modem_os_sem_init(void **sem,
-			  unsigned int initial_count,
-			  unsigned int limit);
+int nrf_modem_os_sem_init(void **sem, unsigned int initial_count, unsigned int limit);
 
 /**
  * @brief Give a semaphore.
@@ -174,11 +184,6 @@ int nrf_modem_os_sem_take(void *sem, int timeout);
  * @returns Current semaphore count.
  */
 unsigned int nrf_modem_os_sem_count_get(void *sem);
-
-/**
- * @brief Wake threads waiting in nrf_modem_os_timedwait for a modem event or freeing of memory.
- */
-void nrf_modem_os_event_notify(void);
 
 /**
  * @brief Generic logging procedure.

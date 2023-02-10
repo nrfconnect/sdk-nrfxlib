@@ -19,7 +19,7 @@ The Modem library supports the following features:
   * Assisted GPS (A-GPS)
 
 * Modem firmware updates (delta updates) (:file:`nrf_modem_delta_dfu.h`)
-* Modem bootloader (:file:`nrf_modem_full_dfu.h`)
+* Modem bootloader (full firmware updates) (:file:`nrf_modem_bootloader.h`)
 * Modem Fault handling
 * Modem tracing (:file:`nrf_modem_trace.h`)
 * Logging

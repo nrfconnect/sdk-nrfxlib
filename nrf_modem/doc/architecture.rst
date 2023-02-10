@@ -19,22 +19,22 @@ The following figure shows a simplified Modem library architecture:
 Shared memory configuration
 ***************************
 
-The shared memory area can be located anywhere within the first 128 kilobytes of RAM (lowest addresses) and it is logically divided into the following four regions:
+The shared memory between the application and modem cores must reside within the lowest 128 kilobytes of RAM.
+The application is responsible for reserving the memory area before passing it onto the library.
+
+In bootloader mode, the shared memory area must be as large as the value of ``NRF_MODEM_SHMEM_BOOTLOADER_SIZE`` and its base address must be 4-bytes aligned.
+The library accepts the shared memory base address and size as parameters to the :c:func:`nrf_modem_bootloader_init` function through the :c:struct:`nrf_modem_bootloader_init_params` structure.
+
+In normal operating mode, the shared memory is divided into the following four regions:
 
 * Control
 * TX
 * RX
 * Trace
 
-The application can configure the size and location of these regions.
-The application is responsible for reserving the memory area by setting the values of these parameters before passing them onto the library.
-The library accepts these values as parameters to the :c:func:`nrf_modem_init` function through :c:enum:`nrf_modem_shmem_cfg`.
-
-.. note::
-   The size of the Control area is fixed.
-
-The application can adjust the size of these regions based on the needs to minimize the RAM requirements of the library.
-
+The application can adjust the size of these regions based on its requirements, with the exception of the control region, which has a fixed size that must be equal to the value of ``NRF_MODEM_SHMEM_CTRL_SIZE``.
+The base address of all regions must be 4-bytes aligned.
+The library accepts the layout of these regions as parameters to the :c:func:`nrf_modem_init` function through the :c:struct:`nrf_modem_init_params` structure.
 
 For |NCS| users, the Partition Manager will automatically reserve some RAM for each region during linking, according to the size of each region as specified in the glue.
 
@@ -42,7 +42,7 @@ Control area
 ============
 
 The control area contains the data structures that are used to setup the communication between the modem core and the application core.
-Among the sizes of the memory regions, only the size of the control area is fixed, and it is exported in the :file:`nrf_modem_platform.h` file.
+Among the sizes of the memory regions, only the size of the control area is fixed, and it is exported in the :file:`nrf_modem.h` file.
 
 For |NCS| users, the build system and the glue implementation will automatically take care of passing the correct size to the :c:func:`nrf_modem_init` call.
 
@@ -56,6 +56,10 @@ The library OS abstraction layer defines the following functions to allocate and
 
 * :c:func:`nrf_modem_os_shm_tx_alloc`
 * :c:func:`nrf_modem_os_shm_tx_free`
+
+.. important::
+   It must be possible for the Modem library to allocate up to the number of bytes passed by the TX region size in the :c:struct:`nrf_modem_init_params` structure.
+   If the OS implementation of :c:func:`nrf_modem_os_shm_tx_alloc` requires any overhead, additional memory must be set aside by the application.
 
 RX area
 =======

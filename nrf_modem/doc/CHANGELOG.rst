@@ -9,6 +9,49 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.3.0
+***************
+
+:ref:`Core library <architecture>`
+==================================
+
+* The :c:func:`nrf_modem_init` function is now used only to initialize the library in normal operating mode.
+  Use :c:func:`nrf_modem_bootloader_init` to initialize the library in bootloader mode.
+* Added a ``context`` parameter to :c:func:`nrf_modem_os_event_notify` to allow waking up only a subset of sleeping threads.
+* Added the :c:func:`nrf_modem_os_sleep` function.
+* The :file:`nrf_modem_limits.h` file has been removed.
+
+:ref:`Sockets <nrf_sockets>`
+============================
+
+* Added the ``NRF_SO_POLLCB`` socket option to receive callbacks for poll events occurring on a socket.
+* Added the :c:func:`nrf_getifaddrs` and :c:func:`nrf_freeifaddrs` functions to retrieve network interface data.
+* Fixed a bug where not reading incoming network data in a timely manner could hang the communication with the modem.
+* Fixed a bug in :c:func:`nrf_connect` where a blocking call could in certain cases time out and set the wrong ``errno`` (``EBUSY`` instead of ``ETIMEDOUT``).
+* Fixed a bug in :c:func:`nrf_poll` where only the first :c:struct:`nrf_pollfd` structure would be updated in case the modem was shut down.
+* Fixed a bug in :c:func:`nrf_setsockopt` where setting ``NRF_SO_RAI_NO_DATA`` on a TCP socket where the peer had closed the connection would return an error.
+* Fixed a bug in :c:func:`nrf_send` and :c:func:`nrf_sendto` where the functions would hang when attempting to send a data payload larger than the TX region.
+* Fixed a possible concurrency bug in :c:func:`nrf_socket`.
+* Fixed a possible concurrency bug in :c:func:`nrf_accept`.
+
+:ref:`AT interface <nrf_modem_at>`
+==================================
+
+* Improved error checking in :c:func:`nrf_modem_at_cmd` and :c:func:`nrf_modem_at_printf`.
+
+:ref:`GNSS interface <gnss_interface>`
+======================================
+
+* Added the :c:member:`nrf_modem_gnss_agps_expiry.position_expiry` field to :c:struct:`nrf_modem_gnss_agps_expiry` to retrieve the position assistance expiry time.
+
+:ref:`Bootloader <nrf_modem_bootloader_api>`
+============================================
+
+* The Full DFU API (:file:`nrf_modem_full_dfu.h`) has been moved to (:file:`nrf_modem_bootloader.h`) and renamed accordingly.
+  The ``nrf_modem_full_dfu_apply()`` function has been renamed to :c:func:`nrf_modem_bootloader_update`.
+* The order of parameters to functions which accepted a buffer and its length has changed, so that the buffer parameter is always passed before the length parameter.
+* The ``MODEM_DFU_RESULT_`` macros have been prefixed with ``NRF_``.
+
 nrf_modem 2.2.1
 ***************
 
@@ -154,7 +197,7 @@ nrf_modem 1.4.0
 * The GNSS socket has been removed.
 * nrf_errno errno values have been aligned with those of newlibc.
 * The :ref:`Modem API <nrf_modem_api>` (:file:`nrf_modem.h`) has been updated to return negative errno values on error.
-* The :ref:`Full Modem DFU API <nrf_modem_full_dfu_api>` (:file:`nrf_modem_full_dfu.h`) has been updated to return negative errno values on error.
+* The :ref:`Full Modem DFU API <nrf_modem_bootloader_api>` (:file:`nrf_modem_full_dfu.h`) has been updated to return negative errno values on error.
 * The :ref:`GNSS API <nrf_modem_gnss_api>` (:file:`nrf_modem_gnss.h`) has been updated to return negative errno values on error.
 * The :c:func:`nrf_modem_gnss_init` and :c:func:`nrf_modem_gnss_deinit` functions have been removed.
 * Added the GNSS velocity estimate validity bit ``NRF_MODEM_GNSS_PVT_FLAG_VELOCITY_VALID``.
