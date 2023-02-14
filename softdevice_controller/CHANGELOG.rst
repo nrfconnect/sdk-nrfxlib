@@ -18,8 +18,14 @@ Added
 =====
 
 * Support for enabling the receiving of Periodic Advertising Sync Transfer (PAST) using dedicated functions such as :c:func:`sdc_support_periodic_adv_sync_transfer_receiver_central` (DRGN-16995).
-* Support for LE Request Peer SCA command HCI command (DRGN-17972)
-* Support for Sleep Clock Accuracy Update control procedure (DRGN-17883)
+* Support for LE Request Peer SCA command HCI command (DRGN-17972).
+* Support for Sleep Clock Accuracy Update control procedure (DRGN-17883).
+* Support for Periodic Advertising with Responses (PAwR) Advertiser (experimental) (DRGN-18497).
+
+Changes
+=======
+
+* Memory buffer provided to :c:func:`sdc_enable` must be 8 bytes aligned (DRGN-18090).
 
 Bug fixes
 =========
@@ -30,6 +36,7 @@ Bug fixes
 * Fixed a bug where the ``Peer_Address_Type`` parameter in the ``LE Connection Complete`` event was set to 2 or 3 in case the connection was established to a device which address was resolved (DRGN-18411).
   The least significant bit of the ``Peer_Address_Type`` parameter was set correctly.
 * Fixed an issue where the stack could dereference a NULL pointer when starting a periodic advertiser (DRGN-18420).
+* Fixed an issue where initiating Periodic Advertisement Sync Transfer (PAST) as advertiser may assert when the periodic advertisement train is not running (DRGN-18586).
 
 nRF Connect SDK v2.2.0
 **********************
@@ -60,6 +67,27 @@ Bug fixes
 * Fixed an issue in MPSL where the controller would assert when a Bluetooth role was running (DRGN-17851).
 * Fixed an issue in MPSL where the controller would abandon a link, causing a disconnect on the remote side (DRGN-18105).
 * Fixed an issue where creating a periodic sync could in some cases erase periodic advertising reports for previously created syncs (DRGN-18089).
+
+nRF Connect SDK v2.1.3
+**********************
+
+All the notable changes included in the |NCS| v2.1.3 release are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an issue in MPSL where the controller would assert when a Bluetooth role was running (DRGN-17851).
+* Fixed an issue in MPSL where the controller would abandon a link, causing a disconnect on the remote side (DRGN-18105).
+
+nRF Connect SDK v2.1.2
+**********************
+
+All the notable changes included in the |NCS| v2.1.2 release are documented in this section.
+
+Changes
+=======
+
+* On nRF53, the fix for Errata 158 is now applied.
 
 nRF Connect SDK v2.1.0
 **********************

@@ -42,6 +42,18 @@ extern "C" {
  * to periodic advertisers. */
 #define SDC_DEFAULT_PERIODIC_SYNC_COUNT 0
 
+/** @brief Default maximum number of concurrent periodic advertisers with responses. */
+#define SDC_DEFAULT_PERIODIC_ADV_RSP_COUNT 0
+
+/** @brief Default number of buffers for subevent data.*/
+#define SDC_DEFAULT_PERIODIC_ADV_RSP_TX_BUFFER_COUNT 1
+
+/** @brief Default maximum data size for subevent data. */
+#define SDC_DEFAULT_PERIODIC_ADV_RSP_MAX_TX_DATA 73
+
+/** @brief Default number of buffers for response reports. */
+#define SDC_DEFAULT_PERIODIC_ADV_RSP_RX_BUFFER_COUNT 0
+
 /** @brief Default maximum number of concurrent peripheral links. */
 #define SDC_DEFAULT_PERIPHERAL_COUNT   1
 
@@ -100,9 +112,9 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1142
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1286
-#define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1156
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1300
+#define __MEM_TX_BUFFER_OVERHEAD_SIZE 16
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
@@ -159,7 +171,7 @@ extern "C" {
     (__MEM_PER_ADV_SET_LOW(max_adv_data)):\
     (__MEM_PER_ADV_SET_HIGH(max_adv_data)))
 
-/** @brief Additional memory required for periodic advertising, if configured.
+/** @brief Additional memory required for periodic advertising.
  *
  * @note The max_adv_data must be the same as for advertising in @ref SDC_MEM_PER_ADV_SET.
  *
@@ -173,13 +185,31 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (247 + (buffer_count) * 283)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (247 + (buffer_count) * 285)
 
 /** Memory required for the periodic adv list.
  *
  * @param[in] list_size The number of entries the list can fit.
  */
 #define SDC_MEM_PERIODIC_ADV_LIST(list_size) ((list_size) * 8)
+
+/** @brief Auxiliary defines, not to be used outside of this file */
+#define __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) ((max_tx_data_size) + 9)
+#define __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER (282)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (716)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (408)
+
+/** Memory required per periodic advertising with responses set.
+ *
+ * @param[in] tx_buffer_count The number of buffers for sending data. Minimum of 1.
+ * @param[in] rx_buffer_count The number of buffers for receiving data.
+ * @param[in] max_tx_data_size The maximum size of data which can be sent.
+ */
+#define SDC_MEM_PER_PERIODIC_ADV_RSP_SET(tx_buffer_count, rx_buffer_count, max_tx_data_size) \
+     (((rx_buffer_count) > 0 ? __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX : \
+                             __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX ) \
+     + (tx_buffer_count) * __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) \
+     + (rx_buffer_count) * __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER)
 
 /** @} end of sdc_mem_defines */
 
@@ -205,29 +235,33 @@ typedef void (*sdc_callback_t)(void);
 enum sdc_cfg_type
 {
     /** No configuration update. */
-    SDC_CFG_TYPE_NONE         = 0,
+    SDC_CFG_TYPE_NONE = 0,
     /** See @ref sdc_cfg_t::central_count. */
-    SDC_CFG_TYPE_CENTRAL_COUNT = 1,
+    SDC_CFG_TYPE_CENTRAL_COUNT,
     /** See @ref sdc_cfg_t::peripheral_count. */
-    SDC_CFG_TYPE_PERIPHERAL_COUNT  = 2,
+    SDC_CFG_TYPE_PERIPHERAL_COUNT,
     /** See @ref sdc_cfg_t::buffer_cfg. */
-    SDC_CFG_TYPE_BUFFER_CFG   = 3,
+    SDC_CFG_TYPE_BUFFER_CFG,
     /** See @ref sdc_cfg_t::event_length. */
-    SDC_CFG_TYPE_EVENT_LENGTH = 4,
+    SDC_CFG_TYPE_EVENT_LENGTH,
     /** See @ref sdc_cfg_t::adv_count. */
-    SDC_CFG_TYPE_ADV_COUNT    = 5,
+    SDC_CFG_TYPE_ADV_COUNT,
     /** See @ref sdc_cfg_t::scan_buffer_cfg. */
-    SDC_CFG_TYPE_SCAN_BUFFER_CFG = 6,
+    SDC_CFG_TYPE_SCAN_BUFFER_CFG,
     /** See @ref sdc_cfg_t::adv_buffer_cfg. */
-    SDC_CFG_TYPE_ADV_BUFFER_CFG = 7,
+    SDC_CFG_TYPE_ADV_BUFFER_CFG,
     /** See @ref sdc_cfg_t::periodic_adv_count. */
-    SDC_CFG_TYPE_PERIODIC_ADV_COUNT = 8,
+    SDC_CFG_TYPE_PERIODIC_ADV_COUNT,
     /** See @ref sdc_cfg_t::periodic_sync_count. */
-    SDC_CFG_TYPE_PERIODIC_SYNC_COUNT = 9,
+    SDC_CFG_TYPE_PERIODIC_SYNC_COUNT,
     /** See @ref sdc_cfg_t::periodic_sync_buffer_cfg. */
-    SDC_CFG_TYPE_PERIODIC_SYNC_BUFFER_CFG = 10,
+    SDC_CFG_TYPE_PERIODIC_SYNC_BUFFER_CFG,
     /** See @ref sdc_cfg_t::periodic_adv_list_size. */
-    SDC_CFG_TYPE_PERIODIC_ADV_LIST_SIZE = 11,
+    SDC_CFG_TYPE_PERIODIC_ADV_LIST_SIZE,
+    /** See @ref sdc_cfg_t::periodic_adv_rsp_count. */
+    SDC_CFG_TYPE_PERIODIC_ADV_RSP_COUNT,
+    /** See @ref sdc_cfg_t::periodic_adv_rsp_buffer_cfg. */
+    SDC_CFG_TYPE_PERIODIC_ADV_RSP_BUFFER_CFG,
 };
 
 
@@ -277,6 +311,29 @@ typedef struct
      */
     uint16_t max_adv_data;
 } sdc_cfg_adv_buffer_cfg_t;
+
+typedef struct
+{
+    /** Configures the size of the buffer pool allocated to each periodic
+     * advertising set with responses for subevent data.
+     *
+     * Default: @ref SDC_DEFAULT_PERIODIC_ADV_RSP_TX_BUFFER_COUNT.
+     */
+    uint8_t tx_buffer_count;
+    /** Configures the maximum amount of data which can be sent in a PAwR subevent.
+     *
+     * Default: @ref SDC_DEFAULT_PERIODIC_ADV_RSP_MAX_TX_DATA.
+     */
+    uint8_t max_tx_data_size;
+    /** Configures the size of the buffer pool allocated to each periodic
+     * advertising set with responses for response reports.
+     *
+     * The value can be set to 0 to disable listening for responses.
+     *
+     * Default: @ref SDC_DEFAULT_PERIODIC_ADV_RSP_RX_BUFFER_COUNT.
+     */
+    uint8_t rx_buffer_count;
+} sdc_cfg_periodic_adv_rsp_buffer_cfg_t;
 
 /** @brief SoftDevice Controller configuration.  */
 typedef union
@@ -347,7 +404,15 @@ typedef union
      * Default: @ref SDC_DEFAULT_PERIODIC_ADV_LIST_SIZE.
      */
     uint8_t periodic_adv_list_size;
-
+    /** Configures the maximum number of concurrent periodic advertising sets with responses.
+     *
+     * Default: @ref SDC_DEFAULT_PERIODIC_ADV_RSP_COUNT.
+     */
+    sdc_cfg_role_count_t periodic_adv_rsp_count;
+    /** Configures the number and size of the data buffers available per periodic advertising set with responses.
+     *  Default: See @ref sdc_cfg_periodic_adv_rsp_buffer_cfg_t.
+     */
+    sdc_cfg_periodic_adv_rsp_buffer_cfg_t periodic_adv_rsp_buffer_cfg;
 } sdc_cfg_t;
 
 
@@ -406,9 +471,10 @@ int32_t sdc_cfg_set(uint8_t config_tag,
  *                      event is available. The callback will be executed in
  *                      the same context as @ref mpsl_low_priority_process.
  *                      See also @ref sdc_hci_get().
- * @param[in]  p_mem    Provide memory for the current resource configuration. If
- *                      custom resource configurations are used, use the value
+ * @param[in]  p_mem    Provide memory for the current resource configuration.
+ *                      To obtain the required memory size, use the value
  *                      returned from @ref sdc_cfg_set().
+ *                      The pointer must be 8 bytes aligned.
  *
  * @retval 0            Success
  * @retval -NRF_EINVAL  Invalid argument provided
@@ -671,6 +737,24 @@ int32_t sdc_support_le_periodic_adv(void);
  * @retval -NRF_EOPNOTSUPP  LE Periodic advertising is not supported.
  */
 int32_t sdc_support_le_periodic_sync(void);
+
+/** @brief Support LE Periodic Advertising with Responses in the Advertising state
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Periodic Advertising with Responses.
+ *
+ * The application shall also call @ref sdc_support_ext_adv(), @ref sdc_support_le_periodic_adv(),
+ * and at least one of @ref sdc_support_periodic_adv_sync_transfer_sender_central()
+ * and @ref sdc_support_periodic_adv_sync_transfer_sender_peripheral()
+ * to enable support for the extended advertising, periodic advertising,
+ * and sync transfer sender features before enabling support for
+ * Periodic Advertising with Responses.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Periodic Advertising with Responses is not supported.
+ */
+int32_t sdc_support_le_periodic_adv_with_rsp(void);
 
 /** @brief Support LE Power Control for central role
  *
