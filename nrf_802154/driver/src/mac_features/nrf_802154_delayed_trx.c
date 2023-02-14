@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2018 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -207,7 +207,10 @@ static bool dly_op_state_set(dly_op_data_t        * p_dly_op_data,
         case RSCH_DLY_TS_OP_DTX:
         case RSCH_DLY_TS_OP_DRX:
         {
-            result = nrf_802154_sl_atomic_cas_u8(&p_dly_op_data->state, &expected_state, new_state);
+            result = nrf_802154_sl_atomic_cas_u8(
+                (uint8_t *)&p_dly_op_data->state,
+                (uint8_t *)&expected_state,
+                new_state);
 
             if (result)
             {
@@ -583,10 +586,16 @@ static void transmit_attempt(dly_op_data_t * p_dly_op_data)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
-    // No need to enqueue transmit attempts. Proceed to transmission immediately
-    nrf_802154_pib_channel_set(p_dly_op_data->tx.channel);
+    bool channel_update_success = true;
 
-    if (nrf_802154_request_channel_update(REQ_ORIG_DELAYED_TRX))
+    if (nrf_802154_pib_channel_get() != p_dly_op_data->tx.channel)
+    {
+        nrf_802154_pib_channel_set(p_dly_op_data->tx.channel);
+        channel_update_success = nrf_802154_request_channel_update(REQ_ORIG_DELAYED_TRX);
+    }
+
+    // No need to enqueue transmit attempts. Proceed to transmission immediately
+    if (channel_update_success)
     {
         (void)nrf_802154_request_transmit(NRF_802154_TERM_802154,
                                           REQ_ORIG_DELAYED_TRX,
@@ -606,16 +615,21 @@ static bool receive_attempt(dly_op_data_t * p_dly_op_data)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
-    bool result = false;
+    bool result                 = false;
+    bool channel_update_success = true;
 
     // This function is expected to result in calling @ref dly_rx_result_notify.
     // In order for that function to differentiate between different delayed RX
     // windows, we atomically insert the ID of the current delayed RX into a FIFO queue.
     dly_rx_data_atomically_push(p_dly_op_data);
 
-    nrf_802154_pib_channel_set(p_dly_op_data->rx.channel);
+    if (nrf_802154_pib_channel_get() != p_dly_op_data->rx.channel)
+    {
+        nrf_802154_pib_channel_set(p_dly_op_data->rx.channel);
+        channel_update_success = nrf_802154_request_channel_update(REQ_ORIG_DELAYED_TRX);
+    }
 
-    if (nrf_802154_request_channel_update(REQ_ORIG_DELAYED_TRX))
+    if (channel_update_success)
     {
         result = nrf_802154_request_receive(NRF_802154_TERM_802154,
                                             REQ_ORIG_DELAYED_TRX,
@@ -625,7 +639,7 @@ static bool receive_attempt(dly_op_data_t * p_dly_op_data)
     }
     else
     {
-        dly_rx_result_notify(false);
+        dly_rx_result_notify(result);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -876,7 +890,8 @@ bool nrf_802154_delayed_trx_receive_cancel(uint32_t id)
         p_dly_op_data->id = NRF_802154_RESERVED_INVALID_ID;
         stopped           = true;
 
-        nrf_802154_sl_atomic_store_u8(&p_dly_op_data->state, DELAYED_TRX_OP_STATE_STOPPED);
+        nrf_802154_sl_atomic_store_u8((uint8_t *)&p_dly_op_data->state,
+                                      DELAYED_TRX_OP_STATE_STOPPED);
     }
 
     return stopped;

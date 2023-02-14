@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -35,7 +35,7 @@
 #ifndef NRF_802154_NRFX_ADDONS_H__
 #define NRF_802154_NRFX_ADDONS_H__
 
-#include "nrf.h"
+#include "nrfx.h"
 #include "nrf_802154_const.h"
 
 /* The usage of ED_RSSISCALE is described imprecisely in the nRF product specifications. The meaning of

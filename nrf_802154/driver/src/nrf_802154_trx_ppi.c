@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2020 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -34,7 +34,7 @@
 
 #define NRF_802154_MODULE_ID NRF_802154_DRV_MODULE_ID_TRX_PPI
 
-#include "nrf.h"
+#include "nrfx.h"
 
 #ifdef NRF52_SERIES
 

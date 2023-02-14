@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2019 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -40,7 +40,6 @@
 #ifndef NRF_802154_PERIPHERALS_NRF53_H__
 #define NRF_802154_PERIPHERALS_NRF53_H__
 
-#include <nrf.h>
 #include <nrfx.h>
 #include "nrf_802154_config.h"
 #include "nrf_802154_debug.h"

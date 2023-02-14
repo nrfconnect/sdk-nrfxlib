@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -39,7 +39,7 @@
 #include NRF_802154_PROJECT_CONFIG
 #endif
 
-#include <nrf.h>
+#include <nrfx.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -527,6 +527,15 @@ extern "C" {
  */
 #ifndef NRF_802154_ENCRYPTION_ENABLED
 #define NRF_802154_ENCRYPTION_ENABLED 1
+#endif
+
+/**
+ * @def NRF_802154_ENCRYPTION_ACCELERATOR_ECB
+ *
+ * Enables ECB peripheral to be used as hardware accelerator for on-the-fly AES-CCM* encryption.
+ */
+#ifndef NRF_802154_ENCRYPTION_ACCELERATOR_ECB
+#define NRF_802154_ENCRYPTION_ACCELERATOR_ECB 1
 #endif
 
 /**

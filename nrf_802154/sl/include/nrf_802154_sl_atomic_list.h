@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -122,6 +122,14 @@ void nrf_802154_sl_atomic_list_insert_ordered(nrf_802154_sl_atomic_list_t * p_li
 bool nrf_802154_sl_atomic_list_remove(nrf_802154_sl_atomic_list_t * p_list,
                                       void                        * p_item,
                                       size_t                        offsetof_membership_capability);
+
+/**@brief Peeks at the value of list head.
+ *
+ * @param p_list  Pointer to the list to peek at.
+ *
+ * @returns Pointer of list head.
+ */
+void * nrf_802154_sl_atomic_list_head_peek(nrf_802154_sl_atomic_list_t * p_list);
 
 /**@brief Type of a function that checks if given item meets some user-defined criteria.
  *

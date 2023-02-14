@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -37,12 +37,8 @@
  *   This file implements debug assert helpers for the nRF 802.15.4 radio driver.
  *
  */
-
+#include "nrfx.h"
 #include "nrf_802154_debug.h"
-
-#include <stdint.h>
-
-#include "nrf.h"
 
 void __assert_func(const char * file, int line, const char * func, const char * cond)
 {

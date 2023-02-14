@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2020 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -40,7 +40,6 @@
 #ifndef NRF_802154_SL_PERIPHS_H__
 #define NRF_802154_SL_PERIPHS_H__
 
-#include <nrf.h>
 #include <nrfx.h>
 #if defined(DPPI_PRESENT)
 #include "hal/nrf_dppi.h"
