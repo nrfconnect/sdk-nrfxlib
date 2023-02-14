@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2019 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -369,6 +369,8 @@ static void fem_for_lna_reset(void)
      */
 }
 
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
 /** Configure FEM to set PA at appropriate time.
  *
  * @note This function must be called before ramp up PPIs are configured.
@@ -395,6 +397,8 @@ static void fem_for_pa_reset(void)
     nrf_802154_trx_ppi_for_fem_clear();
     mpsl_fem_deactivate_now(MPSL_FEM_PA);
 }
+
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 /** Configure FEM for TX procedure.
  *
@@ -841,10 +845,10 @@ void nrf_802154_trx_antenna_update(void)
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
         case TRX_STATE_CONTINUOUS_CARRIER:
         case TRX_STATE_MODULATED_CARRIER:
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
             tx_antenna_update();
             break;
 
-#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
         default:
             /* Intentionally empty */
             break;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -38,10 +38,9 @@
  *
  */
 
+#include <nrfx.h>
+
 #include "nrf_802154_debug.h"
-
-#include <stdint.h>
-
 #include "nrf_802154_debug_log_codes.h"
 
 void nrf_802154_debug_gpio_init(void);

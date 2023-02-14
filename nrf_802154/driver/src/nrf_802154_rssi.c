@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -41,7 +41,7 @@
 #include "nrf_802154_nrfx_addons.h"
 #include "nrf_802154_const.h"
 
-#include "nrf.h"
+#include "nrfx.h"
 #include <stdint.h>
 
 #include "platform/nrf_802154_temperature.h"

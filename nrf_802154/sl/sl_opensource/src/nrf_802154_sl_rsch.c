@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2020 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -37,7 +37,7 @@
 #include <assert.h>
 #include <stddef.h>
 #include <string.h>
-#include <nrf.h>
+#include <nrfx.h>
 
 #include "rsch/nrf_802154_rsch.h"
 #include "platform/nrf_802154_clock.h"

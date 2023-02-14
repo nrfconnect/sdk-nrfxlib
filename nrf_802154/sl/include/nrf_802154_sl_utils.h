@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2020 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -43,7 +43,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "nrf.h"
+#include "nrfx.h"
 
 /**@brief RTC clock frequency. */
 #define NRF_802154_SL_RTC_FREQUENCY               32768UL

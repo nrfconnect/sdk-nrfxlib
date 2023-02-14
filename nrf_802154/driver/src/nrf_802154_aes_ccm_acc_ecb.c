@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -31,6 +31,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
+#include "nrf_802154_config.h"
+
+#if NRF_802154_ENCRYPTION_ACCELERATOR_ECB
 
 #include "nrf_802154_aes_ccm.h"
 
@@ -576,3 +580,5 @@ void nrf_802154_aes_ccm_transform_abort(uint8_t * p_frame)
 
     m_aes_ccm_data.raw_frame = NULL;
 }
+
+#endif /* NRF_802154_ENCRYPTION_ACCELERATOR_ECB */

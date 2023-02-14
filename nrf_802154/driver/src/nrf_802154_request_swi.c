@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2022, Nordic Semiconductor ASA
+ * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -58,7 +58,7 @@
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "platform/nrf_802154_irq.h"
 
-#include <nrf.h>
+#include <nrfx.h>
 
 /** Size of requests queue.
  *
