@@ -48,16 +48,18 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 +--------------------------------+-----------------+--------------+-----------+
 | Sleep Clock Accuracy Updates   |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
+| Periodic Advertising with      |                 |              | X         |
+| Responses - Advertiser         |                 |              |           |
++--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    The following limitations apply to the listed features:
 
    * For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Connection CTE Response, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
+   * For the Periodic Advertising with Responses - Advertiser feature, the support is experimental.
    * For the LE Power Control Request feature, the support is experimental.
-   * For Periodic Advertising Sync Transfer - Sender, the support is experimental.
-   * For Periodic Advertising Sync Transfer - Receiver, the support is experimental, and only one sync transfer reception may be in progress at any one time per link.
-     After using LE HCI Set Default Periodic Advertising Sync Transfer Parameters, there must be a periodic sync available for every new connection established.
+   * For Periodic Advertising Sync Transfer - Receiver, only one sync transfer reception may be in progress at any one time per link.
 
 .. _sdc_proprietary_feature_support:
 
