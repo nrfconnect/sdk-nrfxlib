@@ -7,6 +7,15 @@ Changelog
    :local:
    :depth: 2
 
+Main branch
+***********
+All the notable changes included in the main branch are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed a rare issue which could cause a scheduler assert if two roles were running (DRGN-18308).
+
 nRF Connect SDK v2.2.0
 **********************
 
