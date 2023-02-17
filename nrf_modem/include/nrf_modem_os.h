@@ -27,7 +27,7 @@ extern "C" {
 /** Infinite time-out. */
 #define NRF_MODEM_OS_FOREVER -1
 /** Number of OS semaphores required. */
-#define NRF_MODEM_OS_NUM_SEM_REQUIRED 6
+#define NRF_MODEM_OS_NUM_SEM_REQUIRED 7
 
 enum log_level {
 	NRF_MODEM_LOG_LEVEL_NONE,
