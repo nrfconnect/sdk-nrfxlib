@@ -7,24 +7,14 @@ Changelog
    :local:
    :depth: 2
 
-Main branch
-***********
-All the notable changes included in the main branch are documented in this section.
-
-Bug fixes
-=========
-
-* Fixed a rare issue which could cause a scheduler assert if two roles were running (DRGN-18308).
-
-nRF Connect SDK v2.2.0
+nRF Connect SDK v2.1.3
 **********************
 
-All the notable changes included in the |NCS| v2.2.0 release are documented in this section.
+All the notable changes included in the |NCS| v2.1.3 release are documented in this section.
 
 Bug fixes
 =========
-
-* Fixed an issue where the scheduler could put events in the past (DRGN-17851, DRGN-18105).
+* Fixed an issue where the scheduler could put events in the past. (DRGN-17923, DRGN-18105)
 
 nRF Connect SDK v2.1.0
 **********************

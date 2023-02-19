@@ -40,7 +40,7 @@ extern "C" {
 /** @brief Bitmask of (D)PPI channels reserved for MPSL. */
 #if defined(PPI_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
-#elif defined(DPPI_PRESENT) || defined(DPPIC_PRESENT)
+#elif defined(DPPI_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
 #else
 #error Unknown NRF series.
@@ -70,7 +70,6 @@ typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t li
  *       while this function is executing.
  *       Doing so might lead to a deadlock.
  *
- * @note If only Front End Module functionality is needed, @ref mpsl_fem_init can be called instead.
  *
  * @retval  0               MPSL is successfully initialized.
  * @retval  -NRF_EPERM      MPSL is already initialized.

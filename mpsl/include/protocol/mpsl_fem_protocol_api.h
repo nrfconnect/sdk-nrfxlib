@@ -311,26 +311,23 @@ void mpsl_fem_cleanup(void);
 
 /** @brief Splits transmit power value into components to be applied on each stage on transmit path.
  *
- * @note If the exact value of @p power cannot be achieved, this function attempts to either use
- * available level lower than the requested level to not exceed constraint, or use the lowest
- * available level greater than the requested level, depending on @p tx_power_ceiling.
+ * @note If the exact value of @p power cannot be achieved, this function attempts to use less
+ * power to not exceed constraint.
  *
- * @param[in]  power                TX power requested for transmission on air.
- * @param[out] p_tx_power_split     Components of tx_power to be applied for stages on transmit path.
- *                                  If requested @p power is too high, the split will be set to
- *                                  a value representing maximum achievable power. If the requested
- *                                  @p power is too low, the split will be set to a value representing
- *                                  minimum achievable power.
- * @param[in]  freq_mhz             Frequency in MHz to calculate the split for.
- * @param[in]  tx_power_ceiling     Flag to get ceiling or floor of requested transmit power level.
+ * @param[in]  power            TX power requested for transmission on air.
+ * @param[out] p_tx_power_split Components of tx_power to be applied for stages on transmit path.
+ *                              If requested @p power is too high, the split will be set to
+ *                              a value representing maximum achievable power. If the requested
+ *                              @p power is too low, the split will be set to a value representing
+ *                              minimum achievable power.
+ * @param[in]  freq_mhz         Frequency in MHz to calculate the split for.
  *
  * @return  The power in dBm that will be achieved if values returned through @p p_tx_power_split
  *          are applied.
  */
 int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
                                mpsl_tx_power_split_t * const p_tx_power_split,
-                               uint16_t                      freq_mhz,
-                               bool                          tx_power_ceiling);
+                               uint16_t                      freq_mhz);
 
 /** @brief Sets PA gain.
  *

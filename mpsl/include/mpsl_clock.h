@@ -172,7 +172,6 @@ int32_t mpsl_clock_hfclk_is_running(uint32_t * p_is_running);
  * @param[in] mpsl_clock_hfclk_latency_config Setting for the time it takes for the HFCLK to ramp up.
  *
  * @retval 0  Success
- * @retval 1  Error, passed value not in @ref mpsl_clock_hfclk_latency_config_t
  */
 int32_t mpsl_clock_hfclk_latency_set(mpsl_clock_hfclk_latency_config_t mpsl_clock_hfclk_latency_config);
 

@@ -21,7 +21,6 @@
 #define MPSL_FEM_POWER_MODEL_H__
 
 #include <stdint.h>
-#include <stdbool.h>
 
 #include "mpsl_fem_types.h"
 
@@ -53,13 +52,11 @@ typedef struct
  * @param[in]   freq_mhz          Frequency in MHz.
  * @param[out]  p_output          Output of the model. For details, refer to
  *                                @ref mpsl_fem_power_model_output_t.
- * @param[in]   tx_power_ceiling  Flag to get ceiling or floor of requested RADIO TX power level.
  */
 typedef void (*mpsl_fem_power_model_output_fetch_t)(
     int8_t                          requested_power,
     uint16_t                        freq_mhz,
-    mpsl_fem_power_model_output_t * p_output,
-    bool                            tx_power_ceiling);
+    mpsl_fem_power_model_output_t * p_output);
 
 /**
  * @brief Pointer to function to be used by MPSL to initialize the model.
@@ -144,7 +141,7 @@ int32_t mpsl_fem_power_model_set(const mpsl_fem_power_model_t * p_model);
  * If the value of parameter passed to @ref mpsl_fem_power_model_set was different than the return
  * value of @ref mpsl_fem_nrf21540_power_model_builtin_get, this function does nothing.
  *
- * @note This function takes a significant amount of time to execute (approximately 5ms). Calling it
+ * @note This function takes a significant amount of time to execute. Calling it
  *       from high priority contexts might lead to degraded performance or starving
  *       other contexts of the application.
  *

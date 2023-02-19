@@ -78,16 +78,13 @@ int32_t mpsl_tx_power_channel_map_set(const mpsl_tx_power_envelope_t *const p_en
 /** @brief Adjusts TX power to a value supported by the RADIO peripheral.
  *
  *  @param[in] req_radio_power  Requested TX power desired for RADIO peripheral.
- *  @param[in] tx_power_ceiling Flag to get ceiling or floor of requested RADIO TX power level.
  *
  *  @return RADIO TX power that is supported by the RADIO peripheral.
  *          If @p req_radio_power is less than the minimum TX power supported, the minimum
- *          supported TX power is returned. If @p req_radio_power is more than the maximum
- *          TX power supported, the maximum supported TX power is returned.
- *          Otherwise the closest supported value that is, depending on @p tx_power_ceiling,
- *          less or more, or equal to @p req_radio_power is returned.
+ *          supported TX power is returned. Otherwise, closest supported value that is less
+ *          or equal to @p req_radio_power returned.
  */
-mpsl_tx_power_t mpsl_tx_power_radio_supported_power_adjust(mpsl_tx_power_t req_radio_power, int8_t tx_power_ceiling);
+mpsl_tx_power_t mpsl_tx_power_radio_supported_power_adjust(mpsl_tx_power_t req_radio_power);
 
 #ifdef __cplusplus
 }
