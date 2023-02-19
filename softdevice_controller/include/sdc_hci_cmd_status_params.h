@@ -67,28 +67,34 @@ typedef __PACKED_STRUCT
  */
 /** @brief Read RSSI.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.5.4
  *
  * This command reads the Received Signal Strength Indication (RSSI) value
  * from a Controller.
  *
  * For a BR/EDR Controller, the RSSI parameter returns the difference between
- * the measured Received Signal Strength Indication (RSSI) and the limits of a
- * range selected by the Controller. The lower limit shall correspond to a received
- * power not less than -56 dBm and not greater than 6 dB above the actual
- * sensitivity of the receiver. The upper limit shall be 20±6 dB above the lower
- * limit. A positive RSSI value shall indicate how many dB the RSSI is above the
- * upper limit, a negative value shall indicate how many dB the RSSI is below the
- * lower limit, and zero shall indicate that the RSSI is inside the range.
+ * the measured Received Signal Strength Indication (RSSI) and the limits of the
+ * Golden Receive Power Range for a Connection_Handle to another BR/EDR
+ * Controller. Any positive RSSI value returned by the Controller indicates how
+ * many dB the RSSI is above the upper limit, any negative value indicates how
+ * many dB the RSSI is below the lower limit. The value zero indicates that the
+ * RSSI is inside the Golden Receive Power Range.
  *
- * The returned RSSI value is not required to have any specific accuracy provided
- * that it correctly indicates whether the received signal strength was above the
- * upper limit, below the lower limit, or between the limits.
+ * Note: How accurate the dB values will be depends on the Bluetooth hardware.
+ * The only requirements for the hardware are that the BR/EDR Controller is able
+ * to tell whether the RSSI is inside, above or below the Golden Device Power
+ * Range.
  *
- * For an LE transport, the RSSI parameter returns the absolute received signal
+ * The RSSI measurement compares the received signal power with two
+ * threshold levels, which define the Golden Receive Power Range. The lower
+ * threshold level corresponds to a received power between -56 dBm and 6 dB
+ * above the actual sensitivity of the receiver. The upper threshold level is 20 dB
+ * above the lower threshold level to an accuracy of ±6 dB.
+ *
+ * For an LE transport, the RSSI parameter returns the absolute receiver signal
  * strength value in dBm to ±6 dB accuracy. If the RSSI cannot be read, the RSSI
- * parameter shall be set to 127.
+ * metric shall be set to 127.
  *
  * Event(s) generated (unless masked away):
  * When the HCI_Read_RSSI command has completed, an HCI_Command_-

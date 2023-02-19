@@ -6,10 +6,6 @@ Limitations
 When working with the SoftDevice Controller, you should be aware of the following limitations.
 In addition, see :ref:`nrf:known_issues` for temporary issues that will be fixed in future releases.
 
-DRGN-17562: One of the LE Transmit Power Reporting Event may not be reported to the host.
-  When multiple LE Transmit Power Reporting Events are generated at the same time for the same PHY, one of these events will be missed.
-  This will only occur when there are simultaneous remote and local power level changes on the same PHY.
-
 YOPAN-87: The RSSI value reported by the SoftDevice Controller requires additional temperature compensation
   The RSSI value reported by the SoftDevice Controller is the raw value from the radio peripheral.
   Some SoCs require compensation of the RSSI value based on the chip temperature.
@@ -62,6 +58,3 @@ DRGN-12259: HCI Receiver and Transmitter Test commands not available
 
 DRGN-15989: In some cases, the SDC can connect to the peer it is already connected to
   To prevent this, the application can remove the already connected peer from the Filter Accept List, or from the Resolving List, or not use that peer's address in Create Connection command.
-
-DRGN-17724: The AoA transmitter is not supported in LLPM-mode
-  The AoA transmitter can show unspecified behavior when being used in LLPM-mode.

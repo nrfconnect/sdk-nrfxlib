@@ -7,75 +7,14 @@ Changelog
    :local:
    :depth: 2
 
-All the notable changes to this project are documented on this page.
-
-Main branch
-***********
-
-All the notable changes included in the main branch are documented in this section.
-
-Added
-=====
-
-* Support for enabling the receiving of Periodic Advertising Sync Transfer (PAST) using dedicated functions such as :c:func:`sdc_support_periodic_adv_sync_transfer_receiver_central` (DRGN-16995).
-* Support for LE Request Peer SCA command HCI command (DRGN-17972).
-* Support for Sleep Clock Accuracy Update control procedure (DRGN-17883).
-* Support for Periodic Advertising with Responses (PAwR) Advertiser (experimental) (DRGN-18497).
-
-Changes
-=======
-
-* Memory buffer provided to :c:func:`sdc_enable` must be 8 bytes aligned (DRGN-18090).
-
-Bug fixes
-=========
-
-* Fixed an issue where the controller was using non-zero randomness for the first advertising event.
-  This happened even after calling :c:func:`sdc_hci_cmd_vs_set_adv_randomness` with a valid ``adv_handle`` parameter (DRGN-18261).
-* Fixed an issue where the controller would end up in the HardFault handler after receiving an invalid response to a scan request (DRGN-18358).
-* Fixed a bug where the ``Peer_Address_Type`` parameter in the ``LE Connection Complete`` event was set to 2 or 3 in case the connection was established to a device which address was resolved (DRGN-18411).
-  The least significant bit of the ``Peer_Address_Type`` parameter was set correctly.
-* Fixed an issue where the stack could dereference a NULL pointer when starting a periodic advertiser (DRGN-18420).
-* Fixed an issue where initiating Periodic Advertisement Sync Transfer (PAST) as advertiser may assert when the periodic advertisement train is not running (DRGN-18586).
-
-nRF Connect SDK v2.2.0
-**********************
-
-All the notable changes included in the |NCS| v2.2.0 release are documented in this section.
-
-Added
-=====
-
-* Support for Connection CTE Response in the angle of arrival (AoA) configuration (DRGN-17365).
-* Support for LE Set Data Related Address Changes HCI command (DRGN-17919).
-* Support for changing advertising randomness using :c:func:`sdc_hci_cmd_vs_set_adv_randomness` (DRGN-17872).
-* Support for enabling the sending of Periodic Advertising Sync Transfer (PAST) using dedicated functions such as :c:func:`sdc_support_periodic_adv_sync_transfer_sender_central` (DRGN-17817).
-* Experimental support for the LE Power Control Request feature (DRGN-17350).
-
-Changes
-=======
-
-* The functions :c:func:`sdc_hci_evt_get` and :c:func:`sdc_hci_data_get` have been replaced by :c:func:`sdc_hci_get` (DRGN-17060).
-* Scheduling performance when doing extended advertising and periodic advertising simultaneously has been improved on Coded PHY (DRGN-17819).
-
-Bug fixes
-=========
-
-* Fixed an issue where the controller accepts an LL_PAUSE_ENC_REQ packet received on an unencrypted link (DRGN-17777).
-* Fixed an issue where the controller accepts CONNECT_IND, AUX_CONNECT_REQ and CONNECTION_UPDATE_REQ packets with the ``connSupervisionTimeout`` value set to 0 (DRGN-17776).
-* Fixed an issue where the controller would assert if trying to sync to a periodic advertiser with a sync timeout shorter than the periodic advertiser interval (DRGN-19744).
-* Fixed an issue in MPSL where the controller would assert when a Bluetooth role was running (DRGN-17851).
-* Fixed an issue in MPSL where the controller would abandon a link, causing a disconnect on the remote side (DRGN-18105).
-* Fixed an issue where creating a periodic sync could in some cases erase periodic advertising reports for previously created syncs (DRGN-18089).
+All the notable changes to this project are documented in this file.
 
 nRF Connect SDK v2.1.3
 **********************
-
 All the notable changes included in the |NCS| v2.1.3 release are documented in this section.
 
 Bug fixes
 =========
-
 * Fixed an issue in MPSL where the controller would assert when a Bluetooth role was running (DRGN-17851).
 * Fixed an issue in MPSL where the controller would abandon a link, causing a disconnect on the remote side (DRGN-18105).
 

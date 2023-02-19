@@ -75,10 +75,6 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_PERIPHERAL_LATENCY_MODE_SET = 0xfd09,
     /** @brief See @ref sdc_hci_cmd_vs_write_remote_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_WRITE_REMOTE_TX_POWER = 0xfd0a,
-    /** @brief See @ref sdc_hci_cmd_vs_set_auto_power_control_request_param(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_AUTO_POWER_CONTROL_REQUEST_PARAM = 0xfd0b,
-    /** @brief See @ref sdc_hci_cmd_vs_set_adv_randomness(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_ADV_RANDOMNESS = 0xfd0c,
 };
 
 /** @brief VS subevent Code values. */
@@ -142,8 +138,6 @@ typedef __PACKED_STRUCT
     uint8_t coex_scan_mode_config : 1;
     uint8_t peripheral_latency_mode_set : 1;
     uint8_t write_remote_tx_power : 1;
-    uint8_t set_auto_power_control_request_param : 1;
-    uint8_t set_adv_randomness : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -446,53 +440,6 @@ typedef __PACKED_STRUCT
     int8_t delta;
 } sdc_hci_cmd_vs_write_remote_tx_power_t;
 
-/** @brief Set Autonomous LE Power Control Request parameters command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Enable or Disable controller initiated autonomous LE Power Control Request procedure.
-     *         Disabled by default.
-     */
-    uint8_t enable;
-    /** @brief Beta value used for exponential weighted averaging of RSSI in 12-bit fixed point
-     *         fraction. The RSSI is averaged using the following formula, avg[n] = beta * avg[n -
-     *         1] + (1 - beta) * rssi[n] The valid range of beta is [0, 4095]. The beta value used
-     *         in computation is beta/4096. For example, for beta to be 0.25 in the above
-     *         computation, set the beta parameter in the command to 1024. Default value is 2048.
-     */
-    uint16_t beta;
-    /** @brief The lower limit of RSSI golden range that is explained in Core_v5.3, Vol 6, Part B,
-     *         Section 5.1.17.1, in dBm units. Default value is -70 dBm.
-     */
-    int8_t lower_limit;
-    /** @brief The upper limit of RSSI golden range that is explained in Core_v5.3, Vol 6, Part B,
-     *         Section 5.1.17.1, in dBm units. Default value is -30 dBm.
-     */
-    int8_t upper_limit;
-    /** @brief Target RSSI level in dBm units when the average RSSI level is less than the lower
-     *         limit of RSSI Golden range. Default value is -65 dBm.
-     */
-    int8_t lower_target_rssi;
-    /** @brief Target RSSI level in dBm units when the average RSSI level is greater than the upper
-     *         limit of RSSI Golden range. Default value is -35 dBm.
-     */
-    int8_t upper_target_rssi;
-    /** @brief Duration in seconds to wait before initiating a new LE Power Control Request
-     *         procedure by the controller. 0 seconds value is an invalid value. Default value is 5
-     *         seconds.
-     */
-    uint8_t wait_period;
-} sdc_hci_cmd_vs_set_auto_power_control_request_param_t;
-
-/** @brief Set advertising randomness command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Advertising Handle or 0xFF to set the behavior for the very first advertising event.
-     */
-    uint8_t adv_handle;
-    /** @brief Maximum random delay in microseconds, 0 to disable randomness. */
-    uint16_t rand_us;
-} sdc_hci_cmd_vs_set_adv_randomness_t;
-
 /** @} end of HCI_COMMAND_PARAMETERS */
 
 /**
@@ -750,15 +697,17 @@ uint8_t sdc_hci_cmd_vs_llpm_mode_set(const sdc_hci_cmd_vs_llpm_mode_set_t * p_pa
 
 /** @brief Connection Update.
  *
- * This vendor specific command is used instead of HCI_LE_Connection_Update when
- * it is desirable to provide Connection Interval in microseconds instead of units.
- * See @ref sdc_hci_cmd_le_conn_update for description of behavior.
+ * This vendor specific command is used to change the Link Layer Connection parameters of a
+ * connection. This command may be issued by the master only.
+ *
+ * The Supervision_Timeout in milliseconds shall be larger than (1 + Conn_Latency) *
+ * Conn_Interval_Max * 2, where Conn_Interval_Max is given in milliseconds.
  *
  * Event(s) generated (unless masked away):
- * When the Controller receives the command, the Controller sends the
- * HCI_Command_Status event to the Host. The HCI_VS_Connection_Update_Complete
- * event shall be generated after the connection parameters have been applied
- * by the Controller or if the command subsequently fails.
+ * When the Controller receives the command, the Controller sends the HCI_Command_Status
+ * event to the Host. The HCI_LE_Connection_Update_Complete event shall be generated after
+ * the connection parameters have been applied by the Controller or if the command
+ * subsequently fails.
  *
  * @param[in]  p_params Input parameters.
  *
@@ -770,10 +719,10 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
 
 /** @brief Enable or Disable Extended Connection Events.
  *
- * When Extended Connection Events are disabled, the maximum connection event length is set
- * by @ref sdc_hci_cmd_vs_event_length_set(). When Extended Connection Events are enabled, the
- * controller
- * will extend the connection event as much as possible, if:
+ * When Extended Connection Events are disabled, the maximum connection event length is set by @ref
+ * sdc_hci_cmd_vs_event_length_set().
+ * When Extended Connection Events are enabled, the controller will extend the connection event as
+ * much as possible, if:
  * - Either of the peers has more data to send.
  *   See also: Core v5.1, Vol 6, Part B, Section 4.5.6
  * - There are no conflicts with other concurrent links.
@@ -820,8 +769,7 @@ uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_con
  * established.
  *
  * The SoftDevice Controller will ensure that the anchor points of master link connections are
- * spaced
- * event_length_us apart.
+ * spaced event_length_us apart.
  *
  * The default event length is @ref SDC_DEFAULT_EVENT_LENGTH_US.
  *
@@ -842,12 +790,10 @@ uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t 
  *
  * Set the allocated event length for new periodic advertisers.
  * The SoftDevice Controller will ensure that the anchor points of periodic advertising events are
- * spaced
- * event_length_us apart. If the advertiser requires less time to transmit all the data, the
- * distance to
- * the next scheduling activity will still be equal to the configured event length. If the
- * advertiser
- * requires more time to transmit all the data, scheduling conflicts may occur.
+ * spaced event_length_us apart.
+ * If the advertiser requires less time to transmit all the data, the distance to the next
+ * scheduling activity will still be equal to the configured event length.
+ * If the advertiser requires more time to transmit all the data, scheduling conflicts may occur.
  *
  * This API must be called before configuring a periodic advertiser for the event length to be
  * applied.
@@ -870,8 +816,7 @@ uint8_t sdc_hci_cmd_vs_periodic_adv_event_length_set(const sdc_hci_cmd_vs_period
  * This vendor specific command is used to configure the way the scanner requests a coexistence
  * session.
  * Either the scanner requests a coex session as soon as it has received a valid access address, or
- * it
- * only requests before transmitting.
+ * it only requests before transmitting.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -886,8 +831,8 @@ uint8_t sdc_hci_cmd_vs_coex_scan_mode_config(const sdc_hci_cmd_vs_coex_scan_mode
 
 /** @brief Configure Coexistence Per-Role Priority.
  *
- * This vendor specific command is used to configure the external radio coexistence
- * priorities depending on the Bluetooth device role.
+ * This vendor specific command is used to configure the external radio coexistence priorities
+ * depending on the Bluetooth device role.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -951,42 +896,6 @@ uint8_t sdc_hci_cmd_vs_peripheral_latency_mode_set(const sdc_hci_cmd_vs_peripher
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_tx_power_t * p_params);
-
-/** @brief Set Autonomous LE Power Control Request parameters.
- *
- * This command sets the parameters to initiate autonomous LE Power Control Request
- * procedure by the Link Layer.
- *
- * When this command is issued, the controller stores the parameters and
- * uses them for the subsequent LE Power Control Requests initiated across all the connections.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_set_auto_power_control_request_param(const sdc_hci_cmd_vs_set_auto_power_control_request_param_t * p_params);
-
-/** @brief Set advertising randomness.
- *
- * This vendor specific command is used to change the randomness of advertisers.
- * The setting applies to all subsequent advertising events of a given set.
- *
- * Event(s) generated (unless masked away):
- * When the Controller receives the command, the Controller sends the HCI_Command_Complete
- * event to the Host.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomness_t * p_params);
 
 /** @} end of HCI_VS_API */
 

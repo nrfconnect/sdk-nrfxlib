@@ -47,7 +47,7 @@ enum sdc_hci_opcode_ip
 
 /** @brief LMP features.
  *
- * See Core_v5.4, Vol 2, Part C, Section 3.3
+ * See Core_v5.3, Vol 2, Part C, Section 3.3
  */
 typedef __PACKED_STRUCT
 {
@@ -117,7 +117,7 @@ typedef __PACKED_STRUCT
 
 /** @brief Supported HCI commands.
  *
- * See Core_v5.4, Vol 4, Part E, Section 6.27
+ * See Core_v5.3, Vol 4, Part E, Section 6.27
  */
 typedef __PACKED_STRUCT
 {
@@ -491,20 +491,12 @@ typedef __PACKED_STRUCT
     uint8_t hci_set_min_encryption_key_size : 1;
     uint8_t hci_le_set_default_subrate_command : 1;
     uint8_t hci_le_subrate_request_command : 1;
-    uint8_t hci_le_set_extended_advertising_parameters_v2 : 1;
+    uint8_t rfu_46_2 : 1;
     uint8_t rfu_46_3 : 1;
     uint8_t rfu_46_4 : 1;
-    uint8_t hci_le_set_periodic_advertising_subevent_data : 1;
-    uint8_t hci_le_set_periodic_advertising_response_data : 1;
-    uint8_t hci_le_set_periodic_sync_subevent : 1;
-    uint8_t hci_le_extended_create_connection_v2 : 1;
-    uint8_t hci_le_set_periodic_advertising_parameters_v2 : 1;
-    uint8_t rfu_47_2 : 1;
-    uint8_t rfu_47_3 : 1;
-    uint8_t rfu_47_4 : 1;
-    uint8_t rfu_47_5 : 1;
-    uint8_t rfu_47_6 : 1;
-    uint8_t rfu_47_7 : 1;
+    uint8_t rfu_46_5 : 1;
+    uint8_t rfu_46_6 : 1;
+    uint8_t rfu_46_7 : 1;
 } sdc_hci_ip_supported_commands_t;
 
 /** @} end of HCI_TYPES */
@@ -532,10 +524,9 @@ typedef __PACKED_UNION
 } sdc_hci_cmd_ip_read_local_supported_commands_return_t;
 
 /** @brief Read Local Supported Features return parameter(s). */
-typedef __PACKED_UNION
+typedef __PACKED_STRUCT
 {
-    sdc_hci_ip_lmp_features_t params;
-    uint8_t raw[8];
+    sdc_hci_ip_lmp_features_t lmp_features;
 } sdc_hci_cmd_ip_read_local_supported_features_return_t;
 
 /** @brief Read BD_ADDR return parameter(s). */
@@ -552,7 +543,7 @@ typedef __PACKED_STRUCT
  */
 /** @brief Read Local Version Information.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.4.1
  *
  * This command reads the values for the version information for the local
@@ -578,7 +569,7 @@ uint8_t sdc_hci_cmd_ip_read_local_version_information(sdc_hci_cmd_ip_read_local_
 
 /** @brief Read Local Supported Commands.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.4.2
  *
  * This command reads the list of HCI commands supported for the local
@@ -603,7 +594,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_commands(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read Local Supported Features.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.4.3
  *
  * This command requests a list of the supported features for the local BR/EDR
@@ -624,7 +615,7 @@ uint8_t sdc_hci_cmd_ip_read_local_supported_features(sdc_hci_cmd_ip_read_local_s
 
 /** @brief Read BD_ADDR.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.4.6
  *
  * On a BR/EDR Controller, this command reads the Bluetooth Controller address

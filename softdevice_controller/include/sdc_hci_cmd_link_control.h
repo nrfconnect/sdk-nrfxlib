@@ -69,7 +69,7 @@ typedef __PACKED_STRUCT
  */
 /** @brief Disconnect.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.1.6
  *
  * The HCI_Disconnect command is used to terminate an existing connection.
@@ -84,10 +84,8 @@ typedef __PACKED_STRUCT
  * ACL disconnection.
  *
  * If, on the Central, the Host issues this command before issuing the
- * HCI_LE_Create_CIS command for the same CIS (including if a previous CIS
- * with the same CIS_ID in the same CIG has been terminated or considered
- * lost), then the Controller shall return the error code Command Disallowed
- * (0x0C).
+ * HCI_LE_Create_CIS command for the same CIS, then the Controller shall
+ * return the error code Command Disallowed (0x0C).
  *
  * If, on the Peripheral, the Host issues this command before the Controller has
  * generated the HCI_LE_CIS_Established event for that CIS, then the Controller
@@ -126,7 +124,7 @@ uint8_t sdc_hci_cmd_lc_disconnect(const sdc_hci_cmd_lc_disconnect_t * p_params);
 
 /** @brief Read Remote Version Information.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.1.23
  *
  * This command will obtain the values for the version information for the remote

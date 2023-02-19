@@ -246,7 +246,7 @@ typedef __PACKED_STRUCT
  */
 /** @brief Set Event Mask.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.1
  *
  * The HCI_Set_Event_Mask command is used to control which events are
@@ -274,7 +274,7 @@ uint8_t sdc_hci_cmd_cb_set_event_mask(const sdc_hci_cmd_cb_set_event_mask_t * p_
 
 /** @brief Reset.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.2
  *
  * The HCI_Reset command will reset the Controller and the Link Manager on the
@@ -286,10 +286,8 @@ uint8_t sdc_hci_cmd_cb_set_event_mask(const sdc_hci_cmd_cb_set_event_mask_t * p_
  * operational state will be lost, the Controller will enter standby mode and the
  * Controller will automatically revert to the default values for the parameters for
  * which default values are defined in the specification.
- *
  * Note: The HCI_Reset command will not necessarily perform a hardware reset.
  * This is implementation defined.
- *
  * The Host shall not send additional HCI commands before the
  * HCI_Command_Complete event related to the HCI_Reset command has been
  * received.
@@ -307,12 +305,12 @@ uint8_t sdc_hci_cmd_cb_reset(void);
 
 /** @brief Read Transmit Power Level.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.35
  *
  * This command reads the values for the TX_Power_Level parameter for the
  * specified Connection_Handle. The Connection_Handle shall be a
- * Connection_Handle for an ACL connection.
+ * Connection_Handle for an ACL connection
  *
  * Event(s) generated (unless masked away):
  * When the HCI_Read_Transmit_Power_Level command has completed, an
@@ -330,7 +328,7 @@ uint8_t sdc_hci_cmd_cb_read_transmit_power_level(const sdc_hci_cmd_cb_read_trans
 
 /** @brief Set Controller To Host Flow Control.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.38
  *
  * This command is used by the Host to turn flow control on or off for data and/or
@@ -350,7 +348,6 @@ uint8_t sdc_hci_cmd_cb_read_transmit_power_level(const sdc_hci_cmd_cb_read_trans
  *
  * The Flow_Control_Enable parameter shall only be changed if no connections
  * exist.
- *
  * Event(s) generated (unless masked away):
  * When the HCI_Set_Controller_To_Host_Flow_Control command has
  * completed, an HCI_Command_Complete event shall be generated.
@@ -365,7 +362,7 @@ uint8_t sdc_hci_cmd_cb_set_controller_to_host_flow_control(const sdc_hci_cmd_cb_
 
 /** @brief Host Buffer Size.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.39
  *
  * The HCI_Host_Buffer_Size command is used by the Host to notify the
@@ -396,15 +393,13 @@ uint8_t sdc_hci_cmd_cb_set_controller_to_host_flow_control(const sdc_hci_cmd_cb_
  * The Host_Total_Num_ACL_Data_Packets command parameter contains the
  * total number of HCI ACL Data packets that can be stored in the data buffers of
  * the Host. The Controller will determine how the buffers are to be divided
- * between different Connection_Handles. The Host_Total_Num_Synchronous_-
+ * between different Connection_Handles. The Host_Total_Num_Synchronous_
  * Data_Packets command parameter gives the same information for HCI
- * Synchronous Data packets. If the Host does not support SCO or eSCO over
- * HCI, then it shall set Host_Total_Num_Synchronous_Data_Packets to zero, in
- * which case the Controller shall ignore the Host_Synchronous_Data_Packet_-
- * Length parameter.
- * Note: The Host_ACL_Data_Packet_Length and Host_Synchronous_Data_-
- * Packet_Length command parameters do not include the length of the HCI ACL
- * Data packet header or the HCI Synchronous Data packet header respectively.
+ * Synchronous Data packets.
+ *
+ * Note: The Host_ACL_Data_Packet_Length and Host_Synchronous_Data_
+ * Packet_Length command parameters do not include the length of the HCI Data
+ * packet header.
  *
  * Event(s) generated (unless masked away):
  * When the HCI_Host_Buffer_Size command has completed, an
@@ -420,7 +415,7 @@ uint8_t sdc_hci_cmd_cb_host_buffer_size(const sdc_hci_cmd_cb_host_buffer_size_t 
 
 /** @brief Host Number Of Completed Packets.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.40
  *
  * The HCI_Host_Number_Of_Completed_Packets command is used by the
@@ -468,7 +463,7 @@ uint8_t sdc_hci_cmd_cb_host_number_of_completed_packets(const sdc_hci_cmd_cb_hos
 
 /** @brief Set Event Mask Page 2.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.69
  *
  * The HCI_Set_Event_Mask_Page_2 command is used to control which events
@@ -496,7 +491,7 @@ uint8_t sdc_hci_cmd_cb_set_event_mask_page_2(const sdc_hci_cmd_cb_set_event_mask
 
 /** @brief Read Authenticated Payload Timeout.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.93
  *
  * This command reads the Authenticated_Payload_Timeout
@@ -523,7 +518,7 @@ uint8_t sdc_hci_cmd_cb_read_authenticated_payload_timeout(const sdc_hci_cmd_cb_r
 
 /** @brief Write Authenticated Payload Timeout.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v5.3,
  * Vol 4, Part E, Section 7.3.94
  *
  * This command writes the Authenticated_Payload_Timeout
