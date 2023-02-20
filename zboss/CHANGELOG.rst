@@ -9,6 +9,20 @@ Changelog
 
 All notable changes to this project in the |NCS| are documented in this file.
 
+Main branch
+***********
+
+Updated
+=======
+
+* The ZBOSS stack to version ``3.11.2.1+5.1.3``.
+  For detailed information, see `ZBOSS stack release notes`_ for the |NCS| v2.3.0 release.
+
+Bug fixes
+=========
+
+* Fixed an issue where buffer would not be freed at the ZC after a secure rejoin of a ZED.
+
 nRF Connect SDK v2.0.0
 **********************
 
