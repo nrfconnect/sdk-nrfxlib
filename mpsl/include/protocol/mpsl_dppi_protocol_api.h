@@ -8,7 +8,7 @@
 #define MPSL_DPPI_PROTOCOL_API_H__
 
 #include "nrf_peripherals.h"
-#if (defined DPPI_PRESENT || defined DOXYGEN)
+#if (defined DPPIC_PRESENT || defined DOXYGEN)
 
 /**
  * @file mpsl_dppi_protocol_api.h
@@ -64,5 +64,5 @@ void mpsl_dppi_fixed_channels_clear(void);
 
 /**@} */
 
-#endif // DPPI_PRESENT || DOXYGEN
+#endif // DPPIC_PRESENT || DOXYGEN
 #endif // MPSL_DPPI_PROTOCOL_API_H__

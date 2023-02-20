@@ -11,10 +11,17 @@ Main branch
 ***********
 All the notable changes included in the main branch are documented in this section.
 
+Added
+=====
+
+* The bool parameter :c:parameter:`tx_power_ceiling` to the external model used by the :c:func:`mpsl_fem_tx_power_split` function.
+  When enabled, the function returns the ceiling value instead of the floor.
+
 Bug fixes
 =========
 
 * Fixed a rare issue which could cause a scheduler assert if two roles were running (DRGN-18308).
+* Fixed a rare issue which could cause an assert when requesting timeslots with type ``MPSL_TIMESLOT_REQ_TYPE_EARLIEST`` (DRGN-18555).
 
 nRF Connect SDK v2.2.0
 **********************
