@@ -11,12 +11,10 @@ All the notable changes to this project are documented in this file.
 
 nRF Connect SDK v2.1.3
 **********************
-
 All the notable changes included in the |NCS| v2.1.3 release are documented in this section.
 
 Bug fixes
 =========
-
 * Fixed an issue in MPSL where the controller would assert when a Bluetooth role was running (DRGN-17851).
 * Fixed an issue in MPSL where the controller would abandon a link, causing a disconnect on the remote side (DRGN-18105).
 
