@@ -37,6 +37,7 @@ Bug fixes
   The least significant bit of the ``Peer_Address_Type`` parameter was set correctly.
 * Fixed an issue where the stack could dereference a NULL pointer when starting a periodic advertiser (DRGN-18420).
 * Fixed an issue where initiating Periodic Advertisement Sync Transfer (PAST) as advertiser may assert when the periodic advertisement train is not running (DRGN-18586).
+* Fixed an issue where calling the :c:func:`bt_ctlr_set_public_addr` function before :c:func:`bt_enable` incorrectly failed to set the address (DRGN-18655).
 
 nRF Connect SDK v2.2.0
 **********************
