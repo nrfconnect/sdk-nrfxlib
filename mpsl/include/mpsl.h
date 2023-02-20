@@ -40,7 +40,7 @@ extern "C" {
 /** @brief Bitmask of (D)PPI channels reserved for MPSL. */
 #if defined(PPI_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
-#elif defined(DPPI_PRESENT) || defined(DPPIC_PRESENT)
+#elif defined(DPPIC_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
 #else
 #error Unknown NRF series.
