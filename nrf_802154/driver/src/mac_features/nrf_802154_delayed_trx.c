@@ -586,16 +586,10 @@ static void transmit_attempt(dly_op_data_t * p_dly_op_data)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
-    bool channel_update_success = true;
-
-    if (nrf_802154_pib_channel_get() != p_dly_op_data->tx.channel)
-    {
-        nrf_802154_pib_channel_set(p_dly_op_data->tx.channel);
-        channel_update_success = nrf_802154_request_channel_update(REQ_ORIG_DELAYED_TRX);
-    }
-
     // No need to enqueue transmit attempts. Proceed to transmission immediately
-    if (channel_update_success)
+    nrf_802154_pib_channel_set(p_dly_op_data->tx.channel);
+
+    if (nrf_802154_request_channel_update(REQ_ORIG_DELAYED_TRX))
     {
         (void)nrf_802154_request_transmit(NRF_802154_TERM_802154,
                                           REQ_ORIG_DELAYED_TRX,
