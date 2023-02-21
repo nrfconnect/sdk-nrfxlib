@@ -7,9 +7,10 @@ Changelog
    :local:
    :depth: 2
 
-Main branch
-***********
-All the notable changes included in the main branch are documented in this section.
+nRF Connect SDK v2.3.0
+**********************
+
+All the notable changes included in the |NCS| v2.3.0 release are documented in this section.
 
 Added
 =====
@@ -20,7 +21,7 @@ Added
 Bug fixes
 =========
 
-* Fixed a rare issue which could cause a scheduler assert if two roles were running (DRGN-18308).
+* Fixed a rare issue that could cause a scheduler assert if two roles were running (DRGN-18308).
 * Fixed a rare issue that could cause an assert when requesting timeslots with type ``MPSL_TIMESLOT_REQ_TYPE_EARLIEST`` (DRGN-18555).
 
 nRF Connect SDK v2.2.0

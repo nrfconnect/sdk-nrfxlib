@@ -9,8 +9,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-Main branch
-***********
+nRF Connect SDK v2.3.0
+**********************
 
 Added
 =====
