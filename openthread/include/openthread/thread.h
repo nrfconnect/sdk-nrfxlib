@@ -97,6 +97,7 @@ typedef struct
     uint8_t      mLinkQualityIn;        ///< Link Quality In
     int8_t       mAverageRssi;          ///< Average RSSI
     int8_t       mLastRssi;             ///< Last observed RSSI
+    uint8_t      mLinkMargin;           ///< Link Margin
     uint16_t     mFrameErrorRate;       ///< Frame error rate (0xffff->100%). Requires error tracking feature.
     uint16_t     mMessageErrorRate;     ///< (IPv6) msg error rate (0xffff->100%). Requires error tracking feature.
     uint16_t     mVersion;              ///< Thread version of the neighbor
@@ -278,13 +279,13 @@ bool otThreadIsSingleton(otInstance *aInstance);
  * @retval OT_ERROR_BUSY           Thread Discovery Scan is already in progress.
  *
  */
-otError otThreadDiscover(otInstance *             aInstance,
+otError otThreadDiscover(otInstance              *aInstance,
                          uint32_t                 aScanChannels,
                          uint16_t                 aPanId,
                          bool                     aJoiner,
                          bool                     aEnableEui64Filtering,
                          otHandleActiveScanResult aCallback,
-                         void *                   aCallbackContext);
+                         void                    *aCallbackContext);
 
 /**
  * This function determines if an MLE Thread Discovery is currently in progress.
@@ -311,7 +312,7 @@ bool otThreadIsDiscoverInProgress(otInstance *aInstance);
  * @retval OT_ERROR_INVALID_ARGS Invalid AdvData.
  *
  */
-otError otThreadSetJoinerAdvertisement(otInstance *   aInstance,
+otError otThreadSetJoinerAdvertisement(otInstance    *aInstance,
                                        uint32_t       aOui,
                                        const uint8_t *aAdvData,
                                        uint8_t        aAdvDataLength);
@@ -933,9 +934,9 @@ typedef void (*otThreadParentResponseCallback)(otThreadParentResponseInfo *aInfo
  * @param[in]  aContext   A pointer to callback client-specific context.
  *
  */
-void otThreadRegisterParentResponseCallback(otInstance *                   aInstance,
+void otThreadRegisterParentResponseCallback(otInstance                    *aInstance,
                                             otThreadParentResponseCallback aCallback,
-                                            void *                         aContext);
+                                            void                          *aContext);
 
 /**
  * This structure represents the Thread Discovery Request data.
@@ -965,9 +966,9 @@ typedef void (*otThreadDiscoveryRequestCallback)(const otThreadDiscoveryRequestI
  * @param[in]  aContext   A pointer to callback application-specific context.
  *
  */
-void otThreadSetDiscoveryRequestCallback(otInstance *                     aInstance,
+void otThreadSetDiscoveryRequestCallback(otInstance                      *aInstance,
                                          otThreadDiscoveryRequestCallback aCallback,
-                                         void *                           aContext);
+                                         void                            *aContext);
 
 /**
  * This function pointer type defines the callback to notify the outcome of a `otThreadLocateAnycastDestination()`
@@ -982,7 +983,7 @@ void otThreadSetDiscoveryRequestCallback(otInstance *                     aInsta
  * @param[in] aRloc16             The RLOC16 of the destination if found, otherwise invalid RLOC16 (0xfffe).
  *
  */
-typedef void (*otThreadAnycastLocatorCallback)(void *              aContext,
+typedef void (*otThreadAnycastLocatorCallback)(void               *aContext,
                                                otError             aError,
                                                const otIp6Address *aMeshLocalAddress,
                                                uint16_t            aRloc16);
@@ -1004,10 +1005,10 @@ typedef void (*otThreadAnycastLocatorCallback)(void *              aContext,
  * @retval OT_ERROR_NO_BUFS       Out of buffer to prepare and send the request message.
  *
  */
-otError otThreadLocateAnycastDestination(otInstance *                   aInstance,
-                                         const otIp6Address *           aAnycastAddress,
+otError otThreadLocateAnycastDestination(otInstance                    *aInstance,
+                                         const otIp6Address            *aAnycastAddress,
                                          otThreadAnycastLocatorCallback aCallback,
-                                         void *                         aContext);
+                                         void                          *aContext);
 
 /**
  * This function indicates whether an anycast locate request is currently in progress.
@@ -1032,9 +1033,9 @@ bool otThreadIsAnycastLocateInProgress(otInstance *aInstance);
  * @param[in]  aMlIid        The ML-IID of the ADDR_NTF.ntf message.
  *
  */
-void otThreadSendAddressNotification(otInstance *              aInstance,
-                                     otIp6Address *            aDestination,
-                                     otIp6Address *            aTarget,
+void otThreadSendAddressNotification(otInstance               *aInstance,
+                                     otIp6Address             *aDestination,
+                                     otIp6Address             *aTarget,
                                      otIp6InterfaceIdentifier *aMlIid);
 
 /**
@@ -1051,8 +1052,8 @@ void otThreadSendAddressNotification(otInstance *              aInstance,
  * @retval OT_ERROR_NO_BUFS        If insufficient message buffers available.
  *
  */
-otError otThreadSendProactiveBackboneNotification(otInstance *              aInstance,
-                                                  otIp6Address *            aTarget,
+otError otThreadSendProactiveBackboneNotification(otInstance               *aInstance,
+                                                  otIp6Address             *aTarget,
                                                   otIp6InterfaceIdentifier *aMlIid,
                                                   uint32_t                  aTimeSinceLastTransaction);
 
