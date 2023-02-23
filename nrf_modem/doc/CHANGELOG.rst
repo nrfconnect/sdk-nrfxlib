@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.3.1
+***************
+
+:ref:`Sockets <nrf_sockets>`
+============================
+
+* Fixed a bug where the callbacks for poll events were not called.
+
 nrf_modem 2.3.0
 ***************
 
@@ -44,8 +52,8 @@ nrf_modem 2.3.0
 
 * Added the :c:member:`nrf_modem_gnss_agps_expiry.position_expiry` field to :c:struct:`nrf_modem_gnss_agps_expiry` to retrieve the position assistance expiry time.
 
-:ref:`Bootloader <nrf_modem_bootloader_api>`
-============================================
+:ref:`Bootloader <nrf_modem_bootloader>`
+========================================
 
 * The Full DFU API (:file:`nrf_modem_full_dfu.h`) has been moved to (:file:`nrf_modem_bootloader.h`) and renamed accordingly.
   The ``nrf_modem_full_dfu_apply()`` function has been renamed to :c:func:`nrf_modem_bootloader_update`.

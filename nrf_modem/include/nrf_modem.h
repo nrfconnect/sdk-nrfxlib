@@ -208,7 +208,7 @@ struct nrf_modem_bootloader_init_params {
 };
 
 /**
- * @brief Return version string of the Modem library build.
+ * @brief Return a statically allocated string identifying the Modem library build.
  *
  * @retval Version string if defined.
  * @retval Empty string if version string is not defined.

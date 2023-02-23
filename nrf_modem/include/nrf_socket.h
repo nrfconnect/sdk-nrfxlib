@@ -594,13 +594,14 @@ int nrf_close(int fildes);
 /**
  * @brief Function for controlling file descriptor options.
  *
- * @details Set or get file descriptor options or flags. For a list of supported commands, refer
- *          to @ref nrf_fcnt_commands.
- *          For a list of supported flags, refer to @ref nrf_fcnt_flags.
+ * @details
+ * Set or get file descriptor options or flags.
+ * For a list of supported commands, refer to @ref nrf_fcnt_commands.
+ * For a list of supported flags, refer to @ref nrf_fcnt_flags.
  *
- * @param[in] fd    The descriptor to set options on.
- * @param[in] cmd   The command class for options.
- * @param[in] flags The flags to set.
+ * @param fd    The descriptor to set options on.
+ * @param cmd   The command class for options.
+ * @param flags The flags to set.
  *
  * @return Value dependent on command class:
  *         NRF_F_GETFL - Value of file status flags.
@@ -866,9 +867,13 @@ void nrf_freeaddrinfo(struct nrf_addrinfo *ai);
  * @brief Get interface address information.
  *
  * @details
- * Create a linked list of nrf_ifaddrs structures describing the network interfaces.
+ * Create a linked list of nrf_ifaddrs structures describing the network interfaces
+ * and store the address of the first item of the list in @p *ifa.
  *
- * @param[in] ifa First item in the linked list of interface addresses.
+ * The data returned by this function is dynamically allocated and
+ * must be freed using @ref nrf_freeifaddrs() when no longer needed.
+ *
+ * @param[in, out] ifa First item in the linked list of interface addresses.
  *
  * @retval 0 on success.
  * @retval -1 on error, and set @c errno to indicate the reason.
@@ -881,7 +886,7 @@ int nrf_getifaddrs(struct nrf_ifaddrs **ifa);
  * @details
  * Free a linked list of nrf_ifaddrs structures.
  *
- * @param[in] ifa First item in the linked list of interface addresses.
+ * @param ifa First item in the linked list of interface addresses.
  */
 void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
 
@@ -896,10 +901,10 @@ void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
  * @note
  * It is not possible to unset a secondary DNS address set using this function.
  *
- * @param[in] family    Address family.
- * @param[in] in_addr   An IPv4 or IPv6 address encoded in a nrf_in_addr or
- *                      nrf_in6_addr structure, respectively.
- * @param[in] in_size   Size of the structure pointed to by in_addr.
+ * @param family    Address family.
+ * @param in_addr   An IPv4 or IPv6 address encoded in a nrf_in_addr or
+ *                  nrf_in6_addr structure, respectively.
+ * @param in_size   Size of the structure pointed to by in_addr.
  *
  * @retval 0  On success
  * @retval -1 On error, and set @c errno to indicate the reason.
