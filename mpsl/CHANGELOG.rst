@@ -8,15 +8,10 @@ Changelog
    :depth: 2
 
 nRF Connect SDK v1.9 branch
-**********************
+***************************
 
-Changes
-=======
-* On nRF53, removed calls to __WFE(), to be inline with Errata 160.
-
-Bug fixes
-=========
-* Fixed a rare issue which could cause an assert when requesting timeslots with type ``MPSL_TIMESLOT_REQ_TYPE_EARLIEST`` (DRGN-18555).
+* Removed calls to ``__WFE()`` for the nRF5340 SoC, to be in line with the Errata for the Anomaly 160.
+* Fixed a rare issue that could cause an assert when requesting timeslots with type ``MPSL_TIMESLOT_REQ_TYPE_EARLIEST`` (DRGN-18555).
 
 nRF Connect SDK v1.9.2
 **********************
@@ -26,7 +21,8 @@ All the notable changes included in the |NCS| v1.9.2 release are documented in t
 Bug fixes
 =========
 
-* Fixed an issue where the High Frequency Clock would stay active if it was turned on between timing events. This could occur during Low Frequency Clock calibration when using the RC oscillator as the Low Frequency Clock source (DRGN-17014).
+* Fixed an issue where the High Frequency Clock would stay active if it was turned on between timing events.
+  This could occur during Low Frequency Clock calibration when using the RC oscillator as the Low Frequency Clock source (DRGN-17014).
 
 nRF Connect SDK v1.9.0
 **********************
@@ -36,9 +32,9 @@ All the notable changes included in the |NCS| v1.9.0 release are documented in t
 Added
 =====
 
-* Added a new header :file:`mpsl_dppi_protocol_api.h` which exposes DPPI channels that have a fixed configuration during the lifetime of a radio event (DRGN-16308).
-  This will facilitate debugging protocol implementations.
-  Currently these channels are only guaranteed to be applied correctly for Bluetooth.
+* Added a new header file :file:`mpsl_dppi_protocol_api.h` which exposes DPPI channels that have a fixed configuration during the lifetime of a radio event (DRGN-16308).
+  This will facilitate debugging of protocol implementations.
+  Currently these channels are guaranteed to be applied correctly for Bluetooth only.
 
 nRF Connect SDK v1.8.0
 **********************
