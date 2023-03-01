@@ -7,6 +7,13 @@ Changelog
    :local:
    :depth: 2
 
+nRF Connect SDK v2.1 branch
+**********************
+
+Bug fixes
+=========
+* Fixed a rare issue which could cause an assert when requesting timeslots with type ``MPSL_TIMESLOT_REQ_TYPE_EARLIEST`` (DRGN-18555).
+
 nRF Connect SDK v2.1.3
 **********************
 
@@ -14,8 +21,7 @@ All the notable changes included in the |NCS| v2.1.3 release are documented in t
 
 Bug fixes
 =========
-
-* Fixed an issue where the scheduler could put events in the past (DRGN-17923, DRGN-18105).
+* Fixed an issue where the scheduler could put events in the past. (DRGN-17923, DRGN-18105)
 
 nRF Connect SDK v2.1.0
 **********************
