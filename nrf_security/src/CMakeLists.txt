@@ -129,7 +129,11 @@ append_with_prefix(src_tls ${ARM_MBEDTLS_PATH}/library
     ssl_tls13_generic.c
 )
 
-
+if (CONFIG_MBEDTLS_DEBUG)
+  append_with_prefix(src_tls ${ARM_MBEDTLS_PATH}/library
+    ssl_debug_helpers_generated.c
+  )
+endif()
 
 if (COMPILE_PSA_APIS)
   # Add files for PSA build
@@ -280,6 +284,16 @@ if (CONFIG_MBEDTLS_TLS_LIBRARY)
     PUBLIC
       mbedcrypto_common
   )
+
+  if (CONFIG_MBEDTLS_DEBUG)
+    # Add Zephyr's mbedlts module include path because we need rely on their headers for debug logs.
+    target_include_directories(mbedcrypto_common
+        INTERFACE
+          ${ZEPHYR_BASE}/modules/mbedtls/include
+    )
+    zephyr_library_sources(${ZEPHYR_BASE}/modules/mbedtls/debug.c)
+    zephyr_library_sources(debug_init.c)
+  endif()
 endif()
 
 # Include EITS in Zephyr build

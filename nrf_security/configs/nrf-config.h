@@ -396,6 +396,12 @@ extern "C" {
 #define MBEDTLS_PSA_BUILTIN_MAC
 #endif
 
+#if defined(CONFIG_MBEDTLS_DEBUG)
+#define MBEDTLS_ERROR_C
+#define MBEDTLS_DEBUG_C
+#define MBEDTLS_SSL_DEBUG_ALL
+#endif
+
 #ifdef __cplusplus
 }
 #endif
