@@ -49,8 +49,10 @@
 #include "nrf_802154_peripherals_nrf52.h"
 #elif defined(NRF5340_XXAA)
 #include "nrf_802154_peripherals_nrf53.h"
-#else
-#error Unsupported chip family
+#endif
+
+#ifdef NRF_802154_USE_INTERNAL_INCLUDES
+#include "nrf_802154_peripherals_internal.h"
 #endif
 
 #ifdef __cplusplus
@@ -96,27 +98,6 @@ extern "C" {
     NRFX_CONCAT_2(NRF_TIMER, NRF_802154_TIMER_INSTANCE_NO)
 
 /**
- * @def NRF_802154_COUNTER_TIMER_INSTANCE_NO
- *
- * Number of the timer instance used for detecting when PSDU is being received.
- *
- */
-#ifndef NRF_802154_COUNTER_TIMER_INSTANCE_NO
-#define NRF_802154_COUNTER_TIMER_INSTANCE_NO 2
-#endif
-
-/**
- * @def NRF_802154_COUNTER_TIMER_INSTANCE
- *
- * The timer instance used by the driver for detecting when PSDU is being received.
- *
- * @note This configuration is used only when the NRF_RADIO_EVENT_BCMATCH event handling is disabled
- *       (see @ref NRF_802154_DISABLE_BCC_MATCHING).
- */
-#define NRF_802154_COUNTER_TIMER_INSTANCE \
-    NRFX_CONCAT_2(NRF_TIMER, NRF_802154_COUNTER_TIMER_INSTANCE_NO)
-
-/**
  * @def NRF_802154_RTC_INSTANCE
  *
  * The RTC instance used in the standalone timer driver implementation.
@@ -156,8 +137,7 @@ extern "C" {
  */
 #ifndef NRF_802154_TIMERS_USED_MASK
 #define NRF_802154_TIMERS_USED_MASK ((1 << NRF_802154_HIGH_PRECISION_TIMER_INSTANCE_NO) | \
-                                     (1 << NRF_802154_TIMER_INSTANCE_NO) |                \
-                                     (1 << NRF_802154_COUNTER_TIMER_INSTANCE_NO))
+                                     (1 << NRF_802154_TIMER_INSTANCE_NO))
 #endif // NRF_802154_TIMERS_USED_MASK
 
 /**

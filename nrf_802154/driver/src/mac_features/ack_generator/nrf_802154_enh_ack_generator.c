@@ -474,13 +474,11 @@ static bool encryption_prepare(const nrf_802154_frame_parser_data_t * p_ack_data
  * @section Enhanced ACK generation
  **************************************************************************************************/
 
-static void fcf_process(const nrf_802154_frame_parser_data_t * p_frame_data,
-                        uint8_t                              * p_bytes_written)
+static void fcf_process(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
     // Set Frame Control field bits.
     // Some of them might require correction when higher parse level is available
-    *p_bytes_written   = frame_control_set(p_frame_data, false);
-    m_ack[PHR_OFFSET] += *p_bytes_written;
+    m_ack[PHR_OFFSET] += frame_control_set(p_frame_data, false);
 
     bool result = nrf_802154_frame_parser_valid_data_extend(&m_ack_data,
                                                             m_ack[PHR_OFFSET] + PHR_SIZE,
@@ -490,27 +488,13 @@ static void fcf_process(const nrf_802154_frame_parser_data_t * p_frame_data,
     (void)result;
 }
 
-static void dst_addr_process(const nrf_802154_frame_parser_data_t * p_frame_data,
-                             uint8_t                              * p_bytes_written)
-{
-    // Set valid sequence number in ACK frame.
-    *p_bytes_written   = sequence_number_set(p_frame_data);
-    m_ack[PHR_OFFSET] += *p_bytes_written;
-
-    // Set destination address and PAN ID.
-    *p_bytes_written   = destination_set(p_frame_data, &m_ack_data);
-    m_ack[PHR_OFFSET] += *p_bytes_written;
-
-    bool result = nrf_802154_frame_parser_valid_data_extend(&m_ack_data,
-                                                            m_ack[PHR_OFFSET] + PHR_SIZE,
-                                                            PARSE_LEVEL_DST_ADDRESSING_END);
-
-    assert(result);
-    (void)result;
-}
-
 static void addr_end_process(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
+    // Set valid sequence number in ACK frame.
+    m_ack[PHR_OFFSET] += sequence_number_set(p_frame_data);
+    // Set destination address and PAN ID.
+    m_ack[PHR_OFFSET] += destination_set(p_frame_data, &m_ack_data);
+
     // Set source address and PAN ID.
     source_set();
 
@@ -532,15 +516,16 @@ static void addr_end_process(const nrf_802154_frame_parser_data_t * p_frame_data
     (void)result;
 }
 
-static bool aux_sec_hdr_process(const nrf_802154_frame_parser_data_t * p_frame_data,
-                                uint8_t                              * p_bytes_written)
+static bool aux_sec_hdr_process(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
-    if (security_header_set(p_frame_data, &m_ack_data, p_bytes_written) == false)
+    uint8_t bytes_written;
+
+    if (security_header_set(p_frame_data, &m_ack_data, &bytes_written) == false)
     {
         return false;
     }
 
-    m_ack[PHR_OFFSET] += *p_bytes_written;
+    m_ack[PHR_OFFSET] += bytes_written;
 
     bool result = nrf_802154_frame_parser_valid_data_extend(&m_ack_data,
                                                             m_ack[PHR_OFFSET] + PHR_SIZE,
@@ -552,16 +537,14 @@ static bool aux_sec_hdr_process(const nrf_802154_frame_parser_data_t * p_frame_d
     return true;
 }
 
-static void ie_process(const nrf_802154_frame_parser_data_t * p_frame_data,
-                       uint8_t                              * p_bytes_written)
+static void ie_process(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
     // Set IE header.
     ie_header_set(mp_ie_data, m_ie_data_len, &m_ack_data);
     m_ack[PHR_OFFSET] += m_ie_data_len;
 
     // Terminate the IE header if needed.
-    *p_bytes_written   = ie_header_terminate(mp_ie_data, m_ie_data_len, &m_ack_data);
-    m_ack[PHR_OFFSET] += *p_bytes_written + FCS_SIZE;
+    m_ack[PHR_OFFSET] += ie_header_terminate(mp_ie_data, m_ie_data_len, &m_ack_data) + FCS_SIZE;
 
     bool result = nrf_802154_frame_parser_valid_data_extend(&m_ack_data,
                                                             m_ack[PHR_OFFSET] + PHR_SIZE,
@@ -580,8 +563,6 @@ static uint8_t * ack_process(
     const nrf_802154_frame_parser_data_t * p_frame_data,
     bool                                 * p_processing_done)
 {
-    uint8_t bytes_written = 0U;
-
     nrf_802154_frame_parser_level_t frame_parse_level = nrf_802154_frame_parser_parse_level_get(
         p_frame_data);
     nrf_802154_frame_parser_level_t ack_parse_level = nrf_802154_frame_parser_parse_level_get(
@@ -592,13 +573,7 @@ static uint8_t * ack_process(
     if ((frame_parse_level >= PARSE_LEVEL_FCF_OFFSETS) &&
         (ack_parse_level < PARSE_LEVEL_FCF_OFFSETS))
     {
-        fcf_process(p_frame_data, &bytes_written);
-    }
-
-    if ((frame_parse_level >= PARSE_LEVEL_DST_ADDRESSING_END) &&
-        (ack_parse_level < PARSE_LEVEL_DST_ADDRESSING_END))
-    {
-        dst_addr_process(p_frame_data, &bytes_written);
+        fcf_process(p_frame_data);
     }
 
     if ((frame_parse_level >= PARSE_LEVEL_ADDRESSING_END) &&
@@ -610,14 +585,14 @@ static uint8_t * ack_process(
     if ((frame_parse_level >= PARSE_LEVEL_AUX_SEC_HDR_END) &&
         (ack_parse_level < PARSE_LEVEL_AUX_SEC_HDR_END))
     {
-        if (!aux_sec_hdr_process(p_frame_data, &bytes_written))
+        if (!aux_sec_hdr_process(p_frame_data))
         {
             // Failure to set auxiliary security header, the ACK cannot be created. Exit immediately
             *p_processing_done = true;
             return NULL;
         }
 
-        ie_process(p_frame_data, &bytes_written);
+        ie_process(p_frame_data);
     }
 
     if (frame_parse_level == PARSE_LEVEL_FULL)

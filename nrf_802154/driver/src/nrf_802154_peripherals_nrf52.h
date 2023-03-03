@@ -112,11 +112,29 @@ extern "C" {
 #endif // NRF_802154_RTC_INSTANCE_NO
 
 /**
+ * @def NRF_802154_PPI_RADIO_RAMP_UP_TRIGG
+ *
+ * The PPI channel that connects ramp up triggering event to EGU task.
+ *
+ * @note The peripheral is shared with @ref NRF_802154_PPI_RADIO_DISABLED_TO_EGU in such a way
+ *       that a receive or transmit request causes that ppi to be configured for ramp up
+ *       triggering purpose, while in the EVENT_READY isr the ppi is reconfigured to follow the
+ *       @ref NRF_802154_PPI_RADIO_DISABLED_TO_EGU description.
+ *
+ * @note This option is used regardless of the driver configuration.
+ *
+ */
+#ifndef NRF_802154_PPI_RADIO_RAMP_UP_TRIGG
+#define NRF_802154_PPI_RADIO_RAMP_UP_TRIGG NRF_PPI_CHANNEL6
+#endif
+
+/**
  * @def NRF_802154_PPI_RADIO_DISABLED_TO_EGU
  *
  * The PPI channel that connects RADIO_DISABLED event to EGU task.
  *
  * @note This option is used by the core module regardless of the driver configuration.
+ *       The peripheral is shared with @ref NRF_802154_PPI_RADIO_RAMP_UP_TRIGG.
  *
  */
 #ifndef NRF_802154_PPI_RADIO_DISABLED_TO_EGU
@@ -201,54 +219,11 @@ extern "C" {
 #define NRF_802154_PPI_RADIO_CRCOK_TO_PPI_GRP_DISABLE NRF_PPI_CHANNEL10
 #endif
 
-#if NRF_802154_DISABLE_BCC_MATCHING
-
-/**
- * @def NRF_802154_PPI_RADIO_ADDR_TO_COUNTER_COUNT
- *
- * The PPI channel that connects RADIO_ADDRESS event to TIMER_COUNT task.
- *
- * @note This configuration is used only when the NRF_RADIO_EVENT_BCMATCH event handling is disabled
- *       (see @ref NRF_802154_DISABLE_BCC_MATCHING).
- *
- */
-#ifndef NRF_802154_PPI_RADIO_ADDR_TO_COUNTER_COUNT
-#define NRF_802154_PPI_RADIO_ADDR_TO_COUNTER_COUNT NRF_PPI_CHANNEL11
-#endif
-
-/**
- * @def NRF_802154_PPI_RADIO_CRCERROR_TO_COUNTER_CLEAR
- *
- * The PPI channel that connects RADIO_CRCERROR event to TIMER_CLEAR task.
- *
- * @note This option is used only when the NRF_RADIO_EVENT_BCMATCH event handling is disabled
- *       (see @ref NRF_802154_DISABLE_BCC_MATCHING).
- *
- */
-#ifndef NRF_802154_PPI_RADIO_CRCERROR_COUNTER_CLEAR
-#define NRF_802154_PPI_RADIO_CRCERROR_COUNTER_CLEAR NRF_PPI_CHANNEL12
-#endif
-
-/**
- * @def NRF_802154_DISABLE_BCC_MATCHING_PPI_CHANNELS_USED_MASK
- *
- * Helper bit mask of PPI channels used additionally by the 802.15.4 driver when the BCC matching
- * is disabled.
- */
-#define NRF_802154_DISABLE_BCC_MATCHING_PPI_CHANNELS_USED_MASK \
-    ((1 << NRF_802154_PPI_RADIO_ADDR_TO_COUNTER_COUNT) |       \
-     (1 << NRF_802154_PPI_RADIO_CRCERROR_COUNTER_CLEAR))
-
-#else // NRF_802154_DISABLE_BCC_MATCHING
-
 /**
  * @def NRF_802154_PPI_RADIO_SYNC_TO_EGU_SYNC
  *
  * The PPI channel that connects RADIO_SYNC event to EGU_SYNC task.
  * EGU_SYNC task belongs to one of EGU channels
- *
- * @note This configuration is used only when the NRF_RADIO_EVENT_BCMATCH event handling is enabled
- *       (see @ref NRF_802154_DISABLE_BCC_MATCHING).
  *
  */
 #ifndef NRF_802154_PPI_RADIO_SYNC_TO_EGU_SYNC
@@ -257,8 +232,6 @@ extern "C" {
 
 #define NRF_802154_DISABLE_BCC_MATCHING_PPI_CHANNELS_USED_MASK \
     (1 << NRF_802154_PPI_RADIO_SYNC_TO_EGU_SYNC)
-
-#endif // NRF_802154_DISABLE_BCC_MATCHING
 
 #ifdef NRF_802154_FRAME_TIMESTAMP_ENABLED
 
@@ -341,6 +314,7 @@ extern "C" {
  */
 #ifndef NRF_802154_PPI_CHANNELS_USED_MASK
 #define NRF_802154_PPI_CHANNELS_USED_MASK ((1 << NRF_802154_PPI_RADIO_DISABLED_TO_EGU) |            \
+                                           (1 << NRF_802154_PPI_RADIO_RAMP_UP_TRIGG) |              \
                                            (1 << NRF_802154_PPI_EGU_TO_RADIO_RAMP_UP) |             \
                                            (1 << NRF_802154_PPI_EGU_TO_TIMER_START) |               \
                                            (1 << NRF_802154_PPI_RADIO_CRCERROR_TO_TIMER_CLEAR) |    \

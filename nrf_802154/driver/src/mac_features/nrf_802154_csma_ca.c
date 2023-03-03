@@ -271,6 +271,7 @@ static void random_backoff_start(void)
     rsch_dly_ts_param_t backoff_ts_param =
     {
         .trigger_time     = nrf_802154_sl_timer_current_time_get() + backoff_us,
+        .ppi_trigger_en   = false,
         .op               = RSCH_DLY_TS_OP_CSMACA,
         .type             = RSCH_DLY_TS_TYPE_RELAXED,
         .started_callback = frame_transmit,

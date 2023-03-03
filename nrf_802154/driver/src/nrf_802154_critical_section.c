@@ -74,7 +74,7 @@ static void radio_critical_section_enter(void)
 {
     if (nrf_802154_rsch_prec_is_approved(RSCH_PREC_RAAL, RSCH_PRIO_MIN_APPROVED))
     {
-        nrf_802154_irq_disable(RADIO_IRQn);
+        nrf_802154_irq_disable(nrfx_get_irq_number(NRF_RADIO));
     }
 }
 
@@ -87,7 +87,7 @@ static void radio_critical_section_exit(void)
 {
     if (nrf_802154_rsch_prec_is_approved(RSCH_PREC_RAAL, RSCH_PRIO_MIN_APPROVED))
     {
-        nrf_802154_irq_enable(RADIO_IRQn);
+        nrf_802154_irq_enable(nrfx_get_irq_number(NRF_RADIO));
     }
 }
 
@@ -264,10 +264,11 @@ uint32_t nrf_802154_critical_section_active_vector_priority_get(void)
         return UINT32_MAX;
     }
 
-    assert(active_vector_id >= CMSIS_IRQ_NUM_VECTACTIVE_DIFF);
+    irq_number = (IRQn_Type)((int32_t)active_vector_id - CMSIS_IRQ_NUM_VECTACTIVE_DIFF);
 
-    irq_number      = (IRQn_Type)(active_vector_id - CMSIS_IRQ_NUM_VECTACTIVE_DIFF);
-    active_priority = nrf_802154_irq_priority_get(irq_number);
+    assert(irq_number >= SVCall_IRQn);
+
+    active_priority = NVIC_GetPriority(irq_number);
 
     return active_priority;
 }

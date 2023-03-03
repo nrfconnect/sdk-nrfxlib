@@ -61,6 +61,7 @@
 #define PPI_CHGRP_ABORT            NRF_802154_PPI_ABORT_GROUP                 ///< PPI group used to disable PPIs when async event aborting radio operation is propagated through the system
 
 #define PPI_DISABLED_EGU           NRF_802154_PPI_RADIO_DISABLED_TO_EGU       ///< PPI that connects RADIO DISABLED event with EGU task
+#define PPI_RAMP_UP_TRG_EGU        NRF_802154_PPI_RADIO_RAMP_UP_TRIGG         ///< PPI that connects ramp up trigger event with EGU task
 #define PPI_EGU_RAMP_UP            NRF_802154_PPI_EGU_TO_RADIO_RAMP_UP        ///< PPI that connects EGU event with RADIO TXEN or RXEN task
 #define PPI_EGU_TIMER_START        NRF_802154_PPI_EGU_TO_TIMER_START          ///< PPI that connects EGU event with TIMER START task
 #define PPI_TIMER_TX_ACK           NRF_802154_PPI_TIMER_COMPARE_TO_RADIO_TXEN ///< PPI that connects TIMER COMPARE event with RADIO TXEN task
@@ -76,12 +77,21 @@ void nrf_802154_trx_ppi_for_disable(void)
     // Intentionally empty.
 }
 
-void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool start_timer)
+uint8_t nrf_802154_trx_ppi_for_ramp_up_channel_id_get(void)
+{
+    return PPI_RAMP_UP_TRG_EGU;
+}
+
+void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t                      ramp_up_task,
+                                        nrf_802154_trx_ramp_up_trigger_mode_t trigg_mode,
+                                        bool                                  start_timer)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
     // Clr event EGU (needed for nrf_802154_trx_ppi_for_ramp_up_was_triggered)
     nrf_egu_event_clear(NRF_802154_EGU_INSTANCE, EGU_EVENT);
+
+    uint32_t ppi_mask = (1UL << PPI_EGU_RAMP_UP) | (1UL << PPI_RAMP_UP_TRG_EGU);
 
     nrf_ppi_channel_and_fork_endpoint_setup(NRF_PPI,
                                             PPI_EGU_RAMP_UP,
@@ -100,26 +110,41 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t ramp_up_task, bool star
                                                                  EGU_EVENT),
                                        nrf_timer_task_address_get(NRF_802154_TIMER_INSTANCE,
                                                                   NRF_TIMER_TASK_START));
-    }
 
-    nrf_ppi_channel_endpoint_setup(NRF_PPI,
-                                   PPI_DISABLED_EGU,
-                                   nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_DISABLED),
-                                   nrf_egu_task_address_get(NRF_802154_EGU_INSTANCE, EGU_TASK));
-
-    nrf_ppi_channel_include_in_group(NRF_PPI, PPI_EGU_RAMP_UP, PPI_CHGRP_RAMP_UP);
-
-    uint32_t ppi_mask = (1UL << PPI_EGU_RAMP_UP) |
-                        (1UL << PPI_DISABLED_EGU);
-
-    if (start_timer)
-    {
         ppi_mask |= (1UL << PPI_EGU_TIMER_START);
     }
+
+    if (trigg_mode == TRX_RAMP_UP_SW_TRIGGER)
+    {
+        nrf_ppi_channel_endpoint_setup(NRF_PPI,
+                                       PPI_RAMP_UP_TRG_EGU,
+                                       nrf_radio_event_address_get(NRF_RADIO,
+                                                                   NRF_RADIO_EVENT_DISABLED),
+                                       nrf_egu_task_address_get(NRF_802154_EGU_INSTANCE, EGU_TASK));
+    }
+    else
+    {
+        nrf_ppi_task_endpoint_setup(NRF_PPI,
+                                    PPI_RAMP_UP_TRG_EGU,
+                                    nrf_egu_task_address_get(NRF_802154_EGU_INSTANCE, EGU_TASK));
+    }
+
+    nrf_ppi_channel_include_in_group(NRF_PPI, PPI_EGU_RAMP_UP, PPI_CHGRP_RAMP_UP);
 
     nrf_ppi_channels_enable(NRF_PPI, ppi_mask);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+}
+
+void nrf_802154_trx_ppi_for_ramp_up_reconfigure(void)
+{
+    nrf_egu_event_clear(NRF_802154_EGU_INSTANCE, EGU_EVENT);
+
+    nrf_ppi_channel_endpoint_setup(NRF_PPI,
+                                   PPI_DISABLED_EGU,
+                                   nrf_radio_event_address_get(NRF_RADIO,
+                                                               NRF_RADIO_EVENT_DISABLED),
+                                   nrf_egu_task_address_get(NRF_802154_EGU_INSTANCE, EGU_TASK));
 }
 
 void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool start_timer)
@@ -128,7 +153,7 @@ void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool st
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
     uint32_t ppi_mask = (1UL << PPI_EGU_RAMP_UP) |
-                        (1UL << PPI_DISABLED_EGU);
+                        (1UL << PPI_RAMP_UP_TRG_EGU);
 
     if (start_timer)
     {
@@ -136,9 +161,8 @@ void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool st
     }
 
     nrf_ppi_channels_disable(NRF_PPI, ppi_mask);
-
     nrf_ppi_channel_and_fork_endpoint_setup(NRF_PPI, PPI_EGU_RAMP_UP, 0, 0, 0);
-    nrf_ppi_channel_endpoint_setup(NRF_PPI, PPI_DISABLED_EGU, 0, 0);
+    nrf_ppi_channel_endpoint_setup(NRF_PPI, PPI_RAMP_UP_TRG_EGU, 0, 0);
 
     if (start_timer)
     {

@@ -158,9 +158,6 @@ static uint32_t m_rx_window_id;
 #if !NRF_802154_FRAME_TIMESTAMP_ENABLED
 #error NRF_802154_FRAME_TIMESTAMP_ENABLED == 0 when NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED != 0
 #endif
-#if NRF_802154_DISABLE_BCC_MATCHING
-#error NRF_802154_DISABLE_BCC_MATCHING != 0 when NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED != 0
-#endif
 #endif // NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
 
 #if NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
@@ -195,6 +192,19 @@ static void state_set(radio_state_t state)
                                (uint32_t)state);
 
     request_preconditions_for_state(state);
+}
+
+/** Specifies what ramp up trigger mode to use when handling RX or TX operation request.
+ *
+ * It is assumed that the DELAYED_TRX module always requests HW mode both RX and TX,
+ * while in all other cases SW mode is required.
+ *
+ * @param[in]  request_orig  Module that originates the request.
+ */
+static nrf_802154_trx_ramp_up_trigger_mode_t ramp_up_mode_choose(req_originator_t request_orig)
+{
+    return (request_orig == REQ_ORIG_DELAYED_TRX) ?
+           TRX_RAMP_UP_HW_TRIGGER : TRX_RAMP_UP_SW_TRIGGER;
 }
 
 /** Clear RX frame data. */
@@ -337,7 +347,6 @@ static void transmit_ack_started_notify()
     nrf_802154_tx_ack_started(mp_ack);
 }
 
-#if !NRF_802154_DISABLE_BCC_MATCHING
 /** Notify that reception of a frame has started. */
 static void receive_started_notify(void)
 {
@@ -345,8 +354,6 @@ static void receive_started_notify(void)
 
     nrf_802154_core_hooks_rx_started(p_frame);
 }
-
-#endif
 
 /** Notify MAC layer that a frame was transmitted. */
 static void transmitted_frame_notify(uint8_t * p_ack, int8_t power, uint8_t lqi)
@@ -1001,8 +1008,19 @@ static nrf_802154_trx_transmit_notifications_t make_trx_frame_transmit_notificat
     return result;
 }
 
-/** Initialize RX operation. */
-static void rx_init(void)
+/**
+ * @brief Initializes RX operation
+ *
+ * @param[in]  ru_tr_mode            Desired trigger mode for radio ramp up.
+ * @param[out] p_abort_shall_follow  It is set to `true` when initialization fails and the trx
+ *                                   module needs to be reset. When obtaining `true` here, the user
+ *                                   is then obliged to call @ref nrf_802154_trx_abort. Such a case
+ *                                   can only happen when @p ru_tr_mode = TRX_RAMP_UP_HW_TRIGGER.
+ *                                   In all other cases, the value is not modified at all, so it
+ *                                   should be initialized to `false` before calling the function.
+ *                                   Can be NULL if @p ru_tr_mode is not TRX_RAMP_UP_HW_TRIGGER.
+ */
+static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_abort_shall_follow)
 {
     bool free_buffer;
 
@@ -1029,11 +1047,31 @@ static void rx_init(void)
     (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
 
     nrf_802154_trx_receive_frame(BCC_INIT / 8U,
+                                 ru_tr_mode,
                                  m_trx_receive_frame_notifications_mask,
                                  &split_power);
 
+    if (ru_tr_mode == TRX_RAMP_UP_HW_TRIGGER)
+    {
+        uint32_t ppi_ch = nrf_802154_trx_ramp_up_ppi_channel_get();
+
+        if (!nrf_802154_rsch_delayed_timeslot_ppi_update(ppi_ch))
+        {
+            /**
+             * The trigger has occurred. This has happened too early so there is a high risk
+             * that the radio will not ramp up. It is necessary to abort the operation.
+             */
+            assert(p_abort_shall_follow);
+            *p_abort_shall_follow = true;
+        }
+    }
+
 #if NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
     m_listening_start_hp_timestamp = nrf_802154_hp_timer_current_time_get();
+    // The introduction of TRX_RAMP_UP_HW_TRIGGER broke the measurement method used here.
+    // Obtained timestamp is no more related to the moment when listening starts.
+    // TODO: Remove TOTAL_TIMES_MEASUREMENT feature, as it has been verified that it is
+    // not needed.
 #endif
 
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
@@ -1061,7 +1099,9 @@ static void rx_init(void)
 }
 
 /** Initialize TX operation. */
-static bool tx_init(const uint8_t * p_data, bool cca)
+static bool tx_init(const uint8_t                       * p_data,
+                    nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode,
+                    bool                                  cca)
 {
     if (!timeslot_is_granted() || !nrf_802154_rsch_timeslot_request(
             nrf_802154_tx_duration_get(p_data[0], cca, ack_is_requested(p_data))))
@@ -1091,9 +1131,25 @@ static bool tx_init(const uint8_t * p_data, bool cca)
 
     m_flags.tx_with_cca = cca;
     nrf_802154_trx_transmit_frame(nrf_802154_tx_work_buffer_get(p_data),
+                                  rampup_trigg_mode,
                                   cca,
                                   &m_tx_power,
                                   m_trx_transmit_frame_notifications_mask);
+
+    if (rampup_trigg_mode == TRX_RAMP_UP_HW_TRIGGER)
+    {
+        uint32_t ppi_ch = nrf_802154_trx_ramp_up_ppi_channel_get();
+
+        if (!nrf_802154_rsch_delayed_timeslot_ppi_update(ppi_ch))
+        {
+            /**
+             * The trigger has occurred. This has happened too early so there is a high risk
+             * that the radio will not ramp up. It is necessary to abort the operation.
+             */
+            nrf_802154_trx_abort();
+            return false;
+        }
+    }
 
     return true;
 }
@@ -1345,15 +1401,15 @@ static void on_preconditions_approved(radio_state_t state)
             break;
 
         case RADIO_STATE_RX:
-            rx_init();
+            rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
             break;
 
         case RADIO_STATE_CCA_TX:
-            (void)tx_init(mp_tx_data, true);
+            (void)tx_init(mp_tx_data, TRX_RAMP_UP_SW_TRIGGER, true);
             break;
 
         case RADIO_STATE_TX:
-            (void)tx_init(mp_tx_data, false);
+            (void)tx_init(mp_tx_data, TRX_RAMP_UP_SW_TRIGGER, false);
             break;
 
         case RADIO_STATE_ED:
@@ -1659,122 +1715,129 @@ void nrf_802154_trx_receive_frame_started(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-#if !NRF_802154_DISABLE_BCC_MATCHING
 uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    uint8_t               prev_num_data_bytes;
-    uint8_t               num_data_bytes;
-    nrf_802154_rx_error_t filter_result;
-    bool                  frame_accepted = true;
+    uint8_t                         next_bcc;
+    nrf_802154_filter_mode_t        filter_mode;
+    bool                            parse_result;
+    bool                            should_filter = false;
+    nrf_802154_rx_error_t           filter_result = NRF_802154_RX_ERROR_NONE;
+    nrf_802154_frame_parser_level_t parse_level   = PARSE_LEVEL_NONE;
+    nrf_802154_frame_parser_level_t prev_level    =
+        nrf_802154_frame_parser_parse_level_get(&m_current_rx_frame_data);
 
-    num_data_bytes      = bcc;
-    prev_num_data_bytes = num_data_bytes;
-
-    assert(num_data_bytes >= PHR_SIZE + FCF_SIZE);
     assert(m_state == RADIO_STATE_RX);
 
-    if (!m_flags.frame_filtered)
+    switch (prev_level)
     {
-        filter_result = nrf_802154_filter_frame_part(&m_current_rx_frame_data,
-                                                     &num_data_bytes);
+        case PARSE_LEVEL_NONE:
+            parse_level   = PARSE_LEVEL_FCF_OFFSETS;
+            filter_mode   = NRF_802154_FILTER_MODE_FCF;
+            should_filter = true;
+            break;
 
-        if (filter_result == NRF_802154_RX_ERROR_NONE)
-        {
-            if (num_data_bytes != prev_num_data_bytes)
-            {
-                bcc = num_data_bytes;
-            }
-            else
-            {
-                m_flags.frame_filtered = true;
+        case PARSE_LEVEL_FCF_OFFSETS:
+            parse_level   = PARSE_LEVEL_DST_ADDRESSING_END;
+            filter_mode   = NRF_802154_FILTER_MODE_DST_ADDR;
+            should_filter = true;
+            break;
 
-                /* Request boosted preconditions */
-                nrf_802154_rsch_crit_sect_prio_request(RSCH_PRIO_RX);
+        case PARSE_LEVEL_DST_ADDRESSING_END:
+            parse_level = PARSE_LEVEL_SEC_CTRL_OFFSETS;
+            break;
 
-                /* Request next bcc match event to occur when basic data necessary for Ack
-                 * generation is received. */
-                m_flags.frame_parsed = false;
-                nrf_802154_ack_generator_reset();
+        case PARSE_LEVEL_SEC_CTRL_OFFSETS:
+            parse_level = PARSE_LEVEL_AUX_SEC_HDR_END;
+            break;
 
-                bcc = PHR_SIZE +
-                      nrf_802154_frame_parser_addressing_end_offset_get(&m_current_rx_frame_data) +
-                      SECURITY_CONTROL_SIZE;
-            }
-        }
-        else if ((filter_result == NRF_802154_RX_ERROR_INVALID_LENGTH) ||
-                 (!nrf_802154_pib_promiscuous_get()))
-        {
-            trx_abort();
-            rx_init();
-
-            frame_accepted = false;
-
-            /* Release boosted preconditions */
-            request_preconditions_for_state(m_state);
-
-            if ((mp_current_rx_buffer->data[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) !=
-                FRAME_TYPE_ACK)
-            {
-                receive_failed_notify(filter_result);
-            }
-        }
-        else
-        {
-            // Promiscuous mode, allow incorrect frames. Nothing to do here.
-        }
-    }
-    else if (!m_flags.frame_parsed)
-    {
-        if (nrf_802154_frame_parser_security_enabled_bit_is_set(&m_current_rx_frame_data))
-        {
-            if (nrf_802154_frame_parser_valid_data_extend(
-                    &m_current_rx_frame_data,
-                    num_data_bytes,
-                    PARSE_LEVEL_AUX_SEC_HDR_END))
-            {
-                // All security fields have been received.
-                m_flags.frame_parsed = true;
-            }
-            else if (nrf_802154_frame_parser_valid_data_extend(
-                         &m_current_rx_frame_data,
-                         num_data_bytes,
-                         PARSE_LEVEL_SEC_CTRL_OFFSETS))
-            {
-                // All addressing fields and Security Control byte have been received.
-                // With the Security Control field, length of Auxiliary Security Header can be
-                // determined. Set BCC there
-                bcc = PHR_SIZE +
-                      nrf_802154_frame_parser_aux_sec_hdr_end_offset_get(&m_current_rx_frame_data);
-            }
-            else
-            {
-                // This code should be unreachable.
-            }
-        }
-        else if (nrf_802154_frame_parser_valid_data_extend(
-                     &m_current_rx_frame_data,
-                     num_data_bytes,
-                     PARSE_LEVEL_ADDRESSING_END))
-        {
-            m_flags.frame_parsed = true;
-        }
-        else
-        {
-            // This code should be unreachable.
-        }
-    }
-    else
-    {
-        // Nothing to do
+        default:
+            /* Parsing completed. Nothing more to be done. */
+            nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+            return 0;
     }
 
-    if ((!m_flags.rx_timeslot_requested) && (frame_accepted))
+    parse_result = nrf_802154_frame_parser_valid_data_extend(&m_current_rx_frame_data,
+                                                             bcc,
+                                                             parse_level);
+
+    if (!parse_result)
     {
-        if (nrf_802154_rsch_timeslot_request(nrf_802154_rx_duration_get(
-                                                 mp_current_rx_buffer->data[0],
-                                                 ack_is_requested(mp_current_rx_buffer->data))))
+        should_filter = false;
+        filter_result = NRF_802154_RX_ERROR_INVALID_FRAME;
+    }
+
+    if (should_filter)
+    {
+        filter_result = nrf_802154_filter_frame_part(&m_current_rx_frame_data, filter_mode);
+
+        if ((filter_result == NRF_802154_RX_ERROR_NONE) &&
+            (filter_mode == NRF_802154_FILTER_MODE_DST_ADDR))
+        {
+            m_flags.frame_filtered = true;
+
+            nrf_802154_rsch_crit_sect_prio_request(RSCH_PRIO_RX);
+            nrf_802154_ack_generator_reset();
+        }
+
+        if (nrf_802154_pib_promiscuous_get())
+        {
+            /*
+             * In promiscuous mode all filtering should be ignored unless the frame has
+             * invalid length.
+             */
+            filter_result = filter_result == NRF_802154_RX_ERROR_INVALID_LENGTH ?
+                            filter_result : NRF_802154_RX_ERROR_NONE;
+        }
+    }
+
+    if (filter_result != NRF_802154_RX_ERROR_NONE)
+    {
+        trx_abort();
+        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+
+        /* Release boosted preconditions */
+        request_preconditions_for_state(m_state);
+
+        if (nrf_802154_frame_parser_frame_type_get(&m_current_rx_frame_data) != FRAME_TYPE_ACK)
+        {
+            receive_failed_notify(filter_result);
+        }
+
+        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+        return 0;
+    }
+
+    switch (parse_level)
+    {
+        case PARSE_LEVEL_FCF_OFFSETS:
+            next_bcc = PHR_SIZE + nrf_802154_frame_parser_dst_addressing_end_offset_get(
+                &m_current_rx_frame_data);
+            break;
+
+        case PARSE_LEVEL_DST_ADDRESSING_END:
+            next_bcc = PHR_SIZE + nrf_802154_frame_parser_addressing_end_offset_get(
+                &m_current_rx_frame_data) + SECURITY_CONTROL_SIZE;
+            break;
+
+        case PARSE_LEVEL_SEC_CTRL_OFFSETS:
+            next_bcc = PHR_SIZE + nrf_802154_frame_parser_aux_sec_hdr_end_offset_get(
+                &m_current_rx_frame_data);
+            break;
+
+        default:
+            next_bcc = 0;
+            break;
+    }
+
+    if (!m_flags.rx_timeslot_requested)
+    {
+        uint16_t duration = nrf_802154_rx_duration_get(
+            mp_current_rx_buffer->data[0],
+            nrf_802154_frame_parser_ar_bit_is_set(&m_current_rx_frame_data));
+
+        if (nrf_802154_rsch_timeslot_request(duration))
         {
             m_flags.rx_timeslot_requested = true;
 
@@ -1788,7 +1851,7 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
             // We should not leave trx in temporary state, let's receive then.
             // We avoid hard reset of radio during TX ACK phase due to timeslot end,
             // which could result in spurious RF emission.
-            rx_init();
+            rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
             // Don't care about the result - if the notification cannot be performed
             // no impact on the device's operation is expected
@@ -1799,7 +1862,6 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
     }
 
     if (m_flags.frame_filtered &&
-        m_flags.frame_parsed &&
         nrf_802154_frame_parser_ar_bit_is_set(&m_current_rx_frame_data) &&
         nrf_802154_pib_auto_ack_get())
     {
@@ -1808,10 +1870,8 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 
-    return bcc;
+    return next_bcc;
 }
-
-#endif
 
 void nrf_802154_trx_go_idle_finished(void)
 {
@@ -1905,7 +1965,6 @@ void nrf_802154_trx_receive_frame_crcerror(void)
     rx_data_clear();
 
     // We don't change receive buffer, receive will go to the same that was already used
-#if !NRF_802154_DISABLE_BCC_MATCHING
     request_preconditions_for_state(m_state);
 
     nrf_802154_fal_tx_power_split_t split_power = {0};
@@ -1913,6 +1972,7 @@ void nrf_802154_trx_receive_frame_crcerror(void)
     (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
 
     nrf_802154_trx_receive_frame(BCC_INIT / 8U,
+                                 TRX_RAMP_UP_SW_TRIGGER,
                                  m_trx_receive_frame_notifications_mask,
                                  &split_power);
 
@@ -1922,10 +1982,6 @@ void nrf_802154_trx_receive_frame_crcerror(void)
     // Configure the timer coordinator to get a timestamp of the END event which
     // fires several cycles after CRCOK or CRCERROR events.
     nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_end_event_handle_get());
-#endif
-
-#else
-    // With BCC matching disabled trx module will re-arm automatically
 #endif
 
 #if NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
@@ -1965,7 +2021,8 @@ void nrf_802154_trx_receive_frame_received(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    uint8_t * p_received_data = mp_current_rx_buffer->data;
+    uint8_t             * p_received_data = mp_current_rx_buffer->data;
+    nrf_802154_rx_error_t filter_result   = NRF_802154_RX_ERROR_RUNTIME;
 
     // Latch RSSI and LQI values before sending ACK
     m_last_rssi = rssi_last_measurement_get();
@@ -1980,56 +2037,34 @@ void nrf_802154_trx_receive_frame_received(void)
                                       mp_current_rx_buffer->data[PHR_OFFSET]);
 #endif
 
-#if NRF_802154_DISABLE_BCC_MATCHING
-    uint8_t               num_data_bytes      = PHR_SIZE + FCF_SIZE;
-    uint8_t               prev_num_data_bytes = 0;
-    nrf_802154_rx_error_t filter_result;
+    bool parse_result = nrf_802154_frame_parser_valid_data_extend(
+        &m_current_rx_frame_data,
+        PHR_SIZE + nrf_802154_frame_parser_frame_length_get(&m_current_rx_frame_data),
+        PARSE_LEVEL_FULL);
 
-    // Frame filtering
-    while (num_data_bytes != prev_num_data_bytes)
+    if (parse_result && !m_flags.frame_filtered)
     {
-        prev_num_data_bytes = num_data_bytes;
-
-        // Keep checking consecutive parts of the frame header.
-        filter_result = nrf_802154_filter_frame_part(&m_current_rx_frame_data, &num_data_bytes);
+        filter_result = nrf_802154_filter_frame_part(&m_current_rx_frame_data,
+                                                     NRF_802154_FILTER_MODE_ALL);
 
         if (filter_result == NRF_802154_RX_ERROR_NONE)
         {
-            if (num_data_bytes == prev_num_data_bytes)
+            uint16_t duration = nrf_802154_ack_duration_with_turnaround_get();
+
+            if (nrf_802154_rsch_timeslot_request(duration))
             {
-                m_flags.frame_filtered = true;
+                m_flags.frame_filtered        = true;
+                m_flags.rx_timeslot_requested = true;
+
+                nrf_802154_ack_generator_reset();
+                receive_started_notify();
+            }
+            else
+            {
+                filter_result = NRF_802154_RX_ERROR_TIMESLOT_ENDED;
             }
         }
-        else
-        {
-            break;
-        }
     }
-
-    // Timeslot request
-    if (m_flags.frame_filtered &&
-        nrf_802154_frame_parser_ar_bit_is_set(&m_current_rx_frame_data) &&
-        !nrf_802154_rsch_timeslot_request(nrf_802154_rx_duration_get(0, true)))
-    {
-        // Frame is destined to this node but there is no timeslot to transmit ACK.
-        // Just disable receiver and wait for a new timeslot.
-        nrf_802154_trx_abort();
-
-        rx_flags_clear();
-        rx_data_clear();
-
-        // Filter out received ACK frame if promiscuous mode is disabled.
-        if (((p_received_data[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) != FRAME_TYPE_ACK) ||
-            nrf_802154_pib_promiscuous_get())
-        {
-            mp_current_rx_buffer->free = false;
-            received_frame_notify_and_nesting_allow(p_received_data);
-        }
-
-        nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-        return;
-    }
-#endif // NRF_802154_DISABLE_BCC_MATCHING
 
     if (m_flags.frame_filtered || nrf_802154_pib_promiscuous_get())
     {
@@ -2043,11 +2078,7 @@ void nrf_802154_trx_receive_frame_received(void)
 
         nrf_802154_sl_ant_div_rx_frame_received_notify();
 
-        bool send_ack     = false;
-        bool parse_result = nrf_802154_frame_parser_valid_data_extend(
-            &m_current_rx_frame_data,
-            PHR_SIZE + nrf_802154_frame_parser_frame_length_get(&m_current_rx_frame_data),
-            PARSE_LEVEL_FULL);
+        bool send_ack = false;
 
         if (m_flags.frame_filtered &&
             parse_result &&
@@ -2074,7 +2105,7 @@ void nrf_802154_trx_receive_frame_received(void)
                     mp_current_rx_buffer->free = false;
 
                     state_set(RADIO_STATE_RX);
-                    rx_init();
+                    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
                     received_frame_notify_and_nesting_allow(p_received_data);
                 }
@@ -2090,7 +2121,7 @@ void nrf_802154_trx_receive_frame_received(void)
                 mp_current_rx_buffer->free = false;
 
                 state_set(RADIO_STATE_RX);
-                rx_init();
+                rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
                 received_frame_notify_and_nesting_allow(p_received_data);
             }
@@ -2108,14 +2139,14 @@ void nrf_802154_trx_receive_frame_received(void)
                 // Find new buffer
                 rx_buffer_in_use_set(nrf_802154_rx_buffer_free_find());
 
-                rx_init();
+                rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
                 received_frame_notify_and_nesting_allow(p_received_data);
             }
             else
             {
                 // Receive to the same buffer
-                rx_init();
+                rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
             }
         }
     }
@@ -2125,16 +2156,9 @@ void nrf_802154_trx_receive_frame_received(void)
         // or problem due to software latency (i.e. handled BCMATCH, CRCERROR, CRCOK from two
         // consecutively received frames).
         request_preconditions_for_state(m_state);
-        rx_init();
+        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
-#if NRF_802154_DISABLE_BCC_MATCHING
-        if ((p_received_data[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) != FRAME_TYPE_ACK)
-        {
-            receive_failed_notify(filter_result);
-        }
-#else // NRF_802154_DISABLE_BCC_MATCHING
-        receive_failed_notify(NRF_802154_RX_ERROR_RUNTIME);
-#endif  // NRF_802154_DISABLE_BCC_MATCHING
+        receive_failed_notify(filter_result);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2181,7 +2205,7 @@ void nrf_802154_trx_transmit_ack_transmitted(void)
 
     state_set(RADIO_STATE_RX);
 
-    rx_init();
+    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
     received_frame_notify_and_nesting_allow(p_received_data);
 
@@ -2273,7 +2297,7 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
     {
         state_set(RADIO_STATE_RX);
 
-        rx_init();
+        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
         transmitted_frame_notify(NULL, 0, 0);
     }
@@ -2389,7 +2413,7 @@ static void on_bad_ack(void)
     // We received either a frame with incorrect CRC or not an ACK frame or not matching ACK
     state_set(RADIO_STATE_RX);
 
-    rx_init();
+    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
     nrf_802154_transmit_done_metadata_t metadata = {};
 
@@ -2428,7 +2452,7 @@ void nrf_802154_trx_receive_ack_received(void)
         mp_current_rx_buffer->free = false;
 
         state_set(RADIO_STATE_RX);
-        rx_init();
+        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
         transmitted_frame_notify(p_ack_buffer->data,           // phr + psdu
                                  rssi_last_measurement_get(),  // rssi
@@ -2447,7 +2471,7 @@ void nrf_802154_trx_standalone_cca_finished(bool channel_was_idle)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     state_set(RADIO_STATE_RX);
-    rx_init();
+    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
     cca_notify(channel_was_idle);
 
@@ -2500,7 +2524,7 @@ void nrf_802154_trx_transmit_frame_ccabusy(void)
 #endif
 
     state_set(RADIO_STATE_RX);
-    rx_init();
+    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
     nrf_802154_transmit_done_metadata_t metadata = {};
 
@@ -2543,7 +2567,7 @@ void nrf_802154_trx_energy_detection_finished(uint8_t ed_sample)
         nrf_802154_trx_channel_set(nrf_802154_pib_channel_get());
 
         state_set(RADIO_STATE_RX);
-        rx_init();
+        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
         energy_detected_notify(nrf_802154_rssi_ed_sample_convert(m_ed_result));
 
@@ -2579,8 +2603,8 @@ void nrf_802154_core_deinit(void)
 
     mpsl_fem_cleanup();
 
-    nrf_802154_irq_disable(RADIO_IRQn);
-    nrf_802154_irq_clear_pending(RADIO_IRQn);
+    nrf_802154_irq_disable(nrfx_get_irq_number(NRF_RADIO));
+    nrf_802154_irq_clear_pending(nrfx_get_irq_number(NRF_RADIO));
 
     nrf_802154_sl_timer_deinit(&m_rx_prestarted_timer);
 
@@ -2650,9 +2674,22 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
                 {
                     m_trx_receive_frame_notifications_mask =
                         make_trx_frame_receive_notification_mask();
+
                     m_rx_window_id = id;
                     state_set(RADIO_STATE_RX);
-                    rx_init();
+
+                    bool abort_shall_follow = false;
+
+                    rx_init(ramp_up_mode_choose(req_orig), &abort_shall_follow);
+
+                    if (abort_shall_follow)
+                    {
+                        nrf_802154_trx_abort();
+
+                        // HW triggering failed, fallback is SW trigger.
+                        // (fallback immunizes against the rare case of spurious lptimer firing)
+                        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+                    }
                 }
             }
             else
@@ -2716,13 +2753,14 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
                 m_tx_power = p_params->tx_power;
 
                 // coverity[check_return]
-                result = tx_init(p_data, p_params->cca);
+                result = tx_init(p_data, ramp_up_mode_choose(req_orig), p_params->cca);
+
                 if (p_params->immediate)
                 {
                     if (!result)
                     {
                         state_set(RADIO_STATE_RX);
-                        rx_init();
+                        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
                     }
                 }
                 else
@@ -2908,7 +2946,7 @@ bool nrf_802154_core_channel_update(req_originator_t req_orig)
             case RADIO_STATE_RX:
                 if (current_operation_terminate(NRF_802154_TERM_802154, req_orig, true))
                 {
-                    rx_init();
+                    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
                 }
                 break;
 

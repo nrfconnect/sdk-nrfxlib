@@ -47,6 +47,10 @@
 #include "hal/nrf_ppi.h"
 #endif
 
+#if NRF_802154_USE_INTERNAL_INCLUDES
+#include "nrf_802154_sl_periphs_internal.h"
+#endif
+
 /**
  * @def NRF_802154_EGU_INSTANCE_NO
  *

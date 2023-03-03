@@ -10,6 +10,23 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
+Main branch - nRF 802.15.4 Radio Driver
+***************************************
+
+Notable changes
+===============
+
+* Improved frame filtering routine which reduces the likelihood of encountering ``NRF_802154_RX_ERROR_RUNTIME`` error during heavier loads. (KRKNWK-15525)
+* Delayed transmissions and receptions are triggered by a hardware timer what makes them more immune to software latencies. (KRKNWK-8615)
+
+Other changes
+=============
+
+* Removed the ``NRF_802154_DISABLE_BCC_MATCHING`` config option. Setting this option to ``NRF_802154_DISABLE_BCC_MATCHING=1`` had been not functional for multiple releases. (KRKNWK-15525)
+* Removed the ``NRF_802154_TX_STARTED_NOTIFY_ENABLED`` config option. (KRKNWK-16364)
+* The total times measurement feature is turned off. (KRKNWK-16189)
+
+
 nRF Connect SDK v2.3.0 - nRF 802.15.4 Radio Driver
 **************************************************
 
@@ -17,6 +34,25 @@ Notable changes
 ===============
 
 * Added the possibility to disable the continuous and modulated carrier functions by setting the ``NRF_802154_CARRIER_FUNCTIONS_ENABLED`` define to ``0``.
+
+nRF Connect SDK v2.2.0 - nRF 802.15.4 Radio Driver
+**************************************************
+
+Notable changes
+===============
+
+* The CSL phase calculation method now depends on the anchor time instead of the nearest scheduled reception window. (KRKNWK-15150)
+
+Added
+=====
+
+* Added :c:func:`nrf_802154_csl_writer_anchor_time_set`. (KRKNWK-15150)
+
+Bug fixes
+=========
+
+* Implemented a workaround for the YOPAN-158 errata for nRF5340. (KRKNWK-15473)
+
 
 nRF Connect SDK v2.1.0 - nRF 802.15.4 Radio Driver
 **************************************************

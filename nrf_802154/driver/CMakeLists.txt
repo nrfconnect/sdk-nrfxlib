@@ -106,6 +106,12 @@ if (SL_OPENSOURCE)
   )
 endif()
 
+target_compile_definitions(nrf-802154-driver-interface
+  INTERFACE
+    # Disable total times measurement
+    NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED=0
+)
+
 if (NRF_802154_PROJECT_CONFIG)
   target_compile_definitions(nrf-802154-driver-interface
     INTERFACE

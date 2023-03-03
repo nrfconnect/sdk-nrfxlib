@@ -32,6 +32,8 @@ config NRF_802154_SL
 	select DYNAMIC_INTERRUPTS
 	select SENSOR if NRF_802154_TEMPERATURE_UPDATE
 	select TEMP_NRF5_MPSL if NRF_802154_TEMPERATURE_UPDATE
+	select NRFX_PPI if SOC_SERIES_NRF52X
+	select NRFX_DPPI if SOC_SERIES_NRF53X
 	depends on !NRF_802154_SOURCE_HAL_NORDIC
 	help
 		Use of Nordic Semiconductor proprietary implementation of nRF 802.15.4 Service Layer.
@@ -39,4 +41,18 @@ config NRF_802154_SL
 
 endchoice # NRF_802154_SL_TYPE
 
+if NRF_802154_SL
+
+config NRF_802154_SL_LPTIMER_RTC
+	def_bool y
+	depends on NRF_RTC_TIMER
+
+config NRF_802154_SL_HPTIMER
+	def_bool y
+	depends on SOC_SERIES_NRF52X || SOC_SERIES_NRF53X
+
+endif # NRF_802154_SL
+
 endif # NRF_802154_RADIO_DRIVER
+
+orsource "../internal/Kconfig.nrfxlib"
