@@ -132,7 +132,7 @@ static bool dst_addressing_may_be_present(uint8_t frame_type)
 }
 
 /**
- * @brief Get offset of end of addressing fields for given frame assuming its version is 2006.
+ * @brief Verify if destination addressing bits in the FCF field are correct assuming its version is 2006.
  *
  * If given frame contains errors that prevent getting offset, this function returns
  * NRF_802154_RX_ERROR_INVALID_FRAME. If there are no destination address fields in given frame,
@@ -140,11 +140,9 @@ static bool dst_addressing_may_be_present(uint8_t frame_type)
  * beacon.
  * If both of those conditions are not met, the function returns
  * NRF_802154_RX_ERROR_INVALID_DEST_ADDR.
- * Otherwise, this function returns NRF_802154_RX_ERROR_NONE and inserts offset of addressing
- * fields end to @p p_num_bytes.
+ * Otherwise, this function returns NRF_802154_RX_ERROR_NONE.
  *
  * @param[in]  p_frame_data Pointer to the frame parser data.
- * @param[out] p_num_bytes  Offset of addressing fields end.
  * @param[in]  frame_type   Type of incoming frame.
  *
  * @retval NRF_802154_RX_ERROR_NONE               No errors in given frame were detected - it may be
@@ -153,9 +151,8 @@ static bool dst_addressing_may_be_present(uint8_t frame_type)
  * @retval NRF_802154_RX_ERROR_INVALID_FRAME      Detected an error in given frame - it should be
  *                                                discarded.
  */
-static nrf_802154_rx_error_t dst_addressing_end_offset_get_2006(
+static nrf_802154_rx_error_t dst_addressing_fcf_check_2006(
     const nrf_802154_frame_parser_data_t * p_frame_data,
-    uint8_t                              * p_num_bytes,
     uint8_t                                frame_type)
 {
     nrf_802154_rx_error_t result;
@@ -163,13 +160,11 @@ static nrf_802154_rx_error_t dst_addressing_end_offset_get_2006(
     switch (nrf_802154_frame_parser_dst_addr_type_get(p_frame_data))
     {
         case DEST_ADDR_TYPE_SHORT:
-            *p_num_bytes = SHORT_ADDR_CHECK_OFFSET;
-            result       = NRF_802154_RX_ERROR_NONE;
+            result = NRF_802154_RX_ERROR_NONE;
             break;
 
         case DEST_ADDR_TYPE_EXTENDED:
-            *p_num_bytes = EXTENDED_ADDR_CHECK_OFFSET;
-            result       = NRF_802154_RX_ERROR_NONE;
+            result = NRF_802154_RX_ERROR_NONE;
             break;
 
         case DEST_ADDR_TYPE_NONE:
@@ -179,8 +174,7 @@ static nrf_802154_rx_error_t dst_addressing_end_offset_get_2006(
                 {
                     case SRC_ADDR_TYPE_SHORT:
                     case SRC_ADDR_TYPE_EXTENDED:
-                        *p_num_bytes = PANID_CHECK_OFFSET;
-                        result       = NRF_802154_RX_ERROR_NONE;
+                        result = NRF_802154_RX_ERROR_NONE;
                         break;
 
                     default:
@@ -202,15 +196,13 @@ static nrf_802154_rx_error_t dst_addressing_end_offset_get_2006(
 }
 
 /**
- * @brief Get offset of end of addressing fields for given frame assuming its version is 2015.
+ * @brief Verify if destination addressing bits in the FCF field are correct assuming its version is 2015.
  *
  * If given frame contains errors that prevent getting offset, this function returns
  * NRF_802154_RX_ERROR_INVALID_FRAME.
- * Otherwise, this function returns NRF_802154_RX_ERROR_NONE and inserts offset of addressing
- * fields end to @p p_num_bytes.
+ * Otherwise, this function returns NRF_802154_RX_ERROR_NONE.
  *
  * @param[in]  p_frame_data Pointer to the frame parser data.
- * @param[out] p_num_bytes  Offset of addressing fields end.
  * @param[in]  frame_type   Type of incoming frame.
  *
  * @retval NRF_802154_RX_ERROR_NONE               No errors in given frame were detected - it may be
@@ -218,9 +210,8 @@ static nrf_802154_rx_error_t dst_addressing_end_offset_get_2006(
  * @retval NRF_802154_RX_ERROR_INVALID_FRAME      Detected an error in given frame - it should be
  *                                                discarded.
  */
-static nrf_802154_rx_error_t dst_addressing_end_offset_get_2015(
+static nrf_802154_rx_error_t dst_addressing_fcf_check_2015(
     const nrf_802154_frame_parser_data_t * p_frame_data,
-    uint8_t                              * p_num_bytes,
     uint8_t                                frame_type)
 {
     nrf_802154_rx_error_t result;
@@ -241,8 +232,7 @@ static nrf_802154_rx_error_t dst_addressing_end_offset_get_2015(
             }
             else
             {
-                *p_num_bytes = end_offset;
-                result       = NRF_802154_RX_ERROR_NONE;
+                result = NRF_802154_RX_ERROR_NONE;
             }
         }
         break;
@@ -266,13 +256,12 @@ static nrf_802154_rx_error_t dst_addressing_end_offset_get_2015(
 }
 
 /**
- * @brief Get offset of end of addressing fields for given frame.
+ * @brief Verify if destination addressing bits in the FCF field are correct.
  *
  * This function relays its arguments to either @ref dst_addressing_end_offset_get_2006
  * or @ref dst_addressing_end_offset_get_2015 depending on the frame version.
  *
  * @param[in]  p_frame_data  Pointer to the frame parser data.
- * @param[out] p_num_bytes   Offset of addressing fields end.
  * @param[in]  frame_type    Type of incoming frame.
  * @param[in]  frame_version Version of the incoming frame.
  *
@@ -282,9 +271,8 @@ static nrf_802154_rx_error_t dst_addressing_end_offset_get_2015(
  * @retval NRF_802154_RX_ERROR_INVALID_FRAME      Detected an error in given frame - it should be
  *                                                discarded.
  */
-static nrf_802154_rx_error_t dst_addressing_end_offset_get(
+static nrf_802154_rx_error_t dst_addressing_fcf_check(
     const nrf_802154_frame_parser_data_t * p_frame_data,
-    uint8_t                              * p_num_bytes,
     uint8_t                                frame_type,
     uint8_t                                frame_version)
 {
@@ -294,11 +282,11 @@ static nrf_802154_rx_error_t dst_addressing_end_offset_get(
     {
         case FRAME_VERSION_0:
         case FRAME_VERSION_1:
-            result = dst_addressing_end_offset_get_2006(p_frame_data, p_num_bytes, frame_type);
+            result = dst_addressing_fcf_check_2006(p_frame_data, frame_type);
             break;
 
         case FRAME_VERSION_2:
-            result = dst_addressing_end_offset_get_2015(p_frame_data, p_num_bytes, frame_type);
+            result = dst_addressing_fcf_check_2015(p_frame_data, frame_type);
             break;
 
         default:
@@ -441,60 +429,50 @@ static nrf_802154_rx_error_t dst_addr_check(const nrf_802154_frame_parser_data_t
 }
 
 nrf_802154_rx_error_t nrf_802154_filter_frame_part(
-    nrf_802154_frame_parser_data_t * p_frame_data,
-    uint8_t                        * p_num_bytes)
+    const nrf_802154_frame_parser_data_t * p_frame_data,
+    nrf_802154_filter_mode_t               filter_mode)
 {
-    nrf_802154_rx_error_t result        = NRF_802154_RX_ERROR_INVALID_FRAME;
-    uint8_t               frame_type    = nrf_802154_frame_parser_frame_type_get(p_frame_data);
-    uint8_t               frame_version = nrf_802154_frame_parser_frame_version_get(p_frame_data);
-    uint8_t               psdu_length   = nrf_802154_frame_parser_frame_length_get(p_frame_data);
+    nrf_802154_rx_error_t result     = NRF_802154_RX_ERROR_NONE;
+    uint8_t               frame_type = nrf_802154_frame_parser_frame_type_get(
+        p_frame_data);
+    uint8_t frame_version = nrf_802154_frame_parser_frame_version_get(
+        p_frame_data);
+    uint8_t psdu_length = nrf_802154_frame_parser_frame_length_get(
+        p_frame_data);
 
-    switch (*p_num_bytes)
+    if (filter_mode & NRF_802154_FILTER_MODE_FCF)
     {
-        case FCF_CHECK_OFFSET:
-            if ((psdu_length < IMM_ACK_LENGTH) || (psdu_length > MAX_PACKET_SIZE))
-            {
-                result = NRF_802154_RX_ERROR_INVALID_LENGTH;
-                break;
-            }
+        assert(nrf_802154_frame_parser_parse_level_get(p_frame_data) >= PARSE_LEVEL_FCF_OFFSETS);
 
-            if (!nrf_802154_frame_parser_valid_data_extend(p_frame_data,
-                                                           *p_num_bytes,
-                                                           PARSE_LEVEL_FCF_OFFSETS))
-            {
-                result = NRF_802154_RX_ERROR_INVALID_FRAME;
-                break;
-            }
+        if ((psdu_length < IMM_ACK_LENGTH) || (psdu_length > MAX_PACKET_SIZE))
+        {
+            return NRF_802154_RX_ERROR_INVALID_LENGTH;
+        }
 
-            if (!frame_type_and_version_filter(frame_type, frame_version))
-            {
-                result = NRF_802154_RX_ERROR_INVALID_FRAME;
-                break;
-            }
+        if (!frame_type_and_version_filter(frame_type, frame_version))
+        {
+            return NRF_802154_RX_ERROR_INVALID_FRAME;
+        }
 
-            if (!dst_addressing_may_be_present(frame_type))
-            {
-                result = NRF_802154_RX_ERROR_NONE;
-                break;
-            }
+        if (dst_addressing_may_be_present(frame_type))
+        {
+            result = dst_addressing_fcf_check(p_frame_data,
+                                              frame_type,
+                                              frame_version);
+        }
+    }
 
-            result = dst_addressing_end_offset_get(p_frame_data,
-                                                   p_num_bytes,
-                                                   frame_type,
-                                                   frame_version);
-            break;
+    if (result != NRF_802154_RX_ERROR_NONE)
+    {
+        return result;
+    }
 
-        default:
-            if (!nrf_802154_frame_parser_valid_data_extend(p_frame_data,
-                                                           *p_num_bytes,
-                                                           PARSE_LEVEL_DST_ADDRESSING_END))
-            {
-                result = NRF_802154_RX_ERROR_INVALID_FRAME;
-                break;
-            }
+    if (filter_mode & NRF_802154_FILTER_MODE_DST_ADDR)
+    {
+        assert(nrf_802154_frame_parser_parse_level_get(
+                   p_frame_data) >= PARSE_LEVEL_DST_ADDRESSING_END);
 
-            result = dst_addr_check(p_frame_data);
-            break;
+        result = dst_addr_check(p_frame_data);
     }
 
     return result;

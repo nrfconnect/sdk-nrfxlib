@@ -53,26 +53,42 @@
  * @brief Procedures used to discard the incoming frames that contain unexpected data in PHR or MHR.
  */
 
+/**@brief Type representing the scope of frame filtering.
+ *
+ * Possible values:
+ * @ref NRF_802154_FILTER_MODE_FCF
+ * @ref NRF_802154_FILTER_MODE_DST_ADDR
+ */
+typedef uint32_t nrf_802154_filter_mode_t;
+
+/**@brief Filter the frame based on the content of the FCF field. */
+#define NRF_802154_FILTER_MODE_FCF      (1UL << 0)
+
+/**@brief Filter the frame based on the content of the destination addressing fields. */
+#define NRF_802154_FILTER_MODE_DST_ADDR (1UL << 1)
+
+/**@brief Perform all filtering tests. */
+#define NRF_802154_FILTER_MODE_ALL      (NRF_802154_FILTER_MODE_FCF | \
+                                         NRF_802154_FILTER_MODE_DST_ADDR)
+
 /**
  * @brief Verifies if the given part of the frame is valid.
  *
- * This function is called a few times for each received frame. The first call is after the FCF
- * is received (PSDU length is 2 and @p p_num_bytes value is 3). The subsequent calls are performed
- * when the number of bytes requested by the previous call is available. The iteration ends
- * when the function does not request any more bytes to check.
- * If the verified part of the function is correct, this function returns true and sets
- * @p p_num_bytes to the number of bytes that should be available in PSDU during the next iteration.
- * If the frame is correct and there is nothing more to check, this function returns true
- * and does not modify the @p p_num_bytes value. If the verified frame is incorrect, this function
- * returns false and the @p p_num_bytes value is undefined.
+ * This function filters the given frame within the scope specified by @p filter_mode argument.
+ * In the @c NRF_802154_FILTER_MODE_FCF filter mode the function will reject all frames that do
+ * not satisfy requirements that can be determined by parsing the FCF field, such as unsupported
+ * frame versions, unsupported frame types, or when destination addressing is not present in the
+ * frame and the node is not a coordinator.
+ * In the @c NRF_802154_FILTER_MODE_DST_ADDR filter mode the function will only check if the
+ * destination address matches the address of the current node. If the incoming frame has no address
+ * and the node is a coordinator the frame will be accepted. No validation of FCF is performend.
  *
- * @param[inout] p_frame_data Pointer to a frame parser data of the frame to be filtered.
- *                            The frame filter may increase the frame parse level to either
- *                            PARSE_LEVEL_FCF_OFFSETS or PARSE_LEVEL_DST_ADDRESSING_END.
- * @param[inout] p_num_bytes  Number of bytes available in @p p_data buffer. This value is either
- *                            set to the requested number of bytes for the next iteration or remains
- *                            unchanged if no more iterations are to be performed during
- *                            the filtering of the given frame.
+ * To perform a full filtering procedure it is necessary to call this function on the incoming frame
+ * with both @c NRF_802154_FILTER_MODE_FCF and @c NRF_802154_FILTER_MODE_DST_ADDR scopes in
+ * two iterations, or both at once using @c NRF_802154_FILTER_MODE_ALL.
+ *
+ * @param[in] p_frame_data Pointer to a frame parser data of the frame to be filtered.
+ * @param[in] filter_mode  The filtering scope that should be performed by the function.
  *
  * @retval NRF_802154_RX_ERROR_NONE               Verified part of the incoming frame is valid.
  * @retval NRF_802154_RX_ERROR_INVALID_FRAME      Verified part of the incoming frame is invalid.
@@ -80,8 +96,8 @@
  *                                                mismatches the address of this node.
  */
 nrf_802154_rx_error_t nrf_802154_filter_frame_part(
-    nrf_802154_frame_parser_data_t * p_frame_data,
-    uint8_t                        * p_num_bytes);
+    const nrf_802154_frame_parser_data_t * p_frame_data,
+    nrf_802154_filter_mode_t               filter_mode);
 
 /**
  *@}

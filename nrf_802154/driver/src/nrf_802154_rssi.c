@@ -99,7 +99,7 @@ int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
     return result;
 }
 
-#elif defined(NRF5340_XXAA)
+#else
 
 /** Macro for calculating x raised to the power of 2. */
 #define POW_2(x)        ((x) * (x))
@@ -154,8 +154,6 @@ int8_t nrf_802154_rssi_sample_temp_corr_value_get(uint8_t rssi_sample)
     return compensated_rssi - (int8_t)rssi_sample;
 }
 
-#else
-#error Unsupported chip family
 #endif
 
 uint8_t nrf_802154_rssi_sample_corrected_get(uint8_t rssi_sample)

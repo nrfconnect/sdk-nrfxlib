@@ -138,6 +138,15 @@ __STATIC_INLINE uint16_t nrf_802154_cca_before_tx_duration_get(void)
     return us_time;
 }
 
+/**@brief Get the duration of the Ack frame along with turnaround in microseconds. */
+__STATIC_INLINE uint16_t nrf_802154_ack_duration_with_turnaround_get(void)
+{
+    // aTurnaroundTime + ACK frame duration
+    return PHY_US_TIME_FROM_SYMBOLS(A_TURNAROUND_TIME_SYMBOLS +
+                                    PHY_SHR_SYMBOLS +
+                                    PHY_SYMBOLS_FROM_OCTETS(IMM_ACK_LENGTH + PHR_SIZE));
+}
+
 __STATIC_INLINE uint16_t nrf_802154_rx_duration_get(uint8_t psdu_length, bool ack_requested)
 {
     // SHR + PHR + PSDU
@@ -146,9 +155,7 @@ __STATIC_INLINE uint16_t nrf_802154_rx_duration_get(uint8_t psdu_length, bool ac
 
     if (ack_requested)
     {
-        us_time += PHY_US_TIME_FROM_SYMBOLS(A_TURNAROUND_TIME_SYMBOLS +
-                                            PHY_SHR_SYMBOLS +
-                                            PHY_SYMBOLS_FROM_OCTETS(IMM_ACK_LENGTH + PHR_SIZE));
+        us_time += nrf_802154_ack_duration_with_turnaround_get();
     }
 
     return us_time;

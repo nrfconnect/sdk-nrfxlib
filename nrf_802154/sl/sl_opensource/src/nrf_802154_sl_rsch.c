@@ -180,3 +180,10 @@ bool nrf_802154_rsch_delayed_timeslot_priority_update(rsch_dly_ts_id_t dly_ts_id
 
     return false;
 }
+
+bool nrf_802154_rsch_delayed_timeslot_ppi_update(uint32_t ppi_channel)
+{
+    (void)ppi_channel;
+
+    return false;
+}

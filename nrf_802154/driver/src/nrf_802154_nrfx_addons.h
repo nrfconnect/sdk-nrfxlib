@@ -38,20 +38,18 @@
 #include "nrfx.h"
 #include "nrf_802154_const.h"
 
-/* The usage of ED_RSSISCALE is described inprecisely in the nRF product specifications. The meaning of
+/* The usage of ED_RSSISCALE is described imprecisely in the nRF product specifications. The meaning of
    this constant is the following: If we calculate ed_scaled =  EDSAMPLE *  ED_RSSISCALE, then
    it is guaranteed that in the range 0-255 ed_scaled maps linearly to the ED power in dBm. This means,
    that the maximum value in EDSAMPLE which can be reported in compliance with the 802.15.4 specification is
    255/ED_RSSISCALE. */
 
-#if defined (NRF52840_XXAA)
-#define ED_RSSIOFFS  (-92) ///< dBm value corresponding to value 0 in the EDSAMPLE register.
-#define ED_RSSISCALE 4     ///< Factor needed to calculate the ED result based on the data from the RADIO peripheral.
-#elif defined (NRF52833_XXAA) || defined(NRF5340_XXAA)
-#define ED_RSSIOFFS  (-93) ///< dBm value corresponding to value 0 in the EDSAMPLE register.
-#define ED_RSSISCALE 5     ///< Factor needed to calculate the ED result based on the data from the RADIO peripheral.
+#if defined (NRF52833_XXAA) || defined(NRF5340_XXAA)
+#define ED_RSSIOFFS                 (-93)                                             ///< dBm value corresponding to value 0 in the EDSAMPLE register.
+#define ED_RSSISCALE                5                                                 ///< Factor needed to calculate the ED result based on the data from the RADIO peripheral.
 #else
-#error "Selected chip is not supported."
+#define ED_RSSIOFFS                 (-92)                                             ///< dBm value corresponding to value 0 in the EDSAMPLE register.
+#define ED_RSSISCALE                4                                                 ///< Factor needed to calculate the ED result based on the data from the RADIO peripheral.
 #endif
 
 #define EDSAMPLE_MIN_REPORTED_VALUE (PHY_MIN_RECEIVER_SENSITIVITY - ED_RSSIOFFS + 10) ///< Minimal reported EDSAMPLE value (reported as 0)

@@ -199,21 +199,6 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_DISABLE_BCC_MATCHING
- *
- * Setting this flag disables NRF_RADIO_EVENT_BCMATCH handling, and therefore the address filtering
- * during the frame reception. With this flag set to 1, the address filtering is done after
- * receiving a frame, during NRF_RADIO_EVENT_END handling.
- *
- * @note This option is incompatible with antenna diversity. If set to 1, antenna diversity
- * must not be used.
- *
- */
-#ifndef NRF_802154_DISABLE_BCC_MATCHING
-#define NRF_802154_DISABLE_BCC_MATCHING 0
-#endif
-
-/**
  * @def NRF_802154_NOTIFY_CRCERROR
  *
  * With this flag set to 1, the CRC errors are notified to upper layers. This requires an interrupt
@@ -245,12 +230,11 @@ extern "C" {
  *
  * If measurement of total time spent in certain states is to be calculated.
  *
- * This option can be enabled when @ref NRF_802154_FRAME_TIMESTAMP_ENABLED is 1
- * and @ref NRF_802154_DISABLE_BCC_MATCHING is 0.
+ * This option can be enabled when @ref NRF_802154_FRAME_TIMESTAMP_ENABLED is 1.
  */
 #ifndef NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
 #define NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED \
-    (1 && NRF_802154_FRAME_TIMESTAMP_ENABLED && !NRF_802154_DISABLE_BCC_MATCHING)
+    (1 && NRF_802154_FRAME_TIMESTAMP_ENABLED)
 #endif
 
 /**
@@ -429,22 +413,6 @@ extern "C" {
  * @defgroup nrf_802154_config_transmission Transmission start notification feature configuration
  * @{
  */
-
-/**
- * @def NRF_802154_TX_STARTED_NOTIFY_ENABLED
- *
- * Indicates whether the notifications of the started transmissions are to be enabled in the driver.
- *
- * @note This feature is enabled by default if the ACK timeout feature or CSMA-CA is enabled.
- *       These features depend on the notifications of the transmission start.
- */
-#ifndef NRF_802154_TX_STARTED_NOTIFY_ENABLED
-#if NRF_802154_ACK_TIMEOUT_ENABLED || NRF_802154_CSMA_CA_ENABLED
-#define NRF_802154_TX_STARTED_NOTIFY_ENABLED 1
-#else
-#define NRF_802154_TX_STARTED_NOTIFY_ENABLED 0
-#endif
-#endif // NRF_802154_TX_STARTED_NOTIFY_ENABLED
 
 /**
  * @}
