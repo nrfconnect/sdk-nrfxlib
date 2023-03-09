@@ -717,14 +717,10 @@ psa_status_t psa_driver_wrapper_import_key(
 #endif /* PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
             /* Fell through, meaning no accelerator supports this operation */
-#if defined(MBEDTLS_PSA_BUILTIN_HAS_KEY_TYPE)
             return( psa_import_key_into_slot( attributes,
                                               data, data_length,
                                               key_buffer, key_buffer_size,
                                               key_buffer_length, bits ) );
-#else
-            return ( PSA_ERROR_NOT_SUPPORTED );
-#endif /* !MBEDTLS_PSA_BUILTIN_HAS_KEY_TYPE */
         default:
             (void)status;
             return( PSA_ERROR_INVALID_ARGUMENT );
