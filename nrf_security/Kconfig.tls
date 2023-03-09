@@ -300,7 +300,7 @@ config MBEDTLS_SSL_OUT_CONTENT_LEN
 	default 16380
 
 config MBEDTLS_SSL_IN_CONTENT_LEN
-	prompt "Max length for TLS outgoing fragments"
+	prompt "Max length for TLS incoming fragments"
 	int
 	range 0 16384
 	default 900 if OPENTHREAD_NRF_SECURITY
