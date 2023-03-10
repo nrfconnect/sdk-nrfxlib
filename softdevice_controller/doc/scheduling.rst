@@ -70,7 +70,8 @@ The following table summarizes the priorities.
    |                             | * Flash access after it has been blocked consecutively for a few times                            |
    |                             | * MPSL Timeslot with high priority                                                                |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
-   | Fourth priority             | * MPSL Timeslot with normal priority                                                              |
+   | Fourth priority             | * 802.15.4 radio driver                                                                           |
+   |                             | * MPSL Timeslot with normal priority                                                              |
    |                             | * Flash access                                                                                    |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
 

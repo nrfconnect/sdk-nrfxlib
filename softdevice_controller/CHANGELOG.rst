@@ -9,6 +9,27 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Added
+=====
+
+* Support for the vendor-specific HCI command: Set Compatibility mode for window offset (DRGN-18727).
+* Support for Periodic Advertising with Responses (PAwR) Scanner (experimental) (DRGN-18739).
+
+Changes
+=======
+
+* The ``VersNr`` field in the ``LL_VERSION_IND`` packet now contains the value 0x0D to indicate compatibility with Bluetooth Core Specification v5.4 (DRGN-18624).
+
+Bug fixes
+=========
+
+* Fixed a rare issue where the controller could assert when starting a connectable advertiser or creating a connection too quickly after disconnection (DRGN-18741).
+
 nRF Connect SDK v2.3.0
 **********************
 

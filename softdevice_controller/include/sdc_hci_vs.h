@@ -79,6 +79,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_SET_AUTO_POWER_CONTROL_REQUEST_PARAM = 0xfd0b,
     /** @brief See @ref sdc_hci_cmd_vs_set_adv_randomness(). */
     SDC_HCI_OPCODE_CMD_VS_SET_ADV_RANDOMNESS = 0xfd0c,
+    /** @brief See @ref sdc_hci_cmd_vs_compat_mode_window_offset_set(). */
+    SDC_HCI_OPCODE_CMD_VS_COMPAT_MODE_WINDOW_OFFSET_SET = 0xfd0d,
 };
 
 /** @brief VS subevent Code values. */
@@ -492,6 +494,13 @@ typedef __PACKED_STRUCT
     /** @brief Maximum random delay in microseconds, 0 to disable randomness. */
     uint16_t rand_us;
 } sdc_hci_cmd_vs_set_adv_randomness_t;
+
+/** @brief Set Compatibility mode for window offset command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Set to 1 to enable this compatibility mode. */
+    uint8_t enable;
+} sdc_hci_cmd_vs_compat_mode_window_offset_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -987,6 +996,29 @@ uint8_t sdc_hci_cmd_vs_set_auto_power_control_request_param(const sdc_hci_cmd_vs
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomness_t * p_params);
+
+/** @brief Set Compatibility mode for window offset.
+ *
+ * This compatibility mode enables interoperability with devices that do not support a value of 0
+ * for the WinOffset parameter in the Link Layer CONNECT_IND packet.
+ * This applies to a limited set of legacy peripheral devices from a limited set of vendors.
+ * Enabling this compatibility mode will only have an effect if the local device will act as a
+ * central device and initiate a connection to a peripheral device.
+ * In that case it may lead to the connection creation taking up to one
+ * connection interval longer to complete for all connections.
+ *
+ * By default this mode is disabled.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat_mode_window_offset_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 

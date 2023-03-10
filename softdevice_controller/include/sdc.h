@@ -54,6 +54,9 @@ extern "C" {
 /** @brief Default number of buffers for response reports. */
 #define SDC_DEFAULT_PERIODIC_ADV_RSP_RX_BUFFER_COUNT 0
 
+/** @brief Default number of buffers for response data.*/
+#define SDC_DEFAULT_PERIODIC_SYNC_RSP_TX_BUFFER_COUNT 1
+
 /** @brief Default maximum number of concurrent peripheral links. */
 #define SDC_DEFAULT_PERIPHERAL_COUNT   1
 
@@ -181,11 +184,19 @@ extern "C" {
      (__MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data)):\
      (__MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data)))
 
-/** Memory required per periodic sync
+/** Memory required per periodic sync when periodic sync with responses is not supported.
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
 #define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (247 + (buffer_count) * 285)
+
+/** Memory required per periodic sync when periodic sync with responses is supported.
+ *
+ * @param[in] tx_buffer_count The number of buffers for sending data. Minimum of 1.
+ * @param[in] rx_buffer_count The number of buffers for receiving data.
+ */
+#define SDC_MEM_PER_PERIODIC_SYNC_RSP(tx_buffer_count, rx_buffer_count) \
+    (630 + (tx_buffer_count - 1) * 257 + (rx_buffer_count) * 285)
 
 /** Memory required for the periodic adv list.
  *
@@ -262,6 +273,8 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_PERIODIC_ADV_RSP_COUNT,
     /** See @ref sdc_cfg_t::periodic_adv_rsp_buffer_cfg. */
     SDC_CFG_TYPE_PERIODIC_ADV_RSP_BUFFER_CFG,
+    /** See @ref sdc_cfg_t::periodic_sync_rsp_tx_buffer_cfg. */
+    SDC_CFG_TYPE_PERIODIC_SYNC_RSP_TX_BUFFER_CFG,
 };
 
 
@@ -389,7 +402,11 @@ typedef union
      *  Each synchronization to a periodic advertiser allocates its own buffer
      *  pool.
      *
-     *  The minimum allowed number of buffers is 2.
+     *  When periodic sync with responses is not supported,
+     *  the minimum allowed number of buffers is 2.
+     *
+     *  When periodic sync with responses is supported,
+     *  the minimum allowed number of buffers is 1.
      *
      *  No reports for a new advertising event containing chained PDUs will be
      *  enqueued until the host has emptied the previous event's buffers.
@@ -413,6 +430,14 @@ typedef union
      *  Default: See @ref sdc_cfg_periodic_adv_rsp_buffer_cfg_t.
      */
     sdc_cfg_periodic_adv_rsp_buffer_cfg_t periodic_adv_rsp_buffer_cfg;
+    /** Configures the maximum number of responses that can be stored in the controller
+     *  when synchronized to a periodic advertiser with responses.
+     *
+     * The minimum number of buffers is 1.
+     *
+     * Default: @ref SDC_DEFAULT_PERIODIC_SYNC_RSP_TX_BUFFER_COUNT.
+     */
+    sdc_cfg_buffer_count_t periodic_sync_rsp_tx_buffer_cfg;
 } sdc_cfg_t;
 
 
@@ -755,6 +780,23 @@ int32_t sdc_support_le_periodic_sync(void);
  * @retval -NRF_EOPNOTSUPP  LE Periodic Advertising with Responses is not supported.
  */
 int32_t sdc_support_le_periodic_adv_with_rsp(void);
+
+/** @brief Support LE Periodic Advertising with Responses in the Synchronization state
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Periodic Sync with Responses.
+ *
+ * The application shall also call @ref sdc_support_ext_adv(), @ref sdc_support_le_periodic_sync(),
+ * and at least one of @ref sdc_support_periodic_adv_sync_transfer_receiver_central and
+ * @ref sdc_support_periodic_adv_sync_transfer_receiver_peripheral to enable support for extended
+ * advertising, periodic advertising, and the sync transfer receiver features before enabling
+ * support for Periodic Sync with Responses.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Periodic Sync with Responses is not supported.
+ */
+int32_t sdc_support_le_periodic_sync_with_rsp(void);
 
 /** @brief Support LE Power Control for central role
  *
