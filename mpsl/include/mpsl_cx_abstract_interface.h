@@ -48,9 +48,10 @@ typedef struct
 /** @brief Connects to one of Coexistence PTA client implementation
  *
  * @param[in] p_methods   Pointer to structure of pointers.
+ * this must be valid for the lifetime of the application.
  *
  * @note This must be used by Coexistence implementation "constructor" and this is the only case
- *       in which it can be used.
+ * in which it can be used.
  *
  * @retval   0               The "link" was successfuly created.
  * @retval   -NRF_EPERM      Some error occured (e.g. null pointer was passed).
