@@ -44,6 +44,9 @@
 #include "cc3xx_crypto_primitives.h"
 #endif
 
+#if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
+#include "oberon_mac.h"
+#endif
 #if defined(PSA_CRYPTO_DRIVER_HAS_AEAD_SUPPORT_OBERON)
 #include "oberon_aead.h"
 #endif
@@ -66,10 +69,9 @@ typedef union {
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
     cc3xx_mac_operation_t cc3xx_driver_ctx;
 #endif
-// TODO: Oberon doesn't provide mac APIs yet
-//#if defined(PSA_CRYPTO_DRIVER_OBERON)
-//    oberon_mac_operation_t oberon_driver_ctx;
-//#endif
+#if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
+    oberon_mac_operation_t oberon_driver_ctx;
+#endif
 } psa_driver_mac_context_t;
 
 typedef union {
