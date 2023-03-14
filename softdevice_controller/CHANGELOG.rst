@@ -19,6 +19,7 @@ Added
 
 * Support for the vendor-specific HCI command: Set Compatibility mode for window offset (DRGN-18727).
 * Support for Periodic Advertising with Responses (PAwR) Scanner (experimental) (DRGN-18739).
+* Support for LE Read and Write RF Path Compensation HCI commands (DRGN-10234 and DRGN-18202).
 
 Changes
 =======
@@ -29,6 +30,7 @@ Bug fixes
 =========
 
 * Fixed a rare issue where the controller could assert when starting a connectable advertiser or creating a connection too quickly after disconnection (DRGN-18741).
+* Fixed an issue where the Periodic Advertisement Sync Transfer (PAST) sender may generate an incorrect ``SyncInfo`` field for periodic advertising intervals greater than 5 seconds (DRGN-18775).
 
 nRF Connect SDK v2.3.0
 **********************
