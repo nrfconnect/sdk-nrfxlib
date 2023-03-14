@@ -1807,9 +1807,11 @@ psa_status_t psa_driver_get_tag_len( psa_aead_operation_t *operation,
         *tag_len = (size_t)operation->ctx.oberon_driver_ctx.tag_length;
         return PSA_SUCCESS;
 #endif
+#if defined(MBEDTLS_PSA_BUILTIN_HAS_AEAD_SUPPORT)
     case PSA_CRYPTO_MBED_TLS_DRIVER_ID:
         *tag_len = operation->ctx.mbedtls_ctx.tag_length;
         return ( PSA_SUCCESS );
+#endif
     default:
             return( PSA_ERROR_INVALID_ARGUMENT );
     }
