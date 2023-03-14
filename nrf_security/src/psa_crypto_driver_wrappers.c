@@ -74,6 +74,9 @@
 #if defined(PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_OBERON)
 #include "oberon_key_pair.h"
 #endif
+#if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
+#include "oberon_mac.h"
+#endif
 
 /* Include TF-M builtin key driver */
 #if defined(PSA_CRYPTO_DRIVER_TFM_BUILTIN_KEY_LOADER)
@@ -2298,6 +2301,15 @@ psa_status_t psa_driver_wrapper_mac_compute(
             if( status != PSA_ERROR_NOT_SUPPORTED )
                 return( status );
 #endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX */
+#if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
+            status = oberon_mac_compute(attributes, key_buffer, key_buffer_size, alg,
+                input, input_length,
+                mac, mac_size, mac_length);
+            /* Declared with fallback == true */
+            if (status != PSA_ERROR_NOT_SUPPORTED) {
+                return status;
+            }
+#endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
 #if defined(MBEDTLS_PSA_BUILTIN_HAS_MAC_SUPPORT)
             /* Fell through, meaning no accelerator supports this operation */
@@ -2363,7 +2375,20 @@ psa_status_t psa_driver_wrapper_mac_sign_setup(
             if (status != PSA_ERROR_NOT_SUPPORTED)
                 return status;
 #endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX */
+#if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
+            status = oberon_mac_sign_setup(
+                &operation->ctx.oberon_driver_ctx,
+                attributes, key_buffer, key_buffer_size,
+                alg);
+            if (status == PSA_SUCCESS) {
+                operation->id = PSA_CRYPTO_OBERON_DRIVER_ID;
+            }
+            if (status != PSA_ERROR_NOT_SUPPORTED) {
+                return status;
+            }
+#endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
+
             /* Fell through, meaning no accelerator supports this operation */
 #if defined(MBEDTLS_PSA_BUILTIN_HAS_MAC_SUPPORT)
             status = mbedtls_psa_mac_sign_setup( &operation->ctx.mbedtls_ctx,
@@ -2426,6 +2451,18 @@ psa_status_t psa_driver_wrapper_mac_verify_setup(
             if (status != PSA_ERROR_NOT_SUPPORTED)
                 return status;
 #endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX */
+#if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
+            status = oberon_mac_verify_setup(
+                &operation->ctx.oberon_driver_ctx,
+                attributes, key_buffer, key_buffer_size,
+                alg);
+            if (status == PSA_SUCCESS) {
+                operation->id = PSA_CRYPTO_OBERON_DRIVER_ID;
+            }
+            if (status != PSA_ERROR_NOT_SUPPORTED) {
+                return status;
+            }
+#endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
 #if defined(MBEDTLS_PSA_BUILTIN_HAS_MAC_SUPPORT)
             /* Fell through, meaning no accelerator supports this operation */
@@ -2474,6 +2511,12 @@ psa_status_t psa_driver_wrapper_mac_update(
         case PSA_CRYPTO_CC3XX_DRIVER_ID:
             return(cc3xx_mac_update(&operation->ctx.cc3xx_driver_ctx, input, input_length));
 #endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX */
+#if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
+    case PSA_CRYPTO_OBERON_DRIVER_ID:
+        return oberon_mac_update(
+            &operation->ctx.oberon_driver_ctx,
+            input, input_length);
+#endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
         default:
             (void) input;
@@ -2502,6 +2545,11 @@ psa_status_t psa_driver_wrapper_mac_sign_finish(
             return(cc3xx_mac_sign_finish(&operation->ctx.cc3xx_driver_ctx,
                         mac, mac_size, mac_length));
 #endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX */
+#if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
+        case PSA_CRYPTO_OBERON_DRIVER_ID:
+            return oberon_mac_sign_finish(&operation->ctx.oberon_driver_ctx,
+                        mac, mac_size, mac_length);
+#endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
         default:
             (void) mac;
@@ -2531,6 +2579,12 @@ psa_status_t psa_driver_wrapper_mac_verify_finish(
                         &operation->ctx.cc3xx_driver_ctx,
                         mac, mac_length));
 #endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX */
+#if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
+        case PSA_CRYPTO_OBERON_DRIVER_ID:
+            return oberon_mac_verify_finish(
+                        &operation->ctx.oberon_driver_ctx,
+                        mac, mac_length);
+#endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
         default:
             (void) mac;
@@ -2554,6 +2608,10 @@ psa_status_t psa_driver_wrapper_mac_abort(
         case PSA_CRYPTO_CC3XX_DRIVER_ID:
             return(cc3xx_mac_abort(&operation->ctx.cc3xx_driver_ctx));
 #endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX */
+#if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
+        case PSA_CRYPTO_OBERON_DRIVER_ID:
+            return oberon_mac_abort(&operation->ctx.oberon_driver_ctx);
+#endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
         default:
             return( PSA_ERROR_INVALID_ARGUMENT );
