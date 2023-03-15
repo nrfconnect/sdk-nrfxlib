@@ -511,6 +511,8 @@ A-GPS data
 You can use GNSS assistance data to shorten TTFF and decrease GNSS power consumption.
 See :ref:`lib_nrf_cloud_agps` and :ref:`lib_nrf_cloud_pgps` for information how to obtain assistance data from :ref:`lib_nrf_cloud` to be used with the nRF9160 SiP.
 
+.. _gnss_int_assistance_need:
+
 Determining the assistance data needed by GNSS
 ==============================================
 
