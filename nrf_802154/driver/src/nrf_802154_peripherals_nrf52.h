@@ -87,19 +87,6 @@ extern "C" {
                   _IRQHandler)
 
 /**
- * @def NRF_802154_EGU_IRQN
- *
- * The SWI EGU IRQ number used by the driver for requests and notifications if SWI is in use.
- *
- * @note This option is used when the driver uses SWI to process requests and notifications.
- *
- */
-#define NRF_802154_EGU_IRQN                                             \
-    NRFX_CONCAT_3(NRFX_CONCAT_3(SWI, NRF_802154_EGU_INSTANCE_NO, _EGU), \
-                  NRF_802154_EGU_INSTANCE_NO,                           \
-                  _IRQn)
-
-/**
  * @def NRF_802154_RTC_INSTANCE_NO
  *
  * Number of the RTC instance used in the standalone timer driver implementation.

@@ -104,6 +104,13 @@ nrf_802154_security_error_t nrf_802154_security_pib_key_use(nrf_802154_key_id_t 
 void nrf_802154_security_pib_global_frame_counter_set(uint32_t frame_counter);
 
 /**
+ * @brief Sets nRF 802.15.4 Radio Driver MAC Global Frame Counter if the value passed is larger than current.
+ *
+ * @param[in] frame_counter Frame counter to set.
+ */
+void nrf_802154_security_pib_global_frame_counter_set_if_larger(uint32_t frame_counter);
+
+/**
  * @brief Get the next 802.15.4 global frame counter.
  *
  * @param[out] p_frame_counter Pointer to the frame counter to populate.

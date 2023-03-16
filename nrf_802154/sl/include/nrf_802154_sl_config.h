@@ -40,6 +40,12 @@
 #ifndef NRF_802154_SL_CONFIG_H__
 #define NRF_802154_SL_CONFIG_H__
 
+#include <nrfx.h>
+
+#if NRF_802154_USE_INTERNAL_INCLUDES
+#include "nrf_802154_sl_config_internal.h"
+#endif
+
 /**
  * @def NRF_802154_SL_COEX_INITIALLY_ENABLED
  *
@@ -77,7 +83,11 @@
  * Configures if antenna diversity is to be enabled.
  */
 #ifndef NRF_802154_SL_ANT_DIV_ENABLED
+#if defined(PPI_PRESENT)
 #define NRF_802154_SL_ANT_DIV_ENABLED 1
+#else
+#define NRF_802154_SL_ANT_DIV_ENABLED 0
+#endif
 #endif
 
 #endif // NRF_802154_SL_CONFIG_H__

@@ -36,6 +36,7 @@
 
 #include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
+#include "nrf_802154_sl_atomics.h"
 
 #include <string.h>
 #include <stdbool.h>
@@ -220,6 +221,23 @@ nrf_802154_security_error_t nrf_802154_security_pib_key_use(nrf_802154_key_id_t 
 void nrf_802154_security_pib_global_frame_counter_set(uint32_t frame_counter)
 {
     m_global_frame_counter = frame_counter;
+}
+
+void nrf_802154_security_pib_global_frame_counter_set_if_larger(uint32_t frame_counter)
+{
+    uint32_t fc;
+
+    do
+    {
+        fc = m_global_frame_counter;
+
+        if (fc >= frame_counter)
+        {
+            break;
+        }
+
+    }
+    while (!nrf_802154_sl_atomic_cas_u32(&m_global_frame_counter, &fc, frame_counter));
 }
 
 nrf_802154_security_error_t nrf_802154_security_pib_frame_counter_get_next(

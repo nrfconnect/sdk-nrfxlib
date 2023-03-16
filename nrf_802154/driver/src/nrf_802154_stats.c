@@ -38,13 +38,9 @@
 #include "nrf_802154_stats.h"
 
 #define NUMBER_OF_STAT_COUNTERS (sizeof(nrf_802154_stat_counters_t) / sizeof(uint32_t))
-#define NUMBER_OF_STAT_TOTALS   (sizeof(nrf_802154_stat_totals_t) / sizeof(uint64_t))
 
 /**@brief Structure holding statistics about the Radio Driver behavior. */
 volatile nrf_802154_stats_t g_nrf_802154_stats;
-
-/**@brief Structure holding total times spent in certain states. */
-volatile nrf_802154_stat_totals_t g_nrf_802154_stat_totals;
 
 void nrf_802154_stats_get(nrf_802154_stats_t * p_stats)
 {
@@ -87,33 +83,4 @@ void nrf_802154_stat_counters_reset(void)
     {
         *(p_dst++) = 0U;
     }
-}
-
-void nrf_802154_stat_totals_get(nrf_802154_stat_totals_t * p_stat_totals)
-{
-    volatile uint64_t * p_dst = (volatile uint64_t *)p_stat_totals;
-    const uint64_t    * p_src = (const uint64_t *)(&g_nrf_802154_stat_totals);
-
-    nrf_802154_stat_totals_get_notify();
-
-    for (size_t i = 0; i < NUMBER_OF_STAT_TOTALS; ++i)
-    {
-        nrf_802154_mcu_critical_state_t mcu_cs;
-
-        nrf_802154_mcu_critical_enter(mcu_cs);
-        *p_dst = *p_src;
-        nrf_802154_mcu_critical_exit(mcu_cs);
-
-        p_dst++;
-        p_src++;
-    }
-}
-
-__WEAK void nrf_802154_stat_totals_get_notify(void)
-{
-    /* Implementation here is intentionally empty.
-     *
-     * Implementation can be provided by other module to update g_nrf_802154_stat_totals
-     * to hold state until the moment of call.
-     */
 }

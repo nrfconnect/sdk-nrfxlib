@@ -19,12 +19,18 @@ Notable changes
 * Improved frame filtering routine which reduces the likelihood of encountering ``NRF_802154_RX_ERROR_RUNTIME`` error during heavier loads. (KRKNWK-15525)
 * Delayed transmissions and receptions are triggered by a hardware timer what makes them more immune to software latencies. (KRKNWK-8615)
 
+Added
+=====
+
+* Added :c:func:`nrf_802154_security_global_frame_counter_set_if_larger`. (KRKNWK-16133)
+
 Other changes
 =============
 
 * Removed the ``NRF_802154_DISABLE_BCC_MATCHING`` config option. Setting this option to ``NRF_802154_DISABLE_BCC_MATCHING=1`` had been not functional for multiple releases. (KRKNWK-15525)
 * Removed the ``NRF_802154_TX_STARTED_NOTIFY_ENABLED`` config option. (KRKNWK-16364)
 * The total times measurement feature is turned off. (KRKNWK-16189)
+* Removed the ``NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED`` config option and support for the total times measurement feature. (KRKNWK-16374)
 
 
 nRF Connect SDK v2.3.0 - nRF 802.15.4 Radio Driver
@@ -52,7 +58,6 @@ Bug fixes
 =========
 
 * Implemented a workaround for the YOPAN-158 errata for nRF5340. (KRKNWK-15473)
-
 
 nRF Connect SDK v2.1.0 - nRF 802.15.4 Radio Driver
 **************************************************

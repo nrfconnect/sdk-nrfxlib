@@ -84,8 +84,10 @@ void nrf_802154_swi_init(void)
 
     if (!initialized)
     {
-        nrf_802154_irq_init(NRF_802154_EGU_IRQN, NRF_802154_SWI_PRIORITY, swi_irq_handler);
-        nrf_802154_irq_enable(NRF_802154_EGU_IRQN);
+        nrf_802154_irq_init(nrfx_get_irq_number(NRF_802154_EGU_INSTANCE),
+                            NRF_802154_SWI_PRIORITY,
+                            swi_irq_handler);
+        nrf_802154_irq_enable(nrfx_get_irq_number(NRF_802154_EGU_INSTANCE));
         initialized = true;
     }
 }

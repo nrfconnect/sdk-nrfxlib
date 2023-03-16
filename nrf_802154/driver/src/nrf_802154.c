@@ -1066,6 +1066,11 @@ void nrf_802154_security_global_frame_counter_set(uint32_t frame_counter)
     nrf_802154_security_pib_global_frame_counter_set(frame_counter);
 }
 
+void nrf_802154_security_global_frame_counter_set_if_larger(uint32_t frame_counter)
+{
+    nrf_802154_security_pib_global_frame_counter_set_if_larger(frame_counter);
+}
+
 nrf_802154_security_error_t nrf_802154_security_key_store(nrf_802154_key_t * p_key)
 {
     return nrf_802154_security_pib_key_store(p_key);

@@ -1820,6 +1820,32 @@ bail:
     return;
 }
 
+void nrf_802154_security_global_frame_counter_set_if_larger(uint32_t frame_counter)
+{
+    nrf_802154_ser_err_t res;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+
+    nrf_802154_spinel_response_notifier_lock_before_request(SPINEL_PROP_LAST_STATUS);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_GLOBAL_FRAME_COUNTER_SET_IF_LARGER,
+        SPINEL_DATATYPE_NRF_802154_SECURITY_GLOBAL_FRAME_COUNTER_SET,
+        frame_counter);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return;
+}
+
 nrf_802154_security_error_t nrf_802154_security_key_store(nrf_802154_key_t * p_key)
 {
     nrf_802154_ser_err_t        res;

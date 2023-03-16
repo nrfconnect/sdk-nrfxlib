@@ -1654,6 +1654,35 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_security_global_frame_
 }
 
 /**
+ * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_GLOBAL_FRAME_COUNTER_SET_IF_LARGER.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
+ * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
+ *
+ */
+static nrf_802154_ser_err_t
+spinel_decode_prop_nrf_802154_security_global_frame_counter_set_if_larger(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    spinel_ssize_t siz;
+    uint32_t       frame_counter;
+
+    siz = spinel_datatype_unpack(p_property_data,
+                                 property_data_len,
+                                 SPINEL_DATATYPE_NRF_802154_SECURITY_GLOBAL_FRAME_COUNTER_SET,
+                                 &frame_counter);
+    if (siz < 0)
+    {
+        return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
+    }
+
+    nrf_802154_security_global_frame_counter_set_if_larger(frame_counter);
+
+    return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
+}
+
+/**
  * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_STORE.
  *
  * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
@@ -2021,6 +2050,11 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_STAT_TIMESTAMPS_GET:
             return spinel_decode_prop_nrf_802154_stat_timestamps_get(p_property_data,
                                                                      property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_GLOBAL_FRAME_COUNTER_SET_IF_LARGER:
+            return spinel_decode_prop_nrf_802154_security_global_frame_counter_set_if_larger(
+                p_property_data,
+                property_data_len);
 
         default:
             NRF_802154_SPINEL_LOG_RAW("Unsupported property: %s(%u)\n",

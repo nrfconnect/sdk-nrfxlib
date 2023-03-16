@@ -128,7 +128,7 @@ static void ecb_init(void)
 {
     if (!m_initialized)
     {
-        nrf_802154_irq_init(ECB_IRQn, NRF_802154_ECB_PRIORITY, ecb_irq_handler);
+        nrf_802154_irq_init(nrfx_get_irq_number(NRF_ECB), NRF_802154_ECB_PRIORITY, ecb_irq_handler);
         m_initialized = true;
     }
 
@@ -136,8 +136,8 @@ static void ecb_init(void)
     // TODO: what about ECB initialization in baremetal scenario?
     nrf_ecb_init();
 
-    nrf_802154_irq_clear_pending(ECB_IRQn);
-    nrf_802154_irq_enable(ECB_IRQn);
+    nrf_802154_irq_clear_pending(nrfx_get_irq_number(NRF_ECB));
+    nrf_802154_irq_enable(nrfx_get_irq_number(NRF_ECB));
     nrf_ecb_int_enable(NRF_ECB, NRF_ECB_INT_ENDECB_MASK);
     nrf_ecb_int_enable(NRF_ECB, NRF_ECB_INT_ERRORECB_MASK);
 }
