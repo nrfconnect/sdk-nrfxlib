@@ -225,6 +225,9 @@ char *nrf_modem_build_version(void);
  * @param[in] init_params Initialization parameters.
  *
  * @retval Zero on success.
+ * @retval A positive value from @ref nrf_modem_dfu when executing
+ *         Modem firmware updates.
+ *
  * @retval -NRF_EPERM The Modem library is already initialized.
  * @retval -NRF_EFAULT @c init_params is @c NULL.
  * @retval -NRF_ENOLCK Not enough semaphores.
