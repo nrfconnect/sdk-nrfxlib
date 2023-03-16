@@ -272,7 +272,7 @@ static void req_exit(void)
 /** Assert if SWI interrupt is disabled. */
 static inline void assert_interrupt_status(void)
 {
-    assert(nrf_802154_irq_is_enabled(NRF_802154_EGU_IRQN));
+    assert(nrf_802154_irq_is_enabled(nrfx_get_irq_number(NRF_802154_EGU_INSTANCE)));
 }
 
 #define REQUEST_FUNCTION(func_core, func_swi, ...) \
@@ -314,7 +314,7 @@ static bool active_vector_priority_is_high(void)
 {
 
     return nrf_802154_critical_section_active_vector_priority_get() <=
-           nrf_802154_irq_priority_get(NRF_802154_EGU_IRQN);
+           nrf_802154_irq_priority_get(nrfx_get_irq_number(NRF_802154_EGU_INSTANCE));
 }
 
 /**

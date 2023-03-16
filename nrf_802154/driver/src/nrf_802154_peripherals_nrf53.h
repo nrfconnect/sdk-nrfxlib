@@ -83,17 +83,6 @@ extern "C" {
     NRFX_CONCAT_3(EGU, NRF_802154_EGU_INSTANCE_NO, _IRQHandler)
 
 /**
- * @def NRF_802154_EGU_IRQN
- *
- * The SWI EGU IRQ number used by the driver for requests and notifications if SWI is in use.
- *
- * @note This option is used when the driver uses SWI to process requests and notifications.
- *
- */
-#define NRF_802154_EGU_IRQN \
-    NRFX_CONCAT_3(EGU, NRF_802154_EGU_INSTANCE_NO, _IRQn)
-
-/**
  * @def NRF_802154_EGU_RAMP_UP_EVENT
  *
  * The EGU event used by the driver to trigger radio ramp-up.

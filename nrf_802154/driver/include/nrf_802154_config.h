@@ -41,6 +41,10 @@
 
 #include <nrfx.h>
 
+#if NRF_802154_USE_INTERNAL_INCLUDES
+#include "nrf_802154_config_internal.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -223,18 +227,6 @@ extern "C" {
  */
 #ifndef NRF_802154_FRAME_TIMESTAMP_ENABLED
 #define NRF_802154_FRAME_TIMESTAMP_ENABLED 1
-#endif
-
-/**
- * @def NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
- *
- * If measurement of total time spent in certain states is to be calculated.
- *
- * This option can be enabled when @ref NRF_802154_FRAME_TIMESTAMP_ENABLED is 1.
- */
-#ifndef NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED
-#define NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED \
-    (1 && NRF_802154_FRAME_TIMESTAMP_ENABLED)
 #endif
 
 /**

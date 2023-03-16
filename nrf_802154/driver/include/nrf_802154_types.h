@@ -327,21 +327,6 @@ typedef struct
 } nrf_802154_stat_timestamps_t;
 
 /**
- * @brief Type of structure holding total times spent in certain states.
- *
- * This structure holds fields of @c uint64_t type only.
- */
-typedef struct
-{
-    /**@brief Total time in microseconds spent with receiver turned on, but not actually receiving any frames. */
-    uint64_t total_listening_time;
-    /**@brief Total time in microseconds spent with receiver turned on and actually receiving frames. */
-    uint64_t total_receive_time;
-    /**@brief Total time in microseconds spent on transmission. */
-    uint64_t total_transmit_time;
-} nrf_802154_stat_totals_t;
-
-/**
  * @brief Type of structure holding statistics about the Radio Driver behavior.
  */
 typedef struct

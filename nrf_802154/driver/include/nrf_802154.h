@@ -1672,14 +1672,6 @@ void nrf_802154_stat_timestamps_get(nrf_802154_stat_timestamps_t * p_stat_timest
 void nrf_802154_stat_counters_reset(void);
 
 /**
- * @brief Get total times spent in certain states.
- *
- * @param[out] p_stat_totals Structure that will be filled with times spent in certain states
- *                           until now.
- */
-void nrf_802154_stat_totals_get(nrf_802154_stat_totals_t * p_stat_totals);
-
-/**
  * @}
  * @defgroup nrf_802154_ifs Inter-frame spacing feature
  * @{
@@ -1774,6 +1766,13 @@ nrf_802154_capabilities_t nrf_802154_capabilities_get(void);
  * @param[in] frame_counter Global MAC Frame Counter to set.
  */
 void nrf_802154_security_global_frame_counter_set(uint32_t frame_counter);
+
+/**
+ * @brief Sets nRF 802.15.4 Radio Driver MAC Global Frame Counter if the value passed is larger than current.
+ *
+ * @param[in] frame_counter Frame counter to set.
+ */
+void nrf_802154_security_global_frame_counter_set_if_larger(uint32_t frame_counter);
 
 /**
  * @brief Store the 802.15.4 MAC Security Key inside the nRF 802.15.4 Radio Driver.

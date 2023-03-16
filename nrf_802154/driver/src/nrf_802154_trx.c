@@ -71,15 +71,13 @@
 #define EGU_SYNC_TASK         NRF_EGU_TASK_TRIGGER3
 #define EGU_SYNC_INTMASK      NRF_EGU_INT_TRIGGERED3
 
-#if defined(NRF52840_XXAA) || \
-    defined(NRF52833_XXAA)
+#if defined(DPPI_PRESENT)
+#define RADIO_BASE            NRF_RADIO_NS_BASE
+#define FICR_BASE             NRF_FICR_NS_BASE
+#else
 #define PPI_CCAIDLE_FEM       NRF_802154_PPI_RADIO_CCAIDLE_TO_FEM_GPIOTE ///< PPI that connects RADIO CCAIDLE event with GPIOTE tasks used by FEM
 #define PPI_CHGRP_ABORT       NRF_802154_PPI_ABORT_GROUP                 ///< PPI group used to disable PPIs when async event aborting radio operation is propagated through the system
 #define RADIO_BASE            NRF_RADIO_BASE
-#elif defined(NRF5340_XXAA)
-#define PPI_CCAIDLE_FEM       0
-#define RADIO_BASE            NRF_RADIO_NS_BASE
-#define FICR_BASE             NRF_FICR_NS_BASE
 #endif
 
 #define SHORT_ADDRESS_BCSTART NRF_RADIO_SHORT_ADDRESS_BCSTART_MASK
@@ -180,12 +178,12 @@ static const mpsl_fem_event_t m_activate_tx_cc0 =
 static const mpsl_fem_event_t m_ccaidle =
 {
     .type = MPSL_FEM_EVENT_TYPE_GENERIC,
-#if defined(NRF52_SERIES)
+#if defined(DPPI_PRESENT)
+    .event.generic.event = NRF_802154_DPPI_RADIO_CCAIDLE
+#else
     .override_ppi        = true,
     .ppi_ch_id           = PPI_CCAIDLE_FEM,
     .event.generic.event = ((uint32_t)RADIO_BASE + (uint32_t)NRF_RADIO_EVENT_CCAIDLE)
-#elif defined(NRF53_SERIES)
-    .event.generic.event = NRF_802154_DPPI_RADIO_CCAIDLE
 #endif
 };
 
@@ -198,6 +196,7 @@ typedef struct
 {
     bool          psdu_being_received;    ///< If PSDU is currently being received.
     bool          missing_receive_buffer; ///!< If trx entered receive state without receive buffer
+    bool          rxstarted_notif_en;
     bool          ccastarted_notif_en;
     bool          tx_started;             ///< If the requested transmission has started.
     bool          rssi_started;
@@ -231,7 +230,7 @@ static void modulated_carrier_abort(void);
 static void energy_detection_abort(void);
 
 /** Clear flags describing frame being received. */
-void rx_flags_clear(void)
+static void rx_flags_clear(void)
 {
     m_flags.missing_receive_buffer = false;
     m_flags.psdu_being_received    = false;
@@ -256,7 +255,7 @@ static void txpower_set(nrf_radio_txpower_t txpower)
 }
 
 /** Initialize TIMER peripheral used by the driver. */
-void nrf_timer_init(void)
+static void nrf_timer_init(void)
 {
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
     nrf_timer_mode_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_MODE_TIMER);
@@ -299,7 +298,7 @@ static void yopan_158_workaround(void)
 static void timer_frequency_set_1mhz(void)
 {
     uint32_t base_frequency = NRF_TIMER_BASE_FREQUENCY_GET(NRF_802154_TIMER_INSTANCE);
-    uint32_t prescaler      = 31 - NRF_CLZ(base_frequency / 1000000);
+    uint32_t prescaler      = NRF_TIMER_PRESCALER_CALCULATE(base_frequency, 1000000);
 
     nrf_timer_prescaler_set(NRF_802154_TIMER_INSTANCE, prescaler);
 }
@@ -552,6 +551,13 @@ static inline void wait_until_radio_is_disabled(void)
             radio_is_disabled = true;
             break;
         }
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+        nrf_802154_delay_us(1);
+        /* In this simulated board, and in general in the POSIX ARCH,
+         * code takes 0 simulated time to execute.
+         * Let's hold for 1 microsecond to allow the RADIO HW to clear the state
+         */
+#endif
     }
 
     assert(radio_is_disabled);
@@ -619,7 +625,9 @@ void nrf_802154_trx_enable(void)
 
     NRF_802154_TRX_ENABLE_INTERNAL();
 
+#if defined(RADIO_MODECNF0_RU_Msk)
     nrf_radio_modecnf0_set(NRF_RADIO, true, 0);
+#endif
 
     // Configure CRC
     nrf_radio_crc_configure(NRF_RADIO, CRC_LENGTH, NRF_RADIO_CRC_ADDR_IEEE802154, CRC_POLYNOMIAL);
@@ -639,13 +647,12 @@ void nrf_802154_trx_enable(void)
 
     assert(nrf_radio_shorts_get(NRF_RADIO) == SHORTS_IDLE);
 
-#if defined(NRF52840_XXAA) || \
-    defined(NRF52833_XXAA)
+#if defined(DPPI_PRESENT)
+    mpsl_fem_abort_set(NRF_802154_DPPI_RADIO_DISABLED,
+                       0U); /* The group parameter is ignored by FEM for SoCs with DPPIs */
+#else
     mpsl_fem_abort_set(nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_DISABLED),
                        PPI_CHGRP_ABORT);
-#elif defined(NRF53_SERIES)
-    mpsl_fem_abort_set(NRF_802154_DPPI_RADIO_DISABLED,
-                       0U); /* The group parameter is ignored by FEM for nRF53 */
 #endif
 
     mpsl_fem_deactivate_now(MPSL_FEM_ALL);
@@ -1017,6 +1024,9 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
 
     // Clear filtering flag
     rx_flags_clear();
+
+    m_flags.rxstarted_notif_en = (notifications_mask & TRX_RECEIVE_NOTIFICATION_STARTED) != 0U;
+
     // Clear the RSSI measurement flag.
     m_flags.rssi_started = false;
 
@@ -1049,17 +1059,13 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
     ints_to_enable |= NRF_RADIO_INT_BCMATCH_MASK;
     nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_CRCOK);
     ints_to_enable |= NRF_RADIO_INT_CRCOK_MASK;
+    nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_ADDRESS);
+    ints_to_enable |= NRF_RADIO_INT_ADDRESS_MASK;
 
     if (rampup_trigg_mode == TRX_RAMP_UP_HW_TRIGGER)
     {
         nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_READY);
         ints_to_enable |= NRF_RADIO_INT_READY_MASK;
-    }
-
-    if ((notifications_mask & TRX_RECEIVE_NOTIFICATION_STARTED) != 0U)
-    {
-        nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_ADDRESS);
-        ints_to_enable |= NRF_RADIO_INT_ADDRESS_MASK;
     }
 
     bool allow_sync_swi = false;
@@ -1985,7 +1991,9 @@ void nrf_802154_trx_energy_detection(uint32_t ed_count)
 
     ed_count--;
     /* Check that vd_count will fit into defined bits of register */
+#if defined(RADIO_EDCNT_EDCNT_Msk)
     assert( (ed_count & (~RADIO_EDCNT_EDCNT_Msk)) == 0U);
+#endif
 
     nrf_radio_ed_loop_count_set(NRF_RADIO, ed_count);
 
@@ -2067,10 +2075,17 @@ static void irq_handler_address(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
+    // NRF_RADIO_TASK_DISABLE may have been triggered by (D)PPI, therefore event reg
+    // cleanup is required. It's done here
+    nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
+
     switch (m_trx_state)
     {
         case TRX_STATE_RXFRAME:
-            nrf_802154_trx_receive_frame_started();
+            if (m_flags.rxstarted_notif_en)
+            {
+                nrf_802154_trx_receive_frame_started();
+            }
             break;
 
         case TRX_STATE_RXACK:

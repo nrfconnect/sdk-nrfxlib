@@ -94,6 +94,7 @@ typedef uint32_t nrf_802154_filter_mode_t;
  * @retval NRF_802154_RX_ERROR_INVALID_FRAME      Verified part of the incoming frame is invalid.
  * @retval NRF_802154_RX_ERROR_INVALID_DEST_ADDR  Incoming frame has destination address that
  *                                                mismatches the address of this node.
+ * @retval NRF_802154_RX_ERROR_INVALID_LENGTH     Received a frame with invalid length.
  */
 nrf_802154_rx_error_t nrf_802154_filter_frame_part(
     const nrf_802154_frame_parser_data_t * p_frame_data,
