@@ -676,7 +676,7 @@ config MBEDTLS_HKDF_C
 
 config MBEDTLS_RSA_C
 	bool
-	prompt "RSA - Rivest–Shamir–Adleman cryptosystem"
+	prompt "RSA - Rivest-Shamir-Adleman cryptosystem"
 	default y
 	help
 	  Enable RSA cryptosystem support.
