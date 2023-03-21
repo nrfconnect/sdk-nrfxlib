@@ -31,6 +31,7 @@ Bug fixes
 
 * Fixed a rare issue where the controller could assert when starting a connectable advertiser or creating a connection too quickly after disconnection (DRGN-18741).
 * Fixed an issue where the Periodic Advertisement Sync Transfer (PAST) sender may generate an incorrect ``SyncInfo`` field for periodic advertising intervals greater than 5 seconds (DRGN-18775).
+* Fixed an issue where the Periodic Advertisement Sync Transfer (PAST) sender could assert if the associated periodic sync was not fully established (DRGN-18833).
 
 nRF Connect SDK v2.3.0
 **********************
