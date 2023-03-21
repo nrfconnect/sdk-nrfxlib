@@ -23,10 +23,12 @@ extern "C" {
 /****************************************************************/
 
 #if defined(PSA_WANT_ALG_DETERMINISTIC_ECDSA)
+#if defined(MBEDTLS_PSA_BUILTIN_ALG_DETERMINISTIC_ECDSA)
 #define MBEDTLS_ECDSA_DETERMINISTIC
 #define MBEDTLS_ECDSA_C
 #define MBEDTLS_HMAC_DRBG_C
 #define MBEDTLS_MD_C
+#endif
 #endif
 
 #if defined(PSA_WANT_ALG_ECDH)
