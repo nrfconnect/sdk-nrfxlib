@@ -10,6 +10,7 @@ append_with_prefix(src_crypto_legacy ${ARM_MBEDTLS_PATH}/library
   dhm.c
   cipher.c
   cipher_wrap.c
+  hash_info.c
   md.c
   pk.c
   pk_wrap.c

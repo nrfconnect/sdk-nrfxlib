@@ -182,6 +182,7 @@ append_with_prefix(src_crypto_base ${ARM_MBEDTLS_PATH}/library
   asn1write.c
   base64.c
   bignum.c
+  bignum_core.c
   nist_kw.c
   oid.c
   padlock.c

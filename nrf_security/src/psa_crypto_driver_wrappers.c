@@ -2573,9 +2573,9 @@ psa_status_t psa_driver_wrapper_mac_abort(
  * Key agreement functions
  */
 psa_status_t psa_driver_wrapper_key_agreement(
-        psa_algorithm_t alg,
         const psa_key_attributes_t *attributes,
         const uint8_t *priv_key, size_t priv_key_size,
+        psa_algorithm_t alg,
         const uint8_t *publ_key, size_t publ_key_size,
         uint8_t *output, size_t output_size, size_t *output_length )
 {
