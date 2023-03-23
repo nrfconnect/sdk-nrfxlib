@@ -14,12 +14,16 @@ Multiprotocol Service Layer interface
    :project: nrfxlib
    :members:
 
+.. _mpsl_api_clk:
+
 MPSL Clock
 **********
 
 .. doxygengroup:: mpsl_clock
    :project: nrfxlib
    :members:
+
+.. _mpsl_api_timeslot:
 
 MPSL Timeslot
 *************
@@ -28,12 +32,16 @@ MPSL Timeslot
    :project: nrfxlib
    :members:
 
+.. _mpsl_api_rn:
+
 MPSL Radio Notification
 ***********************
 
 .. doxygengroup:: mpsl_radio_notification
    :project: nrfxlib
    :members:
+
+.. _mpsl_api_txp:
 
 MPSL TX Power
 *************
@@ -42,12 +50,16 @@ MPSL TX Power
    :project: nrfxlib
    :members:
 
+.. _mpsl_api_fem:
+
 MPSL FEM
 ********
 
 .. doxygengroup:: mpsl_fem
    :project: nrfxlib
    :members:
+
+.. _mpsl_api_fem_common:
 
 MPSL FEM common configuration
 *****************************
@@ -56,12 +68,16 @@ MPSL FEM common configuration
    :project: nrfxlib
    :members:
 
+.. _mpsl_api_fem_21540_config:
+
 MPSL FEM common nRF21540 configuration
 **************************************
 
 .. doxygengroup:: mpsl_fem_nrf21540_common
    :project: nrfxlib
    :members:
+
+.. _mpsl_api_fem_21540_gpio:
 
 MPSL FEM nRF21540 GPIO
 **********************
@@ -70,12 +86,16 @@ MPSL FEM nRF21540 GPIO
    :project: nrfxlib
    :members:
 
+.. _mpsl_api_fem_21540_gpiospi:
+
 MPSL FEM nRF21540 GPIO/SPI
 **************************
 
 .. doxygengroup:: mpsl_fem_nrf21540_gpio_spi
    :project: nrfxlib
    :members:
+
+.. _mpsl_api_fem_simple:
 
 MPSL FEM Simple GPIO
 ********************
@@ -84,6 +104,8 @@ MPSL FEM Simple GPIO
    :project: nrfxlib
    :members:
 
+.. _mpsl_api_fem_power:
+
 MPSL FEM power model
 ********************
 
@@ -91,17 +113,16 @@ MPSL FEM power model
    :project: nrfxlib
    :members:
 
-IEEE 802.15.4 External Radio Coexistence
-****************************************
+.. _mpsl_api_sr_cx:
+
+MPSL CX (Coexistence)
+*********************
+
 .. doxygengroup:: mpsl_cx
    :project: nrfxlib
    :members:
 
-Bluetooth External Radio Coexistence
-************************************
-.. doxygengroup:: mpsl_coex
-   :project: nrfxlib
-   :members:
+.. _mpsl_api_temp:
 
 MPSL Temp
 *********
@@ -109,6 +130,8 @@ MPSL Temp
 .. doxygengroup:: mpsl_temp
    :project: nrfxlib
    :members:
+
+.. _mpsl_api_dppi:
 
 MPSL DPPI Protocol
 ******************
