@@ -99,8 +99,10 @@ macro(nrf_security_add_zephyr_options lib_name)
   if(TARGET zephyr_interface)
     # Add compile options and includes from zephyr
     target_compile_options(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_COMPILE_OPTIONS>)
+    target_compile_definitions(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_COMPILE_DEFINITIONS>)
     target_include_directories(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_INCLUDE_DIRECTORIES>)
     target_include_directories(${lib_name} PRIVATE $<TARGET_PROPERTY:zephyr_interface,INTERFACE_SYSTEM_INCLUDE_DIRECTORIES>)
+    add_dependencies(${lib_name} zephyr_interface)
 
     # Unsure if these are needed any more
     target_compile_options(${lib_name} PRIVATE ${TOOLCHAIN_C_FLAGS})
