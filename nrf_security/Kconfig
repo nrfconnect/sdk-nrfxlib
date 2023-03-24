@@ -18,7 +18,7 @@ config NORDIC_SECURITY_BACKEND
 	bool
 	prompt "Use nrf_security module" if !NORDIC_SECURITY_PROMPTLESS
 	default y if BUILD_WITH_TFM
-	depends on SOC_FAMILY_NRF
+	depends on (SOC_FAMILY_NRF && !SOC_SERIES_BSIM_NRFXX)
 	select NRF_SECURITY
 	select MBEDTLS_LEGACY_CRYPTO_C
 	select OBERON_BACKEND if BUILD_WITH_TFM
@@ -32,7 +32,7 @@ config NORDIC_SECURITY_BACKEND
 config NRF_SECURITY
 	bool
 	prompt "Use nrf_security module" if !PSA_PROMPTLESS
-	depends on SOC_FAMILY_NRF
+	depends on (SOC_FAMILY_NRF && !SOC_SERIES_BSIM_NRFXX)
 	default y if BUILD_WITH_TFM
 	select ENTROPY_GENERATOR
 	select DISABLE_MBEDTLS_BUILTIN if MBEDTLS
