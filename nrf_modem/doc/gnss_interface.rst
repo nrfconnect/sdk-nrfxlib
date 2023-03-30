@@ -479,6 +479,8 @@ In cases where GNSS is not running continuously, it may be beneficial to change 
 
    1PPS is only supported by modem firmware v1.3.0 or later.
 
+   1PPS accuracy is not guaranteed when LTE is active.
+
 Resolving the UTC time of 1PPS pulse occurrence
 ===============================================
 
