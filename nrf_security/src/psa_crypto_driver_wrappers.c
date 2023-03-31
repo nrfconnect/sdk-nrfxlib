@@ -2617,6 +2617,20 @@ psa_status_t psa_driver_wrapper_key_agreement(
             return( status );
 #endif /* PSA_CRYPTO_DRIVER_ALG_ECDH_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
+#if defined(MBEDTLS_PSA_BUILTIN_ALG_ECDH)
+            /* Software Fallback */
+            status = psa_key_agreement_raw_builtin( attributes,
+                                                    priv_key,
+                                                    priv_key_size,
+                                                    alg,
+                                                    publ_key,
+                                                    publ_key_size,
+                                                    output,
+                                                    output_size,
+                                                    output_length );
+
+            return( status );
+#endif /* MBEDTLS_PSA_BUILTIN_ALG_ECDH */
             (void) status;
             return ( PSA_ERROR_NOT_SUPPORTED );
     default:
