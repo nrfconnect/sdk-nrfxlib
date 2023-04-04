@@ -1,72 +1,55 @@
 .. _mpsl_cx:
 
-IEEE 802.15.4 External Radio Coexistence
-########################################
+Short-Range Protocols External Radio Coexistence
+################################################
 
 .. contents::
    :local:
    :depth: 2
 
 The radio coexistence feature allows the application to interface with several types of packet traffic arbiters (PTAs).
-This allows for better radio performance for devices using multiple interfering radios simultaneously, like a combination of IEEE 802.15.4 and Wi-Fi.
-The PTA arbitrates the requested radio operations between all radios to avoid interference, increasing the performance of the radio protocols enabled simultaneously.
-The exact arbitration algorithm is dependent on the specific PTA used.
+PTAs arbitrate the requested radio operations between all radios to avoid interference, providing better radio performance to devices using multiple interfering radios simultaneously, like a combination of IEEE 802.15.4, Bluetooth® Low Energy (LE), and Wi-Fi.
+The arbitration algorithm used can vary between PTAs.
 
 .. note::
   The radio coexistence feature is not needed for the arbitration between |BLE| and IEEE 802.15.4 in dynamic multiprotocol applications, as the dynamic multiprotocol does not use PTA for the arbitration.
 
-Limitations
-***********
+Overview
+********
 
-This experimental feature has several limitations:
+The radio coexistence feature allows short-range protocol drivers (e.g. IEEE 802.15.4, Bluetooth LE) to communicate with the packet traffic arbiter (PTA) using :ref:`MPSL CX API <mpsl_api_sr_cx>`.
+The MPSL CX API is hardware-agnostic and separates the implementation of the protocol driver from an implementation specific to given PTA.
+To perform any radio operation, the protocol drivers must first request the appropriate access to the medium from the PTA.
+The request informs the PTA implementation about which radio operations it wants to perform at that moment or shortly after, and what is the priority of the operation.
+The radio operation can be executed only when the PTA grants it.
+When the PTA revokes access to the medium during an ongoing radio operation, the radio protocol must abort this operation immediately.
+When the radio operation is finished, the protocol driver must release the requested operation.
 
-* It supports only the nRF52 SoC family.
-* It does not use radio operation priorities, as the radio protocol requests each operation with a priority value of ``1``.
-* The PTA can deny only TX operations.
-  Denying RX or idle listening has no effect.
-* Aborting a TX operation takes a few dozens of microseconds.
+The implementation of MPSL CX translates the request invoked by radio protocol to hardware signals compatible with the PTA available in the system.
+It also translates the hardware signals received from the PTA indicating which radio operations are allowed at that moment, and it passes this information to the radio protocol.
 
-Implementation
-**************
+.. note::
+  To learn more about the arbitration process during various transmission and reception modes for the IEEE 802.15.4 Radio Driver, see :ref:`Wi-Fi Coexistence module (PTA support) <rd_coex>`
 
-To use the radio coexistence feature, you can either select the implementation available in nRF Connect SDK or replace it with another implementation compatible with your PTA.
-Each implementation exposes the same API to allow for an easier replacement that does not require modifications to the radio protocols.
+Selecting CX Implementation
+***************************
 
-The radio coexistence implementation provided in nRF Connect SDK is the following:
+The :ref:`mpsl` itself does not provide any implementation of the CX interface.
+For details on the implementations present in the |NCS|, see :ref:`ug_radio_coex`.
+An application that needs to use CX must call :c:func:`mpsl_cx_interface_set()` during the system initialization.
+The initialization of any resource needed by the selected CX implementation is not in scope of :ref:`mpsl` and must also be done during the system initialization.
 
-*Thread Radio Coexistence*
-   This PTA interface is compatible with the 3-wire PTA interface defined in the *Thread Radio Coexistence recommendations* document available to Thread Group members.
-   It is also compatible with any IEEE 802.15.4 protocol (including Thread).
+.. note::
+  In the |NCS|, the selection of a CX implementation and its appropriate initialization is done automatically, using Kconfig and Device Tree configuration options.
+  Please refer to :ref:`ug_radio_coex`.
 
-Configuration
-*************
+Using CX API in a protocol driver
+*********************************
 
-To configure the Thread Radio Coexistence implementation, you must define each pin used in the 3-wire PTA interface, specifically:
+To use the CX API in a protocol driver, you must follow the :ref:`MPSL CX API <mpsl_api_sr_cx>` defined by :file:`nrfxlib/mpsl/include/protocol/mpsl_cx_protocol_api.h`.
 
-* ``REQUEST``
-* ``PRIORITY``
-* ``GRANT``
+Implementing CX API
+*******************
 
-General usage
-*************
-
-Each radio protocol using the radio coexistence feature (like IEEE 802.15.4) can enable a transceiver only when the PTA allows a given radio operation.
-When the PTA denies the ongoing radio operation, the radio protocol must abort this operation immediately.
-
-The radio protocol implementation must inform the radio coexistence module about which radio operations it wants to perform at that moment or shortly after, and what is the priority of each radio operation.
-
-The radio coexistence implementation translates the request from the radio protocol to hardware signals compatible with the PTA available in the system.
-It also translates the hardware signals received from the PTA indicating which radio operations are allowed at that moment, and it passes this information to the radio protocol implementation.
-
-The radio protocol must register a callback function in the radio coexistence module to be informed about allowed radio operations.
-
-Implementation of a new radio coexistence module
-************************************************
-
-If the radio coexistence implementation provided in nRF Connect SDK is not compatible with the PTA used in your system, you can implement a software module compatible with your PTA that exposes the radio coexistence API, using the :file:`nrf/subsys/mpsl/cx/thread/mpsl_cx_thread.c` file as an example.
-
-The radio coexistence implementation must implement the interface defined in the ``mpsl_cx_interface_t`` structure in the :file:`nrfxlib/mpsl/include/mpsl_cx_abstract_interface.h` file.
-Each function from this interface is described in detail in the :file:`nrfxlib/mpsl/include/protocol/mpsl_cx_protocol_api.h` file.
-
-Any implementation of the radio coexistence interface must register the interface in MPSL during the system initialization using the :c:func:`mpsl_cx_interface_set()` function.
-You can find an example how to configure a radio coexistence implementation, including the registration of the interface in MPSL, in the :c:func:`mpsl_cx_init()` function described in the :file:`nrf/subsys/mpsl/mpsl_init.c` and :file:`nrf/subsys/mpsl/mpsl_cx.c` files.
+For details on the implementations of the MPSL CX API for certain PTAs already supported by the |NCS|, see :ref:`ug_radio_coex_mpsl_cx_based`.
+If your PTA is not supported yet, see :ref:`ug_radio_mpsl_cx_custom` for guidelines on how to add your own implementation.
