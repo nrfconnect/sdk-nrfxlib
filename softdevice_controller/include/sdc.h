@@ -218,20 +218,12 @@ extern "C" {
  * @param[in] max_tx_data_size The maximum size of data which can be sent.
  * @param[in] failure_reporting_enabled Whether failure reporting is enabled.
  */
-#define __MEM_PER_PERIODIC_ADV_RSP_SET(tx_buffer_count, rx_buffer_count, max_tx_data_size, failure_reporting_enabled) \
+#define SDC_MEM_PER_PERIODIC_ADV_RSP_SET(tx_buffer_count, rx_buffer_count, max_tx_data_size, failure_reporting_enabled) \
      (((rx_buffer_count) > 0 ? __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX : \
                              __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX ) \
      + (tx_buffer_count) * __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) \
      + (rx_buffer_count) * __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER \
      + ((failure_reporting_enabled) ? __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING : 0))
-
-#ifdef SDC_USE_NEW_MEM_API
-#define SDC_MEM_PER_PERIODIC_ADV_RSP_SET(tx_buffer_count, rx_buffer_count, max_tx_data_size, failure_reporting_enabled) \
-     __MEM_PER_PERIODIC_ADV_RSP_SET(tx_buffer_count, rx_buffer_count, max_tx_data_size, failure_reporting_enabled)
-#else
-#define SDC_MEM_PER_PERIODIC_ADV_RSP_SET(tx_buffer_count, rx_buffer_count, max_tx_data_size) \
-     __MEM_PER_PERIODIC_ADV_RSP_SET(tx_buffer_count, rx_buffer_count, max_tx_data_size, false)
-#endif
 
 /** @} end of sdc_mem_defines */
 
