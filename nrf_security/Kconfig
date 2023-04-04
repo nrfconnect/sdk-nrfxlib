@@ -16,7 +16,8 @@ config NORDIC_SECURITY_PROMPTLESS
 
 config NORDIC_SECURITY_BACKEND
 	bool
-	prompt "Use nrf_security module" if !NORDIC_SECURITY_PROMPTLESS
+	prompt "Use nrf_security with Mbed TLS legacy crypto APIs support" \
+		if !NORDIC_SECURITY_PROMPTLESS
 	default y if BUILD_WITH_TFM
 	depends on SOC_FAMILY_NRF
 	select NRF_SECURITY
