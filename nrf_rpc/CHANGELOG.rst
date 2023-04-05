@@ -9,6 +9,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Changes
+=======
+
+* Enabled the nRF RPC library to be initialized more than once.
+
 nRF Connect SDK v2.2.0
 **********************
 

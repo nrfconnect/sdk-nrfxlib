@@ -95,6 +95,9 @@ static uint8_t group_count;
 
 static uint8_t initialized_group_count;
 
+/* nRF RPC initialization status. */
+static bool is_initialized;
+
 /* Error handler provided to the init function. */
 static nrf_rpc_err_handler_t global_err_handler;
 
@@ -966,6 +969,10 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 
 	NRF_RPC_DBG("Initializing nRF RPC module");
 
+	if (is_initialized) {
+		return 0;
+	}
+
 	global_err_handler = err_handler;
 
 	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array,
@@ -1008,6 +1015,7 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 		return err;
 	}
 
+	is_initialized = true;
 	NRF_RPC_DBG("Done initializing nRF RPC module");
 
 	return err;
