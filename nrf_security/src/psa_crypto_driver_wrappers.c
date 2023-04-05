@@ -844,17 +844,16 @@ psa_status_t psa_driver_wrapper_export_public_key(
                  return( status );
 #endif /* PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
-#if defined(MBEDTLS_PSA_BUILTIN_HAS_KEY_TYPE)
-            /* Fell through, meaning no accelerator supports this operation */
-            return( psa_export_public_key_internal( attributes,
-                                                    key_buffer,
-                                                    key_buffer_size,
-                                                    data,
-                                                    data_size,
-                                                    data_length ) );
-#else
-            return ( PSA_ERROR_NOT_SUPPORTED );
-#endif /* !MBEDTLS_PSA_BUILTIN_HAS_KEY_TYPE */
+        /* Fell through, meaning no accelerator supports this operation.
+         * The CryptoCell driver doesn't support export public keys when
+         * the key is a public key itself, so this is necessary.
+         */
+        return( psa_export_public_key_internal( attributes,
+                                                key_buffer,
+                                                key_buffer_size,
+                                                data,
+                                                data_size,
+                                                data_length ) );
         default:
             /* Key is declared with a lifetime not known to us */
             return( status );
