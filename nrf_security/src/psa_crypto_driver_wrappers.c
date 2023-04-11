@@ -87,6 +87,9 @@
 #if defined(PSA_CRYPTO_DRIVER_HAS_KDF_SUPPORT_OBERON)
 #include "oberon_kdf.h"
 #endif
+#if defined(PSA_CRYPTO_DRIVER_HAS_RSA_SUPPORT_OBERON)
+#include "oberon_rsa.h"
+#endif
 
 /* Include TF-M builtin key driver */
 #if defined(PSA_CRYPTO_DRIVER_TFM_BUILTIN_KEY_LOADER)
@@ -367,6 +370,16 @@ psa_status_t psa_driver_wrapper_sign_hash(
             /* Declared with fallback == true */
             if( status != PSA_ERROR_NOT_SUPPORTED )
                 return( status );
+#if defined(PSA_CRYPTO_DRIVER_HAS_RSA_SIGN_SUPPORT_OBERON)
+            status = oberon_rsa_sign_hash(
+                        attributes, key_buffer, key_buffer_size,
+                        alg,
+                        hash, hash_length,
+                        signature, signature_size, signature_length);
+         /* Declared with fallback == true */
+            if( status != PSA_ERROR_NOT_SUPPORTED )
+                return( status );
+#endif /* PSA_CRYPTO_DRIVER_HAS_RSA_SIGN_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_DRIVER_HAS_ASYM_SIGN_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
             /* Fell through, meaning no accelerator supports this operation */
@@ -470,6 +483,15 @@ psa_status_t psa_driver_wrapper_verify_hash(
             /* Declared with fallback == true */
             if( status != PSA_ERROR_NOT_SUPPORTED )
                 return( status );
+#if defined(PSA_CRYPTO_DRIVER_HAS_RSA_SIGN_SUPPORT_OBERON)
+            status = oberon_rsa_verify_hash(attributes,
+                                            key_buffer, key_buffer_size,
+                                            alg,
+                                            hash, hash_length,
+                                            signature, signature_length);
+            if( status != PSA_ERROR_NOT_SUPPORTED )
+                return( status );
+#endif /* PSA_CRYPTO_DRIVER_HAS_RSA_SIGN_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_DRIVER_HAS_ASYM_SIGN_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
 #if defined(MBEDTLS_PSA_BUILTIN_HAS_ASYM_SIGN_SUPPORT)
@@ -717,6 +739,15 @@ psa_status_t psa_driver_wrapper_import_key(
            /* Declared with fallback == true */
            if( status != PSA_ERROR_NOT_SUPPORTED )
                return( status );
+#if defined(PSA_CRYPTO_DRIVER_HAS_RSA_SUPPORT_OBERON)
+            status = oberon_import_rsa_key(
+                            attributes,
+                            data, data_length,
+                            key_buffer, key_buffer_size,
+                            key_buffer_length, bits);
+            if (status != PSA_ERROR_NOT_SUPPORTED)
+                return status;
+#endif /* PSA_CRYPTO_DRIVER_HAS_RSA_SUPPORT_OBERON*/
 #endif /* PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
         /*
@@ -835,16 +866,24 @@ psa_status_t psa_driver_wrapper_export_public_key(
                 return( status );
 #endif /* PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_CC3XX */
 #if defined(PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_OBERON)
-             status = oberon_export_public_key(
+            status = oberon_export_public_key(
                           attributes,
                           key_buffer,
                           key_buffer_size,
                           data,
                           data_size,
                           data_length );
-             /* Declared with fallback == true */
-             if( status != PSA_ERROR_NOT_SUPPORTED )
-                 return( status );
+            /* Declared with fallback == true */
+            if( status != PSA_ERROR_NOT_SUPPORTED )
+                return( status );
+#if defined(PSA_CRYPTO_DRIVER_HAS_RSA_SUPPORT_OBERON)
+            status = oberon_export_rsa_public_key(
+                            attributes,
+                            key_buffer, key_buffer_size,
+                            data, data_size, data_length);
+            if (status != PSA_ERROR_NOT_SUPPORTED)
+                return status;
+#endif /* PSA_CRYPTO_DRIVER_HAS_RSA_SUPPORT_OBERON*/
 #endif /* PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
         /* Fell through, meaning no accelerator supports this operation.
@@ -2885,6 +2924,20 @@ psa_status_t psa_driver_wrapper_asymmetric_encrypt(const psa_key_attributes_t *a
                                                output_length );
             return( status );
 #endif /* PSA_CRYPTO_DRIVER_HAS_ASYM_ENCRYPT_SUPPORT_CC3XX */
+#if defined(PSA_CRYPTO_DRIVER_HAS_ASYM_ENCRYPT_SUPPORT_OBERON)
+            status = oberon_asymmetric_encrypt(attributes,
+                                               key_buffer,
+                                               key_buffer_size,
+                                               alg,
+                                               input,
+                                               input_length,
+                                               salt,
+                                               salt_length,
+                                               output,
+                                               output_size,
+                                               output_length);
+            return status;
+#endif /* PSA_CRYPTO_DRIVER_HAS_ASYM_ENCRYPT_SUPPORT_OBERON */
 #endif  /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
             (void) status;
             return ( PSA_ERROR_NOT_SUPPORTED );
@@ -2941,6 +2994,19 @@ psa_status_t psa_driver_wrapper_asymmetric_decrypt(const psa_key_attributes_t *a
                                                output_length );
             return( status );
 #endif /* PSA_CRYPTO_DRIVER_HAS_ASYM_ENCRYPT_SUPPORT_CC3XX */
+#if defined(PSA_CRYPTO_DRIVER_HAS_ASYM_ENCRYPT_SUPPORT_OBERON)
+        return oberon_asymmetric_decrypt(attributes,
+                                         key_buffer,
+                                         key_buffer_size,
+                                         alg,
+                                         input,
+                                         input_length,
+                                         salt,
+                                         salt_length,
+                                         output,
+                                         output_size,
+                                         output_length);
+#endif /* PSA_CRYPTO_DRIVER_HAS_ASYM_ENCRYPT_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
             (void) status;
             return( PSA_ERROR_NOT_SUPPORTED );

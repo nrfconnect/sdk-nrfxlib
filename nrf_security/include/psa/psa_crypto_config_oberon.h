@@ -149,3 +149,36 @@
 #define PSA_NEED_OBERON_KEY_PAIR_DRIVER 1
 #define PSA_NEED_OBERON_KEY_PAIR_ED25519 1
 #endif
+
+#if defined(PSA_CRYPTO_DRIVER_HAS_RSA_SUPPORT_OBERON)
+#define PSA_NEED_OBERON_RSA_DRIVER                             1
+#define PSA_NEED_OBERON_RSA_KEY_SIZE_1536                      1
+#define PSA_NEED_OBERON_RSA_KEY_SIZE_2048                      1
+#define PSA_NEED_OBERON_RSA_KEY_SIZE_3072                      1
+/* Increasing this value has consequences on callers stack usage. */
+#define PSA_MAX_RSA_KEY_BITS 3072
+#endif
+
+#if defined(PSA_CRYPTO_DRIVER_HAS_RSA_CRYPT_SUPPORT_OBERON)
+#define PSA_NEED_OBERON_RSA_CRYPT                              1
+#endif
+
+#if defined(PSA_CRYPTO_DRIVER_HAS_RSA_SIGN_SUPPORT_OBERON)
+#define PSA_NEED_OBERON_RSA_SIGN                               1
+#endif
+
+#if defined(PSA_CRYPTO_DRIVER_ALG_RSA_PKCS1V15_CRYPT_OBERON)
+#define PSA_NEED_OBERON_RSA_PKCS1V15_CRYPT                     1
+#endif
+
+#if defined(PSA_CRYPTO_DRIVER_ALG_RSA_PKCS1V15_SIGN_OBERON)
+#define PSA_NEED_OBERON_RSA_PKCS1V15_SIGN                      1
+#endif
+
+#if defined(PSA_CRYPTO_DRIVER_ALG_RSA_OAEP_OBERON)
+#define PSA_NEED_OBERON_RSA_OAEP                               1
+#endif
+
+#if defined(PSA_CRYPTO_DRIVER_ALG_RSA_PSS_OBERON)
+#define PSA_NEED_OBERON_RSA_PSS                                1
+#endif
