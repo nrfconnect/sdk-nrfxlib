@@ -17,6 +17,10 @@ Changes
 * Removed deprecated API for specifying the FEM pin configuration type associated with :c:macro:`MPSL_FEM_PIN_CFG_TYPE_PIN_PORT`.
   Only the :c:struct:`mpsl_fem_pin_t` configuration is supported as a FEM pin configuration now (KRKNWK-16496).
 
+Added
+=====
+* Function for getting configuration of simple GPIO front-end module :c:func:`mpsl_fem_simple_gpio_interface_config_get`.
+
 nRF Connect SDK v2.3.0
 **********************
 
