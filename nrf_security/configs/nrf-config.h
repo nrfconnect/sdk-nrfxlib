@@ -122,7 +122,10 @@ extern "C" {
 #endif
 
 #if defined(PSA_WANT_ALG_SHA_1)
-#if defined(MBEDTLS_PSA_BUILTIN_ALG_SHA_1)
+/* TLS/DTLS 1.2 requires SHA-1 support using legacy API for now.
+ * Revert this when resolving NCSDK-20975.
+ */
+#if defined(MBEDTLS_PSA_BUILTIN_ALG_SHA_1) || defined(CONFIG_MBEDTLS_TLS_LIBRARY)
 #define MBEDTLS_SHA1_C
 #endif
 #endif
