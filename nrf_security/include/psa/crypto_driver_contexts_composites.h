@@ -59,7 +59,9 @@
 
 typedef union {
     unsigned dummy; /* Make sure this union is always non-empty */
+#if defined(MBEDTLS_PSA_BUILTIN_HAS_MAC_SUPPORT)
     mbedtls_psa_mac_operation_t mbedtls_ctx;
+#endif
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
     cc3xx_mac_operation_t cc3xx_driver_ctx;
 #endif
@@ -71,7 +73,9 @@ typedef union {
 
 typedef union {
     unsigned dummy; /* Make sure this union is always non-empty */
+#if defined(MBEDTLS_PSA_BUILTIN_HAS_AEAD_SUPPORT)
     mbedtls_psa_aead_operation_t mbedtls_ctx;
+#endif
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
     struct {
         cc3xx_aead_operation_t cc3xx_driver_ctx;
