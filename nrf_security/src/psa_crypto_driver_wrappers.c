@@ -20,17 +20,20 @@
  */
 
 #include "common.h"
-#include "psa_crypto_aead.h"
-#include "psa_crypto_cipher.h"
 #include "psa_crypto_core.h"
 #include "psa_crypto_driver_wrappers.h"
-#include "psa_crypto_hash.h"
-#include "psa_crypto_mac.h"
 #include <string.h>
 
 #include "mbedtls/platform.h"
 
 #if defined(MBEDTLS_PSA_CRYPTO_C)
+
+#if defined(PSA_CRYPTO_DRIVER_BUILTIN)
+#include "psa_crypto_aead.h"
+#include "psa_crypto_cipher.h"
+#include "psa_crypto_hash.h"
+#include "psa_crypto_mac.h"
+#endif
 
 #if defined(MBEDTLS_PSA_CRYPTO_DRIVERS)
 
@@ -73,7 +76,9 @@
 /* Auto-generated values depending on which drivers are registered.
  * ID 0 is reserved for unallocated operations.
  * ID 1 is reserved for the Mbed TLS software driver. */
+#if defined(PSA_CRYPTO_DRIVER_BUILTIN)
 #define PSA_CRYPTO_MBED_TLS_DRIVER_ID (1)
+#endif /* PSA_CRYPTO_DRIVER_BUILTIN */
 
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
 #define PSA_CRYPTO_CC3XX_DRIVER_ID (4)

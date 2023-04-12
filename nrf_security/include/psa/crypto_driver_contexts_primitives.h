@@ -59,7 +59,9 @@
 
 typedef union {
     unsigned dummy; /* Make sure this union is always non-empty */
+#if defined(MBEDTLS_PSA_BUILTIN_HAS_HASH_SUPPORT)
     mbedtls_psa_hash_operation_t mbedtls_ctx;
+#endif
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
     cc3xx_hash_operation_t cc3xx_driver_ctx;
 #endif
@@ -70,7 +72,9 @@ typedef union {
 
 typedef union {
     unsigned dummy; /* Make sure this union is always non-empty */
+#if defined(MBEDTLS_PSA_BUILTIN_HAS_CIPHER_SUPPORT)
     mbedtls_psa_cipher_operation_t mbedtls_ctx;
+#endif
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
     cc3xx_cipher_operation_t cc3xx_driver_ctx;
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
