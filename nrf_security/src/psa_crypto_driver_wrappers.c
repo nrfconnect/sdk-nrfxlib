@@ -386,18 +386,6 @@ psa_status_t psa_driver_wrapper_sign_hash(
             return( PSA_ERROR_NOT_SUPPORTED );
         /* Add cases for opaque driver here */
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
-#if defined(PSA_CRYPTO_DRIVER_TEST)
-        case PSA_CRYPTO_TEST_DRIVER_LOCATION:
-            return( mbedtls_test_opaque_signature_sign_hash( attributes,
-                                                             key_buffer,
-                                                             key_buffer_size,
-                                                             alg,
-                                                             hash,
-                                                             hash_length,
-                                                             signature,
-                                                             signature_size,
-                                                             signature_length ) );
-#endif /* PSA_CRYPTO_DRIVER_TEST */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
         default:
             /* Key is declared with a lifetime not known to us */
