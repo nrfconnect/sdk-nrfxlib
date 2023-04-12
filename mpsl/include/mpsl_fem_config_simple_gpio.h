@@ -83,6 +83,21 @@ typedef struct
  */
 int32_t mpsl_fem_simple_gpio_interface_config_set(mpsl_fem_simple_gpio_interface_config_t const * const p_config);
 
+/** @brief Returns the PA and LNA device configuration.
+ *
+ * This function gets device interface parameters for the PA/LNA module.
+ *
+ * If the passed pointer is incorrect, the function returns the error code.
+ * If the corresponding setter was not called beforehand, the function returns the error code.
+ *
+ * @param[out] p_config Pointer to the interface parameters for the PA/LNA device to populate.
+ *
+ * @retval   0             PA/LNA configuration successfully populated.
+ * @retval   -NRF_EPERM    PA/LNA was not configured beforehand.
+ *
+ */
+int32_t mpsl_fem_simple_gpio_interface_config_get(mpsl_fem_simple_gpio_interface_config_t * const p_config);
+
 /**
  * @brief Simple GPIO Front End Module Timings
  *
