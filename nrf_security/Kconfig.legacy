@@ -111,6 +111,7 @@ config MBEDTLS_CHACHAPOLY_ALT
 	bool
 	depends on CC3XX_BACKEND || PSA_CRYPTO_DRIVER_CC3XX
 	default y
+	depends on MBEDTLS_CHACHA20_ALT
 
 config MBEDTLS_DHM_ALT
 	bool
