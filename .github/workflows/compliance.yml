@@ -26,6 +26,8 @@ jobs:
         pip3 install  -U setuptools
         export PATH="$HOME/.local/bin:$PATH"
         pip3 install  -U wheel
+        # TODO: add yamllint to scripts/requirements-fixed.txt
+        pip3 install -U yamllint
         pip3 install lxml==4.9.1
         pip3 install  -U python-magic junitparser==2.8.0 gitlint pylint pykwalify
         pip3 install --user -U west
@@ -65,7 +67,7 @@ jobs:
 
     - name: Upload Results
       uses: actions/upload-artifact@master
-      continue-on-error: True
+      continue-on-error: true
       with:
         name: compliance.xml
         path: ncs/nrfxlib/compliance.xml
