@@ -17,6 +17,7 @@ You can find the details of the API in the :file:`nrfxlib/mpsl/include/mpsl_coex
 .. NOTE::
    This implementation is only supported on nRF52 devices.
 
+.. _mpsl_bluetooth_coex_1wire:
 
 1-Wire coexistence protocol
 ---------------------------
