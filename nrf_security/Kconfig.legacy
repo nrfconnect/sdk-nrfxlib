@@ -677,7 +677,6 @@ config MBEDTLS_HKDF_C
 config MBEDTLS_RSA_C
 	bool
 	prompt "RSA - Rivest-Shamir-Adleman cryptosystem"
-	default y
 	help
 	  Enable RSA cryptosystem support.
 	  MBEDTLS_RSA_C setting in mbed TLS config file.
@@ -692,12 +691,10 @@ config MBEDTLS_GENPRIME
 
 config MBEDTLS_PKCS1_V15
 	bool "PKCS1 v1.5 support"
-	depends on MBEDTLS_RSA_C
 	default y
 
 config MBEDTLS_PKCS1_V21
 	bool "PKCS1 v2.1 support"
-	depends on MBEDTLS_RSA_C
 	default y
 
 endif # MBEDTLS_RSA_C
