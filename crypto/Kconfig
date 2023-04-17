@@ -3,20 +3,8 @@ menu "Crypto libraries for nRF5x SOCs."
 config NRFXLIB_CRYPTO
 	bool
 
-config CRYPTOCELL_CC310_USABLE
-	bool
-	depends on SOC_NRF52840 || (SOC_SERIES_NRF91X && (BUILD_WITH_TFM || !TRUSTED_EXECUTION_NONSECURE))
-	default y
-
-config CRYPTOCELL_CC312_USABLE
-	bool
-	depends on SOC_NRF5340_CPUAPP && (BUILD_WITH_TFM || !TRUSTED_EXECUTION_NONSECURE)
-	default y
-
-config CRYPTOCELL_USABLE
-	bool
-	depends on CRYPTOCELL_CC310_USABLE || CRYPTOCELL_CC312_USABLE
-	default y
+config HAS_HW_NRF_CC3XX
+	def_bool HAS_HW_NRF_CC310 || HAS_HW_NRF_CC312
 
 config NRF_OBERON
 	bool "nrf_oberon SW crypto library for nRF5x."
@@ -42,7 +30,7 @@ endif
 
 menuconfig NRF_CC3XX_PLATFORM
 	bool "nrf_cc3xx_platform HW crypto library for nRF devices with CryptoCell CC3xx."
-	depends on CRYPTOCELL_USABLE && !BUILD_WITH_TFM
+	depends on HAS_HW_NRF_CC3XX && !BUILD_WITH_TFM
 	select NRFXLIB_CRYPTO if !BUILD_WITH_TFM
 	help
 	  This configuration is only available for direct use of nrf_cc3xx_platform
