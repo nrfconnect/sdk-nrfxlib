@@ -7,10 +7,8 @@
 #include <zephyr/init.h>
 #include <mbedtls/debug.h>
 
-static int _mbedtls_init(const struct device *device)
+static int _mbedtls_init(void)
 {
-	ARG_UNUSED(device);
-
 #if defined(CONFIG_MBEDTLS_DEBUG_LEVEL)
 	mbedtls_debug_set_threshold(CONFIG_MBEDTLS_DEBUG_LEVEL);
 #endif
