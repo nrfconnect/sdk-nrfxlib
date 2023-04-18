@@ -374,11 +374,9 @@ psa_status_t psa_its_remove_backend( psa_storage_uid_t uid )
     return PSA_SUCCESS;
 }
 
-static int zephyr_settings_init( const struct device *device )
+static int zephyr_settings_init(void)
 {
     int ret;
-
-    ARG_UNUSED( device );
 
     ret = settings_subsys_init();
     if ( ret != 0 )
