@@ -229,6 +229,13 @@ target_compile_options(${mbedcrypto_target} PRIVATE
   -Wno-unused-variable
   )
 
+# Disable warnings showing up in Oberon PSA crypto code.
+target_compile_options(${mbedcrypto_target} PRIVATE
+  -Wno-stringop-overflow
+  -Wno-stringop-overread
+  -Wno-strict-aliasing
+  )
+
 # Add drivers if enabled
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/drivers)
 
