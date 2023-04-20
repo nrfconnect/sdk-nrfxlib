@@ -12,13 +12,6 @@ config MBEDTLS_PSA_CRYPTO_C
 	  Enable the Platform Security Architecture cryptography API.
 	  Corresponds to  setting in mbed TLS config file.
 
-# TODO: Move these configs to sdk-zephyr
-config PSA_WANT_ECC_TWISTED_EDWARDS_255
-       bool "PSA ECC Curve Ed25519 support"
-
-config PSA_WANT_ALG_RIPEMD160
-	default n
-
 if MBEDTLS_PSA_CRYPTO_C
 
 config MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER
