@@ -187,29 +187,16 @@ psa_status_t psa_driver_wrapper_sign_message(
             (void)status;
             break;
     }
-#if defined(MBEDTLS_PSA_BUILTIN_HAS_ASYM_SIGN_SUPPORT)
-    status = psa_sign_message_builtin( attributes,
-                                      key_buffer,
-                                      key_buffer_size,
-                                      alg,
-                                      input,
-                                      input_length,
-                                      signature,
-                                      signature_size,
-                                      signature_length );
-    if( status != PSA_ERROR_NOT_SUPPORTED )
-        return( status );
-#endif /* MBEDTLS_PSA_BUILTIN_HAS_ASYM_SIGN_SUPPORT */
-    (void)attributes;
-    (void)key_buffer;
-    (void)key_buffer_size;
-    (void)alg;
-    (void)input;
-    (void)input_length;
-    (void)signature;
-    (void)signature_size;
-    (void)signature_length;
-    return( PSA_ERROR_NOT_SUPPORTED );
+
+    /* Call back to the core with psa_sign_message_builtin.
+     * This will in turn forward this to use psa_crypto_driver_wrapper_sign_hash
+     */
+    return psa_sign_message_builtin(attributes,
+                                    key_buffer, key_buffer_size,
+                                    alg,
+                                    input, input_length,
+                                    signature, signature_size, signature_length );
+
 }
 
 psa_status_t psa_driver_wrapper_verify_message(
@@ -273,27 +260,14 @@ psa_status_t psa_driver_wrapper_verify_message(
             break;
     }
 
-#if defined(MBEDTLS_PSA_BUILTIN_HAS_ASYM_SIGN_SUPPORT)
-    status = psa_verify_message_builtin( attributes,
-                                         key_buffer,
-                                         key_buffer_size,
-                                         alg,
-                                         input,
-                                         input_length,
-                                         signature,
-                                         signature_length );
-    if (status != PSA_ERROR_NOT_SUPPORTED)
-        return status;
-#endif /* MBEDTLS_PSA_BUILTIN_HAS_ASYM_SIGN_SUPPORT */
-    (void)attributes;
-    (void)key_buffer;
-    (void)key_buffer_size;
-    (void)alg;
-    (void)input;
-    (void)input_length;
-    (void)signature;
-    (void)signature_length;
-    return( PSA_ERROR_NOT_SUPPORTED );
+    /* Call back to the core with psa_verify_message_builtin.
+     * This will in turn forward this to use psa_crypto_driver_wrapper_verify_hash
+     */
+    return psa_verify_message_builtin(attributes,
+                                      key_buffer, key_buffer_size,
+                                      alg,
+                                      input, input_length,
+                                      signature, signature_length);
 }
 
 psa_status_t psa_driver_wrapper_sign_hash(
