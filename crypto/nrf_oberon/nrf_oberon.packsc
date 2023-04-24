@@ -2,7 +2,7 @@
     "nrf_oberon": {
         "_name": "nrf_oberon",
         "_class": "nRF_Oberon_Crypto",
-        "_description": "Oberon Microcontrollers Crypto Library",
+        "_description": "Oberon Microsystems Crypto Library",
         "_includes": [
             "include",
             "."
@@ -16,63 +16,63 @@
                     "autogen"
                 ],
                 "_condition": "'cortex-m4f' in _links and ('ses' in _toolchains or 'armgcc' in _toolchains)",
-                "_value": "lib\\cortex-m4\\hard-float\\liboberon_3.0.12.a"
+                "_value": "lib\\cortex-m4\\hard-float\\liboberon_3.0.13.a"
             },
             {
                 "_attrs": [
                     "autogen"
                 ],
                 "_condition": "'cortex-m4f' in _links and 'keilx' in _toolchains",
-                "_value": "lib\\cortex-m4\\hard-float\\short-wchar\\oberon_3.0.12.lib"
+                "_value": "lib\\cortex-m4\\hard-float\\short-wchar\\oberon_3.0.13.lib"
             },
             {
                 "_attrs": [
                     "autogen"
                 ],
                 "_condition": "'cortex-m4f' in _links and ('iar' in _toolchains)",
-                "_value": "lib\\cortex-m4\\hard-float\\short-wchar\\liboberon_3.0.12.a"
+                "_value": "lib\\cortex-m4\\hard-float\\short-wchar\\liboberon_3.0.13.a"
             },
             {
                 "_attrs": [
                     "autogen"
                 ],
                 "_condition": "'cortex-m4nf' in _links and ('ses' in _toolchains or 'armgcc' in _toolchains)",
-                "_value": "lib\\cortex-m4\\soft-float\\liboberon_3.0.12.a"
+                "_value": "lib\\cortex-m4\\soft-float\\liboberon_3.0.13.a"
             },
             {
                 "_attrs": [
                     "autogen"
                 ],
                 "_condition": "'cortex-m4nf' in _links and 'keilx' in _toolchains",
-                "_value": "lib\\cortex-m4\\soft-float\\short-wchar\\oberon_3.0.12.lib"
+                "_value": "lib\\cortex-m4\\soft-float\\short-wchar\\oberon_3.0.13.lib"
             },
             {
                 "_attrs": [
                     "autogen"
                 ],
                 "_condition": "'cortex-m4nf' in _links and 'iar' in _toolchains",
-                "_value": "lib\\cortex-m4\\soft-float\\short-wchar\\liboberon_3.0.12.a"
+                "_value": "lib\\cortex-m4\\soft-float\\short-wchar\\liboberon_3.0.13.a"
             },
             {
                 "_attrs": [
                     "autogen"
                 ],
                 "_condition": "'cortex-m0' in _links and ('ses' in _toolchains or 'armgcc' in _toolchains)",
-                "_value": "lib\\cortex-m0\\soft-float\\liboberon_3.0.12.a"
+                "_value": "lib\\cortex-m0\\soft-float\\liboberon_3.0.13.a"
             },
             {
                 "_attrs": [
                     "autogen"
                 ],
                 "_condition": "'cortex-m0' in _links and 'iar' in _toolchains",
-                "_value": "lib\\cortex-m0\\soft-float\\short-wchar\\liboberon_3.0.12.a"
+                "_value": "lib\\cortex-m0\\soft-float\\short-wchar\\liboberon_3.0.13.a"
             },
             {
                 "_attrs": [
                     "autogen"
                 ],
                 "_condition": "'cortex-m0' in _links and 'keilx' in _toolchains",
-                "_value": "lib\\cortex-m0\\soft-float\\short-wchar\\oberon_3.0.12.lib"
+                "_value": "lib\\cortex-m0\\soft-float\\short-wchar\\oberon_3.0.13.lib"
             }
         ]
     }

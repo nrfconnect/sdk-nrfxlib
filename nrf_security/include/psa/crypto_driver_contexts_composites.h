@@ -42,10 +42,11 @@
  * declared during the autogeneration process. */
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
 #include "cc3xx_crypto_primitives.h"
-#elif defined(PSA_CRYPTO_DRIVER_OBERON)
-#include "oberon_crypto_primitives.h"
 #endif
 
+#if defined(PSA_CRYPTO_DRIVER_HAS_AEAD_SUPPORT_OBERON)
+#include "oberon_aead.h"
+#endif
 
 /* Include the context structure definitions for the Mbed TLS software drivers */
 #include "psa/crypto_builtin_composites.h"
@@ -83,9 +84,9 @@ typedef union {
         size_t cc3xx_driver_ctx_tag_length;
     };
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
-#if defined(PSA_CRYPTO_DRIVER_OBERON)
+#if defined(PSA_CRYPTO_DRIVER_HAS_AEAD_SUPPORT_OBERON)
     oberon_aead_operation_t oberon_driver_ctx;
-#endif /* PSA_CRYPTO_DRIVER_OBERON */
+#endif
 
 } psa_driver_aead_context_t;
 

@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -31,6 +32,11 @@ extern "C" {
  *
  * @retval 0  If @p sk is a valid secret key.
  * @retval -1 Otherwise.
+ *
+ * @remark To generate a valid secret key use the following code pattern:
+ *            @code{.c}
+ *            do get_random(sk); while (ocrypto_ecdh_p224_secret_key_check(sk));
+ *            @endcode
  */
 int ocrypto_ecdh_p224_secret_key_check(const uint8_t sk[28]);
 
@@ -45,20 +51,24 @@ int ocrypto_ecdh_p224_secret_key_check(const uint8_t sk[28]);
 int ocrypto_ecdh_p224_public_key_check(const uint8_t pk[56]);
 
 /**
- * ECDH P-224 public key generation `r = n * p`.
+ * ECDH P-224 public key generation.
  *
  * Given a secret key @p sk the corresponding public key is computed and put
- * into @p r.
+ * into @p pk.
  *
- * @param[out] r  Generated public key.
+ * @param[out] pk Generated public key.
  * @param      sk Secret key. Must be pre-filled with random data.
  *
  * @retval 0  If @p sk is a valid secret key.
  * @retval -1 Otherwise.
  *
- * @remark @p r may be same as @p sk.
+ * @remark @p pk may be same as @p sk.
+ * @remark To generate a valid key pair use the following code pattern:
+ *            @code{.c}
+ *            do get_random(sk); while (ocrypto_ecdh_p224_public_key(pk, sk));
+ *            @endcode
  */
-int ocrypto_ecdh_p224_public_key(uint8_t r[56], const uint8_t sk[28]);
+int ocrypto_ecdh_p224_public_key(uint8_t pk[56], const uint8_t sk[28]);
 
 /**
  * ECDH P-224 common secret.
@@ -82,6 +92,6 @@ int ocrypto_ecdh_p224_common_secret(uint8_t r[28], const uint8_t sk[28], const u
 }
 #endif
 
-#endif /* OCRYPTO_ECDH_P224_H */
+#endif
 
 /** @} */

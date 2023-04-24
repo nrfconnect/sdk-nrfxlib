@@ -7,7 +7,6 @@
 # Link to libraries
 if(CONFIG_MBEDTLS_PSA_CRYPTO_C)
   target_link_libraries(${mbedcrypto_target} PRIVATE
-    mbedcrypto_oberon_psa_imported
     mbedcrypto_oberon_mbedtls_imported
     mbedcrypto_oberon_imported
   )
@@ -17,7 +16,30 @@ if(CONFIG_MBEDTLS_PSA_CRYPTO_C)
      INTERFACE
       ${NRFXLIB_ROOT}/crypto/nrf_oberon/include/
       ${NRFXLIB_ROOT}/crypto/nrf_oberon/include/mbedtls
-      ${NRFXLIB_ROOT}/crypto/nrf_oberon/include/psa
+      ${OBERON_PSA_CRYPTO_PATH}/oberon/drivers
   )
 
+endif()
+
+if (COMPILE_PSA_APIS)
+  append_with_prefix(src_crypto_oberon ${OBERON_PSA_CRYPTO_PATH}/oberon/drivers/
+    oberon_aead.c
+    oberon_cipher.c
+    oberon_ecdh.c
+    oberon_ecdsa.c
+    oberon_hash.c
+    oberon_helpers.c
+    oberon_kdf.c
+    oberon_key_pair.c
+    oberon_mac.c
+    oberon_rsa.c
+  )
+
+  # Add builtin functionality (if enabled)
+  if(DEFINED src_crypto_oberon)
+    target_sources(${mbedcrypto_target}
+      PRIVATE
+        ${src_crypto_oberon}
+    )
+  endif()
 endif()

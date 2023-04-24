@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -24,7 +25,6 @@
 #define OCRYPTO_ECDH_P256_H
 
 #include "ocrypto_types.h"
-#include "ocrypto_curve_p256.h"
 
 
 #ifdef __cplusplus
@@ -34,7 +34,7 @@ extern "C" {
 
 /**@cond */
 typedef struct {
-    ocrypto_p256_mult_context mul;
+    ocrypto_p256_mult_ctx mul;
     int ret;
 } ocrypto_ecdh_p256_ctx;
 /**@endcond */
@@ -47,6 +47,11 @@ typedef struct {
  *
  * @retval 0  If @p sk is a valid secret key.
  * @retval -1 Otherwise.
+ *
+ * @remark To generate a valid secret key use the following code pattern:
+ *            @code{.c}
+ *            do get_random(sk); while (ocrypto_ecdh_p256_secret_key_check(sk));
+ *            @endcode
  */
 int ocrypto_ecdh_p256_secret_key_check(const uint8_t sk[32]);
 
@@ -61,20 +66,24 @@ int ocrypto_ecdh_p256_secret_key_check(const uint8_t sk[32]);
 int ocrypto_ecdh_p256_public_key_check(const uint8_t pk[64]);
 
 /**
- * ECDH P-256 public key generation `r = n * p`.
+ * ECDH P-256 public key generation.
  *
  * Given a secret key @p sk the corresponding public key is computed and put
- * into @p r.
+ * into @p pk.
  *
- * @param[out] r  Generated public key.
+ * @param[out] pk Generated public key.
  * @param      sk Secret key. Must be pre-filled with random data.
  *
  * @retval 0  If @p sk is a valid secret key.
  * @retval -1 Otherwise.
  *
- * @remark @p r may be same as @p sk.
+ * @remark @p pk may be same as @p sk.
+ * @remark To generate a valid key pair use the following code pattern:
+ *            @code{.c}
+ *            do get_random(sk); while (ocrypto_ecdh_p256_public_key(pk, sk));
+ *            @endcode
  */
-int ocrypto_ecdh_p256_public_key(uint8_t r[64], const uint8_t sk[32]);
+int ocrypto_ecdh_p256_public_key(uint8_t pk[64], const uint8_t sk[32]);
 
 /**
  * ECDH P-256 common secret.
@@ -103,13 +112,13 @@ int ocrypto_ecdh_p256_common_secret(uint8_t r[32], const uint8_t sk[32], const u
  * Use pattern:
  *
  * Public Key:
- * @code
+ * @code{.c}
  *   ocrypto_ecdh_p256_public_key_init(ctx, sKey);
  *   while (ocrypto_ecdh_p256_public_key_iterate(ctx));
  *   res = ocrypto_ecdh_p256_public_key_final(ctx, pKey);
  * @endcode
  * Common Secret:
- * @code
+ * @code{.c}
  *   ocrypto_ecdh_p256_common_secret_init(ctx, sKey, pKey);
  *   while (ocrypto_ecdh_p256_common_secret_iterate(ctx));
  *   res = ocrypto_ecdh_p256_common_secret_final(ctx, secet);
@@ -145,12 +154,12 @@ int ocrypto_ecdh_p256_public_key_iterate(ocrypto_ecdh_p256_ctx *ctx);
  * Key generation is finalized and the context @p ctx is used to generate the key.
  *
  * @param      ctx Context.
- * @param[out] r   Generated public key.
+ * @param[out] pk  Generated public key.
  *
  * @retval 0  If @p sk is a valid secret key.
  * @retval -1 Otherwise.
  */
-int ocrypto_ecdh_p256_public_key_final(ocrypto_ecdh_p256_ctx *ctx, uint8_t r[64]);
+int ocrypto_ecdh_p256_public_key_final(ocrypto_ecdh_p256_ctx *ctx, uint8_t pk[64]);
 
 /**
  * Incremental ECDH P-256 common secret generation start.
@@ -194,6 +203,6 @@ int ocrypto_ecdh_p256_common_secret_final(ocrypto_ecdh_p256_ctx *ctx, uint8_t r[
 }
 #endif
 
-#endif /* OCRYPTO_ECDH_P256_H */
+#endif
 
 /** @} */

@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -44,6 +45,11 @@ extern "C" {
  *
  * @retval 0  If @p sk is a valid secret key.
  * @retval -1 Otherwise.
+ *
+ * @remark To generate a valid key pair use the following code pattern:
+ *            @code{.c}
+ *            do get_random(sk); while (ocrypto_ecdsa_p256_public_key(pk, sk));
+ *            @endcode
  */
 int ocrypto_ecdsa_p256_public_key(
     uint8_t pk[64],
@@ -89,37 +95,6 @@ int ocrypto_ecdsa_p256_sign_hash(
     const uint8_t hash[32],
     const uint8_t sk[32],
     const uint8_t ek[32]);
-
-/**
- * ECDSA P-256 deterministic signature generation.
- *
- * The message @p m is signed using the secret key @p sk and a session key calculated
- * from message hash and key. The signature is put into @p sig.
- *
- * @param[out] sig  Generated signature.
- * @param      m    Input message.
- * @param      mlen Length of @p m.
- * @param      sk   Secret key.
- */
-void ocrypto_ecdsa_p256_det_sign(
-    uint8_t sig[64],
-    const uint8_t *m, size_t mlen,
-    const uint8_t sk[32]);
-
-/**
- * ECDSA P-256 deterministic signature generation from SHA256 hash.
- *
- * The message hash @p hash is signed using the secret key @p sk and a session key calculated
- * from hash and key. The signature is put into @p sig.
- *
- * @param[out] sig  Generated signature.
- * @param      hash Input hash.
- * @param      sk   Secret key.
- */
-void ocrypto_ecdsa_p256_det_sign_hash(
-    uint8_t sig[64],
-    const uint8_t hash[32],
-    const uint8_t sk[32]);
 
 /**
  * ECDSA P-256 signature verification.

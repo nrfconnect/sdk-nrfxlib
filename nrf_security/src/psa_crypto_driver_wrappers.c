@@ -54,8 +54,26 @@
 #ifndef PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT
 #define PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT
 #endif
-#include "oberon.h"
 #endif /* PSA_CRYPTO_DRIVER_OBERON */
+
+#if defined(PSA_CRYPTO_DRIVER_HAS_AEAD_SUPPORT_OBERON)
+#include "oberon_aead.h"
+#endif
+#if defined(PSA_CRYPTO_DRIVER_HAS_CIPHER_SUPPORT_OBERON)
+#include "oberon_cipher.h"
+#endif
+#if defined(PSA_CRYPTO_DRIVER_HAS_ASYM_SIGN_SUPPORT_OBERON)
+#include "oberon_ecdsa.h"
+#endif
+#if defined(PSA_CRYPTO_DRIVER_ALG_ECDH_OBERON)
+#include "oberon_ecdh.h"
+#endif
+#if defined(PSA_CRYPTO_DRIVER_HAS_HASH_SUPPORT_OBERON)
+#include "oberon_hash.h"
+#endif
+#if defined(PSA_CRYPTO_DRIVER_HAS_ACCEL_KEY_TYPES_OBERON)
+#include "oberon_key_pair.h"
+#endif
 
 /* Include TF-M builtin key driver */
 #if defined(PSA_CRYPTO_DRIVER_TFM_BUILTIN_KEY_LOADER)
@@ -2577,12 +2595,12 @@ psa_status_t psa_driver_wrapper_key_agreement(
             status = oberon_key_agreement(attributes,
                                           priv_key,
                                           priv_key_size,
+                                          alg,
                                           publ_key,
                                           publ_key_size,
                                           output,
                                           output_size,
-                                          output_length,
-                                          alg);
+                                          output_length );
             return( status );
 #endif /* PSA_CRYPTO_DRIVER_ALG_ECDH_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */

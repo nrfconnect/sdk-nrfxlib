@@ -1,8 +1,10 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
+
 
 /**@file
  * @defgroup ocrypto_aes AES - Advanced Encryption Standard APIs
@@ -12,7 +14,7 @@
  * AES transfers a 128-bit block of data into an encrypted block of the same size.
  * @}
  *
- * @defgroup ocrypto_aes_ccm AES-CCM - Counter mode with CBC-MAC
+ * @defgroup ocrypto_aes_ccm AES-CCM - AES Counter mode with CBC-MAC
  * @ingroup ocrypto_aes
  * @{
  * @brief Type definitions and APIs for AES-CCM (AES Counter mode with CBC-MAC).

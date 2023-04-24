@@ -42,8 +42,12 @@
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
 #include "cc3xx_crypto_primitives.h"
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
-#if defined(PSA_CRYPTO_DRIVER_OBERON)
-#include "oberon.h"
+
+#if defined(PSA_CRYPTO_DRIVER_HAS_CIPHER_SUPPORT_OBERON)
+#include "oberon_cipher.h"
+#endif
+#if defined(PSA_CRYPTO_DRIVER_HAS_HASH_SUPPORT_OBERON)
+#include "oberon_hash.h"
 #endif
 
 
@@ -65,7 +69,7 @@ typedef union {
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
     cc3xx_hash_operation_t cc3xx_driver_ctx;
 #endif
-#if defined(PSA_CRYPTO_DRIVER_OBERON)
+#if defined(PSA_CRYPTO_DRIVER_HAS_HASH_SUPPORT_OBERON)
     oberon_hash_operation_t oberon_driver_ctx;
 #endif
 } psa_driver_hash_context_t;
@@ -78,7 +82,7 @@ typedef union {
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
     cc3xx_cipher_operation_t cc3xx_driver_ctx;
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
-#if defined(PSA_CRYPTO_DRIVER_OBERON)
+#if defined(PSA_CRYPTO_DRIVER_HAS_CIPHER_SUPPORT_OBERON)
     oberon_cipher_operation_t oberon_driver_ctx;
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
 
