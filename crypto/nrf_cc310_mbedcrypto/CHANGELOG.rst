@@ -9,6 +9,45 @@ Changelog - nrf_cc3xx_mbedcrypto
 
 All notable changes to this project are documented in this file.
 
+nrf_cc3xx_mbedcrypto - 0.9.17
+*****************************
+
+New version of the runtime library with the following bug fixes and improvements:
+
+* Updated PSA Crypto drivers to conform to Mbed TLS and PSA Crypto API v1.1.0 changes.
+* Removed requirement to call psa_aead_set_lengths for PSA crypto driver for ChaCha20/Poly1305
+* Updated signature for mbedtls_aes_cmac_prf_128, which is used in legacy _ALT implementation.
+* Improved RSA key size and type checking for PSA Crypto driver.
+
+Library built against Mbed TLS version 3.3.0.
+
+This version is dependent on the nrf_cc310_platform or nrf_cc312_platform library for low-level initialization of the system and proper RTOS integration.
+
+Added
+=====
+
+Added a new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+
+.. note::
+
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+
+* nrf_cc312_mbedcrypto, nRF5340 variants
+  * ``crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.17.a``
+  * ``crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_legacy_crypto_0.9.17.a``
+  * ``crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_core_0.9.17.a``
+
+* nrf_cc310_mbedcrypto, nRF9160 variants
+  * ``crypto/nrf_cc310_mbedcrypto/lib/cortex-m33/**/libnrf_cc310_psa_crypto_0.9.17.a``
+  * ``crypto/nrf_cc310_mbedcrypto/lib/cortex-m33/**/libnrf_cc310_legacy_crypto_0.9.17.a``
+  * ``crypto/nrf_cc310_mbedcrypto/lib/cortex-m33/**/libnrf_cc310_core_0.9.17.a``
+
+* nrf_cc310_mbedcrypto, nRF52840 variants
+  * ``crypto/nrf_cc310_mbedcrypto/lib/cortex-m4/**/libnrf_cc310_psa_crypto_0.9.17.a``
+  * ``crypto/nrf_cc310_mbedcrypto/lib/cortex-m4/**/libnrf_cc310_legacy_crypto_0.9.17.a``
+  * ``crypto/nrf_cc310_mbedcrypto/lib/cortex-m4/**/libnrf_cc310_core_0.9.17.a``
+
+
 nrf_cc3xx_mbedcrypto - 0.9.16
 *****************************
 
