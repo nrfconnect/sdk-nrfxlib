@@ -12,10 +12,10 @@
  *        hashing data using SHA256 algorithm.
  */
 
-#include <stddef.h>
-
 #ifndef NRF_CC3XX_PLATFORM_SHA256_H__
 #define NRF_CC3XX_PLATFORM_SHA256_H__
+
+#include <stddef.h>
 
 #ifdef __cplusplus
 extern "C" {

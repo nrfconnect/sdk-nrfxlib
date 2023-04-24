@@ -17,7 +17,7 @@
 #include <stddef.h>
 #include "nrf.h"
 
-#if defined(NRF9160_XXAA) || defined(NRF5340_XXAA_APPLICATION)
+#if defined(NRF91_SERIES) || defined(NRF5340_XXAA_APPLICATION)
 
 /** @brief Enumeration type listing the key types which support the CryptoCell push operation */
 typedef enum {
@@ -57,7 +57,7 @@ typedef union {
  */
 #define NRF_CC3XX_PLATFORM_KMU_IDENTITY_KEY_PERMISSIONS     (0xFFFFFFFAUL)
 
-#if defined(NRF9160_XXAA)
+#if defined(NRF91_SERIES)
 
     /** @brief Address of the AES key register in CryptoCell */
     #define NRF_CC3XX_PLATFORM_KMU_AES_ADDR                 (0x50841400UL)
@@ -163,9 +163,9 @@ int nrf_cc3xx_platform_kmu_write_key_slot(
     uint32_t key_perm,
     const uint8_t key[16]);
 
-#endif /* defined(NRF9160_XXAA) || defined(NRF5340_XXAA_APPLICATION) */
+#endif /* defined(NRF91_SERIES) || defined(NRF5340_XXAA_APPLICATION) */
 
-#if defined(NRF9160_XXAA)
+#if defined(NRF91_SERIES)
 
 /** @brief Write a 128 bit AES key into a KMU slot for KDR use
  *
@@ -199,7 +199,7 @@ int nrf_cc3xx_platform_kmu_write_kdr_slot(uint32_t slot_id, const uint8_t key[16
  */
 int nrf_cc3xx_platform_kmu_push_kdr_slot_and_lock(uint32_t slot_id);
 
-#endif // defined(NRF9160_XXAA)
+#endif // defined(NRF91_SERIES)
 
 
 #if defined(NRF52840_XXAA)

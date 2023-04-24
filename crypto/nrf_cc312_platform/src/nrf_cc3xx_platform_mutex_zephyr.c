@@ -221,8 +221,7 @@ static void mutex_init_platform(nrf_cc3xx_platform_mutex_t *mutex) {
         /** Set a flag to ensure that mutex is deallocated by the freeing
          * operation
          */
-        mutex->flags = 0;
-        mutex->flags |= NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ALLOCATED;
+        mutex->flags = NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ALLOCATED;
     }
 
     p_mutex = (struct k_mutex *)mutex->mutex;

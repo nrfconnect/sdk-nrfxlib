@@ -166,7 +166,7 @@ int nrf_cc3xx_platform_ctr_drbg_reseed(
  * @note  If the context is NULL the function uses an internal context.
  *
  * This function will calculate PRNG using HW accelerated AES CTR_DRBG with a
- * 16-byte key and reseed with TRNG using ARM CryptoCEll cc3xx HW according
+ * 16-byte key and reseed with TRNG using ARM CryptoCell cc3xx HW according
  * to a reseed interval.
  *
  * @details This function calculates random numbers using PRNG seeded by TRNG

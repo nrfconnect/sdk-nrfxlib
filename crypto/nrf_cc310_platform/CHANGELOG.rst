@@ -9,6 +9,34 @@ Changelog - nrf_cc3xx_platform
 
 All notable changes to this project are documented in this file.
 
+nrf_cc3xx_platform - 0.9.17
+***************************
+
+New version of the library with the following features:
+
+* Removed mbedtls_hardware_poll limitation on buffer size, it now accepts any buffer size.
+* Removed Mbed TLS platform functions from library.
+
+Library built against Mbed TLS version 3.3.0.
+
+Added
+=====
+
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+
+.. note::
+
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+
++* nrf_cc312_platform, nRF5340 variants
++  * ``crypto/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.17.a``
++
++* nrf_cc310_platform, nRF9160 variants
++  * ``crypto/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.17.a``
++
++* nrf_cc310_platform, nRF52840 variants
++  * ``crypto/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.17.a``
+
 nrf_cc3xx_platform - 0.9.16
 ***************************
 
@@ -22,14 +50,14 @@ Library built against Mbed TLS version 3.1.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
    The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
 +* nrf_cc312_platform, nRF5340 variants
-+  * ``crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.16.a``
++  * ``crypto/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.16.a``
 +
 +* nrf_cc310_platform, nRF9160 variants
 +  * ``crypto/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.16.a``
@@ -52,7 +80,7 @@ Library built against Mbed TLS version 3.1.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -133,7 +161,7 @@ Library built against Mbed TLS version 3.0.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -214,7 +242,7 @@ Library built against Mbed TLS version 3.0.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -294,7 +322,7 @@ Library built against Mbed TLS version 2.26.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -379,7 +407,7 @@ Library built against Mbed TLS version 2.26.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -460,7 +488,7 @@ Library built against Mbed TLS version 2.26.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -545,7 +573,7 @@ Library built against Mbed TLS version 2.25.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -629,7 +657,7 @@ Library built against Mbed TLS version 2.24.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -710,7 +738,7 @@ Library built against Mbed TLS version 2.24.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -788,7 +816,7 @@ Library built against Mbed TLS version 2.24.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -865,7 +893,7 @@ Added correct TRNG categorization values for nRF5340 devices.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -946,7 +974,7 @@ See :file:`include/nrf_cc3xx_platform_kmu.h`.
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -1034,7 +1062,7 @@ This version also adds experimental support for interrupts in selected versions 
 Added
 =====
 
-Added a new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
