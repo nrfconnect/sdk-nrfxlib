@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -12,7 +13,7 @@
  * @brief HKDF is a key derivation function based on HMAC Extract-and-Expand
  * @}
  *
- * @defgroup ocrypto_hkdf_sha512 HKDF APIs using SHA-512
+ * @defgroup ocrypto_hkdf_512 HKDF APIs using SHA-512
  * @ingroup ocrypto_hkdf
  * @{
  * @brief Type declaration and APIs for the HKDF-SHA512 algorithm.

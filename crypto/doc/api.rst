@@ -147,7 +147,7 @@ ChaCha20-Poly1305
 ChaCha20-Poly1305 APIs
 ----------------------
 
-.. doxygengroup:: ocrypto_chacha_poly_apis
+.. doxygengroup:: ocrypto_chacha_poly_inc
    :project: nrfxlib
    :members:
 
@@ -226,7 +226,7 @@ HKDF APIs using SHA-256
 HKDF APIs using SHA-512
 -----------------------
 
-.. doxygengroup:: ocrypto_hkdf_sha512
+.. doxygengroup:: ocrypto_hkdf_512
    :project: nrfxlib
    :members:
 

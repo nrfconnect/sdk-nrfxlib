@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -99,7 +100,7 @@ void ocrypto_chacha20_init(
  * ChaCha20 encoder.
  *
  * The message @p m is ChaCha20 encrypted and the resulting cipher stream
- * is written to @p c.
+ * is writen to @p c.
  *
  * This function can be called repeatedly on arbitrarily small chunks of a larger
  * message until the whole message has been processed.

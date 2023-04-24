@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -38,6 +39,11 @@ extern "C" {
  *
  * @retval 0  If @p sk is a valid secret key.
  * @retval -1 Otherwise.
+ *
+ * @remark To generate a valid key pair use the following code pattern:
+ *            @code{.c}
+ *            do get_random(sk); while (ocrypto_ecdsa_p224_public_key(pk, sk));
+ *            @endcode
  */
 int ocrypto_ecdsa_p224_public_key(
     uint8_t pk[56],

@@ -1,8 +1,10 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
+
 
 /**@file
  * @defgroup ocrypto_types ocrypto internal types
@@ -89,6 +91,43 @@ typedef struct {
     ocrypto_mod25519 x0, xn, zn, xm, zm, a, c;
 /**@endcond */
 } ocrypto_curve25519_ctx;
+
+
+typedef struct {
+/**@cond */
+  uint32_t w[8];
+/**@endcond */
+} ocrypto_mod_p256;
+
+typedef struct {
+/**@cond */
+    uint32_t w[8];
+/**@endcond */
+} ocrypto_sc_p256;
+
+typedef struct {
+/**@cond */
+    ocrypto_mod_p256 x, x3, xn, t;
+    int step;
+/**@endcond */
+} ocrypto_p256_inv_ctx;
+
+typedef struct {
+/**@cond */
+    ocrypto_mod_p256 x;
+    ocrypto_mod_p256 y;
+/**@endcond */
+} ocrypto_cp_p256;
+
+typedef struct {
+/**@cond */
+    ocrypto_cp_p256 p, q0, q1;
+    uint32_t e[8];
+    ocrypto_p256_inv_ctx inv;
+    int ret, prev, dec, step;
+/**@endcond */
+} ocrypto_p256_mult_ctx;
+
 
 typedef struct {
 /**@cond */

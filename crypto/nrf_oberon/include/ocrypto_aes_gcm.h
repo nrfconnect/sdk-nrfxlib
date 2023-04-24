@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -114,7 +115,7 @@ void ocrypto_aes_gcm_update_aad(ocrypto_aes_gcm_ctx *ctx, const uint8_t *aa, siz
  * @param      pt     Plaintext.
  * @param      pt_len Length of @p pt and @p ct.
  *
- * @remark @p ct and @p pt can point to the same address.
+ * @remark @p ct may be same as @p pt.
  * @remark Initialization of the context @p ctx through
  *         @c ocrypto_aes_gcm_init is required before this function can be called.
  */
@@ -132,7 +133,7 @@ void ocrypto_aes_gcm_update_enc(ocrypto_aes_gcm_ctx *ctx, uint8_t* ct, const uin
  * @param      ct     Ciphertext.
  * @param      ct_len Length of @p ct and @p pt.
  *
- * @remark @p ct and @p pt can point to the same address.
+ * @remark @p ct may be same as @p pt.
  * @remark Initialization of the context @p ctx through
  *         @c ocrypto_aes_gcm_init is required before this function can be called.
  */

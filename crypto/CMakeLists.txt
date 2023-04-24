@@ -14,7 +14,7 @@ add_library(nrfxlib_crypto INTERFACE)
 if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_OBERON_BACKEND OR CONFIG_PSA_CRYPTO_DRIVER_OBERON)
 
   set(OBERON_BASE ${CMAKE_CURRENT_SOURCE_DIR}/nrf_oberon)
-  set(OBERON_VER 3.0.12)
+  set(OBERON_VER 3.0.13)
 
   nrfxlib_calculate_lib_path(OBERON_LIB_DIR
     BASE_DIR ${OBERON_BASE}
@@ -23,13 +23,11 @@ if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_OBERON_BACKEND OR CONFI
 
   set(OBERON_LIB ${OBERON_LIB_DIR}/liboberon_${OBERON_VER}.a)
   set(OBERON_MBEDTLS_LIB ${OBERON_LIB_DIR}/liboberon_mbedtls_${OBERON_VER}.a)
-  set(OBERON_PSA_LIB ${OBERON_LIB_DIR}/liboberon_psa_${OBERON_VER}.a)
 
   if(NOT EXISTS ${OBERON_LIB} OR
-     NOT EXISTS ${OBERON_MBEDTLS_LIB} OR
-     NOT EXISTS ${OBERON_PSA_LIB})
+     NOT EXISTS ${OBERON_MBEDTLS_LIB})
     message(WARNING "This combination of SoC and floating point ABI is not supported by the nrf_oberon lib."
-                    "(${OBERON_LIB}, ${OBERON_MBEDTLS_LIB} or ${OBERON_PSA_LIB} doesn't exist.)")
+                    "(${OBERON_LIB} or ${OBERON_MBEDTLS_LIB} doesn't exist.)")
   endif()
 
   if (NOT CONFIG_BUILD_WITH_TFM AND NOT CONFIG_OBERON_BACKEND AND NOT CONFIG_PSA_CRYPTO_DRIVER_OBERON)
@@ -71,43 +69,8 @@ if (CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_OBERON_BACKEND OR CONFI
         mbedcrypto_oberon_imported
     )
 
-    if(CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
-      # Workaround for oberon library linking against psa_generate_random in TF-M build
-      # In this case the psa APIs needs to be prefixed with "mbedcrypto__".
-      # Generate a new library with this symbol redefined.
-      set(OBERON_MBEDCRYPTO__PSA_LIB ${CMAKE_CURRENT_BINARY_DIR}/liboberon_mbedcrypto__psa_${OBERON_VER}.a)
-
-      add_custom_command(
-        OUTPUT ${OBERON_MBEDCRYPTO__PSA_LIB}
-        COMMAND ${CMAKE_OBJCOPY}
-          ${OBERON_PSA_LIB}
-          ${OBERON_MBEDCRYPTO__PSA_LIB}
-          --redefine-sym psa_generate_random=mbedcrypto__psa_generate_random
-      )
-      add_custom_target(mbedcrypto_oberon_mbedcrypto__psa_rename DEPENDS ${OBERON_MBEDCRYPTO__PSA_LIB})
-
-      add_dependencies(mbedcrypto_oberon_imported mbedcrypto_oberon_mbedcrypto__psa_rename)
-
-      set(OBERON_PSA_LIB ${OBERON_MBEDCRYPTO__PSA_LIB})
     endif()
 
-    #
-    # Add mbedcrypto_oberon_psa_imported - contains PSA crypto APIs
-    #
-    add_library(mbedcrypto_oberon_psa_imported STATIC IMPORTED GLOBAL)
-    set_target_properties(mbedcrypto_oberon_psa_imported PROPERTIES
-      IMPORTED_LOCATION
-        "${OBERON_PSA_LIB}"
-    )
-    target_include_directories(mbedcrypto_oberon_psa_imported
-      INTERFACE
-        "${OBERON_BASE}/include/psa")
-    target_link_libraries(mbedcrypto_oberon_psa_imported
-      INTERFACE
-        mbedcrypto_oberon_imported
-    )
-
-  endif()
 endif()
 
 if (CONFIG_NRF_CC310_BL)

@@ -1,8 +1,11 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
+
+
 
 #ifndef OCRYPTO_SECP160R1_H
 #define OCRYPTO_SECP160R1_H
@@ -40,4 +43,4 @@ void ocrypto_p160_scalar_mult_alt(uint8_t r[40], const uint8_t s[32]);
 }
 #endif
 
-#endif /* OCRYPTO_SECP160R1_H */
+#endif

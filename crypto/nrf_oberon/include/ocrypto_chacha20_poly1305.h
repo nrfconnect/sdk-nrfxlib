@@ -1,17 +1,13 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
+
 /**@file
- * @defgroup ocrypto_chacha_poly ChaCha20-Poly1305
- * @ingroup ocrypto
- * @{
- * @brief ChaCha20-Poly1305 is an authenticated encryption algorithm with optional
- *        additional authenticated data developed by Daniel J.Bernstein.
- * @}
- * @defgroup ocrypto_chacha_poly_apis ChaCha20-Poly1305 incremental APIs
+ * @defgroup ocrypto_chacha_poly_inc ChaCha20-Poly1305 incremental APIs
  * @ingroup ocrypto_chacha_poly
  * @{
  * @brief Type declaration and APIs for authenticated encryption and additional data using

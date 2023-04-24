@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2022 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
@@ -187,7 +188,7 @@ int ocrypto_ecjpake_process_shared_secret(
 /**
  * EC-JPAKE-P256 premaster secret key generation.
  *
- * @param[out] secret  Resulting premaster secret key.
+ * @param[out] secret  Resulting premaster secret key (curve point).
  * @param      Xr      Remote client/server public key.
  * @param      X2      Remote public key 2.
  * @param      xs      Client/server secret key.
@@ -197,14 +198,14 @@ int ocrypto_ecjpake_process_shared_secret(
  * @retval -1 Otherwise.
  */
 int ocrypto_ecjpake_get_premaster_secret_key(
-    uint8_t secret[32],
+    uint8_t secret[64],
     const uint8_t Xr[64],
     const uint8_t X2[64],
     const uint8_t xs[32],
     const uint8_t x2[32]);
 
 /**
- * EC-JPAKE-P256 secret key generation.
+ * EC-JPAKE-P256 premaster secret generation.
  *
  * @param[out] secret  Resulting premaster secret.
  * @param      Xr      Remote client/server public key.
@@ -215,7 +216,7 @@ int ocrypto_ecjpake_get_premaster_secret_key(
  * @retval 0  If the secret is valid.
  * @retval -1 Otherwise.
  */
-int ocrypto_ecjpake_get_secret_key(
+int ocrypto_ecjpake_get_premaster_secret(
     uint8_t secret[32],
     const uint8_t Xr[64],
     const uint8_t X2[64],

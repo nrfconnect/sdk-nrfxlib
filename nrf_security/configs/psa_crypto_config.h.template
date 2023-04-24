@@ -396,4 +396,6 @@
  */
 #cmakedefine MBEDTLS_HKDF_C                @MBEDTLS_HKDF_C@
 
+#include "psa/psa_crypto_config_oberon.h"
+
 #endif /* PSA_CRYPTO_CONFIG_H */
