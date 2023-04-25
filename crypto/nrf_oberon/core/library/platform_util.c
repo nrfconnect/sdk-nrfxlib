@@ -142,4 +142,3 @@ struct tm *mbedtls_platform_gmtime_r( const mbedtls_time_t *tt,
 #if defined(MBEDTLS_TEST_HOOKS)
 void (*mbedtls_test_hook_test_fail)( const char *, int, const char *);
 #endif /* MBEDTLS_TEST_HOOKS */
-
