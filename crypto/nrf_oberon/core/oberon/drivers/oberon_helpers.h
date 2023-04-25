@@ -135,4 +135,3 @@ void oberon_xor(void *r, const void *x, const void *y, size_t length);
 
 
 #endif
-
