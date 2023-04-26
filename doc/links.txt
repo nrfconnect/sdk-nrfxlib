@@ -84,3 +84,7 @@
 .. _`Bluetooth Core Specification`: https://www.bluetooth.com/specifications/specs/core-specification-5-4/
 
 .. _`Appropriate Language Mapping Table`: https://www.bluetooth.com/language-mapping/Appropriate-Language-Mapping-Table
+
+.. _`nRF Connect for Desktop`: https://www.nordicsemi.com/Products/Development-tools/nRF-Connect-for-Desktop
+
+.. _`nPM1300 Evaluation Kit`: https://infocenter.nordicsemi.com/
