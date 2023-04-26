@@ -1,0 +1,9 @@
+#
+# Copyright (c) 2023 Nordic Semiconductor
+#
+# SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+#
+
+config NRF_FUEL_GAUGE
+	bool "Enable nRF Fuel Gauge library"
+	select REQUIRES_FULL_LIBC
