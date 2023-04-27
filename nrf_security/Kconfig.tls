@@ -439,3 +439,9 @@ endmenu
 
 
 endif # MBEDTLS_TLS_LIBRARY
+
+config OPENTHREAD_MBEDTLS_DEBUG
+	bool "MbedTLS logs for OpenThread"
+	select MBEDTLS
+	select MBEDTLS_DEBUG
+	select MBEDTLS_DEBUG_C
