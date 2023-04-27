@@ -83,8 +83,4 @@ int8_t nrf_802154_tx_power_split_pib_power_for_channel_get(
     uint8_t                                 channel,
     nrf_802154_fal_tx_power_split_t * const p_split_power);
 
-/**
- *@}
- **/
-
 #endif // NRF_802154_TX_POWER_H__

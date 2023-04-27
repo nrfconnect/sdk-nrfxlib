@@ -892,7 +892,7 @@ void nrf_802154_csl_writer_period_set(uint16_t period);
  * If this function is not called, a legacy CSL operation mode is chosen, where the CSL phase is calculated based on the time of the nearest
  * scheduled CSL window (and can be undefined, if no such window was scheduled).
  *
- * @param[in]  period  Anchor time value.
+ * @param[in]  anchor_time  Anchor time value.
  */
 void nrf_802154_csl_writer_anchor_time_set(uint64_t anchor_time);
 

@@ -137,7 +137,7 @@ void nrf_802154_ie_writer_csl_period_set(uint16_t period);
 /**
  * @brief Sets the anchor time based on which the next CSL window time and the CSL phase is calculated.
  *
- * @param[in]  period  Anchor time value.
+ * @param[in]  anchor_time  Anchor time value.
  */
 void nrf_802154_ie_writer_csl_anchor_time_set(uint64_t anchor_time);
 

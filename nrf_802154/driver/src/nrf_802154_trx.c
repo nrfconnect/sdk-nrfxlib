@@ -736,7 +736,6 @@ void nrf_802154_trx_disable(void)
 #if defined(RADIO_POWER_POWER_Msk)
         nrf_radio_power_set(NRF_RADIO, false);
 #endif
-        nrf_802154_irq_clear_pending(nrfx_get_irq_number(NRF_RADIO));
 
         /* While the RADIO is powered off deconfigure any PPIs used directly by trx module */
         ppi_all_clear();
@@ -746,6 +745,8 @@ void nrf_802154_trx_disable(void)
         wait_until_radio_is_disabled();
         nrf_radio_reset();
 #endif
+
+        nrf_802154_irq_clear_pending(nrfx_get_irq_number(NRF_RADIO));
 
 #if defined(RADIO_INTENSET_SYNC_Msk)
         nrf_egu_int_disable(NRF_802154_EGU_INSTANCE, EGU_SYNC_INTMASK);
@@ -1017,6 +1018,13 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
     uint32_t ints_to_enable = 0U;
     uint32_t shorts         = SHORTS_RX;
 
+    if (nrf_radio_event_check(NRF_RADIO, NRF_RADIO_EVENT_DISABLED))
+    {
+        // For DRX a DISABLE event might be pending as a leftover from
+        // an aborted operation. Clear it to avoid spurious interrupts.
+        nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
+    }
+
     // Force the TIMER to be stopped and count from 0.
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
 
@@ -1065,7 +1073,11 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
     if (rampup_trigg_mode == TRX_RAMP_UP_HW_TRIGGER)
     {
         nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_READY);
+#if !defined(NRF53_SERIES)
+        ints_to_enable |= (NRF_RADIO_INT_READY_MASK | NRF_RADIO_INT_DISABLED_MASK);
+#else
         ints_to_enable |= NRF_RADIO_INT_READY_MASK;
+#endif
     }
 
     bool allow_sync_swi = false;
@@ -1249,6 +1261,13 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
 
     uint32_t ints_to_enable = 0U;
 
+    if (nrf_radio_event_check(NRF_RADIO, NRF_RADIO_EVENT_DISABLED))
+    {
+        // For DTX a DISABLE event might be pending as a leftover from
+        // an aborted operation. Clear it to avoid spurious interrupts.
+        nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
+    }
+
     // Force the TIMER to be stopped and count from 0.
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
 
@@ -1278,7 +1297,11 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
     if (rampup_trigg_mode == TRX_RAMP_UP_HW_TRIGGER)
     {
         nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_READY);
+#if !defined(NRF53_SERIES)
+        ints_to_enable |= (NRF_RADIO_INT_READY_MASK | NRF_RADIO_INT_DISABLED_MASK);
+#else
         ints_to_enable |= NRF_RADIO_INT_READY_MASK;
+#endif
     }
 
     if (cca)
@@ -1432,7 +1455,16 @@ bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer, uint32_t delay_
 
     if (result)
     {
-        uint32_t ints_to_enable = NRF_RADIO_INT_PHYEND_MASK | NRF_RADIO_INT_ADDRESS_MASK;
+#if !defined(NRF53_SERIES)
+        uint32_t ints_to_enable = NRF_RADIO_INT_PHYEND_MASK |
+                                  NRF_RADIO_INT_ADDRESS_MASK |
+                                  NRF_RADIO_INT_DISABLED_MASK;
+
+#else
+        uint32_t ints_to_enable = NRF_RADIO_INT_PHYEND_MASK |
+                                  NRF_RADIO_INT_ADDRESS_MASK;
+
+#endif
 
         nrf_radio_int_enable(NRF_RADIO, ints_to_enable);
     }
@@ -1500,7 +1532,8 @@ static void rxframe_finish_disable_ints(void)
 
     uint32_t ints_to_disable = NRF_RADIO_INT_READY_MASK |
                                NRF_RADIO_INT_ADDRESS_MASK |
-                               NRF_RADIO_INT_CRCOK_MASK;
+                               NRF_RADIO_INT_CRCOK_MASK |
+                               NRF_RADIO_INT_DISABLED_MASK;
 
     ints_to_disable |= NRF_RADIO_INT_CRCERROR_MASK;
     ints_to_disable |= NRF_RADIO_INT_BCMATCH_MASK;
@@ -2075,10 +2108,6 @@ static void irq_handler_address(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    // NRF_RADIO_TASK_DISABLE may have been triggered by (D)PPI, therefore event reg
-    // cleanup is required. It's done here
-    nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
-
     switch (m_trx_state)
     {
         case TRX_STATE_RXFRAME:
@@ -2217,7 +2246,8 @@ static void txframe_finish_disable_ints(void)
                           NRF_RADIO_INT_CCAIDLE_MASK |
                           NRF_RADIO_INT_CCABUSY_MASK |
                           NRF_RADIO_INT_ADDRESS_MASK |
-                          NRF_RADIO_INT_READY_MASK);
+                          NRF_RADIO_INT_READY_MASK |
+                          NRF_RADIO_INT_DISABLED_MASK);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
@@ -2314,7 +2344,9 @@ static void txack_finish(void)
     // Anomaly 78: use SHUTDOWN instead of STOP and CLEAR.
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
 
-    nrf_radio_int_disable(NRF_RADIO, NRF_RADIO_INT_PHYEND_MASK | NRF_RADIO_INT_ADDRESS_MASK);
+    nrf_radio_int_disable(NRF_RADIO,
+                          NRF_RADIO_INT_PHYEND_MASK | NRF_RADIO_INT_ADDRESS_MASK |
+                          NRF_RADIO_INT_DISABLED_MASK);
 
     /* Current state of peripherals
      * RADIO is either in TXDISABLE or DISABLED
@@ -2401,6 +2433,17 @@ static void irq_handler_disabled(void)
     {
         case TRX_STATE_GOING_IDLE:
             go_idle_finish();
+            break;
+
+        case TRX_STATE_TXFRAME:
+        case TRX_STATE_TXACK:
+        case TRX_STATE_RXFRAME:
+            // Robust radio ramp-down requires that RADIO.DISABLE is cleared. If the ramp-up was
+            // triggered by software, the event was cleared already immediately after triggering
+            // RADIO.DISABLE task. If the ramp-up was triggered by (D)PPI, the event would need
+            // to be cleared. The IRQ handler does that on entry to irq_handler_disabled. What
+            // remains to be done is disabling the DISABLED interrupt, as it won't be needed.
+            nrf_radio_int_disable(NRF_RADIO, NRF_RADIO_INT_DISABLED_MASK);
             break;
 
         default:
