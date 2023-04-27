@@ -227,8 +227,8 @@ bool nrf_802154_core_notify_buffer_free(uint8_t * p_data);
  * @brief Notifies the core module that the next higher layer requested the change of the channel.
  *
  * The core is expected to update the frequency register of the peripheral and, if it is
- * in the @ref RADIO_STATE_RX, in the @ref RADIO_STATE_CONTINUOUS_CARRIER
- * or in the @ref RADIO_STATE_MODULATED_CARRIER state, the transceiver is disabled
+ * in the @c RADIO_STATE_RX, in the @c RADIO_STATE_CONTINUOUS_CARRIER
+ * or in the @c RADIO_STATE_MODULATED_CARRIER state, the transceiver is disabled
  * and enabled again to use the new channel.
  *
  * @param[in]  req_orig   Module that originates this request.
