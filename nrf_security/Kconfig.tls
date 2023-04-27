@@ -171,6 +171,12 @@ config MBEDTLS_DEBUG_LEVEL
 	  3 Information
 	  4 Verbose
 
+config OPENTHREAD_MBEDTLS_DEBUG
+	bool "MbedTLS logs for OpenThread"
+	select MBEDTLS
+	select MBEDTLS_DEBUG
+	select MBEDTLS_DEBUG_C
+
 config MBEDTLS_SSL_PROTO_DTLS
 	bool "Enable support for DTLS"
 	depends on MBEDTLS_SSL_PROTO_TLS1_2
