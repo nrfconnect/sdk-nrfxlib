@@ -15,8 +15,8 @@ nrf_cc3xx_mbedcrypto - 0.9.17
 New version of the runtime library with the following bug fixes and improvements:
 
 * Updated PSA Crypto drivers to conform to Mbed TLS and PSA Crypto API v1.1.0 changes.
-* Removed requirement to call psa_aead_set_lengths for PSA crypto driver for ChaCha20/Poly1305
-* Updated signature for mbedtls_aes_cmac_prf_128, which is used in legacy _ALT implementation.
+* Removed requirement to call :c:func:`psa_aead_set_lengths` for PSA crypto driver for ChaCha20/Poly1305.
+* Updated signature for :c:func:`mbedtls_aes_cmac_prf_128`, which is used in legacy _ALT implementation.
 * Improved RSA key size and type checking for PSA Crypto driver.
 
 Library built against Mbed TLS version 3.3.0.
