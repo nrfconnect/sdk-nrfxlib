@@ -6,8 +6,8 @@
  */
 
 /**@file
- * @defgroup nrf_oberon_p256 ECC secp256r1 low-level APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_p256 ECC secp256r1 low-level APIs
+ * @ingroup ocrypto
  * @{
  * @brief Type declarations and APIs for low-level elliptic curve point operations
  * based on the NIST secp256r1 curve.

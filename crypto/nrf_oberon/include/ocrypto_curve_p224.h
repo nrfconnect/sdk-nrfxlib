@@ -6,8 +6,8 @@
  */
 
 /**@file
- * @defgroup nrf_oberon_p224 ECC secp224r1 low-level APIs
- * @ingroup nrf_oberon
+ * @defgroup ocrypto_p224 ECC secp224r1 low-level APIs
+ * @ingroup ocrypto
  * @{
  * @brief Type declarations and APIs for low-level elliptic curve point operations
  * based on the NIST secp224r1 curve.
@@ -114,6 +114,8 @@ int ocrypto_curve_p224_add(ocrypto_cp_p224 *r, const ocrypto_cp_p224 *p, const o
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif /* #ifndef OCRYPTO_CURVE_P224_H */
 
-#endif
+/** @} */
