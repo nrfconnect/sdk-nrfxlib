@@ -14,19 +14,7 @@ extern "C" {
 
 #include <stdint.h>
 
-// P-256 scalar modulo group order
-/**@cond */
-typedef struct {
-    uint32_t w[8]; // little endian
-} ocrypto_sc_p256;
-/**@endcond */
-
-// modulo P-256 number
-/**@cond */
-typedef struct {
-  uint32_t w[8]; // little endian
-} ocrypto_mod_p256;
-/**@endcond */
+#include "ocrypto_types.h"
 
 // 32 byte value to scalar
 // return 0 if x < group order
