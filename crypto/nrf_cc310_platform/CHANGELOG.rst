@@ -14,7 +14,7 @@ nrf_cc3xx_platform - 0.9.17
 
 New version of the library with the following features:
 
-* Removed mbedtls_hardware_poll limitation on buffer size, it now accepts any buffer size.
+* Removed :c:struct:`mbedtls_hardware_poll` limitation on buffer size. It now accepts any buffer size.
 * Removed Mbed TLS platform functions from library.
 
 Library built against Mbed TLS version 3.3.0.
@@ -26,16 +26,19 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
-+* nrf_cc312_platform, nRF5340 variants
-+  * ``crypto/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.17.a``
-+
-+* nrf_cc310_platform, nRF9160 variants
-+  * ``crypto/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.17.a``
-+
-+* nrf_cc310_platform, nRF52840 variants
-+  * ``crypto/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.17.a``
+* nrf_cc312_platform, nRF5340 variants
+
+  * ``crypto/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.17.a``
+
+* nrf_cc310_platform, nRF9160 variants
+
+  * ``crypto/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.17.a``
+
+* nrf_cc310_platform, nRF52840 variants
+
+  * ``crypto/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.17.a``
 
 nrf_cc3xx_platform - 0.9.16
 ***************************
@@ -54,16 +57,19 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
-+* nrf_cc312_platform, nRF5340 variants
-+  * ``crypto/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.16.a``
-+
-+* nrf_cc310_platform, nRF9160 variants
-+  * ``crypto/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.16.a``
-+
-+* nrf_cc310_mbedcrypto, nRF52840 variants
-+  * ``crypto/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.16.a``
+* nrf_cc312_platform, nRF5340 variants
+
+  * ``crypto/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.16.a``
+
+* nrf_cc310_platform, nRF9160 variants
+
+  * ``crypto/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.16.a``
+
+* nrf_cc310_mbedcrypto, nRF52840 variants
+
+  * ``crypto/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.16.a``
 
 
 nrf_cc3xx_platform - 0.9.15
@@ -84,7 +90,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -165,7 +171,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -246,7 +252,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -326,7 +332,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -411,7 +417,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -492,7 +498,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -577,7 +583,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -661,7 +667,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -742,7 +748,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -820,7 +826,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -897,7 +903,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -978,7 +984,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -1066,7 +1072,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc312_platform, nRF5340 variants
 
@@ -1147,7 +1153,7 @@ Added a new build of nrf_cc310_platform library for nRF9160 and nRF52 architectu
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc310_platform, nRF9160 variants
 
@@ -1209,7 +1215,7 @@ Added a new build of nrf_cc310_platform library for nRF9160 and nRF52 architectu
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc310_platform, nRF9160 variants
 
@@ -1271,7 +1277,7 @@ Added a new build of nrf_cc310_platform library for nRF9160 and nRF52 architectu
 
 .. note::
 
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a :c:type:`wchar_t` size of 16 bits.
 
 * nrf_cc310_platform, nRF9160 variants
 
