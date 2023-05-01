@@ -13,10 +13,10 @@
 
 #if defined (MBEDTLS_RSA_ALT)
 
-#include "bignum.h"
+#include "mbedtls/bignum.h"
 
 #if defined(MBEDTLS_THREADING_C)
-#include "threading.h"
+#include "mbedtls/threading.h"
 #endif
 
 #ifdef __cplusplus
