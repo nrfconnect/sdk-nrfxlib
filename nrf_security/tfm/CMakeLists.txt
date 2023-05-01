@@ -61,6 +61,9 @@ set(CONFIG_MBEDTLS_PLATFORM_ZEROIZE_ALT             True)
 set(CONFIG_MBEDTLS_THREADING_ALT                    False)
 set(CONFIG_MBEDTLS_THREADING_C                      False)
 
+# mbedtls_printf is used to print messages including error information.
+set(MBEDTLS_PLATFORM_PRINTF_ALT                     True)
+
 # Set the a define stating that KEY_ID encodes owner
 set(CONFIG_MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER  True)
 
