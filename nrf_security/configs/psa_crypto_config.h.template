@@ -9,6 +9,9 @@
 #define PSA_CRYPTO_CONFIG_H
 
 
+#cmakedefine PSA_CORE_BUILTIN                                   @PSA_CORE_BUILTIN@
+#cmakedefine PSA_CORE_OBERON                                    @PSA_CORE_OBERON@
+
 #cmakedefine PSA_WANT_ALG_CTR_DRBG                              @PSA_WANT_ALG_CTR_DRBG@
 #cmakedefine PSA_WANT_ALG_HMAC_DRBG                             @PSA_WANT_ALG_HMAC_DRBG@
 /*

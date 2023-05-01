@@ -51,8 +51,10 @@
 #include "oberon_aead.h"
 #endif
 
+#if defined(PSA_CORE_BUILTIN)
 /* Include the context structure definitions for the Mbed TLS software drivers */
 #include "psa/crypto_builtin_composites.h"
+#endif
 
 /* Define the context to be used for an operation that is executed through the
  * PSA Driver wrapper layer as the union of all possible driver's contexts.
