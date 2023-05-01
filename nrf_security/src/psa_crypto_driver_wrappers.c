@@ -2618,6 +2618,83 @@ psa_status_t psa_driver_wrapper_mac_abort(
     }
 }
 
+#if defined CONFIG_PSA_CORE_OBERON
+/*
+ * Key derivation functions
+ */
+psa_status_t psa_driver_wrapper_key_derivation_setup(
+    psa_key_derivation_operation_t *operation,
+    psa_algorithm_t alg)
+{
+    psa_status_t status;
+
+    (void)status;
+    (void)operation;
+    (void)alg;
+    return PSA_ERROR_NOT_SUPPORTED;
+}
+
+psa_status_t psa_driver_wrapper_key_derivation_set_capacity(
+    psa_key_derivation_operation_t *operation,
+    size_t capacity)
+{
+    switch (operation->id) {
+    default:
+        (void)capacity;
+        return PSA_ERROR_BAD_STATE;
+    }
+}
+
+psa_status_t psa_driver_wrapper_key_derivation_input_bytes(
+    psa_key_derivation_operation_t *operation,
+    psa_key_derivation_step_t step,
+    const uint8_t *data, size_t data_length)
+{
+    switch (operation->id) {
+    default:
+        (void)step;
+        (void)data;
+        (void)data_length;
+        return PSA_ERROR_BAD_STATE;
+    }
+}
+
+psa_status_t psa_driver_wrapper_key_derivation_input_integer(
+    psa_key_derivation_operation_t *operation,
+    psa_key_derivation_step_t step,
+    uint64_t value)
+{
+    switch (operation->id) {
+    default:
+        (void)step;
+        (void)value;
+        return PSA_ERROR_BAD_STATE;
+    }
+}
+
+psa_status_t psa_driver_wrapper_key_derivation_output_bytes(
+    psa_key_derivation_operation_t *operation,
+    uint8_t *output, size_t output_length)
+{
+    switch (operation->id) {
+    default:
+        (void)output;
+        (void)output_length;
+        return PSA_ERROR_BAD_STATE;
+    }
+}
+
+psa_status_t psa_driver_wrapper_key_derivation_abort(
+    psa_key_derivation_operation_t *operation)
+{
+    switch (operation->id) {
+    default:
+        return PSA_SUCCESS;
+    }
+}
+
+#endif /* CONFIG_PSA_CORE_OBERON */
+
 /*
  * Key agreement functions
  */
@@ -2812,5 +2889,33 @@ psa_status_t psa_driver_wrapper_asymmetric_decrypt(const psa_key_attributes_t *a
             return( PSA_ERROR_INVALID_ARGUMENT );
     }
 }
+
+#if defined(CONFIG_PSA_CORE_OBERON)
+
+psa_status_t psa_driver_wrapper_init_random(
+    psa_driver_random_context_t* context)
+{
+    (void)context;
+    return PSA_ERROR_NOT_SUPPORTED;
+}
+
+psa_status_t psa_driver_wrapper_get_random(
+    psa_driver_random_context_t* context,
+    uint8_t* output, size_t output_size)
+{
+    (void)context;
+    (void)output;
+    (void)output_size;
+    return PSA_ERROR_NOT_SUPPORTED;
+}
+
+psa_status_t psa_driver_wrapper_free_random(
+    psa_driver_random_context_t* context)
+{
+    (void)context;
+    return PSA_ERROR_NOT_SUPPORTED;
+}
+
+#endif /* CONFIG_PSA_CORE_OBERON */
 
 #endif /* MBEDTLS_PSA_CRYPTO_C */

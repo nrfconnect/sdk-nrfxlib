@@ -29,6 +29,8 @@ config MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG
 	bool
 	default y if CRYPTOCELL_USABLE
 
+rsource "src/core/Kconfig"
+
 comment "PSA Driver Support"
 
 config MBEDTLS_PSA_CRYPTO_DRIVERS

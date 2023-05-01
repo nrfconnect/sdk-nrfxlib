@@ -4,6 +4,9 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 # Convert all standard Kconfig variables for mbed TLS (strip CONFIG_)
+kconfig_check_and_set_base_to_one(PSA_CORE_BUILTIN)
+kconfig_check_and_set_base_to_one(PSA_CORE_OBERON)
+
 kconfig_check_and_set_base_to_one(PSA_WANT_ALG_CTR_DRBG)
 kconfig_check_and_set_base_to_one(PSA_WANT_ALG_HMAC_DRBG)
 kconfig_check_and_set_base_to_one(PSA_WANT_KEY_TYPE_DERIVE)

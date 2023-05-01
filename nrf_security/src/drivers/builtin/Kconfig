@@ -7,6 +7,7 @@
 menuconfig PSA_CRYPTO_DRIVER_BUILTIN
 	bool
 	prompt "PSA Builtin" if !PSA_PROMPTLESS
+	depends on PSA_CORE_BUILTIN
 	# Fix for NCSDK-13536: Enable builtin if nrf_oberon only due to lacking support
 	default y if PSA_CRYPTO_DRIVER_OBERON && !PSA_CRYPTO_DRIVER_CC3XX && \
 		     (PSA_WANT_ALG_CBC_PKCS7 || PSA_WANT_ALG_CMAC || \
