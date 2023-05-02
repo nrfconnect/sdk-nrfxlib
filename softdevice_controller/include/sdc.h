@@ -81,6 +81,12 @@ extern "C" {
  */
 #define SDC_DEFAULT_RX_PACKET_COUNT 2
 
+/** @brief Default maximum size of the Filter Accept List.
+ *
+ * The default value of 0 will use hardware peripherals to implement the Filter Accept List.
+ */
+#define SDC_DEFAULT_FAL_SIZE 0
+
 /** @brief Default maximum number of advertising reports available in the scanner.
  *
  * The default buffer configuration allows the scanner to continue scanning
@@ -160,6 +166,9 @@ extern "C" {
 /** Memory required for scanner buffers when supporting extended scanning. */
 #define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (24 + (buffer_count) * 306)
 
+/** Memory required for the Filter Accept List */
+#define SDC_MEM_FAL(max_num_entries) ((max_num_entries) * 8)
+
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4829+(max_adv_data)*18)/10)
 #define __MEM_PER_ADV_SET_HIGH(max_adv_data) (670+(max_adv_data))
@@ -196,7 +205,7 @@ extern "C" {
  * @param[in] rx_buffer_count The number of buffers for receiving data.
  */
 #define SDC_MEM_PER_PERIODIC_SYNC_RSP(tx_buffer_count, rx_buffer_count) \
-    (636 + (tx_buffer_count - 1) * 257 + (rx_buffer_count) * 284)
+    (644 + (tx_buffer_count - 1) * 257 + (rx_buffer_count) * 284)
 
 /** Memory required for the periodic adv list.
  *
@@ -264,6 +273,8 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_SCAN_BUFFER_CFG,
     /** See @ref sdc_cfg_t::adv_buffer_cfg. */
     SDC_CFG_TYPE_ADV_BUFFER_CFG,
+    /** See @ref sdc_cfg_t::fal_size */
+    SDC_CFG_TYPE_FAL_SIZE,
     /** See @ref sdc_cfg_t::periodic_adv_count. */
     SDC_CFG_TYPE_PERIODIC_ADV_COUNT,
     /** See @ref sdc_cfg_t::periodic_sync_count. */
@@ -391,6 +402,14 @@ typedef union
      *  Default: See @ref sdc_cfg_adv_buffer_cfg_t.
      */
     sdc_cfg_adv_buffer_cfg_t adv_buffer_cfg;
+    /** Configures the maximum size of the Filter Accept List.
+     *
+     * Setting this value to 0 will configure the controller to
+     * use hardware-based filtering.
+     *
+     * Default: @ref SDC_DEFAULT_FAL_SIZE.
+     */
+    uint16_t fal_size;
     /** Configures the maximum number of concurrent periodic advertisers.
      *  Must be less than or equal to @ref sdc_cfg_t::adv_count.
      *  Default: @ref SDC_DEFAULT_PERIODIC_ADV_COUNT.

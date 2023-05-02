@@ -128,6 +128,8 @@ enum sdc_hci_vs_tx_power_handle_type
     SDC_HCI_VS_TX_POWER_HANDLE_TYPE_SCAN_INIT = 0x01,
     /** @brief Handle of type Connection. */
     SDC_HCI_VS_TX_POWER_HANDLE_TYPE_CONN = 0x02,
+    /** @brief Handle of type Periodic Sync. */
+    SDC_HCI_VS_TX_POWER_HANDLE_TYPE_SYNC = 0x03,
 };
 
 /** @brief Supported Vendor Specific HCI Commands. */
@@ -654,12 +656,11 @@ uint8_t sdc_hci_cmd_vs_zephyr_read_chip_temp(sdc_hci_cmd_vs_zephyr_read_chip_tem
 /** @brief Zephyr Write Tx Power Level (per Role/Connection).
  *
  * This command dynamically modifies Bluetooth LE Tx power level at the antenna given a handle and a
- * handle type (advertiser, scanner, connection).
+ * handle type.
  *
  * The Tx power of the Bluetooth LE radio interface is modified for any low-level link by
  * the controller with a high degree of flexibility. The Bluetooth LE link whose power is
- * set is identified based on a handle type (advertiser, scanner, connection) and
- * handle pair.
+ * set is identified based on a handle type and handle pair.
  *
  * The role/state defining input parameter is the Handle_Type, whereas its
  * corresponding handle is provided by the Handle input parameter. Note that
@@ -703,8 +704,7 @@ uint8_t sdc_hci_cmd_vs_zephyr_write_tx_power(const sdc_hci_cmd_vs_zephyr_write_t
  * In contrast to the standardized HCI command, i.e. Read_Transmit_Power_Level,
  * which returns the transmitted power level only for a specified connection handle,
  * this command operates for both connected and unconnected states.
- * It gets the BLE Tx power level for any given handle type (advertiser, scanner, connection) and
- * handle.
+ * It gets the BLE Tx power level for any given handle type and handle.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.

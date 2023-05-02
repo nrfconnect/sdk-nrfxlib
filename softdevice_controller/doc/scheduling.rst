@@ -63,7 +63,8 @@ The following table summarizes the priorities.
    |                             | * Scanner in the synchronizing state                                                              |
    |                             | * Scanner in the synchronized state where the synchronization is about to be lost                 |
    |                             | * Scanner in the synchronized state receiving auxiliary packets (AUX_CHAIN_IND's)                 |
-   |                             | * Connectable Advertiser/Broadcaster/Scanner which has been blocked consecutively for a few times |
+   |                             | * Connectable Advertiser/Broadcaster which has been blocked consecutively for a few times         |
+   |                             | * Scanner which has been blocked for a long time                                                  |
    |                             | * Scanner which is receiving an advertising packet on a secondary advertising channel             |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Third priority              | * All |BLE| roles in states other than above run with this priority                               |

@@ -20,11 +20,15 @@ Added
 * Support for the vendor-specific HCI command: Set Compatibility mode for window offset (DRGN-18727).
 * Support for Periodic Advertising with Responses (PAwR) Scanner (experimental) (DRGN-18739).
 * Support for LE Read and Write RF Path Compensation HCI commands (DRGN-10234 and DRGN-18202).
+* Support for up to 255 addresses in the Filter Accept List (DRGN-18967).
+* Support for configuring the Filter Accept List to have an arbitrary size (DRGN-18967).
+* Support for sync handles in the :c:func:`sdc_hci_cmd_vs_zephyr_write_tx_power` and :c:func:`sdc_hci_cmd_vs_zephyr_read_tx_power` commands (DRGN-18805).
 
 Changes
 =======
 
 * The ``VersNr`` field in the ``LL_VERSION_IND`` packet now contains the value 0x0D to indicate compatibility with Bluetooth Core Specification v5.4 (DRGN-18624).
+* Receiving a Periodic Advertisement Sync Transfer (PAST) with invalid parameters will now generate the ``LE Periodic Advertising Sync Transfer Received`` event when receiving PAST is enabled (DRGN-18803).
 
 Bug fixes
 =========
@@ -33,6 +37,12 @@ Bug fixes
 * Fixed an issue where the Periodic Advertisement Sync Transfer (PAST) sender may generate an incorrect ``SyncInfo`` field for periodic advertising intervals greater than 5 seconds (DRGN-18775).
 * Fixed an issue where the Periodic Advertisement Sync Transfer (PAST) sender could assert if the associated periodic sync was not fully established (DRGN-18833).
 * Fixed an issue where the controller would not deliver advertising reports for advertisements received when the scanner was close to timing out (DRGN-18651).
+* Fixed lower TX power on the nRF21540 DK in connected state.
+  This occurred when using MPSL FEM and manually configuring the radio power (DRGN-18971).
+* Fixed an issue where the controller cannot synchronize to a periodic advertising train using the Periodic Advertising Sync Transfer procedure if it has previously tried to do it while it was already synchronized to the periodic advertising train (DRGN-19003).
+* Fixed an issue where the peripheral would disconnect with DIFFERENT_TRANSACTION_COLLISION when a collision of a connection update and a PHY update occurs even when central asks for no change (DRGN-18840).
+* Fixed a rare issue where the controller would assert when multiple instances of the same Bluetooth role were running and one of the instances was being stopped (DRGN-18424).
+* Fixed an issue where the SoftDevice Controller would not accept an ``adv_handle`` provided in HCI commands with values above the configured number of advertising sets (DRGN-19058).
 
 nRF Connect SDK v2.3.0
 **********************
