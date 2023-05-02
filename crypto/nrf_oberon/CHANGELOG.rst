@@ -128,22 +128,22 @@ Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51
 nrf_oberon - 3.0.12
 *******************
 
-New version of the nrf_oberon library with the following changes.
+New version of the nrf_oberon library with the following changes:
 
-Added
-=====
-
-* Added incremental ocrypto HMAC API.
+* Incremental ocrypto HMAC API.
 * Reduced SHA-1 stack size.
 * Improved ECDSA performance.
 * Changed the API for PSA Cipher for nrf_oberon PSA Crypto driver (now includes ``iv`` and ``iv_length`` parameters).
 
-Library built against Mbed TLS version 3.1.0.
+The library is built against Mbed TLS version 3.1.0.
 
-Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
+Added
+=====
+
+The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures:
 
 .. note::
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
@@ -244,15 +244,15 @@ New version of the nrf_oberon library with the following changes.
 Added
 =====
 
-* Added support for in-place encryption in PSA Crypto, needed for TLS/DTLS
-* Added PKCS#7 padding for CBC
-* Added support for 16 bytes IV for GCM in PSA Crypto APIs
+* Support for in-place encryption in PSA Crypto, needed for TLS/DTLS.
+* PKCS#7 padding for CBC.
+* Support for 16 bytes IV for GCM in PSA Crypto APIs.
 
 
-Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
+The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures:
 
 .. note::
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
@@ -349,18 +349,18 @@ Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51
 nrf_oberon - 3.0.10
 *******************
 
-New version of the nrf_oberon library with the following changes.
+New version of the nrf_oberon library with the following changes:
+
+* Fixed an issue with the ChaChaPoly PSA APIs where more IV sizes than supported by the APIs were accepted.
+* Support for the PSA APIs.
 
 Added
 =====
 
-* Fixed an issue with the ChaChaPoly PSA APIs where more IV sizes than supported by the APIs were accepted.
-* Added support for the PSA APIs.
-
-Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
+The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures:
 
 .. note::
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
@@ -424,12 +424,12 @@ New version of the nrf_oberon library with the following changes.
 Added
 =====
 
-* Added PSA API support.
+* PSA API support.
 
-Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
+The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures:
 
 .. note::
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 * nrf_oberon, nRF9160, and nRF53 application core variants
 
@@ -494,14 +494,14 @@ New version of the nrf_oberon library with the following changes.
 Added
 =====
 
-* Added APIs for doing ECDH calculation using secp256r1 in incremental steps.
-* Added ``ocrypto_`` APIs for SHA-224 and SHA-384.
-* Added ``ocrypto_`` APIs for pbkdf2 for SHA-1 and SHA-256.
+* APIs for doing ECDH calculation using secp256r1 in incremental steps.
+* ``ocrypto_`` APIs for SHA-224 and SHA-384.
+* ``ocrypto_`` APIs for pbkdf2 for SHA-1 and SHA-256.
 
-Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
+The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
 
 .. note::
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
@@ -565,25 +565,25 @@ New version of the nrf_oberon library with the following changes.
 Added
 =====
 
-Added the following header files with ocrypto APIs
+The following header files with ocrypto APIs:
 
-* ``include/ocrypto_ecdh_p224.h``
-* ``include/ocrypto_ecdsa_p224.h``
+* :file:`include/ocrypto_ecdh_p224.h`
+* :file:`include/ocrypto_ecdsa_p224.h`
 
-Added the following header files with Mbed TLS alternate APIs
+The following header files with Mbed TLS alternate APIs:
 
-* ``include/mbedtls/chacha20_alt.h``
-* ``include/mbedtls/poly1305_alt.h``
+* :file:`include/mbedtls/chacha20_alt.h`
+* :file:`include/mbedtls/poly1305_alt.h`
 
-Added library-internal symbols for Mbed TLS alternate APIs
+The following library-internal symbols for Mbed TLS alternate APIs:
 
 * ECDSA generate key, sign, and verify (secp224r1, secp256r1, curve25519)
 * ECDH generate key, compute shared secret (secp224r1, secp256r1, curve25519)
 
-Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
+The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures:
 
 .. note::
-   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+   The *short-wchar* libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
@@ -645,30 +645,30 @@ nrf_oberon - 3.0.5
 Added
 =====
 
-Added the following header files with ocrypto APIs
+The following header files with ocrypto APIs:
 
-* ``include/ocrypto_aes_cbc.h``
-* ``include/ocrypto_aes_ccm.h``
-* ``include/ocrypto_aes_cmac.h``
-* ``include/ocrypto_ecjpake_p256.h``
-* ``include/ocrypto_hkdf_sha1.h``
-* ``include/ocrypto_hmac_sha1.h``
+* :file:`include/ocrypto_aes_cbc.h`
+* :file:`include/ocrypto_aes_ccm.h`
+* :file:`include/ocrypto_aes_cmac.h`
+* :file:`include/ocrypto_ecjpake_p256.h`
+* :file:`include/ocrypto_hkdf_sha1.h`
+* :file:`include/ocrypto_hmac_sha1.h`
 
-Added the following header files with Mbed TLS alternate APIs
+The following header files with Mbed TLS alternate APIs:
 
-* ``include/mbedtls/ecjpake_alt.h``
-* ``include/mbedtls/sha1_alt.h``
-* ``include/mbedtls/sha256_alt.h``
+* :file:`include/mbedtls/ecjpake_alt.h`
+* :file:`include/mbedtls/sha1_alt.h`
+* :file:`include/mbedtls/sha256_alt.h`
 
-Added library-internal symbols for Mbed TLS alternate APIs
+The following library-internal symbols for Mbed TLS alternate APIs:
 
 * ECDSA generate key, sign, and verify (secp256r1)
 * ECDH generate key, compute shared secret (secp256r1)
 
-Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
+The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures:
 
 .. note::
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   short-wchar: Those libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
@@ -724,22 +724,18 @@ Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51
 
     * ``cortex-m0/soft-float/short-wchar/oberon_3.0.5.lib``
 
-Removed
-=======
-
-
 nrf_oberon - 3.0.3
 ******************
 
 Added
 =====
 
-Added the following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architectures.
+* Oberon :file:`ocrypto_poly1305.h` and :file:`ocrypto_sc_p256.h headers`.
 
-Added Oberon ocrypto_poly1305.h and ocrypto_sc_p256.h headers.
+The following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architectures:
 
 .. note::
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   short-wchar: Those libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 
 * nrf_oberon, nRF9160 variants
@@ -788,7 +784,7 @@ Added Oberon ocrypto_poly1305.h and ocrypto_sc_p256.h headers.
 Removed
 =======
 
-* All 3.0.2 versions of the library and old include files
+* All 3.0.2 versions of the library and old include files.
 
 
 nrf_oberon - 3.0.2
@@ -797,12 +793,12 @@ nrf_oberon - 3.0.2
 Added
 =====
 
-Added the following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architectures.
+* Oberon SRP, Secure Remote Password, :c:func:`ocrypto_srp` functions.
 
-Added Oberon SRP, Secure Remote Password, ocrypto_srp functions.
+The following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architectures:
 
 .. note::
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   short-wchar: Those libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 
 * nrf_oberon, nRF9160 variants
@@ -851,8 +847,7 @@ Added Oberon SRP, Secure Remote Password, ocrypto_srp functions.
 Removed
 =======
 
-* All 3.0.0 versions of the library and old include files
-
+* All 3.0.0 versions of the library and old include files.
 
 nrf_oberon - 3.0.0
 ******************
@@ -860,13 +855,13 @@ nrf_oberon - 3.0.0
 Added
 =====
 
-Added the following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architectures.
+The following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architectures:
 
 .. note::
    The include files and APIs have changed the prefix from ``occ_`` to ``ocrypto_``.
 
 .. note::
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   short-wchar: Those libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 
 * nrf_oberon, nRF9160 variants
@@ -915,7 +910,7 @@ Added the following Oberon crypto libraries for nRF9160, nRF52, and nRF51 archit
 Removed
 =======
 
-* All 2.0.7 versions of the library and old include files
+* All 2.0.7 versions of the library and old include files.
 
 
 nrf_oberon - 2.0.7
@@ -926,10 +921,10 @@ Initial release.
 Added
 =====
 
-Added the following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architectures.
+The following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architectures:
 
 .. note::
-   short-wchar: Those libraries are compiled with a wchar_t size of 16 bits.
+   short-wchar: Those libraries are compiled with a ``wchar_t`` size of 16 bits.
 
 * nrf_oberon, nrf9160 variants
 
