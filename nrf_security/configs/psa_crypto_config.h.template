@@ -12,6 +12,7 @@
 #cmakedefine PSA_CORE_BUILTIN                                   @PSA_CORE_BUILTIN@
 #cmakedefine PSA_CORE_OBERON                                    @PSA_CORE_OBERON@
 
+#cmakedefine PSA_WANT_GENERATE_RANDOM                           @PSA_WANT_GENERATE_RANDOM@
 #cmakedefine PSA_WANT_ALG_CTR_DRBG                              @PSA_WANT_ALG_CTR_DRBG@
 #cmakedefine PSA_WANT_ALG_HMAC_DRBG                             @PSA_WANT_ALG_HMAC_DRBG@
 /*
@@ -169,6 +170,9 @@
 #cmakedefine MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_384                @MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_384@
 #cmakedefine MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_521                @MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_521@
 
+#cmakedefine PSA_CRYPTO_DRIVER_ALG_PRNG_CC3XX_PLATFORM          @PSA_CRYPTO_DRIVER_ALG_PRNG_CC3XX_PLATFORM@
+#cmakedefine PSA_CRYPTO_DRIVER_ALG_CTR_DRBG_CC3XX_PLATFORM      @PSA_CRYPTO_DRIVER_ALG_CTR_DRBG_CC3XX_PLATFORM@
+#cmakedefine PSA_CRYPTO_DRIVER_ALG_HMAC_DRBG_CC3XX_PLATFORM     @PSA_CRYPTO_DRIVER_ALG_HMAC_DRBG_CC3XX_PLATFORM@
 
 /*
  * PSA driver configurations

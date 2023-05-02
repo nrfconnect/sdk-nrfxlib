@@ -53,6 +53,8 @@ config MBEDTLS_PSA_ACCEL_KEY_TYPE_CHACHA20
 
 rsource "nrf_cc3xx/Kconfig"
 
+rsource "nrf_cc3xx_platform/Kconfig"
+
 rsource "nrf_oberon/Kconfig"
 
 rsource "builtin/Kconfig"
