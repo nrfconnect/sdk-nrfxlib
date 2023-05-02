@@ -48,12 +48,12 @@ New version of the library with the following features:
 * Added code-size optimized API for SHA-256 that has no limitation on where the input is stored (flash/RAM).
 * Fixed a bug where platform mutexes ended up unallocated if a context holding them was not zeroized.
 
-Library built against Mbed TLS version 3.1.0.
+The library is built against Mbed TLS version 3.1.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -81,12 +81,12 @@ New version of the library with the following features:
 * Ensured that random seeds (for EITS and attestation) are generated only once during boot.
 * Minor bug fixes and improvements.
 
-Library built against Mbed TLS version 3.1.0.
+The library is built against Mbed TLS version 3.1.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -159,15 +159,15 @@ nrf_cc3xx_platform - 0.9.14
 New version of the library with the following features:
 
 * Internal restructure of the library.
-* Added APIs for storing encrypted identity key in KMU.
-* Added APIs for retrieving boot generated RNG seed and nonce seed.
+* APIs for storing encrypted identity key in KMU.
+* APIs for retrieving boot generated RNG seed and nonce seed.
 
-Library built against Mbed TLS version 3.0.0.
+The library is built against Mbed TLS version 3.0.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -243,12 +243,12 @@ New version of the library with the following features:
 * Internal restructure of the library.
 * Updated to the Mbed TLS version 3.0.0.
 
-Library built against Mbed TLS version 3.0.0.
+The library is built against Mbed TLS version 3.0.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -318,17 +318,17 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 nrf_cc3xx_platform - 0.9.12
 ***************************
 
-New version of the library with bug fixes and added features:
+New version of the library with bug fixes and features:
 
 * Fixed issue with KMU loading for nRF9160 devices.
   The issue is only present in certain builds, but it is highly recommended to update to this version of the library if you are using nRF9160.
 
-Library built against Mbed TLS version 2.26.0.
+The library is built against Mbed TLS version 2.26.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -400,20 +400,19 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 nrf_cc3xx_platform - 0.9.11
 ***************************
 
-New version of the library with bug fixes and added features:
+New version of the library with the following bug fixes and features:
 
 * Modified the KMU APIs to remove the reservation of slots 0 and 1.
   These slots can be used freely now.
-* Fixed an issue where the global CTR_DRBG context would get stuck
-  when it reached the reseed interval.
+* Fixed an issue where the global CTR_DRBG context would get stuck when it reached the reseed interval.
 * Fixed an issue where building with the derived key APIs would not be possible.
 
-Library built against Mbed TLS version 2.26.0.
+The library is built against Mbed TLS version 2.26.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -481,20 +480,19 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
     * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.11.a``
     * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.11.a``
 
-
 nrf_cc3xx_platform - 0.9.10
 ***************************
 
-New version of the library with an added feature:
+New version of the library with a new feature:
 
-* Added HMAC_DRBG APIs in :file:`nrf_cc3xx_platform_hmac_drbg.h`
+* Added HMAC_DRBG APIs in the :file:`nrf_cc3xx_platform_hmac_drbg.h` file.
 
-Library built against Mbed TLS version 2.26.0.
+The library is built against Mbed TLS version 2.26.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -519,7 +517,6 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
     * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.10.a``
     * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.10.a``
-
 
 * nrf_cc310_platform, nRF9160 variants
 
@@ -566,20 +563,20 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 nrf_cc3xx_platform - 0.9.9
 **************************
 
-New version of the library with bug fixes and added features:
+New version of the library with the following bug fixes and new features:
 
-* Added support for using ChaCha20 keys directly from the KMU on nRF9160 and nRF5340 devices.
-* Added APIs for key derivation in nrf_cc3xx_platform_derived_key.h.
-* Added support for using derived keys for ChaCha20 encryption/decryption.
+* Support for using ChaCha20 keys directly from the KMU on nRF9160 and nRF5340 devices.
+* APIs for key derivation in the :file:`nrf_cc3xx_platform_derived_key.h` file.
+* Support for using derived keys for ChaCha20 encryption/decryption.
 * Modified CTR_DRBG APIs to use internal context when the context argument is NULL.
-* Added new API for storing keys in the KMU.
+* New API for storing keys in the KMU.
 
-Library built against Mbed TLS version 2.25.0.
+The library is built against Mbed TLS version 2.25.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -651,19 +648,19 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 nrf_cc3xx_platform - 0.9.8
 **************************
 
-New version of the library with improvements and bug fixes:
+New version of the library with the following improvements and bug fixes:
 
-* Decreased stack usage for PRNG using `CTR_DRBG`.
-* Fixed issue with `CTR_DRBG` usage on the platform library when multiple backends are enabled in nordic security.
+* Decreased stack usage for PRNG using ``CTR_DRBG``.
+* Fixed issue with ``CTR_DRBG`` usage on the platform library when multiple backends are enabled in the Nordic Secure Module (nrf_security).
 * Fixed issues in the entropy module.
-* Added APIs for key derivation in nrf_cc3xx_platform_kmu.h
+* APIs for key derivation in the :file:`nrf_cc3xx_platform_kmu.h`.
 
-Library built against Mbed TLS version 2.24.0.
+The library is built against Mbed TLS version 2.24.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -739,12 +736,12 @@ New version of the library with a bug fix:
 
 * Fixed an issue with mutex slab allocation in Zephyr RTOS platform file.
 
-Library built against Mbed TLS version 2.24.0.
+The library is built against Mbed TLS version 2.24.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -791,7 +788,6 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
     * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.7.a``
     * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.7.a``
 
-
 * nrf_cc310_platform, nRF52840 variants
 
   * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.7.a``
@@ -816,13 +812,13 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 nrf_cc3xx_platform - 0.9.6
 **************************
 
-New version of the library with Mbed TLS sources ctr_drbg.c and entropy.c built in
-Library built against Mbed TLS version 2.24.0.
+New version of the library with Mbed TLS sources :file:`ctr_drbg.c` and :file:`entropy.c` built in.
+The library is built against Mbed TLS version 2.24.0.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -894,12 +890,12 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 nrf_cc3xx_platform - 0.9.5
 **************************
 
-Added correct TRNG categorization values for nRF5340 devices.
-
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+* Correct TRNG categorization values for nRF5340 devices.
+
+A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -971,16 +967,15 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 nrf_cc3xx_platform - 0.9.4
 **************************
 
-Added API to push KMU slot 0 on nRF9160 devices into CryptoCell KDR registers.
-See :file:`include/nrf_cc3xx_platform_kmu.h`.
-
-Added API to load a key from an address into CryptoCell KDR registers on nRF52840 devices.
-See :file:`include/nrf_cc3xx_platform_kmu.h`.
-
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+* API to push KMU slot 0 on nRF9160 devices into CryptoCell KDR registers.
+  See :file:`include/nrf_cc3xx_platform_kmu.h`.
+* API to load a key from an address into CryptoCell KDR registers on nRF52840 devices.
+  See :file:`include/nrf_cc3xx_platform_kmu.h`.
+
+A new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -1051,24 +1046,22 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 nrf_cc3xx_platform - 0.9.3
 **************************
 
-Added experimental support for devices with Arm CryptoCell CC312 (nRF5340).
+This version adds experimental support for interrupts in selected versions of the library (the libraries that do not support interrupts can be found in the :file:`no-interrupts` folders).
 
-Changed name of configurations from CC310 to CC3XX. This is reflected in the header file and APIs as well, where nrf_cc310_xxxx is renamed to nrf_cc3xx_xxxx.
-
-Added new version of libraries nrf_cc310_platform/nrf_cc312_platform built with Mbed TLS version 2.23.0.
-
-Added APIs for storing keys in the KMU peripheral (nRF9160, nRF5340).
-See :file:`include/nrf_cc3xx_platform_kmu.h`.
-
-Added APIs for generating CSPRNG using CTR_DRBG.
-See :file:`include/nrf_cc3xx_platform_ctr_drbg.h`.
-
-This version also adds experimental support for interrupts in selected versions of the library (the libraries that do not support interrupts can be found in the ``no-interrupts`` folders).
+Changed name of configurations from CC310 to CC3XX.
+This is reflected in the header file and APIs as well, where ``nrf_cc310_xxxx`` is renamed to ``nrf_cc3xx_xxxx``.
 
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+* Experimental support for devices with Arm CryptoCell CC312 (nRF5340).
+* New version of libraries nrf_cc310_platform/nrf_cc312_platform built with Mbed TLS version 2.23.0.
+* APIs for storing keys in the KMU peripheral (nRF9160, nRF5340).
+  See :file:`include/nrf_cc3xx_platform_kmu.h`.
+* APIs for generating CSPRNG using CTR_DRBG.
+  See :file:`include/nrf_cc3xx_platform_ctr_drbg.h`.
+
+A new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
 
 .. note::
 
@@ -1142,14 +1135,14 @@ nrf_cc310_platform - 0.9.2
 
 New version of nrf_cc310_platform library fixing power management issues with pending interrupts.
 
-This version also adds experimental support for interrupts in selected versions of the library (the libraries that do not support interrupts can be found in the ``no-interrupts`` folders).
+This version also adds experimental support for interrupts in selected versions of the library (the libraries that do not support interrupts can be found in the :file:`no-interrupts` folders).
 
 This version must match the version of nrf_cc310_mbedcrypto if it is also used.
 
 Added
 =====
 
-Added a new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
+A new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
 
 .. note::
 
@@ -1200,18 +1193,16 @@ nrf_cc310_platform - 0.9.1
 **************************
 
 New version of nrf_cc310_platform library containing Arm CC310 hardware initialization and entropy gathering APIs.
-
 Added to match with the nrf_cc310_mbedcrypto v0.9.1 library.
 
 .. note::
 
-    The library version must match with nrf_cc310_mbedcrypto if this is also
-    used
+   The library version must match with nrf_cc310_mbedcrypto if this is also used.
 
 Added
 =====
 
-Added a new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
+A new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
 
 .. note::
 
@@ -1267,13 +1258,12 @@ The library also contains APIs and companion source-files to setup RTOS dependen
 
 .. note::
 
-    The library version must match with nrf_cc310_mbedcrypto if this is also
-    used
+   The library version must match with nrf_cc310_mbedcrypto if this is also used
 
 Added
 =====
 
-Added a new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
+A new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
 
 .. note::
 
