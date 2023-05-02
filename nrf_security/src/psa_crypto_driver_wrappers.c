@@ -2541,6 +2541,8 @@ psa_status_t psa_driver_wrapper_mac_sign_finish(
     size_t mac_size,
     size_t *mac_length )
 {
+    psa_status_t status;
+
     switch( operation->id )
     {
 #if defined(MBEDTLS_PSA_BUILTIN_HAS_MAC_SUPPORT)
@@ -2552,8 +2554,14 @@ psa_status_t psa_driver_wrapper_mac_sign_finish(
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
 #if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX)
         case PSA_CRYPTO_CC3XX_DRIVER_ID:
-            return(cc3xx_mac_sign_finish(&operation->ctx.cc3xx_driver_ctx,
-                        mac, mac_size, mac_length));
+            status = cc3xx_mac_sign_finish(&operation->ctx.cc3xx_driver_ctx,
+                        mac, mac_size, mac_length);
+            /* NCSDK-21377: Clean up operation context on success. */
+            if (status == PSA_SUCCESS) {
+                cc3xx_mac_abort(&operation->ctx.cc3xx_driver_ctx);
+            }
+
+            return status;
 #endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX */
 #if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
         case PSA_CRYPTO_OBERON_DRIVER_ID:
@@ -2574,6 +2582,8 @@ psa_status_t psa_driver_wrapper_mac_verify_finish(
     const uint8_t *mac,
     size_t mac_length )
 {
+    psa_status_t status;
+
     switch( operation->id )
     {
 #if defined(MBEDTLS_PSA_BUILTIN_HAS_MAC_SUPPORT)
@@ -2585,9 +2595,15 @@ psa_status_t psa_driver_wrapper_mac_verify_finish(
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
 #if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX)
         case PSA_CRYPTO_CC3XX_DRIVER_ID:
-            return(cc3xx_mac_verify_finish(
+            status = cc3xx_mac_verify_finish(
                         &operation->ctx.cc3xx_driver_ctx,
-                        mac, mac_length));
+                        mac, mac_length);
+            /* NCSDK-21377: Clean up operation context on success. */
+            if (status == PSA_SUCCESS) {
+                cc3xx_mac_abort(&operation->ctx.cc3xx_driver_ctx);
+            }
+
+            return status;
 #endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_CC3XX */
 #if defined(PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON)
         case PSA_CRYPTO_OBERON_DRIVER_ID:
