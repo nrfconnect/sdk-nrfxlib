@@ -71,15 +71,12 @@
   - "softdevice_controller/lib/**/*"
   - "mpsl/include/**/*"
   - "mpsl/lib/**/*"
-  - "nfc/**/*"
   - "nrf_802154/driver/**/*"
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
   - "nrf_security/**/*"
 
 "CI-thread-test":
-  - "softdevice_controller/include/**/*"
-  - "softdevice_controller/lib/**/*"
   - "mpsl/include/**/*"
   - "mpsl/lib/**/*"
   - "nrf_802154/driver/**/*"
@@ -101,7 +98,6 @@
   - "softdevice_controller/lib/**/*"
   - "mpsl/include/**/*"
   - "mpsl/lib/**/*"
-  - "nfc/**/*"
   - "nrf_802154/driver/**/*"
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
