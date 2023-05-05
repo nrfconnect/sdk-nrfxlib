@@ -6,7 +6,7 @@
 
 choice PSA_CORE
 	prompt "PSA Core implementation"
-	default PSA_CORE_BUILTIN
+	default PSA_CORE_OBERON
 
 config PSA_CORE_BUILTIN
 	bool "PSA Core implementation - Builtin"
