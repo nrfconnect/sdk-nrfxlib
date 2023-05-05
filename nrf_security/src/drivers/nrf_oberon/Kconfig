@@ -49,7 +49,9 @@ config PSA_CRYPTO_DRIVER_HAS_HASH_SUPPORT_OBERON
 config PSA_CRYPTO_DRIVER_HAS_KDF_SUPPORT_OBERON
 	bool
 	default y
-	depends on PSA_CRYPTO_DRIVER_ALG_HKDF_OBERON
+	depends on PSA_CRYPTO_DRIVER_ALG_HKDF_OBERON || \
+		   PSA_CRYPTO_DRIVER_ALG_TLS12_PRF_OBERON || \
+		   PSA_CRYPTO_DRIVER_ALG_TLS12_PSK_TO_MS_OBERON
 	depends on PSA_CORE_OBERON
 	help
 	  Only Oberon PSA core supports Key Derivation through driver interface.
@@ -229,6 +231,18 @@ config PSA_CRYPTO_DRIVER_ALG_SHA_512_OBERON
 	bool
 	prompt "PSA SHA-512 support - oberon" if !PSA_PROMPTLESS
 	default y if PSA_WANT_ALG_SHA_512
+
+config PSA_CRYPTO_DRIVER_ALG_TLS12_PRF_OBERON
+	bool
+	prompt "PSA TLS 1.2 PRF support - oberon" if !PSA_PROMPTLESS
+	depends on PSA_WANT_ALG_TLS12_PRF
+	default y if !PSA_DEFAULT_OFF
+
+config PSA_CRYPTO_DRIVER_ALG_TLS12_PSK_TO_MS_OBERON
+	bool
+	prompt "PSA TLS 1.2 PSK to MS support - oberon" if !PSA_PROMPTLESS
+	depends on PSA_WANT_ALG_TLS12_PSK_TO_MS
+	default y if !PSA_DEFAULT_OFF
 
 config PSA_CRYPTO_DRIVER_ALG_STREAM_CIPHER_OBERON
 	bool

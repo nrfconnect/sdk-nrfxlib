@@ -170,3 +170,13 @@
 #if defined(PSA_CRYPTO_DRIVER_ALG_RSA_PSS_OBERON)
 #define PSA_NEED_OBERON_RSA_PSS                                1
 #endif
+
+#if defined(PSA_CRYPTO_DRIVER_ALG_TLS12_PRF_OBERON)
+#define PSA_NEED_OBERON_KDF_DRIVER                             1
+#define PSA_NEED_OBERON_TLS12_PRF                              1
+#endif
+
+#if defined(PSA_CRYPTO_DRIVER_ALG_TLS12_PSK_TO_MS_OBERON)
+#define PSA_NEED_OBERON_KDF_DRIVER                             1
+#define PSA_NEED_OBERON_TLS12_PSK_TO_MS                        1
+#endif
