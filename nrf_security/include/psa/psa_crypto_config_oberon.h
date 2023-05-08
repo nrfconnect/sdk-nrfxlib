@@ -140,6 +140,12 @@
 
 #if defined(PSA_CRYPTO_DRIVER_HAS_RSA_SUPPORT_OBERON)
 #define PSA_NEED_OBERON_RSA_DRIVER                             1
+
+#if defined(PSA_CRYPTO_DRIVER_RSA_KEY_SIZE_1024_OBERON)
+/* Only enable RSA key size 1024 for testing */
+#define PSA_NEED_OBERON_RSA_KEY_SIZE_1024                      1
+#endif
+
 #define PSA_NEED_OBERON_RSA_KEY_SIZE_1536                      1
 #define PSA_NEED_OBERON_RSA_KEY_SIZE_2048                      1
 #define PSA_NEED_OBERON_RSA_KEY_SIZE_3072                      1
