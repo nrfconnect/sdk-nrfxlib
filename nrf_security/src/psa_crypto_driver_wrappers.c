@@ -1447,10 +1447,9 @@ psa_status_t psa_driver_wrapper_cipher_abort(
             return( status );
 #endif /* PSA_CRYPTO_DRIVER_HAS_CIPHER_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
+        default:
+            return PSA_SUCCESS;
     }
-
-    (void)status;
-    return( PSA_ERROR_INVALID_ARGUMENT );
 }
 
 /*
@@ -1668,7 +1667,7 @@ psa_status_t psa_driver_wrapper_hash_abort(
                         &operation->ctx.oberon_driver_ctx ) );
 #endif /* PSA_CRYPTO_DRIVER_HAS_HASH_SUPPORT_OBERON */
         default:
-            return( PSA_ERROR_BAD_STATE );
+            return PSA_SUCCESS;
     }
 }
 
@@ -2303,9 +2302,8 @@ psa_status_t psa_driver_wrapper_aead_abort(
                 &operation->ctx.oberon_driver_ctx ) );
 #endif /* PSA_CRYPTO_DRIVER_HAS_AEAD_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
-
         default:
-            return( PSA_ERROR_INVALID_ARGUMENT );
+            return PSA_SUCCESS;
     }
 }
 
@@ -2679,7 +2677,7 @@ psa_status_t psa_driver_wrapper_mac_abort(
 #endif /* PSA_CRYPTO_DRIVER_HAS_MAC_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
         default:
-            return( PSA_ERROR_INVALID_ARGUMENT );
+            return PSA_SUCCESS;
     }
 }
 
