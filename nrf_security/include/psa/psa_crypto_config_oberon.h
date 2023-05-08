@@ -130,6 +130,12 @@
 #define PSA_NEED_OBERON_KEY_PAIR_SECP 1
 #endif
 
+#if defined(PSA_CRYPTO_DRIVER_ECC_SECP_R1_384_OBERON)
+#define PSA_NEED_OBERON_KEY_PAIR_DRIVER                        1
+#define PSA_NEED_OBERON_KEY_PAIR_P384                          1
+#define PSA_NEED_OBERON_KEY_PAIR_SECP                          1
+#endif
+
 #if defined(PSA_CRYPTO_DRIVER_ECC_MONTGOMERY_255_OBERON)
 #define PSA_NEED_OBERON_KEY_PAIR_DRIVER 1
 #define PSA_NEED_OBERON_KEY_PAIR_X25519 1
