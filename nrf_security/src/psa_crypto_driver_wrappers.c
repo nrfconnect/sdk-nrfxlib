@@ -460,15 +460,19 @@ psa_status_t psa_driver_wrapper_verify_hash(
 #endif /* PSA_CRYPTO_DRIVER_HAS_ASYM_SIGN_SUPPORT_OBERON */
 #endif /* PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT */
 #if defined(MBEDTLS_PSA_BUILTIN_HAS_ASYM_SIGN_SUPPORT)
-            return( psa_verify_hash_builtin( attributes,
+            status = psa_verify_hash_builtin(attributes,
                                              key_buffer,
                                              key_buffer_size,
                                              alg,
                                              hash,
                                              hash_length,
                                              signature,
-                                             signature_length ) );
+                                             signature_length);
+            if (status != PSA_ERROR_NOT_SUPPORTED) {
+                return status;
+            }
 #endif /* MBEDTLS_PSA_BUILTIN_HAS_ASYM_SIGN_SUPPORT */
+            /* Fell through, meaning nothing supports this operation */
             (void) attributes;
             (void) key_buffer;
             (void) key_buffer_size;
@@ -477,6 +481,7 @@ psa_status_t psa_driver_wrapper_verify_hash(
             (void) hash_length;
             (void) signature;
             (void) signature_length;
+            return PSA_ERROR_NOT_SUPPORTED;
         default:
             /* Key is declared with a lifetime not known to us */
             (void)status;
