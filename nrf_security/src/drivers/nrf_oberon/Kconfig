@@ -279,4 +279,15 @@ config PSA_CRYPTO_DRIVER_ECC_TWISTED_EDWARDS_255_OBERON
 	prompt "PSA ECC Curve Ed25519 support - oberon" if !PSA_PROMPTLESS
 	default y if !PSA_DEFAULT_OFF && PSA_WANT_ECC_TWISTED_EDWARDS_255
 
+config PSA_CRYPTO_DRIVER_RSA_KEY_SIZE_1024_OBERON
+	bool
+	default y
+	depends on TFM_PSA_TEST_CRYPTO || \
+		   TFM_REGRESSION_S || \
+		   TFM_REGRESSION_NS
+	help
+	  Prompt-less configuration to allow RSA key size 1024 bits for testing
+	  RSA with 1024 bit keys is not recommended for new designs.
+	  Please see https://www.keylength.com/
+
 endif
