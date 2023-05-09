@@ -119,9 +119,61 @@ TLS socket
 DTLS handshake timeout values
 =============================
 
-.. doxygengroup:: nrf_socket_tls_dtls_handshake_timeouts
+.. doxygengroup:: nrf_socket_so_sec_handshake_timeouts
    :project: nrfxlib
    :members:
+
+TLS/DTLS peer verification options
+==================================
+
+.. doxygengroup:: nrf_socket_sec_peer_verify_options
+   :project: nrfxlib
+   :members:
+
+TLS/DTLS session cache options
+==============================
+
+.. doxygengroup:: nrf_socket_session_cache_options
+   :project: nrfxlib
+   :members:
+
+TLS/DTLS socket connection roles
+================================
+
+.. doxygengroup:: nrf_socket_sec_roles
+   :project: nrfxlib
+   :members:
+
+.. _nrf_supported_tls_cipher_suites:
+
+Supported cipher suites
+=======================
+
+.. doxygengroup:: nrf_socket_tls_cipher_suites
+   :project: nrfxlib
+   :members:
+
+DTLS connection ID settings
+===========================
+
+.. doxygengroup:: nrf_so_sec_dtls_cid_settings
+   :project: nrfxlib
+   :members:
+
+DTLS connection ID statuses
+===========================
+
+.. doxygengroup:: nrf_so_sec_dtls_cid_statuses
+   :project: nrfxlib
+   :members:
+
+TLS/DTLS handshake statuses
+===========================
+
+.. doxygengroup:: nrf_so_sec_handshake_statuses
+   :project: nrfxlib
+   :members:
+
 
 Socket address resolution API
 *****************************

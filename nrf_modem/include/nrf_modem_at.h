@@ -65,17 +65,15 @@ typedef void (*nrf_modem_at_resp_handler_t)(const char *resp);
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  * @retval -NRF_E2BIG The response is larger than the supplied buffer @c buf.
  */
-typedef int (*nrf_modem_at_cmd_handler_t)(char *buf, size_t len, char *at_cmd);
+typedef int (*nrf_modem_at_cmd_custom_handler_t)(char *buf, size_t len, char *at_cmd);
 
-/* Struct for AT filter
+/* Struct for custom AT command
  * Contains string for which the AT commands are compared
  * and a function pointer for the function to call on detection.
  */
-struct nrf_modem_at_cmd_filter {
+struct nrf_modem_at_cmd_custom {
 	const char * const cmd;
-	const nrf_modem_at_cmd_handler_t callback;
-	/** Whether filter is paused. */
-	bool paused;
+	const nrf_modem_at_cmd_custom_handler_t callback;
 };
 
 /**
@@ -207,22 +205,22 @@ static inline int nrf_modem_at_err(int error)
 }
 
 /**
- * @brief Set a list of AT commands to be filtered by @c nrf_modem_at_cmd.
+ * @brief Set a list of custom AT commands that are implemented in the application.
  *
- * When a filter list is set, AT commands sent via @c nrf_modem_at_cmd that match any
- * AT command in the filter will be redirected to the filter callback function instead
+ * When a custom AT command list is set, AT commands sent via @c nrf_modem_at_cmd that match any
+ * AT command in the list, will be redirected to the custom callback function instead
  * of being sent to the modem.
  *
- * @note The filter is disabled by passing NULL to the @c filters and
+ * @note The custom commands are disabled by passing NULL to the @c custom_commands and
  * 0 to the @c len.
  *
- * @param filters AT filter list.
- * @param len AT filter list size.
+ * @param custom_commands List of custom AT commands.
+ * @param len Custom AT command list size.
  *
- * @retval  0 On a success.
+ * @retval  0 On success.
  * @retval -NRF_EINVAL On invalid parameters.
  */
-int nrf_modem_at_cmd_filter_set(struct nrf_modem_at_cmd_filter *filters, size_t len);
+int nrf_modem_at_cmd_custom_set(struct nrf_modem_at_cmd_custom *custom_commands, size_t len);
 
 #ifdef __cplusplus
 }

@@ -219,12 +219,13 @@ In this case, the application need not provide any intermediate buffers and can 
 Conversely, :c:func:`nrf_modem_at_cmd` is the only function in the AT interface that copies the whole response of the modem from the shared memory into the provided input buffer, which is owned by the application.
 Therefore, this function can be used when the application needs the whole AT command response, as received from the modem, or in those cases when the stack requirements of :c:func:`nrf_modem_at_scanf` are too high for the calling thread, or when parsing the response using a :c:func:`scanf` format is hard.
 
-Filtering AT commands
-*********************
+Custom AT commands
+******************
 
-The Modem library can filter calls to the :c:func:`nrf_modem_at_cmd` function, sending the AT command to a user-provided callback function instead of the modem.
-You can enable this feature by calling the :c:func:`nrf_modem_at_cmd_filter_set` function with a list of filters defined in the :c:struct:`nrf_modem_at_cmd_filter` structure.
-Only one list of filters can be registered with the Modem library.
+The Modem library allows the application to implement custom AT commands.
+When an AT command is sent by the application using the :c:func:`nrf_modem_at_cmd` function, if it matches any of the custom AT commands set by the application, the AT command is sent to a user-provided callback function instead of being sent to the modem.
+The application can set a list of custom AT commands by calling the :c:func:`nrf_modem_at_cmd_custom_set` function with a list of custom commands defined in the :c:struct:`nrf_modem_at_cmd_custom` structure.
+Only one list of custom commands can be registered with the Modem library.
 
 When the callback function responds, the Modem library treats the contents of the provided :c:var:`buf` buffer as the modem response.
 The following is the response format that must be the same as the modem's:
@@ -232,13 +233,13 @@ The following is the response format that must be the same as the modem's:
 * Successful responses end with ``OK\r\n``.
 * For error response, use ``ERROR\r\n``, ``+CME ERROR: <errorcode>``, or ``+CMS ERROR: <errorcode>`` depending on the error.
 
-The following snippet shows how to set up and use an AT filter:
+The following snippet shows how to set up and use an custom AT command:
 
 .. code-block:: c
 
 	#define AT_CMD_MAX_ARRAY_SIZE 32
 
-	int my_command_callback(char *buf, size_t len, char *at_cmd);
+	int my_at_cmd(char *buf, size_t len, char *at_cmd);
 	{
 		printf("Received +MYCOMMAND call: %s", at_cmd);
 
@@ -248,7 +249,7 @@ The following snippet shows how to set up and use an AT filter:
 		return 0;
 	}
 
-	static struct nrf_modem_at_cmd_filter my_at_cmd_filters[] = {
+	static struct nrf_modem_at_cmd_custom custom_at_cmds[] = {
 		{ .cmd = "AT+MYCOMMAND", .callback = my_command_callback }
 	};
 
@@ -256,7 +257,7 @@ The following snippet shows how to set up and use an AT filter:
 	{
 		int err;
 
-		err = nrf_modem_at_cmd_filter_set(my_at_cmd_filters, 1);
+		err = nrf_modem_at_cmd_custom_set(custom_at_cmds, 1);
 		if (err) {
 			/* error */
 		}

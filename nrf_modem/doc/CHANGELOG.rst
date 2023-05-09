@@ -9,6 +9,47 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.4.0
+***************
+
+:ref:`Sockets <nrf_sockets>`
+============================
+
+* Added
+
+  * The ``NRF_SO_SEC_DTLS_CID`` and ``NRF_SO_SEC_DTLS_CID_STATUS`` socket options for DTLS connection ID.
+  * The ``NRF_SO_SEC_DTLS_CONN_SAVE`` and ``NRF_SO_SEC_DTLS_CONN_LOAD`` socket options.
+  * The ``NRF_SO_SEC_CIPHERSUITE_USED`` socket option (requires mfw v2.0.0).
+  * The ``NRF_SO_SEC_HANDSHAKE_STATUS`` socket option (requires mfw v2.0.0).
+  * The :c:macro:`NRF_SOCKET_TLS_MAX_SEC_TAG_LIST_SIZE` macro to indicate the maximum number of security tags that can be associated with a socket.
+  * Several new macros for allowed TLS/DTLS socket option values.
+
+* Fixed a memory leak in the :c:func:`nrf_getsockopt` function, in certain cases where the function returned an error.
+* The :c:macro:`NRF_MODEM_MAX_SOCKET_COUNT` macro was moved to :file:`nrf_socket.h`, from :file:`nrf_modem.h`.
+
+:ref:`AT interface <nrf_modem_at>`
+==================================
+
+* Renamed the ``at_cmd_filter`` to ``at_cmd_custom``:
+
+  * The :c:type:`nrf_modem_at_cmd_handler_t` type is renamed to :c:type:`nrf_modem_at_cmd_custom_handler_t`.
+  * The :c:struct:`nrf_modem_at_cmd_filter` struct is renamed to :c:struct:`nrf_modem_at_cmd_custom`.
+  * The :c:func:`nrf_modem_at_cmd_filter_set` function is renamed to :c:func:`nrf_modem_at_cmd_custom_set`.
+
+* The ``paused`` field was removed from the :c:struct:`nrf_modem_at_cmd_custom`.
+  It is no longer possible to pause the dispatching of custom AT commands to their handler function.
+
+:ref:`Delta DFU <nrf_modem_delta_dfu>`
+======================================
+
+* It is no longer necessary to call the :c:func:`nrf_modem_shutdown` function after updating the modem firmware.
+  The application can call the :c:func:`nrf_modem_init` function to execute the update, and call that function again to run the modem firmware.
+
+:ref:`Tracing <modem_trace>`
+============================
+
+* Fixed a bug where the :c:func:`nrf_modem_trace_get` function would attempt to take an uninitialized semaphore if called when tracing was disabled.
+
 nrf_modem 2.3.1
 ***************
 

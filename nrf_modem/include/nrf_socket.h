@@ -45,6 +45,12 @@
 extern "C" {
 #endif
 
+/**
+ * @brief Maximum number of IP sockets.
+ * @addtogroup nrf_modem_limits
+ */
+#define NRF_MODEM_MAX_SOCKET_COUNT 8
+
 /**@addtogroup nrf_socket_address_resolution
  *@{
  */
@@ -149,8 +155,13 @@ extern "C" {
 #define NRF_SOCKET_TLS_MAX_MESSAGE_SIZE 2048
 
 /** @brief
+ * Maximum number of security tags that can be associated with a socket.
+ */
+#define NRF_SOCKET_TLS_MAX_SEC_TAG_LIST_SIZE  7
+
+/** @brief
  * Write-only socket option to select the security tags to be used.
- * @sa nrf_sec_tag_t.
+ * This option accepts a list of @sa nrf_sec_tag_t.
  */
 #define NRF_SO_SEC_TAG_LIST 1
 
@@ -163,33 +174,35 @@ extern "C" {
 
 /** @brief
  * Write-only socket option to select which ciphersuites to use.
- * @sa nrf_sec_cipher_t.
+ * This option accepts a prioritized list of @sa nrf_sec_cipher_t with selected cipher suites.
+ * See @ref nrf_socket_tls_cipher_suites for a list of allowed values.
  */
 #define NRF_SO_SEC_CIPHERSUITE_LIST 3
 
 /** @brief
+ * Socket option to retrieve the cipher suite used during the TLS/DTLS handshake.
+ *
+ * @note This socket option is only supported with Modem firmware 2.0.0 and newer.
+ */
+#define NRF_SO_SEC_CIPHERSUITE_USED 4
+
+/** @brief
  * Socket option to set peer verification level.
- * This option accepts an nrf_sec_peer_verify_t with values:
- *  - 0 - None
- *  - 1 - Optional
- *  - 2 - Required
+ * See @ref nrf_socket_sec_peer_verify_options for a list of allowed values of type
  * @sa nrf_sec_peer_verify_t.
  */
 #define NRF_SO_SEC_PEER_VERIFY 5
 
 /** @brief
  * Write-only socket option to set role for the connection.
- * Accepts an nrf_sec_role_t with values:
- *  - 0 - Client role.
- *  - 1 - Server role.
+ * See @ref nrf_socket_sec_roles for a list of allowed values of type
+ * @sa nrf_sec_role_t.
  */
 #define NRF_SO_SEC_ROLE 6
 
 /** @brief
  * Socket option to control TLS session caching.
- * Accepts an nrf_sec_session_cache_t with values:
- *  - 0 - Disabled.
- *  - 1 - Enabled.
+ * See @ref nrf_socket_session_cache_options for a list of allowed values of type
  * @sa nrf_sec_session_cache_t.
  */
 #define NRF_SO_SEC_SESSION_CACHE 12
@@ -202,9 +215,47 @@ extern "C" {
 
 /** @brief
  * Socket option to set DTLS handshake timeout value.
- * Please see @ref nrf_socket_tls_dtls_handshake_timeouts for allowed values.
+ * See @ref nrf_socket_so_sec_handshake_timeouts for allowed values.
  */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO 14
+
+/** @brief
+ * Socket option to enable/disable the connection ID.
+ * See @ref nrf_so_sec_dtls_cid_settings for allowed values.
+ *
+ * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
+ */
+#define NRF_SO_SEC_DTLS_CID 15
+
+/** @brief
+ * Socket option to get the connection ID status.
+ * See @ref nrf_so_sec_dtls_cid_statuses for allowed values.
+ *
+ * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
+ */
+#define NRF_SO_SEC_DTLS_CID_STATUS 16
+
+/** @brief
+ * Socket option to save DTLS connection.
+ *
+ * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
+ */
+#define NRF_SO_SEC_DTLS_CONN_SAVE 17
+
+/** @brief
+ * Socket option to load DTLS connection.
+ *
+ * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
+ */
+#define NRF_SO_SEC_DTLS_CONN_LOAD 18
+
+/** @brief
+ * Socket option to get end status of last completed TLS/DTLS handshake procedure.
+ * See @ref nrf_so_sec_handshake_statuses for allowed values.
+ *
+ * @note This socket option is only supported with Modem firmware 2.0.0 and newer.
+ */
+#define NRF_SO_SEC_HANDSHAKE_STATUS 19
 /**@} */
 
 /**@defgroup nrf_socket_options_sockets Generic socket options
@@ -310,27 +361,132 @@ extern "C" {
 #define NRF_O_NONBLOCK 0x01
 /**@} */
 
-/**@defgroup nrf_socket_tls_dtls_handshake_timeouts DTLS handshake timeout values
+/**@defgroup nrf_socket_sec_peer_verify_options TLS peer verification options
+ * @brief Allowed TLS peer verification options
+ *
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+/** None */
+#define NRF_SO_SEC_PEER_VERIFY_NONE 0
+/** Optional */
+#define NRF_SO_SEC_PEER_VERIFY_OPTIONAL 1
+/** Required */
+#define NRF_SO_SEC_PEER_VERIFY_REQUIRED 2
+/**@} */
+
+/**@defgroup nrf_socket_sec_roles Role for the socket connection
+ * @brief Allowed roles for the socket connection.
+ *
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+/** Client */
+#define NRF_SO_SEC_ROLE_CLIENT 0
+/** Server */
+#define NRF_SO_SEC_ROLE_SERVER 1
+/**@} */
+
+/**@defgroup nrf_socket_session_cache_options TLS session cache options
+ * @brief Allowed options for the TLS session cache.
+ *
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+/** Disabled */
+#define NRF_SO_SEC_SESSION_CACHE_DISABLED 0
+/** Enabled */
+#define NRF_SO_SEC_SESSION_CACHE_ENABLED 1
+/**@} */
+
+/**@defgroup nrf_socket_so_sec_handshake_timeouts DTLS handshake timeout values
  * @brief Allowed timeout values for DTLS handshake timeout socket option according
  *        to RFC6347 section 4.2.4.1. Default is 123 seconds.
  *        (https://tools.ietf.org/html/rfc6347#section-4.2.4.1)
  * @ingroup nrf_socket_tls
  * @{
  */
+/** No timeout */
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_NONE 0
 /** 1 second */
-#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_1S	1
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_1S 1
 /** 1s + 2s */
-#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_3S	3
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_3S 3
 /** 1s + 2s + 4s */
-#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_7S	7
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_7S 7
 /** 1s + 2s + 4s + 8s */
-#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_15S	15
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_15S 15
 /** 1s + 2s + 4s + 8s + 16s */
-#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_31S	31
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_31S 31
 /** 1s + 2s + 4s + 8s + 16s + 32s */
-#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_63S	63
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_63S 63
 /** 1s + 2s + 4s + 8s + 16s + 32s + 60s */
-#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_123S	123
+#define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_123S 123
+/**@} */
+
+/**@defgroup nrf_socket_tls_cipher_suites TLS Cipher suites
+ * @brief Allowed cipher suites for the nRF modem.
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+#define NRF_TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384 0xC024 /**< TLS 1.2 */
+#define NRF_TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA  0xC00A /**< Not in SSL3! */
+#define NRF_TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256 0xC023 /**< TLS 1.2 */
+#define NRF_TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA 0xC009 /**< Not in SSL3! */
+#define NRF_TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA 0xC014 /**< Not in SSL3! */
+#define NRF_TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 0xC027 /**< TLS 1.2 */
+#define NRF_TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA 0xC013 /**< Not in SSL3! */
+#define NRF_TLS_PSK_WITH_AES_256_CBC_SHA 0x008D
+#define NRF_TLS_PSK_WITH_AES_128_CBC_SHA256 0x00AE
+#define NRF_TLS_PSK_WITH_AES_128_CBC_SHA 0x008C
+#define NRF_TLS_PSK_WITH_AES_128_CCM_8 0xC0A8 /**< TLS 1.2 */
+#define NRF_TLS_EMPTY_RENEGOTIATIONINFO_SCSV 0x00FF
+/** The following cipher suites are only supported with
+ * Modem firmware v1.3.x >= 1,
+ * Modem firmware v1.2.x >= 7 and
+ * Modem firmware v1.1.x >= 5.
+ */
+#define NRF_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 0xC02B /**< TLS 1.2 */
+#define NRF_TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 0xC030 /**< TLS 1.2 */
+#define NRF_TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 0xC02F /**< TLS 1.2 */
+
+/**@defgroup nrf_so_sec_dtls_cid_settings DTLS Connection ID settings
+ * @brief Allowed values for DTLS connection ID setting socket option.
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+/** disabled */
+#define NRF_SO_SEC_DTLS_CID_DISABLED 0
+/** supported */
+#define NRF_SO_SEC_DTLS_CID_SUPPORTED 1
+/**  enabled */
+#define NRF_SO_SEC_DTLS_CID_ENABLED 2
+/**@} */
+
+/**@defgroup nrf_so_sec_dtls_cid_statuses DTLS Connection ID statuses
+ * @brief Allowed values for DTLS connection ID status socket option.
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+/** disabled */
+#define NRF_SO_SEC_DTLS_CID_STATUS_DISABLED 0
+/** downlink */
+#define NRF_SO_SEC_DTLS_CID_STATUS_DOWNLINK 1
+/** uplink */
+#define NRF_SO_SEC_DTLS_CID_STATUS_UPLINK 2
+/** bidirectional */
+#define NRF_SO_SEC_DTLS_CID_STATUS_BIDIRECTIONAL 3
+/**@} */
+
+/**@defgroup nrf_so_sec_handshake_statuses TLS/DTLS Handshake statuses
+ * @brief Allowed values for DTLS connection ID status socket option.
+ * @ingroup nrf_socket_tls
+ * @{
+ */
+/** full */
+#define NRF_SO_SEC_HANDSHAKE_STATUS_FULL 0
+/** cached */
+#define NRF_SO_SEC_HANDSHAKE_STATUS_CACHED 1
 /**@} */
 
 /**@addtogroup nrf_socket_api
@@ -491,11 +647,11 @@ struct nrf_ifaddrs {
 	uint32_t ifa_flags;
 	/** Interface address. */
 	struct nrf_sockaddr *ifa_addr;
-	/** Interface netmask. */
+	/** Interface netmask. Not supported by the modem. */
 	struct nrf_sockaddr *ifa_netmask;
-	/** Interface broadcast address. */
+	/** Interface broadcast address. Not supported by the modem.  */
 	struct nrf_sockaddr *ifa_broadaddr;
-	/** Interface destination address. */
+	/** Interface destination address. Not supported by the modem.  */
 	struct nrf_sockaddr *ifa_dstaddr;
 	/** Address specific data. */
 	void *ifa_data;
@@ -636,6 +792,7 @@ int nrf_connect(int socket, const struct nrf_sockaddr *address, nrf_socklen_t ad
  * - [NRF_ESHUTDOWN] Modem was shut down.
  * - [NRF_ECANCELED] Operation canceled because of APN rate control.
  * - [NRF_ENOMEM] TCP stream interrupted because of no heap memory.
+ * - [NRF_EPROTO] Request failed because DTLS context was serialized.
  */
 ssize_t nrf_send(int socket, const void *buffer, size_t length, int flags);
 
@@ -650,6 +807,7 @@ ssize_t nrf_send(int socket, const void *buffer, size_t length, int flags);
  * - [NRF_ESHUTDOWN] Modem was shut down.
  * - [NRF_ECANCELED] Operation canceled because of APN rate control.
  * - [NRF_ENOMEM] TCP stream interrupted because of no heap memory.
+ * - [NRF_EPROTO] Request failed because DTLS context was serialized.
  */
 ssize_t nrf_sendto(int socket, const void *message, size_t length, int flags,
 		   const struct nrf_sockaddr *dest_addr, nrf_socklen_t dest_len);
@@ -756,6 +914,8 @@ int nrf_poll(struct nrf_pollfd fds[], nrf_nfds_t nfds, int timeout);
  *       of socket options described by POSIX, but also some additional options.
  *
  * In addition, the function shall return -1 and set the following errno:
+ * - [NRF_EAGAIN] The option could not be set when requested, try again.
+ * - [NRF_EOPNOTSUPP] The option is not supported with the current socket configuration.
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_setsockopt(int socket, int level, int option_name,
