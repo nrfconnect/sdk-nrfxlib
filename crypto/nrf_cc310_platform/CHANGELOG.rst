@@ -30,15 +30,15 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``crypto/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.17.a``
+  * :file:`/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.17.a`
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``crypto/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.17.a``
+  * :file:`/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.17.a`
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``crypto/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.17.a``
+  * :file:`/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.17.a`
 
 nrf_cc3xx_platform - 0.9.16
 ***************************
@@ -61,15 +61,15 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``crypto/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.16.a``
+  * :file:`/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.16.a`
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``crypto/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.16.a``
+  * :file:`/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.16.a`
 
 * nrf_cc310_mbedcrypto, nRF52840 variants
 
-  * ``crypto/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.16.a``
+  * :file:`/nrf_cc310_platform/lib/cortex-m4/**/libnrf_cc310_platform_0.9.16.a`
 
 
 nrf_cc3xx_platform - 0.9.15
@@ -94,64 +94,64 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.15.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.15.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.15.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.15.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.15.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.15.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.15.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.15.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.15.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.15.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.15.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.15.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.15.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.15.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.15.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.15.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.15.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.15.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.15.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.15.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.15.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.15.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.15.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.15.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.15.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.15.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.15.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.15.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.15.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.15.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.15.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.15.a`
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.15.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.15.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.15.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.15.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.15.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.15.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.15.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.15.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.15.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.15.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.15.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.15.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.15.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.15.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.15.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.15.a`
 
 nrf_cc3xx_platform - 0.9.14
 ***************************
@@ -175,64 +175,64 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.14.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.14.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.14.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.14.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.14.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.14.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.14.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.14.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.14.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.14.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.14.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.14.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.14.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.14.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.14.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.14.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.14.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.14.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.14.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.14.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.14.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.14.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.14.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.14.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.14.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.14.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.14.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.14.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.14.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.14.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.14.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.14.a`
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.14.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.14.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.14.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.14.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.14.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.14.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.14.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.14.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.14.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.14.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.14.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.14.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.14.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.14.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.14.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.14.a`
 
 
 nrf_cc3xx_platform - 0.9.13
@@ -256,64 +256,64 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.13.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.13.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.13.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.13.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.13.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.13.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.13.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.13.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.13.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.13.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.13.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.13.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.13.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.13.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.13.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.13.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.13.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.13.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.13.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.13.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.13.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.13.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.13.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.13.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.13.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.13.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.13.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.13.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.13.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.13.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.13.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.13.a`
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.13.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.13.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.13.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.13.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.13.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.13.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.13.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.13.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.13.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.13.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.13.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.13.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.13.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.13.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.13.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.13.a`
 
 nrf_cc3xx_platform - 0.9.12
 ***************************
@@ -336,65 +336,65 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.12.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.12.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.12.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.12.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.12.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.12.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.12.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.12.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.12.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.12.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.12.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.12.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.12.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.12.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.12.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.12.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.12.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.12.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.12.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.12.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.12.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.12.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.12.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.12.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.12.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.12.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.12.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.12.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.12.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.12.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.12.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.12.a`
 
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.12.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.12.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.12.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.12.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.12.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.12.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.12.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.12.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.12.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.12.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.12.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.12.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.12.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.12.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.12.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.12.a`
 
 
 nrf_cc3xx_platform - 0.9.11
@@ -420,65 +420,65 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.11.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.11.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.11.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.11.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.11.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.11.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.11.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.11.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.11.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.11.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.11.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.11.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.11.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.11.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.11.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.11.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.11.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.11.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.11.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.11.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.11.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.11.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.11.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.11.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.11.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.11.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.11.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.11.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.11.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.11.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.11.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.11.a`
 
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.11.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.11.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.11.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.11.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.11.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.11.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.11.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.11.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.11.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.11.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.11.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.11.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.11.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.11.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.11.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.11.a`
 
 nrf_cc3xx_platform - 0.9.10
 ***************************
@@ -500,64 +500,64 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.10.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.10.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.10.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.10.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.10.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.10.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.10.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.10.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.10.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.10.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.10.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.10.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.10.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.10.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.10.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.10.a`
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.10.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.10.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.10.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.10.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.10.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.10.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.10.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.10.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.10.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.10.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.10.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.10.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.10.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.10.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.10.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.10.a`
 
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.10.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.10.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.10.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.10.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.10.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.10.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.10.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.10.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.10.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.10.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.10.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.10.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.10.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.10.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.10.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.10.a`
 
 
 nrf_cc3xx_platform - 0.9.9
@@ -584,65 +584,65 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.9.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.9.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.9.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.9.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.9.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.9.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.9.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.9.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.9.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.9.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.9.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.9.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.9.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.9.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.9.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.9.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.9.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.9.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.9.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.9.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.9.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.9.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.9.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.9.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.9.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.9.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.9.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.9.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.9.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.9.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.9.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.9.a`
 
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.9.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.9.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.9.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.9.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.9.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.9.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.9.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.9.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.9.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.9.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.9.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.9.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.9.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.9.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.9.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.9.a`
 
 
 nrf_cc3xx_platform - 0.9.8
@@ -668,65 +668,65 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.8.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.8.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.8.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.8.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.8.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.8.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.8.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.8.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.8.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.8.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.8.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.8.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.8.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.8.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.8.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.8.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.8.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.8.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.8.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.8.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.8.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.8.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.8.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.8.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.8.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.8.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.8.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.8.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.8.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.8.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.8.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.8.a`
 
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.8.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.8.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.8.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.8.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.8.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.8.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.8.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.8.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.8.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.8.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.8.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.8.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.8.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.8.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.8.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.8.a`
 
 
 nrf_cc3xx_platform - 0.9.7
@@ -749,64 +749,64 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.7.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.7.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.7.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.7.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.7.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.7.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.7.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.7.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.7.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.7.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.7.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.7.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.7.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.7.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.7.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.7.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.7.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.7.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.7.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.7.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.7.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.7.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.7.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.7.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.7.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.7.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.7.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.7.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.7.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.7.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.7.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.7.a`
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.7.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.7.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.7.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.7.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.7.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.7.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.7.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.7.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.7.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.7.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.7.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.7.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.7.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.7.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.7.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.7.a`
 
 
 nrf_cc3xx_platform - 0.9.6
@@ -826,65 +826,65 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.6.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.6.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.6.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.6.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.6.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.6.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.6.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.6.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.6.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.6.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.6.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.6.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.6.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.6.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.6.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.6.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.6.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.6.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.6.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.6.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.6.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.6.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.6.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.6.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.6.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.6.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.6.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.6.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.6.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.6.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.6.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.6.a`
 
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.6.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.6.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.6.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.6.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.6.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.6.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.6.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.6.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.6.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.6.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.6.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.6.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.6.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.6.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.6.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.6.a`
 
 
 nrf_cc3xx_platform - 0.9.5
@@ -903,65 +903,65 @@ A new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.5.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.5.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.5.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.5.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.5.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.5.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.5.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.5.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.5.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.5.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.5.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.5.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.5.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.5.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.5.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.5.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.5.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.5.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.5.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.5.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.5.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.5.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.5.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.5.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.5.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.5.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.5.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.5.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.5.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.5.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.5.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.5.a`
 
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.5.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.5.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.5.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.5.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.5.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.5.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.5.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.5.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.5.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.5.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.5.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.5.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.5.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.5.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.5.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.5.a`
 
 
 nrf_cc3xx_platform - 0.9.4
@@ -983,65 +983,65 @@ A new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.4.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.4.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.4.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.4.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.4.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.4.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.4.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.4.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.4.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.4.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.4.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.4.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.4.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.4.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.4.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.4.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.4.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.4.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.4.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.4.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.4.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.4.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.4.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.4.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.4.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.4.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.4.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.4.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.4.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.4.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.4.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.4.a`
 
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.4.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.4.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.4.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.4.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.4.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.4.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.4.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.4.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.4.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.4.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.4.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.4.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.4.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.4.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.4.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.4.a`
 
 nrf_cc3xx_platform - 0.9.3
 **************************
@@ -1069,65 +1069,65 @@ A new build of nrf_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340
 
 * nrf_cc312_platform, nRF5340 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc312_platform_0.9.3.a``
-  * ``cortex-m33/soft-float/libnrf_cc312_platform_0.9.3.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc312_platform_0.9.3.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc312_platform_0.9.3.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.3.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.3.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc312_platform_0.9.3.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc312_platform_0.9.3.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.3.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.3.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc312_platform_0.9.3.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc312_platform_0.9.3.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.3.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.3.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.3.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc312_platform_0.9.3.a`
 
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.3.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.3.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.3.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.3.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.3.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.3.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.3.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.3.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.3.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.3.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.3.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.3.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.3.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.3.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.3.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.3.a`
 
 
 * nrf_cc310_platform, nRF52840 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.3.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.3.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.3.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.3.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.3.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.3.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.3.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.3.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.3.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.3.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.3.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.3.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.3.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.3.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.3.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.3.a`
 
 
 nrf_cc310_platform - 0.9.2
@@ -1150,43 +1150,43 @@ A new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.2.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.2.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.2.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.2.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.2.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.2.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.2.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.2.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.2.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.2.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.2.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.2.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.2.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.2.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.2.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.2.a`
 
 * nrf_cc310_platform, nRF52 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.2.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.2.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.2.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.2.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.2.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.2.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.2.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.2.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.2.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.2.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.2.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.2.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.2.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.2.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.2.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.2.a`
 
 
 nrf_cc310_platform - 0.9.1
@@ -1210,43 +1210,43 @@ A new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.1.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.1.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.1.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.1.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.1.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.1.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.1.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.1.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.1.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.1.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.1.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.1.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.1.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.1.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.1.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.1.a`
 
 * nrf_cc310_platform, nRF52 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.1.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.1.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.1.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.1.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.1.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.1.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.1.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.1.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.1.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.1.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.1.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.1.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.1.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.1.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.1.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.1.a`
 
 
 nrf_cc310_platform - 0.9.0
@@ -1271,40 +1271,40 @@ A new build of nrf_cc310_platform library for nRF9160 and nRF52 architectures.
 
 * nrf_cc310_platform, nRF9160 variants
 
-  * ``cortex-m33/hard-float/libnrf_cc310_platform_0.9.0.a``
-  * ``cortex-m33/soft-float/libnrf_cc310_platform_0.9.0.a``
+  * :file:`cortex-m33/hard-float/libnrf_cc310_platform_0.9.0.a`
+  * :file:`cortex-m33/soft-float/libnrf_cc310_platform_0.9.0.a`
 
   * No interrupts
 
-    * ``cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.0.a``
-    * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.0.a``
+    * :file:`cortex-m33/soft-float/no-interrupts/libnrf_cc310_platform_0.9.0.a`
+    * :file:`cortex-m33/hard-float/no-interrupts/libnrf_cc310_platform_0.9.0.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.0.a``
-    * ``cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.0.a``
+    * :file:`cortex-m33/hard-float/short-wchar/libnrf_cc310_platform_0.9.0.a`
+    * :file:`cortex-m33/soft-float/short-wchar/libnrf_cc310_platform_0.9.0.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.0.a``
-    * ``cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.0.a``
+    * :file:`cortex-m33/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.0.a`
+    * :file:`cortex-m33/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.0.a`
 
 * nrf_cc310_platform, nRF52 variants
 
-  * ``cortex-m4/soft-float/libnrf_cc310_platform_0.9.0.a``
-  * ``cortex-m4/hard-float/libnrf_cc310_platform_0.9.0.a``
+  * :file:`cortex-m4/soft-float/libnrf_cc310_platform_0.9.0.a`
+  * :file:`cortex-m4/hard-float/libnrf_cc310_platform_0.9.0.a`
 
   * No interrupts
 
-    * ``cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.0.a``
-    * ``cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.0.a``
+    * :file:`cortex-m4/hard-float/no-interrupts/libnrf_cc310_platform_0.9.0.a`
+    * :file:`cortex-m4/soft-float/no-interrupts/libnrf_cc310_platform_0.9.0.a`
 
   * short-wchar
 
-    * ``cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.0.a``
-    * ``cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.0.a``
+    * :file:`cortex-m4/soft-float/short-wchar/libnrf_cc310_platform_0.9.0.a`
+    * :file:`cortex-m4/hard-float/short-wchar/libnrf_cc310_platform_0.9.0.a`
 
   * short-wchar, no interrupts
 
-    * ``cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.0.a``
-    * ``cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.0.a``
+    * :file:`cortex-m4/soft-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.0.a`
+    * :file:`cortex-m4/hard-float/short-wchar/no-interrupts/libnrf_cc310_platform_0.9.0.a`

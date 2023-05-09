@@ -17,15 +17,15 @@ nrf_modem 2.4.0
 
 * Added
 
-  * The ``NRF_SO_SEC_DTLS_CID`` and ``NRF_SO_SEC_DTLS_CID_STATUS`` socket options for DTLS connection ID.
-  * The ``NRF_SO_SEC_DTLS_CONN_SAVE`` and ``NRF_SO_SEC_DTLS_CONN_LOAD`` socket options.
-  * The ``NRF_SO_SEC_CIPHERSUITE_USED`` socket option (requires mfw v2.0.0).
-  * The ``NRF_SO_SEC_HANDSHAKE_STATUS`` socket option (requires mfw v2.0.0).
+  * The :c:macro:`NRF_SO_SEC_DTLS_CID` and :c:macro:`NRF_SO_SEC_DTLS_CID_STATUS` socket options for DTLS connection ID.
+  * The :c:macro:`NRF_SO_SEC_DTLS_CONN_SAVE` and :c:macro:`NRF_SO_SEC_DTLS_CONN_LOAD` socket options.
+  * The :c:macro:`NRF_SO_SEC_CIPHERSUITE_USED` socket option (requires modem firmware v2.0.0).
+  * The :c:macro:`NRF_SO_SEC_HANDSHAKE_STATUS` socket option (requires modem firmware v2.0.0).
   * The :c:macro:`NRF_SOCKET_TLS_MAX_SEC_TAG_LIST_SIZE` macro to indicate the maximum number of security tags that can be associated with a socket.
   * Several new macros for allowed TLS/DTLS socket option values.
 
 * Fixed a memory leak in the :c:func:`nrf_getsockopt` function, in certain cases where the function returned an error.
-* The :c:macro:`NRF_MODEM_MAX_SOCKET_COUNT` macro was moved to :file:`nrf_socket.h`, from :file:`nrf_modem.h`.
+* The :c:macro:`NRF_MODEM_MAX_SOCKET_COUNT` macro was moved from :file:`nrf_modem.h` to :file:`nrf_socket.h`.
 
 :ref:`AT interface <nrf_modem_at>`
 ==================================

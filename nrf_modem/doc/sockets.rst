@@ -70,7 +70,7 @@ The following table shows all socket options supported by the Modem library.
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_SOL_SECURE  | NRF_SO_SEC_HOSTNAME             | ``char *``             | get/set    | Set/get the hostname to check against during TLS handshakes.                               |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE  | NRF_SO_SEC_CIPHERSUITE_LIST     | ``nrf_sec_cipher_t *`` | get/set    | Set/get allowed ciphersuite list.                                                          |
+| NRF_SOL_SECURE  | NRF_SO_SEC_CIPHERSUITE_LIST     | ``nrf_sec_cipher_t *`` | get/set    | Set/get allowed cipher suite list.                                                         |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_SOL_SECURE  | NRF_SO_SEC_PEER_VERIFY          | ``nrf_peer_verify_t``  | get/set    | Set/get Peer verification level.                                                           |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
@@ -108,12 +108,12 @@ The details for each socket are described as follows:
 NRF_SO_ERROR
    When this option is specified, :c:func:`nrf_getsockopt` returns any pending errors on the socket and clears the error status.
    It returns a ``0`` value if there is no pending error.
-   ``NRF_SO_ERROR`` might be used to check for asynchronous errors on connected connectionless-mode sockets or for other types of asynchronous errors.
-   ``NRF_SO_ERROR`` has no default value.
+   :c:macro:`NRF_SO_ERROR` might be used to check for asynchronous errors on connected connectionless-mode sockets or for other types of asynchronous errors.
+   :c:macro:`NRF_SO_ERROR` has no default value.
 
 NRF_SO_REUSEADDR
   Allow for the reuse of local addresses by using the :c:func:`nrf_bind` function.
-  The default value for ``NRF_SO_REUSEADDR`` is ``off``, that is, reuse of local addresses is not permitted.
+  The default value for :c:macro:`NRF_SO_REUSEADDR` is ``off``, that is, reuse of local addresses is not permitted.
 
 NRF_SO_RCVTIMEO
    Set a timeout value for the :c:func:`nrf_recv` and :c:func:`nrf_recvfrom` operations.
@@ -217,9 +217,9 @@ NRF_SO_SEC_PEER_VERIFY
   Set the peer verification level.
   The following values are accepted:
 
-   * ``NRF_SO_SEC_PEER_VERIFY_NONE`` - No peer verification
-   * ``NRF_SO_SEC_PEER_VERIFY_OPTIONAL`` - Optional peer verification
-   * ``NRF_SO_SEC_PEER_VERIFY_REQUIRED`` - Peer verification is required
+   * :c:macro:`NRF_SO_SEC_PEER_VERIFY_NONE` - No peer verification
+   * :c:macro:`NRF_SO_SEC_PEER_VERIFY_OPTIONAL` - Optional peer verification
+   * :c:macro:`NRF_SO_SEC_PEER_VERIFY_REQUIRED` - Peer verification is required
 
    By default, peer verification is required.
 
@@ -227,8 +227,8 @@ NRF_SO_SEC_ROLE
    Set the role for the connection.
    The following values are accepted:
 
-   * ``NRF_SO_SEC_ROLE_CLIENT`` - Client role
-   * ``NRF_SO_SEC_ROLE_SERVER`` - Server role
+   * :c:macro:`NRF_SO_SEC_ROLE_CLIENT` - Client role
+   * :c:macro:`NRF_SO_SEC_ROLE_SERVER` - Server role
 
    The default role is client.
    For TLS, the choice is implicit from the usage of ``listen()``, ``accept()`` and ``connect()``.
@@ -237,8 +237,8 @@ NRF_SO_SEC_SESSION_CACHE
    This option controls TLS session caching.
    The following values are accepted:
 
-   * ``NRF_SO_SEC_SESSION_CACHE_DISABLED`` - Disable TLS session caching
-   * ``NRF_SO_SEC_SESSION_CACHE_ENABLED`` - Enable TLS session caching
+   * :c:macro:`NRF_SO_SEC_SESSION_CACHE_DISABLED` - Disable TLS session caching
+   * :c:macro:`NRF_SO_SEC_SESSION_CACHE_ENABLED` - Enable TLS session caching
 
    By default, TLS session caching is disabled.
 
@@ -252,13 +252,13 @@ NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO
    The following values are accepted:
 
    * 0 -  No timeout
-   * ``NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_1S`` - 1 second
-   * ``NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_3S`` - 3 seconds
-   * ``NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_7S`` - 7 seconds
-   * ``NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_15S`` - 15 seconds
-   * ``NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_31S`` - 31 seconds
-   * ``NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_63S`` - 63 seconds
-   * ``NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_123S`` - 123 seconds
+   * :c:macro:`NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_1S` - 1 second
+   * :c:macro:`NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_3S` - 3 seconds
+   * :c:macro:`NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_7S` - 7 seconds
+   * :c:macro:`NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_15S` - 15 seconds
+   * :c:macro:`NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_31S` - 31 seconds
+   * :c:macro:`NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_63S` - 63 seconds
+   * :c:macro:`NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_123S` - 123 seconds
 
    The default is no timeout.
 
@@ -268,8 +268,8 @@ NRF_SO_SEC_HANDSHAKE_STATUS
    The socket option is supported from modem firmware v2.x.x.
    The following values are expected:
 
-   * ``NRF_SO_SEC_HANDSHAKE_STATUS_FULL`` - TLS/DTLS attach/negotiation procedure was made with a full handshake, and session cache data was not used or it was not accepted by the server.
-   * ``NRF_SO_SEC_HANDSHAKE_STATUS_CACHED`` - The latest TLS/DTLS attach negotiation was completed successfully with cached session data.
+   * :c:macro:`NRF_SO_SEC_HANDSHAKE_STATUS_FULL` - TLS/DTLS attach/negotiation procedure was made with a full handshake, and session cache data was not used or it was not accepted by the server.
+   * :c:macro:`NRF_SO_SEC_HANDSHAKE_STATUS_CACHED` - The latest TLS/DTLS attach negotiation was completed successfully with cached session data.
 
    The default is a full handshake.
 
@@ -278,9 +278,9 @@ NRF_SO_SEC_DTLS_CID
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
    The following values are accepted:
 
-   * ``NRF_SO_SEC_DTLS_CID_DISABLED`` - The DTLS connection ID is not used, and the connection ID extension is not included in the client hello.
-   * ``NRF_SO_SEC_DTLS_CID_SUPPORTED`` - The DTLS connection ID is supported but not used, and the connection ID extension with a zero-length CID is included in the client hello.
-   * ``NRF_SO_SEC_DTLS_CID_ENABLED`` - The DTLS connection ID is used, and the connection ID extension with a valid CID is included in the client hello.
+   * :c:macro:`NRF_SO_SEC_DTLS_CID_DISABLED` - The DTLS connection ID is not used, and the connection ID extension is not included in the client hello.
+   * :c:macro:`NRF_SO_SEC_DTLS_CID_SUPPORTED` - The DTLS connection ID is supported but not used, and the connection ID extension with a zero-length CID is included in the client hello.
+   * :c:macro:`NRF_SO_SEC_DTLS_CID_ENABLED` - The DTLS connection ID is used, and the connection ID extension with a valid CID is included in the client hello.
 
    The default is disabled.
 
@@ -290,11 +290,11 @@ NRF_SO_SEC_DTLS_CID_STATUS
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
    The following values are expected:
 
-   * ``NRF_SO_SEC_DTLS_CID_STATUS_DISABLED`` - The DTLS connection ID is not included in DTLS records sent to and from the modem.
+   * :c:macro:`NRF_SO_SEC_DTLS_CID_STATUS_DISABLED` - The DTLS connection ID is not included in DTLS records sent to and from the modem.
      This status is returned before the DTLS handshake is complete.
-   * ``NRF_SO_SEC_DTLS_CID_STATUS_DOWNLINK`` - The DTLS connection ID is included only in DTLS records sent to the modem.
-   * ``NRF_SO_SEC_DTLS_CID_STATUS_UPLINK`` - The DTLS connection ID is included only in DTLS records sent from the modem.
-   * ``NRF_SO_SEC_DTLS_CID_STATUS_BIDIRECTIONAL`` - The DTLS connection ID is included in DTLS records sent to and from the modem.
+   * :c:macro:`NRF_SO_SEC_DTLS_CID_STATUS_DOWNLINK` - The DTLS connection ID is included only in DTLS records sent to the modem.
+   * :c:macro:`NRF_SO_SEC_DTLS_CID_STATUS_UPLINK` - The DTLS connection ID is included only in DTLS records sent from the modem.
+   * :c:macro:`NRF_SO_SEC_DTLS_CID_STATUS_BIDIRECTIONAL` - The DTLS connection ID is included in DTLS records sent to and from the modem.
 
 NRF_SO_SEC_DTLS_CONN_SAVE
    Save DTLS connection.
@@ -302,17 +302,17 @@ NRF_SO_SEC_DTLS_CONN_SAVE
    This option require a DTLS v1.2 connection with renegotiation disabled.
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
 
-   Once the DTLS context is saved, the socket can't be used before the DTLS context is loaded with NRF_SO_SEC_DTLS_CONN_LOAD.
+   Once the DTLS context is saved, the socket can't be used before the DTLS context is loaded with :c:macro:`NRF_SO_SEC_DTLS_CONN_LOAD`.
 
    This option will fail with nrf_errno ``NRF_EAGAIN`` if an error happened during serialization of the SSL context.
    This can occur, for instance, when the modem cannot allocate enough memory or if the socket is busy sending or receiving data.
    In this case, the SSL context is still present in the socket, so data sending is still possible.
    The option will fail with nrf_errno ``NRF_EINVAL`` if the socket option is not supported with the current configuration, for instance because the DTLS handshake is not completed,
-   the connection is not an DTLS v1.2 connection with renegotiation disabled, or the connection does not use an AEAD ciper suite (AES-CCM or AES-GCM).
+   the connection is not an DTLS v1.2 connection with renegotiation disabled, or the connection does not use an AEAD cipher suite (AES-CCM or AES-GCM).
    The option will fail with nrf_errno ``NRF_ENOMEM`` if the amount of saved connections exceeds four.
 
 NRF_SO_SEC_DTLS_CONN_LOAD
-   LOAD DTLS connection.
+   Load DTLS connection.
    This option is write-only.
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
 
@@ -336,7 +336,7 @@ For more information about how to configure PDP contexts, activate PDN connectio
 Configuring a socket to use a PDN
 =================================
 
-The application can select which PDN to use on a specific socket by using the :c:func:`nrf_setsockopt` function, with the ``NRF_SO_BINDTODEVICE`` option and specifying the PDN ID as a string, prefixed by ``pdn``.
+The application can select which PDN to use on a specific socket by using the :c:func:`nrf_setsockopt` function, with the :c:macro:`NRF_SO_BINDTODEVICE` option and specifying the PDN ID as a string, prefixed by ``pdn``.
 For example, to select the PDN with ID 1, the application must pass ``pdn1`` as the option value.
 
 The following code shows how to create an IPv4 TCP stream socket and configure it to use the PDN with ID 1:
@@ -369,7 +369,7 @@ Handling PDN errors on sockets
 During operation, an active PDN connection may be deactivated due to loss of connectivity or other reasons.
 When a socket operation is attempted on a socket that no longer has an active PDN connection, the operation will return ``-1`` and set ``errno`` to ``NRF_ENETDOWN``.
 If the socket is being polled, the :c:func:`nrf_poll` function will set the ``POLLERR`` flag and set the socket error to ``NRF_ENETDOWN``.
-The socket error can be retrieved using the ``NRF_SO_ERROR`` socket option.
+The socket error can be retrieved using the :c:macro:`NRF_SO_ERROR` socket option.
 
 When the ``NRF_ENETDOWN`` error is detected, the socket is no longer usable and must be closed by the application.
 The application is responsible for detecting when the PDN connection is activated again, before re-creating the socket and attempting the failed operation again.
