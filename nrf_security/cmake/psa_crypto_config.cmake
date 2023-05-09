@@ -236,6 +236,8 @@ kconfig_check_and_set_base_to_one(MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_256)
 kconfig_check_and_set_base_to_one(MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_384)
 kconfig_check_and_set_base_to_one(MBEDTLS_PSA_BUILTIN_ECC_SECP_R1_521)
 
+kconfig_check_and_set_base_to_one(PSA_CRYPTO_DRIVER_ENTROPY_ZEPHYR)
+
 # Nordic specific
 kconfig_check_and_set_base_to_one(PSA_NATIVE_ITS)
 kconfig_check_and_set_base_to_one(PSA_EITS_BACKEND_ZEPHYR)

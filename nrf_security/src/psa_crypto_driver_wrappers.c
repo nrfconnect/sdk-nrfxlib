@@ -109,6 +109,9 @@
 #include "tfm_builtin_key_loader.h"
 #endif /* PSA_CRYPTO_DRIVER_TFM_BUILTIN_KEY_LOADER */
 
+#if defined(PSA_CRYPTO_DRIVER_ENTROPY_ZEPHYR)
+#include "zephyr_entropy.h"
+#endif
 
 /* Repeat above block for each JSON-declared driver during autogeneration */
 #endif /* MBEDTLS_PSA_CRYPTO_DRIVERS */
@@ -3128,6 +3131,23 @@ psa_status_t psa_driver_wrapper_free_random(
 
     (void)context;
     return PSA_ERROR_NOT_SUPPORTED;
+}
+
+psa_status_t psa_driver_wrapper_get_entropy(
+    uint32_t flags,
+    size_t* estimate_bits,
+    uint8_t* output,
+    size_t output_size)
+{
+#if defined(PSA_CRYPTO_DRIVER_ENTROPY_ZEPHYR)
+    return zephyr_get_entropy(flags, estimate_bits, output, output_size);
+#endif
+
+    (void)flags;
+    (void)output;
+    (void)output_size;
+    *estimate_bits = 0;
+    return PSA_ERROR_INSUFFICIENT_ENTROPY;
 }
 
 #endif /* CONFIG_PSA_CORE_OBERON */

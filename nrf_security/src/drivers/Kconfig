@@ -57,4 +57,6 @@ rsource "nrf_cc3xx_platform/Kconfig"
 
 rsource "nrf_oberon/Kconfig"
 
+rsource "zephyr/Kconfig"
+
 rsource "builtin/Kconfig"
