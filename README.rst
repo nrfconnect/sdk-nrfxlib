@@ -19,6 +19,7 @@ Refer to their respective documentation for more information.
    nrf_modem/README
    mpsl/README
    nrf_802154/README
+   nrf_fuel_gauge/README
    nfc/README
    nrf_dm/README
    nrf_security/README
@@ -26,4 +27,3 @@ Refer to their respective documentation for more information.
    nrf_rpc/README
    softdevice_controller/README
    zboss/README
-   nrf_fuel_gauge/README

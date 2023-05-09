@@ -55,75 +55,75 @@ Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.13.a``
-  * ``cortex-m33/hard-float/liboberon_mbedtls_3.0.13.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.13.a``
-  * ``cortex-m33/soft-float/liboberon_mbedtls_3.0.13.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.13.a`
+  * :file:`cortex-m33/hard-float/liboberon_mbedtls_3.0.13.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.13.a`
+  * :file:`cortex-m33/soft-float/liboberon_mbedtls_3.0.13.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.13.a``
-    * ``cortex-m33/hard-float/short-wchar/liboberon_mbedtls_3.0.13.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.13.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_mbedtls_3.0.13.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.13.a`
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_mbedtls_3.0.13.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.13.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_mbedtls_3.0.13.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.13.lib``
-    * ``cortex-m33/hard-float/short-wchar/oberon_mbedtls_3.0.13.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.13.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.13.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.13.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_mbedtls_3.0.13.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.13.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.13.lib``
 
 * nrf_oberon, nRF53 network core variants
 
-  * ``cortex-m33+nodsp/soft-float/liboberon_3.0.13.a``
-  * ``cortex-m33+nodsp/soft-float/liboberon_mbedtls_3.0.13.a``
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_3.0.13.a`
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_mbedtls_3.0.13.a`
 
   * short-wchar
 
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.13.a``
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_mbedtls_3.0.13.a``
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.13.a`
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_mbedtls_3.0.13.a`
 
   * Keil
 
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.13.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.13.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.13.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.13.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.13.a``
-  * ``cortex-m4/hard-float/liboberon_mbedtls_3.0.13.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.13.a``
-  * ``cortex-m4/soft-float/liboberon_mbedtls_3.0.13.a.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.13.a`
+  * :file:`cortex-m4/hard-float/liboberon_mbedtls_3.0.13.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.13.a`
+  * :file:`cortex-m4/soft-float/liboberon_mbedtls_3.0.13.a.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.13.a``
-    * ``cortex-m4/hard-float/short-wchar/liboberon_mbedtls_3.0.13.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.13.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_mbedtls_3.0.13.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.13.a`
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_mbedtls_3.0.13.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.13.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_mbedtls_3.0.13.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.13.lib``
-    * ``cortex-m4/soft-float/short-wchar/oberon_mbedtls_3.0.13.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.13.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_mbedtls_3.0.13.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.13.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_mbedtls_3.0.13.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.13.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_mbedtls_3.0.13.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.13.a``
-  * ``cortex-m0/soft-float/liboberon_mbedtls_3.0.13.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.13.a`
+  * :file:`cortex-m0/soft-float/liboberon_mbedtls_3.0.13.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.13.a``
-    * ``cortex-m0/soft-float/short-wchar/liboberon_mbedtls_3.0.13.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.13.a`
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_mbedtls_3.0.13.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.13.lib``
-    * ``cortex-m0/soft-float/short-wchar/oberon_mbedtls_3.0.13.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.13.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_mbedtls_3.0.13.lib``
 
 nrf_oberon - 3.0.12
 *******************
@@ -147,93 +147,93 @@ The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 archi
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.12.a``
-  * ``cortex-m33/hard-float/liboberon_psa_3.0.12.a``
-  * ``cortex-m33/hard-float/liboberon_mbedtls_3.0.12.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.12.a``
-  * ``cortex-m33/soft-float/liboberon_psa_3.0.12.a``
-  * ``cortex-m33/soft-float/liboberon_mbedtls_3.0.12.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.12.a`
+  * :file:`cortex-m33/hard-float/liboberon_psa_3.0.12.a`
+  * :file:`cortex-m33/hard-float/liboberon_mbedtls_3.0.12.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.12.a`
+  * :file:`cortex-m33/soft-float/liboberon_psa_3.0.12.a`
+  * :file:`cortex-m33/soft-float/liboberon_mbedtls_3.0.12.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.12.a``
-    * ``cortex-m33/hard-float/short-wchar/liboberon_psa_3.0.12.a``
-    * ``cortex-m33/hard-float/short-wchar/liboberon_mbedtls_3.0.12.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.12.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_psa_3.0.12.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_mbedtls_3.0.12.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.12.a`
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_psa_3.0.12.a`
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_mbedtls_3.0.12.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.12.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_psa_3.0.12.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_mbedtls_3.0.12.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.12.lib``
-    * ``cortex-m33/hard-float/short-wchar/oberon_psa_3.0.12.lib``
-    * ``cortex-m33/hard-float/short-wchar/oberon_mbedtls_3.0.12.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.12.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_psa_3.0.12.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.12.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.12.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_psa_3.0.12.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_mbedtls_3.0.12.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.12.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_psa_3.0.12.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.12.lib``
 
 * nrf_oberon, nrf53 network core variants
 
-  * ``cortex-m33+nodsp/soft-float/liboberon_3.0.12.a``
-  * ``cortex-m33+nodsp/soft-float/liboberon_psa_3.0.12.a``
-  * ``cortex-m33+nodsp/soft-float/liboberon_mbedtls_3.0.12.a``
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_3.0.12.a`
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_psa_3.0.12.a`
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_mbedtls_3.0.12.a`
 
   * short-wchar
 
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.12.a``
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_psa_3.0.12.a``
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_mbedtls_3.0.12.a``
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.12.a`
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_psa_3.0.12.a`
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_mbedtls_3.0.12.a`
 
   * Keil
 
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.12.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_psa_3.0.12.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.12.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.12.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_psa_3.0.12.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.12.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.12.a``
-  * ``cortex-m4/hard-float/liboberon_psa_3.0.12.a``
-  * ``cortex-m4/hard-float/liboberon_mbedtls_3.0.12.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.12.a``
-  * ``cortex-m4/soft-float/liboberon_psa_3.0.12.a``
-  * ``cortex-m4/soft-float/liboberon_mbedtls_3.0.12.a.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.12.a`
+  * :file:`cortex-m4/hard-float/liboberon_psa_3.0.12.a`
+  * :file:`cortex-m4/hard-float/liboberon_mbedtls_3.0.12.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.12.a`
+  * :file:`cortex-m4/soft-float/liboberon_psa_3.0.12.a`
+  * :file:`cortex-m4/soft-float/liboberon_mbedtls_3.0.12.a.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.12.a``
-    * ``cortex-m4/hard-float/short-wchar/liboberon_psa_3.0.12.a``
-    * ``cortex-m4/hard-float/short-wchar/liboberon_mbedtls_3.0.12.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.12.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_psa_3.0.12.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_mbedtls_3.0.12.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.12.a`
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_psa_3.0.12.a`
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_mbedtls_3.0.12.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.12.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_psa_3.0.12.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_mbedtls_3.0.12.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.12.lib``
-    * ``cortex-m4/soft-float/short-wchar/oberon_psa_3.0.12.lib``
-    * ``cortex-m4/soft-float/short-wchar/oberon_mbedtls_3.0.12.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.12.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_psa_3.0.12.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_mbedtls_3.0.12.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.12.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_psa_3.0.12.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_mbedtls_3.0.12.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.12.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_psa_3.0.12.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_mbedtls_3.0.12.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.12.a``
-  * ``cortex-m0/soft-float/oberon_psa_3.0.12.lib``
-  * ``cortex-m0/soft-float/liboberon_mbedtls_3.0.12.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.12.a`
+  * :file:`cortex-m0/soft-float/oberon_psa_3.0.12.lib``
+  * :file:`cortex-m0/soft-float/liboberon_mbedtls_3.0.12.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.12.a``
-    * ``cortex-m0/soft-float/short-wchar/liboberon_psa_3.0.12.a``
-    * ``cortex-m0/soft-float/short-wchar/liboberon_mbedtls_3.0.12.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.12.a`
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_psa_3.0.12.a`
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_mbedtls_3.0.12.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.12.lib``
-    * ``cortex-m0/soft-float/short-wchar/oberon_psa_3.0.12.lib``
-    * ``cortex-m0/soft-float/short-wchar/oberon_mbedtls_3.0.12.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.12.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_psa_3.0.12.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_mbedtls_3.0.12.lib``
 
 
 nrf_oberon - 3.0.11
@@ -256,94 +256,94 @@ The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 archi
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.11.a``
-  * ``cortex-m33/hard-float/liboberon_psa_3.0.11.a``
-  * ``cortex-m33/hard-float/liboberon_mbedtls_3.0.11.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.11.a``
-  * ``cortex-m33/soft-float/liboberon_psa_3.0.11.a``
-  * ``cortex-m33/soft-float/liboberon_mbedtls_3.0.11.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.11.a`
+  * :file:`cortex-m33/hard-float/liboberon_psa_3.0.11.a`
+  * :file:`cortex-m33/hard-float/liboberon_mbedtls_3.0.11.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.11.a`
+  * :file:`cortex-m33/soft-float/liboberon_psa_3.0.11.a`
+  * :file:`cortex-m33/soft-float/liboberon_mbedtls_3.0.11.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.11.a``
-    * ``cortex-m33/hard-float/short-wchar/liboberon_psa_3.0.11.a``
-    * ``cortex-m33/hard-float/short-wchar/liboberon_mbedtls_3.0.11.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.11.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_psa_3.0.11.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_mbedtls_3.0.11.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.11.a`
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_psa_3.0.11.a`
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_mbedtls_3.0.11.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.11.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_psa_3.0.11.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_mbedtls_3.0.11.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.11.lib``
-    * ``cortex-m33/hard-float/short-wchar/oberon_psa_3.0.11.lib``
-    * ``cortex-m33/hard-float/short-wchar/oberon_mbedtls_3.0.11.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.11.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_psa_3.0.11.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.11.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.11.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_psa_3.0.11.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_mbedtls_3.0.11.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.11.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_psa_3.0.11.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.11.lib``
 
 * nrf_oberon, nrf53 network core variants
 
-  * ``cortex-m33+nodsp/soft-float/liboberon_3.0.11.a``
-  * ``cortex-m33+nodsp/soft-float/liboberon_psa_3.0.11.a``
-  * ``cortex-m33+nodsp/soft-float/liboberon_mbedtls_3.0.11.a``
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_3.0.11.a`
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_psa_3.0.11.a`
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_mbedtls_3.0.11.a`
 
   * short-wchar
 
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.11.a``
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_psa_3.0.11.a``
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_mbedtls_3.0.11.a``
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.11.a`
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_psa_3.0.11.a`
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_mbedtls_3.0.11.a`
 
   * Keil
 
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.11.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_psa_3.0.11.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.11.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.11.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_psa_3.0.11.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.11.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.11.a``
-  * ``cortex-m4/hard-float/liboberon_psa_3.0.11.a``
-  * ``cortex-m4/hard-float/liboberon_mbedtls_3.0.11.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.11.a``
-  * ``cortex-m4/soft-float/liboberon_psa_3.0.11.a``
-  * ``cortex-m4/soft-float/liboberon_mbedtls_3.0.11.a.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.11.a`
+  * :file:`cortex-m4/hard-float/liboberon_psa_3.0.11.a`
+  * :file:`cortex-m4/hard-float/liboberon_mbedtls_3.0.11.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.11.a`
+  * :file:`cortex-m4/soft-float/liboberon_psa_3.0.11.a`
+  * :file:`cortex-m4/soft-float/liboberon_mbedtls_3.0.11.a.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.11.a``
-    * ``cortex-m4/hard-float/short-wchar/liboberon_psa_3.0.11.a``
-    * ``cortex-m4/hard-float/short-wchar/liboberon_mbedtls_3.0.11.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.11.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_psa_3.0.11.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_mbedtls_3.0.11.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.11.a`
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_psa_3.0.11.a`
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_mbedtls_3.0.11.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.11.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_psa_3.0.11.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_mbedtls_3.0.11.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.11.lib``
-    * ``cortex-m4/soft-float/short-wchar/oberon_psa_3.0.11.lib``
-    * ``cortex-m4/soft-float/short-wchar/oberon_mbedtls_3.0.11.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.11.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_psa_3.0.11.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_mbedtls_3.0.11.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.11.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_psa_3.0.11.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_mbedtls_3.0.11.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.11.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_psa_3.0.11.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_mbedtls_3.0.11.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.11.a``
-  * ``cortex-m0/soft-float/oberon_psa_3.0.11.lib``
-  * ``cortex-m0/soft-float/liboberon_mbedtls_3.0.11.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.11.a`
+  * :file:`cortex-m0/soft-float/oberon_psa_3.0.11.lib``
+  * :file:`cortex-m0/soft-float/liboberon_mbedtls_3.0.11.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.11.a``
-    * ``cortex-m0/soft-float/short-wchar/liboberon_psa_3.0.11.a``
-    * ``cortex-m0/soft-float/short-wchar/liboberon_mbedtls_3.0.11.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.11.a`
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_psa_3.0.11.a`
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_mbedtls_3.0.11.a`
 
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.11.lib``
-    * ``cortex-m0/soft-float/short-wchar/oberon_psa_3.0.11.lib``
-    * ``cortex-m0/soft-float/short-wchar/oberon_mbedtls_3.0.11.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.11.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_psa_3.0.11.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_mbedtls_3.0.11.lib``
 
 
 nrf_oberon - 3.0.10
@@ -364,57 +364,57 @@ The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 archi
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.10.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.10.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.10.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.10.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.10.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.10.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.10.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.10.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.10.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.10.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.10.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.10.lib``
 
 * nrf_oberon, nrf53 network core variants
 
-  * ``cortex-m33+nodsp/soft-float/liboberon_3.0.10.a``
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_3.0.10.a`
 
   * short-wchar
 
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.10.a``
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.10.a`
 
   * Keil
 
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.10.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.10.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.10.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.10.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.10.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.10.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.10.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.10.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.10.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.10.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.10.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.10.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.10.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.10.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.10.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.10.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.10.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.10.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.10.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.10.lib``
 
 nrf_oberon - 3.0.9
 ******************
@@ -433,57 +433,57 @@ The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 archi
 
 * nrf_oberon, nRF9160, and nRF53 application core variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.9.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.9.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.9.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.9.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.9.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.9.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.9.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.9.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.9.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.9.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.9.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.9.lib``
 
 * nrf_oberon, nrf53 network core variants
 
-  * ``cortex-m33+nodsp/soft-float/liboberon_3.0.9.a``
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_3.0.9.a`
 
   * short-wchar
 
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.9.a``
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.9.a`
 
   * Keil
 
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.9.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.9.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.9.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.9.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.9.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.9.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.9.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.9.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.9.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.9.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.9.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.9.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.9.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.9.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.9.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.9.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.9.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.9.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.9.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.9.lib``
 
 
 nrf_oberon - 3.0.8
@@ -505,57 +505,57 @@ The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 archi
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.8.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.8.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.8.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.8.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.8.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.8.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.8.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.8.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.8.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.8.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.8.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.8.lib``
 
 * nrf_oberon, nrf53 network core variants
 
-  * ``cortex-m33+nodsp/soft-float/liboberon_3.0.8.a``
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_3.0.8.a`
 
   * short-wchar
 
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.8.a``
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.8.a`
 
   * Keil
 
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.8.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.8.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.8.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.8.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.8.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.8.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.8.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.8.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.8.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.8.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.8.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.8.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.8.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.8.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.8.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.8.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.8.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.8.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.8.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.8.lib``
 
 nrf_oberon - 3.0.7
 ******************
@@ -587,57 +587,57 @@ The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 archi
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.7.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.7.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.7.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.7.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.7.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.7.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.7.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.7.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.7.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.7.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.7.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.7.lib``
 
 * nrf_oberon, nrf53 network core variants
 
-  * ``cortex-m33+nodsp/soft-float/liboberon_3.0.7.a``
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_3.0.7.a`
 
   * short-wchar
 
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.7.a``
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.7.a`
 
   * Keil
 
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.7.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.7.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.7.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.7.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.7.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.7.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.7.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.7.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.7.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.7.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.7.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.7.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.7.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.7.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.7.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.7.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.7.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.7.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.7.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.7.lib``
 
 nrf_oberon - 3.0.5
 ******************
@@ -672,57 +672,57 @@ The following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 archi
 
 * nrf_oberon, nRF9160 and nRF53 application core variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.5.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.5.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.5.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.5.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.5.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.5.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.5.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.5.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.5.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.5.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.5.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.5.lib``
 
 * nrf_oberon, nrf53 network core variants
 
-  * ``cortex-m33+nodsp/soft-float/liboberon_3.0.5.a``
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_3.0.5.a`
 
   * short-wchar
 
-    * ``cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.5.a``
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.5.a`
 
   * Keil
 
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.5.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.5.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.5.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.5.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.5.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.5.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.5.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.5.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.5.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.5.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.5.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.5.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.5.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.5.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.5.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.5.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.5.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.5.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.5.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.5.lib``
 
 nrf_oberon - 3.0.3
 ******************
@@ -740,45 +740,45 @@ The following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architecture
 
 * nrf_oberon, nRF9160 variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.3.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.3.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.3.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.3.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.3.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.3.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.3.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.3.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.3.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.3.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.3.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.3.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.3.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.3.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.3.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.3.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.3.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.3.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.3.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.3.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.3.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.3.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.3.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.3.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.3.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.3.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.3.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.3.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.3.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.3.lib``
 
 
 Removed
@@ -803,45 +803,45 @@ The following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architecture
 
 * nrf_oberon, nRF9160 variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.2.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.2.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.2.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.2.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.2.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.2.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.2.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.2.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.2.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.2.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.2.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.2.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.2.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.2.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.2.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.2.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.2.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.2.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.2.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.2.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.2.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.2.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.2.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.2.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.2.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.2.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.2.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.2.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.2.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.2.lib``
 
 
 Removed
@@ -866,45 +866,45 @@ The following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architecture
 
 * nrf_oberon, nRF9160 variants
 
-  * ``cortex-m33/hard-float/liboberon_3.0.0.a``
-  * ``cortex-m33/soft-float/liboberon_3.0.0.a``
+  * :file:`cortex-m33/hard-float/liboberon_3.0.0.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.0.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_3.0.0.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_3.0.0.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.0.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.0.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_3.0.0.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_3.0.0.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.0.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.0.lib``
 
 * nrf_oberon, nRF52 variants
 
-  * ``cortex-m4/hard-float/liboberon_3.0.0.a``
-  * ``cortex-m4/soft-float/liboberon_3.0.0.a``
+  * :file:`cortex-m4/hard-float/liboberon_3.0.0.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.0.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_3.0.0.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_3.0.0.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.0.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.0.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_3.0.0.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_3.0.0.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.0.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.0.lib``
 
 * nrf_oberon, nRF51 variants
 
-  * ``cortex-m0/soft-float/liboberon_3.0.0.a``
+  * :file:`cortex-m0/soft-float/liboberon_3.0.0.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_3.0.0.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.0.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_3.0.0.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.0.lib``
 
 
 Removed
@@ -928,42 +928,42 @@ The following Oberon crypto libraries for nRF9160, nRF52, and nRF51 architecture
 
 * nrf_oberon, nrf9160 variants
 
-  * ``cortex-m33/hard-float/liboberon_2.0.7.a``
-  * ``cortex-m33/soft-float/liboberon_2.0.7.a``
+  * :file:`cortex-m33/hard-float/liboberon_2.0.7.a`
+  * :file:`cortex-m33/soft-float/liboberon_2.0.7.a`
 
   * short-wchar
 
-    * ``cortex-m33/hard-float/short-wchar/liboberon_2.0.7.a``
-    * ``cortex-m33/soft-float/short-wchar/liboberon_2.0.7.a``
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_2.0.7.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_2.0.7.a`
 
   * Keil
 
-    * ``cortex-m33/hard-float/short-wchar/oberon_2.0.7.lib``
-    * ``cortex-m33/soft-float/short-wchar/oberon_2.0.7.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_2.0.7.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_2.0.7.lib``
 
 * nrf_oberon, nrf52 variants
 
-  * ``cortex-m4/hard-float/liboberon_2.0.7.a``
-  * ``cortex-m4/soft-float/liboberon_2.0.7.a``
+  * :file:`cortex-m4/hard-float/liboberon_2.0.7.a`
+  * :file:`cortex-m4/soft-float/liboberon_2.0.7.a`
 
   * short-wchar
 
-    * ``cortex-m4/hard-float/short-wchar/liboberon_2.0.7.a``
-    * ``cortex-m4/soft-float/short-wchar/liboberon_2.0.7.a``
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_2.0.7.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_2.0.7.a`
 
   * Keil
 
-    * ``cortex-m4/soft-float/short-wchar/oberon_2.0.7.lib``
-    * ``cortex-m4/hard-float/short-wchar/oberon_2.0.7.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_2.0.7.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_2.0.7.lib``
 
 * nrf_oberon, nrf51 variants
 
-  * ``cortex-m0/soft-float/liboberon_2.0.7.a``
+  * :file:`cortex-m0/soft-float/liboberon_2.0.7.a`
 
   * short-wchar
 
-    * ``cortex-m0/soft-float/short-wchar/liboberon_2.0.7.a``
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_2.0.7.a`
 
   * Keil
 
-    * ``cortex-m0/soft-float/short-wchar/oberon_2.0.7.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_2.0.7.lib``

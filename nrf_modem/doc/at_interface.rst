@@ -233,7 +233,7 @@ The following is the response format that must be the same as the modem's:
 * Successful responses end with ``OK\r\n``.
 * For error response, use ``ERROR\r\n``, ``+CME ERROR: <errorcode>``, or ``+CMS ERROR: <errorcode>`` depending on the error.
 
-The following snippet shows how to set up and use an custom AT command:
+The following snippet shows how to set up and use a custom AT command:
 
 .. code-block:: c
 
@@ -319,9 +319,9 @@ The user is responsible for rescheduling the processing of AT notifications as a
 In |NCS|, the :ref:`at_monitor_readme` library takes care of dispatching notifications to different parts of the application.
 
 .. important::
-   In NCS applications, many libraries use the :ref:`at_monitor_readme` library to register their own callback with the Modem library using the :c:func:`nrf_modem_at_notif_handler_set` function.
-   If you are building an NCS application, do not use the :c:func:`nrf_modem_at_notif_handler_set` function to register your callback.
-   Instead, use the :ref:`at_monitor_readme` library to dispatch AT notifications to where you need them in your application, and to ensure compatibility with other NCS libraries.
+   In |NCS| applications, many libraries use the :ref:`at_monitor_readme` library to register their own callback with the Modem library using the :c:func:`nrf_modem_at_notif_handler_set` function.
+   If you are building an |NCS| application, do not use the :c:func:`nrf_modem_at_notif_handler_set` function to register your callback.
+   Instead, use the :ref:`at_monitor_readme` library to dispatch AT notifications to where you need them in your application, and to ensure compatibility with other |NCS| libraries.
    The :ref:`at_monitor_readme` library also takes care of rescheduling the notifications to a thread context.
 
 Thread safety
