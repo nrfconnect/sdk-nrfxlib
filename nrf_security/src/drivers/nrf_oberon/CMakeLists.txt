@@ -33,6 +33,8 @@ if (COMPILE_PSA_APIS)
     oberon_key_pair.c
     oberon_mac.c
     oberon_rsa.c
+    oberon_ctr_drbg.c
+    oberon_hmac_drbg.c
   )
 
   # Add builtin functionality (if enabled)
