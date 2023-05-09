@@ -12,6 +12,8 @@ if(CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT CONFIG_BUILD_WITH_TFM)
   add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/nrf_cc3xx)
 endif()
 
+add_subdirectory(zephyr)
+
 if(CONFIG_PSA_CRYPTO_DRIVER_OBERON OR CONFIG_OBERON_BACKEND)
   add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/nrf_oberon)
 endif()
