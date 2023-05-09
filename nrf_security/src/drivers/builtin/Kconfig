@@ -129,8 +129,7 @@ config MBEDTLS_PSA_BUILTIN_ALG_CFB
 	bool
 	prompt "PSA AES CFB support - builtin" if !PSA_PROMPTLESS
 	depends on PSA_WANT_ALG_CFB
-	default y if !PSA_DEFAULT_OFF && \
-		     !PSA_CRYPTO_DRIVER_ALG_CFB_CC3XX
+	default y if !PSA_DEFAULT_OFF
 
 config MBEDTLS_PSA_BUILTIN_ALG_CHACHA20_POLY1305
 	bool
@@ -217,7 +216,8 @@ config MBEDTLS_PSA_BUILTIN_ALG_OFB
 	bool
 	prompt "PSA AES OFB mode support - builtin" if !PSA_PROMPTLESS
 	depends on PSA_WANT_ALG_OFB
-	default y if !PSA_DEFAULT_OFF
+	default y if !PSA_DEFAULT_OFF && \
+		     !PSA_CRYPTO_DRIVER_ALG_OFB_CC3XX
 
 # MBEDTLS_PSA_BUILTIN_ALG_PBKDF2_HMAC - Currently not supported
 
