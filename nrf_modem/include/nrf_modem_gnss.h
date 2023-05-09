@@ -1214,6 +1214,8 @@ int32_t nrf_modem_gnss_dyn_mode_change(uint32_t mode);
  *
  * @note This feature is only supported by modem firmware v1.3.0 or later.
  *
+ * @note 1PPS accuracy is not guaranteed when LTE is active.
+ *
  * @param[in] config Pointer to the configuration struct.
  *
  * @retval 0 on success.

@@ -44,41 +44,33 @@ The following table shows all socket options supported by the Modem library.
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | Option level    | Option                          | Type                   | Operations | Description                                                                                |
 +=================+=================================+========================+============+============================================================================================+
-| NRF_SOL_SOCKET  | NRF_SO_ERROR                    | int                    | get        | Requests and clears pending error information on the socket.                               |
+| NRF_SOL_SOCKET  | NRF_SO_ERROR                    | ``int``                | get        | Requests and clears pending error information on the socket.                               |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_REUSEADDR                | int                    | set        | Non-zero requests reuse of local addresses in :c:func:`nrf_bind` (protocol-specific).      |
+| NRF_SOL_SOCKET  | NRF_SO_REUSEADDR                | ``int``                | set        | Non-zero requests reuse of local addresses in :c:func:`nrf_bind` (protocol-specific).      |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_RCVTIMEO                 | struct nrf_timeval     | get/set    | Timeout value for a socket receive operation.                                              |
+| NRF_SOL_SOCKET  | NRF_SO_RCVTIMEO                 | ``struct nrf_timeval`` | get/set    | Timeout value for a socket receive operation.                                              |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_SNDTIMEO                 | struct nrf_timeval     | get/set    | Timeout value for a socket send operation.                                                 |
+| NRF_SOL_SOCKET  | NRF_SO_SNDTIMEO                 | ``struct nrf_timeval`` | get/set    | Timeout value for a socket send operation.                                                 |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_BINDTODEVICE             | char *                 | set        | Bind this socket to a specific PDN like ``pdn0`` as specified in the passed option value.  |
+| NRF_SOL_SOCKET  | NRF_SO_BINDTODEVICE             | ``char *``             | set        | Bind this socket to a specific PDN like ``pdn0`` as specified in the passed option value.  |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_POLLCB                   | struct nrf_pollcb      | set        | Set callbacks for poll() events on sockets.                                                |
+| NRF_SOL_SOCKET  | NRF_SO_POLLCB                   | ``struct nrf_pollcb``  | set        | Set callbacks for poll() events on sockets.                                                |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_RAI_LAST                 | int                    | set        | Enter Radio Resource Control (RRC) idle immediately after the next send operation.         |
+| NRF_SOL_SOCKET  | NRF_SO_RAI_LAST                 | ``int``                | set        | Enter Radio Resource Control (RRC) idle immediately after the next send operation.         |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_RAI_ONE_RESP             | int                    | set        | Wait for one incoming packet after the next send operation, before entering RRC idle mode. |
+| NRF_SOL_SOCKET  | NRF_SO_RAI_ONE_RESP             | ``int``                | set        | Wait for one incoming packet after the next send operation, before entering RRC idle mode. |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_RAI_ONGOING              | int                    | set        | Keep RRC in connected mode after the next send operation (client).                         |
+| NRF_SOL_SOCKET  | NRF_SO_RAI_ONGOING              | ``int``                | set        | Keep RRC in connected mode after the next send operation (client).                         |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_RAI_WAIT_MORE            | int                    | set        | Keep RRC in connected mode after the next send operation (server).                         |
+| NRF_SOL_SOCKET  | NRF_SO_RAI_WAIT_MORE            | ``int``                | set        | Keep RRC in connected mode after the next send operation (server).                         |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_RAI_NO_DATA              | int                    | set        | Immediately release the RRC.                                                               |
+| NRF_SOL_SOCKET  | NRF_SO_RAI_NO_DATA              | ``int``                | set        | Immediately release the RRC.                                                               |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_IPPROTO_ALL | NRF_SO_SILENCE_ALL              | int                    | get/set    | Non-zero disables ICMP echo replies on both IPv4 and IPv6.                                 |
+| NRF_SOL_SECURE  | NRF_SO_SEC_TAG_LIST             | ``nrf_sec_tag_t *``    | get/set    | Set/get the security tag associated with a socket.                                         |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_IPPROTO_IP  | NRF_SO_IP_ECHO_REPLY            | int                    | get/set    | Non-zero enables ICMP echo replies on IPv4.                                                |
+| NRF_SOL_SECURE  | NRF_SO_SEC_HOSTNAME             | ``char *``             | get/set    | Set/get the hostname to check against during TLS handshakes.                               |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_IPPROTO_IPV6| NRF_SO_IPV6_ECHO_REPLY          | int                    | get/set    | Non-zero enables ICMP echo replies on IPv6.                                                |
-+-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_IPPROTO_TCP | NRF_SO_TCP_SRV_SESSTIMEO        | int                    | get/set    | Non-zero enables TCP server session timeout after a configurable period of inactivity.     |
-+-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE  | NRF_SO_SEC_TAG_LIST             | ``nrf_sec_tag_t``      | get/set    | Set/get the security tag associated with a socket.                                         |
-+-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE  | NRF_SO_SEC_HOSTNAME             | char *                 | get/set    | Set/get the hostname to check against during TLS handshakes.                               |
-+-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE  | NRF_SO_SEC_CIPHERSUITE_LIST     | ``nrf_sec_cipher_t``   | get/set    | Set/get allowed ciphersuite list.                                                          |
+| NRF_SOL_SECURE  | NRF_SO_SEC_CIPHERSUITE_LIST     | ``nrf_sec_cipher_t *`` | get/set    | Set/get allowed ciphersuite list.                                                          |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_SOL_SECURE  | NRF_SO_SEC_PEER_VERIFY          | ``nrf_peer_verify_t``  | get/set    | Set/get Peer verification level.                                                           |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
@@ -86,9 +78,29 @@ The following table shows all socket options supported by the Modem library.
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_SOL_SECURE  | NRF_SO_SEC_SESSION_CACHE        | ``nrf_session_cache_t``| get/set    | Non-zero enables TLS session cache.                                                        |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE  | NRF_SO_SEC_SESSION_CACHE_PURGE  | int                    | set        | Delete TLS session cache.                                                                  |
+| NRF_SOL_SECURE  | NRF_SO_SEC_SESSION_CACHE_PURGE  | ``int``                | set        | Delete TLS session cache.                                                                  |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SECURE  | NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO | int                    | get/set    | Set/get DTLS handshake timeout.                                                            |
+| NRF_SOL_SECURE  | NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO | ``int``                | get/set    | Set/get DTLS handshake timeout.                                                            |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_HANDSHAKE_STATUS     | ``int``                | get        | Get latest TLS/DTLS completed handshake procedure end status.                              |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_DTLS_CID             | ``int``                | get/set    | Set DTLS Connection ID setting.                                                            |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_DTLS_CID_STATUS      | ``int``                | get        | Get status of DTLS Connection ID.                                                          |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_DTLS_CONN_SAVE       | ``int``                | set        | Save DTLS connection.                                                                      |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_DTLS_CONN_LOAD       | ``int``                | set        | Load DTLS connection.                                                                      |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SECURE  | NRF_SO_SEC_CIPHERSUITE_USED     | ``int``                | get        | Get TLS cipher suite used for the handshake.                                               |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_IPPROTO_ALL | NRF_SO_SILENCE_ALL              | ``int``                | get/set    | Non-zero disables ICMP echo replies on both IPv4 and IPv6.                                 |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_IPPROTO_IP  | NRF_SO_IP_ECHO_REPLY            | ``int``                | get/set    | Non-zero enables ICMP echo replies on IPv4.                                                |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_IPPROTO_IPV6| NRF_SO_IPV6_ECHO_REPLY          | ``int``                | get/set    | Non-zero enables ICMP echo replies on IPv6.                                                |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_IPPROTO_TCP | NRF_SO_TCP_SRV_SESSTIMEO        | ``int``                | get/set    | Non-zero enables TCP server session timeout after a configurable period of inactivity.     |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 
 The details for each socket are described as follows:
@@ -185,6 +197,7 @@ NRF_SO_SEC_TAG_LIST
    The option length is the size in bytes of the array of security tags.
    Passing ``NULL`` as an option value and ``0`` as an option length removes all security tags associated with a socket.
    By default, no security tags are associated with a socket.
+   The maximum number of security tags are given by the :c:macro:`NRF_SOCKET_TLS_MAX_SEC_TAG_LIST_SIZE` macro in :file:`nrf_socket.h`.
 
 NRF_SO_SEC_HOSTNAME
    Set the hostname used for peer verification.
@@ -197,16 +210,16 @@ NRF_SO_SEC_CIPHERSUITE_LIST
    Select which cipher suites are allowed to be used during the TLS handshake.
    The cipher suites are identified by their IANA assigned values.
    By default, all supported cipher suites are allowed.
-   For a complete list of supported cipher suites, refer to the release notes of the modem firmware.
-   The release notes is distributed as part of the `nRF9160 modem firmware zip file`_.
+   For a complete list, see the :ref:`supported cipher_suites <nrf_supported_tls_cipher_suites>` API documentation or refer to the release notes of the modem firmware.
+   The release notes are distributed as part of the `nRF9160 modem firmware zip file`_.
 
 NRF_SO_SEC_PEER_VERIFY
   Set the peer verification level.
   The following values are accepted:
 
-   * 0 - No peer verification
-   * 1 - Optional peer verification
-   * 2 - Peer verification is required
+   * ``NRF_SO_SEC_PEER_VERIFY_NONE`` - No peer verification
+   * ``NRF_SO_SEC_PEER_VERIFY_OPTIONAL`` - Optional peer verification
+   * ``NRF_SO_SEC_PEER_VERIFY_REQUIRED`` - Peer verification is required
 
    By default, peer verification is required.
 
@@ -214,17 +227,18 @@ NRF_SO_SEC_ROLE
    Set the role for the connection.
    The following values are accepted:
 
-   * 0 - Client role
-   * 1 - Server role
+   * ``NRF_SO_SEC_ROLE_CLIENT`` - Client role
+   * ``NRF_SO_SEC_ROLE_SERVER`` - Server role
 
    The default role is client.
+   For TLS, the choice is implicit from the usage of ``listen()``, ``accept()`` and ``connect()``.
 
 NRF_SO_SEC_SESSION_CACHE
    This option controls TLS session caching.
    The following values are accepted:
 
-   * 0 - Disable TLS session caching
-   * 1 - Enable TLS session caching
+   * ``NRF_SO_SEC_SESSION_CACHE_DISABLED`` - Disable TLS session caching
+   * ``NRF_SO_SEC_SESSION_CACHE_ENABLED`` - Enable TLS session caching
 
    By default, TLS session caching is disabled.
 
@@ -234,6 +248,7 @@ NRF_SO_SEC_SESSION_CACHE_PURGE
 
 NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO
    Set the DTLS handshake timeout.
+   The socket option is supported from modem firmware version 1.3.x.
    The following values are accepted:
 
    * 0 -  No timeout
@@ -246,6 +261,66 @@ NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO
    * ``NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_123S`` - 123 seconds
 
    The default is no timeout.
+
+NRF_SO_SEC_HANDSHAKE_STATUS
+   Get the latest TLS/DTLS completed handshake procedure end status.
+   This option is read-only.
+   The socket option is supported from modem firmware v2.x.x.
+   The following values are expected:
+
+   * ``NRF_SO_SEC_HANDSHAKE_STATUS_FULL`` - TLS/DTLS attach/negotiation procedure was made with a full handshake, and session cache data was not used or it was not accepted by the server.
+   * ``NRF_SO_SEC_HANDSHAKE_STATUS_CACHED`` - The latest TLS/DTLS attach negotiation was completed successfully with cached session data.
+
+   The default is a full handshake.
+
+NRF_SO_SEC_DTLS_CID
+   Set DTLS Connection ID setting.
+   The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
+   The following values are accepted:
+
+   * ``NRF_SO_SEC_DTLS_CID_DISABLED`` - The DTLS connection ID is not used, and the connection ID extension is not included in the client hello.
+   * ``NRF_SO_SEC_DTLS_CID_SUPPORTED`` - The DTLS connection ID is supported but not used, and the connection ID extension with a zero-length CID is included in the client hello.
+   * ``NRF_SO_SEC_DTLS_CID_ENABLED`` - The DTLS connection ID is used, and the connection ID extension with a valid CID is included in the client hello.
+
+   The default is disabled.
+
+NRF_SO_SEC_DTLS_CID_STATUS
+   Get the status of DTLS connection ID.
+   This option is read-only.
+   The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
+   The following values are expected:
+
+   * ``NRF_SO_SEC_DTLS_CID_STATUS_DISABLED`` - The DTLS connection ID is not included in DTLS records sent to and from the modem.
+     This status is returned before the DTLS handshake is complete.
+   * ``NRF_SO_SEC_DTLS_CID_STATUS_DOWNLINK`` - The DTLS connection ID is included only in DTLS records sent to the modem.
+   * ``NRF_SO_SEC_DTLS_CID_STATUS_UPLINK`` - The DTLS connection ID is included only in DTLS records sent from the modem.
+   * ``NRF_SO_SEC_DTLS_CID_STATUS_BIDIRECTIONAL`` - The DTLS connection ID is included in DTLS records sent to and from the modem.
+
+NRF_SO_SEC_DTLS_CONN_SAVE
+   Save DTLS connection.
+   This option is write-only.
+   This option require a DTLS v1.2 connection with renegotiation disabled.
+   The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
+
+   Once the DTLS context is saved, the socket can't be used before the DTLS context is loaded with NRF_SO_SEC_DTLS_CONN_LOAD.
+
+   This option will fail with nrf_errno ``NRF_EAGAIN`` if an error happened during serialization of the SSL context.
+   This can occur, for instance, when the modem cannot allocate enough memory or if the socket is busy sending or receiving data.
+   In this case, the SSL context is still present in the socket, so data sending is still possible.
+   The option will fail with nrf_errno ``NRF_EINVAL`` if the socket option is not supported with the current configuration, for instance because the DTLS handshake is not completed,
+   the connection is not an DTLS v1.2 connection with renegotiation disabled, or the connection does not use an AEAD ciper suite (AES-CCM or AES-GCM).
+   The option will fail with nrf_errno ``NRF_ENOMEM`` if the amount of saved connections exceeds four.
+
+NRF_SO_SEC_DTLS_CONN_LOAD
+   LOAD DTLS connection.
+   This option is write-only.
+   The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
+
+NRF_SO_SEC_CIPHERSUITE_USED
+   Get chosen TLS cipher suite.
+   This option is read-only.
+   The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
+
 
 Packet data networks
 ********************
