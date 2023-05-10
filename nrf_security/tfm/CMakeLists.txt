@@ -81,6 +81,12 @@ else()
   set(CONFIG_MBEDTLS_HKDF_C                         True)
 endif()
 
+if (NOT CONFIG_TFM_PROFILE_TYPE_MINIMAL AND CONFIG_PSA_CORE_OBERON)
+  set(CONFIG_PSA_CRYPTO_DRIVER_OBERON                 True)
+  set(CONFIG_PSA_CRYPTO_DRIVER_HAS_KDF_SUPPORT_OBERON True)
+  set(CONFIG_PSA_CRYPTO_DRIVER_ALG_HKDF_OBERON        True)
+endif()
+
 # TF-M build require that PSA Crypto APIs are compiled
 set(COMPILE_PSA_APIS True)
 
