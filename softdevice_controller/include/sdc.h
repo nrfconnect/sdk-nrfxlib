@@ -81,11 +81,8 @@ extern "C" {
  */
 #define SDC_DEFAULT_RX_PACKET_COUNT 2
 
-/** @brief Default maximum size of the Filter Accept List.
- *
- * The default value of 0 will use hardware peripherals to implement the Filter Accept List.
- */
-#define SDC_DEFAULT_FAL_SIZE 0
+/** @brief Default maximum size of the Filter Accept List. */
+#define SDC_DEFAULT_FAL_SIZE 8
 
 /** @brief Default maximum number of advertising reports available in the scanner.
  *
@@ -167,7 +164,7 @@ extern "C" {
 #define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (24 + (buffer_count) * 306)
 
 /** Memory required for the Filter Accept List */
-#define SDC_MEM_FAL(max_num_entries) ((max_num_entries) * 8)
+#define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4829+(max_adv_data)*18)/10)
@@ -214,10 +211,10 @@ extern "C" {
 #define SDC_MEM_PERIODIC_ADV_LIST(list_size) ((list_size) * 8)
 
 /** @brief Auxiliary defines, not to be used outside of this file */
-#define __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) ((max_tx_data_size) + 9)
+#define __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) ((max_tx_data_size) + 5)
 #define __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER (282)
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (719)
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (412)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (624)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (320)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
 
 /** Memory required per periodic advertising with responses set.
@@ -403,9 +400,6 @@ typedef union
      */
     sdc_cfg_adv_buffer_cfg_t adv_buffer_cfg;
     /** Configures the maximum size of the Filter Accept List.
-     *
-     * Setting this value to 0 will configure the controller to
-     * use hardware-based filtering.
      *
      * Default: @ref SDC_DEFAULT_FAL_SIZE.
      */
