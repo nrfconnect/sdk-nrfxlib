@@ -269,7 +269,8 @@
 #cmakedefine MBEDTLS_PSA_CRYPTO_C
 #cmakedefine MBEDTLS_USE_PSA_CRYPTO
 #cmakedefine MBEDTLS_PSA_CRYPTO_STORAGE_C
-#cmakedefine MBEDTLS_PSA_CRYPTO_DRIVERS
+/* MBEDTLS_PSA_CRYPTO_DRIVERS is defined to 1 by TF-M's build system. */
+#cmakedefine MBEDTLS_PSA_CRYPTO_DRIVERS                         @MBEDTLS_PSA_CRYPTO_DRIVERS@
 #cmakedefine MBEDTLS_PSA_CRYPTO_CLIENT
 #cmakedefine MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG
 
