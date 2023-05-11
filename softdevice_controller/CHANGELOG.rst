@@ -31,6 +31,7 @@ Changes
 * Receiving a Periodic Advertisement Sync Transfer (PAST) with invalid parameters will now generate the ``LE Periodic Advertising Sync Transfer Received`` event when receiving PAST is enabled (DRGN-18803).
 * Periodic advertiser is allocated from the Periodic Advertising with Responses (PAwR) Advertiser sets when :c:enumerator:`SDC_CFG_TYPE_PERIODIC_ADV_RSP_COUNT` is available.
   Otherwise, it is allocated from the Periodic Advertiser sets if :c:enumerator:`SDC_CFG_TYPE_PERIODIC_ADV_COUNT` is set (DRGN-18979).
+* The controller now returns the error code ``0x0D`` instead of ``0x09`` if it has insufficient resources to handle more connections and the host tries to start a connectable advertiser or the controller receives the commands ``LE Extended Create Connection`` or ``LE Create Connection`` (DRGN-18944).
 
 Bug fixes
 =========
