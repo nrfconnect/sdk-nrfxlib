@@ -125,7 +125,7 @@ static psa_status_t oberon_parse_rsa_key(
     size_t index = 0;
     size_t seq_len, seq_end;
     uint32_t value;
-    int i;
+    size_t i;
 
     // sequence
     if (key_length < 20) return PSA_ERROR_INVALID_ARGUMENT;

@@ -71,7 +71,7 @@ static psa_status_t oberon_hmac_finish(
 
     // H(K ^ ipad, in, num)
     status = psa_driver_wrapper_hash_finish(&operation->hash_op, operation->hash, sizeof operation->hash, &hash_length);
-    if (status) return status;
+    if (status) goto exit;
 
     // k = key ^ opad = (key ^ ipad) ^ (ipad ^ opad) = k ^ (ipad ^ opad)
     for (i = 0; i < operation->block_size; i++) operation->k[i] = (uint8_t)(operation->k[i] ^ (0x36 ^ 0x5c));
@@ -135,20 +135,6 @@ static void gf128_multiply_x(uint8_t r[AES_BLOCK_LEN])
     }
 }
 
-static psa_status_t oberon_cbc_mac_setup(
-    oberon_cmac_operation_t *operation,
-    const psa_key_attributes_t *attributes,
-    const uint8_t *key, size_t key_length)
-{
-    memset(operation->block, 0, AES_BLOCK_LEN);
-    operation->length = 0;
-
-    return psa_driver_wrapper_cipher_encrypt_setup(
-        &operation->aes_op,
-        attributes, key, key_length,
-        PSA_ALG_ECB_NO_PADDING);
-}
-
 static psa_status_t oberon_cmac_setup(
     oberon_cmac_operation_t *operation,
     const psa_key_attributes_t *attributes,
@@ -157,9 +143,12 @@ static psa_status_t oberon_cmac_setup(
     psa_status_t status;
     size_t length;
 
-    status = oberon_cbc_mac_setup(
-        operation,
-        attributes, key, key_length);
+    operation->length = 0;
+
+    status = psa_driver_wrapper_cipher_encrypt_setup(
+        &operation->aes_op,
+        attributes, key, key_length,
+        PSA_ALG_ECB_NO_PADDING);
     if (status) goto exit;
 
     // subkey generation
@@ -302,6 +291,7 @@ psa_status_t oberon_mac_sign_setup(
 {
 #ifdef PSA_NEED_OBERON_HMAC
     if (PSA_ALG_IS_HMAC(alg)) {
+        memset(&operation->hmac, 0, sizeof operation->hmac);
         operation->alg = OBERON_HMAC_ALG;
         return oberon_hmac_setup(
             &operation->hmac,
@@ -313,6 +303,7 @@ psa_status_t oberon_mac_sign_setup(
     if (PSA_ALG_FULL_LENGTH_MAC(alg) == PSA_ALG_CMAC) {
         if (psa_get_key_type(attributes) != PSA_KEY_TYPE_AES) return PSA_ERROR_NOT_SUPPORTED;
         if (key_length != 16 && key_length != 24 && key_length != 32) return PSA_ERROR_INVALID_ARGUMENT;
+        memset(&operation->cmac, 0, sizeof operation->cmac);
         operation->alg = OBERON_CMAC_ALG;
         return oberon_cmac_setup(
             &operation->cmac,

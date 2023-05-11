@@ -51,7 +51,7 @@ static psa_status_t get_entropy(
             uint8_t input[MAX_ENTROPY_BLOCKS * BLOCK_LEN]; // we have to store the whole entropy input here
         };
         psa_cipher_operation_t cipher_op;
-    }u;
+    } u;
     psa_key_attributes_t attr = PSA_KEY_ATTRIBUTES_INIT;
     uint8_t key[KEY_LEN];
     uint8_t temp[(SEED_LEN + BLOCK_LEN - 1) / BLOCK_LEN * BLOCK_LEN];
@@ -83,6 +83,7 @@ static psa_status_t get_entropy(
     // get temp
     i = 0;
     for (temp_length = 0; temp_length < SEED_LEN; temp_length += BLOCK_LEN) {
+        memset(&u.mac_op, 0, sizeof u.mac_op);
         status = psa_driver_wrapper_mac_sign_setup(&u.mac_op, &attr, key, sizeof key, PSA_ALG_CMAC);
         if (status) return status;
         iv[0] = i;
@@ -96,6 +97,7 @@ static psa_status_t get_entropy(
     }
 
     // set key
+    memset(&u.cipher_op, 0, sizeof u.cipher_op);
     psa_set_key_usage_flags(&attr, PSA_KEY_USAGE_ENCRYPT);
     status = psa_driver_wrapper_cipher_encrypt_setup(
         &u.cipher_op,
