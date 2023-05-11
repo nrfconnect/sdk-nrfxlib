@@ -33,7 +33,7 @@
     #error "Enable CONFIG_PSA_WANT_ALG_CTR_DRBG or CONFIG_PSA_WANT_ALG_HMAC_DRBG"
 #endif
 
-    if (ret != 0)
+    if (ret != NRF_CC3XX_PLATFORM_SUCCESS)
     {
         return PSA_ERROR_HARDWARE_FAILURE;
     }
