@@ -30,6 +30,9 @@ static psa_status_t oberon_aead_setup(
 {
     size_t tag_length;
     psa_algorithm_t short_alg;
+#ifdef PSA_NEED_OBERON_CHACHA20_POLY1305
+    ocrypto_chacha20_poly1305_ctx *cp_ctx;
+#endif /* PSA_NEED_OBERON_CHACHA20_POLY1305 */
 
     short_alg = PSA_ALG_AEAD_WITH_SHORTENED_TAG(alg, 0);
     tag_length = PSA_ALG_AEAD_GET_TAG_LENGTH(alg);
@@ -59,7 +62,8 @@ static psa_status_t oberon_aead_setup(
     case PSA_KEY_TYPE_CHACHA20:
         if (alg == PSA_ALG_CHACHA20_POLY1305) {
             if (key_length != 32) return PSA_ERROR_INVALID_ARGUMENT;
-            memcpy(((ocrypto_chacha20_poly1305_ctx*)&operation->ctx)->enc_ctx.cipher, key, key_length);
+            cp_ctx = (ocrypto_chacha20_poly1305_ctx *)&operation->ctx;
+            memcpy(cp_ctx->enc_ctx.cipher, key, key_length);
         } else {
             return PSA_ERROR_NOT_SUPPORTED;
         }
@@ -110,6 +114,10 @@ psa_status_t oberon_aead_set_nonce(
     oberon_aead_operation_t *operation,
     const uint8_t *nonce, size_t nonce_length)
 {
+#ifdef PSA_NEED_OBERON_CHACHA20_POLY1305
+    ocrypto_chacha20_poly1305_ctx *cp_ctx;
+#endif /* PSA_NEED_OBERON_CHACHA20_POLY1305 */
+
     switch (operation->alg) {
 #ifdef PSA_NEED_OBERON_AES_CCM
     case PSA_ALG_AEAD_WITH_SHORTENED_TAG(PSA_ALG_CCM, 0):
@@ -129,9 +137,8 @@ psa_status_t oberon_aead_set_nonce(
     case PSA_ALG_AEAD_WITH_SHORTENED_TAG(PSA_ALG_CHACHA20_POLY1305, 0):
         if (nonce_length != 8 && nonce_length != 12) return PSA_ERROR_INVALID_ARGUMENT;
         // key in ctx->enc_ctx.cipher
-        ocrypto_chacha20_poly1305_init((ocrypto_chacha20_poly1305_ctx*)&operation->ctx,
-                                       nonce, nonce_length,
-                                       ((ocrypto_chacha20_poly1305_ctx*)&operation->ctx)->enc_ctx.cipher);
+        cp_ctx = (ocrypto_chacha20_poly1305_ctx *)&operation->ctx;
+        ocrypto_chacha20_poly1305_init(cp_ctx, nonce, nonce_length, cp_ctx->enc_ctx.cipher);
         break;
 #endif /* PSA_NEED_OBERON_CHACHA20_POLY1305 */
     default:
@@ -332,8 +339,9 @@ psa_status_t oberon_aead_encrypt(
 {
     ocrypto_context ctx;
     size_t tag_length = PSA_ALG_AEAD_GET_TAG_LENGTH(alg);
-    if (ciphertext_size < plaintext_length + tag_length) return PSA_ERROR_BUFFER_TOO_SMALL;
-    *ciphertext_length = plaintext_length + tag_length;
+    size_t length = plaintext_length + tag_length;
+    if (length < tag_length || ciphertext_size < length) return PSA_ERROR_BUFFER_TOO_SMALL;
+    *ciphertext_length = length;
 
     switch (psa_get_key_type(attributes)) {
     case PSA_KEY_TYPE_AES:

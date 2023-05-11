@@ -2166,8 +2166,10 @@ psa_status_t psa_sign_hash_builtin(
     psa_algorithm_t alg, const uint8_t *hash, size_t hash_length,
     uint8_t *signature, size_t signature_size, size_t *signature_length )
 {
+    (void)attributes;
     (void)key_buffer;
     (void)key_buffer_size;
+    (void)alg;
     (void)hash;
     (void)hash_length;
     (void)signature;
@@ -2196,8 +2198,10 @@ psa_status_t psa_verify_hash_builtin(
     psa_algorithm_t alg, const uint8_t *hash, size_t hash_length,
     const uint8_t *signature, size_t signature_length )
 {
+    (void)attributes;
     (void)key_buffer;
     (void)key_buffer_size;
+    (void)alg;
     (void)hash;
     (void)hash_length;
     (void)signature;
@@ -3802,7 +3806,7 @@ psa_status_t psa_key_derivation_setup(psa_key_derivation_operation_t *operation,
 #if defined(PSA_WANT_ALG_TLS12_PRF) || defined(PSA_WANT_ALG_TLS12_PSK_TO_MS)
     if (PSA_ALG_IS_TLS12_PRF(kdf_alg) || PSA_ALG_IS_TLS12_PSK_TO_MS(kdf_alg)) {
         psa_algorithm_t hash_alg = PSA_ALG_HKDF_GET_HASH(kdf_alg);
-        if (hash_alg != PSA_ALG_SHA_256 && hash_alg != PSA_ALG_SHA_384) return PSA_ERROR_INVALID_ARGUMENT;
+        if (hash_alg != PSA_ALG_SHA_256 && hash_alg != PSA_ALG_SHA_384) return PSA_ERROR_NOT_SUPPORTED;
     }
 #endif
 

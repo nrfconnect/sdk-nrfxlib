@@ -29,6 +29,7 @@ static psa_status_t oberon_setup_mac(
     psa_set_key_bits(&attributes, PSA_BYTES_TO_BITS(key_length));
     psa_set_key_usage_flags(&attributes, PSA_KEY_USAGE_SIGN_MESSAGE);
     
+    memset(&operation->mac_op, 0, sizeof operation->mac_op);
     return psa_driver_wrapper_mac_sign_setup(
         &operation->mac_op,
         &attributes, key, key_length,
@@ -45,6 +46,7 @@ static psa_status_t oberon_hash_key(
     psa_status_t status;
     size_t length;
 
+    memset(&operation->hash_op, 0, sizeof operation->hash_op);
     status = psa_driver_wrapper_hash_setup(&operation->hash_op, PSA_ALG_HMAC_GET_HASH(operation->mac_alg));
     if (status) goto exit;
     status = psa_driver_wrapper_hash_update(&operation->hash_op, data, data_length);
@@ -53,8 +55,6 @@ static psa_status_t oberon_hash_key(
 
 exit:
     psa_driver_wrapper_hash_abort(&operation->hash_op);
-    // asure operation is in a clean state
-    memset(&operation->hash_op, 0, sizeof operation->hash_op);
     return status;
 }
 #endif /* PSA_NEED_OBERON_PBKDF2_HMAC */
@@ -163,19 +163,21 @@ psa_status_t oberon_key_derivation_input_bytes(
     switch (step) {
 
     case PSA_KEY_DERIVATION_INPUT_SALT:
-        if (operation->alg == OBERON_HKDF_ALG || operation->alg == OBERON_HKDF_EXTRACT_ALG) {
+        if (data_length) {
+            if (operation->alg == OBERON_HKDF_ALG || operation->alg == OBERON_HKDF_EXTRACT_ALG) {
 #if defined(PSA_NEED_OBERON_HKDF) || defined(PSA_NEED_OBERON_HKDF_EXTRACT)
-            status = oberon_setup_mac(operation, data, data_length);
-            if (status) goto exit;
-            operation->salt_length = (uint16_t)data_length;
+                status = oberon_setup_mac(operation, data, data_length);
+                if (status) goto exit;
+                operation->salt_length = (uint16_t)data_length;
 #endif /* PSA_NEED_OBERON_HKDF || PSA_NEED_OBERON_HKDF_EXTRACT */
-        } else {
+            } else {
 #if defined(PSA_NEED_OBERON_PBKDF2_HMAC) || defined(PSA_NEED_OBERON_PBKDF2_AES_CMAC_PRF_128)
-            length = operation->salt_length + data_length;
-            if (length > sizeof operation->info) return PSA_ERROR_INSUFFICIENT_MEMORY;
-            memcpy(operation->info + operation->salt_length, data, data_length);
-            operation->salt_length = (uint16_t)length;
+                length = operation->salt_length + data_length;
+                if (length < data_length || length > sizeof operation->info) return PSA_ERROR_INSUFFICIENT_MEMORY;
+                memcpy(operation->info + operation->salt_length, data, data_length);
+                operation->salt_length = (uint16_t)length;
 #endif /* PSA_NEED_OBERON_PBKDF2_HMAC || PSA_NEED_OBERON_PBKDF2_AES_CMAC_PRF_128 */
+            }
         }
         return PSA_SUCCESS;
 
@@ -236,6 +238,7 @@ psa_status_t oberon_key_derivation_input_bytes(
             return PSA_SUCCESS;
 #endif /* PSA_NEED_OBERON_ECJPAKE_TO_PMS */
         default:
+#if defined(PSA_NEED_OBERON_HKDF) || defined(PSA_NEED_OBERON_HKDF_EXTRACT)
             if (operation->salt_length == 0) {
                 // set zero salt
                 status = oberon_setup_mac(operation, zero, operation->block_length);
@@ -247,6 +250,7 @@ psa_status_t oberon_key_derivation_input_bytes(
             // HKDF extract
             status = psa_driver_wrapper_mac_sign_finish(&operation->mac_op, operation->key, operation->block_length, &length);
             if (status) goto exit;
+#endif /* PSA_NEED_OBERON_HKDF || PSA_NEED_OBERON_HKDF_EXTRACT */
             return PSA_SUCCESS;
         }
 #endif /* PSA_NEED_OBERON_HKDF || PSA_NEED_OBERON_HKDF_EXTRACT || PSA_NEED_OBERON_HKDF_EXPAND || PSA_NEED_OBERON_TLS12 */
@@ -267,13 +271,12 @@ psa_status_t oberon_key_derivation_input_bytes(
             if (data_length > hash_block_size) {
                 // key = H(password)
                 status = oberon_hash_key(operation, data, data_length);
-                if (status) goto exit;
+                if (status) return status; // no cleanup needed
                 operation->key_length = (uint16_t)operation->block_length;
             } else {
                 memcpy(operation->key, data, data_length);
                 operation->key_length = (uint16_t)data_length;
             }
-            return PSA_SUCCESS;
 #endif /* PSA_NEED_OBERON_PBKDF2_HMAC */
         } else {
 #ifdef PSA_NEED_OBERON_PBKDF2_AES_CMAC_PRF_128
@@ -289,9 +292,9 @@ psa_status_t oberon_key_derivation_input_bytes(
                 if (status) goto exit;
             }
             operation->key_length = 16;
-            return PSA_SUCCESS;
 #endif /* PSA_NEED_OBERON_PBKDF2_AES_CMAC_PRF_128 */
         }
+        return PSA_SUCCESS;
 #endif /* PSA_NEED_OBERON_PBKDF2_HMAC || PSA_NEED_OBERON_PBKDF2_AES_CMAC_PRF_128 */
 
 #if defined(PSA_NEED_OBERON_TLS12_PRF) || defined(PSA_NEED_OBERON_TLS12_PSK_TO_MS)
@@ -303,7 +306,7 @@ psa_status_t oberon_key_derivation_input_bytes(
     case PSA_KEY_DERIVATION_INPUT_LABEL:
         // seed = label || seed
         length = operation->info_length + data_length;
-        if (length > sizeof operation->info) return PSA_ERROR_INSUFFICIENT_MEMORY;
+        if (length < data_length || length > sizeof operation->info) return PSA_ERROR_INSUFFICIENT_MEMORY;
         memmove(operation->info + data_length, operation->info, operation->info_length);
         memcpy(operation->info, data, data_length);
         operation->info_length = (uint16_t)length;
@@ -319,9 +322,7 @@ psa_status_t oberon_key_derivation_input_bytes(
     }
 
 #if defined(PSA_NEED_OBERON_HKDF) || defined(PSA_NEED_OBERON_HKDF_EXTRACT) || \
-    defined(PSA_NEED_OBERON_HKDF_EXPAND) || defined(PSA_NEED_OBERON_TLS12_PRF) || \
-    defined(PSA_NEED_OBERON_TLS12_PSK_TO_MS) || defined(PSA_NEED_OBERON_ECJPAKE_TO_PMS) || \
-    defined(PSA_NEED_OBERON_PBKDF2_HMAC) || defined(PSA_NEED_OBERON_PBKDF2_AES_CMAC_PRF_128)
+    defined(PSA_NEED_OBERON_PBKDF2_AES_CMAC_PRF_128)
 exit:
     psa_driver_wrapper_mac_abort(&operation->mac_op);
     return status;
@@ -493,9 +494,8 @@ psa_status_t oberon_key_derivation_output_bytes(
 
 #if defined(PSA_NEED_OBERON_HKDF) || defined(PSA_NEED_OBERON_HKDF_EXPAND) || \
     defined(PSA_NEED_OBERON_PBKDF2_HMAC) || defined(PSA_NEED_OBERON_PBKDF2_AES_CMAC_PRF_128) || \
-    defined(PSA_NEED_OBERON_TLS12_PRF) || defined(PSA_NEED_OBERON_TLS12_PSK_TO_MS) || \
-    defined(PSA_NEED_OBERON_ECJPAKE_TO_PMS)
-    exit:
+    defined(PSA_NEED_OBERON_TLS12_PRF) || defined(PSA_NEED_OBERON_TLS12_PSK_TO_MS)
+exit:
     psa_driver_wrapper_mac_abort(&operation->mac_op);
     return status;
 #endif
@@ -504,5 +504,11 @@ psa_status_t oberon_key_derivation_output_bytes(
 psa_status_t oberon_key_derivation_abort(
     oberon_key_derivation_operation_t *operation )
 {
-    return psa_driver_wrapper_mac_abort(&operation->mac_op);
+    switch (operation->alg) {
+    case OBERON_HKDF_ALG:
+    case OBERON_HKDF_EXTRACT_ALG:
+        return psa_driver_wrapper_mac_abort(&operation->mac_op);
+    default:
+        return PSA_SUCCESS;
+    }
 }

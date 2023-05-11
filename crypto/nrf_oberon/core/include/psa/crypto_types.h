@@ -470,10 +470,6 @@ typedef uint16_t psa_key_derivation_step_t;
  */
 typedef struct psa_pake_cipher_suite_s psa_pake_cipher_suite_t;
 
-/** Return an initial value for a PAKE cipher suite object.
- */
-static psa_pake_cipher_suite_t psa_pake_cipher_suite_init(void);
-
 /** \brief Encoding of the application role of PAKE
  *
  * Encodes the application's role in the algorithm being executed. For more
