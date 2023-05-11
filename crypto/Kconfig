@@ -50,9 +50,6 @@ menuconfig NRF_CC3XX_PLATFORM
 
 if NRF_CC3XX_PLATFORM
 
-config HW_CC3XX_INTERRUPT
-	bool "Use interrupt version of nrf cc3xx platform library" if !(CC3XX_BACKEND || NRF_CC310_BL)
-
 choice CC3XX_LOCK_VARIANT
 	prompt "CC3XX lock variant"
 	default CC3XX_MUTEX_LOCK
