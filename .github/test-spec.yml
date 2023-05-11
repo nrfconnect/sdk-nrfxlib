@@ -130,3 +130,7 @@
   - "nrf_security/**/*"
   - "crypto/**/*"
   - "nrf_rpc/**/*"
+
+"CI-wifi":
+  - "crypto/**/*"
+  - "nrf_security/**/*"
