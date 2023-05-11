@@ -86,9 +86,15 @@
 #define SHORTS_IDLE           0
 
 /// Value set to SHORTS register for RX operation.
+#if !defined(NRF52_SERIES)
+#define SHORTS_RX             (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
+                               NRF_RADIO_SHORT_PHYEND_DISABLE_MASK |    \
+                               SHORT_ADDRESS_BCSTART)
+#else
 #define SHORTS_RX             (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
                                NRF_RADIO_SHORT_END_DISABLE_MASK |       \
                                SHORT_ADDRESS_BCSTART)
+#endif
 
 #define SHORTS_RX_FREE_BUFFER (NRF_RADIO_SHORT_RXREADY_START_MASK)
 
@@ -104,8 +110,14 @@
 #define SHORTS_TX             (NRF_RADIO_SHORT_TXREADY_START_MASK | \
                                NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
 
+#if !defined(NRF52_SERIES)
+#define SHORTS_RX_ACK         (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
+                               NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+#else
 #define SHORTS_RX_ACK         (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
                                NRF_RADIO_SHORT_END_DISABLE_MASK)
+
+#endif
 
 #define SHORTS_MOD_CARRIER    (NRF_RADIO_SHORT_TXREADY_START_MASK | \
                                NRF_RADIO_SHORT_PHYEND_START_MASK)
@@ -1560,12 +1572,12 @@ static void rxframe_finish(void)
      * Below shown what is happening in the hardware
      *
      * TIMER is started by path:
-     * RADIO.SHORT_END_DISABLE -> RADIO.TASKS_DISABLE -> RADIO.EVENTS_DISABLED ->
+     * RADIO.SHORT_PHYEND_DISABLE -> RADIO.TASKS_DISABLE -> RADIO.EVENTS_DISABLED ->
      *    PPI_DISABLED_EGU -> EGU.TASKS_TRIGGER -> EGU.EVENTS_TRIGGERED -> PPI_EGU_TIMER_START -> TIMER.TASKS_START
      *
      * FEM's LNA mode is disabled by path:
-     * RADIO.SHORT_END_DISABLE -> RADIO.TASKS_DISABLE -> RADIO.EVENTS_DISABLED -> (FEM's PPI triggering disable LNA operation,
-     *                                                                             see mpsl_fem_abort_set() )
+     * RADIO.SHORT_PHYEND_DISABLE -> RADIO.TASKS_DISABLE -> RADIO.EVENTS_DISABLED -> (FEM's PPI triggering disable LNA
+     *                                                                                operation, see mpsl_fem_abort_set() )
      *
      * RADIO will not ramp up, as PPI_EGU_RAMP_UP channel is self-disabling, and
      * it was disabled when receive ramp-up was started.

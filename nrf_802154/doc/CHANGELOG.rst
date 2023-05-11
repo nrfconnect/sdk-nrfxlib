@@ -31,6 +31,7 @@ Other changes
 * Removed the ``NRF_802154_TX_STARTED_NOTIFY_ENABLED`` config option. (KRKNWK-16364)
 * The total times measurement feature is turned off. (KRKNWK-16189)
 * Removed the ``NRF_802154_TOTAL_TIMES_MEASUREMENT_ENABLED`` config option and support for the total times measurement feature. (KRKNWK-16374)
+* The calculation of the CSL Phase assumes that the provided CSL anchor time specifies the time when the first bit of the MAC header of the frame received from a peer starts. (KRKNWK-16647)
 
 
 nRF Connect SDK v2.3.0 - nRF 802.15.4 Radio Driver

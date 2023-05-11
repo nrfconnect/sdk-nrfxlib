@@ -883,16 +883,22 @@ void nrf_802154_csl_writer_period_set(uint16_t period);
 /**
  * @brief Sets the anchor time based on which the next CSL window time and the CSL phase is calculated.
  *
- * This function sets an anchor time which is a time of a CSL window, based which on the times of future CSL windows are
- * calculated. It is assumed that all other CSL windows occur at time @c anchor_time + @c n * @c csl_period, where @c n is
- * an integer. Note that the anchor time can be both in the past and in the future.
+ * This function sets an anchor time based on which the times of future CSL windows are calculated.
+ * When this anchor time is used for calculations, it is assumed that it points to a time where
+ * the first bit of MAC header of the frame received from a peer happens. In other words, the anchor
+ * time should point to a time where CSL phase would be equal 0. As a result, CSL phase can always
+ * be calculated relatively to a time given by the equation @c anchor_time + @c n * @c csl_period
+ * where @c n is an integer. Note that the reasoning holds irrespectively of signedness of @c n
+ * so the anchor time can be either in the past or in the future.
  *
- * This function should be called after calling @ref nrf_802154_csl_writer_period_set and every time when the CSL windows get desynchronized.
+ * This function should be called after calling @ref nrf_802154_csl_writer_period_set and every time
+ * when the CSL communication desynchronizes.
  *
- * If this function is not called, a legacy CSL operation mode is chosen, where the CSL phase is calculated based on the time of the nearest
- * scheduled CSL window (and can be undefined, if no such window was scheduled).
+ * If this function is not called a legacy CSL operation mode is chosen. The CSL phase is then
+ * calculated based on the time of the nearest scheduled CSL reception window and can be undefined,
+ * if no such window was scheduled.
  *
- * @param[in]  anchor_time  Anchor time value.
+ * @param[in]  anchor_time  Anchor time in microseconds.
  */
 void nrf_802154_csl_writer_anchor_time_set(uint64_t anchor_time);
 
