@@ -9,7 +9,9 @@ choice PSA_CORE
 	default PSA_CORE_OBERON
 
 config PSA_CORE_BUILTIN
-	bool "PSA Core implementation - Builtin"
+	bool "[DEPRECATED] PSA Core implementation - Builtin"
+	help
+	  [DEPRECATED] Select PSA_CORE_OBERON instead.
 
 config PSA_CORE_OBERON
 	bool "PSA Core implementation - Oberon"
