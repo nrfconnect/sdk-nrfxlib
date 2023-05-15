@@ -14,9 +14,9 @@ set(OBERON_PSA_CRYPTO_PATH ${NRFXLIB_ROOT}/crypto/nrf_oberon/core)
 # Internal macro to append all unnamed parameters with 'prefix' if condition
 # is met
 #
-macro(append_with_prefix_ifdef var cond prefix)
-  if (cond)
-    append_with_prefix(prefix ${ARGN})
+macro(append_with_prefix_ifdef cond var prefix)
+  if (${${cond}})
+    append_with_prefix(${var} ${prefix} ${ARGN})
   endif()
 endmacro()
 
