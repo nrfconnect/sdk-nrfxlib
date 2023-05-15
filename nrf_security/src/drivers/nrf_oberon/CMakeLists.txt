@@ -33,8 +33,16 @@ if (COMPILE_PSA_APIS)
     oberon_key_pair.c
     oberon_mac.c
     oberon_rsa.c
-    oberon_ctr_drbg.c
-    oberon_hmac_drbg.c
+  )
+
+  append_with_prefix_ifdef(CONFIG_PSA_CRYPTO_DRIVER_ALG_CTR_DRBG_OBERON
+    src_crypto_oberon ${OBERON_PSA_CRYPTO_PATH}/oberon/drivers/
+      oberon_hmac_drbg.c
+  )
+
+  append_with_prefix_ifdef(CONFIG_PSA_CRYPTO_DRIVER_ALG_HMAC_DRBG_OBERON
+    src_crypto_oberon ${OBERON_PSA_CRYPTO_PATH}/oberon/drivers/
+      oberon_ctr_drbg.c
   )
 
   # Add builtin functionality (if enabled)
