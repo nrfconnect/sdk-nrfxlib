@@ -229,7 +229,7 @@ typedef struct otTimestamp
 /**
  * This structure represents an Active or Pending Operational Dataset.
  *
- * Components in Dataset are optional. `mComponets` structure specifies which components are present in the Dataset.
+ * Components in Dataset are optional. `mComponents` structure specifies which components are present in the Dataset.
  *
  */
 typedef struct otOperationalDataset
@@ -583,7 +583,7 @@ otError otDatasetGeneratePskc(const char            *aPassPhrase,
 otError otNetworkNameFromString(otNetworkName *aNetworkName, const char *aNameString);
 
 /**
- * This function parses an Operational Dataset from a `otOperationalDatasetTlvs`.
+ * Parses an Operational Dataset from a given `otOperationalDatasetTlvs`.
  *
  * @param[in]  aDatasetTlvs  A pointer to dataset TLVs.
  * @param[out] aDataset      A pointer to where the dataset will be placed.
@@ -593,6 +593,33 @@ otError otNetworkNameFromString(otNetworkName *aNetworkName, const char *aNameSt
  *
  */
 otError otDatasetParseTlvs(const otOperationalDatasetTlvs *aDatasetTlvs, otOperationalDataset *aDataset);
+
+/**
+ * Converts a given Operational Dataset to `otOperationalDatasetTlvs`.
+ *
+ * @param[in]  aDataset      An Operational dataset to convert to TLVs.
+ * @param[out] aDatasetTlvs  A pointer to dataset TLVs to return the result.
+ *
+ * @retval OT_ERROR_NONE          Successfully converted @p aDataset and updated @p aDatasetTlvs.
+ * @retval OT_ERROR_INVALID_ARGS  @p aDataset is invalid, does not contain active or pending timestamps.
+ *
+ */
+otError otDatasetConvertToTlvs(const otOperationalDataset *aDataset, otOperationalDatasetTlvs *aDatasetTlvs);
+
+/**
+ * Updates a given Operational Dataset.
+ *
+ * @p aDataset contains the fields to be updated and their new value.
+ *
+ * @param[in]     aDataset      Specifies the set of types and values to update.
+ * @param[in,out] aDatasetTlvs  A pointer to dataset TLVs to update.
+ *
+ * @retval OT_ERROR_NONE          Successfully updated @p aDatasetTlvs.
+ * @retval OT_ERROR_INVALID_ARGS  @p aDataset contains invalid values.
+ * @retval OT_ERROR_NO_BUFS       Not enough space space in @p aDatasetTlvs to apply the update.
+ *
+ */
+otError otDatasetUpdateTlvs(const otOperationalDataset *aDataset, otOperationalDatasetTlvs *aDatasetTlvs);
 
 /**
  * @}

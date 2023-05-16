@@ -246,6 +246,35 @@ otDnssdQueryType otDnssdGetQueryTypeAndName(const otDnssdQuery *aQuery, char (*a
 const otDnssdCounters *otDnssdGetCounters(otInstance *aInstance);
 
 /**
+ * Enable or disable forwarding DNS queries to platform DNS upstream API.
+ *
+ * Available when `OPENTHREAD_CONFIG_DNS_UPSTREAM_QUERY_ENABLE` is enabled.
+ *
+ * @param[in]  aInstance  A pointer to an OpenThread instance.
+ * @param[in]  aEnabled   A boolean to enable/disable forwarding DNS queries to upstream.
+ *
+ * @sa otPlatDnsStartUpstreamQuery
+ * @sa otPlatDnsCancelUpstreamQuery
+ * @sa otPlatDnsUpstreamQueryDone
+ *
+ */
+void otDnssdUpstreamQuerySetEnabled(otInstance *aInstance, bool aEnabled);
+
+/**
+ * Returns whether the DNSSD server will forward DNS queries to the platform DNS upstream API.
+ *
+ * Available when `OPENTHREAD_CONFIG_DNS_UPSTREAM_QUERY_ENABLE` is enabled.
+ *
+ * @param[in]  aInstance  A pointer to an OpenThread instance.
+ * @retval     TRUE       If the DNSSD server will forward DNS queries.
+ * @retval     FALSE      If the DNSSD server will not forward DNS queries.
+ *
+ * @sa otDnssdUpstreamQuerySetEnabled
+ *
+ */
+bool otDnssdUpstreamQueryIsEnabled(otInstance *aInstance);
+
+/**
  * @}
  *
  */
