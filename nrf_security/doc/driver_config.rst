@@ -18,19 +18,20 @@ Multiple PSA drivers can be enabled at the same time, with added support for fin
 
 To enable a PSA driver, set the following configurations:
 
-+---------------+--------------------------------------------------+------------------------------------------------+
-| PSA driver    | Configuration option                             | Notes                                          |
-+===============+==================================================+================================================+
-| nrf_cc3xx     | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_CC3XX` | Only on nRF52840, nRF9160, and nRF5340 devices |
-+---------------+--------------------------------------------------+------------------------------------------------+
-| nrf_oberon    | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_OBERON`|                                                |
-+---------------+--------------------------------------------------+------------------------------------------------+
++---------------+--------------------------------------------------+-----------------------------------------------------+
+| PSA driver    | Configuration option                             | Notes                                               |
++===============+==================================================+=====================================================+
+| nrf_cc3xx     | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_CC3XX` | Only on nRF52840, nRF91 Series, and nRF5340 devices |
++---------------+--------------------------------------------------+-----------------------------------------------------+
+| nrf_oberon    | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_OBERON`|                                                     |
++---------------+--------------------------------------------------+-----------------------------------------------------+
 
 If multiple drivers are enabled, the first ordered item in this table takes precedence for an enabled cryptographic feature, unless the driver does not enable or support it.
 
 Enabling or disabling PSA driver specific configurations controls the support for a given algorithm, per driver.
 
 If a specific cryptographic feature is not supported by a PSA driver but the algorithm is configured to be used, then :ref:`nrf_security_drivers_builtin` will be enabled to ensure the feature is available.
+
 
 AES cipher configurations
 *************************
