@@ -69,7 +69,7 @@ You can use the following Kconfig options for fine-grained control over which dr
 +----------------+---------------------------------------------------------------------+----------------------------------------------------------------------+
 | CBC_NO_PADDING | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CBC_NO_PADDING_CC3XX` | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CBC_NO_PADDING_OBERON` |
 +----------------+---------------------------------------------------------------------+----------------------------------------------------------------------+
-| CBC_PKCS7      | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CBC_PKCS7_CC3XX`      | Not supported                                                        |
+| CBC_PKCS7      | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CBC_PKCS7_CC3XX`      | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CBC_PKCS7_OBERON`      |
 +----------------+---------------------------------------------------------------------+----------------------------------------------------------------------+
 | CFB            | Not supported                                                       | Not supported                                                        |
 +----------------+---------------------------------------------------------------------+----------------------------------------------------------------------+
@@ -85,6 +85,41 @@ You can use the following Kconfig options for fine-grained control over which dr
    * The :ref:`nrf_security_drivers_cc3xx` is limited to AES key sizes of 128 bits on devices with Arm CryptoCell cc310.
 
 
+Key Derivation Function
+***********************
+
+To enable key derivation function (KDF) support, set one or more of the following Kconfig options:
+
++-------------------+-------------------------------------------------------+
+| KDF algorithm     | Configuration option                                  |
++===================+=======================================================+
+| HKDF              | :kconfig:option:`CONFIG_PSA_WANT_ALG_HKDF`            |
++-------------------+-------------------------------------------------------+
+| TLS 1.2 PRF       | :kconfig:option:`CONFIG_PSA_WANT_ALG_TLS12_PRF`       |
++-------------------+-------------------------------------------------------+
+| TLS 1.2 PSK to MS | :kconfig:option:`CONFIG_PSA_WANT_ALG_TLS12_PSK_TO_MS` |
++-------------------+-------------------------------------------------------+
+
+
+Key Derivation Function driver configurations
+=============================================
+
+You can use the following Kconfig options for fine-grained control over which drivers provide Key Derivation Function (KDF) support:
+
++-------------------+--------------------------+-----------------------------------------------------------------------+
+| KDF algorithm     | nrf_cc3xx driver support | nrf_oberon driver support                                             |
++===================+==========================+==========================================+============================+
+| HKDF              | Not supported            | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_HKDF_OBERON`            |
++-------------------+--------------------------+-----------------------------------------------------------------------+
+| TLS 1.2 PRF       | Not supported            | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_TLS12_PRF_OBERON`       |
++-------------------+--------------------------+-----------------------------------------------------------------------+
+| TLS 1.2 PSK to MS | Not supported            | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_TLS12_PSK_TO_MS_OBERON` |
++-------------------+--------------------------+-----------------------------------------------------------------------+
+
+.. note::
+   * If a KDF algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
+
+
 MAC configurations
 ******************
 
@@ -98,23 +133,25 @@ To enable MAC support, set one or more of the following Kconfig options:
 | HMAC           | :kconfig:option:`CONFIG_PSA_WANT_ALG_HMAC` |
 +----------------+--------------------------------------------+
 
+
 MAC driver configurations
 =========================
 
 You can use the following Kconfig options for fine-grained control over which drivers provide MAC support:
 
-+----------------+-----------------------------------------------------------+----------------------------+
-| MAC cipher     | nrf_cc3xx driver support                                  | nrf_oberon driver support  |
-+================+===========================================================+============================+
-| CMAC           | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CMAC_CC3XX` | Not supported              |
-+----------------+-----------------------------------------------------------+----------------------------+
-| HMAC           | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_HMAC_CC3XX` | Not supported              |
-+----------------+-----------------------------------------------------------+----------------------------+
+
++----------------+-----------------------------------------------------------+------------------------------------------------------------+
+| MAC cipher     | nrf_cc3xx driver support                                  | nrf_oberon driver support                                  |
++================+===========================================================+============================================================+
+| CMAC           | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CMAC_CC3XX` | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CMAC_OBERON` |
++----------------+-----------------------------------------------------------+------------------------------------------------------------+
+| HMAC           | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_HMAC_CC3XX` | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_HMAC_OBERON` |
++----------------+-----------------------------------------------------------+------------------------------------------------------------+
 
 .. note::
    * If a MAC algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
    * The :ref:`nrf_security_drivers_cc3xx` is limited to AES CMAC key sizes of 128 bits on devices with Arm CryptoCell cc310.
-   * The :ref:`nrf_security_drivers_cc3xx` is limited to HMAC using SHA-1, SHA-224, and SHA-256 on devices with Arm CryptoCell cc310.
+   * The :ref:`nrf_security_drivers_cc3xx` is limited to HMAC using SHA-1, SHA-224, and SHA-256 on devices with Arm CryptoCell.
 
 
 AEAD configurations
@@ -189,7 +226,8 @@ You can use the following Kconfig options for fine-grained control over which dr
 
 .. note::
    * If an ECC algorithm is enabled and no PSA driver enables or supports it, then :ref:`nrf_security_drivers_builtin` support is enabled and used.
-   * The :ref:`nrf_security_drivers_oberon` is currently limited to curve types secp224r1 and secp256r1 for ECDH and ECDSA.
+   * The :ref:`nrf_security_drivers_oberon` is currently limited to curve types secp224r1, secp256r1, and secp384r1 for ECDH and ECDSA.
+   * The :ref:`nrf_security_drivers_oberon` is currently limited to X25519 (using Curve25519) and Ed25519 for EdDSA.
 
 
 ECC curve configurations
@@ -209,6 +247,8 @@ To configure elliptic curve support, set one or more of the following Kconfig op
 | Curve25519            | :kconfig:option:`CONFIG_PSA_WANT_ECC_MONTGOMERY_255`      |
 +-----------------------+-----------------------------------------------------------+
 | Curve448              | :kconfig:option:`CONFIG_PSA_WANT_ECC_MONTGOMERY_448`      |
++-----------------------+-----------------------------------------------------------+
+| Ed25519               | :kconfig:option:`CONFIG_PSA_WANT_ECC_TWISTED_EDWARDS_255` |
 +-----------------------+-----------------------------------------------------------+
 | secp192k1             | :kconfig:option:`CONFIG_PSA_WANT_ECC_SECP_K1_192`         |
 +-----------------------+-----------------------------------------------------------+
@@ -247,6 +287,8 @@ You can use the following Kconfig options for fine-grained control over which dr
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | Curve448              | Not supported                                                            | Not supported                                                             |
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
+| Ed25519               | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_TWISTED_EDWARDS_255_CC3XX` | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_TWISTED_EDWARDS_255_OBERON` |
++-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | secp192k1             | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_K1_192_CC3XX`         | Not supported                                                             |
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | secp256k1             | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_K1_256_CC3XX`         | Not supported                                                             |
@@ -257,10 +299,39 @@ You can use the following Kconfig options for fine-grained control over which dr
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | secp256r1             | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_R1_256_CC3XX`         | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_R1_256_OBERON`         |
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
-| secp384r1             | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_R1_384_CC3XX`         | Not supported                                                             |
+| secp384r1             | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_R1_384_CC3XX`         | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_R1_384_OBERON`         |
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | secp521r1             | Not supported                                                            | Not supported                                                             |
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
+
+
+RNG configurations
+******************
+
+To enable PRNG seeded by entropy (also known as TRNG), set one or more of the following configurations:
+
++---------------------------+-------------------------------------------------+
+| PRNG algorithms           | Configuration option                            |
++===========================+=================================================+
+| CTR_DRBG                  | :kconfig:option:`CONFIG_PSA_WANT_ALG_CTR_DRBG`  |
++---------------------------+-------------------------------------------------+
+| HMAC_DRBG                 | :kconfig:option:`CONFIG_PSA_WANT_ALG_HMAC_DRBG` |
++---------------------------+-------------------------------------------------+
+
+.. note::
+   * Both PRNG algorithms are NIST qualified Cryptographically Secure Pseudo Random Number Generators (CSPRNG).
+   * :kconfig:option:`CONFIG_PSA_WANT_ALG_CTR_DRBG` and :kconfig:option:`CONFIG_PSA_WANT_ALG_HMAC_DRBG` are custom configurations not described by the PSA Crypto specification.
+   * If multiple PRNG algorithms are enabled at the same time, CTR_DRBG will be prioritized for random number generation through the front-end APIs for PSA Crypto.
+
+
+RNG driver configurations
+*************************
+
+There are no public configurations for entropy and PRNG algorithm support and the choice of drivers that provide support is automatic.
+
+The PSA drivers using the Arm CryptoCell peripheral is enabled by default for nRF52840, nRF91 Series, and nRF5340 devices.
+
+For devices without a hardware-accelerated cryptographic engine, entropy is provided by the nRF RNG periperal. PRNG support is provided by the Oberon PSA driver, which is implemented using software.
 
 
 RSA configurations
@@ -286,21 +357,22 @@ RSA driver configurations
 
 You can use the following Kconfig options for fine-grained control over which drivers provide RSA support:
 
-+-----------------------+--------------------------------------------------------------------------+----------------------------+
-| RSA algorithms        | nrf_cc3xx driver support                                                 | nrf_oberon driver support  |
-+=======================+==========================================================================+============================+
-| RSA OAEP              | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_OAEP_CC3XX`            | Not supported              |
-+-----------------------+--------------------------------------------------------------------------+----------------------------+
-| RSA PKCS#1 v1.5 crypt | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_PKCS1V15_CRYPT_CC3XX`  | Not supported              |
-+-----------------------+--------------------------------------------------------------------------+----------------------------+
-| RSA PKCS#1 v1.5 sign  | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_PKCS1V15_SIGN_CC3XX`   | Not supported              |
-+-----------------------+--------------------------------------------------------------------------+----------------------------+
-| RSA PSS               | Not supported                                                            | Not supported              |
-+-----------------------+--------------------------------------------------------------------------+----------------------------+
++-----------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
+| RSA algorithms        | nrf_cc3xx driver support                                                 | nrf_oberon driver support                                                |
++=======================+==========================================================================+==========================================================================+
+| RSA OAEP              | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_OAEP_CC3XX`            | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_OAEP_OBERON`           |
++-----------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
+| RSA PKCS#1 v1.5 crypt | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_PKCS1V15_CRYPT_CC3XX`  | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_PKCS1V15_CRYPT_OBERON` |
++-----------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
+| RSA PKCS#1 v1.5 sign  | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_PKCS1V15_SIGN_CC3XX`   | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_PKCS1V15_SIGN_OBERON`  |
++-----------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
+| RSA PSS               | Not supported                                                            | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_RSA_PSS_OBERON`            |
++-----------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
 
 .. note::
    * If an RSA algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
    * :ref:`nrf_security_drivers_cc3xx` is limited to key sizes less than or equal to 2048 bits.
+   * :ref:`nrf_security_drivers_oberon` does not support RSA key pair generation.
 
 
 Secure Hash configurations
