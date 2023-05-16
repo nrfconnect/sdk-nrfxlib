@@ -93,22 +93,22 @@ To enable MAC support, set one or more of the following Kconfig options:
 +----------------+--------------------------------------------+
 | MAC cipher     | Configuration option                       |
 +================+============================================+
-| ECB_NO_PADDING | :kconfig:option:`CONFIG_PSA_WANT_ALG_CMAC` |
+| CMAC           | :kconfig:option:`CONFIG_PSA_WANT_ALG_CMAC` |
 +----------------+--------------------------------------------+
-| CBC_NO_PADDING | :kconfig:option:`CONFIG_PSA_WANT_ALG_HMAC` |
+| HMAC           | :kconfig:option:`CONFIG_PSA_WANT_ALG_HMAC` |
 +----------------+--------------------------------------------+
 
 MAC driver configurations
 =========================
 
-You can use the following Kconfig options for fine-grained control over which drivers provide AEAD support:
+You can use the following Kconfig options for fine-grained control over which drivers provide MAC support:
 
 +----------------+-----------------------------------------------------------+----------------------------+
 | MAC cipher     | nrf_cc3xx driver support                                  | nrf_oberon driver support  |
 +================+===========================================================+============================+
-| ECB_NO_PADDING | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CMAC_CC3XX` | Not supported              |
+| CMAC           | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_CMAC_CC3XX` | Not supported              |
 +----------------+-----------------------------------------------------------+----------------------------+
-| CBC_NO_PADDING | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_HMAC_CC3XX` | Not supported              |
+| HMAC           | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_HMAC_CC3XX` | Not supported              |
 +----------------+-----------------------------------------------------------+----------------------------+
 
 .. note::
@@ -225,6 +225,9 @@ To configure elliptic curve support, set one or more of the following Kconfig op
 | secp521r1             | :kconfig:option:`CONFIG_PSA_WANT_ECC_SECP_R1_521`         |
 +-----------------------+-----------------------------------------------------------+
 
+.. note::
+   * :kconfig:option:`CONFIG_PSA_WANT_ECC_SECP_R1_521` is only supported by :ref:`nrf_security_drivers_builtin`.
+
 
 ECC curve driver configurations
 ===============================
@@ -234,7 +237,7 @@ You can use the following Kconfig options for fine-grained control over which dr
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | ECC curve type        | nrf_cc3xx driver support                                                 | nrf_oberon driver support                                                 |
 +=======================+==========================================================================+===========================================================================+
-| Brainpool256r1        | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_BRAINPOOL_P_R1_256_CC3XX`  | Not supported                                                             |
+| Brainpool256r1        | Not supported                                                            | Not supported                                                             |
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | Brainpool384r1        | Not supported                                                            | Not supported                                                             |
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
@@ -256,7 +259,7 @@ You can use the following Kconfig options for fine-grained control over which dr
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 | secp384r1             | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_R1_384_CC3XX`         | Not supported                                                             |
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
-| secp521r1             | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ECC_SECP_R1_521_CC3XX`         | Not supported                                                             |
+| secp521r1             | Not supported                                                            | Not supported                                                             |
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 
 
