@@ -32,8 +32,8 @@ Enabling or disabling PSA driver specific configurations controls the support fo
 
 If a specific cryptographic feature is not supported by a PSA driver but the algorithm is configured to be used, then :ref:`nrf_security_drivers_builtin` will be enabled to ensure the feature is available.
 
-AES cipher configuration
-************************
+AES cipher configurations
+*************************
 
 To enable AES cipher modes, set one or more of the following Kconfig options:
 
@@ -56,8 +56,8 @@ To enable AES cipher modes, set one or more of the following Kconfig options:
 +----------------+------------------------------------------------------+
 
 
-AES cipher driver configuration
-===============================
+AES cipher driver configurations
+================================
 
 You can use the following Kconfig options for fine-grained control over which drivers provide AES cipher support:
 
@@ -84,8 +84,8 @@ You can use the following Kconfig options for fine-grained control over which dr
    * The :ref:`nrf_security_drivers_cc3xx` is limited to AES key sizes of 128 bits on devices with Arm CryptoCell cc310.
 
 
-MAC configuration
-*****************
+MAC configurations
+******************
 
 To enable MAC support, set one or more of the following Kconfig options:
 
