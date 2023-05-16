@@ -29,6 +29,7 @@ Applications utilizing the |controller| library are responsible for the followin
 The following peripherals are owned by the |controller| and must not be accessed directly by the application:
 
 * ``ECB``
+* ``CCM``
 * ``AAR``
 * ``NVMC``
 * PPI channels from ``17`` to ``31`` (for the nRF52 Series)
