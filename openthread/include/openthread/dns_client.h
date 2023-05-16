@@ -81,6 +81,36 @@ typedef enum
 } otDnsNat64Mode;
 
 /**
+ * This enumeration type represents the service resolution mode in an `otDnsQueryConfig`.
+ *
+ * This is only used during DNS client service resolution `otDnsClientResolveService()`. It determines which
+ * record types to query.
+ *
+ */
+typedef enum
+{
+    OT_DNS_SERVICE_MODE_UNSPECIFIED      = 0, ///< Mode is not specified. Use default service mode.
+    OT_DNS_SERVICE_MODE_SRV              = 1, ///< Query for SRV record only.
+    OT_DNS_SERVICE_MODE_TXT              = 2, ///< Query for TXT record only.
+    OT_DNS_SERVICE_MODE_SRV_TXT          = 3, ///< Query for both SRV and TXT records in same message.
+    OT_DNS_SERVICE_MODE_SRV_TXT_SEPARATE = 4, ///< Query in parallel for SRV and TXT using separate messages.
+    OT_DNS_SERVICE_MODE_SRV_TXT_OPTIMIZE = 5, ///< Query for TXT/SRV together first, if fails then query separately.
+} otDnsServiceMode;
+
+/**
+ * This enumeration type represents the DNS transport protocol in an `otDnsQueryConfig`.
+ *
+ * This `OT_DNS_TRANSPORT_TCP` is only supported when `OPENTHREAD_CONFIG_DNS_CLIENT_OVER_TCP_ENABLE` is enabled.
+ *
+ */
+typedef enum
+{
+    OT_DNS_TRANSPORT_UNSPECIFIED = 0, /// DNS transport is unspecified.
+    OT_DNS_TRANSPORT_UDP         = 1, /// DNS query should be sent via UDP.
+    OT_DNS_TRANSPORT_TCP         = 2, /// DNS query should be sent via TCP.
+} otDnsTransportProto;
+
+/**
  * This structure represents a DNS query configuration.
  *
  * Any of the fields in this structure can be set to zero to indicate that it is not specified. How the unspecified
@@ -89,11 +119,13 @@ typedef enum
  */
 typedef struct otDnsQueryConfig
 {
-    otSockAddr         mServerSockAddr;  ///< Server address (IPv6 address/port). All zero or zero port for unspecified.
-    uint32_t           mResponseTimeout; ///< Wait time (in msec) to rx response. Zero indicates unspecified value.
-    uint8_t            mMaxTxAttempts;   ///< Maximum tx attempts before reporting failure. Zero for unspecified value.
-    otDnsRecursionFlag mRecursionFlag;   ///< Indicates whether the server can resolve the query recursively or not.
-    otDnsNat64Mode     mNat64Mode;       ///< Allow/Disallow NAT64 address translation during address resolution.
+    otSockAddr          mServerSockAddr;  ///< Server address (IPv6 addr/port). All zero or zero port for unspecified.
+    uint32_t            mResponseTimeout; ///< Wait time (in msec) to rx response. Zero indicates unspecified value.
+    uint8_t             mMaxTxAttempts;   ///< Maximum tx attempts before reporting failure. Zero for unspecified value.
+    otDnsRecursionFlag  mRecursionFlag;   ///< Indicates whether the server can resolve the query recursively or not.
+    otDnsNat64Mode      mNat64Mode;       ///< Allow/Disallow NAT64 address translation during address resolution.
+    otDnsServiceMode    mServiceMode;     ///< Determines which records to query during service resolution.
+    otDnsTransportProto mTransportProto;  ///< Select default transport protocol.
 } otDnsQueryConfig;
 
 /**
@@ -402,11 +434,12 @@ otError otDnsBrowseResponseGetServiceInstance(const otDnsBrowseResponse *aRespon
  *
  * This function MUST only be used from `otDnsBrowseCallback`.
  *
- * A browse DNS response should include the SRV, TXT, and AAAA records for the service instances that are enumerated
- * (note that it is a SHOULD and not a MUST requirement). This function tries to retrieve this info for a given service
- * instance when available.
+ * A browse DNS response can include SRV, TXT, and AAAA records for the service instances that are enumerated. This is
+ * a SHOULD and not a MUST requirement, and servers/resolvers are not required to provide this. This function attempts
+ * to retrieve this info for a given service instance when available.
  *
- * - If no matching SRV record is found in @p aResponse, `OT_ERROR_NOT_FOUND` is returned.
+ * - If no matching SRV record is found in @p aResponse, `OT_ERROR_NOT_FOUND` is returned. In this case, no additional
+ *   records (no TXT and/or AAAA) are read.
  * - If a matching SRV record is found in @p aResponse, @p aServiceInfo is updated and `OT_ERROR_NONE` is returned.
  * - If no matching TXT record is found in @p aResponse, `mTxtDataSize` in @p aServiceInfo is set to zero.
  * - If TXT data length is greater than `mTxtDataSize`, it is read partially and `mTxtDataTruncated` is set to true.
@@ -490,6 +523,18 @@ typedef void (*otDnsServiceCallback)(otError aError, const otDnsServiceResponse 
  * the config for this query. In a non-NULL @p aConfig, some of the fields can be left unspecified (value zero). The
  * unspecified fields are then replaced by the values from the default config.
  *
+ * The function sends queries for SRV and/or TXT records for the given service instance. The `mServiceMode` field in
+ * `otDnsQueryConfig` determines which records to query (SRV only, TXT only, or both SRV and TXT) and how to perform
+ * the query (together in the same message, separately in parallel, or in optimized mode where client will try in the
+ * same message first and then separately if it fails to get a response).
+ *
+ * The SRV record provides information about service port, priority, and weight along with the host name associated
+ * with the service instance. This function DOES NOT perform address resolution for the host name discovered from SRV
+ * record. The server/resolver may provide AAAA/A record(s) for the host name in the Additional Data section of the
+ * response to SRV/TXT query and this information can be retrieved using `otDnsServiceResponseGetServiceInfo()` in
+ * `otDnsServiceCallback`. Users of this API MUST NOT assume that host address will always be available from
+ * `otDnsServiceResponseGetServiceInfo()`.
+ *
  * @param[in]  aInstance          A pointer to an OpenThread instance.
  * @param[in]  aInstanceLabel     The service instance label.
  * @param[in]  aServiceName       The service name (together with @p aInstanceLabel form full instance name).
@@ -536,8 +581,16 @@ otError otDnsServiceResponseGetServiceName(const otDnsServiceResponse *aResponse
  *
  * This function MUST only be used from `otDnsServiceCallback`.
  *
- * - If no matching SRV record is found in @p aResponse, `OT_ERROR_NOT_FOUND` is returned.
- * - If a matching SRV record is found in @p aResponse, @p aServiceInfo is updated and `OT_ERROR_NONE` is returned.
+ * A service resolution DNS response may include AAAA records in its Additional Data section for host name associated
+ * with the service instance that is resolved. This is a SHOULD and not a MUST requirement so servers/resolvers are
+ * not required to provide this. This function attempts to retrieve AAAA record(s) if included in the response. If it
+ * is not included `mHostAddress` is set to all zero (unspecified address). If the caller wants to resolve the host
+ * address it can call `otDnsClientResolveAddress()` with the host name to start an address resolution query.
+ *
+ * - If a matching SRV record is found in @p aResponse, @p aServiceInfo is updated.
+ * - If no matching SRV record is found, `OT_ERROR_NOT_FOUND` is returned unless the query config for this query
+ *   used `OT_DNS_SERVICE_MODE_TXT` for `mServiceMode` (meaning the request was only for TXT record). In this case, we
+ *   still try to parse the SRV record from Additional Data Section of response (in case server provided the info).
  * - If no matching TXT record is found in @p aResponse, `mTxtDataSize` in @p aServiceInfo is set to zero.
  * - If TXT data length is greater than `mTxtDataSize`, it is read partially and `mTxtDataTruncated` is set to true.
  * - If no matching AAAA record is found in @p aResponse, `mHostAddress is set to all zero or unspecified address.
@@ -548,7 +601,7 @@ otError otDnsServiceResponseGetServiceName(const otDnsServiceResponse *aResponse
  * @param[out] aServiceInfo       A `ServiceInfo` to output the service instance information (MUST NOT be NULL).
  *
  * @retval OT_ERROR_NONE          The service instance info was read. @p aServiceInfo is updated.
- * @retval OT_ERROR_NOT_FOUND     Could not find a matching SRV record in @p aResponse.
+ * @retval OT_ERROR_NOT_FOUND     Could not find a required record in @p aResponse.
  * @retval OT_ERROR_NO_BUFS       The host name and/or TXT data could not fit in the given buffers.
  * @retval OT_ERROR_PARSE         Could not parse the records in the @p aResponse.
  *
