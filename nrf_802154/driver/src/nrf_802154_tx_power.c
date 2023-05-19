@@ -34,7 +34,6 @@
 
 #include "nrf_802154_tx_power.h"
 #include "nrf_802154_pib.h"
-#include "nrf_802154_utils.h"
 #include "nrf_802154_fal.h"
 
 int8_t nrf_802154_tx_power_convert_metadata_to_tx_power_split(

@@ -100,6 +100,11 @@ bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                            notify_function)
 }
 
+bool nrf_802154_request_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param)
+{
+    REQUEST_FUNCTION_PARMS(nrf_802154_core_ack_timeout_handle, p_param);
+}
+
 bool nrf_802154_request_energy_detection(nrf_802154_term_t term_lvl, uint32_t time_us)
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_core_energy_detection, term_lvl, time_us)

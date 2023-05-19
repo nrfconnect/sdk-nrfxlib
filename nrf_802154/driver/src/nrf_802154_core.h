@@ -154,6 +154,16 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
                               nrf_802154_notification_func_t notify_function);
 
 /**
+ * @brief Requests end of waiting for an ACK by the core.
+ *
+ * @param[in] p_param   Pointer to the notification parameters;
+ *
+ * @return true    Request handled.
+ * @return false   Request rejected due to already occupied critical section.
+ */
+bool nrf_802154_core_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param);
+
+/**
  * @brief Requests the transition to the @ref RADIO_STATE_ED state.
  *
  * When the energy detection procedure is finished, the driver transitions

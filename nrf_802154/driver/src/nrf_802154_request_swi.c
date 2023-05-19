@@ -76,6 +76,7 @@ typedef enum
     REQ_TYPE_SLEEP,
     REQ_TYPE_RECEIVE,
     REQ_TYPE_TRANSMIT,
+    REQ_TYPE_ACK_TIMEOUT_HANDLE,
     REQ_TYPE_ENERGY_DETECTION,
     REQ_TYPE_CCA,
     REQ_TYPE_CONTINUOUS_CARRIER,
@@ -125,6 +126,12 @@ typedef struct
             nrf_802154_transmit_params_t * p_params;   ///< Pointer to transmission parameters.
             bool                         * p_result;   ///< Transmit request result.
         } transmit;                                    ///< Transmit request details.
+
+        struct
+        {
+            const nrf_802154_ack_timeout_handle_params_t * p_param;
+            bool                                         * p_result;
+        } ack_timeout_handle;
 
         struct
         {
@@ -393,6 +400,18 @@ static void swi_transmit(nrf_802154_term_t              term_lvl,
     p_slot->data.transmit.p_params   = p_params;
     p_slot->data.transmit.notif_func = notify_function;
     p_slot->data.transmit.p_result   = p_result;
+
+    req_exit();
+}
+
+static void swi_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param,
+                                   bool                                         * p_result)
+{
+    nrf_802154_req_data_t * p_slot = req_enter();
+
+    p_slot->type                             = REQ_TYPE_ACK_TIMEOUT_HANDLE;
+    p_slot->data.ack_timeout_handle.p_param  = p_param;
+    p_slot->data.ack_timeout_handle.p_result = p_result;
 
     req_exit();
 }
@@ -696,6 +715,11 @@ bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                      notify_function)
 }
 
+bool nrf_802154_request_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param)
+{
+    REQUEST_FUNCTION(nrf_802154_core_ack_timeout_handle, swi_ack_timeout_handle, p_param);
+}
+
 bool nrf_802154_request_energy_detection(nrf_802154_term_t term_lvl,
                                          uint32_t          time_us)
 {
@@ -829,6 +853,11 @@ static void irq_handler_req_event(void)
                                              p_slot->data.transmit.p_data,
                                              p_slot->data.transmit.p_params,
                                              p_slot->data.transmit.notif_func);
+                break;
+
+            case REQ_TYPE_ACK_TIMEOUT_HANDLE:
+                *(p_slot->data.ack_timeout_handle.p_result) =
+                    nrf_802154_core_ack_timeout_handle(p_slot->data.ack_timeout_handle.p_param);
                 break;
 
             case REQ_TYPE_ENERGY_DETECTION:
