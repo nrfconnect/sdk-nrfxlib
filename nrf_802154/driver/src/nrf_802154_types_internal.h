@@ -47,4 +47,9 @@ typedef struct
                                                       // until its preconditions are met.
 } nrf_802154_transmit_params_t;
 
+typedef struct
+{
+    uint8_t * p_frame; // !< Pointer to the frame for which the timeout of ack reception is notified.
+} nrf_802154_ack_timeout_handle_params_t;
+
 #endif  // NRF_802154_TYPES_INTERNAL_H__

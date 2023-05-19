@@ -66,18 +66,6 @@ static uint32_t              m_dt;                                              
 static volatile bool         m_procedure_is_active;
 static uint8_t             * mp_frame;
 
-static void notify_tx_error(bool result)
-{
-    if (result)
-    {
-        // If waiting for ack timeout occurred, the transmission must had already finished.
-        nrf_802154_transmit_done_metadata_t metadata = {0};
-
-        nrf_802154_tx_work_buffer_original_frame_update(mp_frame, &metadata.frame_props);
-        nrf_802154_notify_transmit_failed(mp_frame, NRF_802154_TX_ERROR_NO_ACK, &metadata);
-    }
-}
-
 static void timeout_timer_fired(nrf_802154_sl_timer_t * p_timer)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -86,11 +74,11 @@ static void timeout_timer_fired(nrf_802154_sl_timer_t * p_timer)
 
     if (m_procedure_is_active)
     {
-        if (nrf_802154_request_receive(NRF_802154_TERM_802154,
-                                       REQ_ORIG_ACK_TIMEOUT,
-                                       notify_tx_error,
-                                       false,
-                                       NRF_802154_RESERVED_IMM_RX_WINDOW_ID))
+        nrf_802154_ack_timeout_handle_params_t param = {0};
+
+        param.p_frame = mp_frame;
+
+        if (nrf_802154_request_ack_timeout_handle(&param))
         {
             m_procedure_is_active = false;
         }

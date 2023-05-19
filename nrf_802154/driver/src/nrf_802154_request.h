@@ -105,6 +105,14 @@ bool nrf_802154_request_transmit(nrf_802154_term_t              term_lvl,
                                  nrf_802154_notification_func_t notify_function);
 
 /**
+ * @brief Request to handle Ack timeout by the core module.
+ *
+ * @param[in]  p_param  Parameter to pass to nrf_802154_core_ack_timeout_handle
+ *
+ */
+bool nrf_802154_request_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param);
+
+/**
  * @brief Requests entering the @ref RADIO_STATE_ED state.
  *
  * @param[in]  term_lvl  Termination level of this request. Selects procedures to abort.

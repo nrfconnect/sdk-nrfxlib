@@ -74,7 +74,6 @@
 #include "rsch/nrf_802154_rsch.h"
 #include "rsch/nrf_802154_rsch_crit_sect.h"
 #include "timer/nrf_802154_timer_coord.h"
-#include "platform/nrf_802154_hp_timer.h"
 #include "platform/nrf_802154_irq.h"
 #include "protocol/mpsl_fem_protocol_api.h"
 
@@ -2388,6 +2387,38 @@ bool nrf_802154_core_sleep(nrf_802154_term_t term_lvl)
     return result;
 }
 
+static bool core_receive(nrf_802154_term_t term_lvl,
+                         req_originator_t  req_orig,
+                         bool              notify_abort,
+                         uint32_t          id)
+{
+    bool result = current_operation_terminate(term_lvl, req_orig, notify_abort);
+
+    if (result)
+    {
+        m_trx_receive_frame_notifications_mask =
+            make_trx_frame_receive_notification_mask();
+
+        m_rx_window_id = id;
+        state_set(RADIO_STATE_RX);
+
+        bool abort_shall_follow = false;
+
+        rx_init(ramp_up_mode_choose(req_orig), &abort_shall_follow);
+
+        if (abort_shall_follow)
+        {
+            nrf_802154_trx_abort();
+
+            // HW triggering failed, fallback is SW trigger.
+            // (fallback immunizes against the rare case of spurious lptimer firing)
+            rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+        }
+    }
+
+    return result;
+}
+
 bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
                              req_originator_t               req_orig,
                              nrf_802154_notification_func_t notify_function,
@@ -2404,29 +2435,7 @@ bool nrf_802154_core_receive(nrf_802154_term_t              term_lvl,
         {
             if (critical_section_can_be_processed_now())
             {
-                result = current_operation_terminate(term_lvl, req_orig, notify_abort);
-
-                if (result)
-                {
-                    m_trx_receive_frame_notifications_mask =
-                        make_trx_frame_receive_notification_mask();
-
-                    m_rx_window_id = id;
-                    state_set(RADIO_STATE_RX);
-
-                    bool abort_shall_follow = false;
-
-                    rx_init(ramp_up_mode_choose(req_orig), &abort_shall_follow);
-
-                    if (abort_shall_follow)
-                    {
-                        nrf_802154_trx_abort();
-
-                        // HW triggering failed, fallback is SW trigger.
-                        // (fallback immunizes against the rare case of spurious lptimer firing)
-                        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
-                    }
-                }
+                result = core_receive(term_lvl, req_orig, notify_abort, id);
             }
             else
             {
@@ -2519,6 +2528,42 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
         {
             notify_function(false);
         }
+    }
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
+
+    return result;
+}
+
+bool nrf_802154_core_ack_timeout_handle(const nrf_802154_ack_timeout_handle_params_t * p_param)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
+
+    bool result = critical_section_enter_and_verify_timeslot_length();
+
+    if (result)
+    {
+        if ((m_state == RADIO_STATE_RX_ACK) && (p_param->p_frame == mp_tx_data))
+        {
+            bool r;
+
+            r = core_receive(NRF_802154_TERM_802154,
+                             REQ_ORIG_ACK_TIMEOUT,
+                             false,
+                             NRF_802154_RESERVED_IMM_RX_WINDOW_ID);
+            assert(r);
+            (void)r;
+
+            nrf_802154_transmit_done_metadata_t metadata = {0};
+
+            nrf_802154_tx_work_buffer_original_frame_update(p_param->p_frame,
+                                                            &metadata.frame_props);
+            nrf_802154_notify_transmit_failed(p_param->p_frame,
+                                              NRF_802154_TX_ERROR_NO_ACK,
+                                              &metadata);
+        }
+
+        nrf_802154_critical_section_exit();
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
