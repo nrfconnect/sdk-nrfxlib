@@ -30,8 +30,6 @@ If multiple drivers are enabled, the first ordered item in this table takes prec
 
 Enabling or disabling PSA driver specific configurations controls the support for a given algorithm, per driver.
 
-If a specific cryptographic feature is not supported by a PSA driver but the algorithm is configured to be used, then :ref:`nrf_security_drivers_builtin` will be enabled to ensure the feature is available.
-
 
 AES cipher configurations
 *************************
@@ -81,7 +79,6 @@ You can use the following Kconfig options for fine-grained control over which dr
 +----------------+---------------------------------------------------------------------+----------------------------------------------------------------------+
 
 .. note::
-   * If an AES cipher mode is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
    * The :ref:`nrf_security_drivers_cc3xx` is limited to AES key sizes of 128 bits on devices with Arm CryptoCell cc310.
 
 
@@ -116,9 +113,6 @@ You can use the following Kconfig options for fine-grained control over which dr
 | TLS 1.2 PSK to MS | Not supported            | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_TLS12_PSK_TO_MS_OBERON` |
 +-------------------+--------------------------+-----------------------------------------------------------------------+
 
-.. note::
-   * If a KDF algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
-
 
 MAC configurations
 ******************
@@ -149,7 +143,6 @@ You can use the following Kconfig options for fine-grained control over which dr
 +----------------+-----------------------------------------------------------+------------------------------------------------------------+
 
 .. note::
-   * If a MAC algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
    * The :ref:`nrf_security_drivers_cc3xx` is limited to AES CMAC key sizes of 128 bits on devices with Arm CryptoCell cc310.
    * The :ref:`nrf_security_drivers_cc3xx` is limited to HMAC using SHA-1, SHA-224, and SHA-256 on devices with Arm CryptoCell.
 
@@ -186,7 +179,6 @@ You can use the following Kconfig options for fine-grained control over which dr
 +----------------+------------------------------------------------------------------------+-------------------------------------------------------------------------+
 
 .. note::
-   * If an AEAD algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
    * The :ref:`nrf_security_drivers_cc3xx` is limited to AES key sizes of 128 bits on devices with Arm CryptoCell cc310.
    * The :ref:`nrf_security_drivers_cc3xx` does not provide hardware support for AES GCM on devices with Arm CryptoCell cc310.
 
@@ -225,7 +217,6 @@ You can use the following Kconfig options for fine-grained control over which dr
 +-----------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------+
 
 .. note::
-   * If an ECC algorithm is enabled and no PSA driver enables or supports it, then :ref:`nrf_security_drivers_builtin` support is enabled and used.
    * The :ref:`nrf_security_drivers_oberon` is currently limited to curve types secp224r1, secp256r1, and secp384r1 for ECDH and ECDSA.
    * The :ref:`nrf_security_drivers_oberon` is currently limited to X25519 (using Curve25519) and Ed25519 for EdDSA.
 
@@ -370,7 +361,6 @@ You can use the following Kconfig options for fine-grained control over which dr
 +-----------------------+--------------------------------------------------------------------------+--------------------------------------------------------------------------+
 
 .. note::
-   * If an RSA algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
    * :ref:`nrf_security_drivers_cc3xx` is limited to key sizes less than or equal to 2048 bits.
    * :ref:`nrf_security_drivers_oberon` does not support RSA key pair generation.
 
@@ -413,6 +403,3 @@ You can use the following PSA driver-specific configurations for fine-grained co
 +-----------------------+---------------------------------------------------------------+---------------------------------------------------------------+
 | SHA-512               |  Not supported                                                | :kconfig:option:`CONFIG_PSA_CRYPTO_DRIVER_ALG_SHA_512_OBERON` |
 +-----------------------+---------------------------------------------------------------+---------------------------------------------------------------+
-
-.. note::
-   If Secure Hash algorithm is enabled and no PSA driver enables or supports it, :ref:`nrf_security_drivers_builtin` support is enabled and used.
