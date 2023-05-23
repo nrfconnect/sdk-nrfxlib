@@ -39,7 +39,9 @@ Setting the Kconfig option :kconfig:option:`CONFIG_CC3XX_OBERON` enables legacy 
 Original Mbed TLS backend
 =========================
 
-The Original Mbed TLS backend is no longer available as a configuration option, and is only used if any of the enabled backends does not support a specific cryptographic algorithm or feature.
+The original Mbed TLS backend is no longer available as a configuration option, and is only used if any of the enabled backends do not support a specific cryptographic algorithm or feature.
+The original Mbed TLS backend can only be used with the :kconfig:option:`CONFIG_PSA_CORE_BUILTIN` Kconfig option selected.
+This backend is deprecated.
 
 AES configuration
 *****************
