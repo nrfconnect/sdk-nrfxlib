@@ -10,8 +10,8 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
-Main branch - nRF 802.15.4 Radio Driver
-***************************************
+nRF Connect SDK v2.4.0 - nRF 802.15.4 Radio Driver
+**************************************************
 
 Notable changes
 ===============
@@ -27,6 +27,7 @@ Added
 Bug fixes
 =========
 * Fixed an issue causing the notification about transmission failure to be generated twice what led to a crash on the nRF5340 network core. (KRKNWK-16825)
+* Fixed an issue with the receive filter, which led to the receiver not being able to receive a frame shorter than 5 bytes in promiscuous mode. (KRKNWK-16977)
 
 Other changes
 =============

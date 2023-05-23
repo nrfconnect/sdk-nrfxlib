@@ -1678,15 +1678,19 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
             nrf_802154_rsch_crit_sect_prio_request(RSCH_PRIO_RX);
             nrf_802154_ack_generator_reset();
         }
+    }
 
-        if (nrf_802154_pib_promiscuous_get())
+    if (nrf_802154_pib_promiscuous_get())
+    {
+        /*
+         * In promiscuous mode all filtering should be ignored unless the frame has
+         * length 0 or above maximum frame length.
+         */
+        uint8_t psdu_length = nrf_802154_frame_parser_frame_length_get(&m_current_rx_frame_data);
+
+        if (psdu_length > 0 && psdu_length <= MAX_PACKET_SIZE)
         {
-            /*
-             * In promiscuous mode all filtering should be ignored unless the frame has
-             * invalid length.
-             */
-            filter_result = filter_result == NRF_802154_RX_ERROR_INVALID_LENGTH ?
-                            filter_result : NRF_802154_RX_ERROR_NONE;
+            filter_result = NRF_802154_RX_ERROR_NONE;
         }
     }
 
