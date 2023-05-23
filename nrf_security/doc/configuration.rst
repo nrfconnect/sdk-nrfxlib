@@ -7,14 +7,26 @@ Configuration
    :local:
    :depth: 2
 
-You can enable the Nordic Security Module using `PSA driver support`_ or with `Legacy crypto support`_.
+You can enable the Nordic Security Module using `PSA crypto support`_ or `Legacy crypto support`_.
 
-PSA driver support
+PSA crypto support
 ******************
 
-To enable Nordic Security Module with the PSA driver support, set the :kconfig:option:`CONFIG_NRF_SECURITY` Kconfig option along with additional configuration options, as described in :ref:`nrf_security_driver_config`.
+To enable the Nordic Security Module with PSA crypto support, set the :kconfig:option:`CONFIG_NRF_SECURITY` Kconfig option along with additional configuration options, as described in :ref:`nrf_security_driver_config`.
 
-The PSA driver support requires using PSA Crypto APIs.
+PSA crypto support is provided through PSA Crypto APIs and is implemented by PSA core.
+PSA core uses PSA drivers to implement the cryptographic features either in software, or using hardware accelerators.
+
+Starting from |NCS| v2.4.0, the Mbed TLS PSA core is deprecated and replaced with nrf_oberon PSA core.
+The nrf_oberon PSA core code is an optimized and efficient implementation of PSA core licensed for use on Nordic Semiconductor devices.
+
++---------------+--------------------------------------------------+------------------------------------------------+
+| PSA core      | Configuration option                             | Notes                                          |
++===============+==================================================+================================================+
+| nrf_oberon    | :kconfig:option:`CONFIG_PSA_CORE_OBERON`         | Default                                        |
++---------------+--------------------------------------------------+------------------------------------------------+
+| Mbed TLS      | :kconfig:option:`CONFIG_PSA_CORE_BUILTIN`        | DEPRECATED                                     |
++---------------+--------------------------------------------------+------------------------------------------------+
 
 .. _legacy_crypto_support:
 
