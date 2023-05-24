@@ -118,8 +118,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1125
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1269
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1136
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1280
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 16
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -213,18 +213,18 @@ extern "C" {
 /** @brief Auxiliary defines, not to be used outside of this file */
 #define __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) ((max_tx_data_size) + 5)
 #define __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER (282)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (465)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (160)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
 
 /** Memory required per periodic advertising with responses set.
  *
+ * @param[in] max_adv_data The maximum size of data whcih can be sent in chains.
  * @param[in] tx_buffer_count The number of buffers for sending data. Minimum of 1.
  * @param[in] rx_buffer_count The number of buffers for receiving data.
- * @param[in] max_tx_data_size The maximum size of data which can be sent.
+ * @param[in] max_tx_data_size The maximum size of data which can be sent in subevents.
  * @param[in] failure_reporting_enabled Whether failure reporting is enabled.
  */
-#ifdef SDC_USE_NEW_MEM_API
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (465)
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (160)
 #define SDC_MEM_PER_PERIODIC_ADV_RSP_SET(max_adv_data, tx_buffer_count, rx_buffer_count, max_tx_data_size, failure_reporting_enabled) \
      (SDC_MEM_PER_PERIODIC_ADV_SET(max_adv_data) \
      + ((rx_buffer_count) > 0 ? __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX : \
@@ -232,16 +232,6 @@ extern "C" {
      + (tx_buffer_count) * __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) \
      + (rx_buffer_count) * __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER \
      + ((failure_reporting_enabled) ? __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING : 0))
-#else
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (624)
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (320)
-#define SDC_MEM_PER_PERIODIC_ADV_RSP_SET(tx_buffer_count, rx_buffer_count, max_tx_data_size, failure_reporting_enabled) \
-     (((rx_buffer_count) > 0 ? __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX : \
-                             __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX ) \
-     + (tx_buffer_count) * __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) \
-     + (rx_buffer_count) * __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER \
-     + ((failure_reporting_enabled) ? __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING : 0))
-#endif
 
 /** @} end of sdc_mem_defines */
 

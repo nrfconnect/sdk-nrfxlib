@@ -23,6 +23,7 @@ Added
 * Support for up to 255 addresses in the Filter Accept List (DRGN-18967).
 * Support for configuring the Filter Accept List to have an arbitrary size (DRGN-18967).
 * Support for sync handles in the :c:func:`sdc_hci_cmd_vs_zephyr_write_tx_power` and :c:func:`sdc_hci_cmd_vs_zephyr_read_tx_power` commands (DRGN-18805).
+* Support for reading channel map updates that are not at the beginning of an ACAD (DRGN-19067).
 
 Changes
 =======
@@ -46,6 +47,7 @@ Bug fixes
 * Fixed an issue where the peripheral would disconnect with DIFFERENT_TRANSACTION_COLLISION when a collision of a connection update and a PHY update occurs even when central asks for no change (DRGN-18840).
 * Fixed a rare issue where the controller would assert when multiple instances of the same Bluetooth role were running and one of the instances was being stopped (DRGN-18424).
 * Fixed an issue where the SoftDevice Controller would not accept an ``adv_handle`` provided in HCI commands with values above the configured number of advertising sets (DRGN-19058).
+* Fixed an issue where the controller could assert while synchronized to a Periodic Advertiser (DRGN-18883).
 
 nRF Connect SDK v2.3.0
 **********************
