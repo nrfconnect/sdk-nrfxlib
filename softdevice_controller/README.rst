@@ -60,8 +60,6 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 
    * For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Connection CTE Response, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
-   * For the Periodic Advertising with Responses - Advertiser feature, the support is experimental.
-   * For the Periodic Advertising with Responses - Scanner feature, the support is experimental.
    * For the LE Power Control Request feature, the support is experimental.
    * For Periodic Advertising Sync Transfer - Receiver, only one sync transfer reception may be in progress at any one time per link.
 

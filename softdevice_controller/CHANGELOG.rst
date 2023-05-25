@@ -18,7 +18,7 @@ Added
 =====
 
 * Support for the vendor-specific HCI command: Set Compatibility mode for window offset (DRGN-18727).
-* Support for Periodic Advertising with Responses (PAwR) Scanner (experimental) (DRGN-18739).
+* Support for Periodic Advertising with Responses (PAwR) Scanner (DRGN-18739).
 * Support for LE Read and Write RF Path Compensation HCI commands (DRGN-10234 and DRGN-18202).
 * Support for up to 255 addresses in the Filter Accept List (DRGN-18967).
 * Support for configuring the Filter Accept List to have an arbitrary size (DRGN-18967).
@@ -33,6 +33,7 @@ Changes
 * Periodic advertiser is allocated from the Periodic Advertising with Responses (PAwR) Advertiser sets when :c:enum:`SDC_CFG_TYPE_PERIODIC_ADV_RSP_COUNT` is available.
   Otherwise, it is allocated from the Periodic Advertiser sets if :c:enum:`SDC_CFG_TYPE_PERIODIC_ADV_COUNT` is set (DRGN-18979).
 * The controller now returns the error code ``0x0D`` instead of ``0x09`` if it has insufficient resources to handle more connections and the host tries to start a connectable advertiser or the controller receives the commands ``LE Extended Create Connection`` or ``LE Create Connection`` (DRGN-18944).
+* Periodic Advertising with Responses (PAwR) Advertiser is supported (DRGN-18497).
 
 Bug fixes
 =========
