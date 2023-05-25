@@ -19,4 +19,6 @@ zephyr_include_directories(include)
 zephyr_include_directories(include/protocol)
 zephyr_link_libraries(${MPSL_LIB_DIR}/libmpsl.a)
 
+add_subdirectory(fem)
+
 endif()
