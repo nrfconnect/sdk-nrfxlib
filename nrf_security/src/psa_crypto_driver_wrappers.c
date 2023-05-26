@@ -1843,30 +1843,6 @@ psa_status_t psa_driver_wrapper_aead_decrypt(
     }
 }
 
-psa_status_t psa_driver_get_tag_len( psa_aead_operation_t *operation,
-                                     uint8_t *tag_len )
-{
-    switch (operation->id) {
-#if defined(PSA_CRYPTO_DRIVER_HAS_AEAD_SUPPORT_CC3XX)
-    case PSA_CRYPTO_CC3XX_DRIVER_ID:
-        *tag_len = operation->ctx.cc3xx_driver_ctx_tag_length;
-        return PSA_SUCCESS;
-#endif
-#if defined(PSA_CRYPTO_DRIVER_HAS_AEAD_SUPPORT_OBERON)
-    case PSA_CRYPTO_OBERON_DRIVER_ID:
-        *tag_len = (size_t)operation->ctx.oberon_driver_ctx.tag_length;
-        return PSA_SUCCESS;
-#endif
-#if defined(MBEDTLS_PSA_BUILTIN_HAS_AEAD_SUPPORT)
-    case PSA_CRYPTO_MBED_TLS_DRIVER_ID:
-        *tag_len = operation->ctx.mbedtls_ctx.tag_length;
-        return ( PSA_SUCCESS );
-#endif
-    default:
-            return( PSA_ERROR_INVALID_ARGUMENT );
-    }
-}
-
 psa_status_t psa_driver_wrapper_aead_encrypt_setup(
    psa_aead_operation_t *operation,
    const psa_key_attributes_t *attributes,
@@ -1889,7 +1865,6 @@ psa_status_t psa_driver_wrapper_aead_encrypt_setup(
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
 #if defined(PSA_CRYPTO_DRIVER_HAS_AEAD_SUPPORT_CC3XX)
             operation->id = PSA_CRYPTO_CC3XX_DRIVER_ID;
-            operation->ctx.cc3xx_driver_ctx_tag_length = PSA_ALG_AEAD_GET_TAG_LENGTH(alg);
             status = cc3xx_aead_encrypt_setup(
                     &operation->ctx.cc3xx_driver_ctx,
                     attributes, key_buffer, key_buffer_size,
@@ -1960,7 +1935,6 @@ psa_status_t psa_driver_wrapper_aead_decrypt_setup(
 #if defined(PSA_CRYPTO_ACCELERATOR_DRIVER_PRESENT)
 #if defined(PSA_CRYPTO_DRIVER_HAS_AEAD_SUPPORT_CC3XX)
             operation->id = PSA_CRYPTO_CC3XX_DRIVER_ID;
-            operation->ctx.cc3xx_driver_ctx_tag_length = PSA_ALG_AEAD_GET_TAG_LENGTH(alg);
             status = cc3xx_aead_decrypt_setup(
                     &operation->ctx.cc3xx_driver_ctx,
                     attributes,
