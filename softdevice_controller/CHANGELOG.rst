@@ -30,8 +30,8 @@ Changes
 
 * The ``VersNr`` field in the ``LL_VERSION_IND`` packet now contains the value 0x0D to indicate compatibility with Bluetooth Core Specification v5.4 (DRGN-18624).
 * Receiving a Periodic Advertisement Sync Transfer (PAST) with invalid parameters will now generate the ``LE Periodic Advertising Sync Transfer Received`` event when receiving PAST is enabled (DRGN-18803).
-* Periodic advertiser is allocated from the Periodic Advertising with Responses (PAwR) Advertiser sets when :c:enum:`SDC_CFG_TYPE_PERIODIC_ADV_RSP_COUNT` is available.
-  Otherwise, it is allocated from the Periodic Advertiser sets if :c:enum:`SDC_CFG_TYPE_PERIODIC_ADV_COUNT` is set (DRGN-18979).
+* Periodic advertiser is allocated from the Periodic Advertising with Responses (PAwR) Advertiser sets when :c:enumerator:`SDC_CFG_TYPE_PERIODIC_ADV_RSP_COUNT` is available.
+  Otherwise, it is allocated from the Periodic Advertiser sets if :c:enumerator:`SDC_CFG_TYPE_PERIODIC_ADV_COUNT` is set (DRGN-18979).
 * The controller now returns the error code ``0x0D`` instead of ``0x09`` if it has insufficient resources to handle more connections and the host tries to start a connectable advertiser or the controller receives the commands ``LE Extended Create Connection`` or ``LE Create Connection`` (DRGN-18944).
 * Periodic Advertising with Responses (PAwR) Advertiser is supported (DRGN-18497).
 
@@ -49,6 +49,8 @@ Bug fixes
 * Fixed a rare issue where the controller would assert when multiple instances of the same Bluetooth role were running and one of the instances was being stopped (DRGN-18424).
 * Fixed an issue where the SoftDevice Controller would not accept an ``adv_handle`` provided in HCI commands with values above the configured number of advertising sets (DRGN-19058).
 * Fixed an issue where the controller could assert while synchronized to a Periodic Advertiser (DRGN-18883).
+* Fixed an issue where the controller fails to advertise using extended advertising in the first advertising event after an increase in advertising data payload (DRGN-19197).
+* Fixed an issue where the advertiser would not use a random delay if other bluetooth roles were running with an interval similar to the advertising interval (DRGN-19193).
 
 nRF Connect SDK v2.3.0
 **********************
