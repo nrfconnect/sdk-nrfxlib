@@ -49,6 +49,7 @@ Bug fixes
 * Fixed a rare issue where the controller would assert when multiple instances of the same Bluetooth role were running and one of the instances was being stopped (DRGN-18424).
 * Fixed an issue where the SoftDevice Controller would not accept an ``adv_handle`` provided in HCI commands with values above the configured number of advertising sets (DRGN-19058).
 * Fixed an issue where the controller could assert while synchronized to a Periodic Advertiser (DRGN-18883).
+* Fixed an issue where the controller fails to advertise using extended advertising in the first advertising event after an increase in advertising data payload (DRGN-19197).
 
 nRF Connect SDK v2.3.0
 **********************
