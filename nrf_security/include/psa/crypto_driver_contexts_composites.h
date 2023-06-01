@@ -84,8 +84,6 @@ typedef union {
 #if defined(PSA_CRYPTO_DRIVER_CC3XX)
     struct {
         cc3xx_aead_operation_t cc3xx_driver_ctx;
-        /* NCSDK-19932: get this from the cc3xx_driver_ctx. */
-        size_t cc3xx_driver_ctx_tag_length;
     };
 #endif /* PSA_CRYPTO_DRIVER_CC3XX */
 #if defined(PSA_CRYPTO_DRIVER_HAS_AEAD_SUPPORT_OBERON)
