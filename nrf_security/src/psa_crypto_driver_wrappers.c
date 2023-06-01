@@ -135,37 +135,19 @@
 #define PSA_CRYPTO_TFM_BUILTIN_KEY_LOADER_DRIVER_ID (6)
 #endif /* PSA_CRYPTO_DRIVER_TFM_BUILTIN_KEY_LOADER */
 
-/* Support the 'old' SE interface when asked to */
+/* This option is deprecated and unsupported */
 #if defined(MBEDTLS_PSA_CRYPTO_SE_C)
-/* PSA_CRYPTO_DRIVER_PRESENT is defined when either a new-style or old-style
- * SE driver is present, to avoid unused argument errors at compile time. */
-#ifndef PSA_CRYPTO_DRIVER_PRESENT
-#define PSA_CRYPTO_DRIVER_PRESENT
-#endif
-#include "psa_crypto_se.h"
+#error "MBEDTLS_PSA_CRYPTO_SE_C is not supported"
 #endif
 
 psa_status_t psa_driver_wrapper_init( void )
 {
-    psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
-
-#if defined(MBEDTLS_PSA_CRYPTO_SE_C)
-    status = psa_init_all_se_drivers( );
-    if( status != PSA_SUCCESS )
-        return( status );
-#endif
-
-    (void) status;
     return( PSA_SUCCESS );
 }
 
 void psa_driver_wrapper_free( void )
 {
-#if defined(MBEDTLS_PSA_CRYPTO_SE_C)
-    /* Unregister all secure element drivers, so that we restart from
-     * a pristine state. */
-    psa_unregister_all_se_drivers( );
-#endif /* MBEDTLS_PSA_CRYPTO_SE_C */
+	/* Intentionally left empty */
 }
 
 /* Start delegation functions */
@@ -319,26 +301,6 @@ psa_status_t psa_driver_wrapper_sign_hash(
     psa_algorithm_t alg, const uint8_t *hash, size_t hash_length,
     uint8_t *signature, size_t signature_size, size_t *signature_length )
 {
-    /* Try dynamically-registered SE interface first */
-#if defined(MBEDTLS_PSA_CRYPTO_SE_C)
-    const psa_drv_se_t *drv;
-    psa_drv_se_context_t *drv_context;
-
-    if( psa_get_se_driver( attributes->core.lifetime, &drv, &drv_context ) )
-    {
-        if( drv->asymmetric == NULL ||
-            drv->asymmetric->p_sign == NULL )
-        {
-            /* Key is defined in SE, but we have no way to exercise it */
-            return( PSA_ERROR_NOT_SUPPORTED );
-        }
-        return( drv->asymmetric->p_sign(
-                    drv_context, *( (psa_key_slot_number_t *)key_buffer ),
-                    alg, hash, hash_length,
-                    signature, signature_size, signature_length ) );
-    }
-#endif /* PSA_CRYPTO_SE_C */
-
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
     psa_key_location_t location =
         PSA_KEY_LIFETIME_GET_LOCATION( attributes->core.lifetime );
@@ -432,26 +394,6 @@ psa_status_t psa_driver_wrapper_verify_hash(
     psa_algorithm_t alg, const uint8_t *hash, size_t hash_length,
     const uint8_t *signature, size_t signature_length )
 {
-    /* Try dynamically-registered SE interface first */
-#if defined(MBEDTLS_PSA_CRYPTO_SE_C)
-    const psa_drv_se_t *drv;
-    psa_drv_se_context_t *drv_context;
-
-    if( psa_get_se_driver( attributes->core.lifetime, &drv, &drv_context ) )
-    {
-        if( drv->asymmetric == NULL ||
-            drv->asymmetric->p_verify == NULL )
-        {
-            /* Key is defined in SE, but we have no way to exercise it */
-            return( PSA_ERROR_NOT_SUPPORTED );
-        }
-        return( drv->asymmetric->p_verify(
-                    drv_context, *( (psa_key_slot_number_t *)key_buffer ),
-                    alg, hash, hash_length,
-                    signature, signature_length ) );
-    }
-#endif /* PSA_CRYPTO_SE_C */
-
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
     psa_key_location_t location =
         PSA_KEY_LIFETIME_GET_LOCATION( attributes->core.lifetime );
@@ -612,27 +554,6 @@ psa_status_t psa_driver_wrapper_generate_key(
     psa_key_location_t location =
         PSA_KEY_LIFETIME_GET_LOCATION(attributes->core.lifetime);
 
-    /* Try dynamically-registered SE interface first */
-#if defined(MBEDTLS_PSA_CRYPTO_SE_C)
-    const psa_drv_se_t *drv;
-    psa_drv_se_context_t *drv_context;
-
-    if( psa_get_se_driver( attributes->core.lifetime, &drv, &drv_context ) )
-    {
-        size_t pubkey_length = 0; /* We don't support this feature yet */
-        if( drv->key_management == NULL ||
-            drv->key_management->p_generate == NULL )
-        {
-            /* Key is defined as being in SE, but we have no way to generate it */
-            return( PSA_ERROR_NOT_SUPPORTED );
-        }
-        return( drv->key_management->p_generate(
-            drv_context,
-            *( (psa_key_slot_number_t *)key_buffer ),
-            attributes, NULL, 0, &pubkey_length ) );
-    }
-#endif /* MBEDTLS_PSA_CRYPTO_SE_C */
-
     switch( location )
     {
         case PSA_KEY_LOCATION_LOCAL_STORAGE:
@@ -689,35 +610,6 @@ psa_status_t psa_driver_wrapper_import_key(
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
     psa_key_location_t location = PSA_KEY_LIFETIME_GET_LOCATION(
                                       psa_get_key_lifetime( attributes ) );
-
-    /* Try dynamically-registered SE interface first */
-#if defined(MBEDTLS_PSA_CRYPTO_SE_C)
-    const psa_drv_se_t *drv;
-    psa_drv_se_context_t *drv_context;
-
-    if( psa_get_se_driver( attributes->core.lifetime, &drv, &drv_context ) )
-    {
-        if( drv->key_management == NULL ||
-            drv->key_management->p_import == NULL )
-            return( PSA_ERROR_NOT_SUPPORTED );
-
-        /* The driver should set the number of key bits, however in
-         * case it doesn't, we initialize bits to an invalid value. */
-        *bits = PSA_MAX_KEY_BITS + 1;
-        status = drv->key_management->p_import(
-            drv_context,
-            *( (psa_key_slot_number_t *)key_buffer ),
-            attributes, data, data_length, bits );
-
-        if( status != PSA_SUCCESS )
-            return( status );
-
-        if( (*bits) > PSA_MAX_KEY_BITS )
-            return( PSA_ERROR_NOT_SUPPORTED );
-
-        return( PSA_SUCCESS );
-    }
-#endif /* PSA_CRYPTO_SE_C */
 
     switch( location )
     {
@@ -785,26 +677,6 @@ psa_status_t psa_driver_wrapper_export_key(
     psa_key_location_t location = PSA_KEY_LIFETIME_GET_LOCATION(
                                       psa_get_key_lifetime( attributes ) );
 
-    /* Try dynamically-registered SE interface first */
-#if defined(MBEDTLS_PSA_CRYPTO_SE_C)
-    const psa_drv_se_t *drv;
-    psa_drv_se_context_t *drv_context;
-
-    if( psa_get_se_driver( attributes->core.lifetime, &drv, &drv_context ) )
-    {
-        if( ( drv->key_management == NULL   ) ||
-            ( drv->key_management->p_export == NULL ) )
-        {
-            return( PSA_ERROR_NOT_SUPPORTED );
-        }
-
-        return( drv->key_management->p_export(
-                     drv_context,
-                     *( (psa_key_slot_number_t *)key_buffer ),
-                     data, data_size, data_length ) );
-    }
-#endif /* PSA_CRYPTO_SE_C */
-
     switch( location )
     {
         case PSA_KEY_LOCATION_LOCAL_STORAGE:
@@ -832,26 +704,6 @@ psa_status_t psa_driver_wrapper_export_public_key(
     psa_status_t status = PSA_ERROR_INVALID_ARGUMENT;
     psa_key_location_t location = PSA_KEY_LIFETIME_GET_LOCATION(
                                       psa_get_key_lifetime( attributes ) );
-
-    /* Try dynamically-registered SE interface first */
-#if defined(MBEDTLS_PSA_CRYPTO_SE_C)
-    const psa_drv_se_t *drv;
-    psa_drv_se_context_t *drv_context;
-
-    if( psa_get_se_driver( attributes->core.lifetime, &drv, &drv_context ) )
-    {
-        if( ( drv->key_management == NULL ) ||
-            ( drv->key_management->p_export_public == NULL ) )
-        {
-            return( PSA_ERROR_NOT_SUPPORTED );
-        }
-
-        return( drv->key_management->p_export_public(
-                    drv_context,
-                    *( (psa_key_slot_number_t *)key_buffer ),
-                    data, data_size, data_length ) );
-    }
-#endif /* MBEDTLS_PSA_CRYPTO_SE_C */
 
     switch( location )
     {
@@ -945,17 +797,6 @@ psa_status_t psa_driver_wrapper_copy_key(
     psa_status_t status = PSA_ERROR_CORRUPTION_DETECTED;
     psa_key_location_t location =
         PSA_KEY_LIFETIME_GET_LOCATION( attributes->core.lifetime );
-
-#if defined(MBEDTLS_PSA_CRYPTO_SE_C)
-    const psa_drv_se_t *drv;
-    psa_drv_se_context_t *drv_context;
-
-    if( psa_get_se_driver( attributes->core.lifetime, &drv, &drv_context ) )
-    {
-        /* Copying to a secure element is not implemented yet. */
-        return( PSA_ERROR_NOT_SUPPORTED );
-    }
-#endif /* MBEDTLS_PSA_CRYPTO_SE_C */
 
     switch( location )
     {
