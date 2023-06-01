@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-set(drivers_path ${OBERON_PSA_CRYPTO_PATH}/oberon/drivers)
+set(drivers_path ${OBERON_PSA_PATH}/core/oberon/drivers)
 
 # Link to libraries
 if(CONFIG_MBEDTLS_PSA_CRYPTO_C)
@@ -13,11 +13,13 @@ if(CONFIG_MBEDTLS_PSA_CRYPTO_C)
     mbedcrypto_oberon_imported
   )
 
-  # Add nrf_oberon PSA Crypto Driver includes to mbedcrypto_common
    target_include_directories(mbedcrypto_common
      INTERFACE
+      # Add nrf_oberon includes
       ${NRFXLIB_ROOT}/crypto/nrf_oberon/include/
       ${NRFXLIB_ROOT}/crypto/nrf_oberon/include/mbedtls
+
+      # Add Oberon PSA Crypto Driver includes
       ${drivers_path}
   )
 endif()

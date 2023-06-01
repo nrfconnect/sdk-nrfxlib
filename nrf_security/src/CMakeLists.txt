@@ -8,7 +8,7 @@
 # File including instructions to build PSA APIs.
 #
 
-set(OBERON_PSA_CRYPTO_PATH ${NRFXLIB_ROOT}/crypto/nrf_oberon/core)
+set(OBERON_PSA_PATH ${NRFXLIB_ROOT}/crypto/nrf_oberon)
 
 #
 # Internal macro to append all unnamed parameters with 'prefix' if condition
