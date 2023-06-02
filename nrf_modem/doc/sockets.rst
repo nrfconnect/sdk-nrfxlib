@@ -304,17 +304,21 @@ NRF_SO_SEC_DTLS_CONN_SAVE
 
    Once the DTLS context is saved, the socket can't be used before the DTLS context is loaded with :c:macro:`NRF_SO_SEC_DTLS_CONN_LOAD`.
 
-   This option will fail with nrf_errno ``NRF_EAGAIN`` if an error happened during serialization of the SSL context.
+   This option fails with nrf_errno ``NRF_EAGAIN`` if an error happened during serialization of the SSL context.
    This can occur, for instance, when the modem cannot allocate enough memory or if the socket is busy sending or receiving data.
    In this case, the SSL context is still present in the socket, so data sending is still possible.
-   The option will fail with nrf_errno ``NRF_EINVAL`` if the socket option is not supported with the current configuration, for instance because the DTLS handshake is not completed,
+   The option fails with nrf_errno ``NRF_EINVAL`` if the socket option is not supported with the current configuration, for instance because the DTLS handshake is not completed,
    the connection is not an DTLS v1.2 connection with renegotiation disabled, or the connection does not use an AEAD cipher suite (AES-CCM or AES-GCM).
-   The option will fail with nrf_errno ``NRF_ENOMEM`` if the amount of saved connections exceeds four.
+   The option fails with nrf_errno ``NRF_ENOMEM`` if the amount of saved connections exceeds four.
 
 NRF_SO_SEC_DTLS_CONN_LOAD
    Load DTLS connection.
    This option is write-only.
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
+
+   This option fails with nrf_errno ``NRF_EAGAIN`` if an error happened during deserialization of the SSL context.
+   This can occur, for instance, when the modem cannot allocate enough memory or the connection is not saved.
+   The option fails with nrf_errno ``NRF_EINVAL`` if the socket option is not supported with the current configuration.
 
 NRF_SO_SEC_CIPHERSUITE_USED
    Get chosen TLS cipher suite.
