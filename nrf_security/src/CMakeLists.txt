@@ -44,7 +44,7 @@ if (CONFIG_MBEDTLS_PSA_CRYPTO_SPM)
   )
 endif()
 
-set(generated_include_path "${CMAKE_CURRENT_BINARY_DIR}/include/generated")
+set(generated_include_path ${CMAKE_CURRENT_BINARY_DIR}/include/generated)
 
 # Empty out previous versions of config-files
 file(REMOVE_RECURSE ${generated_include_path})
@@ -95,14 +95,14 @@ append_with_prefix(src_tls ${ARM_MBEDTLS_PATH}/library
 )
 
 if (CONFIG_MBEDTLS_DEBUG)
-  append_with_prefix(src_tls ${ARM_MBEDTLS_PATH}/library
-    ssl_debug_helpers_generated.c
+  list(APPEND src_tls
+	${ARM_MBEDTLS_PATH}/library/ssl_debug_helpers_generated.c
   )
 endif()
 
 if (COMPILE_PSA_APIS)
   # Add the local version of psa_crypto_driver_wrappers.c
-  append_with_prefix(src_crypto ${CMAKE_CURRENT_LIST_DIR}
+  list(APPEND src_crypto
     psa_crypto_driver_wrappers.c
   )
 endif()
@@ -110,7 +110,7 @@ endif()
 # Add PSA RNG API for the entropy driver
 if(CONFIG_MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG AND NOT CONFIG_BUILD_WITH_TFM)
   list(APPEND src_crypto
-    ${CMAKE_CURRENT_LIST_DIR}/random_ext.c
+    random_ext.c
   )
 endif()
 
@@ -126,7 +126,6 @@ append_with_prefix(src_crypto ${ARM_MBEDTLS_PATH}/library
 add_library(${mbedcrypto_target}
   STATIC
     ${src_crypto}
-    ${src_crypto_replacements}
 )
 
 nrf_security_add_zephyr_options(${mbedcrypto_target})
@@ -167,17 +166,14 @@ target_link_libraries(${mbedcrypto_target}
     mbedcrypto_common
 )
 
-# Don't be too strict with warnings on mbedtls code. This code is not
-# ours, so it's not necessary to do too much static analysis on
-# it. And any warnings that do pop up are difficult to fix as they
-# require changes far upstream.
 target_compile_options(${mbedcrypto_target} PRIVATE
+  # Don't be too strict with warnings on mbedtls code. This code is not
+  # ours, so it's not necessary to do too much static analysis on
+  # it. And any warnings that do pop up are difficult to fix as they
+  # require changes far upstream.
   -Wno-unused-function
   -Wno-unused-variable
-  )
-
-# Disable warnings showing up in Oberon PSA crypto code.
-target_compile_options(${mbedcrypto_target} PRIVATE
+  # Disable warnings showing up in Oberon PSA crypto code.
   -Wno-stringop-overflow
   -Wno-stringop-overread
   -Wno-strict-aliasing
