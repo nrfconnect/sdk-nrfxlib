@@ -146,10 +146,10 @@ target_compile_options(${mbedcrypto_target} PRIVATE
 add_subdirectory(core)
 
 # Add drivers if enabled
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/drivers)
+add_subdirectory(drivers)
 
-# Add legacy mbed TLS APIs if enabled
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/legacy)
+# Add legacy mbed TLS APIs
+add_subdirectory(legacy)
 
 # Print all files in the mbedcrypto_target (with optional legacy-additions)
 nrf_security_debug_list_target_files(${mbedcrypto_target})
@@ -223,7 +223,6 @@ if (CONFIG_MBEDTLS_TLS_LIBRARY)
 
   add_library(${mbedtls_target} STATIC
     ${src_tls}
-    ${src_tls_replacement}
   )
 
   # Add options from Zephyr build
@@ -249,5 +248,7 @@ if (CONFIG_MBEDTLS_TLS_LIBRARY)
   endif()
 endif()
 
-# Include EITS in Zephyr build
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/psa)
+if(CONFIG_PSA_EITS_BACKEND_ZEPHYR)
+  # Include EITS in Zephyr build
+  add_subdirectory(psa)
+endif()
