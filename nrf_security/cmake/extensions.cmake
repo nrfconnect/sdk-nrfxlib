@@ -88,6 +88,24 @@ macro(nrf_security_configure_file config location file)
 endmacro()
 
 #
+# Internal macro to append all unnamed parameters with 'prefix' if condition
+# is met
+#
+macro(append_with_prefix_ifdef cond var prefix)
+  if (${${cond}})
+    append_with_prefix(${var} ${prefix} ${ARGN})
+  endif()
+endmacro()
+
+function(append_with_prefix var prefix)
+  set(listVar ${${var}})
+  foreach(f ${ARGN})
+    list(APPEND listVar "${prefix}/${f}")
+  endforeach(f)
+  set(${var} ${listVar} PARENT_SCOPE)
+endfunction(append_with_prefix)
+
+#
 # Add common configurations/options from the zephyr interface libraries
 #
 # This includes

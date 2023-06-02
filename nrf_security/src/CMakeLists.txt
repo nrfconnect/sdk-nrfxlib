@@ -11,22 +11,7 @@
 set(OBERON_PSA_PATH ${NRFXLIB_DIR}/crypto/nrf_oberon)
 
 #
-# Internal macro to append all unnamed parameters with 'prefix' if condition
-# is met
 #
-macro(append_with_prefix_ifdef cond var prefix)
-  if (${${cond}})
-    append_with_prefix(${var} ${prefix} ${ARGN})
-  endif()
-endmacro()
-
-function(append_with_prefix var prefix)
-  set(listVar ${${var}})
-  foreach(f ${ARGN})
-    list(APPEND listVar "${prefix}/${f}")
-  endforeach(f)
-  set(${var} ${listVar} PARENT_SCOPE)
-endfunction(append_with_prefix)
 
 # Library for mbedcrypto includes and configurations
 add_library(mbedcrypto_common INTERFACE)
