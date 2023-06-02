@@ -670,7 +670,7 @@ endif # MBEDTLS_ECP_C
 config MBEDTLS_HKDF_C
 	bool
 	prompt "HKDF support"
-	default y
+	default y if !TFM_PROFILE_TYPE_MINIMAL
 	help
 	  Enable HKDF support.
 	  MBEDTLS_HKDF_C setting in mbed TLS config file.
