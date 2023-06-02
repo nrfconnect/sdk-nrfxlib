@@ -64,42 +64,6 @@ if(CONFIG_GENERATE_MBEDTLS_CFG_FILE)
 )
 endif()
 
-# x509 files
-append_with_prefix(src_x509 ${ARM_MBEDTLS_PATH}/library
-    x509.c
-    x509_create.c
-    x509_crl.c
-    x509_crt.c
-    x509_csr.c
-    x509write_crt.c
-    x509write_csr.c
-)
-
-# TLS files
-append_with_prefix(src_tls ${ARM_MBEDTLS_PATH}/library
-    debug.c
-    net_sockets.c
-    ssl_cache.c
-    ssl_ciphersuites.c
-    ssl_client.c
-    ssl_cookie.c
-    ssl_msg.c
-    ssl_ticket.c
-    ssl_tls.c
-    ssl_tls12_client.c
-    ssl_tls12_server.c
-    ssl_tls13_keys.c
-    ssl_tls13_server.c
-    ssl_tls13_client.c
-    ssl_tls13_generic.c
-)
-
-if (CONFIG_MBEDTLS_DEBUG)
-  list(APPEND src_tls
-	${ARM_MBEDTLS_PATH}/library/ssl_debug_helpers_generated.c
-  )
-endif()
-
 if (COMPILE_PSA_APIS)
   # Add the local version of psa_crypto_driver_wrappers.c
   list(APPEND src_crypto
@@ -204,6 +168,16 @@ if (CONFIG_NEWLIB_LIBC)
 endif()
 
 if (CONFIG_MBEDTLS_X509_LIBRARY)
+  append_with_prefix(src_x509 ${ARM_MBEDTLS_PATH}/library
+    x509.c
+    x509_create.c
+    x509_crl.c
+    x509_crt.c
+    x509_csr.c
+    x509write_crt.c
+    x509write_csr.c
+  )
+
   add_library(${mbedx509_target} STATIC
     ${src_x509}
   )
@@ -222,6 +196,31 @@ endif()
 
 # Library for TLS protocol support
 if (CONFIG_MBEDTLS_TLS_LIBRARY)
+  # TLS files
+  append_with_prefix(src_tls ${ARM_MBEDTLS_PATH}/library
+    debug.c
+    net_sockets.c
+    ssl_cache.c
+    ssl_ciphersuites.c
+    ssl_client.c
+    ssl_cookie.c
+    ssl_msg.c
+    ssl_ticket.c
+    ssl_tls.c
+    ssl_tls12_client.c
+    ssl_tls12_server.c
+    ssl_tls13_keys.c
+    ssl_tls13_server.c
+    ssl_tls13_client.c
+    ssl_tls13_generic.c
+  )
+
+  if (CONFIG_MBEDTLS_DEBUG)
+	list(APPEND src_tls
+	  ${ARM_MBEDTLS_PATH}/library/ssl_debug_helpers_generated.c
+	)
+  endif()
+
   add_library(${mbedtls_target} STATIC
     ${src_tls}
     ${src_tls_replacement}
