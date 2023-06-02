@@ -99,15 +99,15 @@ endif()
 
 set(COMPILE_PSA_APIS                                True)
 
-# Include nrfxlib common to get nrf_cc3xx_platform and other crypto libs
-include(../../common.cmake)
+# common.cmake has a function that can compute binary paths
+include(${NRFXLIB_DIR}/common.cmake)
 
 # The TF-M build needs a standard version of memory_buffer_alloc.c
 # This currently doesn't do a mutex on heap access according to cc3xx rtos
 # methods...
 list(APPEND src_crypto ${ARM_MBEDTLS_PATH}/library/memory_buffer_alloc.c)
 
-add_subdirectory(${NRF_SECURITY_ROOT}/../crypto ${CMAKE_CURRENT_BINARY_DIR}/nrf_security_crypto)
+add_subdirectory(${NRFXLIB_DIR}/crypto ${CMAKE_CURRENT_BINARY_DIR}/nrf_security_crypto)
 
 # Add mbed TLS libraries
 add_subdirectory(${NRF_SECURITY_ROOT}/src ${CMAKE_CURRENT_BINARY_DIR}/nrf_security_src)
