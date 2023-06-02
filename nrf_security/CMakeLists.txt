@@ -104,7 +104,7 @@ else()
 endif()
 
 # Finally adding the crypto lib
-add_subdirectory(../crypto crypto_copy)
+add_subdirectory(${NRFXLIB_DIR}/crypto crypto_copy)
 
 # Add mbed TLS Libraries
 add_subdirectory(src)
