@@ -4,9 +4,8 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-# This file is the entry point for mbed TLS built through Zephyr.
+# This file is nrf_security's entry-point for the NCS build system
 
-# Set root folders as variables
 set(NRFXLIB_ROOT ${CMAKE_CURRENT_LIST_DIR}/..)
 set(NRF_SECURITY_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
@@ -109,7 +108,7 @@ else()
 
 endif()
 
-#finally adding the crypto lib
+# Finally adding the crypto lib
 add_subdirectory(../crypto crypto_copy)
 
 # Add mbed TLS Libraries

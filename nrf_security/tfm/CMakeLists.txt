@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-# This file is the entry point for mbed TLS built through TF-M.
+# This file is nrf_security's entry-point for the TF-M build system
 
 set(NRFXLIB_ROOT ${CMAKE_CURRENT_LIST_DIR}/../..)
 set(NRF_SECURITY_ROOT ${CMAKE_CURRENT_LIST_DIR}/..)
@@ -96,6 +96,7 @@ if (${PROJECT_NAME} STREQUAL "Bootloader")
   set(CONFIG_MBEDTLS_PKCS1_V21      True)
   set(CONFIG_MBEDTLS_PSA_CRYPTO_SPM False)
 endif()
+
 set(COMPILE_PSA_APIS                                True)
 
 # Include nrfxlib common to get nrf_cc3xx_platform and other crypto libs
