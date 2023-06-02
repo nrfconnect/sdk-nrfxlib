@@ -36,15 +36,7 @@ set(ARM_MBEDTLS_PATH ${ZEPHYR_MBEDTLS_MODULE_DIR})
 # removed with a new mbed TLS version
 set(CONFIG_MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER     False)
 
-if(NOT CONFIG_BUILD_WITH_TFM)
-  nrf_security_debug("Building for pure Zephyr")
-
-  if(CONFIG_MBEDTLS_PSA_CRYPTO_C)
-    # Build PSA APIs if requested
-    set(COMPILE_PSA_APIS                        True)
-  endif()
-
-else()
+if(CONFIG_BUILD_WITH_TFM)
   # TF-M is enabled and we are not inside the TF-M build system.
   # Thus, do not build regular `mbedcrypto` library, instead export
   # needed settings to the TF-M build system using TFM_CMAKE_OPTIONS.
@@ -104,7 +96,13 @@ else()
   # Force this to false to disable it.
   set(CONFIG_MBEDTLS_THREADING_ALT                     False)
   set(CONFIG_MBEDTLS_THREADING_C                       False)
+else()
+  nrf_security_debug("Building for pure Zephyr")
 
+  if(CONFIG_MBEDTLS_PSA_CRYPTO_C)
+    # Build PSA APIs if requested
+    set(COMPILE_PSA_APIS                        True)
+  endif()
 endif()
 
 # Finally adding the crypto lib
