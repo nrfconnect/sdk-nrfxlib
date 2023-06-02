@@ -10,7 +10,6 @@ set(NRFXLIB_DIR ${CMAKE_CURRENT_LIST_DIR}/../..)
 set(NRF_SECURITY_ROOT ${CMAKE_CURRENT_LIST_DIR}/..)
 
 include(${NRF_SECURITY_ROOT}/cmake/extensions.cmake)
-include(${NRF_SECURITY_ROOT}/cmake/nrf_security_debug.cmake)
 
 # Prefix targets as expected from TF-M
 set(mbedcrypto_target ${MBEDTLS_TARGET_PREFIX}mbedcrypto)

@@ -11,8 +11,6 @@ set(NRF_SECURITY_ROOT ${CMAKE_CURRENT_LIST_DIR})
 # Include generic macros
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/extensions.cmake)
 
-# Include debugging
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/nrf_security_debug.cmake)
 
   # pelion-dm creates mbedcrypto and mbedx509 as INTERFACE libraries
   # This results in library name collision, so therefore we are renaming the
