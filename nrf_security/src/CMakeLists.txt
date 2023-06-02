@@ -7,11 +7,13 @@
 #
 # File including instructions to build PSA APIs.
 #
+# Can be executed by both the NCS and TF-M build systems.
+#
+# For TF-M the nrf_security/tfm/CMakeLists.txt file will execute this file.
+# For NCS  the nrf_security/CMakeLists.txt     file will execute this file.
+#
 
 set(OBERON_PSA_PATH ${NRFXLIB_DIR}/crypto/nrf_oberon)
-
-#
-#
 
 # Library for mbedcrypto includes and configurations
 add_library(mbedcrypto_common INTERFACE)

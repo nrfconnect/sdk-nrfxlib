@@ -9,20 +9,20 @@
 set(NRF_SECURITY_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
 # Include generic macros
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/extensions.cmake)
+include(cmake/extensions.cmake)
 
+set(mbedcrypto_target mbedcrypto)
+set(mbedx509_target   mbedx509)
+set(mbedtls_target    mbedtls)
 
-  # pelion-dm creates mbedcrypto and mbedx509 as INTERFACE libraries
-  # This results in library name collision, so therefore we are renaming the
-  # mbedcrypto_target to real_mbedcrypto if mbedcrypto already exists.
+# pelion-dm creates mbedcrypto and mbedx509 as INTERFACE libraries
+# This results in library name collision, so therefore we are renaming
+# the mbedcrypto_target to real_mbedcrypto if mbedcrypto already
+# exists.
 if(TARGET mbedcrypto)
-  set(mbedcrypto_target real_mbedcrypto)
-  set(mbedx509_target   real_mbedx509)
-  set(mbedtls_target    real_mbedtls)
-else()
-  set(mbedcrypto_target mbedcrypto)
-  set(mbedx509_target   mbedx509)
-  set(mbedtls_target    mbedtls)
+  set(mbedcrypto_target real_${mbedcrypto_target})
+  set(mbedx509_target   real_${mbedx509_target})
+  set(mbedtls_target    real_${mbedtls_target})
 endif()
 
 # Populate ARM_MBEDTLS_PATH with the value of ZEPHYR_MBEDTLS_MODULE_DIR
