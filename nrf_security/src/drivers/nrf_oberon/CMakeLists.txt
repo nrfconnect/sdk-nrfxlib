@@ -16,8 +16,8 @@ if(CONFIG_MBEDTLS_PSA_CRYPTO_C)
    target_include_directories(mbedcrypto_common
      INTERFACE
       # Add nrf_oberon includes
-      ${NRFXLIB_ROOT}/crypto/nrf_oberon/include/
-      ${NRFXLIB_ROOT}/crypto/nrf_oberon/include/mbedtls
+      ${NRFXLIB_DIR}/crypto/nrf_oberon/include/
+      ${NRFXLIB_DIR}/crypto/nrf_oberon/include/mbedtls
 
       # Add Oberon PSA Crypto Driver includes
       ${drivers_path}
