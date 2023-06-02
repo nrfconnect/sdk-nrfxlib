@@ -96,8 +96,6 @@ if (${PROJECT_NAME} STREQUAL "Bootloader")
   set(CONFIG_MBEDTLS_PSA_CRYPTO_SPM False)
 endif()
 
-set(COMPILE_PSA_APIS                                True)
-
 # common.cmake has a function that can compute binary paths
 include(${NRFXLIB_DIR}/common.cmake)
 
@@ -108,5 +106,5 @@ list(APPEND src_crypto ${ARM_MBEDTLS_PATH}/library/memory_buffer_alloc.c)
 
 add_subdirectory(${NRFXLIB_DIR}/crypto ${CMAKE_CURRENT_BINARY_DIR}/nrf_security_crypto)
 
-# Add mbed TLS libraries
+# Add nrf_security libraries
 add_subdirectory(${NRF_SECURITY_ROOT}/src ${CMAKE_CURRENT_BINARY_DIR}/nrf_security_src)

@@ -134,4 +134,4 @@ macro(nrf_security_add_zephyr_options lib_name)
 endmacro()
 
 # Include debugging
-include(${CMAKE_CURRENT_SOURCE_DIR}/nrf_security_debug.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/nrf_security_debug.cmake)
