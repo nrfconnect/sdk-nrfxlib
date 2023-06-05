@@ -95,7 +95,7 @@ endif()
 
 if(CONFIG_HAS_HW_NRF_CC312)
   set(CC3XX_ARCH cc312)
-else()
+elseif(CONFIG_HAS_HW_NRF_CC310)
   set(CC3XX_ARCH cc310)
 endif()
 
