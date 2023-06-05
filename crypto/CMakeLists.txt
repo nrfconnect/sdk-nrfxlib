@@ -6,6 +6,8 @@
 
 include_guard(GLOBAL)
 
+include(${NRFXLIB_DIR}/common.cmake)
+
 nrfxlib_calculate_lib_path(lib_path)
 
 add_library(nrfxlib_crypto INTERFACE)
