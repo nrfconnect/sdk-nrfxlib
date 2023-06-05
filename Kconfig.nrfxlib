@@ -10,7 +10,13 @@ rsource "nrf_modem/Kconfig"
 rsource "nfc/Kconfig"
 rsource "mpsl/Kconfig"
 rsource "crypto/Kconfig"
-rsource "nrf_security/Kconfig"
+
+# TODO: NCSDK-22101
+# nrf_security was moved from nrfxlib to nrf. This source statement is
+# kept to avoid breaking configurations that depend on the order of
+# Kconfig processing
+source "$(ZEPHYR_NRF_MODULE_DIR)/subsys/nrf_security/Kconfig"
+
 rsource "nrf_rpc/Kconfig"
 rsource "zboss/Kconfig"
 rsource "openthread/Kconfig"

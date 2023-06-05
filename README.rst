@@ -22,7 +22,6 @@ Refer to their respective documentation for more information.
    nrf_fuel_gauge/README
    nfc/README
    nrf_dm/README
-   nrf_security/README
    openthread/README
    nrf_rpc/README
    softdevice_controller/README
