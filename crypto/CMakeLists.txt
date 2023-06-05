@@ -93,7 +93,7 @@ if (CONFIG_NRF_CC310_BL)
   target_link_libraries(nrfxlib_crypto INTERFACE ${CC310_BL_LIB})
 endif()
 
-if(CONFIG_SOC_NRF5340_CPUAPP)
+if(CONFIG_HAS_HW_NRF_CC312)
   set(CC3XX_ARCH cc312)
 else()
   set(CC3XX_ARCH cc310)
