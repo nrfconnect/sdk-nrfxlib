@@ -46,7 +46,7 @@
 
 #if defined (NRF52833_XXAA) || defined(NRF5340_XXAA)
 #define ED_RSSIOFFS                 (-93)                                             ///< dBm value corresponding to value 0 in the EDSAMPLE register.
-#define ED_RSSISCALE                5                                                 ///< Factor needed to calculate the ED result based on the data from the RADIO peripheral.
+#define ED_RSSISCALE                4                                                 ///< Factor needed to calculate the ED result based on the data from the RADIO peripheral.
 #else
 #define ED_RSSIOFFS                 (-92)                                             ///< dBm value corresponding to value 0 in the EDSAMPLE register.
 #define ED_RSSISCALE                4                                                 ///< Factor needed to calculate the ED result based on the data from the RADIO peripheral.
