@@ -75,9 +75,6 @@
  */
 #define NUMELTS(X)                      (sizeof((X)) / sizeof(X[0]))
 
-/**@brief Wait procedure used in a busy loop. */
-#define nrf_802154_busy_wait()          __WFE()
-
 /**@brief Active waiting for given number of microseconds.
  *
  * It is guaranteed that execution of this macro will take at least @c time_in_us

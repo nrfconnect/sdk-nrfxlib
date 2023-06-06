@@ -10,6 +10,14 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
+Main branch - nRF 802.15.4 Radio Driver
+**************************************************
+
+Other changes
+=============
+
+* Changed the value of ``ED_RSSISCALE`` to ``4`` for the nRF5340 and nRF52833. (KRKNWK-16902)
+
 nRF Connect SDK v2.4.0 - nRF 802.15.4 Radio Driver
 **************************************************
 
