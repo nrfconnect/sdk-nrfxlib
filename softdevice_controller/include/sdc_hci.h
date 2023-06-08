@@ -70,17 +70,6 @@ typedef enum
   SDC_HCI_MSG_TYPE_EVT  = 0x04,
 } sdc_hci_msg_type_t;
 
-/** @brief Send an HCI command packet to the SoftDevice Controller.
- *
- * @param[in] p_cmd_in  HCI Command packet. The first byte in the buffer should correspond to
- *                      OpCode, as specified by the Bluetooth Core Specification.
- *
- * @retval 0              Success
- * @retval -NRF_EINVAL    Invalid input
- */
-int32_t sdc_hci_cmd_put(uint8_t const * p_cmd_in);
-
-
 /** @brief Send an HCI data packet to the SoftDevice Controller.
  *
  * @param[in] p_data_in  HCI Data packet. The first byte in the buffer should correspond to

@@ -9,6 +9,19 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Changes
+=======
+
+* Host now always receives LE Transmit Power Reporting Events.
+  Previously, some events might not be received when remote and local power changes were applied to the same PHY simultaneously. (DRGN-18950)
+* :c:func:`sdc_hci_cmd_put` and :c:func:`sdc_hci_cmd_vs_read_supported_vs_commands` functions are removed.
+  This change does not affect applications developed in the |NCS| context. (DRGN-19281)
+
 nRF Connect SDK v2.4.0
 **********************
 
