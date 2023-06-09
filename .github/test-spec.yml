@@ -51,15 +51,19 @@
   - "nrf_security/**/*"
 
 "CI-rs-test":
+  - "mpsl/CMakeLists.txt"
   - "mpsl/include/**/*"
   - "mpsl/lib/**/*"
+  - "softdevice_controller/CMakeLists.txt"
   - "softdevice_controller/include/**/*"
   - "softdevice_controller/lib/**/*"
   - "nrf_802154/**/*"
 
 "CI-fem-test":
+  - "mpsl/CMakeLists.txt"
   - "mpsl/include/**/*"
   - "mpsl/lib/**/*"
+  - "softdevice_controller/CMakeLists.txt"
   - "softdevice_controller/include/**/*"
   - "softdevice_controller/lib/**/*"
   - "nrf_802154/**/*"
