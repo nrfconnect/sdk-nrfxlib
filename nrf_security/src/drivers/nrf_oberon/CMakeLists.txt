@@ -33,6 +33,9 @@ if (COMPILE_PSA_APIS)
     oberon_key_pair.c
     oberon_mac.c
     oberon_rsa.c
+    oberon_jpake.c
+    oberon_spake2p.c
+    oberon_srp.c
   )
 
   append_with_prefix_ifdef(CONFIG_PSA_CRYPTO_DRIVER_ALG_CTR_DRBG_OBERON
@@ -52,4 +55,5 @@ if (COMPILE_PSA_APIS)
         ${src_crypto_oberon}
     )
   endif()
+
 endif()
