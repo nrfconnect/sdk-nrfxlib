@@ -118,7 +118,7 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1096
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1101
 #define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1248
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 16
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
@@ -169,7 +169,7 @@ extern "C" {
 /** @brief Auxiliary defines, not to be used outside of this file. */
 #define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4829+(max_adv_data)*18)/10)
 #define __MEM_PER_ADV_SET_HIGH(max_adv_data) (670+(max_adv_data))
-#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2658+(max_adv_data)*18)/10)
+#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2664+(max_adv_data)*18)/10)
 #define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (457+(max_adv_data))
 
 /** @brief Maximum required memory for a given advertising buffer size.
@@ -214,7 +214,7 @@ extern "C" {
 #define __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) ((max_tx_data_size) + 5)
 #define __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER (282)
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (465)
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (160)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (166)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
 
 /** Memory required per periodic advertising with responses set.
@@ -985,6 +985,8 @@ int32_t sdc_coex_adv_mode_configure(bool adv_cont_on_denial);
  * @retval -NRF_EPERM  This API must be called before @ref sdc_enable().
  */
 int32_t sdc_default_tx_power_set(int8_t requested_power_level);
+
+int32_t sdc_support_channel_survey(void);
 
 #ifdef __cplusplus
 }

@@ -21,6 +21,9 @@ Changes
   Previously, some events might not be received when remote and local power changes were applied to the same PHY simultaneously. (DRGN-18950)
 * :c:func:`sdc_hci_cmd_put` and :c:func:`sdc_hci_cmd_vs_read_supported_vs_commands` functions are removed.
   This change does not affect applications developed in the |NCS| context. (DRGN-19281)
+* When creating a connection or periodic advertiser, the controller will now attempt to select the interval so that it causes as few scheduling conflicts with existing periodic activities as possible.
+  The selected interval is always in the range ``[interval_min, interval_max]``, where ``interval_min`` and ``interval_max`` are provided by the host.
+  Previously, the controller always selected ``interval_max``.
 
 nRF Connect SDK v2.4.0
 **********************

@@ -81,6 +81,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_SET_ADV_RANDOMNESS = 0xfd0c,
     /** @brief See @ref sdc_hci_cmd_vs_compat_mode_window_offset_set(). */
     SDC_HCI_OPCODE_CMD_VS_COMPAT_MODE_WINDOW_OFFSET_SET = 0xfd0d,
+    /** @brief See @ref sdc_hci_cmd_vs_channel_survey_enable(). */
+    SDC_HCI_OPCODE_CMD_VS_CHANNEL_SURVEY_ENABLE = 0xfd0e,
 };
 
 /** @brief VS subevent Code values. */
@@ -88,6 +90,8 @@ enum sdc_hci_subevent_vs
 {
     /** @brief See @ref sdc_hci_subevent_vs_qos_conn_event_report_t. */
     SDC_HCI_SUBEVENT_VS_QOS_CONN_EVENT_REPORT = 0x80,
+    /** @brief See @ref sdc_hci_subevent_vs_channel_survey_report_t. */
+    SDC_HCI_SUBEVENT_VS_CHANNEL_SURVEY_REPORT = 0x81,
 };
 
 /** @brief Bluetooth roles that are recognized by the coexistence interface. */
@@ -229,6 +233,16 @@ typedef __PACKED_STRUCT
     /** @brief Indicates that the connection event was closed because a packet was not received. */
     uint8_t rx_timeout : 1;
 } sdc_hci_subevent_vs_qos_conn_event_report_t;
+
+/** @brief Channel survey Event.
+ *
+ * Channel survey event
+ */
+typedef __PACKED_STRUCT
+{
+    /** @brief Report channel energy. */
+    uint8_t channel_energy[40];
+} sdc_hci_subevent_vs_channel_survey_report_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -503,6 +517,15 @@ typedef __PACKED_STRUCT
     /** @brief Set to 1 to enable this compatibility mode. */
     uint8_t enable;
 } sdc_hci_cmd_vs_compat_mode_window_offset_set_t;
+
+/** @brief Channel Survey Enable command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Set to 0 for disabling, 1 for enabling, all other values are RFU. */
+    uint8_t enable;
+    /** @brief Interval in us of each survey. 0 for contiues. min 7500 max 4000000. */
+    uint32_t interval_us;
+} sdc_hci_cmd_vs_channel_survey_enable_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1019,6 +1042,23 @@ uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomnes
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat_mode_window_offset_set_t * p_params);
+
+/** @brief Channel Survey Enable.
+ *
+ * This vendor specific command is used to enable or disable generation of Channel Survey
+ * See @ref sdc_hci_subevent_vs_channel_survey_report_t.
+ *
+ *
+ * Event(s) geneated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_channel_survey_enable(const sdc_hci_cmd_vs_channel_survey_enable_t * p_params);
 
 /** @} end of HCI_VS_API */
 
