@@ -155,7 +155,10 @@
   - "gzll/include/**/*"
 
 "CI-rpc-test":
-  - "nrf_rpc/**/*"
+  - any:
+      - "nrf_rpc/**/*"
+      - !"nrf_rpc/doc/**/*"
+      - !"nrf_rpc/*.rst"
 
 "CI-modemshell-test":
   - any:
@@ -175,7 +178,10 @@
       - !"nrf_modem/doc/**/*"
       - !"nrf_modem/*.rst"
   - "nrf_security/**/*"
-  - "nrf_rpc/**/*"
+  - any:
+      - "nrf_rpc/**/*"
+      - !"nrf_rpc/doc/**/*"
+      - !"nrf_rpc/*.rst"
   - any:
       - "crypto/**/*"
       - !"crypto/doc/**/*"
