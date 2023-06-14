@@ -96,7 +96,10 @@
   - "nrf_802154/**/*"
 
 "CI-homekit-test":
-  - "openthread/**/*"
+  - any:
+    - "openthread/**/*"
+    - "!openthread/*.rst"
+    - "!openthread/doc/**/*"
   - "softdevice_controller/include/**/*"
   - "softdevice_controller/lib/**/*"
   - "mpsl/include/**/*"
@@ -135,7 +138,10 @@
       - !"nfc/*.rst"
 
 "CI-matter-test":
-  - "openthread/**/*"
+  - any:
+    - "openthread/**/*"
+    - "!openthread/*.rst"
+    - "!openthread/doc/**/*"
   - "softdevice_controller/include/**/*"
   - "softdevice_controller/lib/**/*"
   - "mpsl/include/**/*"
