@@ -7,8 +7,6 @@
 
 .. _`nrfx`: https://github.com/NordicSemiconductor/nrfx/
 
-.. _`Arm Mbed TLS project`: https://github.com/ARMmbed/mbedtls
-
 .. _`TinyCBOR`: https://github.com/zephyrproject-rtos/tinycbor
 
 .. _`OpenAMP`: https://github.com/OpenAMP/open-amp/
