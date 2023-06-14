@@ -64,6 +64,7 @@ The following table summarizes the priorities.
    |                             | * Scanner in the synchronized state where the synchronization is about to be lost                 |
    |                             | * Scanner in the synchronized state receiving auxiliary packets (AUX_CHAIN_IND's)                 |
    |                             | * Connectable Advertiser/Broadcaster which has been blocked consecutively for a few times         |
+   |                             | * Advertiser/Broadcaster which has been blocked and probabilistically increased its priority      |
    |                             | * Scanner which has been blocked for a long time                                                  |
    |                             | * Scanner which is receiving an advertising packet on a secondary advertising channel             |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
