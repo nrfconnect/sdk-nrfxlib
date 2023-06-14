@@ -132,7 +132,9 @@
       - !"crypto/*.rst"
 
 "CI-gazell-test":
-  - "gzll/**/*"
+  - "gzll/CMakeLists.txt"
+  - "gzll/lib/**/*"
+  - "gzll/include/**/*"
 
 "CI-rpc-test":
   - "nrf_rpc/**/*"
