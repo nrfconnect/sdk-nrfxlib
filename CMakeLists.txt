@@ -13,7 +13,6 @@ endif()
 
 add_subdirectory_ifdef(CONFIG_NRF_MODEM               nrf_modem)
 add_subdirectory_ifdef(CONFIG_NRFXLIB_CRYPTO          crypto)
-add_subdirectory_ifdef(CONFIG_NRF_SECURITY            nrf_security)
 add_subdirectory_ifdef(CONFIG_BT                      softdevice_controller)
 add_subdirectory_ifdef(CONFIG_MPSL                    mpsl)
 add_subdirectory_ifdef(CONFIG_NET_L2_OPENTHREAD       openthread)
