@@ -1,17 +1,29 @@
 # This is the Jenkins ci variant of the .github/labler.yaml
 "CI-iot-zephyr-lwm2m-test":
-  - "nrf_modem/**/*"
+  - any:
+      - "nrf_modem/**/*"
+      - !"nrf_modem/doc/**/*"
+      - !"nrf_modem/*.rst"
   - "nrf_security/src/**/*"
   - "crypto/nrf_oberon/**/*"
 
 "CI-iot-samples-test":
-  - "nrf_modem/**/*"
+  - any:
+      - "nrf_modem/**/*"
+      - !"nrf_modem/doc/**/*"
+      - !"nrf_modem/*.rst"
 
 "CI-iot-libraries-test":
-  - "nrf_modem/**/*"
+  - any:
+      - "nrf_modem/**/*"
+      - !"nrf_modem/doc/**/*"
+      - !"nrf_modem/*.rst"
 
 "CI-lwm2m-test":
-  - "nrf_modem/**/*"
+  - any:
+      - "nrf_modem/**/*"
+      - !"nrf_modem/doc/**/*"
+      - !"nrf_modem/*.rst"
 
 "CI-tfm-test":
   - "nrf_security/**/*"
@@ -146,13 +158,22 @@
   - "nrf_rpc/**/*"
 
 "CI-modemshell-test":
-  - "nrf_modem/**/*"
+  - any:
+      - "nrf_modem/**/*"
+      - !"nrf_modem/doc/**/*"
+      - !"nrf_modem/*.rst"
 
 "CI-positioning-test":
-  - "nrf_modem/**/*"
+  - any:
+      - "nrf_modem/**/*"
+      - !"nrf_modem/doc/**/*"
+      - !"nrf_modem/*.rst"
 
 "CI-cloud-test":
-  - "nrf_modem/**/*"
+  - any:
+      - "nrf_modem/**/*"
+      - !"nrf_modem/doc/**/*"
+      - !"nrf_modem/*.rst"
   - "nrf_security/**/*"
   - "nrf_rpc/**/*"
   - any:
