@@ -105,7 +105,10 @@
     - "!openthread/doc/**/*"
 
 "CI-nfc-test":
-  - "nfc/**/*"
+  - any:
+      - "nfc/**/*"
+      - !"nfc/doc/**/*"
+      - !"nfc/*.rst"
 
 "CI-matter-test":
   - "openthread/**/*"
@@ -123,9 +126,12 @@
       - !"crypto/*.rst"
 
 "CI-find-my-test":
-  - "nfc/**/*"
   - "nrf_security/**/*"
   - "softdevice_controller/**/*"
+  - any:
+      - "nfc/**/*"
+      - !"nfc/doc/**/*"
+      - !"nfc/*.rst"
   - any:
       - "crypto/**/*"
       - !"crypto/doc/**/*"
