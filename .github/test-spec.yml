@@ -14,8 +14,11 @@
   - "nrf_modem/**/*"
 
 "CI-tfm-test":
-  - "crypto/**/*"
   - "nrf_security/**/*"
+  - any:
+      - "crypto/**/*"
+      - !"crypto/doc/**/*"
+      - !"crypto/*.rst"
 
 "CI-ble-test":
   - "softdevice_controller/include/**/*"
@@ -47,8 +50,11 @@
   - "softdevice_controller/lib/**/*"
 
 "CI-crypto-test":
-  - "crypto/**/*"
   - "nrf_security/**/*"
+  - any:
+      - "crypto/**/*"
+      - !"crypto/doc/**/*"
+      - !"crypto/*.rst"
 
 "CI-rs-test":
   - "mpsl/CMakeLists.txt"
@@ -69,7 +75,6 @@
   - "nrf_802154/**/*"
 
 "CI-homekit-test":
-  - "crypto/**/*"
   - "openthread/**/*"
   - "softdevice_controller/include/**/*"
   - "softdevice_controller/lib/**/*"
@@ -79,6 +84,10 @@
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
   - "nrf_security/**/*"
+  - any:
+      - "crypto/**/*"
+      - !"crypto/doc/**/*"
+      - !"crypto/*.rst"
 
 "CI-thread-test":
   - "mpsl/include/**/*"
@@ -86,7 +95,10 @@
   - "nrf_802154/driver/**/*"
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
-  - "crypto/**/*"
+  - any:
+      - "crypto/**/*"
+      - !"crypto/doc/**/*"
+      - !"crypto/*.rst"
   - any:
     - "openthread/**/*"
     - "!openthread/*.rst"
@@ -96,7 +108,6 @@
   - "nfc/**/*"
 
 "CI-matter-test":
-  - "crypto/**/*"
   - "openthread/**/*"
   - "softdevice_controller/include/**/*"
   - "softdevice_controller/lib/**/*"
@@ -106,12 +117,19 @@
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
   - "nrf_security/**/*"
+  - any:
+      - "crypto/**/*"
+      - !"crypto/doc/**/*"
+      - !"crypto/*.rst"
 
 "CI-find-my-test":
-  - "crypto/**/*"
   - "nfc/**/*"
   - "nrf_security/**/*"
   - "softdevice_controller/**/*"
+  - any:
+      - "crypto/**/*"
+      - !"crypto/doc/**/*"
+      - !"crypto/*.rst"
 
 "CI-gazell-test":
   - "gzll/**/*"
@@ -128,9 +146,15 @@
 "CI-cloud-test":
   - "nrf_modem/**/*"
   - "nrf_security/**/*"
-  - "crypto/**/*"
   - "nrf_rpc/**/*"
+  - any:
+      - "crypto/**/*"
+      - !"crypto/doc/**/*"
+      - !"crypto/*.rst"
 
 "CI-wifi":
-  - "crypto/**/*"
   - "nrf_security/**/*"
+  - any:
+      - "crypto/**/*"
+      - !"crypto/doc/**/*"
+      - !"crypto/*.rst"
