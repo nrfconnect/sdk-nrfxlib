@@ -4,7 +4,10 @@
       - "nrf_modem/**/*"
       - !"nrf_modem/doc/**/*"
       - !"nrf_modem/*.rst"
-  - "nrf_security/src/**/*"
+  - any:
+      - "nrf_security/**/*"
+      - !"nrf_security/doc/**/*"
+      - !"nrf_security/*.rst"
   - "crypto/nrf_oberon/**/*"
 
 "CI-iot-samples-test":
@@ -26,7 +29,10 @@
       - !"nrf_modem/*.rst"
 
 "CI-tfm-test":
-  - "nrf_security/**/*"
+  - any:
+      - "nrf_security/**/*"
+      - !"nrf_security/doc/**/*"
+      - !"nrf_security/*.rst"
   - any:
       - "crypto/**/*"
       - !"crypto/doc/**/*"
@@ -62,7 +68,10 @@
   - "softdevice_controller/lib/**/*"
 
 "CI-crypto-test":
-  - "nrf_security/**/*"
+  - any:
+      - "nrf_security/**/*"
+      - !"nrf_security/doc/**/*"
+      - !"nrf_security/*.rst"
   - any:
       - "crypto/**/*"
       - !"crypto/doc/**/*"
@@ -95,7 +104,10 @@
   - "nrf_802154/driver/**/*"
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
-  - "nrf_security/**/*"
+  - any:
+      - "nrf_security/**/*"
+      - !"nrf_security/doc/**/*"
+      - !"nrf_security/*.rst"
   - any:
       - "crypto/**/*"
       - !"crypto/doc/**/*"
@@ -131,14 +143,20 @@
   - "nrf_802154/driver/**/*"
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
-  - "nrf_security/**/*"
+  - any:
+      - "nrf_security/**/*"
+      - !"nrf_security/doc/**/*"
+      - !"nrf_security/*.rst"
   - any:
       - "crypto/**/*"
       - !"crypto/doc/**/*"
       - !"crypto/*.rst"
 
 "CI-find-my-test":
-  - "nrf_security/**/*"
+  - any:
+      - "nrf_security/**/*"
+      - !"nrf_security/doc/**/*"
+      - !"nrf_security/*.rst"
   - "softdevice_controller/**/*"
   - any:
       - "nfc/**/*"
@@ -177,7 +195,10 @@
       - "nrf_modem/**/*"
       - !"nrf_modem/doc/**/*"
       - !"nrf_modem/*.rst"
-  - "nrf_security/**/*"
+  - any:
+      - "nrf_security/**/*"
+      - !"nrf_security/doc/**/*"
+      - !"nrf_security/*.rst"
   - any:
       - "nrf_rpc/**/*"
       - !"nrf_rpc/doc/**/*"
@@ -188,7 +209,10 @@
       - !"crypto/*.rst"
 
 "CI-wifi":
-  - "nrf_security/**/*"
+  - any:
+      - "nrf_security/**/*"
+      - !"nrf_security/doc/**/*"
+      - !"nrf_security/*.rst"
   - any:
       - "crypto/**/*"
       - !"crypto/doc/**/*"
