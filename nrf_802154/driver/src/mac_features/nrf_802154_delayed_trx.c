@@ -116,6 +116,11 @@ typedef struct
     uint8_t                    * p_data;  ///< Pointer to a buffer containing PHR and PSDU of the frame requested to be transmitted.
     nrf_802154_transmit_params_t params;  ///< Transmission parameters.
     uint8_t                      channel; ///< Channel number on which transmission should be performed.
+
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+    uint64_t                     time;    ///< Target time of the first bit of the frame.
+
+#endif
 } dly_tx_data_t;
 
 /**

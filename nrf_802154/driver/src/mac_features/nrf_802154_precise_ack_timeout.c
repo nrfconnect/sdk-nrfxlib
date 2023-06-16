@@ -53,6 +53,10 @@
 #include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_sl_timer.h"
 
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+#include "nrf_802154_bsim_utils.h"
+#endif
+
 #if NRF_802154_ACK_TIMEOUT_ENABLED
 
 #define RETRY_DELAY     500     ///< Procedure is delayed by this time if it cannot be performed at the moment [us].
@@ -110,9 +114,19 @@ static void timeout_timer_start(void)
     uint64_t                  now = nrf_802154_sl_timer_current_time_get();
     nrf_802154_sl_timer_ret_t ret;
 
-    m_dt = m_timeout +
-           IMM_ACK_DURATION +
-           nrf_802154_frame_duration_get(mp_frame[0], false, true);
+    m_dt = m_timeout + IMM_ACK_DURATION + nrf_802154_frame_duration_get(mp_frame[0], false, true);
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+    /**
+     * In simulation, this function is executed immediately after setting up Tx ramp-up instead of
+     * handler of RADIO.ADDRESS event. The timeout must be increased with simulation-specific
+     * adjustments calculated earlier.
+     */
+    nrf_802154_bsim_utils_core_hooks_adjustments_t adjustments;
+
+    nrf_802154_bsim_utils_core_hooks_adjustments_get(&adjustments);
+
+    m_dt += adjustments.tx_started.time_to_radio_address_us;
+#endif
 
     m_timer.action_type              = NRF_802154_SL_TIMER_ACTION_TYPE_CALLBACK;
     m_timer.action.callback.callback = timeout_timer_fired;

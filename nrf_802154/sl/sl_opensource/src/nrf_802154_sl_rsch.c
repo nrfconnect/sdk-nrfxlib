@@ -187,3 +187,11 @@ bool nrf_802154_rsch_delayed_timeslot_ppi_update(uint32_t ppi_channel)
 
     return false;
 }
+
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+uint32_t nrf_802154_rsch_delayed_timeslot_time_to_hw_trigger_get(void)
+{
+    return 0;
+}
+
+#endif

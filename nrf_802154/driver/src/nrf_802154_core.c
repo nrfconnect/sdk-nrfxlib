@@ -80,6 +80,11 @@
 #include "nrf_802154_core_hooks.h"
 #include "nrf_802154_sl_ant_div.h"
 
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+#include "nrf_802154_bsim_utils.h"
+#include "NRF_AES_ECB.h"
+#endif
+
 /// Delay before first check of received frame: 24 bits is PHY header and MAC Frame Control field.
 #define BCC_INIT                    (3 * 8)
 
@@ -127,11 +132,16 @@ static volatile radio_state_t m_state;                         ///< State of the
 
 typedef struct
 {
-    bool frame_filtered        : 1;                           ///< If frame being received passed filtering operation.
-    bool frame_parsed          : 1;                           ///< If frame being received has been parsed
-    bool rx_timeslot_requested : 1;                           ///< If timeslot for the frame being received is already requested.
-    bool tx_with_cca           : 1;                           ///< If currently transmitted frame is transmitted with cca.
-    bool tx_diminished_prio    : 1;                           ///< If priority of the current transmission should be diminished.
+    bool frame_filtered        : 1; ///< If frame being received passed filtering operation.
+    bool frame_parsed          : 1; ///< If frame being received has been parsed
+    bool rx_timeslot_requested : 1; ///< If timeslot for the frame being received is already requested.
+    bool tx_with_cca           : 1; ///< If currently transmitted frame is transmitted with cca.
+    bool tx_diminished_prio    : 1; ///< If priority of the current transmission should be diminished.
+
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+    bool tx_started_notify     : 1; ///< If higher layer should be notified that transmission started.
+
+#endif
 } nrf_802154_flags_t;
 
 static nrf_802154_flags_t m_flags;                            ///< Flags used to store the current driver state.
@@ -321,7 +331,14 @@ static void transmit_started_notify(void)
 {
     uint8_t * p_frame = mp_tx_data;
 
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+    /**
+     * TX started hooks were executed before transmission started. Use latched result
+     */
+    if (m_flags.tx_started_notify)
+#else
     if (nrf_802154_core_hooks_tx_started(p_frame))
+#endif
     {
         nrf_802154_tx_started(p_frame);
     }
@@ -331,7 +348,13 @@ static void transmit_started_notify(void)
 /** Notify MAC layer that transmission of ACK frame has started. */
 static void transmit_ack_started_notify()
 {
+#if !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
     nrf_802154_core_hooks_tx_ack_started(mp_ack);
+#else
+    /**
+     * Otherwise this was already called immediately after setting up the transmission.
+     */
+#endif
     nrf_802154_tx_ack_started(mp_ack);
 }
 
@@ -1033,6 +1056,44 @@ static bool tx_init(const uint8_t                       * p_data,
                                   cca,
                                   &m_tx_power,
                                   m_trx_transmit_frame_notifications_mask);
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+    /**
+     * In simulation the frame contents are latched when the first bit of the preamble is
+     * "transmitted" by the simulated radio. Any modifications performed after that (for example in
+     * handler of RADIO.ADDRESS event) have no effect on the frame received by other devices in the
+     * simulation.
+     *
+     * Because of these limitations of the simulation, modification of the transmitted frame buffer
+     * is performed immediately after the radio ramp-up start. Also, since in simulation no time
+     * passes while the CPU is executing code and the radio ramp-up is shorter than the time needed
+     * by the ECB peripheral to encrypt the longest possible 802.15.4 frame, the ECB is artificially
+     * sped up to guarantee that encryption completes before the transmission starts.
+     */
+    nrf_802154_bsim_utils_core_hooks_adjustments_t adjustments;
+
+    adjustments.tx_started.time_to_radio_address_us =
+        nrf_802154_rsch_delayed_timeslot_time_to_hw_trigger_get();
+
+    if (cca)
+    {
+        adjustments.tx_started.time_to_radio_address_us +=
+            RX_RAMP_UP_TIME + CCA_TIME + RX_TX_TURNAROUND_TIME;
+    }
+    else
+    {
+        adjustments.tx_started.time_to_radio_address_us += TX_RAMP_UP_TIME;
+    }
+
+    adjustments.tx_started.time_to_radio_address_us += PHY_US_TIME_FROM_SYMBOLS(PHY_SHR_SYMBOLS);
+
+    nrf_802154_bsim_utils_core_hooks_adjustments_set(&adjustments);
+
+    m_flags.tx_started_notify = nrf_802154_core_hooks_tx_started(mp_tx_data);
+
+    nrf_802154_bsim_utils_core_hooks_adjustments_t zeroes = {0};
+
+    nrf_802154_bsim_utils_core_hooks_adjustments_set(&zeroes);
+#endif
 
     if (rampup_trigg_mode == TRX_RAMP_UP_HW_TRIGGER)
     {
@@ -1162,6 +1223,17 @@ static void on_timeslot_ended(void)
         nrf_802154_trx_disable();
 
         nrf_802154_timer_coord_stop();
+
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+        /**
+         * In simulation no time passes while the CPU is executing code and the radio ramp-up is
+         * shorter than the time needed by the ECB peripheral to encrypt the longest possible
+         * 802.15.4 frame. The ECB is artificially sped up to guarantee that encryption completes
+         * before transmission starts. Reset its settings to not confuse other users of this
+         * peripheral outside of 802.15.4 timeslot.
+         */
+        nrf_aes_ecb_cheat_reset_t_ecb();
+#endif
 
         nrf_802154_rsch_continuous_ended();
 
@@ -1344,6 +1416,15 @@ static void on_timeslot_started(void)
     m_rsch_timeslot_is_granted = true;
 
     nrf_802154_timer_coord_start();
+
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+    /**
+     * In simulation no time passes while the CPU is executing code and the radio ramp-up is shorter
+     * than the time needed by the ECB peripheral to encrypt the longest possible 802.15.4 frame.
+     * Speed up the ECB to guarantee that encryption completes before transmission starts.
+     */
+    nrf_aes_ecb_cheat_set_t_ecb(1);
+#endif
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -1898,6 +1979,33 @@ void nrf_802154_trx_receive_frame_received(void)
                 if (nrf_802154_trx_transmit_ack(nrf_802154_tx_work_buffer_get(mp_ack), ACK_IFS))
                 {
                     // Intentionally empty: transmitting ack, because we can
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+                    /**
+                     * In simulation the frame contents are latched when the first bit of the
+                     * preamble is "transmitted" by the simulated radio. Any modifications performed
+                     * after that (for example in handler of RADIO.ADDRESS event) have no effect on
+                     * the frame received by other devices in the simulation.
+                     *
+                     * Because of these limitations of the simulation, modification of the transmitted
+                     * frame buffer is performed immediately after the radio ramp-up start. Also,
+                     * since in simulation no time passes while the CPU is executing code and the
+                     * radio ramp-up is shorter than the time needed by the ECB peripheral to encrypt
+                     * the longest possible 802.15.4 frame, the ECB is artificially sped up to
+                     * guarantee that encryption completes before the transmission starts.
+                     */
+                    nrf_802154_bsim_utils_core_hooks_adjustments_t adjustments;
+
+                    adjustments.tx_ack_started.time_to_radio_address_us =
+                        ACK_IFS + TX_RAMP_UP_TIME + PHY_US_TIME_FROM_SYMBOLS(PHY_SHR_SYMBOLS);
+
+                    nrf_802154_bsim_utils_core_hooks_adjustments_set(&adjustments);
+
+                    nrf_802154_core_hooks_tx_ack_started(mp_ack);
+
+                    nrf_802154_bsim_utils_core_hooks_adjustments_t zeroes = {0};
+
+                    nrf_802154_bsim_utils_core_hooks_adjustments_set(&zeroes);
+#endif /* defined(CONFIG_SOC_SERIES_BSIM_NRFXX) */
                 }
                 else
                 {

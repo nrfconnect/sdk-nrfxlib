@@ -322,6 +322,7 @@ bool nrf_802154_rsch_delayed_timeslot_priority_update(rsch_dly_ts_id_t dly_ts_id
  */
 bool nrf_802154_rsch_delayed_timeslot_time_to_start_get(rsch_dly_ts_id_t dly_ts_id,
                                                         uint64_t       * p_time_to_start);
+
 /**
  * @brief Checks if there is a pending timeslot request.
  *
@@ -362,6 +363,15 @@ uint32_t nrf_802154_rsch_timeslot_us_left_get(void);
  * @param[in]  prio  Currently approved priority level.
  */
 extern void nrf_802154_rsch_continuous_prio_changed(rsch_prio_t prio);
+
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+/**
+ * @brief Retrieves time remaining to hardware trigger of a delayed timeslot.
+ *
+ * @note This function exists for testing purposes only. It should not be used in products.
+ */
+uint32_t nrf_802154_rsch_delayed_timeslot_time_to_hw_trigger_get(void);
+#endif /* defined(CONFIG_SOC_SERIES_BSIM_NRFXX) */
 
 /**
  *@}
