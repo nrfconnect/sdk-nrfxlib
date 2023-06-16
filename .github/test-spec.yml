@@ -4,10 +4,6 @@
       - "nrf_modem/**/*"
       - "!nrf_modem/doc/**/*"
       - "!nrf_modem/*.rst"
-  - any:
-      - "nrf_security/**/*"
-      - "!nrf_security/doc/**/*"
-      - "!nrf_security/*.rst"
   - "crypto/nrf_oberon/**/*"
 
 "CI-iot-samples-test":
@@ -29,10 +25,6 @@
       - "!nrf_modem/*.rst"
 
 "CI-tfm-test":
-  - any:
-      - "nrf_security/**/*"
-      - "!nrf_security/doc/**/*"
-      - "!nrf_security/*.rst"
   - any:
       - "crypto/**/*"
       - "!crypto/doc/**/*"
@@ -69,10 +61,6 @@
 
 "CI-crypto-test":
   - any:
-      - "nrf_security/**/*"
-      - "!nrf_security/doc/**/*"
-      - "!nrf_security/*.rst"
-  - any:
       - "crypto/**/*"
       - "!crypto/doc/**/*"
       - "!crypto/*.rst"
@@ -107,10 +95,6 @@
   - "nrf_802154/driver/**/*"
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
-  - any:
-      - "nrf_security/**/*"
-      - "!nrf_security/doc/**/*"
-      - "!nrf_security/*.rst"
   - any:
       - "crypto/**/*"
       - "!crypto/doc/**/*"
@@ -150,19 +134,11 @@
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
   - any:
-      - "nrf_security/**/*"
-      - "!nrf_security/doc/**/*"
-      - "!nrf_security/*.rst"
-  - any:
       - "crypto/**/*"
       - "!crypto/doc/**/*"
       - "!crypto/*.rst"
 
 "CI-find-my-test":
-  - any:
-      - "nrf_security/**/*"
-      - "!nrf_security/doc/**/*"
-      - "!nrf_security/*.rst"
   - "softdevice_controller/**/*"
   - any:
       - "nfc/**/*"
@@ -202,10 +178,6 @@
       - "!nrf_modem/doc/**/*"
       - "!nrf_modem/*.rst"
   - any:
-      - "nrf_security/**/*"
-      - "!nrf_security/doc/**/*"
-      - "!nrf_security/*.rst"
-  - any:
       - "nrf_rpc/**/*"
       - "!nrf_rpc/doc/**/*"
       - "!nrf_rpc/*.rst"
@@ -215,10 +187,6 @@
       - "!crypto/*.rst"
 
 "CI-wifi":
-  - any:
-      - "nrf_security/**/*"
-      - "!nrf_security/doc/**/*"
-      - "!nrf_security/*.rst"
   - any:
       - "crypto/**/*"
       - "!crypto/doc/**/*"
