@@ -986,6 +986,8 @@ int32_t sdc_coex_adv_mode_configure(bool adv_cont_on_denial);
  */
 int32_t sdc_default_tx_power_set(int8_t requested_power_level);
 
+int32_t sdc_support_channel_survey(void);
+
 #ifdef __cplusplus
 }
 #endif
