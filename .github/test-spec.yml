@@ -2,41 +2,41 @@
 "CI-iot-zephyr-lwm2m-test":
   - any:
       - "nrf_modem/**/*"
-      - !"nrf_modem/doc/**/*"
-      - !"nrf_modem/*.rst"
+      - "!nrf_modem/doc/**/*"
+      - "!nrf_modem/*.rst"
   - any:
       - "nrf_security/**/*"
-      - !"nrf_security/doc/**/*"
-      - !"nrf_security/*.rst"
+      - "!nrf_security/doc/**/*"
+      - "!nrf_security/*.rst"
   - "crypto/nrf_oberon/**/*"
 
 "CI-iot-samples-test":
   - any:
       - "nrf_modem/**/*"
-      - !"nrf_modem/doc/**/*"
-      - !"nrf_modem/*.rst"
+      - "!nrf_modem/doc/**/*"
+      - "!nrf_modem/*.rst"
 
 "CI-iot-libraries-test":
   - any:
       - "nrf_modem/**/*"
-      - !"nrf_modem/doc/**/*"
-      - !"nrf_modem/*.rst"
+      - "!nrf_modem/doc/**/*"
+      - "!nrf_modem/*.rst"
 
 "CI-lwm2m-test":
   - any:
       - "nrf_modem/**/*"
-      - !"nrf_modem/doc/**/*"
-      - !"nrf_modem/*.rst"
+      - "!nrf_modem/doc/**/*"
+      - "!nrf_modem/*.rst"
 
 "CI-tfm-test":
   - any:
       - "nrf_security/**/*"
-      - !"nrf_security/doc/**/*"
-      - !"nrf_security/*.rst"
+      - "!nrf_security/doc/**/*"
+      - "!nrf_security/*.rst"
   - any:
       - "crypto/**/*"
-      - !"crypto/doc/**/*"
-      - !"crypto/*.rst"
+      - "!crypto/doc/**/*"
+      - "!crypto/*.rst"
 
 "CI-ble-test":
   - "softdevice_controller/include/**/*"
@@ -70,12 +70,12 @@
 "CI-crypto-test":
   - any:
       - "nrf_security/**/*"
-      - !"nrf_security/doc/**/*"
-      - !"nrf_security/*.rst"
+      - "!nrf_security/doc/**/*"
+      - "!nrf_security/*.rst"
   - any:
       - "crypto/**/*"
-      - !"crypto/doc/**/*"
-      - !"crypto/*.rst"
+      - "!crypto/doc/**/*"
+      - "!crypto/*.rst"
 
 "CI-rs-test":
   - "mpsl/CMakeLists.txt"
@@ -109,12 +109,12 @@
   - "nrf_802154/sl/**/*"
   - any:
       - "nrf_security/**/*"
-      - !"nrf_security/doc/**/*"
-      - !"nrf_security/*.rst"
+      - "!nrf_security/doc/**/*"
+      - "!nrf_security/*.rst"
   - any:
       - "crypto/**/*"
-      - !"crypto/doc/**/*"
-      - !"crypto/*.rst"
+      - "!crypto/doc/**/*"
+      - "!crypto/*.rst"
 
 "CI-thread-test":
   - "mpsl/include/**/*"
@@ -124,8 +124,8 @@
   - "nrf_802154/sl/**/*"
   - any:
       - "crypto/**/*"
-      - !"crypto/doc/**/*"
-      - !"crypto/*.rst"
+      - "!crypto/doc/**/*"
+      - "!crypto/*.rst"
   - any:
     - "openthread/**/*"
     - "!openthread/*.rst"
@@ -134,8 +134,8 @@
 "CI-nfc-test":
   - any:
       - "nfc/**/*"
-      - !"nfc/doc/**/*"
-      - !"nfc/*.rst"
+      - "!nfc/doc/**/*"
+      - "!nfc/*.rst"
 
 "CI-matter-test":
   - any:
@@ -151,27 +151,27 @@
   - "nrf_802154/sl/**/*"
   - any:
       - "nrf_security/**/*"
-      - !"nrf_security/doc/**/*"
-      - !"nrf_security/*.rst"
+      - "!nrf_security/doc/**/*"
+      - "!nrf_security/*.rst"
   - any:
       - "crypto/**/*"
-      - !"crypto/doc/**/*"
-      - !"crypto/*.rst"
+      - "!crypto/doc/**/*"
+      - "!crypto/*.rst"
 
 "CI-find-my-test":
   - any:
       - "nrf_security/**/*"
-      - !"nrf_security/doc/**/*"
-      - !"nrf_security/*.rst"
+      - "!nrf_security/doc/**/*"
+      - "!nrf_security/*.rst"
   - "softdevice_controller/**/*"
   - any:
       - "nfc/**/*"
-      - !"nfc/doc/**/*"
-      - !"nfc/*.rst"
+      - "!nfc/doc/**/*"
+      - "!nfc/*.rst"
   - any:
       - "crypto/**/*"
-      - !"crypto/doc/**/*"
-      - !"crypto/*.rst"
+      - "!crypto/doc/**/*"
+      - "!crypto/*.rst"
 
 "CI-gazell-test":
   - "gzll/CMakeLists.txt"
@@ -181,45 +181,45 @@
 "CI-rpc-test":
   - any:
       - "nrf_rpc/**/*"
-      - !"nrf_rpc/doc/**/*"
-      - !"nrf_rpc/*.rst"
+      - "!nrf_rpc/doc/**/*"
+      - "!nrf_rpc/*.rst"
 
 "CI-modemshell-test":
   - any:
       - "nrf_modem/**/*"
-      - !"nrf_modem/doc/**/*"
-      - !"nrf_modem/*.rst"
+      - "!nrf_modem/doc/**/*"
+      - "!nrf_modem/*.rst"
 
 "CI-positioning-test":
   - any:
       - "nrf_modem/**/*"
-      - !"nrf_modem/doc/**/*"
-      - !"nrf_modem/*.rst"
+      - "!nrf_modem/doc/**/*"
+      - "!nrf_modem/*.rst"
 
 "CI-cloud-test":
   - any:
       - "nrf_modem/**/*"
-      - !"nrf_modem/doc/**/*"
-      - !"nrf_modem/*.rst"
+      - "!nrf_modem/doc/**/*"
+      - "!nrf_modem/*.rst"
   - any:
       - "nrf_security/**/*"
-      - !"nrf_security/doc/**/*"
-      - !"nrf_security/*.rst"
+      - "!nrf_security/doc/**/*"
+      - "!nrf_security/*.rst"
   - any:
       - "nrf_rpc/**/*"
-      - !"nrf_rpc/doc/**/*"
-      - !"nrf_rpc/*.rst"
+      - "!nrf_rpc/doc/**/*"
+      - "!nrf_rpc/*.rst"
   - any:
       - "crypto/**/*"
-      - !"crypto/doc/**/*"
-      - !"crypto/*.rst"
+      - "!crypto/doc/**/*"
+      - "!crypto/*.rst"
 
 "CI-wifi":
   - any:
       - "nrf_security/**/*"
-      - !"nrf_security/doc/**/*"
-      - !"nrf_security/*.rst"
+      - "!nrf_security/doc/**/*"
+      - "!nrf_security/*.rst"
   - any:
       - "crypto/**/*"
-      - !"crypto/doc/**/*"
-      - !"crypto/*.rst"
+      - "!crypto/doc/**/*"
+      - "!crypto/*.rst"
