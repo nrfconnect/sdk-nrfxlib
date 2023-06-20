@@ -233,6 +233,9 @@ extern "C" {
      + (rx_buffer_count) * __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER \
      + ((failure_reporting_enabled) ? __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING : 0))
 
+/** Memory required for Quality of Service (QoS) channel survey module. */
+#define SDC_MEM_QOS_CHANNEL_SURVEY (40)
+
 /** @} end of sdc_mem_defines */
 
 /** @brief Function prototype for the fault handler.
@@ -946,6 +949,16 @@ int32_t sdc_support_periodic_adv_sync_transfer_receiver_central(void);
  * @retval -NRF_EOPNOTSUPP Receiving periodic advertising sync transfers is not supported.
  */
 int32_t sdc_support_periodic_adv_sync_transfer_receiver_peripheral(void);
+
+/** @brief Support for Quality of Service (QoS) channel survey module
+ *
+ * After this API is called, the controller will support the @ref sdc_hci_cmd_vs_qos_channel_survey_enable HCI command
+ *
+ * @retval 0               Success
+ * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP QoS channel survey is not supported.
+ */
+int32_t sdc_support_qos_channel_survey(void);
 
 /** @brief Configure the coex advertising mode
  *

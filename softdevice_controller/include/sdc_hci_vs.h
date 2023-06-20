@@ -81,6 +81,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_SET_ADV_RANDOMNESS = 0xfd0c,
     /** @brief See @ref sdc_hci_cmd_vs_compat_mode_window_offset_set(). */
     SDC_HCI_OPCODE_CMD_VS_COMPAT_MODE_WINDOW_OFFSET_SET = 0xfd0d,
+    /** @brief See @ref sdc_hci_cmd_vs_qos_channel_survey_enable(). */
+    SDC_HCI_OPCODE_CMD_VS_QOS_CHANNEL_SURVEY_ENABLE = 0xfd0e,
 };
 
 /** @brief VS subevent Code values. */
@@ -88,6 +90,8 @@ enum sdc_hci_subevent_vs
 {
     /** @brief See @ref sdc_hci_subevent_vs_qos_conn_event_report_t. */
     SDC_HCI_SUBEVENT_VS_QOS_CONN_EVENT_REPORT = 0x80,
+    /** @brief See @ref sdc_hci_subevent_vs_qos_channel_survey_report_t. */
+    SDC_HCI_SUBEVENT_VS_QOS_CHANNEL_SURVEY_REPORT = 0x81,
 };
 
 /** @brief Bluetooth roles that are recognized by the coexistence interface. */
@@ -148,6 +152,7 @@ typedef __PACKED_STRUCT
     uint8_t write_remote_tx_power : 1;
     uint8_t set_auto_power_control_request_param : 1;
     uint8_t set_adv_randomness : 1;
+    uint8_t qos_channel_survey_enable : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -229,6 +234,19 @@ typedef __PACKED_STRUCT
     /** @brief Indicates that the connection event was closed because a packet was not received. */
     uint8_t rx_timeout : 1;
 } sdc_hci_subevent_vs_qos_conn_event_report_t;
+
+/** @brief QoS Channel Survey report event.
+ *
+ * QoS Channel Survey report event
+ */
+typedef __PACKED_STRUCT
+{
+    /** @brief The measured energy on the Bluetooth Low Energy channels, in dBm, indexed by Channel
+     *         Index. If no measurement is available for the given channel, channel_energy is set to
+     *         127.
+     */
+    int8_t channel_energy[40];
+} sdc_hci_subevent_vs_qos_channel_survey_report_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -503,6 +521,18 @@ typedef __PACKED_STRUCT
     /** @brief Set to 1 to enable this compatibility mode. */
     uint8_t enable;
 } sdc_hci_cmd_vs_compat_mode_window_offset_set_t;
+
+/** @brief Enable the Quality of Service (QoS) channel survey module. command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Set to 0 to disable, 1 to enable, all other values are RFU. */
+    uint8_t enable;
+    /** @brief Requested average interval for the measurements and reports. Valid range is from 7500
+     *         to 4000000. If set to 0, the channel survey role will be scheduled at every available
+     *         opportunity.
+     */
+    uint32_t interval_us;
+} sdc_hci_cmd_vs_qos_channel_survey_enable_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1019,6 +1049,37 @@ uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomnes
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat_mode_window_offset_set_t * p_params);
+
+/** @brief Enable the Quality of Service (QoS) channel survey module.
+ *
+ * This vendor specific command is used to enable or disable the channel survey module.
+ *
+ * The channel survey module provides measurements of the energy levels on
+ * the Bluetooth Low Energy channels. When the module is enabled, @ref
+ * sdc_hci_subevent_vs_qos_channel_survey_report_t
+ * events will periodically report the measured energy levels for each channel.
+ *
+ * The measurements are scheduled with lower priority than other Bluetooth Low Energy roles,
+ * Radio Timeslot API events and Flash API events.
+ *
+ * The channel survey module will attempt to do measurements so that the average interval
+ * between measurements will be interval_us. However due to the channel survey module
+ * having the lowest priority of all roles and modules, this may not be possible. In that
+ * case fewer than expected channel survey reports may be given.
+ *
+ * In order to use the channel survey module, funcref:sdc_support_qos_channel_survey
+ * must be called.
+ *
+ * Event(s) geneated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_qos_channel_survey_enable(const sdc_hci_cmd_vs_qos_channel_survey_enable_t * p_params);
 
 /** @} end of HCI_VS_API */
 

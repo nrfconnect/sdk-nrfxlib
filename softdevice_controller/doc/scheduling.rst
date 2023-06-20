@@ -76,6 +76,8 @@ The following table summarizes the priorities.
    |                             | * MPSL Timeslot with normal priority                                                              |
    |                             | * Flash access                                                                                    |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
+   | Last priority               | * Quality of Service channel survey                                                               |
+   +-----------------------------+---------------------------------------------------------------------------------------------------+
 
 
 .. _initiator_timing:
