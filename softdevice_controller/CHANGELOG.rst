@@ -14,6 +14,12 @@ Main branch
 
 All the notable changes included in the main branch are documented in this section.
 
+Added
+=====
+
+* Experimental support for the Quality of Service (QoS) channel survey.
+  See the :c:func:`sdc_hci_cmd_vs_qos_channel_survey_enable` function.
+
 Changes
 =======
 

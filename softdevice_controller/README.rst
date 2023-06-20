@@ -75,6 +75,9 @@ Proprietary feature support:
 | QoS Conn Event Reports   | X               | X            | X         | Reports QoS for every connection event.                                     |
 |                          |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
 +--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
+| QoS Channel Survey       |                 | X            | X         | Provides measurements of the energy levels on the Bluetooth LE channels.    |
+| (experimental support)   |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
++--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
 
 
 .. note::
