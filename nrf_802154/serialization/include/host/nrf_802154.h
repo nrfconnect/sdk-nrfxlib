@@ -382,6 +382,17 @@ void nrf_802154_extended_address_set(const uint8_t * p_extended_address);
  */
 void nrf_802154_pan_coord_set(bool enabled);
 
+#if NRF_802154_PAN_COORD_GET_ENABLED
+/**
+ * @brief Checks if the radio is configured as the PAN coordinator.
+ *
+ * @retval  true   The radio is configured as the PAN coordinator.
+ * @retval  false  The radio is not configured as the PAN coordinator.
+ */
+bool nrf_802154_pan_coord_get(void);
+
+#endif // NRF_802154_PAN_COORD_GET_ENABLED
+
 /**
  * @brief Enables or disables the promiscuous radio mode.
  *
@@ -704,6 +715,10 @@ int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level);
 /**
  * @brief  Calculates the timestamp of the first symbol of the preamble in a received frame.
  *
+ * @deprecated This function is deprecated. Use @ref nrf_802154_timestamp_end_to_rmarker_convert
+ * instead and adjust the code that calls this function to rely on RMARKER timestamp, not the first
+ * frame symbol timestamp.
+ *
  * @param[in]  end_timestamp  Timestamp of the end of the last symbol in the frame,
  *                            in microseconds.
  * @param[in]  psdu_length    Number of bytes in the frame PSDU.
@@ -716,6 +731,10 @@ uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t p
 /**
  * @brief  Calculates the timestamp of the MAC Header in a received frame.
  *
+ * @deprecated This function is deprecated. Use @ref nrf_802154_timestamp_end_to_rmarker_convert
+ * instead and adjust the code that calls this function to rely on RMARKER timestamp, not the MAC
+ * Header timestamp.
+ *
  * @param[in]  end_timestamp  Timestamp of the end of the last symbol in the frame,
  *                            in microseconds.
  * @param[in]  psdu_length    Number of bytes in the frame PSDU.
@@ -723,6 +742,36 @@ uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t p
  * @return  Timestamp of the MHR of a given frame, in microseconds.
  */
 uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length);
+
+/**
+ * @brief  Converts the timestamp of the frame's end to the timestamp of its RMARKER.
+ *
+ * IEEE 802.15.4-2020 Section 6.9.1 defines RMARKER, a common time synchronization point, as:
+ * "the time when the beginning of the first symbol of the PHR of the RFRAME is at the local antenna".
+ *
+ * This function calculates this point in time.
+ *
+ * @param[in]  end_timestamp  Timestamp of the end of the last symbol in the frame,
+ *                            in microseconds.
+ * @param[in]  psdu_length    Number of bytes in the frame PSDU.
+ *
+ * @return  Timestamp of RMARKER of a given frame, in microseconds.
+ */
+uint64_t nrf_802154_timestamp_end_to_rmarker_convert(uint64_t end_timestamp, uint8_t psdu_length);
+
+/**
+ * @brief  Converts the timestamp of the frame's RMARKER to the timestamp of the start of its SHR.
+ *
+ * IEEE 802.15.4-2020 Section 6.9.1 defines RMARKER, a common time synchronization point, as:
+ * "the time when the beginning of the first symbol of the PHR of the RFRAME is at the local antenna".
+ *
+ * This function converts this point in time to the start of the frame's SHR.
+ *
+ * @param[in]  rmarker_timestamp  Timestamp of the frame's RMARKER.
+ *
+ * @return  Timestamp of the start of the SHR of a given frame, in microseconds.
+ */
+uint64_t nrf_802154_timestamp_rmarker_to_shr_convert(uint64_t rmarker_timestamp);
 
 /**
  * @}

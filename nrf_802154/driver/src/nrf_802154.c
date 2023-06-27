@@ -225,6 +225,18 @@ uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_lengt
     return end_timestamp - (psdu_length * PHY_SYMBOLS_PER_OCTET * PHY_US_PER_SYMBOL);
 }
 
+uint64_t nrf_802154_timestamp_end_to_rmarker_convert(uint64_t end_timestamp, uint8_t psdu_length)
+{
+    uint32_t frame_symbols = (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
+
+    return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
+}
+
+uint64_t nrf_802154_timestamp_rmarker_to_shr_convert(uint64_t rmarker_timestamp)
+{
+    return rmarker_timestamp - (PHY_SHR_SYMBOLS * PHY_US_PER_SYMBOL);
+}
+
 void nrf_802154_init(void)
 {
     static const nrf_802154_sl_crit_sect_interface_t crit_sect_int =
