@@ -9,10 +9,10 @@ Changelog
 
 All the notable changes to this project are documented in this file.
 
-nRF Connect SDK v1.9.0
-**********************
+Main branch
+***********
 
-All the notable changes included in the |NCS| v1.9.0 release are documented in this section.
+All the notable changes included in the main branch are documented in this section.
 
 Added
 =====
@@ -24,7 +24,7 @@ Added
 Bug fixes
 =========
 
-* Fixed an issue on the nRF53 Series where an assert could occur when connected as a peripheral, and the RC oscillator is used as the Low Frequency Clock source (DRGN-16808).
+* Fixed an issue on the nRF53 Series where an assert could occur on when connected as a peripheral, and the RC oscillator is used as the Low Frequency Clock source (DRGN-16808).
 
 nRF Connect SDK v1.8.0
 **********************
