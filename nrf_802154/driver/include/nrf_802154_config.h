@@ -253,6 +253,15 @@ extern "C" {
 #endif
 
 /**
+ * @def NRF_802154_PAN_COORD_GET_ENABLED
+ *
+ * Enables the @ref nrf_802154_pan_coord_get function.
+ */
+#ifndef NRF_802154_PAN_COORD_GET_ENABLED
+#define NRF_802154_PAN_COORD_GET_ENABLED 0
+#endif
+
+/**
  * @}
  * @defgroup nrf_802154_config_csma CSMA/CA procedure configuration
  * @{

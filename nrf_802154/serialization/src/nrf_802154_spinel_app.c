@@ -656,6 +656,40 @@ bail:
     return;
 }
 
+#if NRF_802154_PAN_COORD_GET_ENABLED
+
+bool nrf_802154_pan_coord_get(void)
+{
+    nrf_802154_ser_err_t res;
+    bool                 result = false;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+
+    nrf_802154_spinel_response_notifier_lock_before_request(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PAN_COORD_GET);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PAN_COORD_GET,
+        SPINEL_DATATYPE_NRF_802154_PAN_COORD_GET,
+        &result);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = net_generic_bool_response_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT,
+                                          &result);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return result;
+}
+
+#endif // NRF_802154_PAN_COORD_GET_ENABLED
+
 void nrf_802154_pan_coord_set(bool enabled)
 {
     nrf_802154_ser_err_t res;
@@ -1792,6 +1826,18 @@ uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t p
 uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
 {
     return end_timestamp - (psdu_length * PHY_SYMBOLS_PER_OCTET * PHY_US_PER_SYMBOL);
+}
+
+uint64_t nrf_802154_timestamp_end_to_phr_convert(uint64_t end_timestamp, uint8_t psdu_length)
+{
+    uint32_t frame_symbols = (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
+
+    return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
+}
+
+uint64_t nrf_802154_timestamp_phr_to_shr_convert(uint64_t phr_timestamp)
+{
+    return phr_timestamp - (PHY_SHR_SYMBOLS * PHY_US_PER_SYMBOL);
 }
 
 void nrf_802154_security_global_frame_counter_set(uint32_t frame_counter)
