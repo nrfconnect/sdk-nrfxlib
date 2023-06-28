@@ -38,7 +38,7 @@
 #include "nrf_802154_types.h"
 #include "nrf_802154_utils.h"
 
-#if !defined(UNIT_TEST)
+#if !defined(TEST)
 // Don't use directly. Use provided nrf_802154_stat_xxxx API macros.
 extern volatile nrf_802154_stats_t g_nrf_802154_stats;
 
@@ -85,7 +85,7 @@ extern volatile nrf_802154_stats_t g_nrf_802154_stats;
     }                                                           \
     while (0)
 
-#else // !defined(UNIT_TEST)
+#else // !defined(TEST)
 
 #define nrf_802154_stat_counter_increment(field_name) \
     nrf_802154_stat_counter_increment_func(offsetof(nrf_802154_stat_counters_t, field_name))
@@ -103,6 +103,6 @@ void nrf_802154_stat_counter_increment_func(size_t field_offset);
 void nrf_802154_stat_timestamp_write_func(size_t field_offset, uint64_t value);
 uint64_t nrf_802154_stat_timestamp_read_func(size_t field_offset);
 
-#endif // !defined(UNIT_TEST)
+#endif // !defined(TEST)
 
 #endif /* NRF_802154_STATS_H_ */

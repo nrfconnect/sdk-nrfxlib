@@ -395,6 +395,10 @@ uint8_t nrf_802154_ccaedthres_from_dbm_calculate(int8_t dbm);
 /**
  * @brief  Calculates the timestamp of the first symbol of the preamble in a received frame.
  *
+ * @deprecated This function is deprecated. Use @ref nrf_802154_timestamp_end_to_phr_convert
+ * instead and adjust the code that calls this function to rely on the timestamp of the first symbol
+ * of the PHR, not the timestamp of the first symbol of the frame.
+ *
  * @param[in]  end_timestamp  Timestamp of the end of the last symbol in the frame,
  *                            in microseconds.
  * @param[in]  psdu_length    Number of bytes in the frame PSDU.
@@ -407,6 +411,10 @@ uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t p
 /**
  * @brief  Calculates the timestamp of the MAC Header in a received frame.
  *
+ * @deprecated This function is deprecated. Use @ref nrf_802154_timestamp_end_to_phr_convert
+ * instead and adjust the code that calls this function to rely on the timestamp of the first symbol
+ * of the PHR, not the MAC Header timestamp.
+ *
  * @param[in]  end_timestamp  Timestamp of the end of the last symbol in the frame,
  *                            in microseconds.
  * @param[in]  psdu_length    Number of bytes in the frame PSDU.
@@ -414,6 +422,33 @@ uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t p
  * @return  Timestamp of the MHR of a given frame, in microseconds.
  */
 uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length);
+
+/**
+ * @brief  Converts the timestamp of the frame's end to the timestamp of the start of its PHR.
+ *
+ * This function calculates the time when the first symbol of the PHR is at the local antenna. Note
+ * that this time is equivalent to: the end of the frame's SFD and RMARKER as defined in'
+ * IEEE 802.15.4-2020, Section 6.9.1.
+ *
+ * @param[in]  end_timestamp  Timestamp of the end of the last symbol in the frame,
+ *                            in microseconds.
+ * @param[in]  psdu_length    Number of bytes in the frame PSDU.
+ *
+ * @return  Timestamp of the start of the PHR of a given frame, in microseconds.
+ */
+uint64_t nrf_802154_timestamp_end_to_phr_convert(uint64_t end_timestamp, uint8_t psdu_length);
+
+/**
+ * @brief  Converts the timestamp of the frame's PHR to the timestamp of the start of its SHR.
+ *
+ * This function converts the time when the first symbol of the frame's PHR is at the local antenna
+ * to the timestamp of the start of the frame's SHR.
+ *
+ * @param[in]  phr_timestamp  Timestamp of the frame's PHR.
+ *
+ * @return  Timestamp of the start of the SHR of a given frame, in microseconds.
+ */
+uint64_t nrf_802154_timestamp_phr_to_shr_convert(uint64_t phr_timestamp);
 
 /**
  * @}

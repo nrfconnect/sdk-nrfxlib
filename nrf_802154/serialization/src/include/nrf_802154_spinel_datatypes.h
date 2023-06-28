@@ -453,6 +453,12 @@ typedef enum
     SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_GLOBAL_FRAME_COUNTER_SET_IF_LARGER =
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 64,
 
+    /**
+     * Vendor property for nrf_802154_pan_coord_get serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PAN_COORD_GET =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 65,
+
 } spinel_prop_vendor_key_t;
 
 /**
@@ -820,6 +826,16 @@ typedef enum
  * @brief Spinel data type description for nrf_802154_pan_coord_set.
  */
 #define SPINEL_DATATYPE_NRF_802154_PAN_COORD_SET           SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_pan_coord_get result.
+ */
+#define SPINEL_DATATYPE_NRF_802154_PAN_COORD_GET_RET       SPINEL_DATATYPE_BOOL_S
+
+/**
+ * @brief Spinel data type description for nrf_802154_pan_coord_get.
+ */
+#define SPINEL_DATATYPE_NRF_802154_PAN_COORD_GET           SPINEL_DATATYPE_NULL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_promiscuous_set.

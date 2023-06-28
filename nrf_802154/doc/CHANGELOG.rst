@@ -13,10 +13,18 @@ See also :ref:`nrf_802154_limitations` for permanent limitations.
 Main branch - nRF 802.15.4 Radio Driver
 **************************************************
 
+Added
+=====
+
+* Added :c:func:`nrf_802154_timestamp_end_to_phr_convert` and :c:func:`nrf_802154_timestamp_phr_to_shr_convert` that can be used to convert the timestamps used by the driver to the timestamp of the first symbol of frame's PHR. (KRKNWK-17153)
+* Added support for :c:func:`nrf_802154_pan_coord_get` through serialization (disabled by default via ``NRF_802154_PAN_COORD_GET_ENABLED``). (KRKNWK-10908)
+
 Other changes
 =============
 
 * Changed the value of ``ED_RSSISCALE`` to ``4`` for the nRF5340 and nRF52833. (KRKNWK-16902)
+* Deprecated :c:func:`nrf_802154_first_symbol_timestamp_get` and :c:func:`nrf_802154_mhr_timestamp_get` functions.
+* Improved the modulation filtering when using an external power amplifier on the nRF5340, fixing potential certification issues. (KRKNWK-16949)
 
 nRF Connect SDK v2.4.0 - nRF 802.15.4 Radio Driver
 **************************************************

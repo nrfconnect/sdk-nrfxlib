@@ -366,6 +366,25 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_pan_coord_set(
     return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
 }
 
+#if NRF_802154_PAN_COORD_GET_ENABLED
+
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_pan_coord_get(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    (void)p_property_data;
+    (void)property_data_len;
+
+    bool result = nrf_802154_pan_coord_get();
+
+    return nrf_802154_spinel_send_cmd_prop_value_is(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PAN_COORD_GET,
+        SPINEL_DATATYPE_NRF_802154_PAN_COORD_GET_RET,
+        result);
+}
+
+#endif // NRF_802154_PAN_COORD_GET_ENABLED
+
 /**
  * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PROMISCUOUS_SET.
  *
@@ -1889,6 +1908,12 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PAN_COORD_SET:
             return spinel_decode_prop_nrf_802154_pan_coord_set(p_property_data, property_data_len);
+#if NRF_802154_PAN_COORD_GET_ENABLED
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PAN_COORD_GET:
+            return spinel_decode_prop_nrf_802154_pan_coord_get(p_property_data, property_data_len);
+
+#endif // NRF_802154_PAN_COORD_GET_ENABLED
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PROMISCUOUS_SET:
             return spinel_decode_prop_nrf_802154_promiscuous_set(p_property_data,

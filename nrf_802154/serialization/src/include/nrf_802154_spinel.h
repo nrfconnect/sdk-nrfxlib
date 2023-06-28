@@ -53,10 +53,8 @@ extern "C" {
 #ifndef CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT
 /**
  * @brief Default response timeout in us for response to serialized request.
- *
- * TODO: What timeout is good?
  */
-#define CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT 100
+#define CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT 500
 #endif /* CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT */
 
 /**

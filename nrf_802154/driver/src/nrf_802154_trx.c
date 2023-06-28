@@ -543,6 +543,40 @@ static void errata_117_apply(void)
     *p_radio_reg = ficr_reg;
 }
 
+static uint32_t m_pa_mod_filter_latched    = 0;
+static bool     m_pa_mod_filter_is_latched = false;
+
+/** @brief Applies modulation fix when PA is used.
+ *
+ * Shall be called after setting RADIO mode to NRF_RADIO_MODE_IEEE802154_250KBIT.
+ *
+ * @param[in]  enable   @c true if the appropriate register should be modified
+ *                      @c false if it should return to its previous, latched value
+ */
+static void pa_modulation_fix_apply(bool enable)
+{
+    volatile uint32_t * p_radio_reg = (volatile uint32_t *)(RADIO_BASE + 0x584UL);
+
+    if (enable)
+    {
+        int8_t pa_gain = 0;
+
+        mpsl_fem_pa_is_configured(&pa_gain);
+
+        if (pa_gain > 0)
+        {
+            m_pa_mod_filter_latched    = *(p_radio_reg);
+            m_pa_mod_filter_is_latched = true;
+            *(p_radio_reg)             = 0x40081B08;
+        }
+    }
+    else if (m_pa_mod_filter_is_latched)
+    {
+        *(p_radio_reg)             = m_pa_mod_filter_latched;
+        m_pa_mod_filter_is_latched = false;
+    }
+}
+
 #endif
 
 static inline void wait_until_radio_is_disabled(void)
@@ -626,6 +660,7 @@ void nrf_802154_trx_enable(void)
 #if defined(NRF5340_XXAA)
     // Apply ERRATA-117 after setting RADIO mode to NRF_RADIO_MODE_IEEE802154_250KBIT.
     errata_117_apply();
+    pa_modulation_fix_apply(true);
 #endif
 
     memset(&packet_conf, 0, sizeof(packet_conf));
@@ -745,6 +780,10 @@ void nrf_802154_trx_disable(void)
 
     if (m_trx_state != TRX_STATE_DISABLED)
     {
+#if defined(NRF5340_XXAA)
+        pa_modulation_fix_apply(false);
+#endif
+
 #if defined(RADIO_POWER_POWER_Msk)
         nrf_radio_power_set(NRF_RADIO, false);
 #endif
