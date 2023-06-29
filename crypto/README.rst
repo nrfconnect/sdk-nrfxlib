@@ -11,8 +11,8 @@ Crypto Libraries
    doc/nrf_cc310_platform
    doc/nrf_cc310_mbedcrypto
    doc/nrf_oberon
-   nrf_cc310_platform/CHANGELOG.rst
-   nrf_cc310_bl/CHANGELOG
-   nrf_cc310_mbedcrypto/CHANGELOG
-   nrf_oberon/CHANGELOG
+   doc/CHANGELOG_cc310_bl
+   doc/CHANGELOG_cc3xx_platform
+   doc/CHANGELOG_cc3xx_mbedcrypto
+   doc/CHANGELOG_oberon
    doc/api

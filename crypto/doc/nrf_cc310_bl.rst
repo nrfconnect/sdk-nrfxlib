@@ -21,7 +21,7 @@ The library must be initialized before the APIs can be used.
 
 .. code-block:: c
    :caption: Initializing the nrf_cc310_bl library
-   
+
    if (nrf_cc310_bl_init() != 0) {
            /** nrf_cc310_bl failed to initialize. */
            return -1;
@@ -42,7 +42,7 @@ The hardware is enabled by writing to a specific register.
 
 .. code-block:: c
    :caption: Enabling the CryptoCell hardware
-   
+
    NRF_CRYPTOCELL->ENABLE=1;
 
 Disabling the CryptoCell hardware
@@ -52,7 +52,7 @@ The hardware is disabled by writing to a specific register.
 
 .. code-block:: c
    :caption: Disabling the CryptoCell hardware
-   
+
    NRF_CRYPTOCELL->ENABLE=0;
 
 .. note::
