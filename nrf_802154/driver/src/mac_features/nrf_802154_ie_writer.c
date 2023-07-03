@@ -44,7 +44,6 @@
 #include "mac_features/nrf_802154_delayed_trx.h"
 #include "nrf_802154_core.h"
 #include "nrf_802154_nrfx_addons.h"
-#include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_utils_byteorder.h"
 #include "nrf_802154_sl_timer.h"
