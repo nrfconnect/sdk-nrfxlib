@@ -50,7 +50,6 @@
 #include "nrf_802154_notification.h"
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_request.h"
-#include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_sl_timer.h"
 
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
