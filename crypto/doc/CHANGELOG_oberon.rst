@@ -1,6 +1,6 @@
 .. _crypto_changelog_oberon:
 
-Changelog - nRF Oberon
+Changelog - nrf_oberon
 ######################
 
 .. contents::

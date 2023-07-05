@@ -1,6 +1,6 @@
 .. _crypto_changelog_cc310:
 
-Changelog - nRF cc310 bl
+Changelog - nrf_cc310_bl
 ########################
 
 .. contents::
