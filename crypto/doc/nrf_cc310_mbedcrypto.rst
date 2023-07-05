@@ -145,7 +145,7 @@ The supported features for the PSA driver companion library are:
 * ChaCha20 and Poly1305 (256 bit keys only)
 * ECDSA (secp224r1, secp256r1 and secp384r1 only)
 * ECDH
-* RSA (PKCS1V15 with 1024 bits keys only)
+* RSA (PKCS#1 v1.5 with 1024 bits keys only)
 * HMAC
 * CMAC (192/256 bit keys are only supported by CryptoCell 312)
 * HKDF
