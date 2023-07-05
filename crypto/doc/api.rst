@@ -75,6 +75,12 @@ CC3XX Platform - CTR-DRBG APIs
    :project: nrfxlib
    :members:
 
+CC3XX Platform - HMAC-DRBG APIs
+===============================
+
+.. doxygengroup:: nrf_cc3xx_platform_hmac_drbg
+   :project: nrfxlib
+   :members:
 
 .. _crypto_api_nrf_cc3xx_mbedcrypto:
 
