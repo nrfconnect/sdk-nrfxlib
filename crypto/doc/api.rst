@@ -68,7 +68,7 @@ CC3XX Platform - KMU APIs
    :project: nrfxlib
    :members:
 
-CC3XX Platform - CTR_DRBG APIs
+CC3XX Platform - CTR-DRBG APIs
 ==============================
 
 .. doxygengroup:: nrf_cc3xx_platform_ctr_drbg
