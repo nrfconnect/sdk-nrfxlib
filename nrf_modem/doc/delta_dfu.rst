@@ -204,7 +204,7 @@ Reinitializing the modem to run the new firmware
 ================================================
 
 Regardless of the value returned by :c:func:`nrf_modem_init`, the application must reinitialize the modem by reinitializing the Modem library in order to run the modem firmware.
-The application can reinitialize the Modem library by calling :c:func:`nrf_modem_shutdown` followed by :c:func:`nrf_modem_init`.
+The application can reinitialize the Modem library by calling :c:func:`nrf_modem_init`.
 If the update is successful, the modem runs the new modem firmware.
 The application can verify that by reading the modem firmware UUID or reading the ``AT+CGMR`` command response.
 
@@ -250,7 +250,7 @@ Reinitializing the modem to run the firmware
 ============================================
 
 Regardless of the value returned by :c:func:`nrf_modem_init`, the application must reinitialize the modem by reinitializing the :ref:`nrf_modem` to run the modem firmware.
-The application can reinitialize the Modem library by calling :c:func:`nrf_modem_shutdown` followed by :c:func:`nrf_modem_init`.
+The application can reinitialize the Modem library by calling :c:func:`nrf_modem_init`.
 If the rollback is successful, the modem runs the previous modem firmware.
 The application can verify that by reading the modem firmware UUID or the ``AT+CGMR`` command response.
 
