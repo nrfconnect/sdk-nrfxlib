@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) Nordic Semiconductor ASA
  *
