@@ -143,6 +143,16 @@ extern "C" {
 #define NRF_802154_TEST_MODES_ENABLED 0
 #endif
 
+/**
+ * @def NRF_802154_ENERGY_DETECTED_VERSION
+ *
+ * Selects API for @ref nrf_802154_energy_detected callout
+ * This is a temporary switch to perform API migration in external integration.
+ */
+#ifndef NRF_802154_ENERGY_DETECTED_VERSION
+#define NRF_802154_ENERGY_DETECTED_VERSION 0
+#endif
+
 #ifdef __cplusplus
 }
 #endif

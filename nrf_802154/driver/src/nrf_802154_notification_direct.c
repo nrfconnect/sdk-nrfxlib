@@ -125,11 +125,19 @@ void nrf_802154_notify_transmit_failed(uint8_t                                  
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+void nrf_802154_notify_energy_detected(const nrf_802154_energy_detected_t * p_result)
+#else
 void nrf_802154_notify_energy_detected(uint8_t result)
+#endif
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+    nrf_802154_energy_detected(p_result);
+#else
     nrf_802154_energy_detected(result);
+#endif
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }

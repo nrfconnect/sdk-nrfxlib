@@ -125,7 +125,11 @@ bail:
     return;
 }
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+void nrf_802154_energy_detected(const nrf_802154_energy_detected_t * p_result)
+#else
 void nrf_802154_energy_detected(uint8_t result)
+#endif
 {
     nrf_802154_ser_err_t res;
 
@@ -134,10 +138,17 @@ void nrf_802154_energy_detected(uint8_t result)
     NRF_802154_SPINEL_LOG_BANNER_CALLING();
     NRF_802154_SPINEL_LOG_VAR("%u", result);
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+    res = nrf_802154_spinel_send_cmd_prop_value_is(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ENERGY_DETECTED,
+        SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTED,
+        p_result->ed_dbm);
+#else
     res = nrf_802154_spinel_send_cmd_prop_value_is(
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ENERGY_DETECTED,
         SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTED,
         result);
+#endif
 
     SERIALIZATION_ERROR_CHECK(res, error, bail);
 

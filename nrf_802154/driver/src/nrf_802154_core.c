@@ -418,11 +418,19 @@ static void transmit_failed_notify_and_nesting_allow(
 }
 
 /** Notify MAC layer that energy detection procedure ended. */
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+static void energy_detected_notify(const nrf_802154_energy_detected_t * p_result)
+#else
 static void energy_detected_notify(uint8_t result)
+#endif
 {
     nrf_802154_critical_section_nesting_allow();
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+    nrf_802154_notify_energy_detected(p_result);
+#else
     nrf_802154_notify_energy_detected(result);
+#endif
 
     nrf_802154_critical_section_nesting_deny();
 }
@@ -2416,7 +2424,15 @@ void nrf_802154_trx_energy_detection_finished(uint8_t ed_sample)
         state_set(RADIO_STATE_RX);
         rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+        nrf_802154_energy_detected_t ed_result = {};
+
+        ed_result.ed_dbm = nrf_802154_rssi_ed_sample_to_dbm_convert(m_ed_result);
+
+        energy_detected_notify(&ed_result);
+#else
         energy_detected_notify(nrf_802154_rssi_ed_sample_convert(m_ed_result));
+#endif
 
     }
 

@@ -373,6 +373,18 @@ void nrf_802154_short_address_set(const uint8_t * p_short_address);
  * @{
  */
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+/**
+ * @brief  Converts energy level received during the energy detection procedure to IEEE Std. 802.15.4-2015 compliant value.
+ *
+ * @param ed_dbm  Energy level in dBm
+ *
+ * @return uint8_t  Energy level in units compliant to IEEE Std. 802.15.4-2015 chapter 10.2.5.
+ */
+uint8_t nrf_802154_energy_level_from_dbm_calculate(int8_t ed_dbm);
+
+#else
+
 /**
  * @brief  Converts the energy level received during the energy detection procedure to a dBm value.
  *
@@ -381,6 +393,8 @@ void nrf_802154_short_address_set(const uint8_t * p_short_address);
  * @return  Result of the energy detection procedure in dBm.
  */
 int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level);
+
+#endif // NRF_802154_ENERGY_DETECTED_VERSION != 0
 
 /**
  * @brief  Converts a given dBm level to a CCA energy detection threshold value.
@@ -1013,6 +1027,18 @@ extern void nrf_802154_transmit_failed(uint8_t                                  
                                        nrf_802154_tx_error_t                       error,
                                        const nrf_802154_transmit_done_metadata_t * p_metadata);
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+
+/**
+ * @brief Notifies that the energy detection procedure finished.
+ *
+ * @param[in]  p_result     Pointer to structure containing the result of the operation.
+ *                          The pointer is valid within the @ref nrf_802154_energy_detected only.
+ */
+extern void nrf_802154_energy_detected(const nrf_802154_energy_detected_t * p_result);
+
+#else
+
 /**
  * @brief Notifies that the energy detection procedure finished.
  *
@@ -1025,6 +1051,8 @@ extern void nrf_802154_transmit_failed(uint8_t                                  
  * @param[in]  result  Maximum energy detected during the energy detection procedure.
  */
 extern void nrf_802154_energy_detected(uint8_t result);
+
+#endif
 
 /**
  * @brief Notifies that the energy detection procedure failed.

@@ -37,6 +37,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <nrf_802154_config.h>
 
 /**
  * @defgroup nrf_802154_types Type definitions used in the 802.15.4 driver
@@ -363,6 +364,17 @@ typedef struct
     uint32_t              frame_counter;            // !< Frame counter to use in case @ref use_global_frame_counter is set to false.
     bool                  use_global_frame_counter; // !< Whether to use the global frame counter instead of the one defined in this structure.
 } nrf_802154_key_t;
+
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+/**
+ * @brief Structure that holds results of energy detection procedure.
+ */
+typedef struct
+{
+    int8_t ed_dbm; // !< Maximum detected ED in dBm.
+} nrf_802154_energy_detected_t;
+
+#endif
 
 /**
  *@}

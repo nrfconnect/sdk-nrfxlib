@@ -13,6 +13,12 @@ See also :ref:`nrf_802154_limitations` for permanent limitations.
 Main branch - nRF 802.15.4 Radio Driver
 **************************************************
 
+Notable changes
+===============
+
+* The callout function :c:func:`nrf_802154_energy_detected` takes now parameter of type :c:struct:`nrf_802154_energy_detected_t` and provides ED result in dBm.
+  This change in public API can be enabled by setting the ``NRF_802154_ENERGY_DETECTED_VERSION`` to 1. (KRKNWK-17141)
+
 Added
 =====
 

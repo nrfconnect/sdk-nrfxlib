@@ -68,6 +68,16 @@ extern void nrf_802154_cca_done(bool channel_free);
  */
 extern void nrf_802154_cca_failed(nrf_802154_cca_error_t error);
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+/**
+ * @brief Notifies that the energy detection procedure finished.
+ *
+ * @param[in]  p_result     Pointer to structure containing the result of the operation.
+ *                          The pointer is valid within the @ref nrf_802154_energy_detected only.
+ */
+extern void nrf_802154_energy_detected(const nrf_802154_energy_detected_t * p_result);
+
+#else
 /**
  * @brief Notifies that the energy detection procedure finished.
  *
@@ -80,6 +90,8 @@ extern void nrf_802154_cca_failed(nrf_802154_cca_error_t error);
  * @param[in]  result  Maximum energy detected during the energy detection procedure.
  */
 extern void nrf_802154_energy_detected(uint8_t result);
+
+#endif
 
 /**
  * @brief Notifies that the energy detection procedure failed.

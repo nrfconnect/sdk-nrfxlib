@@ -1809,10 +1809,19 @@ bail:
     SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
 }
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+uint8_t nrf_802154_energy_level_from_dbm_calculate(int8_t ed_dbm)
+{
+    return nrf_802154_addons_energy_level_from_dbm_calculate(ed_dbm);
+}
+
+#else
 int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level)
 {
     return nrf_802154_addons_dbm_from_energy_level_calculate(energy_level);
 }
+
+#endif // NRF_802154_ENERGY_DETECTED_VERSION != 0
 
 uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
 {
