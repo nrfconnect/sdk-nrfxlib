@@ -3,11 +3,11 @@
 Multiprotocol Service Layer
 ===========================
 
-The Multiprotocol Service Layer (MPSL) is a library of common services for single and multiprotocol implementations.
+The Multiprotocol Service Layer (MPSL) is a set of libraries that provide common services for single and multiprotocol implementations.
 
-The library is available as soft-float, softfp-float, and hard-float builds for the nRF52 Series and as soft-float build for the nRF53 Series.
+The libraries are available as soft-float, softfp-float, and hard-float builds for the nRF52 Series and as a soft-float build for the nRF53 Series.
 
-This library provides the following key features:
+These libraries provide the following key features:
 
 * Timeslot.
   It allows the application to schedule its own events concurrently with other protocols.
@@ -19,7 +19,6 @@ This library provides the following key features:
   It provides an API for configuring and controlling the low and high-frequency clock.
 * FEM.
   It provides an API for controlling external Front-End Modules.
-  It supports only the nRF52 Series.
 * SoC Temperature.
   It provides an API for obtaining the temperature measured on the SoC.
 * IEEE 802.15.4 External Radio Coexistence.

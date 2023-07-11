@@ -7,6 +7,16 @@ Changelog
    :local:
    :depth: 2
 
+Main branch
+***********
+
+All the notable changes included in the main branch are documented in this section.
+
+Changes
+=======
+
+* FEM-related firmware is now built and deployed into separate libraries, one for each FEM implementation (such as ``simple_gpio``).
+
 nRF Connect SDK v2.4.0
 **********************
 
