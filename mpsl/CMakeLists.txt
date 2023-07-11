@@ -6,6 +6,8 @@
 
 if (CONFIG_MPSL_BUILD_TYPE_LIB)
 
+add_subdirectory(fem)
+
 nrfxlib_calculate_lib_path(MPSL_LIB_DIR
   BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
   SOFT_FLOAT_FALLBACK
@@ -18,7 +20,5 @@ endif()
 zephyr_include_directories(include)
 zephyr_include_directories(include/protocol)
 zephyr_link_libraries(${MPSL_LIB_DIR}/libmpsl.a)
-
-add_subdirectory(fem)
 
 endif()
