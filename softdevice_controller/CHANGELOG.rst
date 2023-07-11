@@ -19,6 +19,8 @@ Added
 
 * Experimental support for the Quality of Service (QoS) channel survey.
   See the :c:func:`sdc_hci_cmd_vs_qos_channel_survey_enable` function.
+* Support for starting the scanner without setting scan parameters.
+  Previously the controller would assert (DRGN-17623).
 
 Changes
 =======
@@ -37,6 +39,7 @@ Bug fixes
 * Fixed a rare issue where the advertiser was not seen by peers.
   This could happen if the device was running an advertiser and a periodic activity like a scanner/initiator, a periodic advertiser, a connection etc.
   This issue would not occur if scan window was configured to be equal to scan interval (DRGN-19039).
+* Fixed an issue where the continuous extended scanner would not be able to receive the ``AUX_ADV_IND`` packet if the time between the ``ADV_EXT_IND`` and ``AUX_ADV_IND`` was more than 840 μs (DRGN-19460).
 
 nRF Connect SDK v2.4.0
 **********************
