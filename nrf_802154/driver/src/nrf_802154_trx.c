@@ -1069,13 +1069,6 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
     uint32_t ints_to_enable = 0U;
     uint32_t shorts         = SHORTS_RX;
 
-    if (nrf_radio_event_check(NRF_RADIO, NRF_RADIO_EVENT_DISABLED))
-    {
-        // For DRX a DISABLE event might be pending as a leftover from
-        // an aborted operation. Clear it to avoid spurious interrupts.
-        nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
-    }
-
     // Force the TIMER to be stopped and count from 0.
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
 
@@ -1311,13 +1304,6 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     uint32_t ints_to_enable = 0U;
-
-    if (nrf_radio_event_check(NRF_RADIO, NRF_RADIO_EVENT_DISABLED))
-    {
-        // For DTX a DISABLE event might be pending as a leftover from
-        // an aborted operation. Clear it to avoid spurious interrupts.
-        nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
-    }
 
     // Force the TIMER to be stopped and count from 0.
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
@@ -2159,6 +2145,11 @@ static void irq_handler_address(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
+    // At this point we can be certain that no more DISABLED events
+    // comming from the time before the transmission/reception started
+    // will arrive. We can safely disable the DISABLED interrupt.
+    nrf_radio_int_disable(NRF_RADIO, NRF_RADIO_INT_DISABLED_MASK);
+
     switch (m_trx_state)
     {
         case TRX_STATE_RXFRAME:
@@ -2492,9 +2483,13 @@ static void irq_handler_disabled(void)
             // Robust radio ramp-down requires that RADIO.DISABLE is cleared. If the ramp-up was
             // triggered by software, the event was cleared already immediately after triggering
             // RADIO.DISABLE task. If the ramp-up was triggered by (D)PPI, the event would need
-            // to be cleared. The IRQ handler does that on entry to irq_handler_disabled. What
-            // remains to be done is disabling the DISABLED interrupt, as it won't be needed.
-            nrf_radio_int_disable(NRF_RADIO, NRF_RADIO_INT_DISABLED_MASK);
+            // to be cleared. The IRQ handler does that on entry to irq_handler_disabled.
+            // The interrupt must not be disabled here though. It is possible that this handler is executed
+            // before the radio ramp-up finishes as a result of a ramp-down triggered earlier. This is more
+            // probable on platforms where code execution is fast and the critical section that configures
+            // radio ramp-up is exited before that ramp-up finishes. To allow for this interrupt to fire again
+            // when the ramp-up finishes and for the DISABLED event to be cleared once more, do not disable
+            // the interrupt now. It's disabled in ADDRESS event handler.
             break;
 
         default:
