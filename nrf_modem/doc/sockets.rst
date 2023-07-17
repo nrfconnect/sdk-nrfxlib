@@ -327,7 +327,7 @@ NRF_SO_SEC_DTLS_CONN_LOAD
 NRF_SO_SEC_CIPHERSUITE_USED
    Get chosen TLS cipher suite.
    This option is read-only.
-   The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
+   The socket option is supported from modem firmware v2.x.x.
 
 
 Packet data networks
