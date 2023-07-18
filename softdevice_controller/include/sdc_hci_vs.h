@@ -81,6 +81,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_SET_ADV_RANDOMNESS = 0xfd0c,
     /** @brief See @ref sdc_hci_cmd_vs_compat_mode_window_offset_set(). */
     SDC_HCI_OPCODE_CMD_VS_COMPAT_MODE_WINDOW_OFFSET_SET = 0xfd0d,
+    /** @brief See @ref sdc_hci_cmd_vs_set_power_control_apr_handling(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_POWER_CONTROL_APR_HANDLING = 0xfd0e,
     /** @brief See @ref sdc_hci_cmd_vs_qos_channel_survey_enable(). */
     SDC_HCI_OPCODE_CMD_VS_QOS_CHANNEL_SURVEY_ENABLE = 0xfd0e,
 };
@@ -151,6 +153,7 @@ typedef __PACKED_STRUCT
     uint8_t peripheral_latency_mode_set : 1;
     uint8_t write_remote_tx_power : 1;
     uint8_t set_auto_power_control_request_param : 1;
+    uint8_t set_power_control_apr_handling : 1;
     uint8_t set_adv_randomness : 1;
     uint8_t qos_channel_survey_enable : 1;
 } sdc_hci_vs_supported_vs_commands_t;
@@ -521,6 +524,20 @@ typedef __PACKED_STRUCT
     /** @brief Set to 1 to enable this compatibility mode. */
     uint8_t enable;
 } sdc_hci_cmd_vs_compat_mode_window_offset_set_t;
+
+/** @brief Set APR handling witin LE Power Control Request command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Enable or Disable APR handling in controller during LE Power Control Request
+     *         procedure. Disabled by default.
+     */
+    uint8_t enable;
+    /** @brief Margin between APR value received from peer in LL_POWER_CONTROL_RSP PDU and actual
+     *         reduction in TX power that is applied locally. The applied decrease in local TX power
+     *         will be (received_apr - margin) if received_apr > margin, otherwise no change.
+     */
+    uint8_t margin;
+} sdc_hci_cmd_vs_set_power_control_apr_handling_t;
 
 /** @brief Enable the Quality of Service (QoS) channel survey module. command parameter(s). */
 typedef __PACKED_STRUCT
@@ -1049,6 +1066,27 @@ uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomnes
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat_mode_window_offset_set_t * p_params);
+
+/** @brief Set APR handling witin LE Power Control Request.
+ *
+ * This command enables APR handling within scope of the LE Power Control Request
+ * procedure by the Link Layer.
+ *
+ * When APR handling is enabled, the controller applies received APR to the local
+ * power settings.
+ * See Core_v.5.4, Vol 6, Part D, Section 6.27, Fig 6.57.
+ * and Core_v.5.4, Vol 6, Part B, Section 5.1.17.1
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_set_power_control_apr_handling(const sdc_hci_cmd_vs_set_power_control_apr_handling_t * p_params);
 
 /** @brief Enable the Quality of Service (QoS) channel survey module.
  *
