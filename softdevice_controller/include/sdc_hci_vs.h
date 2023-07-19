@@ -1067,18 +1067,18 @@ uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomnes
  */
 uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat_mode_window_offset_set_t * p_params);
 
-/** @brief Set APR handling witin LE Power Control Request.
+/** @brief Set APR handling within LE Power Control Request.
  *
  * This command enables APR handling within scope of the LE Power Control Request
  * procedure by the Link Layer.
  *
  * When APR handling is enabled, the controller applies received APR to the local
  * power settings.
- * See Core_v.5.4, Vol 6, Part D, Section 6.27, Fig 6.57.
- * and Core_v.5.4, Vol 6, Part B, Section 5.1.17.1
+ * See Core_v.5.4, Vol 6, Part D, Section 6.27, Fig 6.57,
+ * and Core_v.5.4, Vol 6, Part B, Section 5.1.17.1.
  *
  * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
+ * When the command is completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
  *
