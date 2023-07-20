@@ -273,6 +273,8 @@ NRF_SO_SEC_HANDSHAKE_STATUS
 
    The default is a full handshake.
 
+.. _dtls_cid_setting:
+
 NRF_SO_SEC_DTLS_CID
    Set DTLS Connection ID setting.
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
@@ -283,6 +285,8 @@ NRF_SO_SEC_DTLS_CID
    * :c:macro:`NRF_SO_SEC_DTLS_CID_ENABLED` - The DTLS connection ID is used, and the connection ID extension with a valid CID is included in the client hello.
 
    The default is disabled.
+
+.. _dtls_cid_status:
 
 NRF_SO_SEC_DTLS_CID_STATUS
    Get the status of DTLS connection ID.
