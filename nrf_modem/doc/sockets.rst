@@ -277,12 +277,13 @@ NRF_SO_SEC_HANDSHAKE_STATUS
 
 NRF_SO_SEC_DTLS_CID
    Set DTLS Connection ID setting.
+   This socket option decides whether the modem will request or accept a DTLS connection ID when performing the server handshake.
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
    The following values are accepted:
 
-   * :c:macro:`NRF_SO_SEC_DTLS_CID_DISABLED` - The DTLS connection ID is not used, and the connection ID extension is not included in the client hello.
-   * :c:macro:`NRF_SO_SEC_DTLS_CID_SUPPORTED` - The DTLS connection ID is supported but not used, and the connection ID extension with a zero-length CID is included in the client hello.
-   * :c:macro:`NRF_SO_SEC_DTLS_CID_ENABLED` - The DTLS connection ID is used, and the connection ID extension with a valid CID is included in the client hello.
+   * :c:macro:`NRF_SO_SEC_DTLS_CID_DISABLED` - The connection ID extension is not included in the client hello, so the DTLS connection ID is not used.
+   * :c:macro:`NRF_SO_SEC_DTLS_CID_SUPPORTED` - The connection ID extension with a zero-length CID is included in the client hello, so the modem will accept a DTLS connection ID from the server.
+   * :c:macro:`NRF_SO_SEC_DTLS_CID_ENABLED` - The connection ID extension with a valid CID is included in the client hello, so the modem will request DTLS connection ID support.
 
    The default is disabled.
 
@@ -290,6 +291,7 @@ NRF_SO_SEC_DTLS_CID
 
 NRF_SO_SEC_DTLS_CID_STATUS
    Get the status of DTLS connection ID.
+   The status tells whether the connection ID is used in the current connection and in which direction it is used.
    This option is read-only.
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
    The following values are expected:
@@ -302,6 +304,10 @@ NRF_SO_SEC_DTLS_CID_STATUS
 
 NRF_SO_SEC_DTLS_CONN_SAVE
    Save DTLS connection.
+   This socket option can be used to pause a session that is not frequently used by the application.
+   Saving the session will free memory in the modem, so the memory can be used for other connections.
+   If the socket is closed, the saved DTLS data is cleaned and the connection with the server is lost.
+
    This option is write-only.
    This option require a DTLS v1.2 connection with renegotiation disabled.
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
