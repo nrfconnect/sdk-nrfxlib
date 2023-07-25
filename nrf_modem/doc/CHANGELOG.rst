@@ -9,6 +9,11 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.4.1
+***************
+
+* Added a workaround for modem firmware v1.3.4 and v1.3.5 to fix an issue where attaching to the network would fail with error ``90`` (UICC initialization failure) after performing a modem firmware update, until the modem is re-initialized.
+
 nrf_modem 2.4.0
 ***************
 
