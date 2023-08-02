@@ -81,10 +81,10 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_SET_ADV_RANDOMNESS = 0xfd0c,
     /** @brief See @ref sdc_hci_cmd_vs_compat_mode_window_offset_set(). */
     SDC_HCI_OPCODE_CMD_VS_COMPAT_MODE_WINDOW_OFFSET_SET = 0xfd0d,
-    /** @brief See @ref sdc_hci_cmd_vs_set_power_control_apr_handling(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_POWER_CONTROL_APR_HANDLING = 0xfd0e,
     /** @brief See @ref sdc_hci_cmd_vs_qos_channel_survey_enable(). */
     SDC_HCI_OPCODE_CMD_VS_QOS_CHANNEL_SURVEY_ENABLE = 0xfd0e,
+    /** @brief See @ref sdc_hci_cmd_vs_set_power_control_apr_handling(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_POWER_CONTROL_APR_HANDLING = 0xfd0f,
 };
 
 /** @brief VS subevent Code values. */
@@ -465,7 +465,10 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
-    /** @brief Phy value to apply transmit power level adjustment. */
+    /** @brief PHY value to apply transmit power level adjustment on. Values 0x01, 0x02, 0x03, and
+     *         0x04 correspond to LE 1M PHY, LE 2M PHY, LE Coded PHY with S=8 data coding, and LE
+     *         Coded PHY with S=2 data coding respectively.
+     */
     uint8_t phy;
     /** @brief The transmit power level adjustment to request in dBm unit. */
     int8_t delta;
@@ -525,7 +528,19 @@ typedef __PACKED_STRUCT
     uint8_t enable;
 } sdc_hci_cmd_vs_compat_mode_window_offset_set_t;
 
-/** @brief Set APR handling witin LE Power Control Request command parameter(s). */
+/** @brief Enable the Quality of Service (QoS) channel survey module. command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Set to 0 to disable, 1 to enable, all other values are RFU. */
+    uint8_t enable;
+    /** @brief Requested average interval for the measurements and reports. Valid range is from 7500
+     *         to 4000000. If set to 0, the channel survey role will be scheduled at every available
+     *         opportunity.
+     */
+    uint32_t interval_us;
+} sdc_hci_cmd_vs_qos_channel_survey_enable_t;
+
+/** @brief Set APR handling within LE Power Control Request command parameter(s). */
 typedef __PACKED_STRUCT
 {
     /** @brief Enable or Disable APR handling in controller during LE Power Control Request
@@ -538,18 +553,6 @@ typedef __PACKED_STRUCT
      */
     uint8_t margin;
 } sdc_hci_cmd_vs_set_power_control_apr_handling_t;
-
-/** @brief Enable the Quality of Service (QoS) channel survey module. command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Set to 0 to disable, 1 to enable, all other values are RFU. */
-    uint8_t enable;
-    /** @brief Requested average interval for the measurements and reports. Valid range is from 7500
-     *         to 4000000. If set to 0, the channel survey role will be scheduled at every available
-     *         opportunity.
-     */
-    uint32_t interval_us;
-} sdc_hci_cmd_vs_qos_channel_survey_enable_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1067,27 +1070,6 @@ uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomnes
  */
 uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat_mode_window_offset_set_t * p_params);
 
-/** @brief Set APR handling within LE Power Control Request.
- *
- * This command enables APR handling within scope of the LE Power Control Request
- * procedure by the Link Layer.
- *
- * When APR handling is enabled, the controller applies received APR to the local
- * power settings.
- * See Core_v.5.4, Vol 6, Part D, Section 6.27, Fig 6.57,
- * and Core_v.5.4, Vol 6, Part B, Section 5.1.17.1.
- *
- * Event(s) generated (unless masked away):
- * When the command is completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_set_power_control_apr_handling(const sdc_hci_cmd_vs_set_power_control_apr_handling_t * p_params);
-
 /** @brief Enable the Quality of Service (QoS) channel survey module.
  *
  * This vendor specific command is used to enable or disable the channel survey module.
@@ -1118,6 +1100,27 @@ uint8_t sdc_hci_cmd_vs_set_power_control_apr_handling(const sdc_hci_cmd_vs_set_p
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_qos_channel_survey_enable(const sdc_hci_cmd_vs_qos_channel_survey_enable_t * p_params);
+
+/** @brief Set APR handling within LE Power Control Request.
+ *
+ * This command enables APR handling within scope of the LE Power Control Request
+ * procedure by the Link Layer.
+ *
+ * When APR handling is enabled, the controller applies received APR to the local
+ * power settings.
+ * See Core_v.5.4, Vol 6, Part D, Section 6.27, Fig 6.57,
+ * and Core_v.5.4, Vol 6, Part B, Section 5.1.17.1.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command is completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_set_power_control_apr_handling(const sdc_hci_cmd_vs_set_power_control_apr_handling_t * p_params);
 
 /** @} end of HCI_VS_API */
 
