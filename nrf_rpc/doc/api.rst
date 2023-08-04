@@ -17,7 +17,6 @@ This API uses pointers to raw packet data.
 
 .. doxygengroup:: nrf_rpc
    :project: nrfxlib
-   :members:
 
 .. _nrf_rpc_cbor_api_documentation:
 
@@ -29,4 +28,3 @@ See :ref:`nrf_rpc_core_api_documentation` for more information on how to use nRF
 
 .. doxygengroup:: nrf_rpc_cbor
    :project: nrfxlib
-   :members:

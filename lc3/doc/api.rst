@@ -15,7 +15,6 @@ Translation layer API documentation
 
 .. doxygengroup:: LC3_translation
    :project: nrfxlib
-   :members:
 
 LC3 API documentation
 *********************
@@ -24,4 +23,3 @@ LC3 API documentation
 
 .. doxygengroup:: LC3
    :project: nrfxlib
-   :members:

@@ -7,4 +7,3 @@ API documentation
 
 .. doxygengroup:: nrf_fuel_gauge
    :project: nrfxlib
-   :members:

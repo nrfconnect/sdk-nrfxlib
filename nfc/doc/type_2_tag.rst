@@ -399,4 +399,3 @@ API documentation
 
 .. doxygengroup:: nfc_t2t_lib
    :project: nrfxlib
-   :members:
