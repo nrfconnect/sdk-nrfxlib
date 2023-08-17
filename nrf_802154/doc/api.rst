@@ -198,6 +198,15 @@ Information Elements configuration
 
 .. _radiodriver_api_other:
 
+Interrupt Handlers
+******************
+
+.. doxygengroup:: nrf_802154_irq
+   :project: nrfxlib
+   :members:
+
+.. _radiodriver_api_irq:
+
 Other functions
 ***************
 

@@ -195,15 +195,16 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_PPI_RADIO_CRCOK_TO_PPI_GRP_DISABLE
+ * @def NRF_802154_PPI_RADIO_CCABUSY_TO_RADIO_CCASTART
  *
- * The PPI channel that connects RADIO_CRCOK event with the task that disables the whole PPI group.
+ * The PPI channel that connects RADIO_CCABUSY event to RADIO_CCASTART task. This PPI is used to
+ * perform multiple back-to-back CCA attempts before a transmission.
  *
  * @note This option is used by the core module regardless of the driver configuration.
  *
  */
-#ifndef NRF_802154_PPI_RADIO_CRCOK_TO_PPI_GRP_DISABLE
-#define NRF_802154_PPI_RADIO_CRCOK_TO_PPI_GRP_DISABLE NRF_PPI_CHANNEL10
+#ifndef NRF_802154_PPI_RADIO_CCABUSY_TO_RADIO_CCASTART
+#define NRF_802154_PPI_RADIO_CCABUSY_TO_RADIO_CCASTART NRF_PPI_CHANNEL10
 #endif
 
 /**
@@ -307,7 +308,7 @@ extern "C" {
                                            (1 << NRF_802154_PPI_RADIO_CRCERROR_TO_TIMER_CLEAR) |    \
                                            (1 << NRF_802154_PPI_RADIO_CCAIDLE_TO_FEM_GPIOTE) |      \
                                            (1 << NRF_802154_PPI_TIMER_COMPARE_TO_RADIO_TXEN) |      \
-                                           (1 << NRF_802154_PPI_RADIO_CRCOK_TO_PPI_GRP_DISABLE) |   \
+                                           (1 << NRF_802154_PPI_RADIO_CCABUSY_TO_RADIO_CCASTART) |  \
                                            NRF_802154_DISABLE_BCC_MATCHING_PPI_CHANNELS_USED_MASK | \
                                            NRF_802154_TIMESTAMP_PPI_CHANNELS_USED_MASK |            \
                                            NRF_802154_DEBUG_PPI_CHANNELS_USED_MASK)

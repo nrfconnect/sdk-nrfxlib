@@ -276,9 +276,7 @@ bool nrf_802154_ifs_pretransmission(
     else
     {
         m_context.p_data                 = p_frame;
-        m_context.params.frame_props     = p_params->frame_props;
-        m_context.params.cca             = p_params->cca;
-        m_context.params.tx_power        = p_params->tx_power;
+        m_context.params                 = *p_params;
         m_context.params.immediate       = true;
         m_timer.trigger_time             = m_last_frame_timestamp + dt;
         m_timer.action_type              = NRF_802154_SL_TIMER_ACTION_TYPE_CALLBACK;

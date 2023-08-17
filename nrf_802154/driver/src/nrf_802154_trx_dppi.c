@@ -67,17 +67,13 @@ void nrf_802154_trx_ppi_for_enable(void)
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_END, NRF_802154_DPPI_RADIO_END);
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_PHYEND, NRF_802154_DPPI_RADIO_PHYEND);
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_CCAIDLE, NRF_802154_DPPI_RADIO_CCAIDLE);
-#if NRF_802154_TEST_MODES_ENABLED
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_CCABUSY, NRF_802154_DPPI_RADIO_CCABUSY);
-#endif // NRF_802154_TEST_MODES_ENABLED
 #if defined(NRF_802154_DPPI_RADIO_TXREADY)
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_TXREADY, NRF_802154_DPPI_RADIO_TXREADY);
 #endif
 
     nrf_dppi_channels_enable(NRF_802154_DPPIC_INSTANCE,
-#if NRF_802154_TEST_MODES_ENABLED
                              (1UL << NRF_802154_DPPI_RADIO_CCABUSY) |
-#endif // NRF_802154_TEST_MODES_ENABLED
                              (1UL << PPI_DISABLED_EGU) |
                              (1UL << NRF_802154_DPPI_RADIO_READY) |
 #if defined(NRF_802154_DPPI_RADIO_TXREADY)
@@ -93,9 +89,7 @@ void nrf_802154_trx_ppi_for_enable(void)
 void nrf_802154_trx_ppi_for_disable(void)
 {
     nrf_dppi_channels_disable(NRF_802154_DPPIC_INSTANCE,
-#if NRF_802154_TEST_MODES_ENABLED
                               (1UL << NRF_802154_DPPI_RADIO_CCABUSY) |
-#endif // NRF_802154_TEST_MODES_ENABLED
                               (1UL << PPI_DISABLED_EGU) |
                               (1UL << NRF_802154_DPPI_RADIO_READY) |
 #if defined(NRF_802154_DPPI_RADIO_TXREADY)
@@ -164,6 +158,16 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t                      ra
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
+void nrf_802154_trx_ppi_for_extra_cca_attempts_set(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+
+    // Assume that NRF_802154_DPPI_RADIO_CCABUSY is enabled and NRF_RADIO_EVENT_CCABUSY publishes to it
+    nrf_radio_subscribe_set(NRF_RADIO, NRF_RADIO_TASK_CCASTART, NRF_802154_DPPI_RADIO_CCABUSY);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+}
+
 void nrf_802154_trx_ppi_for_ramp_up_reconfigure(void)
 {
     // Intentionally empty
@@ -190,6 +194,15 @@ void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool st
     }
 
     nrf_egu_subscribe_clear(NRF_802154_EGU_INSTANCE, EGU_TASK);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+}
+
+void nrf_802154_trx_ppi_for_extra_cca_attempts_clear(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+
+    nrf_radio_subscribe_clear(NRF_RADIO, NRF_RADIO_TASK_CCASTART);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }

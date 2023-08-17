@@ -36,6 +36,7 @@
 #define NRF_802154_NRFX_ADDONS_H__
 
 #include "nrfx.h"
+#include "nrf_802154_config.h"
 #include "nrf_802154_const.h"
 
 /* The usage of ED_RSSISCALE is described imprecisely in the nRF product specifications. The meaning of
@@ -55,6 +56,35 @@
 #define EDSAMPLE_MIN_REPORTED_VALUE (PHY_MIN_RECEIVER_SENSITIVITY - ED_RSSIOFFS + 10) ///< Minimal reported EDSAMPLE value (reported as 0)
 #define EDSAMPLE_MAX_REPORTED_VALUE (ED_RESULT_MAX / ED_RSSISCALE)                    ///< Maximal reported EDSAMPLE value (reported as 255)
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+
+/** Minimum value of ED in dBm for conversion to units conforming IEEE Std. 802.15.4-2015 chapter 10.2.5. */
+#define ED_DBM_MIN (PHY_MIN_RECEIVER_SENSITIVITY + 10)
+
+/** Maximum value of ED in dBm for conversion to units conforming IEEE Std. 802.15.4-2015 chapter 10.2.5. */
+#define ED_DBM_MAX (EDSAMPLE_MAX_REPORTED_VALUE + ED_RSSIOFFS)
+
+static inline uint8_t nrf_802154_addons_energy_level_from_dbm_calculate(int8_t ed_dbm)
+{
+    uint32_t r;
+
+    if (ed_dbm < ED_DBM_MIN)
+    {
+        return 0;
+    }
+
+    r = ((uint32_t)(ed_dbm - ED_DBM_MIN)) * ED_RESULT_MAX / (ED_DBM_MAX - ED_DBM_MIN);
+
+    if (r > ED_RESULT_MAX)
+    {
+        r = ED_RESULT_MAX;
+    }
+
+    return r;
+}
+
+#else
+
 /**
  * @brief  Converts the energy level received during the energy detection procedure to a dBm value.
  *
@@ -68,5 +98,7 @@ static inline int8_t nrf_802154_addons_dbm_from_energy_level_calculate(uint8_t e
             ((int16_t)energy_level)) /
            ED_RESULT_MAX + EDSAMPLE_MIN_REPORTED_VALUE + ED_RSSIOFFS;
 }
+
+#endif // NRF_802154_ENERGY_DETECTED_VERSION != 0
 
 #endif // NRF_802154_NRFX_ADDONS_H__

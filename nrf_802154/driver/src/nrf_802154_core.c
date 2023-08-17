@@ -418,11 +418,19 @@ static void transmit_failed_notify_and_nesting_allow(
 }
 
 /** Notify MAC layer that energy detection procedure ended. */
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+static void energy_detected_notify(const nrf_802154_energy_detected_t * p_result)
+#else
 static void energy_detected_notify(uint8_t result)
+#endif
 {
     nrf_802154_critical_section_nesting_allow();
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+    nrf_802154_notify_energy_detected(p_result);
+#else
     nrf_802154_notify_energy_detected(result);
+#endif
 
     nrf_802154_critical_section_nesting_deny();
 }
@@ -1022,8 +1030,10 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
 /** Initialize TX operation. */
 static bool tx_init(const uint8_t                       * p_data,
                     nrf_802154_trx_ramp_up_trigger_mode_t rampup_trigg_mode,
-                    bool                                  cca)
+                    uint8_t                               cca_attempts)
 {
+    bool cca = cca_attempts > 0;
+
     if (!timeslot_is_granted() || !nrf_802154_rsch_timeslot_request(
             nrf_802154_tx_duration_get(p_data[0], cca, ack_is_requested(p_data))))
     {
@@ -1053,7 +1063,7 @@ static bool tx_init(const uint8_t                       * p_data,
     m_flags.tx_with_cca = cca;
     nrf_802154_trx_transmit_frame(nrf_802154_tx_work_buffer_get(p_data),
                                   rampup_trigg_mode,
-                                  cca,
+                                  cca_attempts,
                                   &m_tx_power,
                                   m_trx_transmit_frame_notifications_mask);
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
@@ -1076,6 +1086,7 @@ static bool tx_init(const uint8_t                       * p_data,
 
     if (cca)
     {
+        // Assume that the first CCA succeeds
         adjustments.tx_started.time_to_radio_address_us +=
             RX_RAMP_UP_TIME + CCA_TIME + RX_TX_TURNAROUND_TIME;
     }
@@ -1299,7 +1310,7 @@ static void on_preconditions_denied(radio_state_t state)
 
     bool result;
 
-    result = nrf_802154_core_hooks_terminate(NRF_802154_TERM_802154, REQ_ORIG_CORE);
+    result = nrf_802154_core_hooks_terminate(NRF_802154_TERM_802154, REQ_ORIG_RSCH);
     assert(result);
     (void)result;
 
@@ -2416,7 +2427,15 @@ void nrf_802154_trx_energy_detection_finished(uint8_t ed_sample)
         state_set(RADIO_STATE_RX);
         rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+        nrf_802154_energy_detected_t ed_result = {};
+
+        ed_result.ed_dbm = nrf_802154_rssi_ed_sample_to_dbm_convert(m_ed_result);
+
+        energy_detected_notify(&ed_result);
+#else
         energy_detected_notify(nrf_802154_rssi_ed_sample_convert(m_ed_result));
+#endif
 
     }
 
@@ -2609,8 +2628,10 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
                 mp_tx_data = p_data;
                 m_tx_power = p_params->tx_power;
 
+                uint8_t cca_attempts = p_params->cca ? (1 + p_params->extra_cca_attempts) : 0;
+
                 // coverity[check_return]
-                result = tx_init(p_data, ramp_up_mode_choose(req_orig), p_params->cca);
+                result = tx_init(p_data, ramp_up_mode_choose(req_orig), cca_attempts);
 
                 if (p_params->immediate)
                 {

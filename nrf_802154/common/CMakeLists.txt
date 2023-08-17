@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
+# Copyright (c) 2023, Nordic Semiconductor ASA
 # All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
@@ -32,59 +32,23 @@
 #
 #
 
-target_include_directories(nrf-802154-serialization-interface
+add_library(nrf-802154-common-interface INTERFACE)
+
+target_include_directories(nrf-802154-common-interface
   INTERFACE
     include
-    include/platform
-    include/serialization
 )
 
-add_library(nrf-802154-serialization STATIC EXCLUDE_FROM_ALL)
+add_library(nrf-802154-common STATIC EXCLUDE_FROM_ALL)
 
-target_include_directories(nrf-802154-serialization
+target_sources(nrf-802154-common
   PRIVATE
-    src/include
+    src/nrf_802154_common_utils.c
 )
 
-target_sources(nrf-802154-serialization
-  PRIVATE
-    spinel_base/spinel.c
-    src/nrf_802154_buffer_allocator.c
-    src/nrf_802154_buffer_mgr_dst.c
-    src/nrf_802154_buffer_mgr_src.c
-    src/nrf_802154_kvmap.c
-    src/nrf_802154_spinel.c
-    src/nrf_802154_spinel_dec.c
-)
 
-if (SER_HOST)
-  target_sources(nrf-802154-serialization
-    PRIVATE
-      src/nrf_802154_spinel_app.c
-      src/nrf_802154_spinel_dec_app.c
-  )
-  target_compile_definitions(nrf-802154-serialization-interface
-    INTERFACE
-      # The core for which the code is compiled does not contain the 802.15.4 radio driver
-      # It contains the serialized radio driver functions.
-      NRF_802154_SERIALIZATION_HOST=1
-  )
-else ()
-  target_sources(nrf-802154-serialization
-    PRIVATE
-      src/nrf_802154_spinel_net.c
-      src/nrf_802154_spinel_dec_net.c
-  )
-endif()
-
-target_link_libraries(nrf-802154-serialization-interface
-  INTERFACE
+target_link_libraries(nrf-802154-common
+  PUBLIC
     nrf-802154-common-interface
-)
-
-target_link_libraries(nrf-802154-serialization
-  PRIVATE
-    nrf-802154-serialization-interface
     nrf-802154-platform
-    nrf-802154-common
 )

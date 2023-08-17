@@ -136,6 +136,20 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t                      ra
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
+void nrf_802154_trx_ppi_for_extra_cca_attempts_set(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+
+    nrf_ppi_channel_endpoint_setup(NRF_PPI,
+                                   NRF_802154_PPI_RADIO_CCABUSY_TO_RADIO_CCASTART,
+                                   nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_CCABUSY),
+                                   nrf_radio_task_address_get(NRF_RADIO, NRF_RADIO_TASK_CCASTART));
+
+    nrf_ppi_channels_enable(NRF_PPI, 1UL << NRF_802154_PPI_RADIO_CCABUSY_TO_RADIO_CCASTART);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+}
+
 void nrf_802154_trx_ppi_for_ramp_up_reconfigure(void)
 {
     nrf_egu_event_clear(NRF_802154_EGU_INSTANCE, EGU_EVENT);
@@ -170,6 +184,16 @@ void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool st
     }
 
     nrf_ppi_channel_remove_from_group(NRF_PPI, PPI_EGU_RAMP_UP, PPI_CHGRP_RAMP_UP);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+}
+
+void nrf_802154_trx_ppi_for_extra_cca_attempts_clear(void)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+
+    nrf_ppi_channel_disable(NRF_PPI, NRF_802154_PPI_RADIO_CCABUSY_TO_RADIO_CCASTART);
+    nrf_ppi_channel_endpoint_setup(NRF_PPI, NRF_802154_PPI_RADIO_CCABUSY_TO_RADIO_CCASTART, 0, 0);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }

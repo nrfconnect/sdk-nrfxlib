@@ -49,12 +49,12 @@
 #include <string.h>
 
 #include "nrf_802154_config.h"
+#include "nrf_802154_utils.h"
 #include "nrf_802154_const.h"
 #include "nrf_802154_core.h"
 #include "nrf_802154_critical_section.h"
 #include "nrf_802154_debug.h"
 #include "nrf_802154_notification.h"
-#include "nrf_802154_nrfx_addons.h"
 #include "nrf_802154_pib.h"
 #include "nrf_802154_request.h"
 #include "nrf_802154_rx_buffer.h"
@@ -132,6 +132,11 @@ static inline bool are_frame_properties_valid(const nrf_802154_transmitted_frame
     return p_props->dynamic_data_is_set || !(p_props->is_secured);
 }
 
+static inline bool are_extra_cca_attempts_valid(const nrf_802154_transmit_at_metadata_t * p_data)
+{
+    return !p_data->cca || (p_data->extra_cca_attempts < UINT8_MAX);
+}
+
 void nrf_802154_channel_set(uint8_t channel)
 {
     bool changed = nrf_802154_pib_channel_get() != channel;
@@ -199,42 +204,6 @@ void nrf_802154_extended_address_set(const uint8_t * p_extended_address)
 void nrf_802154_short_address_set(const uint8_t * p_short_address)
 {
     nrf_802154_pib_short_address_set(p_short_address);
-}
-
-int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level)
-{
-    return nrf_802154_addons_dbm_from_energy_level_calculate(energy_level);
-}
-
-uint8_t nrf_802154_ccaedthres_from_dbm_calculate(int8_t dbm)
-{
-    return dbm - ED_RSSIOFFS;
-}
-
-uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
-{
-    uint32_t frame_symbols = PHY_SHR_SYMBOLS;
-
-    frame_symbols += (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
-
-    return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
-}
-
-uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
-{
-    return end_timestamp - (psdu_length * PHY_SYMBOLS_PER_OCTET * PHY_US_PER_SYMBOL);
-}
-
-uint64_t nrf_802154_timestamp_end_to_phr_convert(uint64_t end_timestamp, uint8_t psdu_length)
-{
-    uint32_t frame_symbols = (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
-
-    return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
-}
-
-uint64_t nrf_802154_timestamp_phr_to_shr_convert(uint64_t phr_timestamp)
-{
-    return phr_timestamp - (PHY_SHR_SYMBOLS * PHY_US_PER_SYMBOL);
 }
 
 void nrf_802154_init(void)
@@ -508,10 +477,11 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
 
     nrf_802154_transmit_params_t params =
     {
-        .frame_props = p_metadata->frame_props,
-        .tx_power    = {0},
-        .cca         = p_metadata->cca,
-        .immediate   = false
+        .frame_props        = p_metadata->frame_props,
+        .tx_power           = {0},
+        .cca                = p_metadata->cca,
+        .immediate          = false,
+        .extra_cca_attempts = 0U,
     };
 
     (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(nrf_802154_pib_channel_get(),
@@ -556,10 +526,11 @@ bool nrf_802154_transmit(const uint8_t                        * p_data,
 
     nrf_802154_transmit_params_t params =
     {
-        .frame_props = p_metadata->frame_props,
-        .tx_power    = {0},
-        .cca         = p_metadata->cca,
-        .immediate   = false
+        .frame_props        = p_metadata->frame_props,
+        .tx_power           = {0},
+        .cca                = p_metadata->cca,
+        .immediate          = false,
+        .extra_cca_attempts = 0U,
     };
 
     (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(nrf_802154_pib_channel_get(),
@@ -591,9 +562,10 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
     bool                              result;
     nrf_802154_transmit_at_metadata_t metadata_default =
     {
-        .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
-        .cca         = true,
-        .tx_power    = {.use_metadata_value = false}
+        .frame_props        = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
+        .cca                = true,
+        .tx_power           = {.use_metadata_value = false},
+        .extra_cca_attempts = 0,
     };
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -604,7 +576,8 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
         p_metadata               = &metadata_default;
     }
 
-    result = are_frame_properties_valid(&p_metadata->frame_props);
+    result = are_frame_properties_valid(&p_metadata->frame_props) &&
+             are_extra_cca_attempts_valid(p_metadata);
     if (result)
     {
         result = nrf_802154_request_transmit_raw_at(p_data, tx_time, p_metadata);
@@ -1217,10 +1190,19 @@ __WEAK void nrf_802154_transmit_failed(uint8_t                                  
     (void)p_metadata;
 }
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+__WEAK void nrf_802154_energy_detected(const nrf_802154_energy_detected_t * p_result)
+{
+    (void)p_result;
+}
+
+#else
 __WEAK void nrf_802154_energy_detected(uint8_t result)
 {
     (void)result;
 }
+
+#endif
 
 __WEAK void nrf_802154_energy_detection_failed(nrf_802154_ed_error_t error)
 {

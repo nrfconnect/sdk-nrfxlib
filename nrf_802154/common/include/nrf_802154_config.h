@@ -235,8 +235,10 @@ extern "C" {
  * If the delayed transmission and the receive window features are available.
  *
  */
+#if !defined(CONFIG_NRF_802154_SL_OPENSOURCE)
 #ifndef NRF_802154_DELAYED_TRX_ENABLED
 #define NRF_802154_DELAYED_TRX_ENABLED 1
+#endif
 #endif
 
 /**
@@ -274,8 +276,10 @@ extern "C" {
  * the driver performance.
  *
  */
+#if !defined(CONFIG_NRF_802154_SL_OPENSOURCE)
 #ifndef NRF_802154_CSMA_CA_ENABLED
 #define NRF_802154_CSMA_CA_ENABLED 1
+#endif
 #endif
 
 /**
@@ -405,8 +409,10 @@ extern "C" {
  * Indicates whether the Short/Long Interframe spacing feature is to be enabled in the driver.
  *
  */
+#if !defined(CONFIG_NRF_802154_SL_OPENSOURCE)
 #ifndef NRF_802154_IFS_ENABLED
 #define NRF_802154_IFS_ENABLED 1
+#endif
 #endif
 
 /**
@@ -532,6 +538,22 @@ extern "C" {
  */
 #ifndef NRF_802154_CARRIER_FUNCTIONS_ENABLED
 #define NRF_802154_CARRIER_FUNCTIONS_ENABLED 1
+#endif
+
+/**
+ * @}
+ * @defgroup nrf_802154_config_apiversions API version configuration options
+ * @{
+ */
+
+/**
+ * @def NRF_802154_ENERGY_DETECTED_VERSION
+ *
+ * Selects API for @ref nrf_802154_energy_detected callout
+ * This is a temporary switch to perform API migration in external integration.
+ */
+#ifndef NRF_802154_ENERGY_DETECTED_VERSION
+#define NRF_802154_ENERGY_DETECTED_VERSION 0
 #endif
 
 /**

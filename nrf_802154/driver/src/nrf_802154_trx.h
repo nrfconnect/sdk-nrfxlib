@@ -305,13 +305,13 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer);
 
 /**@brief Begins frame transmit operation.
  *
- * This operation performs differently according to cca parameter.
- * When cca==false:
+ * This operation performs differently according to cca_attempts parameter.
+ * When cca_attempts==0:
  * - The RADIO starts ramp up in transmit mode.
  * - The RADIO starts sending synchronization header (SHR).
  * - @ref nrf_802154_trx_transmit_frame_started handler is called from an ISR just after SHR is sent
  *
- * When cca==true:
+ * When cca_attempts>=1:
  * - The radio starts ramp up in receive mode, then it starts cca procedure.
  *     - The @ref nrf_802154_trx_transmit_frame_ccastarted handler is called from an ISR when
  *       the RADIO started CCA procedure and @p notifications_mask contained
@@ -323,8 +323,11 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer);
  *       the @ref nrf_802154_trx_transmit_frame_ccaidle is called.
  *     - @ref nrf_802154_trx_transmit_frame_started handler is called from an ISR just after SHR is sent
  * - If cca failed (channel was busy):
- *     - The RADIO disables receive mode
- *     - @ref nrf_802154_trx_transmit_frame_ccabusy from an ISR handler is called
+ *     If cca_attempts==1:
+ *       - The RADIO disables receive mode
+ *       - @ref nrf_802154_trx_transmit_frame_ccabusy from an ISR handler is called
+ *     If cca_attempts>1:
+ *       - Decrease cca_attempts and repeat the entire procedure
  *
  * @param p_transmit_buffer  Pointer to a buffer containing frame to transmit.
  *                           Must not be NULL. p_transmit_buffer[0] is the number of
@@ -341,9 +344,10 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer);
  *                           @ref nrf_802154_trx_ramp_up_ppi_channel_get.
  *                           It is the user's responsibility to prepare the stimulation
  *                           of this (D)PPI.
- * @param cca                Selects if CCA procedure should be performed prior to
- *                           real transmission. If false no cca will be performed.
- *                           If true, cca will be performed.
+ * @param cca_attempts       The maximum number of CCA procedures that can be performed prior to the
+ *                           transmission before the medium is considered busy. If 0, no CCA will be
+ *                           performed. Otherwise, CCA procedures will be performed back to back until
+ *                           idle channel is detected or @p cca_attempts attempts detect busy channel.
  * @param p_tx_power         Transmit power in dBm.
  * @param notifications_mask Selects additional notifications generated during a frame transmission.
  *                           It is bitwise combination of @ref nrf_802154_trx_transmit_notifications_t values.
@@ -351,7 +355,7 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer);
  */
 void nrf_802154_trx_transmit_frame(const void                            * p_transmit_buffer,
                                    nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
-                                   bool                                    cca,
+                                   uint8_t                                 cca_attempts,
                                    const nrf_802154_fal_tx_power_split_t * p_tx_power,
                                    nrf_802154_trx_transmit_notifications_t notifications_mask);
 
