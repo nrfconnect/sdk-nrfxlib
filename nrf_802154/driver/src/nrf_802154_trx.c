@@ -101,6 +101,11 @@
 #define SHORTS_TX_ACK         (NRF_RADIO_SHORT_TXREADY_START_MASK | \
                                NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
 
+#define SHORTS_MULTI_CCA_TX   (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
+                               NRF_RADIO_SHORT_CCAIDLE_TXEN_MASK |     \
+                               NRF_RADIO_SHORT_TXREADY_START_MASK |    \
+                               NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+
 #define SHORTS_CCA_TX         (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
                                NRF_RADIO_SHORT_CCABUSY_DISABLE_MASK |  \
                                NRF_RADIO_SHORT_CCAIDLE_TXEN_MASK |     \
@@ -220,6 +225,7 @@ static nrf_802154_flags_t m_flags; ///< Flags used to store the current driver s
 /** @brief Value of TIMER internal counter from which the counting is resumed on RADIO.EVENTS_END event. */
 static volatile uint32_t m_timer_value_on_radio_end_event;
 static volatile bool     m_transmit_with_cca;
+static volatile uint8_t  m_remaining_cca_attempts;
 
 static void timer_frequency_set_1mhz(void);
 
@@ -1297,19 +1303,21 @@ bool nrf_802154_trx_rssi_sample_is_available(void)
 
 void nrf_802154_trx_transmit_frame(const void                            * p_transmit_buffer,
                                    nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
-                                   bool                                    cca,
+                                   uint8_t                                 cca_attempts,
                                    const nrf_802154_fal_tx_power_split_t * p_tx_power,
                                    nrf_802154_trx_transmit_notifications_t notifications_mask)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     uint32_t ints_to_enable = 0U;
+    bool     cca            = cca_attempts > 0;
 
     // Force the TIMER to be stopped and count from 0.
     nrf_timer_task_trigger(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_SHUTDOWN);
 
-    m_trx_state         = TRX_STATE_TXFRAME;
-    m_transmit_with_cca = cca;
+    m_trx_state              = TRX_STATE_TXFRAME;
+    m_transmit_with_cca      = cca;
+    m_remaining_cca_attempts = cca_attempts;
 
     m_flags.ccastarted_notif_en = false;
 
@@ -1318,7 +1326,12 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
     nrf_radio_packetptr_set(NRF_RADIO, p_transmit_buffer);
 
     // Set shorts
-    if (cca)
+    if (cca_attempts > 1)
+    {
+        nrf_radio_shorts_set(NRF_RADIO, SHORTS_MULTI_CCA_TX);
+        nrf_802154_trx_ppi_for_extra_cca_attempts_set();
+    }
+    else if (cca_attempts == 1)
     {
         nrf_radio_shorts_set(NRF_RADIO, SHORTS_CCA_TX);
     }
@@ -2275,6 +2288,7 @@ static void txframe_finish_disable_ppis(bool cca)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
     nrf_802154_trx_ppi_for_ramp_up_clear(cca ? NRF_RADIO_TASK_RXEN : NRF_RADIO_TASK_TXEN, false);
+    nrf_802154_trx_ppi_for_extra_cca_attempts_clear(); // fine to call unconditionally
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
@@ -2530,9 +2544,72 @@ static void irq_handler_ccabusy(void)
     {
         case TRX_STATE_TXFRAME:
             assert(m_transmit_with_cca);
-            txframe_finish();
-            m_trx_state = TRX_STATE_FINISHED;
-            nrf_802154_trx_transmit_frame_ccabusy();
+
+            if (m_remaining_cca_attempts > 1)
+            {
+                /* There are still remaining CCA attempts to be performed.
+                 * Start of next CCA has already been triggered by (D)PPI.
+                 *
+                 * Assumptions:
+                 * - RADIO is in RXIDLE and will transition to TX on CCAIDLE
+                 * - TIMER is stopped
+                 * - FEM has LNA ramped up and will ramp-up PA on CCAIDLE
+                 */
+                m_remaining_cca_attempts--;
+                if (m_remaining_cca_attempts == 1)
+                {
+                    /* The last CCA attempt was just triggered through a (D)PPI that connects
+                     * RADIO->EVENTS_CCABUSY to RADIO->TASKS_CCASTART. Clear that (D)PPI so that
+                     * there's no next CCA attempt. Also, configure an additional short that will
+                     * disable the RADIO in case busy channel is detected so that consistency with
+                     * single CCA approach is maintained. The RADIO is expected to be disabled
+                     * when CCA concludes with result busy.
+                     */
+                    nrf_802154_trx_ppi_for_extra_cca_attempts_clear();
+                    nrf_radio_shorts_set(
+                        NRF_RADIO,
+                        SHORTS_MULTI_CCA_TX | NRF_RADIO_SHORT_CCABUSY_DISABLE_MASK);
+
+                    /* If the handler was delayed for the duration of a single CCA procedure, a race
+                     * condition between the lines above and the end of CCA might occur. If that CCA
+                     * detects busy channel, there are three cases how the CCABUSY might be placed in
+                     * time relatively to the lines above:
+                     * - before (D)PPI is disconnected and the shorts are reconfigured;
+                     * - after (D)PPI is disconnected and before the shorts are reconfigured;
+                     * - after (D)PPI id disconnected and the shorts are reconfigured;
+                     *
+                     * The recovery procedure for the last case is to manually trigger
+                     * RADIO->TASKS_CCASTOP and RADIO->TASKS_DISABLE. For the second case it would
+                     * be enough to only trigger RADIO->TASKS_DISABLE, but the cases cannot be
+                     * distinguished in code and RADIO->TASKS_CCASTOP is harmless in the second case,
+                     * so the same recovery procedure fixes both the second and the third case.
+                     * For the first case such procedure will cause one fewer CCA attempt than
+                     * requested. That's a low price to pay to ensure the RADIO always ends
+                     * up in the expected, well-defined state, especially that this race should
+                     * happen extremely rarely.
+                     */
+                    if (nrf_radio_event_check(NRF_RADIO, NRF_RADIO_EVENT_CCABUSY))
+                    {
+                        /* RADIO->EVENTS_CCABUSY occurred during IRQ handler execution. Manually
+                         * drive RADIO to state that should have been achieved through hardware and
+                         * finish the procedure.
+                         */
+                        nrf_radio_task_trigger(NRF_RADIO, NRF_RADIO_TASK_CCASTOP);
+                        nrf_radio_task_trigger(NRF_RADIO, NRF_RADIO_TASK_DISABLE);
+                        nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_CCABUSY);
+
+                        txframe_finish();
+                        m_trx_state = TRX_STATE_FINISHED;
+                        nrf_802154_trx_transmit_frame_ccabusy();
+                    }
+                }
+            }
+            else
+            {
+                txframe_finish();
+                m_trx_state = TRX_STATE_FINISHED;
+                nrf_802154_trx_transmit_frame_ccabusy();
+            }
             break;
 
         case TRX_STATE_STANDALONE_CCA:

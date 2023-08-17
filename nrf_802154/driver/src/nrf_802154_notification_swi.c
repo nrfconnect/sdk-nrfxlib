@@ -165,8 +165,14 @@ typedef struct
 
         struct
         {
-            int8_t result; ///< Energy detection result.
-        } energy_detected; ///< Energy detection details.
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+            nrf_802154_energy_detected_t result; ///< Energy detection result.
+
+#else
+            int8_t                       result; ///< Energy detection result.
+
+#endif
+        } energy_detected;                       ///< Energy detection details.
 
         struct
         {
@@ -444,6 +450,18 @@ bool swi_notify_transmit_failed(uint8_t                                   * p_fr
     return true;
 }
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+/**
+ * @brief Notifies the next higher layer that the energy detection procedure ended from
+ * the SWI priority level.
+ *
+ * @param[in]  p_result  Structure holding the result of energy detection procedure.
+ *
+ * @retval  true   Notification enqueued successfully.
+ * @retval  false  Notification could not be performed.
+ */
+bool swi_notify_energy_detected(const nrf_802154_energy_detected_t * p_result)
+#else
 /**
  * @brief Notifies the next higher layer that the energy detection procedure ended from
  * the SWI priority level.
@@ -454,6 +472,7 @@ bool swi_notify_transmit_failed(uint8_t                                   * p_fr
  * @retval  false  Notification could not be performed.
  */
 bool swi_notify_energy_detected(uint8_t result)
+#endif
 {
     uint8_t slot_id = ntf_slot_alloc(m_primary_ntf_pool, NTF_PRIMARY_POOL_SIZE);
 
@@ -465,8 +484,12 @@ bool swi_notify_energy_detected(uint8_t result)
 
     nrf_802154_ntf_data_t * p_slot = &m_primary_ntf_pool[slot_id];
 
-    p_slot->type                        = NTF_TYPE_ENERGY_DETECTED;
+    p_slot->type = NTF_TYPE_ENERGY_DETECTED;
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+    p_slot->data.energy_detected.result = *p_result;
+#else
     p_slot->data.energy_detected.result = result;
+#endif
 
     ntf_push(slot_id | NTF_PRIMARY_POOL_ID_MASK);
 
@@ -631,11 +654,21 @@ void nrf_802154_notify_transmit_failed(uint8_t                                  
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+void nrf_802154_notify_energy_detected(const nrf_802154_energy_detected_t * p_result)
+#else
 void nrf_802154_notify_energy_detected(uint8_t result)
+#endif
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+    bool notified = swi_notify_energy_detected(p_result);
+
+#else
     bool notified = swi_notify_energy_detected(result);
+
+#endif
 
     // It should always be possible to notify energy detection result
     assert(notified);
@@ -751,7 +784,11 @@ static void irq_handler_ntf_event(void)
                 break;
 
             case NTF_TYPE_ENERGY_DETECTED:
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+                nrf_802154_energy_detected(&p_slot->data.energy_detected.result);
+#else
                 nrf_802154_energy_detected(p_slot->data.energy_detected.result);
+#endif
                 break;
 
             case NTF_TYPE_ENERGY_DETECTION_FAILED:

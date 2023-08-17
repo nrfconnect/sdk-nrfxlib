@@ -203,3 +203,13 @@ int8_t nrf_802154_rssi_dbm_from_energy_level_calculate(uint8_t energy_level)
             ((int16_t)energy_level)) /
            ED_RESULT_MAX + EDSAMPLE_MIN_REPORTED_VALUE + ED_RSSIOFFS;
 }
+
+int8_t nrf_802154_rssi_ed_sample_to_dbm_convert(uint8_t ed_sample)
+{
+    int16_t result;
+
+    result = nrf_802154_rssi_ed_corrected_get(ed_sample);
+    result = ED_RSSIOFFS + result;
+
+    return result;
+}

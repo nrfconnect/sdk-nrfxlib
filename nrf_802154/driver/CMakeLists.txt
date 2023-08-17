@@ -115,9 +115,21 @@ if (NRF_802154_PROJECT_CONFIG)
   )
 endif()
 
+target_compile_definitions(nrf-802154-driver-interface
+  INTERFACE
+    # The core for which the code is compiled contains the 802.15.4 radio driver
+    NRF_802154_SERIALIZATION_HOST=0
+)
+
+target_link_libraries(nrf-802154-driver-interface
+  INTERFACE
+    nrf-802154-common-interface
+)
+
 target_link_libraries(nrf-802154-driver
   PUBLIC
     nrf-802154-driver-interface
     nrf-802154-platform
     nrf-802154-sl
+    nrf-802154-common
 )

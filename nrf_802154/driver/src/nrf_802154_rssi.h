@@ -110,6 +110,17 @@ uint8_t nrf_802154_rssi_ed_sample_convert(uint8_t ed_sample);
 int8_t nrf_802154_rssi_dbm_from_energy_level_calculate(uint8_t energy_level);
 
 /**
+ * @brief  Converts the EDSAMPLE value to a dBm value.
+ *
+ * @note Performs temperature correction internally.
+ *
+ * @param[int]  ed_sample  The hardware reported value.
+ *
+ * @return  Result of the energy detection procedure in dBm.
+ */
+int8_t nrf_802154_rssi_ed_sample_to_dbm_convert(uint8_t ed_sample);
+
+/**
  *@}
  **/
 

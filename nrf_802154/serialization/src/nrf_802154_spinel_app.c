@@ -1525,8 +1525,9 @@ bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
             .cca         = true,
             // channel set to 0 will be replaced on net core by the current channel from PIB
-            .channel  = 0,
-            .tx_power = {.use_metadata_value = false}
+            .channel            = 0,
+            .tx_power           = {.use_metadata_value = false},
+            .extra_cca_attempts = 0U,
         };
 
         p_metadata = &metadata_default;
@@ -1807,37 +1808,6 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cfg)
 
 bail:
     SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
-}
-
-int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level)
-{
-    return nrf_802154_addons_dbm_from_energy_level_calculate(energy_level);
-}
-
-uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
-{
-    uint32_t frame_symbols = PHY_SHR_SYMBOLS;
-
-    frame_symbols += (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
-
-    return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
-}
-
-uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
-{
-    return end_timestamp - (psdu_length * PHY_SYMBOLS_PER_OCTET * PHY_US_PER_SYMBOL);
-}
-
-uint64_t nrf_802154_timestamp_end_to_phr_convert(uint64_t end_timestamp, uint8_t psdu_length)
-{
-    uint32_t frame_symbols = (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
-
-    return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
-}
-
-uint64_t nrf_802154_timestamp_phr_to_shr_convert(uint64_t phr_timestamp)
-{
-    return phr_timestamp - (PHY_SHR_SYMBOLS * PHY_US_PER_SYMBOL);
 }
 
 void nrf_802154_security_global_frame_counter_set(uint32_t frame_counter)

@@ -229,7 +229,6 @@ extern "C" {
 #define NRF_802154_DPPI_RADIO_CCAIDLE 9U
 #endif
 
-#if NRF_802154_TEST_MODES_ENABLED
 /**
  * @def NRF_802154_DPPI_RADIO_CCABUSY
  *
@@ -244,11 +243,7 @@ extern "C" {
  *
  * Helper bit mask of DPPI channels used by the 802.15.4 driver's test mode.
  */
-#define NRF_802154_DPPI_RADIO_TEST_MODE_USED_MASK \
-    (1UL << NRF_802154_DPPI_RADIO_CCABUSY)
-#else // NRF_802154_TEST_MODES_ENABLED
 #define NRF_802154_DPPI_RADIO_TEST_MODE_USED_MASK 0U
-#endif  // NRF_802154_TEST_MODES_ENABLED
 
 /**
  * @def NRF_802154_DPPI_RADIO_HW_TRIGGER
@@ -288,6 +283,7 @@ extern "C" {
         (1UL << NRF_802154_DPPI_TIMER_COMPARE_TO_RADIO_TXEN) | \
         (1UL << NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC) |      \
         (1UL << NRF_802154_DPPI_RADIO_CCAIDLE) |               \
+        (1UL << NRF_802154_DPPI_RADIO_CCABUSY) |               \
         (1UL << NRF_802154_DPPI_RADIO_HW_TRIGGER) |            \
         NRF_802154_DPPI_RADIO_TEST_MODE_USED_MASK |            \
         NRF_802154_DPPI_TIMESTAMPS_USED_MASK)

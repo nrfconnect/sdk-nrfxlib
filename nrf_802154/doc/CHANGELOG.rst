@@ -13,11 +13,24 @@ See also :ref:`nrf_802154_limitations` for permanent limitations.
 Main branch - nRF 802.15.4 Radio Driver
 **************************************************
 
+Notable changes
+===============
+
+* The callout function :c:func:`nrf_802154_energy_detected` now takes a parameter of type :c:struct:`nrf_802154_energy_detected_t` and provides the ED result in dBm.
+  This change in public API can be enabled by setting the ``NRF_802154_ENERGY_DETECTED_VERSION`` to 1. (KRKNWK-17141)
+* Include files with API common for both driver and serialization interfaces are now available in the ``common`` directory.
+  This change only affects users who are not using the CMake build system. (KRKNWK-17186)
+
 Added
 =====
 
 * Added :c:func:`nrf_802154_timestamp_end_to_phr_convert` and :c:func:`nrf_802154_timestamp_phr_to_shr_convert` that can be used to convert the timestamps used by the driver to the timestamp of the first symbol of frame's PHR. (KRKNWK-17153)
 * Added support for :c:func:`nrf_802154_pan_coord_get` through serialization (disabled by default via ``NRF_802154_PAN_COORD_GET_ENABLED``). (KRKNWK-10908)
+* Added the possibility to perform multiple CCA attempts before a delayed transmission in case the first CCA attempt detects busy channel. (KRKNWK-17304)
+
+Bug fixes
+=========
+* Fixed an issue causing CSMA/CA procedure to not be terminated correctly in certain Wi-Fi Coexistence scenarios. (KRKNWK-17422)
 
 Other changes
 =============

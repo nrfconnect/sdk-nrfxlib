@@ -35,6 +35,8 @@
 add_library(nrf-802154-driver-interface INTERFACE)
 add_library(nrf-802154-serialization-interface INTERFACE)
 
+add_subdirectory(common)
+
 add_subdirectory(driver)
 add_subdirectory(sl)
 

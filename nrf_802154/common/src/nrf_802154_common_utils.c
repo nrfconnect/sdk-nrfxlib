@@ -32,25 +32,52 @@
  *
  */
 
-#ifndef NRF_802154_TYPES_INTERNAL_H__
-#define NRF_802154_TYPES_INTERNAL_H__
+#include "nrf_802154_common_utils.h"
+#include "nrf_802154_const.h"
+#include "nrf_802154_nrfx_addons.h"
 
-#include "nrf_802154_types.h"
-#include "nrf_802154_fal.h"
-
-typedef struct
+#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
+uint8_t nrf_802154_energy_level_from_dbm_calculate(int8_t ed_dbm)
 {
-    nrf_802154_transmitted_frame_props_t frame_props;        // !< Properties of the frame to be transmitted.
-    nrf_802154_fal_tx_power_split_t      tx_power;           // !< Power to be used when transmitting the frame, split into components to be applied on each stage on transmit path.
-    bool                                 cca;                // !< If the driver is to perform CCA procedure before transmission.
-    bool                                 immediate;          // !< If true, the driver schedules transmission immediately or never. If false, the transmission may be postponed
-                                                             // until its preconditions are met.
-    uint8_t                              extra_cca_attempts; // !< Maximum number of additional CCA attempts that can be performed if the first attempt returns busy channel. Ignored if @ref cca equals @c false.
-} nrf_802154_transmit_params_t;
+    return nrf_802154_addons_energy_level_from_dbm_calculate(ed_dbm);
+}
 
-typedef struct
+#else
+
+int8_t nrf_802154_dbm_from_energy_level_calculate(uint8_t energy_level)
 {
-    uint8_t * p_frame; // !< Pointer to the frame for which the timeout of ack reception is notified.
-} nrf_802154_ack_timeout_handle_params_t;
+    return nrf_802154_addons_dbm_from_energy_level_calculate(energy_level);
+}
 
-#endif  // NRF_802154_TYPES_INTERNAL_H__
+#endif // NRF_802154_ENERGY_DETECTED_VERSION != 0
+
+uint8_t nrf_802154_ccaedthres_from_dbm_calculate(int8_t dbm)
+{
+    return dbm - ED_RSSIOFFS;
+}
+
+uint64_t nrf_802154_first_symbol_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
+{
+    uint32_t frame_symbols = PHY_SHR_SYMBOLS;
+
+    frame_symbols += (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
+
+    return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
+}
+
+uint64_t nrf_802154_mhr_timestamp_get(uint64_t end_timestamp, uint8_t psdu_length)
+{
+    return end_timestamp - (psdu_length * PHY_SYMBOLS_PER_OCTET * PHY_US_PER_SYMBOL);
+}
+
+uint64_t nrf_802154_timestamp_end_to_phr_convert(uint64_t end_timestamp, uint8_t psdu_length)
+{
+    uint32_t frame_symbols = (PHR_SIZE + psdu_length) * PHY_SYMBOLS_PER_OCTET;
+
+    return end_timestamp - (frame_symbols * PHY_US_PER_SYMBOL);
+}
+
+uint64_t nrf_802154_timestamp_phr_to_shr_convert(uint64_t phr_timestamp)
+{
+    return phr_timestamp - (PHY_SHR_SYMBOLS * PHY_US_PER_SYMBOL);
+}

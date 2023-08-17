@@ -191,10 +191,11 @@ static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
 
         nrf_802154_transmit_params_t params =
         {
-            .frame_props = m_data_props,
-            .tx_power    = m_tx_power,
-            .cca         = true,
-            .immediate   = NRF_802154_CSMA_CA_WAIT_FOR_TIMESLOT ? false : true,
+            .frame_props        = m_data_props,
+            .tx_power           = m_tx_power,
+            .cca                = true,
+            .immediate          = NRF_802154_CSMA_CA_WAIT_FOR_TIMESLOT ? false : true,
+            .extra_cca_attempts = 0,
         };
 
         if (!nrf_802154_request_transmit(NRF_802154_TERM_NONE,

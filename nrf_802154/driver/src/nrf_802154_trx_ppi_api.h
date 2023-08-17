@@ -111,6 +111,11 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t                      ra
                                         bool                                  start_timer);
 
 /**
+ * @brief Set (D)PPIs to perform CCA procedures back-to-back.
+ */
+void nrf_802154_trx_ppi_for_extra_cca_attempts_set(void);
+
+/**
  * @brief Reconfigure (D)PPIs for the next steps in receiving or transmitting.
  *
  * Due to limited resources on some platforms, some PPIs have many uses: when starting an operation,
@@ -128,6 +133,11 @@ void nrf_802154_trx_ppi_for_ramp_up_reconfigure(void);
  * @param[in]  start_timer   If timer start on RADIO DISABLED event is to be deconfigured as well. See @ref nrf_802154_trx_ppi_for_ramp_up_set.
  */
 void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool start_timer);
+
+/**
+ * @brief Clear (D)PPIs to perform CCA procedures back-to-back.
+ */
+void nrf_802154_trx_ppi_for_extra_cca_attempts_clear(void);
 
 /**
  * @brief Get (D)PPI channel used to trigger ramp up procedure start.
