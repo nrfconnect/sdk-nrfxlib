@@ -12,6 +12,11 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Bug fixes
+=========
+
+* Fixed an issue where the :c:func:`nrf_rpc_cbor_cmd_rsp` function decodes only the first response element.
+
 Changes
 =======
 

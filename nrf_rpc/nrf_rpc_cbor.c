@@ -69,7 +69,7 @@ int nrf_rpc_cbor_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd,
 
 	if (err >= 0) {
 		zcbor_new_decode_state(ctx->zs, ARRAY_SIZE(ctx->zs),
-				       ctx->out_packet, rsp_size, 1);
+				       ctx->out_packet, rsp_size, NRF_RPC_MAX_PARAMETERS);
 	}
 
 	return err;
