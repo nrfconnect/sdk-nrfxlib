@@ -89,6 +89,15 @@ int32_t mpsl_tx_power_channel_map_set(const mpsl_tx_power_envelope_t *const p_en
  */
 mpsl_tx_power_t mpsl_tx_power_radio_supported_power_adjust(mpsl_tx_power_t req_radio_power, int8_t tx_power_ceiling);
 
+/** @brief Converts radio power in dBm to RADIO.TXPOWER register code.
+ *
+ *  @param[in] req_radio_power  Requested TX power desired for RADIO peripheral.
+ *                              The power value in dBm must be supported by the RADIO peripheral.
+ *
+ *  @return RADIO.TXPOWER register code corrensponding to a radio power in dBm.
+ */
+uint32_t mpsl_tx_power_dbm_to_radio_register_convert(mpsl_tx_power_t req_radio_power);
+
 #ifdef __cplusplus
 }
 #endif

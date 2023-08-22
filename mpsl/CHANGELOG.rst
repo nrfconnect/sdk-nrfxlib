@@ -17,6 +17,10 @@ Changes
 
 * FEM-related firmware is now built and deployed into separate libraries, one for each FEM implementation (such as ``simple_gpio``).
 
+Added
+=====
+* Added :c:func:`mpsl_tx_power_dbm_to_radio_register_convert` to convert supported power in dBm to a register code for RADIO. (KRKNWK-17367)
+
 nRF Connect SDK v2.4.0
 **********************
 
