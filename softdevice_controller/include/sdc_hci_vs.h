@@ -388,7 +388,7 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     /** @brief Connection Handle. */
-    uint16_t connection_handle;
+    uint16_t conn_handle;
     /** @brief Connection Interval in microseconds. Valid range is 7,500 us to 4,000,000 us in 1,250
      *         us steps. If LLPM mode is enabled, parameters in the range 1,000 us to 7,000 us in
      *         1,000 us steps are also accepted.

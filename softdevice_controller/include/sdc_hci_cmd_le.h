@@ -215,6 +215,19 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_PARAMS_V2 = 0x2086,
 };
 
+/** @brief Advertising Event Properties parameters. */
+typedef __PACKED_STRUCT
+{
+    uint16_t connectable_adv : 1;
+    uint16_t scannable_adv : 1;
+    uint16_t directed_adv : 1;
+    uint16_t high_duty_cycle_adv : 1;
+    uint16_t legacy_adv_packets : 1;
+    uint16_t omit_adv_address : 1;
+    uint16_t include_tx_power : 1;
+    uint16_t rfu : 9;
+} sdc_hci_le_adv_event_properties_params_t;
+
 /** @brief LE Extended Create Connection [v1] array parameters. */
 typedef __PACKED_STRUCT
 {
@@ -344,6 +357,15 @@ typedef __PACKED_STRUCT
     uint8_t periodic_advertising_with_responses_scanner : 1;
 } sdc_hci_le_le_features_t;
 
+/** @brief Options parameters for HCI_LE_Periodic_Advertising_Create_Sync command. */
+typedef __PACKED_STRUCT
+{
+    uint8_t use_periodic_adv_list : 1;
+    uint8_t disable_reporting : 1;
+    uint8_t duplicate_filter_initially_enabled : 1;
+    uint8_t rfu : 5;
+} sdc_hci_le_periodic_adv_create_sync_options_params_t;
+
 /** @brief LE Set Connection CTE Transmit Parameters array parameters. */
 typedef __PACKED_STRUCT
 {
@@ -355,6 +377,14 @@ typedef __PACKED_STRUCT
 {
     uint8_t antenna_ids;
 } sdc_hci_le_set_connless_cte_transmit_params_array_params_t;
+
+/** @brief Change Reasons parameters for HCI_LE_Set_Data_Related_Address_Changes command. */
+typedef __PACKED_STRUCT
+{
+    uint8_t change_on_adv_data_change : 1;
+    uint8_t change_on_scan_response_data_change : 1;
+    uint8_t rfu : 6;
+} sdc_hci_le_set_data_related_address_changes_reasons_params_t;
 
 /** @brief LE Set Extended Advertising Enable array parameters. */
 typedef __PACKED_STRUCT
@@ -372,6 +402,22 @@ typedef __PACKED_STRUCT
     uint16_t scan_window;
 } sdc_hci_le_set_ext_scan_params_array_params_t;
 
+/** @brief Enable parameters for HCI_LE_Set_Periodic_Advertising_Enable command. */
+typedef __PACKED_STRUCT
+{
+    uint8_t enable : 1;
+    uint8_t include_adi : 1;
+    uint8_t rfu : 6;
+} sdc_hci_le_set_periodic_adv_enable_params_t;
+
+/** @brief Enable parameters for HCI_LE_Set_Periodic_Advertising_Receive_Enable command. */
+typedef __PACKED_STRUCT
+{
+    uint8_t enable_reporting : 1;
+    uint8_t enable_duplicate_filtering : 1;
+    uint8_t rfu : 6;
+} sdc_hci_le_set_periodic_adv_receive_enable_params_t;
+
 /** @brief LE Set Periodic Advertising Subevent Data array parameters. */
 typedef __PACKED_STRUCT
 {
@@ -381,12 +427,6 @@ typedef __PACKED_STRUCT
     uint8_t subevent_data_length;
     uint8_t subevent_data[];
 } sdc_hci_le_set_periodic_adv_subevent_data_array_params_t;
-
-/** @brief LE Set Periodic Sync Subevent array parameters. */
-typedef __PACKED_STRUCT
-{
-    uint8_t subevent;
-} sdc_hci_le_set_periodic_sync_subevent_array_params_t;
 
 /** @} end of HCI_TYPES */
 
@@ -732,9 +772,9 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     uint8_t adv_handle;
-    uint16_t adv_event_properties;
-    uint8_t primary_adv_interval_min[3];
-    uint8_t primary_adv_interval_max[3];
+    sdc_hci_le_adv_event_properties_params_t adv_event_properties;
+    uint32_t primary_adv_interval_min : 24;
+    uint32_t primary_adv_interval_max : 24;
     uint8_t primary_adv_channel_map;
     uint8_t own_address_type;
     uint8_t peer_address_type;
@@ -821,7 +861,7 @@ typedef __PACKED_STRUCT
 /** @brief LE Set Periodic Advertising Enable command parameter(s). */
 typedef __PACKED_STRUCT
 {
-    uint8_t enable;
+    sdc_hci_le_set_periodic_adv_enable_params_t enable;
     uint8_t adv_handle;
 } sdc_hci_cmd_le_set_periodic_adv_enable_t;
 
@@ -857,7 +897,7 @@ typedef __PACKED_STRUCT
 /** @brief LE Periodic Advertising Create Sync command parameter(s). */
 typedef __PACKED_STRUCT
 {
-    uint8_t options;
+    sdc_hci_le_periodic_adv_create_sync_options_params_t options;
     uint8_t adv_sid;
     uint8_t adv_address_type;
     uint8_t adv_address[6];
@@ -982,7 +1022,7 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     uint16_t sync_handle;
-    uint8_t enable;
+    sdc_hci_le_set_periodic_adv_receive_enable_params_t enable;
 } sdc_hci_cmd_le_set_periodic_adv_receive_enable_t;
 
 /** @brief LE Periodic Advertising Sync Transfer command parameter(s). */
@@ -1115,7 +1155,7 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     uint8_t adv_handle;
-    uint8_t change_reasons;
+    sdc_hci_le_set_data_related_address_changes_reasons_params_t change_reasons;
 } sdc_hci_cmd_le_set_data_related_address_changes_t;
 
 /** @brief LE Set Periodic Advertising Subevent Data command parameter(s). */
@@ -1156,7 +1196,7 @@ typedef __PACKED_STRUCT
     uint16_t sync_handle;
     uint16_t periodic_adv_properties;
     uint8_t num_subevents;
-    sdc_hci_le_set_periodic_sync_subevent_array_params_t array_params[];
+    uint8_t subevents[];
 } sdc_hci_cmd_le_set_periodic_sync_subevent_t;
 
 /** @brief LE Set Periodic Sync Subevent return parameter(s). */
