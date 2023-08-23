@@ -47,15 +47,6 @@
 #endif
 
 /**
- * @def NRF_802154_SL_COEX_INITIALLY_ENABLED
- *
- * Configures if WiFi Coex is initially enabled or disabled.
- */
-#ifndef NRF_802154_SL_COEX_INITIALLY_ENABLED
-#define NRF_802154_SL_COEX_INITIALLY_ENABLED 0
-#endif
-
-/**
  * @def NRF_802154_SL_RTC_IRQ_PRIORITY
  *
  * The priority of RTC interrupt used in the standalone timer driver implementation.

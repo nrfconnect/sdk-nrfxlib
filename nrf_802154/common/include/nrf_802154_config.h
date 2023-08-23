@@ -423,21 +423,6 @@ extern "C" {
 
 /**
  * @}
- * @defgroup nrf_802154_config_coex WiFi coexistence feature configuration
- * @{
- */
-
-/**
- * @def NRF_802154_COEX_INITIALLY_ENABLED
- *
- * Configures if WiFi coex is initially enabled or disabled.
- */
-#ifndef NRF_802154_COEX_INITIALLY_ENABLED
-#define NRF_802154_COEX_INITIALLY_ENABLED 1
-#endif
-
-/**
- * @}
  * @defgroup nrf_802154_config_stats Statistics configuration
  * @{
  */
