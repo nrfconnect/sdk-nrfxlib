@@ -32,35 +32,11 @@
  *
  */
 
-#include "nrf_802154_sl_coex.h"
+#include "nrf_802154.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-nrf_802154_wifi_coex_interface_type_id_t nrf_802154_wifi_coex_interface_type_id_get(void)
-{
-    return NRF_802154_WIFI_COEX_IF_NONE;
-}
-
-void nrf_802154_wifi_coex_cfg_3wire_get(nrf_802154_wifi_coex_3wire_if_config_t * p_cfg)
-{
-    (void)p_cfg;
-
-    return;
-}
-
-void nrf_802154_wifi_coex_cfg_3wire_set(const nrf_802154_wifi_coex_3wire_if_config_t * p_cfg)
-{
-    (void)p_cfg;
-
-    return;
-}
-
-nrf_802154_wifi_coex_ret_t nrf_802154_wifi_coex_init(void)
-{
-    return NRF_802154_WIFI_COEX_RET_DEFAULT_ERR;
-}
 
 bool nrf_802154_wifi_coex_is_enabled(void)
 {
