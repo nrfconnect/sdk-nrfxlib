@@ -43,6 +43,7 @@ Bug fixes
 * Fixed an issue where the HCI Reset command would not clear the channel map set by the host using the HCI Le Set Host Channel Classification command (DRGN-19623).
 * Fixed a bug where the ``Peer_Address_Type`` parameter in the ``LE Connection Complete`` event was set to ``2`` or ``3`` in case the connection was established to a device whose address was resolved (DRGN-18411).
   The least significant bit of the ``Peer_Address_Type`` parameter was set correctly.
+* Fixed an issue where the stack would assert if trying to set up more advertisers than there are available advertising sets (DRGN-20118).
 
 nRF Connect SDK v2.4.0
 **********************
