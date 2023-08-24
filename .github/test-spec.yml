@@ -191,3 +191,11 @@
       - "crypto/**/*"
       - "!crypto/doc/**/*"
       - "!crypto/*.rst"
+
+"CI-sidewalk-test":
+  - "softdevice_controller/include/**/*"
+  - "softdevice_controller/lib/**/*"
+  - any:
+      - "crypto/**/*"
+      - "!crypto/doc/**/*"
+      - "!crypto/*.rst"
