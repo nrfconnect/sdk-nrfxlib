@@ -882,7 +882,7 @@ uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_con
  * spaced
  * event_length_us apart.
  *
- * The default event length is @ref SDC_DEFAULT_EVENT_LENGTH_US.
+ * The default event length is 7500 us.
  *
  * See also @ref sdc_hci_cmd_vs_conn_event_extend().
  *
@@ -911,7 +911,7 @@ uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t 
  * This API must be called before configuring a periodic advertiser for the event length to be
  * applied.
  *
- * The default event length is @ref SDC_DEFAULT_EVENT_LENGTH_US.
+ * The default event length is 7500 us.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
