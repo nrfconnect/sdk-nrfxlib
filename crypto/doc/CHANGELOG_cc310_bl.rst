@@ -17,15 +17,15 @@ Initial release.
 Added
 =====
 
-Added the following crypto libraries for cc310 bootloader nRF52840 and nRF9160.
+Added the following crypto libraries for cc310 bootloader nRF52840 and nRF91 Series.
 
 .. note::
-   * The cc310 libraries require the CryptoCell 310 HW accelerator, available on nRF52840 and nRF9160 devices.
+   * The cc310 libraries require the CryptoCell 310 HW accelerator, available on nRF52840 and nRF91 Series devices.
    * short-wchar: These libraries are compiled with a wchar_t size of 16 bits.
    * no-interrupts: These libraries use blocking waits for long-running cryptography calculations.
 
 
-* nrf_cc310_bl, nrf9160 variants:
+* nrf_cc310_bl, nRF91 Series variants:
 
   * ``cortex-m33/hard-float/libnrf_cc310_bl_0.9.12.a``
   * ``cortex-m33/hard-float/no-interrupts/libnrf_cc310_bl_0.9.12.a``

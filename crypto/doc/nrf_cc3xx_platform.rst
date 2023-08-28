@@ -8,7 +8,7 @@ nrf_cc3xx_platform library
    :local:
    :depth: 2
 
-The nrf_cc3xx_platform library is software library to interface with the Arm CryptoCell CC310/CC312 hardware accelerator that is available on the nRF52840 SoC and the nRF9160 SiP.
+The nrf_cc3xx_platform library is software library to interface with the Arm CryptoCell CC310/CC312 hardware accelerator that is available on the nRF52840 SoC, the nRF53 Series, and the nRF91 Series.
 
 The platform library provides low-level functionality needed by the CC310/CC312
 mbedcrypto library.

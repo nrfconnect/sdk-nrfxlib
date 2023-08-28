@@ -48,12 +48,12 @@ Removed
 
 Library built against Mbed TLS version 3.3.0.
 
-Added the following Oberon crypto libraries for nRF9160, nRF53, nRF52, and nRF51 architectures.
+Added the following Oberon crypto libraries for nRF91, nRF53, nRF52, and nRF51 Series.
 
 .. note::
    The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
 
-* nrf_oberon, nRF9160 and nRF53 application core variants
+* nrf_oberon, nRF91 and nRF53 Series application core variants
 
   * :file:`cortex-m33/hard-float/liboberon_3.0.13.a`
   * :file:`cortex-m33/hard-float/liboberon_mbedtls_3.0.13.a`
