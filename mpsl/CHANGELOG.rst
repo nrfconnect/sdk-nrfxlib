@@ -16,6 +16,7 @@ Changes
 =======
 
 * FEM-related firmware is now built and deployed into separate libraries, one for each FEM implementation (such as ``simple_gpio``).
+* Users of mpsl have to call :c:func:`mpsl_calibration_timer_handle` when calibration shall occur.
 
 Added
 =====

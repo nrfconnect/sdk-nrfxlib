@@ -143,6 +143,11 @@ void MPSL_IRQ_CLOCK_Handler(void);
  */
 void mpsl_low_priority_process(void);
 
+/** @brief Application needs to call this when calibration shall occur.
+ *
+ * In ncs it is designed to be called with a k_timer with period CONFIG_CLOCK_CONTROL_NRF_CALIBRATION_PERIOD
+ */
+void mpsl_calibration_timer_handle(void);
 #ifdef __cplusplus
 }
 #endif
