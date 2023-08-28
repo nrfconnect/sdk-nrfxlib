@@ -34,8 +34,8 @@ Changes
 * When creating a connection or periodic advertiser, the controller will now attempt to select the interval so that it causes as few scheduling conflicts with existing periodic activities as possible.
   The selected interval is always in the range ``[interval_min, interval_max]``, where ``interval_min`` and ``interval_max`` are provided by the host.
   Previously, the controller always selected ``interval_max``.
-* ``SDC_CFG_TYPE_EVENT_LENGTH`` configuration is removed.
-  Instead application should use existing HCI command, see :c:func:`sdc_hci_cmd_vs_event_length_set`.
+* The ``SDC_CFG_TYPE_EVENT_LENGTH`` configuration is removed.
+  An application must use the :c:func:`sdc_hci_cmd_vs_event_length_set` HCI command instead.
 
 Bug fixes
 =========

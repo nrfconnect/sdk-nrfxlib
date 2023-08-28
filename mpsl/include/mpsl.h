@@ -145,7 +145,7 @@ void mpsl_low_priority_process(void);
 
 /** @brief Application needs to call this when calibration shall occur.
  *
- * In ncs it is designed to be called with a k_timer with period CONFIG_CLOCK_CONTROL_NRF_CALIBRATION_PERIOD
+ * In the nRF Connect SDK, it is designed to be called with a period of CONFIG_CLOCK_CONTROL_NRF_CALIBRATION_PERIOD
  */
 void mpsl_calibration_timer_handle(void);
 #ifdef __cplusplus
