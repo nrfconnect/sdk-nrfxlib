@@ -22,7 +22,7 @@ Library built against Mbed TLS version 3.3.0.
 Added
 =====
 
-Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nrf_cc3xx_platform libraries for nRF91 Series, nRF52840, and nRF5340.
 
 .. note::
 
@@ -32,7 +32,7 @@ Added a new build of nrf_cc3xx_platform libraries for nRF9160, nRF52840, and nRF
 
   * :file:`/nrf_cc312_platform/lib/cortex-m33/**/libnrf_cc312_psa_crypto_0.9.17.a`
 
-* nrf_cc310_platform, nRF9160 variants
+* nrf_cc310_platform, nRF91 Series variants
 
   * :file:`/nrf_cc310_platform/lib/cortex-m33/**/libnrf_cc310_platform_0.9.17.a`
 

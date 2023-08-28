@@ -26,7 +26,7 @@ This version is dependent on the nrf_cc310_platform or nrf_cc312_platform librar
 Added
 =====
 
-Added a new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and nRF5340.
+Added a new build of nRF_cc3xx_mbedcrypto libraries for nRF91 Series, nRF52840, and nRF5340.
 
 .. note::
 
@@ -38,7 +38,7 @@ Added a new build of nRF_cc3xx_mbedcrypto libraries for nRF9160, nRF52840, and n
   * :file:`crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_legacy_crypto_0.9.17.a`
   * :file:`crypto/nrf_cc312_mbedcrypto/lib/cortex-m33/**/libnrf_cc312_core_0.9.17.a`
 
-* nrf_cc310_mbedcrypto, nRF9160 variants
+* nrf_cc310_mbedcrypto, nRF91 Series variants
 
   * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m33/**/libnrf_cc310_psa_crypto_0.9.17.a`
   * :file:`crypto/nrf_cc310_mbedcrypto/lib/cortex-m33/**/libnrf_cc310_legacy_crypto_0.9.17.a`
