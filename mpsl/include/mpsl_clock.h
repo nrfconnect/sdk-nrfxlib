@@ -136,6 +136,10 @@ typedef void (*mpsl_clock_hfclk_callback_t)(void);
  * @see mpsl_clock_hfclk_is_running
  * @see mpsl_clock_hfclk_release
  *
+ * @note Don't use this API if the integration layer of MPSL provides a driver that uses this function.
+ *       This is the case for applications in the nRF Connect SDK where there is a clock control driver
+ *       with a corresponding on/off manager.
+ *
  * @param[in] hfclk_started_callback Function to be called when the high frequency clock is started.
  *                                   The callback will be executed in the context as
  *                                   @ref mpsl_low_priority_process.
@@ -151,6 +155,10 @@ int32_t mpsl_clock_hfclk_request(mpsl_clock_hfclk_callback_t hfclk_started_callb
  *
  * @see mpsl_clock_hfclk_is_running
  * @see mpsl_clock_hfclk_request
+ *
+ * @note Don't use this API if the integration layer of MPSL provides a driver that uses this function.
+ *       This is the case for applications in the nRF Connect SDK where there is a clock control driver
+ *       with a corresponding on/off manager.
  *
  * @retval 0  Success
  */
