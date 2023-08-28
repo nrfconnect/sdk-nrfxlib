@@ -100,9 +100,6 @@ extern "C" {
 /** @brief Default number of devices that can be added to the periodic advertiser list. */
 #define SDC_DEFAULT_PERIODIC_ADV_LIST_SIZE 0
 
-/** @brief Default connection event length. */
-#define SDC_DEFAULT_EVENT_LENGTH_US 7500UL
-
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
 
@@ -267,8 +264,6 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_PERIPHERAL_COUNT,
     /** See @ref sdc_cfg_t::buffer_cfg. */
     SDC_CFG_TYPE_BUFFER_CFG,
-    /** See @ref sdc_cfg_t::event_length. */
-    SDC_CFG_TYPE_EVENT_LENGTH,
     /** See @ref sdc_cfg_t::adv_count. */
     SDC_CFG_TYPE_ADV_COUNT,
     /** See @ref sdc_cfg_t::scan_buffer_cfg. */
@@ -315,13 +310,6 @@ typedef struct
     uint8_t rx_packet_count;  /**< Link Layer RX packet count per link. Minimum of 1.
                                    Default: @ref SDC_DEFAULT_RX_PACKET_COUNT. */
 } sdc_cfg_buffer_cfg_t;
-
-
-/** @brief Connection event length configuration. */
-typedef struct
-{
-    uint32_t event_length_us; /**< Maximum connection event length */
-} sdc_cfg_event_length_t;
 
 
 /** @brief Buffer count configuration. */
@@ -381,10 +369,6 @@ typedef union
      *  Default: See @ref sdc_cfg_buffer_cfg_t.
      */
     sdc_cfg_buffer_cfg_t   buffer_cfg;
-    /** Max connection event length.
-     *   Default: @ref SDC_DEFAULT_EVENT_LENGTH_US.
-     */
-    sdc_cfg_event_length_t event_length;
     /** Max number of concurrent advertisers.
      *  Must be more than or equal to @ref sdc_cfg_t::periodic_adv_count.
      *  Default: @ref SDC_DEFAULT_ADV_COUNT.

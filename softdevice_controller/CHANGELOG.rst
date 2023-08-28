@@ -34,6 +34,8 @@ Changes
 * When creating a connection or periodic advertiser, the controller will now attempt to select the interval so that it causes as few scheduling conflicts with existing periodic activities as possible.
   The selected interval is always in the range ``[interval_min, interval_max]``, where ``interval_min`` and ``interval_max`` are provided by the host.
   Previously, the controller always selected ``interval_max``.
+* ``SDC_CFG_TYPE_EVENT_LENGTH`` configuration is removed.
+  Instead application should use existing HCI command, see :c:func:`sdc_hci_cmd_vs_event_length_set`.
 
 Bug fixes
 =========
@@ -43,6 +45,7 @@ Bug fixes
 * Fixed an issue where the HCI Reset command would not clear the channel map set by the host using the HCI Le Set Host Channel Classification command (DRGN-19623).
 * Fixed a bug where the ``Peer_Address_Type`` parameter in the ``LE Connection Complete`` event was set to ``2`` or ``3`` in case the connection was established to a device whose address was resolved (DRGN-18411).
   The least significant bit of the ``Peer_Address_Type`` parameter was set correctly.
+* Fixed an issue where the stack would assert if trying to set up more advertisers than there are available advertising sets (DRGN-20118).
 
 nRF Connect SDK v2.4.0
 **********************
