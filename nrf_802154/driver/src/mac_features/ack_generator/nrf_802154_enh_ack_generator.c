@@ -642,6 +642,16 @@ uint8_t * nrf_802154_enh_ack_generator_create(
     switch (ack_state_get())
     {
         case ACK_STATE_RESET:
+        #if NRF_802154_IE_WRITER_ENABLED
+            // The IE writer module can be in the IE_WRITER_PREPARE state if
+            // the previous transmission failed at an early stage.
+            // Reset it, to avoid data corruption in case this ACK
+            // does not contain information elements. Otherwise, the
+            // IE writer would commit data in nrf_802154_ie_writer_tx_ack_started_hook
+            // regardless if writing of IE elements is needed or not.
+            nrf_802154_ie_writer_reset();
+        #endif
+
             ack_state_set(ACK_STATE_PROCESSING);
         // Fallthrough
 

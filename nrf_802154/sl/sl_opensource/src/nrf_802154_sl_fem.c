@@ -40,6 +40,7 @@
 #include "nrf_802154_fal.h"
 #include "nrf_802154_types.h"
 
+#include "mpsl_tx_power.h"
 #include "protocol/mpsl_fem_protocol_api.h"
 
 #ifdef __cplusplus
@@ -52,6 +53,12 @@ extern "C" {
  */
 #define NUMELTS(X) (sizeof((X)) / sizeof(X[0]))
 
+typedef struct
+{
+    nrf_radio_txpower_t reg;
+    int8_t              dbm;
+} radio_tx_power_t;
+
 /**
  * Converts TX power integer values to RADIO TX power allowed values.
  *
@@ -59,45 +66,50 @@ extern "C" {
  *
  * @retval     RADIO TX power allowed value.
  */
-static nrf_radio_txpower_t to_radio_tx_power_convert(int8_t integer_tx_power)
+static radio_tx_power_t to_radio_tx_power_convert(int8_t integer_tx_power)
 {
-    static const nrf_radio_txpower_t allowed_values[] =
+    static const radio_tx_power_t allowed_values[] =
     {
 #if defined(RADIO_TXPOWER_TXPOWER_Neg40dBm)
-        NRF_RADIO_TXPOWER_NEG40DBM, /**< -40 dBm. */
+        { NRF_RADIO_TXPOWER_NEG40DBM, -40 }, /**< -40 dBm. */
 #endif
-        NRF_RADIO_TXPOWER_NEG20DBM, /**< -20 dBm. */
-        NRF_RADIO_TXPOWER_NEG16DBM, /**< -16 dBm. */
-        NRF_RADIO_TXPOWER_NEG12DBM, /**< -12 dBm. */
-        NRF_RADIO_TXPOWER_NEG8DBM,  /**< -8 dBm. */
-        NRF_RADIO_TXPOWER_NEG4DBM,  /**< -4 dBm. */
-        NRF_RADIO_TXPOWER_0DBM,     /**< 0 dBm. */
+        { NRF_RADIO_TXPOWER_NEG20DBM, -20 }, /**< -20 dBm. */
+        { NRF_RADIO_TXPOWER_NEG16DBM, -16 }, /**< -16 dBm. */
+        { NRF_RADIO_TXPOWER_NEG12DBM, -12 }, /**< -12 dBm. */
+        { NRF_RADIO_TXPOWER_NEG8DBM, -8 },   /**< -8 dBm. */
+        { NRF_RADIO_TXPOWER_NEG4DBM, -4 },   /**< -4 dBm. */
+        { NRF_RADIO_TXPOWER_0DBM, 0 },       /**< 0 dBm. */
+#if defined(NRF53_SERIES)
+        { NRF_RADIO_TXPOWER_NEG2DBM, 1 },    /**< 1 dBm. */
+        { NRF_RADIO_TXPOWER_NEG1DBM, 2 },    /**< 2 dBm. */
+        { NRF_RADIO_TXPOWER_0DBM, 3 },       /**< 3 dBm. */
+#endif
 #if defined(RADIO_TXPOWER_TXPOWER_Pos2dBm)
-        NRF_RADIO_TXPOWER_POS2DBM,  /**< 2 dBm. */
+        { NRF_RADIO_TXPOWER_POS2DBM, 2 },    /**< 2 dBm. */
 #endif
 #if defined(RADIO_TXPOWER_TXPOWER_Pos3dBm)
-        NRF_RADIO_TXPOWER_POS3DBM,  /**< 3 dBm. */
+        { NRF_RADIO_TXPOWER_POS3DBM, 3 },    /**< 3 dBm. */
 #endif
 #if defined(RADIO_TXPOWER_TXPOWER_Pos4dBm)
-        NRF_RADIO_TXPOWER_POS4DBM,  /**< 4 dBm. */
+        { NRF_RADIO_TXPOWER_POS4DBM, 4 },    /**< 4 dBm. */
 #endif
 #if defined(RADIO_TXPOWER_TXPOWER_Pos5dBm)
-        NRF_RADIO_TXPOWER_POS5DBM,  /**< 5 dBm. */
+        { NRF_RADIO_TXPOWER_POS5DBM, 5 },    /**< 5 dBm. */
 #endif
 #if defined(RADIO_TXPOWER_TXPOWER_Pos6dBm)
-        NRF_RADIO_TXPOWER_POS6DBM,  /**< 6 dBm. */
+        { NRF_RADIO_TXPOWER_POS6DBM, 6 },    /**< 6 dBm. */
 #endif
 #if defined(RADIO_TXPOWER_TXPOWER_Pos7dBm)
-        NRF_RADIO_TXPOWER_POS7DBM,  /**< 7 dBm. */
+        { NRF_RADIO_TXPOWER_POS7DBM, 7 },    /**< 7 dBm. */
 #endif
 #if defined(RADIO_TXPOWER_TXPOWER_Pos8dBm)
-        NRF_RADIO_TXPOWER_POS8DBM,  /**< 8 dBm. */
+        { NRF_RADIO_TXPOWER_POS8DBM, 8 },    /**< 8 dBm. */
 #endif
     };
 
     for (uint32_t i = NUMELTS(allowed_values) - 1; i > 0; i--)
     {
-        if (integer_tx_power >= (int8_t)allowed_values[i])
+        if (integer_tx_power >= allowed_values[i].dbm)
         {
             return allowed_values[i];
         }
@@ -176,7 +188,7 @@ void mpsl_fem_cleanup(void)
 void mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
                              mpsl_tx_power_split_t * const p_tx_power_split)
 {
-    p_tx_power_split->radio_tx_power      = to_radio_tx_power_convert(power);
+    p_tx_power_split->radio_tx_power      = to_radio_tx_power_convert(power).dbm;
     p_tx_power_split->fem.gain_db         = 0;
     p_tx_power_split->fem.private_setting = 0;
 }
@@ -216,11 +228,16 @@ int8_t nrf_802154_fal_tx_power_split(const uint8_t                           cha
 {
     (void)channel;
 
-    p_tx_power_split->radio_tx_power      = to_radio_tx_power_convert(power);
+    p_tx_power_split->radio_tx_power      = to_radio_tx_power_convert(power).dbm;
     p_tx_power_split->fem.gain_db         = 0;
     p_tx_power_split->fem.private_setting = 0;
 
     return p_tx_power_split->radio_tx_power;
+}
+
+uint32_t mpsl_tx_power_dbm_to_radio_register_convert(mpsl_tx_power_t req_radio_power)
+{
+    return to_radio_tx_power_convert(req_radio_power).reg;
 }
 
 #ifdef __cplusplus

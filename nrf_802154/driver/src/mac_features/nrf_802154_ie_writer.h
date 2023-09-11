@@ -48,6 +48,12 @@
  */
 
 /**
+ * @brief Resets the IE writer module to pristine state.
+ */
+
+void nrf_802154_ie_writer_reset(void);
+
+/**
  * @brief Prepares to write Information Element data to all elements recognized by the module.
  *
  * Calls to this function put the IE writer module into an armed state.

@@ -410,17 +410,6 @@ static void link_metrics_ie_write_reset(void)
 }
 
 /**
- * @brief Resets IE writer to pristine state.
- */
-static void ie_writer_reset(void)
-{
-    m_writer_state = IE_WRITER_RESET;
-
-    csl_ie_write_reset();
-    link_metrics_ie_write_reset();
-}
-
-/**
  * @brief Performs IE write preparations.
  *
  * This function prepares the write operation for all recognized information elements and
@@ -468,7 +457,7 @@ static void ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
 
         if (result == false)
         {
-            ie_writer_reset();
+            nrf_802154_ie_writer_reset();
             return;
         }
 
@@ -491,12 +480,19 @@ static void ie_writer_commit(bool * p_written)
     link_metrics_ie_write_commit(p_written);
 }
 
+void nrf_802154_ie_writer_reset(void)
+{
+    m_writer_state = IE_WRITER_RESET;
+
+    csl_ie_write_reset();
+    link_metrics_ie_write_reset();
+}
+
 void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
 {
     assert(p_ie_header != NULL);
     assert(p_ie_header < p_end_addr);
 
-    ie_writer_reset();
     ie_writer_prepare(p_ie_header, p_end_addr);
 }
 
@@ -505,7 +501,13 @@ bool nrf_802154_ie_writer_tx_setup(
     nrf_802154_transmit_params_t            * p_params,
     nrf_802154_transmit_failed_notification_t notify_function)
 {
-    (void)notify_function;
+    // The IE writer module can be in the IE_WRITER_PREPARE state if
+    // the previous transmission failed at an early stage.
+    // Reset it, to avoid data corruption in case this frame
+    // does not contain information elements. Otherwise, the
+    // IE writer would commit data in nrf_802154_ie_writer_tx_started_hook
+    // regardless if writing of IE elements is needed or not.
+    nrf_802154_ie_writer_reset();
 
     if (p_params->frame_props.dynamic_data_is_set)
     {
@@ -559,7 +561,7 @@ bool nrf_802154_ie_writer_tx_started_hook(uint8_t * p_frame)
 #endif
 
     ie_writer_commit(&written);
-    ie_writer_reset();
+    nrf_802154_ie_writer_reset();
 
     if (written)
     {
@@ -589,7 +591,7 @@ void nrf_802154_ie_writer_tx_ack_started_hook(uint8_t * p_ack)
 #endif
 
     ie_writer_commit(&written);
-    ie_writer_reset();
+    nrf_802154_ie_writer_reset();
 
     if (written)
     {
