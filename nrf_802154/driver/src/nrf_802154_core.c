@@ -2614,6 +2614,12 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
             {
                 nrf_802154_tx_work_buffer_reset(&p_params->frame_props);
                 result = nrf_802154_core_hooks_tx_setup(p_data, p_params, &transmit_failed_notify);
+
+                if (!result)
+                {
+                    state_set(RADIO_STATE_RX);
+                    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+                }
             }
 
             if (result)

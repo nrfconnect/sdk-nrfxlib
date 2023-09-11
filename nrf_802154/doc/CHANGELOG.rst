@@ -31,6 +31,8 @@ Added
 Bug fixes
 =========
 * Fixed an issue causing CSMA/CA procedure to not be terminated correctly in certain Wi-Fi Coexistence scenarios. (KRKNWK-17422)
+* Fixed an issue causing data corruption when transmitting frames and ACKs containing IE elements. (KRKNWK-17627)
+* Fixed an issue causing an incorrect driver state after transmission setup failure resulting in failing subsequent calls to the 802.15.4 driver. (KRKNWK-17628)
 
 Other changes
 =============

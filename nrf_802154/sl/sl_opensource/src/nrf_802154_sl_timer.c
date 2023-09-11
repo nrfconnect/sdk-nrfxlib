@@ -68,7 +68,7 @@ void nrf_802154_timer_coord_stop(void)
 
 void nrf_802154_sl_timer_module_init(void)
 {
-    BUILD_ASSERT(CONFIG_SYS_CLOCK_TICKS_PER_SEC == NRF_802154_SL_RTC_FREQUENCY);
+    // Intentionally empty
 }
 
 void nrf_802154_sl_timer_module_uninit(void)
@@ -78,7 +78,9 @@ void nrf_802154_sl_timer_module_uninit(void)
 
 uint64_t nrf_802154_sl_timer_current_time_get(void)
 {
-    return NRF_802154_SL_RTC_TICKS_TO_US(k_uptime_ticks());
+    int64_t ticks = k_uptime_ticks();
+
+    return k_ticks_to_us_ceil64(ticks);
 }
 
 void nrf_802154_sl_timer_init(nrf_802154_sl_timer_t * p_timer)

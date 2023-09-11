@@ -45,6 +45,9 @@
 
 #include "nrf_802154_ack_data.h"
 #include "nrf_802154_const.h"
+#if NRF_802154_IE_WRITER_ENABLED
+#include "mac_features/nrf_802154_ie_writer.h"
+#endif
 
 #define IMM_ACK_INITIALIZER {IMM_ACK_LENGTH, ACK_HEADER_WITH_PENDING, 0x00, 0x00, 0x00, 0x00}
 
@@ -65,6 +68,15 @@ void nrf_802154_imm_ack_generator_reset(void)
 uint8_t * nrf_802154_imm_ack_generator_create(
     const nrf_802154_frame_parser_data_t * p_frame_data)
 {
+    #if NRF_802154_IE_WRITER_ENABLED
+    // The IE writer module can be in the IE_WRITER_PREPARE state if
+    // the previous transmission failed at an early stage.
+    // Reset it, to avoid data corruption in when this ACK is transmitted.
+    // Otherwise, the IE writer would commit data in nrf_802154_ie_writer_tx_ack_started_hook
+    // regardless if writing of IE elements is needed or not.
+    nrf_802154_ie_writer_reset();
+    #endif
+
     if (nrf_802154_frame_parser_parse_level_get(p_frame_data) < PARSE_LEVEL_FULL)
     {
         // The entire frame being acknowledged is necessary to correctly generate Ack
