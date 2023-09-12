@@ -36,6 +36,9 @@ Changes
   Previously, the controller always selected ``interval_max``.
 * The ``SDC_CFG_TYPE_EVENT_LENGTH`` configuration is removed.
   An application must use the :c:func:`sdc_hci_cmd_vs_event_length_set` HCI command instead.
+* The ChSel bit in a ``CONNECT_IND`` PDU will now match the ChSel bit in the ``ADV_IND`` PDU.
+  Previously, this was always set to indicate channel selection algorithm 2. (DRGN-19115)
+* The LE Power Control Request feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-17499)
 
 Bug fixes
 =========
@@ -46,6 +49,7 @@ Bug fixes
 * Fixed a bug where the ``Peer_Address_Type`` parameter in the ``LE Connection Complete`` event was set to ``2`` or ``3`` in case the connection was established to a device whose address was resolved (DRGN-18411).
   The least significant bit of the ``Peer_Address_Type`` parameter was set correctly.
 * Fixed an issue where the stack would assert if trying to set up more advertisers than there are available advertising sets (DRGN-20118).
+* Fixed an issue where enabling an extended advertising set would assert in cases where a host-provided address was not needed and no address had been set up for the advertising set (DRGN-20085).
 
 nRF Connect SDK v2.4.0
 **********************
