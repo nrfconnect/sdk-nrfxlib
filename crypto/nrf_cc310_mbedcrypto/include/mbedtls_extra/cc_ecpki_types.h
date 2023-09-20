@@ -48,6 +48,8 @@ extern "C"
 typedef enum
 {
     /* For prime field */
+    /*! EC brainpoolP256r1 */
+    CC_ECPKI_DomainID_brainpoolP256r1,
     /*! EC secp192k1. */
     CC_ECPKI_DomainID_secp192k1,
     /*! EC secp192r1. */
@@ -62,8 +64,6 @@ typedef enum
     CC_ECPKI_DomainID_secp256r1,
     /*! EC secp384r1. */
     CC_ECPKI_DomainID_secp384r1,
-    /*! EC secp521r1. */
-    CC_ECPKI_DomainID_secp521r1,
     /*! Reserved.*/
     CC_ECPKI_DomainID_OffMode,
     /*! Reserved.*/

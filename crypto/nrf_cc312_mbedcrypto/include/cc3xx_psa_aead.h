@@ -165,7 +165,7 @@ psa_status_t cc3xx_aead_set_lengths(
  *
  * \param[in] operation    Active AEAD operation.
  * \param[in] input        Buffer containing the additional data.
- * \param[in] input_length Size of the input buffer in bytes.
+ * \param[in] input_size   Size of the input buffer in bytes.
  *
  * \retval #PSA_SUCCESS
  * \retval #PSA_ERROR_INVALID_ARGUMENT
@@ -176,7 +176,7 @@ psa_status_t cc3xx_aead_set_lengths(
 psa_status_t cc3xx_aead_update_ad(
         cc3xx_aead_operation_t *operation,
         const uint8_t *input,
-        size_t input_length);
+        size_t input_size);
 
 /*!
  * \brief Encrypt or decrypt a message fragment in an active AEAD operation.
@@ -235,7 +235,7 @@ psa_status_t cc3xx_aead_finish(
  * \param[in] plaintext_size    Size of the plaintext buffer in bytes.
  * \param[out] plaintext_length The number of bytes that make up the plaintext
  * \param[in] tag               Buffer containing the tag
- * \param[in] tag_length        Size of the tag buffer in bytes
+ * \param[in] tag_size          Size of the tag buffer in bytes
  *
  * \retval #PSA_SUCCESS
  * \retval #PSA_ERROR_INVALID_ARGUMENT
@@ -248,7 +248,7 @@ psa_status_t cc3xx_aead_verify(
         size_t plaintext_size,
         size_t *plaintext_length,
         const uint8_t *tag,
-        size_t tag_length);
+        size_t tag_size);
 /*!
  * \brief Abort an AEAD operation
  *
