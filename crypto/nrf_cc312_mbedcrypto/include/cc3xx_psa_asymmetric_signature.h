@@ -26,8 +26,8 @@ extern "C" {
  * \brief Sign a message
  *
  * \param[in]  attributes       Attributes of the key to use
- * \param[in]  key_buffer       Key material buffer
- * \param[in]  key_buffer_size  Size in bytes of the key
+ * \param[in]  key              Key material buffer
+ * \param[in]  key_length       Size in bytes of the key
  * \param[in]  alg              Algorithm to use
  * \param[in]  input            Data to sign buffer
  * \param[in]  input_length     Size in bytes of the data to sign
@@ -48,8 +48,8 @@ psa_status_t cc3xx_sign_message(const psa_key_attributes_t *attributes,
  * \brief Verify a message signature
  *
  * \param[in] attributes       Attributes of the key to use
- * \param[in] key_buffer       Key material buffer
- * \param[in] key_buffer_size  Size in bytes of the key
+ * \param[in] key              Key material buffer
+ * \param[in] key_length       Size in bytes of the key
  * \param[in] alg              Algorithm to use
  * \param[in] input            Data to sign buffer
  * \param[in] input_length     Size in bytes of the data to sign
@@ -68,8 +68,8 @@ psa_status_t cc3xx_verify_message(const psa_key_attributes_t *attributes,
  * \brief Sign a precomputed hash of a message
  *
  * \param[in]  attributes       Attributes of the key to use
- * \param[in]  key_buffer       Key material buffer
- * \param[in]  key_buffer_size  Size in bytes of the key
+ * \param[in]  key              Key material buffer
+ * \param[in]  key_length       Size in bytes of the key
  * \param[in]  alg              Algorithm to use
  * \param[in]  input            Hash to sign buffer
  * \param[in]  input_length     Size in bytes of the data to sign
@@ -89,11 +89,11 @@ psa_status_t cc3xx_sign_hash(const psa_key_attributes_t *attributes,
  * \brief Verify a message signature on a hash
  *
  * \param[in] attributes       Attributes of the key to use
- * \param[in] key_buffer       Key material buffer
- * \param[in] key_buffer_size  Size in bytes of the key
+ * \param[in] key              Key material buffer
+ * \param[in] key_length       Size in bytes of the key
  * \param[in] alg              Algorithm to use
- * \param[in] input            Hash to sign buffer
- * \param[in] input_length     Size in bytes of the data to sign
+ * \param[in] hash            Hash to sign buffer
+ * \param[in] hash_length     Size in bytes of the data to sign
  * \param[in] signature        Signature to verify
  * \param[in] signature_length Size in bytes of the signature
  *

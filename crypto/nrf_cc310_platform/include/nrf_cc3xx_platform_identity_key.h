@@ -11,7 +11,7 @@
 
 /** @brief Function to store an identity key
  *
- * @note    The primary usage of this API is to store assymetric key material
+ * @note    The primary usage of this API is to store asymmetric key material
  *          corresponding to a secret identity of the device, for example an ECC
  *          private key using curve type secp256r1.
  *
@@ -49,7 +49,7 @@ bool nrf_cc3xx_platform_identity_key_is_stored(uint32_t slot_id);
 
 /** @brief Function to retrieve an identity key
  *
- * @details The primary usage of this API is to retrieve assymetric key material
+ * @details The primary usage of this API is to retrieve asymmetric key material
  *          corresponding to a secret identity of the device, for example an ECC
  *          private key using curve type secp256r1.
  *
@@ -64,7 +64,7 @@ bool nrf_cc3xx_platform_identity_key_is_stored(uint32_t slot_id);
  *          on the device.
  *
  * @param[in]       slot_id     The first KMU slot ID for the stored identity key (uses 2).
- * @param[in,out]   key         The retreived identity key.
+ * @param[in,out]   key         The retrieved identity key.
  *
  * @return NRF_CC3XX_PLATFORM_SUCCESS on success, otherwise a negative value.
  */

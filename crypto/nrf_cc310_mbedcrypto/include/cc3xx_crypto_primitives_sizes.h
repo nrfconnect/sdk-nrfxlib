@@ -1,0 +1,10 @@
+/*
+ * Copyright (c) 2023 Nordic Semiconductor
+ *
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
+ */
+
+#define PSA_DRIVER_CC3XX_HASH_OPERATION_CONTEXT_SIZE_WORDS      (60)
+#define PSA_DRIVER_CC3XX_CIPHER_OPERATION_CONTEXT_SIZE_WORDS    (55)
+#define PSA_DRIVER_CC3XX_MAC_OPERATION_CONTEXT_SIZE_WORDS       (79)
+#define PSA_DRIVER_CC3XX_AEAD_OPERATION_CONTEXT_SIZE_WORDS      (71)

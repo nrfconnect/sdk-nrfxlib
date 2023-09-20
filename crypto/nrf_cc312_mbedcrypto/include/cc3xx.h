@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, Arm Limited. All rights reserved.
+ * Copyright (c) 2021-2022, Arm Limited. All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
@@ -38,7 +38,7 @@
 
 #ifdef __DOXYGEN_ONLY__
 /*!
- *  Used to enable the cc3xx driver in the PSA Driver Core layer. When this is
+ *  Enables the cc3xx driver in the PSA Driver Core layer. When this is
  *  defined, the \ref cc3xx_crypto_primitives_private.h type definitions are
  *  also visible through including psa/crypto.h
  *
@@ -46,7 +46,7 @@
 #define PSA_CRYPTO_DRIVER_CC3XX
 
 /*!
- *  Used to enable the type conversion from CCError_t to psa_status_t when
+ *  Enables fine grained type conversion from CCError_t to psa_status_t when
  *  translating error codes from CC format to PSA format in ECC and RSA
  *  modules. The translation functions occupy ~1KB of flash hence keep them
  *  disabled by default. By default any CC low-level failure is treated as
@@ -55,11 +55,44 @@
 #define CC3XX_CONFIG_ENABLE_CC_TO_PSA_TYPE_CONVERSION
 
 /*!
- *  Used to enable support for SHA-1 algorithms in the driver layer. By default
- *  this is kept disabled as SHA-1 is deemed un-secure.
- *
+ *  Enables support for SHA-1 algorithms in the interface layer. By
+ *  default this is kept disabled as SHA-1 is deemed un-secure
  */
 #define CC3XX_CONFIG_SUPPORT_SHA1
+
+/*!
+ *  Enables support for the GCM AEAD algorithm in the interface layer.
+ *  By default this is kept enabled
+ */
+#define CC3XX_CONFIG_SUPPORT_GCM
+
+/*!
+ *  Enables support for RSA algorithm in the interface layer.
+ *  By default this is kept enabled. At the moment affects only the RSA utils
+ */
+#define CC3XX_CONFIG_SUPPORT_RSA
+
+/*!
+ *  Enables support for the Chacha20 algorithm in the interface layer.
+ *  By default it's kept enabled
+ */
+#define CC3XX_CONFIG_SUPPORT_CHACHA20
+
+/*!
+ *  Enables support for the Poly1305 algorithm in the interface layer.
+ *  by default it's kept enabled. Note that there isn't a separate interface
+ *  to exercise the Poly1305 algorithm other than through the combination with
+ *  Chacha20 in an AEAD scheme.
+ */
+#define CC3XX_CONFIG_SUPPORT_CHACHA20_POLY1305
+
+/*!
+ *  Enables the implementation of the one-shot AEAD API functions to be
+ *  implemented using multipart AEAD functions, thus saving ~2KB size of code
+ *  when all CCM, GCM and Chacha20-Poly1305 are enabled. By default is kept
+ *  enabled.
+ */
+#define CC3XX_CONFIG_AEAD_ONE_SHOT_USE_MULTIPART
 #endif /* __DOXYGEN_ONLY__ */
 
 #include "cc3xx_psa_cipher.h"
