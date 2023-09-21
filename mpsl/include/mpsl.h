@@ -148,6 +148,12 @@ void mpsl_low_priority_process(void);
  * In the nRF Connect SDK, it is designed to be called with a period of CONFIG_CLOCK_CONTROL_NRF_CALIBRATION_PERIOD
  */
 void mpsl_calibration_timer_handle(void);
+
+/** @brief RFU
+ *
+ * RFU
+ */
+void mpsl_pan_rfu(void);
 #ifdef __cplusplus
 }
 #endif
