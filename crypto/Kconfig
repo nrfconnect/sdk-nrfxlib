@@ -22,12 +22,6 @@ config NRF_CC310_BL
 	  This configuration is only available for direct use of nrf_cc3xx_bl
 	  To use, link with nrfxlib_crypto in CMake.
 
-if NRF_CC310_BL
-	config HW_CC310_INTERRUPT
-	bool #"Use interrupt version of nrf cc310 bl library"
-	default n # Only the no-interrupts version currently verified to work with Zephyr.
-endif
-
 menuconfig NRF_CC3XX_PLATFORM
 	bool "nrf_cc3xx_platform HW crypto library for nRF devices with CryptoCell CC3xx."
 	depends on HAS_HW_NRF_CC3XX && !BUILD_WITH_TFM
