@@ -4,7 +4,7 @@ Modem traces
 ############
 
 The modem trace APIs in the Modem library are used to retrieve binary trace data from the modem core.
-The application is responsible for forwarding the trace data to a host computer, where it can be collected with the `nRF Trace collector`_ PC tool to extract PCAP data, or to save them to file for further inspection by Nordic Semiconductor.
+The application is responsible for forwarding the trace data to a host computer, where it can be collected with the `Cellular Monitor`_ PC tool to extract PCAP data, or to save them to file for further inspection by Nordic Semiconductor.
 
 In the |NCS|, the :ref:`nrf_modem_lib_readme` takes care of retrieving and forwarding the trace data, for example to a computer or to a non-volatile memory.
 
