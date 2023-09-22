@@ -406,8 +406,8 @@ To be able to provision credentials, the modem must be in offline mode.
 The credentials are provisioned through AT commands.
 See `Credential storage management %CMNG`_ for more information.
 If you are using the |NCS| to build your application, you can use the :ref:`nrf:modem_key_mgmt` library to manage credentials.
-If you prefer a graphical tool, use `LTE Link Monitor`_ instead.
-To manage credentials with LTE Link Monitor, your device must be running an |NCS| application.
+If you prefer a graphical tool, use `Cellular Monitor`_ instead.
+To manage credentials with Cellular Monitor, your device must be running an |NCS| application.
 
 The following figure shows how security tags are provisioned using AT commands:
 
