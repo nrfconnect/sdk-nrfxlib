@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
+
 /**
  * @file nrf_modem_gnss.h
  *
@@ -20,24 +21,61 @@
 extern "C" {
 #endif
 
-/** @defgroup nrf_modem_gnss_system_bitmask GNSS system bitmask values
+/** The maximum number of positioning systems supported by the interface (GPS, QZSS, etc.). */
+#define NRF_MODEM_GNSS_MAX_SYSTEMS 4
+
+/** The maximum number of positioning signals supported by the interface (GPS L1 C/A,
+ *  QZSS L1 C/A, etc.).
+ */
+#define NRF_MODEM_GNSS_MAX_SIGNALS 4
+
+/** @brief Maximum number of satellites that can be tracked at the same time. */
+#define NRF_MODEM_GNSS_MAX_SATELLITES 12
+
+/** The number of GPS satellites. */
+#define NRF_MODEM_GNSS_NUM_GPS_SATELLITES 32
+
+/** @defgroup nrf_modem_gnss_system_id GNSS system IDs
  *
- * @brief Use these bitmask values to enable different GNSS systems.
- *
- * @details The values can be OR'ed together to enable multiple GNSS systems at the same time. If a
- *          systems bit is 0, the corresponding system is disabled.
+ * @brief Used to indicate the GNSS system type.
  * @{
  */
-/** @brief Global Positioning System (GPS).
+/** @brief Invalid. */
+#define NRF_MODEM_GNSS_SYSTEM_INVALID 0
+/** @brief GPS. */
+#define NRF_MODEM_GNSS_SYSTEM_GPS     1
+/** @brief QZSS. */
+#define NRF_MODEM_GNSS_SYSTEM_QZSS    3
+/** @} */
+
+/** @defgroup nrf_modem_gnss_signal_id GNSS signal IDs
  *
- * @note GPS can't be disabled and remains enabled even if the corresponding bit is not set.
+ * @brief Used to indicate the GNSS signal type.
+ * @{
  */
-#define NRF_MODEM_GNSS_SYSTEM_GPS_MASK  0x01
-/** @brief Quasi-Zenith Satellite System (QZSS).
+/** @brief Invalid. */
+#define NRF_MODEM_GNSS_SIGNAL_INVALID    0
+/** @brief GPS L1 C/A. */
+#define NRF_MODEM_GNSS_SIGNAL_GPS_L1_CA  1
+/** @brief QZSS L1 C/A. */
+#define NRF_MODEM_GNSS_SIGNAL_QZSS_L1_CA 3
+/** @} */
+
+/** @defgroup nrf_modem_gnss_signal_bitmask GNSS signal bitmask values
  *
- * @note Only supported by modem firmware v1.3.0 or later.
+ * @brief Use these bitmask values to enable different GNSS signals.
+ *
+ * @details The values can be OR'ed together to enable multiple GNSS signals at the same time. If a
+ *          signal bit is 0, the corresponding signal is disabled.
+ * @{
  */
-#define NRF_MODEM_GNSS_SYSTEM_QZSS_MASK 0x04
+/** @brief Global Positioning System (GPS) L1 C/A.
+ *
+ * @note GPS L1 C/A can't be disabled and remains enabled even if the corresponding bit is not set.
+ */
+#define NRF_MODEM_GNSS_SYSTEM_GPS_L1_CA_MASK  0x01
+/** @brief Quasi-Zenith Satellite System (QZSS) L1 C/A. */
+#define NRF_MODEM_GNSS_SYSTEM_QZSS_L1_CA_MASK 0x04
 /** @} */
 
 /** @defgroup nrf_modem_gnss_nmea_string_bitmask NMEA string bitmask values
@@ -104,12 +142,10 @@ extern "C" {
  *          are temporarily ignored. GNSS will perform scheduled downloads until it has downloaded
  *          the data it needs, after which normal operation is resumed.
  *
- * When this bit is set, scheduled downloads are disabled. This is recommended when A-GPS is used
- * to supply assistance data to the GNSS. It is also possible to use this option without A-GPS,
+ * When this bit is set, scheduled downloads are disabled. This is recommended when A-GNSS is used
+ * to supply assistance data to the GNSS. It is also possible to use this option without A-GNSS,
  * but it should be noted that in that case GNSS will never get some data (for example ionospheric
  * corrections), which may affect the accuracy.
- *
- * @note This is only supported by modem firmware v1.3.1 or later.
  */
 #define NRF_MODEM_GNSS_USE_CASE_SCHED_DOWNLOAD_DISABLE 0x04
 /** @} */
@@ -162,52 +198,59 @@ extern "C" {
 #define NRF_MODEM_GNSS_SV_FLAG_UNHEALTHY   0x08
 /** @} */
 
-/** @defgroup nrf_modem_gnss_agps_data_type A-GPS data type enumerator
+/** @defgroup nrf_modem_gnss_agnss_data_type A-GNSS data type enumerator
  *
- * @brief Use these values to indicate the type of A-GPS data written using
- *        #nrf_modem_gnss_agps_write.
+ * @brief Use these values to indicate the type of A-GNSS data written using
+ *        #nrf_modem_gnss_agnss_write.
  * @{
  */
-/** @brief GPS UTC assistance A-GPS parameters.
+/** @brief GPS UTC assistance A-GNSS parameters.
  *
- * @details Data model #nrf_modem_gnss_agps_data_utc.
+ * @details Data model #nrf_modem_gnss_agnss_gps_data_utc.
  */
-#define NRF_MODEM_GNSS_AGPS_UTC_PARAMETERS                   1
-/** @brief GPS ephemeris assistance A-GPS parameters.
+#define NRF_MODEM_GNSS_AGNSS_GPS_UTC_PARAMETERS               1
+/** @brief GPS/QZSS ephemeris assistance A-GNSS parameters.
  *
- * @details Data model #nrf_modem_gnss_agps_data_ephemeris.
+ * @details Data model #nrf_modem_gnss_agnss_gps_data_ephemeris.
  */
-#define NRF_MODEM_GNSS_AGPS_EPHEMERIDES                      2
-/** @brief GPS almanac assistance A-GPS parameters.
+#define NRF_MODEM_GNSS_AGNSS_GPS_EPHEMERIDES                  2
+/** @brief GPS/QZSS almanac assistance A-GNSS parameters.
  *
- * @details Data model #nrf_modem_gnss_agps_data_almanac.
+ * @details Data model #nrf_modem_gnss_agnss_gps_data_almanac.
  */
-#define NRF_MODEM_GNSS_AGPS_ALMANAC                          3
-/** @brief GPS ionospheric assistance A-GPS parameters, Klobuchar model.
+#define NRF_MODEM_GNSS_AGNSS_GPS_ALMANAC                      3
+/** @brief Ionospheric assistance A-GNSS parameters, Klobuchar model.
  *
- * @details Data model #nrf_modem_gnss_agps_data_klobuchar.
+ * @details Data model #nrf_modem_gnss_agnss_data_klobuchar.
  */
-#define NRF_MODEM_GNSS_AGPS_KLOBUCHAR_IONOSPHERIC_CORRECTION 4
-/** @brief GPS ionospheric assistance A-GPS parameters, NeQuick model.
+#define NRF_MODEM_GNSS_AGNSS_KLOBUCHAR_IONOSPHERIC_CORRECTION 4
+/** @brief Ionospheric assistance A-GNSS parameters, NeQuick model.
  *
- * @details Data model #nrf_modem_gnss_agps_data_nequick.
+ * @details Data model #nrf_modem_gnss_agnss_data_nequick.
  */
-#define NRF_MODEM_GNSS_AGPS_NEQUICK_IONOSPHERIC_CORRECTION   5
-/** @brief GPS system time and SV TOW assistance A-GPS parameter.
+#define NRF_MODEM_GNSS_AGNSS_NEQUICK_IONOSPHERIC_CORRECTION   5
+/** @brief GPS system time and satellite TOW assistance A-GNSS parameters.
  *
- * @details Data model #nrf_modem_gnss_agps_data_system_time_and_sv_tow.
+ * @details Data model #nrf_modem_gnss_agnss_gps_data_system_time_and_sv_tow.
  */
-#define NRF_MODEM_GNSS_AGPS_GPS_SYSTEM_CLOCK_AND_TOWS        6
-/** @brief GPS location assistance A-GPS parameters.
+#define NRF_MODEM_GNSS_AGNSS_GPS_SYSTEM_CLOCK_AND_TOWS        6
+/** @brief Location assistance A-GNSS parameters.
  *
- * @details Data model #nrf_modem_gnss_agps_data_location.
+ * @details Data model #nrf_modem_gnss_agnss_data_location.
  */
-#define NRF_MODEM_GNSS_AGPS_LOCATION                         7
-/** @brief GPS integrity assistance A-GPS parameters.
+#define NRF_MODEM_GNSS_AGNSS_LOCATION                         7
+/** @brief Integrity assistance A-GPS parameters.
  *
  * @details Data model #nrf_modem_gnss_agps_data_integrity.
  */
-#define NRF_MODEM_GNSS_AGPS_INTEGRITY                        8
+#define NRF_MODEM_GNSS_AGPS_INTEGRITY                         8
+/** @brief Integrity assistance A-GNSS parameters.
+ *
+ * @details Data model #nrf_modem_gnss_agnss_data_integrity.
+ *
+ * @note This type is only supported by modem firmware v2.0.0 or later.
+ */
+#define NRF_MODEM_GNSS_AGNSS_INTEGRITY                        9
 /** @} */
 
 /** @defgroup nrf_modem_gnss_event_type Event type enumerator
@@ -233,11 +276,11 @@ extern "C" {
  * @details Payload is of type @ref nrf_modem_gnss_nmea_data_frame.
  */
 #define NRF_MODEM_GNSS_EVT_NMEA                3
-/** @brief Need new APGS data event.
+/** @brief Need new A-GNSS data event.
  *
- * @details Payload is of type @ref nrf_modem_gnss_agps_data_frame.
+ * @details Payload is of type @ref nrf_modem_gnss_agnss_data_frame.
  */
-#define NRF_MODEM_GNSS_EVT_AGPS_REQ            4
+#define NRF_MODEM_GNSS_EVT_AGNSS_REQ           4
 /** @brief GNSS is blocked by LTE event.
  *
  * @details This event doesn't have any payload.
@@ -254,29 +297,21 @@ extern "C" {
  *          GNSS starts acquiring the next periodic fix but also when a scheduled download starts.
  *
  * This event doesn't have any payload.
- *
- * @note This event is only supported by modem firmware v1.3.0 or later.
  */
 #define NRF_MODEM_GNSS_EVT_PERIODIC_WAKEUP     7
 /** @brief GNSS enters sleep because fix retry timeout was reached in periodic or single fix mode.
  *
  * @details This event doesn't have any payload.
- *
- * @note This event is only supported by modem firmware v1.3.0 or later.
  */
 #define NRF_MODEM_GNSS_EVT_SLEEP_AFTER_TIMEOUT 8
 /** @brief GNSS enters sleep because fix was achieved in periodic mode.
  *
  * @details This event doesn't have any payload.
- *
- * @note This event is only supported by modem firmware v1.3.0 or later.
  */
 #define NRF_MODEM_GNSS_EVT_SLEEP_AFTER_FIX     9
 /** @brief Reference altitude for 3-satellite fix expired.
  *
  * @details This event doesn't have any payload.
- *
- * @note This event is only supported by modem firmware v1.3.0 or later.
  */
 #define NRF_MODEM_GNSS_EVT_REF_ALT_EXPIRED     10
 /** @} */
@@ -292,7 +327,7 @@ extern "C" {
  *          data will be available when an #NRF_MODEM_GNSS_EVT_PVT or #NRF_MODEM_GNSS_EVT_FIX event
  *          is received.
  */
-#define NRF_MODEM_GNSS_DATA_PVT      1
+#define NRF_MODEM_GNSS_DATA_PVT       1
 /** @brief NMEA data.
  *
  * @details Use this data type to read NMEA data using the #nrf_modem_gnss_read function. New NMEA
@@ -301,14 +336,14 @@ extern "C" {
  * @note There's no buffering for NMEA data. Because of this NMEA data needs to be read inside the
  *       event handler function, otherwise some of the data may be overwritten before it's read.
  */
-#define NRF_MODEM_GNSS_DATA_NMEA     2
-/** @brief A-GPS request data.
+#define NRF_MODEM_GNSS_DATA_NMEA      2
+/** @brief A-GNSS request data.
  *
- * @details Use this data type to read A-GPS request data using the #nrf_modem_gnss_read function.
- *          New A-GPS request data is received when an #NRF_MODEM_GNSS_EVT_AGPS_REQ event is
+ * @details Use this data type to read A-GNSS request data using the #nrf_modem_gnss_read function.
+ *          New A-GNSS request data is received when an #NRF_MODEM_GNSS_EVT_AGNSS_REQ event is
  *          received.
  */
-#define NRF_MODEM_GNSS_DATA_AGPS_REQ 3
+#define NRF_MODEM_GNSS_DATA_AGNSS_REQ 3
 /** @} */
 
 /** @brief Configuration for the #nrf_modem_gnss_1pps_enable function. */
@@ -371,9 +406,6 @@ struct nrf_modem_gnss_1pps_config {
 #define NRF_MODEM_GNSS_QZSS_NMEA_MODE_CUSTOM   1
 /** @} */
 
-/** @brief Maximum number of satellites that can be tracked at the same time. */
-#define NRF_MODEM_GNSS_MAX_SATELLITES 12
-
 /** @brief Date and time. */
 struct nrf_modem_gnss_datetime {
 	/** 4-digit representation (Gregorian calendar). */
@@ -394,17 +426,18 @@ struct nrf_modem_gnss_datetime {
 
 /** @brief Space Vehicle (SV) information. */
 struct nrf_modem_gnss_sv {
-	/** SV number 1...32 for GPS, 193...202 for QZSS. */
-	uint16_t sv;
-	/** Signal type. 0: invalid, 1: GPS L1C/A, 3: QZSS L1C/A, other values are reserved for
-	 *  other GNSSes or signals.
+	/** Satellite ID.
+	 *  1...32 for GPS
+	 *  193...202 for QZSS.
 	 */
+	uint16_t sv;
+	/** Signal type, see @ref nrf_modem_gnss_signal_types. */
 	uint8_t signal;
 	/** 0.1 dB/Hz. */
 	uint16_t cn0;
-	/** SV elevation angle in degrees. */
+	/** Satellite elevation angle in degrees. */
 	int16_t elevation;
-	/** SV azimuth angle in degrees. */
+	/** Satellite azimuth angle in degrees. */
 	int16_t azimuth;
 	/** See @ref nrf_modem_gnss_sv_flag_bitmask. */
 	uint8_t flags;
@@ -420,34 +453,19 @@ struct nrf_modem_gnss_pvt_data_frame {
 	float altitude;
 	/** Position accuracy (2D 1-sigma) in meters. */
 	float accuracy;
-	/** Altitude accuracy (1-sigma) in meters.
-	 *
-	 * @note Only valid with modem firmware v1.3.2 or later.
-	 */
+	/** Altitude accuracy (1-sigma) in meters. */
 	float altitude_accuracy;
 	/** Horizontal speed in m/s. */
 	float speed;
-	/** Speed accuracy (1-sigma) in m/s.
-	 *
-	 * @note Only valid with modem firmware v1.3.0 or later.
-	 */
+	/** Speed accuracy (1-sigma) in m/s. */
 	float speed_accuracy;
-	/** Vertical speed in m/s. Positive is up.
-	 *
-	 * @note Only valid with modem firmware v1.3.2 or later.
-	 */
+	/** Vertical speed in m/s. Positive is up. */
 	float vertical_speed;
-	/** Vertical speed accuracy (1-sigma) in m/s.
-	 *
-	 * @note Only valid with modem firmware v1.3.2 or later.
-	 */
+	/** Vertical speed accuracy (1-sigma) in m/s. */
 	float vertical_speed_accuracy;
 	/** Heading of user movement in degrees. */
 	float heading;
-	/** Heading accuracy (1-sigma) in degrees.
-	 *
-	 * @note Only valid with modem firmware v1.3.2 or later.
-	 */
+	/** Heading accuracy (1-sigma) in degrees. */
 	float heading_accuracy;
 	/** Date and time. */
 	struct nrf_modem_gnss_datetime datetime;
@@ -461,12 +479,9 @@ struct nrf_modem_gnss_pvt_data_frame {
 	float tdop;
 	/** See @ref nrf_modem_gnss_pvt_flag_bitmask. */
 	uint8_t flags;
-	/** Describes up to 12 of the space vehicles used for the measurement. */
+	/** Describes up to 12 of the satellites used for the measurement. */
 	struct nrf_modem_gnss_sv sv[NRF_MODEM_GNSS_MAX_SATELLITES];
-	/** Cumulative GNSS execution time since last start in milliseconds.
-	 *
-	 * @note Only valid with modem firmware v1.3.2 or later.
-	 */
+	/** Cumulative GNSS execution time since last start in milliseconds. */
 	uint32_t execution_time;
 };
 
@@ -479,81 +494,101 @@ struct nrf_modem_gnss_nmea_data_frame {
 	char nmea_str[NRF_MODEM_GNSS_NMEA_MAX_LEN];
 };
 
-/** @defgroup nrf_modem_gnss_agps_data_bitmask A-GPS data request bitmask values
+/** @defgroup nrf_modem_gnss_agnss_data_bitmask A-GNSS data request bitmask values
  *
- * @brief Bitmask values for the data_flags member in the #nrf_modem_gnss_agps_data_frame.
+ * @brief Bitmask values for the data_flags member in the #nrf_modem_gnss_agnss_data_frame.
  * @{
  */
 /** @brief GPS UTC parameters assistance data. */
-#define NRF_MODEM_GNSS_AGPS_GPS_UTC_REQUEST		0x01
+#define NRF_MODEM_GNSS_AGNSS_GPS_UTC_REQUEST			0x01
 /** @brief Klobuchar ionospheric correction parameters assistance data. */
-#define NRF_MODEM_GNSS_AGPS_KLOBUCHAR_REQUEST		0x02
+#define NRF_MODEM_GNSS_AGNSS_KLOBUCHAR_REQUEST			0x02
 /** @brief NeQuick ionospheric correction parameters assistance data. */
-#define NRF_MODEM_GNSS_AGPS_NEQUICK_REQUEST		0x04
+#define NRF_MODEM_GNSS_AGNSS_NEQUICK_REQUEST			0x04
 /** @brief GPS system time and SV TOWs assistance data. */
-#define NRF_MODEM_GNSS_AGPS_SYS_TIME_AND_SV_TOW_REQUEST 0x08
+#define NRF_MODEM_GNSS_AGNSS_GPS_SYS_TIME_AND_SV_TOW_REQUEST	0x08
 /** @brief Position assistance parameters assistance data */
-#define NRF_MODEM_GNSS_AGPS_POSITION_REQUEST		0x10
+#define NRF_MODEM_GNSS_AGNSS_POSITION_REQUEST			0x10
 /** @brief Integrity assistance parameters assistance data */
-#define NRF_MODEM_GNSS_AGPS_INTEGRITY_REQUEST		0x20
+#define NRF_MODEM_GNSS_AGNSS_INTEGRITY_REQUEST			0x20
 /** @} */
 
-/** @brief A-GPS notification data frame used by GNSS to let the application know it needs new A-GPS
- *         data.
- */
-struct nrf_modem_gnss_agps_data_frame {
-	/** @brief Bit mask indicating the satellite PRNs for which the assistance GPS ephemeris
-	 *         data is needed.
+/** @brief Ephemeris and almanac data need for a system. */
+struct nrf_modem_gnss_agnss_system_data_need {
+	/** @brief System ID, see @ref nrf_modem_gnss_system_id. */
+	uint8_t system_id;
+	/** @brief Bit mask indicating the satellites for which the assistance ephemeris data
+	 *         is needed.
 	 */
-	uint32_t sv_mask_ephe;
-	/** @brief Bit mask indicating the satellite PRNs for which the assistance GPS almanac
-	 *         data is needed.
+	uint64_t sv_mask_ephe;
+	/** @brief Bit mask indicating the satellites for which the assistance almanac data
+	 *         is needed.
 	 */
-	uint32_t sv_mask_alm;
-	/** @brief Indicating what kind of A-GPS data is needed by GNSS.
-	 *
-	 * @details See @ref nrf_modem_gnss_agps_data_bitmask.
-	 */
-	uint32_t data_flags;
+	uint64_t sv_mask_alm;
 };
 
-/** @brief The number of GPS satellites. */
-#define NRF_MODEM_GNSS_NUM_GPS_SATELLITES 32
-
-/** @brief A-GPS data expiry.
- *
- * @details Expiry times are given in seconds. 0 indicates that data is needed immediately.
- *          0xffffffff indicates that data is not used by GNSS.
- *
- * @note Only supported by modem firmware v1.3.2 or later.
+/** @brief A-GNSS notification data frame used by GNSS to let the application know it needs new
+ *         assistance data.
  */
-struct nrf_modem_gnss_agps_expiry {
-	/** @brief Flags indicating the A-GPS data types needed by GNSS.
+struct nrf_modem_gnss_agnss_data_frame {
+	/** @brief Indicating what kind of A-GNSS data is needed by GNSS.
 	 *
-	 * @details See @ref nrf_modem_gnss_agps_data_bitmask. If bit
-	 *          @ref NRF_MODEM_GNSS_AGPS_SYS_TIME_AND_SV_TOW_REQUEST is set,
+	 * @details See @ref nrf_modem_gnss_agnss_data_bitmask.
+	 */
+	uint32_t data_flags;
+	/** @brief Number of systems assistance data need is indicated for. */
+	uint8_t system_count;
+	/** @brief Ephemeris and almanac data need for each system. */
+	struct nrf_modem_gnss_agnss_system_data_need system[NRF_MODEM_GNSS_MAX_SYSTEMS];
+};
+
+/** The maximum number of satellites expiry times are given for. */
+#define NRF_MODEM_GNSS_MAX_SV_EXPIRY_TIMES 127
+
+/** @brief Ephemeris and almanac expiry times for a satellite. */
+struct nrf_modem_gnss_agnss_sv_expiry {
+	/** @brief Satellite ID. */
+	uint8_t sv_id;
+	/** @brief System ID, see @ref nrf_modem_gnss_system_id. */
+	uint8_t system_id;
+	/** @brief Ephemeris expiry time in minutes. */
+	uint16_t ephe_expiry;
+	/** @brief Almanac expiry time in minutes. */
+	uint16_t alm_expiry;
+};
+
+/** @brief A-GNSS data expiry.
+ *
+ * @details Expiry times are given in minutes. 0 indicates that data is needed immediately.
+ *          0xffff indicates that data is not used by GNSS.
+ */
+struct nrf_modem_gnss_agnss_expiry {
+	/** @brief Flags indicating the A-GNSS data types needed by GNSS.
+	 *
+	 * @details See @ref nrf_modem_gnss_agnss_data_bitmask. If bit
+	 *          @ref NRF_MODEM_GNSS_AGNSS_GPS_SYS_TIME_AND_SV_TOW_REQUEST is set,
 	 *          GNSS doesn't have the GPS system time and all expiry time fields
 	 *          for ephemerides and almanacs are set to zero.
 	 */
 	uint32_t data_flags;
-	/** @brief Ephemeris expiry time for each GPS satellite. */
-	uint32_t ephe_expiry[NRF_MODEM_GNSS_NUM_GPS_SATELLITES];
-	/** @brief Almamac expiry time for each GPS satellite. */
-	uint32_t alm_expiry[NRF_MODEM_GNSS_NUM_GPS_SATELLITES];
 	/** @brief UTC parameters expiry time. */
-	uint32_t utc_expiry;
+	uint16_t utc_expiry;
 	/** @brief Klobuchar ionospheric correction parameters expiry time. */
-	uint32_t klob_expiry;
+	uint16_t klob_expiry;
 	/** @brief NeQuick ionospheric correction parameters expiry time. */
-	uint32_t neq_expiry;
+	uint16_t neq_expiry;
 	/** @brief Integrity assistance parameters expiry time. */
-	uint32_t integrity_expiry;
+	uint16_t integrity_expiry;
 	/** @brief Position assistance expiry time. */
-	uint32_t position_expiry;
+	uint16_t position_expiry;
+	/** @brief Number of satellites for which expiry times are given. */
+	uint8_t sv_count;
+	/** @brief Ephemeris and almanac expiry times for satellites. */
+	struct nrf_modem_gnss_agnss_sv_expiry sv[NRF_MODEM_GNSS_MAX_SV_EXPIRY_TIMES];
 };
 
-/** @brief A-GPS UTC parameters. */
-struct nrf_modem_gnss_agps_data_utc {
+/** @brief A-GNSS GPS UTC parameters. */
+struct nrf_modem_gnss_agnss_gps_data_utc {
 	/** First order term of polynomial (sec/sec). Scale factor 2^-50.
 	 *  Range -8388608...8388607 (25 bits).
 	 */
@@ -576,9 +611,12 @@ struct nrf_modem_gnss_agps_data_utc {
 	int8_t delta_tlsf;
 };
 
-/** @brief A-GPS ephemeris data. */
-struct nrf_modem_gnss_agps_data_ephemeris {
-	/** Satellite ID (dimensionless). Range 1...32. */
+/** @brief A-GNSS GPS/QZSS ephemeris data. */
+struct nrf_modem_gnss_agnss_gps_data_ephemeris {
+	/** Satellite ID (dimensionless).
+	 *  1...32: GPS
+	 *  193...202: QZSS
+	 */
 	uint8_t sv_id;
 	/** Satellite health (dimensionless). */
 	uint8_t health;
@@ -638,9 +676,12 @@ struct nrf_modem_gnss_agps_data_ephemeris {
 	int16_t cuc;
 };
 
-/** @brief A-GPS almanac data. */
-struct nrf_modem_gnss_agps_data_almanac {
-	/** Satellite ID (dimensionless). Range 1...32. */
+/** @brief A-GNSS GPS/QZSS almanac data. */
+struct nrf_modem_gnss_agnss_gps_data_almanac {
+	/** Satellite ID (dimensionless).
+	 *  1...32: GPS
+	 *  193...202: QZSS
+	 */
 	uint8_t sv_id;
 	/** Almanac reference GPS week number modulo 256. */
 	uint8_t wn;
@@ -676,8 +717,8 @@ struct nrf_modem_gnss_agps_data_almanac {
 	int16_t af1;
 };
 
-/** @brief A-GPS Klobuchar ionospheric correction data. */
-struct nrf_modem_gnss_agps_data_klobuchar {
+/** @brief A-GNSS Klobuchar ionospheric correction data. */
+struct nrf_modem_gnss_agnss_data_klobuchar {
 	/** Constant term (sec). Scale factor 2^-30. */
 	int8_t alpha0;
 	/** First-order coefficient (sec/semi-circle). Scale factor 2^-27. */
@@ -696,8 +737,8 @@ struct nrf_modem_gnss_agps_data_klobuchar {
 	int8_t beta3;
 };
 
-/** @brief A-GPS NeQuick ionospheric correction data. */
-struct nrf_modem_gnss_agps_data_nequick {
+/** @brief A-GNSS NeQuick ionospheric correction data. */
+struct nrf_modem_gnss_agnss_data_nequick {
 	/** Effective ionisation level 1st order parameter (SFU).
 	 * Scale factor 2^-2. Range 0...2047  (11 bits).
 	 */
@@ -720,8 +761,8 @@ struct nrf_modem_gnss_agps_data_nequick {
 	uint8_t storm_valid;
 };
 
-/** @brief A-GPS TOW assistance data for a SV. */
-struct nrf_modem_gnss_agps_data_tow_element {
+/** @brief A-GNSS GPS TOW assistance data for a satellite. */
+struct nrf_modem_gnss_agnss_gps_data_tow_element {
 	/** First two bits (MSB) represent the reserved bit and integrity status flag
 	 *  in the telemetry message (TLM) word. The following 14 bits represent the TLM
 	 *  being broadcast by the satellite.
@@ -733,12 +774,12 @@ struct nrf_modem_gnss_agps_data_tow_element {
 
 /** @brief Maximum number of TOW elements in the TOW array.
  *
- * @see nrf_modem_gnss_agps_data_system_time_and_sv_tow.
+ * @see nrf_modem_gnss_agnss_gps_data_system_time_and_sv_tow.
  */
-#define NRF_MODEM_GNSS_AGPS_MAX_SV_TOW 32
+#define NRF_MODEM_GNSS_AGNSS_GPS_MAX_SV_TOW 32
 
-/** @brief A-GPS system time and SV TOW data. */
-struct nrf_modem_gnss_agps_data_system_time_and_sv_tow {
+/** @brief A-GNSS GPS system time and satellite TOW data. */
+struct nrf_modem_gnss_agnss_gps_data_system_time_and_sv_tow {
 	/** Day number since Jan 6th, 1980 00:00:00 UTC (USNO). */
 	uint16_t date_day;
 	/** Full seconds part of time-of-day (s). Range 0...86399. */
@@ -749,12 +790,13 @@ struct nrf_modem_gnss_agps_data_system_time_and_sv_tow {
 	 *  assistance data is valid.
 	 */
 	uint32_t sv_mask;
-	/** TOW assistance data for SVs. */
-	struct nrf_modem_gnss_agps_data_tow_element sv_tow[NRF_MODEM_GNSS_AGPS_MAX_SV_TOW];
+	/** TOW assistance data for satellites. */
+	struct nrf_modem_gnss_agnss_gps_data_tow_element
+		sv_tow[NRF_MODEM_GNSS_AGNSS_GPS_MAX_SV_TOW];
 };
 
-/** @brief A-GPS location data. */
-struct nrf_modem_gnss_agps_data_location {
+/** @brief A-GNSS location data. */
+struct nrf_modem_gnss_agnss_data_location {
 	/** Geodetic latitude in WGS-84. Range -8388607...8388607.
 	 *  The relation between the coded number N and the latitude
 	 *  range X (in degrees) is as follows: N <= (2^23/90) * X < N + 1.
@@ -781,16 +823,12 @@ struct nrf_modem_gnss_agps_data_location {
 	/** Uncertainty, semi-major. Range 0...127 or 255 for missing latitude and longitude.
 	 *  The uncertainty (in meters) is mapped from the coded number K with following formula:
 	 *  r = C * ((1 + x)^K - 1), where C = 10 and x = 0,1. Range of r (in kilometers) 0...1800.
-	 *
-	 * @note Value 255 is only supported by modem firmware v1.3.0 or later.
 	 */
 	uint8_t unc_semimajor;
 
 	/** Uncertainty, semi-minor. Range 0...127 or 255 for missing latitude and longitude.
 	 *  The uncertainty (in meters) is mapped from the coded number K with following formula:
 	 *  r = C * ((1 + x)^K - 1), where C = 10 and x = 0,1. Range of r (in kilometers) 0...1800.
-	 *
-	 * @note Value 255 is only supported by modem firmware v1.3.0 or later.
 	 */
 	uint8_t unc_semiminor;
 
@@ -800,8 +838,6 @@ struct nrf_modem_gnss_agps_data_location {
 	/** Uncertainty, altitude. Range 0...127 or 255 for missing altitude. The uncertainty in
 	 *  altitude h (in meters) is mapped from the coded number K with following formula:
 	 *  h = C * ((1 + x)^K - 1), where C = 45 and x = 0,025. Range of h (in meters) 0...990,5.
-	 *
-	 * @note Value 255 is only supported by modem firmware v1.3.0 or later.
 	 */
 	uint8_t unc_altitude;
 
@@ -819,6 +855,26 @@ struct nrf_modem_gnss_agps_data_integrity {
 	 *  the corresponding GPS satellite PRN is unhealthy.
 	 */
 	uint32_t integrity_mask;
+};
+
+/** @brief A-GNSS satellite integrity mask for a signal. */
+struct nrf_modem_gnss_agnss_data_signal_integrity {
+	/** Signal ID, see @ref nrf_modem_gnss_signal_id. */
+	uint8_t signal_id;
+	/** Bit mask indicating the unhealthy satellite numbers for the signal. When a mask bit is
+	 *  set, the corresponding satellite is unhealthy.
+	 *  GPS: 32 LSBs correspond to PRN 1 .. 32
+	 *  QZSS: 10 LSBs correspond to PRN 193 .. 202
+	 */
+	uint64_t integrity_mask;
+};
+
+/** @brief A-GNSS satellite integrity data. */
+struct nrf_modem_gnss_agnss_data_integrity {
+	/** Number of signals integrity is indicated for. */
+	uint8_t signal_count;
+	/** Satellite integrity mask for each signal. */
+	struct nrf_modem_gnss_agnss_data_signal_integrity signal[NRF_MODEM_GNSS_MAX_SIGNALS];
 };
 
 /** @defgroup nrf_modem_gnss_delete_bitmask Delete bitmask values
@@ -850,15 +906,22 @@ struct nrf_modem_gnss_agps_data_integrity {
  *
  * @brief Dynamics mode values to be used as an argument for function
  *        #nrf_modem_gnss_dyn_mode_change.
+ *
+ * The maximum speeds listed below are for modem firmware v2.0.0 or later. For older modem
+ * firmware versions, the assumed maximum speed for all modes is 100 km/h.
+ *
+ * The maximum speed is not a hard limit, but if the receiver speed is higher than the assumed
+ * maximum speed for the selected mode, GNSS will operate with suboptimal predictions.
+ *
  * @{
  */
-/** @brief General purpose mode. */
+/** @brief General purpose mode. Assumed maximum speed 100 km/h. */
 #define NRF_MODEM_GNSS_DYNAMICS_GENERAL_PURPOSE 0
-/** @brief Optimize for stationary use case. */
+/** @brief Optimize for stationary use case. Assumed maximum speed 5 km/h. */
 #define NRF_MODEM_GNSS_DYNAMICS_STATIONARY      1
-/** @brief Optimize for pedestrian use case. */
+/** @brief Optimize for pedestrian use case. Assumed maximum speed 30 km/h. */
 #define NRF_MODEM_GNSS_DYNAMICS_PEDESTRIAN      2
-/** @brief Optimize for automotive use case. */
+/** @brief Optimize for automotive use case. Assumed maximum speed > 100 km/h. */
 #define NRF_MODEM_GNSS_DYNAMICS_AUTOMOTIVE      3
 /** @} */
 
@@ -884,14 +947,14 @@ typedef void (*nrf_modem_gnss_event_handler_type_t)(int event);
  */
 int32_t nrf_modem_gnss_event_handler_set(nrf_modem_gnss_event_handler_type_t handler);
 
-/** @brief Sets the supported GNSS systems. Systems which have the corresponding bit set are
+/** @brief Sets the supported GNSS signals. Signals which have the corresponding bit set are
  *         enabled.
  *
- * Default value: All systems supported by the modem firmware are enabled
+ * Default value: All signals supported by the modem firmware are enabled
  *
- * @note GPS can't be disabled and remains enabled even if the corresponding bit is not set.
+ * @note GPS L1 C/A can't be disabled and remains enabled even if the corresponding bit is not set.
  *
- * @param[in] system_mask System bitmask, see @ref nrf_modem_gnss_system_bitmask.
+ * @param[in] signal_mask Signal bitmask, see @ref nrf_modem_gnss_signal_bitmask.
  *
  * @retval 0 on success.
  * @retval -NRF_EPERM The Modem library is not initialized.
@@ -901,7 +964,7 @@ int32_t nrf_modem_gnss_event_handler_set(nrf_modem_gnss_event_handler_type_t han
  * @retval -NRF_ENOMEM There is not enough shared memory for this request.
  * @retval -NRF_ESHUTDOWN The modem was shut down.
  */
-int32_t nrf_modem_gnss_system_mask_set(uint8_t system_mask);
+int32_t nrf_modem_gnss_signal_mask_set(uint8_t signal_mask);
 
 /** @brief Set below which elevation angle GNSS should stop tracking a satellite.
  *
@@ -948,8 +1011,6 @@ int32_t nrf_modem_gnss_use_case_set(uint8_t use_case);
  * seconds.
  *
  * Default value: 1 (continuous navigation)
- *
- * @note Fix interval values over 1800 seconds are only supported by modem firmware v1.3.0 or later.
  *
  * @note In periodic navigation mode, when GNSS determines it needs to download ephemerides or
  *       almanacs from the broadcast, the fix interval and fix retry parameters are temporarily
@@ -1040,8 +1101,6 @@ int32_t nrf_modem_gnss_power_mode_set(uint8_t power_mode);
  *
  * @note Use of TCXO significantly raises the idle current consumption.
  *
- * @note This feature is only supported by modem firmware v1.3.0 or later.
- *
  * @param[in] timing_source See @ref nrf_modem_gnss_timing_source.
  *
  * @retval 0 on success.
@@ -1061,8 +1120,6 @@ int32_t nrf_modem_gnss_timing_source_set(uint8_t timing_source);
  *          IDs 193...202 are used for QZSS satellites.
  *
  * Default value: #NRF_MODEM_GNSS_QZSS_NMEA_MODE_STANDARD
- *
- * @note This feature is only supported by modem firmware v1.3.0 or later.
  *
  * @param[in] nmea_mode See @ref nrf_modem_gnss_qzss_nmea_mode.
  *
@@ -1084,8 +1141,6 @@ int32_t nrf_modem_gnss_qzss_nmea_mode_set(uint8_t nmea_mode);
  *          their value is ignored.
  *
  * Default value: All QZSS PRNs (193...202) are enabled.
- *
- * @note This feature is only supported by modem firmware v1.3.0 or later.
  *
  * @param[in] prn_mask QZSS PRN mask.
  *
@@ -1192,8 +1247,6 @@ int32_t nrf_modem_gnss_prio_mode_disable(void);
  *
  * Default value: #NRF_MODEM_GNSS_DYNAMICS_GENERAL_PURPOSE
  *
- * @note This feature is only supported by modem firmware v1.3.0 or later.
- *
  * @param[in] mode Selected dynamics mode, see @ref nrf_modem_gnss_dynamics_mode.
  *
  * @retval 0 on success.
@@ -1212,8 +1265,6 @@ int32_t nrf_modem_gnss_dyn_mode_change(uint32_t mode);
  *          giving pulses after it has got at least one fix. After this, the pulses will continue
  *          also when GNSS is no longer running, but the precision will start degrading.
  *
- * @note This feature is only supported by modem firmware v1.3.0 or later.
- *
  * @note 1PPS accuracy is not guaranteed when LTE is active.
  *
  * @param[in] config Pointer to the configuration struct.
@@ -1229,8 +1280,6 @@ int32_t nrf_modem_gnss_dyn_mode_change(uint32_t mode);
 int32_t nrf_modem_gnss_1pps_enable(const struct nrf_modem_gnss_1pps_config *config);
 
 /** @brief Disables 1PPS functionality.
- *
- * @note This feature is only supported by modem firmware v1.3.0 or later.
  *
  * @retval 0 on success.
  * @retval -NRF_EPERM The Modem library is not initialized.
@@ -1259,40 +1308,39 @@ int32_t nrf_modem_gnss_1pps_disable(void);
  */
 int32_t nrf_modem_gnss_read(void *buf, int32_t buf_len, int type);
 
-/** @brief Writes A-GPS data to GNSS.
+/** @brief Writes A-GNSS data to GNSS.
  *
- * @details This function is used to write A-GPS data to GNSS to decrease the time to first fix.
+ * @details This function is used to write A-GNSS data to GNSS to decrease the time to first fix.
  *
- * @param[in] buf Pointer to a buffer that contain A-GPS data.
+ * @param[in] buf Pointer to a buffer that contains A-GNSS data.
  * @param[in] buf_len Length of the buffer.
- * @param[in] type A-GPS data type identifier, see @ref nrf_modem_gnss_agps_data_type.
+ * @param[in] type A-GNSS data type identifier, see @ref nrf_modem_gnss_agnss_data_type.
  *
  * @retval 0 on success.
  * @retval -NRF_EPERM The Modem library is not initialized.
  * @retval -NRF_EACCES GNSS is not enabled in system or functional mode.
  * @retval -NRF_EINVAL The buffer supplied by the application is NULL, buffer length is 0,
- *                     the A-GPS data type doesn't exist or the A-GPS data was not accepted by GNSS.
+ *                     the A-GNSS data type doesn't exist or the A-GNSS data was not accepted by
+ *                     GNSS.
  * @retval -NRF_ENOMEM There is not enough shared memory for this request.
  * @retval -NRF_ESHUTDOWN The modem was shut down.
  */
-int32_t nrf_modem_gnss_agps_write(void *buf, int32_t buf_len, uint16_t type);
+int32_t nrf_modem_gnss_agnss_write(void *buf, int32_t buf_len, uint16_t type);
 
-/** @brief Reads the current A-GPS data need and expiry times from GNSS.
+/** @brief Reads the current A-GNSS data need and expiry times from GNSS.
  *
- * @details Returns detailed information about the current GNSS A-GPS data need. The data
+ * @details Returns detailed information about the current GNSS A-GNSS data need. The data
  *          structure contains expiry times in seconds for different types of assistance data.
  *          This function can be called at any time. If GNSS doesn't know the current GPS
  *          system time, the expiry times can not be calculated
  *
- * @note When A-GPS data has been injected but GNSS has not yet been started, ephemerides and
+ * @note When A-GNSS data has been injected but GNSS has not yet been started, ephemerides and
  *       almanacs are in some cases reported as expired. This happens when ephemerides and almanacs
  *       are injected before GPS system time. This can be prevented by either injecting GPS system
  *       time before ephemerides and almanacs or briefly starting and stopping GNSS before calling
  *       the function.
  *
- * @note Only supported by modem firmware v1.3.2 or later.
- *
- * @param[out] agps_expiry Pointer to a buffer where the data is stored to.
+ * @param[out] agnss_expiry Pointer to a buffer where the data is stored to.
  *
  * @return 0 on success.
  * @retval -NRF_EPERM The Modem library is not initialized.
@@ -1303,12 +1351,11 @@ int32_t nrf_modem_gnss_agps_write(void *buf, int32_t buf_len, uint16_t type);
  * @retval -NRF_EOPNOTSUPP The operation is not supported by the modem firmware.
  * @retval -NRF_ESHUTDOWN The modem was shut down.
  */
-int32_t nrf_modem_gnss_agps_expiry_get(struct nrf_modem_gnss_agps_expiry *agps_expiry);
+int32_t nrf_modem_gnss_agnss_expiry_get(struct nrf_modem_gnss_agnss_expiry *agnss_expiry);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* NRF_MODEM_GNSS_H__ */
-
 /** @} */

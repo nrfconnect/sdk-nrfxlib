@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-/**@file nrf_modem_bootloader.h
+/**
+ * @file nrf_modem_bootloader.h
+ *
  * @defgroup nrf_modem_bootloader Bootloader API
  * @{
  * @brief API for modem bootloader (Full DFU).
  */
-
 #ifndef NRF_BOOTLOADER_H__
 #define NRF_BOOTLOADER_H__
 
@@ -21,20 +22,24 @@ extern "C" {
 #endif
 
 /** @brief Digest buffer length. */
-#define NRF_MODEM_BOOTLOADER_DIGEST_LEN 32
+#define NRF_MODEM_BOOTLOADER_DIGEST_LEN 8
 /** @brief UUID buffer length. */
 #define NRF_MODEM_BOOTLOADER_UUID_LEN   36
 
-/** @brief Storage for 256-bit digest/hash replies.
- * Endianness not converted.
- */
+/** @brief Storage for 256-bit digest/hash replies. */
 struct nrf_modem_bootloader_digest {
-	uint8_t data[NRF_MODEM_BOOTLOADER_DIGEST_LEN];
+	uint32_t data[NRF_MODEM_BOOTLOADER_DIGEST_LEN];
 };
 
 /** @brief Modem UUID response. */
 struct nrf_modem_bootloader_uuid {
 	uint8_t data[NRF_MODEM_BOOTLOADER_UUID_LEN];
+};
+
+/** @brief Bootloader segment */
+struct nrf_modem_bootloader_fw_segment {
+	uint32_t start_addr;
+	uint32_t end_addr;
 };
 
 /**
@@ -100,8 +105,8 @@ int nrf_modem_bootloader_update(void);
 /**
  * @brief Read a digest hash data from the modem.
  *
- * @param[in]   addr            Start address.
- * @param[in]   size            Size of hash data.
+ * @param[in]   segments        Firmware segments.
+ * @param[in]   num_frags       Number of firmware segments.
  * @param[out]  digest_buffer   Pointer to the buffer to store digest hash data.
  *
  * @retval 0 on success.
@@ -112,8 +117,9 @@ int nrf_modem_bootloader_update(void);
  * @retval -NRF_ETIMEDOUT When modem did not respond.
  * @retval -NRF_EIO When incorrect response received from modem.
  */
-int nrf_modem_bootloader_digest(uint32_t addr, uint32_t size,
-			     struct nrf_modem_bootloader_digest *digest_buffer);
+int nrf_modem_bootloader_digest(struct nrf_modem_bootloader_fw_segment *segments,
+				size_t num_segments,
+				struct nrf_modem_bootloader_digest *digest_buffer);
 
 /**
  * @brief Read modem UUID data.
@@ -138,6 +144,7 @@ int nrf_modem_bootloader_uuid(struct nrf_modem_bootloader_uuid *modem_uuid);
  *
  * @retval 0 on success.
  * @retval -NRF_EINVAL When data pointer is NULL.
+ * @retval -NRF_EOPNOTSUPP If bootloader is not programmed.
  * @retval -NRF_EPERM When modem did not accept RPC command.
  * @retval -NRF_ENOEXEC When RPC command failed.
  * @retval -NRF_ETIMEDOUT When modem did not respond.
@@ -145,10 +152,9 @@ int nrf_modem_bootloader_uuid(struct nrf_modem_bootloader_uuid *modem_uuid);
  */
 int nrf_modem_bootloader_verify(const void *data, uint32_t len);
 
-/** @} */
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* NRF_BOOTLOADER_H__ */
+/** @} */

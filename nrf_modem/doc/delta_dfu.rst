@@ -13,7 +13,6 @@ Such updates can save significant amounts of time and bandwidth.
 
 During a firmware delta update, the application transfers the firmware into an area of flash memory in the modem, known as the *scratch area*.
 Once the firmware delta update has been transferred completely, the application schedules the update of the modem firmware, which happens the next time the application boots the modem while calling :c:func:`nrf_modem_init`.
-Finally, the application reboots the modem once more, by reinitializing the Modem library to run the updated modem firmware.
 The same delta update for updating to a new firmware version can be used to perform a rollback to the original firmware version from which the update was done.
 
 The delta update functionality is available through the Modem library :ref:`nrf_modem_delta_dfu_api`, found in :file:`nrfxlib/nrf_modem/include/nrf_modem_delta_dfu.h`.
@@ -91,9 +90,8 @@ A delta modem firmware upgrade consists of the following steps:
 #. Preparing the scratch area
 #. Transferring the new firmware
 #. Scheduling the firmware update
-#. Reinitializing the modem to perform the update
+#. Reinitializing the modem to perform the update and run the new firmware
 #. Checking the result of the update
-#. Reinitializing the modem to run the new firmware
 
 Initializing the Modem library
 ==============================
@@ -191,22 +189,16 @@ To let the modem perform the update, the application must reinitialize the modem
 Checking the result of the update
 =================================
 
-:c:func:`nrf_modem_init` will return one of the following values:
+The application is notified of the result of the update through the :c:member:`nrf_modem_init_params.dfu_handler` callback with one of the following values:
 
-* ``NRF_MODEM_DFU_RESULT_OK`` - The update is successful. The modem will run the updated firmware the next time it boots.
-* ``NRF_MODEM_DFU_RESULT_AUTH_ERROR`` - The update did not take place. The modem will run the original firmware the next time it boots.
-* ``NRF_MODEM_DFU_RESULT_UUID_ERROR`` - The update did not take place. The modem will run the original firmware the next time it boots.
+* ``NRF_MODEM_DFU_RESULT_OK`` - The update is successful. The modem is running the new firmware.
+* ``NRF_MODEM_DFU_RESULT_AUTH_ERROR`` - The update did not take place. The modem is running the original firmware.
+* ``NRF_MODEM_DFU_RESULT_UUID_ERROR`` - The update did not take place. The modem is running the original firmware.
 * ``NRF_MODEM_DFU_RESULT_INTERNAL_ERROR`` - The modem encountered an internal error while updating, and it will not boot to prevent executing unintended operations. The next firmware update operation can only be attempted through the :ref:`nrf_modem_bootloader_api`.
 * ``NRF_MODEM_DFU_RESULT_HARDWARE_ERROR`` - The modem encountered a hardware error while updating, and it will not boot to prevent executing unintended operations. The next firmware update operation can only be attempted through the :ref:`nrf_modem_bootloader_api`.
 * ``NRF_MODEM_DFU_RESULT_VOLTAGE_LOW`` - The modem did not have sufficient voltage to apply the firmware update. The operation will be retried the next time the modem is started.
 
-Reinitializing the modem to run the new firmware
-================================================
-
-Regardless of the value returned by :c:func:`nrf_modem_init`, the application must reinitialize the modem by reinitializing the Modem library in order to run the modem firmware.
-The application can reinitialize the Modem library by calling :c:func:`nrf_modem_init`.
-If the update is successful, the modem runs the new modem firmware.
-The application can verify that by reading the modem firmware UUID or reading the ``AT+CGMR`` command response.
+The application can verify that the modem runs the new modem firmware by reading the modem firmware UUID or reading the ``AT+CGMR`` command response.
 
 Rolling back to a previous firmware
 ***********************************
@@ -238,21 +230,16 @@ To let the modem perform the rollback, the application must reinitialize the mod
 Checking the result of the rollback
 ===================================
 
-:c:func:`nrf_modem_init` will return one of the following values:
+The application is notified of the result of the update through the :c:member:`nrf_modem_init_params.dfu_handler` callback with one of the following values:
 
-* ``NRF_MODEM_DFU_RESULT_OK`` - The rollback is successful. The modem will run the previous firmware the next time it boots.
-* ``NRF_MODEM_DFU_RESULT_AUTH_ERROR`` - The rollback did not take place. The modem will run the same firmware the next time it boots.
-* ``NRF_MODEM_DFU_RESULT_UUID_ERROR`` - The rollback did not take place. The modem will run the same firmware the next time it boots.
+* ``NRF_MODEM_DFU_RESULT_OK`` - The rollback is successful. The modem is running the new firmware.
+* ``NRF_MODEM_DFU_RESULT_AUTH_ERROR`` - The rollback did not take place. The modem is running the original firmware.
+* ``NRF_MODEM_DFU_RESULT_UUID_ERROR`` - The rollback did not take place. The modem is running the original firmware.
 * ``NRF_MODEM_DFU_RESULT_INTERNAL_ERROR`` - The modem encountered an internal error while executing the rollback, and it will not boot to prevent executing unintended operations. For subsequent programming, the modem can only be programmed through the :ref:`nrf_modem_bootloader_api`.
 * ``NRF_MODEM_DFU_RESULT_HARDWARE_ERROR`` - The modem encountered a hardware error while executing the rollback, and it will not boot to prevent executing unintended operations. For subsequent programming, the modem can only be programmed through the :ref:`nrf_modem_bootloader_api`.
+* ``NRF_MODEM_DFU_RESULT_VOLTAGE_LOW`` - The modem did not have sufficient voltage to apply the firmware rollback. The operation will be retried the next time the modem is started.
 
-Reinitializing the modem to run the firmware
-============================================
-
-Regardless of the value returned by :c:func:`nrf_modem_init`, the application must reinitialize the modem by reinitializing the :ref:`nrf_modem` to run the modem firmware.
-The application can reinitialize the Modem library by calling :c:func:`nrf_modem_init`.
-If the rollback is successful, the modem runs the previous modem firmware.
-The application can verify that by reading the modem firmware UUID or the ``AT+CGMR`` command response.
+The application can verify that the modem runs the previous modem firmware by reading the modem firmware UUID or the ``AT+CGMR`` command response.
 
 Thread safety
 *************

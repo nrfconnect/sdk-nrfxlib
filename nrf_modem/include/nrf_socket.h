@@ -4,9 +4,14 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-/**@file nrf_socket.h
+/**
+ * @file nrf_socket.h
  *
+ * @defgroup nrf_socket Modem library socket API
+ * @{
+ * @brief Application interface for nRF sockets.
  */
+
 #ifndef NRF_SOCKET_H__
 #define NRF_SOCKET_H__
 
@@ -51,8 +56,9 @@ extern "C" {
  */
 #define NRF_MODEM_MAX_SOCKET_COUNT 8
 
-/**@addtogroup nrf_socket_address_resolution
- *@{
+/**
+ * @addtogroup nrf_socket_address_resolution
+ * @{
  */
 
 /** @brief Host to network byte-orders on half word. */
@@ -88,14 +94,16 @@ extern "C" {
 /** @brief Maximum length of IPv6 in string form, including null-termination character. */
 #define NRF_INET6_ADDRSTRLEN 46
 
-/**@}*/
+/** @} */
 
-/**@defgroup nrf_socket_api_enumerators Socket enumerators.
+/**
+ * @defgroup nrf_socket_api_enumerators Socket enumerators.
  * @brief Enumerated values that is used as input arguments to multiple socket functions.
  * @{
  */
 
-/**@defgroup nrf_socket_families Socket family.
+/**
+ * @defgroup nrf_socket_families Socket family.
  * @{
  */
 /** Unspecified address family */
@@ -106,9 +114,10 @@ extern "C" {
 #define NRF_AF_INET6 2
 /** Raw packet family. */
 #define NRF_AF_PACKET 3
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_types Socket type.
+/**
+ * @defgroup nrf_socket_types Socket type.
  * @{
  */
 /** TCP socket type. */
@@ -117,9 +126,10 @@ extern "C" {
 #define NRF_SOCK_DGRAM 2
 /** RAW socket type. */
 #define NRF_SOCK_RAW 3
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_protocols Socket protocols.
+/**
+ * @defgroup nrf_socket_protocols Socket protocols.
  * @{
  * @brief Protocol numbers from IANA/BSD.
  */
@@ -142,9 +152,12 @@ extern "C" {
 /** DTLS1v2 protocol. */
 #define NRF_SPROTO_DTLS1v2 273
 
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_tls TLS socket
+/** @} */ /* nrf_socket_api_enumerators */
+
+/**
+ * @defgroup nrf_socket_tls TLS socket
  * @brief TLS socket API.
  * @{
  */
@@ -256,9 +269,10 @@ extern "C" {
  * @note This socket option is only supported with Modem firmware 2.0.0 and newer.
  */
 #define NRF_SO_SEC_HANDSHAKE_STATUS 19
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_options_sockets Generic socket options
+/**
+ * @defgroup nrf_socket_options_sockets Generic socket options
  * @brief Socket options used with IP sockets.
  * @ingroup nrf_socket
  * @{
@@ -271,8 +285,6 @@ extern "C" {
 #define NRF_SO_RCVTIMEO 20
 /** Send timeout. */
 #define NRF_SO_SNDTIMEO 21
-/** Bind a socket to network interface identified by a Packet Data Network ID. */
-#define NRF_SO_BINDTODEVICE 25
 /** Disable ICMP echo replies on both IPv4 and IPv6.
  *  Set to 1 to enable, or to 0 to disable. Default is 0, disabled.
  */
@@ -281,6 +293,10 @@ extern "C" {
 #define NRF_SO_IP_ECHO_REPLY 31
 /** Enable ICMPv6 echo reply. Set to 1 to enable, or to 0 to disable. Default is 1, enabled. */
 #define NRF_SO_IPV6_ECHO_REPLY 32
+/** Send data related to an exceptional event. */
+#define NRF_SO_EXCEPTIONAL_DATA 33
+/** Bind a socket to a Packet Data Network ID. */
+#define NRF_SO_BINDTOPDN 40
 /** Configurable TCP server session timeout in minutes.
  *  Range is 0 to 135. 0 is no timeout and 135 is 2 h 15 min. Default is 0 (no timeout).
  */
@@ -319,29 +335,37 @@ extern "C" {
  *  This lets the modem stay in connected mode longer.
  */
 #define NRF_SO_RAI_WAIT_MORE 54
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_options_levels Socket option levels enumerator
+/**
+ * @defgroup nrf_socket_options_levels Socket option levels enumerator
  * @ingroup nrf_socket_api_enumerators
  * @{
  */
 #define NRF_SOL_SOCKET 1
 #define NRF_SOL_SECURE 282
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_send_recv_flags Socket send/recv flags.
- *@ingroup nrf_socket_api_enumerators
+/**
+ * @defgroup nrf_socket_send_recv_flags Socket send/recv flags.
+ * @ingroup nrf_socket_api_enumerators
  * @{
  */
 /** Return data from the beginning of receive queue without removing data from the queue. */
 #define NRF_MSG_PEEK 0x02
 /** Enables non-blocking operation. */
 #define NRF_MSG_DONTWAIT 0x40
-/** Request a blocking operation until the request is satisfied. */
+/** Request a blocking read operation until the request is satisfied. */
 #define NRF_MSG_WAITALL 0x100
-/**@} */
+/** Request a blocking send operation until the request is acknowledged.
+ *  When used in @c nrf_send() or @c nrf_sendto(), the operation will block until the data has been
+ *  sent on-air and acknowledged by the peer, if required by the network protocol.
+ */
+#define NRF_MSG_WAITACK 0x200
+/** @} */
 
-/**@defgroup nrf_fcnt_commands File descriptor control option commands.
+/**
+ * @defgroup nrf_fcnt_commands File descriptor control option commands.
  * @brief API commands used to control the behaviour of IP sockets using nrf_fcntl().
  * @ingroup nrf_socket
  * @{
@@ -350,18 +374,20 @@ extern "C" {
 #define NRF_F_GETFL 3
 /** Set flag. */
 #define NRF_F_SETFL 4
-/**@} */
+/** @} */
 
-/**@defgroup nrf_fcnt_flags File descriptor control option flags.
+/**
+ * @defgroup nrf_fcnt_flags File descriptor control option flags.
  * @brief Flags used to control the behaviour of IP sockets using nrf_fcntl().
  * @ingroup nrf_socket
  * @{
  */
 /** Use non-blocking I/O. */
 #define NRF_O_NONBLOCK 0x01
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_sec_peer_verify_options TLS peer verification options
+/**
+ * @defgroup nrf_socket_sec_peer_verify_options TLS peer verification options
  * @brief Allowed TLS peer verification options
  *
  * @ingroup nrf_socket_tls
@@ -373,9 +399,10 @@ extern "C" {
 #define NRF_SO_SEC_PEER_VERIFY_OPTIONAL 1
 /** Required */
 #define NRF_SO_SEC_PEER_VERIFY_REQUIRED 2
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_sec_roles Role for the socket connection
+/**
+ * @defgroup nrf_socket_sec_roles Role for the socket connection
  * @brief Allowed roles for the socket connection.
  *
  * @ingroup nrf_socket_tls
@@ -385,9 +412,10 @@ extern "C" {
 #define NRF_SO_SEC_ROLE_CLIENT 0
 /** Server */
 #define NRF_SO_SEC_ROLE_SERVER 1
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_session_cache_options TLS session cache options
+/**
+ * @defgroup nrf_socket_session_cache_options TLS session cache options
  * @brief Allowed options for the TLS session cache.
  *
  * @ingroup nrf_socket_tls
@@ -397,9 +425,10 @@ extern "C" {
 #define NRF_SO_SEC_SESSION_CACHE_DISABLED 0
 /** Enabled */
 #define NRF_SO_SEC_SESSION_CACHE_ENABLED 1
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_so_sec_handshake_timeouts DTLS handshake timeout values
+/**
+ * @defgroup nrf_socket_so_sec_handshake_timeouts DTLS handshake timeout values
  * @brief Allowed timeout values for DTLS handshake timeout socket option according
  *        to RFC6347 section 4.2.4.1. Default is 123 seconds.
  *        (https://tools.ietf.org/html/rfc6347#section-4.2.4.1)
@@ -422,9 +451,10 @@ extern "C" {
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_63S 63
 /** 1s + 2s + 4s + 8s + 16s + 32s + 60s */
 #define NRF_SO_SEC_DTLS_HANDSHAKE_TIMEOUT_123S 123
-/**@} */
+/** @} */
 
-/**@defgroup nrf_socket_tls_cipher_suites TLS Cipher suites
+/**
+ * @defgroup nrf_socket_tls_cipher_suites TLS Cipher suites
  * @brief Allowed cipher suites for the nRF modem.
  * @ingroup nrf_socket_tls
  * @{
@@ -449,8 +479,10 @@ extern "C" {
 #define NRF_TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 0xC02B /**< TLS 1.2 */
 #define NRF_TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 0xC030 /**< TLS 1.2 */
 #define NRF_TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 0xC02F /**< TLS 1.2 */
+/** @} */
 
-/**@defgroup nrf_so_sec_dtls_cid_settings DTLS Connection ID settings
+/**
+ * @defgroup nrf_so_sec_dtls_cid_settings DTLS Connection ID settings
  * @brief Allowed values for DTLS connection ID setting socket option.
  * @ingroup nrf_socket_tls
  * @{
@@ -461,9 +493,10 @@ extern "C" {
 #define NRF_SO_SEC_DTLS_CID_SUPPORTED 1
 /**  enabled */
 #define NRF_SO_SEC_DTLS_CID_ENABLED 2
-/**@} */
+/** @} */
 
-/**@defgroup nrf_so_sec_dtls_cid_statuses DTLS Connection ID statuses
+/**
+ * @defgroup nrf_so_sec_dtls_cid_statuses DTLS Connection ID statuses
  * @brief Allowed values for DTLS connection ID status socket option.
  * @ingroup nrf_socket_tls
  * @{
@@ -476,9 +509,10 @@ extern "C" {
 #define NRF_SO_SEC_DTLS_CID_STATUS_UPLINK 2
 /** bidirectional */
 #define NRF_SO_SEC_DTLS_CID_STATUS_BIDIRECTIONAL 3
-/**@} */
+/** @} */
 
-/**@defgroup nrf_so_sec_handshake_statuses TLS/DTLS Handshake statuses
+/**
+ * @defgroup nrf_so_sec_handshake_statuses TLS/DTLS Handshake statuses
  * @brief Allowed values for DTLS connection ID status socket option.
  * @ingroup nrf_socket_tls
  * @{
@@ -487,9 +521,10 @@ extern "C" {
 #define NRF_SO_SEC_HANDSHAKE_STATUS_FULL 0
 /** cached */
 #define NRF_SO_SEC_HANDSHAKE_STATUS_CACHED 1
-/**@} */
+/** @} */
 
-/**@addtogroup nrf_socket_api
+/**
+ * @addtogroup nrf_socket_api
  * @{
  */
 
@@ -502,9 +537,10 @@ struct nrf_timeval {
 	/** Time interval microseconds. */
 	uint32_t tv_usec;
 };
-/**@} */
+/** @} */
 
-/**@addtogroup nrf_socket_address_resolution
+/**
+ * @addtogroup nrf_socket_address_resolution
  * @{
  */
 
@@ -555,8 +591,6 @@ extern const struct nrf_in_addr nrf_inaddr_any;
  * Contains the address and port of the host.
  */
 struct nrf_sockaddr_in6 {
-	/** Length of this data structure. */
-	uint8_t sin6_len;
 	/** Socket family. */
 	nrf_sa_family_t sin6_family;
 	/** Port, in network byte order. */
@@ -575,8 +609,6 @@ struct nrf_sockaddr_in6 {
  * Contains the address and port of the host.
  */
 struct nrf_sockaddr_in {
-	/** Length of this data structure. */
-	uint8_t sin_len;
 	/** Socket family. */
 	nrf_sa_family_t sin_family;
 	/** Port, in network byte order. */
@@ -594,8 +626,6 @@ typedef uint32_t nrf_nfds_t;
  * @details Only provided for API compatibility.
  */
 struct nrf_sockaddr {
-	/** Socket address length */
-	uint8_t sa_len;
 	/** Socket address family */
 	int sa_family;
 	/** Socket address */
@@ -657,9 +687,10 @@ struct nrf_ifaddrs {
 	void *ifa_data;
 };
 
-/**@} */
+/** @} */
 
-/**@addtogroup nrf_socket_tls
+/**
+ * @addtogroup nrf_socket_tls
  * @{
  */
 
@@ -705,21 +736,10 @@ typedef uint32_t nrf_sec_peer_verify_t;
  */
 typedef uint32_t nrf_sec_cipher_t;
 
+/** @} */
+
 /**
- * @brief Maximum network interface name size.
- * @deprecated since v1.1.0.
- */
-#define NRF_IFNAMSIZ 64
-
-/** @brief Data type for network interface.
- * @deprecated since v1.1.0.
- */
-struct nrf_ifreq {
-	char ifr_name[NRF_IFNAMSIZ]; /* Interface name */
-};
-/**@} */
-
-/**@defgroup nrf_socket_api nRF Socket interface
+ * @defgroup nrf_socket_api nRF Socket interface
  * @{
  */
 
@@ -885,9 +905,10 @@ struct nrf_modem_pollcb {
 	bool oneshot;
 };
 
-/**@} */
+/** @} */
 
-/**@addtogroup nrf_socket_api
+/**
+ * @addtogroup nrf_socket_api
  * @{
  */
 
@@ -971,11 +992,10 @@ int nrf_listen(int sock, int backlog);
 int nrf_accept(int socket, struct nrf_sockaddr *restrict address,
 	       nrf_socklen_t *restrict address_len);
 
-/**@} */
+/** @} */
 
-/**@} */
-
-/**@defgroup nrf_socket_address_resolution Socket address resolution API
+/**
+ * @defgroup nrf_socket_address_resolution Socket address resolution API
  * @brief Address resolution utility functions.
  * @ingroup nrf_socket
  * @{
@@ -1078,10 +1098,11 @@ void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
  */
 int nrf_setdnsaddr(int family, const void *in_addr, nrf_socklen_t in_size);
 
+/** @} */
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* NRF_SOCKET_H__ */
-
-/**@} */
+/** @} */

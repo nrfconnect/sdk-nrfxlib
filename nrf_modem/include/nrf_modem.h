@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-/**@file nrf_modem.h
+/**
+ * @file nrf_modem.h
  *
  * @defgroup nrf_modem Modem library
  * @{
@@ -30,7 +31,7 @@ extern "C" {
 /** @brief Maximum size in bytes of shared modem and application memory. */
 #define NRF_MODEM_MAX_SHMEM_SIZE (128 << 10) /* 128KiB */
 
-/**@} */
+/** @} */
 
 /**
  * @defgroup nrf_modem_dfu Modem DFU
@@ -41,25 +42,23 @@ extern "C" {
  */
 
 /** Modem firmware update successful.
- * The modem will run the updated firmware on reboot.
+ *  The modem is running the updated modem firmware.
  */
 #define NRF_MODEM_DFU_RESULT_OK 0x5500001u
 /** Modem firmware update failed.
- * The modem encountered a fatal internal error during firmware update.
+ *  The modem encountered a fatal internal error during firmware update.
  */
 #define NRF_MODEM_DFU_RESULT_INTERNAL_ERROR 0x4400001u
 /** Modem firmware update failed.
- * The modem encountered a fatal hardware error during firmware update.
+ *  The modem encountered a fatal hardware error during firmware update.
  */
 #define NRF_MODEM_DFU_RESULT_HARDWARE_ERROR 0x4400002u
 /** Modem firmware update failed, due to an authentication error.
- * The modem will automatically run the previous (non-updated)
- * firmware on reboot.
+ *  The modem is running the previous (non-updated) firmware.
  */
 #define NRF_MODEM_DFU_RESULT_AUTH_ERROR 0x4400003u
 /** Modem firmware update failed, due to UUID mismatch.
- * The modem will automatically run the previous (non-updated)
- * firmware on reboot.
+ *  The modem is running the previous (non-updated) firmware.
  */
 #define NRF_MODEM_DFU_RESULT_UUID_ERROR 0x4400004u
 /** Modem firmware update not executed due to low voltage.
@@ -67,7 +66,7 @@ extern "C" {
  */
 #define NRF_MODEM_DFU_RESULT_VOLTAGE_LOW 0x4400005u
 
-/**@} */
+/** @} */
 
 /**
  * @defgroup nrf_modem_shmem_config Shared memory configuration.
@@ -130,7 +129,7 @@ struct nrf_modem_bootloader_shmem_cfg {
 	uint32_t size;
 };
 
-/**@} */
+/** @} */
 
 /**
  * @defgroup nrf_modem_fault_handling Modem fault handling
@@ -182,7 +181,12 @@ struct nrf_modem_fault_info {
  */
 typedef void (*nrf_modem_fault_handler_t)(struct nrf_modem_fault_info *fault_info);
 
-/**@} */
+/**
+ * @brief Modem DFU handler.
+ */
+typedef void (*nrf_modem_dfu_handler_t)(uint32_t dfu_result);
+
+/** @} */
 
 /** @brief Modem library initialization parameters. */
 struct nrf_modem_init_params {
@@ -192,6 +196,8 @@ struct nrf_modem_init_params {
 	uint32_t ipc_irq_prio;
 	/** Modem fault handler */
 	nrf_modem_fault_handler_t fault_handler;
+	/** Modem DFU handler */
+	nrf_modem_dfu_handler_t dfu_handler;
 };
 
 /** @brief Modem library bootloader initialization parameters. */
@@ -222,16 +228,17 @@ char *nrf_modem_build_version(void);
  * @param[in] init_params Initialization parameters.
  *
  * @retval Zero on success.
- * @retval A positive value from @ref nrf_modem_dfu when executing
- *         Modem firmware updates.
+ *
  * @retval -NRF_EPERM The Modem library is already initialized.
  * @retval -NRF_EFAULT @c init_params is @c NULL.
  * @retval -NRF_ENOLCK Not enough semaphores.
  * @retval -NRF_ENOMEM Not enough shared memory.
- * @retval -NRF_EINVAL Control region size is incorrect.
+ * @retval -NRF_EINVAL Control region size is incorrect or missing handlers in @c init_params.
  * @retval -NRF_ENOTSUPP RPC version mismatch.
  * @retval -NRF_ETIMEDOUT Operation timed out.
  * @retval -NRF_ACCESS Modem firmware authentication failure.
+ * @retval -NRF_EAGAIN Modem firmware update not executed due to insufficient voltage, try again.
+ * @retval -NRF_EIO Modem firmware update failure. Modem must be reprogrammed.
  */
 int nrf_modem_init(const struct nrf_modem_init_params *init_params);
 
@@ -245,16 +252,16 @@ int nrf_modem_init(const struct nrf_modem_init_params *init_params);
  * @param[in] init_params Bootloader initialization parameters.
  *
  * @retval Zero on success.
- * @retval A positive value from @ref nrf_modem_dfu when executing
- *         Modem firmware updates.
  *
  * @retval -NRF_EPERM The Modem library is already initialized.
  * @retval -NRF_EFAULT @c init_params is @c NULL.
  * @retval -NRF_ENOLCK Not enough semaphores.
  * @retval -NRF_ENOMEM Not enough shared memory.
+ * @retval -NRF_EINVAL Missing handler in @c init_params.
  * @retval -NRF_EACCES Bad root digest.
  * @retval -NRF_ETIMEDOUT Operation timed out.
  * @retval -NRF_EIO Bootloader fault.
+ * @retval -NRF_ENOSYS Operation not available.
  */
 int nrf_modem_bootloader_init(const struct nrf_modem_bootloader_init_params *init_params);
 
@@ -285,5 +292,4 @@ int nrf_modem_shutdown(void);
 #endif
 
 #endif /* NRF_MODEM_H__ */
-
-/**@} */
+/** @} */

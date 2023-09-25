@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-/**@file nrf_modem_trace.h
+/**
+ * @file nrf_modem_trace.h
  *
  * @defgroup nrf_modem_trace Modem library trace interface
  * @{
@@ -68,5 +69,4 @@ int nrf_modem_trace_processed(size_t len);
 #endif
 
 #endif /* NRF_MODEM_TRACE_H__ */
-
-/**@} */
+/** @} */

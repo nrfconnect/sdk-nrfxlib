@@ -331,6 +331,15 @@ Dynamics modes
    :project: nrfxlib
    :members:
 
+.. _nrf_modem_softsim_api:
+
+SoftSIM API
+***********
+
+.. doxygengroup:: nrf_modem_softsim
+   :project: nrfxlib
+   :members:
+
 OS specific definitions
 ***********************
 

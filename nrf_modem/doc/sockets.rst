@@ -52,9 +52,11 @@ The following table shows all socket options supported by the Modem library.
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_SOL_SOCKET  | NRF_SO_SNDTIMEO                 | ``struct nrf_timeval`` | get/set    | Timeout value for a socket send operation.                                                 |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET  | NRF_SO_BINDTODEVICE             | ``char *``             | set        | Bind this socket to a specific PDN like ``pdn0`` as specified in the passed option value.  |
+| NRF_SOL_SOCKET  | NRF_SO_BINDTOPDN                | ``int``                | set        | Bind this socket to a specific PDN ID.                                                     |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_SOL_SOCKET  | NRF_SO_POLLCB                   | ``struct nrf_pollcb``  | set        | Set callbacks for poll() events on sockets.                                                |
++-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_SOL_SOCKET  | NRF_SO_EXCEPTIONAL_DATA         | ``int``                | get/set    | Send data on socket as part of exceptional event.                                          |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_SOL_SOCKET  | NRF_SO_RAI_LAST                 | ``int``                | set        | Enter Radio Resource Control (RRC) idle immediately after the next send operation.         |
 +-----------------+---------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
@@ -127,14 +129,14 @@ NRF_SO_RCVTIMEO
 NRF_SO_SNDTIMEO
    Set a timeout value for the :c:func:`nrf_connect`, :c:func:`nrf_send`, and :c:func:`nrf_sendto` operations.
    The option accepts an :c:struct:`nrf_timeval` structure with a number of seconds and microseconds specifying the limit on how long to wait for an output operation to complete.
-   The default for this option is the value ``0``, which indicates that these operations will not time out.
+   The default for this option is the value ``0``, which indicates that these operations will not time out, or use the maximum timeout available.
 
 .. note::
    The minimum supported resolution is 1 millisecond.
 
-NRF_SO_BINDTODEVICE
-   Bind this socket to a particular packet data network like, ``pdn0``, as specified in the passed interface name.
-   The passed option is a variable-length null-terminated interface name string with a maximum size of ``NRF_IFNAMSIZ``.
+NRF_SO_BINDTOPDN
+   Bind this socket to a particular packet data network ID.
+   The passed option is an integer specifying the PDN ID.
    If a socket is bound to an interface, only packets received from that particular interface are processed by the socket.
 
 NRF_SO_POLLCB
@@ -146,6 +148,16 @@ NRF_SO_POLLCB
 
 .. important::
    The callback is invoked in an interrupt service routine.
+
+NRF_SO_EXCEPTIONAL_DATA
+   Send data on the socket as part of an exceptional event.
+   Exceptional events are described in the 3GPP Release 14 specification.
+   The feature requires network support.
+
+   Before using this socket option, the PDN associated with the socket must be configured to allow exceptional events by using the ``AT%EXCEPTIONALDATA`` AT command.
+   For more information about the ``AT%EXCEPTIONALDATA`` AT command, see the `nRF91 AT Commands Reference Guide <AT Commands Reference Guide_>`_.
+
+   The socket option is supported from modem firmware v2.0.0.
 
 NRF_SO_RAI_LAST
    This is a Release assistance indication (RAI) socket option.
@@ -350,15 +362,16 @@ For more information about how to configure PDP contexts, activate PDN connectio
 Configuring a socket to use a PDN
 =================================
 
-The application can select which PDN to use on a specific socket by using the :c:func:`nrf_setsockopt` function, with the :c:macro:`NRF_SO_BINDTODEVICE` option and specifying the PDN ID as a string, prefixed by ``pdn``.
-For example, to select the PDN with ID 1, the application must pass ``pdn1`` as the option value.
+The application can select which PDN to use on a specific socket by using the :c:func:`nrf_setsockopt` function with the :c:macro:`NRF_SO_BINDTOPDN` socket option and specifying the PDN ID as an integer.
 
 The following code shows how to create an IPv4 TCP stream socket and configure it to use the PDN with ID 1:
 
 .. code-block:: c
 
+   int pdn_id = 1;
+
    fd = nrf_socket(NRF_AF_INET, NRF_SOCK_STREAM, NRF_IPPROTO_TCP);
-   nrf_setsockopt(fd, NRF_SOL_SOCKET, NRF_SO_BINDTODEVICE, "pdn1", strlen("pdn1"));
+   nrf_setsockopt(fd, NRF_SOL_SOCKET, NRF_SO_BINDTOPDN, &pdn_id, sizeof(pdn_id));
 
 
 Routing a DNS query on a PDN
