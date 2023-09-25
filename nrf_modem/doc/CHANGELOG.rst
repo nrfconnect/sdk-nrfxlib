@@ -9,6 +9,61 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.5.0
+***************
+
+Core library
+============
+
+* Added:
+
+  * The :ref:`nrf_modem_softsim` to use a software SIM with the cellular modem.
+  * Binaries for the nRF9120 SoC (nRF9161 SiP).
+
+* Updated:
+
+  * The :c:func:`nrf_modem_init` function is no longer required to be called twice when updating the modem firmware.
+  * The folder structure for the library binaries.
+    The binaries are now used by the SoC they support instead of the processor.
+
+Sockets
+=======
+
+* Added:
+
+  * The :c:macro:`NRF_SO_EXCEPTIONAL_DATA` socket option to enable sending data as part of exceptional events (3GPP).
+  * The :c:macro:`NRF_MSG_WAITACK` flag to request a blocking send operation until the request is acknowledged by the network.
+  * Enhanced APN rate control.
+
+* Removed the ``sa_len``, ``sin_len``, and ``sin6_len`` callbacks from the :c:struct:`nrf_sockaddr`, :c:struct:`nrf_sockaddr_in`, and :c:struct:`nrf_sockaddr_in6` structs, respectively.
+* Replaced the ``NRF_SO_BINDTODEVICE`` socket option with :c:macro:`NRF_SO_BINDTOPDN`.
+  The new option takes an integer for the PDN ID.
+
+AT interface
+============
+
+* Added the option to set a timeout for the waiting time for the ongoing AT commands to complete by calling the :c:func:`nrf_modem_at_sem_timeout_set` function.
+* The :c:func:`nrf_modem_at_cmd_async` function now immediately returns if there is another AT command pending, regardless of whether it was sent with the :c:func:`nrf_modem_at_cmd_async` function or other API calls.
+
+GNSS interface
+==============
+
+* Added:
+
+  * Support for QZSS assistance.
+  * Maximum speeds for dynamics modes.
+
+Delta DFU
+=========
+
+  * Added the :c:member:`nrf_modem_init_params.dfu_handler` callback that will be called after a DFU, and returns the result of the update.
+
+Bootloader
+==========
+
+  * The :c:func:`nrf_modem_bootloader_digest` function now takes a list of firmware segments as input.
+    The resulting digest is an array of 32-bit integers.
+
 nrf_modem 2.4.1
 ***************
 
@@ -17,8 +72,8 @@ nrf_modem 2.4.1
 nrf_modem 2.4.0
 ***************
 
-:ref:`Sockets <nrf_sockets>`
-============================
+Sockets
+=======
 
 * Added
 
@@ -32,8 +87,8 @@ nrf_modem 2.4.0
 * Fixed a memory leak in the :c:func:`nrf_getsockopt` function, in certain cases where the function returned an error.
 * The :c:macro:`NRF_MODEM_MAX_SOCKET_COUNT` macro was moved from :file:`nrf_modem.h` to :file:`nrf_socket.h`.
 
-:ref:`AT interface <nrf_modem_at>`
-==================================
+AT interface
+============
 
 * Renamed the ``at_cmd_filter`` to ``at_cmd_custom``:
 
@@ -44,30 +99,30 @@ nrf_modem 2.4.0
 * The ``paused`` field was removed from the :c:struct:`nrf_modem_at_cmd_custom`.
   It is no longer possible to pause the dispatching of custom AT commands to their handler function.
 
-:ref:`Delta DFU <nrf_modem_delta_dfu>`
-======================================
+Delta DFU
+=========
 
 * It is no longer necessary to call the :c:func:`nrf_modem_shutdown` function after updating the modem firmware.
   The application can call the :c:func:`nrf_modem_init` function to execute the update, and call that function again to run the modem firmware.
 
-:ref:`Tracing <modem_trace>`
-============================
+Tracing
+=======
 
 * Fixed a bug where the :c:func:`nrf_modem_trace_get` function would attempt to take an uninitialized semaphore if called when tracing was disabled.
 
 nrf_modem 2.3.1
 ***************
 
-:ref:`Sockets <nrf_sockets>`
-============================
+Sockets
+=======
 
 * Fixed a bug where the callbacks for poll events were not called.
 
 nrf_modem 2.3.0
 ***************
 
-:ref:`Core library <architecture>`
-==================================
+Core library
+============
 
 * The :c:func:`nrf_modem_init` function is now used only to initialize the library in normal operating mode.
   Use :c:func:`nrf_modem_bootloader_init` to initialize the library in bootloader mode.
@@ -75,8 +130,8 @@ nrf_modem 2.3.0
 * Added the :c:func:`nrf_modem_os_sleep` function.
 * The :file:`nrf_modem_limits.h` file has been removed.
 
-:ref:`Sockets <nrf_sockets>`
-============================
+Sockets
+=======
 
 * Added the ``NRF_SO_POLLCB`` socket option to receive callbacks for poll events occurring on a socket.
 * Added the :c:func:`nrf_getifaddrs` and :c:func:`nrf_freeifaddrs` functions to retrieve network interface data.
@@ -88,18 +143,18 @@ nrf_modem 2.3.0
 * Fixed a possible concurrency bug in :c:func:`nrf_socket`.
 * Fixed a possible concurrency bug in :c:func:`nrf_accept`.
 
-:ref:`AT interface <nrf_modem_at>`
-==================================
+AT interface
+============
 
 * Improved error checking in :c:func:`nrf_modem_at_cmd` and :c:func:`nrf_modem_at_printf`.
 
-:ref:`GNSS interface <gnss_interface>`
-======================================
+GNSS interface
+==============
 
 * Added the :c:member:`nrf_modem_gnss_agps_expiry.position_expiry` field to :c:struct:`nrf_modem_gnss_agps_expiry` to retrieve the position assistance expiry time.
 
-:ref:`Bootloader <nrf_modem_bootloader>`
-========================================
+Bootloader
+==========
 
 * The Full DFU API (:file:`nrf_modem_full_dfu.h`) has been moved to (:file:`nrf_modem_bootloader.h`) and renamed accordingly.
   The ``nrf_modem_full_dfu_apply()`` function has been renamed to :c:func:`nrf_modem_bootloader_update`.

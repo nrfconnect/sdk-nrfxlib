@@ -4,13 +4,18 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-#ifndef NRF_ERRNO_H__
-#define NRF_ERRNO_H__
 /**
  * @file nrf_modem/include/nrf_errno.h
+ *
  * @brief Defines integer values for errno.
  *        Used by system calls to indicates the latest error.
  */
+#ifndef NRF_ERRNO_H__
+#define NRF_ERRNO_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * @brief nRF error numbers
@@ -19,10 +24,6 @@
  * @defgroup nrf_errno nRF error numbers
  * @{
  */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define NRF_EPERM 1             /**< Operation not permitted */
 #define NRF_ENOENT 2            /**< No such file or directory */
@@ -109,12 +110,12 @@ extern "C" {
 #define NRF_ESOCKTNOSUPPORT 124 /**< Socket type not supported */
 #define NRF_ETOOMANYREFS 129    /**< Too many references: can't splice */
 
-#ifdef __cplusplus
-}
-#endif
-
 /**
  * @}
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* NRF_ERRNO_H__ */

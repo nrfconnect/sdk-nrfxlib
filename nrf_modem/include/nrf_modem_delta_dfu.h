@@ -4,7 +4,9 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-/**@file nrf_modem_delta_dfu.h
+/**
+ * @file nrf_modem_delta_dfu.h
+ *
  * @defgroup nrf_modem_delta_dfu Delta DFU API
  * @{
  * @brief API for Delta DFU.
@@ -18,7 +20,8 @@
 extern "C" {
 #endif
 
-/**@defgroup nrf_modem_delta_dfu_errors DFU errors
+/**
+ * @defgroup nrf_modem_delta_dfu_errors DFU errors
  * @brief    Delta DFU errors.
  * @{
  */
@@ -49,10 +52,10 @@ extern "C" {
 /** @} */
 
 
-/**@brief Modem UUID length. */
+/** @brief Modem UUID length. */
 #define NRF_MODEM_DELTA_DFU_UUID_LEN   36
 
-/**@brief Modem UUID. */
+/** @brief Modem UUID. */
 struct nrf_modem_delta_dfu_uuid {
 	uint8_t data[NRF_MODEM_DELTA_DFU_UUID_LEN];
 };
@@ -229,10 +232,9 @@ int nrf_modem_delta_dfu_update(void);
  */
 int nrf_modem_delta_dfu_rollback(void);
 
-/** @} */
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* NRF_MODEM_DELTA_DFU_H__ */
+/** @} */

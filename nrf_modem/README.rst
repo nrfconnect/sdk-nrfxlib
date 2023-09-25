@@ -22,6 +22,7 @@ For more information, see :ref:`nrf_modem_ug_porting`.
    doc/gnss_interface
    doc/bootloader
    doc/delta_dfu
+   doc/softsim_interface
    doc/fault_handling
    doc/modem_trace
    doc/logging

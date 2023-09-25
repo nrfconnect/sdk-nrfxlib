@@ -4,14 +4,16 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-#ifndef NRF_GAI_ERRORS_H__
-#define NRF_GAI_ERRORS_H__
 /**
  * @file nrf_modem/include/nrf_gai_errors.h
- * @brief Defines integer values for getaddrinfo errors.
  *
  * @defgroup nrf_gai_errors Integer values for getaddrinfo errors
+ * @{
+ * @brief Defines integer values for getaddrinfo errors.
  */
+#ifndef NRF_GAI_ERRORS_H__
+#define NRF_GAI_ERRORS_H__
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -34,3 +36,4 @@ extern "C" {
 #endif
 
 #endif /* NRF_GAI_ERRORS_H__ */
+/** @} */

@@ -6,6 +6,7 @@
 
 /**
  * @file nrf_modem_os.h
+ *
  * @brief OS specific definitions.
  *
  * @defgroup nrf_modem_os Modem library OS glue
@@ -209,5 +210,4 @@ void nrf_modem_os_logdump(int level, const char *str, const void *data, size_t l
 #endif
 
 #endif /* NRF_MODEM_OS_H__ */
-
 /** @} */
