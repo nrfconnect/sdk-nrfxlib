@@ -8,7 +8,7 @@ GNSS interface
    :depth: 2
 
 `Global Navigation Satellite System (GNSS)`_ interface in the Modem library is used to control the GNSS module.
-The interface configures and fetches data from the GNSS module and writes `A-GPS`_ data to the GNSS module.
+The interface configures and fetches data from the GNSS module and writes `A-GNSS`_ data to the GNSS module.
 
 .. note::
 
@@ -84,15 +84,15 @@ The data to be deleted is selected using a bitmap.
                  NRF_MODEM_GNSS_DELETE_LAST_GOOD_FIX |
                  NRF_MODEM_GNSS_DELETE_GPS_TOW |
                  NRF_MODEM_GNSS_DELETE_GPS_WEEK |
-                 NRF_MODEM_GNSS_DELETE_UTC_DATA;
+                 NRF_MODEM_GNSS_DELETE_UTC_DATA |
+                 NRF_MODEM_GNSS_DELETE_GPS_TOW_PRECISION;
 
    err = nrf_modem_gnss_nv_data_delete(delete_mask);
 
 .. note::
 
-   TCXO offset data is not obtained from satellites or A-GPS assistance.
-   It is an internal value for the GNSS.
-   It should not be deleted when simulating a cold start.
+   TCXO offset is a slowly changing characteristic of each device.
+   It should typically not be deleted when simulating a cold start.
 
    This is considered a debug feature, and is not supposed to be used in production code.
 
@@ -164,8 +164,6 @@ If the fix retry parameter is set to zero, GNSS is allowed to run indefinitely u
    GNSS performs scheduled downloads until it has downloaded the data it needs.
    After the downloads, the normal operation is resumed.
 
-   Fix intervals longer than 1800 seconds are only supported by modem firmware v1.3.0 or later.
-
 System mask
 ===========
 
@@ -183,10 +181,6 @@ GPS cannot be disabled and it remains enabled even if the corresponding bit is n
    system_mask = NRF_MODEM_GNSS_SYSTEM_GPS_MASK | NRF_MODEM_GNSS_SYSTEM_QZSS_MASK;
 
    err = nrf_modem_gnss_system_mask_set(system_mask);
-
-.. note::
-
-   QZSS is only supported by modem firmware v1.3.0 or later.
 
 Satellite elevation threshold
 =============================
@@ -227,11 +221,11 @@ For a possible position fix using only three satellites, GNSS must have a refere
 The reference altitude is obtained from one of the following sources:
 
 * A GNSS fix using five or more satellites.
-* A-GPS assistance data - The assistance data is injected to GNSS using the :c:type:`nrf_modem_gnss_agps_data_location` A-GPS data location struct, as shown in the following example code:
+* A-GNSS assistance data - The assistance data is injected to GNSS using the :c:type:`nrf_modem_gnss_agnss_data_location` A-GNSS data location struct, as shown in the following example code:
 
   .. code-block:: c
 
-     struct nrf_modem_gnss_agps_data_location location;
+     struct nrf_modem_gnss_agnss_data_location location;
 
      location.latitude          = latitude; /* Best estimate within maximum limit of 1800 km. */
      location.longitude         = longitude;/* Best estimate within maximum limit of 1800 km. */
@@ -242,7 +236,7 @@ The reference altitude is obtained from one of the following sources:
      location.unc_altitude      = 0;        /* Uncertainty, altitude. Range 0...127 or 255. */
      location.confidence        = 100;      /* Set to 100 for maximum confidence. */
 
-     err = nrf_modem_gnss_agps_write(&location, sizeof(location), NRF_MODEM_GNSS_AGPS_LOCATION);
+     err = nrf_modem_gnss_agnss_write(&location, sizeof(location), NRF_MODEM_GNSS_AGNSS_LOCATION);
 
  The struct contains the geodetic latitude, longitude (WGS-84 format), and altitude (in meters) parameters.
  The uncertainties for the latitude, longitude (unc_semimajor and unc_semiminor), and for the altitude (unc_altitude) are given as an index from ``0`` to ``127``, see :file:`nrf_modem_gnss.h` for the encoding of the uncertainty fields.
@@ -252,7 +246,7 @@ The reference altitude is obtained from one of the following sources:
  It is also possible to inject only the altitude without a known latitude and longitude.
  In this case, unc_semimajor and unc_semiminor are set to ``255`` to indicate that latitude and longitude are not valid.
 
-If both verified GNSS fix (five or more satellites used in earlier fix) and A-GPS assistance data are available, the altitude from the verified GNSS fix is used.
+If both verified GNSS fix (five or more satellites used in earlier fix) and A-GNSS assistance data are available, the altitude from the verified GNSS fix is used.
 
 Thus, if GNSS has started in the low accuracy mode, it will not be able to produce fixes using three satellites until it has a reference altitude from one of the mentioned sources.
 Over time, the uncertainty of the reference altitude increases unless a GNSS fix is obtained using five or more satellites, or altitude assistance is injected to GNSS.
@@ -282,12 +276,6 @@ The low accuracy mode can be enabled as shown in the following example:
 
    err = nrf_modem_gnss_use_case_set(use_case);
 
-.. note::
-
-   Low accuracy mode is only supported by modem firmware v1.2.2 or later.
-
-   Uncertainty value ``255`` is only supported by modem firmware v1.3.0 or later.
-
 .. _ref_alt_exp_evt:
 
 Reference altitude expiration event
@@ -295,10 +283,6 @@ Reference altitude expiration event
 
 GNSS sends the event :c:data:`NRF_MODEM_GNSS_EVT_REF_ALT_EXPIRED` when the reference altitude expires.
 This event can be used to trigger a reference altitude update whenever it is needed.
-
-.. note::
-
-   This event is only supported by modem firmware v1.3.0 or later.
 
 NMEA mask
 =========
@@ -359,16 +343,10 @@ The default value is :c:data:`NRF_MODEM_GNSS_TIMING_SOURCE_RTC`.
 
    Use of TCXO significantly raises the idle current consumption.
 
-   This feature is only supported by modem firmware v1.3.0 or later.
-
 QZSS configuration
 ==================
 
 GNSS has configuration options that can be used to change the QZSS-related behavior.
-
-.. note::
-
-   QZSS is only supported by modem firmware v1.3.0 or later.
 
 NMEA mode
 ---------
@@ -383,10 +361,6 @@ The default value is :c:data:`NRF_MODEM_GNSS_QZSS_NMEA_MODE_STANDARD`.
 
    err = nrf_modem_gnss_qzss_nmea_mode_set(NRF_MODEM_GNSS_QZSS_NMEA_MODE_CUSTOM);
 
-.. note::
-
-   QZSS is only supported by modem firmware v1.3.0 or later.
-
 PRN mask
 --------
 
@@ -395,17 +369,13 @@ Bits 0...9 correspond to QZSS PRNs 193...202 respectively.
 When a bit is set, using the corresponding QZSS satellite is enabled.
 Bits 10...15 are reserved and their value is ignored.
 
-By default, all QZSS PRNs (193...202) are enabled.
+The default PRN mask follows the anticipated development of the QZSS constellation and may differ between modem firmware versions.
 
-QZSS PRNs 193, 194, 195 and 199 can be enabled (and others disabled) as shown in the following example:
+QZSS PRNs 194, 195, 196 and 199 can be enabled (and others disabled) as shown in the following example:
 
 .. code-block:: c
 
-   err = nrf_modem_gnss_qzss_prn_mask_set(0x47);
-
-.. note::
-
-   QZSS is only supported by modem firmware v1.3.0 or later.
+   err = nrf_modem_gnss_qzss_prn_mask_set(0x4e);
 
 Enabling GNSS priority mode
 ***************************
@@ -432,8 +402,11 @@ It can also be disabled by the application by calling the :c:func:`nrf_modem_gns
 Changing the dynamics mode
 **************************
 
-Dynamics mode can be used to tune GNSS performance for a specific use case.
-Using a matching dynamics mode improves the positioning performance.
+The dynamics mode describes the dynamics model for the receiver.
+General purpose mode is suitable for a wide range of applications, but using a dynamics mode tuned for a specific use case improves the positioning performance.
+The :ref:`nrf_modem_gnss_api` lists the maximum receiver speed used for predicting satellite visibility and Doppler frequencies in each mode, and for limiting receiver movement between fixes.
+However, these are not hard limits and GNSS will continue working at higher speeds, but with sub-optimal predictions and sub-optimal position computation and filtering.
+
 The dynamics mode can be changed without disruption in positioning.
 The selected dynamics mode is stored into the non-volatile memory.
 
@@ -442,10 +415,6 @@ The default value is :c:data:`NRF_MODEM_GNSS_DYNAMICS_GENERAL_PURPOSE`.
 .. code-block:: c
 
    err = nrf_modem_gnss_dyn_mode_change(NRF_MODEM_GNSS_DYNAMICS_AUTOMOTIVE);
-
-.. note::
-
-   Dynamics mode is only supported by modem firmware v1.3.0 or later.
 
 1PPS
 ****
@@ -477,8 +446,6 @@ In cases where GNSS is not running continuously, it may be beneficial to change 
 
 .. note::
 
-   1PPS is only supported by modem firmware v1.3.0 or later.
-
    1PPS accuracy is not guaranteed when LTE is active.
 
 Resolving the UTC time of 1PPS pulse occurrence
@@ -507,8 +474,8 @@ Thus, |delta| t is always positive.
 
 .. _gnss_int_agps_data:
 
-A-GPS data
-**********
+A-GNSS data
+***********
 
 You can use GNSS assistance data to shorten TTFF and decrease GNSS power consumption.
 See :ref:`lib_nrf_cloud_agps` and :ref:`lib_nrf_cloud_pgps` for information how to obtain assistance data from :ref:`lib_nrf_cloud` to be used with the nRF9160 SiP.
@@ -520,57 +487,59 @@ Determining the assistance data needed by GNSS
 
 The GNSS interface has two methods for getting the current GNSS assistance data need.
 
-A-GPS data need event
----------------------
+A-GNSS data need event
+----------------------
 
-GNSS requests A-GPS data when GNSS is started for the first time or it determines that the existing data will expire soon.
-Whenever A-GPS data is needed, GNSS sends the :c:data:`NRF_MODEM_GNSS_EVT_AGPS_REQ` event.
+GNSS requests A-GNSS data when GNSS is started for the first time or it determines that the existing data will expire soon.
+Whenever A-GNSS data is needed, GNSS sends the :c:data:`NRF_MODEM_GNSS_EVT_AGNSS_REQ` event.
 The payload for this event contains information about what kind of data is needed.
 
 When the event is received, the associated payload can be read like this:
 
 .. code-block:: c
 
-   struct nrf_modem_gnss_agps_data_frame agps_data;
+   struct nrf_modem_gnss_agnss_data_frame agnss_data;
 
-   err = nrf_modem_gnss_read(&agps_data, sizeof(agps_data), NRF_MODEM_GNSS_DATA_AGPS_REQ);
+   err = nrf_modem_gnss_read(&agnss_data, sizeof(agnss_data), NRF_MODEM_GNSS_DATA_AGNSS_REQ);
 
-After reading the data successfully, the struct contains bitmasks ``sv_mask_ephe`` and ``sv_mask_alm``, which indicate the need for ephemerides and almanacs for each GPS satellite.
-The ``data_flags`` member is a bitmask for other A-GPS data.
+After reading the data successfully, the ``system`` array in the struct contains bitmasks ``sv_mask_ephe`` and ``sv_mask_alm`` for each supported system, which indicate the need for ephemerides and almanacs for each satellite in the system.
+The ``data_flags`` member is a bitmask for other A-GNSS data.
 
-To prevent triggering assistance data download too often, GNSS sends the :c:data:`NRF_MODEM_GNSS_EVT_AGPS_REQ` event at most once an hour.
+To prevent triggering assistance data download too often, GNSS sends the :c:data:`NRF_MODEM_GNSS_EVT_AGNSS_REQ` event at most once an hour.
 
-A-GPS data expiry query
------------------------
+A-GNSS data expiry query
+------------------------
 
-You can use the :c:func:`nrf_modem_gnss_agps_expiry_get` function to query assistance data need at any time.
+You can use the :c:func:`nrf_modem_gnss_agnss_expiry_get` function to query assistance data need at any time.
 
 The assistance data need can be read like this:
 
 .. code-block:: c
 
-   struct nrf_modem_gnss_agps_expiry agps_expiry;
+   struct nrf_modem_gnss_agnss_expiry agnss_expiry;
 
-   err = nrf_modem_gnss_agps_expiry_get(&agps_expiry);
+   err = nrf_modem_gnss_agnss_expiry_get(&agnss_expiry);
 
 After reading the data successfully, the struct contains expiration times for different types of assistance data.
-The ``ephe_expiry`` and ``alm_expiry`` arrays contain ephemeris and almanac expiration times for each GPS satellite.
+The ``sv`` array contains ephemeris and almanac expiration times for each GNSS satellite.
+The number of satellites in the array depends on the modem firmware.
+For older modem firmwares, the array only contains GPS satellites, but from modem firmware v2.0.0 onwards, it also contains QZSS satellites.
 The struct also contains expiration times, for example, for Klobuchar ionospheric corrections and satellite integrity assistance.
 The ``data_flags`` member contains a bitmask for certain data types, indicating whether the data is currently needed.
 
 Injecting assistance data
 =========================
 
-A-GPS data is injected into GNSS using the :c:func:`nrf_modem_gnss_agps_write` function.
-Each data type has its own struct that is used when A-GPS data is written to GNSS.
+A-GNSS data is injected into GNSS using the :c:func:`nrf_modem_gnss_agnss_write` function.
+Each data type has its own struct that is used when A-GNSS data is written to GNSS.
 
-For example, UTC parameters can be written to GNSS as shown in the following example:
+For example, GPS UTC parameters can be written to GNSS as shown in the following example:
 
 .. code-block:: c
 
-   struct nrf_modem_gnss_agps_data_utc utc_data;
+   struct nrf_modem_gnss_agnss_gps_data_utc utc_data;
 
    /* Populate struct with data */
    utc_data.a1 = ...
 
-   err = nrf_modem_gnss_agps_write(&utc_data, sizeof(utc_data), NRF_MODEM_GNSS_AGPS_UTC_PARAMETERS);
+   err = nrf_modem_gnss_agnss_write(&utc_data, sizeof(utc_data), NRF_MODEM_GNSS_AGNSS_GPS_UTC_PARAMETERS);
