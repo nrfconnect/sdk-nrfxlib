@@ -54,6 +54,8 @@
 
 .. _`Global navigation satellite system (GNSS)`: https://en.wikipedia.org/wiki/Satellite_navigation
 
+.. _`A-GNSS`: https://en.wikipedia.org/wiki/Assisted_GNSS
+
 .. _`A-GPS`: https://en.wikipedia.org/wiki/Assisted_GPS
 
 .. _`IANA`: https://en.wikipedia.org/wiki/Internet_Assigned_Numbers_Authority
