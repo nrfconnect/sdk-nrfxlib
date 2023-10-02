@@ -54,6 +54,20 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 | Periodic Advertising with      |                 |              | X         |
 | Responses - Scanner            |                 |              |           |
 +--------------------------------+-----------------+--------------+-----------+
+| Connected Isochronous Stream   |                 |              | X         |
+| - Central                      |                 |              |           |
+| (experimental support)         |                 |              |           |
++--------------------------------+-----------------+--------------+-----------+
+| Connected Isochronous Stream   |                 |              | X         |
+| - Peripheral                   |                 |              |           |
+| (experimental support)         |                 |              |           |
++--------------------------------+-----------------+--------------+-----------+
+| Isochronous Broadcaster        |                 |              | X         |
+| (experimental support)         |                 |              |           |
++--------------------------------+-----------------+--------------+-----------+
+| Synchronized Receiver          |                 |              | X         |
+| (experimental support)         |                 |              |           |
++--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    The following limitations apply to the listed features:

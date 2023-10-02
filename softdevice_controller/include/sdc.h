@@ -100,6 +100,30 @@ extern "C" {
 /** @brief Default number of devices that can be added to the periodic advertiser list. */
 #define SDC_DEFAULT_PERIODIC_ADV_LIST_SIZE 0
 
+/** @brief Default maximum number of concurrent Connected Isochronous Groups. */
+#define SDC_DEFAULT_CIG_COUNT 0
+
+/** @brief Default maximum number of concurrent Connected Isochronous Streams. */
+#define SDC_DEFAULT_CIS_COUNT 0
+
+/** @brief Default maximum number of concurrent Broadcast Isochronous Groups. */
+#define SDC_DEFAULT_BIG_COUNT 0
+
+/** @brief Default maximum number of concurrent Broadcast Isochronous Streams. */
+#define SDC_DEFAULT_BIS_COUNT 0
+
+/** @brief Default ISO RX PDU buffer count. */
+#define SDC_DEFAULT_ISO_RX_PDU_BUFFER_COUNT 0
+
+/** @brief Default ISO RX SDU buffer count. */
+#define SDC_DEFAULT_ISO_RX_SDU_BUFFER_COUNT 0
+
+/** @brief Default HCI ISO TX buffer count. */
+#define SDC_DEFAULT_ISO_TX_HCI_BUFFER_COUNT 0
+
+/** @brief Default ISO TX PDU buffer per stream count. */
+#define SDC_DEFAULT_ISO_TX_PDU_BUFFER_PER_STREAM_COUNT 0
+
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
 
@@ -233,6 +257,36 @@ extern "C" {
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
+/** @brief Maximum memory required per CIG. */
+#define SDC_MEM_PER_CIG(count) ((count) > 0 ? (13 + (count) * 123) : 0)
+
+/** @brief Maximum memory required per CIS. Buffer and CIG memory comes in addition. */
+#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 500) : 0)
+
+/** @brief Maximum memory required per BIG. */
+#define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 291) : 0)
+
+/** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
+#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 275) : 0)
+
+/** @brief Maximum memory required for the ISO RX path PDUs. */
+#define SDC_MEM_ISO_RX_PDU_POOL_SIZE(count) ((count) > 0 ? (8 + (count) * 296) : 0)
+
+/** @brief Maximum memory required for the ISO RX path SDUs. */
+#define SDC_MEM_ISO_RX_SDU_POOL_SIZE(count) ((count) > 0 ? (0 + (count) * 280) : 0)
+
+/** @brief Maximum memory required for the ISO TX pool.
+ *  @param[in] tx_hci_buffer_count Number of HCI ISO TX buffers.
+ *  @param[in] tx_pdu_buffer_per_stream_count Number of PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
+ *                                            For BIS, this value determines the maximum supported pretransmission offset.
+ *  @param[in] cis_count The number of supported CIS streams.
+ *  @param[in] bis_count The number of supported BIS streams. */
+#define SDC_MEM_ISO_TX_POOL_SIZE(tx_hci_buffer_count, tx_pdu_buffer_per_stream_count, cis_count, bis_count) \
+     (((tx_hci_buffer_count) > 0 && (tx_pdu_buffer_per_stream_count) > 0) ?                                 \
+     (SDC_MEM_ISO_RX_PDU_POOL_SIZE(tx_hci_buffer_count)                                                     \
+     + SDC_MEM_ISO_RX_PDU_POOL_SIZE(((cis_count) + (bis_count)) * (tx_pdu_buffer_per_stream_count))         \
+     ) : 0)
+
 /** @} end of sdc_mem_defines */
 
 /** @brief Function prototype for the fault handler.
@@ -288,6 +342,20 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_PERIODIC_ADV_RSP_FAILURE_REPORTING_CFG,
     /** See @ref sdc_cfg_t::periodic_sync_rsp_tx_buffer_cfg. */
     SDC_CFG_TYPE_PERIODIC_SYNC_RSP_TX_BUFFER_CFG,
+    /** See @ref sdc_cfg_t::cig_count. */
+    SDC_CFG_TYPE_CIG_COUNT,
+    /** See @ref sdc_cfg_t::cis_count. */
+    SDC_CFG_TYPE_CIS_COUNT,
+    /** See @ref sdc_cfg_t::big_count. */
+    SDC_CFG_TYPE_BIG_COUNT,
+    /** See @ref sdc_cfg_t::bis_count. */
+    SDC_CFG_TYPE_BIS_COUNT,
+    /** See @ref sdc_cfg_t::iso_rx_pdu_buffer_cfg. */
+    SDC_CFG_TYPE_ISO_RX_PDU_BUFFER_CFG,
+    /** See @ref sdc_cfg_t::iso_rx_sdu_buffer_cfg. */
+    SDC_CFG_TYPE_ISO_RX_SDU_BUFFER_CFG,
+    /** See @ref sdc_cfg_t::iso_tx_buffer_cfg. */
+    SDC_CFG_TYPE_ISO_TX_BUFFER_CFG,
 };
 
 
@@ -331,6 +399,7 @@ typedef struct
     uint16_t max_adv_data;
 } sdc_cfg_adv_buffer_cfg_t;
 
+
 typedef struct
 {
     /** Configures the size of the buffer pool allocated to each periodic
@@ -353,6 +422,24 @@ typedef struct
      */
     uint8_t rx_buffer_count;
 } sdc_cfg_periodic_adv_rsp_buffer_cfg_t;
+
+
+typedef struct
+{
+  /** Configures the size of the shared HCI TX buffer pool allocated for ISO.
+   *
+   * Default: @ref SDC_DEFAULT_ISO_TX_HCI_BUFFER_COUNT.
+   */
+  uint8_t tx_hci_buffer_count;
+  /** Configures the number of TX buffers allocated per ISO stream.
+   *
+   * @note For BIS, this value determines the maximum supported pretransmission offset.
+   *
+   * Default: @ref SDC_DEFAULT_ISO_TX_PDU_BUFFER_PER_STREAM_COUNT.
+   */
+  uint8_t tx_pdu_buffer_per_stream_count;
+} sdc_cfg_iso_tx_buffer_cfg_t;
+
 
 /** @brief SoftDevice Controller configuration.  */
 typedef union
@@ -452,6 +539,41 @@ typedef union
      * Default: @ref SDC_DEFAULT_PERIODIC_SYNC_RSP_TX_BUFFER_COUNT.
      */
     sdc_cfg_buffer_count_t periodic_sync_rsp_tx_buffer_cfg;
+    /** Configures the maximum number of concurrent CIGs.
+     *
+     * Default: @ref SDC_DEFAULT_CIG_COUNT.
+     */
+    sdc_cfg_role_count_t cig_count;
+    /** Configures the maximum number of concurrent CISs.
+     *
+     * Default: @ref SDC_DEFAULT_CIS_COUNT.
+     */
+    sdc_cfg_role_count_t cis_count;
+    /** Configures the maximum number of concurrent BIGs.
+     *
+     * Default: @ref SDC_DEFAULT_BIG_COUNT.
+     */
+    sdc_cfg_role_count_t big_count;
+    /** Configures the maximum number of concurrent BISs.
+     *
+     * Default: @ref SDC_DEFAULT_BIS_COUNT.
+     */
+    sdc_cfg_role_count_t bis_count;
+    /** Configures the size of the shared rx PDU buffer pool allocated for ISO.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_RX_PDU_BUFFER_COUNT.
+     */
+    sdc_cfg_buffer_count_t iso_rx_pdu_buffer_cfg;
+    /** Configures the RX SDU buffer count allocated for ISO.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_RX_SDU_BUFFER_COUNT.
+     */
+    sdc_cfg_buffer_count_t iso_rx_sdu_buffer_cfg;
+    /** Configures the size and number of TX buffer pools allocated for ISO.
+     *
+     * Default: See @ref sdc_cfg_iso_tx_buffer_cfg_t.
+     */
+    sdc_cfg_iso_tx_buffer_cfg_t iso_tx_buffer_cfg;
 } sdc_cfg_t;
 
 
@@ -933,6 +1055,50 @@ int32_t sdc_support_periodic_adv_sync_transfer_receiver_central(void);
  * @retval -NRF_EOPNOTSUPP Receiving periodic advertising sync transfers is not supported.
  */
 int32_t sdc_support_periodic_adv_sync_transfer_receiver_peripheral(void);
+
+/** @brief Support Connected Isochronous streams in the peripheral role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Connected Isochronous channels in the peripheral role
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Connected Isochronous streams in the peripheral role is not supported.
+ */
+int32_t sdc_support_cis_peripheral(void);
+
+/** @brief Support Connected Isochronous streams in the central role
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Connected Isochronous channels in the central role
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Connected Isochronous streams in the central role is not supported.
+ */
+int32_t sdc_support_cis_central(void);
+
+/** @brief Support Broadcast Isochronous streams as a source
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Broadcast Isochronous channels as a source
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Broadcast Isochronous streams as a source is not supported.
+ */
+int32_t sdc_support_bis_source(void);
+
+/** @brief Support Broadcast Isochronous streams as a sink
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to Broadcast Isochronous channels as a sink
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Broadcast Isochronous streams as a sink is not supported.
+ */
+int32_t sdc_support_bis_sink(void);
 
 /** @brief Support for Quality of Service (QoS) channel survey module
  *
