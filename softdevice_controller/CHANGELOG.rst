@@ -17,6 +17,34 @@ All the notable changes included in the main branch are documented in this secti
 Added
 =====
 
+* Experimental support for isochronous channels, both Connected Isochronous Streams and Broadcast Isochronous Streams.
+  The controller supports an ISO interval equal to the SDU interval, using unframed PDUs.
+  The following HCI commands are now supported:
+
+    * Read Connection Accept Timeout
+    * Write Connection Accept Timeout
+    * LE Read Buffer Size [v2]
+    * LE Read ISO TX Sync
+    * LE Set CIG Parameters
+    * LE Set CIG Parameters Test
+    * LE Create CIS
+    * LE Remove CIG
+    * LE Accept CIS Request
+    * LE Reject CIS Request
+    * LE Create BIG
+    * LE Create BIG Test
+    * LE Terminate BIG
+    * LE BIG Create Sync
+    * LE BIG Terminate Sync
+    * LE Setup ISO Data Path
+    * LE Remove ISO Data Path
+    * LE ISO Transmit Test
+    * LE ISO Receive Test
+    * LE ISO Read Test Counters
+    * LE ISO Test End
+    * LE Set Host Feature
+    * LE Read ISO Link Quality
+
 * Experimental support for the Quality of Service (QoS) channel survey.
   See the :c:func:`sdc_hci_cmd_vs_qos_channel_survey_enable` function.
 * Support for starting the scanner without setting scan parameters.
@@ -39,6 +67,8 @@ Changes
 * The ChSel bit in a ``CONNECT_IND`` PDU will now match the ChSel bit in the ``ADV_IND`` PDU.
   Previously, this was always set to indicate channel selection algorithm 2. (DRGN-19115)
 * The LE Power Control Request feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-17499)
+* :c:func:`sdc_soc_flash_write_async` and :c:func:`sdc_soc_flash_page_erase_async` functions are removed.
+  This change does not affect applications developed in the |NCS| context. (DRGN-20451)
 
 Bug fixes
 =========

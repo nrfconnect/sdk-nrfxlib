@@ -189,8 +189,50 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_SYNC_TRANSFER_PARAMS = 0x205c,
     /** @brief See @ref sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(). */
     SDC_HCI_OPCODE_CMD_LE_SET_DEFAULT_PERIODIC_ADV_SYNC_TRANSFER_PARAMS = 0x205d,
+    /** @brief See @ref sdc_hci_cmd_le_read_buffer_size_v2(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_BUFFER_SIZE_V2 = 0x2060,
+    /** @brief See @ref sdc_hci_cmd_le_read_iso_tx_sync(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_ISO_TX_SYNC = 0x2061,
+    /** @brief See @ref sdc_hci_cmd_le_set_cig_params(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_CIG_PARAMS = 0x2062,
+    /** @brief See @ref sdc_hci_cmd_le_set_cig_params_test(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_CIG_PARAMS_TEST = 0x2063,
+    /** @brief See @ref sdc_hci_cmd_le_create_cis(). */
+    SDC_HCI_OPCODE_CMD_LE_CREATE_CIS = 0x2064,
+    /** @brief See @ref sdc_hci_cmd_le_remove_cig(). */
+    SDC_HCI_OPCODE_CMD_LE_REMOVE_CIG = 0x2065,
+    /** @brief See @ref sdc_hci_cmd_le_accept_cis_request(). */
+    SDC_HCI_OPCODE_CMD_LE_ACCEPT_CIS_REQUEST = 0x2066,
+    /** @brief See @ref sdc_hci_cmd_le_reject_cis_request(). */
+    SDC_HCI_OPCODE_CMD_LE_REJECT_CIS_REQUEST = 0x2067,
+    /** @brief See @ref sdc_hci_cmd_le_create_big(). */
+    SDC_HCI_OPCODE_CMD_LE_CREATE_BIG = 0x2068,
+    /** @brief See @ref sdc_hci_cmd_le_create_big_test(). */
+    SDC_HCI_OPCODE_CMD_LE_CREATE_BIG_TEST = 0x2069,
+    /** @brief See @ref sdc_hci_cmd_le_terminate_big(). */
+    SDC_HCI_OPCODE_CMD_LE_TERMINATE_BIG = 0x206a,
+    /** @brief See @ref sdc_hci_cmd_le_big_create_sync(). */
+    SDC_HCI_OPCODE_CMD_LE_BIG_CREATE_SYNC = 0x206b,
+    /** @brief See @ref sdc_hci_cmd_le_big_terminate_sync(). */
+    SDC_HCI_OPCODE_CMD_LE_BIG_TERMINATE_SYNC = 0x206c,
     /** @brief See @ref sdc_hci_cmd_le_request_peer_sca(). */
     SDC_HCI_OPCODE_CMD_LE_REQUEST_PEER_SCA = 0x206d,
+    /** @brief See @ref sdc_hci_cmd_le_setup_iso_data_path(). */
+    SDC_HCI_OPCODE_CMD_LE_SETUP_ISO_DATA_PATH = 0x206e,
+    /** @brief See @ref sdc_hci_cmd_le_remove_iso_data_path(). */
+    SDC_HCI_OPCODE_CMD_LE_REMOVE_ISO_DATA_PATH = 0x206f,
+    /** @brief See @ref sdc_hci_cmd_le_iso_transmit_test(). */
+    SDC_HCI_OPCODE_CMD_LE_ISO_TRANSMIT_TEST = 0x2070,
+    /** @brief See @ref sdc_hci_cmd_le_iso_receive_test(). */
+    SDC_HCI_OPCODE_CMD_LE_ISO_RECEIVE_TEST = 0x2071,
+    /** @brief See @ref sdc_hci_cmd_le_iso_read_test_counters(). */
+    SDC_HCI_OPCODE_CMD_LE_ISO_READ_TEST_COUNTERS = 0x2072,
+    /** @brief See @ref sdc_hci_cmd_le_iso_test_end(). */
+    SDC_HCI_OPCODE_CMD_LE_ISO_TEST_END = 0x2073,
+    /** @brief See @ref sdc_hci_cmd_le_set_host_feature(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_HOST_FEATURE = 0x2074,
+    /** @brief See @ref sdc_hci_cmd_le_read_iso_link_quality(). */
+    SDC_HCI_OPCODE_CMD_LE_READ_ISO_LINK_QUALITY = 0x2075,
     /** @brief See @ref sdc_hci_cmd_le_enhanced_read_transmit_power_level(). */
     SDC_HCI_OPCODE_CMD_LE_ENHANCED_READ_TRANSMIT_POWER_LEVEL = 0x2076,
     /** @brief See @ref sdc_hci_cmd_le_read_remote_transmit_power_level(). */
@@ -227,6 +269,19 @@ typedef __PACKED_STRUCT
     uint16_t include_tx_power : 1;
     uint16_t rfu : 9;
 } sdc_hci_le_adv_event_properties_params_t;
+
+/** @brief LE BIG Create Sync array parameters. */
+typedef __PACKED_STRUCT
+{
+    uint8_t bis;
+} sdc_hci_le_big_create_sync_array_params_t;
+
+/** @brief LE Create CIS array parameters. */
+typedef __PACKED_STRUCT
+{
+    uint16_t cis_conn_handle;
+    uint16_t acl_conn_handle;
+} sdc_hci_le_create_cis_array_params_t;
 
 /** @brief LE Extended Create Connection [v1] array parameters. */
 typedef __PACKED_STRUCT
@@ -365,6 +420,45 @@ typedef __PACKED_STRUCT
     uint8_t duplicate_filter_initially_enabled : 1;
     uint8_t rfu : 5;
 } sdc_hci_le_periodic_adv_create_sync_options_params_t;
+
+/** @brief LE Set CIG Parameters array parameters. */
+typedef __PACKED_STRUCT
+{
+    uint8_t cis_id;
+    uint16_t max_sdu_c_to_p;
+    uint16_t max_sdu_p_to_c;
+    uint8_t phy_c_to_p;
+    uint8_t phy_p_to_c;
+    uint8_t rtn_c_to_p;
+    uint8_t rtn_p_to_c;
+} sdc_hci_le_set_cig_params_array_params_t;
+
+/** @brief LE Set CIG Parameters output array parameters. */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_le_set_cig_params_output_array_params_t;
+
+/** @brief LE Set CIG Parameters Test array parameters. */
+typedef __PACKED_STRUCT
+{
+    uint8_t cis_id;
+    uint8_t nse;
+    uint16_t max_sdu_c_to_p;
+    uint16_t max_sdu_p_to_c;
+    uint16_t max_pdu_c_to_p;
+    uint16_t max_pdu_p_to_c;
+    uint8_t phy_c_to_p;
+    uint8_t phy_p_to_c;
+    uint8_t bn_c_to_p;
+    uint8_t bn_p_to_c;
+} sdc_hci_le_set_cig_params_test_array_params_t;
+
+/** @brief LE Set CIG Parameters Test output array parameters. */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_le_set_cig_params_test_output_array_params_t;
 
 /** @brief LE Set Connection CTE Transmit Parameters array parameters. */
 typedef __PACKED_STRUCT
@@ -1078,11 +1172,303 @@ typedef __PACKED_STRUCT
     uint8_t cte_type;
 } sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params_t;
 
+/** @brief LE Read Buffer Size [v2] return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t le_acl_data_packet_length;
+    uint8_t total_num_le_acl_data_packets;
+    uint16_t iso_data_packet_length;
+    uint8_t total_num_iso_data_packets;
+} sdc_hci_cmd_le_read_buffer_size_v2_return_t;
+
+/** @brief LE Read ISO TX Sync command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_read_iso_tx_sync_t;
+
+/** @brief LE Read ISO TX Sync return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint16_t packet_sequence_number;
+    uint32_t tx_time_stamp;
+    uint32_t time_offset : 24;
+} sdc_hci_cmd_le_read_iso_tx_sync_return_t;
+
+/** @brief LE Set CIG Parameters command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t cig_id;
+    uint32_t sdu_interval_c_to_p : 24;
+    uint32_t sdu_interval_p_to_c : 24;
+    uint8_t worst_case_sca;
+    uint8_t packing;
+    uint8_t framing;
+    uint16_t max_transport_latency_c_to_p;
+    uint16_t max_transport_latency_p_to_c;
+    uint8_t cis_count;
+    sdc_hci_le_set_cig_params_array_params_t array_params[];
+} sdc_hci_cmd_le_set_cig_params_t;
+
+/** @brief LE Set CIG Parameters return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t cig_id;
+    uint8_t cis_count;
+    sdc_hci_le_set_cig_params_output_array_params_t array_params[];
+} sdc_hci_cmd_le_set_cig_params_return_t;
+
+/** @brief LE Set CIG Parameters Test command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t cig_id;
+    uint32_t sdu_interval_c_to_p : 24;
+    uint32_t sdu_interval_p_to_c : 24;
+    uint8_t ft_c_to_p;
+    uint8_t ft_p_to_c;
+    uint16_t iso_interval;
+    uint8_t worst_case_sca;
+    uint8_t packing;
+    uint8_t framing;
+    uint8_t cis_count;
+    sdc_hci_le_set_cig_params_test_array_params_t array_params[];
+} sdc_hci_cmd_le_set_cig_params_test_t;
+
+/** @brief LE Set CIG Parameters Test return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t cig_id;
+    uint8_t cis_count;
+    sdc_hci_le_set_cig_params_test_output_array_params_t array_params[];
+} sdc_hci_cmd_le_set_cig_params_test_return_t;
+
+/** @brief LE Create CIS command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t cis_count;
+    sdc_hci_le_create_cis_array_params_t array_params[];
+} sdc_hci_cmd_le_create_cis_t;
+
+/** @brief LE Remove CIG command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t cig_id;
+} sdc_hci_cmd_le_remove_cig_t;
+
+/** @brief LE Remove CIG return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t cig_id;
+} sdc_hci_cmd_le_remove_cig_return_t;
+
+/** @brief LE Accept CIS Request command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_accept_cis_request_t;
+
+/** @brief LE Reject CIS Request command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t reason;
+} sdc_hci_cmd_le_reject_cis_request_t;
+
+/** @brief LE Reject CIS Request return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_reject_cis_request_return_t;
+
+/** @brief LE Create BIG command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t big_handle;
+    uint8_t adv_handle;
+    uint8_t num_bis;
+    uint32_t sdu_interval : 24;
+    uint16_t max_sdu;
+    uint16_t max_transport_latency;
+    uint8_t rtn;
+    uint8_t phy;
+    uint8_t packing;
+    uint8_t framing;
+    uint8_t encryption;
+    uint8_t broadcast_code[16];
+} sdc_hci_cmd_le_create_big_t;
+
+/** @brief LE Create BIG Test command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t big_handle;
+    uint8_t adv_handle;
+    uint8_t num_bis;
+    uint32_t sdu_interval : 24;
+    uint16_t iso_interval;
+    uint8_t nse;
+    uint16_t max_sdu;
+    uint16_t max_pdu;
+    uint8_t phy;
+    uint8_t packing;
+    uint8_t framing;
+    uint8_t bn;
+    uint8_t irc;
+    uint8_t pto;
+    uint8_t encryption;
+    uint8_t broadcast_code[16];
+} sdc_hci_cmd_le_create_big_test_t;
+
+/** @brief LE Terminate BIG command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t big_handle;
+    uint8_t reason;
+} sdc_hci_cmd_le_terminate_big_t;
+
+/** @brief LE BIG Create Sync command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t big_handle;
+    uint16_t sync_handle;
+    uint8_t encryption;
+    uint8_t broadcast_code[16];
+    uint8_t mse;
+    uint16_t big_sync_timeout;
+    uint8_t num_bis;
+    sdc_hci_le_big_create_sync_array_params_t array_params[];
+} sdc_hci_cmd_le_big_create_sync_t;
+
+/** @brief LE BIG Terminate Sync command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t big_handle;
+} sdc_hci_cmd_le_big_terminate_sync_t;
+
+/** @brief LE BIG Terminate Sync return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t big_handle;
+} sdc_hci_cmd_le_big_terminate_sync_return_t;
+
 /** @brief LE Request Peer SCA command parameter(s). */
 typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_request_peer_sca_t;
+
+/** @brief LE Setup ISO Data Path command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t data_path_direction;
+    uint8_t data_path_id;
+    uint8_t codec_id[5];
+    uint32_t controller_delay : 24;
+    uint8_t codec_config_length;
+    uint8_t codec_config[];
+} sdc_hci_cmd_le_setup_iso_data_path_t;
+
+/** @brief LE Setup ISO Data Path return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_setup_iso_data_path_return_t;
+
+/** @brief LE Remove ISO Data Path command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t data_path_direction;
+} sdc_hci_cmd_le_remove_iso_data_path_t;
+
+/** @brief LE Remove ISO Data Path return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_remove_iso_data_path_return_t;
+
+/** @brief LE ISO Transmit Test command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t payload_type;
+} sdc_hci_cmd_le_iso_transmit_test_t;
+
+/** @brief LE ISO Transmit Test return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_iso_transmit_test_return_t;
+
+/** @brief LE ISO Receive Test command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint8_t payload_type;
+} sdc_hci_cmd_le_iso_receive_test_t;
+
+/** @brief LE ISO Receive Test return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_iso_receive_test_return_t;
+
+/** @brief LE ISO Read Test Counters command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_iso_read_test_counters_t;
+
+/** @brief LE ISO Read Test Counters return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint32_t received_sdu_count;
+    uint32_t missed_sdu_count;
+    uint32_t failed_sdu_count;
+} sdc_hci_cmd_le_iso_read_test_counters_return_t;
+
+/** @brief LE ISO Test End command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_iso_test_end_t;
+
+/** @brief LE ISO Test End return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint32_t received_sdu_count;
+    uint32_t missed_sdu_count;
+    uint32_t failed_sdu_count;
+} sdc_hci_cmd_le_iso_test_end_return_t;
+
+/** @brief LE Set Host Feature command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint8_t bit_number;
+    uint8_t bit_value;
+} sdc_hci_cmd_le_set_host_feature_t;
+
+/** @brief LE Read ISO Link Quality command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_read_iso_link_quality_t;
+
+/** @brief LE Read ISO Link Quality return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint32_t tx_unacked_packets;
+    uint32_t tx_flushed_packets;
+    uint32_t tx_last_subevent_packets;
+    uint32_t retransmitted_packets;
+    uint32_t crc_error_packets;
+    uint32_t rx_unreceived_packets;
+    uint32_t duplicate_packets;
+} sdc_hci_cmd_le_read_iso_link_quality_return_t;
 
 /** @brief LE Enhanced Read Transmit Power Level command parameter(s). */
 typedef __PACKED_STRUCT
@@ -4803,6 +5189,1013 @@ uint8_t sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params(const sdc_hci_cmd_l
  */
 uint8_t sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(const sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params_t * p_params);
 
+/** @brief LE Read Buffer Size [v2].
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.2
+ *
+ * This command is used to read the maximum size of the data portion of ACL
+ * data packets and isochronous data packets sent from the Host to the Control-
+ * ler. The Host shall segment the data transmitted to the Controller according to
+ * these values so that the HCI ACL Data packets and HCI ISO Data packets will
+ * contain data up to this size (“data” includes optional fields in the HCI ISO Data
+ * packet, such as ISO_SDU_Length). The HCI_LE_Read_Buffer_Size
+ * command also returns the total number of HCI LE ACL Data packets and iso-
+ * chronous data packets that can be stored in the data buffers of the Controller.
+ * The HCI_LE_Read_Buffer_Size command shall be issued by the Host before it
+ * sends any data to an LE Controller (see Section 4.1.1). If the Controller sup-
+ * ports HCI ISO Data packets, it shall return non-zero values for the ISO_Data_-
+ * Packet_Length and Total_Num_ISO_Data_Packets parameters.
+ *
+ * If the Controller returns a length value of zero for ACL data packets, the Host
+ * shall use the HCI_Read_Buffer_Size command to determine the size of the
+ * data buffers (shared between BR/EDR and LE transports).
+ *
+ * Note: Both the HCI_Read_Buffer_Size command and the HCI_LE_Read_-
+ * Buffer_Size command may return buffer length and number of packets param-
+ * eter values that are nonzero. This allows a Controller to offer different buffers
+ * and number of buffers for BR/EDR data packets and LE data packets.
+ *
+ * The LE_ACL_Data_Packet_Length return parameter shall be used to deter-
+ * mine the maximum size of the L2CAP PDU segments that are contained in
+ * ACL data packets, and which are transferred from the Host to the Controller to
+ * be broken up into packets by the Link Layer. The Total_Num_LE_ACL_Data_-
+ * Packets return parameter contains the total number of HCI ACL Data packets
+ * that can be stored in the data buffers of the Controller. The Host determines
+ * how to divide the buffers between different connection handles.
+ *
+ * The ISO_Data_Packet_Length return parameter shall be used to determine the
+ * maximum size of the SDU segments that are contained in isochronous data
+ * packets, and which are transferred from the Host to the Controller. The
+ * Total_Num_ISO_Data_Packets return parameter contains the total number of
+ * isochronous data packets that can be stored in the data buffers of the
+ * Controller. The Host determines how to divide the buffers between different
+ * connection handle(s).
+ *
+ * Note: The LE_ACL_Data_Packet_Length and ISO_Data_Packet_Length
+ * return parameters do not include the length of the HCI ACL Data packet header
+ * or the HCI ISO Data packet header respectively.
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Read_Buffer_Size command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_buffer_size_v2(sdc_hci_cmd_le_read_buffer_size_v2_return_t * p_return);
+
+/** @brief LE Read ISO TX Sync.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.96
+ *
+ * This command is used to read the TX_Time_Stamp and Time_Offset of a
+ * transmitted SDU identified by the Packet_Sequence_Number on a CIS or BIS
+ * identified by the Connection_Handle parameter on the Central or Peripheral.
+ *
+ * The Packet_Sequence_Number parameter contains the sequence number of a
+ * transmitted SDU.
+ *
+ * The TX_Time_Stamp and Time_Offset parameters are described in [Vol 6] Part
+ * G, Section 3.3 and [Vol 6] Part G, Section 3.1 respectively. When the
+ * Connection_Handle identifies a CIS or BIS that is transmitting unframed PDUs,
+ * the value of Time_Offset returned shall be zero.
+ *
+ * If the Host issues this command with a connection handle that does not exist,
+ * or the connection handle is not associated with a CIS or BIS, the Controller
+ * shall return the error code Unknown Connection Identifier (0x02).
+ *
+ * If the Host issues this command on an existing connection handle for a CIS or
+ * BIS that is not configured for transmitting SDUs, the Controller shall return the
+ * error code Command Disallowed (0x0C).
+ *
+ * If the Host issues this command before an SDU has been transmitted by the
+ * Controller, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Read_ISO_TX_Sync command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_iso_tx_sync(const sdc_hci_cmd_le_read_iso_tx_sync_t * p_params,
+                                        sdc_hci_cmd_le_read_iso_tx_sync_return_t * p_return);
+
+/** @brief LE Set CIG Parameters.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.97
+ *
+ * The HCI_LE_Set_CIG_Parameters command is used by a Central'’s Host to
+ * create a CIG and to set the parameters of one or more CISes that are
+ * associated with a CIG in the Controller.
+ *
+ * The CIG_ID parameter identifies a CIG. This parameter is allocated by the
+ * Central's Host and passed to the Peripheral's Host through the Link Layers
+ * during the process of creating a CIS. If the CIG_ID does not exist, then the
+ * Controller shall first create a new CIG. Once the CIG is created (whether
+ * through this command or previously), the Controller shall modify or add CIS
+ * configurations in the CIG that is identified by the CIG_ID and update all the
+ * parameters that apply to the CIG.
+ *
+ * The SDU_Interval_C_To_P parameter specifies the time interval between the
+ * start of consecutive SDUs from the Central's Host for all the CISes in the CIG.
+ * This parameter shall be ignored for all CISes that are unidirectional from
+ * Peripheral to Central.
+ *
+ * The SDU_Interval_P_To_C parameter specifies the time interval between the
+ * start of consecutive SDUs from the Peripheral's Host for all the CISes in the
+ * CIG. This parameter shall be ignored for all CISes that are unidirectional from
+ * Central to Peripheral.
+ * The Worst_Case_SCA parameter shall be the worst-case sleep clock accuracy
+ * of all the Peripherals that will participate in the CIG. The Host should get the
+ * sleep clock accuracy from all the Peripherals before issuing this command. If
+ * the Host cannot get the sleep clock accuracy from all the Peripherals, it shall
+ * set the Worst_Case_SCA parameter to zero.
+ *
+ * Note: The Worst_Case_SCA parameter can be used by the Link Layer to
+ * better allow for clock drift when scheduling the CISes in the CIG. For example,
+ * if a CIS has more than two subevents, the Link Layer of the Central can set the
+ * timing of the subevents such that the worst case drift in the Peripheral's clock
+ * will not exceed 2 × Sub_Interval. This prevents the Peripheral from
+ * synchronizing its timing to the wrong subevent (adjacent subevents cannot be
+ * on the same channel).
+ *
+ * The Packing parameter indicates the preferred method of arranging subevents
+ * of multiple CISes. The subevents can be arranged in Sequential or Interleaved
+ * arrangement (see [Vol 6] Part B, Section 4.5.14.2). This is a recommendation
+ * to the Controller which the Controller may ignore. This parameter shall be
+ * ignored when there is only one CIS in the CIG.
+ *
+ * The Framing parameter indicates the format of the CIS Data PDUs of the
+ * specified CISes. If the Framing parameter is set to 1 then the CIS Data PDUs
+ * of the specified CISes shall be framed. If the Framing parameter is set to 0 the
+ * CIS Data PDUs of a given CIS may be either unframed or framed (determined
+ * separately for each specified CIS) (see [Vol 6] Part G, Section 1).
+ *
+ * The Max_Transport_Latency_C_To_P parameter contains the maximum
+ * transport latency from the Central to the Peripheral, in milliseconds, as
+ * described in [Vol 6] Part G, Section 3.2.1 and [Vol 6] Part G, Section 3.2.2. This
+ * parameter shall be ignored for all CISes that are unidirectional from Peripheral
+ * to Central.
+ *
+ * The Max_Transport_Latency_P_To_C parameter contains the maximum
+ * transport latency from the Peripheral to the Central, in milliseconds, as
+ * described in [Vol 6] Part G, Section 3.2.1 and [Vol 6] Part G, Section 3.2.2. This
+ * parameter shall be ignored for all CISes that are unidirectional from Central to
+ * Peripheral.
+ *
+ * The CIS_Count parameter indicates the number of CIS configurations being
+ * modified or added by this command. The Controller shall set the CIS_Count
+ * return parameter equal to this.
+ *
+ * The CIS_ID[i] parameter identifies a CIS and is set by the Central’s Host and
+ * passed to the Peripheral’s Host through the Link Layers during the process of
+ * establishing a CIS.
+ *
+ * The Max_SDU_C_To_P[i] parameter identifies the maximum size of an SDU
+ * from the Central’s Host. If the CIS is unidirectional from Peripheral to Central,
+ * this parameter shall be set to 0. If a CIS configuration that is being modified
+ * has a data path set in the Central to Peripheral direction and the Host has
+ * specified that Max_SDU_C_To_P[i] shall be set to zero, the Controller shall
+ * return the error code Command Disallowed (0x0C).
+ *
+ * The Max_SDU_P_To_C[i] parameter identifies the maximum size of an SDU
+ * from the Peripheral's Host. If the CIS is unidirectional from Central to
+ * Peripheral, this parameter shall be set to 0. If a CIS configuration that is being
+ * modified has a data path set in the Peripheral to Central direction and the Host
+ * has specified that Max_SDU_P_To_C[i] shall be set to zero, the Controller
+ * shall return the error code Command Disallowed (0x0C).
+ *
+ * The PHY_C_To_P[i] parameter identifies which PHY to use for transmission
+ * from the Central to the Peripheral. The Host shall set at least one bit in this
+ * parameter and the Controller shall pick a PHY from the bits that are set.
+ *
+ * The PHY_P_To_C[i] parameter identifies which PHY to use for transmission
+ * from the Peripheral to the Central. The Host shall set at least one bit in this
+ * parameter and the Controller shall pick a PHY from the bits that are set.
+ *
+ * The RTN_C_To_P[i] (Retransmission Number) parameter contains the number
+ * of times that a CIS Data PDU should be retransmitted from the Central to
+ * Peripheral before being acknowledged or flushed (irrespective of which CIS
+ * events the retransmission opportunities occur in). If the CIS is unidirectional
+ * from Peripheral to Central, this parameter shall be ignored. Otherwise, this
+ * parameter is a recommendation to the Controller which the Controller may
+ * ignore.
+ *
+ * The RTN_P_To_C[i] parameter contains the number of times that a CIS Data
+ * PDU should be retransmitted from the Peripheral to Central before being
+ * acknowledged or flushed (irrespective of which CIS events the retransmission
+ * opportunities occur in). If the CIS is unidirectional from Central to Peripheral,
+ * this parameter shall be ignored. Otherwise, this parameter is a
+ * recommendation to the Controller which the Controller may ignore.
+ *
+ * In each direction, if the Controller satisfies the recommendation, then every
+ * PDU will have at least RTN+1 opportunities for transmission (assuming that the
+ * initial transmission of that PDU happens at the earliest allowed subevent). The
+ * RTN value indicates that the Host is recommending that the Controller selects
+ * a combination of CIS parameters that satisfy the inequality:
+ *
+ * NSE * FT - NSE ÷ BN * ( BN - 1 ) ≥ RTN + 1
+ *
+ * If the Status return parameter is non-zero, then the state of the CIG and its CIS
+ * configurations shall not be changed by the command. If the CIG did not already
+ * exist, it shall not be created.
+ *
+ * If the Status return parameter is zero, then the Controller shall set the
+ * Connection_Handle arrayed return parameter to the connection handle(s)
+ * corresponding to the CIS configurations specified in the CIS_IDs command
+ * parameter, in the same order. If the same CIS_ID is being reconfigured, the
+ * same connection handle shall be returned.
+ * The connection handle of a CIS shall refer to the CIS when it exists and to the
+ * configuration of the CIS stored in a CIG when the CIG exists but the CIS with
+ * that CIS_ID does not.
+ *
+ * If the Host issues this command when the CIG is not in the configurable state,
+ * the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Host attempts to create a CIG or set parameters that exceed the
+ * maximum supported resources in the Controller, the Controller shall return the
+ * error code Memory Capacity Exceeded (0x07).
+ *
+ * If the Host attempts to set CIS parameters that exceed the maximum
+ * supported connections in the Controller, the Controller shall return the error
+ * code Connection Limit Exceeded (0x09).
+ *
+ * If the Host sets, in the PHY_C_To_P[i] or PHY_P_To_C[i] parameters, a bit for
+ * a PHY that the Controller does not support, including a bit that is reserved for
+ * future use, the Controller shall return the error code Unsupported Feature or
+ * Parameter Value (0x11).
+ *
+ * If the Controller does not support asymmetric PHYs and the Host sets
+ * PHY_C_To_P[i] to a different value than PHY_P_To_C[i], the Controller shall
+ * return the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Host specifies an invalid combination of CIS parameters, the Controller
+ * shall return the error code Invalid HCI Command Parameters (0x12) or the
+ * error code Unsupported Feature or Parameter Value (0x11); it should return
+ * the error code Invalid HCI Command Parameters (0x12).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_CIG_Parameters command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_cig_params(const sdc_hci_cmd_le_set_cig_params_t * p_params,
+                                      sdc_hci_cmd_le_set_cig_params_return_t * p_return);
+
+/** @brief LE Set CIG Parameters Test.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.98
+ *
+ * The HCI_LE_Set_CIG_Parameters_Test command should only be used for
+ * testing purposes.
+ *
+ * The command is used by a Central's Host to create a CIG and to set the
+ * parameters of one or more CISes that are associated with a CIG in the
+ * Controller.
+ *
+ * The CIG_ID parameter identifies a CIG. This parameter is allocated by the
+ * Central's Host and passed to the Peripheral's Host through the Link Layers
+ * during the process of creating a CIS. If the CIG_ID does not exist, then the
+ * Controller shall first create a new CIG. Once the CIG is created (whether
+ * through this command or previously), the Controller shall modify or add CIS
+ * configurations in the CIG that is identified by the CIG_ID and update all the
+ * parameters that apply to the CIG.
+ *
+ * The SDU_Interval_C_To_P parameter specifies the time interval of periodic
+ * SDUs from the Central's Host.
+ * The SDU_Interval_P_To_C parameter specifies the time interval of periodic
+ * SDUs from the Peripheral's Host.
+ *
+ * The FT_C_To_P parameter identifies the maximum time for a payload from the
+ * Central to Peripheral to be transmitted and re-transmitted, after which it is
+ * flushed (see [Vol 6] Part B, Section 4.5.13.5). This parameter is expressed in
+ * multiples of ISO_Interval.
+ *
+ * The FT_P_To_C parameter identifies the maximum time for a payload from the
+ * Peripheral to Central to be transmitted and re-transmitted, after which it is
+ * flushed (see[Vol 6] Part B, Section 4.5.13.5). This parameter is expressed in
+ * multiples of ISO_Interval.
+ *
+ * The ISO_Interval parameter specifies the time between two consecutive CIS
+ * anchor points.
+ *
+ * The CIS_Count parameter contains the number of CIS configurations being
+ * added or modified by this command. The Controller shall set the CIS_Count
+ * return parameter equal to this.
+ *
+ * The CIS_ID[i] parameter identifies the CIS and is set by the Central's Host and
+ * passed to the Peripheral's Host through the Link Layers during the process of
+ * establishing a CIS.
+ *
+ * The Worst_Case_SCA parameter is the worst-case sleep clock accuracy of all
+ * the Peripherals that will participate in the CIG. The Host should get the sleep
+ * clock accuracy from all the Peripherals before issuing this command. In case
+ * the Host cannot get the sleep clock accuracy from all the Peripherals, it shall
+ * set the Worst_Case_SCA parameter to zero.
+ *
+ * Note: The Worst_Case_SCA parameter can be used by the Link Layer to
+ * better allow for clock drift when scheduling the CISes in the CIG. For example,
+ * if a CIS has more than two subevents, the Link Layer of the Central can set the
+ * timing of the subevents such that the worst case drift in the Peripheral's clock
+ * will not exceed 2 × Sub_Interval. This prevents the Peripheral from
+ * synchronizing its timing to the wrong subevent (adjacent subevents cannot be
+ * on the same channel).
+ *
+ * The Packing parameter is used to indicate the preferred method of arranging
+ * subevents of multiple CISes. The subevents can be arranged in Sequential or
+ * Interleaved arrangement. This is a recommendation to the Controller which it
+ * may ignore. This parameter shall be ignored when there is only one CIS in the
+ * CIG.
+ *
+ * The Framing parameter indicates the format of the CIS Data PDUs of all the
+ * CISes. If the Framing parameter is set to 1 then the CIS Data PDUs of the
+ * specified CISes shall be framed, and when set to 0 they shall be unframed (see
+ * [Vol 6] Part G, Section 1).
+ *
+ * The CIS_ID[i] parameter is used to identify a CIS.
+ * The NSE[i] parameter identifies the maximum number of subevents for each
+ * CIS in a CIG event.
+ *
+ * The Max_SDU_C_To_P[i] parameter identifies the maximum size of SDU from
+ * the Central’s Host. If the CIS is unidirectional from Peripheral to Central, this
+ * parameter shall be set to 0. If a CIS configuration that is being modified has a
+ * data path set in the Central to Peripheral direction and the Host has specified
+ * that Max_SDU_C_To_P[i] shall be set to zero, the Controller shall return the
+ * error code Command Disallowed (0x0C). The minimum value of the
+ * Max_SDU_Size parameter in the ISO Transmit Test mode when the
+ * Payload_Type = 1 or 2 shall be 4 octets.
+ *
+ * The Max_SDU_P_To_C[i] parameter identifies the maximum size of SDU from
+ * the Peripheral’s Host. If the CIS is unidirectional from Central to Peripheral, this
+ * parameter shall be set to 0. If a CIS configuration that is being modified has a
+ * data path set in the Peripheral to Central direction and the Host has specified
+ * that Max_SDU_P_To_C[i] shall be set to zero, the Controller shall return the
+ * error code Command Disallowed (0x0C).The minimum value of the Max_SDU
+ * parameter in the ISO Transmit Test mode when the Payload_Type = 1 or 2
+ * shall be 4 octets.
+ *
+ * The Max_PDU_C_To_P[i] parameter identifies the maximum size PDU from
+ * the Central to Peripheral.
+ *
+ * The Max_PDU_P_To_C[i] parameter identifies the maximum size PDU from
+ * the Peripheral to Central.
+ *
+ * The PHY_C_To_P[i] parameter identifies the PHY to be used for transmission
+ * of packets from the Central to the Peripheral. The Host shall set only one bit in
+ * this parameter and the Controller shall use the PHY set by the Host.
+ *
+ * The PHY_P_To_C[i] parameter identifies the PHY to be used for transmission
+ * of packets from the Peripheral to the Central. The Host shall set only one bit in
+ * this parameter and the Controller shall use the PHY set by the Host.
+ *
+ * The BN_C_To_P[i] parameter identifies the burst number for Central to
+ * Peripheral (see [Vol 6] Part B, Section 4.5.13). If the CIS is unidirectional from
+ * Peripheral to Central, this parameter shall be set to zero.
+ *
+ * The BN_P_To_C[i] parameter identifies the burst number for Peripheral to
+ * Central (see [Vol 6] Part B, Section 4.5.13). If the CIS is unidirectional from
+ * Central to Peripheral, this parameter shall be set to zero.
+ *
+ * If the Status return parameter is non-zero, then the state of the CIG and its CIS
+ * configurations shall not be changed by the command. If the CIG did not already
+ * exist, it shall not be created.
+ *
+ * If the Status return parameter is zero, then the Controller shall set the
+ * Connection_Handle arrayed return parameter to the connection handle(s)
+ * corresponding to the CIS configurations specified in the CIS_IDs command
+ * parameter, in the same order. If the same CIS_ID is being reconfigured, the
+ * same connection handle shall be returned.
+ *
+ * If the Host issues this command when the CIG is not in the configurable state,
+ * the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Host attempts to create a CIG or set parameters that exceed the
+ * maximum supported resources in the Controller, the Controller shall return the
+ * error code Memory Capacity Exceeded (0x07).
+ *
+ * If the Host attempts to set CIS parameters that exceed the maximum
+ * supported connections in the Controller, the Controller shall return the error
+ * code Connection Limit Exceeded (0x09).
+ *
+ * If the Host attempts to set an invalid combination of CIS parameters, the
+ * Controller shall return the error code Invalid HCI Command Parameters (0x12)
+ * or the error code Unsupported Feature or Parameter Value (0x11); it should
+ * return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host sets, in the PHY_C_To_P[i] or PHY_P_To_C[i] parameters, a bit for
+ * a PHY that the Controller does not support, including a bit that is reserved for
+ * future use, the Controller shall return the error code Unsupported Feature or
+ * Parameter Value (0x11).
+ *
+ * If the Controller does not support asymmetric PHYs and the Host sets
+ * PHY_C_To_P[i] to a different value than PHY_P_To_C[i], the Controller shall
+ * return the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_CIG_Parameters_Test command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_cig_params_test(const sdc_hci_cmd_le_set_cig_params_test_t * p_params,
+                                           sdc_hci_cmd_le_set_cig_params_test_return_t * p_return);
+
+/** @brief LE Create CIS.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.99
+ *
+ * The HCI_LE_Create_CIS command is used by the Central's Host to create
+ * one or more CISes using the connections identified by the ACL_Connection_-
+ * Handle arrayed parameter.
+ *
+ * The CIS_Count parameter is the total number of CISes created by this
+ * command.
+ *
+ * The CIS_Connection_Handle[i] parameter specifies the connection handle
+ * corresponding to the configuration of the CIS to be created and whose
+ * configuration is already stored in a CIG.
+ *
+ * The ACL_Connection_Handle[i] parameter specifies the connection handle of
+ * the ACL connection associated with each CIS to be created. The list of the
+ * ACL_Connection_Handles shall be in the same order as the list of the
+ * CIS_Connection_Handles e.g., CIS_Connection_Handle[1] will connect to the
+ * Peripheral associated with the ACL_Connection_Handle[1].
+ *
+ * If this command is issued on the Central before the devices have performed
+ * the Feature Exchange procedure, then the Controller shall complete that pro-
+ * cedure before initiating the Connected Isochronous Stream Creation procedure
+ * (see [Vol 6] Part B, Section 5.1.15).
+ *
+ * If any ACL_Connection_Handle[i] is not the handle of an existing ACL
+ * connection or any CIS_Connection_Handle[i] is not the handle of a CIS or CIS
+ * configuration, the Controller shall return the error code Unknown Connection
+ * Identifier (0x02).
+ *
+ * If the Host attempts to create a CIS that has already been created, the
+ * Controller shall return the error code Connection Already Exists (0x0B).
+ *
+ * If two different elements of the CIS_Connection_Handle arrayed parameter
+ * identify the same CIS, the Controller shall return the error code Invalid HCI
+ * Command Parameters (0x12).
+ *
+ * If the Host issues this command before all the HCI_LE_CIS_Established
+ * events from the previous use of the command have been generated, the
+ * Controller shall return the error code Command Disallowed (0x0C).
+ * If the Host issues this command on an ACL_Connection_Handle where the
+ * Controller is the Peripheral, the Controller shall return the error code Command
+ * Disallowed (0x0C).
+ *
+ * Note: The order of the CIS connection handles in this command does not relate
+ * to the order of connection handles in the return parameters of the HCI_LE_-
+ * Set_CIG_Parameters command or the HCI_LE_Set_CIG_Parameters_Test
+ * command.
+ *
+ * If the Host issues this command when the Connected Isochronous Stream
+ * (Host Support) feature bit (see [Vol 6] Part B, Section 4.6.27) is not set, the
+ * Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Host specified an invalid combination of parameters in the HCI_LE_Set_-
+ * CIG_Parameters or HCI_LE_Set_CIG_Parameters_Test command that cre-
+ * ated the CIS configuration, but the Controller could not detect the problem
+ * without knowing the properties of the ACL connection associated with the CIS,
+ * then the Controller shall return an error which should use the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * Note: If an error is reported in the HCI_Command_Status event, it means that
+ * no CIS is created and the Host cannot determine which CIS had the error.
+ * Therefore, in the case of an error that only affects one CIS of several, reporting
+ * the error in the HCI_LE_CIS_Established event for that CIS means that the
+ * remaining CISes are still created and the Host can determine which CIS had
+ * the error.
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Create_CIS command, the
+ * Controller sends the HCI_Command_Status event to the Host. An
+ * HCI_LE_CIS_Established event will be generated for each CIS when it is
+ * established or if it is disconnected or considered lost before being established;
+ * until all the events are generated, the command remains pending.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_create_cis(const sdc_hci_cmd_le_create_cis_t * p_params);
+
+/** @brief LE Remove CIG.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.100
+ *
+ * The HCI_LE_Remove_CIG command is used by the Central’s Host to remove
+ * the CIG identified by CIG_ID.
+ *
+ * The CIG_ID parameter contains the identifier of the CIG.
+ *
+ * This command shall delete the CIG_ID and also delete the
+ * Connection_Handles of the CIS configurations stored in the CIG.
+ *
+ * This command shall also remove the isochronous data paths that are
+ * associated with the Connection_Handles of the CIS configurations, which is
+ * equivalent to issuing the HCI_LE_Remove_ISO_Data_Path command (see
+ * Section 7.8.110).
+ *
+ * If the Host tries to remove a CIG which is in the active state, then the Controller
+ * shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Host issues this command with a CIG_ID that does not exist, the
+ * Controller shall return the error code Unknown Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Remove_CIG command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_remove_cig(const sdc_hci_cmd_le_remove_cig_t * p_params,
+                                  sdc_hci_cmd_le_remove_cig_return_t * p_return);
+
+/** @brief LE Accept CIS Request.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.101
+ *
+ * The HCI_LE_Accept_CIS_Request command is used by the Peripheral's Host
+ * to inform the Controller to accept the request for the CIS that is identified by the
+ * Connection_Handle.
+ *
+ * The command shall only be issued after an HCI_LE_CIS_Request event has
+ * occurred. The event contains the Connection_Handle of the CIS.
+ *
+ * If the Peripheral's Host issues this command with a Connection_Handle that
+ * does not exist, or the Connection_Handle is not for a CIS, the Controller shall
+ * return the error code Unknown Connection Identifier (0x02).
+ *
+ * If the Peripheral's Host issues this command with a Connection_Handle for a
+ * CIS that has already been established or that already has an HCI_LE_-
+ * Accept_CIS_Request or HCI_LE_Reject_CIS_Request command in progress,
+ * the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Central’s Host issues this command, the Controller shall return the error
+ * code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Accept_CIS_Request command,
+ * the Controller sends the HCI_Command_Status event to the Host. An
+ * HCI_LE_CIS_Established event will be generated when the CIS is established
+ * or is considered lost before being established.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_accept_cis_request(const sdc_hci_cmd_le_accept_cis_request_t * p_params);
+
+/** @brief LE Reject CIS Request.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.102
+ *
+ * The HCI_LE_Reject_CIS_Request command is used by the Peripheral's Host
+ * to inform the Controller to reject the request for the CIS that is identified by the
+ * Connection_Handle.
+ *
+ * The command shall only be issued after an HCI_LE_CIS_Request event has
+ * occurred. The event contains the Connection_Handle of the CIS.
+ *
+ * When this command succeeds, the Controller shall delete the
+ * Connection_Handle of the requested CIS.
+ *
+ * The Reason command parameter indicates the reason for rejecting the CIS
+ * request.
+ *
+ * If the Peripheral's Host issues this command with a Connection_Handle that is
+ * not for a CIS, the Controller shall return the error code Unknown Connection
+ * Identifier (0x02).
+ *
+ * If the Peripheral's Host issues this command with a Connection_Handle for a
+ * CIS that has already been established or that already has an HCI_LE_-
+ * Accept_CIS_Request or HCI_LE_Reject_CIS_Request command in progress,
+ * the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Central’s Host issues this command, the Controller shall return the error
+ * code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Reject_CIS_Request command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_reject_cis_request(const sdc_hci_cmd_le_reject_cis_request_t * p_params,
+                                          sdc_hci_cmd_le_reject_cis_request_return_t * p_return);
+
+/** @brief LE Create BIG.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.103
+ *
+ * The HCI_LE_Create_BIG command is used to create a BIG with one or more
+ * BISes (see [Vol 6] Part B, Section 4.4.6). All BISes in a BIG have the same
+ * value for all parameters.
+ *
+ * The BIG_Handle contains the identifier of the BIG. This parameter is allocated
+ * by the Host and used by the Controller and the Host to identify a BIG.
+ *
+ * The Advertising_Handle identifies the associated periodic advertising train of
+ * the BIG (see [Vol 6] Part B, Section 4.4.5.1).
+ *
+ * The Num_BIS parameter contains the total number of BISes in the BIG.
+ *
+ * The SDU_Interval parameter contains the time interval of the periodic SDUs.
+ *
+ * The Max_SDU parameter contains the maximum size of an SDU.
+ *
+ * The Max_Transport_Latency parameter is the maximum transport latency (in
+ * milliseconds) as described in [Vol 6] Part G, Section 3.2.1 and [Vol 6] Part G,
+ * Section 3.2.2. This includes pre-transmissions.
+ *
+ * The RTN (Retransmission Number) parameter contains the number of times
+ * every PDU should be retransmitted, irrespective of which BIG events the
+ * retransmissions occur in. This is a recommendation to the Controller which the
+ * Controller may ignore.
+ *
+ * The PHY parameter is a bit field that indicates the PHY used for transmission
+ * of PDUs of BISes in the BIG. The Host shall set at least one bit in this
+ * parameter and the Controller shall pick a PHY from the bits set. If the Host
+ * sets, in the PHY parameter, a bit for a PHY that the Controller does not
+ * support, including a bit that is reserved for future use, the Controller shall return
+ * the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * The Packing parameter is used to indicate the preferred method of arranging
+ * subevents of multiple BISes. The subevents can be arranged in Sequential or
+ * Interleaved arrangement. This is a recommendation to the Controller which it
+ * may ignore. This parameter shall be ignored when there is only one BIS in the
+ * BIG.
+ *
+ * The Framing parameter indicates the format for sending BIS Data PDUs. If the
+ * Framing parameter is set to 1 then BIS Data PDUs shall be Framed and when
+ * set to 0 they may be unframed (see [Vol 6] Part G, Section 1).
+ *
+ * The Encryption parameter identifies the encryption mode of the BISes. If the
+ * Encryption parameter is set to 1 (encrypted), the Broadcast_Code is used in
+ * the encryption of payloads (see [Vol 6] Part B, Section 4.4.6.10).
+ *
+ * The Broadcast_Code parameter is used to generate the encryption key for
+ * encrypting payloads of all BISes. When the Encryption parameter is set to 0
+ * (unencrypted), the Broadcast_Code parameter shall be set to zero by the Host
+ * and ignored by the Controller.
+ *
+ * If the Controller cannot create all BISes of the BIG or if Num_BIS exceeds the
+ * maximum value supported by the Controller, it shall return the error code
+ * Connection Rejected due to Limited Resources (0x0D).
+ *
+ * If the Advertising_Handle does not identify a periodic advertising train or the
+ * periodic advertising train is associated with another BIG, the Controller shall
+ * return the error code Unknown Advertising Identifier (0x42).
+ *
+ * If the Host issues this command with a BIG_Handle for a BIG that is already
+ * created, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * If the Host specifies an invalid combination of BIG parameters, the Controller
+ * shall return an error which should use the error code Invalid HCI Command
+ * Parameters (0x12).
+ *
+ * If the length of the associated periodic advertising, with the BIGInfo added to
+ * the ACAD, is greater than the maximum that the Controller can transmit within
+ * the periodic advertising interval, then the Controller shall return an error and
+ * should use the error code Packet Too Long (0x45). If advertising on the LE
+ * Coded PHY, then the S=8 coding shall be assumed unless the current
+ * advertising parameters require the use of S=2 for an advertising physical
+ * channel, in which case the S=2 coding shall be assumed for that advertising
+ * physical channel.
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Create_BIG command, the Control-
+ * ler sends the HCI_Command_Status event to the Host. When the HCI_LE_-
+ * Create_BIG command has completed, the HCI_LE_Create_BIG_Complete
+ * event is generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_create_big(const sdc_hci_cmd_le_create_big_t * p_params);
+
+/** @brief LE Create BIG Test.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.104
+ *
+ * The HCI_LE_Create_BIG_Test command should only be used for testing
+ * purposes.
+ *
+ * The command is used to create one or more BISes of a BIG (see [Vol 6] Part B,
+ * Section 4.4.6). All BISes in the BIG have the same values for all parameters.
+ *
+ * The BIG_Handle contains the identifier of the BIG. This parameter is allocated
+ * by the Host and used by the Controller and the Host to identify a BIG.
+ *
+ * The Advertising_Handle identifies the associated periodic advertising train of
+ * the BIG.
+ *
+ * The Num_BIS parameter contains the total number of BISes in the BIG.
+ *
+ * The SDU_Interval parameter specifies the time interval of the periodic SDUs.
+ *
+ * The ISO_Interval parameter contains the time duration between two
+ * consecutive BIG anchor points.
+ *
+ * The NSE (Number of SubEvents) parameter contains the total number of
+ * subevents that are used to transmit BIS Data PDUs for each BIS in a BIG
+ * event. The NSE parameter shall be greater than or equal to IRC * BN.
+ * The Max_SDU parameter contains the maximum size, in octets, of an SDU.
+ * The minimum value of the Max_SDU parameter in the ISO Transmit Test mode
+ * when the Payload_Type = 1 or 2 shall be 4.
+ *
+ * The Max_PDU parameter contains the maximum size of every BIS Data PDU
+ * for every BIS in the BIG.
+ *
+ * The PHY parameter is a bit field that indicates the PHY used for transmission
+ * of PDUs of BISes in the BIG. The Host shall set only one bit in this parameter
+ * and the Controller shall use the PHY set by the Host. If the Host sets, in the
+ * PHY parameter, a bit for a PHY that the Controller does not support, including
+ * a bit that is reserved for future use, the Controller shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * The Packing parameter indicates the preferred method of arranging subevents
+ * of multiple BISes. The subevents can be arranged in Sequential or Interleaved
+ * arrangement. This is a recommendation to the Controller which it may ignore.
+ * This parameter shall be ignored when there is only one BIS in the BIG.
+ *
+ * The Framing parameter indicates the format of BIS Data PDUs. If the Framing
+ * parameter is set to 1 then BIS Data PDUs shall be Framed and when set to 0
+ * the BIS Data PDUs shall be unframed (see [Vol 6] Part G, Section 1).
+ *
+ * The BN (Burst Number) parameter contains the number of new payloads for
+ * each BIS in a BIS event.
+ *
+ * The IRC (Immediate Repetition Count) parameter contains the number of times
+ * the scheduled data packet is transmitted (see [Vol 6] Part B, Section 4.4.6).
+ * The IRC parameter shall be an integer in the range 1 to (NSE ÷ BN).
+ *
+ * The PTO (Pre_Transmission_Offset) parameter contains the offset in number
+ * of ISO_Intervals for pre transmissions of data packets (see [Vol 6] Part B,
+ * Section 4.4.6).
+ *
+ * The Encryption parameter identifies the encryption mode of the BISes in the
+ * BIG. If the Encryption parameter is set to 1 (encrypted), the Broadcast_Code is
+ * used in the encryption of payloads (see [Vol 6] Part B, Section 4.4.6).
+ *
+ * The Broadcast_Code parameter is a 16-octet field that is used to generate the
+ * session key to encrypt payloads of all BISes in the BIG. When the Encryption
+ * parameter is set to 0 (unencrypted), all 16 octets of the Broadcast_Code
+ * parameter shall be set to zero by the Host and ignored by the Controller.
+ *
+ * If the Controller cannot create all BISes of the BIG or if Num_BIS exceeds the
+ * maximum value supported by the Controller, it shall return the error code
+ * Connection Rejected due to Limited Resources (0x0D).
+ *
+ * If the Advertising_Handle does not identify a periodic advertising train or the
+ * periodic advertising train is associated with another BIG, the Controller shall
+ * return the error code Unknown Advertising Identifier (0x42).
+ * If the Host issues this command with a BIG_Handle for a BIG that is already
+ * created, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * If the value of the Max_PDU, NSE, BN, IRC or PTO parameters exceeds the
+ * values supported by the Controller, the Controller shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Host specifies an invalid combination of BIG parameters, the Controller
+ * shall return an error. If the value of the NSE parameter is not an integer
+ * multiple of BN, or NSE is less than (IRC * BN), or the parameters are not in the
+ * specified range, these errors shall use the error code Unsupported Feature or
+ * Parameter Value (0x11). The errors in all other circumstances should use the
+ * error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the length of the associated periodic advertising, with the BIGInfo added to
+ * the ACAD, is greater than the maximum that the Controller can transmit within
+ * the periodic advertising interval, then the Controller shall return an error and
+ * should use the error code Packet Too Long (0x45). If advertising on the LE
+ * Coded PHY, then the S=8 coding shall be assumed unless the current
+ * advertising parameters require the use of S=2 for an advertising physical
+ * channel, in which case the S=2 coding shall be assumed for that advertising
+ * physical channel.
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Create_BIG_Test command, the
+ * Controller sends the HCI_Command_Status event to the Host. When the
+ * HCI_LE_Create_BIG_Test command has completed, the HCI_LE_Create_-
+ * BIG_Complete event is generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_create_big_test(const sdc_hci_cmd_le_create_big_test_t * p_params);
+
+/** @brief LE Terminate BIG.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.105
+ *
+ * The HCI_LE_Terminate_BIG command is used to terminate a BIG identified by
+ * the BIG_Handle parameter. The command also terminates the transmission of
+ * all BISes of the BIG, destroys the associated connection handles of the BISes
+ * in the BIG and removes the data paths for all BISes in the BIG.
+ *
+ * The Reason parameter is used to indicate the reason why the BIG is to be
+ * terminated.
+ *
+ * If the BIG_Handle does not identify a BIG, the Controller shall return the error
+ * code Unknown Advertising Identifier (0x42).
+ *
+ * If the Controller is not the Isochronous Broadcaster for the BIG identified by
+ * BIG_Handle, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Terminate_BIG command, the
+ * Controller sends the HCI_Command_Status event to the Host.
+ *
+ * When the HCI_LE_Terminate_BIG command has completed, the HCI_LE_-
+ * Terminate_BIG_Complete event will be generated.
+ * If the Host attempts to terminate a BIG while the process of establishment of
+ * the BIG is in progress (i.e. HCI_LE_Create_BIG_Complete event has not been
+ * generated) the process of establishment shall stop and the Controller shall
+ * generate the HCI_LE_Create_BIG_Complete event to the Host with the error
+ * code Operation Cancelled by Host (0x44).
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_terminate_big(const sdc_hci_cmd_le_terminate_big_t * p_params);
+
+/** @brief LE BIG Create Sync.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.106
+ *
+ * The HCI_LE_BIG_Create_Sync command is used to synchronize to a BIG
+ * described in the periodic advertising train specified by the Sync_Handle
+ * parameter.
+ *
+ * The BIG_Handle parameter is assigned by the Host to identify the
+ * synchronized BIG.
+ *
+ * The Encryption parameter indicates whether the Broadcast_Code parameter is
+ * valid.
+ *
+ * The Broadcast_Code parameter is a 16-octet field that is used to generate the
+ * session key to encrypt or decrypt payloads of an encrypted BIS.
+ * Broadcast_Code shall be ignored by the Controller if Encryption is set to 0x00.
+ *
+ * If Encryption is set to 0x00 for an encrypted BIG or is set to 0x01 for an
+ * unencrypted BIG, then the Controller shall return the error Encryption Mode
+ * Not Acceptable (0x25).
+ *
+ * The MSE (Maximum Subevents) parameter is the maximum number of
+ * subevents that a Controller should use to receive data payloads in each
+ * interval for a BIS.
+ *
+ * The BIG_Sync_Timeout parameter specifies the maximum permitted time
+ * between successful receptions of BIS PDUs. If this time is exceeded,
+ * synchronization is lost. When the Controller establishes synchronization and if
+ * the BIG_Sync_Timeout set by the Host is less than 6 * ISO_Interval, the
+ * Controller shall set the timeout to 6 * ISO_Interval.
+ *
+ * The Num_BIS parameter contains the number of BIS indices specified in the
+ * BIS arrayed parameter. The number of BISes requested may be a subset of
+ * the BISes available in the BIG.
+ * The BIS arrayed parameter is a list of indices corresponding to BIS(es) in the
+ * synchronized BIG. The list of BIS indices shall be in ascending order and shall
+ * not contain any duplicates. This list of specified BIS(es) may be all or a subset
+ * of BISes available in the BIG.
+ *
+ * If the Sync_Handle does not exist, the Controller shall return the error code
+ * Unknown Advertising Identifier (0x42).
+ *
+ * If the Host sends this command with a BIG_Handle that is already allocated,
+ * the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the information describing the BIG does not specify a PHY supported by the
+ * Controller or does not specify exactly one PHY, the Controller shall return the
+ * error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Num_BIS parameter is greater than the total number of BISes in the BIG,
+ * the Controller shall return the error code Unsupported Feature or Parameter
+ * Value (0x11).
+ *
+ * If the Host sends this command when the Controller is in the process of
+ * synchronizing to any BIG, i.e. the HCI_LE_BIG_Sync_Established event has
+ * not been generated, the Controller shall return the error code Command
+ * Disallowed (0x0C).
+ *
+ * If the Controller is unable to receive PDUs from the specified number of BISes
+ * in the synchronized BIG, it shall return the error code Connection Rejected Due
+ * To Limited Resources (0x0D).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_BIG_Create_Sync command, the
+ * Controller sends the HCI_Command_Status event to the Host. When the
+ * HCI_LE_BIG_Create_Sync command has completed, the HCI_LE_BIG_-
+ * Sync_Established event will be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_big_create_sync(const sdc_hci_cmd_le_big_create_sync_t * p_params);
+
+/** @brief LE BIG Terminate Sync.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.107
+ *
+ * The HCI_LE_BIG_Terminate_Sync command is used to stop synchronizing or
+ * cancel the process of synchronizing to the BIG identified by the BIG_Handle
+ * parameter. The command also terminates the reception of BISes in the BIG
+ * specified in the HCI_LE_BIG_Create_Sync command, destroys the associated
+ * connection handles of the BISes in the BIG and removes the data paths for all
+ * BISes in the BIG.
+ *
+ * If the Host issues this command with a BIG_Handle that does not exist, the
+ * Controller shall return the error code Unknown Advertising Identifier (0x42).
+ *
+ * If the Host issues this command for a BIG which it is neither synchronized to
+ * nor in the process of synchronizing to, then the Controller shall return the error
+ * code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_BIG_Terminate_Sync command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * If the Host attempts to terminate synchronization with a BIG while the process
+ * of synchronization with that BIG is in progress (i.e. HCI_LE_BIG_Sync_-
+ * Established event has not been generated) the process of synchronization
+ * shall stop, and the Controller shall generate the HCI_LE_BIG_Sync_-
+ * Established event to the Host with the error code Operation Cancelled by Host
+ * (0x44).
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_big_terminate_sync(const sdc_hci_cmd_le_big_terminate_sync_t * p_params,
+                                          sdc_hci_cmd_le_big_terminate_sync_return_t * p_return);
+
 /** @brief LE Request Peer SCA.
  *
  * The description below is extracted from Core_v5.4,
@@ -4841,6 +6234,407 @@ uint8_t sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params(const sdc_h
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_request_peer_sca(const sdc_hci_cmd_le_request_peer_sca_t * p_params);
+
+/** @brief LE Setup ISO Data Path.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.109
+ *
+ * The HCI_LE_Setup_ISO_Data_Path command is used to identify and create
+ * the isochronous data path between the Host and the Controller for a CIS, CIS
+ * configuration, or BIS identified by the Connection_Handle parameter. This
+ * command can also be used to configure a codec for each data path. When a
+ * connection is created no data paths are set up for that connection.
+ *
+ * The input and output directions are defined from the perspective of the
+ * Controller, so "input" refers to data flowing from the Host to the Controller.
+ *
+ * If the Host issues this command more than once for the same Connection_-
+ * Handle and direction before issuing the HCI_LE_Remove_ISO_Data_Path
+ * command for that Connection_Handle and direction, the Controller shall return
+ * the error code Command Disallowed (0x0C).
+ *
+ * If the Host issues this command for a CIS on a Peripheral before it has issued
+ * the HCI_LE_Accept_CIS_Request command for that CIS, then the Controller
+ * shall return the error code Command Disallowed (0x0C).
+ *
+ * The Data_Path_Direction parameter specifies the direction for which the data
+ * path is being configured.
+ *
+ * The Data_Path_ID parameter specifies the data transport path used. When set
+ * to 0x00, the data path shall be over the HCI transport. When set to a value in
+ * the range 0x01 to 0xFE, the data path shall use a vendor-specific transport
+ * interface (e.g., a PCM interface) with logical transport numbers. The meanings
+ * of these logical transport numbers are vendor-specific.
+ *
+ * If the Host issues this command for a vendor-specific data transport path that
+ * has not been configured, the Controller shall return the error code Command
+ * Disallowed (0x0C).
+ *
+ * If the Host attempts to set a data path with a Connection Handle that does not
+ * exist or that is not for a CIS, CIS configuration, or BIS, the Controller shall
+ * return the error code Unknown Connection Identifier (0x02).
+ * If the Host attempts to set an output data path using a connection handle that is
+ * for an Isochronous Broadcaster, for an input data path on a Synchronized
+ * Receiver, or for a data path for the direction on a unidirectional CIS where BN
+ * is set to 0, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * The Codec_ID parameter specifies the coding format used over the air.
+ *
+ * When Data_Path_Direction is set to 0x00 (input), the Controller_Delay param-
+ * eter specifies the delay at the data source from the reference time of an SDU to
+ * the CIG reference point (see [Vol 6] Part B, Section 4.5.14.1) or BIG anchor
+ * point (see [Vol 6] Part B, Section 4.4.6.4). When Data_Path_Direction is set to
+ * 0x01 (output), Controller_Delay specifies the delay from the
+ * SDU_Synchronization_Reference to the point in time at which the Controller
+ * begins to transfer the corresponding data to the data path interface. The Host
+ * should use the HCI_Read_Local_Supported_Controller_Delay command to
+ * obtain a suitable value for Controller_Delay.
+ *
+ * Note: Controller vendors may provide additional guidance to the Host on how
+ * to select a suitable Controller_Delay value from the range of values provided
+ * by the HCI_Read_Local_Supported_Controller_Delay command for various
+ * configurations of the data path interface.
+ *
+ * The Codec_Configuration parameter specifies codec-specific configuration
+ * information for the specified direction.
+ *
+ * If the Host issues this command with Codec_Configuration_Length non-zero
+ * and Codec_ID set to transparent air mode, the Controller shall return the error
+ * code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command with codec-related parameters that exceed the
+ * bandwidth and latency allowed on the established CIS or BIS identified by the
+ * Connection_Handle parameter, the Controller shall return the error code
+ * Invalid HCI Command Parameters (0x12).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Setup_ISO_Data_Path command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_setup_iso_data_path(const sdc_hci_cmd_le_setup_iso_data_path_t * p_params,
+                                           sdc_hci_cmd_le_setup_iso_data_path_return_t * p_return);
+
+/** @brief LE Remove ISO Data Path.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.110
+ *
+ * The HCI_LE_Remove_ISO_Data_Path command is used to remove the input
+ * and/or output data path(s) associated with a CIS, CIS configuration, or BIS
+ * identified by the Connection_Handle parameter.
+ *
+ * The Data_Path_Direction parameter specifies which directions are to have the
+ * data path removed.
+ *
+ * If the Host issues this command with a Connection_Handle that does not exist
+ * or is not for a CIS, CIS configuration, or BIS, the Controller shall return the
+ * error code Unknown Connection Identifier (0x02).
+ *
+ * If the Host issues this command for a data path that has not been set up (using
+ * the HCI_LE_Setup_ISO_Data_Path command), the Controller shall return the
+ * error code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Remove_ISO_Data_Path command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_remove_iso_data_path(const sdc_hci_cmd_le_remove_iso_data_path_t * p_params,
+                                            sdc_hci_cmd_le_remove_iso_data_path_return_t * p_return);
+
+/** @brief LE ISO Transmit Test.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.111
+ *
+ * The HCI_LE_ISO_Transmit_Test command should only be used in the ISO
+ * Test mode and only for testing purposes.
+ *
+ * The command is used to configure an established CIS or BIS specified by the
+ * Connection_Handle parameter, and transmit test payloads which are
+ * generated by the Controller.
+ *
+ * The Payload_Type parameter defines the configuration of SDUs in the
+ * payload.
+ *
+ * If the Host issues this command with a connection handle that does not exist,
+ * or the Connection_Handle command parameter is not associated with a CIS or
+ * a BIS, the Controller shall return the error code Unknown Connection Identifier
+ * (0x02).
+ *
+ * If the Host issues this command when the value of the transmit BN parameter
+ * of the CIS is set to zero, the Controller shall return the error code Unsupported
+ * Feature or Parameter Value (0x11).
+ *
+ * If the Host has set the input data path for the CIS or BIS identified by the
+ * connection handle, the Controller shall return the error code Command
+ * Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_ISO_Transmit_Test command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_iso_transmit_test(const sdc_hci_cmd_le_iso_transmit_test_t * p_params,
+                                         sdc_hci_cmd_le_iso_transmit_test_return_t * p_return);
+
+/** @brief LE ISO Receive Test.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.112
+ *
+ * The HCI_LE_ISO_Receive_Test command should only be used in the ISO Test
+ * mode and only for testing purposes.
+ *
+ * The command is used to configure an established CIS or a synchronized BIG
+ * specified by the Connection_Handle parameter to receive payloads.
+ *
+ * When using this command for a BIS, the Host shall synchronize with a BIG
+ * using the HCI_LE_BIG_Create_Sync command before invoking this
+ * command.
+ *
+ * The Payload_Type parameter defines the configuration of SDUs in the
+ * payload.
+ *
+ * If the Host issues this command with a connection handle that is not for an
+ * established CIS or a BIS, the Controller shall return the error code Unknown
+ * Connection Identifier (0x02).
+ *
+ * If the Host issues this command when the value of the receive BN parameter of
+ * the CIS or BIS is set to zero, the Controller shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Host has set the output data path for the CIS or BIS identified by the
+ * Connection_Handle parameter, the Controller shall return the error code
+ * Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_ISO_Receive_Test command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_iso_receive_test(const sdc_hci_cmd_le_iso_receive_test_t * p_params,
+                                        sdc_hci_cmd_le_iso_receive_test_return_t * p_return);
+
+/** @brief LE ISO Read Test Counters.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.113
+ *
+ * The HCI_LE_ISO_Read_Test_Counters command should only be used in the
+ * ISO Test mode and only for testing purposes.
+ *
+ * The command is used to read the test counters (see [Vol 6] Part B, Section 7)
+ * in the Controller which is configured in ISO Receive Test mode for a CIS or BIS
+ * specified by the Connection_Handle. Reading the test counters does not reset
+ * the test counters.
+ *
+ * The Received_SDU_Count, Missed_SDU_Count and Failed_SDU_Count
+ * parameters are set in the ISO Receive Test mode (see [Vol 6] Part B, Section
+ * 7.2).
+ *
+ * If the Host issues this command with a Connection_Handle parameter that is
+ * not for an established CIS or a BIS, the Controller shall return the error code
+ * Unknown Connection Identifier (0x02).
+ *
+ * If the Host issues this command for a CIS or BIS that is not configured in the
+ * ISO Receive Test mode, the Controller shall return the error code Unsupported
+ * Feature or Parameter Value (0x11).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_ISO_Read_Test_Counters command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_iso_read_test_counters(const sdc_hci_cmd_le_iso_read_test_counters_t * p_params,
+                                              sdc_hci_cmd_le_iso_read_test_counters_return_t * p_return);
+
+/** @brief LE ISO Test End.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.114
+ *
+ * The HCI_LE_ISO_Test_End command should only be used in the ISO Test
+ * mode and only for testing purposes.
+ *
+ * The command is used to terminate the ISO Transmit and/or Receive Test
+ * mode for a CIS or BIS specified by the Connection_Handle parameter but does
+ * not terminate the CIS or BIS.
+ *
+ * When the Host terminates the ISO Test mode for a CIS or BIS that is set to ISO
+ * Transmit Test mode only, the test counters in the return parameters shall be set
+ * to zero.
+ *
+ * When the Host terminates the ISO Test mode for a CIS or BIS that is set to the
+ * ISO Receive Test mode, the return parameters contain the values of the test
+ * counters as defined in [Vol 6] Part B, Section 7.
+ *
+ * If the Host issues this command with a Connection_Handle that is not for an
+ * established CIS or a BIS, the Controller shall return the error code Unknown
+ * Connection Identifier (0x02).
+ *
+ * If the Host issues this command for a CIS or BIS that is not configured in the
+ * ISO Transmit or Receive Test mode, the Controller shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_ISO_Test_End command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_iso_test_end(const sdc_hci_cmd_le_iso_test_end_t * p_params,
+                                    sdc_hci_cmd_le_iso_test_end_return_t * p_return);
+
+/** @brief LE Set Host Feature.
+ *
+ * The description below is extracted from Core_v5.3,
+ * Vol 4, Part E, Section 7.8.115
+ *
+ * The HCI_LE_Set_Host_Feature command is used by the Host to set or clear a
+ * bit controlled by the Host in the Link Layer FeatureSet stored in the Controller
+ * (see [Vol 6] Part B, Section 4.6).
+ *
+ * The Bit_Number parameter specifies the bit position in the FeatureSet.
+ *
+ * The Bit_Value parameter specifies whether the feature is enabled or disabled.
+ *
+ * If Bit_Number specifies a feature bit that is not controlled by the Host, the
+ * Controller shall return the error code Unsupported Feature or Parameter Value
+ * (0x11).
+ *
+ * If Bit_Value is set to 0x01 and Bit_Number specifies a feature bit that requires
+ * support of a feature that the Controller does not support, the Controller shall
+ * return the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * If the Host issues this command while the Controller has a connection to
+ * another device, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Host_Feature command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_host_feature(const sdc_hci_cmd_le_set_host_feature_t * p_params);
+
+/** @brief LE Read ISO Link Quality.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.116
+ *
+ * This command returns the values of various counters related to link quality that
+ * are associated with the isochronous stream specified by the
+ * Connection_Handle parameter.
+ *
+ * This command may be issued on both the Central and Peripheral if the
+ * connection handle identifies a CIS and on the Synchronized Receiver if the
+ * connection handle identifies a BIS.
+ *
+ * Each of the remaining return parameters shall contain the current value of the
+ * corresponding counter; all the values shall be recorded at the same moment.
+ * Each counter shall be a 32-bit unsigned value, shall be initialized to zero when
+ * the isochronous stream is created, and shall be incremented as described
+ * below. If a counter is not associated with the type of isochronous stream
+ * specified, the value of the parameter shall be ignored.
+ *
+ *                                   Associated
+ *  Counter                          Streams              When Incremented
+ *
+ *  TX_UnACKed_Packets               CIS                  The Link Layer does not receive an
+ *                                                        acknowledgment for a CIS Data PDU
+ *                                                        that it transmitted at least once by its
+ *                                                        flush point (see [Vol 6] Part B, Section
+ *                                                        4.5.13.5).
+ *
+ *  TX_Flushed_Packets               CIS                  The Link Layer does not transmit a spe-
+ *                                                        cific payload by its flush point.
+ *
+ *  TX_Last_Subevent_-               CIS in Peripheral    The Link Layer transmits a CIS Data
+ *  Packets                          role                 PDU in the last subevent of a CIS
+ *                                                        event.
+ *
+ *  Retransmitted_Packets            CIS                  The Link Layer retransmits a CIS Data
+ *                                                        PDU.
+ *
+ * Table 7.3: Isochronous streams link quality counters
+ *                                 Associated
+ *  Counter                        Streams                When Incremented
+ *
+ *  CRC_Error_Packets              CIS and BIS            The Link Layer receives a packet with a
+ *                                                        CRC error.
+ *
+ *  RX_Unreceived_Packets          CIS and BIS            The Link Layer does not receive a spe-
+ *                                                        cific payload by its flush point (on a
+ *                                                        CIS) or the end of the event it is associ-
+ *                                                        ated with (on a BIS; see [Vol 6] Part B,
+ *                                                        Section 4.4.6.6).
+ *
+ *  Duplicate_Packets              CIS                    The Link Layer receives a retransmis-
+ *                                                        sion of a CIS Data PDU.
+ *
+ * Table 7.3: Isochronous streams link quality counters
+ *
+ * If the Connection_Handle parameter does not identify a current CIS connection
+ * or a BIS that the Controller is synchronized to, the Controller shall return the
+ * error code Unknown Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Read_ISO_Link_Quality command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_read_iso_link_quality(const sdc_hci_cmd_le_read_iso_link_quality_t * p_params,
+                                             sdc_hci_cmd_le_read_iso_link_quality_return_t * p_return);
 
 /** @brief LE Enhanced Read Transmit Power Level.
  *
