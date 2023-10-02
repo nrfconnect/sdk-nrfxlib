@@ -407,11 +407,12 @@ extern "C" {
  * @def NRF_802154_IFS_ENABLED
  *
  * Indicates whether the Short/Long Interframe spacing feature is to be enabled in the driver.
+ * This is an experimental feature.
  *
  */
 #if !defined(CONFIG_NRF_802154_SL_OPENSOURCE)
 #ifndef NRF_802154_IFS_ENABLED
-#define NRF_802154_IFS_ENABLED 1
+#define NRF_802154_IFS_ENABLED 0
 #endif
 #endif
 

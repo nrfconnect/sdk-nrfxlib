@@ -81,3 +81,8 @@ uint64_t nrf_802154_timestamp_phr_to_shr_convert(uint64_t phr_timestamp)
 {
     return phr_timestamp - (PHY_SHR_SYMBOLS * PHY_US_PER_SYMBOL);
 }
+
+uint64_t nrf_802154_timestamp_phr_to_mhr_convert(uint64_t phr_timestamp)
+{
+    return phr_timestamp + (PHR_SIZE * PHY_SYMBOLS_PER_OCTET * PHY_US_PER_SYMBOL);
+}
