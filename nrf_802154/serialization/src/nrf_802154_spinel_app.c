@@ -63,7 +63,6 @@
 #include "nrf_802154.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_types.h"
-#include "nrf_802154_nrfx_addons.h"
 
 /**
  * @brief Wait with timeout for SPINEL_STATUS_OK to be received.

@@ -41,6 +41,7 @@ Other changes
 * Deprecated :c:func:`nrf_802154_first_symbol_timestamp_get` and :c:func:`nrf_802154_mhr_timestamp_get` functions.
 * Improved the modulation filtering when using an external power amplifier on the nRF5340, fixing potential certification issues. (KRKNWK-16949)
 * Removed deprecated functions :c:func:`nrf_802154_wifi_coex_enable` and :c:func:`nrf_802154_wifi_coex_disable` and accompanying configuration option ``NRF_802154_COEX_INITIALLY_ENABLED``. (KRKNWK-14574)
+* The :c:macro:`NRF_802154_IFS_ENABLED` is disabled by default. IFS feature is marked as experimental. (KRKNWK-17198).
 
 nRF Connect SDK v2.4.0 - nRF 802.15.4 Radio Driver
 **************************************************

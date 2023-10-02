@@ -135,6 +135,18 @@ uint64_t nrf_802154_timestamp_end_to_phr_convert(uint64_t end_timestamp, uint8_t
 uint64_t nrf_802154_timestamp_phr_to_shr_convert(uint64_t phr_timestamp);
 
 /**
+ * @brief  Converts the timestamp of the frame's PHR to the timestamp of the start of its MHR.
+ *
+ * This function converts the time when the first symbol of the frame's PHR is at the local antenna
+ * to the timestamp of the start of the frame's MHR.
+ *
+ * @param[in]  phr_timestamp  Timestamp of the frame's PHR.
+ *
+ * @return  Timestamp of the start of the MHR of a given frame, in microseconds.
+ */
+uint64_t nrf_802154_timestamp_phr_to_mhr_convert(uint64_t phr_timestamp);
+
+/**
  * @}
  */
 
