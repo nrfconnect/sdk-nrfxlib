@@ -13,7 +13,7 @@ AT commands
 ***********
 
 AT commands are essentially a set of modem instructions that are used to configure the modem, establish a network connection (or in general, execute operations), and retrieve modem and connection status information.
-For the full set of supported AT commands, see the `AT Commands Reference Guide`_.
+For the full set of supported AT commands, see the `nRF9160 AT Commands Reference Guide`_.
 
 Initialization
 **************
