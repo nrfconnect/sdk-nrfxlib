@@ -34,6 +34,8 @@ Obtaining the Modem library
 The application can either include nrfxlib or only the Modem library.
 Header files are located in the :file:`nrf_modem/include/` folder.
 You can locate the library binary (for both hard-float and soft-float) in the :file:`nrf_modem/lib/` folder.
+The binaries are delivered based on the SoC they support.
+The :file:`nrf_modem/lib/nRF9160` folder contains the binaries for the nRF9160 SiP, and the :file:`nrf_modem/lib/nRF9120` folder contains the binaries for other nRF91 Series SiPs.
 
 IPC driver and interrupt
 ************************
@@ -53,7 +55,7 @@ As the Modem library has been compiled to operate on peripherals in NSPE, the fo
 
 If you are using the hard-float variant of the Modem library, the FPU must be activated in both Secure Processing Environment (SPE) and NSPE, and must be configured to allow the non-secure application to run FPU instructions.
 
-The :file:`nrfx/mdk/system_nrf9160.c` file provides a template on how to configure the FPU in both cases.
+The :file:`nrfx/mdk/system_nrf91.c` file provides a template on how to configure the FPU in both cases.
 The system file also provides several Errata workarounds specific to the chip variant used, which are needed for any SPE application.
 
 Memory

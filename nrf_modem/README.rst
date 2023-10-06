@@ -3,7 +3,7 @@
 Modem library
 #############
 
-The Modem library is the primary interface for operating the nRF9160 modem, establishing the LTE-M and NB-IoT connections, and receiving the position data (GPS).
+The Modem library is the primary interface for operating the nRF91 Series modem, establishing the LTE-M and NB-IoT connections, and receiving the position data (GPS).
 The library aims to be compatible with the POSIX socket APIs to simplify writing and porting of existing networking applications.
 
 To get started with socket programming, you can check out some introductions and tutorials, such as `Beej's Guide to Network Programming`_.

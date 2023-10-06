@@ -15,6 +15,8 @@
 
 .. _`nRF9160 AT Commands Reference Guide`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/intro.html
 
+.. _`nRF91x1 AT Commands Reference Guide`: https://www.nordicsemi.com/-/media/Software-and-other-downloads/SiP/nRF91x1-SiP/v0.8-nRF91x1_CIoT_and_Positioning-AT-Commands-reference-guide.pdf
+
 .. _`Selecting UICC slot %CSUS`: https://infocenter.nordicsemi.com/index.jsp?topic=%2Fref_at_commands%2FREF%2Fat_commands%2Faccess_uicc%2Fcsus.html
 
 .. _`Credential storage management %CMNG`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/mob_termination_ctrl_status/cmng.html
@@ -38,9 +40,9 @@
 .. _`Zigbee CIDs for nRF52840`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52840/COMP/nrf52840/nrf52840_zigbee_cids.html
 .. _`Zigbee CIDs for nRF52833`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52833/COMP/nrf52833/nrf52833_zigbee_cids.html
 
-.. _`nRF9160 modem Packet Domain AT commands`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/packet_domain/packet_domain.html
+.. _`Packet domain commands`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/packet_domain/packet_domain.html
 
-.. _`%XMODEMTRACE AT command documentation`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/mob_termination_ctrl_status/xmodemtrace.html
+.. _`Modem trace activation %XMODEMTRACE`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/mob_termination_ctrl_status/xmodemtrace.html
 
 .. _`nRF Connect Serial Terminal`: https://infocenter.nordicsemi.com/topic/ug_serial_terminal/UG/serial_terminal/intro.html
 
@@ -50,7 +52,11 @@
 
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#0B34B59935AF4AFCB7AB93E9646C1F53
 
+.. _`nRF91x1 LTE firmware zip file`: https://www.nordicsemi.com/Products/nRF9161/Download#636701B052474E5A8EB903C56678D26E
+
 .. _`nRF9160 modem TLS cipher suites`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#infotabs
+
+.. _`nRF91x1 modem TLS cipher suites`: https://www.nordicsemi.com/Products/nRF9161/Download?lang=en#infotabs
 
 .. ### Source: wikipedia
 
