@@ -7,7 +7,7 @@ Library architecture
    :local:
    :depth: 2
 
-The library implements a communication interface between the Application and Modem cores on the nRF9160 through the RPC protocol, using the Inter Processor Communication (IPC) peripheral and a shared region of RAM.
+The library implements a communication interface between the application and modem cores on the nRF91 Series through the RPC protocol, using the Inter Processor Communication (IPC) peripheral and a shared region of RAM.
 
 The following figure shows a simplified Modem library architecture:
 

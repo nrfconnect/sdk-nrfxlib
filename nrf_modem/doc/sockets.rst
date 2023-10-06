@@ -9,7 +9,7 @@ Networking sockets
 
 
 The Modem library offers an implementation of a subset of the POSIX networking sockets API.
-This API allows you to reuse existing programming experience and port existing simple networking applications to the nRF9160.
+This API allows you to reuse existing programming experience and port existing simple networking applications to nRF91 Series devices.
 The implementation is namespaced (``nrf_``) to avoid conflicts with functions that might be part of libc or other POSIX compatibility libraries.
 
 Following is a list of supported functions:
@@ -155,7 +155,7 @@ NRF_SO_EXCEPTIONAL_DATA
    The feature requires network support.
 
    Before using this socket option, the PDN associated with the socket must be configured to allow exceptional events by using the ``AT%EXCEPTIONALDATA`` AT command.
-   For more information about the ``AT%EXCEPTIONALDATA`` AT command, see the `nRF91 AT Commands Reference Guide <AT Commands Reference Guide_>`_.
+   For more information about the ``AT%EXCEPTIONALDATA`` AT command, see the `nRF91x1 AT Commands Reference Guide`_.
 
    The socket option is supported from modem firmware v2.0.0.
 
@@ -223,7 +223,7 @@ NRF_SO_SEC_CIPHERSUITE_LIST
    The cipher suites are identified by their IANA assigned values.
    By default, all supported cipher suites are allowed.
    For a complete list, see the :ref:`supported cipher_suites <nrf_supported_tls_cipher_suites>` API documentation or refer to the release notes of the modem firmware.
-   The release notes are distributed as part of the `nRF9160 modem firmware zip file`_.
+   For more information, see the release notes in the `nRF9160 modem firmware zip file`_ or `nRF91x1 LTE firmware zip file`_ depending on the SiP you are using.
 
 NRF_SO_SEC_PEER_VERIFY
   Set the peer verification level.
@@ -353,10 +353,10 @@ Packet data networks
 
 The Modem library supports selecting which Packet Data Network (PDN) to use on a network socket and for DNS queries.
 The configuration of Packet Data Protocol (PDP) contexts, and the activation of PDN connections are not handled by the Modem library.
-To configure PDP contexts and activate PDN connections, the application must use the nRF9160 modem packet domain AT commands.
+To configure PDP contexts and activate PDN connections, the application must use the packet domain AT commands.
 
 When performing network operations on any PDN, the application ensures that the PDN connection is available.
-For more information about how to configure PDP contexts, activate PDN connections, and determine their state, see the `nRF9160 modem Packet Domain AT commands`_ documentation.
+For more information about how to configure PDP contexts, activate PDN connections, and determine their state, see the `Packet domain commands`_ section in the nRF9160 AT Commands Reference Guide or the same section in the `nRF91x1 AT Commands Reference Guide`_ depending on the SiP you are using.
 
 
 Configuring a socket to use a PDN
@@ -401,13 +401,13 @@ The socket error can be retrieved using the :c:macro:`NRF_SO_ERROR` socket optio
 When the ``NRF_ENETDOWN`` error is detected, the socket is no longer usable and must be closed by the application.
 The application is responsible for detecting when the PDN connection is activated again, before re-creating the socket and attempting the failed operation again.
 
-The `nRF9160 modem Packet Domain AT commands`_ can be used to manage packet data networks.
+The packet domain AT commands can be used to manage packet data networks.
 Alternatively, the :ref:`pdn_readme` library in |NCS| can be used to receive events on PDN connectivity and manage packet data networks.
 
 TLS/DTLS configuration
 **********************
 
-The IP stack in the nRF9160 modem firmware has TLS and DTLS support.
+The IP stack in the nRF91 Series modem firmware has TLS and DTLS support.
 
 .. _security_tags:
 
@@ -417,7 +417,7 @@ Security tags
 To use the cryptographic functions in the modem, the application must provision the security credentials to the modem.
 To be able to provision credentials, the modem must be in offline mode.
 The credentials are provisioned through AT commands.
-See `Credential storage management %CMNG`_ for more information.
+For more information, See `Credential storage management %CMNG`_ section in the nRF9160 AT Commands Reference Guide or the same section in the `nRF91x1 AT Commands Reference Guide`_ depending on the SiP you are using.
 If you are using the |NCS| to build your application, you can use the :ref:`nrf:modem_key_mgmt` library to manage credentials.
 If you prefer a graphical tool, use `Cellular Monitor`_ instead.
 To manage credentials with Cellular Monitor, your device must be running an |NCS| application.
@@ -479,7 +479,7 @@ In this case, either security tag 4 or security tag 5 can be used for operations
 Supported cipher suites
 =======================
 
-See the `nRF9160 modem TLS cipher suites`_ summary page for a full list of TLS/DTLS cipher suites supported by the modem.
+See the `nRF9160 modem TLS cipher suites`_ or `nRF91x1 modem TLS cipher suites`_ summary page, depending on the SiP you are using, for a full list of TLS/DTLS cipher suites supported by the modem.
 
 Each cipher suite is recognized by an official identification number, which is registered at `IANA`_.
 You can narrow down the set of cipher suites that is used for a specific TLS/DTLS connection with :c:func:`nrf_setsockopt`.

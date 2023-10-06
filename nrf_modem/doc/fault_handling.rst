@@ -7,8 +7,8 @@ Modem fault handling
    :local:
    :depth: 2
 
-The application core and the modem core are separate cores on the nRF9160 SiP.
-When the modem core on the nRF9160 SiP crashes, it sends a fault signal to the application core.
+The application core and the modem core are separate cores on the nRF91 Series SiPs.
+When the modem core on an nRF91 Series SiP crashes, it sends a fault signal to the application core.
 
 Detecting a fault
 *****************

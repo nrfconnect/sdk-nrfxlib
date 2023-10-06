@@ -22,7 +22,7 @@ Delta update packages
 
 A delta update is a binary file, with a :file:`.bin` extension.
 The update file is named in such a way that both the source and destination firmware versions can be identified, for example, :file:`mfw_nrf9160_update_from_1.2.2_to_1.2.3`.
-Modem delta update files are part of the official modem releases and can be found in the `nRF9160 modem firmware zip file`_.
+Modem delta update files are part of the official modem releases and can be found in the `nRF9160 modem firmware zip file`_ or `nRF91x1 LTE firmware zip file`_ depending on the SiP you are using.
 
 .. note::
    Delta update files might not be available for any two of the modem firmware versions but only for specific versions, as applicable.
@@ -35,13 +35,13 @@ The size of the scratch area can be retrieved with the :c:func:`nrf_modem_delta_
 A limitation of delta updates is that the size of the update must not exceed the area of flash memory that a given modem firmware version has dedicated for this operation.
 The size of this area varies for any given modem firmware version and it can be retrieved with the Modem library's :c:func:`nrf_modem_delta_dfu_area` function.
 In general, this function can be useful when the size of the largest delta update that can be received needs to be reported to an external service, for example an LwM2M server.
-In practice, the application does not use this function in the normal update process, since all delta update files that are part of the `nRF9160 modem firmware zip file`_ are guaranteed to fit in the scratch area of the modem firmware version that they apply to.
+In practice, the application does not use this function in the normal update process, since all delta update files that are part of the `nRF9160 modem firmware zip file`_ or `nRF91x1 LTE firmware zip file`_ are guaranteed to fit in the scratch area of the modem firmware version that they apply to.
 
 Reading the modem firmware UUID
 *******************************
 
 A modem firmware UUID is a unique identifier for a modem firmware version build.
-The modem firmware UUID for given firmware version is found in the :file:`README.txt` file of the `nRF9160 modem firmware zip file`_, and can also be retrieved by using the :c:func:`nrf_modem_delta_dfu_uuid` function.
+The modem firmware UUID for given firmware version is found in the :file:`README.txt` file of the `nRF9160 modem firmware zip file`_ or `nRF91x1 LTE firmware zip file`_ depending on the SiP you are using, and can also be retrieved by using the :c:func:`nrf_modem_delta_dfu_uuid` function.
 
 Features
 ********
@@ -51,7 +51,7 @@ Following are the features of modem firmware delta updates.
 Security
 ========
 
-Modem firmware delta updates implement security features to ensure that only firmware updates from `nRF9160 modem firmware zip file`_ are ever programmed to the modem.
+Modem firmware delta updates implement security features to ensure that only firmware updates from the `nRF9160 modem firmware zip file`_ or `nRF91x1 LTE firmware zip file`_ are ever programmed to the modem.
 Delta update files are encrypted and signed.
 The modem takes care of verifying the signature and decrypting the content as necessary.
 

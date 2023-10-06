@@ -12,8 +12,8 @@ The SoftSIM interface in the Modem library is used to transfer SIM data between 
 When the modem makes a SoftSIM request, the SoftSIM interface handles the request and forwards it to the application.
 The application then generates a response and responds to the modem through the SoftSIM interface.
 The modem can be configured at runtime to use a regular SIM or SoftSIM (iSIM), or both.
-For more information on how to enable this feature in the modem, refer to the `AT Commands Reference Guide`_ documentation.
-The `Selecting UICC slot %CSUS`_ section, in particular, explains the usage of the Nordic-proprietary ``%CSUS`` command for SIM selection.
+For more information on how to enable this feature in the modem, refer to the `nRF91x1 AT Commands Reference Guide`_  or `nRF9160 AT Commands Reference Guide`_ depending on the SiP you are using.
+The `Selecting UICC slot %CSUS`_ section in the nRF9160 AT Commands Reference Guide or the same section in the `nRF91x1 AT Commands Reference Guide`_ explains the usage of the Nordic-proprietary ``%CSUS`` command for SIM selection.
 
 Handling SoftSIM requests
 *************************
