@@ -33,7 +33,7 @@ doc/*                                     @b-gent
 # All subfolders
 /.github/                                 @thst-nordic
 /.github/test-spec.yml                    @nrfconnect/ncs-test-leads
-/softdevice_controller/                   @rugeGerritsen
+/softdevice_controller/                   @rugeGerritsen @jori-nordic
 /nrf_modem/                               @rlubos @lemrey
 /crypto/                                  @frkv @tejlmand
 /gzll/                                    @leewkb4567
