@@ -261,17 +261,17 @@ Satellite flags bitmask values
    :project: nrfxlib
    :members:
 
-A-GPS data request bitmask values
-=================================
+A-GNSS data request bitmask values
+==================================
 
-.. doxygengroup:: nrf_modem_gnss_agps_data_bitmask
+.. doxygengroup:: nrf_modem_gnss_agnss_data_bitmask
    :project: nrfxlib
    :members:
 
-A-GPS data types
-================
+A-GNSS data type enumerator
+===========================
 
-.. doxygengroup:: nrf_modem_gnss_agps_data_type
+.. doxygengroup:: nrf_modem_gnss_agnss_data_type
    :project: nrfxlib
    :members:
 
@@ -282,10 +282,10 @@ Delete bitmask values
    :project: nrfxlib
    :members:
 
-GNSS system bitmask values
+GNSS signal bitmask values
 ==========================
 
-.. doxygengroup:: nrf_modem_gnss_system_bitmask
+.. doxygengroup:: nrf_modem_gnss_signal_bitmask
    :project: nrfxlib
    :members:
 
