@@ -69,6 +69,8 @@ Changes
 * The LE Power Control Request feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-17499)
 * :c:func:`sdc_soc_flash_write_async` and :c:func:`sdc_soc_flash_page_erase_async` functions are removed.
   This change does not affect applications developed in the |NCS| context. (DRGN-20451)
+* When synchronizing to a periodic advertiser, the number of events skipped is restricted so that there are at least three opportunities to receive before timing out.
+  Previously, only one opportunity to receive was guaranteed before timing out. (DRGN-20448)
 
 Bug fixes
 =========
@@ -80,6 +82,7 @@ Bug fixes
   The least significant bit of the ``Peer_Address_Type`` parameter was set correctly.
 * Fixed an issue where the stack would assert if trying to set up more advertisers than there are available advertising sets (DRGN-20118).
 * Fixed an issue where enabling an extended advertising set would assert in cases where a host-provided address was not needed and no address had been set up for the advertising set (DRGN-20085).
+* Fixed an issue where the controller acting as a central would assert when receiving a non-compliant LL_PHY_RSP from a peer device (DRGN-20578).
 
 nRF Connect SDK v2.4.0
 **********************
