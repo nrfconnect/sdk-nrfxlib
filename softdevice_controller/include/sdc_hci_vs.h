@@ -85,6 +85,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_QOS_CHANNEL_SURVEY_ENABLE = 0xfd0e,
     /** @brief See @ref sdc_hci_cmd_vs_set_power_control_apr_handling(). */
     SDC_HCI_OPCODE_CMD_VS_SET_POWER_CONTROL_APR_HANDLING = 0xfd0f,
+    /** @brief See @ref sdc_hci_cmd_vs_set_power_control_request_params(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_POWER_CONTROL_REQUEST_PARAMS = 0xfd10,
 };
 
 /** @brief VS subevent Code values. */
@@ -156,6 +158,7 @@ typedef __PACKED_STRUCT
     uint8_t set_power_control_apr_handling : 1;
     uint8_t set_adv_randomness : 1;
     uint8_t qos_channel_survey_enable : 1;
+    uint8_t set_power_control_request_params : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -553,6 +556,52 @@ typedef __PACKED_STRUCT
      */
     uint8_t margin;
 } sdc_hci_cmd_vs_set_power_control_apr_handling_t;
+
+/** @brief Set LE Power Control Request procedure parameters command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Enable or Disable controller initiated autonomous LE Power Control Request procedure.
+     *         Disabled by default.
+     */
+    uint8_t auto_enable;
+    /** @brief Enable or Disable received APR handling in controller during LE Power Control Request
+     *         procedure. Disabled by default.
+     */
+    uint8_t apr_enable;
+    /** @brief Beta value used for exponential weighted averaging of RSSI in 12-bit fixed point
+     *         fraction. The valid range of beta is [0, 4095]. The beta value used in computation is
+     *         beta/4096. For example, for beta to be 0.25 in the computation, set the beta
+     *         parameter in the command to 1024. Default value is 2048.
+     */
+    uint16_t beta;
+    /** @brief The lower limit of RSSI golden range that is explained in Core_v5.4, Vol 6, Part B,
+     *         Section 5.1.17.1, in dBm units. Default value is -70 dBm.
+     */
+    int8_t lower_limit;
+    /** @brief The upper limit of RSSI golden range that is explained in Core_v5.4, Vol 6, Part B,
+     *         Section 5.1.17.1, in dBm units. Default value is -30 dBm.
+     */
+    int8_t upper_limit;
+    /** @brief Target RSSI level in dBm units when the average RSSI level is less than the lower
+     *         limit of RSSI Golden range. Default value is -65 dBm.
+     */
+    int8_t lower_target_rssi;
+    /** @brief Target RSSI level in dBm units when the average RSSI level is greater than the upper
+     *         limit of RSSI Golden range. Default value is -35 dBm.
+     */
+    int8_t upper_target_rssi;
+    /** @brief Duration in milliseconds to wait before initiating a new LE Power Control Request
+     *         procedure by the controller. 0 milliseconds value is an invalid value. Default value
+     *         is 5000 milliseconds.
+     */
+    uint8_t wait_period_ms;
+    /** @brief Margin between APR value received from peer in LL_POWER_CONTROL_RSP PDU and actual
+     *         reduction in TX power that is applied locally. The applied decrease in local TX power
+     *         will be (received_apr - apr_margin) if received_apr > apr_margin, otherwise no
+     *         change. Default value is 5 dB.
+     */
+    uint8_t apr_margin;
+} sdc_hci_cmd_vs_set_power_control_request_params_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1121,6 +1170,41 @@ uint8_t sdc_hci_cmd_vs_qos_channel_survey_enable(const sdc_hci_cmd_vs_qos_channe
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_set_power_control_apr_handling(const sdc_hci_cmd_vs_set_power_control_apr_handling_t * p_params);
+
+/** @brief Set LE Power Control Request procedure parameters.
+ *
+ * This command sets the parameters used in LE Power Control Request
+ * procedure by the Link Layer.
+ *
+ * beta parameter is used for exponential weighted averaging of RSSI.
+ * The average RSSI is calculated using the following formula,
+ * avg[n] = beta * avg[n - 1] + (1 - beta) * rssi[n]
+ *
+ * Average RSSI and lower_limit parameter are used to calculate APR value the controller sends
+ * in LL_POWER_CONTROL_RSP.
+ *
+ * When auto_enable parameter is set, the controller will keep average RSSI within
+ * [lower_limit, upper_limit] bounds. When the average RSSI goes out of these bounds, the
+ * controller will autonomously send LL_POWER_CONTROL_REQ requesting to adjust the
+ * peer's TX power so average RSSI becomes either lower_target_rssi or upper_target_rssi.
+ * The controller will not send such requests more often than specified by wait_period_ms parameter.
+ *
+ * When apr_enable parameter is set, the controller will adjust local TX power according to
+ * APR value received from the peer in LL_POWER_CONTROL_RSP and the apr_margin parameter.
+ *
+ * When this command is issued, the controller stores the parameters and
+ * uses them for the subsequent LE Power Control Request procedures across all the connections.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_set_power_control_request_params(const sdc_hci_cmd_vs_set_power_control_request_params_t * p_params);
 
 /** @} end of HCI_VS_API */
 
