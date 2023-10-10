@@ -184,6 +184,14 @@ int32_t mpsl_clock_hfclk_is_running(uint32_t * p_is_running);
  */
 int32_t mpsl_clock_hfclk_latency_set(mpsl_clock_hfclk_latency_config_t mpsl_clock_hfclk_latency_config);
 
+/** @brief Trigger a task upon start of the RTC.
+ *
+ * MPSL will trigger the task at the same time as the RTC is started.
+ *
+ * @param[in] task_address The task address to be triggered
+ */
+void mpsl_clock_task_trigger_on_rtc_start_set(uint32_t task_address);
+
 #ifdef __cplusplus
 }
 #endif

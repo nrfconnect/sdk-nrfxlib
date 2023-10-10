@@ -21,6 +21,7 @@ Changes
 Added
 =====
 * Added :c:func:`mpsl_tx_power_dbm_to_radio_register_convert` to convert supported power in dBm to a register code for RADIO. (KRKNWK-17367)
+* Added :c:func:`mpsl_clock_task_trigger_on_rtc_start_set` to trigger a PPI/DPPI task when the RTC starts. (DRGN-20396)
 
 nRF Connect SDK v2.4.0
 **********************
