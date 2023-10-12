@@ -446,7 +446,7 @@ In cases where GNSS is not running continuously, it may be beneficial to change 
 
 .. note::
 
-   Do not use the 1PPS feature when LTE is enabled.
+   The 1PPS feature must not be used when LTE is active.
 
 Resolving the UTC time of 1PPS pulse occurrence
 ===============================================
