@@ -866,7 +866,10 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     uint8_t adv_handle;
-    sdc_hci_le_adv_event_properties_params_t adv_event_properties;
+    __PACKED_UNION {
+        sdc_hci_le_adv_event_properties_params_t params;
+        uint8_t raw[2];
+    } adv_event_properties;
     uint32_t primary_adv_interval_min : 24;
     uint32_t primary_adv_interval_max : 24;
     uint8_t primary_adv_channel_map;
@@ -955,7 +958,10 @@ typedef __PACKED_STRUCT
 /** @brief LE Set Periodic Advertising Enable command parameter(s). */
 typedef __PACKED_STRUCT
 {
-    sdc_hci_le_set_periodic_adv_enable_params_t enable;
+    __PACKED_UNION {
+        sdc_hci_le_set_periodic_adv_enable_params_t params;
+        uint8_t raw[1];
+    } enable;
     uint8_t adv_handle;
 } sdc_hci_cmd_le_set_periodic_adv_enable_t;
 
@@ -991,7 +997,10 @@ typedef __PACKED_STRUCT
 /** @brief LE Periodic Advertising Create Sync command parameter(s). */
 typedef __PACKED_STRUCT
 {
-    sdc_hci_le_periodic_adv_create_sync_options_params_t options;
+    __PACKED_UNION {
+        sdc_hci_le_periodic_adv_create_sync_options_params_t params;
+        uint8_t raw[1];
+    } options;
     uint8_t adv_sid;
     uint8_t adv_address_type;
     uint8_t adv_address[6];
@@ -1116,7 +1125,10 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     uint16_t sync_handle;
-    sdc_hci_le_set_periodic_adv_receive_enable_params_t enable;
+    __PACKED_UNION {
+        sdc_hci_le_set_periodic_adv_receive_enable_params_t params;
+        uint8_t raw[1];
+    } enable;
 } sdc_hci_cmd_le_set_periodic_adv_receive_enable_t;
 
 /** @brief LE Periodic Advertising Sync Transfer command parameter(s). */
@@ -1541,7 +1553,10 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     uint8_t adv_handle;
-    sdc_hci_le_set_data_related_address_changes_reasons_params_t change_reasons;
+    __PACKED_UNION {
+        sdc_hci_le_set_data_related_address_changes_reasons_params_t params;
+        uint8_t raw[1];
+    } change_reasons;
 } sdc_hci_cmd_le_set_data_related_address_changes_t;
 
 /** @brief LE Set Periodic Advertising Subevent Data command parameter(s). */
