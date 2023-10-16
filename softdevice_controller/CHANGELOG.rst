@@ -83,6 +83,8 @@ Bug fixes
 * Fixed an issue where the stack would assert if trying to set up more advertisers than there are available advertising sets (DRGN-20118).
 * Fixed an issue where enabling an extended advertising set would assert in cases where a host-provided address was not needed and no address had been set up for the advertising set (DRGN-20085).
 * Fixed an issue where the controller acting as a central would assert when receiving a non-compliant LL_PHY_RSP from a peer device (DRGN-20578).
+* Fixed an issue that could occur when the Host Number of Complete Packets command was sent with a connection handle the controller had already raised a disconnect event for.
+  The controller would return ``BT_HCI_ERR_INVALID_PARAM`` to the command, which would mean that the host could not return the buffer to the controller (DRGN-20654).
 
 nRF Connect SDK v2.4.0
 **********************
