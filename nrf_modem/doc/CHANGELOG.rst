@@ -51,7 +51,20 @@ GNSS interface
 * Added:
 
   * Support for QZSS assistance.
+    Because of this, all ``A-GPS`` references in the API have been updated to `A-GNSS`_.
   * Maximum speeds for dynamics modes.
+
+* Updated:
+
+  * The ``NRF_MODEM_GNSS_EVT_AGPS_REQ`` event has been renamed to :c:macro:`NRF_MODEM_GNSS_EVT_AGNSS_REQ`.
+  * The ``NRF_MODEM_GNSS_DATA_AGPS_REQ`` data type has been renamed to :c:macro:`NRF_MODEM_GNSS_DATA_AGNSS_REQ`.
+  * The ``nrf_modem_gnss_agps_data_frame`` struct has been renamed to :c:struct:`nrf_modem_gnss_agnss_data_frame`.
+  * The ``nrf_modem_gnss_agps_expiry`` struct has been renamed to :c:struct:`nrf_modem_gnss_agnss_expiry`.
+  * The ``nrf_modem_gnss_system_mask_set()`` function has been renamed to :c:func:`nrf_modem_gnss_signal_mask_set`.
+  * The ``nrf_modem_gnss_agps_write()`` function has been renamed to :c:func:`nrf_modem_gnss_agnss_write`.
+  * The ``nrf_modem_gnss_agps_expiry_get()`` function has been renamed to :c:func:`nrf_modem_gnss_agnss_expiry_get`.
+  * :c:struct:`nrf_modem_gnss_agnss_data_frame` and :c:struct:`nrf_modem_gnss_agnss_expiry` structs to contain A-GNSS data need for multiple systems.
+  * Expiration times in :c:struct:`nrf_modem_gnss_agnss_expiry` struct from seconds to minutes.
 
 Delta DFU
 =========
