@@ -66,28 +66,45 @@ extern "C" {
 
 enum
 {
-    OT_NETWORK_DIAGNOSTIC_TLV_EXT_ADDRESS       = 0,  ///< MAC Extended Address TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_SHORT_ADDRESS     = 1,  ///< Address16 TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_MODE              = 2,  ///< Mode TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_TIMEOUT           = 3,  ///< Timeout TLV (the maximum polling time period for SEDs)
-    OT_NETWORK_DIAGNOSTIC_TLV_CONNECTIVITY      = 4,  ///< Connectivity TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_ROUTE             = 5,  ///< Route64 TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_LEADER_DATA       = 6,  ///< Leader Data TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_NETWORK_DATA      = 7,  ///< Network Data TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_IP6_ADDR_LIST     = 8,  ///< IPv6 Address List TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_MAC_COUNTERS      = 9,  ///< MAC Counters TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_BATTERY_LEVEL     = 14, ///< Battery Level TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_SUPPLY_VOLTAGE    = 15, ///< Supply Voltage TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_CHILD_TABLE       = 16, ///< Child Table TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_CHANNEL_PAGES     = 17, ///< Channel Pages TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_TYPE_LIST         = 18, ///< Type List TLV
-    OT_NETWORK_DIAGNOSTIC_TLV_MAX_CHILD_TIMEOUT = 19, ///< Max Child Timeout TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_EXT_ADDRESS          = 0,  ///< MAC Extended Address TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_SHORT_ADDRESS        = 1,  ///< Address16 TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_MODE                 = 2,  ///< Mode TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_TIMEOUT              = 3,  ///< Timeout TLV (the maximum polling time period for SEDs)
+    OT_NETWORK_DIAGNOSTIC_TLV_CONNECTIVITY         = 4,  ///< Connectivity TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_ROUTE                = 5,  ///< Route64 TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_LEADER_DATA          = 6,  ///< Leader Data TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_NETWORK_DATA         = 7,  ///< Network Data TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_IP6_ADDR_LIST        = 8,  ///< IPv6 Address List TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_MAC_COUNTERS         = 9,  ///< MAC Counters TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_BATTERY_LEVEL        = 14, ///< Battery Level TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_SUPPLY_VOLTAGE       = 15, ///< Supply Voltage TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_CHILD_TABLE          = 16, ///< Child Table TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_CHANNEL_PAGES        = 17, ///< Channel Pages TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_TYPE_LIST            = 18, ///< Type List TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_MAX_CHILD_TIMEOUT    = 19, ///< Max Child Timeout TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_VERSION              = 24, ///< Version TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_VENDOR_NAME          = 25, ///< Vendor Name TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_VENDOR_MODEL         = 26, ///< Vendor Model TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_VENDOR_SW_VERSION    = 27, ///< Vendor SW Version TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_THREAD_STACK_VERSION = 28, ///< Thread Stack Version TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_CHILD                = 29, ///< Child TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_CHILD_IP6_ADDR_LIST  = 30, ///< Child IPv6 Address List TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_ROUTER_NEIGHBOR      = 31, ///< Router Neighbor TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_ANSWER               = 32, ///< Answer TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_QUERY_ID             = 33, ///< Query ID TLV
+    OT_NETWORK_DIAGNOSTIC_TLV_MLE_COUNTERS         = 34, ///< MLE Counters TLV
+
 };
+
+#define OT_NETWORK_DIAGNOSTIC_MAX_VENDOR_NAME_TLV_LENGTH 32          ///< Max length of Vendor Name TLV.
+#define OT_NETWORK_DIAGNOSTIC_MAX_VENDOR_MODEL_TLV_LENGTH 32         ///< Max length of Vendor Model TLV.
+#define OT_NETWORK_DIAGNOSTIC_MAX_VENDOR_SW_VERSION_TLV_LENGTH 16    ///< Max length of Vendor SW Version TLV.
+#define OT_NETWORK_DIAGNOSTIC_MAX_THREAD_STACK_VERSION_TLV_LENGTH 64 ///< Max length of Thread Stack Version TLV.
 
 typedef uint16_t otNetworkDiagIterator; ///< Used to iterate through Network Diagnostic TLV.
 
 /**
- * This structure represents a Network Diagnostic Connectivity value.
+ * Represents a Network Diagnostic Connectivity value.
  *
  */
 typedef struct otNetworkDiagConnectivity
@@ -139,7 +156,7 @@ typedef struct otNetworkDiagConnectivity
 } otNetworkDiagConnectivity;
 
 /**
- * This structure represents a Network Diagnostic Route data.
+ * Represents a Network Diagnostic Route data.
  *
  */
 typedef struct otNetworkDiagRouteData
@@ -151,7 +168,7 @@ typedef struct otNetworkDiagRouteData
 } otNetworkDiagRouteData;
 
 /**
- * This structure represents a Network Diagnostic Route TLV value.
+ * Represents a Network Diagnostic Route TLV value.
  *
  */
 typedef struct otNetworkDiagRoute
@@ -173,7 +190,7 @@ typedef struct otNetworkDiagRoute
 } otNetworkDiagRoute;
 
 /**
- * This structure represents a Network Diagnostic Mac Counters value.
+ * Represents a Network Diagnostic Mac Counters value.
  *
  * See <a href="https://www.ietf.org/rfc/rfc2863">RFC 2863</a> for definitions of member fields.
  *
@@ -192,7 +209,30 @@ typedef struct otNetworkDiagMacCounters
 } otNetworkDiagMacCounters;
 
 /**
- * This structure represents a Network Diagnostic Child Table Entry.
+ * Represents a Network Diagnostics MLE Counters value.
+ *
+ */
+typedef struct otNetworkDiagMleCounters
+{
+    uint16_t mDisabledRole;                  ///< Number of times device entered disabled role.
+    uint16_t mDetachedRole;                  ///< Number of times device entered detached role.
+    uint16_t mChildRole;                     ///< Number of times device entered child role.
+    uint16_t mRouterRole;                    ///< Number of times device entered router role.
+    uint16_t mLeaderRole;                    ///< Number of times device entered leader role.
+    uint16_t mAttachAttempts;                ///< Number of attach attempts while device was detached.
+    uint16_t mPartitionIdChanges;            ///< Number of changes to partition ID.
+    uint16_t mBetterPartitionAttachAttempts; ///< Number of attempts to attach to a better partition.
+    uint16_t mParentChanges;                 ///< Number of time device changed its parent.
+    uint64_t mTrackedTime;                   ///< Milliseconds tracked by next counters (zero if not supported).
+    uint64_t mDisabledTime;                  ///< Milliseconds device has been in disabled role.
+    uint64_t mDetachedTime;                  ///< Milliseconds device has been in detached role.
+    uint64_t mChildTime;                     ///< Milliseconds device has been in child role.
+    uint64_t mRouterTime;                    ///< Milliseconds device has been in router role.
+    uint64_t mLeaderTime;                    ///< Milliseconds device has been in leader role.
+} otNetworkDiagMleCounters;
+
+/**
+ * Represents a Network Diagnostic Child Table Entry.
  *
  */
 typedef struct otNetworkDiagChildEntry
@@ -222,7 +262,7 @@ typedef struct otNetworkDiagChildEntry
 } otNetworkDiagChildEntry;
 
 /**
- * This structure represents a Network Diagnostic TLV.
+ * Represents a Network Diagnostic TLV.
  *
  */
 typedef struct otNetworkDiagTlv
@@ -242,9 +282,15 @@ typedef struct otNetworkDiagTlv
         otNetworkDiagRoute        mRoute;
         otLeaderData              mLeaderData;
         otNetworkDiagMacCounters  mMacCounters;
+        otNetworkDiagMleCounters  mMleCounters;
         uint8_t                   mBatteryLevel;
         uint16_t                  mSupplyVoltage;
         uint32_t                  mMaxChildTimeout;
+        uint16_t                  mVersion;
+        char                      mVendorName[OT_NETWORK_DIAGNOSTIC_MAX_VENDOR_NAME_TLV_LENGTH + 1];
+        char                      mVendorModel[OT_NETWORK_DIAGNOSTIC_MAX_VENDOR_MODEL_TLV_LENGTH + 1];
+        char                      mVendorSwVersion[OT_NETWORK_DIAGNOSTIC_MAX_VENDOR_SW_VERSION_TLV_LENGTH + 1];
+        char                      mThreadStackVersion[OT_NETWORK_DIAGNOSTIC_MAX_THREAD_STACK_VERSION_TLV_LENGTH + 1];
         struct
         {
             uint8_t mCount;
@@ -270,7 +316,9 @@ typedef struct otNetworkDiagTlv
 } otNetworkDiagTlv;
 
 /**
- * This function gets the next Network Diagnostic TLV in the message.
+ * Gets the next Network Diagnostic TLV in the message.
+ *
+ * Requires `OPENTHREAD_CONFIG_TMF_NETDIAG_CLIENT_ENABLE`.
  *
  * @param[in]      aMessage         A pointer to a message.
  * @param[in,out]  aIterator        A pointer to the Network Diagnostic iterator context. To get the first
@@ -289,7 +337,7 @@ otError otThreadGetNextDiagnosticTlv(const otMessage       *aMessage,
                                      otNetworkDiagTlv      *aNetworkDiagTlv);
 
 /**
- * This function pointer is called when Network Diagnostic Get response is received.
+ * Pointer is called when Network Diagnostic Get response is received.
  *
  * @param[in]  aError        The error when failed to get the response.
  * @param[in]  aMessage      A pointer to the message buffer containing the received Network Diagnostic
@@ -306,6 +354,8 @@ typedef void (*otReceiveDiagnosticGetCallback)(otError              aError,
 
 /**
  * Send a Network Diagnostic Get request.
+ *
+ * Requires `OPENTHREAD_CONFIG_TMF_NETDIAG_CLIENT_ENABLE`.
  *
  * @param[in]  aInstance         A pointer to an OpenThread instance.
  * @param[in]  aDestination      A pointer to destination address.
@@ -329,6 +379,8 @@ otError otThreadSendDiagnosticGet(otInstance                    *aInstance,
 /**
  * Send a Network Diagnostic Reset request.
  *
+ * Requires `OPENTHREAD_CONFIG_TMF_NETDIAG_CLIENT_ENABLE`.
+ *
  * @param[in]  aInstance      A pointer to an OpenThread instance.
  * @param[in]  aDestination   A pointer to destination address.
  * @param[in]  aTlvTypes      An array of Network Diagnostic TLV types. Currently only Type 9 is allowed.
@@ -342,6 +394,87 @@ otError otThreadSendDiagnosticReset(otInstance         *aInstance,
                                     const otIp6Address *aDestination,
                                     const uint8_t       aTlvTypes[],
                                     uint8_t             aCount);
+
+/**
+ * Get the vendor name string.
+ *
+ * @param[in]  aInstance      A pointer to an OpenThread instance.
+ *
+ * @returns The vendor name string.
+ *
+ */
+const char *otThreadGetVendorName(otInstance *aInstance);
+
+/**
+ * Get the vendor model string.
+ *
+ * @param[in]  aInstance      A pointer to an OpenThread instance.
+ *
+ * @returns The vendor model string.
+ *
+ */
+const char *otThreadGetVendorModel(otInstance *aInstance);
+
+/**
+ * Get the vendor sw version string.
+ *
+ * @param[in]  aInstance      A pointer to an OpenThread instance.
+ *
+ * @returns The vendor sw version string.
+ *
+ */
+const char *otThreadGetVendorSwVersion(otInstance *aInstance);
+
+/**
+ * Set the vendor name string.
+ *
+ * Requires `OPENTHREAD_CONFIG_NET_DIAG_VENDOR_INFO_SET_API_ENABLE`.
+ *
+ * @p aVendorName should be UTF8 with max length of 32 chars (`MAX_VENDOR_NAME_TLV_LENGTH`). Maximum length does not
+ * include the null `\0` character.
+ *
+ * @param[in] aInstance       A pointer to an OpenThread instance.
+ * @param[in] aVendorName     The vendor name string.
+ *
+ * @retval OT_ERROR_NONE          Successfully set the vendor name.
+ * @retval OT_ERROR_INVALID_ARGS  @p aVendorName is not valid (too long or not UTF8).
+ *
+ */
+otError otThreadSetVendorName(otInstance *aInstance, const char *aVendorName);
+
+/**
+ * Set the vendor model string.
+ *
+ * Requires `OPENTHREAD_CONFIG_NET_DIAG_VENDOR_INFO_SET_API_ENABLE`.
+ *
+ * @p aVendorModel should be UTF8 with max length of 32 chars (`MAX_VENDOR_MODEL_TLV_LENGTH`). Maximum length does not
+ * include the null `\0` character.
+ *
+ * @param[in] aInstance       A pointer to an OpenThread instance.
+ * @param[in] aVendorModel    The vendor model string.
+ *
+ * @retval OT_ERROR_NONE          Successfully set the vendor model.
+ * @retval OT_ERROR_INVALID_ARGS  @p aVendorModel is not valid (too long or not UTF8).
+ *
+ */
+otError otThreadSetVendorModel(otInstance *aInstance, const char *aVendorModel);
+
+/**
+ * Set the vendor software version string.
+ *
+ * Requires `OPENTHREAD_CONFIG_NET_DIAG_VENDOR_INFO_SET_API_ENABLE`.
+ *
+ * @p aVendorSwVersion should be UTF8 with max length of 16 chars(`MAX_VENDOR_SW_VERSION_TLV_LENGTH`). Maximum length
+ * does not include the null `\0` character.
+ *
+ * @param[in] aInstance          A pointer to an OpenThread instance.
+ * @param[in] aVendorSwVersion   The vendor software version string.
+ *
+ * @retval OT_ERROR_NONE          Successfully set the vendor software version.
+ * @retval OT_ERROR_INVALID_ARGS  @p aVendorSwVersion is not valid (too long or not UTF8).
+ *
+ */
+otError otThreadSetVendorSwVersion(otInstance *aInstance, const char *aVendorSwVersion);
 
 /**
  * @}

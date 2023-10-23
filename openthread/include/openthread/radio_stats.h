@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2019, The OpenThread Authors.
+ *  Copyright (c) 2023, The OpenThread Authors.
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,47 +29,66 @@
 /**
  * @file
  * @brief
- *   This file includes the abstraction for the platform OTNS utilities.
- *
- *   OTNS is an OpenThread Network Simulator that simulates Thread networks using OpenThread simulation instances and
- *   provides visualization and management of those simulated networks.
- *   Refer to https://github.com/openthread/ot-ns for more information about OTNS.
+ *   This file includes the OpenThread API for radio stats module.
  */
 
-#ifndef OPENTHREAD_PLATFORM_OTNS_H_
-#define OPENTHREAD_PLATFORM_OTNS_H_
+#ifndef OPENTHREAD_RADIO_STATS_H_
+#define OPENTHREAD_RADIO_STATS_H_
+
+#include <stdint.h>
+
+#include <openthread/error.h>
+#include <openthread/instance.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /**
- * @addtogroup plat-otns
+ * @addtogroup api-radio
  *
  * @brief
- *   This module includes the platform abstraction for OTNS.
+ *   This module includes functions for radio statistics.
  *
  * @{
  *
  */
 
 /**
- * Exports status information to OTNS.
- *
- * The status information is represented by a null-terminated string with format recognizable by OTNS.
- * Each call to `otPlatOtnsStatus` can send multiple statuses, separated by ';', e.x. "parid=577fbc37;lrid=5".
- * Each status contains key and value separated by '='.
- * Status value can be further separated into multiple fields using ',',
- * e.x. "ping_request=fdde:ad00:beef:0:459e:d7b4:b65e:5480,4,112000".
- *
- * New statuses should follow these conventions.
- *
- * Currently, OTNS only supports virtual time simulation.
- *
- * @param[in]  aStatus  The status string.
+ * Contains the statistics of radio.
  *
  */
-void otPlatOtnsStatus(const char *aStatus);
+typedef struct otRadioTimeStats
+{
+    uint64_t mDisabledTime; ///< The total time that radio is in disabled state, in unit of microseconds.
+    uint64_t mSleepTime;    ///< The total time that radio is in sleep state, in unit of microseconds.
+    uint64_t mTxTime;       ///> The total time that radio is doing transmission, in unit of microseconds.
+    uint64_t mRxTime;       ///> The total time that radio is in receive state, in unit of microseconds.
+} otRadioTimeStats;
+
+/**
+ * Gets the radio statistics.
+ *
+ * The radio statistics include the time when the radio is in TX/RX/Sleep state. These times are in units of
+ * microseconds. All times are calculated from the last reset of radio statistics.
+ *
+ * @param[in]  aInstance    A pointer to an OpenThread instance.
+ *
+ * @returns  A const pointer to the otRadioTimeStats struct that contains the data.
+ *
+ */
+const otRadioTimeStats *otRadioTimeStatsGet(otInstance *aInstance);
+
+/**
+ * Resets the radio statistics.
+ *
+ * All times are reset to 0.
+ *
+ * @param[in]  aInstance    A pointer to an OpenThread instance.
+ *
+ *
+ */
+void otRadioTimeStatsReset(otInstance *aInstance);
 
 /**
  * @}
@@ -80,4 +99,4 @@ void otPlatOtnsStatus(const char *aStatus);
 } // extern "C"
 #endif
 
-#endif // OPENTHREAD_PLATFORM_OTNS_H_
+#endif // OPENTHREAD_RADIO_STATS_H_
