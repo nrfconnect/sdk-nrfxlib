@@ -17,22 +17,6 @@
  *  or disable features selectively, and reduce the global
  *  memory footprint.
  */
-/*
- *  Copyright The Mbed TLS Contributors
- *  SPDX-License-Identifier: Apache-2.0
- *
- *  Licensed under the Apache License, Version 2.0 (the "License"); you may
- *  not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
 
 /**
  * This is an optional version symbol that enables comatibility handling of
@@ -1082,7 +1066,7 @@
  *
  * Uncomment this macro to let the buffer allocator print out error messages.
  */
-//#define MBEDTLS_MEMORY_DEBUG
+/* #undef MBEDTLS_MEMORY_DEBUG */
 
 /**
  * \def MBEDTLS_MEMORY_BACKTRACE
@@ -1206,7 +1190,7 @@
  *
  * \note This option is experimental and may be removed without notice.
  */
-/* #undef MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG */
+#define MBEDTLS_PSA_CRYPTO_EXTERNAL_RNG
 
 /**
  * \def MBEDTLS_PSA_CRYPTO_SPM
@@ -2705,7 +2689,7 @@
  *            on it, and considering stronger message digests instead.
  *
  */
-#define MBEDTLS_SHA1_C
+/* #undef MBEDTLS_SHA1_C */
 
 /**
  * \def MBEDTLS_SHA224_C
@@ -2772,7 +2756,7 @@
  *
  * This module adds support for SHA-512.
  */
-#define MBEDTLS_SHA512_C
+/* #undef MBEDTLS_SHA512_C */
 
 /**
  * \def MBEDTLS_SSL_CACHE_C
@@ -2794,7 +2778,7 @@
  * Module:  library/ssl_cookie.c
  * Caller:
  */
-#define MBEDTLS_SSL_COOKIE_C
+/* #undef MBEDTLS_SSL_COOKIE_C */
 
 /**
  * \def MBEDTLS_SSL_TICKET_C
@@ -2834,7 +2818,7 @@
  *
  * This module is required for SSL/TLS server support.
  */
-#define MBEDTLS_SSL_SRV_C
+/* #undef MBEDTLS_SSL_SRV_C */
 
 /**
  * \def MBEDTLS_SSL_TLS_C
