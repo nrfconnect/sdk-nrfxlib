@@ -24,5 +24,6 @@ Refer to their respective documentation for more information.
    nrf_dm/README
    openthread/README
    nrf_rpc/README
+   nrf_wifi/README
    softdevice_controller/README
    zboss/README
