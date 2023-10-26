@@ -83,23 +83,6 @@
   - "softdevice_controller/lib/**/*"
   - "nrf_802154/**/*"
 
-"CI-homekit-test":
-  - any:
-    - "openthread/**/*"
-    - "!openthread/*.rst"
-    - "!openthread/doc/**/*"
-  - "softdevice_controller/include/**/*"
-  - "softdevice_controller/lib/**/*"
-  - "mpsl/include/**/*"
-  - "mpsl/lib/**/*"
-  - "nrf_802154/driver/**/*"
-  - "nrf_802154/serialization/**/*"
-  - "nrf_802154/sl/**/*"
-  - any:
-      - "crypto/**/*"
-      - "!crypto/doc/**/*"
-      - "!crypto/*.rst"
-
 "CI-thread-test":
   - "mpsl/include/**/*"
   - "mpsl/lib/**/*"
