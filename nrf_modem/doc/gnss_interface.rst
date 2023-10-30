@@ -160,9 +160,9 @@ If the fix retry parameter is set to zero, GNSS is allowed to run indefinitely u
 
 .. note::
 
-   When GNSS determines it needs to download ephemerides or almanacs from the broadcast, the fix interval and fix retry parameters are temporarily ignored.
-   GNSS performs scheduled downloads until it has downloaded the data it needs.
-   After the downloads, the normal operation is resumed.
+   Unless disabled using the :c:func:`nrf_modem_gnss_use_case_set` function, GNSS performs :term:`Scheduled downloads` in periodic navigation mode.
+   During a scheduled download, the fix interval and fix retry parameters are temporarily ignored.
+   After GNSS has downloaded the data it needs, normal operation is resumed.
 
 System mask
 ===========
@@ -447,6 +447,10 @@ In cases where GNSS is not running continuously, it may be beneficial to change 
 .. note::
 
    The 1PPS feature must not be used when LTE is enabled.
+
+   The application must make sure that LTE is not enabled in functional mode when 1PPS is enabled.
+   The application needs to call the :c:func:`nrf_modem_gnss_1pps_disable` function before activating LTE by setting the functional mode to ``1`` (full functionality), ``2`` (receive only) or ``21`` (activate LTE).
+   However, LTE can remain enabled in system mode configuration to avoid the need to change between system modes when a switch between LTE connectivity and time pulse output is desired.
 
 Resolving the UTC time of 1PPS pulse occurrence
 ===============================================
