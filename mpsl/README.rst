@@ -11,8 +11,6 @@ These libraries provide the following key features:
 
 * Timeslot.
   It allows the application to schedule its own events concurrently with other protocols.
-* Radio notifications.
-  It provides a configurable interrupt, usable before and/or after radio activity.
 * TX Power control.
   It provides an API for setting the maximum TX power per channel.
 * Clock control.
@@ -35,7 +33,6 @@ To enable MPSL in |NCS| applications, use the :kconfig:option:`CONFIG_MPSL` Kcon
    doc/mpsl
    doc/clock
    doc/timeslot
-   doc/radio_notification
    doc/tx_power_control
    doc/fem
    doc/cx

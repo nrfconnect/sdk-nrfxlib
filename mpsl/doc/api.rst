@@ -34,15 +34,6 @@ MPSL Timeslot
 
 .. _mpsl_api_rn:
 
-MPSL Radio Notification
-***********************
-
-.. doxygengroup:: mpsl_radio_notification
-   :project: nrfxlib
-   :members:
-
-.. _mpsl_api_txp:
-
 MPSL TX Power
 *************
 
