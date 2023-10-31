@@ -270,7 +270,7 @@ extern "C" {
 #define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 275) : 0)
 
 /** @brief Maximum memory required for the ISO RX path PDUs. */
-#define SDC_MEM_ISO_RX_PDU_POOL_SIZE(count) ((count) > 0 ? (8 + (count) * 296) : 0)
+#define SDC_MEM_ISO_RX_PDU_POOL_SIZE(count) ((count) > 0 ? (8 + (count) * 288) : 0)
 
 /** @brief Maximum memory required for the ISO RX path SDUs. */
 #define SDC_MEM_ISO_RX_SDU_POOL_SIZE(count) ((count) > 0 ? (0 + (count) * 280) : 0)

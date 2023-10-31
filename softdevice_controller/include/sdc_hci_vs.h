@@ -87,6 +87,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_SET_POWER_CONTROL_APR_HANDLING = 0xfd0f,
     /** @brief See @ref sdc_hci_cmd_vs_set_power_control_request_params(). */
     SDC_HCI_OPCODE_CMD_VS_SET_POWER_CONTROL_REQUEST_PARAMS = 0xfd10,
+    /** @brief See @ref sdc_hci_cmd_vs_read_average_rssi(). */
+    SDC_HCI_OPCODE_CMD_VS_READ_AVERAGE_RSSI = 0xfd11,
 };
 
 /** @brief VS subevent Code values. */
@@ -159,6 +161,7 @@ typedef __PACKED_STRUCT
     uint8_t set_adv_randomness : 1;
     uint8_t qos_channel_survey_enable : 1;
     uint8_t set_power_control_request_params : 1;
+    uint8_t read_average_rssi : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -594,7 +597,7 @@ typedef __PACKED_STRUCT
      *         procedure by the controller. 0 milliseconds value is an invalid value. Default value
      *         is 5000 milliseconds.
      */
-    uint8_t wait_period_ms;
+    uint16_t wait_period_ms;
     /** @brief Margin between APR value received from peer in LL_POWER_CONTROL_RSP PDU and actual
      *         reduction in TX power that is applied locally. The applied decrease in local TX power
      *         will be (received_apr - apr_margin) if received_apr > apr_margin, otherwise no
@@ -602,6 +605,21 @@ typedef __PACKED_STRUCT
      */
     uint8_t apr_margin;
 } sdc_hci_cmd_vs_set_power_control_request_params_t;
+
+/** @brief Read average RSSI command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Connection Handle to read the average RSSI for. */
+    uint16_t conn_handle;
+} sdc_hci_cmd_vs_read_average_rssi_t;
+
+/** @brief Read average RSSI return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    /** @brief Average RSSI in dBm. */
+    int8_t avg_rssi;
+} sdc_hci_cmd_vs_read_average_rssi_return_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1205,6 +1223,27 @@ uint8_t sdc_hci_cmd_vs_set_power_control_apr_handling(const sdc_hci_cmd_vs_set_p
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_set_power_control_request_params(const sdc_hci_cmd_vs_set_power_control_request_params_t * p_params);
+
+/** @brief Read average RSSI.
+ *
+ * This command reads the average Received Signal Strength Indication (RSSI) value
+ * calculated by LE Power Control.
+ *
+ * The average RSSI is calculated as an exponential weighted average according to
+ * the formula given in @ref sdc_hci_cmd_vs_set_power_control_request_params().
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_read_average_rssi(const sdc_hci_cmd_vs_read_average_rssi_t * p_params,
+                                         sdc_hci_cmd_vs_read_average_rssi_return_t * p_return);
 
 /** @} end of HCI_VS_API */
 
