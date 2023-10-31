@@ -29,7 +29,7 @@ int nrf_wifi_utils_hex_str_to_val(struct nrf_wifi_osal_priv *opriv,
 
 	if (len / 2 > hex_arr_sz) {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: String length (%d) greater than array size (%d)\n",
+				      "%s: String length (%d) greater than array size (%d)",
 				      __func__,
 				      len,
 				      hex_arr_sz);
@@ -38,7 +38,7 @@ int nrf_wifi_utils_hex_str_to_val(struct nrf_wifi_osal_priv *opriv,
 
 	if (len % 2) {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s:String length = %d, is not a multiple of 2\n",
+				      "%s:String length = %d, is not a multiple of 2",
 				      __func__,
 				      len);
 		goto out;
@@ -50,7 +50,7 @@ int nrf_wifi_utils_hex_str_to_val(struct nrf_wifi_osal_priv *opriv,
 
 		if ((ch < '0' || ch > '9') && (ch < 'a' || ch > 'f')) {
 			nrf_wifi_osal_log_err(opriv,
-					      "%s: Invalid hex character in string %d\n",
+					      "%s: Invalid hex character in string %d",
 					      __func__,
 					      ch);
 			goto out;
@@ -111,7 +111,7 @@ int nrf_wifi_utils_chan_to_freq(struct nrf_wifi_osal_priv *opriv,
 			freq = 2484;
 		} else {
 			nrf_wifi_osal_log_err(opriv,
-					      "%s: Invalid channel value %d\n",
+					      "%s: Invalid channel value %d",
 					      __func__,
 					      chan);
 			goto out;
@@ -128,7 +128,7 @@ int nrf_wifi_utils_chan_to_freq(struct nrf_wifi_osal_priv *opriv,
 		break;
 	default:
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Invalid band value %d\n",
+				      "%s: Invalid band value %d",
 				      __func__,
 				      band);
 		goto out;

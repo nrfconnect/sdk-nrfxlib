@@ -653,7 +653,7 @@ enum nrf_wifi_status tx_cmd_prep_callbk_fn(void *callbk_data,
 
 	if (tx_buf_info->mapped) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Init_TX cmd called for already mapped TX buffer(%d)\n",
+				      "%s: Init_TX cmd called for already mapped TX buffer(%d)",
 				      __func__,
 				      desc_id);
 
@@ -676,7 +676,7 @@ enum nrf_wifi_status tx_cmd_prep_callbk_fn(void *callbk_data,
 
 	if (!phy_addr) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_hal_buf_map_tx failed\n",
+				      "%s: nrf_wifi_hal_buf_map_tx failed",
 				      __func__);
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;
@@ -806,7 +806,7 @@ enum nrf_wifi_status tx_cmd_prepare(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 	if (txq_len == 0) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: txq_len = %d\n",
+				      "%s: txq_len = %d",
 				      __func__,
 				      txq_len);
 		goto err;
@@ -867,7 +867,7 @@ enum nrf_wifi_status tx_cmd_prepare(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: build_mac80211_hdr failed\n",
+				      "%s: build_mac80211_hdr failed",
 				      __func__);
 		goto err;
 	}
@@ -970,7 +970,7 @@ enum nrf_wifi_status tx_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: tx_cmd_prepare failed\n",
+				      "%s: tx_cmd_prepare failed",
 				      __func__);
 
 		goto out;
@@ -1001,7 +1001,7 @@ enum nrf_wifi_status tx_pending_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_c
 
 	if (!fmac_dev_ctx) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid params\n",
+				      "%s: Invalid params",
 				      __func__);
 		goto out;
 	}
@@ -1049,7 +1049,7 @@ enum nrf_wifi_status tx_enqueue(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 	if (!fmac_dev_ctx || !nwb) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid params\n",
+				      "%s: Invalid params",
 				      __func__);
 		goto out;
 	}
@@ -1266,7 +1266,7 @@ enum nrf_wifi_status tx_done_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 	if (desc > def_priv->num_tx_tokens) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "Invalid desc\n");
+				      "Invalid desc");
 		goto out;
 	}
 
@@ -1282,7 +1282,7 @@ enum nrf_wifi_status tx_done_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 		if (!tx_buf_info->mapped) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Deinit_TX cmd called for unmapped TX buf(%d)\n",
+					      "%s: Deinit_TX cmd called for unmapped TX buf(%d)",
 					      __func__,
 					      desc_id);
 			status = NRF_WIFI_STATUS_FAIL;
@@ -1294,7 +1294,7 @@ enum nrf_wifi_status tx_done_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 		if (!virt_addr) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: nrf_wifi_hal_buf_unmap_tx failed\n",
+					      "%s: nrf_wifi_hal_buf_unmap_tx failed",
 					      __func__);
 			status = NRF_WIFI_STATUS_FAIL;
 			goto out;
@@ -1404,7 +1404,7 @@ static void tx_done_tasklet_fn(unsigned long data)
 
 	if (!config) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: TX done event Q is empty\n",
+				      "%s: TX done event Q is empty",
 				      __func__);
 		return;
 	}
@@ -1467,7 +1467,7 @@ enum nrf_wifi_status (nrf_wifi_fmac_tx_done_event_process)(
 
 	if (!config) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid parameters\n",
+				      "%s: Invalid parameters",
 				      __func__);
 
 		goto out;
@@ -1485,7 +1485,7 @@ enum nrf_wifi_status (nrf_wifi_fmac_tx_done_event_process)(
 out:
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Failed\n",
+				      "%s: Failed",
 				      __func__);
 	}
 
@@ -1574,7 +1574,7 @@ enum nrf_wifi_status tx_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 	if (!def_dev_ctx->tx_config.send_pkt_coalesce_count_p) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate send_pkt_coalesce_count_p\n",
+				      "%s: Unable to allocate send_pkt_coalesce_count_p",
 				      __func__);
 		goto out;
 	}
@@ -1586,7 +1586,7 @@ enum nrf_wifi_status tx_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 			if (!def_dev_ctx->tx_config.data_pending_txq[j][i]) {
 				nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-						      "%s: Unable to allocate data_pending_txq\n",
+						      "%s: Unable to allocate data_pending_txq",
 						      __func__);
 				goto coal_q_free;
 			}
@@ -1604,7 +1604,7 @@ enum nrf_wifi_status tx_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 	if (!def_dev_ctx->tx_config.pkt_info_p) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate pkt_info_p\n",
+				      "%s: Unable to allocate pkt_info_p",
 				      __func__);
 		goto tx_q_free;
 	}
@@ -1614,7 +1614,7 @@ enum nrf_wifi_status tx_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 		if (!def_dev_ctx->tx_config.pkt_info_p[i].pkt) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Unable to allocate pkt list\n",
+					      "%s: Unable to allocate pkt list",
 					      __func__);
 			goto tx_q_setup_free;
 		}
@@ -1631,7 +1631,7 @@ enum nrf_wifi_status tx_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 	if (!def_dev_ctx->tx_config.buf_pool_bmp_p) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate buf_pool_bmp_p\n",
+				      "%s: Unable to allocate buf_pool_bmp_p",
 				      __func__);
 		goto tx_pkt_info_free;
 	}
@@ -1649,7 +1649,7 @@ enum nrf_wifi_status tx_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 	if (!def_dev_ctx->tx_config.tx_lock) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate TX lock\n",
+				      "%s: Unable to allocate TX lock",
 				      __func__);
 		goto tx_buff_map_free;
 	}
@@ -1661,7 +1661,7 @@ enum nrf_wifi_status tx_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 	if (!def_dev_ctx->tx_config.wakeup_client_q) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate Wakeup Client List\n",
+				      "%s: Unable to allocate Wakeup Client List",
 				      __func__);
 		goto tx_spin_lock_free;
 	}
@@ -1673,14 +1673,14 @@ enum nrf_wifi_status tx_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 								    NRF_WIFI_TASKLET_TYPE_TX_DONE);
 	if (!def_dev_ctx->tx_done_tasklet) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate tx_done_tasklet\n",
+				      "%s: Unable to allocate tx_done_tasklet",
 				      __func__);
 		goto wakeup_client_q_free;
 	}
 	def_dev_ctx->tx_config.tx_done_tasklet_event_q = nrf_wifi_utils_q_alloc(fpriv->opriv);
 	if (!def_dev_ctx->tx_config.tx_done_tasklet_event_q) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate tx_done_tasklet_event_q\n",
+				      "%s: Unable to allocate tx_done_tasklet_event_q",
 				      __func__);
 		goto tx_done_tasklet_free;
 	}
@@ -1919,7 +1919,7 @@ enum nrf_wifi_status nrf_wifi_fmac_start_xmit(void *dev_ctx,
 
 	if (peer_id == -1) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Got packet for unknown PEER\n",
+				      "%s: Got packet for unknown PEER",
 				      __func__);
 
 		goto out;
@@ -1942,7 +1942,7 @@ enum nrf_wifi_status nrf_wifi_fmac_start_xmit(void *dev_ctx,
 
 	if (tx_status == NRF_WIFI_FMAC_TX_STATUS_FAIL) {
 		nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Failed to send packet\n",
+				      "%s: Failed to send packet",
 				      __func__);
 		goto out;
 	}

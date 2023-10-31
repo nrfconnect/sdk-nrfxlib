@@ -66,7 +66,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_cmd_send(struct nrf_wifi_fmac_dev_ctx *fma
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_fmac_map_desc_to_pool failed\n",
+				      "%s: nrf_wifi_fmac_map_desc_to_pool failed",
 				      __func__);
 		goto out;
 	}
@@ -78,7 +78,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_cmd_send(struct nrf_wifi_fmac_dev_ctx *fma
 	if (cmd_type == NRF_WIFI_FMAC_RX_CMD_TYPE_INIT) {
 		if (rx_buf_info->mapped) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Init RX command called for already mapped RX buffer(%d)\n",
+					      "%s: Init RX command called for already mapped RX buffer(%d)",
 					      __func__,
 					      desc_id);
 			status = NRF_WIFI_STATUS_FAIL;
@@ -90,7 +90,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_cmd_send(struct nrf_wifi_fmac_dev_ctx *fma
 
 		if (!nwb) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: No space for allocating RX buffer\n",
+					      "%s: No space for allocating RX buffer",
 					      __func__);
 			status = NRF_WIFI_STATUS_FAIL;
 			goto out;
@@ -109,7 +109,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_cmd_send(struct nrf_wifi_fmac_dev_ctx *fma
 
 		if (!phy_addr) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: nrf_wifi_hal_buf_map_rx failed\n",
+					      "%s: nrf_wifi_hal_buf_map_rx failed",
 					      __func__);
 			status = NRF_WIFI_STATUS_FAIL;
 			goto out;
@@ -137,7 +137,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_cmd_send(struct nrf_wifi_fmac_dev_ctx *fma
 		 */
 		if (!rx_buf_info->mapped) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Deinit RX command called for unmapped RX buffer(%d)\n",
+					      "%s: Deinit RX command called for unmapped RX buffer(%d)",
 					      __func__,
 					      desc_id);
 			status = NRF_WIFI_STATUS_FAIL;
@@ -151,7 +151,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_cmd_send(struct nrf_wifi_fmac_dev_ctx *fma
 
 		if (!nwb_data) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: nrf_wifi_hal_buf_unmap_rx failed\n",
+					      "%s: nrf_wifi_hal_buf_unmap_rx failed",
 					      __func__);
 			goto out;
 		}
@@ -163,7 +163,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_cmd_send(struct nrf_wifi_fmac_dev_ctx *fma
 		status = NRF_WIFI_STATUS_SUCCESS;
 	} else {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unknown cmd_type (%d)\n",
+				      "%s: Unknown cmd_type (%d)",
 				      __func__,
 				      cmd_type);
 		goto out;
@@ -189,7 +189,7 @@ void nrf_wifi_fmac_rx_tasklet(void *data)
 
 	if (!config) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: No RX config available\n",
+				      "%s: No RX config available",
 				      __func__);
 		goto out;
 	}
@@ -199,7 +199,7 @@ void nrf_wifi_fmac_rx_tasklet(void *data)
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_fmac_rx_event_process failed\n",
+				      "%s: nrf_wifi_fmac_rx_event_process failed",
 				      __func__);
 		goto out;
 	}
@@ -247,7 +247,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 
 		if (desc_id >= def_priv->num_rx_bufs) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Invalid desc_id %d\n",
+					      "%s: Invalid desc_id %d",
 					      __func__,
 					      desc_id);
 			status = NRF_WIFI_STATUS_FAIL;
@@ -260,7 +260,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: nrf_wifi_fmac_map_desc_to_pool failed\n",
+					      "%s: nrf_wifi_fmac_map_desc_to_pool failed",
 					      __func__);
 			goto out;
 		}
@@ -272,7 +272,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 
 		if (!nwb_data) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: nrf_wifi_hal_buf_unmap_rx failed\n",
+					      "%s: nrf_wifi_hal_buf_unmap_rx failed",
 					      __func__);
 			goto out;
 		}
@@ -332,7 +332,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 				break;
 			default:
 				nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-						      "%s: Invalid pkt_type=%d\n",
+						      "%s: Invalid pkt_type=%d",
 						      __func__,
 						      (config->rx_buff_info[i].pkt_type));
 				status = NRF_WIFI_STATUS_FAIL;
@@ -353,7 +353,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 						nwb);
 		} else {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Invalid frame type recd %d\n",
+					      "%s: Invalid frame type recd %d",
 					      __func__,
 					      config->rx_pkt_type);
 			status = NRF_WIFI_STATUS_FAIL;
@@ -366,7 +366,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: nrf_wifi_fmac_rx_cmd_send failed\n",
+					      "%s: nrf_wifi_fmac_rx_cmd_send failed",
 					      __func__);
 			goto out;
 		}

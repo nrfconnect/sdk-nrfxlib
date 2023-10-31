@@ -51,7 +51,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init_rt(struct nrf_wifi_fmac_dev_ct
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: UMAC init failed\n",
+				      "%s: UMAC init failed",
 				      __func__);
 		goto out;
 	}
@@ -67,7 +67,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init_rt(struct nrf_wifi_fmac_dev_ct
 
 	if (!fmac_dev_ctx->fw_init_done) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: UMAC init timed out\n",
+				      "%s: UMAC init timed out",
 				      __func__);
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;
@@ -105,7 +105,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
 
 	if (!fmac_dev_ctx) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid device context\n",
+				      "%s: Invalid device context",
 				      __func__);
 		goto out;
 	}
@@ -114,7 +114,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_hal_dev_init failed\n",
+				      "%s: nrf_wifi_hal_dev_init failed",
 				      __func__);
 		goto out;
 	}
@@ -131,7 +131,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
 
 	if (status == NRF_WIFI_STATUS_FAIL) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_fmac_fw_init failed\n",
+				      "%s: nrf_wifi_fmac_fw_init failed",
 				      __func__);
 		goto out;
 	}
@@ -161,7 +161,7 @@ struct nrf_wifi_fmac_priv *nrf_wifi_fmac_init_rt(void)
 
 	if (!fpriv) {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate fpriv\n",
+				      "%s: Unable to allocate fpriv",
 				      __func__);
 		goto out;
 	}
@@ -183,7 +183,7 @@ struct nrf_wifi_fmac_priv *nrf_wifi_fmac_init_rt(void)
 
 	if (!fpriv->hpriv) {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to do HAL init\n",
+				      "%s: Unable to do HAL init",
 				      __func__);
 		nrf_wifi_osal_mem_free(opriv,
 				       fpriv);
@@ -228,7 +228,7 @@ enum nrf_wifi_status wait_for_radio_cmd_status(struct nrf_wifi_fmac_dev_ctx *fma
 
 	if (count == timeout) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Timed out (%d secs)\n",
+				      "%s: Timed out (%d secs)",
 				      __func__,
 					 timeout / 1000);
 		goto out;
@@ -238,7 +238,7 @@ enum nrf_wifi_status wait_for_radio_cmd_status(struct nrf_wifi_fmac_dev_ctx *fma
 
 	if (radio_cmd_status != NRF_WIFI_UMAC_CMD_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Radio test command failed with status %d\n",
+				      "%s: Radio test command failed with status %d",
 				      __func__,
 				      radio_cmd_status);
 		goto out;
@@ -282,7 +282,7 @@ enum nrf_wifi_status nrf_wifi_fmac_radio_test_init(struct nrf_wifi_fmac_dev_ctx 
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to init radio test\n",
+				      "%s: Unable to init radio test",
 				      __func__);
 		goto out;
 	}
@@ -312,7 +312,7 @@ enum nrf_wifi_status nrf_wifi_fmac_radio_test_prog_tx(struct nrf_wifi_fmac_dev_c
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to program radio test TX\n",
+				      "%s: Unable to program radio test TX",
 				      __func__);
 		goto out;
 	}
@@ -363,7 +363,7 @@ enum nrf_wifi_status nrf_wifi_fmac_radio_test_prog_rx(struct nrf_wifi_fmac_dev_c
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to program radio test RX\n",
+				      "%s: Unable to program radio test RX",
 				      __func__);
 		goto out;
 	}
@@ -412,7 +412,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_rx_cap(struct nrf_wifi_fmac_dev_ctx *
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: umac_cmd_prog_rf_test_cap failed\n",
+				      "%s: umac_cmd_prog_rf_test_cap failed",
 				      __func__);
 
 		goto out;
@@ -427,7 +427,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_rx_cap(struct nrf_wifi_fmac_dev_ctx *
 
 	if (count == NRF_WIFI_FMAC_RF_TEST_EVNT_TIMEOUT) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Timed out\n",
+				      "%s: Timed out",
 				      __func__);
 		rt_dev_ctx->rf_test_type = NRF_WIFI_RF_TEST_MAX;
 		rt_dev_ctx->rf_test_cap_data = NULL;
@@ -472,7 +472,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_tx_tone(struct nrf_wifi_fmac_dev_ctx 
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: umac_cmd_prog_rf_test_tx_tone failed\n",
+				      "%s: umac_cmd_prog_rf_test_tx_tone failed",
 				      __func__);
 
 		goto out;
@@ -487,7 +487,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_tx_tone(struct nrf_wifi_fmac_dev_ctx 
 
 	if (count == NRF_WIFI_FMAC_RF_TEST_EVNT_TIMEOUT) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Timed out\n",
+				      "%s: Timed out",
 				      __func__);
 		rt_dev_ctx->rf_test_type = NRF_WIFI_RF_TEST_MAX;
 		rt_dev_ctx->rf_test_cap_data = NULL;
@@ -528,7 +528,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_dpd(struct nrf_wifi_fmac_dev_ctx *fma
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: umac_cmd_prog_rf_test_dpd failed\n",
+				      "%s: umac_cmd_prog_rf_test_dpd failed",
 				      __func__);
 
 		goto out;
@@ -543,7 +543,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_dpd(struct nrf_wifi_fmac_dev_ctx *fma
 
 	if (count == NRF_WIFI_FMAC_RF_TEST_EVNT_TIMEOUT) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Timed out\n",
+				      "%s: Timed out",
 				      __func__);
 		rt_dev_ctx->rf_test_type = NRF_WIFI_RF_TEST_MAX;
 		rt_dev_ctx->rf_test_cap_data = NULL;
@@ -582,7 +582,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_get_temp(struct nrf_wifi_fmac_dev_ctx *fma
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: umac_cmd_prog_rf_get_temperature failed\n",
+				      "%s: umac_cmd_prog_rf_get_temperature failed",
 				      __func__);
 
 		goto out;
@@ -597,7 +597,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_get_temp(struct nrf_wifi_fmac_dev_ctx *fma
 
 	if (count == NRF_WIFI_FMAC_RF_TEST_EVNT_TIMEOUT) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Timed out\n",
+				      "%s: Timed out",
 				      __func__);
 		rt_dev_ctx->rf_test_type = NRF_WIFI_RF_TEST_MAX;
 		rt_dev_ctx->rf_test_cap_data = NULL;
@@ -637,7 +637,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_get_rf_rssi(struct nrf_wifi_fmac_dev_ctx *
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: umac_cmd_prog_rf_get_rf_rssi failed\n",
+				      "%s: umac_cmd_prog_rf_get_rf_rssi failed",
 				      __func__);
 
 		goto out;
@@ -652,7 +652,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_get_rf_rssi(struct nrf_wifi_fmac_dev_ctx *
 
 	if (count == NRF_WIFI_FMAC_RF_TEST_EVNT_TIMEOUT) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Timed out\n",
+				      "%s: Timed out",
 				      __func__);
 		rt_dev_ctx->rf_test_type = NRF_WIFI_RF_TEST_MAX;
 		rt_dev_ctx->rf_test_cap_data = NULL;
@@ -694,7 +694,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_xo_val(struct nrf_wifi_fmac_dev_ctx *fmac
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: umac_cmd_prog_set_xo_val failed\n",
+				      "%s: umac_cmd_prog_set_xo_val failed",
 				      __func__);
 
 		goto out;
@@ -709,7 +709,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_xo_val(struct nrf_wifi_fmac_dev_ctx *fmac
 
 	if (count == NRF_WIFI_FMAC_RF_TEST_EVNT_TIMEOUT) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Timed out\n",
+				      "%s: Timed out",
 				      __func__);
 		rt_dev_ctx->rf_test_type = NRF_WIFI_RF_TEST_MAX;
 		rt_dev_ctx->rf_test_cap_data = NULL;
@@ -748,7 +748,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_compute_xo(struct nrf_wifi_fmac_dev_c
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: umac_cmd_prog_rf_get_xo_value failed\n",
+				      "%s: umac_cmd_prog_rf_get_xo_value failed",
 				      __func__);
 
 		goto out;
@@ -763,7 +763,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_compute_xo(struct nrf_wifi_fmac_dev_c
 
 	if (count == NRF_WIFI_FMAC_RF_TEST_EVNT_TIMEOUT) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Timed out\n",
+				      "%s: Timed out",
 				      __func__);
 		rt_dev_ctx->rf_test_type = NRF_WIFI_RF_TEST_MAX;
 		rt_dev_ctx->rf_test_cap_data = NULL;

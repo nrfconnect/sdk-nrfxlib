@@ -30,7 +30,7 @@ enum nrf_wifi_status hal_rpu_irq_enable(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Reading from Root interrupt register failed\n",
+				      "%s: Reading from Root interrupt register failed",
 				      __func__);
 		goto out;
 	}
@@ -43,7 +43,7 @@ enum nrf_wifi_status hal_rpu_irq_enable(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Enabling Root interrupt failed\n",
+				      "%s: Enabling Root interrupt failed",
 				      __func__);
 		goto out;
 	}
@@ -57,7 +57,7 @@ enum nrf_wifi_status hal_rpu_irq_enable(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s:Enabling MCU interrupt failed\n",
+				      "%s:Enabling MCU interrupt failed",
 				      __func__);
 		goto out;
 	}
@@ -78,7 +78,7 @@ enum nrf_wifi_status hal_rpu_irq_disable(struct nrf_wifi_hal_dev_ctx *hal_dev_ct
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Reading from Root interrupt register failed\n",
+				      "%s: Reading from Root interrupt register failed",
 				      __func__);
 		goto out;
 	}
@@ -91,7 +91,7 @@ enum nrf_wifi_status hal_rpu_irq_disable(struct nrf_wifi_hal_dev_ctx *hal_dev_ct
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Disabling Root interrupt failed\n",
+				      "%s: Disabling Root interrupt failed",
 				      __func__);
 		goto out;
 	}
@@ -104,7 +104,7 @@ enum nrf_wifi_status hal_rpu_irq_disable(struct nrf_wifi_hal_dev_ctx *hal_dev_ct
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Disabling MCU interrupt failed\n",
+				      "%s: Disabling MCU interrupt failed",
 				      __func__);
 		goto out;
 	}
@@ -141,7 +141,7 @@ static bool hal_rpu_irq_wdog_chk(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Reading from interrupt status register failed\n",
+				      "%s: Reading from interrupt status register failed",
 				      __func__);
 		goto out;
 	}
@@ -166,7 +166,7 @@ static enum nrf_wifi_status hal_rpu_irq_wdog_ack(struct nrf_wifi_hal_dev_ctx *ha
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Acknowledging watchdog interrupt failed\n",
+				      "%s: Acknowledging watchdog interrupt failed",
 				      __func__);
 		goto out;
 	}
@@ -188,7 +188,7 @@ static enum nrf_wifi_status hal_rpu_event_free(struct nrf_wifi_hal_dev_ctx *hal_
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Enqueueing of event failed\n",
+				      "%s: Enqueueing of event failed",
 				      __func__);
 		goto out;
 	}
@@ -225,7 +225,7 @@ static enum nrf_wifi_status hal_rpu_event_get(struct nrf_wifi_hal_dev_ctx *hal_d
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Reading of the event failed\n",
+					      "%s: Reading of the event failed",
 					      __func__);
 			goto out;
 		}
@@ -240,7 +240,7 @@ static enum nrf_wifi_status hal_rpu_event_get(struct nrf_wifi_hal_dev_ctx *hal_d
 
 		if (!hal_dev_ctx->event_data) {
 			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Unable to alloc buff for event data\n",
+					      "%s: Unable to alloc buff for event data",
 					      __func__);
 			goto out;
 		} else {
@@ -261,7 +261,7 @@ static enum nrf_wifi_status hal_rpu_event_get(struct nrf_wifi_hal_dev_ctx *hal_d
 
 			if (status != NRF_WIFI_STATUS_SUCCESS) {
 				nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-						      "%s: Reading of first fragment of event failed\n",
+						      "%s: Reading of first fragment of event failed",
 						      __func__);
 				nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
 						       hal_dev_ctx->event_data);
@@ -276,7 +276,7 @@ static enum nrf_wifi_status hal_rpu_event_get(struct nrf_wifi_hal_dev_ctx *hal_d
 
 				if (status != NRF_WIFI_STATUS_SUCCESS) {
 					nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-							      "%s: Freeing up of the event failed\n",
+							      "%s: Freeing up of the event failed",
 							      __func__);
 					nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
 							       hal_dev_ctx->event_data);
@@ -302,7 +302,7 @@ static enum nrf_wifi_status hal_rpu_event_get(struct nrf_wifi_hal_dev_ctx *hal_d
 
 				if (status != NRF_WIFI_STATUS_SUCCESS) {
 					nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-							      "%s: Reading of large event failed\n",
+							      "%s: Reading of large event failed",
 							      __func__);
 					nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
 							       hal_dev_ctx->event_data);
@@ -323,7 +323,7 @@ static enum nrf_wifi_status hal_rpu_event_get(struct nrf_wifi_hal_dev_ctx *hal_d
 
 				if (status != NRF_WIFI_STATUS_SUCCESS) {
 					nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-							      "%s: Freeing up of the event failed\n",
+							      "%s: Freeing up of the event failed",
 							      __func__);
 					nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
 							       hal_dev_ctx->event_data);
@@ -350,7 +350,7 @@ static enum nrf_wifi_status hal_rpu_event_get(struct nrf_wifi_hal_dev_ctx *hal_d
 
 			if (status != NRF_WIFI_STATUS_SUCCESS) {
 				nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-						      "%s: Reading of large event failed\n",
+						      "%s: Reading of large event failed",
 						      __func__);
 				nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
 						       hal_dev_ctx->event_data);
@@ -366,7 +366,7 @@ static enum nrf_wifi_status hal_rpu_event_get(struct nrf_wifi_hal_dev_ctx *hal_d
 
 			if (status != NRF_WIFI_STATUS_SUCCESS) {
 				nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-						      "%s: Freeing up of the event failed\n",
+						      "%s: Freeing up of the event failed",
 						      __func__);
 				nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
 						       hal_dev_ctx->event_data);
@@ -388,7 +388,7 @@ static enum nrf_wifi_status hal_rpu_event_get(struct nrf_wifi_hal_dev_ctx *hal_d
 
 		if (!event) {
 			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Unable to alloc HAL msg for event\n",
+					      "%s: Unable to alloc HAL msg for event",
 					      __func__);
 			nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
 					       hal_dev_ctx->event_data);
@@ -409,7 +409,7 @@ static enum nrf_wifi_status hal_rpu_event_get(struct nrf_wifi_hal_dev_ctx *hal_d
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Unable to queue event\n",
+					      "%s: Unable to queue event",
 					      __func__);
 			nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
 					       event);
@@ -449,7 +449,7 @@ static unsigned int hal_rpu_event_get_all(struct nrf_wifi_hal_dev_ctx *hal_dev_c
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Failed to get event addr\n",
+					      "%s: Failed to get event addr",
 					      __func__);
 			goto out;
 		}
@@ -468,7 +468,7 @@ static unsigned int hal_rpu_event_get_all(struct nrf_wifi_hal_dev_ctx *hal_dev_c
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Failed to queue event\n",
+					      "%s: Failed to queue event",
 					      __func__);
 			goto out;
 		}
@@ -511,13 +511,13 @@ enum nrf_wifi_status hal_rpu_irq_process(struct nrf_wifi_hal_dev_ctx *hal_dev_ct
 		if (hal_rpu_irq_wdog_chk(hal_dev_ctx)) {
 			/* TODO: Perform RPU recovery */
 			nrf_wifi_osal_log_dbg(hal_dev_ctx->hpriv->opriv,
-					      "Received watchdog interrupt\n");
+					      "Received watchdog interrupt");
 
 			status = hal_rpu_irq_wdog_ack(hal_dev_ctx);
 
 			if (status == NRF_WIFI_STATUS_FAIL) {
 				nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-						      "%s: hal_rpu_irq_wdog_ack failed\n",
+						      "%s: hal_rpu_irq_wdog_ack failed",
 						      __func__);
 				goto out;
 			}
@@ -528,7 +528,7 @@ enum nrf_wifi_status hal_rpu_irq_process(struct nrf_wifi_hal_dev_ctx *hal_dev_ct
 
 	if (status == NRF_WIFI_STATUS_FAIL) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: hal_rpu_irq_ack failed\n",
+				      "%s: hal_rpu_irq_ack failed",
 				      __func__);
 		goto out;
 	}

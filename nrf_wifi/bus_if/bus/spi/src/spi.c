@@ -44,7 +44,7 @@ static void *nrf_wifi_bus_spi_dev_add(void *bus_priv,
 
 	if (!spi_dev_ctx) {
 		nrf_wifi_osal_log_err(spi_priv->opriv,
-				      "%s: Unable to allocate spi_dev_ctx\n", __func__);
+				      "%s: Unable to allocate spi_dev_ctx", __func__);
 		goto out;
 	}
 
@@ -57,7 +57,7 @@ static void *nrf_wifi_bus_spi_dev_add(void *bus_priv,
 
 	if (!spi_dev_ctx->os_spi_dev_ctx) {
 		nrf_wifi_osal_log_err(spi_priv->opriv,
-				      "%s: nrf_wifi_osal_bus_spi_dev_add failed\n", __func__);
+				      "%s: nrf_wifi_osal_bus_spi_dev_add failed", __func__);
 
 		nrf_wifi_osal_mem_free(spi_priv->opriv,
 				       spi_dev_ctx);
@@ -83,7 +83,7 @@ static void *nrf_wifi_bus_spi_dev_add(void *bus_priv,
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(spi_dev_ctx->spi_priv->opriv,
-				      "%s: Unable to register interrupt to the OS\n",
+				      "%s: Unable to register interrupt to the OS",
 				      __func__);
 
 		nrf_wifi_osal_bus_spi_dev_intr_unreg(spi_dev_ctx->spi_priv->opriv,
@@ -131,7 +131,7 @@ static enum nrf_wifi_status nrf_wifi_bus_spi_dev_init(void *bus_dev_ctx)
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(spi_dev_ctx->spi_priv->opriv,
-				      "%s: nrf_wifi_osal_spi_dev_init failed\n", __func__);
+				      "%s: nrf_wifi_osal_spi_dev_init failed", __func__);
 
 		goto out;
 	}
@@ -162,7 +162,7 @@ static void *nrf_wifi_bus_spi_init(struct nrf_wifi_osal_priv *opriv,
 
 	if (!spi_priv) {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate memory for spi_priv\n",
+				      "%s: Unable to allocate memory for spi_priv",
 				      __func__);
 		goto out;
 	}
@@ -179,7 +179,7 @@ static void *nrf_wifi_bus_spi_init(struct nrf_wifi_osal_priv *opriv,
 	spi_priv->os_spi_priv = nrf_wifi_osal_bus_spi_init(opriv);
 	if (!spi_priv->os_spi_priv) {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to register QSPI driver\n",
+				      "%s: Unable to register QSPI driver",
 				      __func__);
 
 		nrf_wifi_osal_mem_free(opriv,
