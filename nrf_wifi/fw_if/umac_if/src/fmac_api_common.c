@@ -24,6 +24,176 @@
 #include "fmac_bb.h"
 #include "util.h"
 
+#include <patch_info.h>
+
+static int nrf_wifi_patch_version_compat(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+				const unsigned int version)
+{
+	unsigned int family, major, minor, patch;
+
+	family = (version >> 24) & 0xff;
+	major = (version >> 16) & 0xff;
+	minor = (version >> 8) & 0xff;
+	patch = (version >> 0) & 0xff;
+
+	if (family != RPU_FAMILY) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Incompatible RPU version: %d", family);
+		return -1;
+	}
+
+	if (major != RPU_MAJOR_VERSION) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Incompatible RPU major version: %d", major);
+		return -1;
+	}
+
+	/* TODO: Allow minor version to be different */
+	if (minor != RPU_MINOR_VERSION) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Incompatible RPU minor version: %d", minor);
+		return -1;
+	}
+
+	/* TODO: Allow patch version to be different */
+	if (patch != RPU_PATCH_VERSION) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Incompatible RPU patch version: %d", patch);
+		return -1;
+	}
+
+	return 0;
+}
+
+static int nrf_wifi_patch_feature_flags_compat(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+				const unsigned int feature_flags)
+{
+#ifdef CONFIG_NRF700X_RADIO_TEST
+	if (!(feature_flags & NRF70_FEAT_RADIO_TEST)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Radio test feature flag not set");
+		return -1;
+	}
+#elif defined(CONFIG_NRF700X_SCAN_ONLY)
+	if (!(feature_flags & NRF70_FEAT_SCAN_ONLY)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Scan only feature flag not set");
+		return -1;
+	}
+#elif defined(CONFIG_NRF700X_SYSTEM_MODE)
+	if (!(feature_flags & NRF70_FEAT_SYSTEM_MODE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"System mode feature flag not set");
+		return -1;
+	}
+#else
+	nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+		"Invalid feature flags: 0x%x or build configuration",
+		feature_flags);
+#endif
+
+	return 0;
+}
+
+enum nrf_wifi_status nrf_wifi_fmac_fw_parse(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+					   const void *fw_data,
+					   unsigned int fw_size,
+					   struct nrf_wifi_fmac_fw_info *fw_info)
+{
+	struct nrf70_fw_image_info *info = (struct nrf70_fw_image_info *)fw_data;
+	unsigned int offset;
+	unsigned int image_id;
+
+	if (!fw_data || !fw_size || !fw_info) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Invalid parameters");
+		return NRF_WIFI_STATUS_FAIL;
+	}
+
+	if (fw_size < sizeof(struct nrf70_fw_image_info)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Invalid fw_size: %d, minimum size: %d",
+			fw_size, sizeof(struct nrf70_fw_image_info));
+		return NRF_WIFI_STATUS_FAIL;
+	}
+
+	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
+		"num_images: %d", info->num_images);
+	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
+		"version: 0x%x", info->version);
+	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
+		"feature_flags: %d", info->feature_flags);
+
+	if (info->num_images != NRF_WIFI_PATCH_NUM_IMAGES) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Invalid number of images, expected %d, got %d",
+			NRF_WIFI_PATCH_NUM_IMAGES, info->num_images);
+		return NRF_WIFI_STATUS_FAIL;
+	}
+
+	if (nrf_wifi_patch_version_compat(fmac_dev_ctx, info->version) != 0) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Incompatible patch version");
+		return NRF_WIFI_STATUS_FAIL;
+	}
+
+	if (nrf_wifi_patch_feature_flags_compat(fmac_dev_ctx, info->feature_flags) != 0) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Incompatible feature flags");
+		return NRF_WIFI_STATUS_FAIL;
+	}
+
+	offset = sizeof(struct nrf70_fw_image_info);
+
+	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv, "====");
+	for (image_id = 0; image_id < info->num_images; image_id++) {
+		struct nrf70_fw_image *image =
+			(struct nrf70_fw_image *)((char *)fw_data + offset);
+		const void *data = (char *)fw_data + offset + sizeof(struct nrf70_fw_image);
+
+		if (offset + sizeof(struct nrf70_fw_image) + image->len > fw_size) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				"Invalid fw_size: %d for image[%d] len: %d",
+				fw_size, image_id, image->len);
+			return NRF_WIFI_STATUS_FAIL;
+		}
+
+		nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
+			"image[%d] type: %d", image_id, image->type);
+		nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
+			"image[%d] len: %d", image_id, image->len);
+		nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
+			"====");
+
+		switch (image_id) {
+		case NRF70_IMAGE_LMAC_PRI:
+			fw_info->lmac_patch_pri.data = data;
+			fw_info->lmac_patch_pri.size = image->len;
+			break;
+		case NRF70_IMAGE_LMAC_SEC:
+			fw_info->lmac_patch_sec.data = data;
+			fw_info->lmac_patch_sec.size = image->len;
+			break;
+		case NRF70_IMAGE_UMAC_PRI:
+			fw_info->umac_patch_pri.data = data;
+			fw_info->umac_patch_pri.size = image->len;
+			break;
+		case NRF70_IMAGE_UMAC_SEC:
+			fw_info->umac_patch_sec.data = data;
+			fw_info->umac_patch_sec.size = image->len;
+			break;
+		default:
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				"Invalid image id: %d", image_id);
+			break;
+		}
+
+		offset += sizeof(struct nrf70_fw_image) + image->len;
+	}
+
+	return NRF_WIFI_STATUS_SUCCESS;
+}
+
 enum nrf_wifi_status nrf_wifi_fmac_fw_load(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 					   struct nrf_wifi_fmac_fw_info *fmac_fw)
 {

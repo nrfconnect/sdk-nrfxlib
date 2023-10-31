@@ -55,7 +55,7 @@ struct rpu_op_stats {
  */
 struct nrf_wifi_fw_info {
 	/** Pointer to the FW patch data. */
-	void *data;
+	const void *data;
 	/** Size of the FW patch data. */
 	unsigned int size;
 };
