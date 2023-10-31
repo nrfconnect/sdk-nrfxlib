@@ -54,7 +54,7 @@ enum nrf_wifi_status pal_rpu_addr_offset_get(struct nrf_wifi_osal_priv *opriv,
 		region_offset = SOC_MMAP_ADDR_OFFSETS_MCU[proc];
 	} else {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Invalid rpu_addr 0x%X\n",
+				      "%s: Invalid rpu_addr 0x%X",
 				      __func__,
 				      rpu_addr);
 		goto out;
@@ -90,7 +90,7 @@ char *pal_ops_get_fw_loc(struct nrf_wifi_osal_priv *opriv,
 			fw_loc = NRF_WIFI_FW_LMAC_PATCH_LOC_SEC;
 		} else {
 			nrf_wifi_osal_log_err(opriv,
-					      "%s: Invalid LMAC FW sub-type = %d\n",
+					      "%s: Invalid LMAC FW sub-type = %d",
 					      __func__,
 					      fw_subtype);
 			goto out;
@@ -103,7 +103,7 @@ char *pal_ops_get_fw_loc(struct nrf_wifi_osal_priv *opriv,
 			fw_loc = NRF_WIFI_FW_UMAC_PATCH_LOC_SEC;
 		} else {
 			nrf_wifi_osal_log_err(opriv,
-					      "%s: Invalid UMAC FW sub-type = %d\n",
+					      "%s: Invalid UMAC FW sub-type = %d",
 					      __func__,
 					      fw_subtype);
 			goto out;
@@ -111,7 +111,7 @@ char *pal_ops_get_fw_loc(struct nrf_wifi_osal_priv *opriv,
 		break;
 	default:
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Invalid FW type = %d\n",
+				      "%s: Invalid FW type = %d",
 				      __func__,
 				      fw_type);
 		goto out;

@@ -39,7 +39,7 @@ static void nrf_wifi_rpu_bal_sleep_chk(struct nrf_wifi_bal_dev_ctx *bal_ctx,
 
 	if ((sleep_reg_val & rpu_ps_state_mask) != rpu_ps_state_mask) {
 		nrf_wifi_osal_log_err(bal_ctx->bpriv->opriv,
-				      "%s:RPU is being accessed when it is not ready !!! (Reg val = 0x%X)\n",
+				      "%s:RPU is being accessed when it is not ready !!! (Reg val = 0x%X)",
 				      __func__,
 				      sleep_reg_val);
 	}
@@ -59,7 +59,7 @@ struct nrf_wifi_bal_dev_ctx *nrf_wifi_bal_dev_add(struct nrf_wifi_bal_priv *bpri
 
 	if (!bal_dev_ctx) {
 		nrf_wifi_osal_log_err(bpriv->opriv,
-				      "%s: Unable to allocate bal_dev_ctx\n", __func__);
+				      "%s: Unable to allocate bal_dev_ctx", __func__);
 		goto out;
 	}
 
@@ -71,7 +71,7 @@ struct nrf_wifi_bal_dev_ctx *nrf_wifi_bal_dev_add(struct nrf_wifi_bal_priv *bpri
 
 	if (!bal_dev_ctx->bus_dev_ctx) {
 		nrf_wifi_osal_log_err(bpriv->opriv,
-				      "%s: Bus dev_add failed\n", __func__);
+				      "%s: Bus dev_add failed", __func__);
 		goto out;
 	}
 
@@ -110,7 +110,7 @@ enum nrf_wifi_status nrf_wifi_bal_dev_init(struct nrf_wifi_bal_dev_ctx *bal_dev_
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(bal_dev_ctx->bpriv->opriv,
-				      "%s: dev_init failed\n", __func__);
+				      "%s: dev_init failed", __func__);
 		goto out;
 	}
 out:
@@ -149,7 +149,7 @@ nrf_wifi_bal_init(struct nrf_wifi_osal_priv *opriv,
 
 	if (!bpriv) {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate memory for bpriv\n", __func__);
+				      "%s: Unable to allocate memory for bpriv", __func__);
 		goto out;
 	}
 
@@ -165,7 +165,7 @@ nrf_wifi_bal_init(struct nrf_wifi_osal_priv *opriv,
 
 	if (!bpriv->bus_priv) {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Failed\n", __func__);
+				      "%s: Failed", __func__);
 		nrf_wifi_osal_mem_free(opriv,
 				       bpriv);
 		bpriv = NULL;

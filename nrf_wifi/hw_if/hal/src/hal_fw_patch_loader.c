@@ -50,7 +50,7 @@ static enum nrf_wifi_status hal_fw_patch_load(struct nrf_wifi_hal_dev_ctx *hal_d
 									patch_chunk_size);
 		if (!patch_data_ram) {
 			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				"%s: Failed to allocate memory for patch %s-%s: chunk %d/%d, size: %d\n",
+				"%s: Failed to allocate memory for patch %s-%s: chunk %d/%d, size: %d",
 				__func__,
 				rpu_proc_to_str(rpu_proc),
 				patch_id_str,
@@ -68,7 +68,7 @@ static enum nrf_wifi_status hal_fw_patch_load(struct nrf_wifi_hal_dev_ctx *hal_d
 
 
 		nrf_wifi_osal_log_dbg(hal_dev_ctx->hpriv->opriv,
-			"%s: Copying patch %s-%s: chunk %d/%d, size: %d\n",
+			"%s: Copying patch %s-%s: chunk %d/%d, size: %d",
 			__func__,
 			rpu_proc_to_str(rpu_proc),
 			patch_id_str,
@@ -83,7 +83,7 @@ static enum nrf_wifi_status hal_fw_patch_load(struct nrf_wifi_hal_dev_ctx *hal_d
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				"%s: Copying patch %s-%s: chunk %d/%d, size: %d failed\n",
+				"%s: Copying patch %s-%s: chunk %d/%d, size: %d failed",
 				__func__,
 				rpu_proc_to_str(rpu_proc),
 				patch_id_str,
@@ -120,7 +120,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_load(struct nrf_wifi_hal_dev_ctx *hal
 
 	if (!fw_pri_patch_data) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Primary patch missing for RPU (%d)\n",
+				      "%s: Primary patch missing for RPU (%d)",
 				      __func__,
 				      rpu_proc);
 		status = NRF_WIFI_STATUS_FAIL;
@@ -129,7 +129,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_load(struct nrf_wifi_hal_dev_ctx *hal
 
 	if (!fw_sec_patch_data) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Secondary patch missing for RPU (%d)\n",
+				      "%s: Secondary patch missing for RPU (%d)",
 				      __func__,
 				      rpu_proc);
 		status = NRF_WIFI_STATUS_FAIL;
@@ -150,7 +150,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_load(struct nrf_wifi_hal_dev_ctx *hal
 		break;
 	default:
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid RPU processor type[%d]\n",
+				      "%s: Invalid RPU processor type[%d]",
 				      __func__,
 				      rpu_proc);
 
@@ -236,7 +236,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_boot(struct nrf_wifi_hal_dev_ctx *hal
 		}
 	} else {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid RPU processor type %d\n",
+				      "%s: Invalid RPU processor type %d",
 				      __func__,
 				      rpu_proc);
 		goto out;
@@ -253,7 +253,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_boot(struct nrf_wifi_hal_dev_ctx *hal
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Clearing of FW pass signature failed for RPU(%d)\n",
+				      "%s: Clearing of FW pass signature failed for RPU(%d)",
 				      __func__,
 				      rpu_proc);
 
@@ -274,7 +274,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_boot(struct nrf_wifi_hal_dev_ctx *hal
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Writing to Boot exception 0 reg for RPU processor(%d) failed\n",
+				      "%s: Writing to Boot exception 0 reg for RPU processor(%d) failed",
 				      __func__,
 				      rpu_proc);
 
@@ -288,7 +288,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_boot(struct nrf_wifi_hal_dev_ctx *hal
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Writing to Boot exception 1 reg for RPU processor(%d) failed\n",
+				      "%s: Writing to Boot exception 1 reg for RPU processor(%d) failed",
 				      __func__,
 				      rpu_proc);
 
@@ -302,7 +302,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_boot(struct nrf_wifi_hal_dev_ctx *hal
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Writing to Boot exception 2 reg for RPU processor(%d) failed\n",
+				      "%s: Writing to Boot exception 2 reg for RPU processor(%d) failed",
 				      __func__,
 				      rpu_proc);
 
@@ -316,7 +316,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_boot(struct nrf_wifi_hal_dev_ctx *hal
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Writing to Boot exception 3 reg for RPU processor(%d) failed\n",
+				      "%s: Writing to Boot exception 3 reg for RPU processor(%d) failed",
 				      __func__,
 				      rpu_proc);
 
@@ -330,7 +330,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_boot(struct nrf_wifi_hal_dev_ctx *hal
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: RPU processor(%d) run failed\n",
+				      "%s: RPU processor(%d) run failed",
 				      __func__,
 				      rpu_proc);
 

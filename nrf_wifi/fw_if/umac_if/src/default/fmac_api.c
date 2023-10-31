@@ -65,7 +65,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_tx(struct nrf_wifi_fmac_dev_ctx *
 
 	if (!def_dev_ctx->tx_buf_info) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: No space for TX buf info\n",
+				      "%s: No space for TX buf info",
 				      __func__);
 		goto out;
 	}
@@ -114,7 +114,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_rx(struct nrf_wifi_fmac_dev_ctx *
 
 	if (!def_dev_ctx->rx_buf_info) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: No space for RX buf info\n",
+				      "%s: No space for RX buf info",
 				      __func__);
 		goto out;
 	}
@@ -126,7 +126,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_rx(struct nrf_wifi_fmac_dev_ctx *
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: nrf_wifi_fmac_rx_cmd_send(INIT) failed for desc_id = %d\n",
+					      "%s: nrf_wifi_fmac_rx_cmd_send(INIT) failed for desc_id = %d",
 					      __func__,
 					      desc_id);
 			goto out;
@@ -137,7 +137,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_rx(struct nrf_wifi_fmac_dev_ctx *
 							       NRF_WIFI_TASKLET_TYPE_RX);
 	if (!def_dev_ctx->rx_tasklet) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: No space for RX tasklet\n",
+				      "%s: No space for RX tasklet",
 				      __func__);
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;
@@ -146,7 +146,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_rx(struct nrf_wifi_fmac_dev_ctx *
 	def_dev_ctx->rx_tasklet_event_q = nrf_wifi_utils_q_alloc(fpriv->opriv);
 	if (!def_dev_ctx->rx_tasklet_event_q) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: No space for RX tasklet event queue\n",
+				      "%s: No space for RX tasklet event queue",
 				      __func__);
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;
@@ -188,7 +188,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_deinit_rx(struct nrf_wifi_fmac_dev_ctx
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: nrf_wifi_fmac_rx_cmd_send(DEINIT) failed for desc_id = %d\n",
+					      "%s: nrf_wifi_fmac_rx_cmd_send(DEINIT) failed for desc_id = %d",
 					      __func__,
 					      desc_id);
 			goto out;
@@ -226,7 +226,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init(struct nrf_wifi_fmac_dev_ctx *
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Init TX failed\n",
+				      "%s: Init TX failed",
 				      __func__);
 		goto out;
 	}
@@ -236,7 +236,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init(struct nrf_wifi_fmac_dev_ctx *
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Init RX failed\n",
+				      "%s: Init RX failed",
 				      __func__);
 #ifdef CONFIG_NRF700X_DATA_TX
 		nrf_wifi_fmac_deinit_tx(fmac_dev_ctx);
@@ -258,7 +258,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init(struct nrf_wifi_fmac_dev_ctx *
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: UMAC init failed\n",
+				      "%s: UMAC init failed",
 				      __func__);
 		nrf_wifi_fmac_deinit_rx(fmac_dev_ctx);
 #ifdef CONFIG_NRF700X_DATA_TX
@@ -278,7 +278,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init(struct nrf_wifi_fmac_dev_ctx *
 
 	if (!fmac_dev_ctx->fw_init_done) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: UMAC init timed out\n",
+				      "%s: UMAC init timed out",
 				      __func__);
 		nrf_wifi_fmac_deinit_rx(fmac_dev_ctx);
 #ifdef CONFIG_NRF700X_DATA_TX
@@ -305,7 +305,7 @@ static void nrf_wifi_fmac_fw_deinit(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: UMAC deinit failed\n",
+				      "%s: UMAC deinit failed",
 				      __func__);
 		goto out;
 	}
@@ -323,7 +323,7 @@ static void nrf_wifi_fmac_fw_deinit(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 	if (!fmac_dev_ctx->fw_deinit_done) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: UMAC deinit timed out\n",
+				      "%s: UMAC deinit timed out",
 				      __func__);
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;
@@ -365,7 +365,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 
 	if (!fmac_dev_ctx) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid device context\n",
+				      "%s: Invalid device context",
 				      __func__);
 		goto out;
 	}
@@ -374,7 +374,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_hal_dev_init failed\n",
+				      "%s: nrf_wifi_hal_dev_init failed",
 				      __func__);
 		goto out;
 	}
@@ -390,7 +390,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Fetching of RPU OTP information failed\n",
+				      "%s: Fetching of RPU OTP information failed",
 				      __func__);
 		goto out;
 	}
@@ -408,7 +408,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 
 		if (ret == -1) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: hex_str_to_val failed\n",
+					      "%s: hex_str_to_val failed",
 					      __func__);
 			status = NRF_WIFI_STATUS_FAIL;
 			goto out;
@@ -420,7 +420,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: RF parameters get failed\n",
+					      "%s: RF parameters get failed",
 					      __func__);
 			goto out;
 		}
@@ -439,7 +439,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 
 	if (status == NRF_WIFI_STATUS_FAIL) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_fmac_fw_init failed\n",
+				      "%s: nrf_wifi_fmac_fw_init failed",
 				      __func__);
 		goto out;
 	}
@@ -477,7 +477,7 @@ struct nrf_wifi_fmac_priv *nrf_wifi_fmac_init(struct nrf_wifi_data_config_params
 
 	if (!fpriv) {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate fpriv\n",
+				      "%s: Unable to allocate fpriv",
 				      __func__);
 		goto out;
 	}
@@ -543,7 +543,7 @@ struct nrf_wifi_fmac_priv *nrf_wifi_fmac_init(struct nrf_wifi_data_config_params
 
 	if (!fpriv->hpriv) {
 		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to do HAL init\n",
+				      "%s: Unable to do HAL init",
 				      __func__);
 		nrf_wifi_osal_mem_free(opriv,
 				       fpriv);
@@ -588,7 +588,7 @@ enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
 
 	if (def_dev_ctx->vif_ctx[if_idx]->if_type == NRF_WIFI_IFTYPE_AP) {
 		nrf_wifi_osal_log_info(fmac_dev_ctx->fpriv->opriv,
-				       "%s: Scan operation not supported in AP mode\n",
+				       "%s: Scan operation not supported in AP mode",
 				       __func__);
 		goto out;
 	}
@@ -598,7 +598,7 @@ enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
 
 	if (!scan_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -637,7 +637,7 @@ enum nrf_wifi_status nrf_wifi_fmac_abort_scan(void *dev_ctx,
 
 	if (def_dev_ctx->vif_ctx[if_idx]->if_type == NRF_WIFI_IFTYPE_AP) {
 		nrf_wifi_osal_log_info(fmac_dev_ctx->fpriv->opriv,
-				       "%s: Scan operation not supported in AP mode\n",
+				       "%s: Scan operation not supported in AP mode",
 				       __func__);
 		goto out;
 	}
@@ -647,7 +647,7 @@ enum nrf_wifi_status nrf_wifi_fmac_abort_scan(void *dev_ctx,
 
 	if (!scan_abort_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -683,7 +683,7 @@ enum nrf_wifi_status nrf_wifi_fmac_scan_res_get(void *dev_ctx,
 
 	if (def_dev_ctx->vif_ctx[vif_idx]->if_type == NRF_WIFI_IFTYPE_AP) {
 		nrf_wifi_osal_log_info(fmac_dev_ctx->fpriv->opriv,
-				       "%s: Scan operation not supported in AP mode\n",
+				       "%s: Scan operation not supported in AP mode",
 				       __func__);
 		goto out;
 	}
@@ -693,7 +693,7 @@ enum nrf_wifi_status nrf_wifi_fmac_scan_res_get(void *dev_ctx,
 
 	if (!scan_res_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -735,7 +735,7 @@ enum nrf_wifi_status nrf_wifi_fmac_auth(void *dev_ctx,
 
 	if (!auth_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -797,7 +797,7 @@ enum nrf_wifi_status nrf_wifi_fmac_deauth(void *dev_ctx,
 
 	if (!deauth_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n", __func__);
+				      "%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -855,7 +855,7 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 
 	if (!assoc_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -950,7 +950,7 @@ enum nrf_wifi_status nrf_wifi_fmac_disassoc(void *dev_ctx,
 
 	if (!disassoc_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1004,7 +1004,7 @@ enum nrf_wifi_status nrf_wifi_fmac_add_key(void *dev_ctx,
 
 	if (!key_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n", __func__);
+				      "%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -1034,7 +1034,7 @@ enum nrf_wifi_status nrf_wifi_fmac_add_key(void *dev_ctx,
 
 		if (peer_id == -1) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Invalid peer\n",
+					      "%s: Invalid peer",
 					      __func__);
 			goto out;
 		}
@@ -1042,7 +1042,7 @@ enum nrf_wifi_status nrf_wifi_fmac_add_key(void *dev_ctx,
 		def_dev_ctx->tx_config.peers[peer_id].pairwise_cipher = key_info->cipher_suite;
 	} else {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid key type %d\n",
+				      "%s: Invalid key type %d",
 				      __func__,
 				      key_info->key_type);
 		goto out;
@@ -1092,7 +1092,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_key(void *dev_ctx,
 
 	if (!key_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1153,7 +1153,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_key(void *dev_ctx,
 
 	if (!set_key_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1197,7 +1197,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_sta(void *dev_ctx,
 
 	if (!chg_sta_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1268,7 +1268,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_bss(void *dev_ctx,
 
 	if (!set_bss_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1323,7 +1323,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_bcn(void *dev_ctx,
 
 	if (!set_bcn_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n", __func__);
+				      "%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -1337,7 +1337,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_bcn(void *dev_ctx,
 			      sizeof(set_bcn_cmd->info));
 
 	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
-			      "%s: Sending command to rpu\n",
+			      "%s: Sending command to rpu",
 			      __func__);
 
 	status = umac_cmd_cfg(fmac_dev_ctx,
@@ -1370,7 +1370,7 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 
 	if (!start_ap_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1432,7 +1432,7 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 
 	if (!wiphy_info) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1452,7 +1452,7 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 
 	if (status == NRF_WIFI_STATUS_FAIL) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_fmac_set_wiphy_params failes\n",
+				      "%s: nrf_wifi_fmac_set_wiphy_params failes",
 				      __func__);
 		goto out;
 	}
@@ -1492,7 +1492,7 @@ enum nrf_wifi_status nrf_wifi_fmac_stop_ap(void *dev_ctx,
 
 	if (!stop_ap_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1531,7 +1531,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_sta(void *dev_ctx,
 
 	if (!del_sta_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1589,7 +1589,7 @@ enum nrf_wifi_status nrf_wifi_fmac_add_sta(void *dev_ctx,
 
 	if (!add_sta_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1691,7 +1691,7 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_frame_reg(void *dev_ctx,
 
 	if (!frame_reg_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1738,7 +1738,7 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_start(void *dev_ctx,
 
 	if (!start_p2p_dev_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n", __func__);
+				      "%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -1774,7 +1774,7 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_stop(void *dev_ctx,
 
 	if (!stop_p2p_dev_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1811,7 +1811,7 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_start(void *dev_ctx,
 
 	if (!roc_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1861,7 +1861,7 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_stop(void *dev_ctx,
 
 	if (!cancel_roc_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1902,7 +1902,7 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_tx(void *dev_ctx,
 
 	if (!mgmt_tx_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1960,7 +1960,7 @@ enum nrf_wifi_status nrf_wifi_fmac_mac_addr(struct nrf_wifi_fmac_dev_ctx *fmac_d
 
 	if (((unsigned short)addr[5] + vif_idx) > 0xff) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: MAC Address rollover!!\n",
+				      "%s: MAC Address rollover!!",
 				      __func__);
 	}
 
@@ -1992,7 +1992,7 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 		break;
 	default:
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: VIF type not supported\n",
+				      "%s: VIF type not supported",
 				      __func__);
 		goto err;
 	}
@@ -2007,7 +2007,7 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 
 	if (!vif_ctx) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory for VIF ctx\n",
+				      "%s: Unable to allocate memory for VIF ctx",
 				      __func__);
 		goto err;
 	}
@@ -2025,7 +2025,7 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 
 	if (vif_idx == MAX_NUM_VIFS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to add additional VIF\n",
+				      "%s: Unable to add additional VIF",
 				      __func__);
 		goto err;
 	}
@@ -2040,7 +2040,7 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 
 		if (!add_vif_cmd) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Unable to allocate memory for cmd\n",
+					      "%s: Unable to allocate memory for cmd",
 					      __func__);
 			goto err;
 		}
@@ -2064,7 +2064,7 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 
 		if (status == NRF_WIFI_STATUS_FAIL) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: NRF_WIFI_UMAC_CMD_NEW_INTERFACE failed\n",
+					      "%s: NRF_WIFI_UMAC_CMD_NEW_INTERFACE failed",
 					      __func__);
 			goto err;
 		}
@@ -2115,7 +2115,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 		break;
 	default:
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: VIF type not supported\n",
+				      "%s: VIF type not supported",
 				      __func__);
 		goto out;
 	}
@@ -2124,7 +2124,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 
 	if (!vif_ctx) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: VIF ctx does not exist\n",
+				      "%s: VIF ctx does not exist",
 				      __func__);
 		goto out;
 	}
@@ -2139,7 +2139,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 
 		if (!del_vif_cmd) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Unable to allocate memory for cmd\n",
+					      "%s: Unable to allocate memory for cmd",
 					      __func__);
 			goto out;
 		}
@@ -2154,7 +2154,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: NRF_WIFI_UMAC_CMD_DEL_INTERFACE failed\n",
+					      "%s: NRF_WIFI_UMAC_CMD_DEL_INTERFACE failed",
 					      __func__);
 			goto out;
 		}
@@ -2197,7 +2197,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif(void *dev_ctx,
 		break;
 	default:
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: VIF type not supported\n", __func__);
+				      "%s: VIF type not supported", __func__);
 		goto out;
 	}
 
@@ -2211,7 +2211,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif(void *dev_ctx,
 
 	if (!chg_vif_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2261,7 +2261,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif_state(void *dev_ctx,
 
 	if (!chg_vif_state_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2290,7 +2290,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif_state(void *dev_ctx,
 	if (count == 0) {
 		status = NRF_WIFI_STATUS_FAIL;
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: RPU is unresponsive for %d sec\n",
+				      "%s: RPU is unresponsive for %d sec",
 				      __func__, RPU_CMD_TIMEOUT_MS / 1000);
 		goto out;
 	}
@@ -2329,7 +2329,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_vif_macaddr(void *dev_ctx,
 
 	if (!mac_addr) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid MAC address\n",
+				      "%s: Invalid MAC address",
 				      __func__);
 		goto out;
 	}
@@ -2341,7 +2341,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_vif_macaddr(void *dev_ctx,
 
 	if (!cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate cmd\n",
+				      "%s: Unable to allocate cmd",
 				      __func__);
 		goto out;
 	}
@@ -2384,7 +2384,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_wiphy_params(void *dev_ctx,
 
 	if (!wiphy_info) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: wiphy_info: Invalid memory\n",
+				      "%s: wiphy_info: Invalid memory",
 				       __func__);
 		goto out;
 	}
@@ -2394,7 +2394,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_wiphy_params(void *dev_ctx,
 
 	if (!set_wiphy_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2491,7 +2491,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_tx_power(void *dev_ctx,
 
 	if (!cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2526,7 +2526,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_channel(void *dev_ctx,
 
 	if (!cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2563,7 +2563,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_station(void *dev_ctx,
 
 	if (!cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2606,7 +2606,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_interface(void *dev_ctx,
 
 	if (!cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2643,7 +2643,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_qos_map(void *dev_ctx,
 
 	if (!set_qos_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2690,7 +2690,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save(void *dev_ctx,
 
 	if (!set_ps_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n", __func__);
+				      "%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -2731,7 +2731,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_uapsd_queue(void *dev_ctx,
 						  sizeof(*set_uapsdq_cmd));
 	if (!set_uapsdq_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2770,7 +2770,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save_timeout(void *dev_ctx,
 
 	if (!set_ps_timeout_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n", __func__);
+				      "%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -2810,7 +2810,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_wiphy(void *dev_ctx, unsigned char if_idx
 
 	if (!get_wiphy) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2848,7 +2848,7 @@ enum nrf_wifi_status nrf_wifi_fmac_register_frame(void *dev_ctx, unsigned char i
 		nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv, sizeof(*frame_reg_cmd));
 
 	if (!frame_reg_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv, "%s: Unable to allocate memory\n",
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv, "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2889,7 +2889,7 @@ enum nrf_wifi_status nrf_wifi_fmac_twt_setup(void *dev_ctx,
 
 	if (!twt_setup_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2936,7 +2936,7 @@ enum nrf_wifi_status nrf_wifi_fmac_twt_teardown(void *dev_ctx,
 
 	if (!twt_teardown_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2974,7 +2974,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_mcast_addr(struct nrf_wifi_fmac_dev_ctx *
 
 	if (!set_mcast_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -3015,7 +3015,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_conn_info(void *dev_ctx,
 
 	if (!cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n",
+				      "%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -3049,7 +3049,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_power_save_info(void *dev_ctx,
 
 	if (!get_ps_info_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n", __func__);
+				      "%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -3085,7 +3085,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_listen_interval(void *dev_ctx,
 
 	if (!set_listen_interval_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n", __func__);
+				      "%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -3123,7 +3123,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_ps_wakeup_mode(void *dev_ctx,
 
 	if (!set_ps_wakeup_mode_cmd) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory\n", __func__);
+				      "%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 

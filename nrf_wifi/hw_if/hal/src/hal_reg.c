@@ -45,7 +45,7 @@ enum nrf_wifi_status hal_rpu_reg_read(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 	if ((val == NULL) ||
 	    !hal_rpu_is_reg(rpu_reg_addr)) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid params, val = %p, rpu_reg (0x%x)\n",
+				      "%s: Invalid params, val = %p, rpu_reg (0x%x)",
 				      __func__,
 				      val,
 				      rpu_reg_addr);
@@ -59,7 +59,7 @@ enum nrf_wifi_status hal_rpu_reg_read(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: pal_rpu_addr_offset_get failed\n",
+				      "%s: pal_rpu_addr_offset_get failed",
 				      __func__);
 		return status;
 	}
@@ -73,7 +73,7 @@ enum nrf_wifi_status hal_rpu_reg_read(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: RPU wake failed\n",
+				      "%s: RPU wake failed",
 				      __func__);
 		goto out;
 	}
@@ -84,7 +84,7 @@ enum nrf_wifi_status hal_rpu_reg_read(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 
 	if (*val == 0xFFFFFFFF) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Error !! Value read at addr_offset = %lx is = %X\n",
+				      "%s: Error !! Value read at addr_offset = %lx is = %X",
 				      __func__,
 				      addr_offset,
 				      *val);
@@ -120,7 +120,7 @@ enum nrf_wifi_status hal_rpu_reg_write(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 
 	if (!hal_rpu_is_reg(rpu_reg_addr)) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid params, rpu_reg_addr (0x%X)\n",
+				      "%s: Invalid params, rpu_reg_addr (0x%X)",
 				      __func__,
 				      rpu_reg_addr);
 		return status;
@@ -133,7 +133,7 @@ enum nrf_wifi_status hal_rpu_reg_write(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: pal_rpu_get_region_offset failed\n",
+				      "%s: pal_rpu_get_region_offset failed",
 				      __func__);
 		return status;
 	}
@@ -147,7 +147,7 @@ enum nrf_wifi_status hal_rpu_reg_write(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: RPU wake failed\n",
+				      "%s: RPU wake failed",
 				      __func__);
 		goto out;
 	}
