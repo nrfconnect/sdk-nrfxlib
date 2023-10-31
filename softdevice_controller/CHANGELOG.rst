@@ -9,6 +9,20 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Changes
+=======
+
+* The controller now returns the error code ``0x12`` if the same subevent index is used multiple times in LE Set Periodic Advertising Subevent Data.
+  This conforms to erratas ES23466 and ES23424. (DRGN-20736)
+
+Bug fixes
+=========
+
+* Fixed an issue where the LE Set Periodic Advertising Subevent Data command could fail when providing data at the same time as an ``AUX_SYNC_SUBEVENT_IND`` was sent. (DRGN-20762)
+
 nRF Connect SDK v2.5.0
 **********************
 
