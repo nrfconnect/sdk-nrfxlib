@@ -7,6 +7,14 @@ Changelog
    :local:
    :depth: 2
 
+Main Branch
+***********
+
+Changes
+=======
+
+* The MPSL radio notification API has been removed. (DRGN-20447)
+
 nRF Connect SDK v2.5.0
 **********************
 

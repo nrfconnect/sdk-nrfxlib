@@ -78,11 +78,6 @@ However, a timeslot that has already started cannot be interrupted or canceled.
 If the timeslot is requested as earliest possible, it is scheduled at any available free time.
 Therefore, there is less probability of collision with the earliest possible request.
 
-.. note::
-   Radio Notification signals behave the same way for timeslots requested through the timeslot interface as for other activities.
-   See :ref:`mpsl_radio_notification` for more information.
-   If radio notifications are enabled, timeslots will be notified.
-
 High-frequency clock configuration
 **********************************
 The application can request the MPSL to guarantee that the HFCLK source is set to the external crystal and that it is ramped up and stable before the start of the timeslot.
