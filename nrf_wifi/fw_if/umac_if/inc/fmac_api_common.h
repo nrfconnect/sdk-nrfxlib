@@ -61,6 +61,21 @@ enum nrf_wifi_status nrf_wifi_fmac_stats_get(struct nrf_wifi_fmac_dev_ctx *fmac_
 
 
 /**
+ * @brief Parse the Firmware(s) to be loaded to the RPU WLAN device.
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device,
+ *	which was passed as \p fmac_dev_ctx parameter via the
+ *	\p add_dev_callbk_fn() callback function.
+ * @param fw_data Pointer to the address where the firmware data is available.
+ * @param fw_size Size of the firmware data.
+ * @param fw_info Pointer to the address where the firmware information needs to be copied.
+ * @return Command execution status
+ */
+enum nrf_wifi_status nrf_wifi_fmac_fw_parse(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+					   const void *fw_data,
+					   unsigned int fw_size,
+					   struct nrf_wifi_fmac_fw_info *fw_info);
+
+/**
  * @brief Loads the Firmware(s) to the RPU WLAN device.
  * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device,
  *      which was passed as \p fmac_dev_ctx parameter via the
