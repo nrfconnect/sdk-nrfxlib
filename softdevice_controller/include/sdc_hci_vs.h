@@ -89,6 +89,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_SET_POWER_CONTROL_REQUEST_PARAMS = 0xfd10,
     /** @brief See @ref sdc_hci_cmd_vs_read_average_rssi(). */
     SDC_HCI_OPCODE_CMD_VS_READ_AVERAGE_RSSI = 0xfd11,
+    /** @brief See @ref sdc_hci_cmd_vs_central_acl_event_spacing_set(). */
+    SDC_HCI_OPCODE_CMD_VS_CENTRAL_ACL_EVENT_SPACING_SET = 0xfd12,
 };
 
 /** @brief VS subevent Code values. */
@@ -162,6 +164,7 @@ typedef __PACKED_STRUCT
     uint8_t qos_channel_survey_enable : 1;
     uint8_t set_power_control_request_params : 1;
     uint8_t read_average_rssi : 1;
+    uint8_t central_acl_event_spacing_set : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -420,7 +423,7 @@ typedef __PACKED_STRUCT
     uint8_t enable;
 } sdc_hci_cmd_vs_qos_conn_event_report_enable_t;
 
-/** @brief Set event length for connections command parameter(s). */
+/** @brief Set event length for ACL connections command parameter(s). */
 typedef __PACKED_STRUCT
 {
     /** @brief Allocated event length in microseconds. */
@@ -620,6 +623,13 @@ typedef __PACKED_STRUCT
     /** @brief Average RSSI in dBm. */
     int8_t avg_rssi;
 } sdc_hci_cmd_vs_read_average_rssi_return_t;
+
+/** @brief Set Central ACL event spacing command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Central ACL event spacing in microseconds. */
+    uint32_t central_acl_event_spacing_us;
+} sdc_hci_cmd_vs_central_acl_event_spacing_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -939,19 +949,21 @@ uint8_t sdc_hci_cmd_vs_conn_event_extend(const sdc_hci_cmd_vs_conn_event_extend_
  */
 uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_conn_event_report_enable_t * p_params);
 
-/** @brief Set event length for connections.
+/** @brief Set event length for ACL connections.
  *
- * Set the event length for new connections. This API must be called before starting a connectable
- * advertiser or starting an initiator for the event length to applied to the connection once
- * established.
+ * Set the event length for new ACL connections. The event length is the time available for
+ * transmission and reception in a single connection event.
+ * The maximum data length capabilities will be set based upon this value.
  *
- * The SoftDevice Controller will ensure that the anchor points of master link connections are
- * spaced
- * event_length_us apart.
+ * This API must be called before issuing the command HCI LE Create Connection, HCI LE Extended
+ * Create Connection,
+ * or before starting a a connectable advertiser for the event length to applied to the connection
+ * once established.
  *
  * The default event length is 7500 us.
  *
  * See also @ref sdc_hci_cmd_vs_conn_event_extend().
+ * See also @ref sdc_hci_cmd_vs_central_acl_event_spacing_set().
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1244,6 +1256,34 @@ uint8_t sdc_hci_cmd_vs_set_power_control_request_params(const sdc_hci_cmd_vs_set
  */
 uint8_t sdc_hci_cmd_vs_read_average_rssi(const sdc_hci_cmd_vs_read_average_rssi_t * p_params,
                                          sdc_hci_cmd_vs_read_average_rssi_return_t * p_return);
+
+/** @brief Set Central ACL event spacing.
+ *
+ * On the central, sets the time ACL connections are spaced apart given that they are using the same
+ * connection interval.
+ *
+ * This API must be called before issuing the command HCI LE Create Connection or HCI LE Extended
+ * Create Connection
+ * for the event length to applied to the connection once established.
+ *
+ * The default event spacing is 7500 us.
+ * The configured value is retained after issuing a HCI Reset command.
+ *
+ * Note: The time available for transmission and reception is not configured using this API
+ *
+ * See also @ref sdc_hci_cmd_vs_event_length_set().
+ * See also @ref sdc_hci_cmd_vs_conn_event_extend().
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_central_acl_event_spacing_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 
