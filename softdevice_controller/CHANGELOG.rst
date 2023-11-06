@@ -19,6 +19,10 @@ Added
   See :c:func:`sdc_hci_cmd_vs_read_average_rssi` (DRGN-17355).
 * Vendor-specific HCI command to set the time between anchor points of central ACL connections with identical connection intervals.
   See :c:func:`sdc_hci_cmd_vs_central_acl_event_spacing_set` (DRGN-20796).
+* Vendor-specific HCI command to set up (D)PPI tasks on radio events.
+  See :c:func:`sdc_hci_cmd_vs_set_conn_event_trigger` (DRGN-20737).
+* Vendor-specific HCI command to read the next connection event counter value.
+  See :c:func:`sdc_hci_cmd_vs_get_next_conn_event_counter` (DRGN-20737).
 
 Changes
 =======

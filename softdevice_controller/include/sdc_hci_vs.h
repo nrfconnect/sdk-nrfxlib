@@ -91,6 +91,10 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_READ_AVERAGE_RSSI = 0xfd11,
     /** @brief See @ref sdc_hci_cmd_vs_central_acl_event_spacing_set(). */
     SDC_HCI_OPCODE_CMD_VS_CENTRAL_ACL_EVENT_SPACING_SET = 0xfd12,
+    /** @brief See @ref sdc_hci_cmd_vs_set_conn_event_trigger(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_CONN_EVENT_TRIGGER = 0xfd13,
+    /** @brief See @ref sdc_hci_cmd_vs_get_next_conn_event_counter(). */
+    SDC_HCI_OPCODE_CMD_VS_GET_NEXT_CONN_EVENT_COUNTER = 0xfd14,
 };
 
 /** @brief VS subevent Code values. */
@@ -118,6 +122,19 @@ enum sdc_hci_vs_coex_scan_mode
     SDC_HCI_VS_COEX_SCAN_MODE_REQUEST_ON_AA = 0x00,
     /** @brief Request before transmitting. */
     SDC_HCI_VS_COEX_SCAN_MODE_REQUEST_ON_TX = 0x01,
+};
+
+/** @brief Connection Event Trigger Role Selection. */
+enum sdc_hci_vs_conn_event_trigger_role
+{
+    /** @brief Unused. */
+    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_UNUSED = 0x00,
+    /** @brief Connection event trigger for the Scanner. */
+    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_SCAN = 0x01,
+    /** @brief Connection event trigger for the Initiator. */
+    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_INIT = 0x02,
+    /** @brief Connection event trigger for connections (Central or Peripheral). */
+    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_CONN = 0x03,
 };
 
 /** @brief Peripheral latency disable/enable modes. */
@@ -165,6 +182,8 @@ typedef __PACKED_STRUCT
     uint8_t set_power_control_request_params : 1;
     uint8_t read_average_rssi : 1;
     uint8_t central_acl_event_spacing_set : 1;
+    uint8_t set_conn_event_trigger : 1;
+    uint8_t get_next_conn_event_counter : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -631,6 +650,44 @@ typedef __PACKED_STRUCT
     uint32_t central_acl_event_spacing_us;
 } sdc_hci_cmd_vs_central_acl_event_spacing_set_t;
 
+/** @brief Set Connection Event Trigger command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Connection handle to set up trigger for. In case @ref
+     *         sdc_hci_vs_conn_event_trigger_role specifies the Scanner or Initiator, this parameter
+     *         is ignored.
+     */
+    uint16_t conn_handle;
+    /** @brief Selected role to set triggers for. See @ref sdc_hci_vs_conn_event_trigger_role. */
+    uint8_t role;
+    /** @brief (D)PPI channel to use. This channel should be regarded as reserved until the
+     *         connection event (D)PPI task triggering is stopped.
+     */
+    uint8_t ppi_ch_id;
+    /** @brief Task Endpoint to trigger. If this is 0, then the connection event triggering feature
+     *         is disabled.
+     */
+    uint32_t task_endpoint;
+    /** @brief Connection event counter when the task end point triggering should start. */
+    uint16_t conn_evt_counter_start;
+    /** @brief The period in events between triggering of the task end point. */
+    uint16_t period_in_events;
+} sdc_hci_cmd_vs_set_conn_event_trigger_t;
+
+/** @brief Get Next Connection Event Counter command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Connection handle to get the connection event counter value for. */
+    uint16_t conn_handle;
+} sdc_hci_cmd_vs_get_next_conn_event_counter_t;
+
+/** @brief Get Next Connection Event Counter return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint16_t next_conn_event_counter;
+} sdc_hci_cmd_vs_get_next_conn_event_counter_return_t;
+
 /** @} end of HCI_COMMAND_PARAMETERS */
 
 /**
@@ -953,12 +1010,12 @@ uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_con
  *
  * Set the event length for new ACL connections. The event length is the time available for
  * transmission and reception in a single connection event.
+ *
  * The maximum data length capabilities will be set based upon this value.
  *
- * This API must be called before issuing the command HCI LE Create Connection, HCI LE Extended
- * Create Connection,
- * or before starting a a connectable advertiser for the event length to applied to the connection
- * once established.
+ * This API must be called before issuing the command HCI LE Create Connection,
+ * HCI LE Extended Create Connection, or before starting a a connectable advertiser
+ * for the event length to applied to the connection once established.
  *
  * The default event length is 7500 us.
  *
@@ -1259,12 +1316,12 @@ uint8_t sdc_hci_cmd_vs_read_average_rssi(const sdc_hci_cmd_vs_read_average_rssi_
 
 /** @brief Set Central ACL event spacing.
  *
- * On the central, sets the time ACL connections are spaced apart given that they are using the same
- * connection interval.
+ * On the central, sets the time ACL connections are spaced apart given that they are
+ * using the same connection interval.
  *
- * This API must be called before issuing the command HCI LE Create Connection or HCI LE Extended
- * Create Connection
- * for the event length to applied to the connection once established.
+ * This API must be called before issuing the command HCI LE Create Connection or
+ * HCI LE Extended Create Connection for the event length to applied to the connection once
+ * established.
  *
  * The default event spacing is 7500 us.
  * The configured value is retained after issuing a HCI Reset command.
@@ -1284,6 +1341,75 @@ uint8_t sdc_hci_cmd_vs_read_average_rssi(const sdc_hci_cmd_vs_read_average_rssi_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_central_acl_event_spacing_set_t * p_params);
+
+/** @brief Set Connection Event Trigger.
+ *
+ * Start triggering a given task on radio event start.
+ *
+ * When enabled, this feature will trigger a (D)PPI task at the start of radio events.
+ *
+ * When used for connections, the connection event trigger can be configured to trigger
+ * every N connection events starting from a given connection event counter.
+ *
+ * Disabling scanning or disconnecting the connection will reset the connection event trigger
+ * configuration.
+ *
+ * If the selected (D)PPI channel is reserved by the controller, the controller will return the
+ * error code
+ * Invalid HCI Command Parameters (0x12).
+ *
+ * If enabling/disabling the connection event trigger and the trigger is already enabled/disabled,
+ * the
+ * controller will return the error code Command Disallowed (0x0C).
+ *
+ * If the specified role is not currently active, the controller will return the error code
+ * Command Disallowed (0x0C).
+ *
+ * If the role is 0x3 and conn_handle does not refer to an active connection, the controller will
+ * return
+ * the error code Unknown Connection Identifier (0x02).
+ *
+ * If the role is 0x3 and conn_evt_counter_start has already passed, the controller will return
+ * the error code Command Disallowed (0x0C).
+ *
+ * If the role is 0x3 and period_in_events is zero, the controller will return the error code
+ * Invalid HCI Command Parameters (0x12).
+ *
+ * If the role is 0x1 or 0x2 and conn_evt_counter_start or period_in_events is non-zero, the
+ * controller
+ * will return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_set_conn_event_trigger(const sdc_hci_cmd_vs_set_conn_event_trigger_t * p_params);
+
+/** @brief Get Next Connection Event Counter.
+ *
+ * This command can be used to fetch the upcoming connection event counter value for Centrals or
+ * Peripherals.
+ *
+ * If conn_handle doesn't match an existing connection, the Unknown Connection Identifier (0x02)
+ * error code will be returned.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_get_next_conn_event_counter(const sdc_hci_cmd_vs_get_next_conn_event_counter_t * p_params,
+                                                   sdc_hci_cmd_vs_get_next_conn_event_counter_return_t * p_return);
 
 /** @} end of HCI_VS_API */
 
