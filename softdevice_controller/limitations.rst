@@ -61,7 +61,3 @@ DRGN-15989: In some cases, the SDC can connect to the peer it is already connect
 
 DRGN-17724: The AoA transmitter is not supported in LLPM-mode
   The AoA transmitter can show unspecified behavior when being used in LLPM-mode.
-
-DRGN-20655: ISO SDUs in Host to Controller direction should not be split into multiple HCI ISO Data packets
-  If the Host provides an SDU that has been split into multiple HCI ISO Data packets without a timestamp, the SDC can assign a wrong timestamp to it.
-  As a result, this SDU can be never transmitted.

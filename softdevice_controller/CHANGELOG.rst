@@ -12,20 +12,11 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
-Added
-=====
-
-* Vendor-specific HCI command to read average RSSI calculated by LE Power Control.
-  See :c:func:`sdc_hci_cmd_vs_read_average_rssi` (DRGN-17355).
-* Vendor-specific HCI command to set the time between anchor points of central ACL connections with identical connection intervals.
-  See :c:func:`sdc_hci_cmd_vs_central_acl_event_spacing_set` (DRGN-20796).
-
 Changes
 =======
 
 * The controller now returns the error code ``0x12`` if the same subevent index is used multiple times in LE Set Periodic Advertising Subevent Data.
   This conforms to erratas ES23466 and ES23424. (DRGN-20736)
-* The vendor-specific Set event length for ACL connections HCI command no longer sets the time between anchor points of central ACL connections with identical connection intervals. (DRGN-20796)
 
 Bug fixes
 =========
