@@ -1044,6 +1044,38 @@ out:
 	return status;
 }
 
+void hal_rpu_eventq_drain(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
+{
+	struct nrf_wifi_hal_msg *event = NULL;
+	unsigned long flags = 0;
+
+	while (1) {
+		nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
+						hal_dev_ctx->lock_rx,
+						&flags);
+
+		event = nrf_wifi_utils_q_dequeue(hal_dev_ctx->hpriv->opriv,
+						 hal_dev_ctx->event_q);
+
+		nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
+					       hal_dev_ctx->lock_rx,
+					       &flags);
+
+		if (!event) {
+			goto out;
+		}
+
+		/* Free up the local buffer */
+		nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
+				       event);
+		event = NULL;
+	}
+
+out:
+	return;
+}
+
+
 
 void nrf_wifi_hal_proc_ctx_set(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 			       enum RPU_PROC_TYPE proc)
@@ -1258,6 +1290,8 @@ void nrf_wifi_hal_dev_rem(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 
 	nrf_wifi_osal_tasklet_kill(hal_dev_ctx->hpriv->opriv,
 				   hal_dev_ctx->event_tasklet);
+
+	hal_rpu_eventq_drain(hal_dev_ctx);
 
 	nrf_wifi_osal_tasklet_free(hal_dev_ctx->hpriv->opriv,
 				   hal_dev_ctx->event_tasklet);
