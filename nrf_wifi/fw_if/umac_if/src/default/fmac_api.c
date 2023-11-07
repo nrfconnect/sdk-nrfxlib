@@ -450,7 +450,9 @@ out:
 
 void nrf_wifi_fmac_dev_deinit(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 {
+	nrf_wifi_hal_lock_rx(fmac_dev_ctx->hal_dev_ctx);
 	nrf_wifi_fmac_fw_deinit(fmac_dev_ctx);
+	nrf_wifi_hal_unlock_rx(fmac_dev_ctx->hal_dev_ctx);
 }
 
 struct nrf_wifi_fmac_priv *nrf_wifi_fmac_init(struct nrf_wifi_data_config_params *data_config,

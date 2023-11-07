@@ -68,6 +68,10 @@ enum nrf_wifi_status nrf_wifi_hal_dev_init(struct nrf_wifi_hal_dev_ctx *hal_dev_
 
 void nrf_wifi_hal_dev_deinit(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx);
 
+void nrf_wifi_hal_lock_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx);
+
+void nrf_wifi_hal_unlock_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx);
+
 /**
  * nrf_wifi_hal_ctrl_cmd_send() - Sends a control command to the RPU.
  * @hal_ctx: Pointer to HAL context.

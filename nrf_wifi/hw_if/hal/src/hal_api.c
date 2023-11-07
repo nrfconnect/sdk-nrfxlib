@@ -1353,6 +1353,24 @@ void nrf_wifi_hal_dev_deinit(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 }
 
 
+void nrf_wifi_hal_lock_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
+{
+	unsigned long flags = 0;
+
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
+					hal_dev_ctx->lock_rx,
+					&flags);
+}
+
+void nrf_wifi_hal_unlock_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
+{
+	unsigned long flags = 0;
+
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
+				       hal_dev_ctx->lock_rx,
+				       &flags);
+}
+
 enum nrf_wifi_status nrf_wifi_hal_irq_handler(void *data)
 {
 	struct nrf_wifi_hal_dev_ctx *hal_dev_ctx = NULL;
