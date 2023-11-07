@@ -116,6 +116,7 @@
   - "nrf_802154/driver/**/*"
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
+  - "nrf_wifi/**/*"
   - any:
       - "crypto/**/*"
       - "!crypto/doc/**/*"
@@ -170,6 +171,7 @@
       - "!crypto/*.rst"
 
 "CI-wifi":
+  - "nrf_wifi/**/*"
   - any:
       - "crypto/**/*"
       - "!crypto/doc/**/*"
