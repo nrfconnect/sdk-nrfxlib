@@ -852,8 +852,9 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	unsigned char *sys_head = NULL;
+	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx;
 #ifdef CONFIG_NRF700X_RADIO_TEST
-	struct nrf_wifi_fmac_dev_ctx_rt *def_dev_ctx;
+	struct nrf_wifi_fmac_dev_ctx_rt *def_dev_ctx_rt;
 	struct nrf_wifi_umac_event_err_status *umac_status;
 
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
@@ -862,6 +863,11 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 	if (!fmac_dev_ctx || !rpu_msg) {
 		return status;
 	}
+
+#ifdef CONFIG_NRF700X_RADIO_TEST
+	def_dev_ctx_rt = wifi_dev_priv(fmac_dev_ctx);
+#endif
+	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
 	sys_head = (unsigned char *)rpu_msg->msg;
 
@@ -885,11 +891,55 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		break;
 	case NRF_WIFI_EVENT_RADIOCMD_STATUS:
 		umac_status = ((struct nrf_wifi_umac_event_err_status *)sys_head);
-		def_dev_ctx->radio_cmd_status = umac_status->status;
-		def_dev_ctx->radio_cmd_done = true;
+		def_dev_ctx_rt->radio_cmd_status = umac_status->status;
+		def_dev_ctx_rt->radio_cmd_done = true;
 		status = NRF_WIFI_STATUS_SUCCESS;
 		break;
 #endif /* CONFIG_NRF700X_RADIO_TEST */
+#ifdef CONFIG_NRF700X_RAWDATA_TX
+	case NRF_WIFI_EVENT_MODE_SET_DONE:
+		struct nrf_wifi_event_raw_config_mode *mode_event;
+		mode_event = (struct nrf_wifi_event_raw_config_mode *)sys_head;
+		if (!mode_event->status) {
+			def_dev_ctx->vif_ctx[mode_event->if_index]->mode =
+								mode_event->op_mode;
+			/**
+			 * Set the transmit queue for RAW packet transmission
+			 */
+			if (mode_event->op_mode == (NRF_WIFI_TX_INJECTION_MODE |
+						    NRF_WIFI_STA_MODE)) {
+				def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id = MAX_PEERS;
+				def_dev_ctx->tx_config.peers[MAX_PEERS].if_idx =
+									mode_event->if_index;
+				def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
+									NRF_WIFI_STA_TX_INJECTOR;
+			} else if (mode_event->op_mode == NRF_WIFI_STA_MODE) {
+				def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
+									NRF_WIFI_IFTYPE_STATION;
+				def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id = -1;
+			}
+			status = NRF_WIFI_STATUS_SUCCESS;
+		}
+		break;
+	case NRF_WIFI_EVENT_CHANNEL_SET_DONE:
+		struct nrf_wifi_event_set_channel *channel_event;
+		channel_event = (struct nrf_wifi_event_set_channel *)sys_head;
+		if (!channel_event->status) {
+			def_dev_ctx->vif_ctx[channel_event->if_index]->channel =
+								channel_event->chan_num;
+		}
+		status = NRF_WIFI_STATUS_SUCCESS;
+		break;
+	case NRF_WIFI_EVENT_FILTER_SET_DONE:
+		struct nrf_wifi_event_raw_config_filter *filter_event;
+		filter_event = (struct nrf_wifi_event_raw_config_filter *)sys_head;
+		if (!filter_event->status) {
+			def_dev_ctx->vif_ctx[filter_event->if_index]->packet_filter =
+								filter_event->filter;
+		}
+		status = NRF_WIFI_STATUS_SUCCESS;
+		break;
+#endif /* CONFIG_NRF700X_RAWDATA_TX */
 	default:
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 				      "%s: Unknown event recd: %d\n",

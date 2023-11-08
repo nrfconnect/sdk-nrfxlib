@@ -341,6 +341,30 @@ unsigned char *nrf_wifi_util_get_src(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 #endif /* CONFIG_NRF700X_STA_MODE */
 
+#ifdef CONFIG_NRF700X_RAWDATA_TX
+enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode)
+{
+	/**
+	 * We validate the currently supported driver and lower layer
+	 * modes only
+	 */
+	if ((mode ^ NRF_WIFI_STA_MODE) == 0) {
+		return NRF_WIFI_STATUS_SUCCESS;
+	} else if ((mode ^ (NRF_WIFI_STA_MODE |
+			    NRF_WIFI_TX_INJECTION_MODE)) == 0) {
+		return NRF_WIFI_STATUS_SUCCESS;
+	}
+	return NRF_WIFI_STATUS_FAIL;
+}
+
+bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif)
+{
+	if (vif->if_type == NRF_WIFI_STA_TX_INJECTOR) {
+		return true;
+	}
+	return false;
+}
+#endif /* CONFIG_NRF700X_RAWDATA_TX */
 
 bool nrf_wifi_util_is_arr_zero(unsigned char *arr,
 			       unsigned int arr_sz)
