@@ -852,12 +852,11 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	unsigned char *sys_head = NULL;
-	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx;
 #ifdef CONFIG_NRF700X_RADIO_TEST
 	struct nrf_wifi_fmac_dev_ctx_rt *def_dev_ctx_rt;
 	struct nrf_wifi_umac_event_err_status *umac_status;
-
-	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+#else
+	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx;
 #endif /* CONFIG_NRF700X_RADIO_TEST */
 
 	if (!fmac_dev_ctx || !rpu_msg) {
@@ -866,9 +865,9 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 
 #ifdef CONFIG_NRF700X_RADIO_TEST
 	def_dev_ctx_rt = wifi_dev_priv(fmac_dev_ctx);
-#endif
+#else
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
-
+#endif
 	sys_head = (unsigned char *)rpu_msg->msg;
 
 	switch (((struct nrf_wifi_sys_head *)sys_head)->cmd_event) {
@@ -896,9 +895,14 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		status = NRF_WIFI_STATUS_SUCCESS;
 		break;
 #endif /* CONFIG_NRF700X_RADIO_TEST */
-#ifdef CONFIG_NRF700X_RAWDATA_TX
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
+	case NRF_WIFI_EVENT_RAW_TX_DONE:
+		status = nrf_wifi_fmac_rawtx_done_event_process(fmac_dev_ctx,
+						(struct nrf_wifi_event_raw_tx_done *)sys_head);
+		break;
 	case NRF_WIFI_EVENT_MODE_SET_DONE:
 		struct nrf_wifi_event_raw_config_mode *mode_event;
+
 		mode_event = (struct nrf_wifi_event_raw_config_mode *)sys_head;
 		if (!mode_event->status) {
 			def_dev_ctx->vif_ctx[mode_event->if_index]->mode =
@@ -923,6 +927,7 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		break;
 	case NRF_WIFI_EVENT_CHANNEL_SET_DONE:
 		struct nrf_wifi_event_set_channel *channel_event;
+
 		channel_event = (struct nrf_wifi_event_set_channel *)sys_head;
 		if (!channel_event->status) {
 			def_dev_ctx->vif_ctx[channel_event->if_index]->channel =
@@ -932,6 +937,7 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		break;
 	case NRF_WIFI_EVENT_FILTER_SET_DONE:
 		struct nrf_wifi_event_raw_config_filter *filter_event;
+
 		filter_event = (struct nrf_wifi_event_raw_config_filter *)sys_head;
 		if (!filter_event->status) {
 			def_dev_ctx->vif_ctx[filter_event->if_index]->packet_filter =
@@ -939,7 +945,7 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		}
 		status = NRF_WIFI_STATUS_SUCCESS;
 		break;
-#endif /* CONFIG_NRF700X_RAWDATA_TX */
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
 	default:
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 				      "%s: Unknown event recd: %d\n",
@@ -947,7 +953,6 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 				      ((struct nrf_wifi_sys_head *)sys_head)->cmd_event);
 		break;
 	}
-
 	return status;
 }
 

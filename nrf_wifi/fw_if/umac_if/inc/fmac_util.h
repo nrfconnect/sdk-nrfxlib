@@ -134,11 +134,11 @@ bool nrf_wifi_util_is_arr_zero(unsigned char *arr,
 
 #endif /* !CONFIG_NRF700X_RADIO_TEST */
 
-#ifdef CONFIG_NRF700X_RAWDATA_TX
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
 bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif);
 
 enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode);
-#endif
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
 
 void *wifi_fmac_priv(struct nrf_wifi_fmac_priv *def);
 void *wifi_dev_priv(struct nrf_wifi_fmac_dev_ctx *def);

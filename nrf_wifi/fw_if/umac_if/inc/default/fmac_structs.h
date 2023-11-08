@@ -25,6 +25,7 @@
 #define MAX_PEERS 5
 #define MAX_SW_PEERS (MAX_PEERS + 1)
 #define NRF_WIFI_AC_TWT_PRIORITY_EMERGENCY 0xFF
+#define NRF_WIFI_MAGIC_NUM_RAWTX 0x12345678
 
 
 /**
@@ -356,6 +357,66 @@ struct nrf_wifi_fmac_priv_def {
 #endif /* CONFIG_NRF700X_STA_MODE */
 };
 
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
+
+/**
+ * @brief Transmit modes for raw packets.
+ *
+ */
+enum nrf_wifi_fmac_rawtx_mode {
+	/** Legacy mode. */
+	NRF_WIFI_FMAC_RAWTX_MODE_LEGACY,
+	/** HT mode. */
+	NRF_WIFI_FMAC_RAWTX_MODE_HT,
+	/** VHT mode. */
+	NRF_WIFI_FMAC_RAWTX_MODE_VHT,
+	/** HE SU mode. */
+	NRF_WIFI_FMAC_RAWTX_MODE_HE_SU,
+	/** HE ER SU mode. */
+	NRF_WIFI_FMAC_RAWTX_MODE_HE_ER_SU,
+	/** HE TB mode. */
+	NRF_WIFI_FMAC_RAWTX_MODE_HE_TB,
+	/** Throughput max. */
+	NRF_WIFI_FMAC_RAWTX_MODE_MAX
+};
+
+/**
+ * @brief Structure to hold raw tx packet information.
+ *
+ * This structure holds the information sent by higher
+ * layers to transmit a raw frame.
+ */
+struct raw_tx_pkt_header {
+	/** magic number to identify a raw packet. */
+	unsigned int magic_num;
+	/** Data rate at which packet is to be transmitted. */
+	unsigned char data_rate;
+	/** Packet length. */
+	unsigned short packet_length;
+	/** Mode describing if packet is VHT, HT, HE or Legacy @ref nrf_wifi_fmac_mode. */
+	unsigned char tx_mode;
+	/** Wi-Fi access category mapping for packet @ref nrf_wifi_fmac_ac. */
+	unsigned char queue;
+	/** Flag indicating raw packet transmission. */
+	unsigned char raw_tx_flag;
+};
+
+/**
+ * @brief Structure to hold raw packet transmit statistics.
+ *
+ * This structure holds the raw packet
+ * transmit statistics.
+ */
+struct raw_tx_stats {
+	/** Total number of raw packets sent. */
+	unsigned int raw_pkts_sent;
+	/** Count of successful raw packets sent. */
+	unsigned int raw_pkt_send_failure;
+	/** Count of un-successful raw packets sent. */
+	unsigned int raw_pkt_send_success;
+};
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
+
 /**
  * @brief Structure to hold per device context information for the UMAC IF layer.
  *
@@ -391,6 +452,10 @@ struct nrf_wifi_fmac_dev_ctx_def {
 	void *tx_done_tasklet;
 #endif /* CONFIG_NRF700X_TX_DONE_WQ_ENABLED */
 #endif /* CONFIG_NRF700X_STA_MODE */
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
+	struct raw_tx_pkt_header raw_tx_config;
+	struct raw_tx_stats raw_pkt_stats;
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
 };
 
 /**
@@ -414,14 +479,12 @@ struct nrf_wifi_fmac_vif_ctx {
 	int if_type;
 	/** BSSID of the AP to which this VIF is connected (applicable only in STA mode). */
 	unsigned char bssid[NRF_WIFI_ETH_ADDR_LEN];
-#ifdef CONFIG_NRF700X_RAWDATA_TX
-	/** packet filter setting for the VIF */
-	unsigned char packet_filter;
-	/** mode setting for the current VIF */
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
+	/** Mode setting for the current VIF */
 	unsigned char mode;
-	/** channel setting for the current VIF */
+	/** Channel setting for the current VIF */
 	unsigned char channel;
-#endif /* CONFIG_NRF700X_RAWDATA_TX */
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
 };
 
 /**

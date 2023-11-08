@@ -2013,6 +2013,9 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 	vif_ctx->fmac_dev_ctx = fmac_dev_ctx;
 	vif_ctx->os_vif_ctx = os_vif_ctx;
 	vif_ctx->if_type = vif_info->iftype;
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
+	vif_ctx->mode = NRF_WIFI_STA_MODE;
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
 
 	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
 			      vif_ctx->mac_addr,

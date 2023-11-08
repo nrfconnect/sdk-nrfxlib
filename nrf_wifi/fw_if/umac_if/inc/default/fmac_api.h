@@ -986,6 +986,60 @@ enum nrf_wifi_status nrf_wifi_fmac_set_listen_interval(void *fmac_dev_ctx,
 enum nrf_wifi_status nrf_wifi_fmac_set_ps_wakeup_mode(void *fmac_dev_ctx,
 							unsigned char if_idx,
 							bool ps_wakeup_mode);
+
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
+/**
+ * @brief Transmit a raw unaltered frame to the RPU.
+ * @param dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
+ * @param if_idx Index of the interface on which the frame is to be
+ *               transmitted.
+ * @param net_packet Pointer to the OS specific network buffer.
+ *
+ * This function takes care of transmitting a frame to the RPU firmware.
+ * It does the following:
+ *
+ *     - Queues the frames to a transmit queue.
+ *     - Based on token availability, sends one or more frames to the RPU using
+ *       the command for transmission.
+ *     - The firmware sends an event once the command has
+ *       been processed to indicate whether the frame has been
+ *       transmitted/aborted.
+ *     - The driver cleans up the frame buffer(s) after receiving this event.
+ *
+ *@retval      WIFI_NRF_STATUS_SUCCESS On success
+ *@retval      WIFI_NRF_STATUS_FAIL On failure
+ */
+enum nrf_wifi_status nrf_wifi_fmac_start_rawpkt_xmit(void *dev_ctx,
+						     unsigned char if_idx,
+						     void *net_packet);
+
+/**
+ * @brief Check if raw packet transmission mode is enabled or not.
+ * @param vif Pointer to the virtual interface context.
+ *
+ * This function checks if raw packet transmission mode is enabled or not. If
+ * raw packet transmission mode is enabled, the packet will be allowed to be
+ * transmitted. If the mode is disabled, the packet will be silently dropped.
+ *
+ *@retval      WIFI_NRF_STATUS_SUCCESS On success
+ *@retval      WIFI_NRF_STATUS_FAIL On failure
+ */
+bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif);
+
+/**
+ * @brief Check if a valid mode is being set.
+ * @param mode The mode value attempted to be configured.
+ *
+ * This function checks the mode value attempted to be configured
+ * is a valid mode as supported by the driver. If the mode is valid,
+ * the mode will be configured to the lower layers, else an error value
+ * will be flagged.
+ *
+ *@retval      WIFI_NRF_STATUS_SUCCESS On success
+ *@retval      WIFI_NRF_STATUS_FAIL On failure
+ */
+enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode);
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
 /**
  * @}
  */
