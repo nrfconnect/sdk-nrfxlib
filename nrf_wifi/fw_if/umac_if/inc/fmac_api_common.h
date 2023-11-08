@@ -241,53 +241,56 @@ enum nrf_wifi_status nrf_wifi_fmac_get_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 enum nrf_wifi_status nrf_wifi_fmac_get_power_save_info(void *fmac_dev_ctx,
 						       unsigned char if_idx);
 
-#ifdef CONFIG_NRF700X_RAWDATA_TX
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
 /**
- * @brief Get or set the current mode of operation
+ * @brief Set the current mode of operation
  * @param dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
  * @param if_idx Index of the interface on which mode is to be set.
- * @param mode value to be set for the interface.
+ * @param mode Value to be set for the interface.
  *
  * This function is used to send a command
- *         to RPU to Set/Get mode of operation
+ *         to RPU to set mode of operation
  *
- * @return Command execution status
+ * @retval      WIFI_NRF_STATUS_SUCCESS On success
+ * @retval      WIFI_NRF_STATUS_FAIL On failure
  */
 enum nrf_wifi_status nrf_wifi_fmac_mode(void *dev_ctx,
 					unsigned char if_idx,
 					unsigned char mode);
 
 /**
- * @brief Get or set the current channel
+ * @brief Set the current channel
  * @param dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
  * @param if_idx Index of the interface on which mode is to be set.
- * @param channel value to be set for the interface.
+ * @param channel Value to be set for the interface.
  *
  * This function is used to send a command
- *         to RPU to Set/Get current channel of operation
+ *         to RPU to set current channel of operation
  *
- * @return Command execution status
+ * @retval      WIFI_NRF_STATUS_SUCCESS On success
+ * @retval      WIFI_NRF_STATUS_FAIL On failure
  */
 enum nrf_wifi_status nrf_wifi_fmac_channel(void *dev_ctx,
 					   unsigned char if_idx,
 					   unsigned int channel);
 
 /**
- * @brief Get or set the current channel
+ * @brief Set the packet filter settings
  * @param dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
  * @param filter value to be set for the interface.
  * @param if_idx Index of the interface on which mode is to be set.
- * @param buffer_size size of packet capture length.
+ * @param buffer_size Size of packet capture length.
  *
  * This function is used to send a command
- *         to RPU to Set/Get current channel of operation
+ *         to RPU to set current packet filter settings
  *
- * @return Command execution status
+ * @retval      WIFI_NRF_STATUS_SUCCESS On success
+ * @retval      WIFI_NRF_STATUS_FAIL On failure
  */
 enum nrf_wifi_status nrf_wifi_fmac_packet_filter(void *dev_ctx, unsigned char filter,
 						 unsigned char if_idx,
 						 unsigned short buffer_size);
-#endif
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
 /**
  * @}
  */

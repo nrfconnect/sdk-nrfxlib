@@ -323,7 +323,11 @@ unsigned char *nrf_wifi_util_get_dest(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx
 unsigned char *nrf_wifi_util_get_ra(struct nrf_wifi_fmac_vif_ctx *vif,
 				    void *nwb)
 {
-	if (vif->if_type == NRF_WIFI_IFTYPE_STATION) {
+	if ((vif->if_type == NRF_WIFI_IFTYPE_STATION)
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
+	    || (vif->if_type == NRF_WIFI_STA_TX_INJECTOR)
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
+	    ) {
 		return vif->bssid;
 	}
 
@@ -341,7 +345,7 @@ unsigned char *nrf_wifi_util_get_src(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 #endif /* CONFIG_NRF700X_STA_MODE */
 
-#ifdef CONFIG_NRF700X_RAWDATA_TX
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
 enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode)
 {
 	/**
@@ -364,7 +368,7 @@ bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif)
 	}
 	return false;
 }
-#endif /* CONFIG_NRF700X_RAWDATA_TX */
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
 
 bool nrf_wifi_util_is_arr_zero(unsigned char *arr,
 			       unsigned int arr_sz)

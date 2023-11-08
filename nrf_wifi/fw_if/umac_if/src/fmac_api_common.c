@@ -923,7 +923,7 @@ out:
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 #endif /* CONFIG_NRF700X_UTIL */
 
-#ifdef CONFIG_NRF700X_RAWDATA_TX
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
 enum nrf_wifi_status nrf_wifi_fmac_mode(void *dev_ctx,
 					unsigned char if_idx,
 					unsigned char mode)
@@ -1059,4 +1059,4 @@ enum nrf_wifi_status nrf_wifi_fmac_packet_filter(void *dev_ctx, unsigned char fi
 out:
 	return status;
 }
-#endif /* CONFIG_NRF700X_RAWDATA_TX */
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
