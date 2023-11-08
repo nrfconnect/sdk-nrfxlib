@@ -922,3 +922,141 @@ out:
 }
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 #endif /* CONFIG_NRF700X_UTIL */
+
+#ifdef CONFIG_NRF700X_RAWDATA_TX
+enum nrf_wifi_status nrf_wifi_fmac_mode(void *dev_ctx,
+					unsigned char if_idx,
+					unsigned char mode)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	struct nrf_wifi_cmd_raw_config_mode *umac_cmd_data = NULL;
+	struct host_rpu_msg *umac_cmd = NULL;
+	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = dev_ctx;
+	int len = 0;
+
+	if (!fmac_dev_ctx) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Invalid parameters",
+				      __func__);
+		goto out;
+	}
+
+	len = sizeof(*umac_cmd_data);
+
+	umac_cmd = umac_cmd_alloc(fmac_dev_ctx,
+				  NRF_WIFI_HOST_RPU_MSG_TYPE_SYSTEM,
+				  len);
+
+	if (!umac_cmd) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: umac_cmd_alloc failed",
+				      __func__);
+		goto out;
+	}
+
+	umac_cmd_data = (struct nrf_wifi_cmd_raw_config_mode *)(umac_cmd->msg);
+
+	umac_cmd_data->sys_head.cmd_event = NRF_WIFI_CMD_RAW_CONFIG_MODE;
+	umac_cmd_data->sys_head.len = len;
+
+	umac_cmd_data->if_index = if_idx;
+	umac_cmd_data->op_mode = mode;
+
+	status = nrf_wifi_hal_ctrl_cmd_send(fmac_dev_ctx->hal_dev_ctx,
+					    umac_cmd,
+					    (sizeof(*umac_cmd) + len));
+out:
+	return status;
+}
+
+enum nrf_wifi_status nrf_wifi_fmac_channel(void *dev_ctx,
+					   unsigned char if_idx,
+					   unsigned int channel)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	struct nrf_wifi_cmd_set_channel *umac_cmd_data = NULL;
+	struct host_rpu_msg *umac_cmd = NULL;
+	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = dev_ctx;
+	int len = 0;
+
+	if (!fmac_dev_ctx) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Invalid parameters",
+				      __func__);
+		goto out;
+	}
+
+	len = sizeof(*umac_cmd_data);
+
+	umac_cmd = umac_cmd_alloc(fmac_dev_ctx,
+				  NRF_WIFI_HOST_RPU_MSG_TYPE_SYSTEM,
+				  len);
+
+	if (!umac_cmd) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: umac_cmd_alloc failed",
+				      __func__);
+		goto out;
+	}
+
+	umac_cmd_data = (struct nrf_wifi_cmd_set_channel *)(umac_cmd->msg);
+
+	umac_cmd_data->sys_head.cmd_event = NRF_WIFI_CMD_CHANNEL;
+	umac_cmd_data->sys_head.len = len;
+
+	umac_cmd_data->if_index = if_idx;
+	umac_cmd_data->chan.primary_num = channel;
+
+	status = nrf_wifi_hal_ctrl_cmd_send(fmac_dev_ctx->hal_dev_ctx,
+					    umac_cmd,
+					    (sizeof(*umac_cmd) + len));
+out:
+	return status;
+}
+
+enum nrf_wifi_status nrf_wifi_fmac_packet_filter(void *dev_ctx, unsigned char filter,
+						 unsigned char if_idx,
+						 unsigned short buffer_size)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	struct nrf_wifi_cmd_raw_config_filter *umac_cmd_data = NULL;
+	struct host_rpu_msg *umac_cmd = NULL;
+	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = dev_ctx;
+	int len = 0;
+
+	if (!fmac_dev_ctx) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Invalid parameters",
+				      __func__);
+		goto out;
+	}
+
+	len = sizeof(*umac_cmd_data);
+
+	umac_cmd = umac_cmd_alloc(fmac_dev_ctx,
+				  NRF_WIFI_HOST_RPU_MSG_TYPE_SYSTEM,
+				  len);
+
+	if (!umac_cmd) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: umac_cmd_alloc failed",
+				      __func__);
+		goto out;
+	}
+
+	umac_cmd_data = (struct nrf_wifi_cmd_raw_config_filter *)(umac_cmd->msg);
+
+	umac_cmd_data->sys_head.cmd_event = NRF_WIFI_CMD_RAW_CONFIG_FILTER;
+	umac_cmd_data->sys_head.len = len;
+
+	umac_cmd_data->if_index = if_idx;
+	umac_cmd_data->filter = filter;
+	umac_cmd_data->capture_len = buffer_size;
+
+	status = nrf_wifi_hal_ctrl_cmd_send(fmac_dev_ctx->hal_dev_ctx,
+					    umac_cmd,
+					    (sizeof(*umac_cmd) + len));
+out:
+	return status;
+}
+#endif /* CONFIG_NRF700X_RAWDATA_TX */
