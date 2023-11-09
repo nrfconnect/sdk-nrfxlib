@@ -10,10 +10,9 @@
  * @defgroup sdc_soc SoftDevice Controller SoC Interface
  * @ingroup sdc
  *
- * The SoftDevice Controller SoC interface provides APIs for flash access and block encryption
- * While the SoftDevice Controller is enabled, the application should only use
- * the provided APIs to access NRF_NVMC or NRF_ECB.
- * Not doing so will lead to undefined behavior.
+ * The SoftDevice Controller SoC interface provides APIs for block encryption and random numbers.
+ * While the SoftDevice Controller is enabled, the application should only use the provided APIs to
+ * access NRF_ECB. Not doing so will lead to undefined behavior.
  * @{
  */
 
