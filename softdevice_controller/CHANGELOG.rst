@@ -35,6 +35,8 @@ Bug fixes
 =========
 
 * Fixed an issue where the LE Set Periodic Advertising Subevent Data command could fail when providing data at the same time as an ``AUX_SYNC_SUBEVENT_IND`` was sent. (DRGN-20762)
+* Fixed an issue where a packet might not be received when sent at the instant of a Channel Map Update.
+  This could happen when acting as Peripheral. (DRGN-20815)
 
 nRF Connect SDK v2.5.0
 **********************

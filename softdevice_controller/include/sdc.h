@@ -112,8 +112,17 @@ extern "C" {
 /** @brief Default maximum number of concurrent Broadcast Isochronous Streams. */
 #define SDC_DEFAULT_BIS_COUNT 0
 
+/** @brief Default maximum number of concurrent Sink Broadcast Isochronous Streams. */
+#define SDC_DEFAULT_BIS_SINK_COUNT 0
+
+/** @brief Default maximum number of concurrent Source Broadcast Isochronous Streams. */
+#define SDC_DEFAULT_BIS_SOURCE_COUNT 0
+
 /** @brief Default ISO RX PDU buffer count. */
 #define SDC_DEFAULT_ISO_RX_PDU_BUFFER_COUNT 0
+
+/** @brief Default ISO RX PDU buffer per stream count. */
+#define SDC_DEFAULT_ISO_RX_PDU_BUFFER_PER_STREAM_COUNT 0
 
 /** @brief Default ISO RX SDU buffer count. */
 #define SDC_DEFAULT_ISO_RX_SDU_BUFFER_COUNT 0
@@ -237,6 +246,7 @@ extern "C" {
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (465)
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (166)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
+#define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (8 + (count) * 288) : 0)
 
 /** Memory required per periodic advertising with responses set.
  *
@@ -261,30 +271,37 @@ extern "C" {
 #define SDC_MEM_PER_CIG(count) ((count) > 0 ? (13 + (count) * 123) : 0)
 
 /** @brief Maximum memory required per CIS. Buffer and CIG memory comes in addition. */
-#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 512) : 0)
+#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 515) : 0)
 
 /** @brief Maximum memory required per BIG. */
 #define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 291) : 0)
 
 /** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
-#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 275) : 0)
+#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 267) : 0)
 
 /** @brief Maximum memory required for the ISO RX path PDUs. */
-#define SDC_MEM_ISO_RX_PDU_POOL_SIZE(count) ((count) > 0 ? (8 + (count) * 288) : 0)
+#define SDC_MEM_ISO_RX_PDU_POOL_SIZE(count) __MEM_PER_ISO_PDU_POOL(count)
+
+/** @brief Maximum memory required for the ISO RX PDU pool per stream.
+ *  @param[in] rx_pdu_buffer_per_stream_count Number of RX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
+ *                                            For BIS, this value determines the number of pretransmission that can be stored.
+ *  @param[in] cis_count The number of supported CIS streams.
+ *  @param[in] bis_sink_count The number of supported sink BIS streams. */
+#define SDC_MEM_ISO_RX_PDU_POOL_PER_STREAM_SIZE(rx_pdu_buffer_per_stream_count, cis_count, bis_sink_count) 0
 
 /** @brief Maximum memory required for the ISO RX path SDUs. */
 #define SDC_MEM_ISO_RX_SDU_POOL_SIZE(count) ((count) > 0 ? (0 + (count) * 280) : 0)
 
 /** @brief Maximum memory required for the ISO TX pool.
  *  @param[in] tx_hci_buffer_count Number of HCI ISO TX buffers.
- *  @param[in] tx_pdu_buffer_per_stream_count Number of PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
+ *  @param[in] tx_pdu_buffer_per_stream_count Number of TX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
  *                                            For BIS, this value determines the maximum supported pretransmission offset.
  *  @param[in] cis_count The number of supported CIS streams.
- *  @param[in] bis_count The number of supported BIS streams. */
-#define SDC_MEM_ISO_TX_POOL_SIZE(tx_hci_buffer_count, tx_pdu_buffer_per_stream_count, cis_count, bis_count) \
+ *  @param[in] bis_source_count The number of supported source BIS streams. */
+#define SDC_MEM_ISO_TX_POOL_SIZE(tx_hci_buffer_count, tx_pdu_buffer_per_stream_count, cis_count, bis_source_count) \
      (((tx_hci_buffer_count) > 0 && (tx_pdu_buffer_per_stream_count) > 0) ?                                 \
-     (SDC_MEM_ISO_RX_PDU_POOL_SIZE(tx_hci_buffer_count)                                                     \
-     + SDC_MEM_ISO_RX_PDU_POOL_SIZE(((cis_count) + (bis_count)) * (tx_pdu_buffer_per_stream_count))         \
+     (__MEM_PER_ISO_PDU_POOL(tx_hci_buffer_count)                                                           \
+     + __MEM_PER_ISO_PDU_POOL(((cis_count) + (bis_source_count)) * (tx_pdu_buffer_per_stream_count))        \
      ) : 0)
 
 /** @} end of sdc_mem_defines */
@@ -350,8 +367,14 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_BIG_COUNT,
     /** See @ref sdc_cfg_t::bis_count. */
     SDC_CFG_TYPE_BIS_COUNT,
+    /** See @ref sdc_cfg_t::bis_sink_count. */
+    SDC_CFG_TYPE_BIS_SINK_COUNT,
+    /** See @ref sdc_cfg_t::bis_source_count. */
+    SDC_CFG_TYPE_BIS_SOURCE_COUNT,
     /** See @ref sdc_cfg_t::iso_rx_pdu_buffer_cfg. */
     SDC_CFG_TYPE_ISO_RX_PDU_BUFFER_CFG,
+    /** See @ref sdc_cfg_t::iso_rx_pdu_buffer_per_stream_cfg. */
+    SDC_CFG_TYPE_ISO_RX_PDU_BUFFER_PER_STREAM_CFG,
     /** See @ref sdc_cfg_t::iso_rx_sdu_buffer_cfg. */
     SDC_CFG_TYPE_ISO_RX_SDU_BUFFER_CFG,
     /** See @ref sdc_cfg_t::iso_tx_buffer_cfg. */
@@ -559,11 +582,26 @@ typedef union
      * Default: @ref SDC_DEFAULT_BIS_COUNT.
      */
     sdc_cfg_role_count_t bis_count;
+    /** Configures the maximum number of concurrent sink BISs.
+     *
+     * Default: @ref SDC_DEFAULT_BIS_SINK_COUNT.
+     */
+    sdc_cfg_role_count_t bis_sink_count;
+    /** Configures the maximum number of concurrent source BISs.
+     *
+     * Default: @ref SDC_DEFAULT_BIS_SOURCE_COUNT.
+     */
+    sdc_cfg_role_count_t bis_source_count;
     /** Configures the size of the shared rx PDU buffer pool allocated for ISO.
      *
      * Default: @ref SDC_DEFAULT_ISO_RX_PDU_BUFFER_COUNT.
      */
     sdc_cfg_buffer_count_t iso_rx_pdu_buffer_cfg;
+    /** Configures the size of the per stream RX PDU buffer pool allocated for ISO streams.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_RX_PDU_BUFFER_PER_STREAM_COUNT.
+     */
+    sdc_cfg_buffer_count_t iso_rx_pdu_buffer_per_stream_cfg;
     /** Configures the RX SDU buffer count allocated for ISO.
      *
      * Default: @ref SDC_DEFAULT_ISO_RX_SDU_BUFFER_COUNT.

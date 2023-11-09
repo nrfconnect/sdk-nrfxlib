@@ -1316,7 +1316,7 @@ uint8_t sdc_hci_cmd_vs_read_average_rssi(const sdc_hci_cmd_vs_read_average_rssi_
 
 /** @brief Set Central ACL event spacing.
  *
- * On the central, sets the time ACL connections are spaced apart given that they are
+ * On the central, sets the time ACL connections are spaced apart, assuming they are
  * using the same connection interval.
  *
  * This API must be called before issuing the command HCI LE Create Connection or
@@ -1351,23 +1351,20 @@ uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_centra
  * When used for connections, the connection event trigger can be configured to trigger
  * every N connection events starting from a given connection event counter.
  *
- * Disabling scanning or disconnecting the connection will reset the connection event trigger
- * configuration.
+ * Disabling scanning or disconnecting the connection will reset the connection event
+ * trigger configuration.
  *
- * If the selected (D)PPI channel is reserved by the controller, the controller will return the
- * error code
- * Invalid HCI Command Parameters (0x12).
+ * If the selected (D)PPI channel is reserved by the controller, the controller will
+ * return the error code Invalid HCI Command Parameters (0x12).
  *
- * If enabling/disabling the connection event trigger and the trigger is already enabled/disabled,
- * the
- * controller will return the error code Command Disallowed (0x0C).
+ * If enabling/disabling the connection event trigger and the trigger is already
+ * enabled/disabled, the controller will return the error code Command Disallowed (0x0C).
  *
  * If the specified role is not currently active, the controller will return the error code
  * Command Disallowed (0x0C).
  *
- * If the role is 0x3 and conn_handle does not refer to an active connection, the controller will
- * return
- * the error code Unknown Connection Identifier (0x02).
+ * If the role is 0x3 and conn_handle does not refer to an active connection, the controller
+ * will return the error code Unknown Connection Identifier (0x02).
  *
  * If the role is 0x3 and conn_evt_counter_start has already passed, the controller will return
  * the error code Command Disallowed (0x0C).
@@ -1375,9 +1372,8 @@ uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_centra
  * If the role is 0x3 and period_in_events is zero, the controller will return the error code
  * Invalid HCI Command Parameters (0x12).
  *
- * If the role is 0x1 or 0x2 and conn_evt_counter_start or period_in_events is non-zero, the
- * controller
- * will return the error code Invalid HCI Command Parameters (0x12).
+ * If the role is 0x1 or 0x2 and conn_evt_counter_start or period_in_events is non-zero,
+ * the controller will return the error code Invalid HCI Command Parameters (0x12).
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
