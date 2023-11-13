@@ -24,8 +24,6 @@
 #include "fmac_bb.h"
 #include "util.h"
 
-#include <patch_info.h>
-
 static int nrf_wifi_patch_version_compat(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				const unsigned int version)
 {
@@ -95,27 +93,9 @@ static int nrf_wifi_patch_feature_flags_compat(struct nrf_wifi_fmac_dev_ctx *fma
 	return 0;
 }
 
-enum nrf_wifi_status nrf_wifi_fmac_fw_parse(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-					   const void *fw_data,
-					   unsigned int fw_size,
-					   struct nrf_wifi_fmac_fw_info *fw_info)
+enum nrf_wifi_status nrf_wifi_validate_fw_header(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+						 struct nrf70_fw_image_info *info)
 {
-	struct nrf70_fw_image_info *info = (struct nrf70_fw_image_info *)fw_data;
-	unsigned int offset;
-	unsigned int image_id;
-
-	if (!fw_data || !fw_size || !fw_info) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-			"Invalid parameters");
-		return NRF_WIFI_STATUS_FAIL;
-	}
-
-	if (fw_size < sizeof(struct nrf70_fw_image_info)) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-			"Invalid fw_size: %d, minimum size: %d",
-			fw_size, sizeof(struct nrf70_fw_image_info));
-		return NRF_WIFI_STATUS_FAIL;
-	}
 
 	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
 		"num_images: %d", info->num_images);
@@ -140,6 +120,38 @@ enum nrf_wifi_status nrf_wifi_fmac_fw_parse(struct nrf_wifi_fmac_dev_ctx *fmac_d
 	if (nrf_wifi_patch_feature_flags_compat(fmac_dev_ctx, info->feature_flags) != 0) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 			"Incompatible feature flags");
+		return NRF_WIFI_STATUS_FAIL;
+	}
+
+	return NRF_WIFI_STATUS_SUCCESS;
+}
+
+enum nrf_wifi_status nrf_wifi_fmac_fw_parse(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+					   const void *fw_data,
+					   unsigned int fw_size,
+					   struct nrf_wifi_fmac_fw_info *fw_info)
+{
+	struct nrf70_fw_image_info *info = (struct nrf70_fw_image_info *)fw_data;
+	unsigned int offset;
+	unsigned int image_id;
+
+	if (!fw_data || !fw_size || !fw_info) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Invalid parameters");
+		return NRF_WIFI_STATUS_FAIL;
+	}
+
+	if (fw_size < sizeof(struct nrf70_fw_image_info)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Invalid fw_size: %d, minimum size: %d",
+			fw_size, sizeof(struct nrf70_fw_image_info));
+		return NRF_WIFI_STATUS_FAIL;
+	}
+
+
+	if (nrf_wifi_validate_fw_header(fmac_dev_ctx, info) != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Invalid fw header");
 		return NRF_WIFI_STATUS_FAIL;
 	}
 
