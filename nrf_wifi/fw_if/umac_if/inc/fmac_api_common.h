@@ -28,6 +28,8 @@
 #include "fmac_vif.h"
 #include "fmac_bb.h"
 
+#include <patch_info.h>
+
 /**
  * @brief Adds a RPU instance.
  * @param fpriv Pointer to the context of the UMAC IF layer.
@@ -59,6 +61,15 @@ enum nrf_wifi_status nrf_wifi_fmac_stats_get(struct nrf_wifi_fmac_dev_ctx *fmac_
 					     enum rpu_op_mode op_mode,
 					     struct rpu_op_stats *stats);
 
+
+/**
+ * @brief Validate the firmware header.
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
+ * @param info Pointer to the address where the firmware information needs to be copied.
+ * @return Command execution status
+ */
+enum nrf_wifi_status nrf_wifi_validate_fw_header(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+						 struct nrf70_fw_image_info *info);
 
 /**
  * @brief Parse the Firmware(s) to be loaded to the RPU WLAN device.
