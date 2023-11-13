@@ -24,6 +24,17 @@
 #include "fmac_bb.h"
 #include "util.h"
 
+struct nrf_wifi_proc {
+	const enum RPU_PROC_TYPE type;
+	const char *name;
+	bool is_patch_present;
+};
+
+struct nrf_wifi_proc wifi_proc[] = {
+	{RPU_PROC_TYPE_MCU_LMAC, "LMAC", true},
+	{RPU_PROC_TYPE_MCU_UMAC, "UMAC", true},
+};
+
 static int nrf_wifi_patch_version_compat(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				const unsigned int version)
 {
@@ -206,25 +217,73 @@ enum nrf_wifi_status nrf_wifi_fmac_fw_parse(struct nrf_wifi_fmac_dev_ctx *fmac_d
 	return NRF_WIFI_STATUS_SUCCESS;
 }
 
+enum nrf_wifi_status nrf_wifi_fmac_fw_reset(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	int i = 0;
+
+	for (i = 0; i < ARRAY_SIZE(wifi_proc); i++) {
+		status = nrf_wifi_hal_proc_reset(fmac_dev_ctx->hal_dev_ctx,
+						 wifi_proc[i].type);
+
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: %s processor reset failed\n",
+					      __func__, wifi_proc[i].name);
+			return NRF_WIFI_STATUS_FAIL;
+		}
+	}
+
+	return NRF_WIFI_STATUS_SUCCESS;
+}
+
+enum nrf_wifi_status nrf_wifi_fmac_fw_boot(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	int i = 0;
+
+	for (i = 0; i < ARRAY_SIZE(wifi_proc); i++) {
+		status = nrf_wifi_hal_fw_patch_boot(fmac_dev_ctx->hal_dev_ctx,
+						    wifi_proc[i].type,
+						    wifi_proc[i].is_patch_present);
+
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: %s processor ROM boot failed\n",
+					      __func__, wifi_proc[i].name);
+			return NRF_WIFI_STATUS_FAIL;
+		}
+
+		status = nrf_wifi_hal_fw_chk_boot(fmac_dev_ctx->hal_dev_ctx,
+						  wifi_proc[i].type);
+
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: %s processor ROM boot check failed\n",
+					      __func__, wifi_proc[i].name);
+			return NRF_WIFI_STATUS_FAIL;
+		}
+	}
+
+	return NRF_WIFI_STATUS_SUCCESS;
+}
+
 enum nrf_wifi_status nrf_wifi_fmac_fw_load(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 					   struct nrf_wifi_fmac_fw_info *fmac_fw)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
+	status = nrf_wifi_fmac_fw_reset(fmac_dev_ctx);
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: FW reset failed\n",
+				      __func__);
+		goto out;
+	}
+
 	/* Load the LMAC patches if available */
-	if ((fmac_fw->lmac_patch_pri.data) && (fmac_fw->lmac_patch_pri.size)) {
-		status = nrf_wifi_hal_proc_reset(fmac_dev_ctx->hal_dev_ctx,
-						 RPU_PROC_TYPE_MCU_LMAC);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: LMAC processor reset failed",
-					      __func__);
-
-			goto out;
-		}
-
-		/* Load the LMAC patches */
+	if (fmac_fw->lmac_patch_pri.data && fmac_fw->lmac_patch_pri.size &&
+	    fmac_fw->lmac_patch_sec.data && fmac_fw->lmac_patch_sec.size) {
 		status = nrf_wifi_hal_fw_patch_load(fmac_dev_ctx->hal_dev_ctx,
 						    RPU_PROC_TYPE_MCU_LMAC,
 						    fmac_fw->lmac_patch_pri.data,
@@ -234,80 +293,21 @@ enum nrf_wifi_status nrf_wifi_fmac_fw_load(struct nrf_wifi_fmac_dev_ctx *fmac_de
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: LMAC patch load failed",
+					      "%s: LMAC patch load failed\n",
 					      __func__);
 			goto out;
 		} else {
 			nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
-					      "%s: LMAC patches loaded",
-					      __func__);
-		}
-
-		status = nrf_wifi_hal_fw_patch_boot(fmac_dev_ctx->hal_dev_ctx,
-						    RPU_PROC_TYPE_MCU_LMAC,
-						    true);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Failed to boot LMAC with patch",
-					      __func__);
-			goto out;
-		}
-
-		status = nrf_wifi_hal_fw_chk_boot(fmac_dev_ctx->hal_dev_ctx,
-						  RPU_PROC_TYPE_MCU_LMAC);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: LMAC ROM boot check failed",
-					      __func__);
-			goto out;
-		} else {
-			nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
-					      "%s: LMAC boot check passed",
+					      "%s: LMAC patches loaded\n",
 					      __func__);
 		}
 	} else {
-		status = nrf_wifi_hal_fw_patch_boot(fmac_dev_ctx->hal_dev_ctx,
-						    RPU_PROC_TYPE_MCU_LMAC,
-						    false);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: LMAC ROM boot failed",
-					      __func__);
-			goto out;
-		}
-
-		status = nrf_wifi_hal_fw_chk_boot(fmac_dev_ctx->hal_dev_ctx,
-						  RPU_PROC_TYPE_MCU_LMAC);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: LMAC ROM boot check failed",
-					      __func__);
-			goto out;
-		} else {
-			nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
-					      "%s: LMAC boot check passed",
-					      __func__);
-		}
+		wifi_proc[0].is_patch_present = false;
 	}
 
 	/* Load the UMAC patches if available */
-	if ((fmac_fw->umac_patch_pri.data) && (fmac_fw->umac_patch_pri.size)) {
-		status = nrf_wifi_hal_proc_reset(fmac_dev_ctx->hal_dev_ctx,
-						 RPU_PROC_TYPE_MCU_UMAC);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: UMAC processor reset failed",
-					      __func__);
-
-			goto out;
-		}
-
-		/* Load the UMAC patches */
+	if (fmac_fw->umac_patch_pri.data && fmac_fw->umac_patch_pri.size &&
+	    fmac_fw->umac_patch_sec.data && fmac_fw->umac_patch_sec.size) {
 		status = nrf_wifi_hal_fw_patch_load(fmac_dev_ctx->hal_dev_ctx,
 						    RPU_PROC_TYPE_MCU_UMAC,
 						    fmac_fw->umac_patch_pri.data,
@@ -325,56 +325,16 @@ enum nrf_wifi_status nrf_wifi_fmac_fw_load(struct nrf_wifi_fmac_dev_ctx *fmac_de
 					      "%s: UMAC patches loaded",
 					      __func__);
 		}
-
-		status = nrf_wifi_hal_fw_patch_boot(fmac_dev_ctx->hal_dev_ctx,
-						    RPU_PROC_TYPE_MCU_UMAC,
-						    true);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Failed to boot UMAC with patch",
-					      __func__);
-			goto out;
-		}
-
-		status = nrf_wifi_hal_fw_chk_boot(fmac_dev_ctx->hal_dev_ctx,
-						  RPU_PROC_TYPE_MCU_UMAC);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: UMAC ROM boot check failed",
-					      __func__);
-			goto out;
-		} else {
-			nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
-					      "%s: UMAC boot check passed",
-					      __func__);
-		}
 	} else {
-		status = nrf_wifi_hal_fw_patch_boot(fmac_dev_ctx->hal_dev_ctx,
-						    RPU_PROC_TYPE_MCU_UMAC,
-						    false);
+		wifi_proc[1].is_patch_present = false;
+	}
 
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: UMAC ROM boot failed",
-					      __func__);
-			goto out;
-		}
-
-		status = nrf_wifi_hal_fw_chk_boot(fmac_dev_ctx->hal_dev_ctx,
-						  RPU_PROC_TYPE_MCU_UMAC);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: UMAC ROM boot check failed",
-					      __func__);
-			goto out;
-		} else {
-			nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
-					      "%s: UMAC boot check passed",
-					      __func__);
-		}
+	status = nrf_wifi_fmac_fw_boot(fmac_dev_ctx);
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: FW boot failed\n",
+				      __func__);
+		goto out;
 	}
 
 	fmac_dev_ctx->fw_boot_done = true;

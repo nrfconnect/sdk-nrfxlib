@@ -86,6 +86,32 @@ enum nrf_wifi_status nrf_wifi_fmac_fw_parse(struct nrf_wifi_fmac_dev_ctx *fmac_d
 					   unsigned int fw_size,
 					   struct nrf_wifi_fmac_fw_info *fw_info);
 
+
+/**
+ * @brief Reset the processors in the RPU WLAN device.
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device,
+ *      which was passed as \p fmac_dev_ctx parameter via the
+ *      \p add_dev_callbk_fn() callback function.
+ *
+ * This function resets the processors in the RPU WLAN device.
+ *
+ * @return Command execution status
+ */
+enum nrf_wifi_status nrf_wifi_fmac_fw_reset(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
+
+/**
+ * @brief Boot the Firmware(s) to the RPU WLAN device.
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device,
+ *      which was passed as \p fmac_dev_ctx parameter via the
+ *      \p add_dev_callbk_fn() callback function.
+ *
+ * This function boots the FullMAC firmware(s) to the RPU WLAN device and waits
+ * for the boot to complete and validate the boot signature.
+ *
+ * @return Command execution status
+ */
+enum nrf_wifi_status nrf_wifi_fmac_fw_boot(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
+
 /**
  * @brief Loads the Firmware(s) to the RPU WLAN device.
  * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device,
