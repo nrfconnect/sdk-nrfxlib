@@ -22,7 +22,14 @@
 #include "hal_reg.h"
 #include "hal_fw_patch_loader.h"
 
+#define NRF_WIFI_ADDR_REG_NAME_LEN		16
+struct nrf70_fw_addr_info{
+	enum RPU_PROC_TYPE rpu_proc;
+	char name[NRF_WIFI_ADDR_REG_NAME_LEN];
+	unsigned int dest_addr;
+};
 
+extern const struct nrf70_fw_addr_info nrf70_fw_addr_info[];
 /**
  * nrf_wifi_hal_init() - Initialize the HAL layer.
  *
