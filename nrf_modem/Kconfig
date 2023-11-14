@@ -3,12 +3,13 @@
 #
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
+menu "nrf_modem (Modem library)"
+
 # Selected by NRF_MODEM_LIB in sdk-nrf
 config NRF_MODEM
 	bool
-
-menu "nrf_modem (Modem library)"
-	visible if NRF_MODEM
+	select NRFX_IPC if (SOC_SERIES_NRF91X || ZTEST)
+	select REQUIRES_FULL_LIBC
 
 choice NRF_MODEM_BUILD_STRATEGY
 	depends on NRF_MODEM
