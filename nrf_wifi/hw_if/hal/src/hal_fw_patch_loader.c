@@ -12,6 +12,8 @@
 #include "host_rpu_common_if.h"
 #include "hal_fw_patch_loader.h"
 #include "hal_mem.h"
+#include "lmac_if_common.h"
+#include "host_rpu_common_if.h"
 
 /* To reduce HEAP maximum usage */
 #define MAX_PATCH_CHUNK_SIZE 8192
@@ -30,6 +32,29 @@ struct patch_contents {
 	unsigned int size;
 	unsigned int dest_addr;
 };
+
+
+static const struct rpu_mcu_boot_vectors RPU_MCU_BOOT_VECTORS[] = {
+	/* MCU1 - LMAC */
+	{
+		{
+			{RPU_REG_MIPS_MCU_BOOT_EXCP_INSTR_0, NRF_WIFI_LMAC_BOOT_EXCP_VECT_0},
+			{RPU_REG_MIPS_MCU_BOOT_EXCP_INSTR_1, NRF_WIFI_LMAC_BOOT_EXCP_VECT_1},
+			{RPU_REG_MIPS_MCU_BOOT_EXCP_INSTR_2, NRF_WIFI_LMAC_BOOT_EXCP_VECT_2},
+			{RPU_REG_MIPS_MCU_BOOT_EXCP_INSTR_3, NRF_WIFI_LMAC_BOOT_EXCP_VECT_3},
+		}
+	},
+	/* MCU2 - UMAC */
+	{
+		{
+			{RPU_REG_MIPS_MCU2_BOOT_EXCP_INSTR_0, NRF_WIFI_UMAC_BOOT_EXCP_VECT_0},
+			{RPU_REG_MIPS_MCU2_BOOT_EXCP_INSTR_1, NRF_WIFI_UMAC_BOOT_EXCP_VECT_1},
+			{RPU_REG_MIPS_MCU2_BOOT_EXCP_INSTR_2, NRF_WIFI_UMAC_BOOT_EXCP_VECT_2},
+			{RPU_REG_MIPS_MCU2_BOOT_EXCP_INSTR_3, NRF_WIFI_UMAC_BOOT_EXCP_VECT_3},
+		}
+	},
+};
+
 
 enum nrf_wifi_status hal_fw_patch_chunk_load(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 						enum RPU_PROC_TYPE rpu_proc,
@@ -219,29 +244,15 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_boot(struct nrf_wifi_hal_dev_ctx *hal
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	unsigned int boot_sig_addr = 0;
 	unsigned int boot_sig_val = 0;
-	unsigned int boot_excp_0_addr = 0;
-	unsigned int boot_excp_1_addr = 0;
-	unsigned int boot_excp_2_addr = 0;
-	unsigned int boot_excp_3_addr = 0;
-	unsigned int boot_excp_0_val = 0;
-	unsigned int boot_excp_1_val = 0;
-	unsigned int boot_excp_2_val = 0;
-	unsigned int boot_excp_3_val = 0;
+	unsigned int boot_vector_id;
 	unsigned int sleepctrl_addr = 0;
 	unsigned int sleepctrl_val = 0;
 	unsigned int run_addr = 0;
+	const struct rpu_mcu_boot_vectors *boot_vectors = &RPU_MCU_BOOT_VECTORS[rpu_proc];
 
 	if (rpu_proc == RPU_PROC_TYPE_MCU_LMAC) {
 		boot_sig_addr = RPU_MEM_LMAC_BOOT_SIG;
 		run_addr = RPU_REG_MIPS_MCU_CONTROL;
-		boot_excp_0_addr = RPU_REG_MIPS_MCU_BOOT_EXCP_INSTR_0;
-		boot_excp_0_val = NRF_WIFI_LMAC_BOOT_EXCP_VECT_0;
-		boot_excp_1_addr = RPU_REG_MIPS_MCU_BOOT_EXCP_INSTR_1;
-		boot_excp_1_val = NRF_WIFI_LMAC_BOOT_EXCP_VECT_1;
-		boot_excp_2_addr = RPU_REG_MIPS_MCU_BOOT_EXCP_INSTR_2;
-		boot_excp_2_val = NRF_WIFI_LMAC_BOOT_EXCP_VECT_2;
-		boot_excp_3_addr = RPU_REG_MIPS_MCU_BOOT_EXCP_INSTR_3;
-		boot_excp_3_val = NRF_WIFI_LMAC_BOOT_EXCP_VECT_3;
 		if (is_patch_present) {
 			sleepctrl_addr = RPU_REG_UCC_SLEEP_CTRL_DATA_0;
 			sleepctrl_val = NRF_WIFI_LMAC_ROM_PATCH_OFFSET;
@@ -249,14 +260,6 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_boot(struct nrf_wifi_hal_dev_ctx *hal
 	} else if (rpu_proc == RPU_PROC_TYPE_MCU_UMAC) {
 		boot_sig_addr = RPU_MEM_UMAC_BOOT_SIG;
 		run_addr = RPU_REG_MIPS_MCU2_CONTROL;
-		boot_excp_0_addr = RPU_REG_MIPS_MCU2_BOOT_EXCP_INSTR_0;
-		boot_excp_0_val = NRF_WIFI_UMAC_BOOT_EXCP_VECT_0;
-		boot_excp_1_addr = RPU_REG_MIPS_MCU2_BOOT_EXCP_INSTR_1;
-		boot_excp_1_val = NRF_WIFI_UMAC_BOOT_EXCP_VECT_1;
-		boot_excp_2_addr = RPU_REG_MIPS_MCU2_BOOT_EXCP_INSTR_2;
-		boot_excp_2_val = NRF_WIFI_UMAC_BOOT_EXCP_VECT_2;
-		boot_excp_3_addr = RPU_REG_MIPS_MCU2_BOOT_EXCP_INSTR_3;
-		boot_excp_3_val = NRF_WIFI_UMAC_BOOT_EXCP_VECT_3;
 		if (is_patch_present) {
 			sleepctrl_addr = RPU_REG_UCC_SLEEP_CTRL_DATA_1;
 			sleepctrl_val = NRF_WIFI_UMAC_ROM_PATCH_OFFSET;
@@ -292,62 +295,31 @@ enum nrf_wifi_status nrf_wifi_hal_fw_patch_boot(struct nrf_wifi_hal_dev_ctx *hal
 		status = hal_rpu_reg_write(hal_dev_ctx,
 					   sleepctrl_addr,
 					   sleepctrl_val);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
+					      "%s: Writing to sleep control register failed for RPU(%d)\n",
+					      __func__,
+					      rpu_proc);
+
+			goto out;
+		}
 	}
 
-	/* Write to Boot exception address 0 */
-	status = hal_rpu_reg_write(hal_dev_ctx,
-				   boot_excp_0_addr,
-				   boot_excp_0_val);
+	for (boot_vector_id = 0; boot_vector_id < ARRAY_SIZE(boot_vectors->vectors); boot_vector_id++) {
+		const struct rpu_mcu_boot_vector *boot_vector = &boot_vectors->vectors[boot_vector_id];
 
-	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Writing to Boot exception 0 reg for RPU processor(%d) failed",
-				      __func__,
-				      rpu_proc);
+		/* Write the boot vector to the RPU memory */
+		status = hal_rpu_reg_write(hal_dev_ctx,
+					   boot_vector->addr,
+					   boot_vector->val);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
+					      "%s: Writing boot vector failed for RPU(%d)\n",
+					      __func__,
+					      rpu_proc);
 
-		goto out;
-	}
-
-	/* Write to Boot exception address 1 */
-	status = hal_rpu_reg_write(hal_dev_ctx,
-				   boot_excp_1_addr,
-				   boot_excp_1_val);
-
-	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Writing to Boot exception 1 reg for RPU processor(%d) failed",
-				      __func__,
-				      rpu_proc);
-
-		goto out;
-	}
-
-	/* Write to Boot exception address 2 */
-	status = hal_rpu_reg_write(hal_dev_ctx,
-				   boot_excp_2_addr,
-				   boot_excp_2_val);
-
-	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Writing to Boot exception 2 reg for RPU processor(%d) failed",
-				      __func__,
-				      rpu_proc);
-
-		goto out;
-	}
-
-	/* Write to Boot exception address 3 */
-	status = hal_rpu_reg_write(hal_dev_ctx,
-				   boot_excp_3_addr,
-				   boot_excp_3_val);
-
-	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Writing to Boot exception 3 reg for RPU processor(%d) failed",
-				      __func__,
-				      rpu_proc);
-
-		goto out;
+			goto out;
+		}
 	}
 
 	/* Perform pulsed soft reset of MIPS - this should now run */
