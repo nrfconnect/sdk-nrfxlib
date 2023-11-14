@@ -63,6 +63,16 @@ static const struct rpu_addr_map RPU_ADDR_MAP_MCU[] = {
 	},
 };
 
+#define RPU_MCU_MAX_BOOT_VECTORS 4
+struct rpu_mcu_boot_vector {
+	unsigned int addr;
+	unsigned int val;
+};
+
+struct rpu_mcu_boot_vectors {
+	struct rpu_mcu_boot_vector vectors[RPU_MCU_MAX_BOOT_VECTORS];
+};
+
 #define RPU_ADDR_MASK_BASE 0xFF000000
 #define RPU_ADDR_MASK_OFFSET 0x00FFFFFF
 #define RPU_ADDR_MASK_BEV_OFFSET 0x000FFFFF
