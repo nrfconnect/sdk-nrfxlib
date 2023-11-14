@@ -36,6 +36,7 @@ struct nrf70_fw_image {
 	unsigned int type;
 	unsigned int len;
 	/* Data follows */
+	unsigned char data[];
 } __NRF_WIFI_PKD;
 
 struct nrf70_fw_image_info {
