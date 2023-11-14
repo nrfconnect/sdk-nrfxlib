@@ -6,7 +6,6 @@
 # Selected by NRF_MODEM_LIB in sdk-nrf
 config NRF_MODEM
 	bool
-	imply FPU_SHARING
 
 menu "nrf_modem (Modem library)"
 	visible if NRF_MODEM
