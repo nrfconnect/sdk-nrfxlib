@@ -1514,6 +1514,8 @@ enum nrf_wifi_status nrf_wifi_hal_proc_reset(struct nrf_wifi_hal_dev_ctx *hal_de
 		goto out;
 	}
 
+	hal_dev_ctx->curr_proc = rpu_proc;
+
 	/* Perform pulsed soft reset of MIPS */
 	if (rpu_proc == RPU_PROC_TYPE_MCU_LMAC) {
 		status = hal_rpu_reg_write(hal_dev_ctx,
@@ -1574,6 +1576,7 @@ enum nrf_wifi_status nrf_wifi_hal_proc_reset(struct nrf_wifi_hal_dev_ctx *hal_de
 					       10);
 	}
 out:
+	hal_dev_ctx->curr_proc = RPU_PROC_TYPE_MCU_LMAC;
 	return status;
 }
 
@@ -1599,6 +1602,8 @@ enum nrf_wifi_status nrf_wifi_hal_fw_chk_boot(struct nrf_wifi_hal_dev_ctx *hal_d
 				      __func__,
 				      rpu_proc);
 	}
+
+	hal_dev_ctx->curr_proc = rpu_proc;
 
 	while (i < 1000) {
 		status = hal_rpu_mem_read(hal_dev_ctx,
@@ -1639,6 +1644,8 @@ enum nrf_wifi_status nrf_wifi_hal_fw_chk_boot(struct nrf_wifi_hal_dev_ctx *hal_d
 
 	status = NRF_WIFI_STATUS_SUCCESS;
 out:
+	hal_dev_ctx->curr_proc = RPU_PROC_TYPE_MCU_LMAC;
+
 	return status;
 }
 
