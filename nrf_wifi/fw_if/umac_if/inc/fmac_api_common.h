@@ -18,6 +18,7 @@
 #include <stdbool.h>
 
 #include "osal_api.h"
+#include "hal_api.h"
 #include "host_rpu_umac_if.h"
 #include "host_rpu_data_if.h"
 #include "host_rpu_sys_if.h"
@@ -111,6 +112,22 @@ enum nrf_wifi_status nrf_wifi_fmac_fw_reset(struct nrf_wifi_fmac_dev_ctx *fmac_d
  * @return Command execution status
  */
 enum nrf_wifi_status nrf_wifi_fmac_fw_boot(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
+
+/**
+ * @brief Load a chunk of the Firmware to the RPU WLAN device.
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device,
+ *      which was passed as \p fmac_dev_ctx parameter via the
+ *      \p add_dev_callbk_fn() callback function.
+ * @param rpu_proc RPU processor type.
+ * @param fw_chunk Pointer to the address where the firmware chunk information is available.
+ *
+ * This function loads a chunk of the firmware to the RPU WLAN device.
+ *
+ * @return Command execution status
+ */
+enum nrf_wifi_status nrf_wifi_fmac_fw_chunk_load(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+					   enum RPU_PROC_TYPE rpu_proc,
+					   struct nrf_wifi_fmac_fw_chunk_info *fw_chunk);
 
 /**
  * @brief Loads the Firmware(s) to the RPU WLAN device.
