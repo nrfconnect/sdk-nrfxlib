@@ -21,7 +21,7 @@ endchoice
 
 config NRF_MODEM_LOG
 	depends on NRF_MODEM_LINK_BINARY
-	bool "Use version of the library with logs"
+	bool "Link binary with logs"
 	help
 	  Links the application with the library version capable of emitting logs.
 	  This increases the final size of the application.
