@@ -21,6 +21,12 @@ enum nrf_wifi_fw_patch_type {
 };
 
 
+/* Loads a firmware patch chunk into RPU memory. */
+enum nrf_wifi_status hal_fw_patch_chunk_load(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
+						enum RPU_PROC_TYPE rpu_proc,
+						unsigned int dest_addr,
+						const void *fw_chunk_data,
+						unsigned int fw_chunk_size);
 /*
  * Downloads a firmware patch into RPU memory.
  */

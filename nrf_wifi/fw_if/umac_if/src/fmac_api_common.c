@@ -11,7 +11,6 @@
 
 #include "host_rpu_umac_if.h"
 #include "fmac_api.h"
-#include "hal_api.h"
 #include "fmac_structs.h"
 #include "fmac_api.h"
 #include "fmac_util.h"
@@ -266,6 +265,18 @@ enum nrf_wifi_status nrf_wifi_fmac_fw_boot(struct nrf_wifi_fmac_dev_ctx *fmac_de
 	}
 
 	return NRF_WIFI_STATUS_SUCCESS;
+}
+
+
+enum nrf_wifi_status nrf_wifi_fmac_fw_chunk_load(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+					   enum RPU_PROC_TYPE rpu_proc,
+					   struct nrf_wifi_fmac_fw_chunk_info *fw_chunk)
+{
+	return hal_fw_patch_chunk_load(fmac_dev_ctx->hal_dev_ctx,
+				       rpu_proc,
+				       fw_chunk->dest_addr,
+				       fw_chunk->data,
+				       fw_chunk->size);
 }
 
 enum nrf_wifi_status nrf_wifi_fmac_fw_load(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,

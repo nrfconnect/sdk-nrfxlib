@@ -31,6 +31,26 @@ struct patch_contents {
 	unsigned int dest_addr;
 };
 
+enum nrf_wifi_status hal_fw_patch_chunk_load(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
+						enum RPU_PROC_TYPE rpu_proc,
+						unsigned int dest_addr,
+						const void *fw_chunk_data,
+						unsigned int fw_chunk_size)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+
+	hal_dev_ctx->curr_proc = rpu_proc;
+
+	status = hal_rpu_mem_write(hal_dev_ctx,
+				 dest_addr,
+				 (void *)fw_chunk_data,
+				 fw_chunk_size);
+
+	hal_dev_ctx->curr_proc = RPU_PROC_TYPE_MCU_LMAC;
+
+	return status;
+}
+
 /* In order to save RAM, divide the patch in to chunks download */
 static enum nrf_wifi_status hal_fw_patch_load(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 						enum RPU_PROC_TYPE rpu_proc,
@@ -83,11 +103,11 @@ static enum nrf_wifi_status hal_fw_patch_load(struct nrf_wifi_hal_dev_ctx *hal_d
 			num_chunks,
 			patch_chunk_size);
 
-		status = hal_rpu_mem_write(hal_dev_ctx,
-					dest_chunk_offset,
-					patch_data_ram,
-					patch_chunk_size);
-
+		status = hal_fw_patch_chunk_load(hal_dev_ctx,
+						rpu_proc,
+						dest_chunk_offset,
+						patch_data_ram,
+						patch_chunk_size);
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
 			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
 				"%s: Copying patch %s-%s: chunk %d/%d, size: %d failed",

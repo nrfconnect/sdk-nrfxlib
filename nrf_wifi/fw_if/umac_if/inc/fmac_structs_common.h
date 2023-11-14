@@ -21,6 +21,8 @@
 #include "osal_api.h"
 #include "host_rpu_umac_if.h"
 
+#define NRF_WIFI_FW_CHUNK_ID_STR_LEN 16
+
 /**
  * @brief Structure to hold host specific statistics.
  *
@@ -74,6 +76,21 @@ struct nrf_wifi_fmac_fw_info {
 	struct nrf_wifi_fw_info umac_patch_pri;
 	/** Secondary UMAC FW patch information. */
 	struct nrf_wifi_fw_info umac_patch_sec;
+};
+
+/**
+ * @brief Structure to hold FW patch chunk information.
+ *
+ */
+struct nrf_wifi_fmac_fw_chunk_info {
+	/** Pointer to the FW patch chunk ID string. */
+	char id_str[NRF_WIFI_FW_CHUNK_ID_STR_LEN];
+	/** Pointer to the FW patch chunk data. */
+	const void *data;
+	/** Size of the FW patch chunk data. */
+	unsigned int size;
+	/** Destination address of the FW patch chunk data. */
+	unsigned int dest_addr;
 };
 
 
