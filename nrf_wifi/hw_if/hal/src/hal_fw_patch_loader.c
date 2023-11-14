@@ -17,6 +17,13 @@
 #define MAX_PATCH_CHUNK_SIZE 8192
 #define ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
 
+const struct nrf70_fw_addr_info nrf70_fw_addr_info[] = {
+	{ RPU_PROC_TYPE_MCU_LMAC, "LMAC bimg", RPU_MEM_LMAC_PATCH_BIMG },
+	{ RPU_PROC_TYPE_MCU_LMAC, "LMAC bin", RPU_MEM_LMAC_PATCH_BIN },
+	{ RPU_PROC_TYPE_MCU_UMAC, "UMAC bimg", RPU_MEM_UMAC_PATCH_BIMG },
+	{ RPU_PROC_TYPE_MCU_UMAC, "UMAC bin", RPU_MEM_UMAC_PATCH_BIN },
+};
+
 struct patch_contents {
 	const char *id_str;
 	const void *data;
