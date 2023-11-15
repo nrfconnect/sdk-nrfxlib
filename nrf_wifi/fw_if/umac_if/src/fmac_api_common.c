@@ -46,27 +46,31 @@ static int nrf_wifi_patch_version_compat(struct nrf_wifi_fmac_dev_ctx *fmac_dev_
 
 	if (family != RPU_FAMILY) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-			"Incompatible RPU version: %d", family);
+			"Incompatible RPU version: %d, expected: %d",
+			family, RPU_FAMILY);
 		return -1;
 	}
 
 	if (major != RPU_MAJOR_VERSION) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-			"Incompatible RPU major version: %d", major);
+			"Incompatible RPU major version: %d, expected: %d",
+			major, RPU_MAJOR_VERSION);
 		return -1;
 	}
 
 	/* TODO: Allow minor version to be different */
 	if (minor != RPU_MINOR_VERSION) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-			"Incompatible RPU minor version: %d", minor);
+			"Incompatible RPU minor version: %d, expected: %d",
+			minor, RPU_MINOR_VERSION);
 		return -1;
 	}
 
 	/* TODO: Allow patch version to be different */
 	if (patch != RPU_PATCH_VERSION) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-			"Incompatible RPU patch version: %d", patch);
+			"Incompatible RPU patch version: %d, expected: %d",
+			patch, RPU_PATCH_VERSION);
 		return -1;
 	}
 
@@ -123,7 +127,7 @@ enum nrf_wifi_status nrf_wifi_validate_fw_header(struct nrf_wifi_fmac_dev_ctx *f
 
 	if (nrf_wifi_patch_version_compat(fmac_dev_ctx, info->version) != 0) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-			"Incompatible patch version");
+			"Incompatible patch");
 		return NRF_WIFI_STATUS_FAIL;
 	}
 
