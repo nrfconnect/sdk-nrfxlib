@@ -292,6 +292,30 @@ enum nrf_wifi_status nrf_wifi_fmac_fw_load(struct nrf_wifi_fmac_dev_ctx *fmac_de
 		goto out;
 	}
 
+	/* Load the UMAC patches if available */
+	if (fmac_fw->umac_patch_pri.data && fmac_fw->umac_patch_pri.size &&
+	    fmac_fw->umac_patch_sec.data && fmac_fw->umac_patch_sec.size) {
+		status = nrf_wifi_hal_fw_patch_load(fmac_dev_ctx->hal_dev_ctx,
+						    RPU_PROC_TYPE_MCU_UMAC,
+						    fmac_fw->umac_patch_pri.data,
+						    fmac_fw->umac_patch_pri.size,
+						    fmac_fw->umac_patch_sec.data,
+						    fmac_fw->umac_patch_sec.size);
+
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: UMAC patch load failed\n",
+					      __func__);
+			goto out;
+		} else {
+			nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
+					      "%s: UMAC patches loaded\n",
+					      __func__);
+		}
+	} else {
+		wifi_proc[1].is_patch_present = false;
+	}
+
 	/* Load the LMAC patches if available */
 	if (fmac_fw->lmac_patch_pri.data && fmac_fw->lmac_patch_pri.size &&
 	    fmac_fw->lmac_patch_sec.data && fmac_fw->lmac_patch_sec.size) {
@@ -314,30 +338,6 @@ enum nrf_wifi_status nrf_wifi_fmac_fw_load(struct nrf_wifi_fmac_dev_ctx *fmac_de
 		}
 	} else {
 		wifi_proc[0].is_patch_present = false;
-	}
-
-	/* Load the UMAC patches if available */
-	if (fmac_fw->umac_patch_pri.data && fmac_fw->umac_patch_pri.size &&
-	    fmac_fw->umac_patch_sec.data && fmac_fw->umac_patch_sec.size) {
-		status = nrf_wifi_hal_fw_patch_load(fmac_dev_ctx->hal_dev_ctx,
-						    RPU_PROC_TYPE_MCU_UMAC,
-						    fmac_fw->umac_patch_pri.data,
-						    fmac_fw->umac_patch_pri.size,
-						    fmac_fw->umac_patch_sec.data,
-						    fmac_fw->umac_patch_sec.size);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: UMAC patch load failed",
-					      __func__);
-			goto out;
-		} else {
-			nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
-					      "%s: UMAC patches loaded",
-					      __func__);
-		}
-	} else {
-		wifi_proc[1].is_patch_present = false;
 	}
 
 	status = nrf_wifi_fmac_fw_boot(fmac_dev_ctx);
