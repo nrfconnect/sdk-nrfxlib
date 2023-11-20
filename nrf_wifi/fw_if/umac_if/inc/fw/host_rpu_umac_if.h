@@ -687,6 +687,8 @@ struct nrf_wifi_scan_params {
 	unsigned short dwell_time_passive;
 	/** Number of channels to be scanned */
 	unsigned short num_scan_channels;
+	/** If true, skip local and IANA Unicast reserved MACs **/
+	unsigned char skip_local_admin_macs;
 	/** specific channels to be scanned */
 	unsigned int center_frequency[0];
 } __NRF_WIFI_PKD;
