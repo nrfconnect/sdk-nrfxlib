@@ -56,7 +56,7 @@ The following table summarizes the priorities.
    |                             | * Peripheral connections that are about to time out                                               |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Second priority             | * Central connection setup (waiting for ACK from peer)                                            |
-   |                             | * Initiator                                                                                       |
+   |                             | * Initiator when the scan window is not equal to the scan interval                                |
    |                             | * Periodic advertiser sending a channel map update                                                |
    |                             | * Scanner in the synchronizing state                                                              |
    |                             | * Scanner in the synchronized state where the synchronization is about to be lost                 |
