@@ -23,6 +23,8 @@ Added
   See :c:func:`sdc_hci_cmd_vs_set_conn_event_trigger` (DRGN-20737).
 * Vendor-specific HCI command to read the next connection event counter value.
   See :c:func:`sdc_hci_cmd_vs_get_next_conn_event_counter` (DRGN-20737).
+* Vendor-specific HCI command to allow parallel connection establishment through initiating and periodic advertising with responses.
+  See :c:func:`sdc_hci_cmd_vs_allow_parallel_connection_establishments` (DRGN-20823).
 
 Changes
 =======
@@ -30,6 +32,14 @@ Changes
 * The controller now returns the error code ``0x12`` if the same subevent index is used multiple times in LE Set Periodic Advertising Subevent Data.
   This conforms to erratas ES23466 and ES23424. (DRGN-20736)
 * The vendor-specific Set event length for ACL connections HCI command no longer sets the time between anchor points of central ACL connections with identical connection intervals. (DRGN-20796)
+* The vendor-specific HCI commands :c:func:`sdc_hci_cmd_vs_set_auto_power_control_request_param` and
+  :c:func:`sdc_hci_cmd_vs_set_power_control_apr_handling` have been replaced by
+  :c:func:`sdc_hci_cmd_vs_set_power_control_request_params` (DRGN-17355).
+* The controller now always returns the error code ``0x0D`` if a connection attempt is made while another is still pending.
+  Previously, this wasn't the case if one connection attempt was through periodic advertising with responses while the other was through the initiator. (DRGN-20823)
+* The scheduling priority for initiator events where the scan window is equal to the scan interval is lowered to the third scheduling priority.
+  For other configurations of scan window and scan interval the priority is unchanged. (DRGN-20831)
+* The vendor-specific Set event length for ACL connections HCI command now accepts values lower than 1250 us. (DRGN-20796)
 
 Bug fixes
 =========
