@@ -25,6 +25,8 @@ Added
   See :c:func:`sdc_hci_cmd_vs_get_next_conn_event_counter` (DRGN-20737).
 * Vendor-specific HCI command to allow parallel connection establishment through initiating and periodic advertising with responses.
   See :c:func:`sdc_hci_cmd_vs_allow_parallel_connection_establishments` (DRGN-20823).
+* Vendor-specific HCI command to  set the minimum value that will be used as maximum Tx octets for ACL connections.
+  See :c:func:`sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set` (DRGN-20819).
 
 Changes
 =======
@@ -47,6 +49,9 @@ Bug fixes
 * Fixed an issue where the LE Set Periodic Advertising Subevent Data command could fail when providing data at the same time as an ``AUX_SYNC_SUBEVENT_IND`` was sent. (DRGN-20762)
 * Fixed an issue where a packet might not be received when sent at the instant of a Channel Map Update.
   This could happen when acting as Peripheral. (DRGN-20815)
+* Fixed an assert that could happen if the LE Set Periodic Advertising Response Data command was issued more than once without fetching the Command Complete Event. (DRGN-20432)
+* Fixed an issue where the controller would assert during cooperative active scanning or when running a cooperative initiator.
+  This could happen when the controller was about to send a scan request or connect indication. (DRGN-20832)
 
 nRF Connect SDK v2.5.0
 **********************
