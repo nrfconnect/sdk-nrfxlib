@@ -246,7 +246,7 @@ extern "C" {
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (465)
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (166)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
-#define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (8 + (count) * 288) : 0)
+#define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (16 + (count) * 288) : 0)
 
 /** Memory required per periodic advertising with responses set.
  *
@@ -280,17 +280,18 @@ extern "C" {
 #define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 275) : 0)
 
 /** @brief Maximum memory required for the ISO RX path PDUs. */
-#define SDC_MEM_ISO_RX_PDU_POOL_SIZE(count) __MEM_PER_ISO_PDU_POOL(count)
+#define SDC_MEM_ISO_RX_PDU_POOL_SIZE(count) 0
 
 /** @brief Maximum memory required for the ISO RX PDU pool per stream.
  *  @param[in] rx_pdu_buffer_per_stream_count Number of RX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
  *                                            For BIS, this value determines the number of pretransmission that can be stored.
  *  @param[in] cis_count The number of supported CIS streams.
  *  @param[in] bis_sink_count The number of supported sink BIS streams. */
-#define SDC_MEM_ISO_RX_PDU_POOL_PER_STREAM_SIZE(rx_pdu_buffer_per_stream_count, cis_count, bis_sink_count) 0
+#define SDC_MEM_ISO_RX_PDU_POOL_PER_STREAM_SIZE(rx_pdu_buffer_per_stream_count, cis_count, bis_sink_count)     \
+      (__MEM_PER_ISO_PDU_POOL(rx_pdu_buffer_per_stream_count) * ((cis_count) + (bis_sink_count)))
 
 /** @brief Maximum memory required for the ISO RX path SDUs. */
-#define SDC_MEM_ISO_RX_SDU_POOL_SIZE(count) ((count) > 0 ? (0 + (count) * 280) : 0)
+#define SDC_MEM_ISO_RX_SDU_POOL_SIZE(count) ((count) > 0 ? (8 + (count) * 272) : 0)
 
 /** @brief Maximum memory required for the ISO TX pool.
  *  @param[in] tx_hci_buffer_count Number of HCI ISO TX buffers.
@@ -301,7 +302,7 @@ extern "C" {
 #define SDC_MEM_ISO_TX_POOL_SIZE(tx_hci_buffer_count, tx_pdu_buffer_per_stream_count, cis_count, bis_source_count) \
      (((tx_hci_buffer_count) > 0 && (tx_pdu_buffer_per_stream_count) > 0) ?                                 \
      (__MEM_PER_ISO_PDU_POOL(tx_hci_buffer_count)                                                           \
-     + __MEM_PER_ISO_PDU_POOL(((cis_count) + (bis_source_count)) * (tx_pdu_buffer_per_stream_count))        \
+     + (__MEM_PER_ISO_PDU_POOL(tx_pdu_buffer_per_stream_count) * ((cis_count) + (bis_source_count)))        \
      ) : 0)
 
 /** @} end of sdc_mem_defines */
