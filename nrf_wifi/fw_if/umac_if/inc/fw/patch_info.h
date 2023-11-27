@@ -49,6 +49,7 @@ struct nrf70_fw_image_info {
 	unsigned int feature_flags;
 	/* Protects against image corruption */
 	unsigned char hash[NRF_WIFI_PATCH_HASH_LEN];
+	unsigned char data[];
 } __NRF_WIFI_PKD;
 
 
