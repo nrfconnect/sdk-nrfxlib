@@ -17,6 +17,8 @@
 #endif /* BIT */
 
 #define NRF_WIFI_PATCH_SIGNATURE 0xDEAD1EAF
+/* SHA256 hash length */
+#define NRF_WIFI_PATCH_HASH_LEN 32
 /* 2 - LMAC and 2 - UMAC */
 #define NRF_WIFI_PATCH_NUM_IMAGES (2 + 2)
 
@@ -45,6 +47,8 @@ struct nrf70_fw_image_info {
 	unsigned int num_images;
 	unsigned int version;
 	unsigned int feature_flags;
+	/* Protects against image corruption */
+	unsigned char hash[NRF_WIFI_PATCH_HASH_LEN];
 } __NRF_WIFI_PKD;
 
 
