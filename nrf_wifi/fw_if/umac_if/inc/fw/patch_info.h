@@ -16,6 +16,7 @@
 #define BIT(x) (1 << (x))
 #endif /* BIT */
 
+#define NRF_WIFI_PATCH_SIGNATURE 0xDEAD1EAF
 /* 2 - LMAC and 2 - UMAC */
 #define NRF_WIFI_PATCH_NUM_IMAGES (2 + 2)
 
@@ -40,6 +41,7 @@ struct nrf70_fw_image {
 } __NRF_WIFI_PKD;
 
 struct nrf70_fw_image_info {
+	unsigned int signature;
 	unsigned int num_images;
 	unsigned int version;
 	unsigned int feature_flags;

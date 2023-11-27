@@ -112,11 +112,20 @@ enum nrf_wifi_status nrf_wifi_validate_fw_header(struct nrf_wifi_fmac_dev_ctx *f
 {
 
 	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
+		"Signature: 0x%x", info->signature);
+	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
 		"num_images: %d", info->num_images);
 	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
 		"version: 0x%x", info->version);
 	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
 		"feature_flags: %d", info->feature_flags);
+
+	if (info->signature != NRF_WIFI_PATCH_SIGNATURE) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"Invalid patch signature: 0x%x, expected: 0x%x",
+			info->signature, NRF_WIFI_PATCH_SIGNATURE);
+		return NRF_WIFI_STATUS_FAIL;
+	}
 
 	if (info->num_images != NRF_WIFI_PATCH_NUM_IMAGES) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
