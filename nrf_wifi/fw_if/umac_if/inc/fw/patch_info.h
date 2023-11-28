@@ -47,6 +47,7 @@ struct nrf70_fw_image_info {
 	unsigned int num_images;
 	unsigned int version;
 	unsigned int feature_flags;
+	unsigned int len;
 	/* Protects against image corruption */
 	unsigned char hash[NRF_WIFI_PATCH_HASH_LEN];
 	unsigned char data[];
