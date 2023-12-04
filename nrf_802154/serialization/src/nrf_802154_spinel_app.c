@@ -1892,7 +1892,7 @@ bail:
 nrf_802154_security_error_t nrf_802154_security_key_remove(nrf_802154_key_id_t * p_id)
 {
     nrf_802154_ser_err_t        res;
-    nrf_802154_security_error_t err = NRF_802154_SECURITY_ERROR_NONE;;
+    nrf_802154_security_error_t err = NRF_802154_SECURITY_ERROR_NONE;
 
     SERIALIZATION_ERROR_INIT(error);
 
@@ -1915,6 +1915,32 @@ bail:
     SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
 
     return err;
+}
+
+void nrf_802154_security_key_remove_all(void)
+{
+    nrf_802154_ser_err_t res;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+
+    nrf_802154_spinel_response_notifier_lock_before_request(SPINEL_PROP_LAST_STATUS);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_REMOVE_ALL,
+        SPINEL_DATATYPE_NRF_802154_SECURITY_KEY_REMOVE_ALL,
+        NULL);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+
+    return;
 }
 
 void nrf_802154_csl_writer_period_set(uint16_t period)

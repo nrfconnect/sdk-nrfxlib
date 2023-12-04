@@ -459,6 +459,12 @@ typedef enum
     SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PAN_COORD_GET =
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 65,
 
+    /**
+     * Vendor property for nrf_802154_security_key_remove_all serialization.
+     */
+    SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_REMOVE_ALL =
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154__BEGIN + 66,
+
 } spinel_prop_vendor_key_t;
 
 /**
@@ -1333,6 +1339,11 @@ typedef enum
     & (key_id).mode,                                               \
     &(key_id).p_key_id,                                            \
     &(key_id_size)
+
+/**
+ * @brief Spinel data type description for nrf_802154_security_key_remove_all.
+ */
+#define SPINEL_DATATYPE_NRF_802154_SECURITY_KEY_REMOVE_ALL    SPINEL_DATATYPE_NULL_S
 
 /**
  * @brief Spinel data type description for return type for security commands.

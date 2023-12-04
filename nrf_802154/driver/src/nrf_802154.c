@@ -1066,6 +1066,11 @@ nrf_802154_security_error_t nrf_802154_security_key_remove(nrf_802154_key_id_t *
     return nrf_802154_security_pib_key_remove(p_id);
 }
 
+void nrf_802154_security_key_remove_all(void)
+{
+    nrf_802154_security_pib_key_remove_all();
+}
+
 #if NRF_802154_DELAYED_TRX_ENABLED && NRF_802154_IE_WRITER_ENABLED
 
 void nrf_802154_csl_writer_period_set(uint16_t period)
