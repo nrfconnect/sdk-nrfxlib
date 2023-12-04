@@ -27,6 +27,7 @@
  *       However, the two values should be measured as closely as possible in time.
  */
 
+#include <stdbool.h>
 #include <stddef.h>
 
 
@@ -81,6 +82,30 @@ struct nrf_fuel_gauge_state_info {
 };
 
 /**
+ * @brief Optional static configuration parameters.
+ *
+ * @details Parameter details purposefully not documented.
+ */
+struct nrf_fuel_gauge_config_parameters {
+	float tau;
+	float neta1;
+	float neta2;
+	float neta3;
+};
+
+/**
+ * @brief Optional runtime configuration parameters.
+ *
+ * @details Parameter details purposefully not documented.
+ */
+struct nrf_fuel_gauge_runtime_parameters {
+	float a;
+	float b;
+	float c;
+	float d;
+};
+
+/**
  * @brief Library init parameter struct.
  */
 struct nrf_fuel_gauge_init_parameters {
@@ -92,6 +117,8 @@ struct nrf_fuel_gauge_init_parameters {
 	float t0;
 	/** Battery model */
 	const struct battery_model *model;
+	/** Optional configuration parameters. Set to NULL to use default values. */
+	const struct nrf_fuel_gauge_config_parameters *opt_params;
 };
 
 /**
@@ -133,12 +160,12 @@ float nrf_fuel_gauge_tte_get(void);
  *
  * @details Time-to-full is calculated based on the charge rate. It may be NAN.
  *
- * @param i_cc Constant charge current [A].
+ * @param cc_charging True if ongoing charging is in constant current (CC) state. Otherwise false.
  * @param i_term Termination current [A].
  *
  * @retval Predicted time-to-full [s].
  */
-float nrf_fuel_gauge_ttf_get(float i_cc, float i_term);
+float nrf_fuel_gauge_ttf_get(bool cc_charging, float i_term);
 
 /**
  * @brief Put library into the idle state.
@@ -168,12 +195,9 @@ void nrf_fuel_gauge_idle_set(float v, float T, float i_avg);
  *
  * @details Parameter details purposefully not documented.
  *
- * @param a New a parameter value.
- * @param b New b parameter value.
- * @param c New c parameter value.
- * @param d New d parameter value.
+ * @param params New parameter values.
  */
-void nrf_fuel_gauge_param_adjust(float a, float b, float c, float d);
+void nrf_fuel_gauge_param_adjust(const struct nrf_fuel_gauge_runtime_parameters *params);
 
 #ifdef __cplusplus
 }
