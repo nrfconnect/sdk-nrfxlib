@@ -1769,6 +1769,25 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_security_key_remove(
         err);
 }
 
+/**
+ * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_REMOVE_ALL.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
+ * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
+ *
+ */
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_security_key_remove_all(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    (void)p_property_data;
+    (void)property_data_len;
+
+    nrf_802154_security_key_remove_all();
+
+    return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
+}
+
 #if NRF_802154_DELAYED_TRX_ENABLED && NRF_802154_IE_WRITER_ENABLED
 
 /**
@@ -2061,6 +2080,10 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_REMOVE:
             return spinel_decode_prop_nrf_802154_security_key_remove(p_property_data,
                                                                      property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_KEY_REMOVE_ALL:
+            return spinel_decode_prop_nrf_802154_security_key_remove_all(p_property_data,
+                                                                         property_data_len);
 
 #if NRF_802154_DELAYED_TRX_ENABLED && NRF_802154_IE_WRITER_ENABLED
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CSL_WRITER_PERIOD_SET:

@@ -10,6 +10,15 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
+Main branch - nRF 802.15.4 Radio Driver
+***************************************
+
+Added
+=====
+
+* Added the :c:func:`nrf_802154_security_key_remove_all` function that allows you to remove all the stored security keys. (KRKNWK-18108)
+* Added :c:macro:`NRF_802154_MAX_PENDING_NOTIFICATIONS` that sets the maximum number of simultaneously pending notifications the driver can issue. (KRKNWK-18110)
+
 nRF Connect SDK v2.5.0 - nRF 802.15.4 Radio Driver
 **************************************************
 

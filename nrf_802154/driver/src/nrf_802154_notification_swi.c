@@ -73,7 +73,7 @@
  *  - frame received notifications for each receive buffer.
  */
 #define NTF_PRIMARY_POOL_SIZE \
-    (NRF_802154_RX_BUFFERS + NRF_802154_RSCH_DLY_TS_OP_DRX_SLOTS + 3)
+    (NRF_802154_RX_BUFFERS + NRF_802154_RSCH_DLY_TS_SLOTS + 1)
 
 /**
  * The implementation uses 8-bit integers to address slots with the oldest bit
@@ -85,10 +85,8 @@
 #endif
 
 /** @brief Size of pool of slots for notifications that can be ignored.
- *
- * The pool needs to contain slots for failed receptions. Its size is chosen arbitrarily.
  */
-#define NTF_SECONDARY_POOL_SIZE    4
+#define NTF_SECONDARY_POOL_SIZE    NRF_802154_MAX_DISREGARDABLE_NOTIFICATIONS
 
 /** @brief Bitmask that represents slot pool used.
  */
@@ -204,6 +202,10 @@ static nrf_802154_queue_t       m_notifications_queue;
 static nrf_802154_queue_entry_t m_notifications_queue_memory[NTF_QUEUE_SIZE];
 
 static volatile nrf_802154_mcu_critical_state_t m_mcu_cs;
+
+#if (NRF_802154_MAX_PENDING_NOTIFICATIONS + 1) != (NTF_QUEUE_SIZE)
+#error "Mismatching sizes of notification queue and maximum number of pending notifications"
+#endif
 
 /** @brief Allocate notification slot from the specified pool.
  *

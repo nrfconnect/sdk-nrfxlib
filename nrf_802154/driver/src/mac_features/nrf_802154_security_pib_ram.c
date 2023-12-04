@@ -200,6 +200,14 @@ nrf_802154_security_error_t nrf_802154_security_pib_key_remove(nrf_802154_key_id
     return NRF_802154_SECURITY_ERROR_KEY_NOT_FOUND;
 }
 
+void nrf_802154_security_pib_key_remove_all(void)
+{
+    for (uint32_t i = 0; i < NRF_802154_SECURITY_KEY_STORAGE_SIZE; i++)
+    {
+        m_key_storage[i].taken = false;
+    }
+}
+
 nrf_802154_security_error_t nrf_802154_security_pib_key_use(nrf_802154_key_id_t * p_id,
                                                             void                * destination)
 {

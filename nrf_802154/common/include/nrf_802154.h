@@ -82,6 +82,17 @@ extern "C" {
 #define NRF_802154_RESERVED_DRX_ID_UPPER_BOUND (UINT32_MAX - 4)
 
 /**
+ * @brief Maximum number of simultaneously pending notifications the driver can issue.
+ *
+ * This parameter allows to determine the correct size for structures that process notifications
+ * issued by the driver. It accumulates the maximum number of simultaneously pending notifications
+ * that can result from successfully received frames, disregardable notifications, all supported
+ * delayed operations and the latest requested immediate operation.
+ */
+#define NRF_802154_MAX_PENDING_NOTIFICATIONS \
+    (NRF_802154_RX_BUFFERS + NRF_802154_MAX_DISREGARDABLE_NOTIFICATIONS + 4 + 1)
+
+/**
  * @brief Initializes the 802.15.4 driver.
  *
  * This function initializes the RADIO peripheral in the @ref RADIO_STATE_SLEEP state.
@@ -1496,6 +1507,13 @@ nrf_802154_security_error_t nrf_802154_security_key_store(nrf_802154_key_t * p_k
  * @retval NRF_802154_SECURITY_ERROR_KEY_NOT_FOUND Failed to remove the key - no such key found.
  */
 nrf_802154_security_error_t nrf_802154_security_key_remove(nrf_802154_key_id_t * p_id);
+
+/**
+ * @brief Remove all stored 802.15.4 MAC Security Keys from the nRF 802.15.4 Radio Driver.
+ *
+ * @note This function is not reentrant and must be called from thread context only.
+ */
+void nrf_802154_security_key_remove_all(void);
 
 /**
  * @}
