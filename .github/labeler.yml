@@ -3,6 +3,3 @@
 "doc-required":
   - "doc/**/*"
   - "**/*.rst"
-
-"wifi-qa-required":
-  - "nrf_wifi/**/*"
