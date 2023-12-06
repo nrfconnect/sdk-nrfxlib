@@ -768,7 +768,6 @@ enum nrf_wifi_status rawtx_cmd_prepare(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ct
 				      __func__);
 		goto err;
 	}
-	def_dev_ctx->host_stats.total_tx_pkts += info.num_tx_pkts;
 
 	return NRF_WIFI_STATUS_SUCCESS;
 err:
@@ -872,7 +871,6 @@ enum nrf_wifi_status tx_cmd_prepare(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 		goto err;
 	}
 
-	def_dev_ctx->host_stats.total_tx_pkts += config->num_tx_pkts;
 	config->wdev_id = def_dev_ctx->tx_config.peers[peer_id].if_idx;
 
 	if ((vif_ctx->if_type == NRF_WIFI_IFTYPE_AP ||
