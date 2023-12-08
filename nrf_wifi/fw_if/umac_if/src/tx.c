@@ -1830,8 +1830,7 @@ enum nrf_wifi_status nrf_wifi_fmac_start_rawpkt_xmit(void *dev_ctx,
 		 * return failure as network buffer and device
 		 * context are NULL
 		 */
-		def_dev_ctx->raw_pkt_stats.raw_pkt_send_failure += 1;
-		return NRF_WIFI_STATUS_FAIL;
+		goto fail;
 	}
 
 	fmac_dev_ctx = (struct nrf_wifi_fmac_dev_ctx *)dev_ctx;
@@ -1885,6 +1884,8 @@ enum nrf_wifi_status nrf_wifi_fmac_start_rawpkt_xmit(void *dev_ctx,
 out:
 	def_dev_ctx->raw_pkt_stats.raw_pkts_sent += 1;
 	return NRF_WIFI_STATUS_SUCCESS;
+fail:
+	return NRF_WIFI_STATUS_FAIL;
 }
 #endif /* CONFIG_NRF700X_RAW_DATA_TX */
 
