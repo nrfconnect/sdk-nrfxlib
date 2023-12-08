@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2021, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -32,7 +32,7 @@
  *
  */
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stddef.h>
 #include <string.h>
 
@@ -77,7 +77,7 @@ void nrf_802154_tx_work_buffer_original_frame_update(
     uint8_t                              * p_original_frame,
     nrf_802154_transmitted_frame_props_t * p_frame_props)
 {
-    assert(p_frame_props != NULL);
+    NRF_802154_ASSERT(p_frame_props != NULL);
 
     p_frame_props->is_secured          = m_is_secured;
     p_frame_props->dynamic_data_is_set = m_is_dynamic_data_updated;

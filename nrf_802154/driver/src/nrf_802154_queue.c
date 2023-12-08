@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2019, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -36,7 +36,7 @@
  * @brief Module implementing simple FIFO queue.
  */
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 
 #include "nrf_802154_queue.h"
 
@@ -62,21 +62,21 @@ void nrf_802154_queue_init(nrf_802154_queue_t * p_queue,
                            size_t               memory_size,
                            size_t               item_size)
 {
-    assert(p_queue != NULL);
-    assert(p_memory != NULL);
-    assert(item_size != 0U);
+    NRF_802154_ASSERT(p_queue != NULL);
+    NRF_802154_ASSERT(p_memory != NULL);
+    NRF_802154_ASSERT(item_size != 0U);
 
     /* Due uint8_t type of nrf_802154_queue_t::item_size */
-    assert(item_size <= UINT8_MAX);
+    NRF_802154_ASSERT(item_size <= UINT8_MAX);
 
     size_t capacity = memory_size / item_size;
 
     /* Due simplified design, one entry in p_memory array is lost,
      * see nrf_802154_queue_is_empty and nrf_802154_queue_is_full */
-    assert(capacity >= 2U);
+    NRF_802154_ASSERT(capacity >= 2U);
 
     /* Due uint8_t type of nrf_802154_queue_t::capacity */
-    assert(capacity <= UINT8_MAX);
+    NRF_802154_ASSERT(capacity <= UINT8_MAX);
 
     p_queue->p_memory  = p_memory;
     p_queue->capacity  = capacity;

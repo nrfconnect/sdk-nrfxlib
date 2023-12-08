@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2021, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -38,7 +38,7 @@
 
 #include "nrf_802154_aes_ccm.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <string.h>
 
 #include "hal/nrf_ecb.h"
@@ -521,7 +521,7 @@ bool nrf_802154_aes_ccm_transform_prepare(const nrf_802154_aes_ccm_data_t * p_ae
         offset = p_aes_ccm_data->plain_text_data - p_aes_ccm_data->raw_frame;
     }
 
-    assert((offset >= 0) && (offset <= MAX_PACKET_SIZE + PHR_SIZE));
+    NRF_802154_ASSERT((offset >= 0) && (offset <= MAX_PACKET_SIZE + PHR_SIZE));
 
     nrf_802154_tx_work_buffer_plain_text_offset_set(offset);
     mp_work_buffer = nrf_802154_tx_work_buffer_enable_for(p_aes_ccm_data->raw_frame);

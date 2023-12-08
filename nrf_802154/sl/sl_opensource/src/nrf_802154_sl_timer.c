@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2020, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -38,7 +38,6 @@
 #include <stdint.h>
 
 #include <zephyr/kernel.h>
-#include <assert.h>
 
 #include "nrf_802154_sl_timer.h"
 

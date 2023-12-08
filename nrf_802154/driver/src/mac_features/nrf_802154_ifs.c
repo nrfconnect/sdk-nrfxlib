@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2019, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -40,7 +40,7 @@
 
 #include "nrf_802154_ifs.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdint.h>
 #include <string.h>
 
@@ -271,7 +271,7 @@ bool nrf_802154_ifs_pretransmission(
 
     if (!ifs_state_set(IFS_STATE_STOPPED, IFS_STATE_ARMED))
     {
-        assert(false);
+        NRF_802154_ASSERT(false);
     }
     else
     {
@@ -285,7 +285,7 @@ bool nrf_802154_ifs_pretransmission(
 
         if (nrf_802154_sl_timer_add(&m_timer) != NRF_802154_SL_TIMER_RET_SUCCESS)
         {
-            assert(false);
+            NRF_802154_ASSERT(false);
         }
     }
 
@@ -294,7 +294,7 @@ bool nrf_802154_ifs_pretransmission(
 
 void nrf_802154_ifs_transmitted_hook(const uint8_t * p_frame)
 {
-    assert(p_frame[0] != 0U);
+    NRF_802154_ASSERT(p_frame[0] != 0U);
 
     m_last_frame_timestamp = nrf_802154_sl_timer_current_time_get();
 

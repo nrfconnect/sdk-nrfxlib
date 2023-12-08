@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2017, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -35,7 +35,7 @@
 #ifndef NRF_802154_UTILS_H__
 #define NRF_802154_UTILS_H__
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdint.h>
 #include <string.h>
 #include "nrfx.h"
@@ -190,7 +190,7 @@ static inline uint64_t NRF_802154_US_TO_RTC_TICKS(uint64_t time)
        value down to RTC ticks.*/
 
     // ceil((time * (2^56 / 15625)) >> (56 - 9))
-    assert(t1 <= 1453125);
+    NRF_802154_ASSERT(t1 <= 1453125);
     u1   = (t1 * 0x431bde82d7b); // (time * (2^56 / 15625))
     u1  += 0x7fffffffffff;       // round up
     u1 >>= 47;                   // ceil(u1 >> (56 - 9))

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
+# Copyright (c) 2021, Nordic Semiconductor ASA
 # All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
@@ -50,7 +50,6 @@ target_sources(nrf-802154-driver
     src/nrf_802154_core_hooks.c
     src/nrf_802154_critical_section.c
     src/nrf_802154_debug.c
-    src/nrf_802154_debug_assert.c
     src/nrf_802154_encrypt.c
     src/nrf_802154_pib.c
     src/nrf_802154_peripherals_alloc.c

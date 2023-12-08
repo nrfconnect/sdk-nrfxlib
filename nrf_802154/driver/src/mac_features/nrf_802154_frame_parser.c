@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2018, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -476,7 +476,7 @@ static bool parse_state_advance(nrf_802154_frame_parser_data_t * p_parser_data,
                 return true;
 
             default:
-                assert(false);
+                NRF_802154_ASSERT(false);
                 return false;
         }
 

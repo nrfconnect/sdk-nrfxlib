@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2017, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -40,7 +40,6 @@
 
 #include "nrf_802154_imm_ack_generator.h"
 
-#include <assert.h>
 #include <string.h>
 
 #include "nrf_802154_ack_data.h"

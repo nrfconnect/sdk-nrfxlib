@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2017, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -40,7 +40,7 @@
 
 #include "nrf_802154_pib.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -313,7 +313,7 @@ void nrf_802154_pib_cca_cfg_set(const nrf_802154_cca_cfg_t * p_cca_cfg)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 }
 
@@ -431,7 +431,7 @@ uint16_t nrf_802154_pib_ifs_min_sifs_period_get(void)
 
 void nrf_802154_pib_ifs_min_sifs_period_set(uint16_t period)
 {
-    assert(period >= TURNAROUND_TIME);
+    NRF_802154_ASSERT(period >= TURNAROUND_TIME);
 
     m_data.ifs.min_sifs_period_us = period;
 }

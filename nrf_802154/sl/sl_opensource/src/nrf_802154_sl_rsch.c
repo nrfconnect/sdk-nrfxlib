@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2020, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -34,7 +34,7 @@
 
 #include "nrf_802154_sl_rsch.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stddef.h>
 #include <string.h>
 #include <nrfx.h>
@@ -79,7 +79,7 @@ bool nrf_802154_rsch_timeslot_request(uint32_t length_us)
 {
     (void)length_us;
 
-    assert(m_ready);
+    NRF_802154_ASSERT(m_ready);
 
     return true;
 }
@@ -119,7 +119,7 @@ void nrf_802154_rsch_crit_sect_prio_request(rsch_prio_t prio)
         }
         else if (m_prev_prio == RSCH_PRIO_IDLE)
         {
-            assert(!m_ready);
+            NRF_802154_ASSERT(!m_ready);
 
             nrf_802154_clock_hfclk_start();
         }

@@ -18,6 +18,12 @@ Added
 
 * Added the :c:func:`nrf_802154_security_key_remove_all` function that allows you to remove all the stored security keys. (KRKNWK-18108)
 * Added :c:macro:`NRF_802154_MAX_PENDING_NOTIFICATIONS` that sets the maximum number of simultaneously pending notifications the driver can issue. (KRKNWK-18110)
+* Added an assert abstraction layer to allow for the customization of the detection and handling of abnormal conditions. (KRKNWK-18116)
+
+Removed
+=======
+
+* Removed the :file:`nrf_802154_debug_assert.c` file. (KRKNWK-18116)
 
 nRF Connect SDK v2.5.0 - nRF 802.15.4 Radio Driver
 **************************************************

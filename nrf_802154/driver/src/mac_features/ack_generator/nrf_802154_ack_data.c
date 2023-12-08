@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2018, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -41,7 +41,7 @@
 
 #include "nrf_802154_ack_data.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <string.h>
 
 #include "mac_features/nrf_802154_frame_parser.h"
@@ -226,7 +226,7 @@ static bool addr_binary_search(const uint8_t       * p_addr,
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
     }
 
@@ -313,7 +313,7 @@ static bool addr_index_find(const uint8_t       * p_addr,
 
         default:
             valid_data_type = false;
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
     }
 
@@ -472,7 +472,7 @@ static bool addr_add(const uint8_t       * p_addr,
 
         default:
             valid_data_type = false;
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
     }
 
@@ -544,7 +544,7 @@ static bool addr_remove(uint32_t location, nrf_802154_ack_data_t data_type, bool
 
         default:
             valid_data_type = false;
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
     }
 
@@ -676,7 +676,7 @@ void nrf_802154_ack_data_src_addr_matching_method_set(nrf_802154_src_addr_match_
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
 }
@@ -702,7 +702,7 @@ bool nrf_802154_ack_data_pending_bit_should_be_set(
 
         default:
             ret = false;
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     return ret;

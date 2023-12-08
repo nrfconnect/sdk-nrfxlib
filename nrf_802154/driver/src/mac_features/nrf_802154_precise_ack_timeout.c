@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2018, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -42,7 +42,7 @@
 
 #include "nrf_802154_ack_timeout.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -97,14 +97,14 @@ static void timeout_timer_fired(nrf_802154_sl_timer_t * p_timer)
 static void timeout_timer_retry(void)
 {
     m_dt += RETRY_DELAY;
-    assert(m_dt <= MAX_RETRY_DELAY);
+    NRF_802154_ASSERT(m_dt <= MAX_RETRY_DELAY);
 
     m_timer.trigger_time += RETRY_DELAY;
 
     nrf_802154_sl_timer_ret_t ret;
 
     ret = nrf_802154_sl_timer_add(&m_timer);
-    assert(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
+    NRF_802154_ASSERT(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
     (void)ret;
 }
 
@@ -134,7 +134,7 @@ static void timeout_timer_start(void)
     m_procedure_is_active = true;
 
     ret = nrf_802154_sl_timer_add(&m_timer);
-    assert(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
+    NRF_802154_ASSERT(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
     (void)ret;
 }
 
@@ -203,14 +203,14 @@ bool nrf_802154_ack_timeout_abort(nrf_802154_term_t term_lvl, req_originator_t r
 
 void nrf_802154_ack_timeout_transmitted_hook(const uint8_t * p_frame)
 {
-    assert((p_frame == mp_frame) || (!m_procedure_is_active));
+    NRF_802154_ASSERT((p_frame == mp_frame) || (!m_procedure_is_active));
 
     timeout_timer_stop();
 }
 
 void nrf_802154_ack_timeout_rx_ack_started_hook(void)
 {
-    assert(m_procedure_is_active);
+    NRF_802154_ASSERT(m_procedure_is_active);
 
     timeout_timer_stop();
 }
@@ -218,7 +218,7 @@ void nrf_802154_ack_timeout_rx_ack_started_hook(void)
 bool nrf_802154_ack_timeout_tx_failed_hook(uint8_t * p_frame, nrf_802154_tx_error_t error)
 {
     (void)error;
-    assert((p_frame == mp_frame) || (!m_procedure_is_active));
+    NRF_802154_ASSERT((p_frame == mp_frame) || (!m_procedure_is_active));
 
     timeout_timer_stop();
 

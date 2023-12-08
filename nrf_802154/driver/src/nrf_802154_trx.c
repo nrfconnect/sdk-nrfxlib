@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2019, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -36,7 +36,7 @@
 
 #include "nrf_802154_trx.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <string.h>
 
 #include "nrf_802154_config.h"
@@ -350,7 +350,7 @@ static void nrf_radio_reset(void)
 
 static void channel_set(uint8_t channel)
 {
-    assert(channel >= 11U && channel <= 26U);
+    NRF_802154_ASSERT(channel >= 11U && channel <= 26U);
 
     nrf_radio_frequency_set(NRF_RADIO, 2405U + 5U * (channel - 11U));
 }
@@ -616,7 +616,7 @@ static inline void wait_until_radio_is_disabled(void)
 #endif
     }
 
-    assert(radio_is_disabled);
+    NRF_802154_ASSERT(radio_is_disabled);
     (void)radio_is_disabled;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -649,7 +649,7 @@ void nrf_802154_trx_enable(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_trx_state == TRX_STATE_DISABLED);
+    NRF_802154_ASSERT(m_trx_state == TRX_STATE_DISABLED);
 
     nrf_timer_init();
     nrf_radio_reset();
@@ -702,7 +702,7 @@ void nrf_802154_trx_enable(void)
 
     irq_init();
 
-    assert(nrf_radio_shorts_get(NRF_RADIO) == SHORTS_IDLE);
+    NRF_802154_ASSERT(nrf_radio_shorts_get(NRF_RADIO) == SHORTS_IDLE);
 
 #if defined(DPPI_PRESENT)
     mpsl_fem_abort_set(NRF_802154_DPPI_RADIO_DISABLED,
@@ -773,7 +773,7 @@ static void ppi_all_clear(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
     nrf_802154_trx_ppi_for_disable();
 }
@@ -873,7 +873,7 @@ static void rx_automatic_antenna_handle(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
     }
 }
@@ -902,11 +902,11 @@ static void rx_antenna_update(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
     }
 
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 }
 
@@ -935,19 +935,19 @@ static void tx_antenna_update(void)
 
         case NRF_802154_SL_ANT_DIV_MODE_AUTO:
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
     }
 
     if (!result)
     {
-        assert(false);
+        NRF_802154_ASSERT(false);
     }
 }
 
 void nrf_802154_trx_antenna_update(void)
 {
-    assert(m_trx_state != TRX_STATE_DISABLED);
+    NRF_802154_ASSERT(m_trx_state != TRX_STATE_DISABLED);
 
     switch (m_trx_state)
     {
@@ -1011,7 +1011,7 @@ bool nrf_802154_trx_receive_is_buffer_missing(void)
             return m_flags.missing_receive_buffer;
 
         default:
-            assert(!m_flags.missing_receive_buffer);
+            NRF_802154_ASSERT(!m_flags.missing_receive_buffer);
             return false;
     }
 }
@@ -1033,7 +1033,7 @@ static void receive_buffer_missing_buffer_set(void * p_receive_buffer)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     m_flags.missing_receive_buffer = false;
@@ -1111,7 +1111,7 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
     nrf_radio_shorts_set(NRF_RADIO, shorts);
 
     // Set BCC
-    assert(bcc != 0U);
+    NRF_802154_ASSERT(bcc != 0U);
     nrf_radio_bcc_set(NRF_RADIO, bcc * 8U);
 
     // Enable IRQs
@@ -1148,7 +1148,7 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
     if (allow_sync_swi)
     {
 #if !defined(RADIO_INTENSET_SYNC_Msk)
-        assert(false);
+        NRF_802154_ASSERT(false);
 #else
         // The RADIO can't generate interrupt on EVENT_SYNC. Path to generate interrupt:
         // RADIO.EVENT_SYNC -> PPI_RADIO_SYNC_EGU_SYNC -> EGU.TASK_SYNC -> EGU.EVENT_SYNC ->
@@ -1411,8 +1411,8 @@ bool nrf_802154_trx_transmit_ack(const void * p_transmit_buffer, uint32_t delay_
 
     bool result = false;
 
-    assert(m_trx_state == TRX_STATE_RXFRAME_FINISHED);
-    assert(p_transmit_buffer != NULL);
+    NRF_802154_ASSERT(m_trx_state == TRX_STATE_RXFRAME_FINISHED);
+    NRF_802154_ASSERT(p_transmit_buffer != NULL);
 
     m_trx_state = TRX_STATE_TXACK;
 
@@ -1708,7 +1708,7 @@ void nrf_802154_trx_abort(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -1747,7 +1747,7 @@ bool nrf_802154_trx_go_idle(void)
     switch (m_trx_state)
     {
         case TRX_STATE_DISABLED:
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
 
         case TRX_STATE_IDLE:
@@ -1769,7 +1769,7 @@ bool nrf_802154_trx_go_idle(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -1889,7 +1889,7 @@ void nrf_802154_trx_standalone_cca(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert((m_trx_state == TRX_STATE_IDLE) || (m_trx_state == TRX_STATE_FINISHED));
+    NRF_802154_ASSERT((m_trx_state == TRX_STATE_IDLE) || (m_trx_state == TRX_STATE_FINISHED));
 
     m_trx_state = TRX_STATE_STANDALONE_CCA;
 
@@ -1950,7 +1950,7 @@ void nrf_802154_trx_continuous_carrier(const nrf_802154_fal_tx_power_split_t * p
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert((m_trx_state == TRX_STATE_IDLE) || (m_trx_state == TRX_STATE_FINISHED));
+    NRF_802154_ASSERT((m_trx_state == TRX_STATE_IDLE) || (m_trx_state == TRX_STATE_FINISHED));
 
     m_trx_state = TRX_STATE_CONTINUOUS_CARRIER;
 
@@ -1975,7 +1975,7 @@ void nrf_802154_trx_continuous_carrier_restart(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_trx_state == TRX_STATE_CONTINUOUS_CARRIER);
+    NRF_802154_ASSERT(m_trx_state == TRX_STATE_CONTINUOUS_CARRIER);
 
     // Continuous carrier PPIs are configured without self-disabling
     // Triggering RADIO.TASK_DISABLE causes ramp-down -> RADIO.EVENTS_DISABLED -> EGU.TASK -> EGU.EVENT ->
@@ -2006,8 +2006,8 @@ void nrf_802154_trx_modulated_carrier(const void                            * p_
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert((m_trx_state == TRX_STATE_IDLE) || (m_trx_state == TRX_STATE_FINISHED));
-    assert(p_transmit_buffer != NULL);
+    NRF_802154_ASSERT((m_trx_state == TRX_STATE_IDLE) || (m_trx_state == TRX_STATE_FINISHED));
+    NRF_802154_ASSERT(p_transmit_buffer != NULL);
 
     m_trx_state = TRX_STATE_MODULATED_CARRIER;
 
@@ -2038,7 +2038,7 @@ void nrf_802154_trx_modulated_carrier_restart(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_trx_state == TRX_STATE_MODULATED_CARRIER);
+    NRF_802154_ASSERT(m_trx_state == TRX_STATE_MODULATED_CARRIER);
 
     // Modulated carrier PPIs are configured without self-disabling
     // Triggering RADIO.TASK_DISABLE causes ramp-down -> RADIO.EVENTS_DISABLED -> EGU.TASK -> EGU.EVENT ->
@@ -2072,14 +2072,14 @@ void nrf_802154_trx_energy_detection(uint32_t ed_count)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert((m_trx_state == TRX_STATE_FINISHED) || (m_trx_state == TRX_STATE_IDLE));
+    NRF_802154_ASSERT((m_trx_state == TRX_STATE_FINISHED) || (m_trx_state == TRX_STATE_IDLE));
 
     m_trx_state = TRX_STATE_ENERGY_DETECTION;
 
     ed_count--;
     /* Check that vd_count will fit into defined bits of register */
 #if defined(RADIO_EDCNT_EDCNT_Msk)
-    assert( (ed_count & (~RADIO_EDCNT_EDCNT_Msk)) == 0U);
+    NRF_802154_ASSERT( (ed_count & (~RADIO_EDCNT_EDCNT_Msk)) == 0U);
 #endif
 
     nrf_radio_ed_loop_count_set(NRF_RADIO, ed_count);
@@ -2152,7 +2152,7 @@ static void irq_handler_ready(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2193,7 +2193,7 @@ static void irq_handler_address(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2206,7 +2206,7 @@ static void irq_handler_bcmatch(void)
     uint8_t current_bcc;
     uint8_t next_bcc;
 
-    assert(m_trx_state == TRX_STATE_RXFRAME);
+    NRF_802154_ASSERT(m_trx_state == TRX_STATE_RXFRAME);
 
     m_flags.psdu_being_received = true;
 
@@ -2255,7 +2255,7 @@ static void irq_handler_crcerror(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2281,7 +2281,7 @@ static void irq_handler_crcok(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2464,7 +2464,7 @@ static void irq_handler_phyend(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2511,7 +2511,7 @@ static void irq_handler_disabled(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2534,7 +2534,7 @@ static void irq_handler_ccaidle(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2547,7 +2547,7 @@ static void irq_handler_ccabusy(void)
     switch (m_trx_state)
     {
         case TRX_STATE_TXFRAME:
-            assert(m_transmit_with_cca);
+            NRF_802154_ASSERT(m_transmit_with_cca);
 
             if (m_remaining_cca_attempts > 1)
             {
@@ -2623,7 +2623,7 @@ static void irq_handler_ccabusy(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2633,7 +2633,7 @@ static void irq_handler_edend(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_trx_state == TRX_STATE_ENERGY_DETECTION);
+    NRF_802154_ASSERT(m_trx_state == TRX_STATE_ENERGY_DETECTION);
 
     uint8_t ed_sample = nrf_radio_ed_sample_get(NRF_RADIO);
 
@@ -2650,7 +2650,7 @@ static void irq_handler_sync(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_trx_state == TRX_STATE_RXFRAME);
+    NRF_802154_ASSERT(m_trx_state == TRX_STATE_RXFRAME);
 
     nrf_802154_trx_receive_frame_prestarted();
 

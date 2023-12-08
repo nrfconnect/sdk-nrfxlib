@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2021, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -34,7 +34,7 @@
 
 #include "nrf_802154_encrypt.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <string.h>
 
 #include "nrf_802154_aes_ccm.h"
@@ -242,7 +242,7 @@ bool aes_ccm_data_a_data_and_m_data_prepare(
         default:
             // No more frame types exist.
             result = false;
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
     }
 
@@ -345,7 +345,7 @@ bool nrf_802154_encrypt_tx_setup(
                                                 p_frame[PHR_OFFSET] + PHR_SIZE,
                                                 PARSE_LEVEL_FULL,
                                                 &frame_data);
-    assert(success);
+    NRF_802154_ASSERT(success);
     (void)success;
 
     if (!nrf_802154_frame_parser_security_enabled_bit_is_set(&frame_data) ||
