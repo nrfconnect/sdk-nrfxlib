@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
+# Copyright (c) 2021, Nordic Semiconductor ASA
 # All rights reserved.
 #
 # SPDX-License-Identifier: BSD-3-Clause
@@ -56,6 +56,17 @@ target_sources(nrf-802154-serialization
     src/nrf_802154_spinel.c
     src/nrf_802154_spinel_dec.c
 )
+
+if(CONFIG_NATIVE_LIBRARY)
+  # The spinel header defines the spinel API, with SPINEL_API_EXTERN, as externally linkable.
+  # When building Zephyr for the native_simulator targets (including bsim targets) it would
+  # cause the linker to find duplicates when building the final executable if multiple MCUs
+  # include each this code. We fix this by having the native_simulator build make those symbols
+  # local before linking the final executable.
+  set_property(TARGET native_simulator APPEND PROPERTY
+    LOCALIZE_EXTRA_OPTIONS "--localize-symbol=spinel*"
+  )
+endif()
 
 if (SER_HOST)
   target_sources(nrf-802154-serialization

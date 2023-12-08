@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2017, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -40,7 +40,7 @@
 
 #include "nrf_802154_request.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -256,7 +256,7 @@ static nrf_802154_req_data_t * req_enter(void)
 {
     nrf_802154_mcu_critical_enter(m_mcu_cs);
 
-    assert(!nrf_802154_queue_is_full(&m_requests_queue));
+    NRF_802154_ASSERT(!nrf_802154_queue_is_full(&m_requests_queue));
 
     return (nrf_802154_req_data_t *)nrf_802154_queue_push_begin(&m_requests_queue);
 }
@@ -279,7 +279,7 @@ static void req_exit(void)
 /** Assert if SWI interrupt is disabled. */
 static inline void assert_interrupt_status(void)
 {
-    assert(nrf_802154_irq_is_enabled(nrfx_get_irq_number(NRF_802154_EGU_INSTANCE)));
+    NRF_802154_ASSERT(nrf_802154_irq_is_enabled(nrfx_get_irq_number(NRF_802154_EGU_INSTANCE)));
 }
 
 #define REQUEST_FUNCTION(func_core, func_swi, ...) \
@@ -948,7 +948,7 @@ static void irq_handler_req_event(void)
 #endif // NRF_802154_DELAYED_TRX_ENABLED
 
             default:
-                assert(false);
+                NRF_802154_ASSERT(false);
         }
 
         nrf_802154_queue_pop_commit(&m_requests_queue);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2018, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -40,7 +40,7 @@
 
 #include "nrf_802154_enh_ack_generator.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <string.h>
 
 #include "mac_features/nrf_802154_frame_parser.h"
@@ -237,8 +237,8 @@ static uint8_t destination_set(const nrf_802154_frame_parser_data_t * p_frame_da
     // Fill the Ack destination address field.
     if ((p_ack_dst_addr != NULL) && (p_frame_src_addr != NULL))
     {
-        assert(nrf_802154_frame_parser_dst_addr_is_extended(p_ack_data) ==
-               nrf_802154_frame_parser_src_addr_is_extended(p_frame_data));
+        NRF_802154_ASSERT(nrf_802154_frame_parser_dst_addr_is_extended(p_ack_data) ==
+                          nrf_802154_frame_parser_src_addr_is_extended(p_frame_data));
 
         memcpy(p_ack_dst_addr, p_frame_src_addr, src_addr_size);
         bytes_written += src_addr_size;
@@ -359,7 +359,7 @@ static bool security_header_set(const nrf_802154_frame_parser_data_t * p_frame_d
     result = nrf_802154_frame_parser_valid_data_extend(p_ack_data,
                                                        ack_sec_ctrl_offset + PHR_SIZE,
                                                        PARSE_LEVEL_SEC_CTRL_OFFSETS);
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 
     if (nrf_802154_frame_parser_sec_ctrl_sec_lvl_get(p_frame_data) == SECURITY_LEVEL_NONE)
@@ -407,7 +407,7 @@ static void ie_header_set(const uint8_t                  * p_ie_data,
         return;
     }
 
-    assert(p_ack_ie != NULL);
+    NRF_802154_ASSERT(p_ack_ie != NULL);
 
     memcpy(p_ack_ie, p_ie_data, ie_data_len);
 
@@ -437,7 +437,7 @@ static uint8_t ie_header_terminate(const uint8_t                  * p_ie_data,
     uint8_t * p_ack_ie = (uint8_t *)p_ack_data->p_frame + p_ack_data->helper.aux_sec_hdr_end_offset;
     uint8_t   ie_hdr_term[IE_HEADER_SIZE];
 
-    assert(p_ack_ie != NULL);
+    NRF_802154_ASSERT(p_ack_ie != NULL);
 
     host_16_to_little((IE_HT2) << IE_HEADER_ELEMENT_ID_OFFSET, ie_hdr_term);
 
@@ -484,7 +484,7 @@ static void fcf_process(const nrf_802154_frame_parser_data_t * p_frame_data)
                                                             m_ack[PHR_OFFSET] + PHR_SIZE,
                                                             PARSE_LEVEL_FCF_OFFSETS);
 
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 }
 
@@ -512,7 +512,7 @@ static void addr_end_process(const nrf_802154_frame_parser_data_t * p_frame_data
                                                             m_ack[PHR_OFFSET] + PHR_SIZE,
                                                             PARSE_LEVEL_ADDRESSING_END);
 
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 }
 
@@ -531,7 +531,7 @@ static bool aux_sec_hdr_process(const nrf_802154_frame_parser_data_t * p_frame_d
                                                             m_ack[PHR_OFFSET] + PHR_SIZE,
                                                             PARSE_LEVEL_AUX_SEC_HDR_END);
 
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 
     return true;
@@ -550,7 +550,7 @@ static void ie_process(const nrf_802154_frame_parser_data_t * p_frame_data)
                                                             m_ack[PHR_OFFSET] + PHR_SIZE,
                                                             PARSE_LEVEL_FULL);
 
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 }
 
@@ -675,7 +675,7 @@ uint8_t * nrf_802154_enh_ack_generator_create(
             return m_ack;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
             return NULL;
     }
 }

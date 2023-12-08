@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2020, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -40,7 +40,7 @@
 
 #include "nrf_802154_buffer_mgr_src.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 
 void nrf_802154_buffer_mgr_src_init(
     nrf_802154_buffer_mgr_src_t * p_obj,
@@ -50,7 +50,7 @@ void nrf_802154_buffer_mgr_src_init(
     /* Implementation is for 32-bit architectures only
      * When this is not true we need mapping uint32->void*
      * When this is true only presence of buffer handle can be checked */
-    assert(sizeof(void *) == sizeof(uint32_t) );
+    NRF_802154_ASSERT(sizeof(void *) == sizeof(uint32_t) );
 
     nrf_802154_kvmap_init(&p_obj->map,
                           p_map_memory,

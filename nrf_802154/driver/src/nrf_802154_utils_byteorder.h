@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2021, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -34,7 +34,7 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <assert.h>
+#include "nrf_802154_assert.h"
 
 #ifndef NRF_802154_UTILS_BYTEORDER_H
 #define NRF_802154_UTILS_BYTEORDER_H
@@ -60,7 +60,7 @@
  */
 static inline void host_64_to_little(uint64_t value, uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
     memcpy(p_buffer, &value, sizeof(uint64_t));
 }
 
@@ -71,7 +71,7 @@ static inline void host_64_to_little(uint64_t value, uint8_t * p_buffer)
  */
 static inline void host_32_to_little(uint32_t value, uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
     memcpy(p_buffer, &value, sizeof(uint32_t));
 }
 
@@ -82,7 +82,7 @@ static inline void host_32_to_little(uint32_t value, uint8_t * p_buffer)
  */
 static inline void host_24_to_little(uint32_t value, uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
     memcpy(p_buffer, &value, 3);
 }
 
@@ -93,7 +93,7 @@ static inline void host_24_to_little(uint32_t value, uint8_t * p_buffer)
  */
 static inline void host_16_to_little(uint16_t value, uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
     memcpy(p_buffer, &value, sizeof(uint16_t));
 }
 
@@ -105,7 +105,7 @@ static inline void host_16_to_little(uint16_t value, uint8_t * p_buffer)
  */
 static inline uint64_t little_64_to_host(uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint64_t value = 0;
 
@@ -122,7 +122,7 @@ static inline uint64_t little_64_to_host(uint8_t * p_buffer)
  */
 static inline uint32_t little_32_to_host(uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint32_t value = 0;
 
@@ -139,7 +139,7 @@ static inline uint32_t little_32_to_host(uint8_t * p_buffer)
  */
 static inline uint32_t little_24_to_host(uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint32_t value = 0;
 
@@ -156,7 +156,7 @@ static inline uint32_t little_24_to_host(uint8_t * p_buffer)
  */
 static inline uint16_t little_16_to_host(uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint16_t value = 0;
 
@@ -172,7 +172,7 @@ static inline uint16_t little_16_to_host(uint8_t * p_buffer)
  */
 static inline void host_64_to_big(uint64_t value, uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint8_t shift = (sizeof(uint64_t) - 1) * 8;
 
@@ -189,7 +189,7 @@ static inline void host_64_to_big(uint64_t value, uint8_t * p_buffer)
  */
 static inline void host_32_to_big(uint32_t value, uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint8_t shift = (sizeof(uint32_t) - 1) * 8;
 
@@ -206,7 +206,7 @@ static inline void host_32_to_big(uint32_t value, uint8_t * p_buffer)
  */
 static inline void host_24_to_big(uint32_t value, uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint8_t shift = (sizeof(uint32_t) - 2) * 8;
 
@@ -223,7 +223,7 @@ static inline void host_24_to_big(uint32_t value, uint8_t * p_buffer)
  */
 static inline void host_16_to_big(uint16_t value, uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint8_t shift = (sizeof(uint16_t) - 1) * 8;
 
@@ -241,7 +241,7 @@ static inline void host_16_to_big(uint16_t value, uint8_t * p_buffer)
  */
 static inline uint64_t big_64_to_host(uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint64_t value = 0;
 
@@ -261,7 +261,7 @@ static inline uint64_t big_64_to_host(uint8_t * p_buffer)
  */
 static inline uint32_t big_32_to_host(uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint32_t value = 0;
 
@@ -281,7 +281,7 @@ static inline uint32_t big_32_to_host(uint8_t * p_buffer)
  */
 static inline uint32_t big_24_to_host(uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint32_t value = 0;
 
@@ -301,7 +301,7 @@ static inline uint32_t big_24_to_host(uint8_t * p_buffer)
  */
 static inline uint16_t big_16_to_host(uint8_t * p_buffer)
 {
-    assert(p_buffer != NULL);
+    NRF_802154_ASSERT(p_buffer != NULL);
 
     uint16_t value = 0;
 

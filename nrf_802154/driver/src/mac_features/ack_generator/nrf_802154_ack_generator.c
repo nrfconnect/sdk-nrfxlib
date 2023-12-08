@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2017, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -40,7 +40,7 @@
 
 #include "nrf_802154_ack_generator.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 
 #include "nrf_802154_const.h"
 #include "nrf_802154_enh_ack_generator.h"
@@ -87,7 +87,7 @@ void nrf_802154_ack_generator_reset(void)
 uint8_t * nrf_802154_ack_generator_create(const nrf_802154_frame_parser_data_t * p_frame_data)
 {
     // This function should not be called if ACK is not requested.
-    assert(nrf_802154_frame_parser_ar_bit_is_set(p_frame_data));
+    NRF_802154_ASSERT(nrf_802154_frame_parser_ar_bit_is_set(p_frame_data));
 
     switch (frame_version_is_2015_or_above(p_frame_data))
     {

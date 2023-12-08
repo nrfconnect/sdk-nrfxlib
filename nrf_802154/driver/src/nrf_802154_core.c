@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2017, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -42,7 +42,7 @@
 
 #include "nrf_802154_core.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -607,7 +607,7 @@ static rsch_prio_t min_required_rsch_prio(radio_state_t state)
             }
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
             return RSCH_PRIO_IDLE;
     }
 }
@@ -714,7 +714,7 @@ static bool can_terminate_current_operation(radio_state_t     state,
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     return result;
@@ -778,7 +778,7 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 }
 
@@ -906,7 +906,7 @@ static nrf_802154_trx_receive_notifications_t make_trx_frame_receive_notificatio
                 break;
 
             default:
-                assert(false);
+                NRF_802154_ASSERT(false);
         }
     }
 
@@ -944,7 +944,7 @@ static nrf_802154_trx_transmit_notifications_t make_trx_frame_transmit_notificat
                 break;
 
             default:
-                assert(false);
+                NRF_802154_ASSERT(false);
         }
     }
 
@@ -1004,7 +1004,7 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
              * The trigger has occurred. This has happened too early so there is a high risk
              * that the radio will not ramp up. It is necessary to abort the operation.
              */
-            assert(p_abort_shall_follow);
+            NRF_802154_ASSERT(p_abort_shall_follow);
             *p_abort_shall_follow = true;
         }
     }
@@ -1249,7 +1249,7 @@ static void on_timeslot_ended(void)
         nrf_802154_rsch_continuous_ended();
 
         result = nrf_802154_core_hooks_terminate(NRF_802154_TERM_802154, REQ_ORIG_RSCH);
-        assert(result);
+        NRF_802154_ASSERT(result);
         (void)result;
 
         switch (m_state)
@@ -1297,7 +1297,7 @@ static void on_timeslot_ended(void)
                 break;
 
             default:
-                assert(false);
+                NRF_802154_ASSERT(false);
         }
     }
 
@@ -1311,7 +1311,7 @@ static void on_preconditions_denied(radio_state_t state)
     bool result;
 
     result = nrf_802154_core_hooks_terminate(NRF_802154_TERM_802154, REQ_ORIG_RSCH);
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 
     bool receiving_psdu_now = false;
@@ -1361,7 +1361,7 @@ static void on_preconditions_denied(radio_state_t state)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     operation_terminated_notify(state, receiving_psdu_now);
@@ -1412,7 +1412,7 @@ static void on_preconditions_approved(radio_state_t state)
 #endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -1528,7 +1528,7 @@ void nrf_802154_trx_receive_ack_started(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_state == RADIO_STATE_RX_ACK);
+    NRF_802154_ASSERT(m_state == RADIO_STATE_RX_ACK);
     nrf_802154_core_hooks_rx_ack_started();
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -1609,15 +1609,16 @@ void nrf_802154_trx_receive_frame_prestarted(void)
     if (!antenna_diversity_is_enabled())
     {
         // Only assert if notifications mask would not allow for calling this function.
-        assert((m_trx_receive_frame_notifications_mask & TRX_RECEIVE_NOTIFICATION_PRESTARTED) !=
-               0U);
+        NRF_802154_ASSERT((m_trx_receive_frame_notifications_mask &
+                           TRX_RECEIVE_NOTIFICATION_PRESTARTED) !=
+                          0U);
     }
     else
     {
         // Antenna diversity uses this function for detecting possible preamble on air.
     }
 
-    assert(m_state == RADIO_STATE_RX);
+    NRF_802154_ASSERT(m_state == RADIO_STATE_RX);
 
 #if (NRF_802154_STATS_COUNT_ENERGY_DETECTED_EVENTS)
     nrf_802154_stat_counter_increment(received_energy_events);
@@ -1657,7 +1658,7 @@ void nrf_802154_trx_receive_frame_prestarted(void)
         nrf_802154_sl_timer_ret_t ret;
 
         ret = nrf_802154_sl_timer_add(&m_rx_prestarted_timer);
-        assert(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
+        NRF_802154_ASSERT(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
         (void)ret;
 
         m_rx_prestarted_trig_count += 1;
@@ -1670,8 +1671,9 @@ void nrf_802154_trx_receive_frame_started(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_state == RADIO_STATE_RX);
-    assert((m_trx_receive_frame_notifications_mask & TRX_RECEIVE_NOTIFICATION_STARTED) != 0U);
+    NRF_802154_ASSERT(m_state == RADIO_STATE_RX);
+    NRF_802154_ASSERT(
+        (m_trx_receive_frame_notifications_mask & TRX_RECEIVE_NOTIFICATION_STARTED) != 0U);
 
 #if (NRF_802154_STATS_COUNT_RECEIVED_PREAMBLES)
     nrf_802154_stat_counter_increment(received_preambles);
@@ -1718,7 +1720,7 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
     nrf_802154_frame_parser_level_t prev_level    =
         nrf_802154_frame_parser_parse_level_get(&m_current_rx_frame_data);
 
-    assert(m_state == RADIO_STATE_RX);
+    NRF_802154_ASSERT(m_state == RADIO_STATE_RX);
 
     switch (prev_level)
     {
@@ -1883,7 +1885,7 @@ void nrf_802154_trx_receive_frame_crcerror(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_state == RADIO_STATE_RX);
+    NRF_802154_ASSERT(m_state == RADIO_STATE_RX);
     rx_flags_clear();
     rx_data_clear();
 
@@ -1910,7 +1912,7 @@ void nrf_802154_trx_receive_ack_crcerror(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_state == RADIO_STATE_RX_ACK);
+    NRF_802154_ASSERT(m_state == RADIO_STATE_RX_ACK);
 
     on_bad_ack();
 
@@ -2086,7 +2088,7 @@ void nrf_802154_trx_transmit_frame_started(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert((m_state == RADIO_STATE_TX) || (m_state == RADIO_STATE_CCA_TX));
+    NRF_802154_ASSERT((m_state == RADIO_STATE_TX) || (m_state == RADIO_STATE_CCA_TX));
     transmit_started_notify();
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2096,7 +2098,7 @@ void nrf_802154_trx_transmit_ack_started(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_state == RADIO_STATE_TX_ACK);
+    NRF_802154_ASSERT(m_state == RADIO_STATE_TX_ACK);
     transmit_ack_started_notify();
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2106,7 +2108,7 @@ void nrf_802154_trx_transmit_ack_transmitted(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_state == RADIO_STATE_TX_ACK);
+    NRF_802154_ASSERT(m_state == RADIO_STATE_TX_ACK);
 
     uint8_t * p_received_data = mp_current_rx_buffer->data;
 
@@ -2346,15 +2348,15 @@ void nrf_802154_trx_transmit_frame_ccastarted(void)
 {
     // This handler provided by trx is never called because parameter notifications_mask
     // of the nrf_802154_trx_transmit_frame does not contain TRX_TRANSMIT_NOTIFICATION_CCASTARTED.
-    assert(false);
+    NRF_802154_ASSERT(false);
 }
 
 void nrf_802154_trx_transmit_frame_ccaidle(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    assert(m_state == RADIO_STATE_CCA_TX);
-    assert(m_trx_transmit_frame_notifications_mask & TRX_TRANSMIT_NOTIFICATION_CCAIDLE);
+    NRF_802154_ASSERT(m_state == RADIO_STATE_CCA_TX);
+    NRF_802154_ASSERT(m_trx_transmit_frame_notifications_mask & TRX_TRANSMIT_NOTIFICATION_CCAIDLE);
 
 #if (NRF_802154_FRAME_TIMESTAMP_ENABLED)
     uint64_t ts = timer_coord_timestamp_get();
@@ -2690,7 +2692,7 @@ bool nrf_802154_core_ack_timeout_handle(const nrf_802154_ack_timeout_handle_para
                              REQ_ORIG_ACK_TIMEOUT,
                              false,
                              NRF_802154_RESERVED_IMM_RX_WINDOW_ID);
-            assert(r);
+            NRF_802154_ASSERT(r);
             (void)r;
 
             nrf_802154_transmit_done_metadata_t metadata = {0};

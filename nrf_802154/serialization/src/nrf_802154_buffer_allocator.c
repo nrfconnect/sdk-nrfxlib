@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2020, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -41,7 +41,7 @@
 
 #include "nrf_802154_serialization_crit_sect.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -98,7 +98,7 @@ static void buffer_free(nrf_802154_buffer_t * p_buffer_to_free,
     size_t   idx       =
         ((uintptr_t)p_buffer_to_free - (uintptr_t)p_buffer_pool) / sizeof(nrf_802154_buffer_t);
 
-    assert(idx < buffer_pool_len);
+    NRF_802154_ASSERT(idx < buffer_pool_len);
 
     nrf_802154_serialization_crit_sect_enter(&crit_sect);
 
@@ -113,7 +113,7 @@ void nrf_802154_buffer_allocator_init(nrf_802154_buffer_allocator_t * p_obj,
 {
     size_t capacity = memsize / sizeof(nrf_802154_buffer_t);
 
-    assert((capacity == 0U) || ((capacity != 0U) && (p_memory != NULL)));
+    NRF_802154_ASSERT((capacity == 0U) || ((capacity != 0U) && (p_memory != NULL)));
 
     p_obj->p_memory = p_memory;
     p_obj->capacity = capacity;

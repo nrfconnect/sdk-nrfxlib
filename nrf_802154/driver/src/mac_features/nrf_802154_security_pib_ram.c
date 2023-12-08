@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2021, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -40,7 +40,7 @@
 
 #include <string.h>
 #include <stdbool.h>
-#include <assert.h>
+#include "nrf_802154_assert.h"
 
 typedef struct
 {
@@ -145,7 +145,7 @@ nrf_802154_security_error_t nrf_802154_security_pib_deinit(void)
 
 nrf_802154_security_error_t nrf_802154_security_pib_key_store(nrf_802154_key_t * p_key)
 {
-    assert(p_key != NULL);
+    NRF_802154_ASSERT(p_key != NULL);
 
     if (p_key->type != NRF_802154_KEY_CLEARTEXT)
     {
@@ -186,7 +186,7 @@ nrf_802154_security_error_t nrf_802154_security_pib_key_store(nrf_802154_key_t *
 
 nrf_802154_security_error_t nrf_802154_security_pib_key_remove(nrf_802154_key_id_t * p_id)
 {
-    assert(p_id != NULL);
+    NRF_802154_ASSERT(p_id != NULL);
 
     for (uint32_t i = 0; i < NRF_802154_SECURITY_KEY_STORAGE_SIZE; i++)
     {
@@ -211,8 +211,8 @@ void nrf_802154_security_pib_key_remove_all(void)
 nrf_802154_security_error_t nrf_802154_security_pib_key_use(nrf_802154_key_id_t * p_id,
                                                             void                * destination)
 {
-    assert(destination != NULL);
-    assert(p_id != NULL);
+    NRF_802154_ASSERT(destination != NULL);
+    NRF_802154_ASSERT(p_id != NULL);
 
     for (uint32_t i = 0; i < NRF_802154_SECURITY_KEY_STORAGE_SIZE; i++)
     {
@@ -252,8 +252,8 @@ nrf_802154_security_error_t nrf_802154_security_pib_frame_counter_get_next(
     uint32_t            * p_frame_counter,
     nrf_802154_key_id_t * p_id)
 {
-    assert(p_frame_counter != NULL);
-    assert(p_id != NULL);
+    NRF_802154_ASSERT(p_frame_counter != NULL);
+    NRF_802154_ASSERT(p_id != NULL);
 
     uint32_t * p_frame_counter_to_use = NULL;
     uint32_t   fc;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2021, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -47,7 +47,7 @@
 #include "nrf_802154_tx_work_buffer.h"
 #include "nrf_802154_utils_byteorder.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stddef.h>
 
 #if NRF_802154_SECURITY_WRITER_ENABLED
@@ -85,7 +85,7 @@ static void key_id_prepare(const nrf_802154_frame_parser_data_t * p_frame_data,
             /* Key Identifier Mode is encoded on 2 bits and has 4 possible values, all handled in
              * the above cases. Ending up in the default case indicates the frame parser is bugged.
              */
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 }
 
@@ -130,7 +130,7 @@ static nrf_802154_security_error_t frame_counter_inject(
             /* nrf_802154_security_pib_frame_counter_get_next function shall not return other
              * error codes than those handled in the above cases. If it does then it is a bug.
              */
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     return err;
@@ -172,7 +172,7 @@ bool nrf_802154_security_writer_tx_setup(
                                                p_frame[PHR_OFFSET] + PHR_SIZE,
                                                PARSE_LEVEL_AUX_SEC_HDR_END,
                                                &frame_data);
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 
     do
@@ -220,7 +220,7 @@ bool nrf_802154_security_writer_tx_setup(
                 /* frame_counter_inject function shall not return other error codes than those
                  * handled in the above cases. If it does then it is a bug.
                  */
-                assert(false);
+                NRF_802154_ASSERT(false);
                 result = false;
         }
     }

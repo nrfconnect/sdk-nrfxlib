@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2018, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -42,7 +42,7 @@
 
 #include "nrf_802154_delayed_trx.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -186,7 +186,7 @@ static dly_op_data_t * dly_rx_data_by_id_search(rsch_dly_ts_id_t id)
                 // IDs and all inactive slots to have their IDs set to NRF_802154_RESERVED_INVALID_ID.
                 // If we ended up here then either we're searching for invalid ID or the IDs assigned
                 // to active slots aren't unique. Either way - assert.
-                assert(false);
+                NRF_802154_ASSERT(false);
             }
         }
     }
@@ -233,7 +233,7 @@ static bool dly_op_state_set(dly_op_data_t        * p_dly_op_data,
 
         default:
         {
-            assert(false);
+            NRF_802154_ASSERT(false);
         }
     }
 
@@ -357,7 +357,7 @@ static void dly_rx_data_atomically_push(dly_op_data_t * p_dly_op_data)
 
     nrf_802154_mcu_critical_enter(mcu_cs);
 
-    assert(!nrf_802154_queue_is_full(&m_dly_rx_id_q));
+    NRF_802154_ASSERT(!nrf_802154_queue_is_full(&m_dly_rx_id_q));
 
     dly_op_data_t ** pp_op = (dly_op_data_t **)nrf_802154_queue_push_begin(&m_dly_rx_id_q);
 
@@ -408,7 +408,7 @@ static bool dly_op_request(const rsch_dly_ts_param_t * p_dly_ts_param,
                                           DELAYED_TRX_OP_STATE_PENDING,
                                           DELAYED_TRX_OP_STATE_STOPPED);
 
-        assert(state_set);
+        NRF_802154_ASSERT(state_set);
         (void)state_set;
     }
 
@@ -444,7 +444,7 @@ static void notify_rx_timeout(nrf_802154_sl_timer_t * p_timer)
         nrf_802154_sl_timer_ret_t ret;
 
         ret = nrf_802154_sl_timer_add(&p_dly_op_data->rx.timeout_timer);
-        assert(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
+        NRF_802154_ASSERT(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
         (void)ret;
     }
     else
@@ -455,7 +455,7 @@ static void notify_rx_timeout(nrf_802154_sl_timer_t * p_timer)
             false);
 
         // It should always be possible to notify DRX result
-        assert(notified);
+        NRF_802154_ASSERT(notified);
         (void)notified;
 
         p_dly_op_data->id = NRF_802154_RESERVED_INVALID_ID;
@@ -464,7 +464,7 @@ static void notify_rx_timeout(nrf_802154_sl_timer_t * p_timer)
                                        DELAYED_TRX_OP_STATE_ONGOING,
                                        DELAYED_TRX_OP_STATE_STOPPED);
 
-        assert(result);
+        NRF_802154_ASSERT(result);
         (void)result;
     }
 
@@ -483,7 +483,7 @@ static void dly_tx_result_notify(bool result)
     // Currently there's only a single delayed transmission possible at a time
     dly_op_data_t * p_dly_op_data = dly_tx_data_by_id_search(NRF_802154_RESERVED_DTX_ID);
 
-    assert(p_dly_op_data != NULL);
+    NRF_802154_ASSERT(p_dly_op_data != NULL);
 
     if (!result)
     {
@@ -523,7 +523,7 @@ static void dly_rx_all_ongoing_abort(void)
                                                          false);
 
         // It should always be possible to notify DRX result
-        assert(notified);
+        NRF_802154_ASSERT(notified);
         (void)notified;
 
         p_dly_op_data->id = NRF_802154_RESERVED_INVALID_ID;
@@ -531,7 +531,7 @@ static void dly_rx_all_ongoing_abort(void)
         result = dly_op_state_set(p_dly_op_data,
                                   DELAYED_TRX_OP_STATE_ONGOING,
                                   DELAYED_TRX_OP_STATE_STOPPED);
-        assert(result);
+        NRF_802154_ASSERT(result);
         (void)result;
     }
 }
@@ -549,7 +549,7 @@ static void dly_rx_result_notify(bool result)
 
     if (p_dly_op_data == NULL)
     {
-        assert(false);
+        NRF_802154_ASSERT(false);
         return;
     }
 
@@ -574,7 +574,7 @@ static void dly_rx_result_notify(bool result)
         nrf_802154_sl_timer_ret_t ret;
 
         ret = nrf_802154_sl_timer_add(&p_dly_op_data->rx.timeout_timer);
-        assert(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
+        NRF_802154_ASSERT(ret == NRF_802154_SL_TIMER_RET_SUCCESS);
         (void)ret;
     }
     else
@@ -585,7 +585,7 @@ static void dly_rx_result_notify(bool result)
             false);
 
         // It should always be possible to notify DRX result
-        assert(notified);
+        NRF_802154_ASSERT(notified);
         (void)notified;
     }
 
@@ -662,23 +662,23 @@ static void tx_timeslot_started_callback(rsch_dly_ts_id_t dly_ts_id)
 
     dly_op_data_t * p_dly_op_data = dly_tx_data_by_id_search(dly_ts_id);
 
-    assert(p_dly_op_data != NULL);
+    NRF_802154_ASSERT(p_dly_op_data != NULL);
 
     bool result = dly_op_state_set(p_dly_op_data,
                                    DELAYED_TRX_OP_STATE_PENDING,
                                    DELAYED_TRX_OP_STATE_ONGOING);
 
-    assert(result);
+    NRF_802154_ASSERT(result);
 
     transmit_attempt(p_dly_op_data);
 
     result = dly_ts_slot_release(p_dly_op_data, true);
-    assert(result);
+    NRF_802154_ASSERT(result);
 
     result = dly_op_state_set(p_dly_op_data,
                               DELAYED_TRX_OP_STATE_ONGOING,
                               DELAYED_TRX_OP_STATE_STOPPED);
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -713,7 +713,7 @@ static void rx_timeslot_started_callback(rsch_dly_ts_id_t dly_ts_id)
     }
 
     result = nrf_802154_rsch_delayed_timeslot_cancel(dly_ts_id, true);
-    assert(result);
+    NRF_802154_ASSERT(result);
 
     if (!attempt_success)
     {
@@ -722,7 +722,7 @@ static void rx_timeslot_started_callback(rsch_dly_ts_id_t dly_ts_id)
         result = dly_op_state_set(p_dly_op_data,
                                   DELAYED_TRX_OP_STATE_ONGOING,
                                   DELAYED_TRX_OP_STATE_STOPPED);
-        assert(result);
+        NRF_802154_ASSERT(result);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -871,7 +871,7 @@ bool nrf_802154_delayed_trx_transmit_cancel(void)
                                   DELAYED_TRX_OP_STATE_PENDING,
                                   DELAYED_TRX_OP_STATE_STOPPED);
 
-        assert(result);
+        NRF_802154_ASSERT(result);
     }
 
     return result;

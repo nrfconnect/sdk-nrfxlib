@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2017, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -42,7 +42,7 @@
 
 #include "nrf_802154_notification.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -269,7 +269,7 @@ static nrf_802154_queue_entry_t * ntf_enter(void)
 {
     nrf_802154_mcu_critical_enter(m_mcu_cs);
 
-    assert(!nrf_802154_queue_is_full(&m_notifications_queue));
+    NRF_802154_ASSERT(!nrf_802154_queue_is_full(&m_notifications_queue));
 
     return nrf_802154_queue_push_begin(&m_notifications_queue);
 }
@@ -606,7 +606,7 @@ void nrf_802154_notify_received(uint8_t * p_data, int8_t power, uint8_t lqi)
     bool notified = swi_notify_received(p_data, power, lqi);
 
     // It should always be possible to notify a successful reception
-    assert(notified);
+    NRF_802154_ASSERT(notified);
     (void)notified;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -635,7 +635,7 @@ void nrf_802154_notify_transmitted(uint8_t                             * p_frame
     bool notified = swi_notify_transmitted(p_frame, p_metadata);
 
     // It should always be possible to notify transmission result
-    assert(notified);
+    NRF_802154_ASSERT(notified);
     (void)notified;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -650,7 +650,7 @@ void nrf_802154_notify_transmit_failed(uint8_t                                  
     bool notified = swi_notify_transmit_failed(p_frame, error, p_metadata);
 
     // It should always be possible to notify transmission result
-    assert(notified);
+    NRF_802154_ASSERT(notified);
     (void)notified;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -673,7 +673,7 @@ void nrf_802154_notify_energy_detected(uint8_t result)
 #endif
 
     // It should always be possible to notify energy detection result
-    assert(notified);
+    NRF_802154_ASSERT(notified);
     (void)notified;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -686,7 +686,7 @@ void nrf_802154_notify_energy_detection_failed(nrf_802154_ed_error_t error)
     bool notified = swi_notify_energy_detection_failed(error);
 
     // It should always be possible to notify energy detection result
-    assert(notified);
+    NRF_802154_ASSERT(notified);
     (void)notified;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -699,7 +699,7 @@ void nrf_802154_notify_cca(bool is_free)
     bool notified = swi_notify_cca(is_free);
 
     // It should always be possible to notify CCA result
-    assert(notified);
+    NRF_802154_ASSERT(notified);
     (void)notified;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -712,7 +712,7 @@ void nrf_802154_notify_cca_failed(nrf_802154_cca_error_t error)
     bool notified = swi_notify_cca_failed(error);
 
     // It should always be possible to notify CCA result
-    assert(notified);
+    NRF_802154_ASSERT(notified);
     (void)notified;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -807,7 +807,7 @@ static void irq_handler_ntf_event(void)
                 break;
 
             default:
-                assert(false);
+                NRF_802154_ASSERT(false);
         }
 
         nrf_802154_queue_pop_commit(&m_notifications_queue);

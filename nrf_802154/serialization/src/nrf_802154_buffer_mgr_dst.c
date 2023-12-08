@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2020, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -38,7 +38,7 @@
 
 #include "nrf_802154_buffer_mgr_dst.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <string.h>
 
 void nrf_802154_buffer_mgr_dst_init(
@@ -77,7 +77,7 @@ bool nrf_802154_buffer_mgr_dst_add(
         /* Allocator is a pool allocator of fixed size.
          * If allocator managed to allocate, there must be place in the map.
          */
-        assert(result);
+        NRF_802154_ASSERT(result);
     }
 
     return result;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2017, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -42,7 +42,7 @@
 
 #include "nrf_802154_critical_section.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdint.h>
 
 #include "nrf_802154_config.h"
@@ -157,7 +157,7 @@ static void critical_section_exit(void)
 
         cnt = m_nested_critical_section_counter;
 
-        assert(cnt > 0);
+        NRF_802154_ASSERT(cnt > 0);
 
         --cnt;
 
@@ -215,7 +215,7 @@ void nrf_802154_critical_section_forcefully_enter(void)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     critical_section_entered = critical_section_enter(true);
-    assert(critical_section_entered);
+    NRF_802154_ASSERT(critical_section_entered);
     (void)critical_section_entered;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -232,17 +232,17 @@ void nrf_802154_critical_section_exit(void)
 
 void nrf_802154_critical_section_nesting_allow(void)
 {
-    assert(m_nested_critical_section_allowed_priority ==
-           NESTED_CRITICAL_SECTION_ALLOWED_PRIORITY_NONE);
-    assert(m_nested_critical_section_counter >= 1);
+    NRF_802154_ASSERT(m_nested_critical_section_allowed_priority ==
+                      NESTED_CRITICAL_SECTION_ALLOWED_PRIORITY_NONE);
+    NRF_802154_ASSERT(m_nested_critical_section_counter >= 1);
 
     m_nested_critical_section_allowed_priority = active_vector_priority_get();
 }
 
 void nrf_802154_critical_section_nesting_deny(void)
 {
-    assert(m_nested_critical_section_allowed_priority >= 0);
-    assert(m_nested_critical_section_counter >= 1);
+    NRF_802154_ASSERT(m_nested_critical_section_allowed_priority >= 0);
+    NRF_802154_ASSERT(m_nested_critical_section_counter >= 1);
 
     m_nested_critical_section_allowed_priority = NESTED_CRITICAL_SECTION_ALLOWED_PRIORITY_NONE;
 }
@@ -277,7 +277,7 @@ uint32_t nrf_802154_critical_section_active_vector_priority_get(void)
 
     irq_number = (IRQn_Type)((int32_t)active_vector_id - CMSIS_IRQ_NUM_VECTACTIVE_DIFF);
 
-    assert(irq_number >= SVCall_IRQn);
+    NRF_802154_ASSERT(irq_number >= SVCall_IRQn);
 #endif
     active_priority = NVIC_GetPriority(irq_number);
 

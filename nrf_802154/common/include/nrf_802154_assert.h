@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2023, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -32,48 +32,17 @@
  *
  */
 
-/**
- * @file
- *   This file implements debug assert helpers for the nRF 802.15.4 radio driver.
- *
- */
-#include "nrfx.h"
-#include "nrf_802154_debug.h"
+#ifndef NRF_802154_ASSERT_H__
+#define NRF_802154_ASSERT_H__
 
-void __assert_func(const char * file, int line, const char * func, const char * cond)
-{
-    (void)file;
-    (void)line;
-    (void)func;
-    (void)cond;
-
-#if defined(ENABLE_DEBUG_ASSERT_BKPT) && (ENABLE_DEBUG_ASSERT_BKPT != 0)
-    __BKPT(0);
+#ifdef NRF_802154_PLATFORM_ASSERT_INCLUDE
+#include NRF_802154_PLATFORM_ASSERT_INCLUDE
 #endif
-    __disable_irq();
 
-    // coverity[no_escape]
-    while (1)
-        ;
-}
+#ifndef NRF_802154_ASSERT
+/* Fallback to assert from C library. */
+#include <assert.h>
+#define NRF_802154_ASSERT(condition) assert(condition)
+#endif /* NRF_802154_PLATFORM_ASSERT_INCLUDE */
 
-void __aeabi_assert(const char * expr, const char * file, int line)
-{
-    (void)expr;
-    (void)file;
-    (void)line;
-
-#if defined(ENABLE_DEBUG_ASSERT_BKPT) && (ENABLE_DEBUG_ASSERT_BKPT != 0)
-    __BKPT(0);
-#endif
-    __disable_irq();
-
-    // coverity[no_escape]
-    while (1)
-        ;
-}
-
-void nrf_802154_debug_assert_init(void)
-{
-    // Intentionally empty
-}
+#endif /* NRF_802154_ASSERT_H__ */

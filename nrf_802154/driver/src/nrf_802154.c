@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2018, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -42,7 +42,7 @@
 
 #include "nrf_802154.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -101,7 +101,7 @@ static uint8_t m_tx_buffer[RAW_PAYLOAD_OFFSET + MAX_PACKET_SIZE];
  */
 static void tx_buffer_fill(const uint8_t * p_data, uint8_t length)
 {
-    assert(length <= MAX_PACKET_SIZE - FCS_SIZE);
+    NRF_802154_ASSERT(length <= MAX_PACKET_SIZE - FCS_SIZE);
 
     m_tx_buffer[RAW_LENGTH_OFFSET] = length + FCS_SIZE;
     memcpy(&m_tx_buffer[RAW_PAYLOAD_OFFSET], p_data, length);
@@ -120,7 +120,7 @@ static void tx_buffer_fill_for_modulated_carrier(const uint8_t * p_data)
 {
     uint8_t length = p_data[RAW_LENGTH_OFFSET];
 
-    assert(length <= MAX_PACKET_SIZE);
+    NRF_802154_ASSERT(length <= MAX_PACKET_SIZE);
 
     memcpy(m_tx_buffer, p_data, RAW_PAYLOAD_OFFSET + length);
 }
@@ -691,11 +691,11 @@ void nrf_802154_buffer_free_raw(uint8_t * p_data)
     bool          result;
     rx_buffer_t * p_buffer = (rx_buffer_t *)p_data;
 
-    assert(p_buffer->free == false);
+    NRF_802154_ASSERT(p_buffer->free == false);
     (void)p_buffer;
 
     result = nrf_802154_request_buffer_free(p_data);
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -708,7 +708,7 @@ bool nrf_802154_buffer_free_immediately_raw(uint8_t * p_data)
     bool          result;
     rx_buffer_t * p_buffer = (rx_buffer_t *)p_data;
 
-    assert(p_buffer->free == false);
+    NRF_802154_ASSERT(p_buffer->free == false);
     (void)p_buffer;
 
     result = nrf_802154_request_buffer_free(p_data);
@@ -726,11 +726,11 @@ void nrf_802154_buffer_free(uint8_t * p_data)
     bool          result;
     rx_buffer_t * p_buffer = (rx_buffer_t *)(p_data - RAW_PAYLOAD_OFFSET);
 
-    assert(p_buffer->free == false);
+    NRF_802154_ASSERT(p_buffer->free == false);
     (void)p_buffer;
 
     result = nrf_802154_request_buffer_free(p_data - RAW_PAYLOAD_OFFSET);
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -743,7 +743,7 @@ bool nrf_802154_buffer_free_immediately(uint8_t * p_data)
     bool          result;
     rx_buffer_t * p_buffer = (rx_buffer_t *)(p_data - RAW_PAYLOAD_OFFSET);
 
-    assert(p_buffer->free == false);
+    NRF_802154_ASSERT(p_buffer->free == false);
     (void)p_buffer;
 
     result = nrf_802154_request_buffer_free(p_data - RAW_PAYLOAD_OFFSET);

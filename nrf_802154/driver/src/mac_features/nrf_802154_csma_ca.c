@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2017, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -45,7 +45,7 @@
 #include "nrf_802154_config.h"
 #if NRF_802154_CSMA_CA_ENABLED
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -125,7 +125,7 @@ static void priority_leverage(void)
         if (!nrf_802154_rsch_delayed_timeslot_priority_update(NRF_802154_RESERVED_CSMACA_ID,
                                                               RSCH_PRIO_TX))
         {
-            assert(false);
+            NRF_802154_ASSERT(false);
         }
     }
 
@@ -181,7 +181,7 @@ static void notify_busy_channel(bool result)
  */
 static void frame_transmit(rsch_dly_ts_id_t dly_ts_id)
 {
-    assert(dly_ts_id == NRF_802154_RESERVED_CSMACA_ID);
+    NRF_802154_ASSERT(dly_ts_id == NRF_802154_RESERVED_CSMACA_ID);
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -250,7 +250,7 @@ static uint8_t backoff_periods_calc(void)
 
         default:
             result = backoff_periods_calc_random();
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
     }
 #else
@@ -298,14 +298,14 @@ static void random_backoff_start(void)
             break;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
             break;
     }
 
     // Delayed timeslot with these parameters should always be scheduled
     if (!nrf_802154_rsch_delayed_timeslot_request(&backoff_ts_param))
     {
-        assert(false);
+        NRF_802154_ASSERT(false);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -331,7 +331,7 @@ static bool channel_busy(void)
             mp_data = NULL;
             bool ret = csma_ca_state_set(CSMA_CA_STATE_BACKOFF, CSMA_CA_STATE_IDLE);
 
-            assert(ret);
+            NRF_802154_ASSERT(ret);
             (void)ret;
         }
         else
@@ -358,7 +358,7 @@ bool nrf_802154_csma_ca_start(uint8_t                                      * p_d
 
     bool result = csma_ca_state_set(CSMA_CA_STATE_IDLE, CSMA_CA_STATE_BACKOFF);
 
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 
     mp_data      = p_data;

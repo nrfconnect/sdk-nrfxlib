@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2018, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -43,7 +43,7 @@
 
 #include "nrf_802154_filter.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -422,7 +422,7 @@ static nrf_802154_rx_error_t dst_addr_check(const nrf_802154_frame_parser_data_t
                    NRF_802154_RX_ERROR_INVALID_DEST_ADDR;
 
         default:
-            assert(false);
+            NRF_802154_ASSERT(false);
     }
 
     return NRF_802154_RX_ERROR_INVALID_FRAME;
@@ -442,7 +442,8 @@ nrf_802154_rx_error_t nrf_802154_filter_frame_part(
 
     if (filter_mode & NRF_802154_FILTER_MODE_FCF)
     {
-        assert(nrf_802154_frame_parser_parse_level_get(p_frame_data) >= PARSE_LEVEL_FCF_OFFSETS);
+        NRF_802154_ASSERT(nrf_802154_frame_parser_parse_level_get(
+                              p_frame_data) >= PARSE_LEVEL_FCF_OFFSETS);
 
         if ((psdu_length < IMM_ACK_LENGTH) || (psdu_length > MAX_PACKET_SIZE))
         {
@@ -469,8 +470,8 @@ nrf_802154_rx_error_t nrf_802154_filter_frame_part(
 
     if (filter_mode & NRF_802154_FILTER_MODE_DST_ADDR)
     {
-        assert(nrf_802154_frame_parser_parse_level_get(
-                   p_frame_data) >= PARSE_LEVEL_DST_ADDRESSING_END);
+        NRF_802154_ASSERT(nrf_802154_frame_parser_parse_level_get(
+                              p_frame_data) >= PARSE_LEVEL_DST_ADDRESSING_END);
 
         result = dst_addr_check(p_frame_data);
     }

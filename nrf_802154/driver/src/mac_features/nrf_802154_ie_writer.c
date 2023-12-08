@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - 2023, Nordic Semiconductor ASA
+ * Copyright (c) 2021, Nordic Semiconductor ASA
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -48,7 +48,7 @@
 #include "nrf_802154_utils_byteorder.h"
 #include "nrf_802154_sl_timer.h"
 
-#include <assert.h>
+#include "nrf_802154_assert.h"
 
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
 #include "nrf_802154_bsim_utils.h"
@@ -205,7 +205,7 @@ static void csl_ie_write_commit(bool * p_written)
  */
 static bool csl_ie_write_prepare(const uint8_t * p_iterator)
 {
-    assert(p_iterator != NULL);
+    NRF_802154_ASSERT(p_iterator != NULL);
 
     if (nrf_802154_frame_parser_ie_length_get(p_iterator) < IE_CSL_SIZE_MIN)
     {
@@ -348,7 +348,7 @@ static void link_metrics_ie_write_commit(bool * p_written)
  */
 static bool link_metrics_ie_write_prepare(const uint8_t * p_iterator)
 {
-    assert(p_iterator != NULL);
+    NRF_802154_ASSERT(p_iterator != NULL);
 
     // Initialize the iterator at the start of IE content
     uint8_t * p_content_iterator =
@@ -423,7 +423,7 @@ static void link_metrics_ie_write_reset(void)
  */
 static void ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
 {
-    assert(m_writer_state == IE_WRITER_RESET);
+    NRF_802154_ASSERT(m_writer_state == IE_WRITER_RESET);
     m_writer_state = IE_WRITER_PREPARE;
 
     const uint8_t * p_iterator = nrf_802154_frame_parser_header_ie_iterator_begin(p_ie_header);
@@ -473,7 +473,7 @@ static void ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
  */
 static void ie_writer_commit(bool * p_written)
 {
-    assert(m_writer_state == IE_WRITER_PREPARE);
+    NRF_802154_ASSERT(m_writer_state == IE_WRITER_PREPARE);
     m_writer_state = IE_WRITER_COMMIT;
 
     csl_ie_write_commit(p_written);
@@ -490,8 +490,8 @@ void nrf_802154_ie_writer_reset(void)
 
 void nrf_802154_ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
 {
-    assert(p_ie_header != NULL);
-    assert(p_ie_header < p_end_addr);
+    NRF_802154_ASSERT(p_ie_header != NULL);
+    NRF_802154_ASSERT(p_ie_header < p_end_addr);
 
     ie_writer_prepare(p_ie_header, p_end_addr);
 }
@@ -525,7 +525,7 @@ bool nrf_802154_ie_writer_tx_setup(
                                                     PARSE_LEVEL_FULL,
                                                     &frame_data);
 
-    assert(result);
+    NRF_802154_ASSERT(result);
     (void)result;
 
     p_ie_header = (uint8_t *)nrf_802154_frame_parser_ie_header_get(&frame_data);
