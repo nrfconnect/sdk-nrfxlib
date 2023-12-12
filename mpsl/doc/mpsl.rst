@@ -56,6 +56,8 @@ The following interrupts do not have real-time requirements:
    When this interrupt is triggered, :c:func:`mpsl_low_priority_process` should be called as soon as possible (at least within a couple of ms).
    The application should configure this interrupt priority lower than :c:macro:`MPSL_HIGH_IRQ_PRIORITY` level (namely, a higher numerical value).
    The interrupt is enabled with :c:func:`mpsl_init` and disabled with :c:func:`mpsl_uninit` by MPSL.
+   The interrupt is selected using the :kconfig:option:`CONFIG_MPSL_LOW_PRIO_IRQN` Kconfig option.
+   This Kconfig option can be used to resolve conflicts with other software modules and should be left to the default value if possible.
 
 Scheduling
 ==========
