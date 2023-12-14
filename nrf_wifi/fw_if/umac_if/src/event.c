@@ -242,9 +242,13 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 	case NRF_WIFI_UMAC_EVENT_IFFLAGS_STATUS:
 		evnt_vif_state = (struct nrf_wifi_umac_event_vif_state *)event_data;
 
-		if (evnt_vif_state->status < 0)
+		if (evnt_vif_state->status < 0) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: Failed to set interface flags: %d",
+					      __func__,
+						evnt_vif_state->status);
 			goto out;
-
+		}
 		vif_ctx->ifflags = true;
 		break;
 #ifdef CONFIG_NRF700X_STA_MODE
