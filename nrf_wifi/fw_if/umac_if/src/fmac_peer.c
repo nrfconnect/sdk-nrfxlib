@@ -142,6 +142,10 @@ void nrf_wifi_fmac_peers_flush(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 	for (i = 0; i < MAX_PEERS; i++) {
 		peer = &def_dev_ctx->tx_config.peers[i];
+
+		if (peer->peer_id == -1)
+			continue;
+
 		if (peer->if_idx == if_idx) {
 
 			nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
