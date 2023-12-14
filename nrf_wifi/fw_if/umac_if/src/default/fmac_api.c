@@ -587,13 +587,6 @@ enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
-	if (def_dev_ctx->vif_ctx[if_idx]->if_type == NRF_WIFI_IFTYPE_AP) {
-		nrf_wifi_osal_log_info(fmac_dev_ctx->fpriv->opriv,
-				       "%s: Scan operation not supported in AP mode",
-				       __func__);
-		goto out;
-	}
-
 	scan_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
 					    (sizeof(*scan_cmd) + channel_info_len));
 
@@ -636,13 +629,6 @@ enum nrf_wifi_status nrf_wifi_fmac_abort_scan(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
-	if (def_dev_ctx->vif_ctx[if_idx]->if_type == NRF_WIFI_IFTYPE_AP) {
-		nrf_wifi_osal_log_info(fmac_dev_ctx->fpriv->opriv,
-				       "%s: Scan operation not supported in AP mode",
-				       __func__);
-		goto out;
-	}
-
 	scan_abort_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
 					    sizeof(*scan_abort_cmd));
 
@@ -681,13 +667,6 @@ enum nrf_wifi_status nrf_wifi_fmac_scan_res_get(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
-
-	if (def_dev_ctx->vif_ctx[vif_idx]->if_type == NRF_WIFI_IFTYPE_AP) {
-		nrf_wifi_osal_log_info(fmac_dev_ctx->fpriv->opriv,
-				       "%s: Scan operation not supported in AP mode",
-				       __func__);
-		goto out;
-	}
 
 	scan_res_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
 						sizeof(*scan_res_cmd));
