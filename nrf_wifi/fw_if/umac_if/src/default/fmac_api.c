@@ -2220,6 +2220,14 @@ out:
 				       chg_vif_cmd);
 	}
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
+
+		def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+
+		def_dev_ctx->vif_ctx[if_idx]->if_type = vif_info->iftype;
+	}
+
 	return status;
 }
 
