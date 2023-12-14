@@ -456,6 +456,16 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 					      umac_hdr->cmd_evnt);
 		break;
 	case NRF_WIFI_UMAC_EVENT_CMD_STATUS:
+#if CONFIG_WIFI_NRF700X_LOG_LEVEL >= NRF_WIFI_LOG_LEVEL_DBG
+		struct nrf_wifi_umac_event_cmd_status *cmd_status =
+			(struct nrf_wifi_umac_event_cmd_status *)event_data;
+#endif
+		nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Command %d -> status %d",
+				      __func__,
+				      cmd_status->cmd_id,
+				      cmd_status->cmd_status);
+		break;
 	case NRF_WIFI_UMAC_EVENT_BEACON_HINT:
 	case NRF_WIFI_UMAC_EVENT_CONNECT:
 	case NRF_WIFI_UMAC_EVENT_DISCONNECT:
