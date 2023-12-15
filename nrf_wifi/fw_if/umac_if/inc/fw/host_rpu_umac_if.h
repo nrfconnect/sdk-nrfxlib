@@ -3477,4 +3477,31 @@ struct nrf_wifi_umac_event_cmd_status {
 	unsigned int cmd_status;
 } __NRF_WIFI_PKD;
 
+/**
+* struct nrf_wifi_umac_cmd_set_channel - Set channel configuration.
+* @umac_hdr: UMAC command header. Refer &struct nrf_wifi_umac_hdr.
+* @valid_fields: Indicate which of the following structure parameters are valid.
+* @freq_params: Information related to channel parameters
+*
+* This structure represents the command to set the wireless channel configuration.
+*/
+struct nrf_wifi_umac_cmd_set_channel {
+        struct nrf_wifi_umac_hdr umac_hdr;
+#define NRF_WIFI_CMD_SET_CHANNEL_FREQ_PARAMS_VALID (1 << 0)
+        unsigned int valid_fields;
+        struct freq_params freq_params;
+} __NRF_WIFI_PKD;
+struct nrf_wifi_event_send_beacon_hint {
+        struct nrf_wifi_umac_hdr umac_hdr;
+        struct nrf_wifi_event_channel channel_before;
+        struct nrf_wifi_event_channel channel_after;
+} __NRF_WIFI_PKD;
+#define NRF_WIFI_EVNT_WIPHY_SELF_MANAGED (1 << 0)
+struct nrf_wifi_event_regulatory_change {
+        struct nrf_wifi_umac_hdr umac_hdr;
+        unsigned short nrf_wifi_flags;
+        signed int intr;
+        signed char regulatory_type;
+        unsigned char nrf_wifi_alpha2[NRF_WIFI_COUNTRY_CODE_LEN];
+} __NRF_WIFI_PKD;
 #endif /* __HOST_RPU_UMAC_IF_H */

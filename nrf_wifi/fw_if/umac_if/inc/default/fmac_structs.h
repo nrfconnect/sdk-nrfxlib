@@ -247,6 +247,32 @@ struct nrf_wifi_fmac_callbk_fns {
 	/** Callback function to be called when rssi is to be processed from the received frame. */
 	void (*process_rssi_from_rx)(void *os_vif_ctx,
 				     signed short signal);
+#ifndef HOST_CFG80211_SUPPORT
+        void (*get_wiphy_callbk_fn)(void *os_vif_ctx,
+                            struct nrf_wifi_event_get_wiphy *get_wiphy_event,
+                            unsigned int event_len);
+
+        void (*get_reg_callbk_fn)(void *os_vif_ctx,
+                                  struct nrf_wifi_reg *get_reg_event,
+                                  unsigned int event_len);
+
+        void (*set_reg_callbk_fn)(void *os_vif_ctx,
+                                  struct nrf_wifi_reg *set_reg_event,
+                                  unsigned int event_len);
+
+        void (*wpa_supp_set_if_callbk_fn)(void *os_vif_ctx,
+                                 struct nrf_wifi_umac_event_set_interface *set_if_event,
+                                 unsigned int event_len);
+#ifdef notyet
+        void (*get_key_callbk_fn)(void *os_vif_ctx,
+                              struct nrf_wifi_umac_event_get_key *get_key_resp,
+                              unsigned int event_len);
+
+        void (*reg_change_callbk_fn)(void *os_vif_ctx,
+                        struct nrf_wifi_event_regulatory_change *reg_chng,
+                        unsigned int event_len);
+#endif
+#endif
 #endif /* CONFIG_NRF700X_STA_MODE */
 };
 
