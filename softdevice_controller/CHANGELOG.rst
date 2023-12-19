@@ -52,6 +52,10 @@ Bug fixes
 * Fixed an assert that could happen if the LE Set Periodic Advertising Response Data command was issued more than once without fetching the Command Complete Event. (DRGN-20432)
 * Fixed an issue where the controller would assert during cooperative active scanning or when running a cooperative initiator.
   This could happen when the controller was about to send a scan request or connect indication. (DRGN-20832)
+* Fixed an issue where the controller would assert when initiating a connection to an extended advertiser.
+  This could happen when both external radio coexistence and FEM were enabled. (DRGN-16013)
+* Fixed an issue where the nRF5340 DK consumed too much current while scanning.
+  This could happen if the controller was running with TX power higher than 0 dB. (DRGN-20862)
 
 nRF Connect SDK v2.5.0
 **********************
