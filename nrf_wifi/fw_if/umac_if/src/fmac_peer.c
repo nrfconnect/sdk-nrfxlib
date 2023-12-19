@@ -106,10 +106,19 @@ void nrf_wifi_fmac_peer_remove(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
 
+	if (peer_id == -1 || peer_id >= MAX_PEERS) {
+		return;
+	}
+
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
 	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
 	peer = &def_dev_ctx->tx_config.peers[peer_id];
+
+	if (!peer || peer->peer_id == -1 || peer->peer_id >= MAX_PEERS ||
+	    peer->if_idx != if_idx) {
+		return;
+	}
 
 	if (vif_ctx->if_type == NRF_WIFI_IFTYPE_AP) {
 		hal_rpu_mem_write(fmac_dev_ctx->hal_dev_ctx,
