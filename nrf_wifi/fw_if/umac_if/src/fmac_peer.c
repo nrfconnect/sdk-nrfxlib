@@ -111,12 +111,6 @@ void nrf_wifi_fmac_peer_remove(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
 	peer = &def_dev_ctx->tx_config.peers[peer_id];
 
-	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
-			      peer,
-			      0x0,
-			      sizeof(struct peers_info));
-	peer->peer_id = -1;
-
 	if (vif_ctx->if_type == NRF_WIFI_IFTYPE_AP) {
 		hal_rpu_mem_write(fmac_dev_ctx->hal_dev_ctx,
 				  (RPU_MEM_UMAC_PEND_Q_BMP +
@@ -124,6 +118,12 @@ void nrf_wifi_fmac_peer_remove(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				  peer->ra_addr,
 				  NRF_WIFI_FMAC_ETH_ADDR_LEN);
 	}
+
+	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
+			      peer,
+			      0x0,
+			      sizeof(struct peers_info));
+	peer->peer_id = -1;
 }
 
 
