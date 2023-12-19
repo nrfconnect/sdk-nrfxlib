@@ -280,9 +280,9 @@ struct peers_info {
 	/** QoS supported. */
 	unsigned char qos_supported;
 	/** Pending queue bitmap. */
-	unsigned char pend_q_bmp;
-	/** Receiver address. */
-	unsigned char ra_addr[NRF_WIFI_ETH_ADDR_LEN];
+	unsigned char pend_q_bmp __NRF_WIFI_ALIGN_4;
+	/** Receiver address, this is programmed to nRF70, so, should be aligned to 4. */
+	unsigned char ra_addr[NRF_WIFI_ETH_ADDR_LEN] __NRF_WIFI_ALIGN_4;
 	/** Pairwise cipher. */
 	unsigned int pairwise_cipher;
 	/** 802.11 power save token count. */
