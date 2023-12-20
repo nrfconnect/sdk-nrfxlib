@@ -118,7 +118,6 @@ struct nrf_wifi_fmac_callbk_fns {
 					  signed short signal);
 #endif /* CONFIG_WIFI_MGMT_RAW_SCAN_RESULTS */
 
-#if defined(CONFIG_NRF700X_STA_MODE) || defined(__DOXYGEN__)
 	/** Callback function to be called when an interface association state changes. */
 	enum nrf_wifi_status (*if_carr_state_chg_callbk_fn)(void *os_vif_ctx,
 							    enum nrf_wifi_fmac_if_carr_state cs);
@@ -127,6 +126,22 @@ struct nrf_wifi_fmac_callbk_fns {
 	void (*rx_frm_callbk_fn)(void *os_vif_ctx,
 				 void *frm);
 
+	/** Callback function to be called when a get interface response is received. */
+	void (*get_interface_callbk_fn)(void *os_vif_ctx,
+				     struct nrf_wifi_interface_info *info,
+				     unsigned int event_len);
+
+	/** Callback function to be called when a get regulatory response is received. */
+	void (*event_get_reg)(void *if_priv,
+		struct nrf_wifi_reg *get_reg,
+		unsigned int event_len);
+
+	/** Callback function to be called when a get wiphy response is received. */
+	void (*event_get_wiphy)(void *if_priv,
+		struct nrf_wifi_event_get_wiphy *get_wiphy,
+		unsigned int event_len);
+
+#if defined(CONFIG_NRF700X_STA_MODE) || defined(__DOXYGEN__)
 	/** Callback function to be called when an authentication response is received. */
 	void (*auth_resp_callbk_fn)(void *os_vif_ctx,
 				    struct nrf_wifi_umac_event_mlme *auth_resp_event,
@@ -198,9 +213,6 @@ struct nrf_wifi_fmac_callbk_fns {
 				     unsigned int event_len);
 
 	/** Callback function to be called when a get interface response is received. */
-	void (*get_interface_callbk_fn)(void *os_vif_ctx,
-				     struct nrf_wifi_interface_info *info,
-				     unsigned int event_len);
 
 	/** Callback function to be called when a management TX status is received. */
 	void (*mgmt_tx_status)(void *if_priv,
@@ -217,20 +229,9 @@ struct nrf_wifi_fmac_callbk_fns {
 		struct nrf_wifi_umac_cmd_teardown_twt *twt_teardown_event_info,
 		unsigned int event_len);
 
-	/** Callback function to be called when a get wiphy response is received. */
-	void (*event_get_wiphy)(void *if_priv,
-		struct nrf_wifi_event_get_wiphy *get_wiphy,
-		unsigned int event_len);
-
 	/** Callback function to be called when a TWT sleep response is received. */
 	void (*twt_sleep_callbk_fn)(void *if_priv,
 		struct nrf_wifi_umac_event_twt_sleep *twt_sleep_event_info,
-		unsigned int event_len);
-
-	/** Callback function to be called when a get regulatory response is received. */
-	void (*event_get_reg)(void *if_priv,
-		struct nrf_wifi_reg *get_reg,
-		unsigned int event_len);
 
 	/** Callback function to be called when a get power save information
 	 * response is received.
@@ -247,6 +248,13 @@ struct nrf_wifi_fmac_callbk_fns {
 	/** Callback function to be called when rssi is to be processed from the received frame. */
 	void (*process_rssi_from_rx)(void *os_vif_ctx,
 				     signed short signal);
+#endif /* CONFIG_NRF700X_STA_MODE */
+#ifndef HOST_CFG80211_SUPPORT
+#if defined(CONFIG_NRF700X_AP_MODE) || defined(__DOXYGEN__)
+        void (*set_reg_callbk_fn)(void *os_vif_ctx,
+                                  struct nrf_wifi_reg *set_reg_event,
+                                  unsigned int event_len);
+#endif /* CONFIG_NRF700X_AP_MODE */
 #endif /* CONFIG_NRF700X_STA_MODE */
 };
 
