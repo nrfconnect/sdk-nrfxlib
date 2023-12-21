@@ -23,7 +23,7 @@
 #define NRF_WIFI_UMAC_VER_EXTRA(version) (((version)&0x000000FF) >> 0)
 #define RPU_MEM_UMAC_BOOT_SIG 0xB0000000
 #define RPU_MEM_UMAC_VER 0xB0000004
-#define RPU_MEM_UMAC_PEND_Q_BMP 0xB0000008
+#define RPU_MEM_UMAC_PEND_Q_BMP 0xB0004FBC
 #define RPU_MEM_UMAC_CMD_ADDRESS 0xB00007A8
 #define RPU_MEM_UMAC_EVENT_ADDRESS 0xB0000E28
 #define RPU_MEM_UMAC_PATCH_BIN 0x8008C000
@@ -70,6 +70,23 @@ struct host_rpu_msg {
 #define NRF_WIFI_PENDING_FRAMES_BITMAP_AC_VI (1 << 1)
 #define NRF_WIFI_PENDING_FRAMES_BITMAP_AC_BE (1 << 2)
 #define NRF_WIFI_PENDING_FRAMES_BITMAP_AC_BK (1 << 3)
+
+/**
+ * @brief This new structure represents the bitmap of STA (Station) pending frames in
+ *  SoftAP power save mode.
+ *
+ */
+struct sap_client_pend_frames_bitmap {
+	/** STA MAC address */
+	unsigned char mac_addr[6] __NRF_WIFI_ALIGN_4;
+	/** Reserved: 2 byte for alignment */
+	unsigned char reserved[2];
+	/** Pending frames bitmap for each access category */
+	unsigned char pend_frames_bitmap;
+	/** Reserved: 3 Bytes for alignment */
+	unsigned char reserved1[3];
+} __NRF_WIFI_PKD __NRF_WIFI_ALIGN_4;
+
 
 /**
  * @brief This structure represents the bitmap of STA (Station) pending frames in
