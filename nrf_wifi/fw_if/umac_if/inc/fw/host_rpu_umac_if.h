@@ -20,6 +20,9 @@
 
 #define MAX_NRF_WIFI_UMAC_CMD_SIZE 400
 
+#define IEEE80211_STYPE_DISASSOC    0x00A0
+#define IEEE80211_STYPE_DEAUTH      0x00C0
+
 /**
  * @brief The host can send the following commands to the RPU.
  *
