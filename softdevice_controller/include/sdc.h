@@ -109,17 +109,11 @@ extern "C" {
 /** @brief Default maximum number of concurrent Broadcast Isochronous Groups. */
 #define SDC_DEFAULT_BIG_COUNT 0
 
-/** @brief Default maximum number of concurrent Broadcast Isochronous Streams. */
-#define SDC_DEFAULT_BIS_COUNT 0
-
 /** @brief Default maximum number of concurrent Sink Broadcast Isochronous Streams. */
 #define SDC_DEFAULT_BIS_SINK_COUNT 0
 
 /** @brief Default maximum number of concurrent Source Broadcast Isochronous Streams. */
 #define SDC_DEFAULT_BIS_SOURCE_COUNT 0
-
-/** @brief Default ISO RX PDU buffer count. */
-#define SDC_DEFAULT_ISO_RX_PDU_BUFFER_COUNT 0
 
 /** @brief Default ISO RX PDU buffer per stream count. */
 #define SDC_DEFAULT_ISO_RX_PDU_BUFFER_PER_STREAM_COUNT 0
@@ -279,9 +273,6 @@ extern "C" {
 /** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
 #define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 275) : 0)
 
-/** @brief Maximum memory required for the ISO RX path PDUs. */
-#define SDC_MEM_ISO_RX_PDU_POOL_SIZE(count) 0
-
 /** @brief Maximum memory required for the ISO RX PDU pool per stream.
  *  @param[in] rx_pdu_buffer_per_stream_count Number of RX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
  *                                            For BIS, this value determines the number of pretransmission that can be stored.
@@ -366,14 +357,10 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_CIS_COUNT,
     /** See @ref sdc_cfg_t::big_count. */
     SDC_CFG_TYPE_BIG_COUNT,
-    /** See @ref sdc_cfg_t::bis_count. */
-    SDC_CFG_TYPE_BIS_COUNT,
     /** See @ref sdc_cfg_t::bis_sink_count. */
     SDC_CFG_TYPE_BIS_SINK_COUNT,
     /** See @ref sdc_cfg_t::bis_source_count. */
     SDC_CFG_TYPE_BIS_SOURCE_COUNT,
-    /** See @ref sdc_cfg_t::iso_rx_pdu_buffer_cfg. */
-    SDC_CFG_TYPE_ISO_RX_PDU_BUFFER_CFG,
     /** See @ref sdc_cfg_t::iso_rx_pdu_buffer_per_stream_cfg. */
     SDC_CFG_TYPE_ISO_RX_PDU_BUFFER_PER_STREAM_CFG,
     /** See @ref sdc_cfg_t::iso_rx_sdu_buffer_cfg. */
@@ -578,11 +565,6 @@ typedef union
      * Default: @ref SDC_DEFAULT_BIG_COUNT.
      */
     sdc_cfg_role_count_t big_count;
-    /** Configures the maximum number of concurrent BISs.
-     *
-     * Default: @ref SDC_DEFAULT_BIS_COUNT.
-     */
-    sdc_cfg_role_count_t bis_count;
     /** Configures the maximum number of concurrent sink BISs.
      *
      * Default: @ref SDC_DEFAULT_BIS_SINK_COUNT.
@@ -593,11 +575,6 @@ typedef union
      * Default: @ref SDC_DEFAULT_BIS_SOURCE_COUNT.
      */
     sdc_cfg_role_count_t bis_source_count;
-    /** Configures the size of the shared rx PDU buffer pool allocated for ISO.
-     *
-     * Default: @ref SDC_DEFAULT_ISO_RX_PDU_BUFFER_COUNT.
-     */
-    sdc_cfg_buffer_count_t iso_rx_pdu_buffer_cfg;
     /** Configures the size of the per stream RX PDU buffer pool allocated for ISO streams.
      *
      * Default: @ref SDC_DEFAULT_ISO_RX_PDU_BUFFER_PER_STREAM_COUNT.

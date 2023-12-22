@@ -58,9 +58,12 @@ The following table summarizes the priorities.
    | Second priority             | * Central connection setup (waiting for ACK from peer)                                            |
    |                             | * Initiator when the scan window is not equal to the scan interval                                |
    |                             | * Periodic advertiser sending a channel map update                                                |
+   |                             | * Periodic advertiser sending auxiliary packets (``AUX_SYNC_SUBEVENT_IND``, ``AUX_CONN_REQ``)     |
+   |                             | * Periodic advertiser receiving auxiliary packets (``AUX_SYNC_SUBEVENT_RSP``, ``AUX_CONN_RSP``)   |
    |                             | * Scanner in the synchronizing state                                                              |
    |                             | * Scanner in the synchronized state where the synchronization is about to be lost                 |
-   |                             | * Scanner in the synchronized state receiving auxiliary packets (AUX_CHAIN_IND's)                 |
+   |                             | * Scanner in the synchronized state receiving auxiliary packets (``AUX_CHAIN_IND``)               |
+   |                             | * Scanner in the synchronized state sending auxiliary packets (``AUX_SYNC_SUBEVENT_RSP``)         |
    |                             | * Connectable Advertiser/Broadcaster which has been blocked consecutively for a few times         |
    |                             | * Scanner which has been blocked for a long time                                                  |
    |                             | * Scanner which is receiving an advertising packet on a secondary advertising channel             |
