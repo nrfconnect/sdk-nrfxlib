@@ -155,6 +155,12 @@ enum nrf_wifi_status update_pend_q_bmp(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ct
 
 	if (vif_ctx->if_type == NRF_WIFI_IFTYPE_AP &&
 	    peer_id < MAX_PEERS) {
+		const unsigned int bitmap_offset = offsetof(struct sap_client_pend_frames_bitmap,
+						      pend_frames_bitmap);
+		const unsigned char *rpu_addr = (unsigned char *)RPU_MEM_UMAC_PEND_Q_BMP +
+			(sizeof(struct sap_client_pend_frames_bitmap) * peer_id) +
+			bitmap_offset;
+
 		bmp = &def_dev_ctx->tx_config.peers[peer_id].pend_q_bmp;
 		pend_pkt_q = def_dev_ctx->tx_config.data_pending_txq[peer_id][ac];
 
@@ -167,11 +173,9 @@ enum nrf_wifi_status update_pend_q_bmp(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ct
 		}
 
 		status = hal_rpu_mem_write(fmac_dev_ctx->hal_dev_ctx,
-					   (RPU_MEM_UMAC_PEND_Q_BMP +
-					    (sizeof(struct sap_pend_frames_bitmap) * peer_id) +
-					    NRF_WIFI_FMAC_ETH_ADDR_LEN),
+					   (unsigned long)rpu_addr,
 					   bmp,
-					   sizeof(unsigned char));
+					   4); /* For alignment */
 	} else {
 		status = NRF_WIFI_STATUS_SUCCESS;
 	}
