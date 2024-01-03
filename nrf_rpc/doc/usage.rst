@@ -112,7 +112,7 @@ RPC decoders are registered with macros :c:macro:`NRF_RPC_CMD_DECODER`, :c:macro
 Decoders are called automatically when a command or event with a matching ID is received.
 Command decoders must send a response.
 
-A RPC decoder associated with the example above can be implemented in the following way:
+An RPC decoder associated with the example above can be implemented in the following way:
 
 .. code-block:: c
 

@@ -975,7 +975,7 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
  *   See also: Core v5.1, Vol 6, Part B, Section 4.5.6
  * - There are no conflicts with other concurrent links.
  *
- * A connection event can not be extended beyond the connection interval.
+ * A connection event cannot be extended beyond the connection interval.
  *
  * By default, that is after an HCI Reset, Extended Connection Events are enabled.
  *

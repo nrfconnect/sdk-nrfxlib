@@ -89,7 +89,7 @@ All the notable changes added to the |NCS| v1.7.0 release are documented in this
 Changes
 =======
 
-* Fixed formatting of kconfig options.
+* Fixed formatting of Kconfig options.
 
 nRF Connect SDK v1.6.0
 **********************

@@ -382,7 +382,7 @@ NRF_SO_SEC_DTLS_CONN_SAVE
    In this case, the SSL context is still present in the socket, so data sending is still possible.
    The option fails with nrf_errno :c:macro:`NRF_EINVAL` if the socket option is not supported with the current configuration, for instance because the DTLS handshake is not completed,
    the connection is not an DTLS v1.2 connection with renegotiation disabled, or the connection does not use an AEAD cipher suite (AES-CCM or AES-GCM).
-   The option fails with nrf_errno :c:macro:`NRF_ENOMEM` if the amount of saved connections exceeds four.
+   The option fails with nrf_errno :c:macro:`NRF_ENOMEM` if the number of saved connections exceeds four.
 
 NRF_SO_SEC_DTLS_CONN_LOAD
    Load DTLS connection.

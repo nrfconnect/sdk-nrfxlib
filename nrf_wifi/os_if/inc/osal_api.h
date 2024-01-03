@@ -981,7 +981,7 @@ void nrf_wifi_osal_bus_pcie_dev_deinit(struct nrf_wifi_osal_priv *opriv,
 
 
 /**
- * nrf_wifi_osal_bus_pcie_dev_intr_reg() - Register a interrupt handler for a PCIe device.
+ * nrf_wifi_osal_bus_pcie_dev_intr_reg() - Register an interrupt handler for a PCIe device.
  * @opriv: Pointer to the OSAL context returned by the @nrf_wifi_osal_init API.
  * @os_pcie_dev_ctx: OS specific PCIe device context.
  * @callbk_data: Data to be passed to the ISR.

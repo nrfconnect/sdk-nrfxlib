@@ -27,8 +27,8 @@
 /**
  * @brief  Structure to hold per device context information for the UMAC IF layer.
  *
- * This structure maintains the context information necessary for the
- * a single instance of an FullMAC based RPU.
+ * This structure maintains the context information necessary for
+ * a single instance of a FullMAC-based RPU.
  */
 struct nrf_wifi_fmac_dev_ctx_rt {
 	/** Firmware RF test command type. */

@@ -301,7 +301,7 @@ HKDF using SHA-512
    :project: nrfxlib
    :members:
 
-HMAC - Hash-based Aessage Authentication Code
+HMAC - Hash-based Message Authentication Code
 =============================================
 
 .. doxygengroup:: ocrypto_hmac

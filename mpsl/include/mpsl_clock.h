@@ -87,7 +87,7 @@ typedef struct
    *        This sets the calibration interval to 4 seconds
    *        and guarantees clock calibration every second calibration interval.
    *        That is, the clock will be calibrated every 8 seconds.
-   *        If the temperature changes more that 0.5 every 4 seconds,
+   *        If the temperature changes more than 0.5 every 4 seconds,
    *        the clock will be calibrated every 4 seconds.
    *        See the Product Specification for more information.
    */

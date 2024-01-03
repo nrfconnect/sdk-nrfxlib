@@ -40,7 +40,7 @@
  *                   from the UMAC layer. e.g. callback function to process
  *                   packet received from RPU firmware, scan result etc
  *
- * This function initializes the UMAC IF layer.It does the following:
+ * This function initializes the UMAC IF layer. It does the following:
  *	    - Creates and initializes the context for the UMAC IF layer.
  *	    - Initializes the HAL layer.
  *	    - Initializes the OS abstraction Layer.
@@ -497,7 +497,7 @@ enum nrf_wifi_status nrf_wifi_fmac_mac_addr(struct nrf_wifi_fmac_dev_ctx *fmac_d
 					    unsigned char *addr);
 
 /**
- * @brief Assign a index for a new VIF.
+ * @brief Assign an index for a new VIF.
  * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
  *
  * This function searches for an unused VIF index and returns it.

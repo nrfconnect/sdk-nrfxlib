@@ -231,7 +231,7 @@ This function translates errnos from the Modem library to the OS-defined ones.
 nrf_modem_os_is_in_isr()
 ------------------------
 
-This function is called by the library to check whether or not it is executing in a interrupt context.
+This function is called by the library to check whether it is executing in an interrupt context.
 
 nrf_modem_os_sem_init()
 -----------------------
@@ -343,7 +343,7 @@ You can use it as a starting point and customize it for your OS or scheduler.
 
     void nrf_modem_os_busywait(int32_t usec)
     {
-        /* Busy wait for a given amount of microseconds. */
+        /* Busy wait for a given number of microseconds. */
     }
 
     int32_t nrf_modem_os_timedwait(uint32_t context, int32_t *timeout)

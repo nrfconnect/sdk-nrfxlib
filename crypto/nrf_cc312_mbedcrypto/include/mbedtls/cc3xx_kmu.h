@@ -108,7 +108,7 @@ int mbedtls_aes_setkey_dec_shadow_key(
  *
  * @note    Replaces the API mbedtls_aes_setkey_dec.
  *
- * @note    The key derivation is executed before each requests to encrypt.
+ * @note    The key derivation is executed before each request to encrypt.
  *          this function only configures the context to use a derived key.
  *
  * @note    When deriving the key from KMU registers, the derived keys exist
@@ -144,7 +144,7 @@ int mbedtls_aes_setkey_enc_shadow_key_derived(
  *          is stored in the context type
  * @note    Replaces the API mbedtls_aes_setkey_enc.
  *
- * @note    The key derivation is executed before each requests to decrypt.
+ * @note    The key derivation is executed before each request to decrypt.
  *          This function only configures the context to use a derived key.
  *
  * @note    When deriving the key from KMU registers, the derived keys exist
@@ -222,7 +222,7 @@ int mbedtls_ccm_setkey_shadow_key(
  *
  * @note    Replaces the API mbedtls_ccm_setkey.
  *
- * @note    The key derivation is executed before each requests to decrypt.
+ * @note    The key derivation is executed before each request to decrypt.
  *          This function only configures the context to use a derived key.
  *
  * @note    When deriving the key from KMU registers, the derived keys exist
@@ -302,7 +302,7 @@ int mbedtls_gcm_setkey_shadow_key(
  *
  * @note    Replaces the API mbedtls_gcm_setkey.
  *
- * @note    The key derivation is executed before each requests to decrypt.
+ * @note    The key derivation is executed before each request to decrypt.
  *          this function only configures the context to use a derived key.
  *
  * @note    When deriving the key from KMU registers, the derived keys exist

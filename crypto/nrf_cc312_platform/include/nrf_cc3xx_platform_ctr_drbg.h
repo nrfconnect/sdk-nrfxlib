@@ -88,7 +88,7 @@ int nrf_cc3xx_platform_ctr_drbg_free(
  * @ref nrf_cc3xx_platform_ctr_drbg_get_with_add. This leads to a higher power
  * draw and longer execution time.
  *
- * @note Before calling this api the context to must be initialized by calling
+ * @note Before calling this API the context to must be initialized by calling
  *       @ref nrf_cc3xx_platform_ctr_drbg_init
  *
  * @note The default configuration is to have prediction resistance turned off.
@@ -111,7 +111,7 @@ int nrf_cc3xx_platform_ctr_drbg_set_pr(
  *
  * This API controls when the ctr_drbg is automatically reseeded
  *
- * @note Before calling this api the context to must be initialized by calling
+ * @note Before calling this API the context to must be initialized by calling
  *       @ref nrf_cc3xx_platform_ctr_drbg_init.
  *
  * @note Changing the reseed interval is optional.
@@ -137,7 +137,7 @@ int nrf_cc3xx_platform_ctr_drbg_set_reseed_interval(
  *       automatically according to the reseed interval in the built-in
  *       mbedtls_ctr_drbg context.
  *
- * @note Before calling this api the context to must be initialized by calling
+ * @note Before calling this API the context to must be initialized by calling
  *       @ref nrf_cc3xx_platform_ctr_drbg_init.
  *
  * @note This API is only usable if @ref nrf_cc3xx_platform_init was run
@@ -175,7 +175,7 @@ int nrf_cc3xx_platform_ctr_drbg_reseed(
  *          random numbers are generated using Arm CryptoCell cc3xx hardware
  *          acceleration.
  *
- * @note Before calling this api the context to must be initialized by calling
+ * @note Before calling this API the context to must be initialized by calling
  *       @ref nrf_cc3xx_platform_ctr_drbg_init.
  *
  * @note This API is only usable if @ref nrf_cc3xx_platform_init was run
@@ -210,7 +210,7 @@ int nrf_cc3xx_platform_ctr_drbg_get_with_add(
  *          random numbers are generated using Arm CryptoCell cc3xx hardware
  *          acceleration.
  *
- * @note Before calling this api the context to must be initialized by calling
+ * @note Before calling this API the context to must be initialized by calling
  *       @ref nrf_cc3xx_platform_ctr_drbg_init.
  *
  * @note This API is only usable if @ref nrf_cc3xx_platform_init was run

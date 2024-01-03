@@ -32,7 +32,7 @@ typedef int8_t mpsl_tx_power_t;
  *  @param[in] req_radio_power  Requested TX power desired for RADIO peripheral.
  *                              The power value in dBm must be supported by the RADIO peripheral.
  *
- *  @return RADIO.TXPOWER register code corrensponding to a radio power in dBm.
+ *  @return RADIO.TXPOWER register code corresponding to radio power in dBm.
  */
 uint32_t mpsl_tx_power_dbm_to_radio_register_convert(mpsl_tx_power_t req_radio_power);
 
