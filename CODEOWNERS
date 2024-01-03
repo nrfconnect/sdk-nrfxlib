@@ -42,7 +42,7 @@ doc/*                                     @b-gent
 /nrf_802154/                              @ankuns @jciupis @ahasztag
 /nrf_security/                            @frkv @tejlmand
 /openthread/                              @lmaciejonczyk @edmont @canisLupus1313
-/zboss/                                   @tomchy
+/zboss/                                   @milewr
 /zephyr/                                  @carlescufi
 /nrf_rpc/                                 @doki-nordic @KAGA164
 /nrf_dm/                                  @Tschet1 @eriksandgren
