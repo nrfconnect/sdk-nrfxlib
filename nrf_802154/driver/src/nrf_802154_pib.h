@@ -70,6 +70,21 @@ bool nrf_802154_pib_promiscuous_get(void);
 void nrf_802154_pib_promiscuous_set(bool enabled);
 
 /**
+ * @brief Checks if the RxOnWhenIdle mode is enabled.
+ *
+ * @retval  true   The RxOnWhenIdle mode is enabled.
+ * @retval  false  The RxOnWhenIdle mode is disabled.
+ */
+bool nrf_802154_pib_rx_on_when_idle_get(void);
+
+/**
+ * @brief Enables or disables the RxOnWhenIdle mode.
+ *
+ * @param[in]  enabled  If the RxOnWhenIdle mode is to be enabled.
+ */
+void nrf_802154_pib_rx_on_when_idle_set(bool enabled);
+
+/**
  * @brief Checks if the auto ACK procedure is enabled.
  *
  * @retval  true   The auto ACK procedure is enabled.

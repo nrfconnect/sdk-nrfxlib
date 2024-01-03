@@ -124,6 +124,7 @@ static uint32_t                        m_ed_time_left;         ///< Remaining ti
 static uint8_t                         m_ed_result;            ///< Result of the current energy detection procedure.
 static uint8_t                         m_last_lqi;             ///< LQI of the last received non-ACK frame, corrected for the temperature.
 static nrf_802154_fal_tx_power_split_t m_tx_power;             ///< Power to be used to transmit the current frame split into components.
+static uint8_t                         m_tx_channel;           ///< Channel to be used to transmit the current frame.
 static int8_t                          m_last_rssi;            ///< RSSI of the last received non-ACK frame, corrected for the temperature.
 
 static nrf_802154_frame_parser_data_t m_current_rx_frame_data; ///< RX frame parser data.
@@ -989,6 +990,8 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
 
     (void)nrf_802154_tx_power_split_pib_power_get(&split_power);
 
+    nrf_802154_trx_channel_set(nrf_802154_pib_channel_get());
+
     nrf_802154_trx_receive_frame(BCC_INIT / 8U,
                                  ru_tr_mode,
                                  m_trx_receive_frame_notifications_mask,
@@ -1060,6 +1063,7 @@ static bool tx_init(const uint8_t                       * p_data,
     }
 #endif
 
+    nrf_802154_trx_channel_set(m_tx_channel);
     m_flags.tx_with_cca = cca;
     nrf_802154_trx_transmit_frame(nrf_802154_tx_work_buffer_get(p_data),
                                   rampup_trigg_mode,
@@ -1210,6 +1214,21 @@ static void modulated_carrier_init(const uint8_t * p_data)
 }
 
 #endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
+
+/** Switches to idle state: rx or sleep depending on RxOnWhenIdle mode */
+static void switch_to_idle(void)
+{
+    if (!nrf_802154_pib_rx_on_when_idle_get())
+    {
+        sleep_init();
+        state_set(RADIO_STATE_SLEEP);
+    }
+    else
+    {
+        state_set(RADIO_STATE_RX);
+        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+    }
+}
 
 /***************************************************************************************************
  * @section Radio Scheduler notification handlers
@@ -2024,8 +2043,7 @@ void nrf_802154_trx_receive_frame_received(void)
                 {
                     mp_current_rx_buffer->free = false;
 
-                    state_set(RADIO_STATE_RX);
-                    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+                    switch_to_idle();
 
                     received_frame_notify_and_nesting_allow(p_received_data);
                 }
@@ -2040,8 +2058,7 @@ void nrf_802154_trx_receive_frame_received(void)
 
                 mp_current_rx_buffer->free = false;
 
-                state_set(RADIO_STATE_RX);
-                rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+                switch_to_idle();
 
                 received_frame_notify_and_nesting_allow(p_received_data);
             }
@@ -2059,7 +2076,7 @@ void nrf_802154_trx_receive_frame_received(void)
                 // Find new buffer
                 rx_buffer_in_use_set(nrf_802154_rx_buffer_free_find());
 
-                rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+                switch_to_idle();
 
                 received_frame_notify_and_nesting_allow(p_received_data);
             }
@@ -2115,9 +2132,7 @@ void nrf_802154_trx_transmit_ack_transmitted(void)
     // Current buffer used for receive operation will be passed to the application
     mp_current_rx_buffer->free = false;
 
-    state_set(RADIO_STATE_RX);
-
-    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+    switch_to_idle();
 
     received_frame_notify_and_nesting_allow(p_received_data);
 
@@ -2170,9 +2185,7 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
     }
     else
     {
-        state_set(RADIO_STATE_RX);
-
-        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+        switch_to_idle();
 
         transmitted_frame_notify(NULL, 0, 0);
     }
@@ -2286,9 +2299,7 @@ static void on_bad_ack(void)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     // We received either a frame with incorrect CRC or not an ACK frame or not matching ACK
-    state_set(RADIO_STATE_RX);
-
-    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+    switch_to_idle();
 
     nrf_802154_transmit_done_metadata_t metadata = {};
 
@@ -2317,8 +2328,38 @@ void nrf_802154_trx_receive_ack_received(void)
 
         mp_current_rx_buffer->free = false;
 
-        state_set(RADIO_STATE_RX);
-        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+        // Detect Frame Pending field set to one on Ack frame received after a Data Request Command
+        bool                           should_receive = false;
+        nrf_802154_frame_parser_data_t frame_data;
+
+        bool parse_result = nrf_802154_frame_parser_data_init(mp_tx_data,
+                                                              mp_tx_data[PHR_OFFSET] + PHR_SIZE,
+                                                              PARSE_LEVEL_FULL,
+                                                              &frame_data);
+
+        if (parse_result &&
+            (nrf_802154_frame_parser_frame_type_get(&frame_data) == FRAME_TYPE_COMMAND))
+        {
+            const uint8_t * p_cmd = nrf_802154_frame_parser_mac_command_id_get(&frame_data);
+
+            if ((p_cmd != NULL) && (*p_cmd == MAC_CMD_DATA_REQ))
+            {
+                if (p_ack_data[FRAME_PENDING_OFFSET] & FRAME_PENDING_BIT)
+                {
+                    should_receive = true;
+                }
+            }
+        }
+
+        if (should_receive)
+        {
+            state_set(RADIO_STATE_RX);
+            rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+        }
+        else
+        {
+            switch_to_idle();
+        }
 
         transmitted_frame_notify(p_ack_buffer->data,           // phr + psdu
                                  rssi_last_measurement_get(),  // rssi
@@ -2336,8 +2377,7 @@ void nrf_802154_trx_standalone_cca_finished(bool channel_was_idle)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    state_set(RADIO_STATE_RX);
-    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+    switch_to_idle();
 
     cca_notify(channel_was_idle);
 
@@ -2383,8 +2423,7 @@ void nrf_802154_trx_transmit_frame_ccabusy(void)
 
     nrf_802154_stat_counter_increment(cca_failed_attempts);
 
-    state_set(RADIO_STATE_RX);
-    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+    switch_to_idle();
 
     nrf_802154_transmit_done_metadata_t metadata = {};
 
@@ -2426,8 +2465,7 @@ void nrf_802154_trx_energy_detection_finished(uint8_t ed_sample)
     {
         nrf_802154_trx_channel_set(nrf_802154_pib_channel_get());
 
-        state_set(RADIO_STATE_RX);
-        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+        switch_to_idle();
 
 #if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
         nrf_802154_energy_detected_t ed_result = {};
@@ -2484,6 +2522,28 @@ radio_state_t nrf_802154_core_state_get(void)
     return m_state;
 }
 
+static bool core_sleep(nrf_802154_term_t term_lvl, req_originator_t req_orig, bool notify_abort)
+{
+    bool result = current_operation_terminate(term_lvl, req_orig, notify_abort);
+
+    if (result)
+    {
+        // The order of calls in the following blocks is inverted to avoid RAAL races.
+        if (timeslot_is_granted())
+        {
+            state_set(RADIO_STATE_FALLING_ASLEEP);
+            falling_asleep_init();
+        }
+        else
+        {
+            sleep_init();
+            state_set(RADIO_STATE_SLEEP);
+        }
+    }
+
+    return result;
+}
+
 bool nrf_802154_core_sleep(nrf_802154_term_t term_lvl)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2494,22 +2554,7 @@ bool nrf_802154_core_sleep(nrf_802154_term_t term_lvl)
     {
         if ((m_state != RADIO_STATE_SLEEP) && (m_state != RADIO_STATE_FALLING_ASLEEP))
         {
-            result = current_operation_terminate(term_lvl, REQ_ORIG_CORE, true);
-
-            if (result)
-            {
-                // The order of calls in the following blocks is inverted to avoid RAAL races.
-                if (timeslot_is_granted())
-                {
-                    state_set(RADIO_STATE_FALLING_ASLEEP);
-                    falling_asleep_init();
-                }
-                else
-                {
-                    sleep_init();
-                    state_set(RADIO_STATE_SLEEP);
-                }
-            }
+            result = core_sleep(term_lvl, REQ_ORIG_CORE, true);
         }
 
         nrf_802154_critical_section_exit();
@@ -2619,8 +2664,7 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
 
                 if (!result)
                 {
-                    state_set(RADIO_STATE_RX);
-                    rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+                    switch_to_idle();
                 }
             }
 
@@ -2633,8 +2677,9 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
                     m_coex_tx_request_mode == NRF_802154_COEX_TX_REQUEST_MODE_CCA_DONE;
 
                 state_set(p_params->cca ? RADIO_STATE_CCA_TX : RADIO_STATE_TX);
-                mp_tx_data = p_data;
-                m_tx_power = p_params->tx_power;
+                mp_tx_data   = p_data;
+                m_tx_power   = p_params->tx_power;
+                m_tx_channel = p_params->channel;
 
                 uint8_t cca_attempts = p_params->cca ? (1 + p_params->extra_cca_attempts) : 0;
 
@@ -2645,8 +2690,7 @@ bool nrf_802154_core_transmit(nrf_802154_term_t              term_lvl,
                 {
                     if (!result)
                     {
-                        state_set(RADIO_STATE_RX);
-                        rx_init(TRX_RAMP_UP_SW_TRIGGER, NULL);
+                        switch_to_idle();
                     }
                 }
                 else
@@ -2688,10 +2732,18 @@ bool nrf_802154_core_ack_timeout_handle(const nrf_802154_ack_timeout_handle_para
         {
             bool r;
 
-            r = core_receive(NRF_802154_TERM_802154,
-                             REQ_ORIG_ACK_TIMEOUT,
-                             false,
-                             NRF_802154_RESERVED_IMM_RX_WINDOW_ID);
+            if (!nrf_802154_pib_rx_on_when_idle_get())
+            {
+                r = core_sleep(NRF_802154_TERM_802154, REQ_ORIG_ACK_TIMEOUT, false);
+            }
+            else
+            {
+                r = core_receive(NRF_802154_TERM_802154,
+                                 REQ_ORIG_ACK_TIMEOUT,
+                                 false,
+                                 NRF_802154_RESERVED_IMM_RX_WINDOW_ID);
+
+            }
             NRF_802154_ASSERT(r);
             (void)r;
 

@@ -414,6 +414,35 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_promiscuous_set(
 }
 
 /**
+ * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RX_ON_WHEN_IDLE_SET.
+ *
+ * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
+ * @param[in]  property_data_len  Size of the @ref p_property_data buffer.
+ *
+ */
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_rx_on_when_idle_set(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    bool           enabled;
+    spinel_ssize_t siz;
+
+    siz = spinel_datatype_unpack(p_property_data,
+                                 property_data_len,
+                                 SPINEL_DATATYPE_NRF_802154_RX_ON_WHEN_IDLE_SET,
+                                 &enabled);
+
+    if (siz < 0)
+    {
+        return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
+    }
+
+    nrf_802154_rx_on_when_idle_set(enabled);
+
+    return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
+}
+
+/**
  * @brief Decode and dispatch SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA.
  *
  * @param[in]  p_property_data    Pointer to a buffer that contains data to be decoded.
@@ -1936,6 +1965,10 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_PROMISCUOUS_SET:
             return spinel_decode_prop_nrf_802154_promiscuous_set(p_property_data,
                                                                  property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RX_ON_WHEN_IDLE_SET:
+            return spinel_decode_prop_nrf_802154_rx_on_when_idle_set(p_property_data,
+                                                                     property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_CCA:
             return spinel_decode_prop_nrf_802154_cca(p_property_data, property_data_len);

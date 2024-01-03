@@ -741,6 +741,31 @@ bail:
     SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
 }
 
+void nrf_802154_rx_on_when_idle_set(bool enabled)
+{
+    nrf_802154_ser_err_t res;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%s", enabled ? "true" : "false", "enabled");
+
+    nrf_802154_spinel_response_notifier_lock_before_request(SPINEL_PROP_LAST_STATUS);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_RX_ON_WHEN_IDLE_SET,
+        SPINEL_DATATYPE_NRF_802154_RX_ON_WHEN_IDLE_SET,
+        enabled);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+}
+
 void nrf_802154_src_addr_matching_method_set(nrf_802154_src_addr_match_t match_method)
 {
     nrf_802154_ser_err_t res;
@@ -1163,7 +1188,8 @@ bool nrf_802154_transmit_csma_ca_raw(uint8_t                                    
         static const nrf_802154_transmit_csma_ca_metadata_t metadata_default =
         {
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
-            .tx_power    = {.use_metadata_value = false}
+            .tx_power    = {.use_metadata_value = false},
+            .tx_channel  = {.use_metadata_value = false}
         };
 
         p_metadata = &metadata_default;
@@ -1460,7 +1486,8 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
         {
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
             .cca         = true,
-            .tx_power    = {.use_metadata_value = false}
+            .tx_power    = {.use_metadata_value = false},
+            .tx_channel  = {.use_metadata_value = false}
         };
 
         p_metadata = &metadata_default;

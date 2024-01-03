@@ -27,6 +27,9 @@ The following functionalities are implemented:
   It provides precise frame timestamps.
 * PA/LNA.
   It allows the Radio Driver to control an external PA/LNA module to amplify the RF signal.
+* The RxOnWhenIdle mode of operation.
+  When the RxOnWhenIdle mode is enabled, the radio is in the receive state during idle periods.
+  Otherwise, the radio is disabled.
 
 The 802.15.4 Radio Driver consists of the following libraries:
 

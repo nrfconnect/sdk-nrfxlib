@@ -459,7 +459,8 @@ bool nrf_802154_receive(void)
 bool nrf_802154_transmit_raw(uint8_t                              * p_data,
                              const nrf_802154_transmit_metadata_t * p_metadata)
 {
-    bool result;
+    bool    result;
+    uint8_t channel;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -469,22 +470,28 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
         {
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
             .cca         = true,
-            .tx_power    = {.use_metadata_value = false}
+            .tx_power    = {.use_metadata_value = false},
+            .tx_channel  = {.use_metadata_value = false}
         };
 
         p_metadata = &metadata_default;
     }
 
+    channel =
+        p_metadata->tx_channel.use_metadata_value ? p_metadata->tx_channel.channel :
+        nrf_802154_pib_channel_get();
+
     nrf_802154_transmit_params_t params =
     {
         .frame_props        = p_metadata->frame_props,
         .tx_power           = {0},
+        .channel            = channel,
         .cca                = p_metadata->cca,
         .immediate          = false,
         .extra_cca_attempts = 0U,
     };
 
-    (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(nrf_802154_pib_channel_get(),
+    (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(channel,
                                                                  p_metadata->tx_power,
                                                                  &params.tx_power);
 
@@ -508,7 +515,8 @@ bool nrf_802154_transmit(const uint8_t                        * p_data,
                          uint8_t                                length,
                          const nrf_802154_transmit_metadata_t * p_metadata)
 {
-    bool result;
+    bool    result;
+    uint8_t channel;
 
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -518,22 +526,28 @@ bool nrf_802154_transmit(const uint8_t                        * p_data,
         {
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
             .cca         = true,
-            .tx_power    = {.use_metadata_value = false}
+            .tx_power    = {.use_metadata_value = false},
+            .tx_channel  = {.use_metadata_value = false}
         };
 
         p_metadata = &metadata_default;
     }
 
+    channel =
+        p_metadata->tx_channel.use_metadata_value ? p_metadata->tx_channel.channel :
+        nrf_802154_pib_channel_get();
+
     nrf_802154_transmit_params_t params =
     {
         .frame_props        = p_metadata->frame_props,
         .tx_power           = {0},
+        .channel            = channel,
         .cca                = p_metadata->cca,
         .immediate          = false,
         .extra_cca_attempts = 0U,
     };
 
-    (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(nrf_802154_pib_channel_get(),
+    (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(channel,
                                                                  p_metadata->tx_power,
                                                                  &params.tx_power);
 
@@ -781,6 +795,11 @@ void nrf_802154_promiscuous_set(bool enabled)
     nrf_802154_pib_promiscuous_set(enabled);
 }
 
+void nrf_802154_rx_on_when_idle_set(bool enabled)
+{
+    nrf_802154_pib_rx_on_when_idle_set(enabled);
+}
+
 void nrf_802154_auto_ack_set(bool enabled)
 {
     nrf_802154_pib_auto_ack_set(enabled);
@@ -873,7 +892,8 @@ bool nrf_802154_transmit_csma_ca_raw(uint8_t                                    
         static const nrf_802154_transmit_csma_ca_metadata_t metadata_default =
         {
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
-            .tx_power    = {.use_metadata_value = false}
+            .tx_power    = {.use_metadata_value = false},
+            .tx_channel  = {.use_metadata_value = false}
         };
 
         p_metadata = &metadata_default;
@@ -904,7 +924,8 @@ bool nrf_802154_transmit_csma_ca(const uint8_t                                * 
         static const nrf_802154_transmit_csma_ca_metadata_t metadata_default =
         {
             .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
-            .tx_power    = {.use_metadata_value = false}
+            .tx_power    = {.use_metadata_value = false},
+            .tx_channel  = {.use_metadata_value = false}
         };
 
         p_metadata = &metadata_default;

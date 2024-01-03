@@ -1551,6 +1551,41 @@ void nrf_802154_csl_writer_period_set(uint16_t period);
 void nrf_802154_csl_writer_anchor_time_set(uint64_t anchor_time);
 
 /**
+ * @brief Sets the RxOnWhenIdle mode value.
+ *
+ * This function sets the RxOnWhenIdle mode value, which defaults to true. When enabled, the radio will
+ * stay in receive state during idle periods. When disabled, the radio will stay in sleep state during
+ * idle periods. The new value will only take effect after a completed operation.
+ *
+ * Notice that the period following a failed reception is not considered idle, rather continuation of
+ * the reception state. Same goes for the finalization of a reception during a receive slot.
+ *
+ * An idle period is started in the following situations:
+ * - After @ref nrf_802154_receive starts a receive state and a frame is correctly received and passed
+ *   the filtering:
+ *   - If the received frame requests an ACK: after the ACK was properly transmitted or immediately
+ *     if for some internal condition the ACK is not transmitted.
+ *   - If the received frame does not request an ACK: immediately, unless the received frame is an
+ *     spurious ACK.
+ * - Immediately after a frame is transmitted, when no ACK is requested.
+ * - After a frame is transmitted, when ACK is requested, if:
+ *   - ACK timeout expires.
+ *   - An invalid ACK is received (or not an ACK frame).
+ *   - The matching ACK is received, unless the transmitted frame was a Data Request Command and the
+ *     frame pending bit is set to true in the ACK.
+ * - After a standalone CCA is completed.
+ * - After a failed CCA during CSMA/CA procedure.
+ * - After every Energy Detection operation.
+ * - After a delayed reception times out.
+ *
+ * Combining disabled RxOnWhenIdle mode and enabled promiscuous mode is unsupported. Such configuration
+ * may result in an undefined behavior.
+ *
+ * @param[in]  rx_on_when_idle  If RxOnWhenIdle mode should be enabled.
+ */
+void nrf_802154_rx_on_when_idle_set(bool rx_on_when_idle);
+
+/**
  * @}
  * @defgroup nrf_802154_test_modes Test modes
  * @{

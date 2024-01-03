@@ -412,6 +412,18 @@ typedef struct
 } nrf_802154_tx_power_metadata_t;
 
 /**
+ * @brief Structure passed in transmit metadata with information needed to set transmission channel.
+ *
+ * If the @p use_metadata_value field is set to true the channel used to transmit the frame is set to the value of the field @p channel.
+ * Otherwise the value from PIB set by @ref nrf_802154_channel_set is used.
+ */
+typedef struct
+{
+    bool    use_metadata_value; // !< Set to true if the value in @p channel should be used as the TX channel
+    uint8_t channel;            // !< Transmission channel
+} nrf_802154_tx_channel_metadata_t;
+
+/**
  * @brief Default initializer for nrf_802154_transmitted_frame_props_t.
  */
 #define NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT \
@@ -427,7 +439,8 @@ typedef struct
 {
     nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the frame to be transmitted.
     bool                                 cca;         // !< If the driver is to perform a CCA procedure before transmission.
-    nrf_802154_tx_power_metadata_t       tx_power;    // !< Information about the TX power to be used
+    nrf_802154_tx_power_metadata_t       tx_power;    // !< Information about the TX power to be used.
+    nrf_802154_tx_channel_metadata_t     tx_channel;  // !< Information about the TX channel to be used.
 } nrf_802154_transmit_metadata_t;
 
 /**
@@ -438,7 +451,7 @@ typedef struct
     nrf_802154_transmitted_frame_props_t frame_props;        // !< Properties of the frame to be transmitted.
     bool                                 cca;                // !< If the driver is to perform a CCA procedure before transmission.
     uint8_t                              channel;            // !< Radio channel on which the frame is to be transmitted.
-    nrf_802154_tx_power_metadata_t       tx_power;           // !< Information about the TX power to be used
+    nrf_802154_tx_power_metadata_t       tx_power;           // !< Information about the TX power to be used.
     uint8_t                              extra_cca_attempts; // !< Maximum number of additional CCA attempts that can be performed if the first attempt returns busy channel. Ignored if @ref cca equals @c false.
 } nrf_802154_transmit_at_metadata_t;
 
@@ -448,7 +461,8 @@ typedef struct
 typedef struct
 {
     nrf_802154_transmitted_frame_props_t frame_props; // !< Properties of the frame to be transmitted.
-    nrf_802154_tx_power_metadata_t       tx_power;    // !< Information about the TX power to be used
+    nrf_802154_tx_power_metadata_t       tx_power;    // !< Information about the TX power to be used.
+    nrf_802154_tx_channel_metadata_t     tx_channel;  // !< Information about the TX channel to be used.
 } nrf_802154_transmit_csma_ca_metadata_t;
 
 /**
