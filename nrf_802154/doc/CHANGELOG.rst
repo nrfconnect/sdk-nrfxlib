@@ -13,17 +13,28 @@ See also :ref:`nrf_802154_limitations` for permanent limitations.
 Main branch - nRF 802.15.4 Radio Driver
 ***************************************
 
+Notable changes
+===============
+
+* Added the :c:func:`nrf_802154_rx_on_when_idle_set` function which allows to choose between the receive and sleep states during radio idle periods. (KRKNWK-17962)
+
 Added
 =====
 
 * Added the :c:func:`nrf_802154_security_key_remove_all` function that allows you to remove all the stored security keys. (KRKNWK-18108)
 * Added :c:macro:`NRF_802154_MAX_PENDING_NOTIFICATIONS` that sets the maximum number of simultaneously pending notifications the driver can issue. (KRKNWK-18110)
 * Added an assert abstraction layer to allow for the customization of the detection and handling of abnormal conditions. (KRKNWK-18116)
+* Added the possibility to insert the transmission channel value to the transmitted frame metadata. (KRKNWK-17965)
 
 Removed
 =======
 
 * Removed the :file:`nrf_802154_debug_assert.c` file. (KRKNWK-18116)
+
+Bug fixes
+=========
+
+* Fixed an issue causing the radio in the nRF54H20 PDK EngA to hang in an intermediate state while the radio is being disabled. (KRKNWK-18223)
 
 nRF Connect SDK v2.5.0 - nRF 802.15.4 Radio Driver
 **************************************************

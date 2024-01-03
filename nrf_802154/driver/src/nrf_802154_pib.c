@@ -95,6 +95,7 @@ typedef struct
     bool                    auto_ack    : 1;                      ///< Indicating if auto ACK procedure is enabled.
     bool                    pan_coord   : 1;                      ///< Indicating if radio is configured as the PAN coordinator.
     uint8_t                 channel     : 5;                      ///< Channel on which the node receives messages.
+    bool                    rx_on_when_idle;                      ///< Indicating if radio is in RxOnWhenIdle mode.
     nrf_802154_pib_coex_t   coex;                                 ///< Coex-related fields.
 
 #if NRF_802154_CSMA_CA_ENABLED
@@ -176,10 +177,11 @@ static bool coex_rx_request_mode_is_supported(nrf_802154_coex_rx_request_mode_t 
 
 void nrf_802154_pib_init(void)
 {
-    m_data.promiscuous = false;
-    m_data.auto_ack    = true;
-    m_data.pan_coord   = false;
-    m_data.channel     = 11;
+    m_data.promiscuous     = false;
+    m_data.rx_on_when_idle = true;
+    m_data.auto_ack        = true;
+    m_data.pan_coord       = false;
+    m_data.channel         = 11;
 
     memset(m_data.pan_id, 0xff, sizeof(m_data.pan_id));
     m_data.short_addr[0] = 0xfe;
@@ -220,6 +222,16 @@ bool nrf_802154_pib_promiscuous_get(void)
 void nrf_802154_pib_promiscuous_set(bool enabled)
 {
     m_data.promiscuous = enabled;
+}
+
+bool nrf_802154_pib_rx_on_when_idle_get(void)
+{
+    return m_data.rx_on_when_idle;
+}
+
+void nrf_802154_pib_rx_on_when_idle_set(bool enabled)
+{
+    m_data.rx_on_when_idle = enabled;
 }
 
 bool nrf_802154_pib_auto_ack_get(void)

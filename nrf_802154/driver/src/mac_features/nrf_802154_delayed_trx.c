@@ -113,12 +113,11 @@ typedef struct
  */
 typedef struct
 {
-    uint8_t                    * p_data;  ///< Pointer to a buffer containing PHR and PSDU of the frame requested to be transmitted.
-    nrf_802154_transmit_params_t params;  ///< Transmission parameters.
-    uint8_t                      channel; ///< Channel number on which transmission should be performed.
+    uint8_t                    * p_data; ///< Pointer to a buffer containing PHR and PSDU of the frame requested to be transmitted.
+    nrf_802154_transmit_params_t params; ///< Transmission parameters.
 
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
-    uint64_t                     time;    ///< Target time of the first bit of the frame.
+    uint64_t                     time;   ///< Target time of the first bit of the frame.
 
 #endif
 } dly_tx_data_t;
@@ -466,6 +465,11 @@ static void notify_rx_timeout(nrf_802154_sl_timer_t * p_timer)
 
         NRF_802154_ASSERT(result);
         (void)result;
+
+        if (!nrf_802154_pib_rx_on_when_idle_get())
+        {
+            (void)nrf_802154_request_sleep(NRF_802154_TERM_NONE);
+        }
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -597,20 +601,11 @@ static void transmit_attempt(dly_op_data_t * p_dly_op_data)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
     // No need to enqueue transmit attempts. Proceed to transmission immediately
-    nrf_802154_pib_channel_set(p_dly_op_data->tx.channel);
-
-    if (nrf_802154_request_channel_update(REQ_ORIG_DELAYED_TRX))
-    {
-        (void)nrf_802154_request_transmit(NRF_802154_TERM_802154,
-                                          REQ_ORIG_DELAYED_TRX,
-                                          p_dly_op_data->tx.p_data,
-                                          &p_dly_op_data->tx.params,
-                                          dly_tx_result_notify);
-    }
-    else
-    {
-        dly_tx_result_notify(false);
-    }
+    (void)nrf_802154_request_transmit(NRF_802154_TERM_802154,
+                                      REQ_ORIG_DELAYED_TRX,
+                                      p_dly_op_data->tx.p_data,
+                                      &p_dly_op_data->tx.params,
+                                      dly_tx_result_notify);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
@@ -796,7 +791,7 @@ bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p
         p_dly_tx_data->tx.params.cca                = p_metadata->cca;
         p_dly_tx_data->tx.params.immediate          = true;
         p_dly_tx_data->tx.params.extra_cca_attempts = p_metadata->extra_cca_attempts;
-        p_dly_tx_data->tx.channel                   = p_metadata->channel;
+        p_dly_tx_data->tx.params.channel            = p_metadata->channel;
         p_dly_tx_data->id                           = NRF_802154_RESERVED_DTX_ID;
 
         rsch_dly_ts_param_t dly_ts_param =
