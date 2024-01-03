@@ -161,7 +161,7 @@ void nrf_802154_trx_ppi_for_ramp_up_propagation_delay_wait(void);
  * @brief Detect if PPIs configured to start radio operation were triggered.
  *
  * In TRX_RAMP_UP_SW_TRIGGER mode, radio ramp up starts by design from RADIO DISABLED event.
- * This functions verifies occurrence of this event and PPIs status.
+ * This function verifies occurrence of this event and PPIs status.
  *
  * The function is intended to be used only when all of the following conditions apply:
  *   - the connections are already made with @ref nrf_802154_trx_ppi_for_ramp_up_set

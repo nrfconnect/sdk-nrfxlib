@@ -2339,7 +2339,7 @@ enum
      *
      * Specifies the preferred Router Id. Upon becoming a router/leader the node
      * attempts to use this Router Id. If the preferred Router Id is not set or
-     * if it can not be used, a randomly generated router id is picked. This
+     * if it cannot be used, a randomly generated router id is picked. This
      * property can be set only when the device role is either detached or
      * disabled.
      *

@@ -52,11 +52,11 @@ typedef enum
  *  published to multiple PPI channels by hardware design, which makes it possible
  *  for multiple tasks to subscribe to it.
  *
- *  For nRF53 series this is a number of a DPPI channel which is configured
+ *  For nRF53 series, this is a number of a DPPI channel which is configured
  *  in such a way that certain event publishes to the DPPI channel and the
- *  DPPI channel is enabled. Ensuring above is responsibility of an user
+ *  DPPI channel is enabled. Ensuring above is responsibility of a user
  *  of the provided API. Multiple tasks can then subscribe to the DPPI channel
- *  (by hardware design) thus indirectly to the event.
+ *  (by hardware design), thus indirectly to the event.
  */
 #ifdef PPI_PRESENT
 typedef uint32_t mpsl_subscribable_hw_event_t;
@@ -96,7 +96,7 @@ typedef struct
         /** Parameters when type is @ref MPSL_FEM_EVENT_TYPE_GENERIC. */
         struct
         {
-            /** Event triggerring required FEM operation. */
+            /** Event triggering required FEM operation. */
             mpsl_subscribable_hw_event_t event;
           /** Generic event, used in case of type equal to @ref MPSL_FEM_EVENT_TYPE_GENERIC. */
         } generic;

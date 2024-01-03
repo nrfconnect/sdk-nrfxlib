@@ -85,7 +85,7 @@ bool nrf_cc3xx_platform_rng_is_initialized(void);
 /** @brief ISR Function for processing of cc3xx Interrupts.
  *         This cc3xx interrupt service routine function should be called for
  *         interrupt processing.
- *         Either by placing this functions directly in the vector table or by
+ *         Either by placing this function directly in the vector table or by
  *         calling it from the ISR in the OS.
  */
 void CRYPTOCELL_IRQHandler(void);

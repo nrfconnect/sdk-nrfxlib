@@ -38,7 +38,7 @@ extern "C" {
 int ocrypto_constant_time_equal(const void *x, const void *y, size_t length);
 
 /**
- * Variable length compare to zero.
+ * Variable length compared to zero.
  *
  * @param x      Memory region that will be compared.
  * @param length Number of bytes to compare, @p length > 0.

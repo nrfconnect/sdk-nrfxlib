@@ -203,7 +203,7 @@ The library cannot be used in the :ref:`Non-Secure Processing Environment (NSPE)
 The hardware can only process one request at a time.
 Therefore, this library has used mutexes to make the library thread-safe.
 
-On Arm CryptoCell 310 devices (nRF52840 and nRF91 Series), symmetric operations (like hashing and encryption) require data input to be present in DMA acessible RAM.
+On Arm CryptoCell 310 devices (nRF52840 and nRF91 Series), symmetric operations (like hashing and encryption) require data input to be present in DMA accessible RAM.
 
 .. note::
 

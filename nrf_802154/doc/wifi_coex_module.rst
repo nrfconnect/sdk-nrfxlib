@@ -18,7 +18,7 @@ The PTA then grants or denies access to the RF medium for that request.
 The nRF 802.15.4 Radio Driver uses the abstract :ref:`mpsl_cx` provided by :ref:`mpsl` with the following limitations:
 
 * It does not use radio operation priorities, as each operation is requested with a priority value of ``1``.
-* When a PTA denies an operations, only the TX operation is aborted.
+* When a PTA denies an operation, only the TX operation is aborted.
   The denial of an RX operation or of *idle listening* has no effect.
 * Aborting a TX operation takes a few dozens of microseconds.
 

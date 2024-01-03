@@ -665,9 +665,9 @@ nrf_gzll_device_channel_selection_policy_t nrf_gzll_get_device_channel_selection
  * This parameter applies in Host mode and for a Device that is
  * in the "in sync" state.
  *
- * Since the Device and Host can not be in perfect synchronization, a
+ * Since the Device and Host cannot be in perfect synchronization, a
  * transmission should overlap to adjacent timeslots on the Host.
- * Therefore this value should be at least 2.
+ * Therefore, this value should be at least 2.
  *
  * @sa nrf_gzll_set_timeslots_per_channel_when_device_out_of_sync
  *
