@@ -835,99 +835,92 @@ typedef enum
 /**
  * @brief Spinel data type description for nrf_802154_receive_at result.
  */
-#define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_RET        SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_RET          SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_receive_at_cancel.
  */
-#define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_CANCEL     SPINEL_DATATYPE_UINT32_S
+#define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_CANCEL       SPINEL_DATATYPE_UINT32_S
 
 /**
  * @brief Spinel data type description for nrf_802154_receive_at_cancel result.
  */
-#define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_CANCEL_RET SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_RECEIVE_AT_CANCEL_RET   SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_pan_id_set.
  */
-#define SPINEL_DATATYPE_NRF_802154_PAN_ID_SET            SPINEL_DATATYPE_DATA_S
+#define SPINEL_DATATYPE_NRF_802154_PAN_ID_SET              SPINEL_DATATYPE_DATA_S
 
 /**
  * @brief Spinel data type description for nrf_802154_short_address_set.
  */
-#define SPINEL_DATATYPE_NRF_802154_SHORT_ADDRESS_SET     SPINEL_DATATYPE_DATA_S
+#define SPINEL_DATATYPE_NRF_802154_SHORT_ADDRESS_SET       SPINEL_DATATYPE_DATA_S
 
 /**
  * @brief Spinel data type description for nrf_802154_extended_address_set.
  */
-#define SPINEL_DATATYPE_NRF_802154_EXTENDED_ADDRESS_SET  SPINEL_DATATYPE_DATA_S
+#define SPINEL_DATATYPE_NRF_802154_EXTENDED_ADDRESS_SET    SPINEL_DATATYPE_DATA_S
 
 /**
  * @brief Spinel data type description for nrf_802154_pan_coord_set.
  */
-#define SPINEL_DATATYPE_NRF_802154_PAN_COORD_SET         SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_PAN_COORD_SET           SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_pan_coord_get result.
  */
-#define SPINEL_DATATYPE_NRF_802154_PAN_COORD_GET_RET     SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_PAN_COORD_GET_RET       SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_pan_coord_get.
  */
-#define SPINEL_DATATYPE_NRF_802154_PAN_COORD_GET         SPINEL_DATATYPE_NULL_S
+#define SPINEL_DATATYPE_NRF_802154_PAN_COORD_GET           SPINEL_DATATYPE_NULL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_promiscuous_set.
  */
-#define SPINEL_DATATYPE_NRF_802154_PROMISCUOUS_SET       SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_PROMISCUOUS_SET         SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_rx_on_when_idle_set.
  */
-#define SPINEL_DATATYPE_NRF_802154_RX_ON_WHEN_IDLE_SET   SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_RX_ON_WHEN_IDLE_SET     SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_cca.
  */
-#define SPINEL_DATATYPE_NRF_802154_CCA                   SPINEL_DATATYPE_NULL_S
+#define SPINEL_DATATYPE_NRF_802154_CCA                     SPINEL_DATATYPE_NULL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_cca result.
  */
-#define SPINEL_DATATYPE_NRF_802154_CCA_RET               SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_CCA_RET                 SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_cca_done.
  */
-#define SPINEL_DATATYPE_NRF_802154_CCA_DONE              SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_CCA_DONE                SPINEL_DATATYPE_BOOL_S
 
 /**
  * @brief Spinel data type description for nrf_802154_cca_failed.
  */
-#define SPINEL_DATATYPE_NRF_802154_CCA_FAILED            SPINEL_DATATYPE_UINT8_S
+#define SPINEL_DATATYPE_NRF_802154_CCA_FAILED              SPINEL_DATATYPE_UINT8_S
 
 /**
  * @brief Spinel data type description for nrf_802154_energy_detection.
  */
-#define SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTION      SPINEL_DATATYPE_UINT32_S
+#define SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTION        SPINEL_DATATYPE_UINT32_S
 
 /**
  * @brief Spinel data type description for nrf_802154_energy_detection result.
  */
-#define SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTION_RET  SPINEL_DATATYPE_BOOL_S
+#define SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTION_RET    SPINEL_DATATYPE_BOOL_S
 
-#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
 /**
  * @brief Spinel data type description for nrf_802154_energy_detected.
  */
-#define SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTED SPINEL_DATATYPE_INT8_S
-#else
-/**
- * @brief Spinel data type description for nrf_802154_energy_detected.
- */
-#define SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTED SPINEL_DATATYPE_UINT8_S
-#endif
+#define SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTED         SPINEL_DATATYPE_INT8_S
 
 /**
  * @brief Spinel data type description for nrf_802154_energy_detection_failed.

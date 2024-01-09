@@ -67,7 +67,6 @@ extern void nrf_802154_cca_done(bool channel_free);
  */
 extern void nrf_802154_cca_failed(nrf_802154_cca_error_t error);
 
-#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
 /**
  * @brief Notifies that the energy detection procedure finished.
  *
@@ -75,22 +74,6 @@ extern void nrf_802154_cca_failed(nrf_802154_cca_error_t error);
  *                          The pointer is valid within the @ref nrf_802154_energy_detected only.
  */
 extern void nrf_802154_energy_detected(const nrf_802154_energy_detected_t * p_result);
-
-#else
-/**
- * @brief Notifies that the energy detection procedure finished.
- *
- * @note This function passes the EnergyLevel defined in the 802.15.4-2006 specification:
- *       0x00 - 0xff, where 0x00 represents -75dBm (10dBm above the worst allowed sensitivity level,
- *       which is -85dBm) and 0xff is the highest possible energy detection level, for which
- *       the measurements are guaranteed map linearly to the real energy level in dBm.
- *       To calculate the result in dBm, use @ref nrf_802154_dbm_from_energy_level_calculate.
- *
- * @param[in]  result  Maximum energy detected during the energy detection procedure.
- */
-extern void nrf_802154_energy_detected(uint8_t result);
-
-#endif
 
 /**
  * @brief Notifies that the energy detection procedure failed.

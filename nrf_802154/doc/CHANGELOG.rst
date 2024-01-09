@@ -16,7 +16,7 @@ Main branch - nRF 802.15.4 Radio Driver
 Notable changes
 ===============
 
-* Added the :c:func:`nrf_802154_rx_on_when_idle_set` function which allows to choose between the receive and sleep states during radio idle periods. (KRKNWK-17962)
+* Added :c:func:`nrf_802154_rx_on_when_idle_set` to choose between receive or sleep states during radio idle periods. (KRKNWK-17962)
 
 Added
 =====
@@ -30,11 +30,14 @@ Removed
 =======
 
 * Removed the :file:`nrf_802154_debug_assert.c` file. (KRKNWK-18116)
+* Removed the deprecated API for :c:func:`nrf_802154_energy_detected`. (KRKNWK-17573)
+  Only the code for ``NRF_802154_ENERGY_DETECTED_VERSION=1`` is kept.
+  Removed API migration macro ``NRF_802154_ENERGY_DETECTED_VERSION``. 
+
 
 Bug fixes
 =========
-
-* Fixed an issue causing the radio in the nRF54H20 PDK EngA to hang in an intermediate state while the radio is being disabled. (KRKNWK-18223)
+* Fixed an issue causing the radio in nRF54H20 EngA to hang in an intermediate state while disabling. (KRKNWK-18223)
 
 nRF Connect SDK v2.5.0 - nRF 802.15.4 Radio Driver
 **************************************************

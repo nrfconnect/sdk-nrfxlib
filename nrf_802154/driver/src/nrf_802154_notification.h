@@ -119,21 +119,12 @@ void nrf_802154_notify_transmit_failed(uint8_t                                  
                                        nrf_802154_tx_error_t                       error,
                                        const nrf_802154_transmit_done_metadata_t * p_metadata);
 
-#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
 /**
  * @brief Notifies the next higher layer that the energy detection procedure ended.
  *
  * @param[in]  p_result  Pointer to structure containing the result of the ED operation.
  */
 void nrf_802154_notify_energy_detected(const nrf_802154_energy_detected_t * p_result);
-#else
-/**
- * @brief Notifies the next higher layer that the energy detection procedure ended.
- *
- * @param[in]  result  Detected energy level.
- */
-void nrf_802154_notify_energy_detected(uint8_t result);
-#endif
 
 /**
  * @brief Notifies the next higher layer that the energy detection procedure failed.
