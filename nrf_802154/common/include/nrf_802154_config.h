@@ -539,26 +539,6 @@ extern "C" {
 #endif
 
 /**
- * @}
- * @defgroup nrf_802154_config_apiversions API version configuration options
- * @{
- */
-
-/**
- * @def NRF_802154_ENERGY_DETECTED_VERSION
- *
- * Selects API for @ref nrf_802154_energy_detected callout
- * This is a temporary switch to perform API migration in external integration.
- */
-#ifndef NRF_802154_ENERGY_DETECTED_VERSION
-#define NRF_802154_ENERGY_DETECTED_VERSION 0
-#endif
-
-/**
- *@}
- **/
-
-/**
  *@}
  **/
 

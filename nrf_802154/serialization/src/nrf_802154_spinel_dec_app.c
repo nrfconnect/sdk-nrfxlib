@@ -116,7 +116,6 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_energy_detected(
     const void * p_property_data,
     size_t       property_data_len)
 {
-#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
     nrf_802154_energy_detected_t result = {};
 
     spinel_ssize_t siz = spinel_datatype_unpack(p_property_data,
@@ -124,26 +123,12 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_energy_detected(
                                                 SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTED,
                                                 &result.ed_dbm);
 
-#else
-    uint8_t result;
-
-    spinel_ssize_t siz = spinel_datatype_unpack(p_property_data,
-                                                property_data_len,
-                                                SPINEL_DATATYPE_NRF_802154_ENERGY_DETECTED,
-                                                &result);
-
-#endif
-
     if (siz < 0)
     {
         return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
     }
 
-#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
     nrf_802154_energy_detected(&result);
-#else
-    nrf_802154_energy_detected(result);
-#endif
 
     return NRF_802154_SERIALIZATION_ERROR_OK;
 }
@@ -796,21 +781,11 @@ __WEAK void nrf_802154_cca_failed(nrf_802154_cca_error_t error)
     // Intentionally empty
 }
 
-#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
 __WEAK void nrf_802154_energy_detected(const nrf_802154_energy_detected_t * p_result)
 {
     (void)p_result;
     // Intentionally empty
 }
-
-#else
-__WEAK void nrf_802154_energy_detected(uint8_t ed_level)
-{
-    (void)ed_level;
-    // Intentionally empty
-}
-
-#endif // NRF_802154_ENERGY_DETECTED_VERSION != 0
 
 __WEAK void nrf_802154_energy_detection_failed(nrf_802154_ed_error_t error)
 {

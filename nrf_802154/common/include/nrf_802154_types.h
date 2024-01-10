@@ -497,7 +497,6 @@ typedef void (* nrf_802154_transmit_failed_notification_t)(
     nrf_802154_tx_error_t                       error,
     const nrf_802154_transmit_done_metadata_t * p_meta);
 
-#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
 /**
  * @brief Structure that holds results of energy detection procedure.
  */
@@ -505,8 +504,6 @@ typedef struct
 {
     int8_t ed_dbm; // !< Maximum detected ED in dBm.
 } nrf_802154_energy_detected_t;
-
-#endif
 
 /**
  *@}
