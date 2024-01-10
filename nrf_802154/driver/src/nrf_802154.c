@@ -1216,19 +1216,10 @@ __WEAK void nrf_802154_transmit_failed(uint8_t                                  
     (void)p_metadata;
 }
 
-#if (NRF_802154_ENERGY_DETECTED_VERSION != 0)
 __WEAK void nrf_802154_energy_detected(const nrf_802154_energy_detected_t * p_result)
 {
     (void)p_result;
 }
-
-#else
-__WEAK void nrf_802154_energy_detected(uint8_t result)
-{
-    (void)result;
-}
-
-#endif
 
 __WEAK void nrf_802154_energy_detection_failed(nrf_802154_ed_error_t error)
 {

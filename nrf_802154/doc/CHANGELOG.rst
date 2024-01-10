@@ -30,6 +30,9 @@ Removed
 =======
 
 * Removed the :file:`nrf_802154_debug_assert.c` file. (KRKNWK-18116)
+* Removed the deprecated API for the :c:func:`nrf_802154_energy_detected` function. (KRKNWK-17573)
+  Removed the code selected by the ``NRF_802154_ENERGY_DETECTED_VERSION=0`` API migration macro.
+  Removed the ``NRF_802154_ENERGY_DETECTED_VERSION`` API migration macro itself.
 
 Bug fixes
 =========
