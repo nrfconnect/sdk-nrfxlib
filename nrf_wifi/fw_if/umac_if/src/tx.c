@@ -15,6 +15,7 @@
 #include "fmac_tx.h"
 #include "fmac_api.h"
 #include "fmac_peer.h"
+#include "hal_structs.h"
 #include "hal_mem.h"
 #include "fmac_util.h"
 
@@ -1398,9 +1399,18 @@ out:
 static void tx_done_tasklet_fn(unsigned long data)
 {
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = (struct nrf_wifi_fmac_dev_ctx *)data;
-	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx;
+	void *tx_done_tasklet_event_q;
+	enum NRF_WIFI_HAL_STATUS hal_status;
 
-	void *tx_done_tasklet_event_q = (void *)def_dev_ctx->tx_config.tx_done_tasklet_event_q;
+	nrf_wifi_hal_lock_rx(fmac_dev_ctx->hal_dev_ctx);
+	hal_status = nrf_wifi_hal_status_unlocked(fmac_dev_ctx->hal_dev_ctx);
+	if (hal_status != NRF_WIFI_HAL_STATUS_ENABLED) {
+		goto out;
+	}
+
+	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+	tx_done_tasklet_event_q = def_dev_ctx->tx_done_tasklet_event_q;
 
 	struct nrf_wifi_tx_buff_done *config = nrf_wifi_utils_q_dequeue(
 		fmac_dev_ctx->fpriv->opriv,
@@ -1417,6 +1427,8 @@ static void tx_done_tasklet_fn(unsigned long data)
 
 	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
 			       config);
+out:
+	nrf_wifi_hal_unlock_rx(fmac_dev_ctx->hal_dev_ctx);
 }
 #endif /* CONFIG_NRF700X_TX_DONE_WQ_ENABLED */
 

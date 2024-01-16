@@ -983,8 +983,19 @@ static void event_tasklet_fn(unsigned long data)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_hal_dev_ctx *hal_dev_ctx = NULL;
+	unsigned long flags = 0;
 
 	hal_dev_ctx = (struct nrf_wifi_hal_dev_ctx *)data;
+
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
+					hal_dev_ctx->lock_rx,
+					&flags);
+
+	if (hal_dev_ctx->hal_status != NRF_WIFI_HAL_STATUS_ENABLED) {
+		/* Ignore the interrupt if the HAL is not enabled */
+		status = NRF_WIFI_STATUS_SUCCESS;
+		goto out;
+	}
 
 	status = hal_rpu_eventq_process(hal_dev_ctx);
 
@@ -993,6 +1004,11 @@ static void event_tasklet_fn(unsigned long data)
 				      "%s: Event queue processing failed",
 				      __func__);
 	}
+
+out:
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
+				       hal_dev_ctx->lock_rx,
+				       &flags);
 }
 
 
@@ -1000,22 +1016,12 @@ enum nrf_wifi_status hal_rpu_eventq_process(struct nrf_wifi_hal_dev_ctx *hal_dev
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_SUCCESS;
 	struct nrf_wifi_hal_msg *event = NULL;
-	unsigned long flags = 0;
 	void *event_data = NULL;
 	unsigned int event_len = 0;
 
 	while (1) {
-		nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-						hal_dev_ctx->lock_rx,
-						&flags);
-
 		event = nrf_wifi_utils_q_dequeue(hal_dev_ctx->hpriv->opriv,
 						 hal_dev_ctx->event_q);
-
-		nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-					       hal_dev_ctx->lock_rx,
-					       &flags);
-
 		if (!event) {
 			goto out;
 		}
@@ -1053,6 +1059,14 @@ void hal_rpu_eventq_drain(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 		nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
 						hal_dev_ctx->lock_rx,
 						&flags);
+
+		if (hal_dev_ctx->hal_status != NRF_WIFI_HAL_STATUS_ENABLED) {
+			/* Ignore the interrupt if the HAL is not enabled */
+			nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
+						hal_dev_ctx->lock_rx,
+						&flags);
+			goto out;
+		}
 
 		event = nrf_wifi_utils_q_dequeue(hal_dev_ctx->hpriv->opriv,
 						 hal_dev_ctx->event_q);
@@ -1418,6 +1432,12 @@ enum nrf_wifi_status nrf_wifi_hal_irq_handler(void *data)
 					hal_dev_ctx->lock_rx,
 					&flags);
 
+	if (hal_dev_ctx->hal_status != NRF_WIFI_HAL_STATUS_ENABLED) {
+		/* Ignore the interrupt if the HAL is not enabled */
+		status = NRF_WIFI_STATUS_SUCCESS;
+		goto out;
+	}
+
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
 	ps_state = hal_dev_ctx->rpu_ps_state;
 	hal_rpu_ps_set_state(hal_dev_ctx,
@@ -1437,10 +1457,6 @@ enum nrf_wifi_status nrf_wifi_hal_irq_handler(void *data)
 #endif /* CONFIG_NRF_WIFI_LOW_POWER_DBG */
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 
-	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->lock_rx,
-				       &flags);
-
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		goto out;
 	}
@@ -1449,6 +1465,9 @@ enum nrf_wifi_status nrf_wifi_hal_irq_handler(void *data)
 				       hal_dev_ctx->event_tasklet);
 
 out:
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
+				       hal_dev_ctx->lock_rx,
+				       &flags);
 	return status;
 }
 
@@ -1786,4 +1805,31 @@ enum nrf_wifi_status nrf_wifi_hal_otp_ft_prog_ver_get(struct nrf_wifi_hal_dev_ct
 	}
 out:
 	return status;
+}
+
+void nrf_wifi_hal_enable(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
+{
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
+					hal_dev_ctx->lock_rx,
+					NULL);
+	hal_dev_ctx->hal_status = NRF_WIFI_HAL_STATUS_ENABLED;
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
+				       hal_dev_ctx->lock_rx,
+				       NULL);
+}
+
+void nrf_wifi_hal_disable(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
+{
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
+					hal_dev_ctx->lock_rx,
+					NULL);
+	hal_dev_ctx->hal_status = NRF_WIFI_HAL_STATUS_DISABLED;
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
+				       hal_dev_ctx->lock_rx,
+				       NULL);
+}
+
+enum NRF_WIFI_HAL_STATUS nrf_wifi_hal_status_unlocked(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
+{
+	return hal_dev_ctx->hal_status;
 }
