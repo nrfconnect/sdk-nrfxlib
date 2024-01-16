@@ -70,6 +70,11 @@ enum RPU_PS_STATE {
 };
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 
+enum NRF_WIFI_HAL_STATUS {
+	NRF_WIFI_HAL_STATUS_ENABLED,
+	NRF_WIFI_HAL_STATUS_DISABLED,
+};
+
 
 struct nrf_wifi_hal_cfg_params {
 	unsigned int max_cmd_size;
@@ -232,6 +237,7 @@ struct nrf_wifi_hal_dev_ctx {
 	unsigned int event_data_len;
 	unsigned int event_data_pending;
 	unsigned int event_resubmit;
+	enum NRF_WIFI_HAL_STATUS hal_status;
 };
 
 

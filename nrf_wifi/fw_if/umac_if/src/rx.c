@@ -180,6 +180,13 @@ void nrf_wifi_fmac_rx_tasklet(void *data)
 	struct nrf_wifi_rx_buff *config = NULL;
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
+	enum NRF_WIFI_HAL_STATUS hal_status;
+
+	nrf_wifi_hal_lock_rx(fmac_dev_ctx->hal_dev_ctx);
+	hal_status = nrf_wifi_hal_status_unlocked(fmac_dev_ctx->hal_dev_ctx);
+	if (hal_status != NRF_WIFI_HAL_STATUS_ENABLED) {
+		goto out;
+	}
 
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
@@ -206,6 +213,7 @@ void nrf_wifi_fmac_rx_tasklet(void *data)
 out:
 	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
 			       config);
+	nrf_wifi_hal_unlock_rx(fmac_dev_ctx->hal_dev_ctx);
 }
 #endif /* CONFIG_NRF700X_RX_WQ_ENABLED */
 
