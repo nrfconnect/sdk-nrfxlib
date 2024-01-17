@@ -797,6 +797,7 @@ enum op_band {
 };
 
 #define TWT_EXTEND_SP_EDCA  0x1
+#define DISABLE_DFS_CHANNELS 0x2
 
 /**
  * @brief This structure defines the command responsible for initializing the UMAC.
