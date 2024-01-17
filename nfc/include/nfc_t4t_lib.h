@@ -168,13 +168,24 @@ typedef enum
 	/**< This signals that more data is expected to be received. */
 } nfc_t4t_data_ind_flags_t;
 
+/**< @brief Maximum values for the Frame Wait time Integer. */
+typedef enum
+{
+	NFC_T4T_FWI_MAX_VAL_EMV = 0x07, /**< Value specified by the EMV specification. */
+	NFC_T4T_FWI_MAX_VAL_NFC = 0x08 /**< Value specified by the NFC specification. */
+} nfc_t4t_fwi_max_val_t;
+
 /**< @brief Parameter IDs that can be set/get with @ref nfc_t4t_parameter_set or
  *   @ref nfc_t4t_parameter_get.
  */
 typedef enum
 {
 	NFC_T4T_PARAM_FWI,
-	/**< Frame Wait Time parameter */
+	/**< Frame Wait Time parameter.
+	 *   The maximum allowed value is limited by the NFC_T4T_PARAM_FWI_MAX parameter.
+	 *   In case of nRF52832 the maximum allowed value is 4,
+	 *   setting the parameter higher will result in silent truncation to 4.
+	 */
 
 	NFC_T4T_PARAM_FDT_MIN,	
 	/**< Frame Delay Time Min parameter 
@@ -191,6 +202,14 @@ typedef enum
 	 *   used if this parameter was not set. This parameter can be set
 	 *   before nfc_t2t_setup() to set initial NFCID1 and it can be changed
 	 *   later.
+	 */
+
+	NFC_T4T_PARAM_FWI_MAX,
+	/**< Maximum value for the Frame Wait time Integer.
+	 *   Valid parameter values are 7 and 8.
+	 *   The default value is 8.
+	 *   This parameter can be used to limit the maximum FWI value to 7,
+	 *   to align the implementation with the EMV specifications.
 	 */
 } nfc_t4t_param_id_t;
 
@@ -258,7 +277,7 @@ int nfc_t4t_setup(nfc_t4t_callback_t callback, void *context);
 int nfc_t4t_ndef_rwpayload_set(uint8_t *emulation_buffer,
 			       size_t buffer_length);
 
-/** @brief Set emulationBuffer and Content for a NDEF Tag emulation that is
+/** @brief Set emulation buffer and content for an NDEF Tag emulation that is
  *  Read-Only.
  *
  * The buffer needs to be kept accessible for the lifetime of the emulation.

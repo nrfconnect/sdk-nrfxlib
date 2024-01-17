@@ -123,8 +123,7 @@ typedef void (*nfc_t2t_callback_t)(void *context,
 				   const uint8_t *data,
 				   size_t data_length);
 
-/**@brief Function for registering the application callback for event
- *  signaling.
+/**@brief Register the application callback for event signaling.
  *
  * The callback will be called by NFC T2T Library to notify the application of
  * relevant events. It will be called from the HAL_NFC callback context.
@@ -139,7 +138,7 @@ typedef void (*nfc_t2t_callback_t)(void *context,
  */
 int nfc_t2t_setup(nfc_t2t_callback_t callback, void *context);
 
-/**@brief Function for setting an NFC parameter.
+/**@brief Set up an NFC parameter.
  *
  * This function allows to set an NFC configuration parameter.
  *
@@ -154,7 +153,7 @@ int nfc_t2t_parameter_set(nfc_t2t_param_id_t id,
 			  void *data,
 			  size_t data_length);
 
-/**@brief Function for querying an NFC parameter value.
+/**@brief Query an NFC parameter value.
  *
  * The queried value will be placed into the passed data buffer. If the buffer
  * is too small, max_data_length will contain the required buffer size. If the
@@ -173,8 +172,7 @@ int nfc_t2t_parameter_get(nfc_t2t_param_id_t id,
 			  void *data,
 			  size_t *max_data_length);
 
-/** @brief Function for registering the payload to send on reception of a READ
- *  request.
+/** @brief Register the payload to send on reception of a READ request.
  *
  * The payload is considered to only contain the NDEF message to deliver to a
  * reader. The required NDEF TLV will be created implicitly by NFC T2T Library.
@@ -206,8 +204,7 @@ int nfc_t2t_parameter_get(nfc_t2t_param_id_t id,
  */
 int nfc_t2t_payload_set(const uint8_t *payload, size_t payload_length);
 
-/** @brief Function for registering the raw payload to send on reception of a
- *  READ request.
+/** @brief Register the raw payload to send on reception of a READ request.
  *
  * The payload will be delivered directly as-is to the reader, without
  * implicitly adding an NDEF TLV container. This can be used if the
@@ -239,7 +236,7 @@ int nfc_t2t_payload_set(const uint8_t *payload, size_t payload_length);
 int nfc_t2t_payload_raw_set(const uint8_t *payload,
 			    size_t payload_length);
 
-/** @brief Function for registering the sequence of internal bytes.
+/** @brief Register the sequence of internal bytes.
  *
  * This refers to the first 10 bytes of the tag memory. The library will set
  * a sensible default for these bytes. The application can use this function
@@ -260,7 +257,7 @@ int nfc_t2t_payload_raw_set(const uint8_t *payload,
  */
 int nfc_t2t_internal_set(const uint8_t *data, size_t data_length);
 
-/** @brief Function for activating the NFC frontend.
+/** @brief Activate the NFC frontend.
  *
  * You must call this function so that events are posted to the application
  * callback.
@@ -270,7 +267,7 @@ int nfc_t2t_internal_set(const uint8_t *data, size_t data_length);
  */
 int nfc_t2t_emulation_start(void);
 
-/** @brief Function for deactivating the NFC frontend.
+/** @brief Deactivate the NFC frontend.
  *
  * After calling this function, no more events will be posted to the
  * application callback.
@@ -280,7 +277,7 @@ int nfc_t2t_emulation_start(void);
  */
 int nfc_t2t_emulation_stop(void);
 
-/** @brief Function for releasing the reference to the application callback.
+/** @brief Release the reference to the application callback.
  *
  * After calling this function, the passed callback pointer is no longer
  * considered valid.
