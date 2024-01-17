@@ -31,6 +31,14 @@
 extern "C" {
 #endif
 
+/** NFC Type 2 Tag buffer size. */
+#define NFC_PLATFORM_T2T_BUFFER_SIZE 16U
+
+/** NFC Type 4 Tag buffer size. It is designed to hold number of data bytes equal to FSD = 256 and
+ *  three bytes WTX frame at the same time.
+ */
+#define NFC_PLATFORM_T4T_BUFFER_SIZE 259U
+
 /** @brief Callback resolution function pointer.
  *
  * The function pointed to by the pointer resolves the input context and passes
@@ -45,15 +53,18 @@ typedef void (* nfc_lib_cb_resolve_t)(const void * p_ctx, const uint8_t * p_data
  * @brief Initialize platform-specific modules required by NFC.
  *
  * This function sets up clock managing interface, interrupts, callback
- * and other platform-specific components that are required for correct operation of the NFC library.
- * The function should save the nfc_lib_cb_call function pointer.
+ * and other platform-specific components that are required for correct operation of
+ * the NFC library. The function should save the nfc_lib_cb_call function pointer and set
+ * the interrupt priority for NFC.
  *
- * @param[in] nfc_lib_cb_call Pointer to the callback resolution function.
+ * @param[in]      nfc_lib_cb_call Pointer to the callback resolution function.
+ * @param[in, out] p_irq_priority  Pointer to the interrupt priority configuration. You must
+ *                                 set its value inside this function.
  *
  * @retval NRFX_SUCCESS If the NFC module is initialized successfully. If one
  *                      of the arguments is invalid, an error code is returned.
  */
-nrfx_err_t nfc_platform_setup(nfc_lib_cb_resolve_t nfc_lib_cb_resolve);
+nrfx_err_t nfc_platform_setup(nfc_lib_cb_resolve_t nfc_lib_cb_resolve, uint8_t * p_irq_priority);
 
 
 /**
@@ -110,6 +121,31 @@ void nfc_platform_cb_request(const void    * p_ctx,
                              const uint8_t * p_data,
                              size_t          data_len,
                              bool            copy_data);
+
+/** @brief Allocate buffer for NFC data exchange.
+ *
+ * This function allocates a buffer that is used directly by the NFCT peripheral.
+ * You might need to allocate buffer within defined memory addresses that are accessible
+ * by the EasyDMA NFCT peripheral utility. Refer to the product specification for more details.
+ *
+ * The buffer size varies for different NFC tag types:
+ *
+ *   - NFC Type 2 Tag: 16 bytes @ref NFC_PLATFORM_T2T_BUFFER_SIZE
+ *   - NFC Type 4 Tag: 259 bytes @ref NFC_PLATFORM_T4T_BUFFER_SIZE
+ *
+ * @param[in] size Size of the requested buffer in bytes.
+ *
+ * @retval Address of allocated buffer if successful, otherwise NULL.
+ */
+uint8_t * nfc_platform_buffer_alloc(size_t size);
+
+/** @brief Free allocated buffer.
+ *
+ * If @a p_buffer is NULL, no operation is performed.
+ *
+ * @param[in] p_buffer Pointer to allocated buffer by the @ref nfc_platform_buffer_alloc function.
+ */
+void nfc_platform_buffer_free(uint8_t * p_buffer);
 
 #ifdef __cplusplus
 }

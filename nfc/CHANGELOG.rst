@@ -9,6 +9,24 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+main branch
+***********
+
+Added
+=====
+
+* Added functions :c:func:`nfc_platform_buffer_alloc()` and :c:func:`nfc_platform_buffer_free()` for the platform layer.
+  The NFCT buffer for data exchange is now outside the library implementation.
+  You have to define these two functions and return a memory that is accessible by the EasyDMA utility.
+* A possibility to modify the maximum value for the Frame Wait time Integer by using the ``NFC_T4T_PARAM_FWI_MAX`` parameter.
+
+Modified
+========
+
+* The :c:func:`nfc_platform_setup()` function now provides a pointer to the interrupt priority of the NFCT peripheral.
+  Its value must be set to the requested one.
+  In implementations where the operating system is responsible for setting the interrupt priority, this value is not relevant.
+
 nRF Connect SDK v2.3.0
 **********************
 
