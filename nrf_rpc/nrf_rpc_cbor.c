@@ -69,7 +69,7 @@ int nrf_rpc_cbor_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd,
 
 	if (err >= 0) {
 		zcbor_new_decode_state(ctx->zs, ARRAY_SIZE(ctx->zs),
-				       ctx->out_packet, rsp_size, NRF_RPC_MAX_PARAMETERS);
+				       ctx->out_packet, rsp_size, NRF_RPC_MAX_PARAMETERS, NULL, 0);
 	}
 
 	return err;
@@ -177,7 +177,7 @@ void _nrf_rpc_cbor_proxy_handler(const struct nrf_rpc_group *group, const uint8_
 		(struct _nrf_rpc_cbor_decoder *)handler_data;
 
 	zcbor_new_decode_state(ctx.zs, ARRAY_SIZE(ctx.zs), ctx.out_packet, len,
-			       NRF_RPC_MAX_PARAMETERS);
+			       NRF_RPC_MAX_PARAMETERS, NULL, 0);
 
 	return cbor_handler->handler(group, &ctx, cbor_handler->handler_data);
 }
