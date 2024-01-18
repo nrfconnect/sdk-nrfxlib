@@ -815,6 +815,9 @@ enum nrf_wifi_status nrf_wifi_fmac_get_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 	get_reg_cmd->umac_hdr.cmd_evnt = NRF_WIFI_UMAC_CMD_GET_REG;
 	get_reg_cmd->umac_hdr.ids.valid_fields = 0;
 
+	fmac_dev_ctx->alpha2_valid = false;
+	fmac_dev_ctx->reg_chan_info = reg_info->reg_chan_info;
+
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      get_reg_cmd,
 			      sizeof(*get_reg_cmd));
@@ -824,8 +827,6 @@ enum nrf_wifi_status nrf_wifi_fmac_get_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 				      "%s: Failed to get regulatory information",	__func__);
 		goto err;
 	}
-
-	fmac_dev_ctx->alpha2_valid = false;
 
 	do {
 		nrf_wifi_osal_sleep_ms(fmac_dev_ctx->fpriv->opriv,
@@ -843,6 +844,8 @@ enum nrf_wifi_status nrf_wifi_fmac_get_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 		   reg_info->alpha2,
 	       fmac_dev_ctx->alpha2,
 	       sizeof(reg_info->alpha2));
+
+	reg_info->reg_chan_count = fmac_dev_ctx->reg_chan_count;
 
 	return NRF_WIFI_STATUS_SUCCESS;
 err:

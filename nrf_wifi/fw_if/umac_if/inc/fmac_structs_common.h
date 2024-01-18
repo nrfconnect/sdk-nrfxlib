@@ -103,6 +103,16 @@ struct nrf_wifi_fmac_otp_info {
 	unsigned int flags;
 };
 
+/* Maximum number of channels supported in a regulatory
+ * currently set to 42 as hardware supports 2.4GHz and 5GHz.
+ * In 2.4 GHz band maximum 14 channels and
+ * in 5 GHz band maximum 28 channels are supported.
+ * Maximum number of channels will change if more number
+ * of channels are enabled in different bands or
+ * different bands are supported in hardware.
+ */
+#define MAX_NUM_REG_CHANELS 42
+
 /**
  * @brief Structure to hold Regulatory parameter data.
  *
@@ -112,6 +122,10 @@ struct nrf_wifi_fmac_reg_info {
 	unsigned char alpha2[NRF_WIFI_COUNTRY_CODE_LEN];
 	 /** Forcefully set regulatory. */
 	bool force;
+	/** Regulatory channels count*/
+	unsigned int reg_chan_count;
+	/** Regulatory channel attributes */
+	struct nrf_wifi_get_reg_chn_info reg_chan_info[MAX_NUM_REG_CHANELS];
 };
 
 /**
@@ -152,6 +166,10 @@ struct nrf_wifi_fmac_dev_ctx {
 	bool alpha2_valid;
 	/** Alpha2 country code, last byte is reserved for null character. */
 	unsigned char alpha2[3];
+	/** Regulatory channels count*/
+	unsigned int reg_chan_count;
+	/** Regulatory channel attributes */
+	struct nrf_wifi_get_reg_chn_info *reg_chan_info;
 	/** Data pointer to mode specific parameters */
 	char priv[];
 };
