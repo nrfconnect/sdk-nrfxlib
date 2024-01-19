@@ -1450,9 +1450,6 @@ enum nrf_wifi_status nrf_wifi_fmac_rawtx_done_event_process(
 	nrf_wifi_osal_spinlock_take(fmac_dev_ctx->fpriv->opriv,
 				    def_dev_ctx->tx_config.tx_lock);
 
-	nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-			      "%s: tx done called",
-			      __func__);
 	status = tx_done_process(fmac_dev_ctx,
 				 config->desc_num);
 
