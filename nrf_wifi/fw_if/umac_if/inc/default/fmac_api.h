@@ -909,7 +909,6 @@ void nrf_wifi_fmac_dev_rem(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
 /**
  * @brief Initializes a RPU instance.
  * @param fmac_dev_ctx Pointer to the context of the RPU instance to be removed.
- * @param rf_params_usr RF parameters (if any) to be passed to the RPU.
  * @param sleep_type Type of RPU sleep.
  * @param phy_calib PHY calibration flags to be passed to the RPU.
  * @param op_band Operating band of the RPU.
@@ -927,7 +926,6 @@ void nrf_wifi_fmac_dev_rem(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
  * @retval	NRF_WIFI_STATUS_FAIL On failure to execute command
  */
 enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-					    unsigned char *rf_params_usr,
 #if defined(CONFIG_NRF_WIFI_LOW_POWER) || defined(__DOXYGEN__)
 					    int sleep_type,
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */

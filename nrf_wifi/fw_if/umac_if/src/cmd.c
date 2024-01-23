@@ -88,7 +88,7 @@ out:
 
 enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 #ifndef CONFIG_NRF700X_RADIO_TEST
-				   unsigned char *rf_params,
+				   struct nrf_wifi_phy_rf_params *rf_params,
 				   bool rf_params_valid,
 				   struct nrf_wifi_data_config_params *config,
 #endif /* !CONFIG_NRF700X_RADIO_TEST */

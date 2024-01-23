@@ -205,7 +205,7 @@ out:
 
 
 static enum nrf_wifi_status nrf_wifi_fmac_fw_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-						  unsigned char *rf_params,
+						  struct nrf_wifi_phy_rf_params *rf_params,
 						  bool rf_params_valid,
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
 						  int sleep_type,
@@ -348,7 +348,6 @@ void nrf_wifi_fmac_dev_rem(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 
 enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-					    unsigned char *rf_params_usr,
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
 					    int sleep_type,
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
@@ -360,8 +359,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_fmac_otp_info otp_info;
-	unsigned char rf_params[NRF_WIFI_RF_PARAMS_SIZE];
-	int ret = -1;
+	struct nrf_wifi_phy_rf_params phy_rf_params;
 
 	if (!fmac_dev_ctx) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
@@ -396,38 +394,23 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 	}
 
 	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
-			      rf_params,
-			      0xFF,
-			      sizeof(rf_params));
+			             &phy_rf_params,
+			             0xFF,
+			             sizeof(phy_rf_params));
 
-	if (rf_params_usr) {
-		ret = nrf_wifi_utils_hex_str_to_val(fmac_dev_ctx->fpriv->opriv,
-						    rf_params,
-						    sizeof(rf_params),
-						    rf_params_usr);
+	status = nrf_wifi_fmac_rf_params_get(fmac_dev_ctx,
+						&phy_rf_params,
+						tx_pwr_ceil_params);
 
-		if (ret == -1) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: hex_str_to_val failed",
-					      __func__);
-			status = NRF_WIFI_STATUS_FAIL;
-			goto out;
-		}
-	} else {
-		status = nrf_wifi_fmac_rf_params_get(fmac_dev_ctx,
-						     rf_params,
-						     tx_pwr_ceil_params);
-
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: RF parameters get failed",
-					      __func__);
-			goto out;
-		}
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					"%s: RF parameters get failed",
+					__func__);
+		goto out;
 	}
 
 	status = nrf_wifi_fmac_fw_init(fmac_dev_ctx,
-				       rf_params,
+				       &phy_rf_params,
 				       true,
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
 				       sleep_type,

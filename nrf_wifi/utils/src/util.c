@@ -12,7 +12,6 @@
 #include <util.h>
 #include "host_rpu_data_if.h"
 
-
 int nrf_wifi_utils_hex_str_to_val(struct nrf_wifi_osal_priv *opriv,
 				  unsigned char *hex_arr,
 				  unsigned int hex_arr_sz,
