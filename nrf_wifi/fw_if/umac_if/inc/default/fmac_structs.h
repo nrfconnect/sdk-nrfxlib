@@ -479,9 +479,9 @@ struct nrf_wifi_fmac_vif_ctx {
 	int if_type;
 	/** BSSID of the AP to which this VIF is connected (applicable only in STA mode). */
 	unsigned char bssid[NRF_WIFI_ETH_ADDR_LEN];
-#ifdef CONFIG_NRF700X_RAW_DATA_TX
 	/** Mode setting for the current VIF */
 	unsigned char mode;
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
 	/** Channel setting for the current VIF */
 	unsigned char channel;
 #endif /* CONFIG_NRF700X_RAW_DATA_TX */

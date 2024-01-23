@@ -295,7 +295,6 @@ enum nrf_wifi_status nrf_wifi_fmac_get_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 enum nrf_wifi_status nrf_wifi_fmac_get_power_save_info(void *fmac_dev_ctx,
 						       unsigned char if_idx);
 
-#ifdef CONFIG_NRF700X_RAW_DATA_TX
 /**
  * @brief Set the current mode of operation
  * @param dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
@@ -312,6 +311,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_mode(void *dev_ctx,
 					    unsigned char if_idx,
 					    unsigned char mode);
 
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
 /**
  * @brief Set the current channel
  * @param dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.

@@ -345,7 +345,6 @@ unsigned char *nrf_wifi_util_get_src(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 #endif /* CONFIG_NRF700X_STA_MODE */
 
-#ifdef CONFIG_NRF700X_RAW_DATA_TX
 enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode)
 {
 	/**
@@ -361,6 +360,7 @@ enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode)
 	return NRF_WIFI_STATUS_FAIL;
 }
 
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
 bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif)
 {
 	if (vif->if_type == NRF_WIFI_STA_TX_INJECTOR) {
