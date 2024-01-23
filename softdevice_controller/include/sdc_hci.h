@@ -68,8 +68,18 @@ typedef enum
 {
   SDC_HCI_MSG_TYPE_DATA = 0x02,
   SDC_HCI_MSG_TYPE_EVT  = 0x04,
-  SDC_HCI_MSG_TYPE_ISO  = 0x08,
 } sdc_hci_msg_type_t;
+
+/** @brief Send an HCI command packet to the SoftDevice Controller.
+ *
+ * @param[in] p_cmd_in  HCI Command packet. The first byte in the buffer should correspond to
+ *                      OpCode, as specified by the Bluetooth Core Specification.
+ *
+ * @retval 0              Success
+ * @retval -NRF_EINVAL    Invalid input
+ */
+int32_t sdc_hci_cmd_put(uint8_t const * p_cmd_in);
+
 
 /** @brief Send an HCI data packet to the SoftDevice Controller.
  *
@@ -81,21 +91,6 @@ typedef enum
  */
 int32_t sdc_hci_data_put(uint8_t const * p_data_in);
 
-/** @brief Send an HCI ISO data packet to the SoftDevice Controller.
- *
- * If an error is returned, the HCI ISO data packet is dropped by the SoftDevice Controller and will not be
- * further processed.
- *
- * @param[in] p_data_in  HCI Data packet. The first byte in the buffer should correspond to
- *                       Handle, as specified by the Bluetooth Core Specification.
- *
- * @retval 0              Success
- * @retval -NRF_EINVAL    Invalid input
- * @retval -NRF_EPERM     There is no data-path for the selected Handle
- * @retval -NRF_EAGAIN    The data is provided too late
- * @retval -NRF_EFAULT    Failure during processing of the data
- */
-int32_t sdc_hci_iso_data_put(uint8_t const * p_data_in);
 
 /** @brief Retrieve an HCI packet from the SoftDevice Controller.
  *

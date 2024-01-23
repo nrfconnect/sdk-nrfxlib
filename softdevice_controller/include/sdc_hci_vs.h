@@ -75,26 +75,12 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_PERIPHERAL_LATENCY_MODE_SET = 0xfd09,
     /** @brief See @ref sdc_hci_cmd_vs_write_remote_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_WRITE_REMOTE_TX_POWER = 0xfd0a,
+    /** @brief See @ref sdc_hci_cmd_vs_set_auto_power_control_request_param(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_AUTO_POWER_CONTROL_REQUEST_PARAM = 0xfd0b,
     /** @brief See @ref sdc_hci_cmd_vs_set_adv_randomness(). */
     SDC_HCI_OPCODE_CMD_VS_SET_ADV_RANDOMNESS = 0xfd0c,
     /** @brief See @ref sdc_hci_cmd_vs_compat_mode_window_offset_set(). */
     SDC_HCI_OPCODE_CMD_VS_COMPAT_MODE_WINDOW_OFFSET_SET = 0xfd0d,
-    /** @brief See @ref sdc_hci_cmd_vs_qos_channel_survey_enable(). */
-    SDC_HCI_OPCODE_CMD_VS_QOS_CHANNEL_SURVEY_ENABLE = 0xfd0e,
-    /** @brief See @ref sdc_hci_cmd_vs_set_power_control_request_params(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_POWER_CONTROL_REQUEST_PARAMS = 0xfd10,
-    /** @brief See @ref sdc_hci_cmd_vs_read_average_rssi(). */
-    SDC_HCI_OPCODE_CMD_VS_READ_AVERAGE_RSSI = 0xfd11,
-    /** @brief See @ref sdc_hci_cmd_vs_central_acl_event_spacing_set(). */
-    SDC_HCI_OPCODE_CMD_VS_CENTRAL_ACL_EVENT_SPACING_SET = 0xfd12,
-    /** @brief See @ref sdc_hci_cmd_vs_set_conn_event_trigger(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_CONN_EVENT_TRIGGER = 0xfd13,
-    /** @brief See @ref sdc_hci_cmd_vs_get_next_conn_event_counter(). */
-    SDC_HCI_OPCODE_CMD_VS_GET_NEXT_CONN_EVENT_COUNTER = 0xfd14,
-    /** @brief See @ref sdc_hci_cmd_vs_allow_parallel_connection_establishments(). */
-    SDC_HCI_OPCODE_CMD_VS_ALLOW_PARALLEL_CONNECTION_ESTABLISHMENTS = 0xfd15,
-    /** @brief See @ref sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(). */
-    SDC_HCI_OPCODE_CMD_VS_MIN_VAL_OF_MAX_ACL_TX_PAYLOAD_SET = 0xfd16,
 };
 
 /** @brief VS subevent Code values. */
@@ -102,8 +88,6 @@ enum sdc_hci_subevent_vs
 {
     /** @brief See @ref sdc_hci_subevent_vs_qos_conn_event_report_t. */
     SDC_HCI_SUBEVENT_VS_QOS_CONN_EVENT_REPORT = 0x80,
-    /** @brief See @ref sdc_hci_subevent_vs_qos_channel_survey_report_t. */
-    SDC_HCI_SUBEVENT_VS_QOS_CHANNEL_SURVEY_REPORT = 0x81,
 };
 
 /** @brief Bluetooth roles that are recognized by the coexistence interface. */
@@ -122,19 +106,6 @@ enum sdc_hci_vs_coex_scan_mode
     SDC_HCI_VS_COEX_SCAN_MODE_REQUEST_ON_AA = 0x00,
     /** @brief Request before transmitting. */
     SDC_HCI_VS_COEX_SCAN_MODE_REQUEST_ON_TX = 0x01,
-};
-
-/** @brief Connection Event Trigger Role Selection. */
-enum sdc_hci_vs_conn_event_trigger_role
-{
-    /** @brief Unused. */
-    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_UNUSED = 0x00,
-    /** @brief Connection event trigger for the Scanner. */
-    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_SCAN = 0x01,
-    /** @brief Connection event trigger for the Initiator. */
-    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_INIT = 0x02,
-    /** @brief Connection event trigger for connections (Central or Peripheral). */
-    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_CONN = 0x03,
 };
 
 /** @brief Peripheral latency disable/enable modes. */
@@ -175,15 +146,8 @@ typedef __PACKED_STRUCT
     uint8_t coex_scan_mode_config : 1;
     uint8_t peripheral_latency_mode_set : 1;
     uint8_t write_remote_tx_power : 1;
+    uint8_t set_auto_power_control_request_param : 1;
     uint8_t set_adv_randomness : 1;
-    uint8_t qos_channel_survey_enable : 1;
-    uint8_t set_power_control_request_params : 1;
-    uint8_t read_average_rssi : 1;
-    uint8_t central_acl_event_spacing_set : 1;
-    uint8_t set_conn_event_trigger : 1;
-    uint8_t get_next_conn_event_counter : 1;
-    uint8_t allow_parallel_connection_establishments : 1;
-    uint8_t min_val_of_max_acl_tx_payload_set : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -265,19 +229,6 @@ typedef __PACKED_STRUCT
     /** @brief Indicates that the connection event was closed because a packet was not received. */
     uint8_t rx_timeout : 1;
 } sdc_hci_subevent_vs_qos_conn_event_report_t;
-
-/** @brief QoS Channel Survey report event.
- *
- * QoS Channel Survey report event
- */
-typedef __PACKED_STRUCT
-{
-    /** @brief The measured energy on the Bluetooth Low Energy channels, in dBm, indexed by Channel
-     *         Index. If no measurement is available for the given channel, channel_energy is set to
-     *         127.
-     */
-    int8_t channel_energy[40];
-} sdc_hci_subevent_vs_qos_channel_survey_report_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -416,7 +367,7 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     /** @brief Connection Handle. */
-    uint16_t conn_handle;
+    uint16_t connection_handle;
     /** @brief Connection Interval in microseconds. Valid range is 7,500 us to 4,000,000 us in 1,250
      *         us steps. If LLPM mode is enabled, parameters in the range 1,000 us to 7,000 us in
      *         1,000 us steps are also accepted.
@@ -442,7 +393,7 @@ typedef __PACKED_STRUCT
     uint8_t enable;
 } sdc_hci_cmd_vs_qos_conn_event_report_enable_t;
 
-/** @brief Set event length for ACL connections command parameter(s). */
+/** @brief Set event length for connections command parameter(s). */
 typedef __PACKED_STRUCT
 {
     /** @brief Allocated event length in microseconds. */
@@ -493,15 +444,48 @@ typedef __PACKED_STRUCT
 typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
-    /** @brief PHY bit number i.e. [1M, 2M, s8, s2] == [1, 2, 3, 4]. */
+    /** @brief Phy value to apply transmit power level adjustment. */
     uint8_t phy;
-    /** @brief Requested adjustment (in dBm) for the remote to apply to its transmit power. The
-     *         value can be 0 to utilize the response of the peer to update the information on the
-     *         transmit power setting of the remote. Note that this is only a request to the peer,
-     *         which is in control of how, if at all, to apply changes to its transmit power.
-     */
+    /** @brief The transmit power level adjustment to request in dBm unit. */
     int8_t delta;
 } sdc_hci_cmd_vs_write_remote_tx_power_t;
+
+/** @brief Set Autonomous LE Power Control Request parameters command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Enable or Disable controller initiated autonomous LE Power Control Request procedure.
+     *         Disabled by default.
+     */
+    uint8_t enable;
+    /** @brief Beta value used for exponential weighted averaging of RSSI in 12-bit fixed point
+     *         fraction. The RSSI is averaged using the following formula, avg[n] = beta * avg[n -
+     *         1] + (1 - beta) * rssi[n] The valid range of beta is [0, 4095]. The beta value used
+     *         in computation is beta/4096. For example, for beta to be 0.25 in the above
+     *         computation, set the beta parameter in the command to 1024. Default value is 2048.
+     */
+    uint16_t beta;
+    /** @brief The lower limit of RSSI golden range that is explained in Core_v5.3, Vol 6, Part B,
+     *         Section 5.1.17.1, in dBm units. Default value is -70 dBm.
+     */
+    int8_t lower_limit;
+    /** @brief The upper limit of RSSI golden range that is explained in Core_v5.3, Vol 6, Part B,
+     *         Section 5.1.17.1, in dBm units. Default value is -30 dBm.
+     */
+    int8_t upper_limit;
+    /** @brief Target RSSI level in dBm units when the average RSSI level is less than the lower
+     *         limit of RSSI Golden range. Default value is -65 dBm.
+     */
+    int8_t lower_target_rssi;
+    /** @brief Target RSSI level in dBm units when the average RSSI level is greater than the upper
+     *         limit of RSSI Golden range. Default value is -35 dBm.
+     */
+    int8_t upper_target_rssi;
+    /** @brief Duration in seconds to wait before initiating a new LE Power Control Request
+     *         procedure by the controller. 0 seconds value is an invalid value. Default value is 5
+     *         seconds.
+     */
+    uint8_t wait_period;
+} sdc_hci_cmd_vs_set_auto_power_control_request_param_t;
 
 /** @brief Set advertising randomness command parameter(s). */
 typedef __PACKED_STRUCT
@@ -519,133 +503,6 @@ typedef __PACKED_STRUCT
     /** @brief Set to 1 to enable this compatibility mode. */
     uint8_t enable;
 } sdc_hci_cmd_vs_compat_mode_window_offset_set_t;
-
-/** @brief Enable the Quality of Service (QoS) channel survey module. command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Set to 0 to disable, 1 to enable, all other values are RFU. */
-    uint8_t enable;
-    /** @brief Requested average interval for the measurements and reports. Valid range is from 7500
-     *         to 4000000. If set to 0, the channel survey role will be scheduled at every available
-     *         opportunity.
-     */
-    uint32_t interval_us;
-} sdc_hci_cmd_vs_qos_channel_survey_enable_t;
-
-/** @brief Set LE Power Control Request procedure parameters command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Enable or Disable controller initiated autonomous LE Power Control Request procedure.
-     *         Disabled by default.
-     */
-    uint8_t auto_enable;
-    /** @brief Enable or Disable received APR handling in controller during LE Power Control Request
-     *         procedure. Disabled by default.
-     */
-    uint8_t apr_enable;
-    /** @brief The valid range is [0, 4095]. Default value is 2048. */
-    uint16_t beta;
-    /** @brief The lower limit of the RSSI golden range. The RSSI golden range is explained in
-     *         Core_v5.4, Vol 6, Part B, Section 5.1.17.1. Default value is -70 dBm.
-     */
-    int8_t lower_limit;
-    /** @brief The upper limit of the RSSI golden range. Default value is -30 dBm. */
-    int8_t upper_limit;
-    /** @brief Target RSSI level in dBm units when the average RSSI level is less than the lower
-     *         limit of RSSI Golden range. Default value is -65 dBm.
-     */
-    int8_t lower_target_rssi;
-    /** @brief Target RSSI level in dBm units when the average RSSI level is greater than the upper
-     *         limit of RSSI Golden range. Default value is -35 dBm.
-     */
-    int8_t upper_target_rssi;
-    /** @brief Duration in milliseconds to wait before initiating a new LE Power Control Request
-     *         procedure by the controller. Default value is 5000 milliseconds. 0 milliseconds value
-     *         is an invalid value.
-     */
-    uint16_t wait_period_ms;
-    /** @brief Margin between APR value received from peer in LL_POWER_CONTROL_RSP PDU and actual
-     *         reduction in Transmit power that is applied locally. The applied decrease in local
-     *         Transmit power will be (received_apr - apr_margin) if received_apr > apr_margin,
-     *         otherwise no change. Default value is 5 dB.
-     */
-    uint8_t apr_margin;
-} sdc_hci_cmd_vs_set_power_control_request_params_t;
-
-/** @brief Read average RSSI command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Connection Handle to read the average RSSI for. */
-    uint16_t conn_handle;
-} sdc_hci_cmd_vs_read_average_rssi_t;
-
-/** @brief Read average RSSI return parameter(s). */
-typedef __PACKED_STRUCT
-{
-    uint16_t conn_handle;
-    /** @brief Average RSSI in dBm. */
-    int8_t avg_rssi;
-} sdc_hci_cmd_vs_read_average_rssi_return_t;
-
-/** @brief Set Central ACL event spacing command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Central ACL event spacing in microseconds. */
-    uint32_t central_acl_event_spacing_us;
-} sdc_hci_cmd_vs_central_acl_event_spacing_set_t;
-
-/** @brief Set Connection Event Trigger command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Connection handle to set up trigger for. In case @ref
-     *         sdc_hci_vs_conn_event_trigger_role specifies the Scanner or Initiator, this parameter
-     *         is ignored.
-     */
-    uint16_t conn_handle;
-    /** @brief Selected role to set triggers for. See @ref sdc_hci_vs_conn_event_trigger_role. */
-    uint8_t role;
-    /** @brief (D)PPI channel to use. This channel should be regarded as reserved until the
-     *         connection event (D)PPI task triggering is stopped.
-     */
-    uint8_t ppi_ch_id;
-    /** @brief Task Endpoint to trigger. If this is 0, then the connection event triggering feature
-     *         is disabled.
-     */
-    uint32_t task_endpoint;
-    /** @brief Connection event counter when the task end point triggering should start. */
-    uint16_t conn_evt_counter_start;
-    /** @brief The period in events between triggering of the task end point. */
-    uint16_t period_in_events;
-} sdc_hci_cmd_vs_set_conn_event_trigger_t;
-
-/** @brief Get Next Connection Event Counter command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    /** @brief Connection handle to get the connection event counter value for. */
-    uint16_t conn_handle;
-} sdc_hci_cmd_vs_get_next_conn_event_counter_t;
-
-/** @brief Get Next Connection Event Counter return parameter(s). */
-typedef __PACKED_STRUCT
-{
-    uint16_t conn_handle;
-    uint16_t next_conn_event_counter;
-} sdc_hci_cmd_vs_get_next_conn_event_counter_return_t;
-
-/** @brief Allow Parallel Connection Establishment command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    uint8_t enable;
-} sdc_hci_cmd_vs_allow_parallel_connection_establishments_t;
-
-/** @brief Set the minimum value that will be used as maximum Tx octets for ACL connections command
- *         parameter(s).
- */
-typedef __PACKED_STRUCT
-{
-    /** @brief Minimum value of maximum ACL TX payload. */
-    uint8_t min_val_of_max_acl_tx_payload;
-} sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -965,25 +822,19 @@ uint8_t sdc_hci_cmd_vs_conn_event_extend(const sdc_hci_cmd_vs_conn_event_extend_
  */
 uint8_t sdc_hci_cmd_vs_qos_conn_event_report_enable(const sdc_hci_cmd_vs_qos_conn_event_report_enable_t * p_params);
 
-/** @brief Set event length for ACL connections.
+/** @brief Set event length for connections.
  *
- * Set the event length for new ACL connections. The event length is the time available for
- * transmission and reception in a single connection event.
+ * Set the event length for new connections. This API must be called before starting a connectable
+ * advertiser or starting an initiator for the event length to applied to the connection once
+ * established.
  *
- * The maximum data length capabilities will be set based upon this value.
+ * The SoftDevice Controller will ensure that the anchor points of master link connections are
+ * spaced
+ * event_length_us apart.
  *
- * This API must be called before issuing a command to create a connection,
- * or before starting a connectable advertiser.
- *
- * The default event length is 7500 us.
- *
- * The event length may be set to a value that is shorter than the time needed
- * for a single packet pair on a given PHY.
- * In that case the controller will reserve time for receiving 27 bytes and transmitting
- * the number of bytes configured with @ref sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set().
+ * The default event length is @ref SDC_DEFAULT_EVENT_LENGTH_US.
  *
  * See also @ref sdc_hci_cmd_vs_conn_event_extend().
- * See also @ref sdc_hci_cmd_vs_central_acl_event_spacing_set().
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1010,7 +861,7 @@ uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t 
  * This API must be called before configuring a periodic advertiser for the event length to be
  * applied.
  *
- * The default event length is 7500 us.
+ * The default event length is @ref SDC_DEFAULT_EVENT_LENGTH_US.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1110,6 +961,25 @@ uint8_t sdc_hci_cmd_vs_peripheral_latency_mode_set(const sdc_hci_cmd_vs_peripher
  */
 uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_tx_power_t * p_params);
 
+/** @brief Set Autonomous LE Power Control Request parameters.
+ *
+ * This command sets the parameters to initiate autonomous LE Power Control Request
+ * procedure by the Link Layer.
+ *
+ * When this command is issued, the controller stores the parameters and
+ * uses them for the subsequent LE Power Control Requests initiated across all the connections.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_set_auto_power_control_request_param(const sdc_hci_cmd_vs_set_auto_power_control_request_param_t * p_params);
+
 /** @brief Set advertising randomness.
  *
  * This vendor specific command is used to change the randomness of advertisers.
@@ -1149,255 +1019,6 @@ uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomnes
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat_mode_window_offset_set_t * p_params);
-
-/** @brief Enable the Quality of Service (QoS) channel survey module.
- *
- * This vendor specific command is used to enable or disable the channel survey module.
- *
- * The channel survey module provides measurements of the energy levels on
- * the Bluetooth Low Energy channels. When the module is enabled, @ref
- * sdc_hci_subevent_vs_qos_channel_survey_report_t
- * events will periodically report the measured energy levels for each channel.
- *
- * The measurements are scheduled with lower priority than other Bluetooth Low Energy roles,
- * Radio Timeslot API events and Flash API events.
- *
- * The channel survey module will attempt to do measurements so that the average interval
- * between measurements will be interval_us. However due to the channel survey module
- * having the lowest priority of all roles and modules, this may not be possible. In that
- * case fewer than expected channel survey reports may be given.
- *
- * In order to use the channel survey module, funcref:sdc_support_qos_channel_survey
- * must be called.
- *
- * Event(s) geneated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_qos_channel_survey_enable(const sdc_hci_cmd_vs_qos_channel_survey_enable_t * p_params);
-
-/** @brief Set LE Power Control Request procedure parameters.
- *
- * This command sets the parameters used in LE Power Control Request
- * procedure by the Link Layer.
- *
- * beta parameter is used to determine the weight of the previous average of RSSI values.
- * A higher value lowers how much the current RSSI weighs into the average, flattening peaks,
- * which also means the controller reacts slower on RSSI changes.
- * The average RSSI is calculated using an exponential weighted averaging in a
- * 12-bit fixed point fraction.
- * avg[n] = gamma * avg[n - 1] + (1 - gamma) * rssi[n]
- * Here, gamma equals beta/4096, and rssi[n] equals the current RSSI.
- * For example, for gamma to be 0.25, set the beta parameter in the command to 1024.
- *
- * Average RSSI and lower_limit parameter are used to calculate APR value the controller sends
- * in LL_POWER_CONTROL_RSP.
- *
- * When auto_enable parameter is set, the controller will keep average RSSI within
- * [lower_limit, upper_limit] bounds. When the average RSSI goes out of these bounds, the
- * controller will autonomously send LL_POWER_CONTROL_REQ requesting to adjust the
- * peer's TX power so average RSSI becomes either lower_target_rssi or upper_target_rssi.
- * The controller will not send such requests more often than specified by wait_period_ms parameter.
- * The wait_period_ms parameter is needed to not repeat send requests for transmit power change
- * without the remote having had the chance to react, as well as to avoid a busy controller.
- * This value should be set depending on needs.
- *
- * When apr_enable parameter is set, the controller will adjust local TX power according to
- * APR value received from the peer in LL_POWER_CONTROL_RSP and the apr_margin parameter.
- *
- * When this command is issued, the controller stores the parameters and
- * uses them for the subsequent LE Power Control Request procedures across all the connections.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_set_power_control_request_params(const sdc_hci_cmd_vs_set_power_control_request_params_t * p_params);
-
-/** @brief Read average RSSI.
- *
- * This command reads the average Received Signal Strength Indication (RSSI) value
- * calculated by LE Power Control.
- *
- * The average RSSI is calculated as an exponential weighted average according to
- * the formula given in @ref sdc_hci_cmd_vs_set_power_control_request_params().
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- * @param[out] p_return Extra return parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_read_average_rssi(const sdc_hci_cmd_vs_read_average_rssi_t * p_params,
-                                         sdc_hci_cmd_vs_read_average_rssi_return_t * p_return);
-
-/** @brief Set Central ACL event spacing.
- *
- * On the central, sets the time ACL connections are spaced apart, assuming they are
- * using the same connection interval.
- *
- * This API must be called before issuing a command to create a connection.
- *
- * The default event spacing is 7500 us.
- * The configured value is retained after issuing a HCI Reset command.
- *
- * Note: The time available for transmission and reception is not configured using this API
- *
- * See also @ref sdc_hci_cmd_vs_event_length_set().
- * See also @ref sdc_hci_cmd_vs_conn_event_extend().
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_central_acl_event_spacing_set_t * p_params);
-
-/** @brief Set Connection Event Trigger.
- *
- * Start triggering a given task on radio event start.
- *
- * When enabled, this feature will trigger a (D)PPI task at the start of radio events.
- *
- * When used for connections, the connection event trigger can be configured to trigger
- * every N connection events starting from a given connection event counter.
- *
- * Disabling scanning or disconnecting the connection will reset the connection event
- * trigger configuration.
- *
- * If the selected (D)PPI channel is reserved by the controller, the controller will
- * return the error code Invalid HCI Command Parameters (0x12).
- *
- * If enabling/disabling the connection event trigger and the trigger is already
- * enabled/disabled, the controller will return the error code Command Disallowed (0x0C).
- *
- * If the specified role is not currently active, the controller will return the error code
- * Command Disallowed (0x0C).
- *
- * If the role is 0x3 and conn_handle does not refer to an active connection, the controller
- * will return the error code Unknown Connection Identifier (0x02).
- *
- * If the role is 0x3 and conn_evt_counter_start has already passed, the controller will return
- * the error code Command Disallowed (0x0C).
- *
- * If the role is 0x3 and period_in_events is zero, the controller will return the error code
- * Invalid HCI Command Parameters (0x12).
- *
- * If the role is 0x1 or 0x2 and conn_evt_counter_start or period_in_events is non-zero,
- * the controller will return the error code Invalid HCI Command Parameters (0x12).
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_set_conn_event_trigger(const sdc_hci_cmd_vs_set_conn_event_trigger_t * p_params);
-
-/** @brief Get Next Connection Event Counter.
- *
- * This command can be used to fetch the upcoming connection event counter value for Centrals or
- * Peripherals.
- *
- * If conn_handle doesn't match an existing connection, the Unknown Connection Identifier (0x02)
- * error code will be returned.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- * @param[out] p_return Extra return parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_get_next_conn_event_counter(const sdc_hci_cmd_vs_get_next_conn_event_counter_t * p_params,
-                                                   sdc_hci_cmd_vs_get_next_conn_event_counter_return_t * p_return);
-
-/** @brief Allow Parallel Connection Establishment.
- *
- * This command enables the controller to accept establishing connections through
- * the initiator and a periodic advertiser with responses simultaneously.
- *
- * When enabled, HCI commands to create connections may then be used to
- * connect to a synchronized peer while the initiator is running, or to start
- * initiating before a connection establishment to a synchronized device
- * has been completed.
- *
- * By default this functionality is disabled.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_allow_parallel_connection_establishments(const sdc_hci_cmd_vs_allow_parallel_connection_establishments_t * p_params);
-
-/** @brief Set the minimum value that will be used as maximum Tx octets for ACL connections.
- *
- * This command sets the minimum value of maximum ACL payload length that can be sent
- * in each packet. If the configured event length is shorter than what is required to
- * send a packet pair of 27 bytes in each direction, the controller will use this value to
- * determine how much it can reduce the payload size to satisfy the event length requirements.
- * LL Control PDUs are not affected by this API.
- *
- * Together with @ref sdc_hci_cmd_vs_event_length_set(), this API allows the controller to schedule
- * ACLs events closer together with other activities.
- *
- * This API must be called before issuing a command to create a connection,
- * or before starting a connectable advertiser.
- *
- * The default and maximum value of this parameter is 27. The minimum supported value
- * of this parameter is 10.
- *
- * Setting this parameter to a lower value will result in more link layer fragmentation,
- * reducing the maximum throughput.
- *
- * Setting this parameter to a value lower than 27 bytes may result in interoperability
- * issues with older Bluetooth products. It is therefore not recommended to use this API
- * for applications interacting with devices qualified for Bluetooth Specification 5.1 or
- * older.
- *
- * The value is preserved when issuing the HCI Reset command.
- *
- * See also @ref sdc_hci_cmd_vs_event_length_set().
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 

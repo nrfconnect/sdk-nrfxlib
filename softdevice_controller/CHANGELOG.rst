@@ -9,134 +9,23 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-Main branch
-***********
-
-Added
-=====
-
-* Vendor-specific HCI command to read average RSSI calculated by LE Power Control.
-  See :c:func:`sdc_hci_cmd_vs_read_average_rssi` (DRGN-17355).
-* Vendor-specific HCI command to set the time between anchor points of central ACL connections with identical connection intervals.
-  See :c:func:`sdc_hci_cmd_vs_central_acl_event_spacing_set` (DRGN-20796).
-* Vendor-specific HCI command to set up (D)PPI tasks on radio events.
-  See :c:func:`sdc_hci_cmd_vs_set_conn_event_trigger` (DRGN-20737).
-* Vendor-specific HCI command to read the next connection event counter value.
-  See :c:func:`sdc_hci_cmd_vs_get_next_conn_event_counter` (DRGN-20737).
-* Vendor-specific HCI command to allow parallel connection establishment through initiating and periodic advertising with responses.
-  See :c:func:`sdc_hci_cmd_vs_allow_parallel_connection_establishments` (DRGN-20823).
-* Vendor-specific HCI command to  set the minimum value that will be used as maximum Tx octets for ACL connections.
-  See :c:func:`sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set` (DRGN-20819).
-
-Changes
-=======
-
-* The controller now returns the error code ``0x12`` if the same subevent index is used multiple times in LE Set Periodic Advertising Subevent Data.
-  This conforms to erratas ES23466 and ES23424. (DRGN-20736)
-* The vendor-specific Set event length for ACL connections HCI command no longer sets the time between anchor points of central ACL connections with identical connection intervals. (DRGN-20796)
-* The vendor-specific HCI commands :c:func:`sdc_hci_cmd_vs_set_auto_power_control_request_param` and
-  :c:func:`sdc_hci_cmd_vs_set_power_control_apr_handling` have been replaced by
-  :c:func:`sdc_hci_cmd_vs_set_power_control_request_params` (DRGN-17355).
-* The controller now always returns the error code ``0x0D`` if a connection attempt is made while another is still pending.
-  Previously, this wasn't the case if one connection attempt was through periodic advertising with responses while the other was through the initiator. (DRGN-20823)
-* The scheduling priority for initiator events where the scan window is equal to the scan interval is lowered to the third scheduling priority.
-  For other configurations of scan window and scan interval the priority is unchanged. (DRGN-20831)
-* The vendor-specific Set event length for ACL connections HCI command now accepts values lower than 1250 us. (DRGN-20796)
-
-Bug fixes
-=========
-
-* Fixed an issue where the LE Set Periodic Advertising Subevent Data command could fail when providing data at the same time as an ``AUX_SYNC_SUBEVENT_IND`` was sent. (DRGN-20762)
-* Fixed an issue where a packet might not be received when sent at the instant of a Channel Map Update.
-  This could happen when acting as Peripheral. (DRGN-20815)
-* Fixed an assert that could happen if the LE Set Periodic Advertising Response Data command was issued more than once without fetching the Command Complete Event. (DRGN-20432)
-* Fixed an issue where the controller would assert during cooperative active scanning or when running a cooperative initiator.
-  This could happen when the controller was about to send a scan request or connect indication. (DRGN-20832)
-* Fixed an issue where the controller would assert when initiating a connection to an extended advertiser.
-  This could happen when both external radio coexistence and FEM were enabled. (DRGN-16013)
-* Fixed an issue where the nRF5340 DK consumed too much current while scanning.
-  This could happen if the controller was running with TX power higher than 0 dB. (DRGN-20862)
-* Fixed an assert that could happen if the Periodic Sync with Responses was terminated. (DRGN-20956)
-* Fixed an issue where the controller stopped generating advertising reports.
-  This could happen when the controller was running an extended cooperative scanner together with other activities, such as advertising or connection,
-  while receiving data in an extended advertising event that used ``AUX_CHAIN_IND``. (DRGN-21020)
-
-nRF Connect SDK v2.5.0
+nRF Connect SDK v2.4.3
 **********************
 
-All the notable changes included in the |NCS| v2.5.0 release are documented in this section.
-
-Added
-=====
-
-* Experimental support for isochronous channels, both Connected Isochronous Streams and Broadcast Isochronous Streams.
-  The controller supports an ISO interval equal to the SDU interval, using unframed PDUs.
-  The following HCI commands are now supported:
-
-    * Read Connection Accept Timeout
-    * Write Connection Accept Timeout
-    * LE Read Buffer Size [v2]
-    * LE Read ISO TX Sync
-    * LE Set CIG Parameters
-    * LE Set CIG Parameters Test
-    * LE Create CIS
-    * LE Remove CIG
-    * LE Accept CIS Request
-    * LE Reject CIS Request
-    * LE Create BIG
-    * LE Create BIG Test
-    * LE Terminate BIG
-    * LE BIG Create Sync
-    * LE BIG Terminate Sync
-    * LE Setup ISO Data Path
-    * LE Remove ISO Data Path
-    * LE ISO Transmit Test
-    * LE ISO Receive Test
-    * LE ISO Read Test Counters
-    * LE ISO Test End
-    * LE Set Host Feature
-    * LE Read ISO Link Quality
-
-* Experimental support for the Quality of Service (QoS) channel survey.
-  See the :c:func:`sdc_hci_cmd_vs_qos_channel_survey_enable` function.
-* Support for starting the scanner without setting scan parameters.
-  Previously the controller would assert (DRGN-17623).
-* Vendor-specific HCI command to enable utilization of remote APR on the local TX power when using LE Power Control.
-  See :c:func:`sdc_hci_cmd_vs_set_power_control_apr_handling` (DRGN-17355).
-
-Changes
-=======
-
-* Host now always receives LE Transmit Power Reporting Events.
-  Previously, some events might not be received when remote and local power changes were applied to the same PHY simultaneously. (DRGN-18950)
-* :c:func:`sdc_hci_cmd_put` and :c:func:`sdc_hci_cmd_vs_read_supported_vs_commands` functions are removed.
-  This change does not affect applications developed in the |NCS| context. (DRGN-19281)
-* When creating a connection or periodic advertiser, the controller will now attempt to select the interval so that it causes as few scheduling conflicts with existing periodic activities as possible.
-  The selected interval is always in the range ``[interval_min, interval_max]``, where ``interval_min`` and ``interval_max`` are provided by the host.
-  Previously, the controller always selected ``interval_max``.
-* The ``SDC_CFG_TYPE_EVENT_LENGTH`` configuration is removed.
-  An application must use the :c:func:`sdc_hci_cmd_vs_event_length_set` HCI command instead.
-* The ChSel bit in a ``CONNECT_IND`` PDU will now match the ChSel bit in the ``ADV_IND`` PDU.
-  Previously, this was always set to indicate channel selection algorithm 2. (DRGN-19115)
-* The LE Power Control Request feature is now :ref:`supported <nrf:software_maturity>` instead of experimental. (DRGN-17499)
-* :c:func:`sdc_soc_flash_write_async` and :c:func:`sdc_soc_flash_page_erase_async` functions are removed.
-  This change does not affect applications developed in the |NCS| context. (DRGN-20451)
-* When synchronizing to a periodic advertiser, the number of events skipped is restricted so that there are at least three opportunities to receive before timing out.
-  Previously, only one opportunity to receive was guaranteed before timing out. (DRGN-20448)
+All the notable changes included in the |NCS| v2.4.3 release are documented in this section.
 
 Bug fixes
 =========
 
+* Fixed an issue where the controller stopped generating advertising reports.
+  This could happen when the controller was running an extended cooperative scanner together with other activities, such as advertising or connection,
+  while receiving data in an extended advertising event that used ``AUX_CHAIN_IND`` (DRGN-21020).
 * Fixed an issue where the continuous extended scanner would not be able to receive the ``AUX_ADV_IND`` packet if the time between the ``ADV_EXT_IND`` and ``AUX_ADV_IND`` was more than 840 μs (DRGN-19460).
-* Fixed an issue where the stack would dereference a NULL pointer when a resolvable :c:enum:`own_address_type` was used in the HCI Le Extended Create Connection V2 command while the resolving list was empty (DRGN-19580).
-* Fixed an issue where the HCI Reset command would not clear the channel map set by the host using the HCI Le Set Host Channel Classification command (DRGN-19623).
-* Fixed a bug where the ``Peer_Address_Type`` parameter in the ``LE Connection Complete`` event was set to ``2`` or ``3`` in case the connection was established to a device whose address was resolved (DRGN-18411).
-  The least significant bit of the ``Peer_Address_Type`` parameter was set correctly.
-* Fixed an issue where the stack would assert if trying to set up more advertisers than there are available advertising sets (DRGN-20118).
-* Fixed an issue where enabling an extended advertising set would assert in cases where a host-provided address was not needed and no address had been set up for the advertising set (DRGN-20085).
-* Fixed an issue where the controller acting as a central would assert when receiving a non-compliant LL_PHY_RSP from a peer device (DRGN-20578).
-* Fixed an issue that could occur when the Host Number of Complete Packets command was sent with a connection handle the controller had already raised a disconnect event for.
-  The controller would return ``BT_HCI_ERR_INVALID_PARAM`` to the command, which would mean that the host could not return the buffer to the controller (DRGN-20654).
+* Fixed an issue where the controller would stop sending ACL data packets to the host when controller to host flow control was enabled.
+  This could happen when a disconnection occurred before the host had issued the Host Number of Complete Packets command for the remaining ACL data packets.
+  Now the controller waits until after all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
+  The controller also validates the handles provided in the Host Number of Complete Packets command (DRGN-21085).
+..Fixed a rare issue where the scanner may assert when it schedules the reception of the next advertising packet (DRGN-21262).
 
 nRF Connect SDK v2.4.0
 **********************
@@ -159,8 +48,8 @@ Changes
 
 * The ``VersNr`` field in the ``LL_VERSION_IND`` packet now contains the value 0x0D to indicate compatibility with Bluetooth Core Specification v5.4 (DRGN-18624).
 * Receiving a Periodic Advertisement Sync Transfer (PAST) with invalid parameters will now generate the ``LE Periodic Advertising Sync Transfer Received`` event when receiving PAST is enabled (DRGN-18803).
-* Periodic advertiser is allocated from the Periodic Advertising with Responses (PAwR) Advertiser sets when :c:enum:`SDC_CFG_TYPE_PERIODIC_ADV_RSP_COUNT` is available.
-  Otherwise, it is allocated from the Periodic Advertiser sets if :c:enum:`SDC_CFG_TYPE_PERIODIC_ADV_COUNT` is set (DRGN-18979).
+* Periodic advertiser is allocated from the Periodic Advertising with Responses (PAwR) Advertiser sets when :c:enumerator:`SDC_CFG_TYPE_PERIODIC_ADV_RSP_COUNT` is available.
+  Otherwise, it is allocated from the Periodic Advertiser sets if :c:enumerator:`SDC_CFG_TYPE_PERIODIC_ADV_COUNT` is set (DRGN-18979).
 * The controller now returns the error code ``0x0D`` instead of ``0x09`` if it has insufficient resources to handle more connections and the host tries to start a connectable advertiser or the controller receives the commands ``LE Extended Create Connection`` or ``LE Create Connection`` (DRGN-18944).
 * Periodic Advertising with Responses (PAwR) Advertiser is supported (DRGN-18497).
 
