@@ -613,13 +613,15 @@ out:
 
 enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 		struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-		unsigned char *rf_params,
+		struct nrf_wifi_phy_rf_params *phy_rf_params,
 		struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_fmac_otp_info otp_info;
 	unsigned int ft_prog_ver;
 	int ret = -1;
+	/* If package_info is not written to OTP then the default value will be 0xFF. */
+	unsigned char package_info = 0xFF;
 #if defined(CONFIG_BOARD_NRF7002DK_NRF7001_NRF5340_CPUAPP) || \
 	defined(CONFIG_BOARD_NRF7002DK_NRF5340_CPUAPP) || \
 	defined(CONFIG_BOARD_NRF5340DK_NRF5340_CPUAPP)
@@ -627,7 +629,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 	unsigned char backoff_5g_lowband = 0, backoff_5g_midband = 0, backoff_5g_highband = 0;
 #endif
 
-	if (!fmac_dev_ctx || !rf_params) {
+	if (!fmac_dev_ctx || !phy_rf_params) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 				      "%s: Invalid parameters",
 				      __func__);
@@ -659,15 +661,10 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 		goto out;
 	}
 
-	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
-			      rf_params,
-			      0xFF,
-			      NRF_WIFI_RF_PARAMS_SIZE);
-
-	ret = nrf_wifi_utils_hex_str_to_val(fmac_dev_ctx->fpriv->opriv,
-					    rf_params,
-					    NRF_WIFI_RF_PARAMS_SIZE,
-					    NRF_WIFI_DEF_RF_PARAMS);
+	ret = nrf_wifi_phy_rf_params_init(fmac_dev_ctx->fpriv->opriv,
+				    	  phy_rf_params,
+				    	  package_info,
+				    	  NRF_WIFI_DEF_RF_PARAMS);
 
 	if (ret == -1) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
@@ -676,10 +673,9 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;
 	}
-
 	if (!(otp_info.flags & (~CALIB_XO_FLAG_MASK))) {
 		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      &rf_params[NRF_WIFI_RF_PARAMS_OFF_CALIB_X0],
+				      &phy_rf_params->xo_offset.xo_freq_offset,
 				      (char *)otp_info.info.calib + OTP_OFF_CALIB_XO,
 				      OTP_SZ_CALIB_XO);
 
@@ -710,25 +706,24 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 			backoff_5g_midband = FT_PROG_VER3_5G_MID_OFDM_TXCEIL_BKOFF;
 			backoff_5g_highband = FT_PROG_VER3_5G_HIGH_OFDM_TXCEIL_BKOFF;
 		}
-		rf_params[NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR2G] =
-			tx_pwr_ceil_params->max_pwr_2g_dsss-backoff_2g_dsss;
-		rf_params[NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR2GM0M7] =
-			tx_pwr_ceil_params->max_pwr_2g_mcs7-backoff_2g_ofdm;
-		rf_params[NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR2GM0M7 + 1] =
-			tx_pwr_ceil_params->max_pwr_2g_mcs0-backoff_2g_ofdm;
-
-		rf_params[NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR5GM7] =
-			tx_pwr_ceil_params->max_pwr_5g_low_mcs7-backoff_5g_lowband;
-		rf_params[NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR5GM7 + 1] =
-			tx_pwr_ceil_params->max_pwr_5g_mid_mcs7-backoff_5g_midband;
-		rf_params[NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR5GM7 + 2] =
-			tx_pwr_ceil_params->max_pwr_5g_high_mcs7-backoff_5g_highband;
-		rf_params[NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR5GM0] =
-			tx_pwr_ceil_params->max_pwr_5g_low_mcs0-backoff_5g_lowband;
-		rf_params[NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR5GM0 + 1] =
-			tx_pwr_ceil_params->max_pwr_5g_mid_mcs0-backoff_5g_midband;
-		rf_params[NRF_WIFI_RF_PARAMS_OFF_CALIB_PWR5GM0 + 2] =
-			tx_pwr_ceil_params->max_pwr_5g_high_mcs0-backoff_5g_highband;
+		phy_rf_params->max_pwr_ceil.max_dsss_pwr =
+		tx_pwr_ceil_params->max_pwr_2g_dsss - backoff_2g_dsss;
+		phy_rf_params->max_pwr_ceil.max_lb_mcs7_pwr =
+		tx_pwr_ceil_params->max_pwr_2g_mcs7 - backoff_2g_ofdm;
+		phy_rf_params->max_pwr_ceil.max_lb_mcs0_pwr =
+		tx_pwr_ceil_params->max_pwr_2g_mcs0 - backoff_2g_ofdm;
+		phy_rf_params->max_pwr_ceil.max_hb_low_chan_mcs7_pwr =
+		tx_pwr_ceil_params->max_pwr_5g_low_mcs7 - backoff_5g_lowband;
+		phy_rf_params->max_pwr_ceil.max_hb_mid_chan_mcs7_pwr =
+		tx_pwr_ceil_params->max_pwr_5g_mid_mcs7 - backoff_5g_midband;
+		phy_rf_params->max_pwr_ceil.max_hb_high_chan_mcs7_pwr =
+		tx_pwr_ceil_params->max_pwr_5g_high_mcs7 - backoff_5g_highband;
+		phy_rf_params->max_pwr_ceil.max_hb_low_chan_mcs0_pwr =
+		tx_pwr_ceil_params->max_pwr_5g_low_mcs0 - backoff_5g_lowband;
+		phy_rf_params->max_pwr_ceil.max_hb_mid_chan_mcs0_pwr =
+		tx_pwr_ceil_params->max_pwr_5g_mid_mcs0 - backoff_5g_midband;
+		phy_rf_params->max_pwr_ceil.max_hb_high_chan_mcs0_pwr =
+		tx_pwr_ceil_params->max_pwr_5g_high_mcs0 - backoff_5g_highband;
 	}
 #endif
 
@@ -850,6 +845,105 @@ enum nrf_wifi_status nrf_wifi_fmac_get_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 	return NRF_WIFI_STATUS_SUCCESS;
 err:
 	return NRF_WIFI_STATUS_FAIL;
+}
+
+int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
+				struct nrf_wifi_phy_rf_params *prf,
+				unsigned char package_info,
+				unsigned char *str)
+{
+	int ret = -1;
+	/* Initilaize reserved bytes */
+	nrf_wifi_osal_mem_set(opriv,
+			      &prf->reserved,
+			      0x0,
+			      sizeof(prf->reserved));	
+	/* Initialize PD adjust values for MCS7. Currently these 4 bytes are not being used */
+	prf->pd_adjust_val.pd_adjt_lb_chan = PD_ADJUST_VAL;
+	prf->pd_adjust_val.pd_adjt_hb_low_chan = PD_ADJUST_VAL;
+	prf->pd_adjust_val.pd_adjt_hb_mid_chan = PD_ADJUST_VAL;
+	prf->pd_adjust_val.pd_adjt_hb_high_chan = PD_ADJUST_VAL;
+
+	/* Configure systematic offset value */
+	prf->syst_tx_pwr_offset.syst_off_lb_chan = SYSTEM_OFFSET_LB;
+	prf->syst_tx_pwr_offset.syst_off_hb_low_chan = SYSTEM_OFFSET_HB_CHAN_LOW;
+	prf->syst_tx_pwr_offset.syst_off_hb_mid_chan = SYSTEM_OFFSET_HB_CHAN_MID;
+	prf->syst_tx_pwr_offset.syst_off_hb_high_chan = SYSTEM_OFFSET_HB_CHAN_HIGH;
+
+	/* RX Gain offsets */
+	prf->rx_gain_offset.rx_gain_lb_chan = RX_GAIN_OFFSET_LB_CHAN;
+	prf->rx_gain_offset.rx_gain_hb_low_chan = RX_GAIN_OFFSET_HB_LOW_CHAN;
+	prf->rx_gain_offset.rx_gain_hb_mid_chan = RX_GAIN_OFFSET_HB_MID_CHAN;
+	prf->rx_gain_offset.rx_gain_hb_high_chan = RX_GAIN_OFFSET_HB_HIGH_CHAN;
+
+	nrf_wifi_osal_mem_set(opriv,
+			      &prf->temp_volt_backoff.reserved,
+			      0x0,
+			      sizeof(prf->temp_volt_backoff.reserved));	
+
+	if (package_info == 1) {
+		prf->xo_offset.xo_freq_offset = CSP_XO_VAL;
+		/* TX power ceiling */
+		prf->max_pwr_ceil.max_dsss_pwr = CSP_MAX_TX_PWR_DSSS;
+		prf->max_pwr_ceil.max_lb_mcs7_pwr = CSP_MAX_TX_PWR_LB_MCS7;
+		prf->max_pwr_ceil.max_lb_mcs0_pwr = CSP_MAX_TX_PWR_LB_MCS0;
+		prf->max_pwr_ceil.max_hb_low_chan_mcs7_pwr = CSP_MAX_TX_PWR_HB_LOW_CHAN_MCS7;
+		prf->max_pwr_ceil.max_hb_mid_chan_mcs7_pwr = CSP_MAX_TX_PWR_HB_MID_CHAN_MCS7;
+		prf->max_pwr_ceil.max_hb_high_chan_mcs7_pwr = CSP_MAX_TX_PWR_HB_HIGH_CHAN_MCS7;
+		prf->max_pwr_ceil.max_hb_low_chan_mcs0_pwr = CSP_MAX_TX_PWR_HB_LOW_CHAN_MCS0;
+		prf->max_pwr_ceil.max_hb_mid_chan_mcs0_pwr = CSP_MAX_TX_PWR_HB_MID_CHAN_MCS0;
+		prf->max_pwr_ceil.max_hb_high_chan_mcs0_pwr = CSP_MAX_TX_PWR_HB_HIGH_CHAN_MCS0;
+
+		/* Max-Min chip temperature, VT backoffs configuration */
+		prf->temp_volt_backoff.max_chip_temp = CSP_MAX_CHIP_TEMP;
+		prf->temp_volt_backoff.min_chip_temp = CSP_MIN_CHIP_TEMP;
+		prf->temp_volt_backoff.lb_max_pwr_bkf_hi_temp =	CSP_LB_MAX_PWR_BKF_HI_TEMP;
+		prf->temp_volt_backoff.lb_max_pwr_bkf_low_temp = CSP_LB_MAX_PWR_BKF_LOW_TEMP;
+		prf->temp_volt_backoff.hb_max_pwr_bkf_hi_temp =	CSP_HB_MAX_PWR_BKF_HI_TEMP;
+		prf->temp_volt_backoff.hb_max_pwr_bkf_low_temp = CSP_HB_MAX_PWR_BKF_LOW_TEMP;
+		prf->temp_volt_backoff.lb_vbt_lt_vlow = CSP_LB_VBT_LT_VLOW;
+		prf->temp_volt_backoff.hb_vbt_lt_vlow =	CSP_HB_VBT_LT_VLOW;
+		prf->temp_volt_backoff.lb_vbt_lt_low = CSP_LB_VBT_LT_LOW;
+		prf->temp_volt_backoff.hb_vbt_lt_low = CSP_HB_VBT_LT_LOW;
+	}
+	else {
+		/** If nothing is written to OTP field corresponding to package info byte
+		 * or if the package info field is corrupted then the default package
+		 * package is QFN.
+		 */
+
+		/* Initialize XO */
+		prf->xo_offset.xo_freq_offset = QFN_XO_VAL;
+
+		/* TX power ceiling */
+		prf->max_pwr_ceil.max_dsss_pwr = QFN_MAX_TX_PWR_DSSS;
+		prf->max_pwr_ceil.max_lb_mcs7_pwr = QFN_MAX_TX_PWR_LB_MCS7;
+		prf->max_pwr_ceil.max_lb_mcs0_pwr = QFN_MAX_TX_PWR_LB_MCS0;
+		prf->max_pwr_ceil.max_hb_low_chan_mcs7_pwr = QFN_MAX_TX_PWR_HB_LOW_CHAN_MCS7;
+		prf->max_pwr_ceil.max_hb_mid_chan_mcs7_pwr = QFN_MAX_TX_PWR_HB_MID_CHAN_MCS7;
+		prf->max_pwr_ceil.max_hb_high_chan_mcs7_pwr = QFN_MAX_TX_PWR_HB_HIGH_CHAN_MCS7;
+		prf->max_pwr_ceil.max_hb_low_chan_mcs0_pwr = QFN_MAX_TX_PWR_HB_LOW_CHAN_MCS0;
+		prf->max_pwr_ceil.max_hb_mid_chan_mcs0_pwr = QFN_MAX_TX_PWR_HB_MID_CHAN_MCS0;
+		prf->max_pwr_ceil.max_hb_high_chan_mcs0_pwr = QFN_MAX_TX_PWR_HB_HIGH_CHAN_MCS0;
+
+		/* Max-Min chip temperature, VT backoffs configuration */
+		prf->temp_volt_backoff.max_chip_temp = QFN_MAX_CHIP_TEMP;
+		prf->temp_volt_backoff.min_chip_temp = QFN_MIN_CHIP_TEMP;
+		prf->temp_volt_backoff.lb_max_pwr_bkf_hi_temp =	QFN_LB_MAX_PWR_BKF_HI_TEMP;
+		prf->temp_volt_backoff.lb_max_pwr_bkf_low_temp = QFN_LB_MAX_PWR_BKF_LOW_TEMP;
+		prf->temp_volt_backoff.hb_max_pwr_bkf_hi_temp =	QFN_HB_MAX_PWR_BKF_HI_TEMP;
+		prf->temp_volt_backoff.hb_max_pwr_bkf_low_temp = QFN_HB_MAX_PWR_BKF_LOW_TEMP;
+		prf->temp_volt_backoff.lb_vbt_lt_vlow =	QFN_LB_VBT_LT_VLOW;
+		prf->temp_volt_backoff.hb_vbt_lt_vlow =	QFN_HB_VBT_LT_VLOW;
+		prf->temp_volt_backoff.lb_vbt_lt_low = QFN_LB_VBT_LT_LOW;
+		prf->temp_volt_backoff.hb_vbt_lt_low = QFN_HB_VBT_LT_LOW;
+	}
+
+	ret = nrf_wifi_utils_hex_str_to_val(opriv,
+					(unsigned char *)&prf->phy_params,
+					sizeof(prf->phy_params),
+					str);
+	return(ret);
 }
 
 #ifdef CONFIG_NRF700X_UTIL
