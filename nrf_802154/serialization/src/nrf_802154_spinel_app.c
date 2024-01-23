@@ -867,6 +867,33 @@ bail:
     return ack_data_clear_res;
 }
 
+void nrf_802154_ack_data_remove_all(bool extended, nrf_802154_ack_data_t data_type)
+{
+    nrf_802154_ser_err_t res;
+
+    SERIALIZATION_ERROR_INIT(error);
+
+    NRF_802154_SPINEL_LOG_BANNER_CALLING();
+    NRF_802154_SPINEL_LOG_VAR_NAMED("%s", (extended ? "true" : "false"), "extended");
+
+    nrf_802154_spinel_response_notifier_lock_before_request(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_REMOVE_ALL);
+
+    res = nrf_802154_spinel_send_cmd_prop_value_set(
+        SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_REMOVE_ALL,
+        SPINEL_DATATYPE_NRF_802154_ACK_DATA_REMOVE_ALL,
+        extended,
+        data_type);
+
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+    res = status_ok_await(CONFIG_NRF_802154_SER_DEFAULT_RESPONSE_TIMEOUT);
+    SERIALIZATION_ERROR_CHECK(res, error, bail);
+
+bail:
+    SERIALIZATION_ERROR_RAISE_IF_FAILED(error);
+}
+
 void nrf_802154_auto_pending_bit_set(bool enabled)
 {
     nrf_802154_ser_err_t res;

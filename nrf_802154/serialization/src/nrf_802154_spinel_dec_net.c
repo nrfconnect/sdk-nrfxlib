@@ -863,6 +863,30 @@ static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_ack_data_clear(
         ack_data_clear_res);
 }
 
+static nrf_802154_ser_err_t spinel_decode_prop_nrf_802154_ack_data_remove_all(
+    const void * p_property_data,
+    size_t       property_data_len)
+{
+    bool                  extended;
+    nrf_802154_ack_data_t data_type;
+    spinel_ssize_t        siz;
+
+    siz = spinel_datatype_unpack(p_property_data,
+                                 property_data_len,
+                                 SPINEL_DATATYPE_NRF_802154_ACK_DATA_REMOVE_ALL,
+                                 &extended,
+                                 &data_type);
+
+    if (siz < 0)
+    {
+        return NRF_802154_SERIALIZATION_ERROR_DECODING_FAILURE;
+    }
+
+    nrf_802154_ack_data_remove_all(extended, data_type);
+
+    return nrf_802154_spinel_send_prop_last_status_is(SPINEL_STATUS_OK);
+}
+
 #if NRF_802154_CSMA_CA_ENABLED
 
 /**
@@ -2100,6 +2124,10 @@ nrf_802154_ser_err_t nrf_802154_spinel_decode_cmd_prop_value_set(const void * p_
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_CLEAR:
             return spinel_decode_prop_nrf_802154_ack_data_clear(p_property_data,
                                                                 property_data_len);
+
+        case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ACK_DATA_REMOVE_ALL:
+            return spinel_decode_prop_nrf_802154_ack_data_remove_all(p_property_data,
+                                                                     property_data_len);
 
         case SPINEL_PROP_VENDOR_NORDIC_NRF_802154_SECURITY_GLOBAL_FRAME_COUNTER_SET:
             return spinel_decode_prop_nrf_802154_security_global_frame_counter_set(p_property_data,

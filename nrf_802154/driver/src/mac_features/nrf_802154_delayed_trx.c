@@ -817,6 +817,12 @@ bool nrf_802154_delayed_trx_receive(uint64_t rx_time,
                                     uint8_t  channel,
                                     uint32_t id)
 {
+    if (dly_rx_data_by_id_search(id) != NULL)
+    {
+        /* DRX with given id is already present. */
+        return false;
+    }
+
     dly_op_data_t * p_dly_rx_data = available_dly_rx_slot_get();
     bool            result        = false;
 

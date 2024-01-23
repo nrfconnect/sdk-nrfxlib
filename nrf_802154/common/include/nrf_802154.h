@@ -1006,6 +1006,15 @@ bool nrf_802154_ack_data_clear(const uint8_t       * p_addr,
                                nrf_802154_ack_data_t data_type);
 
 /**
+ * @brief Removes all addresses of a given length from the ACK data list.
+ *
+ * @param[in]  extended  Indication if all extended addresses or all short addresses are
+ *                       to be removed from the list.
+ * @param[in]  data_type Type of data that is to be cleared for all addresses of a given length.
+ */
+void nrf_802154_ack_data_remove_all(bool extended, nrf_802154_ack_data_t data_type);
+
+/**
  * @brief Enables or disables setting a pending bit in automatically transmitted ACK frames.
  *
  * @note Setting a pending bit in automatically transmitted ACK frames is enabled by default.

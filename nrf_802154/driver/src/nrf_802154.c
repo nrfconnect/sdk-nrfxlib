@@ -841,6 +841,11 @@ bool nrf_802154_ack_data_clear(const uint8_t       * p_addr,
     return nrf_802154_ack_data_for_addr_clear(p_addr, extended, data_type);
 }
 
+void nrf_802154_ack_data_remove_all(bool extended, nrf_802154_ack_data_t data_type)
+{
+    nrf_802154_ack_data_reset(extended, data_type);
+}
+
 void nrf_802154_auto_pending_bit_set(bool enabled)
 {
     nrf_802154_ack_data_enable(enabled);
