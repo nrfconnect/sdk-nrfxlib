@@ -17,6 +17,7 @@ Notable changes
 ===============
 
 * Added the :c:func:`nrf_802154_rx_on_when_idle_set` function which allows to choose between the receive and sleep states during radio idle periods. (KRKNWK-17962)
+* Added a safeguard in the :c:func:`nrf_802154_delayed_trx_receive` to disallow scheduling of two delayed reception windows with the same value of ``id`` parameter. (KRKNWK-18263)
 
 Added
 =====
@@ -25,6 +26,7 @@ Added
 * Added :c:macro:`NRF_802154_MAX_PENDING_NOTIFICATIONS` that sets the maximum number of simultaneously pending notifications the driver can issue. (KRKNWK-18110)
 * Added an assert abstraction layer to allow for the customization of the detection and handling of abnormal conditions. (KRKNWK-18116)
 * Added the possibility to insert the transmission channel value to the transmitted frame metadata. (KRKNWK-17965)
+* Added the :c:func:`nrf_802154_ack_data_remove_all` function that allows you to remove all the stored Ack data of a given type. (KRKNWK-18334)
 
 Removed
 =======
