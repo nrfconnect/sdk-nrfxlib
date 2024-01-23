@@ -40,8 +40,6 @@ extern "C" {
 /** @brief Bitmask of (D)PPI channels reserved for MPSL. */
 #if defined(PPI_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
-#elif defined(GRTC_PRESENT)
-#define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
 #elif defined(DPPIC_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
 #else
@@ -145,17 +143,6 @@ void MPSL_IRQ_CLOCK_Handler(void);
  */
 void mpsl_low_priority_process(void);
 
-/** @brief Application needs to call this when calibration shall occur.
- *
- * In the nRF Connect SDK, it is designed to be called with a period of CONFIG_CLOCK_CONTROL_NRF_CALIBRATION_PERIOD
- */
-void mpsl_calibration_timer_handle(void);
-
-/** @brief RFU
- *
- * RFU
- */
-void mpsl_pan_rfu(void);
 #ifdef __cplusplus
 }
 #endif

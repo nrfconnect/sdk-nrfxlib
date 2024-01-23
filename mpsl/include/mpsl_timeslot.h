@@ -25,8 +25,6 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "nrf.h"
-#include "nrf_peripherals.h"
 #include "nrf_errno.h"
 
 /** @brief The shortest allowed timeslot event in microseconds. */
@@ -43,11 +41,7 @@ extern "C" {
 #define MPSL_TIMESLOT_EARLIEST_TIMEOUT_MAX_US          (256000000UL - 1UL)
 
 /** @brief The maximum jitter in @ref MPSL_TIMESLOT_SIGNAL_START relative to the requested start time. */
-#if defined(GRTC_PRESENT)
-#define MPSL_TIMESLOT_START_JITTER_US                  (0UL)
-#else
 #define MPSL_TIMESLOT_START_JITTER_US                  (1UL)
-#endif
 
 /** @brief The minimum allowed timeslot extension time. */
 #define MPSL_TIMESLOT_EXTENSION_TIME_MIN_US            (200UL)

@@ -136,10 +136,6 @@ typedef void (*mpsl_clock_hfclk_callback_t)(void);
  * @see mpsl_clock_hfclk_is_running
  * @see mpsl_clock_hfclk_release
  *
- * @note Don't use this API if the integration layer of MPSL provides a driver that uses this function.
- *       This is the case for applications in the nRF Connect SDK where there is a clock control driver
- *       with a corresponding on/off manager.
- *
  * @param[in] hfclk_started_callback Function to be called when the high frequency clock is started.
  *                                   The callback will be executed in the context as
  *                                   @ref mpsl_low_priority_process.
@@ -155,10 +151,6 @@ int32_t mpsl_clock_hfclk_request(mpsl_clock_hfclk_callback_t hfclk_started_callb
  *
  * @see mpsl_clock_hfclk_is_running
  * @see mpsl_clock_hfclk_request
- *
- * @note Don't use this API if the integration layer of MPSL provides a driver that uses this function.
- *       This is the case for applications in the nRF Connect SDK where there is a clock control driver
- *       with a corresponding on/off manager.
  *
  * @retval 0  Success
  */
@@ -183,14 +175,6 @@ int32_t mpsl_clock_hfclk_is_running(uint32_t * p_is_running);
  * @retval 1  Error, passed value not in @ref mpsl_clock_hfclk_latency_config_t
  */
 int32_t mpsl_clock_hfclk_latency_set(mpsl_clock_hfclk_latency_config_t mpsl_clock_hfclk_latency_config);
-
-/** @brief Trigger a task upon start of the RTC.
- *
- * MPSL will trigger the task at the same time as the RTC is started.
- *
- * @param[in] task_address The task address to be triggered
- */
-void mpsl_clock_task_trigger_on_rtc_start_set(uint32_t task_address);
 
 #ifdef __cplusplus
 }
