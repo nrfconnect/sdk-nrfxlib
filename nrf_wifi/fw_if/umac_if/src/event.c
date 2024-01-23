@@ -914,31 +914,38 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		status = nrf_wifi_fmac_rawtx_done_event_process(fmac_dev_ctx,
 						(struct nrf_wifi_event_raw_tx_done *)sys_head);
 		break;
+#endif
+#ifndef CONFIG_NRF700X_RADIO_TEST
 	case NRF_WIFI_EVENT_MODE_SET_DONE:
-		struct nrf_wifi_event_raw_config_mode *mode_event;
+		{
+			struct nrf_wifi_event_raw_config_mode *mode_event;
 
-		mode_event = (struct nrf_wifi_event_raw_config_mode *)sys_head;
-		if (!mode_event->status) {
-			def_dev_ctx->vif_ctx[mode_event->if_index]->mode =
+			mode_event = (struct nrf_wifi_event_raw_config_mode *)sys_head;
+			if (!mode_event->status) {
+				def_dev_ctx->vif_ctx[mode_event->if_index]->mode =
 								mode_event->op_mode;
-			/**
-			 * Set the transmit queue for RAW packet transmission
-			 */
-			if (mode_event->op_mode == (NRF_WIFI_TX_INJECTION_MODE |
-						    NRF_WIFI_STA_MODE)) {
-				def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id = MAX_PEERS;
-				def_dev_ctx->tx_config.peers[MAX_PEERS].if_idx =
+				/**
+				 * Set the transmit queue for RAW packet transmission
+				 */
+				if (mode_event->op_mode == (NRF_WIFI_TX_INJECTION_MODE |
+							    NRF_WIFI_STA_MODE)) {
+					def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id =
+										MAX_PEERS;
+					def_dev_ctx->tx_config.peers[MAX_PEERS].if_idx =
 									mode_event->if_index;
-				def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
+					def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
 									NRF_WIFI_STA_TX_INJECTOR;
-			} else if (mode_event->op_mode == NRF_WIFI_STA_MODE) {
-				def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
+				} else if (mode_event->op_mode == NRF_WIFI_STA_MODE) {
+					def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
 									NRF_WIFI_IFTYPE_STATION;
-				def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id = -1;
+					def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id = -1;
+				}
+				status = NRF_WIFI_STATUS_SUCCESS;
 			}
-			status = NRF_WIFI_STATUS_SUCCESS;
 		}
 		break;
+#endif
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
 	case NRF_WIFI_EVENT_CHANNEL_SET_DONE:
 		struct nrf_wifi_event_set_channel *channel_event;
 

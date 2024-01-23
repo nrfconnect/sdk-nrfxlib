@@ -1025,6 +1025,7 @@ enum nrf_wifi_status nrf_wifi_fmac_start_rawpkt_xmit(void *dev_ctx,
  *@retval      WIFI_NRF_STATUS_FAIL On failure
  */
 bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif);
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
 
 /**
  * @brief Check if a valid mode is being set.
@@ -1039,7 +1040,6 @@ bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif);
  *@retval      WIFI_NRF_STATUS_FAIL On failure
  */
 enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode);
-#endif /* CONFIG_NRF700X_RAW_DATA_TX */
 /**
  * @}
  */
