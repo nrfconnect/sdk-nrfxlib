@@ -54,28 +54,14 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 | Periodic Advertising with      |                 |              | X         |
 | Responses - Scanner            |                 |              |           |
 +--------------------------------+-----------------+--------------+-----------+
-| Connected Isochronous Stream   |                 |              | X         |
-| - Central                      |                 |              |           |
-| (experimental support)         |                 |              |           |
-+--------------------------------+-----------------+--------------+-----------+
-| Connected Isochronous Stream   |                 |              | X         |
-| - Peripheral                   |                 |              |           |
-| (experimental support)         |                 |              |           |
-+--------------------------------+-----------------+--------------+-----------+
-| Isochronous Broadcaster        |                 |              | X         |
-| (experimental support)         |                 |              |           |
-+--------------------------------+-----------------+--------------+-----------+
-| Synchronized Receiver          |                 |              | X         |
-| (experimental support)         |                 |              |           |
-+--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    The following limitations apply to the listed features:
 
    * For Connectionless CTE Advertising, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Connection CTE Response, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
+   * For the LE Power Control Request feature, the support is experimental.
    * For Periodic Advertising Sync Transfer - Receiver, only one sync transfer reception may be in progress at any one time per link.
-   * For the Isochronous Channels features, nRF52820 and nRF52833 are the nRF52 Series devices that are supported.
 
 .. _sdc_proprietary_feature_support:
 
@@ -88,9 +74,6 @@ Proprietary feature support:
 +--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
 | QoS Conn Event Reports   | X               | X            | X         | Reports QoS for every connection event.                                     |
 |                          |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
-+--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
-| QoS Channel Survey       |                 | X            | X         | Provides measurements of the energy levels on the Bluetooth LE channels.    |
-| (experimental support)   |                 |              |           | The application can then set an adapted channel map to avoid busy channels. |
 +--------------------------+-----------------+--------------+-----------+-----------------------------------------------------------------------------+
 
 

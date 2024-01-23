@@ -39,10 +39,6 @@ enum sdc_hci_opcode_cb
     SDC_HCI_OPCODE_CMD_CB_SET_EVENT_MASK = 0xc01,
     /** @brief See @ref sdc_hci_cmd_cb_reset(). */
     SDC_HCI_OPCODE_CMD_CB_RESET = 0xc03,
-    /** @brief See @ref sdc_hci_cmd_cb_read_conn_accept_timeout(). */
-    SDC_HCI_OPCODE_CMD_CB_READ_CONN_ACCEPT_TIMEOUT = 0xc15,
-    /** @brief See @ref sdc_hci_cmd_cb_write_conn_accept_timeout(). */
-    SDC_HCI_OPCODE_CMD_CB_WRITE_CONN_ACCEPT_TIMEOUT = 0xc16,
     /** @brief See @ref sdc_hci_cmd_cb_read_transmit_power_level(). */
     SDC_HCI_OPCODE_CMD_CB_READ_TRANSMIT_POWER_LEVEL = 0xc2d,
     /** @brief See @ref sdc_hci_cmd_cb_set_controller_to_host_flow_control(). */
@@ -172,18 +168,6 @@ typedef __PACKED_UNION
     sdc_hci_cb_event_mask_t params;
     uint8_t raw[8];
 } sdc_hci_cmd_cb_set_event_mask_t;
-
-/** @brief Read Connection Accept Timeout return parameter(s). */
-typedef __PACKED_STRUCT
-{
-    uint16_t conn_accept_timeout;
-} sdc_hci_cmd_cb_read_conn_accept_timeout_return_t;
-
-/** @brief Write Connection Accept Timeout command parameter(s). */
-typedef __PACKED_STRUCT
-{
-    uint16_t conn_accept_timeout;
-} sdc_hci_cmd_cb_write_conn_accept_timeout_t;
 
 /** @brief Read Transmit Power Level command parameter(s). */
 typedef __PACKED_STRUCT
@@ -320,46 +304,6 @@ uint8_t sdc_hci_cmd_cb_set_event_mask(const sdc_hci_cmd_cb_set_event_mask_t * p_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_cb_reset(void);
-
-/** @brief Read Connection Accept Timeout.
- *
- * The description below is extracted from Core_v5.4,
- * Vol 4, Part E, Section 7.3.13
- *
- * This command reads the value for the Connection_Accept_Timeout
- * configuration parameter. See Section 6.7.
- *
- * Event(s) generated (unless masked away):
- * When the HCI_Read_Connection_Timeout command has completed, an
- * HCI_Command_Complete event shall be generated.
- *
- * @param[out] p_return Extra return parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_cb_read_conn_accept_timeout(sdc_hci_cmd_cb_read_conn_accept_timeout_return_t * p_return);
-
-/** @brief Write Connection Accept Timeout.
- *
- * The description below is extracted from Core_v5.4,
- * Vol 4, Part E, Section 7.3.14
- *
- * This command writes the value for the Connection_Accept_Timeout
- * configuration parameter. See Section 6.7.
- *
- * Event(s) generated (unless masked away):
- * When the HCI_Write_Connection_Accept_Timeout command has completed,
- * an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_cb_write_conn_accept_timeout(const sdc_hci_cmd_cb_write_conn_accept_timeout_t * p_params);
 
 /** @brief Read Transmit Power Level.
  *

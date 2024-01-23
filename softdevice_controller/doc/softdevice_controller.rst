@@ -73,8 +73,10 @@ Therefore, the host should try to pull data and events until it fails.
     Host,Controller;
     |||;
     Host rbox Controller [label = "Send a command to the controller"];
-    Host->Controller      [label="sdc_hci_cmd_cb_set_event_mask()"];
-    Host<<Controller      [label="Command Complete Status"];
+    Host->Controller      [label="sdc_hci_cmd_put()"];
+    Host<-Controller      [label="Host signal is triggered"];
+    Host->Controller      [label="sdc_evt_get()"];
+    Host<<Controller      [label="Command Complete event"];
     Host rbox Controller [label = "Send data to the controller"];
     Host->Controller      [label="sdc_hci_data_put()"];
     Host<-Controller      [label="Host signal is triggered"];
