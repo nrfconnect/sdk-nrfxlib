@@ -64,6 +64,12 @@ extern "C" {
 /** @brief The maximum size of an HCI packet. */
 #define HCI_MSG_BUFFER_MAX_SIZE HCI_CMD_PACKET_MAX_SIZE
 
+/** @brief The arrival margin in microseconds the controller needs to receive an ISO SDU before it can be sent on air.
+ *
+ * For more details, see the SoftDevice Controller documentation that describes how to provide data for isochronous channels.
+ */
+#define HCI_ISO_TX_SDU_ARRIVAL_MARGIN_US 1000
+
 typedef enum
 {
   SDC_HCI_MSG_TYPE_DATA = 0x02,

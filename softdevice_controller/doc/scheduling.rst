@@ -73,8 +73,8 @@ The following table summarizes the priorities.
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Fourth priority             | * 802.15.4 radio driver                                                                           |
    |                             | * MPSL Timeslot with normal priority                                                              |
-   +-----------------------------+---------------------------------------------------------------------------------------------------+
-   | Last priority               | * Quality of Service channel survey                                                               |
+   |                             | * Scanner when the scan window is equal to the scan interval                                      |
+   |                             | * Quality of Service channel survey                                                               |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
 
 
