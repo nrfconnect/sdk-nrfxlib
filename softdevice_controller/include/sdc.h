@@ -240,7 +240,8 @@ extern "C" {
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (465)
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (166)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
-#define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (16 + (count) * 288) : 0)
+#define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (16 + (count) * 296) : 0)
+#define __MEM_PER_ISO_TX_HCI_BUFFER(count) ((count) > 0 ? (12 + (count) * 296) : 0)
 
 /** Memory required per periodic advertising with responses set.
  *
@@ -265,13 +266,13 @@ extern "C" {
 #define SDC_MEM_PER_CIG(count) ((count) > 0 ? (13 + (count) * 123) : 0)
 
 /** @brief Maximum memory required per CIS. Buffer and CIG memory comes in addition. */
-#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 523) : 0)
+#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 531) : 0)
 
 /** @brief Maximum memory required per BIG. */
 #define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 291) : 0)
 
 /** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
-#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 275) : 0)
+#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 283) : 0)
 
 /** @brief Maximum memory required for the ISO RX PDU pool per stream.
  *  @param[in] rx_pdu_buffer_per_stream_count Number of RX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
@@ -292,7 +293,7 @@ extern "C" {
  *  @param[in] bis_source_count The number of supported source BIS streams. */
 #define SDC_MEM_ISO_TX_POOL_SIZE(tx_hci_buffer_count, tx_pdu_buffer_per_stream_count, cis_count, bis_source_count) \
      (((tx_hci_buffer_count) > 0 && (tx_pdu_buffer_per_stream_count) > 0) ?                                 \
-     (__MEM_PER_ISO_PDU_POOL(tx_hci_buffer_count)                                                           \
+     (__MEM_PER_ISO_TX_HCI_BUFFER(tx_hci_buffer_count)                                                      \
      + (__MEM_PER_ISO_PDU_POOL(tx_pdu_buffer_per_stream_count) * ((cis_count) + (bis_source_count)))        \
      ) : 0)
 

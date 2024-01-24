@@ -42,6 +42,11 @@ Changes
 * The scheduling priority for initiator events where the scan window is equal to the scan interval is lowered to the third scheduling priority.
   For other configurations of scan window and scan interval the priority is unchanged. (DRGN-20831)
 * The vendor-specific Set event length for ACL connections HCI command now accepts values lower than 1250 us. (DRGN-20796)
+* The scheduling priority for the scanner where the scan window is equal to the scan interval is lowered to the fourth scheduling priority.
+  This will allow concurrent |BLE| roles to interrupt continuous scanning, but will reduce the time available for scanning.
+  For other configurations of scan window and scan interval the priority is unchanged. (DRGN-19272)
+* Improved scheduling performance when receiving packets closely following an ``AUX_SYNC_IND`` that does not point to an ``AUX_CHAIN_IND``.
+  The controller will attempt to prioritize the reception of such packets while still maintaining the periodic sync. (DRGN-19272)
 
 Bug fixes
 =========
@@ -60,6 +65,10 @@ Bug fixes
 * Fixed an issue where the controller stopped generating advertising reports.
   This could happen when the controller was running an extended cooperative scanner together with other activities, such as advertising or connection,
   while receiving data in an extended advertising event that used ``AUX_CHAIN_IND``. (DRGN-21020)
+* Fixed an issue where the controller would stop sending ACL data packets to the host when controller to host flow control was enabled.
+  This could happen when a disconnection occurred before the host had issued the Host Number of Complete Packets command for the remaining ACL data packets.
+  Now the controller waits until after all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
+  The controller also validates the handles provided in the Host Number of Complete Packets command. (DRGN-21085)
 
 nRF Connect SDK v2.5.0
 **********************

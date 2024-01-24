@@ -65,3 +65,19 @@ DRGN-17724: The AoA transmitter is not supported in LLPM-mode
 DRGN-20655: ISO SDUs in Host to Controller direction should not be split into multiple HCI ISO Data packets
   If the Host provides an SDU that has been split into multiple HCI ISO Data packets without a timestamp, the SDC can assign a wrong timestamp to it.
   As a result, this SDU can be never transmitted.
+
+DRGN-20336: Receiving ISO SDUs larger than 247 bytes is not supported.
+
+DRGN-21099: Unsupported CIG parameters when requesting framed PDUs
+  The following parameters to the LE Set CIG Parameters command are not supported when framed PDUs are requested:
+
+  * Unequal ``SDU_Interval_C_To_P`` and ``SDU_Interval_P_To_C``.
+    This applies only when the data transfer is bidirectional.
+  * An ``SDU_Interval`` lower than 5000 µs.
+  * A ``Max_SDU`` larger than 246 bytes.
+
+  Note that framed PDUs will be enforced when an ``SDU_Interval`` is not an integer multiple of 1250 µs.
+  In this case, the unsupported parameters mentioned above still apply.
+
+  **Workaround:** Use the LE Set CIG Parameters Test command.
+  See the :ref:`softdevice_controller_iso` page for more details.
