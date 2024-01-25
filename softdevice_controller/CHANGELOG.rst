@@ -23,9 +23,9 @@ Bug fixes
 * Fixed an issue where the continuous extended scanner would not be able to receive the ``AUX_ADV_IND`` packet if the time between the ``ADV_EXT_IND`` and ``AUX_ADV_IND`` was more than 840 μs (DRGN-19460).
 * Fixed an issue where the controller would stop sending ACL data packets to the host when controller to host flow control was enabled.
   This could happen when a disconnection occurred before the host had issued the Host Number of Complete Packets command for the remaining ACL data packets.
-  Now the controller waits until after all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
+  Now, the controller waits until all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
   The controller also validates the handles provided in the Host Number of Complete Packets command (DRGN-21085).
-..Fixed a rare issue where the scanner may assert when it schedules the reception of the next advertising packet (DRGN-21262).
+* Fixed a rare issue where the scanner may assert when it schedules the reception of the next advertising packet (DRGN-21262).
 
 nRF Connect SDK v2.4.0
 **********************
