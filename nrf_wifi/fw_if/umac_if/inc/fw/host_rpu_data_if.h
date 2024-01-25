@@ -65,8 +65,13 @@ struct nrf_wifi_umac_head {
 
 } __NRF_WIFI_PKD;
 
-#define DSCP_TOS_MASK  0xFFFF
-#define DSCP_OR_TOS_TWT_EMERGENCY_TX  (1 << 31)
+#define NRF_WIFI_TX_FLAGS_DSCP_TOS_MASK  0xFFFF
+#define NRF_WIFI_TX_FLAGS_DSCP_TOS_SHIFT 0
+#define NRF_WIFI_TX_FLAGS_DSCP_TOS(x)    (((x) << NRF_WIFI_TX_FLAGS_DSCP_TOS_SHIFT) & NRF_WIFI_TX_FLAGS_DSCP_TOS_MASK)
+
+enum nrf_wifi_tx_flags {
+	NRF_WIFI_TX_FLAG_TWT_EMERGENCY_TX = (1 << 31),
+};
 
 /**
  * @brief Tx mac80211 header information.
@@ -83,8 +88,8 @@ struct tx_mac_hdr_info {
 	unsigned char src[6];
 	/** Ethernet type */
 	unsigned short etype;
-	/** Type of Service */
-	unsigned int dscp_or_tos;
+	/** TX flags */
+	unsigned int tx_flags;
 	/** more frames queued */
 	unsigned char more_data;
 	/** End Of Service Period flag(applicable in U-APSD) */
