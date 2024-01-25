@@ -860,6 +860,11 @@ enum nrf_wifi_status tx_cmd_prepare(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 		config->mac_hdr_info.tx_flags |= NRF_WIFI_TX_FLAG_TWT_EMERGENCY_TX;
 	}
 
+	if (nrf_wifi_osal_nbuf_get_chksum_done(fmac_dev_ctx->fpriv->opriv,
+					       nwb)) {
+		config->mac_hdr_info.tx_flags |= NRF_WIFI_TX_FLAG_CHKSUM_AVAILABLE;
+	}
+
 	config->num_tx_pkts = 0;
 
 	info.fmac_dev_ctx = fmac_dev_ctx;
