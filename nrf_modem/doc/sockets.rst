@@ -356,7 +356,7 @@ The configuration of Packet Data Protocol (PDP) contexts, and the activation of 
 To configure PDP contexts and activate PDN connections, the application must use the packet domain AT commands.
 
 When performing network operations on any PDN, the application ensures that the PDN connection is available.
-For more information about how to configure PDP contexts, activate PDN connections, and determine their state, see the `Packet domain commands`_ section in the nRF9160 AT Commands Reference Guide or the same section in the `nRF91x1 AT Commands Reference Guide`_ depending on the SiP you are using.
+For more information about how to configure PDP contexts, activate PDN connections, and determine their state, see the `Packet domain commands`_ section in the nRF9160 AT Commands Reference Guide or the `same section <nRF91x1 packet Domain AT commands_>`_ in the nRF91x1 AT Commands Reference Guide, depending on the SiP you are using.
 
 
 Configuring a socket to use a PDN
@@ -417,7 +417,7 @@ Security tags
 To use the cryptographic functions in the modem, the application must provision the security credentials to the modem.
 To be able to provision credentials, the modem must be in offline mode.
 The credentials are provisioned through AT commands.
-For more information, See `Credential storage management %CMNG`_ section in the nRF9160 AT Commands Reference Guide or the same section in the `nRF91x1 AT Commands Reference Guide`_ depending on the SiP you are using.
+For more information, See `Credential storage management %CMNG`_ section in the nRF9160 AT Commands Reference Guide or the `same section <nRF91x1 credential storage management %CMNG_>`_ in the nRF91x1 AT Commands Reference Guide, depending on the SiP you are using.
 If you are using the |NCS| to build your application, you can use the :ref:`nrf:modem_key_mgmt` library to manage credentials.
 If you prefer a graphical tool, use `Cellular Monitor`_ instead.
 To manage credentials with Cellular Monitor, your device must be running an |NCS| application.

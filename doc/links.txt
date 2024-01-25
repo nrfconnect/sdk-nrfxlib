@@ -13,13 +13,15 @@
 
 .. ### Source: infocenter.nordicsemi.com
 
-.. _`nRF9160 AT Commands Reference Guide`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/intro.html
+.. _`nRF9160 AT Commands Reference Guide`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/intro_nrf9160.html
 
-.. _`nRF91x1 AT Commands Reference Guide`: https://www.nordicsemi.com/-/media/Software-and-other-downloads/SiP/nRF91x1-SiP/v0.8-nRF91x1_CIoT_and_Positioning-AT-Commands-reference-guide.pdf
+.. _`nRF91x1 AT Commands Reference Guide`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/intro_nrf91x1.html
 
 .. _`Selecting UICC slot %CSUS`: https://infocenter.nordicsemi.com/index.jsp?topic=%2Fref_at_commands%2FREF%2Fat_commands%2Faccess_uicc%2Fcsus.html
+.. _`nRF91x1 selecting UICC slot %CSUS`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/access_uicc/csus.html
 
-.. _`Credential storage management %CMNG`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/mob_termination_ctrl_status/cmng.html
+.. _`Credential storage management %CMNG`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/security/cmng.html
+.. _`nRF91x1 credential storage management %CMNG`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/security/cmng.html
 
 .. _`Cellular Monitor`: https://infocenter.nordicsemi.com/topic/ug_cellular_monitor/UG/cellular_monitor/cellular_mon_cert_manager.html
 
@@ -41,8 +43,10 @@
 .. _`Zigbee CIDs for nRF52833`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52833/COMP/nrf52833/nrf52833_zigbee_cids.html
 
 .. _`Packet domain commands`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/packet_domain/packet_domain.html
+.. _`nRF91x1 packet Domain AT commands`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/packet_domain/packet_domain.html
 
 .. _`Modem trace activation %XMODEMTRACE`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/mob_termination_ctrl_status/xmodemtrace.html
+.. _`nRF91x1 modem trace activation %XMODEMTRACE`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/mob_termination_ctrl_status/xmodemtrace.html
 
 .. _`nRF Connect Serial Terminal`: https://infocenter.nordicsemi.com/topic/ug_serial_terminal/UG/serial_terminal/intro.html
 
