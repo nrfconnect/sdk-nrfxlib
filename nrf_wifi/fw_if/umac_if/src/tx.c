@@ -853,11 +853,11 @@ enum nrf_wifi_status tx_cmd_prepare(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 		nrf_wifi_util_tx_get_eth_type(fmac_dev_ctx,
 					      nwb_data);
 
-	config->mac_hdr_info.dscp_or_tos =
-		nrf_wifi_util_get_tid(fmac_dev_ctx, nwb);
+	config->mac_hdr_info.tx_flags =
+		nrf_wifi_util_get_tid(fmac_dev_ctx, nwb) & NRF_WIFI_TX_FLAGS_DSCP_TOS_MASK;
 
 	if (is_twt_emergency_pkt(fmac_dev_ctx->fpriv->opriv, nwb)) {
-		config->mac_hdr_info.dscp_or_tos |= DSCP_OR_TOS_TWT_EMERGENCY_TX;
+		config->mac_hdr_info.tx_flags |= NRF_WIFI_TX_FLAG_TWT_EMERGENCY_TX;
 	}
 
 	config->num_tx_pkts = 0;
