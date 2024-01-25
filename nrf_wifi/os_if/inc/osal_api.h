@@ -725,6 +725,33 @@ void *nrf_wifi_osal_nbuf_data_pull(struct nrf_wifi_osal_priv *opriv,
  */
 unsigned char nrf_wifi_osal_nbuf_get_priority(struct nrf_wifi_osal_priv *opriv,
 					       void *nbuf);
+
+/**
+ * nrf_wifi_osal_nbuf_get_chksum_done() - Get the checksum status of a network buffer.
+ *
+ * @opriv: Pointer to the OSAL context returned by the @nrf_wifi_osal_init API.
+ * @nbuf: Pointer to a network buffer.
+ *
+ * Gets the checksum status of a network buffer(@nbuf).
+ *
+ * Return: Checksum status of the network buffer.
+ */
+unsigned char nrf_wifi_osal_nbuf_get_chksum_done(struct nrf_wifi_osal_priv *opriv,
+						 void *nbuf);
+
+/**
+ * nrf_wifi_osal_nbuf_set_chksum_done() - Set the checksum status of a network buffer.
+ *
+ * @opriv: Pointer to the OSAL context returned by the @nrf_wifi_osal_init API.
+ * @nbuf: Pointer to a network buffer.
+ * @chksum_done: Checksum status of the network buffer.
+ *
+ * Sets the checksum status of a network buffer(@nbuf).
+ *
+ * Return: None
+ */
+void nrf_wifi_osal_nbuf_set_chksum_done(struct nrf_wifi_osal_priv *opriv,
+						 void *nbuf, unsigned char chksum_done);
 /**
  * nrf_wifi_osal_tasklet_alloc() - Allocate a tasklet.
  * @opriv: Pointer to the OSAL context returned by the @nrf_wifi_osal_init API.

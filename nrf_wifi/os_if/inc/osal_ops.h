@@ -103,6 +103,8 @@
  *                  bytes at the start of the area and return the pointer to the
  *                  beginning of the data area.
  * @nbuf_get_priority: Get the priority of a network buffer(@nbuf).
+ * @nbuf_get_chksum_done: Get the checksum status of a network buffer(@nbuf).
+ * @nbuf_set_chksum_done: Set the checksum status of a network buffer(@nbuf).
  *
  * @tasklet_alloc: Allocate a tasklet structure and return a pointer to it.
  * @tasklet_free: Free a tasklet structure that had been allocated using
@@ -240,6 +242,8 @@ struct nrf_wifi_osal_ops {
 	void *(*nbuf_data_push)(void *nbuf, unsigned int size);
 	void *(*nbuf_data_pull)(void *nbuf, unsigned int size);
 	unsigned char (*nbuf_get_priority)(void *nbuf);
+	unsigned char (*nbuf_get_chksum_done)(void *nbuf);
+	void (*nbuf_set_chksum_done)(void *nbuf, unsigned char chksum_done);
 
 	void *(*tasklet_alloc)(int type);
 	void (*tasklet_free)(void *tasklet);

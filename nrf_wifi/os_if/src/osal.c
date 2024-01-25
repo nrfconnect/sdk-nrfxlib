@@ -431,6 +431,18 @@ unsigned char nrf_wifi_osal_nbuf_get_priority(struct nrf_wifi_osal_priv *opriv,
 	return opriv->ops->nbuf_get_priority(nbuf);
 }
 
+unsigned char nrf_wifi_osal_nbuf_get_chksum_done(struct nrf_wifi_osal_priv *opriv,
+						 void *nbuf)
+{
+	return opriv->ops->nbuf_get_chksum_done(nbuf);
+}
+
+void nrf_wifi_osal_nbuf_set_chksum_done(struct nrf_wifi_osal_priv *opriv,
+						 void *nbuf, unsigned char chksum_done)
+{
+	return opriv->ops->nbuf_set_chksum_done(nbuf, chksum_done);
+}
+
 
 void *nrf_wifi_osal_tasklet_alloc(struct nrf_wifi_osal_priv *opriv, int type)
 {
