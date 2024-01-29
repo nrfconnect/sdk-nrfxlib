@@ -915,7 +915,7 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 						(struct nrf_wifi_event_raw_tx_done *)sys_head);
 		break;
 #endif
-#ifndef CONFIG_NRF700X_RADIO_TEST
+#ifdef CONFIG_NRF700X_SYSTEM_MODE
 	case NRF_WIFI_EVENT_MODE_SET_DONE:
 		{
 			struct nrf_wifi_event_raw_config_mode *mode_event;
