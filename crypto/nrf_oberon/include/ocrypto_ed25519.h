@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -62,7 +62,7 @@ void ocrypto_ed25519_public_key(
     const uint8_t sk[ocrypto_ed25519_SECRET_KEY_BYTES]);
 
 /**
- * Ed25519 signature generate.
+ * Ed25519 signature generation.
  *
  * The message @p m is signed using the secret key @p sk and the corresponding
  * public key @p pk. The signature is put into @p sig.
