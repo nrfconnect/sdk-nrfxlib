@@ -483,6 +483,8 @@ struct nrf_wifi_fmac_vif_ctx {
 	/** Channel setting for the current VIF */
 	unsigned char channel;
 #endif /* CONFIG_NRF700X_RAW_DATA_TX */
+	/** TX injection mode setting */
+	bool txinjection_mode;
 };
 
 /**

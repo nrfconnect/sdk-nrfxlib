@@ -935,9 +935,13 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 									mode_event->if_index;
 					def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
 									NRF_WIFI_STA_TX_INJECTOR;
+					def_dev_ctx->vif_ctx[mode_event->if_index]->txinjection_mode
+									= true;
 				} else if (mode_event->op_mode == NRF_WIFI_STA_MODE) {
 					def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
 									NRF_WIFI_IFTYPE_STATION;
+					def_dev_ctx->vif_ctx[mode_event->if_index]->txinjection_mode
+									= false;
 					def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id = -1;
 				}
 				status = NRF_WIFI_STATUS_SUCCESS;
