@@ -961,6 +961,18 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		status = NRF_WIFI_STATUS_SUCCESS;
 		break;
 #endif /* CONFIG_NRF700X_RAW_DATA_TX */
+#ifdef CONFIG_NRF700X_RAW_DATA_RX
+	case NRF_WIFI_EVENT_FILTER_SET_DONE:
+		struct nrf_wifi_event_raw_config_filter *filter_event;
+
+		filter_event = (struct nrf_wifi_event_raw_config_filter *)sys_head;
+		if (!filter_event->status) {
+			def_dev_ctx->vif_ctx[filter_event->if_index]->packet_filter =
+								filter_event->filter;
+		}
+		status = NRF_WIFI_STATUS_SUCCESS;
+		break;
+#endif /* CONFIG_NRF700X_RAW_DATA_RX */
 	default:
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 				      "%s: Unknown event recd: %d",
