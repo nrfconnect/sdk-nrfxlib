@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -117,7 +117,7 @@ typedef struct {
  * RSA public key setup.
  *
  * @param[out] key     The initialized public key.
- * @param[out] key_mem Key memory. Length OCRYPTO_RSA_KEY_SIZE(bits).
+ * @param[out] key_mem Key memory. Length OCRYPTO_RSA_PUB_KEY_SIZE(bits).
  *                     Must have same lifetime as @p key.
  * @param      n       The RSA modulus, unsigned big-endian.
  * @param      n_len   Length of @p n.
@@ -138,7 +138,7 @@ int ocrypto_rsa_init_pub_key(
  * RSA secret key setup.
  *
  * @param[out] key     The initialized secret key.
- * @param[out] key_mem Key memory. Length OCRYPTO_RSA_PUB_KEY_SIZE(bits).
+ * @param[out] key_mem Key memory. Length OCRYPTO_RSA_KEY_SIZE(bits).
  *                     Must have same lifetime as @p key.
  * @param      n       The RSA modulus, unsigned big-endian.
  * @param      n_len   Length of @p n.
@@ -148,7 +148,8 @@ int ocrypto_rsa_init_pub_key(
  * @retval -1 If the input length is invalid.
  * @retval 0  On success.
  *
- * @remark The n and d values can be read directly from a DER encoded RSAPrivateKey.
+ * @remark The n and d values can be read directly from the corresponding value
+ *         parts of a DER encoded RSAPrivateKey.
  */
 int ocrypto_rsa_init_key(
     ocrypto_rsa_key *key,
@@ -176,7 +177,8 @@ int ocrypto_rsa_init_key(
  * @retval -1 If the input length is invalid.
  * @retval 0  On success.
  *
- * @remark The p, q, dp, dq, and qinv values can be read directly from a DER encoded RSAPrivateKey.
+ * @remark The p, q, dp, dq, and qinv values can be read directly from the
+ *         corresponding value parts of a DER encoded RSAPrivateKey.
  */
 int ocrypto_rsa_init_crt_key(
     ocrypto_rsa_crt_key *key,

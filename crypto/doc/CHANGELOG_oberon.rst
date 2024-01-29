@@ -9,6 +9,104 @@ Changelog - nrf_oberon
 
 All notable changes to this project are documented in this file.
 
+nrf_oberon - 3.0.14
+*******************
+
+New version of the nrf_oberon library with the following changes.
+
+Added
+=====
+
+* Added ECDH key check functions for P521 (secp521r1).
+* Added SHA-3 family of cryptographic hash functions
+  - SHA-3 for hash sizes: 224, 256, 384, 512 (FIPS-PUB-202).
+  - SHAKE128, SHAKE256 (FIPS-PUB-202).
+  - cSHAKE128, cSHAKE256 (NIST SP 800-185).
+* Added KMAC cryptographic MAC functions based on SHA-3 and cSHAKE
+  - KMAC128, KMAC256 (NIST SP 800-185).
+* Added Twisted Edwards curve Ed448, Ed448ph (EdDSA).
+* Added Montgomery curve X448 (ECDH).
+* Added P-521, also known as secp521r1 (ECDSA and ECDH).
+
+Library built against Mbed TLS version 3.5.2.
+
+Added the following Oberon crypto libraries for nRF91, nRF53, nRF52, and nRF51 Series.
+
+.. note::
+   The *short-wchar* libraries are compiled with a wchar_t size of 16 bits.
+
+* nrf_oberon, nRF91 and nRF53 Series application core variants
+
+  * :file:`cortex-m33/hard-float/liboberon_3.0.14.a`
+  * :file:`cortex-m33/hard-float/liboberon_mbedtls_3.0.14.a`
+  * :file:`cortex-m33/soft-float/liboberon_3.0.14.a`
+  * :file:`cortex-m33/soft-float/liboberon_mbedtls_3.0.14.a`
+
+  * short-wchar
+
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_3.0.14.a`
+    * :file:`cortex-m33/hard-float/short-wchar/liboberon_mbedtls_3.0.14.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_3.0.14.a`
+    * :file:`cortex-m33/soft-float/short-wchar/liboberon_mbedtls_3.0.14.a`
+
+  * Keil
+
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_3.0.14.lib``
+    * :file:`cortex-m33/hard-float/short-wchar/oberon_mbedtls_3.0.14.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.14.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.14.lib``
+
+* nrf_oberon, nRF53 Series network core variants
+
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_3.0.14.a`
+  * :file:`cortex-m33+nodsp/soft-float/liboberon_mbedtls_3.0.14.a`
+
+  * short-wchar
+
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_3.0.14.a`
+    * :file:`cortex-m33+nodsp/soft-float/short-wchar/liboberon_mbedtls_3.0.14.a`
+
+  * Keil
+
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_3.0.14.lib``
+    * :file:`cortex-m33/soft-float/short-wchar/oberon_mbedtls_3.0.14.lib``
+
+* nrf_oberon, nRF52 Series variants
+
+  * :file:`cortex-m4/hard-float/liboberon_3.0.14.a`
+  * :file:`cortex-m4/hard-float/liboberon_mbedtls_3.0.14.a`
+  * :file:`cortex-m4/soft-float/liboberon_3.0.14.a`
+  * :file:`cortex-m4/soft-float/liboberon_mbedtls_3.0.14.a.a`
+
+  * short-wchar
+
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_3.0.14.a`
+    * :file:`cortex-m4/hard-float/short-wchar/liboberon_mbedtls_3.0.14.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_3.0.14.a`
+    * :file:`cortex-m4/soft-float/short-wchar/liboberon_mbedtls_3.0.14.a`
+
+  * Keil
+
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_3.0.14.lib``
+    * :file:`cortex-m4/soft-float/short-wchar/oberon_mbedtls_3.0.14.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_3.0.14.lib``
+    * :file:`cortex-m4/hard-float/short-wchar/oberon_mbedtls_3.0.14.lib``
+
+* nrf_oberon, nRF51 Series variants
+
+  * :file:`cortex-m0/soft-float/liboberon_3.0.14.a`
+  * :file:`cortex-m0/soft-float/liboberon_mbedtls_3.0.14.a`
+
+  * short-wchar
+
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_3.0.14.a`
+    * :file:`cortex-m0/soft-float/short-wchar/liboberon_mbedtls_3.0.14.a`
+
+  * Keil
+
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_3.0.14.lib``
+    * :file:`cortex-m0/soft-float/short-wchar/oberon_mbedtls_3.0.14.lib``
+
 nrf_oberon - 3.0.13
 *******************
 

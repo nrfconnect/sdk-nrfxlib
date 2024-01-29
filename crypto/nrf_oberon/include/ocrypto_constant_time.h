@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 - 2023 Nordic Semiconductor ASA
+ * Copyright (c) 2016 - 2024 Nordic Semiconductor ASA
  * Copyright (c) since 2013 Oberon microsystems AG
  *
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
@@ -53,7 +53,7 @@ int ocrypto_constant_time_is_zero(const void *x, size_t length);
  *
  * @param x      Memory region to copy @p y to.
  * @param y      Memory region to copy to @p x.
- * @param length Number of bytes to copy, @p length > 0.
+ * @param length Number of bytes to copy.
  */
 // void ocrypto_constant_time_copy(void *x, const void *y, size_t length);
 #define ocrypto_constant_time_copy(x, y, length) memcpy(x, y, length)
@@ -62,10 +62,20 @@ int ocrypto_constant_time_is_zero(const void *x, size_t length);
  * Variable length fill with zero.
  *
  * @param x      Memory region to be filled with zero.
- * @param length Number of bytes to fill, @p length > 0.
+ * @param length Number of bytes to fill.
  */
 // void ocrypto_constant_time_fill_zero(void *x, size_t length);
 #define ocrypto_constant_time_fill_zero(x, length) memset(x, 0, length)
+
+/**
+ * Variable length fill with a fixed value.
+ *
+ * @param x      Memory region to be filled with value.
+ * @param val    Value filled into memory.
+ * @param length Number of bytes to fill.
+ */
+// void ocrypto_constant_time_fill(void *x, uint8_t val, size_t length);
+#define ocrypto_constant_time_fill(x, val, length) memset(x, val, length)
 
 /**
  * Variable length bitwise xor.
