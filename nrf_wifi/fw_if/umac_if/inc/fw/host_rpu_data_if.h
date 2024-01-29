@@ -158,7 +158,9 @@ enum nrf_wifi_rx_pkt_type {
 	/** The Rx packet is of type data */
 	NRF_WIFI_RX_PKT_DATA,
 	/** RX packet is beacon or probe response */
-	NRF_WIFI_RX_PKT_BCN_PRB_RSP
+	NRF_WIFI_RX_PKT_BCN_PRB_RSP,
+	/** Raw Rx packet */
+	NRF_WIFI_RAW_RX_PKT
 };
 
 /**
@@ -186,7 +188,13 @@ struct nrf_wifi_rx_buff {
 	/** Header @ref nrf_wifi_umac_head */
 	struct nrf_wifi_umac_head umac_head;
 	/** Rx packet type. see &enum nrf_wifi_rx_pkt_type */
-	signed int rx_pkt_type;
+	signed short rx_pkt_type;
+	/** Refer @enum rpu_tput_mode */
+	unsigned char rate_flags;
+	/** Rate: Legacy : 1, 2, 55, 6, 9, 11, 12, 18, 24, 36, 48, 54
+	  *		  11N VHT HE  : MCS index 0 to 7.
+	  */
+	unsigned char rate;
 	/** Interface id */
 	unsigned char wdev_id;
 	/** Number of packets in this event */
