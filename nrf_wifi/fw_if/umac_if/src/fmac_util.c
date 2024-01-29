@@ -353,9 +353,6 @@ enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode)
 	 */
 	if ((mode ^ NRF_WIFI_STA_MODE) == 0) {
 		return NRF_WIFI_STATUS_SUCCESS;
-	} else if ((mode ^ (NRF_WIFI_STA_MODE |
-			    NRF_WIFI_TX_INJECTION_MODE)) == 0) {
-		return NRF_WIFI_STATUS_SUCCESS;
 	}
 	return NRF_WIFI_STATUS_FAIL;
 }
