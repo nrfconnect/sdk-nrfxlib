@@ -343,6 +343,25 @@ enum nrf_wifi_status nrf_wifi_fmac_set_channel(void *dev_ctx,
 					       unsigned int channel);
 
 #endif /* CONFIG_NRF700X_RAW_DATA_TX */
+
+#ifdef CONFIG_NRF700X_RAW_DATA_RX
+/**
+ * @brief Get or set the current channel
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
+ * @param filter value to be set for the interface.
+ * @param if_idx Index of the interface on which mode is to be set.
+ * @param buffer_size size of packet capture length.
+ *
+ * This function is used to send a command
+ *         to RPU to Set/Get current channel of operation
+ *
+ * @return Command execution status
+ */
+enum nrf_wifi_status nrf_wifi_fmac_set_packet_filter(void *dev_ctx, unsigned char filter,
+						     unsigned char if_idx,
+						     unsigned short buffer_size);
+#endif
+
 /**
  * @}
  */
