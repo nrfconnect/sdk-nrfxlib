@@ -73,6 +73,24 @@ enum nrf_wifi_fmac_if_carr_state {
 	NRF_WIFI_FMAC_IF_CARR_STATE_INVALID
 };
 
+#ifdef CONFIG_NRF700X_RAW_DATA_RX
+/**
+ * @brief Structure to hold raw rx packet information.
+ *
+ * This structure holds the information to be sent to higher
+ * layers on receive of a raw frame.
+ */
+struct raw_rx_pkt_header {
+	/** Frequency on which this packet received. */
+	unsigned short frequency;
+	/** Signal strength of received packet. */
+	signed short signal;
+	/** Received packet type */
+	unsigned char rate_flags;
+	/** Data rate of the packet (MCS or Legacy). */
+	unsigned char rate;
+};
+#endif /* CONFIG_NRF700X_RAW_DATA_RX */
 
 /**
  * @brief Callback functions to be invoked by UMAC IF layer when a particular event occurs.
@@ -246,6 +264,11 @@ struct nrf_wifi_fmac_callbk_fns {
 	void (*process_rssi_from_rx)(void *os_vif_ctx,
 				     signed short signal);
 #endif /* CONFIG_NRF700X_STA_MODE */
+#ifdef CONFIG_NRF700X_RAW_DATA_RX
+	void (*rx_sniffer_frm_callbk_fn)(void *os_vif_ctx,
+					 void *frm,
+					 struct raw_rx_pkt_header *);
+#endif
 };
 
 #if defined(CONFIG_NRF700X_STA_MODE) || defined(__DOXYGEN__)
@@ -479,16 +502,16 @@ struct nrf_wifi_fmac_vif_ctx {
 	unsigned char bssid[NRF_WIFI_ETH_ADDR_LEN];
 	/** Mode setting for the current VIF */
 	unsigned char mode;
-#ifdef CONFIG_NRF700X_RAW_DATA_TX
+#if defined(CONFIG_NRF700X_RAW_DATA_TX) || defined(CONFIG_NRF700X_RAW_DATA_RX)
 	/** Channel setting for the current VIF */
 	unsigned char channel;
-#endif /* CONFIG_NRF700X_RAW_DATA_TX */
+	/** TX injection mode setting */
+	bool txinjection_mode;
+#endif /* CONFIG_NRF700X_RAW_DATA_TX || CONFIG_NRF700X_RAW_DATA_RX */
 #ifdef CONFIG_NRF700X_RAW_DATA_RX
 	/** Filter setting for Monitor and Promiscuous modes */
 	unsigned char packet_filter;
 #endif /* CONFIG_NRF700X_RAW_DATA_RX */
-	/** TX injection mode setting */
-	bool txinjection_mode;
 };
 
 /**
