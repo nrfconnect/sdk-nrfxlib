@@ -12,7 +12,6 @@
 #ifndef __OSAL_API_H__
 #define __OSAL_API_H__
 
-#include <stdarg.h>
 #include "osal_structs.h"
 
 /* Have to match zephyr/include/zephyr/logging/log_core.h */

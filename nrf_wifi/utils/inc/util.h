@@ -12,8 +12,6 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-#include <stddef.h>
-#include <stdbool.h>
 #include "osal_api.h"
 #include "host_rpu_umac_if.h"
 

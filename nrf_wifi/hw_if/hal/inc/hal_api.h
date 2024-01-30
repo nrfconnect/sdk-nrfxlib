@@ -13,7 +13,6 @@
 #ifndef __HAL_API_H__
 #define __HAL_API_H__
 
-#include <stdbool.h>
 #include "osal_api.h"
 #include "rpu_if.h"
 #include "bal_api.h"

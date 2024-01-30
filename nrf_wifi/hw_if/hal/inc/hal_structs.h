@@ -12,7 +12,6 @@
 #ifndef __HAL_STRUCTS_H__
 #define __HAL_STRUCTS_H__
 
-#include <stdbool.h>
 #include "lmac_if_common.h"
 #include "host_rpu_common_if.h"
 #include "osal_api.h"

@@ -12,7 +12,6 @@
 #ifndef __QUEUE_H__
 #define __QUEUE_H__
 
-#include <stddef.h>
 #include "osal_ops.h"
 
 void *nrf_wifi_utils_q_alloc(struct nrf_wifi_osal_priv *opriv);

@@ -12,7 +12,6 @@
 #ifndef __LIST_H__
 #define __LIST_H__
 
-#include <stddef.h>
 #include "osal_api.h"
 
 void *nrf_wifi_utils_list_alloc(struct nrf_wifi_osal_priv *opriv);

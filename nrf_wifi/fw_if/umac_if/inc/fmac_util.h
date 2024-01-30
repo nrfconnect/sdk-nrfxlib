@@ -12,7 +12,6 @@
 #define __FMAC_UTIL_H__
 
 #ifndef CONFIG_NRF700X_RADIO_TEST
-#include <stdbool.h>
 #include "fmac_structs.h"
 #include "pack_def.h"
 
