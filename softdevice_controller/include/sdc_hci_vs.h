@@ -95,6 +95,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ALLOW_PARALLEL_CONNECTION_ESTABLISHMENTS = 0xfd15,
     /** @brief See @ref sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(). */
     SDC_HCI_OPCODE_CMD_VS_MIN_VAL_OF_MAX_ACL_TX_PAYLOAD_SET = 0xfd16,
+    /** @brief See @ref sdc_hci_cmd_vs_iso_read_tx_timestamp(). */
+    SDC_HCI_OPCODE_CMD_VS_ISO_READ_TX_TIMESTAMP = 0xfd17,
 };
 
 /** @brief VS subevent Code values. */
@@ -184,6 +186,7 @@ typedef __PACKED_STRUCT
     uint8_t get_next_conn_event_counter : 1;
     uint8_t allow_parallel_connection_establishments : 1;
     uint8_t min_val_of_max_acl_tx_payload_set : 1;
+    uint8_t iso_read_tx_timestamp : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -646,6 +649,20 @@ typedef __PACKED_STRUCT
     /** @brief Minimum value of maximum ACL TX payload. */
     uint8_t min_val_of_max_acl_tx_payload;
 } sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set_t;
+
+/** @brief Iso Read Tx Timestamp command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_vs_iso_read_tx_timestamp_t;
+
+/** @brief Iso Read Tx Timestamp return parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint16_t packet_sequence_number;
+    uint32_t tx_time_stamp;
+} sdc_hci_cmd_vs_iso_read_tx_timestamp_return_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1398,6 +1415,45 @@ uint8_t sdc_hci_cmd_vs_allow_parallel_connection_establishments(const sdc_hci_cm
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set_t * p_params);
+
+/** @brief Iso Read Tx Timestamp.
+ *
+ * The controller operates on a timeline that determines when an SDU provided
+ * by the host is scheduled for transmission. This command is used to return the
+ * tx_time_stamp and packet_sequence_number that determines where on this timelime
+ * the previously provided SDU was scheduled. The packet_sequence_number is a
+ * quantization of the tx_time_stamp. The SDU is provided for transmission on a
+ * CIS or BIS as identified by the conn_handle parameter on the
+ * Central or Peripheral.
+ *
+ * This command is made to simplify sending SDUs on different ISO streams
+ * in the same ISO event.
+ *
+ * If the Host issues this command with a connection handle that does not exist,
+ * or the connection handle is not associated with a CIS or BIS, the Controller
+ * shall return the error code Unknown Connection Identifier (0x02).
+ *
+ * If the Host issues this command on an existing connection handle for a CIS or
+ * BIS where a ISO data path is not enabled, the Controller shall return the
+ * error code Command Disallowed (0x0C).
+ *
+ * If the Host issues this command before an SDU has been transmitted by the
+ * Controller, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Read_ISO_TX_Sync command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_iso_read_tx_timestamp(const sdc_hci_cmd_vs_iso_read_tx_timestamp_t * p_params,
+                                             sdc_hci_cmd_vs_iso_read_tx_timestamp_return_t * p_return);
 
 /** @} end of HCI_VS_API */
 

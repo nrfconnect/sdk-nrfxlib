@@ -165,15 +165,30 @@ The Initiator has now become a Central (:math:`\mathsf{C3}`) and its link is pla
 
    Initiator - scheduling and connection setup
 
+.. _acl_timing:
+
+ACL connection timing
+*********************
+
+ACL connection timing-events are scheduled every connection interval.
+Each connection event is allocated a window of length :math:`\mathsf{t_{event}}` for transmission and reception of packets.
+In the |NCS|, this time allocation is configured with the :kconfig:option:`CONFIG_BT_CTLR_SDC_MAX_CONN_EVENT_LEN_DEFAULT` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_event_length_set`.
+This allows the application to control the bandwidth of each link.
+If :ref:`Connection Event Length Extension <connection_timing_with_connection_event_length_extension>` is enabled, the time available for each connection event may be extended beyond the configured value.
+
+When Data Length Extensions is enabled, the configured :math:`\mathsf{t_{event}}` determines the maximum value of ``supportedMaxRxTime`` and ``supportedMaxTxTime``.
+For more details about these parameters, see Vol 6, Part B, Section 4.5.10 in `Bluetooth Core Specification`_.
+
 .. _central_timing:
 
 Connection timing as a Central
-******************************
+==============================
 
 Central link timing-events are added relative to already running central link timing-events.
 
 Central link timing-events are offset from each other by :math:`\mathsf{t_{event}}` depending on the configuration of the connection.
-For details about :math:`\mathsf{t_{event}}`, see :ref:`initiator_timing`.
+In the |NCS|, the time offset between central links is configured with the :kconfig:option:`CONFIG_BT_CTLR_SDC_CENTRAL_ACL_EVENT_SPACING_DEFAULT` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_central_acl_event_spacing_set`.
+For details about :math:`\mathsf{t_{event}}`, see the :ref:`initiator_timing` section.
 
 The figure below shows a scenario where two central links are established.
 :math:`\mathsf{C0}` timing-events correspond to the first central connection, and :math:`\mathsf{C1}` timing-events correspond to the second central connection.
@@ -220,7 +235,7 @@ It shows the idle time during a connection interval and how the timings of centr
 
 
 Advanced Central connection timing
-==================================
+----------------------------------
 
 In some advanced use cases, the Central may require links to be closer together than what is supported on the initiating PHY.
 This can be achieved by choosing a shorter connection event length and initiating the PHY update procedure to the faster PHY after establishing a connection.
@@ -264,6 +279,81 @@ In the figure below, all four central links are on the faster PHY, and a Scanner
 
    Optimal packing of four links and a Scanner
 
+
+Peripheral connection setup and connection timing
+=================================================
+
+Peripheral link timing-events are added based on the timing dictated by peer Centrals.
+
+.. figure:: pic/schedule/peripheral_conn_setup_and_conn.svg
+   :alt: Alt text: A diagram showing peripheral connection setup and connection
+   :align: center
+   :width: 80%
+
+   Peripheral connection setup and connection
+
+Peripheral link timing-events may collide with any other running role timing-events because the timing of the connection as a Peripheral is dictated by the peer.
+
+.. figure:: pic/schedule/peripheral_conn_setup_and_conn_collision.svg
+   :alt: Alt text: A diagram showing peripheral connection setup and connection with collision
+   :align: center
+   :width: 80%
+
+   Peripheral connection setup and connection with collision
+
+.. table:: Peripheral role timing ranges
+
+   +----------------------------------------------+------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
+   | Value                                        | Description                                                      | Value (μs)                                                                                                                                          |
+   +==============================================+==================================================================+=====================================================================================================================================================+
+   | :math:`\mathsf{t_{PeripheralNominalWindow}}` | Listening window on peripheral.                                  | | :math:`\small\mathsf{2 \times (16 + 16 + 250 + 250)}`                                                                                             |
+   |                                              | It is used to receive the first packet in a connection event.    | |                                                                                                                                                   |
+   |                                              |                                                                  | | Assuming 250 ppm sleep clock accuracy on both Central and Peripheral with 1-second connection interval.                                           |
+   |                                              |                                                                  |   16 μs is the sleep clock instantaneous timing on both Central and Peripheral.                                                                     |
+   +----------------------------------------------+------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :math:`\mathsf{t_{PeripheralEventNominal}}`  | Nominal event length for peripheral link.                        | :math:`\mathsf{t_{PeripheralNominalWindow} + t_{event}}`                                                                                            |
+   +----------------------------------------------+------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :math:`\mathsf{t_{PeripheralEventMax}}`      | Maximum event length for peripheral link.                        | | :math:`\mathsf{t_{PeripheralEventNominal} + 7\, ms}`                                                                                              |
+   |                                              |                                                                  | |                                                                                                                                                   |
+   |                                              |                                                                  | | 7 ms is added for the maximum listening window for 500 ppm sleep clock accuracy on both Central and Peripheral with 4-second connection interval. |
+   |                                              |                                                                  | |                                                                                                                                                   |
+   |                                              |                                                                  | | The listening window is dynamic, so it is added to make :math:`\mathsf{t_{radio}}` remain constant.                                               |
+   +----------------------------------------------+------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :math:`\mathsf{t_{AdvEventMax}}`             | Maximum event length for Advertiser role.                        | | :math:`\mathsf{t_{prep\, (max)} + t_{event\,(max\, for\,adv\, role\, except\, directed\, high\, duty\, cycle\, adv)}}`                            |
+   |                                              | Applies to all types except directed high duty cycle Advertiser. | |                                                                                                                                                   |
+   |                                              |                                                                  | | :math:`\mathsf{t_{prep}}` is the time before first RX/TX available to the protocol stack.                                                         |
+   +----------------------------------------------+------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+.. _connection_timing_with_connection_event_length_extension:
+
+Connection timing with Connection Event Length Extension
+========================================================
+
+Central and peripheral links can extend the event if there is radio time available.
+
+The connection event is the time within a timing-event reserved for sending or receiving packets.
+The |controller| can be configured to dynamically extend the connection event length to fit the maximum number of packets inside the connection event before the timing-event must be ended.
+The time is extended one packet pair at a time until the maximum extend time is reached.
+The connection event cannot be longer than the connection interval; when the interval is reached, the connection event ends and the next connection event begins.
+A connection event cannot be extended if it will collide with another timing-event, regardless of the priorities of the timing-events.
+In |NCS| connection event extension is enabled by default.
+It can be turned off using the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_conn_event_extend`.
+
+To get the maximum bandwidth on a single link, Connection Event Length Extension should be enabled and the connection interval should be increased.
+This will allow the |controller| to send more packets within the event and limit the overhead of processing between connection events.
+For more information, see the :ref:`suggested_intervals_and_windows` section.
+
+Multilink scheduling and Connection Event Length Extension can increase the bandwidth for multiple links by utilizing idle time between connection events.
+An example of this is shown in the figure below.
+Here :math:`\mathsf{C1}` can utilize the free time left by a previously disconnected link :math:`\mathsf{C2}`, :math:`\mathsf{C3}` has idle time as the last central link, and :math:`\mathsf{C0}` is benefitting from having a connection interval set to half of that of :math:`\mathsf{C1}` and :math:`\mathsf{C3}`.
+
+.. figure:: pic/schedule/conn_timing_event_extend.svg
+   :alt: Alt text: A diagram showing multilink scheduling and Connection Event Length Extension
+   :align: center
+   :width: 80%
+
+   Multilink scheduling and Connection Event Length Extension
 
 Scanner timing
 **************
@@ -448,7 +538,8 @@ The packets are sent with an AUX frame space of 330 µs.
 
 Periodic advertiser timing-events are scheduled similarly to a Central device, meaning they are added relative to already running central link or periodic advertising timing-events.
 See :ref:`central_timing` for more information.
-The timing-events are offset from each other by :math:`\mathsf{t_{event}}`, which can be configured using a vendor-specific HCI command.
+The timing-events are offset from each other by :math:`\mathsf{t_{event}}`.
+In the |NCS|, this is configured with the :kconfig:option:`CONFIG_BT_CTLR_SDC_PERIODIC_ADV_EVENT_LEN_DEFAULT` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_periodic_adv_event_length_set`.
 Scheduling conflicts can occur if the length of the periodic advertising data exceeds what can be transmitted in the allocated time.
 
 .. figure:: pic/schedule/sched_periodic_adv.svg
@@ -457,80 +548,6 @@ Scheduling conflicts can occur if the length of the periodic advertising data ex
    :width: 80%
 
    Periodic advertiser timing-events are scheduled relative to other Central device events
-
-
-Peripheral connection setup and connection timing
-*************************************************
-
-Peripheral link timing-events are added as per the timing dictated by peer Centrals.
-
-.. figure:: pic/schedule/peripheral_conn_setup_and_conn.svg
-   :alt: Alt text: A diagram showing peripheral connection setup and connection
-   :align: center
-   :width: 80%
-
-   Peripheral connection setup and connection
-
-Peripheral link timing-events may collide with any other running role timing-events because the timing of the connection as a Peripheral is dictated by the peer.
-
-.. figure:: pic/schedule/peripheral_conn_setup_and_conn_collision.svg
-   :alt: Alt text: A diagram showing peripheral connection setup and connection with collision
-   :align: center
-   :width: 80%
-
-   Peripheral connection setup and connection with collision
-
-.. table:: Peripheral role timing ranges
-
-   +----------------------------------------------+------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
-   | Value                                        | Description                                                      | Value (μs)                                                                                                                                          |
-   +==============================================+==================================================================+=====================================================================================================================================================+
-   | :math:`\mathsf{t_{PeripheralNominalWindow}}` | Listening window on peripheral.                                  | | :math:`\small\mathsf{2 \times (16 + 16 + 250 + 250)}`                                                                                             |
-   |                                              | It is used to receive first packet in a connection event.        | |                                                                                                                                                   |
-   |                                              |                                                                  | | Assuming 250 ppm sleep clock accuracy on both Central and Peripheral with 1-second connection interval.                                           |
-   |                                              |                                                                  |   16 μs is the sleep clock instantaneous timing on both Central and Peripheral.                                                                     |
-   +----------------------------------------------+------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :math:`\mathsf{t_{PeripheralEventNominal}}`  | Nominal event length for peripheral link.                        | :math:`\mathsf{t_{PeripheralNominalWindow} + t_{event}}`                                                                                            |
-   +----------------------------------------------+------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :math:`\mathsf{t_{PeripheralEventMax}}`      | Maximum event length for peripheral link.                        | | :math:`\mathsf{t_{PeripheralEventNominal} + 7\, ms}`                                                                                              |
-   |                                              |                                                                  | |                                                                                                                                                   |
-   |                                              |                                                                  | | 7 ms is added for the maximum listening window for 500 ppm sleep clock accuracy on both Central and Peripheral with 4-second connection interval. |
-   |                                              |                                                                  | |                                                                                                                                                   |
-   |                                              |                                                                  | | The listening window is dynamic, so it is added to make :math:`\mathsf{t_{radio}}` remain constant.                                               |
-   +----------------------------------------------+------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :math:`\mathsf{t_{AdvEventMax}}`             | Maximum event length for Advertiser role.                        | | :math:`\mathsf{t_{prep\, (max)} + t_{event\,(max\, for\,adv\, role\, except\, directed\, high\, duty\, cycle\, adv)}}`                            |
-   |                                              | Applies to all types except directed high duty cycle Advertiser. | |                                                                                                                                                   |
-   |                                              |                                                                  | | :math:`\mathsf{t_{prep}}` is the time before first RX/TX available to the protocol stack.                                                         |
-   +----------------------------------------------+------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------+
-
-
-.. _connection_timing_with_connection_event_length_extension:
-
-Connection timing with Connection Event Length Extension
-********************************************************
-
-Central and peripheral links can extend the event if there is radio time available.
-
-The connection event is the time within a timing-event reserved for sending or receiving packets.
-The |controller| can be configured to dynamically extend the connection event length to fit the maximum number of packets inside the connection event before the timing-event must be ended.
-The time is extended one packet pair at a time until the maximum extend time is reached.
-The connection event cannot be longer than the connection interval; when the interval is reached, the connection event ends and the next connection event begins.
-A connection event cannot be extended if it will collide with another timing-event, regardless of the priorities of the timing-events.
-
-To get the maximum bandwidth on a single link, Connection Event Length Extension should be enabled and the connection interval should be increased.
-This will allow the |controller| to send more packets within the event and limit the overhead of processing between connection events.
-For more information, see :ref:`suggested_intervals_and_windows`.
-
-Multilink scheduling and Connection Event Length Extension can increase the bandwidth for multiple links by utilizing idle time between connection events.
-An example of this is shown in the figure below.
-Here :math:`\mathsf{C1}` can utilize the free time left by a previously disconnected link :math:`\mathsf{C2}`, :math:`\mathsf{C3}` has idle time as the last central link, and :math:`\mathsf{C0}` is benefitting from having a connection interval set to half of that of :math:`\mathsf{C1}` and :math:`\mathsf{C3}`.
-
-.. figure:: pic/schedule/conn_timing_event_extend.svg
-   :alt: Alt text: A diagram showing multilink scheduling and Connection Event Length Extension
-   :align: center
-   :width: 80%
-
-   Multilink scheduling and Connection Event Length Extension
 
 
 Timeslot API timing
