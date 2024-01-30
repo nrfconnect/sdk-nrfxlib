@@ -12,7 +12,6 @@
 #ifndef __OSAL_OPS_H__
 #define __OSAL_OPS_H__
 
-#include <stdarg.h>
 #include "osal_structs.h"
 
 

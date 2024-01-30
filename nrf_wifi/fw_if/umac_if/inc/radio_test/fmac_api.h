@@ -16,8 +16,6 @@
 #ifndef __FMAC_API_H__
 #define __FMAC_API_H__
 
-#include <stdbool.h>
-
 #include "osal_api.h"
 #include "host_rpu_umac_if.h"
 #include "host_rpu_data_if.h"
