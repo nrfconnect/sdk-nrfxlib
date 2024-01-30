@@ -224,6 +224,9 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
 	struct nrf_wifi_fmac_buf_map_info *rx_buf_info = NULL;
 	struct nrf_wifi_fmac_rx_pool_map_info pool_info;
+#ifdef CONFIG_NRF700X_RAW_DATA_RX
+	struct raw_rx_pkt_header raw_rx_hdr;
+#endif /* CONFIG_NRF700X_RAW_DATA_RX */
 	void *nwb = NULL;
 	void *nwb_data = NULL;
 	unsigned int num_pkts = 0;
@@ -359,9 +362,22 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 #endif /* CONFIG_WIFI_MGMT_RAW_SCAN_RESULTS */
 			nrf_wifi_osal_nbuf_free(fmac_dev_ctx->fpriv->opriv,
 						nwb);
-		} else {
+		}
+#ifdef CONFIG_NRF700X_RAW_DATA_RX
+		else if (config->rx_pkt_type == NRF_WIFI_RAW_RX_PKT) {
+			raw_rx_hdr.frequency = config->frequency;
+			raw_rx_hdr.signal = config->signal;
+			raw_rx_hdr.rate_flags = config->rate_flags;
+			raw_rx_hdr.rate = config->rate;
+
+			def_priv->callbk_fns.rx_sniffer_frm_callbk_fn(vif_ctx->os_vif_ctx,
+								      nwb,
+								      &raw_rx_hdr);
+		}
+#endif /* CONFIG_NRF700X_RAW_DATA_RX */
+		else {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Invalid frame type recd %d",
+					      "%s: Invalid frame type received %d",
 					      __func__,
 					      config->rx_pkt_type);
 			status = NRF_WIFI_STATUS_FAIL;
