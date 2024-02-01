@@ -27,7 +27,7 @@ Creating an encoder is similar for all packet types.
 To create an encoder, complete the following steps:
 
 1. Allocate a buffer using :c:func:`nrf_rpc_alloc_tx_buf`.
-#. Encode parameters directly into the buffer or use the `TinyCBOR`_ library.
+#. Encode parameters directly into the buffer or use the `zcbor`_ library.
 
 The packet is sent using one of the sending functions: :c:func:`nrf_rpc_cmd`, :c:func:`nrf_rpc_cbor_evt`, or similar.
 
