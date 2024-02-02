@@ -121,8 +121,14 @@ extern "C" {
 /** @brief Default ISO RX SDU buffer count. */
 #define SDC_DEFAULT_ISO_RX_SDU_BUFFER_COUNT 0
 
+/** @brief Default ISO RX SDU buffer size. */
+#define SDC_DEFAULT_ISO_RX_SDU_BUFFER_SIZE 251
+
 /** @brief Default HCI ISO TX buffer count. */
 #define SDC_DEFAULT_ISO_TX_HCI_BUFFER_COUNT 0
+
+/** @brief Default HCI ISO TX buffer size. */
+#define SDC_DEFAULT_ISO_TX_HCI_BUFFER_SIZE 251
 
 /** @brief Default ISO TX PDU buffer per stream count. */
 #define SDC_DEFAULT_ISO_TX_PDU_BUFFER_PER_STREAM_COUNT 0
@@ -142,9 +148,9 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1101
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1248
-#define __MEM_TX_BUFFER_OVERHEAD_SIZE 16
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1020
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1156
+#define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
@@ -181,8 +187,11 @@ extern "C" {
 /** Maximum shared memory required for peripheral links. */
 #define SDC_MEM_PERIPHERAL_LINKS_SHARED  29
 
+/** Memory required for Quality of Service (QoS) channel survey module. */
+#define SDC_MEM_QOS_CHANNEL_SURVEY (40)
+
 /** Memory required for scanner buffers when only supporting legacy scanning. */
-#define SDC_MEM_SCAN_BUFFER(buffer_count) (56 + (buffer_count) * 88)
+#define SDC_MEM_SCAN_BUFFER(buffer_count) (24 + (buffer_count) * 88)
 
 /** Memory required for scanner buffers when supporting extended scanning. */
 #define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (24 + (buffer_count) * 306)
@@ -191,9 +200,9 @@ extern "C" {
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4829+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (670+(max_adv_data))
-#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2664+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4672+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (654+(max_adv_data))
+#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2658+(max_adv_data)*18)/10)
 #define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (457+(max_adv_data))
 
 /** @brief Maximum required memory for a given advertising buffer size.
@@ -218,7 +227,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (216 + (buffer_count) * 284)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (217 + (buffer_count) * 279)
 
 /** Memory required per periodic sync when periodic sync with responses is supported.
  *
@@ -226,7 +235,7 @@ extern "C" {
  * @param[in] rx_buffer_count The number of buffers for receiving data.
  */
 #define SDC_MEM_PER_PERIODIC_SYNC_RSP(tx_buffer_count, rx_buffer_count) \
-    (644 + (tx_buffer_count - 1) * 257 + (rx_buffer_count) * 284)
+    (646 + (tx_buffer_count - 1) * 257 + (rx_buffer_count) * 278)
 
 /** Memory required for the periodic adv list.
  *
@@ -259,20 +268,17 @@ extern "C" {
      + (rx_buffer_count) * __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER \
      + ((failure_reporting_enabled) ? __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING : 0))
 
-/** Memory required for Quality of Service (QoS) channel survey module. */
-#define SDC_MEM_QOS_CHANNEL_SURVEY (40)
-
 /** @brief Maximum memory required per CIG. */
 #define SDC_MEM_PER_CIG(count) ((count) > 0 ? (13 + (count) * 123) : 0)
 
 /** @brief Maximum memory required per CIS. Buffer and CIG memory comes in addition. */
-#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 539) : 0)
+#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 547) : 0)
 
 /** @brief Maximum memory required per BIG. */
 #define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 291) : 0)
 
 /** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
-#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 283) : 0)
+#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 275) : 0)
 
 /** @brief Maximum memory required for the ISO RX PDU pool per stream.
  *  @param[in] rx_pdu_buffer_per_stream_count Number of RX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
@@ -368,6 +374,8 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_ISO_RX_SDU_BUFFER_CFG,
     /** See @ref sdc_cfg_t::iso_tx_buffer_cfg. */
     SDC_CFG_TYPE_ISO_TX_BUFFER_CFG,
+    /** See @ref sdc_cfg_t::iso_buffer_cfg. */
+    SDC_CFG_TYPE_ISO_BUFFER_CFG,
 };
 
 
@@ -451,6 +459,52 @@ typedef struct
    */
   uint8_t tx_pdu_buffer_per_stream_count;
 } sdc_cfg_iso_tx_buffer_cfg_t;
+
+typedef struct
+{
+    /** Configures the number of shared HCI TX buffers allocated for ISO.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_TX_HCI_BUFFER_COUNT.
+     */
+    uint8_t tx_hci_buffer_count;
+    /** Configures the size of shared HCI TX buffers allocated for ISO.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_TX_HCI_BUFFER_SIZE.
+     */
+    uint16_t tx_hci_buffer_size;
+    /** Configures the number of TX PDU buffers allocated per ISO stream.
+     *
+     * This is the number of maximum size (251 bytes) PDU buffers. When PDU size is smaller
+     * than the maximum size, the pool will be repartitioned into a larger number of adjusted PDUs.
+     *
+     * For BIS, this value is used to determine the furthest PDU that can be stored in the buffers.
+     * Therefore, limiting the number of pretransmission subevents and maximum pretransmission offset (PTO)
+     * that the controller can use.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_TX_PDU_BUFFER_PER_STREAM_COUNT.
+     */
+    uint8_t tx_pdu_buffer_per_stream_count;
+    /** Configures the number of RX PDU buffers allocated per ISO stream.
+     *
+     * This is the number of maximum size (251 bytes) PDU buffers. When PDU size is smaller
+     * than the maximum size, the pool will be repartitioned into a larger number of adjusted PDUs.
+     *
+     * For BIS, this value determines how many pretransmissions can be stored and utilized.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_RX_PDU_BUFFER_PER_STREAM_COUNT.
+     */
+    uint8_t rx_pdu_buffer_per_stream_count;
+    /** Configures the number of RX SDU buffers allocated for ISO.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_RX_SDU_BUFFER_COUNT.
+     */
+    uint8_t rx_sdu_buffer_count;
+    /** Configures the size of RX SDU buffers allocated for ISO.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_RX_SDU_BUFFER_SIZE.
+     */
+    uint16_t rx_sdu_buffer_size;
+} sdc_cfg_iso_buffer_cfg_t;
 
 
 /** @brief SoftDevice Controller configuration.  */
@@ -591,6 +645,11 @@ typedef union
      * Default: See @ref sdc_cfg_iso_tx_buffer_cfg_t.
      */
     sdc_cfg_iso_tx_buffer_cfg_t iso_tx_buffer_cfg;
+    /** Configures the number and size of buffers allocated for ISO.
+     *
+     * Default: See @ref sdc_cfg_iso_buffer_cfg_t.
+     */
+    sdc_cfg_iso_buffer_cfg_t iso_buffer_cfg;
 } sdc_cfg_t;
 
 
