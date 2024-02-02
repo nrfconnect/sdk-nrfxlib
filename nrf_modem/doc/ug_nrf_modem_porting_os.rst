@@ -243,11 +243,6 @@ This function is called by the library to allocate and initialize a semaphore.
 * Allocate and initialize a semaphore.
 * If an address of an already allocated semaphore is provided as an input, the allocation part is skipped and the semaphore is only reinitialized.
 
-.. note::
-
-   Semaphores are not required if multithreaded access to modem functionality is not needed.
-   In this case, the function can blindly return ``0``.
-
 nrf_modem_os_sem_give()
 -----------------------
 
@@ -366,8 +361,8 @@ You can use it as a starting point and customize it for your OS or scheduler.
     int nrf_modem_os_sem_init(void **sem, unsigned int initial_count, unsigned int limit)
     {
         /* The function shall allocate and initialize a semaphore and return its address
-           through the `sem` parameter. If an address of an already allocated semaphore is provided as
-           an input, the allocation part is skipped and the semaphore is only reinitialized. */
+           through the `sem` parameter. If an address of an already allocated semaphore is provided
+           as an input, the allocation part is skipped and the semaphore is only reinitialized. */
         return 0;
     }
 
