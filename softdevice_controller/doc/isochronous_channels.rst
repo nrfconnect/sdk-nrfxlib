@@ -66,7 +66,7 @@ Timestamps
    This is the preferred way of providing data to the |controller| and guarantees the highest degree of control.
 
    The timestamp must be based on the controller's timings.
-   The timestamp of a previous SDU can be retrieved using the HCI LE Read ISO TX sync command.
+   The timestamp of a previous SDU can be retrieved using the HCI VS ISO Read TX Timestamp command.
    The next timestamp should be incremented by a multiple of the SDU interval.
    This means that, in the audio use case where SDUs are provided every SDU interval, the next timestamp should be incremented by one SDU interval.
    SDUs must be provided to the |controller| at least :c:macro:`HCI_ISO_SDU_PROCESSING_TIME_US` before the time indicated in the added timestamp.
@@ -74,7 +74,7 @@ Timestamps
    In ISO, the timing information is based on the central's clock.
    This means that for the CIS central and Broadcaster roles, it is sufficient to retrieve the timestamp from the controller only once.
    The CIS peripheral needs to compensate for drift between its clock and the central's clock.
-   When running the CIS peripheral, the HCI LE Read ISO TX sync needs to be called periodically, and should be called every time before new data is provided.
+   When running the CIS peripheral, the HCI VS ISO Read TX Timestamp needs to be called periodically, and should be called every time before new data is provided.
 
    When a timestamp is added to the HCI data, the |controller| ignores the SDU sequence numbers.
 
@@ -99,11 +99,11 @@ Sequence numbers
    If SDUs are provided more than one SDU interval apart, the SDU sequence number must be increased by a matching amount.
    It is not recommended to use the sequence number mode if SDUs are provided more than one SDU interval apart.
 
-   The controller learns the initial sequence number, so there is no need to align the sequence number each time with the one that is returned when calling the HCI LE Read ISO TX sync command.
+   The controller learns the initial sequence number, so there is no need to align the sequence number each time with the one that is returned when calling the HCI VS ISO Read TX Timestamp command.
 
    Pay special attention on the CIS peripheral side, because the timings of ISO are based on the central's clock.
    This means that you need to account for drift between the central's and the peripheral's clocks for the the generation of SDUs.
-   To do this, use the HCI LE Read ISO TX sync command.
+   To do this, use the HCI VS ISO Read TX Timestamp command.
    The command provides a timestamp corresponding to the last possible point in time that the previous SDU could have been provided.
    When combined with the SDU interval, this gives an indication of the last possible time when an SDU can be provided.
 
@@ -130,7 +130,7 @@ See the :ref:`iso_providing_data` section for more information.
 The following logical flow demonstrates how to send time-synchronized SDUs on multiple CISes or BISes:
 
 1. Provide the controller with an SDU for one of the CISes or BISes using the time of arrival method.
-#. Issue the HCI LE Read ISO TX sync command on the CIS or BIS where the SDU was sent.
+#. Issue the HCI VS ISO Read TX Timestamp command on the CIS or BIS where the SDU was sent.
    The command obtains the timestamp that was assigned to that SDU.
 #. Provide the controller with the SDUs for the remaining CISes or BISes using the timestamp method with the obtained timestamp.
 
