@@ -2376,6 +2376,8 @@ struct nrf_wifi_umac_config_twt_info {
 	unsigned char dialog_token;
 	/** 0->not received 1->received */
 	unsigned char twt_resp_status;
+        /** TWT early wake duration */
+        unsigned int twt_wake_ahead_duration;
 } __NRF_WIFI_PKD;
 
 /**
