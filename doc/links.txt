@@ -9,6 +9,8 @@
 
 .. _`TinyCBOR`: https://github.com/zephyrproject-rtos/tinycbor
 
+.. _`zcbor`: https://github.com/NordicSemiconductor/zcbor
+
 .. _`OpenAMP`: https://github.com/OpenAMP/open-amp/
 
 .. ### Source: infocenter.nordicsemi.com

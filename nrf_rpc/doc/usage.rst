@@ -44,7 +44,7 @@ After parsing it, the :c:func:`nrf_rpc_decoding_done` or :c:func:`nrf_rpc_cbor_d
 
 Events have no response, so they need no additional action after sending them.
 
-The following is a sample command encoder created using the nRF RPC TinyCBOR API.
+The following is a sample command encoder created using the nRF RPC CBOR API.
 The function remotely adds ``1`` to the ``input`` parameter and puts the result in the ``output`` parameter.
 It returns 0 on success or a negative error code if communication with the remote side failed.
 
@@ -69,23 +69,21 @@ It returns 0 on success or a negative error code if communication with the remot
 
 	int remote_inc(int input, int *output)
 	{
-		int err;
 		struct remote_inc_result result;
 		struct nrf_rpc_cbor_ctx ctx;
 
 		NRF_RPC_CBOR_ALLOC(&math_group, ctx, MAX_ENCODED_LEN);
 
-		cbor_encode_int(&ctx.encoder, input);
-
-		err = nrf_rpc_cbor_cmd(&math_group, MATH_COMMAND_INC, &ctx,
-				       remote_inc_rsp, &result);
-
-		if (err == 0) {
-			*output = result.output;
-			err = result.err;
+		if (zcbor_int32_put(&ctx.zs, input)) {
+			if (!nrf_rpc_cbor_cmd(&math_group, MATH_COMMAND_INC, &ctx,
+					remote_inc_rsp, &result)) {
+				*output = result.output;
+				return result.err;
+			} else {
+				return -NRF_EINVAL;
+			}
 		}
-
-		return err;
+		return -NRF_EINVAL;
 	}
 
 The above code uses the ``remote_inc_rsp`` function to parse the response.
@@ -93,24 +91,17 @@ The following code shows how this function might look.
 
 .. code-block:: c
 
-	static void remote_inc_rsp(const struct nrf_rpc_group *group, CborValue *value, void *handler_data)
+	static void remote_inc_rsp(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx,
+				   void *handler_data)
 	{
-		CborError cbor_err;
 		struct remote_inc_result *result =
 			(struct remote_inc_result *)handler_data;
 
-	 	if (!cbor_value_is_integer(value)) {
+		if (zcbor_int32_decode(ctx->zs, &result->output)) {
+			result->err = 0;
+		} else {
 			result->err = -NRF_EINVAL;
-			return;
 		}
-
-		cbor_err = cbor_value_get_int(value, &result->output);
-		if (cbor_err != CborNoError) {
-			result->err = -NRF_EINVAL;
-			return;
-		}
-
-		result->err = 0;
 	}
 
 
@@ -132,20 +123,18 @@ A RPC decoder associated with the example above can be implemented in the follow
 	NRF_RPC_GROUP_DEFINE(math_group, "sample_math", &transport, NULL, NULL, NULL);
 
 
-	static void remote_inc_handler(const struct nrf_rpc_group *group, CborValue *value, void* handler_data)
+	static void remote_inc_handler(const struct nrf_rpc_group *group, struct nrf_rpc_cbor_ctx *ctx, void* handler_data)
 	{
 		int err;
 		int input = 0;
 		int output;
-		struct nrf_rpc_cbor_ctx ctx;
+		struct nrf_rpc_cbor_ctx nctx;
 
 		/* Parsing the input */
 
-	 	if (cbor_value_is_integer(value)) {
-			cbor_value_get_int(value, &input);
-		}
+		zcbor_int32_decode(ctx->zs, &input)
 
-		nrf_rpc_cbor_decoding_done(group, value);
+		nrf_rpc_cbor_decoding_done(group, ctx);
 
 		/* Actual hard work is done in below line */
 
@@ -153,11 +142,11 @@ A RPC decoder associated with the example above can be implemented in the follow
 
 		/* Encoding and sending the response */
 
-		NRF_RPC_CBOR_ALLOC(group, ctx, MAX_ENCODED_LEN);
+		NRF_RPC_CBOR_ALLOC(group, nctx, MAX_ENCODED_LEN);
 
-		cbor_encode_int(&ctx.encoder, output);
+		zcbor_int32_put(&nctx.zs, output))
 
-		err = nrf_rpc_cbor_rsp(group, &ctx);
+		err = nrf_rpc_cbor_rsp(group, &nctx);
 
 		if (err < 0) {
 			fatal_error(err);

@@ -23,12 +23,11 @@
 #define NRF_RPC_ZCBOR_STATES	(2 + CONFIG_NRF_RPC_ZCBOR_BACKUPS)
 
 /**
- * @defgroup nrf_rpc_cbor TinyCBOR serialization layer for nRF RPC.
+ * @defgroup nrf_rpc_cbor zcbor serialization layer for nRF RPC.
  * @{
  * @ingroup nrf_rpc
  *
- * @brief Module simplifying usage of TinyCBOR as a serialization for nRF RPC
- * module.
+ * @brief A module that simplifies the usage of zcbor for serializing nRF RPC.
  */
 
 #ifdef __cplusplus
@@ -202,9 +201,6 @@ void nrf_rpc_cbor_cmd_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
  *
  * See both @ref nrf_rpc_cbor_cmd_rsp and @ref nrf_rpc_cbor_cmd_no_err for more
  * details on this variant of command send function.
- *
- * TinyCBOR value will be initialized and invalid if function failed, so
- * `cbor_value_is_valid` can be used to check failure.
  *
  * @param group  Group that command belongs to.
  * @param cmd    Command id.
