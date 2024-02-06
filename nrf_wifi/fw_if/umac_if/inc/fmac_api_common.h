@@ -306,7 +306,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_power_save_info(void *fmac_dev_ctx,
  */
 int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 				struct nrf_wifi_phy_rf_params *prf,
-				unsigned char package_info,
+				unsigned int package_info,
 				unsigned char *str);
 
 /**
