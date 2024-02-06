@@ -15,8 +15,7 @@ It can also be a separate device of any type (for example, a PC), or another cor
 The nRF RPC library simplifies the serialization of user APIs, such as a Bluetooth stack, and executing of functions implementing those APIs on a remote CPU.
 The library is operating system independent so it can be used with any operating system after porting the OS-dependent layers of the library.
 
-The API layer on top of the core nRF RPC API uses the `TinyCBOR`_ library for serialization.
-nRF RPC requires the Zephyr Project fork of TinyCBOR, because of API differences.
+The API layer on top of the core nRF RPC API uses the `zcbor`_ library for serialization.
 
 .. toctree::
    :maxdepth: 2

@@ -410,8 +410,8 @@ void nrf_rpc_decoding_done(const struct nrf_rpc_group *group, const uint8_t *pac
 
 /** @brief Report an error to nRF RPC error handler.
  *
- * Main intention for exposing this function is to allow serialization layer
- * (e.g. TinyCBOR) report error to the same error handler as entire nRF RPC.
+ * This function allows the serialization layer
+ * (such as zcbor) to report errors to the same error handler as nRF RPC.
  *
  * @param code        Negative error code.
  * @param src         Source of error.
