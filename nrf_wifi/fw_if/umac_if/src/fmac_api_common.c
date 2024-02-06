@@ -621,7 +621,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 	unsigned int ft_prog_ver;
 	int ret = -1;
 	/* If package_info is not written to OTP then the default value will be 0xFF. */
-	unsigned char package_info = 0xFF;
+	unsigned int package_info = 0xFFFFFFFF;
 #if defined(CONFIG_BOARD_NRF7002DK_NRF7001_NRF5340_CPUAPP) || \
 	defined(CONFIG_BOARD_NRF7002DK_NRF5340_CPUAPP) || \
 	defined(CONFIG_BOARD_NRF5340DK_NRF5340_CPUAPP)
@@ -661,6 +661,15 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 		goto out;
 	}
 
+	status = nrf_wifi_hal_otp_pack_info_get(fmac_dev_ctx->hal_dev_ctx,
+						&package_info);
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Fetching of Package info failed",
+				      __func__);
+		goto out;
+	}
+	
 	ret = nrf_wifi_phy_rf_params_init(fmac_dev_ctx->fpriv->opriv,
 				    	  phy_rf_params,
 				    	  package_info,
@@ -849,7 +858,7 @@ err:
 
 int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 				struct nrf_wifi_phy_rf_params *prf,
-				unsigned char package_info,
+				unsigned int package_info,
 				unsigned char *str)
 {
 	int ret = -1;

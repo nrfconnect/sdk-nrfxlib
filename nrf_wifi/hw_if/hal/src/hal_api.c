@@ -1807,6 +1807,33 @@ out:
 	return status;
 }
 
+enum nrf_wifi_status nrf_wifi_hal_otp_pack_info_get(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
+						    unsigned int *package_info)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+
+	if (!hal_dev_ctx || !package_info) {
+		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
+				      "%s: Invalid parameters",
+				      __func__);
+		goto out;
+	}
+
+	status = hal_rpu_mem_read(hal_dev_ctx,
+				  package_info,
+				  RPU_MEM_OTP_PACKAGE_TYPE,
+				  sizeof(*package_info));
+
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
+				      "%s: Package info get failed",
+				      __func__);
+		goto out;
+	}
+out:
+	return status;
+}
+
 void nrf_wifi_hal_enable(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 {
 	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
