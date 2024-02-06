@@ -191,10 +191,10 @@ extern "C" {
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
 /** Memory required for scanner buffers when only supporting legacy scanning. */
-#define SDC_MEM_SCAN_BUFFER(buffer_count) (24 + (buffer_count) * 88)
+#define SDC_MEM_SCAN_BUFFER(buffer_count) (26 + (buffer_count) * 88)
 
 /** Memory required for scanner buffers when supporting extended scanning. */
-#define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (24 + (buffer_count) * 306)
+#define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (26 + (buffer_count) * 306)
 
 /** Memory required for the Filter Accept List */
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)
