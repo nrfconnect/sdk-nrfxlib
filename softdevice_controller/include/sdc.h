@@ -368,12 +368,6 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_BIS_SINK_COUNT,
     /** See @ref sdc_cfg_t::bis_source_count. */
     SDC_CFG_TYPE_BIS_SOURCE_COUNT,
-    /** See @ref sdc_cfg_t::iso_rx_pdu_buffer_per_stream_cfg. */
-    SDC_CFG_TYPE_ISO_RX_PDU_BUFFER_PER_STREAM_CFG,
-    /** See @ref sdc_cfg_t::iso_rx_sdu_buffer_cfg. */
-    SDC_CFG_TYPE_ISO_RX_SDU_BUFFER_CFG,
-    /** See @ref sdc_cfg_t::iso_tx_buffer_cfg. */
-    SDC_CFG_TYPE_ISO_TX_BUFFER_CFG,
     /** See @ref sdc_cfg_t::iso_buffer_cfg. */
     SDC_CFG_TYPE_ISO_BUFFER_CFG,
 };
@@ -443,22 +437,6 @@ typedef struct
     uint8_t rx_buffer_count;
 } sdc_cfg_periodic_adv_rsp_buffer_cfg_t;
 
-
-typedef struct
-{
-  /** Configures the size of the shared HCI TX buffer pool allocated for ISO.
-   *
-   * Default: @ref SDC_DEFAULT_ISO_TX_HCI_BUFFER_COUNT.
-   */
-  uint8_t tx_hci_buffer_count;
-  /** Configures the number of TX buffers allocated per ISO stream.
-   *
-   * @note For BIS, this value determines the maximum supported pretransmission offset.
-   *
-   * Default: @ref SDC_DEFAULT_ISO_TX_PDU_BUFFER_PER_STREAM_COUNT.
-   */
-  uint8_t tx_pdu_buffer_per_stream_count;
-} sdc_cfg_iso_tx_buffer_cfg_t;
 
 typedef struct
 {
@@ -630,21 +608,6 @@ typedef union
      * Default: @ref SDC_DEFAULT_BIS_SOURCE_COUNT.
      */
     sdc_cfg_role_count_t bis_source_count;
-    /** Configures the size of the per stream RX PDU buffer pool allocated for ISO streams.
-     *
-     * Default: @ref SDC_DEFAULT_ISO_RX_PDU_BUFFER_PER_STREAM_COUNT.
-     */
-    sdc_cfg_buffer_count_t iso_rx_pdu_buffer_per_stream_cfg;
-    /** Configures the RX SDU buffer count allocated for ISO.
-     *
-     * Default: @ref SDC_DEFAULT_ISO_RX_SDU_BUFFER_COUNT.
-     */
-    sdc_cfg_buffer_count_t iso_rx_sdu_buffer_cfg;
-    /** Configures the size and number of TX buffer pools allocated for ISO.
-     *
-     * Default: See @ref sdc_cfg_iso_tx_buffer_cfg_t.
-     */
-    sdc_cfg_iso_tx_buffer_cfg_t iso_tx_buffer_cfg;
     /** Configures the number and size of buffers allocated for ISO.
      *
      * Default: See @ref sdc_cfg_iso_buffer_cfg_t.
@@ -1175,6 +1138,18 @@ int32_t sdc_support_bis_source(void);
  * @retval -NRF_EOPNOTSUPP  Broadcast Isochronous streams as a sink is not supported.
  */
 int32_t sdc_support_bis_sink(void);
+
+/** @brief Configure the controller to ignore HCI ISO data timestamps from the host
+ *
+ * The controller requires that timestamps coming from the host/application are based on the controller's clock.
+ * This option can instruct the controller to ignore the timestamps, if the host sends timestamps that are not based on the controller's clock.
+ *
+ * @param ignore indicates if timestamps in HCI ISO data packets from the host should be ignored.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EOPNOTSUPP  Broadcast Isochronous streams as source and Connected Isochronous Channels are not supported.
+ */
+int32_t sdc_iso_host_timestamps_ignore(bool ignore);
 
 /** @brief Support for Quality of Service (QoS) channel survey module
  *

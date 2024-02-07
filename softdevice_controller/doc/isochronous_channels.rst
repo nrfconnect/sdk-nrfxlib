@@ -34,6 +34,13 @@ Testing of the |controller| implementation of LE Isochronous Channels focuses on
 Among others, the following configurations are tested:
 
 * Configurations for the audio use-case that are described in the Basic Audio Profile specification that is available for download from the `Bluetooth Specifications and Documents`_ page.
+
+  * The CIS BAP configurations are tested with two CISes.
+    Depending on the SDU interval of the BAP configuration, each test is performed with an ACL interval of 60 ms, 67.5 ms or 70 ms.
+  * The BIS BAP configurations are tested with two BISes.
+    The tests are executed with extended advertising interval and periodic advertising interval set to 300 ms.
+    The extended advertiser and periodic advertiser are both configured to use 100 bytes of advertising data.
+
 * Parallel use of CIS and BIS (1 CIS, 1 BIS)
 * 4 CISes to the same peer (CIS central and CIS peripheral)
 * 4 CISes to different peers (CIS central)
