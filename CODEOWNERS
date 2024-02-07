@@ -49,5 +49,5 @@ doc/*                                     @b-gent
 /lc3/                                     @koffes @alexsven
 /nrf_fuel_gauge/                          @nordic-auko @aasinclair
 /nrf_wifi/                                @krish2718 @sachinthegreen @rado17 @rlubos
-/nrf_wifi/fw_if/umac_if/inc/fw/           @udaynordic @srkanordic
-/nrf_wifi/hw_if/hal/inc/fw/               @udaynordic @srkanordic
+/nrf_wifi/fw_if/umac_if/inc/fw/           @udaynordic @rajb9 @srkanordic
+/nrf_wifi/hw_if/hal/inc/fw/               @udaynordic @rajb9 @srkanordic
