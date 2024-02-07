@@ -29,6 +29,8 @@ Added
   See :c:func:`sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set` (DRGN-20819).
 * Vendor-specific HCI command to read the ISO tx timestamp and packet sequence number of the SDU that the host previously provided.
   See :c:func:`sdc_hci_cmd_vs_iso_read_tx_timestamp` (DRGN-19283).
+* Vendor-specific HCI command to change the time reserved at the end of a BIG for periodic advertising and other roles.
+  See :c:func:`sdc_hci_cmd_vs_big_reserved_time_set` (DRGN-20891).
 
 Changes
 =======

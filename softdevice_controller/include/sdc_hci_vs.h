@@ -97,6 +97,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_MIN_VAL_OF_MAX_ACL_TX_PAYLOAD_SET = 0xfd16,
     /** @brief See @ref sdc_hci_cmd_vs_iso_read_tx_timestamp(). */
     SDC_HCI_OPCODE_CMD_VS_ISO_READ_TX_TIMESTAMP = 0xfd17,
+    /** @brief See @ref sdc_hci_cmd_vs_big_reserved_time_set(). */
+    SDC_HCI_OPCODE_CMD_VS_BIG_RESERVED_TIME_SET = 0xfd18,
 };
 
 /** @brief VS subevent Code values. */
@@ -187,6 +189,7 @@ typedef __PACKED_STRUCT
     uint8_t allow_parallel_connection_establishments : 1;
     uint8_t min_val_of_max_acl_tx_payload_set : 1;
     uint8_t iso_read_tx_timestamp : 1;
+    uint8_t big_reserved_time_set : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -663,6 +666,12 @@ typedef __PACKED_STRUCT
     uint16_t packet_sequence_number;
     uint32_t tx_time_stamp;
 } sdc_hci_cmd_vs_iso_read_tx_timestamp_return_t;
+
+/** @brief Set the default BIG reserved time command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint32_t reserved_time_us;
+} sdc_hci_cmd_vs_big_reserved_time_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1454,6 +1463,28 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  */
 uint8_t sdc_hci_cmd_vs_iso_read_tx_timestamp(const sdc_hci_cmd_vs_iso_read_tx_timestamp_t * p_params,
                                              sdc_hci_cmd_vs_iso_read_tx_timestamp_return_t * p_return);
+
+/** @brief Set the default BIG reserved time.
+ *
+ * This vendor specific command changes the time reserved at the end of a BIG event for other roles.
+ * This applies to all BIGs created after calling this command.
+ *
+ * The default value is 2500 us, but can be set to between 0 us and 4,000,000 us. Changes persist
+ * after an HCI_Reset command.
+ *
+ * If the value is set such that it cannot be satisfied for a given set of BIG parameters, BIG
+ * creation will fail with error code UNSUPPORTED_FEATURE_OR_PARAMETER_VALUE (0x11).
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_big_reserved_time_set(const sdc_hci_cmd_vs_big_reserved_time_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 
