@@ -21,8 +21,6 @@ static bool hal_rpu_is_mem_ram(enum RPU_PROC_TYPE proc, unsigned int addr_val)
 	if (((addr_val >= RPU_ADDR_GRAM_START) &&
 	     (addr_val <= RPU_ADDR_GRAM_END)) ||
 	    ((addr_val >= RPU_ADDR_PKTRAM_START) &&
-	     (addr_val <= RPU_ADDR_GRAM_END)) ||
-	    ((addr_val >= RPU_ADDR_PKTRAM_START) &&
 	     (addr_val <= RPU_ADDR_PKTRAM_END))) {
 		return true;
 	} else {
