@@ -36,11 +36,7 @@
   - "mpsl/include/**/*"
   - "mpsl/lib/**/*"
 
-"CI-mesh-test":
-  - "softdevice_controller/include/**/*"
-  - "softdevice_controller/lib/**/*"
-  - "mpsl/include/**/*"
-  - "mpsl/lib/**/*"
+"CI-mesh-test": null
 
 "CI-zigbee-test":
   - "softdevice_controller/include/**/*"
@@ -55,9 +51,7 @@
     - "!zboss/*.rst"
     - "!zboss/doc/**/*"
 
-"CI-desktop-test":
-  - "softdevice_controller/include/**/*"
-  - "softdevice_controller/lib/**/*"
+"CI-desktop-test": null
 
 "CI-crypto-test":
   - any:
@@ -84,8 +78,6 @@
   - "nrf_802154/**/*"
 
 "CI-thread-test":
-  - "mpsl/include/**/*"
-  - "mpsl/lib/**/*"
   - "nrf_802154/driver/**/*"
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
@@ -109,10 +101,6 @@
     - "openthread/**/*"
     - "!openthread/*.rst"
     - "!openthread/doc/**/*"
-  - "softdevice_controller/include/**/*"
-  - "softdevice_controller/lib/**/*"
-  - "mpsl/include/**/*"
-  - "mpsl/lib/**/*"
   - "nrf_802154/driver/**/*"
   - "nrf_802154/serialization/**/*"
   - "nrf_802154/sl/**/*"
@@ -123,7 +111,6 @@
       - "!crypto/*.rst"
 
 "CI-find-my-test":
-  - "softdevice_controller/**/*"
   - any:
       - "nfc/**/*"
       - "!nfc/doc/**/*"
