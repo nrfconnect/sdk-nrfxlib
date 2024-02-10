@@ -33,7 +33,7 @@ extern "C"
 /**@brief Macro holding size of the opaque ctr_drbg context type
  *
  * This corresponds to a structure with the combined size of
- * mbedtls_entropy_context and mbedtls_ctr_drbg_context in Arm CryptoCell
+ * cc_mbedtls_entropy_context and mbedtls_ctr_drbg_context in Arm CryptoCell
  * code base which is sized differently than in vanilla mbed TLS software.
  */
 #define NRF_CC3XX_PLATFORM_ENTROPY_SIZE_WORDS (111)

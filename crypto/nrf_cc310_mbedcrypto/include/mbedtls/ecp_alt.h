@@ -90,9 +90,6 @@ mbedtls_ecp_group;
 #define MBEDTLS_ECP_MAX_BITS     384   /**< The maximum size of groups, in bits. */
 #endif
 
-#define MBEDTLS_ECP_MAX_BYTES    ( ( MBEDTLS_ECP_MAX_BITS + 7 ) / 8 )
-#define MBEDTLS_ECP_MAX_PT_LEN   ( 2 * MBEDTLS_ECP_MAX_BYTES + 1 )
-
 #if !defined(MBEDTLS_ECP_WINDOW_SIZE)
 /*
  * Maximum "window" size used for point multiplication.
