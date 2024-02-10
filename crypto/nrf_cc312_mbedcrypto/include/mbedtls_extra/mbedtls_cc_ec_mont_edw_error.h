@@ -58,6 +58,7 @@ extern "C"
 /************************************************************************************************************
  *    NOT SUPPORTED MODULES ERROR IDs                                                                       *
  ************************************************************************************************************/
+#define CC_EC_EDW_SHA512_NOT_SUPPORTED                      (CC_ECPKI_MODULE_ERROR_BASE + 0xFCUL)
 /*! EC montgomery is not supported */
 #define CC_EC_MONT_IS_NOT_SUPPORTED                         (CC_ECPKI_MODULE_ERROR_BASE + 0xFEUL)
 /*! EC edwards is not supported */
