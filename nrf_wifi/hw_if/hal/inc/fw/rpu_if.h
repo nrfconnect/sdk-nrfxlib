@@ -439,47 +439,4 @@ struct host_rpu_msg_hdr {
 	unsigned int resubmit;
 } __NRF_WIFI_PKD;
 
-#define BT_INIT 0x1
-#define BT_MODE 0x2
-#define BT_CTRL 0x4
-
-/*! BT coexistence module enable or disable */
-
-#define BT_COEX_DISABLE 0
-#define BT_COEX_ENABLE 1
-
-/* External BT mode  master or slave */
-
-#define SLAVE 0
-#define MASTER 1
-
-struct pta_ext_params {
-	/*! Set polarity to 1 if  BT_TX_RX active high indicates Tx. Set polarity to 0 if BT_TX_RX
-	 * active high indicates Rx.
-	 */
-	unsigned char tx_rx_pol;
-
-	/*! BT_ACTIVE signal lead time period. This is with reference to time instance at which
-	 *BT slot boundary starts if BT supports classic only mode and BT activity starts if BT
-	 *supports BLE or dual mode
-	 */
-	unsigned int lead_time;
-
-	/*! Time instance at which BT_STATUS is sampled by PTA to get the BT_PTI information. This
-	 *is done anywhere between BT_ACTIVE_ASSERT time and BT_STATUS priority signalling time
-	 *period ends.This is with reference to BT_ACTIVE assert time.
-	 */
-	unsigned int pti_samp_time;
-
-	/*! Time instance at which BT_STATUS is sampled by PTA to get BT_TX_RX information.
-	 *This is done by PTA after the end of time period T2.  This is with reference to BT_ACTIVE
-	 *assert time.
-	 */
-	unsigned int tx_rx_samp_time;
-
-	/*! Time instance at which PTA takes arbitration decision and posts WLAN_DENY to BT. This
-	 * is with reference to BT_ACTIVE assert time.
-	 */
-	unsigned int dec_time;
-} __NRF_WIFI_PKD;
 #endif /* __RPU_IF_H__ */

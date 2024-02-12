@@ -192,17 +192,17 @@ enum nrf_wifi_status nrf_wifi_fmac_get_host_rpu_ps_ctrl_state(void *fmac_dev_ctx
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 #endif /* CONFIG_NRF700X_UTIL */
 /**
- * @brief Configure Bluetooth coexistence parameters in RPU.
+ * @brief Configure SR coexistence parameters in RPU.
  * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
- * @param cmd Bluetooth coexistence parameters which will be configured in RPU.
+ * @param cmd SR coexistence parameters which will be configured in RPU.
  * @param cmd_len Command length.
  *
  * This function is used to send a command to RPU to configure
- *	    Bluetooth coexistence parameters in RPU.
+ *	    SR coexistence parameters in RPU.
  *
  * @return Command execution status
  */
-enum nrf_wifi_status nrf_wifi_fmac_conf_btcoex(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+enum nrf_wifi_status nrf_wifi_fmac_conf_srcoex(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 					       void *cmd, unsigned int cmd_len);
 
 

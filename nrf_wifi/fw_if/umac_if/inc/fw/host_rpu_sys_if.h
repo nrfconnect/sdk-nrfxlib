@@ -139,8 +139,8 @@ enum nrf_wifi_sys_commands {
 	NRF_WIFI_CMD_PWR,
 	/** RPU De-initialization */
 	NRF_WIFI_CMD_DEINIT,
-	/** Command for WIFI & Bluetooth coexistence */
-	NRF_WIFI_CMD_BTCOEX,
+	/** Command for WIFI & SR coexistence */
+	NRF_WIFI_CMD_SRCOEX,
 	/** Command to start RF test */
 	NRF_WIFI_CMD_RF_TEST,
 	/** Configure HE_GI & HE_LTF */
@@ -180,7 +180,7 @@ enum nrf_wifi_sys_events {
 	NRF_WIFI_EVENT_DEINIT_DONE,
 	/** Response to NRF_WIFI_CMD_RF_TEST */
 	NRF_WIFI_EVENT_RF_TEST,
-	/** Response to NRF_WIFI_CMD_BTCOEX. */
+	/** Response to NRF_WIFI_CMD_SRCOEX. */
 	NRF_WIFI_EVENT_COEX_CONFIG,
 	/** Response to NRF_WIFI_CMD_UMAC_INT_STATS */
 	NRF_WIFI_EVENT_INT_UMAC_STATS,
@@ -978,8 +978,8 @@ struct rpu_conf_params {
 	unsigned int tx_pkt_gap_us;
 	/** Configure WLAN antenna switch(0-separate/1-shared) */
 	unsigned char wlan_ant_switch_ctrl;
-	/** Switch to control the BLE antenna or shared WiFi antenna */
-	unsigned char ble_ant_switch_ctrl;
+	/** Switch to control the SR antenna or shared WiFi antenna */
+	unsigned char sr_ant_switch_ctrl;
 	/** Resource unit (RU) size (26,52,106 or 242) */
 	unsigned char ru_tone;
 	/** Location of resource unit (RU) in 20 MHz spectrum */
@@ -1302,10 +1302,10 @@ struct coex_wlan_switch_ctrl {
 
 /**
  * @brief The structure represents the command used to configure the Wi-Fi side shared switch
- *  for Bluetooth coexistence (btcoex).
+ *  for SR coexistence.
  *
  */
-struct nrf_wifi_cmd_btcoex {
+struct nrf_wifi_cmd_srcoex {
 	/** UMAC header, @ref nrf_wifi_sys_head */
 	struct nrf_wifi_sys_head sys_head;
 	/** Switch configuration data */

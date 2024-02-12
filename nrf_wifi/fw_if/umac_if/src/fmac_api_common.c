@@ -527,12 +527,12 @@ enum nrf_wifi_status nrf_wifi_fmac_conf_ltf_gi(struct nrf_wifi_fmac_dev_ctx *fma
 	return status;
 }
 
-enum nrf_wifi_status nrf_wifi_fmac_conf_btcoex(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+enum nrf_wifi_status nrf_wifi_fmac_conf_srcoex(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 					       void *cmd, unsigned int cmd_len)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
-	status = umac_cmd_btcoex(fmac_dev_ctx, cmd, cmd_len);
+	status = umac_cmd_srcoex(fmac_dev_ctx, cmd, cmd_len);
 
 	return status;
 }
