@@ -182,10 +182,10 @@ extern "C" {
      __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
 
 /** Maximum shared memory required for central links. */
-#define SDC_MEM_CENTRAL_LINKS_SHARED 29
+#define SDC_MEM_CENTRAL_LINKS_SHARED 17
 
 /** Maximum shared memory required for peripheral links. */
-#define SDC_MEM_PERIPHERAL_LINKS_SHARED  29
+#define SDC_MEM_PERIPHERAL_LINKS_SHARED  17
 
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
