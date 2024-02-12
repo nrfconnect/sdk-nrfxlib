@@ -233,7 +233,7 @@ out:
 }
 
 
-enum nrf_wifi_status umac_cmd_btcoex(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+enum nrf_wifi_status umac_cmd_srcoex(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				void *cmd, unsigned int cmd_len)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
@@ -256,7 +256,7 @@ enum nrf_wifi_status umac_cmd_btcoex(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 	umac_cmd_data = (struct nrf_wifi_cmd_coex_config *)(umac_cmd->msg);
 
-	umac_cmd_data->sys_head.cmd_event = NRF_WIFI_CMD_BTCOEX;
+	umac_cmd_data->sys_head.cmd_event = NRF_WIFI_CMD_SRCOEX;
 	umac_cmd_data->sys_head.len = len;
 	umac_cmd_data->coex_config_info.len = cmd_len;
 
