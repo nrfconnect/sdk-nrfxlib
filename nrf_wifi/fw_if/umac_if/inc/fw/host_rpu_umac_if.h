@@ -403,6 +403,10 @@ enum nrf_wifi_iftype {
 	NRF_WIFI_STA_TX_INJECTOR,
 	/** Monitor + Tx Packet injector mode. */
 	NRF_WIFI_MONITOR_TX_INJECTOR,
+	/** Station + Promiscuous mode. */
+	NRF_WIFI_STA_PROMISC,
+	/** Station + Promiscuous mode + TX Packet injector. */
+	NRF_WIFI_STA_PROMISC_TX_INJECTOR,
 	/** Highest interface type number currently defined */
 	NUM_NRF_WIFI_IFTYPES,
 	/** Number of defined interface types */
