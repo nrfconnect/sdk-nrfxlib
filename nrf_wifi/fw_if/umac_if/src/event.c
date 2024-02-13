@@ -868,6 +868,101 @@ out:
 	return status;
 }
 
+#ifdef CONFIG_NRF700X_SYSTEM_MODE
+static enum nrf_wifi_status
+nrf_wifi_fmac_if_mode_set_event_proc(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+				     struct nrf_wifi_event_raw_config_mode *mode_event)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_SUCCESS;
+	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx;
+	struct tx_config *config;
+	struct nrf_wifi_fmac_vif_ctx *vif;
+	unsigned char if_idx = mode_event->if_index;
+
+	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+	config = &def_dev_ctx->tx_config;
+	vif = def_dev_ctx->vif_ctx[if_idx];
+
+	if (!mode_event->status) {
+		vif->mode = mode_event->op_mode;
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
+		vif->txinjection_mode = false;
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
+#ifdef CONFIG_NRF700X_PROMISC_DATA_RX
+		vif->promisc_mode = false;
+#endif /* CONFIG_NRF700X_PROMISC_DATA_RX */
+		if ((mode_event->op_mode & NRF_WIFI_STA_MODE)
+			== NRF_WIFI_STA_MODE) {
+			mode_event->op_mode ^= NRF_WIFI_STA_MODE;
+			vif->if_type = NRF_WIFI_STA_MODE;
+			config->peers[MAX_PEERS].peer_id = -1;
+			config->peers[MAX_PEERS].if_idx = -1;
+
+#if defined(CONFIG_NRF700X_RAW_DATA_TX) && defined (CONFIG_NRF700X_PROMISC_DATA_RX)
+			if ((mode_event->op_mode ^
+			    (NRF_WIFI_PROMISCUOUS_MODE |
+			     NRF_WIFI_TX_INJECTION_MODE)) == 0) {
+				vif->if_type
+					= NRF_WIFI_STA_PROMISC_TX_INJECTOR;
+				config->peers[MAX_PEERS].peer_id
+					= MAX_PEERS;
+				config->peers[MAX_PEERS].if_idx
+					= if_idx;
+				vif->txinjection_mode = true;
+				vif->promisc_mode = true;
+			}
+#endif /* CONFIG_NRF700X_RAW_DATA_TX && defined CONFIG_NRF700X_PROMISC_DATA_RX */
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
+			if ((mode_event->op_mode ^
+			     NRF_WIFI_TX_INJECTION_MODE) == 0) {
+				config->peers[MAX_PEERS].peer_id
+					= MAX_PEERS;
+				config->peers[MAX_PEERS].if_idx
+					= if_idx;
+				vif->if_type = NRF_WIFI_STA_TX_INJECTOR;
+				vif->txinjection_mode = true;
+			}
+#endif /* CONFIG_NRF700X_RAW_DATA_TX */
+#ifdef CONFIG_NRF700X_PROMISC_DATA_RX
+			if ((mode_event->op_mode ^
+			     NRF_WIFI_PROMISCUOUS_MODE) == 0) {
+				vif->if_type = NRF_WIFI_STA_PROMISC;
+				vif->promisc_mode = true;
+			}
+#endif /* CONFIG_NRF700X_PROMISC_DATA_RX */
+			goto out;
+		}
+#ifdef CONFIG_NRF700X_RAW_DATA_RX
+		if ((mode_event->op_mode & NRF_WIFI_MONITOR_MODE)
+			== NRF_WIFI_MONITOR_MODE) {
+			mode_event->op_mode ^= NRF_WIFI_MONITOR_MODE;
+			vif->if_type = NRF_WIFI_IFTYPE_MONITOR;
+			config->peers[MAX_PEERS].peer_id = -1;
+			config->peers[MAX_PEERS].if_idx = -1;
+#ifdef CONFIG_NRF700X_RAW_DATA_TX
+			if ((mode_event->op_mode ^
+			     NRF_WIFI_TX_INJECTION_MODE) == 0) {
+				config->peers[MAX_PEERS].peer_id
+					= MAX_PEERS;
+				config->peers[MAX_PEERS].if_idx
+					= if_idx;
+				vif->if_type = NRF_WIFI_MONITOR_TX_INJECTOR;
+				vif->txinjection_mode = true;
+			}
+#endif
+			goto out;
+		}
+#endif
+	} else {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Set mode failed!",
+				      __func__);
+		status = NRF_WIFI_STATUS_FAIL;
+	}
+out:
+	return status;
+}
+#endif
 
 static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 						    struct host_rpu_msg *rpu_msg)
@@ -925,64 +1020,8 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 #endif
 #ifdef CONFIG_NRF700X_SYSTEM_MODE
 	case NRF_WIFI_EVENT_MODE_SET_DONE:
-		{
-			struct nrf_wifi_event_raw_config_mode *mode_event;
-
-			mode_event = (struct nrf_wifi_event_raw_config_mode *)sys_head;
-			if (!mode_event->status) {
-				def_dev_ctx->vif_ctx[mode_event->if_index]->mode =
-								mode_event->op_mode;
-				/**
-				 * Set the transmit queue for RAW packet transmission
-				 */
-#ifdef CONFIG_NRF700X_RAW_DATA_TX
-				if (mode_event->op_mode == (NRF_WIFI_TX_INJECTION_MODE |
-							    NRF_WIFI_STA_MODE)) {
-					def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id =
-										MAX_PEERS;
-					def_dev_ctx->tx_config.peers[MAX_PEERS].if_idx =
-									mode_event->if_index;
-					def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
-									NRF_WIFI_STA_TX_INJECTOR;
-					def_dev_ctx->vif_ctx[mode_event->if_index]->txinjection_mode
-									= true;
-				} else
-#endif /* CONFIG_NRF700X_RAW_DATA_TX */
-				if (mode_event->op_mode == NRF_WIFI_STA_MODE) {
-					def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
-									NRF_WIFI_IFTYPE_STATION;
-#ifdef CONFIG_NRF700X_RAW_DATA_TX
-					def_dev_ctx->vif_ctx[mode_event->if_index]->txinjection_mode
-									= false;
-#endif /* CONFIG_NRF700X_RAW_DATA_TX */
-					def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id = -1;
-				}
-#ifdef CONFIG_NRF700X_RAW_DATA_RX
-				else if (mode_event->op_mode == NRF_WIFI_MONITOR_MODE) {
-					def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
-									NRF_WIFI_IFTYPE_MONITOR;
-					def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id = -1;
-#ifdef CONFIG_NRF700X_RAW_DATA_TX
-					def_dev_ctx->vif_ctx[mode_event->if_index]->txinjection_mode
-									= false;
-#endif /* CONFIG_NRF700X_RAW_DATA_TX */
-				} else if (mode_event->op_mode == (NRF_WIFI_MONITOR_MODE |
-								   NRF_WIFI_TX_INJECTION_MODE)) {
-					def_dev_ctx->tx_config.peers[MAX_PEERS].peer_id
-									= MAX_PEERS;
-					def_dev_ctx->tx_config.peers[MAX_PEERS].if_idx =
-									mode_event->if_index;
-					def_dev_ctx->vif_ctx[mode_event->if_index]->if_type =
-								NRF_WIFI_MONITOR_TX_INJECTOR;
-#ifdef CONFIG_NRF700X_RAW_DATA_TX
-					def_dev_ctx->vif_ctx[mode_event->if_index]->txinjection_mode
-									= true;
-#endif /* CONFIG_NRF700X_RAW_DATA_TX */
-				}
-#endif /* CONFIG_NRF700X_RAW_DATA_RX */
-				status = NRF_WIFI_STATUS_SUCCESS;
-			}
-		}
+		status = nrf_wifi_fmac_if_mode_set_event_proc(fmac_dev_ctx,
+						(struct nrf_wifi_event_raw_config_mode *)sys_head);
 		break;
 #endif
 #if defined(CONFIG_NRF700X_RAW_DATA_TX) || defined(CONFIG_NRF700X_RAW_DATA_RX)
@@ -997,7 +1036,7 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		status = NRF_WIFI_STATUS_SUCCESS;
 		break;
 #endif /* CONFIG_NRF700X_RAW_DATA_TX */
-#ifdef CONFIG_NRF700X_RAW_DATA_RX
+#if defined(CONFIG_NRF700X_RAW_DATA_RX) || defined(CONFIG_NRF700X_PROMISC_DATA_RX)
 	case NRF_WIFI_EVENT_FILTER_SET_DONE:
 		struct nrf_wifi_event_raw_config_filter *filter_event;
 
@@ -1008,7 +1047,7 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		}
 		status = NRF_WIFI_STATUS_SUCCESS;
 		break;
-#endif /* CONFIG_NRF700X_RAW_DATA_RX */
+#endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 	default:
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 				      "%s: Unknown event recd: %d",

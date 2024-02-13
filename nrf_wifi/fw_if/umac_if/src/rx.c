@@ -304,6 +304,19 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 		rx_buf_info->mapped = false;
 
 		if (config->rx_pkt_type == NRF_WIFI_RX_PKT_DATA) {
+#ifdef CONFIG_NRF700X_PROMISC_DATA_RX
+			if (vif_ctx->promisc_mode) {
+				raw_rx_hdr.frequency = config->frequency;
+				raw_rx_hdr.signal = config->signal;
+				raw_rx_hdr.rate_flags = config->rate_flags;
+				raw_rx_hdr.rate = config->rate;
+
+				def_priv->callbk_fns.rx_sniffer_frm_callbk_fn(vif_ctx->os_vif_ctx,
+									      nwb,
+									      &raw_rx_hdr,
+									      false);
+			}
+#endif
 #ifdef CONFIG_NRF700X_STA_MODE
 			switch (config->rx_buff_info[i].pkt_type) {
 			case PKT_TYPE_MPDU:
@@ -372,7 +385,8 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 
 			def_priv->callbk_fns.rx_sniffer_frm_callbk_fn(vif_ctx->os_vif_ctx,
 								      nwb,
-								      &raw_rx_hdr);
+								      &raw_rx_hdr,
+								      true);
 		}
 #endif /* CONFIG_NRF700X_RAW_DATA_RX */
 		else {

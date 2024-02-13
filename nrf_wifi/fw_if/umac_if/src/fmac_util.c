@@ -366,7 +366,8 @@ enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode)
 bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif)
 {
 	if ((vif->if_type == NRF_WIFI_STA_TX_INJECTOR) ||
-	    (vif->if_type == NRF_WIFI_MONITOR_TX_INJECTOR)) {
+	    (vif->if_type == NRF_WIFI_MONITOR_TX_INJECTOR) ||
+	    (vif->if_type == NRF_WIFI_STA_PROMISC_TX_INJECTOR)) {
 		return true;
 	}
 	return false;
