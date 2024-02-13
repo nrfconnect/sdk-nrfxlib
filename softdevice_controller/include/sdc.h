@@ -275,7 +275,7 @@ extern "C" {
 #define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 547) : 0)
 
 /** @brief Maximum memory required per BIG. */
-#define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 291) : 0)
+#define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 284) : 0)
 
 /** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
 #define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 275) : 0)
