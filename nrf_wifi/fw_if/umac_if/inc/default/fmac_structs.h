@@ -264,11 +264,12 @@ struct nrf_wifi_fmac_callbk_fns {
 	void (*process_rssi_from_rx)(void *os_vif_ctx,
 				     signed short signal);
 #endif /* CONFIG_NRF700X_STA_MODE */
-#ifdef CONFIG_NRF700X_RAW_DATA_RX
+#if defined(CONFIG_NRF700X_RAW_DATA_RX) || defined(CONFIG_NRF700X_PROMISC_DATA_RX)
 	void (*rx_sniffer_frm_callbk_fn)(void *os_vif_ctx,
 					 void *frm,
-					 struct raw_rx_pkt_header *);
-#endif
+					 struct raw_rx_pkt_header *,
+					 bool pkt_free);
+#endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 	void (*reg_change_callbk_fn)(void *os_vif_ctx,
 				     struct nrf_wifi_event_regulatory_change *reg_change,
 				     unsigned int event_len);
@@ -515,6 +516,10 @@ struct nrf_wifi_fmac_vif_ctx {
 	/** Filter setting for Monitor and Promiscuous modes */
 	unsigned char packet_filter;
 #endif /* CONFIG_NRF700X_RAW_DATA_RX */
+#ifdef CONFIG_NRF700X_PROMISC_DATA_RX
+	/** Promiscuous mode setting */
+	bool promisc_mode;
+#endif /* CONFIG_NRF700X_PROMISC_DATA_RX */
 };
 
 /**
