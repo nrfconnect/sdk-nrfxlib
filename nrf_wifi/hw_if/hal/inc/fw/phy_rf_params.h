@@ -70,6 +70,10 @@
 #define NRF_WIFI_VBAT_LOW (12)  /* Correspond to (2.5+12*0.07)=3.34V */
 #define NRF_WIFI_VBAT_HIGH (14) /* Correspond to (2.5+14*0.07)=3.48V */
 
+/** Package type information written to the OTP memory */
+#define QFN_PACKAGE_INFO 0x5146
+#define CSP_PACKAGE_INFO 0x4345
+
 /* Package independent params */
 
 /** Power detector adjustment value. */
@@ -148,23 +152,23 @@
 #define CSP_XO_VAL 0x2A
 
 /** Max TX power allowed for DSSS and OFDM in 2.4GHz band */
-#define CSP_MAX_TX_PWR_DSSS 0x54
-#define CSP_MAX_TX_PWR_LB_MCS7 0x40
-#define CSP_MAX_TX_PWR_LB_MCS0 0x40
+#define CSP_MAX_TX_PWR_DSSS 0x58
+#define CSP_MAX_TX_PWR_LB_MCS7 0x48
+#define CSP_MAX_TX_PWR_LB_MCS0 0x50
 
 /** Max TX power allowed for MCS7 for channels in the range,
  * 36 to 64, 96 to 132 and 136 to 177
  */
-#define CSP_MAX_TX_PWR_HB_LOW_CHAN_MCS7 0x34
-#define CSP_MAX_TX_PWR_HB_MID_CHAN_MCS7 0x34
-#define CSP_MAX_TX_PWR_HB_HIGH_CHAN_MCS7 0x30
+#define CSP_MAX_TX_PWR_HB_LOW_CHAN_MCS7 0x40
+#define CSP_MAX_TX_PWR_HB_MID_CHAN_MCS7 0x40
+#define CSP_MAX_TX_PWR_HB_HIGH_CHAN_MCS7 0x40
 
 /** Max TX power allowed for MCS0 for channels in the range,
  * 36 to 64, 96 to 132 and 136 to 177
  */
-#define CSP_MAX_TX_PWR_HB_LOW_CHAN_MCS0 0x38
-#define CSP_MAX_TX_PWR_HB_MID_CHAN_MCS0 0x34
-#define CSP_MAX_TX_PWR_HB_HIGH_CHAN_MCS0 0x30
+#define CSP_MAX_TX_PWR_HB_LOW_CHAN_MCS0 0x50
+#define CSP_MAX_TX_PWR_HB_MID_CHAN_MCS0 0x50
+#define CSP_MAX_TX_PWR_HB_HIGH_CHAN_MCS0 0x50
 
 /** Max chip temperature at which the TX power backoff to be applied. */
 #define CSP_MAX_CHIP_TEMP 0x43
@@ -176,22 +180,22 @@
  * chip temperature crosses MAX_CHIP_TEMP. The resolution is in 0.25dB.
  * To get 1 dB backoff configure -4(0xFC)
  */
-#define CSP_LB_MAX_PWR_BKF_HI_TEMP 0xFC
+#define CSP_LB_MAX_PWR_BKF_HI_TEMP 0xEC
 #define CSP_LB_MAX_PWR_BKF_LOW_TEMP 0x00
-#define CSP_HB_MAX_PWR_BKF_HI_TEMP 0xF8
-#define CSP_HB_MAX_PWR_BKF_LOW_TEMP 0xFC
+#define CSP_HB_MAX_PWR_BKF_HI_TEMP 0xFC
+#define CSP_HB_MAX_PWR_BKF_LOW_TEMP 0xF4
 
 /** TX power backoff values to be applied in 2.4GHz and 5GHz band when
  * the voltage is less than NRF_WIFI_VBAT_VERYLOW
  */
-#define CSP_LB_VBT_LT_VLOW 0xFC
-#define CSP_HB_VBT_LT_VLOW 0xF8
+#define CSP_LB_VBT_LT_VLOW 0xF8
+#define CSP_HB_VBT_LT_VLOW 0xE8
 
 /** TX power backoff values to be applied in 2.4GHz and 5GHz band when
  * the voltage is less than NRF_WIFI_VBAT_LOW
  */
-#define CSP_LB_VBT_LT_LOW 0x00
-#define CSP_HB_VBT_LT_LOW 0xFC
+#define CSP_LB_VBT_LT_LOW 0xFC
+#define CSP_HB_VBT_LT_LOW 0xF4
 
 
 /** XO adjustment value */
