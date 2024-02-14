@@ -990,7 +990,7 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 			      0x0,
 			      sizeof(prf->temp_volt_backoff.reserved));	
 
-	if (package_info == 1) {
+	if (package_info == CSP_PACKAGE_INFO) {
 		prf->xo_offset.xo_freq_offset = CSP_XO_VAL;
 		/* TX power ceiling */
 		prf->max_pwr_ceil.max_dsss_pwr = CSP_MAX_TX_PWR_DSSS;
