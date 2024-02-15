@@ -170,6 +170,10 @@ struct nrf_wifi_fmac_dev_ctx {
 	unsigned int reg_chan_count;
 	/** Regulatory channel attributes */
 	struct nrf_wifi_get_reg_chn_info *reg_chan_info;
+	/** Regulatory set status */
+	int reg_set_status;
+	/** Regulatory change event */
+	struct nrf_wifi_event_regulatory_change *reg_change;
 	/** Data pointer to mode specific parameters */
 	char priv[];
 };

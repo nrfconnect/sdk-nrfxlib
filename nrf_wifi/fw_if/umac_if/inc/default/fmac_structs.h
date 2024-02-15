@@ -269,6 +269,9 @@ struct nrf_wifi_fmac_callbk_fns {
 					 void *frm,
 					 struct raw_rx_pkt_header *);
 #endif
+	void (*reg_change_callbk_fn)(void *os_vif_ctx,
+				     struct nrf_wifi_event_regulatory_change *reg_change,
+				     unsigned int event_len);
 };
 
 #if defined(CONFIG_NRF700X_STA_MODE) || defined(__DOXYGEN__)

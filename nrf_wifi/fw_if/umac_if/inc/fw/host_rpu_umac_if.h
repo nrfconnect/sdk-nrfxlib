@@ -3471,6 +3471,19 @@ struct nrf_wifi_cmd_req_set_reg {
 } __NRF_WIFI_PKD;
 
 /**
+ * @brief This structure represents the event that is generated when the regulatory domain
+ * is modified or updated. It contains the new regulatory domain information.
+ *
+ */
+struct nrf_wifi_event_regulatory_change {
+	struct nrf_wifi_umac_hdr umac_hdr;
+	unsigned short nrf_wifi_flags;
+	signed int intr;
+	signed char regulatory_type;
+	unsigned char nrf_wifi_alpha2[2];
+} __NRF_WIFI_PKD;
+
+/**
  * @brief This structure represents the status code for a command. It is used to indicate
  *  the outcome or result of executing a specific command. The status code provides valuable
  *  information about the success, failure, or any errors encountered during the execution
