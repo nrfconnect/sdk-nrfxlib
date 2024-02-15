@@ -17,6 +17,7 @@
 #ifdef CONFIG_NRF700X_RADIO_TEST
 #define NRF_WIFI_FMAC_RF_TEST_EVNT_TIMEOUT 50 /* 5s */
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
+#define NRF_WIFI_FMAC_REG_SET_TIMEOUT_MS 2000 /* 2s */
 
 struct host_rpu_msg *umac_cmd_alloc(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				    int type,

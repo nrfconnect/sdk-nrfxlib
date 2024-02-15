@@ -747,11 +747,39 @@ enum nrf_wifi_status nrf_wifi_fmac_set_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_cmd_req_set_reg *set_reg_cmd = NULL;
+	unsigned int count = 0, max_count = NRF_WIFI_FMAC_REG_SET_TIMEOUT_MS / 20;
+	enum nrf_wifi_reg_initiator exp_initiator = NRF_WIFI_REGDOM_SET_BY_USER;
+	enum nrf_wifi_reg_type exp_reg_type = NRF_WIFI_REGDOM_TYPE_COUNTRY;
+	char exp_alpha2[NRF_WIFI_COUNTRY_CODE_LEN] = {0};
+	struct nrf_wifi_fmac_reg_info cur_reg_info = {0};
+	struct nrf_wifi_event_regulatory_change *reg_change = NULL;
 
 	if (!fmac_dev_ctx || !reg_info) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 				      "%s: Invalid parameters",
 				      __func__);
+		goto out;
+	}
+
+	/* No change event from UMAC for same regd */
+	status = nrf_wifi_fmac_get_reg(fmac_dev_ctx, &cur_reg_info);
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Failed to get current regulatory information",
+				      __func__);
+		goto out;
+	}
+
+	if (nrf_wifi_osal_mem_cmp(fmac_dev_ctx->fpriv->opriv,
+				  cur_reg_info.alpha2,
+				  reg_info->alpha2,
+				  NRF_WIFI_COUNTRY_CODE_LEN) == 0) {
+		nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
+				       "%s: Regulatory domain already set to %c%c",
+				       __func__,
+				       reg_info->alpha2[0],
+				       reg_info->alpha2[1]);
+		status = NRF_WIFI_STATUS_SUCCESS;
 		goto out;
 	}
 
@@ -773,6 +801,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 			      reg_info->alpha2,
 			      NRF_WIFI_COUNTRY_CODE_LEN);
 
+	exp_alpha2[0] = reg_info->alpha2[0];
+	exp_alpha2[1] = reg_info->alpha2[1];
+
+	if (reg_info->alpha2[0] == '0' && reg_info->alpha2[1] == '0') {
+		exp_reg_type = NRF_WIFI_REGDOM_TYPE_WORLD;
+	}
+
 	set_reg_cmd->valid_fields = NRF_WIFI_CMD_REQ_SET_REG_ALPHA2_VALID;
 
 	/* New feature in rev B patch */
@@ -783,10 +818,75 @@ enum nrf_wifi_status nrf_wifi_fmac_set_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_reg_cmd,
 			      sizeof(*set_reg_cmd));
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Failed to set regulatory information",
+				      __func__);
+		goto out;
+	}
+
+	fmac_dev_ctx->reg_set_status = false;
+	while (!fmac_dev_ctx->reg_set_status && count++ <= max_count) {
+		nrf_wifi_osal_sleep_ms(fmac_dev_ctx->fpriv->opriv,
+				       100);
+	}
+
+	if (!fmac_dev_ctx->reg_set_status) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Failed to set regulatory information",
+				      __func__);
+		status = NRF_WIFI_STATUS_FAIL;
+		goto out;
+	}
+
+	reg_change = fmac_dev_ctx->reg_change;
+
+	if (reg_change->intr != exp_initiator) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Regulatory domain change not initiated by user: exp: %d, got: %d",
+				      __func__,
+					  exp_initiator,
+					  reg_change->intr);
+		status = NRF_WIFI_STATUS_FAIL;
+		goto out;
+	}
+
+	if (reg_change->regulatory_type != exp_reg_type) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Regulatory domain change not to expected type: exp: %d, got: %d",
+				      __func__,
+					  exp_reg_type,
+					  reg_change->regulatory_type);
+		status = NRF_WIFI_STATUS_FAIL;
+		goto out;
+	}
+
+	if ((reg_change->regulatory_type == NRF_WIFI_REGDOM_TYPE_COUNTRY) &&
+		 nrf_wifi_osal_mem_cmp(fmac_dev_ctx->fpriv->opriv,
+				  reg_change->nrf_wifi_alpha2,
+				  exp_alpha2,
+				  NRF_WIFI_COUNTRY_CODE_LEN) != 0) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Regulatory domain change not to expected alpha2: exp: %c%c, got: %c%c",
+				      __func__,
+					  exp_alpha2[0],
+					  exp_alpha2[1],
+					  reg_change->nrf_wifi_alpha2[0],
+					  reg_change->nrf_wifi_alpha2[1]);
+		status = NRF_WIFI_STATUS_FAIL;
+		goto out;
+	}
+
 out:
 	if (set_reg_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
 				       set_reg_cmd);
+	}
+
+	if (reg_change) {
+		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
+				       reg_change);
+		fmac_dev_ctx->reg_change = NULL;
 	}
 
 	return status;
