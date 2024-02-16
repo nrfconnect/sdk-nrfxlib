@@ -2119,8 +2119,8 @@ struct nrf_wifi_umac_cmd_chg_vif_attr {
 struct nrf_wifi_umac_chg_vif_state_info {
 	/** Interface state (1 = UP / 0 = DOWN) */
 	signed int state;
-	/** Interface name */
-	signed char ifacename[IFACENAMSIZ];
+	/** Interface index */
+	signed char if_index;
 } __NRF_WIFI_PKD;
 
 /**
