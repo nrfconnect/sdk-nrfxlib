@@ -353,9 +353,12 @@ enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode)
 	 */
 	if ((mode ^ NRF_WIFI_STA_MODE) == 0) {
 		return NRF_WIFI_STATUS_SUCCESS;
-	} else if ((mode ^ NRF_WIFI_MONITOR_MODE) == 0) {
+	}
+#ifdef CONFIG_NRF700X_RAW_DATA_RX
+	else if ((mode ^ NRF_WIFI_MONITOR_MODE) == 0) {
 		return NRF_WIFI_STATUS_SUCCESS;
 	}
+#endif /* CONFIG_NRF700X_RAW_DATA_RX */
 	return NRF_WIFI_STATUS_FAIL;
 }
 
