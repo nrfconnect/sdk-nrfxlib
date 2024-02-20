@@ -155,7 +155,15 @@ static bool csl_phase_calc(uint32_t * p_csl_phase)
     if (result)
     {
         // Round to the nearest integer when converting us to CSL units
-        *p_csl_phase = (us + (CSL_US_PER_UNIT >> 1)) / CSL_US_PER_UNIT;
+        uint32_t csl_phase = (us + (CSL_US_PER_UNIT >> 1)) / CSL_US_PER_UNIT;
+
+        if (0 == csl_phase)
+        {
+            // If the phase was rounded down to 0, increase it by one period.
+            csl_phase = m_csl_period;
+        }
+
+        *p_csl_phase = csl_phase;
     }
 
     return result;
