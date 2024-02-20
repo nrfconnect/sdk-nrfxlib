@@ -48,6 +48,7 @@
 #include <stdint.h>
 
 #include "nrf_802154.h"
+#include "nrf_802154_co.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_debug.h"
 #include "nrf_802154_queue.h"
@@ -705,27 +706,27 @@ static void irq_handler_ntf_event(void)
         {
             case NTF_TYPE_RECEIVED:
 #if NRF_802154_USE_RAW_API
-                nrf_802154_received_raw(p_slot->data.received.p_data,
-                                        p_slot->data.received.power,
-                                        p_slot->data.received.lqi);
+                nrf_802154_co_received_raw(p_slot->data.received.p_data,
+                                           p_slot->data.received.power,
+                                           p_slot->data.received.lqi);
 #else // NRF_802154_USE_RAW_API
-                nrf_802154_received(p_slot->data.received.p_data + RAW_PAYLOAD_OFFSET,
-                                    p_slot->data.received.p_data[RAW_LENGTH_OFFSET],
-                                    p_slot->data.received.power,
-                                    p_slot->data.received.lqi);
+                nrf_802154_co_received(p_slot->data.received.p_data + RAW_PAYLOAD_OFFSET,
+                                       p_slot->data.received.p_data[RAW_LENGTH_OFFSET],
+                                       p_slot->data.received.power,
+                                       p_slot->data.received.lqi);
 #endif
                 break;
 
             case NTF_TYPE_RECEIVE_FAILED:
-                nrf_802154_receive_failed(p_slot->data.receive_failed.error,
-                                          p_slot->data.receive_failed.id);
+                nrf_802154_co_receive_failed(p_slot->data.receive_failed.error,
+                                             p_slot->data.receive_failed.id);
                 break;
 
             case NTF_TYPE_TRANSMITTED:
             {
 #if NRF_802154_USE_RAW_API
-                nrf_802154_transmitted_raw(p_slot->data.transmitted.p_frame,
-                                           &p_slot->data.transmitted.metadata);
+                nrf_802154_co_transmitted_raw(p_slot->data.transmitted.p_frame,
+                                              &p_slot->data.transmitted.metadata);
 #else // NRF_802154_USE_RAW_API
                 if (p_slot->data.transmitted.metadata.data.transmitted.p_ack != NULL)
                 {
@@ -733,19 +734,19 @@ static void irq_handler_ntf_event(void)
                         p_slot->data.transmitted.metadata.data.transmitted.p_ack[RAW_LENGTH_OFFSET];
                     p_slot->data.transmitted.metadata.data.transmitted.p_ack += RAW_PAYLOAD_OFFSET;
                 }
-                nrf_802154_transmitted(p_slot->data.transmitted.p_frame + RAW_PAYLOAD_OFFSET,
-                                       &p_slot->data.transmitted.metadata);
+                nrf_802154_co_transmitted(p_slot->data.transmitted.p_frame + RAW_PAYLOAD_OFFSET,
+                                          &p_slot->data.transmitted.metadata);
 #endif
             }
             break;
 
             case NTF_TYPE_TRANSMIT_FAILED:
 #if NRF_802154_USE_RAW_API
-                nrf_802154_transmit_failed(p_slot->data.transmit_failed.p_frame,
-                                           p_slot->data.transmit_failed.error,
-                                           &p_slot->data.transmit_failed.metadata);
+                nrf_802154_co_transmit_failed(p_slot->data.transmit_failed.p_frame,
+                                              p_slot->data.transmit_failed.error,
+                                              &p_slot->data.transmit_failed.metadata);
 #else // NRF_802154_USE_RAW_API
-                nrf_802154_transmit_failed(
+                nrf_802154_co_transmit_failed(
                     p_slot->data.transmit_failed.p_frame + RAW_PAYLOAD_OFFSET,
                     p_slot->data.transmit_failed.error,
                     &p_slot->data.transmit_failed.metadata);
@@ -753,20 +754,20 @@ static void irq_handler_ntf_event(void)
                 break;
 
             case NTF_TYPE_ENERGY_DETECTED:
-                nrf_802154_energy_detected(&p_slot->data.energy_detected.result);
+                nrf_802154_co_energy_detected(&p_slot->data.energy_detected.result);
                 break;
 
             case NTF_TYPE_ENERGY_DETECTION_FAILED:
-                nrf_802154_energy_detection_failed(
+                nrf_802154_co_energy_detection_failed(
                     p_slot->data.energy_detection_failed.error);
                 break;
 
             case NTF_TYPE_CCA:
-                nrf_802154_cca_done(p_slot->data.cca.result);
+                nrf_802154_co_cca_done(p_slot->data.cca.result);
                 break;
 
             case NTF_TYPE_CCA_FAILED:
-                nrf_802154_cca_failed(p_slot->data.cca_failed.error);
+                nrf_802154_co_cca_failed(p_slot->data.cca_failed.error);
                 break;
 
             default:

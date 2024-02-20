@@ -907,7 +907,7 @@ bool nrf_802154_transmit_csma_ca_raw(uint8_t                                    
     result = are_frame_properties_valid(&p_metadata->frame_props);
     if (result)
     {
-        nrf_802154_request_csma_ca_start(p_data, p_metadata);
+        result = nrf_802154_request_csma_ca_start(p_data, p_metadata);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -940,7 +940,7 @@ bool nrf_802154_transmit_csma_ca(const uint8_t                                * 
     if (result)
     {
         tx_buffer_fill(p_data, length);
-        nrf_802154_request_csma_ca_start(m_tx_buffer, p_metadata);
+        result = nrf_802154_request_csma_ca_start(m_tx_buffer, p_metadata);
     }
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);

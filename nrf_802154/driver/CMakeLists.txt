@@ -44,8 +44,10 @@ target_include_directories(nrf-802154-driver
 target_sources(nrf-802154-driver
   PRIVATE
     src/nrf_802154.c
+    src/nrf_802154_aes_ccm_acc_ccm.c
     src/nrf_802154_aes_ccm_acc_ecb.c
     src/nrf_802154_bsim_utils.c
+    src/nrf_802154_co.c
     src/nrf_802154_core.c
     src/nrf_802154_core_hooks.c
     src/nrf_802154_critical_section.c

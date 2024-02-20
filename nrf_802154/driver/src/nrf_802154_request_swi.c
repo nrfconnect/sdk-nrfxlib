@@ -941,7 +941,7 @@ static void irq_handler_req_event(void)
                 break;
 
             case REQ_TYPE_CSMA_CA_START:
-                *(p_slot->data.receive_at_cancel.p_result) =
+                *(p_slot->data.csma_ca_start.p_result) =
                     nrf_802154_csma_ca_start(p_slot->data.csma_ca_start.p_data,
                                              p_slot->data.csma_ca_start.p_metadata);
                 break;
