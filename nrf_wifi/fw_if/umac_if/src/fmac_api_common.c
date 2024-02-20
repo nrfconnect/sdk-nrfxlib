@@ -692,9 +692,6 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 
 	ft_prog_ver = (ft_prog_ver & FT_PROG_VER_MASK) >> 16;
 
-#if defined(CONFIG_BOARD_NRF7002DK_NRF7001_NRF5340_CPUAPP) || \
-	defined(CONFIG_BOARD_NRF7002DK_NRF5340_CPUAPP) || \
-	defined(CONFIG_BOARD_NRF5340DK_NRF5340_CPUAPP)
 	if (tx_pwr_ceil_params->rf_tx_pwr_ceil_params_override) {
 		if (ft_prog_ver == FT_PROG_VER1) {
 			backoff_2g_dsss = FT_PROG_VER1_2G_DSSS_TXCEIL_BKOFF;
@@ -734,7 +731,6 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 		phy_rf_params->max_pwr_ceil.max_hb_high_chan_mcs0_pwr =
 		tx_pwr_ceil_params->max_pwr_5g_high_mcs0 - backoff_5g_highband;
 	}
-#endif
 
 	status = NRF_WIFI_STATUS_SUCCESS;
 out:
