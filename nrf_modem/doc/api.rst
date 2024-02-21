@@ -186,7 +186,7 @@ Socket polling API
 ******************
 
 Necessary data types and defines to poll for
-events on one or more sockets using nrf_poll().
+events on one or more sockets using :c:func:`nrf_poll`.
 
 .. doxygengroup:: nrf_socket_api_poll
    :project: nrfxlib

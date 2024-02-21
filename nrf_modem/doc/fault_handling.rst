@@ -46,8 +46,8 @@ Socket APIs that require communication with the modem, return ``-1`` and set ``e
 
 Although the modem has crashed, any data which was stored by the Modem library, including data that was delivered to the Modem library by the modem, remains available until the Modem library is shut down.
 This includes incoming network data, which was received before the crash but has not been read by the application.
-The application can read that data as normal, using the :c:func:`recv` function.
-When no more data is available, the :c:func:`recv` function returns ``-1`` and sets ``errno`` to ``NRF_ESHUTDOWN``.
+The application can read that data as normal, using the :c:func:`nrf_recv` and the :c:func:`nrf_recvfrom` functions.
+When no more data is available, the :c:func:`nrf_recv` and the :c:func:`nrf_recvfrom` functions return ``-1`` and set ``errno`` to ``NRF_ESHUTDOWN``.
 
 Ongoing API calls
 *****************

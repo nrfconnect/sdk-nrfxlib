@@ -49,7 +49,7 @@ After enabling RAI, you control it using the :c:func:`nrf_setsockopt` function w
 Code examples
 *************
 
-The following code snippets illustrate some cases on how to apply RAI using the :c:func:`nrf_setsockopt()` function.
+The following code snippets illustrate some cases on how to apply RAI using the :c:func:`nrf_setsockopt` function.
 
 An example that shows how to use ``NRF_RAI_LAST`` when sending a UDP packet:
 
