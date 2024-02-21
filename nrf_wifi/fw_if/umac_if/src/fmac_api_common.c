@@ -1211,7 +1211,7 @@ out:
 }
 #endif /* CONFIG_NRF700X_RAW_DATA_TX || CONFIG_NRF700X_RAW_DATA_RX */
 
-#ifdef CONFIG_NRF700X_RAW_DATA_RX
+#if defined(CONFIG_NRF700X_RAW_DATA_RX) || defined(CONFIG_NRF700X_PROMISC_DATA_RX)
 enum nrf_wifi_status nrf_wifi_fmac_set_packet_filter(void *dev_ctx, unsigned char filter,
 						     unsigned char if_idx,
 						     unsigned short buffer_size)
@@ -1253,4 +1253,4 @@ enum nrf_wifi_status nrf_wifi_fmac_set_packet_filter(void *dev_ctx, unsigned cha
 out:
 	return status;
 }
-#endif /* CONFIG_NRF700X_RAW_DATA_RX */
+#endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */

@@ -73,7 +73,7 @@ enum nrf_wifi_fmac_if_carr_state {
 	NRF_WIFI_FMAC_IF_CARR_STATE_INVALID
 };
 
-#ifdef CONFIG_NRF700X_RAW_DATA_RX
+#if defined(CONFIG_NRF700X_RAW_DATA_RX) || defined(CONFIG_NRF700X_PROMISC_DATA_RX)
 /**
  * @brief Structure to hold raw rx packet information.
  *
@@ -90,7 +90,7 @@ struct raw_rx_pkt_header {
 	/** Data rate of the packet (MCS or Legacy). */
 	unsigned char rate;
 };
-#endif /* CONFIG_NRF700X_RAW_DATA_RX */
+#endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 
 /**
  * @brief Callback functions to be invoked by UMAC IF layer when a particular event occurs.
@@ -512,10 +512,10 @@ struct nrf_wifi_fmac_vif_ctx {
 	/** TX injection mode setting */
 	bool txinjection_mode;
 #endif /* CONFIG_NRF700X_RAW_DATA_TX || CONFIG_NRF700X_RAW_DATA_RX */
-#ifdef CONFIG_NRF700X_RAW_DATA_RX
+#if defined(CONFIG_NRF700X_RAW_DATA_RX) || defined(CONFIG_NRF700X_PROMISC_DATA_RX)
 	/** Filter setting for Monitor and Promiscuous modes */
 	unsigned char packet_filter;
-#endif /* CONFIG_NRF700X_RAW_DATA_RX */
+#endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 #ifdef CONFIG_NRF700X_PROMISC_DATA_RX
 	/** Promiscuous mode setting */
 	bool promisc_mode;

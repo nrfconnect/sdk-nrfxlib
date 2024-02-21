@@ -224,9 +224,9 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
 	struct nrf_wifi_fmac_buf_map_info *rx_buf_info = NULL;
 	struct nrf_wifi_fmac_rx_pool_map_info pool_info;
-#ifdef CONFIG_NRF700X_RAW_DATA_RX
+#if defined(CONFIG_NRF700X_RAW_DATA_RX) || defined(CONFIG_NRF700X_PROMISC_DATA_RX)
 	struct raw_rx_pkt_header raw_rx_hdr;
-#endif /* CONFIG_NRF700X_RAW_DATA_RX */
+#endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 	void *nwb = NULL;
 	void *nwb_data = NULL;
 	unsigned int num_pkts = 0;
