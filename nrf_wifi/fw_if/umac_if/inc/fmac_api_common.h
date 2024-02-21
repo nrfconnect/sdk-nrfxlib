@@ -344,7 +344,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_channel(void *dev_ctx,
 
 #endif /* CONFIG_NRF700X_RAW_DATA_TX || CONFIG_NRF700X_RAW_DATA_RX */
 
-#ifdef CONFIG_NRF700X_RAW_DATA_RX
+#if defined(CONFIG_NRF700X_RAW_DATA_RX) || (CONFIG_NRF700X_PROMISC_DATA_RX)
 /**
  * @brief Set packet filter settings
  * @param dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
@@ -360,7 +360,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_channel(void *dev_ctx,
 enum nrf_wifi_status nrf_wifi_fmac_set_packet_filter(void *dev_ctx, unsigned char filter,
 						     unsigned char if_idx,
 						     unsigned short buffer_size);
-#endif
+#endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 
 /**
  * @}
