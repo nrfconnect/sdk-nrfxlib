@@ -368,6 +368,13 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 		goto out;
 	}
 
+	fmac_dev_ctx->tx_pwr_ceil_params = nrf_wifi_osal_mem_alloc(fmac_dev_ctx->fpriv->opriv,
+								   sizeof(*tx_pwr_ceil_params));
+	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+			      fmac_dev_ctx->tx_pwr_ceil_params,
+			      tx_pwr_ceil_params,
+			      sizeof(*tx_pwr_ceil_params));
+
 	status = nrf_wifi_hal_dev_init(fmac_dev_ctx->hal_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
@@ -399,9 +406,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 			             sizeof(phy_rf_params));
 
 	status = nrf_wifi_fmac_rf_params_get(fmac_dev_ctx,
-						&phy_rf_params,
-						tx_pwr_ceil_params);
-
+						&phy_rf_params);
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 					"%s: RF parameters get failed",
@@ -435,6 +440,8 @@ void nrf_wifi_fmac_dev_deinit(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 {
 	nrf_wifi_hal_lock_rx(fmac_dev_ctx->hal_dev_ctx);
 	nrf_wifi_fmac_fw_deinit(fmac_dev_ctx);
+	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
+			       fmac_dev_ctx->tx_pwr_ceil_params);
 	nrf_wifi_hal_unlock_rx(fmac_dev_ctx->hal_dev_ctx);
 }
 

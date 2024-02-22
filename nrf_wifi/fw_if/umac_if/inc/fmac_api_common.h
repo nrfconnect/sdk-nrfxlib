@@ -242,8 +242,6 @@ enum nrf_wifi_status nrf_wifi_fmac_otp_mac_addr_get(struct nrf_wifi_fmac_dev_ctx
  * @brief Get the RF parameters to be programmed to the RPU.
  * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
  * @param rf_params Pointer to the address where the RF params information needs to be copied.
- * @param tx_pwr_ceil_params Pointer to the address where TX ceil information is available for
- *		   both frequency bands.
  *
  * This function is used to fetch RF parameters information from the RPU and
  *	    update the default RF parameter with the OTP values. The updated RF
@@ -253,9 +251,7 @@ enum nrf_wifi_status nrf_wifi_fmac_otp_mac_addr_get(struct nrf_wifi_fmac_dev_ctx
  */
 enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 					struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-					struct nrf_wifi_phy_rf_params *rf_params,
-					struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params);
-
+					struct nrf_wifi_phy_rf_params *rf_params);
 /**
  * @brief Set regulatory domain in RPU.
  * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.

@@ -613,8 +613,7 @@ out:
 
 enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 		struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-		struct nrf_wifi_phy_rf_params *phy_rf_params,
-		struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params)
+		struct nrf_wifi_phy_rf_params *phy_rf_params)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_fmac_otp_info otp_info;
@@ -622,6 +621,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 	int ret = -1;
 	/* If package_info is not written to OTP then the default value will be 0xFF. */
 	unsigned int package_info = 0xFFFFFFFF;
+	struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params;
 #if defined(CONFIG_BOARD_NRF7002DK_NRF7001_NRF5340_CPUAPP) || \
 	defined(CONFIG_BOARD_NRF7002DK_NRF5340_CPUAPP) || \
 	defined(CONFIG_BOARD_NRF5340DK_NRF5340_CPUAPP)
@@ -635,6 +635,8 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 				      __func__);
 		goto out;
 	}
+
+	tx_pwr_ceil_params = fmac_dev_ctx->tx_pwr_ceil_params;
 
 	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
 			      &otp_info,
