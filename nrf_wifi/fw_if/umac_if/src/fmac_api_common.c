@@ -622,12 +622,8 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 	/* If package_info is not written to OTP then the default value will be 0xFF. */
 	unsigned int package_info = 0xFFFFFFFF;
 	struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params;
-#if defined(CONFIG_BOARD_NRF7002DK_NRF7001_NRF5340_CPUAPP) || \
-	defined(CONFIG_BOARD_NRF7002DK_NRF5340_CPUAPP) || \
-	defined(CONFIG_BOARD_NRF5340DK_NRF5340_CPUAPP)
 	unsigned char backoff_2g_dsss = 0, backoff_2g_ofdm = 0;
 	unsigned char backoff_5g_lowband = 0, backoff_5g_midband = 0, backoff_5g_highband = 0;
-#endif
 
 	if (!fmac_dev_ctx || !phy_rf_params) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
