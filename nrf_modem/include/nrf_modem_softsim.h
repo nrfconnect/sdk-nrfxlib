@@ -35,7 +35,7 @@ enum nrf_modem_softsim_cmd {
 /** @brief Handle a SoftSIM request.
  *
  * @details This handler lets the application process a SoftSIM request.
- *          The application shall then call @ref nrf_modem_softsim_res with the response data
+ *          The application must then call @ref nrf_modem_softsim_res with the response data
  *          requested.
  *
  * @note This handler is executed in an interrupt service routine.

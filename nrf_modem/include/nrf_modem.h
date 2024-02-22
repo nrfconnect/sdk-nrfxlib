@@ -236,9 +236,8 @@ char *nrf_modem_build_version(void);
  * @retval -NRF_EINVAL Control region size is incorrect or missing handlers in @c init_params.
  * @retval -NRF_ENOTSUPP RPC version mismatch.
  * @retval -NRF_ETIMEDOUT Operation timed out.
- * @retval -NRF_ACCESS Modem firmware authentication failure.
  * @retval -NRF_EAGAIN Modem firmware update not executed due to insufficient voltage, try again.
- * @retval -NRF_EIO Modem firmware update failure. Modem must be reprogrammed.
+ * @retval -NRF_EIO Modem firmware update failure or modem fault during initialization.
  */
 int nrf_modem_init(const struct nrf_modem_init_params *init_params);
 

@@ -29,6 +29,8 @@ extern "C" {
 #define NRF_MODEM_OS_FOREVER -1
 /** Number of OS semaphores required. */
 #define NRF_MODEM_OS_NUM_SEM_REQUIRED 7
+/** Number of OS mutexes required. */
+#define NRF_MODEM_OS_NUM_MUTEX_REQUIRED 1
 
 enum log_level {
 	NRF_MODEM_LOG_LEVEL_NONE,
@@ -46,7 +48,7 @@ void nrf_modem_os_init(void);
 /**
  * @brief Deinitialize the glue layer.
  *
- * When shutdown is called, all pending calls to @c nrf_modem_os_timedwait shall exit
+ * When shutdown is called, all pending calls to @c nrf_modem_os_timedwait exit
  * and return -NRF_ESHUTDOWN.
  */
 void nrf_modem_os_shutdown(void);
@@ -91,9 +93,12 @@ void nrf_modem_os_busywait(int32_t usec);
 /**
  * @brief Put a thread to sleep for a specific time or until an event occurs.
  *
- * The thread is woken by a @c nrf_modem_event_notify call with the same @p context parameter,
- * or after the @p timeout has expired, whichever happens first. If the timeout has not expired,
- * the @p timeout parameter is updated to contain the amount of time left to sleep.
+ * The thread is woken if the timeout has expired and by a @c nrf_modem_event_notify call if
+ * * The @p context equals the event context.
+ * * The @p context is zero (thread wakes on all calls to event notify).
+ * * The event context is zero (wake all sleeping threads).
+ *
+ * The @p timeout parameter is updated to contain the amount of time left to sleep.
  *
  * @param context Library context.
  * @param[in, out] timeout Timeout in milliseconds, or @c NRF_MODEM_OS_FOREVER for no timeout.
@@ -109,8 +114,10 @@ int32_t nrf_modem_os_timedwait(uint32_t context, int32_t *timeout);
 /**
  * @brief Notify the application that an event has occurred.
  *
- * This function wakes up all threads sleeping in @c nrf_modem_os_timedwait
- * that have the same @p context, or all sleeping threads if @p context is zero.
+ * This function wakes up a thread sleeping in @c nrf_modem_os_timedwait if:
+ * * The thread context equals @p context.
+ * * The thread context is zero (thread wakes on all calls to event notify).
+ * * The @p context is zero (wake all sleeping threads).
  *
  * @param context Library context.
  */
@@ -142,8 +149,8 @@ bool nrf_modem_os_is_in_isr(void);
 /**
  * @brief Initialize a semaphore.
  *
- * The function shall allocate and initialize a semaphore and return its address
- * as an output. If an address of an already allocated semaphore is provided as
+ * The function initializes a semaphore and returns its address as an output.
+ * If an address of an already allocated semaphore is provided as
  * an input, the allocation part is skipped and the semaphore is only reinitialized.
  *
  * @param[in, out] sem The address of the semaphore.
@@ -171,7 +178,7 @@ void nrf_modem_os_sem_give(void *sem);
  *		  @c NRF_MODEM_OS_FOREVER indicates infinite timeout.
  *		  @c NRF_MODEM_OS_NO_WAIT indicates no timeout.
  *
- * @note @a timeout shall be set to NRF_MODEM_OS_NO_WAIT if called from ISR.
+ * @note @a timeout must be set to NRF_MODEM_OS_NO_WAIT if called from ISR.
  *
  * @retval 0 on success.
  * @retval -NRF_EAGAIN If the semaphore could not be taken.
@@ -185,6 +192,43 @@ int nrf_modem_os_sem_take(void *sem, int timeout);
  * @returns Current semaphore count.
  */
 unsigned int nrf_modem_os_sem_count_get(void *sem);
+
+/**
+ * @brief Initialize a mutex.
+ *
+ * The function shall allocate and initialize a mutex and return its address
+ * as an output. If an address of an already allocated mutex is provided as
+ * an input, the allocation part is skipped and the mutex is only reinitialized.
+ *
+ * @param[in, out] mutex The address of the mutex.
+ *
+ * @returns 0 on success, a negative errno otherwise.
+ */
+int nrf_modem_os_mutex_init(void **mutex);
+
+/**
+ * @brief Lock a mutex.
+ *
+ * @param mutex The mutex.
+ * @param timeout Timeout in milliseconds.
+ *		  @c NRF_MODEM_OS_FOREVER indicates infinite timeout.
+ *		  @c NRF_MODEM_OS_NO_WAIT indicates no timeout.
+ *
+ * @retval 0 on success.
+ * @retval -NRF_EAGAIN If the mutex could not be taken.
+ */
+int nrf_modem_os_mutex_lock(void *mutex, int timeout);
+
+/**
+ * @brief Unlock a mutex.
+ *
+ * @param mutex The mutex.
+ *
+ * @retval 0 on success.
+ * @retval -NRF_EPERM if the current thread does not own the mutex.
+ * @retval -NRF_EINVAL if the mutex is not locked.
+ */
+int nrf_modem_os_mutex_unlock(void *mutex);
 
 /**
  * @brief Generic logging procedure.

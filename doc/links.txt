@@ -54,6 +54,8 @@
 
 .. _`coex interface of nRF9160`:  https://infocenter.nordicsemi.com/index.jsp?topic=%2Fps_nrf9160%2Fip%2Fradio_lte%2Fdoc%2Fmagpio_if.html
 
+.. _`Revision Identification +CGMR`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/general/cgmr.html
+
 .. ### Source: www.nordicsemi.com
 
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#0B34B59935AF4AFCB7AB93E9646C1F53
@@ -106,3 +108,7 @@
 .. _`nRF Connect for Desktop`: https://www.nordicsemi.com/Products/Development-tools/nRF-Connect-for-Desktop
 
 .. _`nPM1300 Evaluation Kit`: https://infocenter.nordicsemi.com/
+
+.. _`Wireshark`: https://www.wireshark.org/
+
+.. _`3GPP TS 24.301 Technical Specification`: https://www.3gpp.org/DynaReport/24301.htm

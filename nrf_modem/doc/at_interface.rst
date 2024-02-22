@@ -219,6 +219,35 @@ In this case, the application need not provide any intermediate buffers and can 
 Conversely, :c:func:`nrf_modem_at_cmd` is the only function in the AT interface that copies the whole response of the modem from the shared memory into the provided input buffer, which is owned by the application.
 Therefore, this function can be used when the application needs the whole AT command response, as received from the modem, or in those cases when the stack requirements of :c:func:`nrf_modem_at_scanf` are too high for the calling thread, or when parsing the response using a :c:func:`scanf` format is hard.
 
+CFUN handler
+************
+
+The Modem library allows the application to be notified on functional mode changes in the modem by adding a CFUN handler through the :c:func:`nrf_modem_at_cfun_handler_set` function.
+The handler is called after a CFUN AT command is successfully processed by the modem.
+
+.. note::
+   The CFUN handler is not supported with :c:func:`nrf_modem_at_cmd_async`.
+
+The following code snippet shows how to define and set a CFUN handler:
+
+.. code-block:: c
+
+	static void cfun_callback(int mode)
+	{
+		printk("CFUN changed to %d\n", mode);
+
+		if (mode == 0) {
+			/* Resubscribe to network registration status notifications. */
+			nrf_modem_at_printf("AT+CEREG=1");
+		}
+	}
+
+	nrf_modem_at_cfun_handler_set(cfun_callback);
+
+.. important::
+   If you are building an |NCS| application, do not use the :c:func:`nrf_modem_at_cfun_handler_set` function to register your callback.
+   Instead, use the :c:macro:`NRF_MODEM_LIB_ON_CFUN` macro to register functional mode changes where you need them in your application, to ensure compatibility with other |NCS| libraries.
+
 Custom AT commands
 ******************
 

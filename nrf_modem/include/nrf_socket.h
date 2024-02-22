@@ -187,7 +187,7 @@ extern "C" {
 
 /** @brief
  * Write-only socket option to select which ciphersuites to use.
- * This option accepts a prioritized list of @sa nrf_sec_cipher_t with selected cipher suites.
+ * This option accepts a prioritized array of selected cipher suites.
  * See @ref nrf_socket_tls_cipher_suites for a list of allowed values.
  */
 #define NRF_SO_SEC_CIPHERSUITE_LIST 3
@@ -201,22 +201,19 @@ extern "C" {
 
 /** @brief
  * Socket option to set peer verification level.
- * See @ref nrf_socket_sec_peer_verify_options for a list of allowed values of type
- * @sa nrf_sec_peer_verify_t.
+ * See @ref nrf_socket_sec_peer_verify_options for a list of allowed values.
  */
 #define NRF_SO_SEC_PEER_VERIFY 5
 
 /** @brief
  * Write-only socket option to set role for the connection.
- * See @ref nrf_socket_sec_roles for a list of allowed values of type
- * @sa nrf_sec_role_t.
+ * See @ref nrf_socket_sec_roles for a list of allowed values.
  */
 #define NRF_SO_SEC_ROLE 6
 
 /** @brief
  * Socket option to control TLS session caching.
- * See @ref nrf_socket_session_cache_options for a list of allowed values of type
- * @sa nrf_sec_session_cache_t.
+ * See @ref nrf_socket_session_cache_options for a list of allowed values.
  */
 #define NRF_SO_SEC_SESSION_CACHE 12
 
@@ -250,6 +247,9 @@ extern "C" {
 
 /** @brief
  * Socket option to save DTLS connection.
+ *
+ * Serializes the socket and compresses it. After the socket option is successfully called, you must
+ * call @c NRF_SO_SEC_DTLS_CONN_LOAD before continuing to communicate on the socket.
  *
  * @note This socket option is only supported with Modem firmware v1.3.5 and newer.
  */
@@ -295,6 +295,8 @@ extern "C" {
 #define NRF_SO_IPV6_ECHO_REPLY 32
 /** Send data related to an exceptional event. */
 #define NRF_SO_EXCEPTIONAL_DATA 33
+/** Keep socket open when its PDN connection is lost. */
+#define NRF_SO_KEEPOPEN 34
 /** Bind a socket to a Packet Data Network ID. */
 #define NRF_SO_BINDTOPDN 40
 /** Configurable TCP server session timeout in minutes.
@@ -303,10 +305,18 @@ extern "C" {
 #define NRF_SO_TCP_SRV_SESSTIMEO 55
 /** Set a callback for poll events */
 #define NRF_SO_POLLCB 60
+/** Release Assistance Indication (RAI).
+ *  See @ref nrf_socket_options_rai for allowed values.
+ */
+#define NRF_SO_RAI 61
 
 /** Release Assistance Indication.
  *  Indicate that the application does not intend to send more data.
  *  This socket option applies immediately and lets the modem exit connected mode more quickly.
+ *
+ *  @note This socket option requires the socket to be connected.
+ *
+ *  @deprecated since v2.6.0, use @ref NRF_SO_RAI with value @ref NRF_RAI_NO_DATA instead.
  */
 #define NRF_SO_RAI_NO_DATA 50
 
@@ -314,6 +324,8 @@ extern "C" {
  *  Indicate that the application does not intend to send more data
  *  after the next call to send() or sendto().
  *  This lets the modem exit connected mode more quickly after sending the data.
+ *
+ *  @deprecated since v2.6.0, use @ref NRF_SO_RAI with value @ref NRF_RAI_LAST instead.
  */
 #define NRF_SO_RAI_LAST 51
 
@@ -321,18 +333,24 @@ extern "C" {
  *  Indicate that the application is expecting to receive just one data packet
  *  after the next call to send() or sendto().
  *  This lets the modem exit connected mode more quickly after having received the data.
+ *
+ *  @deprecated since v2.6.0, use @ref NRF_SO_RAI with value @ref NRF_RAI_ONE_RESP instead.
  */
 #define NRF_SO_RAI_ONE_RESP 52
 
 /** Release Assistance Indication.
  *  Indicate that the socket is in active use by a client application.
  *  This lets the modem stay in connected mode longer.
+ *
+ *  @deprecated since v2.6.0, use @ref NRF_SO_RAI with value @ref NRF_RAI_ONGOING instead.
  */
 #define NRF_SO_RAI_ONGOING 53
 
 /** Release Assistance Indication.
  *  Indicate that the socket is in active use by a server application.
  *  This lets the modem stay in connected mode longer.
+ *
+ *  @deprecated since v2.6.0, use @ref NRF_SO_RAI with value @ref NRF_RAI_WAIT_MORE instead.
  */
 #define NRF_SO_RAI_WAIT_MORE 54
 /** @} */
@@ -387,8 +405,41 @@ extern "C" {
 /** @} */
 
 /**
+ * @defgroup nrf_socket_options_rai Socket option values for RAI
+ * @brief Release Assistance Indication (RAI).
+ * @ingroup nrf_socket
+ * @{
+ */
+/** Indicate that the application does not intend to send more data.
+ *  This applies immediately and lets the modem exit connected mode more
+ *  quickly.
+ *
+ *  @note This requires the socket to be connected.
+ */
+#define NRF_RAI_NO_DATA 1
+/** Indicate that the application does not intend to send more data
+ *  after the next call to send() or sendto().
+ *  This lets the modem exit connected mode more quickly after sending the data.
+ */
+#define NRF_RAI_LAST 2
+/** Indicate that the application is expecting to receive just one data packet
+ *  after the next call to send() or sendto().
+ *  This lets the modem exit connected mode more quickly after having received the data.
+ */
+#define NRF_RAI_ONE_RESP 3
+/** Indicate that the socket is in active use by a client application.
+ *  This lets the modem stay in connected mode longer.
+ */
+#define NRF_RAI_ONGOING 4
+/** Indicate that the socket is in active use by a server application.
+ *  This lets the modem stay in connected mode longer.
+ */
+#define NRF_RAI_WAIT_MORE 5
+/** @} */
+
+/**
  * @defgroup nrf_socket_sec_peer_verify_options TLS peer verification options
- * @brief Allowed TLS peer verification options
+ * @brief Allowed TLS peer verification options. By default, peer verification is optional.
  *
  * @ingroup nrf_socket_tls
  * @{
@@ -416,7 +467,8 @@ extern "C" {
 
 /**
  * @defgroup nrf_socket_session_cache_options TLS session cache options
- * @brief Allowed options for the TLS session cache.
+ * @brief Allowed options for the TLS session cache. By default, the session cache is enabled.
+ * @note Session cache may not be used if the peer does not support it.
  *
  * @ingroup nrf_socket_tls
  * @{
@@ -455,7 +507,7 @@ extern "C" {
 
 /**
  * @defgroup nrf_socket_tls_cipher_suites TLS Cipher suites
- * @brief Allowed cipher suites for the nRF modem.
+ * @brief Allowed IANA cipher suites for the nRF modem.
  * @ingroup nrf_socket_tls
  * @{
  */
@@ -487,11 +539,21 @@ extern "C" {
  * @ingroup nrf_socket_tls
  * @{
  */
-/** disabled */
+
+/**
+ * Disabled - The connection ID extension is not included in the client hello, so the
+ * DTLS connection ID is not used.
+ */
 #define NRF_SO_SEC_DTLS_CID_DISABLED 0
-/** supported */
+/**
+ * Supported - The connection ID extension with a zero-length CID is included in the client hello,
+ * so the modem will accept a DTLS connection ID from the server.
+ */
 #define NRF_SO_SEC_DTLS_CID_SUPPORTED 1
-/**  enabled */
+/**
+ * Enabled - The connection ID extension with a valid CID is included in the client hello, so the
+ * modem will request DTLS connection ID support.
+ */
 #define NRF_SO_SEC_DTLS_CID_ENABLED 2
 /** @} */
 
@@ -501,13 +563,23 @@ extern "C" {
  * @ingroup nrf_socket_tls
  * @{
  */
-/** disabled */
+
+/**
+ * Disabled - The DTLS connection ID is not included in DTLS records sent to and from the modem.
+ * This status is returned before the DTLS handshake is complete.
+ */
 #define NRF_SO_SEC_DTLS_CID_STATUS_DISABLED 0
-/** downlink */
+/**
+ * Downlink - The DTLS connection ID is included only in DTLS records sent to the modem.
+ */
 #define NRF_SO_SEC_DTLS_CID_STATUS_DOWNLINK 1
-/** uplink */
+/**
+ * Uplink - The DTLS connection ID is included only in DTLS records sent from the modem.
+ */
 #define NRF_SO_SEC_DTLS_CID_STATUS_UPLINK 2
-/** bidirectional */
+/**
+ * Bidirectional - The DTLS connection ID is included in DTLS records sent to and from the modem.
+ */
 #define NRF_SO_SEC_DTLS_CID_STATUS_BIDIRECTIONAL 3
 /** @} */
 
@@ -521,6 +593,42 @@ extern "C" {
 #define NRF_SO_SEC_HANDSHAKE_STATUS_FULL 0
 /** cached */
 #define NRF_SO_SEC_HANDSHAKE_STATUS_CACHED 1
+/** @} */
+
+/**
+ * @defgroup nrf_so_sec_tag_tls_decrypt Security tags for decrypting TLS traffic
+ * @brief Reserved security tags used for decrypting TLS traffic using Nordic tools.
+ * @ingroup nrf_socket_tls
+ *
+ * Transport Layer Security (TLS) traffic can be decrypted with Nordic tools if the TLS
+ * session is created using certificates stored to security tags @ref NRF_SEC_TAG_TLS_DECRYPT_0 to
+ * @ref NRF_SEC_TAG_TLS_DECRYPT_19.
+ * These security tags must be used only for test and development purposes.
+ *
+ * @note Supported by modem firmware v2.0.0 or later.
+ * @{
+ */
+#define NRF_SEC_TAG_TLS_DECRYPT_BASE 2147483648
+#define NRF_SEC_TAG_TLS_DECRYPT_0  (NRF_SEC_TAG_TLS_DECRYPT_BASE + 0)
+#define NRF_SEC_TAG_TLS_DECRYPT_1  (NRF_SEC_TAG_TLS_DECRYPT_BASE + 1)
+#define NRF_SEC_TAG_TLS_DECRYPT_2  (NRF_SEC_TAG_TLS_DECRYPT_BASE + 2)
+#define NRF_SEC_TAG_TLS_DECRYPT_3  (NRF_SEC_TAG_TLS_DECRYPT_BASE + 3)
+#define NRF_SEC_TAG_TLS_DECRYPT_4  (NRF_SEC_TAG_TLS_DECRYPT_BASE + 4)
+#define NRF_SEC_TAG_TLS_DECRYPT_5  (NRF_SEC_TAG_TLS_DECRYPT_BASE + 5)
+#define NRF_SEC_TAG_TLS_DECRYPT_6  (NRF_SEC_TAG_TLS_DECRYPT_BASE + 6)
+#define NRF_SEC_TAG_TLS_DECRYPT_7  (NRF_SEC_TAG_TLS_DECRYPT_BASE + 7)
+#define NRF_SEC_TAG_TLS_DECRYPT_8  (NRF_SEC_TAG_TLS_DECRYPT_BASE + 8)
+#define NRF_SEC_TAG_TLS_DECRYPT_9  (NRF_SEC_TAG_TLS_DECRYPT_BASE + 9)
+#define NRF_SEC_TAG_TLS_DECRYPT_10 (NRF_SEC_TAG_TLS_DECRYPT_BASE + 10)
+#define NRF_SEC_TAG_TLS_DECRYPT_11 (NRF_SEC_TAG_TLS_DECRYPT_BASE + 11)
+#define NRF_SEC_TAG_TLS_DECRYPT_12 (NRF_SEC_TAG_TLS_DECRYPT_BASE + 12)
+#define NRF_SEC_TAG_TLS_DECRYPT_13 (NRF_SEC_TAG_TLS_DECRYPT_BASE + 13)
+#define NRF_SEC_TAG_TLS_DECRYPT_14 (NRF_SEC_TAG_TLS_DECRYPT_BASE + 14)
+#define NRF_SEC_TAG_TLS_DECRYPT_15 (NRF_SEC_TAG_TLS_DECRYPT_BASE + 15)
+#define NRF_SEC_TAG_TLS_DECRYPT_16 (NRF_SEC_TAG_TLS_DECRYPT_BASE + 16)
+#define NRF_SEC_TAG_TLS_DECRYPT_17 (NRF_SEC_TAG_TLS_DECRYPT_BASE + 17)
+#define NRF_SEC_TAG_TLS_DECRYPT_18 (NRF_SEC_TAG_TLS_DECRYPT_BASE + 18)
+#define NRF_SEC_TAG_TLS_DECRYPT_19 (NRF_SEC_TAG_TLS_DECRYPT_BASE + 19)
 /** @} */
 
 /**
@@ -554,7 +662,7 @@ typedef uint16_t nrf_in_port_t;
  *
  * @details For a list of valid values, refer to nrf_socket_families.
  */
-typedef unsigned int nrf_sa_family_t;
+typedef unsigned short int nrf_sa_family_t;
 
 /**
  * @brief IPv6 address.
@@ -595,12 +703,10 @@ struct nrf_sockaddr_in6 {
 	nrf_sa_family_t sin6_family;
 	/** Port, in network byte order. */
 	nrf_in_port_t sin6_port;
-	/** IPv6 flow info parameters. Not used. */
-	uint32_t sin6_flowinfo;
 	/** IPv6 address. */
 	struct nrf_in6_addr sin6_addr;
 	/** IPv6 scope ID. Not used. */
-	uint32_t sin6_scope_id;
+	uint8_t sin6_scope_id;
 };
 
 /**
@@ -627,7 +733,7 @@ typedef uint32_t nrf_nfds_t;
  */
 struct nrf_sockaddr {
 	/** Socket address family */
-	int sa_family;
+	nrf_sa_family_t sa_family;
 	/** Socket address */
 	char sa_data[];
 };
@@ -640,7 +746,7 @@ struct nrf_sockaddr {
 #define NRF_AI_NUMERICSERV 0x400
 /** Assume `service` contains a Packet Data Network (PDN) ID.
  *  When specified together with the NRF_AI_NUMERICSERV flag,
- *  `service` shall be formatted as follows: "port:pdn_id"
+ *  `service` must be formatted as follows: "port:pdn_id"
  *  where "port" is the port number and "pdn_id" is the PDN ID.
  *  Example: "8080:1", port 8080 PDN ID 1.
  *  Example: "42:0", port 42 PDN ID 0.
@@ -698,6 +804,8 @@ struct nrf_ifaddrs {
  * TLS role for the connection.
  *  - 0 - TLS client role.
  *  - 1 - TLS server role.
+ *
+ * @deprecated since v2.6.0, use type int instead.
  */
 typedef uint32_t nrf_sec_role_t;
 
@@ -707,7 +815,7 @@ typedef uint32_t nrf_sec_role_t;
  * More than one security tags may be used on a socket.
  * If more than one tag is used on the socket, pass an array of security tags.
  *
- * A maximum of 8 tags can be set per socket.
+ * A maximum of @ref NRF_SOCKET_TLS_MAX_SEC_TAG_LIST_SIZE tags can be set per socket.
  */
 typedef uint32_t nrf_sec_tag_t;
 
@@ -718,6 +826,8 @@ typedef uint32_t nrf_sec_tag_t;
  *
  * By default, the session cache is enabled.
  * @note Session cache, may not be used if the peer does not support it.
+ *
+ * @deprecated since v2.6.0, use type int instead.
  */
 typedef uint32_t nrf_sec_session_cache_t;
 
@@ -728,11 +838,15 @@ typedef uint32_t nrf_sec_session_cache_t;
  *  - 2 - Required.
  *
  * By default, peer verification is optional.
+ *
+ * @deprecated since v2.6.0, use type int instead.
  */
 typedef uint32_t nrf_sec_peer_verify_t;
 
 /** @brief
  * An IANA cipher suite identifier.
+ *
+ * @deprecated since v2.6.0, use type int instead.
  */
 typedef uint32_t nrf_sec_cipher_t;
 
@@ -750,7 +864,7 @@ typedef uint32_t nrf_sec_cipher_t;
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/socket.html">
  * POSIX.1-2017 article</a> for normative description.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_socket(int family, int type, int protocol);
@@ -762,7 +876,7 @@ int nrf_socket(int family, int type, int protocol);
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/close.html">
  * POSIX.1-2017 article</a> for normative description.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_close(int fildes);
@@ -793,10 +907,10 @@ int nrf_fcntl(int fd, int cmd, int flags);
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/connect.html">
  * POSIX.1-2017 article</a> for normative description.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  *
- * In addition, an asynchronous connection attempt shall fail and set NRF_SO_ERROR if:
+ * In addition, an asynchronous connection attempt will fail and set NRF_SO_ERROR if:
  * - [NRF_EBUSY] Another TLS handshake was ongoing.
  */
 int nrf_connect(int socket, const struct nrf_sockaddr *address, nrf_socklen_t address_len);
@@ -808,7 +922,7 @@ int nrf_connect(int socket, const struct nrf_sockaddr *address, nrf_socklen_t ad
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/send.html">
  * POSIX.1-2017 article</a> for normative description.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  * - [NRF_ECANCELED] Operation canceled because of APN rate control.
  * - [NRF_ENOMEM] TCP stream interrupted because of no heap memory.
@@ -823,7 +937,7 @@ ssize_t nrf_send(int socket, const void *buffer, size_t length, int flags);
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/sendto.html">
  * POSIX.1-2017 article</a> for normative description.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  * - [NRF_ECANCELED] Operation canceled because of APN rate control.
  * - [NRF_ENOMEM] TCP stream interrupted because of no heap memory.
@@ -839,7 +953,7 @@ ssize_t nrf_sendto(int socket, const void *message, size_t length, int flags,
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recv.html">
  * POSIX.1-2017 article</a> for normative description.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  * - [NRF_ENOMEM] TCP stream interrupted because of no heap memory.
  */
@@ -852,7 +966,7 @@ ssize_t nrf_recv(int socket, void *buffer, size_t length, int flags);
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/recvfrom.html">
  * POSIX.1-2017 article</a> for normative description.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  * - [NRF_ENOMEM] TCP stream interrupted because of no heap memory.
  */
@@ -934,8 +1048,11 @@ int nrf_poll(struct nrf_pollfd fds[], nrf_nfds_t nfds, int timeout);
  * @note In Modem library this function supports a subset
  *       of socket options described by POSIX, but also some additional options.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_EAGAIN] The option could not be set when requested, try again.
+ * - [NRF_EDESTADDRREQ] The socket option @ref NRF_SO_RAI_NO_DATA or the socket option
+ *                      @ref NRF_SO_RAI with value @ref NRF_RAI_NO_DATA cannot be set
+ *                      on a socket that is not connected.
  * - [NRF_EOPNOTSUPP] The option is not supported with the current socket configuration.
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
@@ -962,7 +1079,7 @@ int nrf_getsockopt(int socket, int level, int option_name,
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/bind.html">
  * POSIX.1-2017 article</a> for normative description.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_bind(int socket, const struct nrf_sockaddr *address, nrf_socklen_t address_len);
@@ -974,7 +1091,7 @@ int nrf_bind(int socket, const struct nrf_sockaddr *address, nrf_socklen_t addre
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/listen.html">
  * POSIX.1-2017 article</a> for normative description.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_listen(int sock, int backlog);
@@ -986,7 +1103,8 @@ int nrf_listen(int sock, int backlog);
  * See <a href="https://pubs.opengroup.org/onlinepubs/9699919799/functions/accept.html">
  * POSIX.1-2017 article</a> for normative description.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
+ * - [NRF_EAGAIN] The socket's NRF_SO_RCVTIMEO timeout was exceeded.
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_accept(int socket, struct nrf_sockaddr *restrict address,
@@ -1032,7 +1150,7 @@ const char *nrf_inet_ntop(int af, const void *restrict src, char *restrict dst, 
  * attempts to resolve and return the IPv4 family address. This applies regardless of the PDN
  * supporting IPv6 or not.
  *
- * In addition, the function shall return -1 and set the following errno:
+ * In addition, the function may return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
 int nrf_getaddrinfo(const char *restrict nodename,
@@ -1095,7 +1213,7 @@ void nrf_freeifaddrs(struct nrf_ifaddrs *ifa);
  * @retval 0  On success
  * @retval -1 On error, and set @c errno to indicate the reason.
  *
- * The function shall return -1 and set the following errno:
+ * The function may return -1 and set the following errno:
  * - [NRF_EPERM] The Modem library is not initialized.
  * - [NRF_EAFNOSUPPORT] The implementation does not support the specified address family.
  * - [NRF_EINVAL] Invalid parameters.
