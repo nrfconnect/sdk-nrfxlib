@@ -100,7 +100,7 @@ KMU/KDR APIs
 
 
 .. _crypto_api_nrf_oberon:
-   
+
 nrf_oberon crypto library
 *************************
 
@@ -108,10 +108,24 @@ nrf_oberon crypto library
    :project: nrfxlib
    :members:
 
-AES - Advanced Encryption Standard APIs
-=======================================
+AES - Advanced Encryption Standard
+==================================
 
 .. doxygengroup:: ocrypto_aes
+   :project: nrfxlib
+   :members:
+
+AES-CBC - AES Cipher Block Chaining Mode
+----------------------------------------
+
+.. doxygengroup:: ocrypto_aes_cbc
+   :project: nrfxlib
+   :members:
+
+AES-CBC - AES CCipher Block Chaining Mode with PKCS7 padding
+------------------------------------------------------------
+
+.. doxygengroup:: ocrypto_aes_cbc_pkcs7
    :project: nrfxlib
    :members:
 
@@ -122,15 +136,36 @@ AES-CTR - AES Counter Mode
    :project: nrfxlib
    :members:
 
-AES EAX APIs
+AES EAX Mode
 ------------
 
 .. doxygengroup:: ocrypto_aes_eax
    :project: nrfxlib
    :members:
 
-AES GCM - AES Galois/Counter Mode APIs
---------------------------------------
+AES-CBC - AES Electronic Code Book Mode
+---------------------------------------
+
+.. doxygengroup:: ocrypto_aes_ecb
+   :project: nrfxlib
+   :members:
+
+AES-CCM - AES Cipher-based Message Authentication Code
+------------------------------------------------------
+
+.. doxygengroup:: ocrypto_aes_cmac
+   :project: nrfxlib
+   :members:
+
+AES-CCM - AES Counter with CBC-MAC Mode
+---------------------------------------
+
+.. doxygengroup:: ocrypto_aes_ccm
+   :project: nrfxlib
+   :members:
+
+AES GCM - AES Galois/Counter Mode
+---------------------------------
 
 .. doxygengroup:: ocrypto_aes_gcm
    :project: nrfxlib
@@ -150,68 +185,98 @@ ChaCha20-Poly1305
    :project: nrfxlib
    :members:
 
-ChaCha20-Poly1305 APIs
-----------------------
+ChaCha20-Poly1305
+-----------------
 
 .. doxygengroup:: ocrypto_chacha_poly_inc
    :project: nrfxlib
    :members:
 
-ChaCha20 APIs
--------------
+ChaCha20
+--------
 
 .. doxygengroup:: ocrypto_chacha
    :project: nrfxlib
    :members:
 
-Constant time APIs
-==================
+Constant time
+=============
 
 .. doxygengroup:: ocrypto_constant_time
    :project: nrfxlib
    :members:
 
-ECC secp256r1 low-level APIs
-============================
+ECC secp224r1 low-level
+=======================
+
+.. doxygengroup:: ocrypto_p224
+   :project: nrfxlib
+   :members:
+
+ECC secp256r1 low-level
+=======================
 
 .. doxygengroup:: ocrypto_p256
    :project: nrfxlib
    :members:
 
-ECC Curve25519 low-level APIs
-=============================
+ECC Curve25519 low-level
+========================
 
 .. doxygengroup:: ocrypto_curve25519
    :project: nrfxlib
    :members:
 
-ECDH APIs
-=========
-
-.. doxygengroup:: ocrypto_ecdh_p256
-   :project: nrfxlib
-   :members:
+ECDH
+====
 
 .. doxygengroup:: ocrypto_ecdh_p224
    :project: nrfxlib
    :members:
 
-
-ECDSA APIs
-==========
-
-.. doxygengroup:: ocrypto_ecdsa_p256
+.. doxygengroup:: ocrypto_ecdh_p256
    :project: nrfxlib
    :members:
+
+.. doxygengroup:: ocrypto_ecdh_p384
+   :project: nrfxlib
+   :members:
+
+ECDSA
+=====
 
 .. doxygengroup:: ocrypto_ecdsa_p224
    :project: nrfxlib
    :members:
 
-Ed25519 APIs
-=============
+.. doxygengroup:: ocrypto_ecdsa_p256
+   :project: nrfxlib
+   :members:
+
+.. doxygengroup:: ocrypto_ecdsa_p384
+   :project: nrfxlib
+   :members:
+
+.. doxygengroup:: ocrypto_ecdsa_p521
+   :project: nrfxlib
+   :members:
+
+EC-JPAKE
+========
+
+.. doxygengroup:: ocrypto_ecjpake
+   :project: nrfxlib
+   :members:
+
+
+Ed25519
+=======
 
 .. doxygengroup:: ocrypto_ed25519
+   :project: nrfxlib
+   :members:
+
+.. doxygengroup:: ocrypto_ed25519ph
    :project: nrfxlib
    :members:
 
@@ -222,15 +287,15 @@ HKDF - HMAC based Key Derivation Function
    :project: nrfxlib
    :members:
 
-HKDF APIs using SHA-256
------------------------
+HKDF using SHA-256
+------------------
 
 .. doxygengroup:: ocrypto_hkdf_sha256
    :project: nrfxlib
    :members:
 
-HKDF APIs using SHA-512
------------------------
+HKDF using SHA-512
+------------------
 
 .. doxygengroup:: ocrypto_hkdf_512
    :project: nrfxlib
@@ -243,17 +308,24 @@ HMAC - Hash-based Aessage Authentication Code
    :project: nrfxlib
    :members:
 
-HMAC APIs using SHA-256
------------------------
+HMAC using SHA-256
+------------------
 
 .. doxygengroup:: ocrypto_hmac_sha256
    :project: nrfxlib
    :members:
 
-HMAC APIs using SHA-512
------------------------
+HMAC using SHA-512
+------------------
 
 .. doxygengroup:: ocrypto_hmac_sha512
+   :project: nrfxlib
+   :members:
+
+PBKDF2
+===========
+
+.. doxygengroup:: ocrypto_pbkdf2
    :project: nrfxlib
    :members:
 
@@ -262,46 +334,84 @@ RSA - Rivest-Shamir-Adleman algorithm
 
 .. doxygengroup:: ocrypto_rsa
    :project: nrfxlib
-   :members:   
+   :members:
 
-RSA APIs
+RSA
 --------
 
 .. doxygengroup:: ocrypto_rsa_api
    :project: nrfxlib
-   :members:   
+   :members:
 
-RSA key APIs
+RSA key
 ------------
 
 .. doxygengroup:: ocrypto_rsa_key
    :project: nrfxlib
-   :members:   
+   :members:
 
-SHA-256 APIs
-============
+SHA Hashing algorithms
+======================
+
+SHA-1
+-----
+
+.. doxygengroup:: ocrypto_sha_1
+   :project: nrfxlib
+   :members:
+
+SHA-224
+-------
+
+.. doxygengroup:: ocrypto_sha_224
+   :project: nrfxlib
+   :members:
+
+SHA-256
+-------
 
 .. doxygengroup:: ocrypto_sha_256
    :project: nrfxlib
    :members:
 
-SHA-512 APIs
-============
+SHA-256
+-------
+
+.. doxygengroup:: ocrypto_sha_384
+   :project: nrfxlib
+   :members:
+
+SHA-512
+-------
 
 .. doxygengroup:: ocrypto_sha_512
    :project: nrfxlib
    :members:
 
-SRP - Secure Remote Password APIs
-=================================
+SPAKE2+
+=======
+
+.. doxygengroup:: ocrypto_spake2p
+   :project: nrfxlib
+   :members:
+
+SRP - Secure Remote Password
+============================
 
 .. doxygengroup:: ocrypto_srp
    :project: nrfxlib
    :members:
 
-SRPT - Secure Real-Time Transport Protocol APIs
-===============================================
+SRPT - Secure Real-Time Transport Protocol
+==========================================
 
 .. doxygengroup:: ocrypto_srtp
+   :project: nrfxlib
+   :members:
+
+ocrypto internal types
+======================
+
+.. doxygengroup:: ocrypto_types
    :project: nrfxlib
    :members:
