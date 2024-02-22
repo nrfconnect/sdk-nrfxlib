@@ -482,6 +482,8 @@ struct nrf_wifi_tx_pwr_ceil_params {
 	 *  Resolution is 0.25dBm.
 	 */
 	unsigned char max_pwr_2g_mcs7;
+
+#ifndef CONFIG_NRF70_2_4G_ONLY
 	/** Maximum power permitted while transmitting MCS0 rate in 5G lowband.
 	 * Low band corresponds to ch: 36 to 64 Resolution is 0.25dBm.
 	 */
@@ -506,6 +508,7 @@ struct nrf_wifi_tx_pwr_ceil_params {
 	 * High band corresponds to ch: 136 to 177, resolution is 0.25dBm.
 	 */
 	unsigned char max_pwr_5g_high_mcs7;
+#endif /* CONFIG_NRF70_2_4G_ONLY */
 } __NRF_WIFI_PKD;
 
 /* FT Prog version info */
