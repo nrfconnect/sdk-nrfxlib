@@ -11,17 +11,69 @@ This page describes how to integrate the Multiprotocol Service Layer (MPSL) into
 The descriptions are valid for both RTOS and RTOS-free environments.
 
 For the nRF53 Series, the requirements described are only relevant for applications running alongside the MPSL on the network processor.
+For the nRF54H Series, some peripherals in the global domain are reserved so the requirements described here are relevant for all processors.
 
-The following peripherals are owned by MPSL and must not be accessed directly by the application:
+Several peripherals are owned by MPSL and must not be accessed directly by the application.
+They are listed below, separated into instances that MPSL enables interrupts for, and ones it does not.
+See the :ref:`mpsl_lib_interrupt_config` section for more information on interrupts.
 
- * ``RTC0``
- * ``TIMER0``
- * ``TIMER1`` (for the nRF53 Series)
- * ``RADIO``
- * ``CLOCK``
- * ``TEMP``
- * PPI channel: ``19``, ``30``, ``31`` (for the nRF52 Series)
- * DPPI channels: ``0``, ``1``, ``2`` (for the nRF53 Series)
+For the nRF52 Series:
+  Interrupts:
+
+  * ``RTC0``
+  * ``TIMER0``
+
+  No interrupts:
+
+  * ``RADIO``
+  * ``CLOCK``
+  * ``TEMP``
+  * PPI channels: ``19``, ``30``, ``31``
+
+For the nRF53 Series:
+  Interrupts:
+
+  * ``RTC0``
+  * ``TIMER0``
+  * ``TIMER1``
+
+  No interrupts:
+
+  * ``RADIO``
+  * ``CLOCK``
+  * ``TEMP``
+  * DPPI channels: ``0``, ``1``, ``2``
+
+For the nRF54H Series:
+  Interrupts:
+
+  * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_0_IRQn``
+  * ``TIMER020``
+  * ``TIMER021``
+
+  No interrupts:
+
+  * ``RADIO``
+  * ``DPPIC020`` channel ``0``
+  * ``DPPIC130`` channel ``0``
+  * ``DPPIC132`` channel ``0``
+  * ``IPCT130`` channel ``0``
+
+For the nRF54L Series:
+  Interrupts:
+
+  * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_3_IRQn``
+  * ``TIMER10``
+  * ``TIMER20``
+
+  No interrupts:
+
+  * ``RADIO``
+  * ``CLOCK``
+  * ``TEMP``
+  * ``DPPIC10`` channel ``0``
+  * ``PPIB21`` channel ``0``
+  * ``PPIB11`` channel ``0``
 
 .. note::
    These peripherals can be used freely when MPSL is not initialized.
@@ -33,17 +85,18 @@ Thread and interrupt safety
 ***************************
 
 The MPSL library is not reentrant.
-For thread-safe operation, see the <Interrupt configuration>_ and <Scheduling>_ sections below.
+For thread-safe operation, see the  :ref:`mpsl_lib_interrupt_config` and :ref:`mpsl_lib_scheduling` sections.
+
+.. _mpsl_lib_interrupt_config:
 
 Interrupt configuration
 =======================
 
-MPSL enables interrupts for ``RTC0``, ``TIMER0``, ``TIMER1`` (only on nRF53 Series), ``POWER_CLOCK``, and ``low_prio_irq``.
+MPSL enables interrupts for the reserved instances, as well as for ``POWER_CLOCK`` and ``low_prio_irq``.
 The application must enable and configure all the other interrupts.
 If the Timeslot API is used for ``RADIO`` access, the application is responsible for enabling and disabling the interrupt for ``RADIO``.
 
-The application must configure interrupts for ``RTC0``, ``TIMER0``, and ``RADIO`` for priority level ``0`` ( :c:macro:`MPSL_HIGH_IRQ_PRIORITY` ).
-On the nRF53 Series, the application must additionally configure ``TIMER1`` for priority level ``0`` ( :c:macro:`MPSL_HIGH_IRQ_PRIORITY` ).
+The application must configure interrupts for priority level ``0`` ( :c:macro:`MPSL_HIGH_IRQ_PRIORITY` ) for ``RADIO`` and the reserved instances that have interrupts.
 
 The following interrupts do not have real-time requirements:
 
@@ -58,6 +111,8 @@ The following interrupts do not have real-time requirements:
    The interrupt is enabled with :c:func:`mpsl_init` and disabled with :c:func:`mpsl_uninit` by MPSL.
    The interrupt is selected using the :kconfig:option:`CONFIG_MPSL_LOW_PRIO_IRQN` Kconfig option.
    This Kconfig option can be used to resolve conflicts with other software modules and should be left to the default value if possible.
+
+.. _mpsl_lib_scheduling:
 
 Scheduling
 ==========
