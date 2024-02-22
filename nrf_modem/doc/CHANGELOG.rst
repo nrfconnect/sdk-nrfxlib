@@ -9,6 +9,59 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.6.0
+***************
+
+Core library
+============
+
+* Added the :c:func:`nrf_modem_os_mutex_init`, :c:func:`nrf_modem_os_mutex_lock` and :c:func:`nrf_modem_os_mutex_unlock` functions to meet the OS requirements.
+* Fixed a bug where some modem faults during initialization were not sent to the modem fault handler function as intended.
+
+Sockets
+=======
+
+* Added:
+
+  * The new :c:macro:`NRF_SO_KEEPOPEN` socket option to allow sockets to remain open when their PDN connection is lost, or the device is set to flight mode.
+  * The RAI socket option :c:macro:`NRF_SO_RAI` and the values ``NRF_RAI_NO_DATA``, ``NRF_RAI_LAST``, ``NRF_RAI_ONE_RESP``, ``NRF_RAI_ONGOING``, and ``NRF_RAI_WAIT_MORE``.
+  * A set of security tags that can be used for testing and debugging purposes, to allow the `Cellular Monitor`_ application to decrypt TLS traffic.
+
+* Updated:
+
+  * The :c:macro:`nrf_sa_family_t` type definition to ``unsigned short`` (from ``unsigned int``), to reduce the size of the socket address types.
+  * The type of the field :c:member:`nrf_sockaddr.sa_family` to :c:macro:`nrf_sa_family_t` (from ``int``).
+  * The type of the field :c:member:`nrf_sockaddr_in6.sin6_scope_id` to ``uint8_t`` (from ``uint32_t``).
+  * The :c:macro:`NRF_SO_RCVTIMEO` socket option can now be used to set a timeout for the :c:func:`nrf_accept` operation.
+
+* Fixed:
+
+  * Rare multi-threading bugs in the :c:func:`nrf_socket`, :c:func:`nrf_recv`, and :c:func:`nrf_connect` functions.
+  * A bug in the :c:func:`nrf_accept` function that caused it to not wait for a connection as intended.
+  * A bug where the :c:macro:`NRF_POLLNVAL` event would not be reported when using poll callbacks set with the :c:macro:`NRF_SO_POLLCB` socket option.
+  * A bug where retrieving the value of :c:macro:`NRF_SO_SEC_HOSTNAME` caused a bad memory access, if the option had not been set.
+
+* Deprecated:
+
+  * The ``nrf_sec_cipher_t``, ``nrf_sec_peer_verify_t``, ``nrf_sec_role_t``, and ``nrf_sec_session_cache_t`` types. Use ``int`` instead.
+  * The RAI socket options :c:macro:`NRF_SO_RAI_NO_DATA`, :c:macro:`NRF_SO_RAI_LAST`, :c:macro:`NRF_SO_RAI_ONE_RESP`, :c:macro:`NRF_SO_RAI_ONGOING`, and :c:macro:`NRF_SO_RAI_WAIT_MORE`.
+
+* Removed the field ``nrf_sockaddr_in6.sin6_flowinfo``, to reduce the size of the :c:struct:`nrf_sockaddr_in6` structure. The field was unsupported.
+
+AT interface
+============
+
+* Added the :c:func:`nrf_modem_at_cfun_handler_set` function to set a callback for functional mode changes.
+* Updated the custom AT commands to be case-insensitive.
+
+GNSS interface
+==============
+
+* Added:
+
+  * The :c:macro:`NRF_MODEM_GNSS_DELETE_EKF` flag for the :c:func:`nrf_modem_gnss_nv_data_delete` function to delete Extended Kalman Filter (EKF) state data.
+  * The :c:macro:`NRF_MODEM_GNSS_PVT_FLAG_SCHED_DOWNLOAD` flag to indicate that the GNSS is running because of a scheduled download.
+
 nrf_modem 2.5.0
 ***************
 

@@ -31,7 +31,7 @@ struct nrf_modem_trace_data {
 /**
  * @brief Get trace data
  *
- * The application shall call this function to receive trace data from the modem.
+ * The application may call this function to receive trace data from the modem.
  * The trace fragments must be processed in order from the start of the array.
  * Processed data must be freed by calling @c nrf_modem_trace_processed.
  *
@@ -41,7 +41,7 @@ struct nrf_modem_trace_data {
  *            special values NRF_MODEM_OS_FOREVER or NRF_MODEM_OS_NO_WAIT.
  *
  * @retval 0 on success.
- * @retval -NRF_FAULT If @p frags or @p nfrags is NULL.
+ * @retval -NRF_EFAULT If @p frags or @p nfrags is NULL.
  * @retval -NRF_EINPROGRESS Trace is already being processed by the application.
  * @retval -NRF_ENODATA No more trace data is available until the modem is restarted.
  * @retval -NRF_ESHUTDOWN Modem was shut down.
@@ -53,7 +53,7 @@ int nrf_modem_trace_get(struct nrf_modem_trace_data **frags, size_t *n_frags, in
 /**
  * @brief Notify the Modem library that the application has completed processing of trace data.
  *
- * The application shall call this function to let the Modem library free the trace memory.
+ * The application must call this function to let the Modem library free the trace memory.
  * It is the application's responsibility to call this function with the total size of all trace
  * fragments received. If the data is processed in chunks, the function can be called with the size
  * that is processed since last call.

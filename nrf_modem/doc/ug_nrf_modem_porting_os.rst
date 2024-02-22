@@ -182,8 +182,8 @@ This function is called by the Modem library to put a thread to sleep for a cert
 
 The following points decide the *Function return value*:
 
-* If the modem is not initialized, that is, if :c:func:`nrf_modem_is_initialized` returns false, function return value will be ``-NRF_ESHUTDOWN``.
-* If there is a time out, function return value will be ``-NRF_EAGAIN``.
+* If the modem is not initialized, that is, if :c:func:`nrf_modem_is_initialized` returns false, function return value will be ``NRF_ESHUTDOWN``.
+* If there is a time out, function return value will be negative :c:macro:`NRF_EAGAIN`.
 * In all other cases, function return value will be ``0``.
 
 nrf_modem_os_event_notify()
@@ -241,12 +241,11 @@ This function is called by the library to allocate and initialize a semaphore.
 *Required action*:
 
 * Allocate and initialize a semaphore.
-* If an address of an already allocated semaphore is provided as an input, the allocation part is skipped and the semaphore is only reinitialized.
+* If the address of an already allocated semaphore is provided as an input, the allocation part is skipped and the semaphore is only reinitialized.
 
 .. note::
-
-   Semaphores are not required if multithreaded access to modem functionality is not needed.
-   In this case, the function can blindly return ``0``.
+   Semaphores are not required if multithreaded access to modem functionalities is not needed.
+   In this case, the function must blindly return ``0``.
 
 nrf_modem_os_sem_give()
 -----------------------
@@ -262,6 +261,30 @@ nrf_modem_os_sem_count_get()
 ----------------------------
 
 This function is called to retrieve the count of a semaphore.
+
+nrf_modem_os_mutex_init()
+-------------------------
+
+This function is called by the library to allocate and initialize a mutex.
+
+*Required action*:
+
+* Allocate and initialize a mutex.
+* If the address of an already allocated mutex is provided as an input, the allocation part is skipped and the mutex is only reinitialized.
+
+.. note::
+   Mutexes are not required if multithreaded access to modem functionalities is not needed.
+   In this case, the function must blindly return ``0``.
+
+nrf_modem_os_mutex_lock()
+-------------------------
+
+This function is called by the library to lock a mutex.
+
+nrf_modem_os_mutex_unlock()
+---------------------------
+
+This function is called by the library to unlock a mutex.
 
 nrf_modem_os_log()
 ------------------
@@ -365,9 +388,13 @@ You can use it as a starting point and customize it for your OS or scheduler.
 
     int nrf_modem_os_sem_init(void **sem, unsigned int initial_count, unsigned int limit)
     {
-        /* The function shall allocate and initialize a semaphore and return its address
-           through the `sem` parameter. If an address of an already allocated semaphore is provided as
-           an input, the allocation part is skipped and the semaphore is only reinitialized. */
+        /* If multithreaded access to modem functionalities is needed, the function must allocate
+         * and initialize a semaphore and return its address through the `sem` parameter. If the
+         * address of an already allocated semaphore is provided as an input, the allocation part is
+         * skipped and the semaphore is only reinitialized.
+         * Semaphores are not required if multithreaded access to modem functionalities is not
+         * needed. In this case, the function must blindly return ``0``.
+         */
         return 0;
     }
 
@@ -385,6 +412,29 @@ You can use it as a starting point and customize it for your OS or scheduler.
     unsigned int nrf_modem_os_sem_count_get(void *sem)
     {
         /* Get a semaphore's count. */
+        return 0;
+    }
+
+     int nrf_modem_os_mutex_init(void **mutex)
+    {
+        /* If multithreaded access to modem functionalities is needed, the function must allocate
+         * and initialize a reentrant mutex and return its address through the `mutex` parameter.
+         * If the address of an already allocated mutex is provided as an input, the allocation part
+         * is skipped and the mutex is only reinitialized.
+         * Mutexes are not required if multithreaded access to modem functionalities is not needed.
+         * In this case, the function must blindly return ``0``.
+         */
+        return 0;
+    }
+
+    void nrf_modem_os_mutex_unlock(void *sem)
+    {
+        /* Unlock a mutex. */
+    }
+
+    int nrf_modem_os_mutex_lock(void *sem, int timeout)
+    {
+        /* Try to lock a reentrant mutex with the given timeout. */
         return 0;
     }
 

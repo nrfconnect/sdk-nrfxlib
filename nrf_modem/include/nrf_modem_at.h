@@ -39,6 +39,13 @@ extern "C" {
 typedef void (*nrf_modem_at_notif_handler_t)(const char *notif);
 
 /**
+ * @brief AT CFUN handler prototype.
+ *
+ * @param mode CFUN mode.
+ */
+typedef void (*nrf_modem_at_cfun_handler_t)(int mode);
+
+/**
  * @brief Set a handler function for AT notifications.
  *
  * @note The callback is executed in an interrupt service routine.
@@ -49,6 +56,15 @@ typedef void (*nrf_modem_at_notif_handler_t)(const char *notif);
  * @retval 0 On success.
  */
 int nrf_modem_at_notif_handler_set(nrf_modem_at_notif_handler_t callback);
+
+/**
+ * @brief Set a handler function for CFUN AT commands.
+ *
+ * @note The handler is executed after the CFUN command is successfully processed by the modem.
+ *
+ * @param handler The CFUN handler. Use @c NULL to unset handler.
+ */
+void nrf_modem_at_cfun_handler_set(nrf_modem_at_cfun_handler_t handler);
 
 /**
  * @brief Send a formatted AT command to the modem.
@@ -207,7 +223,7 @@ int nrf_modem_at_cmd_custom_set(struct nrf_modem_at_cmd_custom *custom_commands,
  * AT commands wait on a semaphore for the ongoing AT command to complete.
  *
  * This function configures how long @c nrf_modem_at_printf, @c nrf_modem_at_scanf and
- * @c nrf_modem_at_cmd shall wait for ongoing AT commands to complete.
+ * @c nrf_modem_at_cmd will wait for ongoing AT commands to complete.
  *
  * By default, the timeout is infinite.
  *
