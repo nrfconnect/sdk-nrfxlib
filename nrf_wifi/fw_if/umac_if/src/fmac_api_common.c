@@ -720,6 +720,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 	phy_rf_params->max_pwr_ceil.max_lb_mcs0_pwr =
 	tx_pwr_ceil_params->max_pwr_2g_mcs0 - backoff_2g_ofdm;
 	phy_rf_params->max_pwr_ceil.max_hb_low_chan_mcs7_pwr =
+#ifndef CONFIG_NRF70_2_4G_ONLY
 	tx_pwr_ceil_params->max_pwr_5g_low_mcs7 - backoff_5g_lowband;
 	phy_rf_params->max_pwr_ceil.max_hb_mid_chan_mcs7_pwr =
 	tx_pwr_ceil_params->max_pwr_5g_mid_mcs7 - backoff_5g_midband;
@@ -731,6 +732,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 	tx_pwr_ceil_params->max_pwr_5g_mid_mcs0 - backoff_5g_midband;
 	phy_rf_params->max_pwr_ceil.max_hb_high_chan_mcs0_pwr =
 	tx_pwr_ceil_params->max_pwr_5g_high_mcs0 - backoff_5g_highband;
+#endif /* CONFIG_NRF70_2_4G_ONLY */
 
 	status = NRF_WIFI_STATUS_SUCCESS;
 out:
