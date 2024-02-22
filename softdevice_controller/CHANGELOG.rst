@@ -29,8 +29,12 @@ Added
   See :c:func:`sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set` (DRGN-20819).
 * Vendor-specific HCI command to read the ISO tx timestamp and packet sequence number of the SDU that the host previously provided.
   See :c:func:`sdc_hci_cmd_vs_iso_read_tx_timestamp` (DRGN-19283).
-* Vendor-specific HCI command to change the time reserved at the end of a BIG for periodic advertising and other roles.
+* Vendor-specific HCI command to change the time reserved for other roles in each ISO interval, used when selecting BIG parameters.
   See :c:func:`sdc_hci_cmd_vs_big_reserved_time_set` (DRGN-20891).
+* Vendor-specific HCI command to change the time reserved for other roles in each ISO interval, used when selecting CIG parameters.
+  See :c:func:`sdc_hci_cmd_vs_cig_reserved_time_set` (DRGN-21344).
+* Vendor-specific HCI command to set the CIS subevent length.
+  See :c:func:`sdc_hci_cmd_vs_cis_subevent_length_set` (DRGN-21362).
 
 Changes
 =======
@@ -49,6 +53,9 @@ Changes
 * The scheduling priority for the scanner where the scan window is equal to the scan interval is lowered to the fourth scheduling priority.
   This will allow concurrent |BLE| roles to interrupt continuous scanning, but will reduce the time available for scanning.
   For other configurations of scan window and scan interval the priority is unchanged. (DRGN-19272)
+
+  The scheduling priority for MPSL timeslots with normal priority and the 802.15.4 radio driver is lowered to the fifth scheduling priority.
+  This is done to maintain the relative priority with them and continuous scanning. (DRGN-20488)
 * Improved scheduling performance when receiving packets closely following an ``AUX_SYNC_IND`` that does not point to an ``AUX_CHAIN_IND``.
   The controller will attempt to prioritize the reception of such packets while still maintaining the periodic sync. (DRGN-19272)
 
@@ -73,6 +80,7 @@ Bug fixes
   This could happen when a disconnection occurred before the host had issued the Host Number of Complete Packets command for the remaining ACL data packets.
   Now the controller waits until after all ACL data packets have been acknowledged by the host before raising the Disconnection Complete event.
   The controller also validates the handles provided in the Host Number of Complete Packets command. (DRGN-21085)
+* Fixed a rare issue where the scanner may assert when it schedules the reception of the next advertising packet. (DRGN-21253)
 
 nRF Connect SDK v2.5.0
 **********************

@@ -10,14 +10,14 @@ LE Isochronous Channels
 .. note::
    LE Isochronous Channels and the corresponding documentation are currently :ref:`experimental <nrf:software_maturity>` and subject to changes.
 
-LE Isochronous Channels is a feature defined in the `Bluetooth Core Specification`_.
+LE Isochronous Channels (ISO) is a feature defined in the `Bluetooth Core Specification`_.
 It allows for unreliable transport of data in one-to-one, one-to-many and many-to-one topologies.
 
-In LE Isochronous Channels, data is transmitted in units called SDUs.
+In ISO, data is transmitted in units called SDUs.
 The source of the data provides one SDU every SDU interval and these SDUs have a fixed timeout for their delivery.
 SDUs are transmitted at a fixed schedule, which allows to time-synchronize multiple receiving devices with microsecond-scale accuracy.
 
-The LE Isochronous Channels feature is split into a broadcast and a unicast part.
+The ISO feature is split into a broadcast and a unicast part.
 
 For broadcast mode, different broadcast isochronous streams (BIS) are grouped into broadcast isochronous groups (BIG).
 In this mode, data is sent in a unidirectional stream from a source device to an arbitrary number of sink devices.
@@ -29,30 +29,47 @@ In this mode, data is sent on a unidirectional or bidirectional connection.
 Tested configurations
 *********************
 
-The LE Isochronous Channels feature is highly configurable and it is not feasible to test all possible configurations and topologies.
-Testing of the |controller| implementation of LE Isochronous Channels focuses on assumed common use-cases.
-Among others, the following configurations are tested:
+The ISO feature is highly configurable and it is not feasible to test all possible configurations and topologies.
+Testing of the |controller| implementation of ISO focuses on the audio use-case configurations that are described in the Basic Audio Profile (BAP) specification.
+The BAP specification is available for download from the `Bluetooth Specifications and Documents`_ page.
 
-* Configurations for the audio use-case that are described in the Basic Audio Profile specification that is available for download from the `Bluetooth Specifications and Documents`_ page.
+Configurations for CIS
+----------------------
 
-  * The CIS BAP configurations are tested with two CISes.
-    Depending on the SDU interval of the BAP configuration, each test is performed with an ACL interval of 60 ms, 67.5 ms or 70 ms.
-  * The BIS BAP configurations are tested with two BISes.
-    The tests are executed with extended advertising interval and periodic advertising interval set to 300 ms.
-    The extended advertiser and periodic advertiser are both configured to use 100 bytes of advertising data.
+All CIS BAP configurations are tested with two CISes.
+The chosen ACL interval in each test is 60 ms, 67,5 ms or 70 ms, based on the recommendations in the BAP specification.
+In the BAP configuration tests, both the ACL and CIS connections use 2M PHY.
 
-* Parallel use of CIS and BIS (1 CIS, 1 BIS)
+Additionally, these configurations are tested:
+
 * 4 CISes to the same peer (CIS central and CIS peripheral)
 * 4 CISes to different peers (CIS central)
 * 4 CISes distributed in 4 CIGs (CIS central and CIS peripheral)
 * 4 CISes to different peers using the same CIG
+* 1M PHY and CODED PHY are tested with bidirectional data transfer with two CISes configured with longer ISO intervals to accomodate for longer packet durations
+
+Configurations for BIS
+----------------------
+
+All BIS BAP configurations are tested with two BISes.
+The tests are executed with extended advertising interval and periodic advertising interval set to 300 ms.
+The extended advertiser and periodic advertiser are both configured to use 100 bytes of advertising data.
+Each BIS BAP configuration is tested using 2M PHY on the BISes and the periodic advertiser.
+
+Additionally, these configurations are tested:
+
 * BIS source sending on 4 BIGs with 2 streams each
-* BIS source sending on 2 BIS in a single BIG
-* BIS sink connected to 2 BIS in a single BIG
+* BIS source sending on 2 BISes in a single BIG
+* BIS sink connected to 2 BISes in a single BIG
 * BIS sink connected on 4 BIGs with 2 streams each
 * BIS source together with the channel survey feature, see :c:func:`sdc_hci_cmd_vs_qos_channel_survey_enable`
+* 1M PHY and CODED PHY are tested with three BISes configured with longer ISO intervals to accomodate for longer packet durations
 
-There is no absolute maximum of BISes, CISes and ACLs that can be used concurrently.
+Configurations for parallel use of CIS and BIS
+----------------------------------------------
+
+Parallel use of one CIS and one BIS is tested.
+However, there is no absolute maximum of BISes, CISes and ACLs that can be used concurrently.
 Instead, the amount of roles that can be used at the same time is limited by available memory and the on-air timings.
 Except where otherwise mentioned, the |controller| supports the whole range of the allowed parameters.
 ​
@@ -62,7 +79,9 @@ Parameter selection
 
 This section gives an high level overview of how the |controller| selects the values for the broadcast and connected ISO parameters.
 
-Broadcast ISO
+Parameter selection for BIS
+---------------------------
+
    When the HCI LE Create BIG command is used, the |controller| will handle the selection of the ISO parameters.
 
    The values the host gives for the command affect the values that the |controller| selects for the ISO parameters, which affect the resulting reliability and transport latency.

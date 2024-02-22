@@ -76,8 +76,21 @@ DRGN-21099: Unsupported CIG parameters when requesting framed PDUs
   * An ``SDU_Interval`` lower than 5000 µs.
   * A ``Max_SDU`` larger than 246 bytes.
 
-  Note that framed PDUs will be enforced when the selected ``ISO_Interval`` is not equal to or an integer multiple of the ``SDU_Interval``.
+  Note that framed PDUs will be enforced if neither of the following conditions are met:
+
+  * ``SDU_Interval`` is an integer multiple of 1250 µs.
+  * ``SDU_Interval`` is an integer divisor of 5000 µs.
+
   In this case, the unsupported parameters mentioned above still apply.
-  For more details on ``ISO_Interval`` selection, see the :ref:`softdevice_controller_iso` page.
 
   **Workaround:** Use the LE Set CIG Parameters Test command.
+
+DRGN-21246: Unsupported BIG parameters
+  The following parameters are not supported when the HCI LE Create BIG command is used:
+
+  * An ``SDU_Interval`` shorter than 1250 µs.
+  * A ``Max_SDU`` larger than 247 bytes.
+  * An ``SDU_Interval`` shorter than 5000 µs when using framed PDUs.
+  * A ``Max_SDU`` larger than 246 bytes when using framed PDUs.
+
+  Note that framed PDUs will be enforced if ``SDU_Interval`` is not an integer multiple of 1250 µs.

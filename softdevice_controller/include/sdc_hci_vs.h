@@ -99,6 +99,10 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ISO_READ_TX_TIMESTAMP = 0xfd17,
     /** @brief See @ref sdc_hci_cmd_vs_big_reserved_time_set(). */
     SDC_HCI_OPCODE_CMD_VS_BIG_RESERVED_TIME_SET = 0xfd18,
+    /** @brief See @ref sdc_hci_cmd_vs_cig_reserved_time_set(). */
+    SDC_HCI_OPCODE_CMD_VS_CIG_RESERVED_TIME_SET = 0xfd19,
+    /** @brief See @ref sdc_hci_cmd_vs_cis_subevent_length_set(). */
+    SDC_HCI_OPCODE_CMD_VS_CIS_SUBEVENT_LENGTH_SET = 0xfd1a,
 };
 
 /** @brief VS subevent Code values. */
@@ -190,6 +194,8 @@ typedef __PACKED_STRUCT
     uint8_t min_val_of_max_acl_tx_payload_set : 1;
     uint8_t iso_read_tx_timestamp : 1;
     uint8_t big_reserved_time_set : 1;
+    uint8_t cig_reserved_time_set : 1;
+    uint8_t cis_subevent_length_set : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -672,6 +678,19 @@ typedef __PACKED_STRUCT
 {
     uint32_t reserved_time_us;
 } sdc_hci_cmd_vs_big_reserved_time_set_t;
+
+/** @brief Set the default CIG reserved time command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint32_t reserved_time_us;
+} sdc_hci_cmd_vs_cig_reserved_time_set_t;
+
+/** @brief Set the CIS subevent length in microseconds command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief The requested CIS subevent length in microseconds. */
+    uint32_t cis_subevent_length_us;
+} sdc_hci_cmd_vs_cis_subevent_length_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1485,6 +1504,61 @@ uint8_t sdc_hci_cmd_vs_iso_read_tx_timestamp(const sdc_hci_cmd_vs_iso_read_tx_ti
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_big_reserved_time_set(const sdc_hci_cmd_vs_big_reserved_time_set_t * p_params);
+
+/** @brief Set the default CIG reserved time.
+ *
+ * This vendor specific command changes the time reserved each ISO interval for other roles.
+ * This applies to all CIGs created after calling this command.
+ * For example, if the reserved time is set to 2.5 ms and the ISO interval is 10 ms,
+ * the controller may select CIG parameters such that 2.5 ms is reserved for an ACL connection
+ * and the remaining 7.5 ms is used for the CIG.
+ * Note, when multiple CIGs are used the user needs to ensure that the initial CIG reserves time
+ * for the remaining CIGs.
+ *
+ * The default value is 2000 us, but can be set to between 0 us and 4,000,000 us. Changes persist
+ * after an HCI_Reset command.
+ *
+ * If the value is set such that it cannot be satisfied for a given set of CIG parameters, the
+ * actual
+ * reserved time may be smaller than the requested value.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_cig_reserved_time_set(const sdc_hci_cmd_vs_cig_reserved_time_set_t * p_params);
+
+/** @brief Set the CIS subevent length in microseconds.
+ *
+ * This command sets the subevent length to be used for CISes
+ * in microseconds.
+ * If the configured subevent length is too small, the
+ * HCI command used to configure the CIG will fail.
+ * If this parameter is set to zero, the subevent length
+ * is chosen by the controller.
+ *
+ * The default value is 0. That is, the minimum required subevent length
+ * will be used.
+ *
+ * This API must be called before creating a CIG.
+ *
+ * The configured value is preserved when issuing the HCI Reset command.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_cis_subevent_length_set(const sdc_hci_cmd_vs_cis_subevent_length_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 
