@@ -71,12 +71,12 @@ The following table summarizes the priorities.
    | Third priority              | * All |BLE| roles in states other than above run with this priority                               |
    |                             | * MPSL Timeslot with high priority                                                                |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
-   | Fourth priority             | * 802.15.4 radio driver                                                                           |
-   |                             | * MPSL Timeslot with normal priority                                                              |
-   |                             | * Scanner when the scan window is equal to the scan interval                                      |
+   | Fourth priority             | * Scanner when the scan window is equal to the scan interval                                      |
    |                             | * Quality of Service channel survey                                                               |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
-
+   | Fifth priority              | * 802.15.4 radio driver                                                                           |
+   |                             | * MPSL Timeslot with normal priority                                                              |
+   +-----------------------------+---------------------------------------------------------------------------------------------------+
 
 .. _initiator_timing:
 
