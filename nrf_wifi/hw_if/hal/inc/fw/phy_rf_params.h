@@ -506,10 +506,6 @@ struct nrf_wifi_tx_pwr_ceil_params {
 	 * High band corresponds to ch: 136 to 177, resolution is 0.25dBm.
 	 */
 	unsigned char max_pwr_5g_high_mcs7;
-	/** Flag to determine presence of overriding, default parameters present
-	 * in RF parameters string.
-	 */
-	unsigned char rf_tx_pwr_ceil_params_override;
 } __NRF_WIFI_PKD;
 
 /* FT Prog version info */

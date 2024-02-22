@@ -694,45 +694,43 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 
 	ft_prog_ver = (ft_prog_ver & FT_PROG_VER_MASK) >> 16;
 
-	if (tx_pwr_ceil_params->rf_tx_pwr_ceil_params_override) {
-		if (ft_prog_ver == FT_PROG_VER1) {
-			backoff_2g_dsss = FT_PROG_VER1_2G_DSSS_TXCEIL_BKOFF;
-			backoff_2g_ofdm = FT_PROG_VER1_2G_OFDM_TXCEIL_BKOFF;
-			backoff_5g_lowband = FT_PROG_VER1_5G_LOW_OFDM_TXCEIL_BKOFF;
-			backoff_5g_midband = FT_PROG_VER1_5G_MID_OFDM_TXCEIL_BKOFF;
-			backoff_5g_highband = FT_PROG_VER1_5G_HIGH_OFDM_TXCEIL_BKOFF;
-		} else if (ft_prog_ver == FT_PROG_VER2) {
-			backoff_2g_dsss = FT_PROG_VER2_2G_DSSS_TXCEIL_BKOFF;
-			backoff_2g_ofdm = FT_PROG_VER2_2G_OFDM_TXCEIL_BKOFF;
-			backoff_5g_lowband = FT_PROG_VER2_5G_LOW_OFDM_TXCEIL_BKOFF;
-			backoff_5g_midband = FT_PROG_VER2_5G_MID_OFDM_TXCEIL_BKOFF;
-			backoff_5g_highband = FT_PROG_VER2_5G_HIGH_OFDM_TXCEIL_BKOFF;
-		} else if (ft_prog_ver == FT_PROG_VER3) {
-			backoff_2g_dsss = FT_PROG_VER3_2G_DSSS_TXCEIL_BKOFF;
-			backoff_2g_ofdm = FT_PROG_VER3_2G_OFDM_TXCEIL_BKOFF;
-			backoff_5g_lowband = FT_PROG_VER3_5G_LOW_OFDM_TXCEIL_BKOFF;
-			backoff_5g_midband = FT_PROG_VER3_5G_MID_OFDM_TXCEIL_BKOFF;
-			backoff_5g_highband = FT_PROG_VER3_5G_HIGH_OFDM_TXCEIL_BKOFF;
-		}
-		phy_rf_params->max_pwr_ceil.max_dsss_pwr =
-		tx_pwr_ceil_params->max_pwr_2g_dsss - backoff_2g_dsss;
-		phy_rf_params->max_pwr_ceil.max_lb_mcs7_pwr =
-		tx_pwr_ceil_params->max_pwr_2g_mcs7 - backoff_2g_ofdm;
-		phy_rf_params->max_pwr_ceil.max_lb_mcs0_pwr =
-		tx_pwr_ceil_params->max_pwr_2g_mcs0 - backoff_2g_ofdm;
-		phy_rf_params->max_pwr_ceil.max_hb_low_chan_mcs7_pwr =
-		tx_pwr_ceil_params->max_pwr_5g_low_mcs7 - backoff_5g_lowband;
-		phy_rf_params->max_pwr_ceil.max_hb_mid_chan_mcs7_pwr =
-		tx_pwr_ceil_params->max_pwr_5g_mid_mcs7 - backoff_5g_midband;
-		phy_rf_params->max_pwr_ceil.max_hb_high_chan_mcs7_pwr =
-		tx_pwr_ceil_params->max_pwr_5g_high_mcs7 - backoff_5g_highband;
-		phy_rf_params->max_pwr_ceil.max_hb_low_chan_mcs0_pwr =
-		tx_pwr_ceil_params->max_pwr_5g_low_mcs0 - backoff_5g_lowband;
-		phy_rf_params->max_pwr_ceil.max_hb_mid_chan_mcs0_pwr =
-		tx_pwr_ceil_params->max_pwr_5g_mid_mcs0 - backoff_5g_midband;
-		phy_rf_params->max_pwr_ceil.max_hb_high_chan_mcs0_pwr =
-		tx_pwr_ceil_params->max_pwr_5g_high_mcs0 - backoff_5g_highband;
+	if (ft_prog_ver == FT_PROG_VER1) {
+		backoff_2g_dsss = FT_PROG_VER1_2G_DSSS_TXCEIL_BKOFF;
+		backoff_2g_ofdm = FT_PROG_VER1_2G_OFDM_TXCEIL_BKOFF;
+		backoff_5g_lowband = FT_PROG_VER1_5G_LOW_OFDM_TXCEIL_BKOFF;
+		backoff_5g_midband = FT_PROG_VER1_5G_MID_OFDM_TXCEIL_BKOFF;
+		backoff_5g_highband = FT_PROG_VER1_5G_HIGH_OFDM_TXCEIL_BKOFF;
+	} else if (ft_prog_ver == FT_PROG_VER2) {
+		backoff_2g_dsss = FT_PROG_VER2_2G_DSSS_TXCEIL_BKOFF;
+		backoff_2g_ofdm = FT_PROG_VER2_2G_OFDM_TXCEIL_BKOFF;
+		backoff_5g_lowband = FT_PROG_VER2_5G_LOW_OFDM_TXCEIL_BKOFF;
+		backoff_5g_midband = FT_PROG_VER2_5G_MID_OFDM_TXCEIL_BKOFF;
+		backoff_5g_highband = FT_PROG_VER2_5G_HIGH_OFDM_TXCEIL_BKOFF;
+	} else if (ft_prog_ver == FT_PROG_VER3) {
+		backoff_2g_dsss = FT_PROG_VER3_2G_DSSS_TXCEIL_BKOFF;
+		backoff_2g_ofdm = FT_PROG_VER3_2G_OFDM_TXCEIL_BKOFF;
+		backoff_5g_lowband = FT_PROG_VER3_5G_LOW_OFDM_TXCEIL_BKOFF;
+		backoff_5g_midband = FT_PROG_VER3_5G_MID_OFDM_TXCEIL_BKOFF;
+		backoff_5g_highband = FT_PROG_VER3_5G_HIGH_OFDM_TXCEIL_BKOFF;
 	}
+	phy_rf_params->max_pwr_ceil.max_dsss_pwr =
+	tx_pwr_ceil_params->max_pwr_2g_dsss - backoff_2g_dsss;
+	phy_rf_params->max_pwr_ceil.max_lb_mcs7_pwr =
+	tx_pwr_ceil_params->max_pwr_2g_mcs7 - backoff_2g_ofdm;
+	phy_rf_params->max_pwr_ceil.max_lb_mcs0_pwr =
+	tx_pwr_ceil_params->max_pwr_2g_mcs0 - backoff_2g_ofdm;
+	phy_rf_params->max_pwr_ceil.max_hb_low_chan_mcs7_pwr =
+	tx_pwr_ceil_params->max_pwr_5g_low_mcs7 - backoff_5g_lowband;
+	phy_rf_params->max_pwr_ceil.max_hb_mid_chan_mcs7_pwr =
+	tx_pwr_ceil_params->max_pwr_5g_mid_mcs7 - backoff_5g_midband;
+	phy_rf_params->max_pwr_ceil.max_hb_high_chan_mcs7_pwr =
+	tx_pwr_ceil_params->max_pwr_5g_high_mcs7 - backoff_5g_highband;
+	phy_rf_params->max_pwr_ceil.max_hb_low_chan_mcs0_pwr =
+	tx_pwr_ceil_params->max_pwr_5g_low_mcs0 - backoff_5g_lowband;
+	phy_rf_params->max_pwr_ceil.max_hb_mid_chan_mcs0_pwr =
+	tx_pwr_ceil_params->max_pwr_5g_mid_mcs0 - backoff_5g_midband;
+	phy_rf_params->max_pwr_ceil.max_hb_high_chan_mcs0_pwr =
+	tx_pwr_ceil_params->max_pwr_5g_high_mcs0 - backoff_5g_highband;
 
 	status = NRF_WIFI_STATUS_SUCCESS;
 out:
