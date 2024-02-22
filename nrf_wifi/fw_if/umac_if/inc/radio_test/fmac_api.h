@@ -249,7 +249,8 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
 					       unsigned int phy_calib,
 					       enum op_band op_band,
 					       bool beamforming,
-					       struct nrf_wifi_tx_pwr_ctrl_params *tx_pwr_ctrl);
+					       struct nrf_wifi_tx_pwr_ctrl_params *tx_pwr_ctrl,
+						   struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params);
 
 
 /**

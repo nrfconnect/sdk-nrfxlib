@@ -40,6 +40,13 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init_rt(struct nrf_wifi_fmac_dev_ct
 	unsigned long start_time_us = 0;
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
+	if (!fmac_dev_ctx) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Invalid device context",
+				      __func__);
+		goto out;
+	}
+
 	status = umac_cmd_init(fmac_dev_ctx,
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
 			       sleep_type,
@@ -99,7 +106,8 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
 					    unsigned int phy_calib,
 					    enum op_band op_band,
 					    bool beamforming,
-					    struct nrf_wifi_tx_pwr_ctrl_params *tx_pwr_ctrl_params)
+					    struct nrf_wifi_tx_pwr_ctrl_params *tx_pwr_ctrl_params,
+						struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
@@ -119,6 +127,12 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
 		goto out;
 	}
 
+	fmac_dev_ctx->tx_pwr_ceil_params = nrf_wifi_osal_mem_alloc(fmac_dev_ctx->fpriv->opriv,
+								   sizeof(*tx_pwr_ceil_params));
+	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+			      fmac_dev_ctx->tx_pwr_ceil_params,
+			      tx_pwr_ceil_params,
+			      sizeof(*tx_pwr_ceil_params));
 
 	status = nrf_wifi_fmac_fw_init_rt(fmac_dev_ctx,
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
@@ -141,6 +155,8 @@ out:
 
 void nrf_wifi_fmac_dev_deinit_rt(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 {
+	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
+			       fmac_dev_ctx->tx_pwr_ceil_params);
 	nrf_wifi_fmac_fw_deinit_rt(fmac_dev_ctx);
 }
 
