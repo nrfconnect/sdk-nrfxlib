@@ -71,58 +71,73 @@ Configurations for parallel use of CIS and BIS
 Parallel use of one CIS and one BIS is tested.
 However, there is no absolute maximum of BISes, CISes and ACLs that can be used concurrently.
 Instead, the amount of roles that can be used at the same time is limited by available memory and the on-air timings.
-Except where otherwise mentioned, the |controller| supports the whole range of the allowed parameters.
 ​
 
 Parameter selection
 *******************
 
-This section gives an high level overview of how the |controller| selects the values for the broadcast and connected ISO parameters.
+This section gives a high level overview of how the |controller| selects the values for the broadcast and unicast ISO parameters.
 
-Parameter selection for BIS
----------------------------
+When the HCI LE Create BIG command or HCI LE Set CIG Parameters command is used, the |controller| will handle the selection of the ISO parameters.
 
-   When the HCI LE Create BIG command is used, the |controller| will handle the selection of the ISO parameters.
+The host command's input values affect the ISO parameters selected by the |controller|, which affect the resulting reliability and transport latency.
+The selected parameters can result in:
 
-   The values the host gives for the command affect the values that the |controller| selects for the ISO parameters, which affect the resulting reliability and transport latency.
-   The selected parameters can result in:
+* Maximum reliability with high latency.
+* Minimal transport latency with low reliability.
+* Something between these two extremes.
 
-   * Maximum reliability with high latency.
-   * Minimal transport latency with low reliability.
-   * Something between these two extremes.
+The parameters are selected based on the following rules:
 
-   The parameters are selected based on the following rules:
+* The transport latency of the selected configuration does not exceed the ``Max_Transport_Latency`` provided by the host.
+* The number of retransmissions of the selected configuration does not exceed the ``RTN`` provided by the host, and matches it if possible.
 
-   * The transport latency of the selected configuration does not exceed the maximum transport latency provided by the host.
-   * The number of retransmissions of the selected configuration does not exceed the RTN provided by the host, and matches it if possible.
+In other words, ``Max_Transport_Latency`` and ``RTN`` are treated as upper limits for the configuration that the |controller| will use.
+By using these properties, the host can influence the parameter selection.
 
-   In other words, maximum transport latency and RTN are treated as upper limits for the configuration that the |controller| will use.
-   By using these properties, the host can influence the parameter selection.
+To reduce transport latency, consider one or more of the following approaches:
 
-   Retransmissions can be achieved by using repetitions and pre-transmissions.
-   The |controller| will use at least one repetition and as many pre-transmissions as possible to achieve the desired retransmissions.
+* Use a smaller ``Max_SDU``
+* Use a shorter ``SDU_Interval``
+* Switch from LE 1M PHY to LE 2M PHY
 
-   The following example shows how the host provided values affect the selected parameters.
-   The example assumes that the |controller| can produce a valid configuration with a mixture of pre-transmissions and repetitions for a given input.
-   The host can influence the parameters with any of the following actions:
-
-   * Increase the RTN while keeping the maximum transport latency constant.
-     This prioritizes reliability over transport latency, assuming there is room for new retransmissions.
-   * Decrease the RTN while keeping the maximum transport latency constant.
-     This prioritizes transport latency over reliability.
-   * Increase the maximum transport latency while keeping the RTN constant.
-     This makes the |controller| prioritize pre-transmissions over repetitions.
-   * Decrease the maximum transport latency while keeping the RTN constant.
-     This makes the |controller| prioritize repetitions over pre-transmissions.
+``RTN`` also affects transport latency, and this is discussed further in the following sections.
 
 .. note::
    The |controller| has certain limitations on the configurations it can support.
    These are listed in the :ref:`softdevice_controller_limitations` section.
+   Unless mentioned otherwise, the |controller| supports the whole range of the allowed parameters.
+
+Broadcast ISO
+-------------
+
+In the broadcast mode, retransmissions can be achieved by using repetitions and pre-transmissions.
+The |controller| will use at least one repetition and as many pre-transmissions as possible to achieve the desired retransmissions.
+
+The following example shows how the host provided values affect the selected parameters.
+The example assumes that the |controller| can produce a valid configuration with a mixture of pre-transmissions and repetitions for a given input.
+The host can influence the parameters with any of the following actions:
+
+* Increase the ``RTN`` while keeping the ``Max_Transport_Latency`` constant.
+   This prioritizes reliability over transport latency, assuming there is room for new retransmissions.
+* Decrease the ``RTN`` while keeping the ``Max_Transport_Latency`` constant.
+   This prioritizes transport latency over reliability.
+* Increase the ``Max_Transport_Latency`` while keeping the ``RTN`` constant.
+   This makes the |controller| prioritize pre-transmissions over repetitions.
+* Decrease the ``Max_Transport_Latency`` while keeping the ``RTN`` constant.
+   This makes the |controller| prioritize repetitions over pre-transmissions.
 
 .. note::
    The |controller| reserves 2.5 ms to allow time for periodic advertising.
    This in turn limits the number of subevents that can be fitted in a BIG event.
    This value can be configured with the :kconfig:option:`BT_CTLR_BIG_RESERVED_TIME_US` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_big_reserved_time_set`.
+
+Unicast ISO
+-----------
+
+In the unicast mode, a PDU will be restransmitted if it is sent and not acknowledged by the peer, provided there is room for retransmissions.
+That means a greater ``RTN`` provided by the host will improve reliability, but will introduce higher transport latency.
+Conversly, a lower ``Max_Transport_Latency`` will reduce reliability, as a PDU has fewer opportunities for retransmission.
 
 .. _iso_providing_data:
 
