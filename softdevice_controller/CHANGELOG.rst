@@ -58,6 +58,8 @@ Changes
   This is done to maintain the relative priority with them and continuous scanning. (DRGN-20488)
 * Improved scheduling performance when receiving packets closely following an ``AUX_SYNC_IND`` that does not point to an ``AUX_CHAIN_IND``.
   The controller will attempt to prioritize the reception of such packets while still maintaining the periodic sync. (DRGN-19272)
+* The functions :c:func:`rand_prio_low_get` and :c:func:`rand_prio_high_get` have been deprecated.
+  They are no longer used by the SoftDevice Controller. (DRGN-20472)
 
 Bug fixes
 =========

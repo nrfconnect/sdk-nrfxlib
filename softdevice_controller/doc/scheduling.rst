@@ -67,6 +67,8 @@ The following table summarizes the priorities.
    |                             | * Connectable Advertiser/Broadcaster which has been blocked consecutively for a few times         |
    |                             | * Scanner which has been blocked for a long time                                                  |
    |                             | * Scanner which is receiving an advertising packet on a secondary advertising channel             |
+   |                             | * Connected Isochronous channel setup                                                             |
+   |                             | * Connected Isochronous channels that are about to time out                                       |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Third priority              | * All |BLE| roles in states other than above run with this priority                               |
    |                             | * MPSL Timeslot with high priority                                                                |
@@ -549,6 +551,29 @@ Scheduling conflicts can occur if the length of the periodic advertising data ex
 
    Periodic advertiser timing-events are scheduled relative to other Central device events
 
+.. _scheduling_of_connected_iso:
+
+Connected isochronous channels timing
+*************************************
+
+Connected isochronous channel timing-events are scheduled every isochronous (ISO) interval.
+All subevents belonging to the same ISO group are scheduled in the same timing-event.
+
+As a peripheral, the timing of ISO events is determined by the central device.
+The central can choose parameters that allow for conflict-free scheduling of multiple CISes and ACLs.
+To achieve this, the application must set the ACL event spacing and ACL interval to fit the selected ISO parameters.
+The sections :ref:`acl_timing` and :ref:`central_timing` describe how to configure the ACL event length and ACL spacing.
+
+The figure below illustrates a scenario with two ISO channels associated with two ACL connections.
+Here the ACL interval is set to twice the ISO interval, and the ACL event spacing is set equal to the ISO interval.
+If the ACL event spacing is 10 ms and the ACL event length is set to 2.5 ms, 7.5 ms is left for the ISO channels every ISO interval.
+
+.. figure:: pic/schedule/connected_iso_timing.svg
+   :alt: Alt text: Connected ISO channels timing
+   :align: center
+   :width: 80%
+
+   Connected ISO channels are scheduled interleaved with ACL timing-events.
 
 Timeslot API timing
 *******************
