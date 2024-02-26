@@ -1454,19 +1454,20 @@ enum nrf_wifi_status nrf_wifi_fmac_rawtx_done_event_process(
 
 	nrf_wifi_osal_spinlock_take(fmac_dev_ctx->fpriv->opriv,
 				    def_dev_ctx->tx_config.tx_lock);
-	if (!config->status) {
-		status = tx_done_process(fmac_dev_ctx,
-					 config->desc_num);
 
-		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Process raw tx done failed",
-					      __func__);
-			goto unlock;
-		}
-	} else {
+	if (!config->status) {
 		/* Increment raw TX failure count */
 		def_dev_ctx->raw_pkt_stats.raw_pkt_send_failure += 1;
+	}
+
+	status = tx_done_process(fmac_dev_ctx,
+				 config->desc_num);
+
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Process raw tx done failed",
+				      __func__);
+		goto unlock;
 	}
 unlock:
 	nrf_wifi_osal_spinlock_rel(fmac_dev_ctx->fpriv->opriv,
