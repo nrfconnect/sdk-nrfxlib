@@ -1026,6 +1026,12 @@ const char *nrf_inet_ntop(int af, const void *restrict src, char *restrict dst, 
  * See <a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/getaddrinfo.html">
  * POSIX.1-2017 article</a> for normative description.
  *
+ * @note
+ * When using address family @c NRF_AF_UNSPEC the implementation attempt to resolve the IPv6
+ * address first. If successfull, the resolved address is returned. If not, the implementation
+ * attempts to resolve and return the IPv4 family address. This applies regardless of the PDN
+ * supporting IPv6 or not.
+ *
  * In addition, the function shall return -1 and set the following errno:
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */
