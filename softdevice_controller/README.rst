@@ -56,17 +56,13 @@ Variants for the Arm Cortex-M33 processor are available as soft-float only.
 +--------------------------------+-----------------+--------------+-----------+
 | Connected Isochronous Stream   |                 |              | X         |
 | - Central                      |                 |              |           |
-| (experimental support)         |                 |              |           |
 +--------------------------------+-----------------+--------------+-----------+
 | Connected Isochronous Stream   |                 |              | X         |
 | - Peripheral                   |                 |              |           |
-| (experimental support)         |                 |              |           |
 +--------------------------------+-----------------+--------------+-----------+
 | Isochronous Broadcaster        |                 |              | X         |
-| (experimental support)         |                 |              |           |
 +--------------------------------+-----------------+--------------+-----------+
 | Synchronized Receiver          |                 |              | X         |
-| (experimental support)         |                 |              |           |
 +--------------------------------+-----------------+--------------+-----------+
 
 .. note::
