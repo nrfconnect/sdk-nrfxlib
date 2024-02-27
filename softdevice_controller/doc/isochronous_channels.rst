@@ -7,29 +7,30 @@ LE Isochronous Channels
    :local:
    :depth: 2
 
-.. note::
-   LE Isochronous Channels and the corresponding documentation are currently :ref:`experimental <nrf:software_maturity>` and subject to changes.
-
-LE Isochronous Channels (ISO) is a feature defined in the `Bluetooth Core Specification`_.
+LE Isochronous Channels (ISO) is a set of features defined in the `Bluetooth Core Specification`_.
 It allows for unreliable transport of data in one-to-one, one-to-many and many-to-one topologies.
 
-In ISO, data is transmitted in units called SDUs.
+In ISO, data is transmitted in Service Data Units (SDUs).
 The source of the data provides one SDU every SDU interval and these SDUs have a fixed timeout for their delivery.
 SDUs are transmitted at a fixed schedule, which allows to time-synchronize multiple receiving devices with microsecond-scale accuracy.
 
-The ISO feature is split into a broadcast and a unicast part.
+The ISO feature set is split into four separate features:
+* Connected Isochronous Stream - Central
+* Connected Isochronous Stream - Peripheral
+* Isochronous Broadcaster
+* Synchronized Receiver
 
-For broadcast mode, different broadcast isochronous streams (BIS) are grouped into broadcast isochronous groups (BIG).
-In this mode, data is sent in a unidirectional stream from a source device to an arbitrary number of sink devices.
+The first 2 features use Connected Isochronous Streams (CIS) grouped into Connected Isochronous Groups (CIG).
+In this case, data is sent in a unidirectional or bidirectional connection.
 
-For unicast mode, different connected isochronous streams (CIS) are grouped into connected isochronous groups (CIG).
-In this mode, data is sent on a unidirectional or bidirectional connection.
+The last 2 features use Broadcast Isochronous Streams (BIS) grouped into Broadcast Isochronous Groups (BIG).
+In this case, data is sent in a unidirectional stream from a source device to an arbitrary number of sink devices.
 
 
 Tested configurations
 *********************
 
-The ISO feature is highly configurable and it is not feasible to test all possible configurations and topologies.
+The ISO feature is highly configurable and it is not feasible to test all possible configurations.
 Testing of the |controller| implementation of ISO focuses on the audio use-case configurations that are described in the Basic Audio Profile (BAP) specification.
 The BAP specification is available for download from the `Bluetooth Specifications and Documents`_ page.
 
@@ -37,16 +38,10 @@ Configurations for CIS
 ----------------------
 
 All CIS BAP configurations are tested with two CISes.
-The chosen ACL interval in each test is 60 ms, 67,5 ms or 70 ms, based on the recommendations in the BAP specification.
+The chosen ACL interval in each test is 60 ms, 67.5 ms or 70 ms, based on the recommendations in the BAP specification.
 In the BAP configuration tests, both the ACL and CIS connections use 2M PHY.
 
-Additionally, these configurations are tested:
-
-* 4 CISes to the same peer (CIS central and CIS peripheral)
-* 4 CISes to different peers (CIS central)
-* 4 CISes distributed in 4 CIGs (CIS central and CIS peripheral)
-* 4 CISes to different peers using the same CIG
-* 1M PHY and CODED PHY are tested with bidirectional data transfer with two CISes configured with longer ISO intervals to accomodate for longer packet durations
+1M PHY and CODED PHY are tested with bidirectional data transfer with two CISes configured with longer ISO intervals to accommodate for longer packet durations.
 
 Configurations for BIS
 ----------------------
@@ -56,14 +51,9 @@ The tests are executed with extended advertising interval and periodic advertisi
 The extended advertiser and periodic advertiser are both configured to use 100 bytes of advertising data.
 Each BIS BAP configuration is tested using 2M PHY on the BISes and the periodic advertiser.
 
-Additionally, these configurations are tested:
+1M PHY and CODED PHY are tested with three BISes configured with longer ISO intervals to accommodate for longer packet durations.
 
-* BIS source sending on 4 BIGs with 2 streams each
-* BIS source sending on 2 BISes in a single BIG
-* BIS sink connected to 2 BISes in a single BIG
-* BIS sink connected on 4 BIGs with 2 streams each
-* BIS source together with the channel survey feature, see :c:func:`sdc_hci_cmd_vs_qos_channel_survey_enable`
-* 1M PHY and CODED PHY are tested with three BISes configured with longer ISO intervals to accomodate for longer packet durations
+Additionally, BIS source is tested together with the channel survey feature, see :c:func:`sdc_hci_cmd_vs_qos_channel_survey_enable`.
 
 Configurations for parallel use of CIS and BIS
 ----------------------------------------------
@@ -71,12 +61,36 @@ Configurations for parallel use of CIS and BIS
 Parallel use of one CIS and one BIS is tested.
 However, there is no absolute maximum of BISes, CISes and ACLs that can be used concurrently.
 Instead, the amount of roles that can be used at the same time is limited by available memory and the on-air timings.
-​
+
+
+Tested topologies
+*****************
+
+Although the maximum number of BISes/CISes in a single BIG/CIG is limited in the `Bluetooth Core Specification`_, the actual number is subject to available memory and the on-air timings.
+The following topologies are tested with data transfer, and can be used as references.
+
+CIS
+---
+.. figure:: pic/iso_topology/tested_cis_topology.svg
+   :alt: Alt text: A diagram showing the tested topologies for CIS
+   :align: center
+   :width: 80%
+
+   Tested CIS topology - each arrow represents a bidirectional CIS
+
+BIS
+---
+.. figure:: pic/iso_topology/tested_bis_topology.svg
+   :alt: Alt text: A diagram showing the tested topologies for BIS
+   :align: center
+   :width: 80%
+
+   Tested BIS topology - each arrow represents a BIS
 
 Parameter selection
 *******************
 
-This section gives a high level overview of how the |controller| selects the values for the broadcast and unicast ISO parameters.
+This section gives a high level overview of how the |controller| selects the values for the BIS and CIS parameters.
 
 When the HCI LE Create BIG command or HCI LE Set CIG Parameters command is used, the |controller| will handle the selection of the ISO parameters.
 
@@ -108,10 +122,10 @@ To reduce transport latency, consider one or more of the following approaches:
    These are listed in the :ref:`softdevice_controller_limitations` section.
    Unless mentioned otherwise, the |controller| supports the whole range of the allowed parameters.
 
-Broadcast ISO
+BIS
 -------------
 
-In the broadcast mode, retransmissions can be achieved by using repetitions and pre-transmissions.
+When BIS is used, retransmissions can be achieved by using repetitions and pre-transmissions.
 The |controller| will use at least one repetition and as many pre-transmissions as possible to achieve the desired retransmissions.
 
 The following example shows how the host provided values affect the selected parameters.
@@ -130,14 +144,14 @@ The host can influence the parameters with any of the following actions:
 .. note::
    The |controller| reserves 2.5 ms to allow time for periodic advertising.
    This in turn limits the number of subevents that can be fitted in a BIG event.
-   This value can be configured with the :kconfig:option:`BT_CTLR_BIG_RESERVED_TIME_US` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_big_reserved_time_set`.
+   This value can be configured with the :kconfig:option:`BT_CTLR_SDC_BIG_RESERVED_TIME_US` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_big_reserved_time_set`.
 
-Unicast ISO
+CIS
 -----------
 
-In the unicast mode, a PDU will be restransmitted if it is sent and not acknowledged by the peer, provided there is room for retransmissions.
+When CIS is used, a PDU will be retransmitted if it is not acknowledged by the peer, provided there is room for retransmissions.
 That means a greater ``RTN`` provided by the host will improve reliability, but will introduce higher transport latency.
-Conversly, a lower ``Max_Transport_Latency`` will reduce reliability, as a PDU has fewer opportunities for retransmission.
+Conversely, a lower ``Max_Transport_Latency`` will reduce reliability, as a PDU has fewer opportunities for retransmission.
 
 .. _iso_providing_data:
 

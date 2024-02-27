@@ -39,6 +39,9 @@ Added
 Changes
 =======
 
+* The LE Isochronous Channels feature is now :ref:`supported <nrf:software_maturity>` instead of experimental, both Connected Isochronous Streams and Broadcast Isochronous Streams.
+  Unless mentioned otherwise, the |controller| supports the whole range of the allowed parameters.
+  See the :ref:`softdevice_controller_limitations` section for known limitations.
 * The controller now returns the error code ``0x12`` if the same subevent index is used multiple times in LE Set Periodic Advertising Subevent Data.
   This conforms to erratas ES23466 and ES23424. (DRGN-20736)
 * The vendor-specific Set event length for ACL connections HCI command no longer sets the time between anchor points of central ACL connections with identical connection intervals. (DRGN-20796)
