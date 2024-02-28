@@ -894,7 +894,7 @@ nrf_wifi_fmac_if_mode_set_event_proc(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 		if ((mode_event->op_mode & NRF_WIFI_STA_MODE)
 			== NRF_WIFI_STA_MODE) {
 			mode_event->op_mode ^= NRF_WIFI_STA_MODE;
-			vif->if_type = NRF_WIFI_STA_MODE;
+			vif->if_type = NRF_WIFI_IFTYPE_STATION;
 			config->peers[MAX_PEERS].peer_id = -1;
 			config->peers[MAX_PEERS].if_idx = -1;
 
