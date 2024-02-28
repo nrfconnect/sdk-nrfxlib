@@ -28,9 +28,9 @@ enum nrf_wifi_status umac_cmd_cfg(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				  int len);
 
 enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-#ifndef CONFIG_NRF700X_RADIO_TEST
 				   struct nrf_wifi_phy_rf_params *rf_params,
 				   bool rf_params_valid,
+#ifndef CONFIG_NRF700X_RADIO_TEST
 				   struct nrf_wifi_data_config_params *config,
 #endif /* !CONFIG_NRF700X_RADIO_TEST */
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
