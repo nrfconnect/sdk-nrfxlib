@@ -1599,7 +1599,7 @@ out:
 	return status;
 }
 
-
+#define MCU_FW_BOOT_TIMEOUT_MS 1000
 enum nrf_wifi_status nrf_wifi_hal_fw_chk_boot(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 					      enum RPU_PROC_TYPE rpu_proc)
 {
@@ -1607,7 +1607,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_chk_boot(struct nrf_wifi_hal_dev_ctx *hal_d
 	unsigned int addr = 0;
 	unsigned int val = 0;
 	unsigned int exp_val = 0;
-	unsigned int i = 0;
+	unsigned int mcu_ready_wait_count = MCU_FW_BOOT_TIMEOUT_MS / 10;
 
 	if (rpu_proc == RPU_PROC_TYPE_MCU_LMAC) {
 		addr = RPU_MEM_LMAC_BOOT_SIG;
@@ -1624,7 +1624,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_chk_boot(struct nrf_wifi_hal_dev_ctx *hal_d
 
 	hal_dev_ctx->curr_proc = rpu_proc;
 
-	while (i < 1000) {
+	while (mcu_ready_wait_count-- > 0) {
 		status = hal_rpu_mem_read(hal_dev_ctx,
 					  (unsigned char *)&val,
 					  addr,
@@ -1644,12 +1644,9 @@ enum nrf_wifi_status nrf_wifi_hal_fw_chk_boot(struct nrf_wifi_hal_dev_ctx *hal_d
 		/* Sleep for 10 ms */
 		nrf_wifi_osal_sleep_ms(hal_dev_ctx->hpriv->opriv,
 				       10);
-
-		i++;
-
 	};
 
-	if (i == 1000) {
+	if (mcu_ready_wait_count <= 0) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
 				      "%s: Boot_sig check failed for RPU(%d), "
 				      "Expected: 0x%X, Actual: 0x%X",
