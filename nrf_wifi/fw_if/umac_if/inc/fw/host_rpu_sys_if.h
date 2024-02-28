@@ -741,11 +741,11 @@ struct nrf_wifi_sys_params {
 #ifndef CONFIG_NRF700X_RADIO_TEST
 	/** MAC address of the interface */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
+#endif /* !CONFIG_NRF700X_RADIO_TEST */
 	/** An array containing RF & baseband control params */
 	unsigned char rf_params[NRF_WIFI_RF_PARAMS_SIZE];
 	/** Indicates whether the rf_params has a valid value */
 	unsigned char rf_params_valid;
-#endif /* !CONFIG_NRF700X_RADIO_TEST */
 } __NRF_WIFI_PKD;
 
 
@@ -763,30 +763,58 @@ struct nrf_wifi_tx_pwr_ctrl_params {
 	unsigned char ant_gain_5g_band2;
 	/** Antenna gain for 5 GHz band (5730 MHz - 5895 MHz) */
 	unsigned char ant_gain_5g_band3;
-	/** Transmit power backoff (in dB) for lower edge of 2.4 GHz frequency band */
-	unsigned char band_edge_2g_lo;
-	/** Transmit power backoff (in dB) for upper edge of 2.4 GHz frequency band */
-	unsigned char band_edge_2g_hi;
-	/** Transmit power backoff (in dB) for lower edge of UNII-1 frequency band */
-	unsigned char band_edge_5g_unii_1_lo;
-	/** Transmit power backoff (in dB) for upper edge of UNII-1 frequency band */
-	unsigned char band_edge_5g_unii_1_hi;
-	/** Transmit power backoff (in dB) for lower edge of UNII-2A frequency band */
-	unsigned char band_edge_5g_unii_2a_lo;
-	/** Transmit power backoff (in dB) for upper edge of UNII-2A frequency band */
-	unsigned char band_edge_5g_unii_2a_hi;
-	/** Transmit power backoff (in dB) for lower edge of UNII-2C frequency band */
-	unsigned char band_edge_5g_unii_2c_lo;
-	/** Transmit power backoff (in dB) for upper edge of UNII-2C frequency band */
-	unsigned char band_edge_5g_unii_2c_hi;
-	/** Transmit power backoff (in dB) for lower edge of UNII-3 frequency band */
-	unsigned char band_edge_5g_unii_3_lo;
-	/** Transmit power backoff (in dB) for upper edge of UNII-3 frequency band */
-	unsigned char band_edge_5g_unii_3_hi;
-	/** Transmit power backoff (in dB) for lower edge of UNII-4 frequency band */
-	unsigned char band_edge_5g_unii_4_lo;
-	/** Transmit power backoff (in dB) for upper edge of UNII-4 frequency band */
-	unsigned char band_edge_5g_unii_4_hi;
+	/** DSSS Transmit power backoff (in dB) for lower edge of 2.4 GHz frequency band */
+	unsigned char band_edge_2g_lo_dss;
+	/** HT/VHT Transmit power backoff (in dB) for lower edge of 2.4 GHz frequency band */
+	unsigned char band_edge_2g_lo_ht;
+	/** HE Transmit power backoff (in dB) for lower edge of 2.4 GHz frequency band */
+	unsigned char band_edge_2g_lo_he;
+	/** DSSS Transmit power backoff (in dB) for upper edge of 2.4 GHz frequency band */
+	unsigned char band_edge_2g_hi_dsss;
+	/** HT/VHT Transmit power backoff (in dB) for upper edge of 2.4 GHz frequency band */
+	unsigned char band_edge_2g_hi_ht;
+	/** HE Transmit power backoff (in dB) for upper edge of 2.4 GHz frequency band */
+	unsigned char band_edge_2g_hi_he;
+	/** HT Transmit power backoff (in dB) for lower edge of UNII-1 frequency band */
+	unsigned char band_edge_5g_unii_1_lo_ht;
+	/** HE Transmit power backoff (in dB) for lower edge of UNII-1 frequency band */
+	unsigned char band_edge_5g_unii_1_lo_he;
+	/** HT/VHT Transmit power backoff (in dB) for upper edge of UNII-1 frequency band */
+	unsigned char band_edge_5g_unii_1_hi_ht;
+	/** HE Transmit power backoff (in dB) for upper edge of UNII-1 frequency band */
+	unsigned char band_edge_5g_unii_1_hi_he;
+	/** HT/VHT Transmit power backoff (in dB) for lower edge of UNII-2A frequency band */
+	unsigned char band_edge_5g_unii_2a_lo_ht;
+	/** HE Transmit power backoff (in dB) for lower edge of UNII-2A frequency band */
+	unsigned char band_edge_5g_unii_2a_lo_he;
+	/** HT/VHT Transmit power backoff (in dB) for upper edge of UNII-2A frequency band */
+	unsigned char band_edge_5g_unii_2a_hi_ht;
+	/** HE Transmit power backoff (in dB) for upper edge of UNII-2A frequency band */
+	unsigned char band_edge_5g_unii_2a_hi_he;
+	/** HT/VHT Transmit power backoff (in dB) for lower edge of UNII-2C frequency band */
+	unsigned char band_edge_5g_unii_2c_lo_ht;
+	/** HE Transmit power backoff (in dB) for lower edge of UNII-2C frequency band */
+	unsigned char band_edge_5g_unii_2c_lo_he;
+	/** HT/VHT Transmit power backoff (in dB) for upper edge of UNII-2C frequency band */
+	unsigned char band_edge_5g_unii_2c_hi_ht;
+	/** HE Transmit power backoff (in dB) for upper edge of UNII-2C frequency band */
+	unsigned char band_edge_5g_unii_2c_hi_he;
+	/** HT/VHT Transmit power backoff (in dB) for lower edge of UNII-3 frequency band */
+	unsigned char band_edge_5g_unii_3_lo_ht;
+	/** HE Transmit power backoff (in dB) for lower edge of UNII-3 frequency band */
+	unsigned char band_edge_5g_unii_3_lo_he;
+	/** HT/VHT Transmit power backoff (in dB) for upper edge of UNII-3 frequency band */
+	unsigned char band_edge_5g_unii_3_hi_ht;
+	/** HE Transmit power backoff (in dB) for upper edge of UNII-3 frequency band */
+	unsigned char band_edge_5g_unii_3_hi_he;
+	/** HT/VHT Transmit power backoff (in dB) for lower edge of UNII-4 frequency band */
+	unsigned char band_edge_5g_unii_4_lo_ht;
+	/** HE Transmit power backoff (in dB) for lower edge of UNII-4 frequency band */
+	unsigned char band_edge_5g_unii_4_lo_he;
+	/** HT/VHT Transmit power backoff (in dB) for upper edge of UNII-4 frequency band */
+	unsigned char band_edge_5g_unii_4_hi_ht;
+	/** HE Transmit power backoff (in dB) for upper edge of UNII-4 frequency band */
+	unsigned char band_edge_5g_unii_4_hi_he;
 } __NRF_WIFI_PKD;
 
 /**

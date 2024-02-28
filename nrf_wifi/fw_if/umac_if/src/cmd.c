@@ -87,9 +87,9 @@ out:
 
 
 enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-#ifndef CONFIG_NRF700X_RADIO_TEST
 				   struct nrf_wifi_phy_rf_params *rf_params,
 				   bool rf_params_valid,
+#ifndef CONFIG_NRF700X_RADIO_TEST
 				   struct nrf_wifi_data_config_params *config,
 #endif /* !CONFIG_NRF700X_RADIO_TEST */
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
@@ -126,7 +126,7 @@ enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	umac_cmd_data->sys_head.cmd_event = NRF_WIFI_CMD_INIT;
 	umac_cmd_data->sys_head.len = len;
 
-#ifndef CONFIG_NRF700X_RADIO_TEST
+
 	umac_cmd_data->sys_params.rf_params_valid = rf_params_valid;
 
 	if (rf_params_valid) {
@@ -135,7 +135,7 @@ enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				      rf_params,
 				      NRF_WIFI_RF_PARAMS_SIZE);
 	}
-#endif /* !CONFIG_NRF700X_RADIO_TEST */
+
 
 	umac_cmd_data->sys_params.phy_calib = phy_calib;
 	umac_cmd_data->sys_params.hw_bringup_time = HW_DELAY;
@@ -176,14 +176,24 @@ enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	umac_cmd_data->op_band = op_band;
 
 	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+			      &umac_cmd_data->sys_params.rf_params[ANT_GAIN_2G_OFST],
+			      &tx_pwr_ctrl_params->ant_gain_2g,
+			      NUM_ANT_GAIN);
+
+	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+			      &umac_cmd_data->sys_params.rf_params[BAND_2G_LW_ED_BKF_DSSS_OFST],
+			      &tx_pwr_ctrl_params->band_edge_2g_lo_dss,
+			      NUM_EDGE_BACKOFF);
+
+	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
 			      &umac_cmd_data->tx_pwr_ctrl_params,
 			      tx_pwr_ctrl_params,
 			      sizeof(umac_cmd_data->tx_pwr_ctrl_params));
 
 	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-					umac_cmd_data->country_code,
-					CONFIG_NRF700X_REG_DOMAIN,
-					NRF_WIFI_COUNTRY_CODE_LEN);
+			      umac_cmd_data->country_code,
+			      CONFIG_NRF700X_REG_DOMAIN,
+			      NRF_WIFI_COUNTRY_CODE_LEN);
 
 #ifdef CONFIG_NRF700X_RPU_EXTEND_TWT_SP
 	 umac_cmd_data->feature_flags |= TWT_EXTEND_SP_EDCA;

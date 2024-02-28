@@ -29,13 +29,15 @@
 
 
 static enum nrf_wifi_status nrf_wifi_fmac_fw_init_rt(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+						     struct nrf_wifi_phy_rf_params *rf_params,
+						     bool rf_params_valid,
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
-						  int sleep_type,
+						     int sleep_type,
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
-						  unsigned int phy_calib,
-						  enum op_band op_band,
-						  bool beamforming,
-						  struct nrf_wifi_tx_pwr_ctrl_params *tx_pwr_ctrl)
+						     unsigned int phy_calib,
+						     enum op_band op_band,
+						     bool beamforming,
+						     struct nrf_wifi_tx_pwr_ctrl_params *tx_pwr_ctrl)
 {
 	unsigned long start_time_us = 0;
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
@@ -48,6 +50,8 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init_rt(struct nrf_wifi_fmac_dev_ct
 	}
 
 	status = umac_cmd_init(fmac_dev_ctx,
+			       rf_params,
+			       rf_params_valid,
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
 			       sleep_type,
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
@@ -107,9 +111,11 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
 					    enum op_band op_band,
 					    bool beamforming,
 					    struct nrf_wifi_tx_pwr_ctrl_params *tx_pwr_ctrl_params,
-						struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params)
+					    struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	struct nrf_wifi_fmac_otp_info otp_info;
+	struct nrf_wifi_phy_rf_params phy_rf_params;
 
 	if (!fmac_dev_ctx) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
@@ -134,7 +140,40 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
 			      tx_pwr_ceil_params,
 			      sizeof(*tx_pwr_ceil_params));
 
+	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
+			      &otp_info,
+			      0xFF,
+			      sizeof(otp_info));
+
+	status = nrf_wifi_hal_otp_info_get(fmac_dev_ctx->hal_dev_ctx,
+					   &otp_info.info,
+					   &otp_info.flags);
+
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Fetching of RPU OTP information failed",
+				      __func__);
+		goto out;
+	}
+
+	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
+			             &phy_rf_params,
+			             0xFF,
+			             sizeof(phy_rf_params));
+
+	status = nrf_wifi_fmac_rf_params_get(fmac_dev_ctx,
+						&phy_rf_params);
+
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					"%s: RF parameters get failed",
+					__func__);
+		goto out;
+	}
+
 	status = nrf_wifi_fmac_fw_init_rt(fmac_dev_ctx,
+				          &phy_rf_params,
+				          true,
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
 					  sleep_type,
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */

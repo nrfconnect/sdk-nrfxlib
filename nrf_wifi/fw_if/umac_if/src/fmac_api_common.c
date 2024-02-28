@@ -956,6 +956,7 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 				unsigned char *str)
 {
 	int ret = -1;
+	unsigned int rf_param_offset = BAND_2G_LW_ED_BKF_DSSS_OFST - NRF_WIFI_RF_PARAMS_CONF_SIZE;
 	/* Initilaize reserved bytes */
 	nrf_wifi_osal_mem_set(opriv,
 			      &prf->reserved,
@@ -1046,6 +1047,38 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 					(unsigned char *)&prf->phy_params,
 					sizeof(prf->phy_params),
 					str);
+
+	prf->phy_params[rf_param_offset]  = CONFIG_NRF700X_BAND_2G_LOWER_EDGE_BACKOFF_DSSS;
+	prf->phy_params[rf_param_offset + 1]  = CONFIG_NRF700X_BAND_2G_LOWER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 2]  = CONFIG_NRF700X_BAND_2G_LOWER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 3]  = CONFIG_NRF700X_BAND_2G_UPPER_EDGE_BACKOFF_DSSS;
+	prf->phy_params[rf_param_offset + 4]  = CONFIG_NRF700X_BAND_2G_UPPER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 5]  = CONFIG_NRF700X_BAND_2G_UPPER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 6]  = CONFIG_NRF700X_BAND_UNII_1_LOWER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 7]  = CONFIG_NRF700X_BAND_UNII_1_LOWER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 8]  = CONFIG_NRF700X_BAND_UNII_1_UPPER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 9]  = CONFIG_NRF700X_BAND_UNII_1_UPPER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 10]  = CONFIG_NRF700X_BAND_UNII_2A_LOWER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 11]  = CONFIG_NRF700X_BAND_UNII_2A_LOWER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 12]  = CONFIG_NRF700X_BAND_UNII_2A_UPPER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 13]  = CONFIG_NRF700X_BAND_UNII_2A_UPPER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 14]  = CONFIG_NRF700X_BAND_UNII_2C_LOWER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 15]  = CONFIG_NRF700X_BAND_UNII_2C_LOWER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 16]  = CONFIG_NRF700X_BAND_UNII_2C_UPPER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 17]  = CONFIG_NRF700X_BAND_UNII_2C_UPPER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 18]  = CONFIG_NRF700X_BAND_UNII_3_LOWER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 19]  = CONFIG_NRF700X_BAND_UNII_3_LOWER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 20]  = CONFIG_NRF700X_BAND_UNII_3_UPPER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 21]  = CONFIG_NRF700X_BAND_UNII_3_UPPER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 22]  = CONFIG_NRF700X_BAND_UNII_4_LOWER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 23]  = CONFIG_NRF700X_BAND_UNII_4_LOWER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 24]  = CONFIG_NRF700X_BAND_UNII_4_UPPER_EDGE_BACKOFF_HT;
+	prf->phy_params[rf_param_offset + 25]  = CONFIG_NRF700X_BAND_UNII_4_UPPER_EDGE_BACKOFF_HE;
+	prf->phy_params[rf_param_offset + 26]  = CONFIG_NRF700X_ANT_GAIN_2G;
+	prf->phy_params[rf_param_offset + 27]  = CONFIG_NRF700X_ANT_GAIN_5G_BAND1;
+	prf->phy_params[rf_param_offset + 28]  = CONFIG_NRF700X_ANT_GAIN_5G_BAND2;
+	prf->phy_params[rf_param_offset + 29]  = CONFIG_NRF700X_ANT_GAIN_5G_BAND3;
+
 	return(ret);
 }
 
