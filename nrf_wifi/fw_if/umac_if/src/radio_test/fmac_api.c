@@ -157,17 +157,17 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
 	}
 
 	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
-			             &phy_rf_params,
-			             0xFF,
-			             sizeof(phy_rf_params));
+                              &phy_rf_params,
+		              0xFF,
+		              sizeof(phy_rf_params));
 
 	status = nrf_wifi_fmac_rf_params_get(fmac_dev_ctx,
-						&phy_rf_params);
+		                             &phy_rf_params);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					"%s: RF parameters get failed",
-					__func__);
+				      "%s: RF parameters get failed",
+				     __func__);
 		goto out;
 	}
 
