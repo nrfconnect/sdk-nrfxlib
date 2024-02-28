@@ -741,11 +741,11 @@ struct nrf_wifi_sys_params {
 #ifndef CONFIG_NRF700X_RADIO_TEST
 	/** MAC address of the interface */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
+#endif /* !CONFIG_NRF700X_RADIO_TEST */
 	/** An array containing RF & baseband control params */
 	unsigned char rf_params[NRF_WIFI_RF_PARAMS_SIZE];
 	/** Indicates whether the rf_params has a valid value */
 	unsigned char rf_params_valid;
-#endif /* !CONFIG_NRF700X_RADIO_TEST */
 } __NRF_WIFI_PKD;
 
 
