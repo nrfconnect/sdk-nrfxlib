@@ -88,7 +88,7 @@ Testing TLS traffic decryption
 Before you start testing TLS traffic decryption, make sure that the following prerequisites are satisfied:
 
 #. The device runs an application that supports TLS.
-   The TLS session is created using certificates stored to tags ranging between the values specified in :c:macro:`NRF_SEC_TAG_TLS_DECRYPT_0` and :c:macro:`NRF_SEC_TAG_TLS_DECRYPT_19`.
+   The TLS session is created using certificates stored to tags ranging between the values specified in ``NRF_SEC_TAG_TLS_DECRYPT_0`` and ``NRF_SEC_TAG_TLS_DECRYPT_19``.
 #. The device has modem traces enabled.
    For information on modem traces and how to enable them, see the :ref:`modem_trace` documentation.
 #. Modem firmware v2.0.0 or higher is programmed on your device.
@@ -98,7 +98,7 @@ Before you start testing TLS traffic decryption, make sure that the following pr
 
 Complete the following steps to test TLS traffic decryption:
 
-#. |connect_kit|
+#. Connect the kit to the computer using a USB cable.
 #. Open the `Cellular Monitor`_ desktop application and connect the device.
 #. Select :guilabel:`Autoselect` from the **Modem trace database** drop-down menu, or a modem firmware version that is programmed on the device.
 #. Make sure that :guilabel:`Open in Wireshark` is selected.

@@ -1,9 +1,9 @@
 .. _nrf_802154:
 
 nRF 802.15.4 Radio Driver
-=========================
+#########################
 
-The nRF 802.15.4 Radio Driver is a set of libraries that implement the IEEE 802.15.4 functionalities for the SoCs from the nRF52 and nRF53 families.
+The nRF 802.15.4 Radio Driver is a set of libraries that implement the IEEE 802.15.4 functionalities for the SoCs from the nRF52 and nRF53 Series.
 The following functionalities are implemented:
 
 * Frame transmission.

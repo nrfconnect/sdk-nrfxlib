@@ -54,9 +54,9 @@ Handling PDN errors on sockets
 ******************************
 
 During operation, an active PDN connection may be deactivated due to loss of connectivity or other reasons.
-When a socket operation is attempted on a socket that no longer has an active PDN connection, the operation will return ``-1`` and set ``errno`` to :c:macro:`NRF_ENETDOWN`.
-If the socket is being polled, the :c:func:`nrf_poll` function will set the ``POLLERR`` flag and set the socket error to :c:macro:`NRF_ENETDOWN`.
+When a socket operation is attempted on a socket that no longer has an active PDN connection, the operation will return ``-1`` and set ``errno`` to ``NRF_ENETDOWN``.
+If the socket is being polled, the :c:func:`nrf_poll` function will set the ``POLLERR`` flag and set the socket error to ``NRF_ENETDOWN``.
 The socket error can be retrieved using the :c:macro:`NRF_SO_ERROR` socket option.
 
-When the :c:macro:`NRF_ENETDOWN` error is detected, the socket is no longer usable and must be closed by the application.
+When the ``NRF_ENETDOWN`` error is detected, the socket is no longer usable and must be closed by the application.
 The application is responsible for detecting when the PDN connection is activated again, before re-creating the socket and attempting the failed operation again.
