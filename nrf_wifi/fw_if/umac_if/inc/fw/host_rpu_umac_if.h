@@ -143,7 +143,9 @@ enum nrf_wifi_umac_commands {
 	/** Set listen interval @ref nrf_wifi_umac_cmd_set_listen_interval */
 	NRF_WIFI_UMAC_CMD_SET_LISTEN_INTERVAL,
 	/** Configure extended power save @ref nrf_wifi_umac_cmd_config_extended_ps */
-	NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS
+	NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS,
+	/** Maximum number of commands. Add any new command above this */
+	NRF_WIFI_UMAC_CMD_MAX = 255
 };
 
  /**
