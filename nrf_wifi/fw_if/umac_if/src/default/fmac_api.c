@@ -558,8 +558,15 @@ enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_scan *scan_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
-	int channel_info_len = (sizeof(struct nrf_wifi_channel) *
-				scan_info->scan_params.num_scan_channels);
+	int channel_info_len = 0;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !scan_info) {
+		goto out;
+	}
+
+	channel_info_len = (sizeof(struct nrf_wifi_channel) *
+			scan_info->scan_params.num_scan_channels);
+
 
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
@@ -599,6 +606,10 @@ enum nrf_wifi_status nrf_wifi_fmac_abort_scan(void *dev_ctx,
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
@@ -617,6 +628,7 @@ enum nrf_wifi_status nrf_wifi_fmac_abort_scan(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      scan_abort_cmd,
 			      sizeof(*scan_abort_cmd));
+
 out:
 	if (scan_abort_cmd) {
 		nrf_wifi_osal_mem_free(scan_abort_cmd);
@@ -634,6 +646,10 @@ enum nrf_wifi_status nrf_wifi_fmac_scan_res_get(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_get_scan_results *scan_res_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
+
+	if (!dev_ctx || (vif_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
@@ -672,6 +688,10 @@ enum nrf_wifi_status nrf_wifi_fmac_auth(void *dev_ctx,
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !auth_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
@@ -733,6 +753,10 @@ enum nrf_wifi_status nrf_wifi_fmac_deauth(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_disconn *deauth_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !deauth_info) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	deauth_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*deauth_cmd));
@@ -778,6 +802,10 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
 	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !assoc_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
@@ -874,6 +902,10 @@ enum nrf_wifi_status nrf_wifi_fmac_disassoc(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_disconn *disassoc_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !disassoc_info) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	disassoc_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*disassoc_cmd));
@@ -921,6 +953,10 @@ enum nrf_wifi_status nrf_wifi_fmac_add_key(void *dev_ctx,
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
 	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
 	int peer_id = -1;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !key_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
@@ -1004,6 +1040,10 @@ enum nrf_wifi_status nrf_wifi_fmac_del_key(void *dev_ctx,
 	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !key_info) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
@@ -1061,6 +1101,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_key(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_set_key *set_key_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !key_info) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	set_key_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_key_cmd));
@@ -1100,6 +1144,10 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_sta(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_chg_sta *chg_sta_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !chg_sta_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -1168,6 +1216,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_bss(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_set_bss *set_bss_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !bss_info) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	set_bss_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_bss_cmd));
@@ -1219,6 +1271,10 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_bcn(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_set_beacon *set_bcn_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !data) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	set_bcn_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_bcn_cmd));
@@ -1260,6 +1316,10 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_start_ap *start_ap_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 	struct nrf_wifi_umac_set_wiphy_info *wiphy_info = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !ap_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -1375,6 +1435,10 @@ enum nrf_wifi_status nrf_wifi_fmac_stop_ap(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_stop_ap *stop_ap_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	stop_ap_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*stop_ap_cmd));
@@ -1410,6 +1474,10 @@ enum nrf_wifi_status nrf_wifi_fmac_del_sta(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_del_sta *del_sta_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !del_sta_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -1464,6 +1532,10 @@ enum nrf_wifi_status nrf_wifi_fmac_add_sta(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_add_sta *add_sta_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !add_sta_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -1563,6 +1635,10 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_frame_reg(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_mgmt_frame_reg *frame_reg_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !frame_info) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	frame_reg_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*frame_reg_cmd));
@@ -1603,6 +1679,10 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_start(void *dev_ctx,
 	struct nrf_wifi_cmd_start_p2p *start_p2p_dev_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	start_p2p_dev_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*start_p2p_dev_cmd));
@@ -1635,6 +1715,10 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_stop(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_stop_p2p_dev *stop_p2p_dev_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -1669,6 +1753,10 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_start(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_remain_on_channel *roc_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !roc_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -1716,6 +1804,10 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_stop(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_cancel_remain_on_channel *cancel_roc_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	cancel_roc_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cancel_roc_cmd));
@@ -1753,6 +1845,10 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_tx(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_mgmt_tx *mgmt_tx_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !mgmt_tx_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -1801,6 +1897,16 @@ enum nrf_wifi_status nrf_wifi_fmac_mac_addr(struct nrf_wifi_fmac_dev_ctx *fmac_d
 	unsigned char vif_idx = 0;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
 
+	if (!fmac_dev_ctx)
+	       return NRF_WIFI_STATUS_FAIL;
+
+	if (!addr) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: MAC Addressis is NULL",
+				      __func__);
+		return NRF_WIFI_STATUS_FAIL;
+	}
+
 	vif_idx = nrf_wifi_fmac_vif_idx_get(fmac_dev_ctx);
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
@@ -1833,6 +1939,10 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
 	unsigned char vif_idx = 0;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
+
+	if (!dev_ctx || !vif_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
@@ -1957,6 +2067,10 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_del_vif *del_vif_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
@@ -2033,6 +2147,10 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_chg_vif_attr *chg_vif_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !vif_info) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	switch (vif_info->iftype) {
@@ -2106,6 +2224,10 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif_state(void *dev_ctx,
 	unsigned int count = RPU_CMD_TIMEOUT_MS;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !vif_info) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
@@ -2171,7 +2293,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_vif_macaddr(void *dev_ctx,
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 	struct nrf_wifi_umac_cmd_change_macaddr *cmd = NULL;
 
-	if (!dev_ctx) {
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
 		goto out;
 	}
 
@@ -2219,7 +2341,8 @@ enum nrf_wifi_status nrf_wifi_fmac_set_wiphy_params(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	int freq_params_valid = 0;
 
-	if (!dev_ctx) {
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
 		goto out;
 	}
 
@@ -2322,6 +2445,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_tx_power(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_get_tx_power *cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
@@ -2353,6 +2480,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_channel(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_get_channel *cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -2389,6 +2520,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_station(void *dev_ctx,
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !mac) {
+		goto out;
+	}
 
 	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
@@ -2427,6 +2562,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_interface(void *dev_ctx,
 	if (!dev_ctx || if_idx > MAX_NUM_VIFS) {
 		goto out;
 	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
@@ -2460,6 +2596,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_qos_map(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_set_qos_map *set_qos_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !qos_info) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -2504,6 +2644,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_set_power_save *set_ps_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	set_ps_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_ps_cmd));
@@ -2539,13 +2683,12 @@ enum nrf_wifi_status nrf_wifi_fmac_set_uapsd_queue(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_config_uapsd  *set_uapsdq_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
-	fmac_dev_ctx = dev_ctx;
-
-	if (!dev_ctx) {
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
 		goto out;
 	}
 
 	set_uapsdq_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_uapsdq_cmd));
+
 	if (!set_uapsdq_cmd) {
 		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
@@ -2577,6 +2720,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save_timeout(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_set_power_save_timeout *set_ps_timeout_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -2686,7 +2833,7 @@ enum nrf_wifi_status nrf_wifi_fmac_twt_setup(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_config_twt *twt_setup_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
-	if (!dev_ctx || !twt_params) {
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !twt_params) {
 		goto out;
 	}
 
@@ -2729,7 +2876,8 @@ enum nrf_wifi_status nrf_wifi_fmac_twt_teardown(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_teardown_twt *twt_teardown_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
-	if (!dev_ctx || !twt_params) {
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !twt_params) {
 		goto out;
 	}
 
@@ -2769,6 +2917,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_mcast_addr(struct nrf_wifi_fmac_dev_ctx *
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_mcast_filter *set_mcast_cmd = NULL;
 
+	if (!fmac_dev_ctx || (if_idx >= MAX_NUM_VIFS) || !mcast_info) {
+		goto out;
+	}
+
 	set_mcast_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_mcast_cmd));
 
 	if (!set_mcast_cmd) {
@@ -2804,6 +2956,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_conn_info(void *dev_ctx,
 	struct nrf_wifi_umac_cmd_conn_info *cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
+
 	fmac_dev_ctx = dev_ctx;
 
 	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
@@ -2834,6 +2990,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_power_save_info(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_get_power_save_info *get_ps_info_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -2867,6 +3027,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_listen_interval(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_set_listen_interval *set_listen_interval_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
@@ -2902,6 +3066,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_ps_wakeup_mode(void *dev_ctx,
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_config_extended_ps *set_ps_wakeup_mode_cmd = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
 
 	fmac_dev_ctx = dev_ctx;
 
