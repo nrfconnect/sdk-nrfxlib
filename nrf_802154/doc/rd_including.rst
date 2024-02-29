@@ -3,6 +3,10 @@
 Including the nRF 802.15.4 Radio Driver in a project
 ####################################################
 
+.. contents::
+   :local:
+   :depth: 2
+
 You can include the nRF 802.15.4 Radio Driver in your project using either CMake or other build systems.
 
 .. _nrf_802154_build_cmake:

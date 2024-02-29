@@ -34,7 +34,7 @@ Limitations
 The size of the scratch area can be retrieved with the :c:func:`nrf_modem_delta_dfu_area` function, which returns the size of the area in bytes.
 A limitation of delta updates is that the size of the update must not exceed the area of flash memory that a given modem firmware version has dedicated for this operation.
 The size of this area varies for any given modem firmware version and it can be retrieved with the Modem library's :c:func:`nrf_modem_delta_dfu_area` function.
-In general, this function can be useful when the size of the largest delta update that can be received needs to be reported to an external service, for example an LwM2M server.
+In general, this function can be useful when the size of the largest delta update that can be received needs to be reported to an external service, for example an LwM2M Server.
 In practice, the application does not use this function in the normal update process, since all delta update files that are part of the `nRF9160 modem firmware zip file`_ or `nRF91x1 LTE firmware zip file`_ are guaranteed to fit in the scratch area of the modem firmware version that they apply to.
 
 Reading the modem firmware UUID

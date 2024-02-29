@@ -126,7 +126,7 @@ NRF_SO_RCVTIMEO
    Set a timeout value for the :c:func:`nrf_recv`, :c:func:`nrf_recvfrom` and :c:func:`nrf_accept` operations.
    This option accepts an :c:struct:`nrf_timeval` structure with a number of seconds and microseconds specifying the limit on how long to wait for an input operation to complete.
    If a receive operation has blocked for this much time without receiving additional data, it returns with a partial count, or ``errno`` is set to ``NRF_EAGAIN`` or ``NRF_EWOULDBLOCK`` if no data were received.
-   If an accept operation has blocked for this much time without receiving an incoming connection, it returns ``-1`` and ``errno`` is set to :c:macro:`NRF_EAGAIN`.
+   If an accept operation has blocked for this much time without receiving an incoming connection, it returns ``-1`` and ``errno`` is set to ``NRF_EAGAIN``.
    The default for this option is the value ``0``, which indicates that a receive or accept operation will not time out.
 
 .. note::
@@ -206,27 +206,27 @@ NRF_SO_RAI
     * ``NRF_RAI_WAIT_MORE`` - Keep RRC in connected mode after the next output operation on this socket (server side).
 
 NRF_SO_RAI_LAST
-   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value :c:macro:`NRF_RAI_LAST` instead.
+   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value ``NRF_RAI_LAST`` instead.
    This is a Release assistance indication (RAI) socket option.
    Enter RRC idle mode after the next output operation on this socket is complete.
 
 NRF_SO_RAI_ONE_RESP
-   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value :c:macro:`NRF_RAI_ONE_RESP` instead.
+   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value ``NRF_RAI_ONE_RESP`` instead.
    This is a Release assistance indication (RAI) socket option.
    After the next output operation is complete, wait for one more packet to be received from the network on this socket before entering RRC idle mode.
 
 NRF_SO_RAI_ONGOING
-   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value :c:macro:`NRF_RAI_ONGOING` instead.
+   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value ``NRF_RAI_ONGOING`` instead.
    This is a Release assistance indication (RAI) socket option.
    Keep RRC in connected mode after the next output operation on this socket (client side).
 
 NRF_SO_RAI_WAIT_MORE
-   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value :c:macro:`NRF_RAI_WAIT_RESP` instead.
+   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value ``NRF_RAI_WAIT_RESP`` instead.
    This is a Release assistance indication (RAI) socket option.
    Keep RRC in connected mode after the next output operation on this socket (server side).
 
 NRF_SO_RAI_NO_DATA
-   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value :c:macro:`NRF_RAI_NO_DATA` instead.
+   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value ``NRF_RAI_NO_DATA`` instead.
    This is a Release assistance indication (RAI) socket option.
    Immediately enter RRC idle mode for this socket.
    Does not require a following output operation.
@@ -377,21 +377,21 @@ NRF_SO_SEC_DTLS_CONN_SAVE
 
    Once the DTLS context is saved, the socket can't be used before the DTLS context is loaded with :c:macro:`NRF_SO_SEC_DTLS_CONN_LOAD`.
 
-   This option fails with nrf_errno :c:macro:`NRF_EAGAIN` if an error happened during serialization of the SSL context.
+   This option fails with nrf_errno ``NRF_EAGAIN``if an error happened during serialization of the SSL context.
    This can occur, for instance, when the modem cannot allocate enough memory or if the socket is busy sending or receiving data.
    In this case, the SSL context is still present in the socket, so data sending is still possible.
-   The option fails with nrf_errno :c:macro:`NRF_EINVAL` if the socket option is not supported with the current configuration, for instance because the DTLS handshake is not completed,
+   The option fails with nrf_errno ``NRF_EINVAL`` if the socket option is not supported with the current configuration, for instance because the DTLS handshake is not completed,
    the connection is not an DTLS v1.2 connection with renegotiation disabled, or the connection does not use an AEAD cipher suite (AES-CCM or AES-GCM).
-   The option fails with nrf_errno :c:macro:`NRF_ENOMEM` if the number of saved connections exceeds four.
+   The option fails with nrf_errno ``NRF_ENOMEM`` if the number of saved connections exceeds four.
 
 NRF_SO_SEC_DTLS_CONN_LOAD
    Load DTLS connection.
    This option is write-only.
    The socket option is supported from modem firmware v1.3.x, where x is greater than or equal to 5, and v2.x.x.
 
-   This option fails with nrf_errno :c:macro:`NRF_EAGAIN` if an error happened during deserialization of the SSL context.
+   This option fails with nrf_errno ``NRF_EAGAIN`` if an error happened during deserialization of the SSL context.
    This can occur, for instance, when the modem cannot allocate enough memory or the connection is not saved.
-   The option fails with nrf_errno :c:macro:`NRF_EINVAL` if the socket option is not supported with the current configuration.
+   The option fails with nrf_errno ``NRF_EINVAL`` if the socket option is not supported with the current configuration.
 
 NRF_SO_SEC_CIPHERSUITE_USED
    Get chosen TLS cipher suite.

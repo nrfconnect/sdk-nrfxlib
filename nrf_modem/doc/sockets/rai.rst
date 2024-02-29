@@ -11,7 +11,7 @@ Release Assistance Indication (RAI) is a feature introduced in 3GPP Release 13 a
 It is designed to optimize the power consumption of IoT devices by allowing them to inform the network that they do not expect any more data to be sent or received after their current transmission.
 This enables the device to transition to a low-power state more quickly.
 RAI is particularly useful for devices operating on LTE-M and NB-IoT networks, where power efficiency is crucial.
-By using RAI, devices can reduce the time they spend in the higher power-consuming RRC_CONNECTED state, thus saving battery life.
+By using RAI, devices can reduce the time they spend in the higher power-consuming ``RRC_CONNECTED`` state, thus saving battery life.
 
 .. note::
    The decision to release the connection is still at the discretion of the network provider.
