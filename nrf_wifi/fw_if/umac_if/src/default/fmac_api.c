@@ -550,6 +550,30 @@ void nrf_wifi_fmac_deinit(struct nrf_wifi_fmac_priv *fpriv)
 	nrf_wifi_osal_mem_free(fpriv);
 }
 
+static bool cmd_pending(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+			unsigned int if_idx,
+			unsigned int cmd_id)
+{
+	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
+	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
+	int bit = -1;
+	int pool_id = -1;
+
+	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
+
+	bit = (cmd_id % CMD_BUCKET_BOUND);
+	pool_id = (cmd_id / CMD_BUCKET_BOUND);
+
+	if (vif_ctx->cmd_status_info.state[pool_id] & (1 << bit)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			      "%s: cmd_id=[%d] is pending\n", __func__, cmd_id);
+		return true;
+	}
+
+	return false;
+}
+
 enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
 					unsigned char if_idx,
 					struct nrf_wifi_umac_scan_info *scan_info)
@@ -570,6 +594,12 @@ enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_TRIGGER_SCAN)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				"%s: NRF_WIFI_UMAC_CMD_TRIGGER_SCAN pending", __func__);
+		goto out;
+	}
 
 	scan_cmd = nrf_wifi_osal_mem_zalloc((sizeof(*scan_cmd) + channel_info_len));
 
@@ -613,6 +643,13 @@ enum nrf_wifi_status nrf_wifi_fmac_abort_scan(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_ABORT_SCAN)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_ABORT_SCAN pending",
+				      __func__);
+		goto out;
+	}
+
 	scan_abort_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*scan_abort_cmd));
 
 	if (!scan_abort_cmd) {
@@ -653,6 +690,13 @@ enum nrf_wifi_status nrf_wifi_fmac_scan_res_get(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+
+	if (cmd_pending(fmac_dev_ctx, vif_idx, NRF_WIFI_UMAC_CMD_GET_SCAN_RESULTS)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_GET_SCAN_RESULTS pending",
+				      __func__);
+		goto out;
+	}
 
 	scan_res_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*scan_res_cmd));
 
@@ -696,6 +740,13 @@ enum nrf_wifi_status nrf_wifi_fmac_auth(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_AUTHENTICATE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_AUTHENTICATE pending",
+				      __func__);
+		goto out;
+	}
 
 	auth_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*auth_cmd));
 
@@ -759,6 +810,13 @@ enum nrf_wifi_status nrf_wifi_fmac_deauth(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_DEAUTHENTICATE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_DEAUTHENTICATE pending",
+				      __func__);
+		goto out;
+	}
+
 	deauth_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*deauth_cmd));
 
 	if (!deauth_cmd) {
@@ -811,6 +869,13 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
 	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_ASSOCIATE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_ASSOCIATE pending",
+				      __func__);
+		goto out;
+	}
 
 	nrf_wifi_osal_mem_cpy(vif_ctx->bssid,
 			      assoc_info->nrf_wifi_bssid,
@@ -908,6 +973,13 @@ enum nrf_wifi_status nrf_wifi_fmac_disassoc(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_DEAUTHENTICATE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_DEAUTHENTICATE pending",
+				      __func__);
+		goto out;
+	}
+
 	disassoc_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*disassoc_cmd));
 
 	if (!disassoc_cmd) {
@@ -961,6 +1033,13 @@ enum nrf_wifi_status nrf_wifi_fmac_add_key(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_NEW_KEY)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_NEW_KEY pending",
+				      __func__);
+		goto out;
+	}
 
 	key_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*key_cmd));
 
@@ -1047,6 +1126,13 @@ enum nrf_wifi_status nrf_wifi_fmac_del_key(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_DEL_KEY)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_DEL_KEY pending",
+				      __func__);
+		goto out;
+	}
+
 	key_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*key_cmd));
 
 	if (!key_cmd) {
@@ -1107,6 +1193,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_key(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_KEY)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_KEY pending",
+				      __func__);
+		goto out;
+	}
+
 	set_key_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_key_cmd));
 
 	if (!set_key_cmd) {
@@ -1150,6 +1243,13 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_sta(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_STATION)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_STATION pending",
+				      __func__);
+		goto out;
+	}
 
 	chg_sta_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*chg_sta_cmd));
 
@@ -1222,6 +1322,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_bss(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_BSS)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_BSS pending",
+				      __func__);
+		goto out;
+	}
+
 	set_bss_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_bss_cmd));
 
 	if (!set_bss_cmd) {
@@ -1277,6 +1384,13 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_bcn(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_BEACON)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_BEACON pending",
+				      __func__);
+		goto out;
+	}
+
 	set_bcn_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_bcn_cmd));
 
 	if (!set_bcn_cmd) {
@@ -1322,6 +1436,13 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_START_AP)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_START_AP pending",
+				      __func__);
+		goto out;
+	}
 
 	start_ap_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*start_ap_cmd));
 
@@ -1441,6 +1562,13 @@ enum nrf_wifi_status nrf_wifi_fmac_stop_ap(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_STOP_AP)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_STOP_AP pending",
+				      __func__);
+		goto out;
+	}
+
 	stop_ap_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*stop_ap_cmd));
 
 	if (!stop_ap_cmd) {
@@ -1480,6 +1608,13 @@ enum nrf_wifi_status nrf_wifi_fmac_del_sta(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_DEL_STATION)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_DEL_STATION pending",
+				      __func__);
+		goto out;
+	}
 
 	del_sta_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*del_sta_cmd));
 
@@ -1538,6 +1673,13 @@ enum nrf_wifi_status nrf_wifi_fmac_add_sta(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_NEW_STATION)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_NEW_STATION pending",
+				      __func__);
+		goto out;
+	}
 
 	add_sta_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*add_sta_cmd));
 
@@ -1685,6 +1827,13 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_start(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_START_P2P_DEVICE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_START_P2P_DEVICE Pending",
+				      __func__);
+		goto out;
+	}
+
 	start_p2p_dev_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*start_p2p_dev_cmd));
 
 	if (!start_p2p_dev_cmd) {
@@ -1721,6 +1870,13 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_stop(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_STOP_P2P_DEVICE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_STOP_P2P_DEVICE pending",
+				      __func__);
+		goto out;
+	}
 
 	stop_p2p_dev_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*stop_p2p_dev_cmd));
 
@@ -1759,6 +1915,13 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_start(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_REMAIN_ON_CHANNE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_REMAIN_ON_CHANNEL pending",
+				      __func__);
+		goto out;
+	}
 
 	roc_cmd = nrf_wifi_osal_mem_zalloc(sizeof(struct nrf_wifi_umac_cmd_remain_on_channel));
 
@@ -1810,6 +1973,13 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_stop(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_CANCEL_REMAIN_ON_CHANNEL)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_CANCEL_REMAIN_ON_CHANNEL pending",
+				      __func__);
+		goto out;
+	}
+
 	cancel_roc_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cancel_roc_cmd));
 
 	if (!cancel_roc_cmd) {
@@ -1851,6 +2021,13 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_tx(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_FRAME)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_FRAME pending",
+				      __func__);
+		goto out;
+	}
 
 	mgmt_tx_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*mgmt_tx_cmd));
 
@@ -2004,6 +2181,13 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 	 * send commands for non-default interfaces
 	 */
 	if (vif_idx != 0) {
+		if (cmd_pending(fmac_dev_ctx, vif_idx, NRF_WIFI_UMAC_CMD_NEW_INTERFACE)) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_NEW_INTERFACE pending",
+					      __func__);
+			goto out;
+		}
+
 		add_vif_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*add_vif_cmd));
 
 		if (!add_vif_cmd) {
@@ -2099,6 +2283,13 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 	 * send commands for non-default interfaces
 	 */
 	if (if_idx != 0) {
+		if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_DEL_INTERFACE)) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_DEL_INTERFACE pending",
+					      __func__);
+			goto out;
+		}
+
 		del_vif_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*del_vif_cmd));
 
 		if (!del_vif_cmd) {
@@ -2169,6 +2360,13 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif(void *dev_ctx,
 		goto out;
 	}
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_INTERFACE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_INTERFACE pending",
+				      __func__);
+		goto out;
+	}
+
 	chg_vif_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*chg_vif_cmd));
 
 	if (!chg_vif_cmd) {
@@ -2230,6 +2428,13 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif_state(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_IFFLAGS)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_IFFLAGS pending",
+				      __func__);
+		goto out;
+	}
 
 	chg_vif_state_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*chg_vif_state_cmd));
 
@@ -2305,6 +2510,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_vif_macaddr(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_CHANGE_MACADDR)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_CHANGE_MACADDR pending",
+				      __func__);
+		goto out;
+	}
+
 	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
@@ -2350,6 +2562,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_wiphy_params(void *dev_ctx,
 
 	if (!wiphy_info) {
 		nrf_wifi_osal_log_err("%s: wiphy_info: Invalid memory",
+				       __func__);
+		goto out;
+	}
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_WIPHY)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_WIPHY pending",
 				       __func__);
 		goto out;
 	}
@@ -2451,6 +2670,13 @@ enum nrf_wifi_status nrf_wifi_fmac_get_tx_power(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_GET_TX_POWER)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_GET_TX_POWER pending",
+				      __func__);
+		goto out;
+	}
+
 	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
@@ -2487,6 +2713,13 @@ enum nrf_wifi_status nrf_wifi_fmac_get_channel(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_GET_CHANNEL)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_GET_CHANNEL pending",
+				      __func__);
+		goto out;
+	}
+
 	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
@@ -2522,6 +2755,13 @@ enum nrf_wifi_status nrf_wifi_fmac_get_station(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 
 	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS) || !mac) {
+		goto out;
+	}
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_GET_STATION)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_GET_STATION pending",
+				      __func__);
 		goto out;
 	}
 
@@ -2565,6 +2805,13 @@ enum nrf_wifi_status nrf_wifi_fmac_get_interface(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_GET_INTERFACE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_GET_INTERFACE pending",
+				      __func__);
+		goto out;
+	}
+
 	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
@@ -2602,6 +2849,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_qos_map(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_QOS_MAP)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_QOS_MAP pending",
+				      __func__);
+		goto out;
+	}
 
 	set_qos_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_qos_cmd));
 
@@ -2650,6 +2904,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_POWER_SAVE)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_POWER_SAVE pending",
+				      __func__);
+		goto out;
+	}
+
 	set_ps_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_ps_cmd));
 
 	if (!set_ps_cmd) {
@@ -2686,6 +2947,14 @@ enum nrf_wifi_status nrf_wifi_fmac_set_uapsd_queue(void *dev_ctx,
 	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
 		goto out;
 	}
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_CONFIG_UAPSD)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_CONFIG_UAPSD pending",
+				      __func__);
+		goto out;
+	}
+
 
 	set_uapsdq_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_uapsdq_cmd));
 
@@ -2727,6 +2996,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save_timeout(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_POWER_SAVE_TIMEOUT)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_POWER_SAVE_TIMEOUT pending",
+				      __func__);
+		goto out;
+	}
+
 	set_ps_timeout_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_ps_timeout_cmd));
 
 	if (!set_ps_timeout_cmd) {
@@ -2761,6 +3037,13 @@ enum nrf_wifi_status nrf_wifi_fmac_get_wiphy(void *dev_ctx, unsigned char if_idx
 	fmac_dev_ctx = dev_ctx;
 
 	if (!dev_ctx || (if_idx >= MAX_NUM_VIFS)) {
+		goto out;
+	}
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_GET_WIPHY)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_GET_WIPHY pending",
+				      __func__);
 		goto out;
 	}
 
@@ -2839,6 +3122,13 @@ enum nrf_wifi_status nrf_wifi_fmac_twt_setup(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_CONFIG_TWT)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_CONFIG_TWT pending",
+				      __func__);
+		goto out;
+	}
+
 	twt_setup_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*twt_setup_cmd));
 
 	if (!twt_setup_cmd) {
@@ -2883,6 +3173,13 @@ enum nrf_wifi_status nrf_wifi_fmac_twt_teardown(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_TEARDOWN_TWT)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+						      "%s: NRF_WIFI_UMAC_CMD_TEARDOWN_TWT pending",
+						      __func__);
+		goto out;
+	}
+
 	twt_teardown_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*twt_teardown_cmd));
 
 	if (!twt_teardown_cmd) {
@@ -2918,6 +3215,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_mcast_addr(struct nrf_wifi_fmac_dev_ctx *
 	struct nrf_wifi_umac_cmd_mcast_filter *set_mcast_cmd = NULL;
 
 	if (!fmac_dev_ctx || (if_idx >= MAX_NUM_VIFS) || !mcast_info) {
+		goto out;
+	}
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_MCAST_FILTER)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_MCAST_FILTER pending",
+				      __func__);
 		goto out;
 	}
 
@@ -2962,6 +3266,13 @@ enum nrf_wifi_status nrf_wifi_fmac_get_conn_info(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_GET_CONNECTION_INFO)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_GET_CONNECTION_INFO pending",
+				      __func__);
+		goto out;
+	}
+
 	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
@@ -2996,6 +3307,13 @@ enum nrf_wifi_status nrf_wifi_fmac_get_power_save_info(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_GET_POWER_SAVE_INFO)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_GET_POWER_SAVE_INFO pending",
+				      __func__);
+		goto out;
+	}
 
 	get_ps_info_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*get_ps_info_cmd));
 
@@ -3033,6 +3351,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_listen_interval(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_LISTEN_INTERVAL)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_SET_LISTEN_INTERVAL pending",
+				      __func__);
+		goto out;
+	}
 
 	set_listen_interval_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_listen_interval_cmd));
 
@@ -3072,6 +3397,13 @@ enum nrf_wifi_status nrf_wifi_fmac_set_ps_wakeup_mode(void *dev_ctx,
 	}
 
 	fmac_dev_ctx = dev_ctx;
+
+	if (cmd_pending(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS pending",
+				      __func__);
+		goto out;
+	}
 
 	set_ps_wakeup_mode_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_ps_wakeup_mode_cmd));
 
