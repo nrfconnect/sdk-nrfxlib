@@ -488,6 +488,19 @@ struct nrf_wifi_fmac_dev_ctx_def {
 #endif /* CONFIG_NRF700X_RAW_DATA_TX */
 };
 
+#define CMD_BUCKET_BOUND 32
+/**
+ * @brief Structure to store information for the
+ * commands sent to UMAC.
+ */
+struct nrf_wifi_fmac_cmd_status_info {
+	/* This element is bit mapped.
+	 * Each bit representing state of a command
+	 * (whether a command has been sent & event pending or not.)
+	 */
+	unsigned int state[NRF_WIFI_UMAC_CMD_MAX / CMD_BUCKET_BOUND];
+};
+
 /**
  * @brief Structure to hold per VIF context information for the UMAC IF layer.
  *
@@ -525,6 +538,8 @@ struct nrf_wifi_fmac_vif_ctx {
 	/** Promiscuous mode setting */
 	bool promisc_mode;
 #endif /* CONFIG_NRF700X_PROMISC_DATA_RX */
+	/** Command status information related to this VIF*/
+	struct nrf_wifi_fmac_cmd_status_info cmd_status_info;
 };
 
 /**
