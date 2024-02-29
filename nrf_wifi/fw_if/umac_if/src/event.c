@@ -964,6 +964,46 @@ out:
 }
 #endif
 
+static enum nrf_wifi_status umac_event_stats_debug_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+							   void *event)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	struct nrf_wifi_umac_event_debug_stats *stats = NULL;
+
+	if (!event) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Invalid parameters",
+				      __func__);
+		goto out;
+	}
+
+	if (!fmac_dev_ctx->stats_req) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Stats recd when req was not sent!",
+				      __func__);
+		goto out;
+	}
+
+	stats = ((struct nrf_wifi_umac_event_debug_stats *)event);
+
+	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+			      &fmac_dev_ctx->fw_debug->rpu_hw_lockup_count,
+			      &stats->rpu_hw_lockup_count,
+			      sizeof(&fmac_dev_ctx->fw_debug->rpu_hw_lockup_count));
+
+	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+			      &fmac_dev_ctx->fw_debug->rpu_hw_lockup_recovery_done,
+			      &stats->rpu_hw_lockup_recovery_done,
+			      sizeof(&fmac_dev_ctx->fw_debug->rpu_hw_lockup_recovery_done));
+
+	fmac_dev_ctx->stats_req = false;
+
+	status = NRF_WIFI_STATUS_SUCCESS;
+
+out:
+	return status;
+}
+
 static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 						    struct host_rpu_msg *rpu_msg)
 {
@@ -991,6 +1031,10 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 	case NRF_WIFI_EVENT_STATS:
 		status = umac_event_stats_process(fmac_dev_ctx,
 						  sys_head);
+		break;
+	case NRF_WIFI_EVENT_DEBUG_STATS:
+		status = umac_event_stats_debug_process(fmac_dev_ctx,
+							sys_head);
 		break;
 	case NRF_WIFI_EVENT_INIT_DONE:
 		fmac_dev_ctx->fw_init_done = 1;
