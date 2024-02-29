@@ -25,8 +25,8 @@ config ZIGBEE_LIBRARY_PRODUCTION
 	  of those libraries.
 
 config ZIGBEE_LIBRARY_DEVELOPMENT
-	bool "Use development libraries [EXPERIMENTAL]"
-	select EXPERIMENTAL
+	bool "Use development libraries [DEPRECATED]"
+	select DEPRECATED
 	help
 	  If selected, the application will be linked with newest version of
 	  ZBOSS libraries.
