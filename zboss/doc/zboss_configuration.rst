@@ -8,12 +8,9 @@ ZBOSS library configuration
    :depth: 2
 
 The ZBOSS stack is distributed as a set of precompiled linkable libraries.
-These libraries are available in the following versions:
+The available libraries are the `ZBOSS production libraries`_.
 
-* `ZBOSS production libraries`_
-* `ZBOSS development libraries`_
-
-Each version supports different Zigbee device roles, with each variant having its own configuration.
+The libraries supports different Zigbee device roles, with each variant having its own configuration.
 This allows you to scale the application and select the most suitable set of features.
 
 These libraries are used in the Zigbee protocol configuration in the |NCS| when defining the Zigbee device role, as described in :ref:`nrf:zigbee_ug_configuration` in the |NCS| documentation.
@@ -29,22 +26,6 @@ For a complete list of the ZBOSS configuration options, see the following files:
 * :file:`zboss/production/include/osif/libzboss_config.ed.h` - Library for End Devices
 
 The ZBOSS production library version is enabled by default with the :kconfig:option:`CONFIG_ZIGBEE_LIBRARY_PRODUCTION` Kconfig option.
-
-ZBOSS development libraries
-***************************
-
-The ZBOSS libraries in the development state include all the production code, but also features that are still in the experimental state.
-
-For a complete list of the ZBOSS configuration options, see the following files:
-
-* :file:`zboss/development/include/osif/libzboss_config.h` - Library for Coordinators and Routers
-* :file:`zboss/development/include/osif/libzboss_config.ed.h` - Library for End Devices
-
-You can select the ZBOSS development library version with the :kconfig:option:`CONFIG_ZIGBEE_LIBRARY_DEVELOPMENT` Kconfig option.
-These libraries include implementation of the eight version of the ZCL specification.
-
-.. note::
-   This implementation includes new features defined in the new version of the specification, but they introduce incompatibilities with devices that implement older versions of the specification.
 
 Configuration options
 *********************

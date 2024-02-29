@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project in the |NCS| are documented in this file.
 
+nRF Connect SDK v2.6.0
+**********************
+
+Removed
+=======
+
+* Precompiled development ZBOSS libraries.
+
 nRF Connect SDK v2.3.0
 **********************
 
