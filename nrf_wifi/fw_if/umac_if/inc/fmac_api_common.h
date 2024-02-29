@@ -358,6 +358,23 @@ enum nrf_wifi_status nrf_wifi_fmac_set_packet_filter(void *dev_ctx, unsigned cha
 						     unsigned short buffer_size);
 #endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 
+
+/**
+ * @brief Issue a request to get stats from the RPU.
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
+ * @param op_mode RPU operation mode.
+ * @param stats Pointer to memory where the stats are to be copied.
+ *
+ * This function is used to send a command to
+ * instruct the firmware to return the current RPU Lockup recovery statistics. The RPU will
+ * send the event with the current statistics.
+ *
+ * @return Command execution status
+ */
+enum nrf_wifi_status nrf_wifi_fmac_dbg_stats_get(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+						      enum rpu_op_mode op_mode,
+						      struct rpu_op_stats *stats);
+
 /**
  * @}
  */
