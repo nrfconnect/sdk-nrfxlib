@@ -148,6 +148,7 @@ enum nrf_wifi_umac_commands {
 	NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS,
 	/** Configure quiet period nrf_wifi_umac_cmd_config_quiet_period */
 	NRF_WIFI_UMAC_CMD_CONFIG_QUIET_PERIOD,
+	NRF_WIFI_UMAC_CMD_MAX = 255
 };
 
  /**
