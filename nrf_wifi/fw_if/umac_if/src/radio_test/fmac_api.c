@@ -156,11 +156,6 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
 		goto out;
 	}
 
-	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
-                              &phy_rf_params,
-		              0xFF,
-		              sizeof(phy_rf_params));
-
 	status = nrf_wifi_fmac_rf_params_get(fmac_dev_ctx,
 		                             &phy_rf_params);
 
