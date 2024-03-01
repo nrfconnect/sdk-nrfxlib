@@ -667,7 +667,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_params_get(
 				      __func__);
 		goto out;
 	}
-	
+
 	ret = nrf_wifi_phy_rf_params_init(fmac_dev_ctx->fpriv->opriv,
 				    	  phy_rf_params,
 				    	  package_info,
@@ -959,9 +959,9 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 	unsigned int rf_param_offset = BAND_2G_LW_ED_BKF_DSSS_OFST - NRF_WIFI_RF_PARAMS_CONF_SIZE;
 	/* Initilaize reserved bytes */
 	nrf_wifi_osal_mem_set(opriv,
-			      &prf->reserved,
+			      prf,
 			      0x0,
-			      sizeof(prf->reserved));	
+			      sizeof(prf));
 	/* Initialize PD adjust values for MCS7. Currently these 4 bytes are not being used */
 	prf->pd_adjust_val.pd_adjt_lb_chan = PD_ADJUST_VAL;
 	prf->pd_adjust_val.pd_adjt_hb_low_chan = PD_ADJUST_VAL;
@@ -980,11 +980,6 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 	prf->rx_gain_offset.rx_gain_hb_mid_chan = RX_GAIN_OFFSET_HB_MID_CHAN;
 	prf->rx_gain_offset.rx_gain_hb_high_chan = RX_GAIN_OFFSET_HB_HIGH_CHAN;
 
-	nrf_wifi_osal_mem_set(opriv,
-			      &prf->temp_volt_backoff.reserved,
-			      0x0,
-			      sizeof(prf->temp_volt_backoff.reserved));	
-
 	if (package_info == CSP_PACKAGE_INFO) {
 		prf->xo_offset.xo_freq_offset = CSP_XO_VAL;
 		/* TX power ceiling */
@@ -998,6 +993,7 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 		prf->max_pwr_ceil.max_hb_mid_chan_mcs0_pwr = CSP_MAX_TX_PWR_HB_MID_CHAN_MCS0;
 		prf->max_pwr_ceil.max_hb_high_chan_mcs0_pwr = CSP_MAX_TX_PWR_HB_HIGH_CHAN_MCS0;
 
+#ifndef CONFIG_NRF700X_RADIO_TEST
 		/* Max-Min chip temperature, VT backoffs configuration */
 		prf->temp_volt_backoff.max_chip_temp = CSP_MAX_CHIP_TEMP;
 		prf->temp_volt_backoff.min_chip_temp = CSP_MIN_CHIP_TEMP;
@@ -1009,6 +1005,7 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 		prf->temp_volt_backoff.hb_vbt_lt_vlow =	CSP_HB_VBT_LT_VLOW;
 		prf->temp_volt_backoff.lb_vbt_lt_low = CSP_LB_VBT_LT_LOW;
 		prf->temp_volt_backoff.hb_vbt_lt_low = CSP_HB_VBT_LT_LOW;
+#endif /* CONFIG_NRF700X_RADIO_TEST */
 	}
 	else {
 		/** If nothing is written to OTP field corresponding to package info byte
@@ -1030,6 +1027,7 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 		prf->max_pwr_ceil.max_hb_mid_chan_mcs0_pwr = QFN_MAX_TX_PWR_HB_MID_CHAN_MCS0;
 		prf->max_pwr_ceil.max_hb_high_chan_mcs0_pwr = QFN_MAX_TX_PWR_HB_HIGH_CHAN_MCS0;
 
+#ifndef CONFIG_NRF700X_RADIO_TEST
 		/* Max-Min chip temperature, VT backoffs configuration */
 		prf->temp_volt_backoff.max_chip_temp = QFN_MAX_CHIP_TEMP;
 		prf->temp_volt_backoff.min_chip_temp = QFN_MIN_CHIP_TEMP;
@@ -1041,6 +1039,7 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 		prf->temp_volt_backoff.hb_vbt_lt_vlow =	QFN_HB_VBT_LT_VLOW;
 		prf->temp_volt_backoff.lb_vbt_lt_low = QFN_LB_VBT_LT_LOW;
 		prf->temp_volt_backoff.hb_vbt_lt_low = QFN_HB_VBT_LT_LOW;
+#endif /* CONFIG_NRF700X_RADIO_TEST */
 	}
 
 	ret = nrf_wifi_utils_hex_str_to_val(opriv,
