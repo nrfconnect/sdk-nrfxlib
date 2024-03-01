@@ -132,6 +132,43 @@ static void umac_event_connect(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 }
 #endif /* CONFIG_NRF700X_STA_MODE */
 
+#ifndef CONFIG_NRF700X_RADIO_TEST
+static enum nrf_wifi_status umac_event_set_cmd_event_status(struct nrf_wifi_fmac_vif_ctx *vif_ctx,
+							    unsigned int cmd_id,
+							    unsigned int cmd_status)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	int indx = 0;
+
+	/* Get the index from the cmd_id */
+	for (indx = 0; indx < MAX_CMD_PENDING_STATUS; indx++) {
+		/* Check if command already is pending */
+		if ((vif_ctx->cmd_status_info[indx].cmd_id == cmd_id) &&
+		    (vif_ctx->cmd_status_info[indx].state)) {
+			/* Update cmd status success/ failure */
+			if (cmd_status == NRF_WIFI_STATUS_SUCCESS) {
+				vif_ctx->cmd_status_info[indx].status = NRF_WIFI_STATUS_SUCCESS;
+			}
+			/* Clear command waiting for event */
+			vif_ctx->cmd_status_info[indx].state = 0;
+			status = NRF_WIFI_STATUS_SUCCESS;
+			break;
+		}
+	}
+
+	if (indx == MAX_CMD_PENDING_STATUS) {
+#if CONFIG_WIFI_NRF700X_LOG_LEVEL >= NRF_WIFI_LOG_LEVEL_DBG
+		/* As no command pending, log it */
+		nrf_wifi_osal_log_err("%s: Unsolicited event received with cmd_id=%d "
+				      " cmd_status=%d", __func__, cmd_id, cmd_status);
+#endif
+	}
+
+	return status;
+}
+#endif
+
+
 static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 						    void *event_data,
 						    unsigned int event_len)
@@ -260,14 +297,18 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 					      umac_hdr->cmd_evnt);
 		break;
 	case NRF_WIFI_UMAC_EVENT_SCAN_ABORTED:
-		if (callbk_fns->scan_abort_callbk_fn)
-			callbk_fns->scan_abort_callbk_fn(vif_ctx->os_vif_ctx,
-							 event_data,
-							 event_len);
-		else
-			nrf_wifi_osal_log_err("%s: No callback registered for event %d",
-					      __func__,
-					      umac_hdr->cmd_evnt);
+		if (umac_event_set_cmd_event_status(vif_ctx,
+					    NRF_WIFI_UMAC_CMD_ABORT_SCAN,
+					    NRF_WIFI_STATUS_SUCCESS) == NRF_WIFI_STATUS_SUCCESS) {
+			if (callbk_fns->scan_abort_callbk_fn)
+				callbk_fns->scan_abort_callbk_fn(vif_ctx->os_vif_ctx,
+								 event_data,
+								 event_len);
+			else
+				nrf_wifi_osal_log_err("%s: No callback registered for event %d",
+						      __func__,
+						      umac_hdr->cmd_evnt);
+		}
 		break;
 	case NRF_WIFI_UMAC_EVENT_SCAN_DISPLAY_RESULT:
 		if (umac_hdr->seq != 0)
@@ -293,6 +334,21 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 			goto out;
 		}
 		vif_ctx->ifflags = true;
+		break;
+	case NRF_WIFI_UMAC_EVENT_CMD_STATUS:
+		struct nrf_wifi_umac_event_cmd_status *cmd_status =
+			(struct nrf_wifi_umac_event_cmd_status *)event_data;
+		if (umac_event_set_cmd_event_status(vif_ctx,
+						    cmd_status->cmd_id,
+						    cmd_status->cmd_status)
+				== NRF_WIFI_STATUS_SUCCESS) {
+#if CONFIG_WIFI_NRF700X_LOG_LEVEL >= NRF_WIFI_LOG_LEVEL_DBG
+			nrf_wifi_osal_log_dbg("%s: Command %d -> status %d",
+					      __func__,
+					      cmd_status->cmd_id,
+					      cmd_status->cmd_status);
+#endif
+		}
 		break;
 #ifdef CONFIG_NRF700X_STA_MODE
 	case NRF_WIFI_UMAC_EVENT_TWT_SLEEP:
@@ -479,16 +535,6 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 			nrf_wifi_osal_log_err("%s: No callback registered for event %d",
 					      __func__,
 					      umac_hdr->cmd_evnt);
-		break;
-	case NRF_WIFI_UMAC_EVENT_CMD_STATUS:
-#if CONFIG_WIFI_NRF700X_LOG_LEVEL >= NRF_WIFI_LOG_LEVEL_DBG
-		struct nrf_wifi_umac_event_cmd_status *cmd_status =
-			(struct nrf_wifi_umac_event_cmd_status *)event_data;
-#endif
-		nrf_wifi_osal_log_dbg("%s: Command %d -> status %d",
-				      __func__,
-				      cmd_status->cmd_id,
-				      cmd_status->cmd_status);
 		break;
 	case NRF_WIFI_UMAC_EVENT_BEACON_HINT:
 	case NRF_WIFI_UMAC_EVENT_CONNECT:
