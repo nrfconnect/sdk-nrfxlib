@@ -564,22 +564,94 @@ static bool cmd_pending(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 {
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
 	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
-	int bit = -1;
-	int pool_id = -1;
+	unsigned int indx = 0;
+	bool status = false;
+	int total_cmd_pending = 0;
 
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
 
-	bit = (cmd_id % CMD_BUCKET_BOUND);
-	pool_id = (cmd_id / CMD_BUCKET_BOUND);
-
-	if (vif_ctx->cmd_status_info.state[pool_id] & (1 << bit)) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-			      "%s: cmd_id=[%d] is pending\n", __func__, cmd_id);
-		return true;
+	for (indx = 0; indx < MAX_CMD_PENDING_STATUS; indx++) {
+		/*check if command already is pending*/
+		if (vif_ctx->cmd_status_info[indx].cmd_id == cmd_id) {
+			if (vif_ctx->cmd_status_info[indx].state) {
+				nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+						      "%s: cmd_id=[%d] is pending\n",
+						      __func__, cmd_id);
+				status = true;
+				goto out;
+			}
+		}
+		/*check if there is maximum number of command already pending*/
+		if (vif_ctx->cmd_status_info[indx].state) {
+			total_cmd_pending++;
+		}
 	}
 
-	return false;
+	if (total_cmd_pending == MAX_CMD_PENDING_STATUS) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Maximum [%d] no of cmd already pending\n",
+				      __func__, MAX_CMD_PENDING_STATUS);
+		status = false;
+	}
+
+out:
+	return status;
+
+}
+
+#define RPU_CMD_EVENT_TIMEOUT_MS 15000
+static enum nrf_wifi_status wait_for_cmd_event(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+					       unsigned int if_idx,
+					       unsigned int cmd_id)
+{
+	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
+	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_SUCCESS;
+	unsigned int count = RPU_CMD_EVENT_TIMEOUT_MS;
+	unsigned int indx = 0;
+
+	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
+
+	/*get a free postion and update the info*/
+	for (indx = 0; indx < MAX_CMD_PENDING_STATUS; indx++) {
+		/*check if command already is pending*/
+		if (!vif_ctx->cmd_status_info[indx].state) {
+			/* Set command waiting for event*/
+			vif_ctx->cmd_status_info[indx].state = 0x1;
+			vif_ctx->cmd_status_info[indx].cmd_id = cmd_id;
+			vif_ctx->cmd_status_info[indx].status = NRF_WIFI_STATUS_FAIL;
+			break;
+		}
+	}
+
+	while ((vif_ctx->cmd_status_info[indx].state) && (--count > 0))
+		nrf_wifi_osal_sleep_ms(fmac_dev_ctx->fpriv->opriv, 1);
+
+	if (count == 0) {
+		status = NRF_WIFI_STATUS_FAIL;
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: RPU is unresponsive for %d sec",
+				      __func__, RPU_CMD_EVENT_TIMEOUT_MS / 1000);
+		goto out;
+	}
+
+	/* Check  corresponding event status.
+	 * Status is sent when a regular event (i.e success) or
+	 * CMD_STATUS_EVENT is received from UMAC(either success or failure)
+	 */
+	if (vif_ctx->cmd_status_info[indx].status == NRF_WIFI_STATUS_SUCCESS) {
+		status = NRF_WIFI_STATUS_SUCCESS;
+	} else {
+		status =  NRF_WIFI_STATUS_FAIL;
+	}
+out:
+	/* Clear both command state and status bit */
+	vif_ctx->cmd_status_info[indx].state = 0;
+	vif_ctx->cmd_status_info[indx].status = 0;
+
+	return status;
 }
 
 enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
@@ -680,6 +752,14 @@ enum nrf_wifi_status nrf_wifi_fmac_abort_scan(void *dev_ctx,
 			      scan_abort_cmd,
 			      sizeof(*scan_abort_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_ABORT_SCAN);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_ABORT_SCAN failed",
+					      __func__);
+		}
+	}
 out:
 	if (scan_abort_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -808,6 +888,16 @@ enum nrf_wifi_status nrf_wifi_fmac_auth(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      auth_cmd,
 			      sizeof(*auth_cmd));
+
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_AUTHENTICATE);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_AUTHENTICATE failed",
+					      __func__);
+		}
+	}
+
 out:
 	if (auth_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -983,6 +1073,14 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      assoc_cmd,
 			      sizeof(*assoc_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_ASSOCIATE);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_ASSOCIATE failed",
+					      __func__);
+		}
+	}
 out:
 	if (assoc_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1042,6 +1140,14 @@ enum nrf_wifi_status nrf_wifi_fmac_disassoc(void *dev_ctx,
 			      disassoc_cmd,
 			      sizeof(*disassoc_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_DEAUTHENTICATE);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_DEAUTHENTICATE failed",
+					      __func__);
+		}
+	}
 out:
 	if (disassoc_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1144,6 +1250,14 @@ enum nrf_wifi_status nrf_wifi_fmac_add_key(void *dev_ctx,
 			      key_cmd,
 			      sizeof(*key_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_NEW_KEY);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_NEW_KEY failed",
+					      __func__);
+		}
+	}
 out:
 	if (key_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1219,6 +1333,14 @@ enum nrf_wifi_status nrf_wifi_fmac_del_key(void *dev_ctx,
 			      key_cmd,
 			      sizeof(*key_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS)  {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_DEL_KEY);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_DEL_KEY failed",
+					      __func__);
+		}
+	}
 out:
 	if (key_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1275,6 +1397,14 @@ enum nrf_wifi_status nrf_wifi_fmac_set_key(void *dev_ctx,
 			      set_key_cmd,
 			      sizeof(*set_key_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_KEY);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_SET_KEY failed",
+					      __func__);
+		}
+	}
 out:
 	if (set_key_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1423,6 +1553,14 @@ enum nrf_wifi_status nrf_wifi_fmac_set_bss(void *dev_ctx,
 			      set_bss_cmd,
 			      sizeof(*set_bss_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS)  {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_BSS);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_SET_BSS failed",
+					      __func__);
+		}
+	}
 out:
 	if (set_bss_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1479,6 +1617,14 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_bcn(void *dev_ctx,
 			      set_bcn_cmd,
 			      sizeof(*set_bcn_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_BEACON);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_SET_BEACON failed",
+					      __func__);
+		}
+	}
 out:
 	if (set_bcn_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1609,6 +1755,14 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 			      start_ap_cmd,
 			      sizeof(*start_ap_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_START_AP);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_START_AP failed",
+					      __func__);
+		}
+	}
 out:
 	if (wiphy_info) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1664,6 +1818,14 @@ enum nrf_wifi_status nrf_wifi_fmac_stop_ap(void *dev_ctx,
 			      stop_ap_cmd,
 			      sizeof(*stop_ap_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_STOP_AP);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_STOP_AP failed",
+					      __func__);
+		}
+	}
 out:
 	if (stop_ap_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1732,6 +1894,14 @@ enum nrf_wifi_status nrf_wifi_fmac_del_sta(void *dev_ctx,
 			      del_sta_cmd,
 			      sizeof(*del_sta_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_DEL_STATION);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_DEL_STATION failed",
+					      __func__);
+		}
+	}
 out:
 	if (del_sta_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1846,6 +2016,14 @@ enum nrf_wifi_status nrf_wifi_fmac_add_sta(void *dev_ctx,
 			      add_sta_cmd,
 			      sizeof(*add_sta_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_NEW_STATION);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_NEW_STATION failed",
+					      __func__);
+		}
+	}
 out:
 	if (add_sta_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1944,6 +2122,16 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_start(void *dev_ctx,
 			      start_p2p_dev_cmd,
 			      sizeof(*start_p2p_dev_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx,
+					    if_idx,
+					    NRF_WIFI_UMAC_CMD_START_P2P_DEVICE);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_START_P2P_DEVICE failed",
+					      __func__);
+		}
+	}
 out:
 	if (start_p2p_dev_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -1991,6 +2179,17 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_stop(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      stop_p2p_dev_cmd,
 			      sizeof(*stop_p2p_dev_cmd));
+
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx,
+					    if_idx,
+					    NRF_WIFI_UMAC_CMD_STOP_P2P_DEVICE);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_STOP_P2P_DEVICE failed",
+					      __func__);
+		}
+	}
 out:
 	if (stop_p2p_dev_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -2052,6 +2251,16 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_start(void *dev_ctx,
 			      roc_cmd,
 			      sizeof(*roc_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx,
+					    if_idx,
+					    NRF_WIFI_UMAC_CMD_REMAIN_ON_CHANNEL);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_REMAIN_ON_CHANNEL failed",
+					      __func__);
+		}
+	}
 out:
 	if (roc_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -2102,6 +2311,16 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_stop(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      cancel_roc_cmd,
 			      sizeof(*cancel_roc_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx,
+					    if_idx,
+					    NRF_WIFI_UMAC_CMD_CANCEL_REMAIN_ON_CHANNEL);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_CANCEL_REMAIN_ON_CHANNEL failed",
+					      __func__);
+		}
+	}
 out:
 	if (cancel_roc_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -2169,6 +2388,14 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_tx(void *dev_ctx,
 			      mgmt_tx_cmd,
 			      sizeof(*mgmt_tx_cmd));
 
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_FRAME);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_FRAME failed",
+					      __func__);
+		}
+	}
 out:
 	if (mgmt_tx_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -2327,6 +2554,16 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 					      "%s: NRF_WIFI_UMAC_CMD_NEW_INTERFACE failed",
 					      __func__);
 			goto err;
+		} else {
+			status = wait_for_cmd_event(fmac_dev_ctx,
+						    vif_idx,
+						    NRF_WIFI_UMAC_CMD_NEW_INTERFACE);
+			if (status != NRF_WIFI_STATUS_SUCCESS) {
+				nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+						      "%s: NRF_WIFI_UMAC_CMD_NEW_INTERFACE failed",
+						      __func__);
+				goto err;
+			}
 		}
 
 	}
@@ -2428,6 +2665,16 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 					      "%s: NRF_WIFI_UMAC_CMD_DEL_INTERFACE failed",
 					      __func__);
 			goto out;
+		} else {
+			status = wait_for_cmd_event(fmac_dev_ctx,
+						    if_idx,
+						    NRF_WIFI_UMAC_CMD_DEL_INTERFACE);
+			if (status != NRF_WIFI_STATUS_SUCCESS) {
+				nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+						      "%s: NRF_WIFI_UMAC_CMD_DEL_INTERFACE failed",
+						      __func__);
+				goto out;
+			}
 		}
 	} else {
 		status = NRF_WIFI_STATUS_SUCCESS;
@@ -2513,6 +2760,14 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      chg_vif_cmd,
 			      sizeof(*chg_vif_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_INTERFACE);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_SET_INTERFACE failed",
+					      __func__);
+		}
+	}
 out:
 	if (chg_vif_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -2666,6 +2921,15 @@ enum nrf_wifi_status nrf_wifi_fmac_set_vif_macaddr(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      cmd,
 			      sizeof(*cmd));
+
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_CHANGE_MACADDR);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_CHANGE_MACADDR failed",
+					      __func__);
+		}
+	}
 out:
 	if (cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -2782,6 +3046,14 @@ enum nrf_wifi_status nrf_wifi_fmac_set_wiphy_params(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_wiphy_cmd,
 			      sizeof(*set_wiphy_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_WIPHY);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_SET_WIPHY failed",
+					      __func__);
+		}
+	}
 out:
 	if (set_wiphy_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -2828,6 +3100,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_tx_power(void *dev_ctx,
 	cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
 	status = umac_cmd_cfg(fmac_dev_ctx, cmd, sizeof(*cmd));
+
 
 out:
 	if (cmd) {
@@ -3033,6 +3306,14 @@ enum nrf_wifi_status nrf_wifi_fmac_set_qos_map(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_qos_cmd,
 			      sizeof(*set_qos_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_QOS_MAP);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_SET_QOS_MAP failed",
+					      __func__);
+		}
+	}
 out:
 	if (set_qos_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -3082,6 +3363,14 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_ps_cmd,
 			      sizeof(*set_ps_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_SET_POWER_SAVE);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_SET_POWER_SAVE failed",
+					      __func__);
+		}
+	}
 out:
 	if (set_ps_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -3131,6 +3420,14 @@ enum nrf_wifi_status nrf_wifi_fmac_set_uapsd_queue(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_uapsdq_cmd,
 			      sizeof(*set_uapsdq_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_CONFIG_UAPSD);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_CONFIG_UAPSD failed",
+					      __func__);
+		}
+	}
 out:
 	if (set_uapsdq_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -3180,6 +3477,16 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save_timeout(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_ps_timeout_cmd,
 			      sizeof(*set_ps_timeout_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx,
+					    if_idx,
+					    NRF_WIFI_UMAC_CMD_SET_POWER_SAVE_TIMEOUT);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_SET_POWER_SAVE_TIMEOUT failed",
+					      __func__);
+		}
+	}
 out:
 	if (set_ps_timeout_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -3421,6 +3728,14 @@ enum nrf_wifi_status nrf_wifi_fmac_set_mcast_addr(struct nrf_wifi_fmac_dev_ctx *
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_mcast_cmd,
 			      sizeof(*set_mcast_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx, if_idx, NRF_WIFI_UMAC_CMD_MCAST_FILTER);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_MCAST_FILTER failed",
+					      __func__);
+		}
+	}
 out:
 
 	if (set_mcast_cmd) {
@@ -3561,6 +3876,16 @@ enum nrf_wifi_status nrf_wifi_fmac_set_listen_interval(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_listen_interval_cmd,
 			      sizeof(*set_listen_interval_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx,
+					    if_idx,
+					    NRF_WIFI_UMAC_CMD_SET_LISTEN_INTERVAL);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_SET_LISTEN_INTERVAL failed",
+					      __func__);
+		}
+	}
 out:
 	if (set_listen_interval_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
@@ -3610,6 +3935,16 @@ enum nrf_wifi_status nrf_wifi_fmac_set_ps_wakeup_mode(void *dev_ctx,
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_ps_wakeup_mode_cmd,
 			      sizeof(*set_ps_wakeup_mode_cmd));
+	if (status == NRF_WIFI_STATUS_SUCCESS) {
+		status = wait_for_cmd_event(fmac_dev_ctx,
+					    if_idx,
+					    NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS);
+		if (status != NRF_WIFI_STATUS_SUCCESS) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS failed",
+					      __func__);
+		}
+	}
 out:
 	if (set_ps_wakeup_mode_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
