@@ -1,4 +1,5 @@
 .. _fault_handling:
+.. _nrf_modem_fault:
 
 Modem fault handling
 ####################
@@ -17,7 +18,7 @@ The Modem library implements a fault handling mechanism, allowing the applicatio
 The application can set a modem fault handler function using the Modem library initialization parameters during initialization.
 When the modem crashes, the modem fault handler set by the application is called with the fault reason.
 In some cases, the modem fault handler also contains information about the program counter of the modem.
-For a complete list of the modem fault reasons, see :ref:`nrf_modem_fault`.
+For a complete list of the modem fault reasons, see :ref:`nrf_modem_fault_api_reasons`.
 
 In |NCS|, the :ref:`nrf_modem_lib_readme` sets the modem fault handler during Modem library initialization.
 

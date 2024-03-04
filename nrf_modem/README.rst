@@ -3,25 +3,23 @@
 Modem library
 #############
 
-The Modem library is the primary interface for operating the nRF91 Series modem, establishing the LTE-M and NB-IoT connections, and receiving the position data (GPS).
-The library aims to be compatible with the POSIX socket APIs to simplify writing and porting of existing networking applications.
-
-To get started with socket programming, you can check out some introductions and tutorials, such as `Beej's Guide to Network Programming`_.
+The Modem library is a binary library that provides a set of APIs that enable the use of the nRF91 Series modem by the application processor of the nRF91 Series SiP.
 
 The Modem library is portable, you can use it with any RTOS.
-For more information, see :ref:`nrf_modem_ug_porting`.
+For more information about porting, see :ref:`nrf_modem_ug_porting`.
 
 .. toctree::
    :maxdepth: 1
    :caption: Subpages:
 
    doc/architecture
-   doc/supported_features
+   doc/variant_features
    doc/sockets
    doc/at_interface
    doc/gnss_interface
    doc/bootloader
    doc/delta_dfu
+   doc/dectphy
    doc/softsim_interface
    doc/fault_handling
    doc/modem_trace

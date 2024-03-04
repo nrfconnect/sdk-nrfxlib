@@ -106,7 +106,7 @@ int nrf_modem_bootloader_update(void);
  * @brief Read a digest hash data from the modem.
  *
  * @param[in]   segments        Firmware segments.
- * @param[in]   num_frags       Number of firmware segments.
+ * @param[in]   num_segments    Number of firmware segments.
  * @param[out]  digest_buffer   Pointer to the buffer to store digest hash data.
  *
  * @retval 0 on success.

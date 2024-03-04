@@ -90,7 +90,7 @@ Before you start testing TLS traffic decryption, make sure that the following pr
 #. The device runs an application that supports TLS.
    The TLS session is created using certificates stored to tags ranging between the values specified in ``NRF_SEC_TAG_TLS_DECRYPT_0`` and ``NRF_SEC_TAG_TLS_DECRYPT_19``.
 #. The device has modem traces enabled.
-   For information on modem traces and how to enable them, see the :ref:`modem_trace` documentation.
+   For information on modem traces and how to enable them, see the :ref:`nrf_modem_trace` documentation.
 #. Modem firmware v2.0.0 or higher is programmed on your device.
    For information on how to find the modem firmware version, see the `Revision Identification +CGMR`_ documentation.
 #. Wireshark is installed on your machine.

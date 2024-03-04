@@ -1351,7 +1351,7 @@ int32_t nrf_modem_gnss_agnss_write(void *buf, int32_t buf_len, uint16_t type);
  * @details Returns detailed information about the current GNSS A-GNSS data need. The data
  *          structure contains expiry times in seconds for different types of assistance data.
  *          This function can be called at any time. If GNSS doesn't know the current GPS
- *          system time, the expiry times cannot be calculated.
+ *          system time, the expiry times can not be calculated
  *
  * @note When A-GNSS data has been injected but GNSS has not yet been started, ephemerides and
  *       almanacs are in some cases reported as expired. This happens when ephemerides and almanacs

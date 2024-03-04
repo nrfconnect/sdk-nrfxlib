@@ -21,7 +21,7 @@ nrf_modem_init() return values for modem firmware updates
    :project: nrfxlib
    :members:
 
-.. _nrf_modem_trace:
+.. _nrf_modem_trace_api:
 
 Modem traces
 ============
@@ -30,7 +30,7 @@ Modem traces
    :project: nrfxlib
    :members:
 
-.. _nrf_modem_fault:
+.. _nrf_modem_fault_api_reasons:
 
 Modem fault reasons
 ===================
@@ -202,7 +202,6 @@ AT API
    :members:
 
 .. _nrf_modem_bootloader_api:
-.. _nrf_modem_full_dfu_api:
 
 Bootloader API
 **************
@@ -221,6 +220,15 @@ Delta DFU API
    :members:
 
 .. doxygengroup:: nrf_modem_delta_dfu_errors
+   :project: nrfxlib
+   :members:
+
+.. _nrf_modem_dect_phy_api:
+
+DECT NR+ PHY API
+****************
+
+.. doxygengroup:: nrf_modem_dect_phy
    :project: nrfxlib
    :members:
 

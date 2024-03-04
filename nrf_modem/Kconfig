@@ -15,12 +15,15 @@ choice NRF_MODEM_BUILD_STRATEGY
 	depends on NRF_MODEM
 	prompt "Build strategy"
 
-config NRF_MODEM_LINK_BINARY
-	bool "Link binary"
+config NRF_MODEM_LINK_BINARY_CELLULAR
+	bool "Link cellular binary"
+
+config NRF_MODEM_LINK_BINARY_DECT_PHY
+	bool "Link DECT PHY binary"
 endchoice
 
 config NRF_MODEM_LOG
-	depends on NRF_MODEM_LINK_BINARY
+	depends on NRF_MODEM_LINK_BINARY_CELLULAR || NRF_MODEM_LINK_BINARY_DECT_PHY
 	bool "Link binary with logs"
 	help
 	  Links the application with the library version capable of emitting logs.
@@ -28,8 +31,7 @@ config NRF_MODEM_LOG
 
 endmenu
 
-# This configuration is auto-generated.
-# Do not edit.
 config NRF_MODEM_SHMEM_CTRL_SIZE
 	hex
-	default 0x4e8 # import
+	default 0x728 if NRF_MODEM_LINK_BINARY_DECT_PHY
+	default 0x4e8
