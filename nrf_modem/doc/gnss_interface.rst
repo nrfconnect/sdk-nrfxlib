@@ -1,13 +1,14 @@
+.. _nrf_modem_gnss:
 .. _gnss_interface:
 
-GNSS interface
-##############
+Global Navigation Satellite System
+##################################
 
 .. contents::
    :local:
    :depth: 2
 
-`Global Navigation Satellite System (GNSS)`_ interface in the Modem library is used to control the GNSS module.
+The Global Navigation Satellite System (GNSS) interface in the Modem library is used to control the `GNSS <Global Navigation Satellite System (GNSS)_>`_ module.
 The interface configures and fetches data from the GNSS module and writes `A-GNSS`_ data to the GNSS module.
 
 .. note::

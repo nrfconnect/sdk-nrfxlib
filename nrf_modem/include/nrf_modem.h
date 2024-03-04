@@ -76,17 +76,20 @@ extern "C" {
  * @{
  */
 
-/** @brief Shared memory control size
- *
- *  @note: The size of this area is build constant.
+/**
+ * @brief Shared memory control region size for Cellular flavour.
  */
-#define NRF_MODEM_SHMEM_CTRL_SIZE 0x4e8
+#define NRF_MODEM_CELLULAR_SHMEM_CTRL_SIZE 0x4e8
+/**
+ * @brief Shared memory control region size for DECT PHY flavour.
+ */
+#define NRF_MODEM_DECT_PHY_SHMEM_CTRL_SIZE 0x728
 
 /** @brief Shared memory configuration in normal operation mode. */
 struct nrf_modem_shmem_cfg {
 	/** Control memory, used for control structures.
 	 *  The size of this area is build constant, and must be equal to
-	 *  @c NRF_MODEM_SHMEM_CTRL_SIZE.
+	 *  @c NRF_MODEM_CELLULAR_SHMEM_CTRL_SIZE or @c NRF_MODEM_DECT_PHY_SHMEM_CTRL_SIZE.
 	 */
 	struct {
 		uint32_t base;

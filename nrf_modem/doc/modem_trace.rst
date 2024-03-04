@@ -1,3 +1,4 @@
+.. _nrf_modem_trace:
 .. _modem_trace:
 
 Modem traces

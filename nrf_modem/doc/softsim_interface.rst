@@ -1,7 +1,7 @@
 .. _nrf_modem_softsim:
 
-SoftSIM interface
-#################
+SoftSIM
+#######
 
 .. contents::
    :local:

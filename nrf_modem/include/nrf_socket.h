@@ -1145,8 +1145,8 @@ const char *nrf_inet_ntop(int af, const void *restrict src, char *restrict dst, 
  * POSIX.1-2017 article</a> for normative description.
  *
  * @note
- * When using address family @c NRF_AF_UNSPEC the implementation attempt to resolve the IPv6
- * address first. If successfull, the resolved address is returned. If not, the implementation
+ * When using address family @c NRF_AF_UNSPEC the implementation attempts to resolve the IPv6
+ * address first. If successful, the resolved address is returned. If not, the implementation
  * attempts to resolve and return the IPv4 family address. This applies regardless of the PDN
  * supporting IPv6 or not.
  *

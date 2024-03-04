@@ -58,6 +58,8 @@
 
 .. ### Source: www.nordicsemi.com
 
+.. _`nRF9161 DECT NR+ product specification`:  https://docs.nordicsemi.com/bundle/ps_nrf9161/page/dect.html
+
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#0B34B59935AF4AFCB7AB93E9646C1F53
 
 .. _`nRF91x1 LTE firmware zip file`: https://www.nordicsemi.com/Products/nRF9161/Download#636701B052474E5A8EB903C56678D26E
@@ -93,8 +95,6 @@
 .. _`Mbed TLS backend`: https://tls.mbed.org/
 .. _`article on reducing Mbed TLS memory and storage footprint`: https://tls.mbed.org/kb/how-to/reduce-mbedtls-memory-and-storage-footprint
 
-.. _`Beej's Guide to Network Programming`: https://beej.us/guide/bgnet/
-
 .. _`NMEA`: https://www.gpsworld.com/what-exactly-is-gps-nmea-data/
 
 .. _`NMEA report sample`: http://aprs.gids.nl/nmea/#gsa
@@ -112,3 +112,11 @@
 .. _`Wireshark`: https://www.wireshark.org/
 
 .. _`3GPP TS 24.301 Technical Specification`: https://www.3gpp.org/DynaReport/24301.htm
+
+.. _`ETSI EN 301 406-2`: https://etsi.org/deliver/etsi_en/301400_301499/30140602/03.01.01_60/en_30140602v030101p.pdf
+
+.. _`ETSI TS 103 636-2`: https://www.etsi.org/deliver/etsi_ts/103600_103699/10363602/01.03.01_60/ts_10363602v010301p.pdf
+
+.. _`47 CFR Part 15`: https://www.ecfr.gov/current/title-47/part-15
+
+.. _`47 CFR Part 15.323`: https://www.ecfr.gov/current/title-47/section-15.323

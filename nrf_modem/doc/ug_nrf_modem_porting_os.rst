@@ -94,13 +94,13 @@ Following are the minimum sizes of the regions of the Modem Library:
 *  The RX/TX sizes are set using the  :kconfig:option:`CONFIG_NRF_MODEM_LIB_SHMEM_TX_SIZE` and :kconfig:option:`CONFIG_NRF_MODEM_LIB_SHMEM_RX_SIZE` Kconfig options.
    The RX/TX must fit the data for the largest command or socket operation executed.
 *  The trace area size can remain zero if traces are not used.
-   If traces are used, refer to :ref:`modem_trace` for more information on the trace area size.
+   If traces are used, refer to :ref:`nrf_modem_trace` for more information on the trace area size.
 
 Faults and traces
 *****************
 
 The Modem library provides facilities to obtain trace data and handle modem faults.
-Information about these facilities can be found in :ref:`fault_handling` and :ref:`modem_trace`.
+Information about these facilities can be found in :ref:`nrf_modem_fault` and :ref:`nrf_modem_trace`.
 
 Following are the method by which the application can handle the modem fault:
 
@@ -148,7 +148,7 @@ This function is called by the Modem library when the application has issued :c:
 It is responsible for initializing OS-specific functionality related to the Modem library OS abstraction.
 
 If Nordic Proprietary trace is enabled, the library generates trace data that can be retrieved using the :c:func:`nrf_modem_trace_get` function.
-See :ref:`modem_trace` for more information.
+See :ref:`nrf_modem_trace` for more information.
 
 *Required actions*:
 

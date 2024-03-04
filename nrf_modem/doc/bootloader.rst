@@ -1,7 +1,7 @@
 .. _nrf_modem_bootloader:
 
-Full firmware updates
-#####################
+Modem bootloader
+################
 
 .. contents::
    :local:
