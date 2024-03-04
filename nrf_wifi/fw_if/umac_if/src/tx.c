@@ -1455,8 +1455,11 @@ enum nrf_wifi_status nrf_wifi_fmac_rawtx_done_event_process(
 	nrf_wifi_osal_spinlock_take(fmac_dev_ctx->fpriv->opriv,
 				    def_dev_ctx->tx_config.tx_lock);
 
-	if (!config->status) {
-		/* Increment raw TX failure count */
+	if (config->status == NRF_WIFI_STATUS_FAIL) {
+		/**
+		 * If the status indicates failure,
+		 * increment raw TX failure count. The TX buffers
+		 * still need to be freed. */
 		def_dev_ctx->raw_pkt_stats.raw_pkt_send_failure += 1;
 	}
 
