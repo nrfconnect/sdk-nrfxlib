@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -705,6 +705,8 @@ typedef struct zb_byte128_struct_s
 #define FMT__D_H_D_P_D                                  TRACE_ARG_SIZE(1,3,0,1,0)
 #define FMT__D_H_H                                      TRACE_ARG_SIZE(2,1,0,0,0)
 #define FMT__D_H_H_D                                    TRACE_ARG_SIZE(2,2,0,0,0)
+#define FMT__D_H_H_D_H                                  TRACE_ARG_SIZE(3,2,0,0,0)
+#define FMT__D_H_H_D_H_D                                TRACE_ARG_SIZE(3,3,0,0,0)
 #define FMT__D_H_H_D_D_D_D                              TRACE_ARG_SIZE(2,5,0,0,0)
 #define FMT__D_H_H_H                                    TRACE_ARG_SIZE(3,1,0,0,0)
 #define FMT__D_H_H_H_H                                  TRACE_ARG_SIZE(4,1,0,0,0)
@@ -985,6 +987,7 @@ typedef struct zb_byte128_struct_s
 #define FMT__H_A_H_H_H_H_H                              TRACE_ARG_SIZE(6,0,0,0,1)
 #define FMT__H_D_A_H                                    TRACE_ARG_SIZE(2,1,0,0,1)
 #define FMT__D_A_H_D                                    TRACE_ARG_SIZE(1,2,0,0,1)
+#define FMT__D_D_A_H                                    TRACE_ARG_SIZE(1,2,0,0,1)
 #define FMT__P_H_H_H_H_H_H_H_H                          TRACE_ARG_SIZE(8,0,0,1,0)
 #define FMT__D_D_H_L_H_H                                TRACE_ARG_SIZE(3,2,1,0,0)
 #define FMT__D_H_L_H_H                                  TRACE_ARG_SIZE(3,1,1,0,0)

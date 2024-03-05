@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -253,16 +253,18 @@ enum zb_zcl_binary_input_status_flag_value_e
   ZB_ZCL_ATTR_BINARY_INPUT_OUT_OF_SERVICE_ID,                       \
   ZB_ZCL_ATTR_TYPE_BOOL,                                            \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_WRITE_OPTIONAL, \
-  (void*) data_ptr                                             \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                               \
+  (void*) data_ptr                                                  \
 }
 
 /* Optionally, access to this attribute may be changed to READ_WRITE */
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_BINARY_INPUT_PRESENT_VALUE_ID(data_ptr) \
-{                                                                   \
-  ZB_ZCL_ATTR_BINARY_INPUT_PRESENT_VALUE_ID,                        \
-  ZB_ZCL_ATTR_TYPE_BOOL,                                            \
+{                                                                                                  \
+  ZB_ZCL_ATTR_BINARY_INPUT_PRESENT_VALUE_ID,                                                       \
+  ZB_ZCL_ATTR_TYPE_BOOL,                                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_WRITE_OPTIONAL | ZB_ZCL_ATTR_ACCESS_REPORTING, \
-  (void*) data_ptr                                             \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                              \
+  (void*) data_ptr                                                                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_BINARY_INPUT_STATUS_FLAG_ID(data_ptr) \
@@ -270,7 +272,8 @@ enum zb_zcl_binary_input_status_flag_value_e
   ZB_ZCL_ATTR_BINARY_INPUT_STATUS_FLAG_ID,                          \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,      \
-  (void*) data_ptr                                             \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                               \
+  (void*) data_ptr                                                  \
 }
 
 /*! Number of attributes mandatory for reporting in Binary Input cluster */

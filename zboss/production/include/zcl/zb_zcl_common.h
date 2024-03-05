@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -139,8 +139,9 @@ typedef zb_ret_t (*zb_zcl_cluster_check_value_t)(zb_uint16_t attr_id, zb_uint8_t
     @param endpoint - Device Endpoint
     @param attr_id - ZCL Attribute ID
     @param new_value - pointer to the new Attribute Value
+    @param manuf_code - manufacturer specific code
 */
-typedef void (*zb_zcl_cluster_write_attr_hook_t)(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value);
+typedef void (*zb_zcl_cluster_write_attr_hook_t)(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code);
 
 /** @brief ZCL cluster description. */
 typedef ZB_PACKED_PRE struct zb_zcl_cluster_desc_s
@@ -726,6 +727,7 @@ typedef ZB_PACKED_PRE  struct zb_zcl_attr_s
   zb_uint16_t id;     /*!< Attribute id */
   zb_uint8_t type;    /*!< Attribute type see @ref zcl_attr_type */
   zb_uint8_t access;  /*!< Attribute access options according to @ref zcl_attr_access */
+  zb_uint16_t manuf_code; /*!< Manufactirer specific ID */
   void* data_p;  /*!< Pointer to data */
 } ZB_PACKED_STRUCT
 zb_zcl_attr_t;
@@ -762,17 +764,19 @@ zb_zcl_attr_t;
     @param attr_id - attribute identifier (defined individually for any particular cluster).
     @param attr_type - attribute data type @see @ref zcl_attr_type
     @param attr_access - attribute access bitmask @see @ref zcl_attr_access
+    @param manuf_code - attribute manufacturer specific ID
     @param data_ptr - pointer to attribute's value storage.
 
     Creates attribute description value (@ref zb_zcl_attr_s) initialized with provided pointer to
     attribute's data.
 */
-#define ZB_ZCL_SET_MANUF_SPEC_ATTR_DESC(attr_id, attr_type, attr_access, data_ptr) \
+#define ZB_ZCL_SET_MANUF_SPEC_ATTR_DESC(attr_id, attr_type, attr_access, manuf_code, data_ptr) \
   {                                                                                \
     attr_id,                                                                       \
     attr_type,                                                                     \
     attr_access | ZB_ZCL_ATTR_MANUF_SPEC,                                          \
-    (void*) data_ptr                                                          \
+    (manuf_code),                                                                  \
+    (void*) data_ptr                                                               \
   },
 
 
@@ -784,6 +788,7 @@ zb_zcl_attr_t;
     ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID,                                                        \
     ZB_ZCL_ATTR_TYPE_U16,                                                                          \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+    ZB_ZCL_NON_MANUFACTURER_SPECIFIC,                                                              \
     (void*) &(cluster_revision_##attrs_desc_name)                                                  \
   },
 
@@ -795,6 +800,7 @@ zb_zcl_attr_t;
     ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID,                                                        \
     ZB_ZCL_ATTR_TYPE_U16,                                                                          \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+    ZB_ZCL_NON_MANUFACTURER_SPECIFIC,                                                              \
     (void*) &(cluster_revision_##attrs_desc_name)                                                  \
   },
 
@@ -808,6 +814,7 @@ zb_zcl_attr_t;
     ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID,                                                        \
     ZB_ZCL_ATTR_TYPE_U16,                                                                          \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+    ZB_ZCL_NON_MANUFACTURER_SPECIFIC,                                                              \
     (void*) &(cluster_revision_##attrs_desc_name)                                                  \
   },
 
@@ -821,6 +828,7 @@ zb_zcl_attr_t;
     ZB_ZCL_ATTR_GLOBAL_CLUSTER_REVISION_ID,                                                        \
     ZB_ZCL_ATTR_TYPE_U16,                                                                          \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
+    ZB_ZCL_NON_MANUFACTURER_SPECIFIC,                                                              \
     (void*) &(cluster_revision_##attrs_desc_name)                                                  \
   },
 
@@ -830,14 +838,15 @@ zb_zcl_attr_t;
     ZB_ZCL_NULL_ID,                       \
     0,                                    \
     0,                                    \
+    ZB_ZCL_NON_MANUFACTURER_SPECIFIC,     \
     NULL                                  \
   }                                       \
 }
 
 #define ZB_ZCL_SET_ATTR_DESC_M(id, data_ptr, type, attr)                \
-  {                                                                     \
-    (id), (type), (attr), (data_ptr)                                    \
-      },
+{                                                                       \
+  (id), (type), (attr), ZB_ZCL_NON_MANUFACTURER_SPECIFIC, (data_ptr)    \
+},
 
 #if !(defined ZB_ZCL_DISABLE_REPORTING) || defined(DOXYGEN)
 
@@ -1022,7 +1031,9 @@ typedef zb_uint8_t zb_zcl_frame_type_t;
  */
 typedef zb_uint8_t zb_zcl_manufacturer_specific_t;
 
-#define ZB_ZCL_MANUFACTURER_WILDCARD_ID         0xffff
+#define ZB_ZCL_MANUFACTURER_WILDCARD_ID 0xFFFFU
+
+#define ZB_ZCL_NON_MANUFACTURER_SPECIFIC 0xFFFFU
 
 /**
  * @name Disable default response subfield of FCF in ZCL frame
@@ -1193,6 +1204,7 @@ typedef struct zb_zcl_attr_addr_info_s
   zb_uint16_t cluster_id;     /**< Cluster id */
   zb_uint8_t cluster_role;    /**< Cluster role */
   zb_uint16_t attr_id;        /**< Attribute id */
+  zb_uint16_t manuf_code;
 }
 zb_zcl_attr_addr_info_t;
 
@@ -1975,6 +1987,20 @@ typedef void (*zb_zcl_set_default_value_attr_cb_t)(zb_uint8_t ep);
 typedef zb_ret_t (*zb_zcl_app_check_attr_value_cb_t)
     (zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *value);
 
+/** @brief Check attribute value callback with manufacturer specific code
+    @param cluster_id - Cluster ID
+    @param cluster_role - cluster role (@ref zcl_cluster_role)
+    @param endpoint - endpoint number
+    @param attr_id - attribute ID
+    @param manuf_code - manufacturer specific code
+    @param value - new attribute value
+
+    @return RET_OK - if new value is valid, RET_ERROR - if new value is wrong or
+            RET_IGNORE - if use default Check attribute functions
+*/
+typedef zb_ret_t (*zb_zcl_app_check_attr_value_manuf_cb_t)
+(zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint16_t manuf_code, zb_uint8_t *value);
+
 /** @brief Get peer Cluster revision callback
     @param ieee_addr - IEEE address
     @param cluster_id - Cluster ID
@@ -1994,6 +2020,14 @@ typedef zb_uint16_t (*zb_zcl_peer_revision_cb_t)
     @returns Pointer to attribute description, or NULL if no attribute description found.
 */
 zb_zcl_attr_t* zb_zcl_get_attr_desc(zb_zcl_cluster_desc_t *cluster_desc, zb_uint16_t attr_id);
+
+/*! @brief Get registered attribute description by cluster descriptor
+    @param cluster_desc - cluster descriptor
+    @param attr_id - attribute identifier
+    @param manuf_code - manufacturer specific ID
+    @returns Pointer to attribute description, or NULL if no attribute description found.
+*/
+zb_zcl_attr_t* zb_zcl_get_attr_desc_manuf(zb_zcl_cluster_desc_t *cluster_desc, zb_uint16_t attr_id, zb_uint16_t manuf_code);
 
 /** @brief Check registered attribute is writable one
     @param attr_desc - attribute descriptor
@@ -2019,8 +2053,9 @@ zb_uint8_t zb_zcl_check_attribute_writable(
   @param cluster_role - cluster role (@ref zcl_cluster_role)
   @param attr_id - attribute ID
   @param new_value - pointer to newly assigned value
+  @param manuf_code - manufacturer specific code
 */
-void zb_zcl_write_attr_hook(zb_uint8_t endpoint, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id, zb_uint8_t *new_value);
+void zb_zcl_write_attr_hook(zb_uint8_t endpoint, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code);
 
 /*!
   Set attribute value cluster specific postprocessing
@@ -2060,6 +2095,9 @@ zb_bool_t zb_zcl_is_analog_data_type(zb_uint8_t attr_type);
 /**
  * @brief Check if attribute value is valid or not
  *
+ * @deprecated This function will be removed in the next Major release after February 2023
+ *             Use @ref zb_zcl_check_attr_value_manuf instead
+ *
  * @param cluster_id - cluster ID
  * @param cluster_role - cluster role (@ref zcl_cluster_role)
  * @param endpoint - endpoint
@@ -2069,6 +2107,20 @@ zb_bool_t zb_zcl_is_analog_data_type(zb_uint8_t attr_type);
  * @return RET_OK if data value is valid, some error code otherwise
  */
 zb_ret_t zb_zcl_check_attr_value(zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *value);
+
+/**
+ * @brief Check if attribute value is valid or not (with manufacturer specific code)
+ *
+ * @param cluster_id - cluster ID
+ * @param cluster_role - cluster role (@ref zcl_cluster_role)
+ * @param endpoint - endpoint
+ * @param attr_id - attribute ID
+ * @param manuf_code - manufacturer specific code
+ * @param value - pointer to attribute data
+ *
+ * @return ZB_TRUE if data value is valid, ZB_FALSE otherwise
+ */
+zb_ret_t zb_zcl_check_attr_value_manuf(zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint16_t manuf_code, zb_uint8_t *value);
 
 zb_bool_t zb_zcl_is_target_endpoint(zb_af_endpoint_desc_t *ep_desc, zb_uint16_t profile_id);
 
@@ -2129,6 +2181,23 @@ zb_af_endpoint_desc_t *get_endpoint_by_cluster_with_role(
 zb_zcl_attr_t* zb_zcl_get_attr_desc_a(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id);
 
 /**
+ * Find attribute descriptor by given endpoint number, cluster ID, attribute ID, and manuf code
+ *
+ * @param ep - endpoint number (must exist)
+ * @param cluster_id - cluster ID (must exist on given ep, see @ref zb_zcl_cluster_id_t)
+ * @param cluster_role - role (see @ref zcl_cluster_role)
+ * @param attr_id - attribute ID
+ * @param manuf_code - manufacturer code
+ *
+ * @return attribute descriptor
+ */
+zb_zcl_attr_t* zb_zcl_get_attr_desc_manuf_a(zb_uint8_t ep,
+                                            zb_uint16_t cluster_id,
+                                            zb_uint8_t cluster_role,
+                                            zb_uint16_t attr_id,
+                                            zb_uint16_t manuf_code);
+
+/**
  * Put attribute value to command packet, fix endian if needed.
  *
  * @param cmd_ptr - pointer to destination
@@ -2140,6 +2209,32 @@ zb_zcl_attr_t* zb_zcl_get_attr_desc_a(zb_uint8_t ep, zb_uint16_t cluster_id, zb_
 zb_uint8_t* zb_zcl_put_value_to_packet(
     zb_uint8_t *cmd_ptr, zb_uint8_t attr_type, zb_uint8_t *attr_value);
 
+
+/**
+ * @brief Sets value for manufacture-specific attribute. Also, perform all needed
+ * checks before and after setting new value
+ *
+ * @param ep - endpoint number
+ * @param cluster_id - cluster ID (see @ref zb_zcl_cluster_id_t)
+ * @param cluster_role - role (see @ref zcl_cluster_role)
+ * @param attr_id - ID of the attribute being set
+ * @param value - pointer to new value
+ * @param check_access - whether read-only check should be performed
+ * @param manuf_code - manufacturer code attribute
+ *
+ * @return ZB_ZCL_STATUS_SUCCESS if value was written \n
+ *         ZB_ZCL_STATUS_READ_ONLY if attribute is read only and check_access is false
+ *         ZB_ZCL_STATUS_UNSUP_ATTRIB if attribute is not supported by cluster
+ *         ZB_ZCL_STATUS_INVALID_VALUE if current value of attribute is invalid
+ * @note given endpoint with given cluster ID should exist
+ */
+zb_zcl_status_t zb_zcl_set_attr_val_manuf(zb_uint8_t ep,
+                                          zb_uint16_t cluster_id,
+                                          zb_uint8_t cluster_role,
+                                          zb_uint16_t attr_id,
+                                          zb_uint16_t manuf_code,
+                                          zb_uint8_t *value,
+                                          zb_bool_t check_access);
 
 /**
  * @brief Sets attribute value, perform all needed checks before and after setting new value

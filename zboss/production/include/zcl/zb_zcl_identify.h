@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -402,11 +402,12 @@ typedef ZB_PACKED_PRE struct zb_zcl_identify_query_res_s
     @{
 */
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IDENTIFY_IDENTIFY_TIME_ID(data_ptr)  \
-{                                                               \
-  ZB_ZCL_ATTR_IDENTIFY_IDENTIFY_TIME_ID,                               \
-  ZB_ZCL_ATTR_TYPE_U16,                                         \
-  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                \
-  (void*) data_ptr                                         \
+{                                                                               \
+  ZB_ZCL_ATTR_IDENTIFY_IDENTIFY_TIME_ID,                                        \
+  ZB_ZCL_ATTR_TYPE_U16,                                                         \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                           \
+  (void*) data_ptr                                                              \
 }
 
 #if defined ZB_ZCL_SUPPORT_CLUSTER_SCENES

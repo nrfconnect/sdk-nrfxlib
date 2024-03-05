@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -242,7 +242,8 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_ATTR_LEVEL_CONTROL_CURRENT_LEVEL_ID,                                             \
   ZB_ZCL_ATTR_TYPE_U8,                                                                    \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING | ZB_ZCL_ATTR_ACCESS_SCENE, \
-  (void*) data_ptr                                                                   \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                     \
+  (void*) data_ptr                                                                        \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_LEVEL_CONTROL_REMAINING_TIME_ID(data_ptr)\
@@ -250,7 +251,8 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_ATTR_LEVEL_CONTROL_REMAINING_TIME_ID,                                      \
   ZB_ZCL_ATTR_TYPE_U16,                                                             \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                     \
-  (void*) data_ptr                                                             \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                               \
+  (void*) data_ptr                                                                  \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_LEVEL_CONTROL_OPTIONS_ID(data_ptr)      \
@@ -258,7 +260,8 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_ATTR_LEVEL_CONTROL_OPTIONS_ID,                                            \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                        \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                   \
-  (void*) data_ptr                                                            \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                              \
+  (void*) data_ptr                                                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_LEVEL_CONTROL_MOVE_STATUS_ID(data_ptr) \
@@ -266,7 +269,8 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_ATTR_LEVEL_CONTROL_MOVE_STATUS_ID,                                       \
   ZB_ZCL_ATTR_TYPE_NULL,                                                          \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                                                    \
-  (void*) data_ptr                                                           \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                             \
+  (void*) data_ptr                                                                \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_LEVEL_CONTROL_START_UP_CURRENT_LEVEL_ID(data_ptr) \
@@ -274,7 +278,8 @@ enum zb_zcl_level_control_options_e
   ZB_ZCL_ATTR_LEVEL_CONTROL_START_UP_CURRENT_LEVEL_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U8,                                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                             \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 /** @internal Structure of addr variables for Move commands
  */

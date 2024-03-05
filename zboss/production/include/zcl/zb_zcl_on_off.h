@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -418,7 +418,7 @@ typedef struct zb_zcl_on_off_effect_user_app_schedule_e
   ZB_MEMMOVE(&(user_data->cmd_info), (pcmd_info), sizeof(zb_zcl_parsed_hdr_t));             \
   user_data->param.effect_id = (effectId);                                                  \
   user_data->param.effect_variant = (effectVar);                                            \
-  ZB_SCHEDULE_CALLBACK(zb_zcl_on_off_effect_invoke_user_app, (buffer));    \
+  ZB_SCHEDULE_CALLBACK(zb_zcl_on_off_effect_invoke_user_app, (buffer));                     \
 }
 
 /*! @}
@@ -437,7 +437,8 @@ typedef struct zb_zcl_on_off_effect_user_app_schedule_e
   ZB_ZCL_ATTR_ON_OFF_ON_OFF_ID,                                                              \
   ZB_ZCL_ATTR_TYPE_BOOL,                                                                     \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING | ZB_ZCL_ATTR_ACCESS_SCENE,    \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ON_OFF_GLOBAL_SCENE_CONTROL(data_ptr) \
@@ -445,7 +446,8 @@ typedef struct zb_zcl_on_off_effect_user_app_schedule_e
   ZB_ZCL_ATTR_ON_OFF_GLOBAL_SCENE_CONTROL,                                       \
   ZB_ZCL_ATTR_TYPE_BOOL,                                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                  \
-  (void*) data_ptr                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                            \
+  (void*) data_ptr                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ON_OFF_ON_TIME(data_ptr)  \
@@ -453,7 +455,8 @@ typedef struct zb_zcl_on_off_effect_user_app_schedule_e
   ZB_ZCL_ATTR_ON_OFF_ON_TIME,                                        \
   ZB_ZCL_ATTR_TYPE_U16,                                              \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                     \
-  (void*) data_ptr                                              \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                \
+  (void*) data_ptr                                                   \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ON_OFF_OFF_WAIT_TIME(data_ptr)    \
@@ -461,7 +464,8 @@ typedef struct zb_zcl_on_off_effect_user_app_schedule_e
   ZB_ZCL_ATTR_ON_OFF_OFF_WAIT_TIME,                                          \
   ZB_ZCL_ATTR_TYPE_U16,                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                             \
-  (void*) data_ptr                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                        \
+  (void*) data_ptr                                                           \
 }
 
 /** @struct zb_zcl_on_off_attrs_s
@@ -477,10 +481,11 @@ typedef struct zb_zcl_on_off_attrs_s
   ZB_ZCL_ATTR_ON_OFF_START_UP_ON_OFF,                                        \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                             \
-  (void*) data_ptr                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                        \
+  (void*) data_ptr                                                           \
 }
 
-#define ZB_ZCL_DECLARE_ON_OFF_ATTR_LIST(attr_list, attrs)               \
+#define ZB_ZCL_DECLARE_ON_OFF_ATTR_LIST(attr_list, attrs)                    \
   ZB_ZCL_DECLARE_ON_OFF_ATTRIB_LIST(attr_list, &attrs.on_off)
 
 /*! @internal Number of attributes mandatory for reporting in On/Off cluster */

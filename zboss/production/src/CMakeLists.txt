@@ -13,12 +13,6 @@ zephyr_library_include_directories(
     include
   )
 
-# Prevent the -Waddress-of-packed-member warning. We appear to be
-# taking addresses of struct fields in a manner that is not
-# safe. Until this is resolved upstream, we temporarily remove this
-# warning.
-zephyr_library_compile_options(-Wno-address-of-packed-member)
-
 # Add source files
 
 zephyr_library_sources(commissioning/legacy/zdo_commissioning_classic.c)

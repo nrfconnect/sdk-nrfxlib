@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -188,7 +188,8 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
   ZB_ZCL_ATTR_POLL_CONTROL_CHECKIN_INTERVAL_ID,         \
   ZB_ZCL_ATTR_TYPE_U32,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                        \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_ID(data_ptr) \
@@ -196,7 +197,8 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
   ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_INTERVAL_ID,       \
   ZB_ZCL_ATTR_TYPE_U32,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_SHORT_POLL_INTERVAL_ID(data_ptr) \
@@ -204,7 +206,8 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
   ZB_ZCL_ATTR_POLL_CONTROL_SHORT_POLL_INTERVAL_ID,      \
   ZB_ZCL_ATTR_TYPE_U16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_ID(data_ptr) \
@@ -212,15 +215,17 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
   ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_TIMEOUT_ID,        \
   ZB_ZCL_ATTR_TYPE_U16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                        \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_MIN_CHECKIN_INTERVAL_ID(data_ptr) \
 {                                                       \
   ZB_ZCL_ATTR_POLL_CONTROL_MIN_CHECKIN_INTERVAL_ID,     \
   ZB_ZCL_ATTR_TYPE_U32,                                 \
-  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                        \
-  (void*) data_ptr                                 \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_MIN_INTERVAL_ID(data_ptr) \
@@ -228,7 +233,8 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
   ZB_ZCL_ATTR_POLL_CONTROL_LONG_POLL_MIN_INTERVAL_ID,   \
   ZB_ZCL_ATTR_TYPE_U32,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_MAX_TIMEOUT_ID(data_ptr) \
@@ -236,7 +242,8 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
   ZB_ZCL_ATTR_POLL_CONTROL_FAST_POLL_MAX_TIMEOUT_ID,    \
   ZB_ZCL_ATTR_TYPE_U16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_POLL_CONTROL_STATUS_DATA_ID(data_ptr) \
@@ -244,7 +251,8 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
   ZB_ZCL_ATTR_POLL_CONTROL_STATUS_DATA_ID,              \
   ZB_ZCL_ATTR_TYPE_NULL,                                \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                          \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 
@@ -253,7 +261,8 @@ void zb_zcl_poll_controll_register_cb(zb_callback_t cb);
   ZB_ZCL_ATTR_POLL_CONTROL_ADDR_DATA_ID,                \
   ZB_ZCL_ATTR_TYPE_NULL,                                \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                          \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 

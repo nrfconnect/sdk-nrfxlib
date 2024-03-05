@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -212,16 +212,17 @@ zb_ret_t zb_zcl_put_reporting_info(zb_zcl_reporting_info_t* rep_info_ptr, zb_boo
   }
   cluster_desc = get_cluster_desc(ep_desc, rep_info_ptr->cluster_id,
                                   rep_info_ptr->cluster_role);
-  attr_desc = zb_zcl_get_attr_desc(cluster_desc, rep_info_ptr->attr_id);
+  attr_desc = zb_zcl_get_attr_desc_manuf(cluster_desc, rep_info_ptr->attr_id, rep_info_ptr->manuf_code);
 
   if (attr_desc)
   {
     /* search for already registered configure reporting record */
-    rep_info = zb_zcl_find_reporting_info(
+    rep_info = zb_zcl_find_reporting_info_manuf(
       rep_info_ptr->ep,
       rep_info_ptr->cluster_id,
       rep_info_ptr->cluster_role,
-      rep_info_ptr->attr_id);
+      rep_info_ptr->attr_id,
+      rep_info_ptr->manuf_code);
 
     /* New reporting configuration may overrule an existing reporting configuration (probably
      * configured by a peer). Check if overriding is allowed. */
@@ -296,7 +297,7 @@ zb_ret_t zb_zcl_put_reporting_info(zb_zcl_reporting_info_t* rep_info_ptr, zb_boo
           /* [AN] 3/3/2020 maybe we should report only in case, when maximum interval is non-zero*/
           if (rep_info->u.send_info.max_interval)
           {
-            zb_zcl_mark_attr_for_reporting(rep_info->ep, rep_info->cluster_id, rep_info->cluster_role, rep_info->attr_id);
+            zb_zcl_mark_attr_for_reporting_manuf(rep_info->ep, rep_info->cluster_id, rep_info->cluster_role, rep_info->attr_id, rep_info->manuf_code);
           }
         }
       }
@@ -360,10 +361,11 @@ void zb_zcl_put_default_reporting_info_for_cluster(zb_uint8_t endpoint, zb_uint1
     {
       if (attr_desc->access & ZB_ZCL_ATTR_ACCESS_REPORTING)
       {
-        TRACE_MSG(TRACE_ZCL3, "Attribute with id: 0x%x supports reporting, configure...",
-                  (FMT__D, attr_desc->id));
+        TRACE_MSG(TRACE_ZCL3, "Attribute with id: 0x%x, manuf_code 0x%x, supports reporting, configure...",
+                  (FMT__D_D, attr_desc->id, attr_desc->manuf_code));
 
         rep_info.attr_id = attr_desc->id;
+        rep_info.manuf_code = attr_desc->manuf_code;
 
         if (zb_zcl_is_analog_data_type(attr_desc->type))
         {
@@ -406,11 +408,12 @@ zb_ret_t zb_zcl_put_reporting_info_from_req(zb_zcl_configure_reporting_req_t *co
   ZB_ASSERT(attr_addr_info);
 
   /* search for already registered configure reporting record */
-  rep_info = zb_zcl_find_reporting_info(
+  rep_info = zb_zcl_find_reporting_info_manuf(
       attr_addr_info->src_ep,
       attr_addr_info->cluster_id,
       attr_addr_info->cluster_role,
-      config_rep_req->attr_id);
+      config_rep_req->attr_id,
+      attr_addr_info->manuf_code);
 
   if (!rep_info)
   {
@@ -502,8 +505,8 @@ zb_ret_t zb_zcl_put_reporting_info_from_req(zb_zcl_configure_reporting_req_t *co
         /* [AN] 3/3/2020 maybe we should report only in case, when maximum interval is non-zero*/
         if (rep_info->u.send_info.max_interval)
         {
-        zb_zcl_mark_attr_for_reporting(rep_info->ep, rep_info->cluster_id, rep_info->cluster_role, rep_info->attr_id);
-      }
+          zb_zcl_mark_attr_for_reporting_manuf(rep_info->ep, rep_info->cluster_id, rep_info->cluster_role, rep_info->attr_id, rep_info->manuf_code);
+        }
       }
 #ifdef ZB_USE_NVRAM
       /* If we fail, trace is given and assertion is triggered */
@@ -813,11 +816,26 @@ zb_zcl_reporting_info_t* zb_zcl_find_reporting_info(  zb_uint8_t ep,
                                                       zb_uint8_t cluster_role,
                                                       zb_uint16_t attr_id)
 {
+  zb_zcl_reporting_info_t *rep_info;
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_find_reporting_info, ep %hd, cluster %d, attr_id 0x%x, cluster_role %hd",
+            (FMT__H_D_D_D, ep, cluster_id, attr_id, cluster_role));
+  rep_info = zb_zcl_find_reporting_info_manuf(ep, cluster_id, cluster_role, attr_id, ZB_ZCL_NON_MANUFACTURER_SPECIFIC);
+  TRACE_MSG(TRACE_ZCL2, "<< zb_zcl_find_reporting_info %p", (FMT__P, rep_info));
+  return rep_info;
+}
+
+
+zb_zcl_reporting_info_t* zb_zcl_find_reporting_info_manuf(  zb_uint8_t ep,
+                                                            zb_uint16_t cluster_id,
+                                                            zb_uint8_t cluster_role,
+                                                            zb_uint16_t attr_id,
+                                                            zb_uint16_t manuf_code)
+{
   zb_zcl_reporting_info_t *rep_info = NULL;
   zb_uindex_t i, j;
 
-  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_find_reporting_info, ep %hd, cluster %d, attr_id %d",
-            (FMT__H_D_D, ep, cluster_id, attr_id));
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_find_reporting_info_manuf, ep %hd, cluster %d, attr_id 0x%x, manuf_code 0x%x, cluster_role %hd",
+            (FMT__H_D_D_D_D, ep, cluster_id, attr_id, manuf_code, cluster_role));
   if (ZCL_CTX().device_ctx)
   {
     for (j = 0; j < ZCL_CTX().device_ctx->ep_count; j++)
@@ -830,8 +848,8 @@ zb_zcl_reporting_info_t* zb_zcl_find_reporting_info(  zb_uint8_t ep,
         TRACE_MSG(TRACE_ZCL1, ">>  rep_info = %p",(FMT__P, rep_info));
         for (i = 0; i < ZCL_CTX().device_ctx->ep_desc_list[j]->rep_info_count; i++)
         {
-          TRACE_MSG(TRACE_ZCL1, ">>  rep_info->ep = %d rep_info->cluster_id = %d rep_info->attr_id = %d rep_flags %i)",
-                    (FMT__D_D_D_H, rep_info->ep,rep_info->cluster_id,rep_info->attr_id,rep_info->flags));
+          TRACE_MSG(TRACE_ZCL1, ">>  rep_info->ep %d, rep_info->cluster_id %d, rep_info->attr_id 0x%x, manuf_code 0x%x, cluster_role %d, rep_flags %d)",
+                    (FMT__D_D_D_D_D_D, rep_info->ep,rep_info->cluster_id,rep_info->attr_id,rep_info->manuf_code,rep_info->cluster_role,rep_info->flags));
           TRACE_MSG(TRACE_ZCL1, "    max_interval %d min_interval %d",(FMT__D_D, rep_info->u.send_info.max_interval,
                                                                        rep_info->u.send_info.min_interval));
 
@@ -839,8 +857,10 @@ zb_zcl_reporting_info_t* zb_zcl_find_reporting_info(  zb_uint8_t ep,
               (rep_info->cluster_id == cluster_id) &&
               (rep_info->cluster_role == cluster_role) &&
               (rep_info->attr_id == attr_id) &&
+              (rep_info->manuf_code == manuf_code) &&
               ZB_ZCL_GET_REPORTING_FLAG(rep_info,ZB_ZCL_REPORTING_SLOT_BUSY))
           {
+            TRACE_MSG(TRACE_ZCL1, "an entry is found! i == %hd, max %hd", (FMT__H_H, i, ZCL_CTX().device_ctx->ep_desc_list[j]->rep_info_count));
             break;
           }
           rep_info++;
@@ -860,7 +880,7 @@ zb_zcl_reporting_info_t* zb_zcl_find_reporting_info(  zb_uint8_t ep,
     }
   }
 
-  TRACE_MSG(TRACE_ZCL2, "<< zb_zcl_find_reporting_info %p", (FMT__P, rep_info));
+  TRACE_MSG(TRACE_ZCL2, "<< zb_zcl_find_reporting_info_manuf %p", (FMT__P, rep_info));
   return rep_info;
 }
 
@@ -920,6 +940,7 @@ void zb_zcl_report_attr(zb_uint8_t param)
         for (i = 0; i < ZCL_CTX().device_ctx->ep_desc_list[j]->rep_info_count; i++)
         {
           TRACE_MSG(TRACE_ZCL1, "rep_info %p, flags %hx", (FMT__P_H, rep_info, rep_info->flags));
+          TRACE_MSG(TRACE_ZCL1, "attr_id 0x%x, manuf_code 0x%x", (FMT__D_D, rep_info->attr_id, rep_info->manuf_code));
 
           if (ZB_ZCL_GET_REPORTING_FLAG(rep_info, ZB_ZCL_REPORT_ATTR) &&
               ZB_ZCL_GET_REPORTING_FLAG(rep_info, ZB_ZCL_REPORT_IS_ALLOWED) &&
@@ -1002,7 +1023,7 @@ zb_zcl_reporting_info_t* zb_zcl_get_next_reporting_info(zb_zcl_reporting_info_t 
         {
 
           attr_desc =
-            zb_zcl_get_attr_desc_a(rep_info->ep, rep_info->cluster_id, rep_info->cluster_role, rep_info->attr_id);
+            zb_zcl_get_attr_desc_manuf_a(rep_info->ep, rep_info->cluster_id, rep_info->cluster_role, rep_info->attr_id, rep_info->manuf_code);
           attr_manuf_spec = !!ZB_ZCL_IS_ATTR_MANUF_SPEC(attr_desc);
 
           if (ZB_ZCL_GET_REPORTING_FLAG(rep_info, ZB_ZCL_REPORT_ATTR) &&
@@ -1020,7 +1041,7 @@ zb_zcl_reporting_info_t* zb_zcl_get_next_reporting_info(zb_zcl_reporting_info_t 
             ZB_ZCL_CLR_REPORTING_FLAG(rep_info, ZB_ZCL_REPORT_IS_ALLOWED);
             ZB_ZCL_SET_REPORTING_FLAG(rep_info, ZB_ZCL_REPORT_IS_SENT);
 
-              break;
+            break;
           }
         }
         rep_info++;
@@ -1081,16 +1102,31 @@ void zb_zcl_wait_reporting_timeout(zb_uint8_t param)
  */
 void zb_zcl_report_received(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id)
 {
+  TRACE_MSG(TRACE_ZCL1, ">>zb_zcl_report_received ep %hd, cluster_id 0x%x, cluster_role %d, attr_id 0x%x",
+            (FMT__H_D_D_D, ep, cluster_id, cluster_role, attr_id));
+  zb_zcl_report_received_manuf(ep, cluster_id, cluster_role, attr_id, ZB_ZCL_NON_MANUFACTURER_SPECIFIC);
+  TRACE_MSG(TRACE_ZCL1, "<<zb_zcl_report_received", (FMT__0));
+}
+
+/** @internal @brief Function should be called by application on receiving attribute
+    report to inform ZCL that report is received.
+    @param ep - endpoint number
+    @param cluster_id - cluster ID
+    @param attr_id - attribute ID
+ */
+void zb_zcl_report_received_manuf(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id, zb_uint16_t manuf_code)
+{
   zb_zcl_reporting_info_t *rep_info;
 
-  TRACE_MSG(TRACE_ZCL1, "zb_zcl_report_received ep %hd, cluster_id %d, attr_id %d",
-            (FMT__H_D_D, ep, cluster_id, attr_id));
-  rep_info = zb_zcl_find_reporting_info(ep, cluster_id, cluster_role, attr_id);
+  TRACE_MSG(TRACE_ZCL1, ">>zb_zcl_report_received_manuf ep %hd, cluster_id 0x%x, cluster_role %d, attr_id 0x%x, manuf_code 0x%x",
+            (FMT__H_D_D_D_D, ep, cluster_id, cluster_role, attr_id, manuf_code));
+  rep_info = zb_zcl_find_reporting_info_manuf(ep, cluster_id, cluster_role, attr_id, manuf_code);
   if (rep_info)
   {
     TRACE_MSG(TRACE_ZCL3, "restart wait report timer", (FMT__0));
     start_wait_reporting_timer(rep_info);
   }
+  TRACE_MSG(TRACE_ZCL1, "<<zb_zcl_report_received_manuf", (FMT__0));
 }
 
 
@@ -1230,7 +1266,7 @@ static zb_bool_t check_delta_value(zb_zcl_reporting_info_t *rep_info)
 
   TRACE_MSG(TRACE_ZCL1, ">> check_delta_value %p", (FMT__P, rep_info));
 
-  attr_desc = zb_zcl_get_attr_desc_a(rep_info->ep, rep_info->cluster_id, rep_info->cluster_role, rep_info->attr_id);
+  attr_desc = zb_zcl_get_attr_desc_manuf_a(rep_info->ep, rep_info->cluster_id, rep_info->cluster_role, rep_info->attr_id, rep_info->manuf_code);
   if (attr_desc)
   {
     if (zb_zcl_is_analog_data_type(attr_desc->type))
@@ -1383,12 +1419,20 @@ static zb_bool_t check_delta_value(zb_zcl_reporting_info_t *rep_info)
 /* marks attribute for reporting, after its value was changed */
 void zb_zcl_mark_attr_for_reporting(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id)
 {
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_mark_attr_for_reporting, ep %hd, cluster_id 0x%x, attr_id 0x%x",
+            (FMT__H_D_D_D, ep, cluster_id, attr_id));
+  zb_zcl_mark_attr_for_reporting_manuf(ep, cluster_id, cluster_role, attr_id, ZB_ZCL_NON_MANUFACTURER_SPECIFIC);
+  TRACE_MSG(TRACE_ZCL1, "<< zb_zcl_mark_attr_for_reporting", (FMT__0));
+}
+
+void zb_zcl_mark_attr_for_reporting_manuf(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id, zb_uint16_t manuf_code)
+{
   zb_zcl_reporting_info_t *rep_info;
 
-  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_mark_attr_for_reporting, ep %hd, cluster_id %d, attr_id %d",
-            (FMT__H_D_D, ep, cluster_id, attr_id));
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_mark_attr_for_reporting_manuf, ep %hd, cluster_id 0x%x, attr_id 0x%x, manuf_code 0x%x",
+            (FMT__H_D_D_D, ep, cluster_id, attr_id, manuf_code));
 
-  rep_info = zb_zcl_find_reporting_info(ep, cluster_id, cluster_role, attr_id);
+  rep_info = zb_zcl_find_reporting_info_manuf(ep, cluster_id, cluster_role, attr_id, manuf_code);
   if (rep_info)
   {
     TRACE_MSG(TRACE_ZCL3, "min_inerval %hd, flags %hd",
@@ -1430,19 +1474,30 @@ void zb_zcl_mark_attr_for_reporting(zb_uint8_t ep, zb_uint16_t cluster_id, zb_ui
       }
     }
   }
-  TRACE_MSG(TRACE_ZCL1, "<< zb_zcl_mark_attr_for_reporting", (FMT__0));
+  TRACE_MSG(TRACE_ZCL1, "<< zb_zcl_mark_attr_for_reporting_manuf", (FMT__0));
 }
 
 /* stop attribute for reporting */
 zb_ret_t zb_zcl_stop_attr_reporting(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id)
 {
+  zb_ret_t ret;
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_stop_attr_for_reporting, ep %hd, cluster_id %d, attr_id %d",
+            (FMT__H_D_D, ep, cluster_id, attr_id));
+  ret = zb_zcl_stop_attr_reporting_manuf(ep, cluster_id, cluster_role, attr_id, ZB_ZCL_NON_MANUFACTURER_SPECIFIC);
+  TRACE_MSG(TRACE_ZCL1, "<< zb_zcl_stop_attr_for_reporting %d", (FMT__H, ret));
+  return ret;
+}
+
+/* stop attribute for reporting */
+zb_ret_t zb_zcl_stop_attr_reporting_manuf(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id, zb_uint16_t manuf_code)
+{
   zb_ret_t ret = RET_OK;
   zb_zcl_reporting_info_t *rep_info;
 
-  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_stop_attr_for_reporting, ep %hd, cluster_id %d, attr_id %d",
-            (FMT__H_D_D, ep, cluster_id, attr_id));
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_stop_attr_for_reporting_manuf, ep %hd, cluster_id 0x%x, attr_id 0x%x, manuf_code 0x%x",
+            (FMT__H_D_D_D, ep, cluster_id, attr_id, manuf_code));
 
-  rep_info = zb_zcl_find_reporting_info(ep, cluster_id, cluster_role, attr_id);
+  rep_info = zb_zcl_find_reporting_info_manuf(ep, cluster_id, cluster_role, attr_id, manuf_code);
   if (rep_info)
   {
     ZB_ZCL_SET_REPORTING_FLAG(rep_info, ZB_ZCL_REPORTING_STOP);
@@ -1458,13 +1513,24 @@ zb_ret_t zb_zcl_stop_attr_reporting(zb_uint8_t ep, zb_uint16_t cluster_id, zb_ui
 /* start attribute for reporting */
 zb_ret_t zb_zcl_start_attr_reporting(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id)
 {
+  zb_ret_t ret;
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_start_attr_for_reporting, ep %hd, cluster_id 0x%x, attr_id 0x%x",
+            (FMT__H_D_D, ep, cluster_id, attr_id));
+  ret = zb_zcl_start_attr_reporting_manuf(ep, cluster_id, cluster_role, attr_id, ZB_ZCL_NON_MANUFACTURER_SPECIFIC);
+  TRACE_MSG(TRACE_ZCL1, "<< zb_zcl_start_attr_for_reporting %d", (FMT__H, ret));
+  return ret;
+}
+
+/* start attribute for reporting */
+zb_ret_t zb_zcl_start_attr_reporting_manuf(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id, zb_uint16_t manuf_code)
+{
   zb_ret_t ret = RET_OK;
   zb_zcl_reporting_info_t *rep_info;
 
-  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_start_attr_for_reporting, ep %hd, cluster_id %d, attr_id %d",
-            (FMT__H_D_D, ep, cluster_id, attr_id));
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_start_attr_for_reporting, ep %hd, cluster_id 0x%x, attr_id 0x%x, manuf_code 0x%x",
+            (FMT__H_D_D_D, ep, cluster_id, attr_id, manuf_code));
 
-  rep_info = zb_zcl_find_reporting_info(ep, cluster_id, cluster_role, attr_id);
+  rep_info = zb_zcl_find_reporting_info_manuf(ep, cluster_id, cluster_role, attr_id, manuf_code);
   if (rep_info)
   {
     ZB_ZCL_CLR_REPORTING_FLAG(rep_info, ZB_ZCL_REPORTING_STOP);
@@ -1523,14 +1589,24 @@ zb_bool_t zcl_is_attr_reported(
   zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id)
 {
   zb_bool_t ret;
+  TRACE_MSG(TRACE_ZCL1, ">> zcl_is_attr_reported", (FMT__0));
+  ret = zcl_is_attr_reported_manuf(ep, cluster_id, cluster_role, attr_id, ZB_ZCL_NON_MANUFACTURER_SPECIFIC);
+  TRACE_MSG(TRACE_ZCL1, "<< zcl_is_attr_reported ret %hd", (FMT__H, ret));
+  return ret;
+}
+
+zb_bool_t zcl_is_attr_reported_manuf(
+  zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id, zb_uint16_t manuf_code)
+{
+  zb_bool_t ret;
   zb_zcl_reporting_info_t *rep_info;
 
-  TRACE_MSG(TRACE_ZCL1, ">> zcl_is_attr_reported", (FMT__0));
+  TRACE_MSG(TRACE_ZCL1, ">> zcl_is_attr_reported_manuf", (FMT__0));
 
-  rep_info = zb_zcl_find_reporting_info(ep, cluster_id, cluster_role, attr_id);
+  rep_info = zb_zcl_find_reporting_info_manuf(ep, cluster_id, cluster_role, attr_id, manuf_code);
   ret = (zb_bool_t)!!rep_info;
 
-  TRACE_MSG(TRACE_ZCL1, "<< zcl_is_attr_reported ret %hd", (FMT__H, ret));
+  TRACE_MSG(TRACE_ZCL1, "<< zcl_is_attr_reported_manuf ret %hd", (FMT__H, ret));
   return ret;
 }
 
@@ -1560,12 +1636,13 @@ void zb_zcl_report_attr_cmd_handler(zb_uint8_t param)
                 (FMT__H_H, rep_attr_req->attr_id, rep_attr_req->attr_type));
 
       /* inform ZCL that report is received to prevent timeout alarm */
-      zb_zcl_report_received(
+      zb_zcl_report_received_manuf(
           ZB_ZCL_PARSED_HDR_SHORT_DATA(&cmd_info).src_endpoint,
           cmd_info.cluster_id,
           (cmd_info.cmd_direction == ZB_ZCL_FRAME_DIRECTION_TO_SRV) ?
           ZB_ZCL_CLUSTER_SERVER_ROLE : ZB_ZCL_CLUSTER_CLIENT_ROLE,
-          rep_attr_req->attr_id);
+          rep_attr_req->attr_id,
+          (cmd_info.is_manuf_specific) ? cmd_info.manuf_specific : ZB_ZCL_NON_MANUFACTURER_SPECIFIC);
 
       if (ZCL_CTX().report_attr_cb)
       {

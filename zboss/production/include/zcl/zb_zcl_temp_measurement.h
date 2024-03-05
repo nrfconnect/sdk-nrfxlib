@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -134,7 +134,8 @@ enum zb_zcl_temp_measurement_attr_e
   ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID,                        \
   ZB_ZCL_ATTR_TYPE_S16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,  \
-  (void*) data_ptr                                         \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                           \
+  (void*) data_ptr                                              \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TEMP_MEASUREMENT_MIN_VALUE_ID(data_ptr) \
@@ -142,7 +143,8 @@ enum zb_zcl_temp_measurement_attr_e
   ZB_ZCL_ATTR_TEMP_MEASUREMENT_MIN_VALUE_ID,            \
   ZB_ZCL_ATTR_TYPE_S16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TEMP_MEASUREMENT_MAX_VALUE_ID(data_ptr) \
@@ -150,7 +152,8 @@ enum zb_zcl_temp_measurement_attr_e
   ZB_ZCL_ATTR_TEMP_MEASUREMENT_MAX_VALUE_ID,            \
   ZB_ZCL_ATTR_TYPE_S16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TEMP_MEASUREMENT_TOLERANCE_ID(data_ptr) \
@@ -158,7 +161,8 @@ enum zb_zcl_temp_measurement_attr_e
   ZB_ZCL_ATTR_TEMP_MEASUREMENT_TOLERANCE_ID,                   \
   ZB_ZCL_ATTR_TYPE_U16,                                        \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                \
-  (void*) data_ptr                                        \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                          \
+  (void*) data_ptr                                             \
 }
 
 /*! @internal Number of attributes mandatory for reporting in Temperature Measurement cluster */

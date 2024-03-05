@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -220,24 +220,27 @@ enum zb_zcl_ias_zone_zonestatus_e
 {                                                       \
   ZB_ZCL_ATTR_CUSTOM_CIE_ADDR_IS_SET,                   \
   ZB_ZCL_ATTR_TYPE_U8,                                  \
-  ZB_ZCL_ATTR_ACCESS_INTERNAL,                         \
-  (void*) data_ptr                                 \
+  ZB_ZCL_ATTR_ACCESS_INTERNAL,                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CUSTOM_CIE_EP(data_ptr) \
 {                                                       \
   ZB_ZCL_ATTR_CUSTOM_CIE_EP,                            \
   ZB_ZCL_ATTR_TYPE_U8,                                  \
-  ZB_ZCL_ATTR_ACCESS_INTERNAL,                         \
-  (void*) data_ptr                                 \
+  ZB_ZCL_ATTR_ACCESS_INTERNAL,                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CUSTOM_CIE_SHORT_ADDR(data_ptr) \
 {                                                       \
   ZB_ZCL_ATTR_CUSTOM_CIE_SHORT_ADDR,                    \
   ZB_ZCL_ATTR_TYPE_U16,                                 \
-  ZB_ZCL_ATTR_ACCESS_INTERNAL,                         \
-  (void*) data_ptr                                 \
+  ZB_ZCL_ATTR_ACCESS_INTERNAL,                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 
@@ -246,7 +249,8 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_ZONESTATE_ID,                    \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                           \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_ZONETYPE_ID(data_ptr) \
@@ -254,7 +258,8 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_ZONETYPE_ID,                     \
   ZB_ZCL_ATTR_TYPE_16BIT_ENUM,                          \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_ZONESTATUS_ID(data_ptr) \
@@ -262,7 +267,8 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_ZONESTATUS_ID,                           \
   ZB_ZCL_ATTR_TYPE_16BITMAP,                                    \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,  \
-  (void*) data_ptr                                         \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                           \
+  (void*) data_ptr                                              \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID(data_ptr) \
@@ -270,7 +276,8 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_IAS_CIE_ADDRESS_ID,              \
   ZB_ZCL_ATTR_TYPE_IEEE_ADDR,                           \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                        \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_ZONEID_ID(data_ptr) \
@@ -278,23 +285,26 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_ZONEID_ID,                       \
   ZB_ZCL_ATTR_TYPE_U8,                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_NUMBER_OF_ZONE_SENSITIVITY_LEVELS_SUPPORTED_ID(data_ptr) \
-{                                                       \
-  ZB_ZCL_ATTR_IAS_ZONE_NUMBER_OF_ZONE_SENSITIVITY_LEVELS_SUPPORTED_ID,                      \
-  ZB_ZCL_ATTR_TYPE_U8,                                \
-  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
-  (void*) data_ptr                                 \
+{                                                                                                   \
+  ZB_ZCL_ATTR_IAS_ZONE_NUMBER_OF_ZONE_SENSITIVITY_LEVELS_SUPPORTED_ID,                              \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                              \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                     \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                               \
+  (void*) data_ptr                                                                                  \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_CURRENT_ZONE_SENSITIVITY_LEVEL_ID(data_ptr) \
-{                                                       \
-  ZB_ZCL_ATTR_IAS_ZONE_CURRENT_ZONE_SENSITIVITY_LEVEL_ID,                      \
-  ZB_ZCL_ATTR_TYPE_U8,                                \
-  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                         \
-  (void*) data_ptr                                 \
+{                                                                                               \
+  ZB_ZCL_ATTR_IAS_ZONE_CURRENT_ZONE_SENSITIVITY_LEVEL_ID,                                       \
+  ZB_ZCL_ATTR_TYPE_U8,                                                                          \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                           \
+  (void*) data_ptr                                                                              \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_IAS_ZONE_INT_CTX_ID(data_ptr) \
@@ -302,7 +312,8 @@ enum zb_zcl_ias_zone_zonestatus_e
   ZB_ZCL_ATTR_IAS_ZONE_INT_CTX_ID,                      \
   ZB_ZCL_ATTR_TYPE_NULL,                                \
   ZB_ZCL_ATTR_ACCESS_INTERNAL,                          \
-  (void*) data_ptr                                 \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
+  (void*) data_ptr                                      \
 }
 
 /*! @internal Number of attributes mandatory for reporting in IAS Zone cluster */

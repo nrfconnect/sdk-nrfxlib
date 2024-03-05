@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -93,7 +93,7 @@ void zb_zcl_ias_zone_restore_normal_mode(zb_uint8_t endpoint);
 void zb_zcl_ias_zone_set_test_bit_delayed(zb_uint8_t endpoint, zb_uint8_t test_bit);
 void zb_zcl_ias_zone_set_test_bit(zb_uint8_t param, zb_uint16_t user_param);
 zb_ret_t check_value_ias_zone_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
-void zb_zcl_ias_zone_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value);
+void zb_zcl_ias_zone_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code);
 zb_bool_t zb_zcl_process_ias_zone_specific_commands_srv(zb_uint8_t param);
 zb_bool_t zb_zcl_process_ias_zone_specific_commands_cli(zb_uint8_t param);
 
@@ -929,13 +929,13 @@ static void handle_bind_check_response(zb_bufid_t param)
   }
 }
 
-void zb_zcl_ias_zone_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value)
+void zb_zcl_ias_zone_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code)
 {
   zb_zcl_attr_t* attr_desc;
   zb_zcl_ias_zone_int_ctx_t  *int_ctx;
 
-  TRACE_MSG(TRACE_ZCL1, "> zb_zcl_ias_zone_write_attr_hook endpoint %hx attr_id %d",
-      (FMT__H_D, endpoint, attr_id));
+  TRACE_MSG(TRACE_ZCL1, "> zb_zcl_ias_zone_write_attr_hook endpoint %hx attr_id 0x%x, manuf_code 0x%x",
+            (FMT__H_D_D, endpoint, attr_id, manuf_code));
 
   attr_desc = zb_zcl_get_attr_desc_a(endpoint,
                                      ZB_ZCL_CLUSTER_ID_IAS_ZONE,

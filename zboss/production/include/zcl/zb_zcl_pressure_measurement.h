@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -201,6 +201,7 @@ enum zb_zcl_pressure_measurement_attr_e
   ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_VALUE_ID,                    \
   ZB_ZCL_ATTR_TYPE_S16,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,  \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                           \
   (void*) data_ptr                                              \
 }
 
@@ -209,6 +210,7 @@ enum zb_zcl_pressure_measurement_attr_e
   ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_MIN_VALUE_ID,        \
   ZB_ZCL_ATTR_TYPE_S16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
   (void*) data_ptr                                      \
 }
 
@@ -217,6 +219,7 @@ enum zb_zcl_pressure_measurement_attr_e
   ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_MAX_VALUE_ID,        \
   ZB_ZCL_ATTR_TYPE_S16,                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                         \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                   \
   (void*) data_ptr                                      \
 }
 
@@ -225,6 +228,7 @@ enum zb_zcl_pressure_measurement_attr_e
   ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_TOLERANCE_ID,               \
   ZB_ZCL_ATTR_TYPE_U16,                                        \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                          \
   (void*) data_ptr                                             \
 }
 
@@ -233,6 +237,7 @@ enum zb_zcl_pressure_measurement_attr_e
   ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_SCALED_VALUE_ID,            \
   ZB_ZCL_ATTR_TYPE_S16,                                        \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                          \
   (void*) data_ptr                                             \
 }
 
@@ -241,6 +246,7 @@ enum zb_zcl_pressure_measurement_attr_e
   ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_MIN_SCALED_VALUE_ID,        \
   ZB_ZCL_ATTR_TYPE_S16,                                        \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                          \
   (void*) data_ptr                                             \
 }
 
@@ -249,6 +255,7 @@ enum zb_zcl_pressure_measurement_attr_e
   ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_MAX_SCALED_VALUE_ID,        \
   ZB_ZCL_ATTR_TYPE_S16,                                        \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                          \
   (void*) data_ptr                                             \
 }
 
@@ -257,6 +264,7 @@ enum zb_zcl_pressure_measurement_attr_e
   ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_SCALED_TOLERANCE_ID,        \
   ZB_ZCL_ATTR_TYPE_U16,                                        \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                          \
   (void*) data_ptr                                             \
 }
 
@@ -265,6 +273,7 @@ enum zb_zcl_pressure_measurement_attr_e
   ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_SCALE_ID,                   \
   ZB_ZCL_ATTR_TYPE_S8,                                         \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                          \
   (void*) data_ptr                                             \
 }
 

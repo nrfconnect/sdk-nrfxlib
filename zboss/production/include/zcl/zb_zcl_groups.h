@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -760,7 +760,8 @@ zb_bool_t zb_zcl_process_groups_commands_cli(zb_uint8_t param);
   ZB_ZCL_ATTR_GROUPS_NAME_SUPPORT_ID,                             \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                   \
-  (void*) data_ptr                                           \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                             \
+  (void*) data_ptr                                                \
 }
 
 /** @internal @brief Number of attributes mandatory for reporting in Groups cluster. */

@@ -11,66 +11,69 @@
  * Please use release scripts to update it's contents.
  *
  * Repositories:
- * platform_ncs       d86d8e92f77d0676adcf160fd597819480a95dd5 https://projecttools.nordicsemi.no/bitbucket/scm/ZOI/platform_ncs.git
- * zboss-stack-src    a7b9cdd6212a96dad981e8b40da8e606188e7616 https://projecttools.nordicsemi.no/bitbucket/scm/zoi/zboss_stable
- * zboss-stack-doc    696296a5555bc9bb703e104b6d057236e0f9cd25 https://projecttools.nordicsemi.no/bitbucket/scm/zoi/zboss_doc
- * nrf                1df0b2611d91229da2233b26b6e6da871d726bf0 https://github.com/nrfconnect/sdk-nrf
- * zephyr             87138104fa60dae4b2fa61ae0c03559b6e555ee2 https://github.com/nrfconnect/sdk-zephyr
- * sdk-hostap         8d3f26d7da1b49815fbd0fe8335189cfac4ded85 https://github.com/nrfconnect/sdk-hostap
- * mcuboot            d97046ef74ccb932531521a8380c4a831cb344f4 https://github.com/nrfconnect/sdk-mcuboot
- * mbedtls            89419b374d17d30b7637cfb91f699c2d8432127a https://github.com/nrfconnect/sdk-mbedtls
- * nrfxlib            161b58f53846891351812d621116e7d6b0eb0e50 https://github.com/nrfconnect/sdk-nrfxlib
- * trusted-firmware-m 81e6a7fbbc972b95affc9b6805b62237d0ffd6f4 https://github.com/nrfconnect/sdk-trusted-firmware-m
- * matter             0a72fe40ed90d5162bd2419e203ca8036c7345b2 https://github.com/nrfconnect/sdk-connectedhomeip
+ * platform_ncs       1366df8ca7f42a702dbec8d494a0015e85837755 https://projecttools.nordicsemi.no/bitbucket/scm/ZOI/platform_ncs.git
+ * zboss-stack-src    5c339a77a158b29b0072141573e9f7e661cac96c https://projecttools.nordicsemi.no/bitbucket/scm/zoi/zboss_stable
+ * zboss-stack-doc    31a9182d4fc43bfedbcc1bb1dab2aec4e07288ad https://projecttools.nordicsemi.no/bitbucket/scm/zoi/zboss_doc
+ * nrf                68bd648703fd5500e178a5e9ef2dd6fd98018245 https://github.com/nrfconnect/sdk-nrf
+ * zephyr             0fa93fad62c1cf6fb1f4c0f8fa30afcb0dbe50aa https://github.com/nrfconnect/sdk-zephyr
+ * hostap             c66e5de97a44c77ec87a86ded88636a92d7ceea6 https://github.com/nrfconnect/sdk-hostap
+ * wfa-qt-control-app b3cea7b770cf8270cf25831cf3c9db063234e603 https://github.com/nrfconnect/sdk-wi-fiquicktrack-controlappc
+ * mcuboot            323fb663e832d4c45eb2fc2d30a3955684791b7d https://github.com/nrfconnect/sdk-mcuboot
+ * qcbor              751d36583a9ce1a640900c57e13c9b6b8f3a2ba2 https://github.com/laurencelundblade/QCBOR.git
+ * mbedtls            4625a6097993a0bae01f809aacd48ee2c9cb1d0b https://github.com/nrfconnect/sdk-mbedtls
+ * nrfxlib            502ce15474c2619e3ef9291588357dd2ddf31fb0 https://github.com/nrfconnect/sdk-nrfxlib
+ * trusted-firmware-m 51fe43807f8d968de0b0df01862f9a20d9f119e6 https://github.com/nrfconnect/sdk-trusted-firmware-m
+ * psa-arch-tests     94a349db22cd0e44136c281724ffc71b6e7391c3 https://github.com/nrfconnect/sdk-psa-arch-tests
+ * matter             0b7d6e4909f070d20e0f5532927a7241f5de9364 https://github.com/nrfconnect/sdk-connectedhomeip
  * cjson              c6af068b7f05207b28d68880740e4b9ec1e4b50a https://github.com/nrfconnect/sdk-cjson
  * azure-sdk-for-c    308c171cb4b5eed266649012a68406487ec81fb2 https://github.com/nrfconnect/azure-sdk-for-c
+ * cirrus             3873a08377d93a479105a75ac390d3bbcd31d690 https://github.com/nrfconnect/sdk-mcu-drivers
+ * openthread         b9dcdbca4edd348e924d7579a2bada48bf085645 https://github.com/nrfconnect/sdk-openthread
  * cmock              f65066f15d8248e6dcb778efb8739904a4512087 https://github.com/ThrowTheSwitch/cmock
- * memfault-firmware-sdk dbe84b934757ce8ed78cf7840ff1b701f5657fe9 https://github.com/memfault/memfault-firmware-sdk
- * cirrus             9f6b3812237fbb0d4157ba3584c13f1644fcbe3a https://github.com/nrfconnect/sdk-mcu-drivers
- * openthread         55074652907295709f9f3361244a6e76f732bcba https://github.com/nrfconnect/sdk-openthread
- * canopennode        53d3415c14d60f8f4bfca54bfbc5d5a667d7e724 https://github.com/zephyrproject-rtos/canopennode
- * chre               fe0ab36e0fa7453a4c9b97bedac89709f45cf965 https://github.com/zephyrproject-rtos/chre
- * cmsis              74981bf893e8b10931464b9945e2143d99a3f0a3 https://github.com/zephyrproject-rtos/cmsis
- * edtt               000fb87261beaf33f80a8868e73857bd62edc668 https://github.com/zephyrproject-rtos/edtt
- * fatfs              38f303ad09fdd687ee066a938f65ad708dd5989d https://github.com/zephyrproject-rtos/fatfs
- * hal_nordic         fe0be3c3546e136a67264084c0e3edfd7354645a https://github.com/zephyrproject-rtos/hal_nordic
- * hal_st             cccbc24c14decfd3f93959f7b14514536af973c7 https://github.com/zephyrproject-rtos/hal_st
+ * memfault-firmware-sdk 3d51c80bc58933671403eca7c5250a9b03294c5e https://github.com/memfault/memfault-firmware-sdk
+ * bsim               384a091445c57b44ac8cbd18ebd245b47c71db94 https://github.com/BabbleSim/bsim_west
+ * canopennode        dec12fa3f0d790cafa8414a4c2930ea71ab72ffd https://github.com/zephyrproject-rtos/canopennode
+ * chre               3b32c76efee705af146124fb4190f71be5a4e36e https://github.com/zephyrproject-rtos/chre
+ * lz4                8e303c264fc21c2116dc612658003a22e933124d https://github.com/zephyrproject-rtos/lz4
+ * nanopb             42fa8b211e946b90b9d968523fce7b1cfe27617e https://github.com/zephyrproject-rtos/nanopb
+ * tf-m-tests         08a3158f0623a4205608a52d880b17ae394e31d2 https://github.com/zephyrproject-rtos/tf-m-tests
+ * zscilib            34a94b0995683822fa3626dcd5d838301c94c350 https://github.com/zephyrproject-rtos/zscilib
+ * cmsis              4b96cbb174678dcd3ca86e11e1f24bc5f8726da0 https://github.com/zephyrproject-rtos/cmsis
+ * cmsis-dsp          ff7b5fd1ea5f094665c090c343ec44e74dc0b193 https://github.com/zephyrproject-rtos/cmsis-dsp
+ * cmsis-nn           0c8669d81381ccf3b1a01d699f3b68b50134a99f https://github.com/zephyrproject-rtos/cmsis-nn
+ * edtt               64e5105ad82390164fb73fc654be3f73a608209a https://github.com/zephyrproject-rtos/edtt
+ * fatfs              427159bf95ea49b7680facffaa29ad506b42709b https://github.com/zephyrproject-rtos/fatfs
+ * hal_nordic         dce8519f7da37b0a745237679fd3f88250b495ff https://github.com/zephyrproject-rtos/hal_nordic
+ * hal_st             fb8e79d1a261fd02aadff7c142729f1954163cf3 https://github.com/zephyrproject-rtos/hal_st
  * hal_wurthelektronik 24ca9873c3d608fad1fea0431836bc8f144c132e https://github.com/zephyrproject-rtos/hal_wurthelektronik
- * libmetal           efa2ace6028290ddee494a78ade772a0b112ab83 https://github.com/zephyrproject-rtos/libmetal
+ * libmetal           03140d7f4bd9ba474ebfbb6256e84a9089248e67 https://github.com/zephyrproject-rtos/libmetal
  * liblc3             448f3de31f49a838988a162ef1e23a89ddf2d2ed https://github.com/zephyrproject-rtos/liblc3
  * littlefs           ca583fd297ceb48bced3c2548600dc615d67af24 https://github.com/zephyrproject-rtos/littlefs
- * loramac-node       ce57712f3e426bbbb13acaec97b45369f716f43a https://github.com/zephyrproject-rtos/loramac-node
- * lvgl               5ab83099854719ed326b6ecb9b09b07b1eee4818 https://github.com/zephyrproject-rtos/lvgl
- * lz4                8e303c264fc21c2116dc612658003a22e933124d https://github.com/zephyrproject-rtos/lz4
- * mipi-sys-t         0d521d8055f3b2b4842f728b0365d3f0ece9c37f https://github.com/zephyrproject-rtos/mipi-sys-t
- * nanopb             dc4deed54fd4c7e1935e3b6387eedf21bb45dc38 https://github.com/zephyrproject-rtos/nanopb
- * net-tools          e0828aa9629b533644dc96ff6d1295c939bd713c https://github.com/zephyrproject-rtos/net-tools
- * nrf_hw_models      65bc5305d432c08e24a3f343006d1e7deaff4908 https://github.com/zephyrproject-rtos/nrf_hw_models
- * open-amp           aedcc262f93bbb1b0c2f58026911575729b7465c https://github.com/zephyrproject-rtos/open-amp
- * picolibc           04ada5951cbaf8e7b17f8226ce31cb6837c28ba7 https://github.com/zephyrproject-rtos/picolibc
- * segger             d4e568a920b4bd087886170a5624c167b2d0665e https://github.com/zephyrproject-rtos/segger
- * tinycbor           9e1f34bc08123aaad7666d3652aaa839e8178b3b https://github.com/zephyrproject-rtos/tinycbor
+ * loramac-node       842413c5fb98707eb5f26e619e8e792453877897 https://github.com/zephyrproject-rtos/loramac-node
+ * lvgl               7c61a4cec26402d20c845c95dcad0e39dcd319f8 https://github.com/zephyrproject-rtos/lvgl
+ * mipi-sys-t         a819419603a2dfcb47f7f39092e1bc112e45d1ef https://github.com/zephyrproject-rtos/mipi-sys-t
+ * net-tools          d68ee9d17648a1bb3729c2023abfcb735dfe92fa https://github.com/zephyrproject-rtos/net-tools
+ * nrf_hw_models      52d0b4b7b7431d8da6222cc3b17a8afdcb099baf https://github.com/zephyrproject-rtos/nrf_hw_models
+ * open-amp           214f9fc1539f8e5937c0474cb6ee29b6dcb2d4b8 https://github.com/zephyrproject-rtos/open-amp
+ * picolibc           1a5c603b9f8e228f9459bdafedad15ea28efc700 https://github.com/zephyrproject-rtos/picolibc
+ * segger             9d0191285956cef43daf411edc2f1a7788346def https://github.com/zephyrproject-rtos/segger
  * tinycrypt          3e9a49d2672ec01435ffbf0d788db6d95ef28de0 https://github.com/zephyrproject-rtos/tinycrypt
- * TraceRecorderSource d92607521335eaaaedb01b241cdd26fda48a5ca6 https://github.com/zephyrproject-rtos/TraceRecorderSource
- * tf-m-tests         bcb53bccccdc05c713aade707e7a8ddad35c210f https://github.com/zephyrproject-rtos/tf-m-tests
- * psa-arch-tests     f4fc2442b8e29e2a03d9899e46e5a3ea3df8c2c9 https://github.com/zephyrproject-rtos/psa-arch-tests
- * uoscore-uedhoc     e8920192b66db4f909eb9cd3f155d5245c1ae825 https://github.com/zephyrproject-rtos/uoscore-uedhoc
- * zcbor              0556edac504d1f34699aa8a22fcd507c14756c9e https://github.com/zephyrproject-rtos/zcbor
- * zscilib            ca070ddabdaf67175a2da901d0bd62e8899371c5 https://github.com/zephyrproject-rtos/zscilib
+ * uoscore-uedhoc     150f4eb2955eaf36ac0f9519d4f4f58d5ade5740 https://github.com/zephyrproject-rtos/uoscore-uedhoc
+ * zcbor              d3093b5684f62268c7f27f8a5079f166772619de https://github.com/zephyrproject-rtos/zcbor
  */
 
 
 /** ZBOSS build tag */
-#define ZBOSS_BUILD_TAG "ncs_release-3.11.2.1"
+#define ZBOSS_BUILD_TAG "ncs_release-3.11.3.0"
 
 /** ZBOSS platform build tag */
-#define ZBOSS_PLATFORM_BUILD_TAG "v3.11.2.1+v5.1.3"
+#define ZBOSS_PLATFORM_BUILD_TAG "v3.11.3.0+v5.1.4"
 
 /** ZBOSS build date (UTC) */
-#define ZBOSS_BUILD_DATE 20230220
+#define ZBOSS_BUILD_DATE 20240229
 
 /** ZBOSS build time (UTC) */
-#define ZBOSS_BUILD_TIME 080243
+#define ZBOSS_BUILD_TIME 112147
 
 
 #endif /* ZBOSS_BUILD_INFO_H__ */

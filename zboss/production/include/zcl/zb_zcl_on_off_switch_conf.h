@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -145,18 +145,20 @@ enum zb_zcl_on_off_switch_configuration_switch_actions_e
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ON_OFF_SWITCH_CONFIGURATION_SWITCH_TYPE_ID(data_ptr)  \
   {                                                                       \
-    ZB_ZCL_ATTR_ON_OFF_SWITCH_CONFIGURATION_SWITCH_TYPE_ID,                                      \
+    ZB_ZCL_ATTR_ON_OFF_SWITCH_CONFIGURATION_SWITCH_TYPE_ID,               \
     ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                           \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                         \
-    (void*) data_ptr                                                 \
+    (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                   \
+    (void*) data_ptr                                                      \
   }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ON_OFF_SWITCH_CONFIGURATION_SWITCH_ACTIONS_ID(data_ptr) \
   {                                                                         \
-    ZB_ZCL_ATTR_ON_OFF_SWITCH_CONFIGURATION_SWITCH_ACTIONS_ID,                                     \
+    ZB_ZCL_ATTR_ON_OFF_SWITCH_CONFIGURATION_SWITCH_ACTIONS_ID,              \
     ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                             \
     ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                          \
-    (void*) data_ptr                                                   \
+    (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                     \
+    (void*) data_ptr                                                        \
   }
 
 /** @internal Number of attributes mandatory for reporting on On/Off switch configuration cluster */

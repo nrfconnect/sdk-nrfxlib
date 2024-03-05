@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -75,7 +75,7 @@ zb_discover_cmd_list_t gs_poll_control_server_cmd_list =
 };
 
 zb_ret_t check_value_poll_control_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
-static void zb_zcl_poll_control_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value);
+static void zb_zcl_poll_control_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code);
 
 zb_bool_t zb_zcl_process_poll_control_specific_commands_srv(zb_uint8_t param);
 
@@ -1139,7 +1139,7 @@ void zb_zcl_poll_control_save_nvram(zb_uint8_t param)
 
 /** @brief Hook on Write attribute
  * send Check-in if change Check-in interval & Check-in remain time > new check-in interval */
-static void zb_zcl_poll_control_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value)
+static void zb_zcl_poll_control_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code)
 {
   zb_uint32_t new_val = 0;
 /* 07/08/2019 EE CR:MAJOR LE/BE conversion? Is there a problem of local/remote attr write? */
@@ -1148,6 +1148,7 @@ static void zb_zcl_poll_control_write_attr_hook_server(zb_uint8_t endpoint, zb_u
   (void)endpoint;
   (void)attr_id;
   (void)new_value;
+  (void)manuf_code;
 
   TRACE_MSG(TRACE_ZCL1, "> zb_zcl_poll_control_write_attr_hook endpoint %hx attr_id %d",
       (FMT__H_D, endpoint, attr_id));

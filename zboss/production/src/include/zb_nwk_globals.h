@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -210,6 +210,11 @@ typedef struct zb_rejoin_context_s /* do not pack for IAR */
   zb_address_ieee_ref_t addr_ref;
   zb_uint8_t secure_rejoin;
   zb_uint8_t rx_on;
+#ifdef ZB_MAC_PENDING_BIT_SOURCE_MATCHING
+  zb_bufid_t rejoin_rsp_param;          /*!< Buf with nwk header. */
+  zb_bufid_t mlme_set_conf_param;       /*!< This param is needed to determine ent in rejoin table
+                                               for which confirm has arrived. */
+#endif /* ZB_MAC_PENDING_BIT_SOURCE_MATCHING */
 } ZB_PACKED_STRUCT zb_rejoin_context_t;
 
 

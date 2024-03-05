@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -235,7 +235,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_DEVICE_TYPE_ID,                                                \
   ZB_ZCL_ATTR_TYPE_U8,                                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                                   \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_ANNOUNCE_WINDOW_ID(data_ptr)      \
@@ -243,7 +244,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_ANNOUNCE_WINDOW_ID,                                            \
   ZB_ZCL_ATTR_TYPE_U16,                                                                          \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_MTORR_PERIOD_ID(data_ptr)         \
@@ -251,7 +253,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_MTORR_PERIOD_ID,                                               \
   ZB_ZCL_ATTR_TYPE_U16,                                                                          \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_FIRMWARE_VERSION_ID(data_ptr)     \
@@ -259,7 +262,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_FIRMWARE_VERSION_ID,                                           \
   ZB_ZCL_ATTR_TYPE_CHAR_STRING,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                                   \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_REFLASH_VERSION_ID(data_ptr)      \
@@ -267,7 +271,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_REFLASH_VERSION_ID,                                            \
   ZB_ZCL_ATTR_TYPE_U8,                                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                                   \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_BOOT_COUNT_ID(data_ptr)           \
@@ -275,7 +280,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_BOOT_COUNT_ID,                                                 \
   ZB_ZCL_ATTR_TYPE_U16,                                                                          \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                                   \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_PRODUCT_STRING_ID(data_ptr)       \
@@ -283,7 +289,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_PRODUCT_STRING_ID,                                             \
   ZB_ZCL_ATTR_TYPE_CHAR_STRING,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                                   \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_ACCESS_POINT_NODE_ID_ID(data_ptr) \
@@ -291,7 +298,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_ACCESS_POINT_NODE_ID_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                                          \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_ACCESS_POINT_LONG_ID_ID(data_ptr) \
@@ -299,7 +307,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_ACCESS_POINT_LONG_ID_ID,                                       \
   ZB_ZCL_ATTR_TYPE_IEEE_ADDR,                                                                    \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_ACCESS_POINT_COST_ID(data_ptr)    \
@@ -307,7 +316,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_ACCESS_POINT_COST_ID,                                          \
   ZB_ZCL_ATTR_TYPE_U8,                                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                 \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_MESH_CHANNEL_ID(data_ptr)         \
@@ -315,7 +325,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_MESH_CHANNEL_ID,                                               \
   ZB_ZCL_ATTR_TYPE_U8,                                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE | ZB_ZCL_ATTR_ACCESS_REPORTING,                                  \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_AVG_RSSI_ID(data_ptr)             \
@@ -323,7 +334,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_AVG_RSSI_ID,                                                   \
   ZB_ZCL_ATTR_TYPE_S8,                                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_AVG_LQI_ID(data_ptr)              \
@@ -331,7 +343,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_AVG_LQI_ID,                                                    \
   ZB_ZCL_ATTR_TYPE_U8,                                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_BATTERY_LEVEL_ID(data_ptr)        \
@@ -339,7 +352,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_BATTERY_LEVEL_ID,                                              \
   ZB_ZCL_ATTR_TYPE_S8,                                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_CONTROL4_NETWORKING_RADIO_4_BARS_ID(data_ptr)         \
@@ -347,7 +361,8 @@ enum zb_zcl_control4_networking_cmd_e
   ZB_ZCL_ATTR_CONTROL4_NETWORKING_RADIO_4_BARS_ID,                                               \
   ZB_ZCL_ATTR_TYPE_U8,                                                                           \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                  \
-  (void*) data_ptr                                                                          \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                            \
+  (void*) data_ptr                                                                               \
 }
 /** @endcond */ /*internals_doc*/
 
@@ -388,7 +403,7 @@ enum zb_zcl_control4_networking_cmd_e
   /* ZB_DECLARE_SIMPLE_DESC(1, 1); it is already defined */    \
   ZB_AF_SIMPLE_DESC_TYPE(1, 1) simple_desc_##ep_name =         \
   {                                                            \
-    ZB_CONTROL4_NETWORK_ENDPOINT,                          \
+    ZB_CONTROL4_NETWORK_ENDPOINT,                              \
     ZB_AF_CONTROL4_PROFILE_ID,                                 \
     0, 1, 0, 1, 1,                                             \
     {                                                          \
@@ -405,7 +420,7 @@ enum zb_zcl_control4_networking_cmd_e
 #define ZB_ZCL_CONTROL4_NETWORK_DECLARE_EP(ep_name, cluster_list)    \
   ZB_ZCL_CONTROL4_NETWORK_DECLARE_SIMPLE_DESC(ep_name);              \
   ZB_AF_DECLARE_ENDPOINT_DESC(ep_name,                               \
-    ZB_CONTROL4_NETWORK_ENDPOINT, ZB_AF_CONTROL4_PROFILE_ID,     \
+    ZB_CONTROL4_NETWORK_ENDPOINT, ZB_AF_CONTROL4_PROFILE_ID,         \
     0,                                                               \
     NULL,                                                            \
     ZB_ZCL_ARRAY_SIZE(cluster_list, zb_zcl_cluster_desc_t),          \

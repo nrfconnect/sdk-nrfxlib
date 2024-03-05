@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -999,6 +999,22 @@ zb_zcl_write_attr_res_t;
   ZB_ZCL_GENERAL_INIT_WRITE_ATTR_REQ_BY_TYPE( \
     (buffer), (cmd_ptr), (def_resp), ZB_ZCL_CMD_WRITE_ATTRIB);
 
+/** @brief Initialize Write attribute command
+    @param buffer - buffer to store command data
+    @param cmd_ptr - pointer to a command data memory
+    @param direction - direction of command (see @ref zcl_frame_direction)
+    @param def_resp - enable/disable default response
+    @param manuf_code - manufacturer specific code
+*/
+#define ZB_ZCL_GENERAL_INIT_WRITE_ATTR_REQ_MANUF(buffer, cmd_ptr, direction, def_resp, manuf_code) \
+{                                                                                                  \
+  cmd_ptr = ZB_ZCL_START_PACKET(buffer);                                                           \
+  ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_REQ_FRAME_CONTROL_A(                                            \
+    cmd_ptr, direction, ZB_ZCL_MANUFACTURER_SPECIFIC, def_resp);                                   \
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT(                                                             \
+    cmd_ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_TRUE, manuf_code, ZB_ZCL_CMD_WRITE_ATTRIB);                  \
+}
+
 /** @brief Initialize Write Attribute No Response command
     @param buffer - buffer to store command data
     @param cmd_ptr - pointer to a command data memory
@@ -1314,6 +1330,40 @@ typedef zb_uint8_t zb_zcl_disc_complete_t;
   ZB_ZCL_SEND_COMMAND_SHORT(buffer, addr, dst_addr_mode, dst_ep, ep, profile_id, cluster_id, cb); \
 }
 
+/**
+ * @brief Discover Attribute Request
+ * @param buffer - reference to buffer to put packet into
+ * @param cmd_ptr - pointer to command (not used)
+ * @param direction - direction of command (see @ref zcl_frame_direction)
+ * @param def_resp - enable/disable default response
+ * @param manuf_code - manufacturer specific code
+ * @param start_attr_id - start attribute ID
+ * @param max_len - max count
+ * @param addr - address to send packet to
+ * @param dst_addr_mode - addressing mode
+ * @param dst_ep - destination endpoint
+ * @param ep - sending endpoint
+ * @param profile_id - profile identifier
+ * @param cluster_id - cluster identifier
+ * @param cb - callback for getting command send status
+ */
+#define ZB_ZCL_GENERAL_DISC_ATTR_REQ_MANUF(buffer, cmd_ptr, direction, def_resp,          \
+                                           manuf_code, start_attr_id, max_len,            \
+                                           addr, dst_addr_mode, dst_ep, ep,               \
+                                           profile_id, cluster_id, cb)                    \
+{                                                                                         \
+  zb_uint8_t *cmd_ptr = ZB_ZCL_START_PACKET(buffer);                                      \
+  ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_REQ_FRAME_CONTROL_A(cmd_ptr, direction,                \
+                                                       ZB_ZCL_MANUFACTURER_SPECIFIC, def_resp); \
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT(                                                    \
+    cmd_ptr, ZB_ZCL_GET_SEQ_NUM(),                                                        \
+    ZB_ZCL_MANUFACTURER_SPECIFIC, (manuf_code), ZB_ZCL_CMD_DISC_ATTRIB);                  \
+  ZB_ZCL_PACKET_PUT_DATA16_VAL(cmd_ptr, (start_attr_id));                                 \
+  ZB_ZCL_PACKET_PUT_DATA8(cmd_ptr, (max_len));                                            \
+  ZB_ZCL_FINISH_PACKET(buffer, cmd_ptr)                                                   \
+  ZB_ZCL_SEND_COMMAND_SHORT(buffer, addr, dst_addr_mode, dst_ep, ep, profile_id, cluster_id, cb); \
+}
+
 /** @} */ /* Discover attribute request and response sending and parsing. */
 
 
@@ -1559,6 +1609,21 @@ zb_zcl_configure_reporting_res_t;
   ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_REQ_FRAME_CONTROL_A(                                 \
       ptr, ZB_ZCL_FRAME_DIRECTION_TO_SRV, ZB_ZCL_NOT_MANUFACTURER_SPECIFIC, def_resp);  \
   ZB_ZCL_CONSTRUCT_COMMAND_HEADER(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_CONFIG_REPORT); \
+}
+
+/*! @brief Initialize Configure reporting command (report send case)
+    @param buffer to put packet to
+    @param ptr - command buffer pointer
+    @param def_resp - enable/disable default response
+    @param manuf_code - manufacturer specific code
+*/
+#define ZB_ZCL_GENERAL_INIT_CONFIGURE_REPORTING_SRV_REQ_MANUF(buffer, ptr, def_resp, manuf_code) \
+{                                                                                            \
+  ptr = ZB_ZCL_START_PACKET(buffer);                                                         \
+  ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_REQ_FRAME_CONTROL_A(                                      \
+      ptr, ZB_ZCL_FRAME_DIRECTION_TO_SRV, ZB_ZCL_MANUFACTURER_SPECIFIC, def_resp);           \
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_TRUE,                    \
+                                      manuf_code, ZB_ZCL_CMD_CONFIG_REPORT);                 \
 }
 
 /*! @brief Initialize Configure reporting command (report receive case)
@@ -1874,6 +1939,22 @@ typedef ZB_PACKED_PRE struct zb_zcl_read_reporting_cfg_rsp_s
   ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_REQ_FRAME_CONTROL_A(                                 \
       ptr, ZB_ZCL_FRAME_DIRECTION_TO_SRV, ZB_ZCL_NOT_MANUFACTURER_SPECIFIC, def_resp);  \
   ZB_ZCL_CONSTRUCT_COMMAND_HEADER(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_ZCL_CMD_READ_REPORT_CFG); \
+}
+
+
+/*! @brief Initialize Read reporting configuration command (report send case)
+    @param buffer to put packet to
+    @param ptr - command buffer pointer
+    @param def_resp - enable/disable default response
+    @param manuf_code - manufacturer specific code
+*/
+#define ZB_ZCL_GENERAL_INIT_READ_REPORTING_CONFIGURATION_SRV_REQ_MANUF(buffer, ptr, def_resp, manuf_code) \
+{                                                                                                   \
+  ptr = ZB_ZCL_START_PACKET(buffer);                                                                \
+  ZB_ZCL_CONSTRUCT_GENERAL_COMMAND_REQ_FRAME_CONTROL_A(                                             \
+    ptr, ZB_ZCL_FRAME_DIRECTION_TO_SRV, ZB_ZCL_MANUFACTURER_SPECIFIC, def_resp);                    \
+  ZB_ZCL_CONSTRUCT_COMMAND_HEADER_EXT(ptr, ZB_ZCL_GET_SEQ_NUM(), ZB_TRUE,                           \
+                                      manuf_code, ZB_ZCL_CMD_READ_REPORT_CFG);                      \
 }
 
 /*! @brief Initialize Read reporting configuration command (report receive case)
@@ -2352,7 +2433,7 @@ zb_zcl_disc_attr_ext_res_t;
 
   /*! Convert internal attribute access bitmask into ZCL/HA1.2 bitmask
  *  value (actually, support 0 and 1 bits) */
-#define ZB_ZCL_CONVERT_ATTR_ACCESS_BITMASK(_access) ((_access) & 0x3U)
+#define ZB_ZCL_CONVERT_ATTR_ACCESS_BITMASK(_access) ((_access) & 0x7U)
 
 /******************** Command handlers ***************************/
 

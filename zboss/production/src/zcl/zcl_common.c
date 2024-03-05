@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -835,7 +835,7 @@ zb_uint8_t zb_zcl_check_attribute_writable(
     if (ZB_ZCL_STATUS_SUCCESS == status)
         //&& zb_zcl_check_attr_value(cluster_id, cluster_role, endpoint, attr_desc->id, new_value) == RET_ERROR /-- ZB_FALSE) --/
     {
-      zb_ret_t ret = zb_zcl_check_attr_value(cluster_id, cluster_role, endpoint, attr_desc->id, new_value);
+      zb_ret_t ret = zb_zcl_check_attr_value_manuf(cluster_id, cluster_role, endpoint, attr_desc->id, attr_desc->manuf_code, new_value);
       if (ret == RET_ERROR)
       {
         TRACE_MSG(TRACE_ZCL1, "error, invalid value", (FMT__0));
@@ -874,11 +874,11 @@ zb_uint8_t zb_zcl_check_attribute_writable(
 /* Sets attribute value, for other endpoint of singleton attribute
  * check: end-user application may chanage read-only attributes
 */
-static void zb_zcl_conform_singleton(zb_uint8_t ep_first, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id, zb_uint8_t *value)
+static void zb_zcl_conform_singleton(zb_uint8_t ep_first, zb_uint16_t cluster_id, zb_uint8_t cluster_role, zb_uint16_t attr_id, zb_uint8_t *value, zb_uint16_t manuf_code)
 {
   zb_uindex_t i;
-  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_conform_singleton ep %hd, cluster %d, attr %d",
-            (FMT__H_D_D, ep_first, cluster_id, attr_id));
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_conform_singleton ep %hd, cluster %d, attr 0x%x, manuf_code 0x%x",
+            (FMT__H_D_D_D, ep_first, cluster_id, attr_id, manuf_code));
 
   /*cstat !MISRAC2012-Rule-13.6 */
   /* After some investigation, the following violation of Rule 13.6 seems to be a false positive.
@@ -900,14 +900,14 @@ static void zb_zcl_conform_singleton(zb_uint8_t ep_first, zb_uint16_t cluster_id
         continue;
       }
 
-      attr_desc = zb_zcl_get_attr_desc(cluster_desc, attr_id);
+      attr_desc = zb_zcl_get_attr_desc_manuf(cluster_desc, attr_id, manuf_code);
       if (attr_desc == NULL)
       {
         continue;
       }
 
       zb_zcl_write_attr_hook(device_ctx->ep_desc_list[i]->ep_id,
-                             cluster_id, cluster_role, attr_id, value);
+                             cluster_id, cluster_role, attr_id, value, manuf_code);
 
       ZB_MEMCPY(attr_desc->data_p, value,
                     zb_zcl_get_attribute_size(attr_desc->type, value));
@@ -916,8 +916,8 @@ static void zb_zcl_conform_singleton(zb_uint8_t ep_first, zb_uint16_t cluster_id
       /* check, if reporting is needed for an attribute */
       if (ZB_ZCL_IS_ATTR_REPORTABLE(attr_desc))
       {
-        zb_zcl_mark_attr_for_reporting(device_ctx->ep_desc_list[i]->ep_id,
-                                       cluster_id, cluster_role, attr_id);
+        zb_zcl_mark_attr_for_reporting_manuf(device_ctx->ep_desc_list[i]->ep_id,
+                                             cluster_id, cluster_role, attr_id, manuf_code);
       }
 #endif
     }
@@ -933,8 +933,54 @@ static void zb_zcl_conform_singleton(zb_uint8_t ep_first, zb_uint16_t cluster_id
  * Note: access_check specifies if it is needed to perform read-only
  * check: end-user application may chanage read-only attributes
 */
+zb_zcl_status_t zb_zcl_set_attr_val_manuf(zb_uint8_t ep, zb_uint16_t cluster_id,
+                                          zb_uint8_t cluster_role,
+                                          zb_uint16_t attr_id,
+                                          zb_uint16_t manuf_code,
+                                          zb_uint8_t *value,
+                                          zb_bool_t check_access)
+{
+  zb_zcl_attr_t *attr_desc;
+  zb_zcl_status_t status = ZB_ZCL_STATUS_FAIL;
+
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_set_attr_val_manuf check_access %hd, ep %hd, cluster role %hd, cluster 0x%x, attr %d manuf %d",
+            (FMT__H_H_H_D_D_D, check_access, ep, cluster_role, cluster_id, attr_id, manuf_code));
+
+  attr_desc = zb_zcl_get_attr_desc_manuf_a(ep, cluster_id, cluster_role, attr_id, manuf_code);
+  TRACE_MSG(TRACE_ZCL1, "attr_desc %p, value %p", (FMT__P_P, attr_desc, value));
+
+  if (attr_desc != NULL && value != NULL)
+  {
+    status = (zb_zcl_status_t)zb_zcl_check_attribute_writable(attr_desc, ep, cluster_id, cluster_role, value, check_access);
+    if (status == ZB_ZCL_STATUS_SUCCESS)
+    {
+      zb_zcl_write_attr_hook(ep, cluster_id, cluster_role, attr_id, value, attr_desc->manuf_code);
+
+      ZB_MEMCPY(attr_desc->data_p, value,
+                zb_zcl_get_attribute_size(attr_desc->type, value));
+
+#if !(defined ZB_ZCL_DISABLE_REPORTING)
+      /* check, if reporting is needed for an attribute */
+      if (ZB_ZCL_IS_ATTR_REPORTABLE(attr_desc))
+      {
+        zb_zcl_mark_attr_for_reporting_manuf(ep, cluster_id, cluster_role, attr_id, attr_desc->manuf_code);
+      }
+#endif
+
+      if (ZB_ZCL_IS_ATTR_SINGLETON(attr_desc))
+      {
+        zb_zcl_conform_singleton(ep, cluster_id, cluster_role, attr_id, value, attr_desc->manuf_code);
+      }
+    }
+  }
+  TRACE_MSG(TRACE_ZCL1, "<< zb_zcl_set_attr_val_manuf, cluster_id 0x%x, attr_id 0x%x status %hx",
+           (FMT__D_D_H, cluster_id, attr_id, status));
+  return status;
+}
+
+
 zb_zcl_status_t zb_zcl_set_attr_val(zb_uint8_t ep, zb_uint16_t cluster_id, zb_uint8_t cluster_role,
-                             zb_uint16_t attr_id, zb_uint8_t *value, zb_bool_t check_access)
+                                    zb_uint16_t attr_id, zb_uint8_t *value, zb_bool_t check_access)
 {
   zb_zcl_attr_t *attr_desc;
   zb_zcl_status_t status = ZB_ZCL_STATUS_FAIL;
@@ -950,7 +996,7 @@ zb_zcl_status_t zb_zcl_set_attr_val(zb_uint8_t ep, zb_uint16_t cluster_id, zb_ui
     status = (zb_zcl_status_t)zb_zcl_check_attribute_writable(attr_desc, ep, cluster_id, cluster_role, value, check_access);
     if (status == ZB_ZCL_STATUS_SUCCESS)
     {
-      zb_zcl_write_attr_hook(ep, cluster_id, cluster_role, attr_id, value);
+      zb_zcl_write_attr_hook(ep, cluster_id, cluster_role, attr_id, value, attr_desc->manuf_code);
 
       ZB_MEMCPY(attr_desc->data_p, value,
                 zb_zcl_get_attribute_size(attr_desc->type, value));
@@ -959,13 +1005,13 @@ zb_zcl_status_t zb_zcl_set_attr_val(zb_uint8_t ep, zb_uint16_t cluster_id, zb_ui
       /* check, if reporting is needed for an attribute */
       if (ZB_ZCL_IS_ATTR_REPORTABLE(attr_desc))
       {
-        zb_zcl_mark_attr_for_reporting(ep, cluster_id, cluster_role, attr_id);
+        zb_zcl_mark_attr_for_reporting_manuf(ep, cluster_id, cluster_role, attr_id, attr_desc->manuf_code);
       }
 #endif
 
       if (ZB_ZCL_IS_ATTR_SINGLETON(attr_desc))
       {
-        zb_zcl_conform_singleton(ep, cluster_id, cluster_role, attr_id, value);
+        zb_zcl_conform_singleton(ep, cluster_id, cluster_role, attr_id, value, attr_desc->manuf_code);
       }
     }
   }
@@ -1940,7 +1986,7 @@ static zb_ret_t zb_zcl_finish_and_send_packet_common(zb_bufid_t buffer,
                                       apsde_req->clusterid,
                                       (zcl_cmd->frame_ctrl.frame_type == ZB_ZCL_FRAME_TYPE_COMMON) ? ZB_TRUE : ZB_FALSE))
   {
-    if (cb != NULL) 
+    if (cb != NULL)
     {
       ZB_ZCL_SCHEDULE_STATUS_ABORT(buffer, dst_addr, dst_addr_mode, dst_ep, ep, cb);
       /* If cb isn't NULL caller should handle result in zb_zcl_command_send_status_t param */

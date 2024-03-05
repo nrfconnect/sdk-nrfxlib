@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -155,7 +155,8 @@ void zb_nwk_ed_aging_timeout(zb_uint8_t param);
 zb_uint32_t zb_convert_timeout_value(zb_uint8_t timeout);
 
 #ifdef ZB_MAC_PENDING_BIT_SOURCE_MATCHING
-void zb_nwk_src_match_add(zb_uint8_t param, zb_uint16_t nbt_idx);
+void zb_nwk_src_match_add(zb_uint8_t param, zb_uint16_t addr_ref);
+void zb_nwk_src_match_add_ent(zb_uint8_t param, zb_address_ieee_ref_t addr_ref, zb_callback_t cb);
 void zb_nwk_src_match_delete(zb_uint8_t param, zb_address_ieee_ref_t ieee_ref);
 void zb_nwk_src_match_drop(zb_uint8_t param);
 void zb_nwk_src_match_restore(zb_uint8_t param);

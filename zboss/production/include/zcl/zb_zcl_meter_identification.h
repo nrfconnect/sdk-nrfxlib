@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -234,7 +234,8 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_COMPANY_NAME,                                              \
   ZB_ZCL_ATTR_TYPE_CHAR_STRING,                                                               \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (void*) data_ptr                                                                       \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                         \
+  (void*) data_ptr                                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METER_IDENTIFICATION_METER_TYPE_ID(data_ptr)       \
@@ -242,7 +243,8 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_METER_TYPE_ID,                                             \
   ZB_ZCL_ATTR_TYPE_U16,                                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (void*) data_ptr                                                                       \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                         \
+  (void*) data_ptr                                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METER_IDENTIFICATION_DATA_QUALITY_ID(data_ptr)     \
@@ -250,7 +252,8 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_DATA_QUALITY_ID,                                           \
   ZB_ZCL_ATTR_TYPE_U16,                                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (void*) data_ptr                                                                       \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                         \
+  (void*) data_ptr                                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METER_IDENTIFICATION_POD(data_ptr)                 \
@@ -258,7 +261,8 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_POD,                                                       \
   ZB_ZCL_ATTR_TYPE_CHAR_STRING,                                                               \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (void*) data_ptr                                                                       \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                         \
+  (void*) data_ptr                                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METER_IDENTIFICATION_AVAILABLE_POWER(data_ptr)     \
@@ -266,7 +270,8 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_AVAILABLE_POWER,                                           \
   ZB_ZCL_ATTR_TYPE_S24,                                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (void*) data_ptr                                                                       \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                         \
+  (void*) data_ptr                                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METER_IDENTIFICATION_POWER_THRESHOLD(data_ptr)     \
@@ -274,7 +279,8 @@ typedef enum zb_zcl_meter_identification_data_quality_e
   ZB_ZCl_ATTR_METER_IDENTIFICATION_POWER_THRESHOLD,                                           \
   ZB_ZCL_ATTR_TYPE_S24,                                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-  (void*) data_ptr                                                                       \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                         \
+  (void*) data_ptr                                                                            \
 }
 
 /*! @internal Number of attributes mandatory for reporting in Meter Identification cluster */

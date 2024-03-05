@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -147,7 +147,8 @@ enum zb_zcl_thermostat_ui_config_keypad_lockout_e
   ZB_ZCL_ATTR_THERMOSTAT_UI_CONFIG_TEMPERATURE_DISPLAY_MODE_ID,                                       \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                         \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                      \
-  (void*) data_ptr                                                                               \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                                 \
+  (void*) data_ptr                                                                                    \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_THERMOSTAT_UI_CONFIG_KEYPAD_LOCKOUT_ID(data_ptr)           \
@@ -155,7 +156,8 @@ enum zb_zcl_thermostat_ui_config_keypad_lockout_e
   ZB_ZCL_ATTR_THERMOSTAT_UI_CONFIG_KEYPAD_LOCKOUT_ID,                                                 \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                         \
   ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                                                      \
-  (void*) data_ptr                                                                               \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                                 \
+  (void*) data_ptr                                                                                    \
 }
 
 /*! @internal Number of attributes mandatory for reporting in Thermostat UI Configuration cluster */
