@@ -28,7 +28,6 @@ Applications utilizing the |controller| library are responsible for the followin
 
 The following peripherals are owned by the |controller| and must not be accessed directly by the application:
 
-* ``ECB``
 * ``CCM``
 * ``AAR``
 * ``NVMC``

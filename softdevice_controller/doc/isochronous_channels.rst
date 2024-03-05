@@ -62,7 +62,6 @@ Parallel use of one CIS and one BIS is tested.
 However, there is no absolute maximum of BISes, CISes and ACLs that can be used concurrently.
 Instead, the amount of roles that can be used at the same time is limited by available memory and the on-air timings.
 
-
 Tested topologies
 *****************
 
@@ -86,6 +85,8 @@ BIS
    :width: 80%
 
    Tested BIS topology - each arrow represents a BIS
+
+.. _iso_parameter_selection:
 
 Parameter selection
 *******************
@@ -165,7 +166,7 @@ The SDU interval is configured when the CIS or BIS is created and is a constant 
 There are 3 modes that determine when the SDUs provided to the |controller| are sent:
 
 Timestamps
-   In this mode, timestamps are added to the HCI ISO data.
+   In the timestamp mode, timestamps must be provided in the ``Time_Stamp`` parameter in the HCI ISO data that is provided to the controller.
    This is the preferred way of providing data to the |controller| and guarantees the highest degree of control.
 
    The timestamp must be based on the controller's timings.
@@ -198,7 +199,8 @@ Time of arrival
    To use this mode, set the sequence number to 0 and do not add a timestamp to the HCI ISO data.
 
 Sequence numbers
-   In the sequence number mode, an SDU should be provided every SDU interval, and the SDU sequence number must be increased by one for each SDU.
+   In the sequence number mode, a sequence number must be provided in the ``Packet_Sequence_Number`` parameter in the HCI ISO data that is provided to the controller.
+   When using this mode, an SDU should be provided every SDU interval, and the SDU sequence number must be increased by one for each SDU.
    If SDUs are provided more than one SDU interval apart, the SDU sequence number must be increased by a matching amount.
    It is not recommended to use the sequence number mode if SDUs are provided more than one SDU interval apart.
 
