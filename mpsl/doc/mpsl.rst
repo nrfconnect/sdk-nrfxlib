@@ -22,6 +22,7 @@ For the nRF52 Series:
 
   * ``RTC0``
   * ``TIMER0``
+  * ``ECB``
 
   No interrupts:
 
@@ -36,6 +37,7 @@ For the nRF53 Series:
   * ``RTC0``
   * ``TIMER0``
   * ``TIMER1``
+  * ``ECB``
 
   No interrupts:
 
@@ -50,6 +52,7 @@ For the nRF54H Series:
   * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_0_IRQn``
   * ``TIMER020``
   * ``TIMER021``
+  * ``ECB030``
 
   No interrupts:
 
@@ -65,6 +68,7 @@ For the nRF54L Series:
   * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_3_IRQn``
   * ``TIMER10``
   * ``TIMER20``
+  * ``ECB00``
 
   No interrupts:
 
