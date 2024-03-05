@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -364,7 +364,7 @@ zb_zcl_cluster_check_value_t zb_zcl_get_cluster_check_value(zb_uint16_t cluster_
   zb_uindex_t i = 0;
   ZVUNUSED(cluster_role);
 
-  TRACE_MSG(TRACE_ERROR, "zb_zcl_get_cluster_check_value: cluster_id %d cluster_role %hd",
+  TRACE_MSG(TRACE_ZCL3, "zb_zcl_get_cluster_check_value: cluster_id %d cluster_role %hd",
             (FMT__D_H, cluster_id, cluster_role));
 
   /* Search if we already have handler */
@@ -389,7 +389,7 @@ zb_zcl_cluster_write_attr_hook_t zb_zcl_get_cluster_write_attr_hook(zb_uint16_t 
   zb_uindex_t i = 0;
   ZVUNUSED(cluster_role);
 
-  TRACE_MSG(TRACE_ERROR, "zb_zcl_get_cluster_write_attr_hook: cluster_id %d cluster_role %hd",
+  TRACE_MSG(TRACE_ZCL3, "zb_zcl_get_cluster_write_attr_hook: cluster_id %d cluster_role %hd",
             (FMT__D_H, cluster_id, cluster_role));
 
   /* Search if we already have handler */

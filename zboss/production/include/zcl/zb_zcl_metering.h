@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -2355,11 +2355,12 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
 */
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_CURRENT_SUMMATION_DELIVERED_ID(data_ptr) \
-{                                                                                             \
-   ZB_ZCL_ATTR_METERING_CURRENT_SUMMATION_DELIVERED_ID,                                       \
+{                                                                                            \
+  ZB_ZCL_ATTR_METERING_CURRENT_SUMMATION_DELIVERED_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U48,                                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                               \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_STATUS_ID(data_ptr)                      \
@@ -2367,7 +2368,8 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
   ZB_ZCL_ATTR_METERING_STATUS_ID,                                                            \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                               \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_UNIT_OF_MEASURE_ID(data_ptr)             \
@@ -2375,7 +2377,8 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
   ZB_ZCL_ATTR_METERING_UNIT_OF_MEASURE_ID,                                                   \
   ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_SUMMATION_FORMATTING_ID(data_ptr)        \
@@ -2383,7 +2386,8 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
   ZB_ZCL_ATTR_METERING_SUMMATION_FORMATTING_ID,                                              \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_METERING_DEVICE_TYPE_ID(data_ptr)        \
@@ -2391,7 +2395,8 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
   ZB_ZCL_ATTR_METERING_METERING_DEVICE_TYPE_ID,                                              \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_INSTANTANEOUS_DEMAND_ID(data_ptr)        \
@@ -2399,7 +2404,8 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
   ZB_ZCL_ATTR_METERING_INSTANTANEOUS_DEMAND_ID,                                              \
   ZB_ZCL_ATTR_TYPE_S24,                                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                               \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_DEMAND_FORMATTING_ID(data_ptr)           \
@@ -2407,7 +2413,8 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
   ZB_ZCL_ATTR_METERING_DEMAND_FORMATTING_ID,                                                 \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_HISTORICAL_CONSUMPTION_FORMATTING_ID(data_ptr)      \
@@ -2415,7 +2422,8 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
   ZB_ZCL_ATTR_METERING_HISTORICAL_CONSUMPTION_FORMATTING_ID,                                 \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                  \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_MULTIPLIER_ID(data_ptr)                  \
@@ -2423,7 +2431,8 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
   ZB_ZCL_ATTR_METERING_MULTIPLIER_ID,                                                        \
   ZB_ZCL_ATTR_TYPE_U24,                                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_METERING_DIVISOR_ID(data_ptr)                     \
@@ -2431,7 +2440,8 @@ void zb_zcl_metering_send_cmd_get_sampled_data_response(zb_uint8_t param, const 
   ZB_ZCL_ATTR_METERING_DIVISOR_ID,                                                           \
   ZB_ZCL_ATTR_TYPE_U24,                                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                              \
-  (void*) data_ptr                                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                        \
+  (void*) data_ptr                                                                           \
 }
 
 

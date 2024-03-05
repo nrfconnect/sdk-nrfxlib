@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -677,20 +677,26 @@ void zb_enable_panid_conflict_resolution(zb_bool_t status);
 /** @endcond */ /* internals_doc */
 /** @} */ /* nwk_panid_conflicts */
 
-#ifdef ZB_LOW_SECURITY_MODE
 /** @addtogroup nwk_management_service NWK management service
  * @{
  */
+#ifdef ZB_LOW_SECURITY_MODE
 /**
     Public API to set device security level to 0
+    @deprecated This function will be removed in the next Major release after june 2023.
+                Now security level is always equal to 5.
 */
 void zb_disable_nwk_security(void);
 
 /**
     Public API to set device security level to 5
+    @deprecated This function will be removed in the next Major release after june 2023.
+                Now security level is always equal to 5.
 */
 void zb_enable_nwk_security(void);
+#endif /* ZB_LOW_SECURITY_MODE */
 
+#ifdef ZB_NWK_CONFIGURABLE_DST_IEEE_IN_HDR
 /**
    Configure Destination IEEE policy for out NWK frames
 
@@ -699,8 +705,8 @@ void zb_enable_nwk_security(void);
    Default value is ZB_TRUE.
 */
 void zb_nwk_set_ieee_policy(zb_bool_t put_always);
+#endif /* ZB_NWK_CONFIGURABLE_DST_IEEE_IN_HDR */
 /** @} */ /* nwk_management_service */
-#endif /*ZB_LOW_SECURITY_MODE*/
 
 /** @addtogroup nwk_mtorr NWK MTORR functionality
  * @{

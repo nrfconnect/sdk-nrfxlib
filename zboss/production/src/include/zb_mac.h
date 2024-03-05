@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -2888,5 +2888,16 @@ void zb_mac_phy_testing_tx_done(void);
 void zb_mac_phy_testing_mode_notification(zb_bufid_t param);
 
 #endif
+
+/**
+    Parses association response from pkt body
+     and writes result to `zb_mlme_associate_confirm_t` struct.
+
+   @param mhr           - pointer to parsed mac header
+   @param cmd_ptr       - pointer to mac command start
+   @param assoc_confirm - pointer to zb_mlme_associate_confirm_t struct
+                          to which result will be written
+ */
+void zb_mac_parse_associate_response(zb_mac_mhr_t *mhr, zb_uint8_t *cmd_ptr, zb_mlme_associate_confirm_t *assoc_confirm);
 
 #endif  /* ZB_MAC_API_INCLUDED */

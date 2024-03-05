@@ -33,5 +33,6 @@ zb_uint8_t zb_trans_get_next_packet(zb_bufid_t buf);
 zb_ret_t zb_trans_cca(void);
 zb_ret_t zb_trans_continuous_carrier(void);
 void zb_trans_set_crcpoly(zb_uint32_t iv, zb_uint32_t polynomial);
+void zb_trans_set_auto_ack_off(void);
 
 #endif /* ZB_TRANSCEIVER_H__ */

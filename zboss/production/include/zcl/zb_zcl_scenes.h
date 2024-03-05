@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -249,7 +249,8 @@ void zb_zcl_scenes_remove_all_scenes_in_all_endpoints(zb_uint8_t param);
   ZB_ZCL_ATTR_SCENES_SCENE_COUNT_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U8,                                                     \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                            \
-  (void*) data_ptr                                                    \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                      \
+  (void*) data_ptr                                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_SCENES_CURRENT_SCENE_ID(data_ptr) \
@@ -257,7 +258,8 @@ void zb_zcl_scenes_remove_all_scenes_in_all_endpoints(zb_uint8_t param);
   ZB_ZCL_ATTR_SCENES_CURRENT_SCENE_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U8,                                                       \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                              \
-  (void*) data_ptr                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                        \
+  (void*) data_ptr                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_SCENES_CURRENT_GROUP_ID(data_ptr) \
@@ -265,7 +267,8 @@ void zb_zcl_scenes_remove_all_scenes_in_all_endpoints(zb_uint8_t param);
   ZB_ZCL_ATTR_SCENES_CURRENT_GROUP_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                      \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                              \
-  (void*) data_ptr                                                      \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                        \
+  (void*) data_ptr                                                           \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_SCENES_SCENE_VALID_ID(data_ptr) \
@@ -273,7 +276,8 @@ void zb_zcl_scenes_remove_all_scenes_in_all_endpoints(zb_uint8_t param);
   ZB_ZCL_ATTR_SCENES_SCENE_VALID_ID,                                       \
   ZB_ZCL_ATTR_TYPE_BOOL,                                                   \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                            \
-  (void*) data_ptr                                                    \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                      \
+  (void*) data_ptr                                                         \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_SCENES_NAME_SUPPORT_ID(data_ptr) \
@@ -281,7 +285,8 @@ void zb_zcl_scenes_remove_all_scenes_in_all_endpoints(zb_uint8_t param);
   ZB_ZCL_ATTR_SCENES_NAME_SUPPORT_ID,                                       \
   ZB_ZCL_ATTR_TYPE_8BITMAP,                                                 \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                             \
-  (void*) data_ptr                                                     \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                       \
+  (void*) data_ptr                                                          \
 }
 
 /*! @} */ /* Scenes cluster internals */

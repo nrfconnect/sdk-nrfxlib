@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -126,7 +126,8 @@ enum zb_zcl_illuminance_measurement_attr_e
   ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MEASURED_VALUE_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                                        \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                                 \
-  (void*) data_ptr                                                                        \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                          \
+  (void*) data_ptr                                                                             \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MIN_MEASURED_VALUE_ID(data_ptr) \
@@ -134,7 +135,8 @@ enum zb_zcl_illuminance_measurement_attr_e
   ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MIN_MEASURED_VALUE_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                                            \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                    \
-  (void*) data_ptr                                                                            \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                              \
+  (void*) data_ptr                                                                                 \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MAX_MEASURED_VALUE_ID(data_ptr) \
@@ -142,7 +144,8 @@ enum zb_zcl_illuminance_measurement_attr_e
   ZB_ZCL_ATTR_ILLUMINANCE_MEASUREMENT_MAX_MEASURED_VALUE_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                                            \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                    \
-  (void*) data_ptr                                                                            \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                              \
+  (void*) data_ptr                                                                                 \
 }
 
 #define ZB_ZCL_ILLUMINANCE_MEASUREMENT_REPORT_ATTR_COUNT 1

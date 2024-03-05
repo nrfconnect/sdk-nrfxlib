@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -753,7 +753,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_door_lock_read_unlock_door_res_payload_s
     ZB_ZCL_ATTR_DOOR_LOCK_LOCK_STATE_ID,                                                     \
     ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                              \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING | ZB_ZCL_ATTR_ACCESS_SCENE,  \
-    (void*) data_ptr                                                                    \
+    (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                      \
+    (void*) data_ptr                                                                         \
   }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DOOR_LOCK_LOCK_TYPE_ID(data_ptr) \
@@ -761,7 +762,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_door_lock_read_unlock_door_res_payload_s
     ZB_ZCL_ATTR_DOOR_LOCK_LOCK_TYPE_ID,                           \
     ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                   \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-    (void*) data_ptr                                         \
+    (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                           \
+    (void*) data_ptr                                              \
   }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DOOR_LOCK_ACTUATOR_ENABLED_ID(data_ptr) \
@@ -769,7 +771,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_door_lock_read_unlock_door_res_payload_s
     ZB_ZCL_ATTR_DOOR_LOCK_ACTUATOR_ENABLED_ID,                    \
     ZB_ZCL_ATTR_TYPE_BOOL,                                        \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                 \
-    (void*) data_ptr                                         \
+    (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                           \
+    (void*) data_ptr                                              \
   }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_DOOR_LOCK_RF_OPERATION_EVENT_MASK_ID(data_ptr) \
@@ -777,7 +780,8 @@ typedef ZB_PACKED_PRE struct zb_zcl_door_lock_read_unlock_door_res_payload_s
     ZB_ZCL_ATTR_DOOR_LOCK_RF_OPERATION_EVENT_MASK_ID,             \
     ZB_ZCL_ATTR_TYPE_16BITMAP,                                    \
     ZB_ZCL_ATTR_ACCESS_READ_WRITE | ZB_ZCL_ATTR_ACCESS_REPORTING, \
-    (void*) data_ptr                                         \
+    (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                           \
+    (void*) data_ptr                                              \
   }
 
 /*! @internal @brief Number of attributes mandatory for reporting in Door Lock cluster */

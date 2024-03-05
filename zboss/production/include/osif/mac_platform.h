@@ -218,5 +218,6 @@ zb_transceiver_ctx_t;
 */
 #define ZB_TRANS_CUT_SPECIFIC_HEADER(zb_buffer)
 
+#define ZB_TRANSCEIVER_SET_AUTO_ACK_OFF()                zb_macll_set_auto_ack_off()
 
 #endif /* ZB_MAC_PLATFORM_H__ */

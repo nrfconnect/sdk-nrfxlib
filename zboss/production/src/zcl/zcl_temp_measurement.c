@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -52,7 +52,7 @@
 #include "zcl/zb_zcl_common.h"
 
 zb_ret_t check_value_temp_measurement_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
-void zb_zcl_temp_measurement_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value);
+void zb_zcl_temp_measurement_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code);
 
 void zb_zcl_temp_measurement_init_server()
 {
@@ -137,13 +137,14 @@ zb_ret_t check_value_temp_measurement_server(zb_uint16_t attr_id, zb_uint8_t end
 }
 
 void zb_zcl_temp_measurement_write_attr_hook_server(
-  zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value)
+  zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code)
 {
-	ZVUNUSED(new_value);
+  ZVUNUSED(new_value);
   ZVUNUSED(endpoint);
+  ZVUNUSED(manuf_code);
 
-  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_temp_measurement_write_attr_hook endpoint %hd, attr_id %d",
-            (FMT__H_D, endpoint, attr_id));
+  TRACE_MSG(TRACE_ZCL1, ">> zb_zcl_temp_measurement_write_attr_hook endpoint %hd, attr_id 0x%x, manuf_code 0x%x",
+            (FMT__H_D_D, endpoint, attr_id, manuf_code));
 
   if (attr_id == ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID)
   {

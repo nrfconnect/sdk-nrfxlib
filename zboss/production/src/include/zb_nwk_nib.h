@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -417,17 +417,10 @@ zb_bool_t zb_is_device_zc_or_zr(void);
 /** @brief The value of ZB_NIB_ATTRIBUTE_UPDATE_ID attribute */
 #define ZB_NIB_UPDATE_ID() ZB_NIB().update_id
 
-#ifndef ZB_LITE_ALWAYS_SECURE
-/** @brief Device security level; by default is 5 */
-#define ZB_NIB_SECURITY_LEVEL() ZB_NIB().security_level
-/** @brief Set Device security level to value 'v' */
-#define ZB_SET_NIB_SECURITY_LEVEL(v) ZB_NIB().security_level = (v)
-#else
 /** @brief Device security level; always is 5 */
-#define ZB_NIB_SECURITY_LEVEL() 5U
+#define ZB_NIB_SECURITY_LEVEL() ZB_SECURITY_LEVEL
 /** @brief \deprecated unsupported */
 #define ZB_SET_NIB_SECURITY_LEVEL(v)
-#endif  /* ZB_LITE_ALWAYS_SECURE */
 
 /* use tree routing? */
 #ifdef ZB_NWK_TREE_ROUTING
@@ -769,18 +762,11 @@ typedef struct zb_nib_s
   zb_bitfield_t uniq_addr:1;             /*!< Table 3.44 NIB Attributes - nwkUniqueAddr */
 
 
-  zb_bitfield_t reserve:1;
+  zb_bitfield_t reserve:4; /*!< There was security level defined in R22 (spec Table 3-58 NIB Attributes).
+                                Currently, ZBOSS won't run without security.
+                                So, there was a decision to remove possibility of changing security level.
+                                Now, it can be defined only as constant value. */
 
-  zb_bitfield_t           security_level:3; /*!< The security level for
-                                            outgoing and incoming
-                                            NWK frames; the
-                                            allowable security level
-                                            identifiers are presented
-                                            in Table 4.38.
-                                            For ZB 2007 (Standard security only)
-                                            only values 0 and 5 are possible.
-                                            Or, seems, only value 5 is possible?
-                                            */
   /* all_fresh is always 0 for Standard security */
   zb_bitfield_t           active_secur_material_i:2; /*!< index in
                                                       * secur_material_set for
@@ -813,12 +799,12 @@ typedef struct zb_nib_s
                                              * layer; otherwise, it shall report
                                              * a constant value. */
 
-#ifdef ZB_LOW_SECURITY_MODE
+#ifdef ZB_NWK_CONFIGURABLE_DST_IEEE_IN_HDR
   zb_bitfield_t           ieee_policy:1;     /*! If 1, put DST and SRC IEEE for NWK commands (it
                                               *  is mandatory by ZB spec). If 0, include
                                               *  it for all frame types.
                                               *  Default value is 0. */
-#endif
+#endif /* ZB_NWK_CONFIGURABLE_DST_IEEE_IN_HDR */
 
 #ifdef SNCP_MODE
   zb_bitfield_t nwk_force_rrec_sending:1; /*!< If the flag is set to 1, local Zigbee Router device

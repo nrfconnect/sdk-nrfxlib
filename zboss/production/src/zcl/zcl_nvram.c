@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -416,6 +416,7 @@ void zb_nvram_read_zcl_reporting_dataset(
         rep_info->cluster_id = rec.cluster_id;
           rep_info->cluster_role = rec.cluster_role;
         rep_info->attr_id = rec.attr_id;
+        rep_info->manuf_code = rec.manuf_code;
         rep_info->flags = rec.flags;
 
         if (rep_info->direction == ZB_ZCL_CONFIGURE_REPORTING_SEND_REPORT)
@@ -530,6 +531,7 @@ zb_ret_t zb_nvram_write_zcl_reporting_dataset(zb_uint8_t page, zb_uint32_t pos)
               rec.cluster_id = rep_info->cluster_id;
               rec.cluster_role = rep_info->cluster_role;
               rec.attr_id = rep_info->attr_id;
+              rec.manuf_code = rep_info->manuf_code;
               rec.flags = rep_info->flags;
 
               if (rep_info->direction == ZB_ZCL_CONFIGURE_REPORTING_SEND_REPORT)

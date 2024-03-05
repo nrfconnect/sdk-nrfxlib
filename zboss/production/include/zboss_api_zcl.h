@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -287,10 +287,22 @@
 /**
  *  @brief Set "Check attribute value" callback.
  *  The macro sets a callback being called for need to check attribute value.
+ *
+ *  @deprecated This callback will be removed in the next Major release after February 2023
+ *              Use @ref ZB_ZCL_CHECK_ATTR_VALUE_MANUF_CB instead
+ *
  *  @param func_ptr - callback to set (of type @ref zb_zcl_app_check_attr_value_cb_t).
  *  @hideinitializer
  */
 #define ZB_ZCL_CHECK_ATTR_VALUE_CB(func_ptr) ZCL_CTX().app_check_attr_value_cb = (func_ptr)
+
+/**
+ *  @brief Set "Check attribute value" callback to check with manufacturer specific code.
+ *  The macro sets a callback being called for need to check attribute value.
+ *  @param func_ptr - callback to set (of type @ref zb_zcl_app_check_attr_value_manuf_cb_t).
+ *  @hideinitializer
+ */
+#define ZB_ZCL_CHECK_ATTR_VALUE_MANUF_CB(func_ptr) ZCL_CTX().app_check_attr_value_manuf_cb = (func_ptr)
 
 /**
     @brief Set "Discovery manufacture command" callback.
@@ -2434,8 +2446,14 @@ typedef struct zb_zcl_globals_s
 
   /** @internal Set default value all attributes */
   zb_zcl_set_default_value_attr_cb_t set_default_attr_cb;
-  /** @internal Check attribute value */
+  /** @internal Check attribute value
+   *
+   * @deprecated This callback will be removed in the next Major release after February 2023
+   *             Use @ref app_check_attr_value_manuf_cb instead
+   */
   zb_zcl_app_check_attr_value_cb_t app_check_attr_value_cb;
+  /** @internal Check attribute value with manufacturer specific code */
+  zb_zcl_app_check_attr_value_manuf_cb_t app_check_attr_value_manuf_cb;
 #ifdef ZB_HA_ENABLE_OTA_UPGRADE_SERVER
   zb_zcl_ota_upgrade_next_data_ind_t ota_upgrade_next_data_ind_cb;
 #endif /* ZB_HA_ENABLE_OTA_UPGRADE_SERVER */

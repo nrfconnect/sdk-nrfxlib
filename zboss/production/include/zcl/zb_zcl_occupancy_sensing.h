@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -281,7 +281,8 @@ enum zb_zcl_custom_learn_type_e
     ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_ID,                                     \
     ZB_ZCL_ATTR_TYPE_8BITMAP,                                                       \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY | ZB_ZCL_ATTR_ACCESS_REPORTING,                    \
-    (void*) data_ptr                                                           \
+    (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                             \
+    (void*) data_ptr                                                                \
   }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_SENSOR_TYPE_ID(data_ptr) \
@@ -289,7 +290,8 @@ enum zb_zcl_custom_learn_type_e
     ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_SENSOR_TYPE_ID,                                     \
     ZB_ZCL_ATTR_TYPE_8BIT_ENUM,                                                                 \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                               \
-    (void*) data_ptr                                                                       \
+    (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                         \
+    (void*) data_ptr                                                                            \
   }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_SENSOR_TYPE_BITMAP_ID(data_ptr) \
@@ -297,7 +299,8 @@ enum zb_zcl_custom_learn_type_e
     ZB_ZCL_ATTR_OCCUPANCY_SENSING_OCCUPANCY_SENSOR_TYPE_BITMAP_ID,                                     \
     ZB_ZCL_ATTR_TYPE_8BITMAP,                                                                          \
     ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                                      \
-    (void*) data_ptr                                                                              \
+    (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                                \
+    (void*) data_ptr                                                                                   \
   }
 /** @internal Number of attributes mandatory for reporting on Occupancy Sensing cluster */
 #define ZB_ZCL_OCCUPANCY_SENSING_REPORT_ATTR_COUNT 1

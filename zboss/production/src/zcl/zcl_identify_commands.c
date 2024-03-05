@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -84,7 +84,7 @@ zb_ret_t check_value_identify_server(zb_uint16_t attr_id, zb_uint8_t endpoint, z
 zb_bool_t zb_zcl_process_identify_specific_commands_srv(zb_uint8_t param);
 zb_bool_t zb_zcl_process_identify_specific_commands_cli(zb_uint8_t param);
 
-void zb_zcl_identify_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value);
+void zb_zcl_identify_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code);
 
 void zb_zcl_identify_init_server()
 {
@@ -428,17 +428,19 @@ void zb_zcl_stop_identifying(zb_uint8_t endpoint)
 
 /** @brief Hook on Write attribute
  * Start Identifying on IdentifyTime attribute set */
-void zb_zcl_identify_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value)
+void zb_zcl_identify_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code)
 {
   zb_uint16_t val = 0;
   (void)endpoint;
   (void)attr_id;
   ZB_ASSIGN_UINT16(&val, new_value);
 
-  TRACE_MSG(TRACE_ZCL1, "> zb_zcl_identify_write_attr_hook endpoint %hx attr_id %d",
-      (FMT__H_D, endpoint, attr_id));
+  TRACE_MSG(TRACE_ZCL1, "> zb_zcl_identify_write_attr_hook endpoint %hx attr_id 0x%x, manuf_code 0x%x",
+            (FMT__H_D, endpoint, attr_id, manuf_code));
 
- /* ZCL8, 3.5.2.2.1 IdentifyTime attribute:
+  ZVUNUSED(manuf_code);
+
+  /* ZCL8, 3.5.2.2.1 IdentifyTime attribute:
   * If this attribute is set to a value other than 0x0000 then the device SHALL enter its
   * identification procedure, in order to indicate to an observer which of several devices it is. It
   * is recommended that this procedure consists of flashing a light with a period of 0.5

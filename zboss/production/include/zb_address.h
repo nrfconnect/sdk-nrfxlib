@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -614,6 +614,25 @@ void zb_ieee_addr_compress(const zb_ieee_addr_t address, zb_ieee_addr_compressed
  */
 void zb_ieee_addr_decompress(zb_ieee_addr_t address, zb_ieee_addr_compressed_t *compressed_address);
 
+/**
+   Check that two address refs refer to the one address.
+   In this case one record is regular, second - redirect.
+   Also returns returns true if addr_ref_a is equal to addr_ref_b.
+
+   @param addr_ref_a Address ref to compare.
+   @param addr_ref_b Address ref to compare.
+   @return zb_bool_t ZB_FALSE if these address refs refer to different addresses.
+                     ZB_TRUE otherwise.
+ */
+zb_bool_t zb_address_cmp_two_refs(zb_address_ieee_ref_t addr_ref_a, zb_address_ieee_ref_t addr_ref_b);
+
+/**
+ * @brief Check if address tables have enough memory for the new address
+ *
+   @param new_addr - new uncompressed IEEE address
+ * @return zb_bool_t ZB_TRUE if there is enough memory, ZB_FALSE otherwise.
+ */
+zb_bool_t zb_address_check_mem_for_new_addr(const zb_ieee_addr_t new_addr);
 /*! @endcond */
 
 /*! @} */

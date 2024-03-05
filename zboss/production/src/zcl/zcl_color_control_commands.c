@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -1004,7 +1004,11 @@ static void zb_zcl_process_color_control_move_to_loop(zb_uint8_t param)
   if (rm_time_unit!=0)
   {
     zb_int32_t unit_max = is_16bit ? ZB_UINT16_MAX : ZB_UINT8_MAX;
-    zb_int32_t all_delta = (loop_data.finish_value - loop_data.start_value);
+    zb_int32_t all_delta =
+      (loop_data.finish_value > loop_data.start_value) ?
+      (loop_data.finish_value - loop_data.start_value) :
+      (loop_data.start_value - loop_data.finish_value);
+    zb_int32_t step_value;
 
     if((loop_data.attr_id == ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_HUE_ID)
         || (loop_data.attr_id == ZB_ZCL_ATTR_COLOR_CONTROL_ENHANCED_CURRENT_HUE_ID)
@@ -1020,8 +1024,17 @@ static void zb_zcl_process_color_control_move_to_loop(zb_uint8_t param)
       }
     }
 
-    val = (zb_int32_t)(all_delta * delta_time / loop_data.transition_time + loop_data.start_value);
-    if(val > unit_max)
+    step_value =
+      (delta_time == 0U) ?
+      (all_delta) :
+      (zb_int32_t)(all_delta * delta_time / loop_data.transition_time);
+
+    val =
+      (loop_data.finish_value > loop_data.start_value) ?
+      (loop_data.start_value + step_value) :
+      (loop_data.start_value - step_value);
+
+    if (val > unit_max)
     {
       val -= unit_max;
     }
@@ -1045,8 +1058,20 @@ static void zb_zcl_process_color_control_move_to_loop(zb_uint8_t param)
 
     if (rm_time_unit!=0)
     {
-      zb_int32_t all_delta = (loop_data.finish_value2 - loop_data.start_value2);
-      val = (zb_int32_t)(all_delta * delta_time / loop_data.transition_time + loop_data.start_value2);
+      zb_int32_t all_delta =
+        (loop_data.finish_value2 > loop_data.start_value2) ?
+        (loop_data.finish_value2 - loop_data.start_value2) :
+        (loop_data.start_value2 - loop_data.finish_value2);
+
+      zb_int32_t step_value =
+        (delta_time == 0U) ?
+        (all_delta) :
+        (zb_int32_t)(all_delta * delta_time / loop_data.transition_time);
+
+      val =
+        (loop_data.finish_value2 > loop_data.start_value2) ?
+        (loop_data.start_value2 + step_value) :
+        (loop_data.start_value2 - step_value);
     }
     else
     {

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -58,7 +58,7 @@
 */
 
 zb_ret_t check_value_power_config_server(zb_uint16_t attr_id, zb_uint8_t endpoint, zb_uint8_t *value);
-void zb_zcl_power_config_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value);
+void zb_zcl_power_config_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code);
 
 void zb_zcl_power_config_init_server()
 {
@@ -510,10 +510,12 @@ void zcl_pwr_cfg_check_battery_voltage_or_percentage_value(zb_uint8_t ep, zb_uin
   TRACE_MSG(TRACE_ZCL1, "< zcl_pwr_cfg_check_val_value ret %hd", (FMT__H, ret));
 }
 
-void zb_zcl_power_config_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value)
+void zb_zcl_power_config_write_attr_hook_server(zb_uint8_t endpoint, zb_uint16_t attr_id, zb_uint8_t *new_value, zb_uint16_t manuf_code)
 {
-  TRACE_MSG(TRACE_ZCL1, "> zb_zcl_power_config_write_attr_hook endpoint %hx attr_id %d",
-      (FMT__H_D, endpoint, attr_id));
+  TRACE_MSG(TRACE_ZCL1, "> zb_zcl_power_config_write_attr_hook endpoint %hx attr_id 0x%x, manuf_code 0x%x",
+            (FMT__H_D_D, endpoint, attr_id, manuf_code));
+
+  ZVUNUSED(manuf_code);
 
   if (attr_id == ZB_ZCL_ATTR_POWER_CONFIG_MAINS_VOLTAGE_ID)
   {

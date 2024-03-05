@@ -98,4 +98,6 @@ void zb_macll_set_received_data_status(zb_bufid_t bufid, zb_bool_t pending_bit);
 
 zb_ret_t zb_macll_tx_carrier(zb_uint8_t channel, zb_time_t timeout_bi);
 
+#define zb_macll_set_auto_ack_off         zb_trans_set_auto_ack_off
+
 #endif /* ZB_MACLL_H__ */

@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -315,8 +315,9 @@ enum zb_zcl_time_time_status_e
 {                                                                             \
   ZB_ZCL_ATTR_TIME_TIME_ID,                                                   \
   ZB_ZCL_ATTR_TYPE_UTC_TIME,                                                  \
-    ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (void*) data_ptr                                                       \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                              \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                         \
+  (void*) data_ptr                                                            \
 }
 
 /** Acc. to ZCL8 Table 3-69 and section 3.12.2.2.2 "TimeStatus Attribute" TimeStatus attribute is write-optional.
@@ -326,73 +327,82 @@ enum zb_zcl_time_time_status_e
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_TIME_STATUS_ID(data_ptr)      \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_TIME_STATUS_ID,                                            \
-  ZB_ZCL_ATTR_TYPE_8BITMAP,                                                 \
-  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (void*) data_ptr                                                       \
+  ZB_ZCL_ATTR_TYPE_8BITMAP,                                                   \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                              \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                         \
+  (void*) data_ptr                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_TIME_ZONE_ID(data_ptr)        \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_TIME_ZONE_ID,                                              \
   ZB_ZCL_ATTR_TYPE_S32,                                                       \
-    ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (void*) data_ptr                                                       \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                              \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                         \
+  (void*) data_ptr                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_DST_START_ID(data_ptr)        \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_DST_START_ID,                                              \
   ZB_ZCL_ATTR_TYPE_U32,                                                       \
-    ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (void*) data_ptr                                                       \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                              \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                         \
+  (void*) data_ptr                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_DST_END_ID(data_ptr)          \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_DST_END_ID,                                                \
   ZB_ZCL_ATTR_TYPE_U32,                                                       \
-    ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (void*) data_ptr                                                       \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                              \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                         \
+  (void*) data_ptr                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_DST_SHIFT_ID(data_ptr)        \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_DST_SHIFT_ID,                                              \
-  ZB_ZCL_ATTR_TYPE_S32,                                                     \
-  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (void*) data_ptr                                                       \
+  ZB_ZCL_ATTR_TYPE_S32,                                                       \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                              \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                         \
+  (void*) data_ptr                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_STANDARD_TIME_ID(data_ptr)    \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_STANDARD_TIME_ID,                                          \
   ZB_ZCL_ATTR_TYPE_U32,                                                       \
-    ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
-  (void*) data_ptr                                                       \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                               \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                         \
+  (void*) data_ptr                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_LOCAL_TIME_ID(data_ptr)       \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_LOCAL_TIME_ID,                                             \
   ZB_ZCL_ATTR_TYPE_U32,                                                       \
-    ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
-  (void*) data_ptr                                                       \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                               \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                         \
+  (void*) data_ptr                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_LAST_SET_TIME_ID(data_ptr)    \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_LAST_SET_TIME_ID,                                          \
   ZB_ZCL_ATTR_TYPE_UTC_TIME,                                                  \
-    ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                       \
-  (void*) data_ptr                                                       \
+  ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                               \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                         \
+  (void*) data_ptr                                                            \
 }
 
 #define ZB_SET_ATTR_DESCR_WITH_ZB_ZCL_ATTR_TIME_VALID_UNTIL_TIME_ID(data_ptr) \
 {                                                                             \
   ZB_ZCL_ATTR_TIME_VALID_UNTIL_TIME_ID,                                       \
   ZB_ZCL_ATTR_TYPE_UTC_TIME,                                                  \
-    ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                      \
-  (void*) data_ptr                                                       \
+  ZB_ZCL_ATTR_ACCESS_READ_WRITE,                                              \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                         \
+  (void*) data_ptr                                                            \
 }
 
 /*! @internal Number of attributes mandatory for reporting in Time cluster */

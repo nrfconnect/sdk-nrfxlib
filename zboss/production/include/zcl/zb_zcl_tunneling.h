@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -104,7 +104,8 @@ enum zb_zcl_tunneling_attr_e
   ZB_ZCL_ATTR_TUNNELING_CLOSE_TUNNEL_TIMEOUT_ID,                                       \
   ZB_ZCL_ATTR_TYPE_U16,                                                                \
   ZB_ZCL_ATTR_ACCESS_READ_ONLY,                                                        \
-  (void*) data_ptr                                                                \
+  (ZB_ZCL_NON_MANUFACTURER_SPECIFIC),                                                  \
+  (void*) data_ptr                                                                     \
 }
 
 /** @endcond */ /* internals_doc */
