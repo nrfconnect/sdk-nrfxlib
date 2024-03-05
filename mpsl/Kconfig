@@ -5,7 +5,7 @@
 #
 
 config MPSL
-	bool "Nordic Multi Protocol Service Layer (MPSL)"
+	bool "Multi Protocol Service Layer (MPSL)"
 	select ZERO_LATENCY_IRQS
 	select IEEE802154_NRF5_EXT_IRQ_MGMT if IEEE802154_NRF5
 	select NRF_802154_MULTIPROTOCOL_SUPPORT if NRF_802154_RADIO_DRIVER
@@ -15,6 +15,7 @@ config MPSL
 	help
 	  Use Nordic Multi Protocol Service Layer (MPSL) implementation,
 	  providing services for single and multi-protocol implementations.
+	  For more information, see :ref:`mpsl`.
 
 if MPSL
 
