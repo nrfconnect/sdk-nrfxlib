@@ -303,7 +303,9 @@ typedef __PACKED_STRUCT
 {
     /** @brief Assigned hardware manufacturer. Always 0x0002 indicating Nordic Semiconductor. */
     uint16_t hw_platform;
-    /** @brief Assigned platform specific value. Set to 0x2 for nRF52, 0x3 for nRF53. */
+    /** @brief Assigned platform specific value. Set to 0x2 for nRF52, 0x3 for nRF53, 0x4 for
+     *         nRF54H, 0x5 for nRF54L.
+     */
     uint16_t hw_variant;
     /** @brief Firmware Variant. 0 indicates a standard Bluetooth controller. */
     uint8_t fw_variant;
@@ -975,7 +977,7 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
  *   See also: Core v5.1, Vol 6, Part B, Section 4.5.6
  * - There are no conflicts with other concurrent links.
  *
- * A connection event cannot be extended beyond the connection interval.
+ * A connection event can not be extended beyond the connection interval.
  *
  * By default, that is after an HCI Reset, Extended Connection Events are enabled.
  *
@@ -1465,10 +1467,6 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  * BIS where a ISO data path is not enabled, the Controller shall return the
  * error code Command Disallowed (0x0C).
  *
- * If the Host issues this command before an SDU has been transmitted by the
- * Controller, the Controller shall return the error code Command Disallowed
- * (0x0C).
- *
  * Event(s) generated (unless masked away):
  * When the HCI_LE_Read_ISO_TX_Sync command has completed, an
  * HCI_Command_Complete event shall be generated.
@@ -1488,7 +1486,7 @@ uint8_t sdc_hci_cmd_vs_iso_read_tx_timestamp(const sdc_hci_cmd_vs_iso_read_tx_ti
  * This vendor specific command changes the time reserved at the end of a BIG event for other roles.
  * This applies to all BIGs created after calling this command.
  *
- * The default value is 2500 us, but can be set to between 0 us and 4,000,000 us. Changes persist
+ * The default value is 1600 us, but can be set to between 0 us and 4,000,000 us. Changes persist
  * after an HCI_Reset command.
  *
  * If the value is set such that it cannot be satisfied for a given set of BIG parameters, BIG
@@ -1515,7 +1513,7 @@ uint8_t sdc_hci_cmd_vs_big_reserved_time_set(const sdc_hci_cmd_vs_big_reserved_t
  * Note, when multiple CIGs are used the user needs to ensure that the initial CIG reserves time
  * for the remaining CIGs.
  *
- * The default value is 2000 us, but can be set to between 0 us and 4,000,000 us. Changes persist
+ * The default value is 1300 us, but can be set to between 0 us and 4,000,000 us. Changes persist
  * after an HCI_Reset command.
  *
  * If the value is set such that it cannot be satisfied for a given set of CIG parameters, the

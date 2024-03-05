@@ -69,6 +69,10 @@ The following table summarizes the priorities.
    |                             | * Scanner which is receiving an advertising packet on a secondary advertising channel             |
    |                             | * Connected Isochronous channel setup                                                             |
    |                             | * Connected Isochronous channels that are about to time out                                       |
+   |                             | * Isochronous Broadcaster                                                                         |
+   |                             | * Synchronized Receiver in the synchronizing state                                                |
+   |                             | * Synchronized Receiver in the synchronized state where the synchronization is about to be lost   |
+   |                             | * Synchronized Receiver receiving packets in a BIG control subevent                               |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Third priority              | * All |BLE| roles in states other than above run with this priority                               |
    |                             | * MPSL Timeslot with high priority                                                                |
@@ -530,6 +534,7 @@ The duration of an extended advertising event depends on the mode, data length, 
 The |controller| will send as few secondary advertising channel packets as possible with each packet containing the maximum allowed amount of data.
 The packets are sent with an AUX frame space of 330 µs.
 
+.. _periodic_advertiser_timing:
 
 Periodic Advertiser Timing
 **************************
@@ -574,6 +579,34 @@ If the ACL event spacing is 10 ms and the ACL event length is set to 2.5 ms, 7.5
    :width: 80%
 
    Connected ISO channels are scheduled interleaved with ACL timing-events.
+
+Broadcast isochronous channels timing
+*************************************
+
+Broadcast isochronous channel timing-events are scheduled every isochronous (ISO) interval.
+All subevents belonging to the same ISO group are scheduled in the same timing-event.
+The duration of a BIG event depends on data length and the BIG parameters selected by the controller.
+See the :ref:`iso_parameter_selection` section for more information.
+
+Isochronous broadcaster timing-events are scheduled similarly to a Central device, meaning they are added relative to already running central link or periodic advertising timing-events.
+See the :ref:`central_timing` section for more information.
+The timing-events are offset from each other by :math:`\mathsf{t_{event}}`.
+In the |NCS|, this is configured with the :kconfig:option:`BT_CTLR_SDC_BIG_RESERVED_TIME_US` Kconfig option, or with the vendor-specific HCI command defined by the :c:func:`sdc_hci_cmd_vs_big_reserved_time_set` function.
+
+The reserved time allows for the associated periodic and extended advertiser, and any other periodic roles such as the :c:func:`sdc_hci_cmd_vs_qos_channel_survey_enable` function, to run.
+For optimal scheduling, the periodic advertising interval and ISO interval should have a common factor, and the sum of the periodic and extended advertising timing-event lengths should be less than the BIG reserved time.
+The duration of the periodic advertising event can be decreased by using the LE 2M PHY.
+See the :ref:`periodic_advertiser_timing` section for more information.
+
+The synchronized receiver may close a timing-event early in order to save energy.
+It can do this if it has received all payloads in a BIG event 
+
+.. figure:: pic/schedule/broadcast_iso_timing.svg
+   :alt: Alt text: Broadcast ISO channels timing
+   :align: center
+   :width: 80%
+
+   Broadcast isochronous channels timing-events
 
 Timeslot API timing
 *******************
