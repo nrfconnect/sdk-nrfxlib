@@ -7,8 +7,10 @@ Changelog
    :local:
    :depth: 2
 
-Main Branch
-***********
+nRF Connect SDK v2.6.0
+**********************
+
+All the notable changes included in the |NCS| v2.6.0 release are documented in this section.
 
 Changes
 =======
