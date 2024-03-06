@@ -15,6 +15,7 @@ The source of the data provides one SDU every SDU interval and these SDUs have a
 SDUs are transmitted at a fixed schedule, which allows to time-synchronize multiple receiving devices with microsecond-scale accuracy.
 
 The ISO feature set is split into four separate features:
+
 * Connected Isochronous Stream - Central
 * Connected Isochronous Stream - Peripheral
 * Isochronous Broadcaster
