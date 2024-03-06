@@ -98,6 +98,12 @@ static int nrf_wifi_patch_feature_flags_compat(struct nrf_wifi_fmac_dev_ctx *fma
 			"System mode feature flag not set");
 		return -1;
 	}
+#elif defined(CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES)
+	if (!(feature_flags & NRF70_FEAT_SYSTEM_WITH_RAW_MODES)) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			"System with raw modes feature flag not set");
+		return -1;
+	}
 #else
 	nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 		"Invalid feature flags: 0x%x or build configuration",
@@ -1151,6 +1157,7 @@ out:
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 #endif /* CONFIG_NRF700X_UTIL */
 
+#ifdef CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES
 enum nrf_wifi_status nrf_wifi_fmac_set_mode(void *dev_ctx,
 					    unsigned char if_idx,
 					    unsigned char mode)
@@ -1192,6 +1199,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_mode(void *dev_ctx,
 out:
 	return status;
 }
+#endif
 
 #if defined(CONFIG_NRF700X_RAW_DATA_TX) || defined(CONFIG_NRF700X_RAW_DATA_RX)
 enum nrf_wifi_status nrf_wifi_fmac_set_channel(void *dev_ctx,

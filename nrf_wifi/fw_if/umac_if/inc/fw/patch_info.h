@@ -26,6 +26,7 @@ enum nrf70_feature_flags {
 	NRF70_FEAT_SYSTEM_MODE = BIT(0),
 	NRF70_FEAT_RADIO_TEST = BIT(1),
 	NRF70_FEAT_SCAN_ONLY = BIT(2),
+	NRF70_FEAT_SYSTEM_WITH_RAW_MODES = BIT(3),
 };
 
 enum nrf70_image_ids {
