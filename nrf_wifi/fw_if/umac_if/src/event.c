@@ -868,7 +868,7 @@ out:
 	return status;
 }
 
-#ifdef CONFIG_NRF700X_SYSTEM_MODE
+#ifdef CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES
 static enum nrf_wifi_status
 nrf_wifi_fmac_if_mode_set_event_proc(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				     struct nrf_wifi_event_raw_config_mode *mode_event)
@@ -962,7 +962,7 @@ nrf_wifi_fmac_if_mode_set_event_proc(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 out:
 	return status;
 }
-#endif
+#endif /* CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES */
 
 static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 						    struct host_rpu_msg *rpu_msg)
@@ -1018,7 +1018,7 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 						(struct nrf_wifi_event_raw_tx_done *)sys_head);
 		break;
 #endif
-#ifdef CONFIG_NRF700X_SYSTEM_MODE
+#ifdef CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES
 	case NRF_WIFI_EVENT_MODE_SET_DONE:
 		status = nrf_wifi_fmac_if_mode_set_event_proc(fmac_dev_ctx,
 						(struct nrf_wifi_event_raw_config_mode *)sys_head);
