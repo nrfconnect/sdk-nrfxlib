@@ -376,7 +376,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 			nrf_wifi_osal_nbuf_free(fmac_dev_ctx->fpriv->opriv,
 						nwb);
 		}
-#ifdef CONFIG_NRF700X_RAW_DATA_RX
+#if defined(CONFIG_NRF700X_RAW_DATA_RX) || defined(CONFIG_NRF700X_PROMISC_DATA_RX)
 		else if (config->rx_pkt_type == NRF_WIFI_RAW_RX_PKT) {
 			raw_rx_hdr.frequency = config->frequency;
 			raw_rx_hdr.signal = config->signal;
@@ -388,7 +388,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 								      &raw_rx_hdr,
 								      true);
 		}
-#endif /* CONFIG_NRF700X_RAW_DATA_RX */
+#endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 		else {
 			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 					      "%s: Invalid frame type received %d",
