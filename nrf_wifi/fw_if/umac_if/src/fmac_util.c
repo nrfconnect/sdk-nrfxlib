@@ -327,6 +327,10 @@ unsigned char *nrf_wifi_util_get_ra(struct nrf_wifi_fmac_vif_ctx *vif,
 #ifdef CONFIG_NRF700X_RAW_DATA_TX
 	    || (vif->if_type == NRF_WIFI_STA_TX_INJECTOR)
 #endif /* CONFIG_NRF700X_RAW_DATA_TX */
+#ifdef CONFIG_NRF700X_PROMISC_DATA_RX
+	    || (vif->if_type == NRF_WIFI_STA_PROMISC)
+	    || (vif->if_type == NRF_WIFI_STA_PROMISC_TX_INJECTOR)
+#endif
 	    ) {
 		return vif->bssid;
 	}
