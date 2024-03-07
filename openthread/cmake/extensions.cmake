@@ -17,14 +17,6 @@ function(openthread_calculate_lib_path ot_version lib_path)
     set(ot_feature_set "custom")
   endif()
 
-  if(CONFIG_CC310_BACKEND)
-    set(nrf_security_backend "cc310")
-  elseif(CONFIG_CC312_BACKEND)
-    set(nrf_security_backend "cc312")
-  elseif(CONFIG_OBERON_BACKEND)
-    set(nrf_security_backend "oberon")
-  endif()
-
   nrfxlib_calculate_lib_path(nrfxlib_path)
   if(CONFIG_OPENTHREAD_COPROCESSOR_RCP)
     set(${lib_path}
