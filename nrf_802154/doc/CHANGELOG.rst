@@ -10,14 +10,16 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
-Main branch - nRF 802.15.4 Radio Driver
-***************************************
+nRF Connect SDK v2.6.0 - nRF 802.15.4 Radio Driver
+**************************************************
 
 Notable changes
 ===============
 
 * Added the :c:func:`nrf_802154_rx_on_when_idle_set` function which allows to choose between the receive and sleep states during radio idle periods. (KRKNWK-17962)
 * Added a safeguard in the :c:func:`nrf_802154_delayed_trx_receive` to disallow scheduling of two delayed reception windows with the same value of ``id`` parameter. (KRKNWK-18263)
+* The encryption module for the nRF52 and nRF53 series' SoCs based on the ECB peripheral uses the :c:func:`nrf_802154_sl_ecb_block_encrypt` function. (KRKNWK-18576)
+  The :c:func:`nrf_802154_sl_ecb_block_encrypt` provided by the closed-source SL uses :ref:`mpsl` to share the ECB peripheral in the multiprotocol scenario.
 
 Added
 =====
