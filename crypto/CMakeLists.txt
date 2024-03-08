@@ -187,7 +187,11 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
 
   target_include_directories(nrf_cc3xx_core_imported INTERFACE ${mbedcrypto_includes})
 
-  target_link_libraries(nrf_cc3xx_core_imported INTERFACE nrf_cc3xx_platform)
+  target_link_libraries(nrf_cc3xx_core_imported
+    INTERFACE
+      nrf_cc3xx_platform
+      mbedcrypto_base
+  )
 
   target_link_libraries(nrfxlib_crypto INTERFACE nrf_cc3xx_core_imported)
 
@@ -203,8 +207,9 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
   target_link_libraries(nrf_cc3xx_legacy_crypto_imported
     INTERFACE
       nrf_cc3xx_core_imported
+      nrf_cc3xx_platform
       mbedcrypto_base
-    )
+  )
 
   set(NRF_CC3XX_MBEDTLS_LEGACY_LIB
     ${NRF_CC3XX_LIB_DIR}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_legacy_crypto_${NRF_CC3XX_VER}.a
@@ -223,12 +228,13 @@ if (CONFIG_CC3XX_BACKEND OR (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND NOT BUILD_WITH_T
   #
   add_library(nrf_cc3xx_psa_crypto_imported STATIC IMPORTED GLOBAL)
 
-  target_link_libraries(nrf_cc3xx_psa_crypto_imported 
-    INTERFACE 
+  target_link_libraries(nrf_cc3xx_psa_crypto_imported
+    INTERFACE
       nrf_cc3xx_legacy_crypto_imported
       nrf_cc3xx_core_imported
       nrf_cc3xx_platform
-    )
+      mbedcrypto_base
+  )
 
   set(NRF_CC3XX_PSA_LIB
     ${NRF_CC3XX_LIB_DIR}/${CC3XX_FLAVOR}/libnrf_${CC3XX_ARCH}_psa_crypto_${NRF_CC3XX_VER}.a
