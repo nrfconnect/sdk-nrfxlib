@@ -1,42 +1,23 @@
-/*
- * ZBOSS Zigbee 3.0
+/* ZBOSS Zigbee software protocol stack
  *
- * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2020 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
  *
+ * This is unpublished proprietary source code of DSR Corporation
+ * The copyright notice does not evidence any actual or intended
+ * publication of such source code.
  *
- * Use in source and binary forms, redistribution in binary form only, with
- * or without modification, are permitted provided that the following conditions
- * are met:
+ * ZBOSS is a registered trademark of Data Storage Research LLC d/b/a DSR
+ * Corporation
  *
- * 1. Redistributions in binary form, except as embedded into a Nordic
- *    Semiconductor ASA integrated circuit in a product or a software update for
- *    such product, must reproduce the above copyright notice, this list of
- *    conditions and the following disclaimer in the documentation and/or other
- *    materials provided with the distribution.
- *
- * 2. Neither the name of Nordic Semiconductor ASA nor the names of its
- *    contributors may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- *
- * 3. This software, with or without modification, must only be used with a Nordic
- *    Semiconductor ASA integrated circuit.
- *
- * 4. Any software provided in binary form under this license must not be reverse
- *    engineered, decompiled, modified and/or disassembled.
- *
- * THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
- * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Commercial Usage
+ * Licensees holding valid DSR Commercial licenses may use
+ * this file in accordance with the DSR Commercial License
+ * Agreement provided with the Software or, alternatively, in accordance
+ * with the terms contained in a written agreement between you and
+ * DSR.
  */
 /* PURPOSE: Color control cluster definitions
 */
@@ -1322,9 +1303,8 @@ void zb_zcl_color_control_send_move_to_hue_req(zb_bufid_t buffer, const zb_addr_
     (zb_zcl_color_control_move_to_hue_req_t*)zb_buf_begin(buffer) : NULL;                    \
   if (move_to_hue_req_ptr != NULL)                                                           \
   {                                                                                          \
-    move_to_hue_req.hue = move_to_hue_req_ptr->hue;                                          \
-    move_to_hue_req.direction = move_to_hue_req_ptr->direction;                              \
-    ZB_HTOLE16(&(move_to_hue_req).transition_time, &(move_to_hue_req_ptr->transition_time)); \
+    ZB_MEMCPY(&(move_to_hue_req), move_to_hue_req_ptr, ZB_ZCL_COLOR_CONTROL_MOVE_TO_HUE_REQ_PAYLOAD_LEN); \
+    ZB_HTOLE16_ONPLACE((move_to_hue_req).transition_time);                                   \
     (void)zb_buf_cut_left(buffer, ZB_ZCL_COLOR_CONTROL_MOVE_TO_HUE_REQ_PAYLOAD_LEN);         \
     status = ZB_ZCL_PARSE_STATUS_SUCCESS;                                                    \
   }                                                                                          \
@@ -3206,10 +3186,10 @@ void zb_zcl_color_control_send_move_color_temp_req(zb_bufid_t buffer, const zb_a
     (zb_zcl_color_control_move_color_temp_req_t*)zb_buf_begin(buffer) : NULL;                      \
   if (move_color_temp_req_ptr != NULL)                                                             \
   {                                                                                                \
-    move_color_temp_req.move_mode = move_color_temp_req_ptr->move_mode;                            \
-    ZB_HTOLE16(&(move_color_temp_req).rate, &(move_color_temp_req_ptr->rate));                     \
-    ZB_HTOLE16(&(move_color_temp_req).color_temp_min, &(move_color_temp_req_ptr->color_temp_min)); \
-    ZB_HTOLE16(&(move_color_temp_req).color_temp_max, &(move_color_temp_req_ptr->color_temp_max)); \
+    ZB_MEMCPY(&(move_color_temp_req), move_color_temp_req_ptr, ZB_ZCL_COLOR_CONTROL_MOVE_COLOR_TEMP_REQ_PAYLOAD_LEN); \
+    ZB_HTOLE16_ONPLACE((move_color_temp_req).rate);                                                \
+    ZB_HTOLE16_ONPLACE((move_color_temp_req).color_temp_min);                                      \
+    ZB_HTOLE16_ONPLACE((move_color_temp_req).color_temp_max);                                      \
     (void)zb_buf_cut_left(buffer, ZB_ZCL_COLOR_CONTROL_MOVE_COLOR_TEMP_REQ_PAYLOAD_LEN);           \
     status = ZB_ZCL_PARSE_STATUS_SUCCESS;                                                          \
   }                                                                                                \
@@ -3317,34 +3297,6 @@ void zb_zcl_color_control_send_step_color_temp_req(zb_bufid_t buffer, const zb_a
 {                                                                                                                                                          \
   zb_zcl_color_control_send_step_color_temp_req(buffer, ZB_ADDR_U_CAST(addr), dst_addr_mode,                                                               \
                                                 dst_ep, ep, prfl_id, def_resp, cb, step_mode, step_size, transition_time, color_temp_min, color_temp_max); \
-}
-
-/** @brief Macro for getting Move color temperature command
-  * @attention Assumes that ZCL header already cut.
-  * @param buffer containing the packet (by pointer).
-  * @param move_color_temp_req - variable of type @ref
-  * zb_zcl_color_control_move_color_temp_req_s.
-  * @param status - variable to put parse status to (see @ref zb_zcl_parse_status_t).
-  */
-#define ZB_ZCL_COLOR_CONTROL_GET_MOVE_COLOR_TEMP_REQ(buffer, move_color_temp_req, status)          \
-{                                                                                                  \
-  zb_zcl_color_control_move_color_temp_req_t *move_color_temp_req_ptr;                             \
-  (move_color_temp_req_ptr) = zb_buf_len(buffer) >=                                                \
-    ZB_ZCL_COLOR_CONTROL_MOVE_COLOR_TEMP_REQ_PAYLOAD_LEN ?                                         \
-    (zb_zcl_color_control_move_color_temp_req_t*)zb_buf_begin(buffer) : NULL;                      \
-  if (move_color_temp_req_ptr != NULL)                                                             \
-  {                                                                                                \
-    move_color_temp_req.move_mode = move_color_temp_req_ptr->move_mode;                            \
-    ZB_HTOLE16(&(move_color_temp_req).rate, &(move_color_temp_req_ptr->rate));                     \
-    ZB_HTOLE16(&(move_color_temp_req).color_temp_min, &(move_color_temp_req_ptr->color_temp_min)); \
-    ZB_HTOLE16(&(move_color_temp_req).color_temp_max, &(move_color_temp_req_ptr->color_temp_max)); \
-    (void)zb_buf_cut_left(buffer, ZB_ZCL_COLOR_CONTROL_MOVE_COLOR_TEMP_REQ_PAYLOAD_LEN);           \
-    status = ZB_ZCL_PARSE_STATUS_SUCCESS;                                                          \
-  }                                                                                                \
-  else                                                                                             \
-  {                                                                                                \
-    status = ZB_ZCL_PARSE_STATUS_FAILURE;                                                          \
-  }                                                                                                \
 }
 
 /** @brief Macro for getting Move color temperature command
