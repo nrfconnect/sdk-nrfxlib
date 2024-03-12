@@ -9,6 +9,18 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 2.6.1
+***************
+
+Sockets
+=======
+
+* Fixed a bug where the :c:func:`nrf_recv` and :c:func:`nrf_recvfrom` functions erroneously returned ``-1`` and set ``errno`` to ``NRF_EAGAIN`` instead of returning ``0`` when these three conditions were met:
+
+  * The :c:func:`nrf_recv` and :c:func:`nrf_recvfrom` functions were called with the :c:macro:`NRF_MSG_DONTWAIT` flag or when the socket is non-blocking (``NRF_O_NONBLOCK`` is set on the socket).
+  * The socket was closed by the server.
+  * There was no more data to read (End Of File (EOF)).
+
 nrf_modem 2.6.0
 ***************
 
