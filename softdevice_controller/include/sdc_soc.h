@@ -52,30 +52,11 @@ int32_t sdc_soc_ecb_block_encrypt(const uint8_t key[16],
 /**
  * @brief Functions used by the SoftDevice Controller to obtain random numbers.
  *
- * These functions are used for several different purposes,
- * including private address generation so they are expected to conform to:
+ * These functions are used for security-related purposes, so they must conform to:
  * BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 2, Part H, Section 2.
  */
 typedef struct
 {
-    /** @brief Function used by the controller to obtain random numbers in a low priority context.
-     *  The function will be executed in the same context as mpsl_low_priority_process and should not block.
-     *
-     *  @param[out]  p_buff  The destination buffer for the random numbers
-     *  @param[in]   length  The requested number of random bytes and the maximum length of the destination buffer
-     *  @retval              The number of bytes written to p_buff
-     */
-    uint8_t (*rand_prio_low_get)(uint8_t *p_buff, uint8_t length);
-
-    /** @brief Function used by the controller to obtain random numbers in a high priority context.
-     *  This function will be called in an ISR context and should not block.
-     *
-     *  @param[out]  p_buff  The destination buffer for the random numbers
-     *  @param[in]   length  The requested number of random bytes and the maximum length of the destination buffer
-     *  @retval              The number of bytes written to p_buff
-     */
-    uint8_t (*rand_prio_high_get)(uint8_t *p_buff, uint8_t length);
-
     /** @brief Function used by the controller to obtain random numbers.
      *  This function must block until length bytes of random numbers were written to p_buff.
      *  The function will be executed in the same context as mpsl_low_priority_process.
