@@ -65,7 +65,7 @@ For the nRF54H Series:
 For the nRF54L Series:
   Interrupts:
 
-  * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_3_IRQn``
+  * ``GRTC`` channels ``7`` to ``11``, interrupt ``GRTC_3_IRQn``
   * ``TIMER10``
   * ``TIMER20``
   * ``ECB00``
