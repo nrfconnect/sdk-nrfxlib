@@ -7,9 +7,10 @@ Integration with applications
    :local:
    :depth: 2
 
-The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series that supports Bluetooth 5.
+The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor devices that support Bluetooth.
 
 For the nRF53 Series, the requirements described in this document are only relevant for applications running alongside the |controller| on the network processor.
+For the nRF54H Series, some peripherals in the global domain are reserved so the requirements described here are relevant for all processors.
 
 Applications utilizing the |controller| library are responsible for the following:
 
@@ -28,11 +29,37 @@ Applications utilizing the |controller| library are responsible for the followin
 
 The following peripherals are owned by the |controller| and must not be accessed directly by the application:
 
+For the nRF52 Series:
+
 * ``CCM``
 * ``AAR``
 * ``NVMC``
-* PPI channels from ``17`` to ``31`` (for the nRF52 Series)
-* DPPI channels from ``0`` to ``13`` (for the nRF53 Series)
+* PPI channels from ``17`` to ``31``
+
+For the nRF53 Series:
+
+* ``CCM``
+* ``AAR``
+* ``NVMC``
+* DPPI channels from ``0`` to ``13``
+
+For the nRF54H Series:
+
+* ``CCM030``
+* ``AAR030``
+* ``DPPIC020`` channels from ``0`` to ``13``
+* ``PPIB020`` channels from ``0`` to ``3``
+* ``PPIB030`` channels from ``0`` to ``3``
+
+For the nRF54L Series:
+
+* ``CCM00``
+* ``AAR00``
+* ``RRAMC``
+* ``DPPIC10`` channels from ``0`` to ``13``
+* ``PPIB00`` channels from ``0`` to ``3``
+* ``PPIB10`` channels from ``0`` to ``3``
+
 
 Some of these peripherals can be accessed by APIs provided in :file:`sdc_soc.h` and by :ref:`mpsl`.
 The application can access most of these directly using :ref:`mpsl_timeslot`.

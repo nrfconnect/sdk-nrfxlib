@@ -190,11 +190,13 @@ extern "C" {
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
-/** Memory required for scanner buffers when only supporting legacy scanning. */
-#define SDC_MEM_SCAN_BUFFER(buffer_count) (26 + (buffer_count) * 88)
+/** Memory required for the scanner when only supporting legacy scanning. */
+#define SDC_MEM_SCAN_BUFFER(buffer_count) (344 + (buffer_count) * 88)
+#define SDC_MEM_SCAN(buffer_count) (344 + (buffer_count) * 88)
 
-/** Memory required for scanner buffers when supporting extended scanning. */
-#define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (26 + (buffer_count) * 306)
+/** Memory required for the scanner when supporting extended scanning. */
+#define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (345 + (buffer_count) * 307)
+#define SDC_MEM_SCAN_EXT(buffer_count) (345 + (buffer_count) * 307)
 
 /** Memory required for the Filter Accept List */
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)

@@ -51,10 +51,8 @@ DRGN-6362: Synthesized low frequency clock source not tested
 DRGN-12259: HCI Receiver and Transmitter Test commands not available
   The HCI Receiver and Transmitter Test commands are not available.
 
-  **Workaround:** To perform a radio test, use a DTM application:
-
-  * For nRF52, use the DTM application in the nRF5 SDK.
-  * For nRF53, use :ref:`direct_test_mode`.
+  **Workaround:** To perform a radio test, use the :ref:`direct_test_mode` sample.
+  For nRF52 Series devices, you can choose to use the DTM application in the nRF5 SDK instead.
 
 DRGN-15989: In some cases, the SDC can connect to the peer it is already connected to
   To prevent this, the application can remove the already connected peer from the Filter Accept List, or from the Resolving List, or not use that peer's address in Create Connection command.
