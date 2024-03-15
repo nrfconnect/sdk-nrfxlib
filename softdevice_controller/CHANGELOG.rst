@@ -9,6 +9,15 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Changes
+=======
+
+* The deprecated functions :c:func:`rand_prio_low_get` and :c:func:`rand_prio_high_get` have been removed.
+  This change does not affect applications developed in the |NCS| context. (DRGN-20473)
+
 nRF Connect SDK v2.6.0
 **********************
 
