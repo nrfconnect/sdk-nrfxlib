@@ -116,9 +116,44 @@ typedef struct
     /** TX power to be applied to the RADIO peripheral. */
     mpsl_tx_power_t radio_tx_power;
 
-    /** FEM gain. */
-    mpsl_fem_gain_t fem;
+    /** Power control to be applied to the PA of the FEM. */
+    mpsl_fem_pa_power_control_t fem;
 } mpsl_tx_power_split_t;
+
+/** @brief PA setup required for transmission.
+ *  This flag applies to @ref mpsl_fem_caps_t::flags.
+ *  It it is set, then setting up PA for transmission by a call to @ref mpsl_fem_pa_configuration_set
+ *  has non negligible impact on timing.
+ *  If it is clear, then setting up PA for transmission by a call to @ref mpsl_fem_pa_configuration_set
+ *  has negligible impact on timing due to its trivial implementation.
+ */
+#define MPSL_FEM_CAPS_FLAG_PA_SETUP  (1U << 0)
+
+/** @brief LNA setup required for reception.
+ *  This flag applies to @ref mpsl_fem_caps_t::flags.
+ *  It it is set, then setting up LNA for reception by a call to @ref mpsl_fem_lna_configuration_set
+ *  has non negligible impact on timing.
+ *  If it is clear, then setting up PA for transmission by a call to @ref mpsl_fem_lna_configuration_set
+ *  has negligible impact on timing due to its trivial implementation.
+ */
+#define MPSL_FEM_CAPS_FLAG_LNA_SETUP (1U << 1)
+
+/** @brief Structure representing capabilities and characteristics of the FEM in use. */
+typedef struct
+{
+    /** Flags informing about the FEM in use.
+     *
+     *  The following flags apply:
+     *  @ref MPSL_FEM_CAPS_FLAG_PA_SETUP, @ref MPSL_FEM_CAPS_FLAG_LNA_SETUP
+     */
+    uint32_t flags;
+} mpsl_fem_caps_t;
+
+/** @brief Gets the capabilities of the FEM in use.
+ * 
+ *  @param[out] p_caps  Pointer to the capabilities structure to be filled in.
+ */
+void mpsl_fem_caps_get(mpsl_fem_caps_t * p_caps);
 
 /** @brief Disable Front End Module.
  *
@@ -332,27 +367,19 @@ int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
                                uint16_t                      freq_mhz,
                                bool                          tx_power_ceiling);
 
-/** @brief Sets PA gain.
+/** @brief Sets the PA power control.
  *
- * @note The gain set by this function will be applied to radio transmissions
+ * @note The PA power control set by this function will be applied to radio transmissions
  * following the call. If the function is called during radio transmission
- * or during ramp-up for transmission it is unspecified if the gain is applied.
+ * or during ramp-up for transmission it is unspecified if the control is applied.
  *
- * @param[in] p_gain       Pointer to structure with data needed to apply the gain.
+ * @param[in] p_pa_power_control    Pointer to structure with data needed to apply the
+ *                                  PA power control control for the FEM.
  *
- * @retval   0             Gain setting has been applied successfully.
- * @retval   -NRF_EINVAL   Gain setting could not be applied. Provided @p gain_setting is invalid.
+ * @retval   0             PA power control has been applied successfully.
+ * @retval   -NRF_EINVAL   PA power control could not be applied. Provided @p p_pa_power_control is invalid.
  */
-int32_t mpsl_fem_pa_gain_set(const mpsl_fem_gain_t * p_gain);
-
-/** @brief Checks if the PA signaling is configured and enabled, and gets
- *  the configured gain in dB.
- *
- * @param[out] p_gain The configured gain in dB if PA is configured and enabled.
- *                    If there is no PA present or the PA does not affect
- *                    the signal gain, returns 0 dB.
- */
-void mpsl_fem_pa_is_configured(int8_t * const p_gain);
+int32_t mpsl_fem_pa_power_control_set(const mpsl_fem_pa_power_control_t * p_pa_power_control);
 
 /** @brief Returns LNA gain if the LNA signal is configured and enabled, 0 otherwise.
  *
