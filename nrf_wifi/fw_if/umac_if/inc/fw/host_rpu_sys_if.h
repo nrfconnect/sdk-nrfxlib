@@ -634,6 +634,10 @@ struct rpu_lmac_stats {
 	unsigned int scan_abort_complete;
 	/** Number of internal buffer pool null counts */
 	unsigned int internal_buf_pool_null;
+	/** RPU hardware lockup event detection count */
+	unsigned int rpu_hw_lockup_count;
+	/** RPU hardware lockup recovery completed count */
+	unsigned int rpu_hw_lockup_recovery_done;
 } __NRF_WIFI_PKD;
 
 #endif /* !CONFIG_NRF700X_RADIO_TEST */
