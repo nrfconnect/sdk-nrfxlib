@@ -18,6 +18,15 @@ Changes
 * The deprecated functions :c:func:`rand_prio_low_get` and :c:func:`rand_prio_high_get` have been removed.
   This change does not affect applications developed in the |NCS| context. (DRGN-20473)
 
+Bug fixes
+=========
+
+* Fixed an issue where the vendor-specific ISO Read TX Timestamp command returned a timestamp that was 41 µs too small (DRGN-21605).
+* Fixed an issue where an assert could happen if a CIS peripheral stopped receiving packets from the CIS central.
+  This would only occur after the window widening reached at least half of the ISO interval in magnitude.
+  Assuming worst case clock accuracies on both central and peripheral, this would correspond to 2.4, 3.7, and 4.9 seconds for ISO intervals of 5 ms, 7.5 ms, and 10 ms.
+  This issue would not occur if the supervision timeout was set to a value smaller than the onces mentioned above (DRGN-21619).
+
 nRF Connect SDK v2.6.0
 **********************
 
