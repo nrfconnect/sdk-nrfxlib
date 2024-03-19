@@ -36,6 +36,12 @@
   - "mpsl/include/**/*"
   - "mpsl/lib/**/*"
 
+"CI-ble-samples-test":
+  - "softdevice_controller/include/**/*"
+  - "softdevice_controller/lib/**/*"
+  - "mpsl/include/**/*"
+  - "mpsl/lib/**/*"
+
 "CI-mesh-test": null
 
 "CI-zigbee-test":
