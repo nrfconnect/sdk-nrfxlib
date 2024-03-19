@@ -139,21 +139,25 @@ static void umac_event_connect(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 }
 #endif /* CONFIG_NRF700X_STA_MODE */
 
-#ifndef CONFIG_NRF700X_RADIO_TEST
 static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 						    void *event_data,
 						    unsigned int event_len)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_SUCCESS;
 	struct nrf_wifi_umac_hdr *umac_hdr = NULL;
+#ifndef CONFIG_NRF700X_RADIO_TEST
 	struct nrf_wifi_fmac_vif_ctx *vif_ctx = NULL;
 	struct nrf_wifi_fmac_callbk_fns *callbk_fns = NULL;
 	struct nrf_wifi_umac_event_vif_state *evnt_vif_state = NULL;
-	unsigned char if_id = 0;
-	unsigned int event_num = 0;
-	bool more_res = false;
 	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
 	struct nrf_wifi_fmac_priv_def *def_priv = NULL;
+	bool more_res = false;
+#else
+	struct nrf_wifi_reg *get_reg_event = NULL;
+	struct nrf_wifi_event_regulatory_change *reg_change_event = NULL;
+#endif /* !CONFIG_NRF700X_RADIO_TEST */
+	unsigned char if_id = 0;
+	unsigned int event_num = 0;
 
 	if (!fmac_dev_ctx || !event_data) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
@@ -162,12 +166,15 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 		goto out;
 	}
 
+#ifndef CONFIG_NRF700X_RADIO_TEST
 	def_priv = wifi_fmac_priv(fmac_dev_ctx->fpriv);
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
 	if (!def_priv || !def_dev_ctx) {
 		goto out;
 	}
+
+#endif /* !CONFIG_NRF700X_RADIO_TEST */
 
 	umac_hdr = event_data;
 	if_id = umac_hdr->ids.wdev_id;
@@ -182,8 +189,10 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 		goto out;
 	}
 
+#ifndef CONFIG_NRF700X_RADIO_TEST
 	vif_ctx = def_dev_ctx->vif_ctx[if_id];
 	callbk_fns = &def_priv->callbk_fns;
+#endif /* !CONFIG_NRF700X_RADIO_TEST */
 
 	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
 			      "%s: Event %d received from UMAC",
@@ -191,6 +200,61 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 			      event_num);
 
 	switch (umac_hdr->cmd_evnt) {
+	case NRF_WIFI_UMAC_EVENT_GET_REG:
+#ifdef CONFIG_NRF700X_STA_MODE
+		if (callbk_fns->event_get_reg)
+			callbk_fns->event_get_reg(vif_ctx->os_vif_ctx,
+						      event_data,
+						      event_len);
+		else
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: No callback registered for event %d",
+					      __func__,
+					      umac_hdr->cmd_evnt);
+#endif /* CONFIG_NRF700X_STA_MODE */
+#ifdef CONFIG_NRF700X_RADIO_TEST
+		get_reg_event = (struct nrf_wifi_reg *)event_data;
+
+		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+				      &fmac_dev_ctx->alpha2,
+				      &get_reg_event->nrf_wifi_alpha2,
+				      sizeof(get_reg_event->nrf_wifi_alpha2));
+		fmac_dev_ctx->alpha2_valid = true;
+#endif /* CONFIG_NRF700X_RADIO_TEST */
+		break;
+	case NRF_WIFI_UMAC_EVENT_REG_CHANGE:
+#ifdef CONFIG_NRF700X_STA_MODE
+		if (callbk_fns->reg_change_callbk_fn)
+			callbk_fns->reg_change_callbk_fn(vif_ctx->os_vif_ctx,
+							 event_data,
+							 event_len);
+		else
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: No callback registered for event %d",
+					      __func__,
+					      umac_hdr->cmd_evnt);
+#endif /* CONFIG_NRF700X_STA_MODE */
+#ifdef CONFIG_NRF700X_RADIO_TEST
+		reg_change_event = (struct nrf_wifi_event_regulatory_change *)event_data;
+
+		fmac_dev_ctx->reg_change = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
+								    sizeof(*reg_change_event));
+
+		if (!fmac_dev_ctx->reg_change) {
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: Failed to allocate memory for reg_change",
+					      __func__);
+			goto out;
+		}
+
+		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+				      fmac_dev_ctx->reg_change,
+				      reg_change_event,
+				      sizeof(*reg_change_event));
+		fmac_dev_ctx->reg_set_status = true;
+#endif /* CONFIG_NRF700X_RADIO_TEST */
+		break;
+#ifndef CONFIG_NRF700X_RADIO_TEST
 	case NRF_WIFI_UMAC_EVENT_TRIGGER_SCAN_START:
 		if (callbk_fns->scan_start_callbk_fn)
 			callbk_fns->scan_start_callbk_fn(vif_ctx->os_vif_ctx,
@@ -471,17 +535,6 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 	case NRF_WIFI_UMAC_EVENT_DISCONNECT:
 		/* Nothing to be done */
 		break;
-	case NRF_WIFI_UMAC_EVENT_GET_REG:
-		if (callbk_fns->event_get_reg)
-			callbk_fns->event_get_reg(vif_ctx->os_vif_ctx,
-						      event_data,
-						      event_len);
-		else
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: No callback registered for event %d",
-					      __func__,
-					      umac_hdr->cmd_evnt);
-		break;
 	case NRF_WIFI_UMAC_EVENT_GET_POWER_SAVE_INFO:
 		if (callbk_fns->event_get_ps_info)
 			callbk_fns->event_get_ps_info(vif_ctx->os_vif_ctx,
@@ -535,18 +588,8 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 					      __func__,
 					      umac_hdr->cmd_evnt);
 		break;
-	case NRF_WIFI_UMAC_EVENT_REG_CHANGE:
-		if (callbk_fns->reg_change_callbk_fn)
-			callbk_fns->reg_change_callbk_fn(vif_ctx->os_vif_ctx,
-							 event_data,
-							 event_len);
-		else
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: No callback registered for event %d",
-					      __func__,
-					      umac_hdr->cmd_evnt);
-		break;
 #endif /* CONFIG_NRF700X_STA_MODE */
+#endif /* !CONFIG_NRF700X_RADIO_TEST */
 	default:
 		nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
 				      "%s: No callback registered for event %d",
@@ -564,6 +607,7 @@ out:
 	return status;
 }
 
+#ifndef CONFIG_NRF700X_RADIO_TEST
 static enum nrf_wifi_status
 nrf_wifi_fmac_data_event_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				 void *umac_head)
@@ -1088,6 +1132,7 @@ enum nrf_wifi_status nrf_wifi_fmac_event_callback(void *mac_dev_ctx,
 		status = nrf_wifi_fmac_data_events_process(fmac_dev_ctx,
 							   rpu_msg);
 		break;
+#endif /* !CONFIG_NRF700X_RADIO_TEST */
 	case NRF_WIFI_HOST_RPU_MSG_TYPE_UMAC:
 		status = umac_event_ctrl_process(fmac_dev_ctx,
 						 rpu_msg->msg,
@@ -1100,7 +1145,6 @@ enum nrf_wifi_status nrf_wifi_fmac_event_callback(void *mac_dev_ctx,
 			goto out;
 		}
 		break;
-#endif /* !CONFIG_NRF700X_RADIO_TEST */
 	case NRF_WIFI_HOST_RPU_MSG_TYPE_SYSTEM:
 		status = umac_process_sys_events(fmac_dev_ctx,
 						 rpu_msg);
