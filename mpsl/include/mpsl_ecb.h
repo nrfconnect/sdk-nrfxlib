@@ -13,26 +13,17 @@
 #define MPSL_ECB_CLEARTEXT_LENGTH          (16)                       /**< ECB cleartext length. */
 #define MPSL_ECB_CIPHERTEXT_LENGTH         (MPSL_ECB_CLEARTEXT_LENGTH) /**< ECB ciphertext length. */
 
-/**@brief AES ECB parameter typedefs */
-typedef uint32_t mpsl_ecb_key_t[MPSL_ECB_KEY_LENGTH/sizeof(uint32_t)]; /**< Encryption key type. */
-typedef uint8_t mpsl_ecb_cleartext_t[MPSL_ECB_CLEARTEXT_LENGTH];       /**< Cleartext data type. */
-typedef uint8_t mpsl_ecb_ciphertext_t[MPSL_ECB_CIPHERTEXT_LENGTH];     /**< Ciphertext data type. */
-
-/**@brief AES ECB data structure */
-typedef struct
-{
-  mpsl_ecb_key_t        key;            /**< Encryption key. */
-  mpsl_ecb_cleartext_t  cleartext;      /**< Cleartext data. */
-  mpsl_ecb_ciphertext_t ciphertext;     /**< Ciphertext data. */
-} mpsl_ecb_hal_data_t;
-
 /**@brief Encrypts a block according to the specified parameters.
  *
  * @note This function will only return once the ciphertext has been generated.
+ * @note The plaintext must be in RAM.
  *
- * @param[in, out] p_ecb_data pointer to the ECB paramters' struct (two input
- *                            parameters and one output parameter).
+ * @param[in]  key        Encryption key
+ * @param[in]  cleartext  Plaintext to be encrypted
+ * @param[out] ciphertext Encrypted text
  */
-void mpsl_ecb_block_encrypt(mpsl_ecb_hal_data_t * p_ecb_data);
+void mpsl_ecb_block_encrypt(const uint8_t key[MPSL_ECB_KEY_LENGTH],
+                            uint8_t cleartext[MPSL_ECB_CLEARTEXT_LENGTH],
+                            uint8_t ciphertext[MPSL_ECB_CIPHERTEXT_LENGTH]);
 
 #endif /* MPSL_ECB_H__ */
