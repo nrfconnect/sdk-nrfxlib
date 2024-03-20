@@ -672,6 +672,7 @@ typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
     uint16_t packet_sequence_number;
+    /** @brief Synchronization reference of the sent SDU. */
     uint32_t tx_time_stamp;
 } sdc_hci_cmd_vs_iso_read_tx_timestamp_return_t;
 
@@ -1450,7 +1451,7 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  *
  * The controller operates on a timeline that determines when an SDU provided
  * by the host is scheduled for transmission. This command is used to return the
- * tx_time_stamp and packet_sequence_number that determines where on this timelime
+ * tx_time_stamp and packet_sequence_number that determines where on this timeline
  * the previously provided SDU was scheduled. The packet_sequence_number is a
  * quantization of the tx_time_stamp. The SDU is provided for transmission on a
  * CIS or BIS as identified by the conn_handle parameter on the
@@ -1458,6 +1459,15 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  *
  * This command is made to simplify sending SDUs on different ISO streams
  * in the same ISO event.
+ *
+ * The returned timestamp corresponds to the SDU synchronization reference
+ * as defined in Core_v5.4, Vol 6, Part G, Section 3.2.
+ * If the provided handle identifies a CIS, the returned timestamp corresponds to
+ * the SDU synchronization reference for the central to peripheral direction.
+ *
+ * The returned timestamp can be used to make the application provide SDUs to the
+ * controller right before they are sent on air. The returned value
+ * can also be used to synchronize the transmitter and receiver.
  *
  * If the Host issues this command with a connection handle that does not exist,
  * or the connection handle is not associated with a CIS or BIS, the Controller
