@@ -1,0 +1,13 @@
+name: Automatically create manifest PR
+on:
+  pull_request_target:
+    types: [opened, synchronize, closed]
+    branches:
+      - main
+
+
+jobs:
+  call_workflow:
+    uses: nordicbuilder/action-manifest-pr/.github/workflows/auto-manifest-pr.yml@main
+    secrets:
+       NB_TOKEN: ${{ secrets.NCS_GITHUB_TOKEN }}
