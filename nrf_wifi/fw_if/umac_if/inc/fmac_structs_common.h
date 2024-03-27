@@ -39,6 +39,17 @@ struct rpu_host_stats {
 };
 
 /**
+ * @brief Structure to hold firmware debug statistics.
+ *
+ */
+struct rpu_fw_debug_stats{
+	/** RPU hardware lockup event detection count */
+	unsigned int rpu_hw_lockup_count;
+	/** RPU hardware lockup recovery completed count */
+	unsigned int rpu_hw_lockup_recovery_done;
+};
+
+/**
  * @brief - Structure to hold per device host and firmware statistics.
  *
  */
@@ -47,6 +58,8 @@ struct rpu_op_stats {
 	struct rpu_host_stats host;
 	/** Firmware statistics. */
 	struct rpu_fw_stats fw;
+	/** Firmware debug statistics */
+	struct rpu_fw_debug_stats fw_debug;
 };
 
 /**
@@ -176,6 +189,8 @@ struct nrf_wifi_fmac_dev_ctx {
 	struct nrf_wifi_event_regulatory_change *reg_change;
 	/** TX power ceiling parameters */
 	struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params;
+	/** Firmware debug statistics */
+	struct rpu_fw_debug_stats *fw_debug;
 	/** Data pointer to mode specific parameters */
 	char priv[];
 };

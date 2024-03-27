@@ -72,4 +72,10 @@ enum nrf_wifi_status umac_cmd_prog_stats_get(struct nrf_wifi_fmac_dev_ctx *fmac_
 #endif /* CONFIG_NRF700X_RADIO_TEST */
 					     int stat_type);
 
+enum nrf_wifi_status umac_cmd_prog_debug_stats_get(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+#ifdef CONFIG_NRF700X_RADIO_TEST
+						   int op_mode,
+#endif /* CONFIG_NRF700X_RADIO_TEST */
+						   int stat_type);
+
 #endif /* __FMAC_CMD_H__ */
