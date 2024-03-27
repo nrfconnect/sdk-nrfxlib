@@ -1665,7 +1665,7 @@ struct nrf_wifi_umac_set_wiphy_info {
 	/** RTS threshold, TX frames with length larger than or equal to this use RTS/CTS handshake
 	 *  allowed range: 0..65536, disable with -1.
 	 */
-	unsigned int rts_threshold;
+	int rts_threshold;
 	/** Fragmentation threshold, maximum length in octets for frames.
 	 *  allowed range: 256..8000, disable fragmentation with (u32)-1.
 	 */
