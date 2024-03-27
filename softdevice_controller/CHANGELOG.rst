@@ -17,6 +17,8 @@ Changes
 
 * The deprecated functions :c:func:`rand_prio_low_get` and :c:func:`rand_prio_high_get` have been removed.
   This change does not affect applications developed in the |NCS| context. (DRGN-20473)
+* The HCI commands used to configure a scanner or initiator no longer return ``BT_HCI_ERR_INVALID_PARAM`` when the sum of scan windows is greater than the scan interval.
+  Now the controller will truncate the scan windows so that the sum of the windows fit within the scan interval. (DRGN-21710)
 
 Bug fixes
 =========
@@ -26,6 +28,8 @@ Bug fixes
   This would only occur after the window widening reached at least half of the ISO interval in magnitude.
   Assuming worst case clock accuracies on both central and peripheral, this would correspond to 2.4, 3.7, and 4.9 seconds for ISO intervals of 5 ms, 7.5 ms, and 10 ms.
   This issue would not occur if the supervision timeout was set to a value smaller than the onces mentioned above (DRGN-21619).
+* Fixed an issue where the peripheral waited for a link to time out when tearing down the connection.
+  This happened when the central would acknowledge ``TERMINATE_IND`` in the same event as it was being sent (DRGN-21637).
 
 nRF Connect SDK v2.6.0
 **********************

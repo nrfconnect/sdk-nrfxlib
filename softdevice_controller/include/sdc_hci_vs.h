@@ -540,7 +540,7 @@ typedef __PACKED_STRUCT
     /** @brief Set to 0 to disable, 1 to enable, all other values are RFU. */
     uint8_t enable;
     /** @brief Requested average interval for the measurements and reports. Valid range is from 7500
-     *         to 4000000. If set to 0, the channel survey role will be scheduled at every available
+     *         to 4000000. If set to 0, the measurements will be scheduled at every available
      *         opportunity.
      */
     uint32_t interval_us;
@@ -1200,22 +1200,20 @@ uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat
 
 /** @brief Enable the Quality of Service (QoS) channel survey module.
  *
- * This vendor specific command is used to enable or disable the channel survey module.
+ * This vendor specific command is used to enable or disable the QoS channel survey module.
  *
- * The channel survey module provides measurements of the energy levels on
+ * The QoS channel survey module provides measurements of the energy levels on
  * the Bluetooth Low Energy channels. When the module is enabled, @ref
  * sdc_hci_subevent_vs_qos_channel_survey_report_t
  * events will periodically report the measured energy levels for each channel.
  *
- * The measurements are scheduled with lower priority than other Bluetooth Low Energy roles,
- * Radio Timeslot API events and Flash API events.
+ * The measurements are scheduled with low priority.
  *
- * The channel survey module will attempt to do measurements so that the average interval
- * between measurements will be interval_us. However due to the channel survey module
- * having the lowest priority of all roles and modules, this may not be possible. In that
- * case fewer than expected channel survey reports may be given.
+ * The QoS channel survey module will attempt to do measurements so that the average interval
+ * between measurements will be interval_us. However due to low scheduling priority, this may
+ * not be possible. In that case fewer than expected reports may be given.
  *
- * In order to use the channel survey module, funcref:sdc_support_qos_channel_survey
+ * In order to use the QoS channel survey module, funcref:sdc_support_qos_channel_survey
  * must be called.
  *
  * Event(s) geneated (unless masked away):
