@@ -758,7 +758,7 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
             nrf_802154_transmit_done_metadata_t metadata = {};
 
             nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
-            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_ABORTED, &metadata);
+            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_NO_ACK, &metadata);
         }
         break;
 
@@ -843,16 +843,6 @@ static bool current_operation_terminate(nrf_802154_term_t term_lvl,
     return result;
 }
 
-/** Enter Sleep state. */
-static void sleep_init(void)
-{
-    // This function is always executed from a critical section, so this check is safe.
-    if (timeslot_is_granted())
-    {
-        nrf_802154_timer_coord_stop();
-    }
-}
-
 /** Initialize Falling Asleep operation. */
 static void falling_asleep_init(void)
 {
@@ -862,7 +852,6 @@ static void falling_asleep_init(void)
     }
     else
     {
-        sleep_init();
         state_set(RADIO_STATE_SLEEP);
     }
 }
@@ -1212,7 +1201,6 @@ static void switch_to_idle(void)
 {
     if (!nrf_802154_pib_rx_on_when_idle_get())
     {
-        sleep_init();
         state_set(RADIO_STATE_SLEEP);
     }
     else
@@ -1884,7 +1872,6 @@ void nrf_802154_trx_go_idle_finished(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    sleep_init();
     state_set(RADIO_STATE_SLEEP);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2568,7 +2555,6 @@ static bool core_sleep(nrf_802154_term_t term_lvl, req_originator_t req_orig, bo
         }
         else
         {
-            sleep_init();
             state_set(RADIO_STATE_SLEEP);
         }
     }
