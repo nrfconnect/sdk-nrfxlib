@@ -53,6 +53,15 @@ config NRF_802154_SL_HPTIMER
 
 endif # NRF_802154_SL
 
+config NRF_RTC_TIMER_USER_CHAN_COUNT_ADD_NRF_802154_RADIO_DRIVER
+	int
+	default 2 if NRF_802154_SL && SOC_COMPATIBLE_NRF5340_CPUNET
+	default 3 if NRF_802154_SL
+	default 0
+	help
+	  Additional requirements on nrf_rtc_timer user channels required by
+	  the nRF 802.15.4 Radio Driver.
+
 endif # NRF_802154_RADIO_DRIVER
 
 orsource "../internal/Kconfig.nrfxlib"
