@@ -44,7 +44,11 @@
 #include "nrf_802154_const.h"
 #include "nrf_802154_config.h"
 #include "nrf_802154_tx_work_buffer.h"
-#include "nrf_802154_sl_ecb.h"
+#if defined(CONFIG_MPSL)
+#include "mpsl_ecb.h"
+#else
+#include "hal/nrf_ecb.h"
+#endif
 
 #ifndef MIN
 #define MIN(a, b)                                 ((a) < (b) ? (a) : (b)) ///< Leaves the minimum of the two arguments
@@ -61,14 +65,6 @@
 #define NRF_802154_AES_CCM_B0_FIELD_NONCE_OCTET   1                       // AnnnexB4.1.2b) - Position of octet for nonce in B0 field
 #define NRF_802154_AES_CCM_AUTH_DATA_LENGTH_OCTET 0                       // AnnnexB4.1.1b) - Position of octet for length of auth data in AddAuthData
 #define NRF_802154_AES_CCM_AUTH_DATA_OCTET        2                       // AnnnexB4.1.1b) - Position of octet for data of auth data in AddAuthData
-
-#if NRF_802154_AES_CCM_BLOCK_SIZE != NRF_802154_SL_ECB_CLEARTEXT_LENGTH
-#error NRF_802154_AES_CCM_BLOCK_SIZE != NRF_802154_SL_ECB_CLEARTEXT_LENGTH
-#endif
-
-#if NRF_802154_AES_CCM_BLOCK_SIZE != NRF_802154_SL_ECB_CIPHERTEXT_LENGTH
-#error NRF_802154_AES_CCM_BLOCK_SIZE != NRF_802154_SL_ECB_CLEARTEXT_LENGTH
-#endif
 
 /**
  * @brief Steps of AES-CCM* algorithm.
@@ -102,12 +98,98 @@ static uint8_t                 * mp_work_buffer;                                
 
 static const uint8_t m_mic_size[] = { 0, MIC_32_SIZE, MIC_64_SIZE, MIC_128_SIZE }; ///< Security level - 802.15.4-2015 Standard Table 9.6
 
+typedef struct
+{
+    uint32_t key[NRF_802154_AES_CCM_BLOCK_SIZE / sizeof(uint32_t)];
+    uint8_t  cleartext[NRF_802154_AES_CCM_BLOCK_SIZE];
+    uint8_t  ciphertext[NRF_802154_AES_CCM_BLOCK_SIZE];
+} nrf_802154_hal_ecb_data_t;
+
 /******************************************************************************/
 /******************************************************************************/
 /******************************************************************************/
 
-static nrf_802154_sl_ecb_data_t m_ecb_hal_data;
-static bool                     m_ecb_hal_req_run;
+static nrf_802154_hal_ecb_data_t m_ecb_hal_data;
+static bool                      m_ecb_hal_req_run;
+
+#if defined(CONFIG_MPSL)
+static inline void ecb_block_encrypt(nrf_802154_hal_ecb_data_t * p_ecb_data)
+{
+    /* Note: nrf_802154_hal_ecb_data_t and mpsl_ecb_hal_data_t are equivalent
+     * and pointers to them can be safely cast.
+     */
+    mpsl_ecb_block_encrypt((mpsl_ecb_hal_data_t *)p_ecb_data);
+}
+
+#else
+
+#define ECB_INST NRF_ECB
+
+static inline void sleep_wfe(void)
+{
+#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+    void z_impl_k_busy_wait();
+    z_impl_k_busy_wait(10);
+#elif defined(CONFIG_SOC_COMPATIBLE_NRF52X)
+    __WFE();
+#else
+    /* Do-nothing. This includes nRF5340 series due multiple sleep-related anomalies (160, 165, 168) */
+#endif
+}
+
+static void wait_for_ecb_end(void)
+{
+    while (!nrf_ecb_event_check(ECB_INST, NRF_ECB_EVENT_ENDECB) &&
+           !nrf_ecb_event_check(ECB_INST, NRF_ECB_EVENT_ERRORECB))
+    {
+#if !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+        if ((SCB->SCR & SCB_SCR_SEVONPEND_Msk) == SCB_SCR_SEVONPEND_Msk)
+#endif
+        {
+            NVIC_ClearPendingIRQ(ECB_IRQn);
+
+            uint32_t irq_was_masked = __get_PRIMASK();
+
+            __disable_irq();
+
+            nrf_ecb_int_enable(ECB_INST, NRF_ECB_INT_ENDECB_MASK | NRF_ECB_INT_ERRORECB_MASK);
+            if (!nrf_ecb_event_check(ECB_INST, NRF_ECB_EVENT_ENDECB) &&
+                !nrf_ecb_event_check(ECB_INST, NRF_ECB_EVENT_ERRORECB))
+            {
+                sleep_wfe();
+            }
+
+            if (!irq_was_masked)
+            {
+                __enable_irq();
+            }
+        }
+    }
+}
+
+static void ecb_block_encrypt(nrf_802154_hal_ecb_data_t * p_ecb_data)
+{
+    nrf_ecb_int_disable(ECB_INST, NRF_ECB_INT_ENDECB_MASK | NRF_ECB_INT_ERRORECB_MASK);
+
+    do
+    {
+        nrf_ecb_task_trigger(ECB_INST, NRF_ECB_TASK_STOPECB);
+        nrf_ecb_event_clear(ECB_INST, NRF_ECB_EVENT_ENDECB);
+        nrf_ecb_event_clear(ECB_INST, NRF_ECB_EVENT_ERRORECB);
+        nrf_ecb_data_pointer_set(ECB_INST, p_ecb_data);
+
+        nrf_ecb_task_trigger(ECB_INST, NRF_ECB_TASK_STARTECB);
+        wait_for_ecb_end();
+    }
+    while (nrf_ecb_event_check(ECB_INST, NRF_ECB_EVENT_ERRORECB));
+
+    nrf_ecb_int_disable(ECB_INST, NRF_ECB_INT_ENDECB_MASK | NRF_ECB_INT_ERRORECB_MASK);
+    nrf_ecb_event_clear(ECB_INST, NRF_ECB_EVENT_ERRORECB);
+    nrf_ecb_event_clear(ECB_INST, NRF_ECB_EVENT_ENDECB);
+    NVIC_ClearPendingIRQ(ECB_IRQn);
+}
+
+#endif /* defined(CONFIG_MPSL) */
 
 static inline uint8_t * ecb_hal_cleartext_ptr_get(void)
 {
@@ -121,7 +203,7 @@ static inline uint8_t * ecb_hal_ciphertext_ptr_get(void)
 
 static void ecb_hal_key_set(const uint8_t * p_key)
 {
-    memcpy(m_ecb_hal_data.key, p_key, NRF_802154_SL_ECB_KEY_LENGTH);
+    memcpy(m_ecb_hal_data.key, p_key, NRF_802154_AES_CCM_BLOCK_SIZE);
 }
 
 /******************************************************************************/
@@ -436,7 +518,7 @@ static void ecb_hal_block_encrypted_handler(void)
 static void start_ecb_auth_transformation(void)
 {
     ecb_hal_key_set(m_aes_ccm_data.key);
-    memcpy(ecb_hal_cleartext_ptr_get(), m_x, NRF_802154_SL_ECB_CLEARTEXT_LENGTH);
+    memcpy(ecb_hal_cleartext_ptr_get(), m_x, NRF_802154_AES_CCM_BLOCK_SIZE);
     m_state.iteration      = 0;
     m_state.transformation = ADD_AUTH_DATA_AUTH;
     m_ecb_hal_req_run      = true;
@@ -444,7 +526,7 @@ static void start_ecb_auth_transformation(void)
     while (m_ecb_hal_req_run)
     {
         m_ecb_hal_req_run = false;
-        nrf_802154_sl_ecb_block_encrypt(&m_ecb_hal_data);
+        ecb_block_encrypt(&m_ecb_hal_data);
         ecb_hal_block_encrypted_handler();
     }
 }
