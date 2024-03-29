@@ -116,9 +116,49 @@ typedef struct
     /** TX power to be applied to the RADIO peripheral. */
     mpsl_tx_power_t radio_tx_power;
 
-    /** FEM gain. */
+    /** FEM gain.
+     * 
+     * @note This field is deprecated and will be removed. Please use the
+     * @c fem_pa_power_control field and @ref mpsl_fem_pa_power_control_set function.
+     */
     mpsl_fem_gain_t fem;
+
+    /** FEM PA power control.*/
+    mpsl_fem_pa_power_control_t fem_pa_power_control;
 } mpsl_tx_power_split_t;
+
+/** @brief PA setup is required before starting a transmission.
+ *
+ *  This flag applies to @ref mpsl_fem_caps_t::flags.
+ * 
+ *  If it is set, then @ref mpsl_fem_pa_configuration_set must be called before transmission starts.
+ */
+#define MPSL_FEM_CAPS_FLAG_PA_SETUP_REQUIRED  (1U << 0)
+
+/** @brief LNA setup is required before starting a reception.
+ *
+ *  This flag applies to @ref mpsl_fem_caps_t::flags.
+ * 
+ *  If it is set, then @ref mpsl_fem_lna_configuration_set must be called before reception starts.
+ */
+#define MPSL_FEM_CAPS_FLAG_LNA_SETUP_REQUIRED (1U << 1)
+
+/** @brief Structure representing capabilities and characteristics of the FEM in use. */
+typedef struct
+{
+    /** Flags informing about the FEM in use.
+     *
+     *  The following flags apply:
+     *  @ref MPSL_FEM_CAPS_FLAG_PA_SETUP_REQUIRED, @ref MPSL_FEM_CAPS_FLAG_LNA_SETUP_REQUIRED
+     */
+    uint32_t flags;
+} mpsl_fem_caps_t;
+
+/** @brief Gets the capabilities of the FEM in use.
+ * 
+ *  @param[out] p_caps  Pointer to the capabilities structure to be filled in.
+ */
+void mpsl_fem_caps_get(mpsl_fem_caps_t * p_caps);
 
 /** @brief Disable Front End Module.
  *
@@ -332,7 +372,34 @@ int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
                                uint16_t                      freq_mhz,
                                bool                          tx_power_ceiling);
 
+/** @brief Sets the PA power control.
+ * 
+ * Setting the PA power control informs the FEM implementation how the PA is to be controlled
+ * before the next transmission.
+ * 
+ * The PA power control set by this function is to be applied to control signals or
+ * parameters. What signals and parameters are controlled and how does it happen depends on
+ * implementation of given FEM. The meaning of @p pa_power_control parameter is
+ * fully FEM type-dependent. For FEM type-independent protocol implementation please
+ * use the function @ref mpsl_fem_tx_power_split and provide outcome of this function
+ * returned by the parameter @c p_tx_power_split to the call to @ref mpsl_fem_pa_power_control_set.
+ * For applications intended for testing the FEM itself when @ref mpsl_fem_tx_power_split is not used
+ * you must make the @p pa_power_control parameter on your own.
+ *
+ * @note The PA power control set by this function will be applied to radio transmissions
+ * following the call. If the function is called during radio transmission
+ * or during ramp-up for transmission it is unspecified if the control is applied.
+ *
+ * @param[in] pa_power_control  PA power control to be applied to the FEM.
+ *
+ * @retval   0             PA power control has been applied successfully.
+ * @retval   -NRF_EINVAL   PA power control could not be applied. Provided @p pa_power_control is invalid.
+ */
+int32_t mpsl_fem_pa_power_control_set(mpsl_fem_pa_power_control_t pa_power_control);
+
 /** @brief Sets PA gain.
+ * 
+ * @note This function is deprecated. Please use @ref mpsl_fem_pa_power_control_set .
  *
  * @note The gain set by this function will be applied to radio transmissions
  * following the call. If the function is called during radio transmission
@@ -347,6 +414,8 @@ int32_t mpsl_fem_pa_gain_set(const mpsl_fem_gain_t * p_gain);
 
 /** @brief Checks if the PA signaling is configured and enabled, and gets
  *  the configured gain in dB.
+ * 
+ * @note This function is deprecated. Please use the function @ref mpsl_fem_caps_get instead.
  *
  * @param[out] p_gain The configured gain in dB if PA is configured and enabled.
  *                    If there is no PA present or the PA does not affect
