@@ -7,6 +7,19 @@ Changelog
    :local:
    :depth: 2
 
+Main Branch
+***********
+
+Changes
+=======
+
+* New FEM protocol APIs are provided to control the PA power, the previous APIs are deprecated.
+  This change does not affect applications developed in the |NCS| context.
+  :c:func:`mpsl_fem_pa_power_control_set` replaces :c:func:`mpsl_fem_pa_gain_set`.
+  :c:func:`mpsl_fem_caps_get` replaces :c:func:`mpsl_fem_pa_is_configured`.
+  The :c:struct:`mpsl_tx_power_split_t` structure contains the new field ``fem_pa_power_control`` to be used with the :c:func:`mpsl_fem_pa_power_control_set` function.
+  The :c:type:`mpsl_fem_gain_t` type is deprecated, please use :c:type:`mpsl_fem_pa_power_control_t` type instead (KRKNWK-18729).
+
 nRF Connect SDK v2.6.0
 **********************
 
