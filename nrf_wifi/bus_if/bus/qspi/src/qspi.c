@@ -32,7 +32,6 @@ static int nrf_wifi_bus_qspi_irq_handler(void *data)
 static void *nrf_wifi_bus_qspi_dev_add(void *bus_priv,
 				       void *bal_dev_ctx)
 {
-	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_bus_qspi_priv *qspi_priv = NULL;
 	struct nrf_wifi_bus_qspi_dev_ctx *qspi_dev_ctx = NULL;
 	struct nrf_wifi_osal_host_map host_map;
@@ -76,30 +75,6 @@ static void *nrf_wifi_bus_qspi_dev_add(void *bus_priv,
 	qspi_dev_ctx->addr_pktram_base = qspi_dev_ctx->host_addr_base +
 		qspi_priv->cfg_params.addr_pktram_base;
 
-	status = nrf_wifi_osal_bus_qspi_dev_intr_reg(qspi_dev_ctx->qspi_priv->opriv,
-						     qspi_dev_ctx->os_qspi_dev_ctx,
-						     qspi_dev_ctx,
-						     &nrf_wifi_bus_qspi_irq_handler);
-
-	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(qspi_dev_ctx->qspi_priv->opriv,
-				      "%s: Unable to register interrupt to the OS",
-				      __func__);
-
-		nrf_wifi_osal_bus_qspi_dev_intr_unreg(qspi_dev_ctx->qspi_priv->opriv,
-						      qspi_dev_ctx->os_qspi_dev_ctx);
-
-		nrf_wifi_osal_bus_qspi_dev_rem(qspi_dev_ctx->qspi_priv->opriv,
-					       qspi_dev_ctx->os_qspi_dev_ctx);
-
-		nrf_wifi_osal_mem_free(qspi_priv->opriv,
-				       qspi_dev_ctx);
-
-		qspi_dev_ctx = NULL;
-
-		goto out;
-	}
-
 out:
 	return qspi_dev_ctx;
 }
@@ -110,9 +85,6 @@ static void nrf_wifi_bus_qspi_dev_rem(void *bus_dev_ctx)
 	struct nrf_wifi_bus_qspi_dev_ctx *qspi_dev_ctx = NULL;
 
 	qspi_dev_ctx = bus_dev_ctx;
-
-	nrf_wifi_osal_bus_qspi_dev_intr_unreg(qspi_dev_ctx->qspi_priv->opriv,
-					      qspi_dev_ctx->os_qspi_dev_ctx);
 
 	nrf_wifi_osal_bus_qspi_dev_rem(qspi_dev_ctx->qspi_priv->opriv,
 					       qspi_dev_ctx->os_qspi_dev_ctx);
@@ -129,6 +101,21 @@ static enum nrf_wifi_status nrf_wifi_bus_qspi_dev_init(void *bus_dev_ctx)
 
 	qspi_dev_ctx = bus_dev_ctx;
 
+
+	status = nrf_wifi_osal_bus_qspi_dev_intr_reg(qspi_dev_ctx->qspi_priv->opriv,
+						     qspi_dev_ctx->os_qspi_dev_ctx,
+						     qspi_dev_ctx,
+						     &nrf_wifi_bus_qspi_irq_handler);
+
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(qspi_dev_ctx->qspi_priv->opriv,
+				      "%s: Unable to register interrupt to the OS",
+				      __func__);
+		qspi_dev_ctx = NULL;
+
+		goto out;
+	}
+
 	status = nrf_wifi_osal_bus_qspi_dev_init(qspi_dev_ctx->qspi_priv->opriv,
 						 qspi_dev_ctx->os_qspi_dev_ctx);
 
@@ -136,6 +123,8 @@ static enum nrf_wifi_status nrf_wifi_bus_qspi_dev_init(void *bus_dev_ctx)
 		nrf_wifi_osal_log_err(qspi_dev_ctx->qspi_priv->opriv,
 				      "%s: nrf_wifi_osal_qspi_dev_init failed", __func__);
 
+		nrf_wifi_osal_bus_qspi_dev_intr_unreg(qspi_dev_ctx->qspi_priv->opriv,
+						      qspi_dev_ctx->os_qspi_dev_ctx);
 		goto out;
 	}
 out:
@@ -148,6 +137,9 @@ static void nrf_wifi_bus_qspi_dev_deinit(void *bus_dev_ctx)
 	struct nrf_wifi_bus_qspi_dev_ctx *qspi_dev_ctx = NULL;
 
 	qspi_dev_ctx = bus_dev_ctx;
+
+	nrf_wifi_osal_bus_qspi_dev_intr_unreg(qspi_dev_ctx->qspi_priv->opriv,
+					      qspi_dev_ctx->os_qspi_dev_ctx);
 
 	nrf_wifi_osal_bus_qspi_dev_deinit(qspi_dev_ctx->qspi_priv->opriv,
 					  qspi_dev_ctx->os_qspi_dev_ctx);
