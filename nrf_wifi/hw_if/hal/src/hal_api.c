@@ -1060,14 +1060,6 @@ void hal_rpu_eventq_drain(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 						hal_dev_ctx->lock_rx,
 						&flags);
 
-		if (hal_dev_ctx->hal_status != NRF_WIFI_HAL_STATUS_ENABLED) {
-			/* Ignore the interrupt if the HAL is not enabled */
-			nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-						hal_dev_ctx->lock_rx,
-						&flags);
-			goto out;
-		}
-
 		event = nrf_wifi_utils_q_dequeue(hal_dev_ctx->hpriv->opriv,
 						 hal_dev_ctx->event_q);
 
@@ -1305,8 +1297,6 @@ void nrf_wifi_hal_dev_rem(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 	nrf_wifi_osal_tasklet_kill(hal_dev_ctx->hpriv->opriv,
 				   hal_dev_ctx->event_tasklet);
 
-	hal_rpu_eventq_drain(hal_dev_ctx);
-
 	nrf_wifi_osal_tasklet_free(hal_dev_ctx->hpriv->opriv,
 				   hal_dev_ctx->event_tasklet);
 
@@ -1398,6 +1388,7 @@ void nrf_wifi_hal_dev_deinit(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 {
 	nrf_wifi_hal_disable(hal_dev_ctx);
 	nrf_wifi_bal_dev_deinit(hal_dev_ctx->bal_dev_ctx);
+	hal_rpu_eventq_drain(hal_dev_ctx);
 }
 
 
