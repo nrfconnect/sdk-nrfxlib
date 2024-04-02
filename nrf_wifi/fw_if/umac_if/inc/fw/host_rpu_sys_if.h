@@ -161,8 +161,6 @@ enum nrf_wifi_sys_commands {
 	NRF_WIFI_CMD_RAW_CONFIG_FILTER,
 	/** Command to configure packet injector mode or Raw Tx mode */
 	NRF_WIFI_CMD_RAW_TX_PKT,
-	/** Command to get extra RPU debug statistics */ 
-	NRF_WIFI_CMD_GET_DEBUG_STATS,
 };
 
 /**
@@ -194,8 +192,6 @@ enum nrf_wifi_sys_events {
 	NRF_WIFI_EVENT_FILTER_SET_DONE,
 	/** Tx done event for the Raw Tx */
 	NRF_WIFI_EVENT_RAW_TX_DONE,
-	/** Response to NRF_WIFI_CMD_GET_DEBUG_STATS */
-	NRF_WIFI_EVENT_DEBUG_STATS,
 };
 
 /**
@@ -1582,19 +1578,6 @@ struct umac_int_stats {
 struct nrf_wifi_event_deinit_done {
 	/** UMAC header, @ref nrf_wifi_sys_head */
 	struct nrf_wifi_sys_head sys_head;
-} __NRF_WIFI_PKD;
-
-/**
- * @brief This structure represents the event that provides RPU debug
- *  statistics in response to the NRF_WIFI_CMD_GET_DEBUG_STATS command.
- */
-struct nrf_wifi_umac_event_debug_stats {
-	/** UMAC header, @ref nrf_wifi_sys_head */
-	struct nrf_wifi_sys_head sys_head;
-	/** RPU hardware lockup event detection count */
-	unsigned int rpu_hw_lockup_count;
-	/** RPU hardware lockup recovery completed count */
-	unsigned int rpu_hw_lockup_recovery_done;
 } __NRF_WIFI_PKD;
 
 #endif /* __HOST_RPU_SYS_IF_H__ */
