@@ -37,29 +37,29 @@
 #include "nrf_802154_fal.h"
 
 int8_t nrf_802154_tx_power_convert_metadata_to_tx_power_split(
-    uint8_t                                 channel,
-    nrf_802154_tx_power_metadata_t          tx_power,
-    nrf_802154_fal_tx_power_split_t * const p_tx_power_split)
+    uint8_t                                  channel,
+    nrf_802154_tx_power_metadata_t           tx_power,
+    nrf_802154_fal_tx_power_split2_t * const p_tx_power_split)
 {
     int8_t power_unconstrained =
         tx_power.use_metadata_value ? tx_power.power : nrf_802154_pib_tx_power_get();
 
-    return nrf_802154_fal_tx_power_split(channel, power_unconstrained, p_tx_power_split);
+    return nrf_802154_fal_tx_power_split2(channel, power_unconstrained, p_tx_power_split);
 }
 
 int8_t nrf_802154_tx_power_split_pib_power_get(
-    nrf_802154_fal_tx_power_split_t * const p_split_power)
+    nrf_802154_fal_tx_power_split2_t * const p_split_power)
 {
-    return nrf_802154_fal_tx_power_split(nrf_802154_pib_channel_get(),
-                                         nrf_802154_pib_tx_power_get(),
-                                         p_split_power);
+    return nrf_802154_fal_tx_power_split2(nrf_802154_pib_channel_get(),
+                                          nrf_802154_pib_tx_power_get(),
+                                          p_split_power);
 }
 
 int8_t nrf_802154_tx_power_split_pib_power_for_channel_get(
-    uint8_t                                 channel,
-    nrf_802154_fal_tx_power_split_t * const p_split_power)
+    uint8_t                                  channel,
+    nrf_802154_fal_tx_power_split2_t * const p_split_power)
 {
-    return nrf_802154_fal_tx_power_split(channel,
-                                         nrf_802154_pib_tx_power_get(),
-                                         p_split_power);
+    return nrf_802154_fal_tx_power_split2(channel,
+                                          nrf_802154_pib_tx_power_get(),
+                                          p_split_power);
 }

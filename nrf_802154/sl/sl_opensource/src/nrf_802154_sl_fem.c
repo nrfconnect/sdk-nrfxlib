@@ -118,6 +118,11 @@ static radio_tx_power_t to_radio_tx_power_convert(int8_t integer_tx_power)
     return allowed_values[0];
 }
 
+void mpsl_fem_caps_get(mpsl_fem_caps_t * p_caps)
+{
+    *p_caps = (mpsl_fem_caps_t){};
+}
+
 int32_t mpsl_fem_disable(void)
 {
     return 0;
@@ -156,7 +161,7 @@ void mpsl_fem_deactivate_now(mpsl_fem_functionality_t type)
     (void)type;
 }
 
-int32_t mpsl_fem_abort_set(uint32_t event, uint32_t group)
+int32_t mpsl_fem_abort_set(mpsl_subscribable_hw_event_t event, uint32_t group)
 {
     return -NRF_EPERM;
 }
@@ -185,24 +190,25 @@ void mpsl_fem_cleanup(void)
     // Intentionally empty
 }
 
-void mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
-                             mpsl_tx_power_split_t * const p_tx_power_split)
+int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
+                               mpsl_tx_power_split_t * const p_tx_power_split,
+                               uint16_t                      freq_mhz,
+                               bool                          tx_power_ceiling)
 {
-    p_tx_power_split->radio_tx_power      = to_radio_tx_power_convert(power).dbm;
-    p_tx_power_split->fem.gain_db         = 0;
-    p_tx_power_split->fem.private_setting = 0;
+    (void)freq_mhz;
+    (void)tx_power_ceiling;
+
+    p_tx_power_split->radio_tx_power       = to_radio_tx_power_convert(power).dbm;
+    p_tx_power_split->fem_pa_power_control = 0;
+
+    return p_tx_power_split->radio_tx_power;
 }
 
-int32_t mpsl_fem_pa_gain_set(const mpsl_fem_gain_t * p_gain)
+int32_t mpsl_fem_pa_power_control_set(mpsl_fem_pa_power_control_t pa_power_control)
 {
-    (void)p_gain;
+    (void)pa_power_control;
 
     return 0;
-}
-
-void mpsl_fem_pa_is_configured(int8_t * const p_gain)
-{
-    (void)p_gain;
 }
 
 bool mpsl_fem_prepare_powerdown(NRF_TIMER_Type * p_instance,
@@ -222,15 +228,14 @@ bool mpsl_fem_device_config_254_apply_get(void)
     return false;
 }
 
-int8_t nrf_802154_fal_tx_power_split(const uint8_t                           channel,
-                                     const int8_t                            power,
-                                     nrf_802154_fal_tx_power_split_t * const p_tx_power_split)
+int8_t nrf_802154_fal_tx_power_split2(const uint8_t                            channel,
+                                      const int8_t                             power,
+                                      nrf_802154_fal_tx_power_split2_t * const p_tx_power_split)
 {
     (void)channel;
 
-    p_tx_power_split->radio_tx_power      = to_radio_tx_power_convert(power).dbm;
-    p_tx_power_split->fem.gain_db         = 0;
-    p_tx_power_split->fem.private_setting = 0;
+    p_tx_power_split->radio_tx_power       = to_radio_tx_power_convert(power).dbm;
+    p_tx_power_split->fem_pa_power_control = 0;
 
     return p_tx_power_split->radio_tx_power;
 }

@@ -207,10 +207,10 @@ void nrf_802154_trx_cca_configuration_update(void);
  *                  It is bitwise combination of @ref nrf_802154_trx_receive_notifications_t values.
  * @param[in] p_ack_tx_power Selects the power which should be used to transmitted an ACK if required.
  */
-void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
-                                  nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
-                                  nrf_802154_trx_receive_notifications_t  notifications_mask,
-                                  const nrf_802154_fal_tx_power_split_t * p_ack_tx_power);
+void nrf_802154_trx_receive_frame(uint8_t                                  bcc,
+                                  nrf_802154_trx_ramp_up_trigger_mode_t    rampup_trigg_mode,
+                                  nrf_802154_trx_receive_notifications_t   notifications_mask,
+                                  const nrf_802154_fal_tx_power_split2_t * p_ack_tx_power);
 
 /**@brief Puts the trx module into receive ACK mode.
  *
@@ -353,11 +353,11 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer);
  *                           It is bitwise combination of @ref nrf_802154_trx_transmit_notifications_t values.
  * @note To transmit ack after frame is received use @ref nrf_802154_trx_transmit_ack.
  */
-void nrf_802154_trx_transmit_frame(const void                            * p_transmit_buffer,
-                                   nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
-                                   uint8_t                                 cca_attempts,
-                                   const nrf_802154_fal_tx_power_split_t * p_tx_power,
-                                   nrf_802154_trx_transmit_notifications_t notifications_mask);
+void nrf_802154_trx_transmit_frame(const void                             * p_transmit_buffer,
+                                   nrf_802154_trx_ramp_up_trigger_mode_t    rampup_trigg_mode,
+                                   uint8_t                                  cca_attempts,
+                                   const nrf_802154_fal_tx_power_split2_t * p_tx_power,
+                                   nrf_802154_trx_transmit_notifications_t  notifications_mask);
 
 /**@brief Puts the trx module into transmit ACK mode.
  *
@@ -403,7 +403,7 @@ void nrf_802154_trx_standalone_cca(void);
  * Generation of a continuous carrier generates no handlers. It may be terminated by a call to
  * @ref nrf_802154_trx_abort or @ref nrf_802154_trx_disable.
  */
-void nrf_802154_trx_continuous_carrier(const nrf_802154_fal_tx_power_split_t * p_tx_power);
+void nrf_802154_trx_continuous_carrier(const nrf_802154_fal_tx_power_split2_t * p_tx_power);
 
 /**@brief Restarts generating continuous carrier
  *
@@ -420,8 +420,8 @@ void nrf_802154_trx_continuous_carrier_restart(void);
  * @param[in] p_transmit_buffer Pointer to a buffer used for modulating the carrier wave.
  * @param[in] p_tx_power        Transmit power in dBm.
  */
-void nrf_802154_trx_modulated_carrier(const void                            * p_transmit_buffer,
-                                      const nrf_802154_fal_tx_power_split_t * p_tx_power);
+void nrf_802154_trx_modulated_carrier(const void                             * p_transmit_buffer,
+                                      const nrf_802154_fal_tx_power_split2_t * p_tx_power);
 
 /** @brief Restarts generating modulated carrier.*/
 void nrf_802154_trx_modulated_carrier_restart(void);
