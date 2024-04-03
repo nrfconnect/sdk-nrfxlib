@@ -612,9 +612,9 @@ static void fem_for_lna_reset(void)
  *
  * @note This function must be called before ramp up PPIs are configured.
  */
-static void fem_for_pa_set(const mpsl_fem_gain_t * p_fem_gain_data)
+static void fem_for_pa_set(mpsl_fem_pa_power_control_t pa_power_control)
 {
-    (void)mpsl_fem_pa_gain_set(p_fem_gain_data);
+    (void)mpsl_fem_pa_power_control_set(pa_power_control);
     if (mpsl_fem_pa_configuration_set(&m_activate_tx_cc0, NULL) == 0)
     {
         nrf_timer_shorts_enable(m_activate_tx_cc0.event.timer.p_timer_instance,
@@ -641,11 +641,11 @@ static void fem_for_pa_reset(void)
  *
  * @note This function must be called before ramp up PPIs are configured.
  */
-static void fem_for_tx_set(bool cca, const mpsl_fem_gain_t * p_fem_gain_data)
+static void fem_for_tx_set(bool cca, mpsl_fem_pa_power_control_t pa_power_control)
 {
     bool success;
 
-    (void)mpsl_fem_pa_gain_set(p_fem_gain_data);
+    (void)mpsl_fem_pa_power_control_set(pa_power_control);
 
     if (cca)
     {
@@ -764,11 +764,11 @@ static void pa_modulation_fix_apply(bool enable)
 
     if (enable)
     {
-        int8_t pa_gain = 0;
+        mpsl_fem_caps_t fem_caps = {};
 
-        mpsl_fem_pa_is_configured(&pa_gain);
+        mpsl_fem_caps_get(&fem_caps);
 
-        if (pa_gain > 0)
+        if ((fem_caps.flags & MPSL_FEM_CAPS_FLAG_PA_SETUP_REQUIRED) != 0)
         {
             m_pa_mod_filter_latched    = *(p_radio_reg);
             m_pa_mod_filter_is_latched = true;
@@ -1292,10 +1292,10 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer)
     return result;
 }
 
-void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
-                                  nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
-                                  nrf_802154_trx_receive_notifications_t  notifications_mask,
-                                  const nrf_802154_fal_tx_power_split_t * p_ack_tx_power)
+void nrf_802154_trx_receive_frame(uint8_t                                  bcc,
+                                  nrf_802154_trx_ramp_up_trigger_mode_t    rampup_trigg_mode,
+                                  nrf_802154_trx_receive_notifications_t   notifications_mask,
+                                  const nrf_802154_fal_tx_power_split2_t * p_ack_tx_power)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -1401,7 +1401,7 @@ void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
     }
 
     // Set FEM PA gain for ACK transmission
-    mpsl_fem_pa_gain_set(&p_ack_tx_power->fem);
+    mpsl_fem_pa_power_control_set(p_ack_tx_power->fem_pa_power_control);
 
     m_timer_value_on_radio_end_event = delta_time;
 
@@ -1528,11 +1528,11 @@ bool nrf_802154_trx_rssi_sample_is_available(void)
 #endif
 }
 
-void nrf_802154_trx_transmit_frame(const void                            * p_transmit_buffer,
-                                   nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
-                                   uint8_t                                 cca_attempts,
-                                   const nrf_802154_fal_tx_power_split_t * p_tx_power,
-                                   nrf_802154_trx_transmit_notifications_t notifications_mask)
+void nrf_802154_trx_transmit_frame(const void                             * p_transmit_buffer,
+                                   nrf_802154_trx_ramp_up_trigger_mode_t    rampup_trigg_mode,
+                                   uint8_t                                  cca_attempts,
+                                   const nrf_802154_fal_tx_power_split2_t * p_tx_power,
+                                   nrf_802154_trx_transmit_notifications_t  notifications_mask)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -1607,7 +1607,7 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
 
     nrf_radio_int_enable(NRF_RADIO, ints_to_enable);
 
-    fem_for_tx_set(cca, &p_tx_power->fem);
+    fem_for_tx_set(cca, p_tx_power->fem_pa_power_control);
     nrf_802154_trx_antenna_update();
     nrf_802154_trx_ppi_for_ramp_up_set(cca ? NRF_RADIO_TASK_RXEN : NRF_RADIO_TASK_TXEN,
                                        rampup_trigg_mode,
@@ -2168,7 +2168,7 @@ static void standalone_cca_abort(void)
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
-void nrf_802154_trx_continuous_carrier(const nrf_802154_fal_tx_power_split_t * p_tx_power)
+void nrf_802154_trx_continuous_carrier(const nrf_802154_fal_tx_power_split2_t * p_tx_power)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -2180,7 +2180,7 @@ void nrf_802154_trx_continuous_carrier(const nrf_802154_fal_tx_power_split_t * p
     txpower_set(p_tx_power->radio_tx_power);
 
     // Set FEM
-    fem_for_pa_set(&p_tx_power->fem);
+    fem_for_pa_set(p_tx_power->fem_pa_power_control);
 
     // Select antenna
     nrf_802154_trx_antenna_update();
@@ -2222,8 +2222,8 @@ static void continuous_carrier_abort(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
-void nrf_802154_trx_modulated_carrier(const void                            * p_transmit_buffer,
-                                      const nrf_802154_fal_tx_power_split_t * p_tx_power)
+void nrf_802154_trx_modulated_carrier(const void                             * p_transmit_buffer,
+                                      const nrf_802154_fal_tx_power_split2_t * p_tx_power)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -2242,7 +2242,7 @@ void nrf_802154_trx_modulated_carrier(const void                            * p_
     nrf_radio_shorts_set(NRF_RADIO, SHORTS_MOD_CARRIER);
 
     // Set FEM
-    fem_for_pa_set(&p_tx_power->fem);
+    fem_for_pa_set(p_tx_power->fem_pa_power_control);
 
     // Select antenna
     nrf_802154_trx_antenna_update();

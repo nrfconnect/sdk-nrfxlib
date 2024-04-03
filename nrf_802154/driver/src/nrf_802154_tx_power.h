@@ -53,9 +53,9 @@
  *
  */
 int8_t nrf_802154_tx_power_convert_metadata_to_tx_power_split(
-    uint8_t                                 channel,
-    nrf_802154_tx_power_metadata_t          tx_power,
-    nrf_802154_fal_tx_power_split_t * const p_tx_power_split);
+    uint8_t                                  channel,
+    nrf_802154_tx_power_metadata_t           tx_power,
+    nrf_802154_fal_tx_power_split2_t * const p_tx_power_split);
 
 /**@brief Get the transmit power stored in PIB after applying the power constraints for the current channel and splitting
  *        into components to be applied on each stage of the transmit path.
@@ -68,7 +68,7 @@ int8_t nrf_802154_tx_power_convert_metadata_to_tx_power_split(
  *
  */
 int8_t nrf_802154_tx_power_split_pib_power_get(
-    nrf_802154_fal_tx_power_split_t * const p_split_power);
+    nrf_802154_fal_tx_power_split2_t * const p_split_power);
 
 /**@brief Get the transmit power stored in PIB after applying the power constraints for the given channel and splitting
  *        into components to be applied on each stage of the transmit path.
@@ -80,7 +80,7 @@ int8_t nrf_802154_tx_power_split_pib_power_get(
  *
  */
 int8_t nrf_802154_tx_power_split_pib_power_for_channel_get(
-    uint8_t                                 channel,
-    nrf_802154_fal_tx_power_split_t * const p_split_power);
+    uint8_t                                  channel,
+    nrf_802154_fal_tx_power_split2_t * const p_split_power);
 
 #endif // NRF_802154_TX_POWER_H__

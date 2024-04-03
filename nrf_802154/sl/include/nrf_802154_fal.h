@@ -47,28 +47,30 @@
 extern "C" {
 #endif
 
-/**
- * @brief Represents components of tx_power to be applied for stages on transmit path.
- */
+/** @brief Represents components of tx_power to be applied for stages on transmit path. */
 typedef struct
 {
-    int8_t          radio_tx_power; // !< TX power in dBm to be applied to the RADIO peripheral.
-    mpsl_fem_gain_t fem;            // !< Data needed to set the FEM gain
-} nrf_802154_fal_tx_power_split_t;
+    /** TX power to be applied to the RADIO peripheral. */
+    int8_t                      radio_tx_power;
 
-/** @brief Splits transmit power value into components to be applied on each stage on the transmit path.
+    /** PA power control to be applied to Front-End Module. */
+    mpsl_fem_pa_power_control_t fem_pa_power_control;
+} nrf_802154_fal_tx_power_split2_t;
+
+/** @brief Splits transmit power value into components to be applied on each stage on transmit path.
  *
- * @note This is a stub implementation used when MPSL is not linked.
+ * @note If the exact value of @p power cannot be achieved this function attempts to use less
+ * power to not exceed constraint.
  *
- * @param[in]  channel          Ignored.
+ * @param[in]  channel          802.15.4 channel.
  * @param[in]  power            TX power in dBm requested for transmission on air.
  * @param[out] p_tx_power_split Components of tx_power to be applied for stages on transmit path.
  *
- * @returns The real achieved total transmission power in dBm.
+ * @return Actually achieved power in dBm.
  */
-int8_t nrf_802154_fal_tx_power_split(const uint8_t                           channel,
-                                     const int8_t                            power,
-                                     nrf_802154_fal_tx_power_split_t * const p_tx_power_split);
+int8_t nrf_802154_fal_tx_power_split2(const uint8_t                            channel,
+                                      const int8_t                             power,
+                                      nrf_802154_fal_tx_power_split2_t * const p_tx_power_split);
 
 #ifdef __cplusplus
 }

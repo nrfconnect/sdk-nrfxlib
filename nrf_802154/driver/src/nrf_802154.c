@@ -161,7 +161,7 @@ void nrf_802154_tx_power_set(int8_t power)
 
 int8_t nrf_802154_tx_power_get(void)
 {
-    nrf_802154_fal_tx_power_split_t split_power = {0};
+    nrf_802154_fal_tx_power_split2_t split_power = {0};
 
     return nrf_802154_tx_power_split_pib_power_get(&split_power);
 }
