@@ -148,8 +148,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1015
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1140
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1020
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1150
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -252,7 +252,7 @@ extern "C" {
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (166)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
 #define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (16 + (count) * 296) : 0)
-#define __MEM_PER_ISO_TX_HCI_BUFFER(count) ((count) > 0 ? (12 + (count) * 296) : 0)
+#define __MEM_PER_ISO_TX_HCI_BUFFER(count) ((count) > 0 ? (12 + (count) * 300) : 0)
 
 /** Memory required per periodic advertising with responses set.
  *
@@ -274,13 +274,13 @@ extern "C" {
 #define SDC_MEM_PER_CIG(count) ((count) > 0 ? (13 + (count) * 123) : 0)
 
 /** @brief Maximum memory required per CIS. Buffer and CIG memory comes in addition. */
-#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 556) : 0)
+#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 548) : 0)
 
 /** @brief Maximum memory required per BIG. */
 #define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 284) : 0)
 
 /** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
-#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 276) : 0)
+#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 268) : 0)
 
 /** @brief Maximum memory required for the ISO RX PDU pool per stream.
  *  @param[in] rx_pdu_buffer_per_stream_count Number of RX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
