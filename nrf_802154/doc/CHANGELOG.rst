@@ -16,6 +16,7 @@ Main branch - nRF 802.15.4 Radio Driver
 Bug fixes
 =========
 
+* Test PR creation
 * Fixed an issue causing the driver to report a very inaccurate timestamp if a delayed operation starts shortly after sleep request. (KRKNWK-18589)
 
 nRF Connect SDK v2.6.0 - nRF 802.15.4 Radio Driver
