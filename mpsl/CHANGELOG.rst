@@ -13,7 +13,7 @@ Main Branch
 Changes
 =======
 
-* New FEM protocol APIs are provided to control the PA power, the previous APIs are deprecated.
+* New FEM protocol APIs are provided to control the PA power, the previous APIs are removed.
   This change does not affect applications developed in the |NCS| context.
   :c:func:`mpsl_fem_pa_power_control_set` replaces :c:func:`mpsl_fem_pa_gain_set`.
   :c:func:`mpsl_fem_caps_get` replaces :c:func:`mpsl_fem_pa_is_configured`.

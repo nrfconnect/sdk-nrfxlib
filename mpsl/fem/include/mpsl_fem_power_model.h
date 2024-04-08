@@ -38,31 +38,10 @@ typedef struct
      *  supported by the SoC that can safely be applied directly to RADIO registers. */
     int8_t          soc_pwr;
 
-#ifdef _MPSL_FEM_POWER_MODEL_FEM_GAIN_API_DEPRECATED
-    /** Front-End Module gain. 
-     * 
-     *  @note This field is deprecated. In implementation of your model please wrap any access to
-     *  this field with @c ifdef @c _MPSL_FEM_POWER_MODEL_FEM_GAIN_API_DEPRECATED
-     *  While @ref _MPSL_FEM_POWER_MODEL_FEM_GAIN_API_DEPRECATED is defined this field should be
-     *  written as before. Please note the @c fem_pa_power_control field.
-     *  The @c fem field will be removed along with @ref _MPSL_FEM_POWER_MODEL_FEM_GAIN_API_DEPRECATED
-     *  macro and only the field @c fem_pa_power_control will be left.
-     */
-    mpsl_fem_gain_t fem;
-#endif
-
     /** PA power control to be applied to the FEM.
      *
      * This value is FEM type-dependent. The produced value is to be passed to the
      * call to @ref mpsl_fem_pa_power_control_set.
-     *
-     * @note During depreciation period while @ref _MPSL_FEM_POWER_MODEL_FEM_GAIN_API_DEPRECATED is defined
-     * this field is expected to contain the same value as @c fem.private_setting . If the implementation
-     * of the model is not aligned yet to the new API and does not write @c fem_pa_power_control field,
-     * then in case of difference between @c fem.private_setting and @c fem_pa_power_control the
-     * @c fem.private_setting is used. After depreciation period only the
-     * @c fem_pa_power_control field will be left and macro @ref _MPSL_FEM_POWER_MODEL_FEM_GAIN_API_DEPRECATED
-     * will be removed.
      */
     mpsl_fem_pa_power_control_t fem_pa_power_control;
 

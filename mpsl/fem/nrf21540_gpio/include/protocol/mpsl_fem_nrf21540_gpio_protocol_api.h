@@ -22,16 +22,16 @@
 extern "C" {
 #endif
 
-/** @brief Bit number of @c private_setting holding MODE pin state. */
+/** @brief Bit number of @c mpsl_fem_pa_power_control_t holding MODE pin state. */
 #define MPSL_FEM_NRF21540_GPIO_PA_POWER_CONTROL_MODE_BITNO    (0)
 
-/** @brief Bit mask of @c private_setting for holding MODE pin state. */
+/** @brief Bit mask of @c mpsl_fem_pa_power_control_t for holding MODE pin state. */
 #define MPSL_FEM_NRF21540_GPIO_PA_POWER_CONTROL_MODE_MSK      (1U << MPSL_FEM_NRF21540_GPIO_PA_POWER_CONTROL_MODE_BITNO)
 
-/** @brief Bit field value of @c private_setting for controlling MODE pin state to use POUTA power setting. */
+/** @brief Bit field value of @c mpsl_fem_pa_power_control_t for controlling MODE pin state to use POUTA power setting. */
 #define MPSL_FEM_NRF21540_GPIO_PA_POWER_CONTROL_MODE_POUTA    (0U << MPSL_FEM_NRF21540_GPIO_PA_POWER_CONTROL_MODE_BITNO)
 
-/** @brief Bit field value of @c private_setting for controlling MODE pin state to use POUTB power setting. */
+/** @brief Bit field value of @c mpsl_fem_pa_power_control_t for controlling MODE pin state to use POUTB power setting. */
 #define MPSL_FEM_NRF21540_GPIO_PA_POWER_CONTROL_MODE_POUTB    (1U << MPSL_FEM_NRF21540_GPIO_PA_POWER_CONTROL_MODE_BITNO)
 
 #ifdef __cplusplus
