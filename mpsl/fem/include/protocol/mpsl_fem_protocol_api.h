@@ -116,13 +116,6 @@ typedef struct
     /** TX power to be applied to the RADIO peripheral. */
     mpsl_tx_power_t radio_tx_power;
 
-    /** FEM gain.
-     * 
-     * @note This field is deprecated and will be removed. Please use the
-     * @c fem_pa_power_control field and @ref mpsl_fem_pa_power_control_set function.
-     */
-    mpsl_fem_gain_t fem;
-
     /** FEM PA power control.*/
     mpsl_fem_pa_power_control_t fem_pa_power_control;
 } mpsl_tx_power_split_t;
@@ -396,32 +389,6 @@ int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
  * @retval   -NRF_EINVAL   PA power control could not be applied. Provided @p pa_power_control is invalid.
  */
 int32_t mpsl_fem_pa_power_control_set(mpsl_fem_pa_power_control_t pa_power_control);
-
-/** @brief Sets PA gain.
- * 
- * @note This function is deprecated. Please use @ref mpsl_fem_pa_power_control_set .
- *
- * @note The gain set by this function will be applied to radio transmissions
- * following the call. If the function is called during radio transmission
- * or during ramp-up for transmission it is unspecified if the gain is applied.
- *
- * @param[in] p_gain       Pointer to structure with data needed to apply the gain.
- *
- * @retval   0             Gain setting has been applied successfully.
- * @retval   -NRF_EINVAL   Gain setting could not be applied. Provided @p gain_setting is invalid.
- */
-int32_t mpsl_fem_pa_gain_set(const mpsl_fem_gain_t * p_gain);
-
-/** @brief Checks if the PA signaling is configured and enabled, and gets
- *  the configured gain in dB.
- * 
- * @note This function is deprecated. Please use the function @ref mpsl_fem_caps_get instead.
- *
- * @param[out] p_gain The configured gain in dB if PA is configured and enabled.
- *                    If there is no PA present or the PA does not affect
- *                    the signal gain, returns 0 dB.
- */
-void mpsl_fem_pa_is_configured(int8_t * const p_gain);
 
 /** @brief Returns LNA gain if the LNA signal is configured and enabled, 0 otherwise.
  *
