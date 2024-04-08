@@ -257,6 +257,13 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_PARAMS_V2 = 0x2086,
 };
 
+/** @brief LE subevent Code values. */
+enum sdc_hci_subevent_le
+{
+    /** @brief See @ref sdc_hci_subevent_le_subrate_change_t. */
+    SDC_HCI_SUBEVENT_LE_SUBRATE_CHANGE = 0x23,
+};
+
 /** @brief Advertising Event Properties parameters. */
 typedef __PACKED_STRUCT
 {
@@ -523,6 +530,38 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_set_periodic_adv_subevent_data_array_params_t;
 
 /** @} end of HCI_TYPES */
+
+/**
+ * @defgroup HCI_EVENTS Events
+ * @{
+ */
+
+/** @brief LE Subrate Change.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.7.65.35
+ *
+ * The HCI_LE_Subrate_Change event is used to indicate that a Connection
+ * Subrate Update procedure has completed and some parameters of the speci-
+ * fied connection have changed.
+ *
+ * This event shall be issued if the HCI_LE_Subrate_Request command was
+ * issued by the Host or the parameters are updated successfully following a
+ * request from the peer device. If no parameters are updated following a request
+ * from the peer device or the parameters were changed using the Connection
+ * Update procedure, then this event shall not be issued.
+ */
+typedef __PACKED_STRUCT
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint16_t subrate_factor;
+    uint16_t peripheral_latency;
+    uint16_t continuation_number;
+    uint16_t supervision_timeout;
+} sdc_hci_subevent_le_subrate_change_t;
+
+/** @} end of HCI_EVENTS */
 
 /**
  * @defgroup HCI_COMMAND_PARAMETERS Parameters

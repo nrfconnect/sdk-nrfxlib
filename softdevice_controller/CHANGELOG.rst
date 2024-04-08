@@ -12,6 +12,11 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Added
+=====
+
+* Experimental support for scanning and initiating at the same time. (DRGN-19050)
+
 Changes
 =======
 

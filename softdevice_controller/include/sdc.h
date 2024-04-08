@@ -148,8 +148,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1020
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1150
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 996
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1124
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -197,6 +197,11 @@ extern "C" {
 /** Memory required for the scanner when supporting extended scanning. */
 #define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (345 + (buffer_count) * 307)
 #define SDC_MEM_SCAN_EXT(buffer_count) (345 + (buffer_count) * 307)
+
+/** Additional memory required for the initiator when supporting scanning
+ *  and initiating at the same time.
+ */
+#define SDC_MEM_INITIATOR (304)
 
 /** Memory required for the Filter Accept List */
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)
@@ -817,6 +822,21 @@ int32_t sdc_support_central(void);
  * @retval -NRF_EOPNOTSUPP  These features are not supported.
  */
 int32_t sdc_support_ext_central(void);
+
+/** @brief Support for scanning and initiating at the same time.
+ *
+ * After this API is called, the controller will support:
+ *   - Creating a connection while passive or active scanning is enabled
+ *   - Enabling passive or active scanning while a connection attempt is ongoing
+ *
+ * This API should be called only when centrals are supported (the application should
+ * call either @ref sdc_support_central() or @ref sdc_support_ext_central()).
+ *
+ * @retval 0               Success
+ * @retval -NRF_EPERM      This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP Scanning and initiating in parallel is not supported.
+ */
+int32_t sdc_support_parallel_scanning_and_initiating(void);
 
 /** @brief Support Data Length Extensions for a central device
  *
