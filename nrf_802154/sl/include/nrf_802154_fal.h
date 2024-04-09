@@ -55,7 +55,7 @@ typedef struct
 
     /** PA power control to be applied to Front-End Module. */
     mpsl_fem_pa_power_control_t fem_pa_power_control;
-} nrf_802154_fal_tx_power_split2_t;
+} nrf_802154_fal_tx_power_split_t;
 
 /** @brief Splits transmit power value into components to be applied on each stage on transmit path.
  *
@@ -68,9 +68,9 @@ typedef struct
  *
  * @return Actually achieved power in dBm.
  */
-int8_t nrf_802154_fal_tx_power_split2(const uint8_t                            channel,
-                                      const int8_t                             power,
-                                      nrf_802154_fal_tx_power_split2_t * const p_tx_power_split);
+int8_t nrf_802154_fal_tx_power_split(const uint8_t                           channel,
+                                     const int8_t                            power,
+                                     nrf_802154_fal_tx_power_split_t * const p_tx_power_split);
 
 #ifdef __cplusplus
 }
