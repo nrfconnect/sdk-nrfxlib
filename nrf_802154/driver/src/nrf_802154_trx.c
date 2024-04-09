@@ -1292,10 +1292,10 @@ bool nrf_802154_trx_receive_buffer_set(void * p_receive_buffer)
     return result;
 }
 
-void nrf_802154_trx_receive_frame(uint8_t                                  bcc,
-                                  nrf_802154_trx_ramp_up_trigger_mode_t    rampup_trigg_mode,
-                                  nrf_802154_trx_receive_notifications_t   notifications_mask,
-                                  const nrf_802154_fal_tx_power_split2_t * p_ack_tx_power)
+void nrf_802154_trx_receive_frame(uint8_t                                 bcc,
+                                  nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
+                                  nrf_802154_trx_receive_notifications_t  notifications_mask,
+                                  const nrf_802154_fal_tx_power_split_t * p_ack_tx_power)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -1528,11 +1528,11 @@ bool nrf_802154_trx_rssi_sample_is_available(void)
 #endif
 }
 
-void nrf_802154_trx_transmit_frame(const void                             * p_transmit_buffer,
-                                   nrf_802154_trx_ramp_up_trigger_mode_t    rampup_trigg_mode,
-                                   uint8_t                                  cca_attempts,
-                                   const nrf_802154_fal_tx_power_split2_t * p_tx_power,
-                                   nrf_802154_trx_transmit_notifications_t  notifications_mask)
+void nrf_802154_trx_transmit_frame(const void                            * p_transmit_buffer,
+                                   nrf_802154_trx_ramp_up_trigger_mode_t   rampup_trigg_mode,
+                                   uint8_t                                 cca_attempts,
+                                   const nrf_802154_fal_tx_power_split_t * p_tx_power,
+                                   nrf_802154_trx_transmit_notifications_t notifications_mask)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -2168,7 +2168,7 @@ static void standalone_cca_abort(void)
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
-void nrf_802154_trx_continuous_carrier(const nrf_802154_fal_tx_power_split2_t * p_tx_power)
+void nrf_802154_trx_continuous_carrier(const nrf_802154_fal_tx_power_split_t * p_tx_power)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
@@ -2222,8 +2222,8 @@ static void continuous_carrier_abort(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
-void nrf_802154_trx_modulated_carrier(const void                             * p_transmit_buffer,
-                                      const nrf_802154_fal_tx_power_split2_t * p_tx_power)
+void nrf_802154_trx_modulated_carrier(const void                            * p_transmit_buffer,
+                                      const nrf_802154_fal_tx_power_split_t * p_tx_power)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
