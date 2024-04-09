@@ -1,7 +1,7 @@
 .. _nrf_modem_log:
 
-Logging
-#######
+Library logging
+###############
 
 .. contents::
    :local:
