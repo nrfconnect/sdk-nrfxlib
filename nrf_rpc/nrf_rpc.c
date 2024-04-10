@@ -369,11 +369,14 @@ static int transport_init(nrf_rpc_tr_receive_handler_t receive_cb)
 		}
 
 		group->data->transport_initialized = true;
+	}
+
+	for (NRF_RPC_AUTO_ARR_FOR(iter, group, &nrf_rpc_groups_array,
+				 const struct nrf_rpc_group)) {
 		err = group_init_send(group);
 		if (err) {
 			NRF_RPC_ERR("Failed to send group init packet for group id: %d strid: %s",
-				    data->src_group_id, group->strid);
-			continue;
+				    group->data->src_group_id, group->strid);
 		}
 	}
 
