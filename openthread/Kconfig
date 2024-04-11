@@ -109,6 +109,14 @@ config OPENTHREAD_NORDIC_LIBRARY_MTD
 	help
 	  Nordic Semiconductor optimized OpenThread features for MTD.
 
+config OPENTHREAD_NORDIC_LIBRARY_RCP
+	bool "Nordic OpenThread RCP configuration"
+	select OPENTHREAD_LINK_METRICS_INITIATOR if !OPENTHREAD_THREAD_VERSION_1_1
+	select OPENTHREAD_LINK_METRICS_SUBJECT if !OPENTHREAD_THREAD_VERSION_1_1
+	select OPENTHREAD_CSL_RECEIVER if !OPENTHREAD_THREAD_VERSION_1_1
+	help
+	   Nordic Semiconductor optimized OpenThread features for RCP.
+
 config OPENTHREAD_USER_CUSTOM_LIBRARY
 	bool "User custom configuration"
 	help
