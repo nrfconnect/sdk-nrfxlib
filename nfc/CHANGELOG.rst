@@ -9,6 +9,14 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+main branch
+***********
+
+Bug fixes
+=========
+
+* Fixed a possible RAM data leakage in the :ref:`type_4_tag` library when the reader device sends an APDU Read Binary command without previous file selection.
+
 nRF Connect SDK v2.6.0
 **********************
 
