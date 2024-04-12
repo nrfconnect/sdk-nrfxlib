@@ -268,6 +268,8 @@ A-GNSS data request bitmask values
    :project: nrfxlib
    :members:
 
+.. _agnss_data_type_enum_api:
+
 A-GNSS data type enumerator
 ===========================
 
