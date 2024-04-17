@@ -16,7 +16,7 @@ zephyr_include_directories(
         include
 )
 
-nrfxlib_calculate_lib_path(LC3_LIB_DIR SOC_MODE BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+nrfxlib_calculate_lib_path(LC3_LIB_DIR BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 if(NOT LC3_LIB_DIR)
   message(WARNING "This combination of SoC and floating point ABI is not supported by the LC3 lib.")
 endif()
