@@ -39,9 +39,6 @@ DRGN-11297: Maximum connection interval of 10 ms before entering LLPM-mode
   * A first update to 10 ms connection interval.
   * A second update to 1 ms connection interval.
 
-DRGN-10305: Scan window is limited to 16 seconds
-  If the scanner is configured with a scan window larger than 16 seconds, the scanner will truncate the scan window to 16 seconds.
-
 DRGN-8569: SEVONPEND flag must not be modified
   Applications must not modify the SEVONPEND flag in the SCR register when running in priority levels higher than 6 (priority level numerical values lower than 6), as this can lead to undefined behavior.
 

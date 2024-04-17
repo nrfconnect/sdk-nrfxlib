@@ -103,6 +103,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_CIG_RESERVED_TIME_SET = 0xfd19,
     /** @brief See @ref sdc_hci_cmd_vs_cis_subevent_length_set(). */
     SDC_HCI_OPCODE_CMD_VS_CIS_SUBEVENT_LENGTH_SET = 0xfd1a,
+    /** @brief See @ref sdc_hci_cmd_vs_scan_channel_map_set(). */
+    SDC_HCI_OPCODE_CMD_VS_SCAN_CHANNEL_MAP_SET = 0xfd20,
 };
 
 /** @brief VS subevent Code values. */
@@ -143,6 +145,8 @@ enum sdc_hci_vs_conn_event_trigger_role
     SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_INIT = 0x02,
     /** @brief Connection event trigger for connections (Central or Peripheral). */
     SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_CONN = 0x03,
+    /** @brief Connection event trigger for the Advertiser. */
+    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_ADV = 0x04,
 };
 
 /** @brief Peripheral latency disable/enable modes. */
@@ -196,6 +200,7 @@ typedef __PACKED_STRUCT
     uint8_t big_reserved_time_set : 1;
     uint8_t cig_reserved_time_set : 1;
     uint8_t cis_subevent_length_set : 1;
+    uint8_t scan_channel_map_set : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -694,6 +699,17 @@ typedef __PACKED_STRUCT
     /** @brief The requested CIS subevent length in microseconds. */
     uint32_t cis_subevent_length_us;
 } sdc_hci_cmd_vs_cis_subevent_length_set_t;
+
+/** @brief Set the channel map for scanning and initiating. command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief This parameter contains 40 1-bit fields. The nth such field (in the range 0 to 39)
+     *         contains the value for the Link Layer channel index n. Set the bit to 1 to enable the
+     *         channel.  Only channel index 37, 38 and 39 are supported. The remaining bits shall be
+     *         set to 1.
+     */
+    uint8_t channel_map[5];
+} sdc_hci_cmd_vs_scan_channel_map_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1326,8 +1342,8 @@ uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_centra
  * When used for connections, the connection event trigger can be configured to trigger
  * every N connection events starting from a given connection event counter.
  *
- * Disabling scanning or disconnecting the connection will reset the connection event
- * trigger configuration.
+ * Disabling scanning, removing the advertising set, or disconnecting the connection will reset the
+ * connection event trigger configuration.
  *
  * If the selected (D)PPI channel is reserved by the controller, the controller will
  * return the error code Invalid HCI Command Parameters (0x12).
@@ -1335,11 +1351,15 @@ uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_centra
  * If enabling/disabling the connection event trigger and the trigger is already
  * enabled/disabled, the controller will return the error code Command Disallowed (0x0C).
  *
- * If the specified role is not currently active, the controller will return the error code
- * Command Disallowed (0x0C).
+ * If the role is 0x1, 0x2, or 0x4, and the role is not currently active,
+ * the controller will return the error code Command Disallowed (0x0C).
  *
  * If the role is 0x3 and conn_handle does not refer to an active connection, the controller
  * will return the error code Unknown Connection Identifier (0x02).
+ *
+ * If the role is 0x4 and legacy advertising is used, conn_handle must be set to 0.
+ * If extended advertising is used, conn_handle must refer to an active advertising set.
+ * Otherwise, the controller will return the error code Unknown Advertising Identifier (0x42).
  *
  * If the role is 0x3 and conn_evt_counter_start has already passed, the controller will return
  * the error code Command Disallowed (0x0C).
@@ -1347,7 +1367,7 @@ uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_centra
  * If the role is 0x3 and period_in_events is zero, the controller will return the error code
  * Invalid HCI Command Parameters (0x12).
  *
- * If the role is 0x1 or 0x2 and conn_evt_counter_start or period_in_events is non-zero,
+ * If the role is 0x1, 0x2, or 0x4 and conn_evt_counter_start or period_in_events is non-zero,
  * the controller will return the error code Invalid HCI Command Parameters (0x12).
  *
  * Event(s) generated (unless masked away):
@@ -1565,6 +1585,27 @@ uint8_t sdc_hci_cmd_vs_cig_reserved_time_set(const sdc_hci_cmd_vs_cig_reserved_t
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_cis_subevent_length_set(const sdc_hci_cmd_vs_cis_subevent_length_set_t * p_params);
+
+/** @brief Set the channel map for scanning and initiating.
+ *
+ * This command sets the RF channels that should be used for scanning and initiating
+ * on the primary advertising channels. The channel map will be used for subsequent
+ * commands to start scanning or to create connections. Scanning and initiating
+ * that was started before issuing this command is not affected.
+ *
+ * The default behavior is to listan on all primary advertising channels.
+ * The default behavior is restored when issuing the HCI Reset command.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_scan_channel_map_set(const sdc_hci_cmd_vs_scan_channel_map_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 

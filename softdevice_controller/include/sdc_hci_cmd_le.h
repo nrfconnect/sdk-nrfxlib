@@ -245,6 +245,8 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_TRANSMIT_POWER_REPORTING_ENABLE = 0x207a,
     /** @brief See @ref sdc_hci_cmd_le_set_data_related_address_changes(). */
     SDC_HCI_OPCODE_CMD_LE_SET_DATA_RELATED_ADDRESS_CHANGES = 0x207c,
+    /** @brief See @ref sdc_hci_cmd_le_set_default_subrate(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_DEFAULT_SUBRATE = 0x207d,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_subevent_data(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_SUBEVENT_DATA = 0x2082,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_response_data(). */
@@ -1597,6 +1599,16 @@ typedef __PACKED_STRUCT
         uint8_t raw[1];
     } change_reasons;
 } sdc_hci_cmd_le_set_data_related_address_changes_t;
+
+/** @brief LE Set Default Subrate command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t subrate_min;
+    uint16_t subrate_max;
+    uint16_t max_latency;
+    uint16_t continuation_number;
+    uint16_t supervision_timeout;
+} sdc_hci_cmd_le_set_default_subrate_t;
 
 /** @brief LE Set Periodic Advertising Subevent Data command parameter(s). */
 typedef __PACKED_STRUCT
@@ -6959,6 +6971,32 @@ uint8_t sdc_hci_cmd_le_set_transmit_power_reporting_enable(const sdc_hci_cmd_le_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_data_related_address_changes(const sdc_hci_cmd_le_set_data_related_address_changes_t * p_params);
+
+/** @brief LE Set Default Subrate.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.123
+ *
+ * The HCI_LE_Set_Default_Subrate command is used by the Host to set the initial
+ * values for the acceptable parameters for subrating requests, as defined by the
+ * HCI_LE Subrate_Request command (see [Vol 4] Section 7.8.124), for all future ACL
+ * connections where the Controller is the Central. This command does not affect any
+ * existing connection.
+ *
+ * The parameters have the same meanings and restrictions as those in the
+ * HCI_LE_Subrate_Request command.
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Set_Default_Subrate command, the Controller
+ * sends the HCI_Command_Complete event to the Host.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_default_subrate(const sdc_hci_cmd_le_set_default_subrate_t * p_params);
 
 /** @brief LE Set Periodic Advertising Subevent Data.
  *
