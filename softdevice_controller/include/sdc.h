@@ -127,8 +127,14 @@ extern "C" {
 /** @brief Default HCI ISO TX buffer count. */
 #define SDC_DEFAULT_ISO_TX_HCI_BUFFER_COUNT 0
 
+/** @brief Default ISO SDU TX buffer count. */
+#define SDC_DEFAULT_ISO_TX_SDU_BUFFER_COUNT 0
+
 /** @brief Default HCI ISO TX buffer size. */
 #define SDC_DEFAULT_ISO_TX_HCI_BUFFER_SIZE 251
+
+/** @brief Default ISO SDU TX buffer size. */
+#define SDC_DEFAULT_ISO_TX_SDU_BUFFER_SIZE 247
 
 /** @brief Default ISO TX PDU buffer per stream count. */
 #define SDC_DEFAULT_ISO_TX_PDU_BUFFER_PER_STREAM_COUNT 0
@@ -148,8 +154,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 996
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1124
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1004
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1132
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -207,8 +213,8 @@ extern "C" {
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4752+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (665+(max_adv_data))
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4833+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (671+(max_adv_data))
 #define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2658+(max_adv_data)*18)/10)
 #define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (457+(max_adv_data))
 
@@ -296,11 +302,30 @@ extern "C" {
       (__MEM_PER_ISO_PDU_POOL(rx_pdu_buffer_per_stream_count) * ((cis_count) + (bis_sink_count)))
 
 /** @brief Maximum memory required for the ISO RX path SDUs. */
-#define SDC_MEM_ISO_RX_SDU_POOL_SIZE(count) ((count) > 0 ? (8 + (count) * 272) : 0)
+#define SDC_MEM_ISO_RX_SDU_POOL_SIZE_DEPRECATED(count) ((count) > 0 ? (8 + (count) * 272) : 0)
+
+/** @brief Maximum memory required for the ISO RX path SDUs.
+ * @param[in] count Number of shared SDUs allocated for the RX path.
+ * @param[in] size  Maximum size of SDUs being used. */
+#define SDC_MEM_ISO_RX_SDU_POOL_SIZE(count, size) ((count) > 0 ? (8 + (count) * ((size) + 21)) : 0)
+
+/** @brief Maximum memory required for the ISO TX PDU pool.
+ *  @param[in] tx_pdu_buffer_per_stream_count Number of TX PDU buffers allocated for each BIS or CIS stream.
+ *                                            For BIS, this value determines the number of pretransmission that can be stored.
+ *  @param[in] cis_count The number of supported CIS streams.
+ *  @param[in] bis_source_count The number of supported source BIS streams. */
+#define SDC_MEM_ISO_TX_PDU_POOL_SIZE(tx_pdu_buffer_per_stream_count, cis_count, bis_source_count)     \
+      ((tx_pdu_buffer_per_stream_count) > 0 ? \
+       __MEM_PER_ISO_PDU_POOL(tx_pdu_buffer_per_stream_count) * ((cis_count) + (bis_source_count)) : 0)
+
+/** @brief Maximum memory required for the ISO TX path SDUs.
+ * @param[in] count Number of shared SDUs allocated for the TX path.
+ * @param[in] size  Maximum size of SDUs being used. */
+#define SDC_MEM_ISO_TX_SDU_POOL_SIZE(count, size) ((count) > 0 ? (12 + (count) * ((size) + 53)) : 0)
 
 /** @brief Maximum memory required for the ISO TX pool.
  *  @param[in] tx_hci_buffer_count Number of HCI ISO TX buffers.
- *  @param[in] tx_pdu_buffer_per_stream_count Number of TX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
+ *  @param[in] tx_pdu_buffer_per_stream_count Number of TX PDU buffers allocated for each BIS or CIS stream.
  *                                            For BIS, this value determines the maximum supported pretransmission offset.
  *  @param[in] cis_count The number of supported CIS streams.
  *  @param[in] bis_source_count The number of supported source BIS streams. */
@@ -452,11 +477,21 @@ typedef struct
      * Default: @ref SDC_DEFAULT_ISO_TX_HCI_BUFFER_COUNT.
      */
     uint8_t tx_hci_buffer_count;
+    /** Configures the number of shared SDU TX buffers allocated for ISO.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_TX_SDU_BUFFER_COUNT.
+     */
+    uint8_t tx_sdu_buffer_count;
     /** Configures the size of shared HCI TX buffers allocated for ISO.
      *
      * Default: @ref SDC_DEFAULT_ISO_TX_HCI_BUFFER_SIZE.
      */
     uint16_t tx_hci_buffer_size;
+    /** Configures the size of shared SDU TX buffers allocated for ISO.
+     *
+     * Default: @ref SDC_DEFAULT_ISO_TX_SDU_BUFFER_SIZE.
+     */
+    uint16_t tx_sdu_buffer_size;
     /** Configures the number of TX PDU buffers allocated per ISO stream.
      *
      * This is the number of maximum size (251 bytes) PDU buffers. When PDU size is smaller

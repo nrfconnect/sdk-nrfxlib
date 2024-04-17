@@ -16,14 +16,18 @@ Added
 =====
 
 * Experimental support for scanning and initiating at the same time. (DRGN-19050)
+* Vendor-specific HCI command to set the channel map for scanning and initiating.
+  See :c:func:`sdc_hci_cmd_vs_scan_channel_map_set` (DRGN-19730).
 
 Changes
 =======
 
+* Scan windows are no longer limited to 16 seconds. (DRGN-19050)
 * The deprecated functions :c:func:`rand_prio_low_get` and :c:func:`rand_prio_high_get` have been removed.
   This change does not affect applications developed in the |NCS| context. (DRGN-20473)
 * The HCI commands used to configure a scanner or initiator no longer return ``BT_HCI_ERR_INVALID_PARAM`` when the sum of scan windows is greater than the scan interval.
   Now the controller will truncate the scan windows so that the sum of the windows fit within the scan interval. (DRGN-21710)
+* The vendor-specific Set Connection Event Trigger command can now be used with advertising sets. (DRGN-21665)
 
 Bug fixes
 =========
@@ -35,6 +39,8 @@ Bug fixes
   This issue would not occur if the supervision timeout was set to a value smaller than the onces mentioned above (DRGN-21619).
 * Fixed an issue where the peripheral waited for a link to time out when tearing down the connection.
   This happened when the central would acknowledge ``TERMINATE_IND`` in the same event as it was being sent (DRGN-21637).
+* Fixed an issue where the |controller| would accept the HCI LE Set Random Address command while passive scanning had been enabled.
+  The |controller| now returns the error code ``0x0D`` in this case. (DRGN-19050)
 
 nRF Connect SDK v2.6.0
 **********************
