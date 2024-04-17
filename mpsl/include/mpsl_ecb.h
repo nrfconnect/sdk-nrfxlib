@@ -21,9 +21,10 @@ typedef struct
   uint8_t  ciphertext[MPSL_ECB_CIPHERTEXT_LENGTH];    /**< Ciphertext data. */
 } mpsl_ecb_hal_data_t;
 
-#define MPSL_ECB_NO_FLAGS  (0)
-#define MPSL_ECB_INPUT_LE  (1u << 0)
-#define MPSL_ECB_OUTPUT_LE (1u << 1)
+#define MPSL_ECB_NO_FLAGS               (0)
+#define MPSL_ECB_INPUT_LE               (1u << 0)
+#define MPSL_ECB_OUTPUT_LE              (1u << 1)
+#define MPSL_ECB_CLEARTEXT_IN_LOCAL_RAM (1u << 2)
 
 /**@brief Encrypts a block according to the specified parameters.
  *
@@ -38,17 +39,18 @@ void mpsl_ecb_block_encrypt(mpsl_ecb_hal_data_t *p_ecb_data);
 /**@brief Encrypts a block according to the specified parameters.
  *
  * @note This function will only return once the ciphertext has been generated.
- * @note The plaintext must be in RAM.
  *
  * @param[in]  key        Encryption key
  * @param[in]  cleartext  Plaintext to be encrypted
  * @param[out] ciphertext Encrypted text
  * @param[in]  flags      Any combination of the following flags:
- *  - MPSL_ECB_INPUT_LE     They key and cleartext are in little-endian format.
- *  - MPSL_ECB_OUTPUT_LE    The ciphertext will be returned in little-endian format.
+ *  - MPSL_ECB_INPUT_LE               The key and cleartext are in little-endian format.
+ *  - MPSL_ECB_OUTPUT_LE              The ciphertext will be returned in little-endian format.
+ *  - MPSL_ECB_CLEARTEXT_IN_LOCAL_RAM Unless this is set, the @p cleartext will be copied to RAM
+ *                                    since the ECB hardware cannot access other memory locations.
  */
 void mpsl_ecb_block_encrypt_extended(const uint8_t key[MPSL_ECB_KEY_LENGTH],
-                                     uint8_t cleartext[MPSL_ECB_CLEARTEXT_LENGTH],
+                                     const uint8_t cleartext[MPSL_ECB_CLEARTEXT_LENGTH],
                                      uint8_t ciphertext[MPSL_ECB_CIPHERTEXT_LENGTH],
                                      uint32_t flags);
 
