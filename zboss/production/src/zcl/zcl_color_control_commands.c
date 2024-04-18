@@ -1228,7 +1228,7 @@ static void zb_zcl_process_color_control_stop_all_commands(zb_uint8_t endpoint)
 static zb_ret_t zb_zcl_process_color_control_move_to_hue_handler(zb_uint8_t param, zb_uint8_t buf2_param)
 {
   zb_ret_t ret = RET_OK;
-  zb_zcl_color_control_move_to_hue_req_t payload = {0};
+  zb_zcl_color_control_move_to_hue_req_t payload;
   zb_zcl_parse_status_t status;
   zb_zcl_parsed_hdr_t cmd_info;
 
@@ -2636,7 +2636,7 @@ static zb_uint16_t zb_zcl_color_control_get_color_temperature_limit(
 static zb_ret_t zb_zcl_process_color_control_move_color_temp_handler(zb_uint8_t param, zb_uint8_t buf2_param)
 {
   zb_ret_t ret = RET_OK;
-  zb_zcl_color_control_move_color_temp_req_t payload = {0};
+  zb_zcl_color_control_move_color_temp_req_t payload;
   zb_zcl_parse_status_t status;
   zb_zcl_parsed_hdr_t cmd_info;
   zb_uint8_t endpoint;

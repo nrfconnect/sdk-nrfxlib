@@ -44,8 +44,6 @@
 #ifndef ZB_ZCL_WWAH_H
 #define ZB_ZCL_WWAH_H 1
 
-#include <string.h>
-
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
 
@@ -395,6 +393,8 @@ ZB_ASSERT_VALUE_ALIGNED_TO_4(ZB_ZCL_WWAH_APS_LINK_KEY_AUTHORIZATION_TABLE_SIZE *
 #define ZB_ZCL_WWAH_USE_TRUST_CENTER_FOR_CLUSTER_TABLE_SIZE 4
 ZB_ASSERT_VALUE_ALIGNED_TO_4(ZB_ZCL_WWAH_USE_TRUST_CENTER_FOR_CLUSTER_TABLE_SIZE * sizeof(zb_uint16_t));
 
+#define ZB_ZCL_WWAH_CLUSTER_LIST_MAX_SIZE ZB_ZCL_WWAH_APS_ACK_EXEMPT_TABLE_SIZE
+
 /** @brief WWAH Cluster arrays "record is free" flag */
 #define ZB_ZCL_WWAH_CLUSTER_ID_FREE_RECORD 0xFFFF
 
@@ -643,12 +643,13 @@ typedef enum zb_zcl_wwah_behavior_e
   (void*) data_ptr                                                                                   \
 }
 
-typedef ZB_PACKED_PRE struct zb_zcl_wwah_cluster_list_s
+typedef struct zb_zcl_wwah_cluster_list_s
 {
-  zb_uint8_t number_of_clusters; /**< Number of Clusters */
-  zb_uint16_t *cluster_id;       /**< Cluster ID */
+  zb_uint8_t number_of_clusters;                              /**< Number of Clusters */
+  zb_uint8_t alignment[3];                                    /**< Alignment */
+  zb_uint16_t cluster_id[ZB_ZCL_WWAH_CLUSTER_LIST_MAX_SIZE];  /**< Cluster list */
 }
-ZB_PACKED_STRUCT zb_zcl_wwah_cluster_list_t;
+zb_zcl_wwah_cluster_list_t;
 
 /*!
   @brief Parses various commands with cluster list variable length payload and fills data request structure.
@@ -660,19 +661,21 @@ ZB_PACKED_STRUCT zb_zcl_wwah_cluster_list_t;
 
 #define ZB_ZCL_WWAH_GET_CLUSTER_LIST_CMD(data_buf, req, status)                                \
 {                                                                                              \
-  zb_zcl_wwah_cluster_list_t *src_ptr = (zb_zcl_wwah_cluster_list_t*)zb_buf_begin((data_buf)); \
+  zb_uint8_t *src_ptr = (zb_uint8_t*)zb_buf_begin((data_buf));                                 \
+  zb_uint8_t number_of_clusters = *src_ptr;                                                    \
   (status) = ZB_ZCL_PARSE_STATUS_FAILURE;                                                      \
   if (zb_buf_len((data_buf)) >= sizeof(zb_uint8_t))                                            \
   {                                                                                            \
-    (req)->number_of_clusters = src_ptr->number_of_clusters;                                   \
-    if (src_ptr->number_of_clusters)                                                           \
+    (req).number_of_clusters = number_of_clusters;                                             \
+    if (number_of_clusters > 0)                                                                \
     {                                                                                          \
       if (zb_buf_len((data_buf)) >= sizeof(zb_uint8_t) +                                       \
-          src_ptr->number_of_clusters * sizeof(zb_uint16_t))                                   \
+          number_of_clusters * sizeof(zb_uint16_t))                                            \
       {                                                                                        \
-        zb_uint16_t cluster_id;                                                                \
-        memcpy(&cluster_id, &(src_ptr->cluster_id), sizeof(zb_uint16_t));                      \
-        (req)->cluster_id = &cluster_id;                                                       \
+        ZB_MEMCPY(                                                                             \
+          (zb_uint8_t*)((req).cluster_id),                                                     \
+          (src_ptr + 1),                                                                       \
+          number_of_clusters * sizeof(zb_uint16_t));                                           \
         (status) = ZB_ZCL_PARSE_STATUS_SUCCESS;                                                \
       }                                                                                        \
     }                                                                                          \
