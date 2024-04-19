@@ -247,6 +247,8 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_DATA_RELATED_ADDRESS_CHANGES = 0x207c,
     /** @brief See @ref sdc_hci_cmd_le_set_default_subrate(). */
     SDC_HCI_OPCODE_CMD_LE_SET_DEFAULT_SUBRATE = 0x207d,
+    /** @brief See @ref sdc_hci_cmd_le_subrate_request(). */
+    SDC_HCI_OPCODE_CMD_LE_SUBRATE_REQUEST = 0x207e,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_subevent_data(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_SUBEVENT_DATA = 0x2082,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_response_data(). */
@@ -1609,6 +1611,17 @@ typedef __PACKED_STRUCT
     uint16_t continuation_number;
     uint16_t supervision_timeout;
 } sdc_hci_cmd_le_set_default_subrate_t;
+
+/** @brief LE Subrate Request command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    uint16_t conn_handle;
+    uint16_t subrate_min;
+    uint16_t subrate_max;
+    uint16_t max_latency;
+    uint16_t continuation_number;
+    uint16_t supervision_timeout;
+} sdc_hci_cmd_le_subrate_request_t;
 
 /** @brief LE Set Periodic Advertising Subevent Data command parameter(s). */
 typedef __PACKED_STRUCT
@@ -6977,18 +6990,18 @@ uint8_t sdc_hci_cmd_le_set_data_related_address_changes(const sdc_hci_cmd_le_set
  * The description below is extracted from Core_v5.4,
  * Vol 4, Part E, Section 7.8.123
  *
- * The HCI_LE_Set_Default_Subrate command is used by the Host to set the initial
- * values for the acceptable parameters for subrating requests, as defined by the
- * HCI_LE Subrate_Request command (see [Vol 4] Section 7.8.124), for all future ACL
- * connections where the Controller is the Central. This command does not affect any
- * existing connection.
+ * The HCI_LE_Set_Default_Subrate command is used by the Host to set the ini-
+ * tial values for the acceptable parameters for subrating requests, as defined by
+ * the HCI_LE Subrate_Request command (see Section 7.8.124), for all future
+ * ACL connections where the Controller is the Central. This command does not
+ * affect any existing connection.
  *
  * The parameters have the same meanings and restrictions as those in the
  * HCI_LE_Subrate_Request command.
  *
  * Event(s) generated (unless masked away):
- * When the Controller receives the HCI_LE_Set_Default_Subrate command, the Controller
- * sends the HCI_Command_Complete event to the Host.
+ * When the Controller receives the HCI_LE_Set_Default_Subrate command, the
+ * Controller sends the HCI_Command_Complete event to the Host.
  *
  * @param[in]  p_params Input parameters.
  *
@@ -6997,6 +7010,93 @@ uint8_t sdc_hci_cmd_le_set_data_related_address_changes(const sdc_hci_cmd_le_set
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_set_default_subrate(const sdc_hci_cmd_le_set_default_subrate_t * p_params);
+
+/** @brief LE Subrate Request.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.8.124
+ *
+ * The HCI_LE_Subrate_Request command is used by a Central or a Peripheral
+ * to request a change to the subrating factor and/or other parameters (see [Vol 6]
+ * Part B, Section 4.5.1) applied to an existing connection using the Connection
+ * Subrate Update procedure.
+ *
+ * The Subrate_Min and Subrate_Max parameters specify the range of accept-
+ * able subrating factors being requested.
+ *
+ * The Max_Latency parameter specifies the maximum Peripheral latency in units
+ * of subrated connection events. The same maximum shall apply irrespective of
+ * the subrating factor actually chosen.
+ *
+ * The Continuation_Number parameter specifies the number of underlying con-
+ * nection intervals to remain active after a packet (other than an empty packet) is
+ * transmitted or received.
+ *
+ * The Supervision_Timeout parameter specifies the link supervision timeout for
+ * the connection. The Supervision_Timeout, in milliseconds, shall be greater
+ * than 2 × current connection interval × Subrate_Max × (Max_Latency + 1).
+ *
+ * If this command is issued on the Central, the following rules shall apply when
+ * the Controller initiates the Connection Subrate Update procedure (see [Vol 6]
+ * Part B, Section 5.1.19):
+ * • The Peripheral latency shall be less than or equal to Max_Latency.
+ * • The subrate factor shall be between Subrate_Min and Subrate_Max.
+ * • The continuation number shall be equal to the lesser of Continuation_-
+ *   Number and (subrate factor - 1).
+ * • The connection supervision timeout shall be equal to Supervision_Timeout.
+ *
+ * If this command is issued on the Central, it also sets the acceptable parame-
+ * ters for requests from the Peripheral (see [Vol 6] Part B, Section 5.1.20). The
+ * acceptable parameters set by this command override those provided via the
+ * HCI_LE_Set_Default_Subrate command or any values set by previous uses of
+ * this command on the same connection.
+ * If this command is issued on the Central before the devices have performed
+ * the Feature Exchange procedure, then the Controller shall complete that pro-
+ * cedure before initiating the Connection Subrate Update procedure.
+ *
+ * If this command is issued on the Peripheral, the following rules shall apply
+ * when the Controller initiates the Connection Subrate Request procedure:
+ * • The Peripheral latency shall be less than or equal to Max_Latency.
+ * • The minimum and maximum subrate factors shall be between Subrate_Min
+ *   and Subrate_Max.
+ * • The continuation number shall be equal to the lesser of Continuation_-
+ *   Number and (maximum subrate factor - 1).
+ * • The connection supervision timeout shall be equal to Supervision_Timeout.
+ *
+ * If the Connection_Handle parameter does not identify a current ACL connec-
+ * tion, the Controller shall return the error code Unknown Connection Identifier
+ * (0x02).
+ *
+ * If the Host issues this command with parameters such that Subrate_Max ×
+ * (Max_Latency + 1) is greater than 500 or the current connection interval ×
+ * Subrate_Max × (Max_Latency + 1) is greater than or equal to half the
+ * Supervision_Timeout parameter, the Controller shall return the error code
+ * Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command with Subrate_Max less than Subrate_Min, the
+ * Controller shall return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command with Continuation_Number greater than or
+ * equal to Subrate_Max, then the Controller shall return the error code Invalid
+ * HCI Command Parameters (0x12).
+ *
+ * If the Central's Host issues this command when the Connection Subrating
+ * (Host Support) bit is not set in the Peripheral's FeatureSet, the Controller shall
+ * return the error code Unsupported Remote Feature (0x1A).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_Subrate_Request command, the
+ * Controller sends the HCI_Command_Status event to the Host. An HCI_LE_-
+ * Subrate_Change event shall be generated when the Connection Subrate
+ * Update procedure has completed.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * p_params);
 
 /** @brief LE Set Periodic Advertising Subevent Data.
  *
