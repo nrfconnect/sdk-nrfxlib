@@ -12,22 +12,7 @@ if (CONFIG_BT_LL_SOFTDEVICE_HEADERS_INCLUDE)
 endif()
 
 if(CONFIG_BT_LL_SOFTDEVICE AND CONFIG_BT_LL_SOFTDEVICE_BUILD_TYPE_LIB)
-  if (CONFIG_SOC_SERIES_NRF54HX OR CONFIG_SOC_SERIES_NRF54LX)
-    nrfxlib_calculate_lib_path(SOFTDEVICE_CONTROLLER_LIB_DIR SOC_MODE
-      BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
-      SOFT_FLOAT_FALLBACK
-    )
-  else()
-    nrfxlib_calculate_lib_path(SOFTDEVICE_CONTROLLER_LIB_DIR
-      BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
-      SOFT_FLOAT_FALLBACK
-    )
-  endif()
-
-  if(NOT SOFTDEVICE_CONTROLLER_LIB_DIR)
-    message(WARNING "This combination of SoC and floating point ABI is not"
-      "supported by the SoftDevice Controller lib.")
-  endif()
+  set(SOFTDEVICE_CONTROLLER_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/${CONFIG_MPSL_LIB_DIR}/${CONFIG_MPSL_LIB_FLOAT_ABI_DIR}")
 
   if(CONFIG_BT_LL_SOFTDEVICE_PERIPHERAL)
     set(softdevice_controller_variant peripheral)
@@ -41,5 +26,11 @@ if(CONFIG_BT_LL_SOFTDEVICE AND CONFIG_BT_LL_SOFTDEVICE_BUILD_TYPE_LIB)
 
   set(SOFTDEVICE_CONTROLLER_LIB
     ${SOFTDEVICE_CONTROLLER_LIB_DIR}/libsoftdevice_controller_${softdevice_controller_variant}.a)
+
+  if(NOT EXISTS ${SOFTDEVICE_CONTROLLER_LIB})
+    message(FATAL_ERROR "This combination of SoC and floating point ABI is not"
+      "supported by the SoftDevice Controller lib.")
+  endif()
+
   zephyr_link_libraries(${SOFTDEVICE_CONTROLLER_LIB})
 endif()
