@@ -27,4 +27,24 @@ config MPSL_BUILD_TYPE_LIB
 
 endchoice
 
-endif
+if MPSL_BUILD_TYPE_LIB
+config MPSL_LIB_DIR
+	string
+	default "cortex-m4" if SOC_SERIES_NRF52X
+	default "cortex-m33+nodsp" if SOC_COMPATIBLE_NRF5340_CPUNET
+	default "nrf54h20_cpurad" if SOC_NRF54H20_CPURAD
+	default "nrf54l15_cpuapp" if SOC_SERIES_NRF54LX
+	default "bsim_nrfxx" if SOC_SERIES_BSIM_NRFXX
+	help
+	  Hidden helper option to calculate the library path
+
+config MPSL_LIB_FLOAT_ABI_DIR
+	string
+	default "hard-float" if FPU && FP_HARDABI
+	default "softfp-float" if FPU && FP_SOFTABI
+	default "soft-float"
+	help
+	  Hidden helper option to calculate the library path
+
+endif # MPSL_BUILD_TYPE_LIB
+endif # MPSL
