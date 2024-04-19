@@ -104,7 +104,9 @@ enum sdc_hci_opcode_vs
     /** @brief See @ref sdc_hci_cmd_vs_cis_subevent_length_set(). */
     SDC_HCI_OPCODE_CMD_VS_CIS_SUBEVENT_LENGTH_SET = 0xfd1a,
     /** @brief See @ref sdc_hci_cmd_vs_scan_channel_map_set(). */
-    SDC_HCI_OPCODE_CMD_VS_SCAN_CHANNEL_MAP_SET = 0xfd20,
+    SDC_HCI_OPCODE_CMD_VS_SCAN_CHANNEL_MAP_SET = 0xfd1b,
+    /** @brief See @ref sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set(). */
+    SDC_HCI_OPCODE_CMD_VS_SCAN_ACCEPT_EXT_ADV_PACKETS_SET = 0xfd1c,
 };
 
 /** @brief VS subevent Code values. */
@@ -201,6 +203,7 @@ typedef __PACKED_STRUCT
     uint8_t cig_reserved_time_set : 1;
     uint8_t cis_subevent_length_set : 1;
     uint8_t scan_channel_map_set : 1;
+    uint8_t scan_accept_ext_adv_packets_set : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -710,6 +713,13 @@ typedef __PACKED_STRUCT
      */
     uint8_t channel_map[5];
 } sdc_hci_cmd_vs_scan_channel_map_set_t;
+
+/** @brief Scan accept extended advertising packets set command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Set to 1 to accept or 0 to ignore extended advertising packets. */
+    uint8_t accept_ext_adv_packets;
+} sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1606,6 +1616,29 @@ uint8_t sdc_hci_cmd_vs_cis_subevent_length_set(const sdc_hci_cmd_vs_cis_subevent
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_scan_channel_map_set(const sdc_hci_cmd_vs_scan_channel_map_set_t * p_params);
+
+/** @brief Scan accept extended advertising packets set.
+ *
+ * This command enables or disables reception of extended advertising packets when extended scanner
+ * or extended initiator HCI commands are used.
+ *
+ * When reception of extended advertising packets is disabled, the scanner may be able to receive
+ * more legacy advertising packets.
+ * Reception of extended advertising packets should only be disabled when the application knows it
+ * is not interested in reports from extended advertisers.
+ *
+ * After HCI Reset, reception of extended advertising packets is enabled.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set(const sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set_t * p_params);
 
 /** @} end of HCI_VS_API */
 

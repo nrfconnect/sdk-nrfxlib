@@ -18,6 +18,8 @@ Added
 * Experimental support for scanning and initiating at the same time. (DRGN-19050)
 * Vendor-specific HCI command to set the channel map for scanning and initiating.
   See :c:func:`sdc_hci_cmd_vs_scan_channel_map_set` (DRGN-19730).
+* Vendor-specific HCI command to configure the scanner and initiator to either accept or reject extended advertising packets.
+  See :c:func:`sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set` (DRGN-21755).
 
 Changes
 =======
@@ -28,6 +30,15 @@ Changes
 * The HCI commands used to configure a scanner or initiator no longer return ``BT_HCI_ERR_INVALID_PARAM`` when the sum of scan windows is greater than the scan interval.
   Now the controller will truncate the scan windows so that the sum of the windows fit within the scan interval. (DRGN-21710)
 * The vendor-specific Set Connection Event Trigger command can now be used with advertising sets. (DRGN-21665)
+* The application can now configure the amount of RAM allocated for the RX ISO SDUs.
+  The |controller| now uses the field ``rx_sdu_buffer_size`` in ``sdc_cfg_iso_buffer_cfg_t``.
+  The macro :c:macro:`SDC_MEM_ISO_RX_SDU_POOL_SIZE` has been changed to take the maximum RX SDU size as an input.
+  This change does not affect applications developed in the |NCS| context. (DRGN-21650)
+* The application can now configure the amount of RAM allocated for the TX ISO SDUs.
+  The fields ``tx_sdu_buffer_count`` and ``tx_sdu_buffer_size`` in ``sdc_cfg_iso_buffer_cfg_t`` are added.
+  The fields ``tx_hci_buffer_count`` and ``tx_hci_buffer_size`` in ``sdc_cfg_iso_buffer_cfg_t`` are removed.
+  The macros :c:macro:`SDC_MEM_ISO_TX_PDU_POOL_SIZE` and :c:macro:`SDC_MEM_ISO_TX_SDU_POOL_SIZE` replace :c:macro:`SDC_MEM_ISO_TX_POOL_SIZE`.
+  This change does not affect applications developed in the |NCS| context. (DRGN-21650)
 
 Bug fixes
 =========
