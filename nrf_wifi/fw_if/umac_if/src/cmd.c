@@ -187,11 +187,6 @@ enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 			      NUM_EDGE_BACKOFF);
 
 	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &umac_cmd_data->tx_pwr_ctrl_params,
-			      tx_pwr_ctrl_params,
-			      sizeof(umac_cmd_data->tx_pwr_ctrl_params));
-
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
 			      umac_cmd_data->country_code,
 			      CONFIG_NRF700X_REG_DOMAIN,
 			      NRF_WIFI_COUNTRY_CODE_LEN);
