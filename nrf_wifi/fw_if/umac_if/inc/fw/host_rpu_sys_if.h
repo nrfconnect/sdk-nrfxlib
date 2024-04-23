@@ -860,8 +860,6 @@ struct nrf_wifi_cmd_sys_init {
 	unsigned char country_code[NRF_WIFI_COUNTRY_CODE_LEN];
 	/** Operating band see enum op_band */
 	unsigned int op_band;
-	/** System parameters provided for controlling the TX power */
-	struct nrf_wifi_tx_pwr_ctrl_params tx_pwr_ctrl_params;
 	/** Offload mgmt buffer refill to UMAC when enabled */
 	unsigned char mgmt_buff_offload;
 	/** Enable features from driver config */
