@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <cmsis_compiler.h>
+#include <mdk/compiler_abstraction.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -269,7 +269,7 @@ enum sdc_hci_subevent_le
 };
 
 /** @brief Advertising Event Properties parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t connectable_adv : 1;
     uint16_t scannable_adv : 1;
@@ -282,20 +282,20 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_adv_event_properties_params_t;
 
 /** @brief LE BIG Create Sync array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t bis;
 } sdc_hci_le_big_create_sync_array_params_t;
 
 /** @brief LE Create CIS array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t cis_conn_handle;
     uint16_t acl_conn_handle;
 } sdc_hci_le_create_cis_array_params_t;
 
 /** @brief LE Extended Create Connection [v1] array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t scan_interval;
     uint16_t scan_window;
@@ -308,7 +308,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_ext_create_conn_array_params_t;
 
 /** @brief LE Extended Create Connection [v2] array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t scan_interval;
     uint16_t scan_window;
@@ -325,7 +325,7 @@ typedef __PACKED_STRUCT
  * If the bit in the Event_Mask is set to a one,
  * then the event associated with that bit will be enabled.
  */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t le_connection_complete_event : 1;
     uint8_t le_advertising_report_event : 1;
@@ -374,7 +374,7 @@ typedef __PACKED_STRUCT
  *
  * See Core_v5.4, Vol 6, Part B, Section 4.6
  */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t le_encryption : 1;
     uint8_t connection_parameters_request : 1;
@@ -424,7 +424,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_le_features_t;
 
 /** @brief Options parameters for HCI_LE_Periodic_Advertising_Create_Sync command. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t use_periodic_adv_list : 1;
     uint8_t disable_reporting : 1;
@@ -433,7 +433,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_periodic_adv_create_sync_options_params_t;
 
 /** @brief LE Set CIG Parameters array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cis_id;
     uint16_t max_sdu_c_to_p;
@@ -445,13 +445,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_set_cig_params_array_params_t;
 
 /** @brief LE Set CIG Parameters output array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_le_set_cig_params_output_array_params_t;
 
 /** @brief LE Set CIG Parameters Test array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cis_id;
     uint8_t nse;
@@ -466,25 +466,25 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_set_cig_params_test_array_params_t;
 
 /** @brief LE Set CIG Parameters Test output array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_le_set_cig_params_test_output_array_params_t;
 
 /** @brief LE Set Connection CTE Transmit Parameters array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t antenna_ids;
 } sdc_hci_le_set_conn_cte_transmit_params_array_params_t;
 
 /** @brief LE Set Connectionless CTE Transmit Parameters array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t antenna_ids;
 } sdc_hci_le_set_connless_cte_transmit_params_array_params_t;
 
 /** @brief Change Reasons parameters for HCI_LE_Set_Data_Related_Address_Changes command. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t change_on_adv_data_change : 1;
     uint8_t change_on_scan_response_data_change : 1;
@@ -492,7 +492,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_set_data_related_address_changes_reasons_params_t;
 
 /** @brief LE Set Extended Advertising Enable array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint16_t duration;
@@ -500,7 +500,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_set_ext_adv_enable_array_params_t;
 
 /** @brief LE Set Extended Scan Parameters array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t scan_type;
     uint16_t scan_interval;
@@ -508,7 +508,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_set_ext_scan_params_array_params_t;
 
 /** @brief Enable parameters for HCI_LE_Set_Periodic_Advertising_Enable command. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t enable : 1;
     uint8_t include_adi : 1;
@@ -516,7 +516,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_set_periodic_adv_enable_params_t;
 
 /** @brief Enable parameters for HCI_LE_Set_Periodic_Advertising_Receive_Enable command. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t enable_reporting : 1;
     uint8_t enable_duplicate_filtering : 1;
@@ -524,7 +524,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_le_set_periodic_adv_receive_enable_params_t;
 
 /** @brief LE Set Periodic Advertising Subevent Data array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t subevent;
     uint8_t response_slot_start;
@@ -555,7 +555,7 @@ typedef __PACKED_STRUCT
  * from the peer device or the parameters were changed using the Connection
  * Update procedure, then this event shall not be issued.
  */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t status;
     uint16_t conn_handle;
@@ -573,34 +573,34 @@ typedef __PACKED_STRUCT
  */
 
 /** @brief LE Set Event Mask command parameter(s). */
-typedef __PACKED_UNION
+typedef union __PACKED __ALIGN(1)
 {
     sdc_hci_le_le_event_mask_t params;
     uint8_t raw[8];
 } sdc_hci_cmd_le_set_event_mask_t;
 
 /** @brief LE Read Buffer Size [v1] return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t le_acl_data_packet_length;
     uint8_t total_num_le_acl_data_packets;
 } sdc_hci_cmd_le_read_buffer_size_return_t;
 
 /** @brief LE Read Local Supported Features return parameter(s). */
-typedef __PACKED_UNION
+typedef union __PACKED __ALIGN(1)
 {
     sdc_hci_le_le_features_t params;
     uint8_t raw[8];
 } sdc_hci_cmd_le_read_local_supported_features_return_t;
 
 /** @brief LE Set Random Address command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t random_address[6];
 } sdc_hci_cmd_le_set_random_address_t;
 
 /** @brief LE Set Advertising Parameters command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t adv_interval_min;
     uint16_t adv_interval_max;
@@ -613,33 +613,33 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_adv_params_t;
 
 /** @brief LE Read Advertising Physical Channel Tx Power return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     int8_t tx_power_level;
 } sdc_hci_cmd_le_read_adv_physical_channel_tx_power_return_t;
 
 /** @brief LE Set Advertising Data command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_data_length;
     uint8_t adv_data[31];
 } sdc_hci_cmd_le_set_adv_data_t;
 
 /** @brief LE Set Scan Response Data command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t scan_response_data_length;
     uint8_t scan_response_data[31];
 } sdc_hci_cmd_le_set_scan_response_data_t;
 
 /** @brief LE Set Advertising Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_enable;
 } sdc_hci_cmd_le_set_adv_enable_t;
 
 /** @brief LE Set Scan Parameters command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t le_scan_type;
     uint16_t le_scan_interval;
@@ -649,14 +649,14 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_scan_params_t;
 
 /** @brief LE Set Scan Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t le_scan_enable;
     uint8_t filter_duplicates;
 } sdc_hci_cmd_le_set_scan_enable_t;
 
 /** @brief LE Create Connection command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t le_scan_interval;
     uint16_t le_scan_window;
@@ -673,27 +673,27 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_create_conn_t;
 
 /** @brief LE Read Filter Accept List Size return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t filter_accept_list_size;
 } sdc_hci_cmd_le_read_filter_accept_list_size_return_t;
 
 /** @brief LE Add Device To Filter Accept List command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t address_type;
     uint8_t address[6];
 } sdc_hci_cmd_le_add_device_to_filter_accept_list_t;
 
 /** @brief LE Remove Device From Filter Accept List command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t address_type;
     uint8_t address[6];
 } sdc_hci_cmd_le_remove_device_from_filter_accept_list_t;
 
 /** @brief LE Connection Update command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint16_t conn_interval_min;
@@ -705,51 +705,51 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_conn_update_t;
 
 /** @brief LE Set Host Channel Classification command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t channel_map[5];
 } sdc_hci_cmd_le_set_host_channel_classification_t;
 
 /** @brief LE Read Channel Map command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_read_channel_map_t;
 
 /** @brief LE Read Channel Map return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t channel_map[5];
 } sdc_hci_cmd_le_read_channel_map_return_t;
 
 /** @brief LE Read Remote Features command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_read_remote_features_t;
 
 /** @brief LE Encrypt command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t key[16];
     uint8_t plaintext_data[16];
 } sdc_hci_cmd_le_encrypt_t;
 
 /** @brief LE Encrypt return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t encrypted_data[16];
 } sdc_hci_cmd_le_encrypt_return_t;
 
 /** @brief LE Rand return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint64_t random_number;
 } sdc_hci_cmd_le_rand_return_t;
 
 /** @brief LE Enable Encryption command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t random_number[8];
@@ -758,45 +758,45 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_enable_encryption_t;
 
 /** @brief LE Long Term Key Request Reply command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t long_term_key[16];
 } sdc_hci_cmd_le_long_term_key_request_reply_t;
 
 /** @brief LE Long Term Key Request Reply return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_long_term_key_request_reply_return_t;
 
 /** @brief LE Long Term Key Request Negative Reply command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_long_term_key_request_negative_reply_t;
 
 /** @brief LE Long Term Key Request Negative Reply return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_long_term_key_request_negative_reply_return_t;
 
 /** @brief LE Read Supported States return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     /** @brief See the table in Core v5.4, Vol 4, Part E, Section 7.8.27. */
     uint8_t le_states[8];
 } sdc_hci_cmd_le_read_supported_states_return_t;
 
 /** @brief LE Test End return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t num_packets;
 } sdc_hci_cmd_le_test_end_return_t;
 
 /** @brief LE Set Data Length command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint16_t tx_octets;
@@ -804,27 +804,27 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_data_length_t;
 
 /** @brief LE Set Data Length return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_set_data_length_return_t;
 
 /** @brief LE Read Suggested Default Data Length return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t suggested_max_tx_octets;
     uint16_t suggested_max_tx_time;
 } sdc_hci_cmd_le_read_suggested_default_data_length_return_t;
 
 /** @brief LE Write Suggested Default Data Length command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t suggested_max_tx_octets;
     uint16_t suggested_max_tx_time;
 } sdc_hci_cmd_le_write_suggested_default_data_length_t;
 
 /** @brief LE Add Device To Resolving List command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t peer_identity_address_type;
     uint8_t peer_identity_address[6];
@@ -833,32 +833,32 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_add_device_to_resolving_list_t;
 
 /** @brief LE Remove Device From Resolving List command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t peer_identity_address_type;
     uint8_t peer_identity_address[6];
 } sdc_hci_cmd_le_remove_device_from_resolving_list_t;
 
 /** @brief LE Read Resolving List Size return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t resolving_list_size;
 } sdc_hci_cmd_le_read_resolving_list_size_return_t;
 
 /** @brief LE Set Address Resolution Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t address_resolution_enable;
 } sdc_hci_cmd_le_set_address_resolution_enable_t;
 
 /** @brief LE Set Resolvable Private Address Timeout command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t rpa_timeout;
 } sdc_hci_cmd_le_set_resolvable_private_address_timeout_t;
 
 /** @brief LE Read Maximum Data Length return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t supported_max_tx_octets;
     uint16_t supported_max_tx_time;
@@ -867,13 +867,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_read_max_data_length_return_t;
 
 /** @brief LE Read PHY command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_read_phy_t;
 
 /** @brief LE Read PHY return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t tx_phy;
@@ -881,7 +881,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_read_phy_return_t;
 
 /** @brief LE Set Default PHY command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t all_phys;
     uint8_t tx_phys;
@@ -889,7 +889,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_default_phy_t;
 
 /** @brief LE Set PHY command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t all_phys;
@@ -899,17 +899,17 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_phy_t;
 
 /** @brief LE Set Advertising Set Random Address command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint8_t random_address[6];
 } sdc_hci_cmd_le_set_adv_set_random_address_t;
 
 /** @brief LE Set Extended Advertising Parameters [v1] command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
-    __PACKED_UNION {
+    union __PACKED __ALIGN(1) {
         sdc_hci_le_adv_event_properties_params_t params;
         uint8_t raw[2];
     } adv_event_properties;
@@ -929,13 +929,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_ext_adv_params_t;
 
 /** @brief LE Set Extended Advertising Parameters [v1] return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     int8_t selected_tx_power;
 } sdc_hci_cmd_le_set_ext_adv_params_return_t;
 
 /** @brief LE Set Extended Advertising Data command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint8_t operation;
@@ -945,7 +945,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_ext_adv_data_t;
 
 /** @brief LE Set Extended Scan Response Data command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint8_t operation;
@@ -955,7 +955,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_ext_scan_response_data_t;
 
 /** @brief LE Set Extended Advertising Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t enable;
     uint8_t num_sets;
@@ -963,25 +963,25 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_ext_adv_enable_t;
 
 /** @brief LE Read Maximum Advertising Data Length return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t max_adv_data_length;
 } sdc_hci_cmd_le_read_max_adv_data_length_return_t;
 
 /** @brief LE Read Number of Supported Advertising Sets return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t num_supported_adv_sets;
 } sdc_hci_cmd_le_read_number_of_supported_adv_sets_return_t;
 
 /** @brief LE Remove Advertising Set command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
 } sdc_hci_cmd_le_remove_adv_set_t;
 
 /** @brief LE Set Periodic Advertising Parameters [v1] command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint16_t periodic_adv_interval_min;
@@ -990,7 +990,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_periodic_adv_params_t;
 
 /** @brief LE Set Periodic Advertising Data command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint8_t operation;
@@ -999,9 +999,9 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_periodic_adv_data_t;
 
 /** @brief LE Set Periodic Advertising Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
-    __PACKED_UNION {
+    union __PACKED __ALIGN(1) {
         sdc_hci_le_set_periodic_adv_enable_params_t params;
         uint8_t raw[1];
     } enable;
@@ -1009,7 +1009,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_periodic_adv_enable_t;
 
 /** @brief LE Set Extended Scan Parameters command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t own_address_type;
     uint8_t scanning_filter_policy;
@@ -1018,7 +1018,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_ext_scan_params_t;
 
 /** @brief LE Set Extended Scan Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t enable;
     uint8_t filter_duplicates;
@@ -1027,7 +1027,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_ext_scan_enable_t;
 
 /** @brief LE Extended Create Connection [v1] command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t initiator_filter_policy;
     uint8_t own_address_type;
@@ -1038,9 +1038,9 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_ext_create_conn_t;
 
 /** @brief LE Periodic Advertising Create Sync command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
-    __PACKED_UNION {
+    union __PACKED __ALIGN(1) {
         sdc_hci_le_periodic_adv_create_sync_options_params_t params;
         uint8_t raw[1];
     } options;
@@ -1053,13 +1053,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_periodic_adv_create_sync_t;
 
 /** @brief LE Periodic Advertising Terminate Sync command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t sync_handle;
 } sdc_hci_cmd_le_periodic_adv_terminate_sync_t;
 
 /** @brief LE Add Device To Periodic Advertiser List command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_address_type;
     uint8_t adv_address[6];
@@ -1067,7 +1067,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_add_device_to_periodic_adv_list_t;
 
 /** @brief LE Remove Device From Periodic Advertiser List command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_address_type;
     uint8_t adv_address[6];
@@ -1075,34 +1075,34 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_remove_device_from_periodic_adv_list_t;
 
 /** @brief LE Read Periodic Advertiser List Size return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t periodic_adv_list_size;
 } sdc_hci_cmd_le_read_periodic_adv_list_size_return_t;
 
 /** @brief LE Read Transmit Power return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     int8_t min_tx_power;
     int8_t max_tx_power;
 } sdc_hci_cmd_le_read_transmit_power_return_t;
 
 /** @brief LE Read RF Path Compensation return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     int16_t rf_tx_path_compensation_value;
     int16_t rf_rx_path_compensation_value;
 } sdc_hci_cmd_le_read_rf_path_compensation_return_t;
 
 /** @brief LE Write RF Path Compensation command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     int16_t rf_tx_path_compensation_value;
     int16_t rf_rx_path_compensation_value;
 } sdc_hci_cmd_le_write_rf_path_compensation_t;
 
 /** @brief LE Set Privacy Mode command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t peer_identity_address_type;
     uint8_t peer_identity_address[6];
@@ -1110,7 +1110,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_privacy_mode_t;
 
 /** @brief LE Set Connectionless CTE Transmit Parameters command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint8_t cte_length;
@@ -1121,14 +1121,14 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_connless_cte_transmit_params_t;
 
 /** @brief LE Set Connectionless CTE Transmit Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint8_t cte_enable;
 } sdc_hci_cmd_le_set_connless_cte_transmit_enable_t;
 
 /** @brief LE Set Connection CTE Transmit Parameters command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t cte_types;
@@ -1137,26 +1137,26 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_conn_cte_transmit_params_t;
 
 /** @brief LE Set Connection CTE Transmit Parameters return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_set_conn_cte_transmit_params_return_t;
 
 /** @brief LE Connection CTE Response Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t enable;
 } sdc_hci_cmd_le_conn_cte_response_enable_t;
 
 /** @brief LE Connection CTE Response Enable return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_conn_cte_response_enable_return_t;
 
 /** @brief LE Read Antenna Information return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t supported_switching_sampling_rates;
     uint8_t num_antennae;
@@ -1165,17 +1165,17 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_read_antenna_information_return_t;
 
 /** @brief LE Set Periodic Advertising Receive Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t sync_handle;
-    __PACKED_UNION {
+    union __PACKED __ALIGN(1) {
         sdc_hci_le_set_periodic_adv_receive_enable_params_t params;
         uint8_t raw[1];
     } enable;
 } sdc_hci_cmd_le_set_periodic_adv_receive_enable_t;
 
 /** @brief LE Periodic Advertising Sync Transfer command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint16_t service_data;
@@ -1183,13 +1183,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_periodic_adv_sync_transfer_t;
 
 /** @brief LE Periodic Advertising Sync Transfer return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_periodic_adv_sync_transfer_return_t;
 
 /** @brief LE Periodic Advertising Set Info Transfer command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint16_t service_data;
@@ -1197,13 +1197,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_periodic_adv_set_info_transfer_t;
 
 /** @brief LE Periodic Advertising Set Info Transfer return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_periodic_adv_set_info_transfer_return_t;
 
 /** @brief LE Set Periodic Advertising Sync Transfer Parameters command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t mode;
@@ -1213,13 +1213,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params_t;
 
 /** @brief LE Set Periodic Advertising Sync Transfer Parameters return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_set_periodic_adv_sync_transfer_params_return_t;
 
 /** @brief LE Set Default Periodic Advertising Sync Transfer Parameters command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t mode;
     uint16_t skip;
@@ -1228,7 +1228,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_default_periodic_adv_sync_transfer_params_t;
 
 /** @brief LE Read Buffer Size [v2] return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t le_acl_data_packet_length;
     uint8_t total_num_le_acl_data_packets;
@@ -1237,13 +1237,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_read_buffer_size_v2_return_t;
 
 /** @brief LE Read ISO TX Sync command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_read_iso_tx_sync_t;
 
 /** @brief LE Read ISO TX Sync return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint16_t packet_sequence_number;
@@ -1252,7 +1252,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_read_iso_tx_sync_return_t;
 
 /** @brief LE Set CIG Parameters command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cig_id;
     uint32_t sdu_interval_c_to_p : 24;
@@ -1267,7 +1267,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_cig_params_t;
 
 /** @brief LE Set CIG Parameters return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cig_id;
     uint8_t cis_count;
@@ -1275,7 +1275,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_cig_params_return_t;
 
 /** @brief LE Set CIG Parameters Test command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cig_id;
     uint32_t sdu_interval_c_to_p : 24;
@@ -1291,7 +1291,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_cig_params_test_t;
 
 /** @brief LE Set CIG Parameters Test return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cig_id;
     uint8_t cis_count;
@@ -1299,45 +1299,45 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_cig_params_test_return_t;
 
 /** @brief LE Create CIS command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cis_count;
     sdc_hci_le_create_cis_array_params_t array_params[];
 } sdc_hci_cmd_le_create_cis_t;
 
 /** @brief LE Remove CIG command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cig_id;
 } sdc_hci_cmd_le_remove_cig_t;
 
 /** @brief LE Remove CIG return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t cig_id;
 } sdc_hci_cmd_le_remove_cig_return_t;
 
 /** @brief LE Accept CIS Request command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_accept_cis_request_t;
 
 /** @brief LE Reject CIS Request command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t reason;
 } sdc_hci_cmd_le_reject_cis_request_t;
 
 /** @brief LE Reject CIS Request return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_reject_cis_request_return_t;
 
 /** @brief LE Create BIG command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t big_handle;
     uint8_t adv_handle;
@@ -1354,7 +1354,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_create_big_t;
 
 /** @brief LE Create BIG Test command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t big_handle;
     uint8_t adv_handle;
@@ -1375,14 +1375,14 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_create_big_test_t;
 
 /** @brief LE Terminate BIG command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t big_handle;
     uint8_t reason;
 } sdc_hci_cmd_le_terminate_big_t;
 
 /** @brief LE BIG Create Sync command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t big_handle;
     uint16_t sync_handle;
@@ -1395,25 +1395,25 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_big_create_sync_t;
 
 /** @brief LE BIG Terminate Sync command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t big_handle;
 } sdc_hci_cmd_le_big_terminate_sync_t;
 
 /** @brief LE BIG Terminate Sync return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t big_handle;
 } sdc_hci_cmd_le_big_terminate_sync_return_t;
 
 /** @brief LE Request Peer SCA command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_request_peer_sca_t;
 
 /** @brief LE Setup ISO Data Path command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t data_path_direction;
@@ -1425,58 +1425,58 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_setup_iso_data_path_t;
 
 /** @brief LE Setup ISO Data Path return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_setup_iso_data_path_return_t;
 
 /** @brief LE Remove ISO Data Path command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t data_path_direction;
 } sdc_hci_cmd_le_remove_iso_data_path_t;
 
 /** @brief LE Remove ISO Data Path return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_remove_iso_data_path_return_t;
 
 /** @brief LE ISO Transmit Test command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t payload_type;
 } sdc_hci_cmd_le_iso_transmit_test_t;
 
 /** @brief LE ISO Transmit Test return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_iso_transmit_test_return_t;
 
 /** @brief LE ISO Receive Test command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t payload_type;
 } sdc_hci_cmd_le_iso_receive_test_t;
 
 /** @brief LE ISO Receive Test return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_iso_receive_test_return_t;
 
 /** @brief LE ISO Read Test Counters command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_iso_read_test_counters_t;
 
 /** @brief LE ISO Read Test Counters return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint32_t received_sdu_count;
@@ -1485,13 +1485,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_iso_read_test_counters_return_t;
 
 /** @brief LE ISO Test End command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_iso_test_end_t;
 
 /** @brief LE ISO Test End return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint32_t received_sdu_count;
@@ -1500,20 +1500,20 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_iso_test_end_return_t;
 
 /** @brief LE Set Host Feature command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t bit_number;
     uint8_t bit_value;
 } sdc_hci_cmd_le_set_host_feature_t;
 
 /** @brief LE Read ISO Link Quality command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_read_iso_link_quality_t;
 
 /** @brief LE Read ISO Link Quality return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint32_t tx_unacked_packets;
@@ -1526,14 +1526,14 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_read_iso_link_quality_return_t;
 
 /** @brief LE Enhanced Read Transmit Power Level command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t phy;
 } sdc_hci_cmd_le_enhanced_read_transmit_power_level_t;
 
 /** @brief LE Enhanced Read Transmit Power Level return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t phy;
@@ -1542,14 +1542,14 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_enhanced_read_transmit_power_level_return_t;
 
 /** @brief LE Read Remote Transmit Power Level command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t phy;
 } sdc_hci_cmd_le_read_remote_transmit_power_level_t;
 
 /** @brief LE Set Path Loss Reporting Parameters command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t high_threshold;
@@ -1560,26 +1560,26 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_path_loss_reporting_params_t;
 
 /** @brief LE Set Path Loss Reporting Parameters return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_set_path_loss_reporting_params_return_t;
 
 /** @brief LE Set Path Loss Reporting Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t enable;
 } sdc_hci_cmd_le_set_path_loss_reporting_enable_t;
 
 /** @brief LE Set Path Loss Reporting Enable return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_set_path_loss_reporting_enable_return_t;
 
 /** @brief LE Set Transmit Power Reporting Enable command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t local_enable;
@@ -1587,23 +1587,23 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_transmit_power_reporting_enable_t;
 
 /** @brief LE Set Transmit Power Reporting Enable return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_le_set_transmit_power_reporting_enable_return_t;
 
 /** @brief LE Set Data Related Address Changes command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
-    __PACKED_UNION {
+    union __PACKED __ALIGN(1) {
         sdc_hci_le_set_data_related_address_changes_reasons_params_t params;
         uint8_t raw[1];
     } change_reasons;
 } sdc_hci_cmd_le_set_data_related_address_changes_t;
 
 /** @brief LE Set Default Subrate command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t subrate_min;
     uint16_t subrate_max;
@@ -1613,7 +1613,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_default_subrate_t;
 
 /** @brief LE Subrate Request command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint16_t subrate_min;
@@ -1624,7 +1624,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_subrate_request_t;
 
 /** @brief LE Set Periodic Advertising Subevent Data command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint8_t num_subevents;
@@ -1632,13 +1632,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_periodic_adv_subevent_data_t;
 
 /** @brief LE Set Periodic Advertising Subevent Data return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
 } sdc_hci_cmd_le_set_periodic_adv_subevent_data_return_t;
 
 /** @brief LE Set Periodic Advertising Response Data command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t sync_handle;
     uint16_t request_event;
@@ -1650,13 +1650,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_periodic_adv_response_data_t;
 
 /** @brief LE Set Periodic Advertising Response Data return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t sync_handle;
 } sdc_hci_cmd_le_set_periodic_adv_response_data_return_t;
 
 /** @brief LE Set Periodic Sync Subevent command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t sync_handle;
     uint16_t periodic_adv_properties;
@@ -1665,13 +1665,13 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_periodic_sync_subevent_t;
 
 /** @brief LE Set Periodic Sync Subevent return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t sync_handle;
 } sdc_hci_cmd_le_set_periodic_sync_subevent_return_t;
 
 /** @brief LE Extended Create Connection [v2] command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint8_t subevent;
@@ -1684,7 +1684,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_ext_create_conn_v2_t;
 
 /** @brief LE Set Periodic Advertising Parameters [v2] command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint16_t periodic_adv_interval_min;
@@ -1698,7 +1698,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_le_set_periodic_adv_params_v2_t;
 
 /** @brief LE Set Periodic Advertising Parameters [v2] return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
 } sdc_hci_cmd_le_set_periodic_adv_params_v2_return_t;

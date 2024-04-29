@@ -148,8 +148,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1012
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1140
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1044
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1174
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -191,17 +191,15 @@ extern "C" {
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
 /** Memory required for the scanner when only supporting legacy scanning. */
-#define SDC_MEM_SCAN_BUFFER(buffer_count) (344 + (buffer_count) * 88)
-#define SDC_MEM_SCAN(buffer_count) (344 + (buffer_count) * 88)
+#define SDC_MEM_SCAN(buffer_count) (352 + (buffer_count) * 88)
 
 /** Memory required for the scanner when supporting extended scanning. */
-#define SDC_MEM_SCAN_BUFFER_EXT(buffer_count) (345 + (buffer_count) * 307)
-#define SDC_MEM_SCAN_EXT(buffer_count) (345 + (buffer_count) * 307)
+#define SDC_MEM_SCAN_EXT(buffer_count) (353 + (buffer_count) * 307)
 
 /** Additional memory required for the initiator when supporting scanning
  *  and initiating at the same time.
  */
-#define SDC_MEM_INITIATOR (304)
+#define SDC_MEM_INITIATOR (312)
 
 /** Memory required for the Filter Accept List */
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)

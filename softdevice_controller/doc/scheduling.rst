@@ -65,8 +65,8 @@ The following table summarizes the priorities.
    |                             | * Scanner in the synchronized state receiving auxiliary packets (``AUX_CHAIN_IND``)               |
    |                             | * Scanner in the synchronized state sending auxiliary packets (``AUX_SYNC_SUBEVENT_RSP``)         |
    |                             | * Connectable Advertiser/Broadcaster which has been blocked consecutively for a few times         |
-   |                             | * Scanner which has been blocked for a long time                                                  |
-   |                             | * Scanner which is receiving an advertising packet on a secondary advertising channel             |
+   |                             | * Scanner with interval not equal to the scan window and which hasn't scanned for a full window   |
+   |                             |   in a long time                                                                                  |
    |                             | * Connected Isochronous channel setup                                                             |
    |                             | * Connected Isochronous channels that are about to time out                                       |
    |                             | * Isochronous Broadcaster                                                                         |
@@ -410,27 +410,16 @@ In the following figure there is free time available between link timing-events,
 
    Scanner timing - always after connections
 
-The following figure shows a Scanner with a long :math:`\mathsf{scanWindow}` which will cause some connection timing-events to be dropped.
-
-.. figure:: pic/schedule/scanner_timing_5_one_conn_long_window.svg
-   :alt: Alt text: A diagram showing the Scanner with one long connection causing packets to be dropped.
-   :align: center
-   :width: 80%
-
-   Scanner timing - one connection, long window
-
-Primary channel cooperative scanning
-------------------------------------
-
-When the sum of the scan windows is set equal to the scan interval, the |controller| will schedule new primary channel scanner timing-events cooperatively.
-This allows other timing-events, such as advertising, to be interleaved with the scanning activity.
+The |controller| will avoid causing other timing-events to be dropped when scheduling new primary channel scanner timing-events.
+Other timing-events, such as advertising, may be interleaved with the scanning activity.
+Additionally, when the scan window is equal to the scan interval, the |controller| will always return to primary channel scanning after the interleaved timing-event.
 
 .. figure:: pic/schedule/scanner_timing_coop.svg
    :alt: Alt text: A diagram showing other timing activities interleaving primary channel scanning.
    :align: center
    :width: 80%
 
-   Scanner timing - when window is equal to interval, scanning is cooperative
+   Scanner timing - primary channel scanning interleaved with other timing activities
 
 Secondary channel Scanner timing
 ================================
@@ -599,7 +588,7 @@ The duration of the periodic advertising event can be decreased by using the LE 
 See the :ref:`periodic_advertiser_timing` section for more information.
 
 The synchronized receiver may close a timing-event early in order to save energy.
-It can do this if it has received all payloads in a BIG event 
+It can do this if it has received all payloads in a BIG event.
 
 .. figure:: pic/schedule/broadcast_iso_timing.svg
    :alt: Alt text: Broadcast ISO channels timing
