@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <cmsis_compiler.h>
+#include <mdk/compiler_abstraction.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -64,7 +64,7 @@ enum sdc_hci_opcode_cb
  * If the bit in the Event_Mask is set to a one,
  * then the event associated with that bit will be enabled.
  */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t inquiry_complete_event : 1;
     uint8_t inquiry_result_event : 1;
@@ -122,7 +122,7 @@ typedef __PACKED_STRUCT
  * If the bit in the Event_Mask is set to a one,
  * then the event associated with that bit will be enabled.
  */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t previously_used0 : 1;
     uint8_t previously_used1 : 1;
@@ -153,7 +153,7 @@ typedef __PACKED_STRUCT
 } sdc_hci_cb_event_mask_page_2_t;
 
 /** @brief Host Number Of Completed Packets array parameters. */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint16_t host_num_completed_packets;
@@ -167,46 +167,46 @@ typedef __PACKED_STRUCT
  */
 
 /** @brief Set Event Mask command parameter(s). */
-typedef __PACKED_UNION
+typedef union __PACKED __ALIGN(1)
 {
     sdc_hci_cb_event_mask_t params;
     uint8_t raw[8];
 } sdc_hci_cmd_cb_set_event_mask_t;
 
 /** @brief Read Connection Accept Timeout return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_accept_timeout;
 } sdc_hci_cmd_cb_read_conn_accept_timeout_return_t;
 
 /** @brief Write Connection Accept Timeout command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_accept_timeout;
 } sdc_hci_cmd_cb_write_conn_accept_timeout_t;
 
 /** @brief Read Transmit Power Level command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t type;
 } sdc_hci_cmd_cb_read_transmit_power_level_t;
 
 /** @brief Read Transmit Power Level return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     int8_t tx_power_level;
 } sdc_hci_cmd_cb_read_transmit_power_level_return_t;
 
 /** @brief Set Controller To Host Flow Control command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t flow_control_enable;
 } sdc_hci_cmd_cb_set_controller_to_host_flow_control_t;
 
 /** @brief Host Buffer Size command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t host_acl_data_packet_length;
     uint8_t host_sync_data_packet_length;
@@ -215,41 +215,41 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_cb_host_buffer_size_t;
 
 /** @brief Host Number Of Completed Packets command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t num_handles;
     sdc_hci_cb_host_number_of_completed_packets_array_params_t array_params[];
 } sdc_hci_cmd_cb_host_number_of_completed_packets_t;
 
 /** @brief Set Event Mask Page 2 command parameter(s). */
-typedef __PACKED_UNION
+typedef union __PACKED __ALIGN(1)
 {
     sdc_hci_cb_event_mask_page_2_t params;
     uint8_t raw[8];
 } sdc_hci_cmd_cb_set_event_mask_page_2_t;
 
 /** @brief Read Authenticated Payload Timeout command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_cb_read_authenticated_payload_timeout_t;
 
 /** @brief Read Authenticated Payload Timeout return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint16_t authenticated_payload_timeout;
 } sdc_hci_cmd_cb_read_authenticated_payload_timeout_return_t;
 
 /** @brief Write Authenticated Payload Timeout command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint16_t authenticated_payload_timeout;
 } sdc_hci_cmd_cb_write_authenticated_payload_timeout_t;
 
 /** @brief Write Authenticated Payload Timeout return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_cb_write_authenticated_payload_timeout_return_t;

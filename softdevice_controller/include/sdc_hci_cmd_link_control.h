@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <cmsis_compiler.h>
+#include <mdk/compiler_abstraction.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -49,14 +49,14 @@ enum sdc_hci_opcode_lc
  */
 
 /** @brief Disconnect command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
     uint8_t reason;
 } sdc_hci_cmd_lc_disconnect_t;
 
 /** @brief Read Remote Version Information command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_lc_read_remote_version_information_t;

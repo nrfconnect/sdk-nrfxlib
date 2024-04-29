@@ -20,10 +20,20 @@ Added
   See :c:func:`sdc_hci_cmd_vs_scan_channel_map_set` (DRGN-19730).
 * Vendor-specific HCI command to configure the scanner and initiator to either accept or reject extended advertising packets.
   See :c:func:`sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set` (DRGN-21755).
+* Vendor-specific HCI command to change the scheduling priorities.
+  Currently, this only supports changing the priority of initiator activities on the auxiliary channels.
+  Note that unless documented otherwise, any non-default priorities are not tested.
+  This means that there is no guarantee that the controller works as intended when non-tested priorities are used.
+  See :c:func:`sdc_hci_cmd_vs_set_role_priority` (DRGN-21226).
 
 Changes
 =======
 
+* The |controller| will now schedule all scanner primary channel timing-events cooperatively even when the sum of the scan windows is less than the scan interval.
+  If the |controller| is unable to schedule a full scan window for a long time, the scheduling priority will be raised to ensure a full window is scheduled.
+
+  Generally, this change will result in either increased scanning time, or similar scanning time to before.
+  In cases where there are many conflicting activities within the scan window, this change may result in reduced scanning time. (DRGN-19050)
 * Scan windows are no longer limited to 16 seconds. (DRGN-19050)
 * The deprecated functions :c:func:`rand_prio_low_get` and :c:func:`rand_prio_high_get` have been removed.
   This change does not affect applications developed in the |NCS| context. (DRGN-20473)
@@ -39,10 +49,13 @@ Changes
   The fields ``tx_hci_buffer_count`` and ``tx_hci_buffer_size`` in ``sdc_cfg_iso_buffer_cfg_t`` are removed.
   The macros :c:macro:`SDC_MEM_ISO_TX_PDU_POOL_SIZE` and :c:macro:`SDC_MEM_ISO_TX_SDU_POOL_SIZE` replace :c:macro:`SDC_MEM_ISO_TX_POOL_SIZE`.
   This change does not affect applications developed in the |NCS| context. (DRGN-21650)
+* The function :c:func:`sdc_soc_ecb_block_encrypt` has been removed.
+  Using :file:`mpsl_ecb.h` is now recommended instead. (DRGN-21603)
 
 Bug fixes
 =========
 
+* Fixed an extremely rare race condition where using :c:func:`sdc_soc_ecb_block_encrypt` from an ISR could lead to encryption failures. (DRGN-21603)
 * Fixed an issue where the vendor-specific ISO Read TX Timestamp command returned a timestamp that was 41 µs too small (DRGN-21605).
 * Fixed an issue where an assert could happen if a CIS peripheral stopped receiving packets from the CIS central.
   This would only occur after the window widening reached at least half of the ISO interval in magnitude.
@@ -52,6 +65,9 @@ Bug fixes
   This happened when the central would acknowledge ``TERMINATE_IND`` in the same event as it was being sent (DRGN-21637).
 * Fixed an issue where the |controller| would accept the HCI LE Set Random Address command while passive scanning had been enabled.
   The |controller| now returns the error code ``0x0D`` in this case. (DRGN-19050)
+* Fixed an issue where a BIS Broadcaster would transmit invalid parameters in the BIG Info if a BIG was created with ``num_bis`` set to ``1`` and ``packing`` set to ``1`` (interleaved).
+  This could happen with both the LL Create BIG and LL Create BIG Test commands (DRGN-21912).
+* Fixed an issue with the controller-initiated autonomous LE Power Control Request procedure for Coded PHY that could lead to a disconnection. (DRGN-21923)
 
 nRF Connect SDK v2.6.0
 **********************
