@@ -187,6 +187,12 @@ extern "C" {
 /** Maximum shared memory required for peripheral links. */
 #define SDC_MEM_PERIPHERAL_LINKS_SHARED  17
 
+/** @brief Maximum memory required when supporting LE Power Control.
+ *
+ * @param[in] num_links Total number of peripheral and central links supported.
+ */
+#define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? 0 : 0)
+
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 

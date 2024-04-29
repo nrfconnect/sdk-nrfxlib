@@ -68,6 +68,7 @@ Bug fixes
 * Fixed an issue where a BIS Broadcaster would transmit invalid parameters in the BIG Info if a BIG was created with ``num_bis`` set to ``1`` and ``packing`` set to ``1`` (interleaved).
   This could happen with both the LL Create BIG and LL Create BIG Test commands (DRGN-21912).
 * Fixed an issue with the controller-initiated autonomous LE Power Control Request procedure for Coded PHY that could lead to a disconnection. (DRGN-21923)
+* Fixed an issue where the |controller| could assert if a BIS Receiver stops receiving packets from the BIS Broadcaster. (DRGN-21949)
 
 nRF Connect SDK v2.6.0
 **********************
