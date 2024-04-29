@@ -49,7 +49,7 @@ For the nRF53 Series:
 For the nRF54H Series:
   Interrupts:
 
-  * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_0_IRQn``
+  * ``GRTC`` channels ``8`` to ``12``, interrupt ``GRTC_2_IRQn``
   * ``TIMER020``
   * ``TIMER021``
   * ``ECB030``
@@ -83,7 +83,12 @@ For the nRF54L Series:
    These peripherals can be used freely when MPSL is not initialized.
    Additional peripheral requirements may be set by the protocol stacks in use.
 
-Limited access to these peripherals is provided through the MPSL Timeslot module and other MPSL APIs.
+The mentioned resources related to ``RADIO`` and ``TIMER`` can be accessed directly using the :ref:`mpsl_timeslot` feature.
+Limited access to some of these peripherals is provided through the following APIs:
+
+  * ``ECB`` through :file:`mpsl_ecb.h`
+  * ``CLOCK`` through :file:`mpsl_clock.h`
+  * ``TEMP`` through :file:`mpsl_temp.h`
 
 Thread and interrupt safety
 ***************************
