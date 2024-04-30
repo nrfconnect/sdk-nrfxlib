@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <cmsis_compiler.h>
+#include <mdk/compiler_abstraction.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -47,13 +47,13 @@ enum sdc_hci_opcode_sp
  */
 
 /** @brief Read RSSI command parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t handle;
 } sdc_hci_cmd_sp_read_rssi_t;
 
 /** @brief Read RSSI return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint16_t handle;
     int8_t rssi;

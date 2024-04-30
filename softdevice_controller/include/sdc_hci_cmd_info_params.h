@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <cmsis_compiler.h>
+#include <mdk/compiler_abstraction.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -49,7 +49,7 @@ enum sdc_hci_opcode_ip
  *
  * See Core_v5.4, Vol 2, Part C, Section 3.3
  */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t slot3_packets : 1;
     uint8_t slot5_packets : 1;
@@ -119,7 +119,7 @@ typedef __PACKED_STRUCT
  *
  * See Core_v5.4, Vol 4, Part E, Section 6.27
  */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t hci_inquiry : 1;
     uint8_t hci_inquiry_cancel : 1;
@@ -515,7 +515,7 @@ typedef __PACKED_STRUCT
  */
 
 /** @brief Read Local Version Information return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t hci_version;
     uint16_t hci_subversion;
@@ -525,21 +525,21 @@ typedef __PACKED_STRUCT
 } sdc_hci_cmd_ip_read_local_version_information_return_t;
 
 /** @brief Read Local Supported Commands return parameter(s). */
-typedef __PACKED_UNION
+typedef union __PACKED __ALIGN(1)
 {
     sdc_hci_ip_supported_commands_t params;
     uint8_t raw[64];
 } sdc_hci_cmd_ip_read_local_supported_commands_return_t;
 
 /** @brief Read Local Supported Features return parameter(s). */
-typedef __PACKED_UNION
+typedef union __PACKED __ALIGN(1)
 {
     sdc_hci_ip_lmp_features_t params;
     uint8_t raw[8];
 } sdc_hci_cmd_ip_read_local_supported_features_return_t;
 
 /** @brief Read BD_ADDR return parameter(s). */
-typedef __PACKED_STRUCT
+typedef struct __PACKED __ALIGN(1)
 {
     uint8_t bd_addr[6];
 } sdc_hci_cmd_ip_read_bd_addr_return_t;

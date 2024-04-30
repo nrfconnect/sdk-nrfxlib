@@ -34,14 +34,14 @@ For the nRF52 Series:
 * ``CCM``
 * ``AAR``
 * ``NVMC``
-* PPI channels from ``17`` to ``31``
+* ``PPI`` channels from ``17`` to ``31``
 
 For the nRF53 Series:
 
 * ``CCM``
 * ``AAR``
 * ``NVMC``
-* DPPI channels from ``0`` to ``13``
+* ``DPPI`` channels from ``0`` to ``13``
 
 For the nRF54H Series:
 
@@ -61,8 +61,7 @@ For the nRF54L Series:
 * ``PPIB10`` channels from ``0`` to ``3``
 
 
-Some of these peripherals can be accessed by APIs provided in :file:`sdc_soc.h` and by :ref:`mpsl`.
-The application can access most of these directly using :ref:`mpsl_timeslot`.
+All of the listed resources can be accessed directly using the :ref:`mpsl_timeslot` feature.
 
 Message sequence charts
 ***********************
