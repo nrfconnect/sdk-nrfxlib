@@ -4,17 +4,7 @@
 #
 
 function(mpsl_fem_append_lib fem_lib_name)
-    if (CONFIG_SOC_SERIES_NRF54HX OR CONFIG_SOC_SERIES_NRF54LX)
-      nrfxlib_calculate_lib_path(LIB_DIR SOC_MODE
-        BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${fem_lib_name}
-        SOFT_FLOAT_FALLBACK
-      )
-    else ()
-      nrfxlib_calculate_lib_path(LIB_DIR
-        BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${fem_lib_name}
-        SOFT_FLOAT_FALLBACK
-      )
-    endif()
+    set(LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${fem_lib_name}/lib/${CONFIG_MPSL_LIB_DIR}/${CONFIG_MPSL_LIB_FLOAT_ABI_DIR}")
 
     if(LIB_DIR)
       zephyr_include_directories(${fem_lib_name}/include)
@@ -26,7 +16,7 @@ FILE(GLOB subdirlist RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE
 
 # call mpsl_fem_append_lib for each subdirectory
 FOREACH(subdir ${subdirlist})
-  IF(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
+  IF((IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${subdir}) AND NOT (${subdir} STREQUAL "include"))
     mpsl_fem_append_lib(${subdir})
   ENDIF()
 ENDFOREACH()
