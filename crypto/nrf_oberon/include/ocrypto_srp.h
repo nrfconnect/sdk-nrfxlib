@@ -119,7 +119,7 @@ extern "C" {
  * The verifier is generated for a given user name @p user, a password @p pass
  * and salt @p salt.
  *
- * @param[out] v        Generated password verifier, must be 32-bit aligned.
+ * @param[out] v        Generated password verifier.
  * @param      salt     Salt.
  * @param      user     User name.
  * @param      user_len Length of @p user.
@@ -145,7 +145,7 @@ void ocrypto_srp_verifier(
  * The public key for a given private key @p priv_b is generated using the
  * password verifier @p v and put into @p pub_b.
  *
- * @param[out] pub_b  Generated public key, must be 32-bit aligned.
+ * @param[out] pub_b  Generated public key.
  * @param      priv_b Private key.
  * @param      v      Password verifier.
  */
@@ -158,7 +158,7 @@ void ocrypto_srp_public_key(
 /**
  * SRP-6 Server Public Key.
  *
- * @param[out] pub_b  Generated public key, must be 32 bit aligned.
+ * @param[out] pub_b  Generated public key.
  * @param      priv_b Private key.
  * @param      k      Multiplier.
  * @param      v      Password verifier.
@@ -170,7 +170,7 @@ void ocrypto_srp_server_public_key(
     const uint8_t v[ocrypto_srp_VERIFIER_BYTES]);
     
 /**
- * SRP - 6 Client Public Key.
+ * SRP-6 Client Public Key.
  *
  * @param[out] pub_a  Generated public key.
  * @param      priv_a Private key.
@@ -212,7 +212,7 @@ void ocrypto_srp_scrambling_parameter(
  * @p pub_a is valid, the premaster secret is then put into @p s. The premaster
  * secret can be used to generate encryption keys.
  *
- * @param[out] s      Generated premaster secret, must be 32-bit aligned.
+ * @param[out] s      Generated premaster secret.
  * @param      pub_a  Client public key.
  * @param      priv_b Server private key.
  * @param      u      Scrambling parameter; generated with @c ocrypto_srp_scrambling_parameter.
@@ -237,7 +237,7 @@ int ocrypto_srp_premaster_secret(
  * @p pub_a is valid, the premaster secret is then put into @p s. The premaster
  * secret can be used to generate encryption keys.
  *
- * @param[out] s      Generated premaster secret, must be 32-bit aligned.
+ * @param[out] s      Generated premaster secret.
  * @param      pub_a  Client public key.
  * @param      priv_b Server private key.
  * @param      u      Scrambling parameter; generated with @c ocrypto_srp_scrambling_parameter.
@@ -257,7 +257,7 @@ int ocrypto_srp_server_premaster_secret(
 /**
  * SRP-6 client premaster secret.
  *
- * @param[out] s      Generated premaster secret, must be 32 bit aligned.
+ * @param[out] s      Generated premaster secret.
  * @param      priv_a Client private key.
  * @param      pub_b  Server public key.
  * @param      k      Multiplier.
@@ -358,7 +358,7 @@ void ocrypto_srp_proof_m2(
  * and salt @p salt.
  *
  * @param      ctx      Context.
- * @param[out] v        Generated password verifier, must be 32-bit aligned.
+ * @param[out] v        Generated password verifier.
  * @param      salt     Salt.
  * @param      user     User name.
  * @param      user_len Length of @p user.
@@ -386,7 +386,7 @@ void ocrypto_srp_verifier_ctx(
  * password verifier @p v and put into @p pub_b.
  *
  * @param      ctx    Context.
- * @param[out] pub_b  Generated public key, must be 32-bit aligned.
+ * @param[out] pub_b  Generated public key.
  * @param      priv_b Private key.
  * @param      v      Password verifier.
  */
@@ -432,7 +432,7 @@ void ocrypto_srp_scrambling_parameter_ctx(
  * secret can be used to generate encryption keys.
  *
  * @param      ctx    Context.
- * @param[out] s      Generated premaster secret, must be 32-bit aligned.
+ * @param[out] s      Generated premaster secret.
  * @param      pub_a  Client public key.
  * @param      priv_b Server private key.
  * @param      u      Scrambling parameter; generated with @c ocrypto_srp_scrambling_parameter.
