@@ -187,14 +187,20 @@ extern "C" {
 /** Maximum shared memory required for peripheral links. */
 #define SDC_MEM_PERIPHERAL_LINKS_SHARED  17
 
+/** @brief Maximum memory required when supporting LE Power Control.
+ *
+ * @param[in] num_links Total number of peripheral and central links supported.
+ */
+#define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? 0 : 0)
+
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
 /** Memory required for the scanner when only supporting legacy scanning. */
-#define SDC_MEM_SCAN(buffer_count) (352 + (buffer_count) * 88)
+#define SDC_MEM_SCAN(buffer_count) (340 + (buffer_count) * 96)
 
 /** Memory required for the scanner when supporting extended scanning. */
-#define SDC_MEM_SCAN_EXT(buffer_count) (353 + (buffer_count) * 307)
+#define SDC_MEM_SCAN_EXT(buffer_count) (340 + (buffer_count) * 312)
 
 /** Additional memory required for the initiator when supporting scanning
  *  and initiating at the same time.
@@ -254,7 +260,7 @@ extern "C" {
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (465)
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (166)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
-#define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (16 + (count) * 296) : 0)
+#define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (16 + (count) * 288) : 0)
 #define __MEM_PER_ISO_TX_HCI_BUFFER(count) ((count) > 0 ? (12 + (count) * 300) : 0)
 
 /** Memory required per periodic advertising with responses set.
@@ -296,7 +302,7 @@ extern "C" {
 /** @brief Maximum memory required for the ISO RX path SDUs.
  * @param[in] count Number of shared SDUs allocated for the RX path.
  * @param[in] size  Maximum size of SDUs being used. */
-#define SDC_MEM_ISO_RX_SDU_POOL_SIZE(count, size) ((count) > 0 ? (8 + (count) * ((size) + 21)) : 0)
+#define SDC_MEM_ISO_RX_SDU_POOL_SIZE(count, size) ((count) > 0 ? (8 + (count) * ((size) + 13)) : 0)
 
 /** @brief Maximum memory required for the ISO TX PDU pool.
  *  @param[in] tx_pdu_buffer_per_stream_count Number of TX PDU buffers allocated for each BIS or CIS stream.
@@ -310,7 +316,7 @@ extern "C" {
 /** @brief Maximum memory required for the ISO TX path SDUs.
  * @param[in] count Number of shared SDUs allocated for the TX path.
  * @param[in] size  Maximum size of SDUs being used. */
-#define SDC_MEM_ISO_TX_SDU_POOL_SIZE(count, size) ((count) > 0 ? (12 + (count) * ((size) + 53)) : 0)
+#define SDC_MEM_ISO_TX_SDU_POOL_SIZE(count, size) ((count) > 0 ? (12 + (count) * ((size) + 49)) : 0)
 
 /** @} end of sdc_mem_defines */
 
