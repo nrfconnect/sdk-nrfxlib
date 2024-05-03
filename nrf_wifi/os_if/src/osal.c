@@ -55,10 +55,24 @@ void *nrf_wifi_osal_mem_zalloc(struct nrf_wifi_osal_priv *opriv,
 }
 
 
+void *nrf_wifi_osal_pkt_mem_zalloc(struct nrf_wifi_osal_priv *opriv,
+			       size_t size)
+{
+	return opriv->ops->pkt_mem_zalloc(size);
+}
+
+
 void nrf_wifi_osal_mem_free(struct nrf_wifi_osal_priv *opriv,
 			    void *buf)
 {
 	opriv->ops->mem_free(buf);
+}
+
+
+void nrf_wifi_osal_pkt_mem_free(struct nrf_wifi_osal_priv *opriv,
+			    void *buf)
+{
+	opriv->ops->pkt_mem_free(buf);
 }
 
 
