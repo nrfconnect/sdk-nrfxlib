@@ -56,7 +56,7 @@ void *nrf_wifi_osal_mem_alloc(struct nrf_wifi_osal_priv *opriv,
 							  size_t size);
 
 /**
- * @brief Allocated zero-initialized memory.
+ * @brief Allocated zero-initialized memory for configuration.
  *
  * @param opriv Pointer to the OSAL context returned by the  nrf_wifi_osal_init API.
  * @param size Size of the memory to be allocated in bytes.
@@ -65,6 +65,22 @@ void *nrf_wifi_osal_mem_alloc(struct nrf_wifi_osal_priv *opriv,
  */
 void *nrf_wifi_osal_mem_zalloc(struct nrf_wifi_osal_priv *opriv,
 							   size_t size);
+
+
+/**
+ * @brief Allocated zero-initialized memory for data.
+ *
+ * @opriv: Pointer to the OSAL context returned by the @nrf_wifi_osal_init API.
+ * @size: Size of the memory to be allocated in bytes.
+ *
+ * Allocates memory of @size bytes, zeroes it out and returns a pointer to the
+ * start of the memory allocated.
+ *
+ * @return: Pointer to start of allocated memory or NULL.
+ */
+void *nrf_wifi_osal_data_mem_zalloc(struct nrf_wifi_osal_priv *opriv,
+				size_t size);
+
 
 /**
  * @brief Free previously allocated memory.
@@ -79,6 +95,22 @@ void *nrf_wifi_osal_mem_zalloc(struct nrf_wifi_osal_priv *opriv,
  */
 void nrf_wifi_osal_mem_free(struct nrf_wifi_osal_priv *opriv,
 							void *buf);
+
+
+/**
+ * @brief Free previously allocated memory for data.
+ *
+ * @opriv: Pointer to the OSAL context returned by the @nrf_wifi_osal_init API.
+ * @buf: Pointer to the memory to be freed.
+ *
+ * Free up memory which has been allocated using @nrf_wifi_osal_mem_alloc or
+ * @nrf_wifi_osal_mem_zalloc.
+ *
+ * @return: None.
+ */
+void nrf_wifi_osal_data_mem_free(struct nrf_wifi_osal_priv *opriv,
+			     void *buf);
+
 
 /**
  * @brief Copy contents from one memory location to another.
