@@ -86,7 +86,7 @@ static void nrf_wifi_fmac_deinit_tx(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 	tx_deinit(fmac_dev_ctx);
 
-	nrf_wifi_osal_mem_free(def_dev_ctx->tx_buf_info);
+	nrf_wifi_osal_data_mem_free(def_dev_ctx->tx_buf_info);
 }
 
 #endif /* CONFIG_NRF700X_DATA_TX */
@@ -182,7 +182,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_deinit_rx(struct nrf_wifi_fmac_dev_ctx
 		}
 	}
 
-	nrf_wifi_osal_mem_free(def_dev_ctx->rx_buf_info);
+	nrf_wifi_osal_data_mem_free(def_dev_ctx->rx_buf_info);
 
 	def_dev_ctx->rx_buf_info = NULL;
 out:
