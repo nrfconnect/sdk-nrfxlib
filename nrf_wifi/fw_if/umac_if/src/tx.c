@@ -529,12 +529,15 @@ size_t _tx_pending_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	 * pend_q is empty, send only 1
 	 */
 	if (!nrf_wifi_utils_q_len(fmac_dev_ctx->fpriv->opriv, txq)) {
-		nwb = nrf_wifi_utils_q_dequeue(fmac_dev_ctx->fpriv->opriv,
+		nwb = nrf_wifi_utils_q_peek(fmac_dev_ctx->fpriv->opriv,
 					       pend_pkt_q);
 
-		if (!can_xmit(fmac_dev_ctx, nwb)) {
+		if (!nwb || !can_xmit(fmac_dev_ctx, nwb)) {
 			return 0;
 		}
+
+		nwb = nrf_wifi_utils_q_dequeue(fmac_dev_ctx->fpriv->opriv,
+					       pend_pkt_q);
 
 		nrf_wifi_utils_list_add_tail(fmac_dev_ctx->fpriv->opriv,
 					     txq,
