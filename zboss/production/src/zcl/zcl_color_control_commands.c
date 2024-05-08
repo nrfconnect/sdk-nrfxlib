@@ -614,9 +614,20 @@ static void zb_zcl_color_control_update_color_attrbute(zb_uint8_t endpoint)
   zb_uint16_t y;
   zb_uint16_t temp;
   zb_uint8_t old_mode = zb_zcl_color_control_get8(endpoint, ZB_ZCL_ATTR_COLOR_CONTROL_COLOR_MODE_ID);
+#if defined ZB_ENABLE_ZLL
+  zb_uint16_t ex_hue;
+  old_mode = zb_zcl_color_control_get8(endpoint, ZB_ZCL_ATTR_COLOR_CONTROL_ENHANCED_COLOR_MODE_ID);
+#endif
 
   switch(old_mode)
   {
+#if defined ZB_ENABLE_ZLL
+    case ZB_ZCL_COLOR_CONTROL_COLOR_EX_MODE_HUE_SATURATION_EX:
+      ex_hue = zb_zcl_color_control_get16(endpoint, ZB_ZCL_ATTR_COLOR_CONTROL_ENHANCED_CURRENT_HUE_ID);
+      hue = ex_hue >> 8;
+      zb_zcl_color_control_set8(endpoint, ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_HUE_ID, hue);
+      // next - run ordinary hue and saturation mode
+#endif
     case ZB_ZCL_COLOR_CONTROL_COLOR_MODE_HUE_SATURATION:
       hue = zb_zcl_color_control_get8(endpoint, ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_HUE_ID);
       sat = zb_zcl_color_control_get8(endpoint, ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_SATURATION_ID);
@@ -649,6 +660,12 @@ static void zb_zcl_color_control_update_color_attrbute(zb_uint8_t endpoint)
       break;
   }
 
+#if defined ZB_ENABLE_ZLL
+  if(old_mode!=ZB_ZCL_COLOR_CONTROL_COLOR_EX_MODE_HUE_SATURATION_EX)
+  {
+    zb_zcl_color_control_set16(endpoint, ZB_ZCL_ATTR_COLOR_CONTROL_ENHANCED_CURRENT_HUE_ID, hue << 8);
+  }
+#endif
 }
 
 #endif
@@ -903,6 +920,9 @@ static void zb_zcl_process_color_control_move_loop(zb_uint8_t param)
 
   // prepare struct for process each move command
   is_non_stop_attr = ((loop_data.attr_id == ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_HUE_ID)
+#if defined ZB_ENABLE_ZLL
+        || (loop_data.attr_id == ZB_ZCL_ATTR_COLOR_CONTROL_ENHANCED_CURRENT_HUE_ID)
+#endif /*defined ZB_ENABLE_ZLL*/
         ) ? ZB_TRUE : ZB_FALSE;
 
   // calc delta attribute value and update non-used msec for first attribute
@@ -1228,7 +1248,7 @@ static void zb_zcl_process_color_control_stop_all_commands(zb_uint8_t endpoint)
 static zb_ret_t zb_zcl_process_color_control_move_to_hue_handler(zb_uint8_t param, zb_uint8_t buf2_param)
 {
   zb_ret_t ret = RET_OK;
-  zb_zcl_color_control_move_to_hue_req_t payload = {0};
+  zb_zcl_color_control_move_to_hue_req_t payload;
   zb_zcl_parse_status_t status;
   zb_zcl_parsed_hdr_t cmd_info;
 
@@ -2636,7 +2656,7 @@ static zb_uint16_t zb_zcl_color_control_get_color_temperature_limit(
 static zb_ret_t zb_zcl_process_color_control_move_color_temp_handler(zb_uint8_t param, zb_uint8_t buf2_param)
 {
   zb_ret_t ret = RET_OK;
-  zb_zcl_color_control_move_color_temp_req_t payload = {0};
+  zb_zcl_color_control_move_color_temp_req_t payload;
   zb_zcl_parse_status_t status;
   zb_zcl_parsed_hdr_t cmd_info;
   zb_uint8_t endpoint;

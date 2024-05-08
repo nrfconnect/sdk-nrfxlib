@@ -54,6 +54,13 @@ Do not put there ifdefs depending on defines made in the middle of zb_config.h!
 /* To compile MAC only build;
    TODO: Fix it. there should probably be another way to build without security
 */
+#ifdef ZB_MACSPLIT_DEVICE
+#define ZB_CCM_M 4U
+#define ZB_CCM_KEY_SIZE 16U
+#ifndef ZB_BUILD_DATE
+#define ZB_BUILD_DATE "19700101"
+#endif
+#endif
 /** @endcond *//* internals_doc */
 /****************************Security options**************************/
 
@@ -1258,7 +1265,13 @@ request command frame.
    Maximum time to wait for a response command frame, range 2-64
    Default is 32, 64 set for better compatibility
 */
+#ifndef ZB_NSNG
 #define ZB_MAC_RESPONSE_WAIT_TIME 32U
+#else
+/* Too fast for NSNG causing retransmits. TODO: check why can't it work with
+ * normal timeouts.  */
+#define ZB_MAC_RESPONSE_WAIT_TIME (32U)
+#endif
 
 /*! Make all MAC PIB attributes configurable */
 #define ZB_CONFIGURABLE_MAC_PIB
@@ -1515,7 +1528,11 @@ request command frame.
 
 /* aDUTYCYCLEMeasurementPeriod */
 /*! The period over which the duty cycle is calculated. */
+#ifndef ZB_MAC_TESTING_MODE
 #define ZB_MAC_DUTY_CYCLE_MEASUREMENT_PERIOD_SYMBOLS 360000000U
+#else
+#define ZB_MAC_DUTY_CYCLE_MEASUREMENT_PERIOD_SYMBOLS 24000000U
+#endif /* ZB_MAC_TESTING_MODE */
 
 /* aDUTYCYCLERampUp */
 #ifndef ZB_MAC_DUTY_CYCLE_RAMP_UP_SYMBOLS
@@ -1529,15 +1546,24 @@ request command frame.
 #define ZB_MAC_DUTY_CYCLE_RAMP_DOWN_SYMBOLS   0U
 #endif  /* ZB_MAC_DUTY_CYCLE_RAMP_DOWN_SYMBOLS */
 
+#ifdef ZB_MAC_TESTING_MODE
+
+#define ZB_MAC_DUTY_CYCLE_LIMITED_THRESHOLD_SYMBOLS  6000000U
+
+#define ZB_MAC_DUTY_CYCLE_CRITICAL_THRESHOLD_SYMBOLS 8000000U
+
+#endif  /* ZB_MAC_TESTING_MODE */
 
 
 #ifndef ZB_USE_DUTY_CYCLE_PERCENT_ENABLE
 
+#ifndef ZB_MAC_TESTING_MODE
 /*! MAC duty cycle of limited threshold length */
 #define ZB_MAC_DUTY_CYCLE_LIMITED_THRESHOLD_SYMBOLS  5400000U
 /*! MAC duty cycle of critical threshold length */
 #define ZB_MAC_DUTY_CYCLE_CRITICAL_THRESHOLD_SYMBOLS 7500000U
 
+#endif
 /*! MAC duty cycle of limited threshold length */
 /*! Length of regulated MAC duty cycle pages 29 and 29 */
 #define ZB_MAC_DUTY_CYCLE_REGULATED_SYMBOLS_PAGES_28_29 10000000U
@@ -1699,6 +1725,12 @@ request command frame.
 #define ZB_APS_MAX_WINDOW_SIZE 1U
 #define ZB_APS_INTERFRAME_DELAY 50U /* milliseconds */
 
+#if defined(ZB_SE_ENABLE_SERVICE_DISCOVERY_PROCESSING)
+
+#define ZB_SE_SERVICE_DISCOVERY_PERIODIC_RESTART_TIME (ZB_TIME_ONE_SECOND * 60U * 60U * 3U)
+#define ZB_SE_SERVICE_DISCOVERY_CLUSTER_TIME (ZB_TIME_ONE_SECOND * 40U)
+
+#endif
 
 #define ZB_SE_STEADY_STATE_CLUSTER_MATCH_DESC_TIME (ZB_TIME_ONE_SECOND * 20U)
 #define ZB_SE_STEADY_STATE_MAX_FAILURE_CNT 3U

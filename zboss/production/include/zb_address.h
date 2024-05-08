@@ -627,6 +627,14 @@ void zb_ieee_addr_decompress(zb_ieee_addr_t address, zb_ieee_addr_compressed_t *
 zb_bool_t zb_address_cmp_two_refs(zb_address_ieee_ref_t addr_ref_a, zb_address_ieee_ref_t addr_ref_b);
 
 /**
+ * @brief Check that address reference is used
+ *
+ * @param ref Address ref to check
+ * @return zb_bool_t ZB_TRUE if address is used, ZB_FALSE otherwise.
+ */
+zb_bool_t zb_address_in_use(zb_address_ieee_ref_t ref);
+
+/**
  * @brief Check if address tables have enough memory for the new address
  *
    @param new_addr - new uncompressed IEEE address

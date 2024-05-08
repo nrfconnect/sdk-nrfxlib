@@ -74,12 +74,39 @@ void zb_multimac_mlme_scan_confirm_proxy(zb_uint8_t param);
 
 void zb_multimac_mcps_data_confirm_proxy(zb_uint8_t param);
 
+#ifdef ZB_MACSPLIT_HOST
+void zb_mac_init_macsplit(void);
+#endif /* ZB_MACSPLIT_HOST */
 void zb_multimac_mac_init(void);
 
 /* ZB_MACSPLIT_DEVICE just uses monolithic MAC now */
+#if defined(ZB_MAC_INTERFACE_SINGLE) && defined(ZB_MACSPLIT_HOST)
+  #define ZB_MAC_INIT() zb_mac_init_macsplit()
+#elif defined(ZB_MACSPLIT_DEVICE)
+  ZB_ASSERT_COMPILE_DECL(ZB_NWK_MAC_IFACE_TBL_SIZE == 1U);
   #define ZB_MAC_INIT() zb_mac_init()
+#elif !defined(ZB_MAC_INTERFACE_SINGLE)
+  #define ZB_MAC_INIT() zb_multimac_mac_init()
+#else
+  #define ZB_MAC_INIT() zb_mac_init()
+#endif
 
 /* MAC split interface API */
+#ifdef ZB_MACSPLIT_HOST
+void zb_mcps_data_request_macsplit(zb_uint8_t param);
+void zb_mlme_get_request_macsplit(zb_uint8_t param);
+void zb_mlme_set_request_macsplit(zb_uint8_t param);
+void zb_mlme_reset_request_macsplit(zb_uint8_t param);
+void zb_mlme_scan_request_macsplit(zb_uint8_t param);
+void zb_mlme_associate_request_macsplit(zb_uint8_t param);
+void zb_mlme_associate_response_macsplit(zb_uint8_t param);
+void zb_mlme_poll_request_macsplit(zb_uint8_t param);
+void zb_mlme_orphan_response_macsplit(zb_uint8_t param);
+void zb_mlme_start_request_macsplit(zb_uint8_t param);
+void zb_mac_resp_by_empty_frame_macsplit(zb_uint8_t param);
+
+zb_ret_t zb_mac_logic_iteration_macsplit();
+#endif /* ZB_MACSPLIT_HOST */
 
 /**
  * @brief Synchronizes association parameters (MAC short address, coordinator extended address)

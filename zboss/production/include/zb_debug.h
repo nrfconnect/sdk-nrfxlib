@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -153,7 +153,9 @@ void lwip_zb_assert(zb_uint16_t file_id, zb_int_t line_number);
 
    @param expr - expression to check.
  */
-#if (defined __GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+#ifdef __cplusplus
+#define ZB_ASSERT_COMPILE_DECL(expr) __extension__ static_assert(expr, "Assert at line __LINE__")
+#elif (defined __GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
 #define ZB_ASSERT_COMPILE_DECL(expr) __extension__ _Static_assert(expr, "Assert at line __LINE__")
 #elif defined(__COUNTER__)
 #define ZB_ASSERT_COMPILE_DECL(expr) typedef zb_int_t ZB_ASSERT_CAT(assert, ZB_ASSERT_CAT(__LINE__, __COUNTER__))[(expr) ? 1 : -1]
@@ -220,10 +222,17 @@ while (0)
 #endif  /* ZB_ARRAYS_CHECK */
 
 
+#if !defined ZB_NS_BUILD && defined ZB8051 && defined C8051F120
+#define ZB_P3_ON() LED1 = 0
+#define ZB_P3_OFF() LED1 = 1
+#define ZB_P4_ON() LED2 = 0
+#define ZB_P4_OFF() LED2 = 1
+#else
 #define ZB_P3_ON()
 #define ZB_P3_OFF()
-#define ZB_P4_ON() 
+#define ZB_P4_ON()
 #define ZB_P4_OFF()
+#endif
 
 #if defined ZB_TRAFFIC_DUMP_ON
 /**
@@ -241,7 +250,11 @@ void dump_usb_traf(zb_uint8_t *buf, zb_ushort_t len);
 #define dump_usb_traf(buf, len)
 #endif
 
+#if (defined ZB_MAC_TESTING_MODE) && (defined ZB_TRAFFIC_DUMP_ON)
+#define DUMP_TRAF(cmt, buf, len, total) TRACE_MSG(TRACE_MAC3, #cmt, (FMT__0)); dump_traf(buf, len)
+#else
 #define DUMP_TRAF(comment, buf, len, total)
+#endif
 
 #ifdef DEBUG
 void dump_hex_data(zb_uint_t trace_mask, zb_uint8_t trace_level, zb_uint8_t *buf, zb_ushort_t len);

@@ -409,8 +409,10 @@ zb_bool_t zb_is_device_zc_or_zr(void);
 #define ZB_NIB_DEVICE_TYPE() (ZB_NIB().device_type + 0U)
 
 
+#ifdef ZB_PRO_STACK
 /** @brief number of source routes in device source routing table */
 #define ZB_NIB_SRCRT_CNT() ZB_NIB().nwk_src_route_cnt
+#endif
 
 /** @brief Device extended Pan ID */
 #define ZB_NIB_EXT_PAN_ID() ZB_NIB().extended_pan_id
@@ -484,11 +486,18 @@ zb_bool_t zb_is_device_zc_or_zr(void);
 #endif
 
 /* is leave request allowed? */
+#ifdef ZB_PRO_STACK
 /** Is leave request allowed */
 /** @brief LEAVE_REQ_ALLOWED attribute */
 #define ZB_NIB_GET_LEAVE_REQ_ALLOWED() ZB_NIB().leave_req_allowed
 /** @brief Set LEAVE_REQ_ALLOWED attribute value to 'v' */
 #define ZB_NIB_SET_LEAVE_REQ_ALLOWED( v ) (ZB_NIB().leave_req_allowed = ( v ))
+#else
+/** @brief LEAVE_REQ_ALLOWED - always true */
+#define ZB_NIB_GET_LEAVE_REQ_ALLOWED() ZB_TRUE
+/** @brief \deprecated unsupported */
+#define ZB_NIB_SET_LEAVE_REQ_ALLOWED( v )
+#endif
 
 #ifdef SNCP_MODE
 /** Force route record sending */
@@ -498,10 +507,17 @@ zb_bool_t zb_is_device_zc_or_zr(void);
 #define ZB_NIB_SET_FORCE_RREC_SENDING( v ) (ZB_NIB().nwk_force_rrec_sending = ( v ))
 #endif
 
+#ifdef ZB_PRO_STACK
 /** @brief LEAVE_REQ_WITHOUT_REJOIN_ALLOWED attribute */
 #define ZB_NIB_GET_LEAVE_REQ_WITHOUT_REJOIN_ALLOWED() ZB_NIB().leave_req_without_rejoin_allowed
 /** @brief Set LEAVE_REQ_WITHOUT_REJOIN_ALLOWED attribute value to 'v' */
 #define ZB_NIB_SET_LEAVE_REQ_WITHOUT_REJOIN_ALLOWED( v ) (ZB_NIB().leave_req_without_rejoin_allowed = ( v ))
+#else
+/** @brief LEAVE_REQ_WITHOUT_REJOIN_ALLOWED - always true */
+#define ZB_NIB_GET_LEAVE_REQ_WITHOUT_REJOIN_ALLOWED() ZB_TRUE
+/** @brief \deprecated unsupported */
+#define ZB_NIB_SET_LEAVE_REQ_WITHOUT_REJOIN_ALLOWED( v )
+#endif
 
 #ifndef ZB_LITE_NO_SOURCE_ROUTING
 /** @brief IS_CONCENTRATOR attribute */
@@ -728,6 +744,7 @@ typedef struct zb_nib_s
   zb_uint16_t nwk_manager_addr; /*!< The address of the designated
                                  * network channel manager function. */
 
+#ifdef ZB_PRO_STACK
 #ifndef ZB_LITE_NO_SOURCE_ROUTING
 #ifndef ZB_CONFIGURABLE_MEM
   zb_nwk_rrec_t nwk_src_route_tbl[ZB_NWK_MAX_SRC_ROUTES];
@@ -752,6 +769,7 @@ typedef struct zb_nib_s
 #ifndef ZB_NO_NWK_MULTICAST
   zb_bitfield_t nwk_use_multicast:1;     /*!< Multicast determination flag */
 #endif
+#endif  /* ZB_PRO_STACK */
 
   zb_bitfield_t disable_rejoin:1; /*!< Forbid rejoin - for Rejoin request set Rejoin response with error status */
 #ifdef ZB_NWK_TREE_ROUTING
@@ -762,10 +780,14 @@ typedef struct zb_nib_s
   zb_bitfield_t uniq_addr:1;             /*!< Table 3.44 NIB Attributes - nwkUniqueAddr */
 
 
+#if defined (ZB_PRO_STACK)
   zb_bitfield_t reserve:4; /*!< There was security level defined in R22 (spec Table 3-58 NIB Attributes).
                                 Currently, ZBOSS won't run without security.
                                 So, there was a decision to remove possibility of changing security level.
                                 Now, it can be defined only as constant value. */
+#else
+  zb_bitfield_t reserve:7;
+#endif
 
   /* all_fresh is always 0 for Standard security */
   zb_bitfield_t           active_secur_material_i:2; /*!< index in

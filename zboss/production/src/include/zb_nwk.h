@@ -811,6 +811,18 @@ typedef ZB_PACKED_PRE struct zb_nlme_direct_join_request_s
 } ZB_PACKED_STRUCT
 zb_nlme_direct_join_request_t;
 
+#if defined ZB_ENABLE_ZLL && defined ZB_ROUTER_ROLE
+/**
+   NLME-DIRECT-JOIN.request primitive
+
+   Directly Join another device to the network
+
+   @param param - buffer containing parameters - @see
+   zb_nlme_direct_join_request_t
+   @return RET_OK on success, error code otherwise.
+ */
+void zb_nlme_direct_join_request(zb_uint8_t param);
+#endif /* ZB_ENABLE_ZLL && ZB_ROUTER_ROLE */
 
 /**
    Arguments of the NLME-DIRECT-JOIN.confirm routine.
@@ -822,6 +834,18 @@ typedef ZB_PACKED_PRE struct zb_nlme_direct_join_confirm_s
 } ZB_PACKED_STRUCT
 zb_nlme_direct_join_confirm_t;
 
+#if defined ZB_ENABLE_ZLL && defined ZB_ROUTER_ROLE
+/**
+   NLME-DIRECT-JOIN.confirm primitive
+
+   Report the results of the direct join request.
+
+   @param param - buffer containing results - @see
+   zb_nlme_direct_join_confirm_t
+   @return RET_OK on success, error code otherwise.
+ */
+void zb_nlme_direct_join_confirm(zb_uint8_t param);
+#endif /* ZB_ENABLE_ZLL && ZB_ROUTER_ROLE */
 
 /**
    Arguments of the NLME-LEAVE.request routine.
@@ -1571,6 +1595,8 @@ ZB_LETOH16(addr, &((zb_nwk_hdr_t *)nwk_hdr)->dst_addr)
 */
 
 /* Route request command options field */
+#ifdef ZB_PRO_STACK
+#endif
 
 /**
    Route request structure
@@ -1739,6 +1765,7 @@ typedef ZB_PACKED_PRE struct zb_nwk_update_cmd_s
   zb_uint16_t new_panid;        /**< 16-bit new Network ID*/
 } ZB_PACKED_STRUCT zb_nwk_update_cmd_t;
 
+#ifdef ZB_PRO_STACK
 
 typedef ZB_PACKED_PRE struct zb_nwk_cmd_rrec_s
 {
@@ -1805,6 +1832,7 @@ zb_time_t zb_nwk_get_default_keepalive_timeout(void);
 /*Return ZB_TRUE if nearest aging timeout expired*/
 zb_bool_t zb_nwk_check_aging(void);
 
+#if !(defined ZB_MACSPLIT_DEVICE)
 /**
 Send End device timeout request command
  */
@@ -1820,6 +1848,7 @@ Send End device timeout response handler
  */
 
 void nwk_timeout_resp_handler(zb_bufid_t buf, zb_nwk_hdr_t *nwk_hdr, zb_nwk_ed_timeout_response_t *cmd_ed_time_resp);
+#endif
 
 /**
    3.4.13 Link Power Delta command
@@ -1872,6 +1901,7 @@ zb_ret_t zb_nwk_is_conflict_addr(zb_uint16_t addr, zb_ieee_addr_t ieee_addr);
  */
 zb_ret_t zb_nwk_test_dev_annce(zb_uint16_t addr, zb_ieee_addr_t ieee_addr);
 
+#endif  /* pro stack */
 
 /**
   Set NWK PIB attribute
@@ -2175,9 +2205,16 @@ void nwk_set_tc_connectivity(zb_uint8_t val);
 zb_bool_t nwk_get_tc_connectivity(void);
 #endif /* ZB_PARENT_CLASSIFICATION && ZB_ROUTER_ROLE */
 
+#ifndef ZB_MAC_INTERFACE_SINGLE
+
+zb_uint32_t zb_nwk_get_octet_duration_us(void);
+#define ZB_NWK_OCTET_DURATION_US (zb_nwk_get_octet_duration_us())
+
+#else
 
 #define ZB_NWK_OCTET_DURATION_US (zb_uint32_t)(ZB_2_4_GHZ_OCTET_DURATION_USEC)
 
+#endif
 
 /* 01/15/2019 EE CR:MINOR For 2.4-only mode this solution is ok from
  * the code size point of view: you pass your octets up to the top and
@@ -2197,6 +2234,8 @@ void zb_disable_control4_emulator();
 void zb_enable_control4_emulator();
 #endif /* ZB_CONTROL4_NETWORK_SUPPORT */
 
+#ifndef ZB_MACSPLIT_DEVICE
 zb_ext_neighbor_tbl_ent_t *nwk_choose_parent(zb_address_pan_id_ref_t panid_ref, zb_mac_capability_info_t capability_information);
+#endif /* ZB_MACSPLIT_DEVICE */
 
 #endif /* ZB_NWK_H */

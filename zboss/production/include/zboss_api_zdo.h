@@ -253,6 +253,64 @@ typedef zb_uint8_t zb_zdp_status_t;
 /** @cond DOXYGEN_BDB_SECTION */
 #define ZB_SIGNAL_DEVICE_FIRST_START ZB_BDB_SIGNAL_DEVICE_FIRST_START
 #define ZB_SIGNAL_DEVICE_REBOOT      ZB_BDB_SIGNAL_DEVICE_REBOOT
+#ifdef ZB_ENABLE_ZLL
+/**
+ * @cond DOXYGEN_TOUCHLINK_FEATURE
+ * @addtogroup touchlink
+ * @{ */
+
+/** Informs the Touchlink initiator about the new network has been created.
+ * @parblock
+ * When generated:
+ *  - Upon generating the Network Start Response during the Touchlink commissioning procedure.
+ *
+ * Status codes:
+ *  - RET_OK: New Zigbee network created.
+ *  - Does not return error status.
+ *
+ * Signal parameters:
+ *  - @ref zb_bdb_signal_touchlink_nwk_started_params_t
+ *
+ * @snippet lighting/dimmable_light_tl/light_controller_zed.c signal_touchlink_nwk_started
+ * @endparblock */
+#define ZB_BDB_SIGNAL_TOUCHLINK_NWK_STARTED 7U
+
+/** Inform the Touchlink initiator that the new router joined the network.
+ * @parblock
+ * When generated:
+ *  - Upon receiving the Commissioning Network Join Router Response.
+ *
+ * Status codes:
+ *  - RET_OK: New router joined the network.
+ *  - Does not return error status.
+ *
+ * Signal parameters:
+ *  - @ref zb_bdb_signal_touchlink_nwk_started_params_t
+ *
+ * @snippet lighting/dimmable_light_tl/light_controller_zed.c signal_touchlink_nwk_joined_router
+ * @endparblock */
+#define ZB_BDB_SIGNAL_TOUCHLINK_NWK_JOINED_ROUTER 8U
+
+/** Touchlink commissioning done.
+ * @parblock
+ * When generated:
+ *  - Touchlink initiator device joined the network.
+ *
+ * Status codes:
+ *  - ZB_BDB_STATUS_SUCCESS: Commissioning successful.
+ *  - ZB_BDB_STATUS_NO_SCAN_RESPONSE:
+ *    1. No Touchlink commissioning cluster scan response inter-PAN commands were received
+ *    2. No touchlink commissioning cluster scan response inter-PAN commands were received with the
+ *       inter-PAN transaction identifier field equal to that used by the initiator in its scan request
+ *       command.
+ *
+ * Signal parameters:
+ *  - none
+ * @endparblock */
+#define ZB_BDB_SIGNAL_TOUCHLINK 9U
+/** @} */  /* touchlink */
+/** @endcond */ /* DOXYGEN_TOUCHLINK_FEATURE */
+#endif /*ZB_ENABLE_ZLL*/
 
 /** BDB network steering completed (Network steering only).
  * @parblock
@@ -313,6 +371,55 @@ typedef zb_uint8_t zb_zdp_status_t;
  * @endparblock */
 #define ZB_BDB_SIGNAL_FINDING_AND_BINDING_INITIATOR_FINISHED 13U
 
+#ifdef ZB_ENABLE_ZLL
+/**
+ * @cond DOXYGEN_TOUCHLINK_FEATURE
+ * @addtogroup touchlink
+ * @{ */
+
+/** Touchlink procedure started.
+ * @parblock
+ * When generated:
+ *  - Touchlink procedure started on the Target device.
+ *
+ * Signal parameters:
+ *  - none
+ * @endparblock */
+#define ZB_BDB_SIGNAL_TOUCHLINK_TARGET 14U
+
+/** Touchlink Target network started (Target only).
+ * @parblock
+ * When generated:
+ *  - Touchlink target initiated by bdb_touchlink_target_start().
+ *
+ * Status codes:
+ *  - RET_OK: Touchlink network started successfully.
+ *  - Does not return error status.
+ *
+ * Signal parameters:
+ *  - none
+ * @endparblock */
+#define ZB_BDB_SIGNAL_TOUCHLINK_NWK 15U
+
+/** Touchlink Target finished (Target only).
+ * @parblock
+ * When generated:
+ *  - Touchlink target finished
+ *
+ * Status codes:
+ *  - RET_OK: Touchlink target finished successfully.
+ *  - Does not return error status.
+ *
+ * Signal parameters:
+ *  - none
+ * @endparblock */
+#define ZB_BDB_SIGNAL_TOUCHLINK_TARGET_FINISHED 16U
+
+#define ZB_BDB_SIGNAL_TOUCHLINK_ADD_DEVICE_TO_NWK 17U
+
+/** @} */ /* touchlink */
+/** @endcond */ /* DOXYGEN_TOUCHLINK_FEATURE */
+#endif /*ZB_ENABLE_ZLL*/
 
 /** @endcond */ /* DOXYGEN_BDB_SECTION */
 
@@ -580,6 +687,15 @@ typedef zb_uint8_t zb_zdp_status_t;
 #define ZB_SIGNAL_SUBGHZ_RESUME 42U
 
 /** @endcond */ /* DOXYGEN_SE_SECTION */
+#ifdef ZB_MACSPLIT
+#define ZB_MACSPLIT_DEVICE_BOOT              43U /*!< macsplit mac device is booted  */
+
+#define ZB_MACSPLIT_DEVICE_READY_FOR_UPGRADE 44U /*!< macsplit mac device is ready for upgrade */
+
+/** macsplit device upgrade event: device ready for upgrade or error indication */
+#define ZB_MACSPLIT_DEVICE_FW_UPGRADE_EVENT  45U
+
+#endif /*ZB_MACSPLIT*/
 
 #ifdef NCP_MODE
 
@@ -2795,6 +2911,47 @@ void zb_zdo_rejoin_backoff_cancel(void);
 /*! @} */
 #endif /* ZB_REJOIN_BACKOFF */
 
+#if defined ZB_ENABLE_ZLL
+/** @cond touchlink */
+
+/**
+ *  @brief Set Touchlink Master key
+ *  @param param [IN] - Touchlink Master key value
+ */
+void zb_zdo_touchlink_set_master_key(zb_uint8_t *key);
+
+/**
+ *  @brief Set Touchlink NWK channel
+ *  @param param [IN] - Touchlink NWK channel value
+ */
+void zb_zdo_touchlink_set_nwk_channel(zb_uint8_t channel);
+
+/**
+ *  @brief Set Touchlink RSSI threshold (used for Touchlink commissioning procedure)
+ *  @param param [IN] - Touchlink RSSI threshold value
+ */
+void zb_zdo_touchlink_set_rssi_threshold(zb_uint8_t rssi_threshold);
+
+/**
+ *  @brief Get Touchlink RSSI threshold
+ *  @return Current Touchlink RSSI threshold value
+ */
+zb_uint8_t zb_zdo_touchlink_get_rssi_threshold(void);
+
+/**
+ *  @brief Set Touchlink RSSI correction
+ *  @param param [IN] - Touchlink RSSI correction value
+ */
+void zb_zdo_touchlink_set_rssi_correction(zb_uint8_t rssi_correction);
+
+/**
+ *  @brief Get Touchlink RSSI correction
+ *  @return Current Touchlink RSSI correction value
+ */
+zb_uint8_t zb_zdo_touchlink_get_rssi_correction(void);
+
+/** @endcond */ /* touchlink */
+#endif /* ZB_ENABLE_ZLL */
 
 #define ZB_NWK_LPD_NOTIFICATION  0x01U
 #define ZB_NWK_LPD_REQUEST       0x02U

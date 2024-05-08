@@ -294,6 +294,13 @@ zb_bool_t zb_osif_is_sleeping(void);
 #endif /* ZB_USE_SLEEP */
 
 
+#ifdef ZB_MACSPLIT_DEVICE
+#if defined (NRFX_WDT_ENABLED) && (NRFX_WDT_ENABLED == 1)
+#define ZB_KICK_HW_WATCHDOG()           zb_osif_wdt_feed()
+#else /* ZB_MACSPLIT_DEVICE */
+#define ZB_KICK_HW_WATCHDOG()
+#endif
+#endif /* ZB_MACSPLIT_DEVICE */
 
 #ifdef ZB_MACSPLIT_TRANSPORT_USERIAL
 #define ZB_TRANSPORT_NONBLOCK_ITERATION() (zb_macsplit_transport_recv_bytes(),0)
@@ -339,6 +346,34 @@ zb_bool_t zb_osif_is_sleeping(void);
  */
 void zb_osif_get_ieee_eui64(zb_ieee_addr_t ieee_eui64);
 
+#if defined ZB_NRF_INTERNAL || defined NORDIC_NRF5_SPECIAL_FUNCTIONS
+
+/**@brief Function which waits for event -- essential implementation of sleep on NRF52
+ */
+void zb_osif_wait_for_event(void);
+
+/**@brief Function which tries to sleep down the MCU
+ *
+ * Function is defined as weak; to be redefined if someone wants to implement their own
+ * going-to-sleep policy.
+ */
+void zb_osif_go_idle(void);
+
+/**@brief Function which disables all Zigbee stack-related peripherals
+ *
+ * Function is defined as weak; to be redefined if someone wants to implement their own
+ * going-to-deep-sleep policy/share resources between Zigbee stack and other components.
+ */
+void zb_nrf52_periph_disable(void);
+
+/**@brief Function which enables back all Zigbee stack-related peripherals
+ *
+ * Function is defined as weak; to be redefined if someone wants to implement their own
+ * going-to-deep-sleep policy/share resources between Zigbee stack and other components.
+ */
+void zb_nrf52_periph_enable(void);
+
+#endif /* ZB_NRF_INTERNAL && NORDIC_NRF5_SPECIAL_FUNCTIONS */
 
 /**@brief Function which tries to put the device into deep sleep mode, caused by an empty Zigbee stack scheduler queue.
  *
