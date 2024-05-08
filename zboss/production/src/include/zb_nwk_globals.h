@@ -276,7 +276,9 @@ typedef struct zb_nwk_handle_s  /* do not pac for IAR */
 
   zb_uint16_t status_addr; /* Used to report NWK status indication */
 
+#ifdef ZB_PRO_STACK
   zb_uint8_t               send_link_status_index;  /*!< Current Index of short_sorted address table  */
+#endif /* ZB_PRO_STACK */
 
 #if defined ZB_MAC_POWER_CONTROL
   zb_uint8_t send_power_delta_index; /* Current index of short_sorted address
@@ -499,6 +501,10 @@ typedef struct zb_nwk_globals_s
     zb_callback_t nwk_cancel_nwk_form_resp;
   } selector;
 
+#ifndef ZB_MAC_INTERFACE_SINGLE
+    zb_uindex_t        mac_interfaces_count;
+    zb_mac_interface_t mac_interfaces[ZB_NWK_MAC_IFACE_TBL_SIZE];
+#endif /* ZB_MAC_INTERFACE_SINGLE */
 
 } zb_nwk_globals_t;
 
@@ -559,6 +565,9 @@ void zb_nwk_sync_pibcache_with_mac(zb_uint8_t param, zb_callback_t cb);
 #define zb_nwk_sync_pibcache_with_mac(param, cb)
 #endif
 
+#ifdef ZB_ZCL_SUPPORT_CLUSTER_SUBGHZ
+void nbt_inc_in_pkt_count(zb_neighbor_tbl_ent_t *ent);
+#endif /* ZB_ZCL_SUPPORT_CLUSTER_SUBGHZ */
 
 #if defined ZB_MAC_POWER_CONTROL
 /* Routine to be called by child (ZED/ZR) */

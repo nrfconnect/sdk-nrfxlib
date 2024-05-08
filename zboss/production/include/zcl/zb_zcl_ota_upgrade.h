@@ -44,8 +44,12 @@
 #ifndef ZB_ZCL_OTA_UPGRADE_H
 #define ZB_ZCL_OTA_UPGRADE_H 1
 
+#ifndef ZB_WINDOWS
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
+#else
+#pragma pack(1)
+#endif
 
 #if defined ZB_ZCL_SUPPORT_CLUSTER_OTA_UPGRADE || defined ZB_USE_OSIF_OTA_ROUTINES || defined DOXYGEN
 

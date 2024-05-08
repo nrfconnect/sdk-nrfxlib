@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -1053,6 +1053,11 @@ void secur_nwk_generate_keys(void);
    Authenticate child after join
  */
 void secur_authenticate_child(zb_uint8_t param);
+
+/**
+   Remove from NBT unauthenticated device
+ */
+void secur_forget_unauth_dev(zb_uint8_t addr_ref);
 
 
 /**

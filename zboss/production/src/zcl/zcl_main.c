@@ -65,6 +65,9 @@
 #include "zb_bdb_internal.h"
 #include "zb_zdo.h"
 #include "zb_aps.h"
+#ifdef ZB_ENABLE_SE
+#include "zb_se.h"
+#endif
 
 #include "zdo_wwah_stubs.h"
 
@@ -223,6 +226,13 @@ zb_zcl_status_t zb_zcl_parse_header(zb_uint8_t param, zb_zcl_parsed_hdr_t *cmd_i
   ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).dst_endpoint = ind->dst_endpoint;
   ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).fc = ind->fc;
 
+#ifdef ZB_ENABLE_SE
+  if (ZB_SE_MODE())
+  {
+    ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).aps_key_source = ind->aps_key_source;
+    ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).aps_key_attrs = ind->aps_key_attrs;
+  }
+#endif
 #if (defined ZB_ENABLE_SE) || (defined ZB_ZCL_SUPPORT_CLUSTER_WWAH)
   ZB_ZCL_PARSED_HDR_SHORT_DATA(cmd_info).aps_key_from_tc = ind->aps_key_from_tc;
 #endif

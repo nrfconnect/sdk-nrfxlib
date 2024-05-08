@@ -77,13 +77,23 @@
 #endif
 #endif
 
+#if defined ZB8051
+#define ZB_8BIT_WORD
+#elif defined ZB_PLATFORM_XAP5
+#define ZB_16BIT_WORD
+#else
 #define ZB_32BIT_WORD
+#endif
 
 /* Really need xdata declaration here, not in osif: don't want to include osif.h here */
 #ifdef ZB_IAR
 #define ZB_XDATA
 #define ZB_CODE
+#ifdef ZB8051
+#define ZB_IAR_CODE  __code
+#else
 #define ZB_IAR_CODE
+#endif
 #elif defined __LINT__
 #define ZB_XDATA
 #define ZB_CODE
@@ -95,7 +105,11 @@
 #else
 #define ZB_XDATA
 #define ZB_CODE
+#ifdef ZB8051
+#define ZB_IAR_CODE code
+#else
 #define ZB_IAR_CODE
+#endif
 #endif
 
 /* register modifier for variables. Can be defined to "register". Will it help to the compiler? */
@@ -139,6 +153,9 @@ enum zb_param_e
 #if defined WIN32 && !defined ZB_WINDOWS
 #define ZB_WINDOWS
 #endif
+#if defined ZB_WINDOWS && !defined ZB_LITTLE_ENDIAN
+#define ZB_LITTLE_ENDIAN
+#endif
 
 #if !defined ZB_USE_STDINT && defined UNIX && !defined ZB_WINDOWS
 #define ZB_USE_STDINT
@@ -159,7 +176,27 @@ typedef signed char        zb_int8_t;
 typedef unsigned short     zb_uint16_t;
 
 typedef signed short       zb_int16_t;
-#if   defined ZB_16BIT_WORD
+#if defined ZB8051
+typedef unsigned long      zb_uint32_t;
+
+typedef signed long        zb_int32_t;
+
+typedef zb_uint16_t        zb_bitfield_t;
+typedef zb_uint16_t        zb_lbitfield_t;
+
+typedef zb_int16_t         zb_sbitfield_t;
+
+typedef zb_uint16_t        zb_size_t;
+
+#ifdef ZB_CC25XX
+
+/* Warning: just for an alignment in the macsplit!
+   long long arithmetic won't work */
+typedef zb_uint32_t zb_uint64_t[2];
+
+#endif
+
+#elif defined ZB_16BIT_WORD
 
 typedef unsigned long      zb_uint32_t;
 

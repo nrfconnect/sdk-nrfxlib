@@ -124,8 +124,8 @@ zb_ret_t check_value_power_config_server(zb_uint16_t attr_id, zb_uint8_t endpoin
     ZB_ZCL_CLUSTER_ID_POWER_CONFIG,                                                         \
     ZB_ZCL_CLUSTER_SERVER_ROLE,                                                             \
     (is_percentage) ?                                                                       \
-    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_THRESHOLD1_ID):         \
-    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_PERCENTAGE_THRESHOLD1_ID));     \
+    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_PERCENTAGE_THRESHOLD1_ID):      \
+    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_THRESHOLD1_ID));        \
   if (!attr_desc_local)                                                                     \
   {                                                                                         \
     val &= ~ZB_ZCL_POWER_CONFIG_BATTERY_ALARM_STATE_SOURCE1_VOLTAGE1;                       \
@@ -135,8 +135,8 @@ zb_ret_t check_value_power_config_server(zb_uint16_t attr_id, zb_uint8_t endpoin
     ZB_ZCL_CLUSTER_ID_POWER_CONFIG,                                                         \
     ZB_ZCL_CLUSTER_SERVER_ROLE,                                                             \
     (is_percentage) ?                                                                       \
-    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_THRESHOLD2_ID):         \
-    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_PERCENTAGE_THRESHOLD2_ID));     \
+    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_PERCENTAGE_THRESHOLD2_ID):      \
+    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_THRESHOLD2_ID));        \
   if (!attr_desc_local)                                                                     \
   {                                                                                         \
     val &= ~ZB_ZCL_POWER_CONFIG_BATTERY_ALARM_STATE_SOURCE1_VOLTAGE2;                       \
@@ -146,8 +146,8 @@ zb_ret_t check_value_power_config_server(zb_uint16_t attr_id, zb_uint8_t endpoin
     ZB_ZCL_CLUSTER_ID_POWER_CONFIG,                                                         \
     ZB_ZCL_CLUSTER_SERVER_ROLE,                                                             \
     (is_percentage) ?                                                                       \
-    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_THRESHOLD3_ID):         \
-    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_PERCENTAGE_THRESHOLD3_ID));     \
+    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_PERCENTAGE_THRESHOLD3_ID):      \
+    (zb_uint16_t)(attr_set+ZB_ZCL_ATTR_POWER_CONFIG_BATTERY_VOLTAGE_THRESHOLD3_ID));        \
   if (!attr_desc_local)                                                                     \
   {                                                                                         \
     val &= ~ZB_ZCL_POWER_CONFIG_BATTERY_ALARM_STATE_SOURCE1_VOLTAGE3;                       \

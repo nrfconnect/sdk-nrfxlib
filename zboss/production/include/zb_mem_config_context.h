@@ -289,6 +289,9 @@ ZB_CONFIG_PRE zb_uint_t gc_addr_table_size ZB_CONFIG_POST = ZB_CONFIG_IEEE_ADDR_
 ZB_CONFIG_PRE zb_uint8_t gc_passive_ack[ZB_NWK_BRR_TABLE_SIZE][((ZB_CONFIG_NEIGHBOR_TABLE_SIZE + 7) / 8)] ZB_CONFIG_POST = { 0 };
 #endif
 
+#ifdef ZB_ZCL_SUPPORT_CLUSTER_SUBGHZ
+ZB_CONFIG_PRE zb_address_ieee_ref_t gc_subghz_dev[ZB_CONFIG_NEIGHBOR_TABLE_SIZE] ZB_CONFIG_POST = { 0 };
+#endif
 
 ZB_CONFIG_PRE zb_neighbor_tbl_ent_t gc_neighbor[ZB_CONFIG_NEIGHBOR_TABLE_SIZE] ZB_CONFIG_POST = { 0 };
 ZB_CONFIG_PRE zb_uint_t gc_neighbor_table_size ZB_CONFIG_POST = ZB_CONFIG_NEIGHBOR_TABLE_SIZE;

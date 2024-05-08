@@ -9,6 +9,20 @@ Changelog
 
 All notable changes to this project in the |NCS| are documented in this file.
 
+Main branch
+***********
+
+Updated
+=======
+
+* The ZBOSS stack to version ``3.11.4.0+5.1.5``.
+  For detailed information, see `ZBOSS stack release notes`_ for the |NCS| v2.6.0 release.
+
+Bug fixes
+=========
+
+* Fixed an issue where corrupted entry integrity in zb_nvram resulted in an infinite loop of device reboots.
+
 nRF Connect SDK v2.6.0
 **********************
 

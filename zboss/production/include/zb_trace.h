@@ -574,7 +574,18 @@ typedef struct zb_byte128_struct_s
 
 #ifdef ZB_TRACE_LEVEL
 #ifndef ZB_TRACE_MASK
+#if   defined ZB_UZ2410
 #define ZB_TRACE_MASK ((zb_uint_t)-1)
+/* 1fb == all but MAC */
+//#define ZB_TRACE_MASK 0x1FB
+//#define ZB_TRACE_MASK 0xffff & (~(TRACE_SUBSYSTEM_SECUR|TRACE_SUBSYSTEM_ZCL))
+#elif defined C8051F120
+
+//#define ZB_TRACE_MASK 0xffff & (~(TRACE_SUBSYSTEM_SECUR|TRACE_SUBSYSTEM_ZCL))
+#define ZB_TRACE_MASK ((zb_uint_t)-1)
+#else
+#define ZB_TRACE_MASK ((zb_uint_t)-1)
+#endif  /* uz2410... */
 #endif  /* if not defined trace_mask */
 #endif  /* if defined trace level */
 
@@ -608,6 +619,35 @@ typedef struct zb_byte128_struct_s
 #else
 #define TRACE_ARG_SIZE(n_h, n_d, n_l, n_p, n_a) ZB_TRACE_FILE_ID,__LINE__, (n_h + n_d*2 + n_l*4 + n_p*3 + n_a*8)
 #endif
+
+#elif defined ZB_IAR && defined ZB8051
+
+/* IAR for 8051 passes 1-byte arguments as 2-bytes to vararg functions. Keil uses
+ * 3-bytes pointers while IAR - 2-bytes pointers */
+#ifndef ZB_BINARY_TRACE
+#define TRACE_ARG_SIZE(n_h, n_d, n_l, n_p, n_a) __FILE__,__LINE__, (n_h*2 + n_d*2 + n_l*4 + n_p*2 + n_a*8)
+#else
+#define TRACE_ARG_SIZE(n_h, n_d, n_l, n_p, n_a) ZB_TRACE_FILE_ID,__LINE__, (n_h*2 + n_d*2 + n_l*4 + n_p*2 + n_a*8)
+#endif
+
+#elif defined ZB_PLATFORM_XAP5
+
+#ifndef __XAP5_NEAR__
+/* XAP5 passes bytes as shorts */
+#ifndef ZB_BINARY_TRACE
+#define TRACE_ARG_SIZE(n_h, n_d, n_l, n_p, n_a) __FILE__,__LINE__, (n_h*2 + n_d*2 + n_l*4 + n_p*4 + n_a*8)
+#else
+#define TRACE_ARG_SIZE(n_h, n_d, n_l, n_p, n_a) ZB_TRACE_FILE_ID,__LINE__, (n_h*2 + n_d*2 + n_l*4 + n_p*4 + n_a*8)
+#endif
+#else
+#ifndef ZB_BINARY_TRACE
+#define TRACE_ARG_SIZE(n_h, n_d, n_l, n_p, n_a) __FILE__,__LINE__, (n_h*2 + n_d*2 + n_l*4 + n_p*2 + n_a*8)
+#else
+#define TRACE_ARG_SIZE(n_h, n_d, n_l, n_p, n_a) ZB_TRACE_FILE_ID,__LINE__, (n_h*2 + n_d*2 + n_l*4 + n_p*2 + n_a*8)
+#endif
+#endif
+
+
 
 #else  /* IAR & GCC - 32-bit */
 /* IAR for Cortex passes 1-byte abd 2-bytes arguments as 4-bytes to vararg functions.

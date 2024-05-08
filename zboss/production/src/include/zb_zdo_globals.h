@@ -133,6 +133,10 @@ typedef struct zp_zdo_handle_s
                                              * set after device was requested to leave the network
                                              * via mgmt_leave_req */
   zb_zdo_rejoin_ctx_t rejoin_ctx;
+#ifdef ZB_MACSPLIT_HOST
+  zb_bool_t start_no_autostart;              /*!< if ZB_TRUE, device started with start_no_autostart
+                                              * Used only for macsplit host*/
+#endif
 } zp_zdo_handle_t;
 
 /* Flag to set and check if channel update is disabled */

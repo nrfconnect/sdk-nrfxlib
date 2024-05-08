@@ -1177,7 +1177,17 @@ typedef ZB_PACKED_PRE  struct zb_zcl_parsed_hdr_s
       zb_uint8_t reserved:4;
 #endif
     } ZB_PACKED_STRUCT common_data;
+#if defined ZB_ENABLE_ZLL
+    ZB_PACKED_PRE struct
+    {
+/* 07/26/2017 EE CR:MINOR Kill that data structure. Utilize src_addr_ext. Kill upper one nesting level. */
+      zb_ieee_addr_t src_addr;  /**< Sender device extended address. */
+    } ZB_PACKED_STRUCT intrp_data;
+#endif /* defined ZB_ENABLE_ZLL */
   } addr_data;
+#if defined ZB_ENABLE_ZLL
+  zb_int8_t rssi;          /**< RSSI of the packet. */
+#endif /* defined ZB_ENABLE_ZLL */
   zb_uint16_t cluster_id;
   zb_uint16_t profile_id;
 

@@ -179,16 +179,25 @@ extern zb_intr_globals_t g_izb;
 #include "zb_scheduler.h"
 #include "zb_sleep.h"
 #include "zb_bufpool_globals.h"
+#if (!(defined ZB_MACSPLIT_DEVICE)) || (defined ZB_TH_ENABLED)
 #include "zb_addr_globals.h"
 #include "zb_nwk_globals.h"
 #include "zb_aps_globals.h"
 #include "zb_zdo_globals.h"
 #include "zb_commissioning.h"
+#endif  /* (!(defined ZB_MACSPLIT_DEVICE)) || (defined ZB_TH_ENABLED) */
 
+#ifdef ZB_ENABLE_ZLL
+#include "zll/zb_zll_config.h"
+#include "zboss_api_tl.h"
+#endif
 
 #include "zb_ha.h"
 #include "zb_zcl.h"
 
+#ifdef ZB_ENABLE_ZLL
+#include "zll/zb_zll_common.h"
+#endif
 
 #include "zb_time.h"
 
@@ -219,6 +228,10 @@ extern zb_intr_globals_t g_izb;
 /* Declaration of zb_io_ctx_t on some MAC platforms, like nsng */
 #include "zb_mac.h"
 
+#if defined ZB_MACSPLIT
+/* Host side of out MAC split - for zb_io_ctx_t */
+#include "zb_macsplit_transport.h"
+#endif /* defined ZB_MACSPLIT */
 
 /* Alien MAC connected via some serial protocol: not our MAC split,
  * but similar concept. In Linux it shares some i/o logic with our
@@ -527,6 +540,9 @@ typedef struct zb_cert_hacks_s
   zb_bitfield_t nwk_leave_from_unknown_addr:1; /*!< Send all nwk leave_req with src ieee addr=<nwk_leave_unknown_addr>
                                                     and short=<nwk_leave_unknown_short> */
   zb_bitfield_t low_ram_concentrator:1;       /*!< Forces coordinator to send no route cache in mtorr */
+#ifdef ZB_ZCL_SUPPORT_CLUSTER_SUBGHZ
+  zb_bitbool_t zcl_subghz_cluster_test:1;          /*!< If ZCL cluster needs APS encryption - ignore it; MAC duty cycle substituted mode */
+#endif
 
   zb_bitfield_t tc_rejoin_mac_cap_wrong_dev_type:1; /* Toggle FFD bit in MAC capabilities for rejoin req */
   zb_bitfield_t tc_rejoin_mac_cap_wrong_rx_on_when_idle:1; /* Toggle FFD bit in MAC capabilities for rejoin req */
@@ -637,20 +653,29 @@ struct zb_globals_s
 {
   zb_sched_globals_t      sched;    /*!< Global schedule context */
   zb_buf_pool_t           bpool;    /*!< Global buffer pool context */
+#if (!(defined ZB_MACSPLIT_DEVICE)) || (defined ZB_TH_ENABLED)
   zb_addr_globals_t       addr;     /*!< Global address context */
+#endif /* (!(defined ZB_MACSPLIT_DEVICE)) || (defined ZB_TH_ENABLED) */
 
 #ifndef NCP_MODE_HOST
+#if (!(defined ZB_MACSPLIT_DEVICE)) || (defined ZB_TH_ENABLED)
   zb_nwk_globals_t        nwk;      /*!< Global NWK context - NIB */
   zb_aps_globals_t        aps;      /*!< Global APS context - AIB */
   zb_zdo_globals_t        zdo;      /*!< Global ZDO context - ZDO_CTX */
+#endif /* (!(defined ZB_MACSPLIT_DEVICE)) || (defined ZB_TH_ENABLED) */
   zb_sec_globals_t        sec;      /*!< Global security context - SEC_CTX */
 #endif /* !defined NCP_MODE_HOST */
 
+#if !defined ZB_MACSPLIT_DEVICE || defined ZB_TH_ENABLED
   zb_commissioning_ctx_t commissioning_ctx;
+#endif /* !defined ZB_MACSPLIT_DEVICE || defined ZB_TH_ENABLED */
 
 #if defined ZB_ENABLE_ZCL || defined ZB_ENABLE_ZGPD_ATTR_REPORTING
   zb_zcl_globals_t        zcl;      /*!< Global ZCL context - ZCL_CTX */
 #endif /* defined ZB_ENABLE_ZCL || defined ZB_ENABLE_ZGPD_ATTR_REPORTING */
+#if defined ZB_ENABLE_ZLL
+  zb_zll_ctx_t            zll;
+#endif /* defined ZB_ENABLE_ZLL */
 #if defined ZB_ENABLE_ZGP_INFRA
   zb_zgp_ctx_t            zgp;
 #endif /* defined ZB_ENABLE_ZGP_EP */
@@ -706,6 +731,9 @@ struct zb_intr_globals_s
   zb_io_ctx_t             ioctx;
 #endif
 /* Note: MAC split I/O context is not used on hardware, but it's used on Linux platform */
+#if defined(ZB_MACSPLIT_HOST) || (defined(ZB_MACSPLIT_DEVICE) && defined(ZB_PLATFORM_LINUX))
+  zb_macsplit_io_ctx_t    macsplit_ioctx;
+#endif
 #if defined( ENABLE_USB_SERIAL_IMITATOR )
   zb_usbc_ctx_t           usbctx; /*!< USB imitator IO context. */
 #endif /* defined( ENABLE_USB_SERIAL_IMITATOR ) */

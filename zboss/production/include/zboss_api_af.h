@@ -233,6 +233,25 @@ typedef ZB_PACKED_PRE struct zb_af_node_power_desc_s
      ZB_DECLARE_SIMPLE_DESC(5, 5);
    @endcode
  */
+#if defined ZB_APS_ENCRYPTION_PER_CLUSTER
+
+#define ZB_DECLARE_SIMPLE_DESC(in_clusters_count, out_clusters_count)                     \
+  typedef ZB_PACKED_PRE struct zb_af_simple_desc_ ## in_clusters_count ## _ ## out_clusters_count ## _s \
+  {                                                                                       \
+    zb_uint8_t    endpoint;                 /* Endpoint */                                \
+    zb_uint16_t   app_profile_id;           /* Application profile identifier */          \
+    zb_uint16_t   app_device_id;            /* Application device identifier */           \
+    zb_bitfield_t app_device_version:4;     /* Application device version */              \
+    zb_bitfield_t reserved:4;               /* Reserved */                                \
+    zb_uint8_t    app_input_cluster_count;  /* Application input cluster count */         \
+    zb_uint8_t    app_output_cluster_count; /* Application output cluster count */        \
+    /* Application input and output cluster list */                                       \
+    zb_uint16_t   app_cluster_list[(in_clusters_count) + (out_clusters_count)]; \
+    zb_uint8_t    cluster_encryption[((in_clusters_count) + (out_clusters_count) + 7)/8]; \
+  } ZB_PACKED_STRUCT                                                                      \
+  zb_af_simple_desc_ ## in_clusters_count ## _ ## out_clusters_count ## _t
+
+#else  /* ZB_APS_ENCRYPTION_PER_CLUSTER */
 
 #define ZB_DECLARE_SIMPLE_DESC(in_clusters_count, out_clusters_count)   \
   typedef ZB_PACKED_PRE struct zb_af_simple_desc_ ## in_clusters_count ## _ ## out_clusters_count ## _s \
@@ -249,6 +268,7 @@ typedef ZB_PACKED_PRE struct zb_af_node_power_desc_s
   } ZB_PACKED_STRUCT                                                                      \
   zb_af_simple_desc_ ## in_clusters_count ## _ ## out_clusters_count ## _t
 
+#endif  /* ZB_APS_ENCRYPTION_PER_CLUSTER */
 /** @} */ /* af_data_service */
 
 /**
@@ -411,6 +431,81 @@ zb_af_device_ctx_t;
 #define ZB_AF_START_DECLARE_ENDPOINT_LIST(ep_list_name) \
   zb_af_endpoint_desc_t *ep_list_name[] = {
 
+#if defined ZB_ENABLE_ZLL
+#define ZB_AF_SET_ENDPOINT_DESC_ZLL( \
+    ep_id,                           \
+    profile_id,                      \
+    reserved_length,                 \
+    reserved_ptr,                    \
+    cluster_number,                  \
+    cluster_list,                    \
+    simple_desc,                     \
+    group_id_count,                  \
+    rep_count,                       \
+    rep_ctx,                         \
+    lev_ctrl_count,                  \
+    lev_ctrl_ctx)                    \
+  {                                  \
+    ep_id,                           \
+    profile_id,                      \
+    NULL,                            \
+    NULL,                            \
+    reserved_length,                 \
+    reserved_ptr,                    \
+    cluster_number,                  \
+    cluster_list,                    \
+    simple_desc,                     \
+    group_id_count,                \
+    rep_count,                   \
+    rep_ctx,                     \
+    lev_ctrl_count,              \
+    lev_ctrl_ctx                 \
+  }
+
+/**
+ *   @brief Initialize endpoint descriptor
+ *
+ * @param ep_name - endpoint name
+ * @param ep_id - endpoint ID
+ * @param profile_id - ID of profile deployed on this endpoint
+ * @param reserved_length - unused parameter
+ * @param reserved_ptr - unused parameter
+ * @param cluster_number - number of clusters deployed on endpoint
+ * @param cluster_list - pointer to cluster list structure
+ * @param simple_desc - pointer to simple descriptor structure
+ * @param rep_count - number of reporting info slots
+ * @param rep_ctx - pointer to attributes reporting information
+ * @param lev_ctrl_count - number of continuous value change alarm slots
+ * @param lev_ctrl_ctx - pointer to CVC context
+ */
+#define ZB_AF_DECLARE_ENDPOINT_DESC(            \
+  ep_name,                                      \
+  ep_id,                                        \
+  profile_id,                                   \
+  reserved_length,                              \
+  reserved_ptr,                                 \
+  cluster_number,                               \
+  cluster_list,                                 \
+  simple_desc,                                  \
+  rep_count,                                    \
+  rep_ctx,                                      \
+  lev_ctrl_count,                               \
+  lev_ctrl_ctx)                                 \
+zb_af_endpoint_desc_t ep_name =          \
+    ZB_AF_SET_ENDPOINT_DESC_ZLL(         \
+      ep_id,                             \
+      profile_id,                        \
+      reserved_length,                   \
+      (void*)reserved_ptr,          \
+      cluster_number,                    \
+      cluster_list,                      \
+      simple_desc,                       \
+      0,                                 \
+      rep_count,                         \
+      rep_ctx,                           \
+      lev_ctrl_count,                    \
+      lev_ctrl_ctx)
+#else /* defined ZB_ENABLE_ZLL */
 /**
   @brief Initialize endpoint descriptor
 
@@ -457,6 +552,7 @@ zb_af_device_ctx_t;
     lev_ctrl_count,                      \
     lev_ctrl_ctx                         \
   }
+#endif /* defined ZB_ENABLE_ZLL */
 
 /** Finishes endpoint list declaration */
 #define ZB_AF_FINISH_DECLARE_ENDPOINT_LIST     }

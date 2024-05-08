@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -531,7 +531,7 @@ zb_ret_t zb_zcl_wwah_enable_aps_link_key_authorization_handler(zb_uint8_t param)
 
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
-  ZB_ZCL_WWAH_GET_CLUSTER_LIST_CMD(param, &payload, status);
+  ZB_ZCL_WWAH_GET_CLUSTER_LIST_CMD(param, payload, status);
   if (status == ZB_ZCL_PARSE_STATUS_SUCCESS )
   {
     if (payload.number_of_clusters > ZB_ZCL_WWAH_APS_LINK_KEY_AUTHORIZATION_TABLE_SIZE)
@@ -580,7 +580,7 @@ zb_ret_t zb_zcl_wwah_disable_aps_link_key_authorization_handler(zb_uint8_t param
 
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
-  ZB_ZCL_WWAH_GET_CLUSTER_LIST_CMD(param, &payload, status);
+  ZB_ZCL_WWAH_GET_CLUSTER_LIST_CMD(param, payload, status);
   if (status == ZB_ZCL_PARSE_STATUS_SUCCESS )
   {
     if (payload.number_of_clusters > ZB_ZCL_WWAH_APS_LINK_KEY_AUTHORIZATION_TABLE_SIZE)
@@ -1197,7 +1197,7 @@ zb_ret_t zb_zcl_wwah_require_aps_acks_on_unicasts_handler(zb_uint8_t param){
 
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
-  ZB_ZCL_WWAH_GET_CLUSTER_LIST_CMD(param, &payload, status);
+  ZB_ZCL_WWAH_GET_CLUSTER_LIST_CMD(param, payload, status);
   if (status == ZB_ZCL_PARSE_STATUS_SUCCESS )
   {
     if (payload.number_of_clusters > ZB_ZCL_WWAH_APS_ACK_EXEMPT_TABLE_SIZE)
@@ -1808,7 +1808,7 @@ zb_ret_t zb_zcl_wwah_use_trust_center_for_cluster_handler(zb_uint8_t param)
 
   ZB_MEMCPY(&cmd_info, ZB_BUF_GET_PARAM(param, zb_zcl_parsed_hdr_t), sizeof(zb_zcl_parsed_hdr_t));
 
-  ZB_ZCL_WWAH_GET_CLUSTER_LIST_CMD(param, &payload, status);
+  ZB_ZCL_WWAH_GET_CLUSTER_LIST_CMD(param, payload, status);
   if (status == ZB_ZCL_PARSE_STATUS_SUCCESS )
   {
     if (payload.number_of_clusters > ZB_ZCL_WWAH_USE_TRUST_CENTER_FOR_CLUSTER_TABLE_SIZE)

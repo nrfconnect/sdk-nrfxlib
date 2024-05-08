@@ -406,7 +406,12 @@ static void zdo_classic_handle_leave_with_rejoin_signal(zb_bufid_t param)
 
   zdo_inform_app_leave(ZB_NWK_LEAVE_TYPE_REJOIN);
 
+#ifdef ZB_NSNG
+  /* A hack because of unperfect NSNG CSMA/CA mechanism, hack for CCB2255 */
+  ZB_SCHEDULE_ALARM(zb_nwk_do_rejoin_after_leave, param, ZB_MILLISECONDS_TO_BEACON_INTERVAL(500));
+#else
   zb_nwk_do_rejoin_after_leave(param);
+#endif
 }
 
 #endif /* ZB_JOIN_CLIENT */

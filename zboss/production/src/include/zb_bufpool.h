@@ -185,6 +185,40 @@ zb_uint8_t *zb_buf_data0_func(TRACE_PROTO zb_bufid_t buf);
 zb_bufid_t zb_buf_from_data0_func(TRACE_PROTO void *ptr);
 #define zb_buf_from_data0(a) zb_buf_from_data0_func(TRACE_CALL (a));
 
+#ifdef ZB_MACSPLIT
+/**
+   Serialize internal buffer structure into linear array.
+   Output structure is: | header | body | parameter w/o leading zeros |
+
+   @param buf - buffer id
+   @param ptr - pointer for data output
+   @return serialized data size
+ */
+zb_uint8_t zb_buf_serialize_func(TRACE_PROTO zb_bufid_t buf, zb_uint8_t *ptr);
+#define zb_buf_serialize(a, b) zb_buf_serialize_func(TRACE_CALL (a), (b))
+
+/**
+   Deserialize linear array into ZBOSS buffer.
+   Array structure must be the same as in @see zb_buf_serialize_func.
+
+   @param buf - buffer id
+   @param ptr - pointer to array
+   @param payload_size - array size
+ */
+void zb_buf_deserialize_func(TRACE_PROTO zb_bufid_t buf, zb_uint8_t *ptr, zb_uint8_t payload_size);
+#define zb_buf_deserialize(a, b, c) zb_buf_deserialize_func(TRACE_CALL (a),(b),(c))
+
+/**
+   Partial deserialize linear array.
+   Calculate body pointer and its offset from ptr.
+
+   @param ptr - pointer to array
+   @param size - header size
+   @return pointer to serialized body
+ */
+zb_uint8_t *zb_buf_partial_deserialize_func(TRACE_PROTO zb_uint8_t *ptr, zb_uint8_t *size);
+#define zb_buf_partial_deserialize(a, b) zb_buf_partial_deserialize_func(TRACE_CALL (a),(b))
+#endif /* ZB_MACSPLIT*/
 
 #ifdef ZB_TH_ENABLED
 /**

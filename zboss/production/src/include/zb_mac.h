@@ -678,6 +678,11 @@ zb_ushort_t zb_mac_get_beacon_payload_offset(zb_uint8_t *beacon);
 #define MAC_SECUR_LEV5_KEYID1_AUX_HDR_SIZE 0U
 #endif
 
+#if defined ZB_MAC_TESTING_MODE
+#define MAC_SECUR_CERT_AUX_HDR_SIZE    5U
+#define MAC_SECUR_CERT_FRAME_COUNTER   4U
+#define MAC_SECUR_CERT_KEY_SEQ_COUNTER 5U
+#endif
 
 /**
    Remove MAC header from the packet.
@@ -1226,6 +1231,9 @@ typedef ZB_PACKED_PRE struct zb_mac_pan_descriptor_s    // 7.1.5.1.1 table-41
   zb_uint8_t            link_quality;
   /* Zigbee does not use security and uses beaconless mode, so skip other Pan descriptor
      fields - for timestamp and security  */
+#if defined ZB_MAC_TESTING_MODE
+  zb_time_t             timestamp; /* Optional Timestamp field */
+#endif
 #if defined ZB_ENHANCED_BEACON_SUPPORT
   zb_uint16_t           enh_beacon_nwk_addr; /* the field is required for enhanced beacons handling */
 #endif /* ZB_ENHANCED_BEACON_SUPPORT */
@@ -1623,6 +1631,17 @@ typedef ZB_PACKED_PRE struct zb_mcps_data_req_params_s
   zb_uint8_t      key_index;        /**< */
 #endif
   zb_uint8_t iface_id;
+#ifdef ZB_MAC_TESTING_MODE
+  ZB_PACKED_PRE struct
+  {
+    zb_bitfield_t invalid_fcs: 1;                 /**< Invalid FCS for TP/154/MAC/FRAME-VALIDATION-01 */
+    zb_bitfield_t reserved_frame_type: 1;         /**< Reserved frame type for TP/154/MAC/FRAME-VALIDATION-02 */
+    zb_bitfield_t security_enabled: 1;            /**< Security enabled frame for TP/154/MAC/FRAME-VALIDATION-03 */
+    zb_bitfield_t delay_frame_transmission: 1;    /* Delay to be able to send packet at the end of
+                                                   * tx window (for TP/154/MAC/DATA-04) */
+    zb_bitfield_t reserved: 4;                    /**< Reserved bits */
+  } ZB_PACKED_STRUCT cert_hacks;
+#endif /* ZB_MAC_TESTING_MODE */
 } ZB_PACKED_STRUCT
 zb_mcps_data_req_params_t;
 
@@ -1660,6 +1679,9 @@ typedef ZB_PACKED_PRE struct zb_mcps_data_confirm_params_s
   zb_uint8_t nwk_retry_cnt;
 #endif
   zb_uint8_t msdu_handle;   /**< MSDU handle value. */
+#if defined ZB_MAC_TESTING_MODE
+  zb_time_t timestamp;      /**< Timestamp of TX done */
+#endif
   zb_uint8_t iface_id;
 } ZB_PACKED_STRUCT zb_mcps_data_confirm_params_t;
 
@@ -1916,6 +1938,16 @@ typedef ZB_PACKED_PRE struct zb_mlme_reset_request_s
                                            their values prior to the generation of the
                                            MLME-RESET.request primitive.  */
   zb_uint8_t iface_id;
+#ifdef ZB_MAC_TESTING_MODE
+  ZB_PACKED_PRE struct
+  {
+    zb_bitfield_t allow_empty_beacon_payload:1;   /**< Allow sending/receiving empty Beacon payload */
+    zb_bitfield_t allow_sending_empty_frames:1;   /**< Allow responding with empty frames to indirect transmission */
+    zb_bitfield_t reset_init_only_radio:1;        /**< Only init radio during MLME-RESET.request (for TP_154_MAC_WARM_START_01) */
+    zb_bitfield_t lbt_radio_busy_disabled: 1;     /**< Disable blocking radio by LBT while sending frame TP/154/MAC/CHANNEL-ACCESS-04 test procedure 2 */
+    zb_bitfield_t reserved: 4;                    /**< Reserved bits */
+  } ZB_PACKED_STRUCT cert_hacks;
+#endif /* ZB_MAC_TESTING_MODE */
 } ZB_PACKED_STRUCT
 zb_mlme_reset_request_t;
 
@@ -2634,6 +2666,15 @@ void zb_mac_diag_data_get(zb_uint16_t short_address, zb_uint8_t *lqi, zb_int8_t 
 /** @} */
 /** @endcond */
 
+#ifdef ZB_MAC_TESTING_MODE
+/**
+   Handles MLME-purge.request
+
+   @param param - parameter (packet buffer), @see zb_mlme_purge_request_t is on its tail
+*/
+void zb_mlme_purge_request(zb_uint8_t param);
+
+#endif /* ZB_MAC_TESTING_MODE */
 
 #if defined MAC_CERT_TEST_HACKS || defined ZB_MAC_TESTING_MODE
 
@@ -2657,6 +2698,21 @@ typedef zb_mlme_purge_request_t zb_mlme_purge_confirm_t;
 
 #endif
 
+#ifdef ZB_MAC_TESTING_MODE
+/**
+   Handles PLME-CCA.request
+
+   @param param - parameter (packet buffer)
+*/
+void zb_plme_cca_request(zb_uint8_t param);
+
+/**
+   Handles PLME-CCA.confirm
+
+   @param param - parameter (packet buffer), with status
+*/
+void zb_plme_cca_confirm(zb_uint8_t param);
+#endif /* ZB_MAC_TESTING_MODE */
 
 #if defined ZB_MAC_PENDING_BIT_SOURCE_MATCHING
 
@@ -2702,7 +2758,14 @@ typedef ZB_PACKED_PRE struct zb_mac_src_match_params_s
 #endif  /* ZB_MAC_PENDING_BIT_SOURCE_MATCHING */
 
 
-  #if   defined(ZB_MAC_MONOLITHIC)
+#if defined(ZB_MAC_INTERFACE_SINGLE)
+  #if defined(ZB_MACSPLIT_HOST)
+    #define ZB_MAC_CALL_INTERFACE(interface_id, primitive, param) ((void)interface_id, ZB_SCHEDULE_CALLBACK(zb_##primitive##_macsplit, param))
+    #define ZB_MAC_CALL_INTERFACE_ALARM(interface_id, primitive, param, delay) ((void)interface_id, ZB_SCHEDULE_ALARM(zb_##primitive##_macsplit, param, delay))
+  #elif defined(ZB_MACSPLIT_DEVICE)
+    #define ZB_MAC_CALL_INTERFACE(interface_id, primitive, param) ((void)interface_id, ZB_SCHEDULE_CALLBACK(zb_##primitive, param))
+    #define ZB_MAC_CALL_INTERFACE_ALARM(interface_id, primitive, param, delay) ((void)interface_id, ZB_SCHEDULE_ALARM(zb_##primitive, param, delay))
+  #elif defined(ZB_MAC_MONOLITHIC)
     #define ZB_MAC_CALL_INTERFACE(interface_id, primitive, param) ((void)interface_id, ZB_SCHEDULE_CALLBACK(zb_##primitive, param))
     #define ZB_MAC_CALL_INTERFACE_ALARM(interface_id, primitive, param, delay) ((void)interface_id, ZB_SCHEDULE_ALARM(zb_##primitive, param, delay))
   #elif defined(ZB_MAC_BLE)
@@ -2719,6 +2782,33 @@ typedef ZB_PACKED_PRE struct zb_mac_src_match_params_s
   #endif
 
   #define ZB_MULTIMAC_IS_INTERFACE_ACTIVE(interface_id) (ZB_TRUE)
+#else
+  #define ZB_MAC_CALL_INTERFACE(interface_id, primitive, param)                                   \
+    do {                                                                                          \
+      if (ZB_U2B(ZB_NWK_MAC_IFACE_TBL_ENTRY(interface_id)->state))                                \
+      {                                                                                           \
+        ZB_SCHEDULE_CALLBACK(ZG->nwk.mac_interfaces[interface_id].primitive, param);              \
+      }                                                                                           \
+      else                                                                                        \
+      {                                                                                           \
+        ZB_ASSERT(ZB_FALSE);                                                                      \
+      }                                                                                           \
+    } while (0)
+
+  #define ZB_MAC_CALL_INTERFACE_ALARM(interface_id, primitive, param, delay)                      \
+    do {                                                                                          \
+      if (ZB_U2B(ZB_NWK_MAC_IFACE_TBL_ENTRY(interface_id)->state))                                \
+      {                                                                                           \
+        ZB_SCHEDULE_ALARM(ZG->nwk.mac_interfaces[interface_id].primitive, param, delay);          \
+      }                                                                                           \
+      else                                                                                        \
+      {                                                                                           \
+        ZB_ASSERT(ZB_FALSE);                                                                      \
+      }                                                                                           \
+    } while (0)
+
+    #define ZB_MULTIMAC_IS_INTERFACE_ACTIVE(interface_id) ZB_U2B(ZB_NWK_MAC_IFACE_TBL_ENTRY(interface_id)->state)
+#endif
 
 /**
  * @brief This parameter is added to buffer on MAC interface layer to
@@ -2832,6 +2922,12 @@ void zb_mcps_purge_indirect_queue_confirm(zb_uint8_t param);
 
 #endif
 
+#ifdef ZB_MACSPLIT_HOST
+/**
+   Reset macsplit device
+*/
+void zb_mlme_dev_reset(zb_uint8_t param);
+#endif /* ZB_MACSPLIT_HOST */
 
 #if defined ZB_TRAFFIC_DUMP_ON && !defined ZB_TRANSPORT_OWN_TRAFFIC_DUMP_ON
 void zb_mac_traffic_dump(zb_bufid_t buf, zb_bool_t is_w);
