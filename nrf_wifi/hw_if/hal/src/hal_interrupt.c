@@ -158,11 +158,10 @@ out:
 static enum nrf_wifi_status hal_rpu_irq_wdog_ack(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
-	unsigned int val = 0;
 
 	status = hal_rpu_reg_write(hal_dev_ctx,
-				   RPU_REG_MIPS_MCU_TIMER_CONTROL,
-				   val);
+				   RPU_REG_MIPS_MCU_UCCP_INT_CLEAR,
+				   1 << RPU_REG_BIT_MIPS_WATCHDOG_INT_CLEAR);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
 		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
