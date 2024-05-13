@@ -1036,6 +1036,14 @@ bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif);
  *@retval      WIFI_NRF_STATUS_FAIL On failure
  */
 enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode);
+
+#if defined(CONFIG_NRF_WIFI_RPU_RECOVERY) || defined(__DOXYGEN__)
+/** @cond INTERNAL_HIDDEN */
+enum nrf_wifi_status nrf_wifi_fmac_rpu_recovery_callback(void *mac_dev_ctx,
+						void *event_data,
+						unsigned int len);
+/** @endcond */
+#endif /* CONFIG_NRF_RPU_RECOVERY */
 /**
  * @}
  */
