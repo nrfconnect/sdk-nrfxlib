@@ -175,6 +175,24 @@ out:
 
 }
 
+static enum nrf_wifi_status hal_rpu_irq_wdog_rearm(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+
+	status = hal_rpu_reg_write(hal_dev_ctx,
+				  RPU_REG_MIPS_MCU_TIMER,
+				  RPU_REG_MIPS_MCU_TIMER_RESET_VAL);
+
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
+				      "%s: Rearming watchdog interrupt failed",
+				      __func__);
+		goto out;
+	}
+out:
+	return status;
+}
+
 
 static enum nrf_wifi_status hal_rpu_event_free(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 					       unsigned int event_addr)
