@@ -9,6 +9,13 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem
+*********
+
+* Added:
+
+  * Binaries for nRF9230 SoC internal development.
+
 nrf_modem 2.7.0
 ***************
 
