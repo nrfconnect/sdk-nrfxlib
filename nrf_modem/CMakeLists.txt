@@ -6,13 +6,13 @@
 
 if(CONFIG_NRF_MODEM_LINK_BINARY_CELLULAR OR CONFIG_NRF_MODEM_LINK_BINARY_DECT_PHY)
 
-  if(NOT ${CONFIG_SOC} MATCHES "^nrf9160$" AND NOT ${CONFIG_SOC} MATCHES "^nrf91[356]1$")
-    message(FATAL_ERROR "Unknown SOC. Expected (nrf9160, nrf9131, nrf9151, nrf9161), "
-                        "got '${CONFIG_SOC}'.")
+  if(CONFIG_SOC_NRF9160)
+    set(arch_soc_dir "nRF9160")
+  elseif(CONFIG_SOC_NRF9120)
+    set(arch_soc_dir "nRF9120")
+  else()
+    assert(0 "Unknown SOC for nrf_modem. Got '${CONFIG_SOC}'")
   endif()
-
-  string(REPLACE "nrf" "nRF" arch_soc_dir ${CONFIG_SOC})
-  string(REGEX REPLACE "91[356]1" "9120" arch_soc_dir ${arch_soc_dir})
 
   if(CONFIG_FPU)
     if(CONFIG_FP_HARDABI)
