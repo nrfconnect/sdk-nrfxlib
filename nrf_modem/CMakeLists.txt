@@ -7,9 +7,9 @@
 if(CONFIG_NRF_MODEM_LINK_BINARY_CELLULAR OR CONFIG_NRF_MODEM_LINK_BINARY_DECT_PHY)
 
   if(CONFIG_SOC_NRF9160)
-    set(arch_soc_dir "nRF9160")
+    set(arch_soc_dir "nrf9160")
   elseif(CONFIG_SOC_NRF9120)
-    set(arch_soc_dir "nRF9120")
+    set(arch_soc_dir "nrf9120")
   else()
     assert(0 "Unknown SOC for nrf_modem. Got '${CONFIG_SOC}'")
   endif()
