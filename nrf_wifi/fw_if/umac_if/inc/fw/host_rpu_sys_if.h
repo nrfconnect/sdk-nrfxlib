@@ -891,6 +891,7 @@ struct nrf_wifi_cmd_sys_init {
 	unsigned char ps_data_retrieval_mech;
 } __NRF_WIFI_PKD;
 
+/**
  * @brief This structure defines the command used to de-initialize the RPU.
  *
  */
