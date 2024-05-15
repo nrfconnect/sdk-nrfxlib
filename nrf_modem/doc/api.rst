@@ -262,3 +262,8 @@ OS specific definitions
 ***********************
 
 .. doxygengroup:: nrf_modem_os
+
+OS RPC transport definitions for the nRF9230 SoC
+************************************************
+
+.. doxygengroup:: nrf_modem_os_rpc
