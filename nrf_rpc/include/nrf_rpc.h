@@ -32,8 +32,18 @@ extern "C" {
 /** @brief Special value to indicate that ID is unknown or irrelevant. */
 #define NRF_RPC_ID_UNKNOWN 0xFF
 
+/** @brief Flag indicating that the group does not block on initialization. */
+#define NRF_RPC_FLAGS_WAIT_ON_INIT BIT(0)
+
+/** @brief Flag indicating that the peer must initiate group binding. */
+#define NRF_RPC_FLAGS_INITIATOR BIT(1)
+
+/** @brief Helper macro for conditional flag initialization. */
+#define NRF_RPC_FLAG_COND(_cond, _flag) ((_cond) ? (_flag) : 0UL)
+
 /* Forward declaration. */
 struct nrf_rpc_err_report;
+struct nrf_rpc_group;
 
 /** @brief Type of packet.
  *
@@ -96,6 +106,14 @@ typedef void (*nrf_rpc_ack_handler_t)(uint8_t id, void *handler_data);
  */
 typedef void (*nrf_rpc_err_handler_t)(const struct nrf_rpc_err_report *report);
 
+/** @brief Callback called when the command group is bound.
+ *
+ * @see NRF_RPC_GROUP_DEFINE
+ *
+ * @param group Pointer to the bound group.
+ */
+typedef void (*nrf_rpc_group_bound_handler_t)(const struct nrf_rpc_group *group);
+
 /* Structure used internally to define registered command or event decoder. */
 struct _nrf_rpc_decoder {
 	uint8_t id;
@@ -127,6 +145,8 @@ struct nrf_rpc_group {
 	void *ack_handler_data;
 	const char *strid;
 	nrf_rpc_err_handler_t err_handler;
+	nrf_rpc_group_bound_handler_t bound_handler;
+	const uint32_t flags;
 };
 
 /** @brief Error report.
@@ -151,6 +171,58 @@ struct nrf_rpc_err_report {
 	enum nrf_rpc_packet_type packet_type;
 };
 
+/** @brief Internal macro for parametrizing nrf_rpc groups.
+ *
+ * @param _name          Symbol name of the group.
+ * @param _strid         String containing a unique identifier of the group. Naming
+ *                       conventions are the same as with C symbol name. Groups on local
+ *                       and remote must have the same unique identifier.
+ * @param _transport     Group transport. It is used by group to communicate with
+ *                       a remote processor.
+ * @param _ack_handler   Handler of type @ref nrf_rpc_ack_handler_t, called when
+ *                       ACK was received after event completion. Can be NULL if
+ *                       the group does not want to receive ACK notifications.
+ * @param _ack_data      Opaque pointer for the `_ack_handler`.
+ * @param _err_handler   Handler of type @ref nrf_rpc_err_handler_t, called when
+ *                       an error occurred in context of this group. Can be NULL if
+ *                       the group does not want to receive error notifications.
+ * @param _bound_handler Handler of type @ref nrf_rpc_group_bound_handler_t, called
+ *                       when the group was successfuly bound. The callback is called
+ *                       each time the remote peer binds to the group. This can be used
+ *                       to detect a remote peer reset and can be used by the application
+ *                       to reset the local state.
+ * @param _wait_on_init  The group does not block until it is bound.
+ * @param _initiator     The group is the initiator.
+ */
+#define NRF_RPC_GROUP_DEFINE_INTERNAL__(_name, _strid, _transport, _ack_handler,  \
+					_ack_data, _err_handler, _bound_handler,  \
+					_wait_on_init, _initiator)	          \
+	NRF_RPC_AUTO_ARR(NRF_RPC_CONCAT(_name, _cmd_array),		          \
+			 "cmd_" NRF_RPC_STRINGIFY(_name));		          \
+	NRF_RPC_AUTO_ARR(NRF_RPC_CONCAT(_name, _evt_array),		          \
+			 "evt_" NRF_RPC_STRINGIFY(_name));		          \
+										  \
+	static struct nrf_rpc_group_data NRF_RPC_CONCAT(_name, _group_data) = {   \
+		.src_group_id = NRF_RPC_ID_UNKNOWN,                               \
+		.dst_group_id = NRF_RPC_ID_UNKNOWN,                               \
+		.transport_initialized = false,					  \
+	};                                                                        \
+										  \
+	NRF_RPC_AUTO_ARR_ITEM(const struct nrf_rpc_group, _name, "grp",		      \
+			      _strid) = {					      \
+		.cmd_array = &NRF_RPC_CONCAT(_name, _cmd_array),		      \
+		.evt_array = &NRF_RPC_CONCAT(_name, _evt_array),		      \
+		.data = &NRF_RPC_CONCAT(_name, _group_data),			      \
+		.ack_handler = _ack_handler,					      \
+		.ack_handler_data = _ack_data,					      \
+		.strid = _strid,						      \
+		.transport = _transport,					      \
+		.err_handler = _err_handler,					      \
+		.bound_handler = _bound_handler,				      \
+		.flags = NRF_RPC_FLAG_COND(_wait_on_init, NRF_RPC_FLAGS_WAIT_ON_INIT) \
+		       | NRF_RPC_FLAG_COND(_initiator, NRF_RPC_FLAGS_INITIATOR),      \
+	}
+
 /** @brief Define a group of commands and events.
  *
  * @param _name        Symbol name of the group.
@@ -168,28 +240,45 @@ struct nrf_rpc_err_report {
  */
 #define NRF_RPC_GROUP_DEFINE(_name, _strid, _transport, _ack_handler, _ack_data,  \
 			     _err_handler)				          \
-	NRF_RPC_AUTO_ARR(NRF_RPC_CONCAT(_name, _cmd_array),		          \
-			 "cmd_" NRF_RPC_STRINGIFY(_name));		          \
-	NRF_RPC_AUTO_ARR(NRF_RPC_CONCAT(_name, _evt_array),		          \
-			 "evt_" NRF_RPC_STRINGIFY(_name));		          \
-										  \
-	static struct nrf_rpc_group_data NRF_RPC_CONCAT(_name, _group_data) = {   \
-		.src_group_id = NRF_RPC_ID_UNKNOWN,                               \
-		.dst_group_id = NRF_RPC_ID_UNKNOWN,                               \
-		.transport_initialized = false,					  \
-	};                                                                        \
-										  \
-	NRF_RPC_AUTO_ARR_ITEM(const struct nrf_rpc_group, _name, "grp",	         \
-			      _strid) = {				         \
-		.cmd_array = &NRF_RPC_CONCAT(_name, _cmd_array),	         \
-		.evt_array = &NRF_RPC_CONCAT(_name, _evt_array),	         \
-		.data = &NRF_RPC_CONCAT(_name, _group_data),                     \
-		.ack_handler = _ack_handler,				         \
-		.ack_handler_data = _ack_data,				         \
-		.strid = _strid,					         \
-		.transport = _transport,                                         \
-		.err_handler = _err_handler,				         \
-	}
+	NRF_RPC_GROUP_DEFINE_INTERNAL__(_name, _strid, _transport, _ack_handler,  \
+					_ack_data, _err_handler, NULL, true,      \
+					true)				          \
+
+/** @brief Define a non-blocking group of commands and events.
+ *
+ * The NOWAIT group does not block the @ref nrf_rpc_init until binding completion.
+ * When the NOWAIT group is bound, the @ref nrf_rpc_group_bound_handler_t will
+ * be called. The NOWAIT group can have two roles: initiator and follower.
+ * The initiator initiates the endpoint binding. The follower waits for the initiator
+ * to bind the group. Both peers can be initiators, but there must always be at least
+ * one on either side of the IPC channel.
+ *
+ * @param _name          Symbol name of the group.
+ * @param _strid         String containing a unique identifier of the group. Naming
+ *                       conventions are the same as with C symbol name. Groups on local
+ *                       and remote must have the same unique identifier.
+ * @param _transport     Group transport. It is used by group to communicate with
+ *                       a remote processor.
+ * @param _ack_handler   Handler of type @ref nrf_rpc_ack_handler_t, called when
+ *                       ACK was received after event completion. Can be NULL if
+ *                       the group does not want to receive ACK notifications.
+ * @param _ack_data      Opaque pointer for the `_ack_handler`.
+ * @param _err_handler   Handler of type @ref nrf_rpc_err_handler_t, called when
+ *                       an error occurred in context of this group. Can be NULL if
+ *                       the group does not want to receive error notifications.
+ * @param _bound_handler Handler of type @ref nrf_rpc_group_bound_handler_t, called
+ *                       when the group was successfuly bound. The callback is called
+ *                       each time the remote peer binds to the group. This can be used
+ *                       to detect a remote peer reset and can be used by the application
+ *                       to reset the local state.
+ * @param _initiator     The group is the initiator.
+ */
+#define NRF_RPC_GROUP_DEFINE_NOWAIT(_name, _strid, _transport, _ack_handler,      \
+				    _ack_data, _err_handler, _bound_handler,      \
+				    _initiator)				          \
+	NRF_RPC_GROUP_DEFINE_INTERNAL__(_name, _strid, _transport, _ack_handler,  \
+					_ack_data, _err_handler, _bound_handler,  \
+					false, _initiator)		          \
 
 /** @brief Extern declaration of a group.
  *
