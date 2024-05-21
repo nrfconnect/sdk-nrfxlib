@@ -148,8 +148,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1052
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1180
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1060
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1188
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -191,7 +191,7 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? 0 : 0)
+#define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? (13 + (num_links) * 11) : 0)
 
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
