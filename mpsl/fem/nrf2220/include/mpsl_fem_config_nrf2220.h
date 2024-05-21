@@ -48,15 +48,21 @@ typedef struct
     mpsl_fem_gpiote_pin_config_t  cs_pin_config;
     /** Mode pin configuration. Configuration where @ref md_pin_config.enable is false is unsupported. */
     mpsl_fem_gpiote_pin_config_t  md_pin_config;
-
+#ifdef _MPSL_FEM_NRF22XX_TWI_CONFIG_DEPRECATED
     /** TWI interface configuration.
      *
      * If @p twi_config.p_twim is equal @c NULL no TWI communication is performed and only GPIO part
      * of the interface is used. Otherwise, only TWIM0 is accepted as valid. If @p twi_config.p_twim
      * other than @c NULL or TWIM0 is provided initialization of the inteface fails. Additionally,
      * there is a limitation that no other devices on the TWI bus are allowed.
+     *
+     * @note This field is deprecated. Please use @c twi_if field instead. Once you use the @c twi_if
+     * field, please leave the field @c twi_config filled with zeros.
      */
     mpsl_fem_twi_config_t         twi_config;
+#endif /* _MPSL_FEM_NRF22XX_TWI_CONFIG_DEPRECATED */
+    /** TWI interface. */
+    mpsl_fem_twi_if_t             twi_if;
 
 #if defined(NRF52_SERIES)
     /** Array of PPI channels which need to be provided to Front End Module to operate. */
