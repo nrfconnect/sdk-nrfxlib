@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <nrf.h>
+#include <nrf_errno.h>
 
 #include <mpsl_fem_config_common.h>
 
@@ -28,6 +29,10 @@
 extern "C" {
 #endif
 
+/** @brief Temporary macro controlling FEM TWI API migration.*/
+#define _MPSL_FEM_NRF22XX_TWI_CONFIG_DEPRECATED
+
+#ifdef _MPSL_FEM_NRF22XX_TWI_CONFIG_DEPRECATED
 /** @brief Configuration of the TWI interface that can be used to communicate with Front End Module.
  */
 typedef struct
@@ -43,6 +48,62 @@ typedef struct
     /** TWI slave address. */
     uint8_t         address;
 } mpsl_fem_twi_config_t;
+#endif /* _MPSL_FEM_NRF22XX_TWI_CONFIG_DEPRECATED */
+
+/** @brief Interface to a TWI driver. */
+typedef struct
+{
+    /** Determines if TWI interface is enabled.
+     *  
+     *  If false, then TWI interface is not used, other fields of the struct are ignored.
+     *  If true, then TWI interface is used.
+     */
+    bool    enabled;
+
+    /** TWI slave address of the FEM device. */
+    uint8_t slave_address;
+
+    /** Opaque pointer to the TWI object instance.
+     * 
+     *  This pointer is passed to all function calls to the functions pointed by @ref mpsl_fem_twi_if_t
+     *  interface. The meaning of this pointer is determined by implementation of functions assigned
+     *  to function pointers in this interface.
+     */
+    void  * p_instance;
+
+    /** Pointer to a function performing read transfer from TWI device.
+     *
+     *  @param p_instance       Pointer to object representing TWI instance.
+     *                          The value of @c p_instance field is put here.
+     *                          The meaning is fully up to the implementation of the function.
+     *  @param slave_address    Address of the slave device on TWI bus.
+     *  @param internal_address Internal address within TWI device at which the read starts.
+     *  @param p_data           Pointer to a buffer where read data will be stored.
+     *  @param data_length      Length of buffer pointed by p_data. The number of bytes to read.
+     * 
+     *  @retval 0           In case of success.
+     *  @retval -NRF_EIO    In case of NACK on TWI bus.
+     *  @retval other       Other error.
+     * 
+     */
+    int32_t (*p_xfer_read)(void * p_instance, uint8_t slave_address, uint8_t internal_address, uint8_t * p_data, uint8_t data_length);
+
+    /** Pointer to a function performing write transfer to TWI device.
+     *
+     *  @param p_instance       Pointer to object representing TWI instance.
+     *                          The value of @c p_instance field is put here.
+     *                          The meaning is fully up to the implementation of the function.
+     *  @param slave_address    Address of the slave device on TWI bus.
+     *  @param internal_address Internal address within TWI device at which write starts.
+     *  @param p_data           Pointer to a buffer containing values to be written.
+     *  @param data_length      Length of buffer pointed by p_data. The number of bytes to write.
+     * 
+     *  @retval 0           In case of success.
+     *  @retval -NRF_EIO    In case of NACK on TWI bus.
+     *  @retval other       Other error.
+    */
+    int32_t (*p_xfer_write)(void * p_instance, uint8_t slave_address, uint8_t internal_address, const uint8_t * p_data, uint8_t data_length);
+} mpsl_fem_twi_if_t;
 
 /** @brief Parameters of a TWI register to be written.
  */

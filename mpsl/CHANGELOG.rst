@@ -13,6 +13,8 @@ Main Branch
 Changes
 =======
 
+* The default bit width within timeslots for ``TIMER0`` has been increased from 24 to 32 bits.
+  The user may still configure ``TIMER0`` however they like during the timeslot. (DRGN-19050)
 * New FEM protocol APIs are provided to control the PA power, the previous APIs are removed.
   This change does not affect applications developed in the |NCS| context.
   :c:func:`mpsl_fem_pa_power_control_set` replaces :c:func:`mpsl_fem_pa_gain_set`.
