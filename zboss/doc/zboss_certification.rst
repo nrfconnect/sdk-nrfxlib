@@ -31,7 +31,8 @@ You can use this platform as the building block for your Zigbee Certified Produc
 Certification IDs
 *****************
 
-Check the compatibility matrices in the `Infocenter`_ for information about the latest certification ID entries (CIDs) for the combination of the ZBOSS stack v3.3 (or newer), the |NCS| version, and Nordic Semiconductor's SoCs:
+Check the compatibility matrices for your device for information about the latest certification ID entries (CIDs) for the combination of the ZBOSS stack v3.3 (or newer), the |NCS| version, and Nordic Semiconductor's SoCs:
 
+* `Zigbee CIDs for nRF5340`_
 * `Zigbee CIDs for nRF52840`_
 * `Zigbee CIDs for nRF52833`_

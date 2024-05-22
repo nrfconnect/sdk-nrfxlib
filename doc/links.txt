@@ -41,9 +41,6 @@
 .. _`Thread CIDs for nRF52840`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52840/COMP/nrf52840/nrf52840_thread_cids.html
 .. _`Thread CIDs for nRF52833`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52833/COMP/nrf52833/nrf52833_thread_cids.html
 
-.. _`Zigbee CIDs for nRF52840`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52840/COMP/nrf52840/nrf52840_zigbee_cids.html
-.. _`Zigbee CIDs for nRF52833`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52833/COMP/nrf52833/nrf52833_zigbee_cids.html
-
 .. _`Packet domain commands`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/packet_domain/packet_domain.html
 .. _`nRF91x1 packet Domain AT commands`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/packet_domain/packet_domain.html
 
@@ -67,6 +64,10 @@
 .. _`nRF9160 modem TLS cipher suites`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#infotabs
 
 .. _`nRF91x1 modem TLS cipher suites`: https://www.nordicsemi.com/Products/nRF9161/Download?lang=en#infotabs
+
+.. _`Zigbee CIDs for nRF5340`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf5340/page/COMP/nrf5340/nrf5340_zigbee_cids.html
+.. _`Zigbee CIDs for nRF52840`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52840/page/COMP/nrf52840/nrf52840_zigbee_cids.html
+.. _`Zigbee CIDs for nRF52833`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52833/page/COMP/nrf52833/nrf52833_zigbee_cids.html
 
 .. ### Source: wikipedia
 
