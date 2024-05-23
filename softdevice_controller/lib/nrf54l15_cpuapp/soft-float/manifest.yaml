@@ -1,5 +1,5 @@
 description: SoftDevice Controller
-git_revision: 3b2510eca291f1c939fc438d67861f90b0f29580
-ll_subversion_number: '0x31DC'
+git_revision: 2d2f757835fedabe3444d4dfec80ad30f7806051
+ll_subversion_number: '0x31DE'
 ll_version_number: '0x0D'
-timestamp: '2024-05-21T14:48:08Z'
+timestamp: '2024-05-23T13:50:50Z'
