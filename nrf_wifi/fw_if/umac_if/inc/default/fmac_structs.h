@@ -483,6 +483,17 @@ struct nrf_wifi_fmac_dev_ctx_def {
 #endif /* CONFIG_NRF700X_RAW_DATA_TX */
 };
 
+#define MAX_CMD_PENDING_STATUS 4
+
+struct nrf_wifi_fmac_cmd_status_info {
+	/** Command pending or not */
+	char state;
+	/** Command status as returned in event by firmware*/
+	char status;
+	/** Command Id */
+	char cmd_id;
+};
+
 /**
  * @brief Structure to hold per VIF context information for the UMAC IF layer.
  *
@@ -520,6 +531,8 @@ struct nrf_wifi_fmac_vif_ctx {
 	/** Promiscuous mode setting */
 	bool promisc_mode;
 #endif /* CONFIG_NRF700X_PROMISC_DATA_RX */
+	/** Command status information related to this VIF */
+	struct nrf_wifi_fmac_cmd_status_info cmd_status_info[MAX_CMD_PENDING_STATUS];
 };
 
 /**
