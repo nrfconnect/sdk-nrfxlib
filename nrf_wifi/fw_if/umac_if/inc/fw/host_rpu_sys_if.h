@@ -1174,7 +1174,7 @@ struct nrf_wifi_cmd_raw_config_filter {
 	/** Wireless device operating mode filters for Promiscuous/Monitor modes. */
 	unsigned char filter;
 	/** capture length. */
-	unsigned char capture_len;
+	unsigned short capture_len;
 } __NRF_WIFI_PKD;
 
 /**
@@ -1277,7 +1277,7 @@ struct nrf_wifi_event_raw_config_filter {
 	/** mode filter configured. */
 	unsigned char filter;
 	/** capture len configured. */
-	unsigned char capture_len;
+	unsigned short capture_len;
 	/** status of the set raw filter command, success(0)/Fail(-1). */
 	int status;
 } __NRF_WIFI_PKD;
