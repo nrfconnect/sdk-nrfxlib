@@ -44,6 +44,8 @@ config SW_CODEC_LC3_T2_SOFTWARE
 	bool "Select the T2 Software LC3 codec"
 	depends on FP_HARDABI
 
+if SW_CODEC_LC3_T2_SOFTWARE
+
 config LC3_PLC_DISABLED
 	bool "Override the decoded frame with zeroes if PLC was applied"
 	default n
@@ -112,3 +114,5 @@ config LC3_DEC_SAMPLE_RATE_48KHZ_SUPPORT
 	default y
 
 endmenu #Decoder sample rates
+
+endif # SW_CODEC_LC3_T2_SOFTWARE
