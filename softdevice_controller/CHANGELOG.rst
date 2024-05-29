@@ -70,6 +70,8 @@ Bug fixes
 * Fixed an issue with the controller-initiated autonomous LE Power Control Request procedure for Coded PHY that could lead to a disconnection. (DRGN-21923)
 * Fixed an issue where the |controller| could assert if a BIS Receiver stops receiving packets from the BIS Broadcaster. (DRGN-21949)
 * Fixed an issue where the |controller| could in some rare cases generate an LE Periodic Advertising Subevent Data Request for a subevent it didn't have the memory capacity for. (DRGN-21839)
+* Fixed an issue where an assert could happen if the peripheral received a connection update indication.
+  This happened when the central used a wide receive window for the connection update, and both sent at the end of the receive window and sent a lot of data in the connection event with the connection update instant (DRGN-22024).
 
 nRF Connect SDK v2.6.0
 **********************
