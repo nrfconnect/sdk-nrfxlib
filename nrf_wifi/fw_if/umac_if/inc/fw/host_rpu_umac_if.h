@@ -143,7 +143,13 @@ enum nrf_wifi_umac_commands {
 	/** Set listen interval @ref nrf_wifi_umac_cmd_set_listen_interval */
 	NRF_WIFI_UMAC_CMD_SET_LISTEN_INTERVAL,
 	/** Configure extended power save @ref nrf_wifi_umac_cmd_config_extended_ps */
-	NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS
+	NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS,
+	/** Add DMS @ref nrf_wifi_umac_cmd_req_add_dms */
+	NRF_WIFI_UMAC_CMD_REQ_ADD_DMS,
+	/** Remove DMS @ref nrf_wifi_umac_cmd_req_remove_dms */
+	NRF_WIFI_UMAC_CMD_REQ_REMOVE_DMS,
+	/** Change DMS @ref nrf_wifi_umac_cmd_req_change_dms */
+	NRF_WIFI_UMAC_CMD_REQ_CHANGE_DMS,
 };
 
  /**
@@ -240,7 +246,14 @@ enum nrf_wifi_umac_events {
 	/** send connection information @ref nrf_wifi_umac_event_conn_info. */
 	NRF_WIFI_UMAC_EVENT_GET_CONNECTION_INFO,
 	/** @ref nrf_wifi_umac_event_power_save_info */
-	NRF_WIFI_UMAC_EVENT_GET_POWER_SAVE_INFO
+	NRF_WIFI_UMAC_EVENT_GET_POWER_SAVE_INFO,
+	/** Send DMS response information @ref nrf_wifi_umac_cmd_req_add_dms */
+	NRF_WIFI_UMAC_EVENT_REQ_ADD_DMS,
+	/** Send DMS remove information @ref nrf_wifi_umac_cmd_req_remove_dms */
+	NRF_WIFI_UMAC_EVENT_REQ_REMOVE_DMS,
+	/** Send DMS change information @ref nrf_wifi_umac_cmd_req_change_dms */
+	NRF_WIFI_UMAC_EVENT_TERMINATE_DMS,
+	/** Send DMS terminate information @ref nrf_wifi_umac_event_terminate_dms */
 };
 
 /**
@@ -3499,4 +3512,112 @@ struct nrf_wifi_umac_event_cmd_status {
 	unsigned int cmd_status;
 } __NRF_WIFI_PKD;
 
+
+/**
+ * @brief DMS add commands and events.
+ *
+ */
+
+enum nrf_wifi_dms_setup_cmd_type {
+	/** STA requests to add a multicast address */
+	NRF_WIFI_REQUEST_ADD_DMS,
+	/** AP accept the STA requested params */
+	NRF_WIFI_ACCEPT_DMS,
+	/** AP may suggest the params, these may be different from STA requested */
+	NRF_WIFI_ALTERNATE_DMS,
+	/** AP may reject the STA requested params */
+	NRF_WIFI_REJECT_DMS,
+};
+
+
+#define NRF_WIFI_DMS_RESP_RECEIVED 0
+#define NRF_WIFI_DMS_RESP_NOT_RECEIVED 1
+#define NRF_WIFI_INVALID_DMS_PARAM 3
+
+/**
+ * @brief This structure describes the DMS information.
+ *
+ */
+
+struct nrf_wifi_umac_config_dms_info {
+	/** Dialog token, used to map requests to responses */
+	unsigned char dialog_token;
+	/** DMSID, used to identifying the DMS for the group addressed frame */
+	unsigned char dmsid;
+	/** User priority */
+	unsigned char up;
+	/** Tclas type */
+	unsigned char tclas_type;
+	/** Tclas mask */
+	unsigned char tclas_mask;
+	/** Tclas category 4 elements */
+	/** Version */
+	unsigned char version;
+	/** Source ip address */
+        unsigned int src_ip_addr;
+	/** Destination ip address */
+        unsigned int dest_ip_addr;
+	/** Source port */
+        unsigned short src_port;
+	/** Destination port */
+        unsigned short dest_port;
+	/** DSCP */
+        unsigned char dscp;
+	/** Protocol */
+        unsigned char protocol;
+	/** 0->not received 1->received */
+	unsigned char dms_resp_status;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure defines the parameters required for setting up TWT session.
+ *
+ */
+
+struct nrf_wifi_umac_cmd_req_add_dms {
+	/** Header @ref nrf_wifi_umac_hdr */
+	struct nrf_wifi_umac_hdr umac_hdr;
+	/** DMS add info @ref nrf_wifi_umac_config_dms_info */
+	struct nrf_wifi_umac_config_dms_info info;
+} __NRF_WIFI_PKD;
+
+#define INVALID_TIME 1
+#define TRIGGER_NOT_RECEIVED 2
+
+/**
+ * @brief This structure represents the DMS remove information.
+ *
+ */
+
+struct nrf_wifi_umac_cmd_req_remove_dms {
+	/** DMS Id  */
+	unsigned char dms_id;
+	/** reason for teardown */
+	unsigned char reason_code;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure defines the command used to change a DMS session
+ *
+ */
+
+struct nrf_wifi_umac_cmd_req_change_dms {
+	/** Header @ref nrf_wifi_umac_hdr */
+	struct nrf_wifi_umac_hdr umac_hdr;
+	/** DMS info @ref nrf_wifi_umac_config_dms_info */
+	struct nrf_wifi_umac_config_dms_info info;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure defines an event used to indicate to the host
+ * when terminate event is received.
+ *
+ */
+
+struct nrf_wifi_umac_event_terminate_dms {
+        /** Header @ref nrf_wifi_umac_hdr */
+        struct nrf_wifi_umac_hdr umac_hdr;
+	/** DMS info @ref nrf_wifi_umac_config_dms_info */
+	struct nrf_wifi_umac_config_dms_info info;
+} __NRF_WIFI_PKD;
 #endif /* __HOST_RPU_UMAC_IF_H */
