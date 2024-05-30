@@ -2256,6 +2256,10 @@ out:
 
 		def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
+		nrf_wifi_fmac_vif_update_if_type(fmac_dev_ctx,
+						 if_idx,
+						 vif_info->iftype);
+
 		def_dev_ctx->vif_ctx[if_idx]->if_type = vif_info->iftype;
 	}
 
