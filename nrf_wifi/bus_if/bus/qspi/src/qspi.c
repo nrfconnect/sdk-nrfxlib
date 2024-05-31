@@ -38,36 +38,30 @@ static void *nrf_wifi_bus_qspi_dev_add(void *bus_priv,
 
 	qspi_priv = bus_priv;
 
-	qspi_dev_ctx = nrf_wifi_osal_mem_zalloc(qspi_priv->opriv,
-						sizeof(*qspi_dev_ctx));
+	qspi_dev_ctx = nrf_wifi_osal_mem_zalloc(sizeof(*qspi_dev_ctx));
 
 	if (!qspi_dev_ctx) {
-		nrf_wifi_osal_log_err(qspi_priv->opriv,
-				      "%s: Unable to allocate qspi_dev_ctx", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate qspi_dev_ctx", __func__);
 		goto out;
 	}
 
 	qspi_dev_ctx->qspi_priv = qspi_priv;
 	qspi_dev_ctx->bal_dev_ctx = bal_dev_ctx;
 
-	qspi_dev_ctx->os_qspi_dev_ctx = nrf_wifi_osal_bus_qspi_dev_add(qspi_priv->opriv,
-								       qspi_priv->os_qspi_priv,
+	qspi_dev_ctx->os_qspi_dev_ctx = nrf_wifi_osal_bus_qspi_dev_add(qspi_priv->os_qspi_priv,
 								       qspi_dev_ctx);
 
 	if (!qspi_dev_ctx->os_qspi_dev_ctx) {
-		nrf_wifi_osal_log_err(qspi_priv->opriv,
-				      "%s: nrf_wifi_osal_bus_qspi_dev_add failed", __func__);
+		nrf_wifi_osal_log_err("%s: nrf_wifi_osal_bus_qspi_dev_add failed", __func__);
 
-		nrf_wifi_osal_mem_free(qspi_priv->opriv,
-				       qspi_dev_ctx);
+		nrf_wifi_osal_mem_free(qspi_dev_ctx);
 
 		qspi_dev_ctx = NULL;
 
 		goto out;
 	}
 
-	nrf_wifi_osal_bus_qspi_dev_host_map_get(qspi_priv->opriv,
-						qspi_dev_ctx->os_qspi_dev_ctx,
+	nrf_wifi_osal_bus_qspi_dev_host_map_get(qspi_dev_ctx->os_qspi_dev_ctx,
 						&host_map);
 
 	qspi_dev_ctx->host_addr_base = host_map.addr;
@@ -86,11 +80,9 @@ static void nrf_wifi_bus_qspi_dev_rem(void *bus_dev_ctx)
 
 	qspi_dev_ctx = bus_dev_ctx;
 
-	nrf_wifi_osal_bus_qspi_dev_rem(qspi_dev_ctx->qspi_priv->opriv,
-					       qspi_dev_ctx->os_qspi_dev_ctx);
+	nrf_wifi_osal_bus_qspi_dev_rem(qspi_dev_ctx->os_qspi_dev_ctx);
 
-	nrf_wifi_osal_mem_free(qspi_dev_ctx->qspi_priv->opriv,
-			       qspi_dev_ctx);
+	nrf_wifi_osal_mem_free(qspi_dev_ctx);
 }
 
 
@@ -102,29 +94,24 @@ static enum nrf_wifi_status nrf_wifi_bus_qspi_dev_init(void *bus_dev_ctx)
 	qspi_dev_ctx = bus_dev_ctx;
 
 
-	status = nrf_wifi_osal_bus_qspi_dev_intr_reg(qspi_dev_ctx->qspi_priv->opriv,
-						     qspi_dev_ctx->os_qspi_dev_ctx,
+	status = nrf_wifi_osal_bus_qspi_dev_intr_reg(qspi_dev_ctx->os_qspi_dev_ctx,
 						     qspi_dev_ctx,
 						     &nrf_wifi_bus_qspi_irq_handler);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(qspi_dev_ctx->qspi_priv->opriv,
-				      "%s: Unable to register interrupt to the OS",
+		nrf_wifi_osal_log_err("%s: Unable to register interrupt to the OS",
 				      __func__);
 		qspi_dev_ctx = NULL;
 
 		goto out;
 	}
 
-	status = nrf_wifi_osal_bus_qspi_dev_init(qspi_dev_ctx->qspi_priv->opriv,
-						 qspi_dev_ctx->os_qspi_dev_ctx);
+	status = nrf_wifi_osal_bus_qspi_dev_init(qspi_dev_ctx->os_qspi_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(qspi_dev_ctx->qspi_priv->opriv,
-				      "%s: nrf_wifi_osal_qspi_dev_init failed", __func__);
+		nrf_wifi_osal_log_err("%s: nrf_wifi_osal_qspi_dev_init failed", __func__);
 
-		nrf_wifi_osal_bus_qspi_dev_intr_unreg(qspi_dev_ctx->qspi_priv->opriv,
-						      qspi_dev_ctx->os_qspi_dev_ctx);
+		nrf_wifi_osal_bus_qspi_dev_intr_unreg(qspi_dev_ctx->os_qspi_dev_ctx);
 		goto out;
 	}
 out:
@@ -138,48 +125,38 @@ static void nrf_wifi_bus_qspi_dev_deinit(void *bus_dev_ctx)
 
 	qspi_dev_ctx = bus_dev_ctx;
 
-	nrf_wifi_osal_bus_qspi_dev_intr_unreg(qspi_dev_ctx->qspi_priv->opriv,
-					      qspi_dev_ctx->os_qspi_dev_ctx);
+	nrf_wifi_osal_bus_qspi_dev_intr_unreg(qspi_dev_ctx->os_qspi_dev_ctx);
 
-	nrf_wifi_osal_bus_qspi_dev_deinit(qspi_dev_ctx->qspi_priv->opriv,
-					  qspi_dev_ctx->os_qspi_dev_ctx);
+	nrf_wifi_osal_bus_qspi_dev_deinit(qspi_dev_ctx->os_qspi_dev_ctx);
 }
 
 
-static void *nrf_wifi_bus_qspi_init(struct nrf_wifi_osal_priv *opriv,
-				    void *params,
+static void *nrf_wifi_bus_qspi_init(void *params,
 				    enum nrf_wifi_status (*intr_callbk_fn)(void *bal_dev_ctx))
 {
 	struct nrf_wifi_bus_qspi_priv *qspi_priv = NULL;
 
-	qspi_priv = nrf_wifi_osal_mem_zalloc(opriv,
-					     sizeof(*qspi_priv));
+	qspi_priv = nrf_wifi_osal_mem_zalloc(sizeof(*qspi_priv));
 
 	if (!qspi_priv) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate memory for qspi_priv",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory for qspi_priv",
 				      __func__);
 		goto out;
 	}
 
-	qspi_priv->opriv = opriv;
-
-	nrf_wifi_osal_mem_cpy(opriv,
-			      &qspi_priv->cfg_params,
+	nrf_wifi_osal_mem_cpy(&qspi_priv->cfg_params,
 			      params,
 			      sizeof(qspi_priv->cfg_params));
 
 	qspi_priv->intr_callbk_fn = intr_callbk_fn;
 
-	qspi_priv->os_qspi_priv = nrf_wifi_osal_bus_qspi_init(opriv);
+	qspi_priv->os_qspi_priv = nrf_wifi_osal_bus_qspi_init();
 
 	if (!qspi_priv->os_qspi_priv) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to register QSPI driver",
+		nrf_wifi_osal_log_err("%s: Unable to register QSPI driver",
 				      __func__);
 
-		nrf_wifi_osal_mem_free(opriv,
-				       qspi_priv);
+		nrf_wifi_osal_mem_free(qspi_priv);
 
 		qspi_priv = NULL;
 
@@ -196,11 +173,9 @@ static void nrf_wifi_bus_qspi_deinit(void *bus_priv)
 
 	qspi_priv = bus_priv;
 
-	nrf_wifi_osal_bus_qspi_deinit(qspi_priv->opriv,
-				      qspi_priv->os_qspi_priv);
+	nrf_wifi_osal_bus_qspi_deinit(qspi_priv->os_qspi_priv);
 
-	nrf_wifi_osal_mem_free(qspi_priv->opriv,
-			       qspi_priv);
+	nrf_wifi_osal_mem_free(qspi_priv);
 }
 
 
@@ -212,8 +187,7 @@ static unsigned int nrf_wifi_bus_qspi_read_word(void *dev_ctx,
 
 	qspi_dev_ctx = (struct nrf_wifi_bus_qspi_dev_ctx *)dev_ctx;
 
-	val = nrf_wifi_osal_qspi_read_reg32(qspi_dev_ctx->qspi_priv->opriv,
-					    qspi_dev_ctx->os_qspi_dev_ctx,
+	val = nrf_wifi_osal_qspi_read_reg32(qspi_dev_ctx->os_qspi_dev_ctx,
 					    qspi_dev_ctx->host_addr_base + addr_offset);
 
 	return val;
@@ -228,8 +202,7 @@ static void nrf_wifi_bus_qspi_write_word(void *dev_ctx,
 
 	qspi_dev_ctx = (struct nrf_wifi_bus_qspi_dev_ctx *)dev_ctx;
 
-	nrf_wifi_osal_qspi_write_reg32(qspi_dev_ctx->qspi_priv->opriv,
-				       qspi_dev_ctx->os_qspi_dev_ctx,
+	nrf_wifi_osal_qspi_write_reg32(qspi_dev_ctx->os_qspi_dev_ctx,
 				       qspi_dev_ctx->host_addr_base + addr_offset,
 				       val);
 }
@@ -244,8 +217,7 @@ static void nrf_wifi_bus_qspi_read_block(void *dev_ctx,
 
 	qspi_dev_ctx = (struct nrf_wifi_bus_qspi_dev_ctx *)dev_ctx;
 
-	nrf_wifi_osal_qspi_cpy_from(qspi_dev_ctx->qspi_priv->opriv,
-				    qspi_dev_ctx->os_qspi_dev_ctx,
+	nrf_wifi_osal_qspi_cpy_from(qspi_dev_ctx->os_qspi_dev_ctx,
 				    dest_addr,
 				    qspi_dev_ctx->host_addr_base + src_addr_offset,
 				    len);
@@ -261,8 +233,7 @@ static void nrf_wifi_bus_qspi_write_block(void *dev_ctx,
 
 	qspi_dev_ctx = (struct nrf_wifi_bus_qspi_dev_ctx *)dev_ctx;
 
-	nrf_wifi_osal_qspi_cpy_to(qspi_dev_ctx->qspi_priv->opriv,
-				  qspi_dev_ctx->os_qspi_dev_ctx,
+	nrf_wifi_osal_qspi_cpy_to(qspi_dev_ctx->os_qspi_dev_ctx,
 				  qspi_dev_ctx->host_addr_base + dest_addr_offset,
 				  src_addr,
 				  len);
@@ -308,8 +279,7 @@ static void nrf_wifi_bus_qspi_ps_sleep(void *dev_ctx)
 
 	qspi_dev_ctx = (struct nrf_wifi_bus_qspi_dev_ctx *)dev_ctx;
 
-	nrf_wifi_osal_bus_qspi_ps_sleep(qspi_dev_ctx->qspi_priv->opriv,
-					qspi_dev_ctx->os_qspi_dev_ctx);
+	nrf_wifi_osal_bus_qspi_ps_sleep(qspi_dev_ctx->os_qspi_dev_ctx);
 }
 
 
@@ -319,8 +289,7 @@ static void nrf_wifi_bus_qspi_ps_wake(void *dev_ctx)
 
 	qspi_dev_ctx = (struct nrf_wifi_bus_qspi_dev_ctx *)dev_ctx;
 
-	nrf_wifi_osal_bus_qspi_ps_wake(qspi_dev_ctx->qspi_priv->opriv,
-				       qspi_dev_ctx->os_qspi_dev_ctx);
+	nrf_wifi_osal_bus_qspi_ps_wake(qspi_dev_ctx->os_qspi_dev_ctx);
 }
 
 
@@ -330,8 +299,7 @@ static int nrf_wifi_bus_qspi_ps_status(void *dev_ctx)
 
 	qspi_dev_ctx = (struct nrf_wifi_bus_qspi_dev_ctx *)dev_ctx;
 
-	return nrf_wifi_osal_bus_qspi_ps_status(qspi_dev_ctx->qspi_priv->opriv,
-						qspi_dev_ctx->os_qspi_dev_ctx);
+	return nrf_wifi_osal_bus_qspi_ps_status(qspi_dev_ctx->os_qspi_dev_ctx);
 }
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 

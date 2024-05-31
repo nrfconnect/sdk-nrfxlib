@@ -21,8 +21,6 @@
  * @brief Structure to hold context information for the Linux SPI bus.
  */
 struct nrf_wifi_bus_spi_priv {
-	/** Pointer to the OSAL context. */
-	struct nrf_wifi_osal_priv *opriv;
 	/** Pointer to the OS-specific SPI context. */
 	void *os_spi_priv;
 

@@ -14,25 +14,19 @@
 
 #include "osal_ops.h"
 
-void *nrf_wifi_utils_q_alloc(struct nrf_wifi_osal_priv *opriv);
+void *nrf_wifi_utils_q_alloc(void);
 
-void nrf_wifi_utils_q_free(struct nrf_wifi_osal_priv *opriv,
-			   void *q);
+void nrf_wifi_utils_q_free(void *q);
 
-enum nrf_wifi_status nrf_wifi_utils_q_enqueue(struct nrf_wifi_osal_priv *opriv,
-					      void *q,
+enum nrf_wifi_status nrf_wifi_utils_q_enqueue(void *q,
 					      void *q_node);
 
-enum nrf_wifi_status nrf_wifi_utils_q_enqueue_head(struct nrf_wifi_osal_priv *opriv,
-						   void *q,
+enum nrf_wifi_status nrf_wifi_utils_q_enqueue_head(void *q,
 						   void *q_node);
 
-void *nrf_wifi_utils_q_dequeue(struct nrf_wifi_osal_priv *opriv,
-			       void *q);
+void *nrf_wifi_utils_q_dequeue(void *q);
 
-void *nrf_wifi_utils_q_peek(struct nrf_wifi_osal_priv *opriv,
-			    void *q);
+void *nrf_wifi_utils_q_peek(void *q);
 
-unsigned int nrf_wifi_utils_q_len(struct nrf_wifi_osal_priv *opriv,
-				  void *q);
+unsigned int nrf_wifi_utils_q_len(void *q);
 #endif /* __QUEUE_H__ */

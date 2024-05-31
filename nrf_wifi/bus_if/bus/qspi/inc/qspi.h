@@ -17,8 +17,6 @@
  * @brief Structure to hold context information for the QSPI bus.
  */
 struct nrf_wifi_bus_qspi_priv {
-	/** Pointer to the OSAL context. */
-	struct nrf_wifi_osal_priv *opriv;
 	/** Pointer to the QSPI bus-specific context. */
 	void *os_qspi_priv;
 

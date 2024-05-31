@@ -293,7 +293,6 @@ enum nrf_wifi_status nrf_wifi_fmac_get_power_save_info(void *fmac_dev_ctx,
 
 /**
  * @brief Initialize RF parameters.
- * @param opriv Pointer to the OSAL context.
  * @param prf Pointer to the RF parameter structure.
  * @param package_info Package information, QFN, CSP etc.
  * @param str String of RF params
@@ -302,8 +301,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_power_save_info(void *fmac_dev_ctx,
  * with the XO, power ceiling info, voltage and temperature based
  * backoffs etc.
  */
-int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
-				struct nrf_wifi_phy_rf_params *prf,
+int nrf_wifi_phy_rf_params_init(struct nrf_wifi_phy_rf_params *prf,
 				unsigned int package_info,
 				unsigned char *str);
 

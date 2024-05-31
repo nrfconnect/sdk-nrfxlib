@@ -28,8 +28,7 @@ enum nrf_wifi_status sap_client_ps_get_frames(struct nrf_wifi_fmac_dev_ctx *fmac
 	struct nrf_wifi_fmac_priv_def *def_priv = NULL;
 
 	if (!fmac_dev_ctx || !config) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid params",
+		nrf_wifi_osal_log_err("%s: Invalid params",
 				      __func__);
 		goto out;
 	}
@@ -37,19 +36,16 @@ enum nrf_wifi_status sap_client_ps_get_frames(struct nrf_wifi_fmac_dev_ctx *fmac
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 	def_priv = wifi_fmac_priv(fmac_dev_ctx->fpriv);
 
-	nrf_wifi_osal_spinlock_take(fmac_dev_ctx->fpriv->opriv,
-				    def_dev_ctx->tx_config.tx_lock);
+	nrf_wifi_osal_spinlock_take(def_dev_ctx->tx_config.tx_lock);
 
 	id = nrf_wifi_fmac_peer_get_id(fmac_dev_ctx, config->mac_addr);
 
 	if (id == -1) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid Peer_ID, Mac Addr =%pM",
+		nrf_wifi_osal_log_err("%s: Invalid Peer_ID, Mac Addr =%pM",
 				      __func__,
 				      config->mac_addr);
 
-		nrf_wifi_osal_spinlock_rel(fmac_dev_ctx->fpriv->opriv,
-					   def_dev_ctx->tx_config.tx_lock);
+		nrf_wifi_osal_spinlock_rel(def_dev_ctx->tx_config.tx_lock);
 		goto out;
 	}
 
@@ -60,8 +56,7 @@ enum nrf_wifi_status sap_client_ps_get_frames(struct nrf_wifi_fmac_dev_ctx *fmac
 	wakeup_client_q = def_dev_ctx->tx_config.wakeup_client_q;
 
 	if (wakeup_client_q) {
-		nrf_wifi_utils_q_enqueue(fmac_dev_ctx->fpriv->opriv,
-					 wakeup_client_q,
+		nrf_wifi_utils_q_enqueue(wakeup_client_q,
 					 peer);
 	}
 
@@ -73,8 +68,7 @@ enum nrf_wifi_status sap_client_ps_get_frames(struct nrf_wifi_fmac_dev_ctx *fmac
 		}
 	}
 
-	nrf_wifi_osal_spinlock_rel(fmac_dev_ctx->fpriv->opriv,
-				   def_dev_ctx->tx_config.tx_lock);
+	nrf_wifi_osal_spinlock_rel(def_dev_ctx->tx_config.tx_lock);
 
 	status = NRF_WIFI_STATUS_SUCCESS;
 out:
@@ -95,8 +89,7 @@ enum nrf_wifi_status sap_client_update_pmmode(struct nrf_wifi_fmac_dev_ctx *fmac
 	struct nrf_wifi_fmac_priv_def *def_priv = NULL;
 
 	if (!fmac_dev_ctx || !config) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid params",
+		nrf_wifi_osal_log_err("%s: Invalid params",
 				      __func__);
 		goto out;
 	}
@@ -104,20 +97,17 @@ enum nrf_wifi_status sap_client_update_pmmode(struct nrf_wifi_fmac_dev_ctx *fmac
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 	def_priv = wifi_fmac_priv(fmac_dev_ctx->fpriv);
 
-	nrf_wifi_osal_spinlock_take(fmac_dev_ctx->fpriv->opriv,
-				    def_dev_ctx->tx_config.tx_lock);
+	nrf_wifi_osal_spinlock_take(def_dev_ctx->tx_config.tx_lock);
 
 	id = nrf_wifi_fmac_peer_get_id(fmac_dev_ctx,
 				       config->mac_addr);
 
 	if (id == -1) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid Peer_ID, Mac address = %pM",
+		nrf_wifi_osal_log_err("%s: Invalid Peer_ID, Mac address = %pM",
 				      __func__,
 				      config->mac_addr);
 
-		nrf_wifi_osal_spinlock_rel(fmac_dev_ctx->fpriv->opriv,
-					   def_dev_ctx->tx_config.tx_lock);
+		nrf_wifi_osal_spinlock_rel(def_dev_ctx->tx_config.tx_lock);
 
 		goto out;
 	}
@@ -130,8 +120,7 @@ enum nrf_wifi_status sap_client_update_pmmode(struct nrf_wifi_fmac_dev_ctx *fmac
 		wakeup_client_q = def_dev_ctx->tx_config.wakeup_client_q;
 
 		if (wakeup_client_q) {
-			nrf_wifi_utils_q_enqueue(fmac_dev_ctx->fpriv->opriv,
-						 wakeup_client_q,
+			nrf_wifi_utils_q_enqueue(wakeup_client_q,
 						 peer);
 		}
 
@@ -144,8 +133,7 @@ enum nrf_wifi_status sap_client_update_pmmode(struct nrf_wifi_fmac_dev_ctx *fmac
 		}
 	}
 
-	nrf_wifi_osal_spinlock_rel(fmac_dev_ctx->fpriv->opriv,
-				   def_dev_ctx->tx_config.tx_lock);
+	nrf_wifi_osal_spinlock_rel(def_dev_ctx->tx_config.tx_lock);
 
 	status = NRF_WIFI_STATUS_SUCCESS;
 

@@ -133,8 +133,6 @@ struct nrf_wifi_fmac_reg_info {
  *
  */
 struct nrf_wifi_fmac_priv {
-	/** Handle to the OS abstraction layer. */
-	struct nrf_wifi_osal_priv *opriv;
 	/** Handle to the HAL layer. */
 	struct nrf_wifi_hal_priv *hpriv;
 	/** Data pointer to mode specific parameters */
