@@ -896,16 +896,4 @@ struct nrf_wifi_osal_ops {
 	 */
 	unsigned int (*strlen)(const void *str);
 };
-
-
-/**
- * @brief get_os_ops() - The OSAL layer expects this Op return a initialized instance
- *                      of OS specific Ops.
- *
- * This Op is expected to be implemented by a specific OS shim and is expected
- * to return a pointer to a initialized instance of struct nrf_wifi_osal_ops.
- *
- * @return Pointer to instance of OS specific Ops.
- */
-const struct nrf_wifi_osal_ops *get_os_ops(void);
 #endif /* __OSAL_OPS_H__ */

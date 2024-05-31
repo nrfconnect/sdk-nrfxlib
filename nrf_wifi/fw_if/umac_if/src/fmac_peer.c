@@ -71,8 +71,7 @@ int nrf_wifi_fmac_peer_add(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 		peer = &def_dev_ctx->tx_config.peers[i];
 
 		if (peer->peer_id == -1) {
-			nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-					      peer->ra_addr,
+			nrf_wifi_osal_mem_cpy(peer->ra_addr,
 					      mac_addr,
 					      NRF_WIFI_ETH_ADDR_LEN);
 			peer->if_idx = if_idx;
@@ -90,8 +89,7 @@ int nrf_wifi_fmac_peer_add(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 		}
 	}
 
-	nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-			      "%s: Failed !! No Space Available",
+	nrf_wifi_osal_log_err("%s: Failed !! No Space Available",
 			      __func__);
 
 	return -1;
@@ -128,8 +126,7 @@ void nrf_wifi_fmac_peer_remove(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				  NRF_WIFI_FMAC_ETH_ADDR_LEN);
 	}
 
-	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
-			      peer,
+	nrf_wifi_osal_mem_set(peer,
 			      0x0,
 			      sizeof(struct peers_info));
 	peer->peer_id = -1;
@@ -157,8 +154,7 @@ void nrf_wifi_fmac_peers_flush(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 		if (peer->if_idx == if_idx) {
 
-			nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
-					      peer,
+			nrf_wifi_osal_mem_set(peer,
 					      0x0,
 					      sizeof(struct peers_info));
 			peer->peer_id = -1;

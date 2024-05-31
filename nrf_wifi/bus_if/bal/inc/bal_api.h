@@ -30,8 +30,7 @@
  *
  * @return Pointer to instance of BAL layer context.
  */
-struct nrf_wifi_bal_priv *nrf_wifi_bal_init(struct nrf_wifi_osal_priv *opriv,
-					    struct nrf_wifi_bal_cfg_params *cfg_params,
+struct nrf_wifi_bal_priv *nrf_wifi_bal_init(struct nrf_wifi_bal_cfg_params *cfg_params,
 					    enum nrf_wifi_status (*intr_callbk_fn)(void *hal_ctx));
 
 

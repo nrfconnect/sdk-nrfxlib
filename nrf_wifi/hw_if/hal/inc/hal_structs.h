@@ -142,8 +142,6 @@ struct nrf_wifi_hal_cfg_params {
  * @brief Structure to hold context information for the HAL layer.
  */
 struct nrf_wifi_hal_priv {
-	/** Pointer to OS abstraction layer private data */
-	struct nrf_wifi_osal_priv *opriv;
 	/** Pointer to BAL private data */
 	struct nrf_wifi_bal_priv *bpriv;
 	/** Number of devices */

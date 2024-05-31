@@ -82,18 +82,16 @@ static inline enum RPU_MCU_ADDR_REGIONS pal_mem_type_to_region(enum HAL_RPU_MEM_
 	}
 }
 
-enum nrf_wifi_status pal_rpu_addr_offset_get(struct nrf_wifi_osal_priv *opriv,
-					     unsigned int rpu_addr,
+enum nrf_wifi_status pal_rpu_addr_offset_get(unsigned int rpu_addr,
 					     unsigned long *addr_offset,
-						 enum RPU_PROC_TYPE proc);
+					     enum RPU_PROC_TYPE proc);
 
 
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
 unsigned long pal_rpu_ps_ctrl_reg_addr_get(void);
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 
-char *pal_ops_get_fw_loc(struct nrf_wifi_osal_priv *opriv,
-			 enum nrf_wifi_fw_type fw_type,
+char *pal_ops_get_fw_loc(enum nrf_wifi_fw_type fw_type,
 			 enum nrf_wifi_fw_subtype fw_subtype);
 
 #endif /* __PAL_H__ */

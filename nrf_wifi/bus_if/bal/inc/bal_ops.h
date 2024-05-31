@@ -22,14 +22,12 @@ struct nrf_wifi_bal_ops {
 	/**
 	 * @brief Initialize the bus.
 	 *
-	 * @param opriv Pointer to the OS-specific private data.
 	 * @param cfg_params Pointer to the configuration parameters.
 	 * @param intr_callbk_fn Pointer to the interrupt callback function.
 	 * @return Pointer to the initialized instance of the bus.
 	 */
-	void * (*init)(struct nrf_wifi_osal_priv *opriv,
-			   void *cfg_params,
-			   enum nrf_wifi_status (*intr_callbk_fn)(void *hal_ctx));
+	void * (*init)(void *cfg_params,
+		       enum nrf_wifi_status (*intr_callbk_fn)(void *hal_ctx));
 
 	/**
 	 * @brief Deinitialize the bus.

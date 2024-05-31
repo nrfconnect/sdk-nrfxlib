@@ -60,12 +60,10 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_tx(struct nrf_wifi_fmac_dev_ctx *
 		def_priv->data_config.max_tx_aggregation *
 		sizeof(struct nrf_wifi_fmac_buf_map_info));
 
-	def_dev_ctx->tx_buf_info = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-							     size);
+	def_dev_ctx->tx_buf_info = nrf_wifi_osal_mem_zalloc(size);
 
 	if (!def_dev_ctx->tx_buf_info) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: No space for TX buf info",
+		nrf_wifi_osal_log_err("%s: No space for TX buf info",
 				      __func__);
 		goto out;
 	}
@@ -88,8 +86,7 @@ static void nrf_wifi_fmac_deinit_tx(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 	tx_deinit(fmac_dev_ctx);
 
-	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-			       def_dev_ctx->tx_buf_info);
+	nrf_wifi_osal_mem_free(def_dev_ctx->tx_buf_info);
 }
 
 #endif /* CONFIG_NRF700X_DATA_TX */
@@ -109,12 +106,10 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_rx(struct nrf_wifi_fmac_dev_ctx *
 
 	size = (def_priv->num_rx_bufs * sizeof(struct nrf_wifi_fmac_buf_map_info));
 
-	def_dev_ctx->rx_buf_info = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-							     size);
+	def_dev_ctx->rx_buf_info = nrf_wifi_osal_mem_zalloc(size);
 
 	if (!def_dev_ctx->rx_buf_info) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: No space for RX buf info",
+		nrf_wifi_osal_log_err("%s: No space for RX buf info",
 				      __func__);
 		goto out;
 	}
@@ -125,35 +120,30 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_rx(struct nrf_wifi_fmac_dev_ctx *
 						   desc_id);
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: nrf_wifi_fmac_rx_cmd_send(INIT) failed for desc_id = %d",
+			nrf_wifi_osal_log_err("%s: RX init failed for desc_id = %d",
 					      __func__,
 					      desc_id);
 			goto out;
 		}
 	}
 #ifdef CONFIG_NRF700X_RX_WQ_ENABLED
-	def_dev_ctx->rx_tasklet = nrf_wifi_osal_tasklet_alloc(fmac_dev_ctx->fpriv->opriv,
-							       NRF_WIFI_TASKLET_TYPE_RX);
+	def_dev_ctx->rx_tasklet = nrf_wifi_osal_tasklet_alloc(NRF_WIFI_TASKLET_TYPE_RX);
 	if (!def_dev_ctx->rx_tasklet) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: No space for RX tasklet",
+		nrf_wifi_osal_log_err("%s: No space for RX tasklet",
 				      __func__);
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;
 	}
 
-	def_dev_ctx->rx_tasklet_event_q = nrf_wifi_utils_q_alloc(fpriv->opriv);
+	def_dev_ctx->rx_tasklet_event_q = nrf_wifi_utils_q_alloc();
 	if (!def_dev_ctx->rx_tasklet_event_q) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: No space for RX tasklet event queue",
+		nrf_wifi_osal_log_err("%s: No space for RX tasklet event queue",
 				      __func__);
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;
 	}
 
-	nrf_wifi_osal_tasklet_init(fmac_dev_ctx->fpriv->opriv,
-				   def_dev_ctx->rx_tasklet,
+	nrf_wifi_osal_tasklet_init(def_dev_ctx->rx_tasklet,
 				   nrf_wifi_fmac_rx_tasklet,
 				   (unsigned long)fmac_dev_ctx);
 #endif /* CONFIG_NRF700X_RX_WQ_ENABLED */
@@ -175,10 +165,8 @@ static enum nrf_wifi_status nrf_wifi_fmac_deinit_rx(struct nrf_wifi_fmac_dev_ctx
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
 #ifdef CONFIG_NRF700X_RX_WQ_ENABLED
-	nrf_wifi_osal_tasklet_free(fmac_dev_ctx->fpriv->opriv,
-				     def_dev_ctx->rx_tasklet);
-	nrf_wifi_utils_q_free(fpriv->opriv,
-			      def_dev_ctx->rx_tasklet_event_q);
+	nrf_wifi_osal_tasklet_free(def_dev_ctx->rx_tasklet);
+	nrf_wifi_utils_q_free(def_dev_ctx->rx_tasklet_event_q);
 #endif /* CONFIG_NRF700X_RX_WQ_ENABLED */
 
 	for (desc_id = 0; desc_id < def_priv->num_rx_bufs; desc_id++) {
@@ -187,16 +175,14 @@ static enum nrf_wifi_status nrf_wifi_fmac_deinit_rx(struct nrf_wifi_fmac_dev_ctx
 						   desc_id);
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: nrf_wifi_fmac_rx_cmd_send(DEINIT) failed for desc_id = %d",
+			nrf_wifi_osal_log_err("%s: RX deinit failed for desc_id = %d",
 					      __func__,
 					      desc_id);
 			goto out;
 		}
 	}
 
-	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-			       def_dev_ctx->rx_buf_info);
+	nrf_wifi_osal_mem_free(def_dev_ctx->rx_buf_info);
 
 	def_dev_ctx->rx_buf_info = NULL;
 out:
@@ -226,8 +212,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init(struct nrf_wifi_fmac_dev_ctx *
 	status = nrf_wifi_fmac_init_tx(fmac_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Init TX failed",
+		nrf_wifi_osal_log_err("%s: Init TX failed",
 				      __func__);
 		goto out;
 	}
@@ -236,8 +221,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init(struct nrf_wifi_fmac_dev_ctx *
 	status = nrf_wifi_fmac_init_rx(fmac_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Init RX failed",
+		nrf_wifi_osal_log_err("%s: Init RX failed",
 				      __func__);
 #ifdef CONFIG_NRF700X_DATA_TX
 		nrf_wifi_fmac_deinit_tx(fmac_dev_ctx);
@@ -259,8 +243,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init(struct nrf_wifi_fmac_dev_ctx *
 			       board_params);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: UMAC init failed",
+		nrf_wifi_osal_log_err("%s: UMAC init failed",
 				      __func__);
 		nrf_wifi_fmac_deinit_rx(fmac_dev_ctx);
 #ifdef CONFIG_NRF700X_DATA_TX
@@ -268,19 +251,17 @@ static enum nrf_wifi_status nrf_wifi_fmac_fw_init(struct nrf_wifi_fmac_dev_ctx *
 #endif /* CONFIG_NRF700X_DATA_TX */
 		goto out;
 	}
-	start_time_us = nrf_wifi_osal_time_get_curr_us(fmac_dev_ctx->fpriv->opriv);
+	start_time_us = nrf_wifi_osal_time_get_curr_us();
 	while (!fmac_dev_ctx->fw_init_done) {
-		nrf_wifi_osal_sleep_ms(fmac_dev_ctx->fpriv->opriv, 1);
+		nrf_wifi_osal_sleep_ms(1);
 #define MAX_INIT_WAIT (5 * 1000 * 1000)
-		if (nrf_wifi_osal_time_elapsed_us(fmac_dev_ctx->fpriv->opriv,
-						  start_time_us) >= MAX_INIT_WAIT) {
+		if (nrf_wifi_osal_time_elapsed_us(start_time_us) >= MAX_INIT_WAIT) {
 			break;
 		}
 	}
 
 	if (!fmac_dev_ctx->fw_init_done) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: UMAC init timed out",
+		nrf_wifi_osal_log_err("%s: UMAC init timed out",
 				      __func__);
 		nrf_wifi_fmac_deinit_rx(fmac_dev_ctx);
 #ifdef CONFIG_NRF700X_DATA_TX
@@ -306,26 +287,23 @@ static void nrf_wifi_fmac_fw_deinit(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 	status = umac_cmd_deinit(fmac_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: UMAC deinit failed",
+		nrf_wifi_osal_log_err("%s: UMAC deinit failed",
 				      __func__);
 		goto out;
 	}
 
-	start_time_us = nrf_wifi_osal_time_get_curr_us(fmac_dev_ctx->fpriv->opriv);
+	start_time_us = nrf_wifi_osal_time_get_curr_us();
 
 	while (!fmac_dev_ctx->fw_deinit_done) {
 #define MAX_DEINIT_WAIT (5 * 1000 * 1000)
-		nrf_wifi_osal_sleep_ms(fmac_dev_ctx->fpriv->opriv, 1);
-		if (nrf_wifi_osal_time_elapsed_us(fmac_dev_ctx->fpriv->opriv,
-						  start_time_us) >= MAX_DEINIT_WAIT) {
+		nrf_wifi_osal_sleep_ms(1);
+		if (nrf_wifi_osal_time_elapsed_us(start_time_us) >= MAX_DEINIT_WAIT) {
 			break;
 		}
 	}
 
 	if (!fmac_dev_ctx->fw_deinit_done) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: UMAC deinit timed out",
+		nrf_wifi_osal_log_err("%s: UMAC deinit timed out",
 				      __func__);
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;
@@ -343,8 +321,7 @@ void nrf_wifi_fmac_dev_rem(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 {
 	nrf_wifi_hal_dev_rem(fmac_dev_ctx->hal_dev_ctx);
 
-	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-			       fmac_dev_ctx);
+	nrf_wifi_osal_mem_free(fmac_dev_ctx);
 	fmac_dev_ctx = NULL;
 }
 
@@ -365,30 +342,25 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 	struct nrf_wifi_phy_rf_params phy_rf_params;
 
 	if (!fmac_dev_ctx) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid device context",
+		nrf_wifi_osal_log_err("%s: Invalid device context",
 				      __func__);
 		goto out;
 	}
 
-	fmac_dev_ctx->tx_pwr_ceil_params = nrf_wifi_osal_mem_alloc(fmac_dev_ctx->fpriv->opriv,
-								   sizeof(*tx_pwr_ceil_params));
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      fmac_dev_ctx->tx_pwr_ceil_params,
+	fmac_dev_ctx->tx_pwr_ceil_params = nrf_wifi_osal_mem_alloc(sizeof(*tx_pwr_ceil_params));
+	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->tx_pwr_ceil_params,
 			      tx_pwr_ceil_params,
 			      sizeof(*tx_pwr_ceil_params));
 
 	status = nrf_wifi_hal_dev_init(fmac_dev_ctx->hal_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_hal_dev_init failed",
+		nrf_wifi_osal_log_err("%s: nrf_wifi_hal_dev_init failed",
 				      __func__);
 		goto out;
 	}
 
-	nrf_wifi_osal_mem_set(fmac_dev_ctx->fpriv->opriv,
-			      &otp_info,
+	nrf_wifi_osal_mem_set(&otp_info,
 			      0xFF,
 			      sizeof(otp_info));
 
@@ -397,8 +369,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 					   &otp_info.flags);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Fetching of RPU OTP information failed",
+		nrf_wifi_osal_log_err("%s: Fetching of RPU OTP information failed",
 				      __func__);
 		goto out;
 	}
@@ -406,9 +377,8 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 	status = nrf_wifi_fmac_rf_params_get(fmac_dev_ctx,
 					     &phy_rf_params);
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					"%s: RF parameters get failed",
-					__func__);
+		nrf_wifi_osal_log_err("%s: RF parameters get failed",
+				      __func__);
 		goto out;
 	}
 
@@ -425,8 +395,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 				       board_params);
 
 	if (status == NRF_WIFI_STATUS_FAIL) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_fmac_fw_init failed",
+		nrf_wifi_osal_log_err("%s: nrf_wifi_fmac_fw_init failed",
 				      __func__);
 		goto out;
 	}
@@ -439,8 +408,7 @@ void nrf_wifi_fmac_dev_deinit(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 {
 	nrf_wifi_hal_dev_deinit(fmac_dev_ctx->hal_dev_ctx);
 	nrf_wifi_fmac_fw_deinit(fmac_dev_ctx);
-	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-			       fmac_dev_ctx->tx_pwr_ceil_params);
+	nrf_wifi_osal_mem_free(fmac_dev_ctx->tx_pwr_ceil_params);
 }
 
 #ifdef CONFIG_NRF_WIFI_RPU_RECOVERY
@@ -464,15 +432,13 @@ enum nrf_wifi_status nrf_wifi_fmac_rpu_recovery_callback(void *mac_dev_ctx,
 
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 	if (!def_dev_ctx) {
-		nrf_wifi_osal_log_err(fpriv->opriv,
-				      "%s: Invalid device context",
+		nrf_wifi_osal_log_err("%s: Invalid device context",
 				      __func__);
 		goto out;
 	}
 
 	if (!def_priv->callbk_fns.rpu_recovery_callbk_fn) {
-		nrf_wifi_osal_log_err(fpriv->opriv,
-				      "%s: No RPU recovery callback function",
+		nrf_wifi_osal_log_err("%s: No RPU recovery callback function",
 				      __func__);
 		goto out;
 	}
@@ -491,44 +457,31 @@ struct nrf_wifi_fmac_priv *nrf_wifi_fmac_init(struct nrf_wifi_data_config_params
 					      struct rx_buf_pool_params *rx_buf_pools,
 					      struct nrf_wifi_fmac_callbk_fns *callbk_fns)
 {
-	struct nrf_wifi_osal_priv *opriv = NULL;
 	struct nrf_wifi_fmac_priv *fpriv = NULL;
 	struct nrf_wifi_fmac_priv_def *def_priv = NULL;
 	struct nrf_wifi_hal_cfg_params hal_cfg_params;
 	unsigned int pool_idx = 0;
 	unsigned int desc = 0;
 
-	opriv = nrf_wifi_osal_init();
-
-	if (!opriv) {
-		goto out;
-	}
-
-	fpriv = nrf_wifi_osal_mem_zalloc(opriv,
-					 sizeof(*fpriv) + sizeof(*def_priv));
+	fpriv = nrf_wifi_osal_mem_zalloc(sizeof(*fpriv) + sizeof(*def_priv));
 
 	if (!fpriv) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate fpriv",
+		nrf_wifi_osal_log_err("%s: Unable to allocate fpriv",
 				      __func__);
 		goto out;
 	}
-	fpriv->opriv = opriv;
 
 	def_priv = wifi_fmac_priv(fpriv);
 
-	nrf_wifi_osal_mem_set(opriv,
-			      &hal_cfg_params,
+	nrf_wifi_osal_mem_set(&hal_cfg_params,
 			      0,
 			      sizeof(hal_cfg_params));
 
-	nrf_wifi_osal_mem_cpy(opriv,
-			      &def_priv->callbk_fns,
+	nrf_wifi_osal_mem_cpy(&def_priv->callbk_fns,
 			      callbk_fns,
 			      sizeof(def_priv->callbk_fns));
 
-	nrf_wifi_osal_mem_cpy(opriv,
-			      &def_priv->data_config,
+	nrf_wifi_osal_mem_cpy(&def_priv->data_config,
 			      data_config,
 			      sizeof(def_priv->data_config));
 
@@ -537,8 +490,7 @@ struct nrf_wifi_fmac_priv *nrf_wifi_fmac_init(struct nrf_wifi_data_config_params
 	def_priv->num_tx_tokens_per_ac = (def_priv->num_tx_tokens / NRF_WIFI_FMAC_AC_MAX);
 	def_priv->num_tx_tokens_spare = (def_priv->num_tx_tokens % NRF_WIFI_FMAC_AC_MAX);
 #endif /* CONFIG_NRF700X_DATA_TX */
-	nrf_wifi_osal_mem_cpy(opriv,
-			      def_priv->rx_buf_pools,
+	nrf_wifi_osal_mem_cpy(def_priv->rx_buf_pools,
 			      rx_buf_pools,
 			      sizeof(def_priv->rx_buf_pools));
 
@@ -570,8 +522,7 @@ struct nrf_wifi_fmac_priv *nrf_wifi_fmac_init(struct nrf_wifi_data_config_params
 	hal_cfg_params.max_cmd_size = MAX_NRF_WIFI_UMAC_CMD_SIZE;
 	hal_cfg_params.max_event_size = MAX_EVENT_POOL_LEN;
 
-	fpriv->hpriv = nrf_wifi_hal_init(opriv,
-					 &hal_cfg_params,
+	fpriv->hpriv = nrf_wifi_hal_init(&hal_cfg_params,
 					 &nrf_wifi_fmac_event_callback,
 #ifdef CONFIG_NRF_WIFI_RPU_RECOVERY
 					 &nrf_wifi_fmac_rpu_recovery_callback);
@@ -580,15 +531,11 @@ struct nrf_wifi_fmac_priv *nrf_wifi_fmac_init(struct nrf_wifi_data_config_params
 #endif
 
 	if (!fpriv->hpriv) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to do HAL init",
+		nrf_wifi_osal_log_err("%s: Unable to do HAL init",
 				      __func__);
-		nrf_wifi_osal_mem_free(opriv,
-				       fpriv);
+		nrf_wifi_osal_mem_free(fpriv);
 		fpriv = NULL;
 		def_priv = NULL;
-		nrf_wifi_osal_deinit(opriv);
-		opriv = NULL;
 		goto out;
 	}
 out:
@@ -598,16 +545,9 @@ out:
 
 void nrf_wifi_fmac_deinit(struct nrf_wifi_fmac_priv *fpriv)
 {
-	struct nrf_wifi_osal_priv *opriv = NULL;
-
-	opriv = fpriv->opriv;
-
 	nrf_wifi_hal_deinit(fpriv->hpriv);
 
-	nrf_wifi_osal_mem_free(opriv,
-			       fpriv);
-
-	nrf_wifi_osal_deinit(opriv);
+	nrf_wifi_osal_mem_free(fpriv);
 }
 
 enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
@@ -624,12 +564,10 @@ enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
-	scan_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					    (sizeof(*scan_cmd) + channel_info_len));
+	scan_cmd = nrf_wifi_osal_mem_zalloc((sizeof(*scan_cmd) + channel_info_len));
 
 	if (!scan_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -638,8 +576,7 @@ enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
 	scan_cmd->umac_hdr.ids.wdev_id = if_idx;
 	scan_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &scan_cmd->info,
+	nrf_wifi_osal_mem_cpy(&scan_cmd->info,
 			      scan_info,
 			      (sizeof(scan_cmd->info) + channel_info_len));
 
@@ -648,15 +585,14 @@ enum nrf_wifi_status nrf_wifi_fmac_scan(void *dev_ctx,
 			      sizeof(*scan_cmd) + channel_info_len);
 out:
 	if (scan_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       scan_cmd);
+		nrf_wifi_osal_mem_free(scan_cmd);
 	}
 
 	return status;
 }
 
 enum nrf_wifi_status nrf_wifi_fmac_abort_scan(void *dev_ctx,
-					unsigned char if_idx)
+					      unsigned char if_idx)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_abort_scan *scan_abort_cmd = NULL;
@@ -666,12 +602,10 @@ enum nrf_wifi_status nrf_wifi_fmac_abort_scan(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
-	scan_abort_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					    sizeof(*scan_abort_cmd));
+	scan_abort_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*scan_abort_cmd));
 
 	if (!scan_abort_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -685,8 +619,7 @@ enum nrf_wifi_status nrf_wifi_fmac_abort_scan(void *dev_ctx,
 			      sizeof(*scan_abort_cmd));
 out:
 	if (scan_abort_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       scan_abort_cmd);
+		nrf_wifi_osal_mem_free(scan_abort_cmd);
 	}
 
 	return status;
@@ -705,12 +638,10 @@ enum nrf_wifi_status nrf_wifi_fmac_scan_res_get(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
-	scan_res_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						sizeof(*scan_res_cmd));
+	scan_res_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*scan_res_cmd));
 
 	if (!scan_res_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -725,8 +656,7 @@ enum nrf_wifi_status nrf_wifi_fmac_scan_res_get(void *dev_ctx,
 			      sizeof(*scan_res_cmd));
 out:
 	if (scan_res_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       scan_res_cmd);
+		nrf_wifi_osal_mem_free(scan_res_cmd);
 	}
 
 	return status;
@@ -747,12 +677,10 @@ enum nrf_wifi_status nrf_wifi_fmac_auth(void *dev_ctx,
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
 
-	auth_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					    sizeof(*auth_cmd));
+	auth_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*auth_cmd));
 
 	if (!auth_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -761,8 +689,7 @@ enum nrf_wifi_status nrf_wifi_fmac_auth(void *dev_ctx,
 	auth_cmd->umac_hdr.ids.wdev_id = if_idx;
 	auth_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &auth_cmd->info,
+	nrf_wifi_osal_mem_cpy(&auth_cmd->info,
 			      auth_info,
 			      sizeof(auth_cmd->info));
 
@@ -791,8 +718,7 @@ enum nrf_wifi_status nrf_wifi_fmac_auth(void *dev_ctx,
 			      sizeof(*auth_cmd));
 out:
 	if (auth_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       auth_cmd);
+		nrf_wifi_osal_mem_free(auth_cmd);
 	}
 
 	return status;
@@ -809,12 +735,10 @@ enum nrf_wifi_status nrf_wifi_fmac_deauth(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	deauth_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					      sizeof(*deauth_cmd));
+	deauth_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*deauth_cmd));
 
 	if (!deauth_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -822,8 +746,7 @@ enum nrf_wifi_status nrf_wifi_fmac_deauth(void *dev_ctx,
 	deauth_cmd->umac_hdr.ids.wdev_id = if_idx;
 	deauth_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &deauth_cmd->info,
+	nrf_wifi_osal_mem_cpy(&deauth_cmd->info,
 			      deauth_info,
 			      sizeof(deauth_cmd->info));
 
@@ -838,8 +761,7 @@ enum nrf_wifi_status nrf_wifi_fmac_deauth(void *dev_ctx,
 
 out:
 	if (deauth_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       deauth_cmd);
+		nrf_wifi_osal_mem_free(deauth_cmd);
 	}
 
 	return status;
@@ -862,17 +784,14 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 
 	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      vif_ctx->bssid,
+	nrf_wifi_osal_mem_cpy(vif_ctx->bssid,
 			      assoc_info->nrf_wifi_bssid,
 			      NRF_WIFI_ETH_ADDR_LEN);
 
-	assoc_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					     sizeof(*assoc_cmd));
+	assoc_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*assoc_cmd));
 
 	if (!assoc_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -883,8 +802,7 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 
 	connect_common_info = &assoc_cmd->connect_common_info;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      connect_common_info->mac_addr,
+	nrf_wifi_osal_mem_cpy(connect_common_info->mac_addr,
 			      assoc_info->nrf_wifi_bssid,
 			      NRF_WIFI_ETH_ADDR_LEN);
 
@@ -895,8 +813,7 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 	}
 
 	if (assoc_info->ssid.nrf_wifi_ssid_len > 0) {
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      &connect_common_info->ssid,
+		nrf_wifi_osal_mem_cpy(&connect_common_info->ssid,
 				      &assoc_info->ssid,
 				      sizeof(connect_common_info->ssid));
 
@@ -908,8 +825,7 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 	connect_common_info->valid_fields |= NRF_WIFI_CONNECT_COMMON_INFO_FREQ_VALID;
 
 	if (assoc_info->wpa_ie.ie_len > 0) {
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      &connect_common_info->wpa_ie,
+		nrf_wifi_osal_mem_cpy(&connect_common_info->wpa_ie,
 				      &assoc_info->wpa_ie,
 				      sizeof(connect_common_info->wpa_ie));
 
@@ -928,10 +844,9 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 		assoc_info->control_port;
 
 	if (assoc_info->prev_bssid_flag) {
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			connect_common_info->prev_bssid,
-			assoc_info->prev_bssid,
-			NRF_WIFI_ETH_ADDR_LEN);
+		nrf_wifi_osal_mem_cpy(connect_common_info->prev_bssid,
+				      assoc_info->prev_bssid,
+				      NRF_WIFI_ETH_ADDR_LEN);
 		connect_common_info->nrf_wifi_flags |= NRF_WIFI_CONNECT_COMMON_INFO_PREV_BSSID;
 	}
 
@@ -944,8 +859,7 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 			      sizeof(*assoc_cmd));
 out:
 	if (assoc_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       assoc_cmd);
+		nrf_wifi_osal_mem_free(assoc_cmd);
 	}
 
 	return status;
@@ -962,12 +876,10 @@ enum nrf_wifi_status nrf_wifi_fmac_disassoc(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	disassoc_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						sizeof(*disassoc_cmd));
+	disassoc_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*disassoc_cmd));
 
 	if (!disassoc_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -976,8 +888,7 @@ enum nrf_wifi_status nrf_wifi_fmac_disassoc(void *dev_ctx,
 	disassoc_cmd->umac_hdr.ids.wdev_id = if_idx;
 	disassoc_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &disassoc_cmd->info,
+	nrf_wifi_osal_mem_cpy(&disassoc_cmd->info,
 			      disassoc_info,
 			      sizeof(disassoc_cmd->info));
 
@@ -992,8 +903,7 @@ enum nrf_wifi_status nrf_wifi_fmac_disassoc(void *dev_ctx,
 
 out:
 	if (disassoc_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       disassoc_cmd);
+		nrf_wifi_osal_mem_free(disassoc_cmd);
 	}
 
 	return status;
@@ -1016,12 +926,10 @@ enum nrf_wifi_status nrf_wifi_fmac_add_key(void *dev_ctx,
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
 
-	key_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					   sizeof(*key_cmd));
+	key_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*key_cmd));
 
 	if (!key_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -1029,14 +937,12 @@ enum nrf_wifi_status nrf_wifi_fmac_add_key(void *dev_ctx,
 	key_cmd->umac_hdr.ids.wdev_id = if_idx;
 	key_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &key_cmd->key_info,
+	nrf_wifi_osal_mem_cpy(&key_cmd->key_info,
 			      key_info,
 			      sizeof(key_cmd->key_info));
 
 	if (mac_addr) {
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      key_cmd->mac_addr,
+		nrf_wifi_osal_mem_cpy(key_cmd->mac_addr,
 				      mac_addr,
 				      NRF_WIFI_ETH_ADDR_LEN);
 
@@ -1050,16 +956,14 @@ enum nrf_wifi_status nrf_wifi_fmac_add_key(void *dev_ctx,
 						    mac_addr);
 
 		if (peer_id == -1) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Invalid peer",
+			nrf_wifi_osal_log_err("%s: Invalid peer",
 					      __func__);
 			goto out;
 		}
 
 		def_dev_ctx->tx_config.peers[peer_id].pairwise_cipher = key_info->cipher_suite;
 	} else {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid key type %d",
+		nrf_wifi_osal_log_err("%s: Invalid key type %d",
 				      __func__,
 				      key_info->key_type);
 		goto out;
@@ -1083,8 +987,7 @@ enum nrf_wifi_status nrf_wifi_fmac_add_key(void *dev_ctx,
 
 out:
 	if (key_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       key_cmd);
+		nrf_wifi_osal_mem_free(key_cmd);
 	}
 
 	return status;
@@ -1104,12 +1007,10 @@ enum nrf_wifi_status nrf_wifi_fmac_del_key(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
-	key_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					   sizeof(*key_cmd));
+	key_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*key_cmd));
 
 	if (!key_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1118,14 +1019,12 @@ enum nrf_wifi_status nrf_wifi_fmac_del_key(void *dev_ctx,
 	key_cmd->umac_hdr.ids.wdev_id = if_idx;
 	key_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &key_cmd->key_info,
+	nrf_wifi_osal_mem_cpy(&key_cmd->key_info,
 			      key_info,
 			      sizeof(key_cmd->key_info));
 
 	if (mac_addr) {
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      key_cmd->mac_addr,
+		nrf_wifi_osal_mem_cpy(key_cmd->mac_addr,
 				      mac_addr,
 				      NRF_WIFI_ETH_ADDR_LEN);
 
@@ -1147,8 +1046,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_key(void *dev_ctx,
 
 out:
 	if (key_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       key_cmd);
+		nrf_wifi_osal_mem_free(key_cmd);
 	}
 
 	return status;
@@ -1165,12 +1063,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_key(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	set_key_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*set_key_cmd));
+	set_key_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_key_cmd));
 
 	if (!set_key_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1179,8 +1075,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_key(void *dev_ctx,
 	set_key_cmd->umac_hdr.ids.wdev_id = if_idx;
 	set_key_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &set_key_cmd->key_info,
+	nrf_wifi_osal_mem_cpy(&set_key_cmd->key_info,
 			      key_info,
 			      sizeof(set_key_cmd->key_info));
 
@@ -1192,8 +1087,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_key(void *dev_ctx,
 
 out:
 	if (set_key_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_key_cmd);
+		nrf_wifi_osal_mem_free(set_key_cmd);
 	}
 
 	return status;
@@ -1209,12 +1103,10 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_sta(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	chg_sta_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*chg_sta_cmd));
+	chg_sta_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*chg_sta_cmd));
 
 	if (!chg_sta_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1223,8 +1115,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_sta(void *dev_ctx,
 	chg_sta_cmd->umac_hdr.ids.wdev_id = if_idx;
 	chg_sta_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &chg_sta_cmd->info,
+	nrf_wifi_osal_mem_cpy(&chg_sta_cmd->info,
 			      chg_sta_info,
 			      sizeof(chg_sta_cmd->info));
 
@@ -1262,8 +1153,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_sta(void *dev_ctx,
 
 out:
 	if (chg_sta_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       chg_sta_cmd);
+		nrf_wifi_osal_mem_free(chg_sta_cmd);
 	}
 
 	return status;
@@ -1280,12 +1170,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_bss(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	set_bss_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*set_bss_cmd));
+	set_bss_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_bss_cmd));
 
 	if (!set_bss_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1294,8 +1182,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_bss(void *dev_ctx,
 	set_bss_cmd->umac_hdr.ids.wdev_id = if_idx;
 	set_bss_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &set_bss_cmd->bss_info,
+	nrf_wifi_osal_mem_cpy(&set_bss_cmd->bss_info,
 			      bss_info,
 			      sizeof(set_bss_cmd->bss_info));
 
@@ -1318,8 +1205,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_bss(void *dev_ctx,
 
 out:
 	if (set_bss_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_bss_cmd);
+		nrf_wifi_osal_mem_free(set_bss_cmd);
 	}
 
 	return status;
@@ -1335,12 +1221,10 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_bcn(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	set_bcn_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*set_bcn_cmd));
+	set_bcn_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_bcn_cmd));
 
 	if (!set_bcn_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -1348,13 +1232,11 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_bcn(void *dev_ctx,
 	set_bcn_cmd->umac_hdr.ids.wdev_id = if_idx;
 	set_bcn_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &set_bcn_cmd->info,
+	nrf_wifi_osal_mem_cpy(&set_bcn_cmd->info,
 			      data,
 			      sizeof(set_bcn_cmd->info));
 
-	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
-			      "%s: Sending command to rpu",
+	nrf_wifi_osal_log_dbg("%s: Sending command to rpu",
 			      __func__);
 
 	status = umac_cmd_cfg(fmac_dev_ctx,
@@ -1363,8 +1245,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_bcn(void *dev_ctx,
 
 out:
 	if (set_bcn_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_bcn_cmd);
+		nrf_wifi_osal_mem_free(set_bcn_cmd);
 	}
 
 	return status;
@@ -1382,12 +1263,10 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	start_ap_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						sizeof(*start_ap_cmd));
+	start_ap_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*start_ap_cmd));
 
 	if (!start_ap_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1396,8 +1275,7 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 	start_ap_cmd->umac_hdr.ids.wdev_id = if_idx;
 	start_ap_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &start_ap_cmd->info,
+	nrf_wifi_osal_mem_cpy(&start_ap_cmd->info,
 			      ap_info,
 			      sizeof(start_ap_cmd->info));
 
@@ -1444,12 +1322,10 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 			NRF_WIFI_CMD_BEACON_INFO_P2P_OPPPS_VALID;
 	}
 
-	wiphy_info = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					      sizeof(*wiphy_info));
+	wiphy_info = nrf_wifi_osal_mem_zalloc(sizeof(*wiphy_info));
 
 	if (!wiphy_info) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1468,8 +1344,7 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 						wiphy_info);
 
 	if (status == NRF_WIFI_STATUS_FAIL) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: nrf_wifi_fmac_set_wiphy_params failes",
+		nrf_wifi_osal_log_err("%s: nrf_wifi_fmac_set_wiphy_params failes",
 				      __func__);
 		goto out;
 	}
@@ -1482,13 +1357,11 @@ enum nrf_wifi_status nrf_wifi_fmac_start_ap(void *dev_ctx,
 
 out:
 	if (wiphy_info) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       wiphy_info);
+		nrf_wifi_osal_mem_free(wiphy_info);
 	}
 
 	if (start_ap_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       start_ap_cmd);
+		nrf_wifi_osal_mem_free(start_ap_cmd);
 	}
 
 	return status;
@@ -1504,12 +1377,10 @@ enum nrf_wifi_status nrf_wifi_fmac_stop_ap(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	stop_ap_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*stop_ap_cmd));
+	stop_ap_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*stop_ap_cmd));
 
 	if (!stop_ap_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1526,8 +1397,7 @@ enum nrf_wifi_status nrf_wifi_fmac_stop_ap(void *dev_ctx,
 
 out:
 	if (stop_ap_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       stop_ap_cmd);
+		nrf_wifi_osal_mem_free(stop_ap_cmd);
 	}
 
 	return status;
@@ -1543,12 +1413,10 @@ enum nrf_wifi_status nrf_wifi_fmac_del_sta(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	del_sta_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*del_sta_cmd));
+	del_sta_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*del_sta_cmd));
 
 	if (!del_sta_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1557,8 +1425,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_sta(void *dev_ctx,
 	del_sta_cmd->umac_hdr.ids.wdev_id = if_idx;
 	del_sta_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &del_sta_cmd->info,
+	nrf_wifi_osal_mem_cpy(&del_sta_cmd->info,
 			      del_sta_info,
 			      sizeof(del_sta_cmd->info));
 
@@ -1583,8 +1450,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_sta(void *dev_ctx,
 
 out:
 	if (del_sta_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       del_sta_cmd);
+		nrf_wifi_osal_mem_free(del_sta_cmd);
 	}
 
 	return status;
@@ -1601,12 +1467,10 @@ enum nrf_wifi_status nrf_wifi_fmac_add_sta(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	add_sta_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*add_sta_cmd));
+	add_sta_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*add_sta_cmd));
 
 	if (!add_sta_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1615,8 +1479,7 @@ enum nrf_wifi_status nrf_wifi_fmac_add_sta(void *dev_ctx,
 	add_sta_cmd->umac_hdr.ids.wdev_id = if_idx;
 	add_sta_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &add_sta_cmd->info,
+	nrf_wifi_osal_mem_cpy(&add_sta_cmd->info,
 			      add_sta_info,
 			      sizeof(add_sta_cmd->info));
 
@@ -1686,8 +1549,7 @@ enum nrf_wifi_status nrf_wifi_fmac_add_sta(void *dev_ctx,
 
 out:
 	if (add_sta_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       add_sta_cmd);
+		nrf_wifi_osal_mem_free(add_sta_cmd);
 	}
 
 	return status;
@@ -1703,12 +1565,10 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_frame_reg(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	frame_reg_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						 sizeof(*frame_reg_cmd));
+	frame_reg_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*frame_reg_cmd));
 
 	if (!frame_reg_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1717,8 +1577,7 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_frame_reg(void *dev_ctx,
 	frame_reg_cmd->umac_hdr.ids.wdev_id = if_idx;
 	frame_reg_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &frame_reg_cmd->info,
+	nrf_wifi_osal_mem_cpy(&frame_reg_cmd->info,
 			      frame_info,
 			      sizeof(frame_reg_cmd->info));
 
@@ -1728,8 +1587,7 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_frame_reg(void *dev_ctx,
 
 out:
 	if (frame_reg_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       frame_reg_cmd);
+		nrf_wifi_osal_mem_free(frame_reg_cmd);
 	}
 
 	return status;
@@ -1743,19 +1601,14 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_start(void *dev_ctx,
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_cmd_start_p2p *start_p2p_dev_cmd = NULL;
-	const struct nrf_wifi_osal_ops *osal_ops = NULL;
 	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
 
 	fmac_dev_ctx = dev_ctx;
 
-	osal_ops = fmac_dev_ctx->fpriv->opriv->ops;
-
-	start_p2p_dev_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						     sizeof(*start_p2p_dev_cmd));
+	start_p2p_dev_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*start_p2p_dev_cmd));
 
 	if (!start_p2p_dev_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -1769,8 +1622,7 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_start(void *dev_ctx,
 
 out:
 	if (start_p2p_dev_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       start_p2p_dev_cmd);
+		nrf_wifi_osal_mem_free(start_p2p_dev_cmd);
 	}
 
 	return status;
@@ -1786,12 +1638,10 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_stop(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	stop_p2p_dev_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						    sizeof(*stop_p2p_dev_cmd));
+	stop_p2p_dev_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*stop_p2p_dev_cmd));
 
 	if (!stop_p2p_dev_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1805,8 +1655,7 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_dev_stop(void *dev_ctx,
 			      sizeof(*stop_p2p_dev_cmd));
 out:
 	if (stop_p2p_dev_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       stop_p2p_dev_cmd);
+		nrf_wifi_osal_mem_free(stop_p2p_dev_cmd);
 	}
 
 	return status;
@@ -1823,12 +1672,10 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_start(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	roc_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					   sizeof(struct nrf_wifi_umac_cmd_remain_on_channel));
+	roc_cmd = nrf_wifi_osal_mem_zalloc(sizeof(struct nrf_wifi_umac_cmd_remain_on_channel));
 
 	if (!roc_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1837,8 +1684,7 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_start(void *dev_ctx,
 	roc_cmd->umac_hdr.ids.wdev_id = if_idx;
 	roc_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &roc_cmd->info,
+	nrf_wifi_osal_mem_cpy(&roc_cmd->info,
 			      roc_info,
 			      sizeof(roc_cmd->info));
 
@@ -1855,8 +1701,7 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_start(void *dev_ctx,
 
 out:
 	if (roc_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       roc_cmd);
+		nrf_wifi_osal_mem_free(roc_cmd);
 	}
 
 	return status;
@@ -1873,12 +1718,10 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_stop(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	cancel_roc_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						  sizeof(*cancel_roc_cmd));
+	cancel_roc_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cancel_roc_cmd));
 
 	if (!cancel_roc_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1894,8 +1737,7 @@ enum nrf_wifi_status nrf_wifi_fmac_p2p_roc_stop(void *dev_ctx,
 			      sizeof(*cancel_roc_cmd));
 out:
 	if (cancel_roc_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       cancel_roc_cmd);
+		nrf_wifi_osal_mem_free(cancel_roc_cmd);
 	}
 
 	return status;
@@ -1914,12 +1756,10 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_tx(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	mgmt_tx_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*mgmt_tx_cmd));
+	mgmt_tx_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*mgmt_tx_cmd));
 
 	if (!mgmt_tx_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -1928,8 +1768,7 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_tx(void *dev_ctx,
 	mgmt_tx_cmd->umac_hdr.ids.wdev_id = if_idx;
 	mgmt_tx_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &mgmt_tx_cmd->info,
+	nrf_wifi_osal_mem_cpy(&mgmt_tx_cmd->info,
 			      mgmt_tx_info,
 			      sizeof(mgmt_tx_cmd->info));
 
@@ -1950,8 +1789,7 @@ enum nrf_wifi_status nrf_wifi_fmac_mgmt_tx(void *dev_ctx,
 
 out:
 	if (mgmt_tx_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       mgmt_tx_cmd);
+		nrf_wifi_osal_mem_free(mgmt_tx_cmd);
 	}
 
 	return status;
@@ -1970,14 +1808,12 @@ enum nrf_wifi_status nrf_wifi_fmac_mac_addr(struct nrf_wifi_fmac_dev_ctx *fmac_d
 		return NRF_WIFI_STATUS_FAIL;
 	}
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      addr,
+	nrf_wifi_osal_mem_cpy(addr,
 			      def_dev_ctx->vif_ctx[vif_idx]->mac_addr,
 			      NRF_WIFI_ETH_ADDR_LEN);
 
 	if (((unsigned short)addr[5] + vif_idx) > 0xff) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: MAC Address rollover!!",
+		nrf_wifi_osal_log_err("%s: MAC Address rollover!!",
 				      __func__);
 	}
 
@@ -2008,8 +1844,7 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 	case NRF_WIFI_IFTYPE_P2P_GO:
 		break;
 	default:
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: VIF type not supported",
+		nrf_wifi_osal_log_err("%s: VIF type not supported",
 				      __func__);
 		goto err;
 	}
@@ -2019,12 +1854,10 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 		goto err;
 	}
 
-	vif_ctx = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					   sizeof(*vif_ctx));
+	vif_ctx = nrf_wifi_osal_mem_zalloc(sizeof(*vif_ctx));
 
 	if (!vif_ctx) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory for VIF ctx",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory for VIF ctx",
 				      __func__);
 		goto err;
 	}
@@ -2044,16 +1877,14 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 	vif_ctx->packet_filter = 1;
 #endif
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      vif_ctx->mac_addr,
+	nrf_wifi_osal_mem_cpy(vif_ctx->mac_addr,
 			      vif_info->mac_addr,
 			      sizeof(vif_ctx->mac_addr));
 
 	vif_idx = nrf_wifi_fmac_vif_idx_get(fmac_dev_ctx);
 
 	if (vif_idx == MAX_NUM_VIFS) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to add additional VIF",
+		nrf_wifi_osal_log_err("%s: Unable to add additional VIF",
 				      __func__);
 		goto err;
 	}
@@ -2063,12 +1894,10 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 	 * send commands for non-default interfaces
 	 */
 	if (vif_idx != 0) {
-		add_vif_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						       sizeof(*add_vif_cmd));
+		add_vif_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*add_vif_cmd));
 
 		if (!add_vif_cmd) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Unable to allocate memory for cmd",
+			nrf_wifi_osal_log_err("%s: Unable to allocate memory for cmd",
 					      __func__);
 			goto err;
 		}
@@ -2077,8 +1906,7 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 		add_vif_cmd->umac_hdr.ids.wdev_id = vif_idx;
 		add_vif_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      &add_vif_cmd->info,
+		nrf_wifi_osal_mem_cpy(&add_vif_cmd->info,
 				      vif_info,
 				      sizeof(add_vif_cmd->info));
 
@@ -2091,8 +1919,7 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 				      sizeof(*add_vif_cmd));
 
 		if (status == NRF_WIFI_STATUS_FAIL) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: NRF_WIFI_UMAC_CMD_NEW_INTERFACE failed",
+			nrf_wifi_osal_log_err("%s: NRF_WIFI_UMAC_CMD_NEW_INTERFACE failed",
 					      __func__);
 			goto err;
 		}
@@ -2107,16 +1934,14 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 	goto out;
 err:
 	if (vif_ctx) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       vif_ctx);
+		nrf_wifi_osal_mem_free(vif_ctx);
 	}
 
 	vif_idx = MAX_NUM_VIFS;
 
 out:
 	if (add_vif_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       add_vif_cmd);
+		nrf_wifi_osal_mem_free(add_vif_cmd);
 	}
 
 	return vif_idx;
@@ -2142,8 +1967,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 	case NRF_WIFI_IFTYPE_P2P_GO:
 		break;
 	default:
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: VIF type not supported",
+		nrf_wifi_osal_log_err("%s: VIF type not supported",
 				      __func__);
 		goto out;
 	}
@@ -2151,8 +1975,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 	vif_ctx = def_dev_ctx->vif_ctx[if_idx];
 
 	if (!vif_ctx) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: VIF ctx does not exist",
+		nrf_wifi_osal_log_err("%s: VIF ctx does not exist",
 				      __func__);
 		goto out;
 	}
@@ -2162,12 +1985,10 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 	 * send commands for non-default interfaces
 	 */
 	if (if_idx != 0) {
-		del_vif_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						       sizeof(*del_vif_cmd));
+		del_vif_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*del_vif_cmd));
 
 		if (!del_vif_cmd) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: Unable to allocate memory for cmd",
+			nrf_wifi_osal_log_err("%s: Unable to allocate memory for cmd",
 					      __func__);
 			goto out;
 		}
@@ -2181,8 +2002,7 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 				      sizeof(*del_vif_cmd));
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-					      "%s: NRF_WIFI_UMAC_CMD_DEL_INTERFACE failed",
+			nrf_wifi_osal_log_err("%s: NRF_WIFI_UMAC_CMD_DEL_INTERFACE failed",
 					      __func__);
 			goto out;
 		}
@@ -2194,13 +2014,11 @@ enum nrf_wifi_status nrf_wifi_fmac_del_vif(void *dev_ctx,
 
 out:
 	if (del_vif_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       del_vif_cmd);
+		nrf_wifi_osal_mem_free(del_vif_cmd);
 	}
 
 	if (vif_ctx) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       vif_ctx);
+		nrf_wifi_osal_mem_free(vif_ctx);
 	}
 
 	return status;
@@ -2224,8 +2042,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif(void *dev_ctx,
 	case NRF_WIFI_IFTYPE_P2P_GO:
 		break;
 	default:
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: VIF type not supported", __func__);
+		nrf_wifi_osal_log_err("%s: VIF type not supported", __func__);
 		goto out;
 	}
 
@@ -2234,12 +2051,10 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif(void *dev_ctx,
 		goto out;
 	}
 
-	chg_vif_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*chg_vif_cmd));
+	chg_vif_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*chg_vif_cmd));
 
 	if (!chg_vif_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2248,8 +2063,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif(void *dev_ctx,
 	chg_vif_cmd->umac_hdr.ids.wdev_id = if_idx;
 	chg_vif_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &chg_vif_cmd->info,
+	nrf_wifi_osal_mem_cpy(&chg_vif_cmd->info,
 			      vif_info,
 			      sizeof(chg_vif_cmd->info));
 
@@ -2261,8 +2075,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif(void *dev_ctx,
 			      sizeof(*chg_vif_cmd));
 out:
 	if (chg_vif_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       chg_vif_cmd);
+		nrf_wifi_osal_mem_free(chg_vif_cmd);
 	}
 
 	if (status == NRF_WIFI_STATUS_SUCCESS) {
@@ -2296,12 +2109,10 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif_state(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
-	chg_vif_state_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						     sizeof(*chg_vif_state_cmd));
+	chg_vif_state_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*chg_vif_state_cmd));
 
 	if (!chg_vif_state_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2311,8 +2122,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif_state(void *dev_ctx,
 	chg_vif_state_cmd->umac_hdr.ids.valid_fields |=
 		NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &chg_vif_state_cmd->info,
+	nrf_wifi_osal_mem_cpy(&chg_vif_state_cmd->info,
 			      vif_info,
 			      sizeof(chg_vif_state_cmd->info));
 
@@ -2325,12 +2135,11 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif_state(void *dev_ctx,
 			      sizeof(*chg_vif_state_cmd));
 
 	while (!vif_ctx->ifflags && (--count > 0))
-		nrf_wifi_osal_sleep_ms(fmac_dev_ctx->fpriv->opriv, 1);
+		nrf_wifi_osal_sleep_ms(1);
 
 	if (count == 0) {
 		status = NRF_WIFI_STATUS_FAIL;
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: RPU is unresponsive for %d sec",
+		nrf_wifi_osal_log_err("%s: RPU is unresponsive for %d sec",
 				      __func__, RPU_CMD_TIMEOUT_MS / 1000);
 		goto out;
 	}
@@ -2347,8 +2156,7 @@ enum nrf_wifi_status nrf_wifi_fmac_chg_vif_state(void *dev_ctx,
 #endif /* CONFIG_NRF700X_AP_MODE */
 out:
 	if (chg_vif_state_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       chg_vif_state_cmd);
+		nrf_wifi_osal_mem_free(chg_vif_state_cmd);
 	}
 
 	return status;
@@ -2368,20 +2176,17 @@ enum nrf_wifi_status nrf_wifi_fmac_set_vif_macaddr(void *dev_ctx,
 	}
 
 	if (!mac_addr) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid MAC address",
+		nrf_wifi_osal_log_err("%s: Invalid MAC address",
 				      __func__);
 		goto out;
 	}
 
 	fmac_dev_ctx = dev_ctx;
 
-	cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*cmd));
+	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate cmd",
+		nrf_wifi_osal_log_err("%s: Unable to allocate cmd",
 				      __func__);
 		goto out;
 	}
@@ -2390,8 +2195,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_vif_macaddr(void *dev_ctx,
 	cmd->umac_hdr.ids.wdev_id = if_idx;
 	cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      cmd->macaddr_info.mac_addr,
+	nrf_wifi_osal_mem_cpy(cmd->macaddr_info.mac_addr,
 			      mac_addr,
 			      sizeof(cmd->macaddr_info.mac_addr));
 
@@ -2400,8 +2204,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_vif_macaddr(void *dev_ctx,
 			      sizeof(*cmd));
 out:
 	if (cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       cmd);
+		nrf_wifi_osal_mem_free(cmd);
 	}
 
 	return status;
@@ -2423,18 +2226,15 @@ enum nrf_wifi_status nrf_wifi_fmac_set_wiphy_params(void *dev_ctx,
 	fmac_dev_ctx = dev_ctx;
 
 	if (!wiphy_info) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: wiphy_info: Invalid memory",
+		nrf_wifi_osal_log_err("%s: wiphy_info: Invalid memory",
 				       __func__);
 		goto out;
 	}
 
-	set_wiphy_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						 sizeof(*set_wiphy_cmd));
+	set_wiphy_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_wiphy_cmd));
 
 	if (!set_wiphy_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2498,8 +2298,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_wiphy_params(void *dev_ctx,
 			NRF_WIFI_CMD_SET_WIPHY_RETRY_SHORT_VALID;
 	}
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &set_wiphy_cmd->info,
+	nrf_wifi_osal_mem_cpy(&set_wiphy_cmd->info,
 			      wiphy_info,
 			      sizeof(set_wiphy_cmd->info));
 
@@ -2508,8 +2307,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_wiphy_params(void *dev_ctx,
 			      sizeof(*set_wiphy_cmd));
 out:
 	if (set_wiphy_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_wiphy_cmd);
+		nrf_wifi_osal_mem_free(set_wiphy_cmd);
 	}
 
 	return status;
@@ -2526,12 +2324,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_tx_power(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-				       sizeof(*cmd));
+	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2544,8 +2340,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_tx_power(void *dev_ctx,
 
 out:
 	if (cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       cmd);
+		nrf_wifi_osal_mem_free(cmd);
 	}
 
 	return status;
@@ -2561,12 +2356,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_channel(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-				       sizeof(*cmd));
+	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2580,8 +2373,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_channel(void *dev_ctx,
 			      sizeof(*cmd));
 out:
 	if (cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       cmd);
+		nrf_wifi_osal_mem_free(cmd);
 	}
 
 	return status;
@@ -2598,12 +2390,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_station(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-				       sizeof(*cmd));
+	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2612,8 +2402,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_station(void *dev_ctx,
 	cmd->umac_hdr.ids.wdev_id = if_idx;
 	cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      cmd->info.mac_addr,
+	nrf_wifi_osal_mem_cpy(cmd->info.mac_addr,
 			      mac,
 			      NRF_WIFI_ETH_ADDR_LEN);
 
@@ -2622,8 +2411,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_station(void *dev_ctx,
 			      sizeof(*cmd));
 out:
 	if (cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       cmd);
+		nrf_wifi_osal_mem_free(cmd);
 	}
 
 	return status;
@@ -2641,12 +2429,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_interface(void *dev_ctx,
 	}
 	fmac_dev_ctx = dev_ctx;
 
-	cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-				       sizeof(*cmd));
+	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2660,8 +2446,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_interface(void *dev_ctx,
 			      sizeof(*cmd));
 out:
 	if (cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       cmd);
+		nrf_wifi_osal_mem_free(cmd);
 	}
 
 	return status;
@@ -2678,12 +2463,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_qos_map(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	set_qos_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					       sizeof(*set_qos_cmd));
+	set_qos_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_qos_cmd));
 
 	if (!set_qos_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2693,8 +2476,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_qos_map(void *dev_ctx,
 	set_qos_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
 	if (qos_info->qos_map_info_len) {
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      &set_qos_cmd->info.qos_map_info,
+		nrf_wifi_osal_mem_cpy(&set_qos_cmd->info.qos_map_info,
 				      qos_info->qos_map_info,
 				      qos_info->qos_map_info_len);
 
@@ -2707,8 +2489,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_qos_map(void *dev_ctx,
 			      sizeof(*set_qos_cmd));
 out:
 	if (set_qos_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_qos_cmd);
+		nrf_wifi_osal_mem_free(set_qos_cmd);
 	}
 
 	return status;
@@ -2725,12 +2506,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	set_ps_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					      sizeof(*set_ps_cmd));
+	set_ps_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_ps_cmd));
 
 	if (!set_ps_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -2745,8 +2524,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save(void *dev_ctx,
 			      sizeof(*set_ps_cmd));
 out:
 	if (set_ps_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_ps_cmd);
+		nrf_wifi_osal_mem_free(set_ps_cmd);
 	}
 
 	return status;
@@ -2767,11 +2545,9 @@ enum nrf_wifi_status nrf_wifi_fmac_set_uapsd_queue(void *dev_ctx,
 		goto out;
 	}
 
-	set_uapsdq_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						  sizeof(*set_uapsdq_cmd));
+	set_uapsdq_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_uapsdq_cmd));
 	if (!set_uapsdq_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2787,8 +2563,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_uapsd_queue(void *dev_ctx,
 			      sizeof(*set_uapsdq_cmd));
 out:
 	if (set_uapsdq_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_uapsdq_cmd);
+		nrf_wifi_osal_mem_free(set_uapsdq_cmd);
 	}
 
 	return status;
@@ -2805,12 +2580,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save_timeout(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	set_ps_timeout_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					      sizeof(*set_ps_timeout_cmd));
+	set_ps_timeout_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_ps_timeout_cmd));
 
 	if (!set_ps_timeout_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -2825,8 +2598,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_power_save_timeout(void *dev_ctx,
 			      sizeof(*set_ps_timeout_cmd));
 out:
 	if (set_ps_timeout_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_ps_timeout_cmd);
+		nrf_wifi_osal_mem_free(set_ps_timeout_cmd);
 	}
 
 	return status;
@@ -2845,12 +2617,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_wiphy(void *dev_ctx, unsigned char if_idx
 		goto out;
 	}
 
-	get_wiphy = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					      sizeof(*get_wiphy));
+	get_wiphy = nrf_wifi_osal_mem_zalloc(sizeof(*get_wiphy));
 
 	if (!get_wiphy) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2864,8 +2634,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_wiphy(void *dev_ctx, unsigned char if_idx
 			      sizeof(*get_wiphy));
 out:
 	if (get_wiphy) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       get_wiphy);
+		nrf_wifi_osal_mem_free(get_wiphy);
 	}
 
 	return status;
@@ -2885,10 +2654,10 @@ enum nrf_wifi_status nrf_wifi_fmac_register_frame(void *dev_ctx, unsigned char i
 	}
 
 	frame_reg_cmd =
-		nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv, sizeof(*frame_reg_cmd));
+		nrf_wifi_osal_mem_zalloc(sizeof(*frame_reg_cmd));
 
 	if (!frame_reg_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv, "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -2897,13 +2666,12 @@ enum nrf_wifi_status nrf_wifi_fmac_register_frame(void *dev_ctx, unsigned char i
 	frame_reg_cmd->umac_hdr.ids.wdev_id = if_idx;
 	frame_reg_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-		&frame_reg_cmd->info, frame_info, sizeof(frame_reg_cmd->info));
+	nrf_wifi_osal_mem_cpy(&frame_reg_cmd->info, frame_info, sizeof(frame_reg_cmd->info));
 
 	status = umac_cmd_cfg(fmac_dev_ctx, frame_reg_cmd, sizeof(*frame_reg_cmd));
 out:
 	if (frame_reg_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv, frame_reg_cmd);
+		nrf_wifi_osal_mem_free(frame_reg_cmd);
 	}
 
 	return status;
@@ -2924,18 +2692,15 @@ enum nrf_wifi_status nrf_wifi_fmac_twt_setup(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	twt_setup_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						 sizeof(*twt_setup_cmd));
+	twt_setup_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*twt_setup_cmd));
 
 	if (!twt_setup_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &twt_setup_cmd->info,
+	nrf_wifi_osal_mem_cpy(&twt_setup_cmd->info,
 			      twt_params,
 			      sizeof(twt_setup_cmd->info));
 
@@ -2948,8 +2713,7 @@ enum nrf_wifi_status nrf_wifi_fmac_twt_setup(void *dev_ctx,
 			      sizeof(*twt_setup_cmd));
 out:
 	if (twt_setup_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       twt_setup_cmd);
+		nrf_wifi_osal_mem_free(twt_setup_cmd);
 	}
 
 	return status;
@@ -2971,18 +2735,15 @@ enum nrf_wifi_status nrf_wifi_fmac_twt_teardown(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	twt_teardown_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						    sizeof(*twt_teardown_cmd));
+	twt_teardown_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*twt_teardown_cmd));
 
 	if (!twt_teardown_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &twt_teardown_cmd->info,
+	nrf_wifi_osal_mem_cpy(&twt_teardown_cmd->info,
 			      twt_params,
 			      sizeof(twt_teardown_cmd->info));
 
@@ -2995,8 +2756,7 @@ enum nrf_wifi_status nrf_wifi_fmac_twt_teardown(void *dev_ctx,
 			      sizeof(*twt_teardown_cmd));
 out:
 	if (twt_teardown_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       twt_teardown_cmd);
+		nrf_wifi_osal_mem_free(twt_teardown_cmd);
 	}
 
 	return status;
@@ -3009,12 +2769,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_mcast_addr(struct nrf_wifi_fmac_dev_ctx *
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_umac_cmd_mcast_filter *set_mcast_cmd = NULL;
 
-	set_mcast_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						 sizeof(*set_mcast_cmd));
+	set_mcast_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_mcast_cmd));
 
 	if (!set_mcast_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -3023,8 +2781,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_mcast_addr(struct nrf_wifi_fmac_dev_ctx *
 	set_mcast_cmd->umac_hdr.ids.wdev_id = if_idx;
 	set_mcast_cmd->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &set_mcast_cmd->info,
+	nrf_wifi_osal_mem_cpy(&set_mcast_cmd->info,
 			      mcast_info,
 			      sizeof(*mcast_info));
 
@@ -3034,8 +2791,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_mcast_addr(struct nrf_wifi_fmac_dev_ctx *
 out:
 
 	if (set_mcast_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_mcast_cmd);
+		nrf_wifi_osal_mem_free(set_mcast_cmd);
 	}
 	return status;
 }
@@ -3050,12 +2806,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_conn_info(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-				       sizeof(*cmd));
+	cmd = nrf_wifi_osal_mem_zalloc(sizeof(*cmd));
 
 	if (!cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory",
 				      __func__);
 		goto out;
 	}
@@ -3068,8 +2822,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_conn_info(void *dev_ctx,
 			      sizeof(*cmd));
 out:
 	if (cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       cmd);
+		nrf_wifi_osal_mem_free(cmd);
 	}
 
 	return status;
@@ -3084,12 +2837,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_power_save_info(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	get_ps_info_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-						   sizeof(*get_ps_info_cmd));
+	get_ps_info_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*get_ps_info_cmd));
 
 	if (!get_ps_info_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -3103,8 +2854,7 @@ enum nrf_wifi_status nrf_wifi_fmac_get_power_save_info(void *dev_ctx,
 			      sizeof(*get_ps_info_cmd));
 out:
 	if (get_ps_info_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       get_ps_info_cmd);
+		nrf_wifi_osal_mem_free(get_ps_info_cmd);
 	}
 
 	return status;
@@ -3120,12 +2870,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_listen_interval(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	set_listen_interval_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-					      sizeof(*set_listen_interval_cmd));
+	set_listen_interval_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_listen_interval_cmd));
 
 	if (!set_listen_interval_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -3140,8 +2888,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_listen_interval(void *dev_ctx,
 			      sizeof(*set_listen_interval_cmd));
 out:
 	if (set_listen_interval_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_listen_interval_cmd);
+		nrf_wifi_osal_mem_free(set_listen_interval_cmd);
 	}
 
 	return status;
@@ -3158,12 +2905,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_ps_wakeup_mode(void *dev_ctx,
 
 	fmac_dev_ctx = dev_ctx;
 
-	set_ps_wakeup_mode_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
-							  sizeof(*set_ps_wakeup_mode_cmd));
+	set_ps_wakeup_mode_cmd = nrf_wifi_osal_mem_zalloc(sizeof(*set_ps_wakeup_mode_cmd));
 
 	if (!set_ps_wakeup_mode_cmd) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Unable to allocate memory", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory", __func__);
 		goto out;
 	}
 
@@ -3178,8 +2923,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_ps_wakeup_mode(void *dev_ctx,
 			      sizeof(*set_ps_wakeup_mode_cmd));
 out:
 	if (set_ps_wakeup_mode_cmd) {
-		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
-				       set_ps_wakeup_mode_cmd);
+		nrf_wifi_osal_mem_free(set_ps_wakeup_mode_cmd);
 	}
 
 	return status;
