@@ -75,7 +75,11 @@
 #include "hal/nrf_spu.h"
 #define PPIB_RAD  NRF_PPIB020
 #define PPIB_CCM  NRF_PPIB030
+#ifndef NRF_DPPIC030
+#define DPPIC_CCM ((NRF_DPPIC_Type *)0x53032000)
+#else
 #define DPPIC_CCM NRF_DPPIC030
+#endif
 #elif defined(NRF54L_SERIES)
 #define PPIB_RAD  NRF_PPIB10
 #define PPIB_CCM  NRF_PPIB00
