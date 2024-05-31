@@ -17,7 +17,6 @@
 
 /**
  * struct nrf_wifi_bus_spi_priv - Structure to hold context information for the Linux SPI bus.
- * @opriv: Pointer to the OSAL context.
  * @os_spi_priv:
  * @intr_callbk_fn:
  * @cfg_params:
@@ -28,7 +27,6 @@
  * updated over the duration of the Linux SPI bus operation.
  */
 struct nrf_wifi_bus_spi_priv {
-	struct nrf_wifi_osal_priv *opriv;
 	void *os_spi_priv;
 
 	enum nrf_wifi_status (*intr_callbk_fn)(void *hal_ctx);

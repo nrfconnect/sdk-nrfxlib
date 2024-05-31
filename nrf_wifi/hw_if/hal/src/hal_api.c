@@ -24,14 +24,12 @@ nrf_wifi_hal_rpu_pktram_buf_map_init(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	unsigned int pool_idx = 0;
 
-	status = pal_rpu_addr_offset_get(hal_dev_ctx->hpriv->opriv,
-					 RPU_MEM_PKT_BASE,
+	status = pal_rpu_addr_offset_get(RPU_MEM_PKT_BASE,
 					 &hal_dev_ctx->addr_rpu_pktram_base,
 					 hal_dev_ctx->curr_proc);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: pal_rpu_addr_offset_get failed",
+		nrf_wifi_osal_log_err("%s: pal_rpu_addr_offset_get failed",
 				      __func__);
 		goto out;
 	}
@@ -69,8 +67,7 @@ unsigned long nrf_wifi_hal_buf_map_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 	rx_buf_info = &hal_dev_ctx->rx_buf_info[pool_id][buf_id];
 
 	if (rx_buf_info->mapped) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Called for already mapped RX buffer",
+		nrf_wifi_osal_log_err("%s: Called for already mapped RX buffer",
 				      __func__);
 		goto out;
 	}
@@ -79,8 +76,7 @@ unsigned long nrf_wifi_hal_buf_map_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 	rx_buf_info->buf_len = buf_len;
 
 	if (buf_len != hal_dev_ctx->hpriv->cfg_params.rx_buf_pool[pool_id].buf_sz) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid buf_len (%d) for pool_id (%d)",
+		nrf_wifi_osal_log_err("%s: Invalid buf_len (%d) for pool_id (%d)",
 				      __func__,
 				      buf_len,
 				      pool_id);
@@ -105,8 +101,7 @@ unsigned long nrf_wifi_hal_buf_map_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 						     NRF_WIFI_OSAL_DMA_DIR_FROM_DEV);
 
 	if (!rx_buf_info->phy_addr) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: DMA map failed",
+		nrf_wifi_osal_log_err("%s: DMA map failed",
 				      __func__);
 		goto out;
 	}
@@ -133,8 +128,7 @@ unsigned long nrf_wifi_hal_buf_unmap_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx
 	rx_buf_info = &hal_dev_ctx->rx_buf_info[pool_id][buf_id];
 
 	if (!rx_buf_info->mapped) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Called for unmapped RX buffer",
+		nrf_wifi_osal_log_err("%s: Called for unmapped RX buffer",
 				      __func__);
 		goto out;
 	}
@@ -148,8 +142,7 @@ unsigned long nrf_wifi_hal_buf_unmap_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx
 
 	if (data_len) {
 		if (!unmapped_addr) {
-			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: DMA unmap failed",
+			nrf_wifi_osal_log_err("%s: DMA unmap failed",
 					      __func__);
 			goto out;
 		}
@@ -163,8 +156,7 @@ unsigned long nrf_wifi_hal_buf_unmap_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx
 
 	virt_addr = rx_buf_info->virt_addr;
 
-	nrf_wifi_osal_mem_set(hal_dev_ctx->hpriv->opriv,
-			      rx_buf_info,
+	nrf_wifi_osal_mem_set(rx_buf_info,
 			      0,
 			      sizeof(*rx_buf_info));
 out:
@@ -189,8 +181,7 @@ unsigned long nrf_wifi_hal_buf_map_tx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 	tx_buf_info = &hal_dev_ctx->tx_buf_info[desc_id];
 
 	if (tx_buf_info->mapped) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Called for already mapped TX buffer",
+		nrf_wifi_osal_log_err("%s: Called for already mapped TX buffer",
 				      __func__);
 		goto out;
 	}
@@ -199,8 +190,7 @@ unsigned long nrf_wifi_hal_buf_map_tx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 
 	if (buf_len > (hal_dev_ctx->hpriv->cfg_params.max_tx_frm_sz -
 		       hal_dev_ctx->hpriv->cfg_params.tx_buf_headroom_sz)) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid TX buf_len (%d) for (%d)",
+		nrf_wifi_osal_log_err("%s: Invalid TX buf_len (%d) for (%d)",
 				      __func__,
 				      buf_len,
 				      desc_id);
@@ -222,8 +212,7 @@ unsigned long nrf_wifi_hal_buf_map_tx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 
 	rpu_addr = RPU_MEM_PKT_BASE + (bounce_buf_addr - hal_dev_ctx->addr_rpu_pktram_base);
 
-	nrf_wifi_osal_log_dbg(hal_dev_ctx->hpriv->opriv,
-	       "%s: bounce_buf_addr: 0x%lx, rpu_addr: 0x%lx, buf_len: %d off:%d",
+	nrf_wifi_osal_log_dbg("%s: bounce_buf_addr: 0x%lx, rpu_addr: 0x%lx, buf_len: %d off:%d",
 	       __func__,
 	       bounce_buf_addr,
 	       rpu_addr,
@@ -243,8 +232,7 @@ unsigned long nrf_wifi_hal_buf_map_tx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 						     NRF_WIFI_OSAL_DMA_DIR_TO_DEV);
 
 	if (!tx_buf_info->phy_addr) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: DMA map failed",
+		nrf_wifi_osal_log_err("%s: DMA map failed",
 				      __func__);
 		goto out;
 	}
@@ -269,8 +257,7 @@ unsigned long nrf_wifi_hal_buf_unmap_tx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx
 	tx_buf_info = &hal_dev_ctx->tx_buf_info[desc_id];
 
 	if (!tx_buf_info->mapped) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Called for unmapped TX buffer",
+		nrf_wifi_osal_log_err("%s: Called for unmapped TX buffer",
 				      __func__);
 		goto out;
 	}
@@ -281,16 +268,14 @@ unsigned long nrf_wifi_hal_buf_unmap_tx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx
 					       NRF_WIFI_OSAL_DMA_DIR_TO_DEV);
 
 	if (!unmapped_addr) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: DMA unmap failed",
+		nrf_wifi_osal_log_err("%s: DMA unmap failed",
 				      __func__);
 		goto out;
 	}
 
 	virt_addr = tx_buf_info->virt_addr;
 
-	nrf_wifi_osal_mem_set(hal_dev_ctx->hpriv->opriv,
-			      tx_buf_info,
+	nrf_wifi_osal_mem_set(tx_buf_info,
 			      0,
 			      sizeof(*tx_buf_info));
 out:
@@ -312,8 +297,7 @@ enum nrf_wifi_status hal_rpu_ps_wake(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
 	if (!hal_dev_ctx) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid parameters",
+		nrf_wifi_osal_log_err("%s: Invalid parameters",
 				      __func__);
 		return status;
 	}
@@ -333,15 +317,14 @@ enum nrf_wifi_status hal_rpu_ps_wake(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 
 	nrf_wifi_bal_rpu_ps_wake(hal_dev_ctx->bal_dev_ctx);
 
-	start_time_us = nrf_wifi_osal_time_get_curr_us(hal_dev_ctx->hpriv->opriv);
+	start_time_us = nrf_wifi_osal_time_get_curr_us();
 
 	rpu_ps_state_mask = ((1 << RPU_REG_BIT_PS_STATE) |
 			     (1 << RPU_REG_BIT_READY_STATE));
 
 	/* Add a delay to avoid a race condition in the RPU */
 	/* TODO: Reduce to 200 us after sleep has been stabilized */
-	nrf_wifi_osal_delay_us(hal_dev_ctx->hpriv->opriv,
-			       1000);
+	nrf_wifi_osal_delay_us(1000);
 
 	do {
 		/* Poll the RPU PS state */
@@ -352,36 +335,31 @@ enum nrf_wifi_status hal_rpu_ps_wake(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 			break;
 		}
 
-		idle_time_start_us = nrf_wifi_osal_time_get_curr_us(hal_dev_ctx->hpriv->opriv);
+		idle_time_start_us = nrf_wifi_osal_time_get_curr_us();
 
 		do {
-			idle_time_us = nrf_wifi_osal_time_elapsed_us(hal_dev_ctx->hpriv->opriv,
-								     idle_time_start_us);
+			idle_time_us = nrf_wifi_osal_time_elapsed_us(idle_time_start_us);
 		} while ((idle_time_us / 1000) < RPU_PS_WAKE_INTERVAL_MS);
 
-		elapsed_time_usec = nrf_wifi_osal_time_elapsed_us(hal_dev_ctx->hpriv->opriv,
-								  start_time_us);
+		elapsed_time_usec = nrf_wifi_osal_time_elapsed_us(start_time_us);
 		elapsed_time_sec = (elapsed_time_usec / 1000000);
 	} while (elapsed_time_sec < RPU_PS_WAKE_TIMEOUT_S);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: RPU is not ready for more than %d sec,"
+		nrf_wifi_osal_log_err("%s: RPU is not ready for more than %d sec,"
 				      "reg_val = 0x%X rpu_ps_state_mask = 0x%X",
 				      __func__,
 				      RPU_PS_WAKE_TIMEOUT_S,
 				      reg_val,
 				      rpu_ps_state_mask);
-		nrf_wifi_osal_tasklet_schedule(hal_dev_ctx->hpriv->opriv,
-					       hal_dev_ctx->recovery_tasklet);
+		nrf_wifi_osal_tasklet_schedule(hal_dev_ctx->recovery_tasklet);
 		goto out;
 	}
 	hal_dev_ctx->rpu_ps_state = RPU_PS_STATE_AWAKE;
 
 out:
 	if (!hal_dev_ctx->irq_ctx) {
-		nrf_wifi_osal_timer_schedule(hal_dev_ctx->hpriv->opriv,
-					     hal_dev_ctx->rpu_ps_timer,
+		nrf_wifi_osal_timer_schedule(hal_dev_ctx->rpu_ps_timer,
 					     CONFIG_NRF700X_RPU_PS_IDLE_TIMEOUT_MS);
 	}
 	return status;
@@ -395,16 +373,14 @@ static void hal_rpu_ps_sleep(unsigned long data)
 
 	hal_dev_ctx = (struct nrf_wifi_hal_dev_ctx *)data;
 
-	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-					hal_dev_ctx->rpu_ps_lock,
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->rpu_ps_lock,
 					&flags);
 
 	nrf_wifi_bal_rpu_ps_sleep(hal_dev_ctx->bal_dev_ctx);
 
 	hal_dev_ctx->rpu_ps_state = RPU_PS_STATE_ASLEEP;
 
-	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->rpu_ps_lock,
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->rpu_ps_lock,
 				       &flags);
 }
 
@@ -413,31 +389,26 @@ static enum nrf_wifi_status hal_rpu_ps_init(struct nrf_wifi_hal_dev_ctx *hal_dev
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
-	hal_dev_ctx->rpu_ps_lock = nrf_wifi_osal_spinlock_alloc(hal_dev_ctx->hpriv->opriv);
+	hal_dev_ctx->rpu_ps_lock = nrf_wifi_osal_spinlock_alloc();
 
 	if (!hal_dev_ctx->rpu_ps_lock) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Unable to allocate lock",
+		nrf_wifi_osal_log_err("%s: Unable to allocate lock",
 				      __func__);
 		goto out;
 	}
 
-	nrf_wifi_osal_spinlock_init(hal_dev_ctx->hpriv->opriv,
-				    hal_dev_ctx->rpu_ps_lock);
+	nrf_wifi_osal_spinlock_init(hal_dev_ctx->rpu_ps_lock);
 
-	hal_dev_ctx->rpu_ps_timer = nrf_wifi_osal_timer_alloc(hal_dev_ctx->hpriv->opriv);
+	hal_dev_ctx->rpu_ps_timer = nrf_wifi_osal_timer_alloc();
 
 	if (!hal_dev_ctx->rpu_ps_timer) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Unable to allocate timer",
+		nrf_wifi_osal_log_err("%s: Unable to allocate timer",
 				      __func__);
-		nrf_wifi_osal_spinlock_free(hal_dev_ctx->hpriv->opriv,
-					    hal_dev_ctx->rpu_ps_lock);
+		nrf_wifi_osal_spinlock_free(hal_dev_ctx->rpu_ps_lock);
 		goto out;
 	}
 
-	nrf_wifi_osal_timer_init(hal_dev_ctx->hpriv->opriv,
-				 hal_dev_ctx->rpu_ps_timer,
+	nrf_wifi_osal_timer_init(hal_dev_ctx->rpu_ps_timer,
 				 hal_rpu_ps_sleep,
 				 (unsigned long)hal_dev_ctx);
 
@@ -452,14 +423,11 @@ out:
 
 static void hal_rpu_ps_deinit(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 {
-	nrf_wifi_osal_timer_kill(hal_dev_ctx->hpriv->opriv,
-				 hal_dev_ctx->rpu_ps_timer);
+	nrf_wifi_osal_timer_kill(hal_dev_ctx->rpu_ps_timer);
 
-	nrf_wifi_osal_timer_free(hal_dev_ctx->hpriv->opriv,
-				 hal_dev_ctx->rpu_ps_timer);
+	nrf_wifi_osal_timer_free(hal_dev_ctx->rpu_ps_timer);
 
-	nrf_wifi_osal_spinlock_free(hal_dev_ctx->hpriv->opriv,
-				    hal_dev_ctx->rpu_ps_lock);
+	nrf_wifi_osal_spinlock_free(hal_dev_ctx->rpu_ps_lock);
 }
 
 
@@ -476,8 +444,7 @@ enum nrf_wifi_status nrf_wifi_hal_get_rpu_ps_state(
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
 	if (!hal_dev_ctx) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid parameters",
+		nrf_wifi_osal_log_err("%s: Invalid parameters",
 				      __func__);
 		goto out;
 	}
@@ -502,8 +469,7 @@ static bool hal_rpu_hpq_is_empty(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 				  hpq->dequeue_addr);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Read from dequeue address failed, val (0x%X)",
+		nrf_wifi_osal_log_err("%s: Read from dequeue address failed, val (0x%X)",
 				      __func__,
 				      val);
 		return true;
@@ -526,8 +492,7 @@ static enum nrf_wifi_status hal_rpu_ready(struct nrf_wifi_hal_dev_ctx *hal_dev_c
 	if (msg_type == NRF_WIFI_HAL_MSG_TYPE_CMD_CTRL) {
 		avl_buf_q = &hal_dev_ctx->rpu_info.hpqm_info.cmd_avl_queue;
 	} else {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid msg type %d",
+		nrf_wifi_osal_log_err("%s: Invalid msg type %d",
 				      __func__,
 				      msg_type);
 
@@ -552,13 +517,11 @@ static enum nrf_wifi_status hal_rpu_ready_wait(struct nrf_wifi_hal_dev_ctx *hal_
 	unsigned long start_time_us = 0;
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
-	start_time_us = nrf_wifi_osal_time_get_curr_us(hal_dev_ctx->hpriv->opriv);
+	start_time_us = nrf_wifi_osal_time_get_curr_us();
 
 	while (hal_rpu_ready(hal_dev_ctx, msg_type) != NRF_WIFI_STATUS_SUCCESS) {
-		if (nrf_wifi_osal_time_elapsed_us(hal_dev_ctx->hpriv->opriv,
-						  start_time_us) >= MAX_HAL_RPU_READY_WAIT) {
-			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Timed out waiting (msg_type = %d)",
+		if (nrf_wifi_osal_time_elapsed_us(start_time_us) >= MAX_HAL_RPU_READY_WAIT) {
+			nrf_wifi_osal_log_err("%s: Timed out waiting (msg_type = %d)",
 					      __func__,
 					      msg_type);
 			goto out;
@@ -580,8 +543,7 @@ static enum nrf_wifi_status hal_rpu_msg_trigger(struct nrf_wifi_hal_dev_ctx *hal
 				   (hal_dev_ctx->num_cmds | 0x7fff0000));
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Writing to MCU cmd register failed",
+		nrf_wifi_osal_log_err("%s: Writing to MCU cmd register failed",
 				      __func__);
 		goto out;
 	}
@@ -601,8 +563,7 @@ static enum nrf_wifi_status hal_rpu_msg_post(struct nrf_wifi_hal_dev_ctx *hal_de
 	struct host_rpu_hpq *busy_queue = NULL;
 
 	if (queue_id >= MAX_NUM_OF_RX_QUEUES) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid queue_id (%d)",
+		nrf_wifi_osal_log_err("%s: Invalid queue_id (%d)",
 				      __func__,
 				      queue_id);
 		goto out;
@@ -614,8 +575,7 @@ static enum nrf_wifi_status hal_rpu_msg_post(struct nrf_wifi_hal_dev_ctx *hal_de
 	} else if (msg_type == NRF_WIFI_HAL_MSG_TYPE_CMD_DATA_RX) {
 		busy_queue = &hal_dev_ctx->rpu_info.hpqm_info.rx_buf_busy_queue[queue_id];
 	} else {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid msg_type (%d)",
+		nrf_wifi_osal_log_err("%s: Invalid msg_type (%d)",
 				      __func__,
 				      msg_type);
 		goto out;
@@ -629,8 +589,7 @@ static enum nrf_wifi_status hal_rpu_msg_post(struct nrf_wifi_hal_dev_ctx *hal_de
 				     msg_addr);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Queueing of message to RPU failed",
+		nrf_wifi_osal_log_err("%s: Queueing of message to RPU failed",
 				      __func__);
 		goto out;
 	}
@@ -640,8 +599,7 @@ static enum nrf_wifi_status hal_rpu_msg_post(struct nrf_wifi_hal_dev_ctx *hal_de
 		status = hal_rpu_msg_trigger(hal_dev_ctx);
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Posting command to RPU failed",
+			nrf_wifi_osal_log_err("%s: Posting command to RPU failed",
 					      __func__);
 			goto out;
 		}
@@ -661,8 +619,7 @@ static enum nrf_wifi_status hal_rpu_msg_get_addr(struct nrf_wifi_hal_dev_ctx *ha
 	if (msg_type == NRF_WIFI_HAL_MSG_TYPE_CMD_CTRL) {
 		avl_queue = &hal_dev_ctx->rpu_info.hpqm_info.cmd_avl_queue;
 	} else {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid msg_type (%d)",
+		nrf_wifi_osal_log_err("%s: Invalid msg_type (%d)",
 				      __func__,
 				      msg_type);
 		goto out;
@@ -673,8 +630,7 @@ static enum nrf_wifi_status hal_rpu_msg_get_addr(struct nrf_wifi_hal_dev_ctx *ha
 				     msg_addr);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Dequeue of address failed msg_addr 0x%X",
+		nrf_wifi_osal_log_err("%s: Dequeue of address failed msg_addr 0x%X",
 				      __func__,
 				      *msg_addr);
 		*msg_addr = 0;
@@ -701,8 +657,7 @@ static enum nrf_wifi_status hal_rpu_msg_write(struct nrf_wifi_hal_dev_ctx *hal_d
 				      &msg_addr);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Getting address (0x%X) to post message failed",
+		nrf_wifi_osal_log_err("%s: Getting address (0x%X) to post message failed",
 				      __func__,
 				      msg_addr);
 		goto out;
@@ -715,8 +670,7 @@ static enum nrf_wifi_status hal_rpu_msg_write(struct nrf_wifi_hal_dev_ctx *hal_d
 				   len);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Copying information to RPU failed",
+		nrf_wifi_osal_log_err("%s: Copying information to RPU failed",
 				      __func__);
 		goto out;
 	}
@@ -728,8 +682,7 @@ static enum nrf_wifi_status hal_rpu_msg_write(struct nrf_wifi_hal_dev_ctx *hal_d
 				  msg_addr);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Posting command to RPU failed",
+		nrf_wifi_osal_log_err("%s: Posting command to RPU failed",
 				      __func__);
 		goto out;
 	}
@@ -744,17 +697,14 @@ static enum nrf_wifi_status hal_rpu_cmd_process_queue(struct nrf_wifi_hal_dev_ct
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_hal_msg *cmd = NULL;
 
-	while ((cmd = nrf_wifi_utils_q_dequeue(hal_dev_ctx->hpriv->opriv,
-					       hal_dev_ctx->cmd_q))) {
+	while ((cmd = nrf_wifi_utils_q_dequeue(hal_dev_ctx->cmd_q))) {
 		status = hal_rpu_ready_wait(hal_dev_ctx,
 					    NRF_WIFI_HAL_MSG_TYPE_CMD_CTRL);
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Timeout waiting to get free cmd buff from RPU",
+			nrf_wifi_osal_log_err("%s: Timeout waiting to get free cmd buff from RPU",
 					      __func__);
-			nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
-					       cmd);
+			nrf_wifi_osal_mem_free(cmd);
 			cmd = NULL;
 			continue;
 		}
@@ -765,18 +715,15 @@ static enum nrf_wifi_status hal_rpu_cmd_process_queue(struct nrf_wifi_hal_dev_ct
 					   cmd->len);
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Writing command to RPU failed",
+			nrf_wifi_osal_log_err("%s: Writing command to RPU failed",
 					      __func__);
-			nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
-					       cmd);
+			nrf_wifi_osal_mem_free(cmd);
 			cmd = NULL;
 			continue;
 		}
 
 		/* Free the command data and command */
-		nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
-				       cmd);
+		nrf_wifi_osal_mem_free(cmd);
 		cmd = NULL;
 	}
 
@@ -805,31 +752,26 @@ static enum nrf_wifi_status hal_rpu_cmd_queue(struct nrf_wifi_hal_dev_ctx *hal_d
 				size = len;
 			}
 
-			hal_msg = nrf_wifi_osal_mem_zalloc(hal_dev_ctx->hpriv->opriv,
-							   sizeof(*hal_msg) + size);
+			hal_msg = nrf_wifi_osal_mem_zalloc(sizeof(*hal_msg) + size);
 
 			if (!hal_msg) {
-				nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-						      "%s: Unable to alloc buff for frag HAL cmd",
+				nrf_wifi_osal_log_err("%s: Unable to alloc buff for frag HAL cmd",
 						      __func__);
 				status = NRF_WIFI_STATUS_FAIL;
 				goto out;
 			}
 
-			nrf_wifi_osal_mem_cpy(hal_dev_ctx->hpriv->opriv,
-					      hal_msg->data,
+			nrf_wifi_osal_mem_cpy(hal_msg->data,
 					      data,
 					      size);
 
 			hal_msg->len = size;
 
-			status = nrf_wifi_utils_q_enqueue(hal_dev_ctx->hpriv->opriv,
-							  hal_dev_ctx->cmd_q,
+			status = nrf_wifi_utils_q_enqueue(hal_dev_ctx->cmd_q,
 							  hal_msg);
 
 			if (status != NRF_WIFI_STATUS_SUCCESS) {
-				nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-						      "%s: Unable to queue frag HAL cmd",
+				nrf_wifi_osal_log_err("%s: Unable to queue frag HAL cmd",
 						      __func__);
 				goto out;
 			}
@@ -838,39 +780,33 @@ static enum nrf_wifi_status hal_rpu_cmd_queue(struct nrf_wifi_hal_dev_ctx *hal_d
 			data += size;
 		}
 	} else {
-		hal_msg = nrf_wifi_osal_mem_zalloc(hal_dev_ctx->hpriv->opriv,
-						   sizeof(*hal_msg) + len);
+		hal_msg = nrf_wifi_osal_mem_zalloc(sizeof(*hal_msg) + len);
 
 		if (!hal_msg) {
-			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Unable to allocate buffer for HAL command",
+			nrf_wifi_osal_log_err("%s: Unable to allocate buffer for HAL command",
 					      __func__);
 			status = NRF_WIFI_STATUS_FAIL;
 			goto out;
 		}
 
-		nrf_wifi_osal_mem_cpy(hal_dev_ctx->hpriv->opriv,
-				      hal_msg->data,
+		nrf_wifi_osal_mem_cpy(hal_msg->data,
 				      cmd,
 				      len);
 
 		hal_msg->len = len;
 
-		status = nrf_wifi_utils_q_enqueue(hal_dev_ctx->hpriv->opriv,
-						  hal_dev_ctx->cmd_q,
+		status = nrf_wifi_utils_q_enqueue(hal_dev_ctx->cmd_q,
 						  hal_msg);
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Unable to queue fragmented command",
+			nrf_wifi_osal_log_err("%s: Unable to queue fragmented command",
 					      __func__);
 			goto out;
 		}
 	}
 
 	/* Free the original command data */
-	nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
-			       cmd);
+	nrf_wifi_osal_mem_free(cmd);
 
 out:
 	return status;
@@ -883,16 +819,14 @@ enum nrf_wifi_status nrf_wifi_hal_ctrl_cmd_send(struct nrf_wifi_hal_dev_ctx *hal
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
-	nrf_wifi_osal_spinlock_take(hal_dev_ctx->hpriv->opriv,
-				    hal_dev_ctx->lock_hal);
+	nrf_wifi_osal_spinlock_take(hal_dev_ctx->lock_hal);
 
 	status = hal_rpu_cmd_queue(hal_dev_ctx,
 				   cmd,
 				   cmd_size);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Queueing of command failed",
+		nrf_wifi_osal_log_err("%s: Queueing of command failed",
 				      __func__);
 		goto out;
 	}
@@ -900,8 +834,7 @@ enum nrf_wifi_status nrf_wifi_hal_ctrl_cmd_send(struct nrf_wifi_hal_dev_ctx *hal
 	status = hal_rpu_cmd_process_queue(hal_dev_ctx);
 
 out:
-	nrf_wifi_osal_spinlock_rel(hal_dev_ctx->hpriv->opriv,
-				   hal_dev_ctx->lock_hal);
+	nrf_wifi_osal_spinlock_rel(hal_dev_ctx->lock_hal);
 
 	return status;
 }
@@ -921,8 +854,7 @@ enum nrf_wifi_status nrf_wifi_hal_data_cmd_send(struct nrf_wifi_hal_dev_ctx *hal
 	unsigned int host_addr = 0;
 
 
-	nrf_wifi_osal_spinlock_take(hal_dev_ctx->hpriv->opriv,
-				    hal_dev_ctx->lock_hal);
+	nrf_wifi_osal_spinlock_take(hal_dev_ctx->lock_hal);
 
 	if (cmd_type == NRF_WIFI_HAL_MSG_TYPE_CMD_DATA_RX) {
 		addr_base = hal_dev_ctx->rpu_info.rx_cmd_base;
@@ -931,8 +863,7 @@ enum nrf_wifi_status nrf_wifi_hal_data_cmd_send(struct nrf_wifi_hal_dev_ctx *hal
 		addr_base = hal_dev_ctx->rpu_info.tx_cmd_base;
 		max_cmd_size = RPU_DATA_CMD_SIZE_MAX_TX;
 	} else {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid data command type %d",
+		nrf_wifi_osal_log_err("%s: Invalid data command type %d",
 				      __func__,
 				      cmd_type);
 	}
@@ -953,8 +884,7 @@ enum nrf_wifi_status nrf_wifi_hal_data_cmd_send(struct nrf_wifi_hal_dev_ctx *hal
 				   cmd_size);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Copying data cmd(%d) to RPU failed",
+		nrf_wifi_osal_log_err("%s: Copying data cmd(%d) to RPU failed",
 				      __func__,
 				      cmd_type);
 		goto out;
@@ -967,14 +897,12 @@ enum nrf_wifi_status nrf_wifi_hal_data_cmd_send(struct nrf_wifi_hal_dev_ctx *hal
 				  addr);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Posting RX buf info to RPU failed",
+		nrf_wifi_osal_log_err("%s: Posting RX buf info to RPU failed",
 				      __func__);
 		goto out;
 	}
 out:
-	nrf_wifi_osal_spinlock_rel(hal_dev_ctx->hpriv->opriv,
-				   hal_dev_ctx->lock_hal);
+	nrf_wifi_osal_spinlock_rel(hal_dev_ctx->lock_hal);
 
 
 	return status;
@@ -989,8 +917,7 @@ static void event_tasklet_fn(unsigned long data)
 
 	hal_dev_ctx = (struct nrf_wifi_hal_dev_ctx *)data;
 
-	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-					hal_dev_ctx->lock_rx,
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->lock_rx,
 					&flags);
 
 	if (hal_dev_ctx->hal_status != NRF_WIFI_HAL_STATUS_ENABLED) {
@@ -1002,14 +929,12 @@ static void event_tasklet_fn(unsigned long data)
 	status = hal_rpu_eventq_process(hal_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Event queue processing failed",
+		nrf_wifi_osal_log_err("%s: Event queue processing failed",
 				      __func__);
 	}
 
 out:
-	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->lock_rx,
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->lock_rx,
 				       &flags);
 }
 
@@ -1022,8 +947,7 @@ enum nrf_wifi_status hal_rpu_eventq_process(struct nrf_wifi_hal_dev_ctx *hal_dev
 	unsigned int event_len = 0;
 
 	while (1) {
-		event = nrf_wifi_utils_q_dequeue(hal_dev_ctx->hpriv->opriv,
-						 hal_dev_ctx->event_q);
+		event = nrf_wifi_utils_q_dequeue(hal_dev_ctx->event_q);
 		if (!event) {
 			goto out;
 		}
@@ -1037,14 +961,12 @@ enum nrf_wifi_status hal_rpu_eventq_process(struct nrf_wifi_hal_dev_ctx *hal_dev
 							    event_len);
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Interrupt callback failed",
+			nrf_wifi_osal_log_err("%s: Interrupt callback failed",
 					      __func__);
 		}
 
 		/* Free up the local buffer */
-		nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
-				       event);
+		nrf_wifi_osal_mem_free(event);
 		event = NULL;
 	}
 
@@ -1058,15 +980,12 @@ void hal_rpu_eventq_drain(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 	unsigned long flags = 0;
 
 	while (1) {
-		nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-						hal_dev_ctx->lock_rx,
+		nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->lock_rx,
 						&flags);
 
-		event = nrf_wifi_utils_q_dequeue(hal_dev_ctx->hpriv->opriv,
-						 hal_dev_ctx->event_q);
+		event = nrf_wifi_utils_q_dequeue(hal_dev_ctx->event_q);
 
-		nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-					       hal_dev_ctx->lock_rx,
+		nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->lock_rx,
 					       &flags);
 
 		if (!event) {
@@ -1074,8 +993,7 @@ void hal_rpu_eventq_drain(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 		}
 
 		/* Free up the local buffer */
-		nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
-				       event);
+		nrf_wifi_osal_mem_free(event);
 		event = NULL;
 	}
 
@@ -1097,16 +1015,14 @@ static enum nrf_wifi_status hal_rpu_recovery(struct nrf_wifi_hal_dev_ctx *hal_de
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
 	if (!hal_dev_ctx->hpriv->rpu_recovery_callbk_fn) {
-		nrf_wifi_osal_log_dbg(hal_dev_ctx->hpriv->opriv,
-				      "%s: RPU recovery callback not registered",
+		nrf_wifi_osal_log_dbg("%s: RPU recovery callback not registered",
 				      __func__);
 		goto out;
 	}
 
 	status = hal_dev_ctx->hpriv->rpu_recovery_callbk_fn(hal_dev_ctx->mac_dev_ctx, NULL, 0);
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: RPU recovery failed",
+		nrf_wifi_osal_log_err("%s: RPU recovery failed",
 				      __func__);
 		goto out;
 	}
@@ -1122,18 +1038,15 @@ static void recovery_tasklet_fn(unsigned long data)
 
 	hal_dev_ctx = (struct nrf_wifi_hal_dev_ctx *)data;
 	if (!hal_dev_ctx) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid hal_dev_ctx",
+		nrf_wifi_osal_log_err("%s: Invalid hal_dev_ctx",
 				      __func__);
 		return;
 	}
 
-	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-					hal_dev_ctx->lock_recovery,
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->lock_recovery,
 					&flags);
 	hal_rpu_recovery(hal_dev_ctx);
-	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->lock_recovery,
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->lock_recovery,
 				       &flags);
 }
 
@@ -1148,12 +1061,10 @@ struct nrf_wifi_hal_dev_ctx *nrf_wifi_hal_dev_add(struct nrf_wifi_hal_priv *hpri
 	unsigned int size = 0;
 #endif /* !CONFIG_NRF700X_RADIO_TEST */
 
-	hal_dev_ctx = nrf_wifi_osal_mem_zalloc(hpriv->opriv,
-					       sizeof(*hal_dev_ctx));
+	hal_dev_ctx = nrf_wifi_osal_mem_zalloc(sizeof(*hal_dev_ctx));
 
 	if (!hal_dev_ctx) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: Unable to allocate hal_dev_ctx",
+		nrf_wifi_osal_log_err("%s: Unable to allocate hal_dev_ctx",
 				      __func__);
 		goto err;
 	}
@@ -1164,92 +1075,77 @@ struct nrf_wifi_hal_dev_ctx *nrf_wifi_hal_dev_add(struct nrf_wifi_hal_priv *hpri
 
 	hal_dev_ctx->num_cmds = RPU_CMD_START_MAGIC;
 
-	hal_dev_ctx->cmd_q = nrf_wifi_utils_q_alloc(hpriv->opriv);
+	hal_dev_ctx->cmd_q = nrf_wifi_utils_q_alloc();
 
 	if (!hal_dev_ctx->cmd_q) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: Unable to allocate command queue",
+		nrf_wifi_osal_log_err("%s: Unable to allocate command queue",
 				      __func__);
 		goto hal_dev_free;
 	}
 
-	hal_dev_ctx->event_q = nrf_wifi_utils_q_alloc(hpriv->opriv);
+	hal_dev_ctx->event_q = nrf_wifi_utils_q_alloc();
 
 	if (!hal_dev_ctx->event_q) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: Unable to allocate event queue",
+		nrf_wifi_osal_log_err("%s: Unable to allocate event queue",
 				      __func__);
 		goto cmd_q_free;
 	}
 
-	hal_dev_ctx->lock_hal = nrf_wifi_osal_spinlock_alloc(hpriv->opriv);
+	hal_dev_ctx->lock_hal = nrf_wifi_osal_spinlock_alloc();
 
 	if (!hal_dev_ctx->lock_hal) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: Unable to allocate HAL lock", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate HAL lock", __func__);
 		hal_dev_ctx = NULL;
 		goto event_q_free;
 	}
 
-	nrf_wifi_osal_spinlock_init(hpriv->opriv,
-				    hal_dev_ctx->lock_hal);
+	nrf_wifi_osal_spinlock_init(hal_dev_ctx->lock_hal);
 
-	hal_dev_ctx->lock_rx = nrf_wifi_osal_spinlock_alloc(hpriv->opriv);
+	hal_dev_ctx->lock_rx = nrf_wifi_osal_spinlock_alloc();
 
 	if (!hal_dev_ctx->lock_rx) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: Unable to allocate HAL lock",
+		nrf_wifi_osal_log_err("%s: Unable to allocate HAL lock",
 				      __func__);
 		goto lock_hal_free;
 	}
 
-	nrf_wifi_osal_spinlock_init(hpriv->opriv,
-				    hal_dev_ctx->lock_rx);
+	nrf_wifi_osal_spinlock_init(hal_dev_ctx->lock_rx);
 
-	hal_dev_ctx->event_tasklet = nrf_wifi_osal_tasklet_alloc(hpriv->opriv,
-		NRF_WIFI_TASKLET_TYPE_BH);
+	hal_dev_ctx->event_tasklet = nrf_wifi_osal_tasklet_alloc(NRF_WIFI_TASKLET_TYPE_BH);
 
 	if (!hal_dev_ctx->event_tasklet) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: Unable to allocate event_tasklet",
+		nrf_wifi_osal_log_err("%s: Unable to allocate event_tasklet",
 				      __func__);
 		goto lock_rx_free;
 	}
 
-	nrf_wifi_osal_tasklet_init(hpriv->opriv,
-				   hal_dev_ctx->event_tasklet,
+	nrf_wifi_osal_tasklet_init(hal_dev_ctx->event_tasklet,
 				   event_tasklet_fn,
 				   (unsigned long)hal_dev_ctx);
 
-	hal_dev_ctx->recovery_tasklet = nrf_wifi_osal_tasklet_alloc(hpriv->opriv,
-		NRF_WIFI_TASKLET_TYPE_BH);
+	hal_dev_ctx->recovery_tasklet = nrf_wifi_osal_tasklet_alloc(NRF_WIFI_TASKLET_TYPE_BH);
 	if (!hal_dev_ctx->recovery_tasklet) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: Unable to allocate recovery_tasklet",
+		nrf_wifi_osal_log_err("%s: Unable to allocate recovery_tasklet",
 				      __func__);
 		goto event_tasklet_free;
 	}
-	nrf_wifi_osal_tasklet_init(hpriv->opriv,
-				   hal_dev_ctx->recovery_tasklet,
+	nrf_wifi_osal_tasklet_init(hal_dev_ctx->recovery_tasklet,
 				   recovery_tasklet_fn,
 				   (unsigned long)hal_dev_ctx);
 
-	hal_dev_ctx->lock_recovery = nrf_wifi_osal_spinlock_alloc(hpriv->opriv);
+	hal_dev_ctx->lock_recovery = nrf_wifi_osal_spinlock_alloc();
 	if (!hal_dev_ctx->lock_recovery) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: Unable to allocate recovery lock",
+		nrf_wifi_osal_log_err("%s: Unable to allocate recovery lock",
 				      __func__);
 		goto recovery_tasklet_free;
 	}
 
-	nrf_wifi_osal_spinlock_init(hpriv->opriv,
-				    hal_dev_ctx->lock_recovery);
+	nrf_wifi_osal_spinlock_init(hal_dev_ctx->lock_recovery);
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
 	status = hal_rpu_ps_init(hal_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: hal_rpu_ps_init failed",
+		nrf_wifi_osal_log_err("%s: hal_rpu_ps_init failed",
 				      __func__);
 		goto lock_recovery_free;
 	}
@@ -1259,8 +1155,7 @@ struct nrf_wifi_hal_dev_ctx *nrf_wifi_hal_dev_add(struct nrf_wifi_hal_priv *hpri
 							hal_dev_ctx);
 
 	if (!hal_dev_ctx->bal_dev_ctx) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: nrf_wifi_bal_dev_add failed",
+		nrf_wifi_osal_log_err("%s: nrf_wifi_bal_dev_add failed",
 				      __func__);
 		goto lock_recovery_free;
 	}
@@ -1268,8 +1163,7 @@ struct nrf_wifi_hal_dev_ctx *nrf_wifi_hal_dev_add(struct nrf_wifi_hal_priv *hpri
 	status = hal_rpu_irq_enable(hal_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: hal_rpu_irq_enable failed",
+		nrf_wifi_osal_log_err("%s: hal_rpu_irq_enable failed",
 				      __func__);
 		goto bal_dev_free;
 	}
@@ -1280,12 +1174,10 @@ struct nrf_wifi_hal_dev_ctx *nrf_wifi_hal_dev_add(struct nrf_wifi_hal_priv *hpri
 
 		size = (num_rx_bufs * sizeof(struct nrf_wifi_hal_buf_map_info));
 
-		hal_dev_ctx->rx_buf_info[i] = nrf_wifi_osal_mem_zalloc(hpriv->opriv,
-								       size);
+		hal_dev_ctx->rx_buf_info[i] = nrf_wifi_osal_mem_zalloc(size);
 
 		if (!hal_dev_ctx->rx_buf_info[i]) {
-			nrf_wifi_osal_log_err(hpriv->opriv,
-					      "%s: No space for RX buf info[%d]",
+			nrf_wifi_osal_log_err("%s: No space for RX buf info[%d]",
 					      __func__,
 					      i);
 			goto bal_dev_free;
@@ -1295,12 +1187,10 @@ struct nrf_wifi_hal_dev_ctx *nrf_wifi_hal_dev_add(struct nrf_wifi_hal_priv *hpri
 	size = (hal_dev_ctx->hpriv->cfg_params.max_tx_frms *
 		sizeof(struct nrf_wifi_hal_buf_map_info));
 
-	hal_dev_ctx->tx_buf_info = nrf_wifi_osal_mem_zalloc(hpriv->opriv,
-							    size);
+	hal_dev_ctx->tx_buf_info = nrf_wifi_osal_mem_zalloc(size);
 
 	if (!hal_dev_ctx->tx_buf_info) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: No space for TX buf info",
+		nrf_wifi_osal_log_err("%s: No space for TX buf info",
 				      __func__);
 		goto rx_buf_free;
 	}
@@ -1309,8 +1199,7 @@ struct nrf_wifi_hal_dev_ctx *nrf_wifi_hal_dev_add(struct nrf_wifi_hal_priv *hpri
 	status = nrf_wifi_hal_rpu_pktram_buf_map_init(hal_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hpriv->opriv,
-				      "%s: Buffer map init failed",
+		nrf_wifi_osal_log_err("%s: Buffer map init failed",
 				      __func__);
 #ifdef CONFIG_NRF700X_DATA_TX
 		goto tx_buf_free;
@@ -1322,14 +1211,12 @@ struct nrf_wifi_hal_dev_ctx *nrf_wifi_hal_dev_add(struct nrf_wifi_hal_priv *hpri
 #ifndef CONFIG_NRF700X_RADIO_TEST
 #ifdef CONFIG_NRF700X_DATA_TX
 tx_buf_free:
-	nrf_wifi_osal_mem_free(hpriv->opriv,
-			       hal_dev_ctx->tx_buf_info);
+	nrf_wifi_osal_mem_free(hal_dev_ctx->tx_buf_info);
 	hal_dev_ctx->tx_buf_info = NULL;
 rx_buf_free:
 
 	for (i = 0; i < MAX_NUM_OF_RX_QUEUES; i++) {
-		nrf_wifi_osal_mem_free(hpriv->opriv,
-						hal_dev_ctx->rx_buf_info[i]);
+		nrf_wifi_osal_mem_free(hal_dev_ctx->rx_buf_info[i]);
 		hal_dev_ctx->rx_buf_info[i] = NULL;
 	}
 #endif /* CONFIG_NRF700X_DATA_TX */
@@ -1337,29 +1224,21 @@ rx_buf_free:
 bal_dev_free:
 	nrf_wifi_bal_dev_rem(hal_dev_ctx->bal_dev_ctx);
 lock_recovery_free:
-	nrf_wifi_osal_spinlock_free(hpriv->opriv,
-					hal_dev_ctx->lock_recovery);
+	nrf_wifi_osal_spinlock_free(hal_dev_ctx->lock_recovery);
 recovery_tasklet_free:
-	nrf_wifi_osal_tasklet_free(hpriv->opriv,
-					hal_dev_ctx->recovery_tasklet);
+	nrf_wifi_osal_tasklet_free(hal_dev_ctx->recovery_tasklet);
 event_tasklet_free:
-	nrf_wifi_osal_tasklet_free(hpriv->opriv,
-					hal_dev_ctx->event_tasklet);
+	nrf_wifi_osal_tasklet_free(hal_dev_ctx->event_tasklet);
 lock_rx_free:
-	nrf_wifi_osal_spinlock_free(hpriv->opriv,
-					hal_dev_ctx->lock_rx);
+	nrf_wifi_osal_spinlock_free(hal_dev_ctx->lock_rx);
 lock_hal_free:
-	nrf_wifi_osal_spinlock_free(hpriv->opriv,
-					hal_dev_ctx->lock_hal);
+	nrf_wifi_osal_spinlock_free(hal_dev_ctx->lock_hal);
 event_q_free:
-	nrf_wifi_utils_q_free(hpriv->opriv,
-					hal_dev_ctx->event_q);
+	nrf_wifi_utils_q_free(hal_dev_ctx->event_q);
 cmd_q_free:
-	nrf_wifi_utils_q_free(hpriv->opriv,
-					hal_dev_ctx->cmd_q);
+	nrf_wifi_utils_q_free(hal_dev_ctx->cmd_q);
 hal_dev_free:
-	nrf_wifi_osal_mem_free(hpriv->opriv,
-					hal_dev_ctx);
+	nrf_wifi_osal_mem_free(hal_dev_ctx);
 	hal_dev_ctx = NULL;
 err:
 	return NULL;
@@ -1370,37 +1249,27 @@ void nrf_wifi_hal_dev_rem(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 {
 	unsigned int i = 0;
 
-	nrf_wifi_osal_tasklet_kill(hal_dev_ctx->hpriv->opriv,
-				   hal_dev_ctx->recovery_tasklet);
-	nrf_wifi_osal_tasklet_free(hal_dev_ctx->hpriv->opriv,
-				   hal_dev_ctx->recovery_tasklet);
+	nrf_wifi_osal_tasklet_kill(hal_dev_ctx->recovery_tasklet);
+	nrf_wifi_osal_tasklet_free(hal_dev_ctx->recovery_tasklet);
 
-	nrf_wifi_osal_tasklet_kill(hal_dev_ctx->hpriv->opriv,
-				   hal_dev_ctx->event_tasklet);
+	nrf_wifi_osal_tasklet_kill(hal_dev_ctx->event_tasklet);
 
-	nrf_wifi_osal_tasklet_free(hal_dev_ctx->hpriv->opriv,
-				   hal_dev_ctx->event_tasklet);
+	nrf_wifi_osal_tasklet_free(hal_dev_ctx->event_tasklet);
 
-	nrf_wifi_osal_spinlock_free(hal_dev_ctx->hpriv->opriv,
-				    hal_dev_ctx->lock_hal);
-	nrf_wifi_osal_spinlock_free(hal_dev_ctx->hpriv->opriv,
-				    hal_dev_ctx->lock_rx);
+	nrf_wifi_osal_spinlock_free(hal_dev_ctx->lock_hal);
+	nrf_wifi_osal_spinlock_free(hal_dev_ctx->lock_rx);
 
-	nrf_wifi_utils_q_free(hal_dev_ctx->hpriv->opriv,
-			      hal_dev_ctx->event_q);
+	nrf_wifi_utils_q_free(hal_dev_ctx->event_q);
 
-	nrf_wifi_utils_q_free(hal_dev_ctx->hpriv->opriv,
-			      hal_dev_ctx->cmd_q);
+	nrf_wifi_utils_q_free(hal_dev_ctx->cmd_q);
 
 	nrf_wifi_bal_dev_rem(hal_dev_ctx->bal_dev_ctx);
 
-	nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
-			       hal_dev_ctx->tx_buf_info);
+	nrf_wifi_osal_mem_free(hal_dev_ctx->tx_buf_info);
 	hal_dev_ctx->tx_buf_info = NULL;
 
 	for (i = 0; i < MAX_NUM_OF_RX_QUEUES; i++) {
-		nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->rx_buf_info[i]);
+		nrf_wifi_osal_mem_free(hal_dev_ctx->rx_buf_info[i]);
 		hal_dev_ctx->rx_buf_info[i] = NULL;
 	}
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
@@ -1409,8 +1278,7 @@ void nrf_wifi_hal_dev_rem(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 
 	hal_dev_ctx->hpriv->num_devs--;
 
-	nrf_wifi_osal_mem_free(hal_dev_ctx->hpriv->opriv,
-			       hal_dev_ctx);
+	nrf_wifi_osal_mem_free(hal_dev_ctx);
 }
 
 
@@ -1425,8 +1293,7 @@ enum nrf_wifi_status nrf_wifi_hal_dev_init(struct nrf_wifi_hal_dev_ctx *hal_dev_
 	status = nrf_wifi_bal_dev_init(hal_dev_ctx->bal_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: nrf_wifi_bal_dev_init failed",
+		nrf_wifi_osal_log_err("%s: nrf_wifi_bal_dev_init failed",
 				      __func__);
 		goto out;
 	}
@@ -1440,8 +1307,7 @@ enum nrf_wifi_status nrf_wifi_hal_dev_init(struct nrf_wifi_hal_dev_ctx *hal_dev_
 				  sizeof(hal_dev_ctx->rpu_info.hpqm_info));
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Failed to get the HPQ info",
+		nrf_wifi_osal_log_err("%s: Failed to get the HPQ info",
 				      __func__);
 		goto out;
 	}
@@ -1452,8 +1318,7 @@ enum nrf_wifi_status nrf_wifi_hal_dev_init(struct nrf_wifi_hal_dev_ctx *hal_dev_
 				  sizeof(hal_dev_ctx->rpu_info.rx_cmd_base));
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Reading the RX cmd base failed",
+		nrf_wifi_osal_log_err("%s: Reading the RX cmd base failed",
 				      __func__);
 		goto out;
 	}
@@ -1477,8 +1342,7 @@ void nrf_wifi_hal_lock_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 {
 	unsigned long flags = 0;
 
-	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-					hal_dev_ctx->lock_rx,
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->lock_rx,
 					&flags);
 }
 
@@ -1486,8 +1350,7 @@ void nrf_wifi_hal_unlock_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 {
 	unsigned long flags = 0;
 
-	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->lock_rx,
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->lock_rx,
 				       &flags);
 }
 
@@ -1503,8 +1366,7 @@ enum nrf_wifi_status nrf_wifi_hal_irq_handler(void *data)
 
 	hal_dev_ctx = (struct nrf_wifi_hal_dev_ctx *)data;
 
-	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-					hal_dev_ctx->lock_rx,
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->lock_rx,
 					&flags);
 
 	if (hal_dev_ctx->hal_status != NRF_WIFI_HAL_STATUS_ENABLED) {
@@ -1537,17 +1399,14 @@ enum nrf_wifi_status nrf_wifi_hal_irq_handler(void *data)
 	}
 
 	if (do_rpu_recovery) {
-		nrf_wifi_osal_tasklet_schedule(hal_dev_ctx->hpriv->opriv,
-					       hal_dev_ctx->recovery_tasklet);
+		nrf_wifi_osal_tasklet_schedule(hal_dev_ctx->recovery_tasklet);
 		goto out;
 	}
 
-	nrf_wifi_osal_tasklet_schedule(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->event_tasklet);
+	nrf_wifi_osal_tasklet_schedule(hal_dev_ctx->event_tasklet);
 
 out:
-	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->lock_rx,
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->lock_rx,
 				       &flags);
 	return status;
 }
@@ -1569,8 +1428,7 @@ static int nrf_wifi_hal_poll_reg(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 					  reg_addr);
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Read from address (0x%X) failed, val (0x%X)",
+			nrf_wifi_osal_log_err("%s: Read from address (0x%X) failed, val (0x%X)",
 					      __func__,
 					      reg_addr,
 					      val);
@@ -1581,13 +1439,11 @@ static int nrf_wifi_hal_poll_reg(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 			break;
 		}
 
-		nrf_wifi_osal_sleep_ms(hal_dev_ctx->hpriv->opriv,
-				       poll_delay);
+		nrf_wifi_osal_sleep_ms(poll_delay);
 	} while (count-- > 0);
 
 	if (count == 0) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Timed out polling on (0x%X)",
+		nrf_wifi_osal_log_err("%s: Timed out polling on (0x%X)",
 				      __func__,
 				      reg_addr);
 
@@ -1607,8 +1463,7 @@ enum nrf_wifi_status nrf_wifi_hal_proc_reset(struct nrf_wifi_hal_dev_ctx *hal_de
 
 	if ((rpu_proc != RPU_PROC_TYPE_MCU_LMAC) &&
 	    (rpu_proc != RPU_PROC_TYPE_MCU_UMAC)) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Unsupported RPU processor(%d)",
+		nrf_wifi_osal_log_err("%s: Unsupported RPU processor(%d)",
 				      __func__,
 				      rpu_proc);
 		goto out;
@@ -1628,8 +1483,7 @@ enum nrf_wifi_status nrf_wifi_hal_proc_reset(struct nrf_wifi_hal_dev_ctx *hal_de
 	}
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Pulsed soft reset of MCU failed for (%d) processor",
+		nrf_wifi_osal_log_err("%s: Pulsed soft reset of MCU failed for (%d) processor",
 				      __func__,
 				      rpu_proc);
 		goto out;
@@ -1652,8 +1506,7 @@ enum nrf_wifi_status nrf_wifi_hal_proc_reset(struct nrf_wifi_hal_dev_ctx *hal_de
 	}
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: MCU (%d) failed to come out of reset",
+		nrf_wifi_osal_log_err("%s: MCU (%d) failed to come out of reset",
 				      __func__,
 				      rpu_proc);
 		goto out;
@@ -1697,8 +1550,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_chk_boot(struct nrf_wifi_hal_dev_ctx *hal_d
 		addr = RPU_MEM_UMAC_BOOT_SIG;
 		exp_val = NRF_WIFI_UMAC_BOOT_SIG;
 	} else {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid RPU processor (%d)",
+		nrf_wifi_osal_log_err("%s: Invalid RPU processor (%d)",
 				      __func__,
 				      rpu_proc);
 	}
@@ -1712,8 +1564,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_chk_boot(struct nrf_wifi_hal_dev_ctx *hal_d
 					  sizeof(val));
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-					      "%s: Reading of boot signature failed for RPU(%d)",
+			nrf_wifi_osal_log_err("%s: Reading of boot signature failed for RPU(%d)",
 					      __func__,
 					      rpu_proc);
 		}
@@ -1723,13 +1574,11 @@ enum nrf_wifi_status nrf_wifi_hal_fw_chk_boot(struct nrf_wifi_hal_dev_ctx *hal_d
 		}
 
 		/* Sleep for 10 ms */
-		nrf_wifi_osal_sleep_ms(hal_dev_ctx->hpriv->opriv,
-				       10);
+		nrf_wifi_osal_sleep_ms(10);
 	};
 
 	if (mcu_ready_wait_count <= 0) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Boot_sig check failed for RPU(%d), "
+		nrf_wifi_osal_log_err("%s: Boot_sig check failed for RPU(%d), "
 				      "Expected: 0x%X, Actual: 0x%X",
 				      __func__,
 				      rpu_proc,
@@ -1748,8 +1597,7 @@ out:
 
 
 struct nrf_wifi_hal_priv *
-nrf_wifi_hal_init(struct nrf_wifi_osal_priv *opriv,
-		  struct nrf_wifi_hal_cfg_params *cfg_params,
+nrf_wifi_hal_init(struct nrf_wifi_hal_cfg_params *cfg_params,
 		  enum nrf_wifi_status (*intr_callbk_fn)(void *dev_ctx,
 							 void *event_data,
 							 unsigned int len),
@@ -1761,50 +1609,40 @@ nrf_wifi_hal_init(struct nrf_wifi_osal_priv *opriv,
 	struct nrf_wifi_hal_priv *hpriv = NULL;
 	struct nrf_wifi_bal_cfg_params bal_cfg_params;
 
-	hpriv = nrf_wifi_osal_mem_zalloc(opriv,
-					 sizeof(*hpriv));
+	hpriv = nrf_wifi_osal_mem_zalloc(sizeof(*hpriv));
 
 	if (!hpriv) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate memory for hpriv",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory for hpriv",
 				      __func__);
 		goto out;
 	}
 
-	hpriv->opriv = opriv;
-
-	nrf_wifi_osal_mem_cpy(opriv,
-			      &hpriv->cfg_params,
+	nrf_wifi_osal_mem_cpy(&hpriv->cfg_params,
 			      cfg_params,
 			      sizeof(hpriv->cfg_params));
 
 	hpriv->intr_callbk_fn = intr_callbk_fn;
 	hpriv->rpu_recovery_callbk_fn = rpu_recovery_callbk_fn;
 
-	status = pal_rpu_addr_offset_get(opriv,
-					 RPU_ADDR_PKTRAM_START,
+	status = pal_rpu_addr_offset_get(RPU_ADDR_PKTRAM_START,
 					 &hpriv->addr_pktram_base,
 					 RPU_PROC_TYPE_MAX);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: pal_rpu_addr_offset_get failed",
+		nrf_wifi_osal_log_err("%s: pal_rpu_addr_offset_get failed",
 				      __func__);
 		goto out;
 	}
 
 	bal_cfg_params.addr_pktram_base = hpriv->addr_pktram_base;
 
-	hpriv->bpriv = nrf_wifi_bal_init(opriv,
-					 &bal_cfg_params,
+	hpriv->bpriv = nrf_wifi_bal_init(&bal_cfg_params,
 					 &nrf_wifi_hal_irq_handler);
 
 	if (!hpriv->bpriv) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Failed",
+		nrf_wifi_osal_log_err("%s: Failed",
 				      __func__);
-		nrf_wifi_osal_mem_free(opriv,
-				       hpriv);
+		nrf_wifi_osal_mem_free(hpriv);
 		hpriv = NULL;
 	}
 out:
@@ -1816,8 +1654,7 @@ void nrf_wifi_hal_deinit(struct nrf_wifi_hal_priv *hpriv)
 {
 	nrf_wifi_bal_deinit(hpriv->bpriv);
 
-	nrf_wifi_osal_mem_free(hpriv->opriv,
-			       hpriv);
+	nrf_wifi_osal_mem_free(hpriv);
 }
 
 
@@ -1828,8 +1665,7 @@ enum nrf_wifi_status nrf_wifi_hal_otp_info_get(struct nrf_wifi_hal_dev_ctx *hal_
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
 	if (!hal_dev_ctx || !otp_info) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid parameters",
+		nrf_wifi_osal_log_err("%s: Invalid parameters",
 				      __func__);
 		goto out;
 	}
@@ -1840,8 +1676,7 @@ enum nrf_wifi_status nrf_wifi_hal_otp_info_get(struct nrf_wifi_hal_dev_ctx *hal_
 				  sizeof(*otp_info));
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: OTP info get failed",
+		nrf_wifi_osal_log_err("%s: OTP info get failed",
 				      __func__);
 		goto out;
 	}
@@ -1852,8 +1687,7 @@ enum nrf_wifi_status nrf_wifi_hal_otp_info_get(struct nrf_wifi_hal_dev_ctx *hal_
 				  sizeof(*otp_flags));
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: OTP flags get failed",
+		nrf_wifi_osal_log_err("%s: OTP flags get failed",
 				      __func__);
 		goto out;
 	}
@@ -1868,8 +1702,7 @@ enum nrf_wifi_status nrf_wifi_hal_otp_ft_prog_ver_get(struct nrf_wifi_hal_dev_ct
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
 	if (!hal_dev_ctx || !ft_prog_ver) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid parameters",
+		nrf_wifi_osal_log_err("%s: Invalid parameters",
 				      __func__);
 		goto out;
 	}
@@ -1880,8 +1713,7 @@ enum nrf_wifi_status nrf_wifi_hal_otp_ft_prog_ver_get(struct nrf_wifi_hal_dev_ct
 				  sizeof(*ft_prog_ver));
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: FT program version get failed",
+		nrf_wifi_osal_log_err("%s: FT program version get failed",
 				      __func__);
 		goto out;
 	}
@@ -1895,8 +1727,7 @@ enum nrf_wifi_status nrf_wifi_hal_otp_pack_info_get(struct nrf_wifi_hal_dev_ctx 
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
 	if (!hal_dev_ctx || !package_info) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid parameters",
+		nrf_wifi_osal_log_err("%s: Invalid parameters",
 				      __func__);
 		goto out;
 	}
@@ -1907,8 +1738,7 @@ enum nrf_wifi_status nrf_wifi_hal_otp_pack_info_get(struct nrf_wifi_hal_dev_ctx 
 				  sizeof(*package_info));
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Package info get failed",
+		nrf_wifi_osal_log_err("%s: Package info get failed",
 				      __func__);
 		goto out;
 	}
@@ -1918,23 +1748,19 @@ out:
 
 void nrf_wifi_hal_enable(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 {
-	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-					hal_dev_ctx->lock_rx,
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->lock_rx,
 					NULL);
 	hal_dev_ctx->hal_status = NRF_WIFI_HAL_STATUS_ENABLED;
-	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->lock_rx,
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->lock_rx,
 				       NULL);
 }
 
 void nrf_wifi_hal_disable(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 {
-	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-					hal_dev_ctx->lock_rx,
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->lock_rx,
 					NULL);
 	hal_dev_ctx->hal_status = NRF_WIFI_HAL_STATUS_DISABLED;
-	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->lock_rx,
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->lock_rx,
 				       NULL);
 }
 

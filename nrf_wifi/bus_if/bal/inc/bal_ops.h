@@ -27,8 +27,7 @@
  * @dma_unmap:
  */
 struct nrf_wifi_bal_ops {
-	void * (*init)(struct nrf_wifi_osal_priv *opriv,
-		       void *cfg_params,
+	void * (*init)(void *cfg_params,
 		       enum nrf_wifi_status (*intr_callbk_fn)(void *hal_ctx));
 	void (*deinit)(void *bus_priv);
 	void * (*dev_add)(void *bus_priv,

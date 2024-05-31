@@ -12,21 +12,19 @@
 
 #include "list.h"
 
-void *nrf_wifi_utils_list_alloc(struct nrf_wifi_osal_priv *opriv)
+void *nrf_wifi_utils_list_alloc(void)
 {
 	void *list = NULL;
 
-	list = nrf_wifi_osal_llist_alloc(opriv);
+	list = nrf_wifi_osal_llist_alloc();
 
 	if (!list) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate list",
+		nrf_wifi_osal_log_err("%s: Unable to allocate list",
 				      __func__);
 		goto out;
 	}
 
-	nrf_wifi_osal_llist_init(opriv,
-				 list);
+	nrf_wifi_osal_llist_init(list);
 
 out:
 	return list;
@@ -34,157 +32,130 @@ out:
 }
 
 
-void nrf_wifi_utils_list_free(struct nrf_wifi_osal_priv *opriv,
-			      void *list)
+void nrf_wifi_utils_list_free(void *list)
 {
-	nrf_wifi_osal_llist_free(opriv,
-				 list);
+	nrf_wifi_osal_llist_free(list);
 }
 
 
-enum nrf_wifi_status nrf_wifi_utils_list_add_tail(struct nrf_wifi_osal_priv *opriv,
-						  void *list,
+enum nrf_wifi_status nrf_wifi_utils_list_add_tail(void *list,
 						  void *data)
 {
 	void *list_node = NULL;
 
-	list_node = nrf_wifi_osal_llist_node_alloc(opriv);
+	list_node = nrf_wifi_osal_llist_node_alloc();
 
 	if (!list_node) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate list node",
+		nrf_wifi_osal_log_err("%s: Unable to allocate list node",
 				      __func__);
 		return NRF_WIFI_STATUS_FAIL;
 	}
 
-	nrf_wifi_osal_llist_node_data_set(opriv,
-					  list_node,
+	nrf_wifi_osal_llist_node_data_set(list_node,
 					  data);
 
-	nrf_wifi_osal_llist_add_node_tail(opriv,
-					  list,
+	nrf_wifi_osal_llist_add_node_tail(list,
 					  list_node);
 
 	return NRF_WIFI_STATUS_SUCCESS;
 }
 
-enum nrf_wifi_status nrf_wifi_utils_list_add_head(struct nrf_wifi_osal_priv *opriv,
-						  void *list,
+enum nrf_wifi_status nrf_wifi_utils_list_add_head(void *list,
 						  void *data)
 {
 	void *list_node = NULL;
 
-	list_node = nrf_wifi_osal_llist_node_alloc(opriv);
+	list_node = nrf_wifi_osal_llist_node_alloc();
 
 	if (!list_node) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate list node",
+		nrf_wifi_osal_log_err("%s: Unable to allocate list node",
 				      __func__);
 		return NRF_WIFI_STATUS_FAIL;
 	}
 
-	nrf_wifi_osal_llist_node_data_set(opriv,
-					  list_node,
+	nrf_wifi_osal_llist_node_data_set(list_node,
 					  data);
 
-	nrf_wifi_osal_llist_add_node_head(opriv,
-					  list,
+	nrf_wifi_osal_llist_add_node_head(list,
 					  list_node);
 
 	return NRF_WIFI_STATUS_SUCCESS;
 }
 
-void nrf_wifi_utils_list_del_node(struct nrf_wifi_osal_priv *opriv,
-				  void *list,
+void nrf_wifi_utils_list_del_node(void *list,
 				  void *data)
 {
 	void *stored_data;
 	void *list_node = NULL;
 	void *list_node_next = NULL;
 
-	list_node = nrf_wifi_osal_llist_get_node_head(opriv,
-						      list);
+	list_node = nrf_wifi_osal_llist_get_node_head(list);
 
 	while (list_node) {
-		stored_data = nrf_wifi_osal_llist_node_data_get(opriv,
-								list_node);
+		stored_data = nrf_wifi_osal_llist_node_data_get(list_node);
 
-		list_node_next = nrf_wifi_osal_llist_get_node_nxt(opriv,
-								  list,
+		list_node_next = nrf_wifi_osal_llist_get_node_nxt(list,
 								  list_node);
 
 		if (stored_data == data) {
-			nrf_wifi_osal_llist_del_node(opriv,
-						     list,
+			nrf_wifi_osal_llist_del_node(list,
 						     list_node);
 
-			nrf_wifi_osal_llist_node_free(opriv,
-						      list_node);
+			nrf_wifi_osal_llist_node_free(list_node);
 		}
 
 		list_node = list_node_next;
 	}
 }
 
-void *nrf_wifi_utils_list_del_head(struct nrf_wifi_osal_priv *opriv,
-				   void *list)
+void *nrf_wifi_utils_list_del_head(void *list)
 {
 	void *list_node = NULL;
 	void *data = NULL;
 
-	list_node = nrf_wifi_osal_llist_get_node_head(opriv,
-						      list);
+	list_node = nrf_wifi_osal_llist_get_node_head(list);
 
 	if (!list_node) {
 		goto out;
 	}
 
-	data = nrf_wifi_osal_llist_node_data_get(opriv,
-						 list_node);
+	data = nrf_wifi_osal_llist_node_data_get(list_node);
 
-	nrf_wifi_osal_llist_del_node(opriv,
-				     list,
+	nrf_wifi_osal_llist_del_node(list,
 				     list_node);
-	nrf_wifi_osal_llist_node_free(opriv,
-				      list_node);
+	nrf_wifi_osal_llist_node_free(list_node);
 
 out:
 	return data;
 }
 
 
-void *nrf_wifi_utils_list_peek(struct nrf_wifi_osal_priv *opriv,
-			       void *list)
+void *nrf_wifi_utils_list_peek(void *list)
 {
 	void *list_node = NULL;
 	void *data = NULL;
 
-	list_node = nrf_wifi_osal_llist_get_node_head(opriv,
-						      list);
+	list_node = nrf_wifi_osal_llist_get_node_head(list);
 
 	if (!list_node) {
 		goto out;
 	}
 
-	data = nrf_wifi_osal_llist_node_data_get(opriv,
-						 list_node);
+	data = nrf_wifi_osal_llist_node_data_get(list_node);
 
 out:
 	return data;
 }
 
 
-unsigned int nrf_wifi_utils_list_len(struct nrf_wifi_osal_priv *opriv,
-				     void *list)
+unsigned int nrf_wifi_utils_list_len(void *list)
 {
-	return nrf_wifi_osal_llist_len(opriv,
-				       list);
+	return nrf_wifi_osal_llist_len(list);
 }
 
 
 enum nrf_wifi_status
-nrf_wifi_utils_list_traverse(struct nrf_wifi_osal_priv *opriv,
-			     void *list,
+nrf_wifi_utils_list_traverse(void *list,
 			     void *callbk_data,
 			     enum nrf_wifi_status (*callbk_func)(void *callbk_data,
 								 void *data))
@@ -193,12 +164,10 @@ nrf_wifi_utils_list_traverse(struct nrf_wifi_osal_priv *opriv,
 	void *data = NULL;
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 
-	list_node = nrf_wifi_osal_llist_get_node_head(opriv,
-						      list);
+	list_node = nrf_wifi_osal_llist_get_node_head(list);
 
 	while (list_node) {
-		data = nrf_wifi_osal_llist_node_data_get(opriv,
-							 list_node);
+		data = nrf_wifi_osal_llist_node_data_get(list_node);
 
 		status = callbk_func(callbk_data,
 				     data);
@@ -207,8 +176,7 @@ nrf_wifi_utils_list_traverse(struct nrf_wifi_osal_priv *opriv,
 			goto out;
 		}
 
-		list_node = nrf_wifi_osal_llist_get_node_nxt(opriv,
-							     list,
+		list_node = nrf_wifi_osal_llist_get_node_nxt(list,
 							     list_node);
 	}
 out:

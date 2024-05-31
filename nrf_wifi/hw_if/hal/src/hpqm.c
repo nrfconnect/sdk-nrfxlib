@@ -24,8 +24,7 @@ enum nrf_wifi_status hal_rpu_hpq_enqueue(struct nrf_wifi_hal_dev_ctx *hal_ctx,
 				   val);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_ctx->hpriv->opriv,
-				      "%s: Writing to enqueue address failed",
+		nrf_wifi_osal_log_err("%s: Writing to enqueue address failed",
 				      __func__);
 		goto out;
 	}
@@ -46,8 +45,7 @@ enum nrf_wifi_status hal_rpu_hpq_dequeue(struct nrf_wifi_hal_dev_ctx *hal_ctx,
 				  hpq->dequeue_addr);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_ctx->hpriv->opriv,
-				      "%s: Dequeue failed, val (0x%X)",
+		nrf_wifi_osal_log_err("%s: Dequeue failed, val (0x%X)",
 				      __func__,
 				      *val);
 		goto out;
@@ -60,8 +58,7 @@ enum nrf_wifi_status hal_rpu_hpq_dequeue(struct nrf_wifi_hal_dev_ctx *hal_ctx,
 					   *val);
 
 		if (status != NRF_WIFI_STATUS_SUCCESS) {
-			nrf_wifi_osal_log_err(hal_ctx->hpriv->opriv,
-					      "%s: Writing to dequeue address failed, val (0x%X)",
+			nrf_wifi_osal_log_err("%s: Writing to dequeue address failed, val (0x%X)",
 					      __func__,
 					      *val);
 			goto out;

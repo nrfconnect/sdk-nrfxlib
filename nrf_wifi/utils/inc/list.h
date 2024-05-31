@@ -14,35 +14,27 @@
 
 #include "osal_api.h"
 
-void *nrf_wifi_utils_list_alloc(struct nrf_wifi_osal_priv *opriv);
+void *nrf_wifi_utils_list_alloc(void);
 
-void nrf_wifi_utils_list_free(struct nrf_wifi_osal_priv *opriv,
-			      void *list);
+void nrf_wifi_utils_list_free(void *list);
 
-enum nrf_wifi_status nrf_wifi_utils_list_add_tail(struct nrf_wifi_osal_priv *opriv,
-						  void *list,
+enum nrf_wifi_status nrf_wifi_utils_list_add_tail(void *list,
 						  void *data);
 
-enum nrf_wifi_status nrf_wifi_utils_list_add_head(struct nrf_wifi_osal_priv *opriv,
-						  void *list,
+enum nrf_wifi_status nrf_wifi_utils_list_add_head(void *list,
 						  void *data);
 
-void nrf_wifi_utils_list_del_node(struct nrf_wifi_osal_priv *opriv,
-				  void *list,
+void nrf_wifi_utils_list_del_node(void *list,
 				  void *data);
 
-void *nrf_wifi_utils_list_del_head(struct nrf_wifi_osal_priv *opriv,
-				   void *list);
+void *nrf_wifi_utils_list_del_head(void *list);
 
-void *nrf_wifi_utils_list_peek(struct nrf_wifi_osal_priv *opriv,
-			       void *list);
+void *nrf_wifi_utils_list_peek(void *list);
 
-unsigned int nrf_wifi_utils_list_len(struct nrf_wifi_osal_priv *opriv,
-				     void *list);
+unsigned int nrf_wifi_utils_list_len(void *list);
 
 enum nrf_wifi_status
-nrf_wifi_utils_list_traverse(struct nrf_wifi_osal_priv *opriv,
-			     void *list,
+nrf_wifi_utils_list_traverse(void *list,
 			     void *callbk_data,
 			     enum nrf_wifi_status (*callbk_func)(void *callbk_data,
 								 void *data));

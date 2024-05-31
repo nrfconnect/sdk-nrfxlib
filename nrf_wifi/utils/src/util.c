@@ -12,8 +12,7 @@
 #include <util.h>
 #include "host_rpu_data_if.h"
 
-int nrf_wifi_utils_hex_str_to_val(struct nrf_wifi_osal_priv *opriv,
-				  unsigned char *hex_arr,
+int nrf_wifi_utils_hex_str_to_val(unsigned char *hex_arr,
 				  unsigned int hex_arr_sz,
 				  unsigned char *str)
 {
@@ -24,11 +23,10 @@ int nrf_wifi_utils_hex_str_to_val(struct nrf_wifi_osal_priv *opriv,
 	unsigned int len = 0;
 	int ret = -1;
 
-	len = nrf_wifi_osal_strlen(opriv, str);
+	len = nrf_wifi_osal_strlen(str);
 
 	if (len / 2 > hex_arr_sz) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: String length (%d) greater than array size (%d)",
+		nrf_wifi_osal_log_err("%s: String length (%d) greater than array size (%d)",
 				      __func__,
 				      len,
 				      hex_arr_sz);
@@ -36,8 +34,7 @@ int nrf_wifi_utils_hex_str_to_val(struct nrf_wifi_osal_priv *opriv,
 	}
 
 	if (len % 2) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s:String length = %d, is not a multiple of 2",
+		nrf_wifi_osal_log_err("%s:String length = %d, is not a multiple of 2",
 				      __func__,
 				      len);
 		goto out;
@@ -48,8 +45,7 @@ int nrf_wifi_utils_hex_str_to_val(struct nrf_wifi_osal_priv *opriv,
 		ch = ((str[i] >= 'A' && str[i] <= 'Z') ? str[i] + 32 : str[i]);
 
 		if ((ch < '0' || ch > '9') && (ch < 'a' || ch > 'f')) {
-			nrf_wifi_osal_log_err(opriv,
-					      "%s: Invalid hex character in string %d",
+			nrf_wifi_osal_log_err("%s: Invalid hex character in string %d",
 					      __func__,
 					      ch);
 			goto out;
@@ -78,22 +74,19 @@ out:
 }
 
 
-bool nrf_wifi_utils_is_mac_addr_valid(struct nrf_wifi_osal_priv *opriv,
-				      const char *mac_addr)
+bool nrf_wifi_utils_is_mac_addr_valid(const char *mac_addr)
 {
 	unsigned char zero_addr[NRF_WIFI_ETH_ADDR_LEN] = {0};
 
 	return (mac_addr &&
-		(nrf_wifi_osal_mem_cmp(opriv,
-				       mac_addr,
+		(nrf_wifi_osal_mem_cmp(mac_addr,
 				       zero_addr,
 				       sizeof(zero_addr)) != 0) &&
 		!(mac_addr[0] & 0x1));
 }
 
 
-int nrf_wifi_utils_chan_to_freq(struct nrf_wifi_osal_priv *opriv,
-				enum nrf_wifi_band band,
+int nrf_wifi_utils_chan_to_freq(enum nrf_wifi_band band,
 				unsigned short chan)
 {
 	int freq = -1;
@@ -109,8 +102,7 @@ int nrf_wifi_utils_chan_to_freq(struct nrf_wifi_osal_priv *opriv,
 		} else if (chan == 14) {
 			freq = 2484;
 		} else {
-			nrf_wifi_osal_log_err(opriv,
-					      "%s: Invalid channel value %d",
+			nrf_wifi_osal_log_err("%s: Invalid channel value %d",
 					      __func__,
 					      chan);
 			goto out;
@@ -126,8 +118,7 @@ int nrf_wifi_utils_chan_to_freq(struct nrf_wifi_osal_priv *opriv,
 
 		break;
 	default:
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Invalid band value %d",
+		nrf_wifi_osal_log_err("%s: Invalid band value %d",
 				      __func__,
 				      band);
 		goto out;

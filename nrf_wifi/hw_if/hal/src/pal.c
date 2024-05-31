@@ -32,10 +32,9 @@ bool pal_check_rpu_mcu_regions(enum RPU_PROC_TYPE proc, unsigned int addr_val)
 	return false;
 }
 
-enum nrf_wifi_status pal_rpu_addr_offset_get(struct nrf_wifi_osal_priv *opriv,
-					     unsigned int rpu_addr,
+enum nrf_wifi_status pal_rpu_addr_offset_get(unsigned int rpu_addr,
 					     unsigned long *addr,
-						 enum RPU_PROC_TYPE proc)
+					     enum RPU_PROC_TYPE proc)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	unsigned int addr_base = (rpu_addr & RPU_ADDR_MASK_BASE);
@@ -53,8 +52,7 @@ enum nrf_wifi_status pal_rpu_addr_offset_get(struct nrf_wifi_osal_priv *opriv,
 	} else if (pal_check_rpu_mcu_regions(proc, rpu_addr)) {
 		region_offset = SOC_MMAP_ADDR_OFFSETS_MCU[proc];
 	} else {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Invalid rpu_addr 0x%X",
+		nrf_wifi_osal_log_err("%s: Invalid rpu_addr 0x%X",
 				      __func__,
 				      rpu_addr);
 		goto out;
@@ -76,8 +74,7 @@ unsigned long pal_rpu_ps_ctrl_reg_addr_get(void)
 }
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 
-char *pal_ops_get_fw_loc(struct nrf_wifi_osal_priv *opriv,
-			 enum nrf_wifi_fw_type fw_type,
+char *pal_ops_get_fw_loc(enum nrf_wifi_fw_type fw_type,
 			 enum nrf_wifi_fw_subtype fw_subtype)
 {
 	char *fw_loc = NULL;
@@ -89,8 +86,7 @@ char *pal_ops_get_fw_loc(struct nrf_wifi_osal_priv *opriv,
 		} else if (fw_subtype == NRF_WIFI_FW_SUBTYPE_SEC) {
 			fw_loc = NRF_WIFI_FW_LMAC_PATCH_LOC_SEC;
 		} else {
-			nrf_wifi_osal_log_err(opriv,
-					      "%s: Invalid LMAC FW sub-type = %d",
+			nrf_wifi_osal_log_err("%s: Invalid LMAC FW sub-type = %d",
 					      __func__,
 					      fw_subtype);
 			goto out;
@@ -102,16 +98,14 @@ char *pal_ops_get_fw_loc(struct nrf_wifi_osal_priv *opriv,
 		} else if (fw_subtype == NRF_WIFI_FW_SUBTYPE_SEC) {
 			fw_loc = NRF_WIFI_FW_UMAC_PATCH_LOC_SEC;
 		} else {
-			nrf_wifi_osal_log_err(opriv,
-					      "%s: Invalid UMAC FW sub-type = %d",
+			nrf_wifi_osal_log_err("%s: Invalid UMAC FW sub-type = %d",
 					      __func__,
 					      fw_subtype);
 			goto out;
 		}
 		break;
 	default:
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Invalid FW type = %d",
+		nrf_wifi_osal_log_err("%s: Invalid FW type = %d",
 				      __func__,
 				      fw_type);
 		goto out;
