@@ -818,6 +818,21 @@ struct nrf_wifi_tx_pwr_ctrl_params {
 } __NRF_WIFI_PKD;
 
 /**
+ * @brief This structure defines board dependent parameters like PCB loss.
+ *
+ */
+struct nrf_wifi_board_params {
+	/** PCB loss for 2.4 GHz band */
+	unsigned char pcb_loss_2g;
+	/** PCB loss for 5 GHz band (5150 MHz - 5350 MHz) */
+	unsigned char pcb_loss_5g_band1;
+	/** PCB loss for 5 GHz band (5470 MHz - 5730 MHz) */
+	unsigned char pcb_loss_5g_band2;
+	/** PCB loss for 5 GHz band (5730 MHz - 5895 MHz) */
+	unsigned char pcb_loss_5g_band3;
+} __NRF_WIFI_PKD;
+
+/**
  * @brief This enum defines different types of operating bands.
  *
  */
@@ -868,7 +883,7 @@ struct nrf_wifi_cmd_sys_init {
 	 *  If a user wishes to turn it off, they should set this parameter to 1.
 	 */
 	unsigned int disable_beamforming;
-	/** The RPU uses this value (in seconds) to decide how long to wait 
+	/** The RPU uses this value (in seconds) to decide how long to wait
 	 *  without receiving beacons before disconnection.
 	 */
 	unsigned int discon_timeout;

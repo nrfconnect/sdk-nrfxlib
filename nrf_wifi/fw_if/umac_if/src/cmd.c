@@ -98,7 +98,8 @@ enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				   unsigned int phy_calib,
 				   enum op_band op_band,
 				   bool beamforming,
-				   struct nrf_wifi_tx_pwr_ctrl_params *tx_pwr_ctrl_params)
+				   struct nrf_wifi_tx_pwr_ctrl_params *tx_pwr_ctrl_params,
+				   struct nrf_wifi_board_params *board_params)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct host_rpu_msg *umac_cmd = NULL;
@@ -175,6 +176,11 @@ enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 #endif /* !CONFIG_NRF700X_RADIO_TEST */
 
 	umac_cmd_data->op_band = op_band;
+
+	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+			      &umac_cmd_data->sys_params.rf_params[PCB_LOSS_BYTE_2G_OFST],
+			      &board_params->pcb_loss_2g,
+			      NUM_PCB_LOSS_OFFSET);
 
 	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
 			      &umac_cmd_data->sys_params.rf_params[ANT_GAIN_2G_OFST],
