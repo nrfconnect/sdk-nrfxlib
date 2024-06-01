@@ -1083,6 +1083,10 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 	prf->phy_params[rf_param_offset + 27]  = CONFIG_NRF700X_ANT_GAIN_5G_BAND1;
 	prf->phy_params[rf_param_offset + 28]  = CONFIG_NRF700X_ANT_GAIN_5G_BAND2;
 	prf->phy_params[rf_param_offset + 29]  = CONFIG_NRF700X_ANT_GAIN_5G_BAND3;
+	prf->phy_params[rf_param_offset + 30]  = CONFIG_NRF700X_PCB_LOSS_2G;
+	prf->phy_params[rf_param_offset + 31]  = CONFIG_NRF700X_PCB_LOSS_5G_BAND1;
+	prf->phy_params[rf_param_offset + 32]  = CONFIG_NRF700X_PCB_LOSS_5G_BAND2;
+	prf->phy_params[rf_param_offset + 33]  = CONFIG_NRF700X_PCB_LOSS_5G_BAND3;
 
 	return(ret);
 }
