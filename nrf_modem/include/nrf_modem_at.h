@@ -196,6 +196,8 @@ struct nrf_modem_at_cmd_custom {
 	const char * const cmd;
 	/** The function implementing the AT command. */
 	const nrf_modem_at_cmd_custom_handler_t callback;
+	/** Filter len */
+	size_t cmd_strlen;
 };
 
 /**

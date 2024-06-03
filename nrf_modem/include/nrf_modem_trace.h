@@ -46,7 +46,7 @@ struct nrf_modem_trace_data {
  * @retval -NRF_ENODATA No more trace data is available until the modem is restarted.
  * @retval -NRF_ESHUTDOWN Modem was shut down.
  * @retval -NRF_EAGAIN If the request timed out.
- * @retval -NRF_ENOTSUP Traces are disabled because trace region size is zero.
+ * @retval -NRF_ENOTSUP Modem is not configured for trace output.
  */
 int nrf_modem_trace_get(struct nrf_modem_trace_data **frags, size_t *n_frags, int timeout);
 

@@ -122,7 +122,7 @@ struct nrf_modem_shmem_cfg {
  *
  *  @note: The size of this area is build constant.
  */
-#define NRF_MODEM_SHMEM_BOOTLOADER_SIZE 0x201c
+#define NRF_MODEM_SHMEM_BOOTLOADER_SIZE 0x2018
 
 /** @brief Shared memory configuration in bootloader mode.
  *  The base address must be word-aligned (4 bytes).
