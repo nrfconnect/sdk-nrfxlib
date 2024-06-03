@@ -17,6 +17,21 @@ The library is now released in two variants, with different feature sets and sup
 * The cellular variant, with support for cellular firmware.
 * The DECT PHY variant, with support for DECT NR+ PHY firmware.
 
+Core library
+============
+
+* Updated:
+
+  * The minimum requirement for the ``NRF_MODEM_SHMEM_BOOTLOADER_SIZE`` from ``0x201c`` to ``0x2018``.
+  * The modem trace functionality to support future modem firmwares.
+
+AT interface
+============
+
+* Added the :c:member:`nrf_modem_at_cmd_custom.cmd_strlen` field to hold the AT filter length.
+* The custom AT command filters now use the longest AT filter match.
+  This allows to have for example filters for both ``AT#XSOCKET`` and ``AT#XSOCKETOPTION``.
+
 DECT NR+
 ========
 
