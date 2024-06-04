@@ -24,7 +24,7 @@ For the full list of configuration options that were used during compilation of 
 Certified libraries
 *******************
 
-Check the compatibility matrices in the `Infocenter`_ for information about which library variants and versions are certified for a specific device:
+Check the following compatibility matrices for information about which library variants and versions are certified for a specific device:
 
 * `Thread CIDs for nRF5340`_
 * `Thread CIDs for nRF52840`_

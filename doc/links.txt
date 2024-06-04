@@ -13,57 +13,41 @@
 
 .. _`OpenAMP`: https://github.com/OpenAMP/open-amp/
 
-.. ### Source: infocenter.nordicsemi.com
+.. ### Source: www.nordicsemi.com
 
-.. _`nRF9160 AT Commands Reference Guide`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/intro_nrf9160.html
+.. _`nRF9160 AT Commands Reference Guide`: https://docs.nordicsemi.com/bundle/ref_at_commands/page/REF/at_commands/intro_nrf9160.html
+.. _`nRF91x1 AT Commands Reference Guide`: https://docs.nordicsemi.com/bundle/ref_at_commands_nrf91x1/page/REF/at_commands/intro_nrf91x1.html
+.. _`Selecting UICC slot %CSUS`: https://docs.nordicsemi.com/bundle/ref_at_commands/page/REF/at_commands/access_uicc/csus.html
+.. _`nRF91x1 selecting UICC slot %CSUS`: https://docs.nordicsemi.com/bundle/ref_at_commands_nrf91x1/page/REF/at_commands/access_uicc/csus.html
+.. _`Packet domain commands`: https://docs.nordicsemi.com/bundle/ref_at_commands/page/REF/at_commands/packet_domain/packet_domain.html
+.. _`nRF91x1 packet Domain AT commands`: https://docs.nordicsemi.com/bundle/ref_at_commands_nrf91x1/page/REF/at_commands/packet_domain/packet_domain.html
+.. _`Credential storage management %CMNG`: https://docs.nordicsemi.com/bundle/ref_at_commands/page/REF/at_commands/security/cmng.html
+.. _`nRF91x1 credential storage management %CMNG`: https://docs.nordicsemi.com/bundle/ref_at_commands_nrf91x1/page/REF/at_commands/security/cmng.html
+.. _`Modem trace activation %XMODEMTRACE`: https://docs.nordicsemi.com/bundle/ref_at_commands/page/REF/at_commands/mob_termination_ctrl_status/xmodemtrace.html
+.. _`nRF91x1 modem trace activation %XMODEMTRACE`: https://docs.nordicsemi.com/bundle/ref_at_commands_nrf91x1/page/REF/at_commands/mob_termination_ctrl_status/xmodemtrace.html
+.. _`Revision Identification +CGMR`: https://docs.nordicsemi.com/bundle/ref_at_commands_nrf91x1/page/REF/at_commands/general/cgmr.html
 
-.. _`nRF91x1 AT Commands Reference Guide`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/intro_nrf91x1.html
-
-.. _`Selecting UICC slot %CSUS`: https://infocenter.nordicsemi.com/index.jsp?topic=%2Fref_at_commands%2FREF%2Fat_commands%2Faccess_uicc%2Fcsus.html
-.. _`nRF91x1 selecting UICC slot %CSUS`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/access_uicc/csus.html
-
-.. _`Credential storage management %CMNG`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/security/cmng.html
-.. _`nRF91x1 credential storage management %CMNG`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/security/cmng.html
-
-.. _`Cellular Monitor`: https://infocenter.nordicsemi.com/topic/ug_cellular_monitor/UG/cellular_monitor/cellular_mon_cert_manager.html
-
-.. _`nRF IEEE 802.15.4 radio driver documentation`: https://infocenter.nordicsemi.com/topic/15.4_radio_driver_v2.0.0-1.prealpha/index.html
+.. _`Cellular Monitor`: https://docs.nordicsemi.com/bundle/nrf-connect-cellularmonitor/page/managing_credentials.html
+.. _`nRF Connect Serial Terminal`: https://docs.nordicsemi.com/bundle/nrf-connect-serial-terminal/page/index.html
 
 .. _Radio Driver section: https://infocenter.nordicsemi.com/topic/15.4_radio_driver_v1.10.0/rd_release_notes.html
 
 .. _nRF21540: https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF21540
 
-.. _nRF21540 Product Specification: https://infocenter.nordicsemi.com/topic/struct_fem/struct/nrf21540_ps.html
+.. _`Thread CIDs for nRF5340`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf5340/page/COMP/nrf5340/nrf5340_thread_cids.html
+.. _`Thread CIDs for nRF52840`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52840/page/COMP/nrf52840/nrf52840_thread_cids.html
+.. _`Thread CIDs for nRF52833`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52833/page/COMP/nrf52833/nrf52833_thread_cids.html
 
-.. _`Infocenter`: https://infocenter.nordicsemi.com/index.jsp
-
-.. _`Thread CIDs for nRF5340`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf5340/COMP/nrf5340/nrf5340_thread_cids.html
-.. _`Thread CIDs for nRF52840`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52840/COMP/nrf52840/nrf52840_thread_cids.html
-.. _`Thread CIDs for nRF52833`: https://infocenter.nordicsemi.com/topic/comp_matrix_nrf52833/COMP/nrf52833/nrf52833_thread_cids.html
-
-.. _`Packet domain commands`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/packet_domain/packet_domain.html
-.. _`nRF91x1 packet Domain AT commands`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/packet_domain/packet_domain.html
-
-.. _`Modem trace activation %XMODEMTRACE`: https://infocenter.nordicsemi.com/topic/ref_at_commands/REF/at_commands/mob_termination_ctrl_status/xmodemtrace.html
-.. _`nRF91x1 modem trace activation %XMODEMTRACE`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/mob_termination_ctrl_status/xmodemtrace.html
-
-.. _`nRF Connect Serial Terminal`: https://infocenter.nordicsemi.com/topic/ug_serial_terminal/UG/serial_terminal/intro.html
-
-.. _`coex interface of nRF9160`:  https://infocenter.nordicsemi.com/index.jsp?topic=%2Fps_nrf9160%2Fip%2Fradio_lte%2Fdoc%2Fmagpio_if.html
-
-.. _`Revision Identification +CGMR`: https://infocenter.nordicsemi.com/topic/ref_at_commands_nrf91x1/REF/at_commands/general/cgmr.html
-
-.. ### Source: www.nordicsemi.com
+.. _`coex interface of nRF9160`: https://docs.nordicsemi.com/bundle/ps_nrf9160/page/ip/radio_lte/doc/magpio_if.html
 
 .. _`nRF9161 DECT NR+ product specification`:  https://docs.nordicsemi.com/bundle/ps_nrf9161/page/dect.html
 
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#0B34B59935AF4AFCB7AB93E9646C1F53
-
 .. _`nRF91x1 LTE firmware zip file`: https://www.nordicsemi.com/Products/nRF9161/Download#636701B052474E5A8EB903C56678D26E
-
 .. _`nRF9160 modem TLS cipher suites`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#infotabs
-
 .. _`nRF91x1 modem TLS cipher suites`: https://www.nordicsemi.com/Products/nRF9161/Download?lang=en#infotabs
+
+.. _`nPM1300 Evaluation Kit`: https://docs.nordicsemi.com/bundle/ug_npm1300_ek/page/UG/nPM1300_EK/intro.html
 
 .. _`Zigbee CIDs for nRF5340`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf5340/page/COMP/nrf5340/nrf5340_zigbee_cids.html
 .. _`Zigbee CIDs for nRF52840`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52840/page/COMP/nrf52840/nrf52840_zigbee_cids.html
@@ -107,8 +91,6 @@
 .. _`Appropriate Language Mapping Table`: https://www.bluetooth.com/language-mapping/Appropriate-Language-Mapping-Table
 
 .. _`nRF Connect for Desktop`: https://www.nordicsemi.com/Products/Development-tools/nRF-Connect-for-Desktop
-
-.. _`nPM1300 Evaluation Kit`: https://infocenter.nordicsemi.com/
 
 .. _`Wireshark`: https://www.wireshark.org/
 
