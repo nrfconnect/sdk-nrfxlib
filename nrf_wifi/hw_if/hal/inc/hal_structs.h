@@ -240,6 +240,8 @@ struct nrf_wifi_hal_dev_ctx {
 	unsigned int event_data_pending;
 	unsigned int event_resubmit;
 	enum NRF_WIFI_HAL_STATUS hal_status;
+	void *recovery_tasklet;
+	void *lock_recovery;
 };
 
 
