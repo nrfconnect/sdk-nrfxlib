@@ -258,7 +258,7 @@ Added
 Notable Changes
 ===============
 
-* The release notes of the legacy versions of the Radio Driver are available in the `Radio Driver section`_ of the Infocenter.
+* The release notes of the legacy versions of the Radio Driver are available in the `Radio Driver section`_.
 * The changelog of the previous versions of the 802.15.4 SL library is now located at the bottom of this page.
 * The Radio Driver documentation will now also include the Service Layer documentation.
 * Future versions of the Radio Driver and the Service Layer will follow NCS version tags.
