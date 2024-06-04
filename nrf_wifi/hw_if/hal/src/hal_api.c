@@ -372,6 +372,8 @@ enum nrf_wifi_status hal_rpu_ps_wake(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 				      RPU_PS_WAKE_TIMEOUT_S,
 				      reg_val,
 				      rpu_ps_state_mask);
+		nrf_wifi_osal_tasklet_schedule(hal_dev_ctx->hpriv->opriv,
+					       hal_dev_ctx->recovery_tasklet);
 		goto out;
 	}
 	hal_dev_ctx->rpu_ps_state = RPU_PS_STATE_AWAKE;
