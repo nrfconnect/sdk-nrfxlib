@@ -25,6 +25,7 @@ Added
   Note that unless documented otherwise, any non-default priorities are not tested.
   This means that there is no guarantee that the controller works as intended when non-tested priorities are used.
   See :c:func:`sdc_hci_cmd_vs_set_role_priority` (DRGN-21226).
+* Support for the LE Set Path Loss Reporting Parameters and LE Set Path Loss Reporting Enable HCI commands. (DRGN-17376)
 
 Changes
 =======
@@ -70,6 +71,9 @@ Bug fixes
 * Fixed an issue with the controller-initiated autonomous LE Power Control Request procedure for Coded PHY that could lead to a disconnection. (DRGN-21923)
 * Fixed an issue where the |controller| could assert if a BIS Receiver stops receiving packets from the BIS Broadcaster. (DRGN-21949)
 * Fixed an issue where the |controller| could in some rare cases generate an LE Periodic Advertising Subevent Data Request for a subevent it didn't have the memory capacity for. (DRGN-21839)
+* Fixed an issue where an assert could happen if the peripheral received a connection update indication.
+  This happened when the central used a wide receive window for the connection update, and both sent at the end of the receive window and sent a lot of data in the connection event with the connection update instant (DRGN-22024).
+* Fixed an issue where the |controller| could assert when scanning or advertising on Coded PHY using SPI FEM on the nRF53 series. (DRGN-21962)
 
 nRF Connect SDK v2.6.0
 **********************
