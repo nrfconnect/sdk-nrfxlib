@@ -29,6 +29,8 @@
 
 #include <patch_info.h>
 
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 /**
  * @brief Adds a RPU instance.
  * @param fpriv Pointer to the context of the UMAC IF layer.
