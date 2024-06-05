@@ -2034,6 +2034,16 @@ unsigned char nrf_wifi_fmac_add_vif(void *dev_ctx,
 	vif_ctx->if_type = vif_info->iftype;
 	vif_ctx->mode = NRF_WIFI_STA_MODE;
 
+	/**
+	 * Set initial packet filter setting to filter all.
+	 * subsequent calls to set packet filter will set
+	 * packet_filter settings to appropriate value as
+	 * desired by application.
+	 */
+#if defined(CONFIG_NRF700X_RAW_DATA_RX) || defined(CONFIG_NRF700X_PROMISC_DATA_RX)
+	vif_ctx->packet_filter = 1;
+#endif
+
 	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
 			      vif_ctx->mac_addr,
 			      vif_info->mac_addr,
