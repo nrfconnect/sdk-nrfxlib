@@ -21,6 +21,12 @@ Changes
   :c:func:`mpsl_fem_caps_get` replaces :c:func:`mpsl_fem_pa_is_configured`.
   The :c:struct:`mpsl_tx_power_split_t` structure contains the new field ``fem_pa_power_control`` to be used with the :c:func:`mpsl_fem_pa_power_control_set` function.
   The :c:type:`mpsl_fem_gain_t` type is deprecated, please use :c:type:`mpsl_fem_pa_power_control_t` type instead (KRKNWK-18729).
+* The FEM libraries for nRF2220 and nRF2240 no more link directly to the TWIM library.
+
+  * The TWI implementation now needs to be provided externally.
+  * The limitation that only the TWIM0 instance could be used for nRF2220 and nRF2240 devices is removed.
+  * :c:struct:`mpsl_fem_twi_if_t` replaces :c:struct:`mpsl_fem_twi_config_t`.
+  * The ``twi_if`` field replaces the ``twi_config`` field within :c:struct:`mpsl_fem_nrf2220_interface_config_t` and :c:struct:`mpsl_fem_nrf2240_interface_config_t` (KRKNWK-19010).
 
 nRF Connect SDK v2.6.0
 **********************

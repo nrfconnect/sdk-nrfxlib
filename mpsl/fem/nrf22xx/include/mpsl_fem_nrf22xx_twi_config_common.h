@@ -29,27 +29,6 @@
 extern "C" {
 #endif
 
-/** @brief Temporary macro controlling FEM TWI API migration.*/
-#define _MPSL_FEM_NRF22XX_TWI_CONFIG_DEPRECATED
-
-#ifdef _MPSL_FEM_NRF22XX_TWI_CONFIG_DEPRECATED
-/** @brief Configuration of the TWI interface that can be used to communicate with Front End Module.
- */
-typedef struct
-{
-    /** Pointer to the TWI peripheral instance to be used. */
-    NRF_TWIM_Type * p_twim;
-    /** SCL pin. */
-    mpsl_fem_pin_t  scl;
-    /** SDA pin. */
-    mpsl_fem_pin_t  sda;
-    /** Clock frequency in Hz. */
-    uint32_t        freq_hz;
-    /** TWI slave address. */
-    uint8_t         address;
-} mpsl_fem_twi_config_t;
-#endif /* _MPSL_FEM_NRF22XX_TWI_CONFIG_DEPRECATED */
-
 /** @brief Interface to a TWI driver. */
 typedef struct
 {
