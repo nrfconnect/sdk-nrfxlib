@@ -81,7 +81,7 @@ typedef struct
             /** Counter period parameters */
             struct
             {
-                /** Timer value when the Front End Module can start preparing PA/LNA. */
+                /** Timer value when the Front End Module can start preparing PA/LNA. This parameter is deprecated (unused). */
                 uint32_t       start;
                 /** Timer value at which the PA/LNA have to be prepared. Radio operation shall start at this point. */
                 uint32_t       end;
@@ -123,7 +123,7 @@ typedef struct
 /** @brief PA setup is required before starting a transmission.
  *
  *  This flag applies to @ref mpsl_fem_caps_t::flags.
- * 
+ *
  *  If it is set, then @ref mpsl_fem_pa_configuration_set must be called before transmission starts.
  */
 #define MPSL_FEM_CAPS_FLAG_PA_SETUP_REQUIRED  (1U << 0)
@@ -131,7 +131,7 @@ typedef struct
 /** @brief LNA setup is required before starting a reception.
  *
  *  This flag applies to @ref mpsl_fem_caps_t::flags.
- * 
+ *
  *  If it is set, then @ref mpsl_fem_lna_configuration_set must be called before reception starts.
  */
 #define MPSL_FEM_CAPS_FLAG_LNA_SETUP_REQUIRED (1U << 1)
@@ -148,7 +148,7 @@ typedef struct
 } mpsl_fem_caps_t;
 
 /** @brief Gets the capabilities of the FEM in use.
- * 
+ *
  *  @param[out] p_caps  Pointer to the capabilities structure to be filled in.
  */
 void mpsl_fem_caps_get(mpsl_fem_caps_t * p_caps);
@@ -366,10 +366,10 @@ int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
                                bool                          tx_power_ceiling);
 
 /** @brief Sets the PA power control.
- * 
+ *
  * Setting the PA power control informs the FEM implementation how the PA is to be controlled
  * before the next transmission.
- * 
+ *
  * The PA power control set by this function is to be applied to control signals or
  * parameters. What signals and parameters are controlled and how does it happen depends on
  * implementation of given FEM. The meaning of @p pa_power_control parameter is
@@ -419,6 +419,14 @@ bool mpsl_fem_prepare_powerdown(NRF_TIMER_Type * p_instance,
                                 uint32_t         compare_channel,
                                 uint32_t         ppi_id,
                                 uint32_t         event_addr);
+
+/** @brief Caches the CC channels to be used by FEM.
+ *
+ * @note Calling this function improves the execution speed for PA/LNA configuration (if the mask is unchanged).
+ *
+ * @param[in] mask Bitmask of available compare channels.
+ */
+void mpsl_fem_utils_available_cc_channels_cache(uint8_t mask);
 
 #endif // MPSL_FEM_PROTOCOL_API_H__
 
