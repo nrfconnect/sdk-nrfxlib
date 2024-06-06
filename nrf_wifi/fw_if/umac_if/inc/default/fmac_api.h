@@ -1036,6 +1036,22 @@ bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif);
  *@retval      WIFI_NRF_STATUS_FAIL On failure
  */
 enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode);
+
+/**
+ * @brief Configure WLAN quiet period.
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
+ * @param if_idx Index of the interface on which power management is to be set.
+ * @param quite period Quiet period in seconds to be set.
+ *
+ * This function is used to send a command (%NRF_WIFI_UMAC_CMD_CONFIG_QUIET_PERIOD to:
+ *         - The RPU firmware to set quiet period.
+ *
+ *@retval      NRF_WIFI_STATUS_SUCCESS On success
+ *@retval      NRF_WIFI_STATUS_FAIL On failure to execute command
+ */
+enum nrf_wifi_status nrf_wifi_fmac_set_quiet_period(void *fmac_dev_ctx,
+						    unsigned char if_idx,
+						    unsigned int quiet_period);
 /**
  * @}
  */
