@@ -25,7 +25,6 @@ Added
   Note that unless documented otherwise, any non-default priorities are not tested.
   This means that there is no guarantee that the controller works as intended when non-tested priorities are used.
   See :c:func:`sdc_hci_cmd_vs_set_role_priority` (DRGN-21226).
-* Support for the LE Set Path Loss Reporting Parameters and LE Set Path Loss Reporting Enable HCI commands. (DRGN-17376)
 
 Changes
 =======
@@ -52,6 +51,8 @@ Changes
   This change does not affect applications developed in the |NCS| context. (DRGN-21650)
 * The function :c:func:`sdc_soc_ecb_block_encrypt` has been removed.
   Using :file:`mpsl_ecb.h` is now recommended instead. (DRGN-21603)
+* The ability to configure a periodic advertiser with subevents but without response slots has been removed.
+  This is due to an errata to the Bluetooth Core Specification v5.4 no longer allowing this configuration. (DRGN-22189)
 
 Bug fixes
 =========
