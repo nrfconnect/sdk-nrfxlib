@@ -14,8 +14,8 @@ if NRF_RPC
 config NRF_RPC_CBOR
 	bool "Add CBOR layer"
 	default y
-	select ZCBOR
-	select ZCBOR_STOP_ON_ERROR
+	depends on ZCBOR
+	depends on ZCBOR_STOP_ON_ERROR
 	help
 	  Adds API that helps use of CBOR library for data serialization.
 
