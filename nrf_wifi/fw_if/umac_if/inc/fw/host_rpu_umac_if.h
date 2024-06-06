@@ -143,7 +143,9 @@ enum nrf_wifi_umac_commands {
 	/** Set listen interval @ref nrf_wifi_umac_cmd_set_listen_interval */
 	NRF_WIFI_UMAC_CMD_SET_LISTEN_INTERVAL,
 	/** Configure extended power save @ref nrf_wifi_umac_cmd_config_extended_ps */
-	NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS
+	NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS,
+	/** Configure quiet period @ref nrf_wifi_umac_cmd_config_quiet_period */
+	NRF_WIFI_UMAC_CMD_CONFIG_QUIET_PERIOD,
 };
 
  /**
@@ -3512,6 +3514,17 @@ struct nrf_wifi_umac_event_cmd_status {
 	unsigned int cmd_id;
 	/** Status codes */
 	unsigned int cmd_status;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure represents the command used to  configure quiet period.
+ *
+ */
+struct nrf_wifi_umac_cmd_config_quiet_period {
+	/** Header @ref nrf_wifi_umac_hdr */
+	struct nrf_wifi_umac_hdr umac_hdr;
+	/** quiet period value in seconds */
+	unsigned int quiet_period_in_sec;
 } __NRF_WIFI_PKD;
 
 #endif /* __HOST_RPU_UMAC_IF_H */
