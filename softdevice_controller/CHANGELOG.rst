@@ -57,6 +57,7 @@ Changes
 Bug fixes
 =========
 
+* Fixed an issue where an assert could happen if a initiator ran for more than 2147 seconds before connecting (DRGN-22163).
 * Fixed an extremely rare race condition where using :c:func:`sdc_soc_ecb_block_encrypt` from an ISR could lead to encryption failures. (DRGN-21603)
 * Fixed an issue where the vendor-specific ISO Read TX Timestamp command returned a timestamp that was 41 µs too small (DRGN-21605).
 * Fixed an issue where an assert could happen if a CIS peripheral stopped receiving packets from the CIS central.
