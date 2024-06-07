@@ -1061,6 +1061,22 @@ enum nrf_wifi_status nrf_wifi_fmac_rpu_recovery_callback(void *mac_dev_ctx,
 enum nrf_wifi_status nrf_wifi_fmac_set_quiet_period(void *fmac_dev_ctx,
 						    unsigned char if_idx,
 						    unsigned int quiet_period);
+
+/**
+ * @brief DMS request command
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
+ * @param if_idx Index of the interface on which the DMS parameters be set.
+ * @param dms_info DMS parameters.
+ *
+ * This function is used to send a command to the RPU firmware to:
+ *	    - Configure DMS request specific parameters.
+ *
+ *@retval	NRF_WIFI_STATUS_SUCCESS On success
+ *@retval	NRF_WIFI_STATUS_FAIL On failure to execute command
+ */
+enum nrf_wifi_status nrf_wifi_fmac_req_dms(void *fmac_dev_ctx,
+					   unsigned char if_idx,
+					   struct nrf_wifi_umac_config_dms_info *dms_info);
 /**
  * @}
  */

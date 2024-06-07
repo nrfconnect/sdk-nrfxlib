@@ -588,6 +588,17 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 					      __func__,
 					      umac_hdr->cmd_evnt);
 		break;
+	case NRF_WIFI_UMAC_EVENT_DMS:
+		if (callbk_fns->dms_callbk_fn)
+			callbk_fns->dms_callbk_fn(vif_ctx->os_vif_ctx,
+						  event_data,
+						  event_len);
+		else
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: No callback registered for event %d",
+					      __func__,
+					      umac_hdr->cmd_evnt);
+		break;
 #endif /* CONFIG_NRF700X_STA_MODE */
 #endif /* !CONFIG_NRF700X_RADIO_TEST */
 	default:
