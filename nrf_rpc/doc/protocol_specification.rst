@@ -58,7 +58,7 @@ A description of the various fields and their meaning:
   The remote processor is then obliged to use the source context ID as the destination context ID in the response packet.
   This ensures that responses and any packets that follow within each conversation are correctly routed to the initiating thread.
 
-  The exact source context ID allocation pattern is implementation-defined, meaning that when the packet sender intiates a new conversation or responds to the initiating packet, it is free to allocate any unused source context ID for the new conversation.
+  The exact source context ID allocation pattern is implementation-defined, meaning that when the packet sender initiates a new conversation or responds to the initiating packet, it is free to allocate any unused source context ID for the new conversation.
 
 ``Command ID``: 8 bits
   Identifies an individual command or event within an nRF RPC group.

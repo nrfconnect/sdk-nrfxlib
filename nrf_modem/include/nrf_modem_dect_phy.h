@@ -1131,7 +1131,7 @@ int nrf_modem_dect_phy_deinit(void);
  * Incoming data received on the physical layer control and data channels is sent to the
  * @ref nrf_modem_dect_phy_callbacks.pcc and @ref nrf_modem_dect_phy_callbacks.pdc callbacks.
  *
- * When the operation has completed, either successfully or unsuccesfully, the result is sent
+ * When the operation has completed, either successfully or unsuccessfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.
  *
@@ -1149,7 +1149,7 @@ int nrf_modem_dect_phy_rx(const struct nrf_modem_dect_phy_rx_params *params);
  *
  * Schedule a data transmission with given parameters.
  *
- * When the operation has completed, either successfully or unsuccesfully, the result is sent
+ * When the operation has completed, either successfully or unsuccessfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.
  *
@@ -1177,7 +1177,7 @@ int nrf_modem_dect_phy_tx(const struct nrf_modem_dect_phy_tx_params *params);
  * received. In that case modem will inject ACK or NACK feedback into the Transmission feedback
  * field based on the PDC reception result once the reception is complete.
  *
- * When the operation has completed, either successfully or unsuccesfully, the result is sent
+ * When the operation has completed, either successfully or unsuccessfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.
  *
@@ -1200,11 +1200,11 @@ int nrf_modem_dect_phy_tx_harq(const struct nrf_modem_dect_phy_tx_params *params
  * The RX operation scheduling is relative to the end of the TX operation and must include
  * the guard time.
  *
- * When the TX operation has completed, either successfully or unsuccesfully, the result is sent
+ * When the TX operation has completed, either successfully or unsuccessfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.tx.
  *
- * When the RX operation has completed, either successfully or unsuccesfully, the result is sent
+ * When the RX operation has completed, either successfully or unsuccessfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.rx.
  *
@@ -1223,7 +1223,7 @@ int nrf_modem_dect_phy_tx_rx(const struct nrf_modem_dect_phy_tx_rx_params *param
  * Schedule an RSSI measurement operation with given parameters.
  * The measurements are sent to the @ref nrf_modem_dect_phy_callbacks.rssi callback.
  *
- * When the operation has completed, either successfully or unsuccesfully, the result is sent
+ * When the operation has completed, either successfully or unsuccessfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.
  *

@@ -1677,8 +1677,8 @@ uint8_t sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set(const sdc_hci_cmd_vs_scan
  * This means that there is no guarantee that the controller works as intended when non-tested
  * priorities are used.
  * The default values for the priorities of the different roles are listed in
- * https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrfxlib/softdevice_controller/doc/sch
- * eduling.html
+ * https://docs.nordicsemi.com/bundle/ncs-latest/page/nrfxlib/softdevice_controller/doc/scheduling.html
+ *
  *
  * Priority changes configured using this API are not persisted on resets.
  *
