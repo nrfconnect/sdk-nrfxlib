@@ -309,6 +309,10 @@ The following snippet shows how to set up and use a custom AT command:
    The filter uses the callback of the first match found in the filter list.
    Hence, make sure to keep the filters accurately or order them accordingly.
 
+.. note::
+   The custom AT command filter is compared against the start of the AT command string sent to the Modem library.
+   Therefore, you must make sure to remove any leading whitespace characters in the AT command string before calling the :c:func:`nrf_modem_at_cmd` function.
+
 Receiving AT notifications
 **************************
 
