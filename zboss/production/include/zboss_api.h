@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -1133,6 +1133,23 @@ typedef enum zb_nvram_dataset_types_e
 #define ZB_NVRAM_APP_DATASET_NUMBER 4U
 
 /**
+ * @brief Structure that contains report about any NVRAM failure.
+ *
+ *  Upon receiving of this error, user can decide what to do:
+ *  1. Do nothing - stack will be reset immediately,
+ *  all not corrupted datasets will be copied to another page.
+ *  2. Clear nvram.
+ *  3. Manually implement function that implements user logic in this case.
+ */
+typedef struct zb_nvram_failure_report_s
+{
+  zb_uint16_t ds_type;        /*!< Dataset type @see zb_nvram_dataset_types_t */
+  zb_uint16_t pos;            /*!< Position of dataset payload that haven't been written */
+  zb_uint8_t page;            /*!< Page of dataset payload that haven't been written */
+  zb_uint8_t reserved[3];     /*!< Reserved for future use */
+} zb_nvram_failure_report_t;
+
+/**
  * Declares application callback used for reading application datasets from NVRAM.
  *
  * @param page - page in NVRAM from data will be read
@@ -1242,6 +1259,11 @@ zb_ret_t zb_nvram_write_dataset(zb_nvram_dataset_types_t t);
  * Clears all datasets except @ref ZB_IB_COUNTERS and application datasets.
  */
 void zb_nvram_clear(void);
+
+/**
+   Disable using NVRAM till ZBOSS restart
+ */
+void zb_nvram_disable(void);
 /** @endcond */ /* DOXYGEN_INTERNAL_DOC */
 
 #ifndef ZB_USE_INTERNAL_HEADERS
