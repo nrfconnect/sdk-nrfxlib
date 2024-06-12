@@ -779,6 +779,7 @@ struct nrf_wifi_signal {
 
 #define NRF_WIFI_CMD_CONNECT_COMMON_INFO_USE_RRM (1 << 14)
 #define NRF_WIFI_CONNECT_COMMON_INFO_PREV_BSSID (1 << 15)
+#define NRF_WIFI_CONNECT_COMMON_INFO_SECURITY (1 << 16)
 
 /**
  * @brief This structure contains parameters related to the connection.
@@ -1303,6 +1304,18 @@ struct nrf_wifi_umac_cmd_auth {
 #define NRF_WIFI_CMD_ASSOCIATE_MAC_ADDR_VALID (1 << 0)
 
 /**
+ * @brief Types of connection protected/un-protected.
+ *
+ */
+
+enum nrf_wifi_conn_type {
+	/* Connection to be non-protected */
+	NRF_WIFI_CONN_TYPE_OPEN,
+	/* Connection to be protected */
+	NRF_WIFI_CONN_TYPE_SECURE,
+};
+
+/**
  * @brief This structure specifies the parameters to be used when sending an association request.
  *
  */
@@ -1331,6 +1344,8 @@ struct nrf_wifi_umac_assoc_info {
 	 *  BSS MAX IDLE IE in assoc request frame.
 	 */
 	unsigned short bss_max_idle_time;
+	/** Connection type */
+	unsigned char conn_type;
 } __NRF_WIFI_PKD;
 
 /**

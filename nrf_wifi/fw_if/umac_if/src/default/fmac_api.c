@@ -887,6 +887,11 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 		connect_common_info->maxidle_insec = assoc_info->bss_max_idle_time;
 	}
 
+	if (assoc_info->conn_type == NRF_WIFI_CONN_TYPE_SECURE) {
+		connect_common_info->nrf_wifi_flags |=
+			NRF_WIFI_CONNECT_COMMON_INFO_SECURITY;
+	}
+
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      assoc_cmd,
 			      sizeof(*assoc_cmd));
