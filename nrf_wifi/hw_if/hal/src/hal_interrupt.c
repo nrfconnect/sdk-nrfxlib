@@ -585,6 +585,11 @@ enum nrf_wifi_status hal_rpu_irq_process(struct nrf_wifi_hal_dev_ctx *hal_dev_ct
 		}
 	}
 
+	if (!num_events) {
+		status = NRF_WIFI_STATUS_SUCCESS;
+		goto out;
+	}
+
 	status = hal_rpu_irq_ack(hal_dev_ctx);
 
 	if (status == NRF_WIFI_STATUS_FAIL) {
