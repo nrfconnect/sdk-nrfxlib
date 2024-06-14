@@ -24,8 +24,12 @@
  *             of the memory allocated.
  * @mem_zalloc: Allocate memory of @size bytes, zero out the memory and return
  *              a pointer to the start of the zeroed out memory.
+ * @pkt_mem_zalloc: Allocate memory of @size bytes, zero out the memory and return
+ *              a pointer to the start of the zeroed out memory.
  * @mem_free: Free up memory which has been allocated using @mem_alloc or
  *            @mem_zalloc.
+ * @pkt_mem_free: Free up memory which has been allocated using @pkt_mem_alloc or
+ *            @pkt_mem_zalloc.
  * @mem_cpy: Copy @count number of bytes from @src location in memory to @dest
  *           location in memory.
  * @mem_set: Fill a block of memory of @size bytes starting at @start with a
@@ -182,7 +186,9 @@
 struct nrf_wifi_osal_ops {
 	void *(*mem_alloc)(size_t size);
 	void *(*mem_zalloc)(size_t size);
+	void *(*pkt_mem_zalloc)(size_t size);
 	void (*mem_free)(void *buf);
+	void (*pkt_mem_free)(void *buf);
 	void *(*mem_cpy)(void *dest, const void *src, size_t count);
 	void *(*mem_set)(void *start, int val, size_t size);
 	int (*mem_cmp)(const void *addr1, const void *addr2, size_t size);
