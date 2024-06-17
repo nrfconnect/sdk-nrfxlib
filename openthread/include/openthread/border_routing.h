@@ -85,7 +85,9 @@ typedef struct otBorderRoutingPrefixTableIterator
 {
     const void *mPtr1;
     const void *mPtr2;
-    uint32_t    mData32;
+    uint32_t    mData1;
+    uint8_t     mData2;
+    uint8_t     mData3;
 } otBorderRoutingPrefixTableIterator;
 
 /**
@@ -95,9 +97,11 @@ typedef struct otBorderRoutingPrefixTableIterator
 typedef struct otBorderRoutingRouterEntry
 {
     otIp6Address mAddress;                      ///< IPv6 address of the router.
+    uint32_t     mMsecSinceLastUpdate;          ///< Milliseconds since last update (any message rx) from this router.
     bool         mManagedAddressConfigFlag : 1; ///< The router's Managed Address Config flag (`M` flag).
     bool         mOtherConfigFlag : 1;          ///< The router's Other Config flag (`O` flag).
     bool         mStubRouterFlag : 1;           ///< The router's Stub Router flag.
+    bool         mIsLocalDevice : 1;            ///< This router is the local device (this BR).
 } otBorderRoutingRouterEntry;
 
 /**
@@ -238,6 +242,22 @@ void otBorderRoutingSetRouteInfoOptionPreference(otInstance *aInstance, otRouteP
  *
  */
 void otBorderRoutingClearRouteInfoOptionPreference(otInstance *aInstance);
+
+/**
+ * Sets additional options to append at the end of emitted Router Advertisement (RA) messages.
+ *
+ * The content of @p aOptions is copied internally, so it can be a temporary buffer (e.g., a stack allocated array).
+ *
+ * Subsequent calls to this function overwrite the previously set value.
+ *
+ * @param[in] aOptions   A pointer to the encoded options. Can be `NULL` to clear.
+ * @param[in] aLength    Number of bytes in @p aOptions.
+ *
+ * @retval OT_ERROR_NONE     Successfully set the extra option bytes.
+ * @retval OT_ERROR_NO_BUFS  Could not allocate buffer to save the buffer.
+ *
+ */
+otError otBorderRoutingSetExtraRouterAdvertOptions(otInstance *aInstance, const uint8_t *aOptions, uint16_t aLength);
 
 /**
  * Gets the current preference used for published routes in Network Data.
@@ -481,6 +501,31 @@ void otBorderRoutingDhcp6PdSetEnabled(otInstance *aInstance, bool aEnabled);
  *
  */
 otBorderRoutingDhcp6PdState otBorderRoutingDhcp6PdGetState(otInstance *aInstance);
+
+/**
+ * When the state of a DHCPv6 Prefix Delegation (PD) on the Thread interface changes, this callback notifies processes
+ * in the OS of this changed state.
+ *
+ * @param[in] aState    The state of DHCPv6 Prefix Delegation State.
+ * @param[in] aContext  A pointer to arbitrary context information.
+ *
+ */
+typedef void (*otBorderRoutingRequestDhcp6PdCallback)(otBorderRoutingDhcp6PdState aState, void *aContext);
+
+/**
+ * Sets the callback whenever the DHCPv6 PD state changes on the Thread interface.
+ *
+ * Subsequent calls to this function replace the previously set callback.
+ *
+ * @param[in] aInstance  A pointer to an OpenThread instance.
+ * @param[in] aCallback  A pointer to a function that is called whenever the DHCPv6 PD state changes.
+ * @param[in] aContext   A pointer to arbitrary context information.
+ *
+ *
+ */
+void otBorderRoutingDhcp6PdSetRequestCallback(otInstance                           *aInstance,
+                                              otBorderRoutingRequestDhcp6PdCallback aCallback,
+                                              void                                 *aContext);
 
 /**
  * @}
