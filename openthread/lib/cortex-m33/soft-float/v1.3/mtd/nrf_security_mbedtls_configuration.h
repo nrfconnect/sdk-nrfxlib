@@ -31,6 +31,10 @@ extern "C" {
 #define MBEDTLS_ASN1_PARSE_C
 #endif
 
+#if defined(CONFIG_PSA_NEED_CRACEN_KEY_MANAGEMENT_DRIVER)
+#define MBEDTLS_PSA_CRYPTO_BUILTIN_KEYS
+#endif
+
 /****************************************************************/
 /* Require built-in implementations based on PSA requirements
  *
@@ -72,13 +76,6 @@ extern "C" {
 #if defined(PSA_WANT_ALG_SHA_256)
 #define MBEDTLS_SHA224_C
 #define MBEDTLS_SHA256_C
-#endif
-
-/* Required for OPENTHREAD_NRF_SECURITY_PSA_CHOICE (KRKNWK-18015) */
-#if defined(PSA_WANT_ALG_CMAC)
-#define MBEDTLS_CMAC_C
-#define MBEDTLS_CIPHER_C
-#define MBEDTLS_AES_C
 #endif
 
 /* Required for MBEDTLS_HAS_CBC_CIPHERSUITE_REQUIREMENTS */
