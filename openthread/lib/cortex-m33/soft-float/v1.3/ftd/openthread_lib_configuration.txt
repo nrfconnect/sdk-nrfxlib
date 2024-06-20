@@ -1,7 +1,7 @@
 GCC_version: arm-zephyr-eabi-gcc (Zephyr SDK 0.16.5-1) 12.2.0
 
 OpenThread_commit=a57d927b0ace94972a49ea2672c9073b88b86377
-NRFXLIB_commit=v2.7.0-rc2-1-g050b3c93
+NRFXLIB_commit=v2.7.0-rc2-3-g99a747cc
 MBEDTLS_commit=v3.5.2-ncs2-rc2-0-g72868c6f1
 
 CONFIG_OPENTHREAD_BLE_TCAT_RING_BUF_SIZE=512
