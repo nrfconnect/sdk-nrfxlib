@@ -148,8 +148,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1043
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1164
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1019
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1140
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -191,16 +191,16 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? (12 + (num_links) * 26) : 0)
+#define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? (13 + (num_links) * 51) : 0)
 
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
 /** Memory required for the scanner when only supporting legacy scanning. */
-#define SDC_MEM_SCAN(buffer_count) (340 + (buffer_count) * 96)
+#define SDC_MEM_SCAN(buffer_count) (337 + (buffer_count) * 98)
 
 /** Memory required for the scanner when supporting extended scanning. */
-#define SDC_MEM_SCAN_EXT(buffer_count) (340 + (buffer_count) * 312)
+#define SDC_MEM_SCAN_EXT(buffer_count) (337 + (buffer_count) * 320)
 
 /** Additional memory required for the initiator when supporting scanning
  *  and initiating at the same time.

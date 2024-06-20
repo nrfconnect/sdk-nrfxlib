@@ -264,6 +264,12 @@ enum sdc_hci_opcode_le
 /** @brief LE subevent Code values. */
 enum sdc_hci_subevent_le
 {
+    /** @brief See @ref sdc_hci_subevent_le_adv_report_t. */
+    SDC_HCI_SUBEVENT_LE_ADV_REPORT = 0x02,
+    /** @brief See @ref sdc_hci_subevent_le_directed_adv_report_t. */
+    SDC_HCI_SUBEVENT_LE_DIRECTED_ADV_REPORT = 0x0b,
+    /** @brief See @ref sdc_hci_subevent_le_ext_adv_report_t. */
+    SDC_HCI_SUBEVENT_LE_EXT_ADV_REPORT = 0x0d,
     /** @brief See @ref sdc_hci_subevent_le_subrate_change_t. */
     SDC_HCI_SUBEVENT_LE_SUBRATE_CHANGE = 0x23,
 };
@@ -281,6 +287,19 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t rfu : 9;
 } sdc_hci_le_adv_event_properties_params_t;
 
+/** @brief LE Advertising Report array parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t event_type;
+    uint8_t address_type;
+    uint8_t address[6];
+    uint8_t data_length;
+    uint8_t data[];
+    /* C does not allow fields to be placed after variable sized array
+    int8_t rssi;
+    */
+} sdc_hci_le_adv_report_array_params_t;
+
 /** @brief LE BIG Create Sync array parameters. */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -293,6 +312,50 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t cis_conn_handle;
     uint16_t acl_conn_handle;
 } sdc_hci_le_create_cis_array_params_t;
+
+/** @brief LE Directed Advertising Report array parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t event_type;
+    uint8_t address_type;
+    uint8_t address[6];
+    uint8_t direct_address_type;
+    uint8_t direct_address[6];
+    int8_t rssi;
+} sdc_hci_le_directed_adv_report_array_params_t;
+
+/** @brief Event_Type parameters for HCI_LE_Extended_Advertising_Report event. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t connectable_adv : 1;
+    uint16_t scannable_adv : 1;
+    uint16_t directed_adv : 1;
+    uint16_t scan_response : 1;
+    uint16_t legacy_adv_pdus_used : 1;
+    uint16_t data_status : 2;
+    uint16_t rfu : 9;
+} sdc_hci_le_ext_adv_report_array_event_type_params_t;
+
+/** @brief LE Extended Advertising Report array parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    union __PACKED __ALIGN(1) {
+        sdc_hci_le_ext_adv_report_array_event_type_params_t params;
+        uint8_t raw[2];
+    } event_type;
+    uint8_t address_type;
+    uint8_t address[6];
+    uint8_t primary_phy;
+    uint8_t secondary_phy;
+    uint8_t adv_sid;
+    int8_t tx_power;
+    int8_t rssi;
+    uint16_t periodic_adv_interval;
+    uint8_t direct_address_type;
+    uint8_t direct_address[6];
+    uint8_t data_length;
+    uint8_t data[];
+} sdc_hci_le_ext_adv_report_array_params_t;
 
 /** @brief LE Extended Create Connection [v1] array parameters. */
 typedef struct __PACKED __ALIGN(1)
@@ -539,6 +602,158 @@ typedef struct __PACKED __ALIGN(1)
  * @defgroup HCI_EVENTS Events
  * @{
  */
+
+/** @brief LE Advertising Report.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.7.65.2
+ *
+ * The HCI_LE_Advertising_Report event indicates that one or more Bluetooth
+ * devices have responded to an active scan or have broadcast advertisements
+ * that were received during a passive scan. The Controller may queue these
+ * advertising reports and send information from multiple devices in one
+ * HCI_LE_Advertising_Report event.
+ *
+ * This event shall only be generated if scanning was enabled using the
+ * HCI_LE_Set_Scan_Enable command. It only reports advertising events that
+ * used legacy advertising PDUs.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t num_reports;
+    /** C does not allow array of variable sized arrays, otherwise it should be @ref
+    sdc_hci_le_adv_report_array_params_t reports[]; */
+    uint8_t reports[];
+} sdc_hci_subevent_le_adv_report_t;
+
+/** @brief LE Directed Advertising Report.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.7.65.11
+ *
+ * The HCI_LE_Directed_Advertising_Report event indicates that directed
+ * advertisements have been received where the advertiser is using a resolvable
+ * private address for the TargetA field of the advertising PDU which the
+ * Controller is unable to resolve and the Scanning_Filter_Policy is equal to 0x02
+ * or 0x03, see Section 7.8.10. Direct_Address_Type and Direct_Address specify
+ * the address the directed advertisements are being directed to. Address_Type
+ * and Address specify the address of the advertiser sending the directed
+ * advertisements. The Controller may queue these advertising reports and send
+ * information from multiple advertisers in one HCI_LE_Directed_Advertising_-
+ * Report event.
+ *
+ * This event shall only be generated if scanning was enabled using the
+ * HCI_LE_Set_Scan_Enable command. It only reports advertising events that
+ * used legacy advertising PDUs.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t num_reports;
+    sdc_hci_le_directed_adv_report_array_params_t reports[];
+} sdc_hci_subevent_le_directed_adv_report_t;
+
+/** @brief LE Extended Advertising Report.
+ *
+ * The description below is extracted from Core_v5.4,
+ * Vol 4, Part E, Section 7.7.65.13
+ *
+ * The HCI_LE_Extended_Advertising_Report event indicates that one or more
+ * Bluetooth devices have responded to an active scan or have broadcast
+ * advertisements that were received during a passive scan. The Controller may
+ * coalesce multiple advertising reports from the same or different advertisers into
+ * a single HCI_LE_Extended_Advertising_Report event, provided all the
+ * parameters from all the advertising reports fit in a single HCI event.
+ *
+ * This event shall only be generated if scanning was enabled using the
+ * HCI_LE_Set_Extended_Scan_Enable command. It reports advertising events
+ * using either legacy or extended advertising PDUs.
+ *
+ * The Controller may split the data from a single advertisement or scan response
+ * (whether one PDU or several) into several reports. If so, each report except the
+ * last shall have an Event_Type with a data status field of "incomplete, more data
+ * to come", while the last shall have the value "complete"; the Address_Type,
+ * Address, Advertising_SID, Primary_PHY, and Secondary_PHY fields shall be
+ * the same in all the reports. No further reports shall be sent for a given adver-
+ * tisement or scan response after one with a Data_Status other than "incom-
+ * plete, more data to come".
+ *
+ * When a scan response is received, bits 0 to 2 and 4 of the event type shall
+ * indicate the properties of the original advertising event and the Advertising_SID
+ * field should be set to the value in the original scannable advertisement.
+ * An Event_Type with a data status field of "incomplete, data truncated" shall
+ * indicate that the Controller attempted to receive an AUX_CHAIN_IND PDU but
+ * was not successful or received it but was unable to store the data.
+ * Where the event being reported used a legacy advertising PDU, the Controller
+ * shall set the Event_Type to the value specified in Table 7.1.
+ *
+ *  PDU Type                                      Event_Type
+ *
+ *  ADV_IND                                       0b0010011
+ *
+ *  ADV_DIRECT_IND                                0b0010101
+ *
+ *  ADV_SCAN_IND                                  0b0010010
+ *
+ *  ADV_NONCONN_IND                               0b0010000
+ *
+ *  SCAN_RSP to an ADV_IND                        0b0011011
+ *
+ *  SCAN_RSP to an ADV_SCAN_IND                   0b0011010
+ *
+ * Table 7.1: Event_Type values for legacy PDUs
+ *
+ * If the Event_Type indicates a legacy PDU (bit 4 = 1), the Primary_PHY
+ * parameter shall indicate the LE 1M PHY and the Secondary_PHY parameter
+ * shall be set to 0x00. Otherwise, the Primary_PHY parameter shall indicate the
+ * PHY used to send the advertising PDU on the primary advertising physical
+ * channel and the Secondary_PHY parameter shall indicate the PHY used to
+ * send the advertising PDU(s), if any, on the secondary advertising physical
+ * channel. If the Advertising Coding Selection (Host Support) Link Layer feature
+ * bit is set (see [Vol 6] Part B, Section 4.6) and the Primary_PHY or
+ * Secondary_PHY parameter indicates that the LE Coded PHY was used, then
+ * the parameter shall also indicate which coding was used.
+ *
+ * The Periodic_Advertising_Interval event parameter shall be set to zero when
+ * no periodic advertising exists as part of the advertising set.
+ *
+ * The Direct_Address_Type and Direct_Address parameters shall contain the
+ * TargetA address in the advertising PDU for directed advertising event types (bit
+ * 2 = 1). These parameters shall be ignored for undirected advertising event
+ * types (bit 2 = 0). If the TargetA address is a resolvable private address that the
+ * Controller successfully resolved, then the value of Direct_Address_Type shall
+ * depend on the value of the Own_Address_Type parameter of the command
+ * that set the extended scan parameters. Direct_Address shall be set as follows:
+ * • If Direct_Address_Type equals 0x02, then Direct_Address shall be set to
+ *   either the TargetA field in the received advertisement or to the public device
+ *   address of the scanning device.
+ * • If Direct_Address_Type equals 0x03, then Direct_Address shall be set to
+ *   either the TargetA field in the received advertisement or to the address set
+ *   by the HCI_LE_Set_Random_Address command.
+ * • Otherwise Direct_Address shall be set to the TargetA field in the received
+ *   advertisement.
+ *
+ * When multiple advertising packets are used to complete a single advertising
+ * report (e.g., a packet containing an ADV_EXT_IND PDU combined with one
+ * containing an AUX_ADV_IND PDU), the RSSI event parameter shall be set
+ * based on the last packet received and the TX_Power event parameter shall be
+ * based on the last packet of the current advertisement or scan response
+ * received that contains a TxPower field. However, if an event has been sent
+ * with a TX_Power value other than 0x7F and a Data_Status of "incomplete,
+ * more data to come", and if no subsequent PDU with a TxPower field has been
+ * received, then subsequent events may instead have a TX_Power value of
+ * 0x7F.
+ *
+ * If the Controller receives an AUX_CHAIN_IND with no AdvData, it should send
+ * the report (or the last report if it has split the data) immediately without waiting
+ * for any subsequent AUX_CHAIN_IND PDUs.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t num_reports;
+    /** C does not allow array of variable sized arrays, otherwise it should be @ref
+    sdc_hci_le_ext_adv_report_array_params_t reports[]; */
+    uint8_t reports[];
+} sdc_hci_subevent_le_ext_adv_report_t;
 
 /** @brief LE Subrate Change.
  *
@@ -1628,6 +1843,8 @@ typedef struct __PACKED __ALIGN(1)
 {
     uint8_t adv_handle;
     uint8_t num_subevents;
+    /** C does not allow array of variable sized arrays, otherwise it should be @ref
+    sdc_hci_le_set_periodic_adv_subevent_data_array_params_t array_params[]; */
     uint8_t array_params[];
 } sdc_hci_cmd_le_set_periodic_adv_subevent_data_t;
 
