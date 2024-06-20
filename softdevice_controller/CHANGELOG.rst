@@ -9,6 +9,21 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Added
+=====
+
+* Support for the LE Set Path Loss Reporting Parameters and LE Set Path Loss Reporting Enable HCI commands. (DRGN-17376)
+
+Bug fixes
+=========
+
+* Fixed a rare assert that could happen when disabling a periodic advertising set with responses. (DRGN-22443)
+* Fixed an issue where the length byte of the HCI packet could be incorrect.
+  This could happen when the packet contained an LE BIG Sync Established event or LE BIG Complete event with status not equal to success. (DRGN-22441)
+
 nRF Connect SDK v2.7.0
 **********************
 
