@@ -21,6 +21,8 @@ config NRF_MODEM_LINK_BINARY_CELLULAR
 
 config NRF_MODEM_LINK_BINARY_DECT_PHY
 	bool "Link DECT PHY binary"
+	select EXPERIMENTAL
+
 endchoice
 
 config NRF_MODEM_LOG
