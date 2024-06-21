@@ -49,6 +49,10 @@ extern "C" {
 #define NRF_MODEM_DECT_PHY_RSSI2_NOT_MEASURED -32768
 /** @brief Signal to noise ratio not measured. */
 #define NRF_MODEM_DECT_PHY_SNR_NOT_MEASURED -32768
+/** @brief Voltage not measured. */
+#define NRF_MODEM_DECT_PHY_VOLTAGE_NOT_MEASURED 0
+/** @brief Special handle to cancel all operations in @ref nrf_modem_dect_phy_cancel */
+#define NRF_MODEM_DECT_PHY_HANDLE_CANCEL_ALL UINT32_MAX
 
 /** @brief Buffer status and Channel quality indicator not used. */
 #define NRF_MODEM_DECT_PHY_BS_CQI_NOT_USED 0
@@ -73,9 +77,9 @@ enum nrf_modem_dect_phy_err {
 	 */
 	NRF_MODEM_DECT_PHY_ERR_UNSUPPORTED_OP = 0x2,
 	/**
-	 * @brief Operation is not executing; it cannot be stopped.
+	 * @brief Operation not found.
 	 */
-	NRF_MODEM_DECT_PHY_ERR_NO_ONGOING_OP = 0x3,
+	NRF_MODEM_DECT_PHY_ERR_NOT_FOUND = 0x3,
 	/**
 	 * @brief Modem out of memory.
 	 */
@@ -135,6 +139,10 @@ enum nrf_modem_dect_phy_err {
 	 */
 	NRF_MODEM_DECT_PHY_ERR_COMBINED_OP_FAILED = 0x100A,
 	/**
+	 * @brief Operation is not allowed in the current radio mode.
+	 */
+	NRF_MODEM_DECT_PHY_ERR_RADIO_MODE_CONFLICT = 0x100B,
+	/**
 	 * @brief Unsupported carrier.
 	 */
 	NRF_MODEM_DECT_PHY_ERR_UNSUPPORTED_CARRIER = 0x6000,
@@ -193,54 +201,185 @@ struct nrf_modem_dect_phy_modem_cfg {
 	 */
 	struct {
 		/**
-		 * @brief From Idle to RSSI RF sampling start.
+		 * @brief Latency of transition from idle to RSSI.
+		 *
+		 * With radio modes:
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY
 		 */
-		uint32_t idle_to_rssi;
+		uint32_t idle_to_rssi_low_latency;
 		/**
-		 * @brief From RF sampling of RSSI to Idle.
+		 * @brief Latency of transition from RSSI operation to idle.
+		 *
+		 * With radio modes:
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY
 		 */
-		uint32_t rssi_to_idle;
+		uint32_t rssi_to_idle_low_latency;
 		/**
-		 * @brief From Idle to RX RF sampling start.
+		 * @brief Latency of transition from idle to RSSI.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
 		 */
-		uint32_t idle_to_rx;
+		uint32_t idle_to_rssi_non_lbt;
 		/**
-		 * @brief From RF sampling of RX to Idle.
+		 * @brief Latency of transition from RSSI to idle.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
 		 */
-		uint32_t rx_to_idle;
+		uint32_t rssi_to_idle_non_lbt;
 		/**
-		 * @brief From RF sampling of RX with RSSI measurement to Idle.
+		 * @brief Latency of transition from idle to RX.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
 		 */
-		uint32_t rx_rssi_to_idle;
+		uint32_t idle_to_rx_low_latency;
 		/**
-		 * @brief From RX stop request to RF sampling stop.
+		 * @brief Latency of transition from RX to idle.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
 		 */
-		uint32_t rx_stop_to_rf_off;
+		uint32_t rx_to_idle_low_latency;
 		/**
-		 * @brief From RX with RSSI measurement stop request to RF sampling stop.
+		 * @brief Latency of transition from RX with RSSI measurement to idle.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
 		 */
-		uint32_t rx_rssi_stop_to_rf_off;
+		uint32_t rx_rssi_to_idle_low_latency;
 		/**
-		 * @brief From Idle to TX RF sample transmission start.
+		 * @brief Latency of stopping an RX operation.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
 		 */
-		uint32_t idle_to_tx;
+		uint32_t rx_stop_to_rf_off_low_latency;
 		/**
-		 * @brief From Idle to TX with LBT monitoring RF sampling start.
+		 * @brief Latency of stopping an operation RX with RSSI measurement.
+		 *
+		 * With radio modes:
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY
 		 */
-		uint32_t idle_to_tx_with_lbt;
+		uint32_t rx_rssi_stop_to_rf_off_low_latency;
 		/**
-		 * @brief From TX RF sample transmission end (with or without LBT) to Idle.
+		 * @brief Latency of transition from idle to RX.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
 		 */
-		uint32_t tx_to_idle;
+		uint32_t idle_to_rx_non_lbt;
 		/**
-		 * @brief From Idle to TX with LBT monitoring RF sampling start in TX-RX operation.
+		 * @brief Latency of transition from RX to idle.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
 		 */
-		uint32_t idle_to_txrx_with_lbt;
+		uint32_t rx_to_idle_non_lbt;
 		/**
-		 * @brief From TX RF sample transmission end
-		 *	  to RX RF sampling start in TX-RX operation.
+		 * @brief Latency of transition from RX with RSSI measurement to idle.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
 		 */
-		uint32_t txrx_tx_to_rx;
+		uint32_t rx_rssi_to_idle_non_lbt;
+		/**
+		 * @brief Latency of stopping an RX operation.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
+		 */
+		uint32_t rx_stop_to_rf_off_non_lbt;
+		/**
+		 * @brief Latency of stopping an RX operation with RSSI measurement.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
+		 */
+		uint32_t rx_rssi_stop_to_rf_off_non_lbt;
+		/**
+		 * @brief Latency of transition from idle to TX.
+		 *
+		 * With radio modes:
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY
+		 */
+		uint32_t idle_to_tx_low_latency;
+		/**
+		 * @brief Latency of transition from idle to TX, with LBT monitoring.
+		 *
+		 * With radio modes:
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY
+		 */
+		uint32_t idle_to_tx_with_lbt_low_latency;
+		/**
+		 * @brief  Latency of transition from TX to idle state.
+		 *
+		 * With radio modes:
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY
+		 */
+		uint32_t tx_to_idle_low_latency;
+		/**
+		 * @brief Latency of transition from idle to TX.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
+		 */
+		uint32_t idle_to_tx_non_lbt;
+		/**
+		 * @brief Latency of transition from TX to idle.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
+		 */
+		uint32_t tx_to_idle_non_lbt;
+		/**
+		 * @brief Latency of transition from idle to combined TX-RX, with LBT monitoring.
+		 *
+		 * With radio modes:
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY
+		 */
+		uint32_t idle_to_txrx_with_lbt_low_latency;
+		/**
+		 * @brief Latency of transition in combined operation from TX to RX.
+		 *
+		 * With radio modes:
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY
+		 * - NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY
+		 */
+		uint32_t tx_to_rx_low_latency;
+		/**
+		 * @brief Latency of transition in combined operation from TX to RX.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
+		 */
+		uint32_t tx_to_rx_non_lbt;
+		/**
+		 * @brief Latency of transition from idle to radio mode change start.
+		 */
+		uint32_t idle_to_radio_mode_change;
+		/**
+		 * @brief Latency of transition from radio mode change back to idle.
+		 */
+		uint32_t radio_mode_change_to_idle;
+		/**
+		 * @brief Latency of transition from idle to standby.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY.
+		 */
+		uint32_t idle_to_standby_low_latency_with_standby;
+		/**
+		 * @brief Latency of transition from standby to idle.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY.
+		 */
+		uint32_t standby_to_idle_low_latency_with_standby;
+		/**
+		 * @brief Latency of transition from idle to standby.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
+		 */
+		uint32_t idle_to_standby_non_lbt;
+		/**
+		 * @brief Latency of transition from standby to idle.
+		 *
+		 * With radio mode NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY.
+		 */
+		uint32_t standby_to_idle_non_lbt;
 	} latency;
 };
 
@@ -440,155 +579,6 @@ struct nrf_modem_dect_phy_rx_filter {
 	 * See 6.2.1 and 4.2.3.3 in @ref DECT-SPEC "DECT-2020 NR Part 4".
 	 */
 	uint16_t receiver_identity;
-};
-
-/**
- * @brief Reception parameters (PCC).
- */
-struct nrf_modem_dect_phy_rx_pcc_status {
-	/**
-	 * @brief Synchronization Training Field start time.
-	 *
-	 * Start time of the STF of this reception in modem time.
-	 */
-	uint64_t stf_start_time;
-	/**
-	 * @brief Physical layer control field type.
-	 *
-	 * Valid values are 0 and 1 corresponding types 1 and 2, respectively.
-	 *
-	 * See 6.2.1 in @ref DECT-SPEC "DECT-2020 NR Part 4".
-	 */
-	uint8_t phy_type;
-	/**
-	 * @brief Validity of the physical header.
-	 */
-	enum nrf_modem_dect_phy_hdr_status header_status;
-	/**
-	 * @brief Received signal strength indicator (RSSI-2).
-	 *
-	 * Values are in dBm with 0.5 dBm resolution (Q14.1).
-	 *
-	 * See 8.3 in @ref DECT-SPEC "DECT-2020 NR Part 2".
-	 */
-	int16_t rssi_2;
-	/**
-	 * @brief Received signal to noise indicator (SNR).
-	 *
-	 * Values are dB values with 0.25 dB resolution (Q13.2).
-	 *
-	 * See 8.4 in @ref DECT-SPEC "DECT-2020 NR Part 2".
-	 */
-	int16_t snr;
-};
-
-/**
- * @brief Reception parameters (PDC).
- */
-struct nrf_modem_dect_phy_rx_pdc_status {
-	/**
-	 * @brief Received signal strength indicator (RSSI-2).
-	 *
-	 * Values are in dBm with 0.5 dBm resolution (Q14.1).
-	 *
-	 * See 8.3 in @ref DECT-SPEC "DECT-2020 NR Part 2".
-	 */
-	int16_t rssi_2;
-	/**
-	 * @brief Received signal to noise indicator (SNR).
-	 *
-	 * Values are dB values with 0.25 dB resolution (Q13.2).
-	 *
-	 * See 8.4 in @ref DECT-SPEC "DECT-2020 NR Part 2".
-	 */
-	int16_t snr;
-};
-
-/**
- * @brief Reception parameters for PCC CRC failures.
- */
-struct nrf_modem_dect_phy_rx_pcc_crc_failure {
-	/**
-	 * @brief Synchronization Training Field start time.
-	 *
-	 * Start time of the STF of this reception in modem time.
-	 */
-	uint64_t stf_start_time;
-	/**
-	 * @brief Received signal strength indicator (RSSI-2).
-	 *
-	 * Values are in dBm with 0.5 dBm resolution (Q14.1).
-	 *
-	 * See 8.3 in @ref DECT-SPEC "DECT-2020 NR Part 2".
-	 */
-	int16_t rssi_2;
-	/**
-	 * @brief Received signal to noise indicator (SNR).
-	 *
-	 * Values are dB values with 0.25 dB resolution (Q13.2).
-	 *
-	 * See 8.4 in @ref DECT-SPEC "DECT-2020 NR Part 2".
-	 */
-	int16_t snr;
-};
-
-/**
- * @brief Reception parameters for PDC CRC failures.
- */
-struct nrf_modem_dect_phy_rx_pdc_crc_failure {
-	/**
-	 * @brief Received signal strength indicator (RSSI-2).
-	 *
-	 * Values are in dBm with 0.5 dBm resolution (Q14.1).
-	 *
-	 * If this value is not measured, it is reported as
-	 * @ref NRF_MODEM_DECT_PHY_RSSI2_NOT_MEASURED.
-	 *
-	 * See 8.3 in @ref DECT-SPEC "DECT-2020 NR Part 2".
-	 */
-	int16_t rssi_2;
-	/**
-	 * @brief Received signal to noise indicator (SNR).
-	 *
-	 * Values are dB values with 0.25 dB resolution (Q13.2).
-	 *
-	 * If this value is not measured, it is reported as
-	 * @ref NRF_MODEM_DECT_PHY_SNR_NOT_MEASURED.
-	 *
-	 * See 8.4 in @ref DECT-SPEC "DECT-2020 NR Part 2".
-	 */
-	int16_t snr;
-};
-
-/**
- * @brief RSSI measurement.
- */
-struct nrf_modem_dect_phy_rssi_meas {
-	/**
-	 * @brief Measurement start time, in modem time units.
-	 */
-	uint64_t meas_start_time;
-	/**
-	 * @brief Handle of the operation.
-	 */
-	uint32_t handle;
-	/**
-	 * @brief The absolute channel frequency number on which the measurements were made.
-	 */
-	uint16_t carrier;
-	/**
-	 * @brief Number of measurements in @ref meas.
-	 */
-	uint16_t meas_len;
-	/**
-	 * @brief RSSI measurements, in dBm.
-	 *
-	 * If a symbol is measured, its measurement is in the interval [-1, -140].
-	 * If the measurement is saturated, the measured signal strength is reported
-	 * as a positive integer. If a symbol is not measured, its value is reported
-	 * as @ref NRF_MODEM_DECT_PHY_RSSI_NOT_MEASURED.
-	 */
-	int8_t *meas;
 };
 
 /**
@@ -822,6 +812,56 @@ struct nrf_modem_dect_phy_rssi_params {
 	enum nrf_modem_dect_phy_rssi_interval reporting_interval;
 };
 
+enum nrf_modem_dect_phy_radio_mode {
+	/**
+	 * @brief Low latency.
+	 *
+	 * This mode has the lowest latency, the best RX/TX switching performance,
+	 * and the highest power consumption. This is the only mode that supports
+	 * starting operations immediately, that is, operations whose configured
+	 * start time is zero.
+	 */
+	NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY,
+	/**
+	 * @brief Low latency with standby.
+	 *
+	 * This mode has the same RX/TX switching performance as the low latency mode,
+	 * but higher operation start-up latency due to radio entering standby mode
+	 * when possible. Power consumption is thus lower compared to the low latency mode.
+	 */
+	NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY_WITH_STANDBY,
+	/**
+	 * @brief Listen-before-talk disabled, with standby.
+	 *
+	 * This mode has the lowest power consumption, due the to modem entering
+	 * standby mode when possible and not using Listen-Before-Talk, at the cost
+	 * of higher start-up latency and worse RX/TX switching performance compared
+	 * to the other radio modes.
+	 */
+	NRF_MODEM_DECT_PHY_RADIO_MODE_NON_LBT_WITH_STANDBY,
+};
+
+struct nrf_modem_dect_phy_radio_config_params {
+	/**
+	 * @brief Operation start time as modem time.
+	 *
+	 * If zero, the operation will be executed immediately.
+	 *
+	 * This kind of scheduling can only be done when the modem is idle.
+	 */
+	uint64_t start_time;
+	/**
+	 * @brief Handle for the RSSI operation.
+	 *
+	 * An application-defined handle for the operation.
+	 */
+	uint32_t handle;
+	/**
+	 * @brief Desired radio mode.
+	 */
+	enum nrf_modem_dect_phy_radio_mode radio_mode;
+};
+
 /**
  * @brief Link configuration parameters.
  */
@@ -849,38 +889,50 @@ struct nrf_modem_dect_phy_link_config_params {
 };
 
 /**
- * @brief DECT PHY callbacks.
- *
- * Callbacks for user operations and incoming data.
- *
- * @note
- * All callbacks are executed in ISR.
+ * @brief Initialization event.
  */
-struct nrf_modem_dect_phy_callbacks {
+struct nrf_modem_dect_phy_init_event {
 	/**
-	 * @brief DECT PHY initialization callback.
+	 * @brief Operation result.
 	 *
-	 * The @p err parameter indicates the result of the operation.
-	 * It can be one of the following values:
+	 * Can be one of the following values:
 	 *
 	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
 	 * - @ref NRF_MODEM_DECT_PHY_ERR_NOT_ALLOWED
 	 * - @ref NRF_MODEM_DECT_PHY_ERR_TEMP_HIGH
 	 * - @ref NRF_MODEM_DECT_PHY_ERR_PROD_LOCK
-	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param temp Temperature in degrees Celsius.
-	 * @param err Operation result.
-	 * @param[in] cfg Modem configuration.
 	 */
-	void (*init)(const uint64_t *time, int16_t temp, enum nrf_modem_dect_phy_err err,
-		     const struct nrf_modem_dect_phy_modem_cfg *cfg);
-
+	enum nrf_modem_dect_phy_err err;
 	/**
-	 * @brief Callback to indicate the completion of RX, TX and RSSI measurement operations.
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+	/**
+	 * @brief Modem PHY configuration.
+	 */
+	struct nrf_modem_dect_phy_modem_cfg *cfg;
+	/**
+	 * @brief Temperature in degrees Celsius.
+	 */
+	int16_t temp;
+	/**
+	 * @brief Voltage in millivolts.
+	 */
+	uint16_t voltage;
+};
+
+/**
+ * @brief Operation complete event.
+ */
+struct nrf_modem_dect_phy_op_complete_event {
+	/**
+	 * @brief Handle of the operation.
+	 */
+	uint32_t handle;
+	/**
+	 * @brief Operation result.
 	 *
-	 * The @p err parameter indicates the result of the operation.
-	 * It can be one of the following values:
+	 * Can be one of the following values:
 	 *
 	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
 	 * - @ref NRF_MODEM_DECT_PHY_ERR_LBT_CHANNEL_BUSY
@@ -905,143 +957,413 @@ struct nrf_modem_dect_phy_callbacks {
 	 * - @ref NRF_MODEM_DECT_PHY_ERR_INVALID_DURATION
 	 * - @ref NRF_MODEM_DECT_PHY_ERR_INVALID_PARAMETER
 	 * - @ref NRF_MODEM_DECT_PHY_ERR_TEMP_HIGH
-	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param temp Temperature in degrees Celsius.
-	 * @param err Operation result.
-	 * @param handle Operation handle.
 	 */
-	void (*op_complete)(const uint64_t *time, int16_t temperature,
-			    enum nrf_modem_dect_phy_err err, uint32_t handle);
+	enum nrf_modem_dect_phy_err err;
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+	/**
+	 * @brief Temperature in degrees Celsius.
+	 */
+	int16_t temp;
+	/**
+	 * @brief Voltage in millivolts.
+	 */
+	uint16_t voltage;
+};
 
+/**
+ * @brief RSSI measurement event.
+ */
+struct nrf_modem_dect_phy_rssi_event {
+	/**
+	 * @brief Handle of the operation.
+	 */
+	uint32_t handle;
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+	/**
+	 * @brief Measurement start time, in modem time units.
+	 */
+	uint64_t meas_start_time;
+	/**
+	 * @brief The absolute channel frequency number on which the measurements were made.
+	 */
+	uint16_t carrier;
+	/**
+	 * @brief Number of measurements in @ref meas.
+	 */
+	uint16_t meas_len;
+	/**
+	 * @brief RSSI measurements, in dBm.
+	 *
+	 * If a symbol is measured, its measurement is in the interval [-1, -140].
+	 * If the measurement is saturated, the measured signal strength is reported
+	 * as a positive integer. If a symbol is not measured, its value is reported
+	 * as @ref NRF_MODEM_DECT_PHY_RSSI_NOT_MEASURED.
+	 */
+	int8_t *meas;
+};
+
+struct nrf_modem_dect_phy_cancel_event {
+	/**
+	 * @brief Handle of the operation.
+	 */
+	uint32_t handle;
+	/**
+	 * @brief Operation result.
+	 *
+	 * Can be one of the following values:
+	 *
+	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
+	 * - @ref NRF_MODEM_DECT_PHY_ERR_UNSUPPORTED_OP
+	 * - @ref NRF_MODEM_DECT_PHY_ERR_NOT_FOUND
+	 * - @ref NRF_MODEM_DECT_PHY_ERR_NOT_ALLOWED
+	 */
+	enum nrf_modem_dect_phy_err err;
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+};
+
+/**
+ * @brief PCC reception event.
+ */
+struct nrf_modem_dect_phy_pcc_event {
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+	/**
+	 * @brief Synchronization Training Field start time.
+	 *
+	 * Start time of the STF of this reception in modem time.
+	 */
+	uint64_t stf_start_time;
+	/**
+	 * @brief Validity of the physical header.
+	 */
+	enum nrf_modem_dect_phy_hdr_status header_status;
+	/**
+	 * @brief Physical layer control field type.
+	 *
+	 * Valid values are 0 and 1 corresponding types 1 and 2, respectively.
+	 *
+	 * See 6.2.1 in @ref DECT-SPEC "DECT-2020 NR Part 4".
+	 */
+	uint8_t phy_type;
+	/**
+	 * @brief PHY header.
+	 */
+	union nrf_modem_dect_phy_hdr hdr;
+	/**
+	 * @brief Received signal strength indicator (RSSI-2).
+	 *
+	 * Values are in dBm with 0.5 dBm resolution (Q14.1).
+	 *
+	 * See 8.3 in @ref DECT-SPEC "DECT-2020 NR Part 2".
+	 */
+	int16_t rssi_2;
+	/**
+	 * @brief Received signal to noise indicator (SNR).
+	 *
+	 * Values are dB values with 0.25 dB resolution (Q13.2).
+	 *
+	 * See 8.4 in @ref DECT-SPEC "DECT-2020 NR Part 2".
+	 */
+	int16_t snr;
+};
+
+/**
+ * @brief PCC reception CRC failure event.
+ */
+struct nrf_modem_dect_phy_pcc_crc_failure_event {
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+	/**
+	 * @brief Synchronization Training Field start time.
+	 *
+	 * Start time of the STF of this reception in modem time.
+	 */
+	uint64_t stf_start_time;
+	/**
+	 * @brief Received signal strength indicator (RSSI-2).
+	 *
+	 * Values are in dBm with 0.5 dBm resolution (Q14.1).
+	 *
+	 * See 8.3 in @ref DECT-SPEC "DECT-2020 NR Part 2".
+	 */
+	int16_t rssi_2;
+	/**
+	 * @brief Received signal to noise indicator (SNR).
+	 *
+	 * Values are dB values with 0.25 dB resolution (Q13.2).
+	 *
+	 * See 8.4 in @ref DECT-SPEC "DECT-2020 NR Part 2".
+	 */
+	int16_t snr;
+};
+
+/**
+ * @brief PDC reception event.
+ */
+struct nrf_modem_dect_phy_pdc_event {
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+	/**
+	 * @brief Received signal strength indicator (RSSI-2).
+	 *
+	 * Values are in dBm with 0.5 dBm resolution (Q14.1).
+	 *
+	 * See 8.3 in @ref DECT-SPEC "DECT-2020 NR Part 2".
+	 */
+	int16_t rssi_2;
+	/**
+	 * @brief Received signal to noise indicator (SNR).
+	 *
+	 * Values are dB values with 0.25 dB resolution (Q13.2).
+	 *
+	 * See 8.4 in @ref DECT-SPEC "DECT-2020 NR Part 2".
+	 */
+	int16_t snr;
+	/**
+	 * @brief Received data payload.
+	 */
+	void *data;
+	/**
+	 * @brief Data payload length, in bytes.
+	 */
+	size_t len;
+};
+
+/**
+ * @brief PDC CRC failure event.
+ */
+struct nrf_modem_dect_phy_pdc_crc_failure_event {
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+	/**
+	 * @brief Received signal strength indicator (RSSI-2).
+	 *
+	 * Values are in dBm with 0.5 dBm resolution (Q14.1).
+	 *
+	 * If this value is not measured, it is reported as
+	 * @ref NRF_MODEM_DECT_PHY_RSSI2_NOT_MEASURED.
+	 *
+	 * See 8.3 in @ref DECT-SPEC "DECT-2020 NR Part 2".
+	 */
+	int16_t rssi_2;
+	/**
+	 * @brief Received signal to noise indicator (SNR).
+	 *
+	 * Values are dB values with 0.25 dB resolution (Q13.2).
+	 *
+	 * If this value is not measured, it is reported as
+	 * @ref NRF_MODEM_DECT_PHY_SNR_NOT_MEASURED.
+	 *
+	 * See 8.4 in @ref DECT-SPEC "DECT-2020 NR Part 2".
+	 */
+	int16_t snr;
+};
+
+/**
+ * @brief Radio configuration event.
+ */
+struct nrf_modem_dect_phy_radio_config_event {
+	/**
+	 * @brief Handle of the operation.
+	 */
+	uint32_t handle;
+	/**
+	 * @brief Operation result.
+	 *
+	 * Can be one of the following values:
+	 *
+	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
+	 */
+	enum nrf_modem_dect_phy_err err;
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+};
+
+struct nrf_modem_dect_phy_link_config_event {
+	/**
+	 * @brief Operation result.
+	 *
+	 * Can be one of the following values:
+	 *
+	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
+	 * - @ref NRF_MODEM_DECT_PHY_ERR_NO_MEMORY
+	 * - @ref NRF_MODEM_DECT_PHY_ERR_NOT_ALLOWED
+	 * - @ref NRF_MODEM_DECT_PHY_ERR_INVALID_PARAMETER
+	 */
+	enum nrf_modem_dect_phy_err err;
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+};
+
+/**
+ * @brief Time get event.
+ */
+struct nrf_modem_dect_phy_time_get_event {
+	/**
+	 * @brief Operation result.
+	 *
+	 * Can be one of the following values:
+	 *
+	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
+	 */
+	enum nrf_modem_dect_phy_err err;
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+};
+
+/**
+ * @brief Capability get event.
+ */
+struct nrf_modem_dect_phy_capability_get_event {
+	/**
+	 * @brief Operation result.
+	 *
+	 * Can be one of the following values:
+	 *
+	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
+	 */
+	enum nrf_modem_dect_phy_err err;
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+	/**
+	 * @brief PHY capability.
+	 */
+	struct nrf_modem_dect_phy_capability *capability;
+};
+
+struct nrf_modem_dect_phy_deinit_event {
+	/**
+	 * @brief Operation result.
+	 *
+	 * Can be one of the following values:
+	 *
+	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
+	 * - @ref NRF_MODEM_DECT_PHY_NOT_ALLOWED
+	 */
+	enum nrf_modem_dect_phy_err err;
+	/**
+	 * @brief Modem time, in modem time units.
+	 */
+	uint64_t time;
+};
+
+/**
+ * @brief DECT PHY callbacks.
+ *
+ * Callbacks for user operations and incoming data.
+ *
+ * @note
+ * All callbacks are executed in ISR.
+ */
+struct nrf_modem_dect_phy_callbacks {
+	/**
+	 * @brief DECT PHY initialization callback.
+	 *
+	 * @param[in] evt Event parameters.
+	 */
+	void (*init)(const struct nrf_modem_dect_phy_init_event *evt);
+	/**
+	 * @brief Callback to indicate the completion of RX, TX and RSSI measurement operations.
+	 *
+	 * @param[in] evt Event parameters.
+	 */
+	void (*op_complete)(const struct nrf_modem_dect_phy_op_complete_event *evt);
 	/**
 	 * @brief Callback to receive RSSI measurements.
 	 *
 	 * Callback function to receive the RSSI measurements requested
 	 * with @ref nrf_modem_dect_phy_rssi or @ref nrf_modem_dect_phy_rx.
 	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param[in] meas RSSI measurement.
+	 * @param[in] evt Event parameters.
 	 */
-	void (*rssi)(const uint64_t *time, const struct nrf_modem_dect_phy_rssi_meas *meas);
-
+	void (*rssi)(const struct nrf_modem_dect_phy_rssi_event *evt);
 	/**
-	 * @brief Callback for @ref nrf_modem_dect_phy_rx_stop.
+	 * @brief Callback for @ref nrf_modem_dect_phy_cancel.
 	 *
-	 * When an RX operation is stopped, the operation complete callback will be called
-	 * once the operation has fully stopped. That is, it is possible that the
-	 * operation hasn't been fully stopped at the time this callback is called.
-
-	 * The @p err parameter indicates the result of the operation.
-	 * It can be one of the following values:
-	 *
-	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
-	 * - @ref NRF_MODEM_DECT_PHY_ERR_UNSUPPORTED_OP
-	 * - @ref NRF_MODEM_DECT_PHY_ERR_NO_ONGOING_OP
-	 * - @ref NRF_MODEM_DECT_PHY_ERR_NOT_ALLOWED
-	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param err Operation result.
-	 * @param handle Operation handle.
+	 * @param[in] evt Event parameters.
 	 */
-	void (*rx_stop)(const uint64_t *time, enum nrf_modem_dect_phy_err err, uint32_t handle);
-
+	void (*cancel)(const struct nrf_modem_dect_phy_cancel_event *evt);
 	/**
 	 * @brief Callback for control channel reception.
 	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param status Reception data.
-	 * @param[in] hdr Physical layer control header.
+	 * @param[in] evt Event parameters.
 	 */
-	void (*pcc)(const uint64_t *time, const struct nrf_modem_dect_phy_rx_pcc_status *status,
-		    const union nrf_modem_dect_phy_hdr *hdr);
-
+	void (*pcc)(const struct nrf_modem_dect_phy_pcc_event *evt);
 	/**
 	 * @brief Callback for CRC failures on the physical control channel.
 	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param[in] crc_failure CRC failure information.
+	 * @param[in] evt Event parameters.
 	 */
-	void (*pcc_crc_err)(const uint64_t *time,
-			    const struct nrf_modem_dect_phy_rx_pcc_crc_failure *crc_failure);
-
+	void (*pcc_crc_err)(const struct nrf_modem_dect_phy_pcc_crc_failure_event *evt);
 	/**
 	 * @brief Callback for data channel reception.
 	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param status Reception data.
-	 * @param[in] data Data received.
-	 * @param len Size of received data.
+	 * @param[in] evt Event parameters.
 	 */
-	void (*pdc)(const uint64_t *time, const struct nrf_modem_dect_phy_rx_pdc_status *status,
-		    const void *data, uint32_t len);
-
+	void (*pdc)(const struct nrf_modem_dect_phy_pdc_event *evt);
 	/**
 	 * @brief Callback for CRC failures on the physical data channel.
 	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param[in] crc_failure CRC failure information.
+	 * @param[in] evt Event parameters.
 	 */
-	void (*pdc_crc_err)(const uint64_t *time,
-			    const struct nrf_modem_dect_phy_rx_pdc_crc_failure *crc_failure);
-
+	void (*pdc_crc_err)(const struct nrf_modem_dect_phy_pdc_crc_failure_event *evt);
+	/**
+	 * @brief Callback for @ref nrf_modem_dect_phy_radio_config.
+	 *
+	 * @param[in] evt Event parameters.
+	 */
+	void (*radio_config)(const struct nrf_modem_dect_phy_radio_config_event *evt);
 	/**
 	 * @brief Callback for @ref nrf_modem_dect_phy_link_config.
 	 *
-	 * The @p err parameter indicates the result of the operation.
-	 * It can be one of the following values:
-	 *
-	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
-	 * - @ref NRF_MODEM_DECT_PHY_ERR_NO_MEMORY
-	 * - @ref NRF_MODEM_DECT_PHY_ERR_NOT_ALLOWED
-	 * - @ref NRF_MODEM_DECT_PHY_ERR_INVALID_PARAMETER
-	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param err Operation result.
+	 * @param[in] evt Event parameters.
 	 */
-	void (*link_config)(const uint64_t *time, enum nrf_modem_dect_phy_err err);
-
+	void (*link_config)(const struct nrf_modem_dect_phy_link_config_event *evt);
 	/**
 	 * @brief Callback for @ref nrf_modem_dect_phy_time_get.
 	 *
 	 * The @p err parameter indicates the result of the operation.
-	 * It can be one of the following values:
 	 *
-	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
-	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param err Operation result.
+	 * @param[in] evt Event parameters.
 	 */
-	void (*time_get)(const uint64_t *time, enum nrf_modem_dect_phy_err err);
-
+	void (*time_get)(const struct nrf_modem_dect_phy_time_get_event *evt);
 	/**
 	 * @brief Callback for @ref nrf_modem_dect_phy_capability_get.
 	 *
-	 * The @p err parameter indicates the result of the operation.
-	 * It can be one of the following values:
-	 *
-	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
-	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param err Operation result.
-	 * @param[in] capability PHY capabilities.
+	 * @param[in] evt Event parameters.
 	 */
-	void (*capability_get)(const uint64_t *time, enum nrf_modem_dect_phy_err err,
-			       const struct nrf_modem_dect_phy_capability *capability);
-
+	void (*capability_get)(const struct nrf_modem_dect_phy_capability_get_event *evt);
 	/**
 	 * @brief Callback for @ref nrf_modem_dect_phy_deinit.
 	 *
-	 * The @p err parameter indicates the result of the operation.
-	 * It can be one of the following values:
-	 *
-	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
-	 * - @ref NRF_MODEM_DECT_PHY_ERR_NOT_ALLOWED
-	 *
-	 * @param[in] time Modem time, in modem time units.
-	 * @param err Operation result.
+	 * @param[in] evt Event parameters.
 	 */
-	void (*deinit)(const uint64_t *time, enum nrf_modem_dect_phy_err err);
+	void (*deinit)(const struct nrf_modem_dect_phy_deinit_event *evt);
 };
 
 /**
@@ -1131,7 +1453,7 @@ int nrf_modem_dect_phy_deinit(void);
  * Incoming data received on the physical layer control and data channels is sent to the
  * @ref nrf_modem_dect_phy_callbacks.pcc and @ref nrf_modem_dect_phy_callbacks.pdc callbacks.
  *
- * When the operation has completed, either successfully or unsuccessfully, the result is sent
+ * When the operation has completed, either successfully or unsuccesfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.
  *
@@ -1149,7 +1471,7 @@ int nrf_modem_dect_phy_rx(const struct nrf_modem_dect_phy_rx_params *params);
  *
  * Schedule a data transmission with given parameters.
  *
- * When the operation has completed, either successfully or unsuccessfully, the result is sent
+ * When the operation has completed, either successfully or unsuccesfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.
  *
@@ -1177,7 +1499,7 @@ int nrf_modem_dect_phy_tx(const struct nrf_modem_dect_phy_tx_params *params);
  * received. In that case modem will inject ACK or NACK feedback into the Transmission feedback
  * field based on the PDC reception result once the reception is complete.
  *
- * When the operation has completed, either successfully or unsuccessfully, the result is sent
+ * When the operation has completed, either successfully or unsuccesfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.
  *
@@ -1200,11 +1522,11 @@ int nrf_modem_dect_phy_tx_harq(const struct nrf_modem_dect_phy_tx_params *params
  * The RX operation scheduling is relative to the end of the TX operation and must include
  * the guard time.
  *
- * When the TX operation has completed, either successfully or unsuccessfully, the result is sent
+ * When the TX operation has completed, either successfully or unsuccesfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.tx.
  *
- * When the RX operation has completed, either successfully or unsuccessfully, the result is sent
+ * When the RX operation has completed, either successfully or unsuccesfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.rx.
  *
@@ -1223,7 +1545,7 @@ int nrf_modem_dect_phy_tx_rx(const struct nrf_modem_dect_phy_tx_rx_params *param
  * Schedule an RSSI measurement operation with given parameters.
  * The measurements are sent to the @ref nrf_modem_dect_phy_callbacks.rssi callback.
  *
- * When the operation has completed, either successfully or unsuccessfully, the result is sent
+ * When the operation has completed, either successfully or unsuccesfully, the result is sent
  * to the @ref nrf_modem_dect_phy_callbacks.op_complete callback, with a `handle`
  * parameter equal to the `handle` specified in @p params.
  *
@@ -1237,25 +1559,45 @@ int nrf_modem_dect_phy_tx_rx(const struct nrf_modem_dect_phy_tx_rx_params *param
 int nrf_modem_dect_phy_rssi(const struct nrf_modem_dect_phy_rssi_params *params);
 
 /**
- * @brief Stop an ongoing reception.
+ * @brief Cancel an operation.
  *
- * Stop an ongoing reception before its duration has ended; this can take more or less
- * time depending on the internal state of the operation at the time the request is received.
+ * Cancel an ongoing operation or an operation scheduled to be executed.
+ *
+ * If an operation is canceled while executing, it is reported as having completed successfully.
+ * Otherwise, if an operation is canceled before it could be executed,
+ * the operation complete event will report @ref NRF_MODEM_DECT_PHY_ERR_OP_CANCELED.
  *
  * This operation is asynchronous. The result of the operation is sent to the
- * @ref nrf_modem_dect_phy_callbacks.rx_stop callback.
+ * @ref nrf_modem_dect_phy_callbacks.cancel callback. This callback is invoked after
+ * the operation complete callback.
  *
- * @note
- * Only RX operations can be stopped.
- *
- * @param handle  Handle of the operation to be stopped.
+ * @param handle  Handle of the operation to be canceled,
+ *		  or @ref NRF_MODEM_DECT_PHY_HANDLE_CANCEL_ALL to cancel all operations.
  *
  * @retval 0           Request was sent to modem.
  * @retval -NRF_EPERM  The Modem library is not initialized.
  * @retval -NRF_EFAULT Callback configuration is invalid.
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  */
-int nrf_modem_dect_phy_rx_stop(uint32_t handle);
+int nrf_modem_dect_phy_cancel(uint32_t handle);
+
+/**
+ * @brief Configure radio mode.
+ *
+ * Configure the radio to achieve desired operation latency,
+ * RX/TX switching performance and power consumption.
+ *
+ * This operation is asynchronous. The result of the operation is sent to the
+ * @ref nrf_modem_dect_phy_callbacks.radio_config callback.
+ *
+ * @param[in] params Radio mode configuration parameters.
+ *
+ * @retval 0           Request was sent to modem.
+ * @retval -NRF_EPERM  The Modem library is not initialized.
+ * @retval -NRF_EFAULT Callback configuration is invalid, or @p params is @c NULL.
+ * @retval -NRF_ENOMEM Not enough shared memory for this request.
+ */
+int nrf_modem_dect_phy_radio_config(const struct nrf_modem_dect_phy_radio_config_params *params);
 
 /**
  * @brief Configure links.
