@@ -7,8 +7,8 @@ Changelog
    :local:
    :depth: 2
 
-nRF Connect SDK v2.7.0
-**********************
+Main Branch
+***********
 
 Changes
 =======
