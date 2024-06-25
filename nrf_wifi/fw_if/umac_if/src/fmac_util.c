@@ -89,54 +89,44 @@ void nrf_wifi_util_convert_to_eth(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	struct nrf_wifi_fmac_eth_hdr *ehdr = NULL;
 	unsigned int len = 0;
 
-	len = nrf_wifi_osal_nbuf_data_size(fmac_dev_ctx->fpriv->opriv,
-					   nwb);
+	len = nrf_wifi_osal_nbuf_data_size(nwb);
 
 	ehdr = (struct nrf_wifi_fmac_eth_hdr *)
-		nrf_wifi_osal_nbuf_data_push(fmac_dev_ctx->fpriv->opriv,
-					     nwb,
+		nrf_wifi_osal_nbuf_data_push(nwb,
 					     sizeof(struct nrf_wifi_fmac_eth_hdr));
 
 	switch (hdr->fc & (NRF_WIFI_FCTL_TODS | NRF_WIFI_FCTL_FROMDS)) {
 	case (NRF_WIFI_FCTL_TODS | NRF_WIFI_FCTL_FROMDS):
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      ehdr->src,
+		nrf_wifi_osal_mem_cpy(ehdr->src,
 				      hdr->addr_4,
 				      NRF_WIFI_FMAC_ETH_ADDR_LEN);
 
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      ehdr->dst,
+		nrf_wifi_osal_mem_cpy(ehdr->dst,
 				      hdr->addr_1,
 				      NRF_WIFI_FMAC_ETH_ADDR_LEN);
 		break;
 	case (NRF_WIFI_FCTL_FROMDS):
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      ehdr->src,
+		nrf_wifi_osal_mem_cpy(ehdr->src,
 				      hdr->addr_3,
 				      NRF_WIFI_FMAC_ETH_ADDR_LEN);
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      ehdr->dst,
+		nrf_wifi_osal_mem_cpy(ehdr->dst,
 				      hdr->addr_1,
 				      NRF_WIFI_FMAC_ETH_ADDR_LEN);
 		break;
 	case (NRF_WIFI_FCTL_TODS):
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      ehdr->src,
+		nrf_wifi_osal_mem_cpy(ehdr->src,
 				      hdr->addr_2,
 				      NRF_WIFI_FMAC_ETH_ADDR_LEN);
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      ehdr->dst,
+		nrf_wifi_osal_mem_cpy(ehdr->dst,
 				      hdr->addr_3,
 				      NRF_WIFI_FMAC_ETH_ADDR_LEN);
 		break;
 	default:
 		/* Both FROM and TO DS bit is zero*/
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      ehdr->src,
+		nrf_wifi_osal_mem_cpy(ehdr->src,
 				      hdr->addr_2,
 				      NRF_WIFI_FMAC_ETH_ADDR_LEN);
-		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-				      ehdr->dst,
+		nrf_wifi_osal_mem_cpy(ehdr->dst,
 				      hdr->addr_1,
 				      NRF_WIFI_FMAC_ETH_ADDR_LEN);
 
@@ -162,38 +152,30 @@ void nrf_wifi_util_rx_convert_amsdu_to_eth(struct nrf_wifi_fmac_dev_ctx *fmac_de
 
 	amsdu_hdr_len = sizeof(struct nrf_wifi_fmac_amsdu_hdr);
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      &amsdu_hdr,
-			      nrf_wifi_osal_nbuf_data_get(fmac_dev_ctx->fpriv->opriv,
-							  nwb),
+	nrf_wifi_osal_mem_cpy(&amsdu_hdr,
+			      nrf_wifi_osal_nbuf_data_get(nwb),
 			      amsdu_hdr_len);
 
-	nwb_data = (unsigned char *)nrf_wifi_osal_nbuf_data_get(fmac_dev_ctx->fpriv->opriv,
-								nwb) + amsdu_hdr_len;
+	nwb_data = (unsigned char *)nrf_wifi_osal_nbuf_data_get(nwb) + amsdu_hdr_len;
 
 	eth_type = nrf_wifi_util_rx_get_eth_type(fmac_dev_ctx,
 						 nwb_data);
 
-	nrf_wifi_osal_nbuf_data_pull(fmac_dev_ctx->fpriv->opriv,
-				     nwb,
+	nrf_wifi_osal_nbuf_data_pull(nwb,
 				     (amsdu_hdr_len +
 				      nrf_wifi_util_get_skip_header_bytes(eth_type)));
 
-	len = nrf_wifi_osal_nbuf_data_size(fmac_dev_ctx->fpriv->opriv,
-					   nwb);
+	len = nrf_wifi_osal_nbuf_data_size(nwb);
 
 	ehdr = (struct nrf_wifi_fmac_eth_hdr *)
-		nrf_wifi_osal_nbuf_data_push(fmac_dev_ctx->fpriv->opriv,
-					     nwb,
+		nrf_wifi_osal_nbuf_data_push(nwb,
 					     sizeof(struct nrf_wifi_fmac_eth_hdr));
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      ehdr->src,
+	nrf_wifi_osal_mem_cpy(ehdr->src,
 			      amsdu_hdr.src,
 			      NRF_WIFI_FMAC_ETH_ADDR_LEN);
 
-	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
-			      ehdr->dst,
+	nrf_wifi_osal_mem_cpy(ehdr->dst,
 			      amsdu_hdr.dst,
 			      NRF_WIFI_FMAC_ETH_ADDR_LEN);
 
@@ -219,14 +201,12 @@ int nrf_wifi_util_get_tid(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	unsigned short ipv6_hdr = 0;
 	void *nwb_data = NULL;
 
-	nwb_data = nrf_wifi_osal_nbuf_data_get(fmac_dev_ctx->fpriv->opriv,
-					       nwb);
+	nwb_data = nrf_wifi_osal_nbuf_data_get(nwb);
 
 	ether_type = nrf_wifi_util_tx_get_eth_type(fmac_dev_ctx,
 						   nwb_data);
 
-	nwb_data = (unsigned char *)nrf_wifi_osal_nbuf_data_get(fmac_dev_ctx->fpriv->opriv,
-								nwb) + NRF_WIFI_FMAC_ETH_HDR_LEN;
+	nwb_data = (unsigned char *)nrf_wifi_osal_nbuf_data_get(nwb) + NRF_WIFI_FMAC_ETH_HDR_LEN;
 
 	switch (ether_type & NRF_WIFI_FMAC_ETH_TYPE_MASK) {
 	/* If VLAN 802.1Q (0x8100) ||
@@ -302,8 +282,7 @@ int nrf_wifi_util_get_vif_indx(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	}
 
 	if (vif_index == -1) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid vif_index = %d",
+		nrf_wifi_osal_log_err("%s: Invalid vif_index = %d",
 				      __func__,
 				      vif_index);
 	}
@@ -315,8 +294,7 @@ int nrf_wifi_util_get_vif_indx(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 unsigned char *nrf_wifi_util_get_dest(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				      void *nwb)
 {
-	return nrf_wifi_osal_nbuf_data_get(fmac_dev_ctx->fpriv->opriv,
-					   nwb);
+	return nrf_wifi_osal_nbuf_data_get(nwb);
 }
 
 
@@ -335,16 +313,14 @@ unsigned char *nrf_wifi_util_get_ra(struct nrf_wifi_fmac_vif_ctx *vif,
 		return vif->bssid;
 	}
 
-	return nrf_wifi_osal_nbuf_data_get(vif->fmac_dev_ctx->fpriv->opriv,
-					   nwb);
+	return nrf_wifi_osal_nbuf_data_get(nwb);
 }
 
 
 unsigned char *nrf_wifi_util_get_src(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				     void *nwb)
 {
-	return (unsigned char *)nrf_wifi_osal_nbuf_data_get(fmac_dev_ctx->fpriv->opriv,
-							    nwb) + NRF_WIFI_FMAC_ETH_ADDR_LEN;
+	return (unsigned char *)nrf_wifi_osal_nbuf_data_get(nwb) + NRF_WIFI_FMAC_ETH_ADDR_LEN;
 }
 
 #endif /* CONFIG_NRF700X_STA_MODE */

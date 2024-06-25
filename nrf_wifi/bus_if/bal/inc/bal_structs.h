@@ -21,7 +21,6 @@ struct nrf_wifi_bal_cfg_params {
 
 /**
  * struct nrf_wifi_bal_priv - Structure to hold context information for the BAL
- * @opriv: Pointer to the OSAL context.
  * @bus_priv: Pointer to a specific bus context.
  * @ops: Pointer to bus operations to be provided by a specific bus
  *       implementation.
@@ -32,7 +31,6 @@ struct nrf_wifi_bal_cfg_params {
  * be kept updated over the duration of the BAL operation.
  */
 struct nrf_wifi_bal_priv {
-	struct nrf_wifi_osal_priv *opriv;
 	void *bus_priv;
 	struct nrf_wifi_bal_ops *ops;
 

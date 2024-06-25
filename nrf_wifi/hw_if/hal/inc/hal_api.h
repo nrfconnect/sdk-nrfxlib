@@ -32,7 +32,6 @@ extern const struct nrf70_fw_addr_info nrf70_fw_addr_info[];
 /**
  * nrf_wifi_hal_init() - Initialize the HAL layer.
  *
- * @opriv: Pointer to the OSAL layer.
  * @cfg_params: Parameters needed to configure the HAL for WLAN operation.
  * @intr_callbk_fn: Pointer to the callback function which the user of this
  *                  layer needs to implement to handle events from the RPU.
@@ -46,8 +45,7 @@ extern const struct nrf70_fw_addr_info nrf70_fw_addr_info[];
  * Returns: Pointer to instance of HAL layer context.
  */
 struct nrf_wifi_hal_priv *
-nrf_wifi_hal_init(struct nrf_wifi_osal_priv *opriv,
-		  struct nrf_wifi_hal_cfg_params *cfg_params,
+nrf_wifi_hal_init(struct nrf_wifi_hal_cfg_params *cfg_params,
 		  enum nrf_wifi_status (*intr_callbk_fn)(void *mac_ctx,
 							 void *event_data,
 							 unsigned int len),

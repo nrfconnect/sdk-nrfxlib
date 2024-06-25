@@ -44,36 +44,31 @@ enum nrf_wifi_status hal_rpu_reg_read(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 
 	if ((val == NULL) ||
 	    !hal_rpu_is_reg(rpu_reg_addr)) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid params, val = %p, rpu_reg (0x%x)",
+		nrf_wifi_osal_log_err("%s: Invalid params, val = %p, rpu_reg (0x%x)",
 				      __func__,
 				      val,
 				      rpu_reg_addr);
 		return status;
 	}
 
-	status = pal_rpu_addr_offset_get(hal_dev_ctx->hpriv->opriv,
-					 rpu_reg_addr,
+	status = pal_rpu_addr_offset_get(rpu_reg_addr,
 					 &addr_offset,
 					 hal_dev_ctx->curr_proc);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: pal_rpu_addr_offset_get failed",
+		nrf_wifi_osal_log_err("%s: pal_rpu_addr_offset_get failed",
 				      __func__);
 		return status;
 	}
 
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
-	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-					hal_dev_ctx->rpu_ps_lock,
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->rpu_ps_lock,
 					&flags);
 
 	status = hal_rpu_ps_wake(hal_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: RPU wake failed",
+		nrf_wifi_osal_log_err("%s: RPU wake failed",
 				      __func__);
 		goto out;
 	}
@@ -83,8 +78,7 @@ enum nrf_wifi_status hal_rpu_reg_read(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 				      addr_offset);
 
 	if (*val == 0xFFFFFFFF) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Error !! Value read at addr_offset = %lx is = %X",
+		nrf_wifi_osal_log_err("%s: Error !! Value read at addr_offset = %lx is = %X",
 				      __func__,
 				      addr_offset,
 				      *val);
@@ -95,8 +89,7 @@ enum nrf_wifi_status hal_rpu_reg_read(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 	status = NRF_WIFI_STATUS_SUCCESS;
 out:
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
-	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->rpu_ps_lock,
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->rpu_ps_lock,
 				       &flags);
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 
@@ -119,35 +112,30 @@ enum nrf_wifi_status hal_rpu_reg_write(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 	}
 
 	if (!hal_rpu_is_reg(rpu_reg_addr)) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: Invalid params, rpu_reg_addr (0x%X)",
+		nrf_wifi_osal_log_err("%s: Invalid params, rpu_reg_addr (0x%X)",
 				      __func__,
 				      rpu_reg_addr);
 		return status;
 	}
 
-	status = pal_rpu_addr_offset_get(hal_dev_ctx->hpriv->opriv,
-					 rpu_reg_addr,
+	status = pal_rpu_addr_offset_get(rpu_reg_addr,
 					 &addr_offset,
 					 hal_dev_ctx->curr_proc);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: pal_rpu_get_region_offset failed",
+		nrf_wifi_osal_log_err("%s: pal_rpu_get_region_offset failed",
 				      __func__);
 		return status;
 	}
 
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
-	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->hpriv->opriv,
-					hal_dev_ctx->rpu_ps_lock,
+	nrf_wifi_osal_spinlock_irq_take(hal_dev_ctx->rpu_ps_lock,
 					&flags);
 
 	status = hal_rpu_ps_wake(hal_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(hal_dev_ctx->hpriv->opriv,
-				      "%s: RPU wake failed",
+		nrf_wifi_osal_log_err("%s: RPU wake failed",
 				      __func__);
 		goto out;
 	}
@@ -161,8 +149,7 @@ enum nrf_wifi_status hal_rpu_reg_write(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 
 #ifdef CONFIG_NRF_WIFI_LOW_POWER
 out:
-	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->hpriv->opriv,
-				       hal_dev_ctx->rpu_ps_lock,
+	nrf_wifi_osal_spinlock_irq_rel(hal_dev_ctx->rpu_ps_lock,
 				       &flags);
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 

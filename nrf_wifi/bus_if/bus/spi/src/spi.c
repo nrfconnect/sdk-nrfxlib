@@ -39,37 +39,31 @@ static void *nrf_wifi_bus_spi_dev_add(void *bus_priv,
 
 	spi_priv = bus_priv;
 
-	spi_dev_ctx = nrf_wifi_osal_mem_zalloc(spi_priv->opriv,
-						sizeof(*spi_dev_ctx));
+	spi_dev_ctx = nrf_wifi_osal_mem_zalloc(sizeof(*spi_dev_ctx));
 
 	if (!spi_dev_ctx) {
-		nrf_wifi_osal_log_err(spi_priv->opriv,
-				      "%s: Unable to allocate spi_dev_ctx", __func__);
+		nrf_wifi_osal_log_err("%s: Unable to allocate spi_dev_ctx", __func__);
 		goto out;
 	}
 
 	spi_dev_ctx->spi_priv = spi_priv;
 	spi_dev_ctx->bal_dev_ctx = bal_dev_ctx;
 
-	spi_dev_ctx->os_spi_dev_ctx = nrf_wifi_osal_bus_spi_dev_add(spi_priv->opriv,
-								       spi_priv->os_spi_priv,
-								       spi_dev_ctx);
+	spi_dev_ctx->os_spi_dev_ctx = nrf_wifi_osal_bus_spi_dev_add(spi_priv->os_spi_priv,
+								    spi_dev_ctx);
 
 	if (!spi_dev_ctx->os_spi_dev_ctx) {
-		nrf_wifi_osal_log_err(spi_priv->opriv,
-				      "%s: nrf_wifi_osal_bus_spi_dev_add failed", __func__);
+		nrf_wifi_osal_log_err("%s: nrf_wifi_osal_bus_spi_dev_add failed", __func__);
 
-		nrf_wifi_osal_mem_free(spi_priv->opriv,
-				       spi_dev_ctx);
+		nrf_wifi_osal_mem_free(spi_dev_ctx);
 
 		spi_dev_ctx = NULL;
 
 		goto out;
 	}
 
-	nrf_wifi_osal_bus_spi_dev_host_map_get(spi_priv->opriv,
-						spi_dev_ctx->os_spi_dev_ctx,
-						&host_map);
+	nrf_wifi_osal_bus_spi_dev_host_map_get(spi_dev_ctx->os_spi_dev_ctx,
+					       &host_map);
 
 	spi_dev_ctx->host_addr_base = host_map.addr;
 
@@ -116,8 +110,7 @@ static enum nrf_wifi_status nrf_wifi_bus_spi_dev_init(void *bus_dev_ctx)
 						 spi_dev_ctx->os_spi_dev_ctx);
 
 	if (status != NRF_WIFI_STATUS_SUCCESS) {
-		nrf_wifi_osal_log_err(spi_dev_ctx->spi_priv->opriv,
-				      "%s: nrf_wifi_osal_spi_dev_init failed", __func__);
+		nrf_wifi_osal_log_err("%s: nrf_wifi_osal_spi_dev_init failed", __func__);
 
 		nrf_wifi_osal_bus_spi_dev_intr_unreg(spi_dev_ctx->spi_priv->opriv,
 						     spi_dev_ctx->os_spi_dev_ctx);
@@ -142,39 +135,31 @@ static void nrf_wifi_bus_spi_dev_deinit(void *bus_dev_ctx)
 }
 
 
-static void *nrf_wifi_bus_spi_init(struct nrf_wifi_osal_priv *opriv,
-				    void *params,
-				    enum nrf_wifi_status (*intr_callbk_fn)(void *bal_dev_ctx))
+static void *nrf_wifi_bus_spi_init(void *params,
+				   enum nrf_wifi_status (*intr_callbk_fn)(void *bal_dev_ctx))
 {
 	struct nrf_wifi_bus_spi_priv *spi_priv = NULL;
 
-	spi_priv = nrf_wifi_osal_mem_zalloc(opriv,
-					     sizeof(*spi_priv));
+	spi_priv = nrf_wifi_osal_mem_zalloc(sizeof(*spi_priv));
 
 	if (!spi_priv) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to allocate memory for spi_priv",
+		nrf_wifi_osal_log_err("%s: Unable to allocate memory for spi_priv",
 				      __func__);
 		goto out;
 	}
 
-	spi_priv->opriv = opriv;
-
-	nrf_wifi_osal_mem_cpy(opriv,
-			      &spi_priv->cfg_params,
+	nrf_wifi_osal_mem_cpy(&spi_priv->cfg_params,
 			      params,
 			      sizeof(spi_priv->cfg_params));
 
 	spi_priv->intr_callbk_fn = intr_callbk_fn;
 
-	spi_priv->os_spi_priv = nrf_wifi_osal_bus_spi_init(opriv);
+	spi_priv->os_spi_priv = nrf_wifi_osal_bus_spi_init();
 	if (!spi_priv->os_spi_priv) {
-		nrf_wifi_osal_log_err(opriv,
-				      "%s: Unable to register QSPI driver",
+		nrf_wifi_osal_log_err("%s: Unable to register QSPI driver",
 				      __func__);
 
-		nrf_wifi_osal_mem_free(opriv,
-				       spi_priv);
+		nrf_wifi_osal_mem_free(spi_priv);
 
 		spi_priv = NULL;
 
@@ -191,82 +176,76 @@ static void nrf_wifi_bus_spi_deinit(void *bus_priv)
 
 	spi_priv = bus_priv;
 
-	nrf_wifi_osal_bus_spi_deinit(spi_priv->opriv,
-				      spi_priv->os_spi_priv);
+	nrf_wifi_osal_bus_spi_deinit(spi_priv->os_spi_priv);
 
-	nrf_wifi_osal_mem_free(spi_priv->opriv,
-			       spi_priv);
+	nrf_wifi_osal_mem_free(spi_priv);
 }
 
 
 static unsigned int nrf_wifi_bus_spi_read_word(void *dev_ctx,
-						unsigned long addr_offset)
+					       unsigned long addr_offset)
 {
 	struct nrf_wifi_bus_spi_dev_ctx *spi_dev_ctx = NULL;
 	unsigned int val = 0;
 
 	spi_dev_ctx = (struct nrf_wifi_bus_spi_dev_ctx *)dev_ctx;
 
-	val = nrf_wifi_osal_spi_read_reg32(spi_dev_ctx->spi_priv->opriv,
-					    spi_dev_ctx->os_spi_dev_ctx,
-					    spi_dev_ctx->host_addr_base + addr_offset);
+	val = nrf_wifi_osal_spi_read_reg32(spi_dev_ctx->os_spi_dev_ctx,
+					   spi_dev_ctx->host_addr_base + addr_offset);
 	return val;
 }
 
 
 static void nrf_wifi_bus_spi_write_word(void *dev_ctx,
-					 unsigned long addr_offset,
-					 unsigned int val)
+					unsigned long addr_offset,
+					unsigned int val)
 {
 	struct nrf_wifi_bus_spi_dev_ctx *spi_dev_ctx = NULL;
 
 	spi_dev_ctx = (struct nrf_wifi_bus_spi_dev_ctx *)dev_ctx;
 
-	nrf_wifi_osal_spi_write_reg32(spi_dev_ctx->spi_priv->opriv,
-				       spi_dev_ctx->os_spi_dev_ctx,
-				       spi_dev_ctx->host_addr_base + addr_offset,
-				       val);
+	nrf_wifi_osal_spi_write_reg32(spi_dev_ctx->os_spi_dev_ctx,
+				      spi_dev_ctx->host_addr_base + addr_offset,
+				      val);
 }
 
 
 static void nrf_wifi_bus_spi_read_block(void *dev_ctx,
-					 void *dest_addr,
-					 unsigned long src_addr_offset,
+					void *dest_addr,
+					unsigned long src_addr_offset,
+					size_t len)
+{
+	struct nrf_wifi_bus_spi_dev_ctx *spi_dev_ctx = NULL;
+
+	spi_dev_ctx = (struct nrf_wifi_bus_spi_dev_ctx *)dev_ctx;
+
+	nrf_wifi_osal_spi_cpy_from(spi_dev_ctx->os_spi_dev_ctx,
+				   dest_addr,
+				   spi_dev_ctx->host_addr_base + src_addr_offset,
+				   len);
+}
+
+
+static void nrf_wifi_bus_spi_write_block(void *dev_ctx,
+					 unsigned long dest_addr_offset,
+					 const void *src_addr,
 					 size_t len)
 {
 	struct nrf_wifi_bus_spi_dev_ctx *spi_dev_ctx = NULL;
 
 	spi_dev_ctx = (struct nrf_wifi_bus_spi_dev_ctx *)dev_ctx;
 
-	nrf_wifi_osal_spi_cpy_from(spi_dev_ctx->spi_priv->opriv,
-				    spi_dev_ctx->os_spi_dev_ctx,
-				    dest_addr,
-				    spi_dev_ctx->host_addr_base + src_addr_offset,
-				    len);
-}
-
-
-static void nrf_wifi_bus_spi_write_block(void *dev_ctx,
-					  unsigned long dest_addr_offset,
-					  const void *src_addr,
-					  size_t len)
-{
-	struct nrf_wifi_bus_spi_dev_ctx *spi_dev_ctx = NULL;
-
-	spi_dev_ctx = (struct nrf_wifi_bus_spi_dev_ctx *)dev_ctx;
-
-	nrf_wifi_osal_spi_cpy_to(spi_dev_ctx->spi_priv->opriv,
-				  spi_dev_ctx->os_spi_dev_ctx,
-				  spi_dev_ctx->host_addr_base + dest_addr_offset,
-				  src_addr,
-				  len);
+	nrf_wifi_osal_spi_cpy_to(spi_dev_ctx->os_spi_dev_ctx,
+				 spi_dev_ctx->host_addr_base + dest_addr_offset,
+				 src_addr,
+				 len);
 }
 
 
 static unsigned long nrf_wifi_bus_spi_dma_map(void *dev_ctx,
-					       unsigned long virt_addr,
-					       size_t len,
-					       enum nrf_wifi_osal_dma_dir dma_dir)
+					      unsigned long virt_addr,
+					      size_t len,
+					      enum nrf_wifi_osal_dma_dir dma_dir)
 {
 	struct nrf_wifi_bus_spi_dev_ctx *spi_dev_ctx = NULL;
 	unsigned long phy_addr = 0;
@@ -281,9 +260,9 @@ static unsigned long nrf_wifi_bus_spi_dma_map(void *dev_ctx,
 
 
 static unsigned long nrf_wifi_bus_spi_dma_unmap(void *dev_ctx,
-						 unsigned long phy_addr,
-						 size_t len,
-						 enum nrf_wifi_osal_dma_dir dma_dir)
+						unsigned long phy_addr,
+						size_t len,
+						enum nrf_wifi_osal_dma_dir dma_dir)
 {
 	struct nrf_wifi_bus_spi_dev_ctx *spi_dev_ctx = NULL;
 	unsigned long virt_addr = 0;
@@ -303,8 +282,7 @@ static void nrf_wifi_bus_spi_ps_sleep(void *dev_ctx)
 
 	spi_dev_ctx = (struct nrf_wifi_bus_spi_dev_ctx *)dev_ctx;
 
-	nrf_wifi_osal_bus_qspi_ps_sleep(spi_dev_ctx->spi_priv->opriv,
-					spi_dev_ctx->os_spi_dev_ctx);
+	nrf_wifi_osal_bus_qspi_ps_sleep(spi_dev_ctx->os_spi_dev_ctx);
 }
 
 
@@ -314,8 +292,7 @@ static void nrf_wifi_bus_spi_ps_wake(void *dev_ctx)
 
 	spi_dev_ctx = (struct nrf_wifi_bus_spi_dev_ctx *)dev_ctx;
 
-	nrf_wifi_osal_bus_qspi_ps_wake(spi_dev_ctx->spi_priv->opriv,
-				       spi_dev_ctx->os_spi_dev_ctx);
+	nrf_wifi_osal_bus_qspi_ps_wake(spi_dev_ctx->os_spi_dev_ctx);
 }
 
 
@@ -325,8 +302,7 @@ static int nrf_wifi_bus_spi_ps_status(void *dev_ctx)
 
 	spi_dev_ctx = (struct nrf_wifi_bus_spi_dev_ctx *)dev_ctx;
 
-	return nrf_wifi_osal_bus_qspi_ps_status(spi_dev_ctx->spi_priv->opriv,
-						spi_dev_ctx->os_spi_dev_ctx);
+	return nrf_wifi_osal_bus_qspi_ps_status(spi_dev_ctx->os_spi_dev_ctx);
 }
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 

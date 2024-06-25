@@ -14,7 +14,6 @@
 
 /**
  * struct nrf_wifi_bus_qspi_priv - Structure to hold context information for the QSPI bus.
- * @opriv: Pointer to the OSAL context.
  * @os_qspi_priv:
  * @intr_callbk_fn:
  * @cfg_params:
@@ -25,7 +24,6 @@
  * updated over the duration of the QSPI bus operation.
  */
 struct nrf_wifi_bus_qspi_priv {
-	struct nrf_wifi_osal_priv *opriv;
 	void *os_qspi_priv;
 
 	enum nrf_wifi_status (*intr_callbk_fn)(void *hal_ctx);

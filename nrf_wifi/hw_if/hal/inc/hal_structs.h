@@ -95,7 +95,6 @@ struct nrf_wifi_hal_cfg_params {
 /**
  * struct nrf_wifi_hal_priv - Structure to hold context information for the
  *                           HAL layer.
- * @opriv: Pointer to the OS abstraction layer.
  * @bpriv: Pointer to the Bus abstraction layer.
  * @add_dev_callbk_data: Data to be passed back when invoking @add_dev_callbk_fn.
  * @add_dev_callbk_fn: Callback function to be called when a new device is being added.
@@ -111,7 +110,6 @@ struct nrf_wifi_hal_cfg_params {
  * operation of the HAL layer.
  */
 struct nrf_wifi_hal_priv {
-	struct nrf_wifi_osal_priv *opriv;
 	struct nrf_wifi_bal_priv *bpriv;
 	unsigned char num_devs;
 
