@@ -11,30 +11,41 @@ config NRF_MODEM
 	select NRFX_IPC if (SOC_SERIES_NRF91X || ZTEST)
 	select REQUIRES_FULL_LIBC
 
+if NRF_MODEM
+
 choice NRF_MODEM_BUILD_STRATEGY
 	prompt "Build strategy"
-	depends on NRF_MODEM
-	default NRF_MODEM_LINK_BINARY_CELLULAR
+
+config NRF_MODEM_LINK_BINARY
+	bool "Link binary"
+
+endchoice # NRF_MODEM_BUILD_STRATEGY
+
+choice
+	prompt "Variant"
+	help
+	  Choose which binary variant to link with: cellular or DECT PHY.
 
 config NRF_MODEM_LINK_BINARY_CELLULAR
-	bool "Link cellular binary"
+	bool "Cellular"
 
 config NRF_MODEM_LINK_BINARY_DECT_PHY
-	bool "Link DECT PHY binary"
 	select EXPERIMENTAL
+	bool "DECT PHY"
 
 endchoice
 
 config NRF_MODEM_LOG
 	bool "Link binary with logs"
-	depends on NRF_MODEM_LINK_BINARY_CELLULAR || NRF_MODEM_LINK_BINARY_DECT_PHY
 	help
 	  Links the application with the library version capable of emitting logs.
 	  This increases the final size of the application.
 
-endmenu
+endif # NRF_MODEM
 
 config NRF_MODEM_SHMEM_CTRL_SIZE
 	hex
 	default 0x728 if NRF_MODEM_LINK_BINARY_DECT_PHY
 	default 0x4e8
+
+endmenu # nrf_modem

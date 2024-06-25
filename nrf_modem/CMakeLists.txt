@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
 #
 
-if(CONFIG_NRF_MODEM_LINK_BINARY_CELLULAR OR CONFIG_NRF_MODEM_LINK_BINARY_DECT_PHY)
+if(CONFIG_NRF_MODEM_LINK_BINARY)
 
   cmake_path(SET lib_path ${CMAKE_CURRENT_SOURCE_DIR})
   cmake_path(APPEND lib_path lib)
