@@ -429,6 +429,15 @@ struct nrf_wifi_rf_test_capture_params {
 	/* Number of samples to be captured. */
 	unsigned short int cap_len;
 
+	/* Capture timeout in terms of seconds. */
+	unsigned short int cap_time;
+
+	/*! Capture timeout status.
+	 *0: Packet detected
+	 *1: Packet detection failed
+	 */
+	unsigned char timeout_status;
+
 	/* LNA Gain to be configured. It is a 3 bit value. The mapping is,
 	 * '0' = 24dB
 	 * '1' = 18dB

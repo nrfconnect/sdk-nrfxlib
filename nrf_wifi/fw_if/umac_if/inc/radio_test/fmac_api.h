@@ -107,8 +107,10 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_rx_cap(struct nrf_wifi_fmac_dev_ctx *
 						  enum nrf_wifi_rf_test rf_test_type,
 						  void *cap_data,
 						  unsigned short int num_samples,
+						  unsigned short int capture_timeout,
 						  unsigned char lna_gain,
-						  unsigned char bb_gain);
+						  unsigned char bb_gain,
+						  unsigned char *timeout_status);
 
 
 /**
