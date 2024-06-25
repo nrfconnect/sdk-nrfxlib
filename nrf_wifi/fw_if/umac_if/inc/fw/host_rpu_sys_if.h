@@ -1492,25 +1492,6 @@ struct nrf_wifi_event_rftest {
 } __NRF_WIFI_PKD;
 
 /**
- * @brief This structure represents the power data event generated in response to
- *  the NRF_WIFI_CMD_PWR command.
- *
- *  The NRF_WIFI_CMD_PWR command is used to retrieve power-related data or measurements
- *  from the radio hardware.
- *
- */
-struct nrf_wifi_event_pwr_data {
-	/** UMAC header, @ref nrf_wifi_sys_head */
-	struct nrf_wifi_sys_head sys_head;
-	/** Power monitor command status info */
-	signed int mon_status;
-	/** Data */
-	signed int data_type;
-	/** Data that host may want to read from Power IP */
-	struct nrf_wifi_rpu_pwr_data data;
-} __NRF_WIFI_PKD;
-
-/**
  * @brief This structure is a comprehensive combination of all the firmware statistics
  *  that the RPU (Radio Processing Unit) can provide.
  *
