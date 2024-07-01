@@ -5,6 +5,9 @@
  */
 
 /**
+ * @file
+ * @addtogroup nrf_wifi_fw_if Wi-Fi driver and firmware interface
+ * @{
  * @brief Common structures and definitions.
  */
 
@@ -214,4 +217,7 @@ struct temp_vbat_config {
 	int temp_threshold;
 	int vbat_threshold;
 } __NRF_WIFI_PKD;
+/**
+ * @}
+ */
 #endif
