@@ -1,14 +1,14 @@
-.. _nrf_wifi_api:
+.. _nrf_wifi_driver:
 
-nRF70 low-level API documentation
-*********************************
+nRF70 Driver documentation
+**************************
 
-The nRF70 Series Wi-Fi driver provides a low-level API for use cases where the application needs to access the nRF70 Series device directly.
-This is typically intended for customers who want to use the nRF70 Series device on a different platform than Zephyr.
+The nRF70 Series Wi-Fi driver has native and OS agnostic components, this document provides an overview of the driver architecture (layers) and the API.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Modules:
+   :caption: Subpages:
    :glob:
 
-   doc/*
+   doc/layers
+   doc/api
