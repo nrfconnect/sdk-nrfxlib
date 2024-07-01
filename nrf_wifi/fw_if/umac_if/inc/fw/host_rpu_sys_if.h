@@ -7,6 +7,8 @@
 
 /**
  * @file
+ * @addtogroup nrf_wifi_fw_if Wi-Fi driver and firmware interface
+ * @{
  * @brief System interface between host and RPU
  */
 
@@ -1601,4 +1603,7 @@ struct nrf_wifi_event_deinit_done {
 	struct nrf_wifi_sys_head sys_head;
 } __NRF_WIFI_PKD;
 
+/**
+ * @}
+ */
 #endif /* __HOST_RPU_SYS_IF_H__ */

@@ -7,6 +7,8 @@
 
 /**
  * @file
+ * @addtogroup nrf_wifi_fw_if Wi-Fi driver and firmware interface
+ * @{
  * @brief Control interface between host and RPU
  */
 
@@ -3502,13 +3504,17 @@ struct nrf_wifi_umac_event_cmd_status {
 } __NRF_WIFI_PKD;
 
  /**
- * @brief This structure represents the command used to  configure quiet period.
- *
- */
+  * @brief This structure represents the command used to  configure quiet period.
+  *
+  */
 struct nrf_wifi_umac_cmd_config_quiet_period {
 	/** Header @ref nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** quiet period value in seconds */
 	unsigned int quiet_period_in_sec;
 } __NRF_WIFI_PKD;
+
+/**
+ * @}
+ */
 #endif /* __HOST_RPU_UMAC_IF_H */

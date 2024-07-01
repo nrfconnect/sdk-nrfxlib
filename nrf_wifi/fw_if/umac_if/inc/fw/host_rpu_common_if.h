@@ -7,6 +7,10 @@
 
 /**
  * @file
+ *
+ * @addtogroup nrf_wifi_fw_if Wi-Fi driver and firmware interface
+ * @{
+ *
  * @brief Common interface between host and RPU
  *
  */
@@ -135,4 +139,7 @@ struct host_rpu_umac_info {
 	/** OTP params */
 	unsigned int calib[9];
 } __NRF_WIFI_PKD;
+/**
+ * @}
+ */
 #endif /* __NRF_WIFI_HOST_RPU_IFACE_H__ */
