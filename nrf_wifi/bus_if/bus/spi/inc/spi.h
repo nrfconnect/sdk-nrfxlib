@@ -5,8 +5,10 @@
  */
 
 /**
- * @brief Header for the Linux SPI bus layer specific structure declarations of the
- * Wi-Fi driver.
+ * @file spi.h
+ *
+ * @brief Header file for the Linux SPI bus layer specific structure declarations
+ * of the Wi-Fi driver.
  */
 
 #ifndef __LINUX_SPI_H__
@@ -16,34 +18,43 @@
 #include "bal_structs.h"
 
 /**
- * struct nrf_wifi_bus_spi_priv - Structure to hold context information for the Linux SPI bus.
- * @opriv: Pointer to the OSAL context.
- * @os_spi_priv:
- * @intr_callbk_fn:
- * @cfg_params:
- *
- * This structure maintains the context information necessary for the operation
- * of the Linux SPI bus. Some of the elements of the structure need to be initialized
- * during the initialization of the Linux SPI bus while others need to be kept
- * updated over the duration of the Linux SPI bus operation.
+ * @brief Structure to hold context information for the Linux SPI bus.
  */
 struct nrf_wifi_bus_spi_priv {
+	/** Pointer to the OSAL context. */
 	struct nrf_wifi_osal_priv *opriv;
+	/** Pointer to the OS-specific SPI context. */
 	void *os_spi_priv;
 
+	/**
+	 * @brief Interrupt callback function.
+	 *
+	 * @param hal_ctx The HAL context.
+	 * @return The status of the interrupt callback function.
+	 */
 	enum nrf_wifi_status (*intr_callbk_fn)(void *hal_ctx);
 
-	/* TODO: See if this can be removed by getting the information from PAL */
+	/**
+	 * @brief Configuration parameters for the Linux SPI bus.
+	 */
 	struct nrf_wifi_bal_cfg_params cfg_params;
 };
 
-
+/**
+ * @brief Structure to hold the device context for the Linux SPI bus.
+ */
 struct nrf_wifi_bus_spi_dev_ctx {
+	/** Pointer to the SPI bus private context. */
 	struct nrf_wifi_bus_spi_priv *spi_priv;
+	/** Pointer to the BAL device context. */
 	void *bal_dev_ctx;
+	/** Pointer to the OS-specific SPI device context. */
 	void *os_spi_dev_ctx;
 
+	/** Base address of the host. */
 	unsigned long host_addr_base;
+	/** Base address of the packet RAM. */
 	unsigned long addr_pktram_base;
 };
+
 #endif /* __LINUX_SPI_H__ */

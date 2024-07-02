@@ -1224,7 +1224,7 @@ enum UMAC_QUEUE_NUM {
  *
  */
 struct nrf_wifi_raw_tx_pkt {
-	/** Queue number will be BK, BE, VI, VO and BCN refer @enum UMAC_QUEUE_NUM. */
+	/** Queue number will be BK, BE, VI, VO and BCN refer UMAC_QUEUE_NUM. */
 	unsigned char queue_num;
 	/** Descriptor identifier or token identifier. */
 	unsigned char desc_num;

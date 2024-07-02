@@ -31,7 +31,7 @@
 
 
 /**
- * @brief Initializes the UMAC IF layer.
+ * @brief Initialize the UMAC IF layer.
  *
  * @param data_config Pointer to configuration of data queues.
  * @param rx_buf_pools Pointer to configuration of Rx queue buffers.
@@ -882,10 +882,10 @@ enum nrf_wifi_status nrf_wifi_fmac_get_conn_info(void *fmac_dev_ctx,
 						unsigned char if_idx);
 
 /**
- * @brief De-initializes the UMAC IF layer.
+ * @brief De-initialize the UMAC IF layer.
  * @param fpriv Pointer to the context of the UMAC IF layer.
  *
- * This function de-initializes the UMAC IF layer of the RPU WLAN FullMAC
+ * This function de-initialize the UMAC IF layer of the RPU WLAN FullMAC
  *	    driver. It does the following:
  *		- De-initializes the HAL layer.
  *		- Frees the context for the UMAC IF layer.
@@ -907,7 +907,7 @@ void nrf_wifi_fmac_dev_rem(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
 
 
 /**
- * @brief Initializes a RPU instance.
+ * @brief Initialize an RPU instance.
  * @param fmac_dev_ctx Pointer to the context of the RPU instance to be removed.
  * @param sleep_type Type of RPU sleep.
  * @param phy_calib PHY calibration flags to be passed to the RPU.
@@ -915,6 +915,7 @@ void nrf_wifi_fmac_dev_rem(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
  * @param beamforming Enable/disable Wi-Fi beamforming.
  * @param tx_pwr_ctrl_params TX power control parameters to be passed to the RPU.
  * @param tx_pwr_ceil_params TX power ceil parameters for both frequency bands.
+ * @param board_params Board parameters to be passed to the RPU.
  *
  * This function initializes the firmware of an RPU instance. The following is addressed
  *              - BAL layer device initialization
@@ -938,7 +939,7 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
 
 
 /**
- * @brief De-initializes a RPU instance.
+ * @brief De-initialize a RPU instance.
  * @param fmac_dev_ctx Pointer to the context of the RPU instance to be removed.
  *
  * This function de-initializes the firmware of an RPU instance.

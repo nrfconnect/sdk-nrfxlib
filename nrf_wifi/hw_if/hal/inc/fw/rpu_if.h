@@ -1,11 +1,5 @@
-/*
- * Copyright (c) 2022 Nordic Semiconductor ASA
- *
- * SPDX-License-Identifier: BSD-3-Clause
- */
-
-/**
- * @brief Common structures and definations.
+/** @file rpu_if.h
+ * @brief Common structures and definitions for RPU interface.
  */
 
 #ifndef __RPU_IF_H__
@@ -367,81 +361,78 @@ struct rpu_mcu_boot_vectors {
 #define FT_PROG_VER_MASK 0xF0000
 
 /**
- * struct nrf_wifi_rpu_pwr_data - Data that host may want to read from the Power IP.
- * @lfc_err: Estimated Lo Frequency Clock error in ppm.
- * @vbat_mon: Vbat monitor readout. The actual Vbat in volt equals 2.5 + 0.07*vbat_mon.
- * @temp: Estimated die temperature (degC).
- *
+ * @brief Data that host may want to read from the Power IP.
  * This structure represents the Power IP monitoring data.
  */
 struct nrf_wifi_rpu_pwr_data {
+	/** Estimated Lo Frequency Clock error in ppm. */
 	int lfc_err;
+	/** Vbat monitor readout. The actual Vbat in volt equals 2.5 + 0.07*vbat_mon. */
 	int vbat_mon;
+	/** Estimated die temperature (degC). */
 	int temp;
 };
 
 /**
- * struct host_rpu_rx_buf_info - RX buffer related information to be passed to
- *                               the RPU.
- * @addr: Address in the host memory where the RX buffer is located.
+ * @brief RX buffer related information to be passed to he RPU.
  *
  * This structure encapsulates the information to be passed to the RPU for
  * buffers which the RPU will use to pass the received frames.
  */
 
 struct host_rpu_rx_buf_info {
+	/** Address in the host memory where the RX buffer is located. */
 	unsigned int addr;
 } __NRF_WIFI_PKD;
 
 /**
- * struct host_rpu_hpq - Hostport Queue (HPQ) information.
- * @enqueue_addr: HPQ address where the host can post the address of a
- *                message intended for the RPU.
- * @dequeue_addr: HPQ address where the host can get the address of a
- *                message intended for the host.
- *
+ * @brief Hostport Queue (HPQ) information.
+
  * This structure encapsulates the information which represents a HPQ.
  */
 
 struct host_rpu_hpq {
+	/** HPQ address where the host can post the address of a message intended for the RPU. */
 	unsigned int enqueue_addr;
+	/** HPQ address where the host can get the address of a message intended for the host. */
 	unsigned int dequeue_addr;
 } __NRF_WIFI_PKD;
 
 /**
- * struct host_rpu_hpqm_info - Information about Hostport Queues (HPQ) to be used
- *            for exchanging information between the Host and RPU.
- * @event_busy_queue: Queue which the RPU uses to inform the host about events.
- * @event_avl_queue: Queue on which the consumed events are pushed so that RPU
- *                    can reuse them.
- * @cmd_busy_queue: Queue used by the host to push commands to the RPU.
- * @cmd_avl_queue: Queue which RPU uses to inform host about command
- *                  buffers which can be used to push commands to the RPU.
+ * @brief Information about Hostport Queues (HPQ) to be used
+ *	for exchanging information between the Host and RPU.
  *
  * Hostport queue information passed by the RPU to the host, which the host can
  * use, to communicate with the RPU.
  */
 
 struct host_rpu_hpqm_info {
+	/** Queue which the RPU uses to inform the host about events. */
 	struct host_rpu_hpq event_busy_queue;
+	/** Queue on which the consumed events are pushed so that RPU can reuse them. */
 	struct host_rpu_hpq event_avl_queue;
+	/** Queue used by the host to push commands to the RPU. */
 	struct host_rpu_hpq cmd_busy_queue;
+	/** Queue which RPU uses to inform host about command buffers which can be used to
+	 * push commands to the RPU.
+	 */
 	struct host_rpu_hpq cmd_avl_queue;
+	/** Queue used by the host to push RX buffers to the RPU. */
 	struct host_rpu_hpq rx_buf_busy_queue[MAX_NUM_OF_RX_QUEUES];
 } __NRF_WIFI_PKD;
 
 /**
- * struct host_rpu_msg_hdr - Common header included in each command/event.
- * @len: Length of the message.
- * @resubmit: Flag to indicate whether the recipient is expected to resubmit
- *            the cmd/event address back to the trasmitting entity.
- *
+ * @brief Common header included in each command/event.
  * This structure encapsulates the common information included at the start of
  * each command/event exchanged with the RPU.
  */
 
 struct host_rpu_msg_hdr {
+	/** Length of the message. */
 	unsigned int len;
+	/** Flag to indicate whether the recipient is expected to resubmit the
+	 * cmd/event address back to the trasmitting entity.
+	 */
 	unsigned int resubmit;
 } __NRF_WIFI_PKD;
 

@@ -30,73 +30,73 @@
  *
  */
 enum nrf_wifi_umac_commands {
-	/** Trigger a new scan @ref nrf_wifi_umac_cmd_scan */
+	/** Trigger a new scan nrf_wifi_umac_cmd_scan */
 	NRF_WIFI_UMAC_CMD_TRIGGER_SCAN,
-	/** Request for scan results @ref nrf_wifi_umac_cmd_get_scan_results */
+	/** Request for scan results nrf_wifi_umac_cmd_get_scan_results */
 	NRF_WIFI_UMAC_CMD_GET_SCAN_RESULTS,
-	/** Send authentication request to AP @ref nrf_wifi_umac_cmd_auth */
+	/** Send authentication request to AP nrf_wifi_umac_cmd_auth */
 	NRF_WIFI_UMAC_CMD_AUTHENTICATE,
-	/** Send associate request to AP @ref nrf_wifi_umac_cmd_assoc */
+	/** Send associate request to AP nrf_wifi_umac_cmd_assoc */
 	NRF_WIFI_UMAC_CMD_ASSOCIATE,
-	/** Send deauthentication request to AP @ref nrf_wifi_umac_cmd_disconn */
+	/** Send deauthentication request to AP nrf_wifi_umac_cmd_disconn */
 	NRF_WIFI_UMAC_CMD_DEAUTHENTICATE,
-	/** Set wiphy parameters @ref nrf_wifi_umac_cmd_set_wiphy */
+	/** Set wiphy parameters nrf_wifi_umac_cmd_set_wiphy */
 	NRF_WIFI_UMAC_CMD_SET_WIPHY,
-	/** Add new key @ref nrf_wifi_umac_cmd_key */
+	/** Add new key nrf_wifi_umac_cmd_key */
 	NRF_WIFI_UMAC_CMD_NEW_KEY,
-	/** Delete key @ref nrf_wifi_umac_cmd_key */
+	/** Delete key nrf_wifi_umac_cmd_key */
 	NRF_WIFI_UMAC_CMD_DEL_KEY,
-	/** Set default key to use @ref nrf_wifi_umac_cmd_set_key */
+	/** Set default key to use nrf_wifi_umac_cmd_set_key */
 	NRF_WIFI_UMAC_CMD_SET_KEY,
 	/** Unused */
 	NRF_WIFI_UMAC_CMD_GET_KEY,
 	/** Unused */
 	NRF_WIFI_UMAC_CMD_NEW_BEACON,
-	/** Change the beacon on an AP interface @ref nrf_wifi_umac_cmd_set_beacon */
+	/** Change the beacon on an AP interface nrf_wifi_umac_cmd_set_beacon */
 	NRF_WIFI_UMAC_CMD_SET_BEACON,
-	/** Set the BSS @ref nrf_wifi_umac_cmd_set_bss */
+	/** Set the BSS nrf_wifi_umac_cmd_set_bss */
 	NRF_WIFI_UMAC_CMD_SET_BSS,
-	/** Start soft AP operation on an AP interface @ref nrf_wifi_umac_cmd_start_ap */
+	/** Start soft AP operation on an AP interface nrf_wifi_umac_cmd_start_ap */
 	NRF_WIFI_UMAC_CMD_START_AP,
-	/** Stop soft AP operation @ref nrf_wifi_umac_cmd_stop_ap */
+	/** Stop soft AP operation nrf_wifi_umac_cmd_stop_ap */
 	NRF_WIFI_UMAC_CMD_STOP_AP,
-	/** Create new interface @ref nrf_wifi_umac_cmd_add_vif */
+	/** Create new interface nrf_wifi_umac_cmd_add_vif */
 	NRF_WIFI_UMAC_CMD_NEW_INTERFACE,
-	/** Change interface configuration @ref nrf_wifi_umac_cmd_chg_vif_attr*/
+	/** Change interface configuration nrf_wifi_umac_cmd_chg_vif_attr*/
 	NRF_WIFI_UMAC_CMD_SET_INTERFACE,
-	/** Delete interface @ref nrf_wifi_umac_cmd_del_vif */
+	/** Delete interface nrf_wifi_umac_cmd_del_vif */
 	NRF_WIFI_UMAC_CMD_DEL_INTERFACE,
-	/** Change interface flags @ref nrf_wifi_umac_cmd_chg_vif_state */
+	/** Change interface flags nrf_wifi_umac_cmd_chg_vif_state */
 	NRF_WIFI_UMAC_CMD_SET_IFFLAGS,
-	/** Add a new station @ref nrf_wifi_umac_cmd_add_sta */
+	/** Add a new station nrf_wifi_umac_cmd_add_sta */
 	NRF_WIFI_UMAC_CMD_NEW_STATION,
-	/** Delete station @ref nrf_wifi_umac_cmd_del_sta */
+	/** Delete station nrf_wifi_umac_cmd_del_sta */
 	NRF_WIFI_UMAC_CMD_DEL_STATION,
-	/** Change station info @ref nrf_wifi_umac_cmd_chg_sta */
+	/** Change station info nrf_wifi_umac_cmd_chg_sta */
 	NRF_WIFI_UMAC_CMD_SET_STATION,
-	/** Get station info @ref nrf_wifi_umac_cmd_get_sta */
+	/** Get station info nrf_wifi_umac_cmd_get_sta */
 	NRF_WIFI_UMAC_CMD_GET_STATION,
-	/** Start the P2P device @ref nrf_wifi_cmd_start_p2p */
+	/** Start the P2P device nrf_wifi_cmd_start_p2p */
 	NRF_WIFI_UMAC_CMD_START_P2P_DEVICE,
-	/** Stop the P2P device @ref nrf_wifi_umac_cmd_stop_p2p_dev */
+	/** Stop the P2P device nrf_wifi_umac_cmd_stop_p2p_dev */
 	NRF_WIFI_UMAC_CMD_STOP_P2P_DEVICE,
-	/** Remain awake on the specified channel @ref nrf_wifi_umac_cmd_remain_on_channel */
+	/** Remain awake on the specified channel nrf_wifi_umac_cmd_remain_on_channel */
 	NRF_WIFI_UMAC_CMD_REMAIN_ON_CHANNEL,
-	/** Cancel a pending ROC duration @ref nrf_wifi_umac_cmd_cancel_remain_on_channel */
+	/** Cancel a pending ROC duration nrf_wifi_umac_cmd_cancel_remain_on_channel */
 	NRF_WIFI_UMAC_CMD_CANCEL_REMAIN_ON_CHANNEL,
 	/** Unused */
 	NRF_WIFI_UMAC_CMD_SET_CHANNEL,
 	/** Unused */
 	NRF_WIFI_UMAC_CMD_RADAR_DETECT,
-	/** Whitelist filter based on frame types @ref nrf_wifi_umac_cmd_mgmt_frame_reg */
+	/** Whitelist filter based on frame types nrf_wifi_umac_cmd_mgmt_frame_reg */
 	NRF_WIFI_UMAC_CMD_REGISTER_FRAME,
-	/** Send a management frame @ref nrf_wifi_umac_cmd_mgmt_tx */
+	/** Send a management frame nrf_wifi_umac_cmd_mgmt_tx */
 	NRF_WIFI_UMAC_CMD_FRAME,
 	/** Unused */
 	NRF_WIFI_UMAC_CMD_JOIN_IBSS,
 	/** Unused */
 	NRF_WIFI_UMAC_CMD_WIN_STA_CONNECT,
-	/** Power save Enable/Disable @ref nrf_wifi_umac_cmd_set_power_save */
+	/** Power save Enable/Disable nrf_wifi_umac_cmd_set_power_save */
 	NRF_WIFI_UMAC_CMD_SET_POWER_SAVE,
 	/** Unused */
 	NRF_WIFI_UMAC_CMD_SET_WOWLAN,
@@ -104,49 +104,49 @@ enum nrf_wifi_umac_commands {
 	NRF_WIFI_UMAC_CMD_SUSPEND,
 	/** Unused */
 	NRF_WIFI_UMAC_CMD_RESUME,
-	/** QOS map @ref nrf_wifi_umac_cmd_set_qos_map */
+	/** QOS map nrf_wifi_umac_cmd_set_qos_map */
 	NRF_WIFI_UMAC_CMD_SET_QOS_MAP,
-	/** Get Channel info @ref nrf_wifi_umac_cmd_get_channel */
+	/** Get Channel info nrf_wifi_umac_cmd_get_channel */
 	NRF_WIFI_UMAC_CMD_GET_CHANNEL,
-	/** Get Tx power level @ref nrf_wifi_umac_cmd_get_tx_power */
+	/** Get Tx power level nrf_wifi_umac_cmd_get_tx_power */
 	NRF_WIFI_UMAC_CMD_GET_TX_POWER,
-	/** Get interface @ref nrf_wifi_cmd_get_interface */
+	/** Get interface nrf_wifi_cmd_get_interface */
 	NRF_WIFI_UMAC_CMD_GET_INTERFACE,
-	/** Get Wiphy info @ref nrf_wifi_cmd_get_wiphy */
+	/** Get Wiphy info nrf_wifi_cmd_get_wiphy */
 	NRF_WIFI_UMAC_CMD_GET_WIPHY,
-	/** Get hardware address @ref nrf_wifi_cmd_get_ifhwaddr */
+	/** Get hardware address nrf_wifi_cmd_get_ifhwaddr */
 	NRF_WIFI_UMAC_CMD_GET_IFHWADDR,
-	/** Set hardware address @ref nrf_wifi_cmd_set_ifhwaddr */
+	/** Set hardware address nrf_wifi_cmd_set_ifhwaddr */
 	NRF_WIFI_UMAC_CMD_SET_IFHWADDR,
-	/** Get regulatory domain @ref nrf_wifi_umac_cmd_get_reg */
+	/** Get regulatory domain nrf_wifi_umac_cmd_get_reg */
 	NRF_WIFI_UMAC_CMD_GET_REG,
 	/** Unused */
 	NRF_WIFI_UMAC_CMD_SET_REG,
-	/** Set regulatory domain @ref  nrf_wifi_cmd_req_set_reg */
+	/** Set regulatory domain  nrf_wifi_cmd_req_set_reg */
 	NRF_WIFI_UMAC_CMD_REQ_SET_REG,
-	/** Config UAPSD @ref nrf_wifi_umac_cmd_config_uapsd */
+	/** Config UAPSD nrf_wifi_umac_cmd_config_uapsd */
 	NRF_WIFI_UMAC_CMD_CONFIG_UAPSD,
-	/** Config TWT @ref nrf_wifi_umac_cmd_config_twt */
+	/** Config TWT nrf_wifi_umac_cmd_config_twt */
 	NRF_WIFI_UMAC_CMD_CONFIG_TWT,
-	/** Teardown TWT @ref nrf_wifi_umac_cmd_teardown_twt */
+	/** Teardown TWT nrf_wifi_umac_cmd_teardown_twt */
 	NRF_WIFI_UMAC_CMD_TEARDOWN_TWT,
-	/** Abort scan @ref nrf_wifi_umac_cmd_abort_scan */
+	/** Abort scan nrf_wifi_umac_cmd_abort_scan */
 	NRF_WIFI_UMAC_CMD_ABORT_SCAN,
-	/** Multicast filter @ref nrf_wifi_umac_cmd_mcast_filter */
+	/** Multicast filter nrf_wifi_umac_cmd_mcast_filter */
 	NRF_WIFI_UMAC_CMD_MCAST_FILTER,
-	/** Change macaddress @ref nrf_wifi_umac_cmd_change_macaddr */
+	/** Change macaddress nrf_wifi_umac_cmd_change_macaddr */
 	NRF_WIFI_UMAC_CMD_CHANGE_MACADDR,
-	/** Set powersave timeout @ref nrf_wifi_umac_cmd_set_power_save_timeout */
+	/** Set powersave timeout nrf_wifi_umac_cmd_set_power_save_timeout */
 	NRF_WIFI_UMAC_CMD_SET_POWER_SAVE_TIMEOUT,
-	/** Get connection information @ref nrf_wifi_umac_cmd_conn_info */
+	/** Get connection information nrf_wifi_umac_cmd_conn_info */
 	NRF_WIFI_UMAC_CMD_GET_CONNECTION_INFO,
-	/** Get power save information @ref nrf_wifi_umac_cmd_get_power_save_info */
+	/** Get power save information nrf_wifi_umac_cmd_get_power_save_info */
 	NRF_WIFI_UMAC_CMD_GET_POWER_SAVE_INFO,
-	/** Set listen interval @ref nrf_wifi_umac_cmd_set_listen_interval */
+	/** Set listen interval nrf_wifi_umac_cmd_set_listen_interval */
 	NRF_WIFI_UMAC_CMD_SET_LISTEN_INTERVAL,
-	/** Configure extended power save @ref nrf_wifi_umac_cmd_config_extended_ps */
+	/** Configure extended power save nrf_wifi_umac_cmd_config_extended_ps */
 	NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS,
-	/** Configure quiet period @ref nrf_wifi_umac_cmd_config_quiet_period */
+	/** Configure quiet period nrf_wifi_umac_cmd_config_quiet_period */
 	NRF_WIFI_UMAC_CMD_CONFIG_QUIET_PERIOD,
 };
 
@@ -157,61 +157,61 @@ enum nrf_wifi_umac_commands {
 
 enum nrf_wifi_umac_events {
 	NRF_WIFI_UMAC_EVENT_UNSPECIFIED = 256,
-	/** Indicate scan started @ref nrf_wifi_umac_event_trigger_scan */
+	/** Indicate scan started nrf_wifi_umac_event_trigger_scan */
 	NRF_WIFI_UMAC_EVENT_TRIGGER_SCAN_START,
 	/** Unused */
 	NRF_WIFI_UMAC_EVENT_SCAN_ABORTED,
-	/** Indicate scan done @ref nrf_wifi_umac_event_scan_done */
+	/** Indicate scan done nrf_wifi_umac_event_scan_done */
 	NRF_WIFI_UMAC_EVENT_SCAN_DONE,
-	/** Scan result event @ref nrf_wifi_umac_event_new_scan_results */
+	/** Scan result event nrf_wifi_umac_event_new_scan_results */
 	NRF_WIFI_UMAC_EVENT_SCAN_RESULT,
-	/** Authentication status @ref nrf_wifi_umac_event_mlme */
+	/** Authentication status nrf_wifi_umac_event_mlme */
 	NRF_WIFI_UMAC_EVENT_AUTHENTICATE,
-	/** Association status @ref nrf_wifi_umac_event_mlme*/
+	/** Association status nrf_wifi_umac_event_mlme*/
 	NRF_WIFI_UMAC_EVENT_ASSOCIATE,
 	/** Unused */
 	NRF_WIFI_UMAC_EVENT_CONNECT,
-	/** Station deauth event @ref nrf_wifi_umac_event_mlme */
+	/** Station deauth event nrf_wifi_umac_event_mlme */
 	NRF_WIFI_UMAC_EVENT_DEAUTHENTICATE,
-	/** Station disassoc event @ref nrf_wifi_umac_event_mlme */
+	/** Station disassoc event nrf_wifi_umac_event_mlme */
 	NRF_WIFI_UMAC_EVENT_DISASSOCIATE,
-	/** Station added indication @ref nrf_wifi_umac_event_new_station */
+	/** Station added indication nrf_wifi_umac_event_new_station */
 	NRF_WIFI_UMAC_EVENT_NEW_STATION,
-	/** Station added indication @ref nrf_wifi_umac_event_new_station */
+	/** Station added indication nrf_wifi_umac_event_new_station */
 	NRF_WIFI_UMAC_EVENT_DEL_STATION,
-	/** Station info indication @ref nrf_wifi_umac_event_new_station */
+	/** Station info indication nrf_wifi_umac_event_new_station */
 	NRF_WIFI_UMAC_EVENT_GET_STATION,
-	/** remain on channel event @ref nrf_wifi_event_remain_on_channel */
+	/** remain on channel event nrf_wifi_event_remain_on_channel */
 	NRF_WIFI_UMAC_EVENT_REMAIN_ON_CHANNEL,
 	/** Unused */
 	NRF_WIFI_UMAC_EVENT_CANCEL_REMAIN_ON_CHANNEL,
 	/** Unused */
 	NRF_WIFI_UMAC_EVENT_DISCONNECT,
-	/** RX management frame @ref nrf_wifi_umac_event_mlme */
+	/** RX management frame nrf_wifi_umac_event_mlme */
 	NRF_WIFI_UMAC_EVENT_FRAME,
-	/** Cookie mapping for NRF_WIFI_UMAC_CMD_FRAME @ref nrf_wifi_umac_event_cookie_rsp */
+	/** Cookie mapping for NRF_WIFI_UMAC_CMD_FRAME nrf_wifi_umac_event_cookie_rsp */
 	NRF_WIFI_UMAC_EVENT_COOKIE_RESP,
-	/** TX management frame transmitted @ref nrf_wifi_umac_event_mlme */
+	/** TX management frame transmitted nrf_wifi_umac_event_mlme */
 	NRF_WIFI_UMAC_EVENT_FRAME_TX_STATUS,
-	/** @ref nrf_wifi_umac_event_vif_state */
+	/** nrf_wifi_umac_event_vif_state */
 	NRF_WIFI_UMAC_EVENT_IFFLAGS_STATUS,
-	/** Send Tx power @ref nrf_wifi_umac_event_get_tx_power */
+	/** Send Tx power nrf_wifi_umac_event_get_tx_power */
 	NRF_WIFI_UMAC_EVENT_GET_TX_POWER,
-	/** Send Channel info @ref nrf_wifi_umac_event_get_channel */
+	/** Send Channel info nrf_wifi_umac_event_get_channel */
 	NRF_WIFI_UMAC_EVENT_GET_CHANNEL,
-	/** @ref nrf_wifi_umac_event_set_interface */
+	/** nrf_wifi_umac_event_set_interface */
 	NRF_WIFI_UMAC_EVENT_SET_INTERFACE,
-	/** @ref nrf_wifi_umac_event_mlme */
+	/** nrf_wifi_umac_event_mlme */
 	NRF_WIFI_UMAC_EVENT_UNPROT_DEAUTHENTICATE,
-	/** @ref nrf_wifi_umac_event_mlme */
+	/** nrf_wifi_umac_event_mlme */
 	NRF_WIFI_UMAC_EVENT_UNPROT_DISASSOCIATE,
-	/** @ref nrf_wifi_interface_info */
+	/** nrf_wifi_interface_info */
 	NRF_WIFI_UMAC_EVENT_NEW_INTERFACE,
-	/** @ref nrf_wifi_event_get_wiphy */
+	/** nrf_wifi_event_get_wiphy */
 	NRF_WIFI_UMAC_EVENT_NEW_WIPHY,
 	/** Unused */
 	NRF_WIFI_UMAC_EVENT_GET_IFHWADDR,
-	/** Get regulatory @ref nrf_wifi_reg */
+	/** Get regulatory nrf_wifi_reg */
 	NRF_WIFI_UMAC_EVENT_GET_REG,
 	/** Unused */
 	NRF_WIFI_UMAC_EVENT_SET_REG,
@@ -225,25 +225,25 @@ enum nrf_wifi_umac_events {
 	NRF_WIFI_UMAC_EVENT_REG_CHANGE,
 	/** Unused */
 	NRF_WIFI_UMAC_EVENT_WIPHY_REG_CHANGE,
-	/** Display scan result @ref nrf_wifi_umac_event_new_scan_display_results */
+	/** Display scan result nrf_wifi_umac_event_new_scan_display_results */
 	NRF_WIFI_UMAC_EVENT_SCAN_DISPLAY_RESULT,
-	/** @ref nrf_wifi_umac_event_cmd_status */
+	/** nrf_wifi_umac_event_cmd_status */
 	NRF_WIFI_UMAC_EVENT_CMD_STATUS,
-	/** @ref nrf_wifi_umac_event_new_scan_results */
+	/** nrf_wifi_umac_event_new_scan_results */
 	NRF_WIFI_UMAC_EVENT_BSS_INFO,
-	/** Send TWT response information @ref nrf_wifi_umac_cmd_config_twt */
+	/** Send TWT response information nrf_wifi_umac_cmd_config_twt */
 	NRF_WIFI_UMAC_EVENT_CONFIG_TWT,
-	/** Send TWT teardown information @ref nrf_wifi_umac_cmd_teardown_twt */
+	/** Send TWT teardown information nrf_wifi_umac_cmd_teardown_twt */
 	NRF_WIFI_UMAC_EVENT_TEARDOWN_TWT,
-	/** Send block or unblock state @ref nrf_wifi_umac_event_twt_sleep */
+	/** Send block or unblock state nrf_wifi_umac_event_twt_sleep */
 	NRF_WIFI_UMAC_EVENT_TWT_SLEEP,
 	/** Unused */
 	NRF_WIFI_UMAC_EVENT_COALESCING,
 	/** Unused */
 	NRF_WIFI_UMAC_EVENT_MCAST_FILTER,
-	/** send connection information @ref nrf_wifi_umac_event_conn_info. */
+	/** send connection information nrf_wifi_umac_event_conn_info. */
 	NRF_WIFI_UMAC_EVENT_GET_CONNECTION_INFO,
-	/** @ref nrf_wifi_umac_event_power_save_info */
+	/** nrf_wifi_umac_event_power_save_info */
 	NRF_WIFI_UMAC_EVENT_GET_POWER_SAVE_INFO
 };
 
@@ -354,15 +354,15 @@ enum nrf_wifi_chan_width {
 	NRF_WIFI_CHAN_WIDTH_20_NOHT,
 	/** 20 MHz HT channel */
 	NRF_WIFI_CHAN_WIDTH_20,
-	/** 40 MHz channel, the @ref %NRF_WIFI_ATTR_CENTER_FREQ1 must be provided as well */
+	/** 40 MHz channel, the NRF_WIFI_ATTR_CENTER_FREQ1 must be provided as well */
 	NRF_WIFI_CHAN_WIDTH_40,
-	/** 80 MHz channel, the @ref %NRF_WIFI_ATTR_CENTER_FREQ1 must be provided as well */
+	/** 80 MHz channel, the NRF_WIFI_ATTR_CENTER_FREQ1 must be provided as well */
 	NRF_WIFI_CHAN_WIDTH_80,
-	/** 80+80 MHz channel, the @ref %NRF_WIFI_ATTR_CENTER_FREQ1 and
-	 *  @ref %NRF_WIFI_ATTR_CENTER_FREQ2 must be provided as well
+	/** 80+80 MHz channel, the NRF_WIFI_ATTR_CENTER_FREQ1 and
+	 *  NRF_WIFI_ATTR_CENTER_FREQ2 must be provided as well
 	 */
 	NRF_WIFI_CHAN_WIDTH_80P80,
-	/** 160 MHz channel, the %NRF_WIFI_ATTR_CENTER_FREQ1 must be provided as well */
+	/** 160 MHz channel, the NRF_WIFI_ATTR_CENTER_FREQ1 must be provided as well */
 	NRF_WIFI_CHAN_WIDTH_160,
 	/**  5 MHz OFDM channel */
 	NRF_WIFI_CHAN_WIDTH_5,
@@ -395,8 +395,8 @@ enum nrf_wifi_iftype {
 	NRF_WIFI_IFTYPE_P2P_CLIENT,
 	/** P2P group owner */
 	NRF_WIFI_IFTYPE_P2P_GO,
-	/** P2P device use the @ref %NRF_WIFI_UMAC_CMD_START_P2P_DEVICE &
-	 *  @ref %NRF_WIFI_UMAC_CMD_STOP_P2P_DEVICE commands to create and destroy one
+	/** P2P device use the NRF_WIFI_UMAC_CMD_START_P2P_DEVICE &
+	 *  NRF_WIFI_UMAC_CMD_STOP_P2P_DEVICE commands to create and destroy one
 	 */
 	NRF_WIFI_IFTYPE_P2P_DEVICE,
 	/** Not Supported */
@@ -688,7 +688,7 @@ struct nrf_wifi_scan_params {
 	unsigned char no_cck;
 	/**  Bitmap of bands to be scanned. Value Zero will scan both 2.4 and 5 GHZ */
 	unsigned char bands;
-	/** Information element(s) data @ref nrf_wifi_ie*/
+	/** Information element(s) data nrf_wifi_ie*/
 	struct nrf_wifi_ie ie;
 	/** MAC address */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
@@ -822,9 +822,9 @@ struct nrf_wifi_connect_common_info {
 	unsigned char mac_addr_hint[NRF_WIFI_ETH_ADDR_LEN];
 	/** SSID (binary attribute, 0..32 octets) */
 	struct nrf_wifi_ssid ssid;
-	/** IE's @ref nrf_wifi_ie */
+	/** IE's nrf_wifi_ie */
 	struct nrf_wifi_ie wpa_ie;
-	/** VHT Capability information element @ref nrf_wifi_ht_vht_capabilities */
+	/** VHT Capability information element nrf_wifi_ht_vht_capabilities */
 	struct nrf_wifi_ht_vht_capabilities ht_vht_capabilities;
 	/** A 16-bit value indicating the ethertype that will be used for key negotiation.
 	 *  If it is not specified, the value defaults to 0x888E.
@@ -1008,9 +1008,9 @@ struct nrf_wifi_sta_info {
 	unsigned int chain_signal_avg_mask;
 	/** per-chain signal strength average */
 	unsigned char chain_signal_avg[NRF_WIFI_IEEE80211_MAX_CHAINS];
-	/**@ref nrf_wifi_rate_info */
+	/**nrf_wifi_rate_info */
 	struct nrf_wifi_rate_info tx_bitrate;
-	/**@ref nrf_wifi_rate_info */
+	/**nrf_wifi_rate_info */
 	struct nrf_wifi_rate_info rx_bitrate;
 	/** Not used */
 	unsigned short llid;
@@ -1040,7 +1040,7 @@ struct nrf_wifi_sta_info {
 	unsigned int peer_pm;
 	/** Not used */
 	unsigned int nonpeer_pm;
-	/** station flags @ref nrf_wifi_sta_flag_update */
+	/** station flags nrf_wifi_sta_flag_update */
 	struct nrf_wifi_sta_flag_update sta_flags;
 	/** timing offset with respect to this STA */
 	unsigned long long t_offset;
@@ -1050,7 +1050,7 @@ struct nrf_wifi_sta_info {
 	unsigned long long rx_beacon;
 	/** average of beacon signal */
 	long long rx_beacon_signal_avg;
-	/** Station connected BSS params. @ref nrf_wifi_sta_bss_parameters */
+	/** Station connected BSS params. nrf_wifi_sta_bss_parameters */
 	struct nrf_wifi_sta_bss_parameters bss_param;
 } __NRF_WIFI_PKD;
 
@@ -1070,7 +1070,7 @@ struct nrf_wifi_umac_hdr {
 	unsigned int cmd_evnt;
 	/** unused */
 	signed int rpu_ret_val;
-	/** Interface information @ref nrf_wifi_index_ids */
+	/** Interface information nrf_wifi_index_ids */
 	struct nrf_wifi_index_ids ids;
 } __NRF_WIFI_PKD;
 
@@ -1101,10 +1101,10 @@ struct nrf_wifi_umac_key_info {
 	unsigned short nrf_wifi_flags;
 	/** Key Type, see &enum nrf_wifi_key_type */
 	signed int key_type;
-	/** Key data @ref nrf_wifi_key */
+	/** Key data nrf_wifi_key */
 	struct nrf_wifi_key key;
 	/** Transmit key sequence number (IV/PN) for TKIP and CCMP keys,
-	 *  each six bytes in little endian @ref nrf_wifi_seq
+	 *  each six bytes in little endian nrf_wifi_seq
 	 */
 	struct nrf_wifi_seq seq;
 	/** Key ID (0-3) */
@@ -1131,7 +1131,7 @@ enum scan_reason {
 struct nrf_wifi_umac_scan_info {
 	/** scan type see &enum scan_reason */
 	signed int scan_reason;
-	/** scan parameters @ref nrf_wifi_scan_params */
+	/** scan parameters nrf_wifi_scan_params */
 	struct nrf_wifi_scan_params scan_params;
 } __NRF_WIFI_PKD;
 
@@ -1141,9 +1141,9 @@ struct nrf_wifi_umac_scan_info {
  */
 
 struct nrf_wifi_umac_cmd_scan {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** @ref nrf_wifi_umac_scan_info */
+	/** nrf_wifi_umac_scan_info */
 	struct nrf_wifi_umac_scan_info info;
 } __NRF_WIFI_PKD;
 
@@ -1153,7 +1153,7 @@ struct nrf_wifi_umac_cmd_scan {
  */
 
 struct nrf_wifi_umac_cmd_abort_scan {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -1165,7 +1165,7 @@ struct nrf_wifi_umac_cmd_abort_scan {
  */
 
 struct nrf_wifi_umac_cmd_get_scan_results {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** scan type see &enum scan_reason */
 	signed int scan_reason;
@@ -1176,7 +1176,7 @@ struct nrf_wifi_umac_cmd_get_scan_results {
  *
  */
 struct nrf_wifi_umac_event_scan_done {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** status, 0=Scan successful & 1=Scan aborted */
 	signed int status;
@@ -1204,9 +1204,9 @@ struct nrf_wifi_umac_mcast_cfg {
  *
  */
 struct nrf_wifi_umac_cmd_mcast_filter {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** @ref nrf_wifi_umac_mcast_cfg */
+	/** nrf_wifi_umac_mcast_cfg */
 	struct nrf_wifi_umac_mcast_cfg info;
 } __NRF_WIFI_PKD;
 
@@ -1226,9 +1226,9 @@ struct nrf_wifi_umac_change_macaddr_info {
  *
  */
 struct nrf_wifi_umac_cmd_change_macaddr {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** @ref nrf_wifi_umac_change_macaddr_info */
+	/** nrf_wifi_umac_change_macaddr_info */
 	struct nrf_wifi_umac_change_macaddr_info macaddr_info;
 } __NRF_WIFI_PKD;
 
@@ -1296,11 +1296,11 @@ struct nrf_wifi_umac_auth_info {
  */
 
 struct nrf_wifi_umac_cmd_auth {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** Information to be passed in the authentication command @ref nrf_wifi_umac_auth_info */
+	/** Information to be passed in the authentication command nrf_wifi_umac_auth_info */
 	struct nrf_wifi_umac_auth_info info;
 } __NRF_WIFI_PKD;
 
@@ -1314,11 +1314,11 @@ struct nrf_wifi_umac_cmd_auth {
 struct nrf_wifi_umac_assoc_info {
 	/** Frequency of the selected channel in MHz */
 	unsigned int center_frequency;
-	/** ssid @ref nrf_wifi_ssid */
+	/** ssid nrf_wifi_ssid */
 	struct nrf_wifi_ssid ssid;
 	/** MAC address (various uses) */
 	unsigned char nrf_wifi_bssid[NRF_WIFI_ETH_ADDR_LEN];
-	/**  WPA information element data. @ref nrf_wifi_ie */
+	/**  WPA information element data. nrf_wifi_ie */
 	struct nrf_wifi_ie wpa_ie;
 	/** Whether management frame protection (IEEE 802.11w) is used for the association */
 	unsigned char use_mfp;
@@ -1343,11 +1343,11 @@ struct nrf_wifi_umac_assoc_info {
  */
 
 struct nrf_wifi_umac_cmd_assoc {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** @ref nrf_wifi_connect_common_info */
+	/** nrf_wifi_connect_common_info */
 	struct nrf_wifi_connect_common_info connect_common_info;
 	/**
 	 * Previous BSSID, to be used by in ASSOCIATE commands to specify
@@ -1382,11 +1382,11 @@ struct nrf_wifi_umac_disconn_info {
  */
 
 struct nrf_wifi_umac_cmd_disconn {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** @ref nrf_wifi_umac_disconn_info */
+	/** nrf_wifi_umac_disconn_info */
 	struct nrf_wifi_umac_disconn_info info;
 } __NRF_WIFI_PKD;
 
@@ -1420,11 +1420,11 @@ struct nrf_wifi_umac_add_vif_info {
  */
 
 struct nrf_wifi_umac_cmd_add_vif {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** VIF specific information to be passed to the RPU @ref nrf_wifi_umac_add_vif_info */
+	/** VIF specific information to be passed to the RPU nrf_wifi_umac_add_vif_info */
 	struct nrf_wifi_umac_add_vif_info info;
 } __NRF_WIFI_PKD;
 
@@ -1435,7 +1435,7 @@ struct nrf_wifi_umac_cmd_add_vif {
  */
 
 struct nrf_wifi_umac_cmd_del_vif {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -1475,11 +1475,11 @@ struct nrf_wifi_umac_mgmt_frame_info {
  */
 
 struct nrf_wifi_umac_cmd_mgmt_frame_reg {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/**
 	 * Management frame specific information to be passed to the RPU.
-	 * @ref nrf_wifi_umac_mgmt_frame_info
+	 * nrf_wifi_umac_mgmt_frame_info
 	 */
 	struct nrf_wifi_umac_mgmt_frame_info info;
 } __NRF_WIFI_PKD;
@@ -1492,11 +1492,11 @@ struct nrf_wifi_umac_cmd_mgmt_frame_reg {
  */
 
 struct nrf_wifi_umac_cmd_key {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** Key information. @ref nrf_wifi_umac_key_info */
+	/** Key information. nrf_wifi_umac_key_info */
 	struct nrf_wifi_umac_key_info key_info;
 	/** MAC address associated with the key */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
@@ -1508,9 +1508,9 @@ struct nrf_wifi_umac_cmd_key {
  */
 
 struct nrf_wifi_umac_cmd_set_key {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** Key information , @ref nrf_wifi_umac_key_info */
+	/** Key information , nrf_wifi_umac_key_info */
 	struct nrf_wifi_umac_key_info key_info;
 } __NRF_WIFI_PKD;
 
@@ -1562,11 +1562,11 @@ struct nrf_wifi_umac_bss_info {
  */
 
 struct nrf_wifi_umac_cmd_set_bss {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** BSS specific information to be passed to the RPU @ref nrf_wifi_umac_bss_info */
+	/** BSS specific information to be passed to the RPU nrf_wifi_umac_bss_info */
 	struct nrf_wifi_umac_bss_info bss_info;
 } __NRF_WIFI_PKD;
 
@@ -1688,9 +1688,9 @@ struct nrf_wifi_umac_set_wiphy_info {
 	unsigned int antenna_rx;
 	/** Frequency information of the a channel see &struct freq_params */
 	struct freq_params freq_params;
-	/** TX queue parameters @ref nrf_wifi_txq_params */
+	/** TX queue parameters nrf_wifi_txq_params */
 	struct nrf_wifi_txq_params txq_params;
-	/** Tx power settings @ref nrf_wifi_tx_power_setting @ref nrf_wifi_tx_power_setting */
+	/** Tx power settings nrf_wifi_tx_power_setting nrf_wifi_tx_power_setting */
 	struct nrf_wifi_tx_power_setting tx_power_setting;
 	/** TX retry limit for frames whose length is less than or equal to the RTS threshold
 	 *  allowed range: 1..255.
@@ -1712,11 +1712,11 @@ struct nrf_wifi_umac_set_wiphy_info {
  */
 
 struct nrf_wifi_umac_cmd_set_wiphy {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicates which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** @ref nrf_wifi_umac_set_wiphy_info */
+	/** nrf_wifi_umac_set_wiphy_info */
 	struct nrf_wifi_umac_set_wiphy_info info;
 } __NRF_WIFI_PKD;
 
@@ -1744,11 +1744,11 @@ struct nrf_wifi_umac_del_sta_info {
  */
 
 struct nrf_wifi_umac_cmd_del_sta {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** Information regarding the station to be deleted @ref nrf_wifi_umac_del_sta_info */
+	/** Information regarding the station to be deleted nrf_wifi_umac_del_sta_info */
 	struct nrf_wifi_umac_del_sta_info info;
 } __NRF_WIFI_PKD;
 
@@ -1768,9 +1768,9 @@ struct nrf_wifi_umac_get_sta_info {
  */
 
 struct nrf_wifi_umac_cmd_get_sta {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** Information regarding the station to get @ref nrf_wifi_umac_get_sta_info */
+	/** Information regarding the station to get nrf_wifi_umac_get_sta_info */
 	struct nrf_wifi_umac_get_sta_info info;
 } __NRF_WIFI_PKD;
 
@@ -1864,15 +1864,15 @@ struct nrf_wifi_umac_chg_sta_info {
 	unsigned short sta_capability;
 	/** Unused */
 	unsigned short spare;
-	/** Supported rates in IEEE 802.11 format @ref nrf_wifi_supp_rates */
+	/** Supported rates in IEEE 802.11 format nrf_wifi_supp_rates */
 	struct nrf_wifi_supp_rates supp_rates;
-	/** Extended capabilities of the station @ref nrf_wifi_ext_capability */
+	/** Extended capabilities of the station nrf_wifi_ext_capability */
 	struct nrf_wifi_ext_capability ext_capability;
-	/** Supported channels in IEEE 802.11 format @ref nrf_wifi_supported_channels */
+	/** Supported channels in IEEE 802.11 format nrf_wifi_supported_channels */
 	struct nrf_wifi_supported_channels supported_channels;
-	/** Supported oper classes in IEEE 802.11 format @ref nrf_wifi_supported_oper_classes */
+	/** Supported oper classes in IEEE 802.11 format nrf_wifi_supported_oper_classes */
 	struct nrf_wifi_supported_oper_classes supported_oper_classes;
-	/** station flags mask/set @ref nrf_wifi_sta_flag_update @ref nrf_wifi_sta_flag_update */
+	/** station flags mask/set nrf_wifi_sta_flag_update nrf_wifi_sta_flag_update */
 	struct nrf_wifi_sta_flag_update sta_flags2;
 	/** HT capabilities of station */
 	unsigned char ht_capability[NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE];
@@ -1898,11 +1898,11 @@ struct nrf_wifi_umac_chg_sta_info {
  */
 
 struct nrf_wifi_umac_cmd_chg_sta {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** @ref nrf_wifi_umac_chg_sta_info */
+	/** nrf_wifi_umac_chg_sta_info */
 	struct nrf_wifi_umac_chg_sta_info info;
 } __NRF_WIFI_PKD;
 
@@ -1940,15 +1940,15 @@ struct nrf_wifi_umac_add_sta_info {
 	unsigned short sta_capability;
 	/** Unused */
 	unsigned short spare;
-	/** Supported rates in IEEE 802.11 format @ref nrf_wifi_supp_rates */
+	/** Supported rates in IEEE 802.11 format nrf_wifi_supp_rates */
 	struct nrf_wifi_supp_rates supp_rates;
-	/** Extended capabilities of the station @ref nrf_wifi_ext_capability */
+	/** Extended capabilities of the station nrf_wifi_ext_capability */
 	struct nrf_wifi_ext_capability ext_capability;
-	/** Supported channels in IEEE 802.11 format @ref nrf_wifi_supported_channels */
+	/** Supported channels in IEEE 802.11 format nrf_wifi_supported_channels */
 	struct nrf_wifi_supported_channels supported_channels;
-	/** Supported oper classes in IEEE 802.11 format @ref nrf_wifi_supported_oper_classes */
+	/** Supported oper classes in IEEE 802.11 format nrf_wifi_supported_oper_classes */
 	struct nrf_wifi_supported_oper_classes supported_oper_classes;
-	/** station flags mask/set @ref nrf_wifi_sta_flag_update */
+	/** station flags mask/set nrf_wifi_sta_flag_update */
 	struct nrf_wifi_sta_flag_update sta_flags2;
 	/** HT capabilities of station */
 	unsigned char ht_capability[NRF_WIFI_HT_VHT_CAPABILITY_MAX_SIZE];
@@ -1974,11 +1974,11 @@ struct nrf_wifi_umac_add_sta_info {
  */
 
 struct nrf_wifi_umac_cmd_add_sta {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** @ref nrf_wifi_umac_add_sta_info */
+	/** nrf_wifi_umac_add_sta_info */
 	struct nrf_wifi_umac_add_sta_info info;
 } __NRF_WIFI_PKD;
 
@@ -2013,11 +2013,11 @@ struct nrf_wifi_umac_start_ap_info {
 	signed int smps_mode;
 	/** Beacon info flags */
 	unsigned int nrf_wifi_flags;
-	/** Beacon frame, @ref nrf_wifi_beacon_data */
+	/** Beacon frame, nrf_wifi_beacon_data */
 	struct nrf_wifi_beacon_data beacon_data;
-	/** SSID string, @ref nrf_wifi_ssid */
+	/** SSID string, nrf_wifi_ssid */
 	struct nrf_wifi_ssid ssid;
-	/** Connect params, @ref nrf_wifi_connect_common_info */
+	/** Connect params, nrf_wifi_connect_common_info */
 	struct nrf_wifi_connect_common_info connect_common_info;
 	/** Channel info, see &struct freq_params */
 	struct freq_params freq_params;
@@ -2038,12 +2038,12 @@ struct nrf_wifi_umac_start_ap_info {
  */
 
 struct nrf_wifi_umac_cmd_start_ap {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
 	/** Parameters that need to be passed to the RPU when starting a SoftAP.
-	 *  @ref nrf_wifi_umac_start_ap_info
+	 *  nrf_wifi_umac_start_ap_info
 	 */
 	struct nrf_wifi_umac_start_ap_info info;
 } __NRF_WIFI_PKD;
@@ -2054,7 +2054,7 @@ struct nrf_wifi_umac_cmd_start_ap {
  */
 
 struct nrf_wifi_umac_cmd_stop_ap {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -2065,7 +2065,7 @@ struct nrf_wifi_umac_cmd_stop_ap {
  */
 
 struct nrf_wifi_umac_set_beacon_info {
-	/** Beacon frame, @ref nrf_wifi_beacon_data */
+	/** Beacon frame, nrf_wifi_beacon_data */
 	struct nrf_wifi_beacon_data beacon_data;
 } __NRF_WIFI_PKD;
 
@@ -2076,9 +2076,9 @@ struct nrf_wifi_umac_set_beacon_info {
  */
 
 struct nrf_wifi_umac_cmd_set_beacon {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** @ref nrf_wifi_umac_set_beacon_info */
+	/** nrf_wifi_umac_set_beacon_info */
 	struct nrf_wifi_umac_set_beacon_info info;
 } __NRF_WIFI_PKD;
 
@@ -2104,11 +2104,11 @@ struct nrf_wifi_umac_chg_vif_attr_info {
  */
 
 struct nrf_wifi_umac_cmd_chg_vif_attr {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** Interface attributes to be changed @ref nrf_wifi_umac_chg_vif_attr_info */
+	/** Interface attributes to be changed nrf_wifi_umac_chg_vif_attr_info */
 	struct nrf_wifi_umac_chg_vif_attr_info info;
 } __NRF_WIFI_PKD;
 
@@ -2133,9 +2133,9 @@ struct nrf_wifi_umac_chg_vif_state_info {
  */
 
 struct nrf_wifi_umac_cmd_chg_vif_state {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** @ref nrf_wifi_umac_chg_vif_state_info */
+	/** nrf_wifi_umac_chg_vif_state_info */
 	struct nrf_wifi_umac_chg_vif_state_info info;
 } __NRF_WIFI_PKD;
 /**
@@ -2144,7 +2144,7 @@ struct nrf_wifi_umac_cmd_chg_vif_state {
  */
 
 struct nrf_wifi_umac_event_vif_state {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Status to command NRF_WIFI_UMAC_CMD_SET_IFFLAGS */
 	signed int status;
@@ -2155,7 +2155,7 @@ struct nrf_wifi_umac_event_vif_state {
  */
 
 struct nrf_wifi_cmd_start_p2p {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -2165,7 +2165,7 @@ struct nrf_wifi_cmd_start_p2p {
  */
 
 struct nrf_wifi_umac_cmd_stop_p2p_dev {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -2190,7 +2190,7 @@ struct nrf_wifi_umac_mgmt_tx_info {
 	unsigned int frequency;
 	/** Duration field value */
 	unsigned int dur;
-	/** Management frame to transmit, @ref nrf_wifi_frame */
+	/** Management frame to transmit, nrf_wifi_frame */
 	struct nrf_wifi_frame frame;
 	/** Frequency configuration, see &struct freq_params */
 	struct freq_params freq_params;
@@ -2206,12 +2206,12 @@ struct nrf_wifi_umac_mgmt_tx_info {
  */
 
 struct nrf_wifi_umac_cmd_mgmt_tx {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
 	/** Information about the management frame to be transmitted.
-	 *  @ref nrf_wifi_umac_mgmt_tx_info
+	 *  nrf_wifi_umac_mgmt_tx_info
 	 */
 	struct nrf_wifi_umac_mgmt_tx_info info;
 } __NRF_WIFI_PKD;
@@ -2233,10 +2233,10 @@ struct nrf_wifi_umac_set_power_save_info {
  */
 
 struct nrf_wifi_umac_cmd_set_power_save {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Power save setting parameters.
-	 * @ref nrf_wifi_umac_set_power_save_info
+	 * nrf_wifi_umac_set_power_save_info
 	 */
 	struct nrf_wifi_umac_set_power_save_info info;
 } __NRF_WIFI_PKD;
@@ -2247,7 +2247,7 @@ struct nrf_wifi_umac_cmd_set_power_save {
  */
 
 struct nrf_wifi_umac_cmd_set_power_save_timeout {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Timeout value in milli seconds
 	 * if timeout < 0 RPU will set timeout to 100ms
@@ -2273,9 +2273,9 @@ struct nrf_wifi_umac_qos_map_info {
  */
 
 struct nrf_wifi_umac_cmd_set_qos_map {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** qos map info. @ref nrf_wifi_umac_qos_map_info */
+	/** qos map info. nrf_wifi_umac_qos_map_info */
 	struct nrf_wifi_umac_qos_map_info info;
 } __NRF_WIFI_PKD;
 
@@ -2285,7 +2285,7 @@ struct nrf_wifi_umac_cmd_set_qos_map {
  */
 
 struct nrf_wifi_umac_cmd_get_tx_power {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -2295,7 +2295,7 @@ struct nrf_wifi_umac_cmd_get_tx_power {
  */
 
 struct nrf_wifi_umac_cmd_get_reg {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -2305,7 +2305,7 @@ struct nrf_wifi_umac_cmd_get_reg {
  */
 
 struct nrf_wifi_umac_cmd_get_channel {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -2394,9 +2394,9 @@ struct nrf_wifi_umac_config_twt_info {
  */
 
 struct nrf_wifi_umac_cmd_config_twt {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** TWT configuration info @ref nrf_wifi_umac_config_twt_info */
+	/** TWT configuration info nrf_wifi_umac_config_twt_info */
 	struct nrf_wifi_umac_config_twt_info info;
 } __NRF_WIFI_PKD;
 
@@ -2421,9 +2421,9 @@ struct nrf_wifi_umac_teardown_twt_info {
  */
 
 struct nrf_wifi_umac_cmd_teardown_twt {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** @ref nrf_wifi_umac_teardown_twt_info */
+	/** nrf_wifi_umac_teardown_twt_info */
 	struct nrf_wifi_umac_teardown_twt_info info;
 } __NRF_WIFI_PKD;
 
@@ -2447,9 +2447,9 @@ struct twt_sleep_info {
  */
 
 struct nrf_wifi_umac_event_twt_sleep {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** @ref twt_sleep_info */
+	/** twt_sleep_info */
 	struct twt_sleep_info info;
 } __NRF_WIFI_PKD;
 
@@ -2471,9 +2471,9 @@ struct nrf_wifi_umac_uapsd_info {
  */
 
 struct nrf_wifi_umac_cmd_config_uapsd {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** @ref nrf_wifi_umac_uapsd_info */
+	/** nrf_wifi_umac_uapsd_info */
 	struct nrf_wifi_umac_uapsd_info info;
 } __NRF_WIFI_PKD;
 
@@ -2483,7 +2483,7 @@ struct nrf_wifi_umac_cmd_config_uapsd {
  */
 
 struct nrf_wifi_umac_event_trigger_scan {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
@@ -2497,9 +2497,9 @@ struct nrf_wifi_umac_event_trigger_scan {
 	unsigned char num_scan_frequencies;
 	/** center frequencies */
 	unsigned short scan_frequencies[NRF_WIFI_SCAN_MAX_NUM_FREQUENCIES];
-	/** @ref nrf_wifi_ssid */
+	/** nrf_wifi_ssid */
 	struct nrf_wifi_ssid scan_ssid[NRF_WIFI_SCAN_MAX_NUM_SSIDS];
-	/** @ref nrf_wifi_ie */
+	/** nrf_wifi_ie */
 	struct nrf_wifi_ie ie;
 } __NRF_WIFI_PKD;
 
@@ -2523,7 +2523,7 @@ struct nrf_wifi_umac_event_trigger_scan {
  */
 
 struct nrf_wifi_umac_event_new_scan_results {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
@@ -2549,7 +2549,7 @@ struct nrf_wifi_umac_event_new_scan_results {
 	unsigned short beacon_interval;
 	/** Capability field */
 	unsigned short capability;
-	/** Signal strength, @ref nrf_wifi_signal */
+	/** Signal strength, nrf_wifi_signal */
 	struct nrf_wifi_signal signal;
 	/** BSSID of the BSS (6 octets) */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
@@ -2580,7 +2580,7 @@ struct nrf_wifi_umac_event_new_scan_results {
  */
 
 struct umac_display_results {
-	/** Network SSID @ref nrf_wifi_ssid */
+	/** Network SSID nrf_wifi_ssid */
 	struct nrf_wifi_ssid ssid;
 	/** BSSID of the BSS (6 octets) */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
@@ -2618,11 +2618,11 @@ struct umac_display_results {
  */
 
 struct nrf_wifi_umac_event_new_scan_display_results {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Number of scan results in the current event */
 	unsigned char event_bss_count;
-	/** Display scan results info @ref umac_display_results */
+	/** Display scan results info umac_display_results */
 	struct umac_display_results display_results[DISPLAY_BSS_TOHOST_PEREVNT];
 } __NRF_WIFI_PKD;
 
@@ -2645,7 +2645,7 @@ struct nrf_wifi_umac_event_new_scan_display_results {
  */
 
 struct nrf_wifi_umac_event_mlme {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
@@ -2657,7 +2657,7 @@ struct nrf_wifi_umac_event_mlme {
 	unsigned int nrf_wifi_flags;
 	/** cookie identifier */
 	unsigned long long cookie;
-	/** Frame data, including frame header and body @ref nrf_wifi_frame */
+	/** Frame data, including frame header and body nrf_wifi_frame */
 	struct nrf_wifi_frame frame;
 	/** BSSID of the BSS */
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
@@ -2677,7 +2677,7 @@ struct nrf_wifi_umac_event_mlme {
  */
 
 struct nrf_wifi_umac_event_new_station {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate if assoc_req ies is valid */
 	unsigned int valid_fields;
@@ -2689,9 +2689,9 @@ struct nrf_wifi_umac_event_new_station {
 	unsigned char mac_addr[NRF_WIFI_ETH_ADDR_LEN];
 	/** generation number */
 	unsigned int generation;
-	/** Station information @ref nrf_wifi_sta_info */
+	/** Station information nrf_wifi_sta_info */
 	struct nrf_wifi_sta_info sta_info;
-	/** @ref nrf_wifi_ie */
+	/** nrf_wifi_ie */
 	struct nrf_wifi_ie assoc_req_ies;
 
 } __NRF_WIFI_PKD;
@@ -2706,7 +2706,7 @@ struct nrf_wifi_umac_event_new_station {
  */
 
 struct nrf_wifi_umac_event_cookie_rsp {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate if assoc_req ies is valid */
 	unsigned int valid_fields;
@@ -2727,7 +2727,7 @@ struct nrf_wifi_umac_event_cookie_rsp {
  */
 
 struct nrf_wifi_umac_event_get_tx_power {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Tx power in dbm */
 	signed int txpwr_level;
@@ -2742,7 +2742,7 @@ struct nrf_wifi_umac_event_get_tx_power {
  */
 
 struct nrf_wifi_umac_event_set_interface {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** return value */
 	signed int return_value;
@@ -2782,9 +2782,9 @@ enum nrf_wifi_channel_flags {
 	 * restrictions.
 	 */
 	CHAN_NO_160MHZ    = 1<<8,
-	/** @ref NL80211_FREQUENCY_ATTR_INDOOR_ONLY */
+	/** NL80211_FREQUENCY_ATTR_INDOOR_ONLY */
 	CHAN_INDOOR_ONLY  = 1<<9,
-	/** @ref NL80211_FREQUENCY_ATTR_GO_CONCURRENT */
+	/** NL80211_FREQUENCY_ATTR_GO_CONCURRENT */
 	CHAN_GO_CONCURRENT    = 1<<10,
 	/** 20 MHz bandwidth is not permitted on this channel */
 	CHAN_NO_20MHZ     = 1<<11,
@@ -2814,9 +2814,9 @@ struct nrf_wifi_chan_definition {
  *
  */
 struct nrf_wifi_umac_event_get_channel {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
-	/** Channel information.@ref nrf_wifi_chan_definition */
+	/** Channel information.nrf_wifi_chan_definition */
 	struct nrf_wifi_chan_definition chan_def;
 } __NRF_WIFI_PKD;
 
@@ -2825,7 +2825,7 @@ struct nrf_wifi_umac_event_get_channel {
  *
  */
 struct nrf_wifi_umac_cmd_conn_info {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -2844,7 +2844,7 @@ enum link_mode {
  */
 
 struct nrf_wifi_umac_event_conn_info {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Beacon interval */
 	unsigned short beacon_interval;
@@ -2864,7 +2864,7 @@ struct nrf_wifi_umac_event_conn_info {
  *
  */
 struct nrf_wifi_umac_cmd_get_power_save_info {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -2876,7 +2876,7 @@ struct nrf_wifi_umac_cmd_get_power_save_info {
  *
  */
 struct nrf_wifi_umac_cmd_set_listen_interval {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** listen interval */
 	unsigned short listen_interval;
@@ -2891,7 +2891,7 @@ struct nrf_wifi_umac_cmd_set_listen_interval {
  *
  */
 struct nrf_wifi_umac_cmd_config_extended_ps {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** 1=enable 0=disable */
 	unsigned char enable_extended_ps;
@@ -2914,7 +2914,7 @@ struct nrf_wifi_umac_cmd_config_extended_ps {
  *
  */
 struct nrf_wifi_umac_event_power_save_info {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Power save mode. NRF_WIFI_PS_MODE_LEGACY/NRF_WIFI_PS_MODE_WMM */
 	unsigned char ps_mode;
@@ -2930,7 +2930,7 @@ struct nrf_wifi_umac_event_power_save_info {
 	unsigned short listen_interval;
 	/** Number TWT flows */
 	unsigned char num_twt_flows;
-	/** TWT info of each flow @ref nrf_wifi_umac_config_twt_info */
+	/** TWT info of each flow nrf_wifi_umac_config_twt_info */
 	struct nrf_wifi_umac_config_twt_info twt_flow_info[0];
 } __NRF_WIFI_PKD;
 
@@ -2964,11 +2964,11 @@ struct remain_on_channel_info {
  */
 
 struct nrf_wifi_umac_cmd_remain_on_channel {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
-	/** Information about channel parameters.@ref remain_on_channel_info */
+	/** Information about channel parameters.remain_on_channel_info */
 	struct remain_on_channel_info info;
 
 } __NRF_WIFI_PKD;
@@ -2979,7 +2979,7 @@ struct nrf_wifi_umac_cmd_remain_on_channel {
  *
  */
 struct nrf_wifi_umac_cmd_cancel_remain_on_channel {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
@@ -2997,7 +2997,7 @@ struct nrf_wifi_umac_cmd_cancel_remain_on_channel {
  */
 
 struct nrf_wifi_event_remain_on_channel {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
@@ -3016,7 +3016,7 @@ struct nrf_wifi_event_remain_on_channel {
  *
  */
 struct nrf_wifi_cmd_get_interface {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -3030,7 +3030,7 @@ struct nrf_wifi_cmd_get_interface {
  */
 
 struct nrf_wifi_interface_info {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
@@ -3040,9 +3040,9 @@ struct nrf_wifi_interface_info {
 	signed char ifacename[IFACENAMSIZ];
 	/** Mac address */
 	unsigned char nrf_wifi_eth_addr[NRF_WIFI_ETH_ADDR_LEN];
-	/** @ref nrf_wifi_chan_definition */
+	/** nrf_wifi_chan_definition */
 	struct nrf_wifi_chan_definition chan_def;
-	/** @ref nrf_wifi_ssid */
+	/** nrf_wifi_ssid */
 	struct nrf_wifi_ssid ssid;
 } __NRF_WIFI_PKD;
 
@@ -3073,7 +3073,7 @@ struct nrf_wifi_event_sta_ht_cap {
 	signed int nrf_wifi_ht_supported;
 	/** HT capabilities, as in the HT information IE */
 	unsigned short nrf_wifi_cap;
-	/** MCS information. @ref nrf_wifi_event_mcs_info */
+	/** MCS information. nrf_wifi_event_mcs_info */
 	struct nrf_wifi_event_mcs_info mcs;
 	/** A-MPDU factor, as in 11n */
 	unsigned char nrf_wifi_ampdu_factor;
@@ -3160,7 +3160,7 @@ struct nrf_wifi_event_sta_vht_cap {
 	signed char nrf_wifi_vht_supported;
 	/** VHT capability info */
 	unsigned int nrf_wifi_cap;
-	/** Refer @ref nrf_wifi_event_vht_mcs_info */
+	/** Refer nrf_wifi_event_vht_mcs_info */
 	struct nrf_wifi_event_vht_mcs_info vht_mcs;
 } __NRF_WIFI_PKD;
 
@@ -3209,7 +3209,7 @@ struct nrf_wifi_event_iface_combination {
 	unsigned int nrf_wifi_num_different_channels;
 	/** Unused */
 	signed int beacon_int_infra_match;
-	/** @ref nrf_wifi_event_iface_limit */
+	/** nrf_wifi_event_iface_limit */
 	struct nrf_wifi_event_iface_limit limits[2];
 	/** Max interfaces */
 	unsigned short nrf_wifi_max_interfaces;
@@ -3258,7 +3258,7 @@ struct nrf_wifi_event_iface_combination {
  *
  */
 struct nrf_wifi_event_get_wiphy {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Unused */
 	unsigned int nrf_wifi_frag_threshold;
@@ -3332,7 +3332,7 @@ struct nrf_wifi_event_get_wiphy {
 	signed char num_iface_com;
 	/** Wiphy name */
 	signed char wiphy_name[NRF_WIFI_INDEX_IDS_WIPHY_NAME];
-	/** Supported bands info. @ref nrf_wifi_event_supported_band */
+	/** Supported bands info. nrf_wifi_event_supported_band */
 	struct nrf_wifi_event_supported_band sband[NRF_WIFI_EVENT_GET_WIPHY_NUM_BANDS];
 } __NRF_WIFI_PKD;
 /**
@@ -3340,7 +3340,7 @@ struct nrf_wifi_event_get_wiphy {
  *
  */
 struct nrf_wifi_cmd_get_wiphy {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 } __NRF_WIFI_PKD;
 
@@ -3349,7 +3349,7 @@ struct nrf_wifi_cmd_get_wiphy {
  *
  */
 struct nrf_wifi_cmd_get_ifhwaddr {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Interface name */
 	signed char ifacename[IFACENAMSIZ];
@@ -3361,7 +3361,7 @@ struct nrf_wifi_cmd_get_ifhwaddr {
  *
  */
 struct nrf_wifi_cmd_set_ifhwaddr {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Interface name */
 	signed char ifacename[IFACENAMSIZ];
@@ -3444,7 +3444,7 @@ struct nrf_wifi_get_reg_chn_info {
  */
 
 struct nrf_wifi_reg {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Country code */
 	unsigned char nrf_wifi_alpha2[NRF_WIFI_COUNTRY_CODE_LEN];
@@ -3464,7 +3464,7 @@ struct nrf_wifi_reg {
  *
  */
 struct nrf_wifi_cmd_req_set_reg {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Indicate which of the following parameters are valid */
 	unsigned int valid_fields;
@@ -3495,7 +3495,7 @@ struct nrf_wifi_event_regulatory_change {
  *
  */
 struct nrf_wifi_umac_event_cmd_status {
-	/** Header @ref nrf_wifi_umac_hdr */
+	/** Header nrf_wifi_umac_hdr */
 	struct nrf_wifi_umac_hdr umac_hdr;
 	/** Command id. see &enum nrf_wifi_umac_commands */
 	unsigned int cmd_id;
