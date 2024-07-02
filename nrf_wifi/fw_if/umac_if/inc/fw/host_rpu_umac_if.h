@@ -143,7 +143,11 @@ enum nrf_wifi_umac_commands {
 	/** Set listen interval @ref nrf_wifi_umac_cmd_set_listen_interval */
 	NRF_WIFI_UMAC_CMD_SET_LISTEN_INTERVAL,
 	/** Configure extended power save @ref nrf_wifi_umac_cmd_config_extended_ps */
-	NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS
+	NRF_WIFI_UMAC_CMD_CONFIG_EXTENDED_PS,
+	/** Configure quiet period @ref nrf_wifi_umac_cmd_config_quiet_period */
+	NRF_WIFI_UMAC_CMD_CONFIG_QUIET_PERIOD,
+	/** Add DMS @ref nrf_wifi_umac_cmd_req_config_dms */
+	NRF_WIFI_UMAC_CMD_REQ_CONFIG_DMS,
 };
 
  /**
@@ -240,7 +244,9 @@ enum nrf_wifi_umac_events {
 	/** send connection information @ref nrf_wifi_umac_event_conn_info. */
 	NRF_WIFI_UMAC_EVENT_GET_CONNECTION_INFO,
 	/** @ref nrf_wifi_umac_event_power_save_info */
-	NRF_WIFI_UMAC_EVENT_GET_POWER_SAVE_INFO
+	NRF_WIFI_UMAC_EVENT_GET_POWER_SAVE_INFO,
+	/** Send DMS response information @ref nrf_wifi_umac_cmd_config_dms */
+	NRF_WIFI_UMAC_EVENT_DMS,
 };
 
 /**
@@ -779,6 +785,7 @@ struct nrf_wifi_signal {
 
 #define NRF_WIFI_CMD_CONNECT_COMMON_INFO_USE_RRM (1 << 14)
 #define NRF_WIFI_CONNECT_COMMON_INFO_PREV_BSSID (1 << 15)
+#define NRF_WIFI_CONNECT_COMMON_INFO_SECURITY (1 << 16)
 
 /**
  * @brief This structure contains parameters related to the connection.
@@ -1303,6 +1310,18 @@ struct nrf_wifi_umac_cmd_auth {
 #define NRF_WIFI_CMD_ASSOCIATE_MAC_ADDR_VALID (1 << 0)
 
 /**
+ * @brief Types of connection protected/un-protected.
+ *
+ */
+
+enum nrf_wifi_conn_type {
+	/* Connection to be non-protected */
+	NRF_WIFI_CONN_TYPE_OPEN,
+	/* Connection to be protected */
+	NRF_WIFI_CONN_TYPE_SECURE,
+};
+
+/**
  * @brief This structure specifies the parameters to be used when sending an association request.
  *
  */
@@ -1331,6 +1350,8 @@ struct nrf_wifi_umac_assoc_info {
 	 *  BSS MAX IDLE IE in assoc request frame.
 	 */
 	unsigned short bss_max_idle_time;
+	/** Connection type */
+	unsigned char conn_type;
 } __NRF_WIFI_PKD;
 
 /**
@@ -3497,6 +3518,99 @@ struct nrf_wifi_umac_event_cmd_status {
 	unsigned int cmd_id;
 	/** Status codes */
 	unsigned int cmd_status;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure represents the command used to  configure quiet period.
+ *
+ */
+struct nrf_wifi_umac_cmd_config_quiet_period {
+	/** Header @ref nrf_wifi_umac_hdr */
+	struct nrf_wifi_umac_hdr umac_hdr;
+	/** quiet period value in seconds */
+	unsigned int quiet_period_in_sec;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief DMS add commands and events.
+ *
+ */
+
+#define NRF_WIFI_DMS_RESP_RECEIVED 0
+#define NRF_WIFI_DMS_RESP_NOT_RECEIVED 1
+#define NRF_WIFI_INVALID_DMS_PARAM 3
+
+/**
+ * @brief The RPU can send the following DMS events to host.
+ *
+ */
+enum nrf_wifi_dms_event_type {
+	NRF_WIFI_DMS_EVENT_ACCEPT,
+	NRF_WIFI_DMS_EVENT_REJECT,
+	NRF_WIFI_DMS_EVENT_TERMINATE,
+	NRF_WIFI_DMS_EVENT_INVALID
+};
+
+/**
+ * @brief The Host can send the following DMS request type events to rpu.
+ *
+ */
+enum nrf_wifi_dms_req_type {
+	NRF_WIFI_DMS_REQ_ADD,
+	NRF_WIFI_DMS_REQ_REMOVE,
+	NRF_WIFI_DMS_REQ_CHANGE,
+	NRF_WIFI_DMS_REQ_INVALID
+};
+
+/**
+ * @brief This structure describes the DMS information.
+ *
+ */
+
+struct nrf_wifi_umac_config_dms_info {
+	/** Dialog token, used to map requests to responses */
+	unsigned char dialog_token;
+	/** DMSID, used to identifying the DMS for the group addressed frame */
+	unsigned char dmsid;
+	/** request type (0- ADD, 1-Remove, 2- Change) */
+	unsigned char req_type;
+	/** User priority */
+	unsigned char up;
+	/** Tclas type */
+	unsigned char tclas_type;
+	/** Tclas mask */
+	unsigned char tclas_mask;
+	/** Tclas category 4 elements */
+	/** Version */
+	unsigned char version;
+	/** Source ip address */
+	unsigned int src_ip_addr;
+	/** Destination ip address */
+	unsigned int dest_ip_addr;
+	/** Source port */
+	unsigned short src_port;
+	/** Destination port */
+	unsigned short dest_port;
+	/** DSCP */
+	unsigned char dscp;
+	/** Protocol */
+	unsigned char protocol;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure defines the parameters required for DMS operation.
+ *
+ */
+
+struct nrf_wifi_umac_cmd_config_dms {
+	/** Header @ref nrf_wifi_umac_hdr */
+	struct nrf_wifi_umac_hdr umac_hdr;
+	/** DMS add info @ref nrf_wifi_umac_config_dms_info */
+	struct nrf_wifi_umac_config_dms_info info;
+	/** Event type received */
+	enum nrf_wifi_dms_event_type event_type;
+	/** 0->not received 1->received */
+	unsigned char dms_resp_status;
 } __NRF_WIFI_PKD;
 
 #endif /* __HOST_RPU_UMAC_IF_H */
