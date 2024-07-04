@@ -22,6 +22,14 @@ Changes
 
 * The ``sdc_coex_adv_mode_configure`` API has been deprecated as it is not applicable to any supported coexistence interfaces. (DRGN-20876).
 * The ``sdc_hci_cmd_vs_coex_priority_config`` and ``sdc_hci_cmd_vs_coex_scan_mode_config`` vendor-specific HCI commands have been removed as they are not applicable to any supported coexistence interfaces. (DRGN-20876)
+* The vendor-specific Set Connection Event Trigger command can now be used with :kconfig:option:`CONFIG_BT_LL_SOFTDEVICE_PERIPHERAL`. (DRGN-22511)
+
+Bug fixes
+=========
+
+* Fixed a rare assert that could happen when disabling a periodic advertising set with responses. (DRGN-22443)
+* Fixed an issue where the length byte of the HCI packet could be incorrect.
+  This could happen when the packet contained an LE BIG Sync Established event or LE BIG Complete event with status not equal to success. (DRGN-22441)
 
 nRF Connect SDK v2.7.0
 **********************
@@ -67,14 +75,10 @@ Changes
   Using :file:`mpsl_ecb.h` is now recommended instead. (DRGN-21603)
 * The ability to configure a periodic advertiser with subevents but without response slots has been removed.
   This is due to an errata to the Bluetooth Core Specification v5.4 no longer allowing this configuration. (DRGN-22189)
-* The vendor-specific Set Connection Event Trigger command can now be used with :kconfig:option:`CONFIG_BT_LL_SOFTDEVICE_PERIPHERAL`. (DRGN-22511)
 
 Bug fixes
 =========
 
-* Fixed a rare assert that could happen when disabling a periodic advertising set with responses. (DRGN-22443)
-* Fixed an issue where the length byte of the HCI packet could be incorrect.
-  This could happen when the packet contained an LE BIG Sync Established event or LE BIG Complete event with status not equal to success. (DRGN-22441)
 * Fixed an issue where an assert could happen if an initiator ran for more than 2147 seconds before connecting (DRGN-22163).
 * Fixed an extremely rare race condition where using :c:func:`sdc_soc_ecb_block_encrypt` from an ISR could lead to encryption failures. (DRGN-21603)
 * Fixed an issue where the vendor-specific ISO Read TX Timestamp command returned a timestamp that was 41 µs too small (DRGN-21605).
