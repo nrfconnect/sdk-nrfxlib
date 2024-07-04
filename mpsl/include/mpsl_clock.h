@@ -177,12 +177,13 @@ int32_t mpsl_clock_hfclk_is_running(uint32_t * p_is_running);
 
 /** @brief Informs MPSL about the actual ramp-up time of the high-frequency crystal oscillator.
  *
- * @param[in] mpsl_clock_hfclk_latency_config Setting for the time it takes for the HFCLK to ramp up.
+ * @note Using a value smaller than the actual ramp-up time needed will cause asserts.
+ *
+ * @param[in] hfclk_latency_us Ramp-up time of the high-frequency oscillator, in microseconds. See @ref mpsl_clock_hfclk_latency_config_t for recommended values.
  *
  * @retval 0  Success
- * @retval 1  Error, passed value not in @ref mpsl_clock_hfclk_latency_config_t
  */
-int32_t mpsl_clock_hfclk_latency_set(mpsl_clock_hfclk_latency_config_t mpsl_clock_hfclk_latency_config);
+int32_t mpsl_clock_hfclk_latency_set(uint16_t hfclk_latency_us);
 
 /** @brief Trigger a task upon start of the RTC.
  *
