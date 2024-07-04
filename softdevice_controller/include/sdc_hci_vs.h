@@ -67,10 +67,6 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_EVENT_LENGTH_SET = 0xfd05,
     /** @brief See @ref sdc_hci_cmd_vs_periodic_adv_event_length_set(). */
     SDC_HCI_OPCODE_CMD_VS_PERIODIC_ADV_EVENT_LENGTH_SET = 0xfd06,
-    /** @brief See @ref sdc_hci_cmd_vs_coex_scan_mode_config(). */
-    SDC_HCI_OPCODE_CMD_VS_COEX_SCAN_MODE_CONFIG = 0xfd07,
-    /** @brief See @ref sdc_hci_cmd_vs_coex_priority_config(). */
-    SDC_HCI_OPCODE_CMD_VS_COEX_PRIORITY_CONFIG = 0xfd08,
     /** @brief See @ref sdc_hci_cmd_vs_peripheral_latency_mode_set(). */
     SDC_HCI_OPCODE_CMD_VS_PERIPHERAL_LATENCY_MODE_SET = 0xfd09,
     /** @brief See @ref sdc_hci_cmd_vs_write_remote_tx_power(). */
@@ -118,24 +114,6 @@ enum sdc_hci_subevent_vs
     SDC_HCI_SUBEVENT_VS_QOS_CONN_EVENT_REPORT = 0x80,
     /** @brief See @ref sdc_hci_subevent_vs_qos_channel_survey_report_t. */
     SDC_HCI_SUBEVENT_VS_QOS_CHANNEL_SURVEY_REPORT = 0x81,
-};
-
-/** @brief Bluetooth roles that are recognized by the coexistence interface. */
-enum sdc_hci_vs_coex_bt_role
-{
-    SDC_HCI_VS_COEX_BT_ROLE_ADVERTISER = 0x00,
-    SDC_HCI_VS_COEX_BT_ROLE_SCANNER = 0x01,
-    SDC_HCI_VS_COEX_BT_ROLE_CENTRAL = 0x02,
-    SDC_HCI_VS_COEX_BT_ROLE_PERIPHERAL = 0x03,
-};
-
-/** @brief Scanner coexistence session request modes. */
-enum sdc_hci_vs_coex_scan_mode
-{
-    /** @brief Request after receiving a valid access address. */
-    SDC_HCI_VS_COEX_SCAN_MODE_REQUEST_ON_AA = 0x00,
-    /** @brief Request before transmitting. */
-    SDC_HCI_VS_COEX_SCAN_MODE_REQUEST_ON_TX = 0x01,
 };
 
 /** @brief Connection Event Trigger Role Selection. */
@@ -194,8 +172,6 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t qos_conn_event_report_enable : 1;
     uint8_t event_length_set : 1;
     uint8_t periodic_adv_event_length_set : 1;
-    uint8_t coex_priority_config : 1;
-    uint8_t coex_scan_mode_config : 1;
     uint8_t peripheral_latency_mode_set : 1;
     uint8_t write_remote_tx_power : 1;
     uint8_t set_adv_randomness : 1;
@@ -488,30 +464,6 @@ typedef struct __PACKED __ALIGN(1)
     uint32_t event_length_us;
 } sdc_hci_cmd_vs_periodic_adv_event_length_set_t;
 
-/** @brief Configure Coexistence Scan Request Mode command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Scanner request mode. See @ref sdc_hci_vs_coex_scan_mode. */
-    uint8_t mode;
-} sdc_hci_cmd_vs_coex_scan_mode_config_t;
-
-/** @brief Configure Coexistence Per-Role Priority command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Current Bluetooth device role, see @ref sdc_hci_vs_coex_bt_role. */
-    uint8_t role;
-    /** @brief @ref MPSL_COEX_PRIORITY_HIGH or @ref MPSL_COEX_PRIORITY_LOW priority. */
-    uint8_t priority;
-    /** @brief When the number of denied requests to the PTA controller is larger than the
-     *         escalation threshold, the priority will be escalated. The threshold is handled only
-     *         if priority is @ref MPSL_COEX_PRIORITY_LOW. The priority will be reset to @ref
-     *         MPSL_COEX_PRIORITY_LOW after the end of the current radio activity. This means after
-     *         the end of the advertising event, scan window, or connection event. If an escalation
-     *         is not required then use @ref MPSL_COEX_ESCALATION_THRESHOLD_OFF.
-     */
-    uint8_t escalation_threshold;
-} sdc_hci_cmd_vs_coex_priority_config_t;
-
 /** @brief Set peripheral latency mode command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -743,9 +695,9 @@ typedef struct __PACKED __ALIGN(1)
      */
     uint16_t handle;
     /** @brief The new priority for the role. Values from 1 to 5 set the new priority for the role,
-     *         see https://developer.nordicsemi.com/nRF_Connect_SDK/doc/latest/nrfxlib/softdevice_co
-     *         ntroller/doc/scheduling.html A value of 0xFF resets the priority to the default
-     *         selected by the controller.
+     *         see https://docs.nordicsemi.com/bundle/ncs-
+     *         latest/page/nrfxlib/softdevice_controller/doc/scheduling.html A value of 0xFF resets
+     *         the priority to the default selected by the controller.
      */
     uint8_t priority;
 } sdc_hci_cmd_vs_set_role_priority_t;
@@ -1125,41 +1077,6 @@ uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t 
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_periodic_adv_event_length_set(const sdc_hci_cmd_vs_periodic_adv_event_length_set_t * p_params);
-
-/** @brief Configure Coexistence Scan Request Mode.
- *
- * This vendor specific command is used to configure the way the scanner requests a coexistence
- * session.
- * Either the scanner requests a coex session as soon as it has received a valid access address, or
- * it
- * only requests before transmitting.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_coex_scan_mode_config(const sdc_hci_cmd_vs_coex_scan_mode_config_t * p_params);
-
-/** @brief Configure Coexistence Per-Role Priority.
- *
- * This vendor specific command is used to configure the external radio coexistence
- * priorities depending on the Bluetooth device role.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_coex_priority_config(const sdc_hci_cmd_vs_coex_priority_config_t * p_params);
 
 /** @brief Set peripheral latency mode.
  *
