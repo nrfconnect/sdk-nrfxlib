@@ -148,8 +148,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 1043
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1164
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 955
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1076
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -191,21 +191,27 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? (12 + (num_links) * 26) : 0)
+#define SDC_MEM_LE_POWER_CONTROL(num_links) ((num_links) > 0 ? (13 + (num_links) * 115) : 0)
+
+/** @brief Maximum memory required when supporting subrating.
+ *
+ * @param[in] num_links Total number of peripheral and central links supported.
+ */
+#define SDC_MEM_SUBRATING(num_links) ((num_links) * 0)
 
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
 /** Memory required for the scanner when only supporting legacy scanning. */
-#define SDC_MEM_SCAN(buffer_count) (340 + (buffer_count) * 96)
+#define SDC_MEM_SCAN(buffer_count) (345 + (buffer_count) * 98)
 
 /** Memory required for the scanner when supporting extended scanning. */
-#define SDC_MEM_SCAN_EXT(buffer_count) (340 + (buffer_count) * 312)
+#define SDC_MEM_SCAN_EXT(buffer_count) (345 + (buffer_count) * 320)
 
 /** Additional memory required for the initiator when supporting scanning
  *  and initiating at the same time.
  */
-#define SDC_MEM_INITIATOR (312)
+#define SDC_MEM_INITIATOR (320)
 
 /** Memory required for the Filter Accept List */
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)
@@ -1193,20 +1199,9 @@ int32_t sdc_support_qos_channel_survey(void);
 
 /** @brief Configure the coex advertising mode
  *
- * Configure how the advertiser behaves on denial of an advertising packet.
- * The advertiser can be configured to carry on with the advertisement after the denial or
- * to abort the advertising event, once an advertising packet gets denied.
+ * This API has now been deprecated and has no effect.
  *
- * The default behavior is that the advertiser tries to carry on with the advertising event
- * after the denial.
- *
- * @note Setting @p adv_cont_on_denial to True is not supported for the
- *       @ref MPSL_COEX_1WIRE_GPIOTE_ID coex interface type.
- *       Using the @ref MPSL_COEX_1WIRE_GPIOTE_ID coex interface without using this
- *       API call with @p adv_cont_on_denial set to False will result in unexpected behavior.
- *
- * @retval 0                Success
- * @retval -NRF_EOPNOTSUPP  The coexistence feature is not supported.
+ * @retval -NRF_EOPNOTSUPP  This API is no longer supported.
  */
 int32_t sdc_coex_adv_mode_configure(bool adv_cont_on_denial);
 
