@@ -722,6 +722,7 @@ static enum nrf_wifi_status umac_event_rf_test_process(struct nrf_wifi_fmac_dev_
 	struct nrf_wifi_rf_test_xo_calib xo_calib_params;
 	struct nrf_wifi_rf_get_xo_value rf_get_xo_value_params;
 	struct nrf_wifi_fmac_dev_ctx_rt *def_dev_ctx;
+	struct nrf_wifi_rf_test_capture_params rf_test_capture_params;
 
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
@@ -749,6 +750,12 @@ static enum nrf_wifi_status umac_event_rf_test_process(struct nrf_wifi_fmac_dev_
 					  def_dev_ctx->rf_test_cap_data,
 					  RPU_MEM_RF_TEST_CAP_BASE,
 					  def_dev_ctx->rf_test_cap_sz);
+					  
+		nrf_wifi_osal_mem_cpy(&rf_test_capture_params,
+				      (const unsigned char *)&rf_test_event->rf_test_info.rfevent[0],
+				      sizeof(rf_test_capture_params));
+
+		def_dev_ctx->capture_status = rf_test_capture_params.capture_status;
 
 		break;
 	case NRF_WIFI_RF_TEST_EVENT_TX_TONE_START:

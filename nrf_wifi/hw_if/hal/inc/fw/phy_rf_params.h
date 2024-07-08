@@ -31,6 +31,7 @@
 #define NRF_WIFI_PHY_CALIB_FLAG_TXIQ 8
 #define NRF_WIFI_PHY_CALIB_FLAG_RXIQ 16
 #define NRF_WIFI_PHY_CALIB_FLAG_DPD 32
+#define NRF_WIFI_PHY_CALIB_FLAG_ENHANCED_TXDC 64
 
 #define NRF_WIFI_PHY_SCAN_CALIB_FLAG_RXDC (1<<16)
 #define NRF_WIFI_PHY_SCAN_CALIB_FLAG_TXDC (2<<16)
@@ -45,6 +46,7 @@
 				NRF_WIFI_PHY_CALIB_FLAG_TXIQ |\
 				NRF_WIFI_PHY_CALIB_FLAG_TXPOW |\
 				NRF_WIFI_PHY_CALIB_FLAG_DPD |\
+				NRF_WIFI_PHY_CALIB_FLAG_ENHANCED_TXDC |\
 				NRF_WIFI_PHY_SCAN_CALIB_FLAG_RXDC |\
 				NRF_WIFI_PHY_SCAN_CALIB_FLAG_TXDC |\
 				NRF_WIFI_PHY_SCAN_CALIB_FLAG_RXIQ |\
@@ -395,6 +397,12 @@ enum EDGE_BACKOFF_OFFSETS {
 };
 
 #ifdef CONFIG_NRF700X_RADIO_TEST
+
+#define MAX_CAPTURE_LEN 16383
+#define MIN_CAPTURE_LEN 0
+#define RX_CAPTURE_TIMEOUT_CONST 11
+#define CAPTURE_DURATION_IN_SEC 600
+
 enum nrf_wifi_rf_test {
 	NRF_WIFI_RF_TEST_RX_ADC_CAP,
 	NRF_WIFI_RF_TEST_RX_STAT_PKT_CAP,
@@ -428,6 +436,16 @@ struct nrf_wifi_rf_test_capture_params {
 
 	/* Number of samples to be captured. */
 	unsigned short int cap_len;
+
+	/* Capture timeout in seconds. */
+	unsigned short int cap_time;
+
+	/* Capture status codes:
+	 *0: Capture successful after WLAN packet detection
+	 *1: Capture failed after WLAN packet detection
+	 *2: Capture timedout as no WLAN packets are detected
+	 */
+	unsigned char capture_status;
 
 	/* LNA Gain to be configured. It is a 3 bit value. The mapping is,
 	 * '0' = 24dB

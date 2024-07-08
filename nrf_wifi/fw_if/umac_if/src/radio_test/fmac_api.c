@@ -27,7 +27,6 @@
 #define RADIO_CMD_STATUS_TIMEOUT 5000
 
 
-
 static enum nrf_wifi_status nrf_wifi_fmac_fw_init_rt(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 						     struct nrf_wifi_phy_rf_params *rf_params,
 						     bool rf_params_valid,
@@ -388,8 +387,10 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_rx_cap(struct nrf_wifi_fmac_dev_ctx *
 						  enum nrf_wifi_rf_test rf_test_type,
 						  void *cap_data,
 						  unsigned short int num_samples,
+						  unsigned short int capture_timeout ,
 						  unsigned char lna_gain,
-						  unsigned char bb_gain)
+						  unsigned char bb_gain,
+						  unsigned char *capture_status)
 {
 	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
 	struct nrf_wifi_rf_test_capture_params rf_test_cap_params;
@@ -404,12 +405,14 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_rx_cap(struct nrf_wifi_fmac_dev_ctx *
 
 	rf_test_cap_params.test = rf_test_type;
 	rf_test_cap_params.cap_len = num_samples;
+	rf_test_cap_params.cap_time = capture_timeout;
 	rf_test_cap_params.lna_gain = lna_gain;
 	rf_test_cap_params.bb_gain = bb_gain;
 
 	rt_dev_ctx->rf_test_type = rf_test_type;
 	rt_dev_ctx->rf_test_cap_data = cap_data;
 	rt_dev_ctx->rf_test_cap_sz = (num_samples * 3);
+	rt_dev_ctx->capture_status = 0;
 
 	status = umac_cmd_prog_rf_test(fmac_dev_ctx,
 				       &rf_test_cap_params,
@@ -426,9 +429,9 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_rx_cap(struct nrf_wifi_fmac_dev_ctx *
 		nrf_wifi_osal_sleep_ms(100);
 		count++;
 	} while ((rt_dev_ctx->rf_test_type != NRF_WIFI_RF_TEST_MAX) &&
-		 (count < NRF_WIFI_FMAC_RF_TEST_EVNT_TIMEOUT));
+		 (count < (RX_CAPTURE_TIMEOUT_CONST * capture_timeout)));
 
-	if (count == NRF_WIFI_FMAC_RF_TEST_EVNT_TIMEOUT) {
+	if (count == (RX_CAPTURE_TIMEOUT_CONST * capture_timeout)) {
 		nrf_wifi_osal_log_err("%s: Timed out",
 				      __func__);
 		rt_dev_ctx->rf_test_type = NRF_WIFI_RF_TEST_MAX;
@@ -436,6 +439,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_rx_cap(struct nrf_wifi_fmac_dev_ctx *
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;
 	}
+	*capture_status = rt_dev_ctx->capture_status;
 
 out:
 	return status;

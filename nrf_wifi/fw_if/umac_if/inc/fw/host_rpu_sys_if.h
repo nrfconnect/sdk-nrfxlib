@@ -1058,6 +1058,8 @@ struct rpu_conf_params {
 	unsigned char bb_gain;
 	/** Number of RX samples to be captured */
 	unsigned short int capture_length;
+	/** Capture timeout in seconds */
+	unsigned short int capture_timeout;
 	/** Configure WLAN to bypass regulatory */
 	unsigned char bypass_regulatory;
 	/** Two letter country code (00: Default for WORLD) */
