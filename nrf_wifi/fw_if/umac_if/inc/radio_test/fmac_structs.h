@@ -41,6 +41,8 @@ struct nrf_wifi_fmac_dev_ctx_rt {
 	bool radio_cmd_done;
 	/** Firmware RF test command status. */
 	enum nrf_wifi_radio_test_err_status radio_cmd_status;
+	/** Firmware RF test RX capture event status */
+	unsigned char capture_status;
 };
 
 /**
