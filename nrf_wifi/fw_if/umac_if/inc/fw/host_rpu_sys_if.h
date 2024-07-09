@@ -887,6 +887,10 @@ struct nrf_wifi_cmd_sys_init {
 	 *  without receiving beacons before disconnection.
 	 */
 	unsigned int discon_timeout;
+	/** When set, RPU uses QoS null frames to retrieve buffered frames from the AP,
+	 *  otherwise, it initially uses PS-POLL frames.
+	 */
+	unsigned char nullframe_pwrsave;
 } __NRF_WIFI_PKD;
 
 /**
