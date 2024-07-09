@@ -433,11 +433,10 @@ out:
 
 void nrf_wifi_fmac_dev_deinit(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 {
-	nrf_wifi_hal_lock_rx(fmac_dev_ctx->hal_dev_ctx);
+	nrf_wifi_hal_dev_deinit(fmac_dev_ctx->hal_dev_ctx);
 	nrf_wifi_fmac_fw_deinit(fmac_dev_ctx);
 	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
 			       fmac_dev_ctx->tx_pwr_ceil_params);
-	nrf_wifi_hal_unlock_rx(fmac_dev_ctx->hal_dev_ctx);
 }
 
 #ifdef CONFIG_NRF_WIFI_RPU_RECOVERY
