@@ -939,6 +939,11 @@ enum nrf_wifi_status nrf_wifi_fmac_assoc(void *dev_ctx,
 		connect_common_info->maxidle_insec = assoc_info->bss_max_idle_time;
 	}
 
+	if (assoc_info->conn_type == NRF_WIFI_CONN_TYPE_SECURE) {
+		connect_common_info->nrf_wifi_flags |=
+			NRF_WIFI_CONNECT_COMMON_INFO_SECURITY;
+	}
+
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      assoc_cmd,
 			      sizeof(*assoc_cmd));
@@ -3180,6 +3185,94 @@ out:
 	if (set_ps_wakeup_mode_cmd) {
 		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
 				       set_ps_wakeup_mode_cmd);
+	}
+
+	return status;
+}
+
+enum nrf_wifi_status nrf_wifi_fmac_set_quiet_period(void *dev_ctx,
+						    unsigned char if_idx,
+						    unsigned int quiet_period)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	struct nrf_wifi_umac_cmd_config_quiet_period  *set_quiet_period_cmd = NULL;
+	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	fmac_dev_ctx = dev_ctx;
+
+	if (!dev_ctx) {
+		goto out;
+	}
+
+	set_quiet_period_cmd = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
+							sizeof(*set_quiet_period_cmd));
+
+	if (!set_quiet_period_cmd) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Unable to allocate memory",
+				      __func__);
+		goto out;
+	}
+
+	set_quiet_period_cmd->umac_hdr.cmd_evnt = NRF_WIFI_UMAC_CMD_CONFIG_QUIET_PERIOD;
+	set_quiet_period_cmd->umac_hdr.ids.wdev_id = if_idx;
+	set_quiet_period_cmd->umac_hdr.ids.valid_fields |=
+		NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
+	set_quiet_period_cmd->quiet_period_in_sec = quiet_period;
+
+	status = umac_cmd_cfg(fmac_dev_ctx,
+			      set_quiet_period_cmd,
+			      sizeof(*set_quiet_period_cmd));
+out:
+	if (set_quiet_period_cmd) {
+		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
+				       set_quiet_period_cmd);
+	}
+
+	return status;
+}
+
+
+enum nrf_wifi_status nrf_wifi_fmac_req_dms(void *dev_ctx,
+					   unsigned char if_idx,
+					   struct nrf_wifi_umac_config_dms_info *dms_info)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	struct nrf_wifi_umac_cmd_config_dms *req_dms = NULL;
+	struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx = NULL;
+
+	if (!dev_ctx || !dms_info) {
+		goto out;
+	}
+
+	fmac_dev_ctx = dev_ctx;
+
+	req_dms = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
+					   sizeof(*req_dms));
+
+	if (!req_dms) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Unable to allocate memory",
+				      __func__);
+		goto out;
+	}
+
+	nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+			      &req_dms->info,
+			      dms_info,
+			      sizeof(req_dms->info));
+
+	req_dms->umac_hdr.cmd_evnt = NRF_WIFI_UMAC_CMD_REQ_CONFIG_DMS;
+	req_dms->umac_hdr.ids.wdev_id = if_idx;
+	req_dms->umac_hdr.ids.valid_fields |= NRF_WIFI_INDEX_IDS_WDEV_ID_VALID;
+
+	status = umac_cmd_cfg(fmac_dev_ctx,
+			      req_dms,
+			      sizeof(*req_dms));
+out:
+	if (req_dms) {
+		nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
+				       req_dms);
 	}
 
 	return status;
