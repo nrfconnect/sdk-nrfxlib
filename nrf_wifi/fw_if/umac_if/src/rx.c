@@ -226,6 +226,7 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 	struct nrf_wifi_fmac_rx_pool_map_info pool_info;
 #if defined(CONFIG_NRF700X_RAW_DATA_RX) || defined(CONFIG_NRF700X_PROMISC_DATA_RX)
 	struct raw_rx_pkt_header raw_rx_hdr;
+	unsigned short frame_control;
 #endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 	void *nwb = NULL;
 	void *nwb_data = NULL;
@@ -311,10 +312,20 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 				raw_rx_hdr.rate_flags = config->rate_flags;
 				raw_rx_hdr.rate = config->rate;
 
-				def_priv->callbk_fns.rx_sniffer_frm_callbk_fn(vif_ctx->os_vif_ctx,
-									      nwb,
-									      &raw_rx_hdr,
-									      false);
+				nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
+						      &frame_control,
+						      nwb_data,
+						      sizeof(unsigned short));
+
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: frame_control is 0x%x",
+					      __func__, frame_control);
+				if (nrf_wifi_util_check_filt_setting(vif_ctx, &frame_control)) {
+					def_priv->callbk_fns.sniffer_callbk_fn(vif_ctx->os_vif_ctx,
+									       nwb,
+									       &raw_rx_hdr,
+									       false);
+				}
 			}
 #endif
 #ifdef CONFIG_NRF700X_STA_MODE
@@ -383,10 +394,21 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 			raw_rx_hdr.rate_flags = config->rate_flags;
 			raw_rx_hdr.rate = config->rate;
 
-			def_priv->callbk_fns.rx_sniffer_frm_callbk_fn(vif_ctx->os_vif_ctx,
-								      nwb,
-								      &raw_rx_hdr,
-								      true);
+#if defined(CONFIG_NRF700X_PROMISC_DATA_RX)
+			if (nrf_wifi_util_check_filt_setting(vif_ctx, &frame_control))
+#endif
+			{
+				def_priv->callbk_fns.sniffer_callbk_fn(vif_ctx->os_vif_ctx,
+								       nwb,
+								       &raw_rx_hdr,
+								       true);
+			}
+#if defined(CONFIG_NRF700X_PROMISC_DATA_RX)
+			else {
+				nrf_wifi_osal_nbuf_free(fmac_dev_ctx->fpriv->opriv,
+							nwb);
+			}
+#endif
 		}
 #endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 		else {

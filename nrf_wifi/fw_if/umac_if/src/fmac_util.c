@@ -13,6 +13,7 @@
 #include "fmac_api_common.h"
 #include "fmac_util.h"
 #include "host_rpu_umac_if.h"
+#include "host_rpu_sys_if.h"
 
 bool nrf_wifi_util_is_multicast_addr(const unsigned char *addr)
 {
@@ -365,6 +366,98 @@ enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode)
 #endif /* CONFIG_NRF700X_RAW_DATA_RX */
 	return NRF_WIFI_STATUS_FAIL;
 }
+
+#if defined(CONFIG_NRF700X_PROMISC_DATA_RX)
+bool nrf_wifi_util_check_filt_setting(struct nrf_wifi_fmac_vif_ctx *vif,
+				      unsigned short *frame_control)
+{
+	bool filter_check = false;
+	struct nrf_wifi_fmac_frame_ctrl *frm_ctrl =
+		(struct nrf_wifi_fmac_frame_ctrl *)frame_control;
+
+	/**
+	 * The different filter settings for 802.11 packets are a bit map
+	 * and the description of the different valid values for the case
+	 * statements are as follows:
+	 * 0x2 - Enable management packets only
+	 * 0x4 - Enable data packets only
+	 * 0x8 - Enable control packets only
+	 * 0x6 - Enable data and management packets
+	 * 0xa - Enable control and management packets
+	 * 0xb - Enable data and control packets
+	 * if bit 0 is set, all packet types are allowed to be sent upstack
+	 **/
+	nrf_wifi_osal_log_err(vif->fmac_dev_ctx->fpriv->opriv,
+			      "%s:  is 0x%x",
+			      __func__, *frame_control);
+	
+	nrf_wifi_osal_log_err(vif->fmac_dev_ctx->fpriv->opriv,
+			      "%s: packet_filter is %d",
+			      __func__, vif->packet_filter);
+
+	switch (vif->packet_filter) {
+		case 0x2:
+	nrf_wifi_osal_log_err(vif->fmac_dev_ctx->fpriv->opriv,
+			      "%s: NRF_WIFI_MGMT_PKT_TYPE",
+			      __func__);
+			if (frm_ctrl->type == NRF_WIFI_MGMT_PKT_TYPE) {
+				filter_check = true;
+			}
+		break;
+		case 0x4:
+	nrf_wifi_osal_log_err(vif->fmac_dev_ctx->fpriv->opriv,
+			      "%s: NRF_WIFI_DATA_PKT_TYPE",
+			      __func__);
+			if (frm_ctrl->type == NRF_WIFI_DATA_PKT_TYPE) {
+				filter_check = true;
+			}
+		break;
+		case 0x6:
+	nrf_wifi_osal_log_err(vif->fmac_dev_ctx->fpriv->opriv,
+			      "%s: NRF_WIFI_DATA_PKT_TYPE/NRF_WIFI_MGMT_PKT_TYPE",
+			      __func__);
+			if ((frm_ctrl->type == NRF_WIFI_DATA_PKT_TYPE) ||
+			    (frm_ctrl->type == NRF_WIFI_MGMT_PKT_TYPE)) {
+				filter_check = true;
+			}
+		break;
+		case 0x8:
+	nrf_wifi_osal_log_err(vif->fmac_dev_ctx->fpriv->opriv,
+			      "%s: NRF_WIFI_CTRL_PKT_TYPE",
+			      __func__);
+			if (frm_ctrl->type == NRF_WIFI_CTRL_PKT_TYPE)
+				filter_check = true;
+		break;
+		case 0xa:
+	nrf_wifi_osal_log_err(vif->fmac_dev_ctx->fpriv->opriv,
+			      "%s: NRF_WIFI_CTRL_PKT_TYPE/NRF_WIFI_MGMT_PKT_TYPE",
+			      __func__);
+			if ((frm_ctrl->type == NRF_WIFI_CTRL_PKT_TYPE) ||
+			    (frm_ctrl->type == NRF_WIFI_MGMT_PKT_TYPE)) {
+				filter_check = true;
+			}
+		break;
+		case 0xb:
+	nrf_wifi_osal_log_err(vif->fmac_dev_ctx->fpriv->opriv,
+			      "%s: NRF_WIFI_DATA_PKT_TYPE/NRF_WIFI_CTRL_PKT_TYPE",
+			      __func__);
+			if ((frm_ctrl->type == NRF_WIFI_DATA_PKT_TYPE) ||
+			    (frm_ctrl->type == NRF_WIFI_CTRL_PKT_TYPE)) {
+				filter_check = true;
+			}
+		/* all other packet_filter cases - bit 0 is set and hence all
+		 * packet types are allowed or in the case of 0xE - all packet
+		 * type bits are enabled */
+		default:
+	nrf_wifi_osal_log_err(vif->fmac_dev_ctx->fpriv->opriv,
+			      "%s: default",
+			      __func__);
+			filter_check = true;
+		break;
+	}
+	return filter_check;
+}
+#endif
 
 #ifdef CONFIG_NRF700X_RAW_DATA_TX
 bool nrf_wifi_util_is_rawpktmode_enabled(struct nrf_wifi_fmac_vif_ctx *vif)
