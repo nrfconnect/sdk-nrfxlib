@@ -1123,8 +1123,6 @@ out:
 	return;
 }
 
-
-
 void nrf_wifi_hal_proc_ctx_set(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx,
 			       enum RPU_PROC_TYPE proc)
 {
@@ -1511,6 +1509,7 @@ void nrf_wifi_hal_dev_deinit(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
 {
 	nrf_wifi_hal_disable(hal_dev_ctx);
 	nrf_wifi_bal_dev_deinit(hal_dev_ctx->bal_dev_ctx);
+	hal_rpu_eventq_drain(hal_dev_ctx);
 }
 
 void nrf_wifi_hal_lock_rx(struct nrf_wifi_hal_dev_ctx *hal_dev_ctx)
