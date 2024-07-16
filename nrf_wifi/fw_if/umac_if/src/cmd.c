@@ -541,3 +541,35 @@ enum nrf_wifi_status umac_cmd_prog_stats_get(struct nrf_wifi_fmac_dev_ctx *fmac_
 out:
 	return status;
 }
+
+enum nrf_wifi_status umac_cmd_prog_stats_reset(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	struct host_rpu_msg *umac_cmd = NULL;
+	struct nrf_wifi_cmd_reset_stats *umac_cmd_data = NULL;
+	int len = 0;
+
+	len = sizeof(*umac_cmd_data);
+
+	umac_cmd = umac_cmd_alloc(fmac_dev_ctx,
+				  NRF_WIFI_HOST_RPU_MSG_TYPE_SYSTEM,
+				  len);
+	if (!umac_cmd) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: umac_cmd_alloc failed",
+				      __func__);
+		goto out;
+	}
+
+	umac_cmd_data = (struct nrf_wifi_cmd_reset_stats *)(umac_cmd->msg);
+
+	umac_cmd_data->sys_head.cmd_event = NRF_WIFI_CMD_RESET_STATISTICS;
+	umac_cmd_data->sys_head.len = len;
+
+	status = nrf_wifi_hal_ctrl_cmd_send(fmac_dev_ctx->hal_dev_ctx,
+					    umac_cmd,
+					    (sizeof(*umac_cmd) + len));
+
+out:
+	return status;
+}
