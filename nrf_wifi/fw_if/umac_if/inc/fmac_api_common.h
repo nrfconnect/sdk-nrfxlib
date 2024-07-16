@@ -363,6 +363,17 @@ enum nrf_wifi_status nrf_wifi_fmac_set_packet_filter(void *dev_ctx, unsigned cha
 #endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
 
 /**
+ * @brief Issue a request to reset stats of the RPU.
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
+ *
+ * This function is used to send a command to
+ * instruct the firmware to reset current RPU statistics.
+ *
+ * @return Command execution status
+ */
+enum nrf_wifi_status nrf_wifi_fmac_stats_reset(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
+
+/**
  * @}
  */
 #endif /* __FMAC_API_COMMON_H__ */
