@@ -118,7 +118,7 @@ typedef enum
 {
   MPSL_CLOCK_HF_LATENCY_BEST = 396,
   MPSL_CLOCK_HF_LATENCY_TYPICAL = 854,
-  MPSL_CLOCK_HF_LATENCY_WORST_CASE = 1525,
+  MPSL_CLOCK_HF_LATENCY_WORST_CASE = 1400,
 } mpsl_clock_hfclk_latency_config_t;
 
 /** @brief High frequency clock callback.
@@ -179,11 +179,11 @@ int32_t mpsl_clock_hfclk_is_running(uint32_t * p_is_running);
  *
  * @note Using a value smaller than the actual ramp-up time needed will cause asserts.
  *
- * @param[in] hfclk_latency_us Ramp-up time of the high-frequency oscillator, in microseconds. See @ref mpsl_clock_hfclk_latency_config_t for recommended values.
+ * @param[in] hfclk_rampup_time_us Ramp-up time of the high-frequency oscillator, in microseconds. See @ref mpsl_clock_hfclk_latency_config_t for recommended values.
  *
  * @retval 0  Success
  */
-int32_t mpsl_clock_hfclk_latency_set(uint16_t hfclk_latency_us);
+int32_t mpsl_clock_hfclk_latency_set(uint16_t hfclk_rampup_time_us);
 
 /** @brief Trigger a task upon start of the RTC.
  *
