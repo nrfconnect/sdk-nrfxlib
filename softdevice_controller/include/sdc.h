@@ -148,8 +148,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 955
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1076
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 948
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1068
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -217,8 +217,8 @@ extern "C" {
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4833+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (671+(max_adv_data))
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4912+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (679+(max_adv_data))
 #define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2658+(max_adv_data)*18)/10)
 #define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (457+(max_adv_data))
 
@@ -244,7 +244,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (221 + (buffer_count) * 279)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (218 + (buffer_count) * 279)
 
 /** Memory required per periodic sync when periodic sync with responses is supported.
  *
@@ -252,7 +252,7 @@ extern "C" {
  * @param[in] rx_buffer_count The number of buffers for receiving data.
  */
 #define SDC_MEM_PER_PERIODIC_SYNC_RSP(tx_buffer_count, rx_buffer_count) \
-    (650 + (tx_buffer_count - 1) * 257 + (rx_buffer_count) * 278)
+    (639 + (tx_buffer_count - 1) * 254 + (rx_buffer_count) * 278)
 
 /** Memory required for the periodic adv list.
  *

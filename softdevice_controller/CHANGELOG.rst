@@ -23,6 +23,8 @@ Changes
 * The ``sdc_coex_adv_mode_configure`` API has been deprecated as it is not applicable to any supported coexistence interfaces. (DRGN-20876).
 * The ``sdc_hci_cmd_vs_coex_priority_config`` and ``sdc_hci_cmd_vs_coex_scan_mode_config`` vendor-specific HCI commands have been removed as they are not applicable to any supported coexistence interfaces. (DRGN-20876)
 * The vendor-specific Set Connection Event Trigger command can now be used with :kconfig:option:`CONFIG_BT_LL_SOFTDEVICE_PERIPHERAL`. (DRGN-22511)
+* Extended Connection Events are not re-enabled on HCI Reset.
+  The state before HCI Reset is preserved, either the value of :kconfig:option:`CONFIG_BT_CTLR_SDC_CONN_EVENT_EXTEND_DEFAULT` or the most recent call to :c:func:`sdc_hci_cmd_vs_conn_event_extend`. (DRGN-22687)
 
 Bug fixes
 =========
@@ -30,6 +32,21 @@ Bug fixes
 * Fixed a rare assert that could happen when disabling a periodic advertising set with responses. (DRGN-22443)
 * Fixed an issue where the length byte of the HCI packet could be incorrect.
   This could happen when the packet contained an LE BIG Sync Established event or LE BIG Complete event with status not equal to success. (DRGN-22441)
+* Fixed an assert that could happen when in a connection where the peer device is transmitting on S8 Coded PHY.
+  This issue was present in v2.6 and v2.7 releases. (DRGN-22652)
+* Fixed an issue where the extended scanner would not generate a truncated advertising report after the coexistence interface aborted the reception of an ``AUX_CHAIN_IND`` packet. (DRGN-22686)
+* Fixed a very rare issue where the controller stopped generating advertising reports. (DRGN-22678)
+  On nRF52 Series and nRF53 Series this would happen at least one hour after the scanner started.
+  On nRF54L and nRF54H Series this would occur immediately after the scanner started.
+  In would only happen when:
+
+    * There was another central-like scheduling activity running. Examples of roles with such activities are the ACL central, periodic advertiser, isochronous broadcaster and the CIS central.
+      This activity was configured with an event length or event spacing equal or greater than the scan interval.
+      This is typically only true for use cases where the application enables isochronous channels or uses very short scan windows.
+    * The scanner was configured with scan window equal to scan interval (continuous scanning).
+    * The central-like scheduling activity required less than 1 ms to complete at the point in time where the scanner started.
+* Fixed a rare issue where the scanner would be stuck in the synchronizing state after failing to receive an ``AUX_ADV_IND`` packet.
+  This could only happen when the corresponding ``ADV_EXT_IND`` packet contained a resolvable address, privacy/address resolution is enabled, and the periodic advertising list is not used. (DRGN-22230)
 
 nRF Connect SDK v2.7.0
 **********************
@@ -165,8 +182,6 @@ Bug fixes
 * Fixed an assert that could happen if the LE Set Periodic Advertising Response Data command was issued more than once without fetching the Command Complete Event. (DRGN-20432)
 * Fixed an issue where the controller would assert during cooperative active scanning or when running a cooperative initiator.
   This could happen when the controller was about to send a scan request or connect indication. (DRGN-20832)
-* Fixed an issue where the controller would assert when initiating a connection to an extended advertiser.
-  This could happen when both external radio coexistence and FEM were enabled. (DRGN-16013)
 * Fixed an issue where the nRF5340 DK consumed too much current while scanning.
   This could happen if the controller was running with TX power higher than 0 dB. (DRGN-20862)
 * Fixed an assert that could happen if the Periodic Sync with Responses was terminated. (DRGN-20956)

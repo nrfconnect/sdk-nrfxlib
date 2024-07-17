@@ -105,6 +105,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_SCAN_ACCEPT_EXT_ADV_PACKETS_SET = 0xfd1c,
     /** @brief See @ref sdc_hci_cmd_vs_set_role_priority(). */
     SDC_HCI_OPCODE_CMD_VS_SET_ROLE_PRIORITY = 0xfd1d,
+    /** @brief See @ref sdc_hci_cmd_vs_set_event_start_task(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_EVENT_START_TASK = 0xfd1e,
 };
 
 /** @brief VS subevent Code values. */
@@ -140,6 +142,19 @@ enum sdc_hci_vs_peripheral_latency_mode
     SDC_HCI_VS_PERIPHERAL_LATENCY_MODE_DISABLE = 0x01,
     /** @brief Peripheral latency wait for ack. */
     SDC_HCI_VS_PERIPHERAL_LATENCY_MODE_WAIT_FOR_ACK = 0x02,
+};
+
+/** @brief Set Event Start Task Handle Type. */
+enum sdc_hci_vs_set_event_start_task_handle_type
+{
+    /** @brief Scanner. */
+    SDC_HCI_VS_SET_EVENT_START_TASK_HANDLE_TYPE_SCAN = 0x01,
+    /** @brief Initiator. */
+    SDC_HCI_VS_SET_EVENT_START_TASK_HANDLE_TYPE_INITIATOR = 0x02,
+    /** @brief Connection. */
+    SDC_HCI_VS_SET_EVENT_START_TASK_HANDLE_TYPE_CONN = 0x03,
+    /** @brief Advertiser. */
+    SDC_HCI_VS_SET_EVENT_START_TASK_HANDLE_TYPE_ADV = 0x04,
 };
 
 /** @brief Handle type for priority update. */
@@ -190,6 +205,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t scan_channel_map_set : 1;
     uint8_t scan_accept_ext_adv_packets_set : 1;
     uint8_t set_role_priority : 1;
+    uint8_t set_event_start_task : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -702,6 +718,23 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t priority;
 } sdc_hci_cmd_vs_set_role_priority_t;
 
+/** @brief Set Event Start Task command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief Selected handle type to set trigger for. See @ref
+     *         sdc_hci_vs_set_event_start_task_handle_type.
+     */
+    uint8_t handle_type;
+    /** @brief The handle to configure the task for. In case @ref
+     *         sdc_hci_vs_set_event_start_task_handle_type specifies the Scanner or Initiator, this
+     *         parameter is ignored. If the handle_type specifies the Advertiser and legacy
+     *         advertising is used, this parameter is ignored.
+     */
+    uint16_t handle;
+    /** @brief Task to trigger. Set this to 0 to disable this feature. */
+    uint32_t task_address;
+} sdc_hci_cmd_vs_set_event_start_task_t;
+
 /** @} end of HCI_COMMAND_PARAMETERS */
 
 /**
@@ -987,7 +1020,7 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
  *
  * A connection event can not be extended beyond the connection interval.
  *
- * By default, that is after an HCI Reset, Extended Connection Events are enabled.
+ * The configured value is preserved when issuing the HCI Reset command.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1618,6 +1651,39 @@ uint8_t sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set(const sdc_hci_cmd_vs_scan
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_set_role_priority(const sdc_hci_cmd_vs_set_role_priority_t * p_params);
+
+/** @brief Set Event Start Task.
+ *
+ * When enabled, this feature will trigger the specified peripheral task register right before
+ * the first radio activity of a timing-event.
+ *
+ * For activities with a handle, the task configuration is automatically reset when the
+ * controller deletes the handle.
+ *
+ * If enabling the task and it is already enabled for the given handle and
+ * handle_type, the controller will return the error code Command Disallowed (0x0C).
+ *
+ * If the advertising handle is not currently active, the controller will return the error code
+ * Unknown Advertising Identifier (0x42).
+ *
+ * If the connection handle is not currently active, the controller will return the error code
+ * Unknown Connection Identifier (0x2).
+ *
+ * If the selected handle_type is not supported by this SDC variant, the controller will
+ * return the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * The task configurations are cleared after an HCI Reset.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_set_event_start_task(const sdc_hci_cmd_vs_set_event_start_task_t * p_params);
 
 /** @} end of HCI_VS_API */
 
