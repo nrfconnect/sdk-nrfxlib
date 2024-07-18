@@ -163,6 +163,8 @@ enum nrf_wifi_sys_commands {
 	NRF_WIFI_CMD_RAW_CONFIG_FILTER,
 	/** Command to configure packet injector mode or Raw Tx mode */
 	NRF_WIFI_CMD_RAW_TX_PKT,
+	/** Command to reset interface statistics */
+	NRF_WIFI_CMD_RESET_STATISTICS,
 };
 
 /**
@@ -1601,6 +1603,15 @@ struct umac_int_stats {
 struct nrf_wifi_event_deinit_done {
 	/** UMAC header, @ref nrf_wifi_sys_head */
 	struct nrf_wifi_sys_head sys_head;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure describes the command for reset of interface statistics.
+ *
+ */
+struct nrf_wifi_cmd_reset_stats {
+       /** UMAC header, @ref nrf_wifi_sys_head */
+       struct nrf_wifi_sys_head sys_head;
 } __NRF_WIFI_PKD;
 
 /**
