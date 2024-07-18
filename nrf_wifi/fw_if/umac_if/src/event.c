@@ -194,10 +194,17 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 	callbk_fns = &def_priv->callbk_fns;
 #endif /* !CONFIG_NRF700X_RADIO_TEST */
 
+#ifdef CONFIG_NRF_WIFI_CMD_EVENT_LOG
+	nrf_wifi_osal_log_info(fmac_dev_ctx->fpriv->opriv,
+			      "%s: Event %d received from UMAC\n",
+			      __func__,
+			      event_num);
+#else
 	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
 			      "%s: Event %d received from UMAC",
 			      __func__,
 			      event_num);
+#endif /* CONFIG_NRF_WIFI_CMD_EVENT_LOG */
 
 	switch (umac_hdr->cmd_evnt) {
 	case NRF_WIFI_UMAC_EVENT_GET_REG:
@@ -631,10 +638,17 @@ nrf_wifi_fmac_data_event_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 	event = ((struct nrf_wifi_umac_head *)umac_head)->cmd;
 
+#ifdef CONFIG_NRF_WIFI_CMD_EVENT_LOG
+	nrf_wifi_osal_log_info(fmac_dev_ctx->fpriv->opriv,
+			      "%s: Event %d received from UMAC\n",
+			      __func__,
+			      event);
+#else
 	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
 			      "%s: Event %d received from UMAC",
 			      __func__,
 			      event);
+#endif /* CONFIG_NRF_WIFI_CMD_EVENT_LOG */
 
 	switch (event) {
 	case NRF_WIFI_CMD_RX_BUFF:
@@ -1121,10 +1135,17 @@ enum nrf_wifi_status nrf_wifi_fmac_event_callback(void *mac_dev_ctx,
 	umac_msg_len = rpu_msg->hdr.len;
 	umac_msg_type = umac_hdr->cmd_evnt;
 
+#ifdef CONFIG_NRF_WIFI_CMD_EVENT_LOG
+	nrf_wifi_osal_log_info(fmac_dev_ctx->fpriv->opriv,
+			      "%s: Event type %d recd\n",
+			      __func__,
+			      rpu_msg->type);
+#else
 	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv,
 			      "%s: Event type %d recd",
 			      __func__,
 			      rpu_msg->type);
+#endif /* CONFIG_NRF_WIFI_CMD_EVENT_LOG */
 
 	switch (rpu_msg->type) {
 #ifndef CONFIG_NRF700X_RADIO_TEST
