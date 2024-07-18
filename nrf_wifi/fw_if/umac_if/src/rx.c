@@ -375,6 +375,9 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 #endif /* CONFIG_WIFI_MGMT_RAW_SCAN_RESULTS */
 			nrf_wifi_osal_nbuf_free(fmac_dev_ctx->fpriv->opriv,
 						nwb);
+#ifdef CONFIG_NRF_WIFI_MGMT_BUFF_OFFLOAD
+			goto out;
+#endif /* CONFIG_NRF_WIFI_MGMT_BUFF_OFFLOAD */
 		}
 #if defined(CONFIG_NRF700X_RAW_DATA_RX) || defined(CONFIG_NRF700X_PROMISC_DATA_RX)
 		else if (config->rx_pkt_type == NRF_WIFI_RAW_RX_PKT) {
