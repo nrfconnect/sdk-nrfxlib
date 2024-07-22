@@ -249,9 +249,9 @@ zb_ret_t check_value_thermostat_server(zb_uint16_t attr_id, zb_uint8_t endpoint,
       /* First check MinHeatSetpointLimit/MaxHeatSetpointLimit, than
        * AbsMinHeatSetpointLimit/AbsMaxHeatSetpointLimit, than predefined constants. */
       zb_zcl_attr_t *attr_desc_min = zb_zcl_get_attr_desc_a(endpoint,
-          ZB_ZCL_CLUSTER_ID_THERMOSTAT, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_THERMOSTAT_ABS_MIN_HEAT_SETPOINT_LIMIT_ID);
+          ZB_ZCL_CLUSTER_ID_THERMOSTAT, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_THERMOSTAT_MIN_HEAT_SETPOINT_LIMIT_ID);
       zb_zcl_attr_t *attr_desc_max = zb_zcl_get_attr_desc_a(endpoint,
-          ZB_ZCL_CLUSTER_ID_THERMOSTAT, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_THERMOSTAT_ABS_MAX_HEAT_SETPOINT_LIMIT_ID);
+          ZB_ZCL_CLUSTER_ID_THERMOSTAT, ZB_ZCL_CLUSTER_SERVER_ROLE, ZB_ZCL_ATTR_THERMOSTAT_MAX_HEAT_SETPOINT_LIMIT_ID);
       if (attr_desc_min && attr_desc_max)
       {
         min_val = (zb_int16_t)ZB_ZCL_GET_ATTRIBUTE_VAL_S16(attr_desc_min);
@@ -629,11 +629,11 @@ zb_ret_t check_value_thermostat_server(zb_uint16_t attr_id, zb_uint8_t endpoint,
       ZB_ZCL_CLUSTER_ID_THERMOSTAT,
       ZB_ZCL_CLUSTER_SERVER_ROLE,
       ZB_ZCL_ATTR_THERMOSTAT_MIN_SETPOINT_DEAD_BAND_ID);
-    zb_int8_t dead_band = ZB_ZCL_THERMOSTAT_MIN_SETPOINT_DEAD_BAND_MIN_VALUE;
+    zb_int8_t dead_band = ZB_ZCL_THERMOSTAT_MIN_SETPOINT_DEAD_BAND_MIN_VALUE * 10; /* 10 = 0.1 °C*/
 
     if ( attr_desc != NULL )
     {
-      dead_band = (zb_int8_t)ZB_ZCL_GET_ATTRIBUTE_VAL_S8(attr_desc);
+      dead_band = (zb_int8_t)ZB_ZCL_GET_ATTRIBUTE_VAL_S8(attr_desc) * 10;
     }
 
     switch( attr_id )
