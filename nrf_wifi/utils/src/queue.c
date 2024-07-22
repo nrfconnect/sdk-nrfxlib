@@ -9,8 +9,8 @@
  * for the Wi-Fi driver.
  */
 
-#include "list.h"
-#include "queue.h"
+#include <list.h>
+#include <queue.h>
 
 void *nrf_wifi_utils_q_alloc(struct nrf_wifi_osal_priv *opriv)
 {
