@@ -1,0 +1,49 @@
+name: Verify nRF70 Wi-Fi firmware patch version
+on: pull_request
+env:
+    PATCH_INFO_FILE: 'nrf_wifi/fw_if/umac_if/inc/fw/patch_info.h'
+    PATCH_BIN_BASE: 'nrf_wifi/fw_bins'
+    PATH_BIN_NAME: 'nrf70.bin'
+    PATCH_BIN_VER_OFFSET: 8
+    COMMENT: 'nRF70 Wi-Fi firmware patch version checks:'
+jobs:
+    verify:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Install gawk (needed for strtonum() function in awk below)
+        run: sudo apt-get install gawk
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Extract patch version
+        run: |
+            echo EXP_PATCH_VERSION=$(cat ${{ env.PATCH_INFO_FILE }} | grep "#define RPU_" | awk '{print $3}' | tr -d '()' | paste -sd ".") >> "$GITHUB_OUTPUT"
+        id: patch_version
+      - name: Verify patch version
+        run: |
+          for patch in $(find ${{ env.PATCH_BIN_BASE }} -name ${{ env.PATH_BIN_NAME }}); do
+            echo "Verifying $patch"
+            patch_version=$(hexdump -s ${{ env.PATCH_BIN_VER_OFFSET }} -n 4 -e '4/1 "%02x "' $patch | awk '{ for(i=NF; i>0; i--) printf("%d%s", strtonum("0x"$i), (i==1?"\n":".")) }')
+            echo "Patch version: $patch_version, expected: ${{ steps.patch_version.outputs.EXP_PATCH_VERSION }}"
+            if [ "${{ steps.patch_version.outputs.EXP_PATCH_VERSION }}" != "$patch_version" ]; then
+              echo "COMMENT<<EOF" >> $GITHUB_ENV
+              echo "${{env.COMMENT}} Mismatch for $patch: (Got)$patch_version != (Expected)${{ steps.patch_version.outputs.EXP_PATCH_VERSION }}" >> $GITHUB_ENV
+              echo "EOF" >> $GITHUB_ENV
+              exit 1
+            else
+              echo "COMMENT<<EOF" >> $GITHUB_ENV
+              echo "${{env.COMMENT}} Verified for $patch" >> $GITHUB_ENV
+              echo "EOF" >> $GITHUB_ENV
+            fi
+          done
+      - name: Comment on PR
+        if: ${{ always() }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.NCS_GITHUB_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "${{ env.COMMENT }}"
+            })
