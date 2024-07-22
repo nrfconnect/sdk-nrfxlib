@@ -148,8 +148,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 948
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1068
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 964
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1084
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -271,7 +271,7 @@ extern "C" {
 
 /** Memory required per periodic advertising with responses set.
  *
- * @param[in] max_adv_data The maximum size of data whcih can be sent in chains.
+ * @param[in] max_adv_data The maximum size of data which can be sent in chains.
  * @param[in] tx_buffer_count The number of buffers for sending data. Minimum of 1.
  * @param[in] rx_buffer_count The number of buffers for receiving data.
  * @param[in] max_tx_data_size The maximum size of data which can be sent in subevents.

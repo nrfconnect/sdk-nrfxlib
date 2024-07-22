@@ -107,6 +107,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_SET_ROLE_PRIORITY = 0xfd1d,
     /** @brief See @ref sdc_hci_cmd_vs_set_event_start_task(). */
     SDC_HCI_OPCODE_CMD_VS_SET_EVENT_START_TASK = 0xfd1e,
+    /** @brief See @ref sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable(). */
+    SDC_HCI_OPCODE_CMD_VS_CONN_ANCHOR_POINT_UPDATE_EVENT_REPORT_ENABLE = 0xfd1f,
 };
 
 /** @brief VS subevent Code values. */
@@ -116,6 +118,8 @@ enum sdc_hci_subevent_vs
     SDC_HCI_SUBEVENT_VS_QOS_CONN_EVENT_REPORT = 0x80,
     /** @brief See @ref sdc_hci_subevent_vs_qos_channel_survey_report_t. */
     SDC_HCI_SUBEVENT_VS_QOS_CHANNEL_SURVEY_REPORT = 0x81,
+    /** @brief See @ref sdc_hci_subevent_vs_conn_anchor_point_update_report_t. */
+    SDC_HCI_SUBEVENT_VS_CONN_ANCHOR_POINT_UPDATE_REPORT = 0x82,
 };
 
 /** @brief Connection Event Trigger Role Selection. */
@@ -271,7 +275,7 @@ typedef struct __PACKED __ALIGN(1)
  */
 typedef struct __PACKED __ALIGN(1)
 {
-    /** @brief Connnection handle corresponding to the connection event report. */
+    /** @brief Connection handle corresponding to the connection event report. */
     uint16_t conn_handle;
     /** @brief Connection event counter corresponding to the connection event report. */
     uint16_t event_counter;
@@ -301,6 +305,33 @@ typedef struct __PACKED __ALIGN(1)
     int8_t channel_energy[40];
 } sdc_hci_subevent_vs_qos_channel_survey_report_t;
 
+/** @brief Connection Anchor Point Update Report Event.
+ *
+ * The HCI_VS_conn_anchor_point_update_report event indicates that the device
+ * updated the anchor point for an ACL connection.
+ * The anchor point represents the start of the first packet of a connection event.
+ * See Core_v5.4, Vol 6, Part B, Section 4.5.1.
+ *
+ * The controller only generates HCI_VS_conn_anchor_point_update_report events
+ * if instructed to do so using the @ref cmd_vs_conn_anchor_point_update_report_enable
+ * command.
+ *
+ * The anchor_point_us in this event is a timestamp on the controller's clock.
+ *
+ * On the central device, this event is generated every connection interval.
+ * On the peripheral device, this event is only generated for connection events in which
+ * a packet from the central device is received.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief Connection handle corresponding to the connection anchor point update report. */
+    uint16_t conn_handle;
+    /** @brief Connection event counter corresponding to the anchor point. */
+    uint16_t event_counter;
+    /** @brief Absolute time of the new anchor point in microseconds. */
+    uint64_t anchor_point_us;
+} sdc_hci_subevent_vs_conn_anchor_point_update_report_t;
+
 /** @} end of HCI_EVENTS */
 
 /**
@@ -323,7 +354,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t fw_version;
     /** @brief Firmware Revision. */
     uint16_t fw_revision;
-    /** @brief Firware build revision. */
+    /** @brief Firmware build revision. */
     uint32_t fw_build;
 } sdc_hci_cmd_vs_zephyr_read_version_info_return_t;
 
@@ -462,7 +493,7 @@ typedef struct __PACKED __ALIGN(1)
 /** @brief QoS Connection Event Reports enable command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
-    /** @brief Set to 0 for disabling, 1 for enabling, all other values are RFU. */
+    /** @brief Set to 1 to enable, 0 to disable, all other values are RFU. */
     uint8_t enable;
 } sdc_hci_cmd_vs_qos_conn_event_report_enable_t;
 
@@ -734,6 +765,13 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief Task to trigger. Set this to 0 to disable this feature. */
     uint32_t task_address;
 } sdc_hci_cmd_vs_set_event_start_task_t;
+
+/** @brief Connection Anchor_Point Update Event Reports enable command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    /** @brief Set to 1 to enable, 0 to disable, all other values are RFU. */
+    uint8_t enable;
+} sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -1221,7 +1259,7 @@ uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat
  * In order to use the QoS channel survey module, funcref:sdc_support_qos_channel_survey
  * must be called.
  *
- * Event(s) geneated (unless masked away):
+ * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1582,7 +1620,7 @@ uint8_t sdc_hci_cmd_vs_cis_subevent_length_set(const sdc_hci_cmd_vs_cis_subevent
  * commands to start scanning or to create connections. Scanning and initiating
  * that was started before issuing this command is not affected.
  *
- * The default behavior is to listan on all primary advertising channels.
+ * The default behavior is to listen on all primary advertising channels.
  * The default behavior is restored when issuing the HCI Reset command.
  *
  * Event(s) generated (unless masked away):
@@ -1684,6 +1722,34 @@ uint8_t sdc_hci_cmd_vs_set_role_priority(const sdc_hci_cmd_vs_set_role_priority_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_set_event_start_task(const sdc_hci_cmd_vs_set_event_start_task_t * p_params);
+
+/** @brief Connection Anchor_Point Update Event Reports enable.
+ *
+ * This vendor specific command is used to enable or disable generation of
+ * VS_Conn_Anchor_Point_Update_Report events See @ref
+ * sdc_hci_subevent_vs_conn_anchor_point_update_report_t.
+ *
+ * When enabled, the controller will start producing reports for all ACL connections whenever
+ * a connection anchor point is updated. See Core_v5.4, Vol 6, Part B, Section 4.5.1.
+ *
+ * This event is generated every connection interval.
+ * For peripheral connections, the generation of this event is skipped if no packet from the
+ * central is received.
+ *
+ * If the application does not pull a report in time, it will be overwritten.
+ *
+ * After HCI Reset, this feature is disabled.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable(const sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable_t * p_params);
 
 /** @} end of HCI_VS_API */
 
