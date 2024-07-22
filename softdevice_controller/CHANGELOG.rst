@@ -16,6 +16,9 @@ Added
 =====
 
 * Support for the LE Set Path Loss Reporting Parameters and LE Set Path Loss Reporting Enable HCI commands. (DRGN-17376)
+* Added support for generating connection anchor update event reports using the VS Conn Anchor Point Update Report Enable command. (DRGN-22662)
+  When enabled, one report is generated when the anchor point of a connection is updated.
+  This information can be used to synchronize two applications running on a central and a peripheral device.
 
 Changes
 =======
