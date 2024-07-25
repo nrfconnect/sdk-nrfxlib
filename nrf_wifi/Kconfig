@@ -1,0 +1,12 @@
+#
+# Copyright (c) 2024 Nordic Semiconductor
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+menu "Nordic nRF70 Wi-Fi configuration"
+
+config NRF_WIFI
+	bool "Enable nRF70 OS agnostic library"
+	help
+	  Enable the nRF70 OS agnostic library.
+endmenu

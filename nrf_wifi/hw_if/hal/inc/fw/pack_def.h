@@ -15,6 +15,13 @@
 #include <zephyr/toolchain.h>
 #elif __KERNEL__
 #include <linux/compiler_attributes.h>
+#else
+#ifndef __packed
+#define __packed __attribute__((packed))
+#endif
+#ifndef __aligned
+#define __aligned(x) __attribute__((aligned(x)))
+#endif
 #endif
 
 #define __NRF_WIFI_PKD __packed
