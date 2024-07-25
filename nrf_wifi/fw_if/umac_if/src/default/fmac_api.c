@@ -60,7 +60,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_tx(struct nrf_wifi_fmac_dev_ctx *
 		def_priv->data_config.max_tx_aggregation *
 		sizeof(struct nrf_wifi_fmac_buf_map_info));
 
-	def_dev_ctx->tx_buf_info = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
+	def_dev_ctx->tx_buf_info = nrf_wifi_osal_data_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
 							     size);
 
 	if (!def_dev_ctx->tx_buf_info) {
@@ -88,7 +88,7 @@ static void nrf_wifi_fmac_deinit_tx(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx)
 
 	tx_deinit(fmac_dev_ctx);
 
-	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
+	nrf_wifi_osal_data_mem_free(fmac_dev_ctx->fpriv->opriv,
 			       def_dev_ctx->tx_buf_info);
 }
 
@@ -109,7 +109,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_rx(struct nrf_wifi_fmac_dev_ctx *
 
 	size = (def_priv->num_rx_bufs * sizeof(struct nrf_wifi_fmac_buf_map_info));
 
-	def_dev_ctx->rx_buf_info = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
+	def_dev_ctx->rx_buf_info = nrf_wifi_osal_data_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
 							     size);
 
 	if (!def_dev_ctx->rx_buf_info) {
@@ -195,7 +195,7 @@ static enum nrf_wifi_status nrf_wifi_fmac_deinit_rx(struct nrf_wifi_fmac_dev_ctx
 		}
 	}
 
-	nrf_wifi_osal_mem_free(fmac_dev_ctx->fpriv->opriv,
+	nrf_wifi_osal_data_mem_free(fmac_dev_ctx->fpriv->opriv,
 			       def_dev_ctx->rx_buf_info);
 
 	def_dev_ctx->rx_buf_info = NULL;
