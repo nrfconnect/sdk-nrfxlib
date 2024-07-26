@@ -7,6 +7,15 @@ Changelog
    :local:
    :depth: 2
 
+Main Branch
+***********
+
+Added
+=====
+
+* Added :c:func:`mpsl_fem_enable` to allow turning on the Front-End Module earlier than through a call to :c:func:`mpsl_fem_pa_configuration_set` (KRKNWK-19275).
+  Added implementation of :c:func:`mpsl_fem_enable` for nRF2220 Front-End Module.
+
 nRF Connect SDK v2.7.0
 **********************
 
