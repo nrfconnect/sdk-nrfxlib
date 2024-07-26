@@ -1,4 +1,4 @@
-.. softdevice_controller_api:
+.. _softdevice_controller_api:
 
 API documentation
 #################
