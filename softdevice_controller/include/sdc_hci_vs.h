@@ -210,6 +210,7 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t scan_accept_ext_adv_packets_set : 1;
     uint8_t set_role_priority : 1;
     uint8_t set_event_start_task : 1;
+    uint8_t conn_anchor_point_update_event_report_enable : 1;
 } sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
@@ -766,7 +767,7 @@ typedef struct __PACKED __ALIGN(1)
     uint32_t task_address;
 } sdc_hci_cmd_vs_set_event_start_task_t;
 
-/** @brief Connection Anchor_Point Update Event Reports enable command parameter(s). */
+/** @brief Connection Anchor Point Update Event Reports enable command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
 {
     /** @brief Set to 1 to enable, 0 to disable, all other values are RFU. */
@@ -1058,7 +1059,7 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
  *
  * A connection event can not be extended beyond the connection interval.
  *
- * The configured value is preserved when issuing the HCI Reset command.
+ * The configured value is retained after issuing an HCI Reset command.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1079,6 +1080,8 @@ uint8_t sdc_hci_cmd_vs_conn_event_extend(const sdc_hci_cmd_vs_conn_event_extend_
  * every connection event.
  *
  * @note If the application does not pull a report in time, it will be overwritten.
+ *
+ * After HCI Reset, this feature is disabled.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1137,6 +1140,8 @@ uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t 
  * applied.
  *
  * The default event length is 7500 us.
+ *
+ * The configured value is retained after issuing an HCI Reset command.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1206,6 +1211,9 @@ uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_t
  * This vendor specific command is used to change the randomness of advertisers.
  * The setting applies to all subsequent advertising events of a given set.
  *
+ * The configured randomness for the very first advertising event is retained after issuing an HCI
+ * Reset command.
+ *
  * Event(s) generated (unless masked away):
  * When the Controller receives the command, the Controller sends the HCI_Command_Complete
  * event to the Host.
@@ -1227,6 +1235,8 @@ uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomnes
  * central device and initiate a connection to a peripheral device.
  * In that case it may lead to the connection creation taking up to one
  * connection interval longer to complete for all connections.
+ *
+ * The configured value is retained after issuing an HCI Reset command.
  *
  * By default this mode is disabled.
  *
@@ -1302,6 +1312,8 @@ uint8_t sdc_hci_cmd_vs_qos_channel_survey_enable(const sdc_hci_cmd_vs_qos_channe
  * When this command is issued, the controller stores the parameters and
  * uses them for the subsequent LE Power Control Request procedures across all the connections.
  *
+ * After HCI Reset, all parameters are set to the default values.
+ *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
@@ -1342,7 +1354,7 @@ uint8_t sdc_hci_cmd_vs_read_average_rssi(const sdc_hci_cmd_vs_read_average_rssi_
  * This API must be called before issuing a command to create a connection.
  *
  * The default event spacing is 7500 us.
- * The configured value is retained after issuing a HCI Reset command.
+ * The configured value is retained after issuing an HCI Reset command.
  *
  * Note: The time available for transmission and reception is not configured using this API
  *
@@ -1397,6 +1409,8 @@ uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_centra
  * If the role is 0x1, 0x2, or 0x4 and conn_evt_counter_start or period_in_events is non-zero,
  * the controller will return the error code Invalid HCI Command Parameters (0x12).
  *
+ * After HCI Reset, this feature is disabled.
+ *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
@@ -1439,7 +1453,7 @@ uint8_t sdc_hci_cmd_vs_get_next_conn_event_counter(const sdc_hci_cmd_vs_get_next
  * initiating before a connection establishment to a synchronized device
  * has been completed.
  *
- * By default this functionality is disabled.
+ * After HCI Reset, this feature is disabled.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1477,7 +1491,7 @@ uint8_t sdc_hci_cmd_vs_allow_parallel_connection_establishments(const sdc_hci_cm
  * for applications interacting with devices qualified for Bluetooth Specification 5.1 or
  * older.
  *
- * The value is preserved when issuing the HCI Reset command.
+ * The configured value is retained after issuing an HCI Reset command.
  *
  * See also @ref sdc_hci_cmd_vs_event_length_set().
  *
@@ -1541,8 +1555,8 @@ uint8_t sdc_hci_cmd_vs_iso_read_tx_timestamp(const sdc_hci_cmd_vs_iso_read_tx_ti
  * This vendor specific command changes the time reserved at the end of a BIG event for other roles.
  * This applies to all BIGs created after calling this command.
  *
- * The default value is 1600 us, but can be set to between 0 us and 4,000,000 us. Changes persist
- * after an HCI_Reset command.
+ * The default value is 1600 us, but can be set to between 0 us and 4,000,000 us.
+ * The configured value is retained after issuing an HCI Reset command.
  *
  * If the value is set such that it cannot be satisfied for a given set of BIG parameters, BIG
  * creation will fail with error code UNSUPPORTED_FEATURE_OR_PARAMETER_VALUE (0x11).
@@ -1568,8 +1582,8 @@ uint8_t sdc_hci_cmd_vs_big_reserved_time_set(const sdc_hci_cmd_vs_big_reserved_t
  * Note, when multiple CIGs are used the user needs to ensure that the initial CIG reserves time
  * for the remaining CIGs.
  *
- * The default value is 1300 us, but can be set to between 0 us and 4,000,000 us. Changes persist
- * after an HCI_Reset command.
+ * The default value is 1300 us, but can be set to between 0 us and 4,000,000 us.
+ * The configured value is retained after issuing an HCI Reset command.
  *
  * If the value is set such that it cannot be satisfied for a given set of CIG parameters, the
  * actual
@@ -1600,7 +1614,7 @@ uint8_t sdc_hci_cmd_vs_cig_reserved_time_set(const sdc_hci_cmd_vs_cig_reserved_t
  *
  * This API must be called before creating a CIG.
  *
- * The configured value is preserved when issuing the HCI Reset command.
+ * The configured value is retained after issuing an HCI Reset command.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1668,7 +1682,7 @@ uint8_t sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set(const sdc_hci_cmd_vs_scan
  * https://docs.nordicsemi.com/bundle/ncs-
  * latest/page/nrfxlib/softdevice_controller/doc/scheduling.html
  *
- * Priority changes configured using this API are not persisted on resets.
+ * After HCI Reset, priority is set to the default value.
  *
  * If the handle is not associated with an instance of the role_id type,
  * the error code Unknown Connection Identifier (0x02) is returned.
@@ -1710,7 +1724,7 @@ uint8_t sdc_hci_cmd_vs_set_role_priority(const sdc_hci_cmd_vs_set_role_priority_
  * If the selected handle_type is not supported by this SDC variant, the controller will
  * return the error code Unsupported Feature or Parameter Value (0x11).
  *
- * The task configurations are cleared after an HCI Reset.
+ * After HCI Reset, this feature is disabled.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1723,10 +1737,10 @@ uint8_t sdc_hci_cmd_vs_set_role_priority(const sdc_hci_cmd_vs_set_role_priority_
  */
 uint8_t sdc_hci_cmd_vs_set_event_start_task(const sdc_hci_cmd_vs_set_event_start_task_t * p_params);
 
-/** @brief Connection Anchor_Point Update Event Reports enable.
+/** @brief Connection Anchor Point Update Event Reports enable.
  *
  * This vendor specific command is used to enable or disable generation of
- * VS_Conn_Anchor_Point_Update_Report events See @ref
+ * VS_Conn_Anchor_Point_Update_Report events. See @ref
  * sdc_hci_subevent_vs_conn_anchor_point_update_report_t.
  *
  * When enabled, the controller will start producing reports for all ACL connections whenever

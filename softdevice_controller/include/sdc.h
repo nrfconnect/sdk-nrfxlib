@@ -148,9 +148,9 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 964
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1084
-#define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 955
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 1075
+#define __MEM_TX_BUFFER_OVERHEAD_SIZE 14
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
@@ -1012,7 +1012,7 @@ int32_t sdc_support_le_periodic_sync_with_rsp(void);
 /** @brief Support LE Power Control for central role
  *
  * After this API is called, the controller will support the HCI commands
- * related to the LE Power Control.
+ * related to LE Power Control.
  *
  * @note The application is required to call both @ref sdc_support_le_power_control_central() and @ref sdc_support_le_power_control_peripheral()
  *       if both central and peripheral roles are supported.
@@ -1026,7 +1026,7 @@ int32_t sdc_support_le_power_control_central(void);
 /** @brief Support LE Power Control for peripheral role
  *
  * After this API is called, the controller will support the HCI commands
- * related to the LE Power Control.
+ * related to LE Power Control.
  *
  * @note The application is required to call both @ref sdc_support_le_power_control_central() and @ref sdc_support_le_power_control_peripheral()
  *       if both central and peripheral roles are supported.
@@ -1036,6 +1036,20 @@ int32_t sdc_support_le_power_control_central(void);
  * @retval -NRF_EOPNOTSUPP  LE Power Control is not supported.
  */
 int32_t sdc_support_le_power_control_peripheral(void);
+
+/** @brief Support LE Path Loss Monitoring
+ *
+ * After this API is called, the controller will support the HCI commands
+ * related to LE Path Loss Monitoring.
+ *
+ * @note The application is required to call at least one of @ref sdc_support_le_power_control_central()
+ *       and @ref sdc_support_le_power_control_peripheral() before enabling support for LE Path Loss Monitoring.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  LE Path Loss Monitoring is not supported.
+ */
+int32_t sdc_support_le_path_loss_monitoring(void);
 
 /** @brief Support Sleep Clock Accuracy (SCA) Update procedure for central role
  *
