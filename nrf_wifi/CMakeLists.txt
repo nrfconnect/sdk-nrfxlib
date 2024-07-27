@@ -104,6 +104,12 @@ target_sources_ifdef(CONFIG_NRF700X_STA_MODE
   ${NRF_WIFI_DIR}/fw_if/umac_if/src/fmac_util.c
 )
 
+target_compile_definitions_ifdef(CONFIG_NRF_WIFI_LOW_POWER
+  nrf-wifi
+  PRIVATE
+  -DCONFIG_NRF_WIFI_LOW_POWER
+)
+
 target_compile_definitions(
   nrf-wifi
   PRIVATE
