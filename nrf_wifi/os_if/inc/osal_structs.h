@@ -21,6 +21,10 @@
 #include <linux/stddef.h>
 #include <linux/string.h>
 #include <linux/stdarg.h>
+#else
+#include <stddef.h>
+#include <stdbool.h>
+#include <stdarg.h>
 #endif
 
 /**
