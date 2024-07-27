@@ -9,4 +9,5 @@ config NRF_WIFI
 	bool "Enable nRF70 OS agnostic library"
 	help
 	  Enable the nRF70 OS agnostic library.
+
 endmenu
