@@ -151,6 +151,8 @@ enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 #endif /* CONFIG_NRF700X_TCP_IP_CHECKSUM_OFFLOAD */
 	umac_cmd_data->discon_timeout = CONFIG_NRF_WIFI_AP_DEAD_DETECT_TIMEOUT;
 
+	umac_cmd_data->mgmt_buff_offload =  1;
+
 	nrf_wifi_osal_log_dbg(fmac_dev_ctx->fpriv->opriv, "RPU LPM type: %s",
 		umac_cmd_data->sys_params.sleep_enable == 2 ? "HW" :
 		umac_cmd_data->sys_params.sleep_enable == 1 ? "SW" : "DISABLED");

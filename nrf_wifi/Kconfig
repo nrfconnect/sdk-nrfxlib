@@ -9,4 +9,13 @@ config NRF_WIFI
 	bool "Enable nRF70 OS agnostic library"
 	help
 	  Enable the nRF70 OS agnostic library.
+
+config NRF_WIFI_LOW_POWER
+	bool "Enable low power mode in nRF Wi-Fi chipsets"
+	default y
+
+config NRF700X_LOG_VERBOSE
+	bool "Maintains the verbosity of information in logs"
+	default y
+
 endmenu
