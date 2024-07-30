@@ -16,18 +16,27 @@ Added
 =====
 
 * Support for the LE Set Path Loss Reporting Parameters and LE Set Path Loss Reporting Enable HCI commands. (DRGN-17376)
-* Added support for generating connection anchor update event reports using the VS Conn Anchor Point Update Report Enable command. (DRGN-22662)
+* Support for generating connection anchor update event reports using the VS Conn Anchor Point Update Report Enable command. (DRGN-22662)
   When enabled, one report is generated when the anchor point of a connection is updated.
   This information can be used to synchronize two applications running on a central and a peripheral device.
+* Vendor-specific command for triggering a peripheral task at the start of a radio event.
+  See :c:func:`sdc_hci_cmd_vs_set_event_start_task`. (DRGN-20737)
 
 Changes
 =======
 
 * The ``sdc_coex_adv_mode_configure`` API has been deprecated as it is not applicable to any supported coexistence interfaces. (DRGN-20876).
 * The ``sdc_hci_cmd_vs_coex_priority_config`` and ``sdc_hci_cmd_vs_coex_scan_mode_config`` vendor-specific HCI commands have been removed as they are not applicable to any supported coexistence interfaces. (DRGN-20876)
-* The vendor-specific Set Connection Event Trigger command can now be used with :kconfig:option:`CONFIG_BT_LL_SOFTDEVICE_PERIPHERAL`. (DRGN-22511)
+* The vendor-specific Set Connection Event Trigger command has been deprecated.
+  Users interested in similar functionality are encouraged to use the VS Set Event Start Task command instead. (DRGN-20737)
 * Extended Connection Events are not re-enabled on HCI Reset.
   The state before HCI Reset is preserved, either the value of :kconfig:option:`CONFIG_BT_CTLR_SDC_CONN_EVENT_EXTEND_DEFAULT` or the most recent call to :c:func:`sdc_hci_cmd_vs_conn_event_extend`. (DRGN-22687)
+* The paths to the library files for SoftDevice Controller and MPSL were changed to use the device family. (DRGN-21939)
+
+    * ``cortex-m4`` changed to ``nrf52``
+    * ``cortex-m33+nodsp`` changed to ``nrf53``
+    * ``nrf54l15_cpuapp`` changed to ``nrf54l``
+    * ``nrf54h20_cpurad`` changed to ``nrf54h``
 
 Bug fixes
 =========
@@ -49,7 +58,7 @@ Bug fixes
     * The scanner was configured with scan window equal to scan interval (continuous scanning).
     * The central-like scheduling activity required less than 1 ms to complete at the point in time where the scanner started.
 * Fixed a rare issue where the scanner would be stuck in the synchronizing state after failing to receive an ``AUX_ADV_IND`` packet.
-  This could only happen when the corresponding ``ADV_EXT_IND`` packet contained a resolvable address, privacy/address resolution is enabled, and the periodic advertising list is not used. (DRGN-22230)
+  This could only happen when the corresponding ``ADV_EXT_IND`` packet contained a resolvable address, private address resolution is enabled, and the periodic advertising list is not used. (DRGN-22230)
 * Fixed an issue where the controller could generate the LE Advertising Set Terminated event one event sooner than expected. (DRGN-22705)
   This could only happen when (all of the following)
     * a non-zero Max_Extended_Advertising_Events parameter was used in the LE Set Extended Advertising Enable command.
