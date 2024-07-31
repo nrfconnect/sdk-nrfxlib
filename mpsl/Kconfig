@@ -33,7 +33,8 @@ config MPSL_LIB_DIR
 	default "nrf52" if SOC_SERIES_NRF52X
 	default "nrf53" if SOC_COMPATIBLE_NRF5340_CPUNET
 	default "nrf54h" if SOC_NRF54H20_CPURAD
-	default "nrf54l" if SOC_SERIES_NRF54LX
+	default "nrf54l_ns" if SOC_SERIES_NRF54LX && TRUSTED_EXECUTION_NONSECURE
+	default "nrf54l" if SOC_SERIES_NRF54LX && !TRUSTED_EXECUTION_NONSECURE
 	default "bsim_nrfxx" if SOC_SERIES_BSIM_NRFXX
 	help
 	  Hidden helper option to calculate the library path
