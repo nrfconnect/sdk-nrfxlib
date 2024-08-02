@@ -1274,13 +1274,23 @@ static void on_timeslot_ended(void)
 
             case RADIO_STATE_CCA_TX:
             case RADIO_STATE_TX:
-            case RADIO_STATE_RX_ACK:
             {
                 state_set(RADIO_STATE_RX);
                 nrf_802154_transmit_done_metadata_t metadata = {};
 
                 nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
                 transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_TIMESLOT_ENDED,
+                                                         &metadata);
+            }
+            break;
+
+            case RADIO_STATE_RX_ACK:
+            {
+                state_set(RADIO_STATE_RX);
+                nrf_802154_transmit_done_metadata_t metadata = {};
+
+                nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+                transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_NO_ACK,
                                                          &metadata);
             }
             break;

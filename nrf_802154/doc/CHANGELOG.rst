@@ -10,6 +10,15 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
+Main branch - nRF 802.15.4 Radio Driver
+***************************************
+
+Notable changes
+===============
+
+* If a time slot ends while waiting for or receiving an ACK frame, the transmission terminates with the :c:macro:NRF_802154_TX_ERROR_NO_ACK error code.
+  This behavior allows the higher layer to distinguish between a frame that was not transmitted and a frame that was transmitted but did not receive an ACK frame. (KRKNWK-19126)
+
 nRF Connect SDK v2.7.0 - nRF 802.15.4 Radio Driver
 **************************************************
 
@@ -258,7 +267,7 @@ Added
 Notable Changes
 ===============
 
-* The release notes of the legacy versions of the Radio Driver are available in the `Radio Driver section`_.
+* The release notes of the legacy versions of the Radio Driver are available in the `Radio Driver section`_ of the Infocenter.
 * The changelog of the previous versions of the 802.15.4 SL library is now located at the bottom of this page.
 * The Radio Driver documentation will now also include the Service Layer documentation.
 * Future versions of the Radio Driver and the Service Layer will follow NCS version tags.
