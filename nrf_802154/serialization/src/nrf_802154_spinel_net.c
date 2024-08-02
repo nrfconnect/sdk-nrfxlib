@@ -132,7 +132,7 @@ void nrf_802154_energy_detected(const nrf_802154_energy_detected_t * p_result)
     SERIALIZATION_ERROR_INIT(error);
 
     NRF_802154_SPINEL_LOG_BANNER_CALLING();
-    NRF_802154_SPINEL_LOG_VAR("%u", result);
+    NRF_802154_SPINEL_LOG_VAR("%u", p_result->ed_dbm);
 
     res = nrf_802154_spinel_send_cmd_prop_value_is(
         SPINEL_PROP_VENDOR_NORDIC_NRF_802154_ENERGY_DETECTED,

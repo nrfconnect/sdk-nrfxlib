@@ -142,7 +142,7 @@
 #if !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
 #define MAX_RAMPDOWN_CYCLES (50 * (SystemCoreClock / 1000000UL)) ///< Maximum number of busy wait loop cycles that radio ramp-down is allowed to take
 #else
-#define MAX_RAMPDOWN_CYCLES 10
+#define MAX_RAMPDOWN_CYCLES 20
 #endif
 #define RSSI_SETTLE_TIME_US 15           ///< Time required for RSSI measurements to become valid after signal level change.
 
