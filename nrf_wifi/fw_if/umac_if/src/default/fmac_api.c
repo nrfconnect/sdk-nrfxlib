@@ -104,6 +104,16 @@ static enum nrf_wifi_status nrf_wifi_fmac_init_rx(struct nrf_wifi_fmac_dev_ctx *
 	def_priv = wifi_fmac_priv(fpriv);
 	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
 
+#ifdef CONFIG_NRF_WIFI_MGMT_BUFF_OFFLOAD
+	if (!def_priv->num_rx_bufs) {
+		nrf_wifi_osal_log_dbg("%s: No RX buffers",
+				      __func__);
+		/* RX buffers are optional for scan-only use cases */
+		status = NRF_WIFI_STATUS_SUCCESS;
+		goto out;
+	}
+#endif /* CONFIG_NRF_WIFI_MGMT_BUFF_OFFLOAD */
+
 	size = (def_priv->num_rx_bufs * sizeof(struct nrf_wifi_fmac_buf_map_info));
 
 	def_dev_ctx->rx_buf_info = nrf_wifi_osal_mem_zalloc(size);
