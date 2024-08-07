@@ -235,7 +235,7 @@ extern "C" {
  * The DPPI channel that RADIO.CCABUSY event publishes to
  */
 #ifndef NRF_802154_DPPI_RADIO_CCABUSY
-#define NRF_802154_DPPI_RADIO_CCABUSY 14U
+#define NRF_802154_DPPI_RADIO_CCABUSY 3U
 #endif
 
 /**

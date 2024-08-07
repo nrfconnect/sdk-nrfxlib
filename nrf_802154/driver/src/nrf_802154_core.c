@@ -57,6 +57,7 @@
 #include "nrf_802154_procedures_duration.h"
 #include "nrf_802154_rssi.h"
 #include "nrf_802154_rx_buffer.h"
+#include "nrf_802154_sl_atomics.h"
 #include "nrf_802154_sl_timer.h"
 #include "nrf_802154_sl_utils.h"
 #include "nrf_802154_stats.h"
@@ -118,18 +119,19 @@ static rx_buffer_t * const mp_current_rx_buffer = &nrf_802154_rx_buffers[0];
 
 #endif
 
-static uint8_t                       * mp_ack;                 ///< Pointer to Ack frame buffer.
-static uint8_t                       * mp_tx_data;             ///< Pointer to the data to transmit.
-static uint32_t                        m_ed_time_left;         ///< Remaining time of the current energy detection procedure [us].
-static uint8_t                         m_ed_result;            ///< Result of the current energy detection procedure.
-static uint8_t                         m_last_lqi;             ///< LQI of the last received non-ACK frame, corrected for the temperature.
-static nrf_802154_fal_tx_power_split_t m_tx_power;             ///< Power to be used to transmit the current frame split into components.
-static uint8_t                         m_tx_channel;           ///< Channel to be used to transmit the current frame.
-static int8_t                          m_last_rssi;            ///< RSSI of the last received non-ACK frame, corrected for the temperature.
+static uint8_t                       * mp_ack;                  ///< Pointer to Ack frame buffer.
+static uint8_t                       * mp_tx_data;              ///< Pointer to the data to transmit.
+static uint32_t                        m_ed_time_left;          ///< Remaining time of the current energy detection procedure [us].
+static uint8_t                         m_ed_result;             ///< Result of the current energy detection procedure.
+static uint8_t                         m_last_lqi;              ///< LQI of the last received non-ACK frame, corrected for the temperature.
+static nrf_802154_fal_tx_power_split_t m_tx_power;              ///< Power to be used to transmit the current frame split into components.
+static uint8_t                         m_tx_channel;            ///< Channel to be used to transmit the current frame.
+static int8_t                          m_last_rssi;             ///< RSSI of the last received non-ACK frame, corrected for the temperature.
+static uint8_t                         m_no_rx_buffer_notified; ///< Set when NRF_802154_RX_ERROR_NO_BUFFER has been notified.
 
-static nrf_802154_frame_parser_data_t m_current_rx_frame_data; ///< RX frame parser data.
+static nrf_802154_frame_parser_data_t m_current_rx_frame_data;  ///< RX frame parser data.
 
-static volatile radio_state_t m_state;                         ///< State of the radio driver.
+static volatile radio_state_t m_state;                          ///< State of the radio driver.
 
 typedef struct
 {
@@ -933,6 +935,34 @@ static nrf_802154_trx_transmit_notifications_t make_trx_frame_transmit_notificat
     return result;
 }
 
+static void notify_no_rx_buffer(void)
+{
+    uint8_t old_value = 0U;
+
+    if (nrf_802154_sl_atomic_cas_u8(&m_no_rx_buffer_notified, &old_value, 1U))
+    {
+        receive_failed_notify(NRF_802154_RX_ERROR_NO_BUFFER);
+    }
+}
+
+static void rx_init_free_buffer_find_and_update(bool free_buffer)
+{
+    if (!free_buffer)
+    {
+        // If no buffer was available, then find a new one.
+        rx_buffer_in_use_set(nrf_802154_rx_buffer_free_find());
+
+        uint8_t * rx_buffer = rx_buffer_get();
+
+        nrf_802154_trx_receive_buffer_set(rx_buffer);
+
+        if (NULL == rx_buffer)
+        {
+            notify_no_rx_buffer();
+        }
+    }
+}
+
 /**
  * @brief Initializes RX operation
  *
@@ -998,13 +1028,7 @@ static void rx_init(nrf_802154_trx_ramp_up_trigger_mode_t ru_tr_mode, bool * p_a
     nrf_802154_timer_coord_timestamp_prepare(nrf_802154_trx_radio_crcok_event_handle_get());
 #endif
 
-    // Find RX buffer if none available
-    if (!free_buffer)
-    {
-        rx_buffer_in_use_set(nrf_802154_rx_buffer_free_find());
-
-        nrf_802154_trx_receive_buffer_set(rx_buffer_get());
-    }
+    rx_init_free_buffer_find_and_update(free_buffer);
 
     rx_data_clear();
 
@@ -2062,9 +2086,6 @@ void nrf_802154_trx_receive_frame_received(void)
                 // Current buffer will be passed to the application
                 mp_current_rx_buffer->free = false;
 
-                // Find new buffer
-                rx_buffer_in_use_set(nrf_802154_rx_buffer_free_find());
-
                 switch_to_idle();
 
                 received_frame_notify_and_nesting_allow(p_received_data);
@@ -2210,12 +2231,7 @@ void nrf_802154_trx_transmit_frame_transmitted(void)
 
         nrf_802154_trx_receive_ack();
 
-        if (!rx_buffer_free)
-        {
-            rx_buffer_in_use_set(nrf_802154_rx_buffer_free_find());
-
-            nrf_802154_trx_receive_buffer_set(rx_buffer_get());
-        }
+        rx_init_free_buffer_find_and_update(rx_buffer_free);
     }
     else
     {
@@ -2520,6 +2536,7 @@ void nrf_802154_core_init(void)
     m_state                    = RADIO_STATE_SLEEP;
     m_rsch_timeslot_is_granted = false;
     m_rx_prestarted_trig_count = 0;
+    m_no_rx_buffer_notified    = 0U;
 
     nrf_802154_sl_timer_init(&m_rx_prestarted_timer);
 
@@ -2910,6 +2927,7 @@ bool nrf_802154_core_notify_buffer_free(uint8_t * p_data)
     bool          in_crit_sect = critical_section_enter_and_verify_timeslot_length();
 
     p_buffer->free = true;
+    nrf_802154_sl_atomic_store_u8(&m_no_rx_buffer_notified, 0U);
 
     if (in_crit_sect)
     {

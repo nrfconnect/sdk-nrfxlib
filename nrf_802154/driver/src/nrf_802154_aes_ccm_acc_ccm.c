@@ -41,19 +41,12 @@
  *
  *  Note that with this option set, IEEE 802.15.4 Information Elements injection is not supported.
  */
-#define CCM_OUTPTR_POINTS_TO_RADIO_PACKETPTR      0
+#define CCM_OUTPTR_POINTS_TO_RADIO_PACKETPTR 0
 
-/** Configures if the CCM's START task is triggered at the same time the START task of the RADIO
- * is triggered.
- *
- * Note that with this option set, multiprotocol with Bluetooth Low Energy is not supported.
- */
-#define CCM_START_TASK_TRIGGERED_WITH_RADIO_START 0
-
-#define CCM_ALEN_ATTR_ID                          11 ///< Attribute field that identifies the alen CCM job
-#define CCM_MLEN_ATTR_ID                          12 ///< Attribute field that identifies the mlen CCM job
-#define CCM_ADATA_ATTR_ID                         13 ///< Attribute field that identifies the adata CCM job
-#define CCM_MDATA_ATTR_ID                         14 ///< Attribute field that identifies the mdata CCM job
+#define CCM_ALEN_ATTR_ID                     11 ///< Attribute field that identifies the alen CCM job
+#define CCM_MLEN_ATTR_ID                     12 ///< Attribute field that identifies the mlen CCM job
+#define CCM_ADATA_ATTR_ID                    13 ///< Attribute field that identifies the adata CCM job
+#define CCM_MDATA_ATTR_ID                    14 ///< Attribute field that identifies the mdata CCM job
 
 #include "nrf_802154_aes_ccm.h"
 
@@ -114,7 +107,6 @@ static uint32_t         m_nonce[4];                 ///< Nonce used during the n
 static void ccm_disable(void)
 {
     nrf_802154_irq_disable(nrfx_get_irq_number(NRF_802154_CCM_INSTANCE));
-    nrf_dppi_channels_disable(DPPIC_CCM, (1 << NRF_802154_DPPI_RADIO_TXREADY));
     nrf_ccm_subscribe_clear(NRF_802154_CCM_INSTANCE, NRF_CCM_TASK_START);
     nrf_ccm_subscribe_clear(NRF_802154_CCM_INSTANCE, NRF_CCM_TASK_STOP);
     nrf_ccm_int_disable(NRF_802154_CCM_INSTANCE, NRF_CCM_INT_ERROR_MASK | NRF_CCM_INT_END_MASK);
@@ -188,21 +180,6 @@ static void ppi_configure(void)
                          nrf_ppib_receive_event_get(NRF_802154_DPPI_RADIO_DISABLED),
                          NRF_802154_DPPI_RADIO_DISABLED);
 
-#if CCM_START_TASK_TRIGGERED_WITH_RADIO_START
-    nrf_ppib_subscribe_set(PPIB_RAD,
-                           nrf_ppib_send_task_get(NRF_802154_DPPI_RADIO_TXREADY),
-                           NRF_802154_DPPI_RADIO_TXREADY);
-    nrf_ppib_publish_set(PPIB_CCM,
-                         nrf_ppib_receive_event_get(NRF_802154_DPPI_RADIO_TXREADY),
-                         NRF_802154_DPPI_RADIO_TXREADY);
-
-    nrf_ccm_subscribe_set(NRF_802154_CCM_INSTANCE,
-                          NRF_CCM_TASK_START,
-                          NRF_802154_DPPI_RADIO_TXREADY);
-
-    dppi_ch_to_enable |= (1 << NRF_802154_DPPI_RADIO_TXREADY);
-#endif // CCM_START_TASK_TRIGGERED_WITH_RADIO_START
-
     nrf_ccm_subscribe_set(NRF_802154_CCM_INSTANCE,
                           NRF_CCM_TASK_STOP,
                           NRF_802154_DPPI_RADIO_DISABLED);
@@ -225,10 +202,6 @@ static void ccm_configure(void)
         m_initialized = true;
     }
 
-#if CCM_START_TASK_TRIGGERED_WITH_RADIO_START
-    ccm_peripheral_configure();
-    ppi_configure();
-#endif // CCM_START_TASK_TRIGGERED_WITH_RADIO_START
     m_setup = true;
 }
 
@@ -388,12 +361,11 @@ void nrf_802154_aes_ccm_transform_start(uint8_t * p_frame)
     {
         return;
     }
-#if !CCM_START_TASK_TRIGGERED_WITH_RADIO_START
+
     ccm_peripheral_configure();
     ppi_configure();
 
     nrf_ccm_task_trigger(NRF_802154_CCM_INSTANCE, NRF_CCM_TASK_START);
-#endif // !CCM_START_TASK_TRIGGERED_WITH_RADIO_START
 }
 
 void nrf_802154_aes_ccm_transform_abort(uint8_t * p_frame)
