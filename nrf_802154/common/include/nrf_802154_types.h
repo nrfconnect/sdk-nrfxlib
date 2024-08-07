@@ -108,6 +108,7 @@ typedef uint8_t nrf_802154_rx_error_t;
 #define NRF_802154_RX_ERROR_DELAYED_TIMEOUT         0x08 // !< Delayed reception timeslot ended.
 #define NRF_802154_RX_ERROR_INVALID_LENGTH          0x09 // !< Received a frame with invalid length.
 #define NRF_802154_RX_ERROR_DELAYED_ABORTED         0x0A // !< Delayed operation in the ongoing state was aborted by other request.
+#define NRF_802154_RX_ERROR_NO_BUFFER               0x0B // !< Reception suppressed because there was no free buffer available.
 
 /**
  * @brief Possible errors during the energy detection.

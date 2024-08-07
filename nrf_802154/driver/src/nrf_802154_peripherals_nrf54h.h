@@ -175,18 +175,6 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_DPPI_RADIO_TXREADY
- *
- * The DPPI channel that publishes RADIO_TXREADY event.
- *
- * @note This option is used if @ref NRF_802154_ENCRYPTION_ENABLED is set.
- *
- */
-#ifndef NRF_802154_DPPI_RADIO_TXREADY
-#define NRF_802154_DPPI_RADIO_TXREADY 3U
-#endif
-
-/**
  * @def NRF_802154_DPPI_RADIO_ADDRESS
  *
  * The DPPI channel that publishes RADIO_ADDRESS event.
@@ -274,7 +262,7 @@ extern "C" {
  * The DPPI channel that RADIO.CCABUSY event publishes to
  */
 #ifndef NRF_802154_DPPI_RADIO_CCABUSY
-#define NRF_802154_DPPI_RADIO_CCABUSY 14U
+#define NRF_802154_DPPI_RADIO_CCABUSY 3U
 #endif
 
 /**
@@ -307,7 +295,6 @@ extern "C" {
 #define NRF_802154_DPPI_CHANNELS_USED_MASK (                   \
         (1UL << NRF_802154_DPPI_RADIO_DISABLED) |              \
         (1UL << NRF_802154_DPPI_RADIO_READY) |                 \
-        (1UL << NRF_802154_DPPI_RADIO_TXREADY) |               \
         (1UL << NRF_802154_DPPI_RADIO_ADDRESS) |               \
         (1UL << NRF_802154_DPPI_RADIO_END) |                   \
         (1UL << NRF_802154_DPPI_RADIO_PHYEND) |                \
