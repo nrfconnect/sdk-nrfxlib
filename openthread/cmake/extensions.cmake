@@ -7,6 +7,8 @@
 # The Build the path of the library taking in nrf_security backend type,
 # OpenThread version and feature set
 function(openthread_calculate_lib_path ot_version lib_path)
+  set(OPENTHREAD_LIB_BASE_DIR "${ZEPHYR_NRFXLIB_MODULE_DIR}/openthread")
+
   if(CONFIG_OPENTHREAD_NORDIC_LIBRARY_MASTER)
     set(ot_feature_set "master")
   elseif(CONFIG_OPENTHREAD_NORDIC_LIBRARY_FTD)
@@ -19,14 +21,15 @@ function(openthread_calculate_lib_path ot_version lib_path)
     set(ot_feature_set "custom")
   endif()
 
-  nrfxlib_calculate_lib_path(nrfxlib_path)
+  nrfxlib_calculate_lib_path(nrfxlib_path BASE_DIR ${OPENTHREAD_LIB_BASE_DIR} SOFT_FLOAT_FALLBACK)
+
   if(CONFIG_OPENTHREAD_COPROCESSOR_RCP)
     set(${lib_path}
-      "${ZEPHYR_NRFXLIB_MODULE_DIR}/openthread/${nrfxlib_path}/${ot_version}/rcp"
+      "${nrfxlib_path}/${ot_version}/rcp"
       PARENT_SCOPE)
   else()
     set(${lib_path}
-      "${ZEPHYR_NRFXLIB_MODULE_DIR}/openthread/${nrfxlib_path}/${ot_version}/${ot_feature_set}/${nrf_security_backend}"
+      "${nrfxlib_path}/${ot_version}/${ot_feature_set}/${nrf_security_backend}"
       PARENT_SCOPE)
   endif()
 
