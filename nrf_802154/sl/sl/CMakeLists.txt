@@ -8,7 +8,7 @@ if (CONFIG_NRF_802154_RADIO_DRIVER)
 
 add_library(nrf-802154-sl INTERFACE)
 
-nrfxlib_calculate_lib_path(lib_path SOC_MODE)
+nrfxlib_calculate_lib_path(lib_path SOC_MODE NS_PROVIDED)
 
 set(NRF_802154_SL_LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${lib_path})
 
