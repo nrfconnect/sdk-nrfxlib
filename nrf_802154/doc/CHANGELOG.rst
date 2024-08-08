@@ -20,6 +20,7 @@ Notable changes
   This behavior allows the higher layer to distinguish between a frame that was not transmitted and a frame that was transmitted but did not receive an ACK frame. (KRKNWK-19126)
 * When the nRF 802.15.4 Radio Driver prepares for a reception but no free buffer is left, the :c:func:`nrf_802154_receive_failed` callout is generated with a new error code :c:macro:NRF_802154_RX_ERROR_NO_BUFFER. (KRKNWK-19304)
 * The default assignment of the DPPI channels on the nRF54L Series is changed so that the channels 14 and 15 are left unused for other purposes. (KRKNWK-19349)
+* The binaries of the nRF 802.15.4 SL library for the nRF54L15 SoC are provided also for the non-secure operation. (KRKNWK-19338)
 
 nRF Connect SDK v2.7.0 - nRF 802.15.4 Radio Driver
 **************************************************
