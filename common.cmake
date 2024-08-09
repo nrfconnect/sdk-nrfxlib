@@ -20,6 +20,10 @@ include_guard(GLOBAL)
 #
 # SOC_MODE:            Use the SoC name instead of the SoC architecture when calculating the path.
 #                      For example 'nrf52840' will be used for the path instead of 'cortex-m4'
+# NS_PROVIDED          Use name identifying non-secure library version for builds with
+#                      'CONFIG_TRUSTED_EXECUTION_NONSECURE' on supported SoCs.
+#                      Libraries that do not distinguish between secure and non-secure version
+#                      should not use this parameter.
 # BASE_DIR:            Base path from where the calculated path should start from.
 #                      When specifying BASE_DIR the path returned will be absolute, or
 #                      '<dir>-NOTFOUND' if the path does not exists
@@ -28,7 +32,7 @@ include_guard(GLOBAL)
 #                      This flag requires 'BASE_DIR'
 #
 function(nrfxlib_calculate_lib_path lib_path)
-  cmake_parse_arguments(CALC_LIB_PATH "SOFT_FLOAT_FALLBACK;SOC_MODE" "BASE_DIR" "" ${ARGN})
+  cmake_parse_arguments(CALC_LIB_PATH "SOFT_FLOAT_FALLBACK;SOC_MODE;NS_PROVIDED" "BASE_DIR" "" ${ARGN})
 
   if(CALC_LIB_PATH_SOFT_FLOAT_FALLBACK AND NOT DEFINED CALC_LIB_PATH_BASE_DIR)
     message(WARNING "nrfxlib_calculate_lib_path(SOFT_FLOAT_FALLBACK ...) "
@@ -46,6 +50,9 @@ function(nrfxlib_calculate_lib_path lib_path)
       set(arch_soc_dir ${arch_soc_dir}_cpunet)
     elseif(DEFINED CONFIG_SOC_NRF54L15_ENGA_CPUAPP)
       set(arch_soc_dir ${arch_soc_dir}_cpuapp)
+      if(DEFINED CONFIG_TRUSTED_EXECUTION_NONSECURE AND ${CALC_LIB_PATH_NS_PROVIDED})
+        set(arch_soc_dir ${arch_soc_dir}_ns)
+      endif()
     elseif(DEFINED CONFIG_SOC_NRF54H20_CPURAD)
       set(arch_soc_dir ${arch_soc_dir}_cpurad)
     endif()
