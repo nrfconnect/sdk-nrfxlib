@@ -70,8 +70,7 @@ The following table summarizes the priorities.
    |                             | * Connected Isochronous channel setup                                                             |
    |                             | * Connected Isochronous channels that are about to time out                                       |
    |                             | * Isochronous Broadcaster                                                                         |
-   |                             | * Synchronized Receiver in the synchronizing state                                                |
-   |                             | * Synchronized Receiver in the synchronized state where the synchronization is about to be lost   |
+   |                             | * Synchronized Receiver receiving the first BN subevents of relevant BISes in a BIG event         |
    |                             | * Synchronized Receiver receiving packets in a BIG control subevent                               |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Third priority              | * All |BLE| roles in states other than above run with this priority                               |
