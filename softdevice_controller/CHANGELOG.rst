@@ -37,6 +37,9 @@ Changes
     * ``cortex-m33+nodsp`` changed to ``nrf53``
     * ``nrf54l15_cpuapp`` changed to ``nrf54l``
     * ``nrf54h20_cpurad`` changed to ``nrf54h``
+* For a Synchronized Receiver, the priority of the first ``BN`` subevents of relevant BISes in a BIG event now have an elevated priority.
+  This should improve reliability of ISO data being received by a Synchronized Receiver running alongside a role of lower priority.
+  For more details, see the :ref:`scheduling_priorities_table` table.
 
 Bug fixes
 =========

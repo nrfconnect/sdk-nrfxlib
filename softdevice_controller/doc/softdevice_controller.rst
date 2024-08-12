@@ -41,13 +41,13 @@ For the nRF53 Series:
 * ``CCM``
 * ``AAR``
 * ``NVMC``
-* ``DPPI`` channels from ``0`` to ``13``
+* ``DPPI`` channels from ``0`` to ``12``
 
 For the nRF54H Series:
 
 * ``CCM030``
 * ``AAR030``
-* ``DPPIC020`` channels from ``0`` to ``13``
+* ``DPPIC020`` channels from ``0`` to ``11``
 * ``PPIB020`` channels from ``0`` to ``3``
 * ``PPIB030`` channels from ``0`` to ``3``
 
@@ -56,7 +56,7 @@ For the nRF54L Series:
 * ``CCM00``
 * ``AAR00``
 * ``RRAMC``
-* ``DPPIC10`` channels from ``0`` to ``13``
+* ``DPPIC10`` channels from ``0`` to ``11``
 * ``PPIB00`` channels from ``0`` to ``3``
 * ``PPIB10`` channels from ``0`` to ``3``
 
