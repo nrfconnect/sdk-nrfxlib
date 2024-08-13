@@ -1211,14 +1211,6 @@ int32_t sdc_iso_host_timestamps_ignore(bool ignore);
  */
 int32_t sdc_support_qos_channel_survey(void);
 
-/** @brief Configure the coex advertising mode
- *
- * This API has now been deprecated and has no effect.
- *
- * @retval -NRF_EOPNOTSUPP  This API is no longer supported.
- */
-int32_t sdc_coex_adv_mode_configure(bool adv_cont_on_denial);
-
 /** @brief Support for setting the default radio TX power level
  *
  * This API sets the default power level for radio TX activity in the controller.
