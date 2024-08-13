@@ -33,10 +33,10 @@ extern "C" {
 #define NRF_RPC_ID_UNKNOWN 0xFF
 
 /** @brief Flag indicating that the group does not block on initialization. */
-#define NRF_RPC_FLAGS_WAIT_ON_INIT BIT(0)
+#define NRF_RPC_FLAGS_WAIT_ON_INIT 0x01
 
 /** @brief Flag indicating that the peer must initiate group binding. */
-#define NRF_RPC_FLAGS_INITIATOR BIT(1)
+#define NRF_RPC_FLAGS_INITIATOR 0x02
 
 /** @brief Helper macro for conditional flag initialization. */
 #define NRF_RPC_FLAG_COND(_cond, _flag) ((_cond) ? (_flag) : 0UL)
