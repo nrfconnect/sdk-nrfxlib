@@ -180,7 +180,7 @@ extern "C" {
  *
  */
 #ifndef NRF_802154_DPPI_RADIO_PHYEND
-#define NRF_802154_DPPI_RADIO_PHYEND 12U
+#define NRF_802154_DPPI_RADIO_PHYEND 8U
 #endif
 
 /**
@@ -217,7 +217,7 @@ extern "C" {
  *
  */
 #ifndef NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC
-#define NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC 8U
+#define NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC 12U
 #endif
 
 /**
