@@ -10,6 +10,11 @@ Changelog
 Main Branch
 ***********
 
+Changes
+=======
+
+* Removed the :file:`mpsl_coex.h` API. (DRGN-22567)
+
 Added
 =====
 
