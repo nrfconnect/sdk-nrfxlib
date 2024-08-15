@@ -197,7 +197,7 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_SUBRATING(num_links) ((num_links) * 0)
+#define SDC_MEM_SUBRATING(num_links) (11 + (num_links) * 19)
 
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
@@ -1210,14 +1210,6 @@ int32_t sdc_iso_host_timestamps_ignore(bool ignore);
  * @retval -NRF_EOPNOTSUPP QoS channel survey is not supported.
  */
 int32_t sdc_support_qos_channel_survey(void);
-
-/** @brief Configure the coex advertising mode
- *
- * This API has now been deprecated and has no effect.
- *
- * @retval -NRF_EOPNOTSUPP  This API is no longer supported.
- */
-int32_t sdc_coex_adv_mode_configure(bool adv_cont_on_denial);
 
 /** @brief Support for setting the default radio TX power level
  *
