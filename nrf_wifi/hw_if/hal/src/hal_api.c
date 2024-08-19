@@ -1557,7 +1557,7 @@ enum nrf_wifi_status nrf_wifi_hal_fw_chk_boot(struct nrf_wifi_hal_dev_ctx *hal_d
 
 	hal_dev_ctx->curr_proc = rpu_proc;
 
-	while (mcu_ready_wait_count-- > 0) {
+	while (--mcu_ready_wait_count > 0) {
 		status = hal_rpu_mem_read(hal_dev_ctx,
 					  (unsigned char *)&val,
 					  addr,
