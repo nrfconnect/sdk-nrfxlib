@@ -426,8 +426,12 @@ static bool timeslot_is_granted(void)
 
 static bool antenna_diversity_is_enabled(void)
 {
+#if NRF_802154_ANTENNA_DIVERSITY
     return (NRF_802154_SL_ANT_DIV_MODE_DISABLED !=
             nrf_802154_sl_ant_div_cfg_mode_get(NRF_802154_SL_ANT_DIV_OP_RX));
+#else
+    return false;
+#endif
 }
 
 /***************************************************************************************************
@@ -793,8 +797,10 @@ static bool current_operation_terminate(nrf_802154_term_t term_lvl,
                 m_rx_prestarted_trig_count = 0;
                 (void)nrf_802154_sl_timer_remove(&m_rx_prestarted_timer);
 
+#if NRF_802154_ANTENNA_DIVERSITY
                 /* Notify antenna diversity module that RX has been aborted. */
                 nrf_802154_sl_ant_div_rx_aborted_notify();
+#endif
 
                 /* We might have boosted preconditions (to support coex) above level
                  * normally requested for current state by request_preconditions_for_state(m_state).
@@ -803,10 +809,12 @@ static bool current_operation_terminate(nrf_802154_term_t term_lvl,
                 request_preconditions_for_state(m_state);
             }
 
+#if NRF_802154_ANTENNA_DIVERSITY
             if (m_state == RADIO_STATE_ED)
             {
                 nrf_802154_sl_ant_div_energy_detection_aborted_notify();
             }
+#endif
 
             if (notify)
             {
@@ -1067,9 +1075,11 @@ static void ed_init(void)
 
     uint32_t trx_ed_count = 0U;
 
+#if NRF_802154_ANTENNA_DIVERSITY
     // Notify antenna diversity about energy detection request. Antenna diversity state
     // will be updated, and m_ed_time_left reduced accordingly.
     nrf_802154_sl_ant_div_energy_detection_requested_notify(&m_ed_time_left);
+#endif
 
     if (!ed_iter_setup(&m_ed_time_left, &trx_ed_count))
     {
@@ -1468,7 +1478,9 @@ static void on_rx_prestarted_timeout(nrf_802154_sl_timer_t * p_timer)
 
     nrf_802154_critical_section_forcefully_enter();
 
+#if NRF_802154_ANTENNA_DIVERSITY
     nrf_802154_sl_ant_div_rx_preamble_timeout_notify();
+#endif
 
     do
     {
@@ -1490,7 +1502,9 @@ static void on_rx_prestarted_timeout(nrf_802154_sl_timer_t * p_timer)
             if (nrf_802154_sl_time64_is_in_future(now, m_rx_prestarted_timer.trigger_time))
             {
                 m_rx_prestarted_trig_count = 1;
+#if NRF_802154_ANTENNA_DIVERSITY
                 nrf_802154_sl_ant_div_rx_preamble_detected_notify();
+#endif
                 break;
             }
         }
@@ -1514,6 +1528,7 @@ void nrf_802154_trx_receive_frame_prestarted(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
+#if NRF_802154_ANTENNA_DIVERSITY
     if (!antenna_diversity_is_enabled())
     {
         // Only assert if notifications mask would not allow for calling this function.
@@ -1524,6 +1539,7 @@ void nrf_802154_trx_receive_frame_prestarted(void)
     {
         // Antenna diversity uses this function for detecting possible preamble on air.
     }
+#endif
 
     assert(m_state == RADIO_STATE_RX);
 
@@ -1531,7 +1547,9 @@ void nrf_802154_trx_receive_frame_prestarted(void)
     nrf_802154_stat_counter_increment(received_energy_events);
 #endif
 
+#if NRF_802154_ANTENNA_DIVERSITY
     nrf_802154_sl_ant_div_rx_preamble_detected_notify();
+#endif
 
     // Antenna diversity module should be notified if framestart doesn't come.
     bool rx_timeout_should_be_started = antenna_diversity_is_enabled();
@@ -1601,6 +1619,7 @@ void nrf_802154_trx_receive_frame_started(void)
             break;
     }
 
+#if NRF_802154_ANTENNA_DIVERSITY
     if (antenna_diversity_is_enabled())
     {
         // If antenna diversity is enabled, rx_prestarted_timer would be started even
@@ -1609,6 +1628,7 @@ void nrf_802154_trx_receive_frame_started(void)
         (void)nrf_802154_sl_timer_remove(&m_rx_prestarted_timer);
         nrf_802154_sl_ant_div_rx_frame_started_notify();
     }
+#endif
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -1875,7 +1895,9 @@ void nrf_802154_trx_receive_frame_received(void)
         nrf_802154_stat_timestamp_write(last_rx_end_timestamp, ts);
 #endif
 
+#if NRF_802154_ANTENNA_DIVERSITY
         nrf_802154_sl_ant_div_rx_frame_received_notify();
+#endif
 
         bool send_ack = false;
 
@@ -2297,10 +2319,12 @@ void nrf_802154_trx_energy_detection_finished(uint8_t ed_sample)
              * Operation will be resumed in next timeslot */
         }
     }
+#if NRF_802154_ANTENNA_DIVERSITY
     else if (nrf_802154_sl_ant_div_energy_detection_finished_notify())
     {
         ed_init();
     }
+#endif
     else
     {
         nrf_802154_trx_channel_set(nrf_802154_pib_channel_get());

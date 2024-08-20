@@ -803,6 +803,7 @@ void nrf_802154_trx_disable(void)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
+#if NRF_802154_ANTENNA_DIVERSITY
 static void rx_automatic_antenna_handle(void)
 {
     switch (m_trx_state)
@@ -828,7 +829,9 @@ static void rx_automatic_antenna_handle(void)
             break;
     }
 }
+#endif
 
+#if NRF_802154_ANTENNA_DIVERSITY
 /**
  * Updates the antenna for reception, according to antenna diversity configuration.
  */
@@ -860,7 +863,9 @@ static void rx_antenna_update(void)
     assert(result);
     (void)result;
 }
+#endif
 
+#if NRF_802154_ANTENNA_DIVERSITY
 /**
  * Updates the antenna for transmission, according to antenna diversity configuration.
  *
@@ -895,9 +900,11 @@ static void tx_antenna_update(void)
         assert(false);
     }
 }
+#endif
 
 void nrf_802154_trx_antenna_update(void)
 {
+#if NRF_802154_ANTENNA_DIVERSITY
     assert(m_trx_state != TRX_STATE_DISABLED);
 
     switch (m_trx_state)
@@ -923,6 +930,7 @@ void nrf_802154_trx_antenna_update(void)
             /* Intentionally empty */
             break;
     }
+#endif
 }
 
 void nrf_802154_trx_channel_set(uint8_t channel)

@@ -165,6 +165,7 @@ void nrf_802154_tx_power_set(int8_t power);
  */
 int8_t nrf_802154_tx_power_get(void);
 
+#if NRF_802154_ANTENNA_DIVERSITY
 /**
  * @brief Sets the antenna diversity rx mode.
  *
@@ -324,6 +325,8 @@ bool nrf_802154_antenna_diversity_init(void);
  * interface reports an interrupt.
  */
 void nrf_802154_antenna_diversity_timer_irq_handler(void);
+
+#endif /* NRF_802154_ANTENNA_DIVERSITY */
 
 /**
  * @brief Gets the current time.

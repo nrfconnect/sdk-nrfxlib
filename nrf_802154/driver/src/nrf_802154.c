@@ -282,6 +282,7 @@ void nrf_802154_deinit(void)
 #endif
 }
 
+#if NRF_802154_ANTENNA_DIVERSITY
 bool nrf_802154_antenna_diversity_rx_mode_set(nrf_802154_sl_ant_div_mode_t mode)
 {
     bool result = false;
@@ -392,6 +393,7 @@ void nrf_802154_antenna_diversity_timer_irq_handler(void)
     nrf_802154_sl_ant_div_timer_irq_handle();
 #endif
 }
+#endif /* NRF_802154_ANTENNA_DIVERSITY */
 
 nrf_802154_state_t nrf_802154_state_get(void)
 {

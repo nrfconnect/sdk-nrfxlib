@@ -143,6 +143,19 @@ extern "C" {
 #define NRF_802154_TEST_MODES_ENABLED 0
 #endif
 
+/**
+ * @def NRF_802154_ANTENNA_DIVERSITY
+ *
+ * Enables experimental Antenna Diversity feature.
+ */
+#ifndef NRF_802154_ANTENNA_DIVERSITY
+#if defined(NRF52_SERIES)
+#define NRF_802154_ANTENNA_DIVERSITY 1
+#else
+#define NRF_802154_ANTENNA_DIVERSITY 0
+#endif
+#endif
+
 #ifdef __cplusplus
 }
 #endif
