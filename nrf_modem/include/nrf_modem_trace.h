@@ -41,11 +41,12 @@ struct nrf_modem_trace_data {
  *            special values NRF_MODEM_OS_FOREVER or NRF_MODEM_OS_NO_WAIT.
  *
  * @retval 0 on success.
- * @retval -NRF_EFAULT If @p frags or @p nfrags is NULL.
+ * @retval -NRF_EFAULT @p frags or @p nfrags is NULL.
+ * @retval -NRF_EPERM The Modem library is not initialized, or modem tracing is disabled.
  * @retval -NRF_EINPROGRESS Trace is already being processed by the application.
  * @retval -NRF_ENODATA No more trace data is available until the modem is restarted.
  * @retval -NRF_ESHUTDOWN Modem was shut down.
- * @retval -NRF_EAGAIN If the request timed out.
+ * @retval -NRF_EAGAIN The request timed out.
  * @retval -NRF_ENOTSUP Modem is not configured for trace output.
  */
 int nrf_modem_trace_get(struct nrf_modem_trace_data **frags, size_t *n_frags, int timeout);
