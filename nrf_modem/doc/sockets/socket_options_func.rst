@@ -63,16 +63,6 @@ The following table shows all socket options supported by the Modem library.
 +------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_SOL_SOCKET   | NRF_SO_KEEPOPEN                  | ``int``                | get/set    | Keep the socket open when its PDN connection is lost, or the device is set to flight mode. |
 +------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RAI_LAST                  | ``int``                | set        | Deprecated. Use :c:macro:`NRF_SO_RAI` with value ``NRF_RAI_LAST`` instead.                 |
-+------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RAI_ONE_RESP              | ``int``                | set        | Deprecated. Use :c:macro:`NRF_SO_RAI` with value ``NRF_RAI_ONE_RESP`` instead.             |
-+------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RAI_ONGOING               | ``int``                | set        | Deprecated. Use :c:macro:`NRF_SO_RAI` with value ``NRF_RAI_ONGOING`` instead.              |
-+------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RAI_WAIT_MORE             | ``int``                | set        | Deprecated. Use :c:macro:`NRF_SO_RAI` with value ``NRF_RAI_WAIT_MORE`` instead.            |
-+------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
-| NRF_SOL_SOCKET   | NRF_SO_RAI_NO_DATA               | ``int``                | set        | Deprecated. Use :c:macro:`NRF_SO_RAI` with value ``NRF_RAI_NO_DATA`` instead.              |
-+------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_SOL_SOCKET   | NRF_SO_RAI                       | ``int``                | set        | Release Assistance Indication (RAI).                                                       |
 +------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_IPPROTO_ALL  | NRF_SO_SILENCE_ALL               | ``int``                | get/set    | Non-zero disables ICMP echo replies on both IPv4 and IPv6.                                 |
@@ -80,6 +70,8 @@ The following table shows all socket options supported by the Modem library.
 | NRF_IPPROTO_IP   | NRF_SO_IP_ECHO_REPLY             | ``int``                | get/set    | Non-zero enables ICMP echo replies on IPv4.                                                |
 +------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_IPPROTO_IPV6 | NRF_SO_IPV6_ECHO_REPLY           | ``int``                | get/set    | Non-zero enables ICMP echo replies on IPv6.                                                |
++------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
+| NRF_IPPROTO_IPV6 | NRF_SO_IPV6_DELAYED_ADDR_REFRESH | ``int``                | get/set    | Non-zero delays IPv6 address refresh during power saving mode.                             |
 +------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
 | NRF_IPPROTO_TCP  | NRF_SO_TCP_SRV_SESSTIMEO         | ``int``                | get/set    | Non-zero enables TCP server session timeout after a configurable period of inactivity.     |
 +------------------+----------------------------------+------------------------+------------+--------------------------------------------------------------------------------------------+
@@ -207,32 +199,6 @@ NRF_SO_RAI
     * ``NRF_RAI_ONGOING`` - Keep RRC in connected mode after the next output operation on this socket (client side).
     * ``NRF_RAI_WAIT_MORE`` - Keep RRC in connected mode after the next output operation on this socket (server side).
 
-NRF_SO_RAI_LAST
-   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value ``NRF_RAI_LAST`` instead.
-   This is a Release assistance indication (RAI) socket option.
-   Enter RRC idle mode after the next output operation on this socket is complete.
-
-NRF_SO_RAI_ONE_RESP
-   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value ``NRF_RAI_ONE_RESP`` instead.
-   This is a Release assistance indication (RAI) socket option.
-   After the next output operation is complete, wait for one more packet to be received from the network on this socket before entering RRC idle mode.
-
-NRF_SO_RAI_ONGOING
-   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value ``NRF_RAI_ONGOING`` instead.
-   This is a Release assistance indication (RAI) socket option.
-   Keep RRC in connected mode after the next output operation on this socket (client side).
-
-NRF_SO_RAI_WAIT_MORE
-   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value ``NRF_RAI_WAIT_RESP`` instead.
-   This is a Release assistance indication (RAI) socket option.
-   Keep RRC in connected mode after the next output operation on this socket (server side).
-
-NRF_SO_RAI_NO_DATA
-   Deprecated since v2.6.0. Use the :c:macro:`NRF_SO_RAI` socket option with value ``NRF_RAI_NO_DATA`` instead.
-   This is a Release assistance indication (RAI) socket option.
-   Immediately enter RRC idle mode for this socket.
-   Does not require a following output operation.
-
 NRF_SO_SILENCE_ALL
    Disable ICMP echo replies on both IPv4 and IPv6.
    The option value is an integer, a ``1`` value disables echo replies.
@@ -247,6 +213,13 @@ NRF_SO_IPV6_ECHO_REPLY
    Enable ICMP echo replies on IPv6.
    The option value is an integer, a ``0`` value disables echo replies on IPv6.
    Default value is ``1`` (ON).
+
+NRF_SO_IPV6_DELAYED_ADDR_REFRESH
+   By default, if the lifetime of an IPv6 address expires during power saving mode (PSM), the device wakes up solely to refresh the address.
+   If this socket option is enabled, the IPv6 address refresh is delayed until the next time the device wakes up from PSM or eDRX sleep.
+   This avoids unnecessary wake-ups and optimizes the power usage.
+   The option value is an integer, a ``1`` value enables delayed IPv6 address refresh on IPv6.
+   Default value is ``0`` (OFF).
 
 NRF_SO_TCP_SRV_SESSTIMEO
    Configure the TCP server session inactivity timeout for a socket.

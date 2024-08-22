@@ -16,6 +16,7 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include <nrf_modem_toolchain.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -86,6 +87,7 @@ void nrf_modem_at_cfun_handler_set(nrf_modem_at_cfun_handler_t handler);
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  * @retval -NRF_ESHUTDOWN If modem was shut down.
  */
+__nrf_modem_printf_like(1, 2)
 int nrf_modem_at_printf(const char *fmt, ...);
 
 /**
@@ -108,6 +110,7 @@ int nrf_modem_at_printf(const char *fmt, ...);
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  * @retval -NRF_ESHUTDOWN If the modem was shut down.
  */
+__nrf_modem_scanf_like(2, 3)
 int nrf_modem_at_scanf(const char *cmd, const char *fmt, ...);
 
 /**
@@ -131,6 +134,7 @@ int nrf_modem_at_scanf(const char *cmd, const char *fmt, ...);
  * @retval -NRF_E2BIG The response is larger than the supplied buffer @c buf.
  * @retval -NRF_ESHUTDOWN If the modem was shut down.
  */
+__nrf_modem_printf_like(3, 4)
 int nrf_modem_at_cmd(void *buf, size_t len, const char *fmt, ...);
 
 /**
@@ -165,6 +169,7 @@ typedef void (*nrf_modem_at_resp_handler_t)(const char *resp);
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  * @retval -NRF_ESHUTDOWN If the modem was shut down.
  */
+__nrf_modem_printf_like(2, 3)
 int nrf_modem_at_cmd_async(nrf_modem_at_resp_handler_t callback, const char *fmt, ...);
 
 /** @brief AT command handler prototype.

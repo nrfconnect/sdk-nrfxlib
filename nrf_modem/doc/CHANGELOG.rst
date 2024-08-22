@@ -9,6 +9,57 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem
+*********
+
+Core library
+============
+
+* Added:
+
+  * A header file :file:`nrf_modem_toolchain.h` for compiler attributes used in other header files.
+
+AT interface
+============
+
+* Added:
+
+  * Logging for AT responses and notifications to the logging binaries.
+  * Format helpers to AT functions that take a variable number of arguments to improve type checking.
+
+Sockets
+=======
+
+* Added:
+
+  * The capability to read the value of the :c:macro:`NRF_SO_KEEPOPEN` socket option with modem firmware v2.0.2 and higher.
+  * The :c:macro:`NRF_SO_IPV6_DELAYED_ADDR_REFRESH` socket option to delay the IPv6 address refresh until the device wakes up from PSM or eDRX sleep.
+    This prevents the device from waking up solely to refresh the address.
+    This socket option is supported by modem firmware v1.3.7 and higher and modem firmware v2.0.2 and higher.
+
+* Updated the :c:func:`nrf_getaddrinfo` function to support up to three concurrent DNS requests.
+
+* Removed:
+
+  * The deprecated types ``nrf_sec_cipher_t``, ``nrf_sec_peer_verify_t``, ``nrf_sec_role_t``, and ``nrf_sec_session_cache_t``.
+  * The deprecated RAI socket options ``NRF_SO_RAI_NO_DATA``, ``NRF_SO_RAI_LAST``, ``NRF_SO_RAI_ONE_RESP``, ``NRF_SO_RAI_ONGOING``, and ``NRF_SO_RAI_WAIT_MORE``.
+
+DECT NR+
+========
+
+* Added:
+
+  * Physical layer control field header formats.
+  * New API for STF cover sequence control.
+    This API is intended for certification purposes only and should not be used under normal operation.
+
+* Updated the documentation to state that RSSI reporting interval is measured in slots and not subslots.
+
+Tracing
+=======
+
+* Updated the function :c:func:`nrf_modem_trace_get` to now return ``-NRF_EPERM`` if trace interface is not initialized.
+
 nrf_modem 2.7.0
 ***************
 
