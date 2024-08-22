@@ -26,6 +26,7 @@
 #define NRF_MODEM_DECT_PHY_H__
 
 #include <stdint.h>
+#include <nrf_modem_toolchain.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -314,7 +315,7 @@ enum nrf_modem_dect_phy_rx_mode {
 	 */
 	NRF_MODEM_DECT_PHY_RX_MODE_CONTINUOUS,
 	/**
-	 * @brief Semicontinous reception.
+	 * @brief Semi-continuous reception.
 	 *
 	 * Similar to continuous reception, but will stop after receiving a unicast PDC.
 	 */
@@ -348,6 +349,181 @@ enum nrf_modem_dect_phy_rssi_interval {
 };
 
 /**
+ * @brief Physical header type 1.
+ *
+ * See 6.2 of [2].
+ */
+struct nrf_modem_dect_phy_hdr_type_1 {
+	/**
+	 * @brief Packet length in subslots or slots.
+	 */
+	uint8_t packet_length : 4;
+	/**
+	 * @brief Indicates whether the packet_length is given in subslots (0) or slots (1).
+	 */
+	uint8_t packet_length_type : 1;
+	/**
+	 * @brief Format of the control header Type 1.
+	 */
+	uint8_t header_format : 3;
+	/**
+	 * @brief Short network ID
+	 */
+	uint8_t short_network_id;
+	/**
+	 * @brief Transmitter ID high byte
+	 */
+	uint8_t transmitter_id_hi;
+	/**
+	 * @brief Transmitter ID low byte
+	 */
+	uint8_t transmitter_id_lo;
+	/**
+	 * @brief Defines the transmissions modulation and coding scheme.
+	 */
+	uint8_t df_mcs : 3;
+	/**
+	 * @brief Reserved
+	 */
+	uint8_t reserved : 1;
+	/**
+	 * @brief Transmit power
+	 */
+	uint8_t transmit_power : 4;
+} __nrf_modem_attr_packed;
+
+/**
+ * @brief Feedback format types.
+ *
+ * See 6.2.2 of [2].
+ */
+union nrf_modem_dect_phy_feedback {
+	struct {
+		uint8_t transmission_feedback0 : 1;
+		uint8_t harq_process_number0 : 3;
+		uint8_t format : 4;
+		uint8_t cqi : 4;
+		uint8_t buffer_status : 4;
+	} format1;
+	struct {
+		uint8_t mimo_feedback : 1;
+		uint8_t codebook_index : 3;
+		uint8_t format : 4;
+		uint8_t cqi : 4;
+		uint8_t buffer_status : 4;
+	} format2;
+	struct {
+		uint8_t transmission_feedback0 : 1;
+		uint8_t harq_process_number0 : 3;
+		uint8_t format : 4;
+		uint8_t cqi : 4;
+		uint8_t transmission_feedback1 : 1;
+		uint8_t harq_process_number1 : 3;
+	} format3;
+	struct {
+		uint8_t harq_feedback_bitmap_proc3 : 1;
+		uint8_t harq_feedback_bitmap_proc2 : 1;
+		uint8_t harq_feedback_bitmap_proc1 : 1;
+		uint8_t harq_feedback_bitmap_proc0 : 1;
+		uint8_t format : 4;
+		uint8_t cqi : 4;
+		uint8_t harq_feedback_bitmap_proc7 : 1;
+		uint8_t harq_feedback_bitmap_proc6 : 1;
+		uint8_t harq_feedback_bitmap_proc5 : 1;
+		uint8_t harq_feedback_bitmap_proc4 : 1;
+	} format4;
+	struct {
+		uint8_t transmission_feedback : 1;
+		uint8_t harq_process_number : 3;
+		uint8_t format : 4;
+		uint8_t codebook_index : 6;
+		uint8_t mimo_feedback : 2;
+	} format5;
+	struct {
+		uint8_t reserved : 1;
+		uint8_t harq_process_number : 3;
+		uint8_t format : 4;
+		uint8_t cqi : 4;
+		uint8_t buffer_status : 4;
+	} format6;
+} __nrf_modem_attr_packed;
+
+/**
+ * @brief Physical header type 2.
+ *
+ * See 6.2 of [2].
+ */
+struct nrf_modem_dect_phy_hdr_type_2 {
+
+	/**
+	 * @brief Packet length in subslots or slots.
+	 */
+	uint8_t packet_length : 4;
+	/**
+	 * @brief Indicates whether the packet_length is given in subslots (0) or slots (1).
+	 */
+	uint8_t packet_length_type : 1;
+	/**
+	 * @brief Format of the control header Type 2.
+	 */
+	uint8_t header_format : 3;
+	/**
+	 * @brief Short network ID
+	 */
+	uint8_t short_network_id;
+	/**
+	 * @brief Transmitter ID high byte
+	 */
+	uint8_t transmitter_id_hi;
+	/**
+	 * @brief Transmitter ID low byte
+	 */
+	uint8_t transmitter_id_lo;
+	/**
+	 * @brief Defines the transmissions modulation and coding scheme.
+	 */
+	uint8_t df_mcs : 4;
+	/**
+	 * @brief Transmit power.
+	 */
+	uint8_t transmit_power : 4;
+	/**
+	 * @brief Receiver ID high byte.
+	 */
+	uint8_t receiver_id_hi;
+	/**
+	 * @brief Receiver ID low byte.
+	 */
+	uint8_t receiver_id_lo;
+	/**
+	 * @brief HARQ process number.
+	 *
+	 * Valid only for header format: 000.
+	 */
+	uint8_t df_harq_process_num : 3;
+	/**
+	 * @brief New data indication.
+	 *
+	 * Valid only for header format: 000.
+	 */
+	uint8_t df_new_data_indication : 1;
+	/**
+	 * @brief Redundancy version.
+	 *
+	 * Valid only for header format: 000.
+	 */
+	uint8_t df_redundancy_version : 2;
+	/**
+	 * @brief Number of spatial streams.
+	 */
+	uint8_t num_spatial_streams : 2;
+	/**
+	 * @brief Feedback info
+	 */
+	union nrf_modem_dect_phy_feedback feedback;
+} __nrf_modem_attr_packed;
+
+/**
  * @brief Physical header.
  *
  * See 6.2.1 in @ref DECT-SPEC "DECT-2020 NR Part 4".
@@ -361,6 +537,8 @@ union nrf_modem_dect_phy_hdr {
 	 * @brief Header type 2.
 	 */
 	uint8_t type_2[10];
+	struct nrf_modem_dect_phy_hdr_type_1 hdr_type_1;
+	struct nrf_modem_dect_phy_hdr_type_2 hdr_type_2;
 };
 
 /**
@@ -583,7 +761,7 @@ struct nrf_modem_dect_phy_rssi_meas {
 	/**
 	 * @brief RSSI measurements, in dBm.
 	 *
-	 * If a symbol is measured, its measurement is in the interval [-1, -140].
+	 * If a symbol is measured, its measurement is in the interval [-140, -1].
 	 * If the measurement is saturated, the measured signal strength is reported
 	 * as a positive integer. If a symbol is not measured, its value is reported
 	 * as @ref NRF_MODEM_DECT_PHY_RSSI_NOT_MEASURED.
@@ -620,7 +798,7 @@ struct nrf_modem_dect_phy_rx_params {
 	 */
 	enum nrf_modem_dect_phy_rx_mode mode;
 	/**
-	 * @brief RSSI measurement reporting interval.
+	 * @brief RSSI measurement reporting interval, in slots.
 	 */
 	enum nrf_modem_dect_phy_rssi_interval rssi_interval;
 	/**
@@ -817,7 +995,7 @@ struct nrf_modem_dect_phy_rssi_params {
 	 */
 	uint32_t duration;
 	/**
-	 * @brief RSSI measurements reporting interval, in subslots.
+	 * @brief RSSI measurements reporting interval, in slots.
 	 */
 	enum nrf_modem_dect_phy_rssi_interval reporting_interval;
 };
@@ -1028,6 +1206,20 @@ struct nrf_modem_dect_phy_callbacks {
 	 */
 	void (*capability_get)(const uint64_t *time, enum nrf_modem_dect_phy_err err,
 			       const struct nrf_modem_dect_phy_capability *capability);
+
+	/**
+	 * @brief Callback for @ref nrf_modem_dect_phy_stf_cover_seq_control.
+	 *
+	 * The @p err parameter indicates the result of the operation.
+	 * It can be one of the following values:
+	 *
+	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
+	 * - @ref NRF_MODEM_DECT_PHY_ERR_NOT_ALLOWED
+	 *
+	 * @param[in] time Modem time, in modem time units.
+	 * @param err Operation result.
+	 */
+	void (*stf_cover_seq_control)(const uint64_t *time, enum nrf_modem_dect_phy_err err);
 
 	/**
 	 * @brief Callback for @ref nrf_modem_dect_phy_deinit.
@@ -1287,6 +1479,28 @@ int nrf_modem_dect_phy_link_config(const struct nrf_modem_dect_phy_link_config_p
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  */
 int nrf_modem_dect_phy_time_get(void);
+
+/**
+ * @brief STF cover sequence control.
+ *
+ * Enable or disable STF cover sequence.
+ *
+ * @note
+ * This API is intended for certification purposes only.
+ * It should not be used for normal operation.
+ *
+ * This operation is asynchronous. The result of the operation is sent to the
+ * @ref nrf_modem_dect_phy_callbacks.stf_cover_seq_control callback.
+ *
+ * @param rx_enable Enable STF cover sequence for reception.
+ * @param tx_enable Enable STF cover sequence for transmission.
+ *
+ * @retval 0           Request was sent to modem.
+ * @retval -NRF_EPERM  The Modem library is not initialized.
+ * @retval -NRF_EFAULT Callback configuration is invalid.
+ * @retval -NRF_ENOMEM Not enough shared memory for this request.
+ */
+int nrf_modem_dect_phy_stf_cover_seq_control(bool rx_enable, bool tx_enable);
 
 #ifdef __cplusplus
 }
