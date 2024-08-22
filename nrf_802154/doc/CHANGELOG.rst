@@ -29,6 +29,7 @@ Bug fixes
 =========
 
 * Fixed an issue causing the driver to report a very inaccurate timestamp if a delayed operation starts shortly after sleep request. (KRKNWK-18589)
+* Fixed an issue causing the build for the nRF54L15 SoC with :kconfig:option:`CONFIG_FPU` set to ``y`` to fail. (KRKNWK-19373)
 
 nRF Connect SDK v2.6.0 - nRF 802.15.4 Radio Driver
 **************************************************
