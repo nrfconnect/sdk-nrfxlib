@@ -9,4 +9,10 @@ config NRF_WIFI
 	bool "Enable nRF70 OS agnostic library"
 	help
 	  Enable the nRF70 OS agnostic library.
+
+config NRF70_RADIO_TEST
+	bool "Enable nRF70 radio test"
+	help
+	  Enable the nRF70 radio test.
+
 endmenu

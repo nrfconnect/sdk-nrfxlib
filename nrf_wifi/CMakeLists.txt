@@ -27,13 +27,13 @@ target_include_directories(
   ${NRF_WIFI_DIR}/fw_if/umac_if/inc/fw
 )
 
-target_include_directories_ifdef(CONFIG_NRF700X_RADIO_TEST
+target_include_directories_ifdef(CONFIG_NRF70_RADIO_TEST
   nrf-wifi
   PUBLIC
   ${NRF_WIFI_DIR}/fw_if/umac_if/inc/radio_test
 )
 
-target_include_directories_ifndef(CONFIG_NRF700X_RADIO_TEST
+target_include_directories_ifndef(CONFIG_NRF70_RADIO_TEST
   nrf-wifi
   PUBLIC
   ${NRF_WIFI_DIR}/fw_if/umac_if/inc/default
@@ -60,7 +60,7 @@ target_sources(
   ${NRF_WIFI_DIR}/fw_if/umac_if/src/fmac_api_common.c
 )
 
-target_sources_ifndef(CONFIG_NRF700X_RADIO_TEST
+target_sources_ifndef(CONFIG_NRF70_RADIO_TEST
   nrf-wifi
   PRIVATE
   ${NRF_WIFI_DIR}/fw_if/umac_if/src/rx.c
@@ -69,7 +69,7 @@ target_sources_ifndef(CONFIG_NRF700X_RADIO_TEST
   ${NRF_WIFI_DIR}/fw_if/umac_if/src/default/fmac_api.c
 )
 
-target_sources_ifdef(CONFIG_NRF700X_RADIO_TEST
+target_sources_ifdef(CONFIG_NRF70_RADIO_TEST
   nrf-wifi
   PRIVATE
   ${NRF_WIFI_DIR}/fw_if/umac_if/src/radio_test/fmac_api.c
@@ -108,6 +108,12 @@ target_compile_definitions_ifdef(CONFIG_NRF_WIFI_LOW_POWER
   nrf-wifi
   PRIVATE
   -DCONFIG_NRF_WIFI_LOW_POWER
+)
+
+target_compile_definitions_ifdef(CONFIG_NRF70_RADIO_TEST
+  nrf-wifi
+  PRIVATE
+  -DCONFIG_NRF700X_RADIO_TEST
 )
 
 target_compile_definitions(
