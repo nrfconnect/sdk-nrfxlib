@@ -64,6 +64,8 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 +--------------------------------+-----------------+--------------+-----------+
 | Synchronized Receiver          |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
+| Connection Subrating           |                 |              | X         |
++--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    The following limitations apply to the listed features:

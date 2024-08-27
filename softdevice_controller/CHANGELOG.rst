@@ -21,6 +21,7 @@ Added
   This information can be used to synchronize two applications running on a central and a peripheral device.
 * Vendor-specific command for triggering a peripheral task at the start of a radio event.
   See :c:func:`sdc_hci_cmd_vs_set_event_start_task`. (DRGN-20737)
+* Support for the LE Set Default Subrate and LE Subrate Request HCI commands. (DRGN-19745)
 
 Changes
 =======
@@ -66,6 +67,9 @@ Bug fixes
   This could only happen when (all of the following)
     * a non-zero Max_Extended_Advertising_Events parameter was used in the LE Set Extended Advertising Enable command.
     * other ongoing activities in the controller prevented the first advertising event from taking place when the advertising set was created.
+* Fixed an issue where calling the :c:func:`sdc_hci_cmd_vs_zephyr_write_tx_power` function without the LE Power Control feature enabled could cause the controller to de-reference a NULL pointer. (DRGN-22930)
+* Fixed an issue where the Central failed to receive the last packet in an isochronous event.
+  This could only happen if the Connected Isochronous Stream Creation procedure was initiated by the host before the Encryption Start procedure completed. (DRGN-22879)
 
 nRF Connect SDK v2.7.0
 **********************
