@@ -1170,7 +1170,7 @@ out:
 #endif /* CONFIG_NRF_WIFI_LOW_POWER */
 #endif /* CONFIG_NRF700X_UTIL */
 
-#ifdef CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES
+#if defined(CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES) || defined(CONFIG_NRF700X_SYSTEM_MODE)
 enum nrf_wifi_status nrf_wifi_fmac_set_mode(void *dev_ctx,
 					    unsigned char if_idx,
 					    unsigned char mode)
@@ -1253,6 +1253,10 @@ enum nrf_wifi_status nrf_wifi_fmac_set_channel(void *dev_ctx,
 	status = nrf_wifi_hal_ctrl_cmd_send(fmac_dev_ctx->hal_dev_ctx,
 					    umac_cmd,
 					    (sizeof(*umac_cmd) + len));
+
+	nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			      "%s: nrf_wifi_hal_ctrl_cmd_send succeeded",
+			      __func__);
 out:
 	return status;
 }

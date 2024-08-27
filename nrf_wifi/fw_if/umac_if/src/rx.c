@@ -382,6 +382,9 @@ enum nrf_wifi_status nrf_wifi_fmac_rx_event_process(struct nrf_wifi_fmac_dev_ctx
 			raw_rx_hdr.signal = config->signal;
 			raw_rx_hdr.rate_flags = config->rate_flags;
 			raw_rx_hdr.rate = config->rate;
+			nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+					      "%s: NRF_WIFI_RAW_RX_PKT invoked",
+					      __func__);
 
 			def_priv->callbk_fns.rx_sniffer_frm_callbk_fn(vif_ctx->os_vif_ctx,
 								      nwb,

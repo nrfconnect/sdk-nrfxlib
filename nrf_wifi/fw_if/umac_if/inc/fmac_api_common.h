@@ -307,7 +307,7 @@ int nrf_wifi_phy_rf_params_init(struct nrf_wifi_osal_priv *opriv,
 				unsigned int package_info,
 				unsigned char *str);
 
-#ifdef CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES
+#if defined(CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES) || defined(CONFIG_NRF700X_SYSTEM_MODE)
 /**
  * @brief Set the current mode of operation
  * @param dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.

@@ -47,18 +47,6 @@ unsigned short nrf_wifi_util_rx_get_eth_type(struct nrf_wifi_fmac_dev_ctx *fmac_
 	return payload[6] << 8 | payload[7];
 }
 
-
-unsigned short nrf_wifi_util_tx_get_eth_type(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-					     void *nwb)
-{
-	unsigned char *payload = NULL;
-
-	payload = (unsigned char *)nwb;
-
-	return payload[12] << 8 | payload[13];
-}
-
-
 int nrf_wifi_util_get_skip_header_bytes(unsigned short eth_type)
 {
 	/* Ethernet-II snap header (RFC1042 for most EtherTypes) */
@@ -204,6 +192,44 @@ void nrf_wifi_util_rx_convert_amsdu_to_eth(struct nrf_wifi_fmac_dev_ctx *fmac_de
 	}
 }
 
+int nrf_wifi_util_get_vif_indx(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+			       const unsigned char *mac_addr)
+{
+	int i = 0;
+	int vif_index = -1;
+	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
+
+	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
+
+	for (i = 0; i < MAX_PEERS; i++) {
+		if (!nrf_wifi_util_ether_addr_equal(def_dev_ctx->tx_config.peers[i].ra_addr,
+						    mac_addr)) {
+			vif_index = def_dev_ctx->tx_config.peers[i].if_idx;
+			break;
+		}
+	}
+
+	if (vif_index == -1) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Invalid vif_index = %d",
+				      __func__,
+				      vif_index);
+	}
+
+	return vif_index;
+}
+#endif
+
+#if defined(CONFIG_NRF700X_STA_MODE) || defined(CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES)
+unsigned short nrf_wifi_util_tx_get_eth_type(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+					     void *nwb)
+{
+	unsigned char *payload = NULL;
+
+	payload = (unsigned char *)nwb;
+
+	return payload[12] << 8 | payload[13];
+}
 
 int nrf_wifi_util_get_tid(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 			  void *nwb)
@@ -283,42 +309,12 @@ int nrf_wifi_util_get_tid(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	return priority;
 }
 
-
-int nrf_wifi_util_get_vif_indx(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
-			       const unsigned char *mac_addr)
-{
-	int i = 0;
-	int vif_index = -1;
-	struct nrf_wifi_fmac_dev_ctx_def *def_dev_ctx = NULL;
-
-	def_dev_ctx = wifi_dev_priv(fmac_dev_ctx);
-
-	for (i = 0; i < MAX_PEERS; i++) {
-		if (!nrf_wifi_util_ether_addr_equal(def_dev_ctx->tx_config.peers[i].ra_addr,
-						    mac_addr)) {
-			vif_index = def_dev_ctx->tx_config.peers[i].if_idx;
-			break;
-		}
-	}
-
-	if (vif_index == -1) {
-		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Invalid vif_index = %d",
-				      __func__,
-				      vif_index);
-	}
-
-	return vif_index;
-}
-
-
 unsigned char *nrf_wifi_util_get_dest(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				      void *nwb)
 {
 	return nrf_wifi_osal_nbuf_data_get(fmac_dev_ctx->fpriv->opriv,
 					   nwb);
 }
-
 
 unsigned char *nrf_wifi_util_get_ra(struct nrf_wifi_fmac_vif_ctx *vif,
 				    void *nwb)
@@ -347,7 +343,7 @@ unsigned char *nrf_wifi_util_get_src(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 							    nwb) + NRF_WIFI_FMAC_ETH_ADDR_LEN;
 }
 
-#endif /* CONFIG_NRF700X_STA_MODE */
+#endif /* CONFIG_NRF700X_STA_MODE || CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES*/
 
 enum nrf_wifi_status nrf_wifi_check_mode_validity(unsigned char mode)
 {

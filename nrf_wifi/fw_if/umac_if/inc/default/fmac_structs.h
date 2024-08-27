@@ -139,10 +139,18 @@ struct nrf_wifi_fmac_callbk_fns {
 					  signed short signal);
 #endif /* CONFIG_WIFI_MGMT_RAW_SCAN_RESULTS */
 
-#if defined(CONFIG_NRF700X_STA_MODE) || defined(__DOXYGEN__)
+#if defined(CONFIG_NRF700X_STA_MODE) || defined(CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES) || defined(__DOXYGEN__)
 	/** Callback function to be called when an interface association state changes. */
 	enum nrf_wifi_status (*if_carr_state_chg_callbk_fn)(void *os_vif_ctx,
 							    enum nrf_wifi_fmac_if_carr_state cs);
+
+	/** Callback function to be called when a set interface response is received. */
+	void (*set_if_callbk_fn)(void *os_vif_ctx,
+				 struct nrf_wifi_umac_event_set_interface *set_if_event,
+				 unsigned int event_len);
+#endif
+
+#if defined(CONFIG_NRF700X_STA_MODE) || defined(__DOXYGEN__)
 
 	/** Callback function to be called when a frame is received. */
 	void (*rx_frm_callbk_fn)(void *os_vif_ctx,
@@ -197,11 +205,6 @@ struct nrf_wifi_fmac_callbk_fns {
 	void (*tx_status_callbk_fn)(void *os_vif_ctx,
 				    struct nrf_wifi_umac_event_mlme *tx_status_event,
 				    unsigned int event_len);
-
-	/** Callback function to be called when a set interface response is received. */
-	void (*set_if_callbk_fn)(void *os_vif_ctx,
-				 struct nrf_wifi_umac_event_set_interface *set_if_event,
-				 unsigned int event_len);
 
 	/** Callback function to be called when a remain on channel response is received. */
 	void (*roc_callbk_fn)(void *os_vif_ctx,
@@ -280,18 +283,7 @@ struct nrf_wifi_fmac_callbk_fns {
 				     unsigned int event_len);
 };
 
-#if defined(CONFIG_NRF700X_STA_MODE) || defined(__DOXYGEN__)
-/**
- * @brief The TWT sleep state of device.
- *
- */
-enum nrf_wifi_fmac_twt_state {
-	/** RPU in TWT sleep state. */
-	NRF_WIFI_FMAC_TWT_STATE_SLEEP,
-	/** RPU in TWT awake state. */
-	NRF_WIFI_FMAC_TWT_STATE_AWAKE
-};
-
+#if defined(CONFIG_NRF700X_STA_MODE) || defined(__DOXYGEN__) || defined(CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES)
 /**
  * @brief Structure to hold peer context information.
  *
@@ -354,7 +346,18 @@ struct tx_config {
 	void *tx_done_tasklet_event_q;
 #endif /* CONFIG_NRF700X_TX_DONE_WQ_ENABLED */
 };
-#endif /* CONFIG_NRF700X_STA_MODE */
+
+/**
+ * @brief The TWT sleep state of device.
+ *
+ */
+enum nrf_wifi_fmac_twt_state {
+	/** RPU in TWT sleep state. */
+	NRF_WIFI_FMAC_TWT_STATE_SLEEP,
+	/** RPU in TWT awake state. */
+	NRF_WIFI_FMAC_TWT_STATE_AWAKE
+};
+#endif /* CONFIG_NRF700X_STA_MODE || CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES */
 
 /**
  * @brief Structure to hold context information for the UMAC IF layer.
@@ -373,7 +376,7 @@ struct nrf_wifi_fmac_priv_def {
 	unsigned int rx_desc[MAX_NUM_OF_RX_QUEUES];
 	/** Maximum number of host buffers needed for RX frames. */
 	unsigned int num_rx_bufs;
-#if defined(CONFIG_NRF700X_STA_MODE)
+#if defined(CONFIG_NRF700X_STA_MODE) || defined(CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES)
 	/** Maximum number of tokens available for TX. */
 	unsigned char num_tx_tokens;
 	/** Maximum number of TX tokens available reserved per AC. */
@@ -470,13 +473,15 @@ struct nrf_wifi_fmac_dev_ctx_def {
 	unsigned char num_ap;
 	/** Queue for storing mapping info of RX buffers. */
 	struct nrf_wifi_fmac_buf_map_info *rx_buf_info;
-#if defined(CONFIG_NRF700X_STA_MODE)
+#if defined(CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES) || defined(CONFIG_NRF700X_STA_MODE)
 	/** Queue for storing mapping info of TX buffers. */
 	struct nrf_wifi_fmac_buf_map_info *tx_buf_info;
 	/** Context information related to TX path. */
 	struct tx_config tx_config;
 	/** TWT state of the RPU. */
 	enum nrf_wifi_fmac_twt_state twt_sleep_status;
+#endif
+#if defined(CONFIG_NRF700X_STA_MODE)
 #if defined(CONFIG_NRF700X_TX_DONE_WQ_ENABLED)
 	/** Tasklet for TX done. */
 	void *tx_done_tasklet;

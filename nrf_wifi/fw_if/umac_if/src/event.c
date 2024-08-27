@@ -19,7 +19,7 @@
 #include "fmac_ap.h"
 #include "fmac_util.h"
 
-#ifdef CONFIG_NRF700X_DATA_TX
+#if defined(CONFIG_NRF700X_DATA_TX) || defined(CONFIG_NRF700X_MONITOR_MODE)
 static enum nrf_wifi_status
 nrf_wifi_fmac_if_carr_state_event_proc(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 				       unsigned char *umac_head,
@@ -638,7 +638,7 @@ nrf_wifi_fmac_data_event_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 
 	switch (event) {
 	case NRF_WIFI_CMD_RX_BUFF:
-#ifdef CONFIG_NRF700X_RX_DONE_WQ_ENABLED
+#ifdef CONFIG_NRF700X_RX_DONE_WQ_ENABLED 
 		struct nrf_wifi_rx_buff *config = nrf_wifi_osal_mem_zalloc(
 			fmac_dev_ctx->fpriv->opriv,
 			sizeof(struct nrf_wifi_rx_buff));
@@ -667,6 +667,9 @@ nrf_wifi_fmac_data_event_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 		nrf_wifi_osal_tasklet_schedule(fmac_dev_ctx->fpriv->opriv,
 					       def_dev_ctx->rx_tasklet);
 #else
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: RX event process is being called",
+				      __func__);
 		status = nrf_wifi_fmac_rx_event_process(fmac_dev_ctx,
 							umac_head);
 #endif /* CONFIG_NRF700X_RX_DONE_WQ_ENABLED */
@@ -706,6 +709,8 @@ nrf_wifi_fmac_data_event_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 								umac_head);
 #endif /* CONFIG_NRF700X_TX_DONE_WQ_ENABLED */
 		break;
+#endif /* CONFIG_NRF700X_DATA_TX */
+#if defined(CONFIG_NRF700X_DATA_TX) || defined(CONFIG_NRF700X_MONITOR_MODE)
 	case NRF_WIFI_CMD_CARRIER_ON:
 		status = nrf_wifi_fmac_if_carr_state_event_proc(fmac_dev_ctx,
 								umac_head,
@@ -983,6 +988,9 @@ nrf_wifi_fmac_if_mode_set_event_proc(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 			vif->if_type = NRF_WIFI_IFTYPE_MONITOR;
 			config->peers[MAX_PEERS].peer_id = -1;
 			config->peers[MAX_PEERS].if_idx = -1;
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Mode set to monitor mode",
+				      __func__);
 #ifdef CONFIG_NRF700X_RAW_DATA_TX
 			if ((mode_event->op_mode ^
 			     NRF_WIFI_TX_INJECTION_MODE) == 0) {
@@ -1024,6 +1032,9 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		return status;
 	}
 
+	nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			      "%s: umac_process_sys_event_called",
+			      __func__);
 #ifdef CONFIG_NRF700X_RADIO_TEST
 	def_dev_ctx_rt = wifi_dev_priv(fmac_dev_ctx);
 #else
@@ -1058,12 +1069,18 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 #endif /* CONFIG_NRF700X_RADIO_TEST */
 #ifdef CONFIG_NRF700X_RAW_DATA_TX
 	case NRF_WIFI_EVENT_RAW_TX_DONE:
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Raw TX done is being called",
+				      __func__);
 		status = nrf_wifi_fmac_rawtx_done_event_process(fmac_dev_ctx,
 						(struct nrf_wifi_event_raw_tx_done *)sys_head);
 		break;
 #endif
 #ifdef CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES
 	case NRF_WIFI_EVENT_MODE_SET_DONE:
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: mode set is being invoked",
+				      __func__);
 		status = nrf_wifi_fmac_if_mode_set_event_proc(fmac_dev_ctx,
 						(struct nrf_wifi_event_raw_config_mode *)sys_head);
 		break;
@@ -1071,6 +1088,9 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 #if defined(CONFIG_NRF700X_RAW_DATA_TX) || defined(CONFIG_NRF700X_RAW_DATA_RX)
 	case NRF_WIFI_EVENT_CHANNEL_SET_DONE:
 		struct nrf_wifi_event_set_channel *channel_event;
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: channel set is being invoked",
+				      __func__);
 
 		channel_event = (struct nrf_wifi_event_set_channel *)sys_head;
 		if (!channel_event->status) {

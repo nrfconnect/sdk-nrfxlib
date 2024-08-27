@@ -944,6 +944,9 @@ enum nrf_wifi_status rawtx_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 		goto out;
 	}
 
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: nrf_wifi_hal_ctrl_cmd_send is being called",
+				      __func__);
 	status = nrf_wifi_hal_ctrl_cmd_send(fmac_dev_ctx->hal_dev_ctx,
 					    umac_cmd,
 					    (sizeof(*umac_cmd) + len));
@@ -1029,6 +1032,9 @@ enum nrf_wifi_status tx_pending_process(struct nrf_wifi_fmac_dev_ctx *fmac_dev_c
 					     def_dev_ctx->tx_config.pkt_info_p[desc].peer_id);
 #ifdef CONFIG_NRF700X_RAW_DATA_TX
 		} else {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: rawtx_cmd_init being called",
+				      __func__);
 			status = rawtx_cmd_init(fmac_dev_ctx,
 						def_dev_ctx->tx_config.pkt_info_p[desc].pkt,
 						desc,
