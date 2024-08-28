@@ -9,6 +9,16 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem
+*********
+
+Sockets
+=======
+
+* Removed:
+
+  * The deprecated RAI socket options :c:macro:`NRF_SO_RAI_NO_DATA`, :c:macro:`NRF_SO_RAI_LAST`, :c:macro:`NRF_SO_RAI_ONE_RESP`, :c:macro:`NRF_SO_RAI_ONGOING`, and :c:macro:`NRF_SO_RAI_WAIT_MORE`.
+
 nrf_modem 2.7.0
 ***************
 
