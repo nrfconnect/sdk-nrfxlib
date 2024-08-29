@@ -75,7 +75,10 @@ typedef struct
         /** Parameters when type is @ref MPSL_FEM_EVENT_TYPE_TIMER. */
         struct
         {
-            /** Pointer to a 1-us resolution timer instance. */
+            /** Pointer to a 1-us resolution timer instance.
+             *
+             * For nRF54L series devices this timer must belong to a Radio Power Domain.
+             */
             NRF_TIMER_Type *   p_timer_instance;
 
             /** Counter period parameters */
@@ -96,7 +99,11 @@ typedef struct
         /** Parameters when type is @ref MPSL_FEM_EVENT_TYPE_GENERIC. */
         struct
         {
-            /** Event triggering required FEM operation. */
+            /** Event triggering required FEM operation.
+             *
+             *  For nRF54L series devices this event (being in fact a dppi channel number,
+             *  see doc for @c mpsl_subscribable_hw_event_t ) must belong to the Radio Power Domain.
+             */
             mpsl_subscribable_hw_event_t event;
           /** Generic event, used in case of type equal to @ref MPSL_FEM_EVENT_TYPE_GENERIC. */
         } generic;
