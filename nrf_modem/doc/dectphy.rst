@@ -12,7 +12,7 @@ The DECT physical layer (PHY) interface in the Modem library is used to control 
 The DECT NR+ PHY firmware is a variant of the nRF91x1 firmware with a different radio technology than the cellular firmware.
 In particular, the DECT NR+ PHY firmware does not support cellular operation or the Global Navigation Satellite System (GNSS).
 
-For details about the key hardware capabilities of the nRF9161 and its DECT NR+ PHY firmware implementation, with regards to the DECT NR+ standard, refer to the `nRF9161 DECT NR+ product specification`_.
+For details about the key hardware capabilities of the nRF91x1 DKs and its DECT NR+ PHY firmware implementation, with regards to the DECT NR+ standard, refer to the `nRF9151 DECT NR+ product specification`_ or the `nRF9161 DECT NR+ product specification`_, depending on the SiP you are using.
 
 .. note::
    To obtain the DECT NR+ PHY firmware, you must contact the Nordic Semiconductor sales department.
@@ -47,7 +47,7 @@ The whole DECT NR+ protocol stack consists of four layers:
 * Data link control (DLC), including routing, segmentation and re-assembly of messages.
 * Convergence layer (CVG), including message flow control, multiplexing and transmission service level control.
 
-For more details about the DECT NR+ protocol stack, refer to the `nRF9161 DECT NR+ product specification`_ page.
+For more details about the DECT NR+ protocol stack, refer to the `nRF9151 DECT NR+ product specification`_ or the `nRF9161 DECT NR+ product specification`_, depending on the SiP you are using.
 
 The DECT NR+ PHY firmware implements only the physical layer of the protocol stack.
 
