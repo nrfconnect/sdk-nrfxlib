@@ -41,6 +41,7 @@
 .. _`coex interface of nRF9160`: https://docs.nordicsemi.com/bundle/ps_nrf9160/page/ip/radio_lte/doc/magpio_if.html
 
 .. _`nRF9161 DECT NR+ product specification`:  https://docs.nordicsemi.com/bundle/ps_nrf9161/page/dect.html
+.. _`nRF9151 DECT NR+ product specification`:  https://docs.nordicsemi.com/bundle/ps_nrf9151/page/dect.html
 
 .. _`nRF9160 modem firmware zip file`: https://www.nordicsemi.com/Products/Low-power-cellular-IoT/nRF9160/Download#0B34B59935AF4AFCB7AB93E9646C1F53
 .. _`nRF91x1 LTE firmware zip file`: https://www.nordicsemi.com/Products/nRF9161/Download#636701B052474E5A8EB903C56678D26E
