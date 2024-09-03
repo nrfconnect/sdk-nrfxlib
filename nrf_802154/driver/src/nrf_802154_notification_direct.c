@@ -42,6 +42,8 @@
 
 #include "nrf_802154_notification.h"
 
+#if NRF_802154_NOTIFICATION_IMPL == NRF_802154_NOTIFICATION_IMPL_DIRECT
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -161,3 +163,5 @@ void nrf_802154_notify_cca_failed(nrf_802154_cca_error_t error)
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
+
+#endif /* NRF_802154_NOTIFICATION_IMPL == NRF_802154_NOTIFICATION_IMPL_DIRECT */

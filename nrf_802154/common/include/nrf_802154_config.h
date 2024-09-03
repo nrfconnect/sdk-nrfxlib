@@ -539,6 +539,62 @@ extern "C" {
 #endif
 
 /**
+ * @def NRF_802154_NOTIFICATION_IMPL_DIRECT
+ *
+ * Use nrf_802154_notification_direct.c implementation.
+ * See @ref NRF_802154_NOTIFICATION_IMPL.
+ */
+#define NRF_802154_NOTIFICATION_IMPL_DIRECT 0
+
+/**
+ * @def NRF_802154_NOTIFICATION_IMPL_SWI
+ *
+ * Use nrf_802154_notification_swi.c implementation.
+ * See @ref NRF_802154_NOTIFICATION_IMPL.
+ */
+#define NRF_802154_NOTIFICATION_IMPL_SWI  1
+
+/**
+ * @def NRF_802154_NOTIFICATION_IMPL
+ *
+ * Selects implementation of internal "notification" module.
+ * Possible values:
+ *   @ref NRF_802154_NOTIFICATION_IMPL_DIRECT,
+ *   @ref NRF_802154_NOTIFICATION_IMPL_SWI
+ */
+#ifndef NRF_802154_NOTIFICATION_IMPL
+#define NRF_802154_NOTIFICATION_IMPL NRF_802154_NOTIFICATION_IMPL_SWI
+#endif
+
+/**
+ * @def NRF_802154_REQUEST_IMPL_DIRECT
+ *
+ * Use nrf_802154_request_direct.c implementation.
+ * See @ref NRF_802154_NOTIFICATION_IMPL.
+ */
+#define NRF_802154_REQUEST_IMPL_DIRECT 0
+
+/**
+ * @def NRF_802154_REQUEST_IMPL_DIRECT
+ *
+ * Use nrf_802154_request_swi.c implementation.
+ * See @ref NRF_802154_REQUEST_IMPL.
+ */
+#define NRF_802154_REQUEST_IMPL_SWI    1
+
+/**
+ * @def NRF_802154_REQUEST_IMPL
+ *
+ * Selects implementation of internal "request" module.
+ * Possible values:
+ *   @ref NRF_802154_REQUEST_IMPL_DIRECT,
+ *   @ref NRF_802154_REQUEST_IMPL_SWI
+ */
+#ifndef NRF_802154_REQUEST_IMPL
+#define NRF_802154_REQUEST_IMPL NRF_802154_REQUEST_IMPL_SWI
+#endif
+
+/**
  *@}
  **/
 

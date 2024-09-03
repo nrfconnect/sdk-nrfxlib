@@ -42,6 +42,8 @@
 
 #include "nrf_802154_notification.h"
 
+#if NRF_802154_NOTIFICATION_IMPL == NRF_802154_NOTIFICATION_IMPL_SWI
+
 #include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -54,6 +56,7 @@
 #include "nrf_802154_queue.h"
 #include "nrf_802154_swi.h"
 #include "nrf_802154_tx_work_buffer.h"
+#include "nrf_802154_peripherals.h"
 #include "nrf_802154_utils.h"
 #include "hal/nrf_egu.h"
 #include "rsch/nrf_802154_rsch.h"
@@ -111,9 +114,12 @@
  */
 #define NTF_QUEUE_SIZE             (NTF_PRIMARY_POOL_SIZE + NTF_SECONDARY_POOL_SIZE + 1)
 
-#define NTF_INT                    NRF_EGU_INT_TRIGGERED0   ///< Label of notification interrupt.
-#define NTF_TASK                   NRF_EGU_TASK_TRIGGER0    ///< Label of notification task.
-#define NTF_EVENT                  NRF_EGU_EVENT_TRIGGERED0 ///< Label of notification event.
+#define NTF_INT                    NRFX_CONCAT_2(NRF_EGU_INT_TRIGGERED, \
+                                                 NRF_802154_EGU_NOTIFICATION_CHANNEL_NO)
+#define NTF_TASK                   NRFX_CONCAT_2(NRF_EGU_TASK_TRIGGER, \
+                                                 NRF_802154_EGU_NOTIFICATION_CHANNEL_NO)
+#define NTF_EVENT                  NRFX_CONCAT_2(NRF_EGU_EVENT_TRIGGERED, \
+                                                 NRF_802154_EGU_NOTIFICATION_CHANNEL_NO)
 
 /// Types of notifications in notification queue.
 typedef enum
@@ -800,3 +806,5 @@ void nrf_802154_notification_swi_module_reset(void)
 }
 
 #endif // defined(TEST)
+
+#endif /* NRF_802154_NOTIFICATION_IMPL == NRF_802154_NOTIFICATION_IMPL_SWI */

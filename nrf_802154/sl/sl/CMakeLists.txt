@@ -22,4 +22,6 @@ target_link_libraries(nrf-802154-sl
     ${NRF_802154_SL_LIB_PATH}/libnrf-802154-sl.a
 )
 
+target_include_directories(nrf-802154-driver-interface INTERFACE include)
+
 endif ()

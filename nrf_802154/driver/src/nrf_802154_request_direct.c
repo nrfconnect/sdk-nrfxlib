@@ -40,6 +40,8 @@
 
 #include "nrf_802154_request.h"
 
+#if NRF_802154_REQUEST_IMPL == NRF_802154_REQUEST_IMPL_DIRECT
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -198,3 +200,5 @@ bool nrf_802154_request_csma_ca_start(uint8_t                                   
 {
     REQUEST_FUNCTION_PARMS(nrf_802154_csma_ca_start, p_data, p_metadata);
 }
+
+#endif /* NRF_802154_REQUEST_IMPL == NRF_802154_REQUEST_IMPL_DIRECT */

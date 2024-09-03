@@ -52,8 +52,8 @@
 #include "hal/nrf_radio.h"
 #include "hal/nrf_timer.h"
 
-#define EGU_EVENT                  NRF_EGU_EVENT_TRIGGERED15
-#define EGU_TASK                   NRF_EGU_TASK_TRIGGER15
+#define EGU_EVENT                  NRF_802154_EGU_RAMP_UP_EVENT
+#define EGU_TASK                   NRF_802154_EGU_RAMP_UP_TASK
 
 #define PPI_CHGRP_RAMP_UP          NRF_802154_PPI_CORE_GROUP                  ///< PPI group used to disable self-disabling PPIs
 #define PPI_CHGRP_RAMP_UP_DIS_TASK NRF_PPI_TASK_CHG0_DIS                      ///< PPI task used to disable self-disabling PPIs
