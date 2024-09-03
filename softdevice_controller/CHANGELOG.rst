@@ -70,6 +70,11 @@ Bug fixes
 * Fixed an issue where calling the :c:func:`sdc_hci_cmd_vs_zephyr_write_tx_power` function without the LE Power Control feature enabled could cause the controller to de-reference a NULL pointer. (DRGN-22930)
 * Fixed an issue where the Central failed to receive the last packet in an isochronous event.
   This could only happen if the Connected Isochronous Stream Creation procedure was initiated by the host before the Encryption Start procedure completed. (DRGN-22879)
+* Fixed an assert that could happen when using the coexistence interface. (DRGN-23002)
+  This could happen when any of the following controller activities were ongoing:
+    * Isochronous Broadcaster
+    * Connected Isochronous channel in the peripheral role
+    * Periodic Sync with Responses
 
 nRF Connect SDK v2.7.0
 **********************
