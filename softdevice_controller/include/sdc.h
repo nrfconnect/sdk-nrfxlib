@@ -199,6 +199,12 @@ extern "C" {
  */
 #define SDC_MEM_SUBRATING(num_links) (11 + (num_links) * 19)
 
+/** @brief Maximum memory required when supporting periodic advertising sync transfer.
+ *
+ * @param[in] num_links Total number of peripheral and central links supported.
+ */
+#define SDC_MEM_SYNC_TRANSFER(num_links) (0 + (num_links) * 0)
+
 /** Memory required for Quality of Service (QoS) channel survey module. */
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
