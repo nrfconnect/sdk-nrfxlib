@@ -83,20 +83,6 @@ extern "C" {
     NRFX_CONCAT_3(EGU, NRF_802154_EGU_INSTANCE_NO, _IRQHandler)
 
 /**
- * @def NRF_802154_EGU_RAMP_UP_EVENT
- *
- * The EGU event used by the driver to trigger radio ramp-up.
- */
-#define NRF_802154_EGU_RAMP_UP_EVENT NRF_EGU_EVENT_TRIGGERED15
-
-/**
- * @def NRF_802154_EGU_RAMP_UP_TASK
- *
- * The EGU task used by the driver to trigger radio ramp-up.
- */
-#define NRF_802154_EGU_RAMP_UP_TASK  NRF_EGU_TASK_TRIGGER15
-
-/**
  * @def NRF_802154_EGU_USED_MASK
  *
  * Bit mask of instances of SWI/EGU peripherals used by the 802.15.4 driver.
@@ -255,19 +241,6 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_DPPI_TIMESTAMPS_USED_MASK
- *
- * Helper bit mask of DPPI channels used by the 802.15.4 driver for timestamping.
- */
-#ifdef NRF_802154_FRAME_TIMESTAMP_ENABLED
-#define NRF_802154_DPPI_TIMESTAMPS_USED_MASK                \
-    ((1UL << NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE) | \
-     (1UL << NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE))
-#else // NRF_802154_FRAME_TIMESTAMP_ENABLED
-#define NRF_802154_DPPI_TIMESTAMPS_USED_MASK 0U
-#endif  // NRF_802154_FRAME_TIMESTAMP_ENABLED
-
-/**
  * @def NRF_802154_DPPI_CHANNELS_USED_MASK
  *
  * Bit mask of DPPI channels used by the 802.15.4 driver.
@@ -286,7 +259,7 @@ extern "C" {
         (1UL << NRF_802154_DPPI_RADIO_CCABUSY) |               \
         (1UL << NRF_802154_DPPI_RADIO_HW_TRIGGER) |            \
         NRF_802154_DPPI_RADIO_TEST_MODE_USED_MASK |            \
-        NRF_802154_DPPI_TIMESTAMPS_USED_MASK)
+        NRF_802154_SL_PPI_CHANNELS_USED_MASK)
 #endif // NRF_802154_DPPI_CHANNELS_USED_MASK
 
 /**

@@ -40,6 +40,8 @@
 
 #include "nrf_802154_request.h"
 
+#if NRF_802154_REQUEST_IMPL == NRF_802154_REQUEST_IMPL_SWI
+
 #include "nrf_802154_assert.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -47,6 +49,7 @@
 #include "nrf_802154_config.h"
 #include "nrf_802154_core.h"
 #include "nrf_802154_critical_section.h"
+#include "nrf_802154_peripherals.h"
 #include "nrf_802154_queue.h"
 #include "nrf_802154_rx_buffer.h"
 #include "nrf_802154_swi.h"
@@ -65,9 +68,9 @@
  */
 #define REQ_QUEUE_SIZE 2
 
-#define REQ_INT        NRF_EGU_INT_TRIGGERED2   ///< Label of request interrupt.
-#define REQ_TASK       NRF_EGU_TASK_TRIGGER2    ///< Label of request task.
-#define REQ_EVENT      NRF_EGU_EVENT_TRIGGERED2 ///< Label of request event.
+#define REQ_INT        NRFX_CONCAT_2(NRF_EGU_INT_TRIGGERED, NRF_802154_EGU_REQUEST_CHANNEL_NO)
+#define REQ_TASK       NRFX_CONCAT_2(NRF_EGU_TASK_TRIGGER, NRF_802154_EGU_REQUEST_CHANNEL_NO)
+#define REQ_EVENT      NRFX_CONCAT_2(NRF_EGU_EVENT_TRIGGERED, NRF_802154_EGU_REQUEST_CHANNEL_NO)
 
 /// Type of requests in request queue.
 typedef enum
@@ -963,3 +966,5 @@ void nrf_802154_request_swi_irq_handler(void)
         irq_handler_req_event();
     }
 }
+
+#endif /* NRF_802154_REQUEST_IMPL == NRF_802154_REQUEST_IMPL_SWI */

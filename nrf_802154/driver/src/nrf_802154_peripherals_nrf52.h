@@ -44,6 +44,7 @@
 #include "nrf_802154_config.h"
 #include "nrf_802154_debug.h"
 #include "hal/nrf_ppi.h"
+#include "nrf_802154_sl_periphs.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,7 +59,7 @@ extern "C" {
  */
 #ifndef NRF_802154_EGU_INSTANCE_NO
 
-#define NRF_802154_EGU_INSTANCE_NO 3
+#define NRF_802154_EGU_INSTANCE_NO 0
 
 #endif // NRF_802154_EGU_INSTANCE_NO
 
@@ -221,49 +222,6 @@ extern "C" {
 #define NRF_802154_DISABLE_BCC_MATCHING_PPI_CHANNELS_USED_MASK \
     (1 << NRF_802154_PPI_RADIO_SYNC_TO_EGU_SYNC)
 
-#ifdef NRF_802154_FRAME_TIMESTAMP_ENABLED
-
-/**
- * @def NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE
- *
- * The PPI channel that connects LP timer's COMPARE event to HP timer's TIMER_CAPTURE task.
- *
- * @note This option is used only when the timestamping feature is enabled
- *       (see @ref NRF_802154_FRAME_TIMESTAMP_ENABLED).
- *
- */
-#ifndef NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE
-#define NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE NRF_PPI_CHANNEL13
-#endif
-
-/**
- * @def NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE
- *
- * The PPI channel that connects provided event to HP timer's TIMER_CAPTURE task.
- *
- * @note This option is used only when the timestamping feature is enabled
- *       (see @ref NRF_802154_FRAME_TIMESTAMP_ENABLED).
- *
- */
-#ifndef NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE
-#define NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE NRF_PPI_CHANNEL14
-#endif
-
-/**
- * @def NRF_802154_TIMESTAMP_PPI_CHANNELS_USED_MASK
- *
- * Helper bit mask of PPI channels used by the 802.15.4 driver for timestamping.
- */
-#define NRF_802154_TIMESTAMP_PPI_CHANNELS_USED_MASK       \
-    ((1 << NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE) | \
-     (1 << NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE))
-
-#else // NRF_802154_FRAME_TIMESTAMP_ENABLED
-
-#define NRF_802154_TIMESTAMP_PPI_CHANNELS_USED_MASK 0
-
-#endif // NRF_802154_FRAME_TIMESTAMP_ENABLED
-
 /**
  * @def NRF_802154_PPI_CORE_GROUP
  *
@@ -310,7 +268,7 @@ extern "C" {
                                            (1 << NRF_802154_PPI_TIMER_COMPARE_TO_RADIO_TXEN) |      \
                                            (1 << NRF_802154_PPI_RADIO_CCABUSY_TO_RADIO_CCASTART) |  \
                                            NRF_802154_DISABLE_BCC_MATCHING_PPI_CHANNELS_USED_MASK | \
-                                           NRF_802154_TIMESTAMP_PPI_CHANNELS_USED_MASK |            \
+                                           NRF_802154_SL_PPI_CHANNELS_USED_MASK |                   \
                                            NRF_802154_DEBUG_PPI_CHANNELS_USED_MASK)
 #endif // NRF_802154_PPI_CHANNELS_USED_MASK
 

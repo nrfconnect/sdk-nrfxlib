@@ -1,39 +1,11 @@
 /*
- * Copyright (c) 2020, Nordic Semiconductor ASA
- * All rights reserved.
+ * Copyright (c) 2020 Nordic Semiconductor ASA
  *
- * SPDX-License-Identifier: BSD-3-Clause
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- * 3. Neither the name of Nordic Semiconductor ASA nor the names of its
- *    contributors may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY, AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
+ * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
 /**
- * @file Module that defines the 802.15.4 driver peripheral usage.
+ * @file Module that defines the peripherals used by the nRF 802.15.4 SL.
  *
  */
 
@@ -63,21 +35,33 @@
 #endif
 #endif
 
+#if defined(NRF53_SERIES)
 /**
  * @def NRF_802154_EGU_INSTANCE
  *
- * The EGU instance used by the driver to synchronize PPIs and for requests and notifications if
- * SWI is in use.
+ * The EGU instance used by the nRF 802.15.4 SL.
  *
- * @note This option is used by the core module regardless of the driver configuration.
+ * @note This option is used on nRF53 series SoCs only.
  *
  */
-#define NRF_802154_EGU_INSTANCE          NRFX_CONCAT_2(NRF_EGU, NRF_802154_EGU_INSTANCE_NO)
+#define NRF_802154_EGU_INSTANCE                        NRFX_CONCAT_2(NRF_EGU, \
+                                                                     NRF_802154_EGU_INSTANCE_NO)
 
 /**
  * @def NRF_802154_EGU_TIMESTAMP_CHANNEL
+ *
+ * The EGU channel number of the @ref NRF_802154_EGU_INSTANCE instance used by the time stamping feature.
+ *
+ * @note This option is used on nRF53 series SoCs only.
+ *
  */
-#define NRF_802154_EGU_TIMESTAMP_CHANNEL 4
+#define NRF_802154_EGU_TIMESTAMP_CHANNEL               4
+
+#define NRF_802154_SL_EGU_TIMESTAMP_USED_CHANNELS_MASK (1U << NRF_802154_EGU_TIMESTAMP_CHANNEL)
+
+#else
+#define NRF_802154_SL_EGU_TIMESTAMP_USED_CHANNELS_MASK 0U
+#endif
 
 /**
  * @def NRF_802154_RTC_INSTANCE_NO
@@ -178,11 +162,11 @@
 #endif
 
 /**
- * @def NRF_802154_TIMESTAMP_PPI_CHANNELS_USED_MASK
+ * @def NRF_802154_SL_PPI_CHANNELS_USED_MASK
  *
- * Helper bit mask of PPI channels used by the 802.15.4 driver for timestamping.
+ * Mask of fixed (D)PPI channels used by the nRF 802.15.4 SL.
  */
-#define NRF_802154_TIMESTAMP_PPI_CHANNELS_USED_MASK       \
+#define NRF_802154_SL_PPI_CHANNELS_USED_MASK              \
     ((1 << NRF_802154_PPI_RTC_COMPARE_TO_TIMER_CAPTURE) | \
      (1 << NRF_802154_PPI_TIMESTAMP_EVENT_TO_TIMER_CAPTURE))
 
@@ -202,6 +186,22 @@
 #define NRF_802154_PPI_TIMESTAMP_GROUP NRF_PPI_CHANNEL_GROUP2
 #endif
 #endif
+
+/**
+ * @def NRF_802154_SL_PPI_GROUPS_USED_MASK
+ *
+ * Mask of fixed (D)PPI groups used by the nRF 802.15.4 SL.
+ */
+#define NRF_802154_SL_PPI_GROUPS_USED_MASK \
+    (1U << NRF_802154_PPI_TIMESTAMP_GROUP)
+
+/**
+ * @def NRF_802154_SL_EGU_USED_CHANNELS_MASK
+ *
+ * Mask of fixed EGU channels used by the nRF 802.15.4 SL.
+ */
+#define NRF_802154_SL_EGU_USED_CHANNELS_MASK \
+    NRF_802154_SL_EGU_TIMESTAMP_USED_CHANNELS_MASK
 
 #if defined(NRF54L_SERIES)
 /**

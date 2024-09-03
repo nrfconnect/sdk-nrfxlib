@@ -53,9 +53,13 @@ target_sources(nrf-802154-driver
     src/nrf_802154_critical_section.c
     src/nrf_802154_debug.c
     src/nrf_802154_encrypt.c
+    src/nrf_802154_notification_direct.c
+    src/nrf_802154_notification_swi.c
     src/nrf_802154_pib.c
     src/nrf_802154_peripherals_alloc.c
     src/nrf_802154_queue.c
+    src/nrf_802154_request_direct.c
+    src/nrf_802154_request_swi.c
     src/nrf_802154_rssi.c
     src/nrf_802154_rx_buffer.c
     src/nrf_802154_stats.c
@@ -81,20 +85,6 @@ target_sources(nrf-802154-driver
 )
 
 if (SL_OPENSOURCE)
-  target_sources(nrf-802154-driver
-    PRIVATE
-      src/nrf_802154_notification_direct.c
-      src/nrf_802154_request_direct.c
-  )
-else ()
-  target_sources(nrf-802154-driver
-    PRIVATE
-      src/nrf_802154_notification_swi.c
-      src/nrf_802154_request_swi.c
-  )
-endif ()
-
-if (SL_OPENSOURCE)
   target_compile_definitions(nrf-802154-driver-interface
     INTERFACE
       # Disable Frame Timestamps
@@ -105,6 +95,10 @@ if (SL_OPENSOURCE)
       NRF_802154_IFS_ENABLED=0
       # Disable CSMA-CA
       NRF_802154_CSMA_CA_ENABLED=0
+      # Use nrf_802154_notification_direct.c implementation for "notification" module
+      NRF_802154_NOTIFICATION_IMPL=NRF_802154_NOTIFICATION_IMPL_DIRECT
+      # Use nrf_802154_request_direct.c implementation for "request" module
+      NRF_802154_REQUEST_IMPL=NRF_802154_REQUEST_IMPL_DIRECT
   )
 endif()
 
