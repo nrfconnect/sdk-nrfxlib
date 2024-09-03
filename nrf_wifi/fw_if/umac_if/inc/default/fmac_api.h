@@ -983,6 +983,22 @@ enum nrf_wifi_status nrf_wifi_fmac_set_ps_wakeup_mode(void *fmac_dev_ctx,
 							unsigned char if_idx,
 							bool ps_wakeup_mode);
 
+/**
+ * @brief Configure power save exit strategy.
+ * @param fmac_dev_ctx Pointer to the UMAC IF context for a RPU WLAN device.
+ * @param if_idx Index of the interface on which power management is to be set.
+ * @param ps_exit_strategy PS exit strategy to be configured in RPU.
+ *
+ * This function is used to send a command to RPU
+ * to configure PS exit strategy in RPU.
+ *
+ * @return Command execution status
+ */
+enum nrf_wifi_status nrf_wifi_fmac_set_ps_exit_strategy(
+						void *fmac_dev_ctx,
+						unsigned char if_idx,
+						unsigned int ps_exit_strategy);
+
 #ifdef CONFIG_NRF700X_RAW_DATA_TX
 /**
  * @brief Transmit a raw unaltered frame to the RPU.
