@@ -129,6 +129,13 @@ config OPENTHREAD_BUILD_OUTPUT_STRIPPED
 	help
 	  Build a stripped library versions of OpenThread in the build directory.
 
+config OPENTHREAD_NRFXLIB_RELEASE_TAG
+	string "Release tag for OpenThread libraries"
+	default "Not specified"
+	help
+	  The release tag will be added to the openthread_lib_configuration.txt file
+	  within the OpenThread library directory. 
+
 endmenu # "OpenThread"
 
 endif
