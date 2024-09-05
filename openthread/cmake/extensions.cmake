@@ -56,7 +56,7 @@ endmacro()
 
 # Store the configuration of the compiled OpenThread libraries
 # and set source and destination paths.
-function(openthread_libs_configuration_write CONFIG_FILE)
+function(openthread_libs_configuration_write CONFIG_FILE NRFXLIB_RELEASE_TAG)
   # Store all OT related variables
   get_cmake_property(_variableNames VARIABLES)
   foreach (_variableName ${_variableNames})
@@ -77,6 +77,8 @@ function(openthread_libs_configuration_write CONFIG_FILE)
 
     get_git_decribe(${ZEPHYR_OPENTHREAD_MODULE_DIR})
     list(INSERT OPENTHREAD_SETTINGS 0 "OpenThread_commit=${git_describe}")
+
+    list(INSERT OPENTHREAD_SETTINGS 0 "NRFXLIB_RELEASE_TAG=${NRFXLIB_RELEASE_TAG}\n")
   endif()
 
   # Store compiler and Zephyr SDK version

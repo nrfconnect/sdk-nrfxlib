@@ -14,7 +14,7 @@ if(CONFIG_OPENTHREAD_SOURCES)
 
   set(OPENTHREAD_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/openthread_lib_configuration.txt")
 
-  openthread_libs_configuration_write(${OPENTHREAD_CONFIG_FILE})
+  openthread_libs_configuration_write(${OPENTHREAD_CONFIG_FILE} ${CONFIG_OPENTHREAD_NRFXLIB_RELEASE_TAG})
 
   openthread_calculate_lib_path("v${CONFIG_OPENTHREAD_THREAD_VERSION}" OPENTHREAD_DST_DIR)
 
