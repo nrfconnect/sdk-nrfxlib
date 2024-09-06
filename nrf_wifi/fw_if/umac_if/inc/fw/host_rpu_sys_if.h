@@ -832,7 +832,7 @@ enum op_band {
  * @brief This enum defines keep alive state
  *
  */
-enum keep_alive_status {
+enum nrf_wifi_keep_alive_status {
 	/** Keep alive feature disabled */
 	KEEP_ALIVE_DISABLED = 0,
 	/** Keep alive feature enabled */
