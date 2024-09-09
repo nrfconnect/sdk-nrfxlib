@@ -46,7 +46,7 @@ extern const char *nrf_fuel_gauge_version;
 extern const char *nrf_fuel_gauge_build_date;
 
 /**
- * @brief Battery model parameters.
+ * @brief Secondary cell (rechargeable) battery model parameters.
  *
  * @details Parameter details purposefully not documented.
  */
@@ -84,13 +84,22 @@ struct nrf_fuel_gauge_state_info {
 /**
  * @brief Optional static configuration parameters.
  *
- * @details Parameter details purposefully not documented.
+ * @details Some parameter details purposefully not documented.
  */
 struct nrf_fuel_gauge_config_parameters {
-	float tau;
+	float tau1;
+	float tau2;
 	float neta1;
 	float neta2;
 	float neta3;
+	float beta1;
+	float beta2;
+	/**@brief Minimum duration of battery charge/discharge before TTE becomes available [s] */
+	float tte_min_time;
+	/**@brief Reset threshold for TTE calculation. If short-term state-of-charge gradient differs
+	 * from the long-term state-of-charge by this factor or more, the TTE state is reset.
+	 */
+	float tte_reset_threshold;
 };
 
 /**
@@ -103,6 +112,7 @@ struct nrf_fuel_gauge_runtime_parameters {
 	float b;
 	float c;
 	float d;
+	bool discard_positive_deltaz;
 };
 
 /**
@@ -115,14 +125,24 @@ struct nrf_fuel_gauge_init_parameters {
 	float i0;
 	/** Initial temperature in centigrades [C]. */
 	float t0;
-	/** Battery model */
+	/** Pointer to static battery model. The model is not copied and must be kept valid. */
 	const struct battery_model *model;
 	/** Optional configuration parameters. Set to NULL to use default values. */
 	const struct nrf_fuel_gauge_config_parameters *opt_params;
 };
 
 /**
+ * @brief Initialize optional configuration parameters to default values.
+ *
+ * @param[out] opt_params Pointer to the parameter structure.
+ */
+void nrf_fuel_gauge_opt_params_default_get(struct nrf_fuel_gauge_config_parameters *opt_params);
+
+/**
  * @brief Initialize the nRF Fuel Gauge library.
+ *
+ * @note The battery model referenced in @ref parameters must be kept valid as long as the library
+ *       is in use.
  *
  * @param[in] parameters Pointer to the parameter structure.
  * @param[out] v0 Adjusted battery voltage (optional, for logging purposes).
@@ -139,12 +159,13 @@ int nrf_fuel_gauge_init(const struct nrf_fuel_gauge_init_parameters *parameters,
  * @param i Measured battery current [A].
  * @param T Measured battery temperature [C].
  * @param t_delta Time delta since previous processed measurement [s].
+ * @param vbus_present True if vbus voltage is present, for devices that supports this.
  * @param state Pointer to state info struct (optional, set to null to ignore).
  *
  * @retval Predicted state-of-charge [%].
  */
-float nrf_fuel_gauge_process(
-		float v, float i, float T, float t_delta, struct nrf_fuel_gauge_state_info *state);
+float nrf_fuel_gauge_process(float v, float i, float T, float t_delta, bool vbus_present,
+			     struct nrf_fuel_gauge_state_info *state);
 
 /**
  * @brief Get predicted "time-to-empty" discharge duration.
@@ -198,6 +219,15 @@ void nrf_fuel_gauge_idle_set(float v, float T, float i_avg);
  * @param params New parameter values.
  */
 void nrf_fuel_gauge_param_adjust(const struct nrf_fuel_gauge_runtime_parameters *params);
+
+/**
+ * @brief Update optional parameters.
+ *
+ * @details Parameter details purposefully not documented.
+ *
+ * @param opt_params New parameter values.
+ */
+void nrf_fuel_gauge_opt_params_adjust(const struct nrf_fuel_gauge_config_parameters *opt_params);
 
 #ifdef __cplusplus
 }
