@@ -7,5 +7,3 @@ The nRF70 Wi-Fi firmware interface (FW IF) used by the nRF70 Wi-Fi driver to com
 These header files are shared between the nRF70 Wi-Fi driver and the nRF70 Wi-Fi firmware.
 
 .. doxygengroup:: nrf_wifi_fw_if
-   :project: nrfxlib
-   :members:

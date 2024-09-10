@@ -71,5 +71,3 @@ API documentation
 *****************
 
 .. doxygengroup:: nfc_t4t_lib
-   :project: nrfxlib
-   :members:

@@ -8,5 +8,3 @@ The common API is used for both normal operation and Radio Test mode.
 
 
 .. doxygengroup:: nrf_wifi_api_common
-   :project: nrfxlib
-   :members:

@@ -11,5 +11,3 @@ Distance Measurement interface
 ******************************
 
 .. doxygengroup:: nrf_dm
-   :project: nrfxlib
-   :members:
