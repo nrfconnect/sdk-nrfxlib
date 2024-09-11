@@ -76,7 +76,8 @@ The following table summarizes the priorities.
    | Third priority              | * All |BLE| roles in states other than above run with this priority                               |
    |                             | * MPSL Timeslot with high priority                                                                |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
-   | Fourth priority             | * Scanner when the scan window is equal to the scan interval                                      |
+   | Fourth priority             | * Scanner when the scan window is equal to the scan interval and the scanner has been able to     |
+   |                             |   run a timing-event at least once in the last couple of scan intervals.                          |
    |                             | * Quality of Service channel survey                                                               |
    +-----------------------------+---------------------------------------------------------------------------------------------------+
    | Fifth priority              | * 802.15.4 radio driver                                                                           |
@@ -360,12 +361,21 @@ Here :math:`\mathsf{C1}` can utilize the free time left by a previously disconne
 
    Multilink scheduling and Connection Event Length Extension
 
-Scanner timing
-**************
+Scanner and Initiator timing
+************************
 
 Scanning is a periodic activity where the |controller| listens for packets from Advertisers.
-When the |controller| starts scanning, it will listen for packets on the primary advertising channels.
-If the |controller| is configured to accept extended advertising packets, and it receives a packet with a pointer to a secondary advertising channel, it will continue to scan on this channel to receive the auxiliary packet.
+Initiating is a periodic activity where the |controller| tries to connect to an Advertiser by first listening for packets from an Advertiser.
+When the |controller| starts scanning or initiating, it will listen for packets on the primary advertising channels.
+If the |controller| is configured to accept extended advertising packets, and it receives a packet with a pointer to a secondary advertising channel, it will continue to listen on this secondary advertising channel to receive the auxiliary packet.
+
+The `Primary channel Scanner timing`_ and `Secondary channel Scanner timing`_ sections describe how scanner and initiator timing-events are scheduled.
+The sections only refer to scanner timing-events, but initiator timing-events are scheduled in the same way.
+
+  .. note::
+     The priority of scanner and initiator timing-events are different.
+     See :ref:`scheduling_priorities_table` for details.
+
 
 Primary channel Scanner timing
 ==============================
@@ -466,6 +476,25 @@ Therefore, the Scanner cannot decide when the secondary scanning timing-events w
 
    Scanner timing - secondary scan timing-events will interleave with connections
 
+
+Concurrent scanner and initiator timing
+=======================================
+
+When the :kconfig:option:`CONFIG_BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` Kconfig option is enabled, the application can run the scanner and initiator in parallel.
+The scanner and initiator timing-events will be combined or scheduled separately depending on the parameters provided when starting the scanner and initiator.
+When the timing-events are combined, each received packet is received and processed both by the scanner and initiator.
+When the timing-events are scheduled separately, only one of the roles is processing an incoming packet.
+
+The timing-events are combined only if all the following conditions are met:
+
+ * The scanner is configured to run with a scan duration of 0 (without timeout).
+ * The scanner and initiator are configured to scan on the same primary PHYs.
+ * The scanner and initiator are configured to use the same own address type.
+ * The scanner and initiator have the same scan interval configuration.
+ * The scanner and initiator have the same scan window configuration.
+
+In most cases it is more efficient to have the timing-events combined, because then incoming packets will be processed by both roles.
+This means that the application should use parameters that meet the conditions outlined above, unless the specific use case dictates otherwise.
 
 Timing when synchronized to a periodic advertiser
 *************************************************
