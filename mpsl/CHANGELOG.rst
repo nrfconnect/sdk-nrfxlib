@@ -14,6 +14,8 @@ Changes
 =======
 
 * Removed the :file:`mpsl_coex.h` API. (DRGN-22567)
+* The timeslot implementation now starts ``TIMER0`` a couple microseconds later.
+  It now starts when the ``MPSL_TIMESLOT_SIGNAL_START`` callback is given.
 
 Added
 =====
