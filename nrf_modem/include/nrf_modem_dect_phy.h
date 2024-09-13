@@ -314,7 +314,7 @@ enum nrf_modem_dect_phy_rx_mode {
 	 */
 	NRF_MODEM_DECT_PHY_RX_MODE_CONTINUOUS,
 	/**
-	 * @brief Semicontinous reception.
+	 * @brief Semi-continuous reception.
 	 *
 	 * Similar to continuous reception, but will stop after receiving a unicast PDC.
 	 */
@@ -583,7 +583,7 @@ struct nrf_modem_dect_phy_rssi_meas {
 	/**
 	 * @brief RSSI measurements, in dBm.
 	 *
-	 * If a symbol is measured, its measurement is in the interval [-1, -140].
+	 * If a symbol is measured, its measurement is in the interval [-140, -1].
 	 * If the measurement is saturated, the measured signal strength is reported
 	 * as a positive integer. If a symbol is not measured, its value is reported
 	 * as @ref NRF_MODEM_DECT_PHY_RSSI_NOT_MEASURED.
@@ -620,7 +620,7 @@ struct nrf_modem_dect_phy_rx_params {
 	 */
 	enum nrf_modem_dect_phy_rx_mode mode;
 	/**
-	 * @brief RSSI measurement reporting interval.
+	 * @brief RSSI measurement reporting interval, in slots.
 	 */
 	enum nrf_modem_dect_phy_rssi_interval rssi_interval;
 	/**
@@ -817,7 +817,7 @@ struct nrf_modem_dect_phy_rssi_params {
 	 */
 	uint32_t duration;
 	/**
-	 * @brief RSSI measurements reporting interval, in subslots.
+	 * @brief RSSI measurements reporting interval, in slots.
 	 */
 	enum nrf_modem_dect_phy_rssi_interval reporting_interval;
 };
@@ -1028,6 +1028,20 @@ struct nrf_modem_dect_phy_callbacks {
 	 */
 	void (*capability_get)(const uint64_t *time, enum nrf_modem_dect_phy_err err,
 			       const struct nrf_modem_dect_phy_capability *capability);
+
+	/**
+	 * @brief Callback for @ref nrf_modem_dect_phy_stf_cover_seq_control.
+	 *
+	 * The @p err parameter indicates the result of the operation.
+	 * It can be one of the following values:
+	 *
+	 * - @ref NRF_MODEM_DECT_PHY_SUCCESS
+	 * - @ref NRF_MODEM_DECT_PHY_ERR_NOT_ALLOWED
+	 *
+	 * @param[in] time Modem time, in modem time units.
+	 * @param err Operation result.
+	 */
+	void (*stf_cover_seq_control)(const uint64_t *time, enum nrf_modem_dect_phy_err err);
 
 	/**
 	 * @brief Callback for @ref nrf_modem_dect_phy_deinit.
@@ -1287,6 +1301,28 @@ int nrf_modem_dect_phy_link_config(const struct nrf_modem_dect_phy_link_config_p
  * @retval -NRF_ENOMEM Not enough shared memory for this request.
  */
 int nrf_modem_dect_phy_time_get(void);
+
+/**
+ * @brief STF cover sequence control.
+ *
+ * Enable or disable STF cover sequence.
+ *
+ * @note
+ * This API is intended for certification purposes only.
+ * It should not be used for normal operation.
+ *
+ * This operation is asynchronous. The result of the operation is sent to the
+ * @ref nrf_modem_dect_phy_callbacks.stf_cover_seq_control callback.
+ *
+ * @param rx_enable Enable STF cover sequence for reception.
+ * @param tx_enable Enable STF cover sequence for transmission.
+ *
+ * @retval 0           Request was sent to modem.
+ * @retval -NRF_EPERM  The Modem library is not initialized.
+ * @retval -NRF_EFAULT Callback configuration is invalid.
+ * @retval -NRF_ENOMEM Not enough shared memory for this request.
+ */
+int nrf_modem_dect_phy_stf_cover_seq_control(bool rx_enable, bool tx_enable);
 
 #ifdef __cplusplus
 }
