@@ -16,9 +16,9 @@ Added
 =====
 
 * Support for the LE Set Path Loss Reporting Parameters and LE Set Path Loss Reporting Enable HCI commands. (DRGN-17376)
-* Support for generating connection anchor update event reports using the VS Conn Anchor Point Update Report Enable command. (DRGN-22662)
+* Support for generating connection anchor update event reports using the VS Conn Anchor Point Update Report Enable command.
   When enabled, one report is generated when the anchor point of a connection is updated.
-  This information can be used to synchronize two applications running on a central and a peripheral device.
+  This information can be used to synchronize two applications running on a central and a peripheral device. (DRGN-22662)
 * Vendor-specific command for triggering a peripheral task at the start of a radio event.
   See :c:func:`sdc_hci_cmd_vs_set_event_start_task`. (DRGN-20737)
 * Support for the LE Set Default Subrate and LE Subrate Request HCI commands. (DRGN-19745)
@@ -26,6 +26,7 @@ Added
 Changes
 =======
 
+* The ``VersNr`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x0E`` to indicate compatibility with Bluetooth Core Specification v6.0 (DRGN-23211).
 * The ``sdc_coex_adv_mode_configure`` API has been deprecated as it is not applicable to any supported coexistence interfaces. (DRGN-20876).
 * The ``sdc_hci_cmd_vs_coex_priority_config`` and ``sdc_hci_cmd_vs_coex_scan_mode_config`` vendor-specific HCI commands have been removed as they are not applicable to any supported coexistence interfaces. (DRGN-20876)
 * The vendor-specific Set Connection Event Trigger command has been deprecated.
@@ -41,6 +42,7 @@ Changes
 * For a Synchronized Receiver, the priority of the first ``BN`` subevents of relevant BISes in a BIG event now have an elevated priority.
   This should improve reliability of ISO data being received by a Synchronized Receiver running alongside a role of lower priority.
   For more details, see the :ref:`scheduling_priorities_table` table.
+* The SoftDevice Controller can now utilize more than 64K of memory buffer passed to :c:func:`sdc_enable`. (DRGN-22067)
 
 Bug fixes
 =========
@@ -51,10 +53,11 @@ Bug fixes
 * Fixed an assert that could happen when in a connection where the peer device is transmitting on S8 Coded PHY.
   This issue was present in v2.6 and v2.7 releases. (DRGN-22652)
 * Fixed an issue where the extended scanner would not generate a truncated advertising report after the coexistence interface aborted the reception of an ``AUX_CHAIN_IND`` packet. (DRGN-22686)
-* Fixed a very rare issue where the controller stopped generating advertising reports. (DRGN-22678)
-  On nRF52 Series and nRF53 Series this would happen at least one hour after the scanner started.
-  On nRF54L and nRF54H Series this would occur immediately after the scanner started.
-  In would only happen when:
+* Fixed a very rare issue where the controller stopped generating advertising reports.
+  On nRF52 Series and nRF53 Series devices, this would happen at least one hour after the scanner started.
+  On nRF54L and nRF54H Series devices, this would occur immediately after the scanner started. (DRGN-22678)
+
+  It would only happen when one of the following applies:
 
     * There was another central-like scheduling activity running. Examples of roles with such activities are the ACL central, periodic advertiser, isochronous broadcaster and the CIS central.
       This activity was configured with an event length or event spacing equal or greater than the scan interval.
@@ -64,14 +67,18 @@ Bug fixes
 * Fixed a rare issue where the scanner would be stuck in the synchronizing state after failing to receive an ``AUX_ADV_IND`` packet.
   This could only happen when the corresponding ``ADV_EXT_IND`` packet contained a resolvable address, private address resolution is enabled, and the periodic advertising list is not used. (DRGN-22230)
 * Fixed an issue where the controller could generate the LE Advertising Set Terminated event one event sooner than expected. (DRGN-22705)
-  This could only happen when (all of the following)
+
+  This could only happen when all of the following apply:
+
     * a non-zero Max_Extended_Advertising_Events parameter was used in the LE Set Extended Advertising Enable command.
     * other ongoing activities in the controller prevented the first advertising event from taking place when the advertising set was created.
 * Fixed an issue where calling the :c:func:`sdc_hci_cmd_vs_zephyr_write_tx_power` function without the LE Power Control feature enabled could cause the controller to de-reference a NULL pointer. (DRGN-22930)
 * Fixed an issue where the Central failed to receive the last packet in an isochronous event.
   This could only happen if the Connected Isochronous Stream Creation procedure was initiated by the host before the Encryption Start procedure completed. (DRGN-22879)
 * Fixed an assert that could happen when using the coexistence interface. (DRGN-23002)
+
   This could happen when any of the following controller activities were ongoing:
+
     * Isochronous Broadcaster
     * Connected Isochronous channel in the peripheral role
     * Periodic Sync with Responses
