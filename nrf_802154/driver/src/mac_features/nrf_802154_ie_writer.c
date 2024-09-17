@@ -75,26 +75,32 @@ static uint16_t  m_csl_period;          ///< CSL period value that will be injec
 static uint64_t  m_csl_anchor_time;     ///< The anchor time based on which CSL window times are calculated
 static bool      m_csl_anchor_time_set; ///< Information if CSL anchor time was set by the higher layer
 
+static uint8_t * mp_cst_phase_addr;     ///< Cached CST information element phase field address
+static uint8_t * mp_cst_period_addr;    ///< Cached CST information element period field address
+static uint16_t  m_cst_period;          ///< CST period value that will be injected to CST information element
+static uint64_t  m_cst_anchor_time;     ///< The anchor time based on which CST window times are calculated
+
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
 static uint32_t m_csl_time_to_radio_address_us;
-
 #endif
 
 /** @brief Calulate CSL phase.
  *
  * @param[out]  p_csl_phase   Calculated CSL phase in units of 160us.
+ * @param[in]   csl_period    CSL period value.
+ * @param[in]   anchor_time   The anchor time based on which window times are calculated.
  *
  * @retval  true   The calculation was successful and @p p_csl_phase contains a valid CSL phase.
  * @retval  false  The calculation failed and the value pointed to by @p p_csl_phase is undefined.
  */
-static bool csl_phase_calc(uint32_t * p_csl_phase)
+static bool csl_phase_calc(uint32_t * p_csl_phase, uint16_t csl_period, uint64_t anchor_time)
 {
     bool     result = false;
     uint32_t us;
 
     if (m_csl_anchor_time_set)
     {
-        result = (m_csl_period != 0);
+        result = (csl_period != 0);
 
         if (result)
         {
@@ -112,7 +118,7 @@ static bool csl_phase_calc(uint32_t * p_csl_phase)
              * below takes it into account by adding 64us to the current time.
              */
             uint64_t csl_ref_time_us = nrf_802154_sl_timer_current_time_get() + 64;
-            uint32_t csl_period_us   = m_csl_period * IE_CSL_SYMBOLS_PER_UNIT * PHY_US_PER_SYMBOL;
+            uint32_t csl_period_us   = csl_period * IE_CSL_SYMBOLS_PER_UNIT * PHY_US_PER_SYMBOL;
 
 #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
             /**
@@ -124,16 +130,16 @@ static bool csl_phase_calc(uint32_t * p_csl_phase)
 #endif /* defined(CONFIG_SOC_SERIES_BSIM_NRFXX) */
 
             // Modulo of a negative number possibly will not be positive, so the below if-else clause is needed
-            if (csl_ref_time_us >= m_csl_anchor_time)
+            if (csl_ref_time_us >= anchor_time)
             {
                 uint32_t time_from_previous_window =
-                    (uint32_t)((csl_ref_time_us - m_csl_anchor_time) % csl_period_us);
+                    (uint32_t)((csl_ref_time_us - anchor_time) % csl_period_us);
 
                 us = csl_period_us - time_from_previous_window;
             }
             else
             {
-                us = (uint32_t)((m_csl_anchor_time - csl_ref_time_us) % csl_period_us);
+                us = (uint32_t)((anchor_time - csl_ref_time_us) % csl_period_us);
             }
         }
     }
@@ -185,7 +191,7 @@ static void csl_ie_write_commit(bool * p_written)
         return;
     }
 
-    if (csl_phase_calc(&csl_phase) == false)
+    if (csl_phase_calc(&csl_phase, m_csl_period, m_csl_anchor_time) == false)
     {
         // CSL Phase could not be determined. Do not write to the CSL IE.
         return;
@@ -236,6 +242,74 @@ static void csl_ie_write_reset(void)
     mp_csl_period_addr = NULL;
 }
 
+/**
+ * @brief Writes CST phase to previously set memory address.
+ *
+ * Note: CST period value 0 is treated as a special value which makes the CST phase to be 0 as well.
+ *
+ * @param[inout]  p_written  Flag set to true if CST IE was written. If CST IE is not written, the flag
+ *                           is not modified.
+ */
+static void cst_ie_write_commit(bool * p_written)
+{
+    uint32_t cst_phase = 0;
+
+    if ((mp_cst_phase_addr == NULL) || (mp_cst_period_addr == NULL))
+    {
+        // CST writer not armed. Nothing to be done.
+        return;
+    }
+
+    if (m_cst_anchor_time == 0)
+    {
+        // CST parameters not configured.
+        return;
+    }
+
+    if (m_cst_period > 0 && csl_phase_calc(&cst_phase, m_cst_period, m_cst_anchor_time) == false)
+    {
+        return;
+    }
+
+    host_16_to_little(cst_phase, mp_cst_phase_addr);
+    host_16_to_little(m_cst_period, mp_cst_period_addr);
+
+    *p_written = true;
+}
+
+/**
+ * @brief Finds and prepare memory address where CST phase will be written.
+ *
+ * @param[in]  p_iterator  Information Element parser iterator.
+ *
+ * @retval  true  The write prepare operation to CST IE was successful.
+ * @retval  false An improperly formatted CST IE was detected.
+ */
+static bool cst_ie_write_prepare(const uint8_t * p_iterator)
+{
+    NRF_802154_ASSERT(p_iterator != NULL);
+
+    if (nrf_802154_frame_parser_ie_length_get(p_iterator) != IE_VENDOR_THREAD_CST_SIZE)
+    {
+        // The IE has unexpected size
+        return false;
+    }
+
+    mp_cst_phase_addr  = (uint8_t *)nrf_802154_frame_parser_ie_vendor_thread_data_addr_get(p_iterator);
+    mp_cst_period_addr = mp_cst_phase_addr + sizeof(uint16_t);
+
+    return true;
+}
+
+/**
+ * @brief Resets CST writer to pristine state.
+ */
+static void cst_ie_write_reset(void)
+{
+    mp_cst_phase_addr  = NULL;
+    mp_cst_period_addr = NULL;
+}
+
 #else
 
 /**
@@ -265,6 +339,40 @@ static bool csl_ie_write_prepare(const uint8_t * p_iterator)
  * @brief Resets CSL writer to pristine state.
  */
 static void csl_ie_write_reset(void)
+{
+    // Intentionally empty
+}
+
+/**
+ * @brief Writes CST phase to previously set memory address.
+ *
+ * @param[inout]  p_written  Flag set to true if CST IE was written. If CST IE is not written, the flag
+ *                           is not modified.
+ */
+static void cst_ie_write_commit(bool * p_written)
+{
+    // Intentionally empty
+    (void)p_written;
+}
+
+/**
+ * @brief Finds and prepare memory address where CST phase will be written.
+ *
+ * @param[in]  p_iterator  Information Element parser iterator.
+ *
+ * @retval  true  The write prepare operation to CST IE was successful.
+ * @retval  false An improperly formatted CST IE was detected.
+ */
+static bool cst_ie_write_prepare(const uint8_t * p_iterator)
+{
+    // Intentionally empty
+    return true;
+}
+
+/**
+ * @brief Resets CST writer to pristine state.
+ */
+static void cst_ie_write_reset(void)
 {
     // Intentionally empty
 }
@@ -443,14 +551,19 @@ static void ie_writer_prepare(uint8_t * p_ie_header, const uint8_t * p_end_addr)
         {
             case IE_VENDOR_ID:
                 if (nrf_802154_frame_parser_ie_length_get(p_iterator) >= IE_VENDOR_SIZE_MIN &&
-                    nrf_802154_frame_parser_ie_vendor_oui_get(p_iterator) == IE_VENDOR_THREAD_OUI)
+                    nrf_802154_frame_parser_ie_vendor_oui_get(p_iterator) == IE_VENDOR_THREAD_OUI &&
+                    nrf_802154_frame_parser_ie_length_get(p_iterator) >= IE_VENDOR_THREAD_SIZE_MIN)
                 {
-                    if (nrf_802154_frame_parser_ie_length_get(p_iterator) >=
-                        IE_VENDOR_THREAD_SIZE_MIN &&
-                        nrf_802154_frame_parser_ie_vendor_thread_subtype_get(p_iterator) ==
-                        IE_VENDOR_THREAD_ACK_PROBING_ID)
+                    switch (nrf_802154_frame_parser_ie_vendor_thread_subtype_get(p_iterator))
                     {
+                    case IE_VENDOR_THREAD_ACK_PROBING_ID:
                         result = link_metrics_ie_write_prepare(p_iterator);
+                        break;
+                    case IE_VENDOR_THREAD_CST_ID:
+                        result = cst_ie_write_prepare(p_iterator);
+                        break;
+                    default:
+                        break;
                     }
                 }
                 break;
@@ -485,6 +598,7 @@ static void ie_writer_commit(bool * p_written)
     m_writer_state = IE_WRITER_COMMIT;
 
     csl_ie_write_commit(p_written);
+    cst_ie_write_commit(p_written);
     link_metrics_ie_write_commit(p_written);
 }
 
@@ -493,6 +607,7 @@ void nrf_802154_ie_writer_reset(void)
     m_writer_state = IE_WRITER_RESET;
 
     csl_ie_write_reset();
+    cst_ie_write_reset();
     link_metrics_ie_write_reset();
 }
 
@@ -521,6 +636,12 @@ bool nrf_802154_ie_writer_tx_setup(
     {
         // The dynamic data in the frame is already set. Pass.
         return true;
+    }
+
+    if ((p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
+    {
+      // Multipurpose frame parsing is not implemented, so skip IE writer.
+      return true;
     }
 
     const uint8_t * p_mfr_addr;
@@ -618,6 +739,16 @@ void nrf_802154_ie_writer_csl_anchor_time_set(uint64_t anchor_time)
 {
     m_csl_anchor_time     = anchor_time;
     m_csl_anchor_time_set = true;
+}
+
+void nrf_802154_ie_writer_cst_period_set(uint16_t period)
+{
+    m_cst_period = period;
+}
+
+void nrf_802154_ie_writer_cst_anchor_time_set(uint64_t anchor_time)
+{
+    m_cst_anchor_time = anchor_time;
 }
 
 #endif // NRF_802154_DELAYED_TRX_ENABLED

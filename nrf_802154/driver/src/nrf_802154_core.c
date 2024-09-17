@@ -505,6 +505,12 @@ static bool ack_is_requested(const uint8_t * p_frame)
 {
     nrf_802154_frame_parser_data_t frame_data;
 
+    if ((p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
+    {
+        // Multipurpose frame parsing is not implemented, so assume AR is not set.
+        return false;
+    }
+
     bool result = nrf_802154_frame_parser_data_init(p_frame,
                                                     p_frame[PHR_OFFSET] + PHR_SIZE,
                                                     PARSE_LEVEL_FCF_OFFSETS,
@@ -758,7 +764,7 @@ static void operation_terminated_notify(radio_state_t state, bool receiving_psdu
             nrf_802154_transmit_done_metadata_t metadata = {};
 
             nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
-            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_ABORTED, &metadata);
+            transmit_failed_notify(mp_tx_data, NRF_802154_TX_ERROR_NO_ACK, &metadata);
         }
         break;
 
@@ -843,16 +849,6 @@ static bool current_operation_terminate(nrf_802154_term_t term_lvl,
     return result;
 }
 
-/** Enter Sleep state. */
-static void sleep_init(void)
-{
-    // This function is always executed from a critical section, so this check is safe.
-    if (timeslot_is_granted())
-    {
-        nrf_802154_timer_coord_stop();
-    }
-}
-
 /** Initialize Falling Asleep operation. */
 static void falling_asleep_init(void)
 {
@@ -862,7 +858,6 @@ static void falling_asleep_init(void)
     }
     else
     {
-        sleep_init();
         state_set(RADIO_STATE_SLEEP);
     }
 }
@@ -1212,7 +1207,6 @@ static void switch_to_idle(void)
 {
     if (!nrf_802154_pib_rx_on_when_idle_get())
     {
-        sleep_init();
         state_set(RADIO_STATE_SLEEP);
     }
     else
@@ -1286,13 +1280,23 @@ static void on_timeslot_ended(void)
 
             case RADIO_STATE_CCA_TX:
             case RADIO_STATE_TX:
-            case RADIO_STATE_RX_ACK:
             {
                 state_set(RADIO_STATE_RX);
                 nrf_802154_transmit_done_metadata_t metadata = {};
 
                 nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
                 transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_TIMESLOT_ENDED,
+                                                         &metadata);
+            }
+            break;
+
+            case RADIO_STATE_RX_ACK:
+            {
+                state_set(RADIO_STATE_RX);
+                nrf_802154_transmit_done_metadata_t metadata = {};
+
+                nrf_802154_tx_work_buffer_original_frame_update(mp_tx_data, &metadata.frame_props);
+                transmit_failed_notify_and_nesting_allow(NRF_802154_TX_ERROR_NO_ACK,
                                                          &metadata);
             }
             break;
@@ -1761,6 +1765,12 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
             return 0;
     }
 
+    if (nrf_802154_frame_parser_frame_type_get(&m_current_rx_frame_data) == FRAME_TYPE_MULTIPURPOSE)
+    {
+        m_flags.frame_filtered = true;
+        return 0;
+    }
+
     parse_result = nrf_802154_frame_parser_valid_data_extend(&m_current_rx_frame_data,
                                                              bcc,
                                                              parse_level);
@@ -1884,7 +1894,6 @@ void nrf_802154_trx_go_idle_finished(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-    sleep_init();
     state_set(RADIO_STATE_SLEEP);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
@@ -2568,7 +2577,6 @@ static bool core_sleep(nrf_802154_term_t term_lvl, req_originator_t req_orig, bo
         }
         else
         {
-            sleep_init();
             state_set(RADIO_STATE_SLEEP);
         }
     }

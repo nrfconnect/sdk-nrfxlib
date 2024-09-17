@@ -1595,6 +1595,24 @@ void nrf_802154_csl_writer_anchor_time_set(uint64_t anchor_time);
 void nrf_802154_rx_on_when_idle_set(bool rx_on_when_idle);
 
 /**
+ * @brief Sets the value of CST period to inject into the CST information element.
+ *
+ * @param[in]  period  CST period value.
+ */
+void nrf_802154_cst_writer_period_set(uint16_t period);
+
+/**
+ * @brief Sets the anchor time based on which the next CST window time and the CST phase is calculated.
+ *
+ * This function sets an anchor time which is a time of a CST window, based which on the times of future CST windows are
+ * calculated. It is assumed that all other CST windows occur at time @c anchor_time + @c n * @c cst_period where @c n is
+ * an integer. Note that the anchor time can be both in the past and in the future.
+ *
+ * @param[in]  anchor_time  Anchor time value.
+ */
+void nrf_802154_cst_writer_anchor_time_set(uint64_t anchor_time);
+
+/**
  * @}
  * @defgroup nrf_802154_test_modes Test modes
  * @{

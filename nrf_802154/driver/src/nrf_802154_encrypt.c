@@ -337,6 +337,12 @@ bool nrf_802154_encrypt_tx_setup(
         return true;
     }
 
+    if ((p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
+    {
+      // Multipurpose frame parsing is not implemented, so skip encryption.
+      return true;
+    }
+
     nrf_802154_frame_parser_data_t frame_data;
     nrf_802154_aes_ccm_data_t      aes_ccm_data;
     bool                           success = false;

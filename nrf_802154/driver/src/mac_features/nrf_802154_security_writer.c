@@ -168,6 +168,12 @@ bool nrf_802154_security_writer_tx_setup(
         return true;
     }
 
+    if ((p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
+    {
+      // Multipurpose frame parsing is not implemented, so skip security.
+      return true;
+    }
+
     result = nrf_802154_frame_parser_data_init(p_frame,
                                                p_frame[PHR_OFFSET] + PHR_SIZE,
                                                PARSE_LEVEL_AUX_SEC_HDR_END,

@@ -1109,6 +1109,16 @@ void nrf_802154_csl_writer_anchor_time_set(uint64_t anchor_time)
     nrf_802154_ie_writer_csl_anchor_time_set(anchor_time);
 }
 
+void nrf_802154_cst_writer_period_set(uint16_t period)
+{
+    nrf_802154_ie_writer_cst_period_set(period);
+}
+
+void nrf_802154_cst_writer_anchor_time_set(uint64_t anchor_time)
+{
+    nrf_802154_ie_writer_cst_anchor_time_set(anchor_time);
+}
+
 #endif
 
 __WEAK void nrf_802154_custom_part_of_radio_init(void)
