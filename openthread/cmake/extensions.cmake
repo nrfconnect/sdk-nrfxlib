@@ -21,7 +21,7 @@ function(openthread_calculate_lib_path ot_version lib_path)
     set(ot_feature_set "custom")
   endif()
 
-  nrfxlib_calculate_lib_path(nrfxlib_path BASE_DIR ${OPENTHREAD_LIB_BASE_DIR} SOFT_FLOAT_FALLBACK)
+  nrfxlib_calculate_lib_path(nrfxlib_path BASE_DIR ${OPENTHREAD_LIB_BASE_DIR} SOFT_FLOAT_FALLBACK SOC_MODE)
 
   if(CONFIG_OPENTHREAD_COPROCESSOR_RCP)
     set(${lib_path}
