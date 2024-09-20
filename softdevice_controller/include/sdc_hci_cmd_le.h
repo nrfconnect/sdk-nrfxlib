@@ -284,7 +284,10 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t legacy_adv_packets : 1;
     uint16_t omit_adv_address : 1;
     uint16_t include_tx_power : 1;
-    uint16_t rfu : 9;
+    uint16_t use_decision_pdus : 1;
+    uint16_t include_adva_in_ext_header : 1;
+    uint16_t include_adi_in_ext_header: 1;
+    uint16_t rfu : 6;
 } sdc_hci_le_adv_event_properties_params_t;
 
 /** @brief LE Advertising Report array parameters. */
