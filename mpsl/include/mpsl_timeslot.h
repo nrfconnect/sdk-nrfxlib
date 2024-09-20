@@ -305,15 +305,27 @@ int32_t mpsl_timeslot_session_close(mpsl_timeslot_session_id_t session_id);
 
 /** @brief Requests a timeslot.
  *
+ * Successful requests will result in mpsl_timeslot_signal_callback_t(@ref MPSL_TIMESLOT_SIGNAL_START).
+ * Unsuccessful requests will result in a @ref MPSL_TIMESLOT_SIGNAL_BLOCKED event.
+ *
+ * Once the timeslot has started, the application is responsible for keeping track of timing within
+ * the timeslot and for ensuring that the application’s use of the peripherals does not last for longer
+ * than the granted timeslot length.
+ * The recommended practice is to set up a timer interrupt that expires before the timeslot expires,
+ * with enough time left for the timeslot to do any clean-up actions before the timeslot ends.
+ * Such a timer interrupt can also be used to request an extension of the timeslot,
+ * but there must still be enough time to clean up if the extension is not granted.
+ *
  * @note The first request in a session must always be of type @ref MPSL_TIMESLOT_REQ_TYPE_EARLIEST.
-
- * @note Successful requests will result in mpsl_timeslot_signal_callback_t(@ref MPSL_TIMESLOT_SIGNAL_START).
- *       Unsuccessful requests will result in a @ref MPSL_TIMESLOT_SIGNAL_BLOCKED event.
  * @note The jitter in the start time of the timeslots is +/- @ref MPSL_TIMESLOT_START_JITTER_US us.
  * @note The mpsl_timeslot_signal_callback_t(@ref MPSL_TIMESLOT_SIGNAL_START) call has a latency relative to the
  *       specified timeslot start, but this does not affect the actual start time of the timeslot.
- * @note TIMER0 is reset at the start of the timeslot, and is clocked at 1MHz from the high frequency
- *       (16 MHz) clock source
+ * @note TIMER0 is reset when @ref MPSL_TIMESLOT_SIGNAL_START triggers.
+ *       and is clocked at 1MHz from the high frequency (16 MHz) clock source.
+ *       The scheduler uses the LFCLK source for time calculations when scheduling events.
+ *       If the application uses a TIMER (sourced from the current HFCLK source) to calculate and
+ *       signal the end of a timeslot, it must account for the possible clock drift between the
+ *       HFCLK source and the LFCLK source.
  * @note No stack will neither access the RADIO peripheral nor the TIMER0 peripheral
  *       during the timeslot.
  *
