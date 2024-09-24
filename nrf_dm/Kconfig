@@ -13,5 +13,6 @@ config NRF_DM
 	select CMSIS_DSP_STATISTICS
 	select CMSIS_DSP_TRANSFORM
 	select EXPERIMENTAL
+	select STATIC_INIT_GNU
 	help
 		Enable nRF DM (Distance Measurement) library
