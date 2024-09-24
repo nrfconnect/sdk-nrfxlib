@@ -402,7 +402,7 @@ extern "C" {
  *
  */
 #ifndef NRF_802154_MAX_ACK_IE_SIZE
-#define NRF_802154_MAX_ACK_IE_SIZE 8
+#define NRF_802154_MAX_ACK_IE_SIZE 16
 #endif
 
 /**

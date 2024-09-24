@@ -23,11 +23,13 @@ Notable changes
 * The binaries of the nRF 802.15.4 SL library for the nRF54L15 SoC are provided also for the non-secure operation. (KRKNWK-19338)
 * The internal implementation of *notification* module is selected by the :c:macro:`NRF_802154_NOTIFICATION_IMPL` configuration macro.
   The internal implementation of *request* module is selected by the :c:macro:`NRF_802154_REQUEST_IMPL` configuration macro.
+* Introduced limited support for receiving and transmitting multipurpose frames. (KRKNWK-19492)
 
 Added
 =====
 
 * Added the :c:macro:`NRF_802154_EGU_USED_CHANNELS_MASK` to inform about the fixed EGU channels used by the driver. (KRKNWK-19408)
+* Added the functions :c:func:`nrf_802154_cst_writer_period_set` and :c:func:`nrf_802154_cst_writer_anchor_time_set`. (KRKNWK-19492)
 
 nRF Connect SDK v2.7.0 - nRF 802.15.4 Radio Driver
 **************************************************

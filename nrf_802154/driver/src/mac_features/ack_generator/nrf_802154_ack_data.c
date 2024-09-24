@@ -481,13 +481,27 @@ static bool addr_add(const uint8_t       * p_addr,
         return false;
     }
 
-    memmove(p_addr_array + entry_size * (location + 1),
-            p_addr_array + entry_size * (location),
+    uint8_t * p_entry_at_location = p_addr_array + entry_size * location;
+
+    memmove(p_entry_at_location + entry_size,
+            p_entry_at_location,
             (*p_addr_array_len - location) * entry_size);
 
-    memcpy(p_addr_array + entry_size * location,
+    memcpy(p_entry_at_location,
            p_addr,
            extended ? EXTENDED_ADDRESS_SIZE : SHORT_ADDRESS_SIZE);
+
+    if (data_type == NRF_802154_ACK_DATA_IE)
+    {
+        /* The content of ie_data_t in the structure indexed by location
+         * is uninitialized (can have old content). Let's initialize it. */
+        ie_data_t * p_ie_data = extended ?
+                                &(((ack_ext_ie_data_t *)p_entry_at_location)->ie_data) :
+                                &(((ack_short_ie_data_t *)p_entry_at_location)->ie_data);
+
+        p_ie_data->len = 0U;
+        /* p_ie_data->p_data does not need initialization when len is set to zero. */
+    }
 
     (*p_addr_array_len)++;
 
@@ -562,18 +576,60 @@ static bool addr_remove(uint32_t location, nrf_802154_ack_data_t data_type, bool
     return true;
 }
 
-static void ie_data_add(uint32_t location, bool extended, const uint8_t * p_data, uint8_t data_len)
+/**
+ * @brief Replace or append an Information Element to the ACK data.
+ *
+ * If the target ACK data already contains an Information Element with the same
+ * ID as the new Information Element, the existing IE is replaced with the new
+ * one. Otherwise, the new IE is appended to the target ACK data.
+ *
+ * @param[in]  location     Index of the ACK data buffer to be modified.
+ * @param[in]  extended     Indication whether the ACK data buffer for
+ *                          an extended or a short address is to be modified.
+ * @param[in]  p_data       New Information Element data.
+ * @param[in]  data_len     New Information Element data length.
+ *
+ * @retval true     The new Information Element has been added successfully.
+ * @retval false    The new Information Element has not fitted in the buffer.
+ */
+static bool ie_data_set(uint32_t location, bool extended, const uint8_t * p_data, uint8_t data_len)
 {
-    if (extended)
+    ie_data_t * ie_data =
+        extended ? &m_ie.ext_data[location].ie_data : &m_ie.short_data[location].ie_data;
+
+    const uint8_t new_ie_id = nrf_802154_frame_parser_ie_id_get(p_data);
+
+    for (const uint8_t * ie = nrf_802154_frame_parser_header_ie_iterator_begin(ie_data->p_data);
+         nrf_802154_frame_parser_ie_iterator_end(ie, ie_data->p_data + ie_data->len) == false;
+         ie = nrf_802154_frame_parser_ie_iterator_next(ie))
     {
-        memcpy(m_ie.ext_data[location].ie_data.p_data, p_data, data_len);
-        m_ie.ext_data[location].ie_data.len = data_len;
+        if (nrf_802154_frame_parser_ie_id_get(ie) != new_ie_id)
+        {
+            continue;
+        }
+
+        if (IE_DATA_OFFSET + nrf_802154_frame_parser_ie_length_get(ie) != data_len)
+        {
+            /* Overwriting an existing IE with a different size is not supported. */
+            return false;
+        }
+
+        memcpy((uint8_t *)ie, p_data, data_len);
+        return true;
     }
-    else
+
+    /* Append IE data with the new IE. */
+
+    if (ie_data->len + data_len > NRF_802154_MAX_ACK_IE_SIZE)
     {
-        memcpy(m_ie.short_data[location].ie_data.p_data, p_data, data_len);
-        m_ie.short_data[location].ie_data.len = data_len;
+        /* No space to fit it the new IE. */
+        return false;
     }
+
+    memcpy(ie_data->p_data + ie_data->len, p_data, data_len);
+    ie_data->len += data_len;
+
+    return true;
 }
 
 /***************************************************************************************************
@@ -607,7 +663,7 @@ bool nrf_802154_ack_data_for_addr_set(const uint8_t       * p_addr,
     {
         if (data_type == NRF_802154_ACK_DATA_IE)
         {
-            ie_data_add(location, extended, p_data, data_len);
+            return ie_data_set(location, extended, p_data, data_len);
         }
 
         return true;
