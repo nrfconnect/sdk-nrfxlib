@@ -507,6 +507,12 @@ static bool ack_is_requested(const uint8_t * p_frame)
 {
     nrf_802154_frame_parser_data_t frame_data;
 
+    if ((p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
+    {
+        // Multipurpose frame parsing is not implemented, so assume AR is not set.
+        return false;
+    }
+
     bool result = nrf_802154_frame_parser_data_init(p_frame,
                                                     p_frame[PHR_OFFSET] + PHR_SIZE,
                                                     PARSE_LEVEL_FCF_OFFSETS,
@@ -1781,6 +1787,12 @@ uint8_t nrf_802154_trx_receive_frame_bcmatched(uint8_t bcc)
             /* Parsing completed. Nothing more to be done. */
             nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
             return 0;
+    }
+
+    if (nrf_802154_frame_parser_frame_type_get(&m_current_rx_frame_data) == FRAME_TYPE_MULTIPURPOSE)
+    {
+        m_flags.frame_filtered = true;
+        return 0;
     }
 
     parse_result = nrf_802154_frame_parser_valid_data_extend(&m_current_rx_frame_data,

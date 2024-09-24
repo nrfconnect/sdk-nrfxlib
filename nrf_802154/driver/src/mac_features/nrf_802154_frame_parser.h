@@ -431,7 +431,14 @@ static inline bool nrf_802154_frame_parser_panid_compression_is_set(
 static inline bool nrf_802154_frame_parser_ar_bit_is_set(
     const nrf_802154_frame_parser_data_t * p_parser_data)
 {
-    return (p_parser_data->p_frame[ACK_REQUEST_OFFSET] & ACK_REQUEST_BIT) ? true : false;
+    if ((p_parser_data->p_frame[FRAME_TYPE_OFFSET] & FRAME_TYPE_MASK) == FRAME_TYPE_MULTIPURPOSE)
+    {
+        return false;
+    }
+    else
+    {
+        return (p_parser_data->p_frame[ACK_REQUEST_OFFSET] & ACK_REQUEST_BIT) ? true : false;
+    }
 }
 
 /**

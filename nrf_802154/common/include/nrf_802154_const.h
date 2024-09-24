@@ -212,6 +212,8 @@
 #define IE_VENDOR_THREAD_MARGIN_FLOOR   0                                            ///< Thread Vendor-specific ACK Probing margin floor value used for scaling
 #define IE_VENDOR_THREAD_RSSI_CEIL      0                                            ///< Thread Vendor-specific ACK Probing RSSI ceil value used for scaling
 #define IE_VENDOR_THREAD_MARGIN_CEIL    130                                          ///< Thread Vendor-specific ACK Probing margin ceil value used for scaling
+#define IE_VENDOR_THREAD_CST_ID         0x02                                         ///< Thread Vendor-specific CST IE subtype ID
+#define IE_VENDOR_THREAD_CST_SIZE       8                                            ///< Thread Vendor-specific CST IE size
 #define IE_CSL_SYMBOLS_PER_UNIT         10                                           ///< Number of symbols per phase/period unit
 #define IE_CSL_PERIOD_MAX               0xffff                                       ///< Maximum CSL IE phase/period value
 #define IE_CSL_SIZE_MIN                 4                                            ///< Minimal size of the CSL IE
