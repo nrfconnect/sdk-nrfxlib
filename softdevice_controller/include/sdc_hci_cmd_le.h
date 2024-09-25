@@ -277,14 +277,17 @@ enum sdc_hci_subevent_le
 /** @brief Advertising Event Properties parameters. */
 typedef struct __PACKED __ALIGN(1)
 {
-    uint16_t connectable_adv : 1;
-    uint16_t scannable_adv : 1;
-    uint16_t directed_adv : 1;
-    uint16_t high_duty_cycle_adv : 1;
-    uint16_t legacy_adv_packets : 1;
-    uint16_t omit_adv_address : 1;
-    uint16_t include_tx_power : 1;
-    uint16_t rfu : 9;
+    uint8_t connectable_adv : 1;
+    uint8_t scannable_adv : 1;
+    uint8_t directed_adv : 1;
+    uint8_t high_duty_cycle_adv : 1;
+    uint8_t legacy_adv_packets : 1;
+    uint8_t omit_adv_address : 1;
+    uint8_t include_tx_power : 1;
+    uint8_t use_decision_pdus : 1;
+    uint8_t include_adva_in_ext_header : 1;
+    uint8_t include_adi_in_ext_header : 1;
+    uint8_t rfu : 6;
 } sdc_hci_le_adv_event_properties_params_t;
 
 /** @brief LE Advertising Report array parameters. */
