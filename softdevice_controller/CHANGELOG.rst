@@ -44,6 +44,8 @@ Changes
   For more details, see the :ref:`scheduling_priorities_table` table.
 * The SoftDevice Controller can now utilize more than 64K of memory buffer passed to :c:func:`sdc_enable`. (DRGN-22067)
 * If LE Power Control is not being used, the TX power of CISes is now the same as for the corresponding ACL connection. (DRGN-23291)
+* Prioritize generating the Number Of Completed Packets event above all other events.
+  Generate the event irrespective of the state of the Controller to Host data flow control. (DRGN-23284)
 
 Bug fixes
 =========
