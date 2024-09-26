@@ -53,6 +53,10 @@ K_MUTEX_DEFINE(key_slot_mutex_int);
  */
 K_MUTEX_DEFINE(psa_globaldata_mutex_int);
 
+/** @brief Definition of mutex for PSA global access
+ */
+K_MUTEX_DEFINE(psa_rng_mutex_int);
+
 #elif CONFIG_CC3XX_ATOMIC_LOCK
 
 /** @brief Definition of mutex for symmetric cryptography
@@ -79,6 +83,10 @@ static atomic_t key_slot_mutex_int;
  */
 static atomic_t psa_globaldata_mutex_int;
 
+/** @brief Definition of mutex for PSA global access
+ */
+static atomic_t psa_rng_mutex_int;
+
 #elif defined(NRF5340_XXAA_APPLICATION) && NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_HW_MUTEX
 
 typedef enum {
@@ -88,6 +96,7 @@ typedef enum {
     HW_MUTEX_HEAP_ALLOC = 12,
     HW_MUTEX_KEY_SLOT = 11,
     HW_MUTEX_PSA_GLOBALDATA = 10,
+    HW_MUTEX_PSA_RNG = 9,
 } hw_mutex_t;
 
 /** @brief Definition of mutex for symmetric cryptography
@@ -113,6 +122,10 @@ static hw_mutex_t key_slot_mutex_int = HW_MUTEX_KEY_SLOT;
 /** @brief Definition of mutex for PSA global access
  */
 static hw_mutex_t psa_globaldata_mutex_int = HW_MUTEX_PSA_GLOBALDATA;
+
+/** @brief Definition of mutex for PSA global access
+ */
+static hw_mutex_t psa_rng_mutex_int = HW_MUTEX_PSA_RNG;
 
 #else
 #error "Improper configuration of the lock variant!"
@@ -233,11 +246,9 @@ nrf_cc3xx_platform_mutex_t mbedtls_threading_psa_globaldata_mutex = {
  *  allocation is unneccesary
  *
  * @note This symbol can't be static as it is referenced from Mbed TLS
- *
- * @note Reusing the RNG mutex used for CryptoCell.
  */
 nrf_cc3xx_platform_mutex_t mbedtls_threading_psa_rngdata_mutex = {
-    .mutex = &rng_mutex_int,
+    .mutex = &psa_rng_mutex_int,
     .flags = IS_ENABLED(CONFIG_CC3XX_ATOMIC_LOCK) ?
                 NRF_CC3XX_PLATFORM_MUTEX_MASK_IS_ATOMIC :
                 IS_ENABLED(CONFIG_CC3XX_HW_MUTEX_LOCK) ?
