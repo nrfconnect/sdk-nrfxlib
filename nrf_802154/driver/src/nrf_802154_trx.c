@@ -333,37 +333,81 @@ static void timer_frequency_set_1mhz(void)
     nrf_timer_prescaler_set(NRF_802154_TIMER_INSTANCE, prescaler);
 }
 
+/** Disables the radio no matter its state. */
+static void radio_force_disable(void)
+{
+    /* Radio cannot be disabled if EVENT_DISABLED is set. Clear it first. */
+    nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
+    nrf_radio_task_trigger(NRF_RADIO, NRF_RADIO_TASK_DISABLE);
+}
+
+/** Robustly disable the radio peripheral based on the radio state. */
+static void radio_robust_disable(void)
+{
+    nrf_radio_state_t radio_state = nrf_radio_state_get(NRF_RADIO);
+
+    if ((radio_state == NRF_RADIO_STATE_RXDISABLE) || (radio_state == NRF_RADIO_STATE_TXDISABLE))
+    {
+        /* RADIO is in an unstable state that should resolve to DISABLED. Do nothing. */
+    }
+    else
+    {
+        /* RADIO is in a stable state and needs to be transitioned to DISABLED manually. */
+        radio_force_disable();
+    }
+}
+
 static inline void wait_until_radio_is_disabled(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
     bool radio_is_disabled = false;
+    bool repeat            = false;
 
-    /* RADIO should enter DISABLED state after no longer than RX ramp-down time or TX ramp-down
-     * time, depending on its initial state before TASK_DISABLE was triggered. The loop below busy
-     * waits for the state transition to complete. To prevent the CPU from spinning in an endless
-     * loop, the maximum allowed number of loop cycles is limited. The limit's intention is not to
-     * approximate the expected maximum time the transition might actually take, which is generally
-     * very short, but to act as a safeguard against obviously incorrect and unexpected behaviors.
-     * In practice, in most cases the radio will have already changed state to DISABLED before this
-     * function starts. In the remaining cases several cycles of the loop should be sufficient for
-     * the transition to complete.
-     */
-    for (uint32_t i = 0; i < MAX_RAMPDOWN_CYCLES; i++)
+    do
     {
-        if (nrf_radio_state_get(NRF_RADIO) == NRF_RADIO_STATE_DISABLED)
+        /* RADIO should enter DISABLED state after no longer than RX ramp-down time or TX ramp-down
+         * time, depending on its initial state before TASK_DISABLE was triggered. The loop below busy
+         * waits for the state transition to complete. To prevent the CPU from spinning in an endless
+         * loop, the maximum allowed number of loop cycles is limited. The limit's intention is not to
+         * approximate the expected maximum time the transition might actually take, which is generally
+         * very short, but to act as a safeguard against obviously incorrect and unexpected behaviors.
+         * In practice, in most cases the radio will have already changed state to DISABLED before this
+         * function starts. In the remaining cases several cycles of the loop should be sufficient for
+         * the transition to complete.
+         */
+        for (uint32_t i = 0; i < MAX_RAMPDOWN_CYCLES; i++)
         {
-            radio_is_disabled = true;
+            if (nrf_radio_state_get(NRF_RADIO) == NRF_RADIO_STATE_DISABLED)
+            {
+                radio_is_disabled = true;
+                break;
+            }
+    #if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+            nrf_802154_delay_us(1);
+            /* In this simulated board, and in general in the POSIX ARCH,
+             * code takes 0 simulated time to execute.
+             * Let's hold for 1 microsecond to allow the RADIO HW to clear the state
+             */
+    #endif
+        }
+
+#ifdef NRF54L_SERIES
+        if (!radio_is_disabled && !repeat)
+        {
+            /* Radio still not in disabled state.
+             * Manually disable the radio and repeat the loop once as a last resort.
+             */
+            radio_force_disable();
+            repeat = true;
+        }
+        else
+        {
             break;
         }
-#if defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
-        nrf_802154_delay_us(1);
-        /* In this simulated board, and in general in the POSIX ARCH,
-         * code takes 0 simulated time to execute.
-         * Let's hold for 1 microsecond to allow the RADIO HW to clear the state
-         */
 #endif
     }
+    while (repeat);
 
     NRF_802154_ASSERT(radio_is_disabled);
     (void)radio_is_disabled;
@@ -523,24 +567,6 @@ static void nrf_radio_reset(void)
                                 0U);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-}
-
-/** Robustly disable the radio peripheral. */
-static void radio_robust_disable(void)
-{
-    nrf_radio_state_t radio_state = nrf_radio_state_get(NRF_RADIO);
-
-    if ((radio_state == NRF_RADIO_STATE_RXDISABLE) || (radio_state == NRF_RADIO_STATE_TXDISABLE))
-    {
-        /* RADIO is in an unstable state that should resolve to DISABLED. Do nothing. */
-    }
-    else
-    {
-        /* RADIO is in a stable state and needs to be transitioned to DISABLED manually.
-         * It cannot be disabled if EVENT_DISABLED is set. Clear it first. */
-        nrf_radio_event_clear(NRF_RADIO, NRF_RADIO_EVENT_DISABLED);
-        nrf_radio_task_trigger(NRF_RADIO, NRF_RADIO_TASK_DISABLE);
-    }
 }
 
 static void channel_set(uint8_t channel)
