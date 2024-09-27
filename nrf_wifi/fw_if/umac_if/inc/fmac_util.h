@@ -66,6 +66,27 @@
 #define NRF_WIFI_FMAC_IPV6_TOS_SHIFT 0x04 /* 4bit */
 #define NRF_WIFI_FMAC_ETH_TYPE_MASK 0xFFFF
 
+#if defined(CONFIG_NRF700X_PROMISC_DATA_RX)
+#define NRF_WIFI_MGMT_PKT_TYPE 0x00
+#define NRF_WIFI_DATA_PKT_TYPE 0x10
+#define NRF_WIFI_CTRL_PKT_TYPE 0x01
+
+/* Frame Control structure */
+struct nrf_wifi_fmac_frame_ctrl{
+	unsigned short protocolVersion : 2;
+	unsigned short type            : 2;
+	unsigned short subtype         : 4;
+	unsigned short toDS            : 1;
+	unsigned short fromDS          : 1;
+	unsigned short moreFragments   : 1;
+	unsigned short retry           : 1;
+	unsigned short powerManagement : 1;
+	unsigned short moreData        : 1;
+	unsigned short protectedFrame  : 1;
+	unsigned short order           : 1;
+} __NRF_WIFI_PKD;
+#endif
+
 struct nrf_wifi_fmac_ieee80211_hdr {
 	unsigned short fc;
 	unsigned short dur_id;
@@ -130,6 +151,11 @@ void nrf_wifi_util_rx_convert_amsdu_to_eth(struct nrf_wifi_fmac_dev_ctx *fmac_de
 
 bool nrf_wifi_util_is_arr_zero(unsigned char *arr,
 			       unsigned int arr_sz);
+
+#if defined(CONFIG_NRF700X_PROMISC_DATA_RX)
+bool nrf_wifi_util_check_filt_setting(struct nrf_wifi_fmac_vif_ctx *vif,
+				      unsigned short *frame_control);
+#endif
 
 #endif /* !CONFIG_NRF700X_RADIO_TEST */
 
