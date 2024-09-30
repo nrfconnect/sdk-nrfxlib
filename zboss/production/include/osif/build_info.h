@@ -11,20 +11,20 @@
  * Please use release scripts to update it's contents.
  *
  * Repositories:
- * platform_ncs       1366df8ca7f42a702dbec8d494a0015e85837755 https://projecttools.nordicsemi.no/bitbucket/scm/ZOI/platform_ncs.git
- * zboss-stack-src    5c339a77a158b29b0072141573e9f7e661cac96c https://projecttools.nordicsemi.no/bitbucket/scm/zoi/zboss_stable
- * zboss-stack-doc    31a9182d4fc43bfedbcc1bb1dab2aec4e07288ad https://projecttools.nordicsemi.no/bitbucket/scm/zoi/zboss_doc
- * nrf                68bd648703fd5500e178a5e9ef2dd6fd98018245 https://github.com/nrfconnect/sdk-nrf
- * zephyr             0fa93fad62c1cf6fb1f4c0f8fa30afcb0dbe50aa https://github.com/nrfconnect/sdk-zephyr
- * hostap             c66e5de97a44c77ec87a86ded88636a92d7ceea6 https://github.com/nrfconnect/sdk-hostap
- * wfa-qt-control-app b3cea7b770cf8270cf25831cf3c9db063234e603 https://github.com/nrfconnect/sdk-wi-fiquicktrack-controlappc
- * mcuboot            323fb663e832d4c45eb2fc2d30a3955684791b7d https://github.com/nrfconnect/sdk-mcuboot
- * qcbor              751d36583a9ce1a640900c57e13c9b6b8f3a2ba2 https://github.com/laurencelundblade/QCBOR.git
- * mbedtls            4625a6097993a0bae01f809aacd48ee2c9cb1d0b https://github.com/nrfconnect/sdk-mbedtls
- * nrfxlib            502ce15474c2619e3ef9291588357dd2ddf31fb0 https://github.com/nrfconnect/sdk-nrfxlib
- * trusted-firmware-m 51fe43807f8d968de0b0df01862f9a20d9f119e6 https://github.com/nrfconnect/sdk-trusted-firmware-m
+ * platform_ncs       ab551193ef6604991ec943bc75686893d0194f06 https://projecttools.nordicsemi.no/bitbucket/scm/zoi/platform_ncs.git
+ * zboss-stack-src    0b52c56e0e42cd367ace12eb9c6482e75e93bbb6 https://projecttools.nordicsemi.no/bitbucket/scm/zoi/zboss_stable
+ * zboss-stack-doc    e27795fd73b18a7f3cd497ef2ed3092e569c292a https://projecttools.nordicsemi.no/bitbucket/scm/zoi/zboss_doc
+ * nrf                3190fa573ff67bfb745028f203e9d0ea4144a1ce https://github.com/nrfconnect/sdk-nrf
+ * zephyr             d96769facecaba386b642d2c76c92c7694c81da0 https://github.com/nrfconnect/sdk-zephyr
+ * hostap             dda5457ad2cfce99e333980c7764c8d480ae4010 https://github.com/nrfconnect/sdk-hostap
+ * wfa-qt-control-app d649bd1342215e089d4211757186705cda179013 https://github.com/nrfconnect/sdk-wi-fiquicktrack-controlappc
+ * mcuboot            3c2f2ff12bc20625cd65730b6036d061de4da5f7 https://github.com/nrfconnect/sdk-mcuboot
+ * qcbor              751d36583a9ce1a640900c57e13c9b6b8f3a2ba2 https://github.com/laurencelundblade/QCBOR
+ * mbedtls            9beb52e67835a17368616b27700270b3eb99e4ca https://github.com/nrfconnect/sdk-mbedtls
+ * nrfxlib            13cd978b22d192447537a60f7fae5fe092930dc4 https://github.com/nrfconnect/sdk-nrfxlib
+ * trusted-firmware-m 2a2e1ce5e80fa3893a7747728003552bf6cfef55 https://github.com/nrfconnect/sdk-trusted-firmware-m
  * psa-arch-tests     94a349db22cd0e44136c281724ffc71b6e7391c3 https://github.com/nrfconnect/sdk-psa-arch-tests
- * matter             0b7d6e4909f070d20e0f5532927a7241f5de9364 https://github.com/nrfconnect/sdk-connectedhomeip
+ * matter             7653e6c78d0aab6d9c0fd25408e5a908435955b8 https://github.com/nrfconnect/sdk-connectedhomeip
  * cjson              c6af068b7f05207b28d68880740e4b9ec1e4b50a https://github.com/nrfconnect/sdk-cjson
  * azure-sdk-for-c    308c171cb4b5eed266649012a68406487ec81fb2 https://github.com/nrfconnect/azure-sdk-for-c
  * cirrus             3873a08377d93a479105a75ac390d3bbcd31d690 https://github.com/nrfconnect/sdk-mcu-drivers
@@ -43,7 +43,7 @@
  * cmsis-nn           0c8669d81381ccf3b1a01d699f3b68b50134a99f https://github.com/zephyrproject-rtos/cmsis-nn
  * edtt               64e5105ad82390164fb73fc654be3f73a608209a https://github.com/zephyrproject-rtos/edtt
  * fatfs              427159bf95ea49b7680facffaa29ad506b42709b https://github.com/zephyrproject-rtos/fatfs
- * hal_nordic         dce8519f7da37b0a745237679fd3f88250b495ff https://github.com/zephyrproject-rtos/hal_nordic
+ * hal_nordic         5470822384781624efb2fda28cbc6a895a227677 https://github.com/zephyrproject-rtos/hal_nordic
  * hal_st             fb8e79d1a261fd02aadff7c142729f1954163cf3 https://github.com/zephyrproject-rtos/hal_st
  * hal_wurthelektronik 24ca9873c3d608fad1fea0431836bc8f144c132e https://github.com/zephyrproject-rtos/hal_wurthelektronik
  * libmetal           03140d7f4bd9ba474ebfbb6256e84a9089248e67 https://github.com/zephyrproject-rtos/libmetal
@@ -64,16 +64,16 @@
 
 
 /** ZBOSS build tag */
-#define ZBOSS_BUILD_TAG "ncs_release-3.11.3.0"
+#define ZBOSS_BUILD_TAG "0b52c56e0"
 
 /** ZBOSS platform build tag */
-#define ZBOSS_PLATFORM_BUILD_TAG "v3.11.3.0+v5.1.4"
+#define ZBOSS_PLATFORM_BUILD_TAG "v3.11.2.159+v5.1.5"
 
 /** ZBOSS build date (UTC) */
-#define ZBOSS_BUILD_DATE 20240229
+#define ZBOSS_BUILD_DATE 20240404
 
 /** ZBOSS build time (UTC) */
-#define ZBOSS_BUILD_TIME 112147
+#define ZBOSS_BUILD_TIME 113621
 
 
 #endif /* ZBOSS_BUILD_INFO_H__ */

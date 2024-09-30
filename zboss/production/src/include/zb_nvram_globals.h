@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -53,6 +53,7 @@ typedef struct zb_nvram_pos_payload_checker_s
   zb_lbitfield_t pos:30;
   zb_lbitfield_t page:2;
   zb_uint16_t payload_length;
+  zb_uint16_t crc; /* < CRC field is needed to accumulate crc while writing */
 } zb_nvram_pos_payload_checker_t;
 
 typedef ZB_PACKED_PRE struct zb_nvram_page_state_s
@@ -103,7 +104,7 @@ typedef struct zb_nvram_globals_s
   zb_nvram_write_app_data_t     write_app_data_cb[ZB_NVRAM_APP_DATASET_NUMBER];
   zb_nvram_get_app_data_size_t  get_app_data_size_cb[ZB_NVRAM_APP_DATASET_NUMBER];
   zb_nvram_custom_ds_ctx_t      custom_ds_ctx;
-  
+
   zb_nvram_ds_filter_cb_t ds_filter_cb; /*!< If assigned function to be called to filter out some datasets at load  */
   zb_nvram_tl_t current_time_label;     /*!< Current time label. Max from wrote NVRAM dataset header */
   zb_nvram_page_state_t pages[ZB_NVRAM_MAX_N_PAGES];
