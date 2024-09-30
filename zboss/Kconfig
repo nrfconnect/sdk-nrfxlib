@@ -36,7 +36,7 @@ config ZIGBEE_LIBRARY_DEVELOPMENT
 endchoice # ZIGBEE_LIBRARY_TYPE
 
 # Add a menu option to switch between platform designs.
-choice
+choice ZIGBEE_LIBRARY_PLATFORM
 	prompt "Zigbee platform design"
 	default ZIGBEE_LIBRARY_SOC
 
@@ -54,7 +54,7 @@ config ZIGBEE_LIBRARY_NCP_DEV
 endchoice
 
 # Add a menu option to switch between subsets of Zigbee Green Power features.
-choice
+choice ZIGBEE_GP_FEATURES
 	prompt "Zigbee Green Power feature set configuration"
 	default ZIGBEE_GP_PB
 
