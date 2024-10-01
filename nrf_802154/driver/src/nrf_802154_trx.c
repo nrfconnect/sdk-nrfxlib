@@ -72,13 +72,13 @@
 #define EGU_SYNC_TASK         NRFX_CONCAT_2(NRF_EGU_TASK_TRIGGER, NRF_802154_EGU_SYNC_CHANNEL_NO)
 #define EGU_SYNC_INTMASK      NRFX_CONCAT_2(NRF_EGU_INT_TRIGGERED, NRF_802154_EGU_SYNC_CHANNEL_NO)
 
+#define RADIO_BASE            ((uintptr_t)NRF_RADIO)
+
 #if defined(DPPI_PRESENT)
-#define RADIO_BASE            NRF_RADIO_NS_BASE
 #define FICR_BASE             NRF_FICR_NS_BASE
 #else
 #define PPI_CCAIDLE_FEM       NRF_802154_PPI_RADIO_CCAIDLE_TO_FEM_GPIOTE ///< PPI that connects RADIO CCAIDLE event with GPIOTE tasks used by FEM
 #define PPI_CHGRP_ABORT       NRF_802154_PPI_ABORT_GROUP                 ///< PPI group used to disable PPIs when async event aborting radio operation is propagated through the system
-#define RADIO_BASE            NRF_RADIO_BASE
 #endif
 
 #define SHORT_ADDRESS_BCSTART NRF_RADIO_SHORT_ADDRESS_BCSTART_MASK
@@ -885,6 +885,11 @@ void nrf_802154_trx_enable(void)
     nrf_radio_packet_conf_t packet_conf;
 
     nrf_radio_mode_set(NRF_RADIO, NRF_RADIO_MODE_IEEE802154_250KBIT);
+
+#if defined(NRF54L_SERIES) && !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
+    // Apply MLTPAN-6
+    *(volatile uint32_t *)(RADIO_BASE + 0x810UL) = 2;
+#endif
 
 #if defined(NRF5340_XXAA) && !defined(CONFIG_SOC_SERIES_BSIM_NRFXX)
     // Apply ERRATA-117 after setting RADIO mode to NRF_RADIO_MODE_IEEE802154_250KBIT.
