@@ -85,6 +85,19 @@ struct init_packet_data {
 	const char *strid;   /* Remote group unique identifier. */
 };
 
+enum internal_pool_data_type {
+	NRF_RPC_INITIALIZATION,
+	NRF_RPC_ERROR
+};
+
+struct internal_pool_data {
+	enum internal_pool_data_type type;
+	const struct nrf_rpc_group *group;
+	int err;
+	uint8_t hdr_id;
+	uint8_t hdr_type;
+};
+
 /* Pool of statically allocated command contexts. */
 static struct nrf_rpc_cmd_ctx cmd_ctx_pool[CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE];
 
@@ -101,6 +114,8 @@ static bool is_initialized;
 
 /* Error handler provided to the init function. */
 static nrf_rpc_err_handler_t global_err_handler;
+
+static struct internal_pool_data internal_data;
 
 /* Array with all defiend groups */
 NRF_RPC_AUTO_ARR(nrf_rpc_groups_array, "grp");
@@ -343,6 +358,24 @@ static inline bool packet_validate(const uint8_t *packet)
 	       (addr < (uintptr_t)0 - (uintptr_t)NRF_RPC_HEADER_SIZE);
 }
 
+static void internal_tx_handler(void)
+{
+	struct internal_pool_data copy = internal_data;
+
+	nrf_rpc_os_event_set(&copy.group->data->decode_done_event);
+
+	if (copy.type == NRF_RPC_INITIALIZATION) {
+		if (group_init_send(copy.group)) {
+			NRF_RPC_ERR("Failed to send group init packet for group id: %d strid: %s",
+				    copy.group->data->src_group_id, copy.group->strid);
+		}
+	}
+
+	if (copy.type == NRF_RPC_ERROR) {
+		nrf_rpc_err(copy.err, NRF_RPC_ERR_SRC_RECV, copy.group, copy.hdr_id, copy.hdr_type);
+	}
+}
+
 static int transport_init(nrf_rpc_tr_receive_handler_t receive_cb)
 {
 	int err = 0;
@@ -513,7 +546,11 @@ static uint8_t parse_incoming_packet(struct nrf_rpc_cmd_ctx *cmd_ctx,
 /* Thread pool callback */
 static void execute_packet(const uint8_t *packet, size_t len)
 {
-	parse_incoming_packet(NULL, packet, len);
+	if (packet == (const uint8_t *)&internal_data) {
+		internal_tx_handler();
+	} else {
+		parse_incoming_packet(NULL, packet, len);
+	}
 }
 
 static bool protocol_version_check(const struct init_packet_data *init_data)
@@ -636,14 +673,13 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 		 * If remote processor does not know our group id, send an init packet back,
 		 * since it might have missed our original init packet.
 		 */
-		err = group_init_send(*group);
-		if (err) {
-			NRF_RPC_ERR("Failed to send group init packet for group id: %d strid: %s",
-				    group_data->src_group_id, (**group).strid);
-		}
+		internal_data.type = NRF_RPC_INITIALIZATION;
+		internal_data.group = *group;
+		nrf_rpc_os_thread_pool_send((const uint8_t *)&internal_data, sizeof(internal_data));
+		nrf_rpc_os_event_wait(&(*group)->data->decode_done_event, NRF_RPC_OS_WAIT_FOREVER);
 	}
 
-	return err;
+	return 0;
 }
 
 /* Callback from transport layer that handles incoming. */
@@ -765,8 +801,13 @@ cleanup_and_exit:
 	}
 
 	if (err < 0) {
-		nrf_rpc_err(err, NRF_RPC_ERR_SRC_RECV, group, hdr.id,
-			    hdr.type);
+		internal_data.type = NRF_RPC_ERROR;
+		internal_data.group = group;
+		internal_data.err = err;
+		internal_data.hdr_id = hdr.id;
+		internal_data.hdr_type = hdr.type;
+		nrf_rpc_os_thread_pool_send((const uint8_t *)&internal_data, sizeof(internal_data));
+		nrf_rpc_os_event_wait(&group->data->decode_done_event, NRF_RPC_OS_WAIT_FOREVER);
 	}
 }
 
