@@ -24,7 +24,6 @@ extern "C" {
 /**
 * @defgroup gzll_api Gazell Link Layer
 * @{
-* @ingroup modules_01_gzll
 * @brief Gazell Link Layer Application Programming Interface (API).
 */
 
