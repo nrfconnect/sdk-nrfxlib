@@ -141,7 +141,7 @@ void nrf_fuel_gauge_opt_params_default_get(struct nrf_fuel_gauge_config_paramete
 /**
  * @brief Initialize the nRF Fuel Gauge library.
  *
- * @note The battery model referenced in @ref parameters must be kept valid as long as the library
+ * @note The battery model referenced in @p parameters must be kept valid as long as the library
  *       is in use.
  *
  * @param[in] parameters Pointer to the parameter structure.
