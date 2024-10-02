@@ -51,5 +51,5 @@ To use the CX API in a protocol driver, you must follow the :ref:`MPSL CX API <m
 Implementing CX API
 *******************
 
-For details on the implementations of the MPSL CX API for certain PTAs already supported by the |NCS|, see :ref:`ug_radio_coex_mpsl_cx_based`.
+For details on the implementations of the MPSL CX API for certain PTAs already supported by the |NCS|, see :ref:`ug_radio_coex`.
 If your PTA is not supported yet, see :ref:`ug_radio_mpsl_cx_custom` for guidelines on how to add your own implementation.
