@@ -6,7 +6,14 @@
  */
 
 
-/**@file
+/**
+ * @file
+ * @defgroup ocrypto_ecdsa_p521 ECDSA secp521r1 low-level APIs
+ * @ingroup ocrypto_ecdsa
+ * @{
+ * @brief Type declarations and APIs to do Elliptic Curve Digital Signature Algorithm using the
+ *        NIST secp521r1 curve.
+ *
  * ECDSA P-521 is a specific implementation of a digital signature scheme.
  */
 
@@ -126,6 +133,8 @@ int ocrypto_ecdsa_p521_verify_hash(
     const uint8_t hash[64],
     const uint8_t pk[132]);
 
+
+/** @} */
 
 #ifdef __cplusplus
 }
