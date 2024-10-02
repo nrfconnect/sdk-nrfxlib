@@ -35,13 +35,13 @@ Selecting CX Implementation
 ***************************
 
 The :ref:`mpsl` itself does not provide any implementation of the CX interface.
-For details on the implementations present in the |NCS|, see :ref:`ug_radio_coex`.
+For details on the implementations present in the |NCS|, see :ref:`nrf:ug_radio_coex`.
 An application that needs to use CX must call :c:func:`mpsl_cx_interface_set()` during the system initialization.
 The initialization of any resource needed by the selected CX implementation is not in scope of :ref:`mpsl` and must also be done during the system initialization.
 
 .. note::
   In the |NCS|, the selection of a CX implementation and its appropriate initialization is done automatically, using Kconfig and Device Tree configuration options.
-  Please refer to :ref:`ug_radio_coex`.
+  Please refer to :ref:`nrf:ug_radio_coex`.
 
 Using CX API in a protocol driver
 *********************************
@@ -51,5 +51,5 @@ To use the CX API in a protocol driver, you must follow the :ref:`MPSL CX API <m
 Implementing CX API
 *******************
 
-For details on the implementations of the MPSL CX API for certain PTAs already supported by the |NCS|, see :ref:`ug_radio_coex`.
-If your PTA is not supported yet, see :ref:`ug_radio_mpsl_cx_custom` for guidelines on how to add your own implementation.
+For details on the implementations of the MPSL CX API for certain PTAs already supported by the |NCS|, see :ref:`nrf:ug_radio_coex`.
+If your PTA is not supported yet, see :ref:`nrf:ug_radio_mpsl_cx_custom` for guidelines on how to add your own implementation.
