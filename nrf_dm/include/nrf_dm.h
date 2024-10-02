@@ -296,7 +296,7 @@ nrf_dm_status_t nrf_dm_configure(const nrf_dm_config_t *config);
  * @note A call to @ref nrf_dm_proc_execute will take more time to
  * execute for a given config, since that also includes some pre-processing
  * and post-processing. To get the full expected duration use the constant
- * defined below @ref NRF_DM_PROC_EXECUTE_DURATION_OVERHEAD_US:
+ * defined below NRF_DM_PROC_EXECUTE_DURATION_OVERHEAD_US :
  * nrf_dm_get_duration_us(&config) + NRF_DM_PROC_EXECUTE_DURATION_OVERHEAD_US
  *
  * @param[in] config Pointer to configuration instance
