@@ -30,7 +30,7 @@ extern "C" {
  * \param[in]  key_buffer_size   Size in bytes of the key_buffer buffer
  * \param[out] key_buffer_length Size in bytes of the generated key
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_generate_key(const psa_key_attributes_t *attributes,
@@ -46,7 +46,7 @@ psa_status_t cc3xx_generate_key(const psa_key_attributes_t *attributes,
  * \param[in]  data_size       Size in bytes of the data buffer
  * \param[out] data_length     Size in bytes of the extracted public key
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_export_public_key(const psa_key_attributes_t *attributes,
@@ -63,9 +63,9 @@ psa_status_t cc3xx_export_public_key(const psa_key_attributes_t *attributes,
  * \param[out] key_buffer        Internal buffer to hold the key
  * \param[in]  key_buffer_size   Size in bytes of the internal buffer
  * \param[out] key_buffer_length Length in bytes of the imported key
- * \param[out] key_buffer_bits   Length in bits the imported key
+ * \param[out] key_bits          Length in bits the imported key
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_import_key(const psa_key_attributes_t *attributes,

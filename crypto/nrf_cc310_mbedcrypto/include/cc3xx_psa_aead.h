@@ -39,7 +39,7 @@ extern "C" {
  * \param[in]  ciphertext_size        Size in bytes of the ciphertext buffer
  * \param[out] ciphertext_length      Size in bytes of the encrypted data
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t
@@ -68,7 +68,7 @@ cc3xx_aead_encrypt(const psa_key_attributes_t *attributes,
  * \param[in]  plaintext_size         Size in bytes of the plaintext buffer
  * \param[out] plaintext_length       Size in bytes of the decrypted data
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t
@@ -88,13 +88,13 @@ cc3xx_aead_decrypt(const psa_key_attributes_t *attributes,
  * \param[in] key_buffer      The buffer containing the key material.
  * \param[in] key_buffer_size Size of \p key_buffer in bytes.
  * \param[in] alg             The AEAD algorithm
- *                            (#PSA_ALG_IS_AEAD(\p alg) must be true).
+ *                            (PSA_ALG_IS_AEAD(\p alg) must be true).
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_INVALID_ARGUMENT
- * \retval #PSA_ERROR_BAD_STATE
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
- * \retval #PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_INVALID_ARGUMENT
+ * \retval PSA_ERROR_BAD_STATE
+ * \retval PSA_ERROR_CORRUPTION_DETECTED
+ * \retval PSA_ERROR_NOT_SUPPORTED
  */
 psa_status_t cc3xx_aead_encrypt_setup(
         cc3xx_aead_operation_t *operation,
@@ -110,13 +110,13 @@ psa_status_t cc3xx_aead_encrypt_setup(
  * \param[in] key_buffer      The buffer containing the key material.
  * \param[in] key_buffer_size Size of \p key_buffer in bytes.
  * \param[in] alg             The AEAD algorithm
- *                            (#PSA_ALG_IS_AEAD(\p alg) must be true).
+ *                            (PSA_ALG_IS_AEAD(\p alg) must be true).
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_INVALID_ARGUMENT
- * \retval #PSA_ERROR_BAD_STATE
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
- * \retval #PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_INVALID_ARGUMENT
+ * \retval PSA_ERROR_BAD_STATE
+ * \retval PSA_ERROR_CORRUPTION_DETECTED
+ * \retval PSA_ERROR_NOT_SUPPORTED
  */
 psa_status_t cc3xx_aead_decrypt_setup(
         cc3xx_aead_operation_t *operation,
@@ -131,12 +131,12 @@ psa_status_t cc3xx_aead_decrypt_setup(
  * \param[in] nonce        Buffer containing the nonce to use.
  * \param[in] nonce_length Size of the nonce in bytes.
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_GENERIC_ERROR
- * \retval #PSA_ERROR_NOT_SUPPORTED
- * \retval #PSA_ERROR_INVALID_ARGUMENT
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
- * \retval #PSA_ERROR_DATA_INVALID
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_GENERIC_ERROR
+ * \retval PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_ERROR_INVALID_ARGUMENT
+ * \retval PSA_ERROR_CORRUPTION_DETECTED
+ * \retval PSA_ERROR_DATA_INVALID
  */
 psa_status_t cc3xx_aead_set_nonce(
         cc3xx_aead_operation_t *operation,
@@ -150,10 +150,10 @@ psa_status_t cc3xx_aead_set_nonce(
  * \param[in] ad_length        Size of the additional data in bytes.
  * \param[in] plaintext_length Size of the plaintext to encrypt in bytes.
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_INVALID_ARGUMENT
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
- * \retval #PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_INVALID_ARGUMENT
+ * \retval PSA_ERROR_CORRUPTION_DETECTED
+ * \retval PSA_ERROR_NOT_SUPPORTED
  */
 psa_status_t cc3xx_aead_set_lengths(
         cc3xx_aead_operation_t *operation,
@@ -167,11 +167,11 @@ psa_status_t cc3xx_aead_set_lengths(
  * \param[in] input        Buffer containing the additional data.
  * \param[in] input_size   Size of the input buffer in bytes.
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_INVALID_ARGUMENT
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
- * \retval #PSA_ERROR_NOT_SUPPORTED
- * \retval #PSA_ERROR_DATA_INVALID
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_INVALID_ARGUMENT
+ * \retval PSA_ERROR_CORRUPTION_DETECTED
+ * \retval PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_ERROR_DATA_INVALID
  */
 psa_status_t cc3xx_aead_update_ad(
         cc3xx_aead_operation_t *operation,
@@ -188,11 +188,11 @@ psa_status_t cc3xx_aead_update_ad(
  * \param[in]  output_size   Size of the output buffer in bytes.
  * \param[out] output_length The number of bytes that make up the output.
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_INVALID_ARGUMENT
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
- * \retval #PSA_ERROR_NOT_SUPPORTED
- * \retval #PSA_ERROR_DATA_INVALID
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_INVALID_ARGUMENT
+ * \retval PSA_ERROR_CORRUPTION_DETECTED
+ * \retval PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_ERROR_DATA_INVALID
  */
 psa_status_t cc3xx_aead_update(
         cc3xx_aead_operation_t *operation,
@@ -213,10 +213,10 @@ psa_status_t cc3xx_aead_update(
  * \param[in] tag_size           Size of the tag buffer in bytes.
  * \param[out] tag_length        The number of bytes that make up the tag.
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_INVALID_ARGUMENT
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
- * \retval #PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_INVALID_ARGUMENT
+ * \retval PSA_ERROR_CORRUPTION_DETECTED
+ * \retval PSA_ERROR_NOT_SUPPORTED
  */
 psa_status_t cc3xx_aead_finish(
         cc3xx_aead_operation_t *operation,
@@ -237,10 +237,10 @@ psa_status_t cc3xx_aead_finish(
  * \param[in] tag               Buffer containing the tag
  * \param[in] tag_size          Size of the tag buffer in bytes
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_INVALID_ARGUMENT
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
- * \retval #PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_INVALID_ARGUMENT
+ * \retval PSA_ERROR_CORRUPTION_DETECTED
+ * \retval PSA_ERROR_NOT_SUPPORTED
  */
 psa_status_t cc3xx_aead_verify(
         cc3xx_aead_operation_t *operation,
@@ -254,8 +254,8 @@ psa_status_t cc3xx_aead_verify(
  *
  * \param[out] operation Initialized AEAD operation.
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_NOT_SUPPORTED
  */
 psa_status_t cc3xx_aead_abort(cc3xx_aead_operation_t *operation);
 

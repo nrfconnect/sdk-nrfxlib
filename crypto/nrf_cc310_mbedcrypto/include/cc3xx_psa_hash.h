@@ -29,7 +29,7 @@ extern "C" {
  * \param[in] operation Pointer to the operation object to be setup
  * \param[in] alg       Algorithm for hash to be used
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_hash_setup(cc3xx_hash_operation_t *operation,
@@ -40,7 +40,7 @@ psa_status_t cc3xx_hash_setup(cc3xx_hash_operation_t *operation,
  * \param[in]  source_operation Pointer to the operation to be cloned
  * \param[out] target_operation Pointer to the target operation
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_hash_clone(const cc3xx_hash_operation_t *source_operation,
@@ -52,7 +52,7 @@ psa_status_t cc3xx_hash_clone(const cc3xx_hash_operation_t *source_operation,
  * \param[in]  input        Buffer containing the input data
  * \param[out] input_length Size in bytes of the input data
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_hash_update(cc3xx_hash_operation_t *operation,
@@ -65,7 +65,7 @@ psa_status_t cc3xx_hash_update(cc3xx_hash_operation_t *operation,
  * \param[in]  hash_size   Size in bytes of the hash buffer
  * \param[out] hash_length Size of the produced hash in bytes
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_hash_finish(cc3xx_hash_operation_t *operation, uint8_t *hash,
@@ -75,7 +75,7 @@ psa_status_t cc3xx_hash_finish(cc3xx_hash_operation_t *operation, uint8_t *hash,
  *
  * \param[out] operation Pointer to the operation object
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_hash_abort(cc3xx_hash_operation_t *operation);
@@ -90,7 +90,7 @@ psa_status_t cc3xx_hash_abort(cc3xx_hash_operation_t *operation);
  * \param[in]  hash_size    Size in bytes of the hash buffer
  * \param[out] hash_length  Size in bytes
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_hash_compute(psa_algorithm_t alg, const uint8_t *input,

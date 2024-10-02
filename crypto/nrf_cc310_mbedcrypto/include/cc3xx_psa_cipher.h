@@ -34,11 +34,11 @@ extern "C" {
  * \param[in] alg        Algorithm to setup for which PSA_ALG_IS_CIPHER(alg)
  *                       must be true
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_NOT_SUPPORTED
- * \retval #PSA_ERROR_INVALID_ARGUMENT
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
- * \retval #PSA_ERROR_BAD_STATE
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_ERROR_INVALID_ARGUMENT
+ * \retval PSA_ERROR_CORRUPTION_DETECTED
+ * \retval PSA_ERROR_BAD_STATE
  *
  */
 psa_status_t cc3xx_cipher_encrypt_setup(
@@ -57,11 +57,11 @@ psa_status_t cc3xx_cipher_encrypt_setup(
  * \param[in] alg        Algorithm to setup for which PSA_ALG_IS_CIPHER(alg)
  *                       must be true
  *
- * \retval #PSA_SUCCESS
- * \retval #PSA_ERROR_NOT_SUPPORTED
- * \retval #PSA_ERROR_INVALID_ARGUMENT
- * \retval #PSA_ERROR_CORRUPTION_DETECTED
- * \retval #PSA_ERROR_BAD_STATE
+ * \retval PSA_SUCCESS
+ * \retval PSA_ERROR_NOT_SUPPORTED
+ * \retval PSA_ERROR_INVALID_ARGUMENT
+ * \retval PSA_ERROR_CORRUPTION_DETECTED
+ * \retval PSA_ERROR_BAD_STATE
  *
  */
 psa_status_t cc3xx_cipher_decrypt_setup(
@@ -76,7 +76,7 @@ psa_status_t cc3xx_cipher_decrypt_setup(
  * \param[in] iv        Buffer holding the IV to setup
  * \param[in] iv_length Size in bytes of the IV
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_cipher_set_iv(
@@ -93,7 +93,7 @@ psa_status_t cc3xx_cipher_set_iv(
  * \param[in]  output_size   Size in bytes of the output buffer
  * \param[out] output_length Size in bytes of the actual output
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_cipher_update(
@@ -109,7 +109,7 @@ psa_status_t cc3xx_cipher_update(
  * \param[in]  output_size   Size in bytes of the output buffer
  * \param[out] output_length Size in bytes of the encrypted output
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_cipher_finish(
@@ -120,7 +120,7 @@ psa_status_t cc3xx_cipher_finish(
  *
  * \param[out] operation Pointer to the operation object
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_cipher_abort(
@@ -141,7 +141,7 @@ psa_status_t cc3xx_cipher_abort(
  * \param[in]  output_size     Size in bytes of the output buffer
  * \param[out] output_length   Size in bytes of the encrypted data
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_cipher_encrypt(
@@ -170,7 +170,7 @@ psa_status_t cc3xx_cipher_encrypt(
  * \param[in]  output_size     Size in bytes of the output buffer
  * \param[out] output_length   Size in bytes of the decrypted data
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_cipher_decrypt(

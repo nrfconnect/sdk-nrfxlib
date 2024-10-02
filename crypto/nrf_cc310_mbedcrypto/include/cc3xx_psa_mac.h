@@ -32,7 +32,7 @@ extern "C" {
  * \param[in] key_buffer_size Size in bytes of the key
  * \param[in] alg             Algorithm to setup
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_mac_sign_setup(cc3xx_mac_operation_t *operation,
@@ -48,7 +48,7 @@ psa_status_t cc3xx_mac_sign_setup(cc3xx_mac_operation_t *operation,
  * \param[in] key_buffer_size Size in bytes of the key
  * \param[in] alg             Algorithm to setup
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_mac_verify_setup(cc3xx_mac_operation_t *operation,
@@ -63,7 +63,7 @@ psa_status_t cc3xx_mac_verify_setup(cc3xx_mac_operation_t *operation,
  * \param[in] input        Buffer holding the new input data
  * \param[in] input_length Size in bytes of the input buffer
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_mac_update(cc3xx_mac_operation_t *operation,
@@ -76,7 +76,7 @@ psa_status_t cc3xx_mac_update(cc3xx_mac_operation_t *operation,
  * \param[in]  mac_size   Size in bytes of the mac buffer
  * \param[out] mac_length Size in bytes of the produced MAC
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_mac_sign_finish(cc3xx_mac_operation_t *operation,
@@ -90,7 +90,7 @@ psa_status_t cc3xx_mac_sign_finish(cc3xx_mac_operation_t *operation,
  * \param[in] mac        Buffer holding the reference MAC value to verify
  * \param[in] mac_length Size in bytes of the mac buffer
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_mac_verify_finish(cc3xx_mac_operation_t *operation,
@@ -100,7 +100,7 @@ psa_status_t cc3xx_mac_verify_finish(cc3xx_mac_operation_t *operation,
  *
  * \param[out] operation Pointer to the operation object
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_mac_abort(cc3xx_mac_operation_t *operation);
@@ -118,7 +118,7 @@ psa_status_t cc3xx_mac_abort(cc3xx_mac_operation_t *operation);
  * \param[in]  mac_size        Size in bytes of the mac buffer
  * \param[out] mac_length      Size in bytes of the produced MAC value
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_mac_compute(const psa_key_attributes_t *attributes,

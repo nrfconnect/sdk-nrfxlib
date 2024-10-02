@@ -35,7 +35,7 @@ extern "C" {
  * \param[in]  signature_size   Size in bytes of the signature buffer
  * \param[out] signature_length Size in bytes of the signature
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_sign_message(const psa_key_attributes_t *attributes,
@@ -56,7 +56,7 @@ psa_status_t cc3xx_sign_message(const psa_key_attributes_t *attributes,
  * \param[in] signature        Signature to verify
  * \param[in] signature_length Size in bytes of the signature
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_verify_message(const psa_key_attributes_t *attributes,
@@ -77,7 +77,7 @@ psa_status_t cc3xx_verify_message(const psa_key_attributes_t *attributes,
  * \param[in]  signature_size   Size in bytes of the signature buffer
  * \param[out] signature_length Size in bytes of the signature
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_sign_hash(const psa_key_attributes_t *attributes,
@@ -97,7 +97,7 @@ psa_status_t cc3xx_sign_hash(const psa_key_attributes_t *attributes,
  * \param[in] signature        Signature to verify
  * \param[in] signature_length Size in bytes of the signature
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_verify_hash(const psa_key_attributes_t *attributes,

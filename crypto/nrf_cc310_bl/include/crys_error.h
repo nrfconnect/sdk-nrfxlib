@@ -48,7 +48,6 @@ extern "C"
 for each module of the layers listed below.
 @defgroup crys_error CryptoCell general base error codes
 @{
-@ingroup cryptocell_api
 */
 
 /*! The definitions of the error number space used for the different modules */
@@ -267,7 +266,3 @@ typedef uint32_t CRYSError_t;
 @}
  */
 #endif
-
-
-
-

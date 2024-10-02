@@ -33,8 +33,9 @@ extern "C" {
  * \param[out] output          Buffer to hold the agreed key
  * \param[in]  output_size     Size in bytes of the output buffer
  * \param[out] output_length   Size in bytes of the agreed key
+ * \param[in]  alg             Algorithm
  *
- * \retval  PSA_SUCCESS on success. Error code from \ref psa_status_t on
+ * \retval  PSA_SUCCESS on success. Error code from psa_status_t on
  *          failure
  */
 psa_status_t cc3xx_key_agreement(
