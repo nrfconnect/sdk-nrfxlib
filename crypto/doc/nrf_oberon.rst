@@ -35,7 +35,7 @@ The library does not require any initialization before the APIs can be used, alt
 Mbed TLS integration
 ====================
 Starting from version 3.0.5, the nrf_oberon library contains a companion library that provides Mbed TLS integration for select features.
-This must be used with the :ref:`nrf_security`.
+This must be used with the :ref:`nrf:nrf_security`.
 
 
 Supported features
@@ -55,7 +55,7 @@ The supported features for the Mbed TLS companion library are:
 PSA driver integration
 ======================
 Starting from version 3.0.9, the nrf_oberon library contains a companion library that provides PSA driver integration for select features.
-This must be used with the :ref:`nrf_security`.
+This must be used with the :ref:`nrf:nrf_security`.
 
 Supported features
 ------------------

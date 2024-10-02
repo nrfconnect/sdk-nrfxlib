@@ -14,7 +14,7 @@ To configure PDP contexts and activate PDN connections, the application must use
 When performing network operations on any PDN, the application ensures that the PDN connection is available.
 For more information about how to configure PDP contexts, activate PDN connections, and determine their state, see the `Packet domain commands`_ section in the nRF9160 AT Commands Reference Guide or the same section in the `nRF91x1 AT Commands Reference Guide`_ depending on the SiP you are using.
 
-Alternatively, the :ref:`pdn_readme` library in |NCS| can be used to receive events on PDN connectivity and manage packet data networks.
+Alternatively, the :ref:`nrf:pdn_readme` library in |NCS| can be used to receive events on PDN connectivity and manage packet data networks.
 
 
 Configuring a socket to use a PDN

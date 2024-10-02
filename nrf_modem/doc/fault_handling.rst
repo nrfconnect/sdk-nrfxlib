@@ -20,7 +20,7 @@ When the modem crashes, the modem fault handler set by the application is called
 In some cases, the modem fault handler also contains information about the program counter of the modem.
 For a complete list of the modem fault reasons, see :ref:`nrf_modem_fault_api_reasons`.
 
-In |NCS|, the :ref:`nrf_modem_lib_readme` sets the modem fault handler during Modem library initialization.
+In |NCS|, the :ref:`nrf:nrf_modem_lib_readme` sets the modem fault handler during Modem library initialization.
 
 Recovering from a fault
 ***********************
@@ -38,7 +38,7 @@ The application can reinitialize the modem by reinitializing the Modem library t
    To make sure the application is able to retrieve the coredump correctly, the application must not re-initialize the modem until all the outstanding trace data has been processed.
    The :c:func:`nrf_modem_trace_get` function returns ``-NRF_ENODATA`` when all outstanding trace data has been processed by the application.
 
-When the Modem library is used in |NCS|, the :ref:`nrf_modem_lib_readme` handles synchronizing modem re-initialization with tracing operations.
+When the Modem library is used in |NCS|, the :ref:`nrf:nrf_modem_lib_readme` handles synchronizing modem re-initialization with tracing operations.
 
 Networking sockets
 ******************

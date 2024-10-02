@@ -48,7 +48,7 @@ DRGN-6362: Synthesized low frequency clock source not tested
 DRGN-12259: HCI Receiver and Transmitter Test commands not available
   The HCI Receiver and Transmitter Test commands are not available.
 
-  **Workaround:** To perform a radio test, use the :ref:`direct_test_mode` sample.
+  **Workaround:** To perform a radio test, use the :ref:`nrf:direct_test_mode` sample.
   For nRF52 Series devices, you can choose to use the DTM application in the nRF5 SDK instead.
 
 DRGN-15989: In some cases, the SDC can connect to the peer it is already connected to

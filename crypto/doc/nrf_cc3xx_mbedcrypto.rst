@@ -17,7 +17,7 @@ The nrf_cc3xx_mbedcrypto library provides low-level integration with the Mbed TL
 Some of the APIs expressed in this library use the Mbed TLS "alternative implementation" abstraction layer.
 
 .. note::
-   It is not recommended to link to this library directly. Use the :ref:`nrf_security`.
+   It is not recommended to link to this library directly. Use the :ref:`nrf:nrf_security`.
 
 
 Supported cryptographic algorithms
@@ -134,7 +134,7 @@ Otherwise, the library will default to use the clib functions :c:func:`calloc` a
 PSA driver integration
 ======================
 Starting from version 0.9.13, the nrf_oberon library contains a companion library that provides PSA driver integration for select features.
-This must be used with the :ref:`nrf_security`.
+This must be used with the :ref:`nrf:nrf_security`.
 
 Supported features
 ------------------

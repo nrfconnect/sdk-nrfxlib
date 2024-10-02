@@ -10,7 +10,7 @@ OpenThread pre-built libraries
 The |NCS| provides pre-built OpenThread libraries.
 Some of these are certified by the Thread Group for use with Nordic Semiconductor devices.
 This simplifies the OpenThread certification process of the final product.
-See :ref:`ug_thread_cert` for more information.
+See :ref:`nrf:ug_thread_cert` for more information.
 
 The pre-built libraries vary depending on stack configuration and hardware cryptography capabilities:
 

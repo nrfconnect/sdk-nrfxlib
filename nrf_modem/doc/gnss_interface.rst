@@ -161,7 +161,7 @@ If the fix retry parameter is set to zero, GNSS is allowed to run indefinitely u
 
 .. note::
 
-   Unless disabled using the :c:func:`nrf_modem_gnss_use_case_set` function, GNSS performs :term:`Scheduled downloads` in periodic navigation mode.
+   Unless disabled using the :c:func:`nrf_modem_gnss_use_case_set` function, GNSS performs :term:`nrf:Scheduled downloads` in periodic navigation mode.
    During a scheduled download, the fix interval and fix retry parameters are temporarily ignored.
    After GNSS has downloaded the data it needs, normal operation is resumed.
 
@@ -483,7 +483,7 @@ A-GNSS data
 ***********
 
 You can use GNSS assistance data to shorten TTFF and decrease GNSS power consumption.
-See :ref:`lib_nrf_cloud_agps` and :ref:`lib_nrf_cloud_pgps` for information how to obtain assistance data from :ref:`lib_nrf_cloud` to be used with the nRF91 Series SiPs.
+See :ref:`nrf:lib_nrf_cloud_agps` and :ref:`nrf:lib_nrf_cloud_pgps` for information how to obtain assistance data from :ref:`nrf:lib_nrf_cloud` to be used with the nRF91 Series SiPs.
 
 .. _gnss_int_assistance_need:
 

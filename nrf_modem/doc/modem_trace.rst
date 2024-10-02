@@ -11,7 +11,7 @@ Modem traces
 The modem trace APIs in the Modem library are used to retrieve binary trace data from the modem core.
 The application is responsible for forwarding the trace data to a host computer, where it can be collected with the `Cellular Monitor`_ PC tool to extract PCAP data, or to save them to file for further inspection by Nordic Semiconductor.
 
-In the |NCS|, the :ref:`nrf_modem_lib_readme` takes care of retrieving and forwarding the trace data, for example to a computer or to a non-volatile memory.
+In the |NCS|, the :ref:`nrf:nrf_modem_lib_readme` takes care of retrieving and forwarding the trace data, for example to a computer or to a non-volatile memory.
 
 Enabling modem traces
 *********************
@@ -20,7 +20,7 @@ To enable traces the application must initialize the Modem library with a non-ze
 The trace output from the modem can be toggled at runtime using the AT command ``%XMODEMTRACE``, which can also be used to change the trace output level.
 For more information, see the `Modem trace activation %XMODEMTRACE`_ section in the nRF9160 AT Commands Reference Guide or the `same section <nRF91x1 modem trace activation %XMODEMTRACE_>`_ in the nRF91x1 AT Commands Reference Guide, depending on the SiP you are using.
 
-In the |NCS|, the :ref:`nrf_modem_lib_readme` offers a dedicated function to simplify the task of enabling and disabling the trace output, and setting the trace level.
+In the |NCS|, the :ref:`nrf:nrf_modem_lib_readme` offers a dedicated function to simplify the task of enabling and disabling the trace output, and setting the trace level.
 
 Fetching modem traces
 *********************

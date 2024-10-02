@@ -8,7 +8,7 @@ Low Complexity Communication Codec (LC3)
    :depth: 2
 
 Low Complexity Communication Codec (LC3) is the default software codec for the nRF5340 Audio application, conformant to the `Bluetooth® LE Audio specifications`_ (Bluetooth 5.2).
-For more information about the codec usage in the application, see the :ref:`application documentation page <nrf53_audio_app>`.
+For more information about the codec usage in the application, see the :ref:`application documentation page <nrf:nrf53_audio_app>`.
 
 The nrfxlib module includes the :file:`lc3/include/sw_codec_lc3.h` and :file:`lc3/src/sw_codec_lc3.c` files that form a translation layer for using a standardized API in the nRF5340 Audio application.
 
