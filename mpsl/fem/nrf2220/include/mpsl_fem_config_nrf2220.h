@@ -44,9 +44,15 @@ typedef struct
 {
     /** nRF2220 parameters configuration. */
     mpsl_fem_nrf2220_config_t     fem_config;
-    /** Chip Select pin configuration. Configuration where @ref cs_pin_config.enable is false is unsupported. */
+    /**
+     * Chip Select pin configuration. Configuration where @ref mpsl_fem_gpiote_pin_config_t.enable
+     * is false is unsupported.
+     */
     mpsl_fem_gpiote_pin_config_t  cs_pin_config;
-    /** Mode pin configuration. Configuration where @ref md_pin_config.enable is false is unsupported. */
+    /**
+     * Mode pin configuration. Configuration where @ref mpsl_fem_gpiote_pin_config_t.enable is
+     * false is unsupported.
+     */
     mpsl_fem_gpiote_pin_config_t  md_pin_config;
     /** TWI interface. */
     mpsl_fem_twi_if_t             twi_if;
