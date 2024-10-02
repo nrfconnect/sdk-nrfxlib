@@ -10,7 +10,6 @@
 /**
  * @defgroup nrf_nfc_errno Error codes for nRF NFC libraries.
  * @{
- * @ingroup nrf_nfc
  *
  * @brief Defines error codes that can be used in nRF NFC libraries.
  */
