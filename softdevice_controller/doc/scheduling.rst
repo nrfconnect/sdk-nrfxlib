@@ -362,7 +362,7 @@ Here :math:`\mathsf{C1}` can utilize the free time left by a previously disconne
    Multilink scheduling and Connection Event Length Extension
 
 Scanner and Initiator timing
-************************
+****************************
 
 Scanning is a periodic activity where the |controller| listens for packets from Advertisers.
 Initiating is a periodic activity where the |controller| tries to connect to an Advertiser by first listening for packets from an Advertiser.
