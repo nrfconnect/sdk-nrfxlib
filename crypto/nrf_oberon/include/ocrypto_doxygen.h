@@ -5,21 +5,17 @@
  * SPDX-License-Identifier: LicenseRef-Nordic-5-Clause
  */
 
-/**@file
+/**
+ * @file
+ *
  * @defgroup ocrypto Oberon cryptographic library
- * @{
  * @brief Highly optimized cryptographic algorithm implementation for Cortex-M0, Cortex-M4,
  * and Cortex-M33. Created by Oberon, under distribution license with Nordic Semiconductor ASA.
- * @}
- *
-
-/*
- * @defgroup ocrypto_chacha_poly ChaCha20-Poly1305
- * @ingroup ocrypto
  * @{
+ *
+ * @defgroup ocrypto_chacha_poly ChaCha20-Poly1305
  * @brief ChaCha20-Poly1305 is an authenticated encryption algorithm with optional
  *        additional authenticated data developed by Daniel J.Bernstein.
+ *
  * @}
  */
-
-/** @} */
