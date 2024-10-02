@@ -154,7 +154,7 @@ typedef enum
 	 *
 	 * @param data Pointer to the fragment of APDU.
 	 * @param data_length Length of data.
-	 * @param flags @ref nfc_t4t_data_ind_flags.
+	 * @param flags nfc_t4t_data_ind_flags.
 	 */
 } nfc_t4t_event_t;
 
@@ -216,13 +216,13 @@ typedef enum
 /** @brief Callback to pass events from NFCLib to application.
  *
  * @param context Application context for callback execution.
- * @param event The event that occurred. see @ref nfc_t4t_event.
+ * @param event The event that occurred. see nfc_t4t_event.
  * @param data Data to send to the application (event specific).
  * @param data_length Length of the data. In case of @ref
  * NFC_T4T_EVENT_NDEF_UPDATED, this parameter contains the value of the 'NLEN'
  * field of the NDEF File; if the value is non-zero, it corresponds to the new
  * size of the NDEF Message in the updated NDEF File.
- * @param flags Some events deliver flags. see @ref nfc_t4t_event for details.
+ * @param flags Some events deliver flags. see nfc_t4t_event for details.
  */
 typedef void (*nfc_t4t_callback_t)(void *context,
 				   nfc_t4t_event_t event,
