@@ -18,6 +18,8 @@
 /**
  * @brief  Initialize the BAL layer.
  *
+ * @param opriv Pointer to the OSAL layer context returned by the
+ *			nrf_wifi_osal_init API.
  * @param cfg_params Pointer to the configuration parameters for the BAL layer.
  * @param intr_callbk_fn Pointer to the callback function which the user of this
  *	       layer needs to implement to handle interrupts from the RPU.
@@ -40,6 +42,8 @@ struct nrf_wifi_bal_priv *nrf_wifi_bal_init(struct nrf_wifi_bal_cfg_params *cfg_
  *
  * @param bpriv Pointer to the BAL layer context returned by the
  *              @ref nrf_wifi_bal_init API.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_deinit(struct nrf_wifi_bal_priv *bpriv);
 
@@ -60,6 +64,8 @@ struct nrf_wifi_bal_dev_ctx *nrf_wifi_bal_dev_add(struct nrf_wifi_bal_priv *bpri
  *
  * @param bal_dev_ctx Pointer to the device context returned by the
  *                    @ref nrf_wifi_bal_dev_add API.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_dev_rem(struct nrf_wifi_bal_dev_ctx *bal_dev_ctx);
 
@@ -78,6 +84,8 @@ enum nrf_wifi_status nrf_wifi_bal_dev_init(struct nrf_wifi_bal_dev_ctx *bal_dev_
  *
  * @param bal_dev_ctx Pointer to the device context returned by the
  *                    @ref nrf_wifi_bal_dev_add API.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_dev_deinit(struct nrf_wifi_bal_dev_ctx *bal_dev_ctx);
 
@@ -97,6 +105,8 @@ unsigned int nrf_wifi_bal_read_word(void *ctx, unsigned long addr_offset);
  * @param ctx Pointer to the context.
  * @param addr_offset Address offset to write to.
  * @param val Value to write.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_write_word(void *ctx,
 		unsigned long addr_offset,
@@ -109,6 +119,8 @@ void nrf_wifi_bal_write_word(void *ctx,
  * @param dest_addr Pointer to the destination address.
  * @param src_addr_offset Source address offset to read from.
  * @param len Length of the data to read.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_read_block(void *ctx,
 		void *dest_addr,
@@ -122,6 +134,8 @@ void nrf_wifi_bal_read_block(void *ctx,
  * @param dest_addr_offset Destination address offset to write to.
  * @param src_addr Pointer to the source address.
  * @param len Length of the data to write.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_write_block(void *ctx,
 		unsigned long dest_addr_offset,
@@ -150,6 +164,8 @@ unsigned long nrf_wifi_bal_dma_map(void *ctx,
  * @param phy_addr Physical address to unmap.
  * @param len Length of the data to unmap.
  * @param dma_dir DMA direction.
+ *
+ * @return None.
  */
 unsigned long nrf_wifi_bal_dma_unmap(void *ctx,
 		unsigned long phy_addr,
@@ -160,6 +176,8 @@ unsigned long nrf_wifi_bal_dma_unmap(void *ctx,
  * @brief Enable bus access recording.
  *
  * @param ctx Pointer to the context.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_bus_access_rec_enab(void *ctx);
 
@@ -167,6 +185,8 @@ void nrf_wifi_bal_bus_access_rec_enab(void *ctx);
  * @brief Disable bus access recording.
  *
  * @param ctx Pointer to the context.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_bus_access_rec_disab(void *ctx);
 
@@ -174,6 +194,8 @@ void nrf_wifi_bal_bus_access_rec_disab(void *ctx);
  * @brief Print bus access count.
  *
  * @param ctx Pointer to the context.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_bus_access_cnt_print(void *ctx);
 
@@ -182,6 +204,8 @@ void nrf_wifi_bal_bus_access_cnt_print(void *ctx);
  * @brief Put the RPU to sleep.
  *
  * @param ctx Pointer to the context.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_rpu_ps_sleep(void *ctx);
 
@@ -189,6 +213,8 @@ void nrf_wifi_bal_rpu_ps_sleep(void *ctx);
  * @brief Wake up the RPU from sleep.
  *
  * @param ctx Pointer to the context.
+ *
+ * @return None.
  */
 void nrf_wifi_bal_rpu_ps_wake(void *ctx);
 

@@ -62,6 +62,8 @@ nrf_wifi_hal_init(struct nrf_wifi_hal_cfg_params *cfg_params,
  *
  * This API is used to deinitialize the HAL layer and is expected to be called
  * after done using the HAL layer.
+ *
+ * @return None.
  */
 void nrf_wifi_hal_deinit(struct nrf_wifi_hal_priv *hpriv);
 
@@ -92,7 +94,7 @@ enum NRF_WIFI_HAL_STATUS nrf_wifi_hal_status_unlocked(struct nrf_wifi_hal_dev_ct
  *
  * @param hal_ctx Pointer to HAL context.
  * @param cmd Pointer to command data.
- * @param cmd_size Size of the command data pointed to by @p cmd.
+ * @param cmd_size Size of the command data pointed to by @cmd.
  *
  * This function takes care of sending a command to the RPU. It does the
  * following:
@@ -140,7 +142,7 @@ enum nrf_wifi_status nrf_wifi_hal_data_cmd_send(struct nrf_wifi_hal_dev_ctx *hal
 /**
  * @brief Process events from the RPU.
  *
- * @param hal_ctx Pointer to HAL context.
+ * @param hpriv Pointer to HAL context.
  *
  * This function processes the events which have been queued into the event
  * queue by an ISR. It does the following:

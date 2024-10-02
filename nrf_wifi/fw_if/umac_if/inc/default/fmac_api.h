@@ -889,6 +889,8 @@ enum nrf_wifi_status nrf_wifi_fmac_get_conn_info(void *fmac_dev_ctx,
  *	    driver. It does the following:
  *		- De-initializes the HAL layer.
  *		- Frees the context for the UMAC IF layer.
+ *
+ * @return None
  */
 void nrf_wifi_fmac_deinit(struct nrf_wifi_fmac_priv *fpriv);
 
@@ -898,6 +900,8 @@ void nrf_wifi_fmac_deinit(struct nrf_wifi_fmac_priv *fpriv);
  *
  * This is a wrapper function which frees the memory for
  * an RPU instance at the UMAC layer.
+ *
+ * @return None.
  */
 void nrf_wifi_fmac_dev_rem(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
 
@@ -941,6 +945,8 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init(struct nrf_wifi_fmac_dev_ctx *fmac_d
  * This function de-initializes the firmware of an RPU instance.
  *		- RPU UMAC deinitialization command is executed
  *		- RX and TX is deallocated for firmware via UMAC command
+ *
+ * @return None.
  */
 void nrf_wifi_fmac_dev_deinit(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
 

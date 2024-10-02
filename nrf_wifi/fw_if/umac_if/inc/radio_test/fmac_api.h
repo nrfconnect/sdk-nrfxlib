@@ -94,10 +94,8 @@ enum nrf_wifi_status nrf_wifi_fmac_radio_test_prog_rx(struct nrf_wifi_fmac_dev_c
  * @param rf_test_type Type of RF test to be performed.
  * @param cap_data Pointer to the memory where the RF test capture is to be stored.
  * @param num_samples Number of RF test samples to capture.
- * @param capture_timeout Capture timeout.
  * @param lna_gain LNA gain value.
  * @param bb_gain Baseband gain value.
- * @param timeout_status Timeout status.
  *
  * This function is used to send a command to:
  *	- The RPU firmware to start the RF test capture in radio test mode.
@@ -215,6 +213,8 @@ enum nrf_wifi_status nrf_wifi_fmac_rf_test_compute_xo(struct nrf_wifi_fmac_dev_c
  *
  *	- De-initializes the HAL layer.
  *	- Frees the context for the UMAC IF layer.
+ *
+ * @return None
  */
 void nrf_wifi_fmac_deinit_rt(struct nrf_wifi_fmac_priv *fpriv);
 
@@ -224,6 +224,8 @@ void nrf_wifi_fmac_deinit_rt(struct nrf_wifi_fmac_priv *fpriv);
  * @param fmac_dev_ctx Pointer to the context of the RPU instance to be removed.
  *
  * This function handles the removal of an RPU instance at the UMAC IF layer.
+ *
+ * @return None.
  */
 void nrf_wifi_fmac_dev_rem_rt(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
 
@@ -261,6 +263,8 @@ enum nrf_wifi_status nrf_wifi_fmac_dev_init_rt(struct nrf_wifi_fmac_dev_ctx *fma
  * @param fmac_dev_ctx Pointer to the context of the RPU instance to be removed.
  *
  * This function de-initializes the firmware of an RPU instance.
+ *
+ * @return None.
  */
 void nrf_wifi_fmac_dev_deinit_rt(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx);
 
