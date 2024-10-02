@@ -503,8 +503,8 @@ extern "C" {
  *
  * Enables ECB peripheral to be used as hardware accelerator for on-the-fly AES-CCM* encryption.
  */
-#ifndef NRF_802154_ENCRYPTION_ACCELERATOR_ECB
-#if defined(NRF52_SERIES) || defined(NRF5340_XXAA)
+#if !defined(NRF_802154_ENCRYPTION_ACCELERATOR_ECB) || defined(__DOXYGEN__)
+#if defined(NRF52_SERIES) || defined(NRF5340_XXAA) || defined(__DOXYGEN__)
 #define NRF_802154_ENCRYPTION_ACCELERATOR_ECB 1
 #elif defined(NRF54H_SERIES) || defined(NRF54L_SERIES)
 #define NRF_802154_ENCRYPTION_ACCELERATOR_ECB 0
@@ -593,6 +593,8 @@ extern "C" {
 #ifndef NRF_802154_REQUEST_IMPL
 #define NRF_802154_REQUEST_IMPL NRF_802154_REQUEST_IMPL_SWI
 #endif
+
+/** @} */
 
 /**
  *@}

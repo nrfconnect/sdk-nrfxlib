@@ -114,7 +114,7 @@ int8_t nrf_802154_rssi_dbm_from_energy_level_calculate(uint8_t energy_level);
  *
  * @note Performs temperature correction internally.
  *
- * @param[int]  ed_sample  The hardware reported value.
+ * @param[in]  ed_sample  The hardware reported value.
  *
  * @return  Result of the energy detection procedure in dBm.
  */
