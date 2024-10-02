@@ -316,8 +316,6 @@ int32_t OSALCALL LC3EncodeSessionData(LC3EncoderHandle_t encodeHandle, LC3Encode
  * this returns.  The encodeHandle is no longer valid and should not be reused.
  *
  * @param[in] encodeHandle  Handle to the encoder instance to close.
- *
- * @returns  None.
  */
 void OSALCALL LC3EncodeSessionClose(LC3EncoderHandle_t encodeHandle);
 
@@ -393,8 +391,6 @@ int32_t OSALCALL LC3DecodeSessionData(LC3DecoderHandle_t decodeHandle, LC3Decode
  * this returns.  The decodeHandle is no longer valid and should not be reused.
  *
  * @param[in] decodeHandle  Handle to the decoder instance to close.
- *
- * @returns  None.
  */
 void OSALCALL LC3DecodeSessionClose(LC3DecoderHandle_t decodeHandle);
 
