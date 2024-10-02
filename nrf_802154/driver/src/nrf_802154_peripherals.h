@@ -180,7 +180,7 @@ extern "C" {
 
 #if NRF_802154_NOTIFICATION_IMPL == NRF_802154_NOTIFICATION_IMPL_SWI
 /**
- * @def NRF_802154_EGU_NOTIFICATION_SWI_CHANNEL_NO
+ * @def NRF_802154_EGU_NOTIFICATION_CHANNEL_NO
  *
  * The channel number of the @ref NRF_802154_EGU_INSTANCE used by the
  * "swi" implementation of the "notification" module.
@@ -266,7 +266,7 @@ extern "C" {
                                                                 NRF_802154_EGU_RAMP_UP_CHANNEL_NO)
 
 /**
- * @def NRF_802154_EGU_CHANNELS_MASK
+ * @def NRF_802154_EGU_USED_CHANNELS_MASK
  *
  * The mask of fixed channels of the @ref NRF_802154_EGU_INSTANCE used by the
  * nRF 802.15.4 Radio Driver.

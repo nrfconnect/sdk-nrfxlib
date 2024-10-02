@@ -42,7 +42,7 @@
 #include "nrf_802154_config.h"
 #include "nrf_802154_types.h"
 
-#if NRF_802154_DELAYED_TRX_ENABLED
+#if NRF_802154_DELAYED_TRX_ENABLED || defined(__DOXYGEN__)
 
 /**
  * @defgroup nrf_802154_delayed_trx Delayed transmission and reception window features
@@ -94,10 +94,6 @@ bool nrf_802154_delayed_trx_transmit(uint8_t                                 * p
  * @retval false    No delayed transmission was scheduled.
  */
 bool nrf_802154_delayed_trx_transmit_cancel(void);
-
-/**
- *@}
- **/
 
 /**
  * @brief Requests the reception of a frame at a given time.
