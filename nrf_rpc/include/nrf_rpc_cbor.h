@@ -112,9 +112,8 @@ struct nrf_rpc_cbor_ctx {
  * functions. If not @ref NRF_RPC_CBOR_DISCARD() can be used.
  *
  * @param[in]  _group nRF RPC group.
- * @param[out] _ctx   Variable of type @ref nrf_rpc_cbor_ctx or
- *                    @ref nrf_rpc_cbor_rsp_ctx that will hold newly allocated
- *                    resources to encode and send a packet.
+ * @param[out] _ctx   Variable of type @ref nrf_rpc_cbor_ctx that will hold
+ *                    newly allocated resources to encode and send a packet.
  * @param[in]  _len   Requested length of the packet.
  */
 #define NRF_RPC_CBOR_ALLOC(_group, _ctx, _len)                                           \
