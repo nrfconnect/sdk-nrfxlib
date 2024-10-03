@@ -41,7 +41,7 @@ typedef enum
 */
 typedef struct
 {
-  uint64_t              event_time_rel_us;              ///< Relative time to next event. Only valid during MPSL_PM_EVENT_STATE_BEFORE_EVENT.
+  uint64_t              event_time_abs_us;              ///< Absolute time of next event. Only valid during MPSL_PM_EVENT_STATE_BEFORE_EVENT.
   mpsl_pm_event_state_t event_state;                    ///< State of event @ref mpsl_pm_event_state_t.
   uint8_t               cnt_flag;                       ///< Used both to inform low priority that it has been preempted and to keep track of PM parameter updates from event to event.
 } mpsl_pm_params_t;
