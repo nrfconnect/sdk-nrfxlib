@@ -133,6 +133,9 @@ extern "C" {
 /** @brief Default ISO TX PDU buffer per stream count. */
 #define SDC_DEFAULT_ISO_TX_PDU_BUFFER_PER_STREAM_COUNT 0
 
+/** @brief Default maximum number of concurrent connections supporting CS procedure */
+#define SDC_DEFAULT_CS_COUNT 0
+
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
 
@@ -330,6 +333,18 @@ extern "C" {
  * @param[in] size  Maximum size of SDUs being used. */
 #define SDC_MEM_ISO_TX_SDU_POOL_SIZE(count, size) ((count) > 0 ? (12 + (count) * ((size) + 49)) : 0)
 
+/** @brief Maximum additional memory required to support Channel Sounding
+ *
+ * @param[in] count Maximum number of concurrent connections supporting CS procedure.
+ */
+#define SDC_MEM_CS(count) ((count) > 0 ? (13 + (count)*7371) : 0)
+
+/** @brief Maximum additional memory required to support Channel Sounding setup phase procedures
+ *
+ * @param[in] count Total number of links (central + peripheral).
+ */
+#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count)*315) : 0)
+
 /** @} end of sdc_mem_defines */
 
 /** @brief Function prototype for the fault handler.
@@ -397,6 +412,8 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_BIS_SOURCE_COUNT,
     /** See @ref sdc_cfg_t::iso_buffer_cfg. */
     SDC_CFG_TYPE_ISO_BUFFER_CFG,
+    /** See @ref sdc_cfg_t::cs_count. */
+    SDC_CFG_TYPE_CS_COUNT,
 };
 
 
@@ -640,6 +657,11 @@ typedef union
      * Default: See @ref sdc_cfg_iso_buffer_cfg_t.
      */
     sdc_cfg_iso_buffer_cfg_t iso_buffer_cfg;
+    /** Configures the maximum number of concurrent connections supporting CS procedure.
+     *
+     * Default: @ref SDC_DEFAULT_CS_COUNT.
+     */
+    sdc_cfg_role_count_t cs_count;
 } sdc_cfg_t;
 
 
@@ -1264,6 +1286,31 @@ int32_t sdc_support_connection_subrating_central(void);
  * @retval -NRF_EOPNOTSUPP  Connection Subrating is not supported.
  */
 int32_t sdc_support_connection_subrating_peripheral(void);
+
+/** @brief Support Channel Sounding test command
+ *
+ * After this API is called, the controller will support the HCI command
+ * HCI LE Channel Sounding Test
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Channel Sounding Test is not supported
+ */
+int32_t sdc_support_channel_sounding_test(void);
+
+/** @brief Support LE Channel Sounding
+ *
+ * After this API is called, the controller will support the HCI command
+ * related to Channel Sounding.
+ *
+ * The application shall call @ref sdc_support_channel_sounding_test() to enable
+ * support for Channel Sounding test command.
+ *
+ * @retval 0                Success
+ * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ * @retval -NRF_EOPNOTSUPP  Channel Sounding is not supported
+ */
+int32_t sdc_support_channel_sounding(void);
 
 #ifdef __cplusplus
 }

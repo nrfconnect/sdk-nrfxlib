@@ -259,6 +259,34 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_EXT_CREATE_CONN_V2 = 0x2085,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_params_v2(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_PARAMS_V2 = 0x2086,
+    /** @brief See @ref sdc_hci_cmd_le_cs_read_local_supported_capabilities(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_READ_LOCAL_SUPPORTED_CAPABILITIES = 0x2089,
+    /** @brief See @ref sdc_hci_cmd_le_cs_read_remote_supported_capabilities(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_READ_REMOTE_SUPPORTED_CAPABILITIES = 0x208a,
+    /** @brief See @ref sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_WRITE_CACHED_REMOTE_SUPPORTED_CAPABILITIES = 0x208b,
+    /** @brief See @ref sdc_hci_cmd_le_cs_security_enable(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_SECURITY_ENABLE = 0x208c,
+    /** @brief See @ref sdc_hci_cmd_le_cs_set_default_settings(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_SET_DEFAULT_SETTINGS = 0x208d,
+    /** @brief See @ref sdc_hci_cmd_le_cs_read_remote_fae_table(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_READ_REMOTE_FAE_TABLE = 0x208e,
+    /** @brief See @ref sdc_hci_cmd_le_cs_write_cached_remote_fae_table(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_WRITE_CACHED_REMOTE_FAE_TABLE = 0x208f,
+    /** @brief See @ref sdc_hci_cmd_le_cs_create_config(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_CREATE_CONFIG = 0x2090,
+    /** @brief See @ref sdc_hci_cmd_le_cs_remove_config(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_REMOVE_CONFIG = 0x2091,
+    /** @brief See @ref sdc_hci_cmd_le_cs_set_channel_classification(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_SET_CHANNEL_CLASSIFICATION = 0x2092,
+    /** @brief See @ref sdc_hci_cmd_le_cs_set_procedure_params(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_SET_PROCEDURE_PARAMS = 0x2093,
+    /** @brief See @ref sdc_hci_cmd_le_cs_procedure_enable(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_PROCEDURE_ENABLE = 0x2094,
+    /** @brief See @ref sdc_hci_cmd_le_cs_test(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_TEST = 0x2095,
+    /** @brief See @ref sdc_hci_cmd_le_cs_test_end(). */
+    SDC_HCI_OPCODE_CMD_LE_CS_TEST_END = 0x2096,
 };
 
 /** @brief LE subevent Code values. */
@@ -272,6 +300,22 @@ enum sdc_hci_subevent_le
     SDC_HCI_SUBEVENT_LE_EXT_ADV_REPORT = 0x0d,
     /** @brief See @ref sdc_hci_subevent_le_subrate_change_t. */
     SDC_HCI_SUBEVENT_LE_SUBRATE_CHANGE = 0x23,
+    /** @brief See @ref sdc_hci_subevent_le_cs_read_remote_supported_capabilities_complete_t. */
+    SDC_HCI_SUBEVENT_LE_CS_READ_REMOTE_SUPPORTED_CAPABILITIES_COMPLETE = 0x2c,
+    /** @brief See @ref sdc_hci_subevent_le_cs_read_remote_fae_table_complete_t. */
+    SDC_HCI_SUBEVENT_LE_CS_READ_REMOTE_FAE_TABLE_COMPLETE = 0x2d,
+    /** @brief See @ref sdc_hci_subevent_le_cs_security_enable_complete_t. */
+    SDC_HCI_SUBEVENT_LE_CS_SECURITY_ENABLE_COMPLETE = 0x2e,
+    /** @brief See @ref sdc_hci_subevent_le_cs_config_complete_t. */
+    SDC_HCI_SUBEVENT_LE_CS_CONFIG_COMPLETE = 0x2f,
+    /** @brief See @ref sdc_hci_subevent_le_cs_procedure_enable_complete_t. */
+    SDC_HCI_SUBEVENT_LE_CS_PROCEDURE_ENABLE_COMPLETE = 0x30,
+    /** @brief See @ref sdc_hci_subevent_le_cs_subevent_result_t. */
+    SDC_HCI_SUBEVENT_LE_CS_SUBEVENT_RESULT = 0x31,
+    /** @brief See @ref sdc_hci_subevent_le_cs_subevent_result_continue_t. */
+    SDC_HCI_SUBEVENT_LE_CS_SUBEVENT_RESULT_CONTINUE = 0x32,
+    /** @brief See @ref sdc_hci_subevent_le_cs_test_end_complete_t. */
+    SDC_HCI_SUBEVENT_LE_CS_TEST_END_COMPLETE = 0x33,
 };
 
 /** @brief Advertising Event Properties parameters. */
@@ -315,6 +359,24 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t cis_conn_handle;
     uint16_t acl_conn_handle;
 } sdc_hci_le_create_cis_array_params_t;
+
+/** @brief LE CS Subevent Result array parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t step_mode;
+    uint8_t step_channel;
+    uint8_t step_data_length;
+    uint8_t step_data[];
+} sdc_hci_le_cs_subevent_result_array_params_t;
+
+/** @brief LE CS Subevent Result Continue array parameters. */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t step_mode;
+    uint8_t step_channel;
+    uint8_t step_data_length;
+    uint8_t step_data[];
+} sdc_hci_le_cs_subevent_result_continue_array_params_t;
 
 /** @brief LE Directed Advertising Report array parameters. */
 typedef struct __PACKED __ALIGN(1)
@@ -438,7 +500,7 @@ typedef struct __PACKED __ALIGN(1)
 
 /** @brief LE features.
  *
- * See Core_v5.4, Vol 6, Part B, Section 4.6
+ * See Core_v6.0, Vol 6, Part B, Section 4.6
  */
 typedef struct __PACKED __ALIGN(1)
 {
@@ -484,9 +546,21 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t channel_classification : 1;
     uint8_t advertising_coding_selection : 1;
     uint8_t advertising_coding_selection_host_support : 1;
-    uint8_t rfu42 : 1;
+    uint8_t decision_based_advertising_filtering : 1;
     uint8_t periodic_advertising_with_responses_advertiser : 1;
     uint8_t periodic_advertising_with_responses_scanner : 1;
+    uint8_t unsegmented_framed_mode : 1;
+    uint8_t channel_sounding : 1;
+    uint8_t channel_sounding_host_support : 1;
+    uint8_t channel_sounding_tone_quality_indication : 1;
+    uint8_t rfu56 : 1;
+    uint8_t rfu57 : 1;
+    uint8_t rfu58 : 1;
+    uint8_t rfu59 : 1;
+    uint8_t rfu60 : 1;
+    uint8_t rfu61 : 1;
+    uint8_t rfu62 : 1;
+    uint8_t ll_extended_feature_set : 1;
 } sdc_hci_le_le_features_t;
 
 /** @brief Options parameters for HCI_LE_Periodic_Advertising_Create_Sync command. */
@@ -782,6 +856,383 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t continuation_number;
     uint16_t supervision_timeout;
 } sdc_hci_subevent_le_subrate_change_t;
+
+/** @brief LE CS Read Remote Supported Capabilities Complete.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.39
+ *
+ * The HCI_LE_CS_Read_Remote_Supported_Capabilities_Complete event shall be
+ * generated when a locally initiated CS Capabilities Exchange procedure has completed
+ * or when the local Controller has received an LL_CS_CAPABILITIES_REQ from the
+ * remote Controller.
+ *
+ * The Num_Config_Supported parameter indicates the number of CS configurations that
+ * are supported by the remote Controller.
+ *
+ * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
+ * number of consecutive CS procedures that are supported by the remote Controller.
+ * The Num_Antennas_Supported parameter indicates the number of antenna elements
+ * that are available for CS tone exchanges.
+ *
+ * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
+ * antenna paths that are supported by the remote Controller for CS tone exchanges.
+ *
+ * The Roles_Supported parameter indicates the CS roles that are supported by the
+ * remote Controller.
+ *
+ * The Modes_Supported parameter indicates the optional CS modes that are supported
+ * by the remote Controller.
+ *
+ * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and RTT_Random_-
+ * Payload_N parameters indicate the time-of-flight accuracy as described in [Vol 6] Part
+ * B, Section 2.4.2.44.
+ *
+ * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
+ * the support by the remote Controller for reporting Normalized Attack Detector Metric
+ * (NADM) when a CS_SYNC with a sounding sequence or random sequence is received.
+ *
+ * The CS_SYNC_PHYs_Supported parameter indicates the optional transmit and receive
+ * PHYs supported by the remote Controller for CS_SYNC exchanges as described in [Vol
+ * 6] Part H, Section 4.3.
+ *
+ * The Subfeatures_Supported parameter indicates which of the following optional
+ * subfeatures are supported by the remote Controller:
+ *
+ * • A Frequency Actuation Error of zero for all allowed CS channels as described in [Vol
+ *   6] Part A, Section 3.5.
+ * • Channel Selection Algorithm #3c as described in [Vol 6] Part H, Section 4.1.4.2.
+ * • Phase-based ranging from a sounding sequence as described in [Vol 6] Part H,
+ *   Section 3.3.1.
+ *
+ * The T_IP1_Times_Supported, T_IP2_Times_Supported, T_FCS_Times_Supported,
+ * T_PM_Times_Supported, and T_SW_Time_Supported parameters indicate the
+ * supported optional time durations used in CS steps as described in [Vol 6] Part H,
+ * Section 4.3.
+ *
+ * The TX_SNR_Capability parameter indicated the supported SNR levels used in RTT
+ * packets as described in [Vol 6] Part A, Section 3.1.3.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t num_config_supported;
+    uint16_t max_consecutive_procedures_supported;
+    uint8_t num_antennas_supported;
+    uint8_t max_antenna_paths_supported;
+    uint8_t roles_supported;
+    uint8_t modes_supported;
+    uint8_t rtt_capability;
+    uint8_t rtt_aa_only_n;
+    uint8_t rtt_sounding_n;
+    uint8_t rtt_random_payload_n;
+    uint16_t nadm_sounding_capability;
+    uint16_t nadm_random_capability;
+    uint8_t cs_sync_phys_supported;
+    uint16_t subfeatures_supported;
+    uint16_t t_ip1_times_supported;
+    uint16_t t_ip2_times_supported;
+    uint16_t t_fcs_times_supported;
+    uint16_t t_pm_times_supported;
+    uint8_t t_sw_time_supported;
+    uint8_t tx_snr_capability;
+} sdc_hci_subevent_le_cs_read_remote_supported_capabilities_complete_t;
+
+/** @brief LE CS Read Remote FAE Table Complete.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.40
+ *
+ * The HCI_LE_CS_Read_Remote_FAE_Table_Complete event shall be generated when
+ * a locally initiated CS Mode-0 Frequency Actuation Error Table Update procedure has
+ * completed.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t remote_fae_table[72];
+} sdc_hci_subevent_le_cs_read_remote_fae_table_complete_t;
+
+/** @brief LE CS Security Enable Complete.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.41
+ *
+ * The HCI_LE_CS_Security_Enable_Complete event shall be generated when a locally
+ * initiated CS Security Start procedure has completed or when the local Controller has
+ * responded to a CS security request from the remote Controller.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+} sdc_hci_subevent_le_cs_security_enable_complete_t;
+
+/** @brief LE CS Config Complete.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.42
+ *
+ * The HCI_LE_CS_Config_Complete event shall be generated when a locally initiated
+ * Channel Sounding Configuration procedure has completed or when the local Controller
+ * has responded to a CS configuration request from the remote Controller for the CS
+ * configuration identified by Config_ID or when a CS configuration is created only with
+ * local context. The Action parameter indicates if a CS configuration was requested to be
+ * created or removed. The Status parameter indicates whether the request indicated by
+ * the Action parameter was successful.
+ *
+ * When the Action parameter is set to 0x00, all the remaining event parameters are
+ * ignored.
+ * The Main_Mode_Type and Sub_Mode_Type parameters indicate the CS modes used
+ * during the CS procedure for the specified CS configuration. The Min_Main_Mode_Steps
+ * and Max_Main_Mode_Steps parameters indicate the range of main mode CS steps
+ * executed before a submode CS step is executed during the CS procedure. The
+ * Main_Mode_Repetition parameter indicates the number of main mode CS steps
+ * repeated from the last CS subevent at the beginning of the current CS subevent. The
+ * Mode_0_Steps parameter indicates the number of mode-0 CS steps included at the
+ * beginning of each CS subevent.
+ *
+ * The Role parameter indicates the CS role for the local Controller for the specified CS
+ * configuration. The RTT_Type parameter indicates the RTT variant to be used during the
+ * CS procedure, and the CS_SYNC_PHY parameter indicates the PHY to be used for
+ * CS_SYNC exchanges during the CS procedure for the specified CS configuration.
+ *
+ * The Channel_Map parameter indicates the channels to be used or unused during the
+ * CS procedure, and the Channel_Map_Repetition parameter indicates the number of
+ * times the channels specified by Channel_Map will be repeated for non-mode-0 steps
+ * during the CS procedure (see [Vol 6] Part H, Section 4.1.4).
+ *
+ * The Channel_Selection_Type parameter indicates the Channel Selection Algorithm
+ * to be used during the CS procedure for non-mode-0 steps. When the
+ * Channel_Selection_Type parameter is set to 0x01, the Ch3c_Shape and the
+ * Ch3c_Jump parameters indicate the selected shape and channels to be skipped as
+ * described in [Vol 6] Part H, Section 4.1.4.2.
+ *
+ * The T_IP1_Time, T_IP2_Time, T_FCS_Time, T_PM_Time, and T_SW_Time
+ * parameters indicate the time durations used in CS steps as described in [Vol 6] Part
+ * H, Section 4.3.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t config_id;
+    uint8_t action;
+    uint8_t main_mode_type;
+    uint8_t sub_mode_type;
+    uint8_t min_main_mode_steps;
+    uint8_t max_main_mode_steps;
+    uint8_t main_mode_repetition;
+    uint8_t mode_0_steps;
+    uint8_t role;
+    uint8_t rtt_type;
+    uint8_t cs_sync_phy;
+    uint8_t channel_map[10];
+    uint8_t channel_map_repetition;
+    uint8_t channel_selection_type;
+    uint8_t ch3c_shape;
+    uint8_t ch3c_jump;
+    uint8_t reserved;
+    uint8_t t_ip1_time;
+    uint8_t t_ip2_time;
+    uint8_t t_fcs_time;
+    uint8_t t_pm_time;
+} sdc_hci_subevent_le_cs_config_complete_t;
+
+/** @brief LE CS Procedure Enable Complete.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.43
+ *
+ * The HCI_LE_CS_Procedure_Enable_Complete event shall be generated when the
+ * local or remote Controller has scheduled a new CS procedure measurement or disabled
+ * an ongoing CS procedure measurement as a result of an HCI_LE_CS_Procedure_-
+ * Enable command. When a new CS procedure measurement is enabled, the HCI_LE_-
+ * CS_Procedure_Enable_Complete event shall be sent to the Host after the LL_CS_IND
+ * is transmitted or received and before any CS subevent results are available.
+ *
+ * When the State parameter is set to 0x00, all the remaining event parameters are
+ * ignored.
+ *
+ * The Tone_Antenna_Config_Selection parameter indicates the Antenna Configuration
+ * Index used in the CS procedure.
+ *
+ * The Controller shall set the Selected_TX_Power parameter to the transmit power level
+ * that it will use for the CS procedures as described in [Vol 6] Part B, Section 5.1.26. If the
+ * radiated power level will vary between packets (e.g., because of frequency-dependent
+ * properties of the transmitter), then the value should be the best estimate of the transmit
+ * power level that will be used.
+ *
+ * The Subevent_Len parameter indicates the selected maximum duration of each CS
+ * subevent during the CS procedure. The Subevents_Per_Event parameter indicates
+ * the number of CS subevents that are anchored off the same associated LE ACL
+ * anchor point. The Subevent_Interval parameter indicates the gap between the start
+ * of two consecutive CS subevents that are anchored off the same associated LE
+ * ACL anchor point. The Event_Interval parameter indicates the number of connection
+ * intervals between consecutive LE ACL anchor points from which CS subevents are
+ * anchored.
+ *
+ * The Procedure_Interval parameter indicates the selected interval between consecutive
+ * CS procedures, in units of ACL connection events. The Procedure_Count parameter
+ * indicates the selected number of consecutive CS procedures to be scheduled as
+ * part of this measurement. The Max_Procedure_Len parameter indicates the selected
+ * maximum duration of each CS procedure.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+    uint16_t conn_handle;
+    uint8_t config_id;
+    uint8_t state;
+    uint8_t tone_antenna_config_selection;
+    int8_t selected_tx_power;
+    uint32_t subevent_len : 24;
+    uint8_t subevents_per_event;
+    uint16_t subevent_interval;
+    uint16_t event_interval;
+    uint16_t procedure_interval;
+    uint16_t procedure_count;
+    uint16_t max_procedure_len;
+} sdc_hci_subevent_le_cs_procedure_enable_complete_t;
+
+/** @brief LE CS Subevent Result.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.44
+ *
+ * The HCI_LE_CS_Subevent_Result event shall be generated when the local Controller
+ * has results to report for a CS subevent during the CS procedure. Depending on
+ * the number of CS steps in the CS subevent, the Controller may choose to report
+ * complete or partial results. When the number of CS steps exceeds the maximum HCI
+ * event size, the Controller may report further results for the CS subevent using the
+ * HCI_LE_CS_Subevent_Result_Continue event.
+ *
+ * When Connection_Handle is set to 0x0FFF, the Config_ID and Start_ACL_Conn_-
+ * Event_Counter parameters shall be ignored.
+ *
+ * The Start_ACL_Conn_Event_Counter parameter indicates the starting ACL connection
+ * event count from which the CS event results reported in this HCI event are anchored. A
+ * CS procedure may have CS subevents in multiple ACL connection events anchored
+ * to the same ACL connection event count as defined by the Event_Interval return
+ * parameter in the HCI_LE_CS_Procedure_Enable_Complete event.
+ *
+ * The Procedure_Counter parameter indicates the associated CS procedure count for the
+ * results reported in this HCI event (see [Vol 6] Part B, Section 5.1.24).
+ * The Frequency_Compensation parameter indicates the value of the fractional frequency
+ * offset (FFO) used by the initiator device to align the timing of CS steps and transmit
+ * frequencies during non-mode-0 CS steps (see [Vol 6] Part A, Section 3.5.1).
+ *
+ * The Reference_Power_Level parameter is expressed in dBm and is described in [Vol 6]
+ * Part H, Section 4.6 and [Vol 6] Part H, Section 3.3.1. If the reference power level value
+ * is not available during a subevent, then this value shall be set to 0x7F.
+ *
+ * When bits 0 to 3 of Subevent_Done_Status are set to 0x1, the Controller shall send
+ * one or more LE CS Subevent Result Continue events for the current CS subevent.
+ * Otherwise, the Controller sends no further events for the current CS subevent.
+ *
+ * When bits 0 to 3 of Procedure_Done_Status are set to 0x1, the Controller shall send
+ * one or more LE CS Subevent Result or LE CS Subevent Result Continue events for the
+ * current or subsequent CS procedure. Otherwise, the Controller sends no further events
+ * for the current CS procedure. When bits 0 to 3 of Procedure_Done_Status are set to
+ * 0xF or when results of all CS procedures are sent to the Host, the Controller sends no
+ * further events until a new CS procedure measurement is enabled by the Host.
+ *
+ * The allowed combinations of Procedure_Done_Status and Subevent_Done_Status are
+ * shown in Table 7.2.
+ *
+ *  Procedure_Done_Status                  Allowed values of Subevent_Done_Status
+ *  (Bits 0 to 3)                          (Bits 0 to 3)
+ *  0x0                                    0x0, 0xF
+ *  0x1                                    0x0, 0x1, 0xF
+ *  0xF                                    0x0, 0xF
+ * Table 7.2: Allowed combinations of done status
+ *
+ * The Num_Antenna_Paths parameter indicates the number of antenna paths used for
+ * CS tone exchanges.
+ *
+ * The Num_Steps_Reported parameter indicates the number of CS steps for which
+ * results are reported. The Step_Mode[i] parameter indicates the CS mode for each CS
+ * step, and the Step_Channel[i] parameter indicates the channel used for each CS step.
+ * A Controller may return a value 0 when a subevent is aborted.
+ *
+ * The Step_Data_Length[i] and Step_Data[i] parameters indicate the reported data
+ * that varies based on the CS mode and the CS role of the local device. When
+ * Step_Data_Length[i] is set to zero, it indicates that the Step may have been aborted for
+ * unspecified reasons. Otherwise, the Step_Data[i] indicates the mode- and role-specific
+ * information being reported.
+ *
+ * For each CS procedure in a repeat sequence, the Controller shall report the results
+ * for each CS step in each CS subevent of the CS procedure even if the CS step has
+ * been aborted for any reason. In order to terminate reporting of pending CS steps in
+ * a CS subevent, the Controller shall set the Subevent_Done_Status parameter to 0xF
+ * in the HCI_LE_CS_Subevent_Result or the HCI_LE_CS_Subevent_Result_Continue
+ * event and shall not report any additional HCI_LE_CS_Subevent_Result_Continue
+ * events for that CS subevent. The Controller may terminate reporting of pending
+ * CS procedures by setting the Procedure_Done_Status parameter to 0xF in the
+ * HCI_LE_CS_Subevent_Result or the HCI_LE_CS_Subevent_Result_Continue event
+ * and shall not report any additional HCI_LE_CS_Subevent_Result_Continue events for
+ * that CS measurement.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t config_id;
+    uint16_t start_acl_conn_event_counter;
+    uint16_t procedure_counter;
+    uint16_t frequency_compensation;
+    int8_t reference_power_level;
+    uint8_t procedure_done_status;
+    uint8_t subevent_done_status;
+    uint8_t abort_reason;
+    uint8_t num_antenna_paths;
+    uint8_t num_steps_reported;
+    /** C does not allow array of variable sized arrays, otherwise it should be @ref
+    sdc_hci_le_cs_subevent_result_array_params_t data[]; */
+    uint8_t data[];
+} sdc_hci_subevent_le_cs_subevent_result_t;
+
+/** @brief LE CS Subevent Result Continue.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.45
+ *
+ * The HCI_LE_CS_Subevent_Result_Continue event shall be generated after the local
+ * Controller has completed a new CS subevent measurement and has already sent an
+ * HCI_LE_CS_Subevent_Result event for the specified CS subevent.
+ *
+ * When Connection_Handle is set to 0x0FFF, the Config_ID parameter shall be ignored.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t config_id;
+    uint8_t procedure_done_status;
+    uint8_t subevent_done_status;
+    uint8_t abort_reason;
+    uint8_t num_antenna_paths;
+    uint8_t num_steps_reported;
+    /** C does not allow array of variable sized arrays, otherwise it should be @ref
+    sdc_hci_le_cs_subevent_result_continue_array_params_t data[]; */
+    uint8_t data[];
+} sdc_hci_subevent_le_cs_subevent_result_continue_t;
+
+/** @brief LE CS Test End Complete.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.7.65.46
+ *
+ * The HCI_LE_CS_Test_End_Complete event shall be generated when the local
+ * Controller has stopped an ongoing CS test as a result of the HCI_LE_CS_Test_End
+ * command. When the HCI_LE_CS_Test_End command is issued by the Host, the
+ * HCI_LE_CS_Test_End_Complete event shall be sent to the Host after any pending CS
+ * test result events are sent to the Host.
+ */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t status;
+} sdc_hci_subevent_le_cs_test_end_complete_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -1923,6 +2374,209 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t adv_handle;
 } sdc_hci_cmd_le_set_periodic_adv_params_v2_return_t;
 
+/** @brief LE CS Read Local Supported Capabilities return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t num_config_supported;
+    uint16_t max_consecutive_procedures_supported;
+    uint8_t num_antennas_supported;
+    uint8_t max_antenna_paths_supported;
+    uint8_t roles_supported;
+    uint8_t modes_supported;
+    uint8_t rtt_capability;
+    uint8_t rtt_aa_only_n;
+    uint8_t rtt_sounding_n;
+    uint8_t rtt_random_payload_n;
+    uint16_t nadm_sounding_capability;
+    uint16_t nadm_random_capability;
+    uint8_t cs_sync_phys_supported;
+    uint16_t subfeatures_supported;
+    uint16_t t_ip1_times_supported;
+    uint16_t t_ip2_times_supported;
+    uint16_t t_fcs_times_supported;
+    uint16_t t_pm_times_supported;
+    uint8_t t_sw_time_supported;
+    uint8_t tx_snr_capability;
+} sdc_hci_cmd_le_cs_read_local_supported_capabilities_return_t;
+
+/** @brief LE CS Read Remote Supported Capabilities command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_cs_read_remote_supported_capabilities_t;
+
+/** @brief LE CS Write Cached Remote Supported Capabilities command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t num_config_supported;
+    uint16_t max_consecutive_procedures_supported;
+    uint8_t num_antennas_supported;
+    uint8_t max_antenna_paths_supported;
+    uint8_t roles_supported;
+    uint8_t modes_supported;
+    uint8_t rtt_capability;
+    uint8_t rtt_aa_only_n;
+    uint8_t rtt_sounding_n;
+    uint8_t rtt_random_payload_n;
+    uint16_t nadm_sounding_capability;
+    uint16_t nadm_random_capability;
+    uint8_t cs_sync_phys_supported;
+    uint16_t subfeatures_supported;
+    uint16_t t_ip1_times_supported;
+    uint16_t t_ip2_times_supported;
+    uint16_t t_fcs_times_supported;
+    uint16_t t_pm_times_supported;
+    uint8_t t_sw_time_supported;
+    uint8_t tx_snr_capability;
+} sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_t;
+
+/** @brief LE CS Write Cached Remote Supported Capabilities return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_return_t;
+
+/** @brief LE CS Security Enable command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_cs_security_enable_t;
+
+/** @brief LE CS Set Default Settings command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t role_enable;
+    uint8_t cs_sync_antenna_selection;
+    int8_t max_tx_power;
+} sdc_hci_cmd_le_cs_set_default_settings_t;
+
+/** @brief LE CS Set Default Settings return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_cs_set_default_settings_return_t;
+
+/** @brief LE CS Read Remote FAE Table command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_cs_read_remote_fae_table_t;
+
+/** @brief LE CS Write Cached Remote FAE Table command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t remote_fae_table[72];
+} sdc_hci_cmd_le_cs_write_cached_remote_fae_table_t;
+
+/** @brief LE CS Write Cached Remote FAE Table return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_cs_write_cached_remote_fae_table_return_t;
+
+/** @brief LE CS Create Config command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t config_id;
+    uint8_t create_context;
+    uint8_t main_mode_type;
+    uint8_t sub_mode_type;
+    uint8_t min_main_mode_steps;
+    uint8_t max_main_mode_steps;
+    uint8_t main_mode_repetition;
+    uint8_t mode_0_steps;
+    uint8_t role;
+    uint8_t rtt_type;
+    uint8_t cs_sync_phy;
+    uint8_t channel_map[10];
+    uint8_t channel_map_repetition;
+    uint8_t channel_selection_type;
+    uint8_t ch3c_shape;
+    uint8_t ch3c_jump;
+    uint8_t reserved;
+} sdc_hci_cmd_le_cs_create_config_t;
+
+/** @brief LE CS Remove Config command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t config_id;
+} sdc_hci_cmd_le_cs_remove_config_t;
+
+/** @brief LE CS Set Channel Classification command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t channel_classification[10];
+} sdc_hci_cmd_le_cs_set_channel_classification_t;
+
+/** @brief LE CS Set Procedure Parameters command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t config_id;
+    uint16_t max_procedure_len;
+    uint16_t min_procedure_interval;
+    uint16_t max_procedure_interval;
+    uint16_t max_procedure_count;
+    uint32_t min_subevent_len : 24;
+    uint32_t max_subevent_len : 24;
+    uint8_t tone_antenna_config_selection;
+    uint8_t phy;
+    int8_t tx_power_delta;
+    uint8_t preferred_peer_antenna;
+    uint8_t snr_control_initiator;
+    uint8_t snr_control_reflector;
+} sdc_hci_cmd_le_cs_set_procedure_params_t;
+
+/** @brief LE CS Set Procedure Parameters return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+} sdc_hci_cmd_le_cs_set_procedure_params_return_t;
+
+/** @brief LE CS Procedure Enable command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint16_t conn_handle;
+    uint8_t config_id;
+    uint8_t enable;
+} sdc_hci_cmd_le_cs_procedure_enable_t;
+
+/** @brief LE CS Test command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t main_mode_type;
+    uint8_t sub_mode_type;
+    uint8_t main_mode_repetition;
+    uint8_t mode_0_steps;
+    uint8_t role;
+    uint8_t rtt_type;
+    uint8_t cs_sync_phy;
+    uint8_t cs_sync_antenna_selection;
+    uint32_t subevent_len : 24;
+    uint16_t subevent_interval;
+    uint8_t max_num_subevents;
+    int8_t transmit_power_level;
+    uint8_t t_ip1_time;
+    uint8_t t_ip2_time;
+    uint8_t t_fcs_time;
+    uint8_t t_pm_time;
+    uint8_t t_sw_time;
+    uint8_t tone_antenna_config_selection;
+    uint8_t reserved;
+    uint8_t snr_control_initiator;
+    uint8_t snr_control_reflector;
+    uint16_t drbg_nonce;
+    uint8_t channel_map_repetition;
+    uint16_t override_config;
+    uint8_t override_params_length;
+    uint8_t override_params_data[];
+} sdc_hci_cmd_le_cs_test_t;
+
 /** @} end of HCI_COMMAND_PARAMETERS */
 
 /**
@@ -2020,14 +2674,17 @@ uint8_t sdc_hci_cmd_le_read_buffer_size(sdc_hci_cmd_le_read_buffer_size_return_t
 
 /** @brief LE Read Local Supported Features.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.8.3
  *
- * This command requests the list of the supported LE features for the Controller.
+ * This command requests page 0 of the list of the supported LE features for the
+ * Controller.
  *
  * Event(s) generated (unless masked away):
- * When the HCI_LE_Read_Local_Supported_Features command has
+ * When the HCI_LE_Read_Local_Supported_Features_Page_0 command has
  * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * This command was formerly called “LE Read Local Supported Features”.
  *
  * @param[out] p_return Extra return parameters.
  *
@@ -7702,6 +8359,809 @@ uint8_t sdc_hci_cmd_le_ext_create_conn_v2(const sdc_hci_cmd_le_ext_create_conn_v
  */
 uint8_t sdc_hci_cmd_le_set_periodic_adv_params_v2(const sdc_hci_cmd_le_set_periodic_adv_params_v2_t * p_params,
                                                   sdc_hci_cmd_le_set_periodic_adv_params_v2_return_t * p_return);
+
+/** @brief LE CS Read Local Supported Capabilities.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.130
+ *
+ * The HCI_LE_CS_Read_Local_Supported_Capabilities command allows a Host to read
+ * the CS capabilities that are supported by the local Controller. This command may
+ * be used along with the local supported features to provide additional details of the
+ * supported CS capabilities.
+ *
+ * The Num_Config_Supported parameter indicates the number of CS configurations that
+ * are supported by the Controller.
+ *
+ * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
+ * number of consecutive CS procedures that are supported by the local Controller.
+ *
+ * The Num_Antennas_Supported parameter indicates the number of antenna elements
+ * that are available for CS tone exchanges.
+ * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
+ * antenna paths that are supported by the local Controller for CS tone exchanges.
+ *
+ * The Roles_Supported parameter indicates the CS roles that are supported by the local
+ * Controller.
+ *
+ * The Modes_Supported parameter indicates the optional CS modes that are supported
+ * by the local Controller.
+ *
+ * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the RTT_Random_-
+ * Payload_N parameters indicate the time-of-flight accuracy as described in [Vol 6] Part
+ * B, Section 2.4.2.44.
+ *
+ * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
+ * the support by the local Controller for reporting Normalized Attack Detector Metric
+ * (NADM) when a CS_SYNC with a sounding sequence or random sequence is received.
+ *
+ * The CS_SYNC_PHYs_Supported parameter indicates the optional transmit and receive
+ * PHYs that are supported by the local Controller for CS_SYNC exchanges as described
+ * in [Vol 6] Part H, Section 4.3.
+ *
+ * The Subfeatures_Supported parameter indicates which of the following optional
+ * subfeatures are supported by the local Controller:
+ *
+ * • A Frequency Actuation Error of zero for all allowed CS channels relative to mode-0
+ *   transmissions when in the reflector role as described in [Vol 6] Part A, Section 3.5.
+ * • Channel Selection Algorithm #3c as described in [Vol 6] Part H, Section 4.1.4.2.
+ * • Phase-based ranging from a sounding sequence as described in [Vol 6] Part H,
+ *   Section 3.3.1.
+ *
+ * The T_IP1_Times_Supported, T_IP2_Times_Supported, T_FCS_Times_Supported,
+ * T_PM_Times_Supported, and T_SW_Time_Supported parameters indicate the
+ * supported optional time durations used in CS steps as described in [Vol 6] Part H,
+ * Section 4.3.
+ *
+ * The TX_SNR_Capability parameter indicates the supported SNR levels used in RTT
+ * packets as described in [Vol 6] Part A, Section 3.1.3.
+ *
+ * If the Host issues this command when the Channel Sounding (Host Support) feature bit
+ * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
+ * code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_CS_Read_Local_Supported_Capabilities command has completed,
+ * an HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_read_local_supported_capabilities(sdc_hci_cmd_le_cs_read_local_supported_capabilities_return_t * p_return);
+
+/** @brief LE CS Read Remote Supported Capabilities.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.131
+ *
+ * The HCI_LE_CS_Read_Remote_Supported_Capabilities command allows a Host
+ * to query the CS capabilities that are supported by the remote Controller.
+ * If no Channel Sounding Capability Exchange procedure has been initiated
+ * on the ACL connection specified by the Connection_Handle and if no prior
+ * HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command has been
+ * issued by the Host, then the Controller shall initiate a Channel Sounding Capabilities
+ * Exchange procedure on the ACL. Otherwise, the Controller may use a cached copy of
+ * the capabilities of the remote device.
+ *
+ * If this command is issued on the Central or Peripheral before the devices have
+ * performed the Feature Exchange procedure, then the Controller of the Central or
+ * Peripheral shall complete that procedure before initiating the Channel Sounding
+ * Capability Exchange procedure (see [Vol 6] Part B, Section 5.1.24).
+ *
+ * If the Host issues this command when the local or remote Channel Sounding (Host
+ * Support) feature bit (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller
+ * shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL, then the Controller shall return the error code
+ * Unknown Connection Identifier (0x02).
+ *
+ * The Host may store a copy of the remote device’s capabilities and write the remote
+ * capabilities in the local Controller when it reconnects to the same remote device by
+ * using the HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command.
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_CS_Read_Remote_Supported_Capabilities
+ * command, the Controller shall send the HCI_Command_Status event to the
+ * Host. When the Controller has completed the Channel Sounding Capability
+ * Exchange procedure with the remote Controller or has a cached copy of
+ * the capabilities of the remote Controller, the Controller shall generate an
+ * HCI_LE_CS_Read_Remote_Supported_Capabilities_Complete event.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_read_remote_supported_capabilities(const sdc_hci_cmd_le_cs_read_remote_supported_capabilities_t * p_params);
+
+/** @brief LE CS Write Cached Remote Supported Capabilities.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.132
+ *
+ * The HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command allows a
+ * Host to write the cached copy of the CS capabilities that are supported by the remote
+ * Controller for the connection identified by the Connection_Handle parameter.
+ *
+ * The Num_Config_Supported parameter indicates the number of CS configurations that
+ * are supported by the remote Controller.
+ *
+ * The Max_Consecutive_Procedures_Supported parameter indicates the maximum
+ * number of consecutive CS procedures that are supported by the remote Controller.
+ *
+ * The Num_Antennas_Supported parameter indicates the number of antenna elements
+ * that are available for CS tone exchanges.
+ * The Max_Antenna_Paths_Supported parameter indicates the maximum number of
+ * antenna paths that are supported by the local Controller for CS tone exchanges.
+ *
+ * The Roles_Supported parameter indicates the CS roles that are supported by the
+ * remote Controller.
+ *
+ * The Modes_Supported parameter indicates the optional CS modes that are supported
+ * by the remote Controller.
+ *
+ * The RTT_Capability, RTT_AA_Only_N, RTT_Sounding_N, and the
+ * RTT_Random_Payload_N parameters indicate the time-of-flight accuracy as described
+ * in [Vol 6] Part B, Section 2.4.2.44.
+ *
+ * The NADM_Sounding_Capability and NADM_Random_Capability parameters indicate
+ * the support by the remote Controller for reporting Normalized Attack Detector Metric
+ * (NADM) when a CS_SYNC with a sounding sequence or random sequence is received.
+ *
+ * The CS_SYNC_PHYs_Supported parameter indicates the optional transmit and receive
+ * PHYs that are supported by the remote Controller for CS_SYNC exchanges as
+ * described in [Vol 6] Part H, Section 4.3.
+ *
+ * The Subfeatures_Supported parameter indicates which of the following optional
+ * subfeatures are supported by the remote Controller:
+ *
+ * • A Frequency Actuation Error of zero for all allowed CS channels relative to mode-0
+ *   transmissions when in the reflector role as described in [Vol 6] Part A, Section 3.5.
+ * • Channel Selection Algorithm #3c as described in [Vol 6] Part H, Section 4.1.4.2.
+ * • Phase-based ranging from a sounding sequence as described in [Vol 6] Part H,
+ *   Section 3.3.1.
+ *
+ * The T_IP1_Times_Supported, T_IP2_Times_Supported, T_FCS_Times_Supported,
+ * T_PM_Times_Supported, and T_SW_Time_Supported parameters indicate the
+ * supported optional time durations used in CS steps as described in [Vol 6] Part H,
+ * Section 4.3.
+ *
+ * The TX_SNR_Capability parameter indicates the supported SNR levels used in RTT
+ * packets as described in [Vol 6] Part A, Section 3.1.3.
+ *
+ * If the Host issues this command after an LL_CS_CAPABILITIES_REQ or
+ * LL_CS_CAPABILITIES_RSP PDU has been received from the remote Controller, then
+ * the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Host issues this command after a CS configuration has been created in the local
+ * Controller, then the Controller shall return the error code Command Disallowed (0x0C).
+ * If the Host issues this command when the Channel Sounding (Host Support) feature bit
+ * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
+ * code Command Disallowed (0x0C).
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL the Controller shall return the error code Unknown
+ * Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities(const sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_t * p_params,
+                                                                     sdc_hci_cmd_le_cs_write_cached_remote_supported_capabilities_return_t * p_return);
+
+/** @brief LE CS Security Enable.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.133
+ *
+ * The HCI_LE_CS_Security_Enable command is used by a Host to start or restart
+ * the Channel Sounding Security Start procedure in the local Controller for the ACL
+ * connection identified by the Connection_Handle parameter.
+ *
+ * If the Host issues this command on a Connection_Handle where the Controller is the
+ * Peripheral, then the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the connection identified by the Connection_Handle parameter is not encrypted, then
+ * the Controller shall return the error code Insufficient Security (0x2F).
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL, then the Controller shall return the error code
+ * Unknown Connection Identifier (0x02).
+ *
+ * If the Host issues this command when the Channel Sounding (Host Support) feature bit
+ * (see [Vol 6] Part B, Section 4.6.33.4) is not set, then the Controller shall return the error
+ * code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_CS_Security_Enable command, the
+ * Controller shall send the HCI_Command_Status event to the Host. When the Controller
+ * has completed the Channel Sounding Security Start procedure with the remote
+ * Controller, the Controller shall generate an LE_CS_Security_Enable_Complete event.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_security_enable(const sdc_hci_cmd_le_cs_security_enable_t * p_params);
+
+/** @brief LE CS Set Default Settings.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.134
+ *
+ * The HCI_LE_CS_Set_Default_Settings command is used by a Host to set default CS
+ * settings in the local Controller for the connection identified by the Connection_Handle
+ * parameter. The default settings specify that all roles are disabled in a Controller and
+ * CS_SYNC_Antenna_Selection is set to 0x01.
+ *
+ * The Role_Enable parameter is used to enable or disable the CS roles in the local
+ * Controller. If the Host issues this command to disable a Role for which a valid CS
+ * configuration is present, then the Controller shall return the error code Invalid HCI
+ * Command Parameters (0x12).
+ *
+ * The CS_SYNC_Antenna_Selection parameter indicates the antenna identifier to be
+ * used for transmitting and receiving CS_SYNC packets.
+ *
+ * If the Role_Enable parameter is used to enable an unsupported role or the
+ * CS_SYNC_Antenna_Selection parameter indicates an unsupported antenna identifier,
+ * then the Controller shall return the error code Unsupported Feature or Parameter Value
+ * (0x11).
+ *
+ * The Max_TX_Power parameter is used to set the maximum output power, EIRP, to be
+ * used for all CS transmissions. If the value provided in this parameter is higher than
+ * the maximum output power supported by the Controller, then the Controller shall use
+ * the maximum output power that it supports. If the Controller is unable to use the exact
+ * output power requested by the Host, then the Controller shall use an output power that
+ * is lower but closest to the requested value.
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL, then the Controller shall return the error code
+ * Unknown Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_CS_Set_Default_Settings command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_set_default_settings(const sdc_hci_cmd_le_cs_set_default_settings_t * p_params,
+                                               sdc_hci_cmd_le_cs_set_default_settings_return_t * p_return);
+
+/** @brief LE CS Read Remote FAE Table.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.135
+ *
+ * The HCI_LE_CS_Read_Remote_FAE_Table command is used by a Host to read the
+ * per-channel mode-0 Frequency Actuation Error table of the remote Controller.
+ *
+ * If the remote Controller supports a Frequency Actuation Error of zero relative to
+ * its mode-0 transmissions in the reflector role (No_FAE bit set as described in
+ * [Vol 6] Part B, Section 2.4.2.44), then the Controller shall generate the LE_CS_-
+ * Read_Remote_FAE_Table_Complete event with Status set to Unsupported Feature or
+ * Parameter Value (0x11).
+ *
+ * The Host may store a copy of the remote device’s Frequency Actuation
+ * Error table and write the remote Frequency Actuation Error table in the
+ * local Controller when it reconnects to the same remote device by using the
+ * HCI_LE_CS_Write_Cached_Remote_FAE_Table command.
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL, then the Controller shall return the error code
+ * Unknown Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_CS_Read_Remote_FAE_Table command,
+ * the Controller shall send the HCI_Command_Status event to the Host. When
+ * the Controller has completed the Channel Sounding Mode-0 FAE Table
+ * Request procedure with the remote Controller, the Controller shall generate an
+ * LE_CS_Read_Remote_FAE_Table_Complete event.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_read_remote_fae_table(const sdc_hci_cmd_le_cs_read_remote_fae_table_t * p_params);
+
+/** @brief LE CS Write Cached Remote FAE Table.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.136
+ *
+ * The HCI_LE_CS_Write_Cached_Remote_FAE_Table command is used by a Host to
+ * write a cached copy of the per-channel mode-0 Frequency Actuation Error table of the
+ * remote device in the local Controller.
+ *
+ * If the remote Controller supports a Frequency Actuation Error of zero relative to its
+ * mode-0 transmissions in the reflector role (No_FAE bit set as described in [Vol 6]
+ * Part B, Section 2.4.2.44), then the Controller shall return the error code Unsupported
+ * Feature or Parameter Value (0x11).
+ *
+ * If the Host issues this command after an LL_CS_FAE_RSP PDU has been received
+ * from the remote Controller, then the Controller shall return the error code Command
+ * Disallowed (0x0C).
+ *
+ * If the Host issues this command after a CS configuration has been created in the local
+ * Controller, then the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL, then the Controller shall return the error code
+ * Unknown Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_CS_Write_Cached_Remote_FAE_Table command has completed,
+ * an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_write_cached_remote_fae_table(const sdc_hci_cmd_le_cs_write_cached_remote_fae_table_t * p_params,
+                                                        sdc_hci_cmd_le_cs_write_cached_remote_fae_table_return_t * p_return);
+
+/** @brief LE CS Create Config.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.137
+ *
+ * The HCI_LE_CS_Create_Config command is used by a Host to create a new CS
+ * configuration or update an existing CS configuration with the identifier Config_ID on
+ * the connection identified by the Connection_Handle in the local and/or the remote
+ * Controller.
+ *
+ * When the Create_Context parameter is set to 0x00, the CS configuration is written
+ * only in the local Controller. Otherwise when set to 0x01, the CS configuration is written
+ * in both the local and remote Controllers using the Channel Sounding Configuration
+ * procedure.
+ *
+ * The Main_Mode_Type and the Sub_Mode_Type parameters indicate the CS modes to
+ * be used during the CS procedure for the specified CS configuration.
+ *
+ * The Min_Main_Mode_Steps and Max_Main_Mode_Steps parameters indicate the
+ * range of main mode CS steps to be executed before a submode CS step is executed
+ * during the CS procedure. When the Sub_Mode_Type parameter is set to 0xFF,
+ * the Min_Main_Mode_Steps and Max_Main_Mode_Steps parameters are reserved for
+ * future use.
+ * The Main_Mode_Repetition parameter indicates the number of main mode CS steps
+ * repeated from the last CS subevent at the beginning of the current CS subevent.
+ *
+ * The Mode_0_Steps parameter indicates the number of mode-0 CS steps to be included
+ * at the beginning of each CS subevent.
+ *
+ * The Role parameter indicates the CS role for the local Controller for the specified CS
+ * configuration. The RTT_Type parameter indicates the RTT variant to be used during the
+ * CS procedure, and the CS_SYNC_PHY parameter indicates the PHY to be used for
+ * CS_SYNC exchanges during the CS procedure for the specified CS configuration.
+ *
+ * The Channel_Map parameter indicates the channels to be used or unused during the
+ * CS procedure, and the Channel_Map_Repetition parameter indicates the number of
+ * times the channels specified by Channel_Map are to be repeated for non-mode-0 steps
+ * during the CS procedure (see [Vol 6] Part H, Section 4.1.4).
+ *
+ * The Channel_Selection_Type parameter indicates the Channel Selection Algorithm
+ * to be used during the CS procedure for non-mode-0 steps. When the
+ * Channel_Selection_Type is set to 0x01, the Ch3c_Shape and the Ch3c_Jump
+ * parameters shall each be set to the selected shape and channels to be skipped
+ * as described in [Vol 6] Part H, Section 4.1.4.2. Otherwise, the Ch3c_Shape and the
+ * Ch3c_Jump parameters shall be ignored.
+ *
+ * If the Host issues this command with parameters that are not supported by the local or
+ * remote Controllers, then the Controller shall return the error code Unsupported Feature
+ * or Parameter Value (0x11).
+ *
+ * If the Host issues this command with a Role not enabled by a prior
+ * HCI_LE_CS_Set_Default_Settings command or with a set of parameters that are
+ * considered an invalid configuration according to [Vol 6] Part H, then the Controller shall
+ * return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command before a Channel Sounding
+ * Capability Exchange procedure has been completed or an
+ * HCI_LE_CS_Write_Cached_Remote_Supported_Capabilities command has been
+ * issued for the connection identified by the Connection_Handle parameter, then the
+ * Controller may autonomously initiate the Channel Sounding Capability Exchange
+ * procedure. Otherwise, the Controller shall return the error code Command Disallowed
+ * (0x0C).
+ *
+ * If the Host issues this command to update a CS configuration identified by the
+ * Config_ID parameter that is already enabled using the HCI_LE_CS_Procedure_Enable
+ * command, then the Controller shall return the error code Command Disallowed (0x0C).
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL, then the Controller shall return the error code
+ * Unknown Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_CS_Create_Config command, the Controller
+ * shall send the HCI_Command_Status event to the Host. When the Controller has
+ * completed the Channel Sounding Configuration procedure with the remote Controller
+ * or when the Create_Context parameter is set to 0x00, the Controller shall generate an
+ * LE_CS_Config_Complete event.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_create_config(const sdc_hci_cmd_le_cs_create_config_t * p_params);
+
+/** @brief LE CS Remove Config.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.138
+ *
+ * The HCI_LE_CS_Remove_Config command is used to remove a CS configuration
+ * identified by Config_ID from the local Controller for the connection identified by
+ * the Connection_Handle parameter. When the Host issues this command, the local
+ * Controller shall initiate a Channel Sounding Configuration procedure to remove the CS
+ * configuration from both the local and remote device. The Controller shall delete any CS
+ * procedure related parameters set using the HCI_LE_CS_Set_Procedure_Parameters
+ * command for the CS configuration identified by Config_ID.
+ *
+ * If the CS configuration corresponding to Config_ID does not exist, then the Controller
+ * shall return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command when one or more CS procedures have been enabled
+ * using the HCI_LE_CS_Procedure_Enable command, then the Controller shall return the
+ * error code Command Disallowed (0x0C).
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL, then the Controller shall return the error code
+ * Unknown Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_CS_Remove_Config command, the
+ * Controller shall send the HCI_Command_Status event to the Host. When the
+ * Controller has completed the Channel Sounding Configuration procedure to disable the
+ * configuration, the Controller shall generate an LE_CS_Config_Complete event.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_remove_config(const sdc_hci_cmd_le_cs_remove_config_t * p_params);
+
+/** @brief LE CS Set Channel Classification.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.139
+ *
+ * The HCI_LE_CS_Set_Channel_Classification command is used by a Host to update the
+ * channel classification based on its local information. This channel classification persists
+ * until overwritten with a subsequent HCI_LE_CS_Set_CS_Channel_Classification
+ * command or until the Controller is reset. The Controller may combine the channel
+ * classification information provided by the Host along with local channel classification
+ * information to send an updated CS channel map to the remote Controller.
+ *
+ * If this command is used, then the Host should send updates within 10 seconds of
+ * knowing that the CS channel classification has changed.
+ *
+ * If the host issues this command less than 1 second after the previous time it issued this
+ * command, then the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Channel_Classification parameter enables channels that are reserved for future
+ * use or enables fewer than 15 channels, then the Controller shall return the error code
+ * Invalid HCI Command Parameters (0x12).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_CS_Set_Channel_Classification command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_set_channel_classification(const sdc_hci_cmd_le_cs_set_channel_classification_t * p_params);
+
+/** @brief LE CS Set Procedure Parameters.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.140
+ *
+ * The HCI_LE_CS_Set_Procedure_Parameters command is used by a Host to set the
+ * parameters for the scheduling of one or more CS procedures by the local Controller,
+ * with the remote device for the CS configuration identified by Config_ID and the
+ * connection identified by the Connection_Handle parameter.
+ *
+ * The Max_Procedure_Len parameter indicates the maximum duration of each CS
+ * procedure. The Min_Procedure_Interval and Max_Procedure_Interval parameters
+ * indicate the minimum and maximum interval period between consecutive
+ * CS procedures. The Max_Procedure_Count parameter indicates the maximum
+ * number of consecutive CS procedures to be scheduled as part of this
+ * measurement. If Max_Procedure_Count is set to 1, then Min_Procedure_Interval and
+ * Max_Procedure_Interval shall be ignored.
+ *
+ * The Min_Subevent_Len and Max_Subevent_Len parameters indicate the minimum and
+ * maximum duration of each CS subevent during the CS procedure.
+ *
+ * The values for Min_Procedure_Interval, Max_Procedure_Interval, Min_Subevent_Len,
+ * and Max_Subevent_Len are recommendations to the Controller which it may ignore.
+ *
+ * The Tone_Antenna_Config_Selection parameter indicates the Antenna Configuration
+ * Index to be used in the CS procedure.
+ * The power delta value Tx_Power_Delta indicates the recommended difference between
+ * the remote device’s power level for the CS tones and RTT packets and the power level
+ * for the PHY indicated by the PHY parameter.
+ *
+ * The Preferred_Peer_Antenna parameter indicates the preferred peer-ordered antenna
+ * elements to be used by the remote device for the antenna configuration denoted by
+ * the Tone_Antenna_Config_Selection parameter. The number of bits set in this field
+ * shall be greater than or equal to the number of antenna elements denoted by the
+ * Tone_Antenna_Config_Selection parameter.
+ *
+ * The SNR_Control_Initiator parameter indicates the SNR control adjustment for the
+ * CS_SYNC transmissions of the initiator.
+ *
+ * The SNR_Control_Reflector parameter indicates the SNR control adjustment for the
+ * CS_SYNC transmissions of the reflector.
+ *
+ * If the Host issues this command with parameters that exceed the CS capabilities or
+ * any coexistence constraints, then the Controller shall return the error code Connection
+ * Rejected Due to Limited Resources (0x0D).
+ *
+ * If the CS configuration corresponding to Config_ID does not exist or is removed using
+ * the HCI_LE_CS_Remove_Config command, then the Controller shall return the error
+ * code Invalid HCI Command Parameters (0x12).
+ *
+ * If the Host issues this command when a CS procedure measurement is already enabled
+ * for the specified Config_ID in the Controller using the HCI_LE_CS_Procedure_Enable
+ * command, then the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * The parameters specified by this command for the CS configuration identified
+ * by the Config_ID parameter become invalid after the Host issues the
+ * HCI_LE_CS_Remove_Config command for the given Config_ID.
+ *
+ * If the number of channels available for Channel Sounding before the start of a new CS
+ * procedure measurement is less than 15, then the Controller shall return the error code
+ * Insufficient Channels (0x48).
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL, then the Controller shall return the error code
+ * Unknown Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_CS_Set_Procedure_Parameters command has completed, an
+ * HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_set_procedure_params(const sdc_hci_cmd_le_cs_set_procedure_params_t * p_params,
+                                               sdc_hci_cmd_le_cs_set_procedure_params_return_t * p_return);
+
+/** @brief LE CS Procedure Enable.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.141
+ *
+ * The HCI_LE_CS_Procedure_Enable command is used by a Host to enable or disable
+ * the scheduling of CS procedures by the local Controller, with the remote device for the
+ * connection identified by the Connection_Handle parameter.
+ *
+ * If the Host issues this command to enable a CS configuration identified by the
+ * Config_ID parameter before a corresponding HCI_LE_CS_Set_Procedure_Parameters
+ * command has been issued for the same Config_ID, then the Controller shall return the
+ * error code Command Disallowed (0x0C).
+ *
+ * If the CS configuration corresponding to Config_ID does not exist (or has been removed
+ * using the HCI_LE_CS_Remove_Config command), then the Controller shall return the
+ * error code Invalid HCI Command Parameters (0x12).
+ *
+ * If the CS procedure parameters associated with the given Config_ID exceed any
+ * scheduling or coexistence constraints at the time this command is issued, then the
+ * Controller shall return the error code Connection Rejected Due to Limited Resources
+ * (0x0D).
+ *
+ * If the Host issues this command to enable a CS configuration identified by the
+ * Config_ID parameter that is already enabled using the HCI_LE_CS_Procedure_Enable
+ * command, then the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the number of channels available for Channel Sounding before the start of a new CS
+ * procedure measurement is less than 15, then the Controller shall return the error code
+ * Insufficient Channels (0x48).
+ *
+ * If the Host sends this command with a Connection_Handle that does not exist, or the
+ * Connection_Handle is not for an ACL, then the Controller shall return the error code
+ * Unknown Connection Identifier (0x02).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_CS_Procedure_Enable command, the
+ * Controller shall send the HCI_Command_Status event to the Host. When
+ * the locally initiated Channel Sounding Start procedure has completed or
+ * when the Controller has received the LL_CS_IND PDU, it shall generate
+ * an LE_CS_Procedure_Enable_Complete event. When the Host has issued a
+ * command to disable an active CS procedure, the Controller shall generate an
+ * LE_CS_Procedure_Enable_Complete event after any pending CS subevent results
+ * have been sent to the Host and the LL_CS_TERMINATE_RSP PDU has been
+ * successfully sent or received.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_procedure_enable(const sdc_hci_cmd_le_cs_procedure_enable_t * p_params);
+
+/** @brief LE CS Test.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.142
+ *
+ * This command is used to start a CS test where the Implementation Under Test (IUT)
+ * is placed in the role of either the initiator or reflector. The first mode-0 channel in the
+ * list is used as the starting channel for the test. At the beginning of any test, the IUT
+ * in the reflector role shall listen on the first mode-0 channel until it receives the first
+ * transmission from the initiator. Similarly, with the IUT in the initiator role, the tester
+ * will start by listening on the first mode-0 channel and the IUT shall transmit on that
+ * channel for the first half of the first CS step. Thereafter, the parameters of this command
+ * describe the required transmit and receive behavior for the CS test.
+ *
+ * This command is used to schedule a single CS procedure that consists of one or more
+ * CS subevents. After the channels contained in the Channel map or the Channel array in
+ * case of an override have been used the number of times indicated by Channel_Map_-
+ * Repetition to schedule CS steps, or the maximum number of allowed steps in a CS
+ * procedure has been reached, or the maximum number of subevents indicated by
+ * the Max_Num_Subevents parameter has been reached, or the maximum number of
+ * allowed subevents in a CS procedure has been reached, the CS procedure will end.
+ *
+ * The Main_Mode_Type and the Sub_Mode_Type parameters indicate the CS modes to
+ * be used during the CS procedure for the specified CS configuration.
+ *
+ * The Main_Mode_Repetition parameter indicates the number of main mode CS steps
+ * repeated from the last CS subevent at the beginning of the current CS subevent.
+ *
+ * The Mode_0_Steps parameter indicates the number of mode-0 CS steps to be included
+ * at the beginning of each CS subevent.
+ *
+ * The Role parameter indicates the CS role for the local Controller.
+ *
+ * The RTT_Type parameter indicates the RTT type and payload length to be used during
+ * the CS procedure.
+ *
+ * The CS_SYNC_PHY parameter indicates the PHY to be used for CS_SYNC exchanges
+ * during the CS procedure.
+ *
+ * The CS_SYNC_Antenna_Selection parameter indicates the antenna identifier to be
+ * used for transmitting and receiving CS_SYNC packets.
+ *
+ * The Subevent_Len parameter indicates the maximum length of a CS subevent.
+ *
+ * The Subevent_Interval parameter indicates the gap between the start of consecutive
+ * CS subevents. When Subevent_Interval is set to zero, the Subevent_Len parameter is
+ * ignored, and only one CS subevent is executed in the CS test.
+ *
+ * The Max_Num_Subevents parameter indicates the maximum number of subevents
+ * that are in the procedure. If Max_Num_Subevents is set to 0x00, then the
+ * Max_Num_Subevents parameter is ignored.
+ *
+ * The Transmit_Power_Level parameter indicates the transmit power level used for the
+ * CS procedure.
+ * The T_IP1_Time, T_IP2_Time, T_FCS_Time, T_PM_Time, and T_SW_Time
+ * parameters indicate the time durations used in CS steps as described in [Vol 6] Part
+ * H, Section 4.3.
+ *
+ * The Tone_Antenna_Config_Selection parameter indicates the Antenna Configuration
+ * Index used during antenna switching during the tone phases of CS steps as described
+ * in [Vol 6] Part A, Section 5.3.
+ *
+ * The SNR_Control_Initiator parameter indicates the SNR control adjustment for the
+ * CS_SYNC transmissions of the initiator.
+ *
+ * The SNR_Control_Reflector parameter indicates the SNR control adjustment for of the
+ * CS_SYNC transmissions of the reflector.
+ *
+ * The DRBG_Nonce parameter specifies octets 14 and 15 of the initial value of the DRBG
+ * nonce, VDRBG, used in calls to the random bit generation function described in [Vol 6]
+ * Part E, Section 3.1.6. The remaining octets of the initial nonce value VDRBG are set to
+ * 0x00. All octets of the initial temporal key KDRBG are set to 0x00. The most significant bit
+ * of this parameter is stored in the most significant bit of the octet 14 of the DRBG nonce.
+ * The least significant bit of this parameter is stored in the least significant bit of octet 15
+ * of the DRBG nonce.
+ *
+ * The Channel_Map_Repetition field shall indicate the number of times the
+ * Channel_Map is cycled through for non-mode-0 steps within a CS procedure. The
+ * Channel_Map_Repetition field shall be greater than or equal to 1. The Channel_Map
+ * content is selected based on the setting of the Override_Config bit 0 as described
+ * below.
+ *
+ * The Override_Config parameter indicates which CS parameters are not derived from
+ * the DRBG but determined from the Override_Parameters_Data parameter in this
+ * command.
+ *
+ * If the Override_Config bit 2 corresponding to CS submode insertion is not set, then the
+ * number of main mode CS steps to be executed before a submode CS step during the
+ * CS procedure is determined using DRBG with following default values:
+ *
+ * • Min_Main_Mode_Steps: 6
+ * • Max_Main_Mode_Steps: 10
+ *
+ * If the Override_Config bit 10 corresponding to the Stable Phase test is set, then
+ * the procedure is replaced with the Stable Phase test as described in [Vol 6] Part F,
+ * Section 2.4.
+ * The Override_Parameters_Data is a variable sized object with a length indicated by
+ * Override_Parameters_Length parameter whose contents are determined by the bits set
+ * in the Override_Config parameter.
+ *
+ * An ongoing CS test can be stopped using the HCI_LE_CS_Test_End command (see
+ * Section 7.8.143).
+ *
+ * The CS test is considered complete when all the results of the CS procedure initiated by
+ * the CS test have been reported to the Host.
+ *
+ * If the Host issues this command when a CS test is already enabled using the
+ * HCI_LE_CS_Test command and has not completed, then the Controller shall return
+ * the error code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_CS_Test command has completed, an HCI_Command_Complete
+ * event shall be generated. The Controller shall either generate the LE_CS_Subevent_-
+ * Result event once or generate the LE_CS_Subevent_Result_Continue event multiple
+ * times to send results from the completed CS steps to the Host.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_test(const sdc_hci_cmd_le_cs_test_t * p_params);
+
+/** @brief LE CS Test End.
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.143
+ *
+ * The HCI_LE_CS_Test_End command is used to stop any CS test that is in progress.
+ *
+ * If the Host issues this command when there is no prior CS test initiated using the
+ * HCI_LE_CS_Test command or when a prior CS test has already been completed, then
+ * the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * Event(s) generated (unless masked away):
+ * When the Controller receives the HCI_LE_CS_Test_End command, the Controller
+ * shall send the HCI_Command_Status event to the Host. When the Controller has
+ * successfully sent all the pending CS subevent results to the Host, the Controller shall
+ * generate an LE_CS_Test_End_Complete event.
+ *
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_cs_test_end(void);
 
 /** @} end of HCI_VS_API */
 
