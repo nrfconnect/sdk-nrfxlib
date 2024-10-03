@@ -179,6 +179,8 @@ enum sdc_hci_vs_tx_power_handle_type
     SDC_HCI_VS_TX_POWER_HANDLE_TYPE_CONN = 0x02,
     /** @brief Handle of type Periodic Sync. */
     SDC_HCI_VS_TX_POWER_HANDLE_TYPE_SYNC = 0x03,
+    /** @brief Handle of type ISO broadcaster. */
+    SDC_HCI_VS_TX_POWER_HANDLE_TYPE_ISO_BROADCASTER = 0x04,
 };
 
 /** @brief Supported Vendor Specific HCI Commands. */
@@ -315,7 +317,7 @@ typedef struct __PACKED __ALIGN(1)
  *
  * The controller only generates HCI_VS_conn_anchor_point_update_report events
  * if instructed to do so using the
- * @ref sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable_t command.
+ * @ref sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable command.
  *
  * The anchor_point_us in this event is a timestamp on the controller's clock.
  *

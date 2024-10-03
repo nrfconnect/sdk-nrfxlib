@@ -219,8 +219,8 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t previously_used_11_7 : 1;
     uint8_t previously_used_12_0 : 1;
     uint8_t hci_set_afh_host_channel_classification : 1;
-    uint8_t rfu_12_2 : 1;
-    uint8_t rfu_12_3 : 1;
+    uint8_t hci_le_cs_read_remote_fae_table : 1;
+    uint8_t hci_le_cs_write_cached_remote_fae_table : 1;
     uint8_t hci_read_inquiry_scan_type : 1;
     uint8_t hci_write_inquiry_scan_type : 1;
     uint8_t hci_read_inquiry_mode : 1;
@@ -251,12 +251,12 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_read_clock : 1;
     uint8_t hci_read_loopback_mode : 1;
     uint8_t hci_write_loopback_mode : 1;
-    uint8_t hci_enable_device_under_test_mode : 1;
+    uint8_t hci_enable_implementation_under_test_mode : 1;
     uint8_t hci_setup_synchronous_connection_request : 1;
     uint8_t hci_accept_synchronous_connection_request : 1;
     uint8_t hci_reject_synchronous_connection_request : 1;
-    uint8_t rfu_16_6 : 1;
-    uint8_t rfu_16_7 : 1;
+    uint8_t hci_le_cs_create_config : 1;
+    uint8_t hci_le_cs_remove_config : 1;
     uint8_t hci_read_extended_inquiry_response : 1;
     uint8_t hci_write_extended_inquiry_response : 1;
     uint8_t hci_refresh_encryption_key : 1;
@@ -286,9 +286,9 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_send_keypress_notification : 1;
     uint8_t hci_io_capability_request_negative_reply : 1;
     uint8_t hci_read_encryption_key_size : 1;
-    uint8_t rfu_20_5 : 1;
-    uint8_t rfu_20_6 : 1;
-    uint8_t rfu_20_7 : 1;
+    uint8_t hci_le_cs_read_local_supported_capabilities : 1;
+    uint8_t hci_le_cs_read_remote_supported_capabilities : 1;
+    uint8_t hci_le_cs_write_cached_remote_supported_capabilities : 1;
     uint8_t previously_used_21_0 : 1;
     uint8_t previously_used_21_1 : 1;
     uint8_t previously_used_21_2 : 1;
@@ -308,19 +308,19 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_read_flow_control_mode : 1;
     uint8_t hci_write_flow_control_mode : 1;
     uint8_t hci_read_data_block_size : 1;
-    uint8_t rfu_23_3 : 1;
-    uint8_t rfu_23_4 : 1;
+    uint8_t hci_le_cs_test : 1;
+    uint8_t hci_le_cs_test_end : 1;
     uint8_t previously_used_23_5 : 1;
     uint8_t previously_used_23_6 : 1;
     uint8_t previously_used_23_7 : 1;
     uint8_t hci_read_enhanced_transmit_power_level : 1;
-    uint8_t rfu_24_1 : 1;
+    uint8_t hci_le_cs_security_enable : 1;
     uint8_t previously_used_24_2 : 1;
     uint8_t previously_used_24_3 : 1;
     uint8_t previously_used_24_4 : 1;
     uint8_t hci_read_le_host_support : 1;
     uint8_t hci_write_le_host_support : 1;
-    uint8_t rfu_24_7 : 1;
+    uint8_t hci_le_cs_set_default_settings : 1;
     uint8_t hci_le_set_event_mask : 1;
     uint8_t hci_le_read_buffer_size_v1 : 1;
     uint8_t hci_le_read_local_supported_features : 1;
@@ -352,10 +352,10 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_le_receiver_test_v1 : 1;
     uint8_t hci_le_transmitter_test_v1 : 1;
     uint8_t hci_le_test_end : 1;
-    uint8_t rfu_28_7 : 1;
-    uint8_t rfu_29_0 : 1;
-    uint8_t rfu_29_1 : 1;
-    uint8_t rfu_29_2 : 1;
+    uint8_t hci_le_enable_monitoring_advertisers : 1;
+    uint8_t hci_le_cs_set_channel_classification : 1;
+    uint8_t hci_le_cs_set_procedure_parameters : 1;
+    uint8_t hci_le_cs_procedure_enable : 1;
     uint8_t hci_enhanced_setup_synchronous_connection : 1;
     uint8_t hci_enhanced_accept_synchronous_connection : 1;
     uint8_t hci_read_local_supported_codecs : 1;
@@ -492,19 +492,21 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t hci_le_set_default_subrate_command : 1;
     uint8_t hci_le_subrate_request_command : 1;
     uint8_t hci_le_set_extended_advertising_parameters_v2 : 1;
-    uint8_t rfu_46_3 : 1;
-    uint8_t rfu_46_4 : 1;
+    uint8_t hci_le_set_decision_data : 1;
+    uint8_t hci_le_set_decision_instructions : 1;
     uint8_t hci_le_set_periodic_advertising_subevent_data : 1;
     uint8_t hci_le_set_periodic_advertising_response_data : 1;
     uint8_t hci_le_set_periodic_sync_subevent : 1;
     uint8_t hci_le_extended_create_connection_v2 : 1;
     uint8_t hci_le_set_periodic_advertising_parameters_v2 : 1;
-    uint8_t rfu_47_2 : 1;
-    uint8_t rfu_47_3 : 1;
-    uint8_t rfu_47_4 : 1;
-    uint8_t rfu_47_5 : 1;
-    uint8_t rfu_47_6 : 1;
-    uint8_t rfu_47_7 : 1;
+    uint8_t hci_le_read_all_local_supported_features : 1;
+    uint8_t hci_le_read_all_remote_features : 1;
+    uint8_t hci_le_set_host_feature_v2 : 1;
+    uint8_t hci_le_add_device_to_monitored_advertisers_list : 1;
+    uint8_t hci_le_remove_device_from_monitored_advertisers_list : 1;
+    uint8_t hci_le_clear_monitored_advertisers_list : 1;
+    uint8_t hci_le_read_monitored_advertisers_list_size : 1;
+    uint8_t hci_le_frame_space_update : 1;
 } sdc_hci_ip_supported_commands_t;
 
 /** @} end of HCI_TYPES */
@@ -578,20 +580,18 @@ uint8_t sdc_hci_cmd_ip_read_local_version_information(sdc_hci_cmd_ip_read_local_
 
 /** @brief Read Local Supported Commands.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.4.2
  *
- * This command reads the list of HCI commands supported for the local
- * Controller.
+ * This command reads the list of HCI commands supported for the local Controller.
  *
- * This command shall return the Supported_Commands configuration
- * parameter.
+ * This command shall return the Supported_Commands configuration parameter.
  *
  * See Section 6.27 for more information.
  *
  * Event(s) generated (unless masked away):
- * When the HCI_Read_Local_Supported_Commands command has completed,
- * an HCI_Command_Complete event shall be generated.
+ * When the HCI_Read_Local_Supported_Commands command has completed, an
+ * HCI_Command_Complete event shall be generated.
  *
  * @param[out] p_return Extra return parameters.
  *
