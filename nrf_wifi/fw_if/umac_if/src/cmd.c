@@ -200,6 +200,11 @@ enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	umac_cmd_data->ps_data_retrieval_mech = PS_POLL_FRAME;
 #endif  /* CONFIG_NRF_WIFI_QOS_NULL_BASED_RETRIEVAL */
 
+#if defined(CONFIG_NRF_WIFI_FEAT_KEEPALIVE)
+	umac_cmd_data->keep_alive_enable = KEEP_ALIVE_ENABLED;
+	umac_cmd_data->keep_alive_period = CONFIG_NRF_WIFI_KEEPALIVE_PERIOD_S;
+#endif /* CONFIG_NRF_WIFI_FEAT_KEEPALIVE */
+
 	status = nrf_wifi_hal_ctrl_cmd_send(fmac_dev_ctx->hal_dev_ctx,
 					    umac_cmd,
 					    (sizeof(*umac_cmd) + len));
