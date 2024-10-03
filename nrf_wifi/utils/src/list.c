@@ -10,7 +10,7 @@
  */
 
 
-#include "list.h"
+#include <list.h>
 
 void *nrf_wifi_utils_list_alloc(void)
 {
