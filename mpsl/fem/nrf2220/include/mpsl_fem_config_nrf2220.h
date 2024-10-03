@@ -50,8 +50,8 @@ typedef struct
      */
     mpsl_fem_gpiote_pin_config_t  cs_pin_config;
     /**
-     * Mode pin configuration. Configuration where @ref mpsl_fem_gpiote_pin_config_t.enable is
-     * false is unsupported.
+     * Mode pin configuration. Configuration where @ref mpsl_fem_gpiote_pin_config_t.enable
+     * is false is unsupported.
      */
     mpsl_fem_gpiote_pin_config_t  md_pin_config;
     /** TWI interface. */
