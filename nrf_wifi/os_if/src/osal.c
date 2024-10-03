@@ -37,9 +37,21 @@ void *nrf_wifi_osal_mem_zalloc(size_t size)
 }
 
 
+void *nrf_wifi_osal_data_mem_zalloc(size_t size)
+{
+	return opriv->ops->data_mem_zalloc(size);
+}
+
+
 void nrf_wifi_osal_mem_free(void *buf)
 {
 	os_ops->mem_free(buf);
+}
+
+
+void nrf_wifi_osal_data_mem_free(void *buf)
+{
+	opriv->ops->data_mem_free(buf);
 }
 
 
