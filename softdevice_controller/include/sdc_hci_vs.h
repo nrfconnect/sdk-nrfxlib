@@ -315,7 +315,7 @@ typedef struct __PACKED __ALIGN(1)
  *
  * The controller only generates HCI_VS_conn_anchor_point_update_report events
  * if instructed to do so using the
- * @ref sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable_t command.
+ * @ref sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable command.
  *
  * The anchor_point_us in this event is a timestamp on the controller's clock.
  *
