@@ -13,4 +13,4 @@ KRKNWK-11204: Transmitting an 802.15.4 frame with improperly populated Auxiliary
   **Workaround:** Make sure that you populate the Auxiliary Security Header field according to the IEEE Std 802.15.4-2015 specification, section 9.4.
 
 KRKNWK-12482: Reception of correct frames will occasionally end in failure with error ``NRF_802154_RX_ERROR_RUNTIME``
-  This issue can occur for the ``nrf5340dk_nrf5340_cpunet`` target if a custom application (other than :ref:`nrf:multiprotocol-rpmsg-sample` sample or :ref:`zephyr:nrf-ieee802154-rpmsg-sample` sample) is used.
+  This issue can occur for the ``nrf5340dk_nrf5340_cpunet`` target if a custom application (other than :ref:`nrf:multiprotocol-rpmsg-sample` sample or :zephyr:code-sample:`nrf_ieee802154_rpmsg` sample) is used.
