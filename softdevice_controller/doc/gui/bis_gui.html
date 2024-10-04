@@ -1,0 +1,445 @@
+<script src="https://cdn.plot.ly/plotly-2.34.0.min.js" charset="utf-8"></script>
+<style>
+  .generate-button {
+    color: #fff !important;
+    background-color: #00a9ce !important;
+    box-shadow: none;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    border-radius: .25rem;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-top: 1.5rem !important;
+  }
+  .form-select {
+    width: 9rem;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-right-width: 2px;
+    border-left-width: 2px;
+  }
+  .form-control-sm {
+    border-color: darkgray;
+  }
+</style>
+<div id="gui-top">
+  <div class="row justify-content-md-center", style="width:100%;"">
+    <div id="gui-control" style="max-width: 750px;">
+      <div class="row">
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inNse">NSE</label><br>
+            <input type="number" class="form-control-sm" id="inNse" min=1 max=15 value=6 style="width: 9rem;">
+          </div>
+        </div>
+
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inBn">BN</label><br>
+            <input type="number" class="form-control-sm" id="inBn" min=1 max=7 value=2 style="width: 9rem;">
+          </div>
+        </div>
+
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inIrc">IRC</label><br>
+            <input type="number" class="form-control-sm" id="inIrc" min=1 max=15 value=2 style="width: 9rem;">
+          </div>
+        </div>
+
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inPto">PTO</label><br>
+            <input type="number" class="form-control-sm" id="inPto" min=0 max=15 value=2 style="width: 9rem;">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inNumBis">Num BIS</label><br>
+            <input type="number" class="form-control-sm" id="inNumBis" min=1 max=15 value=1 style="width: 9rem;">
+          </div>
+        </div>
+
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inMaxPdu">Max. PDU</label><br>
+            <input type="number" class="form-control-sm" id="inMaxPdu" min=1 max=251 value=130 style="width: 9rem;">
+          </div>
+        </div>
+
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inIsoInterval">ISO Interval [us]</label><br>
+            <input type="number" class="form-control-sm" id="inIsoInterval" min=5000 max=4000000 value=20000 step=1250 style="width: 9rem;">
+          </div>
+        </div>
+
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inIsoInterval">SDU Interval [us]</label><br>
+            <input type="number" class="form-control-sm" id="inSduInterval" min=255 max=1048575 value=20000 style="width: 9rem;">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inPhy">PHY</label><br>
+            <select class="form-select" id="inPhy" aria-label="PHY Selection" style="width: 9rem;">
+              <option selected value="1">LE 1M</option>
+              <option value="2">LE 2M</option>
+              <option value="3">LE Coded</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inFraming">Framing</label><br>
+            <select class="form-select" id="inFraming" aria-label="Framing Selection" style="width: 9rem;">
+              <option selected value="0">Unframed</option>
+              <option value="1">Framed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col d-flex">
+          <div class="mx-auto d-block">
+            <label for="inPacking">Packing</label><br>
+            <select class="form-select" id="inPacking" aria-label="Packing Selection" style="width: 9rem;">
+              <option selected value="0">Sequential</option>
+              <option value="1">Interleaved</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col d-flex">
+          <div class="mx-auto d-block"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-md-center", style="width:100%;"">
+      <div id="gui-table" style="max-width:750px;min-width: 280px;"></div>
+  </div>
+
+  <div class="row justify-content-md-center" id="gui-events" style="width:100%;"">
+    <div id="event-layout" style="max-width:850px;height:200px;"></div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('gui-control').querySelectorAll('select, input').forEach(el => {
+    el.addEventListener('input', () => {
+      showEvents();
+    });
+  });
+
+  showEvents();
+
+  function getDefaultTrace() {
+    return {
+        x: [],
+        y: [],
+        type: 'bar',
+        text: '',
+        textposition: 'auto',
+        insidetextfont: {
+          color: 'black',
+        },
+        hoverlabel: {
+          font: {
+            color: 'black'
+          },
+          bgcolor: 'rgb(231, 242, 250)'
+        },
+        hoverinfo: 'text',
+        hovertext: [],
+        marker: {
+          color: 'rgb(158,202,225)',
+          line: {
+            width: 1.5
+          }
+        },
+      };
+  }
+
+  function setSubeventTrace(traces, annotations, numberOfPdus, subeventNo, nse, bn, irc, pto, fontFamily) {
+    const rd = 117 / numberOfPdus;
+    const gd = 117 / numberOfPdus;
+    const bd = 30 / numberOfPdus;
+    const currentEvent = Math.floor(subeventNo / nse);
+    const group = Math.floor((subeventNo % nse) / bn);
+    let pduEvent = currentEvent;
+    if (group >= irc) {
+      const ptoGroup = group - irc + 1;
+      pduEvent += (ptoGroup * pto);
+    }
+
+    const pdu = (pduEvent * bn) + (subeventNo % bn);
+    traces[pdu].y.push(1);
+    traces[pdu].x.push(currentEvent + subeventNo);
+    traces[pdu].text = `${pdu}`;
+    traces[pdu].marker.color = `rgb(${Math.floor(147 - pdu * rd)},${Math.floor(232 - pdu * gd)},${Math.floor(250 - pdu * bd)})`;
+    traces[pdu].hovertext.push(`Type: ${group < irc ? 'Current' : 'Future'}<br>PDU: ${pdu}<br>Subevent: ${subeventNo % nse}`)
+
+    if (group === 0) {
+      annotations.push({
+        text: `Event ${currentEvent}`,
+        x: (currentEvent * (nse + 1)) + (nse - 1) / 2,
+        y: -0.1,
+        align: 'center',
+        showarrow: false,
+        font: {
+          family: fontFamily,
+          size: 15,
+        }
+      })
+    }
+  }
+
+  function limit(val, min, max) {
+    return Number.isNaN(val) ? val : Math.min(Math.max(val, min), max);
+  }
+
+  function readInputs() {
+    const params = {
+      valid: true,
+      nse: limit(parseInt(inNse.value), 1, 15),
+      bn: limit(parseInt(inBn.value), 1, 7),
+      irc: limit(parseInt(inIrc.value), 1, 15),
+      pto: limit(parseInt(inPto.value), 0, 15),
+      numBis: limit(parseInt(inNumBis.value), 1, 15),
+      phy: parseInt(inPhy.value),
+      maxPdu: limit(parseInt(inMaxPdu.value), 1, 251),
+      packing: parseInt(inPacking.value),
+      isoInterval: parseInt(inIsoInterval.value),
+      sduInterval: parseInt(inSduInterval.value),
+      framing: parseInt(inFraming.value),
+    };
+
+    if (Object.values(params).some(val => Number.isNaN(val))) {
+      params.valid = false;
+      return params;
+    }
+
+    inNse.value = params.nse;
+    inBn.value = params.bn;
+    inIrc.value = params.irc;
+    inPto.value = params.pto;
+    inNumBis.value = params.numBis;
+    inMaxPdu.value = params.maxPdu;
+
+    return params;
+  }
+
+  function validateInputs(params) {
+    if (!params.valid) {
+      return "All input parameters should be entered"
+    }
+
+    if (params.nse % params.bn) {
+      return "BN must be an integer divisor of NSE";
+    }
+
+    const gc = params.nse / params.bn;
+    if (gc > params.irc) {
+      if (!params.pto) {
+        return "PTO must be greater than 0 when (NSE / BN) > IRC";
+      }
+    }
+    else if (gc == params.irc) {
+      if (params.pto) {
+        return "PTO must be 0 when (NSE / BN) == IRC";
+      }
+    }
+    else {
+      return "(NSE / BN) must be smaller than or equal to IRC";
+    }
+
+    if (params.isoInterval % 1250) {
+      return "ISO interval must be an integer multiple of 1250us";
+    }
+
+    if (params.isoInterval < 5000 || params.isoInterval > 4000000) {
+      return "ISO interval must be between 5000us and 4000000us";
+    }
+
+    if (params.sduInterval < 255 || params.sduInterval > 1048575) {
+      return "SDU interval must be between 255us and 1048575us";
+    }
+
+    if ((params.isoInterval < params.sduInterval) && !params.framing) {
+      return "Framing must be enabled when ISO interval is smaller that SDU interval";
+    }
+
+    return null;
+  }
+
+  function showEvents() {
+    const fontFamily = 'system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, Liberation Sans, sans-serif';
+    const numberOfEvents = 4;
+    const params = readInputs();
+    const err = validateInputs(params);
+    const guiTable = document.getElementById('gui-table');
+    const eventLayout = document.getElementById('event-layout');
+    guiTable.replaceChildren();
+    eventLayout.replaceChildren();
+    if (err) {
+      guiTable.insertAdjacentHTML('afterbegin',
+        `<p style="color:red;font-family:monospace;font-size:15px;margin-top:30px;">Error: ${err}</p>`);
+      return;
+    }
+
+    const gc = Math.floor(params.nse / params.bn);
+    const ptoGroups = gc - params.irc;
+    const numberOfPdus = ((numberOfEvents - 1) * params.bn) + (ptoGroups * params.bn * params.pto) + params.bn + 4;
+
+    let mpt;
+    if (params.phy === 1) {
+      mpt = (10 + params.maxPdu) * 8;
+    }
+    else if (params.phy === 2) {
+      mpt = (11 + params.maxPdu) * 4;
+    }
+    else {
+      mpt = ((10 + params.maxPdu) * 64) + 80;
+    }
+
+    const minSubInterval = 32 + (params.isoInterval / 500);
+    let subInterval, spacing;
+    if (params.packing === 0) {
+      subInterval = mpt + 150;
+      if (subInterval < minSubInterval) {
+        subInterval = minSubInterval;
+      }
+      spacing = subInterval * params.nse;
+    }
+    else {
+      spacing = mpt + 150;
+      subInterval = spacing * params.numBis;
+      if (subInterval < minSubInterval) {
+        subInterval = minSubInterval;
+      }
+    }
+
+    const syncDelay = ((params.numBis - 1) * spacing) + ((params.nse - 1) * subInterval) + mpt;
+    let transportLatency;
+    if (params.framing === 1) {
+      transportLatency = syncDelay + (params.pto * (gc - params.irc) * params.isoInterval) + params.isoInterval + params.sduInterval;
+    }
+    else {
+      transportLatency = syncDelay + (((params.pto * (gc - params.irc)) + 1) * params.isoInterval) - params.sduInterval;
+    }
+
+    const annotations = [];
+    const traces = [];
+    for (let pdu = 0; pdu < numberOfPdus; pdu++) {
+      traces.push(getDefaultTrace());
+    }
+
+    for (let subeventNo = 0; subeventNo < (numberOfEvents * params.nse); subeventNo++) {
+      setSubeventTrace(traces, annotations, numberOfPdus, subeventNo, params.nse, params.bn, params.irc, params.pto, fontFamily);
+    }
+
+    const layout = {
+      autosize: true,
+      showlegend: false,
+      textangle: 0,
+      yaxis: {
+        range: [-0.25, 1.25],
+        visible: false,
+        fixedrange: true
+      },
+      xaxis: {
+        range: [-1, ((numberOfEvents) * params.nse) + numberOfEvents - 1],
+        visible: false
+      },
+      margin: {
+        b: 0,
+        l: 0,
+        r: 0,
+        t: 0
+      },
+      annotations: annotations,
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      modebar: {
+        color: 'rgb(56, 103, 113)',
+        activecolor: 'rgb(0, 169, 206)',
+        bgcolor: 'rgba(0,0,0,0)'
+      }
+    };
+
+    const config = {
+      modeBarButtonsToRemove: ['toImage', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d'],
+      displaylogo: false,
+      responsive: true,
+    };
+
+    Plotly.newPlot('event-layout', traces, layout, config);
+    const dragLayer = document.getElementsByClassName('nsewdrag')[0]
+    document.getElementById('event-layout').on('plotly_hover', function (data) {
+      dragLayer.style.cursor = 'default'
+    });
+
+    var values = [
+      ['ISO Interval [ms]', 'Sync Delay [ms]', 'Transport Latency [ms]'],
+      [params.isoInterval / 1000, syncDelay / 1000, transportLatency / 1000]]
+
+    var data = [{
+      type: 'table',
+      columnwidth: [2, 1],
+      header: {
+        values: [["<b>Parameter</b>"], ["<b>Value</b>"]],
+        align: "center",
+        fill: { color: "rgb(106, 176, 222)" },
+        font: { family: fontFamily, size: 12, color: "white" },
+        height: 20
+      },
+      cells: {
+        values: values,
+        align: "center",
+        font: { family: fontFamily, size: 14, color: ["black", "black"] },
+        fill: { color: ["rgb(231, 242, 250)", "rgb(231, 242, 250)"] },
+        height: 28
+      }
+    }]
+
+    const table_layout = {
+      autosize: true,
+      margin: {
+        b: 1,
+        l: 1,
+        r: 1,
+        t: 26
+      },
+      plot_bgcolor: "rgba(0,0,0,0)",
+      paper_bgcolor: "rgba(0,0,0,0)",
+      dragmode: false,
+      height: 150,
+      minreducedwidth: 250
+    };
+
+    const table_config = {
+      modeBarButtonsToRemove: ['toImage', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d'],
+      displaylogo: false,
+      responsive: true,
+      staticPlot: true
+    };
+
+    Plotly.newPlot('gui-table', data, table_layout, table_config);
+  }
+</script>
