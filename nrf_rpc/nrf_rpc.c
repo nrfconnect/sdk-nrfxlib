@@ -668,7 +668,7 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 		}
 	}
 
-	if (hdr->dst_group_id == NRF_RPC_ID_UNKNOWN) {
+	if (hdr->dst_group_id == NRF_RPC_ID_UNKNOWN && (*group)->data->transport_initialized) {
 		/*
 		 * If remote processor does not know our group id, send an init packet back,
 		 * since it might have missed our original init packet.
