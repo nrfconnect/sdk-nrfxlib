@@ -88,6 +88,8 @@ Bug fixes
     * Connected Isochronous channel in the peripheral role
     * Periodic Sync with Responses
 * Fixed an issue where LE Power Control was not being used for CISes which are not the first CIS in a CIG. (DRGN-23291)
+* Fixed an issue where the SoftDevice Controller in the peripheral role could terminate a connection due to a MIC failure during a valid encryption start procedure.
+  This could only happen if the ``LL_ENC_RSP`` packet was corrupted due to on-air interference. (DRGN-23204)
 
 nRF Connect SDK v2.7.0
 **********************
