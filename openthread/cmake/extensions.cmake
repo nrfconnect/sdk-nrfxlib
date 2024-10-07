@@ -103,7 +103,11 @@ function(get_active_mbedtls_configs_from_file fileName returnMatch1List)
 endfunction()
 
 function(check_openthread_dependencies ot_lib_nrf_security_mbedtls_config_file)
-  set(nrf_security_mbedtls_config_file "${CMAKE_CURRENT_BINARY_DIR}/../../../nrf/subsys/nrf_security/src/include/generated/${CONFIG_MBEDTLS_CFG_FILE}")
+  if (CONFIG_BUILD_WITH_TFM)
+    set(nrf_security_mbedtls_config_file ${CMAKE_CURRENT_BINARY_DIR}/../../../../generated/interface_nrf_security_psa/${CONFIG_MBEDTLS_CFG_FILE})
+  else()
+    set(nrf_security_mbedtls_config_file ${CMAKE_CURRENT_BINARY_DIR}/../../../../generated/library_nrf_security_psa/${CONFIG_MBEDTLS_CFG_FILE})
+  endif()
   get_active_mbedtls_configs_from_file(${nrf_security_mbedtls_config_file} mbedtls_conf_list)
   get_active_mbedtls_configs_from_file(${ot_lib_nrf_security_mbedtls_config_file} ot_mbedtls_conf_list)
 

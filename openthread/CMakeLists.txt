@@ -23,7 +23,12 @@ if(CONFIG_OPENTHREAD_SOURCES)
   set(OPENTHREAD_UTILS_DST_DIR "${NRFXLIB_DIR}/openthread/include/utils")
   set(OPENTHREAD_SYSTEM_H "${ZEPHYR_OPENTHREAD_MODULE_DIR}/examples/platforms/openthread-system.h")
   set(OPENTHREAD_UART_H "${ZEPHYR_OPENTHREAD_MODULE_DIR}/examples/platforms/utils/uart.h")
-  set(NRF_SECURITY_MBEDTLS_CONFIG_FILE ${CMAKE_CURRENT_BINARY_DIR}/../../../nrf/subsys/nrf_security/src/include/generated/${CONFIG_MBEDTLS_CFG_FILE})
+
+  if (CONFIG_BUILD_WITH_TFM)
+    set(NRF_SECURITY_MBEDTLS_CONFIG_FILE ${CMAKE_CURRENT_BINARY_DIR}/../../../../generated/interface_nrf_security_psa/${CONFIG_MBEDTLS_CFG_FILE})
+  else()
+    set(NRF_SECURITY_MBEDTLS_CONFIG_FILE ${CMAKE_CURRENT_BINARY_DIR}/../../../../generated/library_nrf_security_psa/${CONFIG_MBEDTLS_CFG_FILE})
+  endif()
 
   if(CONFIG_OPENTHREAD_BUILD_OUTPUT_STRIPPED)
     foreach(target IN LISTS OPENTHREAD_LIBRARIES)
