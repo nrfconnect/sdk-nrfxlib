@@ -13,6 +13,8 @@ Main Branch
 Changes
 =======
 
+* On nRF54L Series devices, the application now needs to implement :c:func:`mpsl_constlat_request_callback` and :c:func:`mpsl_lowpower_request_callback`.
+  This is already added to the MPSL driver in the |NCS|. (DRGN-22562)
 * Removed the :file:`mpsl_coex.h` API. (DRGN-22567)
 * The timeslot implementation now starts ``TIMER0`` a couple microseconds later.
   It now starts when the ``MPSL_TIMESLOT_SIGNAL_START`` callback is given.
