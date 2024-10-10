@@ -309,18 +309,50 @@ extern "C" {
  *  See @ref nrf_socket_options_rai for allowed values.
  */
 #define NRF_SO_RAI 61
-/** Delay IPv6 address refresh during power saving mode.
+
+/** Release Assistance Indication.
+ *  Indicate that the application does not intend to send more data.
+ *  This socket option applies immediately and lets the modem exit connected mode more quickly.
  *
- * If the lifetime of an IPv6 address expires during PSM or eDRX sleep, the device will
- * wake up solely to refresh the address. If this option is enabled, the IPv6 address refresh
- * is delayed until the next time the device wakes up from PSM or eDRX sleep.
+ *  @note This socket option requires the socket to be connected.
  *
- * Set to 1 to enable, or to 0 to disable. Default is 0, disabled.
- *
- * @note This socket option is only supported by modem firmware version 1.3.7 and newer, and
- *       modem firmware version 2.0.2 and newer.
+ *  @deprecated since v2.6.0, use @ref NRF_SO_RAI with value @ref NRF_RAI_NO_DATA instead.
  */
-#define NRF_SO_IPV6_DELAYED_ADDR_REFRESH 62
+#define NRF_SO_RAI_NO_DATA 50
+
+/** Release Assistance Indication.
+ *  Indicate that the application does not intend to send more data
+ *  after the next call to send() or sendto().
+ *  This lets the modem exit connected mode more quickly after sending the data.
+ *
+ *  @deprecated since v2.6.0, use @ref NRF_SO_RAI with value @ref NRF_RAI_LAST instead.
+ */
+#define NRF_SO_RAI_LAST 51
+
+/** Release Assistance Indication.
+ *  Indicate that the application is expecting to receive just one data packet
+ *  after the next call to send() or sendto().
+ *  This lets the modem exit connected mode more quickly after having received the data.
+ *
+ *  @deprecated since v2.6.0, use @ref NRF_SO_RAI with value @ref NRF_RAI_ONE_RESP instead.
+ */
+#define NRF_SO_RAI_ONE_RESP 52
+
+/** Release Assistance Indication.
+ *  Indicate that the socket is in active use by a client application.
+ *  This lets the modem stay in connected mode longer.
+ *
+ *  @deprecated since v2.6.0, use @ref NRF_SO_RAI with value @ref NRF_RAI_ONGOING instead.
+ */
+#define NRF_SO_RAI_ONGOING 53
+
+/** Release Assistance Indication.
+ *  Indicate that the socket is in active use by a server application.
+ *  This lets the modem stay in connected mode longer.
+ *
+ *  @deprecated since v2.6.0, use @ref NRF_SO_RAI with value @ref NRF_RAI_WAIT_MORE instead.
+ */
+#define NRF_SO_RAI_WAIT_MORE 54
 /** @} */
 
 /**
@@ -769,6 +801,15 @@ struct nrf_ifaddrs {
  */
 
 /** @brief
+ * TLS role for the connection.
+ *  - 0 - TLS client role.
+ *  - 1 - TLS server role.
+ *
+ * @deprecated since v2.6.0, use type int instead.
+ */
+typedef uint32_t nrf_sec_role_t;
+
+/** @brief
  * Security tags used on the TLS socket.
  *
  * More than one security tags may be used on a socket.
@@ -777,6 +818,37 @@ struct nrf_ifaddrs {
  * A maximum of @ref NRF_SOCKET_TLS_MAX_SEC_TAG_LIST_SIZE tags can be set per socket.
  */
 typedef uint32_t nrf_sec_tag_t;
+
+/** @brief
+ * Session cache configuration for the TLS connection.
+ *  - 0 - Disabled.
+ *  - 1 - Enabled.
+ *
+ * By default, the session cache is enabled.
+ * @note Session cache, may not be used if the peer does not support it.
+ *
+ * @deprecated since v2.6.0, use type int instead.
+ */
+typedef uint32_t nrf_sec_session_cache_t;
+
+/** @brief
+ * Peer verification level for the TLS connection.
+ *  - 0 - None.
+ *  - 1 - Optional.
+ *  - 2 - Required.
+ *
+ * By default, peer verification is optional.
+ *
+ * @deprecated since v2.6.0, use type int instead.
+ */
+typedef uint32_t nrf_sec_peer_verify_t;
+
+/** @brief
+ * An IANA cipher suite identifier.
+ *
+ * @deprecated since v2.6.0, use type int instead.
+ */
+typedef uint32_t nrf_sec_cipher_t;
 
 /** @} */
 
@@ -978,8 +1050,9 @@ int nrf_poll(struct nrf_pollfd fds[], nrf_nfds_t nfds, int timeout);
  *
  * In addition, the function may return -1 and set the following errno:
  * - [NRF_EAGAIN] The option could not be set when requested, try again.
- * - [NRF_EDESTADDRREQ] The socket option @ref NRF_SO_RAI with value @ref NRF_RAI_NO_DATA cannot be
- *                      set on a socket that is not connected.
+ * - [NRF_EDESTADDRREQ] The socket option @ref NRF_SO_RAI_NO_DATA or the socket option
+ *                      @ref NRF_SO_RAI with value @ref NRF_RAI_NO_DATA cannot be set
+ *                      on a socket that is not connected.
  * - [NRF_EOPNOTSUPP] The option is not supported with the current socket configuration.
  * - [NRF_ESHUTDOWN] Modem was shut down.
  */

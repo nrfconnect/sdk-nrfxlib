@@ -93,7 +93,7 @@ void nrf_modem_os_busywait(int32_t usec);
 /**
  * @brief Put a thread to sleep for a specific time or until an event occurs.
  *
- * The thread is woken if the timeout has expired and by a @c nrf_modem_os_event_notify call if
+ * The thread is woken if the timeout has expired and by a @c nrf_modem_event_notify call if
  * * The @p context equals the event context.
  * * The @p context is zero (thread wakes on all calls to event notify).
  * * The event context is zero (wake all sleeping threads).
