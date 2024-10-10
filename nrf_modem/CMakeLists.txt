@@ -21,8 +21,6 @@ if(CONFIG_NRF_MODEM_LINK_BINARY)
     cmake_path(APPEND lib_path nrf9160)
   elseif(CONFIG_SOC_NRF9120)
     cmake_path(APPEND lib_path nrf9120)
-  elseif(CONFIG_SOC_NRF9230_ENGB_CPUAPP)
-    cmake_path(APPEND lib_path nrf9230)
   else()
     assert(0 "Unsupported SOC. Got '${CONFIG_SOC}'")
   endif()
@@ -56,8 +54,6 @@ if(CONFIG_NRF_MODEM_LINK_BINARY)
 
   zephyr_include_directories(include)
 
-  if(CONFIG_SOC_NRF9160 OR CONFIG_SOC_NRF9120)
-    target_sources(app PRIVATE shmem.c)
-  endif()
+  target_sources(app PRIVATE shmem.c)
 
 endif()
