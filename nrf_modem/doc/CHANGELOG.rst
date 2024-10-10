@@ -18,8 +18,6 @@ Core library
 * Added:
 
   * A header file :file:`nrf_modem_toolchain.h` for compiler attributes used in other header files.
-  * Binaries for the nRF9230 SoC for internal development.
-  * A header file :file:`nrf_modem_os_rpc.h` for the nRF9230 SoC RPC OS glue.
 
 AT interface
 ============
