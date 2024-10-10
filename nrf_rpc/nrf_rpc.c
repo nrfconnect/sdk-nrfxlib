@@ -1163,6 +1163,51 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 	return err;
 }
 
+int nrf_rpc_cmd(const struct nrf_rpc_group *group, uint8_t cmd, uint8_t *packet,
+		size_t len, nrf_rpc_handler_t handler, void *handler_data)
+{
+	int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
+			       uint8_t *packet, size_t len, void *ptr1,
+			       void *ptr2);
+
+	return nrf_rpc_cmd_common(group, cmd, packet, len, handler,
+				  handler_data);
+}
+
+int nrf_rpc_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd, uint8_t *packet,
+		    size_t len, const uint8_t **rsp_packet, size_t *rsp_len)
+{
+	int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
+			       uint8_t *packet, size_t len, void *ptr1,
+			       void *ptr2);
+
+	return nrf_rpc_cmd_common(group, cmd | 0x10000, packet, len, rsp_packet,
+				  rsp_len);
+}
+
+void nrf_rpc_cmd_no_err(const struct nrf_rpc_group *group, uint8_t cmd, uint8_t *packet,
+			size_t len, nrf_rpc_handler_t handler, void *handler_data)
+{
+	void nrf_rpc_cmd_common_no_err(const struct nrf_rpc_group *group,
+				       uint32_t cmd, uint8_t *packet,
+				       size_t len, void *ptr1, void *ptr2);
+
+	nrf_rpc_cmd_common_no_err(group, cmd, packet, len, handler,
+				  handler_data);
+}
+
+void nrf_rpc_cmd_rsp_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
+			    uint8_t *packet, size_t len, const uint8_t **rsp_packet,
+			    size_t *rsp_len)
+{
+	void nrf_rpc_cmd_common_no_err(const struct nrf_rpc_group *group,
+				       uint32_t cmd, uint8_t *packet,
+				       size_t len, void *ptr1, void *ptr2);
+
+	nrf_rpc_cmd_common_no_err(group, cmd | 0x10000, packet, len, rsp_packet,
+				  rsp_len);
+}
+
 /** Report an error that cannot be reported as a function return value */
 void nrf_rpc_err(int code, enum nrf_rpc_err_src src,
 		 const struct nrf_rpc_group *group, uint8_t id,

@@ -372,9 +372,8 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler);
  * @return             0 on success or negative error code if a transport layer
  *                     reported a sending error.
  */
-static inline int nrf_rpc_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
-			      uint8_t *packet, size_t len,
-			      nrf_rpc_handler_t handler, void *handler_data);
+int nrf_rpc_cmd(const struct nrf_rpc_group *group, uint8_t cmd, uint8_t *packet,
+		size_t len, nrf_rpc_handler_t handler, void *handler_data);
 
 /** @brief Send a command and get response as an output parameter.
  *
@@ -394,9 +393,8 @@ static inline int nrf_rpc_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
  * @return                0 on success or negative error code if a transport
  *                        layer reported a sending error.
  */
-static inline int nrf_rpc_cmd_rsp(const struct nrf_rpc_group *group,
-				  uint8_t cmd, uint8_t *packet, size_t len,
-				  const uint8_t **rsp_packet, size_t *rsp_len);
+int nrf_rpc_cmd_rsp(const struct nrf_rpc_group *group, uint8_t cmd, uint8_t *packet,
+		    size_t len, const uint8_t **rsp_packet, size_t *rsp_len);
 
 /** @brief Send a command, provide callback to handle response and pass any
  * error to an error handler.
@@ -415,10 +413,8 @@ static inline int nrf_rpc_cmd_rsp(const struct nrf_rpc_group *group,
  *                     undefined if the handler will be called.
  * @param handler_data Opaque pointer that will be passed to `handler`.
  */
-static inline void nrf_rpc_cmd_no_err(const struct nrf_rpc_group *group,
-				      uint8_t cmd, uint8_t *packet, size_t len,
-				      nrf_rpc_handler_t handler,
-				      void *handler_data);
+void nrf_rpc_cmd_no_err(const struct nrf_rpc_group *group, uint8_t cmd, uint8_t *packet,
+			size_t len, nrf_rpc_handler_t handler, void *handler_data);
 
 /** @brief Send a command, get response as an output parameter and pass any
  * error to an error handler.
@@ -434,11 +430,9 @@ static inline void nrf_rpc_cmd_no_err(const struct nrf_rpc_group *group,
  * @param[out] rsp_packet Packet containing the response or NULL on error.
  * @param[out] rsp_len    Length of `rsp_packet`.
  */
-static inline void nrf_rpc_cmd_rsp_no_err(const struct nrf_rpc_group *group,
-					  uint8_t cmd, uint8_t *packet,
-					  size_t len,
-					  const uint8_t **rsp_packet,
-					  size_t *rsp_len);
+void nrf_rpc_cmd_rsp_no_err(const struct nrf_rpc_group *group, uint8_t cmd,
+			    uint8_t *packet, size_t len, const uint8_t **rsp_packet,
+			    size_t *rsp_len);
 
 /** @brief Send an event.
  *
@@ -522,59 +516,6 @@ void nrf_rpc_decoding_done(const struct nrf_rpc_group *group, const uint8_t *pac
 void nrf_rpc_err(int code, enum nrf_rpc_err_src src,
 		 const struct nrf_rpc_group *group, uint8_t id,
 		 uint8_t packet_type);
-
-/* Inline definitions. */
-
-static inline int nrf_rpc_cmd(const struct nrf_rpc_group *group, uint8_t cmd,
-			      uint8_t *packet, size_t len,
-			      nrf_rpc_handler_t handler, void *handler_data)
-{
-	int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
-			       uint8_t *packet, size_t len, void *ptr1,
-			       void *ptr2);
-
-	return nrf_rpc_cmd_common(group, cmd, packet, len, handler,
-				  handler_data);
-}
-
-static inline int nrf_rpc_cmd_rsp(const struct nrf_rpc_group *group,
-				  uint8_t cmd, uint8_t *packet, size_t len,
-				  const uint8_t **rsp_packet, size_t *rsp_len)
-{
-	int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
-			       uint8_t *packet, size_t len, void *ptr1,
-			       void *ptr2);
-
-	return nrf_rpc_cmd_common(group, cmd | 0x10000, packet, len, rsp_packet,
-				  rsp_len);
-}
-
-static inline void nrf_rpc_cmd_no_err(const struct nrf_rpc_group *group,
-				      uint8_t cmd, uint8_t *packet, size_t len,
-				      nrf_rpc_handler_t handler,
-				      void *handler_data)
-{
-	void nrf_rpc_cmd_common_no_err(const struct nrf_rpc_group *group,
-				       uint32_t cmd, uint8_t *packet,
-				       size_t len, void *ptr1, void *ptr2);
-
-	nrf_rpc_cmd_common_no_err(group, cmd, packet, len, handler,
-				  handler_data);
-}
-
-static inline void nrf_rpc_cmd_rsp_no_err(const struct nrf_rpc_group *group,
-					  uint8_t cmd, uint8_t *packet,
-					  size_t len,
-					  const uint8_t **rsp_packet,
-					  size_t *rsp_len)
-{
-	void nrf_rpc_cmd_common_no_err(const struct nrf_rpc_group *group,
-				       uint32_t cmd, uint8_t *packet,
-				       size_t len, void *ptr1, void *ptr2);
-
-	nrf_rpc_cmd_common_no_err(group, cmd | 0x10000, packet, len, rsp_packet,
-				  rsp_len);
-}
 
 /** @brief Allocates buffer for a packet.
  *
