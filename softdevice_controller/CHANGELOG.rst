@@ -71,9 +71,10 @@ Bug fixes
     * The central-like scheduling activity required less than 1 ms to complete at the point in time where the scanner started.
 * Fixed a rare issue where the scanner would be stuck in the synchronizing state after failing to receive an ``AUX_ADV_IND`` packet.
   This could only happen when the corresponding ``ADV_EXT_IND`` packet contained a resolvable address, private address resolution is enabled, and the periodic advertising list is not used. (DRGN-22230)
-* Fixed an issue where the controller could generate the LE Advertising Set Terminated event one event sooner than expected. (DRGN-22705)
 
-  This could only happen when all of the following apply:
+* Fixed an issue where the controller could generate the LE Advertising Set Terminated event one event sooner than expected (DRGN-22705).
+
+  This could only happen when (all of the following):
 
     * a non-zero Max_Extended_Advertising_Events parameter was used in the LE Set Extended Advertising Enable command.
     * other ongoing activities in the controller prevented the first advertising event from taking place when the advertising set was created.
