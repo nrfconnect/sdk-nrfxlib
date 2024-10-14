@@ -60,14 +60,14 @@ typedef struct
     uint8_t         gpiote_ch_id;
 
 #if defined(NRF54L_SERIES)
-    /** The EGU channel numbers (belonging to EGU10 in Radio Power Domain) that need to be provided.
+    /** The PPIB channel numbers of PPIB11 that can be subscribed within Radio Power Domain to trigger GPIOTE tasks.
      *
-     *  It is a responsibility of an user of the FEM API to provide the cross-domain DPPI/PPIB connectios that
-     *  fulfills the following requirements:
-     *  - The egu_channels[0] should trigger the TASKS_CLR[gpiote_ch_id] of the GPIOTE.
-     *  - The egu_channels[1] should trigger the TASKS_SET[gpiote_ch_id] of the GPIOTE.
+     *  It is a responsibility of an user of the FEM API to provide the cross-domain DPPI/PPIB connections that
+     *  fulfill the following requirements:
+     *  - The PPIB11 channel number @c ppib_channels[0] triggers the TASKS_CLR[gpiote_ch_id] of the GPIOTE.
+     *  - The PPIB11 channel number @c ppib_channels[1] triggers the TASKS_SET[gpiote_ch_id] of the GPIOTE.
      */
-    uint8_t         egu_channels[2];
+    uint8_t         ppib_channels[2];
 
     /** The pointer to the GPIOTE instance used to toggle the GPIO pin.
      *
