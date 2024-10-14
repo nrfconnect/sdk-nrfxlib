@@ -21,6 +21,8 @@ The service layer is available as a binary for the following SoCs:
 * nRF52833
 * nRF52840
 * nRF5340 Network Core
+* nRF54L15
+* nRF54H20 Radio Core
 
 For the SOCs equipped with a floating-point unit (nRF52840 and nRF52833), the service layer is available in the soft-float, softfp-float, and hard-float build versions.
 For the other SOCs/SiPs, it is available only in the soft-float build version.

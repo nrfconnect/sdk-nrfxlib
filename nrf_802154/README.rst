@@ -42,6 +42,8 @@ The libraries are compatible with the following SoCs:
 * nRF52833
 * nRF52840
 * nRF5340
+* nRF54L15
+* nRF54H20
 
 .. toctree::
    :maxdepth: 2
