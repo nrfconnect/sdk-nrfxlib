@@ -825,6 +825,8 @@ enum nrf_wifi_status nrf_wifi_fmac_set_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 	}
 
 	fmac_dev_ctx->reg_set_status = false;
+	fmac_dev_ctx->waiting_for_reg_event = true;
+
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_reg_cmd,
 			      sizeof(*set_reg_cmd));
@@ -849,6 +851,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 		goto out;
 	}
 
+	fmac_dev_ctx->waiting_for_reg_event = false;
 	reg_change = fmac_dev_ctx->reg_change;
 
 	if (reg_change->intr != exp_initiator) {
