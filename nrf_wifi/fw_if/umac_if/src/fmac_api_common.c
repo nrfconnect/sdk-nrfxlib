@@ -809,6 +809,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 		set_reg_cmd->valid_fields |= NRF_WIFI_CMD_REQ_SET_REG_USER_REG_FORCE;
 	}
 
+	fmac_dev_ctx->reg_set_status = false;
 	status = umac_cmd_cfg(fmac_dev_ctx,
 			      set_reg_cmd,
 			      sizeof(*set_reg_cmd));
