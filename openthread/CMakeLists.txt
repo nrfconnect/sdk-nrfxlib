@@ -24,12 +24,6 @@ if(CONFIG_OPENTHREAD_SOURCES)
   set(OPENTHREAD_SYSTEM_H "${ZEPHYR_OPENTHREAD_MODULE_DIR}/examples/platforms/openthread-system.h")
   set(OPENTHREAD_UART_H "${ZEPHYR_OPENTHREAD_MODULE_DIR}/examples/platforms/utils/uart.h")
 
-  if (CONFIG_BUILD_WITH_TFM)
-    set(NRF_SECURITY_MBEDTLS_CONFIG_FILE ${CMAKE_CURRENT_BINARY_DIR}/../../../../generated/interface_nrf_security_psa/${CONFIG_MBEDTLS_CFG_FILE})
-  else()
-    set(NRF_SECURITY_MBEDTLS_CONFIG_FILE ${CMAKE_CURRENT_BINARY_DIR}/../../../../generated/library_nrf_security_psa/${CONFIG_MBEDTLS_CFG_FILE})
-  endif()
-
   if(CONFIG_OPENTHREAD_BUILD_OUTPUT_STRIPPED)
     foreach(target IN LISTS OPENTHREAD_LIBRARIES)
 
@@ -64,9 +58,7 @@ if(CONFIG_OPENTHREAD_SOURCES)
     COMMAND ${CMAKE_COMMAND} -E make_directory "${OPENTHREAD_UTILS_DST_DIR}"
     COMMAND ${CMAKE_COMMAND} -E copy ${OPENTHREAD_SYSTEM_H} ${OPENTHREAD_HEADERS_DST_DIR}/
     COMMAND ${CMAKE_COMMAND} -E copy ${OPENTHREAD_UART_H} ${OPENTHREAD_UTILS_DST_DIR}/
-    COMMAND ${CMAKE_COMMAND} -E copy ${OPENTHREAD_CONFIG_FILE} ${OPENTHREAD_DST_DIR}/
-    COMMAND ${CMAKE_COMMAND} -E copy
-      ${NRF_SECURITY_MBEDTLS_CONFIG_FILE} ${OPENTHREAD_DST_DIR}/${OPENTHREAD_LIB_MBEDTLS_CONF_FILE}
+    COMMAND ${CMAKE_COMMAND} -E copy ${OPENTHREAD_CONFIG_FILE} ${OPENTHREAD_DST_DIR}
   )
 
   add_custom_target(install_openthread_libraries ${INSTALL_COMMANDS})
@@ -84,7 +76,7 @@ if (CONFIG_OPENTHREAD_NORDIC_LIBRARY)
   check_openthread_version()
 
   if(NOT CONFIG_OPENTHREAD_COPROCESSOR_RCP)
-    check_openthread_dependencies("${OT_LIB_PATH}/${OPENTHREAD_LIB_MBEDTLS_CONF_FILE}")
+    check_openthread_dependencies("${OT_LIB_PATH}/openthread_lib_configuration.txt")
   endif()
 
   foreach(target IN LISTS OPENTHREAD_LIBRARIES)
