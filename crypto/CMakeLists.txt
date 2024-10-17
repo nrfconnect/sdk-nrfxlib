@@ -31,6 +31,20 @@ if(CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_OBERON_BACKEND OR CONFIG
                     "(${OBERON_LIB} or ${OBERON_MBEDTLS_LIB} doesn't exist.)")
   endif()
 
+  #
+  # Add mbedcrypto_oberon_imported - Contains proprietary nrf_oberon APIs
+  #
+  add_library(mbedcrypto_oberon_imported STATIC IMPORTED GLOBAL)
+  set_target_properties(mbedcrypto_oberon_imported PROPERTIES
+    IMPORTED_LOCATION
+      "${OBERON_LIB}"
+  )
+  target_include_directories(mbedcrypto_oberon_imported
+    INTERFACE
+      "${OBERON_BASE}/include"
+  )
+
+
   if (NOT CONFIG_BUILD_WITH_TFM AND NOT CONFIG_OBERON_BACKEND AND NOT CONFIG_PSA_CRYPTO_DRIVER_OBERON)
     target_include_directories(nrfxlib_crypto INTERFACE ${OBERON_BASE}/include)
     target_link_libraries(nrfxlib_crypto INTERFACE ${OBERON_LIB})
@@ -39,19 +53,6 @@ if(CONFIG_NRF_OBERON OR CONFIG_BUILD_WITH_TFM OR CONFIG_OBERON_BACKEND OR CONFIG
       message(WARNING "This combination of SoC and floating point ABI is not supported by the nrf_oberon_mbedtls lib."
                       "(${OBERON_MBEDTLS_LIB} doesn't exist.)")
     endif()
-
-    #
-    # Add mbedcrypto_oberon_imported - Contains proprietary nrf_oberon APIs
-    #
-    add_library(mbedcrypto_oberon_imported STATIC IMPORTED GLOBAL)
-    set_target_properties(mbedcrypto_oberon_imported PROPERTIES
-      IMPORTED_LOCATION
-        "${OBERON_LIB}"
-    )
-    target_include_directories(mbedcrypto_oberon_imported
-      INTERFACE
-        "${OBERON_BASE}/include"
-    )
 
     #
     # Add mbedcrypto_oberon_mbedtls_imported - contains legacy crypto APIs
