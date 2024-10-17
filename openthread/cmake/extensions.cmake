@@ -57,71 +57,73 @@ endmacro()
 # Store the configuration of the compiled OpenThread libraries
 # and set source and destination paths.
 function(openthread_libs_configuration_write CONFIG_FILE NRFXLIB_RELEASE_TAG)
-  # Store all OT related variables
-  get_cmake_property(_variableNames VARIABLES)
-  foreach (_variableName ${_variableNames})
-    if("${_variableName}" MATCHES "^CONFIG_OPENTHREAD_.*|^OT_.*")
-      list(APPEND OPENTHREAD_SETTINGS "${_variableName}=${${_variableName}}\n")
-    endif()
-  endforeach()
-
-  list(SORT OPENTHREAD_SETTINGS)
-
-  find_package(Git QUIET)
-  if(GIT_FOUND)
-    get_git_decribe(${ZEPHYR_MBEDTLS_MODULE_DIR})
-    list(INSERT OPENTHREAD_SETTINGS 0 "MBEDTLS_commit=${git_describe}\n")
-
-    get_git_decribe(${ZEPHYR_NRFXLIB_MODULE_DIR})
-    list(INSERT OPENTHREAD_SETTINGS 0 "NRFXLIB_commit=${git_describe}")
-
-    get_git_decribe(${ZEPHYR_OPENTHREAD_MODULE_DIR})
-    list(INSERT OPENTHREAD_SETTINGS 0 "OpenThread_commit=${git_describe}")
-
-    list(INSERT OPENTHREAD_SETTINGS 0 "NRFXLIB_RELEASE_TAG=${NRFXLIB_RELEASE_TAG}\n")
-  endif()
-
   # Store compiler and Zephyr SDK version
   execute_process(COMMAND ${CMAKE_C_COMPILER} --version
     OUTPUT_VARIABLE GCC_VERSION)
   string(REPLACE "\n" ";" GCC_VERSION_LINES ${GCC_VERSION})
   list(GET GCC_VERSION_LINES 0 GCC_VERSION_LINE)
-  list(INSERT OPENTHREAD_SETTINGS 0 "GCC_version: ${GCC_VERSION_LINE}\n\n")
+  list(APPEND LIB_CONFIGURATION "###################### Compiler Version ######################\n\n")
+  list(APPEND LIB_CONFIGURATION "GCC_version: ${GCC_VERSION_LINE}\n")
 
-  file(WRITE ${CONFIG_FILE} ${OPENTHREAD_SETTINGS})
-endfunction()
+  # Store SDK Version
+  find_package(Git QUIET)
+  if(GIT_FOUND)
+    list(APPEND LIB_CONFIGURATION "\n###################### SDK Version ###########################\n\n")
+    get_git_decribe(${ZEPHYR_MBEDTLS_MODULE_DIR})
+    list(APPEND LIB_CONFIGURATION "MBEDTLS_commit=${git_describe}")
 
-function(get_active_mbedtls_configs_from_file fileName returnMatch1List)
-  file(READ ${fileName} FILE_CONTENT)
-  set(PATTERN "\n[ \t]*#define[ \t]+(MBEDTLS_[A-Za-z0-9_]*[ \t]*[0-9A-Fx]*)")
-  string(REGEX MATCHALL ${PATTERN} match_list ${FILE_CONTENT})
-    foreach(element ${match_list})
-      string(REGEX MATCH ${PATTERN} MACRO_DEF ${element})
-      list(APPEND match1_list "${CMAKE_MATCH_1}\n")
-      set(${returnMatch1List} ${match1_list} PARENT_SCOPE)
-    endforeach()
-endfunction()
+    get_git_decribe(${ZEPHYR_NRFXLIB_MODULE_DIR})
+    list(APPEND LIB_CONFIGURATION "NRFXLIB_commit=${git_describe}")
 
-function(check_openthread_dependencies ot_lib_nrf_security_mbedtls_config_file)
-  if (CONFIG_BUILD_WITH_TFM)
-    set(nrf_security_mbedtls_config_file ${CMAKE_CURRENT_BINARY_DIR}/../../../../generated/interface_nrf_security_psa/${CONFIG_MBEDTLS_CFG_FILE})
-  else()
-    set(nrf_security_mbedtls_config_file ${CMAKE_CURRENT_BINARY_DIR}/../../../../generated/library_nrf_security_psa/${CONFIG_MBEDTLS_CFG_FILE})
+    get_git_decribe(${ZEPHYR_OPENTHREAD_MODULE_DIR})
+    list(APPEND LIB_CONFIGURATION "OpenThread_commit=${git_describe}")
+
+    list(APPEND LIB_CONFIGURATION "NRFXLIB_RELEASE_TAG=${NRFXLIB_RELEASE_TAG}\n")
   endif()
-  get_active_mbedtls_configs_from_file(${nrf_security_mbedtls_config_file} mbedtls_conf_list)
-  get_active_mbedtls_configs_from_file(${ot_lib_nrf_security_mbedtls_config_file} ot_mbedtls_conf_list)
 
-  foreach(config_option ${ot_mbedtls_conf_list})
-    if(NOT (${config_option} IN_LIST mbedtls_conf_list))
+  # Store all OT related variables
+  get_cmake_property(_variableNames VARIABLES)
+  list(APPEND OPENTHREAD_SETTINGS "\n###################### OpenThread configuration ##############\n\n")
+  foreach (_variableName ${_variableNames})
+    if("${_variableName}" MATCHES "^CONFIG_OPENTHREAD_.*|^OT_.*")
+      list(APPEND OPENTHREAD_SETTINGS "${_variableName}=${${_variableName}}\n")
+    endif()
+  endforeach()
+  list(SORT OPENTHREAD_SETTINGS)
+  list(APPEND LIB_CONFIGURATION ${OPENTHREAD_SETTINGS})
+
+  # Store Crypto configuration
+  list(APPEND LIB_CONFIGURATION "\n###################### Crypto configuration ##################\n\n")
+  foreach (_variableName ${_variableNames})
+    if("${_variableName}" MATCHES "^CONFIG_MBEDTLS_.*|^CONFIG_PSA_WANT_.*")
+      list(APPEND CRYPTO_SETTINGS "${_variableName}=${${_variableName}}\n")
+    endif()
+  endforeach()
+  list(SORT CRYPTO_SETTINGS)
+  list(APPEND LIB_CONFIGURATION ${CRYPTO_SETTINGS})
+
+  file(WRITE ${CONFIG_FILE} ${LIB_CONFIGURATION})
+endfunction()
+
+function(check_openthread_dependencies CONFIG_FILE)
+  get_cmake_property(_variableNames VARIABLES)
+  file(READ ${CONFIG_FILE} FILE_CONTENT)
+  file(READ "cmake/crypto_config_tfm_whitelist.txt" TFM_WHITELIST)
+  string(REGEX MATCHALL "CONFIG_(MBEDTLS_|PSA_WANT_)[^\n]*" match_list ${FILE_CONTENT})
+  foreach(element ${match_list})
+    string(REGEX MATCH "([^=]+)=(.*)" _ ${element})
+    set(config_name "${CMAKE_MATCH_1}")
+    set(config_value "${CMAKE_MATCH_2}")
+    if (NOT ((config_name IN_LIST _variableNames AND ${${config_name}} STREQUAL ${config_value}) OR
+             (CONFIG_BUILD_WITH_TFM AND ${TFM_WHITELIST} MATCHES ${config_name})))
       message(WARNING
         " \n"
-        " Current nrf_security configuration does not provide all MBEDTLS"
-        " options which are required by precompiled OpenThread libraries.\n"
-        " The minimum of MBEDTLS configuration is stored at:"
-        " ${ot_lib_nrf_security_mbedtls_config_file}\n")
-        break()
+        " ${config_name}=${config_value} is required by the precompiled OpenThread libraries,"
+        " but it has been configured differently in the current build.\n"
+        " The minimal crypto configuration is stored under \"Crypto configuration\" section at:"
+        " ${CONFIG_FILE}\n")
     endif()
-  endforeach(config_option)
+  endforeach()
 endfunction()
 
 function(check_openthread_version)
