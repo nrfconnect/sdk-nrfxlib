@@ -85,7 +85,7 @@
 
 .. _`NMEA report sample`: http://aprs.gids.nl/nmea/#gsa
 
-.. _`Bluetooth Core Specification`: https://www.bluetooth.com/specifications/specs/core-specification-5-4/
+.. _`Bluetooth Core Specification`: https://www.bluetooth.com/specifications/specs/core-specification-6-0/
 
 .. _`Bluetooth Specifications and Documents`: https://www.bluetooth.com/specifications/specs/
 
