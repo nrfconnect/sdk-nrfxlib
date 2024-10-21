@@ -4,7 +4,8 @@ on:
     types: [opened, synchronize, closed]
     branches:
       - main
-
+    paths-ignore:
+      - 'nrf_wifi/bin/zephyr/**'
 
 jobs:
   call-manifest-pr-action:
