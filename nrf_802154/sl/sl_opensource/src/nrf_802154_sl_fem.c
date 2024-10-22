@@ -123,6 +123,11 @@ void mpsl_fem_caps_get(mpsl_fem_caps_t * p_caps)
     *p_caps = (mpsl_fem_caps_t){};
 }
 
+void mpsl_fem_enable(void)
+{
+    // Intentionally empty
+}
+
 int32_t mpsl_fem_disable(void)
 {
     return 0;
