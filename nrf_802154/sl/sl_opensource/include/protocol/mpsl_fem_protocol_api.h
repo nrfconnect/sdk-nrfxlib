@@ -160,6 +160,17 @@ typedef struct
  */
 void mpsl_fem_caps_get(mpsl_fem_caps_t * p_caps);
 
+/** @brief Enable Front End Module.
+ *
+ *  Some Front End Module devices should be explicitly enabled before they can be configured
+ *  for radio operation. This function is intended to enable Front End Module shortly before
+ *  radio operations are started.
+ * 
+ *  After the Front End Module performed all it's operations complementary @ref mpsl_fem_disable
+ *  function should be called.
+ */
+void mpsl_fem_enable(void);
+
 /** @brief Disable Front End Module.
  *
  * Some Front End Module devices can be explicitly disabled after PA and LNA activities are

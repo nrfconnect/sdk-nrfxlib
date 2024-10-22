@@ -932,6 +932,7 @@ void nrf_802154_trx_enable(void)
 
     NRF_802154_ASSERT(nrf_radio_shorts_get(NRF_RADIO) == SHORTS_IDLE);
 
+    mpsl_fem_enable();
 #if defined(DPPI_PRESENT)
     mpsl_fem_abort_set(NRF_802154_DPPI_RADIO_DISABLED,
                        0U); /* The group parameter is ignored by FEM for SoCs with DPPIs */
@@ -939,8 +940,6 @@ void nrf_802154_trx_enable(void)
     mpsl_fem_abort_set(nrf_radio_event_address_get(NRF_RADIO, NRF_RADIO_EVENT_DISABLED),
                        PPI_CHGRP_ABORT);
 #endif
-
-    mpsl_fem_deactivate_now(MPSL_FEM_ALL);
 
     m_trx_state = TRX_STATE_IDLE;
 
