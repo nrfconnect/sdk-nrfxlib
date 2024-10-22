@@ -47,7 +47,7 @@ doc/*                                     @b-gent
 /nrf_rpc/                                 @doki-nordic @KAGA164
 /nrf_dm/                                  @Tschet1 @eriksandgren
 /lc3/                                     @koffes @alexsven
-/nrf_fuel_gauge/                          @nordic-auko @aasinclair
+/nrf_fuel_gauge/                          @nordic-auko
 /nrf_wifi/                                @krish2718 @sachinthegreen @rado17 @rlubos
 /nrf_wifi/fw_bins/                        @udaynordic @rajb9 @srkanordic
 /nrf_wifi/fw_if/umac_if/inc/fw/           @udaynordic @rajb9 @srkanordic
