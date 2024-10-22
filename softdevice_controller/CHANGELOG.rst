@@ -9,10 +9,10 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
-nRF Connect SDK v2.5.0-pc1
-**************************
+nRF Connect SDK v2.5.0-NCSDK-29842
+**********************************
 
-All the notable changes included in the |NCS| v2.5.0-pc1 release are documented in this section.
+All the notable changes included in the |NCS| v2.5.0-NCSDK-29842 release are documented in this section.
 
 Changes
 =======
