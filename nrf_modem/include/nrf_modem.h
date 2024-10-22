@@ -237,7 +237,7 @@ char *nrf_modem_build_version(void);
  * @retval -NRF_ENOLCK Not enough semaphores.
  * @retval -NRF_ENOMEM Not enough shared memory.
  * @retval -NRF_EINVAL Control region size is incorrect or missing handlers in @c init_params.
- * @retval -NRF_ENOTSUPP RPC version mismatch.
+ * @retval -NRF_ENOTSUP RPC version mismatch.
  * @retval -NRF_ETIMEDOUT Operation timed out.
  * @retval -NRF_EAGAIN Modem firmware update not executed due to insufficient voltage, try again.
  * @retval -NRF_EIO Modem firmware update failure or modem fault during initialization.
