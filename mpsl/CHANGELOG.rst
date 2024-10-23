@@ -13,6 +13,8 @@ Main Branch
 Changes
 =======
 
+* Removed support for running MPSL on the nRF54L15 PDK v0.7.0 and earlier. (DRGN-23325)
+* Removed support for running MPSL on the Engineering A revision of the nRF54H20 SoC. (DRGN-23325)
 * On nRF54L Series devices, the application now needs to implement :c:func:`mpsl_constlat_request_callback` and :c:func:`mpsl_lowpower_request_callback`.
   This is already added to the MPSL driver in the |NCS|. (DRGN-22562)
 * Removed the :file:`mpsl_coex.h` API. (DRGN-22567)
@@ -22,6 +24,7 @@ Changes
 Added
 =====
 
+* Added production support for the nRF54L Series. (DRGN-23325)
 * Added :c:func:`mpsl_fem_enable` to allow turning on the Front-End Module earlier than through a call to :c:func:`mpsl_fem_pa_configuration_set` (KRKNWK-19275).
   Added implementation of :c:func:`mpsl_fem_enable` for nRF2220 Front-End Module.
 
