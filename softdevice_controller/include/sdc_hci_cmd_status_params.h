@@ -67,32 +67,32 @@ typedef struct __PACKED __ALIGN(1)
  */
 /** @brief Read RSSI.
  *
- * The description below is extracted from Core_v5.4,
+ * The description below is extracted from Core_v6.0,
  * Vol 4, Part E, Section 7.5.4
  *
- * This command reads the Received Signal Strength Indication (RSSI) value
- * from a Controller.
+ * This command reads the Received Signal Strength Indication (RSSI) value from a
+ * Controller.
  *
- * For a BR/EDR Controller, the RSSI parameter returns the difference between
- * the measured Received Signal Strength Indication (RSSI) and the limits of a
- * range selected by the Controller. The lower limit shall correspond to a received
- * power not less than -56 dBm and not greater than 6 dB above the actual
- * sensitivity of the receiver. The upper limit shall be 20±6 dB above the lower
- * limit. A positive RSSI value shall indicate how many dB the RSSI is above the
- * upper limit, a negative value shall indicate how many dB the RSSI is below the
- * lower limit, and zero shall indicate that the RSSI is inside the range.
+ * For a BR/EDR Controller, the RSSI parameter returns the difference between the
+ * measured Received Signal Strength Indication (RSSI) and the limits of a range selected
+ * by the Controller. The lower limit shall correspond to a received power not less than -56
+ * dBm and not greater than 6 dB above the actual sensitivity of the receiver. The upper
+ * limit shall be 20±6 dB above the lower limit. A positive RSSI value shall indicate how
+ * many dB the RSSI is above the upper limit, a negative value shall indicate how many
+ * dB the RSSI is below the lower limit, and zero shall indicate that the RSSI is inside the
+ * range.
  *
- * The returned RSSI value is not required to have any specific accuracy provided
- * that it correctly indicates whether the received signal strength was above the
- * upper limit, below the lower limit, or between the limits.
+ * The returned RSSI value is not required to have any specific accuracy provided that
+ * it correctly indicates whether the received signal strength was above the upper limit,
+ * below the lower limit, or between the limits.
  *
- * For an LE transport, the RSSI parameter returns the absolute received signal
- * strength value in dBm to ±6 dB accuracy. If the RSSI cannot be read, the RSSI
- * parameter shall be set to 127.
+ * For an LE transport, the RSSI parameter returns the absolute received signal strength
+ * value in dBm to ±6 dB accuracy. If the RSSI cannot be read, the RSSI parameter shall
+ * be set to 127.
  *
  * Event(s) generated (unless masked away):
- * When the HCI_Read_RSSI command has completed, an HCI_Command_-
- * Complete event shall be generated.
+ * When the HCI_Read_RSSI command has completed, an HCI_Command_Complete
+ * event shall be generated.
  *
  * @param[in]  p_params Input parameters.
  * @param[out] p_return Extra return parameters.

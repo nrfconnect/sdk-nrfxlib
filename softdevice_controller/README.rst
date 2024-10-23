@@ -66,6 +66,9 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 +--------------------------------+-----------------+--------------+-----------+
 | Connection Subrating           |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
+| Channel Sounding               |                 |              | X         |
+| (experimental support)         |                 |              |           |
++--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    The following limitations apply to the listed features:
@@ -74,7 +77,8 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
    * For Connection CTE Response, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Periodic Advertising Sync Transfer - Receiver, only one sync transfer reception may be in progress at any one time per link.
    * For the Isochronous Channels features, nRF52820 and nRF52833 are the nRF52 Series devices that support encrypting and decrypting the Isochronous Channels packets.
-   * For the nRF54H and nRF54L series, all Bluetooth features are experimental.
+   * For the nRF54H series, all Bluetooth features are experimental.
+   * For the Channel Sounding feature, support is experimental and only available for nRF54L Series devices.
 
 .. _sdc_proprietary_feature_support:
 
@@ -104,6 +108,7 @@ Proprietary feature support:
    doc/softdevice_controller
    doc/scheduling
    doc/isochronous_channels
+   doc/channel_sounding
    limitations
    CHANGELOG
    doc/api
