@@ -15,6 +15,7 @@ Main branch
 Added
 =====
 
+* Production support for the nRF54L Series. (DRGN-23325)
 * Support for the LE Set Path Loss Reporting Parameters and LE Set Path Loss Reporting Enable HCI commands. (DRGN-17376)
 * Support for generating connection anchor update event reports using the VS Conn Anchor Point Update Report Enable command.
   When enabled, one report is generated when the anchor point of a connection is updated.
@@ -23,10 +24,27 @@ Added
   See :c:func:`sdc_hci_cmd_vs_set_event_start_task`. (DRGN-20737)
 * Support for the LE Set Default Subrate and LE Subrate Request HCI commands. (DRGN-19745)
 * Support for ISO broadcaster handles in the :c:func:`sdc_hci_cmd_vs_zephyr_write_tx_power` and :c:func:`sdc_hci_cmd_vs_zephyr_read_tx_power` commands (DRGN-23441).
+* :ref:`Experimental <nrf:software_maturity>` support for Channel Sounding (CS) on nRF54L Series devices.
+  Currently, the |controller| only supports one subevent per event.
+  The following HCI commands are now supported:
+
+    * LE CS Read Local Supported Capabilities
+    * LE CS Read Remote Supported Capabilities
+    * LE CS Security Enable
+    * LE CS Set Default Settings
+    * LE CS Read Remote FAE Table
+    * LE CS Create Config
+    * LE CS Set Channel Classification
+    * LE CS Set Procedure Parameters
+    * LE CS Procedure Enable
+    * LE CS Test
+    * LE CS Test End
 
 Changes
 =======
 
+* Removed support for running the SoftDevice Controller on the nRF54L15 PDK v0.7.0 and earlier. (DRGN-23325)
+* Removed support for running the SoftDevice Controller on the Engineering A revision of the nRF54H20 SoC. (DRGN-23325)
 * The ``VersNr`` field in the ``LL_VERSION_IND`` packet now contains the value ``0x0E`` to indicate compatibility with Bluetooth Core Specification v6.0 (DRGN-23211).
 * The ``sdc_coex_adv_mode_configure`` API has been deprecated as it is not applicable to any supported coexistence interfaces. (DRGN-20876).
 * The ``sdc_hci_cmd_vs_coex_priority_config`` and ``sdc_hci_cmd_vs_coex_scan_mode_config`` vendor-specific HCI commands have been removed as they are not applicable to any supported coexistence interfaces. (DRGN-20876)
@@ -90,6 +108,9 @@ Bug fixes
 * Fixed an issue where LE Power Control was not being used for CISes which are not the first CIS in a CIG. (DRGN-23291)
 * Fixed an issue where the SoftDevice Controller in the peripheral role could terminate a connection due to a MIC failure during a valid encryption start procedure.
   This could only happen if the ``LL_ENC_RSP`` packet was corrupted due to on-air interference. (DRGN-23204)
+* Fixed an issue where received unframed Isochronous SDUs were not reported to be a SDU interval apart.
+  This could happen when the ISO interval is greater than the SDU interval and multiple SDUs can be received in a single ISO interval. (DRGN-23586)
+* Fixed an issue where the sleep clock accuracy communicated to the peer was too inaccurate if MPSL was initialized with a low frequency clock accuracy better than 20ppm. (DRGN-23693)
 
 nRF Connect SDK v2.7.0
 **********************
