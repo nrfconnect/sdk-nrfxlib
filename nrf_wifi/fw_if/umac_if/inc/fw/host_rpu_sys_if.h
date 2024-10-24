@@ -161,6 +161,8 @@ enum nrf_wifi_sys_commands {
 	NRF_WIFI_CMD_RAW_CONFIG_FILTER,
 	/** Command to configure packet injector mode or Raw Tx mode */
 	NRF_WIFI_CMD_RAW_TX_PKT,
+	/** Command to get RPU temperature */
+	NRF_WIFI_CMD_GET_TEMP,
 };
 
 /**
@@ -192,6 +194,8 @@ enum nrf_wifi_sys_events {
 	NRF_WIFI_EVENT_FILTER_SET_DONE,
 	/** Tx done event for the Raw Tx */
 	NRF_WIFI_EVENT_RAW_TX_DONE,
+	/** Response to NRF_WIFI_CMD_GET_TEMP */
+	NRF_WIFI_EVENT_CURRENT_TEMP,
 };
 
 /**
@@ -1595,6 +1599,26 @@ struct umac_int_stats {
 struct nrf_wifi_event_deinit_done {
 	/** UMAC header, @ref nrf_wifi_sys_head */
 	struct nrf_wifi_sys_head sys_head;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure represents the command used to get the RPU temperature.
+ */
+struct nrf_wifi_cmd_get_temperature {
+	/** UMAC header, @ref nrf_wifi_sys_head */
+	struct nrf_wifi_sys_head sys_head;
+} __NRF_WIFI_PKD;
+
+/**
+ * @brief This structure represents an event that provides the current RPU temperature
+ * in degree celsius.
+ *
+ */
+struct nrf_wifi_event_current_temperature {
+	/** UMAC header, @ref nrf_wifi_sys_head */
+	struct nrf_wifi_sys_head sys_head;
+	/** Current temperature value in degree celsius */
+	int current_temperature;
 } __NRF_WIFI_PKD;
 
 #endif /* __HOST_RPU_SYS_IF_H__ */
