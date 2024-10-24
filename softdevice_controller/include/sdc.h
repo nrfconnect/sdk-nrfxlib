@@ -880,6 +880,17 @@ int32_t sdc_support_ext_central(void);
  */
 int32_t sdc_support_parallel_scanning_and_initiating(void);
 
+/** @brief Support LE Power Class 1
+ *
+ * After this API is called, the controller will include LE Power Class 1 in the supported features.
+ *
+ * @note The controller only adds this feature bit, the user will have to know whether this is required.
+ *
+ * @retval 0          Success
+ * @retval -NRF_EPERM This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
+ */
+int32_t sdc_support_le_power_class_1(void);
+
 /** @brief Support Data Length Extensions for a central device
  *
  * After this API is called, the controller will support data length extension in the central role.
