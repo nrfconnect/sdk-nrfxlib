@@ -176,6 +176,10 @@ struct nrf_wifi_fmac_dev_ctx {
 	struct nrf_wifi_event_regulatory_change *reg_change;
 	/** TX power ceiling parameters */
 	struct nrf_wifi_tx_pwr_ceil_params *tx_pwr_ceil_params;
+	/** current temp request status */
+	int temp_get_status;
+	/** current temperature */
+	int current_temp;
 	/** Data pointer to mode specific parameters */
 	char priv[];
 };

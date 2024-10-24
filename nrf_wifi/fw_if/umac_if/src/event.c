@@ -1008,6 +1008,38 @@ out:
 }
 #endif /* CONFIG_NRF700X_SYSTEM_WITH_RAW_MODES */
 
+static enum nrf_wifi_status umac_event_current_temp_proc(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+							 void *event)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	struct nrf_wifi_event_current_temperature *event_current_temp = NULL;
+
+	if (!event) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Invalid parameters",
+				      __func__);
+		goto out;
+	}
+
+	if (!fmac_dev_ctx->temp_get_status) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Temperature received when req was not sent!",
+				      __func__);
+		goto out;
+	}
+
+	event_current_temp = ((struct nrf_wifi_event_current_temperature *)event);
+
+	fmac_dev_ctx->current_temp = event_current_temp->current_temperature;
+
+	fmac_dev_ctx->temp_get_status = false;
+
+	status = NRF_WIFI_STATUS_SUCCESS;
+
+out:
+	return status;
+}
+
 static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 						    struct host_rpu_msg *rpu_msg)
 {
@@ -1092,6 +1124,10 @@ static enum nrf_wifi_status umac_process_sys_events(struct nrf_wifi_fmac_dev_ctx
 		status = NRF_WIFI_STATUS_SUCCESS;
 		break;
 #endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
+	case NRF_WIFI_EVENT_CURRENT_TEMP:
+		status = umac_event_current_temp_proc(fmac_dev_ctx,
+						      sys_head);
+		break;
 	default:
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 				      "%s: Unknown event recd: %d",
