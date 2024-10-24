@@ -93,9 +93,11 @@ function(openthread_libs_configuration_write CONFIG_FILE NRFXLIB_RELEASE_TAG)
   list(APPEND LIB_CONFIGURATION ${OPENTHREAD_SETTINGS})
 
   # Store Crypto configuration
+  file(READ "cmake/crypto_config_ignore.txt" CRYPTO_IGNORE)
+  string(REPLACE "\n" ";" CRYPTO_IGNORE ${CRYPTO_IGNORE})
   list(APPEND LIB_CONFIGURATION "\n###################### Crypto configuration ##################\n\n")
   foreach (_variableName ${_variableNames})
-    if("${_variableName}" MATCHES "^CONFIG_MBEDTLS_.*|^CONFIG_PSA_WANT_.*")
+    if("${_variableName}" MATCHES "^CONFIG_MBEDTLS_.*|^CONFIG_PSA_WANT_.*" AND NOT "${_variableName}" IN_LIST CRYPTO_IGNORE)
       list(APPEND CRYPTO_SETTINGS "${_variableName}=${${_variableName}}\n")
     endif()
   endforeach()
