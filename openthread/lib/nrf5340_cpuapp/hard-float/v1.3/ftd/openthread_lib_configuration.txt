@@ -4,8 +4,8 @@ GCC_version: arm-zephyr-eabi-gcc (Zephyr SDK 0.16.8) 12.2.0
 
 ###################### SDK Version ###########################
 
-MBEDTLS_commit=mbedtls-2.26.0-16450-g2e24f78c0
-NRFXLIB_commit=v2.7.0-113-g823dc448
+MBEDTLS_commit=v3.6.2-ncs1-rc1-0-g98603a8c9
+NRFXLIB_commit=v2.8.0-rc1-0-gd5d7c455
 OpenThread_commit=ncs-thread-reference-20241002-0-gee86dc26d
 NRFXLIB_RELEASE_TAG=v2.8.0
 
