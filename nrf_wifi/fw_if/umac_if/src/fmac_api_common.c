@@ -1301,3 +1301,36 @@ out:
 	return status;
 }
 #endif /* CONFIG_NRF700X_RAW_DATA_RX || CONFIG_NRF700X_PROMISC_DATA_RX */
+
+enum nrf_wifi_status nrf_wifi_fmac_temp_get(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
+					    int *current_temp)
+{
+	enum nrf_wifi_status status = NRF_WIFI_STATUS_FAIL;
+	unsigned char count = 0;
+
+	fmac_dev_ctx->temp_get_status = true;
+
+	status = umac_cmd_prog_temp_get(fmac_dev_ctx);
+
+	if (status != NRF_WIFI_STATUS_SUCCESS) {
+		goto out;
+	}
+
+	do {
+		nrf_wifi_osal_sleep_ms(fmac_dev_ctx->fpriv->opriv,
+				       1);
+		count++;
+	} while ((fmac_dev_ctx->temp_get_status == true) &&
+		 (count < NRF_WIFI_FMAC_STATS_RECV_TIMEOUT));
+
+	if (count == NRF_WIFI_FMAC_STATS_RECV_TIMEOUT) {
+		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+				      "%s: Timed out",
+				      __func__);
+		goto out;
+	}
+
+	*current_temp = fmac_dev_ctx->current_temp;
+out:
+	return status;
+}
