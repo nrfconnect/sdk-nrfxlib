@@ -1020,16 +1020,22 @@ static enum nrf_wifi_status umac_event_current_temp_proc(struct nrf_wifi_fmac_de
 				      __func__);
 		goto out;
 	}
-
+#if 0
 	if (!fmac_dev_ctx->temp_get_status) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
 				      "%s: Temperature received when req was not sent!",
 				      __func__);
 		goto out;
 	}
-
+#endif
 	event_current_temp = ((struct nrf_wifi_event_current_temperature *)event);
+#if 0
+	nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
+			      "%s %d: Temperature received !",
+			      __func__,event_current_temp->current_temperature);
 
+#endif
+	printf("Temperature:%d\n",event_current_temp->current_temperature);
 	fmac_dev_ctx->current_temp = event_current_temp->current_temperature;
 
 	fmac_dev_ctx->temp_get_status = false;
