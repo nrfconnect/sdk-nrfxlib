@@ -801,13 +801,7 @@ cleanup_and_exit:
 	}
 
 	if (err < 0) {
-		internal_data.type = NRF_RPC_ERROR;
-		internal_data.group = group;
-		internal_data.err = err;
-		internal_data.hdr_id = hdr.id;
-		internal_data.hdr_type = hdr.type;
-		nrf_rpc_os_thread_pool_send((const uint8_t *)&internal_data, sizeof(internal_data));
-		nrf_rpc_os_event_wait(&group->data->decode_done_event, NRF_RPC_OS_WAIT_FOREVER);
+		nrf_rpc_err(err, NRF_RPC_ERR_SRC_RECV, group, hdr.id, hdr.type);
 	}
 }
 
