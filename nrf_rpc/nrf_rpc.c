@@ -102,6 +102,7 @@ struct internal_pool_data {
 static struct nrf_rpc_cmd_ctx cmd_ctx_pool[CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE];
 
 static struct nrf_rpc_os_event groups_init_event;
+static struct nrf_rpc_os_event error_event;
 
 /* Number of groups */
 static uint8_t group_count;
@@ -362,9 +363,8 @@ static void internal_tx_handler(void)
 {
 	struct internal_pool_data copy = internal_data;
 
-	nrf_rpc_os_event_set(&copy.group->data->decode_done_event);
-
 	if (copy.type == NRF_RPC_INITIALIZATION) {
+		nrf_rpc_os_event_set(&copy.group->data->decode_done_event);
 		if (group_init_send(copy.group)) {
 			NRF_RPC_ERR("Failed to send group init packet for group id: %d strid: %s",
 				    copy.group->data->src_group_id, copy.group->strid);
@@ -372,6 +372,7 @@ static void internal_tx_handler(void)
 	}
 
 	if (copy.type == NRF_RPC_ERROR) {
+		nrf_rpc_os_event_set(&error_event);
 		nrf_rpc_err(copy.err, NRF_RPC_ERR_SRC_RECV, copy.group, copy.hdr_id, copy.hdr_type);
 	}
 }
@@ -807,7 +808,7 @@ cleanup_and_exit:
 		internal_data.hdr_id = hdr.id;
 		internal_data.hdr_type = hdr.type;
 		nrf_rpc_os_thread_pool_send((const uint8_t *)&internal_data, sizeof(internal_data));
-		nrf_rpc_os_event_wait(&group->data->decode_done_event, NRF_RPC_OS_WAIT_FOREVER);
+		nrf_rpc_os_event_wait(&error_event, NRF_RPC_OS_WAIT_FOREVER);
 	}
 }
 
@@ -1078,6 +1079,11 @@ int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 	}
 
 	err = nrf_rpc_os_event_init(&groups_init_event);
+	if (err < 0) {
+		return err;
+	}
+
+	err = nrf_rpc_os_event_init(&error_event);
 	if (err < 0) {
 		return err;
 	}
