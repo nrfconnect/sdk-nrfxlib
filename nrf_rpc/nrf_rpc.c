@@ -96,6 +96,8 @@ struct internal_task {
 	union {
 		struct {
 			const struct nrf_rpc_group *group;
+			bool send_reply;
+			bool signal_groups_init_event;
 		} group_init;
 
 		struct {
@@ -377,10 +379,19 @@ static void internal_tx_handler(void)
 	case NRF_RPC_TASK_GROUP_INIT: {
 		const struct nrf_rpc_group *group = task.group_init.group;
 
-		if (group_init_send(group)) {
+		if (task.group_init.send_reply && group_init_send(group)) {
 			NRF_RPC_ERR("Failed to send group init packet for group id: %d strid: %s",
 				    group->data->src_group_id, group->strid);
 		}
+
+		if (group->bound_handler != NULL) {
+			group->bound_handler(group);
+		}
+
+		if (task.group_init.signal_groups_init_event) {
+			nrf_rpc_os_event_set(&groups_init_event);
+		}
+
 		break;
 	}
 	case NRF_RPC_TASK_RECV_ERROR:
@@ -633,7 +644,8 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 	struct init_packet_data init_data = {0};
 	struct nrf_rpc_group_data *group_data;
 	bool first_init;
-	bool wait_on_init;
+	bool signal_groups_init_event = false;
+	bool send_reply;
 
 	*group = NULL;
 
@@ -663,32 +675,38 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 	group_data = (*group)->data;
 	first_init = group_data->dst_group_id == NRF_RPC_ID_UNKNOWN;
 	group_data->dst_group_id = hdr->src_group_id;
-	wait_on_init = (*group)->flags & NRF_RPC_FLAGS_WAIT_ON_INIT;
-	nrf_rpc_group_bound_handler_t bound_handler = (*group)->bound_handler;
 
 	NRF_RPC_DBG("Found corresponding local group. Remote id: %d, Local id: %d",
-		    hdr->src_group_id, group_data->src_group_id);
+		    group_data->dst_group_id, group_data->src_group_id);
 
-	if (bound_handler != NULL) {
-		bound_handler(*group);
-	}
-
-	if (first_init && wait_on_init) {
+	if (first_init && (*group)->flags & NRF_RPC_FLAGS_WAIT_ON_INIT) {
 		++initialized_group_count;
 
-		if (initialized_group_count == waiting_group_count) {
-			/* All groups are initialized. */
-			nrf_rpc_os_event_set(&groups_init_event);
-		}
+		/*
+		 * If this is the last group that nrf_rpc_init() is waiting for, use the async task
+		 * to signal the corresponding event and unblock the waiting thread.
+		 */
+		signal_groups_init_event = (initialized_group_count == waiting_group_count);
 	}
 
-	if (hdr->dst_group_id == NRF_RPC_ID_UNKNOWN && (*group)->data->transport_initialized) {
-		/*
-		 * If remote processor does not know our group id, send an init packet back,
-		 * since it might have missed our original init packet.
-		 */
+	/*
+	 * If the remote processor does not know our group id, send an init packet back as
+	 * either we are not an initiator, which is indicated by NRF_RPC_FLAGS_INITIATOR
+	 * flag, or the remote has missed our init packet.
+	 */
+	send_reply = (hdr->dst_group_id == NRF_RPC_ID_UNKNOWN) && group_data->transport_initialized;
+
+	/*
+	 * Spawn the async task only if necessary. The async task is used to avoid sending the init
+	 * reply in the transport receive thread. The application is also notified about the group
+	 * initialization from within the task to ensure that when this happens the init reply has
+	 * already been sent and the remote is ready to receive nRF RPC commands.
+	 */
+	if (((*group)->bound_handler != NULL) || send_reply || signal_groups_init_event) {
 		internal_task.type = NRF_RPC_TASK_GROUP_INIT;
 		internal_task.group_init.group = *group;
+		internal_task.group_init.send_reply = send_reply;
+		internal_task.group_init.signal_groups_init_event = signal_groups_init_event;
 		nrf_rpc_os_thread_pool_send((const uint8_t *)&internal_task, sizeof(internal_task));
 		nrf_rpc_os_event_wait(&internal_task_consumed, NRF_RPC_OS_WAIT_FOREVER);
 	}
