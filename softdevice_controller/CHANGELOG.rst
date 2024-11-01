@@ -40,6 +40,11 @@ Added
     * LE CS Test
     * LE CS Test End
 
+* The defines :c:macro:`SDC_PPI_CHANNELS_USED_MASK`, :c:macro:`SDC_DPPI_CHANNELS_USED_MASK`, :c:macro:`SDC_DPPIC10_CHANNELS_USED_MASK`, :c:macro:`SDC_DPPIC00_CHANNELS_USED_MASK`, :c:macro:`SDC_DPPIC020_CHANNELS_USED_MASK`, and :c:macro:`SDC_DPPIC030_CHANNELS_USED_MASK`.
+  These represent the PPI resources used in the SoftDevice Controller.
+* The defines :c:macro:`SDC_PPIB00_CHANNELS_USED_MASK`, :c:macro:`SDC_PPIB10_CHANNELS_USED_MASK`, :c:macro:`SDC_PPIB020_CHANNELS_USED_MASK`, and :c:macro:`SDC_PPIB030_CHANNELS_USED_MASK`.
+  These represent the PPIB resources used in the SoftDevice Controller.
+
 Changes
 =======
 
@@ -66,6 +71,8 @@ Changes
 * Generating the Number of Completed Packets event is now prioritized above all other events.
   The event is generated irrespective of the state of the Controller to Host data flow control. (DRGN-23284)
 * When a link disconnects, the controller will now raise one or more Number Of Completed Packets events for data packets not ACKed by the peer device. (DRGN-23302)
+* Isochronous roles may now produce HCI ISO data with SDUs containing the ``0b01`` packet status flag which indicates "possibly invalid data".
+  This is the case if the peer sends invalid data. (DRGN-23420)
 
 Bug fixes
 =========
@@ -111,6 +118,13 @@ Bug fixes
 * Fixed an issue where received unframed Isochronous SDUs were not reported to be a SDU interval apart.
   This could happen when the ISO interval is greater than the SDU interval and multiple SDUs can be received in a single ISO interval. (DRGN-23586)
 * Fixed an issue where the sleep clock accuracy communicated to the peer was too inaccurate if MPSL was initialized with a low frequency clock accuracy better than 20ppm. (DRGN-23693)
+* Fixed a rare issue in the controller that could lead to a bus fault. (DRGN-22036)
+
+  This could only happen when all of the following conditions were met:
+
+    * The host was too slow at pulling HCI events.
+    * One or more HCI events had been masked in the controller.
+    * The controller was raising ACL or ISO data to the host.
 
 nRF Connect SDK v2.7.0
 **********************
