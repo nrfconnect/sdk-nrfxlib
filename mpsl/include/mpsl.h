@@ -37,13 +37,25 @@ extern "C" {
 /** @brief Size of build revision array in bytes. */
 #define MPSL_BUILD_REVISION_SIZE 20
 
-/** @brief Bitmask of (D)PPI channels reserved for MPSL. */
-#if defined(PPI_PRESENT)
+/* Reserved (D)PPI, PPIB and IPCT resources for the supported platforms. */
+#if defined(NRF52_SERIES)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
-#elif defined(GRTC_PRESENT)
-#define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
-#elif defined(DPPIC_PRESENT)
+/* This corresponds to the PPI channels 19, 30, and 31. */
+#define MPSL_PPI_CHANNELS_USED_MASK (0xc0080000)
+#elif defined(NRF53_SERIES)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
+/* This corresponds to the DPPI channels 0, 1, and 2. */
+#define MPSL_DPPIC_CHANNELS_USED_MASK (0x00000007)
+#elif defined(NRF54L_SERIES)
+#define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
+#define MPSL_DPPIC10_CHANNELS_USED_MASK (0x00000001)
+#define MPSL_DPPIC20_CHANNELS_USED_MASK (0x00000001)
+#define MPSL_PPIB11_CHANNELS_USED_MASK  (0x00000001)
+#define MPSL_PPIB21_CHANNELS_USED_MASK  (0x00000001)
+#elif defined(NRF54H) || defined(GRTC_PRESENT)
+#define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
+#define MPSL_DPPIC020_CHANNELS_USED_MASK (0x00000001)
+#define MPSL_IPCT130_CHANNELS_USED_MASK  (0x00000001)
 #else
 #error Unknown NRF series.
 #endif
