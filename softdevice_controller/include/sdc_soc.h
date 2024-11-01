@@ -30,6 +30,24 @@ extern "C" {
 #include <stdbool.h>
 #include "nrf_errno.h"
 
+#if defined(NRF52_SERIES)
+  /* PPI channels 17 - 31, for the nRF52 Series */
+  #define SDC_PPI_CHANNELS_USED_MASK      (0xfffe0000)
+#elif defined(NRF53_SERIES)
+  /* PPI channels 3 - 12, for the nRF53 Series */
+  #define SDC_DPPI_CHANNELS_USED_MASK     (0x00001ff8)
+#elif defined(NRF54L_SERIES)
+  #define SDC_DPPIC10_CHANNELS_USED_MASK  (0x00000ffe)
+  #define SDC_DPPIC00_CHANNELS_USED_MASK  (0x0000000a)
+  #define SDC_PPIB00_CHANNELS_USED_MASK   (0x0000000f)
+  #define SDC_PPIB10_CHANNELS_USED_MASK   (0x0000000f)
+#elif defined(NRF54H) || defined(GRTC_PRESENT)
+  #define SDC_DPPIC020_CHANNELS_USED_MASK (0x00000ffe)
+  #define SDC_DPPIC030_CHANNELS_USED_MASK (0x0000000a)
+  #define SDC_PPIB020_CHANNELS_USED_MASK  (0x0000000f)
+  #define SDC_PPIB030_CHANNELS_USED_MASK  (0x0000000f)
+#endif
+
 /**
  * @brief Functions used by the SoftDevice Controller to obtain random numbers.
  *
