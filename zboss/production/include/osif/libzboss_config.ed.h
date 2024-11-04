@@ -408,8 +408,7 @@
 /**
  * Length of the internal ZBOSS MAC TX queue
  *
- * The value of NRF_802154_RX_BUFFERS (ZIGBEE_RX_QUEUE_LENGTH in nRF5 SDK)
- * should not be greater than ZB_MAC_QUEUE_SIZE.
+ * The value of NET_PKT_RX_COUNT should not be greater than ZB_MAC_QUEUE_SIZE.
  * If the node is flooded with requests, that require a response to be sent,
  * the node should be able to schedule responses for each buffer,
  * stored inside MAC LL RX queue.
