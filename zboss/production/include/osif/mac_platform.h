@@ -21,8 +21,6 @@
 #define ZB_AUTO_ACK_TX
 #define ZB_MAC_AUTO_ACK_RECV
 #define ZB_MANUAL_ACK
-#define ZB_MANUAL_ACK_TIMEOUT
-#define MAC_ACK_PARSE_BY_INTR
 
 /* gpTxOffset should be calibrated for each HW/SW variant.
  * The reason is that ZB_GPD_TX_OFFSET_US is used from ZGP stub during Green Power frame transmitting,
