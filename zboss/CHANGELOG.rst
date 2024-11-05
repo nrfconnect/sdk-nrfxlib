@@ -9,6 +9,20 @@ Changelog
 
 All notable changes to this project in the |NCS| are documented in this file.
 
+nRF Connect SDK v2.8.0
+**********************
+
+Updated
+=======
+
+* The ZBOSS stack to version ``3.11.5.0+5.1.6``.
+  For detailed information, see `ZBOSS stack release notes`_ for the |NCS| v2.8.0 release.
+
+Bug fixes
+=========
+
+* Fixed the traces mask used to build the traces version of the libraries, so that more subsystems are enabled when the :kconfig:option:`CONFIG_ZIGBEE_ENABLE_TRACES` Kconfig option is enabled.
+
 nRF Connect SDK v2.7.0
 **********************
 
