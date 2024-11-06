@@ -111,13 +111,15 @@ function(check_openthread_dependencies CONFIG_FILE)
   get_cmake_property(_variableNames VARIABLES)
   file(READ ${CONFIG_FILE} FILE_CONTENT)
   file(READ "cmake/crypto_config_tfm_whitelist.txt" TFM_WHITELIST)
+  file(READ "cmake/crypto_config_cc3xx_whitelist.txt" CC3XX_WHITELIST)
   string(REGEX MATCHALL "CONFIG_(MBEDTLS_|PSA_WANT_)[^\n]*" match_list ${FILE_CONTENT})
   foreach(element ${match_list})
     string(REGEX MATCH "([^=]+)=(.*)" _ ${element})
     set(config_name "${CMAKE_MATCH_1}")
     set(config_value "${CMAKE_MATCH_2}")
     if (NOT ((config_name IN_LIST _variableNames AND ${${config_name}} STREQUAL ${config_value}) OR
-             (CONFIG_BUILD_WITH_TFM AND ${TFM_WHITELIST} MATCHES ${config_name})))
+             (CONFIG_BUILD_WITH_TFM AND ${TFM_WHITELIST} MATCHES ${config_name}) OR
+             (CONFIG_PSA_CRYPTO_DRIVER_CC3XX AND ${CC3XX_WHITELIST} MATCHES ${config_name})))
       message(WARNING
         " \n"
         " ${config_name}=${config_value} is required by the precompiled OpenThread libraries,"
