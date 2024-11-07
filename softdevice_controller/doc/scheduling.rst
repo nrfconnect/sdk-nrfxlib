@@ -64,7 +64,7 @@ The following table summarizes the priorities.
    |                             | * Scanner in the synchronized state where the synchronization is about to be lost                 |
    |                             | * Scanner in the synchronized state receiving auxiliary packets (``AUX_CHAIN_IND``)               |
    |                             | * Scanner in the synchronized state sending auxiliary packets (``AUX_SYNC_SUBEVENT_RSP``)         |
-   |                             | * Connectable Advertiser/Broadcaster which has been blocked consecutively for a few times         |
+   |                             | * Connectable Advertiser/Broadcaster which hasn't been able to send advertisements in a long time |
    |                             | * Scanner with interval not equal to the scan window and which hasn't scanned for a full window   |
    |                             |   in a long time                                                                                  |
    |                             | * Connected Isochronous channel setup                                                             |
