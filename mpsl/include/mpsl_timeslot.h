@@ -153,7 +153,9 @@ enum MPSL_TIMESLOT_HFCLK_CFG
                                                  @note If the application will use the radio peripheral
                                                  in timeslots with this configuration, it must ensure
                                                  that the crystal is running and stable before
-                                                 starting the radio. */
+                                                 starting the radio. On nRF54H series chips the crystal
+                                                 is also needed to use any peripheral in RADIO_PD,
+                                                 including timers. */
 };
 
 /** @brief Timeslot event priorities. */
