@@ -87,6 +87,8 @@ In such case, the MPSL leaves the crystal running.
 
 If the application does not request the MPSL to have the external high-frequency crystal ready by the start of the timeslot,
 then the high-frequency clock might or might not be running during the timeslot.
+Note that if the application will use the radio peripheral in timeslots with this configuration, it must ensure that the crystal is running and stable before starting the radio.
+On nRF54H Series SoCs the crystal is also needed to use any peripheral in RADIO_PD, including timers.
 
 Performance considerations
 **************************
