@@ -30,9 +30,7 @@
 .. _`Cellular Monitor`: https://docs.nordicsemi.com/bundle/nrf-connect-cellularmonitor/page/managing_credentials.html
 .. _`nRF Connect Serial Terminal`: https://docs.nordicsemi.com/bundle/nrf-connect-serial-terminal/page/index.html
 
-.. _Radio Driver section: https://infocenter.nordicsemi.com/topic/15.4_radio_driver_v1.10.0/rd_release_notes.html
-
-.. _nRF21540: https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF21540
+.. _`nRF21540`: https://www.nordicsemi.com/Products/Low-power-short-range-wireless/nRF21540
 
 .. _`Thread CIDs for nRF5340`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf5340/page/COMP/nrf5340/nrf5340_thread_cids.html
 .. _`Thread CIDs for nRF52840`: https://docs.nordicsemi.com/bundle/comp_matrix_nrf52840/page/COMP/nrf52840/nrf52840_thread_cids.html
