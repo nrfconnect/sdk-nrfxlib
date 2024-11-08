@@ -9,8 +9,8 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
-nrf_modem
-*********
+nrf_modem 2.8.0
+***************
 
 Core library
 ============
