@@ -343,7 +343,7 @@ extern "C" {
  *
  * @param[in] count Total number of links (central + peripheral).
  */
-#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count)*315) : 0)
+#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count)*326) : 0)
 
 /** @} end of sdc_mem_defines */
 
