@@ -28,7 +28,6 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "nrf_errno.h"
 
 #if defined(NRF52_SERIES)
   /* PPI channels 17 - 31, for the nRF52 Series */
