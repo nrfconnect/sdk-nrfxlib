@@ -185,7 +185,7 @@ extern "C" {
      __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
 
 /** Maximum shared memory required for central links. */
-#define SDC_MEM_CENTRAL_LINKS_SHARED 17
+#define SDC_MEM_CENTRAL_LINKS_SHARED 21
 
 /** Maximum shared memory required for peripheral links. */
 #define SDC_MEM_PERIPHERAL_LINKS_SHARED  17
@@ -212,15 +212,15 @@ extern "C" {
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
 /** Memory required for the scanner when only supporting legacy scanning. */
-#define SDC_MEM_SCAN(buffer_count) (345 + (buffer_count) * 98)
+#define SDC_MEM_SCAN(buffer_count) (353 + (buffer_count) * 98)
 
 /** Memory required for the scanner when supporting extended scanning. */
-#define SDC_MEM_SCAN_EXT(buffer_count) (345 + (buffer_count) * 320)
+#define SDC_MEM_SCAN_EXT(buffer_count) (353 + (buffer_count) * 320)
 
 /** Additional memory required for the initiator when supporting scanning
  *  and initiating at the same time.
  */
-#define SDC_MEM_INITIATOR (320)
+#define SDC_MEM_INITIATOR (328)
 
 /** Memory required for the Filter Accept List */
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)
@@ -337,7 +337,7 @@ extern "C" {
  *
  * @param[in] count Maximum number of concurrent connections supporting CS procedure.
  */
-#define SDC_MEM_CS(count) ((count) > 0 ? (13 + (count) * 8907) : 0)
+#define SDC_MEM_CS(count) ((count) > 0 ? (13 + (count) * 8912) : 0)
 
 /** @brief Maximum additional memory required to support Channel Sounding setup phase procedures
  *
