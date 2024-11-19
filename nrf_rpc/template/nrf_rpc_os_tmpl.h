@@ -156,29 +156,6 @@ uint32_t nrf_rpc_os_ctx_pool_reserve();
  */
 void nrf_rpc_os_ctx_pool_release(uint32_t index);
 
-/** @brief Set number of remote threads.
- *
- * Number of remote threads that can be reserved by
- * @ref nrf_rpc_os_remote_reserve is limited by `count` parameter.
- * After initialization `count` is assumed to be zero.
- *
- * @param count Number of remote threads.
- */
-void nrf_rpc_os_remote_count(int count);
-
-/** @brief Reserve one thread from a remote thread pool.
- *
- * If there are no more threads available or @ref nrf_rpc_os_remote_count was
- * not called yet then this function waits.
- *
- * Remote thread reserving and releasing can be implemented using a semaphore.
- */
-void nrf_rpc_os_remote_reserve();
-
-/** @brief Release one thread from a remote thread pool.
- */
-void nrf_rpc_os_remote_release();
-
 #ifdef __cplusplus
 }
 #endif
