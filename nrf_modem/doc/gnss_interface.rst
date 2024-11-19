@@ -169,7 +169,7 @@ System mask
 ===========
 
 System mask controls which GNSSs are enabled.
-The system mask is set using the :c:func:`nrf_modem_gnss_system_mask_set` function by providing a bitmap of the selected systems.
+The system mask is set using the :c:func:`nrf_modem_gnss_signal_mask_set` function by providing a bitmap of the selected systems.
 
 By default, all supported GNSSs are enabled.
 
@@ -181,7 +181,7 @@ GPS cannot be disabled and it remains enabled even if the corresponding bit is n
 
    system_mask = NRF_MODEM_GNSS_SYSTEM_GPS_MASK | NRF_MODEM_GNSS_SYSTEM_QZSS_MASK;
 
-   err = nrf_modem_gnss_system_mask_set(system_mask);
+   err = nrf_modem_gnss_signal_mask_set(system_mask);
 
 Satellite elevation threshold
 =============================

@@ -51,7 +51,7 @@ The following snippet shows how to use :c:func:`nrf_modem_at_printf` to send a f
 		int err;
 
 		err = nrf_modem_at_printf("AT+CFUN=%d", mode);
-		if (err = 0) {
+		if (err == 0) {
 			/* OK, success */
 		} else if (err < 0) {
 			/* Failed to send command, err is an nrf_errno */
