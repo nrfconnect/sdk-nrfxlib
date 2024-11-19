@@ -414,17 +414,20 @@ static int transport_init(nrf_rpc_tr_receive_handler_t receive_cb)
 
 		NRF_RPC_ASSERT(transport != NULL);
 
-		err = transport->api->init(transport, receive_cb, NULL);
-		if (err) {
-			NRF_RPC_ERR("Failed to initialize transport, err: %d", err);
-			continue;
-		}
-
+		/* Initialize all dependencies of `receive_handler` before calling the transport
+		 * init to avoid possible data race if `receive_handler` was invoked before this
+		 * function was completed. */
 		if (auto_free_rx_buf(transport)) {
 			err = nrf_rpc_os_event_init(&data->decode_done_event);
 			if (err < 0) {
 				continue;
 			}
+		}
+
+		err = transport->api->init(transport, receive_cb, NULL);
+		if (err) {
+			NRF_RPC_ERR("Failed to initialize transport, err: %d", err);
+			continue;
 		}
 
 		group->data->transport_initialized = true;
@@ -694,7 +697,7 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 	 * either we are not an initiator, which is indicated by NRF_RPC_FLAGS_INITIATOR
 	 * flag, or the remote has missed our init packet.
 	 */
-	send_reply = (hdr->dst_group_id == NRF_RPC_ID_UNKNOWN) && group_data->transport_initialized;
+	send_reply = (hdr->dst_group_id == NRF_RPC_ID_UNKNOWN);
 
 	/*
 	 * Spawn the async task only if necessary. The async task is used to avoid sending the init
@@ -742,6 +745,12 @@ static void receive_handler(const struct nrf_rpc_tr *transport, const uint8_t *p
 			err = -NRF_EBADMSG;
 			goto cleanup_and_exit;
 		}
+
+		/* Mark the transport as initialized in case the first packet arrives sooner than
+		 * `nrf_rpc_init` does that. Without this, an attempt to allocate a buffer for the
+		 * response to this packet would fail.
+		 */
+		group->data->transport_initialized = true;
 	}
 
 	NRF_RPC_DBG("Received %d bytes packet from %d to %d, type 0x%02X, "
