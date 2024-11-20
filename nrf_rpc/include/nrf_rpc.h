@@ -66,6 +66,7 @@ enum nrf_rpc_err_src {
 	NRF_RPC_ERR_SRC_RECV,   /**< @brief Error during receiving */
 	NRF_RPC_ERR_SRC_SEND,   /**< @brief Error during sending */
 	NRF_RPC_ERR_SRC_REMOTE, /**< @brief Error reported be the remote */
+	NRF_RPC_ERR_SRC_REBOOT, /**< @brief Error due to reboot of the remote */
 };
 
 /* Helper nRF group structure declaration needed for callback definition. */

@@ -98,6 +98,7 @@ struct internal_task {
 			const struct nrf_rpc_group *group;
 			bool send_reply;
 			bool signal_groups_init_event;
+			bool signal_reboot;
 		} group_init;
 
 		struct {
@@ -378,6 +379,11 @@ static void internal_tx_handler(void)
 	switch (task.type) {
 	case NRF_RPC_TASK_GROUP_INIT: {
 		const struct nrf_rpc_group *group = task.group_init.group;
+
+		if (task.group_init.signal_reboot) {
+			nrf_rpc_err(-NRF_ECONNRESET, NRF_RPC_ERR_SRC_REBOOT, group,
+				    NRF_RPC_ID_UNKNOWN, NRF_RPC_PACKET_TYPE_INIT);
+		}
 
 		if (task.group_init.send_reply && group_init_send(group)) {
 			NRF_RPC_ERR("Failed to send group init packet for group id: %d strid: %s",
@@ -710,6 +716,7 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 		internal_task.group_init.group = *group;
 		internal_task.group_init.send_reply = send_reply;
 		internal_task.group_init.signal_groups_init_event = signal_groups_init_event;
+		internal_task.group_init.signal_reboot = send_reply && !first_init;
 		nrf_rpc_os_thread_pool_send((const uint8_t *)&internal_task, sizeof(internal_task));
 		nrf_rpc_os_event_wait(&internal_task_consumed, NRF_RPC_OS_WAIT_FOREVER);
 	}
