@@ -11,7 +11,7 @@ config MPSL
 	select NRF_802154_MULTIPROTOCOL_SUPPORT if NRF_802154_RADIO_DRIVER
 	select MULTITHREADING_LOCK
 	depends on (SOC_SERIES_BSIM_NRFXX || SOC_SERIES_NRF52X || SOC_NRF5340_CPUNET ||\
-			SOC_NRF54H20_CPURAD || SOC_NRF54H20_ENGB_CPURAD || SOC_SERIES_NRF54LX)
+			SOC_NRF54H20_CPURAD || SOC_SERIES_NRF54LX)
 	help
 	  Use Nordic Multi Protocol Service Layer (MPSL) implementation,
 	  providing services for single and multi-protocol implementations.
@@ -32,7 +32,7 @@ config MPSL_LIB_DIR
 	string
 	default "nrf52" if SOC_SERIES_NRF52X
 	default "nrf53" if SOC_NRF5340_CPUNET
-	default "nrf54h" if SOC_NRF54H20_CPURAD || SOC_NRF54H20_ENGB_CPURAD
+	default "nrf54h" if SOC_NRF54H20_CPURAD
 	default "nrf54l_ns" if SOC_SERIES_NRF54LX && TRUSTED_EXECUTION_NONSECURE
 	default "nrf54l" if SOC_SERIES_NRF54LX && !TRUSTED_EXECUTION_NONSECURE
 	default "bsim_nrf52" if SOC_SERIES_BSIM_NRF52X
