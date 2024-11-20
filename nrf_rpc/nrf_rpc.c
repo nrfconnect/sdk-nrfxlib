@@ -96,7 +96,8 @@ struct internal_task {
 	union {
 		struct {
 			const struct nrf_rpc_group *group;
-			bool send_reply;
+			bool first_init;
+			bool needs_reply;
 			bool signal_groups_init_event;
 		} group_init;
 
@@ -125,6 +126,9 @@ static bool is_initialized;
 
 /* Error handler provided to the init function. */
 static nrf_rpc_err_handler_t global_err_handler;
+
+/* Bound group handler provided to the init function. */
+static nrf_rpc_group_bound_handler_t global_bound_handler;
 
 static struct internal_task internal_task;
 static struct nrf_rpc_os_event internal_task_consumed;
@@ -379,13 +383,19 @@ static void internal_tx_handler(void)
 	case NRF_RPC_TASK_GROUP_INIT: {
 		const struct nrf_rpc_group *group = task.group_init.group;
 
-		if (task.group_init.send_reply && group_init_send(group)) {
+		if (task.group_init.needs_reply && group_init_send(group)) {
 			NRF_RPC_ERR("Failed to send group init packet for group id: %d strid: %s",
 				    group->data->src_group_id, group->strid);
 		}
 
-		if (group->bound_handler != NULL) {
-			group->bound_handler(group);
+		if (task.group_init.first_init || task.group_init.needs_reply) {
+			if (group->bound_handler != NULL) {
+				group->bound_handler(group);
+			}
+
+			if (global_bound_handler != NULL) {
+				global_bound_handler(group);
+			}
 		}
 
 		if (task.group_init.signal_groups_init_event) {
@@ -648,7 +658,7 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 	struct nrf_rpc_group_data *group_data;
 	bool first_init;
 	bool signal_groups_init_event = false;
-	bool send_reply;
+	bool needs_reply;
 
 	*group = NULL;
 
@@ -697,7 +707,7 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 	 * either we are not an initiator, which is indicated by NRF_RPC_FLAGS_INITIATOR
 	 * flag, or the remote has missed our init packet.
 	 */
-	send_reply = (hdr->dst_group_id == NRF_RPC_ID_UNKNOWN);
+	needs_reply = (hdr->dst_group_id == NRF_RPC_ID_UNKNOWN);
 
 	/*
 	 * Spawn the async task only if necessary. The async task is used to avoid sending the init
@@ -705,10 +715,11 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 	 * initialization from within the task to ensure that when this happens the init reply has
 	 * already been sent and the remote is ready to receive nRF RPC commands.
 	 */
-	if (((*group)->bound_handler != NULL) || send_reply || signal_groups_init_event) {
+	if (first_init || needs_reply || signal_groups_init_event) {
 		internal_task.type = NRF_RPC_TASK_GROUP_INIT;
 		internal_task.group_init.group = *group;
-		internal_task.group_init.send_reply = send_reply;
+		internal_task.group_init.first_init = first_init;
+		internal_task.group_init.needs_reply = needs_reply;
 		internal_task.group_init.signal_groups_init_event = signal_groups_init_event;
 		nrf_rpc_os_thread_pool_send((const uint8_t *)&internal_task, sizeof(internal_task));
 		nrf_rpc_os_event_wait(&internal_task_consumed, NRF_RPC_OS_WAIT_FOREVER);
@@ -1074,6 +1085,11 @@ void nrf_rpc_rsp_no_err(const struct nrf_rpc_group *group, uint8_t *packet, size
 }
 
 /* ======================== Common API functions ======================== */
+
+void nrf_rpc_set_bound_handler(nrf_rpc_group_bound_handler_t bound_handler)
+{
+	global_bound_handler = bound_handler;
+}
 
 int nrf_rpc_init(nrf_rpc_err_handler_t err_handler)
 {

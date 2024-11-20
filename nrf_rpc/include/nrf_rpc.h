@@ -338,6 +338,16 @@ struct nrf_rpc_err_report {
 #define NRF_RPC_GROUP_STATUS(_group)								\
 	(_group.data->transport_initialized && (_group.data->dst_group_id != NRF_RPC_ID_UNKNOWN))
 
+/** @brief Register a global bound handler.
+ *
+ * Registers a global handler that is called each time the remote peer binds to a local group.
+ * This can be used by the application to detect that the peer has restarted, to reset any local
+ * state associated with the peer.
+ *
+ * @param bound_handler Bound handler.
+ */
+void nrf_rpc_set_bound_handler(nrf_rpc_group_bound_handler_t bound_handler);
+
 /** @brief Initialize the nRF RPC
  *
  * @param err_handler Error handler that will be called to report error in
