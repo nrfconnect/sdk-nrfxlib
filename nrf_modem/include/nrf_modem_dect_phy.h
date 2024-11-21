@@ -1249,13 +1249,30 @@ struct nrf_modem_dect_phy_init_params {
 	 * Maximum supported value: 5000000.
 	 */
 	uint32_t harq_rx_expiry_time_us;
-	/**
-	 * @brief Number of HARQ processes.
-	 *
-	 * The HARQ reception buffer is divided equally between processes.
-	 * Supported values: 1, 2, 4, 8.
-	 */
-	uint8_t harq_rx_process_count;
+	struct {
+		/**
+		 * @brief Number of HARQ processes.
+		 *
+		 * The HARQ reception buffer is divided equally between processes.
+		 * Supported values: 1, 2, 4, 8.
+		 */
+		uint8_t harq_rx_process_count : 4;
+		/**
+		 * @brief Reserved for future use.
+		 */
+		uint8_t reserved : 3;
+		/**
+		 * @brief Band 4 support.
+		 *
+		 * 1 - Enables band 4 operation.
+		 * 0 - Disables band 4 operation.
+		 *
+		 * @note
+		 * Band 4 support may only be toggled when de-initialized.
+		 * Toggling band 4 support when already initialized is not supported.
+		 */
+		uint8_t band4_support : 1;
+	};
 };
 
 /**
