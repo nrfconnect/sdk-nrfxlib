@@ -9,6 +9,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Bug fixes
+=========
+
+* Fixed an issue where the CIS central running on an nRF53 Series device could set an invalid MIC when sending encrypted ISO packets. (DRGN-23776)
+
 nRF Connect SDK v2.8.0
 **********************
 
