@@ -9,6 +9,19 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem
+*********
+
+Sockets
+=======
+
+* Updated the :c:func:`nrf_send()` and :c:func:`nrf_sendto()` functions to correctly set ``errno`` when the socket is closed during a send operation with :c:macro:`NRF_MSG_WAITACK`.
+
+DECT NR+
+========
+
+* Added a field to the :c:struct:`nrf_modem_dect_phy_init_params` struct to control band 4 support for nRF9151 devices.
+
 nrf_modem 2.8.0
 ***************
 
