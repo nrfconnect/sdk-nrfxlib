@@ -23,7 +23,7 @@ nRF Connect SDK v2.6.0
 Added
 =====
 
-* Added functions :c:func:`nfc_platform_buffer_alloc()` and :c:func:`nfc_platform_buffer_free()` for the platform layer.
+* Added functions :c:func:`nfc_platform_buffer_alloc` and :c:func:`nfc_platform_buffer_free` for the platform layer.
   The NFCT buffer for data exchange is now outside the library implementation.
   You have to define these two functions and return a memory that is accessible by the EasyDMA utility.
 * A possibility to modify the maximum value for the Frame Wait time Integer by using the ``NFC_T4T_PARAM_FWI_MAX`` parameter.
@@ -31,7 +31,7 @@ Added
 Modified
 ========
 
-* The :c:func:`nfc_platform_setup()` function now provides a pointer to the interrupt priority of the NFCT peripheral.
+* The :c:func:`nfc_platform_setup` function now provides a pointer to the interrupt priority of the NFCT peripheral.
   Its value must be set to the requested one.
   In implementations where the operating system is responsible for setting the interrupt priority, this value is not relevant.
 
@@ -41,14 +41,14 @@ nRF Connect SDK v2.3.0
 Added
 =====
 
-* A callback requested by the :c:func:`nfc_platform_cb_request()` function to allow execution of platform-dependent code before executing the user callback.
+* A callback requested by the :c:func:`nfc_platform_cb_request` function to allow execution of platform-dependent code before executing the user callback.
 * A header file :file:`nfc_platform.h` for platform layer.
 
 Modified
 ========
 
-* The :c:func:`nfc_platform_setup()` function now provides a pointer to the callback resolution function that is used to execute the user-defined NFC callback.
-* The :c:func:`nfc_t2t_setup()` function was updated to allow coexistence of the Type 2 Tag and the Type 4 Tag libraries.
+* The :c:func:`nfc_platform_setup` function now provides a pointer to the callback resolution function that is used to execute the user-defined NFC callback.
+* The :c:func:`nfc_t2t_setup` function was updated to allow coexistence of the Type 2 Tag and the Type 4 Tag libraries.
 
 nRF Connect SDK v2.1.0
 **********************
@@ -64,7 +64,7 @@ nRF Connect SDK v2.0.0
 Bug fixes
 =========
 
-* Fixed the Type 2 Tag initialization, where the return value of the :c:func:`nfc_platform_nfcid1_default_bytes_get()` function was not converted to the local NFC error code resulting in incorrect NFCID1 values.
+* Fixed the Type 2 Tag initialization, where the return value of the :c:func:`nfc_platform_nfcid1_default_bytes_get` function was not converted to the local NFC error code resulting in incorrect NFCID1 values.
 
 nRF Connect SDK v1.9.0
 **********************
@@ -103,7 +103,7 @@ Modified
 
 * Debug info is removed from the NFC T2T and T4T libraries.
 * Fixed duplicated initial Frame Waiting Time (FWT) value setting.
-* Modified the :c:func:`nfc_t2t_done()` and the :c:func:`nfc_t4t_done()` functions to uninitialize the NFCT driver to achieve symmetry in the library behaviour since the :c:func:`nfc_txt_setup()` function initializes the NFCT driver.
+* Modified the :c:func:`nfc_t2t_done` and the :c:func:`nfc_t4t_done` functions to uninitialize the NFCT driver to achieve symmetry in the library behaviour since the :c:func:`nfc_txt_setup` function initializes the NFCT driver.
 * Fixed FSDI value setting for RFU value cases.
 
 nRF Connect SDK v1.6.0
