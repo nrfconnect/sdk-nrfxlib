@@ -10,6 +10,10 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
+Main branch - nRF 802.15.4 Radio Driver
+***************************************
+
+
 nRF Connect SDK v2.8.0 - nRF 802.15.4 Radio Driver
 **************************************************
 

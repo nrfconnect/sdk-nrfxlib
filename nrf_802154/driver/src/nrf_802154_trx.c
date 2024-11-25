@@ -176,6 +176,13 @@ extern uint32_t SystemCoreClock;
 
 #endif
 
+#if defined(NRF54L_SERIES)
+/// Flag that informs if the disable operation had to be repeated forcefully since the last trx enable.
+static volatile bool g_nrf_802154_trx_disable_repeat_was_needed;
+/// Increments whenever repeating disable operation forcefully happens.
+static uint16_t g_nrf_802154_trx_disable_repeat_counter;
+#endif
+
 /// Common parameters for the FEM handling.
 static const mpsl_fem_event_t m_activate_rx_cc0 =
 {
@@ -376,6 +383,10 @@ static inline void wait_until_radio_is_disabled(void)
     bool radio_is_disabled = false;
     bool repeat            = false;
 
+#if defined(NRF54L_SERIES)
+    g_nrf_802154_trx_disable_repeat_was_needed = false;
+#endif
+
     do
     {
         /* RADIO should enter DISABLED state after no longer than RX ramp-down time or TX ramp-down
@@ -412,6 +423,8 @@ static inline void wait_until_radio_is_disabled(void)
              */
             radio_force_disable();
             repeat = true;
+            g_nrf_802154_trx_disable_repeat_was_needed = true;
+            g_nrf_802154_trx_disable_repeat_counter++;
         }
         else
         {
@@ -881,6 +894,10 @@ void nrf_802154_trx_enable(void)
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     NRF_802154_ASSERT(m_trx_state == TRX_STATE_DISABLED);
+
+#if defined(NRF54L_SERIES)
+    g_nrf_802154_trx_disable_repeat_was_needed = false;
+#endif
 
     nrf_timer_init();
     nrf_radio_reset();
