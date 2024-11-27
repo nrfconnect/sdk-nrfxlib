@@ -72,7 +72,16 @@ Before initializing the DECT PHY interface of the Modem library, the application
 Afterwards, the application can initialize the DECT PHY interface by calling the :c:func:`nrf_modem_dect_phy_init` function.
 Upon successful initialization, both the DECT PHY interface and DECT NR+ physical layer in the modem are ready for operation.
 
-The very first time the DECT PHY interface is initialized on a nRF9131 SiP, the DECT NR+ PHY firmware locks the calibration data preventing any changes to it.
+On nRF9151 Series devices only, the application can configure band 4 support during initialization by setting the :c:member:`nrf_modem_dect_phy_init_params.band4_support` field to ``1``.
+
+.. note::
+   DECT NR+ band 4 is supported by the nRF9151 LACA A0 SiP for R&D evaluation purposes.
+   The nRF9151 LACA A0AB SiP will be qualified for DECT NR+ band 4 support.
+
+.. important::
+   When operating on band 4, you must not use the carries outside the range of 525 to 551 as they interfere with other radio devices, including LTE devices.
+
+On nRF9131 Series devices only, the DECT NR+ PHY firmware locks the calibration data the very first time the DECT PHY interface is initialized.
 
 The DECT PHY interface can be de-initialized, which in turn de-initializes the physical layer in the modem, cancelling all scheduled operations.
 
@@ -178,7 +187,13 @@ Channel frequency
 -----------------
 
 The DECT radio band is divided into different channels, as described in chapter 5.2 of `ETSI TS 103 636-2`_.
+
 The absolute radio channel frequency used for transmission is controlled by the :c:member:`nrf_modem_dect_phy_tx_params.carrier` field on the transmission parameters.
+
+.. note::
+   DECT NR+ band 4 is supported by the nRF9151 LACA A0 SiP for R&D evaluation purposes.
+
+   The nRF9151 LACA A0AB SiP will be qualified for DECT NR+ band 4 support.
 
 .. important::
    Follow the local regulations when transmitting.
@@ -188,6 +203,7 @@ The absolute radio channel frequency used for transmission is controlled by the 
    * In the USA, you must refer to `47 CFR Part 15.323`_.
    * In all other territories, you must follow the local regulations.
 
+   When operating on band 4, you must not use the carries outside the range of 525 to 551 as they interfere with other radio devices, including LTE devices.
 
 Transmission length
 -------------------
