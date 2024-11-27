@@ -16,6 +16,8 @@ Bug fixes
 =========
 
 * Fixed an issue where the CIS central running on an nRF53 Series device could set an invalid MIC when sending encrypted ISO packets. (DRGN-23776)
+* Fixed a rare issue where the scanner may give a single advertising report with corrupted data when restarting scanning.
+  The issue would only happen when the scanner received a long extended advertising packet that did not fit into a single advertising report and the scanning was stopped explicitly or through a timeout. (DRGN-23966)
 
 nRF Connect SDK v2.8.0
 **********************
