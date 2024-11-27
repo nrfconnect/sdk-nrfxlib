@@ -357,6 +357,20 @@ void nrf_rpc_set_bound_handler(nrf_rpc_group_bound_handler_t bound_handler);
  */
 int nrf_rpc_init(nrf_rpc_err_handler_t err_handler);
 
+/** @brief Initialize a single nRF RPC group
+ *
+ * Initialize a single nRF RPC group. It can be used to initialize all groups using this function
+ * and avoid calling nrf_rpc_init. It is also possible to initialize a subset of the groups and
+ * then call nrf_rpc_init.
+ * This function doesn't support providing an error handler, a default error handler will be used
+ * if an erorr occurs. If a custom error handler is needed, use nrf_rpc_init.
+ *
+ * @param group Group to initialize
+ *
+ * @return            0 on success or negative error code.
+ */
+int nrf_rpc_init_group(const struct nrf_rpc_group *group);
+
 /** @brief Send a command and provide callback to handle response.
  *
  * @param group        Group that command belongs to.
