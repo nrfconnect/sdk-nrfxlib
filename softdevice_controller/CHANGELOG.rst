@@ -12,12 +12,18 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Added
+=====
+
+* Production support for scanning and initiating at the same time. (DRGN-23824)
+
 Bug fixes
 =========
 
 * Fixed an issue where the CIS central running on an nRF53 Series device could set an invalid MIC when sending encrypted ISO packets. (DRGN-23776)
 * Fixed a rare issue where the scanner may give a single advertising report with corrupted data when restarting scanning.
   The issue would only happen when the scanner received a long extended advertising packet that did not fit into a single advertising report and the scanning was stopped explicitly or through a timeout. (DRGN-23966)
+* Fixed an issue where the CIS TX Power was set according to the LE Power Control state of the previous CIS in a CIG. (DRGN-21721)
 
 nRF Connect SDK v2.8.0
 **********************
