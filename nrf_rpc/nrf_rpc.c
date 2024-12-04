@@ -930,7 +930,7 @@ static void wait_for_response(const struct nrf_rpc_group *group, struct nrf_rpc_
 }
 
 int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
-			uint8_t *packet, size_t len, void *ptr1, void *ptr2)
+			uint8_t *packet, size_t len, uintptr_t ptr1, void *ptr2)
 {
 	int err;
 	struct header hdr;
@@ -946,16 +946,16 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 	NRF_RPC_ASSERT(group != NULL);
 	NRF_RPC_ASSERT((cmd & 0xFF) != NRF_RPC_ID_UNKNOWN);
 	NRF_RPC_ASSERT(packet_validate(packet));
-	NRF_RPC_ASSERT(ptr1 != NULL);
+	NRF_RPC_ASSERT(ptr1 != 0);
 
 	if (cmd & 0x10000) {
 		NRF_RPC_ASSERT(ptr2 != NULL);
-		rsp_packet = ptr1;
+		rsp_packet = (const uint8_t**)ptr1;
 		rsp_len = ptr2;
 		*rsp_packet = NULL;
 		*rsp_len = 0;
 	} else {
-		handler = ptr1;
+		handler = (nrf_rpc_handler_t)ptr1;
 		handler_data = ptr2;
 	}
 
@@ -991,7 +991,7 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 }
 
 void nrf_rpc_cmd_common_no_err(const struct nrf_rpc_group *group, uint32_t cmd,
-			       uint8_t *packet, size_t len, void *ptr1,
+			       uint8_t *packet, size_t len, uintptr_t ptr1,
 			       void *ptr2)
 {
 	int err;
