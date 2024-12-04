@@ -133,8 +133,17 @@ extern "C" {
 /** @brief Default ISO TX PDU buffer per stream count. */
 #define SDC_DEFAULT_ISO_TX_PDU_BUFFER_PER_STREAM_COUNT 0
 
-/** @brief Default maximum number of concurrent connections supporting CS procedure */
+/** @brief Default maximum number of concurrent connections supporting Channel Sounding procedure */
 #define SDC_DEFAULT_CS_COUNT 0
+
+/** @brief Default maximum number of antenna paths supported in Channel Sounding. */
+#define SDC_DEFAULT_CS_MAX_ANTENNA_PATHS_SUPPORTED 1
+
+/** @brief Default number of antennas supported by the local device in Channel Sounding. */
+#define SDC_DEFAULT_CS_NUM_ANTENNAS_SUPPORTED 1
+
+/** @brief Default optional support for Channel Sounding step mode-3. */
+#define SDC_DEFAULT_CS_STEP_MODE3_SUPPORTED false
 
 /** @brief Size of build revision array in bytes. */
 #define SDC_BUILD_REVISION_SIZE 20
@@ -414,6 +423,8 @@ enum sdc_cfg_type
     SDC_CFG_TYPE_ISO_BUFFER_CFG,
     /** See @ref sdc_cfg_t::cs_count. */
     SDC_CFG_TYPE_CS_COUNT,
+    /** See @ref sdc_cfg_t::cs_cfg. */
+    SDC_CFG_TYPE_CS_CFG,
 };
 
 
@@ -528,6 +539,27 @@ typedef struct
     uint16_t rx_sdu_buffer_size;
 } sdc_cfg_iso_buffer_cfg_t;
 
+
+typedef struct
+{
+    /** Configures the maximum number of antenna paths supported in Channel Sounding.
+     *  Valid range [1, 4].
+     *
+     *  Default: @ref SDC_DEFAULT_CS_MAX_ANTENNA_PATHS_SUPPORTED.
+     */
+    uint8_t max_antenna_paths_supported;
+    /** Configures the number of antennas supported by the local device in Channel Sounding.
+     *  Valid range [1, @ref max_antenna_paths_supported].
+     *
+     *  Default: @ref SDC_DEFAULT_CS_NUM_ANTENNAS_SUPPORTED.
+     */
+    uint8_t num_antennas_supported;
+    /** Configures support of optional step mode-3 in Channel Sounding.
+     *
+     *  Default: @ref SDC_DEFAULT_CS_STEP_MODE3_SUPPORTED.
+     */
+    bool step_mode3_supported;
+} sdc_cfg_cs_cfg_t;
 
 /** @brief SoftDevice Controller configuration.  */
 typedef union
@@ -662,6 +694,11 @@ typedef union
      * Default: @ref SDC_DEFAULT_CS_COUNT.
      */
     sdc_cfg_role_count_t cs_count;
+    /** Configures the capabilities enabled in the Channel Sounding feature.
+     *
+     *  Default: See @ref sdc_cfg_cs_cfg_t.
+     */
+    sdc_cfg_cs_cfg_t cs_cfg;
 } sdc_cfg_t;
 
 
