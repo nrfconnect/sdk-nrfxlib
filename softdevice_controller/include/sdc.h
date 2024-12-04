@@ -337,13 +337,13 @@ extern "C" {
  *
  * @param[in] count Maximum number of concurrent connections supporting CS procedure.
  */
-#define SDC_MEM_CS(count) ((count) > 0 ? (13 + (count) * 8912) : 0)
+#define SDC_MEM_CS(count) ((count) > 0 ? (13 + (count) * 8883) : 0)
 
 /** @brief Maximum additional memory required to support Channel Sounding setup phase procedures
  *
  * @param[in] count Total number of links (central + peripheral).
  */
-#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count)*326) : 0)
+#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count)*339) : 0)
 
 /** @} end of sdc_mem_defines */
 

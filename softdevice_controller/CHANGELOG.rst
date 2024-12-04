@@ -24,6 +24,7 @@ Bug fixes
 * Fixed a rare issue where the scanner may give a single advertising report with corrupted data when restarting scanning.
   The issue would only happen when the scanner received a long extended advertising packet that did not fit into a single advertising report and the scanning was stopped explicitly or through a timeout. (DRGN-23966)
 * Fixed an issue where the CIS TX Power was set according to the LE Power Control state of the previous CIS in a CIG. (DRGN-21721)
+* Fixed an issue where the BIS receiver running with FEM could enable the radio at the wrong time, causing the receiver to drop packets and lose sync. (DRGN-23891)
 
 nRF Connect SDK v2.8.0
 **********************
