@@ -212,7 +212,7 @@ extern "C" {
  * The DPPI channel that RADIO.CCAIDLE event publishes to
  */
 #ifndef NRF_802154_DPPI_RADIO_CCAIDLE
-#define NRF_802154_DPPI_RADIO_CCAIDLE 9U
+#define NRF_802154_DPPI_RADIO_CCAIDLE 14U
 #endif
 
 /**
