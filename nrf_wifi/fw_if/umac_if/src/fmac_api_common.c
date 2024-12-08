@@ -842,7 +842,7 @@ enum nrf_wifi_status nrf_wifi_fmac_set_reg(struct nrf_wifi_fmac_dev_ctx *fmac_de
 
 	if (!fmac_dev_ctx->reg_set_status) {
 		nrf_wifi_osal_log_err(fmac_dev_ctx->fpriv->opriv,
-				      "%s: Failed to set regulatory information",
+				      "%s: Failed to set regulatory information: timedout",
 				      __func__);
 		status = NRF_WIFI_STATUS_FAIL;
 		goto out;

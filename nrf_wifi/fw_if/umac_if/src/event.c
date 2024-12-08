@@ -201,7 +201,7 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 
 	switch (umac_hdr->cmd_evnt) {
 	case NRF_WIFI_UMAC_EVENT_GET_REG:
-#ifdef CONFIG_NRF700X_STA_MODE
+#ifndef CONFIG_NRF700X_RADIO_TEST
 		if (callbk_fns->event_get_reg)
 			callbk_fns->event_get_reg(vif_ctx->os_vif_ctx,
 						      event_data,
@@ -211,8 +211,7 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 					      "%s: No callback registered for event %d",
 					      __func__,
 					      umac_hdr->cmd_evnt);
-#endif /* CONFIG_NRF700X_STA_MODE */
-#ifdef CONFIG_NRF700X_RADIO_TEST
+#else
 		get_reg_event = (struct nrf_wifi_reg *)event_data;
 
 		nrf_wifi_osal_mem_cpy(fmac_dev_ctx->fpriv->opriv,
@@ -223,7 +222,7 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 #endif /* CONFIG_NRF700X_RADIO_TEST */
 		break;
 	case NRF_WIFI_UMAC_EVENT_REG_CHANGE:
-#ifdef CONFIG_NRF700X_STA_MODE
+#ifndef CONFIG_NRF700X_RADIO_TEST
 		if (callbk_fns->reg_change_callbk_fn)
 			callbk_fns->reg_change_callbk_fn(vif_ctx->os_vif_ctx,
 							 event_data,
@@ -233,8 +232,7 @@ static enum nrf_wifi_status umac_event_ctrl_process(struct nrf_wifi_fmac_dev_ctx
 					      "%s: No callback registered for event %d",
 					      __func__,
 					      umac_hdr->cmd_evnt);
-#endif /* CONFIG_NRF700X_STA_MODE */
-#ifdef CONFIG_NRF700X_RADIO_TEST
+#else
 		reg_change_event = (struct nrf_wifi_event_regulatory_change *)event_data;
 
 		fmac_dev_ctx->reg_change = nrf_wifi_osal_mem_zalloc(fmac_dev_ctx->fpriv->opriv,
