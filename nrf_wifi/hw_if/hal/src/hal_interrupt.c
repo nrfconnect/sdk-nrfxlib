@@ -506,6 +506,11 @@ static enum nrf_wifi_status hal_rpu_process_wdog(struct nrf_wifi_hal_dev_ctx *ha
 	unsigned long flags = 0;
 #endif
 
+	/* NCS 2.7.0 doesn't have proper recovery mechanism for RPU, so
+	 * ignore the watchdog interrupt.
+	 */
+	return 0;
+
 	nrf_wifi_osal_log_dbg(hal_dev_ctx->hpriv->opriv,
 			      "Processing watchdog interrupt");
 
