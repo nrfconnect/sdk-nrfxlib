@@ -712,8 +712,10 @@ typedef struct zb_nib_s
 
 #ifdef ZB_ROUTER_ROLE
   zb_uint8_t     max_children;           /*!< The number of children a device is allowed to have */
+#ifdef ZB_COUNT_CHILDREN
   zb_uint8_t     router_child_num;       /*!< Number of child devices with router capability */
   zb_uint8_t     ed_child_num;           /*!< Number of child ed devices */
+#endif
 #endif
 
 #if defined ZB_NWK_DISTRIBUTED_ADDRESS_ASSIGN && defined ZB_ROUTER_ROLE

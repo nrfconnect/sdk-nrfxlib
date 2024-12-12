@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -570,7 +570,11 @@ static zb_uint8_t zdo_classic_get_permit_join_duration(void)
 {
   zb_uint8_t duration;
 
-  if (ZB_NIB().max_children != 0U)
+  if ((ZB_NIB().max_children != 0U)
+#ifdef ZB_CERTIFICATION_HACKS
+      && (ZB_CERT_HACKS().max_joins != 0U)
+#endif /* ZB_CERTIFICATION_HACKS */
+    )
   {
     duration = ZDO_CTX().conf_attr.permit_join_duration;
   }
