@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -222,6 +222,7 @@ typedef zb_uint8_t zb_zdp_status_t;
  *
  * Status codes:
  *  - RET_OK: Device started after the NVRAM erase
+ *  - RET_INTERRUPTED: The operation was cancelled with zb_bdb_reset_via_local_action()
  *  - RET_ERROR: An error of any type.
  *
  * Signal parameters:
@@ -241,6 +242,7 @@ typedef zb_uint8_t zb_zdp_status_t;
  *
  * Status codes:
  *  - RET_OK: Device started using configuration stored in NVRAM
+ *  - RET_INTERRUPTED: The operation was cancelled with zb_bdb_reset_via_local_action()
  *  - RET_ERROR: An error of any type.
  *
  * Signal parameters:
@@ -303,6 +305,7 @@ typedef zb_uint8_t zb_zdp_status_t;
  *    2. No touchlink commissioning cluster scan response inter-PAN commands were received with the
  *       inter-PAN transaction identifier field equal to that used by the initiator in its scan request
  *       command.
+ *  - RET_INTERRUPTED: The operation was cancelled with zb_bdb_reset_via_local_action()
  *
  * Signal parameters:
  *  - none
@@ -321,6 +324,7 @@ typedef zb_uint8_t zb_zdp_status_t;
  * Status codes:
  *  - RET_OK: Network steering completed.
  *  - RET_INTERRUPTED: was cancelled with bdb_cancel_joining()
+ *    or with zb_bdb_reset_via_local_action()
  *
  * Has additional data of type zb_zdo_signal_leave_indication_params_t.
  *
@@ -338,6 +342,7 @@ typedef zb_uint8_t zb_zdp_status_t;
  * Status codes:
  *  - RET_OK: Network formation completed.
  *  - RET_INTERRUPTED: was cancelled with bdb_cancel_formation()
+ *    or with zb_bdb_reset_via_local_action()
  *
  * Signal parameters:
  *  - none
@@ -381,6 +386,10 @@ typedef zb_uint8_t zb_zdp_status_t;
  * @parblock
  * When generated:
  *  - Touchlink procedure started on the Target device.
+ * 
+ * Status codes:
+ *  - RET_OK: Procedure started on the Target device
+ *  - RET_INTERRUPTED: The operation was cancelled with zb_bdb_reset_via_local_action()
  *
  * Signal parameters:
  *  - none
@@ -394,7 +403,7 @@ typedef zb_uint8_t zb_zdp_status_t;
  *
  * Status codes:
  *  - RET_OK: Touchlink network started successfully.
- *  - Does not return error status.
+ *  - RET_INTERRUPTED: The operation was cancelled with zb_bdb_reset_via_local_action()
  *
  * Signal parameters:
  *  - none
@@ -2485,7 +2494,7 @@ typedef ZB_PACKED_PRE struct zb_zdo_mgmt_leave_req_s
 {
   zb_ieee_addr_t device_address;   /*!< 64-bit IEEE address */
   zb_bitfield_t reserved:6;        /*!< Reserve */
-  zb_bitfield_t remove_children:1; /*!< Remove children */
+  zb_bitfield_t remove_children:1;   /*!< Obsolete field, should be always 0 according to CSA */
   zb_bitfield_t rejoin:1;          /*!< Rejoin */
 }
 ZB_PACKED_STRUCT
