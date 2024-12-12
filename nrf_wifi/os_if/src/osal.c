@@ -922,3 +922,8 @@ unsigned int nrf_wifi_osal_strlen(struct nrf_wifi_osal_priv *opriv,
 {
 	return opriv->ops->strlen(str);
 }
+
+unsigned char nrf_wifi_osal_rand8_get(struct nrf_wifi_osal_priv *opriv)
+{
+	return opriv->ops->rand8_get();
+}

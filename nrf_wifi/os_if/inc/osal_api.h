@@ -1609,4 +1609,15 @@ int nrf_wifi_osal_mem_cmp(struct nrf_wifi_osal_priv *opriv,
 			  const void *addr1,
 			  const void *addr2,
 			  size_t count);
+
+/**
+ * nrf_wifi_osal_rand8_get() - Get a random 8 bit number.
+ * @opriv: Pointer to the OSAL context returned by the @nrf_wifi_osal_init API.
+ *
+ * Generates an 8 bit random number.
+ *
+ * Return:
+ * 			returns an 8 bit random number.
+ */
+unsigned char nrf_wifi_osal_rand8_get(struct nrf_wifi_osal_priv *opriv);
 #endif /* __OSAL_API_H__ */

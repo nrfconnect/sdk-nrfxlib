@@ -336,6 +336,7 @@ struct nrf_wifi_osal_ops {
 		       char *assert_msg);
 
 	unsigned int (*strlen)(const void *str);
+	unsigned char (*rand8_get)(void);
 };
 
 
