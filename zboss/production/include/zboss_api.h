@@ -527,12 +527,12 @@ zb_ret_t zb_set_tx_power(zb_uint8_t tx_power);
  */
 typedef struct zb_tx_power_params_s
 {
-  zb_ret_t status;    /*!< Status of the operation. Can be RET_OK, RET_UNINITIALIZED or one of 
+  zb_ret_t status;    /*!< Status of the operation. Can be RET_OK, RET_UNINITIALIZED or one of
                             RET_INVALID_PARAMETET_1, RET_INVALID_PARAMETET_2 or RET_INVALID_PARAMETET_3
                             for the following three fields respectively. */
   zb_uint8_t page;    /*!< Page number. Should be provided by the application. */
   zb_uint8_t channel; /*!< Channel number on a given page. Should be provided by the application. */
-  zb_int8_t tx_power; /*!< Transceiver power for a given page and channel. 
+  zb_int8_t tx_power; /*!< Transceiver power for a given page and channel.
                             Should be provided by the application in case of setting the power */
   zb_callback_t cb;   /*!< Callback function to be called after the function finishes. Should be provided by the application. */
 } zb_tx_power_params_t;
@@ -540,21 +540,21 @@ typedef struct zb_tx_power_params_s
 
 /**
  * @brief Get transceiver power for given page and channel asynchronously.
- * 
- * This function requires param to contain @ref zb_tx_power_params_t. 
+ *
+ * This function requires param to contain @ref zb_tx_power_params_t.
  * Will return status RET_UNINITIALIZED if the channel/page storage hasn't been initialized yet.
- * 
+ *
  * @param param - buffer, containing @ref zb_tx_power_params_t.
 */
 void zb_get_tx_power_async(zb_bufid_t param);
 
 /**
  * @brief Set transceiver power to a given value on a given page and channel asynchronously.
- * 
- * This function requires param to contain @ref zb_tx_power_params_t. 
- * If the power change is for the current channel, the function will attempt to change power immediately, 
+ *
+ * This function requires param to contain @ref zb_tx_power_params_t.
+ * If the power change is for the current channel, the function will attempt to change power immediately,
  *  otherwise it will save the change until channel switch.
- * 
+ *
  * @param param - buffer, containing @ref zb_tx_power_params_t.
 */
 void zb_set_tx_power_async(zb_bufid_t param);

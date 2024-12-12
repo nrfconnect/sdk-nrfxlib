@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2021 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -645,7 +645,16 @@ void zb_zdo_do_set_channel(zb_uint8_t channel);
 
 void zb_zdo_mgmt_permit_joining_confirm_handle(zb_uint8_t param);
 
-#endif
+#ifdef ZB_CERTIFICATION_HACKS
+/* ZB_UINT8_MAX used as a special value
+  (this value forces stack to not consider this value at all)
+*/
+void zb_set_max_joins(zb_uint8_t max_joins);
+
+zb_uint8_t zb_get_max_joins(void);
+
+#endif /* ZB_CERTIFICATION_HACKS */
+#endif /* ZB_ROUTER_ROLE */
 
 #ifndef ZB_LITE_NO_ZDO_RESPONSE_VALIDATION
 zb_bool_t zb_zdo_validate_reponse(zb_bufid_t buf, zb_uint16_t cluster_id);

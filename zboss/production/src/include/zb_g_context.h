@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -552,10 +552,15 @@ typedef struct zb_cert_hacks_s
   zb_bitfield_t tc_rejoin_aps_decrypt_error:1; /* Simulate TC rejoin without known aps key */
   zb_ieee_addr_t nwk_leave_from_unknown_ieee_addr; /*!< IEEE source address used in nwk_leave if `nwk_leave_from_unknown_addr` is set */
   zb_uint16_t nwk_leave_from_unknown_short_addr; /*!< Short source address used in nwk_leave if `nwk_leave_from_unknown_addr` is set */
+  zb_uint8_t joins_ctr; /*!< count of joins to our device */
+  zb_uint8_t max_joins; /*!< max number of successful joins */
 } zb_cert_hacks_t;
 
 #define ZB_CERT_HACKS() ZG->cert_hacks
-#endif
+
+/* Value that means that ZB_CERT_HACKS().max_joins is uninitialized */
+#define ZB_MAX_JOINS_UNINITIALIZED ZB_UINT8_MAX
+#endif /* ZB_CERTIFICATION_HACKS */
 
 #ifdef ZB_STACK_REGRESSION_TESTING_API
 

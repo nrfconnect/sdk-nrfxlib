@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -88,11 +88,18 @@ static void nwk_cancel_network_discovery_response(zb_bufid_t buf);
 zb_bool_t bdb_not_ever_joined()
 {
   zb_ext_pan_id_t curr_ext_pan_id = {0};
+  zb_bool_t ret;
   zb_get_extended_pan_id(curr_ext_pan_id);
 
-  return (zb_bool_t)(ZB_EXTPANID_IS_ZERO(curr_ext_pan_id)
-                     && !zb_zdo_authenticated()
-                     && !zb_zdo_tclk_valid());
+  ret = ZB_EXTPANID_IS_ZERO(curr_ext_pan_id)
+                && !zb_zdo_authenticated();
+
+  if (!ZB_IS_DEVICE_ZC())
+  {
+    ret = ret && !zb_zdo_tclk_valid();
+  }
+
+  return ret;
 }
 
 
@@ -251,7 +258,7 @@ zb_bool_t bdb_joined(void)
   joined = (zb_bool_t)(!ZB_EXTPANID_IS_ZERO(ext_pan_id) &&
                        zb_zdo_authenticated());
 
-  if (zb_aib_get_coordinator_version() >= 21)
+  if (!ZB_IS_DEVICE_ZC() && zb_aib_get_coordinator_version() >= 21)
   {
     joined = (zb_bool_t)(joined && zb_zdo_tclk_valid());
   }
@@ -342,13 +349,25 @@ void bdb_preinit(void)
 
   bdb_init_channel_sets();
 
-  TRACE_MSG(TRACE_INFO1, "dev type %hd, joined %hd, ext_pan_id %hd, authenticated %hd, tclk_valid %hd",
+  if (ZB_IS_DEVICE_ZC())
+  {
+    TRACE_MSG(TRACE_INFO1, "dev type %hd, joined %hd, ext_pan_id %hd, authenticated %hd",
+            (FMT__H_H_H_H_H,
+             zb_get_device_type(),
+             joined,
+             !ZB_EXTPANID_IS_ZERO(ext_pan_id),
+             zb_zdo_authenticated()));
+  }
+  else
+  {
+    TRACE_MSG(TRACE_INFO1, "dev type %hd, joined %hd, ext_pan_id %hd, authenticated %hd, tclk_valid %hd",
             (FMT__H_H_H_H_H,
              zb_get_device_type(),
              joined,
              !ZB_EXTPANID_IS_ZERO(ext_pan_id),
              zb_zdo_authenticated(),
              zb_zdo_tclk_valid()));
+  }
 }
 
 
@@ -407,7 +426,7 @@ void bdb_initialization_procedure(zb_uint8_t param)
   }
   else if (!ZB_EXTPANID_IS_ZERO(ext_pan_id)
            && ((zb_aib_get_coordinator_version() < 21) ||
-               ((zb_aib_get_coordinator_version() >= 21) && zb_zdo_tclk_valid())))
+               ((zb_aib_get_coordinator_version() >= 21) && !ZB_IS_DEVICE_ZC() && zb_zdo_tclk_valid())))
   {
     /* Perform TC rejoin */
     TRACE_MSG(TRACE_ERROR, "Perform TC rejoin", (FMT__0));
@@ -903,6 +922,12 @@ static void bdb_touchlink_machine(zb_uint8_t param)
     }
     break;
 #endif /* ZB_BDB_TOUCHLINK */
+    case BDB_COMM_SIGNAL_LEAVE_DONE:
+      TRACE_MSG(TRACE_ZDO1, "BDB_COMM_SIGNAL_LEAVE_DONE, finishing", (FMT__0));
+      ZB_BDB().bdb_commissioning_status = ZB_BDB_STATUS_CANCELLED;
+      bdb_commissioning_signal(BDB_COMM_SIGNAL_TOUCHLINK_FINISH, param);
+      break;
+
     case BDB_COMM_SIGNAL_TOUCHLINK_FINISH:
       if (ZB_BDB().bdb_commissioning_status != ZB_BDB_STATUS_IN_PROGRESS)
       {
@@ -1320,10 +1345,19 @@ static void bdb_network_steering_machine(zb_uint8_t param)
       break;
 
     case BDB_COMM_SIGNAL_LEAVE_DONE:
+      TRACE_MSG(TRACE_ZDO1, "BDB_COMM_SIGNAL_LEAVE_DONE, status %hd", (FMT__H, ZB_BDB().bdb_commissioning_status));
       if (ZB_BDB().bdb_commissioning_status != ZB_BDB_STATUS_NO_NETWORK)
       {
         /* Probably bdb device failed to update tclk exchange */
         bdb_commissioning_signal(BDB_COMM_SIGNAL_NETWORK_STEERING_FINISH, param);
+
+        /* We can be here with status ZB_BDB_STATUS_IN_PROGRESS after calling the function 
+         * zb_bdb_reset_via_local_action on the application. In this case, we should change 
+         * the comm status for the correct return code when commissioning is complete. */
+        if (ZB_BDB().bdb_commissioning_status == ZB_BDB_STATUS_IN_PROGRESS)
+        {
+          ZB_BDB().bdb_commissioning_status = ZB_BDB_STATUS_CANCELLED;
+        }
       }
       else
       {
@@ -1431,6 +1465,12 @@ static void bdb_network_formation_machine(zb_uint8_t param)
 
     case BDB_COMM_SIGNAL_NWK_FORMATION_OK:
       TRACE_MSG(TRACE_ZDO1, "Network is successfully formed", (FMT__0));
+      bdb_commissioning_signal(BDB_COMM_SIGNAL_NETWORK_FORMATION_FINISH, param);
+      break;
+    
+    case BDB_COMM_SIGNAL_LEAVE_DONE:
+      TRACE_MSG(TRACE_ZDO1, "BDB_COMM_SIGNAL_LEAVE_DONE, finishing", (FMT__0));
+      ZB_BDB().bdb_commissioning_status = ZB_BDB_STATUS_CANCELLED;
       bdb_commissioning_signal(BDB_COMM_SIGNAL_NETWORK_FORMATION_FINISH, param);
       break;
 
@@ -2418,7 +2458,7 @@ void zb_bdb_initiate_tc_rejoin(zb_uint8_t param)
 
   TRACE_MSG(TRACE_ZDO1, ">> zb_bdb_initiate_tc_rejoin, param %hd", (FMT__H, param));
 
-  if ((!zb_zdo_tclk_valid() || (zb_aib_get_coordinator_version() < 21))
+  if (((!ZB_IS_DEVICE_ZC() && !zb_zdo_tclk_valid()) || (zb_aib_get_coordinator_version() < 21))
         && !zb_aib_tcpol_get_allow_unsecure_tc_rejoins())
   {
     TRACE_MSG(TRACE_ERROR, "TC rejoin is not allowed", (FMT__0));
