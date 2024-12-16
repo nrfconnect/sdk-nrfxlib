@@ -249,6 +249,8 @@ enum sdc_hci_opcode_le
     SDC_HCI_OPCODE_CMD_LE_SET_DEFAULT_SUBRATE = 0x207d,
     /** @brief See @ref sdc_hci_cmd_le_subrate_request(). */
     SDC_HCI_OPCODE_CMD_LE_SUBRATE_REQUEST = 0x207e,
+    /** @brief See @ref sdc_hci_cmd_le_set_ext_adv_params_v2(). */
+    SDC_HCI_OPCODE_CMD_LE_SET_EXT_ADV_PARAMS_V2 = 0x207f,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_subevent_data(). */
     SDC_HCI_OPCODE_CMD_LE_SET_PERIODIC_ADV_SUBEVENT_DATA = 0x2082,
     /** @brief See @ref sdc_hci_cmd_le_set_periodic_adv_response_data(). */
@@ -2282,6 +2284,37 @@ typedef struct __PACKED __ALIGN(1)
     uint16_t continuation_number;
     uint16_t supervision_timeout;
 } sdc_hci_cmd_le_subrate_request_t;
+
+/** @brief LE Set Extended Advertising Parameters [v2] command parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    uint8_t adv_handle;
+    union __PACKED __ALIGN(1) {
+        sdc_hci_le_adv_event_properties_params_t params;
+        uint8_t raw[2];
+    } adv_event_properties;
+    uint32_t primary_adv_interval_min : 24;
+    uint32_t primary_adv_interval_max : 24;
+    uint8_t primary_adv_channel_map;
+    uint8_t own_address_type;
+    uint8_t peer_address_type;
+    uint8_t peer_address[6];
+    uint8_t adv_filter_policy;
+    int8_t adv_tx_power;
+    uint8_t primary_adv_phy;
+    uint8_t secondary_adv_max_skip;
+    uint8_t secondary_adv_phy;
+    uint8_t adv_sid;
+    uint8_t scan_request_notification_enable;
+    uint8_t primary_adv_phy_options;
+    uint8_t secondary_adv_phy_options;
+} sdc_hci_cmd_le_set_ext_adv_params_v2_t;
+
+/** @brief LE Set Extended Advertising Parameters [v2] return parameter(s). */
+typedef struct __PACKED __ALIGN(1)
+{
+    int8_t selected_tx_power;
+} sdc_hci_cmd_le_set_ext_adv_params_v2_return_t;
 
 /** @brief LE Set Periodic Advertising Subevent Data command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -7865,6 +7898,193 @@ uint8_t sdc_hci_cmd_le_set_default_subrate(const sdc_hci_cmd_le_set_default_subr
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_le_subrate_request(const sdc_hci_cmd_le_subrate_request_t * p_params);
+
+/** @brief LE Set Extended Advertising Parameters [v2].
+ *
+ * The description below is extracted from Core_v6.0,
+ * Vol 4, Part E, Section 7.8.53
+ *
+ * The HCI_LE_Set_Extended_Advertising_Parameters command is used by the Host to
+ * set the advertising parameters.
+ * The Advertising_Handle parameter identifies the advertising set whose parameters are
+ * being configured.
+ *
+ * The Advertising_Event_Properties parameter describes the type of advertising event
+ * that is being configured and its basic properties. The type shall be one supported by the
+ * Controller. In particular, the following restrictions apply to this parameter:
+ *
+ * • If legacy advertising PDU types are being used, then the parameter value shall be
+ * one of those specified in Table 7.3. If the advertising set already contains data, the
+ * type shall be one that supports advertising data and the amount of data shall not
+ * exceed 31 octets.
+ *
+ *                                                            Advertising
+ *                                                            Event         Advertising
+ *  Event Type                      PDU Type                  Properties    Data
+ *
+ *  Connectable and scannable       ADV_IND                   0b00010011    Supported
+ *  undirected
+ *
+ *  Connectable directed            ADV_DIRECT_IND            0b00010101    Not allowed
+ *  (low duty cycle)
+ *
+ *  Connectable directed            ADV_DIRECT_IND            0b00011101    Not allowed
+ *  (high duty cycle)
+ *
+ *  Scannable undirected            ADV_SCAN_IND              0b00010010    Supported
+ *
+ *  Non-connectable and non-        ADV_NONCONN_IND           0b00010000    Supported
+ *  scannable undirected
+ *
+ * Table 7.3: Advertising_Event_Properties values for legacy PDUs
+ *
+ * • If extended advertising PDU types are being used (bit 4 = 0), then the advertisement
+ *   shall not be both connectable and scannable (bits 0 and 1 must not both be set to 1)
+ *   and high duty cycle directed connectable advertising (≤ 3.75 ms advertising interval)
+ *   shall not be used (bit 3 = 0).
+ *
+ * If the Advertising_Event_Properties parameter does not describe an event type
+ * supported by the Controller, contains an invalid bit combination, or specifies a type
+ * that does not support advertising data when the advertising set already contains some,
+ * the Controller shall return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * The Own_Address_Type parameter shall be ignored for undirected anonymous
+ * advertising (bit 2 = 0 and bit 5 = 1).
+ *
+ * If Directed advertising is selected, the Peer_Address_Type and Peer_Address shall be
+ * valid and the Advertising_Filter_Policy parameter shall be ignored.
+ *
+ * The Primary_Advertising_Interval_Min parameter shall be less than or equal to the
+ * Primary_Advertising_Interval_Max parameter. The Primary_Advertising_Interval_Min
+ * and Primary_Advertising_Interval_Max parameters should not be the same value so
+ * that the Controller can choose the best advertising interval given other activities.
+ *
+ * For high duty cycle connectable directed advertising event type (ADV_DIRECT_IND),
+ * the Primary_Advertising_Interval_Min and Primary_Advertising_Interval_Max
+ * parameters are not used and shall be ignored.
+ *
+ * If the primary advertising interval range provided by the Host
+ * (Primary_Advertising_Interval_Min, Primary_Advertising_Interval_Max) does not
+ * overlap with the advertising interval range supported by the Controller, then the
+ * Controller shall return the error code Unsupported Feature or Parameter Value (0x11).
+ *
+ * The Primary_Advertising_Channel_Map is a bit field that indicates the advertising
+ * channel indices that shall be used when transmitting advertising packets. At least one
+ * channel bit shall be set in the Primary_Advertising_Channel_Map parameter.
+ *
+ * The Own_Address_Type parameter specifies the type of address being used in
+ * the advertising packets. For random addresses, the address is specified by the
+ * HCI_LE_Set_Advertising_Set_Random_Address command.
+ *
+ * If Own_Address_Type equals 0x02 or 0x03, the Peer_Address parameter contains
+ * the peer’s Identity Address and the Peer_Address_Type parameter contains the
+ * peer’s Identity Type (i.e., 0x00 or 0x01). These parameters are used to locate the
+ * corresponding local IRK in the resolving list; this IRK is used to generate their own
+ * address used in the advertisement.
+ *
+ * The Advertising_TX_Power parameter indicates the maximum power level at which the
+ * advertising packets are to be transmitted on the advertising physical channels. The
+ * Controller shall choose a power level lower than or equal to the one specified by the
+ * Host.
+ *
+ * The Primary_Advertising_PHY parameter indicates the PHY on which the advertising
+ * packets are transmitted on the primary advertising physical channel. If legacy
+ * advertising PDUs are being used, the Primary_Advertising_PHY shall indicate the LE
+ * 1M PHY. The Secondary_Advertising_PHY parameter indicates the PHY on which the
+ * advertising packets are be transmitted on the secondary advertising physical channel.
+ * If the Host specifies a PHY that is not supported by the Controller, including a value
+ * that is reserved for future use, it should return the error code Unsupported Feature or
+ * Parameter Value (0x11). If Constant Tone Extensions are enabled for the advertising set
+ * and Secondary_Advertising_PHY specifies a PHY that does not allow Constant Tone
+ * Extensions, the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Primary_Advertising_PHY indicates the LE Coded PHY, then the
+ * Primary_Advertising_PHY_Options shall indicate the Host's preference or requirement
+ * concerning coding scheme. Otherwise, Primary_Advertising_PHY_Options shall
+ * be ignored. If the Secondary_Advertising_PHY indicates the LE Coded PHY,
+ * then the Secondary_Advertising_PHY_Options shall indicate the Host's preference
+ * or requirement concerning coding scheme (including for periodic advertising).
+ * Otherwise, Secondary_Advertising_PHY_Options shall be ignored. If the Host
+ * specifies that it requires a specific coding (i.e., value 0x03 or 0x04) in the
+ * Primary_Advertising_PHY_Options or Secondary_Advertising_PHY_Options and the
+ * Controller supports the LE Feature (Advertising Coding Selection) but is currently
+ * unable to provide all the required settings, then the Controller shall return the error
+ * code Command Disallowed (0x0C).
+ *
+ * The Secondary_Advertising_Max_Skip parameter is the maximum number of
+ * advertising events that can be skipped before the AUX_ADV_IND can be sent.
+ *
+ * The Advertising_SID parameter specifies the value to be transmitted in the Advertising
+ * SID subfield of the ADI field of the Extended Header of those advertising physical
+ * channel PDUs that have an ADI field. If the advertising set only uses PDUs that do not
+ * contain an ADI field, Advertising_SID shall be ignored.
+ *
+ * The Scan_Request_Notification_Enable parameter indicates whether the Controller
+ * shall send notifications upon the receipt of a scan request PDU that is in response
+ * to an advertisement from the specified advertising set that contains its device address
+ * and is from a scanner that is allowed by the advertising filter policy.
+ *
+ * The Controller shall set the Selected_TX_Power parameter to the transmit power that
+ * it will use for transmitting the advertising packets for the specified advertising set. The
+ * Controller shall only change this value if requested by the Host. If the radiated power
+ * level will vary between packets (e.g., because of frequency-dependent properties of the
+ * transmitter) then the value should be the best estimate of the maximum power used.
+ *
+ * If the Host issues this command when advertising is enabled for the specified
+ * advertising set, the Controller shall return the error code Command Disallowed (0x0C).
+ *
+ * If the Host issues this command when periodic advertising is enabled for the specified
+ * advertising set and connectable, scannable, legacy, or anonymous advertising is
+ * specified, the Controller shall return the error code Invalid HCI Command Parameters
+ * (0x12).
+ *
+ * If periodic advertising is enabled for the advertising set and the
+ * Secondary_Advertising_PHY parameter does not specify the PHY currently being
+ * used for the periodic advertising, the Controller shall return the error code Command
+ * Disallowed (0x0C).
+ *
+ * If the Advertising_Handle does not identify an existing advertising set and the Controller
+ * is unable to support a new advertising set at present, the Controller shall return the error
+ * code Memory Capacity Exceeded (0x07).
+ *
+ * If the advertising set already contains advertising data or scan response data, extended
+ * advertising is being used, and the length of the data is greater than the maximum that
+ * the Controller can transmit within the longest possible auxiliary advertising segment
+ * consistent with the parameters, the Controller shall return the error code Packet Too
+ * Long (0x45). If advertising on the LE Coded PHY, the S=8 coding shall be assumed
+ * unless the current advertising parameters require the use of S=2 for an advertising
+ * physical channel, in which case the S=2 coding shall be assumed for that advertising
+ * physical channel.
+ *
+ * If the Controller does not support the LE Feature (Advertising Coding
+ * Selection) and the Host does not set both Primary_Advertising_PHY_Options and
+ * Secondary_Advertising_PHY_Options to zero, the Controller shall return the error code
+ * Unsupported Feature or Parameter Value (0x11).
+ *
+ * Missing parameters:
+ *
+ * When a version of this command is issued that does not include all the
+ * parameters, the following values shall be used:
+ *
+ *  Parameter                                        Value
+ *
+ *  Primary_Advertising_PHY_Options                 0x00
+ *
+ *  Secondary_Advertising_PHY_Options               0x00
+ *
+ * Event(s) generated (unless masked away):
+ * When the HCI_LE_Set_Extended_Advertising_Parameters command has
+ * completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_le_set_ext_adv_params_v2(const sdc_hci_cmd_le_set_ext_adv_params_v2_t * p_params,
+                                             sdc_hci_cmd_le_set_ext_adv_params_v2_return_t * p_return);
 
 /** @brief LE Set Periodic Advertising Subevent Data.
  *
