@@ -9,6 +9,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v2.9.0
+**********************
+
+Bug fixes
+=========
+* Fixed an issue where the functions :c:func:`mpsl_clock_hfclk_request` and :c:func:`mpsl_clock_hfclk_release` could end up not working after :c:func:`mpsl_uninit`
+  This could happen if LFRC was used as clock source (DRGN-23325)
+
 nRF Connect SDK v2.8.0
 **********************
 
