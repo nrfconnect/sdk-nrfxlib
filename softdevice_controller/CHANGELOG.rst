@@ -9,6 +9,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+Main branch
+***********
+
+Changes
+=======
+
+* The CIS or BIS sink now generate lost SDUs immediately when scheduling conflicts occur instead of after receiving the next valid SDU. (DRGN-24062)
+
 nRF Connect SDK v2.9.0
 **********************
 
@@ -16,6 +24,18 @@ Added
 =====
 
 * Production support for scanning and initiating at the same time. (DRGN-23824)
+* :ref:`Experimental <nrf:software_maturity>` support for Channel Sounding step mode-3.
+* :ref:`Experimental <nrf:software_maturity>` support for Channel Sounding multiple antenna elements.
+* :ref:`Experimental <nrf:software_maturity>` support for the following Channel Sounding HCI commands:
+
+    * LE CS Write Cached Remote Supported Capabilities
+    * LE CS Write Cached Remote FAE Table
+    * LE CS Remove Config
+
+Changes
+=======
+
+* The vendor-specific Set Connection Event Trigger HCI command has been removed. (DRGN-23981)
 
 Bug fixes
 =========
@@ -25,6 +45,7 @@ Bug fixes
   The issue would only happen when the scanner received a long extended advertising packet that did not fit into a single advertising report and the scanning was stopped explicitly or through a timeout. (DRGN-23966)
 * Fixed an issue where the CIS TX Power was set according to the LE Power Control state of the previous CIS in a CIG. (DRGN-21721)
 * Fixed an issue where the BIS receiver running with FEM could enable the radio at the wrong time, causing the receiver to drop packets and lose sync. (DRGN-23891)
+* Fixed an issue where the controller would raise Number Of Completed Packets events for a disconnected CIS. (DRGN-23869)
 
 nRF Connect SDK v2.8.0
 **********************
