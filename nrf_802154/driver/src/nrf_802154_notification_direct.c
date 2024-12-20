@@ -66,11 +66,7 @@ void nrf_802154_notify_received(uint8_t * p_data, int8_t power, uint8_t lqi)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
-#if NRF_802154_USE_RAW_API
     nrf_802154_co_received_raw(p_data, power, lqi);
-#else // NRF_802154_USE_RAW_API
-    nrf_802154_co_received(p_data + RAW_PAYLOAD_OFFSET, p_data[RAW_LENGTH_OFFSET], power, lqi);
-#endif  // NRF_802154_USE_RAW_API
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -97,17 +93,7 @@ void nrf_802154_notify_transmitted(uint8_t                             * p_frame
     nrf_802154_tx_work_buffer_original_frame_update(p_frame,
                                                     &p_metadata->frame_props);
     // Notify
-#if NRF_802154_USE_RAW_API
     nrf_802154_co_transmitted_raw(p_frame, p_metadata);
-#else // NRF_802154_USE_RAW_API
-    if (p_metadata->data.transmitted.p_ack != NULL)
-    {
-        p_metadata->data.transmitted.length = p_metadata->data.transmitted.p_ack[RAW_LENGTH_OFFSET];
-        p_metadata->data.transmitted.p_ack += RAW_PAYLOAD_OFFSET;
-    }
-
-    nrf_802154_transmitted(p_frame + RAW_PAYLOAD_OFFSET, p_metadata);
-#endif // NRF_802154_USE_RAW_API
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
@@ -119,11 +105,7 @@ void nrf_802154_notify_transmit_failed(uint8_t                                  
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
 
     // Notify
-#if NRF_802154_USE_RAW_API
     nrf_802154_co_transmit_failed(p_frame, error, p_metadata);
-#else // NRF_802154_USE_RAW_API
-    nrf_802154_co_transmit_failed(p_frame + RAW_PAYLOAD_OFFSET, error, p_metadata);
-#endif  // NRF_802154_USE_RAW_API
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }

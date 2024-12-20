@@ -10,6 +10,15 @@ Changelog
 All notable changes to this project are documented in this file.
 See also :ref:`nrf_802154_limitations` for permanent limitations.
 
+Main branch - nRF 802.15.4 Radio Driver
+***************************************
+
+Removed
+=======
+
+* Removed deprecated non-raw API that could be enabled by setting ``NRF_802154_USE_RAW_API=0``.
+  Only raw API is kept.
+
 nRF Connect SDK v2.9.0 - nRF 802.15.4 Radio Driver
 **************************************************
 

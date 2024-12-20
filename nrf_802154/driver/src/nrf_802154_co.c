@@ -79,8 +79,6 @@ void nrf_802154_co_tx_ack_started(const uint8_t * p_data)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
 
-#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
-
 #if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
 
 void nrf_802154_co_received_raw(uint8_t * p_data, int8_t power, uint8_t lqi)
@@ -92,29 +90,12 @@ void nrf_802154_co_received_raw(uint8_t * p_data, int8_t power, uint8_t lqi)
 
 #endif // !NRF_802154_SERIALIZATION_HOST
 
-#endif // NRF_802154_USE_RAW_API
-
-#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
-#if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
-
-void nrf_802154_co_received(uint8_t * p_data, uint8_t length, int8_t power, uint8_t lqi)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
-    nrf_802154_received(p_data, length, power, lqi);
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-}
-
-#endif // !NRF_802154_SERIALIZATION_HOST
-#endif // !NRF_802154_USE_RAW_API
-
 void nrf_802154_co_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
     nrf_802154_receive_failed(error, id);
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
-
-#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
 
 void nrf_802154_co_transmitted_raw(uint8_t                                   * p_frame,
                                    const nrf_802154_transmit_done_metadata_t * p_metadata)
@@ -123,20 +104,6 @@ void nrf_802154_co_transmitted_raw(uint8_t                                   * p
     nrf_802154_transmitted_raw(p_frame, p_metadata);
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
 }
-
-#endif // NRF_802154_USE_RAW_API
-
-#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
-
-void nrf_802154_co_transmitted(uint8_t                                   * p_frame,
-                               const nrf_802154_transmit_done_metadata_t * p_metadata)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
-    nrf_802154_transmitted(p_frame, p_metadata);
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-}
-
-#endif // !NRF_802154_USE_RAW_API
 
 void nrf_802154_co_transmit_failed(uint8_t                                   * p_frame,
                                    nrf_802154_tx_error_t                       error,

@@ -711,16 +711,9 @@ static void irq_handler_ntf_event(void)
         switch (p_slot->type)
         {
             case NTF_TYPE_RECEIVED:
-#if NRF_802154_USE_RAW_API
                 nrf_802154_co_received_raw(p_slot->data.received.p_data,
                                            p_slot->data.received.power,
                                            p_slot->data.received.lqi);
-#else // NRF_802154_USE_RAW_API
-                nrf_802154_co_received(p_slot->data.received.p_data + RAW_PAYLOAD_OFFSET,
-                                       p_slot->data.received.p_data[RAW_LENGTH_OFFSET],
-                                       p_slot->data.received.power,
-                                       p_slot->data.received.lqi);
-#endif
                 break;
 
             case NTF_TYPE_RECEIVE_FAILED:
@@ -729,34 +722,14 @@ static void irq_handler_ntf_event(void)
                 break;
 
             case NTF_TYPE_TRANSMITTED:
-            {
-#if NRF_802154_USE_RAW_API
                 nrf_802154_co_transmitted_raw(p_slot->data.transmitted.p_frame,
                                               &p_slot->data.transmitted.metadata);
-#else // NRF_802154_USE_RAW_API
-                if (p_slot->data.transmitted.metadata.data.transmitted.p_ack != NULL)
-                {
-                    p_slot->data.transmitted.metadata.data.transmitted.length =
-                        p_slot->data.transmitted.metadata.data.transmitted.p_ack[RAW_LENGTH_OFFSET];
-                    p_slot->data.transmitted.metadata.data.transmitted.p_ack += RAW_PAYLOAD_OFFSET;
-                }
-                nrf_802154_co_transmitted(p_slot->data.transmitted.p_frame + RAW_PAYLOAD_OFFSET,
-                                          &p_slot->data.transmitted.metadata);
-#endif
-            }
-            break;
+                break;
 
             case NTF_TYPE_TRANSMIT_FAILED:
-#if NRF_802154_USE_RAW_API
                 nrf_802154_co_transmit_failed(p_slot->data.transmit_failed.p_frame,
                                               p_slot->data.transmit_failed.error,
                                               &p_slot->data.transmit_failed.metadata);
-#else // NRF_802154_USE_RAW_API
-                nrf_802154_co_transmit_failed(
-                    p_slot->data.transmit_failed.p_frame + RAW_PAYLOAD_OFFSET,
-                    p_slot->data.transmit_failed.error,
-                    &p_slot->data.transmit_failed.metadata);
-#endif
                 break;
 
             case NTF_TYPE_ENERGY_DETECTED:
