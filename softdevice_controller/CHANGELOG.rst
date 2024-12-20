@@ -12,10 +12,24 @@ All the notable changes to this project are documented on this page.
 Main branch
 ***********
 
+Added
+=====
+
+* Support generating the HCI LE CIS Established v2 event. (DRGN-24112)
+* Support for the Advertising Coding Selection feature as an advertiser or scanner. (DRGN-23744)
+
+  * For an advertiser, this adds support for the LE Set Extended Advertising Parameters [v2] HCI command.
+  * For a scanner, the advertising reports will contain the coding scheme for packets received over LE Coded PHY when the host feature bit is enabled.
+
 Changes
 =======
 
 * The CIS or BIS sink now generate lost SDUs immediately when scheduling conflicts occur instead of after receiving the next valid SDU. (DRGN-24062)
+
+Bug fixes
+=========
+
+* Fixed an issue where ACL connections could not be created if a Periodic Advertiser was configured when the :kconfig:option:`CONFIG_BT_CTLR_SDC_PAWR_ADV` Kconfig option was selected. (DRGN-24148)
 
 nRF Connect SDK v2.9.0
 **********************
