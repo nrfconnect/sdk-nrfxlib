@@ -155,20 +155,6 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_USE_RAW_API
- *
- * When this flag is set, the RAW API is available for the MAC layer. It is recommended to use
- * the RAW API because it provides more optimized functions.
- *
- * @note If the RAW API is not enabled for the MAC layer, only less optimized functions performing
- *       copy are available.
- *
- */
-#ifndef NRF_802154_USE_RAW_API
-#define NRF_802154_USE_RAW_API 1
-#endif
-
-/**
  * @def NRF_802154_PENDING_SHORT_ADDRESSES
  *
  * The number of slots containing short addresses of nodes for which the pending data is stored.
@@ -225,11 +211,11 @@ extern "C" {
  * @def NRF_802154_FRAME_TIMESTAMP_ENABLED
  *
  * If timestamps are to be added to the frames received.
- * Enabling this feature enables the functions @ref nrf_802154_received_timestamp_raw,
- * @ref nrf_802154_received_timestamp which add timestamps to the frames received.
+ * Enabling this feature enables the function @ref nrf_802154_received_timestamp_raw,
+ * which add timestamps to the frames received.
  * Enables also proper value of frame timestamp
  * ( @c nrf_802154_transmit_done_metadata_t::data.transmitted.time ) passed as metadata to
- * @ref nrf_802154_transmitted and @ref nrf_802154_transmitted_raw,
+ * @ref nrf_802154_transmitted_raw .
  * This option also enables timestamping in stats.
  *
  */
