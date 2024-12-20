@@ -396,7 +396,7 @@ nrf_802154_sleep_error_t nrf_802154_sleep_if_idle(void);
  *
  * In the receive state, the radio receives frames and may automatically send ACK frames when
  * appropriate. The received frame is reported to the higher layer by a call to
- * @ref nrf_802154_received.
+ * @ref nrf_802154_received_raw or @ref nrf_802154_received_timestamp_raw .
  *
  * @retval  true   The radio enters the receive state.
  * @retval  false  The driver could not enter the receive state.
@@ -453,8 +453,6 @@ bool nrf_802154_receive_at(uint64_t rx_time,
  */
 bool nrf_802154_receive_at_cancel(uint32_t id);
 
-#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
-
 /**
  * @brief Changes the radio state to @ref RADIO_STATE_TX.
  *
@@ -464,8 +462,6 @@ bool nrf_802154_receive_at_cancel(uint32_t id);
  *
  * @note This function is implemented in zero-copy fashion. It passes the given buffer pointer to
  *       the RADIO peripheral.
- *
- * @note This function is available if @ref NRF_802154_USE_RAW_API is enabled.
  *
  * In the transmit state, the radio transmits a given frame. If requested, it waits for
  * an ACK frame. Depending on @ref NRF_802154_ACK_TIMEOUT_ENABLED, the radio driver automatically
@@ -501,63 +497,6 @@ bool nrf_802154_receive_at_cancel(uint32_t id);
  */
 bool nrf_802154_transmit_raw(uint8_t                              * p_data,
                              const nrf_802154_transmit_metadata_t * p_metadata);
-
-#endif // NRF_802154_USE_RAW_API
-
-#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
-#if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
-
-/**
- * @brief Changes the radio state to transmit.
- *
- * @note If the CPU is halted or interrupted while this function is executed,
- *       @ref nrf_802154_transmitted or @ref nrf_802154_transmit_failed must be called before this
- *       function returns a result.
- *
- * @note This function copies the given buffer. It maintains an internal buffer, which is used to
- *       make a frame copy. To prevent unnecessary memory consumption and to perform zero-copy
- *       transmission, use @ref nrf_802154_transmit_raw instead.
- *
- * @note This function is available if @ref NRF_802154_USE_RAW_API is disabled.
- *
- * In the transmit state, the radio transmits a given frame. If requested, it waits for
- * an ACK frame. Depending on @ref NRF_802154_ACK_TIMEOUT_ENABLED, the radio driver automatically
- * stops waiting for an ACK frame or waits indefinitely for an ACK frame. If it is configured to
- * wait, the MAC layer is responsible for calling @ref nrf_802154_receive or
- * @ref nrf_802154_sleep after the ACK timeout.
- * The transmission result is reported to the higher layer by calls to @ref nrf_802154_transmitted
- * or @ref nrf_802154_transmit_failed.
- *
- * @verbatim
- *       p_data
- *       v
- * +-----+-----------------------------------------------------------+------------+
- * | PHR | MAC header and payload                                    | FCS        |
- * +-----+-----------------------------------------------------------+------------+
- *       |                                                           |
- *       | <------------------ length -----------------------------> |
- * @endverbatim
- *
- * @param[in]  p_data      Pointer to the array with the payload of data to transmit. The array
- *                         should exclude PHR or FCS fields of the 802.15.4 frame.
- * @param[in]  length      Length of the given frame. This value must exclude PHR and FCS fields
- *                         from the given frame (exact size of buffer pointed to by @p p_data).
- * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
- *                         to transmit. If @c NULL following metadata are used:
- *                         Field           | Value
- *                         ----------------|-----------------------------------------------------
- *                         @c frame_props  | @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
- *                         @c cca          | @c true
- *
- * @retval  true   The transmission procedure was scheduled.
- * @retval  false  The driver could not schedule the transmission procedure.
- */
-bool nrf_802154_transmit(const uint8_t                        * p_data,
-                         uint8_t                                length,
-                         const nrf_802154_transmit_metadata_t * p_metadata);
-
-#endif // !NRF_802154_SERIALIZATION_HOST
-#endif // !NRF_802154_USE_RAW_API
 
 /**
  * @brief Requests transmission at the specified time.
@@ -719,15 +658,12 @@ bool nrf_802154_modulated_carrier(const uint8_t * p_data);
  * @{
  */
 
-#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
-
 /**
  * @brief Notifies the driver that the buffer containing the received frame is not used anymore.
  *
  * @note The buffer pointed to by @p p_data may be modified by this function.
  * @note This function can be safely called only from the main context. To free the buffer from
  *       a callback or the IRQ context, use @ref nrf_802154_buffer_free_immediately_raw.
- * @note This function is available if @ref NRF_802154_USE_RAW_API is enabled.
  *
  * @param[in]  p_data  Pointer to the buffer containing the received data that is no longer needed
  *                     by the higher layer.
@@ -742,7 +678,6 @@ void nrf_802154_buffer_free_raw(uint8_t * p_data);
  * @note This function can be safely called from any context. If the driver is busy processing
  *       a request called from a context with lower priority, this function returns false and
  *       the caller should free the buffer later.
- * @note This function is available if @ref NRF_802154_USE_RAW_API is enabled.
  *
  * @param[in]  p_data  Pointer to the buffer containing the received data that is no longer needed
  *                     by the higher layer.
@@ -752,44 +687,6 @@ void nrf_802154_buffer_free_raw(uint8_t * p_data);
  */
 bool nrf_802154_buffer_free_immediately_raw(uint8_t * p_data);
 #endif // !NRF_802154_SERIALIZATION_HOST
-
-#endif // NRF_802154_USE_RAW_API
-
-#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
-#if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
-
-/**
- * @brief Notifies the driver that the buffer containing the received frame is not used anymore.
- *
- * @note The buffer pointed to by @p p_data may be modified by this function.
- * @note This function can be safely called only from the main context. To free the buffer from
- *       a callback or IRQ context, use @ref nrf_802154_buffer_free_immediately.
- * @note This function is available if @ref NRF_802154_USE_RAW_API is disabled.
- *
- * @param[in]  p_data  Pointer to the buffer containing the received data that is no longer needed
- *                     by the higher layer.
- */
-void nrf_802154_buffer_free(uint8_t * p_data);
-
-/**
- * @brief Notifies the driver that the buffer containing the received frame is not used anymore.
- *
- * @note The buffer pointed to by @p p_data may be modified by this function.
- * @note This function can be safely called from any context. If the driver is busy processing
- *       a request called from a context with lower priority, this function returns false and
- *       the caller should free the buffer later.
- * @note This function is available if @ref NRF_802154_USE_RAW_API is disabled.
- *
- * @param[in]  p_data  Pointer to the buffer containing the received data that is no longer needed
- *                     by the higher layer.
- *
- * @retval true   Buffer was freed successfully.
- * @retval false  Buffer cannot be freed right now due to ongoing operation.
- */
-bool nrf_802154_buffer_free_immediately(uint8_t * p_data);
-
-#endif // !NRF_802154_SERIALIZATION_HOST
-#endif // !NRF_802154_USE_RAW_API
 
 /**
  * @}
@@ -869,7 +766,7 @@ bool nrf_802154_promiscuous_get(void);
  * after the ACK frame is transmitted.
  * If the auto ACK is disabled, the driver does not transmit ACK frames. It notifies the next higher
  * layer about the received frames when a frame is received. In this mode, the next higher layer is
- * responsible for sending the ACK frame. ACK frames should be sent using @ref nrf_802154_transmit.
+ * responsible for sending the ACK frame. ACK frames should be sent using @ref nrf_802154_transmit_raw.
  *
  * @param[in]  enabled  If the auto ACK should be enabled.
  */
@@ -1121,7 +1018,6 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg);
  * @{
  */
 #if NRF_802154_CSMA_CA_ENABLED || defined(DOXYGEN)
-#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
 
 /**
  * @brief Performs the CSMA-CA procedure and transmits a frame in case of success.
@@ -1136,8 +1032,7 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg);
  *       to time out waiting for the ACK frame. This timer can be started
  *       by @ref nrf_802154_tx_started. When the timer expires, the MAC layer is expected
  *       to call @ref nrf_802154_receive or @ref nrf_802154_sleep to stop waiting for the ACK frame.
- * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled and
- *       @ref NRF_802154_USE_RAW_API is enabled.
+ * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled.
  *
  * @param[in]  p_data      Pointer to the frame to transmit. See also @ref nrf_802154_transmit_raw.
  * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
@@ -1151,43 +1046,6 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg);
  */
 bool nrf_802154_transmit_csma_ca_raw(uint8_t                                      * p_data,
                                      const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
-
-#else // NRF_802154_USE_RAW_API
-
-#if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
-/**
- * @brief Performs the CSMA-CA procedure and transmits a frame in case of success.
- *
- * The end of the CSMA-CA procedure is notified by @ref nrf_802154_transmitted or
- * @ref nrf_802154_transmit_failed.
- *
- * @note The driver may be configured to automatically time out waiting for an ACK frame depending
- *       on @ref NRF_802154_ACK_TIMEOUT_ENABLED. If the automatic ACK timeout is disabled,
- *       the CSMA-CA procedure does not time out waiting for an ACK frame if a frame
- *       with the ACK request bit set was transmitted. The MAC layer is expected to manage the timer
- *       to time out waiting for the ACK frame. This timer can be started
- *       by @ref nrf_802154_tx_started. When the timer expires, the MAC layer is expected
- *       to call @ref nrf_802154_receive or @ref nrf_802154_sleep to stop waiting for the ACK frame.
- * @note This function is available if @ref NRF_802154_CSMA_CA_ENABLED is enabled and
- *       @ref NRF_802154_USE_RAW_API is disabled.
- *
- * @param[in]  p_data      Pointer to the frame to transmit. See also @ref nrf_802154_transmit.
- * @param[in]  length      Length of the given frame. See also @ref nrf_802154_transmit.
- * @param[in]  p_metadata  Pointer to metadata structure. Contains detailed properties of data
- *                         to transmit. If @c NULL following metadata are used:
- *                         Field           | Value
- *                         ----------------|-----------------------------------------------------
- *                         @c frame_props  | @ref NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT
- *
- * @retval  true   The chain of CSMA-CA and transmission procedure was scheduled.
- * @retval  false  The driver could not schedule the procedure chain.
- */
-bool nrf_802154_transmit_csma_ca(const uint8_t                                * p_data,
-                                 uint8_t                                        length,
-                                 const nrf_802154_transmit_csma_ca_metadata_t * p_metadata);
-#endif // !NRF_802154_SERIALIZATION_HOST
-
-#endif // NRF_802154_USE_RAW_API
 
 /**
  * @brief Sets the minimum value of the backoff exponent (BE) in the CSMA-CA algorithm.

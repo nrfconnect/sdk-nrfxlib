@@ -80,34 +80,15 @@
 #include "nrf_802154_sl_capabilities.h"
 #include "nrf_802154_sl_timer.h"
 
-#if !NRF_802154_USE_RAW_API || NRF_802154_CARRIER_FUNCTIONS_ENABLED
-/** Static transmit buffer used by @sa nrf_802154_transmit() family of functions.
+#if NRF_802154_CARRIER_FUNCTIONS_ENABLED
+/** Static transmit buffer used by @sa nrf_802154_modulated_carrier function.
  *
  * If none of functions using this buffer is called and link time optimization is enabled, this
  * buffer should be removed by linker.
  */
 static uint8_t m_tx_buffer[RAW_PAYLOAD_OFFSET + MAX_PACKET_SIZE];
 
-#endif // !NRF_802154_USE_RAW_API || NRF_802154_CARRIER_FUNCTIONS_ENABLED
-
-#if !NRF_802154_USE_RAW_API
-/**
- * @brief Fill transmit buffer with given data.
- *
- * @param[in]  p_data   Pointer to array containing payload of a data to transmit. The array
- *                      should exclude PHR or FCS fields of 802.15.4 frame.
- * @param[in]  length   Length of given frame. This value shall exclude PHR and FCS fields from
- *                      the given frame (exact size of buffer pointed by @p p_data).
- */
-static void tx_buffer_fill(const uint8_t * p_data, uint8_t length)
-{
-    NRF_802154_ASSERT(length <= MAX_PACKET_SIZE - FCS_SIZE);
-
-    m_tx_buffer[RAW_LENGTH_OFFSET] = length + FCS_SIZE;
-    memcpy(&m_tx_buffer[RAW_PAYLOAD_OFFSET], p_data, length);
-}
-
-#endif // !NRF_802154_USE_RAW_API
+#endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
 #if NRF_802154_CARRIER_FUNCTIONS_ENABLED
 /**
@@ -455,7 +436,6 @@ bool nrf_802154_receive(void)
     return result;
 }
 
-#if NRF_802154_USE_RAW_API
 bool nrf_802154_transmit_raw(uint8_t                              * p_data,
                              const nrf_802154_transmit_metadata_t * p_metadata)
 {
@@ -508,65 +488,6 @@ bool nrf_802154_transmit_raw(uint8_t                              * p_data,
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;
 }
-
-#else // NRF_802154_USE_RAW_API
-
-bool nrf_802154_transmit(const uint8_t                        * p_data,
-                         uint8_t                                length,
-                         const nrf_802154_transmit_metadata_t * p_metadata)
-{
-    bool    result;
-    uint8_t channel;
-
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
-
-    if (p_metadata == NULL)
-    {
-        static const nrf_802154_transmit_metadata_t metadata_default =
-        {
-            .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
-            .cca         = true,
-            .tx_power    = {.use_metadata_value = false},
-            .tx_channel  = {.use_metadata_value = false}
-        };
-
-        p_metadata = &metadata_default;
-    }
-
-    channel =
-        p_metadata->tx_channel.use_metadata_value ? p_metadata->tx_channel.channel :
-        nrf_802154_pib_channel_get();
-
-    nrf_802154_transmit_params_t params =
-    {
-        .frame_props        = p_metadata->frame_props,
-        .tx_power           = {0},
-        .channel            = channel,
-        .cca                = p_metadata->cca,
-        .immediate          = false,
-        .extra_cca_attempts = 0U,
-    };
-
-    (void)nrf_802154_tx_power_convert_metadata_to_tx_power_split(channel,
-                                                                 p_metadata->tx_power,
-                                                                 &params.tx_power);
-
-    result = are_frame_properties_valid(&params.frame_props);
-    if (result)
-    {
-        tx_buffer_fill(p_data, length);
-        result = nrf_802154_request_transmit(NRF_802154_TERM_NONE,
-                                             REQ_ORIG_HIGHER_LAYER,
-                                             m_tx_buffer,
-                                             &params,
-                                             NULL);
-    }
-
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-    return result;
-}
-
-#endif // NRF_802154_USE_RAW_API
 
 #if NRF_802154_DELAYED_TRX_ENABLED
 bool nrf_802154_transmit_raw_at(uint8_t                                 * p_data,
@@ -696,8 +617,6 @@ bool nrf_802154_modulated_carrier(const uint8_t * p_data)
 
 #endif // NRF_802154_CARRIER_FUNCTIONS_ENABLED
 
-#if NRF_802154_USE_RAW_API
-
 void nrf_802154_buffer_free_raw(uint8_t * p_data)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
@@ -730,43 +649,6 @@ bool nrf_802154_buffer_free_immediately_raw(uint8_t * p_data)
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;
 }
-
-#else // NRF_802154_USE_RAW_API
-
-void nrf_802154_buffer_free(uint8_t * p_data)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
-
-    bool          result;
-    rx_buffer_t * p_buffer = (rx_buffer_t *)(p_data - RAW_PAYLOAD_OFFSET);
-
-    NRF_802154_ASSERT(p_buffer->free == false);
-    (void)p_buffer;
-
-    result = nrf_802154_request_buffer_free(p_data - RAW_PAYLOAD_OFFSET);
-    NRF_802154_ASSERT(result);
-    (void)result;
-
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-}
-
-bool nrf_802154_buffer_free_immediately(uint8_t * p_data)
-{
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
-
-    bool          result;
-    rx_buffer_t * p_buffer = (rx_buffer_t *)(p_data - RAW_PAYLOAD_OFFSET);
-
-    NRF_802154_ASSERT(p_buffer->free == false);
-    (void)p_buffer;
-
-    result = nrf_802154_request_buffer_free(p_data - RAW_PAYLOAD_OFFSET);
-
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-    return result;
-}
-
-#endif // NRF_802154_USE_RAW_API
 
 bool nrf_802154_rssi_measure_begin(void)
 {
@@ -883,7 +765,6 @@ void nrf_802154_cca_cfg_get(nrf_802154_cca_cfg_t * p_cca_cfg)
 }
 
 #if NRF_802154_CSMA_CA_ENABLED
-#if NRF_802154_USE_RAW_API
 
 bool nrf_802154_transmit_csma_ca_raw(uint8_t                                      * p_data,
                                      const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
@@ -913,41 +794,6 @@ bool nrf_802154_transmit_csma_ca_raw(uint8_t                                    
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
     return result;
 }
-
-#else // NRF_802154_USE_RAW_API
-
-bool nrf_802154_transmit_csma_ca(const uint8_t                                * p_data,
-                                 uint8_t                                        length,
-                                 const nrf_802154_transmit_csma_ca_metadata_t * p_metadata)
-{
-    bool result;
-
-    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_LOW);
-
-    if (p_metadata == NULL)
-    {
-        static const nrf_802154_transmit_csma_ca_metadata_t metadata_default =
-        {
-            .frame_props = NRF_802154_TRANSMITTED_FRAME_PROPS_DEFAULT_INIT,
-            .tx_power    = {.use_metadata_value = false},
-            .tx_channel  = {.use_metadata_value = false}
-        };
-
-        p_metadata = &metadata_default;
-    }
-
-    result = are_frame_properties_valid(&p_metadata->frame_props);
-    if (result)
-    {
-        tx_buffer_fill(p_data, length);
-        result = nrf_802154_request_csma_ca_start(m_tx_buffer, p_metadata);
-    }
-
-    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_LOW);
-    return result;
-}
-
-#endif // NRF_802154_USE_RAW_API
 
 bool nrf_802154_csma_ca_min_be_set(uint8_t min_be)
 {
@@ -1131,7 +977,6 @@ __WEAK void nrf_802154_tx_ack_started(const uint8_t * p_data)
     (void)p_data;
 }
 
-#if NRF_802154_USE_RAW_API
 __WEAK void nrf_802154_received_raw(uint8_t * p_data, int8_t power, uint8_t lqi)
 {
     uint64_t timestamp;
@@ -1156,29 +1001,6 @@ __WEAK void nrf_802154_received_timestamp_raw(uint8_t * p_data,
     nrf_802154_buffer_free_raw(p_data);
 }
 
-#else // NRF_802154_USE_RAW_API
-
-__WEAK void nrf_802154_received(uint8_t * p_data, uint8_t length, int8_t power, uint8_t lqi)
-{
-    nrf_802154_received_timestamp(p_data, length, power, lqi, last_rx_frame_timestamp_get());
-}
-
-__WEAK void nrf_802154_received_timestamp(uint8_t * p_data,
-                                          uint8_t   length,
-                                          int8_t    power,
-                                          uint8_t   lqi,
-                                          uint32_t  time)
-{
-    (void)length;
-    (void)power;
-    (void)lqi;
-    (void)time;
-
-    nrf_802154_buffer_free(p_data);
-}
-
-#endif // !NRF_802154_USE_RAW_API
-
 __WEAK void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id)
 {
     (void)error;
@@ -1190,7 +1012,6 @@ __WEAK void nrf_802154_tx_started(const uint8_t * p_frame)
     (void)p_frame;
 }
 
-#if NRF_802154_USE_RAW_API
 __WEAK void nrf_802154_transmitted_raw(uint8_t                                   * p_frame,
                                        const nrf_802154_transmit_done_metadata_t * p_metadata)
 {
@@ -1203,24 +1024,6 @@ __WEAK void nrf_802154_transmitted_raw(uint8_t                                  
         nrf_802154_buffer_free_raw(p_ack);
     }
 }
-
-#else // NRF_802154_USE_RAW_API
-
-__WEAK void nrf_802154_transmitted(uint8_t                                   * p_frame,
-                                   const nrf_802154_transmit_done_metadata_t * p_metadata)
-
-{
-    (void)p_frame;
-
-    uint8_t * p_ack = p_metadata->data.transmitted.p_ack;
-
-    if (p_ack != NULL)
-    {
-        nrf_802154_buffer_free(p_ack);
-    }
-}
-
-#endif // NRF_802154_USE_RAW_API
 
 __WEAK void nrf_802154_transmit_failed(uint8_t                                   * p_frame,
                                        nrf_802154_tx_error_t                       error,

@@ -477,8 +477,7 @@ typedef struct
     {
         struct
         {
-            uint8_t * p_ack; // !< If NRF_802154_USE_RAW_API is disabled, p_ack is a pointer to a buffer that contains only the received ACK payload (PSDU excluding FCS).
-                             // If NRF_802154_USE_RAW_API is enabled, p_ack is a pointer to a buffer that contains PHR and PSDU of the received ACK. The first byte
+            uint8_t * p_ack; // !< A pointer to a buffer that contains PHR and PSDU of the received ACK. The first byte
                              // in the buffer is the length of the frame (PHR). The following bytes contain the ACK frame itself (PSDU). The length byte
                              // (PHR) includes FCS. FCS is already verified by the hardware and may be modified by the hardware.
                              // If ACK was not requested or requested but not received, @ref p_ack is set to NULL.

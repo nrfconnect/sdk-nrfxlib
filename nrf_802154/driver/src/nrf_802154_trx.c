@@ -181,6 +181,7 @@ extern uint32_t SystemCoreClock;
 static volatile bool g_nrf_802154_trx_disable_repeat_was_needed;
 /// Increments whenever repeating disable operation forcefully happens.
 static uint16_t g_nrf_802154_trx_disable_repeat_counter;
+
 #endif
 
 /// Common parameters for the FEM handling.
@@ -862,23 +863,14 @@ void nrf_802154_trx_init(void)
 static void radio_trims_apply(void)
 {
 #if defined(NRF54H20_XXAA) && !defined(TEST)
-    /* HMPAN-76 */
+    /* HMPAN-103 */
     if ((*(volatile uint32_t *)0x5302C8A0 == 0x80000000) ||
         (*(volatile uint32_t *)0x5302C8A0 == 0x0058120E))
     {
         *(volatile uint32_t *)0x5302C8A0 = 0x0058090E;
     }
 
-    *(volatile uint32_t *)0x5302C8A4 = 0x008C0035;
-    *(volatile uint32_t *)0x5302C8A8 = 0x00800005;
-
-    *(volatile uint32_t *)0x5302C8B4 = 0x01280000;
-    *(volatile uint32_t *)0x5302C8B8 = 0x00F8AA5F;
-    *(volatile uint32_t *)0x5302C8BC = 0x007C0015;
-    *(volatile uint32_t *)0x5302C8C4 = 0x02100002;
-    *(volatile uint32_t *)0x5302C8C8 = 0x00280640;
-    *(volatile uint32_t *)0x5302C8CC = 0x003005C0;
-
+    *(volatile uint32_t *)0x5302C8A4 = 0x00F8AA5F;
     *(volatile uint32_t *)0x5302C7AC = 0x8672827A;
     *(volatile uint32_t *)0x5302C7B0 = 0x7E768672;
     *(volatile uint32_t *)0x5302C7B4 = 0x0406007E;

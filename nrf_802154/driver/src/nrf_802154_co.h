@@ -66,7 +66,6 @@ void nrf_802154_co_energy_detection_failed(nrf_802154_ed_error_t error);
  */
 void nrf_802154_co_tx_ack_started(const uint8_t * p_data);
 
-#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
 #if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
 
 /** @brief Calls @ref nrf_802154_received_raw.
@@ -75,43 +74,17 @@ void nrf_802154_co_tx_ack_started(const uint8_t * p_data);
 void nrf_802154_co_received_raw(uint8_t * p_data, int8_t power, uint8_t lqi);
 
 #endif // !NRF_802154_SERIALIZATION_HOST
-#endif // NRF_802154_USE_RAW_API
-
-#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
-#if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
-
-/** @brief Calls @ref nrf_802154_received.
- *  @note See @ref nrf_802154_received for documentation of parameters.
- */
-void nrf_802154_co_received(uint8_t * p_data, uint8_t length, int8_t power, uint8_t lqi);
-
-#endif // !NRF_802154_SERIALIZATION_HOST
-#endif // !NRF_802154_USE_RAW_API
 
 /** @brief Calls @ref nrf_802154_receive_failed.
  *  @note See @ref nrf_802154_receive_failed for documentation of parameters.
  */
 void nrf_802154_co_receive_failed(nrf_802154_rx_error_t error, uint32_t id);
 
-#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
-
 /** @brief Calls @ref nrf_802154_transmitted_raw.
  *  @note See @ref nrf_802154_transmitted_raw for documentation of parameters.
  */
 void nrf_802154_co_transmitted_raw(uint8_t                                   * p_frame,
                                    const nrf_802154_transmit_done_metadata_t * p_metadata);
-
-#endif // NRF_802154_USE_RAW_API
-
-#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
-
-/** @brief Calls @ref nrf_802154_transmitted.
- *  @note See @ref nrf_802154_transmitted for documentation of parameters.
- */
-void nrf_802154_co_transmitted(uint8_t                                   * p_frame,
-                               const nrf_802154_transmit_done_metadata_t * p_metadata);
-
-#endif // !NRF_802154_USE_RAW_API
 
 /** @brief Calls @ref nrf_802154_transmit_failed.
  *  @note See @ref nrf_802154_transmit_failed for documentation of parameters.

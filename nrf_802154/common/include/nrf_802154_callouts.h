@@ -98,8 +98,6 @@ extern void nrf_802154_energy_detection_failed(nrf_802154_ed_error_t error);
  */
 extern void nrf_802154_tx_ack_started(const uint8_t * p_data);
 
-#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
-
 #if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
 /**
  * @brief Notifies that a frame was received.
@@ -110,9 +108,8 @@ extern void nrf_802154_tx_ack_started(const uint8_t * p_data);
  *       to receive a frame) until @ref nrf_802154_buffer_free_raw is called.
  * @note The buffer pointed to by @p p_data may be modified by the function handler (and other
  *       modules) until @ref nrf_802154_buffer_free_raw is called.
- * @note This callout is called by the nRF 802.15.4 Radio Driver if @ref NRF_802154_USE_RAW_API
- *       is enabled. Default implementation of this function provided by
- *       the nRF 802.15.4 Radio Driver calls @ref nrf_802154_received_timestamp_raw .
+ * @note Default implementation of this function provided by the nRF 802.15.4 Radio Driver
+ *       calls @ref nrf_802154_received_timestamp_raw .
  *
  * @verbatim
  * p_data
@@ -160,67 +157,6 @@ extern void nrf_802154_received_timestamp_raw(uint8_t * p_data,
                                               uint8_t   lqi,
                                               uint64_t  time);
 
-#endif // NRF_802154_USE_RAW_API
-
-#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
-#if !NRF_802154_SERIALIZATION_HOST || defined(DOXYGEN)
-/**
- * @brief Notifies that a frame was received.
- *
- * @note The buffer pointed to by @p p_data is not modified by the radio driver (and cannot
- *       be used to receive a frame) until @ref nrf_802154_buffer_free is called.
- * @note The buffer pointed to by @p p_data can be modified by the function handler (and other
- *       modules) until @ref nrf_802154_buffer_free is called.
- * @note This callout is called by the nRF 802.15.4 Radio Driver if @ref NRF_802154_USE_RAW_API
- *       is disabled. Default implementation of this function provided by
- *       the nRF 802.15.4 Radio Driver calls @ref nrf_802154_received_timestamp .
- *
- * @verbatim
- *       p_data
- *       v
- * +-----+-----------------------------------------------------------+------------+
- * | PHR | MAC Header and payload                                    | FCS        |
- * +-----+-----------------------------------------------------------+------------+
- *       |                                                           |
- *       | <------------------ length -----------------------------> |
- * @endverbatim
- *
- * @param[in]  p_data  Pointer to a buffer that contains only the payload of the received frame
- *                     (PSDU without FCS).
- * @param[in]  length  Length of the received payload.
- * @param[in]  power   RSSI of the received frame.
- * @param[in]  lqi     LQI of the received frame.
- */
-extern void nrf_802154_received(uint8_t * p_data, uint8_t length, int8_t power, uint8_t lqi);
-
-/**
- * @brief Notifies that a frame was received at a given time.
- *
- * This function works like @ref nrf_802154_received and adds a timestamp to the parameter list.
- *
- * @note The received frame usually contains a timestamp. However, due to a race condition,
- *       the timestamp may be invalid. This erroneous situation is indicated by
- *       the @ref NRF_802154_NO_TIMESTAMP value of the @p time parameter.
- * @note This callout is called by the default implementation of @ref nrf_802154_received .
- *
- * @param[in]  p_data  Pointer to a buffer that contains only the payload of the received frame
- *                     (PSDU without FCS).
- * @param[in]  length  Length of the received payload.
- * @param[in]  power   RSSI of the received frame.
- * @param[in]  lqi     LQI of the received frame.
- * @param[in]  time    Timestamp taken when the last symbol of the frame was received,
- *                     in microseconds (us), or @ref NRF_802154_NO_TIMESTAMP if the timestamp
- *                     is invalid.
- */
-extern void nrf_802154_received_timestamp(uint8_t * p_data,
-                                          uint8_t   length,
-                                          int8_t    power,
-                                          uint8_t   lqi,
-                                          uint32_t  time);
-
-#endif // !NRF_802154_SERIALIZATION_HOST
-#endif // !NRF_802154_USE_RAW_API
-
 /**
  * @brief Notifies that the reception of a frame failed.
  *
@@ -233,7 +169,6 @@ extern void nrf_802154_received_timestamp(uint8_t * p_data,
  */
 extern void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id);
 
-#if NRF_802154_USE_RAW_API || defined(DOXYGEN)
 /**
  * @brief Notifies that a frame was transmitted.
  *
@@ -249,46 +184,12 @@ extern void nrf_802154_receive_failed(nrf_802154_rx_error_t error, uint32_t id);
  * @note @c nrf_802154_transmit_done_metadata_t::data.transmitted.time granularity depends on the
  *       granularity of the timer driver in the
  *       platform/timer directory.
- * @note This callout is called by the nRF 802.15.4 Radio Driver if @ref NRF_802154_USE_RAW_API
- *       is enabled.
  *
  * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the transmitted frame.
  * @param[in]  p_metadata   Pointer to a metadata structure describing frame passed in @p p_frame.
  */
 extern void nrf_802154_transmitted_raw(uint8_t                                   * p_frame,
                                        const nrf_802154_transmit_done_metadata_t * p_metadata);
-
-#endif // NRF_802154_USE_RAW_API
-
-#if !NRF_802154_USE_RAW_API || defined(DOXYGEN)
-/**
- * @brief Notifies that a frame was transmitted.
- *
- * @note If ACK was requested for the transmitted frame, this function is called after a proper ACK
- *       is received. If ACK was not requested, this function is called just after transmission has
- *       ended.
- * @note The buffer pointed to by @c nrf_802154_transmit_done_metadata_t::data.transmitted.p_ack
- *       is not modified by the radio driver (and cannot be used to receive a frame) until
- *       @ref nrf_802154_buffer_free is called.
- * @note The buffer pointed to by @c nrf_802154_transmit_done_metadata_t::data.transmitted.p_ack
- *       may be modified by the function handler (and other modules) until
- *       @ref nrf_802154_buffer_free is called.
- * @note The next higher layer must handle either @ref nrf_802154_transmitted or
- *       @ref nrf_802154_transmitted_raw. It should not handle both functions.
- * @note @c nrf_802154_transmit_done_metadata_t::data.transmitted.time granularity depends on the
- *       granularity of the timer driver in the platform/timer directory.
- * @note Including a timestamp for received frames uses resources like CPU time and memory. If the
- *       timestamp is not required, use @ref nrf_802154_received instead.
- * @note This callout is called by the nRF 802.15.4 Radio Driver if @ref NRF_802154_USE_RAW_API
- *       is disabled.
- *
- * @param[in]  p_frame      Pointer to a buffer that contains PHR and PSDU of the transmitted frame.
- * @param[in]  p_metadata   Pointer to a metadata structure describing frame passed in @p p_frame.
- */
-extern void nrf_802154_transmitted(uint8_t                                   * p_frame,
-                                   const nrf_802154_transmit_done_metadata_t * p_metadata);
-
-#endif // !NRF_802154_USE_RAW_API
 
 /**
  * @brief Notifies that a frame was not transmitted due to a busy channel.
@@ -313,9 +214,9 @@ extern void nrf_802154_transmit_failed(uint8_t                                  
  *
  * @note Currently this callout is only available on the CPU which is running the core of the radio driver.
  *       If the higher layer runs on a different core it should use nrf_802154_received_timestamp_raw instead.
- * @note Usually, @ref nrf_802154_transmitted is called shortly after this function.
+ * @note Usually, @ref nrf_802154_transmitted_raw is called shortly after this function.
  *       However, if the transmit procedure is interrupted, it might happen that
- *       @ref nrf_802154_transmitted is not called.
+ *       @ref nrf_802154_transmitted_raw is not called.
  * @note This function should be very short to prevent dropping frames by the driver.
  *
  * @param[in]  p_frame  Pointer to a buffer that contains PHR and PSDU of the frame being

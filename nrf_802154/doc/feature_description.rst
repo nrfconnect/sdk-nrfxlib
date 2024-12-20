@@ -319,7 +319,6 @@ When the driver modifies a frame, it also informs the higher layer about the mod
 
 To do so, the following functions take an additional parameter:
 
-* :c:func:`nrf_802154_transmitted`
 * :c:func:`nrf_802154_transmitted_raw`
 * :c:func:`nrf_802154_transmit_failed`
 
@@ -338,9 +337,7 @@ After receiving information about the modifications performed, the higher layer 
 
 To do so, the following functions take an additional parameter:
 
-* :c:func:`nrf_802154_transmit`
 * :c:func:`nrf_802154_transmit_raw`
-* :c:func:`nrf_802154_transmit_csma_ca`
 * :c:func:`nrf_802154_transmit_csma_ca_raw`
 * :c:func:`nrf_802154_transmit_raw_at`
 
