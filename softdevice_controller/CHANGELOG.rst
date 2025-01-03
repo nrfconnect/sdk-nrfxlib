@@ -9,6 +9,38 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+
+nRF Connect SDK v2.6.3
+**********************
+
+All the notable changes included in the |NCS| v2.6.3 release are documented in this section.
+
+Bug fixes
+=========
+
+* Fixed an assert that could happen when in a connection where the peer device is transmitting on S8 Coded PHY. (DRGN-22652)
+* Fixed an issue where the peripheral waited for a link to time out when tearing down the connection.
+  This happened when the central would acknowledge ``TERMINATE_IND`` in the same event as it was being sent (DRGN-21637).
+* Fixed an issue where the sleep clock accuracy communicated to the peer was too inaccurate if MPSL was initialized with a low frequency clock accuracy better than 20ppm. (DRGN-23693)
+* Fixed an issue where an assert could happen if the peripheral received a connection update indication.
+  This happened when the central used a wide receive window for the connection update, and both sent at the end of the receive window and sent a lot of data in the connection event with the connection update instant (DRGN-22024).
+* Fixed an issue where the SoftDevice Controller in the peripheral role could terminate a connection due to a MIC failure during a valid encryption start procedure.
+  This could only happen if the ``LL_ENC_RSP`` packet was corrupted due to on-air interference. (DRGN-23204)
+* Fixed a rare issue in the controller that could lead to a bus fault. (DRGN-22036)
+
+  This could only happen when all of the following conditions were met:
+
+    * The host was too slow at pulling HCI events.
+    * One or more HCI events had been masked in the controller.
+    * The controller was raising ACL or ISO data to the host.
+
+Changes
+=======
+
+* Generating the Number of Completed Packets event is now prioritized above all other events.
+  The event is generated irrespective of the state of the Controller to Host data flow control. (DRGN-23284)
+* When a link disconnects, the controller will now raise one or more Number Of Completed Packets events for data packets not ACKed by the peer device. (DRGN-23302)
+
 nRF Connect SDK v2.6.0
 **********************
 
