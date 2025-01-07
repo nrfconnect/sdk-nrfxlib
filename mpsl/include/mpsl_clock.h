@@ -50,6 +50,11 @@ enum MPSL_CLOCK_LF_SRC
 /** @brief Default LF clock accuracy in parts per million (ppm). */
 #define MPSL_DEFAULT_CLOCK_ACCURACY_PPM  250
 
+/** @brief Worst LF clock accuracy allowed by the BLUETOOTH CORE SPECIFICATION Version 6.0 | Vol 6, Part B
+ *         4.2.2 Sleep clock accuracy in parts per million (ppm).
+ */
+#define MPSL_WORST_CLOCK_ACCURACY_PPM  500
+
 /** @brief MPSL waits for low frequency clock to start by default. */
 #define MPSL_DEFAULT_SKIP_WAIT_LFCLK_STARTED false
 
@@ -140,6 +145,9 @@ typedef void (*mpsl_clock_hfclk_callback_t)(void);
  *       This is the case for applications in the nRF Connect SDK where there is a clock control driver
  *       with a corresponding on/off manager.
  *
+ * @note This API is not supported when an external clock driver has been registered.
+ *       See also @ref mpsl_clock_ctrl_source_register().
+ *
  * @param[in] hfclk_started_callback Function to be called when the high frequency clock is started.
  *                                   The callback will be executed in the context as
  *                                   @ref mpsl_low_priority_process.
@@ -160,6 +168,9 @@ int32_t mpsl_clock_hfclk_request(mpsl_clock_hfclk_callback_t hfclk_started_callb
  *       This is the case for applications in the nRF Connect SDK where there is a clock control driver
  *       with a corresponding on/off manager.
  *
+ * @note This API is not supported when an external clock driver has been registered.
+ *       See also @ref mpsl_clock_ctrl_source_register().
+ *
  * @retval 0  Success
  */
 int32_t mpsl_clock_hfclk_release(void);
@@ -168,6 +179,9 @@ int32_t mpsl_clock_hfclk_release(void);
  *
  * @see mpsl_clock_hfclk_request
  * @see mpsl_clock_hfclk_release
+ *
+ * @note This API is not supported when an external clock driver has been registered.
+ *       See also @ref mpsl_clock_ctrl_source_register().
  *
  * @param[out] p_is_running 1 if the external crystal oscillator is running, 0 if not.
  *
@@ -179,6 +193,9 @@ int32_t mpsl_clock_hfclk_is_running(uint32_t * p_is_running);
  *
  * @note Using a value smaller than the actual ramp-up time needed will cause asserts.
  *
+ * @note This API is not supported when an external clock driver has been registered.
+ *       See also @ref mpsl_clock_ctrl_source_register().
+ *
  * @param[in] hfclk_rampup_time_us Ramp-up time of the high-frequency oscillator, in microseconds. See @ref mpsl_clock_hfclk_latency_config_t for recommended values.
  *
  * @retval 0  Success
@@ -189,9 +206,153 @@ int32_t mpsl_clock_hfclk_latency_set(uint16_t hfclk_rampup_time_us);
  *
  * MPSL will trigger the task at the same time as the RTC is started.
  *
+ * @note This API is not supported when an external clock driver has been registered.
+ *       See also @ref mpsl_clock_ctrl_source_register().
+ *
  * @param[in] task_address The task address to be triggered
  */
 void mpsl_clock_task_trigger_on_rtc_start_set(uint32_t task_address);
+
+/** @brief Type representing LFCLK clock handling external API that is expected by MPSL to be
+ *         delivered on init.
+ */
+typedef struct
+{
+  /** @brief Pointer to function that waits for LFCLK to be started
+   *
+   * This API will be called from the same execution context as @ref mpsl_low_priority_process.
+   *
+   * The pointer is mandatory for all supported platforms.
+   *
+   * @return Non-negative value in case of success. Negative value in case of failure.
+   */
+  int32_t (*lfclk_wait)(void);
+
+  /** @brief Pointer to function that triggers LFCLK callibration start
+   *
+   * The function may used from high priority or low priority execution context.
+   *
+   * The pointer is mandatory for nRF52, nRF53 series.
+   */
+  void (*lfclk_calibration_start)(void);
+
+  /** @brief Pointer to function that checks if LFCLK callibration is enabled
+   *
+   * The function may used from high priority or low priority execution context.
+   *
+   * The pointer is mandatory for nRF52 series.
+   *
+   * @return true if calibration is enabled, false otherwise.
+   */
+  bool (*lfclk_calibration_is_enabled)(void);
+
+  /** @brief Pointer to function that requests LFCLK
+   *
+   * This API will be called from the same execution context as @ref mpsl_init()
+   *
+   * The pointer is mandatory for all supported platforms.
+   *
+   * @return Non-negative value in case of success. Negative value in case of failure.
+   */
+  int32_t (*lfclk_request)(void);
+
+  /** @brief Pointer to function that releases LFCLK
+   *
+   * This API will be called from the same execution context as @ref mpsl_uninit()
+   *
+   * The pointer is mandatory for all supported platforms.
+   *
+   * @return Non-negative value in case of success. Negative value in case of failure.
+   */
+  int32_t (*lfclk_release)(void);
+
+  /** @brief Value of available LFCLK accuracy
+   */
+  uint16_t accuracy_ppm;
+
+  /** @brief Determines whether MPSL waits for the low frequency clock to start during initialization or not.
+   *  If it is set to true, MPSL will wait for the low frequency clock later, before the low frequency
+   *  clock is used for the first time.
+   *
+   * @note For nRF54h SoC series the MPSL always waits for LFCLK in mpsl_init(). Blocking wait at
+   *       later stage may prevent Radio core to get notification from system controller about LFCLK
+   *       being ready.
+   */
+  bool skip_wait_lfclk_started;
+} mpsl_clock_lfclk_ctrl_source_t;
+
+/** @brief Type representing HFCLK clock handling external API that is expected by MPSL to be
+ *         delivered on init.
+ */
+typedef struct
+{
+  /** @brief Pointer to function that puts HFCLK request
+   *
+   * The function is used from high priority context.
+   *
+   * The pointer is mandatory for all supported platforms.
+   */
+  void (*hfclk_request)(void);
+
+  /** @brief Pointer to function that releases HFCLK request
+   *
+   * The function is used from high priority context.
+   *
+   * The pointer is mandatory for all supported platforms.
+   */
+  void (*hfclk_release)(void);
+
+  /** @brief Pointer to function that checks if HFCLK is running
+   *
+   * The function is used from high priority context.
+   *
+   * The pointer is mandatory for all supported platforms.
+   *
+   * @return true if HFCLK is running, false otherwise
+   */
+  bool (*hfclk_is_running)(void);
+
+  /** @brief Value of a HFXO startup time.
+   *
+   * The value is only used for nRF52 and nRF53 series.
+   */
+  uint16_t startup_time_us;
+} mpsl_clock_hfclk_ctrl_source_t;
+
+/** @brief Register an external clock driver.
+ *
+ * When this API is called, MPSL will use an external clock driver instead of the
+ * built-in clock driver.
+ *
+ * @note The API must be called before mpsl_init() to enable MPSL use external clock driver.
+ *
+ * The API is supported for nRF54h series. It is experimental for nRF52, nRF53 series.
+ *
+ * @param[in] p_lfclk_ctrl_source A pointer to struct holding the API to LFCLK control.
+ * @param[in] p_hfclk_ctrl_source A pointer to struct holding the API to HFCLK control.
+ *
+ * @note Any of the clock control pointers can't be NULL. In such case  the function
+ *        return -NRF_EINVAL.
+ *
+ * @retval 0               Clock control API is successfully registered.
+ * @retval -NRF_EPERM      Clock control API is already initialized.
+ * @retval -NRF_EINVAL     Invalid parameters supplied.
+ */
+int32_t mpsl_clock_ctrl_source_register(const mpsl_clock_lfclk_ctrl_source_t * p_lfclk_ctrl_source,
+                                        const mpsl_clock_hfclk_ctrl_source_t * p_hfclk_ctrl_source);
+
+/** @brief Unregisters external clock driver from MPSL.
+ *
+ * The function shall not be called when MPSL is initialized.
+ *
+ * @note The API must be called after the mpsl_uninit() to disable MPSL use external clock driver.
+ *
+ * The API is supported for nRF54h series. It is experimental for nRF52, nRF53 series.
+ *
+ * @retval 0               Clock control API is successfully unregistered.
+ * @retval -NRF_EPERM      Clock control module is still initialized.
+ */
+int32_t mpsl_clock_ctrl_source_unregister(void);
 
 #ifdef __cplusplus
 }
