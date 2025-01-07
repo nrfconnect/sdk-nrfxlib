@@ -1,8 +1,8 @@
 .. _nrf_modem_gnss:
 .. _gnss_interface:
 
-Global Navigation Satellite System
-##################################
+GNSS
+####
 
 .. contents::
    :local:
