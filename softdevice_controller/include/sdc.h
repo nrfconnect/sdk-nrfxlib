@@ -221,7 +221,7 @@ extern "C" {
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
 /** Memory required for the scanner when only supporting legacy scanning. */
-#define SDC_MEM_SCAN(buffer_count) (353 + (buffer_count) * 98)
+#define SDC_MEM_SCAN(buffer_count) (353 + (buffer_count) * 104)
 
 /** Memory required for the scanner when supporting extended scanning. */
 #define SDC_MEM_SCAN_EXT(buffer_count) (353 + (buffer_count) * 320)
@@ -309,10 +309,10 @@ extern "C" {
 #define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 556) : 0)
 
 /** @brief Maximum memory required per BIG. */
-#define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 284) : 0)
+#define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 291) : 0)
 
 /** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
-#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 268) : 0)
+#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 267) : 0)
 
 /** @brief Maximum memory required for the ISO RX PDU pool per stream.
  *  @param[in] rx_pdu_buffer_per_stream_count Number of RX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
@@ -345,7 +345,7 @@ extern "C" {
  *
  * @param[in] count Maximum number of concurrent connections supporting CS procedure.
  */
-#define SDC_MEM_CS(count) ((count) > 0 ? (13 + (count) * 8904) : 0)
+#define SDC_MEM_CS(count) ((count) > 0 ? (13 + (count) * 8924) : 0)
 
 /** @brief Maximum additional memory required to support Channel Sounding setup phase procedures
  *
