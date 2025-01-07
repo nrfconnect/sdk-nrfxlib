@@ -7,7 +7,19 @@ Changelog
    :local:
    :depth: 2
 
+
 All the notable changes to this project are documented on this page.
+
+Main branch
+***********
+
+Added
+=====
+
+* Added the functions :c:func:`mpsl_clock_ctrl_source_register` and :c:func:`mpsl_clock_ctrl_source_unregister` to provide :ref:`Experimental <nrf:software_maturity>` support for running MPSL with an external clock driver.
+  The APIs are only supported on nR54H Series SoCs.
+  Using these functions makes it possible to use an external clock driver, such as one provided by the |NCS|.
+  This fixes an issue on nRF54H Series where MPSL would assert or get suboptimal performance when other application components attempt to use a clock. (DRGN-21843)
 
 nRF Connect SDK v2.9.0
 **********************
