@@ -21,8 +21,11 @@
 #pragma GCC diagnostic ignored "-Warray-bounds"
 #endif
 
-/* A pointer value to pass information that response */
+/* A pointer value to pass information that the response has been handled in the receive thread. */
 #define RESPONSE_HANDLED_PTR ((uint8_t *)1)
+
+/* A pointer value to pass information that the connection has been reset. */
+#define CONNECTION_RESET_PTR ((uint8_t *)2)
 
 /* Internal definition used in the macros. */
 #define NRF_RPC_HEADER_SIZE 5
@@ -50,6 +53,7 @@ struct nrf_rpc_cmd_ctx {
 	uint8_t use_count;	   /* Context usage counter. It increases
 				    * each time context is reused.
 				    */
+	const struct nrf_rpc_group* group;
 	nrf_rpc_handler_t handler; /* Response handler provided be the user. */
 	void *handler_data;	   /* Pointer for the response handler. */
 	struct nrf_rpc_os_msg recv_msg;
@@ -650,6 +654,18 @@ static int init_packet_parse(struct init_packet_data *init_data, const uint8_t *
 	return 0;
 }
 
+static void cancel_wait_for_response(const struct nrf_rpc_group* group)
+{
+	for (size_t i = 0; i < CONFIG_NRF_RPC_CMD_CTX_POOL_SIZE; ++i) {
+		struct nrf_rpc_cmd_ctx* cmd_ctx = &cmd_ctx_pool[i];
+
+		if (cmd_ctx->group == group) {
+			nrf_rpc_os_msg_set(&cmd_ctx->recv_msg,
+					   CONNECTION_RESET_PTR, 0);
+		}
+	}
+}
+
 static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **group,
 			      const uint8_t *packet, size_t len)
 {
@@ -708,6 +724,13 @@ static int init_packet_handle(struct header *hdr, const struct nrf_rpc_group **g
 	 * flag, or the remote has missed our init packet.
 	 */
 	needs_reply = (hdr->dst_group_id == NRF_RPC_ID_UNKNOWN);
+
+	/*
+	 * If the connection has been reset, cancel any ongoing commands waiting for response.
+	 */
+	if (!first_init && needs_reply) {
+		cancel_wait_for_response(*group);
+	}
 
 	/*
 	 * Spawn the async task only if necessary. The async task is used to avoid sending the init
@@ -888,7 +911,7 @@ void nrf_rpc_decoding_done(const struct nrf_rpc_group *group, const uint8_t *pac
  * @param[out] rsp_len    If not NULL contains response packet length.
  * @return 0 on success or negative error code.
  */
-static void wait_for_response(const struct nrf_rpc_group *group, struct nrf_rpc_cmd_ctx *cmd_ctx,
+static int wait_for_response(const struct nrf_rpc_group *group, struct nrf_rpc_cmd_ctx *cmd_ctx,
 			      const uint8_t **rsp_packet, size_t *rsp_len)
 {
 	size_t len;
@@ -905,7 +928,11 @@ static void wait_for_response(const struct nrf_rpc_group *group, struct nrf_rpc_
 		NRF_RPC_ASSERT(packet != NULL);
 
 		if (packet == RESPONSE_HANDLED_PTR) {
-			return;
+			return 0;
+		}
+
+		if (packet == CONNECTION_RESET_PTR) {
+			return -NRF_ECONNRESET;
 		}
 
 		type = parse_incoming_packet(cmd_ctx, packet, len);
@@ -927,6 +954,8 @@ static void wait_for_response(const struct nrf_rpc_group *group, struct nrf_rpc_
 
 		nrf_rpc_decoding_done(group, &packet[NRF_RPC_HEADER_SIZE]);
 	}
+
+	return 0;
 }
 
 int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
@@ -934,6 +963,7 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 {
 	int err;
 	struct header hdr;
+	const struct nrf_rpc_group* old_group;
 	nrf_rpc_handler_t old_handler;
 	void *old_handler_data;
 	uint8_t *full_packet = &packet[-NRF_RPC_HEADER_SIZE];
@@ -968,8 +998,11 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 	hdr.dst_group_id = group->data->dst_group_id;
 	header_cmd_encode(full_packet, &hdr);
 
+	old_group = cmd_ctx->group;
 	old_handler = cmd_ctx->handler;
 	old_handler_data = cmd_ctx->handler_data;
+
+	cmd_ctx->group = group;
 	cmd_ctx->handler = handler;
 	cmd_ctx->handler_data = handler_data;
 
@@ -979,7 +1012,7 @@ int nrf_rpc_cmd_common(const struct nrf_rpc_group *group, uint32_t cmd,
 	err = send(group, full_packet, len + NRF_RPC_HEADER_SIZE);
 
 	if (err >= 0) {
-		wait_for_response(group, cmd_ctx, rsp_packet, rsp_len);
+		err = wait_for_response(group, cmd_ctx, rsp_packet, rsp_len);
 	}
 
 	cmd_ctx->handler = old_handler;
