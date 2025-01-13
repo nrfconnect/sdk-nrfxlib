@@ -111,6 +111,16 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t                      ra
                                         bool                                  start_timer);
 
 /**
+ * @brief Set (D)PPIs to connect trigger event with tasks needed to ramp up for a transmission of a frame.
+ *
+ * @param[in] cca         Transmission with preceding CCA operation.
+ * @param[in] trigg_mode  Trigger mode the connections must conform to.
+ */
+void nrf_802154_trx_ppi_for_txframe_ramp_up_set(
+    bool                                  cca,
+    nrf_802154_trx_ramp_up_trigger_mode_t trigg_mode);
+
+/**
  * @brief Set (D)PPIs to perform CCA procedures back-to-back.
  */
 void nrf_802154_trx_ppi_for_extra_cca_attempts_set(void);
@@ -133,6 +143,15 @@ void nrf_802154_trx_ppi_for_ramp_up_reconfigure(void);
  * @param[in]  start_timer   If timer start on RADIO DISABLED event is to be deconfigured as well. See @ref nrf_802154_trx_ppi_for_ramp_up_set.
  */
 void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool start_timer);
+
+/**
+ * @brief Clear (D)PPIs that are configured for ramp up procedure for a transmission of a frame.
+ *
+ * @note Complementary to @ref nrf_802154_trx_ppi_for_txframe_ramp_up_set.
+ *
+ * @param cca   Transmission with preceding CCA operation.
+ */
+void nrf_802154_trx_ppi_for_txframe_ramp_up_clear(bool cca);
 
 /**
  * @brief Clear (D)PPIs to perform CCA procedures back-to-back.

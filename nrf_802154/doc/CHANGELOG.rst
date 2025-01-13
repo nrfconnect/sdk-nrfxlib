@@ -13,6 +13,16 @@ See also :ref:`nrf_802154_limitations` for permanent limitations.
 Main branch - nRF 802.15.4 Radio Driver
 ***************************************
 
+Added
+=====
+
+* For the nRF54L Series, added the :c:macro:`NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US` configuration macro that allows to extend the time between the CCAIDLE event and the trigger of the TXEN task. (KRKNWK-19819)
+
+Bug fixes
+=========
+
+* Fixed the constant describing the time between CCAIDLE and READY events. The constant is used for calculation of the time needed for a transmission using CCA for the nRF54L Series. (KRKNWK-19819)
+
 Removed
 =======
 
