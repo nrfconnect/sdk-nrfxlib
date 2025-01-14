@@ -59,6 +59,18 @@
 #define PPI_TIMER_TX_ACK            NRF_802154_DPPI_TIMER_COMPARE_TO_RADIO_TXEN
 #define PPI_RADIO_SYNC_EGU_SYNC     NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC
 
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+#define EGU_TIMER_START_EVENT       NRFX_CONCAT_2(NRF_EGU_EVENT_TRIGGERED, \
+                                                  NRF_802154_EGU_TIMER_START_CHANNEL_NO)
+#define EGU_TIMER_START_TASK        NRFX_CONCAT_2(NRF_EGU_TASK_TRIGGER, \
+                                                  NRF_802154_EGU_TIMER_START_CHANNEL_NO)
+
+#define EGU_TIMER_START2_EVENT      NRFX_CONCAT_2(NRF_EGU_EVENT_TRIGGERED, \
+                                                  NRF_802154_EGU_TIMER_START2_CHANNEL_NO)
+#define EGU_TIMER_START2_TASK       NRFX_CONCAT_2(NRF_EGU_TASK_TRIGGER, \
+                                                  NRF_802154_EGU_TIMER_START2_CHANNEL_NO)
+#endif
+
 void nrf_802154_trx_ppi_for_enable(void)
 {
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_DISABLED, PPI_DISABLED_EGU);
@@ -69,6 +81,15 @@ void nrf_802154_trx_ppi_for_enable(void)
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_CCAIDLE, NRF_802154_DPPI_RADIO_CCAIDLE);
     nrf_radio_publish_set(NRF_RADIO, NRF_RADIO_EVENT_CCABUSY, NRF_802154_DPPI_RADIO_CCABUSY);
 
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+    nrf_egu_publish_set(NRF_802154_EGU_INSTANCE,
+                        EGU_TIMER_START_EVENT,
+                        NRF_802154_DPPI_TIMER_START);
+    nrf_timer_subscribe_set(NRF_802154_TIMER_INSTANCE,
+                            NRF_TIMER_TASK_START,
+                            NRF_802154_DPPI_TIMER_START);
+#endif
+
     nrf_dppi_channels_enable(NRF_802154_DPPIC_INSTANCE,
                              (1UL << NRF_802154_DPPI_RADIO_CCABUSY) |
                              (1UL << PPI_DISABLED_EGU) |
@@ -77,6 +98,9 @@ void nrf_802154_trx_ppi_for_enable(void)
                              (1UL << NRF_802154_DPPI_RADIO_END) |
                              (1UL << NRF_802154_DPPI_RADIO_PHYEND) |
                              (1UL << NRF_802154_DPPI_RADIO_CCAIDLE) |
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+                             (1UL << NRF_802154_DPPI_TIMER_START) |
+#endif
                              (1UL << NRF_802154_DPPI_RADIO_HW_TRIGGER));
 }
 
@@ -90,7 +114,15 @@ void nrf_802154_trx_ppi_for_disable(void)
                               (1UL << NRF_802154_DPPI_RADIO_END) |
                               (1UL << NRF_802154_DPPI_RADIO_PHYEND) |
                               (1UL << NRF_802154_DPPI_RADIO_CCAIDLE) |
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+                              (1UL << NRF_802154_DPPI_TIMER_START) |
+#endif
                               (1UL << NRF_802154_DPPI_RADIO_HW_TRIGGER));
+
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+    nrf_timer_subscribe_clear(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_START);
+    nrf_egu_publish_clear(NRF_802154_EGU_INSTANCE, EGU_TIMER_START_EVENT);
+#endif
 
 #if NRF_802154_TEST_MODES_ENABLED
     nrf_radio_publish_clear(NRF_RADIO, NRF_RADIO_EVENT_CCABUSY);
@@ -126,7 +158,13 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t                      ra
 
     if (start_timer)
     {
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+        nrf_egu_subscribe_set(NRF_802154_EGU_INSTANCE,
+                              EGU_TIMER_START_TASK,
+                              PPI_DISABLED_EGU);
+#else
         nrf_timer_subscribe_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_START, PPI_DISABLED_EGU);
+#endif
     }
 
     nrf_egu_publish_set(NRF_802154_EGU_INSTANCE, EGU_EVENT, PPI_EGU_RAMP_UP);
@@ -142,6 +180,70 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t                      ra
                                 NRF_RADIO_TASK_DISABLE,
                                 NRF_802154_DPPI_RADIO_HW_TRIGGER);
     }
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+}
+
+void nrf_802154_trx_ppi_for_txframe_ramp_up_set(
+    bool                                  cca,
+    nrf_802154_trx_ramp_up_trigger_mode_t trigg_mode)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+
+    nrf_802154_trx_ppi_for_ramp_up_set(
+        cca ? NRF_RADIO_TASK_RXEN : NRF_RADIO_TASK_TXEN,
+        trigg_mode,
+        false);
+
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+    if (cca)
+    {
+        nrf_egu_subscribe_set(NRF_802154_EGU_INSTANCE,
+                              EGU_TIMER_START_TASK,
+                              PPI_EGU_RAMP_UP);
+
+        // Let the TIMER be started by RADIO.EVENTS_CCAIDLE
+        // Connections marked with (*) is already done by nrf_802154_trx_ppi_for_enable.
+        //
+        // EGU.EGU_TIMER_START_EVENT ---(*)-+--> NRF_802154_DPPI_TIMER_START  <--(*)-- TIMER.TASKS_START
+        // EGU.EGU_TIMER_START2_EVENT ------/
+        //
+        // RADIO.EVENTS_CCAIDLE --(*)-> NRF_802154_DPPI_RADIO_CCAIDLE <------ EGU.EGU_TIMER_START2_TASK
+
+        nrf_egu_publish_set(NRF_802154_EGU_INSTANCE,
+                            EGU_TIMER_START2_EVENT,
+                            NRF_802154_DPPI_TIMER_START);
+        nrf_egu_subscribe_set(NRF_802154_EGU_INSTANCE,
+                              EGU_TIMER_START2_TASK,
+                              NRF_802154_DPPI_RADIO_CCAIDLE);
+
+        // Setup TIMER.CC[1] to a value when the RADIO.TASKS_TXEN should be triggered.
+        // The TIMER.CC[0] holds value at which the TIMER stopped after the ramp-up for CCA operation.
+        // The timer will continue counting from this value.
+        uint32_t timer_val_at_ccaidle = nrf_timer_cc_get(NRF_802154_TIMER_INSTANCE,
+                                                         NRF_TIMER_CC_CHANNEL0);
+
+        nrf_timer_cc_set(NRF_802154_TIMER_INSTANCE,
+                         NRF_TIMER_CC_CHANNEL1,
+                         timer_val_at_ccaidle + NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US);
+        nrf_timer_shorts_enable(NRF_802154_TIMER_INSTANCE,
+                                NRF_TIMER_SHORT_COMPARE1_STOP_MASK);
+
+        // Let the TIMER'.CC[1] trigger the RADIO.TASKS_TXEN
+        //
+        // TIMER.CC1 ----> NRF_802154_DPPI_RADIO_TXEN <----- RADIO.TASKS_TXEN
+        nrf_timer_publish_set(NRF_802154_TIMER_INSTANCE,
+                              NRF_TIMER_EVENT_COMPARE1,
+                              NRF_802154_DPPI_RADIO_TXEN);
+
+        nrf_radio_subscribe_set(NRF_RADIO,
+                                NRF_RADIO_TASK_TXEN,
+                                NRF_802154_DPPI_RADIO_TXEN);
+
+        nrf_dppi_channels_enable(NRF_802154_DPPIC_INSTANCE,
+                                 (1UL << NRF_802154_DPPI_RADIO_TXEN));
+    }
+#endif
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
@@ -171,6 +273,7 @@ void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool st
     nrf_egu_publish_clear(NRF_802154_EGU_INSTANCE, EGU_EVENT);
     nrf_radio_subscribe_clear(NRF_RADIO, ramp_up_task);
     nrf_radio_subscribe_clear(NRF_RADIO, NRF_RADIO_TASK_DISABLE);
+
     nrf_dppi_subscribe_clear(NRF_802154_DPPIC_INSTANCE, DPPI_CHGRP_RAMP_UP_DIS_TASK);
     nrf_dppi_channels_remove_from_group(NRF_802154_DPPIC_INSTANCE,
                                         1UL << PPI_EGU_RAMP_UP,
@@ -178,10 +281,44 @@ void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool st
 
     if (start_timer)
     {
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+        nrf_egu_subscribe_clear(NRF_802154_EGU_INSTANCE, EGU_TIMER_START_TASK);
+#else
         nrf_timer_subscribe_clear(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_START);
+#endif
     }
 
     nrf_egu_subscribe_clear(NRF_802154_EGU_INSTANCE, EGU_TASK);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+}
+
+void nrf_802154_trx_ppi_for_txframe_ramp_up_clear(bool cca)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+    if (cca)
+    {
+        nrf_dppi_channels_disable(NRF_802154_DPPIC_INSTANCE,
+                                  (1UL << NRF_802154_DPPI_RADIO_TXEN));
+        nrf_radio_subscribe_clear(NRF_RADIO, NRF_RADIO_TASK_TXEN);
+        nrf_timer_publish_clear(NRF_802154_TIMER_INSTANCE,
+                                NRF_TIMER_EVENT_COMPARE1);
+        nrf_timer_shorts_disable(NRF_802154_TIMER_INSTANCE,
+                                 NRF_TIMER_SHORT_COMPARE1_STOP_MASK);
+
+        nrf_egu_publish_clear(NRF_802154_EGU_INSTANCE,
+                              EGU_TIMER_START2_EVENT);
+        nrf_egu_subscribe_clear(NRF_802154_EGU_INSTANCE,
+                                EGU_TIMER_START2_TASK);
+
+        nrf_egu_subscribe_clear(NRF_802154_EGU_INSTANCE,
+                                EGU_TIMER_START_TASK);
+    }
+#endif
+
+    nrf_802154_trx_ppi_for_ramp_up_clear(cca ? NRF_RADIO_TASK_RXEN : NRF_RADIO_TASK_TXEN, false);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
@@ -260,7 +397,13 @@ void nrf_802154_trx_ppi_for_fem_set(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+    nrf_egu_subscribe_set(NRF_802154_EGU_INSTANCE,
+                          EGU_TIMER_START_TASK,
+                          PPI_DISABLED_EGU);
+#else
     nrf_timer_subscribe_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_START, PPI_DISABLED_EGU);
+#endif
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
@@ -269,7 +412,11 @@ void nrf_802154_trx_ppi_for_fem_clear(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+    nrf_egu_subscribe_clear(NRF_802154_EGU_INSTANCE, EGU_TIMER_START_TASK);
+#else
     nrf_timer_subscribe_clear(NRF_802154_TIMER_INSTANCE, NRF_TIMER_TASK_START);
+#endif
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }

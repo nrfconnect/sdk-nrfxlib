@@ -102,26 +102,33 @@
 #define SHORTS_TX_ACK         (NRF_RADIO_SHORT_TXREADY_START_MASK | \
                                NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
 
-#define SHORTS_MULTI_CCA_TX   (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
-                               NRF_RADIO_SHORT_CCAIDLE_TXEN_MASK |     \
-                               NRF_RADIO_SHORT_TXREADY_START_MASK |    \
-                               NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+/* The short CCAIDLE_TXEN is not used */
+#define SHORTS_CCAIDLE_TXEN 0U
+#else
+#define SHORTS_CCAIDLE_TXEN NRF_RADIO_SHORT_CCAIDLE_TXEN_MASK
+#endif
 
-#define SHORTS_CCA_TX         (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
-                               NRF_RADIO_SHORT_CCABUSY_DISABLE_MASK |  \
-                               NRF_RADIO_SHORT_CCAIDLE_TXEN_MASK |     \
-                               NRF_RADIO_SHORT_TXREADY_START_MASK |    \
-                               NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+#define SHORTS_MULTI_CCA_TX (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
+                             SHORTS_CCAIDLE_TXEN |                   \
+                             NRF_RADIO_SHORT_TXREADY_START_MASK |    \
+                             NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
 
-#define SHORTS_TX             (NRF_RADIO_SHORT_TXREADY_START_MASK | \
-                               NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+#define SHORTS_CCA_TX       (NRF_RADIO_SHORT_RXREADY_CCASTART_MASK | \
+                             NRF_RADIO_SHORT_CCABUSY_DISABLE_MASK |  \
+                             SHORTS_CCAIDLE_TXEN |                   \
+                             NRF_RADIO_SHORT_TXREADY_START_MASK |    \
+                             NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+
+#define SHORTS_TX           (NRF_RADIO_SHORT_TXREADY_START_MASK | \
+                             NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
 
 #if !defined(NRF52_SERIES)
-#define SHORTS_RX_ACK         (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
-                               NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
+#define SHORTS_RX_ACK       (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
+                             NRF_RADIO_SHORT_PHYEND_DISABLE_MASK)
 #else
-#define SHORTS_RX_ACK         (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
-                               NRF_RADIO_SHORT_END_DISABLE_MASK)
+#define SHORTS_RX_ACK       (NRF_RADIO_SHORT_ADDRESS_RSSISTART_MASK | \
+                             NRF_RADIO_SHORT_END_DISABLE_MASK)
 
 #endif
 
@@ -726,6 +733,12 @@ static void fem_for_tx_set(bool cca, mpsl_fem_pa_power_control_t pa_power_contro
     {
         nrf_timer_shorts_enable(NRF_802154_TIMER_INSTANCE, NRF_TIMER_SHORT_COMPARE0_STOP_MASK);
         nrf_802154_trx_ppi_for_fem_set();
+    }
+    else
+    {
+        nrf_timer_shorts_enable(NRF_802154_TIMER_INSTANCE,
+                                NRF_TIMER_SHORT_COMPARE0_STOP_MASK);
+        nrf_timer_cc_set(NRF_802154_TIMER_INSTANCE, NRF_TIMER_CC_CHANNEL0, 2);
     }
 }
 
@@ -1637,9 +1650,7 @@ void nrf_802154_trx_transmit_frame(const void                            * p_tra
 
     fem_for_tx_set(cca, p_tx_power->fem_pa_power_control);
     nrf_802154_trx_antenna_update();
-    nrf_802154_trx_ppi_for_ramp_up_set(cca ? NRF_RADIO_TASK_RXEN : NRF_RADIO_TASK_TXEN,
-                                       rampup_trigg_mode,
-                                       false);
+    nrf_802154_trx_ppi_for_txframe_ramp_up_set(cca, rampup_trigg_mode);
 
     if (rampup_trigg_mode == TRX_RAMP_UP_SW_TRIGGER)
     {
@@ -2537,7 +2548,7 @@ static void txframe_finish_disable_ppis(bool cca)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
 
-    nrf_802154_trx_ppi_for_ramp_up_clear(cca ? NRF_RADIO_TASK_RXEN : NRF_RADIO_TASK_TXEN, false);
+    nrf_802154_trx_ppi_for_txframe_ramp_up_clear(cca);
     nrf_802154_trx_ppi_for_extra_cca_attempts_clear(); // fine to call unconditionally
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);

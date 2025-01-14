@@ -91,6 +91,32 @@ extern "C" {
 #define NRF_802154_EGU_USED_MASK (1 << NRF_802154_EGU_INSTANCE_NO)
 #endif
 
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0) || defined(__DOXYGEN__)
+
+/**
+ * @def NRF_802154_EGU_TIMER_START_CHANNEL_NO
+ *
+ * The channel number of the @ref NRF_802154_EGU_INSTANCE used for starting the TIMER.
+ * Used only when @ref NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US is non-zero.
+ */
+#define NRF_802154_EGU_TIMER_START_CHANNEL_NO 14
+
+#define NRF_802154_EGU_TIMER_START_USED_CHANNELS_MASK \
+    (1U << NRF_802154_EGU_TIMER_START_CHANNEL_NO)
+
+/**
+ * @def NRF_802154_EGU_TIMER_START2_CHANNEL_NO
+ *
+ * The channel number of the @ref NRF_802154_EGU_INSTANCE used for starting the TIMER (second source).
+ * Used only when @ref NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US is non-zero.
+ */
+#define NRF_802154_EGU_TIMER_START2_CHANNEL_NO 13
+
+#define NRF_802154_EGU_TIMER_START2_USED_CHANNELS_MASK \
+    (1U << NRF_802154_EGU_TIMER_START2_CHANNEL_NO)
+
+#endif /* (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0) || defined(__DOXYGEN__) */
+
 /**
  * @def NRF_802154_RTC_INSTANCE_NO
  *
@@ -206,6 +232,40 @@ extern "C" {
 #define NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC 12U
 #endif
 
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0) || defined(__DOXYGEN__)
+/**
+ * @def NRF_802154_DPPI_TIMER_START
+ *
+ * The DPPI channel that is used to trigger TIMER's START task.
+ * Used only when @ref NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US is non-zero.
+ *
+ */
+#ifndef NRF_802154_DPPI_TIMER_START
+#define NRF_802154_DPPI_TIMER_START 16U
+#endif
+
+/**
+ * @def NRF_802154_DPPI_RADIO_TXEN
+ *
+ * The DPPI channel that is used to trigger RADIO's TXEN task
+ * in the scenario where short CCAIDLE_TXEN is not used.
+ * Used only when @ref NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US is non-zero.
+ *
+ */
+#ifndef NRF_802154_DPPI_RADIO_TXEN
+#define NRF_802154_DPPI_RADIO_TXEN       17U
+#endif
+
+#define NRF_802154_DPPI_TIMER_START_MASK (1U << NRF_802154_DPPI_TIMER_START)
+#define NRF_802154_DPPI_RADIO_TXEN_MASK  (1U << NRF_802154_DPPI_RADIO_TXEN)
+
+#else
+
+#define NRF_802154_DPPI_TIMER_START_MASK 0U
+#define NRF_802154_DPPI_RADIO_TXEN_MASK  0U
+
+#endif /* (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0) || defined(__DOXYGEN__) */
+
 /**
  * @def NRF_802154_DPPI_RADIO_CCAIDLE
  *
@@ -255,6 +315,8 @@ extern "C" {
         (1UL << NRF_802154_DPPI_EGU_TO_RADIO_RAMP_UP) |        \
         (1UL << NRF_802154_DPPI_TIMER_COMPARE_TO_RADIO_TXEN) | \
         (1UL << NRF_802154_DPPI_RADIO_SYNC_TO_EGU_SYNC) |      \
+        (NRF_802154_DPPI_TIMER_START_MASK) |                   \
+        (NRF_802154_DPPI_RADIO_TXEN_MASK) |                    \
         (1UL << NRF_802154_DPPI_RADIO_CCAIDLE) |               \
         (1UL << NRF_802154_DPPI_RADIO_CCABUSY) |               \
         (1UL << NRF_802154_DPPI_RADIO_HW_TRIGGER) |            \

@@ -35,6 +35,13 @@
 add_library(nrf-802154-driver-interface INTERFACE)
 add_library(nrf-802154-serialization-interface INTERFACE)
 
+if (CONFIG_NRF_802154_RADIO_DRIVER OR CONFIG_NRF_802154_SERIALIZATION)
+  target_compile_definitions(zephyr-802154-interface
+    INTERFACE
+      NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US=${CONFIG_NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US}
+  )
+endif()
+
 add_subdirectory(common)
 
 add_subdirectory(driver)

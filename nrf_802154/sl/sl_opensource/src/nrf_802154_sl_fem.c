@@ -216,18 +216,6 @@ int32_t mpsl_fem_pa_power_control_set(mpsl_fem_pa_power_control_t pa_power_contr
     return 0;
 }
 
-bool mpsl_fem_prepare_powerdown(NRF_TIMER_Type * p_instance,
-                                uint32_t         compare_channel,
-                                uint32_t         ppi_id,
-                                uint32_t         event_addr)
-{
-    (void)p_instance;
-    (void)compare_channel;
-    (void)ppi_id;
-
-    return false;
-}
-
 bool mpsl_fem_device_config_254_apply_get(void)
 {
     return false;

@@ -136,6 +136,24 @@ void nrf_802154_trx_ppi_for_ramp_up_set(nrf_radio_task_t                      ra
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
 
+void nrf_802154_trx_ppi_for_txframe_ramp_up_set(
+    bool                                  cca,
+    nrf_802154_trx_ramp_up_trigger_mode_t trigg_mode)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+
+    nrf_802154_trx_ppi_for_ramp_up_set(
+        cca ? NRF_RADIO_TASK_RXEN : NRF_RADIO_TASK_TXEN,
+        trigg_mode,
+        false);
+
+#if (NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US != 0)
+#error NRF_802154_CCAIDLE_TO_TXEN_EXTRA_TIME_US is unsupported for the selected SoC
+#endif
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+}
+
 void nrf_802154_trx_ppi_for_extra_cca_attempts_set(void)
 {
     nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
@@ -184,6 +202,15 @@ void nrf_802154_trx_ppi_for_ramp_up_clear(nrf_radio_task_t ramp_up_task, bool st
     }
 
     nrf_ppi_channel_remove_from_group(NRF_PPI, PPI_EGU_RAMP_UP, PPI_CHGRP_RAMP_UP);
+
+    nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
+}
+
+void nrf_802154_trx_ppi_for_txframe_ramp_up_clear(bool cca)
+{
+    nrf_802154_log_function_enter(NRF_802154_LOG_VERBOSITY_HIGH);
+
+    nrf_802154_trx_ppi_for_ramp_up_clear(cca ? NRF_RADIO_TASK_RXEN : NRF_RADIO_TASK_TXEN, false);
 
     nrf_802154_log_function_exit(NRF_802154_LOG_VERBOSITY_HIGH);
 }
