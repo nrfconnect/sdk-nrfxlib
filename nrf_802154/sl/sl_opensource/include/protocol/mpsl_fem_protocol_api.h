@@ -408,28 +408,6 @@ int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
  */
 int32_t mpsl_fem_pa_power_control_set(mpsl_fem_pa_power_control_t pa_power_control);
 
-/** @brief Prepares the Front End Module to switch to the Power Down state.
- *
- *  @deprecated This function is deprecated. Use @ref mpsl_fem_disable instead.
- *
- *  This function makes sure the Front End Module shall be switched off in the
- *  appropriate time, using the hardware timer and its compare channel.
- *  The timer is owned by the protocol and must be started by the protocol.
- *  The timer stops after matching the provided compare channel (the call sets the short).
- *
- * @param[in] p_instance      Timer instance that is used to schedule the transition to the Power Down state.
- * @param[in] compare_channel Compare channel to hold a value for the timer.
- * @param[in] ppi_id          ID of the PPI channel used to switch to the Power Down state.
- * @param[in] event_addr      Address of the event which shall trigger the Timer start.
- *
- * @retval true               Whether the scheduling of the transition was successful.
- * @retval false              Whether the scheduling of the transition was not successful.
- */
-bool mpsl_fem_prepare_powerdown(NRF_TIMER_Type * p_instance,
-                                uint32_t         compare_channel,
-                                uint32_t         ppi_id,
-                                uint32_t         event_addr);
-
 #endif // MPSL_FEM_PROTOCOL_API_H__
 
 /**@} */

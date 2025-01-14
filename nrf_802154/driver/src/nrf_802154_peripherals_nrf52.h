@@ -153,27 +153,12 @@ extern "C" {
 #endif
 
 /**
- * @def NRF_802154_PPI_RADIO_CRCERROR_TO_TIMER_CLEAR
- *
- * The PPI channel that connects RADIO_CRCERROR event to TIMER_CLEAR task.
- *
- * @note This option is used by the core module regardless of the driver configuration.
- *       The peripheral is shared with @ref NRF_802154_PPI_RADIO_CCAIDLE_TO_FEM_GPIOTE
- *       and @ref NRF_802154_PPI_TIMER_COMPARE_TO_RADIO_TXEN.
- *
- */
-#ifndef NRF_802154_PPI_RADIO_CRCERROR_TO_TIMER_CLEAR
-#define NRF_802154_PPI_RADIO_CRCERROR_TO_TIMER_CLEAR 9U
-#endif
-
-/**
  * @def NRF_802154_PPI_RADIO_CCAIDLE_TO_FEM_GPIOTE
  *
  * The PPI channel that connects RADIO_CCAIDLE event to the GPIOTE tasks used by the Frontend.
  *
  * @note This option is used by the core module regardless of the driver configuration.
- *       The peripheral is shared with @ref NRF_802154_PPI_RADIO_CRCERROR_TO_TIMER_CLEAR
- *       and @ref NRF_802154_PPI_TIMER_COMPARE_TO_RADIO_TXEN.
+ *       The peripheral is shared with @ref NRF_802154_PPI_TIMER_COMPARE_TO_RADIO_TXEN.
  *
  */
 #ifndef NRF_802154_PPI_RADIO_CCAIDLE_TO_FEM_GPIOTE
@@ -186,8 +171,7 @@ extern "C" {
  * The PPI channel that connects TIMER_COMPARE event to RADIO_TXEN task.
  *
  * @note This option is used by the core module regardless of the driver configuration.
- *       The peripheral is shared with @ref NRF_802154_PPI_RADIO_CRCERROR_TO_TIMER_CLEAR
- *       and @ref NRF_802154_PPI_RADIO_CCAIDLE_TO_FEM_GPIOTE.
+ *       The peripheral is shared with @ref NRF_802154_PPI_RADIO_CCAIDLE_TO_FEM_GPIOTE.
  *
  */
 #ifndef NRF_802154_PPI_TIMER_COMPARE_TO_RADIO_TXEN
@@ -262,7 +246,6 @@ extern "C" {
                                            (1 << NRF_802154_PPI_RADIO_RAMP_UP_TRIGG) |              \
                                            (1 << NRF_802154_PPI_EGU_TO_RADIO_RAMP_UP) |             \
                                            (1 << NRF_802154_PPI_EGU_TO_TIMER_START) |               \
-                                           (1 << NRF_802154_PPI_RADIO_CRCERROR_TO_TIMER_CLEAR) |    \
                                            (1 << NRF_802154_PPI_RADIO_CCAIDLE_TO_FEM_GPIOTE) |      \
                                            (1 << NRF_802154_PPI_TIMER_COMPARE_TO_RADIO_TXEN) |      \
                                            (1 << NRF_802154_PPI_RADIO_CCABUSY_TO_RADIO_CCASTART) |  \

@@ -224,7 +224,7 @@ extern "C" {
  * of an interrupt by the RADIO.EVENTS_SYNC event.
  *
  */
-#define NRF_802154_EGU_SYNC_CHANNEL_NO            3
+#define NRF_802154_EGU_SYNC_CHANNEL_NO                3
 
 /**
  * @def NRF_802154_EGU_SYNC_USED_CHANNELS_MASK
@@ -232,14 +232,14 @@ extern "C" {
  * Mask of EGU channels used by the interrupt generation from the RADIO.EVENTS_SYNC event.
  * See @ref NRF_802154_EGU_USED_CHANNELS_MASK.
  */
-#define NRF_802154_EGU_SYNC_USED_CHANNELS_MASK    (1U << NRF_802154_EGU_SYNC_CHANNEL_NO)
+#define NRF_802154_EGU_SYNC_USED_CHANNELS_MASK        (1U << NRF_802154_EGU_SYNC_CHANNEL_NO)
 
 /**
  * @def NRF_802154_EGU_RAMP_UP_CHANNEL_NO
  *
  * The channel number of the @ref NRF_802154_EGU_INSTANCE used for triggering the ramp-up of the RADIO.
  */
-#define NRF_802154_EGU_RAMP_UP_CHANNEL_NO         15
+#define NRF_802154_EGU_RAMP_UP_CHANNEL_NO             15
 
 /**
  * @def NRF_802154_EGU_RAMP_UP_USED_CHANNELS_MASK
@@ -247,23 +247,31 @@ extern "C" {
  * Mask of EGU channels used for triggering the ramp-up of the RADIO.
  * See @ref NRF_802154_EGU_USED_CHANNELS_MASK.
  */
-#define NRF_802154_EGU_RAMP_UP_USED_CHANNELS_MASK (1U << NRF_802154_EGU_RAMP_UP_CHANNEL_NO)
+#define NRF_802154_EGU_RAMP_UP_USED_CHANNELS_MASK     (1U << NRF_802154_EGU_RAMP_UP_CHANNEL_NO)
 
 /**
  * @def NRF_802154_EGU_RAMP_UP_EVENT
  *
  * The EGU event used by the driver to trigger radio ramp-up.
  */
-#define NRF_802154_EGU_RAMP_UP_EVENT              NRFX_CONCAT_2(NRF_EGU_EVENT_TRIGGERED, \
-                                                                NRF_802154_EGU_RAMP_UP_CHANNEL_NO)
+#define NRF_802154_EGU_RAMP_UP_EVENT                  NRFX_CONCAT_2(NRF_EGU_EVENT_TRIGGERED, \
+                                                                    NRF_802154_EGU_RAMP_UP_CHANNEL_NO)
 
 /**
  * @def NRF_802154_EGU_RAMP_UP_TASK
  *
  * The EGU task used by the driver to trigger radio ramp-up.
  */
-#define NRF_802154_EGU_RAMP_UP_TASK               NRFX_CONCAT_2(NRF_EGU_TASK_TRIGGER, \
-                                                                NRF_802154_EGU_RAMP_UP_CHANNEL_NO)
+#define NRF_802154_EGU_RAMP_UP_TASK                   NRFX_CONCAT_2(NRF_EGU_TASK_TRIGGER, \
+                                                                    NRF_802154_EGU_RAMP_UP_CHANNEL_NO)
+
+#ifndef NRF_802154_EGU_TIMER_START_USED_CHANNELS_MASK
+#define NRF_802154_EGU_TIMER_START_USED_CHANNELS_MASK 0U
+#endif
+
+#ifndef NRF_802154_EGU_TIMER_START2_USED_CHANNELS_MASK
+#define NRF_802154_EGU_TIMER_START2_USED_CHANNELS_MASK 0U
+#endif
 
 /**
  * @def NRF_802154_EGU_USED_CHANNELS_MASK
@@ -276,6 +284,8 @@ extern "C" {
      NRF_802154_EGU_REQUEST_USED_CHANNELS_MASK |      \
      NRF_802154_EGU_SYNC_USED_CHANNELS_MASK |         \
      NRF_802154_EGU_RAMP_UP_USED_CHANNELS_MASK |      \
+     NRF_802154_EGU_TIMER_START_USED_CHANNELS_MASK |  \
+     NRF_802154_EGU_TIMER_START2_USED_CHANNELS_MASK | \
      NRF_802154_SL_EGU_USED_CHANNELS_MASK)
 
 #ifdef __cplusplus
