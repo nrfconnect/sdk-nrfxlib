@@ -7,6 +7,17 @@ Changelog
    :local:
    :depth: 2
 
+nRF Connect SDK v2.6.3
+**********************
+
+All the notable changes included in the |NCS| v2.6.3 release are documented in this section.
+
+Changes
+=======
+
+* Fixed a rare issue that could cause a scheduler assert if interrupts were disabled for a longer period of time (DRGN-24327).
+  Note that disabling interrupts for a longer period of time is not allowed.
+
 nRF Connect SDK v2.6.0
 **********************
 
