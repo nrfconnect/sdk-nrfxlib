@@ -15,35 +15,6 @@ Main branch
 Added
 =====
 
-* Support generating the HCI LE CIS Established v2 event. (DRGN-24112)
-* Support for the Advertising Coding Selection feature as an advertiser or scanner. (DRGN-23744)
-
-  * For an advertiser, this adds support for the LE Set Extended Advertising Parameters [v2] HCI command.
-  * For a scanner, the advertising reports will contain the coding scheme for packets received over LE Coded PHY when the host feature bit is enabled.
-
-Changes
-=======
-
-* The CIS or BIS sink now generate lost SDUs immediately when scheduling conflicts occur instead of after receiving the next valid SDU. (DRGN-24062)
-* Removed support for running the SoftDevice Controller on the nRF54L15 DK v0.8.1 and earlier. (DRGN-21403)
-
-Bug fixes
-=========
-
-* Fixed an issue where ACL connections could not be created if a Periodic Advertiser was configured when the :kconfig:option:`CONFIG_BT_CTLR_SDC_PAWR_ADV` Kconfig option was selected. (DRGN-24148)
-* Fixed a rare issue where the scanner would assert when scanning and initiating at the same time. (DRGN-24198)
-  The issue would only happen if all the conditions are met:
-
-    * :kconfig:option:`BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` is set to the non-default value 2.
-    * The initiator has received a connectable ``ADV_EXT_IND``.
-    * The initiator is canceled.
-
-nRF Connect SDK v2.9.0
-**********************
-
-Added
-=====
-
 * Production support for scanning and initiating at the same time. (DRGN-23824)
 * :ref:`Experimental <nrf:software_maturity>` support for Channel Sounding step mode-3.
 * :ref:`Experimental <nrf:software_maturity>` support for Channel Sounding multiple antenna elements.

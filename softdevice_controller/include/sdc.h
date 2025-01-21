@@ -160,8 +160,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    795
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 891
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE 811
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 915
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 14
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -194,7 +194,7 @@ extern "C" {
      __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count))
 
 /** Maximum shared memory required for central links. */
-#define SDC_MEM_CENTRAL_LINKS_SHARED 21
+#define SDC_MEM_CENTRAL_LINKS_SHARED 17
 
 /** Maximum shared memory required for peripheral links. */
 #define SDC_MEM_PERIPHERAL_LINKS_SHARED  17
@@ -209,7 +209,7 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (12 + (num_links) * 20) : 0)
+#define SDC_MEM_SUBRATING(num_links) (11 + (num_links) * 19)
 
 /** @brief Maximum memory required when supporting periodic advertising sync transfer.
  *
@@ -221,7 +221,7 @@ extern "C" {
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
 /** Memory required for the scanner when only supporting legacy scanning. */
-#define SDC_MEM_SCAN(buffer_count) (353 + (buffer_count) * 104)
+#define SDC_MEM_SCAN(buffer_count) (353 + (buffer_count) * 98)
 
 /** Memory required for the scanner when supporting extended scanning. */
 #define SDC_MEM_SCAN_EXT(buffer_count) (353 + (buffer_count) * 320)
@@ -285,6 +285,7 @@ extern "C" {
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (166)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
 #define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (16 + (count) * 288) : 0)
+#define __MEM_PER_ISO_TX_HCI_BUFFER(count) ((count) > 0 ? (12 + (count) * 300) : 0)
 
 /** Memory required per periodic advertising with responses set.
  *
@@ -306,13 +307,13 @@ extern "C" {
 #define SDC_MEM_PER_CIG(count) ((count) > 0 ? (13 + (count) * 123) : 0)
 
 /** @brief Maximum memory required per CIS. Buffer and CIG memory comes in addition. */
-#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 556) : 0)
+#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 548) : 0)
 
 /** @brief Maximum memory required per BIG. */
-#define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 291) : 0)
+#define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 284) : 0)
 
 /** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
-#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 267) : 0)
+#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 268) : 0)
 
 /** @brief Maximum memory required for the ISO RX PDU pool per stream.
  *  @param[in] rx_pdu_buffer_per_stream_count Number of RX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
@@ -345,13 +346,13 @@ extern "C" {
  *
  * @param[in] count Maximum number of concurrent connections supporting CS procedure.
  */
-#define SDC_MEM_CS(count) ((count) > 0 ? (13 + (count) * 8924) : 0)
+#define SDC_MEM_CS(count) ((count) > 0 ? (13 + (count) * 8883) : 0)
 
 /** @brief Maximum additional memory required to support Channel Sounding setup phase procedures
  *
  * @param[in] count Total number of links (central + peripheral).
  */
-#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count) * 359) : 0)
+#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count)*339) : 0)
 
 /** @} end of sdc_mem_defines */
 
@@ -559,7 +560,6 @@ typedef struct
      */
     bool step_mode3_supported;
 } sdc_cfg_cs_cfg_t;
-
 
 /** @brief SoftDevice Controller configuration.  */
 typedef union
