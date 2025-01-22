@@ -160,8 +160,8 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    795
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 891
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    747
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 867
 #define __MEM_TX_BUFFER_OVERHEAD_SIZE 14
 #define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
 
@@ -209,7 +209,7 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (12 + (num_links) * 20) : 0)
+#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (11 + (num_links) * 63) : 0)
 
 /** @brief Maximum memory required when supporting periodic advertising sync transfer.
  *
@@ -341,17 +341,30 @@ extern "C" {
  * @param[in] size  Maximum size of SDUs being used. */
 #define SDC_MEM_ISO_TX_SDU_POOL_SIZE(count, size) ((count) > 0 ? (12 + (count) * ((size) + 49)) : 0)
 
-/** @brief Maximum additional memory required to support Channel Sounding
+/** @brief Auxiliary defines, not to be used outside of this file. */
+#define __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) (((max_antenna_paths_supported) - 1) * 1024)
+#define __MEM_CS_STEP_MODE3(step_mode3_supported) ((step_mode3_supported) ? 1536 : 0)
+
+/** @brief Maximum additional memory required to support Channel Sounding.
+ *
+ * @param[in] count Maximum number of concurrent connections supporting CS procedure.
+ * @param[in] max_antenna_paths_supported Maximum number of antenna paths supported in CS.
+ * @param[in] step_mode3_supported Whether step mode3 is supported.
+ */
+#define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) ((count) > 0 ? (13 + (count) * (4331 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
+
+/** @brief Maximum additional memory required to support Channel Sounding.
+ *  @note This API will be deprecated and replaced by @ref SDC_MEM_CS.
  *
  * @param[in] count Maximum number of concurrent connections supporting CS procedure.
  */
-#define SDC_MEM_CS(count) ((count) > 0 ? (13 + (count) * 8924) : 0)
+#define SDC_MEM_CS_DEPRECATED(count) ((count) > 0 ? (13 + (count) * 8952) : 0)
 
-/** @brief Maximum additional memory required to support Channel Sounding setup phase procedures
+/** @brief Maximum additional memory required to support Channel Sounding setup phase procedures.
  *
  * @param[in] count Total number of links (central + peripheral).
  */
-#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count) * 359) : 0)
+#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count) * 370) : 0)
 
 /** @} end of sdc_mem_defines */
 

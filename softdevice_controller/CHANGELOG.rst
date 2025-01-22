@@ -32,11 +32,30 @@ Bug fixes
 
 * Fixed an issue where ACL connections could not be created if a Periodic Advertiser was configured when the :kconfig:option:`CONFIG_BT_CTLR_SDC_PAWR_ADV` Kconfig option was selected. (DRGN-24148)
 * Fixed a rare issue where the scanner would assert when scanning and initiating at the same time. (DRGN-24198)
+
   The issue would only happen if all the conditions are met:
 
-    * :kconfig:option:`BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` is set to the non-default value 2.
+    * :kconfig:option:`BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` is selected.
+    * :kconfig:option:`BT_CTLR_SDC_SCAN_BUFFER_COUNT` is set to the non-default value 2.
     * The initiator has received a connectable ``ADV_EXT_IND``.
     * The initiator is canceled.
+* Fixed an issue where the central device would disconnect 40 s after responding to a ``LL_SUBRATE_REQ`` with reason "LMP Response Timeout (0x22)".
+  This would only occur on nRF52 Series and nRF53 Series devices. (DRGN-24310)
+* Fixed a very rare issue where the scanner would assert, hang or stop producing reports when scanning and initiating at the same time. (DRGN-24370)
+
+  The issue would only happen if all the conditions are met:
+
+    * :kconfig:option:`BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` is selected.
+    * The timing events are not combined for the scanner and the initiator.
+    * The initiator is canceled or the scanner is stopped after receiving an extended advertising PDU pointing to a AUX_ADV_IND or AUX_CHAIN_IND PDU, but the AUX_ADV_IND or AUX_CHAIN_IND PDU was not received yet.
+      The issue may also occur if the reception of the AUX_ADV_IND or AUX_CHAIN_IND fails to be scheduled.
+
+    See :ref:`concurrent_scanner_initiator_timing` for information on how to select parameters where the timing events are combined.
+* Fixed a rare issue where the scanner would fail to receive a secondary channel packet. (DRGN-24300)
+  The issue would only happen if all the conditions are met:
+
+    * The configured scan window is larger than 500 milliseconds.
+    * The ``ADV_EXT_IND`` is received at the very end of the scan window.
 
 nRF Connect SDK v2.9.0
 **********************
