@@ -59,6 +59,8 @@ bool mpsl_pm_params_get(mpsl_pm_params_t * p_params);
  * When low-priority context has registered a new event time with the external power management system,
  * based on @ref mpsl_pm_params_get, this function shall be called to acknowledge registration.
  *
+ * TODO: DRGN-23673: Remove this function, as it is sufficient to know if low latency requests are handled in time.
+ *
  * @param[in] req_counter Counter value corresponding to the event time registered.
  */
 void mpsl_pm_event_registered_ack(uint8_t req_counter);
