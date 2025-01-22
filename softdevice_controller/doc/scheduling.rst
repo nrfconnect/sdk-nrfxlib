@@ -178,7 +178,7 @@ ACL connection timing
 
 ACL connection timing-events are scheduled every connection interval.
 Each connection event is allocated a window of length :math:`\mathsf{t_{event}}` for transmission and reception of packets.
-In the |NCS|, this time allocation is configured with the :kconfig:option:`CONFIG_BT_CTLR_SDC_MAX_CONN_EVENT_LEN_DEFAULT` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_event_length_set`.
+In the |NCS|, this time allocation is configured with the :kconfig:option:`CONFIG_BT_CTLR_SDC_MAX_CONN_EVENT_LEN_DEFAULT` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`hci_vs_sdc_event_length_set`.
 This allows the application to control the bandwidth of each link.
 If :ref:`Connection Event Length Extension <connection_timing_with_connection_event_length_extension>` is enabled, the time available for each connection event may be extended beyond the configured value.
 
@@ -340,11 +340,10 @@ Central and peripheral links can extend the event if there is radio time availab
 
 The connection event is the time within a timing-event reserved for sending or receiving packets.
 The |controller| can be configured to dynamically extend the connection event length to fit the maximum number of packets inside the connection event before the timing-event must be ended.
-The time is extended one packet pair at a time until the maximum extend time is reached.
-The connection event cannot be longer than the connection interval; when the interval is reached, the connection event ends and the next connection event begins.
-A connection event cannot be extended if it will collide with another timing-event, regardless of the priorities of the timing-events.
 In |NCS| connection event extension is enabled by default.
-It can be turned off using the vendor-specific HCI command defined by :c:func:`sdc_hci_cmd_vs_conn_event_extend`.
+By default, the connection event is extended as much as possible up to one connection interval.
+That is, either until the start of the next connection event, or another conflicting timing-event of equal or higher priority.
+It can be turned off by using the :kconfig:option:`CONFIG_BT_CTLR_SDC_CONN_EVENT_EXTEND_DEFAULT` Kconfig option, or with the vendor-specific HCI command defined by :c:func:`hci_vs_sdc_conn_event_extend`.
 
 To get the maximum bandwidth on a single link, Connection Event Length Extension should be enabled and the connection interval should be increased.
 This will allow the |controller| to send more packets within the event and limit the overhead of processing between connection events.
@@ -476,6 +475,8 @@ Therefore, the Scanner cannot decide when the secondary scanning timing-events w
 
    Scanner timing - secondary scan timing-events will interleave with connections
 
+
+.. _concurrent_scanner_initiator_timing:
 
 Concurrent scanner and initiator timing
 =======================================

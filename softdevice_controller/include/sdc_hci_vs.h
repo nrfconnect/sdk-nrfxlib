@@ -53,8 +53,6 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
     /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_TX_POWER = 0xfc0f,
-    /** @brief See @ref sdc_hci_cmd_vs_read_supported_vs_commands(). */
-    SDC_HCI_OPCODE_CMD_VS_READ_SUPPORTED_VS_COMMANDS = 0xfd00,
     /** @brief See @ref sdc_hci_cmd_vs_llpm_mode_set(). */
     SDC_HCI_OPCODE_CMD_VS_LLPM_MODE_SET = 0xfd01,
     /** @brief See @ref sdc_hci_cmd_vs_conn_update(). */
@@ -165,38 +163,6 @@ enum sdc_hci_vs_tx_power_handle_type
     /** @brief Handle of type ISO broadcaster. */
     SDC_HCI_VS_TX_POWER_HANDLE_TYPE_ISO_BROADCASTER = 0x04,
 };
-
-/** @brief Supported Vendor Specific HCI Commands. */
-typedef struct __PACKED __ALIGN(1)
-{
-    uint8_t read_supported_vs_commands : 1;
-    uint8_t llpm_mode_set : 1;
-    uint8_t conn_update : 1;
-    uint8_t conn_event_extend : 1;
-    uint8_t qos_conn_event_report_enable : 1;
-    uint8_t event_length_set : 1;
-    uint8_t periodic_adv_event_length_set : 1;
-    uint8_t peripheral_latency_mode_set : 1;
-    uint8_t write_remote_tx_power : 1;
-    uint8_t set_adv_randomness : 1;
-    uint8_t qos_channel_survey_enable : 1;
-    uint8_t set_power_control_request_params : 1;
-    uint8_t read_average_rssi : 1;
-    uint8_t central_acl_event_spacing_set : 1;
-    uint8_t set_conn_event_trigger : 1;
-    uint8_t get_next_conn_event_counter : 1;
-    uint8_t allow_parallel_connection_establishments : 1;
-    uint8_t min_val_of_max_acl_tx_payload_set : 1;
-    uint8_t iso_read_tx_timestamp : 1;
-    uint8_t big_reserved_time_set : 1;
-    uint8_t cig_reserved_time_set : 1;
-    uint8_t cis_subevent_length_set : 1;
-    uint8_t scan_channel_map_set : 1;
-    uint8_t scan_accept_ext_adv_packets_set : 1;
-    uint8_t set_role_priority : 1;
-    uint8_t set_event_start_task : 1;
-    uint8_t conn_anchor_point_update_event_report_enable : 1;
-} sdc_hci_vs_supported_vs_commands_t;
 
 /** @brief Zephyr Static Address type. */
 typedef struct __PACKED __ALIGN(1)
@@ -438,13 +404,6 @@ typedef struct __PACKED __ALIGN(1)
     /** @brief The selected Tx Power in dBm. */
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
-
-/** @brief Read Supported Vendor Specific Commands return parameter(s). */
-typedef union __PACKED __ALIGN(1)
-{
-    sdc_hci_vs_supported_vs_commands_t params;
-    uint8_t raw[64];
-} sdc_hci_cmd_vs_read_supported_vs_commands_return_t;
 
 /** @brief Set Low Latency Packet Mode command parameter(s). */
 typedef struct __PACKED __ALIGN(1)
@@ -949,25 +908,6 @@ uint8_t sdc_hci_cmd_vs_zephyr_write_tx_power(const sdc_hci_cmd_vs_zephyr_write_t
  */
 uint8_t sdc_hci_cmd_vs_zephyr_read_tx_power(const sdc_hci_cmd_vs_zephyr_read_tx_power_t * p_params,
                                             sdc_hci_cmd_vs_zephyr_read_tx_power_return_t * p_return);
-
-/** @brief Read Supported Vendor Specific Commands.
- *
- * This command reads the list of vendor specific HCI commands supported
- * for the local Controller.
- *
- * This command shall return a bitmap of the supported vendor specific
- * commands.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[out] p_return Extra return parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_read_supported_vs_commands(sdc_hci_cmd_vs_read_supported_vs_commands_return_t * p_return);
 
 /** @brief Set Low Latency Packet Mode.
  *
