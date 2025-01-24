@@ -36,9 +36,10 @@ enum nrf_modem_softsim_cmd {
  *
  * @details This handler lets the application process a SoftSIM request.
  *          The application must then call @ref nrf_modem_softsim_res with the response data
- *          requested.
+ *          requested, and @ref nrf_modem_softsim_data_free when the request is not referenced
+ *          anymore and can be freed.
  *
- * @note This handler is executed in an interrupt service routine.
+ * @note This handler is executed in an interrupt service routine (ISR).
  *       Offload any intensive operations as necessary.
  *
  * @param cmd SoftSIM request command.
@@ -52,7 +53,7 @@ typedef void (*nrf_modem_softsim_req_handler_t)(enum nrf_modem_softsim_cmd cmd, 
 /**
  * @brief Set a handler function for SoftSIM requests.
  *
- * @note The handler is executed in an interrupt service routine.
+ * @note The handler is executed in an interrupt service routine (ISR).
  *	 Take care to offload any processing as appropriate.
  *
  * @param handler The SoftSIM request handler. Use @c NULL to unset handler.
@@ -66,6 +67,9 @@ int nrf_modem_softsim_req_handler_set(nrf_modem_softsim_req_handler_t handler);
  *
  * @details This function is used to respond to the Modem with the data requested by a specific
  *          request.
+ *
+ * @note This function takes care of copying @p data to an internal buffer, so any
+ *       heap allocation for @p data can be freed immediately after calling this function.
  *
  * @param cmd SoftSIM response command.
  * @param req_id Request ID used to match request and response.
