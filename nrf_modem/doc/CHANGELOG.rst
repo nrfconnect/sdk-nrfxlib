@@ -9,6 +9,55 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem
+*********
+
+Core library
+============
+
+* Fixed a bug introduced in the :c:func:`nrf_modem_init()` function in version 2.3.0, where the library would use the function's input parameter after the function had returned.
+  This could cause several socket functions to return an error and set ``errno`` to ``NRF_EINVAL``.
+  If you use a version of this library from v2.3.0 to v2.9.0 outside of the |NCS| and are initializing the library by calling the :c:func:`nrf_modem_init()` function, ensure that the parameter of the :c:func:`nrf_modem_init` function is always ``static``.
+
+DECT NR+
+========
+
+Added support for DECT PHY firmware v1.1.0 with new features and improvements, notably:
+
+* Hardware and software initialization of the stack are now separate operations.
+* Full support for scheduled operations.
+* Extended operation latency and band information.
+* Automatic voltage measurement and reporting during operation.
+
+.. important::
+   Due to incompatibilities between the DECT PHY 1.0.x and 1.1.0 firmware versions, this version of the library is only compatible with DECT PHY firmware version 1.1.0 and newer.
+
+* Added:
+
+  * The event types for all operations, and the :c:enum:`nrf_modem_dect_phy_event_id` event ID enumeration.
+  * Transaction IDs to the PCC and PDC events to map the two together.
+  * The :c:func:`nrf_modem_dect_phy_activate` function to activate the DECT PHY stack.
+  * The :c:func:`nrf_modem_dect_phy_deactivate` function to deactivate the DECT PHY stack.
+  * The :c:func:`nrf_modem_dect_phy_configure` function to configure the DECT PHY stack.
+  * The :c:func:`nrf_modem_dect_phy_radio_config` function to configure the radio mode.
+  * The :c:func:`nrf_modem_dect_phy_band_get` function to retrieve the bands supported by the firmware.
+  * The :c:func:`nrf_modem_dect_phy_latency_get` function to retrieve the operation latencies.
+  * The :c:macro:`NRF_MODEM_DECT_PHY_VOLTAGE_NOT_MEASURED` macro to indicate the voltage was not measured.
+  * The :c:enumerator:`NRF_MODEM_DECT_PHY_ERR_RADIO_MODE_CONFLICT` and :c:enumerator:`NRF_MODEM_DECT_PHY_ERR_TX_POWER_OVER_MAX_LIMIT` enumeration values.
+
+* Updated:
+
+  * The ``nrf_modem_dect_phy_rx_stop`` function was renamed to :c:func:`nrf_modem_dect_phy_cancel` and can now be used to cancel any operation.
+  * The ``nrf_modem_dect_phy_callback_set`` function was renamed to :c:func:`nrf_modem_dect_phy_event_handler_set`.
+    Instead of providing a set of callbacks, one for each operation, the application now sets a single event handler function to receive events.
+
+* Removed:
+
+  * The ``nrf_modem_dect_phy_callbacks`` struct.
+    The application now sets a single event handler using the :c:func:`nrf_modem_dect_phy_event_handler_set` function instead.
+  * The ``nrf_modem_dect_phy_modem_cfg`` struct.
+  * The ``NRF_MODEM_DECT_PHY_ERR_NO_ONGOING_OP`` enumeration value.
+
 nrf_modem 2.9.0
 ***************
 

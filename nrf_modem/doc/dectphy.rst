@@ -23,7 +23,7 @@ Regulations
 ***********
 
 DECT NR+ operates on free but regulated radio channels.
-The availability of the channels and the exact regulation to use them varies in different countries.
+The availability of these channels and the exact regulations covering their use varies in different countries.
 
 .. note::
    It is your responsibility to operate the devices according to the local regulation, in all situations.
@@ -57,106 +57,200 @@ The DECT NR+ PHY firmware implements only the physical layer of the protocol sta
 General operation
 *****************
 
-This section describes the characteristics and general operation of the DECT PHY interface.
+The DECT PHY stack has the following three states:
+
+* deinitialized, deactivated
+* initialized, deactivated
+* initialized, activated
+
+The DECT PHY interface offers four functions to manipulate the DECT PHY stack state:
+
+* :c:func:`nrf_modem_dect_phy_init`
+* :c:func:`nrf_modem_dect_phy_deinit`
+* :c:func:`nrf_modem_dect_phy_activate`
+* :c:func:`nrf_modem_dect_phy_deactivate`
 
 Initialization
 ==============
 
-The DECT PHY interface in the Modem library requires explicit initialization.
+Initializing the DECT PHY readies the hardware resources for the PHY in the modem.
 
-Before initializing the DECT PHY interface of the Modem library, the application must:
+Before initializing the DECT PHY, the application must:
 
-#. Initialize the Modem library by calling the :c:func:`nrf_modem_init` function. This also turns on the modem core.
-#. Register callbacks for DECT PHY operations by calling the :c:func:`nrf_modem_dect_phy_callback_set` function.
+#. Initialize the Modem library by calling the :c:func:`nrf_modem_init` function.
+   This also turns on the modem.
+#. Register the event handler for DECT PHY operations by calling the :c:func:`nrf_modem_dect_phy_event_handler_set` function.
 
-Afterwards, the application can initialize the DECT PHY interface by calling the :c:func:`nrf_modem_dect_phy_init` function.
-Upon successful initialization, both the DECT PHY interface and DECT NR+ physical layer in the modem are ready for operation.
+Afterwards, the application can initialize the DECT PHY by calling the :c:func:`nrf_modem_dect_phy_init` function.
 
-On nRF9151 Series devices only, the application can configure band 4 support during initialization by setting the :c:member:`nrf_modem_dect_phy_init_params.band4_support` field to ``1``.
+On nRF9131 Series devices only, the DECT NR+ PHY firmware locks the calibration data the very first time the DECT PHY is initialized.
+
+To begin receiving and transmitting data, the DECT PHY must be configured and activated first.
+
+Configuration
+=============
+
+The DECT PHY must be configured using the :c:func:`nrf_modem_dect_phy_configure` function each time before it is activated.
+
+On nRF9151 Series devices only, the application can configure band 4 support during initialization by setting the :c:member:`nrf_modem_dect_phy_config_params.band_group_index` field to ``1``.
 
 .. note::
    DECT NR+ band 4 is supported by the nRF9151 LACA A0 SiP for R&D evaluation purposes.
    The nRF9151 LACA A0AB SiP will be qualified for DECT NR+ band 4 support.
 
 .. important::
-   When operating on band 4, you must not use the carries outside the range of 525 to 551 as they interfere with other radio devices, including LTE devices.
+   When operating on band 4, you must not use the carriers outside the range of 525 to 551 as they interfere with other radio devices, including LTE devices.
 
-On nRF9131 Series devices only, the DECT NR+ PHY firmware locks the calibration data the very first time the DECT PHY interface is initialized.
+Activation
+==========
 
-The DECT PHY interface can be de-initialized, which in turn de-initializes the physical layer in the modem, cancelling all scheduled operations.
+Once the DECT PHY has been configured, it can be activated in a given radio mode using the :c:func:`nrf_modem_dect_phy_activate` function.
+When the DECT PHY is in an activated state, it is possible to start receiving and transmitting data.
+Different radio modes have different performance and latency.
 
-.. note::
-   De-initializing the DECT PHY interface does not unset any callbacks set by the application using the :c:func:`nrf_modem_dect_phy_callback_set` function.
-   It also does not affect the modem core power status (on/off), which is instead controlled by the :c:func:`nrf_modem_init` and :c:func:`nrf_modem_shutdown` functions.
+Radio modes
+===========
 
-Once de-initialized, the DECT PHY interface can be re-initialized by only calling the :c:func:`nrf_modem_dect_phy_init` function.
+The radio modes have implications on operation latency and power consumption.
 
-Radio states
+The radio can be configured in one of three modes described in the following sections.
+
+Low latency
+-----------
+
+This mode has the lowest latency, the best RX/TX switching performance, and the highest power consumption.
+This is the only mode that supports immediate starting operations, that is, operations whose configured start time is zero.
+
+Low latency with standby
+------------------------
+
+This mode has the same RX/TX switching performance as the low latency mode, but higher operation start-up latency due to the radio entering standby mode when possible.
+Power consumption is thus lower compared to the low latency mode.
+
+No LBT with standby
+-------------------
+
+This mode has the lowest power consumption, due to the modem entering standby mode when possible and not using Listen-Before-Talk, at the cost of higher start-up latency and worse RX/TX switching performance compared to the other radio modes.
+
+Deactivation
 ============
 
-The radio states have implications for latency and power consumption.
-During operation, the radio can be in one of several states.
+The DECT PHY can be deactivated using the :c:func:`nrf_modem_dect_phy_deactivate` function.
+When in the deactivated state, the DECT PHY can be configured with different parameters.
 
-When a radio operation is being executed, the stack is in one of the following states:
+Deinitialization
+================
 
-* TX active- The radio is transmitting, no reception is ongoing.
-* RX active- The radio is receiving, no transmission is ongoing.
-
-When no radio operations are being executed, the stack is in the radio idle state.
-In this state, the radio is powered on and able to start a radio operation with relatively low latency, at the cost of increased power consumption compared to sleep or off states.
-
-Currently, the DECT PHY layer in the DECT NR+ PHY firmware does not support deep sleep states.
-
-Scheduling operations
-=====================
-
-The DECT PHY interface allows to schedule radio operations for execution by the scheduler of the DECT NR+ physical layer in the DECT NR+ PHY firmware.
-Due to the nature of a radio scheduler, which allows radio operations to be executed at a specific time in the future, all radio operations in the DECT PHY interface are asynchronous and their completion is signaled to the application using callbacks.
-
-All scheduling is final, which means that it is not possible to unschedule operations.
-
-A radio operation may be scheduled to execute at a specific time in the future, or immediately, if the radio is not currently executing any other operation.
-
-All radio operations have an application-defined handle, which can be used to identify the operation and that is returned by the callback signaling the completion of an operation.
-The operation handle is entirely opaque to all underlying layers, including the DECT PHY interface.
-
-Modem time and operation latency
---------------------------------
-
-Operation execution is scheduled by the application according to the modem time, which is a 64-bit counter kept by the modem.
-All radio operation callbacks provide the value that the modem time counter had at the moment the callback was sent by the modem core to the application core.
-This provides a way for the application to track the modem time without explicitly querying the modem for it.
-
-If necessary, the application can retrieve the modem time counter value by calling the :c:func:`nrf_modem_dect_phy_time_get` function.
-
-Both radio state transitions between operations in the modem core and the interprocessor communication (IPC) mechanism between the application and modem cores have latency.
-The latency of both radio state transitions and IPC is measured and provided by the DECT PHY interface upon initialization, by the :c:member:`nrf_modem_dect_phy_callbacks.init` callback function, in the :c:member:`nrf_modem_dect_phy_modem_cfg.latency` parameter.
-
-.. note::
-   The application must account for operations' latency when scheduling operations.
+The DECT PHY can be de-initialized using the :c:func:`nrf_modem_dect_phy_deinit` function, releasing all hardware resources.
+Once de-initialized, the DECT PHY interface can be re-initialized by only calling the :c:func:`nrf_modem_dect_phy_init` function.
 
 Temperature monitoring
 ======================
 
-The DECT PHY interface reports the current SiP temperature as measured by the DECT NR+ PHY firmware in all radio operation callbacks, and upon initialization.
+The DECT PHY interface reports the current SiP temperature as measured by the DECT NR+ PHY firmware in all radio operation events, and upon initialization.
 This allows the application to track the changes in temperature and adjust further scheduling of operations accordingly, to ensure the device remains within safe operating temperatures.
 
 The DECT NR+ PHY firmware has an internal temperature protection mechanism that prevents the SiP from operating above safe temperature limits.
-The operating temperature limit is reported upon initialization by the :c:member:`nrf_modem_dect_phy_callbacks.init` callback function, in the :c:member:`nrf_modem_dect_phy_modem_cfg.temperature_limit` parameter.
+The operating temperature limit is reported upon initialization by the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_INIT` event, in the :c:member:`nrf_modem_dect_phy_init_event.temperature_limit` parameter.
 
-If the temperature threshold is reached, the modem rejects further scheduling of radio operations with the :c:enum:`nrf_modem_dect_phy_err.NRF_MODEM_DECT_PHY_ERR_TEMP_HIGH` error.
+If the temperature threshold is reached, the modem rejects further scheduling of radio operations with the :c:enumerator:`NRF_MODEM_DECT_PHY_ERR_TEMP_HIGH` error.
 
-In this event, the application must de-initialize the DECT PHY interface (and thus the firmware DECT NR+ physical layer) by calling the :c:func:`nrf_modem_dect_phy_deinit` function and allow the device to cool.
-This will cancel all scheduled operations, with the :c:enum:`nrf_modem_dect_phy_err.NRF_MODEM_DECT_PHY_ERR_OP_CANCELED` error in their relative callbacks.
+In this event, the application must de-initialize the DECT PHY by calling the :c:func:`nrf_modem_dect_phy_deinit` function and allow the device to cool.
+This will cancel all scheduled operations, with the :c:enumerator:`NRF_MODEM_DECT_PHY_ERR_OP_CANCELED` error in their relative events.
 
-The application can then re-initialize the DECT PHY interface by calling :c:func:`nrf_modem_dect_phy_init`, and read the current measured temperature in the :c:member:`nrf_modem_dect_phy_callbacks.init` function parameters,
-to ensure the temperature has decreased below the allowed threshold.
+The application can then re-initialize the DECT PHY interface by calling :c:func:`nrf_modem_dect_phy_init`, and read the current measured temperature in the :c:struct:`nrf_modem_dect_phy_init_event` event to ensure the temperature has decreased below the allowed threshold.
+
+Voltage monitoring
+==================
+
+The DECT PHY interface reports the voltage as measured by the DECT NR+ PHY firmware in all radio operation events, and upon initialization.
+This allows the application to track the changes in voltage and adjust accordingly to ensure the device operates within expected voltage levels.
 
 Physical layer capabilities
 ===========================
 
 The application can retrieve the DECT NR+ PHY firmware physical layer capabilities by calling the :c:func:`nrf_modem_dect_phy_capability_get` function.
-The list of supported capabilities is returned to the application in the :c:member:`nrf_modem_dect_phy_callbacks.capability_get` callback function.
+The list of supported capabilities is returned to the application in the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_CAPABILITY` event.
+
+Scheduling operations
+*********************
+
+The DECT PHY interface allows to schedule radio operations for execution by the scheduler of the DECT NR+ physical layer in the DECT NR+ PHY firmware.
+Due to the nature of a radio scheduler, which allows radio operations to be executed at a specific time in the future, all radio operations in the DECT PHY interface are asynchronous and their completion is signaled to the application using events.
+
+A radio operation may be scheduled to execute at a specific time in the future or immediately if the radio is not currently executing any other operation.
+
+All events for radio operations carry an application-defined handle that can be used to identify the operation.
+
+Modem time and operation latency
+================================
+
+Operation execution is scheduled by the application according to the modem time, which is a 64-bit counter kept by the modem.
+
+All DECT PHY events provide the value of the modem time counter at the moment the event was sent by the modem core to the application core.
+This provides a way for the application to track the modem time without explicitly querying the modem for it.
+If necessary, the application can retrieve the modem time counter value by calling the :c:func:`nrf_modem_dect_phy_time_get` function.
+
+The current radio mode, the radio state transitions between operations, and scheduling overhead all affect the total operation latency and must be taken into account during scheduling of operations.
+
+These latencies are measured and can be retrieved by the application using the :c:func:`nrf_modem_dect_phy_latency_get` function.
+
+Examples of scheduling
+======================
+
+Example 1: Immediate execution
+
+Pre-conditions:
+
+* The DECT PHY radio mode is :c:enumerator:`NRF_MODEM_DECT_PHY_RADIO_MODE_LOW_LATENCY`.
+* There are no scheduled or ongoing operations.
+
+Let ``t`` be the current modem time.
+
+The operation startup latency ``startup`` is indicated:
+
+* For RX operations (RX, RSSI or RX with RSSI) by :c:member:`nrf_modem_dect_phy_latency_info.idle_to_active`
+* For TX operations by :c:member:`nrf_modem_dect_phy_latency_info.idle_to_active`
+
+The actual start time of the operation can be calculated as ``t + startup``.
+
+Stopping the operation also incurs latency, which includes the time to close the RF channel and send the operation response after the operation's duration.
+
+The stop latency ``stop`` depends on the operation, and is indicated:
+
+* For an RX operation-  :c:member:`nrf_modem_dect_phy_latency_info.active_to_idle_rx`
+* For an RSSI operation- :c:member:`nrf_modem_dect_phy_latency_info.active_to_idle_rssi`
+* For an RX operation with RSSI measurements- :c:member:`nrf_modem_dect_phy_latency_info.active_to_idle_rx_rssi`
+* For a TX operation- :c:member:`nrf_modem_dect_phy_latency_info.active_to_idle`
+* For a TX_RX operation- :c:member:`nrf_modem_dect_phy_latency_info.active_to_idle_rx`
+
+Thus, for a given operation duration of ``duration``, the earliest time at which the next operation can be executed can be calculated as: ``t + startup + duration + stop``.
+
+Example 2: Scheduling one operation after another
+
+Pre-conditions:
+
+* The DECT PHY is activated.
+* There is one scheduled or ongoing operation (operation 1).
+
+Let ``t`` represent the current modem time.
+Let ``start_time_op1`` and ``duration_op1`` be the start time and duration of operation 1 respectively.
+
+The operation startup latency ``startup`` is indicated:
+
+* For RX operations (RX, RSSI or RX with RSSI) by: :c:member:`nrf_modem_dect_phy_latency_info.idle_to_active`
+* For TX operations by: :c:member:`nrf_modem_dect_phy_latency_info.idle_to_active`
+
+Since the operation is scheduled, we must include the additional startup delay associated with scheduled operations for the current radio mode.
+Let ``sched_startup`` be the value of this delay, as indicated by :c:member:`nrf_modem_dect_phy_latency_info.scheduled_operation_startup`.
+
+The earliest start time of the operation is then calculated by adding both the initial startup delay and the scheduled startup delay to the current modem time,
+expressed as: ``t + startup + sched_startup``.
+
+The earliest time at which the operation can be scheduled after another one must include the additional delay associated with transitioning from one scheduled operation to the next, according to the current radio mode.
+Let ``sched_transition`` be the value of this delay, as indicated by :c:member:`nrf_modem_dect_phy_latency_info.scheduled_operation_transition`.
+
+In conclusion, the start time of the operation being scheduled must be at least as large as the minimum between ``t + startup + sched_startup`` and ``start_time_op1 + duration_op1 + sched_transition``.
 
 Radio operations
 ****************
@@ -169,8 +263,9 @@ The DECT PHY interface offers the following three radio operations:
 
 Each of these operations can be performed with different parameters.
 
-The completion of a radio operation is signaled to the application by the invocation of the :c:member:`nrf_modem_dect_phy_callbacks.op_complete` callback function.
-The callback receives the same handle that was specified by the application at the time the operation was scheduled.
+The completion of a radio operation is signaled to the application by the invocation of the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_COMPLETED` event.
+
+The event carries the same handle that was specified by the application at the time the operation was scheduled.
 
 Transmission
 ============
@@ -178,8 +273,8 @@ Transmission
 The application can schedule a transmission by calling the :c:func:`nrf_modem_dect_phy_tx` function.
 
 The operation is asynchronous, and the successful completion of the :c:func:`nrf_modem_dect_phy_tx` function only signals that the request was sent to the modem.
-When the operation has completed, its result is signaled to the application in the :c:member:`nrf_modem_dect_phy_callbacks.op_complete` callback function.
-If any error has occurred in scheduling or executing the operation, it is returned in the callback.
+When the operation has completed, its result is signaled to the application in the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_COMPLETED` event.
+If any error has occurred in scheduling or executing the operation, it is returned in the event.
 
 The operation has several parameters, including Listen Before Talk (LBT) period and threshold.
 
@@ -246,7 +341,7 @@ Hybrid ARQ
 The application can schedule a hybrid ARQ response transmission (HARQ feedback) by calling the :c:func:`nrf_modem_dect_phy_tx_harq` function.
 A HARQ response transmission can be scheduled after a reception on the physical control channel (PCC).
 
-Scheduling a HARQ response is time critical and therefore it must be done directly from the :c:member:`nrf_modem_dect_phy_callbacks.pcc` callback.
+Scheduling a HARQ response is time critical and therefore it must be done directly from the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_PCC` event.
 The MAC must have prepared data towards possible HARQ recipients in advance, so that it can directly call this function without further delays.
 
 .. note::
@@ -261,11 +356,11 @@ The application can schedule a reception by calling the :c:func:`nrf_modem_dect_
 
 The operation is asynchronous, and the completion of the :c:func:`nrf_modem_dect_phy_rx` function only signals that the request was sent to the modem.
 
-During reception, data received on the physical control channel (PCC) and on the physical data channel (PDC) is sent to the application in the :c:member:`nrf_modem_dect_phy_callbacks.pcc` and :c:member:`nrf_modem_dect_phy_callbacks.pdc` callback functions, respectively.
-Any CRC errors on the physical control channel and on the physical data channel are sent to the application in the :c:member:`nrf_modem_dect_phy_callbacks.pcc_crc_err` and :c:member:`nrf_modem_dect_phy_callbacks.pdc_crc_err` callback functions, respectively.
+During reception, data received on the physical control channel (PCC) and on the physical data channel (PDC) is sent to the application in the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_PCC` and :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_PDC` events, respectively.
+Any CRC errors on the physical control channel and on the physical data channel are sent to the application in the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_PCC_ERROR` and :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_PDC_ERROR` events, respectively.
 
-When the operation has completed, its result is signaled to the application in the :c:member:`nrf_modem_dect_phy_callbacks.op_complete` callback function.
-If any error has occurred in scheduling or executing the operation, it is returned in the callback.
+When the operation has completed, its result is signaled to the application in the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_COMPLETED` event.
+If any error has occurred in scheduling or executing the operation, it is returned in the event.
 
 Reception modes
 ---------------
@@ -283,15 +378,6 @@ Reception with RSSI measurement
 
 A reception operation may be combined with an RSSI measurement operation by configuring the :c:member:`nrf_modem_dect_phy_rx_params.rssi_interval` parameter.
 
-Stopping reception
-------------------
-
-It is possible to stop the execution of reception operations by calling the :c:func:`nrf_modem_dect_phy_rx_stop` function.
-
-A reception operation may only be stopped when it is currently being executed.
-
-It is not possible to unschedule the execution of reception operations (or any others).
-
 RSSI measurement
 ================
 
@@ -299,10 +385,10 @@ The application can schedule an RSSI measurement by operation by calling the :c:
 
 The operation is asynchronous, and the completion of the :c:func:`nrf_modem_dect_phy_rssi` function only signals that the request was sent to the modem.
 
-RSSI measurements are sent to the application in the :c:member:`nrf_modem_dect_phy_callbacks.rssi` callback function at a configurable interval, as specified by the :c:member:`nrf_modem_dect_phy_rssi_params.reporting_interval` field in the operation parameters.
+RSSI measurements are sent to the application in the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_RSSI` event at a configurable interval, as specified by the :c:member:`nrf_modem_dect_phy_rssi_params.reporting_interval` field in the operation parameters.
 
-When the operation has completed, its result is signaled to the application in the :c:member:`nrf_modem_dect_phy_callbacks.op_complete` callback function.
-If any error has occurred in scheduling or executing the operation, it is returned in the callback.
+When the operation has completed, its result is signaled to the application in the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_COMPLETED` event.
+If any error has occurred in scheduling or executing the operation, it is returned in the event.
 
 Combined TX and RX operation
 ============================
@@ -310,9 +396,20 @@ Combined TX and RX operation
 You can schedule a combined TX and RX operation by calling the :c:func:`nrf_modem_dect_phy_tx_rx` function.
 Scheduling two operations at once has the advantage of being faster, that is, it has a lower latency than scheduling the two halves of the operation separately.
 
+The start time of the RX operation is relative to the completion of the TX operation.
+
 The operations will be executed one after the other, starting with the TX operation.
 The RX operation will be executed only if the TX operation has been completed successfully.
 
-The start time of the RX operation is relative to the completion of the TX operation.
+When the TX or RX part of the operation has completed, either successfully or unsuccessfully, its result is sent to the :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_COMPLETED` event.
 
-When the TX or RX part of the operation has completed, either successfully or unsuccessfully, its result is sent to the :c:member:`nrf_modem_dect_phy_callbacks.op_complete` callback function.
+Canceling operations
+====================
+
+The application can cancel operations using the :c:func:`nrf_modem_dect_phy_cancel` function and specifying the handle of the operation to be canceled.
+
+When an operation is canceled, one :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_COMPLETED` event is sent to the application.
+
+If the operation was not executing, the event carries the error :c:enumerator:`NRF_MODEM_DECT_PHY_ERR_OP_CANCELED`, otherwise it reports a success.
+
+Afterwards, one :c:enumerator:`NRF_MODEM_DECT_PHY_EVT_CANCELED` event is sent to the application to indicate that the cancellation operation has completed.
