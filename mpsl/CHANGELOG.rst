@@ -9,6 +9,14 @@ Changelog
 
 All the notable changes to this project are documented on this page.
 
+nRF Connect SDK v2.9.1
+**********************
+
+Added
+=====
+
+* On the nRF54L15 SoC, Errata 39 is now applied.
+
 nRF Connect SDK v2.9.0
 **********************
 
@@ -48,6 +56,8 @@ nRF Connect SDK v2.7.0
 Changes
 =======
 
+* Fixed a rare issue that could cause a scheduler assert if interrupts were disabled for a longer period of time (DRGN-24327).
+  Note that disabling interrupts for a longer period of time is not allowed.
 * The default bit width within timeslots for ``TIMER0`` has been increased from 24 to 32 bits.
   The user may still configure ``TIMER0`` however they like during the timeslot. (DRGN-19050)
 * New FEM protocol APIs are provided to control the PA power, the previous APIs are removed.

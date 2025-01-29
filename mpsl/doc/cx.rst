@@ -8,7 +8,7 @@ Short-Range Protocols External Radio Coexistence
    :depth: 2
 
 The radio coexistence feature allows the application to interface with several types of packet traffic arbiters (PTAs).
-PTAs arbitrate the requested radio operations between all radios to avoid interference, providing better radio performance to devices using multiple interfering radios simultaneously, like a combination of IEEE 802.15.4, Bluetooth® Low Energy (LE), and Wi-Fi®.
+PTAs arbitrate the requested radio operations between all radios to avoid interference, providing better radio performance to devices using multiple interfering radios simultaneously, like a combination of IEEE 802.15.4, Bluetooth® Low Energy (LE), and Wi-Fi.
 The arbitration algorithm used can vary between PTAs.
 
 .. note::
@@ -17,7 +17,7 @@ The arbitration algorithm used can vary between PTAs.
 Overview
 ********
 
-The radio coexistence feature allows short-range protocol drivers (for example, IEEE 802.15.4, Bluetooth LE) to communicate with the packet traffic arbiter (PTA) using :ref:`MPSL CX API <mpsl_api_sr_cx>`.
+The radio coexistence feature allows short-range protocol drivers (e.g. IEEE 802.15.4, Bluetooth LE) to communicate with the packet traffic arbiter (PTA) using :ref:`MPSL CX API <mpsl_api_sr_cx>`.
 The MPSL CX API is hardware-agnostic and separates the implementation of the protocol driver from an implementation specific to given PTA.
 To perform any radio operation, the protocol drivers must first request the appropriate access to the medium from the PTA.
 The request informs the PTA implementation about which radio operations it wants to perform at that moment or shortly after, and what is the priority of the operation.
@@ -36,7 +36,7 @@ Selecting CX Implementation
 
 The :ref:`mpsl` itself does not provide any implementation of the CX interface.
 For details on the implementations present in the |NCS|, see :ref:`nrf:ug_radio_coex`.
-An application that needs to use CX must call :c:func:`mpsl_cx_interface_set` during the system initialization.
+An application that needs to use CX must call :c:func:`mpsl_cx_interface_set()` during the system initialization.
 The initialization of any resource needed by the selected CX implementation is not in scope of :ref:`mpsl` and must also be done during the system initialization.
 
 .. note::
