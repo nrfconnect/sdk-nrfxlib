@@ -18,7 +18,7 @@ All the notable changes included in the |NCS| v2.6.3 release are documented in t
 Bug fixes
 =========
 
-* Fixed an assert that could happen when in a connection where the peer device is transmitting on S8 Coded PHY. (DRGN-22652)
+* Fixed an assert that could happen when in a connection where the peer device is transmitting on S8 Coded PHY. (DRGN-22652 and DRGN-24327)
 * Fixed an issue where the peripheral waited for a link to time out when tearing down the connection.
   This happened when the central would acknowledge ``TERMINATE_IND`` in the same event as it was being sent (DRGN-21637).
 * Fixed an issue where the sleep clock accuracy communicated to the peer was too inaccurate if MPSL was initialized with a low frequency clock accuracy better than 20ppm. (DRGN-23693)
