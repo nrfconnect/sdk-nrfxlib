@@ -28,33 +28,54 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "nrf_errno.h"
 
-#if defined(NRF52_SERIES)
-  /* PPI channels 17 - 31, for the nRF52 Series */
-  #define SDC_PPI_CHANNELS_USED_MASK      (0xfffe0000)
-#elif defined(NRF53_SERIES)
-  /* PPI channels 3 - 12, for the nRF53 Series */
-  #define SDC_DPPI_CHANNELS_USED_MASK     (0x00001ff8)
-#elif defined(NRF54L_SERIES)
-  #define SDC_DPPIC10_CHANNELS_USED_MASK  (0x00000ffe)
-  #define SDC_DPPIC00_CHANNELS_USED_MASK  (0x0000000a)
-  #define SDC_PPIB00_CHANNELS_USED_MASK   (0x0000000f)
-  #define SDC_PPIB10_CHANNELS_USED_MASK   (0x0000000f)
-#elif defined(NRF54H) || defined(GRTC_PRESENT)
-  #define SDC_DPPIC020_CHANNELS_USED_MASK (0x00000ffe)
-  #define SDC_DPPIC030_CHANNELS_USED_MASK (0x0000000a)
-  #define SDC_PPIB020_CHANNELS_USED_MASK  (0x0000000f)
-  #define SDC_PPIB030_CHANNELS_USED_MASK  (0x0000000f)
-#endif
+/** @brief Encrypt a block according to the specified parameters.
+ *
+ * The SoftDevice Controller will use NRF_ECB encrypt the block. The encryption type is 128-bit AES.
+ *
+ * @note The application may set the SEVONPEND bit in the SCR to 1 to make the SoftDevice Controller sleep
+ *       while the ECB is running. The SEVONPEND bit must not be cleared (set to 0) from a function
+ *       running in an interrupt priority level higher (lower numerical value) than the execution priority
+ *       level this function was called from.
+ *
+ * @param[in]  key        Encryption key
+ * @param[in]  cleartext  Cleartext data
+ * @param[out] ciphertext Encrypted data
+ *
+ * @retval 0 Success
+ */
+int32_t sdc_soc_ecb_block_encrypt(const uint8_t key[16],
+                                  const uint8_t cleartext[16],
+                                  uint8_t ciphertext[16]);
 
 /**
  * @brief Functions used by the SoftDevice Controller to obtain random numbers.
  *
- * These functions are used for security-related purposes, so they must conform to:
+ * These functions are used for several different purposes,
+ * including private address generation so they are expected to conform to:
  * BLUETOOTH CORE SPECIFICATION Version 5.2 | Vol 2, Part H, Section 2.
  */
 typedef struct
 {
+    /** @brief Function used by the controller to obtain random numbers in a low priority context.
+     *  The function will be executed in the same context as mpsl_low_priority_process and should not block.
+     *
+     *  @param[out]  p_buff  The destination buffer for the random numbers
+     *  @param[in]   length  The requested number of random bytes and the maximum length of the destination buffer
+     *  @retval              The number of bytes written to p_buff
+     */
+    uint8_t (*rand_prio_low_get)(uint8_t *p_buff, uint8_t length);
+
+    /** @brief Function used by the controller to obtain random numbers in a high priority context.
+     *  This function will be called in an ISR context and should not block.
+     *
+     *  @param[out]  p_buff  The destination buffer for the random numbers
+     *  @param[in]   length  The requested number of random bytes and the maximum length of the destination buffer
+     *  @retval              The number of bytes written to p_buff
+     */
+    uint8_t (*rand_prio_high_get)(uint8_t *p_buff, uint8_t length);
+
     /** @brief Function used by the controller to obtain random numbers.
      *  This function must block until length bytes of random numbers were written to p_buff.
      *  The function will be executed in the same context as mpsl_low_priority_process.

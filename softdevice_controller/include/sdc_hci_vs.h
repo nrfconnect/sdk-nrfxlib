@@ -27,7 +27,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <mdk/compiler_abstraction.h>
+#include <cmsis_compiler.h>
 
 /**
  * @defgroup HCI_TYPES Types
@@ -53,6 +53,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_WRITE_TX_POWER = 0xfc0e,
     /** @brief See @ref sdc_hci_cmd_vs_zephyr_read_tx_power(). */
     SDC_HCI_OPCODE_CMD_VS_ZEPHYR_READ_TX_POWER = 0xfc0f,
+    /** @brief See @ref sdc_hci_cmd_vs_read_supported_vs_commands(). */
+    SDC_HCI_OPCODE_CMD_VS_READ_SUPPORTED_VS_COMMANDS = 0xfd00,
     /** @brief See @ref sdc_hci_cmd_vs_llpm_mode_set(). */
     SDC_HCI_OPCODE_CMD_VS_LLPM_MODE_SET = 0xfd01,
     /** @brief See @ref sdc_hci_cmd_vs_conn_update(). */
@@ -65,6 +67,10 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_EVENT_LENGTH_SET = 0xfd05,
     /** @brief See @ref sdc_hci_cmd_vs_periodic_adv_event_length_set(). */
     SDC_HCI_OPCODE_CMD_VS_PERIODIC_ADV_EVENT_LENGTH_SET = 0xfd06,
+    /** @brief See @ref sdc_hci_cmd_vs_coex_scan_mode_config(). */
+    SDC_HCI_OPCODE_CMD_VS_COEX_SCAN_MODE_CONFIG = 0xfd07,
+    /** @brief See @ref sdc_hci_cmd_vs_coex_priority_config(). */
+    SDC_HCI_OPCODE_CMD_VS_COEX_PRIORITY_CONFIG = 0xfd08,
     /** @brief See @ref sdc_hci_cmd_vs_peripheral_latency_mode_set(). */
     SDC_HCI_OPCODE_CMD_VS_PERIPHERAL_LATENCY_MODE_SET = 0xfd09,
     /** @brief See @ref sdc_hci_cmd_vs_write_remote_tx_power(). */
@@ -81,6 +87,8 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_READ_AVERAGE_RSSI = 0xfd11,
     /** @brief See @ref sdc_hci_cmd_vs_central_acl_event_spacing_set(). */
     SDC_HCI_OPCODE_CMD_VS_CENTRAL_ACL_EVENT_SPACING_SET = 0xfd12,
+    /** @brief See @ref sdc_hci_cmd_vs_set_conn_event_trigger(). */
+    SDC_HCI_OPCODE_CMD_VS_SET_CONN_EVENT_TRIGGER = 0xfd13,
     /** @brief See @ref sdc_hci_cmd_vs_get_next_conn_event_counter(). */
     SDC_HCI_OPCODE_CMD_VS_GET_NEXT_CONN_EVENT_COUNTER = 0xfd14,
     /** @brief See @ref sdc_hci_cmd_vs_allow_parallel_connection_establishments(). */
@@ -95,16 +103,6 @@ enum sdc_hci_opcode_vs
     SDC_HCI_OPCODE_CMD_VS_CIG_RESERVED_TIME_SET = 0xfd19,
     /** @brief See @ref sdc_hci_cmd_vs_cis_subevent_length_set(). */
     SDC_HCI_OPCODE_CMD_VS_CIS_SUBEVENT_LENGTH_SET = 0xfd1a,
-    /** @brief See @ref sdc_hci_cmd_vs_scan_channel_map_set(). */
-    SDC_HCI_OPCODE_CMD_VS_SCAN_CHANNEL_MAP_SET = 0xfd1b,
-    /** @brief See @ref sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set(). */
-    SDC_HCI_OPCODE_CMD_VS_SCAN_ACCEPT_EXT_ADV_PACKETS_SET = 0xfd1c,
-    /** @brief See @ref sdc_hci_cmd_vs_set_role_priority(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_ROLE_PRIORITY = 0xfd1d,
-    /** @brief See @ref sdc_hci_cmd_vs_set_event_start_task(). */
-    SDC_HCI_OPCODE_CMD_VS_SET_EVENT_START_TASK = 0xfd1e,
-    /** @brief See @ref sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable(). */
-    SDC_HCI_OPCODE_CMD_VS_CONN_ANCHOR_POINT_UPDATE_EVENT_REPORT_ENABLE = 0xfd1f,
 };
 
 /** @brief VS subevent Code values. */
@@ -114,8 +112,37 @@ enum sdc_hci_subevent_vs
     SDC_HCI_SUBEVENT_VS_QOS_CONN_EVENT_REPORT = 0x80,
     /** @brief See @ref sdc_hci_subevent_vs_qos_channel_survey_report_t. */
     SDC_HCI_SUBEVENT_VS_QOS_CHANNEL_SURVEY_REPORT = 0x81,
-    /** @brief See @ref sdc_hci_subevent_vs_conn_anchor_point_update_report_t. */
-    SDC_HCI_SUBEVENT_VS_CONN_ANCHOR_POINT_UPDATE_REPORT = 0x82,
+};
+
+/** @brief Bluetooth roles that are recognized by the coexistence interface. */
+enum sdc_hci_vs_coex_bt_role
+{
+    SDC_HCI_VS_COEX_BT_ROLE_ADVERTISER = 0x00,
+    SDC_HCI_VS_COEX_BT_ROLE_SCANNER = 0x01,
+    SDC_HCI_VS_COEX_BT_ROLE_CENTRAL = 0x02,
+    SDC_HCI_VS_COEX_BT_ROLE_PERIPHERAL = 0x03,
+};
+
+/** @brief Scanner coexistence session request modes. */
+enum sdc_hci_vs_coex_scan_mode
+{
+    /** @brief Request after receiving a valid access address. */
+    SDC_HCI_VS_COEX_SCAN_MODE_REQUEST_ON_AA = 0x00,
+    /** @brief Request before transmitting. */
+    SDC_HCI_VS_COEX_SCAN_MODE_REQUEST_ON_TX = 0x01,
+};
+
+/** @brief Connection Event Trigger Role Selection. */
+enum sdc_hci_vs_conn_event_trigger_role
+{
+    /** @brief Unused. */
+    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_UNUSED = 0x00,
+    /** @brief Connection event trigger for the Scanner. */
+    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_SCAN = 0x01,
+    /** @brief Connection event trigger for the Initiator. */
+    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_INIT = 0x02,
+    /** @brief Connection event trigger for connections (Central or Peripheral). */
+    SDC_HCI_VS_CONN_EVENT_TRIGGER_ROLE_CONN = 0x03,
 };
 
 /** @brief Peripheral latency disable/enable modes. */
@@ -129,26 +156,6 @@ enum sdc_hci_vs_peripheral_latency_mode
     SDC_HCI_VS_PERIPHERAL_LATENCY_MODE_WAIT_FOR_ACK = 0x02,
 };
 
-/** @brief Set Event Start Task Handle Type. */
-enum sdc_hci_vs_set_event_start_task_handle_type
-{
-    /** @brief Scanner. */
-    SDC_HCI_VS_SET_EVENT_START_TASK_HANDLE_TYPE_SCAN = 0x01,
-    /** @brief Initiator. */
-    SDC_HCI_VS_SET_EVENT_START_TASK_HANDLE_TYPE_INITIATOR = 0x02,
-    /** @brief Connection. */
-    SDC_HCI_VS_SET_EVENT_START_TASK_HANDLE_TYPE_CONN = 0x03,
-    /** @brief Advertiser. */
-    SDC_HCI_VS_SET_EVENT_START_TASK_HANDLE_TYPE_ADV = 0x04,
-};
-
-/** @brief Handle type for priority update. */
-enum sdc_hci_vs_set_role_priority_handle_type
-{
-    /** @brief Handle of type initiator. Only affects secondary channel priority. */
-    SDC_HCI_VS_SET_ROLE_PRIORITY_HANDLE_TYPE_INITIATOR_SECONDARY_CHANNEL = 0x04,
-};
-
 /** @brief TX power handle type. */
 enum sdc_hci_vs_tx_power_handle_type
 {
@@ -160,12 +167,39 @@ enum sdc_hci_vs_tx_power_handle_type
     SDC_HCI_VS_TX_POWER_HANDLE_TYPE_CONN = 0x02,
     /** @brief Handle of type Periodic Sync. */
     SDC_HCI_VS_TX_POWER_HANDLE_TYPE_SYNC = 0x03,
-    /** @brief Handle of type ISO broadcaster. */
-    SDC_HCI_VS_TX_POWER_HANDLE_TYPE_ISO_BROADCASTER = 0x04,
 };
 
+/** @brief Supported Vendor Specific HCI Commands. */
+typedef __PACKED_STRUCT
+{
+    uint8_t read_supported_vs_commands : 1;
+    uint8_t llpm_mode_set : 1;
+    uint8_t conn_update : 1;
+    uint8_t conn_event_extend : 1;
+    uint8_t qos_conn_event_report_enable : 1;
+    uint8_t event_length_set : 1;
+    uint8_t periodic_adv_event_length_set : 1;
+    uint8_t coex_priority_config : 1;
+    uint8_t coex_scan_mode_config : 1;
+    uint8_t peripheral_latency_mode_set : 1;
+    uint8_t write_remote_tx_power : 1;
+    uint8_t set_adv_randomness : 1;
+    uint8_t qos_channel_survey_enable : 1;
+    uint8_t set_power_control_request_params : 1;
+    uint8_t read_average_rssi : 1;
+    uint8_t central_acl_event_spacing_set : 1;
+    uint8_t set_conn_event_trigger : 1;
+    uint8_t get_next_conn_event_counter : 1;
+    uint8_t allow_parallel_connection_establishments : 1;
+    uint8_t min_val_of_max_acl_tx_payload_set : 1;
+    uint8_t iso_read_tx_timestamp : 1;
+    uint8_t big_reserved_time_set : 1;
+    uint8_t cig_reserved_time_set : 1;
+    uint8_t cis_subevent_length_set : 1;
+} sdc_hci_vs_supported_vs_commands_t;
+
 /** @brief Zephyr Static Address type. */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Static device address. */
     uint8_t address[6];
@@ -180,7 +214,7 @@ typedef struct __PACKED __ALIGN(1)
  * If the field is set to 1, it indicates that the underlying command and
  * feature is supported by the controller.
  */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Read Version Information. */
     uint8_t read_version_info : 1;
@@ -225,9 +259,9 @@ typedef struct __PACKED __ALIGN(1)
  *
  * A QoS Connection Event report gives information about the connection event.
  */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
-    /** @brief Connection handle corresponding to the connection event report. */
+    /** @brief Connnection handle corresponding to the connection event report. */
     uint16_t conn_handle;
     /** @brief Connection event counter corresponding to the connection event report. */
     uint16_t event_counter;
@@ -248,7 +282,7 @@ typedef struct __PACKED __ALIGN(1)
  *
  * QoS Channel Survey report event
  */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief The measured energy on the Bluetooth Low Energy channels, in dBm, indexed by Channel
      *         Index. If no measurement is available for the given channel, channel_energy is set to
@@ -256,33 +290,6 @@ typedef struct __PACKED __ALIGN(1)
      */
     int8_t channel_energy[40];
 } sdc_hci_subevent_vs_qos_channel_survey_report_t;
-
-/** @brief Connection Anchor Point Update Report Event.
- *
- * The HCI_VS_conn_anchor_point_update_report event indicates that the device
- * updated the anchor point for an ACL connection.
- * The anchor point represents the start of the first packet of a connection event.
- * See Core_v5.4, Vol 6, Part B, Section 4.5.1.
- *
- * The controller only generates HCI_VS_conn_anchor_point_update_report events
- * if instructed to do so using the
- * @ref sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable command.
- *
- * The anchor_point_us in this event is a timestamp on the controller's clock.
- *
- * On the central device, this event is generated every connection interval.
- * On the peripheral device, this event is only generated for connection events in which
- * a packet from the central device is received.
- */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Connection handle corresponding to the connection anchor point update report. */
-    uint16_t conn_handle;
-    /** @brief Connection event counter corresponding to the anchor point. */
-    uint16_t event_counter;
-    /** @brief Absolute time of the new anchor point in microseconds. */
-    uint64_t anchor_point_us;
-} sdc_hci_subevent_vs_conn_anchor_point_update_report_t;
 
 /** @} end of HCI_EVENTS */
 
@@ -292,7 +299,7 @@ typedef struct __PACKED __ALIGN(1)
  */
 
 /** @brief Zephyr Read Version Information return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Assigned hardware manufacturer. Always 0x0002 indicating Nordic Semiconductor. */
     uint16_t hw_platform;
@@ -306,12 +313,12 @@ typedef struct __PACKED __ALIGN(1)
     uint8_t fw_version;
     /** @brief Firmware Revision. */
     uint16_t fw_revision;
-    /** @brief Firmware build revision. */
+    /** @brief Firware build revision. */
     uint32_t fw_build;
 } sdc_hci_cmd_vs_zephyr_read_version_info_return_t;
 
 /** @brief Zephyr Read Supported Commands return parameter(s). */
-typedef union __PACKED __ALIGN(1)
+typedef __PACKED_UNION
 {
     /** @brief Bit mask for each vendor command. If a bit is 1, the Controller supports the
      *         corresponding command and the features required for the command, unsupported or
@@ -322,14 +329,14 @@ typedef union __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_zephyr_read_supported_commands_return_t;
 
 /** @brief Zephyr Write BD ADDR command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief BD_ADDR of the Device. */
     uint8_t bd_addr[6];
 } sdc_hci_cmd_vs_zephyr_write_bd_addr_t;
 
 /** @brief Zephyr Read Static Addresses return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Number of static device addresses. */
     uint8_t num_addresses;
@@ -338,7 +345,7 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_zephyr_read_static_addresses_return_t;
 
 /** @brief Zephyr Read KEY Hierarchy Roots return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Zephyr Identity Root Key. */
     uint8_t ir[16];
@@ -347,14 +354,14 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_zephyr_read_key_hierarchy_roots_return_t;
 
 /** @brief Zephyr Read Chip Temperature return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief The measured temperature in degrees Celsius. */
     int8_t temp;
 } sdc_hci_cmd_vs_zephyr_read_chip_temp_return_t;
 
 /** @brief Zephyr Write Tx Power Level (per Role/Connection) command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Handle type. See @ref sdc_hci_vs_tx_power_handle_type. */
     uint8_t handle_type;
@@ -372,7 +379,7 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_zephyr_write_tx_power_t;
 
 /** @brief Zephyr Write Tx Power Level (per Role/Connection) return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Handle type. See @ref sdc_hci_vs_tx_power_handle_type. */
     uint8_t handle_type;
@@ -383,7 +390,7 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_zephyr_write_tx_power_return_t;
 
 /** @brief Zephyr Read Tx Power Level (per Role/Connection) Command command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Handle type. See @ref sdc_hci_vs_tx_power_handle_type. */
     uint8_t handle_type;
@@ -395,7 +402,7 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_zephyr_read_tx_power_t;
 
 /** @brief Zephyr Read Tx Power Level (per Role/Connection) Command return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Handle type. See @ref sdc_hci_vs_tx_power_handle_type. */
     uint8_t handle_type;
@@ -405,15 +412,22 @@ typedef struct __PACKED __ALIGN(1)
     int8_t selected_tx_power;
 } sdc_hci_cmd_vs_zephyr_read_tx_power_return_t;
 
+/** @brief Read Supported Vendor Specific Commands return parameter(s). */
+typedef __PACKED_UNION
+{
+    sdc_hci_vs_supported_vs_commands_t params;
+    uint8_t raw[64];
+} sdc_hci_cmd_vs_read_supported_vs_commands_return_t;
+
 /** @brief Set Low Latency Packet Mode command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Set to 1 to enable LLPM. */
     uint8_t enable;
 } sdc_hci_cmd_vs_llpm_mode_set_t;
 
 /** @brief Connection Update command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Connection Handle. */
     uint16_t conn_handle;
@@ -429,35 +443,59 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_conn_update_t;
 
 /** @brief Enable or Disable Extended Connection Events command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Set to 0 for disabling, 1 for enabling, all other values are RFU. */
     uint8_t enable;
 } sdc_hci_cmd_vs_conn_event_extend_t;
 
 /** @brief QoS Connection Event Reports enable command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
-    /** @brief Set to 1 to enable, 0 to disable, all other values are RFU. */
+    /** @brief Set to 0 for disabling, 1 for enabling, all other values are RFU. */
     uint8_t enable;
 } sdc_hci_cmd_vs_qos_conn_event_report_enable_t;
 
 /** @brief Set event length for ACL connections command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Allocated event length in microseconds. */
     uint32_t event_length_us;
 } sdc_hci_cmd_vs_event_length_set_t;
 
 /** @brief Set event length for periodic advertisers command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Allocated periodic advertising event length in microseconds. */
     uint32_t event_length_us;
 } sdc_hci_cmd_vs_periodic_adv_event_length_set_t;
 
+/** @brief Configure Coexistence Scan Request Mode command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Scanner request mode. See @ref sdc_hci_vs_coex_scan_mode. */
+    uint8_t mode;
+} sdc_hci_cmd_vs_coex_scan_mode_config_t;
+
+/** @brief Configure Coexistence Per-Role Priority command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Current Bluetooth device role, see @ref sdc_hci_vs_coex_bt_role. */
+    uint8_t role;
+    /** @brief @ref MPSL_COEX_PRIORITY_HIGH or @ref MPSL_COEX_PRIORITY_LOW priority. */
+    uint8_t priority;
+    /** @brief When the number of denied requests to the PTA controller is larger than the
+     *         escalation threshold, the priority will be escalated. The threshold is handled only
+     *         if priority is @ref MPSL_COEX_PRIORITY_LOW. The priority will be reset to @ref
+     *         MPSL_COEX_PRIORITY_LOW after the end of the current radio activity. This means after
+     *         the end of the advertising event, scan window, or connection event. If an escalation
+     *         is not required then use @ref MPSL_COEX_ESCALATION_THRESHOLD_OFF.
+     */
+    uint8_t escalation_threshold;
+} sdc_hci_cmd_vs_coex_priority_config_t;
+
 /** @brief Set peripheral latency mode command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Connection handle. */
     uint16_t conn_handle;
@@ -466,7 +504,7 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_peripheral_latency_mode_set_t;
 
 /** @brief Write remote transmit power level command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
     /** @brief PHY bit number i.e. [1M, 2M, s8, s2] == [1, 2, 3, 4]. */
@@ -480,7 +518,7 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_write_remote_tx_power_t;
 
 /** @brief Set advertising randomness command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Advertising Handle or 0xFF to set the behavior for the very first advertising event.
      */
@@ -490,26 +528,26 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_set_adv_randomness_t;
 
 /** @brief Set Compatibility mode for window offset command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Set to 1 to enable this compatibility mode. */
     uint8_t enable;
 } sdc_hci_cmd_vs_compat_mode_window_offset_set_t;
 
 /** @brief Enable the Quality of Service (QoS) channel survey module. command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Set to 0 to disable, 1 to enable, all other values are RFU. */
     uint8_t enable;
     /** @brief Requested average interval for the measurements and reports. Valid range is from 7500
-     *         to 4000000. If set to 0, the measurements will be scheduled at every available
+     *         to 4000000. If set to 0, the channel survey role will be scheduled at every available
      *         opportunity.
      */
     uint32_t interval_us;
 } sdc_hci_cmd_vs_qos_channel_survey_enable_t;
 
 /** @brief Set LE Power Control Request procedure parameters command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Enable or Disable controller initiated autonomous LE Power Control Request procedure.
      *         Disabled by default.
@@ -549,14 +587,14 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_set_power_control_request_params_t;
 
 /** @brief Read average RSSI command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Connection Handle to read the average RSSI for. */
     uint16_t conn_handle;
 } sdc_hci_cmd_vs_read_average_rssi_t;
 
 /** @brief Read average RSSI return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
     /** @brief Average RSSI in dBm. */
@@ -564,28 +602,52 @@ typedef struct __PACKED __ALIGN(1)
 } sdc_hci_cmd_vs_read_average_rssi_return_t;
 
 /** @brief Set Central ACL event spacing command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Central ACL event spacing in microseconds. */
     uint32_t central_acl_event_spacing_us;
 } sdc_hci_cmd_vs_central_acl_event_spacing_set_t;
 
+/** @brief Set Connection Event Trigger command parameter(s). */
+typedef __PACKED_STRUCT
+{
+    /** @brief Connection handle to set up trigger for. In case @ref
+     *         sdc_hci_vs_conn_event_trigger_role specifies the Scanner or Initiator, this parameter
+     *         is ignored.
+     */
+    uint16_t conn_handle;
+    /** @brief Selected role to set triggers for. See @ref sdc_hci_vs_conn_event_trigger_role. */
+    uint8_t role;
+    /** @brief (D)PPI channel to use. This channel should be regarded as reserved until the
+     *         connection event (D)PPI task triggering is stopped.
+     */
+    uint8_t ppi_ch_id;
+    /** @brief Task Endpoint to trigger. If this is 0, then the connection event triggering feature
+     *         is disabled.
+     */
+    uint32_t task_endpoint;
+    /** @brief Connection event counter when the task end point triggering should start. */
+    uint16_t conn_evt_counter_start;
+    /** @brief The period in events between triggering of the task end point. */
+    uint16_t period_in_events;
+} sdc_hci_cmd_vs_set_conn_event_trigger_t;
+
 /** @brief Get Next Connection Event Counter command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Connection handle to get the connection event counter value for. */
     uint16_t conn_handle;
 } sdc_hci_cmd_vs_get_next_conn_event_counter_t;
 
 /** @brief Get Next Connection Event Counter return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
     uint16_t next_conn_event_counter;
 } sdc_hci_cmd_vs_get_next_conn_event_counter_return_t;
 
 /** @brief Allow Parallel Connection Establishment command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint8_t enable;
 } sdc_hci_cmd_vs_allow_parallel_connection_establishments_t;
@@ -593,106 +655,44 @@ typedef struct __PACKED __ALIGN(1)
 /** @brief Set the minimum value that will be used as maximum Tx octets for ACL connections command
  *         parameter(s).
  */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief Minimum value of maximum ACL TX payload. */
     uint8_t min_val_of_max_acl_tx_payload;
 } sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set_t;
 
 /** @brief Iso Read Tx Timestamp command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
 } sdc_hci_cmd_vs_iso_read_tx_timestamp_t;
 
 /** @brief Iso Read Tx Timestamp return parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint16_t conn_handle;
     uint16_t packet_sequence_number;
-    /** @brief Synchronization reference of the sent SDU. */
     uint32_t tx_time_stamp;
 } sdc_hci_cmd_vs_iso_read_tx_timestamp_return_t;
 
 /** @brief Set the default BIG reserved time command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint32_t reserved_time_us;
 } sdc_hci_cmd_vs_big_reserved_time_set_t;
 
 /** @brief Set the default CIG reserved time command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     uint32_t reserved_time_us;
 } sdc_hci_cmd_vs_cig_reserved_time_set_t;
 
 /** @brief Set the CIS subevent length in microseconds command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
+typedef __PACKED_STRUCT
 {
     /** @brief The requested CIS subevent length in microseconds. */
     uint32_t cis_subevent_length_us;
 } sdc_hci_cmd_vs_cis_subevent_length_set_t;
-
-/** @brief Set the channel map for scanning and initiating. command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief This parameter contains 40 1-bit fields. The nth such field (in the range 0 to 39)
-     *         contains the value for the Link Layer channel index n. Set the bit to 1 to enable the
-     *         channel.  Only channel index 37, 38 and 39 are supported. The remaining bits shall be
-     *         set to 1.
-     */
-    uint8_t channel_map[5];
-} sdc_hci_cmd_vs_scan_channel_map_set_t;
-
-/** @brief Scan accept extended advertising packets set command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Set to 1 to accept or 0 to ignore extended advertising packets. */
-    uint8_t accept_ext_adv_packets;
-} sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set_t;
-
-/** @brief Set priority of a BT role command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Handle type for which to change the priority. See @ref
-     *         sdc_hci_vs_set_role_priority_handle_type for valid values.
-     */
-    uint8_t handle_type;
-    /** @brief Handle of the selected handle_type that identifies the instance to set the priority
-     *         of. This parameter is ignored for scanner and initiator roles.
-     */
-    uint16_t handle;
-    /** @brief The new priority for the role. Values from 1 to 5 set the new priority for the role,
-     *         see https://docs.nordicsemi.com/bundle/ncs-
-     *         latest/page/nrfxlib/softdevice_controller/doc/scheduling.html A value of 0xFF resets
-     *         the priority to the default selected by the controller.
-     */
-    uint8_t priority;
-} sdc_hci_cmd_vs_set_role_priority_t;
-
-/** @brief Set Event Start Task command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Selected handle type to set trigger for. See @ref
-     *         sdc_hci_vs_set_event_start_task_handle_type.
-     */
-    uint8_t handle_type;
-    /** @brief The handle to configure the task for. In case @ref
-     *         sdc_hci_vs_set_event_start_task_handle_type specifies the Scanner or Initiator, this
-     *         parameter is ignored. If the handle_type specifies the Advertiser and legacy
-     *         advertising is used, this parameter is ignored.
-     */
-    uint16_t handle;
-    /** @brief Task to trigger. Set this to 0 to disable this feature. */
-    uint32_t task_address;
-} sdc_hci_cmd_vs_set_event_start_task_t;
-
-/** @brief Connection Anchor Point Update Event Reports enable command parameter(s). */
-typedef struct __PACKED __ALIGN(1)
-{
-    /** @brief Set to 1 to enable, 0 to disable, all other values are RFU. */
-    uint8_t enable;
-} sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable_t;
 
 /** @} end of HCI_COMMAND_PARAMETERS */
 
@@ -909,6 +909,25 @@ uint8_t sdc_hci_cmd_vs_zephyr_write_tx_power(const sdc_hci_cmd_vs_zephyr_write_t
 uint8_t sdc_hci_cmd_vs_zephyr_read_tx_power(const sdc_hci_cmd_vs_zephyr_read_tx_power_t * p_params,
                                             sdc_hci_cmd_vs_zephyr_read_tx_power_return_t * p_return);
 
+/** @brief Read Supported Vendor Specific Commands.
+ *
+ * This command reads the list of vendor specific HCI commands supported
+ * for the local Controller.
+ *
+ * This command shall return a bitmap of the supported vendor specific
+ * commands.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[out] p_return Extra return parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_read_supported_vs_commands(sdc_hci_cmd_vs_read_supported_vs_commands_return_t * p_return);
+
 /** @brief Set Low Latency Packet Mode.
  *
  * This command enables or disables Low Latency Packet Mode support.
@@ -960,7 +979,7 @@ uint8_t sdc_hci_cmd_vs_conn_update(const sdc_hci_cmd_vs_conn_update_t * p_params
  *
  * A connection event can not be extended beyond the connection interval.
  *
- * The configured value is retained after issuing an HCI Reset command.
+ * By default, that is after an HCI Reset, Extended Connection Events are enabled.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -981,8 +1000,6 @@ uint8_t sdc_hci_cmd_vs_conn_event_extend(const sdc_hci_cmd_vs_conn_event_extend_
  * every connection event.
  *
  * @note If the application does not pull a report in time, it will be overwritten.
- *
- * After HCI Reset, this feature is disabled.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1042,8 +1059,6 @@ uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t 
  *
  * The default event length is 7500 us.
  *
- * The configured value is retained after issuing an HCI Reset command.
- *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
@@ -1054,6 +1069,41 @@ uint8_t sdc_hci_cmd_vs_event_length_set(const sdc_hci_cmd_vs_event_length_set_t 
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_periodic_adv_event_length_set(const sdc_hci_cmd_vs_periodic_adv_event_length_set_t * p_params);
+
+/** @brief Configure Coexistence Scan Request Mode.
+ *
+ * This vendor specific command is used to configure the way the scanner requests a coexistence
+ * session.
+ * Either the scanner requests a coex session as soon as it has received a valid access address, or
+ * it
+ * only requests before transmitting.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_coex_scan_mode_config(const sdc_hci_cmd_vs_coex_scan_mode_config_t * p_params);
+
+/** @brief Configure Coexistence Per-Role Priority.
+ *
+ * This vendor specific command is used to configure the external radio coexistence
+ * priorities depending on the Bluetooth device role.
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_coex_priority_config(const sdc_hci_cmd_vs_coex_priority_config_t * p_params);
 
 /** @brief Set peripheral latency mode.
  *
@@ -1112,9 +1162,6 @@ uint8_t sdc_hci_cmd_vs_write_remote_tx_power(const sdc_hci_cmd_vs_write_remote_t
  * This vendor specific command is used to change the randomness of advertisers.
  * The setting applies to all subsequent advertising events of a given set.
  *
- * The configured randomness for the very first advertising event is retained after issuing an HCI
- * Reset command.
- *
  * Event(s) generated (unless masked away):
  * When the Controller receives the command, the Controller sends the HCI_Command_Complete
  * event to the Host.
@@ -1137,8 +1184,6 @@ uint8_t sdc_hci_cmd_vs_set_adv_randomness(const sdc_hci_cmd_vs_set_adv_randomnes
  * In that case it may lead to the connection creation taking up to one
  * connection interval longer to complete for all connections.
  *
- * The configured value is retained after issuing an HCI Reset command.
- *
  * By default this mode is disabled.
  *
  * Event(s) generated (unless masked away):
@@ -1154,23 +1199,25 @@ uint8_t sdc_hci_cmd_vs_compat_mode_window_offset_set(const sdc_hci_cmd_vs_compat
 
 /** @brief Enable the Quality of Service (QoS) channel survey module.
  *
- * This vendor specific command is used to enable or disable the QoS channel survey module.
+ * This vendor specific command is used to enable or disable the channel survey module.
  *
- * The QoS channel survey module provides measurements of the energy levels on
+ * The channel survey module provides measurements of the energy levels on
  * the Bluetooth Low Energy channels. When the module is enabled, @ref
  * sdc_hci_subevent_vs_qos_channel_survey_report_t
  * events will periodically report the measured energy levels for each channel.
  *
- * The measurements are scheduled with low priority.
+ * The measurements are scheduled with lower priority than other Bluetooth Low Energy roles,
+ * Radio Timeslot API events and Flash API events.
  *
- * The QoS channel survey module will attempt to do measurements so that the average interval
- * between measurements will be interval_us. However due to low scheduling priority, this may
- * not be possible. In that case fewer than expected reports may be given.
+ * The channel survey module will attempt to do measurements so that the average interval
+ * between measurements will be interval_us. However due to the channel survey module
+ * having the lowest priority of all roles and modules, this may not be possible. In that
+ * case fewer than expected channel survey reports may be given.
  *
- * In order to use the QoS channel survey module, funcref:sdc_support_qos_channel_survey
+ * In order to use the channel survey module, funcref:sdc_support_qos_channel_survey
  * must be called.
  *
- * Event(s) generated (unless masked away):
+ * Event(s) geneated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
  * @param[in]  p_params Input parameters.
@@ -1213,8 +1260,6 @@ uint8_t sdc_hci_cmd_vs_qos_channel_survey_enable(const sdc_hci_cmd_vs_qos_channe
  * When this command is issued, the controller stores the parameters and
  * uses them for the subsequent LE Power Control Request procedures across all the connections.
  *
- * After HCI Reset, all parameters are set to the default values.
- *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
  *
@@ -1255,7 +1300,7 @@ uint8_t sdc_hci_cmd_vs_read_average_rssi(const sdc_hci_cmd_vs_read_average_rssi_
  * This API must be called before issuing a command to create a connection.
  *
  * The default event spacing is 7500 us.
- * The configured value is retained after issuing an HCI Reset command.
+ * The configured value is retained after issuing a HCI Reset command.
  *
  * Note: The time available for transmission and reception is not configured using this API
  *
@@ -1272,6 +1317,50 @@ uint8_t sdc_hci_cmd_vs_read_average_rssi(const sdc_hci_cmd_vs_read_average_rssi_
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_central_acl_event_spacing_set(const sdc_hci_cmd_vs_central_acl_event_spacing_set_t * p_params);
+
+/** @brief Set Connection Event Trigger.
+ *
+ * Start triggering a given task on radio event start.
+ *
+ * When enabled, this feature will trigger a (D)PPI task at the start of radio events.
+ *
+ * When used for connections, the connection event trigger can be configured to trigger
+ * every N connection events starting from a given connection event counter.
+ *
+ * Disabling scanning or disconnecting the connection will reset the connection event
+ * trigger configuration.
+ *
+ * If the selected (D)PPI channel is reserved by the controller, the controller will
+ * return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * If enabling/disabling the connection event trigger and the trigger is already
+ * enabled/disabled, the controller will return the error code Command Disallowed (0x0C).
+ *
+ * If the specified role is not currently active, the controller will return the error code
+ * Command Disallowed (0x0C).
+ *
+ * If the role is 0x3 and conn_handle does not refer to an active connection, the controller
+ * will return the error code Unknown Connection Identifier (0x02).
+ *
+ * If the role is 0x3 and conn_evt_counter_start has already passed, the controller will return
+ * the error code Command Disallowed (0x0C).
+ *
+ * If the role is 0x3 and period_in_events is zero, the controller will return the error code
+ * Invalid HCI Command Parameters (0x12).
+ *
+ * If the role is 0x1 or 0x2 and conn_evt_counter_start or period_in_events is non-zero,
+ * the controller will return the error code Invalid HCI Command Parameters (0x12).
+ *
+ * Event(s) generated (unless masked away):
+ * When the command has completed, an HCI_Command_Complete event shall be generated.
+ *
+ * @param[in]  p_params Input parameters.
+ *
+ * @retval 0 if success.
+ * @return Returns value between 0x01-0xFF in case of error.
+ *         See Vol 2, Part D, Error for a list of error codes and descriptions.
+ */
+uint8_t sdc_hci_cmd_vs_set_conn_event_trigger(const sdc_hci_cmd_vs_set_conn_event_trigger_t * p_params);
 
 /** @brief Get Next Connection Event Counter.
  *
@@ -1304,7 +1393,7 @@ uint8_t sdc_hci_cmd_vs_get_next_conn_event_counter(const sdc_hci_cmd_vs_get_next
  * initiating before a connection establishment to a synchronized device
  * has been completed.
  *
- * After HCI Reset, this feature is disabled.
+ * By default this functionality is disabled.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1342,7 +1431,7 @@ uint8_t sdc_hci_cmd_vs_allow_parallel_connection_establishments(const sdc_hci_cm
  * for applications interacting with devices qualified for Bluetooth Specification 5.1 or
  * older.
  *
- * The configured value is retained after issuing an HCI Reset command.
+ * The value is preserved when issuing the HCI Reset command.
  *
  * See also @ref sdc_hci_cmd_vs_event_length_set().
  *
@@ -1361,7 +1450,7 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  *
  * The controller operates on a timeline that determines when an SDU provided
  * by the host is scheduled for transmission. This command is used to return the
- * tx_time_stamp and packet_sequence_number that determines where on this timeline
+ * tx_time_stamp and packet_sequence_number that determines where on this timelime
  * the previously provided SDU was scheduled. The packet_sequence_number is a
  * quantization of the tx_time_stamp. The SDU is provided for transmission on a
  * CIS or BIS as identified by the conn_handle parameter on the
@@ -1369,15 +1458,6 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  *
  * This command is made to simplify sending SDUs on different ISO streams
  * in the same ISO event.
- *
- * The returned timestamp corresponds to the SDU synchronization reference
- * as defined in Core_v5.4, Vol 6, Part G, Section 3.2.
- * If the provided handle identifies a CIS, the returned timestamp corresponds to
- * the SDU synchronization reference for the central to peripheral direction.
- *
- * The returned timestamp can be used to make the application provide SDUs to the
- * controller right before they are sent on air. The returned value
- * can also be used to synchronize the transmitter and receiver.
  *
  * If the Host issues this command with a connection handle that does not exist,
  * or the connection handle is not associated with a CIS or BIS, the Controller
@@ -1406,8 +1486,8 @@ uint8_t sdc_hci_cmd_vs_iso_read_tx_timestamp(const sdc_hci_cmd_vs_iso_read_tx_ti
  * This vendor specific command changes the time reserved at the end of a BIG event for other roles.
  * This applies to all BIGs created after calling this command.
  *
- * The default value is 1600 us, but can be set to between 0 us and 4,000,000 us.
- * The configured value is retained after issuing an HCI Reset command.
+ * The default value is 1600 us, but can be set to between 0 us and 4,000,000 us. Changes persist
+ * after an HCI_Reset command.
  *
  * If the value is set such that it cannot be satisfied for a given set of BIG parameters, BIG
  * creation will fail with error code UNSUPPORTED_FEATURE_OR_PARAMETER_VALUE (0x11).
@@ -1433,8 +1513,8 @@ uint8_t sdc_hci_cmd_vs_big_reserved_time_set(const sdc_hci_cmd_vs_big_reserved_t
  * Note, when multiple CIGs are used the user needs to ensure that the initial CIG reserves time
  * for the remaining CIGs.
  *
- * The default value is 1300 us, but can be set to between 0 us and 4,000,000 us.
- * The configured value is retained after issuing an HCI Reset command.
+ * The default value is 1300 us, but can be set to between 0 us and 4,000,000 us. Changes persist
+ * after an HCI_Reset command.
  *
  * If the value is set such that it cannot be satisfied for a given set of CIG parameters, the
  * actual
@@ -1465,7 +1545,7 @@ uint8_t sdc_hci_cmd_vs_cig_reserved_time_set(const sdc_hci_cmd_vs_cig_reserved_t
  *
  * This API must be called before creating a CIG.
  *
- * The configured value is retained after issuing an HCI Reset command.
+ * The configured value is preserved when issuing the HCI Reset command.
  *
  * Event(s) generated (unless masked away):
  * When the command has completed, an HCI_Command_Complete event shall be generated.
@@ -1477,144 +1557,6 @@ uint8_t sdc_hci_cmd_vs_cig_reserved_time_set(const sdc_hci_cmd_vs_cig_reserved_t
  *         See Vol 2, Part D, Error for a list of error codes and descriptions.
  */
 uint8_t sdc_hci_cmd_vs_cis_subevent_length_set(const sdc_hci_cmd_vs_cis_subevent_length_set_t * p_params);
-
-/** @brief Set the channel map for scanning and initiating.
- *
- * This command sets the RF channels that should be used for scanning and initiating
- * on the primary advertising channels. The channel map will be used for subsequent
- * commands to start scanning or to create connections. Scanning and initiating
- * that was started before issuing this command is not affected.
- *
- * The default behavior is to listen on all primary advertising channels.
- * The default behavior is restored when issuing the HCI Reset command.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_scan_channel_map_set(const sdc_hci_cmd_vs_scan_channel_map_set_t * p_params);
-
-/** @brief Scan accept extended advertising packets set.
- *
- * This command enables or disables reception of extended advertising packets
- * when extended scanner or extended initiator HCI commands are used.
- *
- * When reception of extended advertising packets is disabled,
- * the scanner may be able to receive more legacy advertising packets.
- * Reception of extended advertising packets should only be disabled
- * when the application knows it is not interested in reports from extended advertisers.
- *
- * After HCI Reset, reception of extended advertising packets is enabled.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set(const sdc_hci_cmd_vs_scan_accept_ext_adv_packets_set_t * p_params);
-
-/** @brief Set priority of a BT role.
- *
- * This vendor specific command changes the scheduling priority of a role running in the controller.
- *
- * Note that unless documented otherwise, any non-default priorities are not tested.
- * This means that there is no guarantee that the controller works as intended when non-tested
- * priorities are used.
- * The default values for the priorities of the different roles are listed in
- * https://docs.nordicsemi.com/bundle/ncs-
- * latest/page/nrfxlib/softdevice_controller/doc/scheduling.html
- *
- * After HCI Reset, priority is set to the default value.
- *
- * If the handle is not associated with an instance of the role_id type,
- * the error code Unknown Connection Identifier (0x02) is returned.
- *
- * If the role_id is set to an invalid or unsupported role,
- * the error code Invalid HCI Command Parameters (0x12) is returned.
- *
- * If the priority is set to an invalid or unsupported value,
- * the error code Invalid HCI Command Parameters (0x12) is returned.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_set_role_priority(const sdc_hci_cmd_vs_set_role_priority_t * p_params);
-
-/** @brief Set Event Start Task.
- *
- * When enabled, this feature will trigger the specified peripheral task register right before
- * the first radio activity of a timing-event.
- *
- * For activities with a handle, the task configuration is automatically reset when the
- * controller deletes the handle.
- *
- * If enabling the task and it is already enabled for the given handle and
- * handle_type, the controller will return the error code Command Disallowed (0x0C).
- *
- * If the advertising handle is not currently active, the controller will return the error code
- * Unknown Advertising Identifier (0x42).
- *
- * If the connection handle is not currently active, the controller will return the error code
- * Unknown Connection Identifier (0x2).
- *
- * If the selected handle_type is not supported by this SDC variant, the controller will
- * return the error code Unsupported Feature or Parameter Value (0x11).
- *
- * After HCI Reset, this feature is disabled.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_set_event_start_task(const sdc_hci_cmd_vs_set_event_start_task_t * p_params);
-
-/** @brief Connection Anchor Point Update Event Reports enable.
- *
- * This vendor specific command is used to enable or disable generation of
- * VS_Conn_Anchor_Point_Update_Report events. See @ref
- * sdc_hci_subevent_vs_conn_anchor_point_update_report_t.
- *
- * When enabled, the controller will start producing reports for all ACL connections whenever
- * a connection anchor point is updated. See Core_v5.4, Vol 6, Part B, Section 4.5.1.
- *
- * This event is generated every connection interval.
- * For peripheral connections, the generation of this event is skipped if no packet from the
- * central is received.
- *
- * If the application does not pull a report in time, it will be overwritten.
- *
- * After HCI Reset, this feature is disabled.
- *
- * Event(s) generated (unless masked away):
- * When the command has completed, an HCI_Command_Complete event shall be generated.
- *
- * @param[in]  p_params Input parameters.
- *
- * @retval 0 if success.
- * @return Returns value between 0x01-0xFF in case of error.
- *         See Vol 2, Part D, Error for a list of error codes and descriptions.
- */
-uint8_t sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable(const sdc_hci_cmd_vs_conn_anchor_point_update_event_report_enable_t * p_params);
 
 /** @} end of HCI_VS_API */
 

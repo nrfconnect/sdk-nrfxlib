@@ -61,7 +61,7 @@ Configurations for parallel use of CIS and BIS
 
 Parallel use of one CIS and one BIS is tested.
 However, there is no absolute maximum of BISes, CISes and ACLs that can be used concurrently.
-Instead, the number of roles that can be used at the same time is limited by available memory and the on-air timings.
+Instead, the amount of roles that can be used at the same time is limited by available memory and the on-air timings.
 
 Tested topologies
 *****************
@@ -194,7 +194,7 @@ Time of arrival
    Expect a larger latency if data is not provided every SDU interval and the stream is configured with retransmissions.
    This is due to the fact that the controller first needs to send empty data packets for the data that was not provided.
    In case data is missing, the controller sends NULL data every ISO event.
-   This also ensures that the data provided with the time of arrival mode is retransmitted the configured number of times.
+   This also ensures that the data provided with the time of arrival mode is retransmitted the configured amount of times.
 
    Use this mode if the exact time when an SDU is sent does not matter or if SDUs are only produced at a rate much smaller than the SDU interval.
    To use this mode, set the sequence number to 0 and do not add a timestamp to the HCI ISO data.
@@ -208,7 +208,7 @@ Sequence numbers
    The controller learns the initial sequence number, so there is no need to align the sequence number each time with the one that is returned when calling the HCI VS ISO Read TX Timestamp command.
 
    Pay special attention on the CIS peripheral side, because the timings of ISO are based on the central's clock.
-   This means that you need to account for drift between the central's and the peripheral's clocks for the generation of SDUs.
+   This means that you need to account for drift between the central's and the peripheral's clocks for the the generation of SDUs.
    To do this, use the HCI VS ISO Read TX Timestamp command.
    The command provides a timestamp corresponding to the last possible point in time that the previous SDU could have been provided.
    When combined with the SDU interval, this gives an indication of the last possible time when an SDU can be provided.
@@ -230,7 +230,7 @@ The application needs to inform the |controller| which SDUs should be time-synch
 
 The recommended way to provide this information is using the timestamps mode.
 Using the same timestamp for multiple SDUs guarantees that the SDUs are time-synchronized.
-Synchronization cannot be reliably achieved using the time of arrival method.
+Synchronization can not be reliably achieved using the time of arrival method.
 See the :ref:`iso_providing_data` section for more information.
 
 The following logical flow demonstrates how to send time-synchronized SDUs on multiple CISes or BISes:

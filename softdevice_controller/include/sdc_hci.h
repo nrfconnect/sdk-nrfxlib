@@ -72,7 +72,6 @@ extern "C" {
 
 typedef enum
 {
-  SDC_HCI_MSG_TYPE_NONE = 0x00,
   SDC_HCI_MSG_TYPE_DATA = 0x02,
   SDC_HCI_MSG_TYPE_EVT  = 0x04,
   SDC_HCI_MSG_TYPE_ISO  = 0x08,
@@ -114,14 +113,13 @@ int32_t sdc_hci_iso_data_put(uint8_t const * p_data_in);
  * @param[in,out] p_packet_out Buffer where the HCI packet will be stored.
  *                             If an event is retrieved, the first byte corresponds to the Event Code.
  *                             If a data packet is retrieved, the first byte corresponds to the Handle.
- * @param[out] p_msg_type_out  Type of HCI packet produced by the controller.
- *                             See @ref sdc_hci_msg_type_t for possible values.
+ * @param[out] p_msg_type_out  Enum indicating the type of HCI packet produced by the controller.
  *
  * @retval 0            Success
  * @retval -NRF_EAGAIN  No event available
  * @retval -NRF_EINVAL  Invalid input
  */
-int32_t sdc_hci_get(uint8_t * p_packet_out, uint8_t * p_msg_type_out);
+int32_t sdc_hci_get(uint8_t * p_packet_out, sdc_hci_msg_type_t * p_msg_type_out);
 
 #ifdef __cplusplus
 }

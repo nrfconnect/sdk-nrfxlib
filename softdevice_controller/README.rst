@@ -3,11 +3,13 @@
 SoftDevice Controller
 #####################
 
-The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor devices that support Bluetooth.
+The |controller| is an RTOS-agnostic library built for the Nordic Semiconductor nRF52 and nRF53 Series.
+It supports Bluetooth 5.
 The library utilizes services provided by the :ref:`mpsl`.
 
 The |controller| is distributed in different variants containing different features.
-The libraries are available as soft-float, softfp-float, and hard-float builds for the nRF52, nRF54H and nRF54L Series, and as a soft-float build for the nRF53 Series.
+Variants for the Arm Cortex-M4 processor are available as soft-float, softfp-float, and hard-float.
+Variants for the Arm Cortex-M33 processor are available as soft-float only.
 
 |BLE| feature support:
 
@@ -18,11 +20,11 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 +--------------------------------+-----------------+--------------+-----------+
 | Advertiser                     | X               |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
-| Peripheral                     | X               |              | X         |
+| Slave                          | X               |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
 | Scanner                        |                 | X            | X         |
 +--------------------------------+-----------------+--------------+-----------+
-| Central                        |                 | X            | X         |
+| Master                         |                 | X            | X         |
 +--------------------------------+-----------------+--------------+-----------+
 | Data Length Extensions         | X               | X            | X         |
 +--------------------------------+-----------------+--------------+-----------+
@@ -37,8 +39,6 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 | Coded PHY (Long Range)         |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
 | LE Power Control Request       | X               | X            | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| LE Path Loss Monitoring        | X               | X            | X         |
 +--------------------------------+-----------------+--------------+-----------+
 | Periodic Advertising Sync      |                 |              | X         |
 | Transfer - Sender              |                 |              |           |
@@ -64,11 +64,6 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
 +--------------------------------+-----------------+--------------+-----------+
 | Synchronized Receiver          |                 |              | X         |
 +--------------------------------+-----------------+--------------+-----------+
-| Connection Subrating           |                 |              | X         |
-+--------------------------------+-----------------+--------------+-----------+
-| Channel Sounding               |                 |              | X         |
-| (experimental support)         |                 |              |           |
-+--------------------------------+-----------------+--------------+-----------+
 
 .. note::
    The following limitations apply to the listed features:
@@ -77,8 +72,6 @@ The libraries are available as soft-float, softfp-float, and hard-float builds f
    * For Connection CTE Response, angle of arrival (AoA) is supported, but angle of departure (AoD) is not.
    * For Periodic Advertising Sync Transfer - Receiver, only one sync transfer reception may be in progress at any one time per link.
    * For the Isochronous Channels features, nRF52820 and nRF52833 are the nRF52 Series devices that support encrypting and decrypting the Isochronous Channels packets.
-   * For the nRF54H series, all Bluetooth features are experimental.
-   * For the Channel Sounding feature, support is experimental and only available for nRF54L Series devices.
 
 .. _sdc_proprietary_feature_support:
 
@@ -108,7 +101,6 @@ Proprietary feature support:
    doc/softdevice_controller
    doc/scheduling
    doc/isochronous_channels
-   doc/channel_sounding
    limitations
    CHANGELOG
    doc/api
