@@ -7,81 +7,16 @@ Changelog
    :local:
    :depth: 2
 
-
-All the notable changes to this project are documented on this page.
-
-Main branch
-***********
-
-Added
-=====
-
-* Added the functions :c:func:`mpsl_clock_ctrl_source_register` and :c:func:`mpsl_clock_ctrl_source_unregister` to provide :ref:`Experimental <nrf:software_maturity>` support for running MPSL with an external clock driver.
-  The APIs are only supported on nR54H Series SoCs.
-  Using these functions makes it possible to use an external clock driver, such as one provided by the |NCS|.
-  This fixes an issue on nRF54H Series where MPSL would assert or get suboptimal performance when other application components attempt to use a clock. (DRGN-21843)
-* On the nRF54L15 SoC, Errata 39 is now applied.
-
-Removed
-=======
-
-* Removed the deprecated function :c:func:`mpsl_fem_prepare_powerdown`. (KRKNWK-16691)
-
-nRF Connect SDK v2.9.0
+nRF Connect SDK v2.6.3
 **********************
 
-Bug fixes
-=========
-* Fixed an issue where the functions :c:func:`mpsl_clock_hfclk_request` and :c:func:`mpsl_clock_hfclk_release` could end up not working after :c:func:`mpsl_uninit`
-  This could happen if LFRC was used as clock source (DRGN-23325)
-
-nRF Connect SDK v2.8.0
-**********************
-
-Changes
-=======
-
-* Removed support for running MPSL on the nRF54L15 PDK v0.7.0 and earlier. (DRGN-23325)
-* Removed support for running MPSL on the Engineering A revision of the nRF54H20 SoC. (DRGN-23325)
-* On nRF54L Series devices, the application now needs to implement :c:func:`mpsl_constlat_request_callback` and :c:func:`mpsl_lowpower_request_callback`.
-  This is already added to the MPSL driver in the |NCS|. (DRGN-22562)
-* Removed the :file:`mpsl_coex.h` API. (DRGN-22567)
-* The timeslot implementation now starts ``TIMER0`` a couple microseconds later.
-  It now starts when the ``MPSL_TIMESLOT_SIGNAL_START`` callback is given.
-
-Added
-=====
-
-* Added production support for the nRF54L Series. (DRGN-23325)
-* Added :c:func:`mpsl_fem_enable` to allow turning on the Front-End Module earlier than through a call to :c:func:`mpsl_fem_pa_configuration_set` (KRKNWK-19275).
-  Added implementation of :c:func:`mpsl_fem_enable` for nRF2220 Front-End Module.
-* Added the defines :c:macro:`MPSL_PPI_CHANNELS_USED_MASK`, :c:macro:`MPSL_DPPIC_CHANNELS_USED_MASK`, :c:macro:`MPSL_DPPIC10_CHANNELS_USED_MASK`, :c:macro:`MPSL_DPPIC20_CHANNELS_USED_MASK`, and :c:macro:`MPSL_DPPIC020_CHANNELS_USED_MASK`.
-  These represent the same resources as ``MPSL_RESERVED_PPI_CHANNELS``, but also specify the DPPI controller the channels belongs to.
-* Added the defines :c:macro:`MPSL_PPIB11_CHANNELS_USED_MASK`, :c:macro:`MPSL_PPIB21_CHANNELS_USED_MASK`, and :c:macro:`MPSL_IPCT130_CHANNELS_USED_MASK`.
-  These represent the PPIB and IPCT resources used.
-
-nRF Connect SDK v2.7.0
-**********************
+All the notable changes included in the |NCS| v2.6.3 release are documented in this section.
 
 Changes
 =======
 
 * Fixed a rare issue that could cause a scheduler assert if interrupts were disabled for a longer period of time (DRGN-24327).
   Note that disabling interrupts for a longer period of time is not allowed.
-* The default bit width within timeslots for ``TIMER0`` has been increased from 24 to 32 bits.
-  The user may still configure ``TIMER0`` however they like during the timeslot. (DRGN-19050)
-* New FEM protocol APIs are provided to control the PA power, the previous APIs are removed.
-  This change does not affect applications developed in the |NCS| context.
-  :c:func:`mpsl_fem_pa_power_control_set` replaces :c:func:`mpsl_fem_pa_gain_set`.
-  :c:func:`mpsl_fem_caps_get` replaces :c:func:`mpsl_fem_pa_is_configured`.
-  The :c:struct:`mpsl_tx_power_split_t` structure contains the new field ``fem_pa_power_control`` to be used with the :c:func:`mpsl_fem_pa_power_control_set` function.
-  The :c:type:`mpsl_fem_gain_t` type is deprecated, please use :c:type:`mpsl_fem_pa_power_control_t` type instead (KRKNWK-18729).
-* The FEM libraries for nRF2220 and nRF2240 no more link directly to the TWIM library.
-
-  * The TWI implementation now needs to be provided externally.
-  * The limitation that only the TWIM0 instance could be used for nRF2220 and nRF2240 devices is removed.
-  * :c:struct:`mpsl_fem_twi_if_t` replaces :c:struct:`mpsl_fem_twi_config_t`.
-  * The ``twi_if`` field replaces the ``twi_config`` field within :c:struct:`mpsl_fem_nrf2220_interface_config_t` and :c:struct:`mpsl_fem_nrf2240_interface_config_t` (KRKNWK-19010).
 
 nRF Connect SDK v2.6.0
 **********************

@@ -19,8 +19,10 @@ These libraries provide the following key features:
   It provides an API for controlling external Front-End Modules.
 * SoC Temperature.
   It provides an API for obtaining the temperature measured on the SoC.
-* Short-Range External Radio Coexistence.
-  It provides an API that allows the application to interface with several types of packet traffic arbiters (PTAs).
+* IEEE 802.15.4 External Radio Coexistence.
+  It provides an API to control coexistence with IEEE 802.15.4.
+* Bluetooth External Radio Coexistence.
+  It provides an API to control coexistence with Bluetooth.
 
 To enable MPSL in |NCS| applications, use the :kconfig:option:`CONFIG_MPSL` Kconfig option.
 
@@ -34,5 +36,6 @@ To enable MPSL in |NCS| applications, use the :kconfig:option:`CONFIG_MPSL` Kcon
    doc/tx_power_control
    doc/fem
    doc/cx
+   doc/bluetooth_coex
    CHANGELOG
    doc/api

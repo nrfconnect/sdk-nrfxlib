@@ -34,51 +34,17 @@ typedef struct
   uint8_t         port_pin;  /**< GPIO pin number relative to the port. */
 } mpsl_fem_pin_t;
 
-/** @brief Configuration parameters for pins that control Front End Module through a GPIOTE peripheral.
+/** @brief Configuration parameters for pins that enable or disable (or both) either Power Amplifier (PA) or Low Noise Amplifier (LNA).
  */
 typedef struct
 {
-    /** GPIO port number, register address and pin number relative to the port.
-     * 
-     *  For nRF54L series devices only the pins within a power domain equipped with a GPIOTE can be used.
-     *  For nRF54L15 device pins from GPIO P0 or GPIO P1 can be used, GPIO P2 can not be used.
-    */
-    mpsl_fem_pin_t  gpio_pin;
-
-    /* Enable toggling for this pin. */
-    bool            enable;
-
-    /* If true, the pin will be active high. Otherwise, the pin will be active low. */
-    bool            active_high;
-
-    /** The GPIOTE channel used for toggling the pin.
-     *
-     * For nRF54L series devices it is assumed that the GPIOTE channel belongs to that GPIOTE instance
-     * that allows to control the pin given by @c gpio_pin.
-     * The field @c p_gpiote must also be set.
-     */
-    uint8_t         gpiote_ch_id;
-
-#if defined(NRF54L_SERIES)
-    /** The PPIB channel numbers of PPIB11 that can be subscribed within Radio Power Domain to trigger GPIOTE tasks.
-     *
-     *  It is a responsibility of an user of the FEM API to provide the cross-domain DPPI/PPIB connections that
-     *  fulfill the following requirements:
-     *  - The PPIB11 channel number @c ppib_channels[0] triggers the TASKS_CLR[gpiote_ch_id] of the GPIOTE.
-     *  - The PPIB11 channel number @c ppib_channels[1] triggers the TASKS_SET[gpiote_ch_id] of the GPIOTE.
-     */
-    uint8_t         ppib_channels[2];
-
-    /** The pointer to the GPIOTE instance used to toggle the GPIO pin.
-     *
-     *  It is a responsibility of an user of the FEM API to provide proper instance
-     *  allowing to toggle the pin given by @c gpio_pin field.
-     */
-    NRF_GPIOTE_Type * p_gpiote;
-#endif
+    mpsl_fem_pin_t  gpio_pin;       /**< GPIO port number, register address and pin number relative to the port. */
+    bool            enable;         /**< Enable toggling for this pin. */
+    bool            active_high;    /**< If true, the pin will be active high. Otherwise, the pin will be active low. */
+    uint8_t         gpiote_ch_id;   /**< The GPIOTE channel used for toggling this pin. */
 } mpsl_fem_gpiote_pin_config_t;
 
-/** @brief Configuration parameters for pins that control Front End Module.
+/** @brief Configuration parameters for pins that enable or disable (or both) either Power Amplifier (PA) or Low Noise Amplifier (LNA).
  */
 typedef struct
 {

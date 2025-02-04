@@ -37,25 +37,13 @@ extern "C" {
 /** @brief Size of build revision array in bytes. */
 #define MPSL_BUILD_REVISION_SIZE 20
 
-/* Reserved (D)PPI, PPIB and IPCT resources for the supported platforms. */
-#if defined(NRF52_SERIES)
+/** @brief Bitmask of (D)PPI channels reserved for MPSL. */
+#if defined(PPI_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 19) | (1UL << 30) | (1UL << 31))
-/* This corresponds to the PPI channels 19, 30, and 31. */
-#define MPSL_PPI_CHANNELS_USED_MASK (0xc0080000)
-#elif defined(NRF53_SERIES)
+#elif defined(GRTC_PRESENT)
+#define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
+#elif defined(DPPIC_PRESENT)
 #define MPSL_RESERVED_PPI_CHANNELS ((1UL << 0) | (1UL << 1) | (1UL << 2))
-/* This corresponds to the DPPI channels 0, 1, and 2. */
-#define MPSL_DPPIC_CHANNELS_USED_MASK (0x00000007)
-#elif defined(NRF54L_SERIES)
-#define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
-#define MPSL_DPPIC10_CHANNELS_USED_MASK (0x00000001)
-#define MPSL_DPPIC20_CHANNELS_USED_MASK (0x00000001)
-#define MPSL_PPIB11_CHANNELS_USED_MASK  (0x00000001)
-#define MPSL_PPIB21_CHANNELS_USED_MASK  (0x00000001)
-#elif defined(NRF54H) || defined(GRTC_PRESENT)
-#define MPSL_RESERVED_PPI_CHANNELS (1UL << 0)
-#define MPSL_DPPIC020_CHANNELS_USED_MASK (0x00000001)
-#define MPSL_IPCT130_CHANNELS_USED_MASK  (0x00000001)
 #else
 #error Unknown NRF series.
 #endif
@@ -75,7 +63,6 @@ typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t li
                                  If NULL the LF clock will be configured as an RC source with rc_ctiv =
                                  @ref MPSL_RECOMMENDED_RC_CTIV, .rc_temp_ctiv =
                                  @ref MPSL_RECOMMENDED_RC_TEMP_CTIV, and .accuracy_ppm = @ref MPSL_DEFAULT_CLOCK_ACCURACY_PPM.
-                                 The parameter is not used when external clock driver is registered @ref mpsl_clock_ctrl_source_register().
  * @param[in]  low_prio_irq      IRQ to pend when low priority processing should be executed. The application
  *                               shall call @ref mpsl_low_priority_process after this IRQ has occurred.
  * @param[in]  p_assert_handler  Pointer to MPSL assert handler.
@@ -84,10 +71,6 @@ typedef void (*mpsl_assert_handler_t)(const char * const file, const uint32_t li
  *       never modify the SEVONPEND flag in the SCR register,
  *       while this function is executing.
  *       Doing so might lead to a deadlock.
- *
- * @note For nRF54h SoC series the function always waits for LFCLK to be ready. The LFCLK is handled by system controller
- *       so response must arrive from other domain. That shall be done in non-blocking context. To do not change
- *       requirements for other MPSL APIs delayed wait for LFCLK is not allowed for the nRF54h SoC series.
  *
  * @note If only Front End Module functionality is needed, @ref mpsl_fem_init can be called instead.
  *
@@ -173,22 +156,6 @@ void mpsl_calibration_timer_handle(void);
  * RFU
  */
 void mpsl_pan_rfu(void);
-
-/** @brief MPSL requesting CONSTLAT to be on.
- *
- * The application needs to implement this function.
- * MPSL will call the function when it needs CONSTLAT to be on.
- * It only calls the function on nRF54L Series devices.
- */
-void mpsl_constlat_request_callback(void);
-
-/** @brief De-request CONSTLAT to be on.
- *
- * The application needs to implement this function.
- * MPSL will call the function when it no longer needs CONSTLAT to be on.
- * It only only calls the function on nRF54L Series devices.
- */
-void mpsl_lowpower_request_callback(void);
 #ifdef __cplusplus
 }
 #endif

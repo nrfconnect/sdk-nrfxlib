@@ -45,12 +45,12 @@ extern "C" {
 #define MPSL_DPPI_RADIO_PUBLISH_DISABLED_CH_IDX      7U
 
 /** @brief Fixed channel for NRF_RADIO->PUBLISH_PHYEND. */
-#define MPSL_DPPI_RADIO_PUBLISH_PHYEND_CHANNEL_IDX   8U
+#define MPSL_DPPI_RADIO_PUBLISH_PHYEND_CHANNEL_IDX   12U
 
 /** @brief Fixed channel for NRF_RADIO->SUBSCRIBE_DISABLE.
  * Publishing to this channel will result in undefined behavior.
  */
-#define MPSL_DPPI_RADIO_SUBSCRIBE_DISABLED_CHANNEL_IDX  9U
+#define MPSL_DPPI_RADIO_SUBSCRIBE_DISABLED_CHANNEL_IDX  11U
 
 /** @brief Setup the DPPI channels. */
 void mpsl_dppi_fixed_channels_set(void);

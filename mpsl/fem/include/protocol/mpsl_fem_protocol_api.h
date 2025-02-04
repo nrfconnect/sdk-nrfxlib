@@ -75,16 +75,13 @@ typedef struct
         /** Parameters when type is @ref MPSL_FEM_EVENT_TYPE_TIMER. */
         struct
         {
-            /** Pointer to a 1-us resolution timer instance.
-             *
-             * For nRF54L series devices this timer must belong to a Radio Power Domain.
-             */
+            /** Pointer to a 1-us resolution timer instance. */
             NRF_TIMER_Type *   p_timer_instance;
 
             /** Counter period parameters */
             struct
             {
-                /** Timer value when the Front End Module can start preparing PA/LNA. This parameter is deprecated (unused). */
+                /** Timer value when the Front End Module can start preparing PA/LNA. */
                 uint32_t       start;
                 /** Timer value at which the PA/LNA have to be prepared. Radio operation shall start at this point. */
                 uint32_t       end;
@@ -99,11 +96,7 @@ typedef struct
         /** Parameters when type is @ref MPSL_FEM_EVENT_TYPE_GENERIC. */
         struct
         {
-            /** Event triggering required FEM operation.
-             *
-             *  For nRF54L series devices this event (being in fact a dppi channel number,
-             *  see doc for @c mpsl_subscribable_hw_event_t ) must belong to the Radio Power Domain.
-             */
+            /** Event triggering required FEM operation. */
             mpsl_subscribable_hw_event_t event;
           /** Generic event, used in case of type equal to @ref MPSL_FEM_EVENT_TYPE_GENERIC. */
         } generic;
@@ -123,53 +116,9 @@ typedef struct
     /** TX power to be applied to the RADIO peripheral. */
     mpsl_tx_power_t radio_tx_power;
 
-    /** FEM PA power control.*/
-    mpsl_fem_pa_power_control_t fem_pa_power_control;
+    /** FEM gain. */
+    mpsl_fem_gain_t fem;
 } mpsl_tx_power_split_t;
-
-/** @brief PA setup is required before starting a transmission.
- *
- *  This flag applies to @ref mpsl_fem_caps_t::flags.
- *
- *  If it is set, then @ref mpsl_fem_pa_configuration_set must be called before transmission starts.
- */
-#define MPSL_FEM_CAPS_FLAG_PA_SETUP_REQUIRED  (1U << 0)
-
-/** @brief LNA setup is required before starting a reception.
- *
- *  This flag applies to @ref mpsl_fem_caps_t::flags.
- *
- *  If it is set, then @ref mpsl_fem_lna_configuration_set must be called before reception starts.
- */
-#define MPSL_FEM_CAPS_FLAG_LNA_SETUP_REQUIRED (1U << 1)
-
-/** @brief Structure representing capabilities and characteristics of the FEM in use. */
-typedef struct
-{
-    /** Flags informing about the FEM in use.
-     *
-     *  The following flags apply:
-     *  @ref MPSL_FEM_CAPS_FLAG_PA_SETUP_REQUIRED, @ref MPSL_FEM_CAPS_FLAG_LNA_SETUP_REQUIRED
-     */
-    uint32_t flags;
-} mpsl_fem_caps_t;
-
-/** @brief Gets the capabilities of the FEM in use.
- *
- *  @param[out] p_caps  Pointer to the capabilities structure to be filled in.
- */
-void mpsl_fem_caps_get(mpsl_fem_caps_t * p_caps);
-
-/** @brief Enable Front End Module.
- *
- *  Some Front End Module devices should be explicitly enabled before they can be configured
- *  for radio operation. This function is intended to enable Front End Module shortly before
- *  radio operations are started.
- * 
- *  After the Front End Module performed all it's operations complementary @ref mpsl_fem_disable
- *  function should be called.
- */
-void mpsl_fem_enable(void);
 
 /** @brief Disable Front End Module.
  *
@@ -383,30 +332,27 @@ int8_t mpsl_fem_tx_power_split(const mpsl_tx_power_t         power,
                                uint16_t                      freq_mhz,
                                bool                          tx_power_ceiling);
 
-/** @brief Sets the PA power control.
+/** @brief Sets PA gain.
  *
- * Setting the PA power control informs the FEM implementation how the PA is to be controlled
- * before the next transmission.
- *
- * The PA power control set by this function is to be applied to control signals or
- * parameters. What signals and parameters are controlled and how does it happen depends on
- * implementation of given FEM. The meaning of @p pa_power_control parameter is
- * fully FEM type-dependent. For FEM type-independent protocol implementation please
- * use the function @ref mpsl_fem_tx_power_split and provide outcome of this function
- * returned by the parameter @c p_tx_power_split to the call to @ref mpsl_fem_pa_power_control_set.
- * For applications intended for testing the FEM itself when @ref mpsl_fem_tx_power_split is not used
- * you must make the @p pa_power_control parameter on your own.
- *
- * @note The PA power control set by this function will be applied to radio transmissions
+ * @note The gain set by this function will be applied to radio transmissions
  * following the call. If the function is called during radio transmission
- * or during ramp-up for transmission it is unspecified if the control is applied.
+ * or during ramp-up for transmission it is unspecified if the gain is applied.
  *
- * @param[in] pa_power_control  PA power control to be applied to the FEM.
+ * @param[in] p_gain       Pointer to structure with data needed to apply the gain.
  *
- * @retval   0             PA power control has been applied successfully.
- * @retval   -NRF_EINVAL   PA power control could not be applied. Provided @p pa_power_control is invalid.
+ * @retval   0             Gain setting has been applied successfully.
+ * @retval   -NRF_EINVAL   Gain setting could not be applied. Provided @p gain_setting is invalid.
  */
-int32_t mpsl_fem_pa_power_control_set(mpsl_fem_pa_power_control_t pa_power_control);
+int32_t mpsl_fem_pa_gain_set(const mpsl_fem_gain_t * p_gain);
+
+/** @brief Checks if the PA signaling is configured and enabled, and gets
+ *  the configured gain in dB.
+ *
+ * @param[out] p_gain The configured gain in dB if PA is configured and enabled.
+ *                    If there is no PA present or the PA does not affect
+ *                    the signal gain, returns 0 dB.
+ */
+void mpsl_fem_pa_is_configured(int8_t * const p_gain);
 
 /** @brief Returns LNA gain if the LNA signal is configured and enabled, 0 otherwise.
  *
@@ -416,13 +362,27 @@ int32_t mpsl_fem_pa_power_control_set(mpsl_fem_pa_power_control_t pa_power_contr
  */
 void mpsl_fem_lna_is_configured(int8_t * const p_gain);
 
-/** @brief Caches the CC channels to be used by FEM.
+/** @brief Prepares the Front End Module to switch to the Power Down state.
  *
- * @note Calling this function improves the execution speed for PA/LNA configuration (if the mask is unchanged).
+ *  @deprecated This function is deprecated. Use @ref mpsl_fem_disable instead.
  *
- * @param[in] mask Bitmask of available compare channels.
+ *  This function makes sure the Front End Module shall be switched off in the
+ *  appropriate time, using the hardware timer and its compare channel.
+ *  The timer is owned by the protocol and must be started by the protocol.
+ *  The timer stops after matching the provided compare channel (the call sets the short).
+ *
+ * @param[in] p_instance      Timer instance that is used to schedule the transition to the Power Down state.
+ * @param[in] compare_channel Compare channel to hold a value for the timer.
+ * @param[in] ppi_id          ID of the PPI channel used to switch to the Power Down state.
+ * @param[in] event_addr      Address of the event which shall trigger the Timer start.
+ *
+ * @retval true               Whether the scheduling of the transition was successful.
+ * @retval false              Whether the scheduling of the transition was not successful.
  */
-void mpsl_fem_utils_available_cc_channels_cache(uint8_t mask);
+bool mpsl_fem_prepare_powerdown(NRF_TIMER_Type * p_instance,
+                                uint32_t         compare_channel,
+                                uint32_t         ppi_id,
+                                uint32_t         event_addr);
 
 #endif // MPSL_FEM_PROTOCOL_API_H__
 

@@ -37,14 +37,8 @@ typedef struct
     /** SoC power in dBm. When returned by a model, this field is expected to contain value
      *  supported by the SoC that can safely be applied directly to RADIO registers. */
     int8_t          soc_pwr;
-
-    /** PA power control to be applied to the FEM.
-     *
-     * This value is FEM type-dependent. The produced value is to be passed to the
-     * call to @ref mpsl_fem_pa_power_control_set.
-     */
-    mpsl_fem_pa_power_control_t fem_pa_power_control;
-
+    /** Front-End Module gain. */
+    mpsl_fem_gain_t fem;
     /** Achieved power on the antenna in dBm. */
     int8_t          achieved_pwr;
 } mpsl_fem_power_model_output_t;
