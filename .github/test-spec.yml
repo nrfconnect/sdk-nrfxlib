@@ -194,3 +194,9 @@
   - "nrf_rpc/CMakeLists.txt"
   - "nrf_rpc/include/**/*"
   - "nrf_rpc/nrf_rpc*"
+
+"CI-ps-test":
+  - any:
+      - "nrf_rpc/**/*"
+      - "!nrf_rpc/doc/**/*"
+      - "!nrf_rpc/*.rst"
