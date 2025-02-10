@@ -33,7 +33,7 @@ Bug fixes
 * Fixed an issue where ACL connections could not be created if a Periodic Advertiser was configured when the :kconfig:option:`CONFIG_BT_CTLR_SDC_PAWR_ADV` Kconfig option was selected. (DRGN-24148)
 * Fixed a rare issue where the scanner would assert when scanning and initiating at the same time. (DRGN-24198)
 
-  The issue would only happen if all the conditions are met:
+  The issue would only happen if all the following conditions are met:
 
     * :kconfig:option:`BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` is selected.
     * :kconfig:option:`BT_CTLR_SDC_SCAN_BUFFER_COUNT` is set to the non-default value 2.
@@ -43,7 +43,7 @@ Bug fixes
   This would only occur on nRF52 Series and nRF53 Series devices. (DRGN-24310)
 * Fixed a very rare issue where the scanner would assert, hang or stop producing reports when scanning and initiating at the same time. (DRGN-24370)
 
-  The issue would only happen if all the conditions are met:
+  The issue would only happen if all the following conditions are met:
 
     * :kconfig:option:`BT_CTLR_SDC_ALLOW_PARALLEL_SCANNING_AND_INITIATING` is selected.
     * The timing events are not combined for the scanner and the initiator.
@@ -56,6 +56,14 @@ Bug fixes
 
     * The configured scan window is larger than 500 milliseconds.
     * The ``ADV_EXT_IND`` is received at the very end of the scan window.
+* Fixed an issue where the CIS peripheral would not be able to receive after the first subevent.
+  This would only happen if the subevent interval is large or if the CIS is configured with interleaved packing. (DRGN-24359)
+* Fixed an issue where the CIS peripheral would report wrong SDU sequence numbers upon receiving. (DRGN-24359)
+
+  The issue would only happen if all the following conditions are met:
+
+    * The subevent interval is large, or if the CIS is configured with interleaved packing.
+    * There are scheduling conflicts.
 
 nRF Connect SDK v2.9.0
 **********************

@@ -20,8 +20,20 @@
 extern "C" {
 #endif
 
-/** @brief Initialize MPSL Power Management. */
+/** @brief Initialize MPSL external Power Management integration.
+ *
+ * Enables integration with external power management system. After calling
+ * this function, the external power management system must service requests
+ * for low latency and event registration according to the API defined
+ * in @ref mpsl_pm.h file.
+ */
 void mpsl_pm_init(void);
+
+/** @brief Uninitialize MPSL external Power Management integration.
+ *
+ * Disables integration with external power management system.
+ */
+void mpsl_pm_uninit(void);
 
 #ifdef __cplusplus
 }

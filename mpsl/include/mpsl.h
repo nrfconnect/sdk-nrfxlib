@@ -60,6 +60,17 @@ extern "C" {
 #error Unknown NRF series.
 #endif
 
+/* Defines which timer is being used by the MPSL implementation */
+#if defined(NRF52_SERIES)
+	#define MPSL_TIMER0 NRF_TIMER0
+#elif defined(NRF53_SERIES)
+	#define MPSL_TIMER0 NRF_TIMER0_NS
+#elif defined(NRF54L_SERIES)
+	#define MPSL_TIMER0 NRF_TIMER10
+#else
+	#define MPSL_TIMER0 NRF_TIMER020
+#endif
+
 /** @brief    Function prototype for the assert handler.
  *
  * @note      If an internal assert occurs this function is called. It is supposed to log the assert and stop execution.
@@ -133,12 +144,17 @@ void MPSL_IRQ_RADIO_Handler(void);
 
 /** @brief      RTC0 interrupt handler
  *
+ * For nRF52 and nRF53 series the RTC timer is NRF_RTC0.
+ * For nRF54 series devices, the RTC timer corresponds to NRF_GRTC.
+ *
  * @note       This handler should be placed in the interrupt vector table.
  *             The interrupt priority level should be priority 0
  */
 void MPSL_IRQ_RTC0_Handler(void);
 
 /** @brief      TIMER0 interrupt handler.
+ *
+ * The timer being used is defined by @ref MPSL_TIMER0.
  *
  * @note       This handler should be placed in the interrupt vector table.
  *             The interrupt priority level should be priority 0

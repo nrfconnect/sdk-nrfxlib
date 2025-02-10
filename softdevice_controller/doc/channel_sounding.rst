@@ -106,7 +106,6 @@ Experimental limitations
 Currently, the following limitations apply to the :ref:`Experimental <nrf:software_maturity>` support of Channel Sounding:
 
  * :ref:`radio coexistence <nrf:ug_radio_coex>` and :ref:`front-end modules <mpsl_fem>` are not supported.
- * Only one subevent per event is supported in CS.
 
 Developing with CS
 ******************
