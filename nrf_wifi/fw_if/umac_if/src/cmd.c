@@ -228,6 +228,12 @@ enum nrf_wifi_status umac_cmd_init(struct nrf_wifi_fmac_dev_ctx *fmac_dev_ctx,
 	umac_cmd_data->ps_exit_strategy = EVERY_TIM;
 #endif  /* CONFIG_NRF_WIFI_PS_INT_PS */
 
+	umac_cmd_data->max_ps_poll_fail_cnt = CONFIG_NRF_WIFI_MAX_PS_POLL_FAIL_CNT;
+
+#ifdef CONFIG_NRF_WIFI_RX_STBC_HT
+	umac_cmd_data->stbc_enable_in_ht  = 1;
+#endif /* CONFIG_NRF_WIFI_RX_STBC_HT */
+
 	status = nrf_wifi_hal_ctrl_cmd_send(fmac_dev_ctx->hal_dev_ctx,
 					    umac_cmd,
 					    (sizeof(*umac_cmd) + len));
