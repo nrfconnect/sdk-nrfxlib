@@ -160,10 +160,10 @@ extern "C" {
  */
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    747
-#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 867
-#define __MEM_TX_BUFFER_OVERHEAD_SIZE 14
-#define __MEM_RX_BUFFER_OVERHEAD_SIZE 14
+#define __MEM_MINIMAL_CENTRAL_LINK_SIZE    731
+#define __MEM_MINIMAL_PERIPHERAL_LINK_SIZE 851
+#define __MEM_TX_BUFFER_OVERHEAD_SIZE 15
+#define __MEM_RX_BUFFER_OVERHEAD_SIZE 15
 
 #define __MEM_ADDITIONAL_LINK_SIZE(tx_size, rx_size, tx_count, rx_count) \
     ((tx_count) * ((tx_size) + __MEM_TX_BUFFER_OVERHEAD_SIZE) - \
@@ -209,7 +209,7 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (11 + (num_links) * 63) : 0)
+#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (11 + (num_links) * 127) : 0)
 
 /** @brief Maximum memory required when supporting periodic advertising sync transfer.
  *
@@ -221,24 +221,24 @@ extern "C" {
 #define SDC_MEM_QOS_CHANNEL_SURVEY (40)
 
 /** Memory required for the scanner when only supporting legacy scanning. */
-#define SDC_MEM_SCAN(buffer_count) (353 + (buffer_count) * 104)
+#define SDC_MEM_SCAN(buffer_count) (320 + (buffer_count) * 104)
 
 /** Memory required for the scanner when supporting extended scanning. */
-#define SDC_MEM_SCAN_EXT(buffer_count) (353 + (buffer_count) * 320)
+#define SDC_MEM_SCAN_EXT(buffer_count) (320 + (buffer_count) * 320)
 
 /** Additional memory required for the initiator when supporting scanning
  *  and initiating at the same time.
  */
-#define SDC_MEM_INITIATOR (328)
+#define SDC_MEM_INITIATOR (296)
 
 /** Memory required for the Filter Accept List */
 #define SDC_MEM_FAL(max_num_entries) ((max_num_entries) > 0 ? (4 + (max_num_entries) * 8) : 0)
 
 /** @brief Auxiliary defines, not to be used outside of this file. */
-#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4995+(max_adv_data)*18)/10)
-#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (683+(max_adv_data))
-#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2658+(max_adv_data)*18)/10)
-#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (457+(max_adv_data))
+#define __MEM_PER_ADV_SET_LOW(max_adv_data) ((4864+(max_adv_data)*18)/10)
+#define __MEM_PER_ADV_SET_HIGH(max_adv_data) (674+(max_adv_data))
+#define __MEM_PER_PERIODIC_ADV_SET_LOW(max_adv_data) ((2704+(max_adv_data)*18)/10)
+#define __MEM_PER_PERIODIC_ADV_SET_HIGH(max_adv_data) (458+(max_adv_data))
 
 /** @brief Maximum required memory for a given advertising buffer size.
  *
@@ -262,7 +262,7 @@ extern "C" {
  *
  * @param[in] buffer_count The number of periodic synchronization receive buffers.
  */
-#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (218 + (buffer_count) * 279)
+#define SDC_MEM_PER_PERIODIC_SYNC(buffer_count) (217 + (buffer_count) * 279)
 
 /** Memory required per periodic sync when periodic sync with responses is supported.
  *
@@ -270,7 +270,7 @@ extern "C" {
  * @param[in] rx_buffer_count The number of buffers for receiving data.
  */
 #define SDC_MEM_PER_PERIODIC_SYNC_RSP(tx_buffer_count, rx_buffer_count) \
-    (639 + (tx_buffer_count - 1) * 254 + (rx_buffer_count) * 278)
+    (638 + (tx_buffer_count - 1) * 254 + (rx_buffer_count) * 278)
 
 /** Memory required for the periodic adv list.
  *
@@ -281,7 +281,7 @@ extern "C" {
 /** @brief Auxiliary defines, not to be used outside of this file */
 #define __MEM_PER_PERIODIC_ADV_RSP_TX_BUFFER(max_tx_data_size) ((max_tx_data_size) + 5)
 #define __MEM_PER_PERIODIC_ADV_RSP_RX_BUFFER (282)
-#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (465)
+#define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITH_RX (470)
 #define __MEM_MINIMAL_PERIODIC_ADV_RSP_SET_SIZE_WITHOUT_RX (166)
 #define __MEM_FOR_PERIODIC_ADV_RSP_FAILURE_REPORTING (224)
 #define __MEM_PER_ISO_PDU_POOL(count) ((count) > 0 ? (16 + (count) * 288) : 0)
@@ -306,13 +306,13 @@ extern "C" {
 #define SDC_MEM_PER_CIG(count) ((count) > 0 ? (13 + (count) * 123) : 0)
 
 /** @brief Maximum memory required per CIS. Buffer and CIG memory comes in addition. */
-#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 556) : 0)
+#define SDC_MEM_PER_CIS(count) ((count) > 0 ? (13 + (count) * 547) : 0)
 
 /** @brief Maximum memory required per BIG. */
 #define SDC_MEM_PER_BIG(count) ((count) > 0 ? (13 + (count) * 291) : 0)
 
 /** @brief Maximum memory required per BIS. Buffer and BIG memory comes in addition. */
-#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 267) : 0)
+#define SDC_MEM_PER_BIS(count) ((count) > 0 ? (13 + (count) * 259) : 0)
 
 /** @brief Maximum memory required for the ISO RX PDU pool per stream.
  *  @param[in] rx_pdu_buffer_per_stream_count Number of RX PDU buffers allocated for each BIS or CIS stream. Minimum of 1.
@@ -351,20 +351,13 @@ extern "C" {
  * @param[in] max_antenna_paths_supported Maximum number of antenna paths supported in CS.
  * @param[in] step_mode3_supported Whether step mode3 is supported.
  */
-#define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) ((count) > 0 ? (13 + (count) * (4331 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
-
-/** @brief Maximum additional memory required to support Channel Sounding.
- *  @note This API will be deprecated and replaced by @ref SDC_MEM_CS.
- *
- * @param[in] count Maximum number of concurrent connections supporting CS procedure.
- */
-#define SDC_MEM_CS_DEPRECATED(count) ((count) > 0 ? (13 + (count) * 8952) : 0)
+#define SDC_MEM_CS(count, max_antenna_paths_supported, step_mode3_supported) ((count) > 0 ? (13 + (count) * (4195 + __MEM_CS_ANTENNA_PATHS(max_antenna_paths_supported) + __MEM_CS_STEP_MODE3(step_mode3_supported))) : 0)
 
 /** @brief Maximum additional memory required to support Channel Sounding setup phase procedures.
  *
  * @param[in] count Total number of links (central + peripheral).
  */
-#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count) * 370) : 0)
+#define SDC_MEM_CS_SETUP_PHASE_LINKS(count) ((count) > 0 ? (11 + (count) * 363) : 0)
 
 /** @} end of sdc_mem_defines */
 

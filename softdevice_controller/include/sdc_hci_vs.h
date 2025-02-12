@@ -1370,14 +1370,20 @@ uint8_t sdc_hci_cmd_vs_min_val_of_max_acl_tx_payload_set(const sdc_hci_cmd_vs_mi
  * This command is made to simplify sending SDUs on different ISO streams
  * in the same ISO event.
  *
- * The returned timestamp corresponds to the SDU synchronization reference
- * as defined in Core_v5.4, Vol 6, Part G, Section 3.2.
- * If the provided handle identifies a CIS, the returned timestamp corresponds to
- * the SDU synchronization reference for the central to peripheral direction.
+ * The returned timestamp is set to start of the CIG or BIG event in which
+ * the first PDU containing the SDU is scheduled for transmission.
+ * The returned timestamp may be set to a value in the past or into the future
+ * depending on how the application has previously provided SDUs to the controller.
  *
  * The returned timestamp can be used to make the application provide SDUs to the
  * controller right before they are sent on air. The returned value
  * can also be used to synchronize the transmitter and receiver.
+ *
+ * The following equations can be used to find the relation between timestamps on
+ * the transmitter and receiver:
+ * CIS_reference_anchor_point = tx_time_stamp + CIG_Sync_Delay - CIS_Sync_Delay
+ * BIG_reference_anchor_point = tx_time_stamp + PTO * ISO_Interval
+ * See also Core_v6.0, Vol 6, Part G, Section 3.
  *
  * If the Host issues this command with a connection handle that does not exist,
  * or the connection handle is not associated with a CIS or BIS, the Controller
