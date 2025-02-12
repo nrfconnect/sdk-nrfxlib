@@ -15,4 +15,11 @@ if(NOT EXISTS ${NRF_FUEL_GAUGE_DIR})
 endif()
 
 zephyr_include_directories(include)
-target_link_libraries(app PRIVATE ${NRF_FUEL_GAUGE_DIR}/libnrf_fuel_gauge.a)
+
+if(CONFIG_NRF_FUEL_GAUGE_VARIANT_PRIMARY_CELL)
+  target_link_libraries(app PRIVATE ${NRF_FUEL_GAUGE_DIR}/libnrf_fuel_gauge_primary.a)
+elseif(CONFIG_NRF_FUEL_GAUGE_VARIANT_SECONDARY_CELL)
+  target_link_libraries(app PRIVATE ${NRF_FUEL_GAUGE_DIR}/libnrf_fuel_gauge.a)
+else()
+  message(FATAL_ERROR "Invalid nRF Fuel Gauge variant selection")
+endif()
