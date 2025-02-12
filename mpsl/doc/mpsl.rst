@@ -66,6 +66,12 @@ For the nRF54L Series:
   Interrupts:
 
   * ``GRTC`` channels ``7`` to ``11``, interrupt ``GRTC_3_IRQn``
+
+    .. note::
+       The ``GRTC`` must be started by the application before calling :c:func:`mpsl_init` function.
+       Additionally, the ``SYSCOUNTER`` must be enabled in the ``MODE`` register.
+       This is done automatically when using the |NCS|.
+
   * ``TIMER10``
   * ``TIMER20``
   * ``ECB00``

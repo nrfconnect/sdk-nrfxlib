@@ -75,7 +75,9 @@ enum MPSL_TIMESLOT_SIGNAL
                                                 @ref MPSL_IRQ_TIMER0_Handler. */
     MPSL_TIMESLOT_SIGNAL_TIMER0           = 1,  /**< This signal indicates the TIMER0 interrupt.
                                                 The signal will be executed in the same context as
-                                                @ref MPSL_IRQ_TIMER0_Handler. */
+                                                @ref MPSL_IRQ_TIMER0_Handler.
+                                                The timer being used is defined by
+                                                @ref MPSL_TIMER0. */
     MPSL_TIMESLOT_SIGNAL_RADIO            = 2,  /**< This signal indicates the RADIO interrupt.
                                                 The signal will be executed in the same context as
                                                 @ref MPSL_IRQ_RADIO_Handler. */

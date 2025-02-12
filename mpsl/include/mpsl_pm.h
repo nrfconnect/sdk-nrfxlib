@@ -29,8 +29,7 @@ extern "C" {
 /** @brief MPSL Power Management state in regards to next event. */
 typedef enum
 {
-  MPSL_PM_EVENT_STATE_IN_EVENT = 0, // TODO: DRGN-23673: Remove this when sdk-nrf is updated to use new low latency API.
-  MPSL_PM_EVENT_STATE_BEFORE_EVENT,
+  MPSL_PM_EVENT_STATE_BEFORE_EVENT = 0,
   MPSL_PM_EVENT_STATE_NO_EVENTS_LEFT
 } mpsl_pm_event_state_t;
 
@@ -54,17 +53,6 @@ typedef struct
  */
 bool mpsl_pm_params_get(mpsl_pm_params_t * p_params);
 
-/** @brief Acknowledge event registration.
- *
- * When low-priority context has registered a new event time with the external power management system,
- * based on @ref mpsl_pm_params_get, this function shall be called to acknowledge registration.
- *
- * TODO: DRGN-23673: Remove this function, as it is sufficient to know if low latency requests are handled in time.
- *
- * @param[in] req_counter Counter value corresponding to the event time registered.
- */
-void mpsl_pm_event_registered_ack(uint8_t req_counter);
-
 /** @brief MPSL Power Management low latency state.
  *
  * The different states of low latency requests. The external power management system shall use
@@ -72,9 +60,9 @@ void mpsl_pm_event_registered_ack(uint8_t req_counter);
  * For transitions that are not instant, the corresponding
  * REQUESTING and RELEASING states shall be used.
  *
- * When low latency state is either OFF or ON, the external power management system shall call
+ * When low latency state is either OFF, REQUESTING or ON, the external power management system shall call
  * @ref mpsl_pm_low_latency_requested and initiate transition to the appropriate state. MPSL
- * will only request low latency in the OFF state, and only release low latency in the ON state.
+ * will only request low latency in the OFF state, and only release low latency in the REQUESTING or ON states.
  */
 typedef enum
 {

@@ -206,6 +206,8 @@ int32_t mpsl_clock_hfclk_latency_set(uint16_t hfclk_rampup_time_us);
  *
  * MPSL will trigger the task at the same time as the RTC is started.
  *
+ * The function is supported only for nRF52 and nRF53 series.
+ *
  * @note This API is not supported when an external clock driver has been registered.
  *       See also @ref mpsl_clock_ctrl_source_register().
  *
