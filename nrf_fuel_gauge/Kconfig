@@ -7,3 +7,19 @@
 config NRF_FUEL_GAUGE
 	bool "Enable nRF Fuel Gauge library"
 	select REQUIRES_FULL_LIBC
+
+if NRF_FUEL_GAUGE
+
+choice NRF_FUEL_GAUGE_VARIANT
+	prompt "nRF Fuel Gauge variant"
+	default NRF_FUEL_GAUGE_VARIANT_SECONDARY_CELL
+
+config NRF_FUEL_GAUGE_VARIANT_PRIMARY_CELL
+	bool "Primary cell"
+
+config NRF_FUEL_GAUGE_VARIANT_SECONDARY_CELL
+	bool "Secondary cell"
+
+endchoice
+
+endif # NRF_FUEL_GAUGE
