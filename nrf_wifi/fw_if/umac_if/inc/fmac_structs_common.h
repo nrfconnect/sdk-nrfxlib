@@ -170,6 +170,8 @@ struct nrf_wifi_fmac_dev_ctx {
 	unsigned int reg_chan_count;
 	/** Regulatory channel attributes */
 	struct nrf_wifi_get_reg_chn_info *reg_chan_info;
+	/** To determine if event is solicited or not */
+	bool waiting_for_reg_event;
 	/** Regulatory set status */
 	int reg_set_status;
 	/** Regulatory change event */
