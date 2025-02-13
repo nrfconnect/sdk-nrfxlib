@@ -1,7 +1,7 @@
 /*
  * ZBOSS Zigbee 3.0
  *
- * Copyright (c) 2012-2022 DSR Corporation, Denver CO, USA.
+ * Copyright (c) 2012-2024 DSR Corporation, Denver CO, USA.
  * www.dsr-zboss.com
  * www.dsr-corporation.com
  * All rights reserved.
@@ -310,15 +310,20 @@ typedef struct zb_nvram_position_s
 #define ZB_NVRAM_VER_7_0  6U /* Used for ZBOSS SDK: stub for the next versions */
 #define ZB_NVRAM_VER_8_0  7U /* Used before introducing dataset tails */
 #define ZB_NVRAM_VER_9_0  8U /* Version of NVRAM having additional dataset trailers */
-#define ZB_NVRAM_VER_10_0 9U
-#define ZB_NVRAM_LAST_VER ZB_NVRAM_VER_10_0 /* Should always be equal to the highest version */
+#define ZB_NVRAM_VER_10_0 9U /* Version with unused CRC field in tail */
+#define ZB_NVRAM_VER_11_0 10U /* Version with used CRC field in tail */
+#define ZB_NVRAM_VER_12_0 11U /* Version with guarantee that all dataset sizes are forcefully aligned to 4 */
+#define ZB_NVRAM_LAST_VER ZB_NVRAM_VER_12_0 /* Should always be equal to the highest version */
 /*------------------*/
 #define ZB_NVRAM_VER_COUNT (ZB_NVRAM_LAST_VER + 1U)
 /** @} */
 
 
 #define ZB_MIN_NVRAM_VER_WITH_DS_TRAILERS ZB_NVRAM_VER_9_0
+#define ZB_MIN_NVRAM_VER_WITH_DS_CRC_IN_TAIL ZB_NVRAM_VER_11_0
 
+/* Initnial value for crc calculation */
+#define ZB_NVRAM_CRC_DEFAULT_VALUE 0xFFFFU
 
 typedef zb_uint16_t zb_nvram_ver_t;
 
@@ -1385,6 +1390,7 @@ zb_ret_t zb_nvram_write_poll_control_dataset(zb_uint8_t page, zb_uint32_t pos);
 
 #define ZB_ERROR_NVRAM_READ_FAILURE 1
 #define ZB_ERROR_NVRAM_WRITE_FAILURE 2
+#define ZB_ERROR_NVRAM_WRITE_VALIDATION_FAILURE 3
 
 #if defined(ZDO_DIAGNOSTICS)
 
