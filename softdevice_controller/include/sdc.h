@@ -209,7 +209,7 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (11 + (num_links) * 127) : 0)
+#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (11 + (num_links) * 119) : 0)
 
 /** @brief Maximum memory required when supporting periodic advertising sync transfer.
  *
