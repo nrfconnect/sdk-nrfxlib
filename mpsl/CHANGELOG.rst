@@ -17,6 +17,7 @@ Changes
 =======
 
 * Documented that the :c:func:`mpsl_clock_task_trigger_on_rtc_start_set` function is supported only on the nRF52 and nRF53 Series.
+* Added support for the nRF21540 GPIO Front-End Module on the nRF54L Series SoCs. (KRKNWK-19928)
 
 Added
 =====
