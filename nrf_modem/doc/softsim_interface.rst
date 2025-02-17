@@ -29,7 +29,7 @@ This is called instead of the :c:func:`nrf_modem_softsim_res` function.
 If a SoftSIM request from the Modem library has data associated with it, the application is expected to free the data by calling the :c:func:`nrf_modem_softsim_data_free` function, if the data is not used anymore.
 
 .. note::
-   All requests and responses follows the standard IOS/IEC 7816-3, PPS sequence, or APDU.
+   All requests and responses follows the standard ISO/IEC 7816-3, PPS sequence, or APDU.
 
 The following code block shows an example implementation of the API.
 The ``softsim_handler()`` function is an implementation of the :c:type:`nrf_modem_softsim_req_handler_t` handler.
