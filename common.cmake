@@ -49,7 +49,8 @@ function(nrfxlib_calculate_lib_path lib_path)
     elseif(DEFINED CONFIG_SOC_NRF5340_CPUNET)
       set(arch_soc_dir ${arch_soc_dir}_cpunet)
     elseif(DEFINED CONFIG_SOC_NRF54L15_CPUAPP OR DEFINED CONFIG_SOC_NRF54L20_ENGA_CPUAPP
-          OR DEFINED CONFIG_SOC_NRF54L10_CPUAPP OR DEFINED CONFIG_SOC_NRF54L05_CPUAPP)
+          OR DEFINED CONFIG_SOC_NRF54L10_CPUAPP OR DEFINED CONFIG_SOC_NRF54L05_CPUAPP
+          OR DEFINED CONFIG_SOC_NRF54L09_ENGA_CPUAPP)
       set(arch_soc_dir ${arch_soc_dir}_cpuapp)
       if(DEFINED CONFIG_TRUSTED_EXECUTION_NONSECURE AND ${CALC_LIB_PATH_NS_PROVIDED})
         set(arch_soc_dir ${arch_soc_dir}_ns)
