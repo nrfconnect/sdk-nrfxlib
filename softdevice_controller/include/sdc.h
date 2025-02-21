@@ -209,7 +209,7 @@ extern "C" {
  *
  * @param[in] num_links Total number of peripheral and central links supported.
  */
-#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (11 + (num_links) * 119) : 0)
+#define SDC_MEM_SUBRATING(num_links) ((num_links) > 0 ? (12 + (num_links) * 112) : 0)
 
 /** @brief Maximum memory required when supporting periodic advertising sync transfer.
  *
@@ -378,6 +378,17 @@ typedef void (*sdc_fault_handler_t)(const char * file, const uint32_t line);
  *  See also @ref sdc_enable().
  */
 typedef void (*sdc_callback_t)(void);
+
+#define CS_ANTENNA_SWITCH_CALLBACK_TYPE_DEFINED
+
+/** @brief Function prototype for antenna switching callback in Channel Sounding.
+ *
+ *  See also @ref sdc_support_channel_sounding
+ *
+ *  @param[in] antenna_index The index of the antenna being switched to.
+ *                           Valid range [0, @ref sdc_cfg_cs_cfg_t::num_antennas_supported - 1]
+ */
+typedef void (*sdc_cs_antenna_switch_callback_t)(uint8_t antenna_index);
 
 
 enum sdc_cfg_type
@@ -1354,17 +1365,22 @@ int32_t sdc_support_channel_sounding_test(void);
 
 /** @brief Support LE Channel Sounding
  *
- * After this API is called, the controller will support the HCI command
+ * After this API is called, the controller will support the HCI commands
  * related to Channel Sounding.
  *
  * The application shall call @ref sdc_support_channel_sounding_test() to enable
  * support for Channel Sounding test command.
  *
+ * @param[in] antenna_switch_cb Antenna Switching callback used to control an antennna switch
+ *                              in the case of a multiantenna application. May be NULL if no
+ *                              antenna switching is needed. See
+ *                              @ref sdc_cfg_cs_cfg_t::num_antennas_supported.
+ *
  * @retval 0                Success
  * @retval -NRF_EPERM       This API must be called before @ref sdc_cfg_set() or @ref sdc_enable().
  * @retval -NRF_EOPNOTSUPP  Channel Sounding is not supported
  */
-int32_t sdc_support_channel_sounding(void);
+int32_t sdc_support_channel_sounding(sdc_cs_antenna_switch_callback_t antenna_switch_cb);
 
 #ifdef __cplusplus
 }
